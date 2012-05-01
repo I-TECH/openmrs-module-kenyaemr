@@ -1,0 +1,12 @@
+.project
+.settings
+
+api/.classpath
+api/.project
+api/.settings
+api/target
+
+omod/.classpath
+omod/.project
+omod/.settings
+omod/target
