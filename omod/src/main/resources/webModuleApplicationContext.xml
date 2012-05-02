@@ -20,10 +20,26 @@
   		    http://www.springframework.org/schema/util
   		    http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
-	<!-- Add here beans related to the web context -->
-
+	<!-- UI Framework setup -->
+	
 	<bean class="org.openmrs.ui.framework.StandardModuleUiConfiguration">
 		<property name="moduleId" value="kenyaemr"/>
 	</bean>
-		
+	
+	<!-- App Framework setup -->
+	
+	<bean id="kenyaEmrRegistrationApp" class="org.openmrs.module.appframework.SimpleAppDescriptor">
+		<property name="id" value="kenyaemr.registration"/>
+		<property name="label" value="Registration"/>
+		<property name="homepageUrl" value="pages/registrationHome.page"/>
+		<property name="iconUrl" value="moduleResources/uilibrary/images/users_32.png"/>
+	</bean>
+	
+	<bean id="kenyaEmrClinicalChartApp" class="org.openmrs.module.appframework.SimpleAppDescriptor">
+		<property name="id" value="kenyaemr.clinicalChart"/>
+		<property name="label" value="Patient Chart"/>
+		<property name="homepageUrl" value="pages/patientChartHome.page"/>
+		<property name="iconUrl" value="moduleResources/uilibrary/images/folder_32.png"/>
+	</bean>
+
 </beans>

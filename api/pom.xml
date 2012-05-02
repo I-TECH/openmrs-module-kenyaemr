@@ -22,19 +22,20 @@
 			<artifactId>library-name</artifactId>
 		</dependency> 
 		-->
-
-		
 				
 		<!-- Begin OpenMRS modules -->
-				
+
 		<dependency>
-		
 			<groupId>org.openmrs.module</groupId>
-									
 			<artifactId>uiframework-api</artifactId>
-															
 		</dependency>
-				
+
+		<dependency>
+			<groupId>org.openmrs.module</groupId>
+			<artifactId>appframework-api</artifactId>
+		</dependency>
+		
+
 		<!-- End OpenMRS modules -->
 		
 

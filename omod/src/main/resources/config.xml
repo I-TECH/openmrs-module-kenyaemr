@@ -22,6 +22,11 @@
 		<require_module version="1.2">
 			org.openmrs.module.uiframework
 		</require_module>
+
+		<require_module>
+			org.openmrs.module.appframework
+		</require_module>
+
 			
 	</require_modules>
 	<!-- / Required Modules -->
