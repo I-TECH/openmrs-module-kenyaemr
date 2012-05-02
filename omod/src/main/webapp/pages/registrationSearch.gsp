@@ -2,12 +2,17 @@
 	ui.decorateWith("standardAppPage")
 %>
 <style>
+	#create-patient {
+		position: fixed;
+		bottom: 0;
+		left: 40%;
+	}
+	
 	#search {
 		float: left;
 	}
 	
 	#results {
-		float: left;
 	}
 
 	.panel {
@@ -40,12 +45,25 @@
 			fragment: "patientSearch",
 			action: "search",
 			submitOnEvent: "patientSearch/changed",
+			resetOnSubmit: false,
 			successEvent: "patientSearch/results"
 		] )}
 </fieldset>
 
-<div id="results">
-</div>
+<fieldset>
+	<legend>Results</legend>
+	<div id="results">
+	</div>
+</fieldset>
+
+${ ui.includeFragment("widget/button", [
+	id: "create-patient",
+	iconProvider: "uilibrary",
+	icon: "add1-32.png",
+	label: "Create New Patient Record",
+	extra: "Patient does not exist yet",
+	href: ui.pageLink("registrationCreatePatient") ]) }
+
 
 <script>
 	subscribe("patientSearch/results", function(event, data) {

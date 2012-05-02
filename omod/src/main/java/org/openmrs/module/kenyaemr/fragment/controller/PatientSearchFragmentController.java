@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  */
 public class PatientSearchFragmentController {
 	
-	public List<SimpleObject> search(@RequestParam("q") String query,
+	public List<SimpleObject> search(@RequestParam(value="q", required=false) String query,
 	                     @RequestParam(value="age", required=false) Integer age,
 	                     @RequestParam(value="ageWindow", defaultValue="5") int ageWindow,
 	                     UiUtils ui) {
