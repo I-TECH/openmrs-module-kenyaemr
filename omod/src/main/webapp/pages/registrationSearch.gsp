@@ -16,6 +16,7 @@
 	}
 
 	.panel {
+		cursor: pointer;
 		background-color: #e0e0e0;
 		margin-bottom: 0.5em;
 	}	
@@ -71,6 +72,7 @@ ${ ui.includeFragment("widget/button", [
 		for (var i = 0; i < data.length; ++i) {
 			var pt = data[i]
 			var html = '<div class="panel">';
+			html += '<input type="hidden" class="patientId" value="' + pt.patientId + '"/>';
 			html += '<span class="demographics">';
 			html += '<span class="name">' + pt.personName + '</span><br/>';
 			html += '<span class="age">' + pt.age + ' year old </span>';
@@ -78,7 +80,13 @@ ${ ui.includeFragment("widget/button", [
 			html += '</span>';
 			html += '<span class="identifiers">' + pt.patientIdentifier + '</span>';
 			html += '</div>';
-			jq(html).appendTo(jq('#results'));
+			jq(html).appendTo(jq('#results')).click(function() {
+				location.href = pageLink("registrationViewPatient", { patientId: jq(this).find('.patientId').val() }); 
+			});
 		}
+	});
+	jq(function() {
+		// if the user goes back to this page in their history, redo the ajax query
+		publish('patientSearch/changed');
 	});
 </script>

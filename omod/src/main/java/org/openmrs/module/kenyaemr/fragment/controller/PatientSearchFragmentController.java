@@ -45,6 +45,6 @@ public class PatientSearchFragmentController {
 			}
 			ret = similar;
 		}
-		return SimpleObject.fromCollection(ret, ui, "personName", "age", "gender", "patientIdentifier");
+		return SimpleObject.fromCollection(ret, ui, "patientId", "personName", "age", "gender", "patientIdentifier");
 	}
 }

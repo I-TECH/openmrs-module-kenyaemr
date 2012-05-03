@@ -1,5 +1,7 @@
 <%
-// config supports icon, iconProvider, label, extra, href
+// supports icon, iconProvider, label, extra
+// supports onClick (javascript snippet)
+// supports href (link url)
 
 def id = config.id ?: ui.randomId("button")
 %>
@@ -34,11 +36,16 @@ def id = config.id ?: ui.randomId("button")
 	<% if (config.href) { %></a><% } %>
 </button>
 
-<% if (config.href) { %>
+<% if (config.href || config.onClick) { %>
 	<script>
 		jq(function() {
 			jq('#${ id }').click(function() {
+	<% if (config.onClick) { %>
+				${ config.onClick }
+	<% } %>
+	<% if (config.href) { %>
 				location.href = '${ ui.escapeJs(config.href) }'
+	<% } %>
 			});
 		});
 	</script>
