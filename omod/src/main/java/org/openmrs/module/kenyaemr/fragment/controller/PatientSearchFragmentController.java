@@ -18,6 +18,7 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.Patient;
+import org.openmrs.Visit;
 import org.openmrs.api.context.Context;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
@@ -45,6 +46,29 @@ public class PatientSearchFragmentController {
 			}
 			ret = similar;
 		}
-		return SimpleObject.fromCollection(ret, ui, "patientId", "personName", "age", "gender", "patientIdentifier");
+		return simplePatientList(ui, ret);
 	}
+	
+	public List<SimpleObject> withActiveVisits(UiUtils ui) {
+		List<Visit> activeVisits = Context.getVisitService().getVisits(null, null, null, null, null, null, null, null, null, false, false);
+
+		List<Patient> ret = new ArrayList<Patient>();
+		for (Visit v : activeVisits) {
+			if (!ret.contains(v.getPatient()))
+				ret.add(v.getPatient());
+		}
+		return simplePatientList(ui, ret);
+	}
+
+	/**
+     * Simplifies a list of patients so it can be sent to the client via json
+     * 
+     * @param ui
+     * @param pts
+     * @return
+     */
+    private List<SimpleObject> simplePatientList(UiUtils ui, List<Patient> pts) {
+    	return SimpleObject.fromCollection(pts, ui, "patientId", "personName", "age", "gender", "activeIdentifiers.identifierType", "activeIdentifiers.identifier");
+    }
+
 }

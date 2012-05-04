@@ -18,7 +18,11 @@
 
 <div class="col2">
 	<h2>Checked In Patients</h2>
-	List of currently checked in patients (clicking takes you to their open visit)
-	<br/>
-	Link to "Close of business day, check everyone out"
+	${ ui.includeFragment("patientList", [ id: "checkedInPatients", page: "registrationViewPatient" ]) }
+	TODO link to "Close of business day, check everyone out"
 </div>
+
+
+<script>
+	getJsonAsEvent(actionLink('patientSearch', 'withActiveVisits'), 'checkedInPatients/show');
+</script>

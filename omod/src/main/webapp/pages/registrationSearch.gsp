@@ -11,25 +11,6 @@
 	#search {
 		float: left;
 	}
-	
-	#results {
-	}
-
-	.panel {
-		cursor: pointer;
-		background-color: #e0e0e0;
-		margin-bottom: 0.5em;
-	}	
-	.panel .name {
-		font-weight: bold;
-		font-size: 1.5em;
-	}
-	.panel .demographics {
-	}
-	.panel .identifiers {
-		float: right;
-		padding-left: 2em;
-	}
 </style>
 
 <fieldset id="search">
@@ -51,10 +32,12 @@
 		] )}
 </fieldset>
 
-<fieldset>
-	<legend>Results</legend>
-	<div id="results">
-	</div>
+<fieldset style="border: none">
+	${ ui.includeFragment("patientList", [
+		id: "results",
+		showNumResults: true,
+		page: "registrationViewPatient"
+	]) }
 </fieldset>
 
 ${ ui.includeFragment("widget/button", [
@@ -65,25 +48,9 @@ ${ ui.includeFragment("widget/button", [
 	extra: "Patient does not exist yet",
 	href: ui.pageLink("registrationCreatePatient") ]) }
 
-
 <script>
 	subscribe("patientSearch/results", function(event, data) {
-		jq('#results').html('');
-		for (var i = 0; i < data.length; ++i) {
-			var pt = data[i]
-			var html = '<div class="panel">';
-			html += '<input type="hidden" class="patientId" value="' + pt.patientId + '"/>';
-			html += '<span class="demographics">';
-			html += '<span class="name">' + pt.personName + '</span><br/>';
-			html += '<span class="age">' + pt.age + ' year old </span>';
-			html += '<span class="gender">' + pt.gender + '</span>';
-			html += '</span>';
-			html += '<span class="identifiers">' + pt.patientIdentifier + '</span>';
-			html += '</div>';
-			jq(html).appendTo(jq('#results')).click(function() {
-				location.href = pageLink("registrationViewPatient", { patientId: jq(this).find('.patientId').val() }); 
-			});
-		}
+		publish("results/show", data);
 	});
 	jq(function() {
 		// if the user goes back to this page in their history, redo the ajax query

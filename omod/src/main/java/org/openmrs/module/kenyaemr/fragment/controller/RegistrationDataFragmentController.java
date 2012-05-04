@@ -19,7 +19,7 @@ import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.BindParams;
 import org.openmrs.ui.framework.annotation.Validate;
-import org.openmrs.validator.VisitValidator;
+import org.springframework.web.bind.annotation.RequestParam;
 
 
 /**
@@ -28,9 +28,25 @@ import org.openmrs.validator.VisitValidator;
 public class RegistrationDataFragmentController {
 	
 	public Object startVisit(UiUtils ui,
-	                         @BindParams("visit") @Validate(VisitValidator.class) Visit visit) {
+	                         @BindParams("visit") @Validate Visit visit) {
 		Visit saved = Context.getVisitService().saveVisit(visit);
-		return SimpleObject.fromObject(saved, ui, "visitId", "visitType", "startDatetime", "stopDatetime");
+		return simpleVisit(ui, saved);
 	}
+	
+	public Object editVisit(UiUtils ui,
+	                        @RequestParam("visit.visitId") @BindParams("visit") @Validate Visit visit) {
+		Visit saved = Context.getVisitService().saveVisit(visit);
+		return simpleVisit(ui, saved);
+	}
+	
+	/**
+     * Simplifies a visit so it can be sent to the client via json
+     * 
+     * @param visit
+     * @return
+     */
+    private SimpleObject simpleVisit(UiUtils ui, Visit visit) {
+    	return SimpleObject.fromObject(visit, ui, "visitId", "visitType", "startDatetime", "stopDatetime");
+    }
 	
 }
