@@ -68,7 +68,7 @@ public class PatientSearchFragmentController {
      * @return
      */
     private List<SimpleObject> simplePatientList(UiUtils ui, List<Patient> pts) {
-    	return SimpleObject.fromCollection(pts, ui, "patientId", "personName", "age", "gender", "activeIdentifiers.identifierType", "activeIdentifiers.identifier");
+    	return SimpleObject.fromCollection(pts, ui, "patientId", "personName", "age", "birthdate", "gender", "activeIdentifiers.identifierType", "activeIdentifiers.identifier");
     }
 
 }
