@@ -98,7 +98,7 @@
 <script>
 subscribe("${ config.id }/show", function(event, data) {
 	<% if (config.showNumResults) { %>
-		jq('#${ config.id } > .num-results').html(data.length ? (data.length + ' result(s)') : "");
+		jq('#${ config.id } > .num-results').html(data.length ? (data.length + ' patient(s)') : "");
 	<% } %>
 		
 	jq('#${ config.id } > .results').html('');
