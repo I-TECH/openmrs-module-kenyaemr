@@ -14,8 +14,11 @@
 package org.openmrs.module.kenyaemr;
 
 
-import org.apache.commons.logging.Log; 
+import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.Location;
+import org.openmrs.VisitType;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.ModuleActivator;
 
 /**
@@ -50,6 +53,7 @@ public class KenyaEmrActivator implements ModuleActivator {
 	 * @see ModuleActivator#started()
 	 */
 	public void started() {
+		setupInitialData();
 		log.info("Kenya OpenMRS EMR Module started");
 	}
 	
@@ -67,4 +71,33 @@ public class KenyaEmrActivator implements ModuleActivator {
 		log.info("Kenya OpenMRS EMR Module stopped");
 	}
 		
+    private void setupInitialData() {
+    	setupVisitType(MetadataConstants.HIV_VISIT_TYPE_UUID, "HIV Consult", "Patient came for an HIV consult");
+    	setupVisitType(MetadataConstants.OUTPATIENT_CONSULT_VISIT_TYPE_UUID, "Outpatient Consult", "Patient came for a general consult");
+    	setupVisitType(MetadataConstants.HOSPITALIZATION_VISIT_TYPE_UUID, "Hospitalization", "Patient was admitted to the hospital");
+    	setupLocation(MetadataConstants.UNKNOWN_LOCATION_UUID, "Unknown Location", null);
+    }
+
+    private void setupLocation(String uuid, String name, String description) {
+    	Location md = Context.getLocationService().getLocationByUuid(uuid);
+	    if (md == null) {
+	    	md = new Location();
+	    	md.setUuid(uuid);
+	    }
+	    md.setName(name);
+	    md.setDescription(description);
+	    Context.getLocationService().saveLocation(md);
+    }
+
+	private void setupVisitType(String uuid, String name, String description) {
+	    VisitType md = Context.getVisitService().getVisitTypeByUuid(uuid);
+	    if (md == null) {
+	    	md = new VisitType();
+	    	md.setUuid(uuid);
+	    }
+	    md.setName(name);
+	    md.setDescription(description);
+	    Context.getVisitService().saveVisitType(md);
+    }
+
 }
