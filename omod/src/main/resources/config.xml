@@ -31,6 +31,9 @@
 			org.openmrs.module.appframework
 		</require_module>
 
+		<require_module version="1.0.7">
+			org.openmrs.module.metadatasharing
+		</require_module>
 			
 	</require_modules>
 	<!-- / Required Modules -->
