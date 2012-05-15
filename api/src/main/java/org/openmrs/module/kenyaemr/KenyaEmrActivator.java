@@ -60,7 +60,7 @@ public class KenyaEmrActivator implements ModuleActivator {
 	
 	/**
 	 * @see ModuleActivator#started()
-	 * @should install initial data
+	 * @should install initial data only once
 	 */
 	public void started() {
 		try {
@@ -85,8 +85,16 @@ public class KenyaEmrActivator implements ModuleActivator {
 		log.info("Kenya OpenMRS EMR Module stopped");
 	}
 		
-    private void setupInitialData() throws Exception {
-    	installMetadataPackageIfNecessary("fe64cb1e-5434-4c59-96f0-64db9bad1469", "KenyaEmrCoreMetadata-v2.zip");
+    /**
+     * Public for testing
+     * 
+     * @return whether any changes were made to the db
+     * @throws Exception
+     */
+    public boolean setupInitialData() throws Exception {
+    	boolean anyChanges = false;
+    	anyChanges |= installMetadataPackageIfNecessary("fe64cb1e-5434-4c59-96f0-64db9bad1469", "KenyaEmrCoreMetadata-v2.zip");
+    	return anyChanges;
     }
 
     /**
@@ -94,9 +102,10 @@ public class KenyaEmrActivator implements ModuleActivator {
      * 
      * @param groupUuid
      * @param filename
+     * @return whether any changes were made to the db
      * @throws IOException 
      */
-    private void installMetadataPackageIfNecessary(String groupUuid, String filename) throws IOException {
+    private boolean installMetadataPackageIfNecessary(String groupUuid, String filename) throws IOException {
     	//NameWithNoSpaces-v1.zip
     	Matcher matcher = Pattern.compile("\\w+-v(\\d+).zip").matcher(filename);
     	if (!matcher.matches())
@@ -106,7 +115,7 @@ public class KenyaEmrActivator implements ModuleActivator {
     	ImportedPackage installed = Context.getService(MetadataSharingService.class).getImportedPackageByGroup(groupUuid);
     	if (installed != null && installed.getVersion() >= version) {
     		log.info("Metadata package " + filename + " is already installed with version " + installed.getVersion());
-    		return;
+    		return false;
     	}
     	
     	if (getClass().getClassLoader().getResource(filename) == null) {
@@ -114,11 +123,9 @@ public class KenyaEmrActivator implements ModuleActivator {
     	}
     	
     	PackageImporter metadataImporter = MetadataSharing.getInstance().newPackageImporter();
-    	//metadataImporter.loadSerializedPackageStream(getClass().getClassLoader().getResourceAsStream(filename));
-    	URL url = getClass().getClassLoader().getResource(filename);
-    	File file = new File(url.getFile());
-    	metadataImporter.loadSerializedPackageStream(new FileInputStream(file));
+    	metadataImporter.loadSerializedPackageStream(getClass().getClassLoader().getResourceAsStream(filename));
     	metadataImporter.importPackage();
+    	return true;
     }
 
 }
