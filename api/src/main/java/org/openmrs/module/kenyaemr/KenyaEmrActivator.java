@@ -14,10 +14,7 @@
 package org.openmrs.module.kenyaemr;
 
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
