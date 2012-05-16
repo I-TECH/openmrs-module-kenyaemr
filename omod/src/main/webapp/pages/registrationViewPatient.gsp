@@ -76,7 +76,25 @@
 		font-weight: bold;
 		display: block;
 	}
+	
+	.encounter-panel {
+		border: 1px #e0e0e0 solid;
+		cursor: pointer;
+	}
+	.encounter-panel:hover {
+		text-decoration: underline;
+	}
 </style>
+
+<script>
+	jq(function() {
+		jq('.encounter-panel').click(function(event) {
+			var encId = jq(event.srcElement).find('input[name=encounterId]').val();
+			publish('showHtmlForm/showEncounter', encId);
+			showDivAsDialog('#showHtmlForm', 'Encounter ' + encId);
+		});
+	});
+</script>
 
 <div id="col1">
 	<fieldset id="registrationDetails">
@@ -206,12 +224,15 @@
 		<% } %>
 		
 		<% if (visit.encounters) visit.encounters.each { %>
-			${ ui.format(it.encounterDatetime) } :
-			${ ui.format(it.encounterType) }
-			by:
-			<% it.providersByRoles.each { %>
-				${ ui.format(it.key) }: ${ ui.format(it.value) }
-			<% } %>
+			<span class="encounter-panel">
+				<input type="hidden" name="encounterId" value="${ it.encounterId }"/>
+				${ ui.format(it.encounterDatetime) } :
+				${ ui.format(it.encounterType) }
+				by:
+				<% it.providersByRoles.each { %>
+					${ ui.format(it.key) }: ${ ui.format(it.value) }
+				<% } %>
+			</span>
 		<% } %>
 		
 		<% if (!visit.stopDatetime) { %>
@@ -237,5 +258,7 @@
 			</div>
 		<% } %>
 	</div>
+	
+	${ ui.includeFragment("showHtmlForm", [ id: "showHtmlForm", style: "display: none" ]) }
 
 <% } %>
