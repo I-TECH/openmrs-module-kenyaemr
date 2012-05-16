@@ -27,12 +27,16 @@
 			org.openmrs.module.uilibrary
 		</require_module>
 
-		<require_module>
+		<require_module version="1.0">
 			org.openmrs.module.appframework
 		</require_module>
 
 		<require_module version="1.0.7">
 			org.openmrs.module.metadatasharing
+		</require_module>
+		
+		<require_module version="1.9.3">
+			org.openmrs.module.htmlformentry
 		</require_module>
 			
 	</require_modules>
