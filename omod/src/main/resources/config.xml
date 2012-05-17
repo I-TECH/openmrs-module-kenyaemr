@@ -35,7 +35,7 @@
 			org.openmrs.module.metadatasharing
 		</require_module>
 		
-		<require_module version="1.9.3">
+		<require_module version="1.9.1">
 			org.openmrs.module.htmlformentry
 		</require_module>
 			
