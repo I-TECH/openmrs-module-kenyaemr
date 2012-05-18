@@ -80,6 +80,7 @@
 	.encounter-panel {
 		border: 1px #e0e0e0 solid;
 		cursor: pointer;
+		margin: 2px 0px;
 	}
 	.encounter-panel:hover {
 		text-decoration: underline;
@@ -94,6 +95,16 @@
 			showDivAsDialog('#showHtmlForm', 'Encounter ' + encId);
 		});
 	});
+	
+	function enterHtmlForm(htmlFormId) {
+		showDialog({
+			fragment: "enterHtmlForm",
+			config: {
+				patient: ${ patient.id },
+				htmlFormId: htmlFormId
+			}
+		});
+	}
 </script>
 
 <div id="col1">
@@ -224,7 +235,7 @@
 		<% } %>
 		
 		<% if (visit.encounters) visit.encounters.each { %>
-			<span class="encounter-panel">
+			<div class="encounter-panel">
 				<input type="hidden" name="encounterId" value="${ it.encounterId }"/>
 				${ ui.format(it.encounterDatetime) } :
 				${ ui.format(it.encounterType) }
@@ -232,11 +243,18 @@
 				<% it.providersByRoles.each { %>
 					${ ui.format(it.key) }: ${ ui.format(it.value) }
 				<% } %>
-			</span>
+			</div>
 		<% } %>
 		
 		<% if (!visit.stopDatetime) { %>
 			<div style="position: fixed; bottom: 0.5em; text-align: center; padding: 0.5em; background-color: #e0e0e0;">
+				${ ui.includeFragment("widget/button", [
+					iconProvider: "uilibrary",
+					icon: "activity_monitor_add.png",
+					label: "Vitals",
+					onClick: "enterHtmlForm(1);"
+				]) }
+				<br/>
 				${ ui.includeFragment("widget/popupForm", [
 					buttonConfig: [
 						label: "Is Patient Leaving?",
@@ -260,5 +278,7 @@
 	</div>
 	
 	${ ui.includeFragment("showHtmlForm", [ id: "showHtmlForm", style: "display: none" ]) }
+	
+	${ ui.includeFragment("dialogSupport") }
 
 <% } %>
