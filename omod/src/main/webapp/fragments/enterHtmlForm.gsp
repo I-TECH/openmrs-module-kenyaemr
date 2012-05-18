@@ -6,6 +6,7 @@ ui.includeJavascript("jquery-ui.js")
 %>
 
 <script type="text/javascript" src="/${ contextPath }/moduleResources/htmlformentry/htmlformEntry.js"></script>
+<link href="/${ contextPath }/moduleResources/htmlformentry/htmlFormEntry.css" type="text/css" rel="stylesheet" />
 
 <script>
 	function showDiv(id) {

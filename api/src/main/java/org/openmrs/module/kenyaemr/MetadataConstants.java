@@ -24,6 +24,9 @@ public class MetadataConstants {
 	public static final String OUTPATIENT_CONSULT_VISIT_TYPE_UUID = "73bbb069-9781-4afc-a9d1-54b6b2270e01";
 	public static final String HOSPITALIZATION_VISIT_TYPE_UUID = "73bbb069-9781-4afc-a9d1-54b6b2270e02";
 	
+	// Encounter Types
+	public static final String VITALS_ENCOUNTER_TYPE_UUID = "345368b9-060e-4d9f-9630-039eca730505";
+	
 	// Locations
 	public static final String UNKNOWN_LOCATION_UUID = "8d6c993e-c2cc-11de-8d13-0010c6dffd0f";
 	

@@ -4,6 +4,8 @@
 // listens for the event (id)/showEncounter (takes an encounter id)
 %>
 
+<link href="/${ contextPath }/moduleResources/htmlformentry/htmlFormEntry.css" type="text/css" rel="stylesheet" />
+
 <div id="${ config.id }" <% if (config.style) { %>style="${ config.style }"<% } %>>
 </div>
 

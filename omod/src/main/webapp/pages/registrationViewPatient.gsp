@@ -96,8 +96,9 @@
 		});
 	});
 	
-	function enterHtmlForm(htmlFormId) {
+	function enterHtmlForm(htmlFormId, title) {
 		showDialog({
+			title: title,
 			fragment: "enterHtmlForm",
 			config: {
 				patient: ${ patient.id },
@@ -239,22 +240,25 @@
 				<input type="hidden" name="encounterId" value="${ it.encounterId }"/>
 				${ ui.format(it.encounterDatetime) } :
 				${ ui.format(it.encounterType) }
-				by:
+				by
 				<% it.providersByRoles.each { %>
-					${ ui.format(it.key) }: ${ ui.format(it.value) }
+					${ ui.format(it.key) }:
+					<%= it.value.collect { ui.format(it) } .join(", ") %>
 				<% } %>
 			</div>
 		<% } %>
 		
 		<% if (!visit.stopDatetime) { %>
 			<div style="position: fixed; bottom: 0.5em; text-align: center; padding: 0.5em; background-color: #e0e0e0;">
-				${ ui.includeFragment("widget/button", [
-					iconProvider: "uilibrary",
-					icon: "activity_monitor_add.png",
-					label: "Vitals",
-					onClick: "enterHtmlForm(1);"
-				]) }
-				<br/>
+				<% availableForms.each { %>
+					${ ui.includeFragment("widget/button", [
+						iconProvider: "uilibrary",
+						icon: it.icon,
+						label: it.label,
+						onClick: "enterHtmlForm(" + it.htmlFormId + ", '" + it.label + "');"
+					]) }
+					<br/>
+				<% } %>
 				${ ui.includeFragment("widget/popupForm", [
 					buttonConfig: [
 						label: "Is Patient Leaving?",

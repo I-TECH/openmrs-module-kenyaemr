@@ -15,12 +15,17 @@ package org.openmrs.module.kenyaemr.page.controller;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import org.openmrs.Encounter;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appframework.AppUiUtil;
+import org.openmrs.module.kenyaemr.MetadataConstants;
+import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.page.PageModel;
 import org.openmrs.ui.framework.session.Session;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -58,8 +63,23 @@ public class RegistrationViewPatientPageController {
 		if (visit == null && currentVisits.size() > 0) {
 			visit = currentVisits.get(0);
 		}
+		
+		List<SimpleObject> availableForms = new ArrayList<SimpleObject>();
+		if (visit != null) {
+			Set<String> encounterTypesAlready = new HashSet<String>();
+			for (Encounter e : visit.getEncounters()) {
+				if (e.isVoided())
+					continue;
+				encounterTypesAlready.add(e.getEncounterType().getUuid());
+			}
+			
+			if (!encounterTypesAlready.contains(MetadataConstants.VITALS_ENCOUNTER_TYPE_UUID)) {
+				availableForms.add(SimpleObject.create("htmlFormId", 3, "label", "Vitals", "icon", "activity_monitor_add.png"));
+			}
+		}
 			
 		model.addAttribute("visit", visit);
+		model.addAttribute("availableForms", availableForms);
 		
 		if (currentVisits.size() == 0) {
 			Visit newVisit = new Visit();
