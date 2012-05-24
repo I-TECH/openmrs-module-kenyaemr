@@ -28,7 +28,10 @@ import org.openmrs.ui.framework.session.Session;
  */
 public class KenyaHomePageController {
 	
-	public void controller(PageModel model, Session session) {
+	public String controller(PageModel model, Session session) {
+		if (!Context.isAuthenticated()) {
+			return "kenyaLogin";
+		}
 		
 		model.addAttribute("motd", "Do we want to show something here like a message of the day?");
 
@@ -41,6 +44,7 @@ public class KenyaHomePageController {
 		model.addAttribute("apps", apps);
 		
 		model.addAttribute("currentApp", AppUiUtil.getCurrentApp(session));
+		return null; // default view
 	}
 	
 }

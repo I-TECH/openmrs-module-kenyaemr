@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 
 /**
- * Takes over /index.htm so users don't see the legacy OpenMRS UI
+ * Takes over /index.htm and /login.htm so users don't see the legacy OpenMRS UI
  */
 @Controller
 public class HomepageOverrideController {
@@ -27,5 +27,11 @@ public class HomepageOverrideController {
 	public String showOurHomepage() {
 		return "forward:/pages/kenyaHome.page";
 	}
+	
+	@RequestMapping("/login.htm")
+	public String showLoginHomepage() {
+		return showOurHomepage();
+	}
+
 	
 }
