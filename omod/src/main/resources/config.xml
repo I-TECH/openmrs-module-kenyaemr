@@ -23,7 +23,7 @@
 			org.openmrs.module.uiframework
 		</require_module>
 
-		<require_module version="1.1">
+		<require_module version="1.2">
 			org.openmrs.module.uilibrary
 		</require_module>
 
