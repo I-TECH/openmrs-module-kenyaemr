@@ -1,6 +1,11 @@
 <%
 	config.require("page") // (will go the that page, with a patientId parameter)
-	// supports showNumResults
+	// supports showNumResults (default false)
+
+	// supports noneMessage (default "general.none", only takes effect if showNumResults is false)
+	def noneMessage = config.noneMessage ?: "general.none"
+	if (config.showNumResults)
+		noneMessage = null
 %>
 <script>
 	function panelItem(data, item) {
@@ -92,6 +97,9 @@
 
 <div id="${ config.id }">
 	<div class="num-results"></div>
+	<% if (noneMessage) { %>
+		<div class="no-results">${ ui.message(noneMessage) }</div>
+	<% } %>
 	<div class="results"></div>
 </div>
 
@@ -99,6 +107,13 @@
 subscribe("${ config.id }/show", function(event, data) {
 	<% if (config.showNumResults) { %>
 		jq('#${ config.id } > .num-results').html(data.length ? (data.length + ' patient(s)') : "");
+	<% } %>
+	<% if (noneMessage) { %>
+		if (data.length == 0) {
+			jq('#${ config.id } > .no-results').show();
+		} else {
+			jq('#${ config.id } > .no-results').hide();
+		}
 	<% } %>
 		
 	jq('#${ config.id } > .results').html('');
