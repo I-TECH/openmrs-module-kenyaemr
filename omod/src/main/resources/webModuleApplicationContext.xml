@@ -36,10 +36,32 @@
 	</bean>
 	
 	<bean id="kenyaEmrClinicalChartApp" class="org.openmrs.module.appframework.SimpleAppDescriptor">
-		<property name="id" value="kenyaemr.clinicalChart"/>
-		<property name="label" value="Patient Chart"/>
-		<property name="homepageUrl" value="pages/patientChartHome.page"/>
+		<property name="id" value="kenyaemr.medicalChart"/>
+		<property name="label" value="Medical Chart"/>
+		<property name="homepageUrl" value="pages/medicalChartHome.page"/>
 		<property name="iconUrl" value="moduleResources/uilibrary/images/folder_32.png"/>
+	</bean>
+	
+	<bean id="kenyaEmrReportsApp" class="org.openmrs.module.appframework.SimpleAppDescriptor">
+		<property name="id" value="kenyaemr.reports"/>
+		<property name="label" value="Reports"/>
+		<property name="homepageUrl" value="pages/reportsHome.page"/>
+		<property name="iconUrl" value="moduleResources/uilibrary/images/activity_monitor_chart.png"/>
+	</bean>
+	
+	<bean id="kenyaEmrAdminApp" class="org.openmrs.module.appframework.SimpleAppDescriptor">
+		<property name="id" value="kenyaemr.admin"/>
+		<property name="label" value="Admin"/>
+		<property name="homepageUrl" value="pages/adminHome.page"/>
+		<property name="iconUrl" value="moduleResources/uilibrary/images/configure32.png"/>
+	</bean>
+	
+	<!-- Get rid of this once we go into production -->
+	<bean id="legacyAdminApp" class="org.openmrs.module.appframework.SimpleAppDescriptor">
+		<property name="id" value="legacy.admin"/>
+		<property name="label" value="Full OpenMRS Administration"/>
+		<property name="homepageUrl" value="admin/index.htm"/>
+		<property name="iconUrl" value="moduleResources/uilibrary/images/info_button_32.png"/>
 	</bean>
 
 </beans>

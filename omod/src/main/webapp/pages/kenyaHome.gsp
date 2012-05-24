@@ -1,5 +1,5 @@
 <%
-	ui.decorateWith("standardPage")
+	ui.decorateWith("standardAppPage", [ doNotShowApp: true ])
 	def APPS_PER_ROW = 3;
 %>
 
@@ -32,6 +32,13 @@
 		text-align: center;
 		padding-top: 0.5em;
 	}
+	
+	#homepage-current-app {
+		clear: both;
+		float: right;
+		padding: 0.5em;
+		border: 1px grey solid;
+	}
 </style>
 
 <img id="homepage-logo" src="${ ui.resourceLink("kenyaemr", "images/logo.png") }"/>
@@ -54,3 +61,15 @@
 		</div>
 	<% } %>
 </div>
+
+<% if (currentApp) { %>
+	<div id="homepage-current-app">
+		Most Recent App:
+		<% if (currentApp.app.tinyIconUrl) { %>
+			<img src="/${ contextPath }/${ currentApp.app.tinyIconUrl }"/>
+		<% } %>
+		<a href="/${ contextPath }/${ currentApp.app.homepageUrl }">
+			${ currentApp.app.label }
+		</a>
+	</div>
+<% } %>
