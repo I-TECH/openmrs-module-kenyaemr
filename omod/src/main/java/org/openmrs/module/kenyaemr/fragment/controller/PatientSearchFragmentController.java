@@ -84,7 +84,8 @@ public class PatientSearchFragmentController {
 			if (v == null) {
 				i.remove();
 			} else {
-				candidate.put("extra", "Active <b>" + ui.format(v.getVisitType()) + "</b>");
+				String imgUrl = ui.resourceLink("kenyaemr", "images/checked_in_16.png");
+				candidate.put("extra", "<img src=\"" + imgUrl + "\"/> <small>" + ui.format(v.getVisitType()) + "<br/>" + ui.format(v.getStartDatetime()) + "</small>");
 			}
 		}
 		return matching;

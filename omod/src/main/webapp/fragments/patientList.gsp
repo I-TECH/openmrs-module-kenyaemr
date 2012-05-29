@@ -20,8 +20,8 @@
 	function panelHelper(data, values) {
 		var ret = '<div class="panel">';
 		ret += '<table width="100%"><tr valign="top"><td>';
-		ret += '<span class="title">' + panelItem(data, values.title) + '</span>';
 		ret += '<span class="icon">' + panelItem(data, values.icon) + '</span>';
+		ret += '<span class="title">' + panelItem(data, values.title) + '</span>';
 		ret += '<span class="leftDetails">' + panelItem(data, values.leftDetails) + '</span>';
 		ret += '</td><td align="center">';
 		ret += panelItem(data, values.center);
@@ -79,18 +79,16 @@
 		cursor: pointer;
 		border: 1px #a0a0a0 solid;
 		margin-bottom: 0.5em;
-	}
-	.panel > table td, .panel > table th {
-		padding: 0.5em;
+		padding: 0.2em;
 	}
 	.panel .title {
 		float: left;
 		font-weight: bold;
-		font-size: 1.2em;
+		font-size: 1.1em;
 	}
 	.panel .icon {
 		float: left;
-		clear: left;
+		padding-right: 0.3em;
 	}
 	.panel .leftDetails {
 		float: left;
