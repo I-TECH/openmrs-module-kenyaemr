@@ -46,23 +46,13 @@ public class RegistrationViewPatientPageController {
 
 		model.addAttribute("patient", patient);
 		model.addAttribute("person", patient);
+		
+		List<Visit> activeVisits = Context.getVisitService().getActiveVisitsByPatient(patient);
 
-		List<Visit> currentVisits = new ArrayList<Visit>();
-		List<Visit> pastVisits = new ArrayList<Visit>();
+		model.addAttribute("activeVisits", activeVisits);
 		
-		for (Visit v : Context.getVisitService().getVisitsByPatient(patient)) {
-			// TODO only include visits at this location and its sub-locations
-			if (v.getStopDatetime() == null) {
-				currentVisits.add(v);
-			} else {
-				pastVisits.add(v);
-			}
-		}
-		model.addAttribute("pastVisits", pastVisits);
-		model.addAttribute("currentVisits", currentVisits);
-		
-		if (visit == null && currentVisits.size() > 0) {
-			visit = currentVisits.get(0);
+		if (visit == null && activeVisits.size() > 0) {
+			visit = activeVisits.get(0);
 		}
 		
 		List<SimpleObject> availableForms = new ArrayList<SimpleObject>();
@@ -75,33 +65,20 @@ public class RegistrationViewPatientPageController {
 			}
 			
 			for (HtmlForm hf : Context.getService(HtmlFormEntryService.class).getAllHtmlForms()) {
-				if (!encounterTypesAlready.contains(hf.getForm().getEncounterType().getUuid())) {
+				if (!hf.getForm().isRetired() && hf.getForm().getPublished() && !encounterTypesAlready.contains(hf.getForm().getEncounterType().getUuid())) {
 					availableForms.add(SimpleObject.create("htmlFormId", hf.getId(), "label", hf.getName(), "icon", "activity_monitor_add.png"));
 				}
 			}
-			
-			/*
-			if (!encounterTypesAlready.contains(MetadataConstants.VITALS_ENCOUNTER_TYPE_UUID)) {
-				// TODO this needs to be defined by UUID
-				availableForms.add(SimpleObject.create("htmlFormId", 2, "label", "Vitals", "icon", "activity_monitor_add.png"));
-			}
-			*/
 		}
 			
 		model.addAttribute("visit", visit);
 		model.addAttribute("availableForms", availableForms);
 		
-		if (currentVisits.size() == 0) {
+		if (activeVisits.size() == 0) {
 			Visit newVisit = new Visit();
 			newVisit.setPatient(patient);
 			newVisit.setStartDatetime(new Date());
 			model.addAttribute("newCurrentVisit", newVisit);
-		}
-		
-		{
-			Visit pastVisit = new Visit();
-			pastVisit.setPatient(patient);
-			model.addAttribute("newPastVisit", pastVisit);
 		}
 	}
 	

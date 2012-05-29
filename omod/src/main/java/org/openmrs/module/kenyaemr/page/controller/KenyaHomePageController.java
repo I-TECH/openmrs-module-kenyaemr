@@ -48,12 +48,14 @@ public class KenyaHomePageController {
 					return 0;
 				else if ("kenyaemr.medicalChart".equals(app.getId()))
 					return 1;
-				else if ("kenyaemr.reports".equals(app.getId()))
+				else if ("kenyaemr.medicalEncounter".equals(app.getId()))
 					return 2;
-				else if ("kenyaemr.admin".equals(app.getId()))
+				else if ("kenyaemr.reports".equals(app.getId()))
 					return 3;
+				else if ("kenyaemr.admin".equals(app.getId()))
+					return 4;
 				else
-					return 10;
+					return Integer.MAX_VALUE;
 			}
 			
 			@Override

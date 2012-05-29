@@ -1,82 +1,40 @@
 <%
-	ui.decorateWith("standardAppPage")
-	
-	def showVisit = { v ->
-		def selected = v == visit
-		def ret = """<div class="${ selected ? "active-" : "" }visit">"""
-		if (!selected)
-			ret += """<a href="${ ui.pageLink("registrationViewPatient", [patientId: patient.id, visitId: v.id ]) }">"""
-		ret += """${ ui.format(v.startDatetime) } - ${ ui.format(v.visitType) }"""
-		if (!selected)
-			ret += "</a>"
-		ret += "</div>"
-		return ret
-	}
+	ui.decorateWith("standardAppPage", [ afterAppHeader: ui.includeFragment("selectedPatientHeader") ])
 %>
 
 <style>
+	fieldset {
+		margin-bottom: 0.6em;
+	}
+	
 	#col1 {
 		float: left;
-		margin-right: 1em;
+		width: 45%;
+		padding-right: 4px;
 	}
 	
 	#col2 {
 		float: left;
-		margin-right: 0px;
-	}
-	
-	#col3 {
-		float: left;
-		position: relative;
-		left: -1px; // so active tab from col2 is on top of the left border 
-		margin-left: 0px;
+		padding-left: 0.5em;
 		border-left: 1px black solid;
-		padding-left: 0.6em;
 		height: 100%;
 	}
 	
-	#registrationDetails > .icon {
-		float: left;
-		padding-right: 1em;
+	.person-name, .demographics, .identifiers, .attributes {
+		margin-bottom: 0.5em;
 	}
-	#registrationDetails > .demographics {
-		float: left;
+	
+	.person-name {
+		font-weight: bold;
 	}
-	#registrationDetails > .identifiers {
-	}
-	#registrationDetails > .identifiers .identifier {
-		clear: left;
-		display: block;
-		padding-top: 0.5em;
-		padding-bottom: 0.5em;
-	}
-	#registrationDetails > .identifiers .identifier-type {
-		font-decoration: underline;
+
+	.identifier-type, .attribute-type {
 		font-size: 0.8em;
+		color: #808080;
 	}
-	#registrationDetails > .identifiers .identifier-value {
-		font-weight: bold;
+	.identifier-value, .attribute-value {
 	}
-	
-	.visit, .active-visit {
-		display: block;
-		border: 1px black solid;
-		padding: 0.3em;
-		margin: 0.2em 0em 0.2em 0.2em; 
-	}
-	
-	.active-visit {
-		border-right: none;
-		background-color: #F5F5DC;
-		position: relative;
-		z-index: 1; // tab needs to be over the left border in col3
-	}
-	
-	.visit-group-label {
-		font-weight: bold;
-		display: block;
-	}
-	
+
 	.encounter-panel {
 		border: 1px #e0e0e0 solid;
 		cursor: pointer;
@@ -85,14 +43,45 @@
 	.encounter-panel:hover {
 		text-decoration: underline;
 	}
+	
+	.active-visit {
+		border: 1px black solid;
+		border-top-left-radius: 0.5em;
+		border-bottom-left-radius: 0.5em;
+		margin-bottom: 0.6em;
+		padding: 0.3em;
+		position: relative;
+		right: -5px;
+		z-index: 1;
+	}
+	
+	.active-visit h4 {
+		margin: 0.3em;
+	}
+	
+	.selected-visit {
+		background-color: #ffffaa;
+		border-right: none;
+	}
+
+	.selectable:hover {
+		cursor: pointer;
+		background-color: #ffffcc;
+	}
+	
+	.padded {
+		padding: 1em;
+	}
 </style>
 
 <script>
 	jq(function() {
 		jq('.encounter-panel').click(function(event) {
 			var encId = jq(event.srcElement).find('input[name=encounterId]').val();
+			var title = jq(event.srcElement).find('input[name=title]').val();
 			publish('showHtmlForm/showEncounter', encId);
-			showDivAsDialog('#showHtmlForm', 'Encounter ' + encId);
+			showDivAsDialog('#showHtmlForm', title);
+			return false;
 		});
 	});
 	
@@ -109,42 +98,122 @@
 </script>
 
 <div id="col1">
-	<fieldset id="registrationDetails">
+	<fieldset>
 		<legend>
-			Registration Details
+			Patient Details
 		</legend>
 		
-		<div class="icon">
-			<img width="32" height="32" src="${ ui.resourceLink("uilibrary", "images/patient_" + patient.gender + ".gif") }"/>
+		<div class="person-name">
+			${ patient.personName }
 		</div>
-		
 		<div class="demographics">
-			<b>${ patient.personName }</b> <br/>
-			${ patient.gender }, ${ patient.age }y
+			${ ui.message("Patient.gender." + (patient.gender == 'M' ? 'male' : 'female')) },
+			${ patient.age } year(s)<br/>
+			Born:
+			<% if (patient.birthdateEstimated) { %>~<% } %>
+			${ ui.format(patient.birthdate) }
 		</div>
 		
 		<div class="identifiers">
+			<div class="identifier-type">TODO determine which identifier types to use</div>
 			<% patient.activeIdentifiers.each { %>
 				<span class="identifier">
-					<span class="identifier-type">${ it.identifierType.name }</span><br/>
+					<span class="identifier-type">${ ui.format(it.identifierType) }:</span>
 					<span class="identifier-value">${ it.identifier }</span><br/>
 				</span>
 			<% } %>
-			
+		</div>
+		
+		<div class="attributes">
+			<div class="attribute-type">TODO determine whether we're using an PersonAttributes</div>
 			<% patient.activeAttributes.each { %>
-				${ ui.format(it.attributeType) }: ${ ui.format(it) }<br/>
+				<span class="attribute">
+					<span class="attribute-type">${ ui.format(it.attributeType) }:</span>
+					<span class="attribute-value">${ ui.format(it) }</span><br/>
 			<% } %>
 		</div>
 	</fieldset>
+
+	<% activeVisits.each { v ->
+		def selected = v == visit
+	%>
+		<div id="visit-${ v.id }" class="active-visit <% if (selected) { %>selected-visit<% } else { %>selectable<% } %>">
+			<h4>
+				<img src="${ ui.resourceLink("kenyaemr", "images/checked_in_16.png") }"/>
+				${ ui.format(v.visitType) }
+			</h4>
+			Location: ${ ui.format(v.location) } <br/>
+			Start: ${ ui.format(v.startDatetime) } <br/>
+			End: ${ ui.format(v.stopDatetime) }
+			<hr/>
+			<% if (!v.encounters) { %>
+				No data recorded
+			<% } %>
+			<% v.encounters.each { %>
+				<div class="encounter-panel">
+					<input type="hidden" name="encounterId" value="${ it.encounterId }"/>
+					<input type="hidden" name="title" value="${ ui.escapeAttribute(ui.format(v.visitType) + " - " + ui.format(it.form ?: it.encounterType)) }"/>
+					${ ui.format(it.encounterType) }
+					by
+					<% it.providersByRoles.each { %>
+						${ ui.format(it.key) }:
+						<%= it.value.collect { ui.format(it) } .join(", ") %>
+					<% } %>
+				</div>
+			<% } %>
+			<% if (!selected) { %>
+				<script>
+					jq('#visit-${ v.id }').click(function() {
+						location.href = '${ ui.escapeJs(ui.pageLink("registrationViewPatient", [ patientId: patient.id, visitId: v.id ])) }';
+					});
+				</script>
+			<% } %>
+		</div>
+	<% } %>
 </div>
 
 <div id="col2">
-	<% if (currentVisits) { %>
+	<h4>
+	<% if (visit) { %>
+		Current ${ ui.format(visit.visitType) }
+	<% } else { %>
+		No current visit
+	<% } %>
+	</h4>
+	
+	<% if (visit) { %>
+
+		<% availableForms.each { %>
+			${ ui.includeFragment("widget/button", [
+				iconProvider: "uilibrary",
+				icon: it.icon,
+				label: it.label,
+				classes: [ "padded" ],
+				onClick: "enterHtmlForm(" + it.htmlFormId + ", '" + it.label + "');"
+			]) }
+			<br/>
+		<% } %>
 		
-		<span class="visit-group-label">Currently at Clinic</span>
-		
-		<% currentVisits.each { %>
-			${ showVisit(it) }
+		<% if (!visit.stopDatetime) { %>
+			${ ui.includeFragment("widget/popupForm", [
+				buttonConfig: [
+					label: "Is Patient Leaving?",
+					classes: [ "padded" ],
+					extra: "Check Out",
+					iconProvider: "uilibrary",
+					icon: "user_close_32.png"
+				],
+				popupTitle: "Check Out",
+				fields: [
+					[ hiddenInputName: "visit.visitId", value: visit.visitId ],
+					[ label: "End Date and Time", formFieldName: "visit.stopDatetime", class: java.util.Date, initialValue: new Date() ]
+				],
+				fragment: "registrationUtil",
+				action: "editVisit",
+				successCallbacks: [ "location.reload()" ],
+				submitLabel: ui.message("general.submit"),
+				cancelLabel: ui.message("general.cancel")
+			]) }
 		<% } %>
 	
 	<% } else {
@@ -152,13 +221,12 @@
 		def jsSuccess = "location.href = pageLink('registrationViewPatient', " + "{" + "patientId: ${ patient.id }, visitId: data.visitId" + "});"
 	%>
 
-		<span class="visit-group-label">No current visit</span>
-		
 		${ ui.includeFragment("widget/popupForm", [
 				buttonConfig: [
 					iconProvider: "uilibrary",
 					icon: "user_add_32.png",
 					label: "Is Patient Here?",
+					classes: [ "padded" ],
 					extra: "Check In"
 				],
 				popupTitle: "Check In to Clinic",
@@ -176,110 +244,9 @@
 	
 	<br/>
 
-	<% if (pastVisits.size() == 0) { %>
-		
-		<span class="visit-group-label">No past visits</span>
-	
-	<% } else { %>
-
-		<span class="visit-group-label">Past Visits</span>
-		
-	<% } %>
-		
-	${ ui.includeFragment("widget/popupForm", [
-			buttonConfig: [
-				label: "Add"
-			],
-			popupTitle: "Record Past Visit",
-			prefix: "visit",
-			commandObject: newPastVisit,
-			hiddenProperties: [ "patient" ],
-			properties: [ "startDatetime", "stopDatetime", "visitType" ],
-			fragment: "registrationUtil",
-			action: "startVisit",
-			successCallbacks: [ "location.reload()" ],
-			submitLabel: ui.message("general.submit"),
-			cancelLabel: ui.message("general.cancel")
-		]) }
-	
-	<% pastVisits.each { %>
-		${ showVisit(it) }
-	<% } %>
-	
 </div>
 
 <% if (visit) { %>
-
-	<div id="col3">
-		
-		<h4>Visit: ${ ui.format(visit.visitType) }</h4>
-
-		<table>
-			<tr>
-				<td>Location:</td>
-				<td>${ ui.format(visit.location) }</td>
-			</tr>
-			<tr>
-				<td>Started:</td>
-				<td>${ ui.format(visit.startDatetime) }</td>
-			</tr>
-			<tr>
-				<td>Ended:</td>
-				<td>${ ui.format(visit.stopDatetime) }</td>
-			</tr>
-		</table>
-		
-		<hr/>
-		
-		<% if (visit.encounters.size() == 0) { %>
-			No Encounters
-		<% } %>
-		
-		<% if (visit.encounters) visit.encounters.each { %>
-			<div class="encounter-panel">
-				<input type="hidden" name="encounterId" value="${ it.encounterId }"/>
-				${ ui.format(it.encounterDatetime) } :
-				${ ui.format(it.encounterType) }
-				by
-				<% it.providersByRoles.each { %>
-					${ ui.format(it.key) }:
-					<%= it.value.collect { ui.format(it) } .join(", ") %>
-				<% } %>
-			</div>
-		<% } %>
-		
-		<% if (!visit.stopDatetime) { %>
-			<div style="position: fixed; bottom: 0.5em; text-align: center; padding: 0.5em; background-color: #e0e0e0;">
-				<% availableForms.each { %>
-					${ ui.includeFragment("widget/button", [
-						iconProvider: "uilibrary",
-						icon: it.icon,
-						label: it.label,
-						onClick: "enterHtmlForm(" + it.htmlFormId + ", '" + it.label + "');"
-					]) }
-					<br/>
-				<% } %>
-				${ ui.includeFragment("widget/popupForm", [
-					buttonConfig: [
-						label: "Is Patient Leaving?",
-						extra: "Check Out",
-						iconProvider: "uilibrary",
-						icon: "user_close_32.png"
-					],
-					popupTitle: "Check Out",
-					fields: [
-						[ hiddenInputName: "visit.visitId", value: visit.visitId ],
-						[ label: "End Date and Time", formFieldName: "visit.stopDatetime", class: java.util.Date, initialValue: new Date() ]
-					],
-					fragment: "registrationUtil",
-					action: "editVisit",
-					successCallbacks: [ "location.reload()" ],
-					submitLabel: ui.message("general.submit"),
-					cancelLabel: ui.message("general.cancel")
-				]) }
-			</div>
-		<% } %>
-	</div>
 	
 	${ ui.includeFragment("showHtmlForm", [ id: "showHtmlForm", style: "display: none" ]) }
 	
