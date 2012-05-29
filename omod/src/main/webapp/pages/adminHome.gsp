@@ -1,19 +1,64 @@
 <%
 	ui.decorateWith("standardAppPage")
+	ui.includeJavascript("jquery-ui.js")
+	
+	def formatMap = { map ->
+		def ret = "<table>"
+		map.each {
+			ret += '<tr valign="top">'
+			ret += "<th>${ it.key }</th>"
+			ret += "<td>${ ui.format(it.value) }</td>"
+			ret += "</tr>"
+		}
+		ret += "</table>"
+		return ret
+	}
 %>
 
-<h3>System Information</h3>
+<script>
+	jq(function() {
+		jq('.accordion').accordion();
+	});
+</script>
 
-<table>
-	<% info.each { %>
-		<tr>
-			<th>${ it.key }</th>
-			<td>${ ui.format(it.value) }</td>
-		</tr>
-	<% } %>
-</table>
+<div style="float: right; width: 30%;">
+	<fieldset>
+		<legend>Actions</legend>
+		${ ui.includeFragment("widget/button", [
+				iconProvider: "uilibrary",
+				icon: "users_32.png",
+				label: "Manage Users"
+			]) }
+		<br/>
 
-<h3>Recent Errors</h3>
+		${ ui.includeFragment("widget/button", [
+				iconProvider: "uilibrary",
+				icon: "users_business_32.png",
+				label: "Manage Providers"
+			]) }
+		<br/>
 
-Ideally we can record errors that occur (especially if the end-user sees them) and allow them to be reported from here.
-(In a first pass this would just mean giving the admin a textarea to be copied to the clipboard.)
+		${ ui.includeFragment("widget/button", [
+				iconProvider: "uilibrary",
+				icon: "refresh.png",
+				label: "Install New<br/>Software Version"
+			]) }
+		<br/>
+		
+	</fieldset>
+</div>
+
+<div style="float: left; width: 65%">
+	<div class="accordion">
+		<% info.each { %>
+			<h3><a href="#">${ it.key }</a></h3>
+			<div>
+				<% if (it.value instanceof java.util.Map) { %>
+					${ formatMap(it.value) }
+				<% } else { %>
+					${ ui.format(it.value) }
+				<% } %>
+			</div>
+		<% } %>
+	</div>
+</div>

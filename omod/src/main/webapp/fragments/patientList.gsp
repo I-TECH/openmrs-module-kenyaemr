@@ -50,7 +50,9 @@
 					}
 					return tmp;
 				},
-				right: "Something"
+				right: function(patient) {
+					return typeof patient.extra !== 'undefined' ? patient.extra : '';
+				}
 			});
 		}
 	}
@@ -106,7 +108,7 @@
 <script>
 subscribe("${ config.id }/show", function(event, data) {
 	<% if (config.showNumResults) { %>
-		jq('#${ config.id } > .num-results').html(data.length ? (data.length + ' patient(s)') : "");
+		jq('#${ config.id } > .num-results').html(typeof data.length === 'number' ? (data.length + ' patient(s)') : "");
 	<% } %>
 	<% if (noneMessage) { %>
 		if (data.length == 0) {

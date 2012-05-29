@@ -24,7 +24,8 @@ import org.openmrs.Patient;
 import org.openmrs.Visit;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appframework.AppUiUtil;
-import org.openmrs.module.kenyaemr.MetadataConstants;
+import org.openmrs.module.htmlformentry.HtmlForm;
+import org.openmrs.module.htmlformentry.HtmlFormEntryService;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.page.PageModel;
 import org.openmrs.ui.framework.session.Session;
@@ -73,9 +74,18 @@ public class RegistrationViewPatientPageController {
 				encounterTypesAlready.add(e.getEncounterType().getUuid());
 			}
 			
-			if (!encounterTypesAlready.contains(MetadataConstants.VITALS_ENCOUNTER_TYPE_UUID)) {
-				availableForms.add(SimpleObject.create("htmlFormId", 3, "label", "Vitals", "icon", "activity_monitor_add.png"));
+			for (HtmlForm hf : Context.getService(HtmlFormEntryService.class).getAllHtmlForms()) {
+				if (!encounterTypesAlready.contains(hf.getForm().getEncounterType().getUuid())) {
+					availableForms.add(SimpleObject.create("htmlFormId", hf.getId(), "label", hf.getName(), "icon", "activity_monitor_add.png"));
+				}
 			}
+			
+			/*
+			if (!encounterTypesAlready.contains(MetadataConstants.VITALS_ENCOUNTER_TYPE_UUID)) {
+				// TODO this needs to be defined by UUID
+				availableForms.add(SimpleObject.create("htmlFormId", 2, "label", "Vitals", "icon", "activity_monitor_add.png"));
+			}
+			*/
 		}
 			
 		model.addAttribute("visit", visit);

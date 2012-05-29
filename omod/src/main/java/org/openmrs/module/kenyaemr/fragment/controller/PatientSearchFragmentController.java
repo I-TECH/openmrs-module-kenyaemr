@@ -14,7 +14,10 @@
 package org.openmrs.module.kenyaemr.fragment.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.Patient;
@@ -49,15 +52,42 @@ public class PatientSearchFragmentController {
 		return simplePatientList(ui, ret);
 	}
 	
-	public List<SimpleObject> withActiveVisits(UiUtils ui) {
+	public List<SimpleObject> withActiveVisits(@RequestParam(value = "q", required = false) String query,
+	                                           @RequestParam(value = "age", required = false) Integer age,
+	                                           @RequestParam(value = "ageWindow", defaultValue = "5") int ageWindow,
+	                                           UiUtils ui) {
+		
+		// TODO refactor so it performs faster
+		
+		List<SimpleObject> matching = search(query, age, ageWindow, ui);			
+
 		List<Visit> activeVisits = Context.getVisitService().getVisits(null, null, null, null, null, null, null, null, null, false, false);
 
-		List<Patient> ret = new ArrayList<Patient>();
-		for (Visit v : activeVisits) {
-			if (!ret.contains(v.getPatient()))
-				ret.add(v.getPatient());
+		// no query, so we start with all patients with active visits
+		if (matching == null) {
+			List<Patient> ret = new ArrayList<Patient>();
+			for (Visit v : activeVisits) {
+				if (!ret.contains(v.getPatient()))
+					ret.add(v.getPatient());
+			}
+			matching = simplePatientList(ui, ret);
 		}
-		return simplePatientList(ui, ret);
+		
+		// intersect query with active visits
+		final Map<String, Visit> ptIds = new HashMap<String, Visit>();
+		for (Visit v : activeVisits) {
+			ptIds.put(v.getPatient().getPatientId().toString(), v);
+		}
+		for (Iterator<SimpleObject> i = matching.iterator(); i.hasNext(); ) {
+			SimpleObject candidate = i.next();
+			Visit v = ptIds.get(candidate.get("patientId"));
+			if (v == null) {
+				i.remove();
+			} else {
+				candidate.put("extra", "Active <b>" + ui.format(v.getVisitType()) + "</b>");
+			}
+		}
+		return matching;
 	}
 
 	/**

@@ -20,7 +20,7 @@
 		margin-right: 1em;
 	}
 	
-	#homepage-motd {
+	#homepage-welcome-message {
 		float: left;
 		font-size: 1.2em;
 		font-weight: bold;
@@ -43,8 +43,8 @@
 
 <img id="homepage-logo" src="${ ui.resourceLink("kenyaemr", "images/logo.png") }"/>
 
-<div id="homepage-motd">
-	${ motd }
+<div id="homepage-welcome-message">
+	Hello ${ ui.format(context.authenticatedUser) }, welcome to the Kenya OpenMRS EMR.
 </div>
 
 <div id="homepage-apps">	

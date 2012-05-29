@@ -57,6 +57,8 @@ public class EnterHtmlFormFragmentController {
 				hf = Context.getService(HtmlFormEntryService.class).getHtmlFormByForm(form);
 			}
 		}
+		if (hf == null)
+			throw new RuntimeException("Could not find HTML Form");
 		
 		FormEntrySession fes = new FormEntrySession(patient, hf, Mode.ENTER);
 		model.addAttribute("command", fes);

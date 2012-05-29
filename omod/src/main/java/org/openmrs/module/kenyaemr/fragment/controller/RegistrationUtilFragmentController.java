@@ -39,7 +39,7 @@ import org.openmrs.ui.framework.annotation.MethodParam;
 import org.openmrs.ui.framework.annotation.Validate;
 import org.openmrs.ui.framework.fragment.action.FailureResult;
 import org.openmrs.ui.framework.fragment.action.SuccessResult;
-import org.openmrs.util.HandlerUtil;
+import org.openmrs.ui.framework.session.Session;
 import org.openmrs.validator.PatientValidator;
 import org.openmrs.validator.ValidateUtil;
 import org.springframework.validation.Errors;
@@ -49,7 +49,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 
 /**
- *
+ * Helpful utility actions for the registration app
  */
 public class RegistrationUtilFragmentController {
 	
@@ -102,7 +102,8 @@ public class RegistrationUtilFragmentController {
 	
 	public Patient createPatientCommand(@RequestParam(required=false, value="birthdate") Date birthdate,
 	                                    @RequestParam(required=false, value="age") Integer age,
-	                                    HttpServletRequest req) {
+	                                    HttpServletRequest req,
+	                                    Session session) {
 		Patient pat = new Patient();
 		pat.addName(new PersonName()); // will be bound by create patient fragment action
 		
@@ -115,8 +116,7 @@ public class RegistrationUtilFragmentController {
 		for (PatientIdentifierType pit : Context.getPatientService().getAllPatientIdentifierTypes()) {
 			String identifier = req.getParameter("identifier." + pit.getId());
 			if (StringUtils.isNotBlank(identifier)) {
-				Location loc = Context.getLocationService().getLocation(1); // TODO fix this
-				pat.addIdentifier(new PatientIdentifier(identifier, pit, loc));
+				pat.addIdentifier(new PatientIdentifier(identifier, pit, getCurrentLocation(session)));
 			}
 		}
 		if (pat.getIdentifiers().size() > 0)
@@ -150,5 +150,50 @@ public class RegistrationUtilFragmentController {
 	    }
    }
 
+
+	/**
+	 * Creates a new visit
+	 * 
+	 * @param ui
+	 * @param visit
+	 * @return
+	 */
+	public Object startVisit(UiUtils ui,
+	                         Session session,
+	                         @BindParams("visit") @Validate Visit visit) {
+		if (visit.getLocation() == null)
+			visit.setLocation(getCurrentLocation(session));
+		Visit saved = Context.getVisitService().saveVisit(visit);
+		return simpleVisit(ui, saved);
+	}
 	
+	/**
+	 * Edits an existing visit
+	 * 
+	 * @param ui
+	 * @param visit
+	 * @return
+	 */
+	public Object editVisit(UiUtils ui,
+	                        @RequestParam("visit.visitId") @BindParams("visit") @Validate Visit visit) {
+		Visit saved = Context.getVisitService().saveVisit(visit);
+		return simpleVisit(ui, saved);
+	}
+	
+	/**
+     * Simplifies a visit so it can be sent to the client via json
+     * 
+     * @param visit
+     * @return
+     */
+    private SimpleObject simpleVisit(UiUtils ui, Visit visit) {
+    	return SimpleObject.fromObject(visit, ui, "visitId", "visitType", "startDatetime", "stopDatetime");
+    }
+
+    private Location getCurrentLocation(Session session) {
+    	Location loc = Context.getLocationService().getLocation(1); // TODO fix this
+    	if (loc == null)
+    		throw new RuntimeException("Error in temp hack: no location with id=1");
+    	return loc;
+    }
 }

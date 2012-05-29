@@ -35,7 +35,14 @@
 		<property name="iconUrl" value="moduleResources/uilibrary/images/users_32.png"/>
 	</bean>
 	
-	<bean id="kenyaEmrClinicalChartApp" class="org.openmrs.module.appframework.SimpleAppDescriptor">
+	<bean id="kenyaEmrMedicalEncounterApp" class="org.openmrs.module.appframework.SimpleAppDescriptor">
+		<property name="id" value="kenyaemr.medicalEncounter"/>
+		<property name="label" value="Medical Encounter"/>
+		<property name="homepageUrl" value="pages/registrationMedicalEncounter.page"/>
+		<property name="iconUrl" value="moduleResources/uilibrary/images/clipboard_32.png"/>
+	</bean>
+	
+	<bean id="kenyaEmrMedicalChartApp" class="org.openmrs.module.appframework.SimpleAppDescriptor">
 		<property name="id" value="kenyaemr.medicalChart"/>
 		<property name="label" value="Medical Chart"/>
 		<property name="homepageUrl" value="pages/medicalChartHome.page"/>
@@ -56,12 +63,13 @@
 		<property name="iconUrl" value="moduleResources/uilibrary/images/configure32.png"/>
 	</bean>
 	
-	<!-- Get rid of this once we go into production -->
+	<!-- Get rid of this once we go into production
 	<bean id="legacyAdminApp" class="org.openmrs.module.appframework.SimpleAppDescriptor">
 		<property name="id" value="legacy.admin"/>
 		<property name="label" value="Full OpenMRS Administration"/>
 		<property name="homepageUrl" value="admin/index.htm"/>
 		<property name="iconUrl" value="moduleResources/uilibrary/images/info_button_32.png"/>
 	</bean>
+	-->
 
 </beans>

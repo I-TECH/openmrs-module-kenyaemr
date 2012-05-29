@@ -13,6 +13,8 @@
  */
 package org.openmrs.module.kenyaemr.page.controller;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.openmrs.api.context.Context;
@@ -33,14 +35,31 @@ public class KenyaHomePageController {
 			return "kenyaLogin";
 		}
 		
-		model.addAttribute("motd", "Do we want to show something here like a message of the day?");
-
 		AppFrameworkService appService = Context.getService(AppFrameworkService.class);
 		List<AppDescriptor> apps = appService.getAppsForUser(Context.getAuthenticatedUser());
 		// since I haven't implemented a UI for enabling apps yet, show all apps for testing:
 		if (apps.size() == 0) {
 			apps.addAll(appService.getAllApps());
 		}
+		Collections.sort(apps, new Comparator<AppDescriptor>() {
+			
+			Integer getScore(AppDescriptor app) {
+				if ("kenyaemr.registration".equals(app.getId()))
+					return 0;
+				else if ("kenyaemr.medicalChart".equals(app.getId()))
+					return 1;
+				else if ("kenyaemr.reports".equals(app.getId()))
+					return 2;
+				else if ("kenyaemr.admin".equals(app.getId()))
+					return 3;
+				else
+					return 10;
+			}
+			
+			@Override
+            public int compare(AppDescriptor left, AppDescriptor right) {
+	            return getScore(left).compareTo(getScore(right));
+            }});
 		model.addAttribute("apps", apps);
 		
 		model.addAttribute("currentApp", AppUiUtil.getCurrentApp(session));
