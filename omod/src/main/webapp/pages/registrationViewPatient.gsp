@@ -9,7 +9,6 @@
 	
 	#col1 {
 		float: left;
-		width: 45%;
 		padding-right: 4px;
 	}
 	
@@ -17,7 +16,9 @@
 		float: left;
 		padding-left: 0.5em;
 		border-left: 1px black solid;
+		width: 50%;
 		height: 100%;
+		background-color: #ffffbb;
 	}
 	
 	.person-name, .demographics, .identifiers, .attributes {
@@ -60,13 +61,13 @@
 	}
 	
 	.selected-visit {
-		background-color: #ffffaa;
+		background-color: #ffffbb;
 		border-right: none;
 	}
 
 	.selectable:hover {
 		cursor: pointer;
-		background-color: #ffffcc;
+		background-color: #e0e0e0;
 	}
 	
 	.padded {
