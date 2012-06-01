@@ -49,7 +49,24 @@ public class PatientSearchFragmentController {
 			}
 			ret = similar;
 		}
-		return simplePatientList(ui, ret);
+		
+		List<Visit> activeVisits = Context.getVisitService().getVisits(null, null, null, null, null, null, null, null, null, false, false);
+		final Map<String, Visit> ptIds = new HashMap<String, Visit>();
+		for (Visit v : activeVisits) {
+			ptIds.put(v.getPatient().getPatientId().toString(), v);
+		}
+		
+		List<SimpleObject> matching = simplePatientList(ui, ret);
+
+		for (SimpleObject so : matching) {
+			Visit v = ptIds.get(so.get("patientId"));
+			if (v != null) {
+				String imgUrl = ui.resourceLink("kenyaemr", "images/checked_in_16.png");
+				so.put("extra", "<img src=\"" + imgUrl + "\"/> <small>" + ui.format(v.getVisitType()) + "<br/>" + ui.format(v.getStartDatetime()) + "</small>");
+			}
+		}
+		
+		return matching;
 	}
 	
 	public List<SimpleObject> withActiveVisits(@RequestParam(value = "q", required = false) String query,
@@ -74,7 +91,7 @@ public class PatientSearchFragmentController {
 		}
 		
 		// intersect query with active visits
-		final Map<String, Visit> ptIds = new HashMap<String, Visit>();
+		Map<String, Visit> ptIds = new HashMap<String, Visit>();
 		for (Visit v : activeVisits) {
 			ptIds.put(v.getPatient().getPatientId().toString(), v);
 		}

@@ -1,6 +1,7 @@
 <%
 	config.require("page") // (will go the that page, with a patientId parameter)
 	// supports showNumResults (default false)
+	// supports numResultsSuffix (default "")
 
 	// supports noneMessage (default "general.none", only takes effect if showNumResults is false)
 	def noneMessage = config.noneMessage ?: "general.none"
@@ -106,7 +107,7 @@
 <script>
 subscribe("${ config.id }/show", function(event, data) {
 	<% if (config.showNumResults) { %>
-		jq('#${ config.id } > .num-results').html(typeof data.length === 'number' ? (data.length + ' patient(s)') : "");
+		jq('#${ config.id } > .num-results').html(typeof data.length === 'number' ? (data.length + ' patient(s)<% if (config.numResultsSuffix) { %> ${ config.numResultsSuffix }<% } %>') : "");
 	<% } %>
 	<% if (noneMessage) { %>
 		if (data.length == 0) {

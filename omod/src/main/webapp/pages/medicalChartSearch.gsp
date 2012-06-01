@@ -2,12 +2,6 @@
 	ui.decorateWith("standardAppPage")
 %>
 <style>
-	#check-in-patient {
-		position: fixed;
-		bottom: 0;
-		left: 40%;
-	}
-	
 	#search {
 		float: left;
 	}
@@ -25,7 +19,7 @@
 				[ label: "Age", formFieldName: "age", class: java.lang.Integer ]
 			],
 			fragment: "patientSearch",
-			action: "withActiveVisits",
+			action: "search",
 			submitOnEvent: "patientSearch/changed",
 			resetOnSubmit: false,
 			successEvent: "patientSearch/results"
@@ -39,14 +33,6 @@
 		page: "medicalChartViewPatient"
 	]) }
 </fieldset>
-
-${ ui.includeFragment("widget/button", [
-	id: "check-in-patient",
-	iconProvider: "uilibrary",
-	icon: "add1-32.png",
-	label: "Patient Not Checked In?",
-	extra: "Go to registration app (TODO)",
-	onClick: "window.alert('TODO implement this')" ]) }
 
 <script>
 	subscribe("patientSearch/results", function(event, data) {

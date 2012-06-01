@@ -190,7 +190,7 @@ public class RegistrationUtilFragmentController {
     	return SimpleObject.fromObject(visit, ui, "visitId", "visitType", "startDatetime", "stopDatetime");
     }
 
-    private Location getCurrentLocation(Session session) {
+    public static Location getCurrentLocation(Session session) {
     	Location loc = Context.getLocationService().getLocation(1); // TODO fix this
     	if (loc == null)
     		throw new RuntimeException("Error in temp hack: no location with id=1");

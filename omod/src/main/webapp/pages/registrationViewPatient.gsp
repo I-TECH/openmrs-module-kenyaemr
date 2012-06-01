@@ -18,7 +18,6 @@
 		border-left: 1px black solid;
 		width: 50%;
 		height: 100%;
-		background-color: #ffffbb;
 	}
 	
 	.person-name, .demographics, .identifiers, .attributes {
@@ -173,7 +172,7 @@
 	<% } %>
 </div>
 
-<div id="col2">
+<div id="col2" <% if (visit) { %>class="selected-visit"<% } %>>
 	<h4>
 	<% if (visit) { %>
 		Current ${ ui.format(visit.visitType) }

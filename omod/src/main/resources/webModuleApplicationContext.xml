@@ -38,7 +38,7 @@
 	<bean id="kenyaEmrMedicalEncounterApp" class="org.openmrs.module.appframework.SimpleAppDescriptor">
 		<property name="id" value="kenyaemr.medicalEncounter"/>
 		<property name="label" value="Medical Encounter"/>
-		<property name="homepageUrl" value="pages/registrationMedicalEncounter.page"/>
+		<property name="homepageUrl" value="pages/medicalEncounterHome.page"/>
 		<property name="iconUrl" value="moduleResources/uilibrary/images/clipboard_32.png"/>
 	</bean>
 	

@@ -2,12 +2,10 @@
 	ui.decorateWith("standardAppPage")
 %>
 <style>
-	#create-patient {
+	#check-in-patient {
 		position: fixed;
 		bottom: 0;
 		left: 40%;
-		padding: 0.5em;
-		font-size: 0.8em;
 	}
 	
 	#search {
@@ -27,7 +25,7 @@
 				[ label: "Age", formFieldName: "age", class: java.lang.Integer ]
 			],
 			fragment: "patientSearch",
-			action: "search",
+			action: "withActiveVisits",
 			submitOnEvent: "patientSearch/changed",
 			resetOnSubmit: false,
 			successEvent: "patientSearch/results"
@@ -38,17 +36,18 @@
 	${ ui.includeFragment("patientList", [
 		id: "results",
 		showNumResults: true,
-		page: "registrationViewPatient"
+		numResultsSuffix: "(searching within checked-in patients)",
+		page: "medicalEncounterViewPatient"
 	]) }
 </fieldset>
 
 ${ ui.includeFragment("widget/button", [
-	id: "create-patient",
+	id: "check-in-patient",
 	iconProvider: "uilibrary",
 	icon: "add1-32.png",
-	label: "Create New Patient Record",
-	extra: "Patient does not exist yet",
-	href: ui.pageLink("registrationCreatePatient") ]) }
+	label: "Patient Not Checked In?",
+	extra: "Go to registration app (TODO)",
+	onClick: "window.alert('TODO implement this')" ]) }
 
 <script>
 	subscribe("patientSearch/results", function(event, data) {

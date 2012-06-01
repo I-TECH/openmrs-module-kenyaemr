@@ -30,4 +30,11 @@ public class MetadataConstants {
 	// Locations
 	public static final String UNKNOWN_LOCATION_UUID = "8d6c993e-c2cc-11de-8d13-0010c6dffd0f";
 	
+	// Patient Identifier Types
+	public static final String UNIQUE_PATIENT_NUMBER_UUID = "03ff7348-e221-443f-b516-4d0895809863";
+	public static final String PATIENT_CLINIC_NUMBER_UUID = "0d29df0a-cd23-4930-b5c9-adcea28ad0ed";
+	
+	// Person Attribute Types
+	public static final String TELEPHONE_CONTACT_UUID = "afdbc2da-3a98-4c9a-8e4b-27c3c3be716a";
+	
 }

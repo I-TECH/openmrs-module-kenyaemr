@@ -6,6 +6,8 @@
 	<% config.fields.each { %>
 		<% if (it instanceof String) { %>
 			<td>${ it }</td>
+		<% } else if (it.hiddenInputName) { %>
+			<input type="hidden" name="${ it.hiddenInputName }" value="${ ui.convert(it.value, java.lang.String) }"/>
 		<% } else { %>
 			<td><%= ui.includeFragment("widget/labeledField", it) %></td>
 		<% } %>
