@@ -105,7 +105,7 @@
 			<% if (!selected) { %>
 				<script>
 					jq('#visit-${ v.id }').click(function() {
-						location.href = '${ ui.escapeJs(ui.pageLink("registrationViewPatient", [ patientId: patient.id, visitId: v.id ])) }';
+						location.href = '${ ui.escapeJs(ui.pageLink("medicalEncounterViewPatient", [ patientId: patient.id, visitId: v.id ])) }';
 					});
 				</script>
 			<% } %>
@@ -134,19 +134,21 @@
 			</fieldset>
 		<% } %>
 		
-		Forms already filled out
-
-		<% visit.encounters.each { %>
-			<div class="encounter-panel">
-				<input type="hidden" name="encounterId" value="${ it.encounterId }"/>
-				<input type="hidden" name="title" value="${ ui.escapeAttribute(ui.format(visit.visitType) + " - " + ui.format(it.form ?: it.encounterType)) }"/>
-				${ ui.includeFragment("encounterSummary", [ encounter: it, maxObs: 2 ]) }
-			</div>
+		<% if (visit.encounters) { %>
+			Forms already filled out
+	
+			<% visit.encounters.each { %>
+				<div class="encounter-panel">
+					<input type="hidden" name="encounterId" value="${ it.encounterId }"/>
+					<input type="hidden" name="title" value="${ ui.escapeAttribute(ui.format(visit.visitType) + " - " + ui.format(it.form ?: it.encounterType)) }"/>
+					${ ui.includeFragment("encounterSummary", [ encounter: it, maxObs: 2 ]) }
+				</div>
+			<% } %>
 		<% } %>
 	
 	<% } else {
 		// do this here to avoid annoying template engine issue
-		def jsSuccess = "location.href = pageLink('registrationViewPatient', " + "{" + "patientId: ${ patient.id }, visitId: data.visitId" + "});"
+		def jsSuccess = "location.href = pageLink('medicalEncounterViewPatient', " + "{" + "patientId: ${ patient.id }, visitId: data.visitId" + "});"
 	%>
 
 		${ ui.includeFragment("widget/popupForm", [

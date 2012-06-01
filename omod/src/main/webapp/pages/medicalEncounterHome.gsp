@@ -36,7 +36,7 @@
 	${ ui.includeFragment("patientList", [
 		id: "results",
 		showNumResults: true,
-		numResultsSuffix: "(searching within checked-in patients)",
+		numResultsSuffix: "<i>limited to checked-in patients</i>",
 		page: "medicalEncounterViewPatient"
 	]) }
 </fieldset>
