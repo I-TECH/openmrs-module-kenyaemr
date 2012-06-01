@@ -46,9 +46,9 @@ public class KenyaHomePageController {
 			Integer getScore(AppDescriptor app) {
 				if ("kenyaemr.registration".equals(app.getId()))
 					return 0;
-				else if ("kenyaemr.medicalChart".equals(app.getId()))
-					return 1;
 				else if ("kenyaemr.medicalEncounter".equals(app.getId()))
+					return 1;
+				else if ("kenyaemr.medicalChart".equals(app.getId()))
 					return 2;
 				else if ("kenyaemr.reports".equals(app.getId()))
 					return 3;
