@@ -21,7 +21,6 @@
 	}
 	
 	#homepage-welcome-message {
-		float: left;
 		font-size: 1.2em;
 		font-weight: bold;
 		padding-top: 1em;
@@ -34,8 +33,9 @@
 	}
 	
 	#homepage-current-app {
-		clear: both;
-		float: right;
+		position: fixed;
+		bottom: 0;
+		right: 0;
 		padding: 0.5em;
 		border: 1px grey solid;
 	}
