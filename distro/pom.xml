@@ -1,0 +1,111 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.openmrs.module</groupId>
+		<artifactId>kenyaemr</artifactId>
+		<version>1.0-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>kenyaemr-distro</artifactId>
+	<packaging>pom</packaging>
+	<name>Kenya OpenMRS EMR Distribution</name>
+	<description>Distro project for Kenya OpenMRS EMR</description>
+
+	<profiles>
+		<profile>
+			<id>distribution</id>
+			<activation>
+				<property>
+					<name>buildDistro</name>
+					<value>true</value>
+				</property>
+			</activation>
+			<dependencies>
+				<dependency>
+					<groupId>org.openmrs.module</groupId>
+					<artifactId>kenyaemr-omod</artifactId>
+					<version>${project.parent.version}</version>
+				</dependency>
+			</dependencies>
+			<build>
+				<plugins>
+					<plugin>
+						<artifactId>maven-antrun-plugin</artifactId>
+						<version>1.7</version>
+						<executions>
+							<execution>
+								<phase>package</phase>
+								<configuration>
+									<target>
+										<get dest="target/distro" verbose="true" usetimestamp="true">
+											<url
+												url="https://modules.openmrs.org/modules/download/uiframework/uiframework-${uiframeworkVersion}.omod" />
+											<url
+												url="https://modules.openmrs.org/modules/download/uilibrary/uilibrary-${uilibraryVersion}.omod" />
+											<url
+												url="https://modules.openmrs.org/modules/download/appframework/appframework-${appframeworkVersion}.omod" />
+											<url
+												url="https://modules.openmrs.org/modules/download/htmlformentry/htmlformentry-${htmlformentryVersion}.omod" />
+											<url
+												url="https://modules.openmrs.org/modules/download/htmlformentry19ext/htmlformentry19ext-${htmlformentry19extVersion}.omod" />
+											<!-- <url url="https://modules.openmrs.org/modules/download/metadatasharing/metadatasharing-${metadatasharingVersion}.omod"/> -->
+										</get>
+									</target>
+								</configuration>
+								<goals>
+									<goal>run</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<artifactId>maven-resources-plugin</artifactId>
+						<version>2.5</version>
+						<executions>
+							<execution>
+								<id>copy-resources</id>
+								<phase>package</phase>
+								<goals>
+									<goal>copy-resources</goal>
+								</goals>
+								<configuration>
+									<outputDirectory>${basedir}/target/distro</outputDirectory>
+									<resources>
+										<resource>
+											<directory>${basedir}/../omod/target</directory>
+											<filtering>false</filtering>
+											<includes>
+												<include>kenyaemr-${project.parent.version}.omod</include>
+											</includes>
+										</resource>
+									</resources>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<artifactId>maven-assembly-plugin</artifactId>
+						<version>2.3</version>
+						<configuration>
+							<descriptors>
+								<descriptor>${basedir}/src/main/assembly/assembly.xml</descriptor>
+							</descriptors>
+						</configuration>
+						<executions>
+							<execution>
+								<id>make-assembly</id>
+								<phase>package</phase>
+								<goals>
+									<goal>single</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
+</project>

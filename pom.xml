@@ -30,10 +30,17 @@
 	<modules>
 		<module>api</module>
 		<module>omod</module>
+		<module>distro</module>
 	</modules>
 	
 	<properties>
-		<openMRSVersion>1.9.0-RC3</openMRSVersion>
+		<openMRSVersion>1.9.0-RC4</openMRSVersion>
+		<uiframeworkVersion>1.4</uiframeworkVersion>
+		<uilibraryVersion>1.2</uilibraryVersion>
+		<appframeworkVersion>1.1</appframeworkVersion>
+		<metadatasharingVersion>1.0.8-SNAPSHOT</metadatasharingVersion>
+		<htmlformentryVersion>1.9.4</htmlformentryVersion>
+		<htmlformentry19extVersion>0.9</htmlformentry19extVersion>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
@@ -57,28 +64,28 @@
 			<dependency>
 				<groupId>org.openmrs.module</groupId>
 				<artifactId>uiframework-api</artifactId>
-				<version>1.4</version>
+				<version>${uiframeworkVersion}</version>
 				<scope>provided</scope>
 			</dependency>
 			
 			<dependency>
 				<groupId>org.openmrs.module</groupId>
 				<artifactId>appframework-api</artifactId>
-				<version>1.0</version>
+				<version>${appframeworkVersion}</version>
 				<scope>provided</scope>
 			</dependency>
 			
 			<dependency>
 				<groupId>org.openmrs.module</groupId>
 				<artifactId>metadatasharing-api</artifactId>
-				<version>1.0.8-SNAPSHOT</version>
+				<version>${metadatasharingVersion}</version>
 				<scope>provided</scope>
 			</dependency>
 			
 			<dependency>
 				<groupId>org.openmrs.module</groupId>
 				<artifactId>htmlformentry-api</artifactId>
-				<version>1.9.3</version>
+				<version>${htmlformentryVersion}</version>
 				<scope>provided</scope>
 			</dependency>
 						
