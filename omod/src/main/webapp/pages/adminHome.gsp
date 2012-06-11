@@ -1,5 +1,5 @@
 <%
-	ui.decorateWith("standardAppPage")
+	ui.decorateWith("standardKenyaEmrPage")
 	ui.includeJavascript("jquery-ui.js")
 	
 	def formatMap = { map ->
@@ -27,7 +27,8 @@
 		${ ui.includeFragment("widget/button", [
 				iconProvider: "uilibrary",
 				icon: "users_32.png",
-				label: "Manage Users"
+				label: "Manage Users",
+				href: ui.pageLink("adminManageUsers")
 			]) }
 		<br/>
 

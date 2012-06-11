@@ -1,5 +1,5 @@
 <%
-	ui.decorateWith("standardAppPage", [ doNotShowApp: true ])
+	ui.decorateWith("standardKenyaEmrPage", [ doNotShowApp: true ])
 	def APPS_PER_ROW = 3;
 %>
 

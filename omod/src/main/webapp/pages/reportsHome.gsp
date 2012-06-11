@@ -1,5 +1,5 @@
 <%
-	ui.decorateWith("standardAppPage")
+	ui.decorateWith("standardKenyaEmrPage")
 %>
 
 Not Yet Implemented

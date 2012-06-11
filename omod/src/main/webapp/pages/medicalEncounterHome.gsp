@@ -1,5 +1,7 @@
 <%
-	ui.decorateWith("standardAppPage")
+	ui.decorateWith("standardKenyaEmrPage")
+	
+	def numResultsFormatter = """function(listOfItems) { return listOfItems.length + " patient(s) <i>limited to checked-in patients</i>"; }"""
 %>
 <style>
 	#check-in-patient {
@@ -36,7 +38,7 @@
 	${ ui.includeFragment("patientList", [
 		id: "results",
 		showNumResults: true,
-		numResultsSuffix: "<i>limited to checked-in patients</i>",
+		numResultsFormatter: numResultsFormatter,
 		page: "medicalEncounterViewPatient"
 	]) }
 </fieldset>

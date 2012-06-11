@@ -90,7 +90,7 @@ public class KenyaEmrActivator implements ModuleActivator {
      */
     public boolean setupInitialData() throws Exception {
     	boolean anyChanges = false;
-    	anyChanges |= installMetadataPackageIfNecessary("fe64cb1e-5434-4c59-96f0-64db9bad1469", "KenyaEmrCoreMetadata-v3.zip");
+    	anyChanges |= installMetadataPackageIfNecessary("fe64cb1e-5434-4c59-96f0-64db9bad1469", "KenyaEmrCoreMetadata-v4.zip");
     	anyChanges |= installMetadataPackageIfNecessary("b45eaa94-6269-4a1e-8052-1e1cd79422a9", "VitalsForm-v1.zip");
     	return anyChanges;
     }

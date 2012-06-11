@@ -14,6 +14,7 @@
 package org.openmrs.module.kenyaemr.fragment.controller;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -37,8 +38,9 @@ public class PatientSearchFragmentController {
 	                     @RequestParam(value="age", required=false) Integer age,
 	                     @RequestParam(value="ageWindow", defaultValue="5") int ageWindow,
 	                     UiUtils ui) {
-		if (StringUtils.isBlank(query))
-			return null;
+		if (StringUtils.isBlank(query)) {
+			return Collections.emptyList();
+		}
 		
 		List<Patient> ret = Context.getPatientService().getPatients(query);
 		if (age != null) {
@@ -81,7 +83,7 @@ public class PatientSearchFragmentController {
 		List<Visit> activeVisits = Context.getVisitService().getVisits(null, null, null, null, null, null, null, null, null, false, false);
 
 		// no query, so we start with all patients with active visits
-		if (matching == null) {
+		if (matching == null || matching.size() == 0) {
 			List<Patient> ret = new ArrayList<Patient>();
 			for (Visit v : activeVisits) {
 				if (!ret.contains(v.getPatient()))
