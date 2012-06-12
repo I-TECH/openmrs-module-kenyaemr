@@ -3,7 +3,7 @@
 		width: 33%;
 	}
 	
-	.user-details .label {
+	.user-details .subtle-label {
 		color: #888888;
 	}
 	
@@ -32,7 +32,7 @@
 <div class="user-details">
 	<div class="login-details">
 		<img class="icon" src="${ ui.resourceLink("images/" + (user.retired ? "user_blue_32.png" : "user_32.png")) }"/>
-		<span class="label">User:</span>
+		<span class="subtle-label">User:</span>
 		${ user.username }
 		
 		<% if (user.retired) { %>
@@ -71,7 +71,7 @@
 	</div>
 
 	<div class="role-details">
-		<span class="label">Roles:</span>
+		<span class="subtle-label">Roles:</span>
 		${ user.roles.join(", ") }
 		<br/>
 		<%
@@ -79,7 +79,7 @@
 			inheritedRoles.removeAll(user.roles)
 		%>
 		<% if (inheritedRoles) { %>
-			<span class="label">
+			<span class="subtle-label">
 				Inherited:
 				${ inheritedRoles.join(", ") }
 			</span>
@@ -87,10 +87,10 @@
 	</div>
 
 	<div class="person-details">
-		<span class="label">Real Name:</span>
+		<span class="subtle-label">Real Name:</span>
 		${ user.personName }
 		<br/>
-		<span class="label">Gender:</span>
+		<span class="subtle-label">Gender:</span>
 		${ user.person.gender }
 		<br/>
 		
