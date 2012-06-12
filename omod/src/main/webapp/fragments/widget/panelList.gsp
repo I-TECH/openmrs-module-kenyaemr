@@ -21,7 +21,7 @@
 		padding: 0.2em;
 	}
 	.panel .title {
-		float: left;
+		display: block;
 		font-weight: bold;
 		font-size: 1.1em;
 	}
@@ -29,7 +29,10 @@
 		float: left;
 		padding-right: 0.3em;
 	}
-	.panel .leftDetails {
+	.panel .leftText {
+		float: left;
+	}
+	.panel .one-column {
 		float: left;
 	}
 </style>

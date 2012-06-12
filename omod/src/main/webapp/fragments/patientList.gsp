@@ -34,7 +34,7 @@
 		center: function(patient) {
 			var tmp = "";
 			for (var i = 0; i < patient.activeIdentifiers.length; ++i) {
-				tmp += '<span class="identifier-label">' + patient.activeIdentifiers[i].identifierType + ':</span>';
+				tmp += '<span class="identifier-label">' + patient.activeIdentifiers[i].identifierType + ':</span><br/>';
 				tmp += '<span class="identifier-value">' + patient.activeIdentifiers[i].identifier + '</span>';
 				tmp += '<br/>';
 			}
@@ -46,7 +46,7 @@
 	};
 	
 	function formatPatientAsPanel(patient) {
-		return kenyaemr.panelFormatter(patient, patientPanelOpts);
+		return kenyaemr.threeColumnPanelFormatter(patient, patientPanelOpts);
 	}
 </script>
 

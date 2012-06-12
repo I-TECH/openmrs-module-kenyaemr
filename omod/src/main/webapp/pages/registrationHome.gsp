@@ -3,9 +3,14 @@
 %>
 
 <style>
-.col2 {
-	width: 48%;
+.first-column, .second-column {
 	float: left;
+}
+.first-column {
+	width: 38%;
+}
+.second-column {
+	width: 59%;
 }
 #end-of-day {
 	display: none;
@@ -15,14 +20,14 @@
 }
 </style>
 
-<div class="col2">
+<div class="first-column">
 	<h1>Registration App</h1>
 	<h3>Welcome!</h3>
 	
 	${ ui.includeFragment("widget/button", [ icon: "search_32.png", label: "Find a Patient", href: ui.pageLink("registrationSearch") ]) }
 </div>
 
-<div class="col2">
+<div class="second-column">
 	<h2>Checked In Patients</h2>
 	${ ui.includeFragment("patientList", [ id: "checkedInPatients", page: "registrationViewPatient" ]) }
 	

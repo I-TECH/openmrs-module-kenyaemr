@@ -15,11 +15,11 @@
 %>
 <script>
 	var userPanelOpts = {
+		icon: '<img width="32" height="32" src="${ ui.resourceLink('uilibrary', 'images/user_32.png') }"/>',
 		title: function(user) {
 			return user.personName + '<input type="hidden" name="userId" value="' + user.userId + '"/>';
 		},
-		icon: '<img width="32" height="32" src="${ ui.resourceLink('uilibrary', 'images/user_32.png') }"/>',
-		center: function(user) {
+		leftDetails: function(user) {
 			var ret = '';
 			if (user.username)
 				ret += user.username + ' ';
@@ -33,7 +33,7 @@
 	};
 	
 	function formatUserAsPanel(user) {
-		return kenyaemr.panelFormatter(user, userPanelOpts);
+		return kenyaemr.threeColumnPanelFormatter(user, userPanelOpts);
 	}
 </script>
 

@@ -15,15 +15,35 @@ var kenyaemr = (function($) {
 		/*
 		 * values may specify (as function(data) or static text): icon, title, leftDetails, center, right
 		 */
-		panelFormatter: function(data, values) {
+		twoColumnPanelFormatter: function(data, values) {
 			var ret = '<div class="panel">';
-			ret += '<table width="100%"><tr valign="top"><td>';
+			ret += '<table width="100%"><tr valign="top"><td width="50%">';
 			ret += '<span class="icon">' + formatHelper(data, values.icon) + '</span>';
+			ret += '<span class="leftText">';
 			ret += '<span class="title">' + formatHelper(data, values.title) + '</span>';
 			ret += '<span class="leftDetails">' + formatHelper(data, values.leftDetails) + '</span>';
-			ret += '</td><td align="center">';
+			ret += '</span>';
+			ret += '</td><td align="right" width="50%">';
+			ret += formatHelper(data, values.right);
+			ret += '</td></tr></table>';
+			ret += '</div>';
+			return ret;
+		},
+		
+		/*
+		 * values may specify (as function(data) or static text): icon, title, leftDetails, center, right
+		 */
+		threeColumnPanelFormatter: function(data, values) {
+			var ret = '<div class="panel">';
+			ret += '<table width="100%"><tr valign="top"><td width="40%">';
+			ret += '<span class="icon">' + formatHelper(data, values.icon) + '</span>';
+			ret += '<span class="leftText">';
+			ret += '<span class="title">' + formatHelper(data, values.title) + '</span>';
+			ret += '<span class="leftDetails">' + formatHelper(data, values.leftDetails) + '</span>';
+			ret += '</span>';
+			ret += '</td><td align="center width="30%">';
 			ret += formatHelper(data, values.center);
-			ret += '</td><td align="right">';
+			ret += '</td><td align="right" width="30%">';
 			ret += formatHelper(data, values.right);
 			ret += '</td></tr></table>';
 			ret += '</div>';
