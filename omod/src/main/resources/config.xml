@@ -38,6 +38,10 @@
 		<require_module version="${ htmlformentryVersion }">
 			org.openmrs.module.htmlformentry
 		</require_module>
+		
+		<require_module version="${ moduledistroVersion }">
+			org.openmrs.module.moduledistro
+		</require_module>
 			
 	</require_modules>
 	<!-- / Required Modules -->

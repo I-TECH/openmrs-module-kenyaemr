@@ -42,7 +42,8 @@
 		${ ui.includeFragment("widget/button", [
 				iconProvider: "uilibrary",
 				icon: "refresh.png",
-				label: "Install New<br/>Software Version"
+				label: "Install New<br/>Software Version",
+				href: ui.pageLink("adminSoftwareVersion")
 			]) }
 		<br/>
 		
