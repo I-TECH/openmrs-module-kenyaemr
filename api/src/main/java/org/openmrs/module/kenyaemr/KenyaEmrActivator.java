@@ -22,6 +22,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.ModuleActivator;
+import org.openmrs.module.metadatasharing.ImportConfig;
+import org.openmrs.module.metadatasharing.ImportMode;
 import org.openmrs.module.metadatasharing.ImportedPackage;
 import org.openmrs.module.metadatasharing.MetadataSharing;
 import org.openmrs.module.metadatasharing.api.MetadataSharingService;
@@ -121,6 +123,7 @@ public class KenyaEmrActivator implements ModuleActivator {
     	}
     	
     	PackageImporter metadataImporter = MetadataSharing.getInstance().newPackageImporter();
+    	metadataImporter.setImportConfig(ImportConfig.valueOf(ImportMode.PARENT_AND_CHILD));
     	metadataImporter.loadSerializedPackageStream(getClass().getClassLoader().getResourceAsStream(filename));
     	metadataImporter.importPackage();
     	return true;
