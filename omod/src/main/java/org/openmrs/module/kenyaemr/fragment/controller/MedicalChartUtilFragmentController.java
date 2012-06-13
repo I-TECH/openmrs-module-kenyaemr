@@ -31,8 +31,10 @@ public class MedicalChartUtilFragmentController {
 	public List<SimpleObject> recentlyViewed(UiUtils ui,Session session) {
 		List<Integer> recent = session.getAttribute("kenyaemr.medicalChart.recentlyViewedPatients", List.class);
 		List<Patient> pats = new ArrayList<Patient>();
-		for (Integer ptId : recent) {
-			pats.add(Context.getPatientService().getPatient(ptId));
+		if (recent != null) {
+			for (Integer ptId : recent) {
+				pats.add(Context.getPatientService().getPatient(ptId));
+			}
 		}
 		return simplePatientList(ui, pats);
 	}
