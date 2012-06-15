@@ -1,5 +1,7 @@
 <!-- This is the login page -->
 
+<% ui.includeCss("uilibrary.css") %>
+
 <style>
 	#fullwindow {
 		top: 0;
@@ -16,6 +18,13 @@
 		display: table-cell;
 		margin-left: auto;
 		margin-right: auto;
+	}
+	
+	#errors {
+		margin: 1em;
+		text-align: center;
+		background-color: #FFFFBB;
+		border: 1px gray solid;
 	}
 </style>
 
