@@ -39,6 +39,26 @@
 			<groupId>org.openmrs.module</groupId>
 			<artifactId>metadatasharing-api</artifactId>
 		</dependency>
+		
+		<dependency>
+			<groupId>org.openmrs</groupId>
+			<artifactId>calculation-api</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.openmrs.module</groupId>
+			<artifactId>reporting</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.openmrs.module</groupId>
+			<artifactId>htmlwidgets</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.openmrs.module</groupId>
+			<artifactId>serialization.xstream-api</artifactId>
+		</dependency>
 
 		<!-- End OpenMRS modules -->
 		
@@ -79,6 +99,11 @@
 		</dependency>
 					
 		<!-- End OpenMRS core -->
+		
+		<dependency>
+			<groupId>joda-time</groupId>
+			<artifactId>joda-time</artifactId>
+		</dependency>
 		
 	</dependencies>
 	

@@ -3,16 +3,6 @@
 %>
 
 <style>
-	#alerts {
-		margin: 0.5em;
-	}
-	.alert {
-		background-color: yellow;
-		border: 1px black dashed;
-		margin-right: 0.5em;
-		padding: 0.2em;
-	}
-	
 	#col1, #col2, #col3 {
 		float: left;
 		width: 32%;
@@ -37,14 +27,7 @@ jq(function() {
 });
 </script>
 
-<div id="alerts">
-	<span class="alert">
-		Should we show some alerts here with some decoration?
-	</span>
-	<span class="alert">
-		If they're short, we have room for lots.
-	</span>
-</div>
+${ ui.includeFragment("clinicalAlerts") }
 
 <div id="col1">
 	<fieldset id="registrationDetails">

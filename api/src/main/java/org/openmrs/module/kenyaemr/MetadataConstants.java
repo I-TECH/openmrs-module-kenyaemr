@@ -13,6 +13,8 @@
  */
 package org.openmrs.module.kenyaemr;
 
+import java.util.Locale;
+
 
 /**
  *
@@ -36,5 +38,11 @@ public class MetadataConstants {
 	
 	// Person Attribute Types
 	public static final String TELEPHONE_CONTACT_UUID = "afdbc2da-3a98-4c9a-8e4b-27c3c3be716a";
+	
+	// Concepts
+	public static final String CD4_CONCEPT_UUID = "5497AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+	
+	// Other
+	public static final Locale LOCALE = Locale.UK;
 	
 }

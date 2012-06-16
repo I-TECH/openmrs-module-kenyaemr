@@ -9,13 +9,13 @@
 	<name>Kenya OpenMRS EMR Module</name>
 	<description>OpenMRS-based EMR for Kenya</description>
 	<url>https://wiki.openmrs.org/display/docs/Kenya+OpenMRS+EMR+Module+Module</url>
-	
+
 	<developers>
 		<developer>
 			<name>ITECH</name>
 		</developer>
 	</developers>
-	
+
 	<organization>
 		<name>OpenMRS</name>
 		<url>http://openmrs.org</url>
@@ -32,7 +32,7 @@
 		<module>omod</module>
 		<module>distro</module>
 	</modules>
-	
+
 	<properties>
 		<openMRSVersion>1.9.0</openMRSVersion>
 		<uiframeworkVersion>1.5</uiframeworkVersion>
@@ -42,24 +42,22 @@
 		<htmlformentryVersion>1.9.4</htmlformentryVersion>
 		<htmlformentry19extVersion>0.9</htmlformentry19extVersion>
 		<moduledistroVersion>1.2</moduledistroVersion>
+		<calculationVersion>1.0-SNAPSHOT</calculationVersion>
+		<reportingVersion>0.7.1.1</reportingVersion>
+		<htmlwidgetsVersion>1.6.0</htmlwidgetsVersion>
+		<serializationxstreamVersion>0.2.6</serializationxstreamVersion>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
 	<dependencyManagement>
 		<dependencies>
-		
-			<!--
-			Libraries to add as dependencies with compile or runtime scope:
-			Find matching dependencies in the maven central repository.
-			<dependency>
-				<groupId>org.other.library</groupId>
-				<artifactId>library-name</artifactId>
-				<version>library.version</version>
-				<scope>compile</scope>
-			</dependency>
-			-->
-			
-						
+
+			<!-- Libraries to add as dependencies with compile or runtime scope: Find 
+				matching dependencies in the maven central repository. <dependency> <groupId>org.other.library</groupId> 
+				<artifactId>library-name</artifactId> <version>library.version</version> 
+				<scope>compile</scope> </dependency> -->
+
+
 			<!-- Begin OpenMRS modules -->
 
 			<dependency>
@@ -68,40 +66,68 @@
 				<version>${uiframeworkVersion}</version>
 				<scope>provided</scope>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>org.openmrs.module</groupId>
 				<artifactId>appframework-api</artifactId>
 				<version>${appframeworkVersion}</version>
 				<scope>provided</scope>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>org.openmrs.module</groupId>
 				<artifactId>metadatasharing-api</artifactId>
 				<version>${metadatasharingVersion}</version>
 				<scope>provided</scope>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>org.openmrs.module</groupId>
 				<artifactId>htmlformentry-api</artifactId>
 				<version>${htmlformentryVersion}</version>
 				<scope>provided</scope>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>org.openmrs.module</groupId>
 				<artifactId>moduledistro-api</artifactId>
 				<version>${moduledistroVersion}</version>
 				<scope>provided</scope>
 			</dependency>
-						
+
+			<dependency>
+				<groupId>org.openmrs</groupId>
+				<artifactId>calculation-api</artifactId>
+				<version>${calculationVersion}</version>
+				<scope>provided</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>org.openmrs.module</groupId>
+				<artifactId>reporting</artifactId>
+				<version>${reportingVersion}</version>
+				<scope>provided</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>org.openmrs.module</groupId>
+				<artifactId>htmlwidgets</artifactId>
+				<version>${htmlwidgetsVersion}</version>
+				<scope>provided</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>org.openmrs.module</groupId>
+				<artifactId>serialization.xstream-api</artifactId>
+				<version>${serializationxstreamVersion}</version>
+				<scope>provided</scope>
+			</dependency>
+
 			<!-- End OpenMRS modules -->
-			
+
 
 			<!-- Begin OpenMRS core -->
-			
+
 			<dependency>
 				<groupId>org.openmrs.api</groupId>
 				<artifactId>openmrs-api</artifactId>
@@ -117,7 +143,7 @@
 				<type>jar</type>
 				<scope>provided</scope>
 			</dependency>
-						
+
 			<dependency>
 				<groupId>org.openmrs.api</groupId>
 				<artifactId>openmrs-api</artifactId>
@@ -125,7 +151,7 @@
 				<type>test-jar</type>
 				<scope>test</scope>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>org.openmrs.web</groupId>
 				<artifactId>openmrs-web</artifactId>
@@ -133,7 +159,7 @@
 				<type>test-jar</type>
 				<scope>test</scope>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>org.openmrs.test</groupId>
 				<artifactId>openmrs-test</artifactId>
@@ -141,9 +167,16 @@
 				<type>pom</type>
 				<scope>test</scope>
 			</dependency>
-						
+
 			<!-- End OpenMRS core -->
 
+			<dependency>
+				<groupId>joda-time</groupId>
+				<artifactId>joda-time</artifactId>
+				<version>2.1</version>
+				<type>jar</type>
+				<scope>compile</scope>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
