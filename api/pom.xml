@@ -41,7 +41,7 @@
 		</dependency>
 		
 		<dependency>
-			<groupId>org.openmrs</groupId>
+			<groupId>org.openmrs.module</groupId>
 			<artifactId>calculation-api</artifactId>
 		</dependency>
 		
