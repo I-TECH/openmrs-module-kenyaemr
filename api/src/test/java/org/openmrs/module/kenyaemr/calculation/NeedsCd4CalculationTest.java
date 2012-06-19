@@ -1,6 +1,5 @@
 package org.openmrs.module.kenyaemr.calculation;
 
-
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
@@ -28,7 +27,7 @@ public class NeedsCd4CalculationTest extends BaseModuleContextSensitiveTest {
 	@Test
 	public void evaluate_shouldDetermineWhetherPatientsNeedACD4() throws Exception {
 		// make sure the CD4 concept has the MVP/CIEL UUID
-		ConceptService cs = Context.getConceptService();
+ 		ConceptService cs = Context.getConceptService();
 		Concept cd4 = cs.getConcept(5497);
 		cd4.setUuid(MetadataConstants.CD4_CONCEPT_UUID);
 		cs.saveConcept(cd4);
@@ -37,6 +36,8 @@ public class NeedsCd4CalculationTest extends BaseModuleContextSensitiveTest {
 		Obs obs = new Obs(Context.getPatientService().getPatient(7), cd4, new Date(), null);
 		obs.setValueNumeric(123d);
 		Context.getObsService().saveObs(obs, null);
+		
+		Context.flushSession();
 		
 		List<Integer> ptIds = Arrays.asList(6, 7, 8);
 		CalculationResultMap resultMap = new NeedsCd4Calculation().evaluate(ptIds, null, Context.getService(PatientCalculationService.class).createCalculationContext());

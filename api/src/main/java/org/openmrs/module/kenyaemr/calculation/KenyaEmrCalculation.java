@@ -68,6 +68,9 @@ public abstract class KenyaEmrCalculation extends BaseCalculation implements Pat
 	
 	CalculationResultMap lastObs(String conceptUuid, Collection<Integer> patientIds, PatientCalculationContext calculationContext) {
 		Concept concept = getConcept(conceptUuid);
+		if (concept == null) {
+			throw new RuntimeException("Cannot find concept with uuid = " + conceptUuid);
+		}
 		ObsForPersonDataDefinition def = new ObsForPersonDataDefinition("Last " + concept.getPreferredName(MetadataConstants.LOCALE), TimeQualifier.LAST, concept, calculationContext.getNow(), null);
 		return evaluateWithReporting(def, patientIds, new HashMap<String, Object>(), calculationContext);
 	}

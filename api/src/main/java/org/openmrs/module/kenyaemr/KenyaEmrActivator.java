@@ -20,8 +20,10 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.GlobalProperty;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.ModuleActivator;
+import org.openmrs.module.kenyaemr.datatype.LocationDatatype;
 import org.openmrs.module.metadatasharing.ImportConfig;
 import org.openmrs.module.metadatasharing.ImportMode;
 import org.openmrs.module.metadatasharing.ImportedPackage;
@@ -62,6 +64,7 @@ public class KenyaEmrActivator implements ModuleActivator {
 	 * @should install initial data only once
 	 */
 	public void started() {
+		setupGlobalProperties();
 		try {
 			setupInitialData();
 		} catch (Exception ex) {
@@ -70,6 +73,7 @@ public class KenyaEmrActivator implements ModuleActivator {
 		log.info("Kenya OpenMRS EMR Module started");
 	}
 	
+
 	/**
 	 * @see ModuleActivator#willStop()
 	 */
@@ -84,6 +88,20 @@ public class KenyaEmrActivator implements ModuleActivator {
 		log.info("Kenya OpenMRS EMR Module stopped");
 	}
 		
+	/**
+	 * Public for testing
+	 */
+	public void setupGlobalProperties() {
+		GlobalProperty gp = Context.getAdministrationService().getGlobalPropertyObject(KenyaEmrConstants.GP_DEFAULT_LOCATION);
+		if (gp == null) {
+			gp = new GlobalProperty();
+			gp.setProperty(KenyaEmrConstants.GP_DEFAULT_LOCATION);
+			gp.setDescription("The facility for which this installation is configured. Visits and encounters will be created with this location value.");
+			gp.setDatatypeClassname(LocationDatatype.class.getName());
+			Context.getAdministrationService().saveGlobalProperty(gp);
+		}
+	}
+	
     /**
      * Public for testing
      * 

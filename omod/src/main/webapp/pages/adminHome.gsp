@@ -38,6 +38,16 @@
 				label: "Manage Providers"
 			]) }
 		<br/>
+		
+		${ ui.includeFragment("widget/button", [
+				iconProvider: "uilibrary",
+				icon: "application32.png",
+				label: "Redo<br/>First-time Setup",
+				href: ui.pageLink("adminFirstTimeSetup")
+			]) }
+		<br/>
+
+		<hr/>
 
 		${ ui.includeFragment("widget/button", [
 				iconProvider: "uilibrary",
@@ -46,7 +56,7 @@
 				href: ui.pageLink("adminSoftwareVersion")
 			]) }
 		<br/>
-		
+				
 	</fieldset>
 </div>
 

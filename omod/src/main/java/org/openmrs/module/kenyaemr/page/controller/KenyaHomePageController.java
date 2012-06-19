@@ -21,7 +21,11 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.appframework.AppDescriptor;
 import org.openmrs.module.appframework.AppUiUtil;
 import org.openmrs.module.appframework.api.AppFrameworkService;
+import org.openmrs.module.kenyaemr.api.KenyaEmrService;
+import org.openmrs.ui.framework.UiUtils;
+import org.openmrs.ui.framework.WebConstants;
 import org.openmrs.ui.framework.page.PageModel;
+import org.openmrs.ui.framework.page.Redirect;
 import org.openmrs.ui.framework.session.Session;
 
 
@@ -30,9 +34,13 @@ import org.openmrs.ui.framework.session.Session;
  */
 public class KenyaHomePageController {
 	
-	public String controller(PageModel model, Session session) {
+	public String controller(PageModel model, Session session, UiUtils ui) throws Redirect {
 		if (!Context.isAuthenticated()) {
 			return "kenyaLogin";
+		}
+		
+		if (!Context.getService(KenyaEmrService.class).isConfigured()) {
+			return "redirect:" + ui.pageLink("adminConfiguration");
 		}
 		
 		AppFrameworkService appService = Context.getService(AppFrameworkService.class);

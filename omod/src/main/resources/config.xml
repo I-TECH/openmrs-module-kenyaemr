@@ -57,7 +57,6 @@
 	<!-- Module Activator -->
 	<activator>${project.parent.groupId}.${project.parent.artifactId}.KenyaEmrActivator</activator>
 	
-	
 	<!-- Maps hibernate file's, if present -->
 	<mappingFiles>
 				
