@@ -57,6 +57,7 @@ public interface KenyaEmrService extends OpenmrsService {
 	 * @should set up an identifier source
 	 * @should fail if already set up
 	 */
+	@Transactional
 	void setupMrnIdentifierSource(String startFrom);
 
 	/**

@@ -1,9 +1,10 @@
 <%
-	def idFields = []
+	def idFields = [ ]
 	identifierTypes.eachWithIndex { it, i ->
 		idFields << [ hiddenInputName: "identifiers[${ i }].identifierType", value: it.id ]
 		idFields << [ formFieldName: "identifiers[${ i }].identifier", label: ui.format(it), class: java.lang.String ]
 	}
+	idFields << [ label: "OpenMRS ID", value: "automatically generated" ]
 	
 	def nameFields = [
 		[formFieldName: "names[0].givenName", label: "Given Name", class: java.lang.String],
@@ -76,6 +77,8 @@
 <script>
 jq(function() {
 	jq('#create-patient-form input[type=submit]').button();
+	
+	jq('input[name="names[0].givenName"]').focus();
 	
 	ui.setupAjaxPost('#create-patient-form', {
 		onSuccess: function(data) {

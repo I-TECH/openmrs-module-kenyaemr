@@ -19,6 +19,7 @@ import org.openmrs.PatientIdentifierType;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.impl.BaseOpenmrsService;
+import org.openmrs.module.idgen.AutoGenerationOption;
 import org.openmrs.module.idgen.IdentifierSource;
 import org.openmrs.module.idgen.SequentialIdentifierGenerator;
 import org.openmrs.module.idgen.service.IdentifierSourceService;
@@ -143,28 +144,34 @@ public class KenyaEmrServiceImpl extends BaseOpenmrsService implements KenyaEmrS
 	    }
 	    catch (ConfigurationRequiredException ex) {
 	    	// this is the good case: we are only allowed to configure this if it isn't set up yet
-	    	PatientIdentifierType idType = Context.getPatientService().getPatientIdentifierTypeByUuid(MetadataConstants.OPENMRS_ID_UUID);
-	    	String validatorClass = idType.getValidator();
-	    	LuhnModNIdentifierValidator validator;
-	    	try {
-	    		validator = (LuhnModNIdentifierValidator) Context.loadClass(validatorClass).newInstance(); 
-	    	} catch (Exception e) {
-	    		throw new APIException("Unexpected Identifier Validator (" + validatorClass + ") for " + idType.getName(), e);
-	    	}
-	    	
-	    	if (startFrom == null) {
-	    		startFrom = validator.getBaseCharacters().substring(0, 1);
-	    	}
-	    	
-	    	SequentialIdentifierGenerator idGen = new SequentialIdentifierGenerator();
-	    	idGen.setName(OPENMRS_MEDICAL_RECORD_NUMBER_NAME);
-	    	idGen.setDescription("Identifier Generator for " + idType.getName());
-	    	idGen.setIdentifierType(idType);
-	    	idGen.setPrefix("M");
-	    	idGen.setBaseCharacterSet(validator.getBaseCharacters());
-	    	idGen.setFirstIdentifierBase(startFrom);
-	    	Context.getService(IdentifierSourceService.class).saveIdentifierSource(idGen);
 	    }
+	    
+    	PatientIdentifierType idType = Context.getPatientService().getPatientIdentifierTypeByUuid(MetadataConstants.OPENMRS_ID_UUID);
+    	String validatorClass = idType.getValidator();
+    	LuhnModNIdentifierValidator validator;
+    	try {
+    		validator = (LuhnModNIdentifierValidator) Context.loadClass(validatorClass).newInstance(); 
+    	} catch (Exception e) {
+    		throw new APIException("Unexpected Identifier Validator (" + validatorClass + ") for " + idType.getName(), e);
+    	}
+    	
+    	if (startFrom == null) {
+    		startFrom = validator.getBaseCharacters().substring(0, 1);
+    	}
+
+    	IdentifierSourceService idService = Context.getService(IdentifierSourceService.class);
+
+    	SequentialIdentifierGenerator idGen = new SequentialIdentifierGenerator();
+    	idGen.setName(OPENMRS_MEDICAL_RECORD_NUMBER_NAME);
+    	idGen.setDescription("Identifier Generator for " + idType.getName());
+    	idGen.setIdentifierType(idType);
+    	idGen.setPrefix("M");
+    	idGen.setBaseCharacterSet(validator.getBaseCharacters());
+    	idGen.setFirstIdentifierBase(startFrom);
+		idService.saveIdentifierSource(idGen);
+    	
+    	AutoGenerationOption auto = new AutoGenerationOption(idType, idGen, true, true);
+	    idService.saveAutoGenerationOption(auto);
 	}
 	
 }

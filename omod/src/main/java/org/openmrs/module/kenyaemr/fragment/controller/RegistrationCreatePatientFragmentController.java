@@ -28,7 +28,9 @@ import org.openmrs.PersonAttribute;
 import org.openmrs.PersonName;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.idgen.service.IdentifierSourceService;
 import org.openmrs.module.kenyaemr.MetadataConstants;
+import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.BindParams;
@@ -53,7 +55,6 @@ public class RegistrationCreatePatientFragmentController {
 	public void controller(FragmentModel model) {
 		PatientService ps = Context.getPatientService();
 		List<PatientIdentifierType> identifierTypes = new ArrayList<PatientIdentifierType>();
-		identifierTypes.add(ps.getPatientIdentifierTypeByUuid(MetadataConstants.UNIQUE_PATIENT_NUMBER_UUID));
 		identifierTypes.add(ps.getPatientIdentifierTypeByUuid(MetadataConstants.PATIENT_CLINIC_NUMBER_UUID));
 		model.addAttribute("identifierTypes", identifierTypes);
 		
@@ -63,7 +64,9 @@ public class RegistrationCreatePatientFragmentController {
 	public SimpleObject createPatient(UiUtils ui,
 	                                  @MethodParam("createPatientCommand") @BindParams CreatePatientCommand command) {
 		ui.validate(command, command, null);
-		Patient created = Context.getPatientService().savePatient(command.toPatient());
+		Location location = Context.getService(KenyaEmrService.class).getDefaultLocation();
+		Patient toCreate = command.toPatient(location);
+		Patient created = Context.getPatientService().savePatient(toCreate);
 		return SimpleObject.create("patientId", created.getPatientId());
 	}
 	
@@ -230,13 +233,12 @@ public class RegistrationCreatePatientFragmentController {
 	    		}
 	    		errors.popNestedPath();
 	    	}
-	    	if (!nonBlankIdentifiers) {
-	    		errors.rejectValue("identifiers[" + (identifiers.size() - 1) + "].identifier", "error.requiredField");
-	    	}
 	    	
 	    	if (!errors.hasErrors()) {
 	    		// make sure there aren't any errors we're missing
-    			Patient pt = command.toPatient();
+	    		// unfortunately we have to generate an OpenMRS ID to test this...
+	    		Location location = Context.getService(KenyaEmrService.class).getDefaultLocation();
+    			Patient pt = command.toPatient(location);
     			BindException ptErrors = new BindException(pt, "patient");
     			ValidateUtil.validate(pt, ptErrors);
 
@@ -254,22 +256,35 @@ public class RegistrationCreatePatientFragmentController {
 	    	}
 	    }
 
+	    private PatientIdentifier generatedOpenmrsId = null;
+	    
 		/**
 	     * Assembles this command object into a patient. Make sure you validate before trying to save this.
+	     * We will store the OpenMRS ID that we generate, so this can be called from validate() and while handling the post
+	     * without wasting an ID number
 	     */
-	    public Patient toPatient() {
+	    public Patient toPatient(Location location) {
 		    Patient ret = new Patient();
 		    for (PersonName name : names) {
 		    	ret.addName(name);
 		    }
+		    
+		    // auto-generate OpenMRS ID if necessary
+		    if (generatedOpenmrsId == null) {
+		    	PatientIdentifierType openmrsIdType = Context.getPatientService().getPatientIdentifierTypeByUuid(MetadataConstants.OPENMRS_ID_UUID);
+			    String generated = Context.getService(IdentifierSourceService.class).generateIdentifier(openmrsIdType, "Registration Create Patient");
+			    generatedOpenmrsId = new PatientIdentifier(generated, openmrsIdType, location);
+			    generatedOpenmrsId.setPreferred(true);
+		    }
+		    ret.addIdentifier(generatedOpenmrsId);
+		    
+		    // add any other identifiers
 		    for (PatientIdentifier id : identifiers) {
 		    	if (StringUtils.isNotBlank(id.getIdentifier())) {
 		    		ret.addIdentifier(id);
 		    	}
 		    }
-		    if (ret.getActiveIdentifiers().size() > 0) {
-		    	ret.getActiveIdentifiers().get(0).setPreferred(true);
-		    }
+
 		    for (PersonAttribute attr : attributes) {
 		    	if (StringUtils.isNotBlank(attr.getValue())) {
 		    		ret.addAttribute(attr);

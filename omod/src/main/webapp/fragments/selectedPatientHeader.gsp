@@ -34,6 +34,10 @@
 		float: right;
 		text-align: right;
 	}
+	
+	.header-identifier-type {
+		font-weight: normal;
+	}
 </style>
 
 <div id="selected-patient-header">
@@ -46,10 +50,10 @@
 	
 	<div class="identifiers">
 		<% patient.activeIdentifiers.each { %>
-			<span class="identifier-type">
+			<span class="header-identifier-type">
 				${ it.identifierType.name }:
 			</span>
-			<span class="identifier-value">
+			<span class="header-identifier-value">
 				${ it.identifier }
 			</span>
 			<br/>

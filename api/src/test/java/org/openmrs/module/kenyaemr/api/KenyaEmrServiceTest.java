@@ -105,9 +105,12 @@ public class KenyaEmrServiceTest extends BaseModuleContextSensitiveTest {
 	    service.setupMrnIdentifierSource("4");
 	    Assert.assertTrue(isMrnIdentifierSourceSetup());
 	    IdentifierSource source = service.getMrnIdentifierSource();
-	    Assert.assertEquals("M4E", Context.getService(IdentifierSourceService.class).generateIdentifier(source, "Testing"));
-	    Assert.assertEquals("M6C", Context.getService(IdentifierSourceService.class).generateIdentifier(source, "Testing"));
-	    Assert.assertEquals("M79", Context.getService(IdentifierSourceService.class).generateIdentifier(source, "Testing"));
+	    Assert.assertNotNull(source);
+	    
+	    PatientIdentifierType idType = source.getIdentifierType();
+	    Assert.assertEquals("M4E", Context.getService(IdentifierSourceService.class).generateIdentifier(idType, "Testing"));
+	    Assert.assertEquals("M6C", Context.getService(IdentifierSourceService.class).generateIdentifier(idType, "Testing"));
+	    Assert.assertEquals("M79", Context.getService(IdentifierSourceService.class).generateIdentifier(idType, "Testing"));
     }
 
 	/**
