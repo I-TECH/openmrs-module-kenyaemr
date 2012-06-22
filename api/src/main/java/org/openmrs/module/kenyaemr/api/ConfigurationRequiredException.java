@@ -11,7 +11,7 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.kenyaemr.api.impl;
+package org.openmrs.module.kenyaemr.api;
 
 import org.openmrs.api.APIException;
 

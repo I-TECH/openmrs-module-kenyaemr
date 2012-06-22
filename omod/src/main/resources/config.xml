@@ -50,6 +50,10 @@
 		<require_module version="${reportingVersion}">
 			org.openmrs.module.reporting
 		</require_module>
+		
+		<require_module version="${idgenVersion}">
+			org.openmrs.module.idgen
+		</require_module>
 			
 	</require_modules>
 	<!-- / Required Modules -->

@@ -3,8 +3,11 @@
 <% if (isSuperUser) { %>
 
 	<style>
-		.field-label, .field-content {
+		.field-label {
 			font-size: 1.2em;
+		}
+		.field-content {
+			padding: 0.3em;
 		}
 	</style>
 
@@ -17,18 +20,33 @@
 		</div>
 	
 		<div class="ui-widget-content" style="padding: 1em;">
-		
+		<%
+			def fields = [
+				[
+					label: "What facility is this installation managing?",
+					formFieldName: "defaultLocation",
+					class: org.openmrs.Location,
+					initialValue: defaultLocation
+				]
+			]
+			if (mrnIdentifierSource) {
+				fields << [
+					label: "OpenMRS ID Generator",
+					value: "Already configured"
+				]
+			} else {
+				fields << [
+					label: "(OpenMRS ID Generator) Base for first ID Number",
+					formFieldName: "mrnIdentifierSourceStart",
+					initialValue: "3",
+					class: java.lang.String
+				]
+			}
+		%>
 			${ ui.includeFragment("widget/form", [
 					page: "adminFirstTimeSetup",
 					submitLabel: "Save Settings",
-					fields: [
-						[
-							label: "What facility is this installation managing?",
-							formFieldName: "defaultLocation",
-							class: org.openmrs.Location,
-							initialValue: defaultLocation
-						]
-					]
+					fields: fields
 				]) }
 		
 		</div>

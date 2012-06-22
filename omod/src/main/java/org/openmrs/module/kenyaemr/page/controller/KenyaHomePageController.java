@@ -40,7 +40,7 @@ public class KenyaHomePageController {
 		}
 		
 		if (!Context.getService(KenyaEmrService.class).isConfigured()) {
-			return "redirect:" + ui.pageLink("adminConfiguration");
+			return "redirect:" + ui.pageLink("adminFirstTimeSetup");
 		}
 		
 		AppFrameworkService appService = Context.getService(AppFrameworkService.class);

@@ -35,6 +35,7 @@ public class MetadataConstants {
 	// Patient Identifier Types
 	public static final String UNIQUE_PATIENT_NUMBER_UUID = "03ff7348-e221-443f-b516-4d0895809863";
 	public static final String PATIENT_CLINIC_NUMBER_UUID = "0d29df0a-cd23-4930-b5c9-adcea28ad0ed";
+	public static final String OPENMRS_ID_UUID = "5fe0232a-2c82-4496-9021-e287ec989125";
 	
 	// Person Attribute Types
 	public static final String TELEPHONE_CONTACT_UUID = "afdbc2da-3a98-4c9a-8e4b-27c3c3be716a";

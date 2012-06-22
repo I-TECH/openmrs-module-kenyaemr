@@ -13,10 +13,12 @@
  */
 package org.openmrs.module.kenyaemr.page.controller;
 
+import org.apache.commons.lang.StringUtils;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.idgen.IdentifierSource;
+import org.openmrs.module.kenyaemr.api.ConfigurationRequiredException;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
-import org.openmrs.module.kenyaemr.api.impl.ConfigurationRequiredException;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.WebConstants;
 import org.openmrs.ui.framework.page.PageModel;
@@ -29,12 +31,19 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class AdminFirstTimeSetupPageController {
 	
 	public String controller(Session session, PageModel model, UiUtils ui,
-	                         @RequestParam(required = false, value = "defaultLocation") Location defaultLocation) {
+	                         @RequestParam(required = false, value = "defaultLocation") Location defaultLocation,
+	                         @RequestParam(required = false, value = "mrnIdentifierSourceStart") String mrnIdentifierSourceStart) {
 		
 		KenyaEmrService service = Context.getService(KenyaEmrService.class);
 		
-		if (defaultLocation != null) {
-			service.setDefaultLocation(defaultLocation);
+		// handle submission
+		if (defaultLocation != null || StringUtils.isNotEmpty(mrnIdentifierSourceStart)) {
+			if (defaultLocation != null) {
+				service.setDefaultLocation(defaultLocation);
+			}
+			if (StringUtils.isNotEmpty(mrnIdentifierSourceStart)) {
+				service.setupMrnIdentifierSource(mrnIdentifierSourceStart);
+			}
 			session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "First-Time Setup Completed");
 			return "redirect:" + ui.pageLink("kenyaHome");
 		}
@@ -49,8 +58,16 @@ public class AdminFirstTimeSetupPageController {
 			// pass
 		}
 		
+		IdentifierSource mrnIdentifierSource = null;
+		try {
+			mrnIdentifierSource = service.getMrnIdentifierSource();
+		} catch (ConfigurationRequiredException ex) {
+			// pass
+		}
+		
 		model.addAttribute("isSuperUser", Context.getAuthenticatedUser().isSuperUser());
 		model.addAttribute("defaultLocation", defaultLocation);
+		model.addAttribute("mrnIdentifierSource", mrnIdentifierSource);
 		return null;
 	}
 	

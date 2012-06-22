@@ -15,6 +15,7 @@ package org.openmrs.module.kenyaemr.api;
 
 import org.openmrs.Location;
 import org.openmrs.api.OpenmrsService;
+import org.openmrs.module.idgen.IdentifierSource;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -47,5 +48,21 @@ public interface KenyaEmrService extends OpenmrsService {
 	 */
 	@Transactional(readOnly=true)
 	Location getDefaultLocation();
+	
+	/**
+	 * Sets up a new idgen identifier source for our auto-generated medical record numbers
+	 * 
+	 * @param startFrom the first identifier to use
+	 * 
+	 * @should set up an identifier source
+	 * @should fail if already set up
+	 */
+	void setupMrnIdentifierSource(String startFrom);
+
+	/**
+     * @return the ID generator for Medical Record Numbers (OpenMRS IDs)
+     * @throws ConfigurationRequiredException if the ID source has not be set up yet
+     */
+    IdentifierSource getMrnIdentifierSource() throws ConfigurationRequiredException;
 	
 }

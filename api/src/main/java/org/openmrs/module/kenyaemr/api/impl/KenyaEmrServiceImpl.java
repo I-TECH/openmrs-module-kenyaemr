@@ -15,9 +15,17 @@ package org.openmrs.module.kenyaemr.api.impl;
 
 import org.openmrs.GlobalProperty;
 import org.openmrs.Location;
+import org.openmrs.PatientIdentifierType;
+import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.impl.BaseOpenmrsService;
+import org.openmrs.module.idgen.IdentifierSource;
+import org.openmrs.module.idgen.SequentialIdentifierGenerator;
+import org.openmrs.module.idgen.service.IdentifierSourceService;
+import org.openmrs.module.idgen.validator.LuhnModNIdentifierValidator;
 import org.openmrs.module.kenyaemr.KenyaEmrConstants;
+import org.openmrs.module.kenyaemr.MetadataConstants;
+import org.openmrs.module.kenyaemr.api.ConfigurationRequiredException;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 
 
@@ -26,6 +34,7 @@ import org.openmrs.module.kenyaemr.api.KenyaEmrService;
  */
 public class KenyaEmrServiceImpl extends BaseOpenmrsService implements KenyaEmrService {
 	
+    private static final String OPENMRS_MEDICAL_RECORD_NUMBER_NAME = "Kenya EMR - OpenMRS Medical Record Number";
 	private boolean hasBeenConfigured = false;
 	
 	/**
@@ -40,6 +49,16 @@ public class KenyaEmrServiceImpl extends BaseOpenmrsService implements KenyaEmrS
 			return true;
 		}
 		
+		hasBeenConfigured = isConfiguredDefaultLocation();
+		hasBeenConfigured &= isConfiguredOpenmrsIdGenerator();
+		return hasBeenConfigured;
+	}
+	
+
+	/**
+     * @return whether or not the defaultLocation is configured
+     */
+    boolean isConfiguredDefaultLocation() {
 		try {
 			getDefaultLocation();
 			hasBeenConfigured = true;
@@ -47,8 +66,47 @@ public class KenyaEmrServiceImpl extends BaseOpenmrsService implements KenyaEmrS
 		} catch (ConfigurationRequiredException ex) {
 			return false;
 		}
-	}
-	
+    }
+
+    /**
+     * @return whether or not an id generator is configured for the OpenMRS MRN
+     */
+    boolean isConfiguredOpenmrsIdGenerator() {
+    	try {
+    		IdentifierSource source = getMrnIdentifierSource();
+    		return source != null;
+    	} catch (ConfigurationRequiredException ex) {
+    		return false;
+    	}
+    }
+    
+	/**
+     * @return the identifier source for MRNs
+     */
+    @Override
+    public IdentifierSource getMrnIdentifierSource() {
+    	IdentifierSource source = getIdentifierSource(OPENMRS_MEDICAL_RECORD_NUMBER_NAME);
+    	if (source == null) {
+    		throw new ConfigurationRequiredException("MRN Identifier Source not configured");
+    	}
+    	return source;
+    }
+
+
+	/**
+     * @param name
+     * @return the source with the given name
+     */
+    private IdentifierSource getIdentifierSource(String name) {
+    	for (IdentifierSource source : Context.getService(IdentifierSourceService.class).getAllIdentifierSources(false)) {
+    		if (source.getName().equals(name)) {
+    			return source;
+    		}
+    	}
+    	return null;
+    }
+
+
 	/**
 	 * @see org.openmrs.module.kenyaemr.api.KenyaEmrService#setDefaultLocation(org.openmrs.Location)
 	 */
@@ -72,6 +130,41 @@ public class KenyaEmrServiceImpl extends BaseOpenmrsService implements KenyaEmrS
 			}
 		}
 		throw new ConfigurationRequiredException("Global Property: " + KenyaEmrConstants.GP_DEFAULT_LOCATION);
+	}
+	
+	/**
+	 * @see org.openmrs.module.kenyaemr.api.KenyaEmrService#setupMrnIdentifierSource(java.lang.String)
+	 */
+	@Override
+	public void setupMrnIdentifierSource(String startFrom) {
+	    try {
+	    	IdentifierSource source = getMrnIdentifierSource();
+	    	throw new APIException(source.getName() + " is already set up");
+	    }
+	    catch (ConfigurationRequiredException ex) {
+	    	// this is the good case: we are only allowed to configure this if it isn't set up yet
+	    	PatientIdentifierType idType = Context.getPatientService().getPatientIdentifierTypeByUuid(MetadataConstants.OPENMRS_ID_UUID);
+	    	String validatorClass = idType.getValidator();
+	    	LuhnModNIdentifierValidator validator;
+	    	try {
+	    		validator = (LuhnModNIdentifierValidator) Context.loadClass(validatorClass).newInstance(); 
+	    	} catch (Exception e) {
+	    		throw new APIException("Unexpected Identifier Validator (" + validatorClass + ") for " + idType.getName(), e);
+	    	}
+	    	
+	    	if (startFrom == null) {
+	    		startFrom = validator.getBaseCharacters().substring(0, 1);
+	    	}
+	    	
+	    	SequentialIdentifierGenerator idGen = new SequentialIdentifierGenerator();
+	    	idGen.setName(OPENMRS_MEDICAL_RECORD_NUMBER_NAME);
+	    	idGen.setDescription("Identifier Generator for " + idType.getName());
+	    	idGen.setIdentifierType(idType);
+	    	idGen.setPrefix("M");
+	    	idGen.setBaseCharacterSet(validator.getBaseCharacters());
+	    	idGen.setFirstIdentifierBase(startFrom);
+	    	Context.getService(IdentifierSourceService.class).saveIdentifierSource(idGen);
+	    }
 	}
 	
 }
