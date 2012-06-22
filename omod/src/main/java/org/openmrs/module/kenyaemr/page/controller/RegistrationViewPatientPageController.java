@@ -26,6 +26,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.appframework.AppUiUtil;
 import org.openmrs.module.htmlformentry.HtmlForm;
 import org.openmrs.module.htmlformentry.HtmlFormEntryService;
+import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.page.PageModel;
 import org.openmrs.ui.framework.session.Session;
@@ -44,6 +45,7 @@ public class RegistrationViewPatientPageController {
 		
 		AppUiUtil.startApp("kenyaemr.registration", session);
 
+		model.addAttribute("MC", new MetadataConstants());		
 		model.addAttribute("patient", patient);
 		model.addAttribute("person", patient);
 		

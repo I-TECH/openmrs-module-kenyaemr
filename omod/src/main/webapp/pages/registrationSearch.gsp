@@ -55,6 +55,7 @@ ${ ui.includeFragment("widget/button", [
 		publish("results/show", data);
 	});
 	jq(function() {
+		jq('input[name=q]').focus();
 		// if the user goes back to this page in their history, redo the ajax query
 		publish('patientSearch/changed');
 	});

@@ -115,8 +115,9 @@
 		</div>
 		
 		<div class="identifiers">
-			<div class="identifier-type">TODO determine which identifier types to use</div>
-			<% patient.activeIdentifiers.each { %>
+			<% patient.activeIdentifiers.findAll {
+				it.identifierType.uuid == MC.OPENMRS_ID_UUID || it.identifierType.uuid == MC.PATIENT_CLINIC_NUMBER_UUID 
+			}.each { %>
 				<span class="identifier">
 					<span class="identifier-type">${ ui.format(it.identifierType) }:</span>
 					<span class="identifier-value">${ it.identifier }</span><br/>
@@ -125,7 +126,7 @@
 		</div>
 		
 		<div class="attributes">
-			<div class="attribute-type">TODO determine whether we're using an PersonAttributes</div>
+			<div class="attribute-type">TODO determine whether we're using any PersonAttributes</div>
 			<% patient.activeAttributes.each { %>
 				<span class="attribute">
 					<span class="attribute-type">${ ui.format(it.attributeType) }:</span>
@@ -195,7 +196,8 @@
 		<% } %>
 		
 		<% if (!visit.stopDatetime) { %>
-			${ ui.includeFragment("widget/popupForm", [
+			<%= ui.includeFragment("widget/popupForm", [
+				id: "check-out-form",
 				buttonConfig: [
 					label: "Is Patient Leaving?",
 					classes: [ "padded" ],
@@ -203,6 +205,7 @@
 					iconProvider: "uilibrary",
 					icon: "user_close_32.png"
 				],
+				/* dialogOpts: """{ open: function() { jq('#check-out-form input[type=submit]').focus(); } }""", */
 				popupTitle: "Check Out",
 				fields: [
 					[ hiddenInputName: "visit.visitId", value: visit.visitId ],
@@ -213,7 +216,7 @@
 				successCallbacks: [ "location.reload()" ],
 				submitLabel: ui.message("general.submit"),
 				cancelLabel: ui.message("general.cancel")
-			]) }
+			]) %>
 		<% } %>
 	
 	<% } else {
@@ -221,7 +224,8 @@
 		def jsSuccess = "location.href = pageLink('registrationViewPatient', " + "{" + "patientId: ${ patient.id }, visitId: data.visitId" + "});"
 	%>
 
-		${ ui.includeFragment("widget/popupForm", [
+		<%= ui.includeFragment("widget/popupForm", [
+				id: "check-in-form",
 				buttonConfig: [
 					iconProvider: "uilibrary",
 					icon: "user_add_32.png",
@@ -233,13 +237,16 @@
 				prefix: "visit",
 				commandObject: newCurrentVisit,
 				hiddenProperties: [ "patient" ],
-				properties: [ "startDatetime", "visitType" ],
+				properties: [ "visitType", "startDatetime" ],
+				propConfig: [
+					"visitType": [ type: "radio" ],
+				],
 				fragment: "registrationUtil",
 				action: "startVisit",
 				successCallbacks: [ jsSuccess ],
 				submitLabel: ui.message("general.submit"),
 				cancelLabel: ui.message("general.cancel")
-			]) }
+			]) %>
 	<% } %>
 	
 	<br/>

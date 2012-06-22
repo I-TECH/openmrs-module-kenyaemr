@@ -1,4 +1,12 @@
-<%= ui.includeFragment("widget/selectList", [
+<%
+// supports config.type = radio (otherwise a select list)
+
+def widget = "selectList"
+if (config?.config?.type == 'radio')
+	widget = "radioButtons"
+%>
+
+<%= ui.includeFragment("widget/${ widget }", [
         selected: [config.initialValue],
         formFieldName: config.formFieldName,
         options: context.getVisitService().getAllVisitTypes(),
