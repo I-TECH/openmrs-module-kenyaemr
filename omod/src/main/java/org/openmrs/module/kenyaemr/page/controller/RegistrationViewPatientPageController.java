@@ -21,8 +21,11 @@ import java.util.Set;
 
 import org.openmrs.Encounter;
 import org.openmrs.Patient;
+import org.openmrs.PatientProgram;
+import org.openmrs.Program;
 import org.openmrs.Visit;
 import org.openmrs.api.PatientService;
+import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appframework.AppUiUtil;
 import org.openmrs.module.htmlformentry.HtmlForm;
@@ -88,6 +91,21 @@ public class RegistrationViewPatientPageController {
 			newVisit.setStartDatetime(new Date());
 			model.addAttribute("newCurrentVisit", newVisit);
 		}
+		
+		ProgramWorkflowService pws = Context.getProgramWorkflowService(); 
+		Program hivProgram = pws.getProgramByUuid(MetadataConstants.HIV_PROGRAM_UUID);
+		PatientProgram currentHivEnrollment = null;
+		List<PatientProgram> pastHivEnrollments = new ArrayList<PatientProgram>();
+		for (PatientProgram pp : pws.getPatientPrograms(patient, hivProgram, null, null, null, null, false)) {
+			if (pp.getActive()) {
+				currentHivEnrollment = pp;
+			} else {
+				pastHivEnrollments.add(pp);
+			}
+		}
+		model.addAttribute("hivProgram", hivProgram);
+		model.addAttribute("currentHivEnrollment", currentHivEnrollment);
+		model.addAttribute("pastHivEnrollments", pastHivEnrollments);
 	}
 	
 }

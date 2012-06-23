@@ -43,6 +43,9 @@ public class MetadataConstants {
 	// Concepts
 	public static final String CD4_CONCEPT_UUID = "5497AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 	
+	// Programs
+	public static final String HIV_PROGRAM_UUID = "7f010c0a-629c-11e1-82bf-27f24891fe48"; // TODO fix this
+	
 	// Other
 	public static final Locale LOCALE = Locale.UK;
 	

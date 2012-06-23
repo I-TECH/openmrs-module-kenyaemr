@@ -19,6 +19,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.openmrs.Encounter;
 import org.openmrs.Form;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
@@ -29,6 +30,7 @@ import org.openmrs.module.htmlformentry.FormEntrySession;
 import org.openmrs.module.htmlformentry.FormSubmissionError;
 import org.openmrs.module.htmlformentry.HtmlForm;
 import org.openmrs.module.htmlformentry.HtmlFormEntryService;
+import org.openmrs.module.htmlformentry.HtmlFormEntryUtil;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.fragment.FragmentConfiguration;
@@ -46,8 +48,10 @@ public class EnterHtmlFormFragmentController {
 	                       @FragmentParam(required=false, value="htmlFormId") HtmlForm hf,
 	                       @FragmentParam(required=false, value="formId") Form form,
 	                       @FragmentParam(required=false, value="formUuid") String formUuid,
+	                       @FragmentParam(required=false, value="encounter") Encounter encounter,
+	                       @FragmentParam(required=false, value="returnUrl") String returnUrl,
 	                       FragmentModel model) throws Exception {
-		config.require("patient", "htmlFormId | formId | formUuid");
+		config.require("patient", "htmlFormId | formId | formUuid | encounter");
 
 		if (hf == null) {
 			if (form != null) {
@@ -57,10 +61,26 @@ public class EnterHtmlFormFragmentController {
 				hf = Context.getService(HtmlFormEntryService.class).getHtmlFormByForm(form);
 			}
 		}
+		if (hf == null && encounter != null) {
+			form = encounter.getForm();
+            hf = HtmlFormEntryUtil.getService().getHtmlFormByForm(encounter.getForm());
+            if (hf == null)
+        		throw new IllegalArgumentException("The form for the specified encounter (" + encounter.getForm() + ") does not have an HtmlForm associated with it");
+		}
 		if (hf == null)
 			throw new RuntimeException("Could not find HTML Form");
-		
-		FormEntrySession fes = new FormEntrySession(patient, hf, Mode.ENTER);
+
+		// the code below doesn't handle the HFFS case where you might want to _add_ data to an existing encounter
+		FormEntrySession fes;
+		if (encounter != null) {
+			fes = new FormEntrySession(patient, encounter, Mode.EDIT, hf);				
+		} 
+		else {
+			fes = new FormEntrySession(patient, hf);
+		}
+		if (returnUrl != null) {
+			fes.setReturnUrl(returnUrl);
+		}
 		model.addAttribute("command", fes);
 	}
 	
@@ -79,9 +99,21 @@ public class EnterHtmlFormFragmentController {
 	
 	public Object submit(@RequestParam("personId") Patient patient,
 	                           @RequestParam("htmlFormId") HtmlForm hf,
+	                           @RequestParam(required=false, value="encounterId") Encounter encounter,
+	                           @RequestParam(value="returnUrl", required=false) String returnUrl,
 	                           HttpServletRequest request) throws Exception {
 
-		FormEntrySession fes = new FormEntrySession(patient, hf, Mode.ENTER);
+		// TDOO formModifiedTimestamp and encounterModifiedTimestamp
+		
+		FormEntrySession fes;
+		if (encounter != null) {
+			fes = new FormEntrySession(patient, encounter, Mode.EDIT, hf);
+		} else {
+			fes = new FormEntrySession(patient, hf, Mode.ENTER);
+		}
+		if (returnUrl != null) {
+			fes.setReturnUrl(returnUrl);
+		}
 		
         List<FormSubmissionError> validationErrors = fes.getSubmissionController().validateSubmission(fes.getContext(), request);
         if (validationErrors != null && validationErrors.size() > 0) {

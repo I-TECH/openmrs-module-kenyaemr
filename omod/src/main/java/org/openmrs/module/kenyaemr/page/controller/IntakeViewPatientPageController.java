@@ -34,14 +34,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 /**
  *
  */
-public class MedicalEncounterViewPatientPageController {
-	
+public class IntakeViewPatientPageController {
+
 	public void controller(@RequestParam("patientId") Patient patient,
 	                       @RequestParam(value="visitId", required=false) Visit visit,
 	                       PageModel model,
 	                       Session session) {
 		
-		AppUiUtil.startApp("kenyaemr.medicalEncounter", session);
+		AppUiUtil.startApp("kenyaemr.intake", session);
 
 		model.addAttribute("patient", patient);
 		model.addAttribute("person", patient);
@@ -73,5 +73,5 @@ public class MedicalEncounterViewPatientPageController {
 		model.addAttribute("visit", visit);
 		model.addAttribute("availableForms", availableForms);
 	}
-	
+
 }

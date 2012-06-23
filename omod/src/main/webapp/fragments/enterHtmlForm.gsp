@@ -134,14 +134,20 @@ ui.includeJavascript("jquery-ui.js")
 		// only do the submit if all the beforeSubmit functions returned "true"
 		if (state_beforeSubmit){
 			var form = jq('#htmlform');
+			ui.openLoadingDialog('Submitting Form');
 			jq.post(form.attr('action'), form.serialize(), function(result) {
 				if (result.success) {
-					if (typeof(parent) !== 'undefined') {
-						parent.location.reload();
-					} else {
-						location.reload();
-					}
+					<% if (command.returnUrl) { %>
+						location.href = '${ command.returnUrl }';
+					<% } else { %>
+						if (typeof(parent) !== 'undefined') {
+							parent.location.reload();
+						} else {
+							location.reload();
+						}
+					<% } %>
 				} else {
+					ui.closeLoadingDialog();
 					for (key in result.errors) {
 						showError(key, result.errors[key]);
 					}
@@ -169,6 +175,9 @@ ui.includeJavascript("jquery-ui.js")
 		<input type="hidden" name="encounterModifiedTimestamp" value="${ command.encounterModifiedTimestamp }"/>
 		<% if (command.encounter) { %>
 			<input type="hidden" name="encounterId" value="${ command.encounter.encounterId }"/>
+		<% } %>
+		<% if (command.returnUrl) { %>
+			<input type="hidden" name="returnUrl" value="${ command.returnUrl }"/>
 		<% } %>
 		<input type="hidden" name="closeAfterSubmission" value="${ config.closeAfterSubmission }"/>
 

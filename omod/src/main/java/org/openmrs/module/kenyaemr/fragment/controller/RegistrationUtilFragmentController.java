@@ -23,15 +23,18 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
-import org.openmrs.Location;
+import org.openmrs.Concept;
 import org.openmrs.Patient;
 import org.openmrs.PatientIdentifier;
 import org.openmrs.PatientIdentifierType;
+import org.openmrs.PatientProgram;
 import org.openmrs.PersonName;
+import org.openmrs.Program;
 import org.openmrs.Visit;
 import org.openmrs.VisitType;
 import org.openmrs.api.VisitService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.BindParams;
@@ -40,6 +43,7 @@ import org.openmrs.ui.framework.annotation.Validate;
 import org.openmrs.ui.framework.fragment.action.FailureResult;
 import org.openmrs.ui.framework.fragment.action.SuccessResult;
 import org.openmrs.ui.framework.session.Session;
+import org.openmrs.validator.PatientProgramValidator;
 import org.openmrs.validator.PatientValidator;
 import org.openmrs.validator.ValidateUtil;
 import org.springframework.validation.Errors;
@@ -116,7 +120,7 @@ public class RegistrationUtilFragmentController {
 		for (PatientIdentifierType pit : Context.getPatientService().getAllPatientIdentifierTypes()) {
 			String identifier = req.getParameter("identifier." + pit.getId());
 			if (StringUtils.isNotBlank(identifier)) {
-				pat.addIdentifier(new PatientIdentifier(identifier, pit, getCurrentLocation(session)));
+				pat.addIdentifier(new PatientIdentifier(identifier, pit, Context.getService(KenyaEmrService.class).getDefaultLocation()));
 			}
 		}
 		if (pat.getIdentifiers().size() > 0)
@@ -162,7 +166,7 @@ public class RegistrationUtilFragmentController {
 	                         Session session,
 	                         @BindParams("visit") @Validate Visit visit) {
 		if (visit.getLocation() == null)
-			visit.setLocation(getCurrentLocation(session));
+			visit.setLocation(Context.getService(KenyaEmrService.class).getDefaultLocation());
 		Visit saved = Context.getVisitService().saveVisit(visit);
 		return simpleVisit(ui, saved);
 	}
@@ -182,18 +186,42 @@ public class RegistrationUtilFragmentController {
 	
 	/**
      * Simplifies a visit so it can be sent to the client via json
-     * 
-     * @param visit
-     * @return
      */
     private SimpleObject simpleVisit(UiUtils ui, Visit visit) {
     	return SimpleObject.fromObject(visit, ui, "visitId", "visitType", "startDatetime", "stopDatetime");
     }
+    
+    /**
+     * Enrolls a patient in a program 
+     */
+    public Object enrollInProgram(UiUtils ui,
+                                  @RequestParam("patient") Patient patient,
+                                  @RequestParam("program") Program program,
+                                  @RequestParam("dateEnrolled") Date enrollmentDate) {
+    	PatientProgram pp = new PatientProgram();
+    	pp.setPatient(patient);
+    	pp.setProgram(program);
+    	pp.setDateEnrolled(enrollmentDate);
 
-    public static Location getCurrentLocation(Session session) {
-    	Location loc = Context.getLocationService().getLocation(1); // TODO fix this
-    	if (loc == null)
-    		throw new RuntimeException("Error in temp hack: no location with id=1");
-    	return loc;
+    	// TODO error messages won't be pretty
+    	ui.validate(pp, new PatientProgramValidator(), null);
+    	
+    	pp = Context.getProgramWorkflowService().savePatientProgram(pp);
+    	return SimpleObject.fromObject(pp, ui, "patientProgramId");
     }
+    
+    public Object completeProgram(UiUtils ui,
+                                  @RequestParam("enrollment") PatientProgram pp,
+                                  @RequestParam("dateCompleted") Date dateCompleted,
+                                  @RequestParam("outcome") Concept outcome) {
+    	pp.setDateCompleted(dateCompleted);
+    	pp.setOutcome(outcome);
+    	
+    	// TODO error messages won't be pretty
+    	ui.validate(pp, new PatientProgramValidator(), null);
+    	
+    	pp = Context.getProgramWorkflowService().savePatientProgram(pp);
+    	return SimpleObject.fromObject(pp, ui, "patientProgramId");
+    }
+    
 }

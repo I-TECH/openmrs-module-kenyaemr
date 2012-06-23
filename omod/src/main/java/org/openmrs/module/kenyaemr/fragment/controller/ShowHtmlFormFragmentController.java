@@ -39,4 +39,9 @@ public class ShowHtmlFormFragmentController {
 		return SimpleObject.create("html", html);
 	}
 	
+	public SimpleObject deleteEncounter(@RequestParam("encounterId") Encounter enc) {
+		Context.getEncounterService().voidEncounter(enc, "Kenya EMR UI");
+		return SimpleObject.create("encounterId", enc.getEncounterId());
+	}
+	
 }

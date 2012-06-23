@@ -197,6 +197,80 @@
 			<% } %>
 		</div>
 	<% } %>
+	
+	<% if (currentHivEnrollment) {
+		// TODO put these in MetadataConstants
+		def outcomeOptions = [
+			[ conceptId: 1693, name: "Transfer Out" ],
+			[ conceptId: 1694, name: "Lost to Followup" ]
+		]
+	%>
+		<fieldset class="editable">
+			<legend>HIV Program Data</legend>
+
+			<div class="edit-button">
+				Edit (TODO)
+			</div>
+
+			Enrolled: ${ ui.format(currentHivEnrollment.dateEnrolled) } <br/>
+			Currently Enrolled <br/>
+			
+			${ ui.includeFragment("widget/popupForm", [
+				buttonConfig: [
+					label: "Exit",
+					extra: "from program",
+					iconProvider: "uilibrary",
+					icon: "window_app_list_close_32.png"
+				],
+				popupTitle: "Exit from HIV Program",
+				fields: [
+					[ hiddenInputName: "enrollment", value: currentHivEnrollment.patientProgramId ],
+					[ label: "Outcome", formFieldName: "outcome", fragment: "widget/radioButtons", options: outcomeOptions, optionsValueField: "conceptId", optionsDisplayField: "name" ], 
+					[ label: "Exit Date", formFieldName: "dateCompleted", class: java.util.Date, initialValue: new Date() ]
+				],
+				fragment: "registrationUtil",
+				action: "completeProgram",
+				successCallbacks: [ "location.reload()" ],
+				submitLabel: ui.message("general.submit"),
+				cancelLabel: ui.message("general.cancel")
+			]) }
+
+		</fieldset>
+
+	<% } else { %>
+		${ ui.includeFragment("widget/popupForm", [
+				buttonConfig: [
+					label: "HIV Program",
+					classes: [ "padded" ],
+					extra: "Enroll",
+					iconProvider: "uilibrary",
+					icon: "window_app_list_add_32.png"
+				],
+				popupTitle: "Enroll in HIV Program",
+				fields: [
+					[ hiddenInputName: "patient", value: patient.patientId ],
+					[ hiddenInputName: "program", value: hivProgram.programId ],
+					[ label: "Enrollment Date", formFieldName: "dateEnrolled", class: java.util.Date, initialValue: new Date() ]
+				],
+				fragment: "registrationUtil",
+				action: "enrollInProgram",
+				successCallbacks: [ "location.reload()" ],
+				submitLabel: ui.message("general.submit"),
+				cancelLabel: ui.message("general.cancel")
+			]) }
+
+	<% } %>
+	
+	<% pastHivEnrollments.each { %>
+		<fieldset>
+			<legend>(past) HIV Program Data</legend>
+			
+			Enrolled: ${ ui.format(it.dateEnrolled) } <br/>
+			Completed: ${ ui.format(it.dateCompleted) } <br/>
+			Outcome: ${ ui.format(it.outcome) } <br/>
+		</fieldset>
+	<% } %>
+	
 </div>
 
 <div id="col2" <% if (visit) { %>class="selected-visit"<% } %>>
@@ -227,7 +301,7 @@
 				buttonConfig: [
 					label: "Check Out",
 					classes: [ "padded" ],
-					extra: "Close Visit",
+					extra: "and Close Visit",
 					iconProvider: "uilibrary",
 					icon: "user_close_32.png"
 				],

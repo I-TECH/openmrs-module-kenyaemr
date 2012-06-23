@@ -62,7 +62,7 @@
 		jq('.encounter-panel').click(function(event) {
 			var encId = jq(this).find('input[name=encounterId]').val();
 			var title = jq(this).find('input[name=title]').val();
-			publish('showHtmlForm/showEncounter', { encounterId: encId, editButtonLabel: 'Edit', deleteButtonLabel: 'Delete' });
+			publish('showHtmlForm/showEncounter', { encounterId: encId });
 			showDivAsDialog('#showHtmlForm', title);
 			return false;
 		});
@@ -100,7 +100,7 @@
 			</h4>
 			Location: ${ ui.format(v.location) } <br/>
 			Start: ${ ui.format(v.startDatetime) } <br/>
-			End: ${ v.stopDatetime ? ui.format(v.stopDatetime) : "<i>ongoing</i>" } <br/>
+			End: ${ ui.format(v.stopDatetime) } <br/>
 			${ v.encounters.size() } encounter(s)
 			<% if (!selected) { %>
 				<script>
