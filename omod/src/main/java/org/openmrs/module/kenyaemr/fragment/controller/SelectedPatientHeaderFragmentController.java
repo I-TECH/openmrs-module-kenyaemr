@@ -13,11 +13,13 @@
  */
 package org.openmrs.module.kenyaemr.fragment.controller;
 
+import java.util.Iterator;
 import java.util.List;
 
 import org.openmrs.Patient;
-import org.openmrs.Visit;
+import org.openmrs.PatientIdentifier;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.ui.framework.fragment.FragmentConfiguration;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 import org.openmrs.ui.framework.page.PageModel;
@@ -38,6 +40,19 @@ public class SelectedPatientHeaderFragmentController {
 		model.addAttribute("patient", patient);
 
 		model.addAttribute("activeVisits", Context.getVisitService().getActiveVisitsByPatient(patient));
+		
+		// TODO: utility to get identifiers besides OpenMRS ID (or get that if it's the only one)
+		List<PatientIdentifier> idsToShow = patient.getActiveIdentifiers();
+		for (Iterator<PatientIdentifier> i = idsToShow.iterator(); i.hasNext(); ) {
+			if (i.next().getIdentifierType().getUuid().equals(MetadataConstants.OPENMRS_ID_UUID)) {
+				i.remove();
+			}
+		}
+		if (idsToShow.isEmpty()) {
+			idsToShow.add(patient.getPatientIdentifier());
+		}
+		// TODO: end utility
+		model.addAttribute("idsToShow", idsToShow);
 	}
 
 }

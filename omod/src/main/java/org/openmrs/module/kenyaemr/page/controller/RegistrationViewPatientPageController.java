@@ -22,6 +22,7 @@ import java.util.Set;
 import org.openmrs.Encounter;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
+import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appframework.AppUiUtil;
 import org.openmrs.module.htmlformentry.HtmlForm;
@@ -43,11 +44,16 @@ public class RegistrationViewPatientPageController {
 	                       PageModel model,
 	                       Session session) {
 		
+		PatientService ps = Context.getPatientService();
+		
 		AppUiUtil.startApp("kenyaemr.registration", session);
 
 		model.addAttribute("MC", new MetadataConstants());		
 		model.addAttribute("patient", patient);
 		model.addAttribute("person", patient);
+		
+		model.addAttribute("clinicNumberIdType", ps.getPatientIdentifierTypeByUuid(MetadataConstants.PATIENT_CLINIC_NUMBER_UUID));
+		model.addAttribute("hivNumberIdType", ps.getPatientIdentifierTypeByUuid(MetadataConstants.UNIQUE_PATIENT_NUMBER_UUID));
 		
 		List<Visit> activeVisits = Context.getVisitService().getActiveVisitsByPatient(patient);
 

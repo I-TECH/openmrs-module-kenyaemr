@@ -72,6 +72,17 @@
 	.padded {
 		padding: 1em;
 	}
+	
+	#content fieldset {
+		position: relative;
+	}
+	
+	.edit-button {
+		position: absolute;
+		top: 0.5em;
+		right: 0.3em;
+		font-size: 0.8em;
+	}
 </style>
 
 <script>
@@ -82,6 +93,13 @@
 			publish('showHtmlForm/showEncounter', encId);
 			showDivAsDialog('#showHtmlForm', title);
 			return false;
+		});
+		
+		jq('.edit-button').hide();
+		jq('.editable').mouseenter(function() {
+			jq(this).find('.edit-button').show();
+		}).mouseleave(function() {
+			jq(this).find('.edit-button').hide();
 		});
 	});
 	
@@ -98,10 +116,13 @@
 </script>
 
 <div id="col1">
-	<fieldset>
+	<fieldset class="editable">
 		<legend>
-			Patient Details
+			Patient
 		</legend>
+		<div class="edit-button">
+			<a href="${ ui.pageLink("registrationEditPatient", [patientId: patient.id]) }">Edit</a>
+		</div>
 		
 		<div class="person-name">
 			${ patient.personName }
@@ -115,18 +136,23 @@
 		</div>
 		
 		<div class="identifiers">
-			<% patient.activeIdentifiers.findAll {
-				it.identifierType.uuid == MC.OPENMRS_ID_UUID || it.identifierType.uuid == MC.PATIENT_CLINIC_NUMBER_UUID 
-			}.each { %>
+			<% [ clinicNumberIdType, hivNumberIdType ].each { %>
 				<span class="identifier">
-					<span class="identifier-type">${ ui.format(it.identifierType) }:</span>
-					<span class="identifier-value">${ it.identifier }</span><br/>
+					<span class="identifier-type">${ ui.format(it) }:</span>
+					<span class="identifier-value">${ ui.format(patient.getPatientIdentifier(it)?.identifier) }</span><br/>
+				</span>
+			<% } %>
+			<% if (patient.patientIdentifier.identifierType.uuid == MC.OPENMRS_ID_UUID) {
+				def prefId = patient.patientIdentifier
+			%>
+				<span class="identifier">
+					<span class="identifier-type">${ ui.format(prefId.identifierType) }:</span>
+					<span class="identifier-value">${ ui.format(prefId.identifier) }</span><br/>
 				</span>
 			<% } %>
 		</div>
 		
 		<div class="attributes">
-			<div class="attribute-type">TODO determine whether we're using any PersonAttributes</div>
 			<% patient.activeAttributes.each { %>
 				<span class="attribute">
 					<span class="attribute-type">${ ui.format(it.attributeType) }:</span>
@@ -199,9 +225,9 @@
 			<%= ui.includeFragment("widget/popupForm", [
 				id: "check-out-form",
 				buttonConfig: [
-					label: "Is Patient Leaving?",
+					label: "Check Out",
 					classes: [ "padded" ],
-					extra: "Check Out",
+					extra: "Close Visit",
 					iconProvider: "uilibrary",
 					icon: "user_close_32.png"
 				],
@@ -229,11 +255,11 @@
 				buttonConfig: [
 					iconProvider: "uilibrary",
 					icon: "user_add_32.png",
-					label: "Is Patient Here?",
+					label: "Check In For Visit",
 					classes: [ "padded" ],
-					extra: "Check In"
+					extra: "Patient is Here"
 				],
-				popupTitle: "Check In to Clinic",
+				popupTitle: "Check In For Visit",
 				prefix: "visit",
 				commandObject: newCurrentVisit,
 				hiddenProperties: [ "patient" ],

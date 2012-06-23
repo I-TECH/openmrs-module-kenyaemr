@@ -49,7 +49,7 @@
 	</div>
 	
 	<div class="identifiers">
-		<% patient.activeIdentifiers.each { %>
+		<% idsToShow.each { %>
 			<span class="header-identifier-type">
 				${ it.identifierType.name }:
 			</span>
