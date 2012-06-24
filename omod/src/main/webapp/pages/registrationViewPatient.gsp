@@ -232,7 +232,8 @@
 				action: "completeProgram",
 				successCallbacks: [ "location.reload()" ],
 				submitLabel: ui.message("general.submit"),
-				cancelLabel: ui.message("general.cancel")
+				cancelLabel: ui.message("general.cancel"),
+				submitLoadingMessage: "Exiting"
 			]) }
 
 		</fieldset>
@@ -256,7 +257,8 @@
 				action: "enrollInProgram",
 				successCallbacks: [ "location.reload()" ],
 				submitLabel: ui.message("general.submit"),
-				cancelLabel: ui.message("general.cancel")
+				cancelLabel: ui.message("general.cancel"),
+				submitLoadingMessage: "Enrolling"
 			]) }
 
 	<% } %>
@@ -313,9 +315,10 @@
 				],
 				fragment: "registrationUtil",
 				action: "editVisit",
-				successCallbacks: [ "location.reload()" ],
+				successCallbacks: [ "location.href = '${ ui.pageLink("registrationViewPatient", [ patientId: patient.id ]) }'" ],
 				submitLabel: ui.message("general.submit"),
-				cancelLabel: ui.message("general.cancel")
+				cancelLabel: ui.message("general.cancel"),
+				submitLoadingMessage: "Checking Out"
 			]) %>
 		<% } %>
 	
@@ -345,7 +348,8 @@
 				action: "startVisit",
 				successCallbacks: [ jsSuccess ],
 				submitLabel: ui.message("general.submit"),
-				cancelLabel: ui.message("general.cancel")
+				cancelLabel: ui.message("general.cancel"),
+				submitLoadingMessage: "Checking In"
 			]) %>
 	<% } %>
 	
