@@ -43,7 +43,7 @@
 ${ ui.includeFragment("widget/button", [
 	id: "create-user",
 	iconProvider: "uilibrary",
-	icon: "add1-32.png",
+	icon: "user_add_32.png",
 	label: "Create User",
 	href: ui.pageLink("adminEditUser") ]) }
 

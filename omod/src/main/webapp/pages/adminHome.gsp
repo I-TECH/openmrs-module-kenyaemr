@@ -25,19 +25,12 @@
 		<legend>Actions</legend>
 		${ ui.includeFragment("widget/button", [
 				iconProvider: "uilibrary",
-				icon: "users_32.png",
-				label: "Manage Users",
-				href: ui.pageLink("adminManageUsers")
-			]) }
-		<br/>
-
-		${ ui.includeFragment("widget/button", [
-				iconProvider: "uilibrary",
 				icon: "users_business_32.png",
-				label: "Manage Providers"
+				label: "Manage Accounts",
+				href: ui.pageLink("adminManageAccounts")
 			]) }
 		<br/>
-		
+				
 		${ ui.includeFragment("widget/button", [
 				iconProvider: "uilibrary",
 				icon: "application32.png",

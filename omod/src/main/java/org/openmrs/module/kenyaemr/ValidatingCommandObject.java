@@ -38,7 +38,7 @@ public abstract class ValidatingCommandObject implements Validator {
 	}
 	
 	public void require(Errors errors, String field) {
-		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "gender", "error.requiredField");
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, field, "error.requiredField");
 	}
 	
 	public void requireAny(Errors errors, String... fields) {
