@@ -1,6 +1,5 @@
 <%
 	ui.decorateWith("standardKenyaEmrPage")
-	ui.includeJavascript("jquery-ui.js")
 	
 	def formatMap = { map ->
 		def ret = "<table>"

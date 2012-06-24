@@ -13,9 +13,12 @@
  */
 package org.openmrs.module.kenyaemr.fragment.controller;
 
+import java.util.Set;
+
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.Person;
 import org.openmrs.PersonName;
+import org.openmrs.Role;
 import org.openmrs.User;
 import org.openmrs.api.PasswordException;
 import org.openmrs.api.context.Context;
@@ -23,6 +26,7 @@ import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.BindParams;
 import org.openmrs.ui.framework.annotation.MethodParam;
 import org.openmrs.ui.framework.fragment.FragmentModel;
+import org.openmrs.ui.framework.fragment.action.FailureResult;
 import org.openmrs.ui.framework.fragment.action.SuccessResult;
 import org.openmrs.ui.framework.page.PageModel;
 import org.openmrs.util.OpenmrsUtil;
@@ -51,6 +55,16 @@ public class AdminEditUserFragmentController {
 	public Object unretireUser(@RequestParam("userId") User user) {
 		Context.getUserService().unretireUser(user);
 		return new SuccessResult("Enabled: " + user.getUsername());
+	}
+	
+	public Object editUserRoles(@RequestParam("userId") User user,
+	                            @RequestParam(required=false, value="roles") Set<Role> roles) {
+		if (roles.size() == 0) {
+			return new FailureResult("At least one role is required");
+		}
+		user.setRoles(roles);
+		Context.getUserService().saveUser(user, null);
+		return new SuccessResult("Saved roles");
 	}
 	
 	public Object editLoginDetails(@MethodParam("newEditLoginDetailsForm") @BindParams("editLoginDetails") EditLoginDetailsForm form,
