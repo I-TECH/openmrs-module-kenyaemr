@@ -17,16 +17,17 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appframework.AppDescriptor;
 import org.openmrs.module.appframework.AppUiUtil;
 import org.openmrs.module.appframework.api.AppFrameworkService;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.ui.framework.UiUtils;
-import org.openmrs.ui.framework.WebConstants;
 import org.openmrs.ui.framework.page.PageModel;
 import org.openmrs.ui.framework.page.Redirect;
 import org.openmrs.ui.framework.session.Session;
+import org.springframework.web.bind.annotation.RequestParam;
 
 
 /**
@@ -34,13 +35,19 @@ import org.openmrs.ui.framework.session.Session;
  */
 public class KenyaHomePageController {
 	
-	public String controller(PageModel model, Session session, UiUtils ui) throws Redirect {
+	public String controller(@RequestParam(required=false, value="patientId") Patient patient,
+	                         @RequestParam(required=false, value="clearContext") Boolean clearContext,
+	                         PageModel model, Session session, UiUtils ui) throws Redirect {
 		if (!Context.isAuthenticated()) {
 			return "kenyaLogin";
 		}
 		
 		if (!Context.getService(KenyaEmrService.class).isConfigured()) {
 			return "redirect:" + ui.pageLink("adminFirstTimeSetup");
+		}
+		
+		if (clearContext != null && clearContext) {
+			AppUiUtil.endCurrentApp(session);
 		}
 		
 		AppFrameworkService appService = Context.getService(AppFrameworkService.class);
@@ -71,10 +78,13 @@ public class KenyaHomePageController {
 			@Override
             public int compare(AppDescriptor left, AppDescriptor right) {
 	            return getScore(left).compareTo(getScore(right));
-            }});
+            }
+		});
+
 		model.addAttribute("apps", apps);
-		
 		model.addAttribute("currentApp", AppUiUtil.getCurrentApp(session));
+		model.addAttribute("patient", patient);
+		
 		return null; // default view
 	}
 	

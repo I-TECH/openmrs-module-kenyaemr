@@ -1,5 +1,5 @@
 <%
-	ui.decorateWith("standardKenyaEmrPage")
+	ui.decorateWith("standardKenyaEmrPage", [ patient: patient ])
 %>
 
 <style>

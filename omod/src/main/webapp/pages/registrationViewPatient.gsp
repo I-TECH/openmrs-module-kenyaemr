@@ -1,5 +1,5 @@
 <%
-	ui.decorateWith("standardKenyaEmrPage", [ afterAppHeader: ui.includeFragment("selectedPatientHeader") ])
+	ui.decorateWith("standardKenyaEmrPage", [ patient: patient ])
 %>
 
 <style>

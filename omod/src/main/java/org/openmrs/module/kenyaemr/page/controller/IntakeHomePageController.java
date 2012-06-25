@@ -14,7 +14,10 @@
 package org.openmrs.module.kenyaemr.page.controller;
 
 import org.openmrs.module.appframework.AppUiUtil;
+import org.openmrs.ui.framework.SimpleObject;
+import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.session.Session;
+import org.springframework.web.bind.annotation.RequestParam;
 
 
 /**
@@ -22,8 +25,14 @@ import org.openmrs.ui.framework.session.Session;
  */
 public class IntakeHomePageController {
 	
-	public void controller(Session session) {
+	public String controller(@RequestParam(required=false, value="patientId") Integer patientId,
+	                         Session session, UiUtils ui) {
 		AppUiUtil.startApp("kenyaemr.intake", session);
+		if (patientId != null) {
+			return "redirect:" + ui.pageLink("intakeViewPatient", SimpleObject.create("patientId", patientId));
+		} else {
+			return null;
+		}
 	}
 	
 }
