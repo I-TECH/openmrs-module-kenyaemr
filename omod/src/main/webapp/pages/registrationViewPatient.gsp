@@ -90,7 +90,7 @@
 		jq('.encounter-panel').click(function(event) {
 			var encId = jq(event.srcElement).find('input[name=encounterId]').val();
 			var title = jq(event.srcElement).find('input[name=title]').val();
-			publish('showHtmlForm/showEncounter', encId);
+			publish('showHtmlForm/showEncounter', { encounterId: encId });
 			showDivAsDialog('#showHtmlForm', title);
 			return false;
 		});
@@ -173,10 +173,9 @@
 			Start: ${ ui.format(v.startDatetime) } <br/>
 			End: ${ ui.format(v.stopDatetime) }
 			<hr/>
-			<% if (!v.encounters) { %>
-				No data recorded
-			<% } %>
-			<% v.encounters.each { %>
+			<% v.encounters.findAll {
+				!it.voided
+			}.each { %>
 				<div class="encounter-panel">
 					<input type="hidden" name="encounterId" value="${ it.encounterId }"/>
 					<input type="hidden" name="title" value="${ ui.escapeAttribute(ui.format(v.visitType) + " - " + ui.format(it.form ?: it.encounterType)) }"/>

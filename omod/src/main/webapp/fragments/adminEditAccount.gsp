@@ -76,16 +76,6 @@ jq(function() {
 
 <br/>
 
-<%
-	def roleHtml = context.userService.allRoles.findAll {
-		it.role != "Anonymous" && it.role != "Authenticated"
-	}.collect {
-		"""<input type="checkbox" name="editLoginDetails.roles" value="${ it.role }" id="role-${ it.uuid }" ${ user && user.roles.contains(it) ? 'checked="true"' : "" }/>
-			<label for="role-${ it.uuid }">${ it.role }</label>"""
-	}.join("<br/>")
-	roleHtml += """<br/><span class="error" style="display: none"></span>"""
-	roleHtml += "<br/>"
-%>
 <fieldset class="login-details <% if (user && !user.retired) { %> editable-container <% } %>">
 	<legend>
 		<img src="${ ui.resourceLink("uilibrary", "images/screen_32.png") }"/>
@@ -140,14 +130,16 @@ jq(function() {
 					prefix: "editLoginDetails",
 					commandObject: editLoginDetails,
 					hiddenProperties: [ "userId" ],
-					properties: [ "username", "password", "confirmPassword" ],
+					properties: [ "username", "password", "confirmPassword", "roles" ],
+					fieldConfig: [
+						roles: [ fieldFragment: "field/RoleCollection" ]
+					],
 					propConfig: [
 						"password": [ type: "password" ],
 						"confirmPassword": [ type: "password" ]
 					],
 					extraFields: [
-						[ hiddenInputName: "personId", value: person.id ],
-						[ label: "Roles", value: roleHtml ]
+						[ hiddenInputName: "personId", value: person.id ]
 					],
 					popupTitle: "Edit login details for '${ user.username }'",
 					submitLabel: "Save Changes",
@@ -170,9 +162,11 @@ jq(function() {
 					"password": [ type: "password" ],
 					"confirmPassword": [ type: "password" ]
 				],
+				fieldConfig: [
+					roles: [ fieldFragment: "field/RoleCollection" ]
+				],
 				extraFields: [
-					[ hiddenInputName: "personId", value: person.id ],
-					[ label: "Roles", value: roleHtml ]
+					[ hiddenInputName: "personId", value: person.id ]
 				],
 				popupTitle: "New Login Account for '${ ui.format(person) }'",
 				submitLabel: "Save Changes",

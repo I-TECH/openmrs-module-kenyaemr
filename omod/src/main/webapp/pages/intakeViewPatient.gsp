@@ -101,7 +101,6 @@
 			Location: ${ ui.format(v.location) } <br/>
 			Start: ${ ui.format(v.startDatetime) } <br/>
 			End: ${ ui.format(v.stopDatetime) } <br/>
-			${ v.encounters.size() } encounter(s)
 			<% if (!selected) { %>
 				<script>
 					jq('#visit-${ v.id }').click(function() {

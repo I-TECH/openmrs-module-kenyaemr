@@ -26,7 +26,8 @@
 					label: "What facility is this installation managing?",
 					formFieldName: "defaultLocation",
 					class: org.openmrs.Location,
-					initialValue: defaultLocation
+					initialValue: defaultLocation,
+					fieldFragment: "field/org.openmrs.Location.kenyaemr"
 				]
 			]
 			if (mrnIdentifierSource) {
