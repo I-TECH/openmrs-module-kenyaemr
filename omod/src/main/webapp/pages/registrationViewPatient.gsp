@@ -90,7 +90,7 @@
 		jq('.encounter-panel').click(function(event) {
 			var encId = jq(event.srcElement).find('input[name=encounterId]').val();
 			var title = jq(event.srcElement).find('input[name=title]').val();
-			publish('showHtmlForm/showEncounter', { encounterId: encId });
+			publish('showHtmlForm/showEncounter', { encounterId: encId, editButtonLabel: 'Edit', deleteButtonLabel: 'Delete' });
 			showDivAsDialog('#showHtmlForm', title);
 			return false;
 		});

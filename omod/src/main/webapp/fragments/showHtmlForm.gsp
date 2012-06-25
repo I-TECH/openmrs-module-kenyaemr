@@ -13,6 +13,22 @@ def returnUrl = config.returnUrl ?: ui.thisUrl()
 	top: 0px;
 	right: 0px;
 }
+
+.html-form-edit-history {
+	font-size: 0.8em;
+	margin-top: 3em;
+	border-top: 1px gray solid;
+	color: gray;
+}
+
+.html-form-edit-history:hover {
+	color: black;
+}
+
+.html-form-edit-history .title {
+	text-decoration: underline;
+	margin: 0.4em 0em;
+}
 </style>
 
 <link href="/${ contextPath }/moduleResources/htmlformentry/htmlFormEntry.css" type="text/css" rel="stylesheet" />
@@ -47,6 +63,14 @@ def returnUrl = config.returnUrl ?: ui.thisUrl()
 				toShow += '</div>';
 			}
 			toShow += data.html;
+			
+			toShow += '<div class="html-form-edit-history"> <div class="title">Edit History</div>';
+			for (var i = 0; i < data.editHistory.length; ++i) {
+				var item = data.editHistory[i];
+				toShow += item.user + ' on ' + item.timestamp + ': ' + item.description + '<br/>';
+			}
+			toShow += '</div>';
+			
 			jq('#${ config.id }').html(toShow);
 			if (payload.deleteButtonLabel) {
 			 	jq('.html-form-buttons .delete-button').click(function() {
