@@ -34,15 +34,6 @@
 	}
 	.identifier-value, .attribute-value {
 	}
-
-	.encounter-panel {
-		border: 1px #e0e0e0 solid;
-		cursor: pointer;
-		margin: 2px 0px;
-	}
-	.encounter-panel:hover {
-		text-decoration: underline;
-	}
 	
 	.active-visit {
 		border: 1px black solid;
@@ -86,15 +77,7 @@
 </style>
 
 <script>
-	jq(function() {
-		jq('.encounter-panel').click(function(event) {
-			var encId = jq(event.srcElement).find('input[name=encounterId]').val();
-			var title = jq(event.srcElement).find('input[name=title]').val();
-			publish('showHtmlForm/showEncounter', { encounterId: encId, editButtonLabel: 'Edit', deleteButtonLabel: 'Delete' });
-			showDivAsDialog('#showHtmlForm', title);
-			return false;
-		});
-		
+	jq(function() {	
 		jq('.edit-button').hide();
 		jq('.editable').mouseenter(function() {
 			jq(this).find('.edit-button').show();
@@ -102,17 +85,6 @@
 			jq(this).find('.edit-button').hide();
 		});
 	});
-	
-	function enterHtmlForm(htmlFormId, title) {
-		showDialog({
-			title: title,
-			fragment: "enterHtmlForm",
-			config: {
-				patient: ${ patient.id },
-				htmlFormId: htmlFormId
-			}
-		});
-	}
 </script>
 
 <div id="col1">
@@ -172,21 +144,6 @@
 			Location: ${ ui.format(v.location) } <br/>
 			Start: ${ ui.format(v.startDatetime) } <br/>
 			End: ${ ui.format(v.stopDatetime) }
-			<hr/>
-			<% v.encounters.findAll {
-				!it.voided
-			}.each { %>
-				<div class="encounter-panel">
-					<input type="hidden" name="encounterId" value="${ it.encounterId }"/>
-					<input type="hidden" name="title" value="${ ui.escapeAttribute(ui.format(v.visitType) + " - " + ui.format(it.form ?: it.encounterType)) }"/>
-					${ ui.format(it.encounterType) }
-					by
-					<% it.providersByRoles.each { %>
-						${ ui.format(it.key) }:
-						<%= it.value.collect { ui.format(it) } .join(", ") %>
-					<% } %>
-				</div>
-			<% } %>
 			<% if (!selected) { %>
 				<script>
 					jq('#visit-${ v.id }').click(function() {
@@ -277,7 +234,7 @@
 <div id="col2" <% if (visit) { %>class="selected-visit"<% } %>>
 	<h4>
 	<% if (visit) { %>
-		Current ${ ui.format(visit.visitType) }
+		Current ${ ui.format(visit.visitType) } Visit
 	<% } else { %>
 		No current visit
 	<% } %>
@@ -285,18 +242,10 @@
 	
 	<% if (visit) { %>
 
-		<% availableForms.each { %>
-			${ ui.includeFragment("widget/button", [
-				iconProvider: "uilibrary",
-				icon: it.icon,
-				label: it.label,
-				classes: [ "padded" ],
-				onClick: "enterHtmlForm(" + it.htmlFormId + ", '" + it.label + "');"
-			]) }
-			<br/>
-		<% } %>
+		${ ui.includeFragment("availableForms", [ visit: visit ]) }
 		
 		<% if (!visit.stopDatetime) { %>
+			<br/>
 			<%= ui.includeFragment("widget/popupForm", [
 				id: "check-out-form",
 				buttonConfig: [

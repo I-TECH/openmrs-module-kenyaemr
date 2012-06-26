@@ -51,6 +51,7 @@ public class RegistrationEditPatientFragmentController {
 		} else {
 			model.addAttribute("command", new EditPatientCommand());
 		}
+		model.addAttribute("telephoneContactAttrType", Context.getPersonService().getPersonAttributeTypeByUuid(MetadataConstants.TELEPHONE_CONTACT_UUID));
 	}
 	
 	public SimpleObject savePatient(@MethodParam("commandObject") @BindParams EditPatientCommand command,

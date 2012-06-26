@@ -22,6 +22,7 @@ import org.openmrs.LocationAttribute;
 import org.openmrs.LocationAttributeType;
 import org.openmrs.api.LocationService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyaemr.api.ConfigurationRequiredException;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.ui.framework.SimpleObject;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -39,9 +40,13 @@ public class KenyaEmrUtilFragmentController {
 		
 		List<Location> results = new ArrayList<Location>();
 		// always show default location and its sub-locations
-		Location defaultLocation = Context.getService(KenyaEmrService.class).getDefaultLocation();
-		results.add(defaultLocation);
-		results.addAll(defaultLocation.getChildLocations(false));
+		try {
+			Location defaultLocation = Context.getService(KenyaEmrService.class).getDefaultLocation();
+			results.add(defaultLocation);
+			results.addAll(defaultLocation.getChildLocations(false));
+		} catch (ConfigurationRequiredException ex) {
+			// pass
+		}
 		
 		if (StringUtils.isNotBlank(query)) {
 			results.addAll(ls.getLocations(query, true, 0, 50));

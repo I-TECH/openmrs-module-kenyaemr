@@ -19,10 +19,14 @@ import java.util.List;
 import org.openmrs.Patient;
 import org.openmrs.PatientIdentifier;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.appframework.AppStatus;
+import org.openmrs.module.appframework.AppUiUtil;
 import org.openmrs.module.kenyaemr.MetadataConstants;
+import org.openmrs.ui.framework.WebConstants;
 import org.openmrs.ui.framework.fragment.FragmentConfiguration;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 import org.openmrs.ui.framework.page.PageModel;
+import org.openmrs.ui.framework.session.Session;
 
 
 /**
@@ -32,7 +36,8 @@ public class SelectedPatientHeaderFragmentController {
 
 	public void controller(PageModel sharedPageModel,
 	                       FragmentConfiguration config,
-	                       FragmentModel model) {
+	                       FragmentModel model,
+	                       Session session) {
 		Patient patient = (Patient) config.get("patient");
 		if (patient == null) {
 			patient = (Patient) sharedPageModel.getAttribute("patient");
@@ -40,6 +45,8 @@ public class SelectedPatientHeaderFragmentController {
 		model.addAttribute("patient", patient);
 
 		model.addAttribute("activeVisits", Context.getVisitService().getActiveVisitsByPatient(patient));
+		
+		model.addAttribute("appHomepageUrl", "/" + WebConstants.CONTEXT_PATH + "/" + AppUiUtil.getCurrentApp(session).getApp().getHomepageUrl());
 		
 		// TODO: utility to get identifiers besides OpenMRS ID (or get that if it's the only one)
 		List<PatientIdentifier> idsToShow = patient.getActiveIdentifiers();

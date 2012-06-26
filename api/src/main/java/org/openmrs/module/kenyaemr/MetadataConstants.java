@@ -22,29 +22,47 @@ import java.util.Locale;
 public class MetadataConstants {
 
 	// Visit Types
-	public static final String HIV_VISIT_TYPE_UUID = "a74032ac-9624-11e1-bc86-da3a922f3783";
-	public static final String OUTPATIENT_CONSULT_VISIT_TYPE_UUID = "73bbb069-9781-4afc-a9d1-54b6b2270e01";
-	public static final String HOSPITALIZATION_VISIT_TYPE_UUID = "73bbb069-9781-4afc-a9d1-54b6b2270e02";
+	public static final String OUTPATIENT_VISIT_TYPE_UUID = "3371a4d4-f66f-4454-a86d-92c7b3da990c";
 	
 	// Encounter Types
-	public static final String VITALS_ENCOUNTER_TYPE_UUID = "345368b9-060e-4d9f-9630-039eca730505";
+	public static final String CHECK_OUT_ENCOUNTER_TYPE_UUID ="abfb143c-5b49-41e5-9ead-f47ee4cc57cf";
+	public static final String TRIAGE_ENCOUNTER_TYPE_UUID = "d1059fb9-a079-4feb-a749-eedd709ae542";
+	public static final String HIV_REGISTRATION_ENCOUNTER_TYPE_UUID = "de78a6be-bfc5-4634-adc3-5f1a280455cc";
+	public static final String HIV_CONSULTATION_ENCOUNTER_TYPE_UUID = "a0034eee-1940-4e35-847f-97537a35d05e";
+	public static final String LAB_RESULTS_ENCOUNTER_TYPE_UUID = "17a381d1-7e29-406a-b782-aa903b963c28";
+	public static final String CONSULTATION_ENCOUNTER_TYPE_UUID = "465a92f2-baf8-42e9-9612-53064be868e8";
+	public static final String REGISTRATION_ENCOUNTER_TYPE_UUID = "de1f9d67-b73e-4e1b-90d0-036166fc6995";
+	
+	// HTML Forms
+	public static final String CLINICAL_ENCOUNTER_HTML_FORM_UUID = "02735db9-85cf-444e-b9ef-d59f5a27628d";
+	public static final String LAB_RESULTS_HTML_FORM_UUID = "0c4bbc81-9bb9-4d04-b063-255d1cb58c48";
+	public static final String HIV_PROGRAM_ENROLLMENT_HTML_FORM_UUID = "1a2bf46f-dffc-404f-9df3-96dacc394c49";
+	public static final String FAMILY_PLANNING_AND_PREGNANCY_HTML_FORM_UUID = "681f7971-72de-4340-a39c-7147df5a24b5";
+	public static final String ART_HISTORY_HTML_FORM_UUID = "6aad25ae-142c-4af7-9f46-f3e65ad67882";
+	public static final String TB_SCREENING_HTML_FORM_UUID = "928f1e66-3b74-4e89-a31a-a08bcef4416c";
+	public static final String VITALS_AND_TRIAGE_HTML_FORM_UUID = "9da2a73f-49f4-46ae-a8cc-49d1c0c49a1b";
+	public static final String IMPRESSIONS_AND_DIAGNOSES_HTML_FORM_UUID = "a6591753-dd57-4e32-9034-d1710b147f4c";
+	public static final String PAST_MEDICAL_HISTORY_AND_SURGICAL_HISTORY_HTML_FORM_UUID = "f3d7ba6a-e7ff-40b5-aeb1-73e1ac76bd20";
 	
 	// Locations
 	public static final String UNKNOWN_LOCATION_UUID = "8d6c993e-c2cc-11de-8d13-0010c6dffd0f";
 	
+	// Location Attribute Types
+	public static final String MASTER_FACILITY_CODE_LOCATION_ATTRIBUTE_TYPE_UUID = "8a845a89-6aa5-4111-81d3-0af31c45c002";
+	
 	// Patient Identifier Types
-	public static final String UNIQUE_PATIENT_NUMBER_UUID = "03ff7348-e221-443f-b516-4d0895809863";
-	public static final String PATIENT_CLINIC_NUMBER_UUID = "0d29df0a-cd23-4930-b5c9-adcea28ad0ed";
-	public static final String OPENMRS_ID_UUID = "5fe0232a-2c82-4496-9021-e287ec989125";
+	public static final String UNIQUE_PATIENT_NUMBER_UUID = "05ee9cf4-7242-4a17-b4d4-00f707265c8a";
+	public static final String PATIENT_CLINIC_NUMBER_UUID = "b4d66522-11fc-45c7-83e3-39a1af21ae0d";
+	public static final String OPENMRS_ID_UUID = "dfacd928-0370-4315-99d7-6ec1c9f7ae76";
 	
 	// Person Attribute Types
-	public static final String TELEPHONE_CONTACT_UUID = "afdbc2da-3a98-4c9a-8e4b-27c3c3be716a";
+	public static final String TELEPHONE_CONTACT_UUID = "b2c38640-2603-4629-aebd-3b54f33f1e3a";
 	
 	// Concepts
 	public static final String CD4_CONCEPT_UUID = "5497AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 	
 	// Programs
-	public static final String HIV_PROGRAM_UUID = "7f010c0a-629c-11e1-82bf-27f24891fe48"; // TODO fix this
+	//public static final String HIV_PROGRAM_UUID = "3ccdc250-ca2c-4b27-8a5c-9c74c77353df";
 	
 	// Other
 	public static final Locale LOCALE = Locale.UK;

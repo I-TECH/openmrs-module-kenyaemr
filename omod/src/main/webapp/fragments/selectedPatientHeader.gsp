@@ -35,6 +35,11 @@
 		text-align: right;
 	}
 	
+	#selected-patient-header > .close-patient {
+		float: right;
+		padding-left: 1em;
+	}
+	
 	.header-identifier-type {
 		font-weight: normal;
 	}
@@ -60,12 +65,18 @@
 		<% } %>
 	</div>
 	
+	<% if (appHomepageUrl) { %>
+		<div class="close-patient">
+			<a href="${ appHomepageUrl }"><img title="Close Chart" src="${ ui.resourceLink("uilibrary", "images/folder_close_32.png") }"/></a>
+		</div>
+	<% } %>
+
 	<div class="checked-in">
 		<% if (activeVisits) { %>
 			<img src="${ ui.resourceLink("kenyaemr", "images/checked_in_16.png") }"/><br/>
 			<%= activeVisits.collect { ui.format(it.visitType) }.join(", ") %>
 		<% } %>
 	</div>
-	
+		
 	<div style="clear: both"> </div>
 </div>

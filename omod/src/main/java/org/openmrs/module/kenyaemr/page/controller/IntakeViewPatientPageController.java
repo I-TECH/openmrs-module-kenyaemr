@@ -54,24 +54,7 @@ public class IntakeViewPatientPageController {
 			visit = activeVisits.get(0);
 		}
 		
-		List<SimpleObject> availableForms = new ArrayList<SimpleObject>();
-		if (visit != null) {
-			Set<String> encounterTypesAlready = new HashSet<String>();
-			for (Encounter e : visit.getEncounters()) {
-				if (e.isVoided())
-					continue;
-				encounterTypesAlready.add(e.getEncounterType().getUuid());
-			}
-			
-			for (HtmlForm hf : Context.getService(HtmlFormEntryService.class).getAllHtmlForms()) {
-				if (!hf.getForm().isRetired() && hf.getForm().getPublished() && !encounterTypesAlready.contains(hf.getForm().getEncounterType().getUuid())) {
-					availableForms.add(SimpleObject.create("htmlFormId", hf.getId(), "label", hf.getName(), "icon", "activity_monitor_add.png"));
-				}
-			}
-		}
-			
 		model.addAttribute("visit", visit);
-		model.addAttribute("availableForms", availableForms);
 	}
 
 }

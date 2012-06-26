@@ -13,19 +13,12 @@
  */
 package org.openmrs.module.kenyaemr.page.controller;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-import org.openmrs.Encounter;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appframework.AppUiUtil;
-import org.openmrs.module.htmlformentry.HtmlForm;
-import org.openmrs.module.htmlformentry.HtmlFormEntryService;
-import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.page.PageModel;
 import org.openmrs.ui.framework.session.Session;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -54,24 +47,7 @@ public class MedicalEncounterViewPatientPageController {
 			visit = activeVisits.get(0);
 		}
 		
-		List<SimpleObject> availableForms = new ArrayList<SimpleObject>();
-		if (visit != null) {
-			Set<String> encounterTypesAlready = new HashSet<String>();
-			for (Encounter e : visit.getEncounters()) {
-				if (e.isVoided())
-					continue;
-				encounterTypesAlready.add(e.getEncounterType().getUuid());
-			}
-			
-			for (HtmlForm hf : Context.getService(HtmlFormEntryService.class).getAllHtmlForms()) {
-				if (!hf.getForm().isRetired() && hf.getForm().getPublished() && !encounterTypesAlready.contains(hf.getForm().getEncounterType().getUuid())) {
-					availableForms.add(SimpleObject.create("htmlFormId", hf.getId(), "label", hf.getName(), "icon", "activity_monitor_add.png"));
-				}
-			}
-		}
-			
 		model.addAttribute("visit", visit);
-		model.addAttribute("availableForms", availableForms);
 	}
 	
 }

@@ -21,16 +21,6 @@
 		height: 100%;
 	}
 	
-	.encounter-panel {
-		border: 1px #e0e0e0 solid;
-		cursor: pointer;
-		margin: 2px 0px;
-		padding: 0.2em;
-	}
-	.encounter-panel:hover {
-		background-color: white;
-	}
-	
 	.active-visit {
 		border: 1px black solid;
 		border-top-left-radius: 0.5em;
@@ -56,29 +46,6 @@
 		background-color: #e0e0e0;
 	}
 </style>
-
-<script>
-	jq(function() {
-		jq('.encounter-panel').click(function(event) {
-			var encId = jq(this).find('input[name=encounterId]').val();
-			var title = jq(this).find('input[name=title]').val();
-			publish('showHtmlForm/showEncounter', { encounterId: encId, editButtonLabel: 'Edit', deleteButtonLabel: 'Delete' });
-			showDivAsDialog('#showHtmlForm', title);
-			return false;
-		});
-	});
-	
-	function enterHtmlForm(htmlFormId, title) {
-		showDialog({
-			title: title,
-			fragment: "enterHtmlForm",
-			config: {
-				patient: ${ patient.id },
-				htmlFormId: htmlFormId
-			}
-		});
-	}
-</script>
 
 <div id="col1">
 	<fieldset>
@@ -119,33 +86,7 @@
 	
 	<% if (visit) { %>
 	
-		<% if (availableForms) { %>
-			<fieldset>
-				<legend>Fill out a form</legend>
-				<% availableForms.each { %>
-					${ ui.includeFragment("widget/button", [
-						iconProvider: "uilibrary",
-						icon: it.icon,
-						label: it.label,
-						onClick: "enterHtmlForm(" + it.htmlFormId + ", '" + it.label + "');"
-					]) }
-				<% } %>
-			</fieldset>
-		<% } %>
-		
-		<% if (visit.encounters) { %>
-			Forms already filled out
-	
-			<% visit.encounters.findAll {
-				!it.voided
-			}.each { %>
-				<div class="encounter-panel">
-					<input type="hidden" name="encounterId" value="${ it.encounterId }"/>
-					<input type="hidden" name="title" value="${ ui.escapeAttribute(ui.format(visit.visitType) + " - " + ui.format(it.form ?: it.encounterType)) }"/>
-					${ ui.includeFragment("encounterSummary", [ encounter: it, maxObs: 2 ]) }
-				</div>
-			<% } %>
-		<% } %>
+		${ ui.includeFragment("availableForms", [ visit: visit ]) }
 	
 	<% } else {
 		// do this here to avoid annoying template engine issue
