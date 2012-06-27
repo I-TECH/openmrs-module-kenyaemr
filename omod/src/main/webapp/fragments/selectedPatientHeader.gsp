@@ -37,7 +37,7 @@
 	
 	#selected-patient-header > .close-patient {
 		float: right;
-		padding-left: 1em;
+		padding-left: 2em;
 	}
 	
 	.header-identifier-type {

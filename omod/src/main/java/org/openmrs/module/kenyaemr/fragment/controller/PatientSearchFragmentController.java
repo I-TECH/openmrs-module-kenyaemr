@@ -34,10 +34,17 @@ import org.springframework.web.bind.annotation.RequestParam;
  */
 public class PatientSearchFragmentController {
 	
+	public void controller() {
+	}
+	
 	public List<SimpleObject> search(@RequestParam(value="q", required=false) String query,
-	                     @RequestParam(value="age", required=false) Integer age,
-	                     @RequestParam(value="ageWindow", defaultValue="5") int ageWindow,
-	                     UiUtils ui) {
+									 @RequestParam(value="which", required=false) String which,
+									 @RequestParam(value="age", required=false) Integer age,
+									 @RequestParam(value="ageWindow", defaultValue="5") int ageWindow,
+									 UiUtils ui) {
+		if ("checked-in".equals(which)) {
+			return withActiveVisits(query, age, ageWindow, ui);
+		}
 		if (StringUtils.isBlank(query)) {
 			return Collections.emptyList();
 		}
@@ -78,7 +85,7 @@ public class PatientSearchFragmentController {
 		
 		// TODO refactor so it performs faster
 		
-		List<SimpleObject> matching = search(query, age, ageWindow, ui);			
+		List<SimpleObject> matching = search(query, null, age, ageWindow, ui);			
 
 		List<Visit> activeVisits = Context.getVisitService().getVisits(null, null, null, null, null, null, null, null, null, false, false);
 
