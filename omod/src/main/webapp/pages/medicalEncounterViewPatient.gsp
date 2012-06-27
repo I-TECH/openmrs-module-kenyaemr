@@ -88,30 +88,17 @@
 	
 		${ ui.includeFragment("availableForms", [ visit: visit ]) }
 	
-	<% } else {
-		// do this here to avoid annoying template engine issue
-		def jsSuccess = "location.href = pageLink('medicalEncounterViewPatient', " + "{" + "patientId: ${ patient.id }, visitId: data.visitId" + "});"
-	%>
+	<% } else { %>
 
-		${ ui.includeFragment("widget/popupForm", [
-				buttonConfig: [
-					iconProvider: "uilibrary",
-					icon: "user_add_32.png",
-					label: "Is Patient Here?",
-					classes: [ "padded" ],
-					extra: "Check In"
-				],
-				popupTitle: "Check In to Clinic",
-				prefix: "visit",
-				commandObject: newCurrentVisit,
-				hiddenProperties: [ "patient" ],
-				properties: [ "startDatetime", "visitType" ],
-				fragment: "registrationUtil",
-				action: "startVisit",
-				successCallbacks: [ jsSuccess ],
-				submitLabel: ui.message("general.submit"),
-				cancelLabel: ui.message("general.cancel")
+		${ ui.includeFragment("widget/button", [
+				iconProvider: "uilibrary",
+				icon: "user_add_32.png",
+				label: "Go to Registration",
+				classes: [ "padded" ],
+				extra: "to Check In",
+				href: ui.pageLink("registrationViewPatient", [ patientId: patient.id ])
 			]) }
+
 	<% } %>
 	
 	<br/>
