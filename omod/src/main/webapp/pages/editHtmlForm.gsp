@@ -11,8 +11,10 @@
 </div>
 
 <script>
-	jq('#cancel-form').click(function() {
-		location.href = '${ returnUrl }';
+	jq(function() {
+		jq('#cancel-form').click(function() {
+			location.href = '${ returnUrl }';
+		}).clone(true).insertAfter(jq('input.submitButton'));
 	});
 </script>
 
