@@ -45,9 +45,13 @@
 			</a>
 		<% } %>
 		<span id="running-app-user" style="float: right">
-			${ context.authenticatedUser.personName }
-			|
-			<a href="/${ contextPath }/logout">Log Out</a>
+			<% if (context.authenticatedUser) { %>
+				${ context.authenticatedUser.personName }
+				|
+				<a href="/${ contextPath }/logout">Log Out</a>
+			<% } else { %>
+				Not Logged In
+			<% } %>
 		</span>
 		<span style="clear: both">&nbsp;</span>
 	</div>

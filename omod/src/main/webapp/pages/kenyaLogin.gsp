@@ -1,10 +1,11 @@
 <!-- This is the login page -->
 
-<% ui.includeCss("uilibrary.css") %>
+<%
+	ui.includeCss("uilibrary.css")
+%>
 
 <style>
 	#fullwindow {
-		top: 0;
 		left: 0;
 		width: 100%;
 		height: 100%;
@@ -28,6 +29,10 @@
 	}
 </style>
 
+<div id="kenya-header">
+	${ ui.includeFragment("kenyaHeader") }
+</div>
+
 <div id="fullwindow">
 	<div class="centered">
 		${ ui.includeFragment("flashMessage") }
@@ -35,10 +40,10 @@
 		<form method="post" action="/${ contextPath }/loginServlet" autocomplete="off">
 			<table class="centered">
 				<tr>
-					<td colspan="2">
+					<td rowspan="5" width="300">
 						<img src="${ ui.resourceLink("kenyaemr", "images/logo_250.png") }"/>
-						<h3 align="center">Kenya EMR</h3>
 					</td>
+					<td colspan="2"><div style="height:100px;">&nbsp;</div></td>
 				</tr>
 				<tr>
 					<th>Username</th>
@@ -51,9 +56,14 @@
 				<tr>
 					<th></th>
 					<td>
-						<br/>
 						<input type="submit" value="Login"/>
 					</td>
+				</tr>
+				<tr>
+					<td colspan="2"></td>
+				</tr>
+				<tr>
+					<td><div style="height: 100px">&nbsp;</div></td>
 				</tr>
 			</table>
 			
