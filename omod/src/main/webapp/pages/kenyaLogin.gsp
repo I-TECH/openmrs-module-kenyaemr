@@ -36,7 +36,7 @@
 			<table class="centered">
 				<tr>
 					<td colspan="2">
-						<img src="${ ui.resourceLink("kenyaemr", "images/logo.png") }"/>
+						<img src="${ ui.resourceLink("kenyaemr", "images/logo_250.png") }"/>
 						<h3 align="center">Kenya EMR</h3>
 					</td>
 				</tr>

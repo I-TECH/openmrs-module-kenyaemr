@@ -10,13 +10,14 @@
 	#col1 {
 		float: left;
 		padding-right: 4px;
+		width: 38%;
 	}
 	
 	#col2 {
 		float: left;
 		padding-left: 0.5em;
 		border-left: 1px black solid;
-		width: 50%;
+		width: 60%;
 		height: 100%;
 	}
 	

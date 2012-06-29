@@ -1,12 +1,19 @@
 <%
 	ui.includeJavascript("uilibrary", "jquery.js")
 	ui.includeJavascript("kenyaemr.js")
-	
+
 	if (config.patient) {
-		config.afterAppHeader = ui.includeFragment("selectedPatientHeader")
 		config.context = "patientId=${ patient.id }"
 	}
-	ui.decorateWith("standardAppPage", config)
+
+	config.beforeContent = ui.includeFragment("kenyaHeader", config)
+	config.beforeContent += ui.includeFragment("kenyaRunningApp", config)
+
+	if (config.patient) {
+		config.beforeContent += ui.includeFragment("selectedPatientHeader")
+	}
+	
+	ui.decorateWith("standardPage", config)
 %>
 
 <%= config.content %>

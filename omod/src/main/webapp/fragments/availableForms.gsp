@@ -40,7 +40,7 @@
 	
 	<% availableForms.each { %>
 		${ ui.includeFragment("widget/button", [
-			iconProvider: "uilibrary",
+			iconProvider: it.iconProvider,
 			icon: it.icon,
 			label: it.label,
 			classes: [ "padded" ],
@@ -52,7 +52,7 @@
 
 <% if (encounters) { %>
 	<fieldset>
-		<legend>Already Filled Out</legend>
+		<legend>This Visit</legend>
 
 		<% encounters.each { %>
 			${ ui.includeFragment("encounterPanel", [ encounter: it ]) }

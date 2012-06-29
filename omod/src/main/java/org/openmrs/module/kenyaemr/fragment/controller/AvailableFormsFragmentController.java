@@ -14,12 +14,11 @@
 package org.openmrs.module.kenyaemr.fragment.controller;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -27,6 +26,8 @@ import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
 import org.openmrs.Encounter;
+import org.openmrs.PatientProgram;
+import org.openmrs.Program;
 import org.openmrs.Visit;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appframework.AppDescriptor;
@@ -39,28 +40,33 @@ import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 import org.openmrs.ui.framework.session.Session;
 
-
 /**
  *
  */
 public class AvailableFormsFragmentController {
 	
-	public void controller(FragmentModel model,
-	                       @FragmentParam("visit") Visit visit,
-	                       Session session) {
-		// available forms are defined by the running app
-		AppDescriptor app = AppUiUtil.getCurrentApp(session).getApp();
-
-		List<String> formUuids;
-		if (app.getId().equals("kenyaemr.registration")) {
-			formUuids = Arrays.asList(MetadataConstants.VITALS_AND_TRIAGE_HTML_FORM_UUID);
-		} else if (app.getId().equals("kenyaemr.intake")) {
-			formUuids = Arrays.asList(MetadataConstants.VITALS_AND_TRIAGE_HTML_FORM_UUID, MetadataConstants.PAST_MEDICAL_HISTORY_AND_SURGICAL_HISTORY_HTML_FORM_UUID, MetadataConstants.ART_HISTORY_HTML_FORM_UUID, MetadataConstants.CLINICAL_ENCOUNTER_HTML_FORM_UUID, MetadataConstants.TB_SCREENING_HTML_FORM_UUID, MetadataConstants.FAMILY_PLANNING_AND_PREGNANCY_HTML_FORM_UUID, MetadataConstants.LAB_RESULTS_HTML_FORM_UUID);
-		} else if (app.getId().equals("kenyaemr.medicalEncounter")) {
-			formUuids = Arrays.asList(MetadataConstants.PAST_MEDICAL_HISTORY_AND_SURGICAL_HISTORY_HTML_FORM_UUID, MetadataConstants.ART_HISTORY_HTML_FORM_UUID, MetadataConstants.CLINICAL_ENCOUNTER_HTML_FORM_UUID, MetadataConstants.TB_SCREENING_HTML_FORM_UUID, MetadataConstants.FAMILY_PLANNING_AND_PREGNANCY_HTML_FORM_UUID, MetadataConstants.IMPRESSIONS_AND_DIAGNOSES_HTML_FORM_UUID, MetadataConstants.LAB_RESULTS_HTML_FORM_UUID);
-		} else {
-			throw new RuntimeException("No suitable running app");
-		}
+	public void controller(FragmentModel model, @FragmentParam("visit") Visit visit, Session session) {
+		// TODO get by uuid
+		Program hivProgram = Context.getProgramWorkflowService().getPrograms("HIV Program").get(0);
+		
+		List<AvailableFormConfig> forms = new ArrayList<AvailableFormConfig>();
+		forms.add(new AvailableFormConfig(MetadataConstants.MOH_257_REGISTRATION_FORM_UUID, Frequency.PROGRAM, hivProgram));
+		forms.add(new AvailableFormConfig(MetadataConstants.MOH_257_ENCOUNTER_TRIAGE_FORM_UUID, Frequency.VISIT, null));
+		forms.add(new AvailableFormConfig(MetadataConstants.MOH_257_TRANSFER_OUT_AND_DEATH_FORM_UUID, Frequency.PROGRAM, hivProgram));
+		forms.add(new AvailableFormConfig(MetadataConstants.MOH_257_ART_TREATMENT_INTERUPTION_FORM_UUID, Frequency.UNLIMITED, hivProgram));
+		forms.add(new AvailableFormConfig(MetadataConstants.MOH_257_ENROLLMENT_TRANSFER_IN_FORM_UUID, Frequency.PROGRAM, hivProgram));
+		forms.add(new AvailableFormConfig(MetadataConstants.MOH_257_ENROLLMENT_NEW_TO_HIV_CARE_FORM_UUID, Frequency.PROGRAM, hivProgram));
+		forms.add(new AvailableFormConfig(MetadataConstants.MOH_257_ENCOUNTER_PREGNANCY_DETAILS_FORM_UUID, Frequency.VISIT, hivProgram));
+		forms.add(new AvailableFormConfig(MetadataConstants.MOH_257_ENCOUNTER_PATIENTS_DEMOGRAPHICS_FORM_UUID, Frequency.VISIT, hivProgram));
+		forms.add(new AvailableFormConfig(MetadataConstants.MOH_257_ENCOUNTER_CLINICAL_NOTE_FORM_FORM_UUID, Frequency.VISIT, hivProgram));
+		forms.add(new AvailableFormConfig(MetadataConstants.MOH_257_ENCOUNTER_TB_SCREENING_FORM_UUID, Frequency.VISIT, hivProgram));
+		forms.add(new AvailableFormConfig(MetadataConstants.MOH_257_ENCOUNTER_CLINICAL_ENCOUNTER_FORM_FORM_UUID, Frequency.VISIT, hivProgram));
+		forms.add(new AvailableFormConfig(MetadataConstants.MOH_257_ENCOUNTER_IMPRESSIONS_AND_DIAGNOSES_FORM_UUID, Frequency.VISIT, hivProgram));
+		forms.add(new AvailableFormConfig(MetadataConstants.MOH_257_ENCOUNTER_DECISION_POINTS_FORM_UUID, Frequency.VISIT, hivProgram));
+		forms.add(new AvailableFormConfig(MetadataConstants.MOH_257_ENCOUNTER_ORDER_LAB_INVESTIGATIONS_FORM_UUID, Frequency.UNLIMITED, hivProgram));
+		forms.add(new AvailableFormConfig(MetadataConstants.MOH_257_ENCOUNTER_MEDICATION_ORDERS_FORM_UUID, Frequency.UNLIMITED, hivProgram));
+		forms.add(new AvailableFormConfig(MetadataConstants.MOH_257_ENCOUNTER_PAST_MEDICAL_AND_SURGICAL_HISTORY_FORM_UUID, Frequency.PROGRAM, hivProgram));
+		forms.add(new AvailableFormConfig(MetadataConstants.MOH_257_ENCOUNTER_ART_HISTORY_FORM_UUID, Frequency.PROGRAM, hivProgram));
 		
 		List<Encounter> encounters = new ArrayList<Encounter>(visit.getEncounters());
 		CollectionUtils.filter(encounters, new Predicate() {
@@ -71,36 +77,187 @@ public class AvailableFormsFragmentController {
 		});
 		Collections.sort(encounters, new Comparator<Encounter>() {
 			@Override
-            public int compare(Encounter left, Encounter right) {
-	            return left.getEncounterDatetime().compareTo(right.getEncounterDatetime());
-            }
+			public int compare(Encounter left, Encounter right) {
+				return left.getEncounterDatetime().compareTo(right.getEncounterDatetime());
+			}
 		});
 		
-		List<SimpleObject> availableForms = new ArrayList<SimpleObject>();
-		Set<Encounter> editableEncounters = new HashSet<Encounter>();
-		
-		Map<String, HtmlForm> formByUuid = new HashMap<String, HtmlForm>();
-		for (HtmlForm hf : Context.getService(HtmlFormEntryService.class).getAllHtmlForms()) {
-			formByUuid.put(hf.getUuid(), hf);
-		}
-		
-		for (String uuid : formUuids) {
-			HtmlForm hf = formByUuid.get(uuid);
-			boolean found = false;
-			for (Encounter e : encounters) {
-				if (hf.getForm().equals(e.getForm())) {
-					found = true;
-					editableEncounters.add(e);
-				}
-			}
-			if (!found) {
-				availableForms.add(SimpleObject.create("htmlFormId", hf.getId(), "label", hf.getName(), "icon", "activity_monitor_add.png"));
-			}
-		}
+		List<SimpleObject> availableForms = getAvailableForms(visit, forms);
 		
 		model.addAttribute("encounters", encounters);
 		model.addAttribute("availableForms", availableForms);
-		model.addAttribute("editableEncounters", editableEncounters);
+	}
+	
+	/**
+     * @param visit
+     * @param forms
+     * @return
+     */
+    private List<SimpleObject> getAvailableForms(Visit visit, List<AvailableFormConfig> forms) {
+    	Set<String> formUuidsThisVisit = new HashSet<String>();
+    	for (Encounter e : visit.getEncounters()) {
+    		if (!e.getVoided()) {
+    			formUuidsThisVisit.add(e.getForm().getUuid());
+    		}
+    	}
+    	
+    	List<Encounter> encs = Context.getEncounterService().getEncountersByPatient(visit.getPatient());
+    	Set<String> allFormUuids = new HashSet<String>();
+    	for (Encounter e : encs) {
+    		allFormUuids.add(e.getForm().getUuid());
+    	}
+    	
+    	Map<Program, Date> dateOfActiveEnrollment = new HashMap<Program, Date>();
+    	for (PatientProgram pp : Context.getProgramWorkflowService().getPatientPrograms(visit.getPatient(), null, null, null, null, null, false)) {
+    		if (pp.getDateCompleted() == null) {
+    			dateOfActiveEnrollment.put(pp.getProgram(), pp.getDateEnrolled());
+    		}
+    	}
+    	Map<Program, Set<String>> formUuidsByProgram = new HashMap<Program, Set<String>>();
+		for (Map.Entry<Program, Date> e : dateOfActiveEnrollment.entrySet()) {
+			Date started = e.getValue();
+			Set<String> formUuids = new HashSet<String>();
+			for (Encounter enc : encs) {
+				if (enc.getEncounterDatetime().compareTo(started) >= 0) {
+					formUuids.add(enc.getForm().getUuid());
+				}
+			}
+			 formUuidsByProgram.put(e.getKey(), formUuids);
+		}
+    	
+		Map<String, HtmlForm> formByUuid = new HashMap<String, HtmlForm>();
+		for (HtmlForm hf : Context.getService(HtmlFormEntryService.class).getAllHtmlForms()) {
+			formByUuid.put(hf.getForm().getUuid(), hf);
+		}
+		
+    	List<SimpleObject> ret = new ArrayList<SimpleObject>();
+		
+		for (AvailableFormConfig config : forms) {
+			if (config.getForProgram() != null && !dateOfActiveEnrollment.keySet().contains(config.getForProgram())) {
+				continue;
+			}
+			boolean allowed = false;
+			if (config.getFrequency().equals(Frequency.UNLIMITED)) {
+				allowed = true;
+			} else if (config.getFrequency().equals(Frequency.VISIT)) {
+				allowed = !formUuidsThisVisit.contains(config.getFormUuid());
+			} else if (config.getFrequency().equals(Frequency.PROGRAM)) {
+				Set<String> formsForProgram = formUuidsByProgram.get(config.getForProgram());
+				allowed = formsForProgram == null || !formsForProgram.contains(config.getFormUuid());
+			} else if (config.getFrequency().equals(Frequency.ONCE_EVER)) {
+				allowed = !allFormUuids.contains(config.getFormUuid());
+			} else {
+				throw new RuntimeException("Unknown Frequency");
+			}
+			if (allowed) {
+				HtmlForm hf = formByUuid.get(config.getFormUuid());
+				if (hf == null) {
+					throw new RuntimeException("No htmlform with uuid " + config.getFormUuid());
+				}
+				ret.add(SimpleObject.create("htmlFormId", hf.getId(), "label", hf.getName(), "iconProvider", config.getIconProvider(), "icon", config.getIcon()));
+			}
+		}
+		
+		return ret;
+    }
+
+	public enum Frequency {
+		ONCE_EVER, PROGRAM, VISIT, UNLIMITED
+	}
+	
+	public class AvailableFormConfig {
+		
+		private String formUuid;
+		
+		private Program forProgram;
+		
+		private Frequency frequency = Frequency.VISIT;
+		
+		private String iconProvider = "uilibrary";
+		
+		private String icon = "page_blank_add_32.png";
+		
+		/**
+		 * @param formUuid
+		 * @param frequency
+		 * @param forProgram
+		 */
+		public AvailableFormConfig(String formUuid, Frequency frequency, Program forProgram) {
+			this.formUuid = formUuid;
+			this.frequency = frequency;
+			this.forProgram = forProgram;
+		}
+		
+		/**
+		 * @return the formUuid
+		 */
+		public String getFormUuid() {
+			return formUuid;
+		}
+		
+		/**
+		 * @param formUuid the formUuid to set
+		 */
+		public void setFormUuid(String formUuid) {
+			this.formUuid = formUuid;
+		}
+		
+		/**
+		 * @return the forProgram
+		 */
+		public Program getForProgram() {
+			return forProgram;
+		}
+		
+		/**
+		 * @param forProgram the forProgram to set
+		 */
+		public void setForProgram(Program forProgram) {
+			this.forProgram = forProgram;
+		}
+		
+		/**
+		 * @return the frequency
+		 */
+		public Frequency getFrequency() {
+			return frequency;
+		}
+		
+		/**
+		 * @param frequency the frequency to set
+		 */
+		public void setFrequency(Frequency frequency) {
+			this.frequency = frequency;
+		}
+		
+		/**
+		 * @return the iconProvider
+		 */
+		public String getIconProvider() {
+			return iconProvider;
+		}
+		
+		/**
+		 * @param iconProvider the iconProvider to set
+		 */
+		public void setIconProvider(String iconProvider) {
+			this.iconProvider = iconProvider;
+		}
+		
+		/**
+		 * @return the icon
+		 */
+		public String getIcon() {
+			return icon;
+		}
+		
+		/**
+		 * @param icon the icon to set
+		 */
+		public void setIcon(String icon) {
+			this.icon = icon;
+		}
+		
 	}
 	
 }
