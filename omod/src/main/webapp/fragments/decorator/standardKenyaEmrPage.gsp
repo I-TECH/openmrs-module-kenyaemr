@@ -1,5 +1,10 @@
 <%
+	ui.includeCss("uilibrary", "jquery-ui.css")
 	ui.includeJavascript("uilibrary", "jquery.js")
+	ui.includeJavascript("uilibrary", "jquery-ui.js")
+	ui.includeJavascript("kenyaemr", "jquery-ui-timepicker-addon-mod.js")
+	
+	ui.includeJavascript("uiframework.js")
 	ui.includeJavascript("kenyaemr.js")
 
 	if (config.patient) {

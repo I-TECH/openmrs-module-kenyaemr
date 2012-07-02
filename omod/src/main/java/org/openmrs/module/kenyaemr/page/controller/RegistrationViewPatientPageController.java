@@ -70,21 +70,8 @@ public class RegistrationViewPatientPageController {
 		}
 		
 		ProgramWorkflowService pws = Context.getProgramWorkflowService(); 
-		// TODO Program hivProgram = pws.getProgramByUuid(MetadataConstants.HIV_PROGRAM_UUID);
 		Program hivProgram = pws.getPrograms("HIV Program").get(0);
-		
-		PatientProgram currentHivEnrollment = null;
-		List<PatientProgram> pastHivEnrollments = new ArrayList<PatientProgram>();
-		for (PatientProgram pp : pws.getPatientPrograms(patient, hivProgram, null, null, null, null, false)) {
-			if (pp.getActive()) {
-				currentHivEnrollment = pp;
-			} else {
-				pastHivEnrollments.add(pp);
-			}
-		}
 		model.addAttribute("hivProgram", hivProgram);
-		model.addAttribute("currentHivEnrollment", currentHivEnrollment);
-		model.addAttribute("pastHivEnrollments", pastHivEnrollments);
 	}
 	
 }

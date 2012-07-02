@@ -77,17 +77,6 @@
 	}
 </style>
 
-<script>
-	jq(function() {	
-		jq('.edit-button').hide();
-		jq('.editable').mouseenter(function() {
-			jq(this).find('.edit-button').show();
-		}).mouseleave(function() {
-			jq(this).find('.edit-button').hide();
-		});
-	});
-</script>
-
 <div id="col1">
 	<fieldset class="editable">
 		<legend>
@@ -155,80 +144,12 @@
 		</div>
 	<% } %>
 	
-	<% if (currentHivEnrollment) {
-		// TODO put these in MetadataConstants
-		def outcomeOptions = [
-			[ conceptId: 1693, name: "Transfer Out" ],
-			[ conceptId: 1694, name: "Lost to Followup" ]
-		]
-	%>
-		<fieldset class="editable">
-			<legend>HIV Program Data</legend>
-
-			<div class="edit-button">
-				Edit (TODO)
-			</div>
-
-			Enrolled: ${ ui.format(currentHivEnrollment.dateEnrolled) } <br/>
-			Currently Enrolled <br/>
-			
-			${ ui.includeFragment("widget/popupForm", [
-				buttonConfig: [
-					label: "Exit",
-					extra: "from program",
-					iconProvider: "uilibrary",
-					icon: "window_app_list_close_32.png"
-				],
-				popupTitle: "Exit from HIV Program",
-				fields: [
-					[ hiddenInputName: "enrollment", value: currentHivEnrollment.patientProgramId ],
-					[ label: "Outcome", formFieldName: "outcome", fragment: "widget/radioButtons", options: outcomeOptions, optionsValueField: "conceptId", optionsDisplayField: "name" ], 
-					[ label: "Exit Date", formFieldName: "dateCompleted", class: java.util.Date, initialValue: new Date() ]
-				],
-				fragment: "registrationUtil",
-				action: "completeProgram",
-				successCallbacks: [ "location.reload()" ],
-				submitLabel: ui.message("general.submit"),
-				cancelLabel: ui.message("general.cancel"),
-				submitLoadingMessage: "Exiting"
-			]) }
-
-		</fieldset>
-
-	<% } else { %>
-		${ ui.includeFragment("widget/popupForm", [
-				buttonConfig: [
-					label: "HIV Program",
-					classes: [ "padded" ],
-					extra: "Enroll",
-					iconProvider: "uilibrary",
-					icon: "window_app_list_add_32.png"
-				],
-				popupTitle: "Enroll in HIV Program",
-				fields: [
-					[ hiddenInputName: "patient", value: patient.patientId ],
-					[ hiddenInputName: "program", value: hivProgram.programId ],
-					[ label: "Enrollment Date", formFieldName: "dateEnrolled", class: java.util.Date, initialValue: new Date() ]
-				],
-				fragment: "registrationUtil",
-				action: "enrollInProgram",
-				successCallbacks: [ "location.reload()" ],
-				submitLabel: ui.message("general.submit"),
-				cancelLabel: ui.message("general.cancel"),
-				submitLoadingMessage: "Enrolling"
-			]) }
-
-	<% } %>
-	
-	<% pastHivEnrollments.each { %>
-		<fieldset>
-			<legend>(past) HIV Program Data</legend>
-			
-			Enrolled: ${ ui.format(it.dateEnrolled) } <br/>
-			Completed: ${ ui.format(it.dateCompleted) } <br/>
-			Outcome: ${ ui.format(it.outcome) } <br/>
-		</fieldset>
-	<% } %>
+	${ ui.includeFragment("programPanel", [
+			patient: patient,
+			program: hivProgram,
+			registrationFormUuid: "e4b506c1-7379-42b6-a374-284469cba8da",
+			exitFormUuid: "e3237ede-fa70-451f-9e6c-0908bc39f8b9"
+		]) }
 	
 </div>
 
@@ -260,7 +181,7 @@
 				popupTitle: "Check Out",
 				fields: [
 					[ hiddenInputName: "visit.visitId", value: visit.visitId ],
-					[ label: "End Date and Time", formFieldName: "visit.stopDatetime", class: java.util.Date, initialValue: new Date() ]
+					[ label: "End Date and Time", formFieldName: "visit.stopDatetime", class: java.util.Date, initialValue: new Date(), fieldFragment: "field/java.util.Date.datetime" ]
 				],
 				fragment: "registrationUtil",
 				action: "editVisit",
@@ -292,6 +213,9 @@
 				properties: [ "visitType", "startDatetime" ],
 				propConfig: [
 					"visitType": [ type: "radio" ],
+				],
+				fieldConfig: [
+					"startDatetime": [ fieldFragment: "field/java.util.Date.datetime" ]
 				],
 				fragment: "registrationUtil",
 				action: "startVisit",

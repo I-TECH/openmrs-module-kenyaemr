@@ -1,8 +1,3 @@
-<% ui.includeCss("jquery-ui.css") %>
-<% ui.includeJavascript("jquery.js") %>
-<% ui.includeJavascript("jquery-ui.js") %>
-<% ui.includeJavascript("uiframework.js") %>
-
 <script>
 	\$(document).ready(function() {
 		\$('#openmrsDialog').dialog({

@@ -1,5 +1,5 @@
 <%
-	ui.decorateWith("standardKenyaEmrPage", [ afterAppHeader: ui.includeFragment("selectedPatientHeader") ])
+	ui.decorateWith("standardKenyaEmrPage", [ patient: patient ])
 %>
 
 <div style="border-bottom: 2px gray dashed; font-size: 0.8em; margin-bottom: 0.5em;">
