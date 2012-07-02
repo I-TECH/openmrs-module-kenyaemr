@@ -23,7 +23,9 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.GlobalProperty;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.ModuleActivator;
+import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.module.kenyaemr.datatype.LocationDatatype;
+import org.openmrs.module.kenyaemr.report.Moh731Report;
 import org.openmrs.module.metadatasharing.ImportConfig;
 import org.openmrs.module.metadatasharing.ImportMode;
 import org.openmrs.module.metadatasharing.ImportedPackage;
@@ -50,6 +52,8 @@ public class KenyaEmrActivator implements ModuleActivator {
 	 */
 	public void contextRefreshed() {
 		log.info("Kenya OpenMRS EMR Module refreshed");
+		cleanupReports();
+		setupReports();
 	}
 	
 	/**
@@ -70,6 +74,12 @@ public class KenyaEmrActivator implements ModuleActivator {
 		} catch (Exception ex) {
 			throw new RuntimeException("Failed to setup initial data", ex);
 		}
+		try {
+			cleanupReports();
+			setupReports();
+		} catch (Exception ex) {
+			throw new RuntimeException("Failed to setup reports", ex);
+		}
 		log.info("Kenya OpenMRS EMR Module started");
 	}
 	
@@ -79,6 +89,11 @@ public class KenyaEmrActivator implements ModuleActivator {
 	 */
 	public void willStop() {
 		log.info("Stopping Kenya OpenMRS EMR Module");
+		try {
+			cleanupReports();
+		} catch (Exception ex) {
+			throw new RuntimeException("Failed to cleanup reports", ex);
+		}
 	}
 	
 	/**
@@ -145,6 +160,14 @@ public class KenyaEmrActivator implements ModuleActivator {
     	metadataImporter.loadSerializedPackageStream(getClass().getClassLoader().getResourceAsStream(filename));
     	metadataImporter.importPackage();
     	return true;
+    }
+    
+    private void setupReports() {
+    	Context.getService(KenyaEmrService.class).setupReportDefinitions();
+    }
+    
+    private void cleanupReports() {
+    	Context.getService(KenyaEmrService.class).cleanupReportDefinitions();
     }
 
 }

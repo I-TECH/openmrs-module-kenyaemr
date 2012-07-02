@@ -16,6 +16,8 @@ package org.openmrs.module.kenyaemr.api;
 import org.openmrs.Location;
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.idgen.IdentifierSource;
+import org.openmrs.module.kenyaemr.report.ReportManager;
+import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -65,5 +67,24 @@ public interface KenyaEmrService extends OpenmrsService {
      * @throws ConfigurationRequiredException if the ID source has not be set up yet
      */
     IdentifierSource getMrnIdentifierSource() throws ConfigurationRequiredException;
+
+	/**
+     * Called at spring context refresh to setup report definitions 
+     */
+    @Transactional
+    void setupReportDefinitions();
+    
+    /**
+     * Called at spring context refresh to cleanup report definitions 
+     */
+    @Transactional
+    void cleanupReportDefinitions();
+
+    /**
+     * @param id
+     * @return the ReportDefinition that was setup by the {@link ReportManager} with the given classname
+     */
+    @Transactional(readOnly=true)
+    ReportDefinition getReportDefinition(String id);
 	
 }

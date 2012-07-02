@@ -13,6 +13,9 @@
  */
 package org.openmrs.module.kenyaemr.api.impl;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.openmrs.GlobalProperty;
 import org.openmrs.Location;
 import org.openmrs.PatientIdentifierType;
@@ -28,6 +31,10 @@ import org.openmrs.module.kenyaemr.KenyaEmrConstants;
 import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.kenyaemr.api.ConfigurationRequiredException;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
+import org.openmrs.module.kenyaemr.report.ReportManager;
+import org.openmrs.module.reporting.report.definition.ReportDefinition;
+import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
+import org.springframework.transaction.annotation.Transactional;
 
 
 /**
@@ -37,6 +44,8 @@ public class KenyaEmrServiceImpl extends BaseOpenmrsService implements KenyaEmrS
 	
     private static final String OPENMRS_MEDICAL_RECORD_NUMBER_NAME = "Kenya EMR - OpenMRS Medical Record Number";
 	private boolean hasBeenConfigured = false;
+	
+	private Map<String, String> reportDefinitionUuids;
 	
 	/**
 	 * @see org.openmrs.module.kenyaemr.api.KenyaEmrService#isConfigured()
@@ -173,5 +182,39 @@ public class KenyaEmrServiceImpl extends BaseOpenmrsService implements KenyaEmrS
     	AutoGenerationOption auto = new AutoGenerationOption(idType, idGen, true, true);
 	    idService.saveAutoGenerationOption(auto);
 	}
+
+	/**
+	 * @see org.openmrs.module.kenyaemr.api.KenyaEmrService#getReportDefinition(java.lang.String)
+	 */
+	@Override
+	public ReportDefinition getReportDefinition(String id) {
+		String uuid = reportDefinitionUuids.get(id);
+		return uuid == null ? null : Context.getService(ReportDefinitionService.class).getDefinitionByUuid(uuid);
+	}
 	
+	/**
+	 * @see org.openmrs.module.kenyaemr.api.KenyaEmrService#setupReportDefinitions()
+	 */
+	@Override
+	public void setupReportDefinitions() {
+		reportDefinitionUuids = new HashMap<String, String>();
+		for (ReportManager manager : Context.getRegisteredComponents(ReportManager.class)) {
+			String key = manager.getClass().getName();
+			String reportUuid = manager.setup();
+			reportDefinitionUuids.put(key, reportUuid);
+		}
+	}
+
+	/**
+	 * @see org.openmrs.module.kenyaemr.api.KenyaEmrService#cleanupReportDefinitions()
+	 */
+	@Override
+	@Transactional
+	public void cleanupReportDefinitions() {
+		reportDefinitionUuids = null;
+		for (ReportManager manager : Context.getRegisteredComponents(ReportManager.class)) {
+			manager.cleanup();
+		}
+	}
+
 }
