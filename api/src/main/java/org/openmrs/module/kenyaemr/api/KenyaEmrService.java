@@ -13,10 +13,12 @@
  */
 package org.openmrs.module.kenyaemr.api;
 
+import java.util.List;
+
 import org.openmrs.Location;
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.idgen.IdentifierSource;
-import org.openmrs.module.kenyaemr.report.ReportManager;
+import org.openmrs.module.kenyaemr.report.IndicatorReportManager;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -69,22 +71,19 @@ public interface KenyaEmrService extends OpenmrsService {
     IdentifierSource getMrnIdentifierSource() throws ConfigurationRequiredException;
 
 	/**
-     * Called at spring context refresh to setup report definitions 
+     * Called at spring context refresh to refresh the list of known report managers 
      */
-    @Transactional
-    void setupReportDefinitions();
-    
-    /**
-     * Called at spring context refresh to cleanup report definitions 
-     */
-    @Transactional
-    void cleanupReportDefinitions();
+    void refreshReportManagers();
 
     /**
-     * @param id
-     * @return the ReportDefinition that was setup by the {@link ReportManager} with the given classname
+     * @param className
+     * @return the ReportDefinition that was setup by the {@link IndicatorReportManager} with the given classname
      */
-    @Transactional(readOnly=true)
-    ReportDefinition getReportDefinition(String id);
+    IndicatorReportManager getReportManager(String className);
+
+	/**
+     * @return all registered report managers
+     */
+    List<IndicatorReportManager> getAllReportManagers();
 	
 }

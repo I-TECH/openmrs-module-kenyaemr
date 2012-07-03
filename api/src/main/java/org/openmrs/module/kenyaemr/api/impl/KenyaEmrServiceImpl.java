@@ -13,7 +13,9 @@
  */
 package org.openmrs.module.kenyaemr.api.impl;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.openmrs.GlobalProperty;
@@ -31,10 +33,7 @@ import org.openmrs.module.kenyaemr.KenyaEmrConstants;
 import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.kenyaemr.api.ConfigurationRequiredException;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
-import org.openmrs.module.kenyaemr.report.ReportManager;
-import org.openmrs.module.reporting.report.definition.ReportDefinition;
-import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
-import org.springframework.transaction.annotation.Transactional;
+import org.openmrs.module.kenyaemr.report.IndicatorReportManager;
 
 
 /**
@@ -45,7 +44,8 @@ public class KenyaEmrServiceImpl extends BaseOpenmrsService implements KenyaEmrS
     private static final String OPENMRS_MEDICAL_RECORD_NUMBER_NAME = "Kenya EMR - OpenMRS Medical Record Number";
 	private boolean hasBeenConfigured = false;
 	
-	private Map<String, String> reportDefinitionUuids;
+	// maps classname to manager instance
+	private Map<String, IndicatorReportManager> reportManagers;
 	
 	/**
 	 * @see org.openmrs.module.kenyaemr.api.KenyaEmrService#isConfigured()
@@ -184,37 +184,31 @@ public class KenyaEmrServiceImpl extends BaseOpenmrsService implements KenyaEmrS
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.api.KenyaEmrService#getReportDefinition(java.lang.String)
+	 * @see org.openmrs.module.kenyaemr.api.KenyaEmrService#refreshReportManagers()
 	 */
 	@Override
-	public ReportDefinition getReportDefinition(String id) {
-		String uuid = reportDefinitionUuids.get(id);
-		return uuid == null ? null : Context.getService(ReportDefinitionService.class).getDefinitionByUuid(uuid);
+	public void refreshReportManagers() {
+		synchronized(this) {
+			reportManagers = new LinkedHashMap<String, IndicatorReportManager>();
+			for (IndicatorReportManager manager : Context.getRegisteredComponents(IndicatorReportManager.class)) {
+				reportManagers.put(manager.getClass().getName(), manager);
+			}
+		}
 	}
 	
 	/**
-	 * @see org.openmrs.module.kenyaemr.api.KenyaEmrService#setupReportDefinitions()
+	 * @see org.openmrs.module.kenyaemr.api.KenyaEmrService#getReportManager(java.lang.String)
 	 */
 	@Override
-	public void setupReportDefinitions() {
-		reportDefinitionUuids = new HashMap<String, String>();
-		for (ReportManager manager : Context.getRegisteredComponents(ReportManager.class)) {
-			String key = manager.getClass().getName();
-			String reportUuid = manager.setup();
-			reportDefinitionUuids.put(key, reportUuid);
-		}
+	public IndicatorReportManager getReportManager(String className) {
+	    return reportManagers.get(className);
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.api.KenyaEmrService#cleanupReportDefinitions()
+	 * @see org.openmrs.module.kenyaemr.api.KenyaEmrService#getAllReportManagers()
 	 */
 	@Override
-	@Transactional
-	public void cleanupReportDefinitions() {
-		reportDefinitionUuids = null;
-		for (ReportManager manager : Context.getRegisteredComponents(ReportManager.class)) {
-			manager.cleanup();
-		}
+	public List<IndicatorReportManager> getAllReportManagers() {
+	    return new ArrayList<IndicatorReportManager>(reportManagers.values());
 	}
-
 }

@@ -33,6 +33,7 @@ import org.openmrs.module.reporting.cohort.definition.DateObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.ProgramEnrollmentCohortDefinition;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
+import org.openmrs.module.reporting.definition.DefinitionSummary;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.evaluation.parameter.Parameterizable;
@@ -48,7 +49,9 @@ import org.springframework.stereotype.Component;
  *
  */
 @Component
-public class Moh731Report implements ReportManager {
+public class Moh731Report implements IndicatorReportManager {
+	
+	private Boolean configured = Boolean.FALSE;
 	
 	private final Log log = LogFactory.getLog(getClass());
 	
@@ -65,17 +68,19 @@ public class Moh731Report implements ReportManager {
     Program hivProgram;
     
     Concept transferInDate;
-        
-	/**
-	 * @see org.openmrs.module.kenyaemr.report.ReportManager#setup()
-	 */
-	public String setup() {
-		setupWithoutPersisting();
-		ReportDefinition saved = Context.getService(ReportDefinitionService.class).saveDefinition(reportDefinition);
-		return saved.getUuid();
-	}
-	
-	public void setupWithoutPersisting() {
+    
+    /**
+     * @see org.openmrs.module.kenyaemr.report.IndicatorReportManager#getReportDefinitionSummary()
+     */
+    @Override
+    public DefinitionSummary getReportDefinitionSummary() {
+    	DefinitionSummary ret = new DefinitionSummary();
+    	ret.setName(NAME_PREFIX);
+    	ret.setUuid(getClass().getName());
+    	return ret;
+    }
+    
+	public void setup() {
 		log.debug("Setting up metadata");
 		setupMetadata();
 		log.debug("Setting up cohort definitions");
@@ -88,23 +93,16 @@ public class Moh731Report implements ReportManager {
 		reportDefinition = createReportDefinition();
 	}
 	
-	/**
-	 * @see org.openmrs.module.kenyaemr.report.ReportManager#cleanup()
-	 */
-	@Override
-	public void cleanup() {
-	    ReportDefinitionService service = Context.getService(ReportDefinitionService.class);
-	    for (ReportDefinition rd : service.getAllDefinitions(true)) {
-	    	if (rd.getName().startsWith(NAME_PREFIX)) {
-	    		service.purgeDefinition(rd);
-	    	}
-	    }
-	}
-	
     /**
      * @return the reportDefinition
      */
     public ReportDefinition getReportDefinition() {
+    	synchronized (configured) {
+	        if (!configured) {
+	        	setup();
+	        	configured = true;
+	        }
+        }
 	    return reportDefinition;
     }
 	

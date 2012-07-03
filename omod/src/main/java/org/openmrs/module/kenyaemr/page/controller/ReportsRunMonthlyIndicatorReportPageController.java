@@ -20,7 +20,8 @@ import java.util.Map;
 
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appframework.AppUiUtil;
-import org.openmrs.module.kenyaemr.report.Moh731Report;
+import org.openmrs.module.kenyaemr.api.KenyaEmrService;
+import org.openmrs.module.kenyaemr.report.IndicatorReportManager;
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.report.ReportData;
@@ -43,10 +44,8 @@ public class ReportsRunMonthlyIndicatorReportPageController {
 		
 		AppUiUtil.startApp("kenyaemr.reports", session);
 		
-		//ReportDefinition rd = Context.getService(KenyaEmrService.class).getReportDefinition(managerClassname);
-		Moh731Report report = new Moh731Report();
-		report.setupWithoutPersisting();
-		ReportDefinition rd = report.getReportDefinition();
+		IndicatorReportManager manager = Context.getService(KenyaEmrService.class).getReportManager(managerClassname);
+		ReportDefinition rd = manager.getReportDefinition();
 		
 		model.addAttribute("definition", rd);
 		
