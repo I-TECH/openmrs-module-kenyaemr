@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.kenyaemr.page.controller;
 
+import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -22,11 +23,16 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.appframework.AppUiUtil;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.module.kenyaemr.report.IndicatorReportManager;
+import org.openmrs.module.reporting.common.ContentType;
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.report.ReportData;
+import org.openmrs.module.reporting.report.ReportDesign;
+import org.openmrs.module.reporting.report.ReportDesignResource;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
+import org.openmrs.module.reporting.report.renderer.ExcelTemplateRenderer;
+import org.openmrs.ui.framework.page.FileDownload;
 import org.openmrs.ui.framework.page.PageModel;
 import org.openmrs.ui.framework.session.Session;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -37,9 +43,10 @@ import org.springframework.web.bind.annotation.RequestParam;
  */
 public class ReportsRunMonthlyIndicatorReportPageController {
 	
-	public void controller(Session session,
+	public Object controller(Session session,
 	                       PageModel model,
 	                       @RequestParam("manager") String managerClassname,
+	                       @RequestParam(required = false, value = "mode") String mode,
 	                       @RequestParam(required = false, value = "startDate") Date startDate) throws Exception {
 		
 		AppUiUtil.startApp("kenyaemr.reports", session);
@@ -55,7 +62,42 @@ public class ReportsRunMonthlyIndicatorReportPageController {
 			ec.addParameterValue("startDate", startDate);
 			ec.addParameterValue("endDate", DateUtil.getEndOfMonth(startDate));
 			ReportData data = Context.getService(ReportDefinitionService.class).evaluate(rd, ec);
-			model.addAttribute("data", data);
+			
+			if ("excel".equals(mode)) {
+				byte[] excelTemplate = manager.getExcelTemplate();
+				if (excelTemplate == null) {
+					throw new RuntimeException(managerClassname + " does not support Excel output");
+				}
+				
+				ExcelTemplateRenderer renderer;
+				{
+					// this is a bit of a hack, copied from ExcelRendererTest in the reporting module, to avoid
+					// needing to save the template and report design in the database
+					ReportDesignResource resource = new ReportDesignResource();
+					resource.setName("template.xls");
+					resource.setContents(excelTemplate);
+					
+					final ReportDesign design = new ReportDesign();
+					design.setName(rd.getName() + " design");
+					design.setReportDefinition(rd);
+					design.setRendererType(ExcelTemplateRenderer.class);
+					design.addResource(resource);
+					
+					renderer = new ExcelTemplateRenderer() {
+						public ReportDesign getDesign(String argument) {
+							return design;
+						}
+					};
+				}
+				
+				ByteArrayOutputStream out = new ByteArrayOutputStream();
+				renderer.render(data, "xxx:xls", out);
+				return new FileDownload(manager.getExcelFilename(ec), ContentType.EXCEL.getContentType(), out.toByteArray());
+				
+			} else {
+				model.addAttribute("data", data);
+			}
+			
 		} else {
 			// show form with date options
 			model.addAttribute("data", null);
@@ -69,6 +111,7 @@ public class ReportsRunMonthlyIndicatorReportPageController {
 			}
 			model.addAttribute("startDateOptions", startDateOptions);
 		}
+		return null;
 	}
 	
 }

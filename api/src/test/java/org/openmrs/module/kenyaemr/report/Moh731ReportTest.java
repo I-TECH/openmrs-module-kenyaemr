@@ -13,15 +13,20 @@
  */
 package org.openmrs.module.kenyaemr.report;
 
+import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 
+import org.apache.commons.io.IOUtils;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.report.ReportData;
+import org.openmrs.module.reporting.report.ReportDesign;
+import org.openmrs.module.reporting.report.ReportDesignResource;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
+import org.openmrs.module.reporting.report.renderer.ExcelTemplateRenderer;
 import org.openmrs.module.reporting.report.renderer.TsvReportRenderer;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.SkipBaseSetup;
@@ -55,7 +60,7 @@ public class Moh731ReportTest extends BaseModuleContextSensitiveTest {
 		authenticate();
 		
 		Moh731Report report = new Moh731Report();
-		ReportDefinition rd = report.createReportDefinition();
+		ReportDefinition rd = report.getReportDefinition();
 		
 		EvaluationContext ec = new EvaluationContext();
 		SimpleDateFormat ymd = new SimpleDateFormat("yyyy-MM-dd");
@@ -63,6 +68,28 @@ public class Moh731ReportTest extends BaseModuleContextSensitiveTest {
 		ec.addParameterValue("endDate", ymd.parse("2012-06-30"));
 		ReportData data = Context.getService(ReportDefinitionService.class).evaluate(rd, ec);
 		printOutput(data);
+		
+		byte[] excelTemplate = report.getExcelTemplate();
+		
+		ReportDesignResource resource = new ReportDesignResource();
+		resource.setName("template.xls");
+		resource.setContents(excelTemplate);
+		
+		final ReportDesign design = new ReportDesign();
+		design.setName(rd.getName() + " design");
+		design.setReportDefinition(rd);
+		design.setRendererType(ExcelTemplateRenderer.class);
+		design.addResource(resource);
+		
+		ExcelTemplateRenderer renderer = new ExcelTemplateRenderer() {
+			public ReportDesign getDesign(String argument) {
+				return design;
+			}
+		};
+		
+		FileOutputStream fos = new FileOutputStream("/tmp/test.xls"); // You will need to change this if you have no /tmp directory
+		renderer.render(data, "xxx:xls", fos);
+		IOUtils.closeQuietly(fos);
 	}
 
     private void printOutput(ReportData data) throws Exception {

@@ -35,7 +35,7 @@
 
 	<properties>
 		<openMRSVersion>1.9.0</openMRSVersion>
-		<uiframeworkVersion>1.6-SNAPSHOT</uiframeworkVersion>
+		<uiframeworkVersion>1.6</uiframeworkVersion>
 		<uilibraryVersion>1.4-SNAPSHOT</uilibraryVersion>
 		<appframeworkVersion>1.3-SNAPSHOT</appframeworkVersion>
 		<metadatasharingVersion>1.0.8-SNAPSHOT</metadatasharingVersion>
@@ -175,6 +175,12 @@
 			<version>2.1</version>
 			<type>jar</type>
 			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi</artifactId>
+			<version>3.2-FINAL</version>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 

@@ -14,6 +14,7 @@
 package org.openmrs.module.kenyaemr.report;
 
 import org.openmrs.module.reporting.definition.DefinitionSummary;
+import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 
 
@@ -32,5 +33,16 @@ public interface IndicatorReportManager {
 	 * @return the definition of this report
 	 */
 	public ReportDefinition getReportDefinition();
+	
+	/**
+	 * @return the excel template for rendering this report, or null if excel is not supported 
+	 */
+	public byte[] getExcelTemplate();
+
+	/**
+     * @param ec
+     * @return the filename for downloading this report as excel, or null if excel is not supported 
+     */
+    public String getExcelFilename(EvaluationContext ec);
 	
 }

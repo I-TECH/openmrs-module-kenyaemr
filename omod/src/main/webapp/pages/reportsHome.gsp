@@ -2,16 +2,9 @@
 	ui.decorateWith("standardKenyaEmrPage")
 %>
 
-<br/>
-
-<% reports.each { %>
-
-	${ ui.includeFragment("widget/button", [
+${ ui.includeFragment("widget/button", [
 		iconProvider: "uilibrary",
 		icon: "chart_32.png",
-		label: it.name, 
-		href: ui.pageLink("reportsRunMonthlyIndicatorReport", [ manager: it.uuid ])
+		label: "MOH 731 Indicator Report",
+		href: ui.pageLink("reportsRunMonthlyIndicatorReport", [ manager: "org.openmrs.module.kenyaemr.report.Moh731Report" ])
 	]) }
-	<br/>
-
-<% } %>

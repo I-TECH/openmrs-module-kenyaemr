@@ -18,6 +18,17 @@
 				optionsValueField: "key",
 				optionsDisplayField: "value"
 			]) }
+		
+		<br/>
+		<br/>
+		${ ui.includeFragment("widget/radioButtons", [
+				formFieldName: "mode",
+				options: [
+					[ value: "view", label: "View online" ],
+					[ value: "excel", label: "Download as Excel" ]
+				],
+				selected: "view"
+			]) }
 			
 		<br/>
 		<br/>

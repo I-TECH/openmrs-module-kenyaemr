@@ -13,11 +13,15 @@
  */
 package org.openmrs.module.kenyaemr.report;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Concept;
@@ -34,6 +38,7 @@ import org.openmrs.module.reporting.cohort.definition.ProgramEnrollmentCohortDef
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.definition.DefinitionSummary;
+import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.evaluation.parameter.Parameterizable;
@@ -41,7 +46,7 @@ import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.openmrs.module.reporting.indicator.dimension.CohortDefinitionDimension;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
-import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
+import org.openmrs.util.OpenmrsClassLoader;
 import org.springframework.stereotype.Component;
 
 
@@ -199,15 +204,39 @@ public class Moh731Report implements IndicatorReportManager {
 
 		dsd.addDimension("age", map(dimensions.get("age"), "date=${endDate}"));
 		
-		dsd.addColumn("3.1", "Enrolled in Care", map(indicators.get("enrolledInCare"), "startDate=${startDate},endDate=${endDate}"), "");
-		dsd.addColumn("3.1 (15+)", "Enrolled in Care (15+)", map(indicators.get("enrolledInCare"), "startDate=${startDate},endDate=${endDate}"), "age=15+");
-		dsd.addColumn("3.1 (<15)", "Enrolled in Care (<15)", map(indicators.get("enrolledInCare"), "startDate=${startDate},endDate=${endDate}"), "age=<15");
+		dsd.addColumn("3.2", "Enrolled in Care", map(indicators.get("enrolledInCare"), "startDate=${startDate},endDate=${endDate}"), "");
+		dsd.addColumn("3.2 (15+)", "Enrolled in Care (15+)", map(indicators.get("enrolledInCare"), "startDate=${startDate},endDate=${endDate}"), "age=15+");
+		dsd.addColumn("3.2 (<15)", "Enrolled in Care (<15)", map(indicators.get("enrolledInCare"), "startDate=${startDate},endDate=${endDate}"), "age=<15");
 	    
 	    return dsd;
     }
 
     private <T extends Parameterizable> Mapped<T> map(T parameterizable, String mappings) {
     	return new Mapped<T>(parameterizable, ParameterizableUtil.createParameterMappings(mappings));
+    }
+    
+    /**
+     * @see org.openmrs.module.kenyaemr.report.IndicatorReportManager#getExcelTemplate()
+     */
+    @Override
+    public byte[] getExcelTemplate() {
+    	try {
+	    	InputStream is = OpenmrsClassLoader.getInstance().getResourceAsStream("Moh731Report.xls");
+	    	byte[] contents = IOUtils.toByteArray(is);
+			IOUtils.closeQuietly(is);
+			return contents;
+    	} catch (IOException ex) {
+    		throw new RuntimeException("Error loading excel template", ex);
+    	}
+    }
+    
+    /**
+     * @see org.openmrs.module.kenyaemr.report.IndicatorReportManager#getExcelFilename(org.openmrs.module.reporting.evaluation.EvaluationContext)
+     */
+    @Override
+    public String getExcelFilename(EvaluationContext ec) {
+        SimpleDateFormat df = new SimpleDateFormat("yM");
+        return NAME_PREFIX + " " + df.format(ec.getParameterValue("startDate")) + ".xls";
     }
 
 }
