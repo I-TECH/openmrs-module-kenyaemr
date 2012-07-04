@@ -50,12 +50,8 @@ public class AvailableFormsFragmentController {
 		Program hivProgram = Context.getProgramWorkflowService().getPrograms("HIV Program").get(0);
 		
 		List<AvailableFormConfig> forms = new ArrayList<AvailableFormConfig>();
-		forms.add(new AvailableFormConfig(MetadataConstants.MOH_257_REGISTRATION_FORM_UUID, Frequency.PROGRAM, hivProgram));
 		forms.add(new AvailableFormConfig(MetadataConstants.MOH_257_ENCOUNTER_TRIAGE_FORM_UUID, Frequency.VISIT, null));
-		forms.add(new AvailableFormConfig(MetadataConstants.MOH_257_TRANSFER_OUT_AND_DEATH_FORM_UUID, Frequency.PROGRAM, hivProgram));
 		forms.add(new AvailableFormConfig(MetadataConstants.MOH_257_ART_TREATMENT_INTERUPTION_FORM_UUID, Frequency.UNLIMITED, hivProgram));
-		forms.add(new AvailableFormConfig(MetadataConstants.MOH_257_ENROLLMENT_TRANSFER_IN_FORM_UUID, Frequency.PROGRAM, hivProgram));
-		forms.add(new AvailableFormConfig(MetadataConstants.MOH_257_ENROLLMENT_NEW_TO_HIV_CARE_FORM_UUID, Frequency.PROGRAM, hivProgram));
 		forms.add(new AvailableFormConfig(MetadataConstants.MOH_257_ENCOUNTER_PREGNANCY_DETAILS_FORM_UUID, Frequency.VISIT, hivProgram));
 		forms.add(new AvailableFormConfig(MetadataConstants.MOH_257_ENCOUNTER_PATIENTS_DEMOGRAPHICS_FORM_UUID, Frequency.VISIT, hivProgram));
 		forms.add(new AvailableFormConfig(MetadataConstants.MOH_257_ENCOUNTER_CLINICAL_NOTE_FORM_FORM_UUID, Frequency.VISIT, hivProgram));

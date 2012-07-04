@@ -34,13 +34,8 @@ public class MetadataConstants {
 	public static final String REGISTRATION_ENCOUNTER_TYPE_UUID = "de1f9d67-b73e-4e1b-90d0-036166fc6995";
 	
 	// HTML Forms
-	public static final String MOH_257_REGISTRATION_FORM_UUID = "c7867d4f-6c10-4034-b37f-4da79e79af63";                                  
-	//public static final String MOH_257_PATIENT_HISTORY_FORM_UUID = "960066b5-508d-4ca4-adb3-31859417544e";                               
 	public static final String MOH_257_ENCOUNTER_TRIAGE_FORM_UUID = "37f6bd8d-586a-4169-95fa-5781f987fe62";                            
-	public static final String MOH_257_TRANSFER_OUT_AND_DEATH_FORM_UUID = "1c34fb36-834a-4d11-b21e-4e75a968f07b";                        
 	public static final String MOH_257_ART_TREATMENT_INTERUPTION_FORM_UUID = "9e560607-cb99-46b0-8599-5d06110b4742";                     
-	public static final String MOH_257_ENROLLMENT_TRANSFER_IN_FORM_UUID = "6d60a39d-3963-4da8-854a-35939b67a473";                      
-	public static final String MOH_257_ENROLLMENT_NEW_TO_HIV_CARE_FORM_UUID = "8515c87b-e9f5-430b-ad08-cc1f0fe1626d";                  
 	public static final String MOH_257_ENCOUNTER_PREGNANCY_DETAILS_FORM_UUID = "c136f6e0-ecd0-4f9e-beeb-a5cab6161f44";                 
 	public static final String MOH_257_ENCOUNTER_PATIENTS_DEMOGRAPHICS_FORM_UUID = "8be821d9-8535-4715-9408-6c3112e8245a";             
 	public static final String MOH_257_ENCOUNTER_CLINICAL_NOTE_FORM_FORM_UUID = "0038a296-62f8-4099-80e5-c9ea7590c157";                

@@ -34,6 +34,7 @@ import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.DateObsCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.ProgramEnrollmentCohortDefinition;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
@@ -122,12 +123,31 @@ public class Moh731Report implements IndicatorReportManager {
 	private void setupCohortDefinitions() {
 		cohortDefinitions = new HashMap<String, CohortDefinition>();
 		{
+			GenderCohortDefinition cd = new GenderCohortDefinition();
+			cd.setName("Gender = Male");
+			cd.setMaleIncluded(true);
+			cohortDefinitions.put("gender.M", cd);
+		}
+		{
+			GenderCohortDefinition cd = new GenderCohortDefinition();
+			cd.setName("Gender = Female");
+			cd.setFemaleIncluded(true);
+			cohortDefinitions.put("gender.F", cd);
+		}
+		{
 			AgeCohortDefinition cd = new AgeCohortDefinition();
-			cd.setName("Age < 15");
+			cd.setName("Age < 1");
 			cd.addParameter(new Parameter("effectiveDate", "Date", Date.class));
-			cd.setMinAge(0);
+			cd.setMaxAge(0);
+			cohortDefinitions.put("age.<1", cd);
+		}
+		{
+			AgeCohortDefinition cd = new AgeCohortDefinition();
+			cd.setName("Age 1 to 14");
+			cd.addParameter(new Parameter("effectiveDate", "Date", Date.class));
+			cd.setMinAge(1);
 			cd.setMaxAge(14);
-			cohortDefinitions.put("age.<15", cd);
+			cohortDefinitions.put("age.1to14", cd);
 		}
 		{
 			AgeCohortDefinition cd = new AgeCohortDefinition();
@@ -167,11 +187,19 @@ public class Moh731Report implements IndicatorReportManager {
 		dimensions = new HashMap<String, CohortDefinitionDimension>();
 		{
 		    CohortDefinitionDimension dim = new CohortDefinitionDimension();
-		    dim.setName("Age (<15, 15+)");
+		    dim.setName("Age (<1, 1-14, 15+)");
 		    dim.addParameter(new Parameter("date", "Date", Date.class));
-		    dim.addCohortDefinition("<15", map(cohortDefinitions.get("age.<15"), "effectiveDate=${date}"));
+		    dim.addCohortDefinition("<1", map(cohortDefinitions.get("age.<1"), "effectiveDate=${date}"));
+		    dim.addCohortDefinition("1to14", map(cohortDefinitions.get("age.1to14"), "effectiveDate=${date}"));
 		    dim.addCohortDefinition("15+", map(cohortDefinitions.get("age.15+"), "effectiveDate=${date}"));
 		    dimensions.put("age", dim);
+		}
+		{
+		    CohortDefinitionDimension dim = new CohortDefinitionDimension();
+		    dim.setName("Gender");
+		    dim.addCohortDefinition("M", map(cohortDefinitions.get("gender.M"), null));
+		    dim.addCohortDefinition("F", map(cohortDefinitions.get("gender.F"), null));
+		    dimensions.put("gender", dim);
 		}
 	}
 	
@@ -203,15 +231,22 @@ public class Moh731Report implements IndicatorReportManager {
 		dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
 
 		dsd.addDimension("age", map(dimensions.get("age"), "date=${endDate}"));
+		dsd.addDimension("gender", map(dimensions.get("gender"), null));
 		
 		dsd.addColumn("3.2", "Enrolled in Care", map(indicators.get("enrolledInCare"), "startDate=${startDate},endDate=${endDate}"), "");
-		dsd.addColumn("3.2 (15+)", "Enrolled in Care (15+)", map(indicators.get("enrolledInCare"), "startDate=${startDate},endDate=${endDate}"), "age=15+");
-		dsd.addColumn("3.2 (<15)", "Enrolled in Care (<15)", map(indicators.get("enrolledInCare"), "startDate=${startDate},endDate=${endDate}"), "age=<15");
+		dsd.addColumn("3.2-under1", "Enrolled in Care (<1)", map(indicators.get("enrolledInCare"), "startDate=${startDate},endDate=${endDate}"), "age=<1");
+		dsd.addColumn("3.2-1to14-M", "Enrolled in Care (1-14, Male)", map(indicators.get("enrolledInCare"), "startDate=${startDate},endDate=${endDate}"), "gender=M|age=1to14");
+		dsd.addColumn("3.2-1to14-F", "Enrolled in Care (1-14, Female)", map(indicators.get("enrolledInCare"), "startDate=${startDate},endDate=${endDate}"), "gender=F|age=1to14");
+		dsd.addColumn("3.2-15+-M", "Enrolled in Care (15+, Male)", map(indicators.get("enrolledInCare"), "startDate=${startDate},endDate=${endDate}"), "gender=M|age=15+");
+		dsd.addColumn("3.2-15+-F", "Enrolled in Care (15+, Female)", map(indicators.get("enrolledInCare"), "startDate=${startDate},endDate=${endDate}"), "gender=F|age=15+");
 	    
 	    return dsd;
     }
 
     private <T extends Parameterizable> Mapped<T> map(T parameterizable, String mappings) {
+    	if (mappings == null) {
+    		mappings = ""; // probably not necessary, just to be safe
+    	}
     	return new Mapped<T>(parameterizable, ParameterizableUtil.createParameterMappings(mappings));
     }
     
