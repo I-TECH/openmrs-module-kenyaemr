@@ -235,7 +235,7 @@ public class Moh731Report implements IndicatorReportManager {
      */
     @Override
     public String getExcelFilename(EvaluationContext ec) {
-        SimpleDateFormat df = new SimpleDateFormat("yM");
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM");
         return NAME_PREFIX + " " + df.format(ec.getParameterValue("startDate")) + ".xls";
     }
 
