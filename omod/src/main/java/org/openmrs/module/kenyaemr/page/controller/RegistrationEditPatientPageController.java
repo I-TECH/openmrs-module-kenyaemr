@@ -24,8 +24,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class RegistrationEditPatientPageController {
 	
 	public void controller(@RequestParam("patientId") Patient patient,
+	                       @RequestParam(required = false, value = "returnUrl") String returnUrl,
 	                       PageModel model) {
 		model.addAttribute("patient", patient);
+		model.addAttribute("returnUrl", returnUrl);
 	}
 	
 }

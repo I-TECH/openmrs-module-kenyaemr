@@ -23,10 +23,12 @@
 								]) }">Edit</a>
 						</div>"""
 		}
+		
+		def title = enrollment.dateCompleted ? "<i>[Discontinued]</i> ${ ui.format(program) }" : ui.format(program)
 			
 		return """
 			<fieldset class="editable">
-				<legend>${ ui.format(program) }</legend>
+				<legend>${ title }</legend>
 				${ editHtml }
 		
 				Enrolled: ${ ui.format(enrollment.dateEnrolled) } <br/>

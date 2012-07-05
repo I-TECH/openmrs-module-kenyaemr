@@ -43,7 +43,6 @@
 			iconProvider: it.iconProvider,
 			icon: it.icon,
 			label: it.label,
-			classes: [ "padded" ],
 			onClick: "enterHtmlForm(" + it.htmlFormId + ", '" + it.label + "');"
 		]) }
 		<br/>

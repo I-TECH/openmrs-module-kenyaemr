@@ -1,4 +1,6 @@
 <%
+	def returnUrl = config.returnUrl ?: (command.original ? ui.pageLink("registrationViewPatient", [patientId: command.original.patientId]) : ui.pageLink("registrationHome"))  
+	
 	def nameFields = [
 		[ object: command, property: "personName.givenName", label: "Given Name" ],
 		[ object: command, property: "personName.familyName", label: "Family Name" ]
@@ -92,17 +94,17 @@ jq(function() {
 	jq('#edit-patient-form .button').button();
 	
 	jq('#edit-patient-form .cancel-button').click(function() {
-		<% if (command.original) { %>
-			location.href = '${ ui.pageLink("registrationViewPatient", [patientId: command.original.patientId]) }';
-		<% } else { %>
-			location.href = '${ ui.pageLink("registrationHome") }';
-		<% } %>
+		location.href = '${ returnUrl }';
 	});
 	
 	ui.setupAjaxPost('#edit-patient-form', {
 		onSuccess: function(data) {
 			if (data.patientId) {
-				location.href = pageLink('registrationViewPatient', { patientId: data.patientId });
+				<% if (returnUrl.indexOf('patientId') > 0) { %>
+					location.href = '${ returnUrl }';
+				<% } else { %>
+					location.href = pageLink('registrationViewPatient', { patientId: data.patientId });
+				<% } %>
 			} else {
 				notifyError('Saving patient was successful, but unexpected response');
 				debugObject(data);

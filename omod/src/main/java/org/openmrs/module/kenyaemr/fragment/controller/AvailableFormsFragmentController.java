@@ -30,7 +30,6 @@ import org.openmrs.PatientProgram;
 import org.openmrs.Program;
 import org.openmrs.Visit;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.appframework.AppDescriptor;
 import org.openmrs.module.appframework.AppUiUtil;
 import org.openmrs.module.htmlformentry.HtmlForm;
 import org.openmrs.module.htmlformentry.HtmlFormEntryService;
@@ -50,19 +49,25 @@ public class AvailableFormsFragmentController {
 		Program hivProgram = Context.getProgramWorkflowService().getPrograms("HIV Program").get(0);
 		
 		List<AvailableFormConfig> forms = new ArrayList<AvailableFormConfig>();
-		forms.add(new AvailableFormConfig(MetadataConstants.MOH_257_ENCOUNTER_TRIAGE_FORM_UUID, Frequency.VISIT, null));
-		forms.add(new AvailableFormConfig(MetadataConstants.MOH_257_ART_TREATMENT_INTERUPTION_FORM_UUID, Frequency.UNLIMITED, hivProgram));
-		forms.add(new AvailableFormConfig(MetadataConstants.MOH_257_ENCOUNTER_PREGNANCY_DETAILS_FORM_UUID, Frequency.VISIT, hivProgram));
-		forms.add(new AvailableFormConfig(MetadataConstants.MOH_257_ENCOUNTER_PATIENTS_DEMOGRAPHICS_FORM_UUID, Frequency.VISIT, hivProgram));
-		forms.add(new AvailableFormConfig(MetadataConstants.MOH_257_ENCOUNTER_CLINICAL_NOTE_FORM_FORM_UUID, Frequency.VISIT, hivProgram));
-		forms.add(new AvailableFormConfig(MetadataConstants.MOH_257_ENCOUNTER_TB_SCREENING_FORM_UUID, Frequency.VISIT, hivProgram));
-		forms.add(new AvailableFormConfig(MetadataConstants.MOH_257_ENCOUNTER_CLINICAL_ENCOUNTER_FORM_FORM_UUID, Frequency.VISIT, hivProgram));
-		forms.add(new AvailableFormConfig(MetadataConstants.MOH_257_ENCOUNTER_IMPRESSIONS_AND_DIAGNOSES_FORM_UUID, Frequency.VISIT, hivProgram));
-		forms.add(new AvailableFormConfig(MetadataConstants.MOH_257_ENCOUNTER_DECISION_POINTS_FORM_UUID, Frequency.VISIT, hivProgram));
-		forms.add(new AvailableFormConfig(MetadataConstants.MOH_257_ENCOUNTER_ORDER_LAB_INVESTIGATIONS_FORM_UUID, Frequency.UNLIMITED, hivProgram));
-		forms.add(new AvailableFormConfig(MetadataConstants.MOH_257_ENCOUNTER_MEDICATION_ORDERS_FORM_UUID, Frequency.UNLIMITED, hivProgram));
-		forms.add(new AvailableFormConfig(MetadataConstants.MOH_257_ENCOUNTER_PAST_MEDICAL_AND_SURGICAL_HISTORY_FORM_UUID, Frequency.PROGRAM, hivProgram));
-		forms.add(new AvailableFormConfig(MetadataConstants.MOH_257_ENCOUNTER_ART_HISTORY_FORM_UUID, Frequency.PROGRAM, hivProgram));
+		String currentApp = AppUiUtil.getCurrentApp(session).getApp().getId();
+		
+		if ("kenyaemr.registration".equals(currentApp)) {
+			forms.add(new AvailableFormConfig(MetadataConstants.TRIAGE_FORM_UUID, Frequency.VISIT, null));
+		} else if ("kenyaemr.intake".equals(currentApp)) {
+			forms.add(new AvailableFormConfig(MetadataConstants.TRIAGE_FORM_UUID, Frequency.VISIT, null));
+			forms.add(new AvailableFormConfig(MetadataConstants.TB_SCREENING_FORM_UUID, Frequency.VISIT, hivProgram));
+			forms.add(new AvailableFormConfig(MetadataConstants.PROGRESS_NOTE_FORM_UUID, Frequency.VISIT, null));
+			forms.add(new AvailableFormConfig(MetadataConstants.MOH_257_ENCOUNTER_ORDER_LAB_INVESTIGATIONS_FORM_UUID, Frequency.UNLIMITED, hivProgram));
+		} else {
+			//forms.add(new AvailableFormConfig(MetadataConstants.TRIAGE_FORM_UUID, Frequency.VISIT, null));
+			forms.add(new AvailableFormConfig(MetadataConstants.CLINICAL_ENCOUNTER_FORM_UUID, Frequency.VISIT, null));
+			forms.add(new AvailableFormConfig(MetadataConstants.CLINICAL_ENCOUNTER_HIV_ADDENDUM_FORM_UUID, Frequency.VISIT, hivProgram));
+			forms.add(new AvailableFormConfig(MetadataConstants.TB_SCREENING_FORM_UUID, Frequency.VISIT, hivProgram));
+			forms.add(new AvailableFormConfig(MetadataConstants.PROGRESS_NOTE_FORM_UUID, Frequency.VISIT, null));
+			forms.add(new AvailableFormConfig(MetadataConstants.MOH_257_ENCOUNTER_ORDER_LAB_INVESTIGATIONS_FORM_UUID, Frequency.UNLIMITED, hivProgram));
+			forms.add(new AvailableFormConfig(MetadataConstants.MOH_257_ENCOUNTER_PAST_MEDICAL_AND_SURGICAL_HISTORY_FORM_UUID, Frequency.VISIT, null));
+			forms.add(new AvailableFormConfig(MetadataConstants.MOH_257_ENCOUNTER_ART_HISTORY_FORM_UUID, Frequency.PROGRAM, hivProgram));
+		}
 		
 		List<Encounter> encounters = new ArrayList<Encounter>(visit.getEncounters());
 		CollectionUtils.filter(encounters, new Predicate() {

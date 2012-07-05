@@ -34,19 +34,22 @@ public class MetadataConstants {
 	public static final String REGISTRATION_ENCOUNTER_TYPE_UUID = "de1f9d67-b73e-4e1b-90d0-036166fc6995";
 	
 	// HTML Forms
-	public static final String MOH_257_ENCOUNTER_TRIAGE_FORM_UUID = "37f6bd8d-586a-4169-95fa-5781f987fe62";                            
-	public static final String MOH_257_ART_TREATMENT_INTERUPTION_FORM_UUID = "9e560607-cb99-46b0-8599-5d06110b4742";                     
-	public static final String MOH_257_ENCOUNTER_PREGNANCY_DETAILS_FORM_UUID = "c136f6e0-ecd0-4f9e-beeb-a5cab6161f44";                 
-	public static final String MOH_257_ENCOUNTER_PATIENTS_DEMOGRAPHICS_FORM_UUID = "8be821d9-8535-4715-9408-6c3112e8245a";             
-	public static final String MOH_257_ENCOUNTER_CLINICAL_NOTE_FORM_FORM_UUID = "0038a296-62f8-4099-80e5-c9ea7590c157";                
-	public static final String MOH_257_ENCOUNTER_TB_SCREENING_FORM_UUID = "59ed8e62-7f1f-40ae-a2e3-eabe350277ce";                      
-	public static final String MOH_257_ENCOUNTER_CLINICAL_ENCOUNTER_FORM_FORM_UUID = "e958f902-64df-4819-afd4-7fb061f59308";           
-	public static final String MOH_257_ENCOUNTER_IMPRESSIONS_AND_DIAGNOSES_FORM_UUID = "46c5acb5-e4ae-4a4a-a9e5-6debf52cd773";         
-	public static final String MOH_257_ENCOUNTER_DECISION_POINTS_FORM_UUID = "5ddb20c1-cd21-49cd-aba2-6bc62e367baf";                   
-	public static final String MOH_257_ENCOUNTER_ORDER_LAB_INVESTIGATIONS_FORM_UUID = "7e603909-9ed5-4d0c-a688-26ecb05d8b6e";          
-	public static final String MOH_257_ENCOUNTER_MEDICATION_ORDERS_FORM_UUID = "01f3aa8d-d0b5-4252-a7eb-059fec6633e9";                 
-	public static final String MOH_257_ENCOUNTER_PAST_MEDICAL_AND_SURGICAL_HISTORY_FORM_UUID = "4a0d1332-490e-439f-9d14-c782143c94de"; 
-	public static final String MOH_257_ENCOUNTER_ART_HISTORY_FORM_UUID = "b388cd66-8e08-4e8f-97de-7cf10023ed0f";                       
+	public static final String HIV_PROGRAM_ENROLLMENT_FORM_UUID = "e4b506c1-7379-42b6-a374-284469cba8da";
+	public static final String HIV_PROGRAM_DISCONTINUATION_FORM_UUID = "e3237ede-fa70-451f-9e6c-0908bc39f8b9";
+	public static final String TRIAGE_FORM_UUID = "37f6bd8d-586a-4169-95fa-5781f987fe62";
+	public static final String CLINICAL_ENCOUNTER_FORM_UUID = "e958f902-64df-4819-afd4-7fb061f59308";
+	public static final String CLINICAL_ENCOUNTER_HIV_ADDENDUM_FORM_UUID = "bd598114-4ef4-47b1-a746-a616180ccfc0";
+	public static final String TB_SCREENING_FORM_UUID = "59ed8e62-7f1f-40ae-a2e3-eabe350277ce";
+	public static final String PROGRESS_NOTE_FORM_UUID = "0038a296-62f8-4099-80e5-c9ea7590c157";
+	public static final String MOH_257_ENCOUNTER_ART_HISTORY_FORM_UUID = "b388cd66-8e08-4e8f-97de-7cf10023ed0f";
+	public static final String MOH_257_ENCOUNTER_ORDER_LAB_INVESTIGATIONS_FORM_UUID = "7e603909-9ed5-4d0c-a688-26ecb05d8b6e";
+	public static final String MOH_257_ENCOUNTER_PAST_MEDICAL_AND_SURGICAL_HISTORY_FORM_UUID = "4a0d1332-490e-439f-9d14-c782143c94de";
+	//public static final String MOH_257_ART_TREATMENT_INTERUPTION_FORM_UUID = "9e560607-cb99-46b0-8599-5d06110b4742";
+	//public static final String MOH_257_ENCOUNTER_PREGNANCY_DETAILS_FORM_UUID = "c136f6e0-ecd0-4f9e-beeb-a5cab6161f44";
+	//public static final String MOH_257_ENCOUNTER_PATIENTS_DEMOGRAPHICS_FORM_UUID = "8be821d9-8535-4715-9408-6c3112e8245a";        
+	//public static final String MOH_257_ENCOUNTER_IMPRESSIONS_AND_DIAGNOSES_FORM_UUID = "46c5acb5-e4ae-4a4a-a9e5-6debf52cd773";
+	//public static final String MOH_257_ENCOUNTER_DECISION_POINTS_FORM_UUID = "5ddb20c1-cd21-49cd-aba2-6bc62e367baf";         
+	//public static final String MOH_257_ENCOUNTER_MEDICATION_ORDERS_FORM_UUID = "01f3aa8d-d0b5-4252-a7eb-059fec6633e9";            
 	
 	// Locations
 	public static final String UNKNOWN_LOCATION_UUID = "8d6c993e-c2cc-11de-8d13-0010c6dffd0f";

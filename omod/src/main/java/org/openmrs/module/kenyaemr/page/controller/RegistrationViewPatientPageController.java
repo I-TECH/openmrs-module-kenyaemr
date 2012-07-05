@@ -13,12 +13,10 @@
  */
 package org.openmrs.module.kenyaemr.page.controller;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import org.openmrs.Patient;
-import org.openmrs.PatientProgram;
 import org.openmrs.Program;
 import org.openmrs.Visit;
 import org.openmrs.api.PatientService;
@@ -48,10 +46,7 @@ public class RegistrationViewPatientPageController {
 		model.addAttribute("MC", new MetadataConstants());		
 		model.addAttribute("patient", patient);
 		model.addAttribute("person", patient);
-		
-		model.addAttribute("clinicNumberIdType", ps.getPatientIdentifierTypeByUuid(MetadataConstants.PATIENT_CLINIC_NUMBER_UUID));
-		model.addAttribute("hivNumberIdType", ps.getPatientIdentifierTypeByUuid(MetadataConstants.UNIQUE_PATIENT_NUMBER_UUID));
-		
+				
 		List<Visit> activeVisits = Context.getVisitService().getActiveVisitsByPatient(patient);
 
 		model.addAttribute("activeVisits", activeVisits);
@@ -68,10 +63,6 @@ public class RegistrationViewPatientPageController {
 			newVisit.setStartDatetime(new Date());
 			model.addAttribute("newCurrentVisit", newVisit);
 		}
-		
-		ProgramWorkflowService pws = Context.getProgramWorkflowService(); 
-		Program hivProgram = pws.getPrograms("HIV Program").get(0);
-		model.addAttribute("hivProgram", hivProgram);
 	}
 	
 }

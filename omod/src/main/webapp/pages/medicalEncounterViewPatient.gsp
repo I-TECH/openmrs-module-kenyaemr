@@ -1,5 +1,7 @@
 <%
 	ui.decorateWith("standardKenyaEmrPage", [ patient: patient ])
+	
+	ui.includeCss("kenyaemr", "kenyaemr.css");
 %>
 
 <style>
@@ -10,15 +12,14 @@
 	#col1 {
 		float: left;
 		padding-right: 4px;
-		width: 30%;
+		width: 38%;
 	}
 	
 	#col2 {
 		float: left;
 		padding-left: 0.5em;
 		border-left: 1px black solid;
-		width: 68%;
-		height: 100%;
+		width: 60%;
 	}
 	
 	.active-visit {
@@ -48,35 +49,11 @@
 </style>
 
 <div id="col1">
-	<fieldset>
-		<legend>
-			Summary
-			<a href="#">(more info TODO)</a>
-		</legend>
-		
-		TODO: Summary of high-value clinical data
-	</fieldset>
-
-	<% activeVisits.each { v ->
-		def selected = v == visit
-	%>
-		<div id="visit-${ v.id }" class="active-visit <% if (selected) { %>selected-visit<% } else { %>selectable<% } %>">
-			<h4>
-				<img src="${ ui.resourceLink("kenyaemr", "images/checked_in_16.png") }"/>
-				${ ui.format(v.visitType) }
-			</h4>
-			Location: ${ ui.format(v.location) } <br/>
-			Start: ${ ui.format(v.startDatetime) } <br/>
-			End: ${ v.stopDatetime ? ui.format(v.stopDatetime) : "<i>ongoing</i>" } <br/>
-			<% if (!selected) { %>
-				<script>
-					jq('#visit-${ v.id }').click(function() {
-						location.href = '${ ui.escapeJs(ui.pageLink("medicalEncounterViewPatient", [ patientId: patient.id, visitId: v.id ])) }';
-					});
-				</script>
-			<% } %>
-		</div>
-	<% } %>
+	${ ui.includeFragment("patientOverallDetails", [
+			patient: patient,
+			visit: visit,
+			activeVisits: activeVisits
+		]) }
 </div>
 
 <div id="col2" <% if (visit) { %>class="selected-visit"<% } %>>
@@ -85,9 +62,9 @@
 	<% } %>
 	
 	<% if (visit) { %>
-	
-		${ ui.includeFragment("availableForms", [ visit: visit ]) }
-	
+
+		${ ui.includeFragment("availableForms", [ visit: visit ]) }	
+		
 	<% } else { %>
 
 		${ ui.includeFragment("widget/button", [

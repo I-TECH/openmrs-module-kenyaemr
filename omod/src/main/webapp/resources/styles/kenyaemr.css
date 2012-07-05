@@ -1,0 +1,48 @@
+#patient-col1 {
+	float: left;
+	padding-right: 4px;
+	width: 38%;
+}
+
+#patient-col2 {
+	float: left;
+	padding-left: 0.5em;
+	border-left: 1px black solid;
+	width: 60%;
+}
+
+.patient-summary-box .person-name,
+.patient-summary-box .demographics,
+.patient-summary-box .identifiers,
+.patient-summary-box .attributes {
+	margin-bottom: 0.5em;
+}
+
+.patient-summary-box .person-name {
+	font-weight: bold;
+}
+
+.patient-summary-box .identifier-type,
+.patient-summary-box .attribute-type {
+	font-size: 0.8em;
+	color: #808080;
+}
+
+.patient-summary-box .identifier-value,
+.patient-summary-box .attribute-value {
+}
+
+.editable {
+	position: relative;
+}
+
+.editable .edit-button {
+	position: absolute;
+	top: 0.5em;
+	right: 0.3em;
+	font-size: 0.8em;
+}
+
+.padded {
+	padding: 1em;
+}
