@@ -15,5 +15,6 @@
 ${ ui.includeFragment("enterHtmlForm", [
 		patient: patient,
 		formUuid: formUuid,
+		htmlFormId: htmlFormId,
 		returnUrl: returnUrl
 	]) }

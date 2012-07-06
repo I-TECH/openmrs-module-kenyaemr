@@ -24,10 +24,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class EnterHtmlFormPageController {
 
 	public void controller(@RequestParam("patientId") Patient patient,
-	                       @RequestParam("formUuid") String formUuid,
+	                       @RequestParam(required = false, value = "formUuid") String formUuid,
+	                       @RequestParam(required = false, value = "htmlFormId") String htmlFormId,
 	                       @RequestParam("returnUrl") String returnUrl,
 	                       PageModel model) {
 		model.addAttribute("formUuid", formUuid);
+		model.addAttribute("htmlFormId", htmlFormId);
 		model.addAttribute("patient", patient);
 		model.addAttribute("person", patient);
 		model.addAttribute("returnUrl", returnUrl);

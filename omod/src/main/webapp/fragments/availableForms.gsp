@@ -22,6 +22,7 @@
 	});
 
 	function enterHtmlForm(htmlFormId, title) {
+		/*
 		showDialog({
 			title: title,
 			fragment: "enterHtmlForm",
@@ -30,6 +31,12 @@
 				htmlFormId: htmlFormId
 			}
 		});
+		*/
+		location.href = ui.pageLink('enterHtmlForm', {
+				patientId: ${ patient.id },
+				htmlFormId: htmlFormId,
+				returnUrl: '${ ui.thisUrl() }'
+			});
 	}
 </script>
 
