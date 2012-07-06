@@ -13,7 +13,7 @@
 		${ ui.message("Patient.gender." + (patient.gender == 'M' ? 'male' : 'female')) },
 		${ patient.age } year(s)<br/>
 		Born:
-		<% if (patient.birthdateEstimated) { %>~<% } %>
+		<% if (patient.birthdateEstimated) { %><i>approx</i><% } %>
 		${ ui.format(patient.birthdate) }
 	</div>
 	

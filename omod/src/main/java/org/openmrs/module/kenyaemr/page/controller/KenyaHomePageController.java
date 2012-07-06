@@ -52,8 +52,8 @@ public class KenyaHomePageController {
 		
 		AppFrameworkService appService = Context.getService(AppFrameworkService.class);
 		List<AppDescriptor> apps = appService.getAppsForUser(Context.getAuthenticatedUser());
-		// since I haven't implemented a UI for enabling apps yet, show all apps for testing:
 		if (apps.size() == 0) {
+			// for testing purposes, if we haven't configured this, show all apps
 			apps.addAll(appService.getAllApps());
 		}
 		Collections.sort(apps, new Comparator<AppDescriptor>() {
@@ -82,7 +82,6 @@ public class KenyaHomePageController {
 		});
 
 		model.addAttribute("apps", apps);
-		model.addAttribute("currentApp", AppUiUtil.getCurrentApp(session));
 		model.addAttribute("patient", patient);
 		
 		return null; // default view

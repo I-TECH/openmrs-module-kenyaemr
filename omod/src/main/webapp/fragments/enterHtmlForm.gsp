@@ -3,6 +3,7 @@
 
 ui.includeJavascript("jquery.js")
 ui.includeJavascript("jquery-ui.js")
+ui.includeJavascript("dwr-util.js")
 %>
 
 <script type="text/javascript" src="/${ contextPath }/moduleResources/htmlformentry/htmlFormEntry.js"></script>
@@ -205,3 +206,9 @@ ui.includeJavascript("jquery-ui.js")
 		</div>
 	</form>
 </div>
+
+<% if (command.fieldAccessorJavascript) { %>
+	<script type="text/javascript">
+		${ command.fieldAccessorJavascript }
+	</script>
+<% } %>

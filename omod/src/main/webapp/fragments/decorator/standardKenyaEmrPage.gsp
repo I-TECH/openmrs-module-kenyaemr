@@ -15,7 +15,7 @@
 	config.beforeContent += ui.includeFragment("kenyaRunningApp", config)
 
 	if (config.patient) {
-		config.beforeContent += ui.includeFragment("selectedPatientHeader")
+		config.beforeContent += ui.includeFragment("selectedPatientHeader", [ closeChartUrl: config.closeChartUrl ])
 	}
 	
 	ui.decorateWith("standardPage", config)

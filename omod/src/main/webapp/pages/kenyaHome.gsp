@@ -1,5 +1,5 @@
 <%
-	ui.decorateWith("standardKenyaEmrPage", [ doNotShowApp: true ])
+	ui.decorateWith("standardKenyaEmrPage", [ doNotShowApp: true, patient: patient, closeChartUrl: ui.pageLink("kenyaHome") ])
 	def APPS_PER_ROW = 3;
 %>
 
@@ -25,49 +25,11 @@
 		text-align: center;
 		padding-top: 0.5em;
 	}
-	
-	#homepage-context {
-		position: relative;
-		margin: 1em;
-		padding: 0.5em;
-		border: 1px grey solid;
-		width: 30em;
-		background-color: lightyellow;
-	}
-	#homepage-context .ui-icon {
-		position: absolute;
-		top: 0;
-		right: 0;
-	}
 </style>
 
 <div id="homepage-welcome-message">
 	Hello ${ ui.format(context.authenticatedUser) }, welcome to the Kenya OpenMRS EMR.
 </div>
-
-<% if (patient || currentApp) { %>
-	<div id="homepage-context">
-		<% if (patient) { %>
-			Selected:
-			<img width="32" height="32" src="${ ui.resourceLink("uilibrary", "images/patient_" + patient.gender + ".gif") }"/>
-			<b>${ ui.format(patient) }</b>
-			<br/>
-		<% } %>
-		<% if (currentApp) { %>
-			Back to:
-			<a href="/${ contextPath }/${ currentApp.app.homepageUrl }<% if (patient) { %>?patientId=${ patient.id }<% } %>">
-				<img width="16" height="16" src="${ ui.resourceLink("uilibrary", "images/arrow_left_16.png") }"/>
-				<% if (currentApp.app.tinyIconUrl) { %>
-					<img src="/${ contextPath }/${ currentApp.app.tinyIconUrl }"/>
-				<% } %>
-				${ currentApp.app.label }
-			</a>
-			<br/>
-		<% } %>
-		
-		<a href="?clearContext=true" class="ui-icon ui-icon-closethick">Clear</a>
-	</div>
-<% } %>
 
 <div id="homepage-apps">	
 	<% apps.eachWithIndex { app, i -> %>

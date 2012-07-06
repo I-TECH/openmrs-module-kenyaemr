@@ -46,6 +46,16 @@
 
 <div id="patient-col2" <% if (visit) { %>class="selected-visit"<% } %>>
 
+<% /* Bill wants this, but I really don't think it fits. Consider putting in gray bar instead
+	<div style="float: right">
+		${ ui.includeFragment("widget/button", [
+				iconProvider: "uilibrary",
+				icon: "user_search_32.png",
+				classes: [ "padded" ]
+			]) }
+	</div>
+*/ %>
+
 	<% if (visit) { %>
 
 		<% if (!visit.stopDatetime) { %>
@@ -53,9 +63,9 @@
 				<%= ui.includeFragment("widget/popupForm", [
 					id: "check-out-form",
 					buttonConfig: [
-						label: "Check Out",
-						classes: [ "padded" ],
-						extra: "and Close Visit",
+						label: "End Visit",
+						/* classes: [ "padded" ], */
+						extra: "patient going home",
 						iconProvider: "uilibrary",
 						icon: "user_close_32.png"
 					],

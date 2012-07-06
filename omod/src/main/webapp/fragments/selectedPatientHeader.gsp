@@ -1,3 +1,6 @@
+<%
+	def closeChartUrl = config.closeChartUrl ?: appHomepageUrl
+%>
 <style>
 	#selected-patient-header {
 		border-bottom: 1px black solid;
@@ -37,7 +40,10 @@
 	
 	#selected-patient-header > .close-patient {
 		float: right;
-		padding-left: 2em;
+		padding-left: 0.4em;
+		margin-left: 0.4em;
+		position: relative;
+		top: 3;
 	}
 	
 	.header-identifier-type {
@@ -65,9 +71,9 @@
 		<% } %>
 	</div>
 	
-	<% if (appHomepageUrl) { %>
-		<div class="close-patient">
-			<a href="${ appHomepageUrl }"><img title="Close Chart" src="${ ui.resourceLink("uilibrary", "images/folder_close_32.png") }"/></a>
+	<% if (closeChartUrl) { %>
+		<div class="close-patient selected-visit">
+			<a href="${ closeChartUrl }"><img title="Close Chart" src="${ ui.resourceLink("uilibrary", "images/folder_close_32.png") }"/></a>
 		</div>
 	<% } %>
 
@@ -77,6 +83,6 @@
 			<%= activeVisits.collect { ui.format(it.visitType) }.join(", ") %>
 		<% } %>
 	</div>
-		
+	
 	<div style="clear: both"> </div>
 </div>

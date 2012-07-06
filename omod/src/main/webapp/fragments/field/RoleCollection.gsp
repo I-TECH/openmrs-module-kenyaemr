@@ -10,8 +10,6 @@
 	}
 %>
 
-<pre>${ config.toString() }</pre>
-
 <div id="${ config.id }">
 	<span id="${ config.id }-error" class="error" style="display: none"></span>
 	<% assignableRoles.each { %>

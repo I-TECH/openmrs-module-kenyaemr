@@ -40,21 +40,21 @@
 	}
 </script>
 
-<fieldset>
-	<legend>Fill Out a Form</legend>
-	
-	<% if (!availableForms) { %> None <% } %>
-	
-	<% availableForms.each { %>
-		${ ui.includeFragment("widget/button", [
-			iconProvider: it.iconProvider,
-			icon: it.icon,
-			label: it.label,
-			onClick: "enterHtmlForm(" + it.htmlFormId + ", '" + it.label + "');"
-		]) }
-		<br/>
-	<% } %>
-</fieldset>
+<% if (availableForms) { %>
+	<fieldset>
+		<legend>Fill Out a Form</legend>
+		
+		<% availableForms.each { %>
+			${ ui.includeFragment("widget/button", [
+				iconProvider: it.iconProvider,
+				icon: it.icon,
+				label: it.label,
+				onClick: "enterHtmlForm(" + it.htmlFormId + ", '" + it.label + "');"
+			]) }
+			<br/>
+		<% } %>
+	</fieldset>
+<% } %>
 
 <% if (encounters) { %>
 	<fieldset>

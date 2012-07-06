@@ -19,7 +19,6 @@ import java.util.List;
 import org.openmrs.Patient;
 import org.openmrs.PatientIdentifier;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.appframework.AppStatus;
 import org.openmrs.module.appframework.AppUiUtil;
 import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.ui.framework.WebConstants;

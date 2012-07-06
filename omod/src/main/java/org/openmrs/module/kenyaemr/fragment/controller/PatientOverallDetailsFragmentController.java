@@ -32,8 +32,8 @@ import org.openmrs.ui.framework.fragment.FragmentModel;
 public class PatientOverallDetailsFragmentController {
 	
 	public void controller(@FragmentParam("patient") Patient patient,
-	                       @FragmentParam("visit") Visit visit,
-	                       @FragmentParam("activeVisits") List<Visit> activeVisits,
+	                       @FragmentParam(required=false, value="visit") Visit visit,
+	                       @FragmentParam(required=false, value="activeVisits") List<Visit> activeVisits,
 	                       FragmentModel model) {
 
 		model.addAttribute("patient", patient);

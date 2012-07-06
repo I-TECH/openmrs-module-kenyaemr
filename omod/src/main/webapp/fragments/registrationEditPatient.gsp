@@ -61,15 +61,16 @@
 	
 	<h4>ID Numbers</h4>
 	<table>
-		<% ["patientClinicNumber", "hivIdNumber"].each {
-			def current = command[it].identifier
-		%>
-			<tr>
-				<td>${ ui.format(command[it].identifierType) }</td>
-				<td>${ ui.includeFragment("widget/field", [ object: command, property: it + ".identifier" ]) }</td>
-				<td><% if (!current) { %>(if available)<% } %></td>
-			</tr>
-		<% } %>
+		<tr>
+			<td>${ ui.format(command.patientClinicNumber.identifierType) }</td>
+			<td>${ ui.includeFragment("widget/field", [ object: command, property: "patientClinicNumber.identifier" ]) }</td>
+			<td><% if (!command.patientClinicNumber.identifier) { %>(if available)<% } %></td>
+		</tr>
+		<tr>
+			<td>${ ui.format(command.hivIdNumber.identifierType) }</td>
+			<td>${ ui.includeFragment("widget/field", [ object: command, property: "hivIdNumber.identifier" ]) }</td>
+			<td>(HIV program<% if (!command.hivIdNumber.identifier) { %>, if assigned<% } %>)</td>
+		</tr>
 	</table>
 
 	<h4>Demographics</h4>
