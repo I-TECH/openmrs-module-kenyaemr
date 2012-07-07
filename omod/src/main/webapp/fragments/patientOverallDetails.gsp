@@ -7,7 +7,7 @@
 	</div>
 	
 	<div class="person-name">
-		${ patient.personName }
+		${ ui.includeFragment("kenyaemrPersonName", [ name: patient.personName ]) }
 	</div>
 	<div class="demographics">
 		${ ui.message("Patient.gender." + (patient.gender == 'M' ? 'male' : 'female')) },

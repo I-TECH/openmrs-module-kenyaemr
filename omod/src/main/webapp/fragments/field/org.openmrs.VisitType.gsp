@@ -7,9 +7,9 @@ if (config?.config?.type == 'radio')
 %>
 
 <%= ui.includeFragment("widget/${ widget }", [
-        selected: [config.initialValue],
+        selected: [ config?.initialValue?.id ],
         formFieldName: config.formFieldName,
-        options: context.getVisitService().getAllVisitTypes(),
+        options: context.getVisitService().getAllVisitTypes().findAll { !it.retired },
         optionsDisplayField: 'name',
         optionsValueField: 'id'
 ]) %>

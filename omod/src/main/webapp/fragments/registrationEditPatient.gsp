@@ -2,8 +2,9 @@
 	def returnUrl = config.returnUrl ?: (command.original ? ui.pageLink("registrationViewPatient", [patientId: command.original.patientId]) : ui.pageLink("registrationHome"))  
 	
 	def nameFields = [
-		[ object: command, property: "personName.givenName", label: "Given Name" ],
-		[ object: command, property: "personName.familyName", label: "Family Name" ]
+		[ object: command, property: "personName.familyName", label: "Surname" ],
+		[ object: command, property: "personName.givenName", label: "First Name" ],
+		[ object: command, property: "personName.middleName", label: "Other Name(s)" ]		
 	]
 	
 	def demogFields = [

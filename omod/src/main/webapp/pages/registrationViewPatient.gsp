@@ -110,6 +110,9 @@
 				commandObject: newCurrentVisit,
 				hiddenProperties: [ "patient" ],
 				properties: [ "visitType", "startDatetime" ],
+				fieldConfig: [
+					"visitType": [ label: "Visit Type" ]
+				],
 				propConfig: [
 					"visitType": [ type: "radio" ],
 				],
