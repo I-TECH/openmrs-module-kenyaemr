@@ -21,6 +21,7 @@ import org.openmrs.Program;
 import org.openmrs.Visit;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.ProgramWorkflowService;
+import org.openmrs.api.VisitService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appframework.AppUiUtil;
 import org.openmrs.module.kenyaemr.MetadataConstants;
@@ -46,8 +47,9 @@ public class RegistrationViewPatientPageController {
 		model.addAttribute("MC", new MetadataConstants());		
 		model.addAttribute("patient", patient);
 		model.addAttribute("person", patient);
-				
-		List<Visit> activeVisits = Context.getVisitService().getActiveVisitsByPatient(patient);
+
+		VisitService vs = Context.getVisitService();
+		List<Visit> activeVisits = vs.getActiveVisitsByPatient(patient);
 
 		model.addAttribute("activeVisits", activeVisits);
 		
@@ -61,6 +63,7 @@ public class RegistrationViewPatientPageController {
 			Visit newVisit = new Visit();
 			newVisit.setPatient(patient);
 			newVisit.setStartDatetime(new Date());
+			newVisit.setVisitType(vs.getVisitTypeByUuid(MetadataConstants.OUTPATIENT_VISIT_TYPE_UUID));
 			model.addAttribute("newCurrentVisit", newVisit);
 		}
 	}
