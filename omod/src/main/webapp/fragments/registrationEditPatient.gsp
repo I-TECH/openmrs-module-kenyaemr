@@ -7,12 +7,14 @@
 		[ object: command, property: "personName.middleName", label: "Other Name(s)" ]		
 	]
 	
+	def femaleChecked = command.gender == 'F' ? 'checked="true"' : ''
+	def maleChecked = command.gender == 'M' ? 'checked="true"' : ''
 	def demogFields = [
 		ui.decorate("labeled", [label: "Sex"], """
-			<input type="radio" name="gender" value="F" id="gender-F" checked="${ command.gender == 'F' }"/>
+			<input type="radio" name="gender" value="F" id="gender-F" ${ femaleChecked }/>
 			<label for="gender-F">Female</label>
 			&nbsp;
-			<input type="radio" name="gender" value="M" id="gender-M" checked="${ command.gender == 'M' }"/>
+			<input type="radio" name="gender" value="M" id="gender-M" ${ maleChecked }/>
 			<label for="gender-M">Male</label>
 			<span class="error" style="display: none"></span>
 		"""),
