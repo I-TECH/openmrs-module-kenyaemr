@@ -1,0 +1,122 @@
+/**
+ * The contents of this file are subject to the OpenMRS Public License
+ * Version 1.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ * http://license.openmrs.org
+ *
+ * Software distributed under the License is distributed on an "AS IS"
+ * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+ * License for the specific language governing rights and limitations
+ * under the License.
+ *
+ * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ */
+package org.openmrs.module.kenyaemr.regimen;
+
+import java.util.Date;
+import java.util.List;
+
+import org.openmrs.Concept;
+
+/**
+ *
+ */
+public class RegimenChange {
+	
+	private Date date;
+	
+	private Regimen stopped;
+	
+	private Regimen started;
+	
+	private List<Concept> changeReasons;
+	
+	private List<String> changeReasonsNonCoded;
+	
+	/**
+     * @param date
+     * @param stopped
+     * @param started
+     * @param changeReasons
+     * @param changeReasonsNonCoded
+     */
+    public RegimenChange(Date date, Regimen stopped, Regimen started, List<Concept> changeReasons,
+        List<String> changeReasonsNonCoded) {
+	    this.date = date;
+	    this.stopped = stopped;
+	    this.started = started;
+	    this.changeReasons = changeReasons;
+	    this.changeReasonsNonCoded = changeReasonsNonCoded;
+    }
+
+	/**
+	 * @return the date
+	 */
+	public Date getDate() {
+		return date;
+	}
+	
+	/**
+	 * @param date the date to set
+	 */
+	public void setDate(Date date) {
+		this.date = date;
+	}
+	
+	/**
+	 * @return the stopped
+	 */
+	public Regimen getStopped() {
+		return stopped;
+	}
+	
+	/**
+	 * @param stopped the stopped to set
+	 */
+	public void setStopped(Regimen stopped) {
+		this.stopped = stopped;
+	}
+	
+	/**
+	 * @return the started
+	 */
+	public Regimen getStarted() {
+		return started;
+	}
+	
+	/**
+	 * @param started the started to set
+	 */
+	public void setStarted(Regimen started) {
+		this.started = started;
+	}
+	
+	/**
+	 * @return the changeReasons
+	 */
+	public List<Concept> getChangeReasons() {
+		return changeReasons;
+	}
+	
+	/**
+	 * @param changeReasons the changeReasons to set
+	 */
+	public void setChangeReasons(List<Concept> changeReasons) {
+		this.changeReasons = changeReasons;
+	}
+	
+	/**
+	 * @return the changeReasonsNonCoded
+	 */
+	public List<String> getChangeReasonsNonCoded() {
+		return changeReasonsNonCoded;
+	}
+	
+	/**
+	 * @param changeReasonsNonCoded the changeReasonsNonCoded to set
+	 */
+	public void setChangeReasonsNonCoded(List<String> changeReasonsNonCoded) {
+		this.changeReasonsNonCoded = changeReasonsNonCoded;
+	}
+	
+}
