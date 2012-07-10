@@ -41,6 +41,8 @@ public class MetadataConstants {
 	public static final String CLINICAL_ENCOUNTER_HIV_ADDENDUM_FORM_UUID = "bd598114-4ef4-47b1-a746-a616180ccfc0";
 	public static final String TB_SCREENING_FORM_UUID = "59ed8e62-7f1f-40ae-a2e3-eabe350277ce";
 	public static final String PROGRESS_NOTE_FORM_UUID = "0038a296-62f8-4099-80e5-c9ea7590c157";
+	public static final String OBSTETRIC_HISTORY_FORM_UUID = "8e4e1abf-7c08-4ba8-b6d8-19a9f1ccb6c9";
+	public static final String FAMILY_HISTORY_FORM_UUID = "7efa0ee0-6617-4cd7-8310-9f95dfee7a82";
 	public static final String MOH_257_ENCOUNTER_ART_HISTORY_FORM_UUID = "b388cd66-8e08-4e8f-97de-7cf10023ed0f";
 	public static final String MOH_257_ENCOUNTER_ORDER_LAB_INVESTIGATIONS_FORM_UUID = "7e603909-9ed5-4d0c-a688-26ecb05d8b6e";
 	public static final String MOH_257_ENCOUNTER_PAST_MEDICAL_AND_SURGICAL_HISTORY_FORM_UUID = "4a0d1332-490e-439f-9d14-c782143c94de";
@@ -68,6 +70,7 @@ public class MetadataConstants {
 	// Concepts
 	public static final String CD4_CONCEPT_UUID = "5497AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 	public static final String TRANSFER_IN_DATE_CONCEPT_UUID = "160534AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+	public static final String ANTIRETROVIRAL_DRUGS_CONCEPT_UUID = "1085AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 	
 	// Programs
 	//public static final String HIV_PROGRAM_UUID = "3ccdc250-ca2c-4b27-8a5c-9c74c77353df";

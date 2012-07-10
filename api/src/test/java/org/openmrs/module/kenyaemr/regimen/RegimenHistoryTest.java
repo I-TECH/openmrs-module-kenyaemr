@@ -1,6 +1,5 @@
 package org.openmrs.module.kenyaemr.regimen;
 
-
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Collections;
@@ -10,6 +9,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.openmrs.Concept;
 import org.openmrs.ConceptName;
@@ -22,7 +22,7 @@ public class RegimenHistoryTest {
 	 * @verifies create regimen history based on drug orders
 	 */
 	@Test
-	public void RegimenHistory_shouldCreateRegimenHistoryBasedOnDrugOrders() throws Exception {
+	public void integrationTest() throws Exception {
 		/* Test case like this:
 		 * 1: <--->
 		 * 2: | <----->
@@ -80,8 +80,42 @@ public class RegimenHistoryTest {
 		List<DrugOrder> allDrugOrders = Arrays.asList(one, two, three, four);
 		
 		RegimenHistory regimenHistory = new RegimenHistory(relevantDrugs, allDrugOrders);
-		for (RegimenChange c : regimenHistory.getChanges()) {
-			System.out.println("On " + ymd.format(c.getDate()) + " changed from " + c.getStopped() + " to " + c.getStarted() + " for reasons: " + c.getChangeReasons() + " and " + c.getChangeReasonsNonCoded()); 
+		List<RegimenChange> changes = regimenHistory.getChanges();
+		
+		Assert.assertEquals(4, changes.size());
+		
+		Assert.assertNull(changes.get(0).getStopped());
+		Assert.assertEquals(t0, changes.get(0).getDate());
+		assertContainsDrugOrders(changes.get(0).getStarted(), one);
+		
+		Assert.assertSame(changes.get(0).getStarted(), changes.get(1).getStopped());
+		Assert.assertEquals(t1, changes.get(1).getDate());
+		assertContainsDrugOrders(changes.get(1).getStarted(), one, two);
+		
+		Assert.assertSame(changes.get(1).getStarted(), changes.get(2).getStopped());
+		Assert.assertEquals(t2, changes.get(2).getDate());
+		assertContainsDrugOrders(changes.get(2).getStarted(), two, three);
+		
+		Assert.assertSame(changes.get(2).getStarted(), changes.get(3).getStopped());
+		Assert.assertEquals(t3, changes.get(3).getDate());
+		assertContainsDrugOrders(changes.get(3).getStarted(), three);
+		
+		// TODO asserts for change reasons
+		
+		for (RegimenChange c : changes) {
+			System.out.println("On " + ymd.format(c.getDate()) + " changed from " + c.getStopped() + " to " + c.getStarted()
+			        + " for reasons: " + c.getChangeReasons() + " and " + c.getChangeReasonsNonCoded());
+		}
+	}
+	
+	private void assertContainsDrugOrders(Regimen reg, DrugOrder... drugOrders) {
+		if (drugOrders.length == 0) {
+			Assert.assertTrue(reg.getDrugOrders() == null || reg.getDrugOrders().size() == 0);
+		} else {
+			Assert.assertEquals(drugOrders.length, reg.getDrugOrders().size());
+			for (DrugOrder o : drugOrders) {
+				Assert.assertTrue(reg.getDrugOrders().contains(o));
+			}
 		}
 	}
 }

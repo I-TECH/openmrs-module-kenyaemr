@@ -41,6 +41,30 @@
 				<span class="attribute-value">${ ui.format(it) }</span><br/>
 		<% } %>
 	</div>
+	
+	${ ui.includeFragment("widget/button", [
+			iconProvider: "uilibrary",
+			icon: "comment_user_32.png",
+			label: "Family History",
+			href: ui.pageLink("editPatientHtmlForm", [
+				patientId: patient.id,
+				formUuid: MetadataConstants.FAMILY_HISTORY_FORM_UUID,
+				returnUrl: ui.thisUrl()
+			])
+		]) }
+	<% if (patient.gender == 'F') { %>
+		<br/>
+		${ ui.includeFragment("widget/button", [
+			iconProvider: "uilibrary",
+			icon: "home_32.png",
+			label: "Obstetric History",
+			href: ui.pageLink("editPatientHtmlForm", [
+				patientId: patient.id,
+				formUuid: MetadataConstants.OBSTETRIC_HISTORY_FORM_UUID,
+				returnUrl: ui.thisUrl()
+			])
+		]) } 
+	<% } %>
 </fieldset>
 
 <% activeVisits.each { v ->

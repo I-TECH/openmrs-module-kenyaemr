@@ -18,7 +18,12 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.openmrs.Concept;
+import org.openmrs.ConceptName;
 import org.openmrs.DrugOrder;
+import org.openmrs.api.context.Context;
+import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.util.OpenmrsUtil;
 
 /**
@@ -40,6 +45,20 @@ public class Regimen {
 	}
 	
 	/**
+	 * @param genericDrug
+	 * @return drug orders whose concept is genericDrug
+	 */
+	public List<DrugOrder> getDrugOrders(Concept genericDrug) {
+		List<DrugOrder> ret = new ArrayList<DrugOrder>();
+		for (DrugOrder o : drugOrders) {
+			if (o.getConcept().equals(genericDrug)) {
+				ret.add(o);
+			}
+		}
+		return ret;
+	}
+	
+	/**
 	 * @param drugOrders the drugOrders to set
 	 */
 	public void setDrugOrders(Set<DrugOrder> drugOrders) {
@@ -52,6 +71,48 @@ public class Regimen {
 			list.add(o.getConcept().getPreferredName(Locale.ENGLISH).getName());
 		}
 		return OpenmrsUtil.join(list, ", ");
+	}
+	
+	/**
+	 * @param ui
+	 * @return short version of display string for the components of reg
+	 */
+	public String getShortDisplay(UiUtils ui) {
+		if (CollectionUtils.isEmpty(getDrugOrders())) {
+			return "None";
+		}
+		List<String> components = new ArrayList<String>();
+		for (DrugOrder o : getDrugOrders()) {
+			ConceptName cn = o.getConcept().getPreferredName(Context.getLocale());
+			if (cn == null) {
+				cn = o.getConcept().getName(Context.getLocale());
+			}
+			components.add(cn.getName());
+		}
+		return OpenmrsUtil.join(components, ", ");
+	}
+	
+	/**
+	 * @param ui
+	 * @return long version of display string for the components of reg
+	 */
+	public String getLongDisplay(UiUtils ui) {
+		if (CollectionUtils.isEmpty(getDrugOrders())) {
+			return "None";
+		}
+		List<String> components = new ArrayList<String>();
+		for (DrugOrder o : getDrugOrders()) {
+			ConceptName cn = o.getConcept().getPreferredName(Context.getLocale());
+			if (cn == null) {
+				cn = o.getConcept().getName(Context.getLocale());
+			}
+			String s = cn.getName();
+			if (o.getDose() != null) {
+				s += " " + ui.format(o.getDose()) + o.getUnits();
+			}
+			components.add(s);
+		}
+		return OpenmrsUtil.join(components, ", ");
 	}
 	
 }

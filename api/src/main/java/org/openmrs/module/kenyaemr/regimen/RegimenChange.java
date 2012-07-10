@@ -14,7 +14,7 @@
 package org.openmrs.module.kenyaemr.regimen;
 
 import java.util.Date;
-import java.util.List;
+import java.util.Set;
 
 import org.openmrs.Concept;
 
@@ -29,26 +29,26 @@ public class RegimenChange {
 	
 	private Regimen started;
 	
-	private List<Concept> changeReasons;
+	private Set<Concept> changeReasons;
 	
-	private List<String> changeReasonsNonCoded;
+	private Set<String> changeReasonsNonCoded;
 	
 	/**
-     * @param date
-     * @param stopped
-     * @param started
-     * @param changeReasons
-     * @param changeReasonsNonCoded
-     */
-    public RegimenChange(Date date, Regimen stopped, Regimen started, List<Concept> changeReasons,
-        List<String> changeReasonsNonCoded) {
-	    this.date = date;
-	    this.stopped = stopped;
-	    this.started = started;
-	    this.changeReasons = changeReasons;
-	    this.changeReasonsNonCoded = changeReasonsNonCoded;
-    }
-
+	 * @param date
+	 * @param stopped
+	 * @param started
+	 * @param changeReasons
+	 * @param changeReasonsNonCoded
+	 */
+	public RegimenChange(Date date, Regimen stopped, Regimen started, Set<Concept> changeReasons,
+	    Set<String> changeReasonsNonCoded) {
+		this.date = date;
+		this.stopped = stopped;
+		this.started = started;
+		this.changeReasons = changeReasons;
+		this.changeReasonsNonCoded = changeReasonsNonCoded;
+	}
+	
 	/**
 	 * @return the date
 	 */
@@ -94,28 +94,28 @@ public class RegimenChange {
 	/**
 	 * @return the changeReasons
 	 */
-	public List<Concept> getChangeReasons() {
+	public Set<Concept> getChangeReasons() {
 		return changeReasons;
 	}
 	
 	/**
 	 * @param changeReasons the changeReasons to set
 	 */
-	public void setChangeReasons(List<Concept> changeReasons) {
+	public void setChangeReasons(Set<Concept> changeReasons) {
 		this.changeReasons = changeReasons;
 	}
 	
 	/**
 	 * @return the changeReasonsNonCoded
 	 */
-	public List<String> getChangeReasonsNonCoded() {
+	public Set<String> getChangeReasonsNonCoded() {
 		return changeReasonsNonCoded;
 	}
 	
 	/**
 	 * @param changeReasonsNonCoded the changeReasonsNonCoded to set
 	 */
-	public void setChangeReasonsNonCoded(List<String> changeReasonsNonCoded) {
+	public void setChangeReasonsNonCoded(Set<String> changeReasonsNonCoded) {
 		this.changeReasonsNonCoded = changeReasonsNonCoded;
 	}
 	

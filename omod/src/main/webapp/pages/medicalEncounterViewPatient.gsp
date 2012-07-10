@@ -48,6 +48,14 @@
 	}
 </style>
 
+<script>
+	jq(function() {
+		jq.getJSON('${ ui.actionLink("arvRegimen", "currentRegimen", [ patientId: patient.id ]) }', function(data) {
+			jq('#current-hiv-regimen').html(data.shortDisplay);
+		});
+	});
+</script>
+
 <div id="col1">
 	${ ui.includeFragment("patientOverallDetails", [
 			patient: patient,
@@ -57,6 +65,14 @@
 </div>
 
 <div id="col2" <% if (visit) { %>class="selected-visit"<% } %>>
+
+	<a href="${ ui.pageLink("medicalEncounterArvRegimen", [ patientId: patient.id ]) }">
+		Current ARVs:
+		<span id="current-hiv-regimen">(loading)</span>
+	</a>
+
+	<br/><br/>
+
 	<% if (!visit) { %>
 		<h4>No current visit</h4>
 	<% } %>
