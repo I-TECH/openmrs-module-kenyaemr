@@ -45,7 +45,7 @@ public class ArvRegimenFragmentController {
 		Concept arvs = Context.getConceptService().getConceptByUuid(MetadataConstants.ANTIRETROVIRAL_DRUGS_CONCEPT_UUID);
 		RegimenHistory history = RegimenHistory.forPatient(patient, arvs);
 		Regimen reg = history.getCurrentRegimen();
-		return SimpleObject.create("shortDisplay", reg.getShortDisplay(ui), "longDisplay", reg.getLongDisplay(ui));
+		return reg == null ? SimpleObject.create("shortDisplay", "None", "longDisplay", "None") : SimpleObject.create("shortDisplay", reg.getShortDisplay(ui), "longDisplay", reg.getLongDisplay(ui));
 	}
 	
 	/**

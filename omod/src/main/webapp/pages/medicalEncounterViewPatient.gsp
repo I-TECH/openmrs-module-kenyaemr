@@ -71,7 +71,7 @@
 		<span id="current-hiv-regimen">(loading)</span>
 	</a>
 
-	<br/><br/>
+	<br/>
 
 	<% if (!visit) { %>
 		<h4>No current visit</h4>

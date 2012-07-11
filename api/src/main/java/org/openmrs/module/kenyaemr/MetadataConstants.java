@@ -43,9 +43,9 @@ public class MetadataConstants {
 	public static final String PROGRESS_NOTE_FORM_UUID = "0038a296-62f8-4099-80e5-c9ea7590c157";
 	public static final String OBSTETRIC_HISTORY_FORM_UUID = "8e4e1abf-7c08-4ba8-b6d8-19a9f1ccb6c9";
 	public static final String FAMILY_HISTORY_FORM_UUID = "7efa0ee0-6617-4cd7-8310-9f95dfee7a82";
-	public static final String MOH_257_ENCOUNTER_ART_HISTORY_FORM_UUID = "b388cd66-8e08-4e8f-97de-7cf10023ed0f";
 	public static final String MOH_257_ENCOUNTER_ORDER_LAB_INVESTIGATIONS_FORM_UUID = "7e603909-9ed5-4d0c-a688-26ecb05d8b6e";
-	public static final String MOH_257_ENCOUNTER_PAST_MEDICAL_AND_SURGICAL_HISTORY_FORM_UUID = "4a0d1332-490e-439f-9d14-c782143c94de";
+	//public static final String MOH_257_ENCOUNTER_ART_HISTORY_FORM_UUID = "b388cd66-8e08-4e8f-97de-7cf10023ed0f";
+	//public static final String MOH_257_ENCOUNTER_PAST_MEDICAL_AND_SURGICAL_HISTORY_FORM_UUID = "4a0d1332-490e-439f-9d14-c782143c94de";
 	//public static final String MOH_257_ART_TREATMENT_INTERUPTION_FORM_UUID = "9e560607-cb99-46b0-8599-5d06110b4742";
 	//public static final String MOH_257_ENCOUNTER_PREGNANCY_DETAILS_FORM_UUID = "c136f6e0-ecd0-4f9e-beeb-a5cab6161f44";
 	//public static final String MOH_257_ENCOUNTER_PATIENTS_DEMOGRAPHICS_FORM_UUID = "8be821d9-8535-4715-9408-6c3112e8245a";        
@@ -71,11 +71,12 @@ public class MetadataConstants {
 	public static final String CD4_CONCEPT_UUID = "5497AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 	public static final String TRANSFER_IN_DATE_CONCEPT_UUID = "160534AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 	public static final String ANTIRETROVIRAL_DRUGS_CONCEPT_UUID = "1085AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+	public static final String CIVIL_STATUS_CONCEPT_UUID = "1054AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 	
 	// Programs
 	//public static final String HIV_PROGRAM_UUID = "3ccdc250-ca2c-4b27-8a5c-9c74c77353df";
 	
 	// Other
 	public static final Locale LOCALE = Locale.UK;
-	
+
 }

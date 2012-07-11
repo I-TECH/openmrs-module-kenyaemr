@@ -65,8 +65,6 @@ public class AvailableFormsFragmentController {
 			forms.add(new AvailableFormConfig(MetadataConstants.TB_SCREENING_FORM_UUID, Frequency.VISIT, hivProgram));
 			forms.add(new AvailableFormConfig(MetadataConstants.PROGRESS_NOTE_FORM_UUID, Frequency.VISIT, null));
 			forms.add(new AvailableFormConfig(MetadataConstants.MOH_257_ENCOUNTER_ORDER_LAB_INVESTIGATIONS_FORM_UUID, Frequency.UNLIMITED, hivProgram));
-			forms.add(new AvailableFormConfig(MetadataConstants.MOH_257_ENCOUNTER_PAST_MEDICAL_AND_SURGICAL_HISTORY_FORM_UUID, Frequency.VISIT, null));
-			forms.add(new AvailableFormConfig(MetadataConstants.MOH_257_ENCOUNTER_ART_HISTORY_FORM_UUID, Frequency.PROGRAM, hivProgram));
 		}
 		
 		List<Encounter> encounters = new ArrayList<Encounter>(visit.getEncounters());

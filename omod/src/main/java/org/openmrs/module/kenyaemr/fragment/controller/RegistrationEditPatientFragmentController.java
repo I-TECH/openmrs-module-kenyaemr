@@ -13,11 +13,14 @@
  */
 package org.openmrs.module.kenyaemr.fragment.controller;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.Concept;
 import org.openmrs.Location;
+import org.openmrs.Obs;
 import org.openmrs.Patient;
 import org.openmrs.PatientIdentifier;
 import org.openmrs.PatientIdentifierType;
@@ -37,6 +40,7 @@ import org.openmrs.ui.framework.annotation.BindParams;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.annotation.MethodParam;
 import org.openmrs.ui.framework.fragment.FragmentModel;
+import org.openmrs.util.OpenmrsUtil;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -52,6 +56,7 @@ public class RegistrationEditPatientFragmentController {
 			model.addAttribute("command", new EditPatientCommand());
 		}
 		model.addAttribute("telephoneContactAttrType", Context.getPersonService().getPersonAttributeTypeByUuid(MetadataConstants.TELEPHONE_CONTACT_UUID));
+		model.addAttribute("civilStatusConcept", Context.getConceptService().getConceptByUuid(MetadataConstants.CIVIL_STATUS_CONCEPT_UUID));
 	}
 	
 	public SimpleObject savePatient(@MethodParam("commandObject") @BindParams EditPatientCommand command,
@@ -93,6 +98,8 @@ public class RegistrationEditPatientFragmentController {
 		private PersonAttribute telephoneContact;
 		
 		private Concept maritalStatus;
+		
+		private Obs savedMaritalStatus;
 		
 		public EditPatientCommand() {
 			location = Context.getService(KenyaEmrService.class).getDefaultLocation();
@@ -151,6 +158,13 @@ public class RegistrationEditPatientFragmentController {
 				telephoneContact = attr;
 			} else {
 				telephoneContact.setPerson(patient);
+			}
+		
+			Concept civilStatusConcept = Context.getConceptService().getConceptByUuid(MetadataConstants.CIVIL_STATUS_CONCEPT_UUID);
+			List<Obs> civilStatuses = Context.getObsService().getObservationsByPersonAndConcept(patient, civilStatusConcept);
+			if (civilStatuses.size() > 0) {
+				savedMaritalStatus = civilStatuses.get(civilStatuses.size() - 1);
+				maritalStatus = savedMaritalStatus.getValueCoded();
 			}
 		}
 		
@@ -230,7 +244,7 @@ public class RegistrationEditPatientFragmentController {
 				toSave.addName(personName);
 			}
 			
-			if (anyChanges(toSave.getPersonAddress(), personAddress, "address1", "address2")) { // TODO address
+			if (anyChanges(toSave.getPersonAddress(), personAddress, "address1", "address2", "address5", "address6", "countyDistrict")) {
 				if (toSave.getPersonAddress() != null) {
 					voidData(toSave.getPersonAddress());
 				}
@@ -245,7 +259,36 @@ public class RegistrationEditPatientFragmentController {
 				toSave.addAttribute(telephoneContact);
 			}
 			
-			return Context.getPatientService().savePatient(toSave);
+			Patient ret = Context.getPatientService().savePatient(toSave);
+			
+			List<Obs> obsToSave = new ArrayList<Obs>();
+			List<Obs> obsToVoid = new ArrayList<Obs>();
+			if (!OpenmrsUtil.nullSafeEquals(savedMaritalStatus != null ? savedMaritalStatus.getValueCoded() : null, maritalStatus)) {
+				// there was a change
+				if (savedMaritalStatus != null && maritalStatus == null) {
+					// treat going from a value to null as voiding all past civil status obs
+					obsToVoid.addAll(Context.getObsService().getObservationsByPersonAndConcept(ret, Context.getConceptService().getConceptByUuid(MetadataConstants.CIVIL_STATUS_CONCEPT_UUID)));
+				}
+				if (maritalStatus != null) {
+					Obs o = new Obs();
+					o.setPerson(ret);
+					o.setConcept(Context.getConceptService().getConceptByUuid(MetadataConstants.CIVIL_STATUS_CONCEPT_UUID));
+					o.setObsDatetime(new Date());
+					o.setLocation(Context.getService(KenyaEmrService.class).getDefaultLocation());
+					o.setValueCoded(maritalStatus);
+					obsToSave.add(o);
+				}
+			}
+			
+			for (Obs o : obsToVoid) {
+				Context.getObsService().voidObs(o, "Kenya EMR edit patient");
+			}
+			
+			for (Obs o : obsToSave) {
+				Context.getObsService().saveObs(o, "Kenya EMR edit patient");
+			}
+			
+			return ret;
 		}
 		
 		/**

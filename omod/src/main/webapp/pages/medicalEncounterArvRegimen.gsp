@@ -48,6 +48,8 @@
 	});
 </script>
 
+<a href="${ ui.pageLink("medicalEncounterViewPatient", [ patientId: patient.id ]) }">Back to Visit</a>
+
 <h3>ARV Regimen History</h3>
 
 <table id="regimen-history" class="bordered">
@@ -90,7 +92,7 @@
 				action: "changeRegimen",
 				fields: [
 					[ hiddenInputName: "patient", value: patient.id ],
-					[ label: "Start Date", formFieldName: "startDate", class: java.util.Date, initialValue: new Date(), fieldFragment: "field/java.util.Date.datetime" ],
+					[ label: "Change Date", formFieldName: "startDate", class: java.util.Date, initialValue: new Date(), fieldFragment: "field/java.util.Date.datetime" ],
 					[ value: arvFields ],
 					[ label: "Reason for Change", formFieldName: "changeReason", class: java.lang.String ]
 				],

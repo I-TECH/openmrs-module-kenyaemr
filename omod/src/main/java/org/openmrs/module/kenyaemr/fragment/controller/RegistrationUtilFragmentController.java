@@ -84,16 +84,28 @@ public class RegistrationUtilFragmentController {
 		VisitService vs = Context.getVisitService();
 		List<Visit> activeVisits = vs.getVisits(null, null, null, null, null, null, null, null, null, false, false);
 		int numClosed = 0;
+		int numFailed = 0;
 		for (Visit v : activeVisits) {
 			if (visitTypesToClose.contains(v.getVisitType())) {
-				v.setStopDatetime(toStop);
-				vs.saveVisit(v);
-				numClosed += 1;
+				try {
+					v.setStopDatetime(toStop);
+					vs.saveVisit(v);
+					numClosed += 1;
+				} catch (Exception ex) {
+					numFailed += 1;
+				}
 			}
 		}
 		String msg = "Closed " + numClosed + " visit";
-		if (numClosed > 1)
+		if (numClosed > 1) {
 			msg += "s";
+		}
+		if (numFailed > 0) {
+			msg += ". Failed to close " + numFailed + " visit";
+			if (numFailed > 1) {
+				msg += "s";
+			}
+		}
 		return new SuccessResult(msg);
 	}
 	
