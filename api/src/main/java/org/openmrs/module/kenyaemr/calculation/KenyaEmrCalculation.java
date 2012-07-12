@@ -16,13 +16,16 @@ package org.openmrs.module.kenyaemr.calculation;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.openmrs.Cohort;
 import org.openmrs.Concept;
 import org.openmrs.Obs;
+import org.openmrs.Program;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.BaseCalculation;
@@ -35,16 +38,20 @@ import org.openmrs.calculation.result.ObsResult;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.reporting.common.TimeQualifier;
+import org.openmrs.module.reporting.common.VitalStatus;
 import org.openmrs.module.reporting.data.DataDefinition;
 import org.openmrs.module.reporting.data.patient.EvaluatedPatientData;
 import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition;
+import org.openmrs.module.reporting.data.patient.definition.ProgramEnrollmentsForPatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.service.PatientDataService;
 import org.openmrs.module.reporting.data.person.EvaluatedPersonData;
 import org.openmrs.module.reporting.data.person.definition.ObsForPersonDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
+import org.openmrs.module.reporting.data.person.definition.VitalStatusDataDefinition;
 import org.openmrs.module.reporting.data.person.service.PersonDataService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
+import org.openmrs.util.OpenmrsUtil;
 
 
 /**
@@ -79,6 +86,36 @@ public abstract class KenyaEmrCalculation extends BaseCalculation implements Pat
 		Concept concept = getConcept(conceptUuid);
 		ObsForPersonDataDefinition def = new ObsForPersonDataDefinition("First " + concept.getPreferredName(MetadataConstants.LOCALE), TimeQualifier.FIRST, concept, calculationContext.getNow(), null);
 		return evaluateWithReporting(def, patientIds, new HashMap<String, Object>(), calculationContext);
+	}
+	
+	CalculationResultMap lastProgramEnrollment(Program program, Collection<Integer> patientIds, PatientCalculationContext calculationContext) {
+		ProgramEnrollmentsForPatientDataDefinition def = new ProgramEnrollmentsForPatientDataDefinition("Last " + program.getName() + " enrollment");
+		def.setWhichEnrollment(TimeQualifier.LAST);
+		def.setProgram(program);
+		def.setActiveOnDate(calculationContext.getNow());
+		return evaluateWithReporting(def, patientIds, new HashMap<String, Object>(), calculationContext);
+	}
+	
+	Set<Integer> passingPatients(CalculationResultMap map) {
+		Set<Integer> ret = new HashSet<Integer>();
+		for (Map.Entry<Integer, CalculationResult> e : map.entrySet()) {
+			if (e.getValue() != null && !e.getValue().isEmpty()) {
+				ret.add(e.getKey());
+			}
+		}
+		return ret;
+	}
+	
+	Set<Integer> alivePatients(Collection<Integer> cohort, PatientCalculationContext context) {
+		CalculationResultMap map = evaluateWithReporting(new VitalStatusDataDefinition(), cohort, new HashMap<String, Object>(), context);
+		Set<Integer> ret = new HashSet<Integer>();
+		for (Map.Entry<Integer, CalculationResult> e : map.entrySet()) {
+			VitalStatus vs = ((VitalStatus) e.getValue().getValue());
+			if (!vs.getDead() || OpenmrsUtil.compareWithNullAsEarliest(vs.getDeathDate(), context.getNow()) > 0) {
+				ret.add(e.getKey());
+			}
+		}
+		return ret;
 	}
 	
 	Concept getConcept(String uuid) {

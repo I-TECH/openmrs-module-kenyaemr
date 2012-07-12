@@ -15,7 +15,10 @@ package org.openmrs.module.kenyaemr.calculation;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 
+import org.openmrs.Program;
+import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.ObsResult;
@@ -32,7 +35,7 @@ public class NeedsCd4Calculation extends KenyaEmrCalculation {
 	 */
 	@Override
 	public String getShortMessage() {
-	    return "Needs CD4";
+	    return "Due for CD4";
 	}
 	
 	/**
@@ -43,11 +46,14 @@ public class NeedsCd4Calculation extends KenyaEmrCalculation {
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues,
 	                                     PatientCalculationContext context) {
+		Program hivProgram = Context.getProgramWorkflowService().getPrograms("HIV Program").get(0);
+		Set<Integer> inHivProgram = passingPatients(lastProgramEnrollment(hivProgram, cohort, context));
+		Set<Integer> alive = alivePatients(cohort, context);
 		CalculationResultMap lastObs = lastObs(MetadataConstants.CD4_CONCEPT_UUID, cohort, context);
 		CalculationResultMap ret = new CalculationResultMap();
 		for (Integer ptId : cohort) {
 			ObsResult r = (ObsResult) lastObs.get(ptId);
-			boolean needed = r == null || r.isEmpty() || daysSince(r.getDateOfResult(), context) > 180;
+			boolean needed = inHivProgram.contains(ptId) && alive.contains(ptId) && (r == null || r.isEmpty() || daysSince(r.getDateOfResult(), context) > 180);
 			ret.put(ptId, new SimpleResult(needed, this, context));
 		}
 		return ret;

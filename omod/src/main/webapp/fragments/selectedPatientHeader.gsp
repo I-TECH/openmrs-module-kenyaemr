@@ -85,5 +85,6 @@
 		<% } %>
 	</div>
 	
-	<div style="clear: both"> </div>
+	<div style="clear: both"></div>
+	${ ui.includeFragment("clinicalAlerts") }
 </div>

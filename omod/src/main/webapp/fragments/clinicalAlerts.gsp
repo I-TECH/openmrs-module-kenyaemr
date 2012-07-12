@@ -3,8 +3,9 @@
 		margin: 0.5em;
 	}
 	.alert {
+		color: black;
 		background-color: yellow;
-		border: 1px black dashed;
+		border: 1px black solid;
 		margin-right: 0.5em;
 		padding: 0.2em;
 	}
