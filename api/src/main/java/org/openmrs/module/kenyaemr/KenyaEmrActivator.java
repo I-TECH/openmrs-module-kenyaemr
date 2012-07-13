@@ -72,6 +72,7 @@ public class KenyaEmrActivator implements ModuleActivator {
 		} catch (Exception ex) {
 			throw new RuntimeException("Failed to setup initial data", ex);
 		}
+		Context.getService(KenyaEmrService.class).refreshReportManagers();
 		log.info("Kenya OpenMRS EMR Module started");
 	}
 	
@@ -112,7 +113,7 @@ public class KenyaEmrActivator implements ModuleActivator {
      */
     public boolean setupInitialData() throws Exception {
     	boolean anyChanges = false;
-    	anyChanges |= installMetadataPackageIfNecessary("c66d041c-563e-4438-83eb-ad5f32c6e97a", "Kenya_EMR_Forms-v17.zip");
+    	anyChanges |= installMetadataPackageIfNecessary("c66d041c-563e-4438-83eb-ad5f32c6e97a", "Kenya_EMR_Forms-v18.zip");
     	anyChanges |= installMetadataPackageIfNecessary("d4b71375-f64a-442d-a0c2-9f507c432925", "Kenya_EMR_Roles_and_Privileges-v1.zip");
     	anyChanges |= installMetadataPackageIfNecessary("29177ba6-a634-42d5-9314-e12689856ff1", "Kenya_EMR_Core_Metadata-v4.zip");
     	return anyChanges;
@@ -128,26 +129,31 @@ public class KenyaEmrActivator implements ModuleActivator {
      */
     private boolean installMetadataPackageIfNecessary(String groupUuid, String filename) throws IOException {
     	//NameWithNoSpaces-v1.zip
-    	Matcher matcher = Pattern.compile("\\w+-v(\\d+).zip").matcher(filename);
-    	if (!matcher.matches())
-    		throw new RuntimeException("Filename must match PackageNameWithNoSpaces-v1.zip");
-    	Integer version = Integer.valueOf(matcher.group(1));
-    	
-    	ImportedPackage installed = Context.getService(MetadataSharingService.class).getImportedPackageByGroup(groupUuid);
-    	if (installed != null && installed.getVersion() >= version) {
-    		log.info("Metadata package " + filename + " is already installed with version " + installed.getVersion());
+    	try {
+			Matcher matcher = Pattern.compile("\\w+-v(\\d+).zip").matcher(filename);
+			if (!matcher.matches())
+				throw new RuntimeException("Filename must match PackageNameWithNoSpaces-v1.zip");
+			Integer version = Integer.valueOf(matcher.group(1));
+			
+			ImportedPackage installed = Context.getService(MetadataSharingService.class).getImportedPackageByGroup(groupUuid);
+			if (installed != null && installed.getVersion() >= version) {
+				log.info("Metadata package " + filename + " is already installed with version " + installed.getVersion());
+				return false;
+			}
+			
+			if (getClass().getClassLoader().getResource(filename) == null) {
+				throw new RuntimeException("Cannot find " + filename + " for group " + groupUuid + ". Make sure it's in api/src/main/resources");
+			}
+			
+			PackageImporter metadataImporter = MetadataSharing.getInstance().newPackageImporter();
+			metadataImporter.setImportConfig(ImportConfig.valueOf(ImportMode.PARENT_AND_CHILD));
+			metadataImporter.loadSerializedPackageStream(getClass().getClassLoader().getResourceAsStream(filename));
+			metadataImporter.importPackage();
+			return true;
+    	} catch (Exception ex) {
+    		log.error("Failed to install metadata package " + filename, ex);
     		return false;
     	}
-    	
-    	if (getClass().getClassLoader().getResource(filename) == null) {
-    		throw new RuntimeException("Cannot find " + filename + " for group " + groupUuid + ". Make sure it's in api/src/main/resources");
-    	}
-    	
-    	PackageImporter metadataImporter = MetadataSharing.getInstance().newPackageImporter();
-    	metadataImporter.setImportConfig(ImportConfig.valueOf(ImportMode.PARENT_AND_CHILD));
-    	metadataImporter.loadSerializedPackageStream(getClass().getClassLoader().getResourceAsStream(filename));
-    	metadataImporter.importPackage();
-    	return true;
     }
 
 }
