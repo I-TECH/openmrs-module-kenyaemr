@@ -4,8 +4,12 @@
 	</a>
 </div>
 <div style="float: left">
-	<span style="font-size: 1.5em;">Kenya EMR</span> <br/>
-	powered by OpenMRS
+	<span style="font-size: 1.5em;">Kenya EMR</span>
+	<span style="font-size: 0.6em;">powered by OpenMRS</span>
+	<br/>
+	<% if (systemLocation) { %>
+		<span style="font-weight: bold; margin-left: 0.5em; border-top: 1px gray solid;">${ ui.format(systemLocation) }</span>
+	<% } %>
 </div>
 
 <div style="float: right; text-align: right">
