@@ -82,6 +82,12 @@
 				successCallbacks: [ "ui.reloadPage();" ]
 			]) }
 	</fieldset>
+	
+	<script>
+		jq(function() {
+			ui.confirmBeforeNavigating('.start-new-regimen');
+		});
+	</script>
 <% } %>
 
 <% if (allowChange) { %>
@@ -100,4 +106,10 @@
 				successCallbacks: [ "ui.reloadPage();" ]
 			]) }
 	</fieldset>
+	
+	<script>
+		jq(function() {
+			ui.confirmBeforeNavigating('.change-regimen');
+		});
+	</script>
 <% } %>
