@@ -35,7 +35,7 @@ ui.includeJavascript("dwr-util.js")
 	function submitHtmlForm() {
 	    if (!tryingToSubmit) {
 	        tryingToSubmit = true;
-	        ui.cancelConfirmBeforeNavigating('#htmlform');
+	        ui.disableConfirmBeforeNavigating();
 	        jq.getJSON(actionLink('enterHtmlForm', 'checkIfLoggedIn'), function(result) {
 	        	checkIfLoggedInAndErrorsCallback(result.isLoggedIn);
 	        });
@@ -153,7 +153,7 @@ ui.includeJavascript("dwr-util.js")
 					for (key in result.errors) {
 						showError(key, result.errors[key]);
 					}
-					ui.confirmBeforeNavigating('#htmlform');
+					ui.enableConfirmBeforeNavigating();
 				}
 			}, 'json');
 		}
