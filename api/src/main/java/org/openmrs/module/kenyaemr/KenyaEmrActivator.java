@@ -112,7 +112,7 @@ public class KenyaEmrActivator implements ModuleActivator {
      */
     public boolean setupInitialData() throws Exception {
     	boolean anyChanges = false;
-    	anyChanges |= installMetadataPackageIfNecessary("c66d041c-563e-4438-83eb-ad5f32c6e97a", "Kenya_EMR_Forms-v16.zip");
+    	anyChanges |= installMetadataPackageIfNecessary("c66d041c-563e-4438-83eb-ad5f32c6e97a", "Kenya_EMR_Forms-v17.zip");
     	anyChanges |= installMetadataPackageIfNecessary("d4b71375-f64a-442d-a0c2-9f507c432925", "Kenya_EMR_Roles_and_Privileges-v1.zip");
     	anyChanges |= installMetadataPackageIfNecessary("29177ba6-a634-42d5-9314-e12689856ff1", "Kenya_EMR_Core_Metadata-v4.zip");
     	return anyChanges;
