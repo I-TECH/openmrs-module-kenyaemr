@@ -45,6 +45,7 @@ import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinitio
 import org.openmrs.module.reporting.data.patient.definition.ProgramEnrollmentsForPatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.service.PatientDataService;
 import org.openmrs.module.reporting.data.person.EvaluatedPersonData;
+import org.openmrs.module.reporting.data.person.definition.AgeDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.ObsForPersonDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.VitalStatusDataDefinition;
@@ -71,6 +72,12 @@ public abstract class KenyaEmrCalculation extends BaseCalculation implements Pat
 	 */
 	public String getDetailedMessage() {
 		return getShortMessage();
+	}
+	
+	CalculationResultMap ages(Collection<Integer> patientIds, PatientCalculationContext calculationContext) {
+		AgeDataDefinition def = new AgeDataDefinition();
+		def.setEffectiveDate(calculationContext.getNow());
+		return evaluateWithReporting(def, patientIds, new HashMap<String, Object>(), calculationContext);
 	}
 	
 	CalculationResultMap lastObs(String conceptUuid, Collection<Integer> patientIds, PatientCalculationContext calculationContext) {
@@ -117,6 +124,25 @@ public abstract class KenyaEmrCalculation extends BaseCalculation implements Pat
 		}
 		return ret;
 	}
+	
+	Obs obsResultForPatient(CalculationResultMap results, Integer ptId) {
+		CalculationResult result = results.get(ptId);
+		if (result != null && !result.isEmpty()) {
+			Obs val = (Obs) result.getValue();
+			return val;
+		}
+		return null;
+	}
+	
+	Double numericObsResultForPatient(CalculationResultMap results, Integer ptId) {
+		Obs o = obsResultForPatient(results, ptId);
+		return o == null ? null : o.getValueNumeric();
+	}
+	
+	Concept codedObsResultForPatient(CalculationResultMap results, Integer ptId) {
+		Obs o = obsResultForPatient(results, ptId);
+		return o == null ? null : o.getValueCoded();
+	}	
 	
 	Concept getConcept(String uuid) {
 		return Context.getConceptService().getConceptByUuid(uuid);

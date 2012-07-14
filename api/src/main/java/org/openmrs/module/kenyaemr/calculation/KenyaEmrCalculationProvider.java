@@ -38,6 +38,7 @@ public class KenyaEmrCalculationProvider implements CalculationProvider {
 	
 	public KenyaEmrCalculationProvider() {
 		map.put("needsCd4", NeedsCd4Calculation.class);
+		map.put("eligibleForArt", EligibleForArtCalculation.class);
 	}
 	
 	public List<KenyaEmrCalculation> getAllCalculations() {
