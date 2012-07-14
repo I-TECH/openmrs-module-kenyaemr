@@ -89,7 +89,9 @@ public class RegistrationEditPatientFragmentController {
 		
 		private Date birthdate;
 		
-		private Integer age;
+		private Boolean birthdateEstimated;
+		
+		//private Integer age;
 		
 		private String gender;
 		
@@ -132,12 +134,8 @@ public class RegistrationEditPatientFragmentController {
 			}
 			
 			gender = patient.getGender();
-			
-			if (patient.getBirthdateEstimated()) {
-				age = patient.getAge();
-			} else {
-				birthdate = patient.getBirthdate();
-			}
+			birthdate = patient.getBirthdate();
+			birthdateEstimated = patient.getBirthdateEstimated();
 			
 			PatientIdentifier id = patient.getPatientIdentifier(ps.getPatientIdentifierTypeByUuid(MetadataConstants.PATIENT_CLINIC_NUMBER_UUID));
 			if (id != null) {
@@ -163,7 +161,8 @@ public class RegistrationEditPatientFragmentController {
 			Concept civilStatusConcept = Context.getConceptService().getConceptByUuid(MetadataConstants.CIVIL_STATUS_CONCEPT_UUID);
 			List<Obs> civilStatuses = Context.getObsService().getObservationsByPersonAndConcept(patient, civilStatusConcept);
 			if (civilStatuses.size() > 0) {
-				savedMaritalStatus = civilStatuses.get(civilStatuses.size() - 1);
+				// these are in reverse chronological order
+				savedMaritalStatus = civilStatuses.get(0);
 				maritalStatus = savedMaritalStatus.getValueCoded();
 			}
 		}
@@ -182,7 +181,7 @@ public class RegistrationEditPatientFragmentController {
 			}
 			
 			require(errors, "gender");
-			requireAny(errors, "age", "birthdate");
+			require(errors, "birthdate");
 			
 			validateField(errors, "personName");
 			validateField(errors, "personAddress");
@@ -196,17 +195,8 @@ public class RegistrationEditPatientFragmentController {
 			Patient toSave = original != null ? original : new Patient();
 			
 			toSave.setGender(gender);
-			if (birthdate != null) {
-				toSave.setBirthdate(birthdate);
-				toSave.setBirthdateEstimated(false);
-			} else if (age != null) {
-				// avoid re-estimating the birthdate if they didn't change this field
-				if (!age.equals(toSave.getAge())) {
-					toSave.setBirthdateFromAge(age, null);
-				}
-			} else {
-				throw new RuntimeException("Age or Birthdate was supposed to be specified");
-			}
+			toSave.setBirthdate(birthdate);
+			toSave.setBirthdateEstimated(birthdateEstimated);
 			
 			PatientIdentifier oldPatientClinicNumber = toSave.getPatientIdentifier(ps.getPatientIdentifierTypeByUuid(MetadataConstants.PATIENT_CLINIC_NUMBER_UUID));
 			if (anyChanges(oldPatientClinicNumber, patientClinicNumber, "identifier")) {
@@ -361,19 +351,19 @@ public class RegistrationEditPatientFragmentController {
 			this.birthdate = birthdate;
 		}
 		
-		/**
-		 * @return the age
-		 */
-		public Integer getAge() {
-			return age;
-		}
-		
-		/**
-		 * @param age the age to set
-		 */
-		public void setAge(Integer age) {
-			this.age = age;
-		}
+        /**
+         * @return the birthdateEstimated
+         */
+        public Boolean getBirthdateEstimated() {
+	        return birthdateEstimated;
+        }
+        
+        /**
+         * @param birthdateEstimated the birthdateEstimated to set
+         */
+        public void setBirthdateEstimated(Boolean birthdateEstimated) {
+	        this.birthdateEstimated = birthdateEstimated;
+        }
 		
 		/**
 		 * @return the gender

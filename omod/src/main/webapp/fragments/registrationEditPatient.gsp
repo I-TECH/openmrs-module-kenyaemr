@@ -21,8 +21,7 @@
 			"""),
 			"&nbsp;&nbsp;&nbsp;&nbsp;",
 			[ object: command, property: "birthdate", label: "Birthdate" ],
-			"- or -",
-			[ object: command, property: "age", label: "Age", afterField: "year(s)"]
+			[ object: command, property: "birthdateEstimated", label: "Estimated?" ]
 		],
 		[
 			[ object: command, property: "maritalStatus", label: "Marital Status", config: [ answerTo: civilStatusConcept ] ]
