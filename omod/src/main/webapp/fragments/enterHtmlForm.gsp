@@ -155,7 +155,12 @@ ui.includeJavascript("dwr-util.js")
 					}
 					ui.enableConfirmBeforeNavigating();
 				}
-			}, 'json');
+			}, 'json')
+			.error(function(jqXHR, textStatus, errorThrown) {
+				ui.closeLoadingDialog();
+				ui.enableConfirmBeforeNavigating();
+				window.alert('Unexpected error, please contact your System Administrator: ' + textStatus);
+			});
 		}
 		tryingToSubmit = false;
 	}
