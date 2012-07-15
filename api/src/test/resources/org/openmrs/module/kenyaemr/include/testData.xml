@@ -34,4 +34,7 @@
   
   <concept concept_id="1223" retired="false" datatype_id="4" class_id="5" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="1223AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
   <concept_name concept_name_id="1223" concept_id="1223" name="WHO STAGE 4 PEDS" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="1223-name"/>
+  
+  <concept concept_id="1085" retired="false" datatype_id="4" class_id="9" is_set="true" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="1085AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+  <concept_name concept_name_id="1085" concept_id="1085" name="ANTIRETROVIRAL DRUGS" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="1085-name"/>
 </dataset>

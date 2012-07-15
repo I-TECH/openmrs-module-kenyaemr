@@ -14,6 +14,7 @@
 package org.openmrs.module.kenyaemr.calculation;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -32,6 +33,7 @@ import org.openmrs.calculation.BaseCalculation;
 import org.openmrs.calculation.CalculationContext;
 import org.openmrs.calculation.patient.PatientCalculation;
 import org.openmrs.calculation.patient.PatientCalculationContext;
+import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.ObsResult;
@@ -41,6 +43,7 @@ import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.common.VitalStatus;
 import org.openmrs.module.reporting.data.DataDefinition;
 import org.openmrs.module.reporting.data.patient.EvaluatedPatientData;
+import org.openmrs.module.reporting.data.patient.definition.DrugOrdersForPatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.ProgramEnrollmentsForPatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.service.PatientDataService;
@@ -103,10 +106,31 @@ public abstract class KenyaEmrCalculation extends BaseCalculation implements Pat
 		return evaluateWithReporting(def, patientIds, new HashMap<String, Object>(), calculationContext);
 	}
 	
-	Set<Integer> passingPatients(CalculationResultMap map) {
+	CalculationResultMap activeDrugOrders(Concept medSet, Collection<Integer> cohort, PatientCalculationContext context) {
+    	DrugOrdersForPatientDataDefinition def = new DrugOrdersForPatientDataDefinition("On ART");
+    	def.setDrugConceptSetsToInclude(Collections.singletonList(medSet));
+    	def.setActiveOnDate(context.getNow());
+    	return evaluateWithReporting(def, cohort, null, context);
+    }
+	
+	CalculationResultMap calculate(PatientCalculation calculation, Collection<Integer> patientIds, PatientCalculationContext calculationContext) {
+		return Context.getService(PatientCalculationService.class).evaluate(patientIds, calculation, calculationContext);
+	}
+	
+	Set<Integer> patientsThatPass(CalculationResultMap map) {
 		Set<Integer> ret = new HashSet<Integer>();
 		for (Map.Entry<Integer, CalculationResult> e : map.entrySet()) {
 			if (e.getValue() != null && !e.getValue().isEmpty()) {
+				ret.add(e.getKey());
+			}
+		}
+		return ret;
+	}
+	
+	Set<Integer> patientsThatDoNotPass(CalculationResultMap map) {
+		Set<Integer> ret = new HashSet<Integer>();
+		for (Map.Entry<Integer, CalculationResult> e : map.entrySet()) {
+			if (e.getValue() == null || e.getValue().isEmpty()) {
 				ret.add(e.getKey());
 			}
 		}

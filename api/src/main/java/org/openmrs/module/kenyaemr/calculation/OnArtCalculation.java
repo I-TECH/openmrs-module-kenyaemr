@@ -15,46 +15,40 @@ package org.openmrs.module.kenyaemr.calculation;
 
 import java.util.Collection;
 import java.util.Map;
-import java.util.Set;
 
-import org.openmrs.Program;
+import org.openmrs.Concept;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
+import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.calculation.result.CalculationResultMap;
-import org.openmrs.calculation.result.ObsResult;
-import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyaemr.MetadataConstants;
 
 /**
  *
  */
-public class NeedsCd4Calculation extends KenyaEmrCalculation {
+public class OnArtCalculation extends KenyaEmrCalculation {
 	
 	/**
 	 * @see org.openmrs.module.kenyaemr.calculation.KenyaEmrCalculation#getShortMessage()
 	 */
 	@Override
 	public String getShortMessage() {
-	    return "Due for CD4";
+		return "On ART";
 	}
 	
 	/**
 	 * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(java.util.Collection,
 	 *      java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
-	 * @should determine whether patients need a CD4
 	 */
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues,
 	                                     PatientCalculationContext context) {
-		Program hivProgram = Context.getProgramWorkflowService().getPrograms("HIV Program").get(0);
-		Set<Integer> inHivProgram = patientsThatPass(lastProgramEnrollment(hivProgram, cohort, context));
-		Set<Integer> alive = alivePatients(cohort, context);
-		CalculationResultMap lastObs = lastObs(MetadataConstants.CD4_CONCEPT_UUID, cohort, context);
+		Concept arvs = Context.getConceptService().getConceptByUuid(MetadataConstants.ANTIRETROVIRAL_DRUGS_CONCEPT_UUID);
+		CalculationResultMap map = activeDrugOrders(arvs, cohort, context);
+		
 		CalculationResultMap ret = new CalculationResultMap();
-		for (Integer ptId : cohort) {
-			ObsResult r = (ObsResult) lastObs.get(ptId);
-			boolean needed = inHivProgram.contains(ptId) && alive.contains(ptId) && (r == null || r.isEmpty() || daysSince(r.getDateOfResult(), context) > 180);
-			ret.put(ptId, new SimpleResult(needed, this, context));
+		for (Map.Entry<Integer, CalculationResult> e : map.entrySet()) {
+			ret.put(e.getKey(), new BooleanResult(e.getValue() != null && !e.getValue().isEmpty(), this));
 		}
 		return ret;
 	}

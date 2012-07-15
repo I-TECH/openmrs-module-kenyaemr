@@ -19,7 +19,7 @@ jq(function() {
 		if (result) {
 			var html = jq.map(result, function(alertText) {
 				return '<span class="alert">' + alertText.shortMessage + '</span>';
-			}).join();
+			}).join('');
 			jq('#alerts').append(html).show();
 		}
 	});

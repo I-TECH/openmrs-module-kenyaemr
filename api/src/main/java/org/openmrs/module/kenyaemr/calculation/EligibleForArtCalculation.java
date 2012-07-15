@@ -46,8 +46,13 @@ public class EligibleForArtCalculation extends KenyaEmrCalculation {
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues,
 	                                     PatientCalculationContext context) {
+
+		// only applies to patients in the HIV program
 		Program hivProgram = Context.getProgramWorkflowService().getPrograms("HIV Program").get(0);
-		Set<Integer> inHivProgram = passingPatients(lastProgramEnrollment(hivProgram, cohort, context));
+		Set<Integer> inHivProgram = patientsThatPass(lastProgramEnrollment(hivProgram, cohort, context));
+		
+		// need to exclude those on ART already
+		Set<Integer> onArt = patientsThatPass(calculate(new OnArtCalculation(), cohort, context));
 		
 		CalculationResultMap ages = ages(cohort, context);
 		
@@ -58,7 +63,7 @@ public class EligibleForArtCalculation extends KenyaEmrCalculation {
 		CalculationResultMap ret = new CalculationResultMap();
 		for (Integer ptId : cohort) {
 			boolean eligible = false;
-			if (inHivProgram.contains(ptId)) {
+			if (inHivProgram.contains(ptId) && !onArt.contains(ptId)) {
 				int ageInMonths = ((Age) ages.get(ptId).getValue()).getFullMonths();
 				Double cd4 = numericObsResultForPatient(lastCd4, ptId);
 				Double cd4Percent = numericObsResultForPatient(lastCd4Percent, ptId);
