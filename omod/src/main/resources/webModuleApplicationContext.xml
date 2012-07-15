@@ -37,14 +37,14 @@
 	
 	<bean id="kenyaEmrMedicalEncounterApp" class="org.openmrs.module.appframework.SimpleAppDescriptor">
 		<property name="id" value="kenyaemr.medicalEncounter"/>
-		<property name="label" value="Provider"/>
+		<property name="label" value="Clinician"/>
 		<property name="homepageUrl" value="pages/medicalEncounterHome.page"/>
 		<property name="iconUrl" value="moduleResources/uilibrary/images/clipboard_32.png"/>
 	</bean>
 	
 	<bean id="kenyaEmrIntakeApp" class="org.openmrs.module.appframework.SimpleAppDescriptor">
 		<property name="id" value="kenyaemr.intake"/>
-		<property name="label" value="Intake"/>
+		<property name="label" value="Triage"/>
 		<property name="homepageUrl" value="pages/intakeHome.page"/>
 		<property name="iconUrl" value="moduleResources/uilibrary/images/page_text_add_32.png"/>
 	</bean>
