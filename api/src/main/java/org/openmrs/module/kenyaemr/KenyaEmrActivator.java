@@ -37,6 +37,10 @@ import org.openmrs.module.metadatasharing.wrapper.PackageImporter;
  */
 public class KenyaEmrActivator implements ModuleActivator {
 	
+	private static final String METADATA_FILENAME_FORMS = "Kenya_EMR_Forms-v22.zip";
+    private static final String METADATA_FILENAME_CORE = "Kenya_EMR_Core_Metadata-v4.zip";
+    private static final String METADATA_FILENAME_ROLES = "Kenya_EMR_Roles_and_Privileges-v1.zip";
+    
 	protected Log log = LogFactory.getLog(getClass());
 		
 	/**
@@ -113,9 +117,9 @@ public class KenyaEmrActivator implements ModuleActivator {
      */
     public boolean setupInitialData() throws Exception {
     	boolean anyChanges = false;
-    	anyChanges |= installMetadataPackageIfNecessary("c66d041c-563e-4438-83eb-ad5f32c6e97a", "Kenya_EMR_Forms-v18.zip");
-    	anyChanges |= installMetadataPackageIfNecessary("d4b71375-f64a-442d-a0c2-9f507c432925", "Kenya_EMR_Roles_and_Privileges-v1.zip");
-    	anyChanges |= installMetadataPackageIfNecessary("29177ba6-a634-42d5-9314-e12689856ff1", "Kenya_EMR_Core_Metadata-v4.zip");
+    	anyChanges |= installMetadataPackageIfNecessary("c66d041c-563e-4438-83eb-ad5f32c6e97a", METADATA_FILENAME_FORMS);
+    	anyChanges |= installMetadataPackageIfNecessary("d4b71375-f64a-442d-a0c2-9f507c432925", METADATA_FILENAME_ROLES);
+    	anyChanges |= installMetadataPackageIfNecessary("29177ba6-a634-42d5-9314-e12689856ff1", METADATA_FILENAME_CORE);
     	return anyChanges;
     }
 
