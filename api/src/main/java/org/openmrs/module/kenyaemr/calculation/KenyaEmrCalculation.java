@@ -18,6 +18,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -25,6 +26,7 @@ import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.openmrs.Cohort;
 import org.openmrs.Concept;
+import org.openmrs.DrugOrder;
 import org.openmrs.Obs;
 import org.openmrs.Program;
 import org.openmrs.api.APIException;
@@ -36,6 +38,7 @@ import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.calculation.result.CalculationResultMap;
+import org.openmrs.calculation.result.ListResult;
 import org.openmrs.calculation.result.ObsResult;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyaemr.MetadataConstants;
@@ -107,11 +110,38 @@ public abstract class KenyaEmrCalculation extends BaseCalculation implements Pat
 	}
 	
 	CalculationResultMap activeDrugOrders(Concept medSet, Collection<Integer> cohort, PatientCalculationContext context) {
-    	DrugOrdersForPatientDataDefinition def = new DrugOrdersForPatientDataDefinition("On ART");
+    	DrugOrdersForPatientDataDefinition def = new DrugOrdersForPatientDataDefinition("On " + medSet.getName().getName());
     	def.setDrugConceptSetsToInclude(Collections.singletonList(medSet));
     	def.setActiveOnDate(context.getNow());
     	return evaluateWithReporting(def, cohort, null, context);
     }
+	
+	CalculationResultMap allDrugOrders(Concept medSet, Collection<Integer> cohort,
+	                                   PatientCalculationContext context) {
+		DrugOrdersForPatientDataDefinition def = new DrugOrdersForPatientDataDefinition("First " + medSet.getName().getName() + " start date");
+    	def.setDrugConceptSetsToInclude(Collections.singletonList(medSet));
+    	def.setStartedOnOrBefore(context.getNow());
+    	return evaluateWithReporting(def, cohort, null, context);
+	}
+	
+	CalculationResultMap firstDrugOrderStartDate(Concept medSet, Collection<Integer> cohort,
+                                                 PatientCalculationContext context) {
+		CalculationResultMap orders = allDrugOrders(medSet, cohort, context);
+    	CalculationResultMap ret = new CalculationResultMap();
+    	for (Map.Entry<Integer, CalculationResult> e : orders.entrySet()) {
+    		Integer ptId = e.getKey();
+    		ListResult result = (ListResult) e.getValue();
+    		Date earliest = null;
+    		for (SimpleResult r : (List<SimpleResult>) result.getValue()) {
+    			Date candidate = ((DrugOrder) r.getValue()).getStartDate();
+    			if (earliest == null || OpenmrsUtil.compareWithNullAsLatest(candidate, earliest) < 0) {
+    				earliest = candidate;
+    			}
+    		}
+    		ret.put(ptId, earliest == null ? null : new SimpleResult(earliest, this));
+    	}
+    	return ret;
+	}
 	
 	CalculationResultMap calculate(PatientCalculation calculation, Collection<Integer> patientIds, PatientCalculationContext calculationContext) {
 		return Context.getService(PatientCalculationService.class).evaluate(patientIds, calculation, calculationContext);
@@ -206,6 +236,12 @@ public abstract class KenyaEmrCalculation extends BaseCalculation implements Pat
     CalculationResult toCalculationResult(Object o, PatientCalculationContext ctx) {
 	    if (o instanceof Obs) {
 	    	return new ObsResult((Obs) o, this, ctx);
+	    } else if (o instanceof Collection) {
+	    	ListResult ret = new ListResult();
+	    	for (Object obj : (Collection) o) {
+	    		ret.add(toCalculationResult(obj, ctx));
+	    	}
+	    	return ret;
 	    } else {
 	    	return new SimpleResult(o, this, ctx);
 	    }
@@ -229,6 +265,20 @@ public abstract class KenyaEmrCalculation extends BaseCalculation implements Pat
     	ret.setParameterValues(parameterValues);
     	calculationContext.addToCache("reportingEvaluationContext", ret);
 	    return ret;
+    }
+    
+    /**
+     * If map is missing entries for any of patientIds, they are added (with null result)
+     * 
+     * @param map
+     * @param patientIds
+     */
+    void ensureCohort(CalculationResultMap map, Collection<Integer> patientIds) {
+    	for (Integer ptId : patientIds) {
+    		if (!map.containsKey(ptId)) {
+    			map.put(ptId, null);
+    		}
+    	}
     }
     
     int daysSince(Date date, CalculationContext ctx) {

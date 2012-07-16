@@ -64,8 +64,8 @@ public class Moh731ReportTest extends BaseModuleContextSensitiveTest {
 		
 		EvaluationContext ec = new EvaluationContext();
 		SimpleDateFormat ymd = new SimpleDateFormat("yyyy-MM-dd");
-		ec.addParameterValue("startDate", ymd.parse("2012-06-01"));
-		ec.addParameterValue("endDate", ymd.parse("2012-06-30"));
+		ec.addParameterValue("startDate", ymd.parse("2012-07-01"));
+		ec.addParameterValue("endDate", ymd.parse("2012-07-31"));
 		ReportData data = Context.getService(ReportDefinitionService.class).evaluate(rd, ec);
 		printOutput(data);
 		

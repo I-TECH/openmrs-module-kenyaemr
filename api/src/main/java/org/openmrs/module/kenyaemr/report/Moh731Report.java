@@ -34,8 +34,10 @@ import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.DateObsCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.EncounterCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.ProgramEnrollmentCohortDefinition;
+import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.definition.DefinitionSummary;
@@ -181,6 +183,13 @@ public class Moh731Report implements IndicatorReportManager {
 			cd.setCompositionString("enrolled AND NOT transferIn");
 			cohortDefinitions.put("enrolledNoTransfers", cd);
 		}
+		{
+			EncounterCohortDefinition cd = new EncounterCohortDefinition();
+			cd.setTimeQualifier(TimeQualifier.ANY);
+			cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+			cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+			cohortDefinitions.put("anyEncounterBetween", cd);
+		}
 	}
 
 	private void setupDimensions() {
@@ -212,6 +221,13 @@ public class Moh731Report implements IndicatorReportManager {
 			ind.setCohortDefinition(map(cohortDefinitions.get("enrolledNoTransfers"), "fromDate=${startDate},toDate=${endDate}"));
 			indicators.put("enrolledInCare", ind);
 		}
+		{
+			CohortIndicator ind = new CohortIndicator("Currently in Care (includes transfers)");
+			ind.addParameter(new Parameter("startDate", "Start Date", Date.class));
+			ind.addParameter(new Parameter("endDate", "End Date", Date.class));
+			ind.setCohortDefinition(map(cohortDefinitions.get("anyEncounterBetween"), "onOrAfter=${endDate-90d},onOrBefore=${endDate}"));
+			indicators.put("currentlyInCare", ind);
+		}
 	}
 
 	public ReportDefinition createReportDefinition() {
@@ -239,11 +255,21 @@ public class Moh731Report implements IndicatorReportManager {
 		dsd.addColumn("3.2-1to14-F", "Enrolled in Care (1-14, Female)", map(indicators.get("enrolledInCare"), "startDate=${startDate},endDate=${endDate}"), "gender=F|age=1to14");
 		dsd.addColumn("3.2-15+-M", "Enrolled in Care (15+, Male)", map(indicators.get("enrolledInCare"), "startDate=${startDate},endDate=${endDate}"), "gender=M|age=15+");
 		dsd.addColumn("3.2-15+-F", "Enrolled in Care (15+, Female)", map(indicators.get("enrolledInCare"), "startDate=${startDate},endDate=${endDate}"), "gender=F|age=15+");
+		
+		dsd.addColumn("3.3", "Currently in Care", map(indicators.get("currentlyInCare"), "startDate=${startDate},endDate=${endDate}"), "");
+		dsd.addColumn("3.3-under1", "Currently in Care (<1)", map(indicators.get("currentlyInCare"), "startDate=${startDate},endDate=${endDate}"), "age=<1");
+		dsd.addColumn("3.3-1to14-M", "Currently in Care (1-14, Male)", map(indicators.get("currentlyInCare"), "startDate=${startDate},endDate=${endDate}"), "gender=M|age=1to14");
+		dsd.addColumn("3.3-1to14-F", "Currently in Care (1-14, Female)", map(indicators.get("currentlyInCare"), "startDate=${startDate},endDate=${endDate}"), "gender=F|age=1to14");
+		dsd.addColumn("3.3-15+-M", "Currently in Care (15+, Male)", map(indicators.get("currentlyInCare"), "startDate=${startDate},endDate=${endDate}"), "gender=M|age=15+");
+		dsd.addColumn("3.3-15+-F", "Currently in Care (15+, Female)", map(indicators.get("currentlyInCare"), "startDate=${startDate},endDate=${endDate}"), "gender=F|age=15+");
 	    
 	    return dsd;
     }
 
     private <T extends Parameterizable> Mapped<T> map(T parameterizable, String mappings) {
+    	if (parameterizable == null) {
+    		throw new NullPointerException("Programming error: missing parameterizable");
+    	}
     	if (mappings == null) {
     		mappings = ""; // probably not necessary, just to be safe
     	}
