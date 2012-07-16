@@ -32,17 +32,21 @@ public class AdminFirstTimeSetupPageController {
 	
 	public String controller(Session session, PageModel model, UiUtils ui,
 	                         @RequestParam(required = false, value = "defaultLocation") Location defaultLocation,
-	                         @RequestParam(required = false, value = "mrnIdentifierSourceStart") String mrnIdentifierSourceStart) {
+	                         @RequestParam(required = false, value = "mrnIdentifierSourceStart") String mrnIdentifierSourceStart,
+	                         @RequestParam(required = false, value = "hivIdentifierSourceStart") String hivIdentifierSourceStart) {
 		
 		KenyaEmrService service = Context.getService(KenyaEmrService.class);
 		
 		// handle submission
-		if (defaultLocation != null || StringUtils.isNotEmpty(mrnIdentifierSourceStart)) {
+		if (defaultLocation != null || StringUtils.isNotEmpty(mrnIdentifierSourceStart) || StringUtils.isNotEmpty(hivIdentifierSourceStart)) {
 			if (defaultLocation != null) {
 				service.setDefaultLocation(defaultLocation);
 			}
 			if (StringUtils.isNotEmpty(mrnIdentifierSourceStart)) {
 				service.setupMrnIdentifierSource(mrnIdentifierSourceStart);
+			}
+			if (StringUtils.isNotEmpty(hivIdentifierSourceStart)) {
+				service.setupHivUniqueIdentifierSource(hivIdentifierSourceStart);
 			}
 			session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "First-Time Setup Completed");
 			return "redirect:" + ui.pageLink("kenyaHome");
@@ -65,9 +69,17 @@ public class AdminFirstTimeSetupPageController {
 			// pass
 		}
 		
+		IdentifierSource hivIdentifierSource = null;
+		try {
+			hivIdentifierSource = service.getHivUniqueIdentifierSource();
+		} catch (ConfigurationRequiredException ex) {
+			// pass
+		}
+		
 		model.addAttribute("isSuperUser", Context.getAuthenticatedUser().isSuperUser());
 		model.addAttribute("defaultLocation", defaultLocation);
 		model.addAttribute("mrnIdentifierSource", mrnIdentifierSource);
+		model.addAttribute("hivIdentifierSource", hivIdentifierSource);
 		return null;
 	}
 	

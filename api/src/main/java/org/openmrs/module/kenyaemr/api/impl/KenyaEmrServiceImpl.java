@@ -42,6 +42,7 @@ import org.openmrs.module.kenyaemr.report.IndicatorReportManager;
 public class KenyaEmrServiceImpl extends BaseOpenmrsService implements KenyaEmrService {
 	
     private static final String OPENMRS_MEDICAL_RECORD_NUMBER_NAME = "Kenya EMR - OpenMRS Medical Record Number";
+    private static final String HIV_UNIQUE_PATIENT_NUMBER_NAME = "Kenya EMR - OpenMRS HIV Unique Patient Number";
 	private boolean hasBeenConfigured = false;
 	
 	// maps classname to manager instance
@@ -61,6 +62,7 @@ public class KenyaEmrServiceImpl extends BaseOpenmrsService implements KenyaEmrS
 		
 		hasBeenConfigured = isConfiguredDefaultLocation();
 		hasBeenConfigured &= isConfiguredOpenmrsIdGenerator();
+		hasBeenConfigured &= isConfiguredHivUniqueIdGenerator();
 		return hasBeenConfigured;
 	}
 	
@@ -90,6 +92,18 @@ public class KenyaEmrServiceImpl extends BaseOpenmrsService implements KenyaEmrS
     	}
     }
     
+    /**
+     * @return whether or not an id generator is configured for the OpenMRS MRN
+     */
+    boolean isConfiguredHivUniqueIdGenerator() {
+    	try {
+    		IdentifierSource source = getHivUniqueIdentifierSource();
+    		return source != null;
+    	} catch (ConfigurationRequiredException ex) {
+    		return false;
+    	}
+    }
+    
 	/**
      * @return the identifier source for MRNs
      */
@@ -102,6 +116,17 @@ public class KenyaEmrServiceImpl extends BaseOpenmrsService implements KenyaEmrS
     	return source;
     }
 
+    /**
+     * @see org.openmrs.module.kenyaemr.api.KenyaEmrService#getHivUniqueIdentifierSource()
+     */
+    @Override
+    public IdentifierSource getHivUniqueIdentifierSource() throws ConfigurationRequiredException {
+    	IdentifierSource source = getIdentifierSource(HIV_UNIQUE_PATIENT_NUMBER_NAME);
+    	if (source == null) {
+    		throw new ConfigurationRequiredException("HIV Unique Patient Number Identifier Source not configured");
+    	}
+    	return source;
+    }
 
 	/**
      * @param name
@@ -141,6 +166,47 @@ public class KenyaEmrServiceImpl extends BaseOpenmrsService implements KenyaEmrS
 		}
 		throw new ConfigurationRequiredException("Global Property: " + KenyaEmrConstants.GP_DEFAULT_LOCATION);
 	}
+
+	private void setupIdentifierSource(String startFrom, String name, PatientIdentifierType idType, String baseCharacterSet) {
+    	String validatorClass = idType.getValidator();
+    	LuhnModNIdentifierValidator validator = null;
+		if (validatorClass != null) {
+			try {
+    			validator = (LuhnModNIdentifierValidator) Context.loadClass(validatorClass).newInstance();
+	    	} catch (Exception e) {
+	    		throw new APIException("Unexpected Identifier Validator (" + validatorClass + ") for " + idType.getName(), e);
+	    	}
+		}
+    	
+    	if (startFrom == null) {
+    		if (validator != null) {
+    			startFrom = validator.getBaseCharacters().substring(0, 1);
+    		} else {
+    			throw new RuntimeException("startFrom is required if this isn't using a LuhnModNIdentifierValidator");
+    		}
+    	}
+    	
+    	if (baseCharacterSet == null) {
+    		baseCharacterSet = validator.getBaseCharacters();
+    	}
+
+    	IdentifierSourceService idService = Context.getService(IdentifierSourceService.class);
+
+    	SequentialIdentifierGenerator idGen = new SequentialIdentifierGenerator();
+    	idGen.setName(name);
+    	idGen.setDescription("Identifier Generator for " + idType.getName());
+    	idGen.setIdentifierType(idType);
+    	if (OPENMRS_MEDICAL_RECORD_NUMBER_NAME.equals(name)) {
+    		idGen.setPrefix("M");
+    	}
+    	idGen.setBaseCharacterSet(baseCharacterSet);
+    	idGen.setFirstIdentifierBase(startFrom);
+		idService.saveIdentifierSource(idGen);
+    	
+    	AutoGenerationOption auto = new AutoGenerationOption(idType, idGen, true, true);
+	    idService.saveAutoGenerationOption(auto);
+
+	}
 	
 	/**
 	 * @see org.openmrs.module.kenyaemr.api.KenyaEmrService#setupMrnIdentifierSource(java.lang.String)
@@ -156,31 +222,27 @@ public class KenyaEmrServiceImpl extends BaseOpenmrsService implements KenyaEmrS
 	    }
 	    
     	PatientIdentifierType idType = Context.getPatientService().getPatientIdentifierTypeByUuid(MetadataConstants.OPENMRS_ID_UUID);
-    	String validatorClass = idType.getValidator();
-    	LuhnModNIdentifierValidator validator;
-    	try {
-    		validator = (LuhnModNIdentifierValidator) Context.loadClass(validatorClass).newInstance(); 
-    	} catch (Exception e) {
-    		throw new APIException("Unexpected Identifier Validator (" + validatorClass + ") for " + idType.getName(), e);
-    	}
-    	
-    	if (startFrom == null) {
-    		startFrom = validator.getBaseCharacters().substring(0, 1);
-    	}
-
-    	IdentifierSourceService idService = Context.getService(IdentifierSourceService.class);
-
-    	SequentialIdentifierGenerator idGen = new SequentialIdentifierGenerator();
-    	idGen.setName(OPENMRS_MEDICAL_RECORD_NUMBER_NAME);
-    	idGen.setDescription("Identifier Generator for " + idType.getName());
-    	idGen.setIdentifierType(idType);
-    	idGen.setPrefix("M");
-    	idGen.setBaseCharacterSet(validator.getBaseCharacters());
-    	idGen.setFirstIdentifierBase(startFrom);
-		idService.saveIdentifierSource(idGen);
-    	
-    	AutoGenerationOption auto = new AutoGenerationOption(idType, idGen, true, true);
-	    idService.saveAutoGenerationOption(auto);
+    	setupIdentifierSource(startFrom, OPENMRS_MEDICAL_RECORD_NUMBER_NAME, idType, null);
+	}
+	
+	/**
+	 * @see org.openmrs.module.kenyaemr.api.KenyaEmrService#setupHivUniqueIdentifierSource(java.lang.String)
+	 */
+	@Override
+	public void setupHivUniqueIdentifierSource(String startFrom) {
+		try {
+	    	IdentifierSource source = getHivUniqueIdentifierSource();
+	    	throw new APIException(source.getName() + " is already set up");
+	    }
+	    catch (ConfigurationRequiredException ex) {
+	    	// this is the good case: we are only allowed to configure this if it isn't set up yet
+	    }
+		if (startFrom == null) {
+			startFrom = "00001";
+		}
+	    
+    	PatientIdentifierType idType = Context.getPatientService().getPatientIdentifierTypeByUuid(MetadataConstants.UNIQUE_PATIENT_NUMBER_UUID);
+    	setupIdentifierSource(startFrom, HIV_UNIQUE_PATIENT_NUMBER_NAME, idType, "0123456789");
 	}
 
 	/**

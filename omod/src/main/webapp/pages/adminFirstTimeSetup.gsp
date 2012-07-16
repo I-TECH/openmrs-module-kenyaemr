@@ -30,6 +30,7 @@
 					fieldFragment: "field/org.openmrs.Location.kenyaemr"
 				]
 			]
+			
 			if (mrnIdentifierSource) {
 				fields << [
 					label: "OpenMRS ID Generator",
@@ -40,6 +41,20 @@
 					label: "(OpenMRS ID Generator) Base for first ID Number",
 					formFieldName: "mrnIdentifierSourceStart",
 					initialValue: "3",
+					class: java.lang.String
+				]
+			}
+			
+			if (hivIdentifierSource) {
+				fields << [
+					label: "HIV Unique Patient Number Generator",
+					value: "Already configured"
+				]
+			} else {
+				fields << [
+					label: "(HIV Unique Patient Number Generator) First ID Number",
+					formFieldName: "hivIdentifierSourceStart",
+					initialValue: "00001",
 					class: java.lang.String
 				]
 			}

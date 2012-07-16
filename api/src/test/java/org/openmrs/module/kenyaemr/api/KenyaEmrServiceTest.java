@@ -24,9 +24,10 @@ public class KenyaEmrServiceTest extends BaseModuleContextSensitiveTest {
 	
 	@Before
 	public void beforeEachTest() throws Exception {
+		executeDataSet("org/openmrs/module/kenyaemr/include/testData.xml");
 		new KenyaEmrActivator().setupGlobalProperties();
 		service = Context.getService(KenyaEmrService.class);
-		setupMetadata();
+		//setupMetadata();
 	}
 	
 	/**
@@ -92,6 +93,9 @@ public class KenyaEmrServiceTest extends BaseModuleContextSensitiveTest {
     	// MRN ID source
     	service.setupMrnIdentifierSource(null);
     	
+    	// HIV ID source
+    	service.setupHivUniqueIdentifierSource(null);
+    	
     	Assert.assertTrue(service.isConfigured());
     }
 
@@ -137,6 +141,51 @@ public class KenyaEmrServiceTest extends BaseModuleContextSensitiveTest {
     		Assert.fail("Shouldn't be allowed to set up twice");
     	} catch (Exception ex) {
     		// pass
+    	}
+    }
+
+	/**
+     * @see KenyaEmrService#setupHivUniqueIdentifierSource(String)
+     * @verifies fail if already set up
+     */
+    @Test
+    public void setupHivUniqueIdentifierSource_shouldFailIfAlreadySetUp() throws Exception {
+    	service.setupHivUniqueIdentifierSource("00517");
+    	try {
+    		service.setupHivUniqueIdentifierSource("00517");
+    		Assert.fail("Shouldn't be allowed to set up twice");
+    	} catch (Exception ex) {
+    		// pass
+    	}
+    }
+
+	/**
+     * @see KenyaEmrService#setupHivUniqueIdentifierSource(String)
+     * @verifies set up an identifier source
+     */
+    @Test
+    public void setupHivUniqueIdentifierSource_shouldSetUpAnIdentifierSource() throws Exception {
+    	Assert.assertFalse(isHivIdentifierSourceSetup());
+	    service.setupHivUniqueIdentifierSource("00517");
+	    Assert.assertTrue(isHivIdentifierSourceSetup());
+	    IdentifierSource source = service.getHivUniqueIdentifierSource();
+	    Assert.assertNotNull(source);
+	    
+	    PatientIdentifierType idType = source.getIdentifierType();
+	    Assert.assertEquals("00517", Context.getService(IdentifierSourceService.class).generateIdentifier(idType, "Testing"));
+	    Assert.assertEquals("00518", Context.getService(IdentifierSourceService.class).generateIdentifier(idType, "Testing"));
+	    Assert.assertEquals("00519", Context.getService(IdentifierSourceService.class).generateIdentifier(idType, "Testing"));
+    }
+    
+    /**
+     * @return whether the HIV identifier source has been set up
+     */
+    private boolean isHivIdentifierSourceSetup() {
+    	try {
+    		IdentifierSource source = service.getHivUniqueIdentifierSource();
+    		return source != null;
+    	} catch (Exception ex) {
+    		return false;
     	}
     }
 }

@@ -63,12 +63,29 @@ public interface KenyaEmrService extends OpenmrsService {
 	 */
 	@Transactional
 	void setupMrnIdentifierSource(String startFrom);
+	
+	/**
+	 * Sets up a new idgen identifier source for our auto-generated HIV Unique Patient Numbers
+	 * 
+	 * @param startFrom the first identifier to use
+	 * 
+	 * @should set up an identifier source
+	 * @should fail if already set up
+	 */
+	@Transactional
+	void setupHivUniqueIdentifierSource(String startFrom);
 
 	/**
      * @return the ID generator for Medical Record Numbers (OpenMRS IDs)
      * @throws ConfigurationRequiredException if the ID source has not be set up yet
      */
     IdentifierSource getMrnIdentifierSource() throws ConfigurationRequiredException;
+    
+    /**
+     * @return the ID generator for HIV Unique Patient Numbers
+     * @throws ConfigurationRequiredException if the ID source has not be set up yet
+     */
+    IdentifierSource getHivUniqueIdentifierSource() throws ConfigurationRequiredException;
 
 	/**
      * Called at spring context refresh to refresh the list of known report managers 
