@@ -80,6 +80,12 @@
 			<version>${htmlformentryVersion}</version>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.openmrs.module</groupId>
+			<artifactId>htmlformentry-omod</artifactId>
+			<version>${htmlformentryVersion}</version>
+			<scope>provided</scope>
+		</dependency>
 
 		<dependency>
 			<groupId>org.openmrs.module</groupId>
