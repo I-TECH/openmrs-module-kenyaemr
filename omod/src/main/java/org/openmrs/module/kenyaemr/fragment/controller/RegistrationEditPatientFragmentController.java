@@ -24,11 +24,14 @@ import org.openmrs.Obs;
 import org.openmrs.Patient;
 import org.openmrs.PatientIdentifier;
 import org.openmrs.PatientIdentifierType;
+import org.openmrs.PatientProgram;
 import org.openmrs.PersonAddress;
 import org.openmrs.PersonAttribute;
 import org.openmrs.PersonAttributeType;
 import org.openmrs.PersonName;
+import org.openmrs.Program;
 import org.openmrs.api.PatientService;
+import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.idgen.service.IdentifierSourceService;
 import org.openmrs.module.kenyaemr.MetadataConstants;
@@ -279,6 +282,20 @@ public class RegistrationEditPatientFragmentController {
 			}
 			
 			return ret;
+		}
+		
+		public boolean isInHivProgram() {
+			if (original == null) {
+				return false;
+			}
+			ProgramWorkflowService pws = Context.getProgramWorkflowService();
+			Program hivProgram = pws.getPrograms("HIV Program").get(0);
+			for (PatientProgram pp : pws.getPatientPrograms(original, hivProgram, null, null, null, null, false)) {
+				if (pp.getActive()) {
+					return true;
+				}
+			}
+			return false;
 		}
 		
 		/**

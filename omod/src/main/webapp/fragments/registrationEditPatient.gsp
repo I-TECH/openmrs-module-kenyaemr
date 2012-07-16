@@ -79,11 +79,13 @@
 			<td>${ ui.includeFragment("widget/field", [ object: command, property: "patientClinicNumber.identifier" ]) }</td>
 			<td><% if (!command.patientClinicNumber.identifier) { %>(if available)<% } %></td>
 		</tr>
-		<tr>
-			<td>${ ui.format(command.hivIdNumber.identifierType) }</td>
-			<td>${ ui.includeFragment("widget/field", [ object: command, property: "hivIdNumber.identifier" ]) }</td>
-			<td>(HIV program<% if (!command.hivIdNumber.identifier) { %>, if assigned<% } %>)</td>
-		</tr>
+		<% if (command.inHivProgram) { %>
+			<tr>
+				<td>${ ui.format(command.hivIdNumber.identifierType) }</td>
+				<td>${ ui.includeFragment("widget/field", [ object: command, property: "hivIdNumber.identifier" ]) }</td>
+				<td>(HIV program<% if (!command.hivIdNumber.identifier) { %>, if assigned<% } %>)</td>
+			</tr>
+		<% } %>
 	</table>
 
 	<h4>Demographics</h4>
