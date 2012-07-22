@@ -60,6 +60,15 @@ public class RegistrationEditPatientFragmentController {
 		}
 		model.addAttribute("telephoneContactAttrType", Context.getPersonService().getPersonAttributeTypeByUuid(MetadataConstants.TELEPHONE_CONTACT_UUID));
 		model.addAttribute("civilStatusConcept", Context.getConceptService().getConceptByUuid(MetadataConstants.CIVIL_STATUS_CONCEPT_UUID));
+		model.addAttribute("occupationConcept", Context.getConceptService().getConceptByUuid(MetadataConstants.OCCUPATION_CONCEPT_UUID));
+		model.addAttribute("educationConcept", Context.getConceptService().getConceptByUuid(MetadataConstants.EDUCATION_CONCEPT_UUID));
+		List<Concept> educationOptions = new ArrayList<Concept>();
+		educationOptions.add(Context.getConceptService().getConceptByUuid(MetadataConstants.NONE_CONCEPT_UUID));
+		educationOptions.add(Context.getConceptService().getConceptByUuid(MetadataConstants.PRIMARY_EDUCATION_CONCEPT_UUID));
+		educationOptions.add(Context.getConceptService().getConceptByUuid(MetadataConstants.SECONDARY_EDUCATION_CONCEPT_UUID));
+		educationOptions.add(Context.getConceptService().getConceptByUuid(MetadataConstants.COLLEGE_UNIVERSITY_POLYTECHNIC_CONCEPT_UUID));
+		educationOptions.add(Context.getConceptService().getConceptByUuid(MetadataConstants.UNIVERSITY_COMPLETE_CONCEPT_UUID));
+		model.addAttribute("educationOptions", educationOptions);
 	}
 	
 	public SimpleObject savePatient(@MethodParam("commandObject") @BindParams EditPatientCommand command,
@@ -104,7 +113,15 @@ public class RegistrationEditPatientFragmentController {
 		
 		private Concept maritalStatus;
 		
+		private Concept occupation;
+		
+		private Concept education;
+		
 		private Obs savedMaritalStatus;
+		
+		private Obs savedOccupation;
+		
+		private Obs savedEducation;
 		
 		public EditPatientCommand() {
 			location = Context.getService(KenyaEmrService.class).getDefaultLocation();
@@ -160,16 +177,34 @@ public class RegistrationEditPatientFragmentController {
 			} else {
 				telephoneContact.setPerson(patient);
 			}
-		
-			Concept civilStatusConcept = Context.getConceptService().getConceptByUuid(MetadataConstants.CIVIL_STATUS_CONCEPT_UUID);
-			List<Obs> civilStatuses = Context.getObsService().getObservationsByPersonAndConcept(patient, civilStatusConcept);
-			if (civilStatuses.size() > 0) {
-				// these are in reverse chronological order
-				savedMaritalStatus = civilStatuses.get(0);
+			
+			savedMaritalStatus = getLatestObs(patient, MetadataConstants.CIVIL_STATUS_CONCEPT_UUID);
+			if (savedMaritalStatus != null) {
 				maritalStatus = savedMaritalStatus.getValueCoded();
 			}
+			
+			savedOccupation = getLatestObs(patient, MetadataConstants.OCCUPATION_CONCEPT_UUID);
+			if (savedOccupation != null) {
+				occupation = savedOccupation.getValueCoded();
+			}
+			
+			savedEducation = getLatestObs(patient, MetadataConstants.EDUCATION_CONCEPT_UUID);
+			if (savedEducation != null) {
+				education = savedEducation.getValueCoded();
+			}
+		
 		}
 		
+        private Obs getLatestObs(Patient patient, String conceptUuid) {
+        	Concept concept = Context.getConceptService().getConceptByUuid(conceptUuid);
+			List<Obs> obs = Context.getObsService().getObservationsByPersonAndConcept(patient, concept);
+			if (obs.size() > 0) {
+				// these are in reverse chronological order
+				return obs.get(0);
+			}
+			return null;
+        }
+
 		/**
 		 * @see org.springframework.validation.Validator#validate(java.lang.Object,
 		 *      org.springframework.validation.Errors)
@@ -256,22 +291,9 @@ public class RegistrationEditPatientFragmentController {
 			
 			List<Obs> obsToSave = new ArrayList<Obs>();
 			List<Obs> obsToVoid = new ArrayList<Obs>();
-			if (!OpenmrsUtil.nullSafeEquals(savedMaritalStatus != null ? savedMaritalStatus.getValueCoded() : null, maritalStatus)) {
-				// there was a change
-				if (savedMaritalStatus != null && maritalStatus == null) {
-					// treat going from a value to null as voiding all past civil status obs
-					obsToVoid.addAll(Context.getObsService().getObservationsByPersonAndConcept(ret, Context.getConceptService().getConceptByUuid(MetadataConstants.CIVIL_STATUS_CONCEPT_UUID)));
-				}
-				if (maritalStatus != null) {
-					Obs o = new Obs();
-					o.setPerson(ret);
-					o.setConcept(Context.getConceptService().getConceptByUuid(MetadataConstants.CIVIL_STATUS_CONCEPT_UUID));
-					o.setObsDatetime(new Date());
-					o.setLocation(Context.getService(KenyaEmrService.class).getDefaultLocation());
-					o.setValueCoded(maritalStatus);
-					obsToSave.add(o);
-				}
-			}
+			handleOncePerPatientObs(ret, obsToSave, obsToVoid, Context.getConceptService().getConceptByUuid(MetadataConstants.CIVIL_STATUS_CONCEPT_UUID), savedMaritalStatus, maritalStatus);
+			handleOncePerPatientObs(ret, obsToSave, obsToVoid, Context.getConceptService().getConceptByUuid(MetadataConstants.OCCUPATION_CONCEPT_UUID), savedOccupation, occupation);
+			handleOncePerPatientObs(ret, obsToSave, obsToVoid, Context.getConceptService().getConceptByUuid(MetadataConstants.EDUCATION_CONCEPT_UUID), savedEducation, education);
 			
 			for (Obs o : obsToVoid) {
 				Context.getObsService().voidObs(o, "Kenya EMR edit patient");
@@ -284,6 +306,26 @@ public class RegistrationEditPatientFragmentController {
 			return ret;
 		}
 		
+        private void handleOncePerPatientObs(Patient patient, List<Obs> obsToSave, List<Obs> obsToVoid, Concept question,
+                                             Obs savedObs, Concept newValue) {
+        	if (!OpenmrsUtil.nullSafeEquals(savedObs != null ? savedObs.getValueCoded() : null, newValue)) {
+				// there was a change
+				if (savedObs != null && newValue == null) {
+					// treat going from a value to null as voiding all past civil status obs
+					obsToVoid.addAll(Context.getObsService().getObservationsByPersonAndConcept(patient, question));
+				}
+				if (newValue != null) {
+					Obs o = new Obs();
+					o.setPerson(patient);
+					o.setConcept(question);
+					o.setObsDatetime(new Date());
+					o.setLocation(Context.getService(KenyaEmrService.class).getDefaultLocation());
+					o.setValueCoded(newValue);
+					obsToSave.add(o);
+				}
+			}
+        }
+
 		public boolean isInHivProgram() {
 			if (original == null) {
 				return false;
@@ -424,6 +466,34 @@ public class RegistrationEditPatientFragmentController {
 			this.maritalStatus = maritalStatus;
 		}
 		
+        /**
+         * @return the education
+         */
+        public Concept getEducation() {
+	        return education;
+        }
+        
+        /**
+         * @param education the education to set
+         */
+        public void setEducation(Concept education) {
+	        this.education = education;
+        }
+        
+        /**
+         * @return the occupation
+         */
+        public Concept getOccupation() {
+	        return occupation;
+        }
+        
+        /**
+         * @param occupation the occupation to set
+         */
+        public void setOccupation(Concept occupation) {
+	        this.occupation = occupation;
+        }
+        
         /**
          * @return the telephoneContact
          */

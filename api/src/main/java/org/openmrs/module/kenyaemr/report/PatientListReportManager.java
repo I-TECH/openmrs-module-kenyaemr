@@ -17,6 +17,6 @@ package org.openmrs.module.kenyaemr.report;
 /**
  *
  */
-public interface IndicatorReportManager extends ReportManager {
+public interface PatientListReportManager extends ReportManager {
 	
 }

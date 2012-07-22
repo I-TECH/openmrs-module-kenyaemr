@@ -19,7 +19,9 @@ import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
@@ -57,7 +59,7 @@ import org.springframework.stereotype.Component;
  *
  */
 @Component
-public class Moh731Report implements IndicatorReportManager {
+public class Moh731Report implements ReportManager {
 	
 	private Boolean configured = Boolean.FALSE;
 	
@@ -78,7 +80,19 @@ public class Moh731Report implements IndicatorReportManager {
     Concept transferInDate;
     
     /**
-     * @see org.openmrs.module.kenyaemr.report.IndicatorReportManager#getReportDefinitionSummary()
+     * @see org.openmrs.module.kenyaemr.report.ReportManager#getTags()
+     */
+    @Override
+    public Set<String> getTags() {
+        Set<String> ret = new LinkedHashSet<String>();
+        ret.add("HIV");
+        ret.add("MoH");
+        ret.add("indicator");
+        return ret;
+    }
+    
+    /**
+     * @see org.openmrs.module.kenyaemr.report.ReportManager#getReportDefinitionSummary()
      */
     @Override
     public DefinitionSummary getReportDefinitionSummary() {
@@ -277,7 +291,7 @@ public class Moh731Report implements IndicatorReportManager {
     }
     
     /**
-     * @see org.openmrs.module.kenyaemr.report.IndicatorReportManager#getExcelTemplate()
+     * @see org.openmrs.module.kenyaemr.report.ReportManager#getExcelTemplate()
      */
     @Override
     public byte[] getExcelTemplate() {
@@ -292,7 +306,7 @@ public class Moh731Report implements IndicatorReportManager {
     }
     
     /**
-     * @see org.openmrs.module.kenyaemr.report.IndicatorReportManager#getExcelFilename(org.openmrs.module.reporting.evaluation.EvaluationContext)
+     * @see org.openmrs.module.kenyaemr.report.ReportManager#getExcelFilename(org.openmrs.module.reporting.evaluation.EvaluationContext)
      */
     @Override
     public String getExcelFilename(EvaluationContext ec) {

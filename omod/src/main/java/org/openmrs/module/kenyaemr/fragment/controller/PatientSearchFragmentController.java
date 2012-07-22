@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.joda.time.Period;
+import org.joda.time.PeriodType;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
 import org.openmrs.api.context.Context;
@@ -125,7 +127,16 @@ public class PatientSearchFragmentController {
      * @return
      */
     private List<SimpleObject> simplePatientList(UiUtils ui, List<Patient> pts) {
-    	return SimpleObject.fromCollection(pts, ui, "patientId", "personName", "age", "birthdate", "gender", "activeIdentifiers.identifierType", "activeIdentifiers.identifier");
+    	List<SimpleObject> ret = new ArrayList<SimpleObject>();
+    	long now = System.currentTimeMillis();
+    	for (Patient pt : pts) {
+    		SimpleObject so = SimpleObject.fromObject(pt, ui, "patientId", "personName", "age", "birthdate", "gender", "activeIdentifiers.identifierType", "activeIdentifiers.identifier");
+    		Period p = new Period(pt.getBirthdate().getTime(), now, PeriodType.yearMonthDay());
+    		so.put("ageMonths", p.getMonths());
+    		so.put("ageDays", p.getDays());
+    		ret.add(so);
+    	}
+    	return ret;
     }
 
 }

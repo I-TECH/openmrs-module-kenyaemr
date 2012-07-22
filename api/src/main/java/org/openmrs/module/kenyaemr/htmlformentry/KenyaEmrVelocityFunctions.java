@@ -20,9 +20,11 @@ import java.util.List;
 import org.openmrs.Concept;
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
+import org.openmrs.PatientIdentifierType;
 import org.openmrs.Person;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.htmlformentry.FormEntrySession;
+import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.reporting.common.DateUtil;
 
 
@@ -38,6 +40,15 @@ public class KenyaEmrVelocityFunctions {
      */
     public KenyaEmrVelocityFunctions(FormEntrySession session) {
 	    this.session = session;
+    }
+    
+    public boolean hasHivUniquePatientNumber() {
+    	if (session.getPatient() == null) {
+    		return false;
+    	} else {
+    		PatientIdentifierType pit = Context.getPatientService().getPatientIdentifierTypeByUuid(MetadataConstants.UNIQUE_PATIENT_NUMBER_UUID);
+    		return session.getPatient().getPatientIdentifier(pit) != null;
+    	}
     }
 
     /**

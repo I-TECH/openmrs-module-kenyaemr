@@ -57,7 +57,7 @@
 			<img width="32" height="32" src="${ ui.resourceLink("uilibrary", "images/patient_" + patient.gender + ".gif") }"/>
 		</div>
 		${ ui.includeFragment("kenyaemrPersonName", [ name: patient.personName ]) }<br/>
-		${ patient.gender == 'M' ? "Male" : patient.gender == 'F' ? 'Female' : patient.gender } - ${ patient.age }y
+		${ patient.gender == 'M' ? "Male" : patient.gender == 'F' ? 'Female' : patient.gender } - ${ ui.includeFragment("kenyaemrPersonAge", [ person: patient ]) }
 	</div>
 	
 	<div class="identifiers">

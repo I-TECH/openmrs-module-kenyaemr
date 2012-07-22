@@ -63,5 +63,13 @@ public class KenyaEmrUtilFragmentController {
 		}
 		return ret;
 	}
+	
+	public SimpleObject nextHivUniquePatientNumber(@RequestParam(required = false, value = "comment") String comment) {
+		if (comment == null) {
+			comment = "Kenya EMR UI";
+		}
+		String id = Context.getService(KenyaEmrService.class).getNextHivUniquePatientNumber(comment);
+		return SimpleObject.create("value", id);
+	}
 
 }

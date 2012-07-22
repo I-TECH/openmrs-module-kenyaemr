@@ -20,6 +20,8 @@ import java.util.Map;
 
 import org.openmrs.GlobalProperty;
 import org.openmrs.Location;
+import org.openmrs.LocationAttribute;
+import org.openmrs.LocationAttributeType;
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
@@ -33,7 +35,8 @@ import org.openmrs.module.kenyaemr.KenyaEmrConstants;
 import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.kenyaemr.api.ConfigurationRequiredException;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
-import org.openmrs.module.kenyaemr.report.IndicatorReportManager;
+import org.openmrs.module.kenyaemr.identifier.HivUniquePatientNumberGenerator;
+import org.openmrs.module.kenyaemr.report.ReportManager;
 
 
 /**
@@ -46,7 +49,7 @@ public class KenyaEmrServiceImpl extends BaseOpenmrsService implements KenyaEmrS
 	private boolean hasBeenConfigured = false;
 	
 	// maps classname to manager instance
-	private Map<String, IndicatorReportManager> reportManagers;
+	private Map<String, ReportManager> reportManagers;
 	
 	/**
 	 * @see org.openmrs.module.kenyaemr.api.KenyaEmrService#isConfigured()
@@ -166,6 +169,20 @@ public class KenyaEmrServiceImpl extends BaseOpenmrsService implements KenyaEmrS
 		}
 		throw new ConfigurationRequiredException("Global Property: " + KenyaEmrConstants.GP_DEFAULT_LOCATION);
 	}
+	
+	/**
+	 * @see org.openmrs.module.kenyaemr.api.KenyaEmrService#getDefaultLocationMflCode()
+	 */
+	@Override
+	public String getDefaultLocationMflCode() {
+		LocationAttributeType attrType = Context.getLocationService().getLocationAttributeTypeByUuid(MetadataConstants.MASTER_FACILITY_CODE_LOCATION_ATTRIBUTE_TYPE_UUID);
+	    Location location = getDefaultLocation();
+	    List<LocationAttribute> list = location.getActiveAttributes(attrType);
+	    if (list.size() == 0) {
+	    	throw new ConfigurationRequiredException("Default location (" + location.getName() + ") does not have an " + attrType.getName());
+	    }
+	    return (String) list.get(0).getValue();
+	}
 
 	private void setupIdentifierSource(String startFrom, String name, PatientIdentifierType idType, String baseCharacterSet) {
     	String validatorClass = idType.getValidator();
@@ -192,13 +209,21 @@ public class KenyaEmrServiceImpl extends BaseOpenmrsService implements KenyaEmrS
 
     	IdentifierSourceService idService = Context.getService(IdentifierSourceService.class);
 
-    	SequentialIdentifierGenerator idGen = new SequentialIdentifierGenerator();
+    	SequentialIdentifierGenerator idGen;
+    	if (OPENMRS_MEDICAL_RECORD_NUMBER_NAME.equals(name)) {
+    		idGen = new SequentialIdentifierGenerator();
+    		idGen.setPrefix("M");
+    	} else if (HIV_UNIQUE_PATIENT_NUMBER_NAME.equals(name)) {
+    		// Can't do this because it can't be persisted to hibernate
+    		// idGen = new HivUniquePatientNumberGenerator();
+    		idGen = new SequentialIdentifierGenerator();
+    	} else {
+    		throw new RuntimeException("Programming error: don't know how to create identifier source: " + name);
+    	}
+    	
     	idGen.setName(name);
     	idGen.setDescription("Identifier Generator for " + idType.getName());
     	idGen.setIdentifierType(idType);
-    	if (OPENMRS_MEDICAL_RECORD_NUMBER_NAME.equals(name)) {
-    		idGen.setPrefix("M");
-    	}
     	idGen.setBaseCharacterSet(baseCharacterSet);
     	idGen.setFirstIdentifierBase(startFrom);
 		idService.saveIdentifierSource(idGen);
@@ -251,8 +276,8 @@ public class KenyaEmrServiceImpl extends BaseOpenmrsService implements KenyaEmrS
 	@Override
 	public void refreshReportManagers() {
 		synchronized(this) {
-			reportManagers = new LinkedHashMap<String, IndicatorReportManager>();
-			for (IndicatorReportManager manager : Context.getRegisteredComponents(IndicatorReportManager.class)) {
+			reportManagers = new LinkedHashMap<String, ReportManager>();
+			for (ReportManager manager : Context.getRegisteredComponents(ReportManager.class)) {
 				reportManagers.put(manager.getClass().getName(), manager);
 			}
 		}
@@ -262,7 +287,7 @@ public class KenyaEmrServiceImpl extends BaseOpenmrsService implements KenyaEmrS
 	 * @see org.openmrs.module.kenyaemr.api.KenyaEmrService#getReportManager(java.lang.String)
 	 */
 	@Override
-	public IndicatorReportManager getReportManager(String className) {
+	public ReportManager getReportManager(String className) {
 	    return reportManagers.get(className);
 	}
 
@@ -270,7 +295,31 @@ public class KenyaEmrServiceImpl extends BaseOpenmrsService implements KenyaEmrS
 	 * @see org.openmrs.module.kenyaemr.api.KenyaEmrService#getAllReportManagers()
 	 */
 	@Override
-	public List<IndicatorReportManager> getAllReportManagers() {
-	    return new ArrayList<IndicatorReportManager>(reportManagers.values());
+	public List<ReportManager> getReportManagersByTag(String withTag) {
+		if (withTag == null) {
+			return new ArrayList<ReportManager>(reportManagers.values());
+		} else {
+			List<ReportManager> ret = new ArrayList<ReportManager>();
+			for (ReportManager candidate : reportManagers.values()) {
+				if (candidate.getTags() != null && candidate.getTags().contains(withTag)) {
+					ret.add(candidate);
+				}
+			}
+			return ret;
+		}
+	}
+	
+	/**
+	 * @see org.openmrs.module.kenyaemr.api.KenyaEmrService#getNextHivUniquePatientNumber(String)
+	 */
+	@Override
+	public String getNextHivUniquePatientNumber(String comment) {
+		if (comment == null) {
+			comment = "Kenya EMR Service";
+		}
+	    IdentifierSource source = getHivUniqueIdentifierSource();
+	    String prefix = getDefaultLocationMflCode();
+	    String sequentialNumber = Context.getService(IdentifierSourceService.class).generateIdentifier(source, comment);
+	    return prefix + sequentialNumber;
 	}
 }

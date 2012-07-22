@@ -2,22 +2,28 @@
 	ui.decorateWith("standardKenyaEmrPage", [ patient: patient ])
 
 	def allowNew = !history.changes
-	def allowChange = history.changes
+	def allowChange = history.changes && history.changes.last().started.drugOrders
+	def allowRestart = history.changes && !history.changes.last().started.drugOrders
 	
 	def arvOptions = arvs.collect{
 			"""<option value="${ it.conceptId }">${ it.getPreferredName(Locale.ENGLISH) }</option>"""
 		}.join()
 	def arvSelect = { """<select name="arv${ it }"><option value="">${ arvOptions }</select>""" }
 	def arvFields = ui.decorate("labeled", [label: "ARVs"], """
-			${ arvSelect(1) }, dosage: <input type="text" size="5" name="dosage1"/><select name="units1"><option value="mg">mg</option></select><br/>
-			${ arvSelect(2) }, dosage: <input type="text" size="5" name="dosage2"/><select name="units2"><option value="mg">mg</option></select> <br/>
-			${ arvSelect(3) }, dosage: <input type="text" size="5" name="dosage3"/><select name="units3"><option value="mg">mg</option></select>
+			${ arvSelect(1) }, dosage: <input type="text" size="5" name="dosage1"/><select name="units1"><option value="mg">mg</option></select> <select name="frequency1"><option value="BD">BD</option><option value="OD">OD</option></select> <br/>
+			${ arvSelect(2) }, dosage: <input type="text" size="5" name="dosage2"/><select name="units2"><option value="mg">mg</option></select> <select name="frequency2"><option value="BD">BD</option><option value="OD">OD</option></select> <br/>
+			${ arvSelect(3) }, dosage: <input type="text" size="5" name="dosage3"/><select name="units3"><option value="mg">mg</option></select> <select name="frequency3"><option value="BD">BD</option><option value="OD">OD</option></select>
 		""")
 %>
 
 <style>
 	.start-new-regimen, .change-regimen {
 		float: left;
+	}
+	
+	.cancel-action-button {
+		cursor: pointer;
+		margin-left: 2em;
 	}
 </style>
 
@@ -43,8 +49,17 @@
 		});
 	}
 	
+	function choseAction(classChosen) {
+		jq('#regimen-actions').hide();
+		jq('.' + classChosen).show();
+	}
+	
 	jq(function() {
 		showRegimenHistory(jq('#regimen-history > tbody'), ${ regimenHistoryJson });
+		jq('.cancel-action-button').click(function() {
+			jq(this).parents('fieldset').hide();
+			jq('#regimen-actions').show();
+		});
 	});
 </script>
 
@@ -67,9 +82,48 @@
 
 <br/>
 
+<div id="regimen-actions">
+	<% if (allowNew) { %>
+		${ ui.includeFragment("widget/button", [
+				iconProvider: "uilibrary",
+				icon: "add1-32.png",
+				label: "Start",
+				onClick: "choseAction('start-new-regimen')"
+			]) }
+	<% } %>
+	
+	<% if (allowChange) { %>
+		${ ui.includeFragment("widget/button", [
+				iconProvider: "uilibrary",
+				icon: "arrow_right_32.png",
+				label: "Change",
+				onClick: "choseAction('change-regimen')"
+			]) }
+			
+		${ ui.includeFragment("widget/button", [
+				iconProvider: "uilibrary",
+				icon: "close_32.png",
+				label: "Stop",
+				onClick: "choseAction('stop-regimen')"
+			]) }
+	<% } %>
+	
+	<% if (allowRestart) { %>
+		${ ui.includeFragment("widget/button", [
+				iconProvider: "uilibrary",
+				icon: "blue_arrow_right_32.png",
+				label: "Restart",
+				onClick: "choseAction('restart-regimen')"
+			]) }
+	<% } %>
+</div>
+
 <% if (allowNew) { %>
-	<fieldset class="start-new-regimen">
-		<legend>Start ARVs</legend>
+	<fieldset class="start-new-regimen" style="display: none">
+		<legend>
+			Start ARVs
+			<img class="cancel-action-button" src="${ ui.resourceLink("uilibrary", "images/close_16.png") }" title="Cancel"/>
+		</legend>
 		${ ui.includeFragment("widget/form", [
 				fragment: "arvRegimen",
 				action: "startRegimen",
@@ -91,8 +145,11 @@
 <% } %>
 
 <% if (allowChange) { %>
-	<fieldset class="change-regimen">
-		<legend>Change ARVs</legend>
+	<fieldset class="change-regimen" style="display: none">
+		<legend>
+			Change ARVs
+			<img class="cancel-action-button" src="${ ui.resourceLink("uilibrary", "images/close_16.png") }" title="Cancel"/>
+		</legend>
 		${ ui.includeFragment("widget/form", [
 				fragment: "arvRegimen",
 				action: "changeRegimen",
@@ -107,9 +164,54 @@
 			]) }
 	</fieldset>
 	
+	<fieldset class="stop-regimen" style="display: none">
+		<legend>
+			Stop ARVs
+			<img class="cancel-action-button" src="${ ui.resourceLink("uilibrary", "images/close_16.png") }" title="Cancel"/>
+		</legend>
+		${ ui.includeFragment("widget/form", [
+				fragment: "arvRegimen",
+				action: "stopRegimen",
+				fields: [
+					[ hiddenInputName: "patient", value: patient.id ],
+					[ label: "Stop Date", formFieldName: "stopDate", class: java.util.Date, initialValue: new Date(), fieldFragment: "field/java.util.Date.datetime" ],
+					[ label: "Reason for Stop", formFieldName: "stopReason", class: java.lang.String ]
+				],
+				submitLabel: "Stop ARV Regimen",
+				successCallbacks: [ "ui.reloadPage();" ]
+			]) }
+	</fieldset>
+	
 	<script>
 		jq(function() {
 			ui.confirmBeforeNavigating('.change-regimen');
+			ui.confirmBeforeNavigating('.stop-regimen');
+		});
+	</script>
+<% } %>
+
+<% if (allowRestart) { %>
+	<fieldset class="restart-regimen" style="display: none">
+		<legend>
+			Restart ARVs
+			<img class="cancel-action-button" src="${ ui.resourceLink("uilibrary", "images/close_16.png") }" title="Cancel"/>
+		</legend>
+		${ ui.includeFragment("widget/form", [
+				fragment: "arvRegimen",
+				action: "startRegimen",
+				fields: [
+					[ hiddenInputName: "patient", value: patient.id ],
+					[ label: "Restart Date", formFieldName: "startDate", class: java.util.Date, initialValue: new Date(), fieldFragment: "field/java.util.Date.datetime" ],
+					[ value: arvFields ]
+				],
+				submitLabel: "Restart ARVs",
+				successCallbacks: [ "ui.reloadPage();" ]
+			]) }
+	</fieldset>
+	
+	<script>
+		jq(function() {
+			ui.confirmBeforeNavigating('.restart-regimen');
 		});
 	</script>
 <% } %>

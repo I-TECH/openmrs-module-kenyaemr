@@ -31,12 +31,16 @@ def returnUrl = config.returnUrl ?: ui.thisUrl()
 }
 </style>
 
+<script type="text/javascript" src="/${ contextPath }/moduleResources/htmlformentry/htmlFormEntry.js"></script>
 <link href="/${ contextPath }/moduleResources/htmlformentry/htmlFormEntry.css" type="text/css" rel="stylesheet" />
 
 <div id="${ config.id }" <% if (config.style) { %>style="${ config.style }"<% } %>>
 </div>
 
 <script>
+	\$j = jQuery;
+	var propertyAccessorInfo = new Array();
+
 	// TODO move to js resource
 	function confirmDeleteEncounter(encounterId, returnUrl) {
 		var doIt = confirm('Are you sure you want to delete this form?');

@@ -11,7 +11,7 @@
 	</div>
 	<div class="demographics">
 		${ ui.message("Patient.gender." + (patient.gender == 'M' ? 'male' : 'female')) },
-		${ patient.age } year(s)<br/>
+		${ ui.includeFragment("kenyaemrPersonAge", [ person: patient ]) }<br/>
 		Born:
 		<% if (patient.birthdateEstimated) { %><i>approx</i><% } %>
 		${ ui.format(patient.birthdate) }

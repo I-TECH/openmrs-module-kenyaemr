@@ -19,8 +19,8 @@ import java.util.List;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appframework.AppUiUtil;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
-import org.openmrs.module.kenyaemr.report.IndicatorReportManager;
-import org.openmrs.module.reporting.definition.DefinitionSummary;
+import org.openmrs.module.kenyaemr.report.ReportManager;
+import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.page.PageModel;
 import org.openmrs.ui.framework.session.Session;
 
@@ -34,11 +34,16 @@ public class ReportsHomePageController {
 	                       PageModel model) {
 		AppUiUtil.startApp("kenyaemr.reports", session);
 		
-		List<DefinitionSummary> reports= new ArrayList<DefinitionSummary>();
-		for (IndicatorReportManager m : Context.getService(KenyaEmrService.class).getAllReportManagers()) {
-			reports.add(m.getReportDefinitionSummary());
-		}
-		model.addAttribute("reports", reports);
+		model.addAttribute("mohReports", getReportDefinitionSummaries("MoH"));
+		model.addAttribute("patientAlertReports", getReportDefinitionSummaries("alert"));
 	}
+
+    private List<SimpleObject> getReportDefinitionSummaries(String tag) {
+    	List<SimpleObject> ret = new ArrayList<SimpleObject>();
+		for (ReportManager m : Context.getService(KenyaEmrService.class).getReportManagersByTag(tag)) {
+			ret.add(SimpleObject.create("name", m.getReportDefinitionSummary().getName(), "manager", m.getClass().getName()));
+		}
+		return ret;
+    }
 	
 }

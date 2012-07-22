@@ -13,10 +13,19 @@
  */
 package org.openmrs.module.kenyaemr.report;
 
+import org.openmrs.module.kenyaemr.calculation.EligibleForArtCalculation;
+import org.springframework.stereotype.Component;
+
+
 
 /**
  *
  */
-public interface IndicatorReportManager extends ReportManager {
+@Component
+public class EligibleForArvButNotStartedReport extends PatientAlertListReportManager {
 	
+	public EligibleForArvButNotStartedReport() {
+		setAlertCalculation(new EligibleForArtCalculation());
+	}
+
 }

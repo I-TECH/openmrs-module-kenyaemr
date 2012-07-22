@@ -5,6 +5,7 @@ import org.apache.commons.lang.StringUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.GlobalProperty;
 import org.openmrs.Location;
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.api.APIException;
@@ -187,5 +188,22 @@ public class KenyaEmrServiceTest extends BaseModuleContextSensitiveTest {
     	} catch (Exception ex) {
     		return false;
     	}
+    }
+
+	/**
+     * @see KenyaEmrService#getNextHivUniquePatientNumber(String)
+     * @verifies get sequential numbers with mfl prefix
+     */
+    @Test
+    public void getNextHivUniquePatientNumber_shouldGetSequentialNumbersWithMflPrefix() throws Exception {
+    	Location loc = Context.getLocationService().getLocation(1);
+		Assert.assertNotNull(loc);
+		service.setDefaultLocation(loc);
+		
+    	service.setupHivUniqueIdentifierSource("00571");
+    	Assert.assertEquals("123400571", service.getNextHivUniquePatientNumber(null));
+    	Assert.assertEquals("123400572", service.getNextHivUniquePatientNumber(null));
+    	Assert.assertEquals("123400573", service.getNextHivUniquePatientNumber(null));
+    	Assert.assertEquals("123400574", service.getNextHivUniquePatientNumber(null));
     }
 }

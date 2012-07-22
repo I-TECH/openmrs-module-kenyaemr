@@ -18,8 +18,7 @@ import java.util.List;
 import org.openmrs.Location;
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.idgen.IdentifierSource;
-import org.openmrs.module.kenyaemr.report.IndicatorReportManager;
-import org.openmrs.module.reporting.report.definition.ReportDefinition;
+import org.openmrs.module.kenyaemr.report.ReportManager;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -52,6 +51,13 @@ public interface KenyaEmrService extends OpenmrsService {
 	 */
 	@Transactional(readOnly=true)
 	Location getDefaultLocation();
+	
+	/**
+	 * Gets the Master Facility List code for the default location for this server
+	 * 
+	 * @return
+	 */
+	String getDefaultLocationMflCode();
 	
 	/**
 	 * Sets up a new idgen identifier source for our auto-generated medical record numbers
@@ -94,13 +100,20 @@ public interface KenyaEmrService extends OpenmrsService {
 
     /**
      * @param className
-     * @return the ReportDefinition that was setup by the {@link IndicatorReportManager} with the given classname
+     * @return the ReportDefinition that was setup by the {@link ReportManager} with the given classname
      */
-    IndicatorReportManager getReportManager(String className);
+    ReportManager getReportManager(String className);
 
 	/**
-     * @return all registered report managers
+	 * @param withTag null means get all report managers
+     * @return all registered report managers with the given tag
      */
-    List<IndicatorReportManager> getAllReportManagers();
+    List<ReportManager> getReportManagersByTag(String withTag);
+    
+    /**
+     * @return the next HIV Unique Patient Number, including both the MFL prefix, and an idgen-generated sequential number
+     * @should get sequential numbers with mfl prefix
+     */
+    String getNextHivUniquePatientNumber(String comment);
 	
 }

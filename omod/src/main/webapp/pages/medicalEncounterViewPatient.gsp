@@ -67,6 +67,7 @@
 <div id="col2" <% if (visit) { %>class="selected-visit"<% } %>>
 
 	<a href="${ ui.pageLink("medicalEncounterArvRegimen", [ patientId: patient.id ]) }">
+		<img src="${ ui.resourceLink("uilibrary", "images/pencil_16.png") }"/>
 		Current ARVs:
 		<span id="current-hiv-regimen">(loading)</span>
 	</a>

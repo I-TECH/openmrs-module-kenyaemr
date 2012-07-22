@@ -15,7 +15,6 @@ package org.openmrs.module.kenyaemr.fragment.controller;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
 import org.openmrs.Concept;
@@ -26,6 +25,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.kenyaemr.ValidatingCommandObject;
 import org.openmrs.module.kenyaemr.regimen.Regimen;
+import org.openmrs.module.kenyaemr.regimen.RegimenChange;
 import org.openmrs.module.kenyaemr.regimen.RegimenHistory;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
@@ -45,7 +45,8 @@ public class ArvRegimenFragmentController {
 		Concept arvs = Context.getConceptService().getConceptByUuid(MetadataConstants.ANTIRETROVIRAL_DRUGS_CONCEPT_UUID);
 		RegimenHistory history = RegimenHistory.forPatient(patient, arvs);
 		Regimen reg = history.getCurrentRegimen();
-		return reg == null ? SimpleObject.create("shortDisplay", "None", "longDisplay", "None") : SimpleObject.create("shortDisplay", reg.getShortDisplay(ui), "longDisplay", reg.getLongDisplay(ui));
+		return reg == null ? SimpleObject.create("shortDisplay", "None", "longDisplay", "None") : SimpleObject.create(
+		    "shortDisplay", reg.getShortDisplay(ui), "longDisplay", reg.getLongDisplay(ui));
 	}
 	
 	/**
@@ -81,6 +82,20 @@ public class ArvRegimenFragmentController {
 		return currentRegimen(patient, ui);
 	}
 	
+	public SimpleObject stopRegimen(UiUtils ui, @RequestParam("patient") Patient patient,
+	                                @RequestParam("stopDate") Date stopDate, @RequestParam("stopReason") String stopReason) {
+		
+		Concept arvs = Context.getConceptService().getConceptByUuid(MetadataConstants.ANTIRETROVIRAL_DRUGS_CONCEPT_UUID);
+		
+		ArvRegimenCommandObject command = new ArvRegimenCommandObject();
+		command.setPatient(patient);
+		command.setStartDate(stopDate);
+		command.setChangeReason(stopReason);
+		command.applyRegimenChange(arvs);
+		
+		return currentRegimen(patient, ui);
+	}
+	
 	public ArvRegimenCommandObject newArvRegimenCommandObject() {
 		return new ArvRegimenCommandObject();
 	}
@@ -111,6 +126,12 @@ public class ArvRegimenFragmentController {
 		
 		private String units3;
 		
+		private String frequency1;
+		
+		private String frequency2;
+		
+		private String frequency3;
+		
 		/**
 		 * @see org.springframework.validation.Validator#validate(java.lang.Object,
 		 *      org.springframework.validation.Errors)
@@ -128,6 +149,9 @@ public class ArvRegimenFragmentController {
 			require(errors, "units1");
 			require(errors, "units2");
 			require(errors, "units3");
+			require(errors, "frequency1");
+			require(errors, "frequency2");
+			require(errors, "frequency3");
 		}
 		
 		/**
@@ -136,13 +160,14 @@ public class ArvRegimenFragmentController {
 		@SuppressWarnings("deprecation")
 		public void applyNewRegimen(Concept medSet) {
 			RegimenHistory history = RegimenHistory.forPatient(patient, medSet);
-			if (history.getChanges().size() > 0) {
-				throw new RuntimeException("Can't create a NEW regimen for a patient who already has one");
+			List<RegimenChange> changes = history.getChanges();
+			if (changes.size() > 0 && changes.get(changes.size() - 1).getStarted().getDrugOrders().size() > 0) {
+				throw new RuntimeException("Can't Start/Restart a regimen for a patient who already has one");
 			}
 			
-			DrugOrder o1 = newDrugOrder(patient, startDate, arv1, dosage1, units1);
-			DrugOrder o2 = newDrugOrder(patient, startDate, arv2, dosage2, units2);
-			DrugOrder o3 = newDrugOrder(patient, startDate, arv3, dosage3, units3);
+			DrugOrder o1 = newDrugOrder(patient, startDate, arv1, dosage1, units1, frequency1);
+			DrugOrder o2 = newDrugOrder(patient, startDate, arv2, dosage2, units2, frequency2);
+			DrugOrder o3 = newDrugOrder(patient, startDate, arv3, dosage3, units3, frequency3);
 			Context.getOrderService().saveOrder(o1);
 			Context.getOrderService().saveOrder(o2);
 			Context.getOrderService().saveOrder(o3);
@@ -165,9 +190,15 @@ public class ArvRegimenFragmentController {
 			List<DrugOrder> noChanges = new ArrayList<DrugOrder>();
 			List<DrugOrder> toChangeDose = new ArrayList<DrugOrder>();
 			List<DrugOrder> toStart = new ArrayList<DrugOrder>();
-			changeRegimenHelper(baseline, noChanges, toChangeDose, toStart, arv1, dosage1, units1);
-			changeRegimenHelper(baseline, noChanges, toChangeDose, toStart, arv2, dosage2, units2);
-			changeRegimenHelper(baseline, noChanges, toChangeDose, toStart, arv3, dosage3, units3);
+			if (arv1 != null) {
+				changeRegimenHelper(baseline, noChanges, toChangeDose, toStart, arv1, dosage1, units1, frequency1);
+			}
+			if (arv2 != null) {
+				changeRegimenHelper(baseline, noChanges, toChangeDose, toStart, arv2, dosage2, units2, frequency2);
+			}
+			if (arv3 != null) {
+				changeRegimenHelper(baseline, noChanges, toChangeDose, toStart, arv3, dosage3, units3, frequency3);
+			}
 			
 			List<DrugOrder> toStop = new ArrayList<DrugOrder>(baseline.getDrugOrders());
 			// for now "toChangeDose" is handled the same as toStop
@@ -193,11 +224,12 @@ public class ArvRegimenFragmentController {
 		}
 		
 		private void changeRegimenHelper(Regimen baseline, List<DrugOrder> noChanges, List<DrugOrder> toChangeDose,
-		                                 List<DrugOrder> toStart, Concept generic, Double dosage, String units) {
+		                                 List<DrugOrder> toStart, Concept generic, Double dosage, String units,
+		                                 String frequency) {
 			List<DrugOrder> sameGeneric = baseline.getDrugOrders(generic);
 			boolean anyDoseChanges = false;
 			for (DrugOrder o : sameGeneric) {
-				if (o.getDose().equals(dosage) && o.getUnits().equals(units)) {
+				if (o.getDose().equals(dosage) && o.getUnits().equals(units) && OpenmrsUtil.nullSafeEquals(o.getFrequency(), frequency)) {
 					noChanges.add(o);
 				} else {
 					toChangeDose.add(o);
@@ -209,6 +241,7 @@ public class ArvRegimenFragmentController {
 				newOrder.setConcept(generic);
 				newOrder.setDose(dosage);
 				newOrder.setUnits(units);
+				newOrder.setFrequency(frequency);
 				toStart.add(newOrder);
 			}
 		}
@@ -222,7 +255,8 @@ public class ArvRegimenFragmentController {
 		 * @return
 		 */
 		@SuppressWarnings("deprecation")
-		private DrugOrder newDrugOrder(Patient patient, Date startDate, Concept generic, Double dosage, String doseUnit) {
+		private DrugOrder newDrugOrder(Patient patient, Date startDate, Concept generic, Double dosage, String doseUnit,
+		                               String frequency) {
 			DrugOrder ret = new DrugOrder();
 			ret.setOrderType(Context.getOrderService().getOrderType(OpenmrsConstants.ORDERTYPE_DRUG));
 			ret.setPatient(patient);
@@ -230,6 +264,7 @@ public class ArvRegimenFragmentController {
 			ret.setConcept(generic);
 			ret.setDose(dosage);
 			ret.setUnits(doseUnit);
+			ret.setFrequency(frequency);
 			return ret;
 		}
 		
@@ -385,6 +420,48 @@ public class ArvRegimenFragmentController {
 		 */
 		public void setUnits3(String units3) {
 			this.units3 = units3;
+		}
+		
+		/**
+		 * @return the frequency1
+		 */
+		public String getFrequency1() {
+			return frequency1;
+		}
+		
+		/**
+		 * @param frequency1 the frequency1 to set
+		 */
+		public void setFrequency1(String frequency1) {
+			this.frequency1 = frequency1;
+		}
+		
+		/**
+		 * @return the frequency2
+		 */
+		public String getFrequency2() {
+			return frequency2;
+		}
+		
+		/**
+		 * @param frequency2 the frequency2 to set
+		 */
+		public void setFrequency2(String frequency2) {
+			this.frequency2 = frequency2;
+		}
+		
+		/**
+		 * @return the frequency3
+		 */
+		public String getFrequency3() {
+			return frequency3;
+		}
+		
+		/**
+		 * @param frequency3 the frequency3 to set
+		 */
+		public void setFrequency3(String frequency3) {
+			this.frequency3 = frequency3;
 		}
 		
 		/**

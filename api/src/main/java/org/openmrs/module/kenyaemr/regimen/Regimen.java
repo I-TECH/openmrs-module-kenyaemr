@@ -110,6 +110,9 @@ public class Regimen {
 			if (o.getDose() != null) {
 				s += " " + ui.format(o.getDose()) + o.getUnits();
 			}
+			if (o.getFrequency() != null) {
+				s += " " + o.getFrequency();
+			}
 			components.add(s);
 		}
 		return OpenmrsUtil.join(components, ", ");

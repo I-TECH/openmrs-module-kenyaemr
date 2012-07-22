@@ -4,13 +4,15 @@
 
 <h2>${ definition.name }</h2>
 
-<fieldset>
-	<legend> Parameters </legend>
-
-	<% definition.parameters.each { %>
-		${ it.label }: ${ ui.format(data.context.parameterValues[it.name]) } <br/>
-	<% } %>
-</fieldset>
+<% if (definition.parameters) { %>
+	<fieldset>
+		<legend> Parameters </legend>
+	
+		<% definition.parameters.each { %>
+			${ it.label }: ${ ui.format(data.context.parameterValues[it.name]) } <br/>
+		<% } %>
+	</fieldset>
+<% } %>
 
 <br/>
 

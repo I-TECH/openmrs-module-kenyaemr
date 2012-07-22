@@ -1,0 +1,1 @@
+${ ageInYears > 0 ? ageInYears + " year(s)" : ageInMonths + " month(s), " + ageInDays + " day(s)" }

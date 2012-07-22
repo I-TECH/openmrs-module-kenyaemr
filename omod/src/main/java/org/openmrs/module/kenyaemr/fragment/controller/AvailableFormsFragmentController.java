@@ -55,16 +55,17 @@ public class AvailableFormsFragmentController {
 			forms.add(new AvailableFormConfig(MetadataConstants.TRIAGE_FORM_UUID, Frequency.VISIT, null));
 		} else if ("kenyaemr.intake".equals(currentApp)) {
 			forms.add(new AvailableFormConfig(MetadataConstants.TRIAGE_FORM_UUID, Frequency.VISIT, null));
-			forms.add(new AvailableFormConfig(MetadataConstants.TB_SCREENING_FORM_UUID, Frequency.VISIT, hivProgram));
+			forms.add(new AvailableFormConfig(MetadataConstants.TB_SCREENING_FORM_UUID, Frequency.VISIT, null));
 			forms.add(new AvailableFormConfig(MetadataConstants.PROGRESS_NOTE_FORM_UUID, Frequency.VISIT, null));
-			forms.add(new AvailableFormConfig(MetadataConstants.MOH_257_ENCOUNTER_ORDER_LAB_INVESTIGATIONS_FORM_UUID, Frequency.UNLIMITED, hivProgram));
+			forms.add(new AvailableFormConfig(MetadataConstants.MOH_257_ENCOUNTER_ORDER_LAB_INVESTIGATIONS_FORM_UUID, Frequency.VISIT, null));
 		} else {
 			//forms.add(new AvailableFormConfig(MetadataConstants.TRIAGE_FORM_UUID, Frequency.VISIT, null));
 			forms.add(new AvailableFormConfig(MetadataConstants.CLINICAL_ENCOUNTER_FORM_UUID, Frequency.VISIT, null));
 			forms.add(new AvailableFormConfig(MetadataConstants.CLINICAL_ENCOUNTER_HIV_ADDENDUM_FORM_UUID, Frequency.VISIT, hivProgram));
-			forms.add(new AvailableFormConfig(MetadataConstants.TB_SCREENING_FORM_UUID, Frequency.VISIT, hivProgram));
+			forms.add(new AvailableFormConfig(MetadataConstants.TB_SCREENING_FORM_UUID, Frequency.VISIT, null));
 			forms.add(new AvailableFormConfig(MetadataConstants.PROGRESS_NOTE_FORM_UUID, Frequency.VISIT, null));
-			forms.add(new AvailableFormConfig(MetadataConstants.MOH_257_ENCOUNTER_ORDER_LAB_INVESTIGATIONS_FORM_UUID, Frequency.UNLIMITED, hivProgram));
+			forms.add(new AvailableFormConfig(MetadataConstants.MOH_257_ENCOUNTER_ORDER_LAB_INVESTIGATIONS_FORM_UUID, Frequency.VISIT, null));
+			forms.add(new AvailableFormConfig(MetadataConstants.OTHER_MEDICATIONS_FORM_UUID, Frequency.VISIT, null));
 		}
 		
 		List<Encounter> encounters = new ArrayList<Encounter>(visit.getEncounters());

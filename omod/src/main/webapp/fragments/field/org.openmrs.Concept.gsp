@@ -1,11 +1,17 @@
 <%
-if (!config?.config?.answerTo) throw new RuntimeException("Concept field currently only supports config.answerTo mode")
+if (!config?.config?.answerTo && !config?.config?.options) throw new RuntimeException("Concept field currently only supports config.answerTo and config.options mode")
 // supports config.type = radio (otherwise a select list)
 
 def options = [ [ id: "", name: "" ] ]
-options.addAll(config.config.answerTo.answers.collect {
-		[ id: it.answerConcept.id, name: ui.format(it.answerConcept) ]
-	})
+if (config?.config?.options) {
+	options.addAll(config.config.options.collect {
+			[ id: it.id, name: ui.format(it) ]
+		});
+} else {
+	options.addAll(config.config.answerTo.answers.collect {
+			[ id: it.answerConcept.id, name: ui.format(it.answerConcept) ]
+		})
+}
 
 def widget = "selectList"
 if (config?.config?.type == 'radio')

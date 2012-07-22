@@ -4,6 +4,7 @@
   <patient_identifier_type patient_identifier_type_id="1002" name="HIV Unique Patient Number" description="Unique Patient Number" check_digit="0" required="1" creator="1" date_created="2004-08-12 00:00:00.0" retired="0" uuid="05ee9cf4-7242-4a17-b4d4-00f707265c8a"/>
 
   <location_attribute_type location_attribute_type_id="1" name="Master Facility Code" description="Code for linking to the Ministry of Health's Master Facility List" datatype="org.openmrs.customdatatype.datatype.RegexValidatedTextDatatype" datatype_config="\d{5}" min_occurs="0" max_occurs="1" creator="1" date_created="2005-01-01 00:00:00.0" retired="0" uuid="8a845a89-6aa5-4111-81d3-0af31c45c002" />
+  <location_attribute location_attribute_id="1000" location_id="1" attribute_type_id="1" value_reference="1234" creator="1" date_created="2005-01-01 00:00:00.0" voided="0" uuid="482684c0-d02a-11e1-9bad-45c1fa9f2d05"/>
   
   <concept concept_id="5497" retired="false" datatype_id="1" class_id="1" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="5497AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
   
