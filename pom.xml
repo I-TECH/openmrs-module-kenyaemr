@@ -35,10 +35,10 @@
 
 	<properties>
 		<openMRSVersion>1.9.0</openMRSVersion>
-		<uiframeworkVersion>1.6</uiframeworkVersion>
+		<uiframeworkVersion>1.7</uiframeworkVersion>
 		<uilibraryVersion>1.4</uilibraryVersion>
-		<appframeworkVersion>1.3-SNAPSHOT</appframeworkVersion>
-		<metadatasharingVersion>1.0.8-SNAPSHOT</metadatasharingVersion>
+		<appframeworkVersion>1.3</appframeworkVersion>
+		<metadatasharingVersion>1.0.8</metadatasharingVersion>
 		<htmlformentryVersion>1.10.1-SNAPSHOT</htmlformentryVersion>
 		<htmlformentry19extVersion>0.9</htmlformentry19extVersion>
 		<moduledistroVersion>1.2</moduledistroVersion>
@@ -119,6 +119,13 @@
 			<groupId>org.openmrs.module</groupId>
 			<artifactId>serialization.xstream-api</artifactId>
 			<version>${serializationxstreamVersion}</version>
+			<scope>provided</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.openmrs.module</groupId>
+			<artifactId>idgen</artifactId>
+			<version>${idgenVersion}</version>
 			<scope>provided</scope>
 		</dependency>
 		

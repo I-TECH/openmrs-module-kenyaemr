@@ -47,8 +47,6 @@
 											<url
 												url="https://modules.openmrs.org/modules/download/appframework/appframework-${appframeworkVersion}.omod" />
 											<url
-												url="https://modules.openmrs.org/modules/download/htmlformentry/htmlformentry-${htmlformentryVersion}.omod" />
-											<url
 												url="https://modules.openmrs.org/modules/download/htmlformentry19ext/htmlformentry19ext-${htmlformentry19extVersion}.omod" />
 											<url
 												url="https://modules.openmrs.org/modules/download/reporting/reporting-${reportingVersion}.omod" />
@@ -56,8 +54,16 @@
 												url="https://modules.openmrs.org/modules/download/htmlwidgets/htmlwidgets-${htmlwidgetsVersion}.omod" />
 											<url
 												url="https://modules.openmrs.org/modules/download/serialization.xstream/serialization.xstream-${serializationxstreamVersion}.omod" />
-											<!-- <url url="https://modules.openmrs.org/modules/download/metadatasharing/metadatasharing-${metadatasharingVersion}.omod"/> -->
-											<!-- <url url="https://modules.openmrs.org/modules/download/calculation/calculation-${calculationVersion}.omod"/> -->
+											<url
+												url="https://modules.openmrs.org/modules/download/metadatasharing/metadatasharing-${metadatasharingVersion}.omod"/>
+											<url
+												url="https://modules.openmrs.org/modules/download/idgen/idgen-${idgenVersion}.omod" />
+											<!-- 
+											<url
+												url="https://modules.openmrs.org/modules/download/htmlformentry/htmlformentry-${htmlformentryVersion}.omod" />
+											<url
+												url="https://modules.openmrs.org/modules/download/calculation/calculation-${calculationVersion}.omod"/>
+											 -->
 										</get>
 									</target>
 								</configuration>
