@@ -3,21 +3,27 @@
 %>
 
 <style>
-	#col1, #col2, #col3 {
+	#col1, #col2 {
 		float: left;
-		width: 32%;
 		height: 100%;
 	}
-	#col1, #col2 {
+	
+	#col1 {
+		width: 32%;
 		margin-right: 0.5em;
 	}
 	
-	.active-visit {
-		font-weight: bold;
+	#col2 {		
 	}
-	
+		
 	fieldset {
 		margin-bottom: 1em;
+	}
+	
+	.link-button {
+		border: 1px black solid;
+		margin-bottom: 0.5em;
+		padding: 0.3em;
 	}
 </style>
 
@@ -27,96 +33,72 @@ jq(function() {
 });
 </script>
 
-${ ui.includeFragment("clinicalAlerts") }
-
 <div id="col1">
-	<fieldset id="registrationDetails">
-		<legend>
-			Registration Details
-		</legend>
-		
-		<div class="icon">
-			<img width="32" height="32" src="${ ui.resourceLink("uilibrary", "images/patient_" + patient.gender + ".gif") }"/>
+
+	<div class="link-button">
+		<a href="${ ui.pageLink("medicalChartViewPatient", [ patientId: patient.id ]) }">
+			Overview
+		</a>
+	</div>
+	
+	<% visits.each { visit -> %>
+		<div class="link-button">
+			<a href="${ ui.pageLink("medicalChartViewPatient", [ patientId: patient.id, visitId: visit.id ]) }">
+				${ ui.format(visit.visitType) } <br/>
+				from ${ ui.format(visit.startDatetime) }
+				<% if (visit.stopDatetime) { %>
+					<br/>
+					to ${ ui.format(visit.stopDatetime) }
+				<% } %>
+			</a>
 		</div>
-		
-		<div class="demographics">
-			<b>${ patient.personName }</b> <br/>
-			${ patient.gender }, ${ patient.age }y
-		</div>
-		
-		<div class="identifiers">
-			<% patient.activeIdentifiers.each { %>
-				<span class="identifier">
-					<span class="identifier-type">${ it.identifierType.name }</span><br/>
-					<span class="identifier-value">${ it.identifier }</span><br/>
-				</span>
-			<% } %>
-			
-			<% patient.activeAttributes.each { %>
-				${ ui.format(it.attributeType) }: ${ ui.format(it) }<br/>
-			<% } %>
-		</div>
-	</fieldset>
+	<% } %>
+	
 </div>
 
 <div id="col2">
-	<fieldset id="hiv-overview">
-		<legend>
-			HIV Overview
-		</legend>
-		If in HIV program, include details here like last CD4, current regimen, regimen changes, etc.
-	</fieldset>
-
-	<fieldset id="recent-labs">
-		<legend>
-			Recent Labs
-		</legend>
-		For all patients, show recent lab results
-	</fieldset>
+	<% if (visit) { %>
 	
-	<fieldset id="clinical-overview">
-		<legend>
-			Overview
-		</legend>
-		For all patients, show a graph of weight progression, annotated with when visits happened
-		${ ui.includeFragment("obsTableByDate", [ concepts: [ 5089 ] ]) }
-	</fieldset>
+		<fieldset>
+			<legend>
+				<b>${ ui.format(visit.visitType) } visit</b>
+			</legend>
+			at <b>${ ui.format(visit.location) }</b><br/>
+			from ${ ui.format(visit.startDatetime) }
+			<% if (visit.stopDatetime) { %>
+				to ${ ui.format(visit.stopDatetime) }
+			<% } %>
+			
+			<br/>
+			<br/>
+			<u>Forms</u>
+			<% if (visit.encounters) { %>
+				${ ui.includeFragment("viewableEncounters", [ encounters: visit.encounters ]) }
+			<% } else { %>
+				<br/>
+				None
+			<% } %>
+		</fieldset>
+		
+	<% } else {
+		def cs = context.conceptService
+		def conceptList = [
+			cs.getConcept(5089),
+			cs.getConcept(5497)
+		]
+	%>
+
+		${ ui.includeFragment("obsTableByDate", [
+				concepts: conceptList
+			]) }
+		
+	<% } %>
 </div>
 
-<div id="col3">
-	<fieldset id="visits">
-		<legend>
-			Visits
-		</legend>
-		<% if (visits.size() == 0) { %>
-			${ ui.message("general.none") }
-		<% } else { %>
-			<table class="decorated">
-				<thead>
-					<tr>
-						<th>Type</th>
-						<th>Start</th>
-						<th>End</th>
-					</tr>
-				</thead>
-				<tbody>
-					<% visits.each {
-						def active = !it.stopDatetime
-					%>
-						<tr <% if (active) { %>class="active-visit"<% } %>>
-							<td>${ ui.format(it.visitType) }</td>
-							<td>${ ui.format(it.startDatetime) }</td>
-							<td>
-								<% if (active) { %>
-									Active
-								<% } else { %>
-									${ ui.format(it.stopDatetime) }
-								<% } %>
-							</td>
-						</tr>
-					<% } %>
-				</tbody>
-			</table>
-		<% } %>
-	</fieldset>
-</div>
+<% if (visit) { %>
+	
+	${ ui.includeFragment("showHtmlForm", [ id: "showHtmlForm", style: "display: none" ]) }
+	
+	${ ui.includeFragment("dialogSupport") }
+
+<% } %>

@@ -16,6 +16,7 @@ package org.openmrs.module.kenyaemr.page.controller;
 import java.util.LinkedList;
 
 import org.openmrs.Patient;
+import org.openmrs.Visit;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appframework.AppUiUtil;
 import org.openmrs.ui.framework.page.PageModel;
@@ -29,6 +30,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class MedicalChartViewPatientPageController {
 
 	public void controller(@RequestParam("patientId") Patient patient,
+	                       @RequestParam(required = false, value = "visitId") Visit visit,
 	                       PageModel model,
 	                       Session session) {
 
@@ -40,6 +42,7 @@ public class MedicalChartViewPatientPageController {
 		model.addAttribute("person", patient);
 		
 		model.addAttribute("visits", Context.getVisitService().getVisitsByPatient(patient));
+		model.addAttribute("visit", visit);
 	}
 
 	/**

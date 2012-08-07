@@ -16,7 +16,7 @@ var kenyaemr = (function($) {
 		 * values may specify (as function(data) or static text): icon, title, leftDetails, center, right
 		 */
 		twoColumnPanelFormatter: function(data, values) {
-			var ret = '<div class="panel">';
+			var ret = '<div class="panel clickable">';
 			ret += '<table width="100%"><tr valign="top"><td width="50%">';
 			ret += '<span class="icon">' + formatHelper(data, values.icon) + '</span>';
 			ret += '<span class="leftText">';
@@ -34,7 +34,7 @@ var kenyaemr = (function($) {
 		 * values may specify (as function(data) or static text): icon, title, leftDetails, center, right
 		 */
 		threeColumnPanelFormatter: function(data, values) {
-			var ret = '<div class="panel">';
+			var ret = '<div class="panel clickable">';
 			ret += '<table width="100%"><tr valign="top"><td width="40%">';
 			ret += '<span class="icon">' + formatHelper(data, values.icon) + '</span>';
 			ret += '<span class="leftText">';

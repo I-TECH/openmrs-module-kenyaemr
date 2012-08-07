@@ -67,7 +67,7 @@
 	<% } %>
 </fieldset>
 
-<% activeVisits.each { v ->
+<% config.activeVisits.each { v ->
 	def selected = v == visit
 %>
 	<div id="visit-${ v.id }" class="active-visit <% if (selected) { %>selected-visit<% } else { %>selectable<% } %>">

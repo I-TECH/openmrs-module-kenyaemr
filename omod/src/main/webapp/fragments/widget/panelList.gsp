@@ -9,34 +9,6 @@
 		noneMessage = null
 %>
 
-<style>
-	.panel:nth-child(odd) {
-		background-color: #e0e0e0;
-	}	
-
-	.panel {
-		<% if (config.clickFunction) { %> cursor: pointer; <% } %>
-		border: 1px #a0a0a0 solid;
-		margin-bottom: 0.5em;
-		padding: 0.2em;
-	}
-	.panel .title {
-		display: block;
-		font-weight: bold;
-		font-size: 1.1em;
-	}
-	.panel .icon {
-		float: left;
-		padding-right: 0.3em;
-	}
-	.panel .leftText {
-		float: left;
-	}
-	.panel .one-column {
-		float: left;
-	}
-</style>
-
 <div id="${ config.id }">
 	<div class="num-results"></div>
 	<% if (noneMessage) { %>

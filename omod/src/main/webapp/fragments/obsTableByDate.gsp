@@ -1,4 +1,4 @@
-<table>
+<table class="decorated">
 	<thead>
 		<tr>
 			<th></th>
