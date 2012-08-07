@@ -1,5 +1,5 @@
 <%
-if (!config?.config?.answerTo && !config?.config?.options) throw new RuntimeException("Concept field currently only supports config.answerTo and config.options mode")
+if (!config?.config?.answerTo && !config?.config?.options) throw new RuntimeException("Concept field currently only supports config.answerTo and config.options mode (error for formFieldName=${ config.formFieldName })")
 // supports config.type = radio (otherwise a select list)
 
 def options = [ [ id: "", name: "" ] ]
