@@ -40,8 +40,12 @@ import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.ListResult;
 import org.openmrs.calculation.result.ObsResult;
+import org.openmrs.calculation.result.ResultUtil;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyaemr.MetadataConstants;
+import org.openmrs.module.reporting.cohort.EvaluatedCohort;
+import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.common.VitalStatus;
 import org.openmrs.module.reporting.data.DataDefinition;
@@ -150,7 +154,7 @@ public abstract class KenyaEmrCalculation extends BaseCalculation implements Pat
 	public static Set<Integer> patientsThatPass(CalculationResultMap map) {
 		Set<Integer> ret = new HashSet<Integer>();
 		for (Map.Entry<Integer, CalculationResult> e : map.entrySet()) {
-			if (e.getValue() != null && !e.getValue().isEmpty()) {
+			if (ResultUtil.isTrue(e.getValue())) {
 				ret.add(e.getKey());
 			}
 		}
@@ -160,7 +164,7 @@ public abstract class KenyaEmrCalculation extends BaseCalculation implements Pat
 	public static Set<Integer> patientsThatDoNotPass(CalculationResultMap map) {
 		Set<Integer> ret = new HashSet<Integer>();
 		for (Map.Entry<Integer, CalculationResult> e : map.entrySet()) {
-			if (e.getValue() == null || e.getValue().isEmpty()) {
+			if (ResultUtil.isFalse(e.getValue())) {
 				ret.add(e.getKey());
 			}
 		}
@@ -225,6 +229,15 @@ public abstract class KenyaEmrCalculation extends BaseCalculation implements Pat
 			throw new APIException(ex);
 		}
 	}
+	
+	public static EvaluatedCohort evaluateWithReporting(CohortDefinition cd, Collection<Integer> inputCohort, Map<String, Object> parameterValues, PatientCalculationContext calculationContext) {
+		try {
+			EvaluationContext reportingContext = ensureReportingContext(calculationContext, inputCohort, parameterValues);
+			return Context.getService(CohortDefinitionService.class).evaluate(cd, reportingContext);
+		} catch (EvaluationException ex) {
+			throw new APIException(ex);
+		}
+	}
 
     /**
      * Wraps a plain object in the appropriate calculation result subclass
@@ -273,10 +286,24 @@ public abstract class KenyaEmrCalculation extends BaseCalculation implements Pat
      * @param map
      * @param patientIds
      */
-    public static void ensureCohort(CalculationResultMap map, Collection<Integer> patientIds) {
+    public static void ensureNullResults(CalculationResultMap map, Collection<Integer> patientIds) {
     	for (Integer ptId : patientIds) {
     		if (!map.containsKey(ptId)) {
     			map.put(ptId, null);
+    		}
+    	}
+    }
+    
+    /**
+     * If map is missing entries for any of patientIds, they are added (with empty ListResults)
+     * 
+     * @param map
+     * @param patientIds
+     */
+    public static void ensureEmptyListResults(CalculationResultMap map, Collection<Integer> patientIds) {
+    	for (Integer ptId : patientIds) {
+    		if (!map.containsKey(ptId)) {
+    			map.put(ptId, new ListResult());
     		}
     	}
     }

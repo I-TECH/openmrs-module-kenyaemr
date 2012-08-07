@@ -14,38 +14,64 @@
 package org.openmrs.module.kenyaemr.calculation;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.Map;
 
 import org.openmrs.Concept;
+import org.openmrs.Patient;
+import org.openmrs.api.PatientSetService.TimeModifier;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyaemr.MetadataConstants;
+import org.openmrs.module.reporting.cohort.EvaluatedCohort;
+import org.openmrs.module.reporting.cohort.definition.DateObsCohortDefinition;
+import org.openmrs.module.reporting.common.DateUtil;
+import org.openmrs.module.reporting.common.RangeComparator;
 
 
 /**
  *
  */
-public class FirstArtStartDateCalculation extends KenyaEmrCalculation {
+public class ScheduledVisitOnDayCalculation extends KenyaEmrCalculation {
 	
 	/**
 	 * @see org.openmrs.module.kenyaemr.calculation.KenyaEmrCalculation#getShortMessage()
 	 */
 	@Override
 	public String getShortMessage() {
-		return "First ART Start Date";
+		return "Scheduled for Visit";
 	}
-	
+
 	/**
 	 * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
 	 */
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues,
 	                                     PatientCalculationContext context) {
-		Concept arvs = Context.getConceptService().getConceptByUuid(MetadataConstants.ANTIRETROVIRAL_DRUGS_CONCEPT_UUID);
-		CalculationResultMap ret = firstDrugOrderStartDate(arvs, cohort, context);
-		ensureNullResults(ret, cohort);
+		Date date = (Date) parameterValues.get("date");
+		if (date == null) {
+			date = new Date();
+		}
+		Date startOfDay = DateUtil.getStartOfDay(date);
+		Date endOfDay = DateUtil.getEndOfDay(date);
+		
+		Concept returnVisitDate = Context.getConceptService().getConceptByUuid(MetadataConstants.RETURN_VISIT_DATE_CONCEPT_UUID);
+		DateObsCohortDefinition cd = new DateObsCohortDefinition();
+		cd.setTimeModifier(TimeModifier.ANY);
+		cd.setQuestion(returnVisitDate);
+		cd.setOperator1(RangeComparator.GREATER_EQUAL);
+		cd.setValue1(startOfDay);
+		cd.setOperator2(RangeComparator.LESS_EQUAL);
+		cd.setValue2(endOfDay);
+		
+		EvaluatedCohort withScheduledVisit = evaluateWithReporting(cd, cohort, null, context);
+		
+		CalculationResultMap ret = new CalculationResultMap();
+		for (Integer ptId : cohort) {
+			ret.put(ptId, new BooleanResult(withScheduledVisit.contains(ptId), this));
+		}
 		return ret;
 	}
-
+	
 }
