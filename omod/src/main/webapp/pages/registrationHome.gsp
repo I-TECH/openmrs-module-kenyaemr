@@ -31,6 +31,9 @@
 	<h2>Checked In Patients</h2>
 	${ ui.includeFragment("patientList", [ id: "checkedInPatients", page: "registrationViewPatient" ]) }
 	
+	<h2><a href="${ ui.pageLink("dailySchedule") }">Today's Schedule</a></h2>
+	${ ui.includeFragment("dailySchedule", [ id: "todaysSchedule", page: "registrationViewPatient" ]) }
+	
 	<br/>
 	<div id="end-of-day">
 		<h3>End-of-Day Tasks</h3>
