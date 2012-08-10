@@ -6,6 +6,9 @@
 	#search {
 		float: left;
 	}
+	#calendar {
+		font-size: 0.8em;
+	}
 </style>
 
 <script type="text/javascript">
@@ -23,7 +26,7 @@
 
 <fieldset id="search">
 	<legend>
-		Choose Another Date
+		Schedule by Date
 	</legend>
 	
 	<div id="calendar"></div>

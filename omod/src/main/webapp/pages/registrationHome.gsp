@@ -31,7 +31,7 @@
 	<h2>Checked In Patients</h2>
 	${ ui.includeFragment("patientList", [ id: "checkedInPatients", page: "registrationViewPatient" ]) }
 	
-	<h2><a href="${ ui.pageLink("dailySchedule") }">Today's Schedule</a></h2>
+	<h2>Today's Schedule <a href="${ ui.pageLink("dailySchedule") }" style="font-size: 0.6em;">(calendar)</a></h2>
 	${ ui.includeFragment("dailySchedule", [ id: "todaysSchedule", page: "registrationViewPatient" ]) }
 	
 	<br/>

@@ -28,7 +28,7 @@
 			iconProvider: "uilibrary",
 			icon: "clock_32.png",
 			label: "Today's Scheduled Visits",
-			onClick: """window.alert("Not Yet Implemented")"""
+			href: ui.pageLink("dailySchedule")
 		]) }
 	<br/>
 	

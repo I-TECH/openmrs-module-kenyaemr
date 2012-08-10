@@ -1,6 +1,5 @@
 <%
 config.require("page")
-/* TODO redo this to look like patientList */
 %>
 
 <% if (!scheduled) { %>
@@ -11,28 +10,51 @@ config.require("page")
 		<input type="hidden" name="clickUrl" value="${ ui.pageLink(config.page, [ patientId: it.patient.id ]) }"/>
 		<table width="100%">
 			<tr>
-				<td>
-					<span class="title">
-						${ ui.includeFragment("kenyaemrPersonName", [ name: it.patient.personName]) }
+				<td width="40%">
+					<span class="icon">
+						<img width="32" height="32" src="${ ui.resourceLink("uilibrary", "images/patient_" + it.patient.gender + ".gif") }"/>
 					</span>
-					<span class="leftDetails">
-						${ it.patient.gender }, ${ it.patient.age } year(s) old
+					
+					<span class="leftText">
+						<span class="title">
+							${ ui.includeFragment("kenyaemrPersonName", [ name: it.patient.personName]) }
+						</span>
+						<span class="leftDetails">
+							${ ui.includeFragment("kenyaemrPersonAgeAndBirthdate", [ person: it.patient ]) }
+						</span>
 					</span>
 				</td>
-				<td valign="right" style="padding-left: 1em">
+				<td align="center width="30%">
+					<% it.patient.activeIdentifiers.each { %>
+						<span class="identifier-label">${ ui.format(it.identifierType) }:</span><br/>
+						<span class="identifier-value">${ it.identifier }</span><br/>
+					<% } %>
+				</td>
+				<td align="right" width="30%">
 					<% if (it.visits) { %>
+
+						<u>
+							<img src="${ ui.resourceLink("kenyaemr", "images/checked_in_16.png") }"/>
+							<small>Seen Today</small>
+						</u>
+						<br/>
 						<% it.visits.each { v -> %>
 							<div class="encounter-panel">
 								<input type="hidden" name="clickUrl" value="${ ui.pageLink(config.page, [ patientId: it.patient.id, visitId: v.id ]) }"/>
-								<u><b>${ ui.format(v.visitType) } visit</b></u><br/>
+								${ ui.format(v.visitType) } visit<br/>
 								<span style="color: gray">
 									<%= v.encounters.collect { ui.format(it.form ?: it.encounterType) } .join(", ") %>
 								</span>
 							</div>
 						<% } %>
+
 					<% } else { %>
-						No visit.
-						<img src="${ ui.resourceLink("uilibrary", "images/close_32.png") }"/>
+
+						<i>
+							Not seen today
+							<img src="${ ui.resourceLink("uilibrary", "images/close_32.png") }"/>
+						</i>
+						
 					<% } %>
 				</td>
 			</tr>
