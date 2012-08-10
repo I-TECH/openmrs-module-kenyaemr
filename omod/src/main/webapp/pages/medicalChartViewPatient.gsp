@@ -1,7 +1,6 @@
 <%
 	ui.decorateWith("standardKenyaEmrPage", [ patient: patient ])
 %>
-
 <style>
 	#col1, #col2 {
 		float: left;
@@ -24,6 +23,19 @@
 		border: 1px black solid;
 		margin-bottom: 0.5em;
 		padding: 0.3em;
+		border-radius: 0.3em;
+	}
+	
+	.selected {
+		background-color: #ffffaa;
+	}
+	
+	.link-button .label {
+		font-weight: bold;
+	}
+	
+	.link-button .description {
+		font-size: 0.6em;
 	}
 </style>
 
@@ -35,22 +47,67 @@ jq(function() {
 
 <div id="col1">
 
-	<div class="link-button">
-		<a href="${ ui.pageLink("medicalChartViewPatient", [ patientId: patient.id ]) }">
-			Overview
-		</a>
+	<div class="link-button<% if (selection == "overview") { %> selected<% } %>">
+		<span class="title">
+			<a href="${ ui.pageLink("medicalChartViewPatient", [ patientId: patient.id ]) }">
+				Overview
+			</a>
+		</span>
 	</div>
 	
+	<% oneTimeForms.each { %>
+		<div class="link-button<% if (selection == "form-${ it.formUuid }") { %> selected<% } %>">
+			<span class="title">
+				<a href="${ ui.pageLink("medicalChartViewPatient", [ patientId: patient.id, formUuid: it.formUuid ]) }">
+					${ it.label }
+				</a>
+			</span>
+		</div>
+	<% } %>
+
+	<% programs.each { %>
+		<div class="link-button<% if (selection == "program-${ it.id }") { %> selected<% } %>">
+			<span class="title">
+				<a href="${ ui.pageLink("medicalChartViewPatient", [ patientId: patient.id, patientProgramId: it.id ]) }">
+					${ ui.format(it.program) }
+				</a>
+			</span>
+			<br/>
+			<span class="description">
+				from ${ ui.format(it.dateEnrolled) }
+				<% if (it.dateCompleted) { %>
+					to ${ ui.format(it.dateCompleted) }
+				<% } %>
+				<% if (it.outcome) { %>
+					<br/>
+					Outcome: <b>${ ui.format(it.outcome) }</b>
+				<% } %>
+			</span>
+		</div>		
+	<% } %>
+	
+	<div style="padding-bottom: 0.5em;">
+		<u>Visits</u>
+	</div>
+
+	<% if (!visits) { %>
+		None
+	<% } %>
+
 	<% visits.each { visit -> %>
-		<div class="link-button">
-			<a href="${ ui.pageLink("medicalChartViewPatient", [ patientId: patient.id, visitId: visit.id ]) }">
-				${ ui.format(visit.visitType) } <br/>
+		<div class="link-button<% if (selection == "visit-${ visit.id }") { %> selected<% } %>">
+			<span class="title">
+				<a href="${ ui.pageLink("medicalChartViewPatient", [ patientId: patient.id, visitId: visit.id ]) }">
+					${ ui.format(visit.visitType) } Visit
+				</a>
+			</span>
+			<br/>
+			<span class="description">
 				from ${ ui.format(visit.startDatetime) }
 				<% if (visit.stopDatetime) { %>
-					<br/>
 					to ${ ui.format(visit.stopDatetime) }
 				<% } %>
-			</a>
+			</span>
 		</div>
 	<% } %>
 	
@@ -79,7 +136,39 @@ jq(function() {
 				None
 			<% } %>
 		</fieldset>
-		
+
+	<% } else if (form) { %>
+
+		<h3>${ ui.format(form) }</h3>
+
+		<% if (encounter) { %>
+			<script type="text/javascript">
+				jq(function() {
+					publish('showHtmlForm/showEncounter', { encounterId: encounter.id });
+				});
+			</script>
+		<% } else { %>
+			Not Filled Out
+		<% } %>
+	
+	<% } else if (program) { %>
+	
+		<h3>${ ui.format(program.program) }</h3>
+		<table>
+			<tr>
+				<td>Enrolled:</td>
+				<td>${ ui.format(program.dateEnrolled) }</td>
+			</tr>
+			<tr>
+				<td>Completed:</td>
+				<td>${ ui.format(program.dateCompleted) }</td>
+			</tr>
+			<tr>
+				<td>Outcome:</td>
+				<td>${ ui.format(program.outcome) }</td>
+			</tr>
+		</table>
+
 	<% } else {
 		def cs = context.conceptService
 		def conceptList = [
@@ -95,7 +184,7 @@ jq(function() {
 	<% } %>
 </div>
 
-<% if (visit) { %>
+<% if (visit || encounter) { %>
 	
 	${ ui.includeFragment("showHtmlForm", [ id: "showHtmlForm", style: "display: none" ]) }
 	

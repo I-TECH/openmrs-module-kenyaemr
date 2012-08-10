@@ -93,7 +93,7 @@ public class MetadataConstants {
 	public static final String RETURN_VISIT_DATE_CONCEPT_UUID = "5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 	
 	// Programs
-	//public static final String HIV_PROGRAM_UUID = "3ccdc250-ca2c-4b27-8a5c-9c74c77353df";
+	public static final String HIV_PROGRAM_UUID = "dfdc6d40-2f2f-463d-ba90-cc97350441a8";
 	
 	// Other
 	public static final Locale LOCALE = Locale.UK;
