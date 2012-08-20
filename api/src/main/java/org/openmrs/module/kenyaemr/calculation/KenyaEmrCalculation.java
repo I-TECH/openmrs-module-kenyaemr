@@ -171,6 +171,26 @@ public abstract class KenyaEmrCalculation extends BaseCalculation implements Pat
 		return ret;
 	}
 	
+    public static Set<Integer> datesWithinRange(CalculationResultMap map, Date minDateInclusive, Date maxDateInclusive) {
+    	Set<Integer> ret = new HashSet<Integer>();
+		for (Map.Entry<Integer, CalculationResult> e : map.entrySet()) {
+			Date result = null;
+			try {
+				result = e.getValue().asType(Date.class);
+			} catch (Exception ex) {
+				// pass
+			}
+			if (result != null) {
+				if (OpenmrsUtil.compareWithNullAsEarliest(result, minDateInclusive) >= 0 && 
+						OpenmrsUtil.compareWithNullAsLatest(result, maxDateInclusive) <= 0) {
+					ret.add(e.getKey());
+				}
+			}
+		}
+		return ret;
+    }
+
+	
 	public static Set<Integer> alivePatients(Collection<Integer> cohort, PatientCalculationContext context) {
 		CalculationResultMap map = evaluateWithReporting(new VitalStatusDataDefinition(), cohort, new HashMap<String, Object>(), null, context);
 		Set<Integer> ret = new HashSet<Integer>();

@@ -32,6 +32,8 @@ import org.openmrs.api.ConceptService;
 import org.openmrs.api.PatientSetService.TimeModifier;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.MetadataConstants;
+import org.openmrs.module.kenyaemr.calculation.FirstArtStartDateCalculation;
+import org.openmrs.module.kenyaemr.calculation.KenyaEmrCalculation;
 import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
@@ -51,6 +53,7 @@ import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.openmrs.module.reporting.indicator.dimension.CohortDefinitionDimension;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
+import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.util.OpenmrsClassLoader;
 import org.springframework.stereotype.Component;
 
@@ -159,11 +162,10 @@ public class Moh731Report implements ReportManager {
 		}
 		{
 			AgeCohortDefinition cd = new AgeCohortDefinition();
-			cd.setName("Age 1 to 14");
+			cd.setName("Age < 15");
 			cd.addParameter(new Parameter("effectiveDate", "Date", Date.class));
-			cd.setMinAge(1);
 			cd.setMaxAge(14);
-			cohortDefinitions.put("age.1to14", cd);
+			cohortDefinitions.put("age.<15", cd);
 		}
 		{
 			AgeCohortDefinition cd = new AgeCohortDefinition();
@@ -204,16 +206,38 @@ public class Moh731Report implements ReportManager {
 			cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 			cohortDefinitions.put("anyEncounterBetween", cd);
 		}
+		{
+			FirstArtStartDateCalculation calc = new FirstArtStartDateCalculation();
+			KenyaEmrCalculationCohortDefinition cd = new KenyaEmrCalculationCohortDefinition(calc);
+			cd.setName("Started ART between dates");
+			cd.addParameter(new Parameter("resultOnOrBefore", "Before Date", Date.class));
+			cd.addParameter(new Parameter("resultOnOrAfter", "After Date", Date.class));
+			cohortDefinitions.put("startedArtBetween", cd);
+		}
+		{
+			// This seems wrong: "Count all patients where ART visit date is within 90 days and ART start date is before reporting period"
+			CohortDefinition startedArtBetween = cohortDefinitions.get("startedArtBetween");
+			CohortDefinition anyEncountersBetween = cohortDefinitions.get("anyEncounterBetween");
+			
+			CompositionCohortDefinition cd = new CompositionCohortDefinition();
+			cd.addParameter(new Parameter("fromDate", "From Date", Date.class));
+			cd.addParameter(new Parameter("toDate", "To Date", Date.class));
+			
+			SimpleObject mappings = SimpleObject.create("resultOnOrAfter", null, "resultOnOrBefore", "${startDate-1d}");
+			cd.addSearch("startedBefore", new Mapped<CohortDefinition>(startedArtBetween, mappings));
+			cd.addSearch("recentEncounter", map(anyEncountersBetween, "onOrAfter=${endDate-90d},onOrBefore=${endDate}"));
+			cd.setCompositionString("recentEncounter AND startedBefore");
+			cohortDefinitions.put("revisitsArt", cd);
+		}
 	}
 
 	private void setupDimensions() {
 		dimensions = new HashMap<String, CohortDefinitionDimension>();
 		{
 		    CohortDefinitionDimension dim = new CohortDefinitionDimension();
-		    dim.setName("Age (<1, 1-14, 15+)");
+		    dim.setName("Age (<15, 15+)");
 		    dim.addParameter(new Parameter("date", "Date", Date.class));
-		    dim.addCohortDefinition("<1", map(cohortDefinitions.get("age.<1"), "effectiveDate=${date}"));
-		    dim.addCohortDefinition("1to14", map(cohortDefinitions.get("age.1to14"), "effectiveDate=${date}"));
+		    dim.addCohortDefinition("<15", map(cohortDefinitions.get("age.<15"), "effectiveDate=${date}"));
 		    dim.addCohortDefinition("15+", map(cohortDefinitions.get("age.15+"), "effectiveDate=${date}"));
 		    dimensions.put("age", dim);
 		}
@@ -242,6 +266,27 @@ public class Moh731Report implements ReportManager {
 			ind.setCohortDefinition(map(cohortDefinitions.get("anyEncounterBetween"), "onOrAfter=${endDate-90d},onOrBefore=${endDate}"));
 			indicators.put("currentlyInCare", ind);
 		}
+		{
+			CohortIndicator ind = new CohortIndicator("Starting ART");
+			ind.addParameter(new Parameter("startDate", "Start Date", Date.class));
+			ind.addParameter(new Parameter("endDate", "End Date", Date.class));
+			ind.setCohortDefinition(map(cohortDefinitions.get("startedArtBetween"), "resultOnOrAfter=${startDate},resultOnOrBefore=${endDate}"));
+			indicators.put("startingArt", ind);
+		}
+		{
+			CohortIndicator ind = new CohortIndicator("Revisits ART");
+			ind.addParameter(new Parameter("startDate", "Start Date", Date.class));
+			ind.addParameter(new Parameter("endDate", "End Date", Date.class));
+			ind.setCohortDefinition(map(cohortDefinitions.get("revisitsArt"), "fromDate=${startDate},toDate=${endDate}"));
+			indicators.put("revisitsArt", ind);
+		}
+		{
+			CohortIndicator ind = new CohortIndicator("Cumulative Ever on ART");
+			ind.addParameter(new Parameter("startDate", "Start Date", Date.class));
+			ind.addParameter(new Parameter("endDate", "End Date", Date.class));
+			ind.setCohortDefinition(map(cohortDefinitions.get("startedArtBetween"), "resultOnOrBefore=${endDate}"));
+			indicators.put("cumulativeOnArt", ind); 
+		}
 	}
 
 	public ReportDefinition createReportDefinition() {
@@ -264,19 +309,39 @@ public class Moh731Report implements ReportManager {
 		dsd.addDimension("gender", map(dimensions.get("gender"), null));
 		
 		dsd.addColumn("3.2", "Enrolled in Care", map(indicators.get("enrolledInCare"), "startDate=${startDate},endDate=${endDate}"), "");
-		dsd.addColumn("3.2-under1", "Enrolled in Care (<1)", map(indicators.get("enrolledInCare"), "startDate=${startDate},endDate=${endDate}"), "age=<1");
-		dsd.addColumn("3.2-1to14-M", "Enrolled in Care (1-14, Male)", map(indicators.get("enrolledInCare"), "startDate=${startDate},endDate=${endDate}"), "gender=M|age=1to14");
-		dsd.addColumn("3.2-1to14-F", "Enrolled in Care (1-14, Female)", map(indicators.get("enrolledInCare"), "startDate=${startDate},endDate=${endDate}"), "gender=F|age=1to14");
+		//dsd.addColumn("3.2-under1", "Enrolled in Care (<1)", map(indicators.get("enrolledInCare"), "startDate=${startDate},endDate=${endDate}"), "age=<1");
+		dsd.addColumn("3.2-under15-M", "Enrolled in Care (<15, Male)", map(indicators.get("enrolledInCare"), "startDate=${startDate},endDate=${endDate}"), "gender=M|age=<15");
+		dsd.addColumn("3.2-under15-F", "Enrolled in Care (<15, Female)", map(indicators.get("enrolledInCare"), "startDate=${startDate},endDate=${endDate}"), "gender=F|age=<15");
 		dsd.addColumn("3.2-15+-M", "Enrolled in Care (15+, Male)", map(indicators.get("enrolledInCare"), "startDate=${startDate},endDate=${endDate}"), "gender=M|age=15+");
 		dsd.addColumn("3.2-15+-F", "Enrolled in Care (15+, Female)", map(indicators.get("enrolledInCare"), "startDate=${startDate},endDate=${endDate}"), "gender=F|age=15+");
 		
 		dsd.addColumn("3.3", "Currently in Care", map(indicators.get("currentlyInCare"), "startDate=${startDate},endDate=${endDate}"), "");
-		dsd.addColumn("3.3-under1", "Currently in Care (<1)", map(indicators.get("currentlyInCare"), "startDate=${startDate},endDate=${endDate}"), "age=<1");
-		dsd.addColumn("3.3-1to14-M", "Currently in Care (1-14, Male)", map(indicators.get("currentlyInCare"), "startDate=${startDate},endDate=${endDate}"), "gender=M|age=1to14");
-		dsd.addColumn("3.3-1to14-F", "Currently in Care (1-14, Female)", map(indicators.get("currentlyInCare"), "startDate=${startDate},endDate=${endDate}"), "gender=F|age=1to14");
+		//dsd.addColumn("3.3-under1", "Currently in Care (<1)", map(indicators.get("currentlyInCare"), "startDate=${startDate},endDate=${endDate}"), "age=<1");
+		dsd.addColumn("3.3-under15-M", "Currently in Care (<15, Male)", map(indicators.get("currentlyInCare"), "startDate=${startDate},endDate=${endDate}"), "gender=M|age=<15");
+		dsd.addColumn("3.3-under15-F", "Currently in Care (<15, Female)", map(indicators.get("currentlyInCare"), "startDate=${startDate},endDate=${endDate}"), "gender=F|age=<15");
 		dsd.addColumn("3.3-15+-M", "Currently in Care (15+, Male)", map(indicators.get("currentlyInCare"), "startDate=${startDate},endDate=${endDate}"), "gender=M|age=15+");
 		dsd.addColumn("3.3-15+-F", "Currently in Care (15+, Female)", map(indicators.get("currentlyInCare"), "startDate=${startDate},endDate=${endDate}"), "gender=F|age=15+");
-	    
+		
+		dsd.addColumn("3.4", "Starting ART", map(indicators.get("startingArt"), "startDate=${startDate},endDate=${endDate}"), "");
+		dsd.addColumn("3.4-under15-M", "Starting ART", map(indicators.get("startingArt"), "startDate=${startDate},endDate=${endDate}"), "gender=M|age=<15");
+		dsd.addColumn("3.4-under15-F", "Starting ART", map(indicators.get("startingArt"), "startDate=${startDate},endDate=${endDate}"), "gender=F|age=<15");
+		dsd.addColumn("3.4-15+-M", "Starting ART", map(indicators.get("startingArt"), "startDate=${startDate},endDate=${endDate}"), "gender=M|age=15+");
+		dsd.addColumn("3.4-15+-F", "Starting ART", map(indicators.get("startingArt"), "startDate=${startDate},endDate=${endDate}"), "gender=F|age=15+");
+		
+		dsd.addColumn("3.5", "Revisits ART", map(indicators.get("revisitsArt"), "startDate=${startDate},endDate=${endDate}"), "");
+		dsd.addColumn("3.5-under15-M", "Revisits ART", map(indicators.get("revisitsArt"), "startDate=${startDate},endDate=${endDate}"), "gender=M|age=<15");
+		dsd.addColumn("3.5-under15-F", "Revisits ART", map(indicators.get("revisitsArt"), "startDate=${startDate},endDate=${endDate}"), "gender=F|age=<15");
+		dsd.addColumn("3.5-15+-M", "Revisits ART", map(indicators.get("revisitsArt"), "startDate=${startDate},endDate=${endDate}"), "gender=M|age=15+");
+		dsd.addColumn("3.5-15+-F", "Revisits ART", map(indicators.get("revisitsArt"), "startDate=${startDate},endDate=${endDate}"), "gender=F|age=15+");
+		
+		// 3.6 is computed within the excel template by adding 3.4 and 3.5
+		
+		dsd.addColumn("3.7", "Cumulative Ever on ART", map(indicators.get("cumulativeOnArt"), "startDate=${startDate},endDate=${endDate}"), "");
+		dsd.addColumn("3.7-under15-M", "Cumulative Ever on ART", map(indicators.get("cumulativeOnArt"), "startDate=${startDate},endDate=${endDate}"), "gender=M|age=<15");
+		dsd.addColumn("3.7-under15-F", "Cumulative Ever on ART", map(indicators.get("cumulativeOnArt"), "startDate=${startDate},endDate=${endDate}"), "gender=F|age=<15");
+		dsd.addColumn("3.7-15+-M", "Cumulative Ever on ART", map(indicators.get("cumulativeOnArt"), "startDate=${startDate},endDate=${endDate}"), "gender=M|age=15+");
+		dsd.addColumn("3.7-15+-F", "Cumulative Ever on ART", map(indicators.get("cumulativeOnArt"), "startDate=${startDate},endDate=${endDate}"), "gender=F|age=15+");
+		
 	    return dsd;
     }
 

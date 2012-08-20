@@ -15,11 +15,16 @@ package org.openmrs.module.kenyaemr.report;
 
 import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
+import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.dataset.DataSet;
+import org.openmrs.module.reporting.dataset.DataSetColumn;
+import org.openmrs.module.reporting.dataset.DataSetRow;
+import org.openmrs.module.reporting.dataset.MapDataSet;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.ReportDesign;
@@ -36,7 +41,7 @@ import org.openmrs.test.SkipBaseSetup;
  *
  */
 @SkipBaseSetup
-@Ignore
+//@Ignore
 public class Moh731ReportTest extends BaseModuleContextSensitiveTest {
 	
 	/**
@@ -94,7 +99,18 @@ public class Moh731ReportTest extends BaseModuleContextSensitiveTest {
 
     private void printOutput(ReportData data) throws Exception {
     	System.out.println(data.getDefinition().getName());
-    	new TsvReportRenderer().render(data, null, System.out);
+    	for (Map.Entry<String, DataSet> e : data.getDataSets().entrySet()) {
+    		System.out.println();
+    		System.out.println(e.getKey());
+    		DataSet ds = e.getValue();
+    		if (ds instanceof MapDataSet) {
+    			for (Map.Entry<DataSetColumn, Object> col : ((MapDataSet) ds).getData().getColumnValues().entrySet()) {
+    				System.out.println(col.getKey().getName() + ":\t" + col.getValue());
+    			}
+        	} else {
+        		System.out.println("Printing non-Map data sets not yet implemented");
+    		}
+    	}
     }
 	
 }

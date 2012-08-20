@@ -57,7 +57,12 @@ public class KenyaEmrCalculationCohortDefinitionEvaluator implements CohortDefin
 			cohort = Context.getPatientSetService().getAllPatients();
 		}
 		CalculationResultMap map = pcs.evaluate(cohort.getMemberIds(), cd.getCalculation(), calcContext);
-		Set<Integer> passing = KenyaEmrCalculation.patientsThatPass(map);
+		Set<Integer> passing;
+		if (cd.getResultOnOrAfter() != null || cd.getResultOnOrBefore() != null) {
+			passing = KenyaEmrCalculation.datesWithinRange(map, cd.getResultOnOrAfter(), cd.getResultOnOrBefore());
+		} else {
+			passing = KenyaEmrCalculation.patientsThatPass(map);
+		}
 		return new EvaluatedCohort(new Cohort(passing), cd, context);
 	}
 	

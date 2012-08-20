@@ -13,6 +13,8 @@
  */
 package org.openmrs.module.kenyaemr.report;
 
+import java.util.Date;
+
 import org.openmrs.module.kenyaemr.calculation.KenyaEmrCalculation;
 import org.openmrs.module.reporting.cohort.definition.BaseCohortDefinition;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
@@ -25,16 +27,22 @@ public class KenyaEmrCalculationCohortDefinition extends BaseCohortDefinition {
 	@ConfigurationProperty(required = true, group = "calculation")
 	private KenyaEmrCalculation calculation;
 	
+	@ConfigurationProperty(required = false, group = "date range")
+	private Date resultOnOrAfter;
+	
+	@ConfigurationProperty(required = false, group = "date range")
+	private Date resultOnOrBefore;
+	
 	public KenyaEmrCalculationCohortDefinition() {
 	}
 	
 	/**
-     * @param calculation
-     */
-    public KenyaEmrCalculationCohortDefinition(KenyaEmrCalculation calculation) {
-	    setCalculation(calculation);
-    }
-
+	 * @param calculation
+	 */
+	public KenyaEmrCalculationCohortDefinition(KenyaEmrCalculation calculation) {
+		setCalculation(calculation);
+	}
+	
 	/**
 	 * @return the calculation
 	 */
@@ -47,6 +55,34 @@ public class KenyaEmrCalculationCohortDefinition extends BaseCohortDefinition {
 	 */
 	public void setCalculation(KenyaEmrCalculation calculation) {
 		this.calculation = calculation;
+	}
+	
+	/**
+	 * @return the resultOnOrAfter
+	 */
+	public Date getResultOnOrAfter() {
+		return resultOnOrAfter;
+	}
+	
+	/**
+	 * @param resultOnOrAfter the resultOnOrAfter to set
+	 */
+	public void setResultOnOrAfter(Date resultOnOrAfter) {
+		this.resultOnOrAfter = resultOnOrAfter;
+	}
+	
+	/**
+	 * @return the resultOnOrBefore
+	 */
+	public Date getResultOnOrBefore() {
+		return resultOnOrBefore;
+	}
+	
+	/**
+	 * @param resultOnOrBefore the resultOnOrBefore to set
+	 */
+	public void setResultOnOrBefore(Date resultOnOrBefore) {
+		this.resultOnOrBefore = resultOnOrBefore;
 	}
 	
 }
