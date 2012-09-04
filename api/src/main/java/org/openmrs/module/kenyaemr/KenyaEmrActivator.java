@@ -37,9 +37,10 @@ import org.openmrs.module.metadatasharing.wrapper.PackageImporter;
  */
 public class KenyaEmrActivator implements ModuleActivator {
 	
-	private static final String METADATA_FILENAME_FORMS = "Kenya_EMR_Forms-v29.zip";
-    private static final String METADATA_FILENAME_CORE = "Kenya_EMR_Core_Metadata-v4.zip";
-    private static final String METADATA_FILENAME_ROLES = "Kenya_EMR_Roles_and_Privileges-v1.zip";
+	private static final String METADATA_FILENAME_FORMS = "Kenya_EMR_Forms-29.zip";
+    private static final String METADATA_FILENAME_CORE = "Kenya_EMR_Core_Metadata-7.zip";
+    private static final String METADATA_FILENAME_ROLES = "Kenya_EMR_Roles_and_Privileges-1.zip";
+    private static final String METADATA_FILENAME_LOCATIONS = "Kenya_Facility_List-1.zip";
     
 	protected Log log = LogFactory.getLog(getClass());
 		
@@ -120,6 +121,7 @@ public class KenyaEmrActivator implements ModuleActivator {
     	anyChanges |= installMetadataPackageIfNecessary("c66d041c-563e-4438-83eb-ad5f32c6e97a", METADATA_FILENAME_FORMS);
     	anyChanges |= installMetadataPackageIfNecessary("d4b71375-f64a-442d-a0c2-9f507c432925", METADATA_FILENAME_ROLES);
     	anyChanges |= installMetadataPackageIfNecessary("29177ba6-a634-42d5-9314-e12689856ff1", METADATA_FILENAME_CORE);
+    	anyChanges |= installMetadataPackageIfNecessary("659bc9bc-f293-4d22-9e53-6358762d9e3f", METADATA_FILENAME_LOCATIONS);
     	return anyChanges;
     }
 
@@ -134,9 +136,9 @@ public class KenyaEmrActivator implements ModuleActivator {
     private boolean installMetadataPackageIfNecessary(String groupUuid, String filename) throws IOException {
     	//NameWithNoSpaces-v1.zip
     	try {
-			Matcher matcher = Pattern.compile("\\w+-v(\\d+).zip").matcher(filename);
+			Matcher matcher = Pattern.compile("\\w+-(\\d+).zip").matcher(filename);
 			if (!matcher.matches())
-				throw new RuntimeException("Filename must match PackageNameWithNoSpaces-v1.zip");
+				throw new RuntimeException("Filename must match PackageNameWithNoSpaces-1.zip");
 			Integer version = Integer.valueOf(matcher.group(1));
 			
 			ImportedPackage installed = Context.getService(MetadataSharingService.class).getImportedPackageByGroup(groupUuid);

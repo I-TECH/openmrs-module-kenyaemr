@@ -331,7 +331,7 @@ public class RegistrationEditPatientFragmentController {
 				return false;
 			}
 			ProgramWorkflowService pws = Context.getProgramWorkflowService();
-			Program hivProgram = pws.getPrograms("HIV Program").get(0);
+			Program hivProgram = pws.getProgramByUuid(MetadataConstants.HIV_PROGRAM_UUID);
 			for (PatientProgram pp : pws.getPatientPrograms(original, hivProgram, null, null, null, null, false)) {
 				if (pp.getActive()) {
 					return true;

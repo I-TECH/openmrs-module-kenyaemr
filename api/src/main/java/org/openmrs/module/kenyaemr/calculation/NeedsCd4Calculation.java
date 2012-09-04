@@ -46,7 +46,7 @@ public class NeedsCd4Calculation extends KenyaEmrCalculation {
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues,
 	                                     PatientCalculationContext context) {
-		Program hivProgram = Context.getProgramWorkflowService().getPrograms("HIV Program").get(0);
+		Program hivProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.HIV_PROGRAM_UUID);
 		Set<Integer> inHivProgram = patientsThatPass(lastProgramEnrollment(hivProgram, cohort, context));
 		Set<Integer> alive = alivePatients(cohort, context);
 		CalculationResultMap lastObs = lastObs(MetadataConstants.CD4_CONCEPT_UUID, cohort, context);

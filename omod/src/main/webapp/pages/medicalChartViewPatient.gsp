@@ -12,7 +12,8 @@
 		margin-right: 0.5em;
 	}
 	
-	#col2 {		
+	#col2 {
+		width: 66%;		
 	}
 		
 	fieldset {
@@ -142,9 +143,11 @@ jq(function() {
 		<h3>${ ui.format(form) }</h3>
 
 		<% if (encounter) { %>
+			${ ui.includeFragment("showHtmlForm", [ id: "showHtmlForm" ]) }
+		
 			<script type="text/javascript">
 				jq(function() {
-					publish('showHtmlForm/showEncounter', { encounterId: encounter.id });
+					publish('showHtmlForm/showEncounter', { encounterId: ${ encounter.id } });
 				});
 			</script>
 		<% } else { %>
@@ -184,7 +187,7 @@ jq(function() {
 	<% } %>
 </div>
 
-<% if (visit || encounter) { %>
+<% if (visit) { %>
 	
 	${ ui.includeFragment("showHtmlForm", [ id: "showHtmlForm", style: "display: none" ]) }
 	

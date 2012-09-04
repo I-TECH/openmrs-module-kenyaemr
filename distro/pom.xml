@@ -58,12 +58,10 @@
 												url="https://modules.openmrs.org/modules/download/metadatasharing/metadatasharing-${metadatasharingVersion}.omod"/>
 											<url
 												url="https://modules.openmrs.org/modules/download/idgen/idgen-${idgenVersion}.omod" />
-											<!-- 
 											<url
 												url="https://modules.openmrs.org/modules/download/htmlformentry/htmlformentry-${htmlformentryVersion}.omod" />
 											<url
 												url="https://modules.openmrs.org/modules/download/calculation/calculation-${calculationVersion}.omod"/>
-											 -->
 										</get>
 									</target>
 								</configuration>
@@ -91,6 +89,13 @@
 											<filtering>false</filtering>
 											<includes>
 												<include>kenyaemr-${project.parent.version}.omod</include>
+											</includes>
+										</resource>
+										<resource>
+											<directory>src/main/resources</directory>
+											<filtering>false</filtering>
+											<includes>
+												<include>*.omod</include>
 											</includes>
 										</resource>
 									</resources>

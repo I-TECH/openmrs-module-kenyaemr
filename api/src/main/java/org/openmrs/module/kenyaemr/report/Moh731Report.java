@@ -133,7 +133,7 @@ public class Moh731Report implements ReportManager {
 	
     private void setupMetadata() {
     	// TODO by uuid
-	    hivProgram = Context.getProgramWorkflowService().getPrograms("HIV Program").get(0);
+	    hivProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.HIV_PROGRAM_UUID);
 	    
 	    ConceptService cs = Context.getConceptService();
 	    transferInDate = cs.getConceptByUuid(MetadataConstants.TRANSFER_IN_DATE_CONCEPT_UUID);

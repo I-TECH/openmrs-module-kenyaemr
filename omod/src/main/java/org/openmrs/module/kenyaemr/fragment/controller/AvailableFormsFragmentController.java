@@ -46,7 +46,7 @@ public class AvailableFormsFragmentController {
 	
 	public void controller(FragmentModel model, @FragmentParam("visit") Visit visit, Session session) {
 		// TODO get by uuid
-		Program hivProgram = Context.getProgramWorkflowService().getPrograms("HIV Program").get(0);
+		Program hivProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.HIV_PROGRAM_UUID);
 		
 		List<AvailableFormConfig> forms = new ArrayList<AvailableFormConfig>();
 		String currentApp = AppUiUtil.getCurrentApp(session).getApp().getId();

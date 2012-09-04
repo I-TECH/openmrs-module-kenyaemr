@@ -69,10 +69,10 @@ public abstract class PatientAlertListReportManager implements PatientListReport
 	 * @param dsd this will be modified by having columns added
 	 */
 	public void addColumns(PatientDataSetDefinition dsd) {
-		dsd.addColumn("HIV Unique ID", new PatientIdentifierDataDefinition("HIV Unique ID", Context.getPatientService().getPatientIdentifierTypeByUuid(MetadataConstants.UNIQUE_PATIENT_NUMBER_UUID)), null);
-		dsd.addColumn("Patient Name", new PreferredNameDataDefinition(), null);
-		dsd.addColumn("Age", new AgeDataDefinition(), null);
-		dsd.addColumn("Sex", new GenderDataDefinition(), null);
+		dsd.addColumn("HIV Unique ID", new PatientIdentifierDataDefinition("HIV Unique ID", Context.getPatientService().getPatientIdentifierTypeByUuid(MetadataConstants.UNIQUE_PATIENT_NUMBER_UUID)), "");
+		dsd.addColumn("Patient Name", new PreferredNameDataDefinition(), "");
+		dsd.addColumn("Age", new AgeDataDefinition(), "");
+		dsd.addColumn("Sex", new GenderDataDefinition(), "");
 	}
 	
 	/**

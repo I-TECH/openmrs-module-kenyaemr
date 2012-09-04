@@ -41,7 +41,7 @@ import org.openmrs.test.SkipBaseSetup;
  *
  */
 @SkipBaseSetup
-//@Ignore
+@Ignore
 public class Moh731ReportTest extends BaseModuleContextSensitiveTest {
 	
 	/**

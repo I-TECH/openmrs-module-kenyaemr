@@ -48,7 +48,7 @@ public class EligibleForArtCalculation extends KenyaEmrCalculation {
 	                                     PatientCalculationContext context) {
 
 		// only applies to patients in the HIV program
-		Program hivProgram = Context.getProgramWorkflowService().getPrograms("HIV Program").get(0);
+		Program hivProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.HIV_PROGRAM_UUID);
 		Set<Integer> inHivProgram = patientsThatPass(lastProgramEnrollment(hivProgram, cohort, context));
 		
 		// need to exclude those on ART already

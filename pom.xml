@@ -31,6 +31,7 @@
 		<module>api</module>
 		<module>omod</module>
 		<module>distro</module>
+		<module>installation</module>
 	</modules>
 
 	<properties>
@@ -38,14 +39,14 @@
 		<uiframeworkVersion>1.7</uiframeworkVersion>
 		<uilibraryVersion>1.4</uilibraryVersion>
 		<appframeworkVersion>1.3</appframeworkVersion>
-		<metadatasharingVersion>1.0.8</metadatasharingVersion>
-		<htmlformentryVersion>1.10.1-SNAPSHOT</htmlformentryVersion>
+		<metadatasharingVersion>1.0.9</metadatasharingVersion>
+		<htmlformentryVersion>2.0</htmlformentryVersion>
 		<htmlformentry19extVersion>0.9</htmlformentry19extVersion>
 		<moduledistroVersion>1.2</moduledistroVersion>
-		<calculationVersion>1.0-SNAPSHOT</calculationVersion>
-		<reportingVersion>0.7.1.1</reportingVersion>
-		<htmlwidgetsVersion>1.6.0</htmlwidgetsVersion>
-		<serializationxstreamVersion>0.2.6</serializationxstreamVersion>
+		<calculationVersion>1.0</calculationVersion>
+		<reportingVersion>0.7.2.1</reportingVersion>
+		<htmlwidgetsVersion>1.6.4</htmlwidgetsVersion>
+		<serializationxstreamVersion>0.2.7</serializationxstreamVersion>
 		<idgenVersion>2.1</idgenVersion>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
@@ -103,14 +104,14 @@
 
 		<dependency>
 			<groupId>org.openmrs.module</groupId>
-			<artifactId>reporting</artifactId>
+			<artifactId>reporting-api</artifactId>
 			<version>${reportingVersion}</version>
 			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.openmrs.module</groupId>
-			<artifactId>htmlwidgets</artifactId>
+			<artifactId>htmlwidgets-api</artifactId>
 			<version>${htmlwidgetsVersion}</version>
 			<scope>provided</scope>
 		</dependency>
