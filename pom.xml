@@ -129,13 +129,15 @@
 			<version>${idgenVersion}</version>
 			<scope>provided</scope>
 		</dependency>
-		
+
+		<!--		
 		<dependency>
 			<groupId>org.openmrs.module</groupId>
 			<artifactId>idgen-api</artifactId>
-			<version>2.3-SNAPSHOT</version>
+			<version>2.2</version>
 			<scope>provided</scope>
 		</dependency>
+		 -->
 
 		<!-- End OpenMRS modules -->
 
