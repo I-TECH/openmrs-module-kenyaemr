@@ -14,6 +14,7 @@
 package org.openmrs.module.kenyaemr.fragment.controller;
 
 import org.openmrs.api.context.Context;
+import org.openmrs.module.ModuleFactory;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 
@@ -24,6 +25,7 @@ import org.openmrs.ui.framework.fragment.FragmentModel;
 public class KenyaHeaderFragmentController {
 	
 	public void controller(FragmentModel model) {
+		model.addAttribute("moduleVersion", ModuleFactory.getModuleById("kenyaemr").getVersion());
 		try {
 			model.addAttribute("systemLocation", Context.getService(KenyaEmrService.class).getDefaultLocation());
 		} catch (Exception ex) {

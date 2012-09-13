@@ -4,7 +4,7 @@
 
 	<groupId>org.openmrs.module</groupId>
 	<artifactId>kenyaemr</artifactId>
-	<version>1.0-SNAPSHOT</version>
+	<version>2012.2-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Kenya OpenMRS EMR Module</name>
 	<description>OpenMRS-based EMR for Kenya</description>
@@ -22,9 +22,9 @@
 	</organization>
 
 	<scm>
-		<connection>scm:svn:http://svn.openmrs.org/openmrs-modules/kenyaemr/trunk/</connection>
-		<developerConnection>scm:svn:http://svn.openmrs.org/openmrs-modules/kenyaemr/trunk/</developerConnection>
-		<url>http://svn.openmrs.org/openmrs-modules/kenyaemr/trunk/</url>
+		<connection>scm:git:git@github.com:djazayeri/openmrs-module-kenyaemr.git</connection>
+		<developerConnection>scm:git:git@github.com:djazayeri/openmrs-module-kenyaemr.git</developerConnection>
+		<url>https://github.com/djazayeri/openmrs-module-kenyaemr</url>
 	</scm>
 
 	<modules>
