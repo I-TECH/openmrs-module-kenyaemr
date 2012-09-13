@@ -48,6 +48,9 @@ public class PatientOverallDetailsFragmentController {
 		ProgramWorkflowService pws = Context.getProgramWorkflowService(); 
 		Program hivProgram = pws.getProgramByUuid(MetadataConstants.HIV_PROGRAM_UUID);
 		model.addAttribute("hivProgram", hivProgram);
+		
+		Program tbProgram = pws.getProgramByUuid(MetadataConstants.TB_PROGRAM_UUID);
+		model.addAttribute("tbProgram", tbProgram);
 	}
 	
 }

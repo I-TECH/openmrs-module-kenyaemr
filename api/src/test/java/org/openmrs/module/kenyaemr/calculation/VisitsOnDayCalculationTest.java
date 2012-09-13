@@ -50,8 +50,8 @@ public class VisitsOnDayCalculationTest extends BaseModuleContextSensitiveTest {
 			System.out.println(ptId + " -> " + ResultUtil.getFirst(resultMap.get(ptId)));
 		}
 		
-		Assert.assertTrue(resultMap.get(6).isEmpty());
-		Assert.assertFalse(resultMap.get(7).isEmpty());
+		Assert.assertFalse(resultMap.get(6).isEmpty()); // from standardTestDataset.xml
+		Assert.assertFalse(resultMap.get(7).isEmpty()); // from testData.xml
 		Assert.assertTrue(resultMap.get(8).isEmpty());
 	}
 	

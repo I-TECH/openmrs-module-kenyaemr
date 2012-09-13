@@ -45,6 +45,10 @@ public class MetadataConstants {
 	public static final String FAMILY_HISTORY_FORM_UUID = "7efa0ee0-6617-4cd7-8310-9f95dfee7a82";
 	public static final String MOH_257_ENCOUNTER_ORDER_LAB_INVESTIGATIONS_FORM_UUID = "7e603909-9ed5-4d0c-a688-26ecb05d8b6e";
 	public static final String OTHER_MEDICATIONS_FORM_UUID = "d4ff8ad1-19f8-484f-9395-04c755de9a47";
+	public static final String TB_ENROLLMENT_FORM_UUID = "89994550-9939-40f3-afa6-173bce445c79";
+	public static final String TB_VISIT_FORM_UUID = "2daabb77-7ad6-4952-864b-8d23e109c69d";
+	public static final String TB_COMPLETION_FORM_UUID = "4b296dd0-f6be-4007-9eb8-d0fd4e94fb3a";
+			
 	//public static final String MOH_257_ENCOUNTER_ART_HISTORY_FORM_UUID = "b388cd66-8e08-4e8f-97de-7cf10023ed0f";
 	//public static final String MOH_257_ENCOUNTER_PAST_MEDICAL_AND_SURGICAL_HISTORY_FORM_UUID = "4a0d1332-490e-439f-9d14-c782143c94de";
 	//public static final String MOH_257_ART_TREATMENT_INTERUPTION_FORM_UUID = "9e560607-cb99-46b0-8599-5d06110b4742";
@@ -94,6 +98,7 @@ public class MetadataConstants {
 	
 	// Programs
 	public static final String HIV_PROGRAM_UUID = "dfdc6d40-2f2f-463d-ba90-cc97350441a8";
+	public static final String TB_PROGRAM_UUID = "9f144a34-3a4a-44a9-8486-6b7af6cc64f6";
 	
 	// Other
 	public static final Locale LOCALE = Locale.UK;

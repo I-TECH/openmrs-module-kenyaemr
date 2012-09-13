@@ -56,6 +56,5 @@
   <obs obs_id="5096" person_id="7" concept_id="5096" obs_datetime="2012-06-01 00:00:00.0" location_id="1" value_datetime="2012-07-04 00:00:00.0" creator="1" date_created="2012-06-01 14:11:13.0" voided="false" uuid="e9c5f692-d518-11e1-a606-e48901690d08"/>
   
   <!-- actual visit for patient 7 on the same day -->
-  <visit />
   <visit visit_id="5096" patient_id="7" visit_type_id="1" date_started="2012-07-04 09:15:00.0" date_stopped="2012-07-04 13:05:00.0" location_id="1" creator="1" date_created="2012-07-05 00:00:00.0" voided="0" uuid="c48253b4-d51b-11e1-a606-e48901690d08" />
 </dataset>
