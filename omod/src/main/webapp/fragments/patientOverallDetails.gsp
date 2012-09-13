@@ -94,6 +94,8 @@ ${ ui.includeFragment("programPanel", [
 		registrationFormUuid: MetadataConstants.HIV_PROGRAM_ENROLLMENT_FORM_UUID,
 		exitFormUuid: MetadataConstants.HIV_PROGRAM_DISCONTINUATION_FORM_UUID
 	]) }
+
+<br/>
 	
 ${ ui.includeFragment("programPanel", [
 		patient: patient,
