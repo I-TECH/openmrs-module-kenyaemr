@@ -17,4 +17,4 @@ ${ ui.includeFragment("widget/button", [
 	icon: "add1-32.png",
 	label: "Patient Not Found?",
 	extra: "Registration -> Create New",
-	onClick: "window.alert('TODO implement this')" ]) }
+	href: ui.pageLink("registrationCreatePatient") ]) }
