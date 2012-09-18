@@ -47,6 +47,7 @@ public class AvailableFormsFragmentController {
 	public void controller(FragmentModel model, @FragmentParam("visit") Visit visit, Session session) {
 		// TODO get by uuid
 		Program hivProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.HIV_PROGRAM_UUID);
+		Program tbProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.TB_PROGRAM_UUID);
 		
 		List<AvailableFormConfig> forms = new ArrayList<AvailableFormConfig>();
 		String currentApp = AppUiUtil.getCurrentApp(session).getApp().getId();
@@ -58,7 +59,7 @@ public class AvailableFormsFragmentController {
 			forms.add(new AvailableFormConfig(MetadataConstants.TB_SCREENING_FORM_UUID, Frequency.VISIT, null));
 			forms.add(new AvailableFormConfig(MetadataConstants.PROGRESS_NOTE_FORM_UUID, Frequency.VISIT, null));
 			forms.add(new AvailableFormConfig(MetadataConstants.MOH_257_ENCOUNTER_ORDER_LAB_INVESTIGATIONS_FORM_UUID, Frequency.VISIT, null));
-			forms.add(new AvailableFormConfig(MetadataConstants.TB_VISIT_FORM_UUID, Frequency.VISIT, null));
+			forms.add(new AvailableFormConfig(MetadataConstants.TB_VISIT_FORM_UUID, Frequency.VISIT, tbProgram));
 		} else {
 			//forms.add(new AvailableFormConfig(MetadataConstants.TRIAGE_FORM_UUID, Frequency.VISIT, null));
 			forms.add(new AvailableFormConfig(MetadataConstants.CLINICAL_ENCOUNTER_FORM_UUID, Frequency.VISIT, null));
@@ -67,7 +68,7 @@ public class AvailableFormsFragmentController {
 			forms.add(new AvailableFormConfig(MetadataConstants.PROGRESS_NOTE_FORM_UUID, Frequency.VISIT, null));
 			forms.add(new AvailableFormConfig(MetadataConstants.MOH_257_ENCOUNTER_ORDER_LAB_INVESTIGATIONS_FORM_UUID, Frequency.VISIT, null));
 			forms.add(new AvailableFormConfig(MetadataConstants.OTHER_MEDICATIONS_FORM_UUID, Frequency.VISIT, null));
-			forms.add(new AvailableFormConfig(MetadataConstants.TB_VISIT_FORM_UUID, Frequency.VISIT, null));
+			forms.add(new AvailableFormConfig(MetadataConstants.TB_VISIT_FORM_UUID, Frequency.VISIT, tbProgram));
 		}
 		
 		List<Encounter> encounters = new ArrayList<Encounter>(visit.getEncounters());
