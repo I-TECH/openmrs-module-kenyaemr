@@ -85,7 +85,7 @@
 			</div>
 		<% } %>
 		
-		<h4>Current ${ ui.format(visit.visitType) } Visit</h4>
+		<h4>Current ${ ui.format(visit.visitType) } Visregistrationit</h4>
 
 		${ ui.includeFragment("availableForms", [ visit: visit ]) }
 		
