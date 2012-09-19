@@ -21,6 +21,8 @@ import java.util.Set;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.kenyaemr.calculation.KenyaEmrCalculation;
+import org.openmrs.module.reporting.data.converter.DataConverter;
+import org.openmrs.module.reporting.data.patient.definition.PatientIdDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.PatientIdentifierDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.AgeDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.GenderDataDefinition;
@@ -73,6 +75,23 @@ public abstract class PatientAlertListReportManager implements PatientListReport
 		dsd.addColumn("Patient Name", new PreferredNameDataDefinition(), "");
 		dsd.addColumn("Age", new AgeDataDefinition(), "");
 		dsd.addColumn("Sex", new GenderDataDefinition(), "");
+		dsd.addColumn("View", new PatientIdDataDefinition(), "", new DataConverter() {
+			
+			@Override
+			public Class<?> getInputDataType() {
+				return Integer.class;
+			}
+			
+			@Override
+			public Class<?> getDataType() {
+				return String.class;
+			}
+			
+			@Override
+			public Object convert(Object input) {
+				return "<a href=\"medicalChartViewPatient.page?patientId=" + input + "\">View</a>";
+			}
+		});
 	}
 	
 	/**
