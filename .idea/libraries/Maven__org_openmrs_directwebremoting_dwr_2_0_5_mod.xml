@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.openmrs.directwebremoting:dwr:2.0.5-mod">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/openmrs/directwebremoting/dwr/2.0.5-mod/dwr-2.0.5-mod.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/openmrs/directwebremoting/dwr/2.0.5-mod/dwr-2.0.5-mod-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/openmrs/directwebremoting/dwr/2.0.5-mod/dwr-2.0.5-mod-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

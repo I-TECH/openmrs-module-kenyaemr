@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.openmrs.simpleframework:simple-xml:1.6.1-mod">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/openmrs/simpleframework/simple-xml/1.6.1-mod/simple-xml-1.6.1-mod.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/openmrs/simpleframework/simple-xml/1.6.1-mod/simple-xml-1.6.1-mod-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/openmrs/simpleframework/simple-xml/1.6.1-mod/simple-xml-1.6.1-mod-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

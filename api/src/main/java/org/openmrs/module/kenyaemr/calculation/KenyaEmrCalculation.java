@@ -332,6 +332,7 @@ public abstract class KenyaEmrCalculation extends BaseCalculation implements Pat
     	DateTime d1 = new DateTime(date.getTime());
     	DateTime d2 = new DateTime(ctx.getNow().getTime());
     	return Days.daysBetween(d1, d2).getDays();
+
     }
 	
 }

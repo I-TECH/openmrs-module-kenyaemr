@@ -46,20 +46,5 @@
 		/* Below here are placeholders that should be removed when these
 		reports are implemented */
 	%>
-	${ ui.includeFragment("widget/button", [
-			iconProvider: "uilibrary",
-			icon: "user_warning_32.png",
-			label: "Missed Appointments or Defaulted",
-			onClick: """window.alert("Not Yet Implemented")"""
-		]) }
-	<br/>
-	
-	${ ui.includeFragment("widget/button", [
-			iconProvider: "uilibrary",
-			icon: "user_warning_32.png",
-			label: "Declining CD4",
-			onClick: """window.alert("Not Yet Implemented")"""
-		]) }
-	<br/>
 	
 </fieldset>
