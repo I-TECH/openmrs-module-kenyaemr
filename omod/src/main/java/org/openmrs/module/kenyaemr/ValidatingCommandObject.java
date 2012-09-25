@@ -14,9 +14,12 @@
 package org.openmrs.module.kenyaemr;
 
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.openmrs.OpenmrsData;
+import org.openmrs.PersonAttribute;
 import org.openmrs.api.context.Context;
 import org.openmrs.util.OpenmrsUtil;
 import org.openmrs.validator.ValidateUtil;
@@ -96,5 +99,15 @@ public abstract class ValidatingCommandObject implements Validator {
 		}
 		return false;
 	}
+
+    public void requireNumericsOnly(PersonAttribute telephoneContact,Errors errors, String field) {
+
+        Pattern pattern = Pattern.compile("\\d{10}");
+        Matcher matcher = pattern.matcher(telephoneContact.getValue().trim());
+
+        if(!(matcher.matches())){
+            errors.rejectValue("telephoneContact","Phone Number can not exceed ten(10) digits and should be positve numbers only");
+        }
+    }
 	
 }
