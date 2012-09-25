@@ -38,7 +38,6 @@ public class DeclineCD4Calculation extends KenyaEmrCalculation {
             ObsResult latest = (ObsResult) lastObs.get(ptId);
             ObsResult first = (ObsResult) firstObs.get(ptId);
 
-              // if(r.getValue().getValueNumeric() <f.getValue().getValueNumeric()){
                 boolean declining=false;
                 if(inHivProgram.contains(ptId) && alive.contains(ptId) && (!(latest.isEmpty()) || !(first.isEmpty()))){
 
