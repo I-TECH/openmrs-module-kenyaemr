@@ -74,40 +74,11 @@ public abstract class PatientAlertListReportManager implements PatientListReport
 	 * @param dsd this will be modified by having columns added
 	 */
 	public void addColumns(PatientDataSetDefinition dsd) {
-		Concept concept = Context.getConceptService().getConceptByUuid(MetadataConstants.CD4_CONCEPT_UUID);
-		Calendar calendar = Calendar.getInstance();
-		calendar.add( Calendar.DATE, -180);
-		Date onOrBefore= calendar.getTime();
-		
-		
 		
 		dsd.addColumn("HIV Unique ID", new PatientIdentifierDataDefinition("HIV Unique ID", Context.getPatientService().getPatientIdentifierTypeByUuid(MetadataConstants.UNIQUE_PATIENT_NUMBER_UUID)), "");
 		dsd.addColumn("Patient Name", new PreferredNameDataDefinition(), "");
 		dsd.addColumn("Age", new AgeDataDefinition(), "");
 		dsd.addColumn("Sex", new GenderDataDefinition(), "");		
-		
-		if(alertCalculation.getShortMessage()=="Declining CD4"){
-			dsd.addColumn("Previous CD4",new ObsForPersonDataDefinition("Previous CD4", TimeQualifier.LAST, concept, onOrBefore, null),"",new DataConverter() {
-				
-				@Override
-				public Class<?> getInputDataType() {
-					return Obs.class;
-				}
-				
-				@Override
-				public Class<?> getDataType() {
-					return Double.class;
-				}
-				
-				@Override
-				public Object convert(Object input) {
-					return  ((Obs) input).getValueNumeric();
-				}
-			});
-			dsd.addColumn("Current CD4",new ObsForPersonDataDefinition("Current CD4", TimeQualifier.LAST, concept, new Date(), null),"");
-			dsd.addColumn("% Decline", new ObsForPersonDataDefinition("Current CD4", TimeQualifier.LAST, concept, new Date(), null),"");
-		}
-		
 		dsd.addColumn("View", new PatientIdDataDefinition(), "", new DataConverter() {
 			
 			@Override
