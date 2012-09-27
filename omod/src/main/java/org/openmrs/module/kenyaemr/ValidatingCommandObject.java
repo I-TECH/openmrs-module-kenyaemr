@@ -106,7 +106,7 @@ public abstract class ValidatingCommandObject implements Validator {
         Matcher matcher = pattern.matcher(telephoneContact.getValue().trim());
 
         if(!(matcher.matches())){
-            errors.rejectValue("telephoneContact","Phone Number can not exceed ten(10) digits and should be positve numbers only");
+            errors.rejectValue("telephoneContact","Phone Number can not exceed ten(10) digits and should be positve numbers only",field);
         }
     }
 	

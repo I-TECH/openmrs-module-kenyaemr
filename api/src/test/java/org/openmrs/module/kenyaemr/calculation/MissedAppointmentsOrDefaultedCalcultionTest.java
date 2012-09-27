@@ -16,6 +16,7 @@ import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -24,7 +25,7 @@ import java.util.List;
  * User: ningosi
  * Date: 9/21/12
  * Time: 11:46 AM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class MissedAppointmentsOrDefaultedCalcultionTest extends BaseModuleContextSensitiveTest {
     @Before
@@ -37,13 +38,17 @@ public class MissedAppointmentsOrDefaultedCalcultionTest extends BaseModuleConte
      * @verifies determine whether patients have a Missed appointments or defaulted
      */
     @Test
-    public void evaluate_shouldDetermineWhetherPatientsNeedACD4() throws Exception {
-        ConceptService cs = Context.getConceptService();
-        Concept cd4 = cs.getConcept(5497);
+    public void evaluate_shouldDetermineWhetherPatientsWhoMissedAppointmentsOrDefaulted() throws Exception {
+    	ConceptService cs = Context.getConceptService();
+        Concept returnVisit = cs.getConcept(5096);
+        
+		// then we expect a patient to have visitited  10 days ago
+        Calendar calendar = Calendar.getInstance();
+		calendar.add( Calendar.DATE, -10);
 
-        // give one of these people a recent CD4
-        Obs obs = new Obs(Context.getPatientService().getPatient(7), cd4, new Date(), null);
-        obs.setValueNumeric(123d);
+        // then we expect a patient to visit 10 days
+        Obs obs = new Obs(Context.getPatientService().getPatient(7), returnVisit, calendar.getTime(), null);
+        obs.setValueDatetime(calendar.getTime());
         Context.getObsService().saveObs(obs, null);
 
         // enroll 6 and 7 in the HIV Program
@@ -62,8 +67,8 @@ public class MissedAppointmentsOrDefaultedCalcultionTest extends BaseModuleConte
 
         List<Integer> ptIds = Arrays.asList(6, 7, 8);
         CalculationResultMap resultMap = new MissedAppointmentsOrDefaultedCalcultion().evaluate(ptIds, null, Context.getService(PatientCalculationService.class).createCalculationContext());
-        Assert.assertTrue((Boolean) resultMap.get(6).getValue());
-        Assert.assertFalse((Boolean) resultMap.get(7).getValue()); // has recent CD4
+        Assert.assertTrue((Boolean) resultMap.get(6).getValue());   //in HIV program but no missed visit date
+        Assert.assertFalse((Boolean) resultMap.get(7).getValue()); // has Missed visit
         Assert.assertFalse((Boolean) resultMap.get(8).getValue()); // not in HIV Program
     }
 }

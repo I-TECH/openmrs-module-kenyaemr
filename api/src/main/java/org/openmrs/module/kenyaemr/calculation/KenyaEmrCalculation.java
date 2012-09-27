@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.kenyaemr.calculation;
 
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -334,5 +335,19 @@ public abstract class KenyaEmrCalculation extends BaseCalculation implements Pat
     	return Days.daysBetween(d1, d2).getDays();
 
     }
+    
+    public static CalculationResultMap sixMonthsAgoCD4(String conceptUuid, Collection<Integer> patientIds, PatientCalculationContext calculationContext) {
+		Concept concept = getConcept(conceptUuid);
+		if (concept == null) {
+			throw new RuntimeException("Cannot find concept with uuid = " + conceptUuid);
+		}
+		// find date that is six months ago
+		Calendar calendar = Calendar.getInstance();
+		calendar.add(Calendar.DATE, -180 );
+		Date sixMonthsAgo=calendar.getTime();
+		
+		ObsForPersonDataDefinition def = new ObsForPersonDataDefinition("Six Months ago " + concept.getPreferredName(MetadataConstants.LOCALE), TimeQualifier.LAST, concept, sixMonthsAgo,null);
+		return evaluateWithReporting(def, patientIds, new HashMap<String, Object>(), null, calculationContext);
+	}
 	
 }

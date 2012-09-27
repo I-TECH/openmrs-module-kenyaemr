@@ -1,6 +1,7 @@
 package org.openmrs.module.kenyaemr.calculation;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 
@@ -8,7 +9,6 @@ import org.openmrs.Program;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
-import org.openmrs.calculation.result.ObsResult;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyaemr.MetadataConstants;
 
@@ -32,15 +32,18 @@ public class MissedAppointmentsOrDefaultedCalcultion extends KenyaEmrCalculation
         Set<Integer> inHivProgram = patientsThatPass(lastProgramEnrollment(hivProgram, cohort, context));
         Set<Integer> alive = alivePatients(cohort, context);
         CalculationResultMap lastObs = lastObs(MetadataConstants.RETURN_VISIT_DATE_CONCEPT_UUID, cohort, context);
+        
         CalculationResultMap ret = new CalculationResultMap();
         for (Integer ptId : cohort) {
             boolean missedVisit=false;
-            if(inHivProgram.contains(ptId) && alive.contains(ptId)){
-
-                    ObsResult resultsDate = (ObsResult) lastObs.get(ptId);
-
-                //to find if there are difference between the next visit day and today
-                     missedVisit = (daysSince(resultsDate.getDateOfResult(),context)) > 0;
+            if(inHivProgram.contains(ptId) && alive.contains(ptId) && (!(lastObs.isEmpty()))){
+            		try{
+                     Date returnDate=obsResultForPatient(lastObs,ptId).getValueDatetime();
+                     missedVisit = (daysSince(returnDate,context)) > 0;
+            		}
+            		catch(Exception ex){
+            			ex.toString();
+            		}
             }
                 ret.put(ptId, new SimpleResult(missedVisit, this, context));
 

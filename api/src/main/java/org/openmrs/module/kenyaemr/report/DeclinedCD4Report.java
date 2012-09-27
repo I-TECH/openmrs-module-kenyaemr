@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
  * User: ningosi
  * Date: 9/20/12
  * Time: 12:59 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 @Component
 public class DeclinedCD4Report extends PatientAlertListReportManager{

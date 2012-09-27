@@ -1,16 +1,18 @@
 package org.openmrs.module.kenyaemr.calculation;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+
+import org.openmrs.Obs;
 import org.openmrs.Program;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
-import org.openmrs.calculation.result.ObsResult;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyaemr.MetadataConstants;
-
-import java.util.Collection;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -31,24 +33,26 @@ public class DeclineCD4Calculation extends KenyaEmrCalculation {
         Program hivProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.HIV_PROGRAM_UUID);
         Set<Integer> inHivProgram = patientsThatPass(lastProgramEnrollment(hivProgram, cohort, context));
         Set<Integer> alive = alivePatients(cohort, context);
-        CalculationResultMap firstObs = firstObs(MetadataConstants.CD4_CONCEPT_UUID, cohort, context);
-        CalculationResultMap lastObs = lastObs(MetadataConstants.CD4_CONCEPT_UUID, cohort, context);
+        CalculationResultMap lastCD4 = lastObs(MetadataConstants.CD4_CONCEPT_UUID, cohort, context);
+        CalculationResultMap cd4SixMonthsAgo=sixMonthsAgoCD4(MetadataConstants.CD4_CONCEPT_UUID, cohort, context);
         CalculationResultMap ret = new CalculationResultMap();
         for (Integer ptId : cohort) {
-            ObsResult latest = (ObsResult) lastObs.get(ptId);
-            ObsResult first = (ObsResult) firstObs.get(ptId);
-
                 boolean declining=false;
-                if(inHivProgram.contains(ptId) && alive.contains(ptId) && (!(latest.isEmpty()) || !(first.isEmpty()))){
-
-                    declining =latest.getValue().getValueNumeric() < first.getValue().getValueNumeric();
-
+                Double latestCD4=null;
+                Double sixMonthsAgoCD4=null;
+                if(inHivProgram.contains(ptId) && alive.contains(ptId) && (!(lastCD4.isEmpty()))){
+                	
+                	latestCD4=numericObsResultForPatient(lastCD4, ptId);
+                	sixMonthsAgoCD4=numericObsResultForPatient(cd4SixMonthsAgo, ptId);
+                	
+                if(latestCD4 !=null && sixMonthsAgoCD4 !=null){
+                	declining =latestCD4 < sixMonthsAgoCD4;
                     ret.put(ptId, new SimpleResult(declining, this, context));
-
-               }
-
-        }
-
-        return ret;
+            	}
+              }
+        
     }
+               return ret;
+}
+    
 }

@@ -16,6 +16,7 @@ import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -24,7 +25,7 @@ import java.util.List;
  * User: ningosi
  * Date: 9/20/12
  * Time: 1:05 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class DeclineCD4CalculationTest extends BaseModuleContextSensitiveTest {
 
@@ -38,14 +39,24 @@ public class DeclineCD4CalculationTest extends BaseModuleContextSensitiveTest {
      * @verifies determine whether patients have a decline in CD4
      */
     @Test
-    public void evaluate_shouldDetermineWhetherPatientsNeedACD4() throws Exception {
+    public void evaluate_shouldDetermineWhetherPatientsHasDeclinedCD4() throws Exception {
         ConceptService cs = Context.getConceptService();
         Concept cd4 = cs.getConcept(5497);
 
-        // give one of these people a recent CD4
-        Obs obs = new Obs(Context.getPatientService().getPatient(7), cd4, new Date(), null);
-        obs.setValueNumeric(123d);
-        Context.getObsService().saveObs(obs, null);
+        // give one of these people  CD4 200 days ago
+        
+        Calendar calendar = Calendar.getInstance();
+		calendar.add( Calendar.DATE, -200);
+		
+        Obs obs180DaysAgo = new Obs(Context.getPatientService().getPatient(7), cd4, calendar.getTime(), null);
+        obs180DaysAgo.setValueNumeric(123d);
+        Context.getObsService().saveObs(obs180DaysAgo, null);
+        
+        //give the same patient recent cd4
+        Obs obsRecent = new Obs(Context.getPatientService().getPatient(7), cd4, new Date(), null);
+        obsRecent.setValueNumeric(120d);
+        Context.getObsService().saveObs(obsRecent, null);
+        
 
         // enroll 6 and 7 in the HIV Program
         PatientService ps = Context.getPatientService();
@@ -63,8 +74,8 @@ public class DeclineCD4CalculationTest extends BaseModuleContextSensitiveTest {
 
         List<Integer> ptIds = Arrays.asList(6, 7, 8);
         CalculationResultMap resultMap = new DeclineCD4Calculation().evaluate(ptIds, null, Context.getService(PatientCalculationService.class).createCalculationContext());
-        Assert.assertTrue((Boolean) resultMap.get(6).getValue());
-        Assert.assertFalse((Boolean) resultMap.get(7).getValue()); // has recent CD4
+        Assert.assertTrue((Boolean) resultMap.get(6).getValue());  //in Hiv program but without cd4 i.e needs cd4
+        Assert.assertFalse((Boolean) resultMap.get(7).getValue()); // has decline in  CD4
         Assert.assertFalse((Boolean) resultMap.get(8).getValue()); // not in HIV Program
     }
 }
