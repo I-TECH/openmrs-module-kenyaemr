@@ -13,17 +13,23 @@
  */
 package org.openmrs.module.kenyaemr.report;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import org.openmrs.Concept;
+import org.openmrs.Obs;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.kenyaemr.calculation.KenyaEmrCalculation;
+import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.data.converter.DataConverter;
 import org.openmrs.module.reporting.data.patient.definition.PatientIdDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.PatientIdentifierDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.AgeDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.GenderDataDefinition;
+import org.openmrs.module.reporting.data.person.definition.ObsForPersonDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.PreferredNameDataDefinition;
 import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
 import org.openmrs.module.reporting.definition.DefinitionSummary;
@@ -68,10 +74,40 @@ public abstract class PatientAlertListReportManager implements PatientListReport
 	 * @param dsd this will be modified by having columns added
 	 */
 	public void addColumns(PatientDataSetDefinition dsd) {
+		Concept concept = Context.getConceptService().getConceptByUuid(MetadataConstants.CD4_CONCEPT_UUID);
+		Calendar calendar = Calendar.getInstance();
+		calendar.add( Calendar.DATE, -180);
+		Date onOrBefore= calendar.getTime();
+		
+		
+		
 		dsd.addColumn("HIV Unique ID", new PatientIdentifierDataDefinition("HIV Unique ID", Context.getPatientService().getPatientIdentifierTypeByUuid(MetadataConstants.UNIQUE_PATIENT_NUMBER_UUID)), "");
 		dsd.addColumn("Patient Name", new PreferredNameDataDefinition(), "");
 		dsd.addColumn("Age", new AgeDataDefinition(), "");
-		dsd.addColumn("Sex", new GenderDataDefinition(), "");
+		dsd.addColumn("Sex", new GenderDataDefinition(), "");		
+		
+		if(alertCalculation.getShortMessage()=="Declining CD4"){
+			dsd.addColumn("Previous CD4",new ObsForPersonDataDefinition("Previous CD4", TimeQualifier.LAST, concept, onOrBefore, null),"",new DataConverter() {
+				
+				@Override
+				public Class<?> getInputDataType() {
+					return Obs.class;
+				}
+				
+				@Override
+				public Class<?> getDataType() {
+					return Double.class;
+				}
+				
+				@Override
+				public Object convert(Object input) {
+					return  ((Obs) input).getValueNumeric();
+				}
+			});
+			dsd.addColumn("Current CD4",new ObsForPersonDataDefinition("Current CD4", TimeQualifier.LAST, concept, new Date(), null),"");
+			dsd.addColumn("% Decline", new ObsForPersonDataDefinition("Current CD4", TimeQualifier.LAST, concept, new Date(), null),"");
+		}
+		
 		dsd.addColumn("View", new PatientIdDataDefinition(), "", new DataConverter() {
 			
 			@Override

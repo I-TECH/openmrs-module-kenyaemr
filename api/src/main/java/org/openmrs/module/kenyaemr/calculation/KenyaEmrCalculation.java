@@ -346,8 +346,10 @@ public abstract class KenyaEmrCalculation extends BaseCalculation implements Pat
 		calendar.add(Calendar.DATE, -180 );
 		Date sixMonthsAgo=calendar.getTime();
 		
+		
 		ObsForPersonDataDefinition def = new ObsForPersonDataDefinition("Six Months ago " + concept.getPreferredName(MetadataConstants.LOCALE), TimeQualifier.LAST, concept, sixMonthsAgo,null);
 		return evaluateWithReporting(def, patientIds, new HashMap<String, Object>(), null, calculationContext);
+		
 	}
 	
 }
