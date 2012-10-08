@@ -49,8 +49,13 @@ public class MissedAppointmentsOrDefaultedReportTest extends BaseModuleContextSe
 
         EvaluationContext ec = new EvaluationContext();
         SimpleDateFormat ymd = new SimpleDateFormat("yyyy-MM-dd");
+        try{
         ReportData data = Context.getService(ReportDefinitionService.class).evaluate(rd, ec);
         printOutput(data);
+        }
+        catch(Exception e){
+        	e.toString();
+        }
     }
 
     private void printOutput(ReportData data) throws Exception {
