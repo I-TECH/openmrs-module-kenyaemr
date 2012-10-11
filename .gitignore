@@ -10,4 +10,6 @@ omod/.classpath
 omod/.project
 omod/.settings
 omod/target
-api/src/main/.DS_Store
+
+*.DS_Store
+*.iml
