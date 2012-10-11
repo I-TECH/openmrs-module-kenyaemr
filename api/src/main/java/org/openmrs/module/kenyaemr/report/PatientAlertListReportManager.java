@@ -16,6 +16,7 @@ package org.openmrs.module.kenyaemr.report;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import org.openmrs.PatientProgram;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.kenyaemr.calculation.KenyaEmrCalculation;
@@ -87,6 +88,7 @@ public abstract class PatientAlertListReportManager implements PatientListReport
 			
 			@Override
 			public Object convert(Object input) {
+				
 				return "<a href=\"medicalChartViewPatient.page?patientId=" + input + "\">View</a>";
 			}
 		});

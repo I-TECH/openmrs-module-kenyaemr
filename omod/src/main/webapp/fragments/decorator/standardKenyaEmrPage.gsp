@@ -8,6 +8,7 @@
 	
 	ui.includeJavascript("uiframework.js")
 	ui.includeJavascript("kenyaemr.js")
+	ui.includeJavascript("highcharts.js")
 	
 	if (config.patient) {
 		config.context = "patientId=${ patient.id }"

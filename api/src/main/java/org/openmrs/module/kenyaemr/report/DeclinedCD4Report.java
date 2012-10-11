@@ -54,7 +54,7 @@ public class DeclinedCD4Report extends PatientAlertListReportManager{
 					return  ((Obs) input).getValueNumeric();
 				}
 			});
-			dsd.addColumn("Current CD4",new ObsForPersonDataDefinition("Current CD4", TimeQualifier.LAST, concept, null,new Date()),"",new DataConverter() {
+			dsd.addColumn("Current CD4",new ObsForPersonDataDefinition("Current CD4", TimeQualifier.LAST, concept,new Date(),null),"",new DataConverter() {
 				
 				@Override
 				public Class<?> getInputDataType() {
