@@ -4,13 +4,12 @@
 	
 	ui.includeJavascript("uilibrary", "jquery.js")
 	ui.includeJavascript("uilibrary", "jquery-ui.js")
-	ui.includeJavascript("kenyaemr","highcharts.js")
 	ui.includeJavascript("kenyaemr", "jquery-ui-timepicker-addon-mod.js")
 	
 	ui.includeJavascript("uiframework.js")
 	ui.includeJavascript("kenyaemr.js")
-	
-	
+	ui.includeJavascript("highcharts.js")
+	ui.includeJavascript("exporting.js")
 	if (config.patient) {
 		config.context = "patientId=${ patient.id }"
 	}

@@ -46,6 +46,7 @@ private Boolean configured = Boolean.FALSE;
         Set<String> ret = new LinkedHashSet<String>();
         ret.add("HIV");
         ret.add("summary");
+        
         return ret;
     }
     /**
@@ -56,7 +57,9 @@ private Boolean configured = Boolean.FALSE;
     	DefinitionSummary ret = new DefinitionSummary();
     	ret.setName(NAME_PREFIX);
     	ret.setUuid(getClass().getName());
+    	System.out.println("THE DEFINITIONS ARE "+ret.getDescription());
     	return ret;
+    	
     }
     @Override
     public byte[] getExcelTemplate() {
@@ -76,7 +79,7 @@ private Boolean configured = Boolean.FALSE;
     @Override
     public String getExcelFilename(EvaluationContext ec) {
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM");
-        return NAME_PREFIX + " " + df.format(ec.getParameterValue("startDate")) + ".xls";
+        return NAME_PREFIX  + ".xls";
     }
     /**
      * @return the reportDefinition

@@ -55,8 +55,7 @@
 		${ ui.includeFragment("widget/button", [
 					iconProvider: "uilibrary",
 					icon: "user_warning_32.png",
-					label: it.name,
-					href: ui.pageLink("reportsRunPatientSummaryReport", [ manager: it.manager ])
+					label: it.name
 		]) }
 		<br/>
 	<% } %>
