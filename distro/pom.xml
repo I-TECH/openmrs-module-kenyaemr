@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
@@ -39,18 +40,30 @@
 								<configuration>
 									<target>
 										<get dest="target/distro" verbose="true" usetimestamp="true">
-											<url url="https://modules.openmrs.org/modules/download/uiframework/uiframework-${uiframeworkVersion}.omod" />
-											<url url="https://modules.openmrs.org/modules/download/uilibrary/uilibrary-${uilibraryVersion}.omod" />
-											<url url="https://modules.openmrs.org/modules/download/appframework/appframework-${appframeworkVersion}.omod" />
-											<url url="https://modules.openmrs.org/modules/download/htmlformentry19ext/htmlformentry19ext-${htmlformentry19extVersion}.omod" />
-											<url url="https://modules.openmrs.org/modules/download/reporting/reporting-${reportingVersion}.omod" />
-											<url url="https://modules.openmrs.org/modules/download/htmlwidgets/htmlwidgets-${htmlwidgetsVersion}.omod" />
-											<url url="https://modules.openmrs.org/modules/download/serialization.xstream/serialization.xstream-${serializationxstreamVersion}.omod" />
-											<url url="https://modules.openmrs.org/modules/download/metadatasharing/metadatasharing-${metadatasharingVersion}.omod" />
-											<url url="https://modules.openmrs.org/modules/download/idgen/idgen-${idgenVersion}.omod" />
-											<url url="https://modules.openmrs.org/modules/download/htmlformentry/htmlformentry-${htmlformentryVersion}.omod" />
-											<url url="https://modules.openmrs.org/modules/download/calculation/calculation-${calculationVersion}.omod" />
-											<url url="https://modules.openmrs.org/modules/download/moduledistro/moduledistro-${moduledistroVersion}.omod" />	
+											<url
+												url="https://modules.openmrs.org/modules/download/uiframework/uiframework-${uiframeworkVersion}.omod" />
+											<url
+												url="https://modules.openmrs.org/modules/download/uilibrary/uilibrary-${uilibraryVersion}.omod" />
+											<url
+												url="https://modules.openmrs.org/modules/download/appframework/appframework-${appframeworkVersion}.omod" />
+											<url
+												url="https://modules.openmrs.org/modules/download/htmlformentry19ext/htmlformentry19ext-${htmlformentry19extVersion}.omod" />
+											<url
+												url="https://modules.openmrs.org/modules/download/reporting/reporting-${reportingVersion}.omod" />
+											<url
+												url="https://modules.openmrs.org/modules/download/htmlwidgets/htmlwidgets-${htmlwidgetsVersion}.omod" />
+											<url
+												url="https://modules.openmrs.org/modules/download/serialization.xstream/serialization.xstream-${serializationxstreamVersion}.omod" />
+											<url
+												url="https://modules.openmrs.org/modules/download/metadatasharing/metadatasharing-${metadatasharingVersion}.omod"/>
+											<url
+												url="https://modules.openmrs.org/modules/download/idgen/idgen-${idgenVersion}.omod" />
+											<url
+												url="https://modules.openmrs.org/modules/download/htmlformentry/htmlformentry-${htmlformentryVersion}.omod" />
+											<url
+												url="https://modules.openmrs.org/modules/download/calculation/calculation-${calculationVersion}.omod"/>
+											<url
+												url="https://modules.openmrs.org/modules/download/moduledistro/moduledistro-${moduledistroVersion}.omod"/>	
 										</get>
 									</target>
 								</configuration>
