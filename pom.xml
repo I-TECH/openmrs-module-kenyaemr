@@ -47,7 +47,7 @@
 		<reportingVersion>0.7.2.1</reportingVersion>
 		<htmlwidgetsVersion>1.6.4</htmlwidgetsVersion>
 		<serializationxstreamVersion>0.2.7</serializationxstreamVersion>
-		<idgenVersion>2.3</idgenVersion>
+		<idgenVersion>2.1</idgenVersion>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
@@ -56,32 +56,31 @@
 
 		<dependency>
 			<groupId>org.openmrs.module</groupId>
-			<artifactId>uiframework-omod</artifactId>
+			<artifactId>uiframework-api</artifactId>
 			<version>${uiframeworkVersion}</version>
 			<scope>provided</scope>
 		</dependency>
 
-        <dependency>
-            <groupId>org.openmrs.module</groupId>
-            <artifactId>uilibrary-omod</artifactId>
-            <version>${uilibraryVersion}</version>
-            <scope>provided</scope>
-        </dependency>
-
 		<dependency>
 			<groupId>org.openmrs.module</groupId>
-			<artifactId>appframework-omod</artifactId>
+			<artifactId>appframework-api</artifactId>
 			<version>${appframeworkVersion}</version>
 			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.openmrs.module</groupId>
-			<artifactId>metadatasharing-omod</artifactId>
+			<artifactId>metadatasharing-api</artifactId>
 			<version>${metadatasharingVersion}</version>
 			<scope>provided</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>org.openmrs.module</groupId>
+			<artifactId>htmlformentry-api</artifactId>
+			<version>${htmlformentryVersion}</version>
+			<scope>provided</scope>
+		</dependency>
 		<dependency>
 			<groupId>org.openmrs.module</groupId>
 			<artifactId>htmlformentry-omod</artifactId>
@@ -89,55 +88,56 @@
 			<scope>provided</scope>
 		</dependency>
 
-        <dependency>
-            <groupId>org.openmrs.module</groupId>
-            <artifactId>htmlformentry19ext-omod</artifactId>
-            <version>${htmlformentry19extVersion}</version>
-            <scope>provided</scope>
-        </dependency>
-
 		<dependency>
 			<groupId>org.openmrs.module</groupId>
-			<artifactId>moduledistro-omod</artifactId>
+			<artifactId>moduledistro-api</artifactId>
 			<version>${moduledistroVersion}</version>
 			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.openmrs.module</groupId>
-			<artifactId>calculation-omod</artifactId>
+			<artifactId>calculation-api</artifactId>
 			<version>${calculationVersion}</version>
 			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.openmrs.module</groupId>
-			<artifactId>reporting-omod</artifactId>
+			<artifactId>reporting-api</artifactId>
 			<version>${reportingVersion}</version>
 			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.openmrs.module</groupId>
-			<artifactId>htmlwidgets-omod</artifactId>
+			<artifactId>htmlwidgets-api</artifactId>
 			<version>${htmlwidgetsVersion}</version>
 			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.openmrs.module</groupId>
-			<artifactId>serialization.xstream-omod</artifactId>
+			<artifactId>serialization.xstream-api</artifactId>
 			<version>${serializationxstreamVersion}</version>
 			<scope>provided</scope>
-            <type>omod</type>
 		</dependency>
 		
 		<dependency>
 			<groupId>org.openmrs.module</groupId>
-			<artifactId>idgen-omod</artifactId>
+			<artifactId>idgen</artifactId>
 			<version>${idgenVersion}</version>
 			<scope>provided</scope>
 		</dependency>
+
+		<!--		
+		<dependency>
+			<groupId>org.openmrs.module</groupId>
+			<artifactId>idgen-api</artifactId>
+			<version>2.2</version>
+			<scope>provided</scope>
+		</dependency>
+		 -->
 
 		<!-- End OpenMRS modules -->
 
