@@ -13,11 +13,10 @@
  */
 package org.openmrs.module.kenyaemr.report;
 
-import java.util.ArrayList;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Set;
 
+import org.openmrs.PatientProgram;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.kenyaemr.calculation.KenyaEmrCalculation;
@@ -27,7 +26,6 @@ import org.openmrs.module.reporting.data.patient.definition.PatientIdentifierDat
 import org.openmrs.module.reporting.data.person.definition.AgeDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.GenderDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.PreferredNameDataDefinition;
-import org.openmrs.module.reporting.dataset.column.definition.RowPerObjectColumnDefinition;
 import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
 import org.openmrs.module.reporting.definition.DefinitionSummary;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
@@ -71,10 +69,11 @@ public abstract class PatientAlertListReportManager implements PatientListReport
 	 * @param dsd this will be modified by having columns added
 	 */
 	public void addColumns(PatientDataSetDefinition dsd) {
+		
 		dsd.addColumn("HIV Unique ID", new PatientIdentifierDataDefinition("HIV Unique ID", Context.getPatientService().getPatientIdentifierTypeByUuid(MetadataConstants.UNIQUE_PATIENT_NUMBER_UUID)), "");
 		dsd.addColumn("Patient Name", new PreferredNameDataDefinition(), "");
 		dsd.addColumn("Age", new AgeDataDefinition(), "");
-		dsd.addColumn("Sex", new GenderDataDefinition(), "");
+		dsd.addColumn("Sex", new GenderDataDefinition(), "");		
 		dsd.addColumn("View", new PatientIdDataDefinition(), "", new DataConverter() {
 			
 			@Override
@@ -89,6 +88,7 @@ public abstract class PatientAlertListReportManager implements PatientListReport
 			
 			@Override
 			public Object convert(Object input) {
+				
 				return "<a href=\"medicalChartViewPatient.page?patientId=" + input + "\">View</a>";
 			}
 		});
