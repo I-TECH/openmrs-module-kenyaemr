@@ -217,6 +217,7 @@ public class RegistrationEditPatientFragmentController {
 			if (StringUtils.isBlank(hivIdNumber.getIdentifier())) {
 				hivIdNumber = null;
 			}
+
 			
 			require(errors, "gender");
 			require(errors, "birthdate");
@@ -225,6 +226,7 @@ public class RegistrationEditPatientFragmentController {
 			validateField(errors, "personAddress");
 			validateField(errors, "patientClinicNumber");
 			validateField(errors, "hivIdNumber");
+            requireNumericsOnly(telephoneContact,errors,"telephoneContact");
 		}
 		
 		public Patient save() {

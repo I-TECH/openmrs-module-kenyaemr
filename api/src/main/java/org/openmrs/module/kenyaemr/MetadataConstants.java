@@ -102,5 +102,11 @@ public class MetadataConstants {
 	
 	// Other
 	public static final Locale LOCALE = Locale.UK;
+	// other additionals
+	public static final String DAPSONE 									= "74250AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+	public static final String MEDICATION_ORDERS 					    = "1282AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+	public static final String SULFAMETHOXAZOLE_TRIMETHOPRIM 			= "105281AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+	public static final String DAPSONE_PYRIMETHAMINE				    = "104409AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+	
 
 }

@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.kenyaemr.calculation;
 
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -217,6 +218,7 @@ public abstract class KenyaEmrCalculation extends BaseCalculation implements Pat
 		return o == null ? null : o.getValueNumeric();
 	}
 	
+	
 	public static Concept codedObsResultForPatient(CalculationResultMap results, Integer ptId) {
 		Obs o = obsResultForPatient(results, ptId);
 		return o == null ? null : o.getValueCoded();
@@ -332,6 +334,28 @@ public abstract class KenyaEmrCalculation extends BaseCalculation implements Pat
     	DateTime d1 = new DateTime(date.getTime());
     	DateTime d2 = new DateTime(ctx.getNow().getTime());
     	return Days.daysBetween(d1, d2).getDays();
+
     }
+    
+    public static CalculationResultMap sixMonthsAgoCD4(String conceptUuid, Collection<Integer> patientIds, PatientCalculationContext calculationContext) {
+		Concept concept = getConcept(conceptUuid);
+		if (concept == null) {
+			throw new RuntimeException("Cannot find concept with uuid = " + conceptUuid);
+		}
+		// find date that is six months ago
+		Calendar calendar = Calendar.getInstance();
+		calendar.add(Calendar.DATE, -180 );
+		Date sixMonthsAgo=calendar.getTime();
+		
+		
+		ObsForPersonDataDefinition def = new ObsForPersonDataDefinition("Six Months ago " + concept.getPreferredName(MetadataConstants.LOCALE), TimeQualifier.LAST, concept, sixMonthsAgo,null);
+		return evaluateWithReporting(def, patientIds, new HashMap<String, Object>(), null, calculationContext);
+		
+	}
+    public static CalculationResultMap allObs(String conceptUuid, Collection<Integer> patientIds, PatientCalculationContext calculationContext) {
+		Concept concept = getConcept(conceptUuid);
+		ObsForPersonDataDefinition def = new ObsForPersonDataDefinition("Any " + concept.getPreferredName(MetadataConstants.LOCALE), TimeQualifier.ANY, concept, calculationContext.getNow(), null);
+		return evaluateWithReporting(def, patientIds, new HashMap<String, Object>(), null, calculationContext);
+	}
 	
 }
