@@ -22,8 +22,8 @@
 	</organization>
 
 	<scm>
-		<connection>scm:git:git@github.com:I-TECH/openmrs-module-kenyaemr.git</connection>
-		<developerConnection>scm:git:git@github.com:I-TECH/openmrs-module-kenyaemr.git</developerConnection>
+		<connection>scm:git:git://github.com:I-TECH/openmrs-module-kenyaemr.git</connection>
+		<developerConnection>scm:git:git://github.com:I-TECH/openmrs-module-kenyaemr.git</developerConnection>
 		<url>https://github.com/I-TECH/openmrs-module-kenyaemr</url>
 	</scm>
 
