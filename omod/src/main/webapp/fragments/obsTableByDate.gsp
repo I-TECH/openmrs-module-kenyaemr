@@ -1,4 +1,5 @@
 <%
+    ui.includeJavascript("uilibrary", "jquery.js") // force this include to be first
     ui.includeJavascript("highcharts.js")
     ui.includeJavascript("exporting.js")
 %>
