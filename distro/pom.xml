@@ -51,6 +51,7 @@
 											<url url="https://modules.openmrs.org/modules/download/htmlformentry/htmlformentry-${htmlformentryVersion}.omod" />
 											<url url="https://modules.openmrs.org/modules/download/calculation/calculation-${calculationVersion}.omod" />
 											<url url="https://modules.openmrs.org/modules/download/moduledistro/moduledistro-${moduledistroVersion}.omod" />
+                                            <url url="https://modules.openmrs.org/modules/download/logic/logic-${logicVersion}.omod" />
 										</get>
 									</target>
 								</configuration>
