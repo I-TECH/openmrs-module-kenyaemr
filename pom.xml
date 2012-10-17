@@ -3,7 +3,7 @@
 
 	<groupId>org.openmrs.module</groupId>
 	<artifactId>kenyaemr</artifactId>
-	<version>2012.1.1</version>
+	<version>2012.1.2-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Kenya OpenMRS EMR Module</name>
 	<description>OpenMRS-based EMR for Kenya</description>
