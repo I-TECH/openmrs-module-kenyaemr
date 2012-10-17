@@ -69,32 +69,34 @@ public abstract class PatientAlertListReportManager implements PatientListReport
 	 * @param dsd this will be modified by having columns added
 	 */
 	public void addColumns(PatientDataSetDefinition dsd) {
-		
 		dsd.addColumn("HIV Unique ID", new PatientIdentifierDataDefinition("HIV Unique ID", Context.getPatientService().getPatientIdentifierTypeByUuid(MetadataConstants.UNIQUE_PATIENT_NUMBER_UUID)), "");
 		dsd.addColumn("Patient Name", new PreferredNameDataDefinition(), "");
 		dsd.addColumn("Age", new AgeDataDefinition(), "");
-		dsd.addColumn("Sex", new GenderDataDefinition(), "");		
-		dsd.addColumn("View", new PatientIdDataDefinition(), "", new DataConverter() {
-			
-			@Override
-			public Class<?> getInputDataType() {
-				return Integer.class;
-			}
-			
-			@Override
-			public Class<?> getDataType() {
-				return String.class;
-			}
-			
-			@Override
-			public Object convert(Object input) {
-				
-				return "<a href=\"medicalChartViewPatient.page?patientId=" + input + "\">View</a>";
-			}
-		});
-	}
-	
-	/**
+		dsd.addColumn("Sex", new GenderDataDefinition(), "");
+        addViewColumn(dsd);
+    }
+
+    protected void addViewColumn(PatientDataSetDefinition dsd) {
+        dsd.addColumn("View", new PatientIdDataDefinition(), "", new DataConverter() {
+
+            @Override
+            public Class<?> getInputDataType() {
+                return Integer.class;
+            }
+
+            @Override
+            public Class<?> getDataType() {
+                return String.class;
+            }
+
+            @Override
+            public Object convert(Object input) {
+                return "<a href=\"medicalChartViewPatient.page?patientId=" + input + "\">View</a>";
+            }
+        });
+    }
+
+    /**
 	 * @see org.openmrs.module.kenyaemr.report.ReportManager#getReportDefinitionSummary()
 	 */
 	@Override

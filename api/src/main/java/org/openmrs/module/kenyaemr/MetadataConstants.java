@@ -95,18 +95,15 @@ public class MetadataConstants {
 	public static final String WHO_STAGE_3_PEDS_CONCEPT_UUID = "1222AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 	public static final String WHO_STAGE_4_PEDS_CONCEPT_UUID = "1223AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 	public static final String RETURN_VISIT_DATE_CONCEPT_UUID = "5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
-	
-	// Programs
+    public static final String DAPSONE_CONCEPT_UUID = "74250AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+    public static final String MEDICATION_ORDERS_CONCEPT_UUID = "1282AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+    public static final String SULFAMETHOXAZOLE_TRIMETHOPRIM_CONCEPT_UUID = "105281AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+
+    // Programs
 	public static final String HIV_PROGRAM_UUID = "dfdc6d40-2f2f-463d-ba90-cc97350441a8";
 	public static final String TB_PROGRAM_UUID = "9f144a34-3a4a-44a9-8486-6b7af6cc64f6";
-	
-	// Other
+
+    // Other
 	public static final Locale LOCALE = Locale.UK;
-	// other additionals
-	public static final String DAPSONE 									= "74250AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
-	public static final String MEDICATION_ORDERS 					    = "1282AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
-	public static final String SULFAMETHOXAZOLE_TRIMETHOPRIM 			= "105281AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
-	public static final String DAPSONE_PYRIMETHAMINE				    = "104409AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
-	
 
 }

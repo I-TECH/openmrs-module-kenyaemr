@@ -23,15 +23,15 @@ public class WithoutCTXOrDapsoneCalculation extends KenyaEmrCalculation {
 		Program hivProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.HIV_PROGRAM_UUID);
 		Set<Integer> inHivProgram = patientsThatPass(lastProgramEnrollment(hivProgram, cohort, context));
 		Set<Integer> alive = alivePatients(cohort, context);
-		CalculationResultMap medicationorder = allObs(MetadataConstants.MEDICATION_ORDERS, cohort, context);
+		CalculationResultMap medicationorder = allObs(MetadataConstants.MEDICATION_ORDERS_CONCEPT_UUID, cohort, context);
 		CalculationResultMap ret = new CalculationResultMap();
 		
 		//for (Integer ptId : cohort) {
 			Object value=null;
 			Integer ptId=null;
 			Obs obs=null;
-			Integer dapsone=Context.getConceptService().getConceptByUuid(MetadataConstants.DAPSONE).getConceptId();
-			Integer ctx=Context.getConceptService().getConceptByUuid(MetadataConstants.SULFAMETHOXAZOLE_TRIMETHOPRIM).getConceptId();
+			Integer dapsone=Context.getConceptService().getConceptByUuid(MetadataConstants.DAPSONE_CONCEPT_UUID).getConceptId();
+			Integer ctx=Context.getConceptService().getConceptByUuid(MetadataConstants.SULFAMETHOXAZOLE_TRIMETHOPRIM_CONCEPT_UUID).getConceptId();
 			
 			//to cater for those without any medication orders
 			for (Integer ptIds : cohort) {

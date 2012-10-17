@@ -36,7 +36,7 @@ public class ReportsHomePageController {
 		
 		model.addAttribute("mohReports", getReportDefinitionSummaries("MoH"));
 		model.addAttribute("patientAlertReports", getReportDefinitionSummaries("alert"));
-		model.addAttribute("patientSummaryReports",getReportDefinitionSummaries("summary"));
+		model.addAttribute("patientSummaryReports", getReportDefinitionSummaries("summary"));
 	}
 
     private List<SimpleObject> getReportDefinitionSummaries(String tag) {

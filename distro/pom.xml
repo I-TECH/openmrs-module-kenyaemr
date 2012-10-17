@@ -64,9 +64,6 @@
 												url="https://modules.openmrs.org/modules/download/calculation/calculation-${calculationVersion}.omod"/>
 											<url
 												url="https://modules.openmrs.org/modules/download/moduledistro/moduledistro-${moduledistroVersion}.omod"/>
-											<url
-												url="https://modules.openmrs.org/modules/download/patientsummary/patientsummary-${patientsummaryVersion}.omod"/>	
-												
 										</get>
 									</target>
 								</configuration>

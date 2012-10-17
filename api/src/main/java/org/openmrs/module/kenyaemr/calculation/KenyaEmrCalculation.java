@@ -105,7 +105,28 @@ public abstract class KenyaEmrCalculation extends BaseCalculation implements Pat
 		ObsForPersonDataDefinition def = new ObsForPersonDataDefinition("First " + concept.getPreferredName(MetadataConstants.LOCALE), TimeQualifier.FIRST, concept, calculationContext.getNow(), null);
 		return evaluateWithReporting(def, patientIds, new HashMap<String, Object>(), null, calculationContext);
 	}
-	
+
+    /**
+     * @param conceptUuid
+     * @param atLeastDaysAgo
+     * @param patientIds
+     * @param calculationContext
+     * @return the most recent obs for the given concept that is at least atLeastDaysAgo
+     */
+    public static CalculationResultMap lastObsAtLeastDaysAgo(String conceptUuid, int atLeastDaysAgo, Collection<Integer> patientIds, PatientCalculationContext calculationContext) {
+        Concept concept = getConcept(conceptUuid);
+        if (concept == null) {
+            throw new RuntimeException("Cannot find concept with uuid = " + conceptUuid);
+        }
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(calculationContext.getNow());
+        calendar.add(Calendar.DATE, -atLeastDaysAgo);
+        Date lastPossibleTime = calendar.getTime();
+
+        ObsForPersonDataDefinition def = new ObsForPersonDataDefinition("Last " + concept.getPreferredName(MetadataConstants.LOCALE) + " at least " + atLeastDaysAgo + " days ago", TimeQualifier.LAST, concept, lastPossibleTime, null);
+        return evaluateWithReporting(def, patientIds, new HashMap<String, Object>(), null, calculationContext);
+    }
+
 	public static CalculationResultMap lastProgramEnrollment(Program program, Collection<Integer> patientIds, PatientCalculationContext calculationContext) {
 		ProgramEnrollmentsForPatientDataDefinition def = new ProgramEnrollmentsForPatientDataDefinition("Last " + program.getName() + " enrollment");
 		def.setWhichEnrollment(TimeQualifier.LAST);
@@ -113,14 +134,14 @@ public abstract class KenyaEmrCalculation extends BaseCalculation implements Pat
 		def.setActiveOnDate(calculationContext.getNow());
 		return evaluateWithReporting(def, patientIds, new HashMap<String, Object>(), null, calculationContext);
 	}
-	
+
 	public static CalculationResultMap activeDrugOrders(Concept medSet, Collection<Integer> cohort, PatientCalculationContext context) {
     	DrugOrdersForPatientDataDefinition def = new DrugOrdersForPatientDataDefinition("On " + medSet.getName().getName());
     	def.setDrugConceptSetsToInclude(Collections.singletonList(medSet));
     	def.setActiveOnDate(context.getNow());
     	return evaluateWithReporting(def, cohort, null, null, context);
     }
-	
+
 	public static CalculationResultMap allDrugOrders(Concept medSet, Collection<Integer> cohort,
 	                                   PatientCalculationContext context) {
 		DrugOrdersForPatientDataDefinition def = new DrugOrdersForPatientDataDefinition("First " + medSet.getName().getName() + " start date");
@@ -128,7 +149,7 @@ public abstract class KenyaEmrCalculation extends BaseCalculation implements Pat
     	def.setStartedOnOrBefore(context.getNow());
     	return evaluateWithReporting(def, cohort, null, null, context);
 	}
-	
+
 	public static CalculationResultMap firstDrugOrderStartDate(Concept medSet, Collection<Integer> cohort,
                                                  PatientCalculationContext context) {
 		CalculationResultMap orders = allDrugOrders(medSet, cohort, context);
@@ -147,11 +168,11 @@ public abstract class KenyaEmrCalculation extends BaseCalculation implements Pat
     	}
     	return ret;
 	}
-	
+
 	CalculationResultMap calculate(PatientCalculation calculation, Collection<Integer> patientIds, PatientCalculationContext calculationContext) {
 		return Context.getService(PatientCalculationService.class).evaluate(patientIds, calculation, calculationContext);
 	}
-	
+
 	public static Set<Integer> patientsThatPass(CalculationResultMap map) {
 		Set<Integer> ret = new HashSet<Integer>();
 		for (Map.Entry<Integer, CalculationResult> e : map.entrySet()) {
@@ -161,7 +182,7 @@ public abstract class KenyaEmrCalculation extends BaseCalculation implements Pat
 		}
 		return ret;
 	}
-	
+
 	public static Set<Integer> patientsThatDoNotPass(CalculationResultMap map) {
 		Set<Integer> ret = new HashSet<Integer>();
 		for (Map.Entry<Integer, CalculationResult> e : map.entrySet()) {
@@ -171,7 +192,8 @@ public abstract class KenyaEmrCalculation extends BaseCalculation implements Pat
 		}
 		return ret;
 	}
-	
+
+
     public static Set<Integer> datesWithinRange(CalculationResultMap map, Date minDateInclusive, Date maxDateInclusive) {
     	Set<Integer> ret = new HashSet<Integer>();
 		for (Map.Entry<Integer, CalculationResult> e : map.entrySet()) {
@@ -182,7 +204,7 @@ public abstract class KenyaEmrCalculation extends BaseCalculation implements Pat
 				// pass
 			}
 			if (result != null) {
-				if (OpenmrsUtil.compareWithNullAsEarliest(result, minDateInclusive) >= 0 && 
+				if (OpenmrsUtil.compareWithNullAsEarliest(result, minDateInclusive) >= 0 &&
 						OpenmrsUtil.compareWithNullAsLatest(result, maxDateInclusive) <= 0) {
 					ret.add(e.getKey());
 				}
@@ -191,7 +213,6 @@ public abstract class KenyaEmrCalculation extends BaseCalculation implements Pat
 		return ret;
     }
 
-	
 	public static Set<Integer> alivePatients(Collection<Integer> cohort, PatientCalculationContext context) {
 		CalculationResultMap map = evaluateWithReporting(new VitalStatusDataDefinition(), cohort, new HashMap<String, Object>(), null, context);
 		Set<Integer> ret = new HashSet<Integer>();
@@ -203,7 +224,7 @@ public abstract class KenyaEmrCalculation extends BaseCalculation implements Pat
 		}
 		return ret;
 	}
-	
+
 	public static Obs obsResultForPatient(CalculationResultMap results, Integer ptId) {
 		CalculationResult result = results.get(ptId);
 		if (result != null && !result.isEmpty()) {
@@ -212,26 +233,31 @@ public abstract class KenyaEmrCalculation extends BaseCalculation implements Pat
 		}
 		return null;
 	}
-	
+
+
 	public static Double numericObsResultForPatient(CalculationResultMap results, Integer ptId) {
 		Obs o = obsResultForPatient(results, ptId);
 		return o == null ? null : o.getValueNumeric();
 	}
-	
-	
+
 	public static Concept codedObsResultForPatient(CalculationResultMap results, Integer ptId) {
 		Obs o = obsResultForPatient(results, ptId);
 		return o == null ? null : o.getValueCoded();
-	}	
-	
+	}
+
+    public static Date datetimeObsResultForPatient(CalculationResultMap results, Integer ptId) {
+        Obs o = obsResultForPatient(results, ptId);
+        return o == null ? null : o.getValueDatetime();
+    }
+
 	public static Concept getConcept(String uuid) {
 		return Context.getConceptService().getConceptByUuid(uuid);
 	}
-	
+
 	public static CalculationResultMap evaluateWithReporting(DataDefinition def, Collection<Integer> patientIds, Map<String, Object> parameterValues, PatientCalculation calculation, PatientCalculationContext calculationContext) {
 		try {
 			EvaluationContext reportingContext = ensureReportingContext(calculationContext, patientIds, parameterValues);
-	
+
 			Map<Integer, Object> data;
 			if (def instanceof PersonDataDefinition) {
 				EvaluatedPersonData result = Context.getService(PersonDataService.class).evaluate((PersonDataDefinition) def, reportingContext);
@@ -251,7 +277,7 @@ public abstract class KenyaEmrCalculation extends BaseCalculation implements Pat
 			throw new APIException(ex);
 		}
 	}
-	
+
 	public static EvaluatedCohort evaluateWithReporting(CohortDefinition cd, Collection<Integer> inputCohort, Map<String, Object> parameterValues, PatientCalculationContext calculationContext) {
 		try {
 			EvaluationContext reportingContext = ensureReportingContext(calculationContext, inputCohort, parameterValues);
@@ -263,7 +289,7 @@ public abstract class KenyaEmrCalculation extends BaseCalculation implements Pat
 
     /**
      * Wraps a plain object in the appropriate calculation result subclass
-     * 
+     *
      * @param o
      * @param ctx
      * @return
@@ -287,10 +313,10 @@ public abstract class KenyaEmrCalculation extends BaseCalculation implements Pat
      * a new one if necessary.
      *
      * (Note: for now we never store this, and always return a new one)
-     * 
+     *
      * @param calculationContext
-     * @param patientIds 
-	 * @param parameterValues 
+     * @param patientIds
+	 * @param parameterValues
      * @return
      */
     public static EvaluationContext ensureReportingContext(PatientCalculationContext calculationContext, Collection<Integer> patientIds, Map<String, Object> parameterValues) {
@@ -301,10 +327,10 @@ public abstract class KenyaEmrCalculation extends BaseCalculation implements Pat
     	calculationContext.addToCache("reportingEvaluationContext", ret);
 	    return ret;
     }
-    
+
     /**
      * If map is missing entries for any of patientIds, they are added (with null result)
-     * 
+     *
      * @param map
      * @param patientIds
      */
@@ -315,10 +341,10 @@ public abstract class KenyaEmrCalculation extends BaseCalculation implements Pat
     		}
     	}
     }
-    
+
     /**
      * If map is missing entries for any of patientIds, they are added (with empty ListResults)
-     * 
+     *
      * @param map
      * @param patientIds
      */
@@ -329,32 +355,17 @@ public abstract class KenyaEmrCalculation extends BaseCalculation implements Pat
     		}
     	}
     }
-    
+
     int daysSince(Date date, CalculationContext ctx) {
     	DateTime d1 = new DateTime(date.getTime());
     	DateTime d2 = new DateTime(ctx.getNow().getTime());
     	return Days.daysBetween(d1, d2).getDays();
 
     }
-    
-    public static CalculationResultMap sixMonthsAgoCD4(String conceptUuid, Collection<Integer> patientIds, PatientCalculationContext calculationContext) {
-		Concept concept = getConcept(conceptUuid);
-		if (concept == null) {
-			throw new RuntimeException("Cannot find concept with uuid = " + conceptUuid);
-		}
-		// find date that is six months ago
-		Calendar calendar = Calendar.getInstance();
-		calendar.add(Calendar.DATE, -180 );
-		Date sixMonthsAgo=calendar.getTime();
-		
-		
-		ObsForPersonDataDefinition def = new ObsForPersonDataDefinition("Six Months ago " + concept.getPreferredName(MetadataConstants.LOCALE), TimeQualifier.LAST, concept, sixMonthsAgo,null);
-		return evaluateWithReporting(def, patientIds, new HashMap<String, Object>(), null, calculationContext);
-		
-	}
+
     public static CalculationResultMap allObs(String conceptUuid, Collection<Integer> patientIds, PatientCalculationContext calculationContext) {
 		Concept concept = getConcept(conceptUuid);
-		ObsForPersonDataDefinition def = new ObsForPersonDataDefinition("Any " + concept.getPreferredName(MetadataConstants.LOCALE), TimeQualifier.ANY, concept, calculationContext.getNow(), null);
+		ObsForPersonDataDefinition def = new ObsForPersonDataDefinition("All " + concept.getPreferredName(MetadataConstants.LOCALE), TimeQualifier.ANY, concept, calculationContext.getNow(), null);
 		return evaluateWithReporting(def, patientIds, new HashMap<String, Object>(), null, calculationContext);
 	}
 	

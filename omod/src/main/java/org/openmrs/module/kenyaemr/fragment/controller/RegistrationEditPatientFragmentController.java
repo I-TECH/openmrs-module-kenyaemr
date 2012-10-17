@@ -16,6 +16,8 @@ package org.openmrs.module.kenyaemr.fragment.controller;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.Concept;
@@ -218,7 +220,6 @@ public class RegistrationEditPatientFragmentController {
 				hivIdNumber = null;
 			}
 
-			
 			require(errors, "gender");
 			require(errors, "birthdate");
 			
@@ -226,9 +227,12 @@ public class RegistrationEditPatientFragmentController {
 			validateField(errors, "personAddress");
 			validateField(errors, "patientClinicNumber");
 			validateField(errors, "hivIdNumber");
-            requireNumericsOnly(telephoneContact,errors,"telephoneContact");
+
+            if (!telephoneContact.getValue().trim().matches("\\d{10}")) {
+                errors.rejectValue("telephoneContact", "Phone Number must be 10 digits long");
+            }
 		}
-		
+
 		public Patient save() {
 			PatientService ps = Context.getPatientService();
 			

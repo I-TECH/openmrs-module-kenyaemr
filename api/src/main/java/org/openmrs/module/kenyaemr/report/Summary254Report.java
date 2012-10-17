@@ -1,3 +1,16 @@
+/*
+ * The contents of this file are subject to the OpenMRS Public License
+ * Version 1.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ * http://license.openmrs.org
+ *
+ * Software distributed under the License is distributed on an "AS IS"
+ * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+ * License for the specific language governing rights and limitations
+ * under the License.
+ *
+ * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ */
 package org.openmrs.module.kenyaemr.report;
 
 import java.io.IOException;
@@ -25,21 +38,21 @@ import org.springframework.stereotype.Component;
 public class Summary254Report implements ReportManager {
 
     private Boolean configured = Boolean.FALSE;
-	
-	private final Log log = LogFactory.getLog(getClass());
-	
+
+    private final Log log = LogFactory.getLog(getClass());
+
     private static final String NAME_PREFIX = "MOH 257 Report";
-    
+
     ReportDefinition reportDefinition;
 
     Map<String, CohortDefinition> cohortDefinitions;
-    
+
     Map<String, CohortDefinitionDimension> dimensions;
-    
+
     Map<String, CohortIndicator> indicators;
-    
+
     Program hivProgram;
-    
+
     /**
      * @see org.openmrs.module.kenyaemr.report.ReportManager#getTags()
      */
@@ -51,28 +64,30 @@ public class Summary254Report implements ReportManager {
         ret.add("summary");
         return ret;
     }
+
     /**
      * @see org.openmrs.module.kenyaemr.report.ReportManager#getReportDefinitionSummary()
      */
     @Override
     public DefinitionSummary getReportDefinitionSummary() {
-    	DefinitionSummary ret = new DefinitionSummary();
-    	ret.setName(NAME_PREFIX);
-    	ret.setUuid(getClass().getName());
-    	return ret;
+        DefinitionSummary ret = new DefinitionSummary();
+        ret.setName(NAME_PREFIX);
+        ret.setUuid(getClass().getName());
+        return ret;
     }
+
     @Override
     public byte[] getExcelTemplate() {
-    	try {
-	    	InputStream is = OpenmrsClassLoader.getInstance().getResourceAsStream("Moh254Report.xls");
-	    	byte[] contents = IOUtils.toByteArray(is);
-			IOUtils.closeQuietly(is);
-			return contents;
-    	} catch (IOException ex) {
-    		throw new RuntimeException("Error loading excel template", ex);
-    	}
+        try {
+            InputStream is = OpenmrsClassLoader.getInstance().getResourceAsStream("Moh254Report.xls");
+            byte[] contents = IOUtils.toByteArray(is);
+            IOUtils.closeQuietly(is);
+            return contents;
+        } catch (IOException ex) {
+            throw new RuntimeException("Error loading excel template", ex);
+        }
     }
-    
+
     /**
      * @see org.openmrs.module.kenyaemr.report.ReportManager#getExcelFilename(org.openmrs.module.reporting.evaluation.EvaluationContext)
      */
@@ -81,18 +96,19 @@ public class Summary254Report implements ReportManager {
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM");
         return NAME_PREFIX + " " + df.format(ec.getParameterValue("startDate")) + ".xls";
     }
+
     /**
      * @return the reportDefinition
      */
     @Override
     public ReportDefinition getReportDefinition() {
-    	synchronized (configured) {
-	        if (!configured) {
-	        	//setup();
-	        	configured = true;
-	        }
+        synchronized (configured) {
+            if (!configured) {
+                //setup();
+                configured = true;
+            }
         }
-	    return reportDefinition;
+        return reportDefinition;
     }
 
 }

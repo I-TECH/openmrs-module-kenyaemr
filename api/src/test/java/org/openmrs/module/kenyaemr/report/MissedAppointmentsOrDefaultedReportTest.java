@@ -1,3 +1,16 @@
+/*
+ * The contents of this file are subject to the OpenMRS Public License
+ * Version 1.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ * http://license.openmrs.org
+ *
+ * Software distributed under the License is distributed on an "AS IS"
+ * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+ * License for the specific language governing rights and limitations
+ * under the License.
+ *
+ * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ */
 package org.openmrs.module.kenyaemr.report;
 
 import org.junit.Before;
@@ -17,19 +30,13 @@ import org.openmrs.test.BaseModuleContextSensitiveTest;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-/**
- * Created with IntelliJ IDEA.
- * User: ningosi
- * Date: 9/21/12
- * Time: 1:20 PM
- * To change this template use File | Settings | File Templates.
- */
 public class MissedAppointmentsOrDefaultedReportTest extends BaseModuleContextSensitiveTest {
 
     @Before
     public void beforeEachTest() throws Exception {
         executeDataSet("org/openmrs/module/kenyaemr/include/testData.xml");
     }
+
     @Test
     public void testReport() throws Exception {
         // enroll 6 and 7 in the HIV Program
@@ -49,12 +56,11 @@ public class MissedAppointmentsOrDefaultedReportTest extends BaseModuleContextSe
 
         EvaluationContext ec = new EvaluationContext();
         SimpleDateFormat ymd = new SimpleDateFormat("yyyy-MM-dd");
-        try{
-        ReportData data = Context.getService(ReportDefinitionService.class).evaluate(rd, ec);
-        printOutput(data);
-        }
-        catch(Exception e){
-        	e.toString();
+        try {
+            ReportData data = Context.getService(ReportDefinitionService.class).evaluate(rd, ec);
+            printOutput(data);
+        } catch (Exception e) {
+            e.toString();
         }
     }
 
@@ -62,4 +68,5 @@ public class MissedAppointmentsOrDefaultedReportTest extends BaseModuleContextSe
         System.out.println(data.getDefinition().getName());
         new TsvReportRenderer().render(data, null, System.out);
     }
+
 }

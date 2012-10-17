@@ -1,3 +1,8 @@
+<%
+    ui.includeJavascript("highcharts.js")
+    ui.includeJavascript("exporting.js")
+%>
+
 <table cellpadding="10px">
 	<tr>
 		<td valign="top">

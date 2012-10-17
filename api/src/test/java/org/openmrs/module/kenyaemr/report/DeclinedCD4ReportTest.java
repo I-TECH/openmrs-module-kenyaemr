@@ -1,3 +1,16 @@
+/*
+ * The contents of this file are subject to the OpenMRS Public License
+ * Version 1.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ * http://license.openmrs.org
+ *
+ * Software distributed under the License is distributed on an "AS IS"
+ * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+ * License for the specific language governing rights and limitations
+ * under the License.
+ *
+ * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ */
 package org.openmrs.module.kenyaemr.report;
 
 import org.junit.Before;
@@ -17,14 +30,7 @@ import org.openmrs.test.BaseModuleContextSensitiveTest;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-/**
- * Created with IntelliJ IDEA.
- * User: ningosi
- * Date: 9/20/12
- * Time: 1:19 PM
- * To change this template use File | Settings | File Templates.
- */
-public class DeclinedCD4ReportTest  extends BaseModuleContextSensitiveTest {
+public class DeclinedCD4ReportTest extends BaseModuleContextSensitiveTest {
 
     @Before
     public void beforeEachTest() throws Exception {
@@ -47,17 +53,15 @@ public class DeclinedCD4ReportTest  extends BaseModuleContextSensitiveTest {
 
         ReportManager report = new DeclinedCD4Report();
         ReportDefinition rd = report.getReportDefinition();
-        
-        
+
 
         EvaluationContext ec = new EvaluationContext();
         SimpleDateFormat ymd = new SimpleDateFormat("yyyy-MM-dd");
-        try{
-	       ReportData data = Context.getService(ReportDefinitionService.class).evaluate(rd, ec);
-	       printOutput(data);
-        }
-        catch(Exception e){
-        	e.toString();
+        try {
+            ReportData data = Context.getService(ReportDefinitionService.class).evaluate(rd, ec);
+            printOutput(data);
+        } catch (Exception e) {
+            e.toString();
         }
     }
 
@@ -65,4 +69,5 @@ public class DeclinedCD4ReportTest  extends BaseModuleContextSensitiveTest {
         System.out.println(data.getDefinition().getName());
         new TsvReportRenderer().render(data, null, System.out);
     }
+
 }

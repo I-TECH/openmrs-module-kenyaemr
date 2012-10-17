@@ -102,7 +102,6 @@ public class Moh731Report implements ReportManager {
     	DefinitionSummary ret = new DefinitionSummary();
     	ret.setName(NAME_PREFIX);
     	ret.setUuid(getClass().getName());
-    	System.out.println("THE DEFINITIONS ARE "+ret);
     	return ret;
     }
     

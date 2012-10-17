@@ -31,7 +31,7 @@ import org.springframework.validation.Validator;
  * Convenience base class for classes that can validate themselves, e.g. command objects
  */
 public abstract class ValidatingCommandObject implements Validator {
-	
+
 	/**
 	 * @see org.springframework.validation.Validator#supports(java.lang.Class)
 	 */
@@ -39,11 +39,11 @@ public abstract class ValidatingCommandObject implements Validator {
 	public boolean supports(Class<?> clazz) {
 		return getClass().isAssignableFrom(clazz);
 	}
-	
+
 	public void require(Errors errors, String field) {
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, field, "error.requiredField");
 	}
-	
+
 	public void requireAny(Errors errors, String... fields) {
 		for (String field : fields) {
 			Object value = errors.getFieldValue(field);
@@ -53,11 +53,11 @@ public abstract class ValidatingCommandObject implements Validator {
 		}
 		errors.rejectValue(fields[0], "error.requiredField");
 	}
-	
+
 	public void validateField(Errors errors, String field) {
 		validateField(errors, field, false);
 	}
-		
+
 	public void validateField(Errors errors, String field, boolean required) {
 		Object value = errors.getFieldValue(field);
 		if (value == null) {
@@ -71,7 +71,7 @@ public abstract class ValidatingCommandObject implements Validator {
 		ValidateUtil.validate(value, errors);
 		errors.popNestedPath();
 	}
-	
+
 	public void voidData(OpenmrsData data) {
 		if (!data.isVoided()) {
 			data.setVoided(true);
@@ -79,7 +79,7 @@ public abstract class ValidatingCommandObject implements Validator {
 			data.setVoidedBy(Context.getAuthenticatedUser());
 		}
 	}
-	
+
 	public boolean anyChanges(Object from, Object to, String... props) {
 		if (from == null && to == null) {
 			return false;
@@ -100,14 +100,4 @@ public abstract class ValidatingCommandObject implements Validator {
 		return false;
 	}
 
-    public void requireNumericsOnly(PersonAttribute telephoneContact,Errors errors, String field) {
-
-        Pattern pattern = Pattern.compile("\\d{10}");
-        Matcher matcher = pattern.matcher(telephoneContact.getValue().trim());
-
-        if(!(matcher.matches())){
-            errors.rejectValue("telephoneContact","Phone Number can not exceed ten(10) digits and should be positve numbers only",field);
-        }
-    }
-	
 }
