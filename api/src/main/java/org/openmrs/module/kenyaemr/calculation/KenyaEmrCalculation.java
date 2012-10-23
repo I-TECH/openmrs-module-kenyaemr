@@ -65,32 +65,45 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.util.OpenmrsUtil;
 
-
 /**
  * Base class for calculations we'll hand-write for this module.
  */
 public abstract class KenyaEmrCalculation extends BaseCalculation implements PatientCalculation {
 	
 	/**
-	 * @return A user-friendly name to display, e.g. the label to use if this calculation represents an alert
+	 * Gets a user-friendly name to display, e.g. the label to use if this calculation represents an alert
+     * @return the display name
 	 */
 	public abstract String getShortMessage();
 	
 	/**
-	 * The default implementation delegates to {@link #getShortMessage()}
-	 * 
-	 * @return A possibly-more-detailed message than {@link #getShortMessage()} 
+	 * Gets a possibly-more-detailed message than {@link #getShortMessage()}. The default implementation
+     * simply delegates to {@link #getShortMessage()}
+	 * @return the possibly-more-detailed message
 	 */
 	public String getDetailedMessage() {
 		return getShortMessage();
 	}
-	
-	CalculationResultMap ages(Collection<Integer> patientIds, PatientCalculationContext calculationContext) {
+
+    /**
+     * Evaluates ages of each patient
+     * @param patientIds the patient ids
+     * @param calculationContext the calculation context
+     * @return the ages in a calculation result map
+     */
+    public static CalculationResultMap ages(Collection<Integer> patientIds, PatientCalculationContext calculationContext) {
 		AgeDataDefinition def = new AgeDataDefinition();
 		def.setEffectiveDate(calculationContext.getNow());
 		return evaluateWithReporting(def, patientIds, new HashMap<String, Object>(), null, calculationContext);
 	}
-	
+
+    /**
+     * Evaluates the last obs of a given type of each patient
+     * @param conceptUuid the obs' concept UUID
+     * @param patientIds the patient ids
+     * @param calculationContext the calculation context
+     * @return the obss in a calculation result map
+     */
 	public static CalculationResultMap lastObs(String conceptUuid, Collection<Integer> patientIds, PatientCalculationContext calculationContext) {
 		Concept concept = getConcept(conceptUuid);
 		if (concept == null) {
@@ -99,7 +112,14 @@ public abstract class KenyaEmrCalculation extends BaseCalculation implements Pat
 		ObsForPersonDataDefinition def = new ObsForPersonDataDefinition("Last " + concept.getPreferredName(MetadataConstants.LOCALE), TimeQualifier.LAST, concept, calculationContext.getNow(), null);
 		return evaluateWithReporting(def, patientIds, new HashMap<String, Object>(), null, calculationContext);
 	}
-	
+
+    /**
+     * Evaluates the first obs of a given type of each patient
+     * @param conceptUuid the obs' concept UUID
+     * @param patientIds the patient ids
+     * @param calculationContext the calculation context
+     * @return the obss in a calculation result map
+     */
 	public static CalculationResultMap firstObs(String conceptUuid, Collection<Integer> patientIds, PatientCalculationContext calculationContext) {
 		Concept concept = getConcept(conceptUuid);
 		ObsForPersonDataDefinition def = new ObsForPersonDataDefinition("First " + concept.getPreferredName(MetadataConstants.LOCALE), TimeQualifier.FIRST, concept, calculationContext.getNow(), null);
@@ -107,11 +127,12 @@ public abstract class KenyaEmrCalculation extends BaseCalculation implements Pat
 	}
 
     /**
-     * @param conceptUuid
-     * @param atLeastDaysAgo
-     * @param patientIds
-     * @param calculationContext
-     * @return the most recent obs for the given concept that is at least atLeastDaysAgo
+     * Evaluates the last obs of a given type of each patient that occurred at least the given number of days ago
+     * @param conceptUuid the obs' concept UUID
+     * @param atLeastDaysAgo the number of days that must be elapsed between now and the observation
+     * @param patientIds the patient ids
+     * @param calculationContext the calculation context
+     * @return the obss in a calculation result map
      */
     public static CalculationResultMap lastObsAtLeastDaysAgo(String conceptUuid, int atLeastDaysAgo, Collection<Integer> patientIds, PatientCalculationContext calculationContext) {
         Concept concept = getConcept(conceptUuid);
@@ -127,6 +148,26 @@ public abstract class KenyaEmrCalculation extends BaseCalculation implements Pat
         return evaluateWithReporting(def, patientIds, new HashMap<String, Object>(), null, calculationContext);
     }
 
+    /**
+     * Evaluates all obs of a given type of each patient
+     * @param conceptUuid the obs' concept UUID
+     * @param patientIds the patient ids
+     * @param calculationContext the calculation context
+     * @return the obss in a calculation result map
+     */
+    protected static CalculationResultMap allObs(String conceptUuid, Collection<Integer> patientIds, PatientCalculationContext calculationContext) {
+        Concept concept = getConcept(conceptUuid);
+        ObsForPersonDataDefinition def = new ObsForPersonDataDefinition("All " + concept.getPreferredName(MetadataConstants.LOCALE), TimeQualifier.ANY, concept, calculationContext.getNow(), null);
+        return evaluateWithReporting(def, patientIds, new HashMap<String, Object>(), null, calculationContext);
+    }
+
+    /**
+     * Evaluates the last program on which each patient was enrolled
+     * @param program the program
+     * @param patientIds the patient ids
+     * @param calculationContext the calculation context
+     * @return the programs in a calculation result map
+     */
 	public static CalculationResultMap lastProgramEnrollment(Program program, Collection<Integer> patientIds, PatientCalculationContext calculationContext) {
 		ProgramEnrollmentsForPatientDataDefinition def = new ProgramEnrollmentsForPatientDataDefinition("Last " + program.getName() + " enrollment");
 		def.setWhichEnrollment(TimeQualifier.LAST);
@@ -135,24 +176,43 @@ public abstract class KenyaEmrCalculation extends BaseCalculation implements Pat
 		return evaluateWithReporting(def, patientIds, new HashMap<String, Object>(), null, calculationContext);
 	}
 
-	public static CalculationResultMap activeDrugOrders(Concept medSet, Collection<Integer> cohort, PatientCalculationContext context) {
+    /**
+     * Evaluates the active drug orders for each patient
+     * @param medSet the medset concept that specifies which drugs to include
+     * @param patientIds the patient ids
+     * @param calculationContext the calculation context
+     * @return the drug orders in a calculation result map
+     */
+	public static CalculationResultMap activeDrugOrders(Concept medSet, Collection<Integer> patientIds, PatientCalculationContext calculationContext) {
     	DrugOrdersForPatientDataDefinition def = new DrugOrdersForPatientDataDefinition("On " + medSet.getName().getName());
     	def.setDrugConceptSetsToInclude(Collections.singletonList(medSet));
-    	def.setActiveOnDate(context.getNow());
-    	return evaluateWithReporting(def, cohort, null, null, context);
+    	def.setActiveOnDate(calculationContext.getNow());
+    	return evaluateWithReporting(def, patientIds, null, null, calculationContext);
     }
 
-	public static CalculationResultMap allDrugOrders(Concept medSet, Collection<Integer> cohort,
-	                                   PatientCalculationContext context) {
+    /**
+     * Evaluates all drug orders for each patient
+     * @param medSet the medset concept that specifies which drugs to include
+     * @param patientIds the patient ids
+     * @param calculationContext the calculation context
+     * @return the drug orders in a calculation result map
+     */
+	public static CalculationResultMap allDrugOrders(Concept medSet, Collection<Integer> patientIds, PatientCalculationContext calculationContext) {
 		DrugOrdersForPatientDataDefinition def = new DrugOrdersForPatientDataDefinition("First " + medSet.getName().getName() + " start date");
     	def.setDrugConceptSetsToInclude(Collections.singletonList(medSet));
-    	def.setStartedOnOrBefore(context.getNow());
-    	return evaluateWithReporting(def, cohort, null, null, context);
+    	def.setStartedOnOrBefore(calculationContext.getNow());
+    	return evaluateWithReporting(def, patientIds, null, null, calculationContext);
 	}
 
-	public static CalculationResultMap firstDrugOrderStartDate(Concept medSet, Collection<Integer> cohort,
-                                                 PatientCalculationContext context) {
-		CalculationResultMap orders = allDrugOrders(medSet, cohort, context);
+    /**
+     * Evaluates the first start date of drug orders for each patient
+     * @param medSet the medset concept that specifies which drugs to include
+     * @param patientIds the patient ids
+     * @param calculationContext the calculation context
+     * @return the start dates in a calculation result map
+     */
+	public static CalculationResultMap firstDrugOrderStartDate(Concept medSet, Collection<Integer> patientIds, PatientCalculationContext calculationContext) {
+		CalculationResultMap orders = allDrugOrders(medSet, patientIds, calculationContext);
     	CalculationResultMap ret = new CalculationResultMap();
     	for (Map.Entry<Integer, CalculationResult> e : orders.entrySet()) {
     		Integer ptId = e.getKey();
@@ -169,13 +229,25 @@ public abstract class KenyaEmrCalculation extends BaseCalculation implements Pat
     	return ret;
 	}
 
-	CalculationResultMap calculate(PatientCalculation calculation, Collection<Integer> patientIds, PatientCalculationContext calculationContext) {
+    /**
+     * Evaluates a given calculation on each patient
+     * @param calculation the calculation
+     * @param patientIds the patient ids
+     * @param calculationContext the calculation context
+     * @return the calculation result map
+     */
+    protected static CalculationResultMap calculate(PatientCalculation calculation, Collection<Integer> patientIds, PatientCalculationContext calculationContext) {
 		return Context.getService(PatientCalculationService.class).evaluate(patientIds, calculation, calculationContext);
 	}
 
-	public static Set<Integer> patientsThatPass(CalculationResultMap map) {
+    /**
+     * Extracts patients from calculation result map with non-false/empty results
+     * @param results calculation result map
+     * @return the extracted patient ids
+     */
+    public static Set<Integer> patientsThatPass(CalculationResultMap results) {
 		Set<Integer> ret = new HashSet<Integer>();
-		for (Map.Entry<Integer, CalculationResult> e : map.entrySet()) {
+		for (Map.Entry<Integer, CalculationResult> e : results.entrySet()) {
 			if (ResultUtil.isTrue(e.getValue())) {
 				ret.add(e.getKey());
 			}
@@ -183,9 +255,14 @@ public abstract class KenyaEmrCalculation extends BaseCalculation implements Pat
 		return ret;
 	}
 
-	public static Set<Integer> patientsThatDoNotPass(CalculationResultMap map) {
+    /**
+     * Extracts patients from calculation result map with false/empty results
+     * @param results the calculation result map
+     * @return the extracted patient ids
+     */
+    public static Set<Integer> patientsThatDoNotPass(CalculationResultMap results) {
 		Set<Integer> ret = new HashSet<Integer>();
-		for (Map.Entry<Integer, CalculationResult> e : map.entrySet()) {
+		for (Map.Entry<Integer, CalculationResult> e : results.entrySet()) {
 			if (ResultUtil.isFalse(e.getValue())) {
 				ret.add(e.getKey());
 			}
@@ -193,10 +270,16 @@ public abstract class KenyaEmrCalculation extends BaseCalculation implements Pat
 		return ret;
 	}
 
-
-    public static Set<Integer> datesWithinRange(CalculationResultMap map, Date minDateInclusive, Date maxDateInclusive) {
+    /**
+     * Extracts patients from a calculation result map with date results in the given range
+     * @param results the calculation result map
+     * @param minDateInclusive the minimum date (inclusive)
+     * @param maxDateInclusive the maximum date (inclusive)
+     * @return the extracted patient ids
+     */
+    public static Set<Integer> datesWithinRange(CalculationResultMap results, Date minDateInclusive, Date maxDateInclusive) {
     	Set<Integer> ret = new HashSet<Integer>();
-		for (Map.Entry<Integer, CalculationResult> e : map.entrySet()) {
+		for (Map.Entry<Integer, CalculationResult> e : results.entrySet()) {
 			Date result = null;
 			try {
 				result = e.getValue().asType(Date.class);
@@ -213,20 +296,32 @@ public abstract class KenyaEmrCalculation extends BaseCalculation implements Pat
 		return ret;
     }
 
-	public static Set<Integer> alivePatients(Collection<Integer> cohort, PatientCalculationContext context) {
-		CalculationResultMap map = evaluateWithReporting(new VitalStatusDataDefinition(), cohort, new HashMap<String, Object>(), null, context);
+    /**
+     * Extracts only alive patients from a cohort
+     * @param patientIds the patient ids
+     * @param calculationContext the calculation context
+     * @return the extracted patient ids
+     */
+    protected static Set<Integer> alivePatients(Collection<Integer> patientIds, PatientCalculationContext calculationContext) {
+		CalculationResultMap map = evaluateWithReporting(new VitalStatusDataDefinition(), patientIds, new HashMap<String, Object>(), null, calculationContext);
 		Set<Integer> ret = new HashSet<Integer>();
 		for (Map.Entry<Integer, CalculationResult> e : map.entrySet()) {
 			VitalStatus vs = ((VitalStatus) e.getValue().getValue());
-			if (!vs.getDead() || OpenmrsUtil.compareWithNullAsEarliest(vs.getDeathDate(), context.getNow()) > 0) {
+			if (!vs.getDead() || OpenmrsUtil.compareWithNullAsEarliest(vs.getDeathDate(), calculationContext.getNow()) > 0) {
 				ret.add(e.getKey());
 			}
 		}
 		return ret;
 	}
 
-	public static Obs obsResultForPatient(CalculationResultMap results, Integer ptId) {
-		CalculationResult result = results.get(ptId);
+    /**
+     * Convenience method to fetch a patient result as an obs
+     * @param results the calculation result map
+     * @param patientId the patient id
+     * @return the obs result
+     */
+    protected static Obs obsResultForPatient(CalculationResultMap results, Integer patientId) {
+		CalculationResult result = results.get(patientId);
 		if (result != null && !result.isEmpty()) {
 			Obs val = (Obs) result.getValue();
 			return val;
@@ -234,39 +329,70 @@ public abstract class KenyaEmrCalculation extends BaseCalculation implements Pat
 		return null;
 	}
 
-
-	public static Double numericObsResultForPatient(CalculationResultMap results, Integer ptId) {
-		Obs o = obsResultForPatient(results, ptId);
+    /**
+     * Convenience method to fetch a patient result as a numeric obs value
+     * @param results the calculation result map
+     * @param patientId the patient id
+     * @return the numeric obs value
+     */
+    protected static Double numericObsResultForPatient(CalculationResultMap results, Integer patientId) {
+		Obs o = obsResultForPatient(results, patientId);
 		return o == null ? null : o.getValueNumeric();
 	}
 
-	public static Concept codedObsResultForPatient(CalculationResultMap results, Integer ptId) {
-		Obs o = obsResultForPatient(results, ptId);
+    /**
+     * Convenience method to fetch a patient result as a coded obs value
+     * @param results the calculation result map
+     * @param patientId the patient id
+     * @return the coded obs value
+     */
+    protected static Concept codedObsResultForPatient(CalculationResultMap results, Integer patientId) {
+		Obs o = obsResultForPatient(results, patientId);
 		return o == null ? null : o.getValueCoded();
 	}
 
-    public static Date datetimeObsResultForPatient(CalculationResultMap results, Integer ptId) {
-        Obs o = obsResultForPatient(results, ptId);
+    /**
+     * Convenience method to fetch a patient result as a datetime obs value
+     * @param results the calculation result map
+     * @param patientId the patient id
+     * @return the datetime obs value
+     */
+    protected static Date datetimeObsResultForPatient(CalculationResultMap results, Integer patientId) {
+        Obs o = obsResultForPatient(results, patientId);
         return o == null ? null : o.getValueDatetime();
     }
 
-	public static Concept getConcept(String uuid) {
+    /**
+     * Convenience method to fetch a a concept by UUID
+     * @param uuid the concept UUID
+     * @return the concept
+     */
+    protected static Concept getConcept(String uuid) {
 		return Context.getConceptService().getConceptByUuid(uuid);
 	}
 
-	public static CalculationResultMap evaluateWithReporting(DataDefinition def, Collection<Integer> patientIds, Map<String, Object> parameterValues, PatientCalculation calculation, PatientCalculationContext calculationContext) {
+    /**
+     * Evaluates a data definition on each patient using a reporting context
+     * @param dataDefinition the data definition
+     * @param patientIds the patient ids
+     * @param parameterValues the parameters for the reporting context
+     * @param calculation the calculation (optional)
+     * @param calculationContext the calculation context
+     * @return the calculation result map
+     */
+    protected static CalculationResultMap evaluateWithReporting(DataDefinition dataDefinition, Collection<Integer> patientIds, Map<String, Object> parameterValues, PatientCalculation calculation, PatientCalculationContext calculationContext) {
 		try {
 			EvaluationContext reportingContext = ensureReportingContext(calculationContext, patientIds, parameterValues);
 
 			Map<Integer, Object> data;
-			if (def instanceof PersonDataDefinition) {
-				EvaluatedPersonData result = Context.getService(PersonDataService.class).evaluate((PersonDataDefinition) def, reportingContext);
+			if (dataDefinition instanceof PersonDataDefinition) {
+				EvaluatedPersonData result = Context.getService(PersonDataService.class).evaluate((PersonDataDefinition) dataDefinition, reportingContext);
 				data = result.getData();
-			} else if (def instanceof PatientDataDefinition) {
-				EvaluatedPatientData result = Context.getService(PatientDataService.class).evaluate((PatientDataDefinition) def, reportingContext);
+			} else if (dataDefinition instanceof PatientDataDefinition) {
+				EvaluatedPatientData result = Context.getService(PatientDataService.class).evaluate((PatientDataDefinition) dataDefinition, reportingContext);
 				data = result.getData();
 			} else {
-				throw new RuntimeException("Unknown DataDefinition type: " + def.getClass());
+				throw new RuntimeException("Unknown DataDefinition type: " + dataDefinition.getClass());
 			}
 			CalculationResultMap ret = new CalculationResultMap();
 			for (Map.Entry<Integer, Object> e : data.entrySet()) {
@@ -278,33 +404,41 @@ public abstract class KenyaEmrCalculation extends BaseCalculation implements Pat
 		}
 	}
 
-	public static EvaluatedCohort evaluateWithReporting(CohortDefinition cd, Collection<Integer> inputCohort, Map<String, Object> parameterValues, PatientCalculationContext calculationContext) {
+    /**
+     * Evaluates a cohort definition on the given base set of patients using a reporting context
+     * @param cohortDefinition the cohort definition
+     * @param patientIds the patient ids
+     * @param parameterValues the parameters for the reporting context
+     * @param calculationContext the calculation context
+     * @return the evaluated cohort
+     */
+    protected static EvaluatedCohort evaluateWithReporting(CohortDefinition cohortDefinition, Collection<Integer> patientIds, Map<String, Object> parameterValues, PatientCalculationContext calculationContext) {
 		try {
-			EvaluationContext reportingContext = ensureReportingContext(calculationContext, inputCohort, parameterValues);
-			return Context.getService(CohortDefinitionService.class).evaluate(cd, reportingContext);
+			EvaluationContext reportingContext = ensureReportingContext(calculationContext, patientIds, parameterValues);
+			return Context.getService(CohortDefinitionService.class).evaluate(cohortDefinition, reportingContext);
 		} catch (EvaluationException ex) {
 			throw new APIException(ex);
 		}
 	}
 
     /**
-     * Wraps a plain object in the appropriate calculation result subclass
-     *
-     * @param o
-     * @param ctx
-     * @return
+     * Convenience method to wrap a plain object in the appropriate calculation result subclass
+     * @param obj the plain object
+     * @param calculation the calculation (optional)
+     * @param calculationContext the calculation context
+     * @return the calculation result
      */
-	public static CalculationResult toCalculationResult(Object o, PatientCalculation calculation, PatientCalculationContext ctx) {
-	    if (o instanceof Obs) {
-	    	return new ObsResult((Obs) o, calculation, ctx);
-	    } else if (o instanceof Collection) {
+    protected static CalculationResult toCalculationResult(Object obj, PatientCalculation calculation, PatientCalculationContext calculationContext) {
+	    if (obj instanceof Obs) {
+	    	return new ObsResult((Obs) obj, calculation, calculationContext);
+	    } else if (obj instanceof Collection) {
 	    	ListResult ret = new ListResult();
-	    	for (Object obj : (Collection) o) {
-	    		ret.add(toCalculationResult(obj, calculation, ctx));
+	    	for (Object item : (Collection) obj) {
+	    		ret.add(toCalculationResult(item, calculation, calculationContext));
 	    	}
 	    	return ret;
 	    } else {
-	    	return new SimpleResult(o, calculation, ctx);
+	    	return new SimpleResult(obj, calculation, calculationContext);
 	    }
     }
 
@@ -314,12 +448,12 @@ public abstract class KenyaEmrCalculation extends BaseCalculation implements Pat
      *
      * (Note: for now we never store this, and always return a new one)
      *
-     * @param calculationContext
-     * @param patientIds
-	 * @param parameterValues
-     * @return
+     * @param calculationContext the calculation context
+     * @param patientIds the patient ids
+	 * @param parameterValues the parameters for the reporting context
+     * @return the reporting evaluation context
      */
-    public static EvaluationContext ensureReportingContext(PatientCalculationContext calculationContext, Collection<Integer> patientIds, Map<String, Object> parameterValues) {
+    protected static EvaluationContext ensureReportingContext(PatientCalculationContext calculationContext, Collection<Integer> patientIds, Map<String, Object> parameterValues) {
 	    EvaluationContext ret = new EvaluationContext();
     	ret.setEvaluationDate(calculationContext.getNow());
     	ret.setBaseCohort(new Cohort(patientIds));
@@ -329,12 +463,11 @@ public abstract class KenyaEmrCalculation extends BaseCalculation implements Pat
     }
 
     /**
-     * If map is missing entries for any of patientIds, they are added (with null result)
-     *
-     * @param map
-     * @param patientIds
+     * Utility method to ensure all patients exist in a result map. If map is missing entries for any of patientIds, they are added with a null result
+     * @param map the calculation result map
+     * @param patientIds the patient ids
      */
-    public static void ensureNullResults(CalculationResultMap map, Collection<Integer> patientIds) {
+    protected static void ensureNullResults(CalculationResultMap map, Collection<Integer> patientIds) {
     	for (Integer ptId : patientIds) {
     		if (!map.containsKey(ptId)) {
     			map.put(ptId, null);
@@ -343,12 +476,11 @@ public abstract class KenyaEmrCalculation extends BaseCalculation implements Pat
     }
 
     /**
-     * If map is missing entries for any of patientIds, they are added (with empty ListResults)
-     *
-     * @param map
-     * @param patientIds
+     * Utility method to ensure all patients exist in a result map. If map is missing entries for any of patientIds, they are added with an empty list result
+     * @param map the calculation result map
+     * @param patientIds the patient ids
      */
-    public static void ensureEmptyListResults(CalculationResultMap map, Collection<Integer> patientIds) {
+    protected static void ensureEmptyListResults(CalculationResultMap map, Collection<Integer> patientIds) {
     	for (Integer ptId : patientIds) {
     		if (!map.containsKey(ptId)) {
     			map.put(ptId, new ListResult());
@@ -356,17 +488,16 @@ public abstract class KenyaEmrCalculation extends BaseCalculation implements Pat
     	}
     }
 
-    int daysSince(Date date, CalculationContext ctx) {
+    /**
+     * Calculates the days since the given date
+     * @param date the date
+     * @param calculationContext the calculation context
+     * @return the number of days
+     */
+    protected static int daysSince(Date date, CalculationContext calculationContext) {
     	DateTime d1 = new DateTime(date.getTime());
-    	DateTime d2 = new DateTime(ctx.getNow().getTime());
+    	DateTime d2 = new DateTime(calculationContext.getNow().getTime());
     	return Days.daysBetween(d1, d2).getDays();
 
     }
-
-    public static CalculationResultMap allObs(String conceptUuid, Collection<Integer> patientIds, PatientCalculationContext calculationContext) {
-		Concept concept = getConcept(conceptUuid);
-		ObsForPersonDataDefinition def = new ObsForPersonDataDefinition("All " + concept.getPreferredName(MetadataConstants.LOCALE), TimeQualifier.ANY, concept, calculationContext.getNow(), null);
-		return evaluateWithReporting(def, patientIds, new HashMap<String, Object>(), null, calculationContext);
-	}
-	
 }
