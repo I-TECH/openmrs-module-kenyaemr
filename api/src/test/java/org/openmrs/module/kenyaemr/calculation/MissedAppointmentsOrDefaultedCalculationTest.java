@@ -15,10 +15,10 @@ package org.openmrs.module.kenyaemr.calculation;
 
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.Concept;
 import org.openmrs.Obs;
+import org.openmrs.Patient;
 import org.openmrs.PatientProgram;
 import org.openmrs.Program;
 import org.openmrs.api.ConceptService;
@@ -34,7 +34,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-@Ignore("The underlying calculation is not implemented correctly yet")
 public class MissedAppointmentsOrDefaultedCalculationTest extends BaseModuleContextSensitiveTest {
 
     @Before
@@ -49,18 +48,13 @@ public class MissedAppointmentsOrDefaultedCalculationTest extends BaseModuleCont
     @Test
     public void evaluate_shouldDetermineWhetherPatientsWhoMissedAppointmentsOrDefaulted() throws Exception {
 
-        ConceptService cs = Context.getConceptService();
-        Concept returnVisit = cs.getConcept(5096);
-
-        // then we expect a patient to have visited 10 days ago
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DATE, -10);
-
-        // enroll 6 and 7 in the HIV Program
-        PatientService ps = Context.getPatientService();
+        // Get HIV Program
         ProgramWorkflowService pws = Context.getProgramWorkflowService();
         Program hivProgram = pws.getPrograms("HIV Program").get(0);
-        for (int i = 6; i <= 7; ++i) {
+
+        // Enroll patients #6, #7, #8 in the HIV Program
+        PatientService ps = Context.getPatientService();
+        for (int i = 6; i <= 8; ++i) {
             PatientProgram pp = new PatientProgram();
             pp.setPatient(ps.getPatient(i));
             pp.setProgram(hivProgram);
@@ -68,18 +62,39 @@ public class MissedAppointmentsOrDefaultedCalculationTest extends BaseModuleCont
             pws.savePatientProgram(pp);
         }
 
-        // then we expect a patient to visit 10 days
-        Obs obs = new Obs(Context.getPatientService().getPatient(7), returnVisit, calendar.getTime(), null);
-        obs.setValueDatetime(calendar.getTime());
-        Context.getObsService().saveObs(obs, null);
+        // Give patient #7 a return visit obs of 10 days ago
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DATE, -10);
+        schedulePatientReturnVisit(Context.getPatientService().getPatient(7), calendar.getTime());
+
+        // Give patient #8 a return visit obs of 10 days in the future
+        calendar = Calendar.getInstance();
+        calendar.add(Calendar.DATE, 10);
+        schedulePatientReturnVisit(Context.getPatientService().getPatient(8), calendar.getTime());
 
         Context.flushSession();
-        List<Integer> ptIds = Arrays.asList(6, 7, 8);
+
+        List<Integer> ptIds = Arrays.asList(6, 7, 8, 9);
 
         CalculationResultMap resultMap = new MissedAppointmentsOrDefaultedCalculation().evaluate(ptIds, null, Context.getService(PatientCalculationService.class).createCalculationContext());
-        Assert.assertFalse((Boolean) resultMap.get(6).getValue());   //in HIV program but no missed visit date
-        Assert.assertTrue((Boolean) resultMap.get(7).getValue()); // has Missed visit
-        Assert.assertFalse((Boolean) resultMap.get(8).getValue()); // not in HIV Program
+        Assert.assertFalse((Boolean) resultMap.get(6).getValue()); // patient in HIV program but no return visit obs
+        Assert.assertTrue((Boolean) resultMap.get(7).getValue()); // patient has missed visit
+        Assert.assertFalse((Boolean) resultMap.get(8).getValue()); // patient has future return visit date
+        Assert.assertFalse((Boolean) resultMap.get(9).getValue()); // patient not in HIV Program
     }
 
+    /**
+     * Helper method to give a patient a return visit date obs
+     * @param patient the patient
+     * @param date the return visit date
+     */
+    private static void schedulePatientReturnVisit(Patient patient, Date date) {
+        // Get return visit date concept
+        Concept returnVisit = Context.getConceptService().getConcept(5096);
+
+        // Create and save obs
+        Obs obs = new Obs(patient, returnVisit, date, null);
+        obs.setValueDatetime(date);
+        Context.getObsService().saveObs(obs, null);
+    }
 }

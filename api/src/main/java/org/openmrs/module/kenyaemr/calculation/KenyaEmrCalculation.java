@@ -28,6 +28,8 @@ import org.joda.time.Days;
 import org.openmrs.Cohort;
 import org.openmrs.Concept;
 import org.openmrs.DrugOrder;
+import org.openmrs.Encounter;
+import org.openmrs.EncounterType;
 import org.openmrs.Obs;
 import org.openmrs.Program;
 import org.openmrs.api.APIException;
@@ -52,6 +54,7 @@ import org.openmrs.module.reporting.common.VitalStatus;
 import org.openmrs.module.reporting.data.DataDefinition;
 import org.openmrs.module.reporting.data.patient.EvaluatedPatientData;
 import org.openmrs.module.reporting.data.patient.definition.DrugOrdersForPatientDataDefinition;
+import org.openmrs.module.reporting.data.patient.definition.EncountersForPatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.ProgramEnrollmentsForPatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.service.PatientDataService;
@@ -96,6 +99,22 @@ public abstract class KenyaEmrCalculation extends BaseCalculation implements Pat
 		def.setEffectiveDate(calculationContext.getNow());
 		return evaluateWithReporting(def, patientIds, new HashMap<String, Object>(), null, calculationContext);
 	}
+
+    /**
+     * Evaluates the last encounter of a given type of each patient
+     * @param encounterType the encounter type
+     * @param patientIds the patient ids
+     * @param calculationContext the calculation context
+     * @return the obss in a calculation result map
+     */
+    public static CalculationResultMap lastEncounter(EncounterType encounterType, Collection<Integer> patientIds, PatientCalculationContext calculationContext) {
+        String encName = encounterType != null ? encounterType.getName() : "encounter";
+        EncountersForPatientDataDefinition def = new EncountersForPatientDataDefinition("Last " + encName);
+        if (encounterType != null)
+            def.addType(encounterType);
+        def.setWhich(TimeQualifier.LAST);
+        return evaluateWithReporting(def, patientIds, new HashMap<String, Object>(), null, calculationContext);
+    }
 
     /**
      * Evaluates the last obs of a given type of each patient
@@ -360,6 +379,21 @@ public abstract class KenyaEmrCalculation extends BaseCalculation implements Pat
     protected static Date datetimeObsResultForPatient(CalculationResultMap results, Integer patientId) {
         Obs o = obsResultForPatient(results, patientId);
         return o == null ? null : o.getValueDatetime();
+    }
+
+    /**
+     * Convenience method to fetch a patient result as an encounter
+     * @param results the calculation result map
+     * @param patientId the patient id
+     * @return the encounter result
+     */
+    protected static Encounter encounterResultForPatient(CalculationResultMap results, Integer patientId) {
+        CalculationResult result = results.get(patientId);
+        if (result != null && !result.isEmpty()) {
+            Encounter val = (Encounter) result.getValue();
+            return val;
+        }
+        return null;
     }
 
     /**
