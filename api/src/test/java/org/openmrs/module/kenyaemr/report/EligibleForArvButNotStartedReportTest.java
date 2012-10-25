@@ -24,6 +24,7 @@ import org.openmrs.api.PatientService;
 import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
+import org.openmrs.module.kenyaemr.test.TestUtils;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
@@ -31,10 +32,6 @@ import org.openmrs.module.reporting.report.definition.service.ReportDefinitionSe
 import org.openmrs.module.reporting.report.renderer.TsvReportRenderer;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
-
-/**
- *
- */
 public class EligibleForArvButNotStartedReportTest extends BaseModuleContextSensitiveTest {
 	
 	@Before
@@ -44,16 +41,15 @@ public class EligibleForArvButNotStartedReportTest extends BaseModuleContextSens
 	
 	@Test
 	public void testReport() throws Exception {
-		// enroll 6 and 7 in the HIV Program
-		PatientService ps = Context.getPatientService();
+
+		// Get HIV Program
 		ProgramWorkflowService pws = Context.getProgramWorkflowService();
 		Program hivProgram = pws.getPrograms("HIV Program").get(0);
+
+		// Enroll patients #6 and #7 in the HIV Program
+		PatientService ps = Context.getPatientService();
 		for (int i = 6; i <= 7; ++i) {
-			PatientProgram pp = new PatientProgram();
-			pp.setPatient(ps.getPatient(i));
-			pp.setProgram(hivProgram);
-			pp.setDateEnrolled(new Date());
-			pws.savePatientProgram(pp);
+			TestUtils.enrollInProgram(ps.getPatient(i), hivProgram, new Date());
 		}
 
 		ReportManager report = new EligibleForArvButNotStartedReport();
@@ -62,12 +58,7 @@ public class EligibleForArvButNotStartedReportTest extends BaseModuleContextSens
 		EvaluationContext ec = new EvaluationContext();
 		SimpleDateFormat ymd = new SimpleDateFormat("yyyy-MM-dd");
 		ReportData data = Context.getService(ReportDefinitionService.class).evaluate(rd, ec);
-		printOutput(data);
+
+		TestUtils.printReport(data);
 	}
-	
-	private void printOutput(ReportData data) throws Exception {
-    	System.out.println(data.getDefinition().getName());
-    	new TsvReportRenderer().render(data, null, System.out);
-    }
-	
 }

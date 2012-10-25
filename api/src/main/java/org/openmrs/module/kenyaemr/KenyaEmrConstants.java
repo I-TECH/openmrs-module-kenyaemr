@@ -18,7 +18,19 @@ package org.openmrs.module.kenyaemr;
  * Constants for everything that is _not_ {@link MetadataConstants}
  */
 public class KenyaEmrConstants {
-	
-	public static final String GP_DEFAULT_LOCATION = "kenyaemr.defaultLocation"; 
-	
+
+	/**
+	 * Global property names
+	 */
+	public static final String GP_DEFAULT_LOCATION = "kenyaemr.defaultLocation";
+
+	/**
+	 * Number of days without an encounter before a patient is consider lost to follow up
+	 */
+	public static final int LOST_TO_FOLLOW_UP_THRESHOLD_DAYS = 90;
+
+	/**
+	 * Number of days between old CD4 count and current CD4 count to determine declining status
+	 */
+	public static final int DECLINING_CD4_COUNT_ACROSS_DAYS = 180;
 }

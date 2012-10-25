@@ -16,12 +16,13 @@ package org.openmrs.module.kenyaemr.calculation;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.Concept;
+import org.openmrs.*;
+import org.openmrs.Encounter;
+import org.openmrs.EncounterType;
 import org.openmrs.Obs;
 import org.openmrs.Patient;
 import org.openmrs.PatientProgram;
 import org.openmrs.Program;
-import org.openmrs.api.ConceptService;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
@@ -35,7 +36,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-public class MissedAppointmentsOrDefaultedCalculationTest extends BaseModuleContextSensitiveTest {
+public class LostToFollowUpCalculationTest extends BaseModuleContextSensitiveTest {
 
 	@Before
 	public void beforeEachTest() throws Exception {
@@ -43,11 +44,11 @@ public class MissedAppointmentsOrDefaultedCalculationTest extends BaseModuleCont
 	}
 
 	/**
-	 * @see MissedAppointmentsOrDefaultedCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
-	 * @verifies determine whether patients have a Missed appointments or defaulted
+	 * @see org.openmrs.module.kenyaemr.calculation.MissedAppointmentsOrDefaultedCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
+	 * @verifies determine whether patients are lost to follow up
 	 */
 	@Test
-	public void evaluate_shouldDetermineWhetherPatientsWhoMissedAppointmentsOrDefaulted() throws Exception {
+	public void evaluate_shouldDetermineWhetherPatientsAreLostToFollowUp() throws Exception {
 
 		// Get HIV Program
 		ProgramWorkflowService pws = Context.getProgramWorkflowService();
@@ -59,25 +60,26 @@ public class MissedAppointmentsOrDefaultedCalculationTest extends BaseModuleCont
 			TestUtils.enrollInProgram(ps.getPatient(i), hivProgram, TestUtils.date(2011, 1, 1));
 		}
 
-		// Give patient #7 a return visit obs of 10 days ago
-		Concept returnVisit = Context.getConceptService().getConcept(5096);
+		// Give patient #7 a scheduled encounter 200 days ago
 		Calendar calendar = Calendar.getInstance();
-		calendar.add(Calendar.DATE, -10);
-		TestUtils.saveObs(Context.getPatientService().getPatient(7), returnVisit, calendar.getTime(), calendar.getTime());
+		calendar.add(Calendar.DATE, -200);
+		EncounterType scheduledEncType = Context.getEncounterService().getEncounterType("Scheduled");
+		TestUtils.saveEncounter(Context.getPatientService().getPatient(7), scheduledEncType, calendar.getTime());
 
-		// Give patient #8 a return visit obs of 10 days in the future
+		// Give patient #8 a scheduled encounter 10 days ago
 		calendar = Calendar.getInstance();
-		calendar.add(Calendar.DATE, 10);
-		TestUtils.saveObs(Context.getPatientService().getPatient(8), returnVisit, calendar.getTime(), calendar.getTime());
+		calendar.add(Calendar.DATE, -10);
+		TestUtils.saveEncounter(Context.getPatientService().getPatient(8), scheduledEncType, calendar.getTime());
 
 		Context.flushSession();
+		Context.clearSession();
 
-		List<Integer> ptIds = Arrays.asList(6, 7, 8, 9);
+		List<Integer> ptIds = Arrays.asList(6, 7, 8, 999);
 
-		CalculationResultMap resultMap = new MissedAppointmentsOrDefaultedCalculation().evaluate(ptIds, null, Context.getService(PatientCalculationService.class).createCalculationContext());
-		Assert.assertFalse((Boolean) resultMap.get(6).getValue()); // patient in HIV program but no return visit obs
-		Assert.assertTrue((Boolean) resultMap.get(7).getValue()); // patient has missed visit
-		Assert.assertFalse((Boolean) resultMap.get(8).getValue()); // patient has future return visit date
-		Assert.assertFalse((Boolean) resultMap.get(9).getValue()); // patient not in HIV Program
+		CalculationResultMap resultMap = Context.getService(PatientCalculationService.class).evaluate(ptIds, new LostToFollowUpCalculation());
+		Assert.assertTrue((Boolean) resultMap.get(6).getValue()); // patient in HIV program and no encounters
+		Assert.assertTrue((Boolean) resultMap.get(7).getValue()); // patient in HIV program and no encounter in last X days
+		Assert.assertFalse((Boolean) resultMap.get(8).getValue()); // patient in HIV program and has encounter in last X days
+		Assert.assertFalse((Boolean) resultMap.get(999).getValue()); // patient not in HIV Program
 	}
 }
