@@ -16,12 +16,10 @@ package org.openmrs.module.kenyaemr.report;
 import org.openmrs.module.kenyaemr.calculation.MissedAppointmentsOrDefaultedCalculation;
 import org.springframework.stereotype.Component;
 
-// Commented out because the underlying calculation is not implemented correctly
-//@Component
+@Component
 public class MissedAppointmentsOrDefaultedReport extends PatientAlertListReportManager {
 
     public MissedAppointmentsOrDefaultedReport() {
         setAlertCalculation(new MissedAppointmentsOrDefaultedCalculation());
     }
-
 }

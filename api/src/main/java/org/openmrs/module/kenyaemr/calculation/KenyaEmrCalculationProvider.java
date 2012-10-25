@@ -37,11 +37,11 @@ public class KenyaEmrCalculationProvider implements CalculationProvider {
 	Map<String, Class<? extends KenyaEmrCalculation>> map = new HashMap<String, Class<? extends KenyaEmrCalculation>>();
 	
 	public KenyaEmrCalculationProvider() {
-		map.put("needsCd4", NeedsCd4Calculation.class);
+		map.put("needsCd4", NeedsCD4Calculation.class);
 		map.put("eligibleForArt", EligibleForArtCalculation.class);
-		map.put("declinedCd4", DeclineCD4Calculation.class);
-        // disabled because the calculation is implemented wrong: map.put("missedAppointmentsOrDefaulted", MissedAppointmentsOrDefaultedCalculation.class);
-		// disabled because the calculation is implemented wrong: map.put("lostToFollowUp", LostToFollowUpCalculation.class);
+		map.put("decliningCd4", DecliningCD4Calculation.class);
+        map.put("missedAppointmentsOrDefaulted", MissedAppointmentsOrDefaultedCalculation.class);
+		map.put("lostToFollowUp", LostToFollowUpCalculation.class);
 		// TODO add others (onArt, scheduledVisitOnDay), but make sure they don't run on the patient page by default.
 	}
 	

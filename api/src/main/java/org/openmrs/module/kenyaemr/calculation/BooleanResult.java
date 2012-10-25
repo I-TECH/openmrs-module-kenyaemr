@@ -14,6 +14,7 @@
 package org.openmrs.module.kenyaemr.calculation;
 
 import org.openmrs.calculation.Calculation;
+import org.openmrs.calculation.CalculationContext;
 import org.openmrs.calculation.result.SimpleResult;
 
 
@@ -23,12 +24,23 @@ import org.openmrs.calculation.result.SimpleResult;
 public class BooleanResult extends SimpleResult {
 
 	/**
-     * @param value
-     * @param calculation
-     */
+	 * Creates a new boolean result
+	 * @param value the result value
+	 * @param calculation the calculation
+	 */
     public BooleanResult(Boolean value, Calculation calculation) {
 	    super(value, calculation);
     }
+
+	/**
+	 * Creates a new boolean result
+	 * @param value the result value
+	 * @param calculation the calculation
+	 * @param context the calculation context
+	 */
+	public BooleanResult(Boolean value, Calculation calculation, CalculationContext context) {
+		super(value, calculation, context);
+	}
     
     /**
      * @see org.openmrs.calculation.result.SimpleResult#isEmpty()

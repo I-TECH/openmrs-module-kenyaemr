@@ -51,10 +51,13 @@
   <concept concept_id="160631" retired="false" datatype_id="4" class_id="5" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="160631AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
   <concept_name concept_name_id="160631" concept_id="160631" name="HIV Program" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="160631-name"/>
   <program program_id="1" concept_id="160631" outcomes_concept_id="1695" creator="1" date_created="2004-08-12 00:00:00.0" retired="0" name="HIV Program" description="Program for following or treating HIV-positive patients" uuid="dfdc6d40-2f2f-463d-ba90-cc97350441a8"/>
-  
-  <!-- scheduled return visit for patient 7 -->
+
+  <!-- HIV identifier for patient #7 -->
+  <patient_identifier patient_identifier_id="101" patient_id="7" identifier="1321200001" identifier_type="1002" preferred="true" location_id="1" creator="1" date_created="2004-08-12 00:00:00.0" changed_by="1" date_changed="2006-06-09 14:57:33.0" voided="false" uuid="9fa0988f-86d1-41d7-b4c6-56fd088d0189" />
+
+  <!-- Scheduled return visit for patient #7 -->
   <obs obs_id="5096" person_id="7" concept_id="5096" obs_datetime="2012-06-01 00:00:00.0" location_id="1" value_datetime="2012-07-04 00:00:00.0" creator="1" date_created="2012-06-01 14:11:13.0" voided="false" uuid="e9c5f692-d518-11e1-a606-e48901690d08"/>
   
-  <!-- actual visit for patient 7 on the same day -->
+  <!-- Actual visit for patient #7 on the same day -->
   <visit visit_id="5096" patient_id="7" visit_type_id="1" date_started="2012-07-04 09:15:00.0" date_stopped="2012-07-04 13:05:00.0" location_id="1" creator="1" date_created="2012-07-05 00:00:00.0" voided="0" uuid="c48253b4-d51b-11e1-a606-e48901690d08" />
 </dataset>

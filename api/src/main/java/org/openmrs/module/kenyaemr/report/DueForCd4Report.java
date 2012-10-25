@@ -13,7 +13,7 @@
  */
 package org.openmrs.module.kenyaemr.report;
 
-import org.openmrs.module.kenyaemr.calculation.NeedsCd4Calculation;
+import org.openmrs.module.kenyaemr.calculation.NeedsCD4Calculation;
 import org.springframework.stereotype.Component;
 
 
@@ -21,10 +21,10 @@ import org.springframework.stereotype.Component;
  *
  */
 @Component
-public class DueForCd4Report extends PatientAlertListReportManager {
+public class DueForCD4Report extends PatientAlertListReportManager {
 	
-    public DueForCd4Report() {
-	    setAlertCalculation(new NeedsCd4Calculation());
+    public DueForCD4Report() {
+	    setAlertCalculation(new NeedsCD4Calculation());
     }
 	
 }
