@@ -28,7 +28,7 @@ import org.openmrs.module.kenyaemr.MetadataConstants;
 /**
  *
  */
-public class NeedsCd4Calculation extends KenyaEmrCalculation {
+public class NeedsCD4Calculation extends KenyaEmrCalculation {
 	
 	/**
 	 * @see org.openmrs.module.kenyaemr.calculation.KenyaEmrCalculation#getShortMessage()

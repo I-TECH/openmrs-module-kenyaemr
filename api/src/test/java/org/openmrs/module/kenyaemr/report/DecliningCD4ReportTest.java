@@ -30,7 +30,7 @@ import org.openmrs.test.BaseModuleContextSensitiveTest;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class DeclinedCD4ReportTest extends BaseModuleContextSensitiveTest {
+public class DecliningCD4ReportTest extends BaseModuleContextSensitiveTest {
 
     @Before
     public void beforeEachTest() throws Exception {
@@ -51,7 +51,7 @@ public class DeclinedCD4ReportTest extends BaseModuleContextSensitiveTest {
             pws.savePatientProgram(pp);
         }
 
-        ReportManager report = new DeclinedCD4Report();
+        ReportManager report = new DecliningCD4Report();
         ReportDefinition rd = report.getReportDefinition();
 
 

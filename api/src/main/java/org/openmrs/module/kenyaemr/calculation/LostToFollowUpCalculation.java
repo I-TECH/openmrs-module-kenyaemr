@@ -24,11 +24,12 @@ import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
+import org.openmrs.module.kenyaemr.KenyaEmrConstants;
 import org.openmrs.module.kenyaemr.MetadataConstants;
 
 /**
  * Calculates whether a patient has been lost to follow up. Calculation returns true if patient
- * is alive, enrolled in the HIV program, but hasn't had an encounter in X days
+ * is alive, enrolled in the HIV program, but hasn't had an encounter in LOST_TO_FOLLOW_UP_THRESHOLD_DAYS days
  */
 public class LostToFollowUpCalculation extends KenyaEmrCalculation {
 
@@ -41,8 +42,8 @@ public class LostToFollowUpCalculation extends KenyaEmrCalculation {
 	 * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
 	 * @should calculate false for deceased patients
 	 * @should calculate false for patients not in HIV program
-	 * @should calculate false for patients with an encounter in last X days
-	 * @should calculate true for patient with no encounter in last X days
+	 * @should calculate false for patients with an encounter in last LOST_TO_FOLLOW_UP_THRESHOLD_DAYS days
+	 * @should calculate true for patient with no encounter in last LOST_TO_FOLLOW_UP_THRESHOLD_DAYS days
 	 */
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> arg1, PatientCalculationContext context) {
@@ -63,7 +64,7 @@ public class LostToFollowUpCalculation extends KenyaEmrCalculation {
 				// Patient is lost if no encounters in last X days
 				Encounter lastEncounter = encounterResultForPatient(lastEncounters, ptId);
 				Date lastEncounterDate = lastEncounter != null ? lastEncounter.getEncounterDatetime() : null;
-				lost = lastEncounterDate == null || daysSince(lastEncounterDate, context) > 90;
+				lost = lastEncounterDate == null || daysSince(lastEncounterDate, context) > KenyaEmrConstants.LOST_TO_FOLLOW_UP_THRESHOLD_DAYS;
 			}
 			ret.put(ptId, new SimpleResult(lost, this, context));
 

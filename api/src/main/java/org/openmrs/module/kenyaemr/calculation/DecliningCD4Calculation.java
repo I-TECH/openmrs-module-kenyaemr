@@ -24,7 +24,7 @@ import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyaemr.MetadataConstants;
 
-public class DeclineCD4Calculation extends KenyaEmrCalculation {
+public class DecliningCD4Calculation extends KenyaEmrCalculation {
 
     @Override
     public String getShortMessage() {

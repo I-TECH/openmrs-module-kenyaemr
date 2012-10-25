@@ -34,7 +34,7 @@ import org.openmrs.test.BaseModuleContextSensitiveTest;
 /**
  *
  */
-public class DueForCd4ReportTest extends BaseModuleContextSensitiveTest {
+public class DueForCD4ReportTest extends BaseModuleContextSensitiveTest {
 
 	@Before
 	public void beforeEachTest() throws Exception {
@@ -55,7 +55,7 @@ public class DueForCd4ReportTest extends BaseModuleContextSensitiveTest {
 			pws.savePatientProgram(pp);
 		}
 
-		ReportManager report = new DueForCd4Report();
+		ReportManager report = new DueForCD4Report();
 		ReportDefinition rd = report.getReportDefinition();
 		
 		EvaluationContext ec = new EvaluationContext();

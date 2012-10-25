@@ -22,7 +22,7 @@ import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
-public class NeedsCd4CalculationTest extends BaseModuleContextSensitiveTest {
+public class NeedsCD4CalculationTest extends BaseModuleContextSensitiveTest {
 	
 	@Before
 	public void beforeEachTest() throws Exception {
@@ -30,7 +30,7 @@ public class NeedsCd4CalculationTest extends BaseModuleContextSensitiveTest {
 	}
 	
 	/**
-	 * @see NeedsCd4Calculation#evaluate(Collection,Map,PatientCalculationContext)
+	 * @see NeedsCD4Calculation#evaluate(Collection,Map,PatientCalculationContext)
 	 * @verifies determine whether patients need a CD4
 	 */
 	@Test
@@ -58,7 +58,7 @@ public class NeedsCd4CalculationTest extends BaseModuleContextSensitiveTest {
 		Context.flushSession();
 		
 		List<Integer> ptIds = Arrays.asList(6, 7, 8);
-		CalculationResultMap resultMap = new NeedsCd4Calculation().evaluate(ptIds, null, Context.getService(PatientCalculationService.class).createCalculationContext());
+		CalculationResultMap resultMap = new NeedsCD4Calculation().evaluate(ptIds, null, Context.getService(PatientCalculationService.class).createCalculationContext());
 		Assert.assertTrue((Boolean) resultMap.get(6).getValue());
 		Assert.assertFalse((Boolean) resultMap.get(7).getValue()); // has recent CD4
 		Assert.assertFalse((Boolean) resultMap.get(8).getValue()); // not in HIV Program
