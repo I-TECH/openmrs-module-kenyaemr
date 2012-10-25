@@ -60,14 +60,15 @@ public class MissedAppointmentsOrDefaultedCalculationTest extends BaseModuleCont
 		}
 
 		// Give patient #7 a return visit obs of 10 days ago
+		Concept returnVisit = Context.getConceptService().getConcept(5096);
 		Calendar calendar = Calendar.getInstance();
 		calendar.add(Calendar.DATE, -10);
-		schedulePatientReturnVisit(Context.getPatientService().getPatient(7), calendar.getTime());
+		TestUtils.saveObs(Context.getPatientService().getPatient(7), returnVisit, calendar.getTime(), calendar.getTime());
 
 		// Give patient #8 a return visit obs of 10 days in the future
 		calendar = Calendar.getInstance();
 		calendar.add(Calendar.DATE, 10);
-		schedulePatientReturnVisit(Context.getPatientService().getPatient(8), calendar.getTime());
+		TestUtils.saveObs(Context.getPatientService().getPatient(8), returnVisit, calendar.getTime(), calendar.getTime());
 
 		Context.flushSession();
 
@@ -78,20 +79,5 @@ public class MissedAppointmentsOrDefaultedCalculationTest extends BaseModuleCont
 		Assert.assertTrue((Boolean) resultMap.get(7).getValue()); // patient has missed visit
 		Assert.assertFalse((Boolean) resultMap.get(8).getValue()); // patient has future return visit date
 		Assert.assertFalse((Boolean) resultMap.get(9).getValue()); // patient not in HIV Program
-	}
-
-	/**
-	 * Helper method to give a patient a return visit date obs
-	 * @param patient the patient
-	 * @param date the return visit date
-	 */
-	private static void schedulePatientReturnVisit(Patient patient, Date date) {
-		// Get return visit date concept
-		Concept returnVisit = Context.getConceptService().getConcept(5096);
-
-		// Create and save obs
-		Obs obs = new Obs(patient, returnVisit, date, null);
-		obs.setValueDatetime(date);
-		Context.getObsService().saveObs(obs, null);
 	}
 }

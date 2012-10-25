@@ -20,6 +20,7 @@ import org.openmrs.Program;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyaemr.test.TestUtils;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
@@ -39,34 +40,29 @@ public class MissedAppointmentsOrDefaultedReportTest extends BaseModuleContextSe
 
     @Test
     public void testReport() throws Exception {
-        // enroll 6 and 7 in the HIV Program
-        PatientService ps = Context.getPatientService();
-        ProgramWorkflowService pws = Context.getProgramWorkflowService();
-        Program hivProgram = pws.getPrograms("HIV Program").get(0);
-        for (int i = 6; i <= 7; ++i) {
-            PatientProgram pp = new PatientProgram();
-            pp.setPatient(ps.getPatient(i));
-            pp.setProgram(hivProgram);
-            pp.setDateEnrolled(new Date());
-            pws.savePatientProgram(pp);
-        }
+
+		// Get HIV Program
+		ProgramWorkflowService pws = Context.getProgramWorkflowService();
+		Program hivProgram = pws.getPrograms("HIV Program").get(0);
+
+		// Enroll patients #6 and #7 in the HIV Program
+		PatientService ps = Context.getPatientService();
+		for (int i = 6; i <= 7; ++i) {
+			TestUtils.enrollInProgram(ps.getPatient(i), hivProgram, new Date());
+		}
 
         ReportManager report = new MissedAppointmentsOrDefaultedReport();
         ReportDefinition rd = report.getReportDefinition();
-
         EvaluationContext ec = new EvaluationContext();
+
         SimpleDateFormat ymd = new SimpleDateFormat("yyyy-MM-dd");
+
         try {
             ReportData data = Context.getService(ReportDefinitionService.class).evaluate(rd, ec);
-            printOutput(data);
+
+			TestUtils.printReport(data);
         } catch (Exception e) {
             e.toString();
         }
     }
-
-    private void printOutput(ReportData data) throws Exception {
-        System.out.println(data.getDefinition().getName());
-        new TsvReportRenderer().render(data, null, System.out);
-    }
-
 }

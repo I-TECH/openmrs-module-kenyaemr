@@ -13,17 +13,24 @@
  */
 package org.openmrs.module.kenyaemr.test;
 
+import org.junit.Assert;
 import org.junit.Ignore;
-import org.openmrs.*;
+import org.openmrs.Concept;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
+import org.openmrs.Obs;
 import org.openmrs.Patient;
+import org.openmrs.PatientIdentifier;
 import org.openmrs.PatientProgram;
 import org.openmrs.Program;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.dataset.DataSet;
+import org.openmrs.module.reporting.dataset.DataSetRow;
+import org.openmrs.module.reporting.report.ReportData;
+import org.openmrs.module.reporting.report.renderer.TsvReportRenderer;
 
-import java.util.Date;
-import java.util.GregorianCalendar;
+import java.io.IOException;
+import java.util.*;
 
 /**
  * Utility methods for unit tests
@@ -43,7 +50,7 @@ public class TestUtils {
 	}
 
 	/**
-	 * Convenience method to create and save an encounter
+	 * Create and save an encounter
 	 * @param patient the patient
 	 * @param type the encounter type
 	 * @param date the encounter date
@@ -60,7 +67,7 @@ public class TestUtils {
 	}
 
 	/**
-	 * Convenience method to enroll patient on a program
+	 * Enroll a patient in a program
 	 * @param patient the patient
 	 * @param program the program
 	 * @param date the enroll date
@@ -72,5 +79,68 @@ public class TestUtils {
 		pp.setProgram(program);
 		pp.setDateEnrolled(date);
 		return Context.getProgramWorkflowService().savePatientProgram(pp);
+	}
+
+	/**
+	 * Save a numeric obs
+	 * @param patient the patient
+	 * @param concept the concept
+	 * @param val the numeric value
+	 * @param date the date
+	 * @return the obs
+	 */
+	public static Obs saveObs(Patient patient, Concept concept, double val, Date date) {
+		Obs obs = new Obs(patient, concept, date, null);
+		obs.setValueNumeric(val);
+		return Context.getObsService().saveObs(obs, null);
+	}
+
+	/**
+	 * Save a datetime obs
+	 * @param patient the patient
+	 * @param concept the concept
+	 * @param val the datetime value
+	 * @param date the date
+	 * @return the obs
+	 */
+	public static Obs saveObs(Patient patient, Concept concept, Date val, Date date) {
+		Obs obs = new Obs(patient, concept, date, null);
+		obs.setValueDatetime(val);
+		return Context.getObsService().saveObs(obs, null);
+	}
+
+	/**
+	 * Checks a patient alert list report
+	 * @param expectedPatientIdentifiers the set of HIV identifiers of expected patients
+	 * @param identifierColumn the name of column containing patient identifiers
+	 * @param data the report data
+	 */
+	public static void checkPatientAlertListReport(Set<String> expectedPatientIdentifiers, String identifierColumn, ReportData data) {
+		// Check report has one data set
+		Assert.assertEquals(1, data.getDataSets().values().size());
+		DataSet set = data.getDataSets().values().iterator().next();
+
+		// Make mutable copy
+		expectedPatientIdentifiers = new HashSet<String>(expectedPatientIdentifiers);
+
+		// Check the patient name of each row is in the expected set
+		for (DataSetRow row : set) {
+			List<PatientIdentifier> patientIdentifiers = (List<PatientIdentifier>)row.getColumnValue(identifierColumn);
+			PatientIdentifier patientIdentifier = patientIdentifiers.get(0);
+			String patientIdentifierVal = patientIdentifier != null ? patientIdentifier.getIdentifier() : null;
+			Assert.assertTrue("Patient identifier '" + patientIdentifierVal + "' not expected", expectedPatientIdentifiers.contains(patientIdentifierVal));
+			expectedPatientIdentifiers.remove(patientIdentifierVal);
+		}
+	}
+
+	/**
+	 * Prints report data to the console
+	 * @param data the report data
+	 * @throws java.io.IOException if error occurs
+	 */
+	public static void printReport(ReportData data) throws IOException {
+		System.out.println("------------ " + data.getDefinition().getName() + " -------------");
+		new TsvReportRenderer().render(data, null, System.out);
+		System.out.println("-------------------------------");
 	}
 }

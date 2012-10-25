@@ -13,13 +13,18 @@
  */
 package org.openmrs.module.kenyaemr.report;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.PatientProgram;
+import org.openmrs.Concept;
+import org.openmrs.PatientIdentifier;
 import org.openmrs.Program;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyaemr.test.TestUtils;
+import org.openmrs.module.reporting.dataset.DataSet;
+import org.openmrs.module.reporting.dataset.DataSetRow;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
@@ -27,47 +32,58 @@ import org.openmrs.module.reporting.report.definition.service.ReportDefinitionSe
 import org.openmrs.module.reporting.report.renderer.TsvReportRenderer;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
-import java.text.SimpleDateFormat;
+import java.io.IOException;
+import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
+import java.util.Set;
 
 public class DecliningCD4ReportTest extends BaseModuleContextSensitiveTest {
 
-    @Before
-    public void beforeEachTest() throws Exception {
-        executeDataSet("org/openmrs/module/kenyaemr/include/testData.xml");
-    }
+	@Before
+	public void beforeEachTest() throws Exception {
+		executeDataSet("org/openmrs/module/kenyaemr/include/testData.xml");
+	}
 
-    @Test
-    public void testReport() throws Exception {
-        // enroll 6 and 7 in the HIV Program
-        PatientService ps = Context.getPatientService();
-        ProgramWorkflowService pws = Context.getProgramWorkflowService();
-        Program hivProgram = pws.getPrograms("HIV Program").get(0);
-        for (int i = 6; i <= 7; ++i) {
-            PatientProgram pp = new PatientProgram();
-            pp.setPatient(ps.getPatient(i));
-            pp.setProgram(hivProgram);
-            pp.setDateEnrolled(new Date());
-            pws.savePatientProgram(pp);
-        }
+	@Test
+	public void testReport() throws Exception {
 
-        ReportManager report = new DecliningCD4Report();
-        ReportDefinition rd = report.getReportDefinition();
+		// Get HIV Program
+		ProgramWorkflowService pws = Context.getProgramWorkflowService();
+		Program hivProgram = pws.getPrograms("HIV Program").get(0);
 
+		// Enroll patients #6, #7 and #8 in the HIV Program
+		PatientService ps = Context.getPatientService();
+		for (int i = 6; i <= 8; ++i) {
+			TestUtils.enrollInProgram(ps.getPatient(i), hivProgram, new Date());
+		}
 
-        EvaluationContext ec = new EvaluationContext();
-        SimpleDateFormat ymd = new SimpleDateFormat("yyyy-MM-dd");
-        try {
-            ReportData data = Context.getService(ReportDefinitionService.class).evaluate(rd, ec);
-            printOutput(data);
-        } catch (Exception e) {
-            e.toString();
-        }
-    }
+		// Give patients #7 and #8 a CD4 count 180 days ago
+		Concept cd4 = Context.getConceptService().getConcept(5497);
+		Calendar calendar = Calendar.getInstance();
+		calendar.add(Calendar.DATE, -180);
+		TestUtils.saveObs(Context.getPatientService().getPatient(7), cd4, 123d, calendar.getTime());
+		TestUtils.saveObs(Context.getPatientService().getPatient(8), cd4, 123d, calendar.getTime());
 
-    private void printOutput(ReportData data) throws Exception {
-        System.out.println(data.getDefinition().getName());
-        new TsvReportRenderer().render(data, null, System.out);
-    }
+		// Give patient #7 a lower CD4 count today
+		TestUtils.saveObs(Context.getPatientService().getPatient(7), cd4, 120d, new Date());
 
+		// Give patient #8 a higher CD4 count today
+		TestUtils.saveObs(Context.getPatientService().getPatient(8), cd4, 126d, new Date());
+
+		Context.flushSession();
+
+		ReportManager report = new DecliningCD4Report();
+		ReportDefinition rd = report.getReportDefinition();
+		EvaluationContext ec = new EvaluationContext();
+
+		try {
+			ReportData data = Context.getService(ReportDefinitionService.class).evaluate(rd, ec);
+
+			TestUtils.checkPatientAlertListReport(Collections.singleton("1321200001"), "HIV Unique ID", data);
+			TestUtils.printReport(data);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }

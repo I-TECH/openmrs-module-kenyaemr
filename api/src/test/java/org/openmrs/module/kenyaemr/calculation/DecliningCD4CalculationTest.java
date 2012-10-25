@@ -53,21 +53,22 @@ public class DecliningCD4CalculationTest extends BaseModuleContextSensitiveTest 
 
 		// Enroll patients #6, #7 and #8 in the HIV Program
 		PatientService ps = Context.getPatientService();
-		for (int i = 6; i <= 7; ++i) {
+		for (int i = 6; i <= 8; ++i) {
 			TestUtils.enrollInProgram(ps.getPatient(i), hivProgram, new Date());
 		}
 
 		// Give patients #7 and #8 a CD4 count 180 days ago
+		Concept cd4 = Context.getConceptService().getConcept(5497);
 		Calendar calendar = Calendar.getInstance();
 		calendar.add(Calendar.DATE, -180);
-		saveCD4Count(Context.getPatientService().getPatient(7), 123d, calendar.getTime());
-		saveCD4Count(Context.getPatientService().getPatient(8), 123d, calendar.getTime());
+		TestUtils.saveObs(Context.getPatientService().getPatient(7), cd4, 123d, calendar.getTime());
+		TestUtils.saveObs(Context.getPatientService().getPatient(8), cd4, 123d, calendar.getTime());
 
 		// Give patient #7 a lower CD4 count today
-		saveCD4Count(Context.getPatientService().getPatient(7), 120d, new Date());
+		TestUtils.saveObs(Context.getPatientService().getPatient(7), cd4, 120d, new Date());
 
 		// Give patient #8 a higher CD4 count today
-		saveCD4Count(Context.getPatientService().getPatient(8), 126d, new Date());
+		TestUtils.saveObs(Context.getPatientService().getPatient(8), cd4, 126d, new Date());
 
 		Context.flushSession();
 
@@ -78,18 +79,5 @@ public class DecliningCD4CalculationTest extends BaseModuleContextSensitiveTest 
 		Assert.assertTrue((Boolean) resultMap.get(7).getValue()); // has decline in CD4
 		Assert.assertFalse((Boolean) resultMap.get(8).getValue()); // has increase in CD4
 		Assert.assertFalse((Boolean) resultMap.get(999).getValue()); // not in HIV Program
-	}
-
-	/**
-	 * Helper method to save a CD4 obs
-	 * @param patient the patient
-	 * @param count the CD4 count
-	 * @param date the date
-	 */
-	public static void saveCD4Count(Patient patient, double count, Date date) {
-		Concept cd4 = Context.getConceptService().getConcept(5497);
-		Obs obs = new Obs(patient, cd4, date, null);
-		obs.setValueNumeric(count);
-		Context.getObsService().saveObs(obs, null);
 	}
 }
