@@ -15,6 +15,7 @@ package org.openmrs.module.kenyaemr.report;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.Concept;
 import org.openmrs.PatientProgram;
 import org.openmrs.Program;
 import org.openmrs.api.PatientService;
@@ -29,6 +30,8 @@ import org.openmrs.module.reporting.report.renderer.TsvReportRenderer;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 
 public class MissedAppointmentsOrDefaultedReportTest extends BaseModuleContextSensitiveTest {
@@ -51,18 +54,30 @@ public class MissedAppointmentsOrDefaultedReportTest extends BaseModuleContextSe
 			TestUtils.enrollInProgram(ps.getPatient(i), hivProgram, new Date());
 		}
 
+		// Give patient #7 a return visit obs of 10 days ago
+		Concept returnVisit = Context.getConceptService().getConcept(5096);
+		Calendar calendar = Calendar.getInstance();
+		calendar.add(Calendar.DATE, -10);
+		TestUtils.saveObs(Context.getPatientService().getPatient(7), returnVisit, calendar.getTime(), calendar.getTime());
+
+		// Give patient #8 a return visit obs of 10 days in the future
+		calendar = Calendar.getInstance();
+		calendar.add(Calendar.DATE, 10);
+		TestUtils.saveObs(Context.getPatientService().getPatient(8), returnVisit, calendar.getTime(), calendar.getTime());
+
+		Context.flushSession();
+
         ReportManager report = new MissedAppointmentsOrDefaultedReport();
         ReportDefinition rd = report.getReportDefinition();
         EvaluationContext ec = new EvaluationContext();
 
-        SimpleDateFormat ymd = new SimpleDateFormat("yyyy-MM-dd");
-
         try {
             ReportData data = Context.getService(ReportDefinitionService.class).evaluate(rd, ec);
 
+			TestUtils.checkPatientAlertListReport(Collections.singleton("1321200001"), "HIV Unique ID", data);
 			TestUtils.printReport(data);
         } catch (Exception e) {
-            e.toString();
+            e.printStackTrace();
         }
     }
 }
