@@ -17,8 +17,7 @@ package org.openmrs.module.kenyaemr.report;
 import org.openmrs.module.kenyaemr.calculation.LostToFollowUpCalculation;
 import org.springframework.stereotype.Component;
 
-// Commented out since the underlying calculation is not implemented correctly
-// @Component
+@Component
 public class LostToFollowReport extends PatientAlertListReportManager {
 
     public LostToFollowReport() {

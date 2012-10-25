@@ -14,47 +14,60 @@
 
 package org.openmrs.module.kenyaemr.calculation;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
+import org.openmrs.Encounter;
+import org.openmrs.Patient;
 import org.openmrs.Program;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
+import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyaemr.MetadataConstants;
 
+/**
+ * Calculates whether a patient has been lost to follow up. Calculation returns true if patient
+ * is alive, enrolled in the HIV program, but hasn't had an encounter in X days
+ */
 public class LostToFollowUpCalculation extends KenyaEmrCalculation {
 
-    @Override
-    public String getShortMessage() {
-        return "Lost to Followup";
-    }
+	@Override
+	public String getShortMessage() {
+		return "Lost to Followup";
+	}
 
-    @Override
-    public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> arg1, PatientCalculationContext context) {
-        /*
-        Program hivProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.HIV_PROGRAM_UUID);
+	/**
+	 * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
+	 * @should calculate false for deceased patients
+	 * @should calculate false for patients not in HIV program
+	 * @should calculate false for patients with an encounter in last X days
+	 * @should calculate true for patient with no encounter in last X days
+	 */
+	@Override
+	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> arg1, PatientCalculationContext context) {
 
-        Set<Integer> inHivProgram = patientsThatPass(lastProgramEnrollment(hivProgram, cohort, context));
-        Set<Integer> alive = alivePatients(cohort, context);
-        CalculationResultMap lastObs = lastObs(MetadataConstants.RETURN_VISIT_DATE_CONCEPT_UUID, cohort, context);
+		Program hivProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.HIV_PROGRAM_UUID);
 
-        CalculationResultMap ret = new CalculationResultMap();
-        for (Integer ptId : cohort) {
-            boolean missedVisit = false;
-            if (inHivProgram.contains(ptId) && alive.contains(ptId)) {
-                Date returnDate = datetimeObsResultForPatient(lastObs, ptId);
-                missedVisit = daysSince(returnDate, context) > 90;
-            }
-            ret.put(ptId, new SimpleResult(missedVisit, this, context));
+		Set<Integer> alive = alivePatients(cohort, context);
+		Set<Integer> inHivProgram = patientsThatPass(lastProgramEnrollment(hivProgram, alive, context));
+		CalculationResultMap lastEncounters = lastEncounter(null, inHivProgram, context);
 
-        }
-        return ret;
-        */
-        throw new RuntimeException("This calculation is not yet implemented");
-    }
+		CalculationResultMap ret = new CalculationResultMap();
+		for (Integer ptId : cohort) {
+			boolean lost = false;
 
+			// Is patient alive and in the HIV program
+			if (inHivProgram.contains(ptId)) {
+
+				// Patient is lost if no encounters in last X days
+				Encounter lastEncounter = encounterResultForPatient(lastEncounters, ptId);
+				Date lastEncounterDate = lastEncounter != null ? lastEncounter.getEncounterDatetime() : null;
+				lost = lastEncounterDate == null || daysSince(lastEncounterDate, context) > 90;
+			}
+			ret.put(ptId, new SimpleResult(lost, this, context));
+
+		}
+		return ret;
+	}
 }
