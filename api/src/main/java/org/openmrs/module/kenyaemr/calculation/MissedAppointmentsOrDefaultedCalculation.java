@@ -53,9 +53,9 @@ public class MissedAppointmentsOrDefaultedCalculation extends KenyaEmrCalculatio
 
         Program hivProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.HIV_PROGRAM_UUID);
 
-        Set<Integer> inHivProgram = patientsThatPass(lastProgramEnrollment(hivProgram, cohort, context));
-        Set<Integer> alive = alivePatients(cohort, context);
-        CalculationResultMap lastReturnDateObss = lastObs(MetadataConstants.RETURN_VISIT_DATE_CONCEPT_UUID, cohort, context);
+		Set<Integer> alive = alivePatients(cohort, context);
+		Set<Integer> inHivProgram = patientsThatPass(lastProgramEnrollment(hivProgram, alive, context));
+        CalculationResultMap lastReturnDateObss = lastObs(MetadataConstants.RETURN_VISIT_DATE_CONCEPT_UUID, inHivProgram, context);
         CalculationResultMap lastEncounters = lastEncounter(null, cohort, context);
 
         CalculationResultMap ret = new CalculationResultMap();
@@ -63,7 +63,7 @@ public class MissedAppointmentsOrDefaultedCalculation extends KenyaEmrCalculatio
             boolean missedVisit = false;
 
             // Is patient alive and in the HIV program
-            if (alive.contains(ptId) && inHivProgram.contains(ptId)) {
+            if (inHivProgram.contains(ptId)) {
                 Date lastScheduledReturnDate = datetimeObsResultForPatient(lastReturnDateObss, ptId);
 
                 // Does patient have a scheduled return visit in the past
