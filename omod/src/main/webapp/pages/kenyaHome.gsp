@@ -3,33 +3,29 @@
 	def APPS_PER_ROW = 3;
 %>
 
-<style>
-	.app-button {
-		border: 1px black solid;
-		background-color: #e0e0e0;
-		padding: 0.3em;
-		margin: 0.5em;
-		float: left;
-		text-align: center;
-		width: 7.5em;
-		height: 5.5em;
-	}
-		
-	#homepage-welcome-message {
-		font-size: 1.1em;
-		font-weight: bold;
-		padding-top: 1em;
-	}
-	
-	#homepage-apps {
-		text-align: center;
-		padding-top: 0.5em;
-	}
-</style>
+<style type="text/css">
+#homepage-apps {
+	text-align: center;
+}
+.app-button {
+	border-bottom: 1px #BBB solid;
+	border-right: 1px #BBB solid;
+	background-color: #e0e0e0;
+	padding: 0.3em;
+	margin: 0.5em;
+	float: left;
+	text-align: center;
+	width: 7.5em;
+	height: 5.5em;
+	border-radius: 3px;
+}
 
-<div id="homepage-welcome-message">
-	Hello ${ ui.format(context.authenticatedUser) }, welcome to the Kenya OpenMRS EMR.
-</div>
+.app-button a {
+	color: #444;
+	font-weight: bold;
+	text-decoration: none;
+}
+</style>
 
 <div id="homepage-apps">	
 	<% apps.eachWithIndex { app, i -> %>

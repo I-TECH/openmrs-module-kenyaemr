@@ -1,26 +1,31 @@
-<style>
-	#alerts {
-		margin: 0.5em;
-	}
-	.alert {
-		color: black;
-		background-color: yellow;
-		border: 1px black solid;
-		margin-right: 0.5em;
-		padding: 0.2em;
-	}
+<style type="text/css">
+#selected-patient-alerts {
+	width: 50%;
+	float: left;
+	overflow: auto;
+	text-align: left;
+}
+
+#selected-patient-alerts > .alert {
+	color: #332;
+	background-color: yellow;
+	margin-right: 3px;
+	padding: 2px;
+	border-radius: 2px;
+	display: inline-block;
+}
 </style>
 
-<div id="alerts" style="display: none"></div>
+<div id="selected-patient-alerts" style="display: none"></div>
 
-<script>
+<script type="text/javascript">
 jq(function() {
 	ui.getFragmentActionAsJson('clinicalAlerts', 'getAlerts', { patientId: ${ patient.id } }, function(result) {
 		if (result) {
 			var html = jq.map(result, function(alertText) {
 				return '<span class="alert">' + alertText.shortMessage + '</span>';
 			}).join('');
-			jq('#alerts').append(html).show();
+			jq('#selected-patient-alerts').append(html).show();
 		}
 	});
 });

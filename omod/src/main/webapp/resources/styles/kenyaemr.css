@@ -1,3 +1,39 @@
+/********************************************
+ *
+ * General styles for KenyaEMR module
+ *
+ ********************************************/
+
+* {
+	font-family: "Lucida Grande", "Lucida Sans", Arial, sans-serif;
+}
+
+#page-header {
+	margin: 5px;
+}
+
+#running-app-header {
+	font-size: 0.9em;
+	color: white;
+	background-color: #404040;
+	border-bottom: 1px black solid;
+	padding: 4px 5px 4px 5px;
+}
+
+#running-app-home {
+	padding-right: 1em;
+	font-weight: bold;
+}
+
+#running-app-header a:link, #running-app-header a:visited {
+	color: white;
+	text-decoration: none;
+}
+
+#running-app-header a:hover {
+	text-decoration: underline;
+}
+
 #patient-col1 {
 	float: left;
 	padding-right: 4px;

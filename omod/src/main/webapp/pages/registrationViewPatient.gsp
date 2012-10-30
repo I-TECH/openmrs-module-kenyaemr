@@ -66,8 +66,8 @@
 						label: "End Visit",
 						/* classes: [ "padded" ], */
 						extra: "patient going home",
-						iconProvider: "uilibrary",
-						icon: "user_close_32.png"
+						iconProvider: "kenyaemr",
+						icon: "end_visit.png"
 					],
 					/* dialogOpts: """{ open: function() { jq('#check-out-form input[type=submit]').focus(); } }""", */
 					popupTitle: "Check Out",

@@ -72,7 +72,7 @@
 %>
 	<div id="visit-${ v.id }" class="active-visit <% if (selected) { %>selected-visit<% } else { %>selectable<% } %>">
 		<h4>
-			<img src="${ ui.resourceLink("kenyaemr", "images/checked_in_16.png") }"/>
+			<img src="${ ui.resourceLink("kenyaemr", "images/visit.png") }"/>
 			${ ui.format(v.visitType) }
 		</h4>
 		Location: ${ ui.format(v.location) } <br/>

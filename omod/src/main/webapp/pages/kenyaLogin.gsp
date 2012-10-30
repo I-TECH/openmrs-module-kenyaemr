@@ -41,7 +41,7 @@
 			<table class="centered">
 				<tr>
 					<td rowspan="5" width="300">
-						<img src="${ ui.resourceLink("kenyaemr", "images/logo_250.png") }"/>
+						<img src="${ ui.resourceLink("kenyaemr", "images/moh_logo_large.png") }"/>
 					</td>
 					<td colspan="2"><div style="height:100px;">&nbsp;</div></td>
 				</tr>

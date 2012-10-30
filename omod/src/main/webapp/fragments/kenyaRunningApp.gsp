@@ -6,25 +6,6 @@
 	def appLabel = running ? (appStatus?.app?.label ?: ui.message("appFramework.runningApp.unknownApp")) : null
 %>
 
-<style>
-	#running-app-header {
-		font-size: 0.9em;
-		color: white;
-		background-color: #404040;
-		border-bottom: 1px black solid;
-	}
-	#running-app-home {
-		padding-right: 1em;
-	}
-	#running-app-header a:link, #running-app-header a:visited {
-		color: white;
-		text-decoration: none;
-	}
-	#running-app-header a:hover {
-		text-decoration: underline;
-	}
-</style>
-
 <div id="running-app-header">
 	<span id="running-app-home" style="float: left">
 		<a href="/${ contextPath }/index.htm?<% if (config.context) { %>${ config.context }<% } %>">
