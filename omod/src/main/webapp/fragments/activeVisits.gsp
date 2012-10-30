@@ -18,12 +18,14 @@
 
 <div id="selected-patient-active-visits">
 	<small>Active visits</small>
-	<% if (visits) {
+	<%
+	if (visits) {
 		visits.each { visit ->
 	%>
 	<span class="visit">${ ui.format(visit.visitType) }</span>
-	<%   }
-	} else { %>
-	None
-	<% } %>
+	<%
+		}
+	} else {
+		print ui.message("general.none")
+	} %>
 </div>
