@@ -13,6 +13,7 @@ var obsData = {
 
 jq(function() {
 
+	var plotStyles = ['longdash', 'shortdot'];
 	var emrTextStyle = {
 		fontFamily: '"Lucida Grande", "Lucida Sans", Arial, sans-serif',
 		color: "#000"
@@ -35,14 +36,21 @@ jq(function() {
 			<% } %>
 		],
 		series: [
-			<% concepts.each { concept -> %>
+			<%
+			def conceptNum = 0;
+			concepts.each { concept ->
+			%>
 			{
 				name: '${ ui.format(concept) }',
+				dashStyle: plotStyles[${ conceptNum++ }],
 				data: obsData[${ concept.conceptId }]
 			},
 			<% } %>
 		],
-		legend: { itemStyle: emrTextStyle },
+		legend: {
+			itemStyle: emrTextStyle,
+			symbolWidth: 50
+		},
 		title: { text: null },
 		credits:{ enabled:false }
     });
