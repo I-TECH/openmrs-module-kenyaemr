@@ -1,3 +1,5 @@
+<% def kenyaEmrWebUtils = context.loadClass("org.openmrs.module.kenyaemr.util.KenyaEmrWebUtils") %>
+
 <table class="decorated" id="tblHistory">
 	<thead>
 	<tr>
@@ -16,7 +18,7 @@
 	<% } %>
 	<% data.each { date, results -> %>
 	<tr>
-		<td nowrap="nowrap">${ ui.format(date) }</td>
+		<td nowrap="nowrap"><%= kenyaEmrWebUtils.formatDateNoTime(date) %></td>
 		<% concepts.each { concept -> %>
 		<td>
 			<%
