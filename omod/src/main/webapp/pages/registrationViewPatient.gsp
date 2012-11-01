@@ -1,10 +1,10 @@
 <%
-	ui.decorateWith("standardKenyaEmrPage", [ patient: patient ])
+	ui.decorateWith("kenyaemr", "standardKenyaEmrPage", [ patient: patient ])
 
 	ui.includeCss("kenyaemr", "kenyaemr.css");
 %>
 
-<style>
+<style type="text/css">
 	fieldset {
 		margin-bottom: 0.6em;
 	}
@@ -37,7 +37,7 @@
 </style>
 
 <div id="patient-col1">
-	${ ui.includeFragment("patientOverallDetails", [
+	${ ui.includeFragment("kenyaemr", "patientOverallDetails", [
 			patient: patient,
 			visit: visit,
 			activeVisits: activeVisits
@@ -48,7 +48,7 @@
 
 <% /* Bill wants this, but I really don't think it fits. Consider putting in gray bar instead
 	<div style="float: right">
-		${ ui.includeFragment("widget/button", [
+		${ ui.includeFragment("uilibrary", "widget/button", [
 				iconProvider: "uilibrary",
 				icon: "user_search_32.png",
 				classes: [ "padded" ]
@@ -60,7 +60,7 @@
 
 		<% if (!visit.stopDatetime) { %>
 			<div style="float: right">
-				<%= ui.includeFragment("widget/popupForm", [
+				<%= ui.includeFragment("uilibrary", "widget/popupForm", [
 					id: "check-out-form",
 					buttonConfig: [
 						label: "End Visit",
@@ -76,8 +76,9 @@
 						[ label: "End Date and Time", formFieldName: "visit.stopDatetime", class: java.util.Date, initialValue: new Date(), fieldFragment: "field/java.util.Date.datetime" ]
 					],
 					fragment: "registrationUtil",
+					fragmentProvider: "kenyaemr",
 					action: "editVisit",
-					successCallbacks: [ "location.href = '${ ui.pageLink("registrationViewPatient", [ patientId: patient.id ]) }'" ],
+					successCallbacks: [ "location.href = '${ ui.pageLink("kenyaemr", "registrationViewPatient", [ patientId: patient.id ]) }'" ],
 					submitLabel: ui.message("general.submit"),
 					cancelLabel: ui.message("general.cancel"),
 					submitLoadingMessage: "Checking Out"
@@ -87,16 +88,16 @@
 		
 		<h4>Current ${ ui.format(visit.visitType) } Visit</h4>
 
-		${ ui.includeFragment("availableForms", [ visit: visit ]) }
+		${ ui.includeFragment("kenyaemr", "availableForms", [ visit: visit ]) }
 		
 	<% } else {
 		// do this here to avoid annoying template engine issue
-		def jsSuccess = "location.href = pageLink('registrationViewPatient', " + "{" + "patientId: ${ patient.id }, visitId: data.visitId" + "});"
+		def jsSuccess = "location.href = ui.pageLink('kenyaemr', 'registrationViewPatient', " + "{" + "patientId: ${ patient.id }, visitId: data.visitId" + "});"
 	%>
 	
 		<h4>No current visit</h4>
 
-		<%= ui.includeFragment("widget/popupForm", [
+		<%= ui.includeFragment("uilibrary", "widget/popupForm", [
 				id: "check-in-form",
 				buttonConfig: [
 					iconProvider: "uilibrary",
@@ -120,6 +121,7 @@
 					"startDatetime": [ fieldFragment: "field/java.util.Date.datetime" ]
 				],
 				fragment: "registrationUtil",
+				fragmentProvider: "kenyaemr",
 				action: "startVisit",
 				successCallbacks: [ jsSuccess ],
 				submitLabel: ui.message("general.submit"),
@@ -134,8 +136,8 @@
 
 <% if (visit) { %>
 	
-	${ ui.includeFragment("showHtmlForm", [ id: "showHtmlForm", style: "display: none" ]) }
+	${ ui.includeFragment("kenyaemr", "showHtmlForm", [ id: "showHtmlForm", style: "display: none" ]) }
 	
-	${ ui.includeFragment("dialogSupport") }
+	${ ui.includeFragment("kenyaemr", "dialogSupport") }
 
 <% } %>

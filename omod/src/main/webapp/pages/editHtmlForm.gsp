@@ -1,5 +1,5 @@
 <%
-	ui.decorateWith("standardKenyaEmrPage", [ patient: patient ])
+	ui.decorateWith("kenyaemr", "standardKenyaEmrPage", [ patient: patient ])
 %>
 
 <div style="border-bottom: 2px gray dashed; font-size: 0.8em; margin-bottom: 0.5em;">
@@ -10,7 +10,7 @@
 	<div style="clear: both"></div>
 </div>
 
-<script>
+<script type="text/javascript">
 	jq(function() {
 		jq('#cancel-form').click(function() {
 			location.href = '${ returnUrl }';
@@ -18,7 +18,7 @@
 	});
 </script>
 
-${ ui.includeFragment("enterHtmlForm", [
+${ ui.includeFragment("kenyaemr", "enterHtmlForm", [
 		patient: patient,
 		encounter: encounter,
 		returnUrl: returnUrl

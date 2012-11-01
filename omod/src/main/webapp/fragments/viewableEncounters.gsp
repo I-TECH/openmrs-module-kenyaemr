@@ -1,7 +1,7 @@
 <%
 	config.require("encounters")
 %>
-<style>
+<style type="text/css">
 	.encounter-panel {
 		border: 1px #e0e0e0 solid;
 		cursor: pointer;
@@ -13,7 +13,7 @@
 	}
 </style>
 
-<script>
+<script type="text/javascript">
 	jq(function() {
 		jq('.encounter-panel').click(function(event) {
 			var encId = jq(this).find('input[name=encounterId]').val();
@@ -26,5 +26,5 @@
 </script>
 
 <% config.encounters.each { %>
-	${ ui.includeFragment("encounterPanel", [ encounter: it ]) }
+	${ ui.includeFragment("kenyaemr", "encounterPanel", [ encounter: it ]) }
 <% } %>

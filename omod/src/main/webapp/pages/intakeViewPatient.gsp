@@ -1,10 +1,10 @@
 <%
-	ui.decorateWith("standardKenyaEmrPage", [ patient: patient ])
+	ui.decorateWith("kenyaemr", "standardKenyaEmrPage", [ patient: patient ])
 	
 	ui.includeCss("kenyaemr", "kenyaemr.css");
 %>
 
-<style>
+<style type="text/css">
 	fieldset {
 		margin-bottom: 0.6em;
 	}
@@ -49,7 +49,7 @@
 </style>
 
 <div id="col1">
-	${ ui.includeFragment("patientOverallDetails", [
+	${ ui.includeFragment("kenyaemr", "patientOverallDetails", [
 			patient: patient,
 			visit: visit,
 			activeVisits: activeVisits
@@ -63,17 +63,17 @@
 	
 	<% if (visit) { %>
 
-		${ ui.includeFragment("availableForms", [ visit: visit ]) }	
+		${ ui.includeFragment("kenyaemr", "availableForms", [ visit: visit ]) }
 		
 	<% } else { %>
 
-		${ ui.includeFragment("widget/button", [
+		${ ui.includeFragment("uilibrary", "widget/button", [
 				iconProvider: "uilibrary",
 				icon: "user_add_32.png",
 				label: "Go to Registration",
 				classes: [ "padded" ],
 				extra: "to Check In",
-				href: ui.pageLink("registrationViewPatient", [ patientId: patient.id ])
+				href: ui.pageLink("kenyaemr", "registrationViewPatient", [ patientId: patient.id ])
 			]) }
 
 	<% } %>
@@ -84,8 +84,8 @@
 
 <% if (visit) { %>
 	
-	${ ui.includeFragment("showHtmlForm", [ id: "showHtmlForm", style: "display: none" ]) }
+	${ ui.includeFragment("kenyaemr", "showHtmlForm", [ id: "showHtmlForm", style: "display: none" ]) }
 	
-	${ ui.includeFragment("dialogSupport") }
+	${ ui.includeFragment("kenyaemr", "dialogSupport") }
 
 <% } %>

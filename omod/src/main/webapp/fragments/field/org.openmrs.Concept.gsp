@@ -18,7 +18,7 @@ if (config?.config?.type == 'radio')
 	widget = "radioButtons"
 %>
 
-<%= ui.includeFragment("widget/${ widget }", [
+<%= ui.includeFragment("uilibrary", "widget/${ widget }", [
 		id: config.id,
         selected: [ config?.initialValue?.id ],
         formFieldName: config.formFieldName,
@@ -28,7 +28,7 @@ if (config?.config?.type == 'radio')
 ]) %>
 
 <% if (config.parentFormId) { %>
-<script>
+<script type="text/javascript">
     FieldUtils.defaultSubscriptions('${ config.parentFormId }', '${ config.formFieldName }', '${ config.id }');
     jq(function() {
     	jq('#${ config.id }').change(function() {

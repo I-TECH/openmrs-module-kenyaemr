@@ -17,7 +17,7 @@
 	<div class="results"></div>
 </div>
 
-<script>
+<script type="text/javascript">
 subscribe("${ config.id }/show", function(event, data) {
 	<% if (config.numResultsFormatter) { %>
 		jq('#${ config.id } > .num-results').html(${ config.numResultsFormatter }(data));

@@ -9,7 +9,7 @@
 		<% } else if (it.hiddenInputName) { %>
 			<input type="hidden" name="${ it.hiddenInputName }" value="${ ui.convert(it.value, java.lang.String) }"/>
 		<% } else { %>
-			<td><%= ui.includeFragment("widget/labeledField", it) %></td>
+			<td><%= ui.includeFragment("uilibrary", "widget/labeledField", it) %></td>
 		<% } %>
 	<% } %>
 	</tr>

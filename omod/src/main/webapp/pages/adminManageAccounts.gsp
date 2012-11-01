@@ -1,8 +1,8 @@
 <%
-	ui.decorateWith("standardKenyaEmrPage")
+	ui.decorateWith("kenyaemr", "standardKenyaEmrPage")
 %>
 
-<style>
+<style type="text/css">
 	#create-button {
 		position: fixed;
 		bottom: 0;
@@ -20,7 +20,7 @@
 		Find an Account
 	</legend>
 	
-	${ ui.includeFragment("widget/form", [
+	${ ui.includeFragment("uilibrary", "widget/form", [
 			id: "accountSearch",
 			fields: [
 				[ label: "Name or Username", formFieldName: "q", class: java.lang.String ],
@@ -35,20 +35,20 @@
 </fieldset>
 
 <fieldset style="border: none">
-	${ ui.includeFragment("accountList", [
+	${ ui.includeFragment("kenyaemr", "accountList", [
 		id: "results",
 		page: "adminEditAccount"
 	]) }
 </fieldset>
 
-${ ui.includeFragment("widget/button", [
+${ ui.includeFragment("uilibrary", "widget/button", [
 	id: "create-button",
 	iconProvider: "uilibrary",
 	icon: "user_business_add_32.png",
 	label: "Create Account",
-	href: ui.pageLink("adminEditAccount") ]) }
+	href: ui.pageLink("kenyaemr", "adminEditAccount") ]) }
 
-<script>
+<script type="text/javascript">
 	subscribe("accountSearch/results", function(event, data) {
 		publish("results/show", data);
 	});

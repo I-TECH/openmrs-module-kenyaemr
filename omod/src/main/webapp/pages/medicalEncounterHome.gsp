@@ -1,7 +1,7 @@
 <%
-	ui.decorateWith("standardKenyaEmrPage")
+	ui.decorateWith("kenyaemr", "standardKenyaEmrPage")
 %>
-<style>
+<style type="text/css">
 	#create-patient {
 		position: fixed;
 		bottom: 0;
@@ -9,12 +9,12 @@
 	}
 </style>
 
-${ ui.includeFragment("patientSearch", [ page: "medicalEncounterViewPatient" ]) }
+${ ui.includeFragment("kenyaemr", "patientSearch", [ page: "medicalEncounterViewPatient" ]) }
 
-${ ui.includeFragment("widget/button", [
+${ ui.includeFragment("uilibrary", "widget/button", [
 	id: "create-patient",
 	iconProvider: "uilibrary",
 	icon: "add1-32.png",
 	label: "Patient Not Found?",
 	extra: "Registration -> Create New",
-	href: ui.pageLink("registrationCreatePatient") ]) }
+	href: ui.pageLink("kenyaemr", "registrationCreatePatient") ]) }

@@ -72,7 +72,7 @@ public class PatientSearchFragmentController {
 		for (SimpleObject so : matching) {
 			Visit v = ptIds.get(so.get("patientId"));
 			if (v != null) {
-				String imgUrl = ui.resourceLink("kenyaemr", "images/checked_in_16.png");
+				String imgUrl = ui.resourceLink("kenyaemr", "images/visit.png");
 				so.put("extra", "<img src=\"" + imgUrl + "\"/> <small>" + ui.format(v.getVisitType()) + "<br/>" + ui.format(v.getStartDatetime()) + "</small>");
 			}
 		}
@@ -112,7 +112,7 @@ public class PatientSearchFragmentController {
 			if (v == null) {
 				i.remove();
 			} else {
-				String imgUrl = ui.resourceLink("kenyaemr", "images/checked_in_16.png");
+				String imgUrl = ui.resourceLink("kenyaemr", "images/visit.png");
 				candidate.put("extra", "<img src=\"" + imgUrl + "\"/> <small>" + ui.format(v.getVisitType()) + "<br/>" + ui.format(v.getStartDatetime()) + "</small>");
 			}
 		}

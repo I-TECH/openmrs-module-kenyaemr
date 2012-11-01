@@ -17,6 +17,7 @@ import org.apache.commons.lang.StringUtils;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.idgen.IdentifierSource;
+import org.openmrs.module.kenyaemr.KenyaEmrConstants;
 import org.openmrs.module.kenyaemr.api.ConfigurationRequiredException;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.ui.framework.UiUtils;
@@ -49,7 +50,7 @@ public class AdminFirstTimeSetupPageController {
 				service.setupHivUniqueIdentifierSource(hivIdentifierSourceStart);
 			}
 			session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "First-Time Setup Completed");
-			return "redirect:" + ui.pageLink("kenyaHome");
+			return "redirect:" + ui.pageLink(KenyaEmrConstants.MODULE_ID, "kenyaHome");
 		}
 		
 		if (!service.isConfigured()) {

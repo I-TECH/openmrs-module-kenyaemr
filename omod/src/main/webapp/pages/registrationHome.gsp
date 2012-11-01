@@ -1,8 +1,8 @@
 <%
-	ui.decorateWith("standardKenyaEmrPage")
+	ui.decorateWith("kenyaemr", "standardKenyaEmrPage")
 %>
 
-<style>
+<style type="text/css">
 .first-column, .second-column {
 	float: left;
 }
@@ -24,23 +24,23 @@
 	<h1>Registration App</h1>
 	<h3>Welcome!</h3>
 	
-	${ ui.includeFragment("widget/button", [ icon: "search_32.png", label: "Find a Patient", href: ui.pageLink("registrationSearch") ]) }
+	${ ui.includeFragment("uilibrary", "widget/button", [ icon: "search_32.png", label: "Find a Patient", href: ui.pageLink("kenyaemr", "registrationSearch") ]) }
 </div>
 
 <div class="second-column">
 <!--
 	<h2>Checked In Patients</h2>
-	${ ui.includeFragment("patientList", [ id: "checkedInPatients", page: "registrationViewPatient" ]) }
+	${ ui.includeFragment("kenyaemr", "patientList", [ id: "checkedInPatients", page: "registrationViewPatient" ]) }
 -->
 	
-	<h2>Today's Schedule <a href="${ ui.pageLink("dailySchedule") }" style="font-size: 0.6em;">(calendar)</a></h2>
-	${ ui.includeFragment("dailySchedule", [ id: "todaysSchedule", page: "registrationViewPatient" ]) }
+	<h2>Today's Schedule <a href="${ ui.pageLink("kenyaemr", "dailySchedule") }" style="font-size: 0.6em;">(calendar)</a></h2>
+	${ ui.includeFragment("kenyaemr", "dailySchedule", [ id: "todaysSchedule", page: "registrationViewPatient" ]) }
 	
 	<br/>
 	<div id="end-of-day">
 		<h3>End-of-Day Tasks</h3>
 		Close all open visits of the following types:
-		<form method="post" action="${ ui.actionLink("registrationUtil", "closeActiveVisits") }">
+		<form method="post" action="${ ui.actionLink("kenyaemr", "registrationUtil", "closeActiveVisits") }">
 			<div class="form-data">
 			</div>
 			<input type="submit" value="Close Visits"/>
@@ -49,8 +49,8 @@
 </div>
 
 
-<script>
-	getJsonAsEvent(actionLink('patientSearch', 'withActiveVisits'), 'checkedInPatients/show');
+<script type="text/javascript">
+	getJsonAsEvent(actionLink('kenyemr', 'patientSearch', 'withActiveVisits'), 'checkedInPatients/show');
 	jq.getJSON(actionLink('registrationUtil', 'activeVisitTypes'), function(result) {
 		if (result.length == 0) {
 			return;

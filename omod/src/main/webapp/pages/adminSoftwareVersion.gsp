@@ -1,5 +1,5 @@
 <%
-	ui.decorateWith("standardKenyaEmrPage")
+	ui.decorateWith("kenyaemr", "standardKenyaEmrPage")
 %>
 
 <h2>Software Version</h2>
@@ -36,7 +36,7 @@
 	<pre>${ log.join("\n") }</pre>
 <% } %>
 
-<script>
+<script type="text/javascript">
 jq(function() {
 	jq('#file-upload-form').submit(function() {
 		ui.openLoadingDialog('Uploading. This may take a while...');

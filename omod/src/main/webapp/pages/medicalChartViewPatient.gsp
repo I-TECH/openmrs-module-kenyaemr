@@ -1,7 +1,8 @@
+
 <%
-	ui.decorateWith("standardKenyaEmrPage", [ patient: patient ])
+	ui.decorateWith("kenyaemr", "standardKenyaEmrPage", [ patient: patient ])
 %>
-<style>
+<style type="text/css">
 #col1, #col2 {
 	float: left;
 	height: 100%;
@@ -39,7 +40,7 @@ fieldset {
 }
 </style>
 
-<script>
+<script type="text/javascript">
 	jq(function() {
 		ui.applyAlternatingClasses('table.decorated tbody', 'alternate-shading-even', 'alternate-shading-odd');
 	});
@@ -49,7 +50,7 @@ fieldset {
 
 	<div class="link-button<% if (selection == "overview") { %> selected<% } %>">
 		<span class="title">
-			<a href="${ ui.pageLink("medicalChartViewPatient", [ patientId: patient.id ]) }">
+			<a href="${ ui.pageLink("kenyaemr", "medicalChartViewPatient", [ patientId: patient.id ]) }">
 				Overview
 			</a>
 		</span>
@@ -58,7 +59,7 @@ fieldset {
 	<% oneTimeForms.each { %>
 	<div class="link-button<% if (selection == "form-${ it.formUuid }") { %> selected<% } %>">
 		<span class="title">
-			<a href="${ ui.pageLink("medicalChartViewPatient", [ patientId: patient.id, formUuid: it.formUuid ]) }">
+			<a href="${ ui.pageLink("kenyaemr", "medicalChartViewPatient", [ patientId: patient.id, formUuid: it.formUuid ]) }">
 				${ it.label }
 			</a>
 		</span>
@@ -68,7 +69,7 @@ fieldset {
 	<% programs.each { %>
 	<div class="link-button<% if (selection == "program-${ it.id }") { %> selected<% } %>">
 		<span class="title">
-			<a href="${ ui.pageLink("medicalChartViewPatient", [ patientId: patient.id, patientProgramId: it.id ]) }">
+			<a href="${ ui.pageLink("kenyaemr", "medicalChartViewPatient", [ patientId: patient.id, patientProgramId: it.id ]) }">
 				${ ui.format(it.program) }
 			</a>
 		</span>
@@ -97,7 +98,7 @@ fieldset {
 	<% visits.each { visit -> %>
 	<div class="link-button<% if (selection == "visit-${ visit.id }") { %> selected<% } %>">
 		<span class="title">
-			<a href="${ ui.pageLink("medicalChartViewPatient", [ patientId: patient.id, visitId: visit.id ]) }">
+			<a href="${ ui.pageLink("kenyaemr", "medicalChartViewPatient", [ patientId: patient.id, visitId: visit.id ]) }">
 				${ ui.format(visit.visitType) } Visit
 			</a>
 		</span>
@@ -130,7 +131,7 @@ fieldset {
 		<br/>
 		<u>Forms</u>
 		<% if (visit.encounters) { %>
-		${ ui.includeFragment("viewableEncounters", [ encounters: visit.encounters ]) }
+		${ ui.includeFragment("kenyaemr", "viewableEncounters", [ encounters: visit.encounters ]) }
 		<% } else { %>
 		<br/>
 		None
@@ -142,7 +143,7 @@ fieldset {
 	<h3>${ ui.format(form) }</h3>
 
 	<% if (encounter) { %>
-	${ ui.includeFragment("showHtmlForm", [ id: "showHtmlForm" ]) }
+	${ ui.includeFragment("kenyaemr", "showHtmlForm", [ id: "showHtmlForm" ]) }
 
 	<script type="text/javascript">
 		jq(function() {
@@ -178,8 +179,8 @@ fieldset {
 	%>
 	<table>
 		<tr>
-			<td style="vertical-align: top">${ ui.includeFragment("obsTableByDate", [concepts: conceptList]) }</td>
-			<td style="vertical-align: top">${ ui.includeFragment("obsGraphByDate", [concepts: conceptList]) }</td>
+			<td style="vertical-align: top">${ ui.includeFragment("kenyaemr", "obsTableByDate", [concepts: conceptList]) }</td>
+			<td style="vertical-align: top">${ ui.includeFragment("kenyaemr", "obsGraphByDate", [concepts: conceptList]) }</td>
 		</tr>
 	</table>
 	<% } %>
@@ -187,8 +188,8 @@ fieldset {
 
 <% if (visit) { %>
 
-${ ui.includeFragment("showHtmlForm", [ id: "showHtmlForm", style: "display: none" ]) }
+${ ui.includeFragment("kenyaemr", "showHtmlForm", [ id: "showHtmlForm", style: "display: none" ]) }
 
-${ ui.includeFragment("dialogSupport") }
+${ ui.includeFragment("kenyaemr", "dialogSupport") }
 
 <% } %>

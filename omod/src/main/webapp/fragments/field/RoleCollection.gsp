@@ -21,7 +21,7 @@
 </div>
 
 <% if (config.parentFormId) { %>
-	<script>
+	<script type="text/javascript">
 	    FieldUtils.defaultSubscriptions('${ config.parentFormId }', '${ config.formFieldName }', '${ config.id }');
 	    jq(function() {
 	    	jq('#${ config.id } input[type=checkbox]').change(function() {

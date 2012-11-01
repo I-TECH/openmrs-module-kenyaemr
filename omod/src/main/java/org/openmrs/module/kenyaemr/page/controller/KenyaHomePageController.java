@@ -22,6 +22,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.appframework.AppDescriptor;
 import org.openmrs.module.appframework.AppUiUtil;
 import org.openmrs.module.appframework.api.AppFrameworkService;
+import org.openmrs.module.kenyaemr.KenyaEmrConstants;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.page.PageModel;
@@ -43,7 +44,7 @@ public class KenyaHomePageController {
 		}
 		
 		if (!Context.getService(KenyaEmrService.class).isConfigured()) {
-			return "redirect:" + ui.pageLink("adminFirstTimeSetup");
+			return "redirect:" + ui.pageLink(KenyaEmrConstants.MODULE_ID, "adminFirstTimeSetup");
 		}
 		
 		if (clearContext != null && clearContext) {

@@ -35,8 +35,8 @@
 
 	<properties>
 		<openMRSVersion>1.9.1</openMRSVersion>
-		<uiframeworkVersion>1.7</uiframeworkVersion>
-		<uilibraryVersion>1.4</uilibraryVersion>
+		<uiframeworkVersion>1.9</uiframeworkVersion>
+		<uilibraryVersion>1.5</uilibraryVersion>
 		<appframeworkVersion>1.3</appframeworkVersion>
 		<metadatasharingVersion>1.0.10</metadatasharingVersion>
 		<htmlformentryVersion>2.0</htmlformentryVersion>

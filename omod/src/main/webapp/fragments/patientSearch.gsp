@@ -6,7 +6,7 @@
 	def defaultWhich = config.defaultWhich ?: "checked-in"
 %>
 
-<style>
+<style type="text/css">
 	#search {
 		float: left;
 	}
@@ -17,7 +17,7 @@
 		Find a Patient
 	</legend>
 	
-	<%= ui.includeFragment("widget/form", [
+	<%= ui.includeFragment("uilibrary", "widget/form", [
 			id: "patientSearch",
 			fields: [
 				[ label: "Which patients", fragment: "widget/radioButtons", formFieldName: "which",
@@ -33,6 +33,7 @@
 				[ label: "Age", formFieldName: "age", class: java.lang.Integer ]
 			],
 			fragment: "patientSearch",
+			fragmentProvider: "kenyaemr",
 			action: "search",
 			submitOnEvent: "patientSearch/changed",
 			resetOnSubmit: false,
@@ -41,14 +42,14 @@
 </fieldset>
 
 <fieldset style="border: none">
-	${ ui.includeFragment("patientList", [
+	${ ui.includeFragment("kenyaemr", "patientList", [
 		id: "results",
 		showNumResults: true,
 		page: config.page
 	]) }
 </fieldset>
 
-<script>
+<script type="text/javascript">
 	subscribe("patientSearch/results", function(event, data) {
 		publish("results/show", data);
 	});

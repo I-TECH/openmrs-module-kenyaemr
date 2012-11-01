@@ -14,6 +14,7 @@
 package org.openmrs.module.kenyaemr.page.controller;
 
 import org.openmrs.module.appframework.AppUiUtil;
+import org.openmrs.module.kenyaemr.KenyaEmrConstants;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.session.Session;
@@ -29,7 +30,7 @@ public class IntakeHomePageController {
 	                         Session session, UiUtils ui) {
 		AppUiUtil.startApp("kenyaemr.intake", session);
 		if (patientId != null) {
-			return "redirect:" + ui.pageLink("intakeViewPatient", SimpleObject.create("patientId", patientId));
+			return "redirect:" + ui.pageLink(KenyaEmrConstants.MODULE_ID, "intakeViewPatient", SimpleObject.create("patientId", patientId));
 		} else {
 			return null;
 		}

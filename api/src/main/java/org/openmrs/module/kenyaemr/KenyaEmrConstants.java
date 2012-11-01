@@ -20,6 +20,11 @@ package org.openmrs.module.kenyaemr;
 public class KenyaEmrConstants {
 
 	/**
+	 * Module ID
+	 */
+	public static final String MODULE_ID = "kenyaemr";
+
+	/**
 	 * Global property names
 	 */
 	public static final String GP_DEFAULT_LOCATION = "kenyaemr.defaultLocation";

@@ -25,7 +25,7 @@ public class HomepageOverrideController {
 	
 	@RequestMapping("/index.htm")
 	public String showOurHomepage() {
-		return "forward:/pages/kenyaHome.page";
+		return "forward:/kenyaemr/kenyaHome.page";
 	}
 	
 	@RequestMapping("/login.htm")

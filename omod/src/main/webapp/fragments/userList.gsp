@@ -9,11 +9,11 @@
 	def clickFunction = null
 	if (config.page) {
 		clickFunction = """function userPanelClicked() {
-				location.href = pageLink('${ config.page }', { userId: jq(this).find('input[name=userId]').val() });
+				location.href = ui.pageLink('kenyaemr', '${ config.page }', { userId: jq(this).find('input[name=userId]').val() });
 			}"""
 	}
 %>
-<script>
+<script type="text/javascript">
 	var userPanelOpts = {
 		icon: '<img width="32" height="32" src="${ ui.resourceLink('uilibrary', 'images/user_32.png') }"/>',
 		title: function(user) {
@@ -37,7 +37,7 @@
 	}
 </script>
 
-<%= ui.includeFragment("widget/panelList", config.merge([
+<%= ui.includeFragment("kenyaemr", "widget/panelList", config.merge([
 		itemFormatter: "formatUserAsPanel",
 		clickFunction: clickFunction
 	])) %>

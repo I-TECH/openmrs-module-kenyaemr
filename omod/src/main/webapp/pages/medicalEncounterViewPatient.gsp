@@ -1,10 +1,10 @@
 <%
-	ui.decorateWith("standardKenyaEmrPage", [ patient: patient ])
+	ui.decorateWith("kenyaemr", "standardKenyaEmrPage", [ patient: patient ])
 	
 	ui.includeCss("kenyaemr", "kenyaemr.css");
 %>
 
-<style>
+<style type="text/css">
 	fieldset {
 		margin-bottom: 0.6em;
 	}
@@ -48,16 +48,16 @@
 	}
 </style>
 
-<script>
+<script type="text/javascript">
 	jq(function() {
-		jq.getJSON('${ ui.actionLink("arvRegimen", "currentRegimen", [ patientId: patient.id ]) }', function(data) {
+		jq.getJSON('${ ui.actionLink("kenyaemr", "arvRegimen", "currentRegimen", [ patientId: patient.id ]) }', function(data) {
 			jq('#current-hiv-regimen').html(data.shortDisplay);
 		});
 	});
 </script>
 
 <div id="col1">
-	${ ui.includeFragment("patientOverallDetails", [
+	${ ui.includeFragment("kenyaemr", "patientOverallDetails", [
 			patient: patient,
 			visit: visit,
 			activeVisits: activeVisits
@@ -66,7 +66,7 @@
 
 <div id="col2" <% if (visit) { %>class="selected-visit"<% } %>>
 
-	<a href="${ ui.pageLink("medicalEncounterArvRegimen", [ patientId: patient.id ]) }">
+	<a href="${ ui.pageLink("kenyaemr", "medicalEncounterArvRegimen", [ patientId: patient.id ]) }">
 		<img src="${ ui.resourceLink("uilibrary", "images/pencil_16.png") }"/>
 		Current ARVs:
 		<span id="current-hiv-regimen">(loading)</span>
@@ -80,17 +80,17 @@
 	
 	<% if (visit) { %>
 
-		${ ui.includeFragment("availableForms", [ visit: visit ]) }	
+		${ ui.includeFragment("kenyaemr", "availableForms", [ visit: visit ]) }
 		
 	<% } else { %>
 
-		${ ui.includeFragment("widget/button", [
+		${ ui.includeFragment("uilibrary", "widget/button", [
 				iconProvider: "uilibrary",
 				icon: "user_add_32.png",
 				label: "Go to Registration",
 				classes: [ "padded" ],
 				extra: "to Check In",
-				href: ui.pageLink("registrationViewPatient", [ patientId: patient.id ])
+				href: ui.pageLink("kenyaemr", "registrationViewPatient", [ patientId: patient.id ])
 			]) }
 
 	<% } %>
@@ -101,8 +101,8 @@
 
 <% if (visit) { %>
 	
-	${ ui.includeFragment("showHtmlForm", [ id: "showHtmlForm", style: "display: none" ]) }
+	${ ui.includeFragment("kenyaemr", "showHtmlForm", [ id: "showHtmlForm", style: "display: none" ]) }
 	
-	${ ui.includeFragment("dialogSupport") }
+	${ ui.includeFragment("kenyaemr", "dialogSupport") }
 
 <% } %>

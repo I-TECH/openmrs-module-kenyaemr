@@ -1,4 +1,4 @@
-<script>
+<script type="text/javascript">
 	function enterHtmlForm(htmlFormId, title) {
 		/*
 		showDialog({
@@ -10,7 +10,7 @@
 			}
 		});
 		*/
-		location.href = ui.pageLink('enterHtmlForm', {
+		location.href = ui.pageLink('kenyaemr', 'enterHtmlForm', {
 				patientId: ${ patient.id },
 				htmlFormId: htmlFormId,
 				returnUrl: '${ ui.thisUrl() }'
@@ -23,7 +23,7 @@
 		<legend>Fill Out a Form</legend>
 		
 		<% availableForms.each { %>
-			${ ui.includeFragment("widget/button", [
+			${ ui.includeFragment("uilibrary", "widget/button", [
 				iconProvider: it.iconProvider,
 				icon: it.icon,
 				label: it.label,
@@ -38,6 +38,6 @@
 	<fieldset>
 		<legend>This Visit</legend>
 
-		${ ui.includeFragment("viewableEncounters", [ encounters: encounters ]) }
+		${ ui.includeFragment("kenyaemr", "viewableEncounters", [ encounters: encounters ]) }
 	</fieldset>
 <% } %>

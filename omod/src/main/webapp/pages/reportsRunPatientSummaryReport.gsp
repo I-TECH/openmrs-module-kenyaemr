@@ -1,10 +1,10 @@
 <%
-	ui.decorateWith("standardKenyaEmrPage")
+	ui.decorateWith("kenyaemr", "standardKenyaEmrPage")
 %>
 
 <% if (data) { %>
 
-	${ ui.includeFragment("showReportOutput", [ definition: definition, data: data ]) }
+	${ ui.includeFragment("kenyaemr", "showReportOutput", [ definition: definition, data: data ]) }
 
 <% } else { %>
 
@@ -12,7 +12,7 @@
 
 	<form method="POST">
 		Period:
-		${ ui.includeFragment("widget/selectList", [
+		${ ui.includeFragment("uilibrary", "widget/selectList", [
 				formFieldName: "startDate",
 				options: startDateOptions,
 				optionsValueField: "key",
@@ -21,7 +21,7 @@
 		
 		<br/>
 		<br/>
-		${ ui.includeFragment("widget/radioButtons", [
+		${ ui.includeFragment("uilibrary", "widget/radioButtons", [
 				formFieldName: "mode",
 				options: [
 					[ value: "view", label: "View online" ],
@@ -36,7 +36,7 @@
 	
 	</form>
 	
-	<script>
+	<script type="text/javascript">
 	jq(function() {
 		jq('.button').button();
 	});

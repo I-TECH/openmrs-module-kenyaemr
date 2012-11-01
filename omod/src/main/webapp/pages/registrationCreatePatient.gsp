@@ -1,7 +1,7 @@
 <%
-	ui.decorateWith("standardKenyaEmrPage")
+	ui.decorateWith("kenyaemr", "standardKenyaEmrPage")
 %>
 
 <h2>Create a New Patient Record</h2>
 
-${ ui.includeFragment("registrationEditPatient") }	
+${ ui.includeFragment("kenyaemr", "registrationEditPatient") }

@@ -4,7 +4,7 @@
 	def clickFunction = null
 	if (config.page) {
 		clickFunction = """function() {
-				location.href = pageLink("${ config.page }", { patientId: jq(this).find('input[name=patientId]').val() });
+				location.href = ui.pageLink('kenyaemr', '${ config.page }', { patientId: jq(this).find('input[name=patientId]').val() });
 			}"""
 	}
 
@@ -20,7 +20,7 @@
 	if (config.showNumResults)
 		noneMessage = null
 %>
-<script>
+<script type="text/javascript">
 	var patientPanelOpts = {
 		title: function(patient) {
 			return patient.personName + ' <input type="hidden" name="patientId" value="' + patient.patientId + '"/>';
@@ -51,7 +51,7 @@
 	}
 </script>
 
-<style>
+<style type="text/css">
 	.identifier-label {
 		font-color: #888888;
 		font-size: 0.8em;
@@ -61,7 +61,7 @@
 	}
 </style>
 
-<%= ui.includeFragment("widget/panelList", config.merge([
+<%= ui.includeFragment("kenyaemr", "widget/panelList", config.merge([
 		itemFormatter: "formatPatientAsPanel",
 		clickFunction: clickFunction
 	])) %>

@@ -52,10 +52,10 @@
 		<div class="patient-icon">
 			<img width="32" height="32" src="${ ui.resourceLink("kenyaemr", "images/patient_" + patient.gender.toLowerCase() + ".png") }"/>
 		</div>
-		${ ui.includeFragment("kenyaemrPersonName", [ name: patient.personName ]) }<br/>
+		${ ui.includeFragment("kenyaemr", "kenyaemrPersonName", [ name: patient.personName ]) }<br/>
 		${ patient.gender == 'M' ? "Male" : patient.gender == 'F' ? 'Female' : patient.gender }
 		-
-		${ ui.includeFragment("kenyaemrPersonAge", [ person: patient ]) }
+		${ ui.includeFragment("kenyaemr", "kenyaemrPersonAge", [ person: patient ]) }
 	</div>
 	
 	<div class="identifiers">
@@ -78,8 +78,8 @@
 
 	<div style="clear: both; height: 5px;"></div>
 
-	${ ui.includeFragment("clinicalAlerts") }
-	${ ui.includeFragment("activeVisits") }
+	${ ui.includeFragment("kenyaemr", "clinicalAlerts") }
+	${ ui.includeFragment("kenyaemr", "activeVisits") }
 
 	<div style="clear: both"></div>
 </div>

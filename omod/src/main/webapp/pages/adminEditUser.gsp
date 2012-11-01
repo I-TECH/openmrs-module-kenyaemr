@@ -1,18 +1,18 @@
 <%
-	ui.decorateWith("standardKenyaEmrPage")
+	ui.decorateWith("kenyaemr", "standardKenyaEmrPage")
 %>
 
-<a href="${ ui.pageLink("adminManageUsers") }">Back to User Management</a>
+<a href="${ ui.pageLink("kenyaemr", "adminManageUsers") }">Back to User Management</a>
 
 <% if (user) { %>
 
-	${ ui.includeFragment("adminEditUser") }
+	${ ui.includeFragment("kenyaemr", "adminEditUser") }
 
 <% } else { %>
 	
 	<h3>Create a new User</h3>
 
-	${ ui.includeFragment("adminNewUser") }
+	${ ui.includeFragment("kenyaemr", "adminNewUser") }
 	
 <% } %>
 

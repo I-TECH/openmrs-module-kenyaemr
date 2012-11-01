@@ -31,52 +31,43 @@
 	<bean id="kenyaEmrRegistrationApp" class="org.openmrs.module.appframework.SimpleAppDescriptor">
 		<property name="id" value="kenyaemr.registration"/>
 		<property name="label" value="Registration"/>
-		<property name="homepageUrl" value="pages/registrationHome.page"/>
+		<property name="homepageUrl" value="kenyaemr/registrationHome.page"/>
 		<property name="iconUrl" value="moduleResources/kenyaemr/images/apps/registration.png"/>
 	</bean>
 	
 	<bean id="kenyaEmrMedicalEncounterApp" class="org.openmrs.module.appframework.SimpleAppDescriptor">
 		<property name="id" value="kenyaemr.medicalEncounter"/>
 		<property name="label" value="Clinician"/>
-		<property name="homepageUrl" value="pages/medicalEncounterHome.page"/>
+		<property name="homepageUrl" value="kenyaemr/medicalEncounterHome.page"/>
 		<property name="iconUrl" value="moduleResources/kenyaemr/images/apps/medicalEncounter.png"/>
 	</bean>
 	
 	<bean id="kenyaEmrIntakeApp" class="org.openmrs.module.appframework.SimpleAppDescriptor">
 		<property name="id" value="kenyaemr.intake"/>
 		<property name="label" value="Triage"/>
-		<property name="homepageUrl" value="pages/intakeHome.page"/>
+		<property name="homepageUrl" value="kenyaemr/intakeHome.page"/>
 		<property name="iconUrl" value="moduleResources/kenyaemr/images/apps/intake.png"/>
 	</bean>
 	
 	<bean id="kenyaEmrMedicalChartApp" class="org.openmrs.module.appframework.SimpleAppDescriptor">
 		<property name="id" value="kenyaemr.medicalChart"/>
 		<property name="label" value="Medical Chart"/>
-		<property name="homepageUrl" value="pages/medicalChartHome.page"/>
+		<property name="homepageUrl" value="kenyaemr/medicalChartHome.page"/>
 		<property name="iconUrl" value="moduleResources/kenyaemr/images/apps/medicalChart.png"/>
 	</bean>
 	
 	<bean id="kenyaEmrReportsApp" class="org.openmrs.module.appframework.SimpleAppDescriptor">
 		<property name="id" value="kenyaemr.reports"/>
 		<property name="label" value="Reports"/>
-		<property name="homepageUrl" value="pages/reportsHome.page"/>
+		<property name="homepageUrl" value="kenyaemr/reportsHome.page"/>
 		<property name="iconUrl" value="moduleResources/kenyaemr/images/apps/reports.png"/>
 	</bean>
 	
 	<bean id="kenyaEmrAdminApp" class="org.openmrs.module.appframework.SimpleAppDescriptor">
 		<property name="id" value="kenyaemr.admin"/>
 		<property name="label" value="Admin"/>
-		<property name="homepageUrl" value="pages/adminHome.page"/>
+		<property name="homepageUrl" value="kenyaemr/adminHome.page"/>
 		<property name="iconUrl" value="moduleResources/kenyaemr/images/apps/admin.png"/>
 	</bean>
-	
-	<!-- Get rid of this once we go into production
-	<bean id="legacyAdminApp" class="org.openmrs.module.appframework.SimpleAppDescriptor">
-		<property name="id" value="legacy.admin"/>
-		<property name="label" value="Full OpenMRS Administration"/>
-		<property name="homepageUrl" value="admin/index.htm"/>
-		<property name="iconUrl" value="moduleResources/uilibrary/images/info_button_32.png"/>
-	</bean>
-	-->
 
 </beans>

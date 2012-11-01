@@ -1,7 +1,7 @@
 <%
-	ui.decorateWith("standardKenyaEmrPage")
+	ui.decorateWith("kenyaemr", "standardKenyaEmrPage")
 %>
-<style>
+<style type="text/css">
 	#create-user {
 		position: fixed;
 		bottom: 0;
@@ -19,7 +19,7 @@
 		Find a User
 	</legend>
 	
-	${ ui.includeFragment("widget/form", [
+	${ ui.includeFragment("uilibrary", "widget/form", [
 			id: "userSearch",
 			fields: [
 				[ label: "Username or Name", formFieldName: "q", class: java.lang.String ],
@@ -34,20 +34,20 @@
 </fieldset>
 
 <fieldset style="border: none">
-	${ ui.includeFragment("userList", [
+	${ ui.includeFragment("kenyaemr", "userList", [
 		id: "results",
 		page: "adminEditUser"
 	]) }
 </fieldset>
 
-${ ui.includeFragment("widget/button", [
+${ ui.includeFragment("uilibrary", "widget/button", [
 	id: "create-user",
 	iconProvider: "uilibrary",
 	icon: "user_add_32.png",
 	label: "Create User",
-	href: ui.pageLink("adminEditUser") ]) }
+	href: ui.pageLink("kenyaemr", "adminEditUser") ]) }
 
-<script>
+<script type="text/javascript">
 	subscribe("userSearch/results", function(event, data) {
 		publish("results/show", data);
 	});

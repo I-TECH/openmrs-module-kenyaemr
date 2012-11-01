@@ -1,5 +1,5 @@
 <%
-	ui.decorateWith("standardKenyaEmrPage")
+	ui.decorateWith("kenyaemr", "standardKenyaEmrPage")
 	
 	def formatMap = { map ->
 		def ret = "<table>"
@@ -14,7 +14,7 @@
 	}
 %>
 
-<script>
+<script type="text/javascript">
 	jq(function() {
 		jq('.accordion').accordion();
 	});
@@ -23,29 +23,29 @@
 <div style="float: right; width: 30%;">
 	<fieldset>
 		<legend>Actions</legend>
-		${ ui.includeFragment("widget/button", [
+		${ ui.includeFragment("uilibrary", "widget/button", [
 				iconProvider: "uilibrary",
 				icon: "users_business_32.png",
 				label: "Manage Accounts",
-				href: ui.pageLink("adminManageAccounts")
+				href: ui.pageLink("kenyaemr", "adminManageAccounts")
 			]) }
 		<br/>
 				
-		${ ui.includeFragment("widget/button", [
+		${ ui.includeFragment("uilibrary", "widget/button", [
 				iconProvider: "uilibrary",
 				icon: "application32.png",
 				label: "Redo<br/>First-time Setup",
-				href: ui.pageLink("adminFirstTimeSetup")
+				href: ui.pageLink("kenyaemr", "adminFirstTimeSetup")
 			]) }
 		<br/>
 
 		<hr/>
 
-		${ ui.includeFragment("widget/button", [
+		${ ui.includeFragment("uilibrary", "widget/button", [
 				iconProvider: "uilibrary",
 				icon: "refresh.png",
 				label: "Install New<br/>Software Version",
-				href: ui.pageLink("adminSoftwareVersion")
+				href: ui.pageLink("kenyaemr", "adminSoftwareVersion")
 			]) }
 		<br/>
 				

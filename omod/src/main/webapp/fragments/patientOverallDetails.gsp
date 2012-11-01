@@ -3,15 +3,15 @@
 		Patient
 	</legend>
 	<div class="edit-button">
-		<a href="${ ui.pageLink("registrationEditPatient", [patientId: patient.id, returnUrl: ui.thisUrl() ]) }">Edit</a>
+		<a href="${ ui.pageLink("kenyaemr", "registrationEditPatient", [patientId: patient.id, returnUrl: ui.thisUrl() ]) }">Edit</a>
 	</div>
 	
 	<div class="person-name">
-		${ ui.includeFragment("kenyaemrPersonName", [ name: patient.personName ]) }
+		${ ui.includeFragment("kenyaemr", "kenyaemrPersonName", [ name: patient.personName ]) }
 	</div>
 	<div class="demographics">
 		${ ui.message("Patient.gender." + (patient.gender == 'M' ? 'male' : 'female')) },
-		${ ui.includeFragment("kenyaemrPersonAge", [ person: patient ]) }<br/>
+		${ ui.includeFragment("kenyaemr", "kenyaemrPersonAge", [ person: patient ]) }<br/>
 		Born:
 		<% if (patient.birthdateEstimated) { %><i>approx</i><% } %>
 		${ ui.format(patient.birthdate) }
@@ -42,11 +42,11 @@
 		<% } %>
 	</div>
 	
-	${ ui.includeFragment("widget/button", [
+	${ ui.includeFragment("uilibrary", "widget/button", [
 			iconProvider: "uilibrary",
 			icon: "comment_user_32.png",
 			label: "Family History",
-			href: ui.pageLink("editPatientHtmlForm", [
+			href: ui.pageLink("kenyaemr", "editPatientHtmlForm", [
 				patientId: patient.id,
 				formUuid: MetadataConstants.FAMILY_HISTORY_FORM_UUID,
 				returnUrl: ui.thisUrl()
@@ -54,11 +54,11 @@
 		]) }
 	<% if (patient.gender == 'F') { %>
 		<br/>
-		${ ui.includeFragment("widget/button", [
+		${ ui.includeFragment("uilibrary", "widget/button", [
 			iconProvider: "uilibrary",
 			icon: "home_32.png",
 			label: "Obstetric History",
-			href: ui.pageLink("editPatientHtmlForm", [
+			href: ui.pageLink("kenyaemr", "editPatientHtmlForm", [
 				patientId: patient.id,
 				formUuid: MetadataConstants.OBSTETRIC_HISTORY_FORM_UUID,
 				returnUrl: ui.thisUrl()
@@ -79,16 +79,16 @@
 		Start: ${ ui.format(v.startDatetime) } <br/>
 		End: ${ ui.format(v.stopDatetime) }
 		<% if (!selected) { %>
-			<script>
+			<script type="text/javascript">
 				jq('#visit-${ v.id }').click(function() {
-					location.href = '${ ui.escapeJs(ui.pageLink("registrationViewPatient", [ patientId: patient.id, visitId: v.id ])) }';
+					location.href = '${ ui.escapeJs(ui.pageLink("kenyaemr", "registrationViewPatient", [ patientId: patient.id, visitId: v.id ])) }';
 				});
 			</script>
 		<% } %>
 	</div>
 <% } %>
 
-${ ui.includeFragment("programPanel", [
+${ ui.includeFragment("kenyaemr", "programPanel", [
 		patient: patient,
 		program: hivProgram,
 		registrationFormUuid: MetadataConstants.HIV_PROGRAM_ENROLLMENT_FORM_UUID,
@@ -97,7 +97,7 @@ ${ ui.includeFragment("programPanel", [
 
 <br/>
 	
-${ ui.includeFragment("programPanel", [
+${ ui.includeFragment("kenyaemr", "programPanel", [
 		patient: patient,
 		program: tbProgram,
 		registrationFormUuid: MetadataConstants.TB_ENROLLMENT_FORM_UUID,

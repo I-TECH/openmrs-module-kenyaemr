@@ -1,4 +1,4 @@
-<style>
+<style type="text/css">
 	.user-details {
 		width: 33%;
 	}
@@ -36,7 +36,7 @@
 	}
 </style>
 
-<script>
+<script type="text/javascript">
 jq(function() {
 	jq('.editable-button').hide();
 	jq('.editable-container').mouseenter(function() {
@@ -50,22 +50,22 @@ jq(function() {
 <br/>
 
 <% if (user.retired) { %>
-	<form method="post" action="${ ui.actionLink("adminEditUser", "unretireUser") }" class="no-form-padding">
+	<form method="post" action="${ ui.actionLink("kenyaemr", "adminEditUser", "unretireUser") }" class="no-form-padding">
 		<input type="hidden" name="userId" value="${ user.userId }"/>
 		<br/>
 		<i>Account is disabled.</i>
 		<br/><br/>
-		${ ui.includeFragment("widget/button", [ label: "Enable account", type: "submit" ]) }
+		${ ui.includeFragment("uilibrary", "widget/button", [ label: "Enable account", type: "submit" ]) }
 		<br/><br/>
 	</form>
 	
 <% } else { %>
-	<form method="post" action="${ ui.actionLink("adminEditUser", "retireUser") }" class="no-form-padding">
+	<form method="post" action="${ ui.actionLink("kenyaemr", "adminEditUser", "retireUser") }" class="no-form-padding">
 		<input type="hidden" name="userId" value="${ user.userId }"/>
 		<br/>
 		<i>Account is enabled.</i>
 		<br/><br/>
-		${ ui.includeFragment("widget/button", [ label: "Disable account", type: "submit" ]) }
+		${ ui.includeFragment("uilibrary", "widget/button", [ label: "Disable account", type: "submit" ]) }
 		<br/><br/>
 	</form>
 	
@@ -73,16 +73,17 @@ jq(function() {
 
 <div class="user-details">
 	<div class="login-details <% if (!user.retired) { %> editable-container <% } %>">
-		<img class="icon" src="${ ui.resourceLink("images/" + (user.retired ? "user_blue_32.png" : "user_32.png")) }"/>
+		<img class="icon" src="${ ui.resourceLink("uilibrary", "images/" + (user.retired ? "user_blue_32.png" : "user_32.png")) }"/>
 		<span class="subtle-label">User:</span>
 		${ user.username }
 		
-		<%= ui.includeFragment("widget/popupForm", [
+		<%= ui.includeFragment("uilibrary", "widget/popupForm", [
 				linkConfig: [
 					label: "Edit",
 					classes: [ "editable-button" ]
 				],
 				fragment: "adminEditUser",
+				fragmentProvider: "kenyaemr",
 				action: "editLoginDetails",
 				prefix: "editLoginDetails",
 				commandObject: editLoginDetails,
@@ -123,12 +124,13 @@ jq(function() {
 			roleHtml += """<br/><span class="error" style="display: none"></span>"""
 			roleHtml += "<br/>"
 		%>
-		<%= ui.includeFragment("widget/popupForm", [
+		<%= ui.includeFragment("uilibrary", "widget/popupForm", [
 				linkConfig: [
 					label: "Edit",
 					classes: [ "editable-button" ]
 				],
 				fragment: "adminEditUser",
+				fragmentProvider: "kenyaemr",
 				action: "editUserRoles",
 				fields: [
 					[ hiddenInputName: "userId", value: user.userId ],
@@ -149,12 +151,13 @@ jq(function() {
 		${ user.person.gender }
 		<br/>
 		
-		<%= ui.includeFragment("widget/popupForm", [
+		<%= ui.includeFragment("uilibrary", "widget/popupForm", [
 					linkConfig: [
 						label: "Edit",
 						classes: [ "editable-button" ]
 					],
 					fragment: "adminEditUser",
+					fragmentProvider: "kenyaemr",
 					action: "editPersonDetails",
 					prefix: "editPersonDetails",
 					commandObject: editPersonDetails,

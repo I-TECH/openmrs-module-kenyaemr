@@ -1,5 +1,5 @@
 <%
-	def returnUrl = config.returnUrl ?: (command.original ? ui.pageLink("registrationViewPatient", [patientId: command.original.patientId]) : ui.pageLink("registrationHome"))  
+	def returnUrl = config.returnUrl ?: (command.original ? ui.pageLink("kenyaemr", "registrationViewPatient", [patientId: command.original.patientId]) : ui.pageLink("kenyaemr", "registrationHome"))
 
 	def femaleChecked = command.gender == 'F' ? 'checked="true"' : ''
 	def maleChecked = command.gender == 'M' ? 'checked="true"' : ''
@@ -46,7 +46,7 @@
 	]
 %>
 
-<style>
+<style type="text/css">
 #possible-matching-patients {
 	float: right;
 	border: 1px black solid;
@@ -63,7 +63,7 @@
 }
 </style>
 
-<form id="edit-patient-form" method="post" action="${ ui.actionLink("savePatient") }">
+<form id="edit-patient-form" method="post" action="${ ui.actionLink("kenyaemr", "savePatient") }">
 	<% if (command.original) { %>
 		<input type="hidden" name="patientId" value="${ command.original.patientId }"/>
 	<% } %>
@@ -78,13 +78,13 @@
 	<table>
 		<tr>
 			<td>${ ui.format(command.patientClinicNumber.identifierType) }</td>
-			<td>${ ui.includeFragment("widget/field", [ object: command, property: "patientClinicNumber.identifier" ]) }</td>
+			<td>${ ui.includeFragment("uilibrary", "widget/field", [ object: command, property: "patientClinicNumber.identifier" ]) }</td>
 			<td><% if (!command.patientClinicNumber.identifier) { %>(if available)<% } %></td>
 		</tr>
 		<% if (command.inHivProgram) { %>
 			<tr>
 				<td>${ ui.format(command.hivIdNumber.identifierType) }</td>
-				<td>${ ui.includeFragment("widget/field", [ object: command, property: "hivIdNumber.identifier" ]) }</td>
+				<td>${ ui.includeFragment("uilibrary", "widget/field", [ object: command, property: "hivIdNumber.identifier" ]) }</td>
 				<td>(HIV program<% if (!command.hivIdNumber.identifier) { %>, if assigned<% } %>)</td>
 			</tr>
 		<% } %>
@@ -93,13 +93,13 @@
 	<h4>Demographics</h4>
 
 	<% demogFieldRows.each { %>
-		${ ui.includeFragment("widget/rowOfFields", [ fields: it ]) }
+		${ ui.includeFragment("kenyaemr", "widget/rowOfFields", [ fields: it ]) }
 	<% } %>
 
 	<h4>Address</h4>
 	
 	<% addressFieldRows.each { %>
-		${ ui.includeFragment("widget/rowOfFields", [ fields: it ]) }
+		${ ui.includeFragment("kenyaemr", "widget/rowOfFields", [ fields: it ]) }
 	<% } %>
 
 	<br/>
@@ -109,7 +109,7 @@
 	
 </form>
 
-<script>
+<script type="text/javascript">
 jq(function() {
 	jq('#edit-patient-form .button').button();
 	
@@ -123,7 +123,7 @@ jq(function() {
 				<% if (returnUrl.indexOf('patientId') > 0) { %>
 					location.href = '${ returnUrl }';
 				<% } else { %>
-					location.href = pageLink('registrationViewPatient', { patientId: data.patientId });
+					location.href = ui.pageLink('kenyaemr', 'registrationViewPatient', { patientId: data.patientId });
 				<% } %>
 			} else {
 				notifyError('Saving patient was successful, but unexpected response');

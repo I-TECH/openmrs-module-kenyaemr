@@ -1,8 +1,8 @@
 <%
-	ui.decorateWith("standardKenyaEmrPage")
+	ui.decorateWith("kenyaemr", "standardKenyaEmrPage")
 %>
 
-<style>
+<style type="text/css">
 	#create-provider {
 		position: fixed;
 		bottom: 0;
@@ -20,7 +20,7 @@
 		Find a Provider
 	</legend>
 	
-	${ ui.includeFragment("widget/form", [
+	${ ui.includeFragment("uilibrary", "widget/form", [
 			id: "providerSearch",
 			fields: [
 				[ label: "Username or Name", formFieldName: "q", class: java.lang.String ],
@@ -35,20 +35,20 @@
 </fieldset>
 
 <fieldset style="border: none">
-	${ ui.includeFragment("providerList", [
+	${ ui.includeFragment("kenyaemr", "providerList", [
 		id: "results",
 		page: "adminEditProvider"
 	]) }
 </fieldset>
 
-${ ui.includeFragment("widget/button", [
+${ ui.includeFragment("uilibrary", "widget/button", [
 	id: "create-provider",
 	iconProvider: "uilibrary",
 	icon: "user_business_add_32.png",
 	label: "Create Provider",
-	href: ui.pageLink("adminEditProvider") ]) }
+	href: ui.pageLink("kenyaemr", "adminEditProvider") ]) }
 
-<script>
+<script type="text/javascript">
 	subscribe("providerSearch/results", function(event, data) {
 		publish("results/show", data);
 	});

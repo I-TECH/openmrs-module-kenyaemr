@@ -20,7 +20,7 @@
 
 <script type="text/javascript">
 jq(function() {
-	ui.getFragmentActionAsJson('clinicalAlerts', 'getAlerts', { patientId: ${ patient.id } }, function(result) {
+	ui.getFragmentActionAsJson('kenyaemr', 'clinicalAlerts', 'getAlerts', { patientId: ${ patient.id } }, function(result) {
 		if (result) {
 			var html = jq.map(result, function(alertText) {
 				return '<span class="alert">' + alertText.shortMessage + '</span>';

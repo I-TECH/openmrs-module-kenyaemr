@@ -1,8 +1,8 @@
 <%
-    ui.includeJavascript("coreFragments.js")
+    ui.includeJavascript("uilibrary", "coreFragments.js")
 %>
 
-<script>
+<script type="text/javascript">
 	jq(function() {
 		jq('#${ config.id }').datetimepicker({
             dateFormat: 'dd-M-yy',
@@ -28,7 +28,7 @@
 
 
 <% if (config.parentFormId) { %>
-<script>
+<script type="text/javascript">
 	subscribe('${ config.parentFormId }.reset', function() {
 		jq('#${ config.id }').datetimepicker('setDate', null);
 	    jq('#${ config.id }-error').html("").hide();

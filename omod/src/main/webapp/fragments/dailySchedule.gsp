@@ -7,7 +7,7 @@ config.require("page")
 <% } %>
 <% scheduled.each { %>
 	<div class="panel clickable scheduled-visit">
-		<input type="hidden" name="clickUrl" value="${ ui.pageLink(config.page, [ patientId: it.patient.id ]) }"/>
+		<input type="hidden" name="clickUrl" value="${ ui.pageLink("kenyaemr", config.page, [ patientId: it.patient.id ]) }"/>
 		<table width="100%">
 			<tr>
 				<td width="40%">
@@ -17,10 +17,10 @@ config.require("page")
 					
 					<span class="leftText">
 						<span class="title">
-							${ ui.includeFragment("kenyaemrPersonName", [ name: it.patient.personName]) }
+							${ ui.includeFragment("kenyaemr", "kenyaemrPersonName", [ name: it.patient.personName]) }
 						</span>
 						<span class="leftDetails">
-							${ ui.includeFragment("kenyaemrPersonAgeAndBirthdate", [ person: it.patient ]) }
+							${ ui.includeFragment("kenyaemr", "kenyaemrPersonAgeAndBirthdate", [ person: it.patient ]) }
 						</span>
 					</span>
 				</td>
@@ -34,13 +34,13 @@ config.require("page")
 					<% if (it.visits) { %>
 
 						<u>
-							<img src="${ ui.resourceLink("kenyaemr", "images/checked_in_16.png") }"/>
+							<img src="${ ui.resourceLink("kenyaemr", "images/visit.png") }"/>
 							<small>Seen Today</small>
 						</u>
 						<br/>
 						<% it.visits.each { v -> %>
 							<div class="encounter-panel">
-								<input type="hidden" name="clickUrl" value="${ ui.pageLink(config.page, [ patientId: it.patient.id, visitId: v.id ]) }"/>
+								<input type="hidden" name="clickUrl" value="${ ui.pageLink("kenyaemr", config.page, [ patientId: it.patient.id, visitId: v.id ]) }"/>
 								${ ui.format(v.visitType) } visit<br/>
 								<span style="color: gray">
 									<%= v.encounters.collect { ui.format(it.form ?: it.encounterType) } .join(", ") %>
@@ -63,7 +63,7 @@ config.require("page")
 <% } %>
 </ul>
 
-<script>
+<script type="text/javascript">
 	jq(function() {
 		jq('.scheduled-visit').click(function(evt) {
 			var url = jq(this).find('input[name=clickUrl]').val();

@@ -1,8 +1,8 @@
 <%
-	ui.decorateWith("standardKenyaEmrPage")
+	ui.decorateWith("kenyaemr", "standardKenyaEmrPage")
 %>
 
-<style>
+<style type="text/css">
 	#search {
 		float: left;
 	}
@@ -18,7 +18,7 @@
 			defaultDate: '${ new java.text.SimpleDateFormat("yyyy-MM-dd").format(date) }',
 			gotoCurrent: true,
 			onSelect: function(dateText) {
-				location.href = ui.pageLink('dailySchedule', { date: dateText });
+				location.href = ui.pageLink('kenyaemr', 'dailySchedule', { date: dateText });
 			}
 		});
 	});
@@ -35,5 +35,5 @@
 <div style="float: left; margin-left: 1em;">
 	<h2>Scheduled Visits on ${ ui.format(date) }</h2>
 
-	${ ui.includeFragment("dailySchedule", [ date: date, page: "registrationViewPatient" ]) }
+	${ ui.includeFragment("kenyaemr", "dailySchedule", [ date: date, page: "registrationViewPatient" ]) }
 </div>

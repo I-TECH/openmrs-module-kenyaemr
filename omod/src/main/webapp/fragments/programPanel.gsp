@@ -6,16 +6,16 @@
 		} else {
 			outcomeText = "Active <br/>"
 			if (exitFormUuid) {
-				outcomeText += ui.includeFragment("widget/button", [
+				outcomeText += ui.includeFragment("uilibrary", "widget/button", [
 							label: "Discontinue Services",
-							href: ui.pageLink("enterHtmlForm", [ patientId: patient.id, formUuid: exitFormUuid, returnUrl: ui.thisUrl() ])
+							href: ui.pageLink("kenyaemr", "enterHtmlForm", [ patientId: patient.id, formUuid: exitFormUuid, returnUrl: ui.thisUrl() ])
 						])
 			}
 		}
 		def editHtml = ""
 		if (registrationFormUuid) {
 			editHtml = """<div class="edit-button">
-							<a href="${ ui.pageLink("editProgramHtmlForm", [
+							<a href="${ ui.pageLink("kenyaemr", "editProgramHtmlForm", [
 									patientId: patient.id,
 									patientProgramId: enrollment.id,
 									formUuid: registrationFormUuid,
@@ -41,13 +41,13 @@
 	${ helper(currentEnrollment) }
 
 <% } else { %>
-	${ ui.includeFragment("widget/button", [
+	${ ui.includeFragment("uilibrary", "widget/button", [
 			label: ui.format(program),
 			classes: [ "padded "],
 			extra: "Enroll",
 			iconProvider: "uilibrary",
 			icon: "window_app_list_add_32.png",
-			href: ui.pageLink("enterHtmlForm", [ patientId: patient.id, formUuid: registrationFormUuid, returnUrl: ui.thisUrl() ])
+			href: ui.pageLink("kenyaemr", "enterHtmlForm", [ patientId: patient.id, formUuid: registrationFormUuid, returnUrl: ui.thisUrl() ])
 		]) }
 <% } %>
 

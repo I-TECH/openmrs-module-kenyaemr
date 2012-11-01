@@ -1,5 +1,5 @@
 <%
-	ui.decorateWith("standardKenyaEmrPage", [ patient: patient ])
+	ui.decorateWith("kenyaemr", "standardKenyaEmrPage", [ patient: patient ])
 
 	def allowNew = !history.changes
 	def allowChange = history.changes && history.changes.last().started.drugOrders
@@ -16,7 +16,7 @@
 		""")
 %>
 
-<style>
+<style type="text/css">
 	.start-new-regimen, .change-regimen {
 		float: left;
 	}
@@ -27,7 +27,7 @@
 	}
 </style>
 
-<script>
+<script type="text/javascript">
 	function showRegimenHistory(tbody, data) {
 		if (!data || data.length === 0) {
 			tbody.append('<tr><td colspan="4">None</td></tr>');
@@ -44,7 +44,7 @@
 	}
 	
 	function refreshRegimenHistory(tbody, patientId) {
-		jq.getJSON(ui.fragmentActionLink('arvRegimen', 'regimenHistory', { patientId: patientId }), function(data) {
+		jq.getJSON(ui.fragmentActionLink('kenyaemr', 'arvRegimen', 'regimenHistory', { patientId: patientId }), function(data) {
 			showRegimenHistory(tbody, data);
 		});
 	}
@@ -63,7 +63,7 @@
 	});
 </script>
 
-<a href="${ ui.pageLink("medicalEncounterViewPatient", [ patientId: patient.id ]) }">Back to Visit</a>
+<a href="${ ui.pageLink("kenyaemr", "medicalEncounterViewPatient", [ patientId: patient.id ]) }">Back to Visit</a>
 
 <h3>ARV Regimen History</h3>
 
@@ -84,7 +84,7 @@
 
 <div id="regimen-actions">
 	<% if (allowNew) { %>
-		${ ui.includeFragment("widget/button", [
+		${ ui.includeFragment("uilibrary", "widget/button", [
 				iconProvider: "uilibrary",
 				icon: "add1-32.png",
 				label: "Start",
@@ -93,14 +93,14 @@
 	<% } %>
 	
 	<% if (allowChange) { %>
-		${ ui.includeFragment("widget/button", [
+		${ ui.includeFragment("uilibrary", "widget/button", [
 				iconProvider: "uilibrary",
 				icon: "arrow_right_32.png",
 				label: "Change",
 				onClick: "choseAction('change-regimen')"
 			]) }
 			
-		${ ui.includeFragment("widget/button", [
+		${ ui.includeFragment("uilibrary", "widget/button", [
 				iconProvider: "uilibrary",
 				icon: "close_32.png",
 				label: "Stop",
@@ -109,7 +109,7 @@
 	<% } %>
 	
 	<% if (allowRestart) { %>
-		${ ui.includeFragment("widget/button", [
+		${ ui.includeFragment("uilibrary", "widget/button", [
 				iconProvider: "uilibrary",
 				icon: "blue_arrow_right_32.png",
 				label: "Restart",
@@ -124,7 +124,7 @@
 			Start ARVs
 			<img class="cancel-action-button" src="${ ui.resourceLink("uilibrary", "images/close_16.png") }" title="Cancel"/>
 		</legend>
-		${ ui.includeFragment("widget/form", [
+		${ ui.includeFragment("uilibrary", "widget/form", [
 				fragment: "arvRegimen",
 				action: "startRegimen",
 				fields: [
@@ -137,7 +137,7 @@
 			]) }
 	</fieldset>
 	
-	<script>
+	<script type="text/javascript">
 		jq(function() {
 			ui.confirmBeforeNavigating('.start-new-regimen');
 		});
@@ -150,7 +150,7 @@
 			Change ARVs
 			<img class="cancel-action-button" src="${ ui.resourceLink("uilibrary", "images/close_16.png") }" title="Cancel"/>
 		</legend>
-		${ ui.includeFragment("widget/form", [
+		${ ui.includeFragment("uilibrary", "widget/form", [
 				fragment: "arvRegimen",
 				action: "changeRegimen",
 				fields: [
@@ -169,7 +169,7 @@
 			Stop ARVs
 			<img class="cancel-action-button" src="${ ui.resourceLink("uilibrary", "images/close_16.png") }" title="Cancel"/>
 		</legend>
-		${ ui.includeFragment("widget/form", [
+		${ ui.includeFragment("uilibrary", "widget/form", [
 				fragment: "arvRegimen",
 				action: "stopRegimen",
 				fields: [
@@ -182,7 +182,7 @@
 			]) }
 	</fieldset>
 	
-	<script>
+	<script type="text/javascript">
 		jq(function() {
 			ui.confirmBeforeNavigating('.change-regimen');
 			ui.confirmBeforeNavigating('.stop-regimen');
@@ -196,7 +196,7 @@
 			Restart ARVs
 			<img class="cancel-action-button" src="${ ui.resourceLink("uilibrary", "images/close_16.png") }" title="Cancel"/>
 		</legend>
-		${ ui.includeFragment("widget/form", [
+		${ ui.includeFragment("uilibrary", "widget/form", [
 				fragment: "arvRegimen",
 				action: "startRegimen",
 				fields: [
@@ -209,7 +209,7 @@
 			]) }
 	</fieldset>
 	
-	<script>
+	<script type="text/javascript">
 		jq(function() {
 			ui.confirmBeforeNavigating('.restart-regimen');
 		});

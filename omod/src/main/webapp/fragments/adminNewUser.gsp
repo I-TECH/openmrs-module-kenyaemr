@@ -35,7 +35,7 @@
 	
 %>
 
-<form id="create-user-form" method="post" action="${ ui.actionLink("adminNewUser", "createUser") }">
+<form id="create-user-form" method="post" action="${ ui.actionLink("kenyaemr", "adminNewUser", "createUser") }">
 	<div class="global-error-container" style="display: none">
 		${ ui.message("fix.error.plain") }
 		<ul class="global-error-content"></ul>
@@ -44,7 +44,7 @@
 	<fieldset>
 		<legend>Person Info</legend>
 		<% demographics.each { %>
-			${ ui.includeFragment("widget/rowOfFields", [ fields: it ]) }
+			${ ui.includeFragment("kenyaemr", "widget/rowOfFields", [ fields: it ]) }
 		<% } %>
 	</fieldset>
 	
@@ -53,10 +53,10 @@
 	<fieldset>
 		<legend>Login Info</legend>
 		<% login.each { %>
-			${ ui.includeFragment("widget/rowOfFields", [ fields: it ]) }
+			${ ui.includeFragment("kenyaemr", "widget/rowOfFields", [ fields: it ]) }
 		<% } %>
 	
-		${ ui.decorate("labeled", [label: "Roles"], roleHtml) }
+		${ ui.decorate("kenyaemr", "labeled", [label: "Roles"], roleHtml) }
 	</fieldset>
 	
 	<br/>
@@ -64,14 +64,14 @@
 	<input type="submit" value="Create User"/>	
 </form>
 
-<script>
+<script type="text/javascript">
 jq(function() {
 	jq('#create-user-form input[type=submit]').button();
 	
 	ui.setupAjaxPost('#create-user-form', {
 		onSuccess: function(data) {
 			if (data.userId) {
-				location.href = pageLink('adminManageUsers');
+				location.href = ui.pageLink('kenyaemr', 'adminManageUsers');
 			} else {
 				notifyError('Creating user was successful, but unexpected response');
 				debugObject(data);

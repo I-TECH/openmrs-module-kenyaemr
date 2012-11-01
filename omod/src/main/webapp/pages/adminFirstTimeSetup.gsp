@@ -1,8 +1,8 @@
-<% ui.decorateWith("standardKenyaEmrPage") %>
+<% ui.decorateWith("kenyaemr", "standardKenyaEmrPage") %>
 
 <% if (isSuperUser) { %>
 
-	<style>
+	<style type="text/css">
 		.field-label {
 			font-size: 1.2em;
 		}
@@ -59,7 +59,7 @@
 				]
 			}
 		%>
-			${ ui.includeFragment("widget/form", [
+			${ ui.includeFragment("uilibrary", "widget/form", [
 					page: "adminFirstTimeSetup",
 					submitLabel: "Save Settings",
 					fields: fields
@@ -68,7 +68,7 @@
 		</div>
 	</div>
 
-	<script>
+	<script type="text/javascript">
 		jq(function() {
 			jq("input[type=submit]").button();
 		});

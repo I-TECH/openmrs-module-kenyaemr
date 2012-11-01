@@ -1,15 +1,15 @@
 <%
 // supports style (css style)
 
-ui.includeJavascript("jquery.js")
-ui.includeJavascript("jquery-ui.js")
-ui.includeJavascript("dwr-util.js")
+ui.includeJavascript("uilibrary", "jquery.js")
+ui.includeJavascript("uilibrary", "jquery-ui.js")
+ui.includeJavascript("kenyaemr", "dwr-util.js")
 %>
 
 <script type="text/javascript" src="/${ contextPath }/moduleResources/htmlformentry/htmlFormEntry.js"></script>
 <link href="/${ contextPath }/moduleResources/htmlformentry/htmlFormEntry.css" type="text/css" rel="stylesheet" />
 
-<script>
+<script type="text/javascript">
 	function showDiv(id) {
 		var div = document.getElementById(id);
 		if ( div ) { div.style.display = ""; }
@@ -21,7 +21,7 @@ ui.includeJavascript("dwr-util.js")
 	}
 </script>
 
-<script>
+<script type="text/javascript">
 	\$j = jQuery;
 	var propertyAccessorInfo = new Array();
 	
@@ -176,7 +176,7 @@ ui.includeJavascript("dwr-util.js")
 
 <div id="${ config.id }" <% if (config.style) { %>style="${ config.style }"<% } %>>
 
-	<form id="htmlform" method="post" action="${ ui.actionLink("enterHtmlForm", "submit") }" onSubmit="submitHtmlForm(); return false;">
+	<form id="htmlform" method="post" action="${ ui.actionLink("kenyaemr", "enterHtmlForm", "submit") }" onSubmit="submitHtmlForm(); return false;">
 		<input type="hidden" name="personId" value="${ command.patient.personId }"/>
 		<input type="hidden" name="htmlFormId" value="${ command.htmlFormId }"/>
 		<input type="hidden" name="formModifiedTimestamp" value="${ command.formModifiedTimestamp }"/>
@@ -220,7 +220,7 @@ ui.includeJavascript("dwr-util.js")
 	</script>
 <% } %>
 
-<script>
+<script type="text/javascript">
 	jq(function() {
 		ui.confirmBeforeNavigating('#htmlform');
 	});

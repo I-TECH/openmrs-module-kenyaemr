@@ -1,10 +1,10 @@
 <!-- This is the login page -->
 
 <%
-	ui.includeCss("uilibrary.css")
+	ui.includeCss("uilibrary", "uilibrary.css")
 %>
 
-<style>
+<style type="text/css">
 	#fullwindow {
 		left: 0;
 		width: 100%;
@@ -30,12 +30,12 @@
 </style>
 
 <div id="kenya-header">
-	${ ui.includeFragment("kenyaHeader") }
+	${ ui.includeFragment("kenyaemr", "kenyaHeader") }
 </div>
 
 <div id="fullwindow">
 	<div class="centered">
-		${ ui.includeFragment("flashMessage") }
+		${ ui.includeFragment("uilibrary", "flashMessage") }
 
 		<form method="post" action="/${ contextPath }/loginServlet" autocomplete="off">
 			<table class="centered">
@@ -71,6 +71,6 @@
 	</div>
 </div>
 
-<script>
+<script type="text/javascript">
 	document.getElementById('uname').focus();
 </script>

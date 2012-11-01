@@ -1,13 +1,13 @@
 <%
-	ui.decorateWith("standardKenyaEmrPage")
+	ui.decorateWith("kenyaemr", "standardKenyaEmrPage")
 %>
 
 <% if (supportsExcel) { %>
 	<div style="float: right">
-		${ ui.includeFragment("widget/button", [
+		${ ui.includeFragment("uilibrary", "widget/button", [
 				iconProvider: "uilibrary",
 				icon: "save_download_32.png",
-				href: ui.pageLink("reportsRunPatientAlertListReport", [
+				href: ui.pageLink("kenyaemr", "reportsRunPatientAlertListReport", [
 							manager: manager.class.name,
 							mode: excel
 						])
@@ -15,4 +15,4 @@
 	</div>
 <% } %>
 
-${ ui.includeFragment("showReportOutput", [ definition: definition, data: data ]) }
+${ ui.includeFragment("kenyaemr", "showReportOutput", [ definition: definition, data: data ]) }

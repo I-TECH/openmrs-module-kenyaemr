@@ -1,4 +1,4 @@
-<style>
+<style type="text/css">
 	.person-details, .login-details, .provider-details {
 		width: 50%;
 	}
@@ -22,7 +22,7 @@
 	}
 </style>
 
-<script>
+<script type="text/javascript">
 jq(function() {
 	jq('.editable-button').hide();
 	jq('.editable-container').mouseenter(function() {
@@ -48,12 +48,13 @@ jq(function() {
 	${ person.gender }
 	<br/>
 	
-	<%= ui.includeFragment("widget/popupForm", [
+	<%= ui.includeFragment("uilibrary", "widget/popupForm", [
 				linkConfig: [
 					label: "Edit",
 					classes: [ "editable-button" ]
 				],
 				fragment: "adminEditAccount",
+				fragmentProvider: "kenyaemr",
 				action: "editPersonDetails",
 				prefix: "editPersonDetails",
 				commandObject: editPersonDetails,
@@ -83,12 +84,12 @@ jq(function() {
 	</legend>
 	<% if (user) { %>
 			<% if (user.retired) { %>
-				<form method="post" action="${ ui.actionLink("adminEditAccount", "unretireUser") }" class="no-form-padding">
+				<form method="post" action="${ ui.actionLink("kenyaemr", "adminEditAccount", "unretireUser") }" class="no-form-padding">
 					<input type="hidden" name="userId" value="${ user.userId }"/>
 					<br/>
 					<i>Account is disabled.</i>
 					<br/><br/>
-					${ ui.includeFragment("widget/button", [ label: "Enable account", type: "submit" ]) }
+					${ ui.includeFragment("uilibrary", "widget/button", [ label: "Enable account", type: "submit" ]) }
 					<br/><br/>
 				</form>
 			<% } %>
@@ -112,20 +113,21 @@ jq(function() {
 			<% } %>
 			
 			<% if (!user.retired) { %>
-				<form method="post" action="${ ui.actionLink("adminEditAccount", "retireUser") }" class="no-form-padding">
+				<form method="post" action="${ ui.actionLink("kenyaemr", "adminEditAccount", "retireUser") }" class="no-form-padding">
 					<input type="hidden" name="userId" value="${ user.userId }"/>
 					<br/>
-					${ ui.includeFragment("widget/button", [ label: "Disable account", type: "submit" ]) }
+					${ ui.includeFragment("uilibrary", "widget/button", [ label: "Disable account", type: "submit" ]) }
 					<br/>
 				</form>
 			<% } %>
 			
-			<%= ui.includeFragment("widget/popupForm", [
+			<%= ui.includeFragment("uilibrary", "widget/popupForm", [
 					linkConfig: [
 						label: "Edit",
 						classes: [ "editable-button" ]
 					],
 					fragment: "adminEditAccount",
+					fragmentProvider: "kenyaemr",
 					action: "editLoginDetails",
 					prefix: "editLoginDetails",
 					commandObject: editLoginDetails,
@@ -149,11 +151,12 @@ jq(function() {
 
 	<% } else { %>
 	
-		<%= ui.includeFragment("widget/popupForm", [
+		<%= ui.includeFragment("uilibrary", "widget/popupForm", [
 				buttonConfig: [
 					label: "Create Login"
 				],
 				fragment: "adminEditAccount",
+				fragmentProvider: "kenyaemr",
 				action: "editLoginDetails",
 				prefix: "editLoginDetails",
 				commandObject: editLoginDetails,
@@ -192,12 +195,13 @@ jq(function() {
 		${ provider.identifier }
 		<br/>
 		
-		<%= ui.includeFragment("widget/popupForm", [
+		<%= ui.includeFragment("uilibrary", "widget/popupForm", [
 				linkConfig: [
 					label: "Edit",
 					classes: [ "editable-button" ]
 				],
 				fragment: "adminEditAccount",
+				fragmentProvider: "kenyaemr",
 				action: "editProviderDetails",
 				prefix: "editProviderDetails",
 				commandObject: editProviderDetails,
@@ -214,7 +218,7 @@ jq(function() {
 	
 	<% } else { %>
 
-		<%= ui.includeFragment("widget/popupForm", [
+		<%= ui.includeFragment("uilibrary", "widget/popupForm", [
 				buttonConfig: [
 					label: "Make this person a Provider"
 				],
