@@ -55,7 +55,7 @@
 		${ ui.includeFragment("kenyaemr", "kenyaemrPersonName", [ name: patient.personName ]) }<br/>
 		${ patient.gender == 'M' ? "Male" : patient.gender == 'F' ? 'Female' : patient.gender }
 		-
-		${ ui.includeFragment("kenyaemr", "kenyaemrPersonAge", [ person: patient ]) }
+		${ ui.includeFragment("kenyaemr", "kenyaemrPersonAgeAndBirthdate", [ person: patient ]) }
 	</div>
 	
 	<div class="identifiers">
