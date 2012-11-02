@@ -26,7 +26,7 @@
 			return patient.personName + ' <input type="hidden" name="patientId" value="' + patient.patientId + '"/>';
 		},
 		icon: function(patient) {
-			return '<img width="32" height="32" src="' + resourceLink('uilibrary', 'images/patient_' + patient.gender + '.gif') + '"/>';
+			return '<img width="32" height="32" src="' + ui.resourceLink('kenyaemr', 'images/patient_' + patient.gender + '.png') + '"/>';
 		},
 		leftDetails: function(patient) {
 			var ret = patient.age < 1 ? (patient.ageMonths + ' month(s), ' + patient.ageDays + ' day(s)') : (patient.age + ' year(s)');
