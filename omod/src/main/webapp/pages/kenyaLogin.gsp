@@ -2,6 +2,7 @@
 
 <%
 	ui.includeCss("uilibrary", "uilibrary.css")
+	ui.includeCss("kenyaemr", "kenyaemr.css");
 %>
 
 <style type="text/css">
@@ -17,8 +18,6 @@
 	.centered {
 		vertical-align: middle;
 		display: table-cell;
-		margin-left: auto;
-		margin-right: auto;
 	}
 	
 	#errors {
@@ -34,11 +33,10 @@
 </div>
 
 <div id="fullwindow">
-	<div class="centered">
-		${ ui.includeFragment("uilibrary", "flashMessage") }
 
+	<div class="centered">
 		<form method="post" action="/${ contextPath }/loginServlet" autocomplete="off">
-			<table class="centered">
+			<table style="margin-left: auto; margin-right: auto;">
 				<tr>
 					<td rowspan="5" width="300">
 						<img src="${ ui.resourceLink("kenyaemr", "images/moh_logo_large.png") }"/>
@@ -63,7 +61,9 @@
 					<td colspan="2"></td>
 				</tr>
 				<tr>
-					<td><div style="height: 100px">&nbsp;</div></td>
+					<td colspan="3">
+						${ ui.includeFragment("uilibrary", "flashMessage") }
+					</td>
 				</tr>
 			</table>
 			

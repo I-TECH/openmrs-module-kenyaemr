@@ -19,9 +19,9 @@
 	<div style="float: right; text-align: right">
 		<img src="${ ui.resourceLink("kenyaemr", "images/moh_logo.png") }"/>
 	</div>
-	<div style="float: right; text-align: right; font-size: 0.9em;">
-		Government of Kenya <br/>
-		Ministry of Medical Services <br/>
+	<div style="float: right; text-align: right; font-size: 0.9em; padding-right: 5px">
+		Government of Kenya<br/>
+		Ministry of Medical Services<br/>
 		Ministry of Public Health and Sanitation
 	</div>
 
