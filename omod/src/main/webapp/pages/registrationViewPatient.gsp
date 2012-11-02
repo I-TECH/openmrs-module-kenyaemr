@@ -67,7 +67,7 @@
 						/* classes: [ "padded" ], */
 						extra: "patient going home",
 						iconProvider: "kenyaemr",
-						icon: "end_visit.png"
+						icon: "visit_end.png"
 					],
 					/* dialogOpts: """{ open: function() { jq('#check-out-form input[type=submit]').focus(); } }""", */
 					popupTitle: "Check Out",

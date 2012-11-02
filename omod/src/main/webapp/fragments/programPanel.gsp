@@ -45,8 +45,8 @@
 			label: ui.format(program),
 			classes: [ "padded "],
 			extra: "Enroll",
-			iconProvider: "uilibrary",
-			icon: "window_app_list_add_32.png",
+			iconProvider: "kenyaemr",
+			icon: "program_enroll.png",
 			href: ui.pageLink("kenyaemr", "enterHtmlForm", [ patientId: patient.id, formUuid: registrationFormUuid, returnUrl: ui.thisUrl() ])
 		]) }
 <% } %>

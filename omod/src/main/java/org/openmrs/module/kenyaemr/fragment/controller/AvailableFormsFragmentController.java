@@ -176,9 +176,9 @@ public class AvailableFormsFragmentController {
 		
 		private Frequency frequency = Frequency.VISIT;
 		
-		private String iconProvider = "uilibrary";
+		private String iconProvider = "kenyaemr";
 		
-		private String icon = "page_blank_add_32.png";
+		private String icon = "form_enter.png";
 		
 		/**
 		 * @param formUuid

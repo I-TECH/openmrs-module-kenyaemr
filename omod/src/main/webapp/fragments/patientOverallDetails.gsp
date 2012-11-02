@@ -43,8 +43,8 @@
 	</div>
 	
 	${ ui.includeFragment("uilibrary", "widget/button", [
-			iconProvider: "uilibrary",
-			icon: "comment_user_32.png",
+			iconProvider: "kenyaemr",
+			icon: "patient_family_history.png",
 			label: "Family History",
 			href: ui.pageLink("kenyaemr", "editPatientHtmlForm", [
 				patientId: patient.id,
