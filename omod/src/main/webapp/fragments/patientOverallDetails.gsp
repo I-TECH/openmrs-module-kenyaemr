@@ -44,7 +44,7 @@
 	
 	${ ui.includeFragment("uilibrary", "widget/button", [
 			iconProvider: "kenyaemr",
-			icon: "patient_family_history.png",
+			icon: "buttons/patient_family_history.png",
 			label: "Family History",
 			href: ui.pageLink("kenyaemr", "editPatientHtmlForm", [
 				patientId: patient.id,

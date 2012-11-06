@@ -178,7 +178,7 @@ public class AvailableFormsFragmentController {
 		
 		private String iconProvider = "kenyaemr";
 		
-		private String icon = "form_enter.png";
+		private String icon = "buttons/form_enter.png";
 		
 		/**
 		 * @param formUuid

@@ -24,7 +24,7 @@
 	<h1>Registration App</h1>
 	<h3>Welcome!</h3>
 	
-	${ ui.includeFragment("uilibrary", "widget/button", [ icon: "search_32.png", label: "Find a Patient", href: ui.pageLink("kenyaemr", "registrationSearch") ]) }
+	${ ui.includeFragment("uilibrary", "widget/button", [ icon: "buttons/patient_search.png", iconProvider: "kenyaemr", label: "Find a Patient", href: ui.pageLink("kenyaemr", "registrationSearch") ]) }
 </div>
 
 <div class="second-column">

@@ -72,7 +72,7 @@
 	
 	<% if (closeChartUrl) { %>
 		<div class="close-patient">
-			<small>Close chart </small> <a href="${ closeChartUrl }"><img title="Close Chart" style="vertical-align: middle" src="${ ui.resourceLink("kenyaemr", "images/patient_close.png") }"/></a>
+			<small>Close chart </small> <a href="${ closeChartUrl }"><img title="Close Chart" style="vertical-align: middle" src="${ ui.resourceLink("kenyaemr", "images/buttons/patient_close.png") }"/></a>
 		</div>
 	<% } %>
 

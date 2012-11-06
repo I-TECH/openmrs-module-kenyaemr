@@ -32,8 +32,8 @@
 		<br/>
 				
 		${ ui.includeFragment("uilibrary", "widget/button", [
-				iconProvider: "uilibrary",
-				icon: "application32.png",
+				iconProvider: "kenyaemr",
+				icon: "buttons/admin_setup.png",
 				label: "Redo<br/>First-time Setup",
 				href: ui.pageLink("kenyaemr", "adminFirstTimeSetup")
 			]) }
@@ -42,8 +42,8 @@
 		<hr/>
 
 		${ ui.includeFragment("uilibrary", "widget/button", [
-				iconProvider: "uilibrary",
-				icon: "refresh.png",
+				iconProvider: "kenyaemr",
+				icon: "buttons/admin_update.png",
 				label: "Install New<br/>Software Version",
 				href: ui.pageLink("kenyaemr", "adminSoftwareVersion")
 			]) }

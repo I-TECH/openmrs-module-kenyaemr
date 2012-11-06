@@ -48,7 +48,7 @@
 	print ui.includeFragment("uilibrary", "widget/button", [
 			id: "create-patient-button",
 			iconProvider: "kenyaemr",
-			icon: "patient_add.png",
+			icon: "buttons/patient_add.png",
 			label: "Create New Patient Record",
 			extra: "Patient does not exist yet",
 			href: ui.pageLink("kenyaemr", "registrationCreatePatient") ])
