@@ -10,6 +10,9 @@
 	#search {
 		float: left;
 	}
+	#create-patient-button {
+		float: right;
+	}
 </style>
 
 <fieldset id="search">
@@ -41,12 +44,25 @@
 		]) %>
 </fieldset>
 
+<% if (config.showCreateButton) {
+	print ui.includeFragment("uilibrary", "widget/button", [
+			id: "create-patient-button",
+			iconProvider: "kenyaemr",
+			icon: "patient_add.png",
+			label: "Create New Patient Record",
+			extra: "Patient does not exist yet",
+			href: ui.pageLink("kenyaemr", "registrationCreatePatient") ])
+}
+%>
+
+<div style="clear: right"></div>
+
 <fieldset style="border: none">
-	${ ui.includeFragment("kenyaemr", "patientList", [
-		id: "results",
-		showNumResults: true,
-		page: config.page
-	]) }
+${ ui.includeFragment("kenyaemr", "patientList", [
+	id: "results",
+	showNumResults: true,
+	page: config.page
+]) }
 </fieldset>
 
 <script type="text/javascript">

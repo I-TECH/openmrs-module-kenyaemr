@@ -72,8 +72,7 @@ public class PatientSearchFragmentController {
 		for (SimpleObject so : matching) {
 			Visit v = ptIds.get(so.get("patientId"));
 			if (v != null) {
-				String imgUrl = ui.resourceLink("kenyaemr", "images/visit.png");
-				so.put("extra", "<img src=\"" + imgUrl + "\"/> <small>" + ui.format(v.getVisitType()) + "<br/>" + ui.format(v.getStartDatetime()) + "</small>");
+				so.put("extra", "<div class='active-visit'>" + ui.format(v.getVisitType()) + "<br/><small>" + ui.format(v.getStartDatetime()) + "</small></div>");
 			}
 		}
 		

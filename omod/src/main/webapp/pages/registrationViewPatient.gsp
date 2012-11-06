@@ -9,7 +9,7 @@
 		margin-bottom: 0.6em;
 	}
 	
-	.active-visit {
+	.active-visit-tab {
 		border: 1px black solid;
 		border-top-left-radius: 0.5em;
 		border-bottom-left-radius: 0.5em;
@@ -20,11 +20,11 @@
 		z-index: 1;
 	}
 	
-	.active-visit h4 {
+	.active-visit-tab h4 {
 		margin: 0.3em;
 	}
 	
-	.selected-visit {
+	.selected-visit-tab {
 		background-color: #ffffbb;
 		border-right: none;
 	}
@@ -44,7 +44,7 @@
 		]) }
 </div>
 
-<div id="patient-col2" <% if (visit) { %>class="selected-visit"<% } %>>
+<div id="patient-col2" <% if (visit) { %>class="selected-visit-tab"<% } %>>
 
 <% /* Bill wants this, but I really don't think it fits. Consider putting in gray bar instead
 	<div style="float: right">

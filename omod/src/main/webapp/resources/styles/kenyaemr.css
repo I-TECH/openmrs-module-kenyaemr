@@ -12,6 +12,8 @@
 	margin: 5px;
 }
 
+/*** App header ***/
+
 #running-app-header {
 	font-size: 0.9em;
 	color: white;
@@ -33,6 +35,28 @@
 #running-app-header a:hover {
 	text-decoration: underline;
 }
+
+/*** Patient header ***/
+
+.patient-alert {
+	color: #332;
+	background-color: yellow;
+	margin-right: 3px;
+	padding: 2px;
+	border-radius: 2px;
+	display: inline-block;
+}
+
+.active-visit {
+	color: #223;
+	background-color: #EEF;
+	margin-left: 3px;
+	padding: 2px;
+	border-radius: 2px;
+	display: inline-block;
+}
+
+/*** Main screen area ***/
 
 #patient-col1 {
 	float: left;

@@ -70,7 +70,7 @@
 <% config.activeVisits.each { v ->
 	def selected = v == visit
 %>
-	<div id="visit-${ v.id }" class="active-visit <% if (selected) { %>selected-visit<% } else { %>selectable<% } %>">
+	<div id="visit-${ v.id }" class="active-visit-tab <% if (selected) { %>selected-visit-tab<% } else { %>selectable<% } %>">
 		<h4>
 			<img src="${ ui.resourceLink("kenyaemr", "images/visit.png") }"/>
 			${ ui.format(v.visitType) }
