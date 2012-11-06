@@ -43,6 +43,7 @@ public class ObsTableByDateFragmentController {
 		if (conceptConfig == null)
 			throw new IllegalArgumentException("concepts is required");
 		List<Concept> concepts = getConcepts(conceptConfig);
+		model.addAttribute("concepts", concepts);
 		model.addAttribute("data", getObsAsTable(patient, concepts));
 	}
 	

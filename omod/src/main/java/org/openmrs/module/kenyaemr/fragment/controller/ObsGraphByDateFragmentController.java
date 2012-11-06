@@ -39,6 +39,7 @@ public class ObsGraphByDateFragmentController {
             throw new IllegalArgumentException("concepts must 1 or 2");
 
 		List<Concept> concepts = getConcepts(conceptConfig);
+		model.addAttribute("concepts", concepts);
 		model.addAttribute("data", getObsAsSeries(patient, concepts));
 	}
 

@@ -9,7 +9,7 @@
 <script type="text/javascript">
 
 var obsData = {
-<% config.concepts.each { concept -> %>
+<% concepts.each { concept -> %>
 	${ concept.conceptId }: [ <% data[concept].each { obs -> print "[" + obs.obsDatetime.time + ", " + obs.valueNumeric + "], " } %> ],
 <% } %>
 };
@@ -27,7 +27,7 @@ jq(function() {
 		chart: { renderTo: '${ config.id }' },
 		xAxis: { type: 'datetime' },
 		yAxis: [
-			<% config.concepts.each { concept -> %>
+			<% concepts.each { concept -> %>
 			{
 				title: {
 					text: '${ ui.format(concept) }',
@@ -41,7 +41,7 @@ jq(function() {
 		series: [
 			<%
 			def conceptNum = 0;
-			config.concepts.each { concept ->
+			concepts.each { concept ->
 			%>
 			{
 				name: '${ ui.format(concept) }',

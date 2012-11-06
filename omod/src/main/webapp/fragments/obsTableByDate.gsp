@@ -9,7 +9,7 @@
 	<thead>
 	<tr>
 		<th>Date</th>
-		<% config.concepts.each { %>
+		<% concepts.each { %>
 		<th nowrap="nowrap">${ ui.format(it) }</th>
 		<% } %>
 	</tr>
@@ -18,13 +18,13 @@
 	<% if (!data) { %>
 	<tr>
 		<td></td>
-		<td colspan="${ config.concepts.size() }">${ ui.message("general.none") }</td>
+		<td colspan="${ concepts.size() }">${ ui.message("general.none") }</td>
 	</tr>
 	<% } %>
 	<% data.each { date, results -> %>
 	<tr>
 		<td nowrap="nowrap"><%= kenyaEmrWebUtils.formatDateNoTime(date) %></td>
-		<% config.concepts.each { concept -> %>
+		<% concepts.each { concept -> %>
 		<td>
 			<%
 			def obs = results[concept]
