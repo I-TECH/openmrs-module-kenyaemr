@@ -11,7 +11,7 @@
 			[ object: command, property: "personName.middleName", label: "Other Name(s)" ]		
 		],
 		[
-			ui.decorate("labeled", [label: "Sex"], """
+			ui.decorate("uilibrary", "labeled", [label: "Sex"], """
 				<input type="radio" name="gender" value="F" id="gender-F" ${ femaleChecked }/>
 				<label for="gender-F">Female</label>
 				&nbsp;
@@ -63,7 +63,7 @@
 }
 </style>
 
-<form id="edit-patient-form" method="post" action="${ ui.actionLink("kenyaemr", "savePatient") }">
+<form id="edit-patient-form" method="post" action="${ ui.actionLink("kenyaemr", "registrationEditPatient", "savePatient") }">
 	<% if (command.original) { %>
 		<input type="hidden" name="patientId" value="${ command.original.patientId }"/>
 	<% } %>
