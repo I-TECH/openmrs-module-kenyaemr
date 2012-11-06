@@ -179,8 +179,8 @@ fieldset {
 	%>
 	<table>
 		<tr>
-			<td style="vertical-align: top">${ ui.includeFragment("kenyaemr", "obsTableByDate", [concepts: conceptList]) }</td>
-			<td style="vertical-align: top">${ ui.includeFragment("kenyaemr", "obsGraphByDate", [concepts: conceptList]) }</td>
+			<td style="vertical-align: top">${ ui.includeFragment("kenyaemr", "obsTableByDate", [id: "tblhistory", concepts: conceptList]) }</td>
+			<td style="vertical-align: top">${ ui.includeFragment("kenyaemr", "obsGraphByDate", [id: "cd4graph", concepts: conceptList, style: "width: 400px; height: 300px" ]) }</td>
 		</tr>
 	</table>
 	<% } %>

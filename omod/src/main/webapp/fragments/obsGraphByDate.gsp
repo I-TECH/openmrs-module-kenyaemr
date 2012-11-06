@@ -1,12 +1,15 @@
 <%
 	ui.includeJavascript("uilibrary", "jquery.js") // force this include to be first
 	ui.includeJavascript("kenyaemr", "highcharts.js")
+
+	config.require("id")
+	config.require("concepts")
 %>
 
 <script type="text/javascript">
 
 var obsData = {
-<% concepts.each { concept -> %>
+<% config.concepts.each { concept -> %>
 	${ concept.conceptId }: [ <% data[concept].each { obs -> print "[" + obs.obsDatetime.time + ", " + obs.valueNumeric + "], " } %> ],
 <% } %>
 };
@@ -21,10 +24,10 @@ jq(function() {
 	var useOppositeYAxis = true;
 
 	var chart = new Highcharts.Chart({
-		chart: { renderTo: 'graph-container' },
+		chart: { renderTo: '${ config.id }' },
 		xAxis: { type: 'datetime' },
 		yAxis: [
-			<% concepts.each { concept -> %>
+			<% config.concepts.each { concept -> %>
 			{
 				title: {
 					text: '${ ui.format(concept) }',
@@ -38,7 +41,7 @@ jq(function() {
 		series: [
 			<%
 			def conceptNum = 0;
-			concepts.each { concept ->
+			config.concepts.each { concept ->
 			%>
 			{
 				name: '${ ui.format(concept) }',
@@ -57,4 +60,4 @@ jq(function() {
 });
 </script>
 
-<div id="graph-container" style="width: 500px; height: 300px"></div>
+<div id="${ config.id }" style="${ config.style ? config.style : "" }"></div>

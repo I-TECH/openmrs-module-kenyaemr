@@ -1,10 +1,15 @@
-<% def kenyaEmrWebUtils = context.loadClass("org.openmrs.module.kenyaemr.util.KenyaEmrWebUtils") %>
+<%
+	def kenyaEmrWebUtils = context.loadClass("org.openmrs.module.kenyaemr.util.KenyaEmrWebUtils")
 
-<table class="decorated" id="tblHistory">
+	config.require("id")
+	config.require("concepts")
+%>
+
+<table class="decorated" id="${ config.id }" style="${ config.style ? config.style : "" }">
 	<thead>
 	<tr>
 		<th>Date</th>
-		<% concepts.each { %>
+		<% config.concepts.each { %>
 		<th nowrap="nowrap">${ ui.format(it) }</th>
 		<% } %>
 	</tr>
@@ -13,13 +18,13 @@
 	<% if (!data) { %>
 	<tr>
 		<td></td>
-		<td colspan="${ concepts.size() }">${ ui.message("general.none") }</td>
+		<td colspan="${ config.concepts.size() }">${ ui.message("general.none") }</td>
 	</tr>
 	<% } %>
 	<% data.each { date, results -> %>
 	<tr>
 		<td nowrap="nowrap"><%= kenyaEmrWebUtils.formatDateNoTime(date) %></td>
-		<% concepts.each { concept -> %>
+		<% config.concepts.each { concept -> %>
 		<td>
 			<%
 			def obs = results[concept]
