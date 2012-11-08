@@ -27,10 +27,14 @@ jq(function() {
 		chart: { renderTo: '${ config.id }' },
 		xAxis: { type: 'datetime' },
 		yAxis: [
-			<% concepts.each { concept -> %>
+			<%
+			concepts.each { concept ->
+				def conceptName = ui.format(concept)
+				def axisTitle = config.showUnits && !conceptName.endsWith(")") ? (conceptName + " (" + concept.units + ")") : conceptName
+			%>
 			{
 				title: {
-					text: '${ ui.format(concept) }',
+					text: '${ ui.escapeHtml(axisTitle) }',
 					style: emrTextStyle
 				},
 				opposite: (useOppositeYAxis = !useOppositeYAxis),
@@ -44,7 +48,7 @@ jq(function() {
 			concepts.each { concept ->
 			%>
 			{
-				name: '${ ui.format(concept) }',
+				name: '${ ui.escapeHtml(ui.format(concept)) }',
 				dashStyle: plotStyles[${ conceptNum++ }],
 				data: obsData[${ concept.conceptId }]
 			},

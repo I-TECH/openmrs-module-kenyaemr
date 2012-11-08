@@ -25,7 +25,7 @@
 	<tr>
 		<td nowrap="nowrap"><%= kenyaEmrWebUtils.formatDateNoTime(date) %></td>
 		<% concepts.each { concept -> %>
-		<td>
+		<td style="text-align: right">
 			<%
 			def obs = results[concept]
 			if (obs) {
