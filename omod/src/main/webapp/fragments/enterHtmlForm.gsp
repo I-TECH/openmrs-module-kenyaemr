@@ -36,7 +36,7 @@ ui.includeJavascript("kenyaemr", "dwr-util.js")
 	    if (!tryingToSubmit) {
 	        tryingToSubmit = true;
 	        ui.disableConfirmBeforeNavigating();
-	        jq.getJSON(actionLink('enterHtmlForm', 'checkIfLoggedIn'), function(result) {
+	        jq.getJSON(ui.fragmentActionLink('kenyaemr', 'enterHtmlForm', 'checkIfLoggedIn'), function(result) {
 	        	checkIfLoggedInAndErrorsCallback(result.isLoggedIn);
 	        });
 	    }

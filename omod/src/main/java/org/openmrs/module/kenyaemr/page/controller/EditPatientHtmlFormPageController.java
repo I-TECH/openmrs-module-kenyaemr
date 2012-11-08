@@ -20,12 +20,12 @@ import org.openmrs.Encounter;
 import org.openmrs.Form;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyaemr.KenyaEmrConstants;
 import org.openmrs.ui.framework.page.PageModel;
 import org.springframework.web.bind.annotation.RequestParam;
 
-
 /**
- *
+ * Handles form enter/edit requests
  */
 public class EditPatientHtmlFormPageController {
 	
@@ -33,18 +33,26 @@ public class EditPatientHtmlFormPageController {
 	                         @RequestParam("formUuid") String formUuid,
 	                         @RequestParam("returnUrl") String returnUrl,
 	                         PageModel model) {
+
 			Form form = Context.getFormService().getFormByUuid(formUuid);
 			if (form == null) {
 				throw new IllegalArgumentException("Cannot find form with uuid = " + formUuid);
 			}
+
+			StringBuilder sb = new StringBuilder("redirect:" + KenyaEmrConstants.MODULE_ID + "/");
+
 			List<Encounter> encounters = Context.getEncounterService().getEncounters(patient, null, null, null, Collections.singleton(form), null, null, null, null, false);
 			if (encounters.size() == 0) {
-				return "redirect:enterHtmlForm.page?patientId=" + patient.getId() + "&formUuid=" + formUuid + "&returnUrl=" + java.net.URLEncoder.encode(returnUrl);
+				sb.append("enterHtmlForm.page?formUuid=" + formUuid);
 			} else {
 				// in case there are more than one, we pick the last one
 				Encounter encounter = encounters.get(encounters.size() - 1);
-				return "redirect:editHtmlForm.page?patientId=" + patient.getId() + "&encounterId=" + encounter.getEncounterId() + "&returnUrl=" + java.net.URLEncoder.encode(returnUrl);
+				sb.append("editHtmlForm.page?encounterId=" + encounter.getEncounterId());
 			}
+
+			sb.append("&patientId=" + patient.getId());
+			sb.append("&returnUrl=" + java.net.URLEncoder.encode(returnUrl));
+			return sb.toString();
 		}
 	
 }
