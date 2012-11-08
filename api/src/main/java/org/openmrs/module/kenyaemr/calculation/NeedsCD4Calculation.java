@@ -23,10 +23,12 @@ import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.ObsResult;
 import org.openmrs.calculation.result.SimpleResult;
+import org.openmrs.module.kenyaemr.KenyaEmrConstants;
 import org.openmrs.module.kenyaemr.MetadataConstants;
 
 /**
- *
+ * Calculate whether patients are due for a CD4 count. Calculation returns true if if the patient
+ * is alive, enrolled in the HIV program, and has not had a CD4 count in the last 180 days
  */
 public class NeedsCD4Calculation extends KenyaEmrCalculation {
 	
@@ -44,19 +46,28 @@ public class NeedsCD4Calculation extends KenyaEmrCalculation {
 	 * @should determine whether patients need a CD4
 	 */
 	@Override
-	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues,
-	                                     PatientCalculationContext context) {
+	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
+
 		Program hivProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.HIV_PROGRAM_UUID);
-		Set<Integer> inHivProgram = patientsThatPass(lastProgramEnrollment(hivProgram, cohort, context));
+
 		Set<Integer> alive = alivePatients(cohort, context);
+		Set<Integer> inHivProgram = patientsThatPass(lastProgramEnrollment(hivProgram, alive, context));
 		CalculationResultMap lastObs = lastObs(MetadataConstants.CD4_CONCEPT_UUID, cohort, context);
+
 		CalculationResultMap ret = new CalculationResultMap();
 		for (Integer ptId : cohort) {
-			ObsResult r = (ObsResult) lastObs.get(ptId);
-			boolean needed = inHivProgram.contains(ptId) && alive.contains(ptId) && (r == null || r.isEmpty() || daysSince(r.getDateOfResult(), context) > 180);
-			ret.put(ptId, new SimpleResult(needed, this, context));
+			boolean needsCD4 = false;
+
+			// Is patient alive and in the HIV program
+			if (inHivProgram.contains(ptId)) {
+
+				// Does patient have CD4 result in the last X days
+				ObsResult r = (ObsResult) lastObs.get(ptId);
+				needsCD4 = r == null || r.isEmpty() || daysSince(r.getDateOfResult(), context) > KenyaEmrConstants.NEEDS_CD4_COUNT_AFTER_DAYS;
+			}
+
+			ret.put(ptId, new BooleanResult(needsCD4, this, context));
 		}
 		return ret;
 	}
-	
 }
