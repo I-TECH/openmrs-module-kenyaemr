@@ -1,7 +1,7 @@
-
 <%
 	ui.decorateWith("kenyaemr", "standardKenyaEmrPage", [ patient: patient ])
 %>
+
 <style type="text/css">
 #col1, #col2 {
 	float: left;
@@ -13,30 +13,48 @@
 	margin-right: 0.5em;
 }
 
-#col2 {
+.panel-menu {
+	border-radius: 3px;
+	background-color: #858580;
+	margin-bottom: 10px;
+	padding: 3px;
+}
+
+.panel-menu .title {
+	padding: 5px;
+	text-align: center;
+	color: white;
+	font-weight: bold;
+}
+
+.panel-menu-button {
+	padding: 5px;
+}
+
+.panel-menu-button:nth-child(odd) {
+	background-color: #EEE
+}
+
+.panel-menu-button:nth-child(even) {
+	background-color: #DDD
+}
+
+.panel-menu-button a {
+	color: #444;
+	font-weight: bold;
+	text-decoration: none;
+}
+
+.panel-menu-button .description {
+	font-size: 0.6em;
+}
+
+.selected:nth-child(odd), .selected:nth-child(even) {
+	background-color: #EEB;
 }
 
 fieldset {
 	margin-bottom: 1em;
-}
-
-.link-button {
-	border: 1px black solid;
-	margin-bottom: 0.5em;
-	padding: 0.3em;
-	border-radius: 0.3em;
-}
-
-.selected {
-	background-color: #ffffaa;
-}
-
-.link-button .label {
-	font-weight: bold;
-}
-
-.link-button .description {
-	font-size: 0.6em;
 }
 </style>
 
@@ -48,69 +66,63 @@ fieldset {
 
 <div id="col1">
 
-	<div class="link-button<% if (selection == "overview") { %> selected<% } %>">
-		<span class="title">
+	<div class="panel-menu">
+		<div class="<% if (selection == "overview") { %>selected<% } %> panel-menu-button">
 			<a href="${ ui.pageLink("kenyaemr", "medicalChartViewPatient", [ patientId: patient.id ]) }">
 				Overview
 			</a>
-		</span>
-	</div>
+		</div>
 
-	<% oneTimeForms.each { %>
-	<div class="link-button<% if (selection == "form-${ it.formUuid }") { %> selected<% } %>">
-		<span class="title">
+		<% oneTimeForms.each { %>
+		<div class="<% if (selection == "form-${ it.formUuid }") { %>selected<% } %> panel-menu-button">
 			<a href="${ ui.pageLink("kenyaemr", "medicalChartViewPatient", [ patientId: patient.id, formUuid: it.formUuid ]) }">
 				${ it.label }
 			</a>
-		</span>
-	</div>
-	<% } %>
+		</div>
+		<% } %>
 
-	<% programs.each { %>
-	<div class="link-button<% if (selection == "program-${ it.id }") { %> selected<% } %>">
-		<span class="title">
+		<% programs.each { %>
+		<div class="panel-menu-button<% if (selection == "program-${ it.id }") { %> selected<% } %>">
 			<a href="${ ui.pageLink("kenyaemr", "medicalChartViewPatient", [ patientId: patient.id, patientProgramId: it.id ]) }">
 				${ ui.format(it.program) }
 			</a>
-		</span>
-		<br/>
-		<span class="description">
-			from ${ ui.format(it.dateEnrolled) }
-			<% if (it.dateCompleted) { %>
-			to ${ ui.format(it.dateCompleted) }
-			<% } %>
-			<% if (it.outcome) { %>
 			<br/>
-			Outcome: <b>${ ui.format(it.outcome) }</b>
-			<% } %>
-		</span>
+			<span class="description">
+				from ${ ui.format(it.dateEnrolled) }
+				<% if (it.dateCompleted) { %>
+				to ${ ui.format(it.dateCompleted) }
+				<% } %>
+				<% if (it.outcome) { %>
+				<br/>
+				Outcome: <b>${ ui.format(it.outcome) }</b>
+				<% } %>
+			</span>
+		</div>
+		<% } %>
 	</div>
-	<% } %>
 
-	<div style="padding-bottom: 0.5em;">
-		<u>Visits</u>
-	</div>
+	<div class="panel-menu">
+		<div class="title">Visits</div>
 
-	<% if (!visits) { %>
-	None
-	<% } %>
+		<% if (!visits) { %>
+		None
+		<% } %>
 
-	<% visits.each { visit -> %>
-	<div class="link-button<% if (selection == "visit-${ visit.id }") { %> selected<% } %>">
-		<span class="title">
+		<% visits.each { visit -> %>
+		<div class="panel-menu-button<% if (selection == "visit-${ visit.id }") { %> selected<% } %>">
 			<a href="${ ui.pageLink("kenyaemr", "medicalChartViewPatient", [ patientId: patient.id, visitId: visit.id ]) }">
 				${ ui.format(visit.visitType) } Visit
 			</a>
-		</span>
-		<br/>
-		<span class="description">
-			from ${ ui.format(visit.startDatetime) }
-			<% if (visit.stopDatetime) { %>
-			to ${ ui.format(visit.stopDatetime) }
-			<% } %>
-		</span>
+			<br/>
+			<span class="description">
+				from ${ ui.format(visit.startDatetime) }
+				<% if (visit.stopDatetime) { %>
+				to ${ ui.format(visit.stopDatetime) }
+				<% } %>
+			</span>
+		</div>
+		<% } %>
 	</div>
-	<% } %>
 
 </div>
 
