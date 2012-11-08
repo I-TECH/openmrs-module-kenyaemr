@@ -6,7 +6,7 @@
 	ui.includeJavascript("uilibrary", "jquery-ui.js")
 	ui.includeJavascript("kenyaemr", "jquery-ui-timepicker-addon-mod.js")
 	
-	ui.includeJavascript("kenyaemr", "uiframework.js")
+	ui.includeJavascript("uilibrary", "uiframework.js")
 	ui.includeJavascript("kenyaemr", "kenyaemr.js")
 	if (config.patient) {
 		config.context = "patientId=${ patient.id }"
