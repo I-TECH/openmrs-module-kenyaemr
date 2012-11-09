@@ -113,7 +113,7 @@ ui.includeJavascript("kenyaemr", "dwr-util.js")
 		var password = \$j('#passwordPopupPassword').val();
 		\$j('#passwordPopupUsername').val('');
 		\$j('#passwordPopupPassword').val('');
-		jq.getJSON(actionLink('enterHtmlForm', 'checkIfLoggedIn', { user: username, pass: password }), submitHtmlForm); 
+		jq.getJSON(ui.fragmentActionLink('kenyaemr', 'enterHtmlForm', 'checkIfLoggedIn', { user: username, pass: password }), submitHtmlForm);
 	}
 
 	function doSubmitHtmlForm() {

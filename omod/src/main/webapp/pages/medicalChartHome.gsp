@@ -40,5 +40,5 @@
 
 
 <script type="text/javascript">
-	getJsonAsEvent(actionLink('medicalChartUtil', 'recentlyViewed'), 'recentlyViewedPatients/show');
+	getJsonAsEvent(ui.fragmentActionLink('kenyaemr', 'medicalChartUtil', 'recentlyViewed'), 'recentlyViewedPatients/show');
 </script>
