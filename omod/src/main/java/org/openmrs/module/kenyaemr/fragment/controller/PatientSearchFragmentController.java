@@ -128,7 +128,7 @@ public class PatientSearchFragmentController {
     	List<SimpleObject> ret = new ArrayList<SimpleObject>();
     	long now = System.currentTimeMillis();
     	for (Patient pt : pts) {
-    		SimpleObject so = SimpleObject.fromObject(pt, ui, "patientId", "personName", "age", "birthdate", "gender", "activeIdentifiers.identifierType", "activeIdentifiers.identifier");
+    		SimpleObject so = SimpleObject.fromObject(pt, ui, "patientId", "personName", "age", "birthdate", "birthdateEstimated", "gender", "activeIdentifiers.identifierType", "activeIdentifiers.identifier");
     		Period p = new Period(pt.getBirthdate().getTime(), now, PeriodType.yearMonthDay());
     		so.put("ageMonths", p.getMonths());
     		so.put("ageDays", p.getDays());
