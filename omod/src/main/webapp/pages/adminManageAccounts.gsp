@@ -27,6 +27,7 @@
 				[ label: "Account Types", value: """TODO <input type="hidden" name="includeUsers" value="true"/> <input type="hidden" name="includeProviders" value="true"/> """]
 			],
 			fragment: "adminUtil",
+			fragmentProvider: "kenyaemr",
 			action: "accountSearch",
 			submitOnEvent: "accountSearch/changed",
 			resetOnSubmit: false,
@@ -35,10 +36,7 @@
 </fieldset>
 
 <fieldset style="border: none">
-	${ ui.includeFragment("kenyaemr", "accountList", [
-		id: "results",
-		page: "adminEditAccount"
-	]) }
+	${ ui.includeFragment("kenyaemr", "accountList", [ id: "results", page: "adminEditAccount" ]) }
 </fieldset>
 
 ${ ui.includeFragment("uilibrary", "widget/button", [
