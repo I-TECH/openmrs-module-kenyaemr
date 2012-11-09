@@ -20,7 +20,7 @@
 	border-radius: 3px;
 }
 
-.app-button a {
+.app-button-label {
 	color: #444;
 	font-weight: bold;
 	text-decoration: none;
@@ -29,15 +29,13 @@
 
 <div id="homepage-apps">	
 	<% apps.eachWithIndex { app, i -> %>
-		<div class="app-button" <% if (i % APPS_PER_ROW == 0) { %> style="clear: left;" <% } %>>
-			<a href="/${ contextPath }/${ app.homepageUrl }<% if (patient) { %>?patientId=${ patient.id }<% } %>">
-				<% if (app.iconUrl) { %>
-					<img class="app-icon" src="/${ contextPath }/${ app.iconUrl }" height="64"/><br/>
-				<% } %>
-				<span class="app-label">
-					${ app.label }
-				</span>
-			</a>
+		<div class="clickable app-button" <% if (i % APPS_PER_ROW == 0) { %> style="clear: left;" <% } %> onclick="location.href='/${ contextPath }/${ app.homepageUrl }<% if (patient) { %>?patientId=${ patient.id }<% } %>'">
+			<% if (app.iconUrl) { %>
+				<img src="/${ contextPath }/${ app.iconUrl }" height="64"/><br/>
+			<% } %>
+			<span class="app-button-label">
+				${ app.label }
+			</span>
 		</div>
 	<% } %>
 </div>
