@@ -33,10 +33,8 @@ public class ObsGraphByDateFragmentController {
 		Patient patient = (Patient) pageModel.getAttribute("patient");
 		List<?> conceptConfig = (List<?>) config.getAttribute("concepts");
 
-		if (conceptConfig == null)
-			throw new IllegalArgumentException("concepts is required");
-        else if (conceptConfig.size() < 1 || conceptConfig.size() > 2)
-            throw new IllegalArgumentException("concepts must 1 or 2");
+		if (conceptConfig == null || conceptConfig.size() < 1)
+			throw new IllegalArgumentException("concepts must be specified and be non-empty");
 
 		List<Concept> concepts = getConcepts(conceptConfig);
 		model.addAttribute("concepts", concepts);

@@ -16,18 +16,23 @@ var obsData = {
 
 jq(function() {
 
-	var plotStyles = ['longdash', 'shortdot'];
+	var plotStyles = ['longdash', 'shortdot', 'solid'];
 	var emrTextStyle = {
 		fontFamily: '"Lucida Grande", "Lucida Sans", Arial, sans-serif',
 		color: "#000"
 	};
-	var useOppositeYAxis = true;
 
 	var chart = new Highcharts.Chart({
 		chart: { renderTo: '${ config.id }' },
-		xAxis: { type: 'datetime' },
+		xAxis: {
+			type: 'datetime',
+			labels: {
+				style: emrTextStyle
+			}
+		},
 		yAxis: [
 			<%
+			def conceptNum = 0;
 			concepts.each { concept ->
 				def conceptName = ui.format(concept)
 				def axisTitle = config.showUnits && !conceptName.endsWith(")") ? (conceptName + " (" + concept.units + ")") : conceptName
@@ -37,22 +42,32 @@ jq(function() {
 					text: '${ ui.escapeHtml(axisTitle) }',
 					style: emrTextStyle
 				},
-				opposite: (useOppositeYAxis = !useOppositeYAxis),
+				labels: {
+					style: emrTextStyle
+				},
+				opposite: ${ conceptNum > 0 ? "true" : "false" },
 				min: 0
 			},
-			<% } %>
+			<%
+			    conceptNum++
+			}
+			%>
 		],
 		series: [
 			<%
-			def conceptNum = 0;
+			conceptNum = 0;
 			concepts.each { concept ->
 			%>
 			{
 				name: '${ ui.escapeHtml(ui.format(concept)) }',
-				dashStyle: plotStyles[${ conceptNum++ }],
-				data: obsData[${ concept.conceptId }]
+				dashStyle: plotStyles[${ conceptNum }],
+				data: obsData[${ concept.conceptId }],
+				yAxis: ${ conceptNum }
 			},
-			<% } %>
+			<%
+			    conceptNum++
+			}
+			%>
 		],
 		legend: {
 			itemStyle: emrTextStyle,
