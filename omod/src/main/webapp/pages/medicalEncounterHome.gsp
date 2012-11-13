@@ -1,20 +1,31 @@
 <%
-	ui.decorateWith("kenyaemr", "standardKenyaEmrPage")
+	ui.decorateWith("kenyaemr", "standardKenyaEmrPage", [ layout: "sidebar" ])
 %>
-<style type="text/css">
-	#create-patient {
-		position: fixed;
-		bottom: 0;
-		left: 40%;
-	}
-</style>
 
-${ ui.includeFragment("kenyaemr", "patientSearch", [ page: "medicalEncounterViewPatient" ]) }
+<div id="content-side">
+	<div class="panel-menu">
+		<div class="panel-heading">Find a patient</div>
+		<div class="panel-content">
+			${ ui.includeFragment("kenyaemr", "patientSearchForm", [ defaultWhich: "all" ]) }
+		</div>
+	</div>
+</div>
 
-${ ui.includeFragment("uilibrary", "widget/button", [
-	id: "create-patient",
-	iconProvider: "uilibrary",
-	icon: "add1-32.png",
-	label: "Patient Not Found?",
-	extra: "Registration -> Create New",
-	href: ui.pageLink("kenyaemr", "registrationCreatePatient") ]) }
+<div id="content-main">
+	${ ui.includeFragment("kenyaemr", "patientList", [
+			id: "results",
+			showNumResults: true,
+			page: "medicalEncounterViewPatient"
+	]) }
+</div>
+
+<script type="text/javascript">
+	subscribe("patientSearch/results", function(event, data) {
+		publish("results/show", data);
+	});
+	jq(function() {
+		jq('input[name=q]').focus();
+		// if the user goes back to this page in their history, redo the ajax query
+		publish('patientSearch/changed');
+	});
+</script>
