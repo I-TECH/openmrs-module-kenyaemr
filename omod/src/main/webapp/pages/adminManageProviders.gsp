@@ -26,6 +26,7 @@
 				[ label: "Username or Name", formFieldName: "q", class: java.lang.String ],
 				[ label: "Role", formFieldName: "role", class: org.openmrs.Role ]
 			],
+			fragmentProvider: "kenyaemr",
 			fragment: "providerSearch",
 			action: "search",
 			submitOnEvent: "providerSearch/changed",

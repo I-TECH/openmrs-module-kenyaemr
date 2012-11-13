@@ -9,7 +9,7 @@
 			"""<option value="${ it.conceptId }">${ it.getPreferredName(Locale.ENGLISH) }</option>"""
 		}.join()
 	def arvSelect = { """<select name="arv${ it }"><option value="">${ arvOptions }</select>""" }
-	def arvFields = ui.decorate("labeled", [label: "ARVs"], """
+	def arvFields = ui.decorate("uilibrary", "labeled", [label: "ARVs"], """
 			${ arvSelect(1) }, dosage: <input type="text" size="5" name="dosage1"/><select name="units1"><option value="mg">mg</option></select> <select name="frequency1"><option value="BD">BD</option><option value="OD">OD</option></select> <br/>
 			${ arvSelect(2) }, dosage: <input type="text" size="5" name="dosage2"/><select name="units2"><option value="mg">mg</option></select> <select name="frequency2"><option value="BD">BD</option><option value="OD">OD</option></select> <br/>
 			${ arvSelect(3) }, dosage: <input type="text" size="5" name="dosage3"/><select name="units3"><option value="mg">mg</option></select> <select name="frequency3"><option value="BD">BD</option><option value="OD">OD</option></select>
@@ -125,6 +125,7 @@
 			<img class="cancel-action-button" src="${ ui.resourceLink("uilibrary", "images/close_16.png") }" title="Cancel"/>
 		</legend>
 		${ ui.includeFragment("uilibrary", "widget/form", [
+				fragmentProvider: "kenyaemr",
 				fragment: "arvRegimen",
 				action: "startRegimen",
 				fields: [
@@ -151,6 +152,7 @@
 			<img class="cancel-action-button" src="${ ui.resourceLink("uilibrary", "images/close_16.png") }" title="Cancel"/>
 		</legend>
 		${ ui.includeFragment("uilibrary", "widget/form", [
+				fragmentProvider: "kenyaemr",
 				fragment: "arvRegimen",
 				action: "changeRegimen",
 				fields: [
@@ -170,6 +172,7 @@
 			<img class="cancel-action-button" src="${ ui.resourceLink("uilibrary", "images/close_16.png") }" title="Cancel"/>
 		</legend>
 		${ ui.includeFragment("uilibrary", "widget/form", [
+				fragmentProvider: "kenyaemr",
 				fragment: "arvRegimen",
 				action: "stopRegimen",
 				fields: [
@@ -197,6 +200,7 @@
 			<img class="cancel-action-button" src="${ ui.resourceLink("uilibrary", "images/close_16.png") }" title="Cancel"/>
 		</legend>
 		${ ui.includeFragment("uilibrary", "widget/form", [
+				fragmentProvider: "kenyaemr",
 				fragment: "arvRegimen",
 				action: "startRegimen",
 				fields: [

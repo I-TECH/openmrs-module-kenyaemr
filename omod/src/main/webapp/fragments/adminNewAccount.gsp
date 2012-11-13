@@ -5,7 +5,7 @@
 			[ formFieldName: "personName.familyName", label: "Family Name", class: java.lang.String ]
 		],
 		[
-			ui.decorate("labeled", [label: "Sex"], """
+			ui.decorate("uilibrary", "labeled", [label: "Sex"], """
 				<input type="radio" name="gender" value="F" id="gender-F"/>
 				<label for="gender-F">Female</label>
 				<input type="radio" name="gender" value="M" id="gender-M"/>
@@ -62,7 +62,7 @@
 			${ ui.includeFragment("kenyaemr", "widget/rowOfFields", [ fields: it ]) }
 		<% } %>
 	
-		${ ui.decorate("labeled", [label: "Roles"], roleHtml) }
+		${ ui.decorate("uilibrary", "labeled", [label: "Roles"], roleHtml) }
 	</fieldset>
 	
 	<br/>

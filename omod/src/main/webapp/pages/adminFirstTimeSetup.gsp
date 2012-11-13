@@ -60,6 +60,7 @@
 			}
 		%>
 			${ ui.includeFragment("uilibrary", "widget/form", [
+					pageProvider: "kenyaemr",
 					page: "adminFirstTimeSetup",
 					submitLabel: "Save Settings",
 					fields: fields
