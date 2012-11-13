@@ -50,8 +50,8 @@
 
 
 <script type="text/javascript">
-	getJsonAsEvent(ui.fragmentActionLink('kenyemr', 'patientSearch', 'withActiveVisits'), 'checkedInPatients/show');
-	jq.getJSON(ui.fragmentActionLink('registrationUtil', 'activeVisitTypes'), function(result) {
+	getJsonAsEvent(ui.fragmentActionLink('kenyaemr', 'patientSearch', 'withActiveVisits'), 'checkedInPatients/show');
+	jq.getJSON(ui.fragmentActionLink('kenyaemr', 'registrationUtil', 'activeVisitTypes'), function(result) {
 		if (result.length == 0) {
 			return;
 		}
