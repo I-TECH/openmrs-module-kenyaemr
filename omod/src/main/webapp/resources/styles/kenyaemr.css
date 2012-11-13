@@ -4,12 +4,9 @@
  *
  ********************************************/
 
-* {
-	font-family: "Lucida Grande", "Lucida Sans", Arial, sans-serif;
-}
-
 #page-header {
-	margin: 5px;
+	border: 5px solid #FFF;
+	background-color: #FFF;
 }
 
 /*** App header ***/
@@ -54,6 +51,68 @@
 	padding: 2px;
 	border-radius: 2px;
 	display: inline-block;
+}
+
+/*** Panel items and menus ***/
+
+.panel-item {
+	border-radius: 3px;
+	background-color: #d1d0c9;
+	margin-bottom: 5px;
+	padding: 3px;
+}
+
+.panel-menu {
+	border-radius: 3px;
+	background-color: #858580;
+	margin-bottom: 5px;
+	padding: 3px;
+}
+
+.panel-content {
+	background-color: #FFF;
+	padding: 5px;
+	overflow: auto;
+}
+
+.panel-heading {
+	padding: 5px;
+	text-align: center;
+	font-weight: bold;
+}
+
+.panel-item .panel-heading {
+	color: #333;
+}
+
+.panel-menu .panel-heading {
+	color: white;
+}
+
+.panel-menu-button {
+	padding: 5px;
+}
+
+.panel-menu-button:nth-child(odd) {
+	background-color: #EEE
+}
+
+.panel-menu-button:nth-child(even) {
+	background-color: #DDD
+}
+
+.panel-menu-button a {
+	color: #444;
+	font-weight: bold;
+	text-decoration: none;
+}
+
+.panel-menu-button-description {
+	font-size: 0.6em;
+}
+
+.selected:nth-child(odd), .selected:nth-child(even) {
+	background-color: #EEB;
 }
 
 /*** Main screen area ***/
