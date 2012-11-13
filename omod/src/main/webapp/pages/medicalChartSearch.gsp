@@ -3,22 +3,18 @@
 %>
 
 <div id="content-side">
-	<div class="panel-menu">
-		<div class="panel-heading">Find a patient</div>
-		<div class="panel-content">
-			${ ui.includeFragment("kenyaemr", "patientSearchForm", [ defaultWhich: "all" ]) }
-		</div>
-	</div>
+	${ ui.includeFragment("kenyaemr", "patientSearchForm", [ defaultWhich: "all" ]) }
 
-	<div class="panel-menu" style="text-align: center">
-		${ ui.includeFragment("uilibrary", "widget/button", [
-				id: "create-patient-button",
+	<div class="panel-frame">
+		<div class="panel-heading">Tasks</div>
+
+		${ ui.includeFragment("kenyaemr", "widget/panelMenuItem", [
 				iconProvider: "kenyaemr",
 				icon: "buttons/patient_add.png",
 				label: "Create New Patient Record",
 				extra: "Patient does not exist yet",
-				href: ui.pageLink("kenyaemr", "registrationCreatePatient") ])
-		}
+				href: ui.pageLink("kenyaemr", "registrationCreatePatient")
+		]) }
 	</div>
 </div>
 

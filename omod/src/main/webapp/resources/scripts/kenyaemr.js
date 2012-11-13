@@ -60,3 +60,15 @@ var kenyaemr = (function($) {
 	};
 
 })(jQuery);
+
+$(function() {
+	/**
+	 * Clicking anywhere on a panel-menuitem should direct you to the target of it's <a> tag
+	 */
+	$('.panel-menuitem').click(function() {
+		var a = $(this).find('a').first();
+		var href = a ? a.attr('href') : null;
+		if (href)
+			location.href = href;
+	});
+});

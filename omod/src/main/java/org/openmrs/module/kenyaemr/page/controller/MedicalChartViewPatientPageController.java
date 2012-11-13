@@ -25,7 +25,11 @@ import org.openmrs.PatientProgram;
 import org.openmrs.Visit;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appframework.AppUiUtil;
+import org.openmrs.module.htmlformentry.HtmlForm;
+import org.openmrs.module.htmlformentry.HtmlFormEntryService;
 import org.openmrs.module.kenyaemr.MetadataConstants;
+import org.openmrs.module.kenyaemr.form.FormConfig;
+import org.openmrs.module.kenyaemr.form.FormManager;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.page.PageModel;
@@ -56,11 +60,13 @@ public class MedicalChartViewPatientPageController {
 		
 		model.addAttribute("patient", patient);
 		model.addAttribute("person", patient);
-		
+
+		List<FormConfig> oneTimeFormConfigs = FormManager.getFormsForPatient("kenyaemr.medicalChart", patient, Collections.singleton(FormConfig.Frequency.ONCE_EVER));
 		List<SimpleObject> oneTimeForms = new ArrayList<SimpleObject>();
-		oneTimeForms.add(SimpleObject.create("label", "Family History", "formUuid", MetadataConstants.FAMILY_HISTORY_FORM_UUID));
-		if ("F".equals(patient.getGender())) {
-			oneTimeForms.add(SimpleObject.create("label", "Obstetric History", "formUuid", MetadataConstants.OBSTETRIC_HISTORY_FORM_UUID));
+		for (FormConfig formConfig : oneTimeFormConfigs) {
+			Form form = Context.getFormService().getFormByUuid(formConfig.getFormUuid());
+			//HtmlForm hf = Context.getService(HtmlFormEntryService.class).getHtmlFormByForm(form);
+			oneTimeForms.add(SimpleObject.create("formUuid", form.getUuid(), "label", form.getName(), "iconProvider", formConfig.getIconProvider(), "icon", formConfig.getIcon()));
 		}
 		model.addAttribute("oneTimeForms", oneTimeForms);
 

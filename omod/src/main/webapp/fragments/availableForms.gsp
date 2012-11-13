@@ -1,20 +1,8 @@
+<% /* Deprecated - to be replaced by visitAvailableForms and visitCompletedForms */ %>
+
 <script type="text/javascript">
 	function enterHtmlForm(htmlFormId, title) {
-		/*
-		showDialog({
-			title: title,
-			fragment: "enterHtmlForm",
-			config: {
-				patient: ${ patient.id },
-				htmlFormId: htmlFormId
-			}
-		});
-		*/
-		location.href = ui.pageLink('kenyaemr', 'enterHtmlForm', {
-				patientId: ${ patient.id },
-				htmlFormId: htmlFormId,
-				returnUrl: '${ ui.thisUrl() }'
-			});
+		location.href = ui.pageLink('kenyaemr', 'enterHtmlForm', { patientId: ${ patient.id }, htmlFormId: htmlFormId, returnUrl: '${ ui.urlEncode(ui.thisUrl()) }' });
 	}
 </script>
 

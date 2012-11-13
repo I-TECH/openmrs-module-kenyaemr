@@ -53,20 +53,28 @@
 	display: inline-block;
 }
 
-/*** Panel items and menus ***/
+/*** Panel style set ***/
 
-.panel-item {
-	border-radius: 3px;
+.panel-frame {
 	background-color: #d1d0c9;
+	border-radius: 3px;
 	margin-bottom: 5px;
 	padding: 3px;
 }
 
-.panel-menu {
-	border-radius: 3px;
+#content-side .panel-frame {
 	background-color: #858580;
-	margin-bottom: 5px;
-	padding: 3px;
+}
+
+.panel-heading {
+	color: #333;
+	padding: 5px;
+	text-align: center;
+	font-weight: bold;
+}
+
+#content-side .panel-heading {
+	color: white;
 }
 
 .panel-content {
@@ -75,43 +83,48 @@
 	overflow: auto;
 }
 
-.panel-heading {
+.panel-menuitem {
 	padding: 5px;
-	text-align: center;
-	font-weight: bold;
+	overflow: auto;
+	background-color: #EEE;
+	border-top: 1px solid #FFF;
+	border-bottom: 1px solid #CCC;
 }
 
-.panel-item .panel-heading {
-	color: #333;
+.panel-menuitem:hover {
+	background-color: #DDD;
 }
 
-.panel-menu .panel-heading {
-	color: white;
+.panel-menuitem:first-child {
+	border-top: none;
+}
+.panel-menuitem:last-child {
+	border-bottom: none;
 }
 
-.panel-menu-button {
-	padding: 5px;
+.panel-menuitem img {
+	float: left;
+	margin-right: 5px;
+	width: 32px;
+	height: 32px;
 }
 
-.panel-menu-button:nth-child(odd) {
-	background-color: #EEE
-}
-
-.panel-menu-button:nth-child(even) {
-	background-color: #DDD
-}
-
-.panel-menu-button a {
+.panel-menuitem a {
 	color: #444;
 	font-weight: bold;
 	text-decoration: none;
 }
 
-.panel-menu-button-description {
+.panel-menuitem-text {
+	color: #888;
+	text-align: center;
+}
+
+.panel-menuitem-description {
 	font-size: 0.6em;
 }
 
-.selected:nth-child(odd), .selected:nth-child(even) {
+.panel-menuitem-active, .panel-menuitem-active:hover {
 	background-color: #EEB;
 }
 

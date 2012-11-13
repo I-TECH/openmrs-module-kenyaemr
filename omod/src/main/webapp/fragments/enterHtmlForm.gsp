@@ -10,6 +10,8 @@ ui.includeJavascript("kenyaemr", "dwr-util.js")
 <link href="/${ contextPath }/moduleResources/htmlformentry/htmlFormEntry.css" type="text/css" rel="stylesheet" />
 
 <script type="text/javascript">
+	\$j = jQuery;
+
 	function showDiv(id) {
 		var div = document.getElementById(id);
 		if ( div ) { div.style.display = ""; }
@@ -22,7 +24,6 @@ ui.includeJavascript("kenyaemr", "dwr-util.js")
 </script>
 
 <script type="text/javascript">
-	\$j = jQuery;
 	var propertyAccessorInfo = new Array();
 	
 	// individual forms can define their own functions to execute before a form validation or submission by adding them to these lists
@@ -45,14 +46,14 @@ ui.includeJavascript("kenyaemr", "dwr-util.js")
 	function findAndHighlightErrors(){
 		/* see if there are error fields */
 		var containError = false
-		var ary = \$j(".autoCompleteHidden");
-		\$j.each(ary,function(index, value){
+		var ary = jq(".autoCompleteHidden");
+		jq.each(ary, function(index, value){
 			if(value.value == "ERROR"){
 				if(!containError){
 					alert("<spring:message code='htmlformentry.error.autoCompleteAnswerNotValid'/>");
 					var id = value.id;
 					id = id.substring(0,id.length-4);
-					\$j("#"+id).focus(); 					
+					jq("#"+id).focus();
 				}
 				containError=true;
 			}
@@ -102,17 +103,16 @@ ui.includeJavascript("kenyaemr", "dwr-util.js")
 	}
 
 	function showAuthenticateDialog() {
-		\$j('#passwordPopup').show();
+		jq('#passwordPopup').show();
 		tryingToSubmit = false;
 	}
 
 	function loginThenSubmitHtmlForm() {
-		
-		\$j('#passwordPopup').hide();
-		var username = \$j('#passwordPopupUsername').val();
-		var password = \$j('#passwordPopupPassword').val();
-		\$j('#passwordPopupUsername').val('');
-		\$j('#passwordPopupPassword').val('');
+		jq('#passwordPopup').hide();
+		var username = jq('#passwordPopupUsername').val();
+		var password = jq('#passwordPopupPassword').val();
+		jq('#passwordPopupUsername').val('');
+		jq('#passwordPopupPassword').val('');
 		jq.getJSON(ui.fragmentActionLink('kenyaemr', 'enterHtmlForm', 'checkIfLoggedIn', { user: username, pass: password }), submitHtmlForm);
 	}
 
@@ -166,15 +166,17 @@ ui.includeJavascript("kenyaemr", "dwr-util.js")
 	}
 
 	function handleDeleteButton() {
-		\$j('#confirmDeleteFormPopup').show();
+		jq('#confirmDeleteFormPopup').show();
 	}
 
 	function cancelDeleteForm() {
-		\$j('#confirmDeleteFormPopup').hide();
+		jq('#confirmDeleteFormPopup').hide();
 	}
 </script>
 
 <div id="${ config.id }" <% if (config.style) { %>style="${ config.style }"<% } %>>
+
+	<span class="error" style="display: none" id="general-form-error"></span>
 
 	<form id="htmlform" method="post" action="${ ui.actionLink("kenyaemr", "enterHtmlForm", "submit") }" onSubmit="submitHtmlForm(); return false;">
 		<input type="hidden" name="personId" value="${ command.patient.personId }"/>
@@ -183,6 +185,9 @@ ui.includeJavascript("kenyaemr", "dwr-util.js")
 		<input type="hidden" name="encounterModifiedTimestamp" value="${ command.encounterModifiedTimestamp }"/>
 		<% if (command.encounter) { %>
 			<input type="hidden" name="encounterId" value="${ command.encounter.encounterId }"/>
+		<% } %>
+		<% if (visit) { %>
+			<input type="hidden" name="visitId" value="${ visit.visitId }"/>
 		<% } %>
 		<% if (command.returnUrl) { %>
 			<input type="hidden" name="returnUrl" value="${ command.returnUrl }"/>

@@ -8,6 +8,7 @@
 	
 	ui.includeJavascript("uilibrary", "uiframework.js")
 	ui.includeJavascript("kenyaemr", "kenyaemr.js")
+
 	if (config.patient) {
 		config.context = "patientId=${ patient.id }"
 	}
@@ -17,6 +18,9 @@
 
 	if (config.patient) {
 		config.beforeContent += ui.includeFragment("kenyaemr", "selectedPatientHeader", [ closeChartUrl: config.closeChartUrl ])
+	}
+	if (config.visit) {
+		config.beforeContent += ui.includeFragment("kenyaemr", "selectedVisitHeader", [ visit: config.visit ])
 	}
 	
 	ui.decorateWith("uilibrary", "standardPage", config)

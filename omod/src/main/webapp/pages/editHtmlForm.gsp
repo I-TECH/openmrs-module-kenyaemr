@@ -1,5 +1,5 @@
 <%
-	ui.decorateWith("kenyaemr", "standardKenyaEmrPage", [ patient: patient ])
+	ui.decorateWith("kenyaemr", "standardKenyaEmrPage", [ patient: patient, visit: visit ])
 %>
 
 <div style="border-bottom: 2px gray dashed; font-size: 0.8em; margin-bottom: 0.5em;">
@@ -19,7 +19,8 @@
 </script>
 
 ${ ui.includeFragment("kenyaemr", "enterHtmlForm", [
-		patient: patient,
-		encounter: encounter,
-		returnUrl: returnUrl
-	]) }
+	patient: patient,
+	encounter: encounter,
+	visit: visit,
+	returnUrl: returnUrl
+]) }

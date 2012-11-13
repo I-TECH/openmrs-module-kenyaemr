@@ -18,6 +18,7 @@ import java.util.List;
 
 import org.openmrs.Patient;
 import org.openmrs.PatientIdentifier;
+import org.openmrs.Visit;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appframework.AppStatus;
 import org.openmrs.module.appframework.AppUiUtil;
@@ -27,7 +28,7 @@ import org.openmrs.ui.framework.fragment.FragmentConfiguration;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 import org.openmrs.ui.framework.page.PageModel;
 import org.openmrs.ui.framework.session.Session;
-
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * A thin banner showing which patient this page is in the context of
@@ -38,12 +39,13 @@ public class SelectedPatientHeaderFragmentController {
 	                       FragmentConfiguration config,
 	                       FragmentModel model,
 	                       Session session) {
+
 		Patient patient = (Patient) config.get("patient");
 		if (patient == null) {
 			patient = (Patient) sharedPageModel.getAttribute("patient");
 		}
-		model.addAttribute("patient", patient);
 
+		model.addAttribute("patient", patient);
 		model.addAttribute("activeVisits", Context.getVisitService().getActiveVisitsByPatient(patient));
 		
 		AppStatus currentApp = AppUiUtil.getCurrentApp(session);

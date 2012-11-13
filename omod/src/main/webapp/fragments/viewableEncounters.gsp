@@ -3,9 +3,13 @@
 %>
 <style type="text/css">
 	.encounter-panel {
-		border: 1px #e0e0e0 solid;
+		border-top: 2px dotted #d1d0c9;
 		cursor: pointer;
-		margin: 2px 0px;
+		padding: 2px;
+	}
+
+	.encounter-panel:first-of-type {
+		border-top: 0;
 	}
 
 	.encounter-panel:hover {

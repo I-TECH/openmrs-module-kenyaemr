@@ -6,6 +6,7 @@
 	border-bottom: 1px #444 solid;
 	padding: 3px;
 	background-color: #858580;
+	overflow: auto;
 	color: white;
 }
 
@@ -27,19 +28,19 @@
 	text-align: center;
 }
 
-#selected-patient-header > .identifiers {
-	float: left;
-	font-weight: bold;
-	width: 30%;
-	text-align: center;
-}
-
-#selected-patient-header > .close-patient {
+#selected-patient-header #close-patient {
 	float: right;
 	padding-left: 0.4em;
 	margin-left: 0.4em;
 	position: relative;
 	top: 3;
+}
+
+#selected-patient-header #active-visits {
+	width: 50%;
+	float: right;
+	overflow: auto;
+	text-align: right;
 }
 
 .header-identifier-type {
@@ -70,7 +71,7 @@
 	</div>
 	
 	<% if (closeChartUrl) { %>
-		<div class="close-patient">
+		<div id="close-patient">
 			<small>Close chart </small> <a href="${ closeChartUrl }"><img title="Close Chart" style="vertical-align: middle" src="${ ui.resourceLink("kenyaemr", "images/buttons/patient_close.png") }"/></a>
 		</div>
 	<% } %>
@@ -78,7 +79,16 @@
 	<div style="clear: both; height: 5px;"></div>
 
 	${ ui.includeFragment("kenyaemr", "clinicalAlerts") }
-	${ ui.includeFragment("kenyaemr", "activeVisits") }
 
-	<div style="clear: both"></div>
+	<div id="active-visits">
+		<small>Current visits</small>
+		<% if (activeVisits) {
+			activeVisits.each { visit ->
+				%><span class="active-visit">${ ui.format(visit.visitType) }</span><%
+			}
+		} else {
+			%><span style="font-style: italic">${ ui.message("general.none") }</span><%
+		}
+		%>
+	</div>
 </div>

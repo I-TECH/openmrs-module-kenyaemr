@@ -1,8 +1,8 @@
 <%
-	def kenyaEmrWebUtils = context.loadClass("org.openmrs.module.kenyaemr.util.KenyaEmrWebUtils")
-
 	config.require("id")
 	config.require("concepts")
+
+	def kenyaEmrWebUtils = context.loadClass("org.openmrs.module.kenyaemr.util.KenyaEmrWebUtils")
 %>
 
 <table class="decorated" id="${ config.id }" style="${ config.style ? config.style : "" }">

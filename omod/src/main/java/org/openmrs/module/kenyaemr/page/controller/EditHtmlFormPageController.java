@@ -14,12 +14,12 @@
 package org.openmrs.module.kenyaemr.page.controller;
 
 import org.openmrs.Encounter;
+import org.openmrs.Visit;
 import org.openmrs.ui.framework.page.PageModel;
 import org.springframework.web.bind.annotation.RequestParam;
 
-
 /**
- *
+ * Controller for editing an existing HTML form
  */
 public class EditHtmlFormPageController {
 	
@@ -29,7 +29,7 @@ public class EditHtmlFormPageController {
 		model.addAttribute("encounter", encounter);
 		model.addAttribute("patient", encounter.getPatient());
 		model.addAttribute("person", encounter.getPatient());
+		model.addAttribute("visit", encounter.getVisit());
 		model.addAttribute("returnUrl", returnUrl);
 	}
-	
 }

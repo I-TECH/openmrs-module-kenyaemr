@@ -25,6 +25,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.ModuleActivator;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.module.kenyaemr.datatype.LocationDatatype;
+import org.openmrs.module.kenyaemr.form.FormManager;
 import org.openmrs.module.metadatasharing.ImportConfig;
 import org.openmrs.module.metadatasharing.ImportMode;
 import org.openmrs.module.metadatasharing.ImportedPackage;
@@ -78,6 +79,9 @@ public class KenyaEmrActivator implements ModuleActivator {
 			throw new RuntimeException("Failed to setup initial data", ex);
 		}
 		Context.getService(KenyaEmrService.class).refreshReportManagers();
+
+		FormManager.setupStandardForms();
+
 		log.info("Kenya OpenMRS EMR Module started");
 	}
 	

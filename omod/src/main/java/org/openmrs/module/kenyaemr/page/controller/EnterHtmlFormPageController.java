@@ -14,25 +14,27 @@
 package org.openmrs.module.kenyaemr.page.controller;
 
 import org.openmrs.Patient;
+import org.openmrs.Visit;
 import org.openmrs.ui.framework.page.PageModel;
 import org.springframework.web.bind.annotation.RequestParam;
 
-
 /**
- *
+ * Controller for entering a new HTML form
  */
 public class EnterHtmlFormPageController {
 
 	public void controller(@RequestParam("patientId") Patient patient,
-	                       @RequestParam(required = false, value = "formUuid") String formUuid,
-	                       @RequestParam(required = false, value = "htmlFormId") String htmlFormId,
+	                       @RequestParam(value = "formUuid", required = false) String formUuid,
+	                       @RequestParam(value = "htmlFormId", required = false) String htmlFormId,
+						   @RequestParam(value = "visitId", required = false) Visit visit,
 	                       @RequestParam("returnUrl") String returnUrl,
 	                       PageModel model) {
+
 		model.addAttribute("formUuid", formUuid);
 		model.addAttribute("htmlFormId", htmlFormId);
 		model.addAttribute("patient", patient);
 		model.addAttribute("person", patient);
+		model.addAttribute("visit", visit);
 		model.addAttribute("returnUrl", returnUrl);
 	}
-	
 }

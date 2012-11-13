@@ -3,19 +3,14 @@
 %>
 
 <div id="content-side">
-	<div class="panel-menu">
-		<div class="panel-heading">Find a patient</div>
-		<div class="panel-content">
-			${ ui.includeFragment("kenyaemr", "patientSearchForm", [ defaultWhich: "all" ]) }
-		</div>
-	</div>
+	${ ui.includeFragment("kenyaemr", "patientSearchForm", [ defaultWhich: "all" ]) }
 </div>
 
 <div id="content-main">
 	${ ui.includeFragment("kenyaemr", "patientList", [
-			id: "results",
-			showNumResults: true,
-			page: "medicalEncounterViewPatient"
+		id: "results",
+		showNumResults: true,
+		page: "medicalEncounterViewPatient"
 	]) }
 </div>
 

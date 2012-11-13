@@ -6,16 +6,13 @@
 %>
 
 <div class="encounter-panel">
+	<img src="${ ui.resourceLink("kenyaemr", "images/buttons/form_view.png") }" style="float: left; margin: 2px" alt="View Encounter" />
 	<input type="hidden" name="encounterId" value="${ config.encounter.encounterId }"/>
 	<input type="hidden" name="title" value="${ ui.escapeAttribute(title) }"/>
 	<b>${ ui.format(config.encounter.form ?: config.encounter.encounterType) }</b>
 	by ${ providers }
 	<br/>
 	<span style="color: gray">
-		entered by ${ ui.format(config.encounter.creator) } on ${ ui.format(config.encounter.dateCreated) }
-		<% if (config.encounter.dateChanged) { %>
-			<br/>
-			last edit by ${ ui.format(config.encounter.changedBy) } on ${ ui.format(config.encounter.dateChanged) }
-		<% } %> 
+		entered by ${ ui.format(config.encounter.creator) } on ${ ui.format(config.encounter.dateCreated) }<% if (config.encounter.dateChanged) { %>, last edit by ${ ui.format(config.encounter.changedBy) } on ${ ui.format(config.encounter.dateChanged) }<% } %>
 	</span>
 </div>
