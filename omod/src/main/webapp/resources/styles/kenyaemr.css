@@ -113,6 +113,7 @@
 	color: #444;
 	font-weight: bold;
 	text-decoration: none;
+	display: inline-block;
 }
 
 .panel-menuitem-text {

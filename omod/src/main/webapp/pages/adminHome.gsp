@@ -1,6 +1,6 @@
 <%
-	ui.decorateWith("kenyaemr", "standardKenyaEmrPage")
-	
+	ui.decorateWith("kenyaemr", "standardKenyaEmrPage", [ layout: "sidebar" ])
+
 	def formatMap = { map ->
 		def ret = "<table>"
 		map.each {
@@ -14,45 +14,42 @@
 	}
 %>
 
-<script type="text/javascript">
-	jq(function() {
-		jq('.accordion').accordion();
-	});
-</script>
+<div id="content-side">
+	<div class="panel-frame">
+		<div class="panel-heading">Tasks</div>
 
-<div style="float: right; width: 30%;">
-	<fieldset>
-		<legend>Actions</legend>
-		${ ui.includeFragment("uilibrary", "widget/button", [
-				iconProvider: "uilibrary",
-				icon: "users_business_32.png",
-				label: "Manage Accounts",
-				href: ui.pageLink("kenyaemr", "adminManageAccounts")
-			]) }
-		<br/>
-				
-		${ ui.includeFragment("uilibrary", "widget/button", [
-				iconProvider: "kenyaemr",
-				icon: "buttons/admin_setup.png",
-				label: "Redo<br/>First-time Setup",
-				href: ui.pageLink("kenyaemr", "adminFirstTimeSetup")
-			]) }
-		<br/>
+		${ ui.includeFragment("kenyaemr", "widget/panelMenuItem", [
+			iconProvider: "kenyaemr",
+			icon: "buttons/users_manage.png",
+			label: "Manage Accounts",
+			href: ui.pageLink("kenyaemr", "adminManageAccounts")
+		]) }
 
-		<hr/>
+		${ ui.includeFragment("kenyaemr", "widget/panelMenuItem", [
+			iconProvider: "kenyaemr",
+			icon: "buttons/admin_setup.png",
+			label: "Redo First-time Setup",
+			href: ui.pageLink("kenyaemr", "adminFirstTimeSetup")
+		]) }
 
-		${ ui.includeFragment("uilibrary", "widget/button", [
-				iconProvider: "kenyaemr",
-				icon: "buttons/admin_update.png",
-				label: "Install New<br/>Software Version",
-				href: ui.pageLink("kenyaemr", "adminSoftwareVersion")
-			]) }
-		<br/>
-				
-	</fieldset>
+
+		${ ui.includeFragment("kenyaemr", "widget/panelMenuItem", [
+			iconProvider: "kenyaemr",
+			icon: "buttons/admin_update.png",
+			label: "Install New Software Version",
+			href: ui.pageLink("kenyaemr", "adminSoftwareVersion")
+		]) }
+	</div>
 </div>
 
-<div style="float: left; width: 65%">
+<div id="content-main">
+
+	<script type="text/javascript">
+		jq(function() {
+			jq('.accordion').accordion();
+		});
+	</script>
+
 	<div class="accordion">
 		<% info.each { %>
 			<h3><a href="#">${ it.key }</a></h3>

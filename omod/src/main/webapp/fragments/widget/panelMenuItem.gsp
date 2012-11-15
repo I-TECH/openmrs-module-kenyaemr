@@ -16,7 +16,7 @@
 	<% }
 
 	if (config.href) { %>
-		<a href="${ config.href }">${ config.label }</a>
+		<a href="${ config.href }" <% if (!config.extra) { %>style="margin-top: 6px"<% } %> >${ config.label }</a>
 	<% } else { %>
 		<span class="panel-menuitem-text">${ config.label }</span>
 	<% }
