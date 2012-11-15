@@ -28,7 +28,7 @@
 	text-align: center;
 }
 
-#selected-patient-header #close-patient {
+#selected-patient-header #selected-patient-header-close {
 	float: right;
 	padding-left: 0.4em;
 	margin-left: 0.4em;
@@ -46,7 +46,20 @@
 .header-identifier-type {
 	font-weight: normal;
 }
+
+.glowing {
+	text-shadow: 0 0 1px #FFD;
+}
 </style>
+<script type="text/javascript">
+	jq(function() {
+		jq('#selected-patient-header-close-link').hover(function() {
+			jq('#selected-patient-header-close-text').addClass('glowing');
+		}, function() {
+			jq('#selected-patient-header-close-text').removeClass('glowing');
+		});
+	});
+</script>
 
 <div id="selected-patient-header">
 	<div class="demographics">
@@ -71,8 +84,9 @@
 	</div>
 	
 	<% if (closeChartUrl) { %>
-		<div id="close-patient">
-			<small>Close chart </small> <a href="${ closeChartUrl }"><img title="Close Chart" style="vertical-align: middle" src="${ ui.resourceLink("kenyaemr", "images/buttons/patient_close.png") }"/></a>
+		<div id="selected-patient-header-close">
+			<small id="selected-patient-header-close-text">Close chart </small>
+			<a href="${ closeChartUrl }" id="selected-patient-header-close-link"><img title="Close Chart" style="vertical-align: middle" src="${ ui.resourceLink("kenyaemr", "images/buttons/patient_close.png") }"/></a>
 		</div>
 	<% } %>
 

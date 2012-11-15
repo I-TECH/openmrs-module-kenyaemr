@@ -3,13 +3,6 @@
 
 	def kenyaEmrWebUtils = context.loadClass("org.openmrs.module.kenyaemr.util.KenyaEmrWebUtils")
 %>
-
-<script type="text/javascript">
-	jq(function() {
-		ui.applyAlternatingClasses('table.decorated tbody', 'alternate-shading-even', 'alternate-shading-odd');
-	});
-</script>
-
 <div id="content-side">
 
 	<div class="panel-frame">
@@ -131,11 +124,11 @@
 		<div class="panel-frame">
 			<div class="panel-heading">CD4/Weight</div>
 			<div class="panel-content">
-				<div style="float: left">
-					${ ui.includeFragment("kenyaemr", "obsTableByDate", [id: "tblhistory", concepts: conceptList]) }
+				<div style="float: left; width: 49%">
+					${ ui.includeFragment("kenyaemr", "obsTableByDate", [ id: "tblhistory", concepts: conceptList ]) }
 				</div>
-				<div style="float: left">
-					${ ui.includeFragment("kenyaemr", "obsGraphByDate", [id: "cd4graph", concepts: conceptList, showUnits: true, style: "width: 400px; height: 300px" ]) }
+				<div style="float: right; width: 49%">
+					${ ui.includeFragment("kenyaemr", "obsGraphByDate", [ id: "cd4graph", concepts: conceptList, showUnits: true, style: "height: 300px" ]) }
 				</div>
 			</div>
 		</div>

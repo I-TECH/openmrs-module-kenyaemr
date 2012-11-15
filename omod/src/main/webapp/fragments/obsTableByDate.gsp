@@ -5,7 +5,7 @@
 	def kenyaEmrWebUtils = context.loadClass("org.openmrs.module.kenyaemr.util.KenyaEmrWebUtils")
 %>
 
-<table class="decorated" id="${ config.id }" style="${ config.style ? config.style : "" }">
+<table class="table-decorated table-vertical" id="${ config.id }" style="${ config.style ? config.style : "" }">
 	<thead>
 	<tr>
 		<th>Date</th>
@@ -25,7 +25,7 @@
 	<tr>
 		<td nowrap="nowrap"><%= kenyaEmrWebUtils.formatDateNoTime(date) %></td>
 		<% concepts.each { concept -> %>
-		<td style="text-align: right">
+		<td>
 			<%
 			def obs = results[concept]
 			if (obs) {
