@@ -2,7 +2,7 @@
 	config.require("id")
 	config.require("concepts")
 
-	def kenyaEmrWebUtils = context.loadClass("org.openmrs.module.kenyaemr.util.KenyaEmrWebUtils")
+	//def kenyaEmrWebUtils = context.loadClass("org.openmrs.module.kenyaemr.KenyaEmrUiUtils")
 %>
 
 <table class="table-decorated table-vertical" id="${ config.id }" style="${ config.style ? config.style : "" }">
@@ -23,7 +23,7 @@
 	<% } %>
 	<% data.each { date, results -> %>
 	<tr>
-		<td nowrap="nowrap"><%= kenyaEmrWebUtils.formatDateNoTime(date) %></td>
+		<td nowrap="nowrap"><%= kenyaEmrUi.formatDateNoTime(date) %></td>
 		<% concepts.each { concept -> %>
 		<td>
 			<%

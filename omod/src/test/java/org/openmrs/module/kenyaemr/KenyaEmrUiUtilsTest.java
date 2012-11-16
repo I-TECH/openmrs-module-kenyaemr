@@ -11,17 +11,19 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.kenyaemr.util;
+package org.openmrs.module.kenyaemr;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.openmrs.module.kenyaemr.KenyaEmrUiUtils;
 
 import java.util.*;
 
-public class KenyaEmrWebUtilsTest {
+public class KenyaEmrUiUtilsTest {
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.util.KenyaEmrWebUtils.formatDateNoTime()
+	 * @see org.openmrs.module.kenyaemr.KenyaEmrUiUtils#formatDateNoTime(java.util.Date)
+	 * @verifies format date as a string without time information
 	 */
 	@Test
 	public void formatDateNoTime_shouldFormatDateWithoutTime() throws Exception {
@@ -33,6 +35,6 @@ public class KenyaEmrWebUtilsTest {
 		cal.set(Calendar.MINUTE, 30);
 		cal.set(Calendar.SECOND, 12);
 
-		Assert.assertEquals("28-May-1981", KenyaEmrWebUtils.formatDateNoTime(cal.getTime()));
+		Assert.assertEquals("28-May-1981", KenyaEmrUiUtils.formatDateNoTime(cal.getTime()));
 	}
 }

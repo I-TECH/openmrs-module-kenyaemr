@@ -13,23 +13,22 @@
  */
 package org.openmrs.module.kenyaemr.util;
 
-import org.openmrs.ui.framework.FormatterImpl;
-
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
 /**
- * Utility methods for web pages
+ * Miscellaneous utility methods
  */
-public class KenyaEmrWebUtils {
+public class KenyaEmrUtils {
 
 	/**
-	 * Formats a date ignoring any time information
+	 * Clears the time portion of a date object
 	 * @param date the date
-	 * @return the string value
+	 * @return the date with no time portion
+	 * @should clear time information from date
 	 */
-	public static String formatDateNoTime(Date date) {
+	public static Date dateOnly(Date date) {
 		Calendar cal = new GregorianCalendar();
 		cal.setTime(date);
 		cal.set(Calendar.AM_PM, 0);
@@ -37,7 +36,6 @@ public class KenyaEmrWebUtils {
 		cal.set(Calendar.MINUTE, 0);
 		cal.set(Calendar.SECOND, 0);
 		cal.set(Calendar.MILLISECOND, 0);
-
-		return new FormatterImpl().format(cal.getTime());
+		return cal.getTime();
 	}
 }
