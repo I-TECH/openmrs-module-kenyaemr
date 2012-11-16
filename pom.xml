@@ -7,11 +7,11 @@
 	<packaging>pom</packaging>
 	<name>Kenya OpenMRS EMR Module</name>
 	<description>OpenMRS-based EMR for Kenya</description>
-	<url>https://wiki.openmrs.org/display/docs/Kenya+OpenMRS+EMR+Module+Module</url>
+	<url>https://wiki.openmrs.org/display/docs/Kenya+OpenMRS+EMR+Module</url>
 
 	<developers>
 		<developer>
-			<name>ITECH</name>
+			<name>I-TECH</name>
 		</developer>
 	</developers>
 
@@ -48,7 +48,10 @@
 		<serializationxstreamVersion>0.2.7</serializationxstreamVersion>
 		<idgenVersion>2.1</idgenVersion>
         <logicVersion>0.5.2</logicVersion>
+
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.build.timestamp.format>dd-MMM-yyyy</maven.build.timestamp.format>
+		<moduleBuildDate>${maven.build.timestamp}</moduleBuildDate>
 	</properties>
 
 	<dependencies>

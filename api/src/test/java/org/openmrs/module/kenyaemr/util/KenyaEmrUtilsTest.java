@@ -15,19 +15,34 @@ package org.openmrs.module.kenyaemr.util;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Map;
 
-public class KenyaEmrUtilsTest {
+public class KenyaEmrUtilsTest extends BaseModuleContextSensitiveTest {
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.util.KenyaEmrUtils#dateOnly(java.util.Date)
+	 * @see KenyaEmrUtils#getModuleBuildProperties()
+	 * @verifies return build properties
+	 */
+	@Test
+	public void getModuleBuildProperties_shouldGetBuildProperties() {
+		Map<String, String> properties = KenyaEmrUtils.getModuleBuildProperties();
+
+		Assert.assertNotNull(properties);
+		Assert.assertNotNull(properties.get("buildDate"));
+		Assert.assertNotNull(properties.get("developer"));
+	}
+
+	/**
+	 * @see KenyaEmrUtils#dateOnly(java.util.Date)
 	 * @verifies clear time information from date
 	 */
 	@Test
-	public void dateOnly_shouldClearTimeInformation() throws Exception {
+	public void dateOnly_shouldClearTimeInformation() {
 		Date now = new Date();
 		Date dateOnly = KenyaEmrUtils.dateOnly(now);
 		Calendar cal = new GregorianCalendar();

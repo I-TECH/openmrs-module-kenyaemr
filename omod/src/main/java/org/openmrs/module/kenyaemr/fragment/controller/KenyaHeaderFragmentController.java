@@ -15,9 +15,15 @@ package org.openmrs.module.kenyaemr.fragment.controller;
 
 import org.openmrs.api.context.Context;
 import org.openmrs.module.ModuleFactory;
+import org.openmrs.module.kenyaemr.KenyaEmrConstants;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
+import org.openmrs.module.kenyaemr.util.ContextProvider;
+import org.openmrs.module.kenyaemr.util.KenyaEmrUtils;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
@@ -25,7 +31,17 @@ import org.openmrs.ui.framework.fragment.FragmentModel;
 public class KenyaHeaderFragmentController {
 	
 	public void controller(FragmentModel model) {
-		model.addAttribute("moduleVersion", ModuleFactory.getModuleById("kenyaemr").getVersion());
+		// Get module version
+		String moduleVersion = KenyaEmrUtils.getModuleVersion();
+
+		// Add build date for snapshot versions
+		if (moduleVersion.endsWith("SNAPSHOT")) {
+			Map<String, String> buildProperties = KenyaEmrUtils.getModuleBuildProperties();
+			model.addAttribute("moduleBuildDate", buildProperties.get("buildDate"));
+		}
+
+		model.addAttribute("moduleVersion", moduleVersion);
+
 		try {
 			model.addAttribute("systemLocation", Context.getService(KenyaEmrService.class).getDefaultLocation());
 		} catch (Exception ex) {
@@ -33,5 +49,4 @@ public class KenyaHeaderFragmentController {
 			model.addAttribute("systemLocation", null);
 		}
 	}
-	
 }

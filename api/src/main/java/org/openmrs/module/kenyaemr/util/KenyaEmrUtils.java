@@ -13,14 +13,31 @@
  */
 package org.openmrs.module.kenyaemr.util;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
+import org.openmrs.module.ModuleFactory;
+import org.openmrs.module.kenyaemr.KenyaEmrConstants;
+
+import java.util.*;
 
 /**
  * Miscellaneous utility methods
  */
 public class KenyaEmrUtils {
+
+	/**
+	 * Gets the module version
+	 * @return the version
+	 */
+	public static String getModuleVersion() {
+		return ModuleFactory.getModuleById(KenyaEmrConstants.MODULE_ID).getVersion();
+	}
+
+	/**
+	 * Gets the module build properties
+	 * @return the build properties map
+	 */
+	public static Map<String, String> getModuleBuildProperties() {
+		return (Map<String, String>)ContextProvider.getApplicationContext().getBean("kenyaEmrBuildProperties");
+	}
 
 	/**
 	 * Clears the time portion of a date object
