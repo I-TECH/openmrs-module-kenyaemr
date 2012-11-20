@@ -88,6 +88,12 @@
 				<td>(HIV program<% if (!command.hivIdNumber.identifier) { %>, if assigned<% } %>)</td>
 			</tr>
 		<% } %>
+		<tr>
+			<td>${ ui.format(command.nationalIdNumber.attributeType) } </td>
+			<td>${ ui.includeFragment("uilibrary", "widget/field", [ object: command, property: "nationalIdNumber.value" ]) }</td>
+			<td><% if (!command.nationalIdNumber.value) { %>(if available)<% } %></td>
+		</tr>
+		
 	</table>
 
 	<h4>Demographics</h4>
