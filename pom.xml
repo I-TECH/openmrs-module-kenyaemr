@@ -53,6 +53,8 @@
         <reportingrestVersion>1.2</reportingrestVersion>
         
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.build.timestamp.format>dd-MMM-yyyy</maven.build.timestamp.format>
+		<moduleBuildDate>${maven.build.timestamp}</moduleBuildDate>
 	</properties>
 
 	<dependencies>
