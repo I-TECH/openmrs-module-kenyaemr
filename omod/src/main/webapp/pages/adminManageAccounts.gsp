@@ -1,50 +1,52 @@
 <%
-	ui.decorateWith("kenyaemr", "standardKenyaEmrPage")
+	ui.decorateWith("kenyaemr", "standardKenyaEmrPage", [ layout: "sidebar" ])
 %>
 
-<style type="text/css">
-	#create-button {
-		position: fixed;
-		bottom: 0;
-		left: 40%;
-		padding: 0.5em;
-	}
-	
-	#search {
-		float: left;
-	}
-</style>
+<div id="content-side">
+	<div class="panel-frame">
+		<div class="panel-heading">Find an Account</div>
+		<div class="panel-content">
+			<%= ui.includeFragment("uilibrary", "widget/form", [
+				id: "accountSearch",
+				fields: [
+					[ label: "Name or Username", formFieldName: "q", class: java.lang.String ],
+					[ label: "Account Types", fragment: "widget/radioButtons", formFieldName: "which",
+						selected: "both",
+						separator: "&nbsp;&nbsp;",
+						options: [
+							[ label: "Users", value: "users" ],
+							[ label: "Providers", value: "providers" ],
+							[ label: "Both", value: "both" ]
+						],
+						onChange: """function() { publish('accountSearch/changed'); }"""
+					]
+				],
+				fragmentProvider: "kenyaemr",
+				fragment: "adminUtil",
+				action: "accountSearch",
+				submitOnEvent: "accountSearch/changed",
+				resetOnSubmit: false,
+				successEvent: "accountSearch/results"
+			] ) %>
+		</div>
+	</div>
 
-<fieldset id="search">
-	<legend>
-		Find an Account
-	</legend>
-	
-	${ ui.includeFragment("uilibrary", "widget/form", [
-			id: "accountSearch",
-			fields: [
-				[ label: "Name or Username", formFieldName: "q", class: java.lang.String ],
-				[ label: "Account Types", value: """TODO <input type="hidden" name="includeUsers" value="true"/> <input type="hidden" name="includeProviders" value="true"/> """]
-			],
-			fragment: "adminUtil",
-			fragmentProvider: "kenyaemr",
-			action: "accountSearch",
-			submitOnEvent: "accountSearch/changed",
-			resetOnSubmit: false,
-			successEvent: "accountSearch/results"
-		] )}
-</fieldset>
+	<div class="panel-frame">
+		<div class="panel-heading">Tasks</div>
 
-<fieldset style="border: none">
+		${ ui.includeFragment("kenyaemr", "widget/panelMenuItem", [
+				iconProvider: "kenyaemr",
+				icon: "buttons/account_add.png",
+				label: "Create a New Account",
+				href: ui.pageLink("kenyaemr", "adminEditAccount")
+		]) }
+	</div>
+</div>
+
+
+<div id="content-main">
 	${ ui.includeFragment("kenyaemr", "accountList", [ id: "results", page: "adminEditAccount" ]) }
-</fieldset>
-
-${ ui.includeFragment("uilibrary", "widget/button", [
-	id: "create-button",
-	iconProvider: "uilibrary",
-	icon: "user_business_add_32.png",
-	label: "Create Account",
-	href: ui.pageLink("kenyaemr", "adminEditAccount") ]) }
+</div>
 
 <script type="text/javascript">
 	subscribe("accountSearch/results", function(event, data) {
