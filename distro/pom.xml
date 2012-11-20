@@ -52,6 +52,8 @@
 											<url url="https://modules.openmrs.org/modules/download/calculation/calculation-${calculationVersion}.omod" />
 											<url url="https://modules.openmrs.org/modules/download/moduledistro/moduledistro-${moduledistroVersion}.omod" />
                                             <url url="https://modules.openmrs.org/modules/download/logic/logic-${logicVersion}.omod" />
+                                            <url url="https://modules.openmrs.org/modules/download/webservices.rest/webservices.rest-${webservicesRestVersionRepo}.omod" />
+                                            <url url="https://modules.openmrs.org/modules/download/reportingrest/reportingrest-${reportingrestVersion}.omod" />
 										</get>
 									</target>
 								</configuration>

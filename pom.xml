@@ -48,10 +48,11 @@
 		<serializationxstreamVersion>0.2.7</serializationxstreamVersion>
 		<idgenVersion>2.1</idgenVersion>
         <logicVersion>0.5.2</logicVersion>
-
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.build.timestamp.format>dd-MMM-yyyy</maven.build.timestamp.format>
-		<moduleBuildDate>${maven.build.timestamp}</moduleBuildDate>
+        <webservicesRestVersion>1.1</webservicesRestVersion>
+        <webservicesRestVersionRepo>1.1.29293</webservicesRestVersionRepo>
+        <reportingrestVersion>1.0.1</reportingrestVersion>
+        
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
 	<dependencies>
@@ -132,7 +133,20 @@
 			<version>${idgenVersion}</version>
 			<scope>provided</scope>
 		</dependency>
-
+		
+		<dependency>
+			<groupId>org.openmrs.module</groupId>
+			<artifactId>webservices.rest-api</artifactId>
+			<version>${webservicesRestVersion}</version>
+			<scope>provided</scope>
+		</dependency>	
+		
+		<dependency>
+			<groupId>org.openmrs.module</groupId>
+			<artifactId>reportingrest-api</artifactId>
+			<version>${reportingrestVersion}</version>
+			<scope>provided</scope>
+		</dependency>
 		<!--		
 		<dependency>
 			<groupId>org.openmrs.module</groupId>
