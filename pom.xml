@@ -50,7 +50,7 @@
         <logicVersion>0.5.2</logicVersion>
         <webservicesRestVersion>1.1</webservicesRestVersion>
         <webservicesRestVersionRepo>1.1.29293</webservicesRestVersionRepo>
-        <reportingrestVersion>1.0.1</reportingrestVersion>
+        <reportingrestVersion>1.2</reportingrestVersion>
         
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
@@ -222,6 +222,13 @@
 			<version>3.2-FINAL</version>
 			<scope>test</scope>
 		</dependency>
+
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-all</artifactId>
+            <version>1.3</version>
+            <scope>test</scope>
+        </dependency>
 		
 	</dependencies>
 

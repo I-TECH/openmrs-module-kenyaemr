@@ -13,16 +13,6 @@
  */
 package org.openmrs.module.kenyaemr.report;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.text.SimpleDateFormat;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -33,7 +23,6 @@ import org.openmrs.api.PatientSetService.TimeModifier;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.kenyaemr.calculation.FirstArtStartDateCalculation;
-import org.openmrs.module.kenyaemr.calculation.KenyaEmrCalculation;
 import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
@@ -57,6 +46,16 @@ import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.util.OpenmrsClassLoader;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
+
 
 /**
  *
@@ -68,7 +67,7 @@ public class Moh731Report implements ReportManager {
 	
 	private final Log log = LogFactory.getLog(getClass());
 	
-    private static final String NAME_PREFIX = "MOH 731 Indicator Report";
+    public static final String NAME_PREFIX = "MOH 731 Indicator Report";
     
     ReportDefinition reportDefinition;
 
