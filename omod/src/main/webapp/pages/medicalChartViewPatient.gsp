@@ -1,7 +1,7 @@
 <%
 	ui.decorateWith("kenyaemr", "standardKenyaEmrPage", [ patient: patient, layout: "sidebar" ])
 
-	def kenyaEmrWebUtils = context.loadClass("org.openmrs.module.kenyaemr.util.KenyaEmrWebUtils")
+	//def kenyaEmrWebUtils = context.loadClass("org.openmrs.module.kenyaemr.KenyaEmrUiUtils")
 %>
 <div id="content-side">
 
@@ -25,9 +25,9 @@
 		} %>
 
 		<% programs.each { prog ->
-			def extra = "from " + kenyaEmrWebUtils.formatDateNoTime(prog.dateEnrolled)
+			def extra = "from " + kenyaEmrUi.formatDateNoTime(prog.dateEnrolled)
 			if (prog.dateCompleted)
-				extra += " to " + kenyaEmrWebUtils.formatDateNoTime(prog.dateCompleted)
+				extra += " to " + kenyaEmrUi.formatDateNoTime(prog.dateCompleted)
 			if (prog.outcome)
 				exta += "<br />Outcome: <b>" + ui.format(prog.outcome) + "</b>"
 

@@ -35,13 +35,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class AdminUtilFragmentController {
 	
 	public List<SimpleObject> accountSearch(@RequestParam(value = "q", required = false) String query,
-	                                        @RequestParam(value = "includeUsers", required = false) Boolean includeUsers,
-	                                        @RequestParam(value = "includeProviders", required = false) Boolean includeProviders,
+											@RequestParam(value="which", required=false) String which,
 	                                        UiUtils ui) {
+
 		Map<Person, User> userAccounts = new HashMap<Person, User>();
 		Map<Person, Provider> providerAccounts = new HashMap<Person, Provider>();
 		
-		if (includeUsers != null && includeUsers) {
+		if ("both".equals(which) || "users".equals(which)) {
 			List<User> users = Context.getUserService().getUsers(query, null, true);
 			for (User u : users) {
 				if (!"daemon".equals(u.getUsername())) {
@@ -49,8 +49,8 @@ public class AdminUtilFragmentController {
 				}
 			}
 		}
-		
-		if (includeProviders != null && includeProviders) {
+
+		if ("both".equals(which) || "providers".equals(which)) {
 			List<Provider> providers = Context.getProviderService().getProviders(query, null, null, null);
 			for (Provider p : providers) {
 				if (p.getPerson() != null) {
@@ -79,5 +79,4 @@ public class AdminUtilFragmentController {
 		
 		return ret;
 	}
-	
 }

@@ -7,11 +7,11 @@
 	<packaging>pom</packaging>
 	<name>Kenya OpenMRS EMR Module</name>
 	<description>OpenMRS-based EMR for Kenya</description>
-	<url>https://wiki.openmrs.org/display/docs/Kenya+OpenMRS+EMR+Module+Module</url>
+	<url>https://wiki.openmrs.org/display/docs/Kenya+OpenMRS+EMR+Module</url>
 
 	<developers>
 		<developer>
-			<name>ITECH</name>
+			<name>I-TECH</name>
 		</developer>
 	</developers>
 
@@ -48,7 +48,13 @@
 		<serializationxstreamVersion>0.2.7</serializationxstreamVersion>
 		<idgenVersion>2.1</idgenVersion>
         <logicVersion>0.5.2</logicVersion>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <webservicesRestVersion>1.1</webservicesRestVersion>
+        <webservicesRestVersionRepo>1.1.29293</webservicesRestVersionRepo>
+        <reportingrestVersion>1.2</reportingrestVersion>
+        
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.build.timestamp.format>dd-MMM-yyyy</maven.build.timestamp.format>
+		<moduleBuildDate>${maven.build.timestamp}</moduleBuildDate>
 	</properties>
 
 	<dependencies>
@@ -129,7 +135,20 @@
 			<version>${idgenVersion}</version>
 			<scope>provided</scope>
 		</dependency>
-
+		
+		<dependency>
+			<groupId>org.openmrs.module</groupId>
+			<artifactId>webservices.rest-api</artifactId>
+			<version>${webservicesRestVersion}</version>
+			<scope>provided</scope>
+		</dependency>	
+		
+		<dependency>
+			<groupId>org.openmrs.module</groupId>
+			<artifactId>reportingrest-api</artifactId>
+			<version>${reportingrestVersion}</version>
+			<scope>provided</scope>
+		</dependency>
 		<!--		
 		<dependency>
 			<groupId>org.openmrs.module</groupId>
@@ -205,6 +224,13 @@
 			<version>3.2-FINAL</version>
 			<scope>test</scope>
 		</dependency>
+
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-all</artifactId>
+            <version>1.3</version>
+            <scope>test</scope>
+        </dependency>
 		
 	</dependencies>
 

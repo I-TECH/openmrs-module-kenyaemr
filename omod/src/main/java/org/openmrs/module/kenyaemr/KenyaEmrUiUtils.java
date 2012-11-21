@@ -11,33 +11,26 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.kenyaemr.util;
+package org.openmrs.module.kenyaemr;
 
+import org.openmrs.module.kenyaemr.util.KenyaEmrUtils;
 import org.openmrs.ui.framework.FormatterImpl;
 
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 
 /**
- * Utility methods for web pages
+ * UI utility methods for web pages
  */
-public class KenyaEmrWebUtils {
+public class KenyaEmrUiUtils {
 
 	/**
 	 * Formats a date ignoring any time information
 	 * @param date the date
 	 * @return the string value
+	 * @should format date as a string without time information
 	 */
 	public static String formatDateNoTime(Date date) {
-		Calendar cal = new GregorianCalendar();
-		cal.setTime(date);
-		cal.set(Calendar.AM_PM, 0);
-		cal.set(Calendar.HOUR, 0);
-		cal.set(Calendar.MINUTE, 0);
-		cal.set(Calendar.SECOND, 0);
-		cal.set(Calendar.MILLISECOND, 0);
-
-		return new FormatterImpl().format(cal.getTime());
+		Date dateOnly = KenyaEmrUtils.dateOnly(date);
+		return new FormatterImpl().format(dateOnly);
 	}
 }

@@ -1,3 +1,9 @@
+<%
+	def moduleVersionFull = "v" + moduleVersion
+	if (moduleBuildDate)
+		moduleVersionFull += " (" + ui.format(moduleBuildDate) + ")"
+%>
+
 <div id="page-header">
 	<div style="float: left">
 		<a href="/${ contextPath }/index.htm?<% if (config.context) { %>${ config.context }<% } %>">
@@ -7,8 +13,7 @@
 	<div style="float: left">
 		<span style="font-size: 1.5em;">Kenya EMR</span>
 		<span style="font-size: 0.6em;">
-			v${ moduleVersion },
-			powered by OpenMRS
+			${ moduleVersionFull }, powered by <a style="color: #000; text-decoration: none; border-bottom: 1px dotted #999" href="http://openmrs.org">OpenMRS</a>
 		</span>
 		<br/>
 		<% if (systemLocation) { %>

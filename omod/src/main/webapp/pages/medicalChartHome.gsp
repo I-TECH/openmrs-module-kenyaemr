@@ -1,28 +1,21 @@
 <%
-	ui.decorateWith("kenyaemr", "standardKenyaEmrPage")
+	ui.decorateWith("kenyaemr", "standardKenyaEmrPage", [ layout: "sidebar" ])
 %>
 
-<style type="text/css">
-.col2 {
-	width: 48%;
-	float: left;
-}
-#end-of-day {
-	display: none;
-}
-#end-of-day .spaced {
-	padding: 0.3em;
-}
-</style>
+<div id="content-side">
+	<div class="panel-frame">
+		<div class="panel-heading">Tasks</div>
 
-<div class="col2">
-	<h1>Medical Chart App</h1>
-	<h3>Welcome!</h3>
-	
-	${ ui.includeFragment("uilibrary", "widget/button", [ icon: "buttons/patient_search.png", iconProvider: "kenyaemr", label: "Find a Patient", href: ui.pageLink("kenyaemr", "medicalChartSearch") ]) }
+		${ ui.includeFragment("kenyaemr", "widget/panelMenuItem", [
+				iconProvider: "kenyaemr",
+				icon: "buttons/patient_search.png",
+				label: "Search for a Patient",
+				href: ui.pageLink("kenyaemr", "medicalChartSearch")
+		]) }
+	</div>
 </div>
 
-<div class="col2">
+<div id="content-main">
 	<h2>Recently-viewed patients</h2>
 	${ ui.includeFragment("kenyaemr", "patientList", [ id: "recentlyViewedPatients", page: "medicalChartViewPatient" ]) }
 </div>
