@@ -71,6 +71,7 @@ public class MetadataConstants {
 	
 	// Person Attribute Types
 	public static final String TELEPHONE_CONTACT_UUID = "b2c38640-2603-4629-aebd-3b54f33f1e3a";
+	public static final String NATIONAL_ID_NUMBER_UUID = "73d34479-2f9e-4de3-a5e6-1f79a17459bb";
 	
 	// Concepts
 	public static final String CD4_CONCEPT_UUID = "5497AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
