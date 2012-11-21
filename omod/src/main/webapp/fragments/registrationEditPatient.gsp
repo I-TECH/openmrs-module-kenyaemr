@@ -36,11 +36,16 @@
 			[ object: command, property: "personAddress.address1", label: "Postal Address", config: [ size: 60 ] ]
 		],
 		[
-			[ object: command, property: "personAddress.countyDistrict", label: "District" ],
-			[ object: command, property: "personAddress.address6", label: "Location" ]
+			[ object: command, property: "personAddress.address3", label: "School/Employer Address",config: [ size: 60 ] ],
+			[ object: command, property: "personAddress.countyDistrict", label: "District" ]
 		],
 		[
-			[ object: command, property: "personAddress.address5", label: "Sub-location" ],
+			
+			[ object: command, property: "personAddress.address6", label: "Location" ],
+			[ object: command, property: "personAddress.address5", label: "Sub-location" ]
+		],
+		[
+			[ object: command, property: "personAddress.cityVillage", label: "Village/Estate" ],
 			[ object: command, property: "personAddress.address2", label: "Landmark" ]
 		]
 	]
@@ -88,6 +93,12 @@
 				<td>(HIV program<% if (!command.hivIdNumber.identifier) { %>, if assigned<% } %>)</td>
 			</tr>
 		<% } %>
+		<tr>
+			<td>${ ui.format(command.nationalIdNumber.attributeType) } </td>
+			<td>${ ui.includeFragment("uilibrary", "widget/field", [ object: command, property: "nationalIdNumber.value" ]) }</td>
+			<td><% if (!command.nationalIdNumber.value) { %>(if available)<% } %></td>
+		</tr>
+		
 	</table>
 
 	<h4>Demographics</h4>

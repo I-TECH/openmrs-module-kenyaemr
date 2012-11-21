@@ -38,8 +38,8 @@ import org.openmrs.module.metadatasharing.wrapper.PackageImporter;
  */
 public class KenyaEmrActivator implements ModuleActivator {
 	
-	private static final String METADATA_FILENAME_FORMS = "Kenya_EMR_Forms-32.zip";
-    private static final String METADATA_FILENAME_CORE = "Kenya_EMR_Core_Metadata-8.zip";
+	private static final String METADATA_FILENAME_FORMS = "Kenya_EMR_Forms-33.zip";
+    private static final String METADATA_FILENAME_CORE = "Kenya_EMR_Core_Metadata-10.zip";
     private static final String METADATA_FILENAME_ROLES = "Kenya_EMR_Roles_and_Privileges-1.zip";
     private static final String METADATA_FILENAME_LOCATIONS = "Kenya_Facility_List-1.zip";
     

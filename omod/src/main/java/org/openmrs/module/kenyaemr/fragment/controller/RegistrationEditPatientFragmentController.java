@@ -71,6 +71,8 @@ public class RegistrationEditPatientFragmentController {
 		educationOptions.add(Context.getConceptService().getConceptByUuid(MetadataConstants.COLLEGE_UNIVERSITY_POLYTECHNIC_CONCEPT_UUID));
 		educationOptions.add(Context.getConceptService().getConceptByUuid(MetadataConstants.UNIVERSITY_COMPLETE_CONCEPT_UUID));
 		model.addAttribute("educationOptions", educationOptions);
+		//additional person attribute
+		model.addAttribute("nationalIdNumberAttrType", Context.getPersonService().getPersonAttributeTypeByUuid(MetadataConstants.NATIONAL_ID_NUMBER_UUID));
 	}
 	
 	public SimpleObject savePatient(@MethodParam("commandObject") @BindParams EditPatientCommand command,
@@ -124,6 +126,8 @@ public class RegistrationEditPatientFragmentController {
 		private Obs savedOccupation;
 		
 		private Obs savedEducation;
+		//additional member variables
+		private PersonAttribute nationalIdNumber;
 		
 		public EditPatientCommand() {
 			location = Context.getService(KenyaEmrService.class).getDefaultLocation();
@@ -136,6 +140,9 @@ public class RegistrationEditPatientFragmentController {
 			        ps.getPatientIdentifierTypeByUuid(MetadataConstants.UNIQUE_PATIENT_NUMBER_UUID), location);
 			telephoneContact = new PersonAttribute();
 			telephoneContact.setAttributeType(Context.getPersonService().getPersonAttributeTypeByUuid(MetadataConstants.TELEPHONE_CONTACT_UUID));
+			//additions
+			nationalIdNumber = new PersonAttribute();
+			nationalIdNumber.setAttributeType(Context.getPersonService().getPersonAttributeTypeByUuid(MetadataConstants.NATIONAL_ID_NUMBER_UUID));
 		}
 		
 		public EditPatientCommand(Patient patient) {
@@ -194,6 +201,15 @@ public class RegistrationEditPatientFragmentController {
 			if (savedEducation != null) {
 				education = savedEducation.getValueCoded();
 			}
+			//additions
+			PersonAttribute attrNationalId = patient.getAttribute(Context.getPersonService().getPersonAttributeTypeByUuid(MetadataConstants.NATIONAL_ID_NUMBER_UUID));
+			if(attrNationalId != null){
+				nationalIdNumber = attrNationalId;
+			}
+			else{
+				nationalIdNumber.setPerson(patient);
+			}
+			
 		
 		}
 		
@@ -278,7 +294,7 @@ public class RegistrationEditPatientFragmentController {
 				toSave.addName(personName);
 			}
 			
-			if (anyChanges(toSave.getPersonAddress(), personAddress, "address1", "address2", "address5", "address6", "countyDistrict")) {
+			if (anyChanges(toSave.getPersonAddress(), personAddress, "address1", "address2", "address5", "address6", "countyDistrict","address3","cityVillage")) {
 				if (toSave.getPersonAddress() != null) {
 					voidData(toSave.getPersonAddress());
 				}
@@ -292,6 +308,15 @@ public class RegistrationEditPatientFragmentController {
 				}
 				toSave.addAttribute(telephoneContact);
 			}
+			//aditions
+			PersonAttributeType nationalId = Context.getPersonService().getPersonAttributeTypeByUuid(MetadataConstants.NATIONAL_ID_NUMBER_UUID);
+			if (anyChanges(toSave.getAttribute(nationalId), nationalIdNumber, "value")) {
+				if (toSave.getAttribute(nationalId) != null) {
+					voidData(toSave.getAttribute(nationalId));
+				}
+				toSave.addAttribute(nationalIdNumber);
+			}
+			
 			
 			Patient ret = Context.getPatientService().savePatient(toSave);
 			
@@ -512,6 +537,18 @@ public class RegistrationEditPatientFragmentController {
          */
         public void setTelephoneContact(PersonAttribute telephoneContact) {
         	this.telephoneContact = telephoneContact;
+        }
+        /**
+         * @return the nationalIdNumber
+         */
+        public PersonAttribute getNationalIdNumber() {
+        	return nationalIdNumber;
+        }
+        /**
+         * @param nationalIdNumber the nationalIdNumber to set
+         */
+        public void setNationalIdNumber(PersonAttribute nationalIdNumber) {
+        	this.nationalIdNumber = nationalIdNumber;
         }
 		
 	}
