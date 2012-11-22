@@ -49,6 +49,17 @@
 			[ object: command, property: "personAddress.address2", label: "Landmark" ]
 		]
 	]
+	def nextOfKinFieldRows = [
+		[
+			[ object: command, property: "nameOfNextOfkin.value", label: ui.format(command.nameOfNextOfkin.attributeType) ],
+			[ object: command, property: "nextOfKinRelationship.value", label: ui.format(command.nextOfKinRelationship.attributeType) ]
+			
+		],
+		[
+			[ object: command, property: "nextOfkinContact.value", label: ui.format(command.nextOfkinContact.attributeType) ],
+			[ object: command, property: "nextOfkinAddress.value", label: ui.format(command.nextOfkinAddress.attributeType) ]
+		]
+	]
 %>
 
 <style type="text/css">
@@ -110,6 +121,12 @@
 	<h4>Address</h4>
 	
 	<% addressFieldRows.each { %>
+		${ ui.includeFragment("kenyaemr", "widget/rowOfFields", [ fields: it ]) }
+	<% } %>
+	
+	<h4>Next of Kin details</h4>
+	
+	<% nextOfKinFieldRows.each { %>
 		${ ui.includeFragment("kenyaemr", "widget/rowOfFields", [ fields: it ]) }
 	<% } %>
 
