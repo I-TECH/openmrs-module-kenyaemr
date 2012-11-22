@@ -15,12 +15,11 @@ package org.openmrs.module.kenyaemr.util;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.openmrs.Concept;
+import org.openmrs.api.context.Context;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.Map;
+import java.util.*;
 
 public class KenyaEmrUtilsTest extends BaseModuleContextSensitiveTest {
 
@@ -53,5 +52,36 @@ public class KenyaEmrUtilsTest extends BaseModuleContextSensitiveTest {
 		Assert.assertEquals(0, cal.get(Calendar.MINUTE));
 		Assert.assertEquals(0, cal.get(Calendar.SECOND));
 		Assert.assertEquals(0, cal.get(Calendar.MILLISECOND));
+	}
+
+	/**
+	 * @see KenyaEmrUtils#fetchConcepts(java.util.Collection)
+	 * @verifies fetch from concepts, integers or strings
+	 */
+	@Test
+	public void fetchConcepts_shouldFetchFromConceptsIntegersOrStrings() {
+		Concept cd4 = Context.getConceptService().getConcept(5497);
+		List<Object> conceptsOrIds = new ArrayList<Object>();
+		conceptsOrIds.add(cd4);
+		conceptsOrIds.add(5497);
+		conceptsOrIds.add("5497");
+		List<Concept> concepts = KenyaEmrUtils.fetchConcepts(conceptsOrIds);
+		Assert.assertEquals(cd4, concepts.get(0));
+		Assert.assertEquals(cd4, concepts.get(1));
+		Assert.assertEquals(cd4, concepts.get(2));
+	}
+
+	/**
+	 * @see KenyaEmrUtils#fetchConcepts(java.util.Collection)
+	 * @verifies throw exception for non concepts, integers or strings
+	 */
+	@Test
+	public void fetchConcepts_shouldThrowExceptionForNonConceptsIntegersOrString() {
+		try {
+			KenyaEmrUtils.fetchConcepts(Collections.singletonList(new Date()));
+			Assert.fail();
+		}
+		catch (IllegalArgumentException ex) {
+		}
 	}
 }

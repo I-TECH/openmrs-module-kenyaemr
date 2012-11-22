@@ -18,6 +18,7 @@ import org.openmrs.Obs;
 import org.openmrs.Patient;
 import org.openmrs.Person;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyaemr.util.KenyaEmrUtils;
 import org.openmrs.ui.framework.fragment.FragmentConfiguration;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 import org.openmrs.ui.framework.page.PageModel;
@@ -36,27 +37,9 @@ public class ObsGraphByDateFragmentController {
 		if (conceptConfig == null || conceptConfig.size() < 1)
 			throw new IllegalArgumentException("concepts must be specified and be non-empty");
 
-		List<Concept> concepts = getConcepts(conceptConfig);
+		List<Concept> concepts = KenyaEmrUtils.fetchConcepts(conceptConfig);
 		model.addAttribute("concepts", concepts);
 		model.addAttribute("data", getObsAsSeries(patient, concepts));
-	}
-
-    /**
-     * Gets a lsit of concepts from a list of concepts or concept identifiers
-     * @param conceptConfig the list of concepts or concept identifiers
-     * @return the list of concepts
-     */
-	private List<Concept> getConcepts(List<?> conceptConfig) {
-		List<Concept> concepts = new ArrayList<Concept>();
-		for (Object o : conceptConfig) {
-			if (o instanceof Concept) {
-				concepts.add((Concept) o);
-			} else {
-				Concept c = Context.getConceptService().getConcept(Integer.valueOf(o.toString()));
-				concepts.add(c);
-			}
-		}
-		return concepts;
 	}
 
     /**

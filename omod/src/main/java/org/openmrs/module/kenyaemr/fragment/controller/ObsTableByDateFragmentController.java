@@ -27,6 +27,7 @@ import org.openmrs.Obs;
 import org.openmrs.Patient;
 import org.openmrs.Person;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyaemr.util.KenyaEmrUtils;
 import org.openmrs.ui.framework.fragment.FragmentConfiguration;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 import org.openmrs.ui.framework.page.PageModel;
@@ -37,52 +38,67 @@ import org.openmrs.ui.framework.page.PageModel;
  */
 public class ObsTableByDateFragmentController {
 
+	/**
+	 * Request handler
+	 * @param pageModel the page model
+	 * @param model the fragment model
+	 * @param config the fragment configuration
+	 */
 	public void controller(PageModel pageModel, FragmentModel model, FragmentConfiguration config) {
 		Patient patient = (Patient) pageModel.getAttribute("patient");
+
 		List<?> conceptConfig = (List<?>) config.getAttribute("concepts");
 		if (conceptConfig == null)
 			throw new IllegalArgumentException("concepts is required");
-		List<Concept> concepts = getConcepts(conceptConfig);
+
+		List<Concept> concepts = KenyaEmrUtils.fetchConcepts(conceptConfig);
 		model.addAttribute("concepts", concepts);
-		model.addAttribute("data", getObsAsTable(patient, concepts));
-	}
-	
-	private List<Concept> getConcepts(List<?> conceptConfig) {
-		List<Concept> concepts = new ArrayList<Concept>();
-		for (Object o : conceptConfig) {
-			if (o instanceof Concept) {
-				concepts.add((Concept) o);
-			} else {
-				Concept c = Context.getConceptService().getConcept(Integer.valueOf(o.toString()));
-				concepts.add(c);
+
+		TableData data = new TableData();
+		for (Concept concept : concepts) {
+			List<Obs> obss = Context.getObsService().getObservationsByPersonAndConcept(patient, concept);
+			for (Obs obs : obss) {
+				data.addObs(obs);
 			}
 		}
-		return concepts;
-	}
-	
-	private SortedMap<Date, Map<Concept, Obs>> getObsAsTable(Person person, List<Concept> concepts) {
-		SortedMap<Date, Map<Concept, Obs>> byDate = new TreeMap<Date, Map<Concept, Obs>>(new Comparator<Date>() {
-			
-			@Override
-			public int compare(Date left, Date right) {
-				return right.compareTo(left);
-			}
-		});
-		for (Concept c : concepts)
-			helper(byDate, person, c);
-		return byDate;
-	}
-	
-	private void helper(SortedMap<Date, Map<Concept, Obs>> byDate, Person p, Concept c) {
-		List<Obs> obs = Context.getObsService().getObservationsByPersonAndConcept(p, c);
-		for (Obs o : obs) {
-			Map<Concept, Obs> onDate = byDate.get(o.getObsDatetime());
-			if (onDate == null) {
-				onDate = new HashMap<Concept, Obs>();
-				byDate.put(o.getObsDatetime(), onDate);
-			}
-			onDate.put(c, o);
-		}
+
+		model.addAttribute("data", data);
 	}
 
+	/**
+	 * Underlying model for the table data
+	 */
+	public class TableData extends TreeMap<Date, Map<Concept, List<Obs>>> {
+
+		public TableData() {
+			super(new Comparator<Date>() {
+				@Override
+				public int compare(Date left, Date right) {
+					return right.compareTo(left);
+				}
+			});
+		}
+
+		/**
+		 * Adds an obs to the table data
+		 * @param obs the obs
+		 */
+		public void addObs(Obs obs) {
+			Concept concept = obs.getConcept();
+			Date dateNoTime = KenyaEmrUtils.dateOnly(obs.getObsDatetime());
+
+			Map<Concept, List<Obs>> allObsDate = get(dateNoTime);
+			if (allObsDate == null) {
+				allObsDate = new HashMap<Concept, List<Obs>>();
+				put(dateNoTime, allObsDate);
+			}
+			List<Obs> obsForConceptOnDate = allObsDate.get(concept);
+			if (obsForConceptOnDate == null) {
+				obsForConceptOnDate = new ArrayList<Obs>();
+				allObsDate.put(concept, obsForConceptOnDate);
+			}
+
+			obsForConceptOnDate.add(obs);
+		}
+	}
 }

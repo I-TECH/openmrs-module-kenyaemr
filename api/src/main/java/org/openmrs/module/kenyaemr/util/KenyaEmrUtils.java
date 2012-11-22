@@ -13,6 +13,8 @@
  */
 package org.openmrs.module.kenyaemr.util;
 
+import org.openmrs.Concept;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.ModuleFactory;
 import org.openmrs.module.kenyaemr.KenyaEmrConstants;
 
@@ -54,5 +56,33 @@ public class KenyaEmrUtils {
 		cal.set(Calendar.SECOND, 0);
 		cal.set(Calendar.MILLISECOND, 0);
 		return cal.getTime();
+	}
+
+	/**
+	 * Fetches a list of concepts from a collection of concepts or concept identifiers
+	 * @param conceptsOrIds the collection of concepts or concept identifiers
+	 * @return the list of concepts
+	 * @throws IllegalArgumentException if item in list is not a concept, and Integer or a String
+	 * @throws NumberFormatException if a String identifier is not a valid integer
+	 * @should fetch from concepts, integers or strings
+	 * @should throw exception for non concepts, integers or strings
+	 */
+	public static List<Concept> fetchConcepts(Collection<?> conceptsOrIds) {
+		List<Concept> concepts = new ArrayList<Concept>();
+		for (Object o : conceptsOrIds) {
+			if (o instanceof Concept) {
+				concepts.add((Concept) o);
+			}
+			else if (o instanceof Integer) {
+				concepts.add(Context.getConceptService().getConcept((Integer) o));
+			}
+			else if (o instanceof String) {
+				concepts.add(Context.getConceptService().getConcept(Integer.valueOf(o.toString())));
+			}
+			else {
+				throw new IllegalArgumentException("Must be a concept, and Integer or a String");
+			}
+		}
+		return concepts;
 	}
 }

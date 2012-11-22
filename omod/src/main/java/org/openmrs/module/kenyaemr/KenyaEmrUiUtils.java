@@ -16,12 +16,16 @@ package org.openmrs.module.kenyaemr;
 import org.openmrs.module.kenyaemr.util.KenyaEmrUtils;
 import org.openmrs.ui.framework.FormatterImpl;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
  * UI utility methods for web pages
  */
 public class KenyaEmrUiUtils {
+
+	private static DateFormat timeFormatter = new SimpleDateFormat("HH:mm");
 
 	/**
 	 * Formats a date ignoring any time information
@@ -32,5 +36,15 @@ public class KenyaEmrUiUtils {
 	public static String formatDateNoTime(Date date) {
 		Date dateOnly = KenyaEmrUtils.dateOnly(date);
 		return new FormatterImpl().format(dateOnly);
+	}
+
+	/**
+	 * Formats a date as a time value only
+	 * @param date the date
+	 * @return the string value
+	 * @should format date as a string without time information
+	 */
+	public static String formatTime(Date date) {
+		return timeFormatter.format(date);
 	}
 }

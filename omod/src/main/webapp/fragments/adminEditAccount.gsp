@@ -133,17 +133,17 @@ jq(function() {
 					commandObject: editLoginDetails,
 					hiddenProperties: [ "userId" ],
 					properties: [ "username", "password", "confirmPassword", "roles" ],
+					propConfig: [
+						password: [ type: "password" ],
+						confirmPassword: [ type: "password" ]
+					],
 					fieldConfig: [
 						roles: [ fieldFragment: "field/RoleCollection" ]
-					],
-					propConfig: [
-						"password": [ type: "password" ],
-						"confirmPassword": [ type: "password" ]
 					],
 					extraFields: [
 						[ hiddenInputName: "personId", value: person.id ]
 					],
-					popupTitle: "Edit login details for '${ user.username }'",
+					popupTitle: "Edit login details for '${ ui.format(person) }'",
 					submitLabel: "Save Changes",
 					cancelLabel: "Cancel",
 					successCallbacks: [ "ui.reloadPage();" ]
@@ -162,8 +162,8 @@ jq(function() {
 				commandObject: editLoginDetails,
 				properties: [ "username", "password", "confirmPassword" ],
 				propConfig: [
-					"password": [ type: "password" ],
-					"confirmPassword": [ type: "password" ]
+					password: [ type: "password" ],
+					confirmPassword: [ type: "password" ]
 				],
 				fieldConfig: [
 					roles: [ fieldFragment: "field/RoleCollection" ]
