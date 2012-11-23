@@ -232,7 +232,7 @@ public class RegistrationEditPatientFragmentController {
 			}
 			//additions
 			PersonAttribute attrNationalId = patient.getAttribute(Context.getPersonService().getPersonAttributeTypeByUuid(MetadataConstants.NATIONAL_ID_NUMBER_UUID));
-			if(attrNationalId != null){
+			if (attrNationalId != null){
 				nationalIdNumber = attrNationalId;
 			}
 			else{
@@ -240,14 +240,14 @@ public class RegistrationEditPatientFragmentController {
 			}
 		// next of kin details come here
 			PersonAttribute attrNameOfNextOfKin = patient.getAttribute(Context.getPersonService().getPersonAttributeTypeByUuid(MetadataConstants.NAME_OF_NEXT_OF_KIN_UUID));
-			if(attrNameOfNextOfKin != null){
+			if (attrNameOfNextOfKin != null){
 				nameOfNextOfkin = attrNameOfNextOfKin;
 			}
 			else{
 				nameOfNextOfkin.setPerson(patient);
 			}
 			PersonAttribute attrNextOfKinRelationship = patient.getAttribute(Context.getPersonService().getPersonAttributeTypeByUuid(MetadataConstants.NEXT_OF_KIN_RELATIONSHIP_UUID));
-			if(attrNextOfKinRelationship != null){
+			if (attrNextOfKinRelationship != null){
 				nextOfKinRelationship = attrNextOfKinRelationship;
 			}
 			else{
@@ -255,7 +255,7 @@ public class RegistrationEditPatientFragmentController {
 			}
 			
 			PersonAttribute attrNextOfKinContact = patient.getAttribute(Context.getPersonService().getPersonAttributeTypeByUuid(MetadataConstants.NEXT_OF_KIN_CONTACT_UUID));
-			if(attrNextOfKinContact != null){
+			if (attrNextOfKinContact != null){
 				nextOfkinContact = attrNextOfKinContact;
 			}
 			else{
@@ -263,7 +263,7 @@ public class RegistrationEditPatientFragmentController {
 			}
 			
 			PersonAttribute attrNextOfKinAddress = patient.getAttribute(Context.getPersonService().getPersonAttributeTypeByUuid(MetadataConstants.NEXT_OF_KIN_ADDRESS_UUID));
-			if(attrNextOfKinAddress != null){
+			if (attrNextOfKinAddress != null){
 				nextOfkinAddress = attrNextOfKinAddress;
 			}
 			else{
