@@ -21,7 +21,6 @@ import org.openmrs.Program;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
-import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyaemr.KenyaEmrConstants;
 import org.openmrs.module.kenyaemr.MetadataConstants;
 
@@ -29,7 +28,7 @@ import org.openmrs.module.kenyaemr.MetadataConstants;
  * Calculates whether a patient has a declining CD4 count. Calculation returns true if patient
  * is alive, enrolled in the HIV program and last CD4 count is less than CD4 count from 6 months ago
  */
-public class DecliningCD4Calculation extends KenyaEmrCalculation {
+public class DecliningCD4Calculation extends BaseKenyaEmrCalculation {
 
 	@Override
 	public String getShortMessage() {
@@ -42,7 +41,7 @@ public class DecliningCD4Calculation extends KenyaEmrCalculation {
 		Program hivProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.HIV_PROGRAM_UUID);
 
 		Set<Integer> alive = alivePatients(cohort, context);
-		Set<Integer> inHivProgram = patientsThatPass(lastProgramEnrollment(hivProgram, alive, context));
+		Set<Integer> inHivProgram = CalculationUtils.patientsThatPass(lastProgramEnrollment(hivProgram, alive, context));
 
 		// Get the two CD4 obss for comparison
 		CalculationResultMap lastCD4Obss = lastObs(MetadataConstants.CD4_CONCEPT_UUID, inHivProgram, context);

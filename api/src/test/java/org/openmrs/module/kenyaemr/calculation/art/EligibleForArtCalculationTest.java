@@ -1,4 +1,4 @@
-package org.openmrs.module.kenyaemr.calculation;
+package org.openmrs.module.kenyaemr.calculation.art;
 
 
 import java.util.Arrays;
@@ -17,6 +17,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
+import org.openmrs.module.kenyaemr.calculation.art.EligibleForArtCalculation;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 public class EligibleForArtCalculationTest extends BaseModuleContextSensitiveTest {
@@ -27,7 +28,7 @@ public class EligibleForArtCalculationTest extends BaseModuleContextSensitiveTes
 	}
 	
 	/**
-	 * @see EligibleForArtCalculation#evaluate(Collection,Map,PatientCalculationContext)
+	 * @see org.openmrs.module.kenyaemr.calculation.art.EligibleForArtCalculation#evaluate(Collection,Map,PatientCalculationContext)
 	 * @verifies calculate eligibility
 	 */
 	@Test

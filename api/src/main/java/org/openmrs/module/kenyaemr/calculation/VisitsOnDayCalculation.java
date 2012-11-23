@@ -32,10 +32,10 @@ import org.openmrs.module.reporting.common.DateUtil;
 /**
  *
  */
-public class VisitsOnDayCalculation extends KenyaEmrCalculation {
+public class VisitsOnDayCalculation extends BaseKenyaEmrCalculation {
 	
 	/**
-	 * @see org.openmrs.module.kenyaemr.calculation.KenyaEmrCalculation#getShortMessage()
+	 * @see BaseKenyaEmrCalculation#getShortMessage()
 	 */
 	@Override
 	public String getShortMessage() {

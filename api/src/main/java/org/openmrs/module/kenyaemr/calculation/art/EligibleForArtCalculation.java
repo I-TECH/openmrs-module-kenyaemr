@@ -11,7 +11,7 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.kenyaemr.calculation;
+package org.openmrs.module.kenyaemr.calculation.art;
 
 import java.util.Collection;
 import java.util.Map;
@@ -23,16 +23,19 @@ import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyaemr.MetadataConstants;
+import org.openmrs.module.kenyaemr.calculation.BaseKenyaEmrCalculation;
+import org.openmrs.module.kenyaemr.calculation.BooleanResult;
+import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
 import org.openmrs.module.reporting.common.Age;
 
 
 /**
  *
  */
-public class EligibleForArtCalculation extends KenyaEmrCalculation {
+public class EligibleForArtCalculation extends BaseKenyaEmrCalculation {
 	
 	/**
-	 * @see org.openmrs.module.kenyaemr.calculation.KenyaEmrCalculation#getShortMessage()
+	 * @see BaseKenyaEmrCalculation#getShortMessage()
 	 */
 	@Override
 	public String getShortMessage() {
@@ -49,10 +52,10 @@ public class EligibleForArtCalculation extends KenyaEmrCalculation {
 
 		// only applies to patients in the HIV program
 		Program hivProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.HIV_PROGRAM_UUID);
-		Set<Integer> inHivProgram = patientsThatPass(lastProgramEnrollment(hivProgram, cohort, context));
+		Set<Integer> inHivProgram = CalculationUtils.patientsThatPass(lastProgramEnrollment(hivProgram, cohort, context));
 		
 		// need to exclude those on ART already
-		Set<Integer> onArt = patientsThatPass(calculate(new OnArtCalculation(), cohort, context));
+		Set<Integer> onArt = CalculationUtils.patientsThatPass(calculate(new OnArtCalculation(), cohort, context));
 		
 		CalculationResultMap ages = ages(cohort, context);
 		

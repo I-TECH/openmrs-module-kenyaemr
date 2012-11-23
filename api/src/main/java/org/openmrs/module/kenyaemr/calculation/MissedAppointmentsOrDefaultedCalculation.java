@@ -32,7 +32,7 @@ import org.openmrs.module.kenyaemr.MetadataConstants;
  * if the patient is alive, enrolled in the HIV program, has a scheduled return visit in the past,
  * and hasn't had an encounter since that date
  */
-public class MissedAppointmentsOrDefaultedCalculation extends KenyaEmrCalculation {
+public class MissedAppointmentsOrDefaultedCalculation extends BaseKenyaEmrCalculation {
 
     @Override
     public String getShortMessage() {
@@ -54,7 +54,7 @@ public class MissedAppointmentsOrDefaultedCalculation extends KenyaEmrCalculatio
         Program hivProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.HIV_PROGRAM_UUID);
 
 		Set<Integer> alive = alivePatients(cohort, context);
-		Set<Integer> inHivProgram = patientsThatPass(lastProgramEnrollment(hivProgram, alive, context));
+		Set<Integer> inHivProgram = CalculationUtils.patientsThatPass(lastProgramEnrollment(hivProgram, alive, context));
         CalculationResultMap lastReturnDateObss = lastObs(MetadataConstants.RETURN_VISIT_DATE_CONCEPT_UUID, inHivProgram, context);
         CalculationResultMap lastEncounters = lastEncounter(null, cohort, context);
 

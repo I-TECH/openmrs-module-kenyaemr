@@ -22,7 +22,7 @@ import org.openmrs.api.ConceptService;
 import org.openmrs.api.PatientSetService.TimeModifier;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.MetadataConstants;
-import org.openmrs.module.kenyaemr.calculation.FirstArtStartDateCalculation;
+import org.openmrs.module.kenyaemr.calculation.art.FirstArtStartDateCalculation;
 import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;

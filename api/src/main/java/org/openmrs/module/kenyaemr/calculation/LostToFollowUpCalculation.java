@@ -17,11 +17,9 @@ package org.openmrs.module.kenyaemr.calculation;
 import java.util.*;
 
 import org.openmrs.Encounter;
-import org.openmrs.Patient;
 import org.openmrs.Program;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
-import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyaemr.KenyaEmrConstants;
@@ -31,7 +29,7 @@ import org.openmrs.module.kenyaemr.MetadataConstants;
  * Calculates whether a patient has been lost to follow up. Calculation returns true if patient
  * is alive, enrolled in the HIV program, but hasn't had an encounter in LOST_TO_FOLLOW_UP_THRESHOLD_DAYS days
  */
-public class LostToFollowUpCalculation extends KenyaEmrCalculation {
+public class LostToFollowUpCalculation extends BaseKenyaEmrCalculation {
 
 	@Override
 	public String getShortMessage() {
@@ -51,7 +49,7 @@ public class LostToFollowUpCalculation extends KenyaEmrCalculation {
 		Program hivProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.HIV_PROGRAM_UUID);
 
 		Set<Integer> alive = alivePatients(cohort, context);
-		Set<Integer> inHivProgram = patientsThatPass(lastProgramEnrollment(hivProgram, alive, context));
+		Set<Integer> inHivProgram = CalculationUtils.patientsThatPass(lastProgramEnrollment(hivProgram, alive, context));
 		CalculationResultMap lastEncounters = lastEncounter(null, inHivProgram, context);
 
 		CalculationResultMap ret = new CalculationResultMap();

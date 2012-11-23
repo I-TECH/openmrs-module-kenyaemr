@@ -27,7 +27,7 @@ import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyaemr.MetadataConstants;
 
-public class HIVPatientsWhoHaveNeverScreenedForTBCalculation extends KenyaEmrCalculation {
+public class HIVPatientsWhoHaveNeverScreenedForTBCalculation extends BaseKenyaEmrCalculation {
 
     @Override
     public String getShortMessage() {
@@ -39,7 +39,7 @@ public class HIVPatientsWhoHaveNeverScreenedForTBCalculation extends KenyaEmrCal
         Program hivProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.HIV_PROGRAM_UUID);
         Form tbScreeningForm = Context.getFormService().getFormByUuid(MetadataConstants.TB_SCREENING_FORM_UUID);
 
-        Set<Integer> inHivProgram = patientsThatPass(lastProgramEnrollment(hivProgram, cohort, context));
+        Set<Integer> inHivProgram = CalculationUtils.patientsThatPass(lastProgramEnrollment(hivProgram, cohort, context));
         Set<Integer> alive = alivePatients(cohort, context);
         // TODO replace the EncounterService search inside the loop with a single reporting query
 

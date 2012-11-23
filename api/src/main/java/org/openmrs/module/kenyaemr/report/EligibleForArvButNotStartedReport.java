@@ -13,7 +13,7 @@
  */
 package org.openmrs.module.kenyaemr.report;
 
-import org.openmrs.module.kenyaemr.calculation.EligibleForArtCalculation;
+import org.openmrs.module.kenyaemr.calculation.art.EligibleForArtCalculation;
 import org.springframework.stereotype.Component;
 
 

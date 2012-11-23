@@ -11,7 +11,7 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.kenyaemr.calculation;
+package org.openmrs.module.kenyaemr.calculation.art;
 
 import java.util.Collection;
 import java.util.Map;
@@ -19,33 +19,40 @@ import java.util.Map;
 import org.openmrs.Concept;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
+import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyaemr.MetadataConstants;
-
+import org.openmrs.module.kenyaemr.calculation.BaseKenyaEmrCalculation;
+import org.openmrs.module.kenyaemr.calculation.BooleanResult;
 
 /**
  *
  */
-public class FirstArtStartDateCalculation extends KenyaEmrCalculation {
+public class OnArtCalculation extends BaseKenyaEmrCalculation {
 	
 	/**
-	 * @see org.openmrs.module.kenyaemr.calculation.KenyaEmrCalculation#getShortMessage()
+	 * @see BaseKenyaEmrCalculation#getShortMessage()
 	 */
 	@Override
 	public String getShortMessage() {
-		return "First ART Start Date";
+		return "On ART";
 	}
 	
 	/**
-	 * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
+	 * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(java.util.Collection,
+	 *      java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
 	 */
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues,
 	                                     PatientCalculationContext context) {
 		Concept arvs = Context.getConceptService().getConceptByUuid(MetadataConstants.ANTIRETROVIRAL_DRUGS_CONCEPT_UUID);
-		CalculationResultMap ret = firstDrugOrderStartDate(arvs, cohort, context);
-		ensureNullResults(ret, cohort);
+		CalculationResultMap map = activeDrugOrders(arvs, cohort, context);
+		
+		CalculationResultMap ret = new CalculationResultMap();
+		for (Map.Entry<Integer, CalculationResult> e : map.entrySet()) {
+			ret.put(e.getKey(), new BooleanResult(e.getValue() != null && !e.getValue().isEmpty(), this));
+		}
 		return ret;
 	}
-
+	
 }

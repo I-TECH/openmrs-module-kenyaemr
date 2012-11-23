@@ -13,7 +13,7 @@
  */
 package org.openmrs.module.kenyaemr.report;
 
-import org.openmrs.module.kenyaemr.calculation.PatientsOnSecondLineCalculation;
+import org.openmrs.module.kenyaemr.calculation.art.PatientsOnSecondLineCalculation;
 import org.springframework.stereotype.Component;
 
 @Component

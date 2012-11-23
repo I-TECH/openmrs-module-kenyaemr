@@ -16,11 +16,10 @@ package org.openmrs.module.kenyaemr.fragment.controller;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResult;
-import org.openmrs.module.kenyaemr.calculation.KenyaEmrCalculation;
+import org.openmrs.module.kenyaemr.calculation.BaseKenyaEmrCalculation;
 import org.openmrs.module.kenyaemr.calculation.KenyaEmrCalculationProvider;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
@@ -39,8 +38,8 @@ public class ClinicalAlertsFragmentController {
 	public List<SimpleObject> getAlerts(@RequestParam("patientId") Integer ptId,
 	                                    UiUtils ui,
 	                                    @SpringBean("org.openmrs.module.kenyaemr.calculation.KenyaEmrCalculationProvider") KenyaEmrCalculationProvider calcs) {
-		List<KenyaEmrCalculation> alerts = new ArrayList<KenyaEmrCalculation>();
-		for (KenyaEmrCalculation calc : calcs.getAllCalculations()) {
+		List<BaseKenyaEmrCalculation> alerts = new ArrayList<BaseKenyaEmrCalculation>();
+		for (BaseKenyaEmrCalculation calc : calcs.getAllCalculations()) {
 			CalculationResult result = Context.getService(PatientCalculationService.class).evaluate(ptId, calc);
 			if ((Boolean) result.getValue()) {
 				alerts.add(calc);

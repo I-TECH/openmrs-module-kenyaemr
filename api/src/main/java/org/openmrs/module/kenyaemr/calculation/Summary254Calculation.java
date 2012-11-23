@@ -24,13 +24,13 @@ import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyaemr.MetadataConstants;
 
-public class Summary254Calculation extends KenyaEmrCalculation {
+public class Summary254Calculation extends BaseKenyaEmrCalculation {
 
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort,Map<String, Object> parameterValues, PatientCalculationContext cxt) {
 		
 		Program hivProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.HIV_PROGRAM_UUID);
-        Set<Integer> inHivProgram = patientsThatPass(lastProgramEnrollment(hivProgram, cohort, cxt));
+        Set<Integer> inHivProgram = CalculationUtils.patientsThatPass(lastProgramEnrollment(hivProgram, cohort, cxt));
         Set<Integer> alive = alivePatients(cohort, cxt);
         
         CalculationResultMap summary = new CalculationResultMap();

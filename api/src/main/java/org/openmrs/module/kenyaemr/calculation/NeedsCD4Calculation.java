@@ -22,7 +22,6 @@ import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.ObsResult;
-import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyaemr.KenyaEmrConstants;
 import org.openmrs.module.kenyaemr.MetadataConstants;
 
@@ -30,10 +29,10 @@ import org.openmrs.module.kenyaemr.MetadataConstants;
  * Calculate whether patients are due for a CD4 count. Calculation returns true if if the patient
  * is alive, enrolled in the HIV program, and has not had a CD4 count in the last 180 days
  */
-public class NeedsCD4Calculation extends KenyaEmrCalculation {
+public class NeedsCD4Calculation extends BaseKenyaEmrCalculation {
 	
 	/**
-	 * @see org.openmrs.module.kenyaemr.calculation.KenyaEmrCalculation#getShortMessage()
+	 * @see BaseKenyaEmrCalculation#getShortMessage()
 	 */
 	@Override
 	public String getShortMessage() {
@@ -51,7 +50,7 @@ public class NeedsCD4Calculation extends KenyaEmrCalculation {
 		Program hivProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.HIV_PROGRAM_UUID);
 
 		Set<Integer> alive = alivePatients(cohort, context);
-		Set<Integer> inHivProgram = patientsThatPass(lastProgramEnrollment(hivProgram, alive, context));
+		Set<Integer> inHivProgram = CalculationUtils.patientsThatPass(lastProgramEnrollment(hivProgram, alive, context));
 		CalculationResultMap lastObs = lastObs(MetadataConstants.CD4_CONCEPT_UUID, cohort, context);
 
 		CalculationResultMap ret = new CalculationResultMap();

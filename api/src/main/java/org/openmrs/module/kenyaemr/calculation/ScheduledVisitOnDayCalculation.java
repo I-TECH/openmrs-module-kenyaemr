@@ -18,7 +18,6 @@ import java.util.Date;
 import java.util.Map;
 
 import org.openmrs.Concept;
-import org.openmrs.Patient;
 import org.openmrs.api.PatientSetService.TimeModifier;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
@@ -33,10 +32,10 @@ import org.openmrs.module.reporting.common.RangeComparator;
 /**
  *
  */
-public class ScheduledVisitOnDayCalculation extends KenyaEmrCalculation {
+public class ScheduledVisitOnDayCalculation extends BaseKenyaEmrCalculation {
 	
 	/**
-	 * @see org.openmrs.module.kenyaemr.calculation.KenyaEmrCalculation#getShortMessage()
+	 * @see BaseKenyaEmrCalculation#getShortMessage()
 	 */
 	@Override
 	public String getShortMessage() {

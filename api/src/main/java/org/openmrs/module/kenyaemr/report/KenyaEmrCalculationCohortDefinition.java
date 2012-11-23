@@ -15,7 +15,7 @@ package org.openmrs.module.kenyaemr.report;
 
 import java.util.Date;
 
-import org.openmrs.module.kenyaemr.calculation.KenyaEmrCalculation;
+import org.openmrs.module.kenyaemr.calculation.BaseKenyaEmrCalculation;
 import org.openmrs.module.reporting.cohort.definition.BaseCohortDefinition;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 
@@ -25,7 +25,7 @@ import org.openmrs.module.reporting.definition.configuration.ConfigurationProper
 public class KenyaEmrCalculationCohortDefinition extends BaseCohortDefinition {
 	
 	@ConfigurationProperty(required = true, group = "calculation")
-	private KenyaEmrCalculation calculation;
+	private BaseKenyaEmrCalculation calculation;
 	
 	@ConfigurationProperty(required = false, group = "date range")
 	private Date resultOnOrAfter;
@@ -39,21 +39,21 @@ public class KenyaEmrCalculationCohortDefinition extends BaseCohortDefinition {
 	/**
 	 * @param calculation
 	 */
-	public KenyaEmrCalculationCohortDefinition(KenyaEmrCalculation calculation) {
+	public KenyaEmrCalculationCohortDefinition(BaseKenyaEmrCalculation calculation) {
 		setCalculation(calculation);
 	}
 	
 	/**
 	 * @return the calculation
 	 */
-	public KenyaEmrCalculation getCalculation() {
+	public BaseKenyaEmrCalculation getCalculation() {
 		return calculation;
 	}
 	
 	/**
 	 * @param calculation the calculation to set
 	 */
-	public void setCalculation(KenyaEmrCalculation calculation) {
+	public void setCalculation(BaseKenyaEmrCalculation calculation) {
 		this.calculation = calculation;
 	}
 	

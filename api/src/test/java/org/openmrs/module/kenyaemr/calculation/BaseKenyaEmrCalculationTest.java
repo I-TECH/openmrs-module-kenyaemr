@@ -16,16 +16,9 @@ package org.openmrs.module.kenyaemr.calculation;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.*;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
-import org.openmrs.Patient;
-import org.openmrs.PatientProgram;
-import org.openmrs.Program;
-import org.openmrs.api.PatientService;
-import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
-import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.calculation.result.CalculationResultMap;
@@ -34,7 +27,7 @@ import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 import java.util.*;
 
-public class KenyaEmrCalculationTest extends BaseModuleContextSensitiveTest {
+public class BaseKenyaEmrCalculationTest extends BaseModuleContextSensitiveTest {
 
 	@Before
 	public void beforeEachTest() throws Exception {
@@ -47,7 +40,7 @@ public class KenyaEmrCalculationTest extends BaseModuleContextSensitiveTest {
 		List<Integer> ptIds = Arrays.asList(6, 7);
 
 		// Get last encounter
-		CalculationResultMap resultMap = KenyaEmrCalculation.lastEncounter(null, ptIds, Context.getService(PatientCalculationService.class).createCalculationContext());
+		CalculationResultMap resultMap = BaseKenyaEmrCalculation.lastEncounter(null, ptIds, Context.getService(PatientCalculationService.class).createCalculationContext());
 		CalculationResult patient6Result = resultMap.get(6);
 		CalculationResult patient7Result = resultMap.get(7);
 
@@ -58,7 +51,7 @@ public class KenyaEmrCalculationTest extends BaseModuleContextSensitiveTest {
 
 		// Get last 'Emergency' encounter
 		EncounterType emergencyEncType = Context.getEncounterService().getEncounterType("Emergency");
-		resultMap = KenyaEmrCalculation.lastEncounter(emergencyEncType, ptIds, Context.getService(PatientCalculationService.class).createCalculationContext());
+		resultMap = BaseKenyaEmrCalculation.lastEncounter(emergencyEncType, ptIds, Context.getService(PatientCalculationService.class).createCalculationContext());
 		patient6Result = resultMap.get(6);
 		patient7Result = resultMap.get(7);
 
@@ -74,7 +67,7 @@ public class KenyaEmrCalculationTest extends BaseModuleContextSensitiveTest {
 		List<Integer> ptIds = Arrays.asList(6, 7);
 
 		// Get total encounters
-		CalculationResultMap resultMap = KenyaEmrCalculation.allEncounters(null, ptIds, Context.getService(PatientCalculationService.class).createCalculationContext());
+		CalculationResultMap resultMap = BaseKenyaEmrCalculation.allEncounters(null, ptIds, Context.getService(PatientCalculationService.class).createCalculationContext());
 		CalculationResult patient6Result = resultMap.get(6);
 		CalculationResult patient7Result = resultMap.get(7);
 
@@ -84,7 +77,7 @@ public class KenyaEmrCalculationTest extends BaseModuleContextSensitiveTest {
 
 		// Get 'Scheduled' encounters
 		EncounterType scheduledEncType = Context.getEncounterService().getEncounterType("Scheduled");
-		resultMap = KenyaEmrCalculation.allEncounters(scheduledEncType, ptIds, Context.getService(PatientCalculationService.class).createCalculationContext());
+		resultMap = BaseKenyaEmrCalculation.allEncounters(scheduledEncType, ptIds, Context.getService(PatientCalculationService.class).createCalculationContext());
 		patient6Result = resultMap.get(6);
 		patient7Result = resultMap.get(7);
 

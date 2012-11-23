@@ -16,10 +16,9 @@ package org.openmrs.module.kenyaemr.report;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import org.openmrs.PatientProgram;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.MetadataConstants;
-import org.openmrs.module.kenyaemr.calculation.KenyaEmrCalculation;
+import org.openmrs.module.kenyaemr.calculation.BaseKenyaEmrCalculation;
 import org.openmrs.module.reporting.data.converter.DataConverter;
 import org.openmrs.module.reporting.data.patient.definition.PatientIdDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.PatientIdentifierDataDefinition;
@@ -42,7 +41,7 @@ public abstract class PatientAlertListReportManager implements PatientListReport
 	
 	private Boolean configured = Boolean.FALSE;
 	
-	private KenyaEmrCalculation alertCalculation;
+	private BaseKenyaEmrCalculation alertCalculation;
 	
 	protected ReportDefinition reportDefinition;
 	
@@ -60,7 +59,7 @@ public abstract class PatientAlertListReportManager implements PatientListReport
     /**
      * @param alertCalculation the alertCalculation to set
      */
-    public void setAlertCalculation(KenyaEmrCalculation alertCalculation) {
+    public void setAlertCalculation(BaseKenyaEmrCalculation alertCalculation) {
 	    this.alertCalculation = alertCalculation;
     }
 	

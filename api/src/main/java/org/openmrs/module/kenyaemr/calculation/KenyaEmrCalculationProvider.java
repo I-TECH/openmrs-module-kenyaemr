@@ -23,6 +23,7 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.calculation.Calculation;
 import org.openmrs.calculation.CalculationProvider;
 import org.openmrs.calculation.InvalidCalculationException;
+import org.openmrs.module.kenyaemr.calculation.art.EligibleForArtCalculation;
 import org.springframework.stereotype.Component;
 
 
@@ -34,7 +35,7 @@ public class KenyaEmrCalculationProvider implements CalculationProvider {
 	
 	private final Log log = LogFactory.getLog(getClass());
 	
-	Map<String, Class<? extends KenyaEmrCalculation>> map = new HashMap<String, Class<? extends KenyaEmrCalculation>>();
+	Map<String, Class<? extends BaseKenyaEmrCalculation>> map = new HashMap<String, Class<? extends BaseKenyaEmrCalculation>>();
 	
 	public KenyaEmrCalculationProvider() {
 		map.put("needsCd4", NeedsCD4Calculation.class);
@@ -45,11 +46,11 @@ public class KenyaEmrCalculationProvider implements CalculationProvider {
 		// TODO add others (onArt, scheduledVisitOnDay), but make sure they don't run on the patient page by default.
 	}
 	
-	public List<KenyaEmrCalculation> getAllCalculations() {
-		List<KenyaEmrCalculation> ret = new ArrayList<KenyaEmrCalculation>();
+	public List<BaseKenyaEmrCalculation> getAllCalculations() {
+		List<BaseKenyaEmrCalculation> ret = new ArrayList<BaseKenyaEmrCalculation>();
 		for (String calcName : map.keySet()) {
 			try {
-	            ret.add((KenyaEmrCalculation) getCalculation(calcName, null));
+	            ret.add((BaseKenyaEmrCalculation) getCalculation(calcName, null));
             }
             catch (InvalidCalculationException ex) {
 	            log.warn("Invalid calculation defined", ex);
@@ -63,7 +64,7 @@ public class KenyaEmrCalculationProvider implements CalculationProvider {
 	 */
 	@Override
 	public Calculation getCalculation(String calculationName, String configuration) throws InvalidCalculationException {
-		Class<? extends KenyaEmrCalculation> clazz = map.get(calculationName);
+		Class<? extends BaseKenyaEmrCalculation> clazz = map.get(calculationName);
 		if (clazz == null)
 			throw new InvalidCalculationException("Not Found: " + clazz + " (valid values are: " + map.keySet() + ")");
 		try {

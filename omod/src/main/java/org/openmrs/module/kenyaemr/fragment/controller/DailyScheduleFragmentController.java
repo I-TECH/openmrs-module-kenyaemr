@@ -27,7 +27,7 @@ import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.ListResult;
-import org.openmrs.module.kenyaemr.calculation.KenyaEmrCalculation;
+import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
 import org.openmrs.module.kenyaemr.calculation.ScheduledVisitOnDayCalculation;
 import org.openmrs.module.kenyaemr.calculation.VisitsOnDayCalculation;
 import org.openmrs.ui.framework.SimpleObject;
@@ -53,7 +53,7 @@ public class DailyScheduleFragmentController {
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("date", date);
 		PatientCalculationContext calcContext = cs.createCalculationContext();
-		Set<Integer> scheduled = KenyaEmrCalculation.patientsThatPass(cs.evaluate(allPatients, new ScheduledVisitOnDayCalculation(), params, calcContext));
+		Set<Integer> scheduled = CalculationUtils.patientsThatPass(cs.evaluate(allPatients, new ScheduledVisitOnDayCalculation(), params, calcContext));
 		CalculationResultMap actual = cs.evaluate(scheduled, new VisitsOnDayCalculation(), params, calcContext);
 		
 		List<Patient> scheduledPatients = Context.getPatientSetService().getPatients(scheduled);

@@ -22,7 +22,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
-import org.openmrs.module.kenyaemr.calculation.KenyaEmrCalculation;
+import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.evaluator.CohortDefinitionEvaluator;
@@ -59,9 +59,9 @@ public class KenyaEmrCalculationCohortDefinitionEvaluator implements CohortDefin
 		CalculationResultMap map = pcs.evaluate(cohort.getMemberIds(), cd.getCalculation(), calcContext);
 		Set<Integer> passing;
 		if (cd.getResultOnOrAfter() != null || cd.getResultOnOrBefore() != null) {
-			passing = KenyaEmrCalculation.datesWithinRange(map, cd.getResultOnOrAfter(), cd.getResultOnOrBefore());
+			passing = CalculationUtils.datesWithinRange(map, cd.getResultOnOrAfter(), cd.getResultOnOrBefore());
 		} else {
-			passing = KenyaEmrCalculation.patientsThatPass(map);
+			passing = CalculationUtils.patientsThatPass(map);
 		}
 		return new EvaluatedCohort(new Cohort(passing), cd, context);
 	}

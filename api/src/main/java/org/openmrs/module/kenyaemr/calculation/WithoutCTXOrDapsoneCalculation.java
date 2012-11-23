@@ -15,13 +15,13 @@ import org.openmrs.calculation.result.ListResult;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyaemr.MetadataConstants;
 
-public class WithoutCTXOrDapsoneCalculation extends KenyaEmrCalculation {
+public class WithoutCTXOrDapsoneCalculation extends BaseKenyaEmrCalculation {
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort,Map<String, Object>  parameterValues, PatientCalculationContext context) {
 		Program hivProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.HIV_PROGRAM_UUID);
-		Set<Integer> inHivProgram = patientsThatPass(lastProgramEnrollment(hivProgram, cohort, context));
+		Set<Integer> inHivProgram = CalculationUtils.patientsThatPass(lastProgramEnrollment(hivProgram, cohort, context));
 		Set<Integer> alive = alivePatients(cohort, context);
 		CalculationResultMap medicationorder = allObs(MetadataConstants.MEDICATION_ORDERS_CONCEPT_UUID, cohort, context);
 		CalculationResultMap ret = new CalculationResultMap();

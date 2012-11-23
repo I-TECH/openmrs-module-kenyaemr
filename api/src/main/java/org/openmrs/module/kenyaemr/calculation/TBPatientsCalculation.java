@@ -25,7 +25,7 @@ import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyaemr.MetadataConstants;
 
-public class TBPatientsCalculation extends KenyaEmrCalculation {
+public class TBPatientsCalculation extends BaseKenyaEmrCalculation {
 
     @Override
     public String getShortMessage() {
@@ -35,7 +35,7 @@ public class TBPatientsCalculation extends KenyaEmrCalculation {
     @Override
     public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> arg1, PatientCalculationContext ctx) {
         Program tbProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.TB_PROGRAM_UUID);
-        Set<Integer> inTbProgram = patientsThatPass(lastProgramEnrollment(tbProgram, cohort, ctx));
+        Set<Integer> inTbProgram = CalculationUtils.patientsThatPass(lastProgramEnrollment(tbProgram, cohort, ctx));
         Set<Integer> alive = alivePatients(cohort, ctx);
 
         CalculationResultMap ret = new CalculationResultMap();
