@@ -76,7 +76,7 @@ public class VisitsOnDayCalculation extends BaseKenyaEmrCalculation {
 			holder.add(new SimpleResult(v, this));
 		}
 		
-		ensureEmptyListResults(ret, cohort);
+		CalculationUtils.ensureEmptyListResults(ret, cohort);
 		return ret;
 	}
 	

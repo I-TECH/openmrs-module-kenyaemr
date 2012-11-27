@@ -457,32 +457,6 @@ public abstract class BaseKenyaEmrCalculation extends BaseCalculation implements
 	}
 
 	/**
-	 * Utility method to ensure all patients exist in a result map. If map is missing entries for any of patientIds, they are added with a null result
-	 * @param map the calculation result map
-	 * @param patientIds the patient ids
-	 */
-	protected static void ensureNullResults(CalculationResultMap map, Collection<Integer> patientIds) {
-		for (Integer ptId : patientIds) {
-			if (!map.containsKey(ptId)) {
-				map.put(ptId, null);
-			}
-		}
-	}
-
-	/**
-	 * Utility method to ensure all patients exist in a result map. If map is missing entries for any of patientIds, they are added with an empty list result
-	 * @param map the calculation result map
-	 * @param patientIds the patient ids
-	 */
-	protected static void ensureEmptyListResults(CalculationResultMap map, Collection<Integer> patientIds) {
-		for (Integer ptId : patientIds) {
-			if (!map.containsKey(ptId)) {
-				map.put(ptId, new ListResult());
-			}
-		}
-	}
-
-	/**
 	 * Calculates the days since the given date
 	 * @param date the date
 	 * @param calculationContext the calculation context

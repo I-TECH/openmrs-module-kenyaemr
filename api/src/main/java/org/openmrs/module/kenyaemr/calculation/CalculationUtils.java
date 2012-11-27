@@ -15,13 +15,11 @@ package org.openmrs.module.kenyaemr.calculation;
 
 import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.calculation.result.CalculationResultMap;
+import org.openmrs.calculation.result.ListResult;
 import org.openmrs.calculation.result.ResultUtil;
 import org.openmrs.util.OpenmrsUtil;
 
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Calculation utility methods, also used by some reporting classes
@@ -82,5 +80,31 @@ public class CalculationUtils {
 			}
 		}
 		return ret;
+	}
+
+	/**
+	 * Ensures all patients exist in a result map. If map is missing entries for any of patientIds, they are added with a null result
+	 * @param map the calculation result map
+	 * @param cohort the patient ids
+	 */
+	public static void ensureNullResults(CalculationResultMap map, Collection<Integer> cohort) {
+		for (Integer ptId : cohort) {
+			if (!map.containsKey(ptId)) {
+				map.put(ptId, null);
+			}
+		}
+	}
+
+	/**
+	 * Ensures all patients exist in a result map. If map is missing entries for any of patientIds, they are added with an empty list result
+	 * @param map the calculation result map
+	 * @param cohort the patient ids
+	 */
+	public static void ensureEmptyListResults(CalculationResultMap map, Collection<Integer> cohort) {
+		for (Integer ptId : cohort) {
+			if (!map.containsKey(ptId)) {
+				map.put(ptId, new ListResult());
+			}
+		}
 	}
 }

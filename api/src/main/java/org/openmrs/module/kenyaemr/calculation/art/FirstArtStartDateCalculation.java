@@ -22,6 +22,7 @@ import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.kenyaemr.calculation.BaseKenyaEmrCalculation;
+import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
 
 
 /**
@@ -45,7 +46,7 @@ public class FirstArtStartDateCalculation extends BaseKenyaEmrCalculation {
 	                                     PatientCalculationContext context) {
 		Concept arvs = Context.getConceptService().getConceptByUuid(MetadataConstants.ANTIRETROVIRAL_DRUGS_CONCEPT_UUID);
 		CalculationResultMap ret = firstDrugOrderStartDate(arvs, cohort, context);
-		ensureNullResults(ret, cohort);
+		CalculationUtils.ensureNullResults(ret, cohort);
 		return ret;
 	}
 
