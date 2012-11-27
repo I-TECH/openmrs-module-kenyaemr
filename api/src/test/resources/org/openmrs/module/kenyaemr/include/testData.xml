@@ -1,63 +1,74 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <dataset>
-  <patient_identifier_type patient_identifier_type_id="1001" name="OpenMRS ID" description="Medical Record Number" validator="org.openmrs.module.idgen.validator.LuhnMod25IdentifierValidator" check_digit="0" required="1" creator="1" date_created="2004-08-12 00:00:00.0" retired="0" uuid="dfacd928-0370-4315-99d7-6ec1c9f7ae76"/>
-  <patient_identifier_type patient_identifier_type_id="1002" name="HIV Unique Patient Number" description="Unique Patient Number" check_digit="0" required="1" creator="1" date_created="2004-08-12 00:00:00.0" retired="0" uuid="05ee9cf4-7242-4a17-b4d4-00f707265c8a"/>
+	<patient_identifier_type patient_identifier_type_id="1001" name="OpenMRS ID" description="Medical Record Number" validator="org.openmrs.module.idgen.validator.LuhnMod25IdentifierValidator" check_digit="0" required="1" creator="1" date_created="2004-08-12 00:00:00.0" retired="0" uuid="dfacd928-0370-4315-99d7-6ec1c9f7ae76"/>
+	<patient_identifier_type patient_identifier_type_id="1002" name="HIV Unique Patient Number" description="Unique Patient Number" check_digit="0" required="1" creator="1" date_created="2004-08-12 00:00:00.0" retired="0" uuid="05ee9cf4-7242-4a17-b4d4-00f707265c8a"/>
 
-  <location_attribute_type location_attribute_type_id="1" name="Master Facility Code" description="Code for linking to the Ministry of Health's Master Facility List" datatype="org.openmrs.customdatatype.datatype.RegexValidatedTextDatatype" datatype_config="\d{5}" min_occurs="0" max_occurs="1" creator="1" date_created="2005-01-01 00:00:00.0" retired="0" uuid="8a845a89-6aa5-4111-81d3-0af31c45c002" />
-  <location_attribute location_attribute_id="1000" location_id="1" attribute_type_id="1" value_reference="1234" creator="1" date_created="2005-01-01 00:00:00.0" voided="0" uuid="482684c0-d02a-11e1-9bad-45c1fa9f2d05"/>
-  
-  <concept concept_id="5497" retired="false" datatype_id="1" class_id="1" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="5497AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-  
-  <concept concept_id="730" retired="false" datatype_id="1" class_id="1" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="730AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-  <concept_name concept_name_id="730" concept_id="730" name="CD4%" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="730-name"/>
-  <concept_numeric concept_id="5497" units="%" precise="false"/>
-  
-  <concept concept_id="5356" retired="false" datatype_id="2" class_id="7" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="5356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-  <concept_name concept_name_id="5356" concept_id="5356" name="CURRENT WHO STAGE" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="5356-name"/>
-  
-  <concept concept_id="1204" retired="false" datatype_id="4" class_id="5" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="1204AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-  <concept_name concept_name_id="1204" concept_id="1204" name="WHO STAGE 1 ADULT" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="1204-name"/>
-  
-  <concept concept_id="1205" retired="false" datatype_id="4" class_id="5" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="1205AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-  <concept_name concept_name_id="1205" concept_id="1205" name="WHO STAGE 2 ADULT" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="1205-name"/>
-  
-  <concept concept_id="1206" retired="false" datatype_id="4" class_id="5" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="1206AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-  <concept_name concept_name_id="1206" concept_id="1206" name="WHO STAGE 3 ADULT" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="1206-name"/>
-  
-  <concept concept_id="1207" retired="false" datatype_id="4" class_id="5" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="1207AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-  <concept_name concept_name_id="1207" concept_id="1207" name="WHO STAGE 4 ADULT" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="1207-name"/>
-   
-  <concept concept_id="1220" retired="false" datatype_id="4" class_id="5" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="1220AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-  <concept_name concept_name_id="1220" concept_id="1220" name="WHO STAGE 1 PEDS" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="1220-name"/>
-  
-  <concept concept_id="1221" retired="false" datatype_id="4" class_id="5" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="1221AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-  <concept_name concept_name_id="1221" concept_id="1221" name="WHO STAGE 2 PEDS" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="1221-name"/>
-  
-  <concept concept_id="1222" retired="false" datatype_id="4" class_id="5" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="1222AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-  <concept_name concept_name_id="1222" concept_id="1222" name="WHO STAGE 3 PEDS" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="1222-name"/>
-  
-  <concept concept_id="1223" retired="false" datatype_id="4" class_id="5" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="1223AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-  <concept_name concept_name_id="1223" concept_id="1223" name="WHO STAGE 4 PEDS" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="1223-name"/>
-  
-  <concept concept_id="1085" retired="false" datatype_id="4" class_id="9" is_set="true" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="1085AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-  <concept_name concept_name_id="1085" concept_id="1085" name="ANTIRETROVIRAL DRUGS" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="1085-name"/>
+	<location_attribute_type location_attribute_type_id="1" name="Master Facility Code" description="Code for linking to the Ministry of Health's Master Facility List" datatype="org.openmrs.customdatatype.datatype.RegexValidatedTextDatatype" datatype_config="\d{5}" min_occurs="0" max_occurs="1" creator="1" date_created="2005-01-01 00:00:00.0" retired="0" uuid="8a845a89-6aa5-4111-81d3-0af31c45c002" />
+	<location_attribute location_attribute_id="1000" location_id="1" attribute_type_id="1" value_reference="1234" creator="1" date_created="2005-01-01 00:00:00.0" voided="0" uuid="482684c0-d02a-11e1-9bad-45c1fa9f2d05"/>
 
-  <concept concept_id="5096" retired="false" datatype_id="6" class_id="7" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-  <concept_name concept_name_id="5096" concept_id="5096" name="RETURN VISIT DATE" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="5096-name"/>
-  
-  <concept concept_id="1695" retired="false" datatype_id="2" class_id="5" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="1695AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-  <concept_name concept_name_id="1695" concept_id="1695" name="DISCHARGE STATUS" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="1695-name"/>
-  
-  <concept concept_id="160631" retired="false" datatype_id="4" class_id="5" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="160631AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-  <concept_name concept_name_id="160631" concept_id="160631" name="HIV Program" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="160631-name"/>
-  <program program_id="1" concept_id="160631" outcomes_concept_id="1695" creator="1" date_created="2004-08-12 00:00:00.0" retired="0" name="HIV Program" description="Program for following or treating HIV-positive patients" uuid="dfdc6d40-2f2f-463d-ba90-cc97350441a8"/>
+	<concept concept_id="5497" retired="false" datatype_id="1" class_id="1" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="5497AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 
-  <!-- HIV identifier for patient #7 -->
-  <patient_identifier patient_identifier_id="101" patient_id="7" identifier="1321200001" identifier_type="1002" preferred="true" location_id="1" creator="1" date_created="2004-08-12 00:00:00.0" changed_by="1" date_changed="2006-06-09 14:57:33.0" voided="false" uuid="9fa0988f-86d1-41d7-b4c6-56fd088d0189" />
+	<concept concept_id="730" retired="false" datatype_id="1" class_id="1" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="730AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+	<concept_name concept_name_id="730" concept_id="730" name="CD4%" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="730-name"/>
+	<concept_numeric concept_id="5497" units="%" precise="false"/>
 
-  <!-- Scheduled return visit for patient #7 -->
-  <obs obs_id="5096" person_id="7" concept_id="5096" obs_datetime="2012-06-01 00:00:00.0" location_id="1" value_datetime="2012-07-04 00:00:00.0" creator="1" date_created="2012-06-01 14:11:13.0" voided="false" uuid="e9c5f692-d518-11e1-a606-e48901690d08"/>
-  
-  <!-- Actual visit for patient #7 on the same day -->
-  <visit visit_id="5096" patient_id="7" visit_type_id="1" date_started="2012-07-04 09:15:00.0" date_stopped="2012-07-04 13:05:00.0" location_id="1" creator="1" date_created="2012-07-05 00:00:00.0" voided="0" uuid="c48253b4-d51b-11e1-a606-e48901690d08" />
+	<concept concept_id="5356" retired="false" datatype_id="2" class_id="7" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="5356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+	<concept_name concept_name_id="5356" concept_id="5356" name="CURRENT WHO STAGE" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="5356-name"/>
+
+	<concept concept_id="1204" retired="false" datatype_id="4" class_id="5" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="1204AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+	<concept_name concept_name_id="1204" concept_id="1204" name="WHO STAGE 1 ADULT" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="1204-name"/>
+
+	<concept concept_id="1205" retired="false" datatype_id="4" class_id="5" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="1205AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+	<concept_name concept_name_id="1205" concept_id="1205" name="WHO STAGE 2 ADULT" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="1205-name"/>
+
+	<concept concept_id="1206" retired="false" datatype_id="4" class_id="5" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="1206AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+	<concept_name concept_name_id="1206" concept_id="1206" name="WHO STAGE 3 ADULT" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="1206-name"/>
+
+	<concept concept_id="1207" retired="false" datatype_id="4" class_id="5" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="1207AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+	<concept_name concept_name_id="1207" concept_id="1207" name="WHO STAGE 4 ADULT" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="1207-name"/>
+
+	<concept concept_id="1220" retired="false" datatype_id="4" class_id="5" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="1220AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+	<concept_name concept_name_id="1220" concept_id="1220" name="WHO STAGE 1 PEDS" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="1220-name"/>
+
+	<concept concept_id="1221" retired="false" datatype_id="4" class_id="5" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="1221AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+	<concept_name concept_name_id="1221" concept_id="1221" name="WHO STAGE 2 PEDS" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="1221-name"/>
+
+	<concept concept_id="1222" retired="false" datatype_id="4" class_id="5" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="1222AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+	<concept_name concept_name_id="1222" concept_id="1222" name="WHO STAGE 3 PEDS" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="1222-name"/>
+
+	<concept concept_id="1223" retired="false" datatype_id="4" class_id="5" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="1223AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+	<concept_name concept_name_id="1223" concept_id="1223" name="WHO STAGE 4 PEDS" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="1223-name"/>
+
+	<!-- ARV medset -->
+	<concept concept_id="1085" retired="false" datatype_id="4" class_id="9" is_set="true" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="1085AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+	<concept_name concept_name_id="1085" concept_id="1085" name="ANTIRETROVIRAL DRUGS" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="1085-name"/>
+
+	<!-- Triomune ARV -->
+	<concept concept_id="792" retired="false" datatype_id="4" class_id="3" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="792AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+	<concept_name concept_name_id="792" concept_id="792" name="STAVUDINE LAMIVUDINE AND NEVIRAPINE" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="792-name"/>
+	<concept_set concept_set_id="792" concept_id="792" concept_set="1085" sort_weight="1" creator="1" date_created="2004-08-12 00:00:00.0" uuid="792-set"/>
+
+	<!-- Aspirin -->
+	<concept concept_id="71617" retired="false" datatype_id="4" class_id="3" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="71617AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+	<concept_name concept_name_id="71617" concept_id="71617" name="ASPIRIN" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="71617-name"/>
+
+	<concept concept_id="5096" retired="false" datatype_id="6" class_id="7" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+	<concept_name concept_name_id="5096" concept_id="5096" name="RETURN VISIT DATE" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="5096-name"/>
+
+	<concept concept_id="1695" retired="false" datatype_id="2" class_id="5" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="1695AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+	<concept_name concept_name_id="1695" concept_id="1695" name="DISCHARGE STATUS" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="1695-name"/>
+
+	<!-- HIV program -->
+	<concept concept_id="160631" retired="false" datatype_id="4" class_id="5" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="160631AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+	<concept_name concept_name_id="160631" concept_id="160631" name="HIV Program" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="160631-name"/>
+	<program program_id="1" concept_id="160631" outcomes_concept_id="1695" creator="1" date_created="2004-08-12 00:00:00.0" retired="0" name="HIV Program" description="Program for following or treating HIV-positive patients" uuid="dfdc6d40-2f2f-463d-ba90-cc97350441a8"/>
+
+	<!-- HIV identifier for patient #7 -->
+	<patient_identifier patient_identifier_id="101" patient_id="7" identifier="1321200001" identifier_type="1002" preferred="true" location_id="1" creator="1" date_created="2004-08-12 00:00:00.0" changed_by="1" date_changed="2006-06-09 14:57:33.0" voided="false" uuid="9fa0988f-86d1-41d7-b4c6-56fd088d0189" />
+
+	<!-- Scheduled return visit for patient #7 -->
+	<obs obs_id="5096" person_id="7" concept_id="5096" obs_datetime="2012-06-01 00:00:00.0" location_id="1" value_datetime="2012-07-04 00:00:00.0" creator="1" date_created="2012-06-01 14:11:13.0" voided="false" uuid="e9c5f692-d518-11e1-a606-e48901690d08"/>
+
+	<!-- Actual visit for patient #7 on the same day -->
+	<visit visit_id="5096" patient_id="7" visit_type_id="1" date_started="2012-07-04 09:15:00.0" date_stopped="2012-07-04 13:05:00.0" location_id="1" creator="1" date_created="2012-07-05 00:00:00.0" voided="0" uuid="c48253b4-d51b-11e1-a606-e48901690d08" />
 </dataset>

@@ -15,7 +15,9 @@ package org.openmrs.module.kenyaemr.test;
 
 import org.junit.Assert;
 import org.junit.Ignore;
+import org.openmrs.*;
 import org.openmrs.Concept;
+import org.openmrs.DrugOrder;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
 import org.openmrs.Obs;
@@ -107,6 +109,25 @@ public class TestUtils {
 		Obs obs = new Obs(patient, concept, date, null);
 		obs.setValueDatetime(val);
 		return Context.getObsService().saveObs(obs, null);
+	}
+
+	/**
+	 * Saves a drug order
+	 * @param patient the patient
+	 * @param concept the drug concept
+	 * @param start the start date
+	 * @param end the end date
+	 * @return the drug order
+	 */
+	public static DrugOrder saveDrugOrder(Patient patient, Concept concept, Date start, Date end) {
+		DrugOrder order = new DrugOrder();
+		order.setOrderType(Context.getOrderService().getOrderType(2));
+		order.setPatient(patient);
+		order.setOrderer(Context.getUserService().getUser(1));
+		order.setConcept(concept);
+		order.setStartDate(start);
+		order.setDiscontinuedDate(end);
+		return (DrugOrder)Context.getOrderService().saveOrder(order);
 	}
 
 	/**

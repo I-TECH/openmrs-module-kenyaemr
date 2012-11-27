@@ -24,9 +24,8 @@ import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.kenyaemr.calculation.BaseKenyaEmrCalculation;
 import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
 
-
 /**
- *
+ * Calculates the date on which a patient first started ART. Returns null if patient never started ART
  */
 public class FirstArtStartDateCalculation extends BaseKenyaEmrCalculation {
 	
@@ -49,5 +48,4 @@ public class FirstArtStartDateCalculation extends BaseKenyaEmrCalculation {
 		CalculationUtils.ensureNullResults(ret, cohort);
 		return ret;
 	}
-
 }
