@@ -25,15 +25,18 @@ import org.springframework.stereotype.Component;
 @Component
 public class KenyaEmrConfigurator implements PageModelConfigurator, FragmentModelConfigurator {
 
+	private static final MetadataConstants METADATA_CONSTANTS = new MetadataConstants();
 	private static final KenyaEmrUiUtils KENYAEMR_UI_UTILS = new KenyaEmrUiUtils();
 
 	@Override
 	public void configureModel(PageContext pageContext) {
+		pageContext.getModel().addAttribute("MetadataConstants", METADATA_CONSTANTS);
 		pageContext.getModel().addAttribute("kenyaEmrUi", KENYAEMR_UI_UTILS);
 	}
 
 	@Override
 	public void configureModel(FragmentContext fragmentContext) {
+		fragmentContext.getModel().addAttribute("MetadataConstants", METADATA_CONSTANTS);
 		fragmentContext.getModel().addAttribute("kenyaEmrUi", KENYAEMR_UI_UTILS);
 	}
 }

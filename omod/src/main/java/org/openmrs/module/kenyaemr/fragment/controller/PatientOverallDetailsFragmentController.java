@@ -25,32 +25,28 @@ import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 
-
 /**
- *
+ * Controller for the patient overall details fragment
  */
 public class PatientOverallDetailsFragmentController {
-	
+
 	public void controller(@FragmentParam("patient") Patient patient,
-	                       @FragmentParam(required=false, value="visit") Visit visit,
-	                       @FragmentParam(required=false, value="activeVisits") List<Visit> activeVisits,
-	                       FragmentModel model) {
+						   @FragmentParam(required=false, value="visit") Visit visit,
+						   @FragmentParam(required=false, value="activeVisits") List<Visit> activeVisits,
+						   FragmentModel model) {
 
 		model.addAttribute("patient", patient);
 		model.addAttribute("person", patient);
-		
+
 		PatientService ps = Context.getPatientService();
 		model.addAttribute("clinicNumberIdType", ps.getPatientIdentifierTypeByUuid(MetadataConstants.PATIENT_CLINIC_NUMBER_UUID));
 		model.addAttribute("hivNumberIdType", ps.getPatientIdentifierTypeByUuid(MetadataConstants.UNIQUE_PATIENT_NUMBER_UUID));
-		
-		model.addAttribute("MetadataConstants", new MetadataConstants());
-		
-		ProgramWorkflowService pws = Context.getProgramWorkflowService(); 
+
+		ProgramWorkflowService pws = Context.getProgramWorkflowService();
 		Program hivProgram = pws.getProgramByUuid(MetadataConstants.HIV_PROGRAM_UUID);
 		model.addAttribute("hivProgram", hivProgram);
-		
+
 		Program tbProgram = pws.getProgramByUuid(MetadataConstants.TB_PROGRAM_UUID);
 		model.addAttribute("tbProgram", tbProgram);
 	}
-	
 }
