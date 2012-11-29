@@ -22,7 +22,7 @@ import org.openmrs.api.ConceptService;
 import org.openmrs.api.PatientSetService.TimeModifier;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.MetadataConstants;
-import org.openmrs.module.kenyaemr.calculation.art.FirstArtStartDateCalculation;
+import org.openmrs.module.kenyaemr.calculation.art.InitialArtStartDateCalculation;
 import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
@@ -206,7 +206,7 @@ public class Moh731Report implements ReportManager {
 			cohortDefinitions.put("anyEncounterBetween", cd);
 		}
 		{
-			FirstArtStartDateCalculation calc = new FirstArtStartDateCalculation();
+			InitialArtStartDateCalculation calc = new InitialArtStartDateCalculation();
 			KenyaEmrCalculationCohortDefinition cd = new KenyaEmrCalculationCohortDefinition(calc);
 			cd.setName("Started ART between dates");
 			cd.addParameter(new Parameter("resultOnOrBefore", "Before Date", Date.class));

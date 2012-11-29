@@ -246,14 +246,45 @@ public abstract class BaseKenyaEmrCalculation extends BaseCalculation implements
 	}
 
 	/**
-	 * Evaluates the first start date of drug orders for each patient
+	 * Evaluates the first drug orders for each patient
 	 * @param medSet the medset concept that specifies which drugs to include
 	 * @param patientIds the patient ids
 	 * @param calculationContext the calculation context
+	 * @return the drug orders in a calculation result map
+	 */
+	protected static CalculationResultMap firstDrugOrders(Concept medSet, Collection<Integer> patientIds, PatientCalculationContext calculationContext) {
+		// Get all drug orders
+		CalculationResultMap orders = allDrugOrders(medSet, patientIds, calculationContext);
+
+		// Calculate the earliest start date of any of the orders for each patient
+		CalculationResultMap earliestStartDates = earliestStartDates(orders, calculationContext);
+
+		// Return only the drug orders that start on the earliest date
+		CalculationResultMap ret = new CalculationResultMap();
+		for (Integer ptId : orders.keySet()) {
+			ListResult allOrders = (ListResult) orders.get(ptId);
+			ListResult earliestOrders = new ListResult();
+			Date earliestStartDate = (Date) earliestStartDates.get(ptId).getValue();
+
+			for (SimpleResult r : (List<SimpleResult>) allOrders.getValue()) {
+				DrugOrder order = (DrugOrder) r.getValue();
+				if (order.getStartDate().equals(earliestStartDate)) {
+					earliestOrders.add(new SimpleResult(order, null));
+				}
+			}
+
+			ret.put(ptId, earliestOrders);
+		}
+		return ret;
+	}
+
+	/**
+	 * Evaluates the earliest start date of a set of drug orders
+	 * @param orders the drug orders
+	 * @param context the calculation context
 	 * @return the start dates in a calculation result map
 	 */
-	protected static CalculationResultMap firstDrugOrderStartDate(Concept medSet, Collection<Integer> patientIds, PatientCalculationContext calculationContext) {
-		CalculationResultMap orders = allDrugOrders(medSet, patientIds, calculationContext);
+	protected static CalculationResultMap earliestStartDates(CalculationResultMap orders, PatientCalculationContext context) {
 		CalculationResultMap ret = new CalculationResultMap();
 		for (Map.Entry<Integer, CalculationResult> e : orders.entrySet()) {
 			Integer ptId = e.getKey();

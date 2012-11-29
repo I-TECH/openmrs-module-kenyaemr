@@ -13,12 +13,19 @@
  */
 package org.openmrs.module.kenyaemr;
 
+import org.openmrs.DrugOrder;
+import org.openmrs.calculation.result.ListResult;
+import org.openmrs.calculation.result.SimpleResult;
+import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
 import org.openmrs.module.kenyaemr.util.KenyaEmrUtils;
 import org.openmrs.ui.framework.FormatterImpl;
+import org.openmrs.util.OpenmrsUtil;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * UI utility methods for web pages
@@ -50,5 +57,29 @@ public class KenyaEmrUiUtils {
 	 */
 	public static String formatTime(Date date) {
 		return timeFormatter.format(date);
+	}
+
+	/**
+	 * Formats a regimen
+	 * @param regimen the regimen as a list result of drug orders
+	 * @return the string value
+	 */
+	public static String formatRegimen(ListResult regimen) {
+		return formatRegimen(CalculationUtils.<DrugOrder>extractListResultValues(regimen));
+	}
+
+	/**
+	 * Formats a regimen
+	 * @param regimen the regimen as a list of drug orders
+	 * @return the string value
+	 */
+	public static String formatRegimen(List<DrugOrder> regimen) {
+		List<String> components = new ArrayList<String>();
+		for (DrugOrder order : regimen) {
+			String component = order.getDrug() != null ? order.getDrug().getName() : order.getConcept().getName().getName();
+			components.add(component);
+		}
+
+		return OpenmrsUtil.join(components, " + ");
 	}
 }

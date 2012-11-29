@@ -13,10 +13,13 @@
  */
 package org.openmrs.module.kenyaemr.calculation;
 
-import org.openmrs.calculation.result.CalculationResult;
-import org.openmrs.calculation.result.CalculationResultMap;
-import org.openmrs.calculation.result.ListResult;
-import org.openmrs.calculation.result.ResultUtil;
+import org.openmrs.DrugOrder;
+import org.openmrs.api.context.Context;
+import org.openmrs.calculation.CalculationProvider;
+import org.openmrs.calculation.InvalidCalculationException;
+import org.openmrs.calculation.patient.PatientCalculationContext;
+import org.openmrs.calculation.patient.PatientCalculationService;
+import org.openmrs.calculation.result.*;
 import org.openmrs.util.OpenmrsUtil;
 
 import java.util.*;
@@ -106,5 +109,33 @@ public class CalculationUtils {
 				map.put(ptId, new ListResult());
 			}
 		}
+	}
+
+	/**
+	 * Extracts actual values from a list result
+	 * @param result the list result
+	 * @param <T> the type of each value
+	 * @return the list of values
+	 */
+	public static <T> List<T> extractListResultValues(ListResult result) {
+		List<T> values = new ArrayList<T>();
+		for (SimpleResult resultItem : (List<SimpleResult>) result.getValue()) {
+			values.add((T)resultItem.getValue());
+		}
+		return values;
+	}
+
+	/**
+	 * Evaluates the specified calculation for a single patient
+	 * @param provider the calculation provider
+	 * @param name the calculation name
+	 * @param configuration the calculation configuration
+	 * @param patientId the patient id
+	 * @return th calculation result
+	 * @throws InvalidCalculationException if no calculation with that name exists
+	 */
+	public static CalculationResult evaluateForPatient(CalculationProvider provider, String name, String configuration, Integer patientId) throws InvalidCalculationException {
+		BaseKenyaEmrCalculation calculation = (BaseKenyaEmrCalculation)provider.getCalculation(name, configuration);
+		return Context.getService(PatientCalculationService.class).evaluate(patientId, calculation);
 	}
 }

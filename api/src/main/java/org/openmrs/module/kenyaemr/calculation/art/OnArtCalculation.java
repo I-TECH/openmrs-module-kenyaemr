@@ -59,7 +59,8 @@ public class OnArtCalculation extends BaseKenyaEmrCalculation {
 		// Return only whether or not patient is on ARTs
 		CalculationResultMap ret = new CalculationResultMap();
 		for (Map.Entry<Integer, CalculationResult> e : patientArvs.entrySet()) {
-			ret.put(e.getKey(), new BooleanResult(!e.getValue().isEmpty(), this));
+			boolean onART = e.getValue() != null && !e.getValue().isEmpty();
+			ret.put(e.getKey(), new BooleanResult(onART, this));
 		}
 		return ret;
 	}

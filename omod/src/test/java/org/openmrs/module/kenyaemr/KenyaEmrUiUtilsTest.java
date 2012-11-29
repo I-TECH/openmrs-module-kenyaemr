@@ -14,12 +14,21 @@
 package org.openmrs.module.kenyaemr;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.DrugOrder;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.KenyaEmrUiUtils;
+import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 
 import java.util.*;
 
-public class KenyaEmrUiUtilsTest {
+public class KenyaEmrUiUtilsTest extends BaseModuleWebContextSensitiveTest {
+
+	@Before
+	public void setUp() throws Exception {
+		executeDataSet("org/openmrs/module/kenyaemr/include/testData.xml");
+	}
 
 	/**
 	 * @see org.openmrs.module.kenyaemr.KenyaEmrUiUtils#formatDateNoTime(java.util.Date)
@@ -45,5 +54,29 @@ public class KenyaEmrUiUtilsTest {
 	@Test
 	public void formatDateNoTime_shouldFormatNullDateAsEmptyString() throws Exception {
 		Assert.assertEquals("", KenyaEmrUiUtils.formatDateNoTime(null));
+	}
+
+	/**
+	 * @see org.openmrs.module.kenyaemr.KenyaEmrUiUtils#formatRegimen(java.util.List)
+	 * @verifies format empty list as empty string
+	 */
+	@Test
+	public void formatRegimen_shouldFormatEmptyListAsEmptyString() throws Exception {
+		Assert.assertEquals("", KenyaEmrUiUtils.formatRegimen(new ArrayList<DrugOrder>()));
+	}
+
+	/**
+	 * @see org.openmrs.module.kenyaemr.KenyaEmrUiUtils#formatRegimen(java.util.List)
+	 * @verifies format regimen
+	 */
+	@Test
+	public void formatRegimen_shouldFormatDrugOrdersAsRegimen() throws Exception {
+		DrugOrder aspirin = new DrugOrder();
+		aspirin.setConcept(Context.getConceptService().getConcept(71617));
+		DrugOrder triomune = new DrugOrder();
+		triomune.setConcept(Context.getConceptService().getConcept(792));
+		List<DrugOrder> regimen = Arrays.asList(aspirin, triomune);
+
+		Assert.assertEquals("ASPIRIN + STAVUDINE LAMIVUDINE AND NEVIRAPINE", KenyaEmrUiUtils.formatRegimen(regimen));
 	}
 }

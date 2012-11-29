@@ -106,17 +106,9 @@
 
 	<% } else if (program) { %>
 
-		<div class="panel-frame">
-			<div class="panel-heading">${ ui.format(program.program) }</div>
-			<div class="panel-content">
-				Enrolled: <b>${ ui.format(program.dateEnrolled) }</b><br />
-				Completed: <b>${ ui.format(program.dateCompleted) }</b><br />
-				Outcome: <b>${ ui.format(program.outcome) }</b>
-			</div>
-		</div>
+		${ ui.includeFragment("kenyaemr", "medicalChartPatientProgram", [ patientProgram: program ]) }
 
-	<%
-	} else {
+	<% } else {
 		def cs = context.conceptService
 		def conceptList = [ cs.getConcept(5089), cs.getConcept(5497) ] // Weight and CD4
 	%>

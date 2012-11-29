@@ -17,6 +17,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.ListResult;
+import org.openmrs.calculation.result.SimpleResult;
 
 import java.util.Arrays;
 import java.util.List;
@@ -62,5 +63,25 @@ public class CalculationUtilsTest {
 		Assert.assertTrue(map.get(6) instanceof ListResult);
 		Assert.assertTrue(map.get(7) instanceof ListResult);
 		Assert.assertTrue(map.get(999) instanceof ListResult);
+	}
+
+	/**
+	 * @see CalculationUtils#extractListResultValues(org.openmrs.calculation.result.ListResult)
+	 */
+	@Test
+	public void extractListResultValues_shouldExtractListResultValues() {
+		// Test with empty list
+		ListResult emptyList = new ListResult();
+		List<Object> emptyValues = CalculationUtils.extractListResultValues(emptyList);
+		Assert.assertEquals(0, emptyValues.size());
+
+		// Test with non-empty list
+		ListResult result = new ListResult();
+		result.add(new SimpleResult(100, null));
+		result.add(new SimpleResult(200, null));
+		List<Integer> numericValues = CalculationUtils.extractListResultValues(result);
+		Assert.assertEquals(2, numericValues.size());
+		Assert.assertEquals(new Integer(100), numericValues.get(0));
+		Assert.assertEquals(new Integer(200), numericValues.get(1));
 	}
 }

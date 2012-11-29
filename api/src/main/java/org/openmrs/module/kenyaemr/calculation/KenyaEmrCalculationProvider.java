@@ -47,7 +47,8 @@ public class KenyaEmrCalculationProvider implements CalculationProvider {
 		// ART
 		map.put("currentArtRegimen", CurrentArtRegimenCalculation.class);
 		map.put("eligibleForArt", EligibleForArtCalculation.class);
-		map.put("firstArtStartDate", FirstArtStartDateCalculation.class);
+		map.put("initialArtRegimen", InitialArtRegimenCalculation.class);
+		map.put("initialArtStartDate", InitialArtStartDateCalculation.class);
 		map.put("onArt", OnArtCalculation.class);
 		map.put("onSecondLine", OnSecondLineCalculation.class);
 	}
@@ -93,7 +94,7 @@ public class KenyaEmrCalculationProvider implements CalculationProvider {
 		try {
 			BaseKenyaEmrCalculation calc = clazz.newInstance();
 
-			if (clazz.isAssignableFrom(ConfigurableCalculation.class)) {
+			if (configuration != null && clazz.isAssignableFrom(ConfigurableCalculation.class)) {
 				((ConfigurableCalculation) calc).setConfiguration(configuration);
 			}
 

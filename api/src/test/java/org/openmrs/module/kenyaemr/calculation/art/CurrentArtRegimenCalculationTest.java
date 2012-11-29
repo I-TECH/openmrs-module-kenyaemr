@@ -58,8 +58,8 @@ public class CurrentArtRegimenCalculationTest extends BaseModuleContextSensitive
 		List<Integer> cohort = Arrays.asList(6, 7, 8);
 
 		CalculationResultMap resultMap = new CurrentArtRegimenCalculation().evaluate(cohort, null, Context.getService(PatientCalculationService.class).createCalculationContext());
-		Assert.assertTrue(((ListResult) resultMap.get(6)).isEmpty()); // isn't on any drugs
-		Assert.assertTrue(((ListResult) resultMap.get(7)).isEmpty()); // isn't on any ARTs
+		Assert.assertNull(resultMap.get(6)); // isn't on any drugs
+		Assert.assertNull(resultMap.get(7)); // isn't on any ARTs
 
 		ListResult pat8Res = (ListResult)resultMap.get(8);
 		Assert.assertEquals(1, pat8Res.size());
