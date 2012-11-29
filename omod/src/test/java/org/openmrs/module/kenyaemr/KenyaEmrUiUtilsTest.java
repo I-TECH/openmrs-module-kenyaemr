@@ -37,4 +37,13 @@ public class KenyaEmrUiUtilsTest {
 
 		Assert.assertEquals("28-May-1981", KenyaEmrUiUtils.formatDateNoTime(cal.getTime()));
 	}
+
+	/**
+	 * @see org.openmrs.module.kenyaemr.KenyaEmrUiUtils#formatDateNoTime(java.util.Date)
+	 * @verifies format null date as empty string
+	 */
+	@Test
+	public void formatDateNoTime_shouldFormatNullDateAsEmptyString() throws Exception {
+		Assert.assertEquals("", KenyaEmrUiUtils.formatDateNoTime(null));
+	}
 }

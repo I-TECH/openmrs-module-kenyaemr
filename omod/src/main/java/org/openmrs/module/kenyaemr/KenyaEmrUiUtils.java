@@ -32,8 +32,12 @@ public class KenyaEmrUiUtils {
 	 * @param date the date
 	 * @return the string value
 	 * @should format date as a string without time information
+	 * @should format null date as empty string
 	 */
 	public static String formatDateNoTime(Date date) {
+		if (date == null)
+			return "";
+
 		Date dateOnly = KenyaEmrUtils.dateOnly(date);
 		return new FormatterImpl().format(dateOnly);
 	}
