@@ -17,6 +17,19 @@ import org.openmrs.module.kenyaemr.MetadataConstants;
 
 public class WithoutCTXOrDapsoneCalculation extends BaseKenyaEmrCalculation {
 
+	@Override
+	public String getShortMessage() {
+		return "Patients Without CTX or Dapsone";
+	}
+
+	@Override
+	public String[] getTags() {
+		return new String[] { "hiv" };
+	}
+
+	/**
+	 * TODO: Fix this - should be looking at drug orders
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort,Map<String, Object>  parameterValues, PatientCalculationContext context) {
@@ -25,13 +38,13 @@ public class WithoutCTXOrDapsoneCalculation extends BaseKenyaEmrCalculation {
 		Set<Integer> alive = alivePatients(cohort, context);
 		CalculationResultMap medicationorder = allObs(MetadataConstants.MEDICATION_ORDERS_CONCEPT_UUID, cohort, context);
 		CalculationResultMap ret = new CalculationResultMap();
-		
+
 		//for (Integer ptId : cohort) {
-			Object value=null;
-			Integer ptId=null;
-			Obs obs=null;
-			Integer dapsone=Context.getConceptService().getConceptByUuid(MetadataConstants.DAPSONE_CONCEPT_UUID).getConceptId();
-			Integer ctx=Context.getConceptService().getConceptByUuid(MetadataConstants.SULFAMETHOXAZOLE_TRIMETHOPRIM_CONCEPT_UUID).getConceptId();
+			Object value = null;
+			Integer ptId = null;
+			Obs obs = null;
+			Integer dapsone = Context.getConceptService().getConceptByUuid(MetadataConstants.DAPSONE_CONCEPT_UUID).getConceptId();
+			Integer ctx = Context.getConceptService().getConceptByUuid(MetadataConstants.SULFAMETHOXAZOLE_TRIMETHOPRIM_CONCEPT_UUID).getConceptId();
 			
 			//to cater for those without any medication orders
 			for (Integer ptIds : cohort) {
@@ -45,44 +58,38 @@ public class WithoutCTXOrDapsoneCalculation extends BaseKenyaEmrCalculation {
 					catch(Exception e){
 						e.toString();
 					}
-					
-					
-					
+
+
+
 				}
-				
+
 			}
 			
 				// to cater for those with medication orders but non of them is dapsone or ctx
 				for(Map.Entry<Integer, CalculationResult> e : medicationorder.entrySet()){
-					
+
 					if(inHivProgram.contains(e.getKey()) && alive.contains(e.getKey())){
 						ptId = e.getKey();
 			    		ListResult result = (ListResult) e.getValue();
 			    		for (SimpleResult r : (List<SimpleResult>) result.getValue()) {
-			    			
+
 			    			value=((Obs)r.getValue()).getValueCoded();
 			    			if((value.toString().equals(dapsone.toString()))||(value.toString().equals(ctx.toString()))){
 			    				break;
 			    			}
 			    			else{
-			    				
+
 			    				ret.put(ptId, new SimpleResult(ptId, null));
 			    			}
 			    		}
-				     	
-						
-						
+
+
+
 					}
-					
-					
+
+
 				}
 		
 		return ret;
 	}
-
-	@Override
-	public String getShortMessage() {
-		return "Patients Without CTX or Dapsone";
-	}
-
 }

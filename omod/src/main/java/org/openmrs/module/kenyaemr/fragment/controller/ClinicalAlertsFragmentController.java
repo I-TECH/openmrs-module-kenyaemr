@@ -27,26 +27,36 @@ import org.openmrs.ui.framework.annotation.SpringBean;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
- *
+ * Controller for requests for clinical alerts
  */
 public class ClinicalAlertsFragmentController {
 	
 	public void controller() {
-		// do nothing, this will load via ajax
+		// Do nothing, this will load via ajax
 	}
-	
+
+	/**
+	 * Gets the clinical alerts for the given patient
+	 * @param ptId the patient id
+	 * @param ui the UI utils
+	 * @param calcs the calculation provider
+	 * @return the alerts as simple objects
+	 */
 	public List<SimpleObject> getAlerts(@RequestParam("patientId") Integer ptId,
 	                                    UiUtils ui,
 	                                    @SpringBean("org.openmrs.module.kenyaemr.calculation.KenyaEmrCalculationProvider") KenyaEmrCalculationProvider calcs) {
+
 		List<BaseKenyaEmrCalculation> alerts = new ArrayList<BaseKenyaEmrCalculation>();
-		for (BaseKenyaEmrCalculation calc : calcs.getAllCalculations()) {
+
+		// Gather all alert calculations that evaluate to true
+		for (BaseKenyaEmrCalculation calc : calcs.getCalculations("alert")) {
 			CalculationResult result = Context.getService(PatientCalculationService.class).evaluate(ptId, calc);
 			if ((Boolean) result.getValue()) {
 				alerts.add(calc);
 			}
 		}
+
+		// Return as simple objects to be formatted as JSON
 		return SimpleObject.fromCollection(alerts, ui, "shortMessage", "detailedMessage");
-		
 	}
-	
 }

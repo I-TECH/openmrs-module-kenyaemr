@@ -13,48 +13,71 @@
  */
 package org.openmrs.module.kenyaemr.calculation;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.calculation.Calculation;
 import org.openmrs.calculation.CalculationProvider;
+import org.openmrs.calculation.ConfigurableCalculation;
 import org.openmrs.calculation.InvalidCalculationException;
-import org.openmrs.module.kenyaemr.calculation.art.EligibleForArtCalculation;
+import org.openmrs.module.kenyaemr.calculation.art.*;
 import org.springframework.stereotype.Component;
 
-
 /**
- *
+ * Provides new instances of calculations in this module
  */
 @Component("org.openmrs.module.kenyaemr.calculation.KenyaEmrCalculationProvider")
 public class KenyaEmrCalculationProvider implements CalculationProvider {
 	
 	private final Log log = LogFactory.getLog(getClass());
 	
-	Map<String, Class<? extends BaseKenyaEmrCalculation>> map = new HashMap<String, Class<? extends BaseKenyaEmrCalculation>>();
+	private Map<String, Class<? extends BaseKenyaEmrCalculation>> map = new HashMap<String, Class<? extends BaseKenyaEmrCalculation>>();
 	
 	public KenyaEmrCalculationProvider() {
-		map.put("needsCd4", NeedsCD4Calculation.class);
-		map.put("eligibleForArt", EligibleForArtCalculation.class);
+
+		// General
 		map.put("decliningCd4", DecliningCD4Calculation.class);
-        map.put("missedAppointmentsOrDefaulted", MissedAppointmentsOrDefaultedCalculation.class);
+		map.put("inTBProgram", InTBProgramCalculation.class);
 		map.put("lostToFollowUp", LostToFollowUpCalculation.class);
-		// TODO add others (onArt, scheduledVisitOnDay), but make sure they don't run on the patient page by default.
+        map.put("missedAppointmentsOrDefaulted", MissedAppointmentsOrDefaultedCalculation.class);
+		map.put("needsCd4", NeedsCD4Calculation.class);
+		map.put("neverScreenedForTB", NeverScreenedForTBCalculation.class);
+
+		// ART
+		map.put("currentArtRegimen", CurrentArtRegimenCalculation.class);
+		map.put("eligibleForArt", EligibleForArtCalculation.class);
+		map.put("firstArtStartDate", FirstArtStartDateCalculation.class);
+		map.put("onArt", OnArtCalculation.class);
+		map.put("onSecondLine", OnSecondLineCalculation.class);
 	}
-	
+
+	/**
+	 * Gets new instances of all calculations in this module
+	 * @return list of calculation instances
+	 */
 	public List<BaseKenyaEmrCalculation> getAllCalculations() {
+		return getCalculations(null);
+	}
+
+	/**
+	 * Gets new instances of all calculations in this module with the given tag
+	 * @return list of calculation instances
+	 */
+	public List<BaseKenyaEmrCalculation> getCalculations(String tag) {
 		List<BaseKenyaEmrCalculation> ret = new ArrayList<BaseKenyaEmrCalculation>();
 		for (String calcName : map.keySet()) {
 			try {
-	            ret.add((BaseKenyaEmrCalculation) getCalculation(calcName, null));
-            }
-            catch (InvalidCalculationException ex) {
-	            log.warn("Invalid calculation defined", ex);
-            }
+				BaseKenyaEmrCalculation calc = (BaseKenyaEmrCalculation) getCalculation(calcName, null);
+
+				// Check against the calculations tags if a tag was specified
+				if (tag == null || (calc.getTags().length > 0 && Arrays.asList(calc.getTags()).contains(tag))) {
+					ret.add(calc);
+				}
+			}
+			catch (InvalidCalculationException ex) {
+				log.warn("Invalid calculation defined", ex);
+			}
 		}
 		return ret;
 	}
@@ -68,11 +91,16 @@ public class KenyaEmrCalculationProvider implements CalculationProvider {
 		if (clazz == null)
 			throw new InvalidCalculationException("Not Found: " + clazz + " (valid values are: " + map.keySet() + ")");
 		try {
-	        return clazz.newInstance();
+			BaseKenyaEmrCalculation calc = clazz.newInstance();
+
+			if (clazz.isAssignableFrom(ConfigurableCalculation.class)) {
+				((ConfigurableCalculation) calc).setConfiguration(configuration);
+			}
+
+			return calc;
         }
         catch (Exception ex) {
 	        throw new InvalidCalculationException("Failed to instantiate " + clazz, ex);
         }
 	}
-	
 }

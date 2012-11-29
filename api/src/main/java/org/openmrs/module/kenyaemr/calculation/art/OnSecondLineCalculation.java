@@ -30,7 +30,20 @@ import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
 import org.openmrs.module.kenyaemr.regimen.RegimenChange;
 import org.openmrs.module.kenyaemr.regimen.RegimenHistory;
 
-public class PatientsOnSecondLineCalculation extends BaseKenyaEmrCalculation {
+/**
+ * Calculates whether patients are on second-line regimens
+ */
+public class OnSecondLineCalculation extends BaseKenyaEmrCalculation {
+
+	@Override
+	public String getShortMessage() {
+		return "Patients on Second Line";
+	}
+
+	@Override
+	public String[] getTags() {
+		return new String[] { "hiv" };
+	}
 
     @Override
     public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> arg1, PatientCalculationContext ctx) {
@@ -57,10 +70,4 @@ public class PatientsOnSecondLineCalculation extends BaseKenyaEmrCalculation {
         }
         return ret;
     }
-
-    @Override
-    public String getShortMessage() {
-        return "Patients on Second Line";
-    }
-
 }

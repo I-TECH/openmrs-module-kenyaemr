@@ -25,30 +25,40 @@ import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyaemr.MetadataConstants;
 
-public class TBPatientsCalculation extends BaseKenyaEmrCalculation {
+/**
+ * Calculates whether patients are in the TB program
+ */
+public class InTBProgramCalculation extends BaseKenyaEmrCalculation {
 
     @Override
     public String getShortMessage() {
         return "TB Patients";
     }
 
+	@Override
+	public String[] getTags() {
+		return new String[] { "tb" };
+	}
+
     @Override
-    public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> arg1, PatientCalculationContext ctx) {
-        Program tbProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.TB_PROGRAM_UUID);
-        Set<Integer> inTbProgram = CalculationUtils.patientsThatPass(lastProgramEnrollment(tbProgram, cohort, ctx));
-        Set<Integer> alive = alivePatients(cohort, ctx);
+    public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> arg1, PatientCalculationContext context) {
+
+		Program hivProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.TB_PROGRAM_UUID);
+
+		Set<Integer> alive = alivePatients(cohort, context);
+		Set<Integer> inTbProgram = CalculationUtils.patientsThatPass(lastProgramEnrollment(hivProgram, alive, context));
 
         CalculationResultMap ret = new CalculationResultMap();
         for (Integer ptId : cohort) {
             boolean inProgram = false;
-            if (inTbProgram.contains(ptId) && alive.contains(ptId)) {
+
+			// Is patient alive and in the TB program
+            if (inTbProgram.contains(ptId)) {
                 inProgram = true;
             }
-            ret.put(ptId, new SimpleResult(inProgram, this, ctx));
+            ret.put(ptId, new SimpleResult(inProgram, this, context));
         }
 
         return ret;
     }
-
-
 }

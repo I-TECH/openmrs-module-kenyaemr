@@ -38,6 +38,11 @@ public class NeedsCD4Calculation extends BaseKenyaEmrCalculation {
 	public String getShortMessage() {
 	    return "Due for CD4";
 	}
+
+	@Override
+	public String[] getTags() {
+		return new String[] { "alert", "hiv" };
+	}
 	
 	/**
 	 * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(java.util.Collection,

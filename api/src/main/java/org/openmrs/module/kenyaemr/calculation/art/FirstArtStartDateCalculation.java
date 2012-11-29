@@ -36,6 +36,11 @@ public class FirstArtStartDateCalculation extends BaseKenyaEmrCalculation {
 	public String getShortMessage() {
 		return "First ART Start Date";
 	}
+
+	@Override
+	public String[] getTags() {
+		return new String[] { "hiv" };
+	}
 	
 	/**
 	 * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)

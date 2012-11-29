@@ -13,14 +13,14 @@
  */
 package org.openmrs.module.kenyaemr.report;
 
-import org.openmrs.module.kenyaemr.calculation.HIVPatientsWhoHaveNeverScreenedForTBCalculation;
+import org.openmrs.module.kenyaemr.calculation.NeverScreenedForTBCalculation;
 import org.springframework.stereotype.Component;
 
 @Component
 public class HIVPatientsWhoHaveNeverScreenedForTBCalculationReport extends PatientAlertListReportManager {
 
     public HIVPatientsWhoHaveNeverScreenedForTBCalculationReport() {
-        setAlertCalculation(new HIVPatientsWhoHaveNeverScreenedForTBCalculation());
+        setAlertCalculation(new NeverScreenedForTBCalculation());
     }
 
 }

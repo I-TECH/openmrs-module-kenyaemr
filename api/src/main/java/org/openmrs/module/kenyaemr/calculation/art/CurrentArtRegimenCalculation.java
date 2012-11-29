@@ -38,6 +38,11 @@ public class CurrentArtRegimenCalculation extends BaseKenyaEmrCalculation {
 	public String getShortMessage() {
 		return "Current ART Regimen";
 	}
+
+	@Override
+	public String[] getTags() {
+		return new String[] { "hiv" };
+	}
 	
 	/**
 	 * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(java.util.Collection,

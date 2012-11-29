@@ -89,6 +89,12 @@ public abstract class BaseKenyaEmrCalculation extends BaseCalculation implements
 	}
 
 	/**
+	 * Gets an array of string tags associated with this calculation
+	 * @return the tags
+	 */
+	public abstract String[] getTags();
+
+	/**
 	 * Evaluates ages of each patient
 	 * @param patientIds the patient ids
 	 * @param calculationContext the calculation context

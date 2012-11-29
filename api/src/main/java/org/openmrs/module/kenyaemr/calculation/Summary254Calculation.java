@@ -27,6 +27,11 @@ import org.openmrs.module.kenyaemr.MetadataConstants;
 public class Summary254Calculation extends BaseKenyaEmrCalculation {
 
 	@Override
+	public String[] getTags() {
+		return new String[] { };
+	}
+
+	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort,Map<String, Object> parameterValues, PatientCalculationContext cxt) {
 		
 		Program hivProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.HIV_PROGRAM_UUID);

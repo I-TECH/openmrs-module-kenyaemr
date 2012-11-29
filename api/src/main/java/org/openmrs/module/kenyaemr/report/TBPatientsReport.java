@@ -14,14 +14,14 @@
 
 package org.openmrs.module.kenyaemr.report;
 
-import org.openmrs.module.kenyaemr.calculation.TBPatientsCalculation;
+import org.openmrs.module.kenyaemr.calculation.InTBProgramCalculation;
 import org.springframework.stereotype.Component;
 
 @Component
 public class TBPatientsReport extends PatientAlertListReportManager {
 
     public TBPatientsReport() {
-        setAlertCalculation(new TBPatientsCalculation());
+        setAlertCalculation(new InTBProgramCalculation());
     }
 
 	/*@Override

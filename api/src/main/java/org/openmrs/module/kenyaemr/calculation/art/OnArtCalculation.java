@@ -39,6 +39,11 @@ public class OnArtCalculation extends BaseKenyaEmrCalculation {
 	public String getShortMessage() {
 		return "On ART";
 	}
+
+	@Override
+	public String[] getTags() {
+		return new String[] { "hiv" };
+	}
 	
 	/**
 	 * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(java.util.Collection,

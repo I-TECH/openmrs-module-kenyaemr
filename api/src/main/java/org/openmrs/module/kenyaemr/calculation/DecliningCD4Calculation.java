@@ -36,6 +36,11 @@ public class DecliningCD4Calculation extends BaseKenyaEmrCalculation {
 	}
 
 	@Override
+	public String[] getTags() {
+		return new String[] { "alert", "hiv" };
+	}
+
+	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
 
 		Program hivProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.HIV_PROGRAM_UUID);

@@ -27,12 +27,17 @@ import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyaemr.MetadataConstants;
 
-public class HIVPatientsWhoHaveNeverScreenedForTBCalculation extends BaseKenyaEmrCalculation {
+public class NeverScreenedForTBCalculation extends BaseKenyaEmrCalculation {
 
     @Override
     public String getShortMessage() {
         return "Never Screened for TB";
     }
+
+	@Override
+	public String[] getTags() {
+		return new String[] { "hiv", "tb" };
+	}
 
     @Override
     public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> arg1, PatientCalculationContext context) {

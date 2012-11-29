@@ -39,8 +39,12 @@ public class VisitsOnDayCalculation extends BaseKenyaEmrCalculation {
 	 */
 	@Override
 	public String getShortMessage() {
-		// TODO this method is meaningless since this isn't an alert
 		return "Visit";
+	}
+
+	@Override
+	public String[] getTags() {
+		return new String[] { };
 	}
 
 	/**

@@ -39,6 +39,11 @@ public class MissedAppointmentsOrDefaultedCalculation extends BaseKenyaEmrCalcul
         return "Missed Appointments";
     }
 
+	@Override
+	public String[] getTags() {
+		return new String[] { "alert", "hiv" };
+	}
+
     /**
      * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
      * @should calculate false for deceased patients
