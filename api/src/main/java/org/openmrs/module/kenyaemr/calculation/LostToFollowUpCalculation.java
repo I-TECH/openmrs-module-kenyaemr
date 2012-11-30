@@ -65,7 +65,7 @@ public class LostToFollowUpCalculation extends BaseKenyaEmrCalculation {
 			if (inHivProgram.contains(ptId)) {
 
 				// Patient is lost if no encounters in last X days
-				Encounter lastEncounter = encounterResultForPatient(lastEncounters, ptId);
+				Encounter lastEncounter = CalculationUtils.encounterResultForPatient(lastEncounters, ptId);
 				Date lastEncounterDate = lastEncounter != null ? lastEncounter.getEncounterDatetime() : null;
 				lost = lastEncounterDate == null || daysSince(lastEncounterDate, context) > KenyaEmrConstants.LOST_TO_FOLLOW_UP_THRESHOLD_DAYS;
 			}

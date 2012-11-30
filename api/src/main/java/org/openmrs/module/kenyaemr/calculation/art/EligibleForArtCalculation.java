@@ -73,9 +73,9 @@ public class EligibleForArtCalculation extends BaseKenyaEmrCalculation {
 			boolean eligible = false;
 			if (inHivProgram.contains(ptId) && !onArt.contains(ptId)) {
 				int ageInMonths = ((Age) ages.get(ptId).getValue()).getFullMonths();
-				Double cd4 = numericObsResultForPatient(lastCd4, ptId);
-				Double cd4Percent = numericObsResultForPatient(lastCd4Percent, ptId);
-				Integer whoStage = whoStage(codedObsResultForPatient(lastWhoStage, ptId));
+				Double cd4 = CalculationUtils.numericObsResultForPatient(lastCd4, ptId);
+				Double cd4Percent = CalculationUtils.numericObsResultForPatient(lastCd4Percent, ptId);
+				Integer whoStage = whoStage(CalculationUtils.codedObsResultForPatient(lastWhoStage, ptId));
 				eligible = isEligible(ageInMonths, cd4, cd4Percent, whoStage);
 			}
 			ret.put(ptId, new BooleanResult(eligible, this));

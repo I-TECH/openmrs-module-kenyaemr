@@ -329,82 +329,6 @@ public abstract class BaseKenyaEmrCalculation extends BaseCalculation implements
 	}
 
 	/**
-	 * Convenience method to fetch a patient result as an obs
-	 * @param results the calculation result map
-	 * @param patientId the patient id
-	 * @return the obs result
-	 */
-	protected static Obs obsResultForPatient(CalculationResultMap results, Integer patientId) {
-		CalculationResult result = results.get(patientId);
-		if (result != null && !result.isEmpty()) {
-			Obs val = (Obs) result.getValue();
-			return val;
-		}
-		return null;
-	}
-
-	/**
-	 * Convenience method to fetch a patient result as a numeric obs value
-	 * @param results the calculation result map
-	 * @param patientId the patient id
-	 * @return the numeric obs value
-	 */
-	protected static Double numericObsResultForPatient(CalculationResultMap results, Integer patientId) {
-		Obs o = obsResultForPatient(results, patientId);
-		return o == null ? null : o.getValueNumeric();
-	}
-
-	/**
-	 * Convenience method to fetch a patient result as a coded obs value
-	 * @param results the calculation result map
-	 * @param patientId the patient id
-	 * @return the coded obs value
-	 */
-	protected static Concept codedObsResultForPatient(CalculationResultMap results, Integer patientId) {
-		Obs o = obsResultForPatient(results, patientId);
-		return o == null ? null : o.getValueCoded();
-	}
-
-	/**
-	 * Convenience method to fetch a patient result as a datetime obs value
-	 * @param results the calculation result map
-	 * @param patientId the patient id
-	 * @return the datetime obs value
-	 */
-	protected static Date datetimeObsResultForPatient(CalculationResultMap results, Integer patientId) {
-		Obs o = obsResultForPatient(results, patientId);
-		return o == null ? null : o.getValueDatetime();
-	}
-
-	/**
-	 * Convenience method to fetch a patient result as an encounter
-	 * @param results the calculation result map
-	 * @param patientId the patient id
-	 * @return the encounter result
-	 */
-	protected static Encounter encounterResultForPatient(CalculationResultMap results, Integer patientId) {
-		CalculationResult result = results.get(patientId);
-		if (result != null && !result.isEmpty()) {
-			return (Encounter) result.getValue();
-		}
-		return null;
-	}
-
-	/**
-	 * Convenience method to fetch a patient result as a date
-	 * @param results the calculation result map
-	 * @param patientId the patient id
-	 * @return the date result
-	 */
-	protected static Date datetimeResultForPatient(CalculationResultMap results, Integer patientId) {
-		CalculationResult result = results.get(patientId);
-		if (result != null && !result.isEmpty()) {
-			return (Date) result.getValue();
-		}
-		return null;
-	}
-
-	/**
 	 * Convenience method to fetch a a concept by UUID
 	 * @param uuid the concept UUID
 	 * @return the concept
@@ -514,6 +438,5 @@ public abstract class BaseKenyaEmrCalculation extends BaseCalculation implements
 		DateTime d1 = new DateTime(date.getTime());
 		DateTime d2 = new DateTime(calculationContext.getNow().getTime());
 		return Days.daysBetween(d1, d2).getDays();
-
 	}
 }

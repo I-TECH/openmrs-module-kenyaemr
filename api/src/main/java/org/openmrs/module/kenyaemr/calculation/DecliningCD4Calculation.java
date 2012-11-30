@@ -60,8 +60,8 @@ public class DecliningCD4Calculation extends BaseKenyaEmrCalculation {
 
 			// Is patient alive and in HIV program?
 			if (inHivProgram.contains(ptId)) {
-				lastCD4Count = numericObsResultForPatient(lastCD4Obss, ptId);
-				oldCD4Count = numericObsResultForPatient(oldCD4Obss, ptId);
+				lastCD4Count = CalculationUtils.numericObsResultForPatient(lastCD4Obss, ptId);
+				oldCD4Count = CalculationUtils.numericObsResultForPatient(oldCD4Obss, ptId);
 
 				if (lastCD4Count != null && oldCD4Count != null) {
 					declining = lastCD4Count < oldCD4Count;

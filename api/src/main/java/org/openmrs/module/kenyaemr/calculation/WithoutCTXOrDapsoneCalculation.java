@@ -50,7 +50,7 @@ public class WithoutCTXOrDapsoneCalculation extends BaseKenyaEmrCalculation {
 			for (Integer ptIds : cohort) {
 				if(inHivProgram.contains(ptIds) && alive.contains(ptIds)){
 					try{
-						obs=obsResultForPatient(medicationorder,ptIds);
+						obs=CalculationUtils.obsResultForPatient(medicationorder,ptIds);
 						if(obs==null){
 							ret.put(ptIds, new SimpleResult(ptIds, null));
 						}

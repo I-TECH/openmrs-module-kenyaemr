@@ -62,8 +62,8 @@ public class InitialArtStartDateCalculation extends BaseKenyaEmrCalculation {
 		// Return the earliest of the two
 		CalculationResultMap result = new CalculationResultMap();
 		for (Integer ptId : cohort) {
-			Date orderDate = datetimeResultForPatient(earliestOrderDates, ptId);
-			Date obsDate = datetimeObsResultForPatient(obsDates, ptId);
+			Date orderDate = CalculationUtils.datetimeResultForPatient(earliestOrderDates, ptId);
+			Date obsDate = CalculationUtils.datetimeObsResultForPatient(obsDates, ptId);
 			Date earliest = CalculationUtils.earliestDate(orderDate, obsDate);
 
 			result.put(ptId, earliest == null ? null : new SimpleResult(earliest, null));

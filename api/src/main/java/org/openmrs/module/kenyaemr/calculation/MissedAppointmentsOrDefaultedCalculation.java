@@ -69,13 +69,13 @@ public class MissedAppointmentsOrDefaultedCalculation extends BaseKenyaEmrCalcul
 
             // Is patient alive and in the HIV program
             if (inHivProgram.contains(ptId)) {
-                Date lastScheduledReturnDate = datetimeObsResultForPatient(lastReturnDateObss, ptId);
+                Date lastScheduledReturnDate = CalculationUtils.datetimeObsResultForPatient(lastReturnDateObss, ptId);
 
                 // Does patient have a scheduled return visit in the past
                 if (lastScheduledReturnDate != null && daysSince(lastScheduledReturnDate, context) > 0) {
 
                     // Has patient returned since
-                    Encounter lastEncounter = encounterResultForPatient(lastEncounters, ptId);
+                    Encounter lastEncounter = CalculationUtils.encounterResultForPatient(lastEncounters, ptId);
                     Date lastActualReturnDate = lastEncounter != null ? lastEncounter.getEncounterDatetime() : null;
                     missedVisit = lastActualReturnDate == null || lastActualReturnDate.before(lastScheduledReturnDate);
                 }

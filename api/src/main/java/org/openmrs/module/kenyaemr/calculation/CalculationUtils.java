@@ -13,7 +13,10 @@
  */
 package org.openmrs.module.kenyaemr.calculation;
 
+import org.openmrs.Concept;
 import org.openmrs.DrugOrder;
+import org.openmrs.Encounter;
+import org.openmrs.Obs;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.CalculationProvider;
 import org.openmrs.calculation.InvalidCalculationException;
@@ -150,5 +153,81 @@ public class CalculationUtils {
 	 */
 	public static Date earliestDate(Date d1, Date d2) {
 		return OpenmrsUtil.compareWithNullAsLatest(d1, d2) >= 0 ? d2 : d1;
+	}
+
+	/**
+	 * Convenience method to fetch a patient result as an obs
+	 * @param results the calculation result map
+	 * @param patientId the patient id
+	 * @return the obs result
+	 */
+	public static Obs obsResultForPatient(CalculationResultMap results, Integer patientId) {
+		CalculationResult result = results.get(patientId);
+		if (result != null && !result.isEmpty()) {
+			Obs val = (Obs) result.getValue();
+			return val;
+		}
+		return null;
+	}
+
+	/**
+	 * Convenience method to fetch a patient result as a numeric obs value
+	 * @param results the calculation result map
+	 * @param patientId the patient id
+	 * @return the numeric obs value
+	 */
+	public static Double numericObsResultForPatient(CalculationResultMap results, Integer patientId) {
+		Obs o = obsResultForPatient(results, patientId);
+		return o == null ? null : o.getValueNumeric();
+	}
+
+	/**
+	 * Convenience method to fetch a patient result as a coded obs value
+	 * @param results the calculation result map
+	 * @param patientId the patient id
+	 * @return the coded obs value
+	 */
+	public static Concept codedObsResultForPatient(CalculationResultMap results, Integer patientId) {
+		Obs o = obsResultForPatient(results, patientId);
+		return o == null ? null : o.getValueCoded();
+	}
+
+	/**
+	 * Convenience method to fetch a patient result as a datetime obs value
+	 * @param results the calculation result map
+	 * @param patientId the patient id
+	 * @return the datetime obs value
+	 */
+	public static Date datetimeObsResultForPatient(CalculationResultMap results, Integer patientId) {
+		Obs o = obsResultForPatient(results, patientId);
+		return o == null ? null : o.getValueDatetime();
+	}
+
+	/**
+	 * Convenience method to fetch a patient result as an encounter
+	 * @param results the calculation result map
+	 * @param patientId the patient id
+	 * @return the encounter result
+	 */
+	public static Encounter encounterResultForPatient(CalculationResultMap results, Integer patientId) {
+		CalculationResult result = results.get(patientId);
+		if (result != null && !result.isEmpty()) {
+			return (Encounter) result.getValue();
+		}
+		return null;
+	}
+
+	/**
+	 * Convenience method to fetch a patient result as a date
+	 * @param results the calculation result map
+	 * @param patientId the patient id
+	 * @return the date result
+	 */
+	public static Date datetimeResultForPatient(CalculationResultMap results, Integer patientId) {
+		CalculationResult result = results.get(patientId);
+		if (result != null && !result.isEmpty()) {
+			return (Date) result.getValue();
+		}
+		return null;
 	}
 }
