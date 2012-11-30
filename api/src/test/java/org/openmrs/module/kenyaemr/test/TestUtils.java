@@ -112,6 +112,20 @@ public class TestUtils {
 	}
 
 	/**
+	 * Save a coded obs
+	 * @param patient the patient
+	 * @param concept the concept
+	 * @param val the datetime value
+	 * @param date the date
+	 * @return the obs
+	 */
+	public static Obs saveObs(Patient patient, Concept concept, Concept val, Date date) {
+		Obs obs = new Obs(patient, concept, date, null);
+		obs.setValueCoded(val);
+		return Context.getObsService().saveObs(obs, null);
+	}
+
+	/**
 	 * Saves a drug order
 	 * @param patient the patient
 	 * @param concept the drug concept

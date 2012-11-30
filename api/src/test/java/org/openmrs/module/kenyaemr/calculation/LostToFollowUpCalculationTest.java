@@ -51,8 +51,7 @@ public class LostToFollowUpCalculationTest extends BaseModuleContextSensitiveTes
 	public void evaluate_shouldDetermineWhetherPatientsAreLostToFollowUp() throws Exception {
 
 		// Get HIV Program
-		ProgramWorkflowService pws = Context.getProgramWorkflowService();
-		Program hivProgram = pws.getPrograms("HIV Program").get(0);
+		Program hivProgram = Context.getProgramWorkflowService().getPrograms("HIV Program").get(0);
 
 		// Enroll patients #6, #7, #8 in the HIV Program
 		PatientService ps = Context.getPatientService();
@@ -64,12 +63,12 @@ public class LostToFollowUpCalculationTest extends BaseModuleContextSensitiveTes
 		Calendar calendar = Calendar.getInstance();
 		calendar.add(Calendar.DATE, -200);
 		EncounterType scheduledEncType = Context.getEncounterService().getEncounterType("Scheduled");
-		TestUtils.saveEncounter(Context.getPatientService().getPatient(7), scheduledEncType, calendar.getTime());
+		TestUtils.saveEncounter(ps.getPatient(7), scheduledEncType, calendar.getTime());
 
 		// Give patient #8 a scheduled encounter 10 days ago
 		calendar = Calendar.getInstance();
 		calendar.add(Calendar.DATE, -10);
-		TestUtils.saveEncounter(Context.getPatientService().getPatient(8), scheduledEncType, calendar.getTime());
+		TestUtils.saveEncounter(ps.getPatient(8), scheduledEncType, calendar.getTime());
 
 		Context.flushSession();
 		Context.clearSession();

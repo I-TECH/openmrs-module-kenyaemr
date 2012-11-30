@@ -43,15 +43,6 @@
 	<concept concept_id="1085" retired="false" datatype_id="4" class_id="9" is_set="true" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="1085AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 	<concept_name concept_name_id="1085" concept_id="1085" name="ANTIRETROVIRAL DRUGS" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="1085-name"/>
 
-	<!-- Triomune ARV -->
-	<concept concept_id="792" retired="false" datatype_id="4" class_id="3" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="792AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-	<concept_name concept_name_id="792" concept_id="792" name="STAVUDINE LAMIVUDINE AND NEVIRAPINE" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="792-name"/>
-	<concept_set concept_set_id="792" concept_id="792" concept_set="1085" sort_weight="1" creator="1" date_created="2004-08-12 00:00:00.0" uuid="792-set"/>
-
-	<!-- Aspirin -->
-	<concept concept_id="71617" retired="false" datatype_id="4" class_id="3" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="71617AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-	<concept_name concept_name_id="71617" concept_id="71617" name="ASPIRIN" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="71617-name"/>
-
 	<!-- Return visit date -->
 	<concept concept_id="5096" retired="false" datatype_id="6" class_id="7" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 	<concept_name concept_name_id="5096" concept_id="5096" name="RETURN VISIT DATE" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="5096-name"/>
@@ -64,10 +55,29 @@
 	<concept concept_id="1695" retired="false" datatype_id="2" class_id="5" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="1695AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 	<concept_name concept_name_id="1695" concept_id="1695" name="DISCHARGE STATUS" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="1695-name"/>
 
+	<!-- Medication orders -->
+	<concept concept_id="1282" retired="false" datatype_id="2" class_id="11" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="1282AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+	<concept_name concept_name_id="1282" concept_id="1282" name="MEDICATION ORDERS" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="1282-name"/>
+
 	<!-- HIV program -->
 	<concept concept_id="160631" retired="false" datatype_id="4" class_id="5" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="160631AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 	<concept_name concept_name_id="160631" concept_id="160631" name="HIV Program" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="160631-name"/>
 	<program program_id="1" concept_id="160631" outcomes_concept_id="1695" creator="1" date_created="2004-08-12 00:00:00.0" retired="0" name="HIV Program" description="Program for following or treating HIV-positive patients" uuid="dfdc6d40-2f2f-463d-ba90-cc97350441a8"/>
+
+	<!-- DRUGS -->
+
+	<!-- Triomune ARV -->
+	<concept concept_id="792" retired="false" datatype_id="4" class_id="3" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="792AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+	<concept_name concept_name_id="792" concept_id="792" name="STAVUDINE LAMIVUDINE AND NEVIRAPINE" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="792-name"/>
+	<concept_set concept_set_id="792" concept_id="792" concept_set="1085" sort_weight="1" creator="1" date_created="2004-08-12 00:00:00.0" uuid="792-set"/>
+
+	<!-- Aspirin -->
+	<concept concept_id="71617" retired="false" datatype_id="4" class_id="3" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="71617AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+	<concept_name concept_name_id="71617" concept_id="71617" name="ASPIRIN" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="71617-name"/>
+
+	<!-- Dapsone -->
+	<concept concept_id="74250" retired="false" datatype_id="4" class_id="3" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="74250AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+	<concept_name concept_name_id="74250" concept_id="74250" name="DAPSONE" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="74250-name"/>
 
 	<!-- HIV identifier for patient #7 -->
 	<patient_identifier patient_identifier_id="101" patient_id="7" identifier="1321200001" identifier_type="1002" preferred="true" location_id="1" creator="1" date_created="2004-08-12 00:00:00.0" changed_by="1" date_changed="2006-06-09 14:57:33.0" voided="false" uuid="9fa0988f-86d1-41d7-b4c6-56fd088d0189" />

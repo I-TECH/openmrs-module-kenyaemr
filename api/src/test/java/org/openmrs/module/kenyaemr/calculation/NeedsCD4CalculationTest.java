@@ -34,8 +34,7 @@ public class NeedsCD4CalculationTest extends BaseModuleContextSensitiveTest {
 	public void evaluate_shouldDetermineWhetherPatientsNeedsCD4() throws Exception {
 
 		// Get HIV Program
-		ProgramWorkflowService pws = Context.getProgramWorkflowService();
-		Program hivProgram = pws.getPrograms("HIV Program").get(0);
+		Program hivProgram = Context.getProgramWorkflowService().getPrograms("HIV Program").get(0);
 
 		// Enroll patients #6, #7 and #8 in the HIV Program
 		PatientService ps = Context.getPatientService();
@@ -45,12 +44,12 @@ public class NeedsCD4CalculationTest extends BaseModuleContextSensitiveTest {
 		
 		// Give patient #7 a recent CD4 result obs
 		Concept cd4 = Context.getConceptService().getConcept(5497);
-		TestUtils.saveObs(Context.getPatientService().getPatient(7), cd4, 123d, new Date());
+		TestUtils.saveObs(ps.getPatient(7), cd4, 123d, new Date());
 
 		// Give patient #8 a CD4 result obs from a year ago
 		Calendar calendar = Calendar.getInstance();
 		calendar.add(Calendar.DATE, -360);
-		TestUtils.saveObs(Context.getPatientService().getPatient(8), cd4, 123d, calendar.getTime());
+		TestUtils.saveObs(ps.getPatient(8), cd4, 123d, calendar.getTime());
 		
 		Context.flushSession();
 		

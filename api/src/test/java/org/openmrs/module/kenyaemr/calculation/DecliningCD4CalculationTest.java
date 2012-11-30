@@ -48,8 +48,7 @@ public class DecliningCD4CalculationTest extends BaseModuleContextSensitiveTest 
 	public void evaluate_shouldDetermineWhetherPatientsHasDeclinedCD4() throws Exception {
 
 		// Get HIV Program
-		ProgramWorkflowService pws = Context.getProgramWorkflowService();
-		Program hivProgram = pws.getPrograms("HIV Program").get(0);
+		Program hivProgram = Context.getProgramWorkflowService().getPrograms("HIV Program").get(0);
 
 		// Enroll patients #6, #7 and #8 in the HIV Program
 		PatientService ps = Context.getPatientService();
@@ -61,14 +60,14 @@ public class DecliningCD4CalculationTest extends BaseModuleContextSensitiveTest 
 		Concept cd4 = Context.getConceptService().getConcept(5497);
 		Calendar calendar = Calendar.getInstance();
 		calendar.add(Calendar.DATE, -180);
-		TestUtils.saveObs(Context.getPatientService().getPatient(7), cd4, 123d, calendar.getTime());
-		TestUtils.saveObs(Context.getPatientService().getPatient(8), cd4, 123d, calendar.getTime());
+		TestUtils.saveObs(ps.getPatient(7), cd4, 123d, calendar.getTime());
+		TestUtils.saveObs(ps.getPatient(8), cd4, 123d, calendar.getTime());
 
 		// Give patient #7 a lower CD4 count today
-		TestUtils.saveObs(Context.getPatientService().getPatient(7), cd4, 120d, new Date());
+		TestUtils.saveObs(ps.getPatient(7), cd4, 120d, new Date());
 
 		// Give patient #8 a higher CD4 count today
-		TestUtils.saveObs(Context.getPatientService().getPatient(8), cd4, 126d, new Date());
+		TestUtils.saveObs(ps.getPatient(8), cd4, 126d, new Date());
 
 		Context.flushSession();
 

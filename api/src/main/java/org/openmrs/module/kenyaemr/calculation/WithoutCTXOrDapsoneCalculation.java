@@ -1,3 +1,16 @@
+/**
+ * The contents of this file are subject to the OpenMRS Public License
+ * Version 1.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ * http://license.openmrs.org
+ *
+ * Software distributed under the License is distributed on an "AS IS"
+ * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+ * License for the specific language governing rights and limitations
+ * under the License.
+ *
+ * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ */
 package org.openmrs.module.kenyaemr.calculation;
 
 import java.util.Collection;
@@ -5,91 +18,68 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.openmrs.Concept;
 import org.openmrs.Obs;
 import org.openmrs.Program;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
-import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.ListResult;
-import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyaemr.MetadataConstants;
 
+/**
+ * Calculates whether patients have taken CTX or Dapsone
+ */
 public class WithoutCTXOrDapsoneCalculation extends BaseKenyaEmrCalculation {
 
 	@Override
 	public String getShortMessage() {
-		return "Patients Without CTX or Dapsone";
+		return "Patients who have taken CTX or Dapsone";
 	}
 
 	@Override
 	public String[] getTags() {
-		return new String[] { "hiv" };
+		return new String[] {"hiv"};
 	}
 
-	/**
-	 * TODO: Fix this - should be looking at drug orders
-	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public CalculationResultMap evaluate(Collection<Integer> cohort,Map<String, Object>  parameterValues, PatientCalculationContext context) {
-		Program hivProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.HIV_PROGRAM_UUID);
-		Set<Integer> inHivProgram = CalculationUtils.patientsThatPass(lastProgramEnrollment(hivProgram, cohort, context));
-		Set<Integer> alive = alivePatients(cohort, context);
-		CalculationResultMap medicationorder = allObs(MetadataConstants.MEDICATION_ORDERS_CONCEPT_UUID, cohort, context);
-		CalculationResultMap ret = new CalculationResultMap();
+	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
 
-		//for (Integer ptId : cohort) {
-			Object value = null;
-			Integer ptId = null;
-			Obs obs = null;
-			Integer dapsone = Context.getConceptService().getConceptByUuid(MetadataConstants.DAPSONE_CONCEPT_UUID).getConceptId();
-			Integer ctx = Context.getConceptService().getConceptByUuid(MetadataConstants.SULFAMETHOXAZOLE_TRIMETHOPRIM_CONCEPT_UUID).getConceptId();
-			
-			//to cater for those without any medication orders
-			for (Integer ptIds : cohort) {
-				if(inHivProgram.contains(ptIds) && alive.contains(ptIds)){
-					try{
-						obs=CalculationUtils.obsResultForPatient(medicationorder,ptIds);
-						if(obs==null){
-							ret.put(ptIds, new SimpleResult(ptIds, null));
+		Program hivProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.HIV_PROGRAM_UUID);
+
+		Set<Integer> alive = alivePatients(cohort, context);
+		Set<Integer> inHivProgram = CalculationUtils.patientsThatPass(lastProgramEnrollment(hivProgram, alive, context));
+
+		CalculationResultMap medOrdersObss = allObs(MetadataConstants.MEDICATION_ORDERS_CONCEPT_UUID, cohort, context);
+
+		// Get concepts for both kinds of medication
+		Concept dapsone = Context.getConceptService().getConceptByUuid(MetadataConstants.DAPSONE_CONCEPT_UUID);
+		Concept ctx = Context.getConceptService().getConceptByUuid(MetadataConstants.SULFAMETHOXAZOLE_TRIMETHOPRIM_CONCEPT_UUID);
+
+		CalculationResultMap ret = new CalculationResultMap();
+		for (Integer ptId : cohort) {
+			boolean notTakingCtxOrDapsone = false;
+
+			// Is patient alive and in the HIV program
+			if (inHivProgram.contains(ptId)) {
+				notTakingCtxOrDapsone = true;
+
+				ListResult patientMedOrders = (ListResult) medOrdersObss.get(ptId);
+				if (patientMedOrders != null) {
+					// Look through list of medication order obs for any Dapsone or CTX
+					List<Obs> medOrderObsList = CalculationUtils.extractListResultValues(patientMedOrders);
+					for (Obs medOrderObs : medOrderObsList) {
+						if (medOrderObs.getValueCoded().equals(dapsone) || medOrderObs.getValueCoded().equals(ctx)) {
+							notTakingCtxOrDapsone = false;
+							break;
 						}
 					}
-					catch(Exception e){
-						e.toString();
-					}
-
-
-
 				}
-
 			}
-			
-				// to cater for those with medication orders but non of them is dapsone or ctx
-				for(Map.Entry<Integer, CalculationResult> e : medicationorder.entrySet()){
 
-					if(inHivProgram.contains(e.getKey()) && alive.contains(e.getKey())){
-						ptId = e.getKey();
-			    		ListResult result = (ListResult) e.getValue();
-			    		for (SimpleResult r : (List<SimpleResult>) result.getValue()) {
-
-			    			value=((Obs)r.getValue()).getValueCoded();
-			    			if((value.toString().equals(dapsone.toString()))||(value.toString().equals(ctx.toString()))){
-			    				break;
-			    			}
-			    			else{
-
-			    				ret.put(ptId, new SimpleResult(ptId, null));
-			    			}
-			    		}
-
-
-
-					}
-
-
-				}
-		
+			ret.put(ptId, new BooleanResult(notTakingCtxOrDapsone, this));
+		}
 		return ret;
 	}
 }
