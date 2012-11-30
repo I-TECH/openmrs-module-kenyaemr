@@ -138,4 +138,17 @@ public class CalculationUtils {
 		BaseKenyaEmrCalculation calculation = (BaseKenyaEmrCalculation)provider.getCalculation(name, configuration);
 		return Context.getService(PatientCalculationService.class).evaluate(patientId, calculation);
 	}
+
+	/**
+	 * Calculates the earliest date of two given dates, ignoring null values
+	 * @param d1 the first date
+	 * @param d2 the second date
+	 * @return the earliest date value
+	 * @should return null if both dates are null
+	 * @should return non-null date if one date is null
+	 * @should return earliest date of two non-null dates
+	 */
+	public static Date earliestDate(Date d1, Date d2) {
+		return OpenmrsUtil.compareWithNullAsLatest(d1, d2) >= 0 ? d2 : d1;
+	}
 }

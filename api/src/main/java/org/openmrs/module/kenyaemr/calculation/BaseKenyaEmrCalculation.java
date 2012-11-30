@@ -292,9 +292,7 @@ public abstract class BaseKenyaEmrCalculation extends BaseCalculation implements
 			Date earliest = null;
 			for (SimpleResult r : (List<SimpleResult>) result.getValue()) {
 				Date candidate = ((DrugOrder) r.getValue()).getStartDate();
-				if (earliest == null || OpenmrsUtil.compareWithNullAsLatest(candidate, earliest) < 0) {
-					earliest = candidate;
-				}
+				earliest = CalculationUtils.earliestDate(earliest, candidate);
 			}
 			ret.put(ptId, earliest == null ? null : new SimpleResult(earliest, null));
 		}
@@ -387,8 +385,21 @@ public abstract class BaseKenyaEmrCalculation extends BaseCalculation implements
 	protected static Encounter encounterResultForPatient(CalculationResultMap results, Integer patientId) {
 		CalculationResult result = results.get(patientId);
 		if (result != null && !result.isEmpty()) {
-			Encounter val = (Encounter) result.getValue();
-			return val;
+			return (Encounter) result.getValue();
+		}
+		return null;
+	}
+
+	/**
+	 * Convenience method to fetch a patient result as a date
+	 * @param results the calculation result map
+	 * @param patientId the patient id
+	 * @return the date result
+	 */
+	protected static Date datetimeResultForPatient(CalculationResultMap results, Integer patientId) {
+		CalculationResult result = results.get(patientId);
+		if (result != null && !result.isEmpty()) {
+			return (Date) result.getValue();
 		}
 		return null;
 	}

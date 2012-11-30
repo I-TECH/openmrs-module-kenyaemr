@@ -18,8 +18,10 @@ import org.junit.Test;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.ListResult;
 import org.openmrs.calculation.result.SimpleResult;
+import org.openmrs.module.kenyaemr.test.TestUtils;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 public class CalculationUtilsTest {
@@ -83,5 +85,37 @@ public class CalculationUtilsTest {
 		Assert.assertEquals(2, numericValues.size());
 		Assert.assertEquals(new Integer(100), numericValues.get(0));
 		Assert.assertEquals(new Integer(200), numericValues.get(1));
+	}
+
+	/**
+	 * @see CalculationUtils#earliestDate(java.util.Date, java.util.Date)
+	 * @verifies return null if both dates are null
+	 */
+	@Test
+	public void earliestDate_shouldReturnNullIfBothDatesAreNull() {
+		Assert.assertNull(CalculationUtils.earliestDate(null, null));
+	}
+
+	/**
+	 * @see CalculationUtils#earliestDate(java.util.Date, java.util.Date)
+	 * @verifies return non-null date if one date is null
+	 */
+	@Test
+	public void earliestDate_shouldReturnNonNullIfOneDateIsNull() {
+		Date date = TestUtils.date(2001, 3, 22);
+		Assert.assertEquals(date, CalculationUtils.earliestDate(null, date));
+		Assert.assertEquals(date, CalculationUtils.earliestDate(date, null));
+	}
+
+	/**
+	 * @see CalculationUtils#earliestDate(java.util.Date, java.util.Date)
+	 * @verifies return earliest date of two non-null dates
+	 */
+	@Test
+	public void earliestDate_shouldReturnEarliestDateOfTwoNonNullDates() {
+		Date date1 = TestUtils.date(2001, 3, 22);
+		Date date2 = TestUtils.date(2010, 2, 16);
+		Assert.assertEquals(date1, CalculationUtils.earliestDate(date1, date2));
+		Assert.assertEquals(date1, CalculationUtils.earliestDate(date2, date1));
 	}
 }

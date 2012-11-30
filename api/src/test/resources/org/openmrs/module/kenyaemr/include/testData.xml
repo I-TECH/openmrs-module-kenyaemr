@@ -52,9 +52,15 @@
 	<concept concept_id="71617" retired="false" datatype_id="4" class_id="3" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="71617AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 	<concept_name concept_name_id="71617" concept_id="71617" name="ASPIRIN" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="71617-name"/>
 
+	<!-- Return visit date -->
 	<concept concept_id="5096" retired="false" datatype_id="6" class_id="7" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 	<concept_name concept_name_id="5096" concept_id="5096" name="RETURN VISIT DATE" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="5096-name"/>
 
+	<!-- ART start date -->
+	<concept concept_id="159599" retired="false" datatype_id="6" class_id="5" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="159599AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+	<concept_name concept_name_id="159599" concept_id="159599" name="Antiretroviral treatment start date" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="159599-name"/>
+
+	<!-- Discharge status -->
 	<concept concept_id="1695" retired="false" datatype_id="2" class_id="5" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="1695AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 	<concept_name concept_name_id="1695" concept_id="1695" name="DISCHARGE STATUS" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="1695-name"/>
 
