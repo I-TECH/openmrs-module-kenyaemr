@@ -141,17 +141,20 @@ public class ArvRegimenFragmentController {
 			require(errors, "patient");
 			require(errors, "startDate");
 			require(errors, "arv1");
-			require(errors, "arv2");
-			require(errors, "arv3");
+			/**
+			 * First ARV is mandatory, while the other two are optional.
+			 */
+			/*require(errors, "arv2");
+			require(errors, "arv3");*/
 			require(errors, "dosage1");
-			require(errors, "dosage2");
-			require(errors, "dosage3");
+			/*require(errors, "dosage2");
+			require(errors, "dosage3");*/
 			require(errors, "units1");
-			require(errors, "units2");
-			require(errors, "units3");
+			/*require(errors, "units2");
+			require(errors, "units3");*/
 			require(errors, "frequency1");
-			require(errors, "frequency2");
-			require(errors, "frequency3");
+			/*require(errors, "frequency2");
+			require(errors, "frequency3");*/
 		}
 		
 		/**
@@ -166,11 +169,17 @@ public class ArvRegimenFragmentController {
 			}
 			
 			DrugOrder o1 = newDrugOrder(patient, startDate, arv1, dosage1, units1, frequency1);
-			DrugOrder o2 = newDrugOrder(patient, startDate, arv2, dosage2, units2, frequency2);
-			DrugOrder o3 = newDrugOrder(patient, startDate, arv3, dosage3, units3, frequency3);
 			Context.getOrderService().saveOrder(o1);
-			Context.getOrderService().saveOrder(o2);
-			Context.getOrderService().saveOrder(o3);
+			
+			if (arv2 != null) {
+				DrugOrder o2 = newDrugOrder(patient, startDate, arv2, dosage2, units2, frequency2);
+				Context.getOrderService().saveOrder(o2);
+			}
+			if (arv3 != null) {
+				DrugOrder o3 = newDrugOrder(patient, startDate, arv3, dosage3, units3, frequency3);
+				Context.getOrderService().saveOrder(o3);
+			}
+					
 		}
 		
 		/**
