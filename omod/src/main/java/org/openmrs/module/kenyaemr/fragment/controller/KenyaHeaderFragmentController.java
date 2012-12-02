@@ -21,6 +21,9 @@ import org.openmrs.module.kenyaemr.util.ContextProvider;
 import org.openmrs.module.kenyaemr.util.KenyaEmrUtils;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,18 +32,22 @@ import java.util.Map;
  *
  */
 public class KenyaHeaderFragmentController {
+
+	private static final DateFormat buildDateFormat = new SimpleDateFormat("dd-MMM-yyyy");
 	
-	public void controller(FragmentModel model) {
+	public void controller(FragmentModel model) throws ParseException {
 		// Get module version
 		String moduleVersion = KenyaEmrUtils.getModuleVersion();
 
-		// Add build date for snapshot versions
+		// Fetch build date for snapshot versions
+		Date moduleBuildDate = null;
 		if (moduleVersion.endsWith("SNAPSHOT")) {
 			Map<String, String> buildProperties = KenyaEmrUtils.getModuleBuildProperties();
-			model.addAttribute("moduleBuildDate", buildProperties.get("buildDate"));
+			moduleBuildDate = buildDateFormat.parse(buildProperties.get("buildDate"));
 		}
 
 		model.addAttribute("moduleVersion", moduleVersion);
+		model.addAttribute("moduleBuildDate", moduleBuildDate);
 
 		try {
 			model.addAttribute("systemLocation", Context.getService(KenyaEmrService.class).getDefaultLocation());
