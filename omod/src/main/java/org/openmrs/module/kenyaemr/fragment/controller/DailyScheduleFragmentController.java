@@ -30,24 +30,36 @@ import org.openmrs.calculation.result.ListResult;
 import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
 import org.openmrs.module.kenyaemr.calculation.ScheduledVisitOnDayCalculation;
 import org.openmrs.module.kenyaemr.calculation.VisitsOnDayCalculation;
+import org.openmrs.module.kenyaemr.util.KenyaEmrUtils;
+import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 import org.openmrs.util.PersonByNameComparator;
 
-
 /**
- *
+ * Controller for daily schedule fragment
  */
 public class DailyScheduleFragmentController {
 	
 	public void controller(FragmentModel model,
 	                       @FragmentParam("page") String pageWhenClicked,
 	                       @FragmentParam(value = "date", required = false) Date date) {
+
+		Date today = KenyaEmrUtils.dateStartOfDay(new Date());
+		Date tomorrow = KenyaEmrUtils.dateAddDays(today, 1);
+		Date yesterday = KenyaEmrUtils.dateAddDays(today, -1);
+
+		// Date defaults to today
 		if (date == null) {
-			date = new Date();
+			date = today;
 		}
-		
+		else {
+			// Ignore time
+			date = KenyaEmrUtils.dateStartOfDay(date);
+		}
+
+		// Run the calculations to get patients with scheduled visits
 		PatientCalculationService cs = Context.getService(PatientCalculationService.class);
 		Set<Integer> allPatients = Context.getPatientSetService().getAllPatients().getMemberIds();
 		Map<String, Object> params = new HashMap<String, Object>();
@@ -55,7 +67,8 @@ public class DailyScheduleFragmentController {
 		PatientCalculationContext calcContext = cs.createCalculationContext();
 		Set<Integer> scheduled = CalculationUtils.patientsThatPass(cs.evaluate(allPatients, new ScheduledVisitOnDayCalculation(), params, calcContext));
 		CalculationResultMap actual = cs.evaluate(scheduled, new VisitsOnDayCalculation(), params, calcContext);
-		
+
+		// Sort patients and convert to simple objects
 		List<Patient> scheduledPatients = Context.getPatientSetService().getPatients(scheduled);
 		Collections.sort(scheduledPatients, new PersonByNameComparator());
 		List<SimpleObject> list = new ArrayList<SimpleObject>();
@@ -67,6 +80,9 @@ public class DailyScheduleFragmentController {
 		}
 		
 		model.addAttribute("date", date);
+		model.addAttribute("isToday", date.equals(today));
+		model.addAttribute("isTomorrow", date.equals(tomorrow));
+		model.addAttribute("isYesterday", date.equals(yesterday));
 		model.addAttribute("scheduled", list);
 	}
 	

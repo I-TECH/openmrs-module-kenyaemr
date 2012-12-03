@@ -15,7 +15,6 @@ package org.openmrs.module.kenyaemr;
 
 import org.openmrs.DrugOrder;
 import org.openmrs.calculation.result.ListResult;
-import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
 import org.openmrs.module.kenyaemr.util.KenyaEmrUtils;
 import org.openmrs.ui.framework.FormatterImpl;
@@ -45,7 +44,7 @@ public class KenyaEmrUiUtils {
 		if (date == null)
 			return "";
 
-		Date dateOnly = KenyaEmrUtils.dateOnly(date);
+		Date dateOnly = KenyaEmrUtils.dateStartOfDay(date);
 		return new FormatterImpl().format(dateOnly);
 	}
 

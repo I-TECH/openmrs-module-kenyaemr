@@ -15,20 +15,35 @@ package org.openmrs.module.kenyaemr.page.controller;
 
 import org.openmrs.module.appframework.AppUiUtil;
 import org.openmrs.module.kenyaemr.KenyaEmrConstants;
+import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
+import org.openmrs.ui.framework.page.PageModel;
 import org.openmrs.ui.framework.session.Session;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.Date;
 
 /**
  * Controller for the registration homepage
  */
 public class RegistrationHomePageController {
 
-	public String controller(Session session, UiUtils ui,
-	                       @RequestParam(required=false, value="patientId") Integer patientId) {
+	public String controller(Session session,
+							 UiUtils ui,
+							 @RequestParam(required = false, value = "scheduleDate") Date scheduleDate,
+	                         @RequestParam(required = false, value = "patientId") Integer patientId,
+							 PageModel model) {
+
 		AppUiUtil.startApp("kenyaemr.registration", session);
+
+		// Get the date for schedule view
+		if (scheduleDate == null) {
+			scheduleDate = new Date();
+		}
+		scheduleDate = DateUtil.getStartOfDay(scheduleDate);
+		model.addAttribute("scheduleDate", scheduleDate);
+
 		if (patientId != null) {
 			return "redirect:" + ui.pageLink(KenyaEmrConstants.MODULE_ID, "registrationViewPatient", SimpleObject.create("patientId", patientId));
 		} else {

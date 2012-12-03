@@ -9,6 +9,11 @@
 #end-of-day .spaced {
 	padding: 0.3em;
 }
+#calendar .ui-widget-content {
+	border: 0;
+	background: inherit;
+	padding: 0;
+}
 </style>
 
 <div id="content-side">
@@ -21,6 +26,13 @@
 				label: "Search for a Patient",
 				href: ui.pageLink("kenyaemr", "registrationSearch")
 		]) }
+	</div>
+
+	<div class="panel-frame">
+		<div class="panel-heading">Select Day to View</div>
+		<div class="panel-content">
+			<div id="calendar"></div>
+		</div>
 	</div>
 
 	<div class="panel-frame" id="end-of-day">
@@ -38,13 +50,23 @@
 </div>
 
 <div id="content-main">
-	<h2>Today's Schedule <a href="${ ui.pageLink("kenyaemr", "dailySchedule") }" style="font-size: 0.6em;">(calendar)</a></h2>
 
-	${ ui.includeFragment("kenyaemr", "dailySchedule", [ id: "todaysSchedule", page: "registrationViewPatient" ]) }
+	${ ui.includeFragment("kenyaemr", "dailySchedule", [ id: "schedule", page: "registrationViewPatient", date: scheduleDate ]) }
+
 </div>
 
 <script type="text/javascript">
-	getJsonAsEvent(ui.fragmentActionLink('kenyaemr', 'patientSearch', 'withActiveVisits'), 'checkedInPatients/show');
+	jq(function() {
+		jq('#calendar').datepicker({
+			dateFormat: 'yy-mm-dd',
+			defaultDate: '${ new java.text.SimpleDateFormat("yyyy-MM-dd").format(scheduleDate) }',
+			gotoCurrent: true,
+			onSelect: function(dateText) {
+				location.href = ui.pageLink('kenyaemr', 'registrationHome', { scheduleDate: dateText });
+			}
+		});
+	});
+
 	jq.getJSON(ui.fragmentActionLink('kenyaemr', 'registrationUtil', 'activeVisitTypes'), function(result) {
 		if (result.length == 0) {
 			return;

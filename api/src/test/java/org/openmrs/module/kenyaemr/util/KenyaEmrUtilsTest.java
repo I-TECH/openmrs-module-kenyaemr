@@ -17,6 +17,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.openmrs.Concept;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyaemr.test.TestUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 import java.util.*;
@@ -37,13 +38,13 @@ public class KenyaEmrUtilsTest extends BaseModuleContextSensitiveTest {
 	}
 
 	/**
-	 * @see KenyaEmrUtils#dateOnly(java.util.Date)
+	 * @see KenyaEmrUtils#dateStartOfDay(java.util.Date)
 	 * @verifies clear time information from date
 	 */
 	@Test
-	public void dateOnly_shouldClearTimeInformation() {
+	public void dateStartOfDay_shouldClearTimeInformation() {
 		Date now = new Date();
-		Date dateOnly = KenyaEmrUtils.dateOnly(now);
+		Date dateOnly = KenyaEmrUtils.dateStartOfDay(now);
 		Calendar cal = new GregorianCalendar();
 		cal.setTime(dateOnly);
 
@@ -52,6 +53,17 @@ public class KenyaEmrUtilsTest extends BaseModuleContextSensitiveTest {
 		Assert.assertEquals(0, cal.get(Calendar.MINUTE));
 		Assert.assertEquals(0, cal.get(Calendar.SECOND));
 		Assert.assertEquals(0, cal.get(Calendar.MILLISECOND));
+	}
+
+	/**
+	 * @see KenyaEmrUtils#dateAddDays(java.util.Date, int)
+	 * @verifies shift the date by the number of days
+	 */
+	@Test
+	public void dateAddDays_shouldShiftDateByNumberOfDays() {
+		Assert.assertEquals(TestUtils.date(2012, 1, 2), KenyaEmrUtils.dateAddDays(TestUtils.date(2012, 1, 1), 1));
+		Assert.assertEquals(TestUtils.date(2012, 2, 1), KenyaEmrUtils.dateAddDays(TestUtils.date(2012, 1, 1), 31));
+		Assert.assertEquals(TestUtils.date(2011, 12, 31), KenyaEmrUtils.dateAddDays(TestUtils.date(2012, 1, 1), -1));
 	}
 
 	/**

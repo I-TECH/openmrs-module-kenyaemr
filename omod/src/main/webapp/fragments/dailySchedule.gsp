@@ -1,9 +1,21 @@
 <%
-config.require("page")
+	def heading = "Schedule for "
+	if (isToday)
+		heading += "Today"
+	else if (isTomorrow)
+		heading += "Tomorrow"
+	else if (isYesterday)
+		heading += "Yesterday"
+	else
+		heading += kenyaEmrUi.formatDateNoTime(date)
+
+	ui.decorateWith("kenyaemr", "panel", [ heading: heading ])
+
+	config.require("page")
 %>
 
 <% if (!scheduled) { %>
-	None
+	No visits
 <% } %>
 <% scheduled.each { %>
 	<div class="panel clickable scheduled-visit">
@@ -12,7 +24,7 @@ config.require("page")
 			<tr>
 				<td width="40%">
 					<span class="icon">
-						<img width="32" height="32" src="${ ui.resourceLink("uilibrary", "images/patient_" + it.patient.gender + ".gif") }"/>
+						<img width="32" height="32" src="${ ui.resourceLink("kenyaemr", "images/patient_" + it.patient.gender + ".gif") }"/>
 					</span>
 					
 					<span class="leftText">

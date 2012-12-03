@@ -47,7 +47,7 @@ public class KenyaEmrUtils {
 	 * @return the date with no time portion
 	 * @should clear time information from date
 	 */
-	public static Date dateOnly(Date date) {
+	public static Date dateStartOfDay(Date date) {
 		Calendar cal = new GregorianCalendar();
 		cal.setTime(date);
 		cal.set(Calendar.AM_PM, 0);
@@ -55,6 +55,20 @@ public class KenyaEmrUtils {
 		cal.set(Calendar.MINUTE, 0);
 		cal.set(Calendar.SECOND, 0);
 		cal.set(Calendar.MILLISECOND, 0);
+		return cal.getTime();
+	}
+
+	/**
+	 * Add days to an existing date
+	 * @param date the date
+	 * @param days the number of days to add (negative to subtract days)
+	 * @return the new date
+	 * @should shift the date by the number of days
+	 */
+	public static Date dateAddDays(Date date, int days) {
+		Calendar cal = new GregorianCalendar();
+		cal.setTime(date);
+		cal.add(Calendar.DATE, days);
 		return cal.getTime();
 	}
 
