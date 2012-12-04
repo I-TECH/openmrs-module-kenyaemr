@@ -51,12 +51,16 @@ import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 import org.springframework.web.bind.annotation.RequestParam;
 
-
 /**
  * Helpful utility actions for the registration app
  */
 public class RegistrationUtilFragmentController {
-	
+
+	/**
+	 * Gets a list of visit types with open visits
+	 * @param ui the UI utils
+	 * @return the visit types as simple objects
+	 */
 	public List<SimpleObject> activeVisitTypes(UiUtils ui) {
 		Map<VisitType, Integer> activeVisitTypes = new HashMap<VisitType, Integer>();
 		
@@ -75,11 +79,17 @@ public class RegistrationUtilFragmentController {
 		}
 		return ret;
 	}
-	
-	public Object closeActiveVisits(@RequestParam("visitType") List<VisitType> visitTypesToClose) {
+
+	/**
+	 * Handles requests to close all open visits of the given types
+	 * @param visitTypesToClose the visit types to close
+	 * @return success or failure message
+	 */
+	public Object closeActiveVisits(@RequestParam(value = "visitType", required = false) List<VisitType> visitTypesToClose) {
 		if (CollectionUtils.isEmpty(visitTypesToClose)) {
 			return new FailureResult("You didn't choose any types");
 		}
+
 		Date toStop = new Date();
 		VisitService vs = Context.getVisitService();
 		List<Visit> activeVisits = vs.getVisits(null, null, null, null, null, null, null, null, null, false, false);
@@ -108,7 +118,13 @@ public class RegistrationUtilFragmentController {
 		}
 		return new SuccessResult(msg);
 	}
-	
+
+	/**
+	 * Creates a new patient
+	 * @param ui the UI utils
+	 * @param pat the patient command object
+	 * @return the patient as a simple object
+	 */
 	public SimpleObject createPatient(UiUtils ui,
 	                                  @MethodParam("createPatientCommand") @BindParams("patient") @Validate(PatientValidator.class) Patient pat) {
 		ui.validate(pat, new CreatePatientValidator(), "patient");

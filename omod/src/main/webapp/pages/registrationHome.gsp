@@ -40,10 +40,9 @@
 
 		<div class="panel-content">
 			Close all open visits of the following types:
-			<form method="post" action="${ ui.actionLink("kenyaemr", "registrationUtil", "closeActiveVisits") }">
-				<div class="form-data">
-				</div>
-				<input type="submit" value="Close Visits"/>
+			<form id="close-visits-form" method="post" action="">
+				<div class="form-data"></div>
+				<input type="submit" value="Close Visits" />
 			</form>
 		</div>
 	</div>
@@ -65,18 +64,40 @@
 				location.href = ui.pageLink('kenyaemr', 'registrationHome', { scheduleDate: dateText });
 			}
 		});
+
+		jq('#close-visits-form').submit(function () {
+
+			ui.getFragmentActionAsJson('kenyaemr', 'registrationUtil', 'closeActiveVisits', jq(this).serialize(), function (result) {
+				if (result.success) {
+					notifySuccess(result.message);
+					loadActiveVisitTypes();
+				}
+				else {
+					notifyError(result.globalErrors[0]);
+				}
+			});
+
+			return false;
+		});
+
+		loadActiveVisitTypes();
 	});
 
-	jq.getJSON(ui.fragmentActionLink('kenyaemr', 'registrationUtil', 'activeVisitTypes'), function(result) {
-		if (result.length == 0) {
-			return;
-		}
-		var str = "";
-		for (var i = 0; i < result.length; ++i) {
-			var r = result[i];
-			str += '<div class="spaced"><input type="checkbox" name="visitType" value="' + r.visitTypeId + '"/> ' + r.name + ' (' + r.count + ')</div>';
-		}
-		jq('#end-of-day .form-data').html(str);
-		jq('#end-of-day').show();
-	});
+	function loadActiveVisitTypes() {
+		jq.getJSON(ui.fragmentActionLink('kenyaemr', 'registrationUtil', 'activeVisitTypes'), function(result) {
+			if (result.length == 0) {
+				jq('#end-of-day').hide();
+				return;
+			}
+			else {
+				var str = "";
+				for (var i = 0; i < result.length; ++i) {
+					var r = result[i];
+					str += '<div class="spaced"><input type="checkbox" name="visitType" value="' + r.visitTypeId + '"/> ' + r.name + ' (' + r.count + ')</div>';
+				}
+				jq('#end-of-day .form-data').html(str);
+				jq('#end-of-day').show();
+			}
+		});
+	}
 </script>
