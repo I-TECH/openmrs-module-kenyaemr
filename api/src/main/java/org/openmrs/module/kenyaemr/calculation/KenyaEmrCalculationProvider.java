@@ -39,6 +39,7 @@ public class KenyaEmrCalculationProvider implements CalculationProvider {
 		// General
 		map.put("decliningCd4", DecliningCD4Calculation.class);
 		map.put("inTBProgram", InTBProgramCalculation.class);
+		map.put("lastWHOStage", LastWHOStageCalculation.class);
 		map.put("lostToFollowUp", LostToFollowUpCalculation.class);
         map.put("missedAppointmentsOrDefaulted", MissedAppointmentsOrDefaultedCalculation.class);
 		map.put("needsCd4", NeedsCD4Calculation.class);
@@ -90,7 +91,7 @@ public class KenyaEmrCalculationProvider implements CalculationProvider {
 	public Calculation getCalculation(String calculationName, String configuration) throws InvalidCalculationException {
 		Class<? extends BaseKenyaEmrCalculation> clazz = map.get(calculationName);
 		if (clazz == null)
-			throw new InvalidCalculationException("Not Found: " + clazz + " (valid values are: " + map.keySet() + ")");
+			throw new InvalidCalculationException("Not Found: " + calculationName + " (valid values are: " + map.keySet() + ")");
 		try {
 			BaseKenyaEmrCalculation calc = clazz.newInstance();
 

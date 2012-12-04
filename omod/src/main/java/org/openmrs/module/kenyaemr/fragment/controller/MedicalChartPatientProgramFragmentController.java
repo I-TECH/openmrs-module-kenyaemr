@@ -32,7 +32,7 @@ import java.util.Map;
  */
 public class MedicalChartPatientProgramFragmentController {
 
-	private final String[] hivCalculations = { "initialArtRegimen", "currentArtRegimen" };
+	private final String[] hivCalculations = { "initialArtRegimen", "currentArtRegimen", "lastWHOStage" };
 
 	public void controller(@FragmentParam("patientProgram") PatientProgram patientProgram,
 						   FragmentModel model,

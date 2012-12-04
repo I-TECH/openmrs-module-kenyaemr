@@ -7,6 +7,7 @@
 	def initialArtStartDate = calculations.initialArtRegimen ? calculations.initialArtRegimen.firstResult.value.startDate : null
 	def initialArtRegimen = calculations.initialArtRegimen ? kenyaEmrUi.formatRegimen(calculations.initialArtRegimen) : "Never started"
 	def currentArtRegimen = calculations.currentArtRegimen ? kenyaEmrUi.formatRegimen(calculations.currentArtRegimen) : "Not on ARVs"
+	def lastWHOStage = calculations.lastWHOStage ? ui.format(calculations.lastWHOStage.value) : "None"
 %>
 
 <ul>
@@ -23,6 +24,7 @@
 			<li>Initial ART regimen: <b>${ initialArtRegimen }</b></li>
 			<li>Current ART regimen: <b>${ currentArtRegimen }</b></li>
 		<% } %>
+		<li>Last WHO stage: <b>${ lastWHOStage }</b></li>
 
 	<% } %>
 
