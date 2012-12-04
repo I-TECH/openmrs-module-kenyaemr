@@ -28,7 +28,7 @@ import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
 
 /**
  * Calculates the date on which a patient first started ART. Calculation returns the earliest data value for each patient
- * considering all ARV drug orders and ANTIRETROVIRAL_TREATMENT_START_DATE obs
+ * considering all ARV drug orders and ANTIRETROVIRAL_TREATMENT_START_DATE_CONCEPT_UUID obs
  */
 public class InitialArtStartDateCalculation extends BaseKenyaEmrCalculation {
 	
@@ -57,7 +57,7 @@ public class InitialArtStartDateCalculation extends BaseKenyaEmrCalculation {
 		CalculationResultMap earliestOrderDates = earliestStartDates(allDrugOrders(arvs, cohort, context), context);
 
 		// Get dates from obs used when patient is transferred in
-		CalculationResultMap obsDates = firstObs(MetadataConstants.ANTIRETROVIRAL_TREATMENT_START_DATE, cohort, context);
+		CalculationResultMap obsDates = firstObs(MetadataConstants.ANTIRETROVIRAL_TREATMENT_START_DATE_CONCEPT_UUID, cohort, context);
 
 		// Return the earliest of the two
 		CalculationResultMap result = new CalculationResultMap();
