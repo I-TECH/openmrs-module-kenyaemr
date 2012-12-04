@@ -7,11 +7,7 @@
 </div>
 
 <div id="content-main">
-	${ ui.includeFragment("kenyaemr", "patientList", [
-		id: "results",
-		showNumResults: true,
-		page: "medicalEncounterViewPatient"
-	]) }
+	${ ui.includeFragment("kenyaemr", "patientList", [ id: "results", showNumResults: true, page: "medicalEncounterViewPatient", heading: "Matching Patients"]) }
 </div>
 
 <script type="text/javascript">

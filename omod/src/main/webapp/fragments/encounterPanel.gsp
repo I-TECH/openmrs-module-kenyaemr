@@ -5,7 +5,7 @@
 	def providers = config.encounter.providersByRoles.values().collectAll { ui.format(it) }.flatten().join(", ")
 %>
 
-<div class="encounter-panel">
+<div class="stack-item clickable encounter-item">
 	<img src="${ ui.resourceLink("kenyaemr", "images/buttons/form_view.png") }" style="float: left; margin: 2px" alt="View Encounter" />
 	<input type="hidden" name="encounterId" value="${ config.encounter.encounterId }"/>
 	<input type="hidden" name="title" value="${ ui.escapeAttribute(title) }"/>

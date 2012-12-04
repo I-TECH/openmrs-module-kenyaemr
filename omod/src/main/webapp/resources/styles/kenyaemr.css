@@ -129,7 +129,7 @@
 	background-color: #EEB;
 }
 
-/*** Tables ***/
+/*** Decorated tables ***/
 
 table.table-decorated {
 	width: 100%;
@@ -167,7 +167,50 @@ table.table-vertical tbody tr:nth-child(odd) {
 	background-color: #F7F7F7;
 }
 
+/*** Stacks (e.g. patient search results) ***/
+
+.stack-item {
+	border-top: 2px dotted #d1d0c9;
+	padding: 3px;
+}
+
+.stack-item:first-of-type {
+	border-top: 0;
+}
+
+.stack-item:hover {
+	background-color: #FFD;
+}
+
+.stack-item .title {
+	display: block;
+	font-weight: bold;
+	font-size: 1.1em;
+}
+
+.stack-item .icon {
+	float: left;
+	padding-right: 0.3em;
+}
+
+.stack-item .leftText {
+	float: left;
+}
+
+.stack-item .one-column {
+	float: left;
+}
+
 /*** Others... ***/
+
+.identifier-label {
+	font-color: #888888;
+	font-size: 0.8em;
+}
+
+.identifier-value {
+	font-weight: bold;
+}
 
 #patient-col1 {
 	float: left;
@@ -216,31 +259,6 @@ table.table-vertical tbody tr:nth-child(odd) {
 
 .padded {
 	padding: 1em;
-}
-
-.panel:nth-child(odd) {
-	background-color: #e0e0e0;
-}	
-
-.panel {
-	border: 1px #a0a0a0 solid;
-	margin-bottom: 0.5em;
-	padding: 0.2em;
-}
-.panel .title {
-	display: block;
-	font-weight: bold;
-	font-size: 1.1em;
-}
-.panel .icon {
-	float: left;
-	padding-right: 0.3em;
-}
-.panel .leftText {
-	float: left;
-}
-.panel .one-column {
-	float: left;
 }
 
 .clickable {

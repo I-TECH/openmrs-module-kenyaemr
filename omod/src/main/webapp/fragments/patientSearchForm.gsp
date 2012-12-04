@@ -1,5 +1,5 @@
 <%
-	ui.decorateWith("kenyaemr", "panel", [ heading: "Search for a patient" ])
+	ui.decorateWith("kenyaemr", "panel", [ heading: "Search for a Patient" ])
 
 	def defaultWhich = config.defaultWhich ?: "checked-in"
 %>

@@ -1,6 +1,6 @@
 <%
 	// config supports "page", which will set up a clickFunction, that will have userId=... appended
-	// provides a default numResultsFormatter to widget/panelList unless you override it 
+	// provides a default numResultsFormatter to widget/stack unless you override it
 	
 	if (!config.numResultsFormatter) {
 		config.numResultsFormatter = """function(listOfItems) { return listOfItems.length + " user(s)"; }""" 
@@ -8,13 +8,13 @@
 	
 	def clickFunction = null
 	if (config.page) {
-		clickFunction = """function userPanelClicked() {
+		clickFunction = """function () {
 				location.href = ui.pageLink('kenyaemr', '${ config.page }', { userId: jq(this).find('input[name=userId]').val() });
 			}"""
 	}
 %>
 <script type="text/javascript">
-	var userPanelOpts = {
+	var userItemOpts = {
 		icon: '<img width="32" height="32" src="${ ui.resourceLink('uilibrary', 'images/user_32.png') }"/>',
 		title: function(user) {
 			return user.personName + '<input type="hidden" name="userId" value="' + user.userId + '"/>';
@@ -32,12 +32,9 @@
 		}
 	};
 	
-	function formatUserAsPanel(user) {
-		return kenyaemr.threeColumnPanelFormatter(user, userPanelOpts);
+	function formatUserAsStackItem(user) {
+		return kenyaemr.threeColumnStackItemFormatter(user, userItemOpts);
 	}
 </script>
 
-<%= ui.includeFragment("kenyaemr", "widget/panelList", config.merge([
-		itemFormatter: "formatUserAsPanel",
-		clickFunction: clickFunction
-	])) %>
+<%= ui.includeFragment("kenyaemr", "widget/stack", config.merge([ itemFormatter: "formatUserAsStackItem", clickFunction: clickFunction ])) %>

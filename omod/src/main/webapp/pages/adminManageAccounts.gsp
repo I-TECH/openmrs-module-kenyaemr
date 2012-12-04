@@ -45,7 +45,7 @@
 
 
 <div id="content-main">
-	${ ui.includeFragment("kenyaemr", "accountList", [ id: "results", page: "adminEditAccount" ]) }
+	${ ui.includeFragment("kenyaemr", "accountList", [ id: "results", page: "adminEditAccount", heading: "Matching Accounts" ]) }
 </div>
 
 <script type="text/javascript">

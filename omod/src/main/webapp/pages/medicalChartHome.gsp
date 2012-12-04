@@ -16,8 +16,7 @@
 </div>
 
 <div id="content-main">
-	<h2>Recently-viewed patients</h2>
-	${ ui.includeFragment("kenyaemr", "patientList", [ id: "recentlyViewedPatients", page: "medicalChartViewPatient" ]) }
+	${ ui.includeFragment("kenyaemr", "patientList", [ id: "recentlyViewedPatients", page: "medicalChartViewPatient", heading: "Recently Viewed Patients" ]) }
 </div>
 
 

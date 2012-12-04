@@ -18,18 +18,18 @@
 	No visits
 <% } %>
 <% scheduled.each { %>
-	<div class="panel clickable scheduled-visit">
+	<div class="stack-item clickable scheduled-visit">
 		<input type="hidden" name="clickUrl" value="${ ui.pageLink("kenyaemr", config.page, [ patientId: it.patient.id ]) }"/>
 		<table width="100%">
 			<tr>
 				<td width="40%">
 					<span class="icon">
-						<img width="32" height="32" src="${ ui.resourceLink("kenyaemr", "images/patient_" + it.patient.gender + ".gif") }"/>
+						<img width="32" height="32" src="${ ui.resourceLink("kenyaemr", "images/patient_" + it.patient.gender.toLowerCase() + ".png") }" alt="" />
 					</span>
 					
 					<span class="leftText">
 						<span class="title">
-							${ ui.includeFragment("kenyaemr", "kenyaemrPersonName", [ name: it.patient.personName]) }
+							${ ui.includeFragment("kenyaemr", "kenyaemrPersonName", [ name: it.patient.personName ]) }
 						</span>
 						<span class="leftDetails">
 							${ ui.includeFragment("kenyaemr", "kenyaemrPersonAgeAndBirthdate", [ person: it.patient ]) }

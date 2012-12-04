@@ -1,6 +1,6 @@
 <%
 	// config supports "page", which will set up a clickFunction, that will have providerId=... appended
-	// provides a default numResultsFormatter to widget/panelList unless you override it
+	// provides a default numResultsFormatter to widget/stack unless you override it
 	
 	if (!config.numResultsFormatter) {
 		config.numResultsFormatter = """function(listOfItems) { return listOfItems.length + " provider(s)"; }""" 
@@ -8,13 +8,13 @@
 	
 	def clickFunction = null
 	if (config.page) {
-		clickFunction = """function providerPanelClicked() {
+		clickFunction = """function () {
 				location.href = ui.pageLink('kenyaemr', '${ config.page }', { providerId: jq(this).find('input[name=providerId]').val() });
 			}"""
 	}
 %>
 <script type="text/javascript">
-	var providerPanelOpts = {
+	var providerItemOpts = {
 		icon: '<img width="32" height="32" src="${ ui.resourceLink('uilibrary', 'images/user_business_32.png') }"/>',
 		title: function(provider) {
 			return (provider.person ? provider.person.personName : provider.name) + '<input type="hidden" name="providerId" value="' + provider.providerId + '"/>';
@@ -36,12 +36,9 @@
 		}
 	};
 	
-	function formatProviderAsPanel(provider) {
-		return kenyaemr.twoColumnPanelFormatter(provider, providerPanelOpts);
+	function formatProviderAsStackItem(provider) {
+		return kenyaemr.twoColumnStackItemFormatter(provider, providerItemOpts);
 	}
 </script>
 
-<%= ui.includeFragment("kenyaemr", "widget/panelList", config.merge([
-		itemFormatter: "formatProviderAsPanel",
-		clickFunction: clickFunction
-	])) %>
+<%= ui.includeFragment("kenyaemr", "widget/stack", config.merge([ itemFormatter: "formatProviderAsStackItem", clickFunction: clickFunction ])) %>

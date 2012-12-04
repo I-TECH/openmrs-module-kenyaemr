@@ -1,9 +1,11 @@
 <%
+	ui.decorateWith("kenyaemr", "panel", [ heading: config.heading ])
+
 	// config supports "page", which will set up a clickFunction, that will have patientId=... appended
 
 	def clickFunction = null
 	if (config.page) {
-		clickFunction = """function() {
+		clickFunction = """function () {
 				location.href = ui.pageLink('kenyaemr', '${ config.page }', { patientId: jq(this).find('input[name=patientId]').val() });
 			}"""
 	}
@@ -21,7 +23,7 @@
 		noneMessage = null
 %>
 <script type="text/javascript">
-	var patientPanelOpts = {
+	var patientItemOpts = {
 		title: function(patient) {
 			return patient.personName + ' <input type="hidden" name="patientId" value="' + patient.patientId + '"/>';
 		},
@@ -48,22 +50,9 @@
 		}
 	};
 	
-	function formatPatientAsPanel(patient) {
-		return kenyaemr.threeColumnPanelFormatter(patient, patientPanelOpts);
+	function formatPatientAsStackItem(patient) {
+		return kenyaemr.threeColumnStackItemFormatter(patient, patientItemOpts);
 	}
 </script>
 
-<style type="text/css">
-	.identifier-label {
-		font-color: #888888;
-		font-size: 0.8em;
-	}	
-	.identifier-value {
-		font-weight: bold;
-	}
-</style>
-
-<%= ui.includeFragment("kenyaemr", "widget/panelList", config.merge([
-		itemFormatter: "formatPatientAsPanel",
-		clickFunction: clickFunction
-	])) %>
+<%= ui.includeFragment("kenyaemr", "widget/stack", config.merge([ itemFormatter: "formatPatientAsStackItem", clickFunction: clickFunction ])) %>
