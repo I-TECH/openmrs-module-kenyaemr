@@ -1,7 +1,5 @@
 <%
 	ui.decorateWith("kenyaemr", "standardKenyaEmrPage", [ patient: patient, layout: "sidebar" ])
-
-	//def kenyaEmrWebUtils = context.loadClass("org.openmrs.module.kenyaemr.KenyaEmrUiUtils")
 %>
 <div id="content-side">
 
@@ -108,30 +106,18 @@
 
 		${ ui.includeFragment("kenyaemr", "medicalChartPatientProgram", [ patientProgram: program ]) }
 
-	<% } else {
-		def cs = context.conceptService
-		def conceptList = [ cs.getConcept(5089), cs.getConcept(5497) ] // Weight and CD4
-	%>
+	<% } else { %>
 
-		<div class="panel-frame">
-			<div class="panel-heading">CD4/Weight</div>
-			<div class="panel-content">
-				<div style="float: left; width: 49%">
-					${ ui.includeFragment("kenyaemr", "obsTableByDate", [ id: "tblhistory", concepts: conceptList ]) }
-				</div>
-				<div style="float: right; width: 49%">
-					${ ui.includeFragment("kenyaemr", "obsGraphByDate", [ id: "cd4graph", concepts: conceptList, showUnits: true, style: "height: 300px" ]) }
-				</div>
-			</div>
-		</div>
+		${ ui.includeFragment("kenyaemr", "medicalChartPatientOverview") }
+
 	<% } %>
 
 </div>
 
 <% if (visit) { %>
 
-${ ui.includeFragment("kenyaemr", "showHtmlForm", [ id: "showHtmlForm", style: "display: none" ]) }
+	${ ui.includeFragment("kenyaemr", "showHtmlForm", [ id: "showHtmlForm", style: "display: none" ]) }
 
-${ ui.includeFragment("kenyaemr", "dialogSupport") }
+	${ ui.includeFragment("kenyaemr", "dialogSupport") }
 
 <% } %>
