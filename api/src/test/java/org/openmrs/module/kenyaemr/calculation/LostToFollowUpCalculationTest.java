@@ -28,6 +28,7 @@ import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
+import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.kenyaemr.test.TestUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
@@ -51,7 +52,7 @@ public class LostToFollowUpCalculationTest extends BaseModuleContextSensitiveTes
 	public void evaluate_shouldDetermineWhetherPatientsAreLostToFollowUp() throws Exception {
 
 		// Get HIV Program
-		Program hivProgram = Context.getProgramWorkflowService().getPrograms("HIV Program").get(0);
+		Program hivProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.HIV_PROGRAM_UUID);
 
 		// Enroll patients #6, #7, #8 in the HIV Program
 		PatientService ps = Context.getPatientService();

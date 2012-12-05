@@ -22,6 +22,9 @@ import org.openmrs.calculation.CalculationProvider;
 import org.openmrs.calculation.ConfigurableCalculation;
 import org.openmrs.calculation.InvalidCalculationException;
 import org.openmrs.module.kenyaemr.calculation.art.*;
+import org.openmrs.module.kenyaemr.calculation.cd4.DecliningCD4Calculation;
+import org.openmrs.module.kenyaemr.calculation.cd4.LastCD4Calculation;
+import org.openmrs.module.kenyaemr.calculation.cd4.NeedsCD4Calculation;
 import org.springframework.stereotype.Component;
 
 /**
@@ -37,12 +40,10 @@ public class KenyaEmrCalculationProvider implements CalculationProvider {
 	public KenyaEmrCalculationProvider() {
 
 		// General
-		map.put("decliningCd4", DecliningCD4Calculation.class);
 		map.put("inTBProgram", InTBProgramCalculation.class);
 		map.put("lastWHOStage", LastWHOStageCalculation.class);
 		map.put("lostToFollowUp", LostToFollowUpCalculation.class);
         map.put("missedAppointmentsOrDefaulted", MissedAppointmentsOrDefaultedCalculation.class);
-		map.put("needsCd4", NeedsCD4Calculation.class);
 		map.put("neverScreenedForTB", NeverScreenedForTBCalculation.class);
 
 		// ART
@@ -52,6 +53,11 @@ public class KenyaEmrCalculationProvider implements CalculationProvider {
 		map.put("initialArtStartDate", InitialArtStartDateCalculation.class);
 		map.put("onArt", OnArtCalculation.class);
 		map.put("onSecondLine", OnSecondLineCalculation.class);
+
+		// CD4
+		map.put("decliningCD4", DecliningCD4Calculation.class);
+		map.put("needsCD4", NeedsCD4Calculation.class);
+		map.put("lastCD4", LastCD4Calculation.class);
 	}
 
 	/**

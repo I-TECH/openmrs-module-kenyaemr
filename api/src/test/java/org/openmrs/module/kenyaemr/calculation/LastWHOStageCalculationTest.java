@@ -24,7 +24,7 @@ public class LastWHOStageCalculationTest extends BaseModuleContextSensitiveTest 
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.calculation.NeedsCD4Calculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
+	 * @see org.openmrs.module.kenyaemr.calculation.cd4.NeedsCD4Calculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
 	 * @verifies calculate last recorded WHO stage for all patients
 	 */
 	@Test

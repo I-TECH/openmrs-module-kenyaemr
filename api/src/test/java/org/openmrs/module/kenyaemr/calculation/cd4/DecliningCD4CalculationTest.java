@@ -11,20 +11,19 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.kenyaemr.calculation;
+package org.openmrs.module.kenyaemr.calculation.cd4;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Concept;
-import org.openmrs.Obs;
-import org.openmrs.Patient;
 import org.openmrs.Program;
 import org.openmrs.api.PatientService;
-import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
+import org.openmrs.module.kenyaemr.MetadataConstants;
+import org.openmrs.module.kenyaemr.calculation.cd4.DecliningCD4Calculation;
 import org.openmrs.module.kenyaemr.test.TestUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
@@ -41,14 +40,14 @@ public class DecliningCD4CalculationTest extends BaseModuleContextSensitiveTest 
 	}
 
 	/**
-	 * @see DecliningCD4Calculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
+	 * @see org.openmrs.module.kenyaemr.calculation.cd4.DecliningCD4Calculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
 	 * @verifies determine whether patients have a decline in CD4
 	 */
 	@Test
 	public void evaluate_shouldDetermineWhetherPatientsHasDeclinedCD4() throws Exception {
 
 		// Get HIV Program
-		Program hivProgram = Context.getProgramWorkflowService().getPrograms("HIV Program").get(0);
+		Program hivProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.HIV_PROGRAM_UUID);
 
 		// Enroll patients #6, #7 and #8 in the HIV Program
 		PatientService ps = Context.getPatientService();
@@ -57,7 +56,7 @@ public class DecliningCD4CalculationTest extends BaseModuleContextSensitiveTest 
 		}
 
 		// Give patients #7 and #8 a CD4 count 180 days ago
-		Concept cd4 = Context.getConceptService().getConcept(5497);
+		Concept cd4 = Context.getConceptService().getConceptByUuid(MetadataConstants.CD4_CONCEPT_UUID);
 		Calendar calendar = Calendar.getInstance();
 		calendar.add(Calendar.DATE, -180);
 		TestUtils.saveObs(ps.getPatient(7), cd4, 123d, calendar.getTime());

@@ -11,7 +11,7 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.kenyaemr.calculation;
+package org.openmrs.module.kenyaemr.calculation.cd4;
 
 import java.util.Collection;
 import java.util.Map;
@@ -24,6 +24,9 @@ import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.ObsResult;
 import org.openmrs.module.kenyaemr.KenyaEmrConstants;
 import org.openmrs.module.kenyaemr.MetadataConstants;
+import org.openmrs.module.kenyaemr.calculation.BaseKenyaEmrCalculation;
+import org.openmrs.module.kenyaemr.calculation.BooleanResult;
+import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
 
 /**
  * Calculate whether patients are due for a CD4 count. Calculation returns true if if the patient

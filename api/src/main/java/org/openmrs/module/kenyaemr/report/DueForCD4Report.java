@@ -13,7 +13,7 @@
  */
 package org.openmrs.module.kenyaemr.report;
 
-import org.openmrs.module.kenyaemr.calculation.NeedsCD4Calculation;
+import org.openmrs.module.kenyaemr.calculation.cd4.NeedsCD4Calculation;
 import org.springframework.stereotype.Component;
 
 

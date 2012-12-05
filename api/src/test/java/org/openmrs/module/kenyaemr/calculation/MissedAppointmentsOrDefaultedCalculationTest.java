@@ -27,6 +27,7 @@ import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
+import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.kenyaemr.test.TestUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
@@ -50,8 +51,7 @@ public class MissedAppointmentsOrDefaultedCalculationTest extends BaseModuleCont
 	public void evaluate_shouldDetermineWhetherPatientsWhoMissedAppointmentsOrDefaulted() throws Exception {
 
 		// Get HIV Program
-		ProgramWorkflowService pws = Context.getProgramWorkflowService();
-		Program hivProgram = pws.getPrograms("HIV Program").get(0);
+		Program hivProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.HIV_PROGRAM_UUID);
 
 		// Enroll patients #6, #7, #8 in the HIV Program
 		PatientService ps = Context.getPatientService();
