@@ -16,7 +16,12 @@ var kenyaemr = (function($) {
 		 * values may specify (as function(data) or static text): icon, title, leftDetails, center, right
 		 */
 		twoColumnStackItemFormatter: function(data, values) {
+			var clickUrl = formatHelper(data, values.clickUrl);
+
 			var ret = '<div class="stack-item clickable">';
+			if (clickUrl) {
+				ret += '<input type="hidden" name="clickUrl" value="' + clickUrl + '" />'
+			}
 			ret += '<table width="100%"><tr valign="top"><td width="50%">';
 			ret += '<span class="icon">' + formatHelper(data, values.icon) + '</span>';
 			ret += '<span class="leftText">';
@@ -34,7 +39,12 @@ var kenyaemr = (function($) {
 		 * values may specify (as function(data) or static text): icon, title, leftDetails, center, right
 		 */
 		threeColumnStackItemFormatter: function(data, values) {
+			var clickUrl = formatHelper(data, values.clickUrl);
+
 			var ret = '<div class="stack-item clickable">';
+			if (clickUrl) {
+				ret += '<input type="hidden" name="clickUrl" value="' + clickUrl + '" />'
+			}
 			ret += '<table width="100%"><tr valign="top"><td width="40%">';
 			ret += '<span class="icon">' + formatHelper(data, values.icon) + '</span>';
 			ret += '<span class="leftText">';
@@ -70,5 +80,15 @@ $(function() {
 		var href = a ? a.attr('href') : null;
 		if (href)
 			location.href = href;
+	});
+
+	/**
+	 * Clicking on a stack-item should direct you to the URL specified in the clickUrl hidden input
+	 */
+	jq('.stack-item').click(function(evt) {
+		var clickUrl = jq(this).find('input[name=clickUrl]');
+		if (clickUrl) {
+			location.href = clickUrl.val();
+		}
 	});
 });

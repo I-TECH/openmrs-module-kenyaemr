@@ -1,5 +1,5 @@
 <%
-	def heading = "Schedule for "
+	def heading = "Scheduled for "
 	if (isToday)
 		heading += "Today"
 	else if (isTomorrow)
@@ -36,7 +36,7 @@
 						</span>
 					</span>
 				</td>
-				<td align="center width="30%">
+				<td align="left" width="30%">
 					<% it.patient.activeIdentifiers.each { %>
 						<span class="identifier-label">${ ui.format(it.identifierType) }:</span><br/>
 						<span class="identifier-value">${ it.identifier }</span><br/>
@@ -51,7 +51,7 @@
 						</u>
 						<br/>
 						<% it.visits.each { v -> %>
-							<div class="encounter-panel">
+							<div class="active-visit">
 								<input type="hidden" name="clickUrl" value="${ ui.pageLink("kenyaemr", config.page, [ patientId: it.patient.id, visitId: v.id ]) }"/>
 								${ ui.format(v.visitType) } visit<br/>
 								<span style="color: gray">
@@ -62,10 +62,7 @@
 
 					<% } else { %>
 
-						<i>
-							Not seen today
-							<img src="${ ui.resourceLink("uilibrary", "images/close_32.png") }"/>
-						</i>
+						<i>Not seen today</i>
 						
 					<% } %>
 				</td>
@@ -73,13 +70,3 @@
 		</table>
 	</div>
 <% } %>
-</ul>
-
-<script type="text/javascript">
-	jq(function() {
-		jq('.scheduled-visit').click(function(evt) {
-			var url = jq(this).find('input[name=clickUrl]').val();
-			location.href = url;
-		});
-	});
-</script>

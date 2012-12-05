@@ -40,9 +40,13 @@
 
 		<div class="panel-content">
 			Close all open visits of the following types:
-			<form id="close-visits-form" method="post" action="">
+			<form id="close-visits-form" method="post" action="${ ui.actionLink("kenyaemr", "registrationUtil", "closeActiveVisits") }">
 				<div class="form-data"></div>
 				<input type="submit" value="Close Visits" />
+				<div class="global-error-container" style="display: none">
+					${ ui.message("fix.error.plain") }
+					<ul class="global-error-content"></ul>
+				</div>
 			</form>
 		</div>
 	</div>
@@ -65,19 +69,11 @@
 			}
 		});
 
-		jq('#close-visits-form').submit(function () {
-
-			ui.getFragmentActionAsJson('kenyaemr', 'registrationUtil', 'closeActiveVisits', jq(this).serialize(), function (result) {
-				if (result.success) {
-					notifySuccess(result.message);
-					loadActiveVisitTypes();
-				}
-				else {
-					notifyError(result.globalErrors[0]);
-				}
-			});
-
-			return false;
+		ui.setupAjaxPost('#close-visits-form', {
+			onSuccess: function (result) {
+				loadActiveVisitTypes();
+				notifySuccess(result.message);
+			}
 		});
 
 		loadActiveVisitTypes();
