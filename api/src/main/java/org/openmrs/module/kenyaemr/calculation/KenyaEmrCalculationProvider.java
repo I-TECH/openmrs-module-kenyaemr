@@ -23,7 +23,8 @@ import org.openmrs.calculation.ConfigurableCalculation;
 import org.openmrs.calculation.InvalidCalculationException;
 import org.openmrs.module.kenyaemr.calculation.art.*;
 import org.openmrs.module.kenyaemr.calculation.cd4.DecliningCD4Calculation;
-import org.openmrs.module.kenyaemr.calculation.cd4.LastCD4Calculation;
+import org.openmrs.module.kenyaemr.calculation.cd4.LastCD4CountCalculation;
+import org.openmrs.module.kenyaemr.calculation.cd4.LastCD4PercentageCalculation;
 import org.openmrs.module.kenyaemr.calculation.cd4.NeedsCD4Calculation;
 import org.springframework.stereotype.Component;
 
@@ -57,7 +58,8 @@ public class KenyaEmrCalculationProvider implements CalculationProvider {
 		// CD4
 		map.put("decliningCD4", DecliningCD4Calculation.class);
 		map.put("needsCD4", NeedsCD4Calculation.class);
-		map.put("lastCD4", LastCD4Calculation.class);
+		map.put("lastCD4Count", LastCD4CountCalculation.class);
+		map.put("lastCD4Percent", LastCD4PercentageCalculation.class);
 	}
 
 	/**

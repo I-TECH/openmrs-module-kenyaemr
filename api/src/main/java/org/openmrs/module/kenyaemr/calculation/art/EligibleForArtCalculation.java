@@ -26,6 +26,9 @@ import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.kenyaemr.calculation.BaseKenyaEmrCalculation;
 import org.openmrs.module.kenyaemr.calculation.BooleanResult;
 import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
+import org.openmrs.module.kenyaemr.calculation.LastWHOStageCalculation;
+import org.openmrs.module.kenyaemr.calculation.cd4.LastCD4CountCalculation;
+import org.openmrs.module.kenyaemr.calculation.cd4.LastCD4PercentageCalculation;
 import org.openmrs.module.reporting.common.Age;
 
 
@@ -64,9 +67,9 @@ public class EligibleForArtCalculation extends BaseKenyaEmrCalculation {
 		
 		CalculationResultMap ages = ages(cohort, context);
 		
-		CalculationResultMap lastWhoStage = lastObs(MetadataConstants.WHO_STAGE_CONCEPT_UUID, cohort, context);
-		CalculationResultMap lastCd4 = lastObs(MetadataConstants.CD4_CONCEPT_UUID, cohort, context);
-		CalculationResultMap lastCd4Percent = lastObs(MetadataConstants.CD4_PERCENT_CONCEPT_UUID, cohort, context);
+		CalculationResultMap lastWhoStage = calculate(new LastWHOStageCalculation(), cohort, context);
+		CalculationResultMap lastCd4 = calculate(new LastCD4CountCalculation(), cohort, context);
+		CalculationResultMap lastCd4Percent = calculate(new LastCD4PercentageCalculation(), cohort, context);
 		
 		CalculationResultMap ret = new CalculationResultMap();
 		for (Integer ptId : cohort) {

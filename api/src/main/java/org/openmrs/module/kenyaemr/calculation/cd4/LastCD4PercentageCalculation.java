@@ -23,13 +23,13 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- * Calculates the last CD4 of patients. Calculation returns NULL for patients with no recorded CD4
+ * Calculates the last CD4 percentage of patients. Calculation returns NULL for patients with no recorded CD4 count
  */
-public class LastCD4Calculation extends BaseKenyaEmrCalculation {
+public class LastCD4PercentageCalculation extends BaseKenyaEmrCalculation {
 
     @Override
     public String getShortMessage() {
-        return "Last CD4";
+        return "Last CD4 Percentage";
     }
 
 	@Override
@@ -39,10 +39,10 @@ public class LastCD4Calculation extends BaseKenyaEmrCalculation {
 
     /**
      * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
-     * @should calculate last recorded CD4 for all patients
+     * @should calculate last CD4 percentage for all patients
      */
     @Override
     public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
-		return lastObs(MetadataConstants.CD4_CONCEPT_UUID, cohort, context);
+		return lastObs(MetadataConstants.CD4_PERCENT_CONCEPT_UUID, cohort, context);
     }
 }

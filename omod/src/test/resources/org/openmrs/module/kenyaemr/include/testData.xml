@@ -7,10 +7,12 @@
 	<location_attribute location_attribute_id="1000" location_id="1" attribute_type_id="1" value_reference="1234" creator="1" date_created="2005-01-01 00:00:00.0" voided="0" uuid="482684c0-d02a-11e1-9bad-45c1fa9f2d05"/>
 
 	<concept concept_id="5497" retired="false" datatype_id="1" class_id="1" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="5497AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+	<concept_name concept_name_id="5497" concept_id="5497" name="CD4 COUNT" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="5497-name"/>
+	<concept_numeric concept_id="5497" units="cells/uL" precise="false"/>
 
 	<concept concept_id="730" retired="false" datatype_id="1" class_id="1" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="730AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 	<concept_name concept_name_id="730" concept_id="730" name="CD4%" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="730-name"/>
-	<concept_numeric concept_id="5497" units="%" precise="false"/>
+	<concept_numeric concept_id="730" units="%" precise="false"/>
 
 	<concept concept_id="5356" retired="false" datatype_id="2" class_id="7" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="5356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 	<concept_name concept_name_id="5356" concept_id="5356" name="CURRENT WHO STAGE" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="5356-name"/>
