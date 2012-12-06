@@ -1,15 +1,29 @@
 <%
 	ui.decorateWith("kenyaemr", "standardKenyaEmrPage", [ layout: "sidebar" ])
 
-	def formatMap = { map ->
-		def ret = "<table>"
-		map.each {
-			ret += '<tr valign="top">'
-			ret += "<th>${ it.key }</th>"
-			ret += "<td>${ ui.format(it.value) }</td>"
+	/**
+	 * Formats a list of informational SimpleObjects as a decorated table
+	 */
+	def formatInfoList = { list ->
+		def ret = "<table class=\"table-decorated table-vertical\"><tbody>"
+		list.each { obj ->
+			ret += "<tr>"
+			obj.each { entry ->
+				def property = entry.key
+				if (property == "version") {
+					// Version numbers look best left-aligned
+					ret += "<td style=\"text-align: left\">${ obj[property] }</td>"
+				} else if (property == "started" || property == "imported") {
+					// Use icon instead of text
+					def icon = obj[property] == "true" ? "success.png" : "alert.png"
+					ret += "<td style=\"text-align: right\"><img src=\"" + ui.resourceLink("kenyaemr", "images/" + icon) + "\" alt=\"\" /></td>"
+				} else {
+					ret += "<td>${ obj[property] }</td>"
+				}
+			}
 			ret += "</tr>"
 		}
-		ret += "</table>"
+		ret += "</tbody></table>"
 		return ret
 	}
 %>
@@ -44,22 +58,19 @@
 
 <div id="content-main">
 
-	<script type="text/javascript">
-		jq(function() {
-			jq('.accordion').accordion();
-		});
-	</script>
+	<% info.each { %>
 
-	<div class="accordion">
-		<% info.each { %>
-			<h3><a href="#">${ it.key }</a></h3>
-			<div>
-				<% if (it.value instanceof java.util.Map) { %>
-					${ formatMap(it.value) }
-				<% } else { %>
-					${ ui.format(it.value) }
-				<% } %>
-			</div>
-		<% } %>
+	<div class="panel-frame">
+		<div class="panel-heading">${ it.key }</div>
+		<div class="panel-content">
+			<% if (it.value instanceof java.util.List) { %>
+				${ formatInfoList(it.value) }
+			<% } else { %>
+				${ ui.format(it.value) }
+			<% } %>
+		</div>
 	</div>
+
+	<% } %>
+
 </div>
