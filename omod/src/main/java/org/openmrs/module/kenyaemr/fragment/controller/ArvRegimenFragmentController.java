@@ -22,6 +22,7 @@ import org.openmrs.DrugOrder;
 import org.openmrs.Patient;
 import org.openmrs.api.OrderService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyaemr.KenyaEmrUiUtils;
 import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.kenyaemr.ValidatingCommandObject;
 import org.openmrs.module.kenyaemr.regimen.Regimen;
@@ -37,27 +38,33 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
- *
+ * Various handlers for regimen related functions
  */
 public class ArvRegimenFragmentController {
-	
+
+	/**
+	 * Gets the specified patient's current regimen
+	 * @param patient the patient
+	 * @param ui the UI utils
+	 * @return the regimen as a simple object
+	 */
 	public SimpleObject currentRegimen(@RequestParam("patientId") Patient patient, UiUtils ui) {
 		Concept arvs = Context.getConceptService().getConceptByUuid(MetadataConstants.ANTIRETROVIRAL_DRUGS_CONCEPT_UUID);
 		RegimenHistory history = RegimenHistory.forPatient(patient, arvs);
 		Regimen reg = history.getCurrentRegimen();
-		return reg == null ? SimpleObject.create("shortDisplay", "None", "longDisplay", "None") : SimpleObject.create(
-		    "shortDisplay", reg.getShortDisplay(ui), "longDisplay", reg.getLongDisplay(ui));
+		return reg == null
+				? SimpleObject.create("shortDisplay", "None", "longDisplay", "None")
+				: SimpleObject.create("shortDisplay", reg.getShortDisplay(ui), "longDisplay", reg.getLongDisplay(ui));
 	}
-	
+
 	/**
 	 * @param patient
-	 * @return a list of object with { startDate, endDate, shortDisplay, longDisplay,
-	 *         changeReasons[] }
+	 * @return a list of object with { startDate, endDate, shortDisplay, longDisplay, changeReasons[] }
 	 */
 	public List<SimpleObject> regimenHistory(@RequestParam("patientId") Patient patient, UiUtils ui) {
 		Concept arvs = Context.getConceptService().getConceptByUuid(MetadataConstants.ANTIRETROVIRAL_DRUGS_CONCEPT_UUID);
 		RegimenHistory history = RegimenHistory.forPatient(patient, arvs);
-		return history.asSimpleRegimenHistory(ui);
+		return KenyaEmrUiUtils.simpleRegimenHistory(history, ui);
 	}
 	
 	public SimpleObject startRegimen(UiUtils ui, @RequestParam("patient") Patient patient,
@@ -95,7 +102,7 @@ public class ArvRegimenFragmentController {
 		
 		return currentRegimen(patient, ui);
 	}
-	
+
 	public ArvRegimenCommandObject newArvRegimenCommandObject() {
 		return new ArvRegimenCommandObject();
 	}

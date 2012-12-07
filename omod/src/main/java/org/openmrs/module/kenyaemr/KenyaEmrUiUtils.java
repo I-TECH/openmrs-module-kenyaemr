@@ -13,11 +13,17 @@
  */
 package org.openmrs.module.kenyaemr;
 
+import org.openmrs.Concept;
 import org.openmrs.DrugOrder;
 import org.openmrs.calculation.result.ListResult;
 import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
+import org.openmrs.module.kenyaemr.regimen.Regimen;
+import org.openmrs.module.kenyaemr.regimen.RegimenChange;
+import org.openmrs.module.kenyaemr.regimen.RegimenHistory;
 import org.openmrs.module.kenyaemr.util.KenyaEmrUtils;
 import org.openmrs.ui.framework.FormatterImpl;
+import org.openmrs.ui.framework.SimpleObject;
+import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.util.OpenmrsUtil;
 
 import java.text.DateFormat;
@@ -80,5 +86,50 @@ public class KenyaEmrUiUtils {
 		}
 
 		return OpenmrsUtil.join(components, " + ");
+	}
+
+	/**
+	 * Converts the given regimen history to simple objects
+	 * @param history the regimen history
+	 * @param ui the UI utils
+	 * @return a list of object with { startDate, endDate, shortDisplay, longDisplay, changeReasons[] }
+	 */
+	public static List<SimpleObject> simpleRegimenHistory(RegimenHistory history, UiUtils ui) {
+		List<RegimenChange> changes = history.getChanges();
+
+		List<SimpleObject> ret = new ArrayList<SimpleObject>();
+
+		if (changes.size() == 0) {
+			return ret;
+		}
+
+		for (int i = 0; i < changes.size(); ++i) {
+			RegimenChange change = changes.get(i);
+			Date startDate = change.getDate();
+			Regimen reg = change.getStarted();
+			Date endDate = null;
+			List<String> changeReasons = new ArrayList<String>();
+			if (i + 1 < changes.size()) {
+				RegimenChange next = changes.get(i + 1);
+				endDate = next.getDate();
+				if (next.getChangeReasons() != null) {
+					for (Concept c : next.getChangeReasons()) {
+						changeReasons.add(ui.format(c));
+					}
+				}
+				if (next.getChangeReasonsNonCoded() != null) {
+					changeReasons.addAll(next.getChangeReasonsNonCoded());
+				}
+			}
+			ret.add(SimpleObject.create(
+					"startDate", KenyaEmrUiUtils.formatDateNoTime(startDate),
+					"endDate", KenyaEmrUiUtils.formatDateNoTime(endDate),
+					"shortDisplay", reg.getShortDisplay(ui),
+					"longDisplay", reg.getLongDisplay(ui),
+					"changeReasons", changeReasons
+			));
+		}
+
+		return ret;
 	}
 }

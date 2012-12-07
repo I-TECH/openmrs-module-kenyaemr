@@ -115,46 +115,6 @@ public class RegimenHistory {
 	}
 	
 	/**
-	 * @param history
-	 * @param ui
-	 * @return a list of object with { startDate, endDate, shortDisplay, longDisplay,
-	 *         changeReasons[] }
-	 */
-	public List<SimpleObject> asSimpleRegimenHistory(UiUtils ui) {
-		List<RegimenChange> changes = getChanges();
-		
-		List<SimpleObject> ret = new ArrayList<SimpleObject>();
-		
-		if (changes.size() == 0) {
-			return ret;
-		}
-		
-		for (int i = 0; i < changes.size(); ++i) {
-			RegimenChange change = changes.get(i);
-			Date startDate = change.getDate();
-			Regimen reg = change.getStarted();
-			Date endDate = null;
-			List<String> changeReasons = new ArrayList<String>();
-			if (i + 1 < changes.size()) {
-				RegimenChange next = changes.get(i + 1);
-				endDate = next.getDate();
-				if (next.getChangeReasons() != null) {
-					for (Concept c : next.getChangeReasons()) {
-						changeReasons.add(ui.format(c));
-					}
-				}
-				if (next.getChangeReasonsNonCoded() != null) {
-					changeReasons.addAll(next.getChangeReasonsNonCoded());
-				}
-			}
-			ret.add(SimpleObject.create("startDate", ui.format(startDate), "endDate", ui.format(endDate), "shortDisplay",
-			    reg.getShortDisplay(ui), "longDisplay", reg.getLongDisplay(ui), "changeReasons", changeReasons));
-		}
-		
-		return ret;
-	}
-	
-	/**
 	 * @param changes the changes to set
 	 */
 	public void setChanges(List<RegimenChange> changes) {

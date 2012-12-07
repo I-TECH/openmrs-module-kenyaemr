@@ -13,22 +13,24 @@
  */
 package org.openmrs.module.kenyaemr.page.controller;
 
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import org.openmrs.Concept;
+import org.openmrs.ConceptName;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyaemr.KenyaEmrUiUtils;
 import org.openmrs.module.kenyaemr.MetadataConstants;
+import org.openmrs.module.kenyaemr.regimen.RegimenDefinition;
 import org.openmrs.module.kenyaemr.regimen.RegimenHistory;
+import org.openmrs.module.kenyaemr.regimen.RegimenManager;
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.page.PageModel;
 import org.springframework.web.bind.annotation.RequestParam;
 
-
 /**
- *
+ * Controller for ARV regimen edit screen
  */
 public class MedicalEncounterArvRegimenPageController {
 
@@ -43,11 +45,17 @@ public class MedicalEncounterArvRegimenPageController {
 		Concept arvSet = Context.getConceptService().getConceptByUuid(MetadataConstants.ANTIRETROVIRAL_DRUGS_CONCEPT_UUID);
 		RegimenHistory history = RegimenHistory.forPatient(patient, arvSet);
 		model.addAttribute("history", history);
-		model.addAttribute("regimenHistoryJson", ui.toJson(history.asSimpleRegimenHistory(ui)));
+		model.addAttribute("regimenHistoryJson", ui.toJson(KenyaEmrUiUtils.simpleRegimenHistory(history, ui)));
 		
-		List<Concept> arvs = Context.getConceptService().getConceptByUuid(MetadataConstants.ANTIRETROVIRAL_DRUGS_CONCEPT_UUID).getSetMembers();
-		model.addAttribute("arvs", arvs);
-		
-	}
+		Set<Integer> arvConceptIds = RegimenManager.getDrugConceptIds("ARV");
+		List<Concept> arvList = new ArrayList<Concept>();
+		for (Integer conceptId : arvConceptIds) {
+			arvList.add(Context.getConceptService().getConcept(conceptId));
+		}
 
+		List<RegimenDefinition> regimenDefinitions = RegimenManager.getRegimenDefinitions("ARV");
+
+		model.addAttribute("arvs", arvList);
+		model.addAttribute("regimenDefinitions", regimenDefinitions);
+	}
 }
