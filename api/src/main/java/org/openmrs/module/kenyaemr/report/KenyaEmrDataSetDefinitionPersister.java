@@ -117,7 +117,7 @@ public class KenyaEmrDataSetDefinitionPersister implements DataSetDefinitionPers
 
         @Override
         public String toString() {
-            return managerClassname + ":" + dsdName;
+            return managerClassname.replaceAll("\\.", "-") + ":" + dsdName;
         }
     }
 
