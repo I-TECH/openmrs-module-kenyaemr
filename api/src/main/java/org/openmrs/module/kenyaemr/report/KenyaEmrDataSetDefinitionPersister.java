@@ -103,7 +103,7 @@ public class KenyaEmrDataSetDefinitionPersister implements DataSetDefinitionPers
 
         public ManagerAndDsdName(String s) {
             String[] split = s.split(":");
-            managerClassname = split[0];
+            managerClassname = split[0].replaceAll("-", ".");
             dsdName = split[1];
         }
 
