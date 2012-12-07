@@ -1,0 +1,29 @@
+<!--
+	Defines the standard Kenya regimens
+-->
+<definitions version="1">
+	<category code="ARV">
+		<drugs>
+			<drug code="D4T" conceptUuid="84309AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><!-- Stavudine -->
+			<drug code="AZT" conceptUuid="86663AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><!-- Zidovudine -->
+			<drug code="3TC" conceptUuid="78643AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><!-- Lamivudine -->
+		</drugs>
+		<regimens>
+			<!-- Adult fixed dose combinations -->
+			<regimen name="AZT + 3TC (300mg/150mg)" pediatric="false">
+				<component drugCode="AZT" dose="300" />
+				<component drugCode="3TC" dose="150" />
+			</regimen>
+			<regimen name="D4T + 3TC (30mg/150mg)" pediatric="false">
+				<component drugCode="D4T" dose="30" />
+				<component drugCode="3TC" dose="150" />
+			</regimen>
+
+			<!-- Children fixed dose combinations -->
+			<regimen name="AZT + 3TC (60mg/30mg)" pediatric="true">
+				<component drugCode="AZT" dose="60" />
+				<component drugCode="3TC" dose="30" />
+			</regimen>
+		</regimens>
+	</category>
+</definitions>

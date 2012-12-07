@@ -32,7 +32,7 @@ public class KenyaEmrActivatorTest extends BaseModuleContextSensitiveTest {
 		Assert.assertNotNull(Context.getEncounterService().getEncounterTypeByUuid(uuid));
 		
 		// simulate starting a second time
-		boolean anyChanges = activator.setupInitialData();
+		boolean anyChanges = activator.setupMetadataPackages();
 		Assert.assertFalse(anyChanges);
 		Assert.assertNotNull(Context.getEncounterService().getEncounterTypeByUuid(uuid));
 	}

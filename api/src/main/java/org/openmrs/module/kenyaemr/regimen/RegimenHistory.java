@@ -59,21 +59,21 @@ public class RegimenHistory {
 			}
 		}
 		
-		List<RegChange> tempChanges = new ArrayList<RegimenHistory.RegChange>();
+		List<DrugOrderChange> tempChanges = new ArrayList<DrugOrderChange>();
 		for (DrugOrder o : relevantDrugOrders) {
-			tempChanges.add(new RegChange(ChangeType.START, o, o.getStartDate()));
+			tempChanges.add(new DrugOrderChange(ChangeType.START, o, o.getStartDate()));
 			if (o.getDiscontinuedDate() != null) {
-				tempChanges.add(new RegChange(ChangeType.END, o, o.getDiscontinuedDate()));
+				tempChanges.add(new DrugOrderChange(ChangeType.END, o, o.getDiscontinuedDate()));
 			} else if (o.getAutoExpireDate() != null) {
-				tempChanges.add(new RegChange(ChangeType.END, o, o.getAutoExpireDate()));
+				tempChanges.add(new DrugOrderChange(ChangeType.END, o, o.getAutoExpireDate()));
 			}
 		}
 		
-		SortedMap<Date, List<RegChange>> changesByDate = new TreeMap<Date, List<RegChange>>();
-		for (RegChange change : tempChanges) {
-			List<RegChange> holder = changesByDate.get(change.getDate());
+		SortedMap<Date, List<DrugOrderChange>> changesByDate = new TreeMap<Date, List<DrugOrderChange>>();
+		for (DrugOrderChange change : tempChanges) {
+			List<DrugOrderChange> holder = changesByDate.get(change.getDate());
 			if (holder == null) {
-				holder = new ArrayList<RegimenHistory.RegChange>();
+				holder = new ArrayList<DrugOrderChange>();
 				changesByDate.put(change.getDate(), holder);
 			}
 			holder.add(change);
@@ -82,11 +82,11 @@ public class RegimenHistory {
 		changes = new ArrayList<RegimenChange>();
 		Set<DrugOrder> runningOrders = new LinkedHashSet<DrugOrder>();
 		Regimen lastRegimen = null;
-		for (Map.Entry<Date, List<RegChange>> e : changesByDate.entrySet()) {
+		for (Map.Entry<Date, List<DrugOrderChange>> e : changesByDate.entrySet()) {
 			Date date = e.getKey();
 			Set<Concept> changeReasons = new LinkedHashSet<Concept>();
 			Set<String> changeReasonsNonCoded = new LinkedHashSet<String>();
-			for (RegChange rc : e.getValue()) {
+			for (DrugOrderChange rc : e.getValue()) {
 				if (ChangeType.START.equals(rc.getType())) {
 					runningOrders.add(rc.getDrugOrder());
 				} else { // ChangeType.END
@@ -168,7 +168,7 @@ public class RegimenHistory {
 	/**
 	 * Helper class for tagging when a DrugOrder starts or stops
 	 */
-	private class RegChange {
+	private class DrugOrderChange {
 		
 		private Date date;
 		
@@ -176,7 +176,7 @@ public class RegimenHistory {
 		
 		private DrugOrder drugOrder;
 		
-		public RegChange(ChangeType type, DrugOrder drugOrder, Date date) {
+		public DrugOrderChange(ChangeType type, DrugOrder drugOrder, Date date) {
 			this.type = type;
 			this.drugOrder = drugOrder;
 			this.date = date;

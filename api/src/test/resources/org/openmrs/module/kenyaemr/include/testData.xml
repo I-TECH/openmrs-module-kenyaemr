@@ -68,10 +68,20 @@
 
 	<!-- DRUGS -->
 
-	<!-- Triomune ARV -->
-	<concept concept_id="792" retired="false" datatype_id="4" class_id="3" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="792AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-	<concept_name concept_name_id="792" concept_id="792" name="STAVUDINE LAMIVUDINE AND NEVIRAPINE" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="792-name"/>
-	<concept_set concept_set_id="792" concept_id="792" concept_set="1085" sort_weight="1" creator="1" date_created="2004-08-12 00:00:00.0" uuid="792-set"/>
+	<!-- Stavudine -->
+	<concept concept_id="84309" retired="false" datatype_id="4" class_id="3" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="84309AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+	<concept_name concept_name_id="84309" concept_id="84309" name="STAVUDINE" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="84309-name"/>
+	<concept_set concept_set_id="84309" concept_id="84309" concept_set="1085" sort_weight="1" creator="1" date_created="2004-08-12 00:00:00.0" uuid="84309-set"/>
+
+	<!-- Zidovudine -->
+	<concept concept_id="86663" retired="false" datatype_id="4" class_id="3" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="86663AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+	<concept_name concept_name_id="86663" concept_id="86663" name="ZIDOVUDINE" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="86663-name"/>
+	<concept_set concept_set_id="86663" concept_id="86663" concept_set="1085" sort_weight="1" creator="1" date_created="2004-08-12 00:00:00.0" uuid="86663-set"/>
+
+	<!-- Lamivudine -->
+	<concept concept_id="78643" retired="false" datatype_id="4" class_id="3" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="78643AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+	<concept_name concept_name_id="78643" concept_id="78643" name="LAMIVUDINE" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="78643-name"/>
+	<concept_set concept_set_id="78643" concept_id="78643" concept_set="1085" sort_weight="1" creator="1" date_created="2004-08-12 00:00:00.0" uuid="78643-set"/>
 
 	<!-- Aspirin -->
 	<concept concept_id="71617" retired="false" datatype_id="4" class_id="3" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="71617AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>

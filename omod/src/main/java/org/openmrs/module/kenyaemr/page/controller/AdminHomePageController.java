@@ -22,6 +22,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.Module;
 import org.openmrs.module.ModuleFactory;
 import org.openmrs.module.appframework.AppUiUtil;
+import org.openmrs.module.kenyaemr.regimen.RegimenManager;
 import org.openmrs.module.metadatasharing.ImportedPackage;
 import org.openmrs.module.metadatasharing.api.MetadataSharingService;
 import org.openmrs.ui.framework.SimpleObject;
@@ -53,6 +54,9 @@ public class AdminHomePageController {
 		for (ImportedPackage imported : Context.getService(MetadataSharingService.class).getAllImportedPackages()) {
 			metadataPackages.add(SimpleObject.fromObject(imported, ui, "name", "version", "imported"));
 		}
+
+		// Regimens aren't actually imported from a metadata package but let's pretend for the sake of simplicity
+		metadataPackages.add(SimpleObject.create("name", "Kenya EMR Regimens", "version", RegimenManager.getDefinitionsVersion(), "imported", true));
 
 		Map<String, Object> info = new LinkedHashMap<String, Object>();
 		info.put("General Information", general);

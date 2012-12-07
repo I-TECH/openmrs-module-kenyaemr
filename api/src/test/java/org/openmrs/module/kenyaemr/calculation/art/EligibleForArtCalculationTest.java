@@ -69,8 +69,8 @@ public class EligibleForArtCalculationTest extends BaseModuleContextSensitiveTes
 		TestUtils.saveObs(Context.getPatientService().getPatient(8), cd4, 101, new Date());
 
 		// Put patient #8 already on ARTs
-		Concept triomune = Context.getConceptService().getConcept(792);
-		TestUtils.saveDrugOrder(Context.getPatientService().getPatient(8), triomune, TestUtils.date(2011, 1, 1), null);
+		Concept stavudine = Context.getConceptService().getConcept(84309);
+		TestUtils.saveDrugOrder(Context.getPatientService().getPatient(8), stavudine, TestUtils.date(2011, 1, 1), null);
 
 		Context.flushSession();
 		

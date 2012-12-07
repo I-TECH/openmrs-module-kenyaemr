@@ -46,10 +46,10 @@ public class InitialArtStartDateCalculationTest extends BaseModuleContextSensiti
 		Concept aspirin = Context.getConceptService().getConcept(71617);
 		TestUtils.saveDrugOrder(Context.getPatientService().getPatient(7), aspirin, TestUtils.date(2011, 1, 1), null);
 
-		// Put patient #8 and #999 on Triomune
-		Concept triomune = Context.getConceptService().getConcept(792);
-		TestUtils.saveDrugOrder(Context.getPatientService().getPatient(8), triomune, TestUtils.date(2011, 1, 1), null);
-		TestUtils.saveDrugOrder(Context.getPatientService().getPatient(999), triomune, TestUtils.date(2011, 1, 1), null);
+		// Put patient #8 and #999 on Stavudine
+		Concept stavudine = Context.getConceptService().getConcept(84309);
+		TestUtils.saveDrugOrder(Context.getPatientService().getPatient(8), stavudine, TestUtils.date(2011, 1, 1), null);
+		TestUtils.saveDrugOrder(Context.getPatientService().getPatient(999), stavudine, TestUtils.date(2011, 1, 1), null);
 
 		// Give patient #999 an earlier date in a recent START DATE obs
 		Concept arvStartDate = Context.getConceptService().getConcept(159599);

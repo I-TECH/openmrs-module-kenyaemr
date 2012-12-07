@@ -46,9 +46,9 @@ public class OnArtCalculationTest extends BaseModuleContextSensitiveTest {
 		Concept aspirin = Context.getConceptService().getConcept(71617);
 		TestUtils.saveDrugOrder(Context.getPatientService().getPatient(7), aspirin, TestUtils.date(2011, 1, 1), null);
 
-		// Put patient #8 on Triomune
-		Concept triomune = Context.getConceptService().getConcept(792);
-		TestUtils.saveDrugOrder(Context.getPatientService().getPatient(8), triomune, TestUtils.date(2011, 1, 1), null);
+		// Put patient #8 on Stavudine
+		Concept stavudine = Context.getConceptService().getConcept(84309);
+		TestUtils.saveDrugOrder(Context.getPatientService().getPatient(8), stavudine, TestUtils.date(2011, 1, 1), null);
 
 		Context.flushSession();
 		
@@ -57,6 +57,6 @@ public class OnArtCalculationTest extends BaseModuleContextSensitiveTest {
 		CalculationResultMap resultMap = new OnArtCalculation().evaluate(cohort, null, Context.getService(PatientCalculationService.class).createCalculationContext());
 		Assert.assertFalse((Boolean) resultMap.get(6).getValue()); // isn't on any drugs
 		Assert.assertFalse((Boolean) resultMap.get(7).getValue()); // isn't on any ARTs
-		Assert.assertTrue((Boolean) resultMap.get(8).getValue()); // is taking Triomune
+		Assert.assertTrue((Boolean) resultMap.get(8).getValue()); // is taking Stavudine
 	}
 }

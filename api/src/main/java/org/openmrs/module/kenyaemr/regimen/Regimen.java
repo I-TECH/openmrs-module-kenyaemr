@@ -27,7 +27,7 @@ import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.util.OpenmrsUtil;
 
 /**
- *
+ * Represents a regimen of drug orders
  */
 public class Regimen {
 	

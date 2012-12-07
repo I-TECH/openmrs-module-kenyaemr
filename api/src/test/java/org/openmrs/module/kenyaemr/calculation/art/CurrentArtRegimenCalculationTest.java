@@ -18,18 +18,15 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Concept;
 import org.openmrs.DrugOrder;
-import org.openmrs.Program;
-import org.openmrs.api.PatientService;
-import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.ListResult;
+import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.kenyaemr.test.TestUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 public class CurrentArtRegimenCalculationTest extends BaseModuleContextSensitiveTest {
@@ -49,9 +46,9 @@ public class CurrentArtRegimenCalculationTest extends BaseModuleContextSensitive
 		Concept aspirin = Context.getConceptService().getConcept(71617);
 		TestUtils.saveDrugOrder(Context.getPatientService().getPatient(7), aspirin, TestUtils.date(2011, 1, 1), null);
 
-		// Put patient #8 on Triomune
-		Concept triomune = Context.getConceptService().getConcept(792);
-		TestUtils.saveDrugOrder(Context.getPatientService().getPatient(8), triomune, TestUtils.date(2011, 1, 1), null);
+		// Put patient #8 on Stavudine
+		Concept stavudine = Context.getConceptService().getConcept(84309);
+		TestUtils.saveDrugOrder(Context.getPatientService().getPatient(8), stavudine, TestUtils.date(2011, 1, 1), null);
 
 		Context.flushSession();
 		
@@ -64,6 +61,6 @@ public class CurrentArtRegimenCalculationTest extends BaseModuleContextSensitive
 		ListResult pat8Res = (ListResult)resultMap.get(8);
 		Assert.assertEquals(1, pat8Res.size());
 		DrugOrder order = (DrugOrder)pat8Res.getFirstResult().getValue();
-		Assert.assertEquals(triomune, order.getConcept());
+		Assert.assertEquals(stavudine, order.getConcept());
 	}
 }

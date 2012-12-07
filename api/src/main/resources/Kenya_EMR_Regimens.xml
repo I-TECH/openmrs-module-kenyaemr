@@ -1,0 +1,66 @@
+<!--
+	Defines the standard Kenya regimens
+-->
+<definitions version="1">
+	<category code="ARV">
+		<drugs>
+			<drug code="D4T" conceptUuid="84309AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><!-- Stavudine -->
+			<drug code="AZT" conceptUuid="86663AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><!-- Zidovudine -->
+			<drug code="TDF" conceptUuid="84795AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><!-- Tenofovir -->
+			<drug code="3TC" conceptUuid="78643AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><!-- Lamivudine -->
+			<drug code="ABC" conceptUuid="70056AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><!-- Abacavir -->
+			<drug code="FTC" conceptUuid="75628AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><!-- Emtricitabine -->
+			<drug code="DDI" conceptUuid="74807AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><!-- Didanosine -->
+			<drug code="NVP" conceptUuid="80586AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><!-- Nevirapine -->
+			<drug code="EFV" conceptUuid="75523AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><!-- Efavirenz -->
+			<drug code="LPV" conceptUuid="79040AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><!-- Lopinavir -->
+			<drug code="RTV" conceptUuid="83412AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><!-- Ritonavir -->
+			<drug code="ATV" conceptUuid="71647AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><!-- Atazanavir -->
+		</drugs>
+		<regimens>
+			<!-- Adult fixed dose combinations -->
+			<regimen name="AZT + 3TC (300mg/150mg)" pediatric="false">
+				<component drugCode="AZT" dose="300" />
+				<component drugCode="3TC" dose="150" />
+			</regimen>
+			<regimen name="AZT + 3TC + NVP (300mg/150mg/200mg)" pediatric="false">
+				<component drugCode="AZT" dose="300" />
+				<component drugCode="3TC" dose="150" />
+				<component drugCode="NVP" dose="200" />
+			</regimen>
+			<regimen name="D4T + 3TC (30mg/150mg)" pediatric="false">
+				<component drugCode="D4T" dose="30" />
+				<component drugCode="3TC" dose="150" />
+			</regimen>
+			<regimen name="D4T + 3TC + NVP (30mg/150mg/200mg)" pediatric="false">
+				<component drugCode="D4T" dose="30" />
+				<component drugCode="3TC" dose="150" />
+				<component drugCode="NVP" dose="200" />
+			</regimen>
+			<regimen name="TDF + 3TC (300mg/300mg)" pediatric="false">
+				<component drugCode="TDF" dose="300" />
+				<component drugCode="3TC" dose="300" />
+			</regimen>
+			<regimen name="TDF + 3TC + EFV (300mg/300mg/600mg)" pediatric="false">
+				<component drugCode="TDF" dose="300" />
+				<component drugCode="3TC" dose="300" />
+				<component drugCode="EFV" dose="600" />
+			</regimen>
+
+			<!-- Children fixed dose combinations -->
+			<regimen name="ABC + 3TC (60mg/30mg)" pediatric="true">
+				<component drugCode="ABC" dose="60" />
+				<component drugCode="3TC" dose="30" />
+			</regimen>
+			<regimen name="AZT + 3TC (60mg/30mg)" pediatric="true">
+				<component drugCode="AZT" dose="60" />
+				<component drugCode="3TC" dose="30" />
+			</regimen>
+			<regimen name="AZT + 3TC + NVP (60mg/30mg/50mg)" pediatric="true">
+				<component drugCode="AZT" dose="60" />
+				<component drugCode="3TC" dose="30" />
+				<component drugCode="NVP" dose="50" />
+			</regimen>
+		</regimens>
+	</category>
+</definitions>

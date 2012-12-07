@@ -15,6 +15,7 @@ package org.openmrs.module.kenyaemr;
 
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -26,6 +27,7 @@ import org.openmrs.module.ModuleActivator;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.module.kenyaemr.datatype.LocationDatatype;
 import org.openmrs.module.kenyaemr.form.FormManager;
+import org.openmrs.module.kenyaemr.regimen.RegimenManager;
 import org.openmrs.module.metadatasharing.ImportConfig;
 import org.openmrs.module.metadatasharing.ImportMode;
 import org.openmrs.module.metadatasharing.ImportedPackage;
@@ -42,6 +44,8 @@ public class KenyaEmrActivator implements ModuleActivator {
     private static final String METADATA_FILENAME_CORE = "Kenya_EMR_Core_Metadata-10.zip";
     private static final String METADATA_FILENAME_ROLES = "Kenya_EMR_Roles_and_Privileges-1.zip";
     private static final String METADATA_FILENAME_LOCATIONS = "Kenya_Facility_List-1.zip";
+
+	private static final String REGIMENS_FILENAME = "Kenya_EMR_Regimens.xml";
     
 	protected Log log = LogFactory.getLog(getClass());
 		
@@ -57,6 +61,7 @@ public class KenyaEmrActivator implements ModuleActivator {
 	 */
 	public void contextRefreshed() {
 		log.info("Kenya OpenMRS EMR Module refreshed");
+
 		Context.getService(KenyaEmrService.class).refreshReportManagers();
 	}
 	
@@ -72,15 +77,31 @@ public class KenyaEmrActivator implements ModuleActivator {
 	 * @should install initial data only once
 	 */
 	public void started() {
-		setupGlobalProperties();
+
+		log.info("Kenya OpenMRS EMR Module starting...");
+
 		try {
-			setupInitialData();
+			setupGlobalProperties();
+
+			log.info(" > Setup global properties");
+
+			boolean metadataUpdated = setupMetadataPackages();
+
+			log.info(" > Setup metadata packages (" + (metadataUpdated ? "Imported packages" : "Already up-to-date") + ")");
+
+			FormManager.setupStandardForms();
+
+			log.info(" > Setup form manager");
+
+			setupRegimenManager();
+
+			log.info(" > Setup regimen manager");
+
 		} catch (Exception ex) {
 			throw new RuntimeException("Failed to setup initial data", ex);
 		}
-		Context.getService(KenyaEmrService.class).refreshReportManagers();
 
-		FormManager.setupStandardForms();
+		Context.getService(KenyaEmrService.class).refreshReportManagers();
 
 		log.info("Kenya OpenMRS EMR Module started");
 	}
@@ -120,7 +141,7 @@ public class KenyaEmrActivator implements ModuleActivator {
      * @return whether any changes were made to the db
      * @throws Exception
      */
-    public boolean setupInitialData() throws Exception {
+    public boolean setupMetadataPackages() throws Exception {
     	boolean anyChanges = false;
     	anyChanges |= installMetadataPackageIfNecessary("c66d041c-563e-4438-83eb-ad5f32c6e97a", METADATA_FILENAME_FORMS);
     	anyChanges |= installMetadataPackageIfNecessary("d4b71375-f64a-442d-a0c2-9f507c432925", METADATA_FILENAME_ROLES);
@@ -128,6 +149,20 @@ public class KenyaEmrActivator implements ModuleActivator {
     	anyChanges |= installMetadataPackageIfNecessary("659bc9bc-f293-4d22-9e53-6358762d9e3f", METADATA_FILENAME_LOCATIONS);
     	return anyChanges;
     }
+
+	/**
+	 * Sets up the regimen manager
+	 * @throws Exception
+	 */
+	private void setupRegimenManager() throws Exception {
+		if (getClass().getClassLoader().getResource(REGIMENS_FILENAME) == null) {
+			throw new RuntimeException("Cannot find " + REGIMENS_FILENAME + ". Make sure it's in api/src/main/resources");
+		}
+
+		InputStream stream = getClass().getClassLoader().getResourceAsStream(REGIMENS_FILENAME);
+
+		RegimenManager.loadDefinitionsFromXML(stream);
+	}
 
     /**
      * Checks whether the given version of the MDS package has been installed yet, and if not, install it

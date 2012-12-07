@@ -15,7 +15,7 @@
 					ret += "<td style=\"text-align: left\">${ obj[property] }</td>"
 				} else if (property == "started" || property == "imported") {
 					// Use icon instead of text
-					def icon = obj[property] == "true" ? "success.png" : "alert.png"
+					def icon = (obj[property] == true || obj[property] == "true") ? "success.png" : "alert.png"
 					ret += "<td style=\"text-align: right\"><img src=\"" + ui.resourceLink("kenyaemr", "images/" + icon) + "\" alt=\"\" /></td>"
 				} else {
 					ret += "<td>${ obj[property] }</td>"
