@@ -19,6 +19,7 @@ import org.openmrs.calculation.result.ListResult;
 import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
 import org.openmrs.module.kenyaemr.regimen.Regimen;
 import org.openmrs.module.kenyaemr.regimen.RegimenChange;
+import org.openmrs.module.kenyaemr.regimen.RegimenDefinition;
 import org.openmrs.module.kenyaemr.regimen.RegimenHistory;
 import org.openmrs.module.kenyaemr.util.KenyaEmrUtils;
 import org.openmrs.ui.framework.FormatterImpl;
@@ -29,6 +30,7 @@ import org.openmrs.util.OpenmrsUtil;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -92,7 +94,7 @@ public class KenyaEmrUiUtils {
 	 * Converts the given regimen history to simple objects
 	 * @param history the regimen history
 	 * @param ui the UI utils
-	 * @return a list of object with { startDate, endDate, shortDisplay, longDisplay, changeReasons[] }
+	 * @return a list of objects with { startDate, endDate, shortDisplay, longDisplay, changeReasons[] }
 	 */
 	public static List<SimpleObject> simpleRegimenHistory(RegimenHistory history, UiUtils ui) {
 		List<RegimenChange> changes = history.getChanges();
@@ -131,5 +133,15 @@ public class KenyaEmrUiUtils {
 		}
 
 		return ret;
+	}
+
+	/**
+	 * Converts regimen definitions to simple objects
+	 * @param definitions the regimen definitions
+	 * @param ui the UI utils
+	 * @return a list of objects with { name, suitability, components.conceptId, components.dose, components.units }
+	 */
+	public static List<SimpleObject> simpleRegimenDefinitions(Collection<RegimenDefinition> definitions, UiUtils ui) {
+		return SimpleObject.fromCollection(definitions, ui, "name", "suitability", "components.conceptId", "components.dose", "components.units");
 	}
 }

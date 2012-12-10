@@ -57,5 +57,6 @@ public class MedicalEncounterArvRegimenPageController {
 
 		model.addAttribute("arvs", arvList);
 		model.addAttribute("regimenDefinitions", regimenDefinitions);
+		model.addAttribute("regimenDefinitionsJson", ui.toJson(KenyaEmrUiUtils.simpleRegimenDefinitions(regimenDefinitions, ui)));
 	}
 }

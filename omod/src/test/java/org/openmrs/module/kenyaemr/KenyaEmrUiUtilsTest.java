@@ -18,16 +18,28 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.DrugOrder;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyaemr.KenyaEmrUiUtils;
+import org.openmrs.module.kenyaemr.regimen.RegimenDefinition;
+import org.openmrs.module.kenyaemr.regimen.RegimenManager;
+import org.openmrs.ui.framework.SimpleObject;
+import org.openmrs.ui.framework.UiUtils;
+import org.openmrs.ui.framework.fragment.FragmentActionUiUtils;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
+import org.xml.sax.SAXException;
 
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 
 public class KenyaEmrUiUtilsTest extends BaseModuleWebContextSensitiveTest {
 
+	private UiUtils ui;
+
 	@Before
 	public void setUp() throws Exception {
 		executeDataSet("org/openmrs/module/kenyaemr/include/testData.xml");
+
+		this.ui = new FragmentActionUiUtils(null, null, null);
 	}
 
 	/**
@@ -73,10 +85,24 @@ public class KenyaEmrUiUtilsTest extends BaseModuleWebContextSensitiveTest {
 	public void formatRegimen_shouldFormatDrugOrdersAsRegimen() throws Exception {
 		DrugOrder aspirin = new DrugOrder();
 		aspirin.setConcept(Context.getConceptService().getConcept(71617));
-		DrugOrder triomune = new DrugOrder();
-		triomune.setConcept(Context.getConceptService().getConcept(792));
-		List<DrugOrder> regimen = Arrays.asList(aspirin, triomune);
+		DrugOrder stavudine = new DrugOrder();
+		stavudine.setConcept(Context.getConceptService().getConcept(84309));
+		List<DrugOrder> regimen = Arrays.asList(aspirin, stavudine);
 
-		Assert.assertEquals("ASPIRIN + STAVUDINE LAMIVUDINE AND NEVIRAPINE", KenyaEmrUiUtils.formatRegimen(regimen));
+		Assert.assertEquals("ASPIRIN + STAVUDINE", KenyaEmrUiUtils.formatRegimen(regimen));
+	}
+
+	/**
+	 * @see org.openmrs.module.kenyaemr.KenyaEmrUiUtils#simpleRegimenDefinitions(java.util.Collection, org.openmrs.ui.framework.UiUtils)
+	 */
+	@Test
+	public void simpleRegimenDefinitions_shouldConvertToSimpleObjects() throws IOException, SAXException, ParserConfigurationException {
+
+		InputStream stream = getClass().getClassLoader().getResourceAsStream("test-regimens.xml");
+		RegimenManager.loadDefinitionsFromXML(stream);
+
+		List<SimpleObject> objs = KenyaEmrUiUtils.simpleRegimenDefinitions(RegimenManager.getRegimenDefinitions("ARV"), ui);
+		Assert.assertEquals("AZT + 3TC (300mg/150mg)", objs.get(0).get("name"));
+		Assert.assertEquals("ADULT", objs.get(0).get("suitability"));
 	}
 }

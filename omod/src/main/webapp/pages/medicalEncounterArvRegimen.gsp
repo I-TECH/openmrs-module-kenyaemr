@@ -29,9 +29,7 @@
 	def arvFreqSelect = { """<select name="frequency${ it }"><option value="BD">BD</option><option value="OD">OD</option></select>""" }
 
 	def arvFields = ui.decorate("uilibrary", "labeled", [ label: "Regimen" ], """
-	    <div style="text-align: right">
-			<i>Use standard:</i> ${ arvStdRegSelect() }
-		</div>
+	    <i>Use standard:</i> ${ arvStdRegSelect() }<br />
 		<br />
 		Drug: ${ arvDrugSelect(1) } Dosage: ${ arvDoseInput(1) }${ arvUnitsSelect(1) } Frequency: ${ arvFreqSelect(1) }<br/>
 		Drug: ${ arvDrugSelect(2) } Dosage: ${ arvDoseInput(2) }${ arvUnitsSelect(2) } Frequency: ${ arvFreqSelect(2) }<br/>
@@ -39,24 +37,9 @@
 	""")
 %>
 
-<style type="text/css">
-	.start-new-regimen, .change-regimen {
-		float: left;
-	}
-	
-	.cancel-action-button {
-		cursor: pointer;
-		margin-left: 2em;
-	}
-</style>
-
 <script type="text/javascript">
 
-	var standardRegimens = [
-		<% regimenDefinitions.each { regDef -> %>
-		{ name: "${ regDef.name }", components: [ <% regDef.components.each { regComp -> %>{ conceptId: ${ regComp.conceptId }, dose: ${ regComp.dose } }, <% } %> ] },
-		<% } %>
-	];
+	var standardRegimens = ${ regimenDefinitionsJson };
 
 	function showRegimenHistory(tbody, data) {
 		if (!data || data.length === 0) {
@@ -99,12 +82,29 @@
 			// Get selected regimen definition
 			var stdRegIndex = parseInt(jq(this).val());
 			var stdReg = standardRegimens[stdRegIndex];
+			var components = stdReg.components;
 
-			for (var c = 0; c < stdReg.components.length; c++) {
-				var component = stdReg.components[c];
+			// Fill out component array with nulls to make 3
+			for (var extra = 0; extra < 3 - components.length; extra++) {
+				components.push(null);
+			}
 
-				jq(this).parent().parent().find('select[name=arv' + c + ']').val(component.conceptId);
-				jq(this).parent().parent().find('input[name=dosage' + c + ']').val(component.dose);
+			// Set component controls for each component of selected regimen
+			for (var c = 0; c < components.length; c++) {
+				var component = components[c];
+				var drugField = jq(this).parent().parent().find('select[name=arv' + (c + 1) + ']');
+				var doseField = jq(this).parent().parent().find('input[name=dosage' + (c + 1) + ']');
+				var unitsField = jq(this).parent().parent().find('input[name=units' + (c + 1) + ']');
+
+				if (component) {
+					drugField.val(component.conceptId);
+					doseField.val(component.dose);
+					unitsField.val(component.units);
+				} else {
+					drugField.val('');
+					doseField.val('');
+					unitsField.val('mg');
+				}
 			}
 
 			// Reset select box back to 'Select...'
