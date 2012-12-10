@@ -33,10 +33,12 @@ public class RegimenManagerTest extends BaseModuleContextSensitiveTest {
 
 		List<RegimenDefinition> arvRegs = RegimenManager.getRegimenDefinitions("ARV");
 		Assert.assertEquals("AZT + 3TC (300mg/150mg)", arvRegs.get(0).getName());
-		Assert.assertFalse(arvRegs.get(0).isPediatric());
+		Assert.assertEquals(RegimenDefinition.Suitability.ADULT, arvRegs.get(0).getSuitability());
 		Assert.assertEquals(86663, arvRegs.get(0).getComponents().get(0).getConceptId()); // zidovudine
 		Assert.assertEquals(300d, arvRegs.get(0).getComponents().get(0).getDose(), 0d);
+		Assert.assertEquals("mg", arvRegs.get(0).getComponents().get(0).getUnits());
 		Assert.assertEquals(78643, arvRegs.get(0).getComponents().get(1).getConceptId()); // lamivudine
 		Assert.assertEquals(150d, arvRegs.get(0).getComponents().get(1).getDose(), 0d);
+		Assert.assertEquals("mg", arvRegs.get(0).getComponents().get(1).getUnits());
 	}
 }

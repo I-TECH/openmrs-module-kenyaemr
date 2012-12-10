@@ -12,12 +12,12 @@
 
 	// Create HTML options for each adult ARV regimen
 	def refDefIndex = 0;
-	def regimenAdultOptions = regimenDefinitions.findAll({ it.pediatric == false }).collect { reg ->
+	def regimenAdultOptions = regimenDefinitions.findAll({ it.suitability.name() == "ADULT" }).collect { reg ->
 		"""<option value="${ refDefIndex++ }">${ reg.name }</option>"""
 	}.join()
 
 	// Create HTML options for each child ARV regimen
-	def regimenChildOptions = regimenDefinitions.findAll({ it.pediatric == true }).collect { reg ->
+	def regimenChildOptions = regimenDefinitions.findAll({ it.suitability.name() == "CHILD" }).collect { reg ->
 		"""<option value="${ refDefIndex++ }">${ reg.name }</option>"""
 	}.join()
 

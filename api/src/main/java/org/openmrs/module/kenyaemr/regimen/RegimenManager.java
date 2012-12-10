@@ -103,9 +103,9 @@ public class RegimenManager {
 			for (int r = 0; r < regimenNodes.getLength(); r++) {
 				Element regimenElement = (Element)regimenNodes.item(r);
 				String name = regimenElement.getAttribute("name");
-				Boolean pediatric = Boolean.parseBoolean(regimenElement.getAttribute("pediatric"));
+				RegimenDefinition.Suitability suitability = RegimenDefinition.Suitability.parse(regimenElement.getAttribute("suitability"));
 
-				RegimenDefinition regimenDefinition = new RegimenDefinition(name, pediatric);
+				RegimenDefinition regimenDefinition = new RegimenDefinition(name, suitability);
 
 				// Parse all components for this regimen
 				NodeList componentNodes = regimenElement.getElementsByTagName("component");
@@ -113,12 +113,13 @@ public class RegimenManager {
 					Element componentElement = (Element)componentNodes.item(p);
 					String drugCode = componentElement.getAttribute("drugCode");
 					double dose = Double.parseDouble(componentElement.getAttribute("dose"));
+					String units = componentElement.getAttribute("units");
 
 					Integer drugConceptId = drugIds.get(drugCode);
 					if (drugConceptId == null)
 						throw new RuntimeException("Regimen component references invalid drug: " + drugCode);
 
-					regimenDefinition.addComponent(drugConceptId, dose);
+					regimenDefinition.addComponent(drugConceptId, dose, units);
 				}
 
 				regimens.add(regimenDefinition);
