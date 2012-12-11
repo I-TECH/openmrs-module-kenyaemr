@@ -39,23 +39,23 @@ import org.openmrs.module.metadatasharing.wrapper.PackageImporter;
  * This class contains the logic that is run every time this module is either started or stopped.
  */
 public class KenyaEmrActivator implements ModuleActivator {
-	
+
 	private static final String METADATA_FILENAME_FORMS = "Kenya_EMR_Forms-33.zip";
-    private static final String METADATA_FILENAME_CORE = "Kenya_EMR_Core_Metadata-11.zip";
-    private static final String METADATA_FILENAME_ROLES = "Kenya_EMR_Roles_and_Privileges-1.zip";
-    private static final String METADATA_FILENAME_LOCATIONS = "Kenya_Facility_List-1.zip";
+	private static final String METADATA_FILENAME_CORE = "Kenya_EMR_Core_Metadata-11.zip";
+	private static final String METADATA_FILENAME_ROLES = "Kenya_EMR_Roles_and_Privileges-1.zip";
+	private static final String METADATA_FILENAME_LOCATIONS = "Kenya_Facility_List-1.zip";
 
 	private static final String REGIMENS_FILENAME = "Kenya_EMR_Regimens.xml";
-    
+
 	protected Log log = LogFactory.getLog(getClass());
-		
+
 	/**
 	 * @see ModuleActivator#willRefreshContext()
 	 */
 	public void willRefreshContext() {
 		log.info("Refreshing Kenya OpenMRS EMR Module");
 	}
-	
+
 	/**
 	 * @see ModuleActivator#contextRefreshed()
 	 */
@@ -64,14 +64,14 @@ public class KenyaEmrActivator implements ModuleActivator {
 
 		Context.getService(KenyaEmrService.class).refreshReportManagers();
 	}
-	
+
 	/**
 	 * @see ModuleActivator#willStart()
 	 */
 	public void willStart() {
 		log.info("Starting Kenya OpenMRS EMR Module");
 	}
-	
+
 	/**
 	 * @see ModuleActivator#started()
 	 * @should install initial data only once
@@ -105,7 +105,7 @@ public class KenyaEmrActivator implements ModuleActivator {
 
 		log.info("Kenya OpenMRS EMR Module started");
 	}
-	
+
 
 	/**
 	 * @see ModuleActivator#willStop()
@@ -113,14 +113,14 @@ public class KenyaEmrActivator implements ModuleActivator {
 	public void willStop() {
 		log.info("Stopping Kenya OpenMRS EMR Module");
 	}
-	
+
 	/**
 	 * @see ModuleActivator#stopped()
 	 */
 	public void stopped() {
 		log.info("Kenya OpenMRS EMR Module stopped");
 	}
-		
+
 	/**
 	 * Public for testing
 	 */
@@ -134,21 +134,21 @@ public class KenyaEmrActivator implements ModuleActivator {
 			Context.getAdministrationService().saveGlobalProperty(gp);
 		}
 	}
-	
-    /**
-     * Public for testing
-     * 
-     * @return whether any changes were made to the db
-     * @throws Exception
-     */
-    public boolean setupMetadataPackages() throws Exception {
-    	boolean anyChanges = false;
-    	anyChanges |= installMetadataPackageIfNecessary("c66d041c-563e-4438-83eb-ad5f32c6e97a", METADATA_FILENAME_FORMS);
-    	anyChanges |= installMetadataPackageIfNecessary("d4b71375-f64a-442d-a0c2-9f507c432925", METADATA_FILENAME_ROLES);
-    	anyChanges |= installMetadataPackageIfNecessary("29177ba6-a634-42d5-9314-e12689856ff1", METADATA_FILENAME_CORE);
-    	anyChanges |= installMetadataPackageIfNecessary("659bc9bc-f293-4d22-9e53-6358762d9e3f", METADATA_FILENAME_LOCATIONS);
-    	return anyChanges;
-    }
+
+	/**
+	 * Public for testing
+	 *
+	 * @return whether any changes were made to the db
+	 * @throws Exception
+	 */
+	public boolean setupMetadataPackages() throws Exception {
+		boolean anyChanges = false;
+		anyChanges |= installMetadataPackageIfNecessary("c66d041c-563e-4438-83eb-ad5f32c6e97a", METADATA_FILENAME_FORMS);
+		anyChanges |= installMetadataPackageIfNecessary("d4b71375-f64a-442d-a0c2-9f507c432925", METADATA_FILENAME_ROLES);
+		anyChanges |= installMetadataPackageIfNecessary("29177ba6-a634-42d5-9314-e12689856ff1", METADATA_FILENAME_CORE);
+		anyChanges |= installMetadataPackageIfNecessary("659bc9bc-f293-4d22-9e53-6358762d9e3f", METADATA_FILENAME_LOCATIONS);
+		return anyChanges;
+	}
 
 	/**
 	 * Sets up the regimen manager
@@ -164,41 +164,40 @@ public class KenyaEmrActivator implements ModuleActivator {
 		RegimenManager.loadDefinitionsFromXML(stream);
 	}
 
-    /**
-     * Checks whether the given version of the MDS package has been installed yet, and if not, install it
-     * 
-     * @param groupUuid
-     * @param filename
-     * @return whether any changes were made to the db
-     * @throws IOException 
-     */
-    private boolean installMetadataPackageIfNecessary(String groupUuid, String filename) throws IOException {
-    	//NameWithNoSpaces-v1.zip
-    	try {
+	/**
+	 * Checks whether the given version of the MDS package has been installed yet, and if not, install it
+	 *
+	 * @param groupUuid
+	 * @param filename
+	 * @return whether any changes were made to the db
+	 * @throws IOException
+	 */
+	private boolean installMetadataPackageIfNecessary(String groupUuid, String filename) throws IOException {
+		//NameWithNoSpaces-v1.zip
+		try {
 			Matcher matcher = Pattern.compile("\\w+-(\\d+).zip").matcher(filename);
 			if (!matcher.matches())
 				throw new RuntimeException("Filename must match PackageNameWithNoSpaces-1.zip");
 			Integer version = Integer.valueOf(matcher.group(1));
-			
+
 			ImportedPackage installed = Context.getService(MetadataSharingService.class).getImportedPackageByGroup(groupUuid);
 			if (installed != null && installed.getVersion() >= version) {
 				log.info("Metadata package " + filename + " is already installed with version " + installed.getVersion());
 				return false;
 			}
-			
+
 			if (getClass().getClassLoader().getResource(filename) == null) {
 				throw new RuntimeException("Cannot find " + filename + " for group " + groupUuid + ". Make sure it's in api/src/main/resources");
 			}
-			
+
 			PackageImporter metadataImporter = MetadataSharing.getInstance().newPackageImporter();
 			metadataImporter.setImportConfig(ImportConfig.valueOf(ImportMode.PARENT_AND_CHILD));
 			metadataImporter.loadSerializedPackageStream(getClass().getClassLoader().getResourceAsStream(filename));
 			metadataImporter.importPackage();
 			return true;
-    	} catch (Exception ex) {
-    		log.error("Failed to install metadata package " + filename, ex);
-    		return false;
-    	}
-    }
-
+		} catch (Exception ex) {
+			log.error("Failed to install metadata package " + filename, ex);
+			return false;
+		}
+	}
 }

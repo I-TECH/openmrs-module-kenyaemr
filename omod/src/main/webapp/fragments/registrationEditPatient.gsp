@@ -31,12 +31,12 @@
 	]
 	def nextOfKinFieldRows = [
 		[
- 	 		[ object: command, property: "nameOfNextOfkin.value", label: ui.format(command.nameOfNextOfkin.attributeType) ],
+ 	 		[ object: command, property: "nameOfNextOfKin.value", label: ui.format(command.nameOfNextOfKin.attributeType) ],
  	 		[ object: command, property: "nextOfKinRelationship.value", label: ui.format(command.nextOfKinRelationship.attributeType) ]
  	    ],
 	   	[
- 			[ object: command, property: "nextOfkinContact.value", label: ui.format(command.nextOfkinContact.attributeType) ],
- 	  		[ object: command, property: "nextOfkinAddress.value", label: ui.format(command.nextOfkinAddress.attributeType) ]
+ 			[ object: command, property: "nextOfKinContact.value", label: ui.format(command.nextOfKinContact.attributeType) ],
+ 	  		[ object: command, property: "nextOfKinAddress.value", label: ui.format(command.nextOfKinAddress.attributeType) ]
  	 	]
 		
  	 	
