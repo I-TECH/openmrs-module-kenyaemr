@@ -16,8 +16,6 @@ package org.openmrs.module.kenyaemr.fragment.controller;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.Concept;
@@ -73,6 +71,11 @@ public class RegistrationEditPatientFragmentController {
 		model.addAttribute("educationOptions", educationOptions);
 		//additional person attribute
 		model.addAttribute("nationalIdNumberAttrType", Context.getPersonService().getPersonAttributeTypeByUuid(MetadataConstants.NATIONAL_ID_NUMBER_UUID));
+		model.addAttribute("nameOfNextOfKinAttrType", Context.getPersonService().getPersonAttributeTypeByUuid(MetadataConstants.NAME_OF_NEXT_OF_KIN_UUID));
+		model.addAttribute("nextOfKinRelationshipAttrType", Context.getPersonService().getPersonAttributeTypeByUuid(MetadataConstants.NEXT_OF_KIN_RELATIONSHIP_UUID));
+		model.addAttribute("nextOfKinContactAttrType", Context.getPersonService().getPersonAttributeTypeByUuid(MetadataConstants.NEXT_OF_KIN_CONTACT_UUID));
+		model.addAttribute("nextOfKinAddressAttrType", Context.getPersonService().getPersonAttributeTypeByUuid(MetadataConstants.NEXT_OF_KIN_ADDRESS_UUID));
+		//model.addAttribute("nextOfKinRelationshipConcept", Context.getConceptService().getConceptByUuid(MetadataConstants.NEXT_OF_KIN_RELATIONSHIP_CONCEPT_UUID));
 	}
 	
 	public SimpleObject savePatient(@MethodParam("commandObject") @BindParams EditPatientCommand command,
@@ -126,8 +129,18 @@ public class RegistrationEditPatientFragmentController {
 		private Obs savedOccupation;
 		
 		private Obs savedEducation;
+		
 		//additional member variables
+		
 		private PersonAttribute nationalIdNumber;
+		
+		private PersonAttribute nameOfNextOfkin;
+		
+		private PersonAttribute nextOfKinRelationship;
+		
+		private PersonAttribute nextOfkinContact;
+		
+		private PersonAttribute nextOfkinAddress;
 		
 		public EditPatientCommand() {
 			location = Context.getService(KenyaEmrService.class).getDefaultLocation();
@@ -143,6 +156,15 @@ public class RegistrationEditPatientFragmentController {
 			//additions
 			nationalIdNumber = new PersonAttribute();
 			nationalIdNumber.setAttributeType(Context.getPersonService().getPersonAttributeTypeByUuid(MetadataConstants.NATIONAL_ID_NUMBER_UUID));
+			nameOfNextOfkin = new PersonAttribute();
+			nameOfNextOfkin.setAttributeType(Context.getPersonService().getPersonAttributeTypeByUuid(MetadataConstants.NAME_OF_NEXT_OF_KIN_UUID));
+			nextOfKinRelationship =new PersonAttribute();
+		    nextOfKinRelationship.setAttributeType(Context.getPersonService().getPersonAttributeTypeByUuid(MetadataConstants.NEXT_OF_KIN_RELATIONSHIP_UUID));
+		 	nextOfkinContact = new PersonAttribute();
+		 	nextOfkinAddress = new PersonAttribute();	
+		    nextOfkinContact.setAttributeType(Context.getPersonService().getPersonAttributeTypeByUuid(MetadataConstants.NEXT_OF_KIN_CONTACT_UUID));
+		 	nextOfkinAddress.setAttributeType(Context.getPersonService().getPersonAttributeTypeByUuid(MetadataConstants.NEXT_OF_KIN_ADDRESS_UUID));	
+		 
 		}
 		
 		public EditPatientCommand(Patient patient) {
@@ -203,14 +225,43 @@ public class RegistrationEditPatientFragmentController {
 			}
 			//additions
 			PersonAttribute attrNationalId = patient.getAttribute(Context.getPersonService().getPersonAttributeTypeByUuid(MetadataConstants.NATIONAL_ID_NUMBER_UUID));
-			if(attrNationalId != null){
+			if (attrNationalId != null) {
 				nationalIdNumber = attrNationalId;
 			}
-			else{
+			else {
 				nationalIdNumber.setPerson(patient);
 			}
+			    // next of kin details come here
+		 	PersonAttribute attrNameOfNextOfKin = patient.getAttribute(Context.getPersonService().getPersonAttributeTypeByUuid(MetadataConstants.NAME_OF_NEXT_OF_KIN_UUID));
+		 	if (attrNameOfNextOfKin != null) {
+		 	    nameOfNextOfkin = attrNameOfNextOfKin;
+		 	}
+		 	else {
+		 	    nameOfNextOfkin.setPerson(patient);
+		 	}
+		 	PersonAttribute attrNextOfKinRelationship = patient.getAttribute(Context.getPersonService().getPersonAttributeTypeByUuid(MetadataConstants.NEXT_OF_KIN_RELATIONSHIP_UUID));
+		 	if (attrNextOfKinRelationship != null) {
+		 	    nextOfKinRelationship = attrNextOfKinRelationship;
+		 	}
+		 	else {
+		 	   nextOfKinRelationship.setPerson(patient);
+		 	}
+		 	PersonAttribute attrNextOfKinContact = patient.getAttribute(Context.getPersonService().getPersonAttributeTypeByUuid(MetadataConstants.NEXT_OF_KIN_CONTACT_UUID));
+		 	if (attrNextOfKinContact != null) {
+		       nextOfkinContact = attrNextOfKinContact;
+		    }
+		 	else {
+		 	   nextOfkinContact.setPerson(patient);
+		 	}
+		 	PersonAttribute attrNextOfKinAddress = patient.getAttribute(Context.getPersonService().getPersonAttributeTypeByUuid(MetadataConstants.NEXT_OF_KIN_ADDRESS_UUID));
+		 	if (attrNextOfKinAddress != null) {
+		 		nextOfkinAddress = attrNextOfKinAddress;
+		 	}
+		 	else {
+		 	     nextOfkinAddress.setPerson(patient);
+		 	}
 			
-		
+	
 		}
 		
         private Obs getLatestObs(Patient patient, String conceptUuid) {
@@ -308,7 +359,7 @@ public class RegistrationEditPatientFragmentController {
 				}
 				toSave.addAttribute(telephoneContact);
 			}
-			//aditions
+			//additions
 			PersonAttributeType nationalId = Context.getPersonService().getPersonAttributeTypeByUuid(MetadataConstants.NATIONAL_ID_NUMBER_UUID);
 			if (anyChanges(toSave.getAttribute(nationalId), nationalIdNumber, "value")) {
 				if (toSave.getAttribute(nationalId) != null) {
@@ -316,6 +367,38 @@ public class RegistrationEditPatientFragmentController {
 				}
 				toSave.addAttribute(nationalIdNumber);
 			}
+			    //next of kin included here
+			PersonAttributeType nameOfNextOfkinpat = Context.getPersonService().getPersonAttributeTypeByUuid(MetadataConstants.NAME_OF_NEXT_OF_KIN_UUID);
+			if (anyChanges(toSave.getAttribute(nameOfNextOfkinpat), this.nameOfNextOfkin, "value")) {
+		 	     if (toSave.getAttribute(nameOfNextOfkinpat) != null) {
+		 	    	 voidData(toSave.getAttribute(nameOfNextOfkinpat));
+		 	     }
+		 	     toSave.addAttribute(this.nameOfNextOfkin);
+			}
+		 		
+			PersonAttributeType nextOfkinRelationshippat = Context.getPersonService().getPersonAttributeTypeByUuid(MetadataConstants.NEXT_OF_KIN_RELATIONSHIP_UUID);
+			if (anyChanges(toSave.getAttribute(nextOfkinRelationshippat), this.nextOfKinRelationship, "value")) {
+		 	     if (toSave.getAttribute(nextOfkinRelationshippat) != null) {
+		 	    	 voidData(toSave.getAttribute(nextOfkinRelationshippat));
+		 	     }
+		 	     toSave.addAttribute(this.nextOfKinRelationship);
+			}
+			
+			PersonAttributeType nextOfkinContactpat = Context.getPersonService().getPersonAttributeTypeByUuid(MetadataConstants.NEXT_OF_KIN_CONTACT_UUID);
+		 	if (anyChanges(toSave.getAttribute(nextOfkinContactpat), this.nextOfkinContact, "value")) {
+		 	     if (toSave.getAttribute(nextOfkinContactpat) != null) {
+		 	    	 voidData(toSave.getAttribute(nextOfkinContactpat));
+		 	     }
+		 	      toSave.addAttribute(this.nextOfkinContact);
+		 	}
+		 		
+		 	PersonAttributeType nextOfkinAddresspat = Context.getPersonService().getPersonAttributeTypeByUuid(MetadataConstants.NEXT_OF_KIN_ADDRESS_UUID);
+		 	if (anyChanges(toSave.getAttribute(nextOfkinAddresspat), this.nextOfkinAddress, "value")) {
+		 	     if (toSave.getAttribute(nextOfkinAddresspat) != null) {
+		 	    	 voidData(toSave.getAttribute(nextOfkinAddresspat));
+		 	     }
+		 	      toSave.addAttribute(this.nextOfkinAddress);
+		 	}
 			
 			
 			Patient ret = Context.getPatientService().savePatient(toSave);
@@ -549,6 +632,54 @@ public class RegistrationEditPatientFragmentController {
          */
         public void setNationalIdNumber(PersonAttribute nationalIdNumber) {
         	this.nationalIdNumber = nationalIdNumber;
+        }
+       /**
+         * @return the nameOfNextOfkin
+         */
+        public PersonAttribute getNameOfNextOfkin() {
+        	return nameOfNextOfkin;
+        }
+        /**
+         * @param nameOfNextOfkin the nameOfNextOfkin to set
+         */
+        public void setNameOfNextOfkin(PersonAttribute nameOfNextOfkin) {	
+           this.nameOfNextOfkin = nameOfNextOfkin;
+        }
+        /**
+         * @return the nextOfKinRelationship
+         */
+        public PersonAttribute getNextOfKinRelationship() {
+        	return nextOfKinRelationship;
+        }
+        /**
+         * @param nextOfKinRelationship the nextOfKinRelationship to set
+         */
+        public void setNextOfKinRelationship(PersonAttribute nextOfKinRelationship) {
+        	this.nextOfKinRelationship = nextOfKinRelationship;
+        }
+        /**
+         * @return the nextOfkinContact
+         */
+        public PersonAttribute getNextOfkinContact() {
+        	return nextOfkinContact;
+        }
+        /**
+         * @param nextOfkinContact the nextOfkinContact to set
+         */
+        public void setNextOfkinContact(PersonAttribute nextOfkinContact) {
+        	this.nextOfkinContact = nextOfkinContact;
+        }
+        /**
+         * @return the nextOfkinAddress
+         */
+        public PersonAttribute getNextOfkinAddress() {
+        	return nextOfkinAddress;
+        }
+        /**
+         * @param nextOfkinAddress the nextOfkinAddress to set
+         */
+        public void setNextOfkinAddress(PersonAttribute nextOfkinAddress) {
+        	this.nextOfkinAddress = nextOfkinAddress;
         }
 		
 	}
