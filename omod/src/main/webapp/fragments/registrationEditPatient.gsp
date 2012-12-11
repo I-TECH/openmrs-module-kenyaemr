@@ -29,6 +29,18 @@
 			[ object: command, property: "education", label: "Education", config: [ options: educationOptions ] ]
 		]
 	]
+	def nextOfKinFieldRows = [
+		[
+ 	 		[ object: command, property: "nameOfNextOfkin.value", label: ui.format(command.nameOfNextOfkin.attributeType) ],
+ 	 		[ object: command, property: "nextOfKinRelationship.value", label: ui.format(command.nextOfKinRelationship.attributeType) ]
+ 	    ],
+	   	[
+ 			[ object: command, property: "nextOfkinContact.value", label: ui.format(command.nextOfkinContact.attributeType) ],
+ 	  		[ object: command, property: "nextOfkinAddress.value", label: ui.format(command.nextOfkinAddress.attributeType) ]
+ 	 	]
+		
+ 	 	
+ 	  ]
 	
 	def addressFieldRows = [
 		[
@@ -38,6 +50,8 @@
 		[
 			[ object: command, property: "personAddress.address3", label: "School/Employer Address",config: [ size: 60 ] ],
 			[ object: command, property: "personAddress.countyDistrict", label: "District" ]
+			
+			
 		],
 		[
 			
@@ -112,7 +126,13 @@
 	<% addressFieldRows.each { %>
 		${ ui.includeFragment("kenyaemr", "widget/rowOfFields", [ fields: it ]) }
 	<% } %>
-
+	
+	<h4>Next of Kin details</h4>
+	
+ 	 <% nextOfKinFieldRows.each { %>
+ 	   ${ ui.includeFragment("kenyaemr", "widget/rowOfFields", [ fields: it ]) }
+ 	 <% } %>
+ 	 
 	<br/>
 	
 	<input class="button" type="submit" value="${ command.original ? "Save Changes" : "Create Patient" }"/>
