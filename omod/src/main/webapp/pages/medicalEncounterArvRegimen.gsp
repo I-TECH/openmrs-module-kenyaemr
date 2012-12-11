@@ -10,23 +10,32 @@
 			"""<option value="${ it.conceptId }">${ it.getPreferredName(Locale.ENGLISH) }</option>"""
 	}.join()
 
-	// Create HTML options for each adult ARV regimen
+	// Create HTML options for each group of ARV regimen
 	def refDefIndex = 0;
-	def regimenAdultOptions = regimenDefinitions.findAll({ it.suitability.name() == "ADULT" }).collect { reg ->
+	def regimenAdult1Options = regimenDefinitions.findAll({ it.group == "adult-first" }).collect { reg ->
+		"""<option value="${ refDefIndex++ }">${ reg.name }</option>"""
+	}.join()
+	def regimenAdult2Options = regimenDefinitions.findAll({ it.group == "adult-second" }).collect { reg ->
+		"""<option value="${ refDefIndex++ }">${ reg.name }</option>"""
+	}.join()
+	def regimenChild1Options = regimenDefinitions.findAll({ it.group == "child-first" }).collect { reg ->
 		"""<option value="${ refDefIndex++ }">${ reg.name }</option>"""
 	}.join()
 
-	// Create HTML options for each child ARV regimen
-	def regimenChildOptions = regimenDefinitions.findAll({ it.suitability.name() == "CHILD" }).collect { reg ->
-		"""<option value="${ refDefIndex++ }">${ reg.name }</option>"""
-	}.join()
+	def unitsOptions = [ "mg", "ml", "tab" ].collect { """<option value="${ it }">${ it }</option>""" }.join()
+	def frequencyOptions = [ OD: "Once daily", BD: "Twice daily", NOCTE: "Nightly"  ].collect { """<option value="${ it.key }">${ it.key } (${ it.value })</option>""" }.join()
 
 	// Create regimen form controls
-	def arvStdRegSelect = { """<select class="standard-regimen-select"><option label="Select..." value="" /><optgroup label="Adult">${ regimenAdultOptions }</optgroup><optgroup label="Child">${ regimenChildOptions }</optgroup></select>""" }
+	def arvStdRegSelect = { """<select class="standard-regimen-select">
+		<option label="Select..." value="" />
+		<optgroup label="Adult (first line)">${ regimenAdult1Options }</optgroup>
+		<optgroup label="Adult (second line)">${ regimenAdult2Options }</optgroup>
+		<optgroup label="Child">${ regimenChild1Options }</optgroup>
+	</select>""" }
 	def arvDrugSelect = { """<select name="arv${ it }"><option value="" />${ drugOptions }</select>""" }
 	def arvDoseInput = { """<input name="dosage${ it }" type="text" size="5" />""" }
-	def arvUnitsSelect = { """<select name="units${ it }"><option value="mg">mg</option></select>""" }
-	def arvFreqSelect = { """<select name="frequency${ it }"><option value="BD">BD</option><option value="OD">OD</option></select>""" }
+	def arvUnitsSelect = { """<select name="units${ it }">${ unitsOptions }</select>""" }
+	def arvFreqSelect = { """<select name="frequency${ it }">${ frequencyOptions }</select>""" }
 
 	def arvFields = ui.decorate("uilibrary", "labeled", [ label: "Regimen" ], """
 	    <i>Use standard:</i> ${ arvStdRegSelect() }<br />
@@ -94,16 +103,19 @@
 				var component = components[c];
 				var drugField = jq(this).parent().parent().find('select[name=arv' + (c + 1) + ']');
 				var doseField = jq(this).parent().parent().find('input[name=dosage' + (c + 1) + ']');
-				var unitsField = jq(this).parent().parent().find('input[name=units' + (c + 1) + ']');
+				var unitsField = jq(this).parent().parent().find('select[name=units' + (c + 1) + ']');
+				var frequencyField = jq(this).parent().parent().find('select[name=frequency' + (c + 1) + ']');
 
 				if (component) {
 					drugField.val(component.conceptId);
 					doseField.val(component.dose);
 					unitsField.val(component.units);
+					frequencyField.val(component.frequency);
 				} else {
-					drugField.val('');
+					drugField.val(null);
 					doseField.val('');
-					unitsField.val('mg');
+					unitsField.val(null);
+					frequencyField.val(null);
 				}
 			}
 

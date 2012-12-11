@@ -142,6 +142,6 @@ public class KenyaEmrUiUtils {
 	 * @return a list of objects with { name, suitability, components.conceptId, components.dose, components.units }
 	 */
 	public static List<SimpleObject> simpleRegimenDefinitions(Collection<RegimenDefinition> definitions, UiUtils ui) {
-		return SimpleObject.fromCollection(definitions, ui, "name", "suitability", "components.conceptId", "components.dose", "components.units");
+		return SimpleObject.fromCollection(definitions, ui, "name", "group", "components.conceptId", "components.dose", "components.units", "components.frequency");
 	}
 }

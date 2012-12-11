@@ -102,7 +102,7 @@ public class KenyaEmrUiUtilsTest extends BaseModuleWebContextSensitiveTest {
 		RegimenManager.loadDefinitionsFromXML(stream);
 
 		List<SimpleObject> objs = KenyaEmrUiUtils.simpleRegimenDefinitions(RegimenManager.getRegimenDefinitions("ARV"), ui);
-		Assert.assertEquals("AZT + 3TC (300mg/150mg)", objs.get(0).get("name"));
-		Assert.assertEquals("ADULT", objs.get(0).get("suitability"));
+		Assert.assertEquals("regimen1", objs.get(0).get("name"));
+		Assert.assertEquals("group1", objs.get(0).get("group"));
 	}
 }

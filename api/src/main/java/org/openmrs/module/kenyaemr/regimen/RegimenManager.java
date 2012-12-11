@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.kenyaemr.regimen;
 
+import org.apache.commons.lang3.StringUtils;
 import org.openmrs.Concept;
 import org.openmrs.api.context.Context;
 import org.w3c.dom.Document;
@@ -98,31 +99,38 @@ public class RegimenManager {
 				drugIds.put(drugCode, drugConcept.getConceptId());
 			}
 
-			// Parse all regimen definitions for this category
-			NodeList regimenNodes = categoryElement.getElementsByTagName("regimen");
-			for (int r = 0; r < regimenNodes.getLength(); r++) {
-				Element regimenElement = (Element)regimenNodes.item(r);
-				String name = regimenElement.getAttribute("name");
-				RegimenDefinition.Suitability suitability = RegimenDefinition.Suitability.parse(regimenElement.getAttribute("suitability"));
+			// Parse all groups for this category
+			NodeList groupNodes = categoryElement.getElementsByTagName("group");
+			for (int g = 0; g < groupNodes.getLength(); g++) {
+				Element groupElement = (Element)groupNodes.item(g);
+				String groupCode = groupElement.getAttribute("code");
 
-				RegimenDefinition regimenDefinition = new RegimenDefinition(name, suitability);
+				// Parse all regimen definitions for this group
+				NodeList regimenNodes = groupElement.getElementsByTagName("regimen");
+				for (int r = 0; r < regimenNodes.getLength(); r++) {
+					Element regimenElement = (Element)regimenNodes.item(r);
+					String name = regimenElement.getAttribute("name");
 
-				// Parse all components for this regimen
-				NodeList componentNodes = regimenElement.getElementsByTagName("component");
-				for (int p = 0; p < componentNodes.getLength(); p++) {
-					Element componentElement = (Element)componentNodes.item(p);
-					String drugCode = componentElement.getAttribute("drugCode");
-					double dose = Double.parseDouble(componentElement.getAttribute("dose"));
-					String units = componentElement.getAttribute("units");
+					RegimenDefinition regimenDefinition = new RegimenDefinition(name, groupCode);
 
-					Integer drugConceptId = drugIds.get(drugCode);
-					if (drugConceptId == null)
-						throw new RuntimeException("Regimen component references invalid drug: " + drugCode);
+					// Parse all components for this regimen
+					NodeList componentNodes = regimenElement.getElementsByTagName("component");
+					for (int p = 0; p < componentNodes.getLength(); p++) {
+						Element componentElement = (Element)componentNodes.item(p);
+						String drugCode = componentElement.getAttribute("drugCode");
+						Double dose = componentElement.hasAttribute("dose") ? Double.parseDouble(componentElement.getAttribute("dose")) : null;
+						String units = componentElement.hasAttribute("units") ? componentElement.getAttribute("units") : null;
+						String frequency = componentElement.hasAttribute("frequency") ? componentElement.getAttribute("frequency") : null;
 
-					regimenDefinition.addComponent(drugConceptId, dose, units);
+						Integer drugConceptId = drugIds.get(drugCode);
+						if (drugConceptId == null)
+							throw new RuntimeException("Regimen component references invalid drug: " + drugCode);
+
+						regimenDefinition.addComponent(drugConceptId, dose, units, frequency);
+					}
+
+					regimens.add(regimenDefinition);
 				}
-
-				regimens.add(regimenDefinition);
 			}
 
 			drugConceptIds.put(categoryCode, new HashSet<Integer>(drugIds.values()));

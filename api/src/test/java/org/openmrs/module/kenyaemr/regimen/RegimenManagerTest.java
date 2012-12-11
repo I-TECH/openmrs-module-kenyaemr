@@ -32,13 +32,25 @@ public class RegimenManagerTest extends BaseModuleContextSensitiveTest {
 		Assert.assertEquals(3, RegimenManager.getRegimenDefinitions("ARV").size());
 
 		List<RegimenDefinition> arvRegs = RegimenManager.getRegimenDefinitions("ARV");
-		Assert.assertEquals("AZT + 3TC (300mg/150mg)", arvRegs.get(0).getName());
-		Assert.assertEquals(RegimenDefinition.Suitability.ADULT, arvRegs.get(0).getSuitability());
+		Assert.assertEquals("regimen1", arvRegs.get(0).getName());
+		Assert.assertEquals("group1", arvRegs.get(0).getGroup());
 		Assert.assertEquals(86663, arvRegs.get(0).getComponents().get(0).getConceptId()); // zidovudine
 		Assert.assertEquals(300d, arvRegs.get(0).getComponents().get(0).getDose(), 0d);
 		Assert.assertEquals("mg", arvRegs.get(0).getComponents().get(0).getUnits());
+		Assert.assertEquals("OD", arvRegs.get(0).getComponents().get(0).getFrequency());
 		Assert.assertEquals(78643, arvRegs.get(0).getComponents().get(1).getConceptId()); // lamivudine
 		Assert.assertEquals(150d, arvRegs.get(0).getComponents().get(1).getDose(), 0d);
 		Assert.assertEquals("mg", arvRegs.get(0).getComponents().get(1).getUnits());
+		Assert.assertEquals("BD", arvRegs.get(0).getComponents().get(1).getFrequency());
+
+		Assert.assertEquals("regimen2", arvRegs.get(1).getName());
+		Assert.assertEquals("group1", arvRegs.get(1).getGroup());
+
+		Assert.assertEquals("regimen3", arvRegs.get(2).getName());
+		Assert.assertEquals("group2", arvRegs.get(2).getGroup());
+		Assert.assertEquals(84309, arvRegs.get(2).getComponents().get(0).getConceptId());
+		Assert.assertNull(arvRegs.get(2).getComponents().get(0).getDose());
+		Assert.assertEquals("tab", arvRegs.get(2).getComponents().get(0).getUnits());
+		Assert.assertNull(arvRegs.get(2).getComponents().get(0).getFrequency());
 	}
 }

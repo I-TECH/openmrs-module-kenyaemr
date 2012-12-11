@@ -21,36 +21,20 @@ import java.util.List;
  */
 public class RegimenDefinition {
 
-	/**
-	 * Represents the age suitability of a regimen
-	 */
-	public enum Suitability {
-		INFANT, CHILD, ADULT;
-
-		/**
-		 * Parses a string into a suitability value
-		 * @param val the string
-		 * @return the suitability
-		 */
-		public static Suitability parse(String val) {
-			return val != null ? Suitability.valueOf(val.trim().toUpperCase()) : null;
-		}
-	}
-
 	private String name;
 
-	private Suitability suitability;
+	private String group;
 
 	private List<RegimenComponent> components = new ArrayList<RegimenComponent>();
 
 	/**
 	 * Creates a new regimen definition
 	 * @param name the name
-	 * @param suitability the suitability
+	 * @param group the group
 	 */
-	public RegimenDefinition(String name, Suitability suitability) {
+	public RegimenDefinition(String name, String group) {
 		this.name = name;
-		this.suitability = suitability;
+		this.group = group;
 	}
 
 	/**
@@ -62,11 +46,11 @@ public class RegimenDefinition {
 	}
 
 	/**
-	 * Gets the suitability
-	 * @return the suitability
+	 * Gets the group
+	 * @return the group
 	 */
-	public Suitability getSuitability() {
-		return suitability;
+	public String getGroup() {
+		return group;
 	}
 
 	/**
@@ -82,29 +66,33 @@ public class RegimenDefinition {
 	 * @param conceptId the component concept id
 	 * @param dose the component dose
 	 * @param units the component units
+	 * @param frequency the component frequency
 	 */
-	public void addComponent(int conceptId, double dose, String units) {
-		components.add(new RegimenComponent(conceptId, dose, units));
+	public void addComponent(int conceptId, Double dose, String units, String frequency) {
+		components.add(new RegimenComponent(conceptId, dose, units, frequency));
 	}
 
 	/**
-	 * RegimenComponent of a regimen (drug, dose and units)
+	 * RegimenComponent of a regimen (drug, dose, units and frequency)
 	 */
 	public class RegimenComponent {
 		private int conceptId;
-		private double dose;
+		private Double dose;
 		private String units;
+		private String frequency;
 
 		/**
 		 * Creates a new component
 		 * @param conceptId the concept id
-		 * @param dose the dose
-		 * @param units the units
+		 * @param dose the dose, e.g. 200
+		 * @param units the units, e.g. mg
+		 * @apram frequency the frequency, e.g. OD
 		 */
-		public RegimenComponent(int conceptId, double dose, String units) {
+		public RegimenComponent(int conceptId, Double dose, String units, String frequency) {
 			this.conceptId = conceptId;
 			this.dose = dose;
 			this.units = units;
+			this.frequency = frequency;
 		}
 
 		/**
@@ -119,7 +107,7 @@ public class RegimenDefinition {
 		 * Gets the dose
 		 * @return the dose
 		 */
-		public double getDose() {
+		public Double getDose() {
 			return dose;
 		}
 
@@ -131,5 +119,12 @@ public class RegimenDefinition {
 			return units;
 		}
 
+		/**
+		 * Gets the frequency
+		 * @return the frequency
+		 */
+		public String getFrequency() {
+			return frequency;
+		}
 	}
 }

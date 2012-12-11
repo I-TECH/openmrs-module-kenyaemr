@@ -1,7 +1,7 @@
 <!--
 	Defines the standard Kenya regimens
 -->
-<definitions xmlns="http://www.kenyaemr.org/regimens" version="1">
+<regimens xmlns="http://www.kenyaemr.org/regimens" version="1">
 	<category code="ARV">
 		<drugs>
 			<drug code="D4T" conceptUuid="84309AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><!-- Stavudine -->
@@ -17,50 +17,114 @@
 			<drug code="RTV" conceptUuid="83412AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><!-- Ritonavir -->
 			<drug code="ATV" conceptUuid="71647AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><!-- Atazanavir -->
 		</drugs>
-		<regimens>
-			<!-- Adult fixed dose combinations -->
-			<regimen name="AZT + 3TC (300mg/150mg)" suitability="adult">
-				<component drugCode="AZT" dose="300" units="mg" />
-				<component drugCode="3TC" dose="150" units="mg" />
-			</regimen>
-			<regimen name="AZT + 3TC + NVP (300mg/150mg/200mg)" suitability="adult">
-				<component drugCode="AZT" dose="300" units="mg" />
-				<component drugCode="3TC" dose="150" units="mg" />
-				<component drugCode="NVP" dose="200" units="mg" />
-			</regimen>
-			<regimen name="D4T + 3TC (30mg/150mg)" suitability="adult">
-				<component drugCode="D4T" dose="30" units="mg" />
-				<component drugCode="3TC" dose="150" units="mg" />
-			</regimen>
-			<regimen name="D4T + 3TC + NVP (30mg/150mg/200mg)" suitability="adult">
-				<component drugCode="D4T" dose="30" units="mg" />
-				<component drugCode="3TC" dose="150" units="mg" />
-				<component drugCode="NVP" dose="200" units="mg" />
-			</regimen>
-			<regimen name="TDF + 3TC (300mg/300mg)" suitability="adult">
-				<component drugCode="TDF" dose="300" units="mg" />
-				<component drugCode="3TC" dose="300" units="mg" />
-			</regimen>
-			<regimen name="TDF + 3TC + EFV (300mg/300mg/600mg)" suitability="adult">
-				<component drugCode="TDF" dose="300" units="mg" />
-				<component drugCode="3TC" dose="300" units="mg" />
-				<component drugCode="EFV" dose="600" units="mg" />
-			</regimen>
 
-			<!-- Children fixed dose combinations -->
-			<regimen name="ABC + 3TC (60mg/30mg)" suitability="child">
-				<component drugCode="ABC" dose="60" units="mg" />
-				<component drugCode="3TC" dose="30" units="mg" />
+		<!-- Adult first line -->
+		<group code="adult-first">
+			<regimen name="TDF + 3TC + NVP (300mg OD/150mg BD/200mg BD)">
+				<component drugCode="TDF" dose="300" units="mg" frequency="OD" />
+				<component drugCode="3TC" dose="150" units="mg" frequency="BD" />
+				<component drugCode="NVP" dose="200" units="mg" frequency="BD" />
 			</regimen>
-			<regimen name="AZT + 3TC (60mg/30mg)" suitability="child">
-				<component drugCode="AZT" dose="60" units="mg" />
-				<component drugCode="3TC" dose="30" units="mg" />
+			<regimen name="TDF + 3TC(BD) + EFV (300mg OD/150mg BD/600mg OD)">
+				<component drugCode="TDF" dose="300" units="mg" frequency="OD" />
+				<component drugCode="3TC" dose="150" units="mg" frequency="BD" />
+				<component drugCode="EFV" dose="600" units="mg" frequency="OD" />
 			</regimen>
-			<regimen name="AZT + 3TC + NVP (60mg/30mg/50mg)" suitability="child">
-				<component drugCode="AZT" dose="60" units="mg" />
-				<component drugCode="3TC" dose="30" units="mg" />
-				<component drugCode="NVP" dose="50" units="mg" />
+			<regimen name="TDF + 3TC(OD) + EFV (300mg OD/300mg OD/600mg OD)">
+				<component drugCode="TDF" dose="300" units="mg" frequency="OD" />
+				<component drugCode="3TC" dose="300" units="mg" frequency="OD" />
+				<component drugCode="EFV" dose="600" units="mg" frequency="OD" />
 			</regimen>
-		</regimens>
+			<regimen name="AZT + 3TC + NVP (300mg BD/150mg BD/200mg BD)">
+				<component drugCode="AZT" dose="300" units="mg" frequency="BD" />
+				<component drugCode="3TC" dose="150" units="mg" frequency="BD" />
+				<component drugCode="NVP" dose="200" units="mg" frequency="BD" />
+			</regimen>
+			<regimen name="AZT + 3TC + EFV (300mg BD/150mg BD/600mg NOCTE)">
+				<component drugCode="AZT" dose="300" units="mg" frequency="BD" />
+				<component drugCode="3TC" dose="150" units="mg" frequency="BD" />
+				<component drugCode="EFV" dose="600" units="mg" frequency="NOCTE" />
+			</regimen>
+			<regimen name="D4T + 3TC + NVP (30mg BD/150mg BD/200mg BD)">
+				<component drugCode="D4T" dose="30" units="mg" frequency="BD" />
+				<component drugCode="3TC" dose="150" units="mg" frequency="BD" />
+				<component drugCode="NVP" dose="200" units="mg" frequency="BD" />
+			</regimen>
+			<regimen name="D4T + 3TC + EFV (30mg BD/150mg BD/600mg NOCTE)">
+				<component drugCode="D4T" dose="30" units="mg" frequency="BD" />
+				<component drugCode="3TC" dose="150" units="mg" frequency="BD" />
+				<component drugCode="EFV" dose="600" units="mg" frequency="NOCTE" />
+			</regimen>
+		</group>
+
+		<!-- Adult second line -->
+		<group code="adult-second">
+			<regimen name="AZT + 3TC + LPV/r (300mg BD/150mg BD/400mg BD/100mg BD)">
+				<component drugCode="AZT" dose="300" units="mg" frequency="BD" />
+				<component drugCode="3TC" dose="150" units="mg" frequency="BD" />
+				<component drugCode="LPV" dose="400" units="mg" frequency="BD" />
+				<component drugCode="RTV" dose="100" units="mg" frequency="BD" />
+			</regimen>
+			<regimen name="AZT + 3TC + ATV/r (300mg BD/150mg BD/300mg OD/100mg OD)">
+				<component drugCode="AZT" dose="300" units="mg" frequency="BD" />
+				<component drugCode="3TC" dose="150" units="mg" frequency="BD" />
+				<component drugCode="ATV" dose="300" units="mg" frequency="OD" />
+				<component drugCode="RTV" dose="100" units="mg" frequency="OD" />
+			</regimen>
+			<regimen name="TDF + 3TC + LPV/r (300mg OD/150mg BD/400mg BD/100mg BD)">
+				<component drugCode="TDF" dose="300" units="mg" frequency="OD" />
+				<component drugCode="3TC" dose="150" units="mg" frequency="BD" />
+				<component drugCode="LPV" dose="400" units="mg" frequency="BD" />
+				<component drugCode="RTV" dose="100" units="mg" frequency="BD" />
+			</regimen>
+			<regimen name="TDF + 3TC(BD) + ATV/r (300mg OD/150mg BD/300mg OD/100mg OD)">
+				<component drugCode="TDF" dose="300" units="mg" frequency="OD" />
+				<component drugCode="3TC" dose="150" units="mg" frequency="BD" />
+				<component drugCode="ATV" dose="300" units="mg" frequency="OD" />
+				<component drugCode="RTV" dose="100" units="mg" frequency="OD" />
+			</regimen>
+			<regimen name="TDF + 3TC(OD) + ATV/r (300mg OD/300mg OD/300mg OD/100mg OD)">
+				<component drugCode="TDF" dose="300" units="mg" frequency="OD" />
+				<component drugCode="3TC" dose="150" units="mg" frequency="OD" />
+				<component drugCode="ATV" dose="300" units="mg" frequency="OD" />
+				<component drugCode="RTV" dose="100" units="mg" frequency="OD" />
+			</regimen>
+		</group>
+
+		<!-- Child first line: dosages and units to be entered manually by clinician -->
+		<group code="child-first">
+			<regimen name="ABC + 3TC + LPV/r">
+				<component drugCode="ABC" units="tab" />
+				<component drugCode="3TC" units="tab" />
+				<component drugCode="LPV" units="tab" />
+				<component drugCode="RTV" units="tab" />
+			</regimen>
+			<regimen name="AZT + 3TC + LPV/r">
+				<component drugCode="AZT" units="tab" />
+				<component drugCode="3TC" units="tab" />
+				<component drugCode="LPV" units="tab" />
+				<component drugCode="RTV" units="tab" />
+			</regimen>
+			<regimen name="ABC + 3TC + NVP">
+				<component drugCode="ABC" units="tab" />
+				<component drugCode="3TC" units="tab" />
+				<component drugCode="NVP" units="tab" />
+			</regimen>
+			<regimen name="AZT + 3TC + NVP">
+				<component drugCode="AZT" units="tab" />
+				<component drugCode="3TC" units="tab" />
+				<component drugCode="NVP" units="tab" />
+			</regimen>
+			<regimen name="ABC + 3TC + EFV">
+				<component drugCode="ABC" units="tab" />
+				<component drugCode="3TC" units="tab" />
+				<component drugCode="EFV" units="tab" />
+			</regimen>
+			<regimen name="AZT + 3TC + EFV">
+				<component drugCode="AZT" units="tab" />
+				<component drugCode="3TC" units="tab" />
+				<component drugCode="EFV" units="tab" />
+			</regimen>
+		</group>
 	</category>
-</definitions>
+</regimens>
