@@ -29,11 +29,11 @@ import java.io.InputStream;
 import java.util.*;
 
 /**
- *
+ * Manager for regimens
  */
 public class RegimenManager {
 
-	private static Map<String, Set<Integer>> drugConceptIds = new LinkedHashMap<String, Set<Integer>>();
+	private static Map<String, Map<String, Integer>> drugConcepts = new LinkedHashMap<String, Map<String, Integer>>();
 
 	private static Map<String, List<RegimenDefinition>> regimenDefinitions = new HashMap<String, List<RegimenDefinition>>();
 
@@ -44,19 +44,51 @@ public class RegimenManager {
 	 * @return the category codes
 	 */
 	public static Set<String> getCategoryCodes() {
-		return drugConceptIds.keySet();
+		return drugConcepts.keySet();
 	}
 
-	public static Set<Integer> getDrugConceptIds(String category) {
-		return drugConceptIds.get(category);
+	/**
+	 * Gets the individual drug concepts for the given category
+	 * @param category the category, e.g. "ARV"
+	 * @return the concept ids
+	 */
+	public static Map<String, Integer> getDrugConcepts(String category) {
+		return drugConcepts.get(category);
 	}
 
+	/**
+	 * Gets the regimen definitions for the given category
+	 * @param category the category, e.g. "ARV"
+	 * @return the regimen definitions
+	 */
 	public static List<RegimenDefinition> getRegimenDefinitions(String category) {
 		return regimenDefinitions.get(category);
 	}
 
+	/**
+	 * Gets the version number of the definitions (from XML)
+	 * @return the version number
+	 */
 	public static int getDefinitionsVersion() {
 		return definitionsVersion;
+	}
+
+	/**
+	 * Looks up the drug code for the given concept in the given category
+	 * @param category the category, e.g. "ARV"
+	 * @param concept the drug concept
+	 * @return the drug code
+	 */
+	public static String findDrugCode(String category, Concept concept) {
+		Map<String, Integer> concepts = drugConcepts.get(category);
+		if (concepts != null) {
+			for (Map.Entry<String, Integer> entry : concepts.entrySet()) {
+				if (entry.getValue().equals(concept.getConceptId())) {
+					return entry.getKey();
+				}
+			}
+		}
+		return null;
 	}
 
 	/**
@@ -75,7 +107,7 @@ public class RegimenManager {
 		Element root = document.getDocumentElement();
 		definitionsVersion = Integer.parseInt(root.getAttribute("version"));
 
-		drugConceptIds.clear();
+		drugConcepts.clear();
 		regimenDefinitions.clear();
 
 		// Parse each category
@@ -84,7 +116,7 @@ public class RegimenManager {
 			Element categoryElement = (Element)categoryNodes.item(c);
 			String categoryCode = categoryElement.getAttribute("code");
 
-			Map<String, Integer> drugIds = new HashMap<String, Integer>();
+			Map<String, Integer> drugs = new HashMap<String, Integer>();
 			List<RegimenDefinition> regimens = new ArrayList<RegimenDefinition>();
 
 			// Parse all drug concepts for this category
@@ -96,7 +128,7 @@ public class RegimenManager {
 
 				Concept drugConcept = Context.getConceptService().getConceptByUuid(drugConceptUuid);
 
-				drugIds.put(drugCode, drugConcept.getConceptId());
+				drugs.put(drugCode, drugConcept.getConceptId());
 			}
 
 			// Parse all groups for this category
@@ -122,7 +154,7 @@ public class RegimenManager {
 						String units = componentElement.hasAttribute("units") ? componentElement.getAttribute("units") : null;
 						String frequency = componentElement.hasAttribute("frequency") ? componentElement.getAttribute("frequency") : null;
 
-						Integer drugConceptId = drugIds.get(drugCode);
+						Integer drugConceptId = drugs.get(drugCode);
 						if (drugConceptId == null)
 							throw new RuntimeException("Regimen component references invalid drug: " + drugCode);
 
@@ -133,7 +165,7 @@ public class RegimenManager {
 				}
 			}
 
-			drugConceptIds.put(categoryCode, new HashSet<Integer>(drugIds.values()));
+			drugConcepts.put(categoryCode, drugs);
 			regimenDefinitions.put(categoryCode, regimens);
 		}
 	}

@@ -3,6 +3,7 @@ package org.openmrs.module.kenyaemr.regimen;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.api.context.Context;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 import java.io.InputStream;
@@ -13,25 +14,29 @@ public class RegimenManagerTest extends BaseModuleContextSensitiveTest {
 	@Before
 	public void beforeEachTest() throws Exception {
 		executeDataSet("org/openmrs/module/kenyaemr/include/testData.xml");
+
+		InputStream stream = getClass().getClassLoader().getResourceAsStream("test-regimens.xml");
+		RegimenManager.loadDefinitionsFromXML(stream);
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.regimen.RegimenManager#loadDefinitionsFromXML(java.io.InputStream)
+	 * @see RegimenManager#loadDefinitionsFromXML(java.io.InputStream)
 	 * @verifies load all definitions
 	 */
 	@Test
 	public void loadDefinitionsFromXML_shouldLoadAllDefinitions() throws Exception {
-
-		InputStream stream = getClass().getClassLoader().getResourceAsStream("test-regimens.xml");
-
-		RegimenManager.loadDefinitionsFromXML(stream);
-
 		Assert.assertEquals(1, RegimenManager.getDefinitionsVersion());
 		Assert.assertEquals(1, RegimenManager.getCategoryCodes().size());
-		Assert.assertEquals(3, RegimenManager.getDrugConceptIds("ARV").size());
-		Assert.assertEquals(3, RegimenManager.getRegimenDefinitions("ARV").size());
+
+		Assert.assertEquals(3, RegimenManager.getDrugConcepts("ARV").size());
+		Assert.assertEquals(new Integer(84309), RegimenManager.getDrugConcepts("ARV").get("D4T"));
+		Assert.assertEquals(new Integer(86663), RegimenManager.getDrugConcepts("ARV").get("AZT"));
+		Assert.assertEquals(new Integer(78643), RegimenManager.getDrugConcepts("ARV").get("3TC"));
 
 		List<RegimenDefinition> arvRegs = RegimenManager.getRegimenDefinitions("ARV");
+
+		Assert.assertEquals(3, arvRegs.size());
+
 		Assert.assertEquals("regimen1", arvRegs.get(0).getName());
 		Assert.assertEquals("group1", arvRegs.get(0).getGroup());
 		Assert.assertEquals(86663, arvRegs.get(0).getComponents().get(0).getConceptId()); // zidovudine
@@ -52,5 +57,15 @@ public class RegimenManagerTest extends BaseModuleContextSensitiveTest {
 		Assert.assertNull(arvRegs.get(2).getComponents().get(0).getDose());
 		Assert.assertEquals("tab", arvRegs.get(2).getComponents().get(0).getUnits());
 		Assert.assertNull(arvRegs.get(2).getComponents().get(0).getFrequency());
+	}
+
+	/**
+	 * @see RegimenManager#findDrugCode(String, org.openmrs.Concept)
+	 */
+	@Test
+	public void findDrugCode_shouldFindDrugCodeForConcept() {
+		Assert.assertEquals("3TC", RegimenManager.findDrugCode("ARV", Context.getConceptService().getConcept(78643)));
+		Assert.assertEquals("AZT", RegimenManager.findDrugCode("ARV", Context.getConceptService().getConcept(86663)));
+		Assert.assertEquals("D4T", RegimenManager.findDrugCode("ARV", Context.getConceptService().getConcept(84309)));
 	}
 }

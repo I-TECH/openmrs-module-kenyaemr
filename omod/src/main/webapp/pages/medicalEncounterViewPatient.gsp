@@ -1,7 +1,5 @@
 <%
 	ui.decorateWith("kenyaemr", "standardKenyaEmrPage", [ patient: patient ])
-	
-	ui.includeCss("kenyaemr", "kenyaemr.css");
 %>
 
 <style type="text/css">
@@ -48,29 +46,12 @@
 	}
 </style>
 
-<script type="text/javascript">
-	jq(function() {
-		jq.getJSON('${ ui.actionLink("kenyaemr", "arvRegimen", "currentRegimen", [ patientId: patient.id ]) }', function(data) {
-			jq('#current-hiv-regimen').html(data.shortDisplay);
-		});
-	});
-</script>
-
 <div id="col1">
-	${ ui.includeFragment("kenyaemr", "patientOverallDetails", [
-			patient: patient,
-			visit: visit,
-			activeVisits: activeVisits
-		]) }
+	${ ui.includeFragment("kenyaemr", "patientOverallDetails", [ patient: patient, visit: visit, activeVisits: activeVisits ]) }
 </div>
 
 <div id="col2" <% if (visit) { %>class="selected-visit-tab"<% } %>>
-
-	<a href="${ ui.pageLink("kenyaemr", "medicalEncounterArvRegimen", [ patientId: patient.id ]) }">
-		<img src="${ ui.resourceLink("kenyaemr", "images/edit.png") }"/>
-		Current ARVs:
-		<span id="current-hiv-regimen">(loading)</span>
-	</a>
+	${ ui.includeFragment("kenyaemr", "medicalEncounterCurrentRegimen", [ patient: patient ]) }
 
 	<br/>
 

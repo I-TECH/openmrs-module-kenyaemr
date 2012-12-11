@@ -14,16 +14,21 @@
 package org.openmrs.module.kenyaemr.calculation.art;
 
 import org.openmrs.Concept;
+import org.openmrs.DrugOrder;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.calculation.result.CalculationResultMap;
+import org.openmrs.calculation.result.ListResult;
+import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.kenyaemr.calculation.BaseKenyaEmrCalculation;
 import org.openmrs.module.kenyaemr.calculation.BooleanResult;
 import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
+import org.openmrs.module.kenyaemr.regimen.Regimen;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
 
 /**
@@ -52,8 +57,20 @@ public class CurrentArtRegimenCalculation extends BaseKenyaEmrCalculation {
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues,
 	                                     PatientCalculationContext context) {
 		Concept arvs = Context.getConceptService().getConceptByUuid(MetadataConstants.ANTIRETROVIRAL_DRUGS_CONCEPT_UUID);
-		CalculationResultMap ret = activeDrugOrders(arvs, cohort, context);
-		CalculationUtils.ensureNullResults(ret, cohort);
+		CalculationResultMap currentARVDrugOrders = activeDrugOrders(arvs, cohort, context);
+
+		CalculationResultMap ret = new CalculationResultMap();
+		for (Integer ptId : cohort) {
+			ListResult patientDrugOrders = (ListResult) currentARVDrugOrders.get(ptId);
+
+			if (patientDrugOrders != null) {
+				Regimen regimen = new Regimen(new HashSet<DrugOrder>(CalculationUtils.<DrugOrder>extractListResultValues(patientDrugOrders)));
+				ret.put(ptId, new SimpleResult(regimen, this, context));
+			}
+			else {
+				ret.put(ptId, null);
+			}
+		}
 		return ret;
 	}
 }

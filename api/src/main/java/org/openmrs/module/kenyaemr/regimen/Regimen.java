@@ -13,17 +13,10 @@
  */
 package org.openmrs.module.kenyaemr.regimen;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
+import java.util.*;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.openmrs.Concept;
-import org.openmrs.ConceptName;
 import org.openmrs.DrugOrder;
-import org.openmrs.api.context.Context;
-import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.util.OpenmrsUtil;
 
 /**
@@ -32,7 +25,18 @@ import org.openmrs.util.OpenmrsUtil;
 public class Regimen {
 	
 	private Set<DrugOrder> drugOrders;
-	
+
+	/**
+	 * Constructs an empty regimen
+	 */
+	public Regimen() {
+		this.drugOrders = new HashSet<DrugOrder>();
+	}
+
+	/**
+	 * Constructs a regimen
+	 * @param drugOrders the drug orders
+	 */
 	public Regimen(Set<DrugOrder> drugOrders) {
 		this.drugOrders = drugOrders;
 	}
@@ -45,8 +49,9 @@ public class Regimen {
 	}
 	
 	/**
-	 * @param genericDrug
-	 * @return drug orders whose concept is genericDrug
+	 * Gets the drug orders in this regimen with the given concept
+	 * @param genericDrug the concept
+	 * @return the drug orders
 	 */
 	public List<DrugOrder> getDrugOrders(Concept genericDrug) {
 		List<DrugOrder> ret = new ArrayList<DrugOrder>();
@@ -59,12 +64,34 @@ public class Regimen {
 	}
 	
 	/**
-	 * @param drugOrders the drugOrders to set
+	 * Sets the drug orders
+	 * @param drugOrders the drug orders
 	 */
 	public void setDrugOrders(Set<DrugOrder> drugOrders) {
 		this.drugOrders = drugOrders;
 	}
-	
+
+	/**
+	 * Adds a drug order
+	 * @param drugOrder the drug order
+	 */
+	public void addDrugOrder(DrugOrder drugOrder) {
+		drugOrders.add(drugOrder);
+	}
+
+	/**
+	 * Gets the start date.. which should be the same across all contained drug orders
+	 * @return the start date
+	 */
+	public Date getStartDate() {
+		Iterator<DrugOrder> orderIterator = drugOrders.iterator();
+		return orderIterator.hasNext() ? orderIterator.next().getStartDate() : null;
+	}
+
+	/**
+	 * @see Object#toString()
+	 */
+	@Override
 	public String toString() {
 		List<String> list = new ArrayList<String>();
 		for (DrugOrder o : drugOrders) {
@@ -72,50 +99,4 @@ public class Regimen {
 		}
 		return OpenmrsUtil.join(list, ", ");
 	}
-	
-	/**
-	 * @param ui
-	 * @return short version of display string for the components of reg
-	 */
-	public String getShortDisplay(UiUtils ui) {
-		if (CollectionUtils.isEmpty(getDrugOrders())) {
-			return "None";
-		}
-		List<String> components = new ArrayList<String>();
-		for (DrugOrder o : getDrugOrders()) {
-			ConceptName cn = o.getConcept().getPreferredName(Context.getLocale());
-			if (cn == null) {
-				cn = o.getConcept().getName(Context.getLocale());
-			}
-			components.add(cn.getName());
-		}
-		return OpenmrsUtil.join(components, ", ");
-	}
-	
-	/**
-	 * @param ui
-	 * @return long version of display string for the components of reg
-	 */
-	public String getLongDisplay(UiUtils ui) {
-		if (CollectionUtils.isEmpty(getDrugOrders())) {
-			return "None";
-		}
-		List<String> components = new ArrayList<String>();
-		for (DrugOrder o : getDrugOrders()) {
-			ConceptName cn = o.getConcept().getPreferredName(Context.getLocale());
-			if (cn == null) {
-				cn = o.getConcept().getName(Context.getLocale());
-			}
-			String s = cn.getName();
-			if (o.getDose() != null) {
-				s += " " + ui.format(o.getDose()) + o.getUnits();
-			}
-			if (o.getFrequency() != null) {
-				s += " " + o.getFrequency();
-			}
-			components.add(s);
-		}
-		return OpenmrsUtil.join(components, ", ");
-	}
-	
 }

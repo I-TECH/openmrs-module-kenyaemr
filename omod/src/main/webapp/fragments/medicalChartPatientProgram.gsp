@@ -15,13 +15,13 @@
 	}
 
 	if (config.patientProgram.program.uuid == MetadataConstants.HIV_PROGRAM_UUID) {
-		def initialArtStartDate = calculations.initialArtRegimen ? calculations.initialArtRegimen.firstResult.value.startDate : null
+		def initialArtStartDate = calculations.initialArtRegimen ? calculations.initialArtRegimen.value.startDate : null
 		if (initialArtStartDate) {
 			dataPoints << [ label: "ART start date", value: kenyaEmrUi.formatDateNoTime(initialArtStartDate) ]
-			dataPoints << [ label: "Initial ART regimen", value: kenyaEmrUi.formatRegimen(calculations.initialArtRegimen) ]
+			dataPoints << [ label: "Initial ART regimen", value: kenyaEmrUi.formatRegimenLong(calculations.initialArtRegimen.value, ui) ]
 
 			if (calculations.currentArtRegimen) {
-				dataPoints << [ label: "Current ART regimen", value: kenyaEmrUi.formatRegimen(calculations.currentArtRegimen) ]
+				dataPoints << [ label: "Current ART regimen", value: kenyaEmrUi.formatRegimenLong(calculations.currentArtRegimen.value, ui) ]
 			}
 		} else {
 			dataPoints << [ label: "ART start date", value: "Never" ]

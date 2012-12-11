@@ -47,9 +47,9 @@ public class MedicalEncounterArvRegimenPageController {
 		model.addAttribute("history", history);
 		model.addAttribute("regimenHistoryJson", ui.toJson(KenyaEmrUiUtils.simpleRegimenHistory(history, ui)));
 		
-		Set<Integer> arvConceptIds = RegimenManager.getDrugConceptIds("ARV");
+		Map<String, Integer> arvConcepts = RegimenManager.getDrugConcepts("ARV");
 		List<Concept> arvList = new ArrayList<Concept>();
-		for (Integer conceptId : arvConceptIds) {
+		for (Integer conceptId : arvConcepts.values()) {
 			arvList.add(Context.getConceptService().getConcept(conceptId));
 		}
 

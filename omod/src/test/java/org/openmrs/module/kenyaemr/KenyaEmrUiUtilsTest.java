@@ -16,8 +16,11 @@ package org.openmrs.module.kenyaemr;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.Concept;
+import org.openmrs.ConceptName;
 import org.openmrs.DrugOrder;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyaemr.regimen.Regimen;
 import org.openmrs.module.kenyaemr.regimen.RegimenDefinition;
 import org.openmrs.module.kenyaemr.regimen.RegimenManager;
 import org.openmrs.ui.framework.SimpleObject;
@@ -34,12 +37,31 @@ import java.util.*;
 public class KenyaEmrUiUtilsTest extends BaseModuleWebContextSensitiveTest {
 
 	private UiUtils ui;
+	private Regimen regimen;
 
 	@Before
 	public void setUp() throws Exception {
 		executeDataSet("org/openmrs/module/kenyaemr/include/testData.xml");
 
+		InputStream stream = getClass().getClassLoader().getResourceAsStream("test-regimens.xml");
+		RegimenManager.loadDefinitionsFromXML(stream);
+
 		this.ui = new FragmentActionUiUtils(null, null, null);
+
+		DrugOrder aspirin = new DrugOrder();
+		aspirin.setConcept(Context.getConceptService().getConcept(71617));
+		aspirin.setDose(100.0d);
+		aspirin.setUnits("mg");
+		aspirin.setFrequency("OD");
+		DrugOrder stavudine = new DrugOrder();
+		stavudine.setConcept(Context.getConceptService().getConcept(84309));
+		stavudine.setDose(30.0d);
+		stavudine.setUnits("ml");
+		stavudine.setFrequency("BD");
+
+		regimen = new Regimen();
+		regimen.addDrugOrder(aspirin);
+		regimen.addDrugOrder(stavudine);
 	}
 
 	/**
@@ -69,27 +91,37 @@ public class KenyaEmrUiUtilsTest extends BaseModuleWebContextSensitiveTest {
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.KenyaEmrUiUtils#formatRegimen(java.util.List)
+	 * @see org.openmrs.module.kenyaemr.KenyaEmrUiUtils#formatRegimenShort(org.openmrs.module.kenyaemr.regimen.Regimen, org.openmrs.ui.framework.UiUtils)
 	 * @verifies format empty list as empty string
 	 */
 	@Test
-	public void formatRegimen_shouldFormatEmptyListAsEmptyString() throws Exception {
-		Assert.assertEquals("", KenyaEmrUiUtils.formatRegimen(new ArrayList<DrugOrder>()));
+	public void formatRegimenShort_shouldFormatEmptyListAsNone() throws Exception {
+		Assert.assertEquals("None", KenyaEmrUiUtils.formatRegimenShort(new Regimen(), ui));
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.KenyaEmrUiUtils#formatRegimen(java.util.List)
+	 * @see org.openmrs.module.kenyaemr.KenyaEmrUiUtils#formatRegimenShort(org.openmrs.module.kenyaemr.regimen.Regimen, org.openmrs.ui.framework.UiUtils)
 	 * @verifies format regimen
 	 */
 	@Test
-	public void formatRegimen_shouldFormatDrugOrdersAsRegimen() throws Exception {
-		DrugOrder aspirin = new DrugOrder();
-		aspirin.setConcept(Context.getConceptService().getConcept(71617));
-		DrugOrder stavudine = new DrugOrder();
-		stavudine.setConcept(Context.getConceptService().getConcept(84309));
-		List<DrugOrder> regimen = Arrays.asList(aspirin, stavudine);
+	public void formatRegimenShort_shouldFormatRegimen() throws Exception {
+		Assert.assertNotNull(KenyaEmrUiUtils.formatRegimenShort(regimen, ui));
+	}
 
-		Assert.assertEquals("ASPIRIN + STAVUDINE", KenyaEmrUiUtils.formatRegimen(regimen));
+	/**
+	 * @see org.openmrs.module.kenyaemr.KenyaEmrUiUtils#simpleRegimen(org.openmrs.module.kenyaemr.regimen.Regimen, org.openmrs.ui.framework.UiUtils)
+	 */
+	@Test
+	public void simpleRegimen_shouldConvertToSimpleObject() {
+ 		// Check empty regimen
+		SimpleObject obj1 = KenyaEmrUiUtils.simpleRegimen(new Regimen(), ui);
+		Assert.assertEquals("None", obj1.get("shortDisplay"));
+		Assert.assertEquals("None", obj1.get("longDisplay"));
+
+		// Check normal regimen
+		SimpleObject obj2 = KenyaEmrUiUtils.simpleRegimen(regimen, ui);
+		Assert.assertNotNull(obj2.get("shortDisplay"));
+		Assert.assertNotNull(obj2.get("longDisplay"));
 	}
 
 	/**
@@ -97,7 +129,6 @@ public class KenyaEmrUiUtilsTest extends BaseModuleWebContextSensitiveTest {
 	 */
 	@Test
 	public void simpleRegimenDefinitions_shouldConvertToSimpleObjects() throws IOException, SAXException, ParserConfigurationException {
-
 		InputStream stream = getClass().getClassLoader().getResourceAsStream("test-regimens.xml");
 		RegimenManager.loadDefinitionsFromXML(stream);
 

@@ -52,9 +52,7 @@ public class ArvRegimenFragmentController {
 		Concept arvs = Context.getConceptService().getConceptByUuid(MetadataConstants.ANTIRETROVIRAL_DRUGS_CONCEPT_UUID);
 		RegimenHistory history = RegimenHistory.forPatient(patient, arvs);
 		Regimen reg = history.getCurrentRegimen();
-		return reg == null
-				? SimpleObject.create("shortDisplay", "None", "longDisplay", "None")
-				: SimpleObject.create("shortDisplay", reg.getShortDisplay(ui), "longDisplay", reg.getLongDisplay(ui));
+		return KenyaEmrUiUtils.simpleRegimen(reg, ui);
 	}
 
 	/**
@@ -186,7 +184,6 @@ public class ArvRegimenFragmentController {
 				DrugOrder o3 = newDrugOrder(patient, startDate, arv3, dosage3, units3, frequency3);
 				Context.getOrderService().saveOrder(o3);
 			}
-					
 		}
 		
 		/**
@@ -493,7 +490,5 @@ public class ArvRegimenFragmentController {
 		public void setChangeReason(String changeReason) {
 			this.changeReason = changeReason;
 		}
-		
 	}
-	
 }
