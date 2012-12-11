@@ -72,6 +72,11 @@ public class MetadataConstants {
 	// Person Attribute Types
 	public static final String TELEPHONE_CONTACT_UUID = "b2c38640-2603-4629-aebd-3b54f33f1e3a";
 	public static final String NATIONAL_ID_NUMBER_UUID = "73d34479-2f9e-4de3-a5e6-1f79a17459bb";
+	public static final String NAME_OF_NEXT_OF_KIN_UUID = "830bef6d-b01f-449d-9f8d-ac0fede8dbd3";
+	public static final String NEXT_OF_KIN_RELATIONSHIP_UUID = "d0aa9fd1-2ac5-45d8-9c5e-4317c622c8f5";
+	public static final String NEXT_OF_KIN_CONTACT_UUID = "342a1d39-c541-4b29-8818-930916f4c2dc";
+	public static final String NEXT_OF_KIN_ADDRESS_UUID = "7cf22bec-d90a-46ad-9f48-035952261294";
+	
 	
 	// Concepts
 	public static final String WEIGHT_KG_CONCEPT_UUID = "5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
@@ -101,6 +106,17 @@ public class MetadataConstants {
     public static final String DAPSONE_CONCEPT_UUID = "74250AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
     public static final String MEDICATION_ORDERS_CONCEPT_UUID = "1282AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
     public static final String SULFAMETHOXAZOLE_TRIMETHOPRIM_CONCEPT_UUID = "105281AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+    
+    //additionals of relationship concepts
+    public static final String GRANDCHILD_UUID = "1529AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+    public static final String PARTNER_OR_SPOUSE_UUID = "5617AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+    public static final String GRANDPARENT_UUID = "973AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+    public static final String PARENT_UUID = "1527AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+    public static final String CHILD_UUID = "1528AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+    public static final String OTHER_FAMILY_MEMBER_UUID = "5620AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+    public static final String SIBLING_UUID = "972AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+    public static final String UNKNOWN_UUID = "1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+    //public static final String NONE_UUID = "1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 
     // Programs
 	public static final String HIV_PROGRAM_UUID = "dfdc6d40-2f2f-463d-ba90-cc97350441a8";
@@ -108,5 +124,7 @@ public class MetadataConstants {
 
     // Other
 	public static final Locale LOCALE = Locale.UK;
+
+	
 
 }
