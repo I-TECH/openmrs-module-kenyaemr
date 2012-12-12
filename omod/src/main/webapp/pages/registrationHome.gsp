@@ -17,23 +17,14 @@
 </style>
 
 <div id="content-side">
-	<div class="panel-frame">
-		<div class="panel-heading">Tasks</div>
+	${ ui.includeFragment("kenyaemr", "widget/panelMenu", [
+		heading: "Tasks",
+		items: [
+			[ iconProvider: "kenyaemr", icon: "buttons/patient_search.png", label: "Search for a Patient", href: ui.pageLink("kenyaemr", "registrationSearch") ]
+		]
+	]) }
 
-		${ ui.includeFragment("kenyaemr", "widget/panelMenuItem", [
-				iconProvider: "kenyaemr",
-				icon: "buttons/patient_search.png",
-				label: "Search for a Patient",
-				href: ui.pageLink("kenyaemr", "registrationSearch")
-		]) }
-	</div>
-
-	<div class="panel-frame">
-		<div class="panel-heading">Select Day to View</div>
-		<div class="panel-content">
-			<div id="calendar"></div>
-		</div>
-	</div>
+	${ ui.decorate("kenyaemr", "panel", [ heading: "Select Day to View" ], """<div id="calendar"></div>""") }
 
 	<div class="panel-frame" id="end-of-day">
 		<div class="panel-heading">End of Day</div>

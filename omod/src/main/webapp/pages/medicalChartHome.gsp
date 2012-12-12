@@ -3,16 +3,12 @@
 %>
 
 <div id="content-side">
-	<div class="panel-frame">
-		<div class="panel-heading">Tasks</div>
-
-		${ ui.includeFragment("kenyaemr", "widget/panelMenuItem", [
-				iconProvider: "kenyaemr",
-				icon: "buttons/patient_search.png",
-				label: "Search for a Patient",
-				href: ui.pageLink("kenyaemr", "medicalChartSearch")
-		]) }
-	</div>
+	${ ui.includeFragment("kenyaemr", "widget/panelMenu", [
+		heading: "Tasks",
+		items: [
+			[ iconProvider: "kenyaemr", icon: "buttons/patient_search.png", label: "Search for a Patient", href: ui.pageLink("kenyaemr", "medicalChartSearch") ]
+		]
+	]) }
 </div>
 
 <div id="content-main">

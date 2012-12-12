@@ -31,16 +31,12 @@
 		</div>
 	</div>
 
-	<div class="panel-frame">
-		<div class="panel-heading">Tasks</div>
-
-		${ ui.includeFragment("kenyaemr", "widget/panelMenuItem", [
-				iconProvider: "kenyaemr",
-				icon: "buttons/account_add.png",
-				label: "Create a New Account",
-				href: ui.pageLink("kenyaemr", "adminEditAccount")
-		]) }
-	</div>
+	${ ui.includeFragment("kenyaemr", "widget/panelMenu", [
+		heading: "Tasks",
+		items: [
+			[ iconProvider: "kenyaemr", icon: "buttons/account_add.png", label: "Create a New Account", href: ui.pageLink("kenyaemr", "adminEditAccount") ]
+		]
+	]) }
 </div>
 
 
