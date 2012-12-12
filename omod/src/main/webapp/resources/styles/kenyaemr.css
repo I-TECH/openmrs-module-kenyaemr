@@ -203,7 +203,7 @@ table.table-vertical tbody tr:nth-child(odd) {
 
 /*** Loading placeholders ***/
 
-.loading {
+.loading-placeholder {
 	/* Actual image URL set in standardKenyaEmrPage.gsp */
 	background-repeat: no-repeat;
 	background-position: left, top;
@@ -213,7 +213,7 @@ table.table-vertical tbody tr:nth-child(odd) {
 	min-height: 16px;
 }
 
-.loading:after {
+.loading-placeholder:after {
 	content: "Loading...";
 }
 

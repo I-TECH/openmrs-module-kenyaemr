@@ -6,7 +6,7 @@
 <fieldset>
 	<legend>Current ARV Regimen</legend>
 
-	<div id="current-arv-regimen" class="loading"></div>
+	<div id="current-arv-regimen" class="loading-placeholder"></div>
 </fieldset>
 
 <script type="text/javascript">
@@ -22,7 +22,7 @@
 			html += '</a>';
 			<% } %>
 
-			jq('#current-arv-regimen').removeClass('loading').html(html);
+			jq('#current-arv-regimen').removeClass('loading-placeholder').html(html);
 		});
 	});
 </script>
