@@ -77,7 +77,7 @@ $(function() {
 	 */
 	$('.panel-menuitem').click(function() {
 		var a = $(this).find('a').first();
-		var href = a ? a.attr('href') : null;
+		var href = (a.length > 0) ? a.attr('href') : null;
 		if (href)
 			location.href = href;
 	});
@@ -86,9 +86,10 @@ $(function() {
 	 * Clicking on a stack-item should direct you to the URL specified in the clickUrl hidden input
 	 */
 	jq('.stack-item').click(function(evt) {
-		var clickUrl = jq(this).find('input[name=clickUrl]');
-		if (clickUrl) {
-			location.href = clickUrl.val();
+		var clickUrl = jq(this).find('input[name=clickUrl]').first();
+		var url = (clickUrl.length > 0) ? clickUrl.val() : null;
+		if (url) {
+			location.href = url;
 		}
 	});
 });
