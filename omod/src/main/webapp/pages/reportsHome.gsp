@@ -1,63 +1,66 @@
 <%
 	ui.decorateWith("kenyaemr", "standardKenyaEmrPage")
 %>
-
 <style type="text/css">
-	#moh-reports, #facility-reports {
+	.report-container {
 		float: left;
+		margin-right: 5px;
 	}
 </style>
 
-<fieldset id="moh-reports">
-	<legend> Ministry of Health Reports </legend>
-	
-	<% mohReports.each { %>
-		${ ui.includeFragment("uilibrary", "widget/button", [
-				iconProvider: "uilibrary",
-				icon: "chart_32.png",
-				label: it.name,
-				href: ui.pageLink("kenyaemr", "reportsRunMonthlyIndicatorReport", [ manager: it.manager ])
-			]) }
-	<% } %>
-</fieldset>
+<div class="panel-frame report-container">
+	<div class="panel-heading">Ministry of Health Reports</div>
+	<div class="panel-content">
 
-<fieldset id="facility-reports">
-	<legend> Facility Reports </legend>
+		<% mohReports.each { %>
+		<div class="stack-item clickable">
+			<input type="hidden" name="clickUrl" value="${ ui.pageLink("kenyaemr", "reportsRunMonthlyIndicatorReport", [ manager: it.manager ]) }" />
+			<table>
+				<tr>
+					<td><img src="${ ui.resourceLink("kenyaemr", "images/reports/moh.png") }" alt="View report" /></td>
+					<td><b>${ it.name }</b></td>
+				</tr>
+			</table>
+		</div>
+		<% } %>
 
-	${ ui.includeFragment("uilibrary", "widget/button", [
-			iconProvider: "uilibrary",
-			icon: "clock_32.png",
-			label: "Today's Scheduled Visits",
-			href: ui.pageLink("kenyaemr", "dailySchedule")
-		]) }
-	<br/>
-	
-	<% patientAlertReports.each { %>
-		${ ui.includeFragment("uilibrary", "widget/button", [
-				iconProvider: "uilibrary",
-				icon: "user_warning_32.png",
-				label: it.name,
-				href: ui.pageLink("kenyaemr", "reportsRunPatientAlertListReport", [ manager: it.manager ])
-			]) }
-		<br/>
-	<% } %>
-	
-	<%
-		/* Below here are placeholders that should be removed when these
-		reports are implemented */
-	%>
-	
-</fieldset>
+	</div>
+</div>
 
-<fieldset id="patient-specific-reports">
-<legend> Patient Specific Reports </legend>
-	<% patientSummaryReports.each { %>
-		${ ui.includeFragment("uilibrary", "widget/button", [
-					iconProvider: "uilibrary",
-					icon: "user_warning_32.png",
-					label: it.name
-		]) }
-		<br/>
-	<% } %>
+<div class="panel-frame report-container">
+	<div class="panel-heading">Facility Reports</div>
+	<div class="panel-content">
 
-</fieldset>
+		<% patientAlertReports.each { %>
+		<div class="stack-item clickable" style="overflow: auto">
+			<input type="hidden" name="clickUrl" value="${ ui.pageLink("kenyaemr", "reportsRunPatientAlertListReport", [ manager: it.manager ]) }" />
+			<table>
+				<tr>
+					<td><img src="${ ui.resourceLink("kenyaemr", "images/reports/facility.png") }" alt="View report" /></td>
+					<td><b>${ it.name }</b></td>
+				</tr>
+			</table>
+		</div>
+		<% } %>
+
+	</div>
+</div>
+
+<div class="panel-frame report-container">
+	<div class="panel-heading">Patient Specific Reports</div>
+	<div class="panel-content">
+
+		<% patientSummaryReports.each { %>
+		<div class="stack-item clickable">
+			<input type="hidden" name="clickUrl" value="${ ui.pageLink("kenyaemr", "reportsRunPatientSummaryReport", [ manager: it.manager ]) }" />
+			<table>
+				<tr>
+					<td><img src="${ ui.resourceLink("kenyaemr", "images/reports/patient.png") }" alt="View report" /></td>
+					<td><b>${ it.name }</b></td>
+				</tr>
+			</table>
+		</div>
+		<% } %>
+
+	</div>
+</div>

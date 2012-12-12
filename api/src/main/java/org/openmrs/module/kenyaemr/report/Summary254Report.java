@@ -41,7 +41,7 @@ public class Summary254Report implements ReportManager {
 
     private final Log log = LogFactory.getLog(getClass());
 
-    private static final String NAME_PREFIX = "MOH 257 Report";
+    private static final String NAME_PREFIX = "MOH 254 Report";
 
     ReportDefinition reportDefinition;
 
