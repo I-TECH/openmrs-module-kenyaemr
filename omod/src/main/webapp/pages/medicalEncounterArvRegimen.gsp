@@ -74,14 +74,25 @@
 		});
 	}
 	
-	function choseAction(classChosen) {
-		jq('#regimen-actions').hide();
-		jq('.' + classChosen).show();
+	function choseAction(formId) {
+		// Hide the regimen action buttons
+		jq('#regimen-action-buttons').hide();
+
+		ui.confirmBeforeNavigating('#' + formId);
+
+		// Show the relevant regimen action form
+		jq('#' + formId).show();
 	}
 
 	function cancelAction() {
-		jq('fieldset').hide();
-		jq('#regimen-actions').show();
+		ui.cancelConfirmBeforeNavigating('.regimen-action-form');
+
+		// Hide and clear all regimen action forms
+		jq('.regimen-action-form').hide();
+		jq('.regimen-action-form form').get(0).reset();
+
+		// Redisplay the regimen action buttons
+		jq('#regimen-action-buttons').show();
 	}
 	
 	jq(function() {
@@ -157,7 +168,7 @@
 
 	<br/>
 
-	<div id="regimen-actions">
+	<div id="regimen-action-buttons">
 	<% if (allowNew) { %>
 		${ ui.includeFragment("uilibrary", "widget/button", [ iconProvider: "kenyaemr", icon: "buttons/regimen_start.png", label: "Start", onClick: "choseAction('start-new-regimen')" ]) }
 	<% } %>
@@ -174,7 +185,7 @@
 	</div>
 
 	<% if (allowNew) { %>
-	<fieldset class="start-new-regimen" style="display: none">
+	<fieldset id="start-new-regimen" class="regimen-action-form" style="display: none">
 		<legend>Start ARVs</legend>
 
 		${ ui.includeFragment("uilibrary", "widget/form", [
@@ -192,16 +203,10 @@
 			cancelFunction: "cancelAction"
 		]) }
 	</fieldset>
-
-	<script type="text/javascript">
-		jq(function() {
-			ui.confirmBeforeNavigating('.start-new-regimen');
-		});
-	</script>
 	<% } %>
 
 	<% if (allowChange) { %>
-	<fieldset class="change-regimen" style="display: none">
+	<fieldset id="change-regimen" class="regimen-action-form" style="display: none">
 		<legend>Change ARVs</legend>
 
 		${ ui.includeFragment("uilibrary", "widget/form", [
@@ -221,7 +226,7 @@
 		]) }
 	</fieldset>
 
-	<fieldset class="stop-regimen" style="display: none">
+	<fieldset id="stop-regimen" class="regimen-action-form" style="display: none">
 		<legend>Stop ARVs</legend>
 
 		${ ui.includeFragment("uilibrary", "widget/form", [
@@ -239,17 +244,10 @@
 			cancelFunction: "cancelAction"
 		]) }
 	</fieldset>
-
-	<script type="text/javascript">
-		jq(function() {
-			ui.confirmBeforeNavigating('.change-regimen');
-			ui.confirmBeforeNavigating('.stop-regimen');
-		});
-	</script>
 	<% } %>
 
 	<% if (allowRestart) { %>
-	<fieldset class="restart-regimen" style="display: none">
+	<fieldset id="restart-regimen" class="regimen-action-form" style="display: none">
 		<legend>Restart ARVs</legend>
 
 		${ ui.includeFragment("uilibrary", "widget/form", [
@@ -267,12 +265,6 @@
 			cancelFunction: "cancelAction"
 		]) }
 	</fieldset>
-
-	<script type="text/javascript">
-		jq(function() {
-			ui.confirmBeforeNavigating('.restart-regimen');
-		});
-	</script>
 	<% } %>
 
 </div>
