@@ -10,20 +10,20 @@
 .app-button {
 	border-bottom: 1px #BBB solid;
 	border-right: 1px #BBB solid;
+	border-radius: 3px;
 	background-color: #e0e0e0;
-	padding: 0.3em;
-	margin: 0.5em;
+	padding: 7px;
+	width: 120px;
+	margin: 7px;
 	float: left;
 	text-align: center;
-	width: 7.5em;
-	height: 5.5em;
-	border-radius: 3px;
 }
 
 .app-button-label {
 	color: #444;
 	font-weight: bold;
 	text-decoration: none;
+	margin-top: 5px;
 }
 </style>
 
@@ -31,11 +31,11 @@
 	<% apps.eachWithIndex { app, i -> %>
 		<div class="clickable app-button" <% if (i % APPS_PER_ROW == 0) { %> style="clear: left;" <% } %> onclick="location.href='/${ contextPath }/${ app.homepageUrl }<% if (patient) { %>?patientId=${ patient.id }<% } %>'">
 			<% if (app.iconUrl) { %>
-				<img src="/${ contextPath }/${ app.iconUrl }" height="64"/><br/>
+				<img src="/${ contextPath }/${ app.iconUrl }" width="64" height="64" alt="" /><br/>
 			<% } %>
-			<span class="app-button-label">
+			<div class="app-button-label">
 				${ app.label }
-			</span>
+			</div>
 		</div>
 	<% } %>
 </div>
