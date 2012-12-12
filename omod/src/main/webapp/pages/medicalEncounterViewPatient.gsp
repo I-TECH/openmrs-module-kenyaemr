@@ -51,7 +51,7 @@
 </div>
 
 <div id="col2" <% if (visit) { %>class="selected-visit-tab"<% } %>>
-	${ ui.includeFragment("kenyaemr", "medicalEncounterCurrentRegimen", [ patient: patient ]) }
+	${ ui.includeFragment("kenyaemr", "medicalEncounterCurrentRegimen", [ patient: patient, editable: (visit != null) ]) }
 
 	<br/>
 

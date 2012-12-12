@@ -35,20 +35,30 @@
 				<component drugCode="3TC" dose="300" units="mg" frequency="OD" />
 				<component drugCode="EFV" dose="600" units="mg" frequency="OD" />
 			</regimen>
-			<regimen name="AZT + 3TC + NVP (300mg BD/150mg BD/200mg BD)">
+			<regimen name="AZT + 3TC + NVP(BD) (300mg BD/150mg BD/200mg BD)">
 				<component drugCode="AZT" dose="300" units="mg" frequency="BD" />
 				<component drugCode="3TC" dose="150" units="mg" frequency="BD" />
 				<component drugCode="NVP" dose="200" units="mg" frequency="BD" />
+			</regimen>
+			<regimen name="AZT + 3TC + NVP(OD) (300mg BD/150mg BD/200mg OD)">
+				<component drugCode="AZT" dose="300" units="mg" frequency="BD" />
+				<component drugCode="3TC" dose="150" units="mg" frequency="BD" />
+				<component drugCode="NVP" dose="200" units="mg" frequency="OD" />
 			</regimen>
 			<regimen name="AZT + 3TC + EFV (300mg BD/150mg BD/600mg NOCTE)">
 				<component drugCode="AZT" dose="300" units="mg" frequency="BD" />
 				<component drugCode="3TC" dose="150" units="mg" frequency="BD" />
 				<component drugCode="EFV" dose="600" units="mg" frequency="NOCTE" />
 			</regimen>
-			<regimen name="D4T + 3TC + NVP (30mg BD/150mg BD/200mg BD)">
+			<regimen name="D4T + 3TC + NVP(BD) (30mg BD/150mg BD/200mg BD)">
 				<component drugCode="D4T" dose="30" units="mg" frequency="BD" />
 				<component drugCode="3TC" dose="150" units="mg" frequency="BD" />
 				<component drugCode="NVP" dose="200" units="mg" frequency="BD" />
+			</regimen>
+			<regimen name="D4T + 3TC + NVP(OD) (30mg BD/150mg BD/200mg OD)">
+				<component drugCode="D4T" dose="30" units="mg" frequency="BD" />
+				<component drugCode="3TC" dose="150" units="mg" frequency="BD" />
+				<component drugCode="NVP" dose="200" units="mg" frequency="OD" />
 			</regimen>
 			<regimen name="D4T + 3TC + EFV (30mg BD/150mg BD/600mg NOCTE)">
 				<component drugCode="D4T" dose="30" units="mg" frequency="BD" />

@@ -201,10 +201,26 @@ table.table-vertical tbody tr:nth-child(odd) {
 	float: left;
 }
 
+/*** Loading placeholders ***/
+
+.loading {
+	/* Actual image URL set in standardKenyaEmrPage.gsp */
+	background-repeat: no-repeat;
+	background-position: left, top;
+	padding-left: 24px;
+	color: #777;
+	font-style: italic;
+	min-height: 16px;
+}
+
+.loading:after {
+	content: "Loading...";
+}
+
 /*** Others... ***/
 
 .identifier-label {
-	font-color: #888888;
+	color: #888888;
 	font-size: 0.8em;
 }
 

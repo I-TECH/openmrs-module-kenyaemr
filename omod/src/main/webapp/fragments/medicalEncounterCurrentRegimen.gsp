@@ -1,21 +1,28 @@
 <%
 	config.require("patient")
+	config.require("editable")
 %>
 
 <fieldset>
 	<legend>Current ARV Regimen</legend>
 
-	<a href="${ ui.pageLink("kenyaemr", "medicalEncounterArvRegimen", [ patientId: patient.id ]) }">
-		<img src="${ ui.resourceLink("kenyaemr", "images/edit.png") }"/>
-
-		<span id="current-hiv-regimen">(loading...)</span>
-	</a>
+	<div id="current-arv-regimen" class="loading"></div>
 </fieldset>
 
 <script type="text/javascript">
 	jq(function() {
 		jq.getJSON('${ ui.actionLink("kenyaemr", "arvRegimen", "currentRegimen", [ patientId: patient.id ]) }', function(data) {
-			jq('#current-hiv-regimen').html(data.longDisplay);
+			var html = "";
+			<% if (config.editable) { %>
+			html += '<a href="${ ui.pageLink("kenyaemr", "medicalEncounterArvRegimen", [ patientId: patient.id ]) }">';
+			html += '<img src="${ ui.resourceLink("kenyaemr", "images/edit.png") }"/> ';
+			<% } %>
+			html += data.longDisplay;
+			<% if (config.editable) { %>
+			html += '</a>';
+			<% } %>
+
+			jq('#current-arv-regimen').removeClass('loading').html(html);
 		});
 	});
 </script>

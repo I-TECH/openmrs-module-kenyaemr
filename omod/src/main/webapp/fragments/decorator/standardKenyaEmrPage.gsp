@@ -55,6 +55,10 @@
 		padding: 5px;
 	}
 <% } %>
+
+	.loading {
+		background-image: url('${ ui.resourceLink("kenyaemr", "images/loading.gif") }');
+	}
 </style>
 
 <%= config.content %>
