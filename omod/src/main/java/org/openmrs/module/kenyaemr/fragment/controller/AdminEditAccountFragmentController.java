@@ -75,8 +75,23 @@ public class AdminEditAccountFragmentController {
 	                               @MethodParam("newEditLoginDetailsForm") @BindParams("editLoginDetails") EditLoginDetailsForm form,
 	                               UiUtils ui) {
 		ui.validate(form, form, "editLoginDetails");
-		Context.getUserService().saveUser(form.getUserToSave(person),
-		    form.getPassword().equals(form.PLACEHOLDER) ? null : form.getPassword());
+
+		User user = form.getUserToSave(person);
+		String newPassword = form.getPassword().equals(form.PLACEHOLDER) ? null : form.getPassword();
+
+		if (user.getUserId() == null) {
+			// New users can be saved with a password
+			Context.getUserService().saveUser(user, newPassword);
+		}
+		else {
+			Context.getUserService().saveUser(user, null);
+
+			// To save a password for an existing user, have to call changePassword
+			if (newPassword != null) {
+				Context.getUserService().changePassword(user, newPassword);
+			}
+		}
+
 		return new SuccessResult("Saved login details");
 	}
 	
