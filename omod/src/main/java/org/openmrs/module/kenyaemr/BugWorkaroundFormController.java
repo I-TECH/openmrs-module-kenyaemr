@@ -34,7 +34,7 @@ public class BugWorkaroundFormController {
 	 * The HTML Form Entry widget does this search relative to the current directory, but this doesn't work
 	 * for us since we have a custom HTML Form Entry page.
 	 */
-	@RequestMapping("/pages/conceptSearch.form")
+	@RequestMapping("/kenyaemr/conceptSearch.form")
 	public void htmlFormEntryConceptSearch(
 			ModelMap model,
 			HttpServletRequest request,
