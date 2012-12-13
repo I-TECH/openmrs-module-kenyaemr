@@ -17,11 +17,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Concept;
-import org.openmrs.DrugOrder;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
-import org.openmrs.calculation.result.ListResult;
 import org.openmrs.module.kenyaemr.test.TestUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
@@ -33,7 +31,8 @@ public class InitialArtStartDateCalculationTest extends BaseModuleContextSensiti
 
 	@Before
 	public void beforeEachTest() throws Exception {
-		executeDataSet("org/openmrs/module/kenyaemr/include/testData.xml");
+		executeDataSet("test-data.xml");
+		executeDataSet("test-drugdata.xml");
 	}
 
 	/**

@@ -41,7 +41,8 @@ public class KenyaEmrUiUtilsTest extends BaseModuleWebContextSensitiveTest {
 
 	@Before
 	public void setUp() throws Exception {
-		executeDataSet("org/openmrs/module/kenyaemr/include/testData.xml");
+		executeDataSet("test-data.xml");
+		executeDataSet("test-drugdata.xml");
 
 		InputStream stream = getClass().getClassLoader().getResourceAsStream("test-regimens.xml");
 		RegimenManager.loadDefinitionsFromXML(stream);

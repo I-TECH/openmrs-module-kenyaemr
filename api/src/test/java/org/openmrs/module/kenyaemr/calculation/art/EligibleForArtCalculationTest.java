@@ -23,7 +23,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Concept;
-import org.openmrs.PatientProgram;
 import org.openmrs.Program;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.ProgramWorkflowService;
@@ -31,8 +30,6 @@ import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
-import org.openmrs.module.kenyaemr.MetadataConstants;
-import org.openmrs.module.kenyaemr.calculation.art.EligibleForArtCalculation;
 import org.openmrs.module.kenyaemr.test.TestUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
@@ -40,7 +37,8 @@ public class EligibleForArtCalculationTest extends BaseModuleContextSensitiveTes
 	
 	@Before
 	public void beforeEachTest() throws Exception {
-		executeDataSet("org/openmrs/module/kenyaemr/include/testData.xml");
+		executeDataSet("test-data.xml");
+		executeDataSet("test-drugdata.xml");
 	}
 	
 	/**

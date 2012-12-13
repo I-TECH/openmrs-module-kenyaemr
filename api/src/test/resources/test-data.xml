@@ -66,32 +66,6 @@
 	<concept_name concept_name_id="160631" concept_id="160631" name="HIV Program" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="160631-name"/>
 	<program program_id="1" concept_id="160631" outcomes_concept_id="1695" creator="1" date_created="2004-08-12 00:00:00.0" retired="0" name="HIV Program" description="Program for following or treating HIV-positive patients" uuid="dfdc6d40-2f2f-463d-ba90-cc97350441a8"/>
 
-	<!-- DRUGS -->
-
-	<!-- Stavudine -->
-	<concept concept_id="84309" retired="false" datatype_id="4" class_id="3" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="84309AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-	<concept_name concept_name_id="84309" concept_id="84309" name="STAVUDINE" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="84309-full-name"/>
-	<concept_name concept_name_id="843091" concept_id="84309" name="D4T" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="SHORT" locale_preferred="1" voided="false" uuid="84309-short-name"/>
-	<concept_set concept_set_id="84309" concept_id="84309" concept_set="1085" sort_weight="1" creator="1" date_created="2004-08-12 00:00:00.0" uuid="84309-set"/>
-
-	<!-- Zidovudine -->
-	<concept concept_id="86663" retired="false" datatype_id="4" class_id="3" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="86663AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-	<concept_name concept_name_id="86663" concept_id="86663" name="ZIDOVUDINE" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="86663-name"/>
-	<concept_set concept_set_id="86663" concept_id="86663" concept_set="1085" sort_weight="1" creator="1" date_created="2004-08-12 00:00:00.0" uuid="86663-set"/>
-
-	<!-- Lamivudine -->
-	<concept concept_id="78643" retired="false" datatype_id="4" class_id="3" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="78643AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-	<concept_name concept_name_id="78643" concept_id="78643" name="LAMIVUDINE" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="78643-name"/>
-	<concept_set concept_set_id="78643" concept_id="78643" concept_set="1085" sort_weight="1" creator="1" date_created="2004-08-12 00:00:00.0" uuid="78643-set"/>
-
-	<!-- Aspirin -->
-	<concept concept_id="71617" retired="false" datatype_id="4" class_id="3" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="71617AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-	<concept_name concept_name_id="71617" concept_id="71617" name="ASPIRIN" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="71617-name"/>
-
-	<!-- Dapsone -->
-	<concept concept_id="74250" retired="false" datatype_id="4" class_id="3" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="74250AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-	<concept_name concept_name_id="74250" concept_id="74250" name="DAPSONE" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="74250-name"/>
-
 	<!-- HIV identifier for patient #7 -->
 	<patient_identifier patient_identifier_id="101" patient_id="7" identifier="1321200001" identifier_type="1002" preferred="true" location_id="1" creator="1" date_created="2004-08-12 00:00:00.0" changed_by="1" date_changed="2006-06-09 14:57:33.0" voided="false" uuid="9fa0988f-86d1-41d7-b4c6-56fd088d0189" />
 

@@ -23,7 +23,6 @@
 		<group code="group2">
 			<regimen name="regimen3">
 				<component drugCode="D4T" units="tab"  />
-				<component drugCode="AZT" units="tab" />
 				<component drugCode="3TC" units="tab" />
 			</regimen>
 		</group>

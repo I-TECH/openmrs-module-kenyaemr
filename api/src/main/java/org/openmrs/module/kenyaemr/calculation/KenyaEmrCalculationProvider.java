@@ -53,7 +53,7 @@ public class KenyaEmrCalculationProvider implements CalculationProvider {
 		map.put("initialArtRegimen", InitialArtRegimenCalculation.class);
 		map.put("initialArtStartDate", InitialArtStartDateCalculation.class);
 		map.put("onArt", OnArtCalculation.class);
-		map.put("onSecondLine", OnSecondLineCalculation.class);
+		map.put("onSecondLineArt", OnSecondLineArtCalculation.class);
 
 		// CD4
 		map.put("decliningCD4", DecliningCD4Calculation.class);

@@ -42,7 +42,7 @@ public class DecliningCD4ReportTest extends BaseModuleContextSensitiveTest {
 
 	@Before
 	public void beforeEachTest() throws Exception {
-		executeDataSet("org/openmrs/module/kenyaemr/include/testData.xml");
+		executeDataSet("test-data.xml");
 	}
 
 	@Test

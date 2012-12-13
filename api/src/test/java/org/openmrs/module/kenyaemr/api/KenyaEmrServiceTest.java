@@ -25,7 +25,7 @@ public class KenyaEmrServiceTest extends BaseModuleContextSensitiveTest {
 	
 	@Before
 	public void beforeEachTest() throws Exception {
-		executeDataSet("org/openmrs/module/kenyaemr/include/testData.xml");
+		executeDataSet("test-data.xml");
 		new KenyaEmrActivator().setupGlobalProperties();
 		service = Context.getService(KenyaEmrService.class);
 		//setupMetadata();

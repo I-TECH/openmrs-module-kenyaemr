@@ -51,7 +51,7 @@ public class AccessReportsByRestWebServiceTest extends BaseModuleWebContextSensi
 
     @Before
     public void setUp() throws Exception {
-        executeDataSet("org/openmrs/module/kenyaemr/include/testData.xml");
+        executeDataSet("test-data.xml");
         service.refreshReportManagers();
     }
 

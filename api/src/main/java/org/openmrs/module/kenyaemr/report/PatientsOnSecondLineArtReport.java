@@ -13,14 +13,14 @@
  */
 package org.openmrs.module.kenyaemr.report;
 
-import org.openmrs.module.kenyaemr.calculation.art.OnSecondLineCalculation;
+import org.openmrs.module.kenyaemr.calculation.art.OnSecondLineArtCalculation;
 import org.springframework.stereotype.Component;
 
 @Component
-public class PatientsOnSecondLineReport extends PatientAlertListReportManager {
+public class PatientsOnSecondLineArtReport extends PatientAlertListReportManager {
 
-    public PatientsOnSecondLineReport() {
-        setAlertCalculation(new OnSecondLineCalculation());
+    public PatientsOnSecondLineArtReport() {
+        setAlertCalculation(new OnSecondLineArtCalculation());
     }
 
 }

@@ -13,8 +13,10 @@
  */
 package org.openmrs.module.kenyaemr.regimen;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.openmrs.Concept;
+import org.openmrs.DrugOrder;
 import org.openmrs.api.context.Context;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -81,14 +83,68 @@ public class RegimenManager {
 	 */
 	public static String findDrugCode(String category, Concept concept) {
 		Map<String, Integer> concepts = drugConcepts.get(category);
-		if (concepts != null) {
-			for (Map.Entry<String, Integer> entry : concepts.entrySet()) {
-				if (entry.getValue().equals(concept.getConceptId())) {
-					return entry.getKey();
-				}
+		if (concepts == null) {
+			throw new IllegalArgumentException("No such regimen category: " + category);
+		}
+
+		for (Map.Entry<String, Integer> entry : concepts.entrySet()) {
+			if (entry.getValue().equals(concept.getConceptId())) {
+				return entry.getKey();
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * Finds definitions that match the given regimen
+	 * @param category the category, e.g. "ARV"
+	 * @param regimen the regimen
+	 * @param exact whether matches must be exact (includes dose, units and frequency)
+	 * @return the definitions
+	 */
+	public static List<RegimenDefinition> findDefinitions(String category, Regimen regimen, boolean exact) {
+		List<RegimenDefinition> definitions = regimenDefinitions.get(category);
+		if (definitions == null) {
+			throw new IllegalArgumentException("No such regimen category: " + category);
+		}
+
+		List<RegimenDefinition> matches = new ArrayList<RegimenDefinition>();
+
+		outer:
+		for (RegimenDefinition definition : definitions) {
+			List<RegimenDefinition.RegimenComponent> components = definition.getComponents();
+			Set<DrugOrder> orders = regimen.getDrugOrders();
+
+			// Skip if regimen doesn't have same number of orders
+			if (components.size() != orders.size()) {
+				continue;
+			}
+
+			// Check each component has an equivalent drug order
+			for (RegimenDefinition.RegimenComponent component : components) {
+
+				// Does regimen have a drug order for this component?
+				boolean regimenHasComponent = false;
+				for (DrugOrder order : orders) {
+					if (order.getConcept().getConceptId().equals(component.getConceptId())) {
+
+						if (!exact || (ObjectUtils.equals(order.getDose(), component.getDose()) && StringUtils.equals(order.getUnits(), component.getUnits()) && StringUtils.equals(order.getFrequency(), component.getFrequency()))) {
+							regimenHasComponent = true;
+							break;
+						}
+					}
+				}
+
+				if (!regimenHasComponent) {
+					continue outer;
+				}
+			}
+
+			// Regimen has all components of the definition
+			matches.add(definition);
+		}
+
+		return matches;
 	}
 
 	/**

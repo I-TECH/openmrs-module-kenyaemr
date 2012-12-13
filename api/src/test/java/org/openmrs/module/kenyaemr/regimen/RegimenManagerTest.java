@@ -3,6 +3,7 @@ package org.openmrs.module.kenyaemr.regimen;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.DrugOrder;
 import org.openmrs.api.context.Context;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
@@ -13,7 +14,8 @@ public class RegimenManagerTest extends BaseModuleContextSensitiveTest {
 
 	@Before
 	public void beforeEachTest() throws Exception {
-		executeDataSet("org/openmrs/module/kenyaemr/include/testData.xml");
+		executeDataSet("test-data.xml");
+		executeDataSet("test-drugdata.xml");
 
 		InputStream stream = getClass().getClassLoader().getResourceAsStream("test-regimens.xml");
 		RegimenManager.loadDefinitionsFromXML(stream);
@@ -67,5 +69,37 @@ public class RegimenManagerTest extends BaseModuleContextSensitiveTest {
 		Assert.assertEquals("3TC", RegimenManager.findDrugCode("ARV", Context.getConceptService().getConcept(78643)));
 		Assert.assertEquals("AZT", RegimenManager.findDrugCode("ARV", Context.getConceptService().getConcept(86663)));
 		Assert.assertEquals("D4T", RegimenManager.findDrugCode("ARV", Context.getConceptService().getConcept(84309)));
+	}
+
+	/**
+	 * @see RegimenManager#findDefinitions(String, Regimen, boolean)
+	 */
+	@Test
+	public void findDefinitions_shouldFindDefinitionsForRegimen() {
+		// Create regimen that matches the regimen2 definition exactly
+		DrugOrder lamivudine = new DrugOrder();
+		lamivudine.setConcept(Context.getConceptService().getConcept(78643));
+		lamivudine.setDose(150d);
+		lamivudine.setUnits("mg");
+		lamivudine.setFrequency("BD");
+		DrugOrder stavudine = new DrugOrder();
+		stavudine.setConcept(Context.getConceptService().getConcept(84309));
+		stavudine.setDose(30d);
+		stavudine.setUnits("mg");
+		stavudine.setFrequency("OD");
+		Regimen regimen = new Regimen();
+		regimen.addDrugOrder(lamivudine);
+		regimen.addDrugOrder(stavudine);
+
+		// Test exact match
+		List<RegimenDefinition> defsExact = RegimenManager.findDefinitions("ARV", regimen, true);
+		Assert.assertEquals(1, defsExact.size());
+		Assert.assertEquals("regimen2", defsExact.get(0).getName());
+
+		// Test non-exact match
+		List<RegimenDefinition> defsNonExact = RegimenManager.findDefinitions("ARV", regimen, false);
+		Assert.assertEquals(2, defsNonExact.size());
+		Assert.assertEquals("regimen2", defsNonExact.get(0).getName());
+		Assert.assertEquals("regimen3", defsNonExact.get(1).getName());
 	}
 }
