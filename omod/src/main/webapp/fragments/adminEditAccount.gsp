@@ -200,8 +200,8 @@ jq(function() {
 					label: "Edit",
 					classes: [ "editable-button" ]
 				],
-				fragment: "adminEditAccount",
 				fragmentProvider: "kenyaemr",
+				fragment: "adminEditAccount",
 				action: "editProviderDetails",
 				prefix: "editProviderDetails",
 				commandObject: editProviderDetails,
@@ -222,6 +222,7 @@ jq(function() {
 				buttonConfig: [
 					label: "Make this person a Provider"
 				],
+				fragmentProvider: "kenyaemr",
 				fragment: "adminEditAccount",
 				action: "editProviderDetails",
 				prefix: "editProviderDetails",
