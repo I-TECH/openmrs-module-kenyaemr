@@ -28,7 +28,6 @@ import org.joda.time.Days;
 import org.openmrs.Cohort;
 import org.openmrs.Concept;
 import org.openmrs.DrugOrder;
-import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
 import org.openmrs.Obs;
 import org.openmrs.Program;
@@ -43,7 +42,6 @@ import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.ListResult;
 import org.openmrs.calculation.result.ObsResult;
-import org.openmrs.calculation.result.ResultUtil;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
@@ -74,8 +72,8 @@ import org.openmrs.util.OpenmrsUtil;
 public abstract class BaseKenyaEmrCalculation extends BaseCalculation implements PatientCalculation {
 
 	/**
-	 * Gets a user-friendly name to display, e.g. the label to use if this calculation represents an alert
-	 * @return the display name
+	 * Gets a user-friendly name to display, e.g. "Patients Eligible for ART"
+	 * @return the name
 	 */
 	public abstract String getShortMessage();
 
@@ -85,6 +83,15 @@ public abstract class BaseKenyaEmrCalculation extends BaseCalculation implements
 	 * @return the possibly-more-detailed message
 	 */
 	public String getDetailedMessage() {
+		return getShortMessage();
+	}
+
+	/**
+	 * Gets a message suitable for a single patient or alert, e.g. "Eligible for ART"
+	 * The default implementation simply delegates to {@link #getShortMessage()}
+	 * @return the message
+	 */
+	public String getSinglePatientMessage() {
 		return getShortMessage();
 	}
 

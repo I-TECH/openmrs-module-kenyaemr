@@ -18,17 +18,16 @@ import java.util.Date;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.PatientProgram;
 import org.openmrs.Program;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyaemr.report.patientlist.NeedsCD4Report;
 import org.openmrs.module.kenyaemr.test.TestUtils;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
-import org.openmrs.module.reporting.report.renderer.TsvReportRenderer;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 
@@ -55,7 +54,7 @@ public class DueForCD4ReportTest extends BaseModuleContextSensitiveTest {
 			TestUtils.enrollInProgram(ps.getPatient(i), hivProgram, new Date());
 		}
 
-		ReportManager report = new DueForCD4Report();
+		ReportManager report = new NeedsCD4Report();
 		ReportDefinition rd = report.getReportDefinition();
 		
 		EvaluationContext ec = new EvaluationContext();

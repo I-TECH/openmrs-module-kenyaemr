@@ -16,8 +16,12 @@ import org.openmrs.module.idgen.validator.LuhnMod25IdentifierValidator;
 import org.openmrs.module.kenyaemr.KenyaEmrActivator;
 import org.openmrs.module.kenyaemr.KenyaEmrConstants;
 import org.openmrs.module.kenyaemr.MetadataConstants;
+import org.openmrs.module.kenyaemr.report.ReportManager;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.ui.framework.session.Session;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class KenyaEmrServiceTest extends BaseModuleContextSensitiveTest {
 	
@@ -206,4 +210,23 @@ public class KenyaEmrServiceTest extends BaseModuleContextSensitiveTest {
     	Assert.assertEquals("123400573", service.getNextHivUniquePatientNumber(null));
     	Assert.assertEquals("123400574", service.getNextHivUniquePatientNumber(null));
     }
+
+	/**
+	 * @see KenyaEmrService#getReportManagersByTag(String)
+	 */
+	@Test
+	public void getReportManagersByTag_shouldGetReportsByTag() {
+
+		service.refreshReportManagers();
+
+		final String[] TEST_TAGS = { "moh", "facility" };
+
+		for (String tag : TEST_TAGS) {
+			List<ReportManager> reports = service.getReportManagersByTag(tag);
+			Assert.assertTrue(reports.size() > 0);
+			for (ReportManager report : reports) {
+				Assert.assertTrue(Arrays.asList(report.getTags()).contains(tag));
+			}
+		}
+	}
 }

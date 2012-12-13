@@ -1,4 +1,4 @@
-/*
+/**
  * The contents of this file are subject to the OpenMRS Public License
  * Version 1.0 (the "License"); you may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
@@ -11,16 +11,18 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+package org.openmrs.module.kenyaemr.report.patientlist;
 
-package org.openmrs.module.kenyaemr.report;
-
-import org.openmrs.module.kenyaemr.calculation.LostToFollowUpCalculation;
+import org.openmrs.module.kenyaemr.calculation.cd4.NeedsCD4Calculation;
 import org.springframework.stereotype.Component;
 
+/**
+ * Due for CD4 test report
+ */
 @Component
-public class LostToFollowUpReport extends PatientAlertListReportManager {
-
-    public LostToFollowUpReport() {
-        setAlertCalculation(new LostToFollowUpCalculation());
-    }
+public class NeedsCD4Report extends PatientListReportManager {
+	
+    public NeedsCD4Report() {
+	    setCalculation(new NeedsCD4Calculation());
+	}
 }

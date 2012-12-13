@@ -36,8 +36,13 @@ public class MissedAppointmentsOrDefaultedCalculation extends BaseKenyaEmrCalcul
 
     @Override
     public String getShortMessage() {
-        return "Missed Appointments";
+        return "Patients With Missed Appointments";
     }
+
+	@Override
+	public String getSinglePatientMessage() {
+		return "Missed Appointment";
+	}
 
 	@Override
 	public String[] getTags() {

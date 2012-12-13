@@ -24,21 +24,24 @@ import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.page.PageModel;
 import org.openmrs.ui.framework.session.Session;
 
-
 /**
  * Homepage for the "Reports" app
  */
 public class ReportsHomePageController {
 
-	public void controller(Session session,
-	                       PageModel model) {
+	public void controller(Session session, PageModel model) {
 		AppUiUtil.startApp("kenyaemr.reports", session);
 		
-		model.addAttribute("mohReports", getReportDefinitionSummaries("MoH"));
-		model.addAttribute("patientAlertReports", getReportDefinitionSummaries("alert"));
-		model.addAttribute("patientSummaryReports", getReportDefinitionSummaries("summary"));
+		model.addAttribute("mohReports", getReportDefinitionSummaries("moh"));
+		model.addAttribute("facilityReports", getReportDefinitionSummaries("facility"));
+		model.addAttribute("patientReports", getReportDefinitionSummaries("patient"));
 	}
 
+	/**
+	 * Fetches all definition summaries for reports with a given tag
+	 * @param tag the report tag
+	 * @return the definition summaries
+	 */
     private List<SimpleObject> getReportDefinitionSummaries(String tag) {
     	List<SimpleObject> ret = new ArrayList<SimpleObject>();
 		for (ReportManager m : Context.getService(KenyaEmrService.class).getReportManagersByTag(tag)) {
@@ -46,5 +49,4 @@ public class ReportsHomePageController {
 		}
 		return ret;
     }
-	
 }

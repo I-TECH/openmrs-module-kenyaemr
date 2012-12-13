@@ -13,30 +13,24 @@
  */
 package org.openmrs.module.kenyaemr.report;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Concept;
-import org.openmrs.PatientIdentifier;
 import org.openmrs.Program;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyaemr.report.patientlist.DecliningCD4Report;
 import org.openmrs.module.kenyaemr.test.TestUtils;
-import org.openmrs.module.reporting.dataset.DataSet;
-import org.openmrs.module.reporting.dataset.DataSetRow;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
-import org.openmrs.module.reporting.report.renderer.TsvReportRenderer;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
-import java.io.IOException;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
-import java.util.Set;
 
 public class DecliningCD4ReportTest extends BaseModuleContextSensitiveTest {
 

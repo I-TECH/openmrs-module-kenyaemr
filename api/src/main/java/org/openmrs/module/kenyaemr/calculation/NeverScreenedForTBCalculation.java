@@ -31,7 +31,7 @@ public class NeverScreenedForTBCalculation extends BaseKenyaEmrCalculation {
 
     @Override
     public String getShortMessage() {
-        return "Never Screened for TB";
+        return "HIV Patients Never Screened for TB";
     }
 
 	@Override
@@ -46,6 +46,7 @@ public class NeverScreenedForTBCalculation extends BaseKenyaEmrCalculation {
 
         Set<Integer> inHivProgram = CalculationUtils.patientsThatPass(lastProgramEnrollment(hivProgram, cohort, context));
         Set<Integer> alive = alivePatients(cohort, context);
+
         // TODO replace the EncounterService search inside the loop with a single reporting query
 
         CalculationResultMap ret = new CalculationResultMap();
@@ -65,5 +66,4 @@ public class NeverScreenedForTBCalculation extends BaseKenyaEmrCalculation {
         }
         return ret;
     }
-
 }

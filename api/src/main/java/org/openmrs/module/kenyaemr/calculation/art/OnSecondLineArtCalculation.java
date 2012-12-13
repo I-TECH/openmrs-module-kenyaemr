@@ -36,9 +36,20 @@ import org.openmrs.module.kenyaemr.regimen.*;
  */
 public class OnSecondLineArtCalculation extends BaseKenyaEmrCalculation {
 
+	/**
+	 * @see org.openmrs.module.kenyaemr.calculation.BaseKenyaEmrCalculation#getShortMessage()
+	 */
 	@Override
 	public String getShortMessage() {
-		return "Patients on Second Line";
+		return "Patients on Second Line ART";
+	}
+
+	/**
+	 * @see org.openmrs.module.kenyaemr.calculation.BaseKenyaEmrCalculation#getSinglePatientMessage()
+	 */
+	@Override
+	public String getSinglePatientMessage() {
+		return "On Second Line ART";
 	}
 
 	@Override

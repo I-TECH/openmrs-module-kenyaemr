@@ -34,7 +34,7 @@ public class WithoutCTXOrDapsoneCalculation extends BaseKenyaEmrCalculation {
 
 	@Override
 	public String getShortMessage() {
-		return "Patients who have taken CTX or Dapsone";
+		return "Patients who have not taken CTX/Dapsone";
 	}
 
 	@Override

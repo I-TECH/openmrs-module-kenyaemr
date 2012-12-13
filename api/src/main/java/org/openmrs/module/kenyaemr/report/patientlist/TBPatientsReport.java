@@ -12,26 +12,29 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.report;
+package org.openmrs.module.kenyaemr.report.patientlist;
 
 import org.openmrs.module.kenyaemr.calculation.InTBProgramCalculation;
 import org.springframework.stereotype.Component;
 
+/**
+ * TB patients report
+ */
 @Component
-public class TBPatientsReport extends PatientAlertListReportManager {
+public class TBPatientsReport extends PatientListReportManager {
 
     public TBPatientsReport() {
-        setAlertCalculation(new InTBProgramCalculation());
+        setCalculation(new InTBProgramCalculation());
     }
 
 	/*@Override
     public void addColumns(PatientDataSetDefinition dsd) {
 		Program tbProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.TB_PROGRAM_UUID);
-		ProgramEnrollmentsForPatientDataDefinition p=new ProgramEnrollmentsForPatientDataDefinition(tbProgram.getName());
+		ProgramEnrollmentsForPatientDataDefinition p=new ProgramEnrollmentsForPatientDataDefinition(tbProgram.getShortMessage());
 		
 		super.addColumns(dsd);
         dsd.removeColumnDefinition("View");
-        dsd.addColumn("Date Treatment Started", new ProgramEnrollmentsForPatientDataDefinition(tbProgram.getName()),"",new DataConverter() {
+        dsd.addColumn("Date Treatment Started", new ProgramEnrollmentsForPatientDataDefinition(tbProgram.getShortMessage()),"",new DataConverter() {
 			
 			@Override
 			public Class<?> getInputDataType() {
@@ -67,5 +70,4 @@ public class TBPatientsReport extends PatientAlertListReportManager {
 		});
        
         }*/
-
 }

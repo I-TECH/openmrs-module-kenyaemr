@@ -32,7 +32,7 @@ public class InTBProgramCalculation extends BaseKenyaEmrCalculation {
 
     @Override
     public String getShortMessage() {
-        return "TB Patients";
+        return "Patients in TB Program";
     }
 
 	@Override

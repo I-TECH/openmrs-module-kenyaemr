@@ -11,14 +11,13 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.kenyaemr.report;
-
-import java.util.LinkedHashSet;
-import java.util.Set;
+package org.openmrs.module.kenyaemr.report.patientlist;
 
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.kenyaemr.calculation.BaseKenyaEmrCalculation;
+import org.openmrs.module.kenyaemr.report.KenyaEmrCalculationCohortDefinition;
+import org.openmrs.module.kenyaemr.report.ReportManager;
 import org.openmrs.module.reporting.data.converter.DataConverter;
 import org.openmrs.module.reporting.data.patient.definition.PatientIdDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.PatientIdentifierDataDefinition;
@@ -33,15 +32,14 @@ import org.openmrs.module.reporting.evaluation.parameter.Parameterizable;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 
-
 /**
- * Base implementation for row-per-patient reports who trigger a certain alert
+ * Base implementation for row-per-patient reports based on calculations
  */
-public abstract class PatientAlertListReportManager implements PatientListReportManager {
+public abstract class PatientListReportManager implements ReportManager {
 	
 	private Boolean configured = Boolean.FALSE;
 	
-	private BaseKenyaEmrCalculation alertCalculation;
+	private BaseKenyaEmrCalculation calculation;
 	
 	protected ReportDefinition reportDefinition;
 	
@@ -49,18 +47,15 @@ public abstract class PatientAlertListReportManager implements PatientListReport
 	 * @see org.openmrs.module.kenyaemr.report.ReportManager#getTags()
 	 */
 	@Override
-	public Set<String> getTags() {
-	    Set<String> ret = new LinkedHashSet<String>();
-	    ret.add("alert");
-	    ret.add("facility");
-	    return ret;
+	public String[] getTags() {
+		return new String[] { "facility" };
 	}
 	
     /**
-     * @param alertCalculation the alertCalculation to set
+     * @param calculation the calculation to set
      */
-    public void setAlertCalculation(BaseKenyaEmrCalculation alertCalculation) {
-	    this.alertCalculation = alertCalculation;
+    public void setCalculation(BaseKenyaEmrCalculation calculation) {
+	    this.calculation = calculation;
     }
 	
 	/**
@@ -101,8 +96,8 @@ public abstract class PatientAlertListReportManager implements PatientListReport
 	@Override
 	public DefinitionSummary getReportDefinitionSummary() {
 		DefinitionSummary ret = new DefinitionSummary();
-		ret.setName(alertCalculation.getShortMessage());
-		ret.setDescription(alertCalculation.getDetailedMessage());
+		ret.setName(calculation.getShortMessage());
+		ret.setDescription(calculation.getDetailedMessage());
 		return ret;
 	}
 	
@@ -125,12 +120,12 @@ public abstract class PatientAlertListReportManager implements PatientListReport
      * Constructs the report definitions
      */
     private ReportDefinition buildReportDefinition() {
-		PatientDataSetDefinition dsd = new PatientDataSetDefinition(alertCalculation.getDetailedMessage());
+		PatientDataSetDefinition dsd = new PatientDataSetDefinition(calculation.getDetailedMessage());
 		addColumns(dsd);
-		dsd.addRowFilter(map(new KenyaEmrCalculationCohortDefinition(alertCalculation), null));
+		dsd.addRowFilter(map(new KenyaEmrCalculationCohortDefinition(calculation), null));
 
 		ReportDefinition ret = new ReportDefinition();
-		ret.setName(alertCalculation.getShortMessage());
+		ret.setName(calculation.getShortMessage());
 		ret.addDataSetDefinition(dsd, null);
 		return ret;
     }
@@ -160,5 +155,4 @@ public abstract class PatientAlertListReportManager implements PatientListReport
     	}
     	return new Mapped<T>(parameterizable, ParameterizableUtil.createParameterMappings(mappings));
     }
-	
 }

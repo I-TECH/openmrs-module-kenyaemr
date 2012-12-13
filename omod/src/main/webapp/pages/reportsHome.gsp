@@ -29,7 +29,7 @@
 				<div class="panel-heading">Facility Reports</div>
 				<div class="panel-content">
 
-					<% patientAlertReports.each { %>
+					<% facilityReports.each { %>
 					<div class="stack-item clickable" style="overflow: auto">
 						<input type="hidden" name="clickUrl" value="${ ui.pageLink("kenyaemr", "reportsRunPatientAlertListReport", [ manager: it.manager ]) }" />
 						<table>
@@ -51,7 +51,7 @@
 
 					<i>None</i>
 
-					<% /* patientSummaryReports.each { */ %>
+					<% /* patientReports.each { */ %>
 					<!-- <div class="stack-item clickable">
 						<input type="hidden" name="clickUrl" value="${ /* ui.pageLink("kenyaemr", "reportsRunPatientSummaryReport", [ manager: it.manager ]) */ }" />
 						<table>

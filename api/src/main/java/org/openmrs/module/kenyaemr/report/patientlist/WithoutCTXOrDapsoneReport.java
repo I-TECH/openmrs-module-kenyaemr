@@ -11,15 +11,16 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.kenyaemr.report;
+package org.openmrs.module.kenyaemr.report.patientlist;
 
-import org.openmrs.module.kenyaemr.calculation.MissedAppointmentsOrDefaultedCalculation;
+import org.openmrs.module.kenyaemr.calculation.WithoutCTXOrDapsoneCalculation;
 import org.springframework.stereotype.Component;
 
 @Component
-public class MissedAppointmentsOrDefaultedReport extends PatientAlertListReportManager {
+public class WithoutCTXOrDapsoneReport extends PatientListReportManager {
 
-    public MissedAppointmentsOrDefaultedReport() {
-        setAlertCalculation(new MissedAppointmentsOrDefaultedCalculation());
+    public WithoutCTXOrDapsoneReport() {
+        setCalculation(new WithoutCTXOrDapsoneCalculation());
     }
+
 }

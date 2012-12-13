@@ -14,7 +14,7 @@ jq(function() {
 	ui.getFragmentActionAsJson('kenyaemr', 'clinicalAlerts', 'getAlerts', { patientId: ${ patient.id } }, function(result) {
 		if (result) {
 			var html = jq.map(result, function(alertText) {
-				return '<span class="patient-alert">' + alertText.shortMessage + '</span>';
+				return '<span class="patient-alert">' + alertText.singlePatientMessage + '</span>';
 			}).join('');
 			jq('#selected-patient-alerts').append(html).show();
 		}

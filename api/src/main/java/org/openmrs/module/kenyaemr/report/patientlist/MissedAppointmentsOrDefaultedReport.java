@@ -1,4 +1,4 @@
-/**
+/*
  * The contents of this file are subject to the OpenMRS Public License
  * Version 1.0 (the "License"); you may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
@@ -11,21 +11,15 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.kenyaemr.report;
+package org.openmrs.module.kenyaemr.report.patientlist;
 
-import org.openmrs.module.kenyaemr.calculation.art.EligibleForArtCalculation;
+import org.openmrs.module.kenyaemr.calculation.MissedAppointmentsOrDefaultedCalculation;
 import org.springframework.stereotype.Component;
 
-
-
-/**
- *
- */
 @Component
-public class EligibleForArvButNotStartedReport extends PatientAlertListReportManager {
-	
-	public EligibleForArvButNotStartedReport() {
-		setAlertCalculation(new EligibleForArtCalculation());
-	}
+public class MissedAppointmentsOrDefaultedReport extends PatientListReportManager {
 
+    public MissedAppointmentsOrDefaultedReport() {
+        setCalculation(new MissedAppointmentsOrDefaultedCalculation());
+    }
 }

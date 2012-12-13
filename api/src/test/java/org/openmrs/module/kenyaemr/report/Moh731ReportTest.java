@@ -21,6 +21,7 @@ import org.apache.commons.io.IOUtils;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyaemr.report.indicator.Moh731Report;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.MapDataSet;

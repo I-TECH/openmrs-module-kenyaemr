@@ -18,7 +18,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
-import org.openmrs.module.kenyaemr.report.Moh731Report;
+import org.openmrs.module.kenyaemr.report.indicator.Moh731Report;
 import org.openmrs.module.reportingrest.web.controller.DataSetDefinitionController;
 import org.openmrs.module.reportingrest.web.controller.EvaluatedDataSetController;
 import org.openmrs.module.webservices.rest.SimpleObject;

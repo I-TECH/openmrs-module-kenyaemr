@@ -17,6 +17,7 @@ package org.openmrs.module.kenyaemr.report;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
+import org.openmrs.module.kenyaemr.report.indicator.Moh731Report;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.test.BaseModuleContextSensitiveTest;

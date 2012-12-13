@@ -28,7 +28,7 @@ public interface ReportManager {
 	/**
 	 * @return tags that categorize this report manager
 	 */
-	public Set<String> getTags();
+	public String[] getTags();
 	
 	/**
 	 * @return a lightweight summary of the report definition, suitable for pick lists

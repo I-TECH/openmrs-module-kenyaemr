@@ -11,16 +11,16 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.kenyaemr.report;
 
-import org.openmrs.module.kenyaemr.calculation.art.OnSecondLineArtCalculation;
+package org.openmrs.module.kenyaemr.report.patientlist;
+
+import org.openmrs.module.kenyaemr.calculation.LostToFollowUpCalculation;
 import org.springframework.stereotype.Component;
 
 @Component
-public class PatientsOnSecondLineArtReport extends PatientAlertListReportManager {
+public class LostToFollowUpReport extends PatientListReportManager {
 
-    public PatientsOnSecondLineArtReport() {
-        setAlertCalculation(new OnSecondLineArtCalculation());
+    public LostToFollowUpReport() {
+        setCalculation(new LostToFollowUpCalculation());
     }
-
 }

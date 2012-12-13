@@ -33,6 +33,11 @@ public class LostToFollowUpCalculation extends BaseKenyaEmrCalculation {
 
 	@Override
 	public String getShortMessage() {
+		return "Patients Lost to Followup";
+	}
+
+	@Override
+	public String getSinglePatientMessage() {
 		return "Lost to Followup";
 	}
 

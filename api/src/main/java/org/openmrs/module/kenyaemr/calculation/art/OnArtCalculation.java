@@ -15,28 +15,31 @@ package org.openmrs.module.kenyaemr.calculation.art;
 
 import java.util.Collection;
 import java.util.Map;
-import java.util.Set;
 
-import org.openmrs.Concept;
-import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.calculation.result.CalculationResultMap;
-import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.kenyaemr.calculation.BaseKenyaEmrCalculation;
 import org.openmrs.module.kenyaemr.calculation.BooleanResult;
-import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
 
 /**
  * Calculates whether patients are on ART
  */
 public class OnArtCalculation extends BaseKenyaEmrCalculation {
-	
+
 	/**
-	 * @see BaseKenyaEmrCalculation#getShortMessage()
+	 * @see org.openmrs.module.kenyaemr.calculation.BaseKenyaEmrCalculation#getShortMessage()
 	 */
 	@Override
 	public String getShortMessage() {
+		return "Patients on ART";
+	}
+
+	/**
+	 * @see org.openmrs.module.kenyaemr.calculation.BaseKenyaEmrCalculation#getSinglePatientMessage()
+	 */
+	@Override
+	public String getSinglePatientMessage() {
 		return "On ART";
 	}
 

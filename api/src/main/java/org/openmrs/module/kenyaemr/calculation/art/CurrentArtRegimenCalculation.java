@@ -17,13 +17,11 @@ import org.openmrs.Concept;
 import org.openmrs.DrugOrder;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
-import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.ListResult;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.kenyaemr.calculation.BaseKenyaEmrCalculation;
-import org.openmrs.module.kenyaemr.calculation.BooleanResult;
 import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
 import org.openmrs.module.kenyaemr.regimen.Regimen;
 

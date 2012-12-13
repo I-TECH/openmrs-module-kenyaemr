@@ -11,7 +11,7 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.kenyaemr.report;
+package org.openmrs.module.kenyaemr.report.indicator;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
@@ -24,7 +24,6 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.kenyaemr.calculation.art.InitialArtStartDateCalculation;
 import org.openmrs.module.kenyaemr.report.KenyaEmrCalculationCohortDefinition;
-import org.openmrs.module.kenyaemr.report.ReportManager;
 import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
@@ -51,25 +50,19 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
-
+import java.util.*;
 
 /**
- *
+ * MOH 731 report
  */
 @Component
-public class Moh731Report implements ReportManager {
+public class Moh731Report extends IndicatorReportManager {
 	
 	private Boolean configured = Boolean.FALSE;
 	
 	private final Log log = LogFactory.getLog(getClass());
 	
-    public static final String NAME_PREFIX = "MOH 731 Indicator Report";
+    public static final String NAME_PREFIX = "MOH 731";
     
     ReportDefinition reportDefinition;
 
@@ -87,12 +80,8 @@ public class Moh731Report implements ReportManager {
      * @see org.openmrs.module.kenyaemr.report.ReportManager#getTags()
      */
     @Override
-    public Set<String> getTags() {
-        Set<String> ret = new LinkedHashSet<String>();
-        ret.add("HIV");
-        ret.add("MoH");
-        ret.add("indicator");
-        return ret;
+    public String[] getTags() {
+		return new String[] { "moh", "hiv" };
     }
     
     /**
@@ -362,7 +351,7 @@ public class Moh731Report implements ReportManager {
     @Override
     public byte[] getExcelTemplate() {
     	try {
-	    	InputStream is = OpenmrsClassLoader.getInstance().getResourceAsStream("Moh731Report.xls");
+	    	InputStream is = OpenmrsClassLoader.getInstance().getResourceAsStream("report_templates/Moh731Report.xls");
 	    	byte[] contents = IOUtils.toByteArray(is);
 			IOUtils.closeQuietly(is);
 			return contents;

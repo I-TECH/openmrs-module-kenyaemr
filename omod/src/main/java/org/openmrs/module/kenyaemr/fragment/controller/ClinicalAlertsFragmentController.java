@@ -57,6 +57,6 @@ public class ClinicalAlertsFragmentController {
 		}
 
 		// Return as simple objects to be formatted as JSON
-		return SimpleObject.fromCollection(alerts, ui, "shortMessage", "detailedMessage");
+		return SimpleObject.fromCollection(alerts, ui, "singlePatientMessage");
 	}
 }

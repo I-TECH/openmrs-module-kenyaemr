@@ -12,7 +12,7 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.report;
+package org.openmrs.module.kenyaemr.report.patientlist;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -29,10 +29,10 @@ import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
 import org.springframework.stereotype.Component;
 
 @Component
-public class DecliningCD4Report extends PatientAlertListReportManager {
+public class DecliningCD4Report extends PatientListReportManager {
 
     public DecliningCD4Report() {
-        setAlertCalculation(new DecliningCD4Calculation());
+        setCalculation(new DecliningCD4Calculation());
     }
 
     @Override
@@ -81,5 +81,4 @@ public class DecliningCD4Report extends PatientAlertListReportManager {
 
         addViewColumn(dsd);
     }
-
 }

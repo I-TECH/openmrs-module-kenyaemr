@@ -19,6 +19,7 @@ import org.openmrs.Program;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.MetadataConstants;
+import org.openmrs.module.kenyaemr.report.patientlist.TBPatientsReport;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;

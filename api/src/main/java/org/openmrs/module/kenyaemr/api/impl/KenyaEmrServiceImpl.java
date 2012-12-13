@@ -13,10 +13,7 @@
  */
 package org.openmrs.module.kenyaemr.api.impl;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.openmrs.GlobalProperty;
 import org.openmrs.Location;
@@ -292,16 +289,17 @@ public class KenyaEmrServiceImpl extends BaseOpenmrsService implements KenyaEmrS
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.api.KenyaEmrService#getAllReportManagers()
+	 * @see org.openmrs.module.kenyaemr.api.KenyaEmrService#getReportManagersByTag(String)
 	 */
 	@Override
-	public List<ReportManager> getReportManagersByTag(String withTag) {
-		if (withTag == null) {
+	public List<ReportManager> getReportManagersByTag(String tag) {
+		if (tag == null) {
 			return new ArrayList<ReportManager>(reportManagers.values());
-		} else {
+		}
+		else {
 			List<ReportManager> ret = new ArrayList<ReportManager>();
 			for (ReportManager candidate : reportManagers.values()) {
-				if (candidate.getTags() != null && candidate.getTags().contains(withTag)) {
+				if (candidate.getTags() != null && Arrays.asList(candidate.getTags()).contains(tag)) {
 					ret.add(candidate);
 				}
 			}

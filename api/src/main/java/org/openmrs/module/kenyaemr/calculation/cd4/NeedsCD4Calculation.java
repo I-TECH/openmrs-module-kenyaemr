@@ -33,13 +33,21 @@ import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
  * is alive, enrolled in the HIV program, and has not had a CD4 count in the last 180 days
  */
 public class NeedsCD4Calculation extends BaseKenyaEmrCalculation {
-	
+
 	/**
-	 * @see BaseKenyaEmrCalculation#getShortMessage()
+	 * @see org.openmrs.module.kenyaemr.calculation.BaseKenyaEmrCalculation#getShortMessage()
 	 */
 	@Override
 	public String getShortMessage() {
-	    return "Due for CD4";
+		return "Patients Due for CD4";
+	}
+
+	/**
+	 * @see org.openmrs.module.kenyaemr.calculation.BaseKenyaEmrCalculation#getSinglePatientMessage()
+	 */
+	@Override
+	public String getSinglePatientMessage() {
+		return "Due for CD4";
 	}
 
 	@Override
