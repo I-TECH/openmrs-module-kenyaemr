@@ -1,8 +1,8 @@
 <%
 	config.require("definition", "data")
-%>
 
-<h2>${ definition.name }</h2>
+	ui.decorateWith("kenyaemr", "panel", [ heading: definition.name ])
+%>
 
 <% if (definition.parameters) { %>
 	<fieldset>
