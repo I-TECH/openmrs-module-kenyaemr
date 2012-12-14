@@ -26,6 +26,7 @@ import org.joda.time.PeriodType;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyaemr.KenyaEmrUiUtils;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -44,6 +45,7 @@ public class PatientSearchFragmentController {
 									 @RequestParam(value="age", required=false) Integer age,
 									 @RequestParam(value="ageWindow", defaultValue="5") int ageWindow,
 									 UiUtils ui) {
+
 		if ("checked-in".equals(which)) {
 			return withActiveVisits(query, age, ageWindow, ui);
 		}
@@ -62,15 +64,15 @@ public class PatientSearchFragmentController {
 		}
 		
 		List<Visit> activeVisits = Context.getVisitService().getVisits(null, null, null, null, null, null, null, null, null, false, false);
-		final Map<String, Visit> ptIds = new HashMap<String, Visit>();
+		final Map<Integer, Visit> patientActiveVisits = new HashMap<Integer, Visit>();
 		for (Visit v : activeVisits) {
-			ptIds.put(v.getPatient().getPatientId().toString(), v);
+			patientActiveVisits.put(v.getPatient().getPatientId(), v);
 		}
 		
-		List<SimpleObject> matching = simplePatientList(ui, ret);
+		List<SimpleObject> matching = KenyaEmrUiUtils.simplePatients(ret, ui);
 
 		for (SimpleObject so : matching) {
-			Visit v = ptIds.get(so.get("patientId"));
+			Visit v = patientActiveVisits.get(so.get("patientId"));
 			if (v != null) {
 				so.put("extra", "<div class='active-visit'>" + ui.format(v.getVisitType()) + "<br/><small>" + ui.format(v.getStartDatetime()) + "</small></div>");
 			}
@@ -97,17 +99,17 @@ public class PatientSearchFragmentController {
 				if (!ret.contains(v.getPatient()))
 					ret.add(v.getPatient());
 			}
-			matching = simplePatientList(ui, ret);
+			matching = KenyaEmrUiUtils.simplePatients(ret, ui);
 		}
 		
 		// intersect query with active visits
-		Map<String, Visit> ptIds = new HashMap<String, Visit>();
+		Map<Integer, Visit> patientActiveVisits = new HashMap<Integer, Visit>();
 		for (Visit v : activeVisits) {
-			ptIds.put(v.getPatient().getPatientId().toString(), v);
+			patientActiveVisits.put(v.getPatient().getPatientId(), v);
 		}
 		for (Iterator<SimpleObject> i = matching.iterator(); i.hasNext(); ) {
 			SimpleObject candidate = i.next();
-			Visit v = ptIds.get(candidate.get("patientId"));
+			Visit v = patientActiveVisits.get(candidate.get("patientId"));
 			if (v == null) {
 				i.remove();
 			} else {
@@ -116,25 +118,4 @@ public class PatientSearchFragmentController {
 		}
 		return matching;
 	}
-
-	/**
-     * Simplifies a list of patients so it can be sent to the client via json
-     * 
-     * @param ui
-     * @param pts
-     * @return
-     */
-    private List<SimpleObject> simplePatientList(UiUtils ui, List<Patient> pts) {
-    	List<SimpleObject> ret = new ArrayList<SimpleObject>();
-    	long now = System.currentTimeMillis();
-    	for (Patient pt : pts) {
-    		SimpleObject so = SimpleObject.fromObject(pt, ui, "patientId", "personName", "age", "birthdate", "birthdateEstimated", "gender", "activeIdentifiers.identifierType", "activeIdentifiers.identifier");
-    		Period p = new Period(pt.getBirthdate().getTime(), now, PeriodType.yearMonthDay());
-    		so.put("ageMonths", p.getMonths());
-    		so.put("ageDays", p.getDays());
-    		ret.add(so);
-    	}
-    	return ret;
-    }
-
 }

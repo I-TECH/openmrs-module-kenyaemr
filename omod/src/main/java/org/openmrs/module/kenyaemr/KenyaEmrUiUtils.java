@@ -14,12 +14,13 @@
 package org.openmrs.module.kenyaemr;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.joda.time.Period;
+import org.joda.time.PeriodType;
 import org.openmrs.Concept;
 import org.openmrs.ConceptName;
 import org.openmrs.DrugOrder;
+import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
-import org.openmrs.calculation.result.ListResult;
-import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
 import org.openmrs.module.kenyaemr.regimen.*;
 import org.openmrs.module.kenyaemr.util.KenyaEmrUtils;
 import org.openmrs.ui.framework.FormatterImpl;
@@ -107,6 +108,25 @@ public class KenyaEmrUiUtils {
 			components.add(s);
 		}
 		return OpenmrsUtil.join(components, " + ");
+	}
+
+	/**
+	 * Simplifies a list of patients
+	 * @param patients the patients
+	 * @param ui the UI utils
+	 * @return
+	 */
+	public static List<SimpleObject> simplePatients(Collection<Patient> patients, UiUtils ui) {
+		List<SimpleObject> ret = new ArrayList<SimpleObject>();
+		long now = System.currentTimeMillis();
+		for (Patient patient : patients) {
+			SimpleObject so = SimpleObject.fromObject(patient, ui, "patientId", "personName", "age", "birthdate", "birthdateEstimated", "gender", "activeIdentifiers.identifierType", "activeIdentifiers.identifier");
+			Period p = new Period(patient.getBirthdate().getTime(), now, PeriodType.yearMonthDay());
+			so.put("ageMonths", p.getMonths());
+			so.put("ageDays", p.getDays());
+			ret.add(so);
+		}
+		return ret;
 	}
 
 	/**

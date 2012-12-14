@@ -31,9 +31,9 @@
 			return '<img width="32" height="32" src="' + ui.resourceLink('kenyaemr', 'images/patient_' + patient.gender.toLowerCase() + '.png') + '"/>';
 		},
 		leftDetails: function(patient) {
-			var str = patient.birthdateEstimated == "true" ? '~' : '';
+			var str = patient.birthdateEstimated ? '~' : '';
 			str += (patient.age < 1) ? (patient.ageMonths + ' month(s), ' + patient.ageDays + ' day(s)') : (patient.age + ' year(s)');
-			str += ' <small>(' + (patient.birthdateEstimated == "true" ? "approx " : "") + patient.birthdate + ')</small>';
+			str += ' <small>(' + (patient.birthdateEstimated ? "approx " : "") + patient.birthdate + ')</small>';
 			return str;
 		},
 		center: function(patient) {
