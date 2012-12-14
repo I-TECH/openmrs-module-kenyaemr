@@ -113,29 +113,25 @@ public class ArvRegimenFragmentController {
 		
 		private String changeReason;
 		
-		private Concept arv1;
-		
-		private Concept arv2;
-		
+		private Concept arv1;	
+		private Concept arv2;		
 		private Concept arv3;
+		private Concept arv4;
 		
 		private Double dosage1;
-		
-		private Double dosage2;
-		
+		private Double dosage2;	
 		private Double dosage3;
+		private Double dosage4;
 		
-		private String units1;
-		
-		private String units2;
-		
+		private String units1;	
+		private String units2;		
 		private String units3;
+		private String units4;
 		
-		private String frequency1;
-		
-		private String frequency2;
-		
+		private String frequency1;	
+		private String frequency2;		
 		private String frequency3;
+		private String frequency4;
 		
 		/**
 		 * @see org.springframework.validation.Validator#validate(java.lang.Object,
@@ -145,21 +141,12 @@ public class ArvRegimenFragmentController {
 		public void validate(Object target, Errors errors) {
 			require(errors, "patient");
 			require(errors, "startDate");
+			
+			// First ARV is mandatory, while rest are optional
 			require(errors, "arv1");
-			/**
-			 * First ARV is mandatory, while the other two are optional.
-			 */
-			/*require(errors, "arv2");
-			require(errors, "arv3");*/
 			require(errors, "dosage1");
-			/*require(errors, "dosage2");
-			require(errors, "dosage3");*/
 			require(errors, "units1");
-			/*require(errors, "units2");
-			require(errors, "units3");*/
 			require(errors, "frequency1");
-			/*require(errors, "frequency2");
-			require(errors, "frequency3");*/
 		}
 		
 		/**
@@ -183,6 +170,10 @@ public class ArvRegimenFragmentController {
 			if (arv3 != null) {
 				DrugOrder o3 = newDrugOrder(patient, startDate, arv3, dosage3, units3, frequency3);
 				Context.getOrderService().saveOrder(o3);
+			}
+			if (arv4 != null) {
+				DrugOrder o4 = newDrugOrder(patient, startDate, arv4, dosage4, units4, frequency4);
+				Context.getOrderService().saveOrder(o4);
 			}
 		}
 		
@@ -211,6 +202,9 @@ public class ArvRegimenFragmentController {
 			}
 			if (arv3 != null) {
 				changeRegimenHelper(baseline, noChanges, toChangeDose, toStart, arv3, dosage3, units3, frequency3);
+			}
+			if (arv4 != null) {
+				changeRegimenHelper(baseline, noChanges, toChangeDose, toStart, arv4, dosage4, units4, frequency4);
 			}
 			
 			List<DrugOrder> toStop = new ArrayList<DrugOrder>(baseline.getDrugOrders());
@@ -350,6 +344,20 @@ public class ArvRegimenFragmentController {
 		public void setArv3(Concept arv3) {
 			this.arv3 = arv3;
 		}
+
+		/**
+		 * @return the arv4
+		 */
+		public Concept getArv4() {
+			return arv4;
+		}
+
+		/**
+		 * @param arv4 the arv4 to set
+		 */
+		public void setArv4(Concept arv4) {
+			this.arv4 = arv4;
+		}
 		
 		/**
 		 * @return the dosage1
@@ -391,6 +399,20 @@ public class ArvRegimenFragmentController {
 		 */
 		public void setDosage3(Double dosage3) {
 			this.dosage3 = dosage3;
+		}
+
+		/**
+		 * @return the dosage4
+		 */
+		public Double getDosage4() {
+			return dosage4;
+		}
+
+		/**
+		 * @param dosage4 the dosage4 to set
+		 */
+		public void setDosage4(Double dosage4) {
+			this.dosage4 = dosage4;
 		}
 		
 		/**
@@ -434,6 +456,20 @@ public class ArvRegimenFragmentController {
 		public void setUnits3(String units3) {
 			this.units3 = units3;
 		}
+
+		/**
+		 * @return the units4
+		 */
+		public String getUnits4() {
+			return units4;
+		}
+
+		/**
+		 * @param units4 the units4 to set
+		 */
+		public void setUnits4(String units4) {
+			this.units4 = units4;
+		}
 		
 		/**
 		 * @return the frequency1
@@ -475,6 +511,20 @@ public class ArvRegimenFragmentController {
 		 */
 		public void setFrequency3(String frequency3) {
 			this.frequency3 = frequency3;
+		}
+
+		/**
+		 * @return the frequency4
+		 */
+		public String getFrequency4() {
+			return frequency4;
+		}
+
+		/**
+		 * @param frequency4 the frequency4 to set
+		 */
+		public void setFrequency4(String frequency4) {
+			this.frequency4 = frequency4;
 		}
 		
 		/**

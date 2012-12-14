@@ -42,7 +42,8 @@
 		<br />
 		Drug: ${ arvDrugSelect(1) } Dosage: ${ arvDoseInput(1) }${ arvUnitsSelect(1) } Frequency: ${ arvFreqSelect(1) }<br/>
 		Drug: ${ arvDrugSelect(2) } Dosage: ${ arvDoseInput(2) }${ arvUnitsSelect(2) } Frequency: ${ arvFreqSelect(2) }<br/>
-		Drug: ${ arvDrugSelect(3) } Dosage: ${ arvDoseInput(3) }${ arvUnitsSelect(3) } Frequency: ${ arvFreqSelect(3) }
+		Drug: ${ arvDrugSelect(3) } Dosage: ${ arvDoseInput(3) }${ arvUnitsSelect(3) } Frequency: ${ arvFreqSelect(3) }<br/>
+		Drug: ${ arvDrugSelect(4) } Dosage: ${ arvDoseInput(4) }${ arvUnitsSelect(4) } Frequency: ${ arvFreqSelect(4) }
 	""")
 %>
 
@@ -104,8 +105,8 @@
 			var stdReg = standardRegimens[stdRegIndex];
 			var components = stdReg.components;
 
-			// Fill out component array with nulls to make 3
-			for (var extra = 0; extra < 3 - components.length; extra++) {
+			// Fill out component array with nulls to make 4
+			for (var extra = 0; extra < 4 - components.length; extra++) {
 				components.push(null);
 			}
 
