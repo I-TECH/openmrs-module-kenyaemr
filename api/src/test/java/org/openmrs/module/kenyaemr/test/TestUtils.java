@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.kenyaemr.test;
 
+import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.openmrs.*;
@@ -177,5 +178,14 @@ public class TestUtils {
 		System.out.println("------------ " + data.getDefinition().getName() + " -------------");
 		new TsvReportRenderer().render(data, null, System.out);
 		System.out.println("-------------------------------");
+	}
+
+	/**
+	 * Prints an object as JSON
+	 * @param object the object
+	 * @throws IOException
+	 */
+	public static void printJson(Object object) throws IOException {
+		System.out.println(new ObjectMapper().writeValueAsString(object));
 	}
 }

@@ -14,7 +14,7 @@
 
 package org.openmrs.module.kenyaemr.rest;
 
-import org.codehaus.jackson.map.ObjectMapper;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
@@ -27,13 +27,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
-import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
-
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
+import java.util.Map;
 
 /**
  *
@@ -60,12 +56,17 @@ public class AccessReportsByRestWebServiceTest extends BaseModuleWebContextSensi
         // equivalent to doing "GET .../datasetdefinition"
         SimpleObject result = dsdController.getAll(new MockHttpServletRequest(), new MockHttpServletResponse());
 
-        assertNotNull(result.get("results"));
-        List results = (List) result.get("results");
+        List<SimpleObject> simpleDSDs = (List<SimpleObject>) result.get("results");
+		Assert.assertNotNull(simpleDSDs);
 
-        printJson(result);
+		for (SimpleObject simpleDSD : simpleDSDs) {
+			Assert.assertNotNull(simpleDSD);
+			Assert.assertNotNull(simpleDSD.get("uuid"));
+			Assert.assertNotNull(simpleDSD.get("display"));
+			Assert.assertNotNull(simpleDSD.get("links"));
+		}
 
-        // need to assert something, but the fact that serialization was successful is meaningful
+        //printJson(result);
     }
 
     @Test
@@ -75,19 +76,23 @@ public class AccessReportsByRestWebServiceTest extends BaseModuleWebContextSensi
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.addParameter("startDate", new String[] { "2012-01-01" });
         request.addParameter("endDate", new String[] { "2012-10-31" });
-        Object result = evalController.retrieve(uuid, request);
+		SimpleObject evaledReport = (SimpleObject) evalController.retrieve(uuid, request);
 
-        printJson(result);
+		Assert.assertNotNull(evaledReport);
+		Assert.assertNotNull(evaledReport.get("uuid"));
+		Assert.assertNotNull(evaledReport.get("links"));
 
-        Object rows = ((SimpleObject) result).get("rows");
-        assertNotNull(rows);
-        assertThat(((Collection) rows).size(), is(1));
+		Map metadata = (Map) evaledReport.get("metadata");
+		Assert.assertNotNull(metadata);
 
-        // should assert more, but the fact that serialization was successful is meaningful
+		Collection cols = (Collection) metadata.get("columns");
+		Assert.assertNotNull(cols);
+		Assert.assertTrue(cols.size() > 1);
+
+		Collection rows = (Collection) evaledReport.get("rows");
+		Assert.assertNotNull(rows);
+		Assert.assertEquals(1, rows.size());
+
+		//printJson(result);
     }
-
-    private void printJson(Object object) throws IOException {
-        System.out.println(new ObjectMapper().writeValueAsString(object));
-    }
-
 }
