@@ -14,10 +14,8 @@
 package org.openmrs.module.kenyaemr.fragment.controller;
 
 import org.openmrs.Patient;
-import org.openmrs.PatientProgram;
 import org.openmrs.calculation.InvalidCalculationException;
 import org.openmrs.calculation.result.CalculationResult;
-import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
 import org.openmrs.module.kenyaemr.calculation.KenyaEmrCalculationProvider;
 import org.openmrs.ui.framework.annotation.FragmentParam;
@@ -28,25 +26,20 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Controller for the medical chart patient program overview
+ * Controller for TB care summary
  */
-public class MedicalChartPatientProgramFragmentController {
+public class CareSummaryTbFragmentController {
 
-	private final String[] hivCalculations = { "initialArtRegimen", "currentArtRegimen", "lastWHOStage", "lastCD4Count", "lastCD4Percent" };
-
-	public void controller(@FragmentParam("patientProgram") PatientProgram patientProgram,
+	public void controller(@FragmentParam("patient") Patient patient,
 						   FragmentModel model,
-						   @SpringBean("org.openmrs.module.kenyaemr.calculation.KenyaEmrCalculationProvider") KenyaEmrCalculationProvider calculationProvider) throws InvalidCalculationException {
+						   @SpringBean("org.openmrs.module.kenyaemr.calculation.KenyaEmrCalculationProvider") KenyaEmrCalculationProvider calculationProvider)
+			throws InvalidCalculationException {
 
-		Patient patient = patientProgram.getPatient();
 		Map<String, CalculationResult> calculationResults = new HashMap<String, CalculationResult>();
 
-		if (patientProgram.getProgram().getUuid().equals(MetadataConstants.HIV_PROGRAM_UUID)) {
-
-			for (String calculationName : hivCalculations) {
-				calculationResults.put(calculationName, CalculationUtils.evaluateForPatient(calculationProvider, calculationName, null, patient.getPatientId()));
-			}
-		}
+		//calculationResults.put("lastWHOStage", CalculationUtils.evaluateForPatient(calculationProvider, "lastWHOStage", null, patient.getPatientId()));
+		//calculationResults.put("lastCD4Count", CalculationUtils.evaluateForPatient(calculationProvider, "lastCD4Count", null, patient.getPatientId()));
+		//calculationResults.put("lastCD4Percent", CalculationUtils.evaluateForPatient(calculationProvider, "lastCD4Percent", null, patient.getPatientId()));
 
 		model.addAttribute("calculations", calculationResults);
 	}

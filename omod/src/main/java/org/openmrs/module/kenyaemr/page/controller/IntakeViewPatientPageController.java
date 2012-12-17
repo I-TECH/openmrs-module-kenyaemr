@@ -16,13 +16,15 @@ package org.openmrs.module.kenyaemr.page.controller;
 import java.util.List;
 
 import org.openmrs.Patient;
+import org.openmrs.Program;
 import org.openmrs.Visit;
+import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appframework.AppUiUtil;
+import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.ui.framework.page.PageModel;
 import org.openmrs.ui.framework.session.Session;
 import org.springframework.web.bind.annotation.RequestParam;
-
 
 /**
  *
@@ -48,6 +50,12 @@ public class IntakeViewPatientPageController {
 		}
 		
 		model.addAttribute("visit", visit);
-	}
 
+		ProgramWorkflowService pws = Context.getProgramWorkflowService();
+		Program hivProgram = pws.getProgramByUuid(MetadataConstants.HIV_PROGRAM_UUID);
+		model.addAttribute("hivProgram", hivProgram);
+
+		Program tbProgram = pws.getProgramByUuid(MetadataConstants.TB_PROGRAM_UUID);
+		model.addAttribute("tbProgram", tbProgram);
+	}
 }

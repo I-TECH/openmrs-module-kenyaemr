@@ -1,91 +1,48 @@
 <%
 	ui.decorateWith("kenyaemr", "standardKenyaEmrPage", [ patient: patient ])
-	
-	ui.includeCss("kenyaemr", "kenyaemr.css");
 %>
 
-<style type="text/css">
-	fieldset {
-		margin-bottom: 0.6em;
-	}
-	
-	#col1 {
-		float: left;
-		padding-right: 4px;
-		width: 38%;
-	}
-	
-	#col2 {
-		float: left;
-		padding-left: 0.5em;
-		border-left: 1px black solid;
-		width: 60%;
-	}
-	
-	.active-visit-tab {
-		border: 1px black solid;
-		border-top-left-radius: 0.5em;
-		border-bottom-left-radius: 0.5em;
-		margin-bottom: 0.6em;
-		padding: 0.3em;
-		position: relative;
-		right: -5px;
-		z-index: 1;
-	}
-	
-	.active-visit-tab h4 {
-		margin: 0.3em;
-	}
-	
-	.selected-visit-tab {
-		background-color: #ffffbb;
-		border-right: none;
-	}
+<table cellpadding="0" cellspacing="0" border="0" width="100%">
+	<tr>
+		<td width="40%" valign="top">
+			${ ui.includeFragment("kenyaemr", "patientSummary", [ patient: patient ]) }
 
-	.selectable:hover {
-		cursor: pointer;
-		background-color: #e0e0e0;
-	}
-</style>
-
-<div id="col1">
-	${ ui.includeFragment("kenyaemr", "patientOverallDetails", [
-			patient: patient,
-			visit: visit,
-			activeVisits: activeVisits
-		]) }
-</div>
-
-<div id="col2" <% if (visit) { %>class="selected-visit-tab"<% } %>>
-	<% if (!visit) { %>
-		<h4>No current visit</h4>
-	<% } %>
-	
-	<% if (visit) { %>
-
-		${ ui.includeFragment("kenyaemr", "availableForms", [ visit: visit ]) }
-		
-	<% } else { %>
-
-		${ ui.includeFragment("uilibrary", "widget/button", [
-				iconProvider: "uilibrary",
-				icon: "user_add_32.png",
-				label: "Go to Registration",
-				classes: [ "padded" ],
-				extra: "to Check In",
-				href: ui.pageLink("kenyaemr", "registrationViewPatient", [ patientId: patient.id ])
+			${ ui.includeFragment("kenyaemr", "medicalEncounterProgram", [
+					patient: patient,
+					program: hivProgram,
+					registrationFormUuid: MetadataConstants.HIV_PROGRAM_ENROLLMENT_FORM_UUID,
+					exitFormUuid: MetadataConstants.HIV_PROGRAM_DISCONTINUATION_FORM_UUID
 			]) }
 
-	<% } %>
-	
-	<br/>
-
-</div>
+			${ ui.includeFragment("kenyaemr", "medicalEncounterProgram", [
+					patient: patient,
+					program: tbProgram,
+					registrationFormUuid: MetadataConstants.TB_ENROLLMENT_FORM_UUID,
+					exitFormUuid: MetadataConstants.TB_COMPLETION_FORM_UUID
+			]) }
+		</td>
+		<td width="60%" valign="top" style="padding-left: 5px">
+		<% if (visit) { %>
+			${ ui.includeFragment("kenyaemr", "visitSummary", [ visit: visit ]) }
+			${ ui.includeFragment("kenyaemr", "visitAvailableForms", [ visit: visit ]) }
+			${ ui.includeFragment("kenyaemr", "visitCompletedForms", [ visit: visit ]) }
+		<% } else { %>
+			<div class="panel-frame" style="text-align: right">
+				${ ui.includeFragment("uilibrary", "widget/button", [
+					iconProvider: "kenyaemr",
+					icon: "buttons/registration.png",
+					label: "Go to Registration",
+					classes: [ "padded" ],
+					extra: "to Check In",
+					href: ui.pageLink("kenyaemr", "registrationViewPatient", [ patientId: patient.id ])
+				]) }
+			</div>
+		<% } %>
+		</td>
+	</tr>
+</table>
 
 <% if (visit) { %>
-	
-	${ ui.includeFragment("kenyaemr", "showHtmlForm", [ id: "showHtmlForm", style: "display: none" ]) }
-	
-	${ ui.includeFragment("kenyaemr", "dialogSupport") }
-
+${ ui.includeFragment("kenyaemr", "showHtmlForm", [ id: "showHtmlForm", style: "display: none" ]) }
+${ ui.includeFragment("kenyaemr", "dialogSupport") }
 <% } %>

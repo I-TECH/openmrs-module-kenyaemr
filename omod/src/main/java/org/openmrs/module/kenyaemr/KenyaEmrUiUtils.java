@@ -16,6 +16,8 @@ package org.openmrs.module.kenyaemr;
 import org.apache.commons.collections.CollectionUtils;
 import org.joda.time.Period;
 import org.joda.time.PeriodType;
+import org.ocpsoft.prettytime.Duration;
+import org.ocpsoft.prettytime.PrettyTime;
 import org.openmrs.Concept;
 import org.openmrs.ConceptName;
 import org.openmrs.DrugOrder;
@@ -31,6 +33,7 @@ import org.openmrs.util.OpenmrsUtil;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * UI utility methods for web pages
@@ -62,6 +65,15 @@ public class KenyaEmrUiUtils {
 	 */
 	public static String formatTime(Date date) {
 		return timeFormatter.format(date);
+	}
+
+	/**
+	 * Formats a date interval
+	 * @param date the date relative to now
+	 */
+	public static String formatInterval(Date date) {
+		PrettyTime t = new PrettyTime(new Date());
+		return t.format(date);
 	}
 
 	/**

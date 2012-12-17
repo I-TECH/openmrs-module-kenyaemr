@@ -13,41 +13,63 @@
  */
 package org.openmrs.module.kenyaemr.page.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.openmrs.Patient;
+import org.openmrs.PatientProgram;
+import org.openmrs.Program;
 import org.openmrs.Visit;
+import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
+import org.openmrs.calculation.InvalidCalculationException;
+import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.module.appframework.AppUiUtil;
+import org.openmrs.module.kenyaemr.MetadataConstants;
+import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
+import org.openmrs.module.kenyaemr.calculation.KenyaEmrCalculationProvider;
+import org.openmrs.module.kenyaemr.util.KenyaEmrUtils;
+import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.page.PageModel;
 import org.openmrs.ui.framework.session.Session;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.management.monitor.StringMonitorMBean;
 
 /**
- *
+ * Medical encounter view patient page
  */
 public class MedicalEncounterViewPatientPageController {
 	
 	public void controller(@RequestParam("patientId") Patient patient,
 	                       @RequestParam(value="visitId", required=false) Visit visit,
 	                       PageModel model,
-	                       Session session) {
+	                       Session session,
+						   @SpringBean("org.openmrs.module.kenyaemr.calculation.KenyaEmrCalculationProvider") KenyaEmrCalculationProvider calculationProvider)
+			throws InvalidCalculationException {
 		
 		AppUiUtil.startApp("kenyaemr.medicalEncounter", session);
 
 		model.addAttribute("patient", patient);
 		model.addAttribute("person", patient);
-		
-		List<Visit> activeVisits = Context.getVisitService().getActiveVisitsByPatient(patient);
 
-		model.addAttribute("activeVisits", activeVisits);
-		
+		// Visit to be viewed defaults to first active visit if there is one
+		List<Visit> activeVisits = Context.getVisitService().getActiveVisitsByPatient(patient);
 		if (visit == null && activeVisits.size() > 0) {
 			visit = activeVisits.get(0);
 		}
 		
 		model.addAttribute("visit", visit);
+
+		ProgramWorkflowService pws = Context.getProgramWorkflowService();
+		Program hivProgram = pws.getProgramByUuid(MetadataConstants.HIV_PROGRAM_UUID);
+		model.addAttribute("hivProgram", hivProgram);
+
+		Program tbProgram = pws.getProgramByUuid(MetadataConstants.TB_PROGRAM_UUID);
+		model.addAttribute("tbProgram", tbProgram);
+
+		model.addAttribute("enrolledInHivProgram", KenyaEmrUtils.isPatientInProgram(patient, hivProgram));
+		model.addAttribute("enrolledInTbProgram", KenyaEmrUtils.isPatientInProgram(patient, tbProgram));
 	}
-	
 }

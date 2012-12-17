@@ -29,5 +29,5 @@ public class RegistrationEditPatientPageController {
 		model.addAttribute("patient", patient);
 		model.addAttribute("returnUrl", returnUrl);
 	}
-	
+
 }

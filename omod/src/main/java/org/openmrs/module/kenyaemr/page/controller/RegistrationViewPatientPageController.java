@@ -29,7 +29,6 @@ import org.openmrs.ui.framework.page.PageModel;
 import org.openmrs.ui.framework.session.Session;
 import org.springframework.web.bind.annotation.RequestParam;
 
-
 /**
  *
  */
@@ -66,6 +65,12 @@ public class RegistrationViewPatientPageController {
 			newVisit.setVisitType(vs.getVisitTypeByUuid(MetadataConstants.OUTPATIENT_VISIT_TYPE_UUID));
 			model.addAttribute("newCurrentVisit", newVisit);
 		}
+
+		ProgramWorkflowService pws = Context.getProgramWorkflowService();
+		Program hivProgram = pws.getProgramByUuid(MetadataConstants.HIV_PROGRAM_UUID);
+		model.addAttribute("hivProgram", hivProgram);
+
+		Program tbProgram = pws.getProgramByUuid(MetadataConstants.TB_PROGRAM_UUID);
+		model.addAttribute("tbProgram", tbProgram);
 	}
-	
 }
