@@ -34,7 +34,6 @@ public class ReportsHomePageController {
 		
 		model.addAttribute("mohReports", getReportDefinitionSummaries("moh"));
 		model.addAttribute("facilityReports", getReportDefinitionSummaries("facility"));
-		model.addAttribute("patientReports", getReportDefinitionSummaries("patient"));
 	}
 
 	/**

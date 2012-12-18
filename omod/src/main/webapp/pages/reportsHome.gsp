@@ -4,7 +4,7 @@
 
 <table cellspacing="0" cellpadding="5" width="100%">
 	<tr>
-		<td width="33%" valign="top">
+		<td width="50%" valign="top">
 			<div class="panel-frame">
 				<div class="panel-heading">Ministry of Health Reports</div>
 				<div class="panel-content" style="height: 100%">
@@ -24,7 +24,7 @@
 				</div>
 			</div>
 		</td>
-		<td width="33%" valign="top">
+		<td width="50%" valign="top">
 			<div class="panel-frame">
 				<div class="panel-heading">Facility Reports</div>
 				<div class="panel-content">
@@ -40,28 +40,6 @@
 						</table>
 					</div>
 					<% } %>
-
-				</div>
-			</div>
-		</td>
-		<td width="33%" valign="top">
-			<div class="panel-frame">
-				<div class="panel-heading">Patient Specific Reports</div>
-				<div class="panel-content">
-
-					<i>None</i>
-
-					<% /* patientReports.each { */ %>
-					<!-- <div class="stack-item clickable">
-						<input type="hidden" name="clickUrl" value="${ /* ui.pageLink("kenyaemr", "reportsRunPatientSummaryReport", [ manager: it.manager ]) */ }" />
-						<table>
-							<tr>
-								<td><img src="${ /* ui.resourceLink("kenyaemr", "images/reports/patient.png") */ }" alt="View report" /></td>
-								<td><b>${ /* it.name */ }</b></td>
-							</tr>
-						</table>
-					</div> -->
-					<% /* } */ %>
 
 				</div>
 			</div>
