@@ -50,7 +50,7 @@ ui.includeJavascript("kenyaemr", "dwr-util.js")
 		jq.each(ary, function(index, value){
 			if(value.value == "ERROR"){
 				if(!containError){
-					alert("<spring:message code='htmlformentry.error.autoCompleteAnswerNotValid'/>");
+					alert("${ ui.message("htmlformentry.error.autoCompleteAnswerNotValid") }");
 					var id = value.id;
 					id = id.substring(0,id.length-4);
 					jq("#"+id).focus();
