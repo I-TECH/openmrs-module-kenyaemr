@@ -1,5 +1,6 @@
 KenyaEMR OpenMRS Module
 =======================
+[![Build Status](https://travis-ci.org/rowanseymour/openmrs-module-kenyaemr.png)](https://travis-ci.org/rowanseymour/openmrs-module-kenyaemr)
 
 Overview
 --------
