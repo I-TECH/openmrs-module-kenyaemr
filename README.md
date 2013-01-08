@@ -5,13 +5,11 @@ KenyaEMR OpenMRS Module
 Overview
 --------
 
-Initial ITECH work on an OpenMRS-based EMR for the Kenya MoH
+Initial ITECH work on an OpenMRS-based EMR for the Kenya MoH, built on OpenMRS 1.9.1
 
-Requirements
+Installation
 ------------
-* OpenmRS 1.9.1
-* UI Framework module 2.0
-* UI Library module 2.0
+Build the distro project to create a zip archive of all required modules. This should then be extracted into your OpenMRS modules repository folder.
 
 Accreditation
 -------------
