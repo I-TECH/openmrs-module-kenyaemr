@@ -56,7 +56,7 @@
 /*** Panel style set ***/
 
 .panel-frame {
-	background-color: #d1d0c9;
+	background-color: #D1D0C9;
 	border-radius: 3px;
 	margin-bottom: 5px;
 	padding: 3px;
@@ -71,6 +71,17 @@
 	padding: 5px;
 	text-align: center;
 	font-weight: bold;
+}
+
+.panel-editlink {
+	float: right;
+	background-color: #E8E6DB;
+	padding: 3px;
+	border-radius: 1px;
+}
+
+.panel-editlink a {
+	text-decoration: none;
 }
 
 #content-side .panel-heading {
@@ -216,49 +227,31 @@ table.table-vertical tbody tr:nth-child(odd) {
 	content: "Loading...";
 }
 
+/*** Data points ***/
+
+.datapoint {
+	margin: 1px 0 1px 0;
+}
+
+.datapoint .datapoint-label {
+}
+
+.datapoint .datapoint-value {
+	font-weight: bold;
+}
+
+.datapoint .datapoint-extra {
+	font-size: 12px;
+}
+
 /*** Others... ***/
 
 .identifier-label {
 	color: #888888;
-	font-size: 0.8em;
 }
 
 .identifier-value {
 	font-weight: bold;
-}
-
-#patient-col1 {
-	float: left;
-	padding-right: 4px;
-	width: 38%;
-}
-
-#patient-col2 {
-	float: left;
-	padding-left: 0.5em;
-	border-left: 1px black solid;
-	width: 60%;
-}
-
-.patient-summary-box .person-name,
-.patient-summary-box .demographics,
-.patient-summary-box .identifiers,
-.patient-summary-box .attributes {
-	margin-bottom: 0.5em;
-}
-
-.patient-summary-box .person-name {
-	font-weight: bold;
-}
-
-.patient-summary-box .identifier-type,
-.patient-summary-box .attribute-type {
-	font-size: 0.8em;
-	color: #808080;
-}
-
-.patient-summary-box .identifier-value,
-.patient-summary-box .attribute-value {
 }
 
 .editable {
@@ -270,6 +263,10 @@ table.table-vertical tbody tr:nth-child(odd) {
 	top: 0.5em;
 	right: 0.3em;
 	font-size: 0.8em;
+}
+
+.edit-button {
+	float: right;
 }
 
 .padded {

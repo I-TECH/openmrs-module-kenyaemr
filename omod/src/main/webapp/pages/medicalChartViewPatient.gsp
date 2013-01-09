@@ -67,20 +67,9 @@
 <div id="content-main">
 
 	<% if (visit) { %>
-
-		<div class="panel-frame">
-			<div class="panel-heading">Visit Summary</div>
-			<div class="panel-content">
-				Type: <b>${ ui.format(visit.visitType) }</b><br />
-				Location: <b>${ ui.format(visit.location) }</b><br />
-				From <b>${ ui.format(visit.startDatetime) }</b> <% if (visit.stopDatetime) { %> to <b>${ ui.format(visit.stopDatetime) }</b> <% } %>
-			</div>
-		</div>
-
+		${ ui.includeFragment("kenyaemr", "visitSummary", [ visit: visit ]) }
 		${ ui.includeFragment("kenyaemr", "visitCompletedForms", [ visit: visit ]) }
-
 		${ ui.includeFragment("kenyaemr", "visitAvailableForms", [ visit: visit ]) }
-
 	<% } else if (form) { %>
 
 		<div class="panel-frame">

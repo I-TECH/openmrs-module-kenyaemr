@@ -55,7 +55,6 @@
 		padding: 5px;
 	}
 <% } %>
-
 	.loading-placeholder {
 		background-image: url('${ ui.resourceLink("kenyaemr", "images/loading.gif") }');
 	}

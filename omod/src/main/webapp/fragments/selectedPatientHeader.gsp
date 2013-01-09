@@ -95,7 +95,7 @@
 	${ ui.includeFragment("kenyaemr", "clinicalAlerts") }
 
 	<div id="active-visits">
-		<small>Current visits</small>
+		<small>Current visit</small>
 		<% if (activeVisits) {
 			activeVisits.each { visit ->
 				%><span class="active-visit">${ ui.format(visit.visitType) }</span><%

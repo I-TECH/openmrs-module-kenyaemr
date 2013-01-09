@@ -33,11 +33,15 @@ import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.util.OpenmrsUtil;
 
 /**
- *
+ * Regimen history of a patient
  */
 public class RegimenHistory {
-	
-	List<RegimenChange> changes;
+
+	private enum ChangeType {
+		START, END
+	}
+
+	private List<RegimenChange> changes;
 	
 	public static RegimenHistory forPatient(Patient patient, Concept medSet) {
 		Set<Concept> relevantGenerics = new HashSet<Concept>(medSet.getSetMembers());
@@ -113,58 +117,19 @@ public class RegimenHistory {
 	public List<RegimenChange> getChanges() {
 		return changes;
 	}
-	
+
 	/**
-	 * @param changes the changes to set
+	 * Convenience method to get the last change
+	 * @return the last regimen change
 	 */
-	public void setChanges(List<RegimenChange> changes) {
-		this.changes = changes;
+	public RegimenChange getLastRegimenChange() {
+		return (changes.size() > 0) ? changes.get(changes.size() - 1) : null;
 	}
-	
-	private enum ChangeType {
-		START, END
-	}
-	
+
 	/**
-	 * Helper class for tagging when a DrugOrder starts or stops
+	 * Convenience method to get the current regimen
+	 * @return the regimen
 	 */
-	private class DrugOrderChange {
-		
-		private Date date;
-		
-		private ChangeType type;
-		
-		private DrugOrder drugOrder;
-		
-		public DrugOrderChange(ChangeType type, DrugOrder drugOrder, Date date) {
-			this.type = type;
-			this.drugOrder = drugOrder;
-			this.date = date;
-		}
-		
-		/**
-		 * @return the date
-		 */
-		public Date getDate() {
-			return date;
-		}
-		
-		/**
-		 * @return the type
-		 */
-		public ChangeType getType() {
-			return type;
-		}
-		
-		/**
-		 * @return the drugOrder
-		 */
-		public DrugOrder getDrugOrder() {
-			return drugOrder;
-		}
-		
-	}
-	
 	public Regimen getCurrentRegimen() {
 		return getRegimenOnDate(new Date());
 	}
@@ -184,5 +149,44 @@ public class RegimenHistory {
 		}
 		return null;
 	}
-	
+
+	/**
+	 * Helper class for tagging when a DrugOrder starts or stops
+	 */
+	private class DrugOrderChange {
+
+		private Date date;
+
+		private ChangeType type;
+
+		private DrugOrder drugOrder;
+
+		public DrugOrderChange(ChangeType type, DrugOrder drugOrder, Date date) {
+			this.type = type;
+			this.drugOrder = drugOrder;
+			this.date = date;
+		}
+
+		/**
+		 * @return the date
+		 */
+		public Date getDate() {
+			return date;
+		}
+
+		/**
+		 * @return the type
+		 */
+		public ChangeType getType() {
+			return type;
+		}
+
+		/**
+		 * @return the drugOrder
+		 */
+		public DrugOrder getDrugOrder() {
+			return drugOrder;
+		}
+
+	}
 }

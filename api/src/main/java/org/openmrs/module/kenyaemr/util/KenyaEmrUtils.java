@@ -14,6 +14,10 @@
 package org.openmrs.module.kenyaemr.util;
 
 import org.openmrs.Concept;
+import org.openmrs.Patient;
+import org.openmrs.PatientProgram;
+import org.openmrs.Program;
+import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.ModuleFactory;
 import org.openmrs.module.kenyaemr.KenyaEmrConstants;
@@ -98,5 +102,21 @@ public class KenyaEmrUtils {
 			}
 		}
 		return concepts;
+	}
+
+	/**
+	 * Determines if patient is currently enrolled in the given program
+	 * @param patient the patient
+	 * @param program the program
+	 * @return true if patient is currently in the program
+	 */
+	public static boolean isPatientInProgram(Patient patient, Program program) {
+		ProgramWorkflowService pws = Context.getProgramWorkflowService();
+		for (PatientProgram pp : pws.getPatientPrograms(patient, program, null, null, null, null, false)) {
+			if (pp.getActive()) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

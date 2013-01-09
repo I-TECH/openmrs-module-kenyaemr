@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.kenyaemr;
 
+import org.apache.commons.lang.StringUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,6 +31,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 public class KenyaEmrUiUtilsTest extends BaseModuleWebContextSensitiveTest {
 
@@ -86,6 +88,15 @@ public class KenyaEmrUiUtilsTest extends BaseModuleWebContextSensitiveTest {
 	@Test
 	public void formatDateNoTime_shouldFormatNullDateAsEmptyString() throws Exception {
 		Assert.assertEquals("", KenyaEmrUiUtils.formatDateNoTime(null));
+	}
+
+	/**
+	 * @see org.openmrs.module.kenyaemr.KenyaEmrUiUtils#formatInterval(java.util.Date)
+	 * @verifies return non-empty string
+	 */
+	@Test
+	public void formatMillis_shouldReturnNonEmptyString() throws Exception {
+		Assert.assertTrue(StringUtils.isNotEmpty(KenyaEmrUiUtils.formatInterval(new Date())));
 	}
 
 	/**
