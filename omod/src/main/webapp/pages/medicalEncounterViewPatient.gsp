@@ -16,7 +16,7 @@
 			program: hivProgram,
 			registrationFormUuid: MetadataConstants.HIV_PROGRAM_ENROLLMENT_FORM_UUID,
 			exitFormUuid: MetadataConstants.HIV_PROGRAM_DISCONTINUATION_FORM_UUID,
-			overviewContent: enrolledInHivProgram ? ui.includeFragment("kenyaemr", "careSummaryHiv", [ patient: patient, complete: false ]) : null,
+			overviewContent: ui.includeFragment("kenyaemr", "careSummaryHiv", [ patient: patient, complete: false ]),
 			enrollmentExtra: hivEnrollmentExtraCallback
 		]) }
 
@@ -25,7 +25,7 @@
 			program: tbProgram,
 			registrationFormUuid: MetadataConstants.TB_ENROLLMENT_FORM_UUID,
 			exitFormUuid: MetadataConstants.TB_COMPLETION_FORM_UUID,
-			overviewContent: enrolledInTbProgram ? ui.includeFragment("kenyaemr", "careSummaryTb", [ patient: patient, complete: false ]) : null
+			overviewContent: ui.includeFragment("kenyaemr", "careSummaryTb", [ patient: patient, complete: false ])
 		]) }
 		</td>
 		<td width="60%" valign="top" style="padding-left: 5px">
