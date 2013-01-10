@@ -303,7 +303,14 @@ public class RegistrationEditPatientFragmentController {
 			if (StringUtils.isBlank(hivIdNumber.getIdentifier())) {
 				hivIdNumber = null;
 			}
-
+			if (!(StringUtils.isBlank(telephoneContact.getValue()))) {
+				if (!telephoneContact.getValue().trim().matches("\\d{10}")) {
+					errors.rejectValue("telephoneContact", "If Phone Number is provided then it  must be 10 digits long");
+				}
+			}
+			else {
+				telephoneContact = null;
+			}
 			require(errors, "gender");
 			require(errors, "birthdate");
 
@@ -311,10 +318,6 @@ public class RegistrationEditPatientFragmentController {
 			validateField(errors, "personAddress");
 			validateField(errors, "patientClinicNumber");
 			validateField(errors, "hivIdNumber");
-
-			if (!telephoneContact.getValue().trim().matches("\\d{10}")) {
-				errors.rejectValue("telephoneContact", "Phone Number must be 10 digits long");
-			}
 		}
 
 		public Patient save() {
