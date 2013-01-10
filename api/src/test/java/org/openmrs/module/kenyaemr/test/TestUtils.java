@@ -77,10 +77,23 @@ public class TestUtils {
 	 * @return the patient program
 	 */
 	public static PatientProgram enrollInProgram(Patient patient, Program program, Date date) {
+		return enrollInProgram(patient, program, date, null);
+	}
+
+	/**
+	 * Enroll a patient in a program
+	 * @param patient the patient
+	 * @param program the program
+	 * @param start the enroll date
+	 * @param completed the completed date
+	 * @return the patient program
+	 */
+	public static PatientProgram enrollInProgram(Patient patient, Program program, Date start, Date completed) {
 		PatientProgram pp = new PatientProgram();
 		pp.setPatient(patient);
 		pp.setProgram(program);
-		pp.setDateEnrolled(date);
+		pp.setDateEnrolled(start);
+		pp.setDateCompleted(completed);
 		return Context.getProgramWorkflowService().savePatientProgram(pp);
 	}
 

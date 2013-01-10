@@ -96,10 +96,12 @@ public abstract class BaseKenyaEmrCalculation extends BaseCalculation implements
 	}
 
 	/**
-	 * Gets an array of string tags associated with this calculation
+	 * Gets an array of string tags associated with this calculation. The default implementation returns an empty array.
 	 * @return the tags
 	 */
-	public abstract String[] getTags();
+	public String[] getTags() {
+		return new String[] {};
+	}
 
 	/**
 	 * Evaluates ages of each patient
@@ -175,6 +177,19 @@ public abstract class BaseKenyaEmrCalculation extends BaseCalculation implements
 	}
 
 	/**
+	 * Evaluates the first obs of a given type of each patient
+	 * @param conceptUuid the obs' concept UUID
+	 * @param patientIds the patient ids
+	 * @param calculationContext the calculation context
+	 * @return the obss in a calculation result map
+	 */
+	protected static CalculationResultMap firstObsOnOrAfterDate(String conceptUuid, Date onOrAfter, Collection<Integer> patientIds, PatientCalculationContext calculationContext) {
+		Concept concept = getConcept(conceptUuid);
+		ObsForPersonDataDefinition def = new ObsForPersonDataDefinition("First " + concept.getPreferredName(MetadataConstants.LOCALE), TimeQualifier.FIRST, concept, calculationContext.getNow(), onOrAfter);
+		return evaluateWithReporting(def, patientIds, new HashMap<String, Object>(), null, calculationContext);
+	}
+
+	/**
 	 * Evaluates the last obs of a given type of each patient that occurred at least the given number of days ago
 	 * @param conceptUuid the obs' concept UUID
 	 * @param atLeastDaysAgo the number of days that must be elapsed between now and the observation
@@ -210,17 +225,31 @@ public abstract class BaseKenyaEmrCalculation extends BaseCalculation implements
 	}
 
 	/**
-	 * Evaluates the last program on which each patient was enrolled
+	 * Evaluates the last program enrollment on the specified program
 	 * @param program the program
 	 * @param patientIds the patient ids
 	 * @param calculationContext the calculation context
-	 * @return the programs in a calculation result map
+	 * @return the enrollments in a calculation result map
 	 */
 	protected static CalculationResultMap lastProgramEnrollment(Program program, Collection<Integer> patientIds, PatientCalculationContext calculationContext) {
 		ProgramEnrollmentsForPatientDataDefinition def = new ProgramEnrollmentsForPatientDataDefinition("Last " + program.getName() + " enrollment");
 		def.setWhichEnrollment(TimeQualifier.LAST);
 		def.setProgram(program);
 		def.setActiveOnDate(calculationContext.getNow());
+		return evaluateWithReporting(def, patientIds, new HashMap<String, Object>(), null, calculationContext);
+	}
+
+	/**
+	 * Evaluates the all program enrollments on the specified program
+	 * @param program the program
+	 * @param patientIds the patient ids
+	 * @param calculationContext the calculation context
+	 * @return the list results enrollments in a calculation result map
+	 */
+	protected static CalculationResultMap allProgramEnrollments(Program program, Collection<Integer> patientIds, PatientCalculationContext calculationContext) {
+		ProgramEnrollmentsForPatientDataDefinition def = new ProgramEnrollmentsForPatientDataDefinition("All " + program.getName() + " enrollments");
+		def.setWhichEnrollment(TimeQualifier.ANY);
+		def.setProgram(program);
 		return evaluateWithReporting(def, patientIds, new HashMap<String, Object>(), null, calculationContext);
 	}
 
