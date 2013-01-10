@@ -71,5 +71,8 @@ public class MedicalEncounterViewPatientPageController {
 
 		model.addAttribute("enrolledInHivProgram", KenyaEmrUtils.isPatientInProgram(patient, hivProgram));
 		model.addAttribute("enrolledInTbProgram", KenyaEmrUtils.isPatientInProgram(patient, tbProgram));
+
+		CalculationResult whoStagesAtEnrollments = CalculationUtils.evaluateForPatient(calculationProvider, "whoStagesAtEnrollments", null, patient.getPatientId());
+		model.put("whoStagesAtEnrollments", whoStagesAtEnrollments.getValue());
 	}
 }

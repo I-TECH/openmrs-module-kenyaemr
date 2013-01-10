@@ -28,7 +28,7 @@ import org.openmrs.ui.framework.fragment.FragmentModel;
 /**
  * 
  */
-public class MedicalEncounterProgramFragmentController {
+public class ProgramSummaryFragmentController {
 	
 	public void controller(FragmentModel model,
 	                       @FragmentParam("patient") Patient patient,

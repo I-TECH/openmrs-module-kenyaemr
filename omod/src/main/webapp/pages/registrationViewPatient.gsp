@@ -9,14 +9,14 @@
 		<td width="40%" valign="top">
 			${ ui.includeFragment("kenyaemr", "patientSummary", [ patient: patient ]) }
 
-			${ ui.includeFragment("kenyaemr", "medicalEncounterProgram", [
+			${ ui.includeFragment("kenyaemr", "programSummary", [
 				patient: patient,
 				program: hivProgram,
 				registrationFormUuid: MetadataConstants.HIV_PROGRAM_ENROLLMENT_FORM_UUID,
 				exitFormUuid: MetadataConstants.HIV_PROGRAM_DISCONTINUATION_FORM_UUID
 			]) }
 
-			${ ui.includeFragment("kenyaemr", "medicalEncounterProgram", [
+			${ ui.includeFragment("kenyaemr", "programSummary", [
 				patient: patient,
 				program: tbProgram,
 				registrationFormUuid: MetadataConstants.TB_ENROLLMENT_FORM_UUID,

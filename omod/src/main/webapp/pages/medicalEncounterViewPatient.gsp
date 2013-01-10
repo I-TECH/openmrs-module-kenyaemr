@@ -1,5 +1,9 @@
 <%
 	ui.decorateWith("kenyaemr", "standardKenyaEmrPage", [ patient: patient ])
+
+	def hivEnrollmentExtraCallback = { patientProgram ->
+		ui.includeFragment("kenyaemr", "dataPoint", [ label: "Enrollment WHO Stage", value: whoStagesAtEnrollments[patientProgram] ])
+	}
 %>
 
 <table cellpadding="0" cellspacing="0" border="0" width="100%">
@@ -7,15 +11,16 @@
 		<td width="40%" valign="top">
 		${ ui.includeFragment("kenyaemr", "patientSummary", [ patient: patient ]) }
 
-		${ ui.includeFragment("kenyaemr", "medicalEncounterProgram", [
+		${ ui.includeFragment("kenyaemr", "programSummary", [
 			patient: patient,
 			program: hivProgram,
 			registrationFormUuid: MetadataConstants.HIV_PROGRAM_ENROLLMENT_FORM_UUID,
 			exitFormUuid: MetadataConstants.HIV_PROGRAM_DISCONTINUATION_FORM_UUID,
-			overviewContent: enrolledInHivProgram ? ui.includeFragment("kenyaemr", "careSummaryHiv", [ patient: patient, complete: false ]) : null
+			overviewContent: enrolledInHivProgram ? ui.includeFragment("kenyaemr", "careSummaryHiv", [ patient: patient, complete: false ]) : null,
+			enrollmentExtra: hivEnrollmentExtraCallback
 		]) }
 
-		${ ui.includeFragment("kenyaemr", "medicalEncounterProgram", [
+		${ ui.includeFragment("kenyaemr", "programSummary", [
 			patient: patient,
 			program: tbProgram,
 			registrationFormUuid: MetadataConstants.TB_ENROLLMENT_FORM_UUID,
