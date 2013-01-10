@@ -65,12 +65,15 @@ public class WHOStagesAtEnrollmentsCalculation extends BaseKenyaEmrCalculation {
 
 			if (patientHivEnrollments != null && patientWhoStageObss != null) {
 
+				List<PatientProgram> patientPrograms = CalculationUtils.extractListResultValues(patientHivEnrollments);
 				for (PatientProgram patientProgram : CalculationUtils.<PatientProgram>extractListResultValues(patientHivEnrollments)) {
-					Date programEnrollment = patientProgram.getDateEnrolled();
 
-					// Get the first WHO Stage obs on or after the enrollment date
+					Date enrollmentDate = patientProgram.getDateEnrolled();
+					Date completedDate = patientProgram.getDateCompleted();
+
+					// Get the first WHO Stage obs on or after the enrollment date but before the discontinue date
 					for (Obs obs : CalculationUtils.<Obs>extractListResultValues(patientWhoStageObss)) {
-						if (obs.getObsDatetime().compareTo(programEnrollment) >= 0) {
+						if (obs.getObsDatetime().compareTo(enrollmentDate) >= 0 && (completedDate == null || obs.getObsDatetime().compareTo(completedDate) < 0)) {
 							whoStageAtEnrollment.put(patientProgram, obs.getValueCoded());
 							break;
 						}

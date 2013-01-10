@@ -43,6 +43,7 @@ public class KenyaEmrCalculationProvider implements CalculationProvider {
 		// General
 		map.put("inTBProgram", InTBProgramCalculation.class);
 		map.put("lastWHOStage", LastWHOStageCalculation.class);
+		map.put("whoStagesAtEnrollments", WHOStagesAtEnrollmentsCalculation.class);
 		map.put("lostToFollowUp", LostToFollowUpCalculation.class);
         map.put("missedAppointmentsOrDefaulted", MissedAppointmentsOrDefaultedCalculation.class);
 		map.put("neverScreenedForTB", NeverScreenedForTBCalculation.class);
