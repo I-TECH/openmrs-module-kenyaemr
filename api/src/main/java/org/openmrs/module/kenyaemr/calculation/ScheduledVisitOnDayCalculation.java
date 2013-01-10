@@ -42,11 +42,6 @@ public class ScheduledVisitOnDayCalculation extends BaseKenyaEmrCalculation {
 		return "Scheduled for Visit";
 	}
 
-	@Override
-	public String[] getTags() {
-		return new String[] { };
-	}
-
 	/**
 	 * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
 	 */
