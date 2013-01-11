@@ -30,16 +30,20 @@ import java.util.Map;
  */
 public class CareSummaryTbFragmentController {
 
+	protected static final String[] calculations = { "tbDiseaseClassification", "tbPatientClassification" };
+
 	public void controller(@FragmentParam("patient") Patient patient,
+						   @FragmentParam("complete") Boolean complete,
 						   FragmentModel model,
 						   @SpringBean("org.openmrs.module.kenyaemr.calculation.KenyaEmrCalculationProvider") KenyaEmrCalculationProvider calculationProvider)
 			throws InvalidCalculationException {
 
-		Map<String, CalculationResult> calculationResults = new HashMap<String, CalculationResult>();
+		Map<String, Object> calculationResults = new HashMap<String, Object>();
 
-		//calculationResults.put("lastWHOStage", CalculationUtils.evaluateForPatient(calculationProvider, "lastWHOStage", null, patient.getPatientId()));
-		//calculationResults.put("lastCD4Count", CalculationUtils.evaluateForPatient(calculationProvider, "lastCD4Count", null, patient.getPatientId()));
-		//calculationResults.put("lastCD4Percent", CalculationUtils.evaluateForPatient(calculationProvider, "lastCD4Percent", null, patient.getPatientId()));
+		for (String calculation : calculations) {
+			CalculationResult result = CalculationUtils.evaluateForPatient(calculationProvider, calculation, null, patient.getPatientId());
+			calculationResults.put(calculation, result != null ? result.getValue() : null);
+		}
 
 		model.addAttribute("calculations", calculationResults);
 	}

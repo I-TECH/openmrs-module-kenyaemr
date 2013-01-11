@@ -26,6 +26,10 @@ import org.openmrs.module.kenyaemr.calculation.cd4.DecliningCD4Calculation;
 import org.openmrs.module.kenyaemr.calculation.cd4.LastCD4CountCalculation;
 import org.openmrs.module.kenyaemr.calculation.cd4.LastCD4PercentageCalculation;
 import org.openmrs.module.kenyaemr.calculation.cd4.NeedsCD4Calculation;
+import org.openmrs.module.kenyaemr.calculation.tb.TbNeverScreenedCalculation;
+import org.openmrs.module.kenyaemr.calculation.tb.TbDiseaseClassificationCalculation;
+import org.openmrs.module.kenyaemr.calculation.tb.TbInProgramCalculation;
+import org.openmrs.module.kenyaemr.calculation.tb.TbPatientClassificationCalculation;
 import org.springframework.stereotype.Component;
 
 /**
@@ -41,12 +45,10 @@ public class KenyaEmrCalculationProvider implements CalculationProvider {
 	public KenyaEmrCalculationProvider() {
 
 		// General
-		map.put("inTBProgram", InTBProgramCalculation.class);
 		map.put("lastWHOStage", LastWHOStageCalculation.class);
 		map.put("whoStagesAtEnrollments", WHOStagesAtEnrollmentsCalculation.class);
 		map.put("lostToFollowUp", LostToFollowUpCalculation.class);
         map.put("missedAppointmentsOrDefaulted", MissedAppointmentsOrDefaultedCalculation.class);
-		map.put("neverScreenedForTB", NeverScreenedForTBCalculation.class);
 
 		// ART
 		map.put("currentArtRegimen", CurrentArtRegimenCalculation.class);
@@ -61,6 +63,12 @@ public class KenyaEmrCalculationProvider implements CalculationProvider {
 		map.put("needsCD4", NeedsCD4Calculation.class);
 		map.put("lastCD4Count", LastCD4CountCalculation.class);
 		map.put("lastCD4Percent", LastCD4PercentageCalculation.class);
+
+		// TB
+		map.put("tbNeverScreened", TbNeverScreenedCalculation.class);
+		map.put("tbInProgram", TbInProgramCalculation.class);
+		map.put("tbDiseaseClassification", TbDiseaseClassificationCalculation.class);
+		map.put("tbPatientClassification", TbPatientClassificationCalculation.class);
 	}
 
 	/**

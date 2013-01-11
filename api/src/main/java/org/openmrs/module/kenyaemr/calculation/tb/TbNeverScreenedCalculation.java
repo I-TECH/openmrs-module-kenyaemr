@@ -11,7 +11,7 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.kenyaemr.calculation;
+package org.openmrs.module.kenyaemr.calculation.tb;
 
 import java.util.Collection;
 import java.util.List;
@@ -26,8 +26,10 @@ import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyaemr.MetadataConstants;
+import org.openmrs.module.kenyaemr.calculation.BaseKenyaEmrCalculation;
+import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
 
-public class NeverScreenedForTBCalculation extends BaseKenyaEmrCalculation {
+public class TbNeverScreenedCalculation extends BaseKenyaEmrCalculation {
 
     @Override
     public String getShortMessage() {

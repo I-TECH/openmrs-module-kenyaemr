@@ -30,6 +30,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
+import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.kenyaemr.test.TestUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
@@ -49,8 +50,7 @@ public class EligibleForArtCalculationTest extends BaseModuleContextSensitiveTes
 	public void evaluate_shouldCalculateEligibility() throws Exception {
 
 		// Get HIV Program
-		ProgramWorkflowService pws = Context.getProgramWorkflowService();
-		Program hivProgram = pws.getPrograms("HIV Program").get(0);
+		Program hivProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.HIV_PROGRAM_UUID);
 
 		// Enroll patients #6, #7 and #8 in the HIV Program
 		PatientService ps = Context.getPatientService();

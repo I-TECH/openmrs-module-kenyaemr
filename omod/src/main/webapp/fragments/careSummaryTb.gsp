@@ -1,9 +1,8 @@
 <%
 	def dataPoints = []
 
-	// TODO
+	dataPoints << [ label: "Disease classification", value: calculations.tbDiseaseClassification ]
+	dataPoints << [ label: "Patient classification", value: calculations.tbPatientClassification ]
 %>
 
-<% dataPoints.each { %>
-<div>${ it.label }: <b>${ it.value }</b> <% if (it.date) { %><small>(${ kenyaEmrUi.formatDateNoTime(it.date) })</small><% } %></div>
-<% } %>
+<% dataPoints.each { print ui.includeFragment("kenyaemr", "dataPoint", it) } %>

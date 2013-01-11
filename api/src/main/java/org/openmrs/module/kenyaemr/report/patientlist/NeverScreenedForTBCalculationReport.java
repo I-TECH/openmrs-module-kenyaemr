@@ -13,7 +13,7 @@
  */
 package org.openmrs.module.kenyaemr.report.patientlist;
 
-import org.openmrs.module.kenyaemr.calculation.NeverScreenedForTBCalculation;
+import org.openmrs.module.kenyaemr.calculation.tb.TbNeverScreenedCalculation;
 import org.springframework.stereotype.Component;
 
 /**
@@ -23,6 +23,6 @@ import org.springframework.stereotype.Component;
 public class NeverScreenedForTBCalculationReport extends PatientListReportManager {
 
     public NeverScreenedForTBCalculationReport() {
-        setCalculation(new NeverScreenedForTBCalculation());
+        setCalculation(new TbNeverScreenedCalculation());
     }
 }
