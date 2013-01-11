@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -56,7 +57,8 @@ public class EnterHtmlFormFragmentController {
 	                       @FragmentParam(value="encounter", required=false) Encounter encounter,
 						   @FragmentParam(value="visit", required=false) Visit visit,
 	                       @FragmentParam(value="returnUrl", required=false) String returnUrl,
-	                       FragmentModel model) throws Exception {
+	                       FragmentModel model,
+						   HttpSession httpSession) throws Exception {
 
 		config.require("patient", "htmlFormId | formId | formUuid | encounter");
 
@@ -82,10 +84,10 @@ public class EnterHtmlFormFragmentController {
 		// the code below doesn't handle the HFFS case where you might want to _add_ data to an existing encounter
 		FormEntrySession fes;
 		if (encounter != null) {
-			fes = new FormEntrySession(patient, encounter, Mode.EDIT, hf);				
+			fes = new FormEntrySession(patient, encounter, Mode.EDIT, hf, httpSession);
 		} 
 		else {
-			fes = new FormEntrySession(patient, hf);
+			fes = new FormEntrySession(patient, hf, httpSession);
 		}
 
 		if (returnUrl != null) {
@@ -141,9 +143,9 @@ public class EnterHtmlFormFragmentController {
 		
 		FormEntrySession fes;
 		if (encounter != null) {
-			fes = new FormEntrySession(patient, encounter, Mode.EDIT, hf);
+			fes = new FormEntrySession(patient, encounter, Mode.EDIT, hf, request.getSession());
 		} else {
-			fes = new FormEntrySession(patient, hf, Mode.ENTER);
+			fes = new FormEntrySession(patient, hf, Mode.ENTER, request.getSession());
 		}
 
 		if (returnUrl != null) {
