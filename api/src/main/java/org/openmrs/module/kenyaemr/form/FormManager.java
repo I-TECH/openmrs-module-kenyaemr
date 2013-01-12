@@ -62,6 +62,7 @@ public class FormManager {
 		registerForm("kenyaemr.medicalChart", new FormConfig(MetadataConstants.MOH_257_ENCOUNTER_ORDER_LAB_INVESTIGATIONS_FORM_UUID, Frequency.VISIT));
 		registerForm("kenyaemr.medicalChart", new FormConfig(MetadataConstants.OTHER_MEDICATIONS_FORM_UUID, Frequency.VISIT));
 		registerForm("kenyaemr.medicalChart", new FormConfig(MetadataConstants.TB_VISIT_FORM_UUID, Frequency.VISIT, tbProgram, Gender.BOTH, null, null));
+		registerForm("kenyaemr.medicalChart", new FormConfig(MetadataConstants.RETROSPECTIVE_257_FORM_UUID, Frequency.VISIT, null, Gender.BOTH, null, null, MetadataConstants.RETROSPECTIVE_ENCOUNTER_TYPE_UUID));
 	}
 
 	/**
@@ -105,6 +106,45 @@ public class FormManager {
 			// Filter by frequency
 			if (includeFrequencies != null && !includeFrequencies.contains(form.getFrequency()))
 				continue;
+
+			patientForms.add(form);
+		}
+
+		return patientForms;
+	}
+	
+	/**
+	 * Gets the forms for the given application and patient
+	 * @param appId the application ID
+	 * @param patient the patient
+	 * @param includeFrequencies the set of form frequencies to include (may be null)
+	 * @return the forms
+	 */
+	public static List<FormConfig> getFormsForPatientByEncounterType(String appId, Patient patient, 
+			Set<Frequency> includeFrequencies, String encounterType) {
+		List<FormConfig> allForms = appForms.get(appId);
+		if (allForms == null)
+			return new ArrayList<FormConfig>();
+
+		List<FormConfig> patientForms = new ArrayList<FormConfig>();
+		for (FormConfig form : allForms) {
+
+			// Filter by patient gender
+			if (patient.getGender() != null) {
+				if (patient.getGender().equals("F") && form.getGender() == Gender.MALE)
+					continue;
+				else if (patient.getGender().equals("M") && form.getGender() == Gender.FEMALE)
+					continue;
+			}
+
+			// Filter by frequency
+			if (includeFrequencies != null && !includeFrequencies.contains(form.getFrequency()))
+				continue;
+			
+			//Filter by encounterType
+			if (form.getEncounterType() == null || !form.getEncounterType().equals(encounterType)) {
+					continue;
+				}
 
 			patientForms.add(form);
 		}
