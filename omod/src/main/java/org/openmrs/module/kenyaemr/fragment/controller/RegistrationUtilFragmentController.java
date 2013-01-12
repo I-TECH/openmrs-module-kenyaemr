@@ -200,6 +200,23 @@ public class RegistrationUtilFragmentController {
 	}
 	
 	/**
+	 * Creates a new retrospective visit
+	 * 
+	 * @param ui
+	 * @param visit
+	 * @return
+	 */
+	public Object createVisit(UiUtils ui,
+	                         Session session,
+	                         @BindParams("visit") @Validate Visit visit) {
+		if (visit.getLocation() == null)
+			visit.setLocation(Context.getService(KenyaEmrService.class).getDefaultLocation());
+		visit = Context.getVisitService().endVisit(visit, visit.getStopDatetime());
+		Visit saved = Context.getVisitService().saveVisit(visit);
+		return simpleVisit(ui, saved);
+	}
+	
+	/**
 	 * Edits an existing visit
 	 * 
 	 * @param ui
