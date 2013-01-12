@@ -118,12 +118,6 @@
 				fieldConfig: [
 					"visitType": [ label: "Visit Type" ]
 				],
-<<<<<<< HEAD
-				fieldConfig: [
-					"stopDatetime": [ label: "Stop date and time" ],
-				],
-=======
->>>>>>> Retrospective Form Entry
 				propConfig: [
 					"visitType": [ type: "radio" ],
 				],
