@@ -212,6 +212,7 @@ public class RegistrationUtilFragmentController {
 		if (visit.getLocation() == null) {
 			visit.setLocation(Context.getService(KenyaEmrService.class).getDefaultLocation());
 		}
+
 		visit = Context.getVisitService().endVisit(visit, visit.getStopDatetime());
 		Visit saved = Context.getVisitService().saveVisit(visit);
 		return simpleVisit(ui, saved);
