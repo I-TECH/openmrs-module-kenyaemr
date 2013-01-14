@@ -60,4 +60,15 @@
 	}
 </style>
 
+<script type="text/javascript">
+jq(function() {
+	/**
+	 * Add icons to edit links in panel frames
+	 */
+	jq('.panel-frame .panel-editlink').each(function() {
+		jq(this).prepend('<img src="${ ui.resourceLink("kenyaemr", "images/edit.png") }" /> ');
+	});
+});
+</script>
+
 <%= config.content %>

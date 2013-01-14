@@ -71,12 +71,12 @@ var kenyaemr = (function($) {
 
 })(jQuery);
 
-$(function() {
+jq(function() {
 	/**
 	 * Clicking anywhere on a panel-menuitem should direct you to the target of it's <a> tag
 	 */
-	$('.panel-menuitem').click(function() {
-		var a = $(this).find('a').first();
+	jq('.panel-menuitem').click(function() {
+		var a = jq(this).find('a').first();
 		var href = (a.length > 0) ? a.attr('href') : null;
 		if (href)
 			location.href = href;

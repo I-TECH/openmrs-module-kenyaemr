@@ -78,9 +78,7 @@
 	background-color: #E8E6DB;
 	padding: 3px;
 	border-radius: 1px;
-}
-
-.panel-editlink a {
+	color: black;
 	text-decoration: none;
 }
 
