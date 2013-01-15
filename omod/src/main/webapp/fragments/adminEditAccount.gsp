@@ -95,14 +95,16 @@
 	
 		<%= ui.includeFragment("uilibrary", "widget/popupForm", [
 				buttonConfig: [
-					label: "Create Login"
+					label: "Create Login",
+					iconProvider: "kenyaemr",
+					icon: "buttons/user_enable.png"
 				],
 				fragment: "adminEditAccount",
 				fragmentProvider: "kenyaemr",
 				action: "editLoginDetails",
 				prefix: "editLoginDetails",
 				commandObject: editLoginDetails,
-				properties: [ "username", "password", "confirmPassword" ],
+				properties: [ "username", "password", "confirmPassword", "roles" ],
 				propConfig: [
 					password: [ type: "password" ],
 					confirmPassword: [ type: "password" ]
