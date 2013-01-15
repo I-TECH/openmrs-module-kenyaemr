@@ -71,12 +71,12 @@ var kenyaemr = (function($) {
 
 })(jQuery);
 
-jq(function() {
+$(function() {
 	/**
 	 * Clicking anywhere on a panel-menuitem should direct you to the target of it's <a> tag
 	 */
-	jq('.panel-menuitem').click(function() {
-		var a = jq(this).find('a').first();
+	$('.panel-menuitem').click(function() {
+		var a = $(this).find('a').first();
 		var href = (a.length > 0) ? a.attr('href') : null;
 		if (href)
 			location.href = href;
@@ -85,8 +85,8 @@ jq(function() {
 	/**
 	 * Clicking on a stack-item should direct you to the URL specified in the clickUrl hidden input
 	 */
-	jq('.stack-item').click(function(evt) {
-		var clickUrl = jq(this).find('input[name=clickUrl]').first();
+	$('.stack-item').click(function(evt) {
+		var clickUrl = $(this).find('input[name=clickUrl]').first();
 		var url = (clickUrl.length > 0) ? clickUrl.val() : null;
 		if (url) {
 			location.href = url;

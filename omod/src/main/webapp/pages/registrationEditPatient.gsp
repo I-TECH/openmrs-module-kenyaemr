@@ -1,7 +1,12 @@
 <%
-	ui.decorateWith("kenyaemr", "standardKenyaEmrPage")
+	ui.decorateWith("kenyaemr", "standardKenyaEmrPage", [ layout: "sidebar" ])
 %>
 
-<h2>Edit Patient Record</h2>
-
-${ ui.includeFragment("kenyaemr", "registrationEditPatient", [ patient: patient, returnUrl: returnUrl ]) }
+<div id="content-side"></div>
+<div id="content-main">
+	${
+		ui.decorate("kenyaemr", "panel", [ heading: "Edit Patient Record" ],
+				ui.includeFragment("kenyaemr", "registrationEditPatient", [ patient: patient, returnUrl: returnUrl ])
+		)
+	}
+</div>

@@ -8,7 +8,13 @@
 	${ ui.includeFragment("kenyaemr", "widget/panelMenu", [
 		heading: "Tasks",
 		items: [
-			[ iconProvider: "kenyaemr", icon: "buttons/patient_add.png", label: "Create New Patient Record", extra: "Patient does not exist yet", href: ui.pageLink("kenyaemr", "registrationCreatePatient") ]
+			[
+				iconProvider: "kenyaemr",
+				icon: "buttons/patient_add.png",
+				label: "Create New Patient Record",
+				extra: "Patient does not exist yet",
+				href: ui.pageLink("kenyaemr", "registrationCreatePatient", [ returnUrl: ui.thisUrl() ])
+			]
 		]
 	]) }
 </div>

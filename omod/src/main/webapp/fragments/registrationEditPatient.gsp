@@ -72,10 +72,6 @@
 	background-color: #e0e0e0;
 }
 
-#edit-patient-form {
-	float: left;
-}
-
 #edit-patient-form h4 {
 	text-decoration: underline;
 	margin-bottom: 0.5em;
