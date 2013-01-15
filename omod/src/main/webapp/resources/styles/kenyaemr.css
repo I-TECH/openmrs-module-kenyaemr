@@ -4,32 +4,67 @@
  *
  ********************************************/
 
-#page-header {
+/*** General fonts ***/
+
+html, body {
+	font-family: 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+	font-size: 14px;
+}
+
+h4 {
+	font-size: 16px;
+}
+
+h3 {
+	font-size: 18px;
+}
+
+small {
+	font-size: 12px;
+}
+
+/*** Full window views (used for login and forgot password pages) ***/
+
+.fullwindow {
+	left: 0;
+	width: 100%;
+	height: 100%;
+	display: table;
+	position: absolute;
+	background-color: #e0e0e0;
+}
+
+/*** Page header ***/
+
+#pageheader {
 	border: 5px solid #FFF;
 	background-color: #FFF;
 }
 
 /*** App header ***/
 
-#running-app-header {
-	font-size: 0.9em;
+#appheader {
+	font-size: 14px;
 	color: white;
 	background-color: #404040;
-	border-bottom: 1px black solid;
-	padding: 4px 5px 4px 5px;
+	padding: 5px 5px 5px 5px;
 }
 
-#running-app-home {
-	padding-right: 1em;
-	font-weight: bold;
+#appheader-appmenu {
+	float: left;
 }
 
-#running-app-header a:link, #running-app-header a:visited {
+#appheader-usermenu {
+	float: right;
+}
+
+#appheader a {
 	color: white;
+	font-weight: bold;
 	text-decoration: none;
 }
 
-#running-app-header a:hover {
+#appheader a:hover {
 	text-decoration: underline;
 }
 
@@ -71,6 +106,7 @@
 	padding: 5px;
 	text-align: center;
 	font-weight: bold;
+	font-size: 16px;
 }
 
 .panel-editlink {
@@ -130,7 +166,7 @@
 }
 
 .panel-menuitem-description {
-	font-size: 0.6em;
+	font-size: 10px;
 }
 
 .panel-menuitem-active, .panel-menuitem-active:hover {
@@ -193,7 +229,7 @@ table.table-vertical tbody tr:nth-child(odd) {
 .stack-item .title {
 	display: block;
 	font-weight: bold;
-	font-size: 1.1em;
+	font-size: 16px;
 }
 
 .stack-item .icon {
@@ -273,4 +309,8 @@ table.table-vertical tbody tr:nth-child(odd) {
 
 .clickable {
 	cursor: pointer;
+}
+
+.hidden {
+	display: none;
 }

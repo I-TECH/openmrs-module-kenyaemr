@@ -30,19 +30,21 @@ import org.openmrs.ui.framework.page.Redirect;
 import org.openmrs.ui.framework.session.Session;
 import org.springframework.web.bind.annotation.RequestParam;
 
-
 /**
- *
+ * Home page controller
  */
 public class KenyaHomePageController {
 	
 	public String controller(@RequestParam(required=false, value="patientId") Patient patient,
 	                         @RequestParam(required=false, value="clearContext") Boolean clearContext,
 	                         PageModel model, Session session, UiUtils ui) throws Redirect {
+
+		// Redirect to login page if no user is logged in
 		if (!Context.isAuthenticated()) {
 			return "kenyaLogin";
 		}
-		
+
+		// Redirect to setup page if module is not yet configured
 		if (!Context.getService(KenyaEmrService.class).isConfigured()) {
 			return "redirect:" + ui.pageLink(KenyaEmrConstants.MODULE_ID, "adminFirstTimeSetup");
 		}
@@ -87,5 +89,4 @@ public class KenyaHomePageController {
 		
 		return null; // default view
 	}
-	
 }

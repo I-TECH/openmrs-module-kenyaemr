@@ -11,27 +11,18 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.kenyaemr;
+package org.openmrs.module.kenyaemr.fragment.controller;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-
+import org.openmrs.module.appframework.AppUiUtil;
+import org.openmrs.ui.framework.fragment.FragmentModel;
+import org.openmrs.ui.framework.session.Session;
 
 /**
- * Takes over /index.htm and /login.htm so users don't see the legacy OpenMRS UI
+ * Controller for the app header, which includes user menu
  */
-@Controller
-public class HomepageOverrideController {
+public class PageAppHeaderFragmentController {
 	
-	@RequestMapping("/index.htm")
-	public String showOurHomepage() {
-		return "forward:/kenyaemr/kenyaHome.page";
+	public void controller(FragmentModel model, Session session) {
+		model.addAttribute("appStatus", AppUiUtil.getCurrentApp(session));
 	}
-	
-	@RequestMapping("/login.htm")
-	public String showLoginHomepage() {
-		return showOurHomepage();
-	}
-
-	
 }

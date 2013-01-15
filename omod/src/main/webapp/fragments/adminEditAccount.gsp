@@ -44,16 +44,17 @@
 			prefix: "editLoginDetails",
 			commandObject: editLoginDetails,
 			hiddenProperties: [ "userId" ],
-			properties: [ "username", "password", "confirmPassword", "roles" ],
+			properties: [ "username", "password", "confirmPassword", "secretQuestion", "secretAnswer", "roles" ],
 			propConfig: [
-					password: [ type: "password" ],
-					confirmPassword: [ type: "password" ]
+				password: [ type: "password" ],
+				confirmPassword: [ type: "password" ],
+				secretAnswer: [ type: "password" ]
 			],
 			fieldConfig: [
-					roles: [ fieldFragment: "field/RoleCollection" ]
+				roles: [ fieldFragment: "field/RoleCollection" ]
 			],
 			extraFields: [
-					[ hiddenInputName: "personId", value: person.id ]
+				[ hiddenInputName: "personId", value: person.id ]
 			],
 			popupTitle: "Edit login details for '${ ui.format(person) }'",
 			submitLabel: "Save Changes",
@@ -104,10 +105,11 @@
 				action: "editLoginDetails",
 				prefix: "editLoginDetails",
 				commandObject: editLoginDetails,
-				properties: [ "username", "password", "confirmPassword", "roles" ],
+				properties: [ "username", "password", "confirmPassword", "secretQuestion", "secretAnswer", "roles" ],
 				propConfig: [
 					password: [ type: "password" ],
-					confirmPassword: [ type: "password" ]
+					confirmPassword: [ type: "password" ],
+					secretAnswer: [ type: "password" ]
 				],
 				fieldConfig: [
 					roles: [ fieldFragment: "field/RoleCollection" ]

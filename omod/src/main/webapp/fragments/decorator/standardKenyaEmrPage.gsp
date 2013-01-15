@@ -13,8 +13,8 @@
 		config.context = "patientId=${ patient.id }"
 	}
 
-	config.beforeContent = ui.includeFragment("kenyaemr", "kenyaHeader", config)
-	config.beforeContent += ui.includeFragment("kenyaemr", "kenyaRunningApp", config)
+	config.beforeContent = ui.includeFragment("kenyaemr", "pageHeader", config)
+	config.beforeContent += ui.includeFragment("kenyaemr", "pageAppHeader", config)
 
 	if (config.patient) {
 		config.beforeContent += ui.includeFragment("kenyaemr", "selectedPatientHeader", [ closeChartUrl: config.closeChartUrl ])
@@ -57,6 +57,9 @@
 <% } %>
 	.loading-placeholder {
 		background-image: url('${ ui.resourceLink("kenyaemr", "images/loading.gif") }');
+	}
+	.field-label {
+		font-size: 12px;
 	}
 </style>
 

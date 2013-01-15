@@ -1,20 +1,13 @@
-<!-- This is the login page -->
-
 <%
 	ui.includeCss("uilibrary", "uilibrary.css")
 	ui.includeCss("kenyaemr", "kenyaemr.css");
+
+	ui.includeJavascript("uilibrary", "jquery.js")
+	ui.includeJavascript("uilibrary", "uiframework.js")
+	ui.includeJavascript("kenyaemr", "kenyaemr.js")
 %>
 
 <style type="text/css">
-	#fullwindow {
-		left: 0;
-		width: 100%;
-		height: 100%;
-		display: table;
-		position: absolute;
-		background-color: #e0e0e0;
-	}
-	
 	.centered {
 		vertical-align: middle;
 		display: table-cell;
@@ -26,13 +19,16 @@
 		background-color: #FFFFBB;
 		border: 1px gray solid;
 	}
+
+	#forgot-password {
+		font-size: 12px;
+		padding: 3px;
+	}
 </style>
 
-<div id="kenya-header">
-	${ ui.includeFragment("kenyaemr", "kenyaHeader") }
-</div>
+${ ui.includeFragment("kenyaemr", "pageHeader") }
 
-<div id="fullwindow">
+<div class="fullwindow">
 
 	<div class="centered">
 		<form method="post" action="/${ contextPath }/loginServlet" autocomplete="off">
@@ -41,7 +37,7 @@
 					<td rowspan="5" width="300">
 						<img src="${ ui.resourceLink("kenyaemr", "images/moh_logo_large.png") }"/>
 					</td>
-					<td colspan="2"><div style="height:100px;">&nbsp;</div></td>
+					<td colspan="2"><div style="height:75px;">&nbsp;</div></td>
 				</tr>
 				<tr>
 					<th>Username</th>
@@ -52,13 +48,12 @@
 					<td><input type="password" name="pw"/></td>
 				</tr>
 				<tr>
-					<th></th>
-					<td>
-						<input type="submit" value="Login"/>
-					</td>
+					<td></td>
+					<td><input type="submit" value="Login"/></td>
 				</tr>
 				<tr>
-					<td colspan="2"></td>
+					<td></td>
+					<td valign="top"><a id="forgot-password" href="forgotPassword.form">Forgot password?</a></td>
 				</tr>
 				<tr>
 					<td colspan="3">
@@ -72,5 +67,7 @@
 </div>
 
 <script type="text/javascript">
-	document.getElementById('uname').focus();
+	jQuery(function() {
+		jQuery('#uname').focus();
+	});
 </script>

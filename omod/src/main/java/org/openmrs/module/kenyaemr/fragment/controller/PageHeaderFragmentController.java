@@ -31,7 +31,7 @@ import java.util.Map;
 /**
  *
  */
-public class KenyaHeaderFragmentController {
+public class PageHeaderFragmentController {
 
 	private static final DateFormat buildDateFormat = new SimpleDateFormat("dd-MMM-yyyy");
 	

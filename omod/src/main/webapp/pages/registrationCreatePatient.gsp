@@ -6,7 +6,7 @@
 <div id="content-main">
 	${
 		ui.decorate("kenyaemr", "panel", [ heading: "Create a New Patient Record" ],
-			ui.includeFragment("kenyaemr", "registrationEditPatient", [ returnUrl: returnUrl ])
+			ui.includeFragment("kenyaemr", "registrationEditPatient")
 		)
 	}
 </div>

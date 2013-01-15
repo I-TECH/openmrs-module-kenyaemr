@@ -86,10 +86,15 @@ public class AdminEditAccountFragmentController {
 		else {
 			Context.getUserService().saveUser(user, null);
 
-			// To save a password for an existing user, have to call changePassword
+			// To save a password for an original user, have to call changePassword
 			if (newPassword != null) {
 				Context.getUserService().changePassword(user, newPassword);
 			}
+		}
+
+		// Update secret answer if specified
+		if (!form.PLACEHOLDER.equals(form.getSecretAnswer())) {
+			Context.getUserService().changeQuestionAnswer(user, form.getSecretQuestion(), form.getSecretAnswer());
 		}
 
 		return new SuccessResult("Saved login details");
@@ -190,9 +195,9 @@ public class AdminEditAccountFragmentController {
 		 */
 		@Override
 		public void validate(Object target, Errors errors) {
-			ValidationUtils.rejectIfEmptyOrWhitespace(errors, "personName.givenName", "error.requiredField");
-			ValidationUtils.rejectIfEmptyOrWhitespace(errors, "personName.familyName", "error.requiredField");
-			ValidationUtils.rejectIfEmptyOrWhitespace(errors, "gender", "error.requiredField");
+			ValidationUtils.rejectIfEmptyOrWhitespace(errors, "personName.givenName", "kenyaemr.error.required");
+			ValidationUtils.rejectIfEmptyOrWhitespace(errors, "personName.familyName", "kenyaemr.error.required");
+			ValidationUtils.rejectIfEmptyOrWhitespace(errors, "gender", "kenyaemr.error.required");
 		}
 		
 		public Integer getPersonId() {
@@ -231,7 +236,10 @@ public class AdminEditAccountFragmentController {
 	public EditLoginDetailsForm newEditLoginDetailsForm(@RequestParam(required = false, value = "editLoginDetails.userId") User u) {
 		return new EditLoginDetailsForm(u);
 	}
-	
+
+	/**
+	 * Command object for editing user logins
+	 */
 	public class EditLoginDetailsForm extends ValidatingCommandObject {
 		
 		public String PLACEHOLDER = "XXXXXXXXXXXXXXXX";
@@ -245,17 +253,27 @@ public class AdminEditAccountFragmentController {
 		private String password;
 		
 		private String confirmPassword;
+
+		private String secretQuestion;
+
+		private String secretAnswer;
 		
 		private Set<Role> roles;
-		
-		public EditLoginDetailsForm(User u) {
-			this.original = u;
-			if (u != null) {
-				this.userId = u.getUserId();
-				this.username = u.getUsername();
+
+		/**
+		 * Create new command object
+		 * @param original the original user (may be null)
+		 */
+		public EditLoginDetailsForm(User original) {
+			this.original = original;
+			if (original != null) {
+				this.userId = original.getUserId();
+				this.username = original.getUsername();
 				this.password = PLACEHOLDER;
 				this.confirmPassword = PLACEHOLDER;
-				this.roles = u.getRoles();
+				this.secretQuestion = original.getSecretQuestion();
+				this.secretAnswer = PLACEHOLDER;
+				this.roles = original.getRoles();
 			}
 		}
 		
@@ -280,16 +298,16 @@ public class AdminEditAccountFragmentController {
 			EditLoginDetailsForm command = (EditLoginDetailsForm) target;
 			
 			if (StringUtils.isEmpty(command.getUsername())) {
-				errors.rejectValue("username", "error.requiredField");
+				errors.rejectValue("username", "kenyaemr.error.required");
 			} else {
-				if ((original == null || !original.getUsername().equals(command.getUsername()))
+				if ((original == null || !command.getUsername().equals(original.getUsername()))
 				        && Context.getUserService().getUserByUsername(command.getUsername()) != null) {
 					errors.rejectValue("username", "kenyaemr.error.username.taken");
 				}
 			}
 			
 			if (StringUtils.isEmpty(command.getPassword())) {
-				errors.rejectValue("password", "error.requiredField");
+				errors.rejectValue("password", "kenyaemr.error.required");
 			} else {
 				if (!PLACEHOLDER.equals(command.getPassword()) || !PLACEHOLDER.equals(command.getConfirmPassword())) {
 					try {
@@ -299,11 +317,19 @@ public class AdminEditAccountFragmentController {
 						errors.rejectValue("password", e.getMessage());
 					}
 					if (StringUtils.isEmpty(command.getConfirmPassword())) {
-						errors.rejectValue("confirmPassword", "error.requiredField");
+						errors.rejectValue("confirmPassword", "kenyaemr.error.required");
 					} else if (!command.getPassword().equals(command.getConfirmPassword())) {
 						errors.rejectValue("confirmPassword", "kenyaemr.error.confirmPassword.match");
 					}
 				}
+			}
+
+			// Check if user changed secret question but not the answer as well - not allowed
+			if (original != null
+					&& !(command.getSecretQuestion().equals("") && original.getSecretQuestion() == null)
+					&& !command.getSecretQuestion().equals(original.getSecretQuestion())
+					&& PLACEHOLDER.equals(command.getSecretAnswer())) {
+				errors.rejectValue("secretAnswer", "kenyaemr.error.secretAnswerNotChangedWithQuestion");
 			}
 			
 			require(errors, "roles");
@@ -364,7 +390,23 @@ public class AdminEditAccountFragmentController {
 		public void setConfirmPassword(String confirmPassword) {
 			this.confirmPassword = confirmPassword;
 		}
-		
+
+		public String getSecretQuestion() {
+			return secretQuestion;
+		}
+
+		public void setSecretQuestion(String secretQuestion) {
+			this.secretQuestion = secretQuestion;
+		}
+
+		public String getSecretAnswer() {
+			return secretAnswer;
+		}
+
+		public void setSecretAnswer(String secretAnswer) {
+			this.secretAnswer = secretAnswer;
+		}
+
 		/**
 		 * @return the roles
 		 */
@@ -380,5 +422,4 @@ public class AdminEditAccountFragmentController {
 		}
 		
 	}
-	
 }

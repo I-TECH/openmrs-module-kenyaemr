@@ -14,21 +14,15 @@
 package org.openmrs.module.kenyaemr.page.controller;
 
 import org.openmrs.module.appframework.AppUiUtil;
-import org.openmrs.ui.framework.page.PageModel;
 import org.openmrs.ui.framework.session.Session;
-import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * Create patient page controller
  */
 public class RegistrationCreatePatientPageController {
 	
-	public void controller(Session session,
-	                       @RequestParam(required = false, value = "returnApp") String returnApp,
-	                       PageModel model) {
+	public void controller(Session session) {
 
 		AppUiUtil.startApp("kenyaemr.registration", session);
-
-		model.addAttribute("returnApp", returnApp);
 	}
 }
