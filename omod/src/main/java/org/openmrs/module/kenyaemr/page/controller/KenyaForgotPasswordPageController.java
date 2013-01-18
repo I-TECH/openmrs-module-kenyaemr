@@ -13,10 +13,11 @@
  */
 package org.openmrs.module.kenyaemr.page.controller;
 
-import com.mysql.jdbc.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.openmrs.User;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appframework.AppUiUtil;
+import org.openmrs.module.kenyaemr.IPAccessSecurity;
 import org.openmrs.module.kenyaemr.KenyaEmrConstants;
 import org.openmrs.module.kenyaemr.KenyaEmrWebConstants;
 import org.openmrs.ui.framework.page.PageModel;
@@ -27,22 +28,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.*;
 
 /**
  * Forgot password page controller
  */
 public class KenyaForgotPasswordPageController {
-
-	/**
-	 * The mapping from user's IP address to the number of attempts at logging in from that IP
-	 */
-	private Map<String, Integer> loginAttemptsByIP = new HashMap<String, Integer>();
-
-	/**
-	 * The mapping from user's IP address to the time that they were locked out
-	 */
-	private Map<String, Date> lockoutDateByIP = new HashMap<String, Date>();
 
 	public String controller(PageModel model,
 						   Session session,
@@ -55,7 +45,7 @@ public class KenyaForgotPasswordPageController {
 		model.addAttribute("username", username);
 		model.addAttribute("secretQuestion", null);
 
-		if (!StringUtils.isNullOrEmpty(username)) {
+		if (!StringUtils.isEmpty(username)) {
 			return handleSubmission(model, username, secretAnswer, request);
 		}
 
@@ -71,38 +61,12 @@ public class KenyaForgotPasswordPageController {
 			return "redirect:/" + KenyaEmrConstants.MODULE_ID + "/profile.page";
 		}
 
-		String ipAddress = request.getLocalAddr();
-		Integer forgotPasswordAttempts = loginAttemptsByIP.get(ipAddress);
-		if (forgotPasswordAttempts == null)
-			forgotPasswordAttempts = 1;
+		String ipAddress = request.getRemoteAddr();
 
-		boolean lockedOut = false;
-
-		if (forgotPasswordAttempts > KenyaEmrWebConstants.MAX_ALLOWED_LOGIN_ATTEMPTS) {
-			lockedOut = true;
-
-			Date lockedOutTime = lockoutDateByIP.get(ipAddress);
-			if (lockedOutTime != null && System.currentTimeMillis() - lockedOutTime.getTime() > KenyaEmrWebConstants.FAILED_LOGIN_LOCKOUT_TIME) {
-				lockedOut = false;
-				forgotPasswordAttempts = 0;
-				lockoutDateByIP.put(ipAddress, null);
-			} else {
-				// they haven't been locked out before, or they're trying again
-				// within the time limit.  Set the locked-out date to right now
-				lockoutDateByIP.put(ipAddress, new Date());
-			}
-
-		}
-
-		if (lockedOut) {
+		if (IPAccessSecurity.isLockedOut(ipAddress)) {
 			httpSession.setAttribute(WebConstants.OPENMRS_ERROR_ATTR, "auth.forgotPassword.tooManyAttempts");
 		} else {
-			// if the previous logic didn't determine that the user should be locked out,
-			// then continue with the check
-
-			forgotPasswordAttempts++;
-
-			if (StringUtils.isNullOrEmpty(secretAnswer)) {
+			if (StringUtils.isEmpty(secretAnswer)) {
 				// if they are seeing this page for the first time
 
 				User user = null;
@@ -111,7 +75,7 @@ public class KenyaForgotPasswordPageController {
 					Context.addProxyPrivilege(PrivilegeConstants.VIEW_USERS);
 
 					// Only search if they actually put in a username
-					if (!StringUtils.isNullOrEmpty(username)) {
+					if (!StringUtils.isEmpty(username)) {
 						user = Context.getUserService().getUserByUsername(username);
 					}
 				}
@@ -119,14 +83,14 @@ public class KenyaForgotPasswordPageController {
 					Context.removeProxyPrivilege(PrivilegeConstants.VIEW_USERS);
 				}
 
-				if (user == null || StringUtils.isNullOrEmpty(user.getSecretQuestion())) {
+				if (user == null) {
+					// Client might be trying to guess a username
+					IPAccessSecurity.registerFailedAccess(ipAddress);
+					httpSession.setAttribute(WebConstants.OPENMRS_ERROR_ATTR, "auth.question.empty");
+				} else if (StringUtils.isEmpty(user.getSecretQuestion())) {
 					httpSession.setAttribute(WebConstants.OPENMRS_ERROR_ATTR, "auth.question.empty");
 				} else {
 					model.addAttribute("secretQuestion", user.getSecretQuestion());
-
-					// reset the forgotPasswordAttempts because they have a right user.
-					// they will now have 5 more chances to get the question right
-					forgotPasswordAttempts = 0;
 				}
 
 			} else {
@@ -143,7 +107,7 @@ public class KenyaForgotPasswordPageController {
 				}
 
 				// Check the secret question again in case the user got here "illegally"
-				if (user == null || StringUtils.isNullOrEmpty(user.getSecretQuestion())) {
+				if (user == null || StringUtils.isEmpty(user.getSecretQuestion())) {
 					httpSession.setAttribute(WebConstants.OPENMRS_ERROR_ATTR, "auth.question.empty");
 				} else if (user.getSecretQuestion() != null && Context.getUserService().isSecretAnswer(user, secretAnswer)) {
 
@@ -158,6 +122,7 @@ public class KenyaForgotPasswordPageController {
 						Context.removeProxyPrivilege(PrivilegeConstants.EDIT_USER_PASSWORDS);
 					}
 
+					IPAccessSecurity.registerSuccessfulAccess(ipAddress);
 					httpSession.setAttribute(KenyaEmrWebConstants.SESSION_ATTR_RESET_PASSWORD, randomPassword);
 					httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "auth.password.reset");
 					Context.authenticate(username, randomPassword);
@@ -166,11 +131,11 @@ public class KenyaForgotPasswordPageController {
 				} else {
 					httpSession.setAttribute(WebConstants.OPENMRS_ERROR_ATTR, "auth.answer.invalid");
 					model.addAttribute("secretQuestion", user.getSecretQuestion());
+					IPAccessSecurity.registerFailedAccess(ipAddress);
 				}
 			}
 		}
 
-		loginAttemptsByIP.put(ipAddress, forgotPasswordAttempts);
 		return null;
 	}
 
