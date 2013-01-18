@@ -30,6 +30,8 @@ import org.openmrs.ui.framework.page.Redirect;
 import org.openmrs.ui.framework.session.Session;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * Home page controller
  */
@@ -37,10 +39,12 @@ public class KenyaHomePageController {
 	
 	public String controller(@RequestParam(required=false, value="patientId") Patient patient,
 	                         @RequestParam(required=false, value="clearContext") Boolean clearContext,
-	                         PageModel model, Session session, UiUtils ui) throws Redirect {
+	                         PageModel model, Session session, UiUtils ui,
+							 HttpServletRequest request) throws Redirect {
 
 		// Redirect to login page if no user is logged in
 		if (!Context.isAuthenticated()) {
+			model.addAttribute("remoteAddr", request.getRemoteAddr());
 			return "kenyaLogin";
 		}
 

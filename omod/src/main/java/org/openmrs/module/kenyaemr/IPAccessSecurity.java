@@ -13,14 +13,22 @@
  */
 package org.openmrs.module.kenyaemr;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.openmrs.api.context.Context;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.openmrs.web.WebConstants.GP_ALLOWED_LOGIN_ATTEMPTS_PER_IP;
 
 /**
  * Manages IP-level security
  */
 public class IPAccessSecurity {
+
+	protected static final Log log = LogFactory.getLog(IPAccessSecurity.class);
 
 	/**
 	 * Exception class for illegal access from a locked out IP
@@ -49,7 +57,9 @@ public class IPAccessSecurity {
 		int attempts = getFailedAccessesByIP(ipAddress) + 1;
 		failedAccessesByIP.put(ipAddress, attempts);
 
-		if (attempts > KenyaEmrWebConstants.MAX_ALLOWED_LOGIN_ATTEMPTS) {
+		final int maxAllowed = getMaxAllowedFailedAccesses();
+
+		if (attempts > maxAllowed) {
 
 			// Has lockout time expired?
 			Date lockedOutTime = lockoutTimeByIP.get(ipAddress);
@@ -121,5 +131,24 @@ public class IPAccessSecurity {
 	private static int getFailedAccessesByIP(String ipAddress) {
 		Integer attempts = failedAccessesByIP.get(ipAddress);
 		return (attempts == null) ? 0 : attempts;
+	}
+
+	/**
+	 * Gets the maximum allowed number of failed accesses by an IP before lockout
+	 * @return the number of accesses
+	 */
+	private static int getMaxAllowedFailedAccesses() {
+		// look up the allowed # of attempts per IP
+		Integer allowedLockoutAttempts = 100;
+
+		String allowedLockoutAttemptsGP = Context.getAdministrationService().getGlobalProperty(GP_ALLOWED_LOGIN_ATTEMPTS_PER_IP, "100");
+		try {
+			allowedLockoutAttempts = Integer.valueOf(allowedLockoutAttemptsGP.trim());
+		}
+		catch (NumberFormatException nfe) {
+			log.error("Unable to format '" + allowedLockoutAttemptsGP + "' from global property " + GP_ALLOWED_LOGIN_ATTEMPTS_PER_IP + " as an integer");
+		}
+
+		return allowedLockoutAttempts;
 	}
 }

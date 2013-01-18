@@ -6,12 +6,6 @@ package org.openmrs.module.kenyaemr;
 public class KenyaEmrWebConstants {
 
 	/**
-	 * Number of times a user can enter an incorrect password
-	 * or secret answer before they are locked out
-	 */
-	public static final int MAX_ALLOWED_LOGIN_ATTEMPTS = 5;
-
-	/**
 	 * Time in milliseconds to lockout an IP or user after repeated
 	 * failed login attempts
 	 */

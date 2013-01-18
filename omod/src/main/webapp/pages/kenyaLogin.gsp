@@ -29,7 +29,7 @@
 ${ ui.includeFragment("kenyaemr", "pageHeader") }
 
 <div class="fullwindow">
-
+	<!-- Remote address: ${ remoteAddr } -->
 	<div class="centered">
 		<form method="post" action="/${ contextPath }/loginServlet" autocomplete="off">
 			<table style="margin-left: auto; margin-right: auto;">

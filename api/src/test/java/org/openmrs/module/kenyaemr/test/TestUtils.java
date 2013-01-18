@@ -159,6 +159,22 @@ public class TestUtils {
 	}
 
 	/**
+	 * Saves a global property
+	 * @param property the property name
+	 * @param value the property value
+	 * @return
+	 */
+	public static GlobalProperty saveGlobalProperty(String property, Object value) {
+		GlobalProperty gp = Context.getAdministrationService().getGlobalPropertyObject(property);
+		if (gp == null) {
+			gp = new GlobalProperty();
+			gp.setProperty(property);
+		}
+		gp.setPropertyValue(String.valueOf(value));
+		return Context.getAdministrationService().saveGlobalProperty(gp);
+	}
+
+	/**
 	 * Checks a patient alert list report
 	 * @param expectedPatientIdentifiers the set of HIV identifiers of expected patients
 	 * @param identifierColumn the name of column containing patient identifiers

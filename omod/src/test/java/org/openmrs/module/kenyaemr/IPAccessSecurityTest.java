@@ -14,9 +14,25 @@
 package org.openmrs.module.kenyaemr;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.GlobalProperty;
+import org.openmrs.api.context.Context;
+import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.web.WebConstants;
 
-public class IPAccessSecurityTest {
+public class IPAccessSecurityTest extends BaseModuleContextSensitiveTest {
+
+	@Before
+	public void setup() throws Exception {
+		GlobalProperty gp = Context.getAdministrationService().getGlobalPropertyObject(WebConstants.GP_ALLOWED_LOGIN_ATTEMPTS_PER_IP);
+		if (gp == null) {
+			gp = new GlobalProperty();
+			gp.setProperty(WebConstants.GP_ALLOWED_LOGIN_ATTEMPTS_PER_IP);
+		}
+		gp.setPropertyValue("10");
+		Context.getAdministrationService().saveGlobalProperty(gp);
+	}
 
 	/**
 	 * @see IPAccessSecurity
@@ -34,7 +50,7 @@ public class IPAccessSecurityTest {
 		Assert.assertFalse(IPAccessSecurity.isLockedOut(ipAddress1));
 
 		// Check IP is locked out after too many failed attempts
-		for (int i = 0; i < KenyaEmrWebConstants.MAX_ALLOWED_LOGIN_ATTEMPTS; ++i) {
+		for (int i = 0; i < 10; ++i) {
 			IPAccessSecurity.registerFailedAccess(ipAddress1);
 		}
 		Assert.assertTrue(IPAccessSecurity.isLockedOut(ipAddress1));
