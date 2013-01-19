@@ -60,7 +60,7 @@
 			visits.each { visit ->
 				def extra = "from " + ui.format(visit.startDatetime)
 				def visitType = visit.visitType;
-				if (visit.encounters && visit.encounters(0).encounterType.name == "Retrospective")
+				if (kenyaEmrUi.isRetrospectiveVisit(visit) == "true")
 					visitType += " (RE)"
 				if (visit.stopDatetime)
 					extra += " to " + ui.format(visit.stopDatetime)

@@ -72,7 +72,7 @@ public class MedicalChartViewPatientPageController {
 		}
 		model.addAttribute("oneTimeForms", oneTimeForms);
 		
-		List<FormConfig> retrospectiveFormConfigs = FormManager.getFormsForPatientByEncounterType("kenyaemr.medicalChart", patient, Collections.singleton(FormConfig.Frequency.VISIT), MetadataConstants.RETROSPECTIVE_ENCOUNTER_TYPE_UUID);
+		List<FormConfig> retrospectiveFormConfigs = FormManager.getFormsForPatientByEncounterType("kenyaemr.medicalChart", patient, Collections.singleton(FormConfig.Frequency.VISIT), MetadataConstants.HIV_RETROSPECTIVE_ENCOUNTER_TYPE_UUID);
 		List<SimpleObject> retrospectiveForms = new ArrayList<SimpleObject>();
 		for (FormConfig formConfig : retrospectiveFormConfigs) {
 			Form form = Context.getFormService().getFormByUuid(formConfig.getFormUuid());
@@ -100,7 +100,7 @@ public class MedicalChartViewPatientPageController {
 			selection = "form-" + formUuid;
 			
 			form = Context.getFormService().getFormByUuid(formUuid);
-			if (!form.getEncounterType().getUuid().equals(MetadataConstants.RETROSPECTIVE_ENCOUNTER_TYPE_UUID)) {
+			if (!form.getEncounterType().getUuid().equals(MetadataConstants.HIV_RETROSPECTIVE_ENCOUNTER_TYPE_UUID)) {
 				List<Encounter> encounters = Context.getEncounterService().getEncounters(patient, null, null, null, Collections.singleton(form), null, null, null, null, false);
 				encounter = encounters.size() > 0 ? encounters.get(0) : null;
 			} else {
