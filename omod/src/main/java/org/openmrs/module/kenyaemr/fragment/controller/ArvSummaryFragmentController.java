@@ -25,7 +25,7 @@ import org.openmrs.ui.framework.fragment.FragmentModel;
 /**
  * ARV Summary for a patient
  */
-public class MedicalEncounterArvSummaryFragmentController {
+public class ArvSummaryFragmentController {
 	
 	public void controller(FragmentModel model, @FragmentParam("patient") Patient patient) {
 

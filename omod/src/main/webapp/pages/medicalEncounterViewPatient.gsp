@@ -31,7 +31,7 @@
 		<td width="60%" valign="top" style="padding-left: 5px">
 		<% if (visit) { %>
 			${ ui.includeFragment("kenyaemr", "visitSummary", [ visit: visit ]) }
-			${ ui.includeFragment("kenyaemr", "medicalEncounterArvSummary", [ patient: patient, editable: true ]) }
+			${ ui.includeFragment("kenyaemr", "arvSummary", [ patient: patient, editable: true ]) }
 			${ ui.includeFragment("kenyaemr", "visitAvailableForms", [ visit: visit ]) }
 			${ ui.includeFragment("kenyaemr", "visitCompletedForms", [ visit: visit ]) }
 		<% } else { %>
@@ -45,7 +45,7 @@
 						href: ui.pageLink("kenyaemr", "registrationViewPatient", [ patientId: patient.id ])
 				]) }
 			</div>
-			${ ui.includeFragment("kenyaemr", "medicalEncounterArvSummary", [ patient: patient, editable: false ]) }
+			${ ui.includeFragment("kenyaemr", "arvSummary", [ patient: patient, editable: false ]) }
 		<% } %>
 		</td>
 	</tr>
