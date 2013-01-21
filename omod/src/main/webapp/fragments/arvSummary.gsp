@@ -4,11 +4,13 @@
 	def editUrl = config.editable ? ui.pageLink("kenyaemr", "medicalEncounterArvRegimen", [ patientId: patient.id ]) : null
 
 	ui.decorateWith("kenyaemr", "panel", [ heading: "ARV Summary", editUrl: editUrl ])
-%>
 
-<% if (lastChange) { %>
-${ ui.includeFragment("kenyaemr", "dataPoint", [ label: "Regimen", value: kenyaEmrUi.formatRegimenLong(lastChange.started, ui) ]) }
-${ ui.includeFragment("kenyaemr", "dataPoint", [ label: "Started", value: lastChange.date, showDateInterval: true ]) }
+	if (lastChange) {
+		def regimen = lastChange.started ? kenyaEmrUi.formatRegimenLong(lastChange.started, ui) : "None"
+		def dateLabel = lastChange.started ? "Started" : "Stopped"
+%>
+${ ui.includeFragment("kenyaemr", "dataPoint", [ label: "Regimen", value: regimen ]) }
+${ ui.includeFragment("kenyaemr", "dataPoint", [ label: dateLabel, value: lastChange.date, showDateInterval: true ]) }
 <% } else { %>
-${ ui.includeFragment("kenyaemr", "dataPoint", [ label: "Regimen", value: "None" ]) }
+${ ui.includeFragment("kenyaemr", "dataPoint", [ label: "Regimen", value: "Never on ARVs" ]) }
 <% } %>
