@@ -27,6 +27,7 @@ import org.openmrs.PatientIdentifier;
 import org.openmrs.PatientProgram;
 import org.openmrs.Program;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyaemr.regimen.Regimen;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.DataSetRow;
 import org.openmrs.module.reporting.report.ReportData;
@@ -154,6 +155,7 @@ public class TestUtils {
 		order.setOrderer(Context.getUserService().getUser(1));
 		order.setConcept(concept);
 		order.setStartDate(start);
+		order.setDiscontinued(end != null);
 		order.setDiscontinuedDate(end);
 		return (DrugOrder)Context.getOrderService().saveOrder(order);
 	}
@@ -195,6 +197,18 @@ public class TestUtils {
 			String patientIdentifierVal = patientIdentifier != null ? patientIdentifier.getIdentifier() : null;
 			Assert.assertTrue("Patient identifier '" + patientIdentifierVal + "' not expected", expectedPatientIdentifiers.contains(patientIdentifierVal));
 			expectedPatientIdentifiers.remove(patientIdentifierVal);
+		}
+	}
+
+	/**
+	 * Asserts that the given regimen contains only the given drug orders
+	 * @param reg
+	 * @param drugOrders
+	 */
+	public static void assertRegimenContainsDrugOrders(Regimen reg, DrugOrder... drugOrders) {
+		Assert.assertEquals(drugOrders.length, reg.getDrugOrders().size());
+		for (DrugOrder o : drugOrders) {
+			Assert.assertTrue(reg.getDrugOrders().contains(o));
 		}
 	}
 

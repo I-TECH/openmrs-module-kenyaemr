@@ -28,8 +28,6 @@ import org.openmrs.Concept;
 import org.openmrs.DrugOrder;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
-import org.openmrs.ui.framework.SimpleObject;
-import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.util.OpenmrsUtil;
 
 /**
@@ -42,7 +40,13 @@ public class RegimenHistory {
 	}
 
 	private List<RegimenChange> changes;
-	
+
+	/**
+	 * Generates a regimen history for the given patient
+	 * @param patient the patient
+	 * @param medSet the medset concept defining the list of relevant drug concepts
+	 * @return the regimen history
+	 */
 	public static RegimenHistory forPatient(Patient patient, Concept medSet) {
 		Set<Concept> relevantGenerics = new HashSet<Concept>(medSet.getSetMembers());
 		@SuppressWarnings("deprecation")
@@ -51,18 +55,22 @@ public class RegimenHistory {
 	}
 	
 	/**
-	 * @param relevantGenericDrugs
+	 * Constructs a regimen history
+	 * @param relevantDrugs
 	 * @param allDrugOrders
 	 * @should create regimen history based on drug orders
 	 */
-	public RegimenHistory(Set<Concept> relevantGenericDrugs, List<DrugOrder> allDrugOrders) {
+	RegimenHistory(Set<Concept> relevantDrugs, List<DrugOrder> allDrugOrders) {
+
+		// Filter the drug orders to only contain orders of relevant drugs
 		List<DrugOrder> relevantDrugOrders = new ArrayList<DrugOrder>();
 		for (DrugOrder o : allDrugOrders) {
-			if (relevantGenericDrugs.contains(o.getConcept())) {
+			if (relevantDrugs.contains(o.getConcept())) {
 				relevantDrugOrders.add(o);
 			}
 		}
-		
+
+		// Collect changes for each individual drug orders
 		List<DrugOrderChange> tempChanges = new ArrayList<DrugOrderChange>();
 		for (DrugOrder o : relevantDrugOrders) {
 			tempChanges.add(new DrugOrderChange(ChangeType.START, o, o.getStartDate()));
@@ -72,7 +80,8 @@ public class RegimenHistory {
 				tempChanges.add(new DrugOrderChange(ChangeType.END, o, o.getAutoExpireDate()));
 			}
 		}
-		
+
+		// Gather changes together by common dates
 		SortedMap<Date, List<DrugOrderChange>> changesByDate = new TreeMap<Date, List<DrugOrderChange>>();
 		for (DrugOrderChange change : tempChanges) {
 			List<DrugOrderChange> holder = changesByDate.get(change.getDate());
@@ -82,7 +91,8 @@ public class RegimenHistory {
 			}
 			holder.add(change);
 		}
-		
+
+		// Group drug orders into regimens based on common change dates
 		changes = new ArrayList<RegimenChange>();
 		Set<DrugOrder> runningOrders = new LinkedHashSet<DrugOrder>();
 		Regimen lastRegimen = null;
@@ -104,11 +114,49 @@ public class RegimenHistory {
 					}
 				}
 			}
-			Regimen newRegimen = new Regimen(new LinkedHashSet<DrugOrder>(runningOrders));
+
+			// Construct new regimen if there are running drug orders
+			Regimen newRegimen = null;
+			if (runningOrders.size() > 0) {
+				newRegimen = new Regimen(new LinkedHashSet<DrugOrder>(runningOrders));
+			}
+
 			RegimenChange change = new RegimenChange(date, lastRegimen, newRegimen, changeReasons, changeReasonsNonCoded);
 			changes.add(change);
 			lastRegimen = newRegimen;
 		}
+	}
+
+	/**
+	 * Undoes the last change in the history
+	 */
+	public void undoLastChange() {
+		RegimenChange lastChange = getLastChange();
+		if (lastChange == null) {
+			return;
+		}
+
+		// Void the regimen that may have been started
+		if (lastChange.getStarted() != null) {
+			for (DrugOrder order : lastChange.getStarted().getDrugOrders()) {
+				Context.getOrderService().voidOrder(order, "Undoing last regimen change");
+			}
+		}
+
+		// Un-discontinue the regimen that may have been stopped
+		if (lastChange.getStopped() != null) {
+			for (DrugOrder order : lastChange.getStopped().getDrugOrders()) {
+				order.setDiscontinued(false);
+				order.setDiscontinuedDate(null);
+				order.setDiscontinuedBy(null);
+				order.setDiscontinuedReason(null);
+				order.setDiscontinuedReasonNonCoded(null);
+				Context.getOrderService().saveOrder(order);
+			}
+		}
+
+		// Remove last change from history
+		changes.remove(lastChange);
 	}
 	
 	/**
@@ -122,7 +170,7 @@ public class RegimenHistory {
 	 * Convenience method to get the last change
 	 * @return the last regimen change
 	 */
-	public RegimenChange getLastRegimenChange() {
+	public RegimenChange getLastChange() {
 		return (changes.size() > 0) ? changes.get(changes.size() - 1) : null;
 	}
 

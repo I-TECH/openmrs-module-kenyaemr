@@ -38,25 +38,13 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
- * Various handlers for regimen related functions
+ * Various actions for regimen related functions
  */
 public class ArvRegimenFragmentController {
 
 	/**
-	 * Gets the specified patient's current regimen
+	 * Gets the patient's complete regimen history
 	 * @param patient the patient
-	 * @param ui the UI utils
-	 * @return the regimen as a simple object
-	 */
-	public SimpleObject currentRegimen(@RequestParam("patientId") Patient patient, UiUtils ui) {
-		Concept arvs = Context.getConceptService().getConceptByUuid(MetadataConstants.ANTIRETROVIRAL_DRUGS_CONCEPT_UUID);
-		RegimenHistory history = RegimenHistory.forPatient(patient, arvs);
-		Regimen reg = history.getCurrentRegimen();
-		return KenyaEmrUiUtils.simpleRegimen(reg, ui);
-	}
-
-	/**
-	 * @param patient
 	 * @return a list of object with { startDate, endDate, shortDisplay, longDisplay, changeReasons[] }
 	 */
 	public List<SimpleObject> regimenHistory(@RequestParam("patientId") Patient patient, UiUtils ui) {
@@ -64,9 +52,30 @@ public class ArvRegimenFragmentController {
 		RegimenHistory history = RegimenHistory.forPatient(patient, arvs);
 		return KenyaEmrUiUtils.simpleRegimenHistory(history, ui);
 	}
-	
-	public SimpleObject startRegimen(UiUtils ui, @RequestParam("patient") Patient patient,
-	                                 @MethodParam("newArvRegimenCommandObject") @BindParams ArvRegimenCommandObject command) {
+
+	/**
+	 * Gets the patient's current regimen
+	 * @param patient the patient
+	 * @param ui the UI utils
+	 * @return the regimen as a simple object
+	 */
+	public SimpleObject currentRegimen(@RequestParam("patientId") Patient patient, UiUtils ui) {
+		Concept arvs = Context.getConceptService().getConceptByUuid(MetadataConstants.ANTIRETROVIRAL_DRUGS_CONCEPT_UUID);
+		RegimenHistory history = RegimenHistory.forPatient(patient, arvs);
+
+		return KenyaEmrUiUtils.simpleRegimen(history.getCurrentRegimen(), ui);
+	}
+
+	/**
+	 * Starts the patient on a new regimen
+	 * @param patient the patient
+	 * @param command
+	 * @param ui the UI utils
+	 * @return the patient's current regimen
+	 */
+	public SimpleObject startRegimen(@RequestParam("patient") Patient patient,
+	                                 @MethodParam("newArvRegimenCommandObject") @BindParams ArvRegimenCommandObject command,
+									 UiUtils ui) {
 		
 		ui.validate(command, command, null);
 		
@@ -75,9 +84,17 @@ public class ArvRegimenFragmentController {
 		
 		return currentRegimen(patient, ui);
 	}
-	
-	public SimpleObject changeRegimen(UiUtils ui, @RequestParam("patient") Patient patient,
-	                                  @MethodParam("newArvRegimenCommandObject") @BindParams ArvRegimenCommandObject command) {
+
+	/**
+	 * Changes the patient's current regimen
+	 * @param patient the patient
+	 * @param command
+	 * @param ui the UI utils
+	 * @return the patient's current regimen
+	 */
+	public SimpleObject changeRegimen(@RequestParam("patient") Patient patient,
+	                                  @MethodParam("newArvRegimenCommandObject") @BindParams ArvRegimenCommandObject command,
+									  UiUtils ui) {
 		
 		ui.validate(command, command, null);
 		
@@ -86,9 +103,18 @@ public class ArvRegimenFragmentController {
 		
 		return currentRegimen(patient, ui);
 	}
-	
-	public SimpleObject stopRegimen(UiUtils ui, @RequestParam("patient") Patient patient,
-	                                @RequestParam("stopDate") Date stopDate, @RequestParam("stopReason") String stopReason) {
+
+	/**
+	 * Stops the patient's current regimen
+	 * @param patient the patient
+	 * @param stopDate the stop date
+	 * @param stopReason the stop reason
+	 * @param ui the UI utils
+	 * @return the patient's current regimen
+	 */
+	public SimpleObject stopRegimen(@RequestParam("patient") Patient patient,
+	                                @RequestParam("stopDate") Date stopDate, @RequestParam("stopReason") String stopReason,
+									UiUtils ui) {
 		
 		Concept arvs = Context.getConceptService().getConceptByUuid(MetadataConstants.ANTIRETROVIRAL_DRUGS_CONCEPT_UUID);
 		
@@ -101,10 +127,31 @@ public class ArvRegimenFragmentController {
 		return currentRegimen(patient, ui);
 	}
 
+	/**
+	 * Undoes the last regimen change for the given patient
+	 * @param patient the patient
+	 * @param ui the UI utils
+	 * @return the patient's current regimen
+	 */
+	public SimpleObject undoLastChange(@RequestParam("patient") Patient patient, UiUtils ui) {
+		Concept arvs = Context.getConceptService().getConceptByUuid(MetadataConstants.ANTIRETROVIRAL_DRUGS_CONCEPT_UUID);
+		RegimenHistory history = RegimenHistory.forPatient(patient, arvs);
+		history.undoLastChange();
+
+		return currentRegimen(patient, ui);
+	}
+
+	/**
+	 * Helper method to create a new form object
+	 * @return the form object
+	 */
 	public ArvRegimenCommandObject newArvRegimenCommandObject() {
 		return new ArvRegimenCommandObject();
 	}
-	
+
+	/**
+	 * Form object
+	 */
 	public class ArvRegimenCommandObject extends ValidatingCommandObject {
 		
 		private Patient patient;
@@ -156,7 +203,7 @@ public class ArvRegimenFragmentController {
 		public void applyNewRegimen(Concept medSet) {
 			RegimenHistory history = RegimenHistory.forPatient(patient, medSet);
 			List<RegimenChange> changes = history.getChanges();
-			if (changes.size() > 0 && changes.get(changes.size() - 1).getStarted().getDrugOrders().size() > 0) {
+			if (history.getLastChange() != null && history.getLastChange().getStarted() != null) {
 				throw new RuntimeException("Can't Start/Restart a regimen for a patient who already has one");
 			}
 			

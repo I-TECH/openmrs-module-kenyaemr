@@ -1,121 +1,134 @@
 package org.openmrs.module.kenyaemr.regimen;
 
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Concept;
-import org.openmrs.ConceptName;
 import org.openmrs.DrugOrder;
+import org.openmrs.Patient;
+import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyaemr.MetadataConstants;
+import org.openmrs.module.kenyaemr.test.TestUtils;
+import org.openmrs.test.BaseModuleContextSensitiveTest;
 
-public class RegimenHistoryTest {
-	
+public class RegimenHistoryTest extends BaseModuleContextSensitiveTest {
+
+	final Date t0 = TestUtils.date(2006, 1, 1);
+	final Date t1 = TestUtils.date(2006, 2, 1);
+	final Date t2 = TestUtils.date(2006, 3, 1);
+	final Date t3 = TestUtils.date(2006, 4, 1);
+
+	Concept drug1, drug2, drug3, drug4;
+
+	DrugOrder order1, order2, order3, order4;
+
+	@Before
+	public void setup() throws Exception {
+		executeDataSet("test-data.xml");
+		executeDataSet("test-drugdata.xml");
+
+		/* Test case like this:
+		 * 3TC: <---->
+		 * AZT: |  <----->
+		 * D4T: |  |  <-----...
+		 * Asp: |  |  <-----... (this drug is not relevant)
+		 *      |  |  |  |
+		 *      t0 t1 t2 t3
+		 */
+
+		drug1 = Context.getConceptService().getConcept(78643); // 3TC
+		drug2 = Context.getConceptService().getConcept(86663); // AZT
+		drug3 = Context.getConceptService().getConcept(84309); // D4T
+		drug4 = Context.getConceptService().getConcept(71617); // Aspirin
+
+		order1 = TestUtils.saveDrugOrder(Context.getPatientService().getPatient(6), drug1, t0, t2);
+		order1.setDiscontinuedReasonNonCoded("Because I felt like it");
+
+		order2 = TestUtils.saveDrugOrder(Context.getPatientService().getPatient(6), drug2, t1, t3);
+		order2.setDiscontinuedReason(Context.getConceptService().getConcept(16)); // DIED
+
+		order3 = TestUtils.saveDrugOrder(Context.getPatientService().getPatient(6), drug3, t2, null);
+
+		order4 = TestUtils.saveDrugOrder(Context.getPatientService().getPatient(6), drug4, t2, null);
+	}
+
 	/**
-	 * @see RegimenHistory#RegimenHistory(Set,List)
-	 * @verifies create regimen history based on drug orders
+	 * @see org.openmrs.module.kenyaemr.regimen.RegimenHistory#RegimenHistory(java.util.Set, java.util.List)
+	 * @verifies create regimen history based on all relevant drug orders
 	 */
 	@Test
-	public void integrationTest() throws Exception {
-		/* Test case like this:
-		 * 1: <--->
-		 * 2: | <----->
-		 * 3: | |  <-----...
-		 * 4: | |  <-----... (this drug is not relevant)
-		 *    | |  |  |
-		 *   t0 t1 t2 t3
-		 */
-		Concept genericOne = new Concept();
-		genericOne.setPreferredName(new ConceptName("One", Locale.ENGLISH));
-		
-		Concept genericTwo = new Concept();
-		genericTwo.setPreferredName(new ConceptName("Two", Locale.ENGLISH));
-		
-		Concept genericThree = new Concept();
-		genericThree.setPreferredName(new ConceptName("Three", Locale.ENGLISH));
-		
-		Concept genericFour = new Concept();
-		genericFour.setPreferredName(new ConceptName("Four", Locale.ENGLISH));
-		
-		Concept reason = new Concept();
-		reason.setConceptId(5);
-		reason.setUuid("Reason");
-		reason.setPreferredName(new ConceptName("Reason", Locale.ENGLISH));
-		
-		SimpleDateFormat ymd = new SimpleDateFormat("yyyy-MM-dd");
-		Date t0 = ymd.parse("2006-01-01");
-		Date t1 = ymd.parse("2006-02-01");
-		Date t2 = ymd.parse("2006-03-01");
-		Date t3 = ymd.parse("2006-04-01");
-		
-		DrugOrder one = new DrugOrder();
-		one.setConcept(genericOne);
-		one.setStartDate(t0);
-		one.setDiscontinued(true);
-		one.setDiscontinuedDate(t2);
-		one.setDiscontinuedReasonNonCoded("Because I felt like it");
-		
-		DrugOrder two = new DrugOrder();
-		two.setConcept(genericTwo);
-		two.setStartDate(t1);
-		two.setDiscontinued(true);
-		two.setDiscontinuedDate(t3);
-		two.setDiscontinuedReason(reason);
-		
-		DrugOrder three = new DrugOrder();
-		three.setConcept(genericThree);
-		three.setStartDate(t2);
-		
-		DrugOrder four = new DrugOrder();
-		four.setConcept(genericFour);
-		four.setStartDate(t2);
-		
-		Set<Concept> relevantDrugs = new HashSet<Concept>(Arrays.asList(genericOne, genericTwo, genericThree));
-		List<DrugOrder> allDrugOrders = Arrays.asList(one, two, three, four);
-		
+	public void constructor_shouldCreateRegimenHistory() throws Exception {
+		List<DrugOrder> allDrugOrders = Arrays.asList(order1, order2, order3, order4);
+		Set<Concept> relevantDrugs = new HashSet<Concept>(Arrays.asList(drug1, drug2, drug3));
 		RegimenHistory regimenHistory = new RegimenHistory(relevantDrugs, allDrugOrders);
 		List<RegimenChange> changes = regimenHistory.getChanges();
-		
+
+		// Should be 4 changes in total
 		Assert.assertEquals(4, changes.size());
-		
-		Assert.assertNull(changes.get(0).getStopped());
+
+		// Change #1 should be null > drug1
 		Assert.assertEquals(t0, changes.get(0).getDate());
-		assertContainsDrugOrders(changes.get(0).getStarted(), one);
-		
-		Assert.assertSame(changes.get(0).getStarted(), changes.get(1).getStopped());
+		Assert.assertNull(changes.get(0).getStopped());
+		TestUtils.assertRegimenContainsDrugOrders(changes.get(0).getStarted(), order1);
+
+		// Change #2 should be drug1 > drug1, drug2
 		Assert.assertEquals(t1, changes.get(1).getDate());
-		assertContainsDrugOrders(changes.get(1).getStarted(), one, two);
-		
-		Assert.assertSame(changes.get(1).getStarted(), changes.get(2).getStopped());
+		Assert.assertSame(changes.get(0).getStarted(), changes.get(1).getStopped());
+		TestUtils.assertRegimenContainsDrugOrders(changes.get(1).getStarted(), order1, order2);
+
+		// Change #3 should be drug1, drug2 > drug2, drug3
 		Assert.assertEquals(t2, changes.get(2).getDate());
-		assertContainsDrugOrders(changes.get(2).getStarted(), two, three);
-		
-		Assert.assertSame(changes.get(2).getStarted(), changes.get(3).getStopped());
+		Assert.assertSame(changes.get(1).getStarted(), changes.get(2).getStopped());
+		TestUtils.assertRegimenContainsDrugOrders(changes.get(2).getStarted(), order2, order3);
+		Assert.assertEquals(1, changes.get(2).getChangeReasonsNonCoded().size());
+
+		// Change #4 should be drug2, drug3 > drug3
 		Assert.assertEquals(t3, changes.get(3).getDate());
-		assertContainsDrugOrders(changes.get(3).getStarted(), three);
-		
-		// TODO asserts for change reasons
-		
-		for (RegimenChange c : changes) {
-			System.out.println("On " + ymd.format(c.getDate()) + " changed from " + c.getStopped() + " to " + c.getStarted()
-			        + " for reasons: " + c.getChangeReasons() + " and " + c.getChangeReasonsNonCoded());
-		}
+		Assert.assertSame(changes.get(2).getStarted(), changes.get(3).getStopped());
+		TestUtils.assertRegimenContainsDrugOrders(changes.get(3).getStarted(), order3);
+		Assert.assertEquals(1, changes.get(3).getChangeReasons().size());
 	}
-	
-	private void assertContainsDrugOrders(Regimen reg, DrugOrder... drugOrders) {
-		if (drugOrders.length == 0) {
-			Assert.assertTrue(reg.getDrugOrders() == null || reg.getDrugOrders().size() == 0);
-		} else {
-			Assert.assertEquals(drugOrders.length, reg.getDrugOrders().size());
-			for (DrugOrder o : drugOrders) {
-				Assert.assertTrue(reg.getDrugOrders().contains(o));
-			}
-		}
+
+	@Test
+	public void forPatient_shouldCreateRegimenHistoryForPatient() {
+		Patient patient6 = Context.getPatientService().getPatient(6);
+		Concept arvs = Context.getConceptService().getConceptByUuid(MetadataConstants.ANTIRETROVIRAL_DRUGS_CONCEPT_UUID);
+		RegimenHistory regimenHistory = RegimenHistory.forPatient(patient6, arvs);
+
+		// Should be 4 changes in total
+		Assert.assertEquals(4, regimenHistory.getChanges().size());
+	}
+
+	/**
+	 * @see org.openmrs.module.kenyaemr.regimen.RegimenHistory#undoLastChange()
+	 */
+	@Test
+	public void undoLastChange() {
+		List<DrugOrder> allDrugOrders = Arrays.asList(order1, order2, order3, order4);
+		Set<Concept> relevantDrugs = new HashSet<Concept>(Arrays.asList(drug1, drug2, drug3));
+		RegimenHistory regimenHistory = new RegimenHistory(relevantDrugs, allDrugOrders);
+
+		regimenHistory.undoLastChange();
+
+		List<RegimenChange> changes = regimenHistory.getChanges();
+
+		// Should be 3 changes in total
+		Assert.assertEquals(3, changes.size());
+
+		// Change #3 should still start drug2, drug3
+		TestUtils.assertRegimenContainsDrugOrders(changes.get(2).getStarted(), order2, order3);
+
+		// But drug2 doesn't discontinue now
+		Assert.assertFalse(order2.getDiscontinued());
+		Assert.assertNull(order2.getDiscontinuedDate());
+		Assert.assertNull(order2.getDiscontinuedBy());
+		Assert.assertNull(order2.getDiscontinuedReason());
+		Assert.assertNull(order2.getDiscontinuedReasonNonCoded());
 	}
 }

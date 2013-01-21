@@ -2,8 +2,9 @@
 	ui.decorateWith("kenyaemr", "standardKenyaEmrPage", [ patient: patient, layout: "sidebar" ])
 
 	def allowNew = !history.changes
-	def allowChange = history.changes && history.changes.last().started.drugOrders
-	def allowRestart = history.changes && !history.changes.last().started.drugOrders
+	def allowChange = history.changes && history.changes.last().started
+	def allowRestart = history.changes && !history.changes.last().started
+	def allowUndo = history.changes && history.changes.size() > 0
 
 	// Create HTML options for each ARV drug
 	def drugOptions = arvs.collect {
@@ -59,7 +60,7 @@
 		for (var i = 0; i < data.length; ++i) {
 			var str = '<tr><td>' + data[i].startDate + '</td>';
 			str += '<td>' + data[i].endDate + '</td>';
-			str += '<td style="text-align: left">' + data[i].shortDisplay + '<br/><small>' + data[i].longDisplay + '</small></td>';
+			str += '<td style="text-align: left">' + data[i].regimen.shortDisplay + '<br/><small>' + data[i].regimen.longDisplay + '</small></td>';
 			str += '<td style="text-align: left">';
 			if (data[i].changeReasons) {
 				str += data[i].changeReasons.join(', ');
@@ -94,6 +95,14 @@
 
 		// Redisplay the regimen action buttons
 		jq('#regimen-action-buttons').show();
+	}
+
+	function undoLastChange() {
+		if (confirm('Undo the last regimen change?')) {
+			ui.getFragmentActionAsJson('kenyaemr', 'arvRegimen', 'undoLastChange', { patient: ${ patient.patientId } }, function (data) {
+				ui.reloadPage();
+			});
+		}
 	}
 	
 	jq(function() {
@@ -171,17 +180,21 @@
 
 	<div id="regimen-action-buttons">
 	<% if (allowNew) { %>
-		${ ui.includeFragment("uilibrary", "widget/button", [ iconProvider: "kenyaemr", icon: "buttons/regimen_start.png", label: "Start", onClick: "choseAction('start-new-regimen')" ]) }
+	${ ui.includeFragment("uilibrary", "widget/button", [ iconProvider: "kenyaemr", icon: "buttons/regimen_start.png", label: "Start", extra: "a new regimen", onClick: "choseAction('start-new-regimen')" ]) }
 	<% } %>
 
 	<% if (allowChange) { %>
-		${ ui.includeFragment("uilibrary", "widget/button", [ iconProvider: "kenyaemr", icon: "buttons/regimen_change.png", label: "Change", onClick: "choseAction('change-regimen')" ]) }
+	${ ui.includeFragment("uilibrary", "widget/button", [ iconProvider: "kenyaemr", icon: "buttons/regimen_change.png", label: "Change", extra: "the current regimen", onClick: "choseAction('change-regimen')" ]) }
 
-		${ ui.includeFragment("uilibrary", "widget/button", [ iconProvider: "kenyaemr", icon: "buttons/regimen_stop.png", label: "Stop", onClick: "choseAction('stop-regimen')" ]) }
+	${ ui.includeFragment("uilibrary", "widget/button", [ iconProvider: "kenyaemr", icon: "buttons/regimen_stop.png", label: "Stop", extra: "the current regimen", onClick: "choseAction('stop-regimen')" ]) }
 	<% } %>
 
 	<% if (allowRestart) { %>
-		${ ui.includeFragment("uilibrary", "widget/button", [ iconProvider: "kenyaemr", icon: "buttons/regimen_restart.png", label: "Restart", onClick: "choseAction('restart-regimen')" ]) }
+	${ ui.includeFragment("uilibrary", "widget/button", [ iconProvider: "kenyaemr", icon: "buttons/regimen_restart.png", label: "Restart", extra: "a new regimen", onClick: "choseAction('restart-regimen')" ]) }
+	<% } %>
+
+	<% if (allowUndo) { %>
+	${ ui.includeFragment("uilibrary", "widget/button", [ iconProvider: "kenyaemr", icon: "buttons/undo.png", label: "Undo", extra: "the last change", onClick: "undoLastChange()" ]) }
 	<% } %>
 	</div>
 

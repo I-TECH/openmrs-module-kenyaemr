@@ -80,7 +80,7 @@ public class KenyaEmrUiUtils {
 	 */
 	public static String formatRegimenShort(Regimen regimen, UiUtils ui) {
 		if (CollectionUtils.isEmpty(regimen.getDrugOrders())) {
-			return "None";
+			return "Empty";
 		}
 		List<String> components = new ArrayList<String>();
 		for (DrugOrder o : regimen.getDrugOrders()) {
@@ -100,7 +100,7 @@ public class KenyaEmrUiUtils {
 	 */
 	public static String formatRegimenLong(Regimen regimen, UiUtils ui) {
 		if (CollectionUtils.isEmpty(regimen.getDrugOrders())) {
-			return "None";
+			return "Empty";
 		}
 		List<String> components = new ArrayList<String>();
 		for (DrugOrder o : regimen.getDrugOrders()) {
@@ -202,8 +202,7 @@ public class KenyaEmrUiUtils {
 			ret.add(SimpleObject.create(
 				"startDate", KenyaEmrUiUtils.formatDateNoTime(startDate),
 				"endDate", KenyaEmrUiUtils.formatDateNoTime(endDate),
-				"shortDisplay", KenyaEmrUiUtils.formatRegimenShort(regimen,  ui),
-				"longDisplay", KenyaEmrUiUtils.formatRegimenLong(regimen, ui),
+				"regimen", simpleRegimen(regimen, ui),
 				"changeReasons", changeReasons
 			));
 		}

@@ -31,7 +31,7 @@ public class MedicalEncounterArvSummaryFragmentController {
 
 		Concept arvs = Context.getConceptService().getConceptByUuid(MetadataConstants.ANTIRETROVIRAL_DRUGS_CONCEPT_UUID);
 		RegimenHistory history = RegimenHistory.forPatient(patient, arvs);
-		RegimenChange lastChange = history.getLastRegimenChange();
+		RegimenChange lastChange = history.getLastChange();
 
 		model.addAttribute("lastChange", lastChange);
 	}
