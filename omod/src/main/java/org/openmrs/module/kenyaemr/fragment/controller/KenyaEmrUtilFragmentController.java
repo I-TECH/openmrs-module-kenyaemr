@@ -13,8 +13,7 @@
  */
 package org.openmrs.module.kenyaemr.fragment.controller;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.Location;
@@ -22,24 +21,37 @@ import org.openmrs.LocationAttribute;
 import org.openmrs.LocationAttributeType;
 import org.openmrs.api.LocationService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyaemr.KenyaEmrUiUtils;
+import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.kenyaemr.api.ConfigurationRequiredException;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.ui.framework.SimpleObject;
+import org.openmrs.ui.framework.UiUtils;
 import org.springframework.web.bind.annotation.RequestParam;
-
 
 /**
  * Fragment actions generally useful for the Kenya EMR module
  */
 public class KenyaEmrUtilFragmentController {
 
-	// no controller method, only actions
-	
-	public List<SimpleObject> locationSearch(@RequestParam(required=false, value="term") String query) {
-		LocationService ls = Context.getLocationService();
-		
-		List<Location> results = new ArrayList<Location>();
-		// always show default location and its sub-locations
+	/**
+	 * Searches for locations by name of MFL code
+	 * @param term the search term
+	 * @return the list of locations as simple objects
+	 */
+	public List<SimpleObject> locationSearch(@RequestParam(required = false, value = "term") String term, UiUtils ui) {
+		LocationService svc = Context.getLocationService();
+		LocationAttributeType mflCodeAttrType = svc.getLocationAttributeTypeByUuid(MetadataConstants.MASTER_FACILITY_CODE_LOCATION_ATTRIBUTE_TYPE_UUID);
+
+		// Results will be sorted by name
+		Set<Location> results = new TreeSet<Location>(new Comparator<Location>() {
+			@Override
+			public int compare(Location location1, Location location2) {
+				return location1.getName().compareTo(location2.getName());
+			}
+		});
+
+		// Add default location and its sub-locations
 		try {
 			Location defaultLocation = Context.getService(KenyaEmrService.class).getDefaultLocation();
 			results.add(defaultLocation);
@@ -47,23 +59,33 @@ public class KenyaEmrUtilFragmentController {
 		} catch (ConfigurationRequiredException ex) {
 			// pass
 		}
-		
-		if (StringUtils.isNotBlank(query)) {
-			results.addAll(ls.getLocations(query, true, 0, 50));
+
+		// If term looks like an MFL code, add location with that code
+		if (StringUtils.isNumeric(term) && term.length() >= 5) {
+			Location locationByMflCode = Context.getService(KenyaEmrService.class).getLocationByMflCode(term);
+			if (locationByMflCode != null) {
+				results.add(locationByMflCode);
+			}
 		}
-		
-		// TODO move this to MetadataConstants
-		LocationAttributeType facilityCode = ls.getLocationAttributeType(1);
-		
+
+		// Add first 20 results of search by name
+		if (StringUtils.isNotBlank(term)) {
+			results.addAll(svc.getLocations(term, true, 0, 20));
+		}
+
+		// Convert to simple objects
 		List<SimpleObject> ret = new ArrayList<SimpleObject>();
 		for (Location l : results) {
-			List<LocationAttribute> attrs = l.getActiveAttributes(facilityCode);
-			String display = attrs.size() > 0 ? (l.getName() + " (" + attrs.get(0).getValue() + ")") : (" -> " + l.getName());
-			ret.add(SimpleObject.create("value", l.getLocationId(), "label", display));
+			ret.add(KenyaEmrUiUtils.simpleLocation(l, mflCodeAttrType, ui));
 		}
 		return ret;
 	}
-	
+
+	/**
+	 *
+	 * @param comment
+	 * @return
+	 */
 	public SimpleObject nextHivUniquePatientNumber(@RequestParam(required = false, value = "comment") String comment) {
 		if (comment == null) {
 			comment = "Kenya EMR UI";
@@ -71,5 +93,4 @@ public class KenyaEmrUtilFragmentController {
 		String id = Context.getService(KenyaEmrService.class).getNextHivUniquePatientNumber(comment);
 		return SimpleObject.create("value", id);
 	}
-
 }

@@ -48,7 +48,7 @@ public class KenyaEmrServiceTest extends BaseModuleContextSensitiveTest {
     }
 
 	/**
-	 * @see KenyaEmrService#getDefaultLocation(Session)
+	 * @see org.openmrs.module.kenyaemr.api.KenyaEmrService#getDefaultLocation()
 	 * @verifies throw an exception if the default location has not been set
 	 */
 	@Test(expected=APIException.class)
@@ -58,7 +58,7 @@ public class KenyaEmrServiceTest extends BaseModuleContextSensitiveTest {
 	}
 	
 	/**
-	 * @see KenyaEmrService#getDefaultLocation(Session)
+	 * @see org.openmrs.module.kenyaemr.api.KenyaEmrService#getDefaultLocation()
 	 * @verifies get the default location when set
 	 */
 	@Test
@@ -74,7 +74,19 @@ public class KenyaEmrServiceTest extends BaseModuleContextSensitiveTest {
 	}
 
 	/**
-     * @see KenyaEmrService#isConfigured()
+	 * @see org.openmrs.module.kenyaemr.api.KenyaEmrService#getLocationByMflCode(String)
+	 * @verifies find the location with that code
+	 * @verifies return null if no location has that code
+	 */
+	@Test
+	public void getLocationByMflCode_shouldFindLocationWithCodeOrNull() throws Exception {
+		Assert.assertEquals(Context.getLocationService().getLocation(1), service.getLocationByMflCode("15001"));
+		Assert.assertEquals(Context.getLocationService().getLocation(3), service.getLocationByMflCode("15003"));
+		Assert.assertNull(service.getLocationByMflCode("20000"));
+	}
+
+	/**
+     * @see org.openmrs.module.kenyaemr.api.KenyaEmrService#isConfigured()
      * @verifies return false before default location has been set
      */
     @Test
@@ -83,7 +95,7 @@ public class KenyaEmrServiceTest extends BaseModuleContextSensitiveTest {
     }
 
 	/**
-     * @see KenyaEmrService#isConfigured()
+     * @see org.openmrs.module.kenyaemr.api.KenyaEmrService#isConfigured()
      * @verifies return true after everything is configured
      */
     @Test
@@ -205,10 +217,10 @@ public class KenyaEmrServiceTest extends BaseModuleContextSensitiveTest {
 		service.setDefaultLocation(loc);
 		
     	service.setupHivUniqueIdentifierSource("00571");
-    	Assert.assertEquals("123400571", service.getNextHivUniquePatientNumber(null));
-    	Assert.assertEquals("123400572", service.getNextHivUniquePatientNumber(null));
-    	Assert.assertEquals("123400573", service.getNextHivUniquePatientNumber(null));
-    	Assert.assertEquals("123400574", service.getNextHivUniquePatientNumber(null));
+    	Assert.assertEquals("1500100571", service.getNextHivUniquePatientNumber(null));
+    	Assert.assertEquals("1500100572", service.getNextHivUniquePatientNumber(null));
+    	Assert.assertEquals("1500100573", service.getNextHivUniquePatientNumber(null));
+    	Assert.assertEquals("1500100574", service.getNextHivUniquePatientNumber(null));
     }
 
 	/**

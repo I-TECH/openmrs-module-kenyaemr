@@ -15,6 +15,7 @@ package org.openmrs.module.kenyaemr.api.impl;
 
 import java.util.*;
 
+import net.sf.cglib.core.CollectionUtils;
 import org.openmrs.GlobalProperty;
 import org.openmrs.Location;
 import org.openmrs.LocationAttribute;
@@ -172,15 +173,44 @@ public class KenyaEmrServiceImpl extends BaseOpenmrsService implements KenyaEmrS
 	 */
 	@Override
 	public String getDefaultLocationMflCode() {
-		LocationAttributeType attrType = Context.getLocationService().getLocationAttributeTypeByUuid(MetadataConstants.MASTER_FACILITY_CODE_LOCATION_ATTRIBUTE_TYPE_UUID);
+		LocationAttributeType mflCodeAttrType = Context.getLocationService().getLocationAttributeTypeByUuid(MetadataConstants.MASTER_FACILITY_CODE_LOCATION_ATTRIBUTE_TYPE_UUID);
 	    Location location = getDefaultLocation();
-	    List<LocationAttribute> list = location.getActiveAttributes(attrType);
+	    List<LocationAttribute> list = location.getActiveAttributes(mflCodeAttrType);
 	    if (list.size() == 0) {
-	    	throw new ConfigurationRequiredException("Default location (" + location.getName() + ") does not have an " + attrType.getName());
+	    	throw new ConfigurationRequiredException("Default location (" + location.getName() + ") does not have an " + mflCodeAttrType.getName());
 	    }
 	    return (String) list.get(0).getValue();
 	}
 
+	/**
+	 * @see org.openmrs.module.kenyaemr.api.KenyaEmrService#getLocationByMflCode(String)
+	 */
+	@Override
+	public Location getLocationByMflCode(String mflCode) {
+		LocationAttributeType mflCodeAttrType = Context.getLocationService().getLocationAttributeTypeByUuid(MetadataConstants.MASTER_FACILITY_CODE_LOCATION_ATTRIBUTE_TYPE_UUID);
+		List<Location> allLocations = Context.getLocationService().getAllLocations();
+
+		/**
+		 * TODO this is not very efficient for a database with a lot of locations. Need to get
+		 * Hibernate level search into core or implement ourselves.
+		 */
+		for (Location location : allLocations) {
+			for (LocationAttribute attr : location.getActiveAttributes(mflCodeAttrType)) {
+				if (attr.getValue().equals(mflCode)) {
+					return location;
+				}
+			}
+		}
+		return null;
+	}
+
+	/**
+	 *
+	 * @param startFrom
+	 * @param name
+	 * @param idType
+	 * @param baseCharacterSet
+	 */
 	private void setupIdentifierSource(String startFrom, String name, PatientIdentifierType idType, String baseCharacterSet) {
     	String validatorClass = idType.getValidator();
     	LuhnModNIdentifierValidator validator = null;

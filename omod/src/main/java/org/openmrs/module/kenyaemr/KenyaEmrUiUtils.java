@@ -18,10 +18,7 @@ import org.joda.time.Period;
 import org.joda.time.PeriodType;
 import org.ocpsoft.prettytime.Duration;
 import org.ocpsoft.prettytime.PrettyTime;
-import org.openmrs.Concept;
-import org.openmrs.ConceptName;
-import org.openmrs.DrugOrder;
-import org.openmrs.Patient;
+import org.openmrs.*;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.regimen.*;
 import org.openmrs.module.kenyaemr.util.KenyaEmrUtils;
@@ -139,6 +136,20 @@ public class KenyaEmrUiUtils {
 			ret.add(so);
 		}
 		return ret;
+	}
+
+	/**
+	 * Simplifies a location
+	 * @param location the location
+	 * @param mfcAttrType the MFL code attribute type
+	 * @param ui the UI utils
+	 * @return the simple object with {  }
+	 */
+	public static SimpleObject simpleLocation(Location location, LocationAttributeType mfcAttrType, UiUtils ui) {
+		List<LocationAttribute> attrs = location.getActiveAttributes(mfcAttrType);
+		String facilityCode = attrs.size() > 0 ? (String)attrs.get(0).getValue() : null;
+		String display = location.getName() + " (" + (facilityCode != null ? facilityCode : "?") + ")";
+		return SimpleObject.create("value", location.getLocationId(), "label", display);
 	}
 
 	/**

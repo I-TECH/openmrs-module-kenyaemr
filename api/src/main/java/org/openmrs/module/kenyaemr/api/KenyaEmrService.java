@@ -27,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 public interface KenyaEmrService extends OpenmrsService {
 	
 	/**
+	 * Get if this server has been properly configured
 	 * @return whether or not all required settings in the application are configured.
 	 * @should return false before default location has been set
 	 * @should return true after everything is configured
@@ -36,28 +37,35 @@ public interface KenyaEmrService extends OpenmrsService {
 	/**
 	 * Sets the default location for this server, i.e. the value that should be auto-set for new
 	 * encounters, visits, etc.
-	 * 
-	 * @param location
+	 * @param location the location
 	 */
 	@Transactional
 	void setDefaultLocation(Location location);
 
 	/**
 	 * Gets the default location for this server.
-	 * 
-	 * @return
+	 * @return the default location
+	 * @throws ConfigurationRequiredException if default location is not configured
 	 * @should throw an exception if the default location has not been set
 	 * @should get the default location when set
 	 */
 	@Transactional(readOnly=true)
 	Location getDefaultLocation();
-	
+
 	/**
 	 * Gets the Master Facility List code for the default location for this server
-	 * 
-	 * @return
+	 * @return the Master Facility List code
+	 * @throws ConfigurationRequiredException if default location is not configured
 	 */
 	String getDefaultLocationMflCode();
+
+	/**
+	 * Gets the location with the given Master Facility List code
+	 * @return the location (null if no location has the given code)
+	 * @should find the location with that code
+	 * @should return null if no location has that code
+	 */
+	Location getLocationByMflCode(String mflCode);
 	
 	/**
 	 * Sets up a new idgen identifier source for our auto-generated medical record numbers
