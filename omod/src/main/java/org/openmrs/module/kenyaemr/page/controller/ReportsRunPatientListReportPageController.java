@@ -37,7 +37,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 /**
  *
  */
-public class ReportsRunPatientAlertListReportPageController {
+public class ReportsRunPatientListReportPageController {
 	
 	public Object controller(Session session,
 	                       PageModel model,

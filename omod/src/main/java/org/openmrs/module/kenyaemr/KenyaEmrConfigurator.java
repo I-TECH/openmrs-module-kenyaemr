@@ -20,7 +20,7 @@ import org.openmrs.ui.framework.page.PageModelConfigurator;
 import org.springframework.stereotype.Component;
 
 /**
- * Makes KenyaEmrUiUtils
+ * Makes utility classes available to pages and fragments in this module
  */
 @Component
 public class KenyaEmrConfigurator implements PageModelConfigurator, FragmentModelConfigurator {

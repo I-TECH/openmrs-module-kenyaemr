@@ -37,9 +37,8 @@ import org.openmrs.ui.framework.page.PageModel;
 import org.openmrs.ui.framework.session.Session;
 import org.springframework.web.bind.annotation.RequestParam;
 
-
 /**
- *
+ * Rum monthly indicator report page controller
  */
 public class ReportsRunMonthlyIndicatorReportPageController {
 	
@@ -52,16 +51,17 @@ public class ReportsRunMonthlyIndicatorReportPageController {
 		AppUiUtil.startApp("kenyaemr.reports", session);
 		
 		ReportManager manager = Context.getService(KenyaEmrService.class).getReportManager(managerClassname);
-		ReportDefinition rd = manager.getReportDefinition();
-		
-		model.addAttribute("definition", rd);
+		ReportDefinition definition = manager.getReportDefinition();
+
+		model.addAttribute("manager", manager);
+		model.addAttribute("definition", definition);
 		
 		if (startDate != null) {
 			// generate the report
 			EvaluationContext ec = new EvaluationContext();
 			ec.addParameterValue("startDate", startDate);
 			ec.addParameterValue("endDate", DateUtil.getEndOfMonth(startDate));
-			ReportData data = Context.getService(ReportDefinitionService.class).evaluate(rd, ec);
+			ReportData data = Context.getService(ReportDefinitionService.class).evaluate(definition, ec);
 			
 			if ("excel".equals(mode)) {
 				byte[] excelTemplate = manager.getExcelTemplate();
@@ -78,8 +78,8 @@ public class ReportsRunMonthlyIndicatorReportPageController {
 					resource.setContents(excelTemplate);
 					
 					final ReportDesign design = new ReportDesign();
-					design.setName(rd.getName() + " design");
-					design.setReportDefinition(rd);
+					design.setName(definition.getName() + " design");
+					design.setReportDefinition(definition);
 					design.setRendererType(ExcelTemplateRenderer.class);
 					design.addResource(resource);
 					

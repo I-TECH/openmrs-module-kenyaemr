@@ -31,7 +31,7 @@
 
 					<% facilityReports.each { %>
 					<div class="stack-item clickable" style="overflow: auto">
-						<input type="hidden" name="clickUrl" value="${ ui.pageLink("kenyaemr", "reportsRunPatientAlertListReport", [ manager: it.manager ]) }" />
+						<input type="hidden" name="clickUrl" value="${ ui.pageLink("kenyaemr", "reportsRunPatientListReport", [ manager: it.manager ]) }" />
 						<table>
 							<tr>
 								<td><img src="${ ui.resourceLink("kenyaemr", "images/reports/facility.png") }" alt="View report" /></td>

@@ -278,6 +278,17 @@ table.table-vertical tbody tr:nth-child(odd) {
 	font-size: 12px;
 }
 
+/*** Forms ***/
+
+fieldset {
+	border: 2px solid #D1D0C9;
+}
+
+legend {
+	color: #333;
+	font-weight: bold;
+}
+
 /*** Others... ***/
 
 .identifier-label {
