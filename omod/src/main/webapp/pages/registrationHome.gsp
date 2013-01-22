@@ -63,7 +63,7 @@
 		ui.setupAjaxPost('#close-visits-form', {
 			onSuccess: function (result) {
 				loadActiveVisitTypes();
-				notifySuccess(result.message);
+				ui.notifySuccess(result.message);
 			}
 		});
 

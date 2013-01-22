@@ -31,10 +31,13 @@ import org.openmrs.ui.framework.annotation.MethodParam;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 import org.openmrs.util.OpenmrsUtil;
 import org.openmrs.validator.ValidateUtil;
+import org.openmrs.web.WebConstants;
 import org.springframework.validation.Errors;
 
+import javax.servlet.http.HttpSession;
+
 /**
- *
+ * Create new account fragment controller
  */
 public class AdminNewAccountFragmentController {
 	
@@ -43,7 +46,7 @@ public class AdminNewAccountFragmentController {
 	}
 	
 	public SimpleObject createAccount(@MethodParam("newAccountCommandObject") @BindParams NewAccountCommandObject command,
-	                                  UiUtils ui) {
+	                                  UiUtils ui, HttpSession session) {
 		ui.validate(command, command, null);
 		// hopefully we caught any errors in the above validation, because any errors here will have ugly error messages
 		Person person = command.getPerson();
@@ -66,6 +69,8 @@ public class AdminNewAccountFragmentController {
 		if (provider != null) {
 			provider = Context.getProviderService().saveProvider(provider);
 		}
+
+		session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "Account created");
 		
 		return SimpleObject.create("personId", person.getPersonId());
 	}

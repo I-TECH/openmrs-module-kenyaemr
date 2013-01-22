@@ -153,7 +153,7 @@ jq(function() {
 					location.href = ui.pageLink('kenyaemr', 'registrationViewPatient', { patientId: data.patientId });
 				<% } %>
 			} else {
-				notifyError('Saving patient was successful, but unexpected response');
+				ui.notifyError('Saving patient was successful, but unexpected response');
 				debugObject(data);
 			}
 		}

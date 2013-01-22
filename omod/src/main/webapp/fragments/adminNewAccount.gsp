@@ -90,7 +90,7 @@ jq(function() {
 			if (data.personId) {
 				location.href = ui.pageLink('kenyaemr', 'adminManageAccounts');
 			} else {
-				notifyError('Creating user was successful, but unexpected response');
+				ui.notifyError('Creating user was successful, but unexpected response');
 				debugObject(data);
 			}
 		}
