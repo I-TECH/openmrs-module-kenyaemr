@@ -222,10 +222,6 @@ table.table-vertical tbody tr:nth-child(odd) {
 	border-top: 0;
 }
 
-.stack-item:hover {
-	background-color: #FFD;
-}
-
 .stack-item .title {
 	display: block;
 	font-weight: bold;
@@ -289,6 +285,16 @@ legend {
 	font-weight: bold;
 }
 
+/*** Clickables ***/
+
+.clickable {
+	cursor: pointer;
+}
+
+.clickable:hover {
+	background-color: #FFD;
+}
+
 /*** Others... ***/
 
 .identifier-label {
@@ -316,10 +322,6 @@ legend {
 
 .padded {
 	padding: 1em;
-}
-
-.clickable {
-	cursor: pointer;
 }
 
 .hidden {

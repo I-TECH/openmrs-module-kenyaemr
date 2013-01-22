@@ -19,6 +19,10 @@
 	text-align: center;
 }
 
+.app-button:hover {
+	background-color: #E9E9E9;
+}
+
 .app-button-label {
 	color: #444;
 	font-weight: bold;
