@@ -23,22 +23,31 @@ import org.openmrs.api.context.Context;
 import org.openmrs.ui.framework.page.PageModel;
 import org.springframework.web.bind.annotation.RequestParam;
 
-
 /**
  * For editing user and provider accounts
  */
 public class AdminEditAccountPageController {
 	
-	public void controller(@RequestParam(value="personId", required=false) Person person,
+	public void controller(@RequestParam(value = "personId", required = false) Person person,
 	                       PageModel model) {
-		// TODO create a domain class for Account
+
 		model.addAttribute("person", person);
+
 		if (person != null) {
 			model.addAttribute("user", getUser(person));
 			model.addAttribute("provider", getProvider(person));
 		}
+		else {
+			model.addAttribute("user", null);
+			model.addAttribute("provider", null);
+		}
 	}
 
+	/**
+	 * Gets the first user associated with the given person
+	 * @param person the person
+	 * @return the user
+	 */
     private User getUser(Person person) {
     	List<User> users = Context.getUserService().getUsersByPerson(person, true);
     	if (users == null || users.size() == 0) {
@@ -46,7 +55,12 @@ public class AdminEditAccountPageController {
     	}
     	return users.get(0);
     }
-	
+
+	/**
+	 * Gets the first provider associated with the given person
+	 * @param person the person
+	 * @return the provider
+	 */
     private Provider getProvider(Person person) {
     	Collection<Provider> providers = Context.getProviderService().getProvidersByPerson(person);
     	if (providers == null || providers.size() == 0) {
@@ -54,5 +68,4 @@ public class AdminEditAccountPageController {
     	}
     	return providers.iterator().next();
     }
-	
 }

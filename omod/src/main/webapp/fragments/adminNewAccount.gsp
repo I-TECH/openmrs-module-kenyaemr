@@ -1,4 +1,6 @@
 <%
+	ui.decorateWith("kenyaemr", "panel", [ heading: "Create New Account" ])
+
 	def demographics = [
 		[
 			[ formFieldName: "personName.givenName", label: "Given Name", class: java.lang.String ],
@@ -53,30 +55,30 @@
 			${ ui.includeFragment("kenyaemr", "widget/rowOfFields", [ fields: it ]) }
 		<% } %>
 	</fieldset>
-	
+
 	<br/>
-	
+
 	<fieldset>
 		<legend>Login Info</legend>
 		<% login.each { %>
 			${ ui.includeFragment("kenyaemr", "widget/rowOfFields", [ fields: it ]) }
 		<% } %>
-	
+
 		${ ui.decorate("uilibrary", "labeled", [label: "Roles"], roleHtml) }
 	</fieldset>
-	
+
 	<br/>
-	
+
 	<fieldset>
 		<legend>Provider Info</legend>
 		<% providerInfo.each { %>
 			${ ui.includeFragment("kenyaemr", "widget/rowOfFields", [ fields: it ]) }
 		<% } %>
 	</fieldset>
-	
+
 	<br/>
-	
-	<input type="submit" value="Create Account"/>	
+
+	<input type="submit" value="Create Account"/>
 </form>
 
 <script type="text/javascript">

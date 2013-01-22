@@ -1,4 +1,4 @@
-<div class="panel-frame" style="width: 70%">
+<div class="panel-frame">
 	<%= ui.includeFragment("uilibrary", "widget/popupForm", [
 		linkConfig: [
 			label: "Edit",
@@ -31,7 +31,7 @@
 	</div>
 </div>
 
-<div class="panel-frame" style="width: 70%">
+<div class="panel-frame">
 	<% if (user && !user.retired) { %>
 		<%= ui.includeFragment("uilibrary", "widget/popupForm", [
 			linkConfig: [
@@ -78,20 +78,11 @@
 		${ ui.includeFragment("kenyaemr", "dataPoint", [ label: "Inherited", value: inheritedRoles.join(", ") ]) }
 		<% } %>
 
-		<br/>
-
 		<% if (user.retired) { %>
-			<form method="post" action="${ ui.actionLink("kenyaemr", "adminEditAccount", "unretireUser") }" class="no-form-padding">
-				<input type="hidden" name="userId" value="${ user.userId }"/>
-				<i>Account is disabled</i> <br />
-				${ ui.includeFragment("uilibrary", "widget/button", [ label: "Enable account", type: "submit", iconProvider: "kenyaemr", icon: "buttons/user_enable.png" ]) }
-			</form>
-		<% } else { %>
-			<form method="post" action="${ ui.actionLink("kenyaemr", "adminEditAccount", "retireUser") }" class="no-form-padding">
-				<input type="hidden" name="userId" value="${ user.userId }"/>
-				${ ui.includeFragment("uilibrary", "widget/button", [ label: "Disable account", type: "submit", iconProvider: "kenyaemr", icon: "buttons/user_disable.png" ]) }
-			</form>
+			<br/>
+			<img src="${ ui.resourceLink("kenyaemr", "images/alert.png") }" alt="" /> <i>Account is disabled</i>
 		<% } %>
+
 	<% } else { %>
 	
 		<%= ui.includeFragment("uilibrary", "widget/popupForm", [
@@ -127,7 +118,7 @@
 	</div>
 </div>
 
-<div class="panel-frame" style="width: 70%">
+<div class="panel-frame">
 	<% if (provider && !provider.retired) { %>
 		<%= ui.includeFragment("uilibrary", "widget/popupForm", [
 			linkConfig: [
