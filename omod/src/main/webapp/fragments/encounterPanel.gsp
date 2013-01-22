@@ -13,6 +13,6 @@
 	by ${ providers }
 	<br/>
 	<span style="color: gray">
-		entered by ${ ui.format(config.encounter.creator) } on ${ ui.format(config.encounter.dateCreated) }<% if (config.encounter.dateChanged) { %>, last edit by ${ ui.format(config.encounter.changedBy) } on ${ ui.format(config.encounter.dateChanged) }<% } %>
+		Entered by ${ ui.format(config.encounter.creator) } on ${ ui.format(config.encounter.dateCreated) }<% if (config.encounter.dateChanged) { %>, last edit by ${ ui.format(config.encounter.changedBy) } on ${ ui.format(config.encounter.dateChanged) }<% } %>
 	</span>
 </div>
