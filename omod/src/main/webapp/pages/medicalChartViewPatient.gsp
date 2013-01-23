@@ -118,7 +118,7 @@
 					"visitType": [ label: "Visit Type" ]
 				],
 				fieldConfig: [
-					"stopDatetime": [ label: "Stop date and time" ]
+					"stopDatetime": [ label: "Stop date and time" ],
 				],
 				propConfig: [
 					"visitType": [ type: "radio" ],
