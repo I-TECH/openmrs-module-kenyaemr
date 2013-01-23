@@ -19,6 +19,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.appframework.AppUiUtil;
 import org.openmrs.module.kenyaemr.IPAccessSecurity;
 import org.openmrs.module.kenyaemr.KenyaEmrConstants;
+import org.openmrs.module.kenyaemr.KenyaEmrUiUtils;
 import org.openmrs.module.kenyaemr.KenyaEmrWebConstants;
 import org.openmrs.ui.framework.page.PageModel;
 import org.openmrs.ui.framework.session.Session;
@@ -64,7 +65,7 @@ public class KenyaForgotPasswordPageController {
 		String ipAddress = request.getRemoteAddr();
 
 		if (IPAccessSecurity.isLockedOut(ipAddress)) {
-			httpSession.setAttribute(WebConstants.OPENMRS_ERROR_ATTR, "auth.forgotPassword.tooManyAttempts");
+			KenyaEmrUiUtils.notifyError(httpSession, "auth.forgotPassword.tooManyAttempts");
 		} else {
 			if (StringUtils.isEmpty(secretAnswer)) {
 				// if they are seeing this page for the first time
@@ -86,9 +87,9 @@ public class KenyaForgotPasswordPageController {
 				if (user == null) {
 					// Client might be trying to guess a username
 					IPAccessSecurity.registerFailedAccess(ipAddress);
-					httpSession.setAttribute(WebConstants.OPENMRS_ERROR_ATTR, "auth.question.empty");
+					KenyaEmrUiUtils.notifyError(httpSession, "auth.question.empty");
 				} else if (StringUtils.isEmpty(user.getSecretQuestion())) {
-					httpSession.setAttribute(WebConstants.OPENMRS_ERROR_ATTR, "auth.question.empty");
+					KenyaEmrUiUtils.notifyError(httpSession, "auth.question.empty");
 				} else {
 					model.addAttribute("secretQuestion", user.getSecretQuestion());
 				}
@@ -108,7 +109,7 @@ public class KenyaForgotPasswordPageController {
 
 				// Check the secret question again in case the user got here "illegally"
 				if (user == null || StringUtils.isEmpty(user.getSecretQuestion())) {
-					httpSession.setAttribute(WebConstants.OPENMRS_ERROR_ATTR, "auth.question.empty");
+					KenyaEmrUiUtils.notifyError(httpSession, "auth.question.empty");
 				} else if (user.getSecretQuestion() != null && Context.getUserService().isSecretAnswer(user, secretAnswer)) {
 
 					String randomPassword = randomPassword();
@@ -124,12 +125,12 @@ public class KenyaForgotPasswordPageController {
 
 					IPAccessSecurity.registerSuccessfulAccess(ipAddress);
 					httpSession.setAttribute(KenyaEmrWebConstants.SESSION_ATTR_RESET_PASSWORD, randomPassword);
-					httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "auth.password.reset");
+					KenyaEmrUiUtils.notifySuccess(httpSession, "auth.password.reset");
 					Context.authenticate(username, randomPassword);
 					httpSession.setAttribute("loginAttempts", 0);
 					return "redirect:/" + KenyaEmrConstants.MODULE_ID + "/profile.page";
 				} else {
-					httpSession.setAttribute(WebConstants.OPENMRS_ERROR_ATTR, "auth.answer.invalid");
+					KenyaEmrUiUtils.notifyError(httpSession, "auth.answer.invalid");
 					model.addAttribute("secretQuestion", user.getSecretQuestion());
 					IPAccessSecurity.registerFailedAccess(ipAddress);
 				}

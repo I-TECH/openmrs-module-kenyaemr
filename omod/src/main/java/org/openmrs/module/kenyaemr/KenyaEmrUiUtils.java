@@ -26,7 +26,9 @@ import org.openmrs.ui.framework.FormatterImpl;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.util.OpenmrsUtil;
+import org.openmrs.web.WebConstants;
 
+import javax.servlet.http.HttpSession;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -38,6 +40,24 @@ import java.util.concurrent.TimeUnit;
 public class KenyaEmrUiUtils {
 
 	private static DateFormat timeFormatter = new SimpleDateFormat("HH:mm");
+
+	/**
+	 * Sets the notification success message
+	 * @param session the session
+	 * @param message the message
+	 */
+	public static void notifySuccess(HttpSession session, String message) {
+		session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, message);
+	}
+
+	/**
+	 * Sets the notification error message
+	 * @param session the session
+	 * @param message the message
+	 */
+	public static void notifyError(HttpSession session, String message) {
+		session.setAttribute(WebConstants.OPENMRS_ERROR_ATTR, message);
+	}
 
 	/**
 	 * Formats a date ignoring any time information
