@@ -18,20 +18,22 @@ import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.idgen.IdentifierSource;
 import org.openmrs.module.kenyaemr.KenyaEmrConstants;
+import org.openmrs.module.kenyaemr.KenyaEmrUiUtils;
 import org.openmrs.module.kenyaemr.api.ConfigurationRequiredException;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.WebConstants;
 import org.openmrs.ui.framework.page.PageModel;
-import org.openmrs.ui.framework.session.Session;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import javax.servlet.http.HttpSession;
 
 /**
  * Controller for the guided first-time configuration
  */
 public class AdminFirstTimeSetupPageController {
 	
-	public String controller(Session session, PageModel model, UiUtils ui,
+	public String controller(HttpSession session, PageModel model, UiUtils ui,
 	                         @RequestParam(required = false, value = "defaultLocation") Location defaultLocation,
 	                         @RequestParam(required = false, value = "mrnIdentifierSourceStart") String mrnIdentifierSourceStart,
 	                         @RequestParam(required = false, value = "hivIdentifierSourceStart") String hivIdentifierSourceStart) {
@@ -49,12 +51,13 @@ public class AdminFirstTimeSetupPageController {
 			if (StringUtils.isNotEmpty(hivIdentifierSourceStart)) {
 				service.setupHivUniqueIdentifierSource(hivIdentifierSourceStart);
 			}
-			session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "First-Time Setup Completed");
+			KenyaEmrUiUtils.notifySuccess(session, "First-Time Setup Completed");
+
 			return "redirect:" + ui.pageLink(KenyaEmrConstants.MODULE_ID, "kenyaHome");
 		}
 		
 		if (!service.isConfigured()) {
-			session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "First-Time Setup Needed");
+			KenyaEmrUiUtils.notifySuccess(session, "First-Time Setup Needed");
 		}
 		
 		try {
@@ -83,5 +86,4 @@ public class AdminFirstTimeSetupPageController {
 		model.addAttribute("hivIdentifierSource", hivIdentifierSource);
 		return null;
 	}
-	
 }

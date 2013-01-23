@@ -23,6 +23,7 @@ import org.openmrs.Role;
 import org.openmrs.User;
 import org.openmrs.api.PasswordException;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyaemr.KenyaEmrUiUtils;
 import org.openmrs.module.kenyaemr.ValidatingCommandObject;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
@@ -70,7 +71,7 @@ public class AdminNewAccountFragmentController {
 			provider = Context.getProviderService().saveProvider(provider);
 		}
 
-		session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "Account created");
+		KenyaEmrUiUtils.notifySuccess(session, "Account created");
 		
 		return SimpleObject.create("personId", person.getPersonId());
 	}

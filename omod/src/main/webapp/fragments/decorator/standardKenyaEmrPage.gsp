@@ -61,6 +61,11 @@
 	.field-label {
 		font-size: 12px;
 	}
+	.toast-item {
+		background-color: #464640;
+		border-radius: 3px;
+		border: 0;
+	}
 </style>
 
 <script type="text/javascript">
