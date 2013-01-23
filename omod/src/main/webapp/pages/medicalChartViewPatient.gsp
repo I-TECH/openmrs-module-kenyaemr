@@ -60,7 +60,7 @@
 			visits.each { visit ->
 				def extra = "from " + ui.format(visit.startDatetime)
 				def visitType = visit.visitType.name
-				def reTypeStr = "- RE";
+				def reTypeStr = " - RE";
 				if (kenyaEmrUi.isRetrospectiveVisit(visit) == "true")
 					visitType += ui.format(reTypeStr);
 				if (visit.stopDatetime)
@@ -119,7 +119,7 @@
 					"visitType": [ label: "Visit Type" ]
 				],
 				fieldConfig: [
-					"stopDatetime": [ label: "Stop date and time" ]
+					"stopDatetime": [ label: "Stop date and time" ],
 				],
 				propConfig: [
 					"visitType": [ type: "radio" ],
