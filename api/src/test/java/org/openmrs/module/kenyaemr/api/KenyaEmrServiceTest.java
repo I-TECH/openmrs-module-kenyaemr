@@ -7,6 +7,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.GlobalProperty;
 import org.openmrs.Location;
+import org.openmrs.LocationAttributeType;
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
@@ -21,7 +22,9 @@ import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.ui.framework.session.Session;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class KenyaEmrServiceTest extends BaseModuleContextSensitiveTest {
 	
@@ -81,8 +84,8 @@ public class KenyaEmrServiceTest extends BaseModuleContextSensitiveTest {
 	@Test
 	public void getLocationByMflCode_shouldFindLocationWithCodeOrNull() throws Exception {
 		Assert.assertEquals(Context.getLocationService().getLocation(1), service.getLocationByMflCode("15001"));
-		Assert.assertEquals(Context.getLocationService().getLocation(3), service.getLocationByMflCode("15003"));
-		Assert.assertNull(service.getLocationByMflCode("20000"));
+		Assert.assertNull(service.getLocationByMflCode("15003")); // Location is retired
+		Assert.assertNull(service.getLocationByMflCode("XXXXX")); // No such MFL code
 	}
 
 	/**
@@ -240,5 +243,45 @@ public class KenyaEmrServiceTest extends BaseModuleContextSensitiveTest {
 				Assert.assertTrue(Arrays.asList(report.getTags()).contains(tag));
 			}
 		}
+	}
+
+	/**
+	 * @see KenyaEmrService#getLocations(String, org.openmrs.Location, java.util.Map, boolean, Integer, Integer)
+	 */
+	@Test
+	public void getLocations_shouldGetAllLocationsWithGivenAttributeValues() {
+		LocationAttributeType mflCodeAttrType = Context.getLocationService().getLocationAttributeTypeByUuid(MetadataConstants.MASTER_FACILITY_CODE_LOCATION_ATTRIBUTE_TYPE_UUID);
+
+		// Search for location #1 by MFL code and don't include retired
+		Map<LocationAttributeType, Object> attrValues = new HashMap<LocationAttributeType, Object>();
+		attrValues.put(mflCodeAttrType, "15001");
+		List<Location> locations = service.getLocations(null, null, attrValues, false, null, null);
+		Assert.assertEquals(1, locations.size());
+		Assert.assertEquals(new Integer(1), locations.get(0).getLocationId());
+
+		// Search for location #3 by MFL code and don't include retired
+		attrValues = new HashMap<LocationAttributeType, Object>();
+		attrValues.put(mflCodeAttrType, "15003");
+		locations = service.getLocations(null, null, attrValues, false, null, null);
+		Assert.assertEquals(0, locations.size());
+
+		// Search for location #3 by MFL code and do include retired
+		attrValues = new HashMap<LocationAttributeType, Object>();
+		attrValues.put(mflCodeAttrType, "15003");
+		locations = service.getLocations(null, null, attrValues, true, null, null);
+		Assert.assertEquals(1, locations.size());
+		Assert.assertEquals(new Integer(3), locations.get(0).getLocationId());
+	}
+
+	/**
+	 * @see KenyaEmrService#getLocations(String, org.openmrs.Location, java.util.Map, boolean, Integer, Integer)
+	 */
+	@Test
+	public void getLocations_shouldNotFindAnyLocationsIfNoneHaveGivenAttributeValues() {
+		LocationAttributeType mflCodeAttrType = Context.getLocationService().getLocationAttributeTypeByUuid(MetadataConstants.MASTER_FACILITY_CODE_LOCATION_ATTRIBUTE_TYPE_UUID);
+		Map<LocationAttributeType, Object> attrValues = new HashMap<LocationAttributeType, Object>();
+		attrValues.put(mflCodeAttrType, "xxxxxx");
+		List<Location> locations = service.getLocations(null, null, attrValues, true, null, null);
+		Assert.assertEquals(0, locations.size());
 	}
 }

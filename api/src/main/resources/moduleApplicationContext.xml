@@ -7,12 +7,20 @@
 	   		http://www.springframework.org/schema/util
 			http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
+	<!-- Module service -->
+
     <bean id="kenyaEmrService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
         <property name="transactionManager">
             <ref bean="transactionManager" />
         </property>
         <property name="target">
-            <bean class="${project.parent.groupId}.${project.parent.artifactId}.api.impl.KenyaEmrServiceImpl"/>
+            <bean class="${project.parent.groupId}.${project.parent.artifactId}.api.impl.KenyaEmrServiceImpl">
+				<property name="kenyaEmrDAO">
+					<bean class="${project.parent.groupId}.${project.parent.artifactId}.api.db.hibernate.HibernateKenyaEmrDAO">
+						<property name="sessionFactory"><ref bean="sessionFactory"/></property>
+					</bean>
+				</property>
+			</bean>
         </property>
         <property name="preInterceptors">
             <ref bean="serviceInterceptors" />
@@ -22,12 +30,7 @@
         </property>
     </bean>
 
-	<util:map id="kenyaEmrBuildProperties" map-class="java.util.HashMap" key-type="java.lang.String" value-type="java.lang.String">
-		<entry key="buildDate" value="${moduleBuildDate}"/>
-		<entry key="developer" value="${user.name}"/>
-	</util:map>
-
-	<bean class="${project.parent.groupId}.${project.parent.artifactId}.util.ContextProvider" />
+	<!-- Register service with OpenMRS -->
 
 	<bean parent="serviceContext">
 		<property name="moduleService">
@@ -37,6 +40,16 @@
 			</list>
 		</property>
 	</bean>
-	
-	
+
+	<!-- Build properties -->
+
+	<util:map id="kenyaEmrBuildProperties" map-class="java.util.HashMap" key-type="java.lang.String" value-type="java.lang.String">
+		<entry key="buildDate" value="${moduleBuildDate}"/>
+		<entry key="developer" value="${user.name}"/>
+	</util:map>
+
+	<!-- Context provider utility class -->
+
+	<bean class="${project.parent.groupId}.${project.parent.artifactId}.util.ContextProvider" />
+
 </beans>

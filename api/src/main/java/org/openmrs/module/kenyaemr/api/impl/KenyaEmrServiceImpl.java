@@ -15,15 +15,11 @@ package org.openmrs.module.kenyaemr.api.impl;
 
 import java.util.*;
 
-import net.sf.cglib.core.CollectionUtils;
-import org.openmrs.GlobalProperty;
-import org.openmrs.Location;
-import org.openmrs.LocationAttribute;
-import org.openmrs.LocationAttributeType;
-import org.openmrs.PatientIdentifierType;
+import org.openmrs.*;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.impl.BaseOpenmrsService;
+import org.openmrs.customdatatype.CustomDatatypeUtil;
 import org.openmrs.module.idgen.AutoGenerationOption;
 import org.openmrs.module.idgen.IdentifierSource;
 import org.openmrs.module.idgen.SequentialIdentifierGenerator;
@@ -33,9 +29,8 @@ import org.openmrs.module.kenyaemr.KenyaEmrConstants;
 import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.kenyaemr.api.ConfigurationRequiredException;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
-import org.openmrs.module.kenyaemr.identifier.HivUniquePatientNumberGenerator;
+import org.openmrs.module.kenyaemr.api.db.KenyaEmrDAO;
 import org.openmrs.module.kenyaemr.report.ReportManager;
-
 
 /**
  * Implementations of business methods for the Kenya EMR application
@@ -48,6 +43,16 @@ public class KenyaEmrServiceImpl extends BaseOpenmrsService implements KenyaEmrS
 	
 	// maps classname to manager instance
 	private Map<String, ReportManager> reportManagers;
+
+	private KenyaEmrDAO dao;
+
+	/**
+	 * Method used to inject the data access object.
+	 * @param dao the data access object.
+	 */
+	public void setKenyaEmrDAO(KenyaEmrDAO dao) {
+		this.dao = dao;
+	}
 	
 	/**
 	 * @see org.openmrs.module.kenyaemr.api.KenyaEmrService#isConfigured()
@@ -188,20 +193,12 @@ public class KenyaEmrServiceImpl extends BaseOpenmrsService implements KenyaEmrS
 	@Override
 	public Location getLocationByMflCode(String mflCode) {
 		LocationAttributeType mflCodeAttrType = Context.getLocationService().getLocationAttributeTypeByUuid(MetadataConstants.MASTER_FACILITY_CODE_LOCATION_ATTRIBUTE_TYPE_UUID);
-		List<Location> allLocations = Context.getLocationService().getAllLocations();
+		Map<LocationAttributeType, Object> attrVals = new HashMap<LocationAttributeType, Object>();
+		attrVals.put(mflCodeAttrType, mflCode);
 
-		/**
-		 * TODO this is not very efficient for a database with a lot of locations. Need to get
-		 * Hibernate level search into core or implement ourselves.
-		 */
-		for (Location location : allLocations) {
-			for (LocationAttribute attr : location.getActiveAttributes(mflCodeAttrType)) {
-				if (attr.getValue().equals(mflCode)) {
-					return location;
-				}
-			}
-		}
-		return null;
+		List<Location> locations = getLocations(null, null, attrVals, false, null, null);
+
+		return locations.size() > 0 ? locations.get(0) : null;
 	}
 
 	/**
@@ -349,5 +346,17 @@ public class KenyaEmrServiceImpl extends BaseOpenmrsService implements KenyaEmrS
 	    String prefix = getDefaultLocationMflCode();
 	    String sequentialNumber = Context.getService(IdentifierSourceService.class).generateIdentifier(source, comment);
 	    return prefix + sequentialNumber;
+	}
+
+	/**
+	 * @see org.openmrs.module.kenyaemr.api.KenyaEmrService#getLocations(String, org.openmrs.Location, java.util.Map, boolean, Integer, Integer)
+	 *
+	 * NEEDS MOVED INTO LocationServiceImpl
+	 */
+	@Override
+	public List<Location> getLocations(String nameFragment, Location parent, Map<LocationAttributeType, Object> attributeValues, boolean includeRetired, Integer start, Integer length) {
+		Map<LocationAttributeType, String> serializedAttributeValues = CustomDatatypeUtil.getValueReferences(attributeValues);
+
+		return dao.getLocations(nameFragment, parent, serializedAttributeValues, includeRetired, start, length);
 	}
 }
