@@ -98,8 +98,8 @@
 							publish('showHtmlForm/showEncounter', { encounterId: ${ encounter.id } });
 						});
 					</script>
-				<% } else if (retrospective) {
-				def jsSuccess = "location.href = ui.pageLink('kenyaemr', 'enterHtmlForm'," + "{" + "patientId: ${ patient.id }, htmlFormId: ${ form.id }, visitId: data.visitId, returnUrl: '${ ui.urlEncode(ui.thisUrl()) }'" + " })"
+				<% } else if (retrospective == true) {
+				def jsSuccess = "location.href = ui.pageLink('kenyaemr', 'enterHtmlForm'," + "{" + "patientId: ${ patient.id }, htmlFormId: ${ form.id }, visitId: data.visitId, returnUrl: location.href })"
 				 %>
 					<%= ui.includeFragment("uilibrary", "widget/popupForm", [
 				id: "check-in-form",
