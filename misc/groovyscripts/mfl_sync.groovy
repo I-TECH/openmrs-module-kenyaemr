@@ -36,8 +36,8 @@ def _new(className, argClassNames, Object... args) {
 def cellValue(cell) { cell.getCellType() == 0 ? cell.getNumericCellValue() : cell.getStringCellValue() }
 
 def importXls(input) {
-	def poifs = _new "org.apache.poi.poifs.filesystem.POIFSFileSystem", [ "java.io.InputStream" ], input
-	def wbook = _new "org.apache.poi.hssf.usermodel.HSSFWorkbook", [ "org.apache.poi.poifs.filesystem.POIFSFileSystem" ], poifs
+	def poifs = _new ("org.apache.poi.poifs.filesystem.POIFSFileSystem", [ "java.io.InputStream" ], input)
+	def wbook = _new ("org.apache.poi.hssf.usermodel.HSSFWorkbook", [ "org.apache.poi.poifs.filesystem.POIFSFileSystem" ], poifs)
 	def sheet = wbook.getSheetAt(0)
 
 	for (def r = sheet.getFirstRowNum() + 1; r <= sheet.getLastRowNum(); ++r) {
@@ -45,9 +45,10 @@ def importXls(input) {
 		def code = String.valueOf((int)cellValue(row.getCell(0)))
 		def name = cellValue(row.getCell(1))
 		def province = cellValue(row.getCell(2))
+		def type = cellValue(row.getCell(6))
 
 		if (code && name) {
-			importLocation(code, name, province)
+			importLocation(code, name, province, type)
 		}
 	}
 }
@@ -55,7 +56,7 @@ def importXls(input) {
 /**
  * Imports a location
  */
-def importLocation(code, name, province) {
+def importLocation(code, name, province, type) {
 	def location = null
 
 	// Look for existing location with this code
@@ -82,7 +83,7 @@ def importLocation(code, name, province) {
 	}
 
 	location.setName(name)
-	location.setDescription("")
+	location.setDescription(type)
 	location.setCountry("Kenya")
 	location.setStateProvince(province)
 
