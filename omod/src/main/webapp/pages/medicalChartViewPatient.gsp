@@ -60,7 +60,7 @@
 			visits.each { visit ->
 				def extra = "from " + ui.format(visit.startDatetime)
 				def visitType = visit.visitType.name;
-				if (kenyaEmrUi.isRetrospectiveVisit(visit) == "true")
+				if (kenyaEmrUi.isRetrospectiveVisit(visit))
 					visitType += " - RE"
 				if (visit.stopDatetime)
 					extra += " to " + ui.format(visit.stopDatetime)
@@ -97,8 +97,8 @@
 							publish('showHtmlForm/showEncounter', { encounterId: ${ encounter.id } });
 						});
 					</script>
-				<% } else if (retrospective) {
-				def jsSuccess = "location.href = ui.pageLink('kenyaemr', 'enterHtmlForm'," + "{" + "patientId: ${ patient.id }, htmlFormId: ${ form.id }, visitId: data.visitId, returnUrl: '${ ui.urlEncode(ui.thisUrl()) }'" + " })"
+				<% } else if (retrospective == true) {
+				def jsSuccess = "location.href = ui.pageLink('kenyaemr', 'enterHtmlForm'," + "{" + "patientId: ${ patient.id }, htmlFormId: ${ form.id }, visitId: data.visitId, returnUrl: location.href })"
 				 %>
 					<%= ui.includeFragment("uilibrary", "widget/popupForm", [
 				id: "check-in-form",

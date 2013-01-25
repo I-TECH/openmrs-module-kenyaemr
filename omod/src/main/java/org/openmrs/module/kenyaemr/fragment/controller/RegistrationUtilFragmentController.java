@@ -206,11 +206,12 @@ public class RegistrationUtilFragmentController {
 	 * @param visit
 	 * @return
 	 */
-	public Object createVisit(UiUtils ui,
+	public SimpleObject createVisit(UiUtils ui,
 	                         Session session,
 	                         @BindParams("visit") @Validate Visit visit) {
-		if (visit.getLocation() == null)
+		if (visit.getLocation() == null) {
 			visit.setLocation(Context.getService(KenyaEmrService.class).getDefaultLocation());
+		}
 		visit = Context.getVisitService().endVisit(visit, visit.getStopDatetime());
 		Visit saved = Context.getVisitService().saveVisit(visit);
 		return simpleVisit(ui, saved);

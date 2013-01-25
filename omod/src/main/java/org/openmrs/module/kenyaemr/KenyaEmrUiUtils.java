@@ -233,12 +233,12 @@ public class KenyaEmrUiUtils {
 	 * @param visit
 	 * @return
 	 */
-	public static String isRetrospectiveVisit(Visit visit) {
-		String retrospective = "false";
+	public static boolean isRetrospectiveVisit(Visit visit) {
+		boolean retrospective = false;
 		
 		for (Encounter e : visit.getEncounters()) {
 			if (e.getEncounterType().getUuid().equals(MetadataConstants.HIV_RETROSPECTIVE_ENCOUNTER_TYPE_UUID)) {
-				retrospective = "true";
+				retrospective = true;
 				break;
 			}
 		}

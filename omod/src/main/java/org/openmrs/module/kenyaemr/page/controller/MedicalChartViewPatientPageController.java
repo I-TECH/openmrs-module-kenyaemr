@@ -89,7 +89,7 @@ public class MedicalChartViewPatientPageController {
 		
 		Form form = null;
 		Encounter encounter = null;
-		String retrospective = null;
+		boolean retrospective = false;
 		
 		String selection = "overview";
 		
@@ -111,7 +111,7 @@ public class MedicalChartViewPatientPageController {
 				newVisit.setStartDatetime(new Date());
 				newVisit.setVisitType(vs.getVisitTypeByUuid(MetadataConstants.OUTPATIENT_VISIT_TYPE_UUID));
 				model.addAttribute("newREVisit", newVisit);
-				retrospective = "true";
+				retrospective = true;
 			}
 		}
 		else if (pp != null) {
