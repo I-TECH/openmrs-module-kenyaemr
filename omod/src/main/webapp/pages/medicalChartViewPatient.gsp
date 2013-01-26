@@ -60,9 +60,8 @@
 			visits.each { visit ->
 				def extra = "from " + ui.format(visit.startDatetime)
 				def visitType = visit.visitType.name
-				def reTypeStr = " - RE";
-				if (kenyaEmrUi.isRetrospectiveVisit(visit) == "true")
-					visitType += ui.format(reTypeStr);
+				if (kenyaEmrUi.isRetrospectiveVisit(visit))
+					visitType += visitType += " - RE";
 				if (visit.stopDatetime)
 					extra += " to " + ui.format(visit.stopDatetime)
 
