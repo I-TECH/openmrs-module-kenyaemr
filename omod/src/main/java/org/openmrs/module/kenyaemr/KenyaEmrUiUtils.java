@@ -19,6 +19,12 @@ import org.joda.time.PeriodType;
 import org.ocpsoft.prettytime.Duration;
 import org.ocpsoft.prettytime.PrettyTime;
 import org.openmrs.*;
+import org.openmrs.Concept;
+import org.openmrs.ConceptName;
+import org.openmrs.DrugOrder;
+import org.openmrs.Encounter;
+import org.openmrs.Patient;
+import org.openmrs.Visit;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.regimen.*;
 import org.openmrs.module.kenyaemr.util.KenyaEmrUtils;
@@ -240,5 +246,22 @@ public class KenyaEmrUiUtils {
 		return SimpleObject.fromCollection(definitions, ui,
 				"name", "group", "components.conceptId", "components.dose", "components.units", "components.frequency"
 		);
+	}
+	
+	/**
+	 * Checks if the visit has been entered retrospectively
+	 * @param visit
+	 * @return
+	 */
+	public static boolean isRetrospectiveVisit(Visit visit) {
+		boolean retrospective = false;
+		
+		for (Encounter e : visit.getEncounters()) {
+			if (e.getEncounterType().getUuid().equals(MetadataConstants.HIV_RETROSPECTIVE_ENCOUNTER_TYPE_UUID)) {
+				retrospective = true;
+				break;
+			}
+		}
+		return retrospective;		
 	}
 }
