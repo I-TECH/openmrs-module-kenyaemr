@@ -59,9 +59,9 @@
 		else {
 			visits.each { visit ->
 				def extra = "from " + ui.format(visit.startDatetime)
-				def visitType = visit.visitType.name
+				def visitType = visit.visitType.name;
 				if (kenyaEmrUi.isRetrospectiveVisit(visit))
-					visitType += visitType += " - RE";
+					visitType += " - RE"
 				if (visit.stopDatetime)
 					extra += " to " + ui.format(visit.stopDatetime)
 
