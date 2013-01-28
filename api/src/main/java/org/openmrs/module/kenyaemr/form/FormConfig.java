@@ -49,6 +49,8 @@ public class FormConfig {
 	private String iconProvider;
 
 	private String icon;
+	
+	private String encounterType;
 
 	/**
 	 * Creates a new form configuration for both genders with the default icon
@@ -80,6 +82,26 @@ public class FormConfig {
 		this.forGender = forGender;
 		this.iconProvider = iconProvider != null ? iconProvider : DEFAULT_ICON_PROVIDER;
 		this.icon = icon != null ? icon : DEFAULT_ICON;
+	}
+	
+	/**
+	 * Creates a new form configuration
+	 * @param formUuid the form UUID
+	 * @param frequency the form usage frequency
+	 * @param forProgram the form program usage (may be null)
+	 * @param forGender the gender usage
+	 * @param iconProvider the icon provider id
+	 * @param icon the icon file
+	 * @param encounterType
+	 */
+	public FormConfig(String formUuid, Frequency frequency, Program forProgram, Gender forGender, String iconProvider, String icon, String encounterType) {
+		this.formUuid = formUuid;
+		this.frequency = frequency;
+		this.forProgram = forProgram;
+		this.forGender = forGender;
+		this.iconProvider = iconProvider != null ? iconProvider : DEFAULT_ICON_PROVIDER;
+		this.icon = icon != null ? icon : DEFAULT_ICON;
+		this.encounterType = encounterType;
 	}
 
 	/**
@@ -168,5 +190,21 @@ public class FormConfig {
 	 */
 	public void setIcon(String icon) {
 		this.icon = icon;
+	}
+	
+	/**
+	 * Gets the encounter type
+	 * @return
+	 */
+	public String getEncounterType() {
+		return encounterType;
+	}
+
+	/**
+	 * Sets the encounter type
+	 * @param encounterType
+	 */
+	public void setEncounterType(String encounterType) {
+		this.encounterType = encounterType;
 	}
 }

@@ -21,6 +21,16 @@
 				active: (selection == "form-" + form.formUuid)
 			])
 		} %>
+		
+		<% retrospectiveForms.each { form ->
+			print ui.includeFragment("kenyaemr", "widget/panelMenuItem", [
+				iconProvider: form.iconProvider,
+				icon: form.icon,
+				label: form.label,
+				href: ui.pageLink("kenyaemr", "medicalChartViewPatient", [ patientId: patient.id, formUuid: form.formUuid ]),
+				active: (selection == "form-" + form.formUuid)
+			])
+		} %>
 
 		<% programs.each { prog ->
 			def extra = "from " + kenyaEmrUi.formatDateNoTime(prog.dateEnrolled)
@@ -49,11 +59,14 @@
 		else {
 			visits.each { visit ->
 				def extra = "from " + ui.format(visit.startDatetime)
+				def visitType = visit.visitType.name;
+				if (kenyaEmrUi.isRetrospectiveVisit(visit))
+					visitType += " - RE"
 				if (visit.stopDatetime)
 					extra += " to " + ui.format(visit.stopDatetime)
 
 				print ui.includeFragment("kenyaemr", "widget/panelMenuItem", [
-						label: ui.format(visit.visitType),
+						label: ui.format(visitType),
 						href: ui.pageLink("kenyaemr", "medicalChartViewPatient", [ patientId: patient.id, visitId: visit.id ]),
 						extra: extra,
 						active: (selection == "visit-" + visit.id)
@@ -84,6 +97,44 @@
 							publish('showHtmlForm/showEncounter', { encounterId: ${ encounter.id } });
 						});
 					</script>
+				<% } else if (retrospective == true) {
+				def jsSuccess = "location.href = ui.pageLink('kenyaemr', 'enterHtmlForm'," + "{" + "patientId: ${ patient.id }, htmlFormId: ${ form.id }, visitId: data.visitId, returnUrl: location.href })"
+				 %>
+					<%= ui.includeFragment("uilibrary", "widget/popupForm", [
+				id: "check-in-form",
+				buttonConfig: [
+					iconProvider: "uilibrary",
+					icon: "user_add_32.png",
+					label: "Add Retrospective Visit",
+					classes: [ "padded" ],
+					extra: "Old visits"
+				],
+				popupTitle: "Retrospective Visit",
+				prefix: "visit",
+				commandObject: newREVisit,
+				hiddenProperties: [ "patient" ],
+				properties: [ "visitType", "startDatetime", "stopDatetime" ],
+				fieldConfig: [
+					"visitType": [ label: "Visit Type" ]
+				],
+				fieldConfig: [
+					"stopDatetime": [ label: "Stop date and time" ],
+				],
+				propConfig: [
+					"visitType": [ type: "radio" ],
+				],
+				fieldConfig: [
+					"startDatetime": [ fieldFragment: "field/java.util.Date.datetime" ],
+					"stopDatetime": [ fieldFragment: "field/java.util.Date.datetime" ],
+				],
+				fragment: "registrationUtil",
+				fragmentProvider: "kenyaemr",
+				action: "createVisit",
+				successCallbacks: [ jsSuccess ],
+				submitLabel: ui.message("general.submit"),
+				cancelLabel: ui.message("general.cancel"),
+				submitLoadingMessage: "Creating retrospective visit"
+			]) %>
 				<% } else { %>
 					<i>Not Filled Out</i>
 				<% } %>
