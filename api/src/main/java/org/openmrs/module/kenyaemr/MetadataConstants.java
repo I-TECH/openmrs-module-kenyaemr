@@ -32,6 +32,7 @@ public class MetadataConstants {
 	public static final String LAB_RESULTS_ENCOUNTER_TYPE_UUID = "17a381d1-7e29-406a-b782-aa903b963c28";
 	public static final String CONSULTATION_ENCOUNTER_TYPE_UUID = "465a92f2-baf8-42e9-9612-53064be868e8";
 	public static final String REGISTRATION_ENCOUNTER_TYPE_UUID = "de1f9d67-b73e-4e1b-90d0-036166fc6995";
+	public static final String HIV_RETROSPECTIVE_ENCOUNTER_TYPE_UUID = "94af1829-2f76-41d4-baf6-3f21dec66ae7";
 
 	// HTML Forms
 	public static final String HIV_PROGRAM_ENROLLMENT_FORM_UUID = "e4b506c1-7379-42b6-a374-284469cba8da";
@@ -48,6 +49,7 @@ public class MetadataConstants {
 	public static final String TB_ENROLLMENT_FORM_UUID = "89994550-9939-40f3-afa6-173bce445c79";
 	public static final String TB_VISIT_FORM_UUID = "2daabb77-7ad6-4952-864b-8d23e109c69d";
 	public static final String TB_COMPLETION_FORM_UUID = "4b296dd0-f6be-4007-9eb8-d0fd4e94fb3a";
+	public static final String RETROSPECTIVE_257_FORM_UUID = "23b4ebbd-29ad-455e-be0e-04aa6bc30798";
 
 	//public static final String MOH_257_ENCOUNTER_ART_HISTORY_FORM_UUID = "b388cd66-8e08-4e8f-97de-7cf10023ed0f";
 	//public static final String MOH_257_ENCOUNTER_PAST_MEDICAL_AND_SURGICAL_HISTORY_FORM_UUID = "4a0d1332-490e-439f-9d14-c782143c94de";

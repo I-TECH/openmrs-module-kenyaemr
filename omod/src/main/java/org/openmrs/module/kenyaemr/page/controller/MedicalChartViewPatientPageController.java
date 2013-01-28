@@ -15,6 +15,7 @@ package org.openmrs.module.kenyaemr.page.controller;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -23,6 +24,7 @@ import org.openmrs.Form;
 import org.openmrs.Patient;
 import org.openmrs.PatientProgram;
 import org.openmrs.Visit;
+import org.openmrs.api.VisitService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appframework.AppUiUtil;
 import org.openmrs.module.htmlformentry.HtmlForm;
@@ -69,6 +71,15 @@ public class MedicalChartViewPatientPageController {
 			oneTimeForms.add(SimpleObject.create("formUuid", form.getUuid(), "label", form.getName(), "iconProvider", formConfig.getIconProvider(), "icon", formConfig.getIcon()));
 		}
 		model.addAttribute("oneTimeForms", oneTimeForms);
+		
+		List<FormConfig> retrospectiveFormConfigs = FormManager.getFormsForPatientByEncounterType("kenyaemr.medicalChart", patient, Collections.singleton(FormConfig.Frequency.VISIT), MetadataConstants.HIV_RETROSPECTIVE_ENCOUNTER_TYPE_UUID);
+		List<SimpleObject> retrospectiveForms = new ArrayList<SimpleObject>();
+		for (FormConfig formConfig : retrospectiveFormConfigs) {
+			Form form = Context.getFormService().getFormByUuid(formConfig.getFormUuid());
+			//HtmlForm hf = Context.getService(HtmlFormEntryService.class).getHtmlFormByForm(form);
+			retrospectiveForms.add(SimpleObject.create("formUuid", form.getUuid(), "label", form.getName(), "iconProvider", formConfig.getIconProvider(), "icon", formConfig.getIcon()));
+		}
+		model.addAttribute("retrospectiveForms", retrospectiveForms);
 
 		model.addAttribute("programs", Context.getProgramWorkflowService().getPatientPrograms(patient, null, null, null, null, null, false));
 		model.addAttribute("program", pp);
@@ -78,6 +89,7 @@ public class MedicalChartViewPatientPageController {
 		
 		Form form = null;
 		Encounter encounter = null;
+		boolean retrospective = false;
 		
 		String selection = "overview";
 		
@@ -88,8 +100,19 @@ public class MedicalChartViewPatientPageController {
 			selection = "form-" + formUuid;
 			
 			form = Context.getFormService().getFormByUuid(formUuid);
-			List<Encounter> encounters = Context.getEncounterService().getEncounters(patient, null, null, null, Collections.singleton(form), null, null, null, null, false);
-			encounter = encounters.size() > 0 ? encounters.get(0) : null;
+			if (!form.getEncounterType().getUuid().equals(MetadataConstants.HIV_RETROSPECTIVE_ENCOUNTER_TYPE_UUID)) {
+				List<Encounter> encounters = Context.getEncounterService().getEncounters(patient, null, null, null, Collections.singleton(form), null, null, null, null, false);
+				encounter = encounters.size() > 0 ? encounters.get(0) : null;
+			} else {
+				Visit newVisit = new Visit();
+				VisitService vs = Context.getVisitService();
+				
+				newVisit.setPatient(patient);
+				newVisit.setStartDatetime(new Date());
+				newVisit.setVisitType(vs.getVisitTypeByUuid(MetadataConstants.OUTPATIENT_VISIT_TYPE_UUID));
+				model.addAttribute("newREVisit", newVisit);
+				retrospective = true;
+			}
 		}
 		else if (pp != null) {
 			selection = "program-" + pp.getPatientProgramId();
@@ -98,6 +121,7 @@ public class MedicalChartViewPatientPageController {
 		model.addAttribute("form", form);
 		model.addAttribute("encounter", encounter);
 		model.addAttribute("selection", selection);
+		model.addAttribute("retrospective", retrospective);
 	}
 
 	/**
