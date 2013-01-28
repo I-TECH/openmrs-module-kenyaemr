@@ -5,10 +5,7 @@ import org.apache.commons.lang.StringUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.GlobalProperty;
-import org.openmrs.Location;
-import org.openmrs.LocationAttributeType;
-import org.openmrs.PatientIdentifierType;
+import org.openmrs.*;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.idgen.IdentifierSource;
@@ -249,7 +246,7 @@ public class KenyaEmrServiceTest extends BaseModuleContextSensitiveTest {
 	 * @see KenyaEmrService#getLocations(String, org.openmrs.Location, java.util.Map, boolean, Integer, Integer)
 	 */
 	@Test
-	public void getLocations_shouldGetAllLocationsWithGivenAttributeValues() {
+	public void getLocations_shouldGetAllLocationsWithMatchingArguments() {
 		LocationAttributeType mflCodeAttrType = Context.getLocationService().getLocationAttributeTypeByUuid(MetadataConstants.MASTER_FACILITY_CODE_LOCATION_ATTRIBUTE_TYPE_UUID);
 
 		// Search for location #1 by MFL code and don't include retired
@@ -271,6 +268,43 @@ public class KenyaEmrServiceTest extends BaseModuleContextSensitiveTest {
 		locations = service.getLocations(null, null, attrValues, true, null, null);
 		Assert.assertEquals(1, locations.size());
 		Assert.assertEquals(new Integer(3), locations.get(0).getLocationId());
+	}
+
+	@Test
+	public void getLocations_shouldGetAllLocationsWithAllGivenAttributeValues() {
+		LocationAttributeType mflCodeAttrType = Context.getLocationService().getLocationAttributeTypeByUuid(MetadataConstants.MASTER_FACILITY_CODE_LOCATION_ATTRIBUTE_TYPE_UUID);
+
+		// Save new phone number attribute type
+		LocationAttributeType phoneAttrType = new LocationAttributeType();
+		phoneAttrType.setName("Facility Phone");
+		phoneAttrType.setMinOccurs(0);
+		phoneAttrType.setMaxOccurs(1);
+		phoneAttrType.setDatatypeClassname("org.openmrs.customdatatype.datatype.FreeTextDatatype");
+		Context.getLocationService().saveLocationAttributeType(phoneAttrType);
+
+		// Assign phone number 0123456789 to locations #1 and #2
+		Location location1 = Context.getLocationService().getLocation(1);
+		LocationAttribute la1 = new LocationAttribute();
+		la1.setAttributeType(phoneAttrType);
+		la1.setValue("0123456789");
+		location1.addAttribute(la1);
+		Context.getLocationService().saveLocation(location1);
+		Location location2 = Context.getLocationService().getLocation(2);
+		LocationAttribute la2 = new LocationAttribute();
+		la2.setAttributeType(phoneAttrType);
+		la2.setValue("0123456789");
+		location2.addAttribute(la2);
+		Context.getLocationService().saveLocation(location2);
+
+		// Search for location #1 by MFL code AND phone number
+		Map<LocationAttributeType, Object> attrValues = new HashMap<LocationAttributeType, Object>();
+		attrValues.put(mflCodeAttrType, "15001");
+		attrValues.put(phoneAttrType, "0123456789");
+
+		// Check that only location #1 is returned
+		List<Location> locations = service.getLocations(null, null, attrValues, false, null, null);
+		Assert.assertEquals(1, locations.size());
+		Assert.assertEquals(location1, locations.get(0));
 	}
 
 	/**

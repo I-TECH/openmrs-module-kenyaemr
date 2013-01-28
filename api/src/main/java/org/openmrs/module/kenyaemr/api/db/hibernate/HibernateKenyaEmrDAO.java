@@ -18,12 +18,12 @@ import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.MatchMode;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
+import org.hibernate.criterion.*;
 import org.openmrs.Location;
+import org.openmrs.LocationAttribute;
 import org.openmrs.LocationAttributeType;
 import org.openmrs.api.db.hibernate.AttributeMatcherPredicate;
+import org.openmrs.attribute.Attribute;
 import org.openmrs.attribute.AttributeType;
 import org.openmrs.module.kenyaemr.api.db.KenyaEmrDAO;
 
@@ -88,12 +88,21 @@ public class HibernateKenyaEmrDAO implements KenyaEmrDAO {
 	 * @param serializedAttributeValues the serialized attribute values
 	 * @param <AT> the attribute type
 	 */
-	public static <AT extends AttributeType> void addAttributeCriteria(Criteria criteria, Map<AT, String> serializedAttributeValues) {
+	public <AT extends AttributeType> void addAttributeCriteria(Criteria criteria, Map<AT, String> serializedAttributeValues) {
+		Conjunction conjunction = Restrictions.conjunction();
+		int a = 0;
+
 		for (Map.Entry<AT, String> entry : serializedAttributeValues.entrySet()) {
-			criteria.createCriteria("attributes")
-					.add(Restrictions.eq("attributeType", entry.getKey()))
-					.add(Restrictions.eq("valueReference", entry.getValue()))
-					.add(Restrictions.eq("voided", false));
+			String alias = "attributes" + (a++);
+			DetachedCriteria detachedCriteria = DetachedCriteria.forClass(Location.class).setProjection(Projections.id());
+			detachedCriteria.createAlias("attributes", alias);
+			detachedCriteria.add(Restrictions.eq(alias + ".attributeType", entry.getKey()));
+			detachedCriteria.add(Restrictions.eq(alias + ".valueReference", entry.getValue()));
+			detachedCriteria.add(Restrictions.eq(alias + ".voided", false));
+
+			conjunction.add(Property.forName("locationId").in(detachedCriteria));
 		}
+
+		criteria.add(conjunction);
 	}
 }
