@@ -46,6 +46,7 @@
 											<url url="https://modules.openmrs.org/modules/download/reporting/reporting-${reportingVersion}.omod" />
 											<url url="https://modules.openmrs.org/modules/download/htmlwidgets/htmlwidgets-${htmlwidgetsVersion}.omod" />
 											<url url="https://modules.openmrs.org/modules/download/serialization.xstream/serialization.xstream-${serializationxstreamVersion}.omod" />
+											<url url="https://modules.openmrs.org/modules/download/metadatamapping/metadatamapping-${metadatamappingVersion}.omod" />
 											<url url="https://modules.openmrs.org/modules/download/metadatasharing/metadatasharing-${metadatasharingVersion}.omod" />
 											<url url="https://modules.openmrs.org/modules/download/idgen/idgen-${idgenVersion}.omod" />
 											<url url="https://modules.openmrs.org/modules/download/htmlformentry/htmlformentry-${htmlformentryVersion}.omod" />

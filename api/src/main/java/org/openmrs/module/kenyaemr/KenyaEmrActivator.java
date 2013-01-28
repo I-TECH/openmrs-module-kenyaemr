@@ -40,10 +40,10 @@ import org.openmrs.module.metadatasharing.wrapper.PackageImporter;
  */
 public class KenyaEmrActivator implements ModuleActivator {
 
-	private static final String METADATA_FILENAME_CORE = "Kenya_EMR_Core_Metadata-12.zip";
+	private static final String METADATA_FILENAME_CORE = "Kenya_EMR_Core_Metadata-13.zip";
 	private static final String METADATA_FILENAME_FORMS = "Kenya_EMR_Forms-36.zip";
 	private static final String METADATA_FILENAME_ROLES = "Kenya_EMR_Roles_and_Privileges-1.zip";
-	private static final String METADATA_FILENAME_LOCATIONS = "Kenya_Facility_List-1.zip";
+	private static final String METADATA_FILENAME_LOCATIONS = "Kenya_EMR_Locations-5.zip";
 
 	private static final String REGIMENS_FILENAME = "Kenya_EMR_Regimens.xml";
 
@@ -146,7 +146,7 @@ public class KenyaEmrActivator implements ModuleActivator {
 		anyChanges |= installMetadataPackageIfNecessary("c66d041c-563e-4438-83eb-ad5f32c6e97a", METADATA_FILENAME_FORMS);
 		anyChanges |= installMetadataPackageIfNecessary("d4b71375-f64a-442d-a0c2-9f507c432925", METADATA_FILENAME_ROLES);
 		anyChanges |= installMetadataPackageIfNecessary("29177ba6-a634-42d5-9314-e12689856ff1", METADATA_FILENAME_CORE);
-		anyChanges |= installMetadataPackageIfNecessary("659bc9bc-f293-4d22-9e53-6358762d9e3f", METADATA_FILENAME_LOCATIONS);
+		anyChanges |= installMetadataPackageIfNecessary("5856a8fc-7ebc-46e8-929c-5ae2c780ab54", METADATA_FILENAME_LOCATIONS);
 		return anyChanges;
 	}
 
@@ -191,7 +191,7 @@ public class KenyaEmrActivator implements ModuleActivator {
 			}
 
 			PackageImporter metadataImporter = MetadataSharing.getInstance().newPackageImporter();
-			metadataImporter.setImportConfig(ImportConfig.valueOf(ImportMode.PARENT_AND_CHILD));
+			metadataImporter.setImportConfig(ImportConfig.valueOf(ImportMode.MIRROR));
 			metadataImporter.loadSerializedPackageStream(getClass().getClassLoader().getResourceAsStream(filename));
 			metadataImporter.importPackage();
 			return true;
