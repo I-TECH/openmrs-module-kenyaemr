@@ -1,51 +1,52 @@
 <%
 	ui.decorateWith("kenyaemr", "standardKenyaEmrPage", [ patient: patient, layout: "sidebar" ])
+
+	def menuItems = [
+			[
+					label: "Overview",
+					href: ui.pageLink("kenyaemr", "medicalChartViewPatient", [ patientId: patient.id, section: "overview" ]),
+					active: (selection == "section-overview"),
+					iconProvider: "kenyaemr",
+					icon: "buttons/patient_overview.png"
+			]/*, Hidden until 2013.1.1
+	        [
+					label: "MOH 257",
+					href: ui.pageLink("kenyaemr", "medicalChartViewPatient", [ patientId: patient.id, section: "moh257" ]),
+					active: (selection == "section-moh257"),
+					iconProvider: "kenyaemr",
+					icon: "buttons/form_moh257.png"
+			]*/
+	];
+
+	oneTimeForms.each { form ->
+		menuItems << [
+				label: form.label,
+				href: ui.pageLink("kenyaemr", "medicalChartViewPatient", [ patientId: patient.id, formUuid: form.formUuid ]),
+				active: (selection == "form-" + form.formUuid),
+				iconProvider: form.iconProvider,
+				icon: form.icon,
+		]
+	}
+
+	programs.each { prog ->
+		def extra = "from " + kenyaEmrUi.formatDateNoTime(prog.dateEnrolled)
+		if (prog.dateCompleted)
+			extra += " to " + kenyaEmrUi.formatDateNoTime(prog.dateCompleted)
+		if (prog.outcome)
+			exta += "<br />Outcome: <b>" + ui.format(prog.outcome) + "</b>"
+
+		menuItems << [
+				label: ui.format(prog.program),
+				extra: extra,
+				href: ui.pageLink("kenyaemr", "medicalChartViewPatient", [ patientId: patient.id, patientProgramId: prog.id ]),
+				active: (selection == "program-" + prog.id)
+		]
+	}
 %>
 <div id="content-side">
 
 	<div class="panel-frame">
-		${ ui.includeFragment("kenyaemr", "widget/panelMenuItem", [
-			iconProvider: "kenyaemr",
-			icon: "buttons/patient_overview.png",
-			label: "Overview",
-			href: ui.pageLink("kenyaemr", "medicalChartViewPatient", [ patientId: patient.id ]),
-			active: (selection == "overview")
-		]) }
-
-		<% oneTimeForms.each { form ->
-			print ui.includeFragment("kenyaemr", "widget/panelMenuItem", [
-				iconProvider: form.iconProvider,
-				icon: form.icon,
-				label: form.label,
-				href: ui.pageLink("kenyaemr", "medicalChartViewPatient", [ patientId: patient.id, formUuid: form.formUuid ]),
-				active: (selection == "form-" + form.formUuid)
-			])
-		} %>
-		
-		<% retrospectiveForms.each { form ->
-			print ui.includeFragment("kenyaemr", "widget/panelMenuItem", [
-				iconProvider: form.iconProvider,
-				icon: form.icon,
-				label: form.label,
-				href: ui.pageLink("kenyaemr", "medicalChartViewPatient", [ patientId: patient.id, formUuid: form.formUuid ]),
-				active: (selection == "form-" + form.formUuid)
-			])
-		} %>
-
-		<% programs.each { prog ->
-			def extra = "from " + kenyaEmrUi.formatDateNoTime(prog.dateEnrolled)
-			if (prog.dateCompleted)
-				extra += " to " + kenyaEmrUi.formatDateNoTime(prog.dateCompleted)
-			if (prog.outcome)
-				exta += "<br />Outcome: <b>" + ui.format(prog.outcome) + "</b>"
-
-			print ui.includeFragment("kenyaemr", "widget/panelMenuItem", [
-				label: ui.format(prog.program),
-				href: ui.pageLink("kenyaemr", "medicalChartViewPatient", [ patientId: patient.id, patientProgramId: prog.id ]),
-				extra: extra,
-				active: (selection == "program-" + prog.id)
-			])
-		} %>
+		<% menuItems.each { item -> print ui.includeFragment("kenyaemr", "widget/panelMenuItem", item) } %>
 	</div>
 
 	<div class="panel-frame">
@@ -60,10 +61,12 @@
 			visits.each { visit ->
 				def extra = "from " + ui.format(visit.startDatetime)
 				def visitType = visit.visitType.name;
-				if (kenyaEmrUi.isRetrospectiveVisit(visit))
-					visitType += " - RE"
-				if (visit.stopDatetime)
+				//if (kenyaEmrUi.isRetrospectiveVisit(visit)) {
+				//	visitType += " - RE"  // Hidden until 2013.1.1
+				//}
+				if (visit.stopDatetime) {
 					extra += " to " + ui.format(visit.stopDatetime)
+				}
 
 				print ui.includeFragment("kenyaemr", "widget/panelMenuItem", [
 						label: ui.format(visitType),
@@ -80,9 +83,11 @@
 <div id="content-main">
 
 	<% if (visit) { %>
+
 		${ ui.includeFragment("kenyaemr", "visitSummary", [ visit: visit ]) }
 		${ ui.includeFragment("kenyaemr", "visitCompletedForms", [ visit: visit ]) }
 		${ ui.includeFragment("kenyaemr", "visitAvailableForms", [ visit: visit ]) }
+
 	<% } else if (form) { %>
 
 		<div class="panel-frame">
@@ -97,44 +102,6 @@
 							publish('showHtmlForm/showEncounter', { encounterId: ${ encounter.id } });
 						});
 					</script>
-				<% } else if (retrospective == true) {
-				def jsSuccess = "location.href = ui.pageLink('kenyaemr', 'enterHtmlForm'," + "{" + "patientId: ${ patient.id }, htmlFormId: ${ form.id }, visitId: data.visitId, returnUrl: location.href })"
-				 %>
-					<%= ui.includeFragment("uilibrary", "widget/popupForm", [
-				id: "check-in-form",
-				buttonConfig: [
-					iconProvider: "uilibrary",
-					icon: "user_add_32.png",
-					label: "Add Retrospective Visit",
-					classes: [ "padded" ],
-					extra: "Old visits"
-				],
-				popupTitle: "Retrospective Visit",
-				prefix: "visit",
-				commandObject: newREVisit,
-				hiddenProperties: [ "patient" ],
-				properties: [ "visitType", "startDatetime", "stopDatetime" ],
-				fieldConfig: [
-					"visitType": [ label: "Visit Type" ]
-				],
-				fieldConfig: [
-					"stopDatetime": [ label: "Stop date and time" ],
-				],
-				propConfig: [
-					"visitType": [ type: "radio" ],
-				],
-				fieldConfig: [
-					"startDatetime": [ fieldFragment: "field/java.util.Date.datetime" ],
-					"stopDatetime": [ fieldFragment: "field/java.util.Date.datetime" ],
-				],
-				fragment: "registrationUtil",
-				fragmentProvider: "kenyaemr",
-				action: "createVisit",
-				successCallbacks: [ jsSuccess ],
-				submitLabel: ui.message("general.submit"),
-				cancelLabel: ui.message("general.cancel"),
-				submitLoadingMessage: "Creating retrospective visit"
-			]) %>
 				<% } else { %>
 					<i>Not Filled Out</i>
 				<% } %>
@@ -146,9 +113,13 @@
 
 		${ ui.includeFragment("kenyaemr", "medicalChartPatientProgram", [ patientProgram: program ]) }
 
-	<% } else { %>
+	<% } else if (section == "overview") { %>
 
-		${ ui.includeFragment("kenyaemr", "medicalChartPatientOverview") }
+		${ ui.includeFragment("kenyaemr", "medicalChartPatientOverview", [ patient: patient ]) }
+
+	<% } else if (section == "moh257") { %>
+
+		${ ui.includeFragment("kenyaemr", "medicalChartMoh257", [ patient: patient ]) }
 
 	<% } %>
 

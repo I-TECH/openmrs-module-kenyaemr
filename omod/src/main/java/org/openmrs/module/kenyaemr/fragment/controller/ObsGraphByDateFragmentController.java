@@ -19,9 +19,8 @@ import org.openmrs.Patient;
 import org.openmrs.Person;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.util.KenyaEmrUtils;
-import org.openmrs.ui.framework.fragment.FragmentConfiguration;
+import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.fragment.FragmentModel;
-import org.openmrs.ui.framework.page.PageModel;
 
 import java.util.*;
 
@@ -30,12 +29,9 @@ import java.util.*;
  */
 public class ObsGraphByDateFragmentController {
 
-	public void controller(PageModel pageModel, FragmentModel model, FragmentConfiguration config) {
-		Patient patient = (Patient) pageModel.getAttribute("patient");
-		List<?> conceptConfig = (List<?>) config.getAttribute("concepts");
-
-		if (conceptConfig == null || conceptConfig.size() < 1)
-			throw new IllegalArgumentException("concepts must be specified and be non-empty");
+	public void controller(@FragmentParam("patient") Patient patient, @FragmentParam("concepts") List<?> conceptConfig, FragmentModel model) {
+		if (conceptConfig.size() < 1)
+			throw new IllegalArgumentException("Concept list must be non-empty");
 
 		List<Concept> concepts = KenyaEmrUtils.fetchConcepts(conceptConfig);
 		model.addAttribute("concepts", concepts);
