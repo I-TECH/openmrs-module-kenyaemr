@@ -11,7 +11,7 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.kenyaemr.htmlformentry;
+package org.openmrs.module.kenyaemr.form;
 
 import java.util.Collections;
 import java.util.Date;
