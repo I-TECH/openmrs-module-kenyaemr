@@ -1,0 +1,21 @@
+This set of scripts is for fixing the UUIDs of locations that were created on installation machines. The UUIDs need
+to be changed to match the UUIDs of the locations created on the metadata server.
+
+The mfl_map.dat file was created by executing the following query on the metadata server with batch output mode:
+
+SELECT la.value_reference, l.name, l.uuid FROM location l
+INNER JOIN location_attribute la ON la.location_id = l.location_id
+INNER JOIN location_attribute_type lat ON lat.location_attribute_type_id = la.attribute_type_id
+  AND lat.uuid = '8a845a89-6aa5-4111-81d3-0af31c45c002';"
+
+To make the fix...
+
+1. Run check_duplicates.sh - this script shows any locations with duplicated MFL codes. If you find any duplicates
+you will need to delete locations or fix their MFL codes.
+
+2. Run check_codes.sh - this script shows any locations with unrecognised MFL codes. The only
+location that should be listed here is the 'Unknown Location' (id = 1). If there are other locations then you will
+need to update their MFL codes.
+
+3. Run fix_uuids.sh - this script will update UUIDs of all locations by looking up their MFL code in the mfl_map.dat
+data file
