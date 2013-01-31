@@ -40,10 +40,10 @@ import org.openmrs.module.metadatasharing.wrapper.PackageImporter;
  */
 public class KenyaEmrActivator implements ModuleActivator {
 
-	private static final String METADATA_FILENAME_CORE = "Kenya_EMR_Core_Metadata-13.zip";
+	private static final String METADATA_FILENAME_CORE = "Kenya_EMR_Core_Metadata-14.zip";
+	private static final String METADATA_FILENAME_ROLES = "Kenya_EMR_Roles_and_Privileges-2.zip";
+	private static final String METADATA_FILENAME_LOCATIONS = "Kenya_EMR_Locations-6.zip";
 	private static final String METADATA_FILENAME_FORMS = "Kenya_EMR_Forms-36.zip";
-	private static final String METADATA_FILENAME_ROLES = "Kenya_EMR_Roles_and_Privileges-1.zip";
-	private static final String METADATA_FILENAME_LOCATIONS = "Kenya_EMR_Locations-5.zip";
 
 	private static final String REGIMENS_FILENAME = "Kenya_EMR_Regimens.xml";
 
@@ -143,10 +143,10 @@ public class KenyaEmrActivator implements ModuleActivator {
 	 */
 	public boolean setupMetadataPackages() throws Exception {
 		boolean anyChanges = false;
-		anyChanges |= installMetadataPackageIfNecessary("c66d041c-563e-4438-83eb-ad5f32c6e97a", METADATA_FILENAME_FORMS);
-		anyChanges |= installMetadataPackageIfNecessary("d4b71375-f64a-442d-a0c2-9f507c432925", METADATA_FILENAME_ROLES);
-		anyChanges |= installMetadataPackageIfNecessary("29177ba6-a634-42d5-9314-e12689856ff1", METADATA_FILENAME_CORE);
-		anyChanges |= installMetadataPackageIfNecessary("5856a8fc-7ebc-46e8-929c-5ae2c780ab54", METADATA_FILENAME_LOCATIONS);
+		anyChanges |= installMetadataPackageIfNecessary(MetadataConstants.CORE_PACKAGE_UUID, METADATA_FILENAME_CORE);
+		anyChanges |= installMetadataPackageIfNecessary(MetadataConstants.ROLES_PACKAGE_UUID, METADATA_FILENAME_ROLES);
+		anyChanges |= installMetadataPackageIfNecessary(MetadataConstants.LOCATIONS_PACKAGE_UUID, METADATA_FILENAME_LOCATIONS);
+		anyChanges |= installMetadataPackageIfNecessary(MetadataConstants.FORMS_PACKAGE_UUID, METADATA_FILENAME_FORMS);
 		return anyChanges;
 	}
 
@@ -177,7 +177,7 @@ public class KenyaEmrActivator implements ModuleActivator {
 		try {
 			Matcher matcher = Pattern.compile("\\w+-(\\d+).zip").matcher(filename);
 			if (!matcher.matches())
-				throw new RuntimeException("Filename must match PackageNameWithNoSpaces-1.zip");
+				throw new RuntimeException("Filename must match PackageNameWithNoSpaces-X.zip");
 			Integer version = Integer.valueOf(matcher.group(1));
 
 			ImportedPackage installed = Context.getService(MetadataSharingService.class).getImportedPackageByGroup(groupUuid);
