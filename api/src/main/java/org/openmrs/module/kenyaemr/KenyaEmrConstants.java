@@ -28,6 +28,7 @@ public class KenyaEmrConstants {
 	 * Global property names
 	 */
 	public static final String GP_DEFAULT_LOCATION = "kenyaemr.defaultLocation";
+	public static final String GP_CONCEPTS_VERSION = "ciel.conceptsVersion";
 
 	/**
 	 * Number of days without an encounter before a patient is consider lost to follow up

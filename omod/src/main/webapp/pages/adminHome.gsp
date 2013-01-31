@@ -12,7 +12,7 @@
 				def property = entry.key
 				if (property == "version") {
 					// Version numbers look best left-aligned
-					ret += "<td style=\"text-align: left\">${ obj[property] }</td>"
+					ret += "<td style=\"text-align: left\">${ obj[property] != null ? obj[property] : "-" }</td>"
 				} else if (property == "started" || property == "imported") {
 					// Use icon instead of text
 					def icon = obj[property] ? "success.png" : "alert.png"
