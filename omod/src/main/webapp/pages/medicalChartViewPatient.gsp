@@ -8,14 +8,14 @@
 					active: (selection == "section-overview"),
 					iconProvider: "kenyaemr",
 					icon: "buttons/patient_overview.png"
-			]/*, Hidden until 2013.1.1
+			],
 	        [
 					label: "MOH 257",
 					href: ui.pageLink("kenyaemr", "medicalChartViewPatient", [ patientId: patient.id, section: "moh257" ]),
 					active: (selection == "section-moh257"),
 					iconProvider: "kenyaemr",
 					icon: "buttons/form_moh257.png"
-			]*/
+			]
 	];
 
 	oneTimeForms.each { form ->
@@ -60,16 +60,16 @@
 		else {
 			visits.each { visit ->
 				def extra = "from " + ui.format(visit.startDatetime)
-				def visitType = visit.visitType.name;
-				//if (kenyaEmrUi.isRetrospectiveVisit(visit)) {
-				//	visitType += " - RE"  // Hidden until 2013.1.1
-				//}
+				def visitType = ui.format(visit.visitType);
+				if (kenyaEmrUi.isRetrospectiveVisit(visit)) {
+					visitType += " [RE]"
+				}
 				if (visit.stopDatetime) {
 					extra += " to " + ui.format(visit.stopDatetime)
 				}
 
 				print ui.includeFragment("kenyaemr", "widget/panelMenuItem", [
-						label: ui.format(visitType),
+						label: visitType,
 						href: ui.pageLink("kenyaemr", "medicalChartViewPatient", [ patientId: patient.id, visitId: visit.id ]),
 						extra: extra,
 						active: (selection == "visit-" + visit.id)

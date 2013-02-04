@@ -62,9 +62,7 @@ public class FormManager {
 		registerForm("kenyaemr.medicalChart", new FormConfig(MetadataConstants.MOH_257_ENCOUNTER_ORDER_LAB_INVESTIGATIONS_FORM_UUID, Frequency.VISIT));
 		registerForm("kenyaemr.medicalChart", new FormConfig(MetadataConstants.OTHER_MEDICATIONS_FORM_UUID, Frequency.VISIT));
 		registerForm("kenyaemr.medicalChart", new FormConfig(MetadataConstants.TB_VISIT_FORM_UUID, Frequency.VISIT, tbProgram, Gender.BOTH, null, null));
-
-		// Hidden until 2013.1.1
-		//registerForm("kenyaemr.medicalChart", new FormConfig(MetadataConstants.RETROSPECTIVE_257_FORM_UUID, Frequency.VISIT, hivProgram, Gender.BOTH, null, null));
+		registerForm("kenyaemr.medicalChart", new FormConfig(MetadataConstants.RETROSPECTIVE_257_FORM_UUID, Frequency.VISIT, hivProgram, Gender.BOTH, null, null));
 	}
 
 	/**
