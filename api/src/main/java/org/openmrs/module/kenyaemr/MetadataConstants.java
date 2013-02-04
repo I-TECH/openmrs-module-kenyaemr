@@ -55,7 +55,7 @@ public class MetadataConstants {
 	public static final String TB_ENROLLMENT_FORM_UUID = "89994550-9939-40f3-afa6-173bce445c79";
 	public static final String TB_VISIT_FORM_UUID = "2daabb77-7ad6-4952-864b-8d23e109c69d";
 	public static final String TB_COMPLETION_FORM_UUID = "4b296dd0-f6be-4007-9eb8-d0fd4e94fb3a";
-	public static final String RETROSPECTIVE_257_FORM_UUID = "23b4ebbd-29ad-455e-be0e-04aa6bc30798";
+	public static final String MOH_257_VISIT_SUMMARY_FORM_UUID = "23b4ebbd-29ad-455e-be0e-04aa6bc30798";
 
 	//public static final String MOH_257_ENCOUNTER_ART_HISTORY_FORM_UUID = "b388cd66-8e08-4e8f-97de-7cf10023ed0f";
 	//public static final String MOH_257_ENCOUNTER_PAST_MEDICAL_AND_SURGICAL_HISTORY_FORM_UUID = "4a0d1332-490e-439f-9d14-c782143c94de";

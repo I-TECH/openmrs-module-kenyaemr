@@ -34,6 +34,7 @@ import org.openmrs.Visit;
 import org.openmrs.VisitType;
 import org.openmrs.api.VisitService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyaemr.KenyaEmrUiUtils;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
@@ -182,65 +183,34 @@ public class RegistrationUtilFragmentController {
 	    }
    }
 
-
 	/**
-	 * Creates a new visit
-	 * 
-	 * @param ui
-	 * @param visit
-	 * @return
+	 * Starts a new visit
+	 * @param ui the UI utils
+	 * @param visit the visit
+	 * @return the simplified visit
 	 */
-	public Object startVisit(UiUtils ui,
-	                         Session session,
-	                         @BindParams("visit") @Validate Visit visit) {
+	public SimpleObject startVisit(UiUtils ui, @BindParams("visit") @Validate Visit visit) {
 		if (visit.getLocation() == null)
 			visit.setLocation(Context.getService(KenyaEmrService.class).getDefaultLocation());
 		Visit saved = Context.getVisitService().saveVisit(visit);
-		return simpleVisit(ui, saved);
-	}
-	
-	/**
-	 * Creates a new retrospective visit
-	 * 
-	 * @param ui
-	 * @param visit
-	 * @return
-	 */
-	public SimpleObject createVisit(UiUtils ui,
-	                         Session session,
-	                         @BindParams("visit") @Validate Visit visit) {
-		if (visit.getLocation() == null) {
-			visit.setLocation(Context.getService(KenyaEmrService.class).getDefaultLocation());
-		}
-		visit = Context.getVisitService().endVisit(visit, visit.getStopDatetime());
-		Visit saved = Context.getVisitService().saveVisit(visit);
-		return simpleVisit(ui, saved);
+		return KenyaEmrUiUtils.simpleVisit(saved, ui);
 	}
 	
 	/**
 	 * Edits an existing visit
-	 * 
-	 * @param ui
-	 * @param visit
-	 * @return
+	 * @param ui the UI utils
+	 * @param visit the visit
+	 * @return the simplified visit
 	 */
-	public Object editVisit(UiUtils ui,
-	                        @RequestParam("visit.visitId") @BindParams("visit") @Validate Visit visit) {
+	public SimpleObject editVisit(UiUtils ui, @RequestParam("visit.visitId") @BindParams("visit") @Validate Visit visit) {
 		Visit saved = Context.getVisitService().saveVisit(visit);
-		return simpleVisit(ui, saved);
+		return KenyaEmrUiUtils.simpleVisit(saved, ui);
 	}
-	
-	/**
-     * Simplifies a visit so it can be sent to the client via json
-     */
-    private SimpleObject simpleVisit(UiUtils ui, Visit visit) {
-    	return SimpleObject.fromObject(visit, ui, "visitId", "visitType", "startDatetime", "stopDatetime");
-    }
     
     /**
      * Enrolls a patient in a program 
      */
-    public Object enrollInProgram(UiUtils ui,
+    public SimpleObject enrollInProgram(UiUtils ui,
                                   @RequestParam("patient") Patient patient,
                                   @RequestParam("program") Program program,
                                   @RequestParam("dateEnrolled") Date enrollmentDate) {
@@ -255,8 +225,16 @@ public class RegistrationUtilFragmentController {
     	pp = Context.getProgramWorkflowService().savePatientProgram(pp);
     	return SimpleObject.fromObject(pp, ui, "patientProgramId");
     }
-    
-    public Object completeProgram(UiUtils ui,
+
+	/**
+	 * Completes a patient in a program
+	 * @param ui
+	 * @param pp
+	 * @param dateCompleted
+	 * @param outcome
+	 * @return
+	 */
+    public SimpleObject completeProgram(UiUtils ui,
                                   @RequestParam("enrollment") PatientProgram pp,
                                   @RequestParam("dateCompleted") Date dateCompleted,
                                   @RequestParam("outcome") Concept outcome) {
@@ -269,5 +247,4 @@ public class RegistrationUtilFragmentController {
     	pp = Context.getProgramWorkflowService().savePatientProgram(pp);
     	return SimpleObject.fromObject(pp, ui, "patientProgramId");
     }
-    
 }

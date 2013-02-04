@@ -92,4 +92,15 @@ $(function() {
 			location.href = url;
 		}
 	});
+
+	/**
+	 * Clicking on an encounter-item should display the encounter as a form in a dialog
+	 */
+	$('.encounter-item').click(function(event) {
+		var encId = $(this).find('input[name=encounterId]').val();
+		var title = $(this).find('input[name=title]').val();
+		publish('showHtmlForm/showEncounter', { encounterId: encId, editButtonLabel: 'Edit', deleteButtonLabel: 'Delete' });
+		showDivAsDialog('#showHtmlForm', title);
+		return false;
+	});
 });

@@ -23,10 +23,12 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.appframework.AppUiUtil;
 import org.openmrs.module.htmlformentry.HtmlForm;
 import org.openmrs.module.htmlformentry.HtmlFormEntryService;
+import org.openmrs.module.kenyaemr.KenyaEmrUiUtils;
 import org.openmrs.module.kenyaemr.form.FormConfig;
 import org.openmrs.module.kenyaemr.form.FormConfig.Frequency;
 import org.openmrs.module.kenyaemr.form.FormManager;
 import org.openmrs.ui.framework.SimpleObject;
+import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 import org.openmrs.ui.framework.session.Session;
@@ -40,11 +42,11 @@ public class VisitAvailableFormsFragmentController {
 
 	protected static final Log log = LogFactory.getLog(VisitAvailableFormsFragmentController.class);
 
-	public void controller(FragmentModel model, @FragmentParam("visit") Visit visit, Session session) {
+	public void controller(FragmentModel model, @FragmentParam("visit") Visit visit, UiUtils ui, Session session) {
 		String currentApp = AppUiUtil.getCurrentApp(session).getApp().getId();
 
 		List<FormConfig> availableFormConfigs = FormManager.getFormsForPatient(currentApp, visit.getPatient(), null);
-		List<SimpleObject> availableForms = getAvailableForms(visit, availableFormConfigs);
+		List<SimpleObject> availableForms = getAvailableForms(visit, availableFormConfigs, ui);
 
 		model.addAttribute("availableForms", availableForms);
 	}
@@ -55,7 +57,7 @@ public class VisitAvailableFormsFragmentController {
      * @param forms the list of possible forms for the visit type
      * @return
      */
-    private List<SimpleObject> getAvailableForms(Visit visit, List<FormConfig> forms) {
+    private List<SimpleObject> getAvailableForms(Visit visit, List<FormConfig> forms, UiUtils ui) {
     	Set<String> formUuidsThisVisit = new HashSet<String>();
     	for (Encounter e : visit.getEncounters()) {
     		if (!e.getVoided()) {
@@ -95,7 +97,10 @@ public class VisitAvailableFormsFragmentController {
     	List<SimpleObject> ret = new ArrayList<SimpleObject>();
 		
 		for (FormConfig config : forms) {
-			if (config.getForProgram() != null && !dateOfActiveEnrollment.keySet().contains(config.getForProgram())) {
+			// Get program for form
+			Program formProgram = config.getForProgramUuid() != null ? Context.getProgramWorkflowService().getProgramByUuid(config.getForProgramUuid()) : null;
+
+			if (formProgram != null && !dateOfActiveEnrollment.keySet().contains(formProgram)) {
 				continue;
 			}
 			boolean allowed = false;
@@ -104,7 +109,7 @@ public class VisitAvailableFormsFragmentController {
 			} else if (config.getFrequency().equals(Frequency.VISIT)) {
 				allowed = !formUuidsThisVisit.contains(config.getFormUuid());
 			} else if (config.getFrequency().equals(Frequency.PROGRAM)) {
-				Set<String> formsForProgram = formUuidsByProgram.get(config.getForProgram());
+				Set<String> formsForProgram = formUuidsByProgram.get(formProgram);
 				allowed = formsForProgram == null || !formsForProgram.contains(config.getFormUuid());
 			} else if (config.getFrequency().equals(Frequency.ONCE_EVER)) {
 				allowed = !allFormUuids.contains(config.getFormUuid());
@@ -116,7 +121,7 @@ public class VisitAvailableFormsFragmentController {
 				if (hf == null) {
 					throw new RuntimeException("No htmlform with uuid " + config.getFormUuid());
 				}
-				ret.add(SimpleObject.create("htmlFormId", hf.getId(), "label", hf.getName(), "iconProvider", config.getIconProvider(), "icon", config.getIcon()));
+				ret.add(KenyaEmrUiUtils.simpleForm(config, ui));
 			}
 		}
 		

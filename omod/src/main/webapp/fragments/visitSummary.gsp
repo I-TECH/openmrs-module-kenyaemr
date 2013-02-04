@@ -31,10 +31,6 @@
 
 ${ ui.includeFragment("kenyaemr", "dataPoint", [ label: "Type", value: visit.visitType ]) }
 ${ ui.includeFragment("kenyaemr", "dataPoint", [ label: "Location", value: visit.location ]) }
-${ ui.includeFragment("kenyaemr", "dataPoint", [ label: "From", value: visit.startDatetime, showTime: true ]) }
-
-<% if (visit.stopDatetime) { %>
-${ ui.includeFragment("kenyaemr", "dataPoint", [ label: "Until", value: visit.stopDatetime, showTime: true ]) }
-<% } %>
+${ ui.includeFragment("kenyaemr", "dataPoint", [ label: "When", value: kenyaEmrUi.formatVisitDates(visit) ]) }
 
 <div style="clear: both"></div>

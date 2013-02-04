@@ -28,6 +28,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.util.KenyaEmrUtils;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.fragment.FragmentModel;
+import org.openmrs.util.OpenmrsUtil;
 
 /**
  * Controller for the obsTableByDate fragment
@@ -72,7 +73,7 @@ public class ObsTableByDateFragmentController {
 		 */
 		public void addObs(Obs obs) {
 			Concept concept = obs.getConcept();
-			Date dateNoTime = KenyaEmrUtils.dateStartOfDay(obs.getObsDatetime());
+			Date dateNoTime = OpenmrsUtil.firstSecondOfDay(obs.getObsDatetime());
 
 			Map<Concept, List<Obs>> allObsDate = get(dateNoTime);
 			if (allObsDate == null) {

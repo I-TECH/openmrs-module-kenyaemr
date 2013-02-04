@@ -13,14 +13,12 @@
  */
 package org.openmrs.module.kenyaemr.util;
 
-import org.openmrs.Concept;
-import org.openmrs.Patient;
-import org.openmrs.PatientProgram;
-import org.openmrs.Program;
+import org.openmrs.*;
 import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.ModuleFactory;
 import org.openmrs.module.kenyaemr.KenyaEmrConstants;
+import org.openmrs.util.OpenmrsUtil;
 
 import java.util.*;
 
@@ -46,23 +44,6 @@ public class KenyaEmrUtils {
 	}
 
 	/**
-	 * Clears the time portion of a date object
-	 * @param date the date
-	 * @return the date with no time portion
-	 * @should clear time information from date
-	 */
-	public static Date dateStartOfDay(Date date) {
-		Calendar cal = new GregorianCalendar();
-		cal.setTime(date);
-		cal.set(Calendar.AM_PM, 0);
-		cal.set(Calendar.HOUR, 0);
-		cal.set(Calendar.MINUTE, 0);
-		cal.set(Calendar.SECOND, 0);
-		cal.set(Calendar.MILLISECOND, 0);
-		return cal.getTime();
-	}
-
-	/**
 	 * Add days to an existing date
 	 * @param date the date
 	 * @param days the number of days to add (negative to subtract days)
@@ -70,10 +51,31 @@ public class KenyaEmrUtils {
 	 * @should shift the date by the number of days
 	 */
 	public static Date dateAddDays(Date date, int days) {
-		Calendar cal = new GregorianCalendar();
+		Calendar cal = Calendar.getInstance();
 		cal.setTime(date);
 		cal.add(Calendar.DATE, days);
 		return cal.getTime();
+	}
+
+	/**
+	 * Checks if two dates are the same day
+	 * @param date1 the first date
+	 * @param date2 the second date
+	 * @return true if dates are same day
+	 */
+	public static boolean isSameDay(Date date1, Date date2) {
+		if (date1 == null || date2 == null) {
+			return false;
+		}
+
+		Calendar cal1 = Calendar.getInstance();
+		cal1.setTime(date1);
+		Calendar cal2 = Calendar.getInstance();
+		cal2.setTime(date2);
+
+		return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR)
+				&& cal1.get(Calendar.MONTH) == cal2.get(Calendar.MONTH)
+				&& cal1.get(Calendar.DAY_OF_MONTH) == cal2.get(Calendar.DAY_OF_MONTH);
 	}
 
 	/**

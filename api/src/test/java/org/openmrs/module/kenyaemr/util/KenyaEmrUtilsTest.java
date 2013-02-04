@@ -16,9 +16,11 @@ package org.openmrs.module.kenyaemr.util;
 import org.junit.Assert;
 import org.junit.Test;
 import org.openmrs.Concept;
+import org.openmrs.Visit;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.test.TestUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.util.OpenmrsUtil;
 
 import java.util.*;
 
@@ -35,24 +37,6 @@ public class KenyaEmrUtilsTest extends BaseModuleContextSensitiveTest {
 		Assert.assertNotNull(properties);
 		Assert.assertNotNull(properties.get("buildDate"));
 		Assert.assertNotNull(properties.get("developer"));
-	}
-
-	/**
-	 * @see KenyaEmrUtils#dateStartOfDay(java.util.Date)
-	 * @verifies clear time information from date
-	 */
-	@Test
-	public void dateStartOfDay_shouldClearTimeInformation() {
-		Date now = new Date();
-		Date dateOnly = KenyaEmrUtils.dateStartOfDay(now);
-		Calendar cal = new GregorianCalendar();
-		cal.setTime(dateOnly);
-
-		Assert.assertEquals(0, cal.get(Calendar.AM_PM));
-		Assert.assertEquals(0, cal.get(Calendar.HOUR));
-		Assert.assertEquals(0, cal.get(Calendar.MINUTE));
-		Assert.assertEquals(0, cal.get(Calendar.SECOND));
-		Assert.assertEquals(0, cal.get(Calendar.MILLISECOND));
 	}
 
 	/**
