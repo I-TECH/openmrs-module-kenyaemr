@@ -25,7 +25,7 @@ public class MetadataConstants {
 	public static final String CORE_PACKAGE_UUID = "29177ba6-a634-42d5-9314-e12689856ff1";
 	public static final String ROLES_PACKAGE_UUID = "d4b71375-f64a-442d-a0c2-9f507c432925";
 	public static final String LOCATIONS_PACKAGE_UUID = "5856a8fc-7ebc-46e8-929c-5ae2c780ab54";
-	public static final String FORMS_PACKAGE_UUID = "54535461-fd90-4719-ae3c-21785c657765";
+	public static final String FORMS_PACKAGE_UUID = "eb6791b2-fab4-4915-ab73-4fee8ec84ca6";
 
 	// Visit Types
 	public static final String OUTPATIENT_VISIT_TYPE_UUID = "3371a4d4-f66f-4454-a86d-92c7b3da990c";
