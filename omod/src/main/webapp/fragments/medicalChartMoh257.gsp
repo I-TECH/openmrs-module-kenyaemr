@@ -16,55 +16,16 @@
 	<div class="panel-content" style="background-color: #F3F9FF">
 
 		<fieldset>
-			<legend>Initial Visit New Forms</legend>
+			<legend>New Forms</legend>
 
-			<% if (initialVisit) { %>
-				<div>
-					Information entered will be attached to <a href="${ ui.pageLink("kenyaemr", "medicalChartViewPatient", [ patientId: patient.id, visitId: initialVisit.id ]) }"><b>${ ui.format(initialVisit.visitType) }</b> visit on <b>${ kenyaEmrUi.formatDate(initialVisit.startDatetime) }</b></a>
-				</div>
-				<br />
-				<div>
-				${ ui.includeFragment("kenyaemr", "formList", [ visit: initialVisit, forms: initialVisitAvailableForms ]) }
-				</div>
-			<% } else {
-
-				print ui.includeFragment("uilibrary", "widget/popupForm", [
-						id: "create-initial-visit",
-						buttonConfig: [
-								iconProvider: "kenyaemr",
-								icon: "buttons/visit_retrospective.png",
-								label: "Add Initial Visit",
-								extra: "When did patient first visit clinic?",
-								classes: [ "padded" ]
-						],
-						popupTitle: "Initial Visit Details",
-						prefix: "visit",
-						commandObject: newREVisit,
-						hiddenProperties: [ "patient" ],
-						properties: [ "visitType", "location", "visitDate" ],
-						propConfig: [
-								"visitType": [ type: "radio" ],
-						],
-						fieldConfig: [
-								"location": [ fieldFragment: "field/org.openmrs.Location.kenyaemr" ]
-						],
-						fragmentProvider: "kenyaemr",
-						fragment: "medicalChartMoh257",
-						action: "createRetrospectiveVisit",
-						successCallbacks: [ "ui.reloadPage()" ],
-						submitLabel: ui.message("general.submit"),
-						cancelLabel: ui.message("general.cancel"),
-						submitLoadingMessage: "Creating initial visit"
-				])
-			}
-			%>
+			${ ui.includeFragment("kenyaemr", "formList", [ visit: null, forms: page1AvailableForms ]) }
 		</fieldset>
 		<br />
 		<fieldset>
 			<legend>Previously Completed Forms</legend>
 			<%
-				if (existingPage1Encounters && existingPage1Encounters.size > 0) {
-					existingPage1Encounters.each {
+				if (page1Encounters && page1Encounters.size > 0) {
+					page1Encounters.each {
 						println ui.includeFragment("kenyaemr", "encounterPanel", [ encounter: it ])
 					}
 				} else {
@@ -80,10 +41,10 @@
 	<div class="panel-content" style="background-color: #F3F9FF">
 
 		<fieldset>
-			<legend>Follow Up Visits</legend>
+			<legend>Initial and Follow Up Visits</legend>
 
 			<%= ui.includeFragment("uilibrary", "widget/popupForm", [
-					id: "create-followup-visit",
+					id: "create-retro-visit",
 					buttonConfig: [
 							iconProvider: "kenyaemr",
 							icon: "buttons/visit_retrospective.png",
@@ -115,8 +76,8 @@
 		<fieldset>
 			<legend>Previously Completed Visit Summaries</legend>
 			<%
-				if (existingPage2Encounters && existingPage2Encounters.size > 0) {
-					existingPage2Encounters.each {
+				if (page2Encounters && page2Encounters.size > 0) {
+					page2Encounters.each {
 						println ui.includeFragment("kenyaemr", "encounterPanel", [ encounter: it ])
 					}
 				} else {

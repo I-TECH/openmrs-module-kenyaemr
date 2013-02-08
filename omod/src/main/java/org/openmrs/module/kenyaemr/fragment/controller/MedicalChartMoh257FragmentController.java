@@ -53,34 +53,30 @@ public class MedicalChartMoh257FragmentController {
 
 		model.addAttribute("lastARVChange", lastARVChange);
 
-		List<Visit> patientVisits = Context.getVisitService().getVisitsByPatient(patient);
-		Visit initialVisit = (patientVisits.size() > 0) ? patientVisits.get(patientVisits.size() - 1) : null;
-		model.addAttribute("initialVisit", initialVisit);
-
 		String[] page1FormUuids = {
 				MetadataConstants.FAMILY_HISTORY_FORM_UUID,
 				MetadataConstants.HIV_PROGRAM_ENROLLMENT_FORM_UUID
 		};
 
-		List<SimpleObject> initialVisitAvailableForms = new ArrayList<SimpleObject>();
-		List<Encounter> existingPage1Encounters = new ArrayList<Encounter>();
+		List<SimpleObject> page1AvailableForms = new ArrayList<SimpleObject>();
+		List<Encounter> page1Encounters = new ArrayList<Encounter>();
 
 		for (String page1FormUuid : page1FormUuids) {
 			List<Encounter> formEncounters = getPatientEncounterByForm(patient, Context.getFormService().getFormByUuid(page1FormUuid));
 
 			if (formEncounters.size() == 0) {
-				initialVisitAvailableForms.add(KenyaEmrUiUtils.simpleForm(FormManager.getFormConfig(page1FormUuid), ui));
+				page1AvailableForms.add(KenyaEmrUiUtils.simpleForm(FormManager.getFormConfig(page1FormUuid), ui));
 			}
 			else {
-				existingPage1Encounters.addAll(formEncounters);
+				page1Encounters.addAll(formEncounters);
 			}
 		}
 
 		List<Encounter> moh257VisitSummaryEncounters = getPatientEncounterByForm(patient, Context.getFormService().getFormByUuid(MetadataConstants.MOH_257_VISIT_SUMMARY_FORM_UUID));
 
-		model.addAttribute("initialVisitAvailableForms", initialVisitAvailableForms);
-		model.addAttribute("existingPage1Encounters", existingPage1Encounters);
-		model.addAttribute("existingPage2Encounters", moh257VisitSummaryEncounters);
+		model.addAttribute("page1AvailableForms", page1AvailableForms);
+		model.addAttribute("page1Encounters", page1Encounters);
+		model.addAttribute("page2Encounters", moh257VisitSummaryEncounters);
 	}
 
 	/**
