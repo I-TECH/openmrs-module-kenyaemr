@@ -27,21 +27,25 @@ import org.openmrs.module.htmlformentry.FormEntrySession;
 import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.reporting.common.DateUtil;
 
-
 /**
- *
+ * Velocity functions for adding logic to HTML forms
  */
 public class KenyaEmrVelocityFunctions {
 	
 	FormEntrySession session;
 	
 	/**
-     * @param session
+     * Constructs a new functions provider
+	 * @param session the form entry session
      */
     public KenyaEmrVelocityFunctions(FormEntrySession session) {
 	    this.session = session;
     }
-    
+
+	/**
+	 * Checks whether the patient has HIV identifier
+	 * @return true if patient has such an identifier
+	 */
     public boolean hasHivUniquePatientNumber() {
     	if (session.getPatient() == null) {
     		return false;
@@ -53,9 +57,8 @@ public class KenyaEmrVelocityFunctions {
 
     /**
      * Looks for an obs on the same calendar day as today, that is not in the same encounter being edited (if any)
-     * 
-     * @param conceptId
-     * @return
+     * @param conceptId the obs's concept id
+     * @return the obs
      */
 	public Obs obsToday(Integer conceptId) {
 		Encounter toSkip = session.getEncounter();
@@ -70,5 +73,4 @@ public class KenyaEmrVelocityFunctions {
 		}
 		return null;
 	}
-	
 }
