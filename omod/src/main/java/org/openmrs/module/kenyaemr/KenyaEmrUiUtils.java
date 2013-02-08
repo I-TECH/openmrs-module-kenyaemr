@@ -14,24 +14,23 @@
 package org.openmrs.module.kenyaemr;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.joda.time.Period;
 import org.joda.time.PeriodType;
-import org.ocpsoft.prettytime.Duration;
 import org.ocpsoft.prettytime.PrettyTime;
 import org.openmrs.*;
 import org.openmrs.Concept;
 import org.openmrs.ConceptName;
 import org.openmrs.DrugOrder;
-import org.openmrs.Encounter;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.htmlformentry.HtmlForm;
+import org.openmrs.module.htmlformentry.HtmlFormEntryConstants;
 import org.openmrs.module.htmlformentry.HtmlFormEntryService;
 import org.openmrs.module.kenyaemr.form.FormConfig;
 import org.openmrs.module.kenyaemr.regimen.*;
 import org.openmrs.module.kenyaemr.util.KenyaEmrUtils;
-import org.openmrs.ui.framework.FormatterImpl;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.util.OpenmrsUtil;
@@ -41,7 +40,6 @@ import javax.servlet.http.HttpSession;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 /**
  * UI utility methods for web pages

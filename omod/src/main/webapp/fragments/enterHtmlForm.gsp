@@ -21,9 +21,7 @@ ui.includeJavascript("kenyaemr", "dwr-util.js")
 		var div = document.getElementById(id);
 		if ( div ) { div.style.display = "none"; }
 	}
-</script>
 
-<script type="text/javascript">
 	var propertyAccessorInfo = new Array();
 	
 	// individual forms can define their own functions to execute before a form validation or submission by adding them to these lists
@@ -172,6 +170,18 @@ ui.includeJavascript("kenyaemr", "dwr-util.js")
 	function cancelDeleteForm() {
 		jq('#confirmDeleteFormPopup').hide();
 	}
+
+	<% if (visit) { %>
+	/**
+	 * Update blank encounter dates to be visit start date
+	 */
+	jq(function() {
+		var displaySelector = '.default-date-from-visit input[type=text]';
+		if (jq(displaySelector).val() == '') {
+			setDatePickerValue(displaySelector, '${ visit.startDatetime.format("yy-MM-dd") }');
+		}
+	});
+	<% } %>
 </script>
 
 <div id="${ config.id }" <% if (config.style) { %>style="${ config.style }"<% } %>>
