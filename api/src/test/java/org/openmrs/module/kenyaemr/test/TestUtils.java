@@ -68,6 +68,23 @@ public class TestUtils {
 	}
 
 	/**
+	 * Create and save a visit
+	 * @param patient the patient
+	 * @param type the visit type
+	 * @param start the start date
+	 * @param stop the stop date
+	 * @return the aved visit
+	 */
+	public static Visit saveVisit(Patient patient, VisitType type, Date start, Date stop) {
+		Visit visit = new Visit();
+		visit.setPatient(patient);
+		visit.setVisitType(type);
+		visit.setStartDatetime(start);
+		visit.setStopDatetime(stop);
+		return Context.getVisitService().saveVisit(visit);
+	}
+
+	/**
 	 * Create and save an encounter
 	 * @param patient the patient
 	 * @param type the encounter type

@@ -121,4 +121,26 @@ public class KenyaEmrUtils {
 		}
 		return false;
 	}
+
+	/**
+	 * Checks a new visit to see if it overlaps with any other visit for that patient
+	 * @param visit the new visit
+	 * @return true if new visit will overlap
+	 */
+	public static boolean visitWillOverlap(Visit visit) {
+		Patient patient = visit.getPatient();
+
+		for (Visit existingVisit : Context.getVisitService().getVisitsByPatient(patient)) {
+			// If visit exists in database, don't compare to itself
+			if (existingVisit.getVisitId().equals(visit.getVisitId())) {
+				continue;
+			}
+
+			if (OpenmrsUtil.compareWithNullAsLatest(visit.getStartDatetime(), existingVisit.getStopDatetime()) <= 0 &&
+					OpenmrsUtil.compareWithNullAsLatest(visit.getStopDatetime(), existingVisit.getStartDatetime()) >= 0) {
+				return true;
+			}
+		}
+		return false;
+	}
 }

@@ -22,6 +22,7 @@ import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.module.kenyaemr.form.FormManager;
 import org.openmrs.module.kenyaemr.regimen.RegimenChange;
 import org.openmrs.module.kenyaemr.regimen.RegimenHistory;
+import org.openmrs.module.kenyaemr.util.KenyaEmrUtils;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.BindParams;
@@ -140,8 +141,16 @@ public class MedicalChartMoh257FragmentController {
 			if (visitDate.after(OpenmrsUtil.firstSecondOfDay(new Date()))) {
 				errors.rejectValue("visitDate", "Date cannot be in the future");
 			}
+
+			if (KenyaEmrUtils.visitWillOverlap(toVisit())) {
+				errors.rejectValue("visitDate", "Date cannot overlap with the patient's existing visits");
+			}
 		}
 
+		/**
+		 * Converts command object to actual visit
+		 * @return the actual visit
+		 */
 		public Visit toVisit() {
 			Visit visit = new Visit();
 			visit.setVisitType(visitType);
