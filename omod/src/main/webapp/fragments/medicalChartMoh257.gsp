@@ -1,18 +1,9 @@
 <%
 	def onAddVisitSuccess = "location.href = ui.pageLink('kenyaemr', 'enterHtmlForm', { patientId: ${ patient.id }, formUuid: '${ MetadataConstants.MOH_257_VISIT_SUMMARY_FORM_UUID }', visitId: data.visitId, returnUrl: location.href })"
-
-	def lastRegimen = null
-
-	if (lastARVChange) {
-		lastRegimen = lastARVChange.started ? kenyaEmrUi.formatRegimenLong(lastARVChange.started, ui) : ui.message("general.none")
-	}
-	else {
-		lastRegimen = ui.message("kenyaemr.neverOnARVs")
-	}
 %>
 
 <div class="panel-frame">
-	<div class="panel-heading">MOH 257: Page 1</div>
+	<div class="panel-heading">Page 1 (Care Summary)</div>
 	<div class="panel-content" style="background-color: #F3F9FF">
 
 		<fieldset>
@@ -26,7 +17,7 @@
 			<%
 				if (page1Encounters && page1Encounters.size > 0) {
 					page1Encounters.each {
-						println ui.includeFragment("kenyaemr", "encounterPanel", [ encounter: it ])
+						println ui.includeFragment("kenyaemr", "encounterStackItem", [ encounter: it ])
 					}
 				} else {
 					println "<i>None</i>"
@@ -37,13 +28,20 @@
 </div>
 
 <div class="panel-frame">
-	<div class="panel-heading">MOH 257: Page 2</div>
+	<div class="panel-heading">Page 2 (Initial and Followup Visits)</div>
 	<div class="panel-content" style="background-color: #F3F9FF">
-
-		<fieldset>
-			<legend>Initial and Follow Up Visits</legend>
-
-			<%= ui.includeFragment("uilibrary", "widget/popupForm", [
+		<%
+			if (page2Encounters && page2Encounters.size > 0) {
+				page2Encounters.each {
+					println ui.includeFragment("kenyaemr", "encounterStackItem", [ encounter: it, showEncounterDate: true ])
+				}
+			} else {
+				println "<i>None</i>"
+			}
+		%>
+		<br />
+		<div align="center">
+			${ ui.includeFragment("uilibrary", "widget/popupForm", [
 					id: "create-retro-visit",
 					buttonConfig: [
 							iconProvider: "kenyaemr",
@@ -70,35 +68,26 @@
 					submitLabel: ui.message("general.submit"),
 					cancelLabel: ui.message("general.cancel"),
 					submitLoadingMessage: "Creating retrospective visit"
-			]) %>
-		</fieldset>
-		<br />
-		<fieldset>
-			<legend>Previously Completed Visit Summaries</legend>
-			<%
-				if (page2Encounters && page2Encounters.size > 0) {
-					page2Encounters.each {
-						println ui.includeFragment("kenyaemr", "encounterPanel", [ encounter: it ])
-					}
-				} else {
-					println "<i>None</i>"
-				}
-			%>
-		</fieldset>
-		<br />
-		<fieldset>
-			<legend>ARV Regimens</legend>
-			${ ui.includeFragment("kenyaemr", "dataPoint", [ label: "Last recorded regimen", value: lastRegimen ]) }
+			]) }
+		</div>
+	</div>
+</div>
 
-			<br />
+<div class="panel-frame">
+	<div class="panel-heading">ARV Regimen History</div>
+	<div class="panel-content" style="background-color: #F3F9FF">
+		${ ui.includeFragment("kenyaemr", "regimenHistory", [ patient: patient ]) }
 
+		<br />
+		<div align="center">
 			${ ui.includeFragment("uilibrary", "widget/button", [
-					label: "Change ARV regimen",
+					label: "Edit History",
+					extra: "Go to editor",
 					iconProvider: "kenyaemr",
 					icon: "buttons/regimen.png",
-					classes: [ "padded" ]
+					classes: [ "padded" ],
+					href: ui.pageLink("kenyaemr", "regimenEditor", [ patientId: patient, returnUrl: ui.thisUrl() ])
 			]) }
-		</fieldset>
-
+		</div>
 	</div>
 </div>

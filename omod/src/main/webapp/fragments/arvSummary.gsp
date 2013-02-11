@@ -1,7 +1,7 @@
 <%
 	config.require("editable")
 
-	def editUrl = config.editable ? ui.pageLink("kenyaemr", "medicalEncounterArvRegimen", [ patientId: patient.id ]) : null
+	def editUrl = config.editable ? ui.pageLink("kenyaemr", "regimenEditor", [ patientId: patient.id, returnUrl: ui.thisUrl() ]) : null
 
 	ui.decorateWith("kenyaemr", "panel", [ heading: "ARV Summary", editUrl: editUrl ])
 

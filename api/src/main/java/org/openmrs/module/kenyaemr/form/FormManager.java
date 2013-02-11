@@ -50,7 +50,7 @@ public class FormManager {
 				new String[] { "kenyaemr.medicalChart" },
 				null,
 				Gender.FEMALE,
-				"kenyaemr", "buttons/form_enter.png"
+				"kenyaemr", "forms/generic.png"
 		);
 
 		/**
@@ -91,7 +91,7 @@ public class FormManager {
 				new String[] { "kenyaemr.medicalChart" },
 				MetadataConstants.HIV_PROGRAM_UUID,
 				Gender.BOTH,
-				"kenyaemr", "buttons/form_enter.png"
+				"kenyaemr", "forms/generic.png"
 		);
 		registerForm(
 				MetadataConstants.CLINICAL_ENCOUNTER_HIV_ADDENDUM_FORM_UUID,
@@ -99,7 +99,7 @@ public class FormManager {
 				new String[] { "kenyaemr.medicalEncounter", "kenyaemr.medicalChart" },
 				MetadataConstants.HIV_PROGRAM_UUID,
 				Gender.BOTH,
-				"kenyaemr", "buttons/form_enter.png"
+				"kenyaemr", "forms/generic.png"
 		);
 		registerForm(
 				MetadataConstants.MOH_257_VISIT_SUMMARY_FORM_UUID,
@@ -107,7 +107,7 @@ public class FormManager {
 				new String[] { "kenyaemr.medicalChart" },
 				MetadataConstants.HIV_PROGRAM_UUID,
 				Gender.BOTH,
-				"kenyaemr", "buttons/form_enter.png"
+				"kenyaemr", "forms/moh257.png"
 		);
 		registerForm(
 				MetadataConstants.HIV_PROGRAM_DISCONTINUATION_FORM_UUID,
@@ -115,7 +115,7 @@ public class FormManager {
 				new String[] { "kenyaemr.medicalChart" },
 				MetadataConstants.HIV_PROGRAM_UUID,
 				Gender.BOTH,
-				"kenyaemr", "buttons/form_enter.png"
+				"kenyaemr", "forms/discontinue.png"
 		);
 
 		/**
@@ -132,7 +132,15 @@ public class FormManager {
 				new String[] { "kenyaemr.intake", "kenyaemr.medicalEncounter", "kenyaemr.medicalChart" },
 				MetadataConstants.TB_PROGRAM_UUID,
 				Gender.BOTH,
-				"kenyaemr", "buttons/form_enter.png"
+				"kenyaemr", "forms/generic.png"
+		);
+		registerForm(
+				MetadataConstants.TB_COMPLETION_FORM_UUID,
+				Frequency.PROGRAM,
+				new String[] { "kenyaemr.medicalChart" },
+				MetadataConstants.TB_PROGRAM_UUID,
+				Gender.BOTH,
+				"kenyaemr", "forms/discontinue.png"
 		);
 	}
 
@@ -143,7 +151,7 @@ public class FormManager {
 	 * @param forApps the applications to use this form
 	 */
 	public static void registerForm(String formUuid, Frequency frequency, String[] forApps) {
-		registerForm(formUuid, frequency, forApps, null, Gender.BOTH, "kenyaemr", "buttons/form_enter.png");
+		registerForm(formUuid, frequency, forApps, null, Gender.BOTH, "kenyaemr", "forms/generic.png");
 	}
 
 	/**

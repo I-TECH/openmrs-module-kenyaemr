@@ -29,6 +29,7 @@ import org.openmrs.module.htmlformentry.HtmlForm;
 import org.openmrs.module.htmlformentry.HtmlFormEntryConstants;
 import org.openmrs.module.htmlformentry.HtmlFormEntryService;
 import org.openmrs.module.kenyaemr.form.FormConfig;
+import org.openmrs.module.kenyaemr.form.FormManager;
 import org.openmrs.module.kenyaemr.regimen.*;
 import org.openmrs.module.kenyaemr.util.KenyaEmrUtils;
 import org.openmrs.ui.framework.SimpleObject;
@@ -234,7 +235,25 @@ public class KenyaEmrUiUtils {
 	}
 
 	/**
-	 * Simplifies a form configuration
+	 * Simplifies a form
+	 * @param form the form
+	 * @param ui the UI utils
+	 * @return the simple object
+	 */
+	public static SimpleObject simpleForm(Form form, UiUtils ui) {
+		FormConfig config = FormManager.getFormConfig(form.getUuid());
+		HtmlForm htmlForm = Context.getService(HtmlFormEntryService.class).getHtmlFormByForm(form);
+
+		return SimpleObject.create(
+				"formUuid", config.getFormUuid(),
+				"htmlFormId", htmlForm.getId(),
+				"label", htmlForm.getName(),
+				"iconProvider", config.getIconProvider(),
+				"icon", config.getIcon());
+	}
+
+	/**
+	 * Simplifies a form
 	 * @param config the form config
 	 * @param ui the UI utils
 	 * @return the simple object

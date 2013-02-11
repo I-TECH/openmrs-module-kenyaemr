@@ -13,7 +13,9 @@
 		def formOnClick = """enterHtmlForm(${ config.visit ? config.visit.visitId : "null" }, ${ patient.id }, '${ form.formUuid }')"""
 %>
 	<div class="stack-item clickable" onclick="${ formOnClick }">
-		<img src="${ ui.resourceLink(form.iconProvider, "images/" + form.icon) }" style="float: left; margin: 2px" alt="Enter Form" />
+		<div style="float: left; margin: 3px">
+			${ ui.includeFragment("kenyaemr", "widget/icon", [ iconProvider: form.iconProvider, icon: form.icon, useEditOverlay: true, tooltip: "Enter form" ]) }
+		</div>
 		<b>${ form.label }</b>
 		<div style="clear: both"></div>
 	</div>

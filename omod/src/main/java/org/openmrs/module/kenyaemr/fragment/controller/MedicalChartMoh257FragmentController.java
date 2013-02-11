@@ -48,12 +48,6 @@ public class MedicalChartMoh257FragmentController {
 
 		model.addAttribute("newREVisit", newRetrospectiveVisitCommandObject(patient));
 
-		Concept arvs = Context.getConceptService().getConceptByUuid(MetadataConstants.ANTIRETROVIRAL_DRUGS_CONCEPT_UUID);
-		RegimenHistory history = RegimenHistory.forPatient(patient, arvs);
-		RegimenChange lastARVChange = history.getLastChange();
-
-		model.addAttribute("lastARVChange", lastARVChange);
-
 		String[] page1FormUuids = {
 				MetadataConstants.FAMILY_HISTORY_FORM_UUID,
 				MetadataConstants.HIV_PROGRAM_ENROLLMENT_FORM_UUID

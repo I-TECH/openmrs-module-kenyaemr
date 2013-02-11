@@ -14,7 +14,7 @@
 					href: ui.pageLink("kenyaemr", "medicalChartViewPatient", [ patientId: patient.id, section: "moh257" ]),
 					active: (selection == "section-moh257"),
 					iconProvider: "kenyaemr",
-					icon: "buttons/form_moh257.png"
+					icon: "forms/moh257.png"
 			]
 	];
 
