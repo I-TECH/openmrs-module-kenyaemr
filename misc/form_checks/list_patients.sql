@@ -23,19 +23,20 @@ SELECT
 	pi2.identifier AS `Unique No`,
 	CONCAT_WS(' ', n.given_name, n.middle_name, n.family_name) AS `Name`,
 	COUNT(e.encounter_id) AS `Num forms`,
+	GROUP_CONCAT(e.encounter_id ORDER BY e.encounter_datetime ASC SEPARATOR ', ') AS `Encounter IDs`,
 	GROUP_CONCAT(CONCAT(f.name, ' (', e.encounter_datetime, ')') ORDER BY e.encounter_datetime ASC SEPARATOR ', ') AS `Forms`
 FROM
-	patient p
-INNER JOIN
-	person_name n ON n.person_id = p.patient_id
-LEFT OUTER JOIN
-	patient_identifier pi1 ON pi1.patient_id = p.patient_id AND pi1.identifier_type = @PCN_ID_ID
-LEFT OUTER JOIN
-	patient_identifier pi2 ON pi2.patient_id = p.patient_id AND pi2.identifier_type = @UPN_ID_ID
-INNER JOIN
-	encounter e ON e.patient_id = p.patient_id AND e.voided = 0
-INNER JOIN
-	form f ON f.form_id = e.form_id AND f.uuid IN (@HIV_ENROLL, @HIV_DISCONTINUE, @TB_ENROLLMENT, @TB_COMPLETE, @OTHER_MEDS, @LAB_RESULTS)
+		patient p
+		INNER JOIN
+		person_name n ON n.person_id = p.patient_id
+		LEFT OUTER JOIN
+		patient_identifier pi1 ON pi1.patient_id = p.patient_id AND pi1.identifier_type = @PCN_ID_ID
+		LEFT OUTER JOIN
+		patient_identifier pi2 ON pi2.patient_id = p.patient_id AND pi2.identifier_type = @UPN_ID_ID
+		INNER JOIN
+		encounter e ON e.patient_id = p.patient_id AND e.voided = 0
+		INNER JOIN
+		form f ON f.form_id = e.form_id AND f.uuid IN (@HIV_ENROLL, @HIV_DISCONTINUE, @TB_ENROLLMENT, @TB_COMPLETE, @OTHER_MEDS, @LAB_RESULTS)
 GROUP BY
 	p.patient_id
 ORDER BY
