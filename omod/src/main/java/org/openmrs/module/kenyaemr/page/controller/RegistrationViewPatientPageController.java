@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.kenyaemr.page.controller;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -57,11 +58,16 @@ public class RegistrationViewPatientPageController {
 		}
 		
 		model.addAttribute("visit", visit);
+
+		// Get now time, accurate only to minute
+		Calendar now = Calendar.getInstance();
+		now.set(Calendar.SECOND, 0);
+		now.set(Calendar.MILLISECOND, 0);
 		
 		if (activeVisits.size() == 0) {
 			Visit newVisit = new Visit();
 			newVisit.setPatient(patient);
-			newVisit.setStartDatetime(new Date());
+			newVisit.setStartDatetime(now.getTime());
 			newVisit.setVisitType(vs.getVisitTypeByUuid(MetadataConstants.OUTPATIENT_VISIT_TYPE_UUID));
 			model.addAttribute("newCurrentVisit", newVisit);
 		}
