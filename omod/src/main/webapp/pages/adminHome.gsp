@@ -30,18 +30,38 @@
 
 <div id="content-side">
 	${ ui.includeFragment("kenyaemr", "widget/panelMenu", [
-		heading: "Tasks",
-		items: [
-			[ iconProvider: "kenyaemr", icon: "buttons/users_manage.png", label: "Manage Accounts", href: ui.pageLink("kenyaemr", "adminManageAccounts") ],
-			[ iconProvider: "kenyaemr", icon: "buttons/admin_setup.png", label: "Redo First-time Setup", href: ui.pageLink("kenyaemr", "adminFirstTimeSetup") ],
-			[ iconProvider: "kenyaemr", icon: "buttons/admin_update.png", label: "Install New Software Version", href: ui.pageLink("kenyaemr", "adminSoftwareVersion") ]
-		]
+			heading: "Information",
+			items: [
+					[
+							iconProvider: "kenyaemr",
+							icon: "buttons/admin_overview.png",
+							label: "General",
+							active: (section == "overview"),
+							href: ui.pageLink("kenyaemr", "adminHome")
+					],
+					[
+							iconProvider: "kenyaemr",
+							icon: "buttons/admin_modules.png",
+							label: "Modules",
+							active: (section == "modules"),
+							href: ui.pageLink("kenyaemr", "adminHome", [ section: "modules" ])
+					]
+			]
+	]) }
+
+	${ ui.includeFragment("kenyaemr", "widget/panelMenu", [
+			heading: "Tasks",
+			items: [
+					[ iconProvider: "kenyaemr", icon: "buttons/users_manage.png", label: "Manage Accounts", href: ui.pageLink("kenyaemr", "adminManageAccounts") ],
+					[ iconProvider: "kenyaemr", icon: "buttons/admin_setup.png", label: "Redo First-time Setup", href: ui.pageLink("kenyaemr", "adminFirstTimeSetup") ],
+					[ iconProvider: "kenyaemr", icon: "buttons/admin_update.png", label: "Install New Software Version", href: ui.pageLink("kenyaemr", "adminSoftwareVersion") ]
+			]
 	]) }
 </div>
 
 <div id="content-main">
 
-	<% info.each { %>
+	<% infoCategories.each { %>
 
 	<div class="panel-frame">
 		<div class="panel-heading">${ it.key }</div>
