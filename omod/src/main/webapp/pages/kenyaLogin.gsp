@@ -1,11 +1,18 @@
 <%
 	ui.includeCss("uilibrary", "uilibrary.css")
+	ui.includeCss("uilibrary", "toastmessage/css/jquery.toastmessage.css")
 	ui.includeCss("kenyaemr", "kenyaemr.css");
 
 	ui.includeJavascript("uilibrary", "jquery.js")
+	ui.includeJavascript("uilibrary", "jquery.toastmessage.js")
 	ui.includeJavascript("uilibrary", "uiframework.js")
+	ui.includeJavascript("uilibrary", "ui.js")
 	ui.includeJavascript("kenyaemr", "kenyaemr.js")
 %>
+<script type="text/javascript">
+	var jq = jQuery;
+	var CONTEXT_PATH = '${ contextPath }';
+</script>
 
 <style type="text/css">
 	.centered {
