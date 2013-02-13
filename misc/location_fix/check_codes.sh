@@ -18,4 +18,4 @@ SQL="
 	DROP TABLE mfl_map;
 "
 
-echo "$SQL" | mysql -uroot -p -D openmrs
+echo "$SQL" | mysql -uroot --local_infile=1 -p -D openmrs
