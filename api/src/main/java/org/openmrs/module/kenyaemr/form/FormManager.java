@@ -50,7 +50,7 @@ public class FormManager {
 				new String[] { "kenyaemr.medicalChart" },
 				null,
 				Gender.FEMALE,
-				"kenyaemr", "forms/generic.png"
+				"kenyaemr", "forms/obstetric.png"
 		);
 
 		/**
@@ -74,7 +74,10 @@ public class FormManager {
 		registerForm(
 				MetadataConstants.MOH_257_ENCOUNTER_ORDER_LAB_INVESTIGATIONS_FORM_UUID,
 				Frequency.VISIT,
-				new String[] { "kenyaemr.intake", "kenyaemr.medicalEncounter", "kenyaemr.medicalChart" }
+				new String[] { "kenyaemr.intake", "kenyaemr.medicalEncounter", "kenyaemr.medicalChart" },
+				null,
+				Gender.BOTH,
+				"kenyaemr", "forms/labresults.png"
 		);
 		registerForm(
 				MetadataConstants.PROGRESS_NOTE_FORM_UUID,
