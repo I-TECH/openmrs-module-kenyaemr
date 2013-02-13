@@ -13,10 +13,7 @@
  */
 package org.openmrs.module.kenyaemr.page.controller;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.openmrs.api.context.Context;
 import org.openmrs.module.Module;
@@ -42,9 +39,10 @@ public class AdminHomePageController {
 
 		List<SimpleObject> general = new ArrayList<SimpleObject>();
 		general.add(SimpleObject.create("label", "OpenMRS version", "value", OpenmrsConstants.OPENMRS_VERSION));
-		general.add(SimpleObject.create("label", "Total Patients", "value", Context.getPatientSetService().getPatientsByCharacteristics(null, null, null).size()));
-		general.add(SimpleObject.create("label", "Total Providers", "value", Context.getProviderService().getAllProviders().size()));
-		general.add(SimpleObject.create("label", "Total Users", "value", Context.getUserService().getAllUsers().size()));
+		general.add(SimpleObject.create("label", "Server timezone", "value", Calendar.getInstance().getTimeZone().getDisplayName()));
+		general.add(SimpleObject.create("label", "Total patients", "value", Context.getPatientSetService().getPatientsByCharacteristics(null, null, null).size()));
+		general.add(SimpleObject.create("label", "Total providers", "value", Context.getProviderService().getAllProviders().size()));
+		general.add(SimpleObject.create("label", "Total users", "value", Context.getUserService().getAllUsers().size()));
 		
 		List<SimpleObject> modules = new ArrayList<SimpleObject>();
 		for (Module mod : ModuleFactory.getLoadedModules()) {
