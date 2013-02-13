@@ -4,7 +4,6 @@
 	
 	ui.includeJavascript("uilibrary", "jquery.js")
 	ui.includeJavascript("uilibrary", "jquery-ui.js")
-	ui.includeJavascript("kenyaemr", "jquery-ui-timepicker-addon-mod.js")
 	
 	ui.includeJavascript("uilibrary", "uiframework.js")
 	ui.includeJavascript("kenyaemr", "kenyaemr.js")

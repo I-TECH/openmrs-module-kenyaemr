@@ -65,8 +65,21 @@ var kenyaemr = (function($) {
 		 */
 		defaultNumResultsFormatter: function(listOfItems) {
 			return typeof listOfItems.length === 'number' ? (listOfItems.length + ' result(s)') : '';
+		},
+
+		/**
+		 * Updates a datetime control after any of its child controls have been changed
+		 * @param fieldId the datetime field id
+		 */
+		updateDateTimeFromDisplay: function(fieldId) {
+			var date = $('#' + fieldId + '_date').datepicker('getDate');
+			var hours = $('#' + fieldId + '_hour').val();
+			var minutes = $('#' + fieldId + '_minute').val();
+
+			// Format date with time fields
+			var timestamp = $.datepicker.formatDate($.datepicker.W3C, date) + ' ' + hours + ':' + minutes + ':00.000';
+			$('#' + fieldId).val(timestamp);
 		}
-		
 	};
 
 })(jQuery);
