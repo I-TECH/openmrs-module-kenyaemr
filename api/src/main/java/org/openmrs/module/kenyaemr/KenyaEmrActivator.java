@@ -43,7 +43,7 @@ public class KenyaEmrActivator implements ModuleActivator {
 	private static final String METADATA_FILENAME_CORE = "Kenya_EMR_Core_Metadata-19.zip";
 	private static final String METADATA_FILENAME_ROLES = "Kenya_EMR_Roles_and_Privileges-2.zip";
 	private static final String METADATA_FILENAME_LOCATIONS = "Kenya_EMR_Locations-6.zip";
-	private static final String METADATA_FILENAME_FORMS = "Kenya_EMR_Forms-10.zip";
+	private static final String METADATA_FILENAME_FORMS = "Kenya_EMR_Forms-11.zip";
 
 	private static final String REGIMENS_FILENAME = "Kenya_EMR_Regimens.xml";
 
