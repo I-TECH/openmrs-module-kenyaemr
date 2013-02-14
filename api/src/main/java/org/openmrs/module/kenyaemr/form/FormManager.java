@@ -36,34 +36,36 @@ public class FormManager {
 		Program hivProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.HIV_PROGRAM_UUID);
 		Program tbProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.TB_PROGRAM_UUID);
 
+		/**
+		 * Note: some forms hidden for 2013.1 release
+		 */
+
 		appForms.clear();
 		registerForm("kenyaemr.registration", new FormConfig(MetadataConstants.TRIAGE_FORM_UUID, Frequency.VISIT));
 
 		registerForm("kenyaemr.intake", new FormConfig(MetadataConstants.TRIAGE_FORM_UUID, Frequency.VISIT));
-		registerForm("kenyaemr.intake", new FormConfig(MetadataConstants.TB_SCREENING_FORM_UUID, Frequency.VISIT));
+		//registerForm("kenyaemr.intake", new FormConfig(MetadataConstants.TB_SCREENING_FORM_UUID, Frequency.VISIT));
 		registerForm("kenyaemr.intake", new FormConfig(MetadataConstants.PROGRESS_NOTE_FORM_UUID, Frequency.VISIT));
 		registerForm("kenyaemr.intake", new FormConfig(MetadataConstants.MOH_257_ENCOUNTER_ORDER_LAB_INVESTIGATIONS_FORM_UUID, Frequency.VISIT));
-		registerForm("kenyaemr.intake", new FormConfig(MetadataConstants.TB_VISIT_FORM_UUID, Frequency.VISIT, tbProgram, Gender.BOTH, null, null));
+		//registerForm("kenyaemr.intake", new FormConfig(MetadataConstants.TB_VISIT_FORM_UUID, Frequency.VISIT, tbProgram, Gender.BOTH, null, null));
 
 		registerForm("kenyaemr.medicalEncounter", new FormConfig(MetadataConstants.CLINICAL_ENCOUNTER_FORM_UUID, Frequency.VISIT));
 		registerForm("kenyaemr.medicalEncounter", new FormConfig(MetadataConstants.CLINICAL_ENCOUNTER_HIV_ADDENDUM_FORM_UUID, Frequency.VISIT, hivProgram, Gender.BOTH, null, null));
-		registerForm("kenyaemr.medicalEncounter", new FormConfig(MetadataConstants.TB_SCREENING_FORM_UUID, Frequency.VISIT));
+		//registerForm("kenyaemr.medicalEncounter", new FormConfig(MetadataConstants.TB_SCREENING_FORM_UUID, Frequency.VISIT));
 		registerForm("kenyaemr.medicalEncounter", new FormConfig(MetadataConstants.PROGRESS_NOTE_FORM_UUID, Frequency.VISIT));
 		registerForm("kenyaemr.medicalEncounter", new FormConfig(MetadataConstants.MOH_257_ENCOUNTER_ORDER_LAB_INVESTIGATIONS_FORM_UUID, Frequency.VISIT));
 		registerForm("kenyaemr.medicalEncounter", new FormConfig(MetadataConstants.OTHER_MEDICATIONS_FORM_UUID, Frequency.VISIT));
-		registerForm("kenyaemr.medicalEncounter", new FormConfig(MetadataConstants.TB_VISIT_FORM_UUID, Frequency.VISIT, tbProgram, Gender.BOTH, null, null));
+		//registerForm("kenyaemr.medicalEncounter", new FormConfig(MetadataConstants.TB_VISIT_FORM_UUID, Frequency.VISIT, tbProgram, Gender.BOTH, null, null));
 
 		registerForm("kenyaemr.medicalChart", new FormConfig(MetadataConstants.FAMILY_HISTORY_FORM_UUID, Frequency.ONCE_EVER, null, Gender.BOTH, "kenyaemr", "forms/family_history.png"));
 		registerForm("kenyaemr.medicalChart", new FormConfig(MetadataConstants.OBSTETRIC_HISTORY_FORM_UUID, Frequency.ONCE_EVER, null, Gender.FEMALE, null, null));
 		registerForm("kenyaemr.medicalChart", new FormConfig(MetadataConstants.CLINICAL_ENCOUNTER_FORM_UUID, Frequency.VISIT));
 		registerForm("kenyaemr.medicalChart", new FormConfig(MetadataConstants.CLINICAL_ENCOUNTER_HIV_ADDENDUM_FORM_UUID, Frequency.VISIT, hivProgram, Gender.BOTH, null, null));
-		registerForm("kenyaemr.medicalChart", new FormConfig(MetadataConstants.TB_SCREENING_FORM_UUID, Frequency.VISIT));
+		//registerForm("kenyaemr.medicalChart", new FormConfig(MetadataConstants.TB_SCREENING_FORM_UUID, Frequency.VISIT));
 		registerForm("kenyaemr.medicalChart", new FormConfig(MetadataConstants.PROGRESS_NOTE_FORM_UUID, Frequency.VISIT));
 		registerForm("kenyaemr.medicalChart", new FormConfig(MetadataConstants.MOH_257_ENCOUNTER_ORDER_LAB_INVESTIGATIONS_FORM_UUID, Frequency.VISIT));
 		registerForm("kenyaemr.medicalChart", new FormConfig(MetadataConstants.OTHER_MEDICATIONS_FORM_UUID, Frequency.VISIT));
-		registerForm("kenyaemr.medicalChart", new FormConfig(MetadataConstants.TB_VISIT_FORM_UUID, Frequency.VISIT, tbProgram, Gender.BOTH, null, null));
-
-		// Hidden until 2013.1.1
+		//registerForm("kenyaemr.medicalChart", new FormConfig(MetadataConstants.TB_VISIT_FORM_UUID, Frequency.VISIT, tbProgram, Gender.BOTH, null, null));
 		//registerForm("kenyaemr.medicalChart", new FormConfig(MetadataConstants.RETROSPECTIVE_257_FORM_UUID, Frequency.VISIT, hivProgram, Gender.BOTH, null, null));
 	}
 
