@@ -34,7 +34,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- *
+ * Metadata package manager
  */
 public class MetadataManager {
 
@@ -80,9 +80,6 @@ public class MetadataManager {
 	 * @throws IOException
 	 */
 	protected static boolean installMetadataPackageIfNecessary(String groupUuid, String filename) throws IOException {
-
-		log.error("Installing metadata package: " + filename);
-
 		try {
 			Matcher matcher = Pattern.compile("[\\w/-]+-(\\d+).zip").matcher(filename);
 			if (!matcher.matches())
