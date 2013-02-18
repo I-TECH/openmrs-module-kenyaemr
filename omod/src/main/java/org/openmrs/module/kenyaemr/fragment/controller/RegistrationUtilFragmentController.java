@@ -192,6 +192,9 @@ public class RegistrationUtilFragmentController {
 	public SimpleObject startVisit(UiUtils ui, @BindParams("visit") @Validate Visit visit) {
 		if (visit.getLocation() == null)
 			visit.setLocation(Context.getService(KenyaEmrService.class).getDefaultLocation());
+
+		ui.validate(visit, new RegistrationVisitValidator(), "visit");
+
 		Visit saved = Context.getVisitService().saveVisit(visit);
 		return KenyaEmrUiUtils.simpleVisit(saved, ui);
 	}
@@ -203,6 +206,8 @@ public class RegistrationUtilFragmentController {
 	 * @return the simplified visit
 	 */
 	public SimpleObject editVisit(UiUtils ui, @RequestParam("visit.visitId") @BindParams("visit") @Validate Visit visit) {
+		ui.validate(visit, new RegistrationVisitValidator(), "visit");
+
 		Visit saved = Context.getVisitService().saveVisit(visit);
 		return KenyaEmrUiUtils.simpleVisit(saved, ui);
 	}
@@ -247,4 +252,26 @@ public class RegistrationUtilFragmentController {
     	pp = Context.getProgramWorkflowService().savePatientProgram(pp);
     	return SimpleObject.fromObject(pp, ui, "patientProgramId");
     }
+
+	/**
+	 * Extra validation for visits
+	 */
+	public class RegistrationVisitValidator implements Validator {
+		@Override
+		public boolean supports(Class<?> aClass) {
+			return aClass.equals(Visit.class);
+		}
+
+		@Override
+		public void validate(Object obj, Errors errors) {
+			Visit visit = (Visit)obj;
+
+			if (visit.getStartDatetime().after(new Date())) {
+				errors.rejectValue("startDatetime", "Start date cannot be in the future");
+			}
+			if (visit.getStopDatetime() != null && visit.getStopDatetime().after(new Date())) {
+				errors.rejectValue("stopDatetime", "Stop date cannot be in the future");
+			}
+		}
+	}
 }
