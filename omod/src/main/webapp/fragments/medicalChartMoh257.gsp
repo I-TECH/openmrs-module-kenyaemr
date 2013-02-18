@@ -1,51 +1,93 @@
 <%
-	ui.decorateWith("kenyaemr", "panel", [ heading: "MOH 257 Retrospective Entry" ])
-
-	def onAddVisitSuccess = "location.href = ui.pageLink('kenyaemr', 'enterHtmlForm'," + "{" + "patientId: ${ patient.id }, htmlFormId: ${ MetadataConstants.RETROSPECTIVE_257_FORM_UUID }, visitId: data.visitId, returnUrl: location.href })"
+	def onAddVisitSuccess = "location.href = ui.pageLink('kenyaemr', 'enterHtmlForm', { patientId: ${ patient.id }, formUuid: '${ MetadataConstants.MOH_257_VISIT_SUMMARY_FORM_UUID }', visitId: data.visitId, returnUrl: location.href })"
 %>
 
-<fieldset>
-	<legend>Page 1: Care Summary</legend>
+<div class="panel-frame">
+	<div class="panel-heading">Page 1 (Care Summary)</div>
+	<div class="panel-content" style="background-color: #F3F9FF">
 
-	TODO: list suitable POC forms
-</fieldset>
-<br />
-<fieldset>
-	<legend>Page 2: Initial and Follow Up Visits</legend>
+		<fieldset>
+			<legend>New Forms</legend>
 
-	<%= ui.includeFragment("uilibrary", "widget/popupForm", [
-			id: "check-in-form",
-			buttonConfig: [
-					iconProvider: "uilibrary",
-					icon: "user_add_32.png",
-					label: "Add Retrospective Visit",
+			${ ui.includeFragment("kenyaemr", "formList", [ visit: null, forms: page1AvailableForms ]) }
+		</fieldset>
+		<br />
+		<fieldset>
+			<legend>Previously Completed Forms</legend>
+			<%
+				if (page1Encounters && page1Encounters.size > 0) {
+					page1Encounters.each {
+						println ui.includeFragment("kenyaemr", "encounterStackItem", [ encounter: it ])
+					}
+				} else {
+					println "<i>None</i>"
+				}
+			%>
+		</fieldset>
+	</div>
+</div>
+
+<div class="panel-frame">
+	<div class="panel-heading">Page 2 (Initial and Followup Visits)</div>
+	<div class="panel-content" style="background-color: #F3F9FF">
+		<%
+			if (page2Encounters && page2Encounters.size > 0) {
+				page2Encounters.each {
+					println ui.includeFragment("kenyaemr", "encounterStackItem", [ encounter: it, showEncounterDate: true ])
+				}
+			} else {
+				println "<i>None</i>"
+			}
+		%>
+		<br />
+		<div align="center">
+			${ ui.includeFragment("uilibrary", "widget/popupForm", [
+					id: "create-retro-visit",
+					buttonConfig: [
+							iconProvider: "kenyaemr",
+							icon: "buttons/visit_retrospective.png",
+							label: "Add Visit Summary",
+							extra: "From column",
+							classes: [ "padded" ]
+					],
+					popupTitle: "Visit Summary Details",
+					prefix: "visit",
+					commandObject: newREVisit,
+					hiddenProperties: [ "patientId" ],
+					properties: [ "visitType", "location", "visitDate" ],
+					propConfig: [
+							"visitType": [ type: "radio" ],
+					],
+					fieldConfig: [
+							"location": [ fieldFragment: "field/org.openmrs.Location.kenyaemr" ]
+					],
+					fragmentProvider: "kenyaemr",
+					fragment: "medicalChartMoh257",
+					action: "createRetrospectiveVisit",
+					successCallbacks: [ onAddVisitSuccess ],
+					submitLabel: ui.message("general.submit"),
+					cancelLabel: ui.message("general.cancel"),
+					submitLoadingMessage: "Creating retrospective visit"
+			]) }
+		</div>
+	</div>
+</div>
+
+<div class="panel-frame">
+	<div class="panel-heading">ARV Regimen History</div>
+	<div class="panel-content" style="background-color: #F3F9FF">
+		${ ui.includeFragment("kenyaemr", "regimenHistory", [ patient: patient ]) }
+
+		<br />
+		<div align="center">
+			${ ui.includeFragment("uilibrary", "widget/button", [
+					label: "Edit History",
+					extra: "Go to editor",
+					iconProvider: "kenyaemr",
+					icon: "buttons/regimen.png",
 					classes: [ "padded" ],
-					extra: "Old visits"
-			],
-			popupTitle: "Retrospective Visit",
-			prefix: "visit",
-			commandObject: newREVisit,
-			hiddenProperties: [ "patient" ],
-			properties: [ "visitType", "startDatetime", "stopDatetime" ],
-			propConfig: [
-					"visitType": [ type: "radio" ],
-			],
-			fieldConfig: [
-					"startDatetime": [ fieldFragment: "field/java.util.Date.datetime" ],
-					"stopDatetime": [ fieldFragment: "field/java.util.Date.datetime" ],
-			],
-			fragment: "registrationUtil",
-			fragmentProvider: "kenyaemr",
-			action: "createVisit",
-			successCallbacks: [ onAddVisitSuccess ],
-			submitLabel: ui.message("general.submit"),
-			cancelLabel: ui.message("general.cancel"),
-			submitLoadingMessage: "Creating retrospective visit"
-	]) %>
-</fieldset>
-<br />
-<fieldset>
-	<legend>Page 2: ARV Drugs</legend>
-
-	TODO: display current regimen and link to POC UI for editing regimens
-</fieldset>
+					href: ui.pageLink("kenyaemr", "regimenEditor", [ patientId: patient, returnUrl: ui.thisUrl() ])
+			]) }
+		</div>
+	</div>
+</div>

@@ -44,7 +44,6 @@ public class RegistrationViewPatientPageController {
 		
 		AppUiUtil.startApp("kenyaemr.registration", session);
 
-		model.addAttribute("MC", new MetadataConstants());		
 		model.addAttribute("patient", patient);
 		model.addAttribute("person", patient);
 

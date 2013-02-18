@@ -14,21 +14,24 @@
 package org.openmrs.module.kenyaemr;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.joda.time.Period;
 import org.joda.time.PeriodType;
-import org.ocpsoft.prettytime.Duration;
 import org.ocpsoft.prettytime.PrettyTime;
 import org.openmrs.*;
 import org.openmrs.Concept;
 import org.openmrs.ConceptName;
 import org.openmrs.DrugOrder;
-import org.openmrs.Encounter;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.htmlformentry.HtmlForm;
+import org.openmrs.module.htmlformentry.HtmlFormEntryConstants;
+import org.openmrs.module.htmlformentry.HtmlFormEntryService;
+import org.openmrs.module.kenyaemr.form.FormConfig;
+import org.openmrs.module.kenyaemr.form.FormManager;
 import org.openmrs.module.kenyaemr.regimen.*;
 import org.openmrs.module.kenyaemr.util.KenyaEmrUtils;
-import org.openmrs.ui.framework.FormatterImpl;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.util.OpenmrsUtil;
@@ -38,14 +41,15 @@ import javax.servlet.http.HttpSession;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 /**
  * UI utility methods for web pages
  */
 public class KenyaEmrUiUtils {
 
-	private static DateFormat timeFormatter = new SimpleDateFormat("HH:mm");
+	private static final DateFormat dateFormatter = new SimpleDateFormat("dd-MMM-yyyy");
+
+	private static final DateFormat timeFormatter = new SimpleDateFormat("HH:mm");
 
 	/**
 	 * Sets the notification success message
@@ -66,18 +70,29 @@ public class KenyaEmrUiUtils {
 	}
 
 	/**
+	 * Formats a date time
+	 * @param date the date
+	 * @return the string value
+	 */
+	public static String formatDateTime(Date date) {
+		if (date == null)
+			return "";
+
+		return dateFormatter.format(date) + " " + timeFormatter.format(date);
+	}
+
+	/**
 	 * Formats a date ignoring any time information
 	 * @param date the date
 	 * @return the string value
 	 * @should format date as a string without time information
 	 * @should format null date as empty string
 	 */
-	public static String formatDateNoTime(Date date) {
+	public static String formatDate(Date date) {
 		if (date == null)
 			return "";
 
-		Date dateOnly = KenyaEmrUtils.dateStartOfDay(date);
-		return new FormatterImpl().format(dateOnly);
+		return dateFormatter.format(date);
 	}
 
 	/**
@@ -87,7 +102,17 @@ public class KenyaEmrUiUtils {
 	 * @should format date as a string without time information
 	 */
 	public static String formatTime(Date date) {
+		if (date == null)
+			return "";
+
 		return timeFormatter.format(date);
+	}
+
+	/**
+	 * @deprecated
+	 */
+	public static String formatDateNoTime(Date date) {
+		return formatDate(date);
 	}
 
 	/**
@@ -100,8 +125,37 @@ public class KenyaEmrUiUtils {
 	}
 
 	/**
+	 * Formats the dates of the given visit
+	 * @param visit the visit
+	 * @return the string value
+	 */
+	public static String formatVisitDates(Visit visit) {
+		if (isRetrospectiveVisit(visit)) {
+			return formatDate(visit.getStartDatetime());
+		}
+		else {
+			StringBuilder sb = new StringBuilder();
+			sb.append(formatDateTime(visit.getStartDatetime()));
+
+			if (visit.getStopDatetime() != null) {
+				sb.append(" \u2192 ");
+
+				if (KenyaEmrUtils.isSameDay(visit.getStartDatetime(), visit.getStopDatetime())) {
+					sb.append(formatTime(visit.getStopDatetime()));
+				}
+				else {
+					sb.append(formatDateTime(visit.getStopDatetime()));
+				}
+			}
+
+			return sb.toString();
+		}
+	}
+
+	/**
 	 * Formats a regimen in long format
 	 * @param regimen the regimen
+	 * @param ui the UI utils
 	 * @return the string value
 	 */
 	public static String formatRegimenShort(Regimen regimen, UiUtils ui) {
@@ -122,6 +176,7 @@ public class KenyaEmrUiUtils {
 	/**
 	 * Formats a regimen in long format
 	 * @param regimen the regimen
+	 * @param ui the UI utils
 	 * @return the string value
 	 */
 	public static String formatRegimenLong(Regimen regimen, UiUtils ui) {
@@ -169,13 +224,60 @@ public class KenyaEmrUiUtils {
 	 * @param location the location
 	 * @param mfcAttrType the MFL code attribute type
 	 * @param ui the UI utils
-	 * @return the simple object with {  }
+	 * @return the simple object
 	 */
 	public static SimpleObject simpleLocation(Location location, LocationAttributeType mfcAttrType, UiUtils ui) {
 		List<LocationAttribute> attrs = location.getActiveAttributes(mfcAttrType);
 		String facilityCode = attrs.size() > 0 ? (String)attrs.get(0).getValue() : null;
 		String display = location.getName() + " (" + (facilityCode != null ? facilityCode : "?") + ")";
+
 		return SimpleObject.create("value", location.getLocationId(), "label", display);
+	}
+
+	/**
+	 * Simplifies a form
+	 * @param form the form
+	 * @param ui the UI utils
+	 * @return the simple object
+	 */
+	public static SimpleObject simpleForm(Form form, UiUtils ui) {
+		FormConfig config = FormManager.getFormConfig(form.getUuid());
+		HtmlForm htmlForm = Context.getService(HtmlFormEntryService.class).getHtmlFormByForm(form);
+
+		return SimpleObject.create(
+				"formUuid", config.getFormUuid(),
+				"htmlFormId", htmlForm.getId(),
+				"label", htmlForm.getName(),
+				"iconProvider", config.getIconProvider(),
+				"icon", config.getIcon());
+	}
+
+	/**
+	 * Simplifies a form
+	 * @param config the form config
+	 * @param ui the UI utils
+	 * @return the simple object
+	 */
+	public static SimpleObject simpleForm(FormConfig config, UiUtils ui) {
+		Form form = Context.getFormService().getFormByUuid(config.getFormUuid());
+		HtmlForm htmlForm = Context.getService(HtmlFormEntryService.class).getHtmlFormByForm(form);
+
+		return SimpleObject.create(
+				"formUuid", config.getFormUuid(),
+				"htmlFormId", htmlForm.getId(),
+				"label", htmlForm.getName(),
+				"iconProvider", config.getIconProvider(),
+				"icon", config.getIcon());
+	}
+
+	/**
+	 * Simplifies a visit
+	 * @param visit the visit
+	 * @param ui the UI utils
+	 * @return the simple object
+	 */
+	public static SimpleObject simpleVisit(Visit visit, UiUtils ui) {
+		return SimpleObject.fromObject(visit, ui, "visitId", "visitType", "startDatetime", "stopDatetime");
 	}
 
 	/**
@@ -247,21 +349,36 @@ public class KenyaEmrUiUtils {
 				"name", "group", "components.conceptId", "components.dose", "components.units", "components.frequency"
 		);
 	}
-	
+
 	/**
-	 * Checks if the visit has been entered retrospectively
-	 * @param visit
-	 * @return
+	 * Checks if a visit has been entered retrospectively. Visits entered retrospectively are entered with just a single
+	 * date value and are always stopped
+	 * @param visit the visit
+	 * @return true if visit was entered retrospectively
 	 */
 	public static boolean isRetrospectiveVisit(Visit visit) {
-		boolean retrospective = false;
-		
-		for (Encounter e : visit.getEncounters()) {
-			if (e.getEncounterType().getUuid().equals(MetadataConstants.HIV_RETROSPECTIVE_ENCOUNTER_TYPE_UUID)) {
-				retrospective = true;
-				break;
-			}
+		if (visit.getStopDatetime() == null) {
+			return false;
 		}
-		return retrospective;		
+
+		// Check that start is first second of day
+		// Note that we don't compare milliseconds as these are lost in persistence
+		Calendar start = Calendar.getInstance();
+		start.setTime(visit.getStartDatetime());
+		if (start.get(Calendar.HOUR_OF_DAY) != 0 || start.get(Calendar.MINUTE) != 0 || start.get(Calendar.SECOND) != 0) {
+			return false;
+		}
+
+		// Check that stop is last second of day
+		Calendar stop = Calendar.getInstance();
+		stop.setTime(visit.getStopDatetime());
+		if (stop.get(Calendar.HOUR_OF_DAY) != 23 || stop.get(Calendar.MINUTE) != 59 || stop.get(Calendar.SECOND) != 59) {
+			return false;
+		}
+
+		// Check start is same day as stop
+		return start.get(Calendar.YEAR) == stop.get(Calendar.YEAR)
+				&& start.get(Calendar.MONTH) == stop.get(Calendar.MONTH)
+				&& start.get(Calendar.DAY_OF_MONTH) == stop.get(Calendar.DAY_OF_MONTH);
 	}
 }

@@ -62,8 +62,6 @@ public class EnterHtmlFormFragmentController {
 
 		config.require("patient", "htmlFormId | formId | formUuid | encounter");
 
-		log.warn("Form to be retrospectively added to visit: " + visit);
-
 		if (hf == null) {
 			if (form != null) {
 				hf = Context.getService(HtmlFormEntryService.class).getHtmlFormByForm(form);

@@ -19,13 +19,16 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Concept;
 import org.openmrs.DrugOrder;
+import org.openmrs.Visit;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.regimen.Regimen;
 import org.openmrs.module.kenyaemr.regimen.RegimenHistory;
 import org.openmrs.module.kenyaemr.regimen.RegimenManager;
+import org.openmrs.module.kenyaemr.test.TestUtils;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.fragment.FragmentActionUiUtils;
+import org.openmrs.util.OpenmrsUtil;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.xml.sax.SAXException;
 
@@ -160,5 +163,37 @@ public class KenyaEmrUiUtilsTest extends BaseModuleWebContextSensitiveTest {
 		List<SimpleObject> objs = KenyaEmrUiUtils.simpleRegimenDefinitions(RegimenManager.getRegimenDefinitions("ARV"), ui);
 		Assert.assertEquals("regimen1", objs.get(0).get("name"));
 		Assert.assertEquals("group1", objs.get(0).get("group"));
+	}
+
+	/**
+	 * @see org.openmrs.module.kenyaemr.KenyaEmrUiUtils#isRetrospectiveVisit(org.openmrs.Visit)
+	 */
+	@Test
+	public void isRetrospectiveVisit() {
+		Date date1 = TestUtils.date(2011, 1, 1, 10, 0, 0); // Jan 1st, 10:00am
+		Date date2 = TestUtils.date(2011, 1, 1, 11, 0, 0); // Jan 1st, 11:00am
+
+		Visit visit1 = new Visit();
+		visit1.setStartDatetime(date1);
+		visit1.setStopDatetime(date2);
+
+		Assert.assertFalse(KenyaEmrUiUtils.isRetrospectiveVisit(visit1));
+
+		Visit visit2 = new Visit();
+		visit2.setStartDatetime(OpenmrsUtil.firstSecondOfDay(date1));
+		visit2.setStopDatetime(OpenmrsUtil.getLastMomentOfDay(date1));
+
+		Assert.assertTrue(KenyaEmrUiUtils.isRetrospectiveVisit(visit2));
+
+		// Check case when stop date has been persisted and lost its milliseconds
+		Calendar stopFromSql = Calendar.getInstance();
+		stopFromSql.setTime(OpenmrsUtil.getLastMomentOfDay(date1));
+		stopFromSql.set(Calendar.MILLISECOND, 0);
+
+		Visit visit3 = new Visit();
+		visit3.setStartDatetime(OpenmrsUtil.firstSecondOfDay(date1));
+		visit3.setStopDatetime(stopFromSql.getTime());
+
+		Assert.assertTrue(KenyaEmrUiUtils.isRetrospectiveVisit(visit3));
 	}
 }

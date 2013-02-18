@@ -31,10 +31,10 @@ import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
 import org.openmrs.module.kenyaemr.calculation.ScheduledVisitOnDayCalculation;
 import org.openmrs.module.kenyaemr.calculation.VisitsOnDayCalculation;
 import org.openmrs.module.kenyaemr.util.KenyaEmrUtils;
-import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.fragment.FragmentModel;
+import org.openmrs.util.OpenmrsUtil;
 import org.openmrs.util.PersonByNameComparator;
 
 /**
@@ -46,7 +46,7 @@ public class DailyScheduleFragmentController {
 	                       @FragmentParam("page") String pageWhenClicked,
 	                       @FragmentParam(value = "date", required = false) Date date) {
 
-		Date today = KenyaEmrUtils.dateStartOfDay(new Date());
+		Date today = OpenmrsUtil.firstSecondOfDay(new Date());
 		Date tomorrow = KenyaEmrUtils.dateAddDays(today, 1);
 		Date yesterday = KenyaEmrUtils.dateAddDays(today, -1);
 
@@ -56,7 +56,7 @@ public class DailyScheduleFragmentController {
 		}
 		else {
 			// Ignore time
-			date = KenyaEmrUtils.dateStartOfDay(date);
+			date = OpenmrsUtil.firstSecondOfDay(date);
 		}
 
 		// Run the calculations to get patients with scheduled visits

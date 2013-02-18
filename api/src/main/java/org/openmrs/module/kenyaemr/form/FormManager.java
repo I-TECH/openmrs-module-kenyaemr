@@ -14,8 +14,6 @@
 package org.openmrs.module.kenyaemr.form;
 
 import org.openmrs.Patient;
-import org.openmrs.Program;
-import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.kenyaemr.form.FormConfig.Frequency;
 import org.openmrs.module.kenyaemr.form.FormConfig.Gender;
@@ -27,61 +25,163 @@ import java.util.*;
  */
 public class FormManager {
 
-	private static Map<String, List<FormConfig>> appForms = new HashMap<String, List<FormConfig>>();
+	private static Map<String, FormConfig> forms = new HashMap<String, FormConfig>();
 
 	/**
-	 * Called from the module activator to register all forms
+	 * Called from the module activator to register all forms. In future this could be loaded from an XML file
 	 */
 	public static void setupStandardForms() {
-		Program hivProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.HIV_PROGRAM_UUID);
-		Program tbProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.TB_PROGRAM_UUID);
+		forms.clear();
 
 		/**
-		 * Note: some forms hidden for 2013.1 release
+		 * Generic once-ever forms
 		 */
+		registerForm(
+				MetadataConstants.FAMILY_HISTORY_FORM_UUID,
+				Frequency.ONCE_EVER,
+				new String[] { "kenyaemr.medicalChart" },
+				null,
+				Gender.BOTH,
+				"kenyaemr", "forms/family_history.png"
+		);
+		registerForm(
+				MetadataConstants.OBSTETRIC_HISTORY_FORM_UUID,
+				Frequency.ONCE_EVER,
+				new String[] { "kenyaemr.medicalChart" },
+				null,
+				Gender.FEMALE,
+				"kenyaemr", "forms/obstetric.png"
+		);
 
-		appForms.clear();
-		registerForm("kenyaemr.registration", new FormConfig(MetadataConstants.TRIAGE_FORM_UUID, Frequency.VISIT));
+		/**
+		 * Generic visit forms
+		 */
+		registerForm(
+				MetadataConstants.TRIAGE_FORM_UUID,
+				Frequency.VISIT,
+				new String[] { "kenyaemr.registration", "kenyaemr.intake" }
+		);
+		registerForm(
+				MetadataConstants.CLINICAL_ENCOUNTER_FORM_UUID,
+				Frequency.VISIT,
+				new String[] { "kenyaemr.medicalEncounter", "kenyaemr.medicalChart" }
+		);
+		registerForm(
+				MetadataConstants.OTHER_MEDICATIONS_FORM_UUID,
+				Frequency.VISIT,
+				new String[] { "kenyaemr.medicalEncounter", "kenyaemr.medicalChart" }
+		);
+		registerForm(
+				MetadataConstants.MOH_257_ENCOUNTER_ORDER_LAB_INVESTIGATIONS_FORM_UUID,
+				Frequency.VISIT,
+				new String[] { "kenyaemr.intake", "kenyaemr.medicalEncounter", "kenyaemr.medicalChart" },
+				null,
+				Gender.BOTH,
+				"kenyaemr", "forms/labresults.png"
+		);
+		registerForm(
+				MetadataConstants.PROGRESS_NOTE_FORM_UUID,
+				Frequency.VISIT,
+				new String[] { "kenyaemr.intake", "kenyaemr.medicalEncounter", "kenyaemr.medicalChart" }
+		);
 
-		registerForm("kenyaemr.intake", new FormConfig(MetadataConstants.TRIAGE_FORM_UUID, Frequency.VISIT));
-		//registerForm("kenyaemr.intake", new FormConfig(MetadataConstants.TB_SCREENING_FORM_UUID, Frequency.VISIT));
-		registerForm("kenyaemr.intake", new FormConfig(MetadataConstants.PROGRESS_NOTE_FORM_UUID, Frequency.VISIT));
-		registerForm("kenyaemr.intake", new FormConfig(MetadataConstants.MOH_257_ENCOUNTER_ORDER_LAB_INVESTIGATIONS_FORM_UUID, Frequency.VISIT));
-		//registerForm("kenyaemr.intake", new FormConfig(MetadataConstants.TB_VISIT_FORM_UUID, Frequency.VISIT, tbProgram, Gender.BOTH, null, null));
+		/**
+		 * HIV specific forms
+		 */
+		registerForm(
+				MetadataConstants.HIV_PROGRAM_ENROLLMENT_FORM_UUID,
+				Frequency.PROGRAM,
+				new String[] { "kenyaemr.medicalChart" },
+				MetadataConstants.HIV_PROGRAM_UUID,
+				Gender.BOTH,
+				"kenyaemr", "forms/generic.png"
+		);
+		registerForm(
+				MetadataConstants.CLINICAL_ENCOUNTER_HIV_ADDENDUM_FORM_UUID,
+				Frequency.VISIT,
+				new String[] { "kenyaemr.medicalEncounter", "kenyaemr.medicalChart" },
+				MetadataConstants.HIV_PROGRAM_UUID,
+				Gender.BOTH,
+				"kenyaemr", "forms/generic.png"
+		);
+		registerForm(
+				MetadataConstants.MOH_257_VISIT_SUMMARY_FORM_UUID,
+				Frequency.VISIT,
+				new String[] { "kenyaemr.medicalChart" },
+				MetadataConstants.HIV_PROGRAM_UUID,
+				Gender.BOTH,
+				"kenyaemr", "forms/moh257.png"
+		);
+		registerForm(
+				MetadataConstants.HIV_PROGRAM_DISCONTINUATION_FORM_UUID,
+				Frequency.PROGRAM,
+				new String[] { "kenyaemr.medicalChart" },
+				MetadataConstants.HIV_PROGRAM_UUID,
+				Gender.BOTH,
+				"kenyaemr", "forms/discontinue.png"
+		);
 
-		registerForm("kenyaemr.medicalEncounter", new FormConfig(MetadataConstants.CLINICAL_ENCOUNTER_FORM_UUID, Frequency.VISIT));
-		registerForm("kenyaemr.medicalEncounter", new FormConfig(MetadataConstants.CLINICAL_ENCOUNTER_HIV_ADDENDUM_FORM_UUID, Frequency.VISIT, hivProgram, Gender.BOTH, null, null));
-		//registerForm("kenyaemr.medicalEncounter", new FormConfig(MetadataConstants.TB_SCREENING_FORM_UUID, Frequency.VISIT));
-		registerForm("kenyaemr.medicalEncounter", new FormConfig(MetadataConstants.PROGRESS_NOTE_FORM_UUID, Frequency.VISIT));
-		registerForm("kenyaemr.medicalEncounter", new FormConfig(MetadataConstants.MOH_257_ENCOUNTER_ORDER_LAB_INVESTIGATIONS_FORM_UUID, Frequency.VISIT));
-		registerForm("kenyaemr.medicalEncounter", new FormConfig(MetadataConstants.OTHER_MEDICATIONS_FORM_UUID, Frequency.VISIT));
-		//registerForm("kenyaemr.medicalEncounter", new FormConfig(MetadataConstants.TB_VISIT_FORM_UUID, Frequency.VISIT, tbProgram, Gender.BOTH, null, null));
-
-		registerForm("kenyaemr.medicalChart", new FormConfig(MetadataConstants.FAMILY_HISTORY_FORM_UUID, Frequency.ONCE_EVER, null, Gender.BOTH, "kenyaemr", "forms/family_history.png"));
-		registerForm("kenyaemr.medicalChart", new FormConfig(MetadataConstants.OBSTETRIC_HISTORY_FORM_UUID, Frequency.ONCE_EVER, null, Gender.FEMALE, null, null));
-		registerForm("kenyaemr.medicalChart", new FormConfig(MetadataConstants.CLINICAL_ENCOUNTER_FORM_UUID, Frequency.VISIT));
-		registerForm("kenyaemr.medicalChart", new FormConfig(MetadataConstants.CLINICAL_ENCOUNTER_HIV_ADDENDUM_FORM_UUID, Frequency.VISIT, hivProgram, Gender.BOTH, null, null));
-		//registerForm("kenyaemr.medicalChart", new FormConfig(MetadataConstants.TB_SCREENING_FORM_UUID, Frequency.VISIT));
-		registerForm("kenyaemr.medicalChart", new FormConfig(MetadataConstants.PROGRESS_NOTE_FORM_UUID, Frequency.VISIT));
-		registerForm("kenyaemr.medicalChart", new FormConfig(MetadataConstants.MOH_257_ENCOUNTER_ORDER_LAB_INVESTIGATIONS_FORM_UUID, Frequency.VISIT));
-		registerForm("kenyaemr.medicalChart", new FormConfig(MetadataConstants.OTHER_MEDICATIONS_FORM_UUID, Frequency.VISIT));
-		//registerForm("kenyaemr.medicalChart", new FormConfig(MetadataConstants.TB_VISIT_FORM_UUID, Frequency.VISIT, tbProgram, Gender.BOTH, null, null));
-		//registerForm("kenyaemr.medicalChart", new FormConfig(MetadataConstants.RETROSPECTIVE_257_FORM_UUID, Frequency.VISIT, hivProgram, Gender.BOTH, null, null));
+		/**
+		 * TB specific forms
+		 */
+		registerForm(
+				MetadataConstants.TB_SCREENING_FORM_UUID,
+				Frequency.VISIT,
+				new String[] { "kenyaemr.intake", "kenyaemr.medicalEncounter", "kenyaemr.medicalChart" }
+		);
+		registerForm(
+				MetadataConstants.TB_VISIT_FORM_UUID,
+				Frequency.VISIT,
+				new String[] { "kenyaemr.intake", "kenyaemr.medicalEncounter", "kenyaemr.medicalChart" },
+				MetadataConstants.TB_PROGRAM_UUID,
+				Gender.BOTH,
+				"kenyaemr", "forms/generic.png"
+		);
+		registerForm(
+				MetadataConstants.TB_COMPLETION_FORM_UUID,
+				Frequency.PROGRAM,
+				new String[] { "kenyaemr.medicalChart" },
+				MetadataConstants.TB_PROGRAM_UUID,
+				Gender.BOTH,
+				"kenyaemr", "forms/discontinue.png"
+		);
 	}
 
 	/**
-	 * Registers the given form for the given application
-	 * @param appId the application ID
-	 * @param formConfig the form configuration
+	 * Registers a form for use in the EMR
+	 * @param formUuid the form UUID
+	 * @param frequency the form usage frequency
+	 * @param forApps the applications to use this form
 	 */
-	public static void registerForm(String appId, FormConfig formConfig) {
-		List<FormConfig> forms = appForms.get(appId);
-		if (forms == null) {
-			forms = new ArrayList<FormConfig>();
-			appForms.put(appId, forms);
+	public static void registerForm(String formUuid, Frequency frequency, String[] forApps) {
+		registerForm(formUuid, frequency, forApps, null, Gender.BOTH, "kenyaemr", "forms/generic.png");
+	}
+
+	/**
+	 * Registers a form for use in the EMR
+	 * @param formUuid the form UUID
+	 * @param frequency the form usage frequency
+	 * @param forApps the applications to use this form
+	 * @param forProgramUuid the form program usage (may be null)
+	 * @param forGender the gender usage
+	 * @param iconProvider the icon provider id
+	 * @param icon the icon file
+	 */
+	public static void registerForm(String formUuid, Frequency frequency, String[] forApps, String forProgramUuid, Gender forGender, String iconProvider, String icon) {
+		if (forms.containsKey(formUuid)) {
+			throw new RuntimeException("Form already registered");
 		}
 
-		forms.add(formConfig);
+		forms.put(formUuid, new FormConfig(formUuid, frequency, new HashSet<String>(Arrays.asList(forApps)), forProgramUuid, forGender, iconProvider, icon));
+	}
+
+	/**
+	 * Gets the form configuration for the form with the given UUID
+	 * @param formUuid the form UUID
+	 * @return the form configuration
+	 */
+	public static FormConfig getFormConfig(String formUuid) {
+		return forms.get(formUuid);
 	}
 
 	/**
@@ -92,12 +192,13 @@ public class FormManager {
 	 * @return the forms
 	 */
 	public static List<FormConfig> getFormsForPatient(String appId, Patient patient, Set<Frequency> includeFrequencies) {
-		List<FormConfig> allForms = appForms.get(appId);
-		if (allForms == null)
-			return new ArrayList<FormConfig>();
-
 		List<FormConfig> patientForms = new ArrayList<FormConfig>();
-		for (FormConfig form : allForms) {
+		for (FormConfig form : forms.values()) {
+
+			// Filter by app id
+			if (appId != null && !form.getForApps().contains(appId)) {
+				continue;
+			}
 
 			// Filter by patient gender
 			if (patient.getGender() != null) {
@@ -108,8 +209,9 @@ public class FormManager {
 			}
 
 			// Filter by frequency
-			if (includeFrequencies != null && !includeFrequencies.contains(form.getFrequency()))
+			if (includeFrequencies != null && !includeFrequencies.contains(form.getFrequency())) {
 				continue;
+			}
 
 			patientForms.add(form);
 		}

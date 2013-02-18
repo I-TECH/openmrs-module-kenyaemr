@@ -8,14 +8,14 @@
 					active: (selection == "section-overview"),
 					iconProvider: "kenyaemr",
 					icon: "buttons/patient_overview.png"
-			]/*, Hidden until 2013.1.1
+			],
 	        [
 					label: "MOH 257",
 					href: ui.pageLink("kenyaemr", "medicalChartViewPatient", [ patientId: patient.id, section: "moh257" ]),
 					active: (selection == "section-moh257"),
 					iconProvider: "kenyaemr",
-					icon: "buttons/form_moh257.png"
-			]*/
+					icon: "forms/moh257.png"
+			]
 	];
 
 	oneTimeForms.each { form ->
@@ -29,9 +29,9 @@
 	}
 
 	programs.each { prog ->
-		def extra = "from " + kenyaEmrUi.formatDateNoTime(prog.dateEnrolled)
+		def extra = "from " + kenyaEmrUi.formatDate(prog.dateEnrolled)
 		if (prog.dateCompleted)
-			extra += " to " + kenyaEmrUi.formatDateNoTime(prog.dateCompleted)
+			extra += " to " + kenyaEmrUi.formatDate(prog.dateCompleted)
 		if (prog.outcome)
 			exta += "<br />Outcome: <b>" + ui.format(prog.outcome) + "</b>"
 
@@ -59,19 +59,10 @@
 		}
 		else {
 			visits.each { visit ->
-				def extra = "from " + ui.format(visit.startDatetime)
-				def visitType = visit.visitType.name;
-				//if (kenyaEmrUi.isRetrospectiveVisit(visit)) {
-				//	visitType += " - RE"  // Hidden until 2013.1.1
-				//}
-				if (visit.stopDatetime) {
-					extra += " to " + ui.format(visit.stopDatetime)
-				}
-
 				print ui.includeFragment("kenyaemr", "widget/panelMenuItem", [
-						label: ui.format(visitType),
+						label: ui.format(visit.visitType),
 						href: ui.pageLink("kenyaemr", "medicalChartViewPatient", [ patientId: patient.id, visitId: visit.id ]),
-						extra: extra,
+						extra: kenyaEmrUi.formatVisitDates(visit),
 						active: (selection == "visit-" + visit.id)
 				])
 			}
@@ -125,10 +116,5 @@
 
 </div>
 
-<% if (visit) { %>
-
-	${ ui.includeFragment("kenyaemr", "showHtmlForm", [ id: "showHtmlForm", style: "display: none" ]) }
-
-	${ ui.includeFragment("kenyaemr", "dialogSupport") }
-
-<% } %>
+${ ui.includeFragment("kenyaemr", "showHtmlForm", [ id: "showHtmlForm", style: "display: none" ]) }
+${ ui.includeFragment("kenyaemr", "dialogSupport") }

@@ -51,30 +51,6 @@
 <script type="text/javascript">
 
 	var standardRegimens = ${ regimenDefinitionsJson };
-
-	function showRegimenHistory(tbody, data) {
-		if (!data || data.length === 0) {
-			tbody.append('<tr><td colspan="4">None</td></tr>');
-			return;
-		}
-		for (var i = 0; i < data.length; ++i) {
-			var str = '<tr><td>' + data[i].startDate + '</td>';
-			str += '<td>' + data[i].endDate + '</td>';
-			str += '<td style="text-align: left">' + data[i].regimen.shortDisplay + '<br/><small>' + data[i].regimen.longDisplay + '</small></td>';
-			str += '<td style="text-align: left">';
-			if (data[i].changeReasons) {
-				str += data[i].changeReasons.join(', ');
-			}
-			str += '</td></tr>';
-			tbody.append(str);
-		}
-	}
-	
-	function refreshRegimenHistory(tbody, patientId) {
-		jq.getJSON(ui.fragmentActionLink('kenyaemr', 'arvRegimen', 'regimenHistory', { patientId: patientId }), function(data) {
-			showRegimenHistory(tbody, data);
-		});
-	}
 	
 	function choseAction(formId) {
 		// Hide the regimen action buttons
@@ -106,8 +82,6 @@
 	}
 	
 	jq(function() {
-		showRegimenHistory(jq('#regimen-history > tbody'), ${ regimenHistoryJson });
-
 		jq('.standard-regimen-select').change(function () {
 			// Get selected regimen definition
 			var stdRegIndex = parseInt(jq(this).val());
@@ -148,12 +122,7 @@
 
 <div id="content-side">
 	<div class="panel-frame">
-		${ ui.includeFragment("kenyaemr", "widget/panelMenuItem", [
-			iconProvider: "kenyaemr",
-			icon: "buttons/back.png",
-			label: "Back to Visit",
-			href: ui.pageLink("kenyaemr", "medicalEncounterViewPatient", [ patientId: patient.id ])
-		]) }
+		${ ui.includeFragment("kenyaemr", "widget/panelMenuItem", [ iconProvider: "kenyaemr", icon: "buttons/back.png", label: "Back", href: returnUrl ]) }
 	</div>
 </div>
 
@@ -163,22 +132,11 @@
 	<div class="panel-heading">ARV Regimen History</div>
 	<div class="panel-content">
 
-	<table id="regimen-history" class="table-decorated table-vertical">
-		<thead>
-			<tr>
-				<th>Start</th>
-				<th>End</th>
-				<th>Regimen</th>
-				<th>Change Reason</th>
-			</tr>
-		</thead>
-		<tbody>
-		</tbody>
-	</table>
+	${ ui.includeFragment("kenyaemr", "regimenHistory", [ patient: patient ]) }
 
 	<br/>
 
-	<div id="regimen-action-buttons">
+	<div id="regimen-action-buttons" style="text-align: center">
 	<% if (allowNew) { %>
 	${ ui.includeFragment("uilibrary", "widget/button", [ iconProvider: "kenyaemr", icon: "buttons/regimen_start.png", label: "Start", extra: "a new regimen", onClick: "choseAction('start-new-regimen')" ]) }
 	<% } %>

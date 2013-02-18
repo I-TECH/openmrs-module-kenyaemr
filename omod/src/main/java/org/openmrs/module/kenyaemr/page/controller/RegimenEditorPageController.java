@@ -16,7 +16,6 @@ package org.openmrs.module.kenyaemr.page.controller;
 import java.util.*;
 
 import org.openmrs.Concept;
-import org.openmrs.ConceptName;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.KenyaEmrUiUtils;
@@ -24,29 +23,29 @@ import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.kenyaemr.regimen.RegimenDefinition;
 import org.openmrs.module.kenyaemr.regimen.RegimenHistory;
 import org.openmrs.module.kenyaemr.regimen.RegimenManager;
-import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.page.PageModel;
+import org.openmrs.util.OpenmrsUtil;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * Controller for ARV regimen edit screen
  */
-public class MedicalEncounterArvRegimenPageController {
+public class RegimenEditorPageController {
 
 	public void controller(@RequestParam("patientId") Patient patient,
+	                       @RequestParam("returnUrl") String returnUrl,
 	                       UiUtils ui,
 	                       PageModel model) {
 
 		model.addAttribute("patient", patient);
-		model.addAttribute("person", patient);
-		model.addAttribute("today", DateUtil.getStartOfDay(new Date()));
-		
-		Concept arvSet = Context.getConceptService().getConceptByUuid(MetadataConstants.ANTIRETROVIRAL_DRUGS_CONCEPT_UUID);
-		RegimenHistory history = RegimenHistory.forPatient(patient, arvSet);
+		model.addAttribute("today", OpenmrsUtil.firstSecondOfDay(new Date()));
+		model.addAttribute("returnUrl", returnUrl);
+
+		Concept arvs = Context.getConceptService().getConceptByUuid(MetadataConstants.ANTIRETROVIRAL_DRUGS_CONCEPT_UUID);
+		RegimenHistory history = RegimenHistory.forPatient(patient, arvs);
 		model.addAttribute("history", history);
-		model.addAttribute("regimenHistoryJson", ui.toJson(KenyaEmrUiUtils.simpleRegimenHistory(history, ui)));
-		
+
 		Map<String, Integer> arvConcepts = RegimenManager.getDrugConcepts("ARV");
 		List<Concept> arvList = new ArrayList<Concept>();
 		for (Integer conceptId : arvConcepts.values()) {
