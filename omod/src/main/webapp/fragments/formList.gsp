@@ -4,7 +4,11 @@
 
 <script type="text/javascript" xmlns="http://www.w3.org/1999/html">
 	function enterHtmlForm(visitId, patientId, formUuid) {
-		location.href = ui.pageLink('kenyaemr', 'enterHtmlForm', { patientId: patientId, formUuid: formUuid, visitId: visitId, returnUrl: location.href });
+		var opts = { patientId: patientId, formUuid: formUuid, returnUrl: location.href };
+		if (visitId) {
+			opts.visitId = visitId;
+		}
+		location.href = ui.pageLink('kenyaemr', 'enterHtmlForm', opts);
 	}
 </script>
 
