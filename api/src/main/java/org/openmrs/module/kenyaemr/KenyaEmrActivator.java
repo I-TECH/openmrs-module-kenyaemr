@@ -13,12 +13,6 @@
  */
 package org.openmrs.module.kenyaemr;
 
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.GlobalProperty;
@@ -28,26 +22,13 @@ import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.module.kenyaemr.datatype.LocationDatatype;
 import org.openmrs.module.kenyaemr.form.FormManager;
 import org.openmrs.module.kenyaemr.regimen.RegimenManager;
-import org.openmrs.module.metadatasharing.ImportConfig;
-import org.openmrs.module.metadatasharing.ImportMode;
-import org.openmrs.module.metadatasharing.ImportedPackage;
-import org.openmrs.module.metadatasharing.MetadataSharing;
-import org.openmrs.module.metadatasharing.api.MetadataSharingService;
-import org.openmrs.module.metadatasharing.wrapper.PackageImporter;
 
 /**
  * This class contains the logic that is run every time this module is either started or stopped.
  */
 public class KenyaEmrActivator implements ModuleActivator {
 
-	private static final String METADATA_FILENAME_CORE = "Kenya_EMR_Core_Metadata-20.zip";
-	private static final String METADATA_FILENAME_ROLES = "Kenya_EMR_Roles_and_Privileges-2.zip";
-	private static final String METADATA_FILENAME_LOCATIONS = "Kenya_EMR_Locations-6.zip";
-	private static final String METADATA_FILENAME_FORMS = "Kenya_EMR_Forms-12.zip";
-
-	private static final String REGIMENS_FILENAME = "Kenya_EMR_Regimens.xml";
-
-	protected Log log = LogFactory.getLog(getClass());
+	protected static final Log log = LogFactory.getLog(KenyaEmrActivator.class);
 
 	/**
 	 * @see ModuleActivator#willRefreshContext()
@@ -85,7 +66,7 @@ public class KenyaEmrActivator implements ModuleActivator {
 
 			log.info(" > Setup global properties");
 
-			boolean metadataUpdated = setupMetadataPackages();
+			boolean metadataUpdated = MetadataManager.setupMetadataPackages();
 
 			log.info(" > Setup metadata packages (" + (metadataUpdated ? "Imported packages" : "Already up-to-date") + ")");
 
@@ -93,7 +74,7 @@ public class KenyaEmrActivator implements ModuleActivator {
 
 			log.info(" > Setup form manager");
 
-			setupRegimenManager();
+			RegimenManager.setupStandardRegimens();
 
 			log.info(" > Setup regimen manager");
 
@@ -132,72 +113,6 @@ public class KenyaEmrActivator implements ModuleActivator {
 			gp.setDescription("The facility for which this installation is configured. Visits and encounters will be created with this location value.");
 			gp.setDatatypeClassname(LocationDatatype.class.getName());
 			Context.getAdministrationService().saveGlobalProperty(gp);
-		}
-	}
-
-	/**
-	 * Public for testing
-	 *
-	 * @return whether any changes were made to the db
-	 * @throws Exception
-	 */
-	public boolean setupMetadataPackages() throws Exception {
-		boolean anyChanges = false;
-		anyChanges |= installMetadataPackageIfNecessary(MetadataConstants.CORE_PACKAGE_UUID, METADATA_FILENAME_CORE);
-		anyChanges |= installMetadataPackageIfNecessary(MetadataConstants.ROLES_PACKAGE_UUID, METADATA_FILENAME_ROLES);
-		anyChanges |= installMetadataPackageIfNecessary(MetadataConstants.LOCATIONS_PACKAGE_UUID, METADATA_FILENAME_LOCATIONS);
-		anyChanges |= installMetadataPackageIfNecessary(MetadataConstants.FORMS_PACKAGE_UUID, METADATA_FILENAME_FORMS);
-		return anyChanges;
-	}
-
-	/**
-	 * Sets up the regimen manager
-	 * @throws Exception
-	 */
-	private void setupRegimenManager() throws Exception {
-		if (getClass().getClassLoader().getResource(REGIMENS_FILENAME) == null) {
-			throw new RuntimeException("Cannot find " + REGIMENS_FILENAME + ". Make sure it's in api/src/main/resources");
-		}
-
-		InputStream stream = getClass().getClassLoader().getResourceAsStream(REGIMENS_FILENAME);
-
-		RegimenManager.loadDefinitionsFromXML(stream);
-	}
-
-	/**
-	 * Checks whether the given version of the MDS package has been installed yet, and if not, install it
-	 *
-	 * @param groupUuid
-	 * @param filename
-	 * @return whether any changes were made to the db
-	 * @throws IOException
-	 */
-	private boolean installMetadataPackageIfNecessary(String groupUuid, String filename) throws IOException {
-		//NameWithNoSpaces-v1.zip
-		try {
-			Matcher matcher = Pattern.compile("\\w+-(\\d+).zip").matcher(filename);
-			if (!matcher.matches())
-				throw new RuntimeException("Filename must match PackageNameWithNoSpaces-X.zip");
-			Integer version = Integer.valueOf(matcher.group(1));
-
-			ImportedPackage installed = Context.getService(MetadataSharingService.class).getImportedPackageByGroup(groupUuid);
-			if (installed != null && installed.getVersion() >= version) {
-				log.info("Metadata package " + filename + " is already installed with version " + installed.getVersion());
-				return false;
-			}
-
-			if (getClass().getClassLoader().getResource(filename) == null) {
-				throw new RuntimeException("Cannot find " + filename + " for group " + groupUuid + ". Make sure it's in api/src/main/resources");
-			}
-
-			PackageImporter metadataImporter = MetadataSharing.getInstance().newPackageImporter();
-			metadataImporter.setImportConfig(ImportConfig.valueOf(ImportMode.MIRROR));
-			metadataImporter.loadSerializedPackageStream(getClass().getClassLoader().getResourceAsStream(filename));
-			metadataImporter.importPackage();
-			return true;
-		} catch (Exception ex) {
-			log.error("Failed to install metadata package " + filename, ex);
-			return false;
 		}
 	}
 }

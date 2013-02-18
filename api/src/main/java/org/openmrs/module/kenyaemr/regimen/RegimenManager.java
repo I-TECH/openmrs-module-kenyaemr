@@ -35,6 +35,8 @@ import java.util.*;
  */
 public class RegimenManager {
 
+	private static final String REGIMENS_FILENAME = "metadata/Kenya_EMR_Regimens.xml";
+
 	private static Map<String, Map<String, Integer>> drugConcepts = new LinkedHashMap<String, Map<String, Integer>>();
 
 	private static Map<String, List<RegimenDefinition>> regimenDefinitions = new HashMap<String, List<RegimenDefinition>>();
@@ -145,6 +147,17 @@ public class RegimenManager {
 		}
 
 		return matches;
+	}
+
+	public static void setupStandardRegimens() throws Exception {
+		try {
+			InputStream stream = RegimenManager.class.getClassLoader().getResourceAsStream(REGIMENS_FILENAME);
+
+			loadDefinitionsFromXML(stream);
+		}
+		catch (IOException ex) {
+			throw new RuntimeException("Cannot find " + REGIMENS_FILENAME + ". Make sure it's in api/src/main/resources/metadata");
+		}
 	}
 
 	/**

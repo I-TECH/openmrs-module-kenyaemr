@@ -35,7 +35,7 @@ public class OnSecondLineArtCalculationTest extends BaseModuleContextSensitiveTe
 		executeDataSet("test-data.xml");
 		executeDataSet("test-drugdata.xml");
 
-		InputStream stream = getClass().getClassLoader().getResourceAsStream("Kenya_EMR_Regimens.xml");
+		InputStream stream = getClass().getClassLoader().getResourceAsStream("metadata/Kenya_EMR_Regimens.xml");
 		RegimenManager.loadDefinitionsFromXML(stream);
 	}
 

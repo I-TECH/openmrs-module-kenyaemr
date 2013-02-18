@@ -1,0 +1,112 @@
+/**
+ * The contents of this file are subject to the OpenMRS Public License
+ * Version 1.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ * http://license.openmrs.org
+ *
+ * Software distributed under the License is distributed on an "AS IS"
+ * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+ * License for the specific language governing rights and limitations
+ * under the License.
+ *
+ * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ */
+package org.openmrs.module.kenyaemr;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.openmrs.api.context.Context;
+import org.openmrs.module.metadatasharing.ImportConfig;
+import org.openmrs.module.metadatasharing.ImportMode;
+import org.openmrs.module.metadatasharing.ImportedPackage;
+import org.openmrs.module.metadatasharing.MetadataSharing;
+import org.openmrs.module.metadatasharing.api.MetadataSharingService;
+import org.openmrs.module.metadatasharing.wrapper.PackageImporter;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+/**
+ *
+ */
+public class MetadataManager {
+
+	private static final String PACKAGES_FILENAME = "metadata/packages.xml";
+
+	protected static final Log log = LogFactory.getLog(MetadataManager.class);
+
+	/**
+	 * @return whether any changes were made to the db
+	 * @throws Exception
+	 */
+	public static boolean setupMetadataPackages() throws Exception {
+		boolean anyChanges = false;
+
+		try {
+			InputStream stream = MetadataManager.class.getClassLoader().getResourceAsStream(PACKAGES_FILENAME);
+			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder builder = dbFactory.newDocumentBuilder();
+			Document document = builder.parse(stream);
+			Element root = document.getDocumentElement();
+
+			NodeList packageNodes = root.getElementsByTagName("package");
+			for (int p = 0; p < packageNodes.getLength(); p++) {
+				Element packageElement = (Element)packageNodes.item(p);
+				String groupUuid = packageElement.getAttribute("groupUuid");
+				String filename = packageElement.getAttribute("filename");
+
+				anyChanges |= installMetadataPackageIfNecessary(groupUuid, "metadata/" + filename);
+			}
+		}
+		catch (IOException ex) {
+			throw new RuntimeException("Cannot find " + PACKAGES_FILENAME + ". Make sure it's in api/src/main/resources/metadata");
+		}
+
+		return anyChanges;
+	}
+
+	/**
+	 * Checks whether the given version of the MDS package has been installed yet, and if not, install it
+	 * @param groupUuid the package group UUID
+	 * @param filename the package filename
+	 * @return whether any changes were made to the db
+	 * @throws IOException
+	 */
+	protected static boolean installMetadataPackageIfNecessary(String groupUuid, String filename) throws IOException {
+
+		log.error("Installing metadata package: " + filename);
+
+		try {
+			Matcher matcher = Pattern.compile("[\\w/-]+-(\\d+).zip").matcher(filename);
+			if (!matcher.matches())
+				throw new RuntimeException("Filename must match PackageNameWithNoSpaces-X.zip");
+			Integer version = Integer.valueOf(matcher.group(1));
+
+			ImportedPackage installed = Context.getService(MetadataSharingService.class).getImportedPackageByGroup(groupUuid);
+			if (installed != null && installed.getVersion() >= version) {
+				log.info("Metadata package " + filename + " is already installed with version " + installed.getVersion());
+				return false;
+			}
+
+			if (MetadataManager.class.getClassLoader().getResource(filename) == null) {
+				throw new RuntimeException("Cannot find " + filename + " for group " + groupUuid);
+			}
+
+			PackageImporter metadataImporter = MetadataSharing.getInstance().newPackageImporter();
+			metadataImporter.setImportConfig(ImportConfig.valueOf(ImportMode.MIRROR));
+			metadataImporter.loadSerializedPackageStream(MetadataManager.class.getClassLoader().getResourceAsStream(filename));
+			metadataImporter.importPackage();
+			return true;
+		} catch (Exception ex) {
+			log.error("Failed to install metadata package " + filename, ex);
+			return false;
+		}
+	}
+}
