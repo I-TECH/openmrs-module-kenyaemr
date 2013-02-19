@@ -76,9 +76,14 @@ var kenyaemr = (function($) {
 			var hours = $('#' + fieldId + '_hour').val();
 			var minutes = $('#' + fieldId + '_minute').val();
 
-			// Format date with time fields
-			var timestamp = $.datepicker.formatDate($.datepicker.W3C, date) + ' ' + hours + ':' + minutes + ':00.000';
-			$('#' + fieldId).val(timestamp);
+			if (date) {
+				// Format date with time fields
+				var timestamp = $.datepicker.formatDate($.datepicker.W3C, date) + ' ' + hours + ':' + minutes + ':00.000';
+				$('#' + fieldId).val(timestamp);
+			} else {
+				// Empty date means empty datetime
+				$('#' + fieldId).val('');
+			}
 		}
 	};
 
