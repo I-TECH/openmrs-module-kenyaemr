@@ -37,9 +37,11 @@ public class RegimenManager {
 
 	private static final String REGIMENS_FILENAME = "metadata/Kenya_EMR_Regimens.xml";
 
+	private static Map<String, Integer> masterSetConcepts = new LinkedHashMap<String, Integer>();
+
 	private static Map<String, Map<String, Integer>> drugConcepts = new LinkedHashMap<String, Map<String, Integer>>();
 
-	private static Map<String, List<RegimenDefinition>> regimenDefinitions = new HashMap<String, List<RegimenDefinition>>();
+	private static Map<String, List<RegimenDefinitionGroup>> regimenGroups = new LinkedHashMap<String, List<RegimenDefinitionGroup>>();
 
 	private static int definitionsVersion = 0;
 
@@ -52,21 +54,36 @@ public class RegimenManager {
 	}
 
 	/**
+	 * Gets the master set concept for the given category
+	 * @param category the category, e.g. "ARV"
+	 * @return the concept
+	 */
+	public static Concept getMasterSetConcept(String category) {
+		Integer conceptId = masterSetConcepts.get(category);
+		return conceptId != null ? Context.getConceptService().getConcept(conceptId) : null;
+	}
+
+	/**
 	 * Gets the individual drug concepts for the given category
 	 * @param category the category, e.g. "ARV"
 	 * @return the concept ids
 	 */
-	public static Map<String, Integer> getDrugConcepts(String category) {
-		return drugConcepts.get(category);
+	public static List<Concept> getDrugConcepts(String category) {
+		Map<String, Integer> conceptIds = drugConcepts.get(category);
+		List<Concept> drugConcepts = new ArrayList<Concept>();
+		for (Integer conceptId : conceptIds.values()) {
+			drugConcepts.add(Context.getConceptService().getConcept(conceptId));
+		}
+		return drugConcepts;
 	}
 
 	/**
-	 * Gets the regimen definitions for the given category
+	 * Gets the regimen groups for the given category
 	 * @param category the category, e.g. "ARV"
-	 * @return the regimen definitions
+	 * @return the regimen groups
 	 */
-	public static List<RegimenDefinition> getRegimenDefinitions(String category) {
-		return regimenDefinitions.get(category);
+	public static List<RegimenDefinitionGroup> getRegimenGroups(String category) {
+		return regimenGroups.get(category);
 	}
 
 	/**
@@ -78,20 +95,16 @@ public class RegimenManager {
 	}
 
 	/**
-	 * Looks up the drug code for the given concept in the given category
-	 * @param category the category, e.g. "ARV"
+	 * Looks up the drug code for the given concept
 	 * @param concept the drug concept
 	 * @return the drug code
 	 */
-	public static String findDrugCode(String category, Concept concept) {
-		Map<String, Integer> concepts = drugConcepts.get(category);
-		if (concepts == null) {
-			throw new IllegalArgumentException("No such regimen category: " + category);
-		}
-
-		for (Map.Entry<String, Integer> entry : concepts.entrySet()) {
-			if (entry.getValue().equals(concept.getConceptId())) {
-				return entry.getKey();
+	public static String findDrugCode(Concept concept) {
+		for (Map<String, Integer> concepts : drugConcepts.values()) {
+			for (Map.Entry<String, Integer> entry : concepts.entrySet()) {
+				if (entry.getValue().equals(concept.getConceptId())) {
+					return entry.getKey();
+				}
 			}
 		}
 		return null;
@@ -100,50 +113,52 @@ public class RegimenManager {
 	/**
 	 * Finds definitions that match the given regimen
 	 * @param category the category, e.g. "ARV"
-	 * @param regimen the regimen
+	 * @param regimenOrder the regimen
 	 * @param exact whether matches must be exact (includes dose, units and frequency)
 	 * @return the definitions
 	 */
-	public static List<RegimenDefinition> findDefinitions(String category, Regimen regimen, boolean exact) {
-		List<RegimenDefinition> definitions = regimenDefinitions.get(category);
-		if (definitions == null) {
-			throw new IllegalArgumentException("No such regimen category: " + category);
+	public static List<RegimenDefinition> findDefinitions(String category, RegimenOrder regimenOrder, boolean exact) {
+		List<RegimenDefinitionGroup> groups = regimenGroups.get(category);
+		if (groups == null) {
+			throw new IllegalArgumentException("No such category: " + category);
 		}
 
 		List<RegimenDefinition> matches = new ArrayList<RegimenDefinition>();
 
-		outer:
-		for (RegimenDefinition definition : definitions) {
-			List<RegimenDefinition.RegimenComponent> components = definition.getComponents();
-			Set<DrugOrder> orders = regimen.getDrugOrders();
+		for (RegimenDefinitionGroup group : groups) {
+			outer:
+			for (RegimenDefinition definition : group.getRegimens()) {
+				List<RegimenComponent> regimen = definition.getComponents();
+				Set<DrugOrder> orders = regimenOrder.getDrugOrders();
 
-			// Skip if regimen doesn't have same number of orders
-			if (components.size() != orders.size()) {
-				continue;
-			}
+				// Skip if regimen doesn't have same number of orders
+				if (regimen.size() != orders.size()) {
+					continue;
+				}
 
-			// Check each component has an equivalent drug order
-			for (RegimenDefinition.RegimenComponent component : components) {
+				// Check each component has an equivalent drug order
+				for (RegimenComponent component : regimen) {
 
-				// Does regimen have a drug order for this component?
-				boolean regimenHasComponent = false;
-				for (DrugOrder order : orders) {
-					if (order.getConcept().getConceptId().equals(component.getConceptId())) {
+					// Does regimen have a drug order for this component?
+					boolean regimenHasComponent = false;
+					for (DrugOrder order : orders) {
+						if (order.getConcept().getConceptId().equals(component.getConceptId())) {
 
-						if (!exact || (ObjectUtils.equals(order.getDose(), component.getDose()) && StringUtils.equals(order.getUnits(), component.getUnits()) && StringUtils.equals(order.getFrequency(), component.getFrequency()))) {
-							regimenHasComponent = true;
-							break;
+							if (!exact || (ObjectUtils.equals(order.getDose(), component.getDose()) && StringUtils.equals(order.getUnits(), component.getUnits()) && StringUtils.equals(order.getFrequency(), component.getFrequency()))) {
+								regimenHasComponent = true;
+								break;
+							}
 						}
+					}
+
+					if (!regimenHasComponent) {
+						continue outer;
 					}
 				}
 
-				if (!regimenHasComponent) {
-					continue outer;
-				}
+				// Regimen has all components of the definition
+				matches.add(definition);
 			}
-
-			// Regimen has all components of the definition
-			matches.add(definition);
 		}
 
 		return matches;
@@ -177,16 +192,20 @@ public class RegimenManager {
 		definitionsVersion = Integer.parseInt(root.getAttribute("version"));
 
 		drugConcepts.clear();
-		regimenDefinitions.clear();
+		regimenGroups.clear();
 
 		// Parse each category
 		NodeList categoryNodes = root.getElementsByTagName("category");
 		for (int c = 0; c < categoryNodes.getLength(); c++) {
 			Element categoryElement = (Element)categoryNodes.item(c);
 			String categoryCode = categoryElement.getAttribute("code");
+			String masterSetUuid = categoryElement.getAttribute("masterSetUuid");
+
+			Concept masterSetConcept = Context.getConceptService().getConceptByUuid(masterSetUuid);
+			masterSetConcepts.put(categoryCode, masterSetConcept.getConceptId());
 
 			Map<String, Integer> drugs = new HashMap<String, Integer>();
-			List<RegimenDefinition> regimens = new ArrayList<RegimenDefinition>();
+			List<RegimenDefinitionGroup> groups = new ArrayList<RegimenDefinitionGroup>();
 
 			// Parse all drug concepts for this category
 			NodeList drugNodes = categoryElement.getElementsByTagName("drug");
@@ -205,6 +224,10 @@ public class RegimenManager {
 			for (int g = 0; g < groupNodes.getLength(); g++) {
 				Element groupElement = (Element)groupNodes.item(g);
 				String groupCode = groupElement.getAttribute("code");
+				String groupName = groupElement.getAttribute("name");
+
+			   	RegimenDefinitionGroup group = new RegimenDefinitionGroup(groupCode, groupName);
+				groups.add(group);
 
 				// Parse all regimen definitions for this group
 				NodeList regimenNodes = groupElement.getElementsByTagName("regimen");
@@ -212,7 +235,7 @@ public class RegimenManager {
 					Element regimenElement = (Element)regimenNodes.item(r);
 					String name = regimenElement.getAttribute("name");
 
-					RegimenDefinition regimenDefinition = new RegimenDefinition(name, groupCode);
+					RegimenDefinition regimenDefinition = new RegimenDefinition(name, group);
 
 					// Parse all components for this regimen
 					NodeList componentNodes = regimenElement.getElementsByTagName("component");
@@ -230,12 +253,12 @@ public class RegimenManager {
 						regimenDefinition.addComponent(drugConceptId, dose, units, frequency);
 					}
 
-					regimens.add(regimenDefinition);
+					group.addRegimen(regimenDefinition);
 				}
 			}
 
 			drugConcepts.put(categoryCode, drugs);
-			regimenDefinitions.put(categoryCode, regimens);
+			regimenGroups.put(categoryCode, groups);
 		}
 	}
 }

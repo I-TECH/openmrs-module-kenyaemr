@@ -20,7 +20,7 @@ import org.openmrs.Concept;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
-import org.openmrs.module.kenyaemr.regimen.Regimen;
+import org.openmrs.module.kenyaemr.regimen.RegimenOrder;
 import org.openmrs.module.kenyaemr.test.TestUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
@@ -57,7 +57,7 @@ public class CurrentArtRegimenCalculationTest extends BaseModuleContextSensitive
 		Assert.assertNull(resultMap.get(6)); // isn't on any drugs
 		Assert.assertNull(resultMap.get(7)); // isn't on any ARTs
 
-		Regimen pat8Res = (Regimen)resultMap.get(8).getValue();
+		RegimenOrder pat8Res = (RegimenOrder)resultMap.get(8).getValue();
 		Assert.assertEquals(1, pat8Res.getDrugOrders().size());
 	}
 }

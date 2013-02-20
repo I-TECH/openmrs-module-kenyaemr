@@ -33,7 +33,7 @@ import org.openmrs.util.OpenmrsUtil;
 /**
  * Regimen history of a patient
  */
-public class RegimenHistory {
+public class RegimenOrderHistory {
 
 	private enum ChangeType {
 		START, END
@@ -42,25 +42,25 @@ public class RegimenHistory {
 	private List<RegimenChange> changes;
 
 	/**
-	 * Generates a regimen history for the given patient
+	 * Generates a regimen order history for the given patient
 	 * @param patient the patient
 	 * @param medSet the medset concept defining the list of relevant drug concepts
 	 * @return the regimen history
 	 */
-	public static RegimenHistory forPatient(Patient patient, Concept medSet) {
+	public static RegimenOrderHistory forPatient(Patient patient, Concept medSet) {
 		Set<Concept> relevantGenerics = new HashSet<Concept>(medSet.getSetMembers());
 		@SuppressWarnings("deprecation")
 		List<DrugOrder> allDrugOrders = Context.getOrderService().getDrugOrdersByPatient(patient);
-		return new RegimenHistory(relevantGenerics, allDrugOrders);
+		return new RegimenOrderHistory(relevantGenerics, allDrugOrders);
 	}
 	
 	/**
-	 * Constructs a regimen history
+	 * Constructs a regimen order history
 	 * @param relevantDrugs
 	 * @param allDrugOrders
 	 * @should create regimen history based on drug orders
 	 */
-	RegimenHistory(Set<Concept> relevantDrugs, List<DrugOrder> allDrugOrders) {
+	RegimenOrderHistory(Set<Concept> relevantDrugs, List<DrugOrder> allDrugOrders) {
 
 		// Filter the drug orders to only contain orders of relevant drugs
 		List<DrugOrder> relevantDrugOrders = new ArrayList<DrugOrder>();
@@ -95,7 +95,7 @@ public class RegimenHistory {
 		// Group drug orders into regimens based on common change dates
 		changes = new ArrayList<RegimenChange>();
 		Set<DrugOrder> runningOrders = new LinkedHashSet<DrugOrder>();
-		Regimen lastRegimen = null;
+		RegimenOrder lastRegimen = null;
 		for (Map.Entry<Date, List<DrugOrderChange>> e : changesByDate.entrySet()) {
 			Date date = e.getKey();
 			Set<Concept> changeReasons = new LinkedHashSet<Concept>();
@@ -116,9 +116,9 @@ public class RegimenHistory {
 			}
 
 			// Construct new regimen if there are running drug orders
-			Regimen newRegimen = null;
+			RegimenOrder newRegimen = null;
 			if (runningOrders.size() > 0) {
-				newRegimen = new Regimen(new LinkedHashSet<DrugOrder>(runningOrders));
+				newRegimen = new RegimenOrder(new LinkedHashSet<DrugOrder>(runningOrders));
 			}
 
 			RegimenChange change = new RegimenChange(date, lastRegimen, newRegimen, changeReasons, changeReasonsNonCoded);
@@ -178,14 +178,14 @@ public class RegimenHistory {
 	 * Convenience method to get the current regimen
 	 * @return the regimen
 	 */
-	public Regimen getCurrentRegimen() {
+	public RegimenOrder getCurrentRegimen() {
 		return getRegimenOnDate(new Date());
 	}
 	
 	/**
 	 * Gets the regimen on the specified date, or now() if null
 	 */
-	public Regimen getRegimenOnDate(Date date) {
+	public RegimenOrder getRegimenOnDate(Date date) {
 		if (date == null) {
 			date = new Date();
 		}
@@ -235,6 +235,5 @@ public class RegimenHistory {
 		public DrugOrder getDrugOrder() {
 			return drugOrder;
 		}
-
 	}
 }

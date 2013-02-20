@@ -1,36 +1,8 @@
 <%
-	config.require("patient")
+	config.require("history")
+
+	def simpleHistory = kenyaEmrUi.simpleRegimenHistory(config.history, ui)
 %>
-<script type="text/javascript">
-
-	function showRegimenHistory(tbody, data) {
-		if (!data || data.length === 0) {
-			tbody.append('<tr><td colspan="4">None</td></tr>');
-			return;
-		}
-		for (var i = 0; i < data.length; ++i) {
-			var str = '<tr><td>' + data[i].startDate + '</td>';
-			str += '<td>' + data[i].endDate + '</td>';
-			str += '<td style="text-align: left">' + data[i].regimen.shortDisplay + '<br/><small>' + data[i].regimen.longDisplay + '</small></td>';
-			str += '<td style="text-align: left">';
-			if (data[i].changeReasons) {
-				str += data[i].changeReasons.join(', ');
-			}
-			str += '</td></tr>';
-			tbody.append(str);
-		}
-	}
-	
-	function refreshRegimenHistory(patientId) {
-		jq.getJSON(ui.fragmentActionLink('kenyaemr', 'arvRegimen', 'regimenHistory', { patientId: patientId }), function(data) {
-			showRegimenHistory(jq('table#regimen-history > tbody'), data);
-		});
-	}
-
-	jq(function() {
-		refreshRegimenHistory(${ patient.id });
-	});
-</script>
 <table id="regimen-history" class="table-decorated table-vertical">
 	<thead>
 		<tr>
@@ -40,5 +12,21 @@
 			<th>Change Reason</th>
 		</tr>
 	</thead>
-	<tbody></tbody>
+	<tbody>
+		<% if (!simpleHistory) { %>
+			<tr><td colspan="4">None</td></tr>
+		<% } %>
+		<% for (def change in simpleHistory) { %>
+	  	<tr>
+			<td>${ change.startDate }</td>
+			<td>${ change.endDate }</td>
+			<td style="text-align: left">${ change.regimen.shortDisplay }<br/><small>${ change.regimen.longDisplay }</small></td>
+			<td style="text-align: left">
+				<% if (change.changeReasons) { %>
+				${ change.changeReasons.join(",") }
+				<% } %>
+			</td>
+	  	</tr>
+		<% } %>
+	</tbody>
 </table>

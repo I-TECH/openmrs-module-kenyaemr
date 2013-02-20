@@ -11,81 +11,23 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.kenyaemr.regimen;
 
-import java.util.*;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
-import org.openmrs.Concept;
-import org.openmrs.DrugOrder;
-import org.openmrs.util.OpenmrsUtil;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Represents a regimen of drug orders
+ * Represents prescribable regimen of drugs
  */
 public class Regimen {
-	
-	private Set<DrugOrder> drugOrders;
 
-	/**
-	 * Constructs an empty regimen
-	 */
-	public Regimen() {
-		this.drugOrders = new HashSet<DrugOrder>();
-	}
+	protected List<RegimenComponent> components = new ArrayList<RegimenComponent>();
 
-	/**
-	 * Constructs a regimen
-	 * @param drugOrders the drug orders
-	 */
-	public Regimen(Set<DrugOrder> drugOrders) {
-		this.drugOrders = drugOrders;
-	}
-	
-	/**
-	 * @return the drugOrders
-	 */
-	public Set<DrugOrder> getDrugOrders() {
-		return drugOrders;
-	}
-	
-	/**
-	 * Gets the drug orders in this regimen with the given concept
-	 * @param genericDrug the concept
-	 * @return the drug orders
-	 */
-	public List<DrugOrder> getDrugOrders(Concept genericDrug) {
-		List<DrugOrder> ret = new ArrayList<DrugOrder>();
-		for (DrugOrder o : drugOrders) {
-			if (o.getConcept().equals(genericDrug)) {
-				ret.add(o);
-			}
-		}
-		return ret;
-	}
-	
-	/**
-	 * Sets the drug orders
-	 * @param drugOrders the drug orders
-	 */
-	public void setDrugOrders(Set<DrugOrder> drugOrders) {
-		this.drugOrders = drugOrders;
-	}
-
-	/**
-	 * Adds a drug order
-	 * @param drugOrder the drug order
-	 */
-	public void addDrugOrder(DrugOrder drugOrder) {
-		drugOrders.add(drugOrder);
-	}
-
-	/**
-	 * Gets the start date.. which should be the same across all contained drug orders
-	 * @return the start date
-	 */
-	public Date getStartDate() {
-		Iterator<DrugOrder> orderIterator = drugOrders.iterator();
-		return orderIterator.hasNext() ? orderIterator.next().getStartDate() : null;
+	public List<RegimenComponent> getComponents() {
+		return components;
 	}
 
 	/**
@@ -93,10 +35,6 @@ public class Regimen {
 	 */
 	@Override
 	public String toString() {
-		List<String> list = new ArrayList<String>();
-		for (DrugOrder o : drugOrders) {
-			list.add(o.getConcept().getPreferredName(Locale.ENGLISH).getName());
-		}
-		return OpenmrsUtil.join(list, ", ");
+		return new ToStringBuilder(this).append("components", components).toString();
 	}
 }

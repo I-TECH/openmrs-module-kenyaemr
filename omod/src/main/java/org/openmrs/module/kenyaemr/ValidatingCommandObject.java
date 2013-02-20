@@ -41,7 +41,7 @@ public abstract class ValidatingCommandObject implements Validator {
 	}
 
 	public void require(Errors errors, String field) {
-		ValidationUtils.rejectIfEmptyOrWhitespace(errors, field, "error.requiredField");
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, field, "kenyaemr.error.required");
 	}
 
 	public void requireAny(Errors errors, String... fields) {
@@ -51,7 +51,7 @@ public abstract class ValidatingCommandObject implements Validator {
 				return;
 			}
 		}
-		errors.rejectValue(fields[0], "error.requiredField");
+		errors.rejectValue(fields[0], "kenyaemr.error.required");
 	}
 
 	public void validateField(Errors errors, String field) {
@@ -62,7 +62,7 @@ public abstract class ValidatingCommandObject implements Validator {
 		Object value = errors.getFieldValue(field);
 		if (value == null) {
 			if (required) {
-				errors.rejectValue(field, "error.requiredField");
+				errors.rejectValue(field, "kenyaemr.error.required");
 			} else {
 				return;
 			}

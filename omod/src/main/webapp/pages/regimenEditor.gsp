@@ -5,53 +5,10 @@
 	def allowChange = history.changes && history.changes.last().started
 	def allowRestart = history.changes && !history.changes.last().started
 	def allowUndo = history.changes && history.changes.size() > 0
-
-	// Create HTML options for each ARV drug
-	def drugOptions = arvs.collect {
-			"""<option value="${ it.conceptId }">${ it.getPreferredName(Locale.ENGLISH) }</option>"""
-	}.join()
-
-	// Create HTML options for each group of ARV regimen
-	def refDefIndex = 0;
-	def regimenAdult1Options = regimenDefinitions.findAll({ it.group == "adult-first" }).collect { reg ->
-		"""<option value="${ refDefIndex++ }">${ reg.name }</option>"""
-	}.join()
-	def regimenAdult2Options = regimenDefinitions.findAll({ it.group == "adult-second" }).collect { reg ->
-		"""<option value="${ refDefIndex++ }">${ reg.name }</option>"""
-	}.join()
-	def regimenChild1Options = regimenDefinitions.findAll({ it.group == "child-first" }).collect { reg ->
-		"""<option value="${ refDefIndex++ }">${ reg.name }</option>"""
-	}.join()
-
-	def unitsOptions = [ "mg", "ml", "tab" ].collect { """<option value="${ it }">${ it }</option>""" }.join()
-	def frequencyOptions = [ OD: "Once daily", BD: "Twice daily", NOCTE: "Nightly"  ].collect { """<option value="${ it.key }">${ it.key } (${ it.value })</option>""" }.join()
-
-	// Create regimen form controls
-	def arvStdRegSelect = { """<select class="standard-regimen-select">
-		<option label="Select..." value="" />
-		<optgroup label="Adult (first line)">${ regimenAdult1Options }</optgroup>
-		<optgroup label="Adult (second line)">${ regimenAdult2Options }</optgroup>
-		<optgroup label="Child">${ regimenChild1Options }</optgroup>
-	</select>""" }
-	def arvDrugSelect = { """<select name="arv${ it }"><option value="" />${ drugOptions }</select>""" }
-	def arvDoseInput = { """<input name="dosage${ it }" type="text" size="5" />""" }
-	def arvUnitsSelect = { """<select name="units${ it }">${ unitsOptions }</select>""" }
-	def arvFreqSelect = { """<select name="frequency${ it }">${ frequencyOptions }</select>""" }
-
-	def arvFields = ui.decorate("uilibrary", "labeled", [ label: "Regimen" ], """
-	    <i>Use standard:</i> ${ arvStdRegSelect() }<br />
-		<br />
-		Drug: ${ arvDrugSelect(1) } Dosage: ${ arvDoseInput(1) }${ arvUnitsSelect(1) } Frequency: ${ arvFreqSelect(1) }<br/>
-		Drug: ${ arvDrugSelect(2) } Dosage: ${ arvDoseInput(2) }${ arvUnitsSelect(2) } Frequency: ${ arvFreqSelect(2) }<br/>
-		Drug: ${ arvDrugSelect(3) } Dosage: ${ arvDoseInput(3) }${ arvUnitsSelect(3) } Frequency: ${ arvFreqSelect(3) }<br/>
-		Drug: ${ arvDrugSelect(4) } Dosage: ${ arvDoseInput(4) }${ arvUnitsSelect(4) } Frequency: ${ arvFreqSelect(4) }
-	""")
 %>
 
 <script type="text/javascript">
 
-	var standardRegimens = ${ regimenDefinitionsJson };
-	
 	function choseAction(formId) {
 		// Hide the regimen action buttons
 		jq('#regimen-action-buttons').hide();
@@ -75,49 +32,11 @@
 
 	function undoLastChange() {
 		if (confirm('Undo the last regimen change?')) {
-			ui.getFragmentActionAsJson('kenyaemr', 'arvRegimen', 'undoLastChange', { patient: ${ patient.patientId } }, function (data) {
+			ui.getFragmentActionAsJson('kenyaemr', 'regimenUtil', 'undoLastChange', { patient: ${ patient.patientId }, category: '${ category }' }, function (data) {
 				ui.reloadPage();
 			});
 		}
 	}
-	
-	jq(function() {
-		jq('.standard-regimen-select').change(function () {
-			// Get selected regimen definition
-			var stdRegIndex = parseInt(jq(this).val());
-			var stdReg = standardRegimens[stdRegIndex];
-			var components = stdReg.components;
-
-			// Fill out component array with nulls to make 4
-			for (var extra = 0; extra < 4 - components.length; extra++) {
-				components.push(null);
-			}
-
-			// Set component controls for each component of selected regimen
-			for (var c = 0; c < components.length; c++) {
-				var component = components[c];
-				var drugField = jq(this).parent().parent().find('select[name=arv' + (c + 1) + ']');
-				var doseField = jq(this).parent().parent().find('input[name=dosage' + (c + 1) + ']');
-				var unitsField = jq(this).parent().parent().find('select[name=units' + (c + 1) + ']');
-				var frequencyField = jq(this).parent().parent().find('select[name=frequency' + (c + 1) + ']');
-
-				if (component) {
-					drugField.val(component.conceptId);
-					doseField.val(component.dose);
-					unitsField.val(component.units);
-					frequencyField.val(component.frequency);
-				} else {
-					drugField.val(null);
-					doseField.val('');
-					unitsField.val(null);
-					frequencyField.val(null);
-				}
-			}
-
-			// Reset select box back to 'Select...'
-			jq(this).val('');
-		});
-	});
 </script>
 
 <div id="content-side">
@@ -129,10 +48,10 @@
 <div id="content-main">
 
 <div class="panel-frame">
-	<div class="panel-heading">ARV Regimen History</div>
+	<div class="panel-heading">${ category } Regimen History</div>
 	<div class="panel-content">
 
-	${ ui.includeFragment("kenyaemr", "regimenHistory", [ patient: patient ]) }
+	${ ui.includeFragment("kenyaemr", "regimenHistory", [ history: history ]) }
 
 	<br/>
 
@@ -162,12 +81,14 @@
 
 		${ ui.includeFragment("uilibrary", "widget/form", [
 			fragmentProvider: "kenyaemr",
-			fragment: "arvRegimen",
-			action: "startRegimen",
+			fragment: "regimenUtil",
+			action: "changeRegimen",
 			fields: [
-				[ hiddenInputName: "patient", value: patient.id ],
-				[ label: "Start Date", formFieldName: "startDate", class: java.util.Date, initialValue: new Date(), fieldFragment: "field/java.util.Date.datetime" ],
-				[ value: arvFields ]
+					[ hiddenInputName: "patient", value: patient.id ],
+					[ hiddenInputName: "category", value: category ],
+					[ hiddenInputName: "changeType", value: "start" ],
+					[ label: "Start Date", formFieldName: "changeDate", class: java.util.Date, initialValue: new Date(), fieldFragment: "field/java.util.Date.datetime" ],
+					[ label: "Regimen", formFieldName: "regimen", class: "org.openmrs.module.kenyaemr.regimen.Regimen", fieldFragment: "field/Regimen", category: category ]
 			],
 			submitLabel: "Save",
 			successCallbacks: [ "ui.reloadPage();" ],
@@ -183,13 +104,16 @@
 
 		${ ui.includeFragment("uilibrary", "widget/form", [
 			fragmentProvider: "kenyaemr",
-			fragment: "arvRegimen",
+			fragment: "regimenUtil",
 			action: "changeRegimen",
 			fields: [
-				[ hiddenInputName: "patient", value: patient.id ],
-				[ label: "Change Date", formFieldName: "startDate", class: java.util.Date, initialValue: new Date(), fieldFragment: "field/java.util.Date.datetime" ],
-				[ value: arvFields ],
-				[ label: "Reason for Change", formFieldName: "changeReason", class: java.lang.String ]
+					[ hiddenInputName: "patient", value: patient.id ],
+					[ hiddenInputName: "category", value: category ],
+					[ hiddenInputName: "changeType", value: "change" ],
+					[ hiddenInputName: "type", value: "CHANGE" ],
+					[ label: "Change Date", formFieldName: "changeDate", class: java.util.Date, initialValue: new Date(), fieldFragment: "field/java.util.Date.datetime" ],
+					[ label: "Regimen", formFieldName: "regimen", class: "org.openmrs.module.kenyaemr.regimen.Regimen", fieldFragment: "field/Regimen", category: category ],
+					[ label: "Reason for Change", formFieldName: "changeReason", class: java.lang.String ]
 			],
 			submitLabel: "Save",
 			successCallbacks: [ "ui.reloadPage();" ],
@@ -203,12 +127,14 @@
 
 		${ ui.includeFragment("uilibrary", "widget/form", [
 			fragmentProvider: "kenyaemr",
-			fragment: "arvRegimen",
-			action: "stopRegimen",
+			fragment: "regimenUtil",
+			action: "changeRegimen",
 			fields: [
-				[ hiddenInputName: "patient", value: patient.id ],
-				[ label: "Stop Date", formFieldName: "stopDate", class: java.util.Date, initialValue: new Date(), fieldFragment: "field/java.util.Date.datetime" ],
-				[ label: "Reason for Stop", formFieldName: "stopReason", class: java.lang.String ]
+					[ hiddenInputName: "patient", value: patient.id ],
+					[ hiddenInputName: "category", value: category ],
+					[ hiddenInputName: "changeType", value: "stop" ],
+					[ label: "Stop Date", formFieldName: "changeDate", class: java.util.Date, initialValue: new Date(), fieldFragment: "field/java.util.Date.datetime" ],
+					[ label: "Reason for Stop", formFieldName: "changeReason", class: java.lang.String ]
 			],
 			submitLabel: "Save",
 			successCallbacks: [ "ui.reloadPage();" ],
@@ -224,12 +150,14 @@
 
 		${ ui.includeFragment("uilibrary", "widget/form", [
 			fragmentProvider: "kenyaemr",
-			fragment: "arvRegimen",
-			action: "startRegimen",
+			fragment: "regimenUtil",
+			action: "changeRegimen",
 			fields: [
-				[ hiddenInputName: "patient", value: patient.id ],
-				[ label: "Restart Date", formFieldName: "startDate", class: java.util.Date, initialValue: new Date(), fieldFragment: "field/java.util.Date.datetime" ],
-				[ value: arvFields ]
+					[ hiddenInputName: "patient", value: patient.id ],
+					[ hiddenInputName: "category", value: category ],
+					[ hiddenInputName: "changeType", value: "restart" ],
+					[ label: "Restart Date", formFieldName: "changeDate", class: java.util.Date, initialValue: new Date(), fieldFragment: "field/java.util.Date.datetime" ],
+					[ label: "Regimen", formFieldName: "regimen", class: "org.openmrs.module.kenyaemr.regimen.Regimen", fieldFragment: "field/Regimen", category: category ]
 			],
 			submitLabel: "Save",
 			successCallbacks: [ "ui.reloadPage();" ],

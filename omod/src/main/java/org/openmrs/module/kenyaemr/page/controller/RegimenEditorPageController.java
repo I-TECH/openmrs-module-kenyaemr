@@ -17,11 +17,7 @@ import java.util.*;
 
 import org.openmrs.Concept;
 import org.openmrs.Patient;
-import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyaemr.KenyaEmrUiUtils;
-import org.openmrs.module.kenyaemr.MetadataConstants;
-import org.openmrs.module.kenyaemr.regimen.RegimenDefinition;
-import org.openmrs.module.kenyaemr.regimen.RegimenHistory;
+import org.openmrs.module.kenyaemr.regimen.RegimenOrderHistory;
 import org.openmrs.module.kenyaemr.regimen.RegimenManager;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.page.PageModel;
@@ -33,29 +29,18 @@ import org.springframework.web.bind.annotation.RequestParam;
  */
 public class RegimenEditorPageController {
 
-	public void controller(@RequestParam("patientId") Patient patient,
+	public void controller(@RequestParam("patientId") Patient patient, @RequestParam("category") String category,
 	                       @RequestParam("returnUrl") String returnUrl,
 	                       UiUtils ui,
 	                       PageModel model) {
 
 		model.addAttribute("patient", patient);
+		model.addAttribute("category", category);
 		model.addAttribute("today", OpenmrsUtil.firstSecondOfDay(new Date()));
 		model.addAttribute("returnUrl", returnUrl);
 
-		Concept arvs = Context.getConceptService().getConceptByUuid(MetadataConstants.ANTIRETROVIRAL_DRUGS_CONCEPT_UUID);
-		RegimenHistory history = RegimenHistory.forPatient(patient, arvs);
+		Concept masterSet = RegimenManager.getMasterSetConcept(category);
+		RegimenOrderHistory history = RegimenOrderHistory.forPatient(patient, masterSet);
 		model.addAttribute("history", history);
-
-		Map<String, Integer> arvConcepts = RegimenManager.getDrugConcepts("ARV");
-		List<Concept> arvList = new ArrayList<Concept>();
-		for (Integer conceptId : arvConcepts.values()) {
-			arvList.add(Context.getConceptService().getConcept(conceptId));
-		}
-
-		List<RegimenDefinition> regimenDefinitions = RegimenManager.getRegimenDefinitions("ARV");
-
-		model.addAttribute("arvs", arvList);
-		model.addAttribute("regimenDefinitions", regimenDefinitions);
-		model.addAttribute("regimenDefinitionsJson", ui.toJson(KenyaEmrUiUtils.simpleRegimenDefinitions(regimenDefinitions, ui)));
 	}
 }

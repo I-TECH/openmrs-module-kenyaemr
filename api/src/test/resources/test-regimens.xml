@@ -2,14 +2,14 @@
 	Defines the standard Kenya regimens
 -->
 <definitions xmlns="http://www.kenyaemr.org/regimens" version="1">
-	<category code="ARV">
+	<category code="category1" masterSetUuid="1085AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
 		<drugs>
 			<drug code="D4T" conceptUuid="84309AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><!-- Stavudine -->
 			<drug code="AZT" conceptUuid="86663AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><!-- Zidovudine -->
 			<drug code="3TC" conceptUuid="78643AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><!-- Lamivudine -->
 		</drugs>
 
-		<group code="group1">
+		<group code="group1" name="Group #1">
 			<regimen name="regimen1">
 				<component drugCode="AZT" dose="300" units="mg" frequency="OD" />
 				<component drugCode="3TC" dose="150" units="mg" frequency="BD" />
@@ -20,7 +20,7 @@
 			</regimen>
 		</group>
 
-		<group code="group2">
+		<group code="group2" name="Group #2">
 			<regimen name="regimen3">
 				<component drugCode="D4T" units="tab"  />
 				<component drugCode="3TC" units="tab" />

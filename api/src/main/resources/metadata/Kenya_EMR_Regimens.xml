@@ -1,8 +1,8 @@
 <!--
 	Defines the standard Kenya regimens
 -->
-<regimens xmlns="http://www.kenyaemr.org/regimens" version="1">
-	<category code="ARV">
+<regimens xmlns="http://www.kenyaemr.org/regimens" version="2">
+	<category code="ARV" masterSetUuid="1085AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
 		<drugs>
 			<drug code="D4T" conceptUuid="84309AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><!-- Stavudine -->
 			<drug code="AZT" conceptUuid="86663AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><!-- Zidovudine -->
@@ -19,7 +19,7 @@
 		</drugs>
 
 		<!-- Adult first line -->
-		<group code="adult-first">
+		<group code="adult-first" name="Adult (first line)">
 			<regimen name="TDF + 3TC + NVP (300mg OD/150mg BD/200mg BD)">
 				<component drugCode="TDF" dose="300" units="mg" frequency="OD" />
 				<component drugCode="3TC" dose="150" units="mg" frequency="BD" />
@@ -68,7 +68,7 @@
 		</group>
 
 		<!-- Adult second line -->
-		<group code="adult-second">
+		<group code="adult-second" name="Adult (second line)">
 			<regimen name="AZT + 3TC + LPV/r (300mg BD/150mg BD/400mg BD/100mg BD)">
 				<component drugCode="AZT" dose="300" units="mg" frequency="BD" />
 				<component drugCode="3TC" dose="150" units="mg" frequency="BD" />
@@ -102,7 +102,7 @@
 		</group>
 
 		<!-- Child first line: dosages and units to be entered manually by clinician -->
-		<group code="child-first">
+		<group code="child-first" name="Child">
 			<regimen name="ABC + 3TC + LPV/r">
 				<component drugCode="ABC" units="tab" />
 				<component drugCode="3TC" units="tab" />

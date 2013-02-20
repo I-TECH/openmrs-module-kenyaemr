@@ -25,9 +25,9 @@ public class RegimenChange {
 	
 	private Date date;
 	
-	private Regimen stopped;
+	private RegimenOrder stopped;
 	
-	private Regimen started;
+	private RegimenOrder started;
 	
 	private Set<Concept> changeReasons;
 	
@@ -40,7 +40,7 @@ public class RegimenChange {
 	 * @param changeReasons
 	 * @param changeReasonsNonCoded
 	 */
-	public RegimenChange(Date date, Regimen stopped, Regimen started, Set<Concept> changeReasons,
+	public RegimenChange(Date date, RegimenOrder stopped, RegimenOrder started, Set<Concept> changeReasons,
 	    Set<String> changeReasonsNonCoded) {
 		this.date = date;
 		this.stopped = stopped;
@@ -66,28 +66,28 @@ public class RegimenChange {
 	/**
 	 * @return the stopped
 	 */
-	public Regimen getStopped() {
+	public RegimenOrder getStopped() {
 		return stopped;
 	}
 	
 	/**
 	 * @param stopped the stopped to set
 	 */
-	public void setStopped(Regimen stopped) {
+	public void setStopped(RegimenOrder stopped) {
 		this.stopped = stopped;
 	}
 	
 	/**
 	 * @return the started
 	 */
-	public Regimen getStarted() {
+	public RegimenOrder getStarted() {
 		return started;
 	}
 	
 	/**
 	 * @param started the started to set
 	 */
-	public void setStarted(Regimen started) {
+	public void setStarted(RegimenOrder started) {
 		this.started = started;
 	}
 	

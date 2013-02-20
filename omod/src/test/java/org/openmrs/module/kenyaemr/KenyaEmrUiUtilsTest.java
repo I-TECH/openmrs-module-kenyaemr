@@ -21,8 +21,8 @@ import org.openmrs.Concept;
 import org.openmrs.DrugOrder;
 import org.openmrs.Visit;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyaemr.regimen.Regimen;
-import org.openmrs.module.kenyaemr.regimen.RegimenHistory;
+import org.openmrs.module.kenyaemr.regimen.RegimenOrder;
+import org.openmrs.module.kenyaemr.regimen.RegimenOrderHistory;
 import org.openmrs.module.kenyaemr.regimen.RegimenManager;
 import org.openmrs.module.kenyaemr.test.TestUtils;
 import org.openmrs.ui.framework.SimpleObject;
@@ -40,7 +40,7 @@ import java.util.*;
 public class KenyaEmrUiUtilsTest extends BaseModuleWebContextSensitiveTest {
 
 	private UiUtils ui;
-	private Regimen regimen;
+	private RegimenOrder regimen;
 
 	@Before
 	public void setUp() throws Exception {
@@ -63,7 +63,7 @@ public class KenyaEmrUiUtilsTest extends BaseModuleWebContextSensitiveTest {
 		stavudine.setUnits("ml");
 		stavudine.setFrequency("BD");
 
-		regimen = new Regimen();
+		regimen = new RegimenOrder();
 		regimen.addDrugOrder(aspirin);
 		regimen.addDrugOrder(stavudine);
 	}
@@ -104,16 +104,16 @@ public class KenyaEmrUiUtilsTest extends BaseModuleWebContextSensitiveTest {
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.KenyaEmrUiUtils#formatRegimenShort(org.openmrs.module.kenyaemr.regimen.Regimen, org.openmrs.ui.framework.UiUtils)
+	 * @see org.openmrs.module.kenyaemr.KenyaEmrUiUtils#formatRegimenShort(org.openmrs.module.kenyaemr.regimen.RegimenOrder, org.openmrs.ui.framework.UiUtils)
 	 * @verifies format empty list as empty string
 	 */
 	@Test
 	public void formatRegimenShort_shouldFormatEmptyListAsEmpty() throws Exception {
-		Assert.assertEquals("Empty", KenyaEmrUiUtils.formatRegimenShort(new Regimen(), ui));
+		Assert.assertEquals("Empty", KenyaEmrUiUtils.formatRegimenShort(new RegimenOrder(), ui));
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.KenyaEmrUiUtils#formatRegimenShort(org.openmrs.module.kenyaemr.regimen.Regimen, org.openmrs.ui.framework.UiUtils)
+	 * @see org.openmrs.module.kenyaemr.KenyaEmrUiUtils#formatRegimenShort(org.openmrs.module.kenyaemr.regimen.RegimenOrder, org.openmrs.ui.framework.UiUtils)
 	 * @verifies format regimen
 	 */
 	@Test
@@ -122,7 +122,7 @@ public class KenyaEmrUiUtilsTest extends BaseModuleWebContextSensitiveTest {
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.KenyaEmrUiUtils#simpleRegimen(org.openmrs.module.kenyaemr.regimen.Regimen, org.openmrs.ui.framework.UiUtils)
+	 * @see org.openmrs.module.kenyaemr.KenyaEmrUiUtils#simpleRegimen(org.openmrs.module.kenyaemr.regimen.RegimenOrder, org.openmrs.ui.framework.UiUtils)
 	 */
 	@Test
 	public void simpleRegimen_shouldConvertToSimpleObject() {
@@ -132,7 +132,7 @@ public class KenyaEmrUiUtilsTest extends BaseModuleWebContextSensitiveTest {
 		Assert.assertEquals("None", obj1.get("longDisplay"));
 
  		// Check empty regimen
-		SimpleObject obj2 = KenyaEmrUiUtils.simpleRegimen(new Regimen(), ui);
+		SimpleObject obj2 = KenyaEmrUiUtils.simpleRegimen(new RegimenOrder(), ui);
 		Assert.assertEquals("Empty", obj2.get("shortDisplay"));
 		Assert.assertEquals("Empty", obj2.get("longDisplay"));
 
@@ -143,15 +143,16 @@ public class KenyaEmrUiUtilsTest extends BaseModuleWebContextSensitiveTest {
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.KenyaEmrUiUtils#simpleRegimenHistory(org.openmrs.module.kenyaemr.regimen.RegimenHistory, org.openmrs.ui.framework.UiUtils)
+	 * @see org.openmrs.module.kenyaemr.KenyaEmrUiUtils#simpleRegimenHistory(org.openmrs.module.kenyaemr.regimen.RegimenOrderHistory, org.openmrs.ui.framework.UiUtils)
 	 */
 	@Test
 	public void simpleRegimenHistory_shouldConvertToSimpleObjects() throws IOException, SAXException, ParserConfigurationException {
 		Concept medset = Context.getConceptService().getConceptByUuid(MetadataConstants.ANTIRETROVIRAL_DRUGS_CONCEPT_UUID);
 
 		// Check empty history
-		RegimenHistory emptyHistory = RegimenHistory.forPatient(Context.getPatientService().getPatient(6), medset);
+		RegimenOrderHistory emptyHistory = RegimenOrderHistory.forPatient(Context.getPatientService().getPatient(6), medset);
 		List<SimpleObject> objs = KenyaEmrUiUtils.simpleRegimenHistory(emptyHistory, ui);
+
 		Assert.assertEquals(0, objs.size());
 	}
 
@@ -160,9 +161,10 @@ public class KenyaEmrUiUtilsTest extends BaseModuleWebContextSensitiveTest {
 	 */
 	@Test
 	public void simpleRegimenDefinitions_shouldConvertToSimpleObjects() throws IOException, SAXException, ParserConfigurationException {
-		List<SimpleObject> objs = KenyaEmrUiUtils.simpleRegimenDefinitions(RegimenManager.getRegimenDefinitions("ARV"), ui);
+		List<SimpleObject> objs = KenyaEmrUiUtils.simpleRegimenDefinitions(RegimenManager.getRegimenGroups("category1").get(0).getRegimens(), ui);
+
 		Assert.assertEquals("regimen1", objs.get(0).get("name"));
-		Assert.assertEquals("group1", objs.get(0).get("group"));
+		Assert.assertEquals("group1", ((Map<String, Object>)objs.get(0).get("group")).get("code"));
 	}
 
 	/**

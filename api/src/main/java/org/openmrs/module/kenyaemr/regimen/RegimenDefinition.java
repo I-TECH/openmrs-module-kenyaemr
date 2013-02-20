@@ -11,28 +11,26 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.kenyaemr.regimen;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /**
- * Represents a regimen of drugs that a patient could be prescribed
+ * Represents predefined regimen with a name and group
  */
-public class RegimenDefinition {
+public class RegimenDefinition extends Regimen {
 
 	private String name;
 
-	private String group;
-
-	private List<RegimenComponent> components = new ArrayList<RegimenComponent>();
+	private RegimenDefinitionGroup group;
 
 	/**
 	 * Creates a new regimen definition
 	 * @param name the name
 	 * @param group the group
 	 */
-	public RegimenDefinition(String name, String group) {
+	public RegimenDefinition(String name, RegimenDefinitionGroup group) {
 		this.name = name;
 		this.group = group;
 	}
@@ -49,20 +47,12 @@ public class RegimenDefinition {
 	 * Gets the group
 	 * @return the group
 	 */
-	public String getGroup() {
+	public RegimenDefinitionGroup getGroup() {
 		return group;
 	}
 
 	/**
-	 * Gets the components
-	 * @return the regimen components
-	 */
-	public List<RegimenComponent> getComponents() {
-		return components;
-	}
-
-	/**
-	 * Adds a component
+	 * Convenience method to add a component
 	 * @param conceptId the component concept id
 	 * @param dose the component dose
 	 * @param units the component units
@@ -73,58 +63,10 @@ public class RegimenDefinition {
 	}
 
 	/**
-	 * RegimenComponent of a regimen (drug, dose, units and frequency)
+	 * @see Object#toString()
 	 */
-	public class RegimenComponent {
-		private int conceptId;
-		private Double dose;
-		private String units;
-		private String frequency;
-
-		/**
-		 * Creates a new component
-		 * @param conceptId the concept id
-		 * @param dose the dose, e.g. 200
-		 * @param units the units, e.g. mg
-		 * @apram frequency the frequency, e.g. OD
-		 */
-		public RegimenComponent(int conceptId, Double dose, String units, String frequency) {
-			this.conceptId = conceptId;
-			this.dose = dose;
-			this.units = units;
-			this.frequency = frequency;
-		}
-
-		/**
-		 * Gets the concept id
-		 * @return the concept id
-		 */
-		public int getConceptId() {
-			return conceptId;
-		}
-
-		/**
-		 * Gets the dose
-		 * @return the dose
-		 */
-		public Double getDose() {
-			return dose;
-		}
-
-		/**
-		 * Gets the units
-		 * @return the units
-		 */
-		public String getUnits() {
-			return units;
-		}
-
-		/**
-		 * Gets the frequency
-		 * @return the frequency
-		 */
-		public String getFrequency() {
-			return frequency;
-		}
+	@Override
+	public String toString() {
+		return new ToStringBuilder(this).append("name", name).append("group", group).append("components", components).toString();
 	}
 }

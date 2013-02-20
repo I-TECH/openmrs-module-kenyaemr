@@ -18,7 +18,7 @@ import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.kenyaemr.regimen.RegimenChange;
-import org.openmrs.module.kenyaemr.regimen.RegimenHistory;
+import org.openmrs.module.kenyaemr.regimen.RegimenOrderHistory;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 
@@ -30,7 +30,7 @@ public class ArvSummaryFragmentController {
 	public void controller(FragmentModel model, @FragmentParam("patient") Patient patient) {
 
 		Concept arvs = Context.getConceptService().getConceptByUuid(MetadataConstants.ANTIRETROVIRAL_DRUGS_CONCEPT_UUID);
-		RegimenHistory history = RegimenHistory.forPatient(patient, arvs);
+		RegimenOrderHistory history = RegimenOrderHistory.forPatient(patient, arvs);
 		RegimenChange lastChange = history.getLastChange();
 
 		model.addAttribute("lastChange", lastChange);

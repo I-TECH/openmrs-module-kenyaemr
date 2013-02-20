@@ -27,7 +27,7 @@ import org.openmrs.PatientIdentifier;
 import org.openmrs.PatientProgram;
 import org.openmrs.Program;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyaemr.regimen.Regimen;
+import org.openmrs.module.kenyaemr.regimen.RegimenOrder;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.DataSetRow;
 import org.openmrs.module.reporting.report.ReportData;
@@ -236,7 +236,7 @@ public class TestUtils {
 	 * @param reg
 	 * @param drugOrders
 	 */
-	public static void assertRegimenContainsDrugOrders(Regimen reg, DrugOrder... drugOrders) {
+	public static void assertRegimenContainsDrugOrders(RegimenOrder reg, DrugOrder... drugOrders) {
 		Assert.assertEquals(drugOrders.length, reg.getDrugOrders().size());
 		for (DrugOrder o : drugOrders) {
 			Assert.assertTrue(reg.getDrugOrders().contains(o));

@@ -17,7 +17,7 @@ import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.kenyaemr.test.TestUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
-public class RegimenHistoryTest extends BaseModuleContextSensitiveTest {
+public class RegimenOrderHistoryTest extends BaseModuleContextSensitiveTest {
 
 	final Date t0 = TestUtils.date(2006, 1, 1);
 	final Date t1 = TestUtils.date(2006, 2, 1);
@@ -59,14 +59,14 @@ public class RegimenHistoryTest extends BaseModuleContextSensitiveTest {
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.regimen.RegimenHistory#RegimenHistory(java.util.Set, java.util.List)
+	 * @see RegimenOrderHistory#RegimenOrderHistory(java.util.Set, java.util.List)
 	 * @verifies create regimen history based on all relevant drug orders
 	 */
 	@Test
 	public void constructor_shouldCreateRegimenHistory() throws Exception {
 		List<DrugOrder> allDrugOrders = Arrays.asList(order1, order2, order3, order4);
 		Set<Concept> relevantDrugs = new HashSet<Concept>(Arrays.asList(drug1, drug2, drug3));
-		RegimenHistory regimenHistory = new RegimenHistory(relevantDrugs, allDrugOrders);
+		RegimenOrderHistory regimenHistory = new RegimenOrderHistory(relevantDrugs, allDrugOrders);
 		List<RegimenChange> changes = regimenHistory.getChanges();
 
 		// Should be 4 changes in total
@@ -99,20 +99,20 @@ public class RegimenHistoryTest extends BaseModuleContextSensitiveTest {
 	public void forPatient_shouldCreateRegimenHistoryForPatient() {
 		Patient patient6 = Context.getPatientService().getPatient(6);
 		Concept arvs = Context.getConceptService().getConceptByUuid(MetadataConstants.ANTIRETROVIRAL_DRUGS_CONCEPT_UUID);
-		RegimenHistory regimenHistory = RegimenHistory.forPatient(patient6, arvs);
+		RegimenOrderHistory regimenHistory = RegimenOrderHistory.forPatient(patient6, arvs);
 
 		// Should be 4 changes in total
 		Assert.assertEquals(4, regimenHistory.getChanges().size());
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.regimen.RegimenHistory#undoLastChange()
+	 * @see RegimenOrderHistory#undoLastChange()
 	 */
 	@Test
 	public void undoLastChange() {
 		List<DrugOrder> allDrugOrders = Arrays.asList(order1, order2, order3, order4);
 		Set<Concept> relevantDrugs = new HashSet<Concept>(Arrays.asList(drug1, drug2, drug3));
-		RegimenHistory regimenHistory = new RegimenHistory(relevantDrugs, allDrugOrders);
+		RegimenOrderHistory regimenHistory = new RegimenOrderHistory(relevantDrugs, allDrugOrders);
 
 		regimenHistory.undoLastChange();
 

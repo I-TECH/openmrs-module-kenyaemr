@@ -14,7 +14,6 @@
 package org.openmrs.module.kenyaemr;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.joda.time.Period;
 import org.joda.time.PeriodType;
 import org.ocpsoft.prettytime.PrettyTime;
@@ -26,7 +25,6 @@ import org.openmrs.Patient;
 import org.openmrs.Visit;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.htmlformentry.HtmlForm;
-import org.openmrs.module.htmlformentry.HtmlFormEntryConstants;
 import org.openmrs.module.htmlformentry.HtmlFormEntryService;
 import org.openmrs.module.kenyaemr.form.FormConfig;
 import org.openmrs.module.kenyaemr.form.FormManager;
@@ -158,7 +156,7 @@ public class KenyaEmrUiUtils {
 	 * @param ui the UI utils
 	 * @return the string value
 	 */
-	public static String formatRegimenShort(Regimen regimen, UiUtils ui) {
+	public static String formatRegimenShort(RegimenOrder regimen, UiUtils ui) {
 		if (CollectionUtils.isEmpty(regimen.getDrugOrders())) {
 			return "Empty";
 		}
@@ -179,13 +177,13 @@ public class KenyaEmrUiUtils {
 	 * @param ui the UI utils
 	 * @return the string value
 	 */
-	public static String formatRegimenLong(Regimen regimen, UiUtils ui) {
+	public static String formatRegimenLong(RegimenOrder regimen, UiUtils ui) {
 		if (CollectionUtils.isEmpty(regimen.getDrugOrders())) {
 			return "Empty";
 		}
 		List<String> components = new ArrayList<String>();
 		for (DrugOrder o : regimen.getDrugOrders()) {
-			String s = RegimenManager.findDrugCode("ARV", o.getConcept());
+			String s = RegimenManager.findDrugCode(o.getConcept());
 			if (s == null) {
 				s = o.getConcept().getName(Context.getLocale()).getName();
 			}
@@ -286,7 +284,7 @@ public class KenyaEmrUiUtils {
 	 * @param ui the UI utils
 	 * @return the simple object with { shortDisplay, longDisplay }
 	 */
-	public static SimpleObject simpleRegimen(Regimen regimen, UiUtils ui) {
+	public static SimpleObject simpleRegimen(RegimenOrder regimen, UiUtils ui) {
 		if (regimen == null) {
 			return SimpleObject.create("shortDisplay", "None", "longDisplay", "None");
 		} else {
@@ -300,7 +298,7 @@ public class KenyaEmrUiUtils {
 	 * @param ui the UI utils
 	 * @return a list of objects with { startDate, endDate, shortDisplay, longDisplay, changeReasons[] }
 	 */
-	public static List<SimpleObject> simpleRegimenHistory(RegimenHistory history, UiUtils ui) {
+	public static List<SimpleObject> simpleRegimenHistory(RegimenOrderHistory history, UiUtils ui) {
 		List<RegimenChange> changes = history.getChanges();
 
 		List<SimpleObject> ret = new ArrayList<SimpleObject>();
@@ -312,7 +310,7 @@ public class KenyaEmrUiUtils {
 		for (int i = 0; i < changes.size(); ++i) {
 			RegimenChange change = changes.get(i);
 			Date startDate = change.getDate();
-			Regimen regimen = change.getStarted();
+			RegimenOrder regimen = change.getStarted();
 			Date endDate = null;
 			List<String> changeReasons = new ArrayList<String>();
 			if (i + 1 < changes.size()) {
@@ -346,7 +344,7 @@ public class KenyaEmrUiUtils {
 	 */
 	public static List<SimpleObject> simpleRegimenDefinitions(Collection<RegimenDefinition> definitions, UiUtils ui) {
 		return SimpleObject.fromCollection(definitions, ui,
-				"name", "group", "components.conceptId", "components.dose", "components.units", "components.frequency"
+				"name", "group.code", "components.conceptId", "components.dose", "components.units", "components.frequency"
 		);
 	}
 

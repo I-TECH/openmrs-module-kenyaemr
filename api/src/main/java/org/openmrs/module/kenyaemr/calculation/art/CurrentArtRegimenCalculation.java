@@ -23,7 +23,7 @@ import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.kenyaemr.calculation.BaseKenyaEmrCalculation;
 import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
-import org.openmrs.module.kenyaemr.regimen.Regimen;
+import org.openmrs.module.kenyaemr.regimen.RegimenOrder;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -62,7 +62,7 @@ public class CurrentArtRegimenCalculation extends BaseKenyaEmrCalculation {
 			ListResult patientDrugOrders = (ListResult) currentARVDrugOrders.get(ptId);
 
 			if (patientDrugOrders != null) {
-				Regimen regimen = new Regimen(new HashSet<DrugOrder>(CalculationUtils.<DrugOrder>extractListResultValues(patientDrugOrders)));
+				RegimenOrder regimen = new RegimenOrder(new HashSet<DrugOrder>(CalculationUtils.<DrugOrder>extractListResultValues(patientDrugOrders)));
 				ret.put(ptId, new SimpleResult(regimen, this, context));
 			}
 			else {

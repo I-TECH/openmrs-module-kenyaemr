@@ -76,7 +76,7 @@
 <div class="panel-frame">
 	<div class="panel-heading">ARV Regimen History</div>
 	<div class="panel-content" style="background-color: #F3F9FF">
-		${ ui.includeFragment("kenyaemr", "regimenHistory", [ patient: patient ]) }
+		${ ui.includeFragment("kenyaemr", "regimenHistory", [ history: arvHistory ]) }
 
 		<br />
 		<div align="center">
@@ -86,7 +86,7 @@
 					iconProvider: "kenyaemr",
 					icon: "buttons/regimen.png",
 					classes: [ "padded" ],
-					href: ui.pageLink("kenyaemr", "regimenEditor", [ patientId: patient, returnUrl: ui.thisUrl() ])
+					href: ui.pageLink("kenyaemr", "regimenEditor", [ patientId: patient, category: "ARV", returnUrl: ui.thisUrl() ])
 			]) }
 		</div>
 	</div>

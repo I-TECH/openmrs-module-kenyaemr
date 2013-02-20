@@ -36,7 +36,6 @@
 <select id="${ config.id }_hour"><% for (def h in 0..23) { %><option ${ initialHour == h ? "selected" : "" }>${ String.format('%02d', h) }</option><% } %></select>:<select id="${ config.id }_minute"><% for (def m in 0..59) { %><option ${ initialMinute == m ? "selected" : "" }>${ String.format('%02d', m) }</option><% } %></select>
 <span id="${ config.id }-error" class="error" style="display: none"></span>
 
-
 <% if (config.parentFormId) { %>
 <script type="text/javascript">
 	jq(function() {
