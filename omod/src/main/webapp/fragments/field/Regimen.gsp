@@ -2,7 +2,15 @@
 	ui.includeJavascript("uilibrary", "coreFragments.js")
 
 	def units = [ "mg", "ml", "tab" ]
-	def frequencies = [ OD: "Once daily", BD: "Twice daily", NOCTE: "Nightly"  ]
+
+	def frequencies = [
+			OD: "Once daily",
+			NOCTE: "Once daily, at bedtime",
+			qPM: "Once daily, in the evening",
+			qAM: "Once daily, in the morning",
+			BD: "Twice daily",
+			TDS: "Thrice daily"
+	]
 
 	def refDefIndex = 0;
 
@@ -12,7 +20,7 @@
 
 	def drugOptions = drugConcepts.collect( { """<option value="${ it.conceptId }">${ it.getPreferredName(Locale.ENGLISH) }</option>""" } ).join()
 	def unitsOptions = units.collect( { """<option value="${ it }">${ it }</option>""" } ).join()
-	def frequencyOptions = frequencies.collect( { """<option value="${ it.key }">${ it.key } (${ it.value })</option>""" } ).join()
+	def frequencyOptions = frequencies.collect( { """<option value="${ it.key }">${ it.value }</option>""" } ).join()
 %>
 <script type="text/javascript">
 	var standardRegimens = ${ ui.toJson(regimenDefinitions) };
