@@ -25,7 +25,7 @@ import java.util.*;
  */
 public class FormManager {
 
-	private static Map<String, FormConfig> forms = new HashMap<String, FormConfig>();
+	private static Map<String, FormConfig> forms = new LinkedHashMap<String, FormConfig>();
 
 	/**
 	 * Called from the module activator to register all forms. In future this could be loaded from an XML file
@@ -34,7 +34,7 @@ public class FormManager {
 		forms.clear();
 
 		/**
-		 * Generic once-ever forms
+		 * Once-ever forms
 		 */
 		registerForm(
 				MetadataConstants.FAMILY_HISTORY_FORM_UUID,
@@ -54,7 +54,7 @@ public class FormManager {
 		);
 
 		/**
-		 * Generic visit forms
+		 * Visit forms
 		 */
 		registerForm(
 				MetadataConstants.TRIAGE_FORM_UUID,
@@ -65,6 +65,14 @@ public class FormManager {
 				MetadataConstants.CLINICAL_ENCOUNTER_FORM_UUID,
 				Frequency.VISIT,
 				new String[] { "kenyaemr.medicalEncounter", "kenyaemr.medicalChart" }
+		);
+		registerForm(
+				MetadataConstants.CLINICAL_ENCOUNTER_HIV_ADDENDUM_FORM_UUID,
+				Frequency.VISIT,
+				new String[] { "kenyaemr.medicalEncounter", "kenyaemr.medicalChart" },
+				MetadataConstants.HIV_PROGRAM_UUID,
+				Gender.BOTH,
+				"kenyaemr", "forms/generic.png"
 		);
 		registerForm(
 				MetadataConstants.OTHER_MEDICATIONS_FORM_UUID,
@@ -84,9 +92,30 @@ public class FormManager {
 				Frequency.VISIT,
 				new String[] { "kenyaemr.intake", "kenyaemr.medicalEncounter", "kenyaemr.medicalChart" }
 		);
+		registerForm(
+				MetadataConstants.MOH_257_VISIT_SUMMARY_FORM_UUID,
+				Frequency.VISIT,
+				new String[] { "kenyaemr.medicalChart" },
+				MetadataConstants.HIV_PROGRAM_UUID,
+				Gender.BOTH,
+				"kenyaemr", "forms/moh257.png"
+		);
+		registerForm(
+				MetadataConstants.TB_SCREENING_FORM_UUID,
+				Frequency.VISIT,
+				new String[] { "kenyaemr.intake", "kenyaemr.medicalEncounter", "kenyaemr.medicalChart" }
+		);
+		registerForm(
+				MetadataConstants.TB_VISIT_FORM_UUID,
+				Frequency.VISIT,
+				new String[] { "kenyaemr.intake", "kenyaemr.medicalEncounter", "kenyaemr.medicalChart" },
+				MetadataConstants.TB_PROGRAM_UUID,
+				Gender.BOTH,
+				"kenyaemr", "forms/generic.png"
+		);
 
 		/**
-		 * HIV specific forms
+		 * Program forms
 		 */
 		registerForm(
 				MetadataConstants.HIV_PROGRAM_ENROLLMENT_FORM_UUID,
@@ -97,22 +126,6 @@ public class FormManager {
 				"kenyaemr", "forms/generic.png"
 		);
 		registerForm(
-				MetadataConstants.CLINICAL_ENCOUNTER_HIV_ADDENDUM_FORM_UUID,
-				Frequency.VISIT,
-				new String[] { "kenyaemr.medicalEncounter", "kenyaemr.medicalChart" },
-				MetadataConstants.HIV_PROGRAM_UUID,
-				Gender.BOTH,
-				"kenyaemr", "forms/generic.png"
-		);
-		registerForm(
-				MetadataConstants.MOH_257_VISIT_SUMMARY_FORM_UUID,
-				Frequency.VISIT,
-				new String[] { "kenyaemr.medicalChart" },
-				MetadataConstants.HIV_PROGRAM_UUID,
-				Gender.BOTH,
-				"kenyaemr", "forms/moh257.png"
-		);
-		registerForm(
 				MetadataConstants.HIV_PROGRAM_DISCONTINUATION_FORM_UUID,
 				Frequency.PROGRAM,
 				new String[] { "kenyaemr.medicalChart" },
@@ -120,19 +133,10 @@ public class FormManager {
 				Gender.BOTH,
 				"kenyaemr", "forms/discontinue.png"
 		);
-
-		/**
-		 * TB specific forms
-		 */
 		registerForm(
-				MetadataConstants.TB_SCREENING_FORM_UUID,
-				Frequency.VISIT,
-				new String[] { "kenyaemr.intake", "kenyaemr.medicalEncounter", "kenyaemr.medicalChart" }
-		);
-		registerForm(
-				MetadataConstants.TB_VISIT_FORM_UUID,
-				Frequency.VISIT,
-				new String[] { "kenyaemr.intake", "kenyaemr.medicalEncounter", "kenyaemr.medicalChart" },
+				MetadataConstants.TB_ENROLLMENT_FORM_UUID,
+				Frequency.PROGRAM,
+				new String[] { "kenyaemr.medicalChart" },
 				MetadataConstants.TB_PROGRAM_UUID,
 				Gender.BOTH,
 				"kenyaemr", "forms/generic.png"
