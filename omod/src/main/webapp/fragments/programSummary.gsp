@@ -35,9 +35,7 @@
 %>
 
 <% if (config.overviewContent) { %>
-<div class="stack-item">
 	${ config.overviewContent }
-</div>
 <% } %>
 
 <% if (currentEnrollment) { %>

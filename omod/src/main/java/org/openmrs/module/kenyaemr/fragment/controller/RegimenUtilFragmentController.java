@@ -28,7 +28,6 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.KenyaEmrUiUtils;
 import org.openmrs.module.kenyaemr.ValidatingCommandObject;
 import org.openmrs.module.kenyaemr.regimen.*;
-import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.BindParams;
 import org.openmrs.ui.framework.annotation.MethodParam;
@@ -38,6 +37,8 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.HttpSession;
+
 /**
  * Various actions for regimen related functions
  */
@@ -46,56 +47,27 @@ public class RegimenUtilFragmentController {
 	protected static final Log log = LogFactory.getLog(RegimenUtilFragmentController.class);
 
 	/**
-	 * Gets the patient's complete regimen history
-	 * @param patient the patient
-	 * @return a list of object with { startDate, endDate, shortDisplay, longDisplay, changeReasons[] }
-	 */
-	public List<SimpleObject> regimenHistory(@RequestParam("patientId") Patient patient, @RequestParam("category") String category, UiUtils ui) {
-		Concept masterSet = RegimenManager.getMasterSetConcept(category);
-		RegimenOrderHistory history = RegimenOrderHistory.forPatient(patient, masterSet);
-
-		return KenyaEmrUiUtils.simpleRegimenHistory(history, ui);
-	}
-
-	/**
-	 * Gets the patient's current regimen
-	 * @param patient the patient
-	 * @param ui the UI utils
-	 * @return the regimen as a simple object
-	 */
-	public SimpleObject currentRegimen(@RequestParam("patientId") Patient patient, @RequestParam("category") String category, UiUtils ui) {
-		Concept masterSet = RegimenManager.getMasterSetConcept(category);
-		RegimenOrderHistory history = RegimenOrderHistory.forPatient(patient, masterSet);
-
-		return KenyaEmrUiUtils.simpleRegimen(history.getCurrentRegimen(), ui);
-	}
-
-	/**
 	 * Changes the patient's current regimen
 	 * @param command the command object
 	 * @param ui the UI utils
 	 * @return the patient's current regimen
 	 */
-	public SimpleObject changeRegimen(@MethodParam("newRegimenChangeCommandObject") @BindParams RegimenChangeCommandObject command, UiUtils ui) {
+	public void changeRegimen(@MethodParam("newRegimenChangeCommandObject") @BindParams RegimenChangeCommandObject command, UiUtils ui) {
 		ui.validate(command, command, null);
 		command.apply();
-		
-		return currentRegimen(command.getPatient(), command.getCategory(), ui);
 	}
 
 	/**
 	 * Undoes the last regimen change for the given patient
 	 * @param patient the patient
-	 * @param category the regimen category
-	 * @param ui the UI utils
 	 * @return the patient's current regimen
 	 */
-	public SimpleObject undoLastChange(@RequestParam("patient") Patient patient, @RequestParam("category") String category, UiUtils ui) {
+	public void undoLastChange(@RequestParam("patient") Patient patient, HttpSession session, @RequestParam("category") String category) {
 		Concept masterSet = RegimenManager.getMasterSetConcept(category);
-		RegimenOrderHistory history = RegimenOrderHistory.forPatient(patient, masterSet);
+		RegimenChangeHistory history = RegimenChangeHistory.forPatient(patient, masterSet);
 		history.undoLastChange();
 
-		return currentRegimen(patient, category, ui);
+		KenyaEmrUiUtils.notifySuccess(session, "Removed last regimen change");
 	}
 
 	/**
@@ -106,6 +78,9 @@ public class RegimenUtilFragmentController {
 		return new RegimenChangeCommandObject();
 	}
 
+	/**
+	 * Change types
+	 */
 	public enum RegimenChangeType {
 		START,
 		CHANGE,
@@ -122,15 +97,13 @@ public class RegimenUtilFragmentController {
 
 		private String category;
 
-		private String changeType;
+		private RegimenChangeType changeType;
 		
 		private Date changeDate;
 		
 		private String changeReason;
 
 		private Regimen regimen;
-
-		private RegimenChangeType type;
 
 		/**
 		 * @see org.springframework.validation.Validator#validate(java.lang.Object,org.springframework.validation.Errors)
@@ -139,24 +112,23 @@ public class RegimenUtilFragmentController {
 		public void validate(Object target, Errors errors) {
 			require(errors, "patient");
 			require(errors, "category");
+			require(errors, "changeType");
 			require(errors, "changeDate");
 
-			log.warn("Type: " + type);
-
 			// Reason is only required for stopping or changing
-			if (changeType.equals("stop") || changeType.equals("change")) {
+			if (changeType == RegimenChangeType.STOP || changeType == RegimenChangeType.CHANGE) {
 				require(errors, "changeReason");
 			}
 
 			if (category != null && changeDate != null) {
 				// Get patient regimen history
 				Concept masterSet = RegimenManager.getMasterSetConcept(category);
-				RegimenOrderHistory history = RegimenOrderHistory.forPatient(patient, masterSet);
+				RegimenChangeHistory history = RegimenChangeHistory.forPatient(patient, masterSet);
 				RegimenChange lastChange = history.getLastChange();
 				boolean onRegimen = lastChange != null && lastChange.getStarted() != null;
 
 				// Can't start if already started
-				if ((changeType.equals("start") || changeType.equals("restart")) && onRegimen) {
+				if ((changeType == RegimenChangeType.START || changeType == RegimenChangeType.RESTART) && onRegimen) {
 					errors.reject("Can't start regimen for patient who is already on a regimen");
 				}
 
@@ -167,7 +139,7 @@ public class RegimenUtilFragmentController {
 			}
 
 			// Validate the regimen
-			if (!changeType.equals("stop")) {
+			if (changeType != RegimenChangeType.STOP) {
 				try {
 					errors.pushNestedPath("regimen");
 					ValidationUtils.invokeValidator(new RegimenValidator(), regimen, errors);
@@ -182,13 +154,13 @@ public class RegimenUtilFragmentController {
 		 */
 		public void apply() {
 			Concept masterSet = RegimenManager.getMasterSetConcept(category);
-			RegimenOrderHistory history = RegimenOrderHistory.forPatient(patient, masterSet);
+			RegimenChangeHistory history = RegimenChangeHistory.forPatient(patient, masterSet);
 			RegimenOrder baseline = history.getRegimenOnDate(changeDate);
 
 			if (baseline == null) {
 				for (RegimenComponent component : regimen.getComponents()) {
-					Concept concept = Context.getConceptService().getConcept(component.getConceptId());
-					DrugOrder o = newDrugOrder(patient, changeDate, concept, component.getDose(), component.getUnits(), component.getFrequency());
+					Concept concept = component.getDrugRef().getConcept();
+					DrugOrder o = component.toDrugOrder(patient, changeDate);
 					Context.getOrderService().saveOrder(o);
 				}
 			}
@@ -199,8 +171,7 @@ public class RegimenUtilFragmentController {
 
 				if (regimen != null) {
 					for (RegimenComponent component : regimen.getComponents()) {
-						Concept concept = Context.getConceptService().getConcept(component.getConceptId());
-						changeRegimenHelper(baseline, noChanges, toChangeDose, toStart, concept, component.getDose(), component.getUnits(), component.getFrequency());
+						changeRegimenHelper(baseline, component, noChanges, toChangeDose, toStart);
 					}
 				}
 
@@ -229,6 +200,7 @@ public class RegimenUtilFragmentController {
 		}
 		
 		/**
+		 * Gets the patient
 		 * @return the patient
 		 */
 		public Patient getPatient() {
@@ -236,7 +208,8 @@ public class RegimenUtilFragmentController {
 		}
 		
 		/**
-		 * @param patient the patient to set
+		 * Sets the patient
+		 * @param patient the patient
 		 */
 		public void setPatient(Patient patient) {
 			this.patient = patient;
@@ -252,7 +225,7 @@ public class RegimenUtilFragmentController {
 
 		/**
 		 * Sets the regimen category
-		 * @param category the regimen category
+		 * @param category the category
 		 */
 		public void setCategory(String category) {
 			this.category = category;
@@ -262,7 +235,7 @@ public class RegimenUtilFragmentController {
 		 * Gets the change type
 		 * @return the change type
 		 */
-		public String getChangeType() {
+		public RegimenChangeType getChangeType() {
 			return changeType;
 		}
 
@@ -270,7 +243,7 @@ public class RegimenUtilFragmentController {
 		 * Sets the change type
 		 * @param changeType the change type
 		 */
-		public void setChangeType(String changeType) {
+		public void setChangeType(RegimenChangeType changeType) {
 			this.changeType = changeType;
 		}
 
@@ -321,34 +294,24 @@ public class RegimenUtilFragmentController {
 		public void setRegimen(Regimen regimen) {
 			this.regimen = regimen;
 		}
-
-		public RegimenChangeType getType() {
-			return type;
-		}
-
-		public void setType(RegimenChangeType type) {
-			this.type = type;
-		}
 	}
 
 	/**
-	 *
-	 * @param baseline
+	 * Analyzes the current regimen order and the new regimen component to decide which orders must be changed
+	 * @param baseline the current regimen order
+	 * @param component the new regimen component
 	 * @param noChanges
 	 * @param toChangeDose
 	 * @param toStart
-	 * @param generic
-	 * @param dosage
-	 * @param units
-	 * @param frequency
 	 */
-	private void changeRegimenHelper(RegimenOrder baseline, List<DrugOrder> noChanges, List<DrugOrder> toChangeDose,
-									 List<DrugOrder> toStart, Concept generic, Double dosage, String units,
-									 String frequency) {
-		List<DrugOrder> sameGeneric = baseline.getDrugOrders(generic);
+	private void changeRegimenHelper(RegimenOrder baseline, RegimenComponent component, List<DrugOrder> noChanges, List<DrugOrder> toChangeDose,
+									 List<DrugOrder> toStart) {
+
+		List<DrugOrder> sameGeneric = baseline.getDrugOrders(component.getDrugRef());
+
 		boolean anyDoseChanges = false;
 		for (DrugOrder o : sameGeneric) {
-			if (o.getDose().equals(dosage) && o.getUnits().equals(units) && OpenmrsUtil.nullSafeEquals(o.getFrequency(), frequency)) {
+			if (o.getDose().equals(component.getDose()) && o.getUnits().equals(component.getUnits()) && OpenmrsUtil.nullSafeEquals(o.getFrequency(), component.getFrequency())) {
 				noChanges.add(o);
 			} else {
 				toChangeDose.add(o);
@@ -356,35 +319,7 @@ public class RegimenUtilFragmentController {
 			}
 		}
 		if (anyDoseChanges || sameGeneric.size() == 0) {
-			DrugOrder newOrder = new DrugOrder();
-			newOrder.setConcept(generic);
-			newOrder.setDose(dosage);
-			newOrder.setUnits(units);
-			newOrder.setFrequency(frequency);
-			toStart.add(newOrder);
+			toStart.add(component.toDrugOrder(null, null));
 		}
-	}
-
-	/**
-	 * Utility method to create a new drug order
-	 * @param patient
-	 * @param startDate
-	 * @param generic
-	 * @param dosage
-	 * @param doseUnit
-	 * @return
-	 */
-	@SuppressWarnings("deprecation")
-	private static DrugOrder newDrugOrder(Patient patient, Date startDate, Concept generic, Double dosage,
-										  String doseUnit, String frequency) {
-		DrugOrder ret = new DrugOrder();
-		ret.setOrderType(Context.getOrderService().getOrderType(OpenmrsConstants.ORDERTYPE_DRUG));
-		ret.setPatient(patient);
-		ret.setStartDate(startDate);
-		ret.setConcept(generic);
-		ret.setDose(dosage);
-		ret.setUnits(doseUnit);
-		ret.setFrequency(frequency);
-		return ret;
 	}
 }

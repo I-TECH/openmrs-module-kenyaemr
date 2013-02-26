@@ -4,6 +4,7 @@
 <packages xmlns="http://www.kenyaemr.org/packages">
 	<package groupUuid="29177ba6-a634-42d5-9314-e12689856ff1" filename="Kenya_EMR_Core_Metadata-20.zip" />
 	<package groupUuid="d4b71375-f64a-442d-a0c2-9f507c432925" filename="Kenya_EMR_Roles_and_Privileges-2.zip" />
+	<package groupUuid="550a5db0-13be-486d-aec7-de05adac71e7" filename="Kenya_EMR_Drugs-1.zip" />
 	<package groupUuid="5856a8fc-7ebc-46e8-929c-5ae2c780ab54" filename="Kenya_EMR_Locations-6.zip" />
 	<package groupUuid="eb6791b2-fab4-4915-ab73-4fee8ec84ca6" filename="Kenya_EMR_Forms-12.zip" />
 </packages>

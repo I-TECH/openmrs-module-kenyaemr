@@ -5,6 +5,27 @@
 	def allowChange = history.changes && history.changes.last().started
 	def allowRestart = history.changes && !history.changes.last().started
 	def allowUndo = history.changes && history.changes.size() > 0
+
+	/*def tbDatePresets = [
+			[ label: "Today", value: today ],
+			[ label: "Today + 1 month", value: todayPlus1Month ],
+			[ label: "Today + 2 months", value: todayPlus2Months ],
+			[ label: "Today + 6 months", value: todayPlus6Months ]
+
+	]
+
+	def dateFieldConfig = null
+
+	if (category == "TB") {
+		dateFieldConfig = [
+				label: "Start Date",
+				formFieldName: "startDate",
+				class: java.util.Date,
+				initialValue: today,
+				fieldFragment: "field/java.util.Date.withpresets",
+				presets: datePresets
+		]
+	}*/
 %>
 
 <script type="text/javascript">
@@ -46,125 +67,124 @@
 </div>
 
 <div id="content-main">
+	<div class="panel-frame">
+		<div class="panel-heading">${ category } Regimen History</div>
+		<div class="panel-content">
 
-<div class="panel-frame">
-	<div class="panel-heading">${ category } Regimen History</div>
-	<div class="panel-content">
+			${ ui.includeFragment("kenyaemr", "regimenHistory", [ history: history ]) }
 
-	${ ui.includeFragment("kenyaemr", "regimenHistory", [ history: history ]) }
+			<br/>
 
-	<br/>
+			<div id="regimen-action-buttons" style="text-align: center">
+			<% if (allowNew) { %>
+			${ ui.includeFragment("uilibrary", "widget/button", [ iconProvider: "kenyaemr", icon: "buttons/regimen_start.png", label: "Start", extra: "a new regimen", onClick: "choseAction('start-new-regimen')" ]) }
+			<% } %>
 
-	<div id="regimen-action-buttons" style="text-align: center">
-	<% if (allowNew) { %>
-	${ ui.includeFragment("uilibrary", "widget/button", [ iconProvider: "kenyaemr", icon: "buttons/regimen_start.png", label: "Start", extra: "a new regimen", onClick: "choseAction('start-new-regimen')" ]) }
-	<% } %>
+			<% if (allowChange) { %>
+			${ ui.includeFragment("uilibrary", "widget/button", [ iconProvider: "kenyaemr", icon: "buttons/regimen_change.png", label: "Change", extra: "the current regimen", onClick: "choseAction('change-regimen')" ]) }
 
-	<% if (allowChange) { %>
-	${ ui.includeFragment("uilibrary", "widget/button", [ iconProvider: "kenyaemr", icon: "buttons/regimen_change.png", label: "Change", extra: "the current regimen", onClick: "choseAction('change-regimen')" ]) }
+			${ ui.includeFragment("uilibrary", "widget/button", [ iconProvider: "kenyaemr", icon: "buttons/regimen_stop.png", label: "Stop", extra: "the current regimen", onClick: "choseAction('stop-regimen')" ]) }
+			<% } %>
 
-	${ ui.includeFragment("uilibrary", "widget/button", [ iconProvider: "kenyaemr", icon: "buttons/regimen_stop.png", label: "Stop", extra: "the current regimen", onClick: "choseAction('stop-regimen')" ]) }
-	<% } %>
+			<% if (allowRestart) { %>
+			${ ui.includeFragment("uilibrary", "widget/button", [ iconProvider: "kenyaemr", icon: "buttons/regimen_restart.png", label: "Restart", extra: "a new regimen", onClick: "choseAction('restart-regimen')" ]) }
+			<% } %>
 
-	<% if (allowRestart) { %>
-	${ ui.includeFragment("uilibrary", "widget/button", [ iconProvider: "kenyaemr", icon: "buttons/regimen_restart.png", label: "Restart", extra: "a new regimen", onClick: "choseAction('restart-regimen')" ]) }
-	<% } %>
+			<% if (allowUndo) { %>
+			${ ui.includeFragment("uilibrary", "widget/button", [ iconProvider: "kenyaemr", icon: "buttons/undo.png", label: "Undo", extra: "the last change", onClick: "undoLastChange()" ]) }
+			<% } %>
+			</div>
 
-	<% if (allowUndo) { %>
-	${ ui.includeFragment("uilibrary", "widget/button", [ iconProvider: "kenyaemr", icon: "buttons/undo.png", label: "Undo", extra: "the last change", onClick: "undoLastChange()" ]) }
-	<% } %>
+			<% if (allowNew) { %>
+			<fieldset id="start-new-regimen" class="regimen-action-form" style="display: none">
+				<legend>Start New Regimen</legend>
+
+				${ ui.includeFragment("uilibrary", "widget/form", [
+					fragmentProvider: "kenyaemr",
+					fragment: "regimenUtil",
+					action: "changeRegimen",
+					fields: [
+							[ hiddenInputName: "patient", value: patient.id ],
+							[ hiddenInputName: "changeType", value: "START" ],
+							[ hiddenInputName: "category", value: category ],
+							[ label: "Start Date", formFieldName: "changeDate", class: java.util.Date, initialValue: today ],
+							[ label: "Regimen", formFieldName: "regimen", class: "org.openmrs.module.kenyaemr.regimen.Regimen", fieldFragment: "field/Regimen", category: category ]
+					],
+					submitLabel: "Save",
+					successCallbacks: [ "ui.reloadPage();" ],
+					cancelLabel: "Cancel",
+					cancelFunction: "cancelAction"
+				]) }
+			</fieldset>
+			<% } %>
+
+			<% if (allowChange) { %>
+			<fieldset id="change-regimen" class="regimen-action-form" style="display: none">
+				<legend>Change Regimen</legend>
+
+				${ ui.includeFragment("uilibrary", "widget/form", [
+					fragmentProvider: "kenyaemr",
+					fragment: "regimenUtil",
+					action: "changeRegimen",
+					fields: [
+							[ hiddenInputName: "patient", value: patient.id ],
+							[ hiddenInputName: "changeType", value: "CHANGE" ],
+							[ hiddenInputName: "category", value: category ],
+							[ label: "Change Date", formFieldName: "changeDate", class: java.util.Date, initialValue: today ],
+							[ label: "Regimen", formFieldName: "regimen", class: "org.openmrs.module.kenyaemr.regimen.Regimen", fieldFragment: "field/Regimen", category: category ],
+							[ label: "Reason for Change", formFieldName: "changeReason", class: java.lang.String ]
+					],
+					submitLabel: "Save",
+					successCallbacks: [ "ui.reloadPage();" ],
+					cancelLabel: "Cancel",
+					cancelFunction: "cancelAction"
+				]) }
+			</fieldset>
+
+			<fieldset id="stop-regimen" class="regimen-action-form" style="display: none">
+				<legend>Stop Regimen</legend>
+
+				${ ui.includeFragment("uilibrary", "widget/form", [
+					fragmentProvider: "kenyaemr",
+					fragment: "regimenUtil",
+					action: "changeRegimen",
+					fields: [
+							[ hiddenInputName: "patient", value: patient.id ],
+							[ hiddenInputName: "changeType", value: "STOP" ],
+							[ hiddenInputName: "category", value: category ],
+							[ label: "Stop Date", formFieldName: "changeDate", class: java.util.Date, initialValue: today ],
+							[ label: "Reason for Stop", formFieldName: "changeReason", class: java.lang.String ]
+					],
+					submitLabel: "Save",
+					successCallbacks: [ "ui.reloadPage();" ],
+					cancelLabel: "Cancel",
+					cancelFunction: "cancelAction"
+				]) }
+			</fieldset>
+			<% } %>
+
+			<% if (allowRestart) { %>
+			<fieldset id="restart-regimen" class="regimen-action-form" style="display: none">
+				<legend>Restart Regimen</legend>
+
+				${ ui.includeFragment("uilibrary", "widget/form", [
+					fragmentProvider: "kenyaemr",
+					fragment: "regimenUtil",
+					action: "changeRegimen",
+					fields: [
+							[ hiddenInputName: "patient", value: patient.id ],
+							[ hiddenInputName: "changeType", value: "RESTART" ],
+							[ hiddenInputName: "category", value: category ],
+							[ label: "Restart Date", formFieldName: "changeDate", class: java.util.Date, initialValue: today ],
+							[ label: "Regimen", formFieldName: "regimen", class: "org.openmrs.module.kenyaemr.regimen.Regimen", fieldFragment: "field/Regimen", category: category ]
+					],
+					submitLabel: "Save",
+					successCallbacks: [ "ui.reloadPage();" ],
+					cancelLabel: "Cancel",
+					cancelFunction: "cancelAction"
+				]) }
+			</fieldset>
+			<% } %>
+		</div>
 	</div>
-
-	<% if (allowNew) { %>
-	<fieldset id="start-new-regimen" class="regimen-action-form" style="display: none">
-		<legend>Start ARVs</legend>
-
-		${ ui.includeFragment("uilibrary", "widget/form", [
-			fragmentProvider: "kenyaemr",
-			fragment: "regimenUtil",
-			action: "changeRegimen",
-			fields: [
-					[ hiddenInputName: "patient", value: patient.id ],
-					[ hiddenInputName: "category", value: category ],
-					[ hiddenInputName: "changeType", value: "start" ],
-					[ label: "Start Date", formFieldName: "changeDate", class: java.util.Date, initialValue: new Date(), fieldFragment: "field/java.util.Date.datetime" ],
-					[ label: "Regimen", formFieldName: "regimen", class: "org.openmrs.module.kenyaemr.regimen.Regimen", fieldFragment: "field/Regimen", category: category ]
-			],
-			submitLabel: "Save",
-			successCallbacks: [ "ui.reloadPage();" ],
-			cancelLabel: "Cancel",
-			cancelFunction: "cancelAction"
-		]) }
-	</fieldset>
-	<% } %>
-
-	<% if (allowChange) { %>
-	<fieldset id="change-regimen" class="regimen-action-form" style="display: none">
-		<legend>Change ARVs</legend>
-
-		${ ui.includeFragment("uilibrary", "widget/form", [
-			fragmentProvider: "kenyaemr",
-			fragment: "regimenUtil",
-			action: "changeRegimen",
-			fields: [
-					[ hiddenInputName: "patient", value: patient.id ],
-					[ hiddenInputName: "category", value: category ],
-					[ hiddenInputName: "changeType", value: "change" ],
-					[ hiddenInputName: "type", value: "CHANGE" ],
-					[ label: "Change Date", formFieldName: "changeDate", class: java.util.Date, initialValue: new Date(), fieldFragment: "field/java.util.Date.datetime" ],
-					[ label: "Regimen", formFieldName: "regimen", class: "org.openmrs.module.kenyaemr.regimen.Regimen", fieldFragment: "field/Regimen", category: category ],
-					[ label: "Reason for Change", formFieldName: "changeReason", class: java.lang.String ]
-			],
-			submitLabel: "Save",
-			successCallbacks: [ "ui.reloadPage();" ],
-			cancelLabel: "Cancel",
-			cancelFunction: "cancelAction"
-		]) }
-	</fieldset>
-
-	<fieldset id="stop-regimen" class="regimen-action-form" style="display: none">
-		<legend>Stop ARVs</legend>
-
-		${ ui.includeFragment("uilibrary", "widget/form", [
-			fragmentProvider: "kenyaemr",
-			fragment: "regimenUtil",
-			action: "changeRegimen",
-			fields: [
-					[ hiddenInputName: "patient", value: patient.id ],
-					[ hiddenInputName: "category", value: category ],
-					[ hiddenInputName: "changeType", value: "stop" ],
-					[ label: "Stop Date", formFieldName: "changeDate", class: java.util.Date, initialValue: new Date(), fieldFragment: "field/java.util.Date.datetime" ],
-					[ label: "Reason for Stop", formFieldName: "changeReason", class: java.lang.String ]
-			],
-			submitLabel: "Save",
-			successCallbacks: [ "ui.reloadPage();" ],
-			cancelLabel: "Cancel",
-			cancelFunction: "cancelAction"
-		]) }
-	</fieldset>
-	<% } %>
-
-	<% if (allowRestart) { %>
-	<fieldset id="restart-regimen" class="regimen-action-form" style="display: none">
-		<legend>Restart ARVs</legend>
-
-		${ ui.includeFragment("uilibrary", "widget/form", [
-			fragmentProvider: "kenyaemr",
-			fragment: "regimenUtil",
-			action: "changeRegimen",
-			fields: [
-					[ hiddenInputName: "patient", value: patient.id ],
-					[ hiddenInputName: "category", value: category ],
-					[ hiddenInputName: "changeType", value: "restart" ],
-					[ label: "Restart Date", formFieldName: "changeDate", class: java.util.Date, initialValue: new Date(), fieldFragment: "field/java.util.Date.datetime" ],
-					[ label: "Regimen", formFieldName: "regimen", class: "org.openmrs.module.kenyaemr.regimen.Regimen", fieldFragment: "field/Regimen", category: category ]
-			],
-			submitLabel: "Save",
-			successCallbacks: [ "ui.reloadPage();" ],
-			cancelLabel: "Cancel",
-			cancelFunction: "cancelAction"
-		]) }
-	</fieldset>
-	<% } %>
-
 </div>

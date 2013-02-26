@@ -18,10 +18,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.GlobalProperty;
 import org.openmrs.api.context.Context;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.web.WebConstants;
+import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 
-public class IPAccessSecurityTest extends BaseModuleContextSensitiveTest {
+public class IPAccessSecurityTest extends BaseModuleWebContextSensitiveTest {
 
 	@Before
 	public void setup() throws Exception {

@@ -14,7 +14,7 @@
 	</thead>
 	<tbody>
 		<% if (!simpleHistory) { %>
-			<tr><td colspan="4">None</td></tr>
+			<tr><td colspan="4" style="text-align: center; font-style: italic">None</td></tr>
 		<% } %>
 		<% for (def change in simpleHistory) { %>
 	  	<tr>

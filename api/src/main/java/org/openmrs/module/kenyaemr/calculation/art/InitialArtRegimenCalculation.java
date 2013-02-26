@@ -23,6 +23,7 @@ import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.kenyaemr.calculation.BaseKenyaEmrCalculation;
 import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
+import org.openmrs.module.kenyaemr.regimen.RegimenManager;
 import org.openmrs.module.kenyaemr.regimen.RegimenOrder;
 
 import java.util.Collection;

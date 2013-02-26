@@ -21,8 +21,9 @@ import org.openmrs.Concept;
 import org.openmrs.DrugOrder;
 import org.openmrs.Visit;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyaemr.regimen.DrugReference;
+import org.openmrs.module.kenyaemr.regimen.RegimenChangeHistory;
 import org.openmrs.module.kenyaemr.regimen.RegimenOrder;
-import org.openmrs.module.kenyaemr.regimen.RegimenOrderHistory;
 import org.openmrs.module.kenyaemr.regimen.RegimenManager;
 import org.openmrs.module.kenyaemr.test.TestUtils;
 import org.openmrs.ui.framework.SimpleObject;
@@ -37,13 +38,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 
+/**
+ *
+ */
 public class KenyaEmrUiUtilsTest extends BaseModuleWebContextSensitiveTest {
 
 	private UiUtils ui;
+
 	private RegimenOrder regimen;
 
 	@Before
-	public void setUp() throws Exception {
+	public void setup() throws Exception {
 		executeDataSet("test-data.xml");
 		executeDataSet("test-drugdata.xml");
 
@@ -69,11 +74,11 @@ public class KenyaEmrUiUtilsTest extends BaseModuleWebContextSensitiveTest {
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.KenyaEmrUiUtils#formatDateNoTime(java.util.Date)
+	 * @see org.openmrs.module.kenyaemr.KenyaEmrUiUtils#formatDate(java.util.Date)
 	 * @verifies format date as a string without time information
 	 */
 	@Test
-	public void formatDateNoTime_shouldFormatDateWithoutTime() throws Exception {
+	public void formatDate_shouldFormatDateWithoutTime() throws Exception {
 		GregorianCalendar cal = new GregorianCalendar();
 		cal.set(Calendar.YEAR, 1981);
 		cal.set(Calendar.MONTH, Calendar.MAY);
@@ -82,16 +87,16 @@ public class KenyaEmrUiUtilsTest extends BaseModuleWebContextSensitiveTest {
 		cal.set(Calendar.MINUTE, 30);
 		cal.set(Calendar.SECOND, 12);
 
-		Assert.assertEquals("28-May-1981", KenyaEmrUiUtils.formatDateNoTime(cal.getTime()));
+		Assert.assertEquals("28-May-1981", KenyaEmrUiUtils.formatDate(cal.getTime()));
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.KenyaEmrUiUtils#formatDateNoTime(java.util.Date)
+	 * @see org.openmrs.module.kenyaemr.KenyaEmrUiUtils#formatDate(java.util.Date)
 	 * @verifies format null date as empty string
 	 */
 	@Test
-	public void formatDateNoTime_shouldFormatNullDateAsEmptyString() throws Exception {
-		Assert.assertEquals("", KenyaEmrUiUtils.formatDateNoTime(null));
+	public void formatDate_shouldFormatNullDateAsEmptyString() throws Exception {
+		Assert.assertEquals("", KenyaEmrUiUtils.formatDate(null));
 	}
 
 	/**
@@ -101,6 +106,21 @@ public class KenyaEmrUiUtilsTest extends BaseModuleWebContextSensitiveTest {
 	@Test
 	public void formatMillis_shouldReturnNonEmptyString() throws Exception {
 		Assert.assertTrue(StringUtils.isNotEmpty(KenyaEmrUiUtils.formatInterval(new Date())));
+	}
+
+	/**
+	 * @see org.openmrs.module.kenyaemr.KenyaEmrUiUtils#formatDrug(org.openmrs.module.kenyaemr.regimen.DrugReference, org.openmrs.ui.framework.UiUtils)
+	 * @verifies format drug reference as concept or drug
+	 */
+	@Test
+	public void formatDrug_shouldFormatDrugReferenceAsConceptOrDrug() throws Exception {
+		// Test concept only reference
+		DrugReference drugRef1 = DrugReference.fromConceptUuid("84309AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");	// STAVUDINE
+		Assert.assertNotNull(KenyaEmrUiUtils.formatDrug(drugRef1, ui));
+
+		// Test concept only reference
+		DrugReference drugRef2 = DrugReference.fromDrugUuid("a74fefc6-931d-47b9-b282-5d6c8c8d8060"); // Rifampicin (100mg)
+		Assert.assertNotNull(KenyaEmrUiUtils.formatDrug(drugRef2, ui));
 	}
 
 	/**
@@ -143,14 +163,14 @@ public class KenyaEmrUiUtilsTest extends BaseModuleWebContextSensitiveTest {
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.KenyaEmrUiUtils#simpleRegimenHistory(org.openmrs.module.kenyaemr.regimen.RegimenOrderHistory, org.openmrs.ui.framework.UiUtils)
+	 * @see org.openmrs.module.kenyaemr.KenyaEmrUiUtils#simpleRegimenHistory(org.openmrs.module.kenyaemr.regimen.RegimenChangeHistory, org.openmrs.ui.framework.UiUtils)
 	 */
 	@Test
 	public void simpleRegimenHistory_shouldConvertToSimpleObjects() throws IOException, SAXException, ParserConfigurationException {
 		Concept medset = Context.getConceptService().getConceptByUuid(MetadataConstants.ANTIRETROVIRAL_DRUGS_CONCEPT_UUID);
 
 		// Check empty history
-		RegimenOrderHistory emptyHistory = RegimenOrderHistory.forPatient(Context.getPatientService().getPatient(6), medset);
+		RegimenChangeHistory emptyHistory = RegimenChangeHistory.forPatient(Context.getPatientService().getPatient(6), medset);
 		List<SimpleObject> objs = KenyaEmrUiUtils.simpleRegimenHistory(emptyHistory, ui);
 
 		Assert.assertEquals(0, objs.size());

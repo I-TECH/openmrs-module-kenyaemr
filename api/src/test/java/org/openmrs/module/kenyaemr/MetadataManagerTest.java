@@ -14,13 +14,10 @@
 package org.openmrs.module.kenyaemr;
 
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
-//@Ignore("This will be hard to get working - UUIDs in test data would have to all match UUIDs from test package"
 public class MetadataManagerTest extends BaseModuleContextSensitiveTest {
 
 	/**

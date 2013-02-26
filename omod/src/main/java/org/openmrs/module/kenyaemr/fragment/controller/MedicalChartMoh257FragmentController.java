@@ -20,7 +20,7 @@ import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.kenyaemr.ValidatingCommandObject;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.module.kenyaemr.form.FormManager;
-import org.openmrs.module.kenyaemr.regimen.RegimenOrderHistory;
+import org.openmrs.module.kenyaemr.regimen.RegimenChangeHistory;
 import org.openmrs.module.kenyaemr.regimen.RegimenManager;
 import org.openmrs.module.kenyaemr.util.KenyaEmrUtils;
 import org.openmrs.ui.framework.SimpleObject;
@@ -74,7 +74,7 @@ public class MedicalChartMoh257FragmentController {
 		model.addAttribute("page2Encounters", moh257VisitSummaryEncounters);
 
 		Concept masterSet = RegimenManager.getMasterSetConcept("ARV");
-		RegimenOrderHistory arvHistory = RegimenOrderHistory.forPatient(patient, masterSet);
+		RegimenChangeHistory arvHistory = RegimenChangeHistory.forPatient(patient, masterSet);
 		model.addAttribute("arvHistory", arvHistory);
 	}
 

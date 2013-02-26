@@ -30,7 +30,7 @@ import java.util.List;
 public class CurrentArtRegimenCalculationTest extends BaseModuleContextSensitiveTest {
 
 	@Before
-	public void beforeEachTest() throws Exception {
+	public void setup() throws Exception {
 		executeDataSet("test-data.xml");
 		executeDataSet("test-drugdata.xml");
 	}

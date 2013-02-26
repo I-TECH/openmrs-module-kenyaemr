@@ -90,13 +90,13 @@ var kenyaemr = (function($) {
 			var regimenStr = '';
 
 			$('#' + fieldId +  '-container .regimen-component').each(function() {
-				var concept = jq(this).find('.regimen-component-concept').val();
+				var drug = jq(this).find('.regimen-component-drug').val();
 				var dose = jq(this).find('.regimen-component-dose').val();
 				var units = jq(this).find('.regimen-component-units').val();
 				var frequency = jq(this).find('.regimen-component-frequency').val();
 
-				if (concept || dose) {
-					regimenStr += (concept + '|' + dose + '|' + units + '|' + frequency + '|');
+				if (drug || dose) {
+					regimenStr += (drug + '|' + dose + '|' + units + '|' + frequency + '|');
 				}
 			});
 

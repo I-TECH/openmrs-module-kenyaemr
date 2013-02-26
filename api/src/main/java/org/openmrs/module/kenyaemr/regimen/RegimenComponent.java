@@ -15,13 +15,19 @@
 package org.openmrs.module.kenyaemr.regimen;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.openmrs.DrugOrder;
+import org.openmrs.Patient;
+import org.openmrs.api.context.Context;
+import org.openmrs.util.OpenmrsConstants;
+
+import java.util.Date;
 
 /**
  * RegimenComponent of a regimen (drug, dose, units and frequency)
  */
 public class RegimenComponent {
 
-	private Integer conceptId;
+	private DrugReference drugRef;
 
 	private Double dose;
 
@@ -37,32 +43,32 @@ public class RegimenComponent {
 
 	/**
 	 * Creates a new component
-	 * @param conceptId the concept id
+	 * @param drugRef the drug reference
 	 * @param dose the dose, e.g. 200
 	 * @param units the units, e.g. mg
 	 * @apram frequency the frequency, e.g. OD
 	 */
-	public RegimenComponent(int conceptId, Double dose, String units, String frequency) {
-		this.conceptId = conceptId;
+	public RegimenComponent(DrugReference drugRef, Double dose, String units, String frequency) {
+		this.drugRef = drugRef;
 		this.dose = dose;
 		this.units = units;
 		this.frequency = frequency;
 	}
 
 	/**
-	 * Gets the concept id
-	 * @return the concept id
+	 * Gets the drug reference
+	 * @return the drug reference
 	 */
-	public Integer getConceptId() {
-		return conceptId;
+	public DrugReference getDrugRef() {
+		return drugRef;
 	}
 
 	/**
-	 * Sets the concept id
-	 * @param conceptId the concept id
+	 * Sets the drug reference
+	 * @param drugRef the drug reference
 	 */
-	public void setConceptId(Integer conceptId) {
-		this.conceptId = conceptId;
+	public void setDrugRef(DrugReference drugRef) {
+		this.drugRef = drugRef;
 	}
 
 	/**
@@ -118,7 +124,24 @@ public class RegimenComponent {
 	 * @return true if complete
 	 */
 	public boolean isComplete() {
-		return conceptId != null && dose != null && units != null && frequency != null;
+		return drugRef != null && dose != null && units != null && frequency != null;
+	}
+
+	/**
+	 * Creates a drug order from this component
+	 * @return the drug order
+	 */
+	public DrugOrder toDrugOrder(Patient patient, Date start) {
+		DrugOrder order = new DrugOrder();
+		order.setOrderType(Context.getOrderService().getOrderType(OpenmrsConstants.ORDERTYPE_DRUG));
+		order.setPatient(patient);
+		order.setStartDate(start);
+		order.setConcept(drugRef.getConcept());
+		order.setDrug(drugRef.getDrug());
+		order.setDose(dose);
+		order.setUnits(units);
+		order.setFrequency(frequency);
+		return order;
 	}
 
 	/**
@@ -126,6 +149,6 @@ public class RegimenComponent {
 	 */
 	@Override
 	public String toString() {
-		return new ToStringBuilder(this).append("conceptId", conceptId).append("dose", dose).append("units", units).append("frequency", frequency).toString();
+		return new ToStringBuilder(this).append("drugRef", drugRef).append("dose", dose).append("units", units).append("frequency", frequency).toString();
 	}
 }

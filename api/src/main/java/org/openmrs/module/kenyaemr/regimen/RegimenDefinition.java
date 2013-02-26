@@ -53,13 +53,13 @@ public class RegimenDefinition extends Regimen {
 
 	/**
 	 * Convenience method to add a component
-	 * @param conceptId the component concept id
+	 * @param drugRef the component drug reference
 	 * @param dose the component dose
 	 * @param units the component units
 	 * @param frequency the component frequency
 	 */
-	public void addComponent(int conceptId, Double dose, String units, String frequency) {
-		components.add(new RegimenComponent(conceptId, dose, units, frequency));
+	public void addComponent(DrugReference drugRef, Double dose, String units, String frequency) {
+		components.add(new RegimenComponent(drugRef, dose, units, frequency));
 	}
 
 	/**

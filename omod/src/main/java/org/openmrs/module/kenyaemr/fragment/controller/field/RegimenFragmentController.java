@@ -23,24 +23,49 @@ import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Set;
 
 /**
  *
  */
 public class RegimenFragmentController {
 
-	public void controller(@FragmentParam("category") String category, FragmentModel model, UiUtils ui) {
+	public void controller(@FragmentParam("category") String category,
+						   @FragmentParam(value = "includeGroups", required = false) Set<String> includeGroups,
+						   FragmentModel model, UiUtils ui) {
 
 		List<RegimenDefinitionGroup> regimenGroups = RegimenManager.getRegimenGroups(category);
+
+		if (includeGroups != null) {
+			regimenGroups = filterGroups(regimenGroups, includeGroups);
+		}
+
 		List<RegimenDefinition> regimenDefinitions = new ArrayList<RegimenDefinition>();
 		for (RegimenDefinitionGroup group : regimenGroups) {
 			regimenDefinitions.addAll(group.getRegimens());
 		}
 
 		model.addAttribute("maxComponents", 4);
-		model.addAttribute("drugConcepts", RegimenManager.getDrugConcepts(category));
+		model.addAttribute("drugs", RegimenManager.getDrugs(category));
 		model.addAttribute("regimenGroups", regimenGroups);
 		model.addAttribute("regimenDefinitions", KenyaEmrUiUtils.simpleRegimenDefinitions(regimenDefinitions, ui));
+	}
+
+	/**
+	 * Filter regimen groups by code
+	 * @param groups the groups
+	 * @param includeGroupCodes the group codes to include
+	 * @return the filtered groups
+	 */
+	private static List<RegimenDefinitionGroup> filterGroups(List<RegimenDefinitionGroup> groups, Set<String> includeGroupCodes) {
+		List<RegimenDefinitionGroup> filtered = new ArrayList<RegimenDefinitionGroup>();
+		for (RegimenDefinitionGroup group : groups) {
+			if (includeGroupCodes.contains(group.getCode())) {
+				filtered.add(group);
+			}
+		}
+		return filtered;
 	}
 }

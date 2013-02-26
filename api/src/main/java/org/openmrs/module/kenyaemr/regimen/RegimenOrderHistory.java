@@ -11,35 +11,25 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.kenyaemr.regimen;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.SortedMap;
-import java.util.TreeMap;
-
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.openmrs.Concept;
 import org.openmrs.DrugOrder;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
 import org.openmrs.util.OpenmrsUtil;
 
+import java.util.*;
+
 /**
- * Regimen history of a patient
+ * Regimen order history of a patient. Use for TB regimens
  */
 public class RegimenOrderHistory {
 
-	private enum ChangeType {
-		START, END
-	}
-
-	private List<RegimenChange> changes;
+	protected List<RegimenOrder> orders;
 
 	/**
 	 * Generates a regimen order history for the given patient
@@ -49,191 +39,94 @@ public class RegimenOrderHistory {
 	 */
 	public static RegimenOrderHistory forPatient(Patient patient, Concept medSet) {
 		Set<Concept> relevantGenerics = new HashSet<Concept>(medSet.getSetMembers());
-		@SuppressWarnings("deprecation")
 		List<DrugOrder> allDrugOrders = Context.getOrderService().getDrugOrdersByPatient(patient);
 		return new RegimenOrderHistory(relevantGenerics, allDrugOrders);
 	}
-	
+
 	/**
 	 * Constructs a regimen order history
-	 * @param relevantDrugs
-	 * @param allDrugOrders
+	 * @param relevantDrugs the relevant drugs
+	 * @param allDrugOrders the orders
 	 * @should create regimen history based on drug orders
 	 */
-	RegimenOrderHistory(Set<Concept> relevantDrugs, List<DrugOrder> allDrugOrders) {
-
+	protected RegimenOrderHistory(Set<Concept> relevantDrugs, List<DrugOrder> allDrugOrders) {
 		// Filter the drug orders to only contain orders of relevant drugs
-		List<DrugOrder> relevantDrugOrders = new ArrayList<DrugOrder>();
-		for (DrugOrder o : allDrugOrders) {
-			if (relevantDrugs.contains(o.getConcept())) {
-				relevantDrugOrders.add(o);
-			}
-		}
+		List<DrugOrder> relevantDrugOrders = filterByConcepts(allDrugOrders, relevantDrugs);
 
-		// Collect changes for each individual drug orders
-		List<DrugOrderChange> tempChanges = new ArrayList<DrugOrderChange>();
-		for (DrugOrder o : relevantDrugOrders) {
-			tempChanges.add(new DrugOrderChange(ChangeType.START, o, o.getStartDate()));
-			if (o.getDiscontinuedDate() != null) {
-				tempChanges.add(new DrugOrderChange(ChangeType.END, o, o.getDiscontinuedDate()));
-			} else if (o.getAutoExpireDate() != null) {
-				tempChanges.add(new DrugOrderChange(ChangeType.END, o, o.getAutoExpireDate()));
-			}
-		}
+		orders = new ArrayList<RegimenOrder>(groupDrugOrdersByDates(relevantDrugOrders));
 
-		// Gather changes together by common dates
-		SortedMap<Date, List<DrugOrderChange>> changesByDate = new TreeMap<Date, List<DrugOrderChange>>();
-		for (DrugOrderChange change : tempChanges) {
-			List<DrugOrderChange> holder = changesByDate.get(change.getDate());
-			if (holder == null) {
-				holder = new ArrayList<DrugOrderChange>();
-				changesByDate.put(change.getDate(), holder);
-			}
-			holder.add(change);
-		}
-
-		// Group drug orders into regimens based on common change dates
-		changes = new ArrayList<RegimenChange>();
-		Set<DrugOrder> runningOrders = new LinkedHashSet<DrugOrder>();
-		RegimenOrder lastRegimen = null;
-		for (Map.Entry<Date, List<DrugOrderChange>> e : changesByDate.entrySet()) {
-			Date date = e.getKey();
-			Set<Concept> changeReasons = new LinkedHashSet<Concept>();
-			Set<String> changeReasonsNonCoded = new LinkedHashSet<String>();
-			for (DrugOrderChange rc : e.getValue()) {
-				if (ChangeType.START.equals(rc.getType())) {
-					runningOrders.add(rc.getDrugOrder());
-				} else { // ChangeType.END
-					DrugOrder o = rc.getDrugOrder();
-					runningOrders.remove(o);
-					if (o.getDiscontinuedReason() != null) {
-						changeReasons.add(o.getDiscontinuedReason());
-					}
-					if (o.getDiscontinuedReasonNonCoded() != null) {
-						changeReasonsNonCoded.add(o.getDiscontinuedReasonNonCoded());
-					}
-				}
-			}
-
-			// Construct new regimen if there are running drug orders
-			RegimenOrder newRegimen = null;
-			if (runningOrders.size() > 0) {
-				newRegimen = new RegimenOrder(new LinkedHashSet<DrugOrder>(runningOrders));
-			}
-
-			RegimenChange change = new RegimenChange(date, lastRegimen, newRegimen, changeReasons, changeReasonsNonCoded);
-			changes.add(change);
-			lastRegimen = newRegimen;
-		}
+		Collections.sort(orders);
 	}
 
 	/**
-	 * Undoes the last change in the history
+	 * Gets the regimen orders
+	 * @return the regimen orders
 	 */
-	public void undoLastChange() {
-		RegimenChange lastChange = getLastChange();
-		if (lastChange == null) {
-			return;
-		}
-
-		// Void the regimen that may have been started
-		if (lastChange.getStarted() != null) {
-			for (DrugOrder order : lastChange.getStarted().getDrugOrders()) {
-				Context.getOrderService().voidOrder(order, "Undoing last regimen change");
-			}
-		}
-
-		// Un-discontinue the regimen that may have been stopped
-		if (lastChange.getStopped() != null) {
-			for (DrugOrder order : lastChange.getStopped().getDrugOrders()) {
-				order.setDiscontinued(false);
-				order.setDiscontinuedDate(null);
-				order.setDiscontinuedBy(null);
-				order.setDiscontinuedReason(null);
-				order.setDiscontinuedReasonNonCoded(null);
-				Context.getOrderService().saveOrder(order);
-			}
-		}
-
-		// Remove last change from history
-		changes.remove(lastChange);
-	}
-	
-	/**
-	 * @return the changes
-	 */
-	public List<RegimenChange> getChanges() {
-		return changes;
-	}
-
-	/**
-	 * Convenience method to get the last change
-	 * @return the last regimen change
-	 */
-	public RegimenChange getLastChange() {
-		return (changes.size() > 0) ? changes.get(changes.size() - 1) : null;
+	public List<RegimenOrder> getOrders() {
+		return orders;
 	}
 
 	/**
 	 * Convenience method to get the current regimen
 	 * @return the regimen
 	 */
-	public RegimenOrder getCurrentRegimen() {
-		return getRegimenOnDate(new Date());
+	public List<RegimenOrder> getCurrentOrders() {
+		return getOrdersOnDate(new Date());
 	}
-	
+
 	/**
-	 * Gets the regimen on the specified date, or now() if null
+	 * Gets the regimen orders on the specified date
+	 * @param date the date to check
 	 */
-	public RegimenOrder getRegimenOnDate(Date date) {
-		if (date == null) {
-			date = new Date();
-		}
-		for (ListIterator<RegimenChange> i = changes.listIterator(changes.size()); i.hasPrevious();) {
-			RegimenChange candidate = i.previous();
-			if (OpenmrsUtil.compare(candidate.getDate(), date) <= 0) {
-				return candidate.getStarted();
+	public List<RegimenOrder> getOrdersOnDate(Date date) {
+		List<RegimenOrder> regimensOnDate = new ArrayList<RegimenOrder>();
+
+		for (RegimenOrder regimenOrder : orders) {
+			if (regimenOrder.isCurrent(date)) {
+				regimensOnDate.add(regimenOrder);
 			}
 		}
-		return null;
+		return regimensOnDate;
 	}
 
 	/**
-	 * Helper class for tagging when a DrugOrder starts or stops
+	 * Filters a list of orders by a set of relevant concepts
+	 * @param orders the orders
+	 * @param concepts the relevant concepts
+	 * @return the filtered list of orders
 	 */
-	private class DrugOrderChange {
+	protected static List<DrugOrder> filterByConcepts(List<DrugOrder> orders, Set<Concept> concepts) {
+		List<DrugOrder> filteredOrders = new ArrayList<DrugOrder>();
+		for (DrugOrder o : orders) {
+			if (concepts.contains(o.getConcept())) {
+				filteredOrders.add(o);
+			}
+		}
+		return filteredOrders;
+	}
 
-		private Date date;
+	/**
+	 * Groups drug orders into regimen orders based on their dates
+	 * @param drugOrders the drug orders
+	 * @return the regimen orders
+	 */
+	protected static Collection<RegimenOrder> groupDrugOrdersByDates(List<DrugOrder> drugOrders) {
+		Map<Pair<Date, Date>, RegimenOrder> regimensByDate = new HashMap<Pair<Date, Date>, RegimenOrder>();
+		for (DrugOrder order : drugOrders) {
+			Date startDate = order.getStartDate();
+			Date endDate = order.getDiscontinuedDate() != null ? order.getDiscontinuedDate() : order.getAutoExpireDate();
+			Pair<Date, Date> orderDates = new ImmutablePair<Date, Date>(startDate, endDate);
 
-		private ChangeType type;
+			RegimenOrder regimen = regimensByDate.get(orderDates);
 
-		private DrugOrder drugOrder;
+			if (regimen == null) {
+				regimen = new RegimenOrder();
+				regimensByDate.put(orderDates, regimen);
+			}
 
-		public DrugOrderChange(ChangeType type, DrugOrder drugOrder, Date date) {
-			this.type = type;
-			this.drugOrder = drugOrder;
-			this.date = date;
+			regimen.addDrugOrder(order);
 		}
 
-		/**
-		 * @return the date
-		 */
-		public Date getDate() {
-			return date;
-		}
-
-		/**
-		 * @return the type
-		 */
-		public ChangeType getType() {
-			return type;
-		}
-
-		/**
-		 * @return the drugOrder
-		 */
-		public DrugOrder getDrugOrder() {
-			return drugOrder;
-		}
+		return regimensByDate.values();
 	}
 }

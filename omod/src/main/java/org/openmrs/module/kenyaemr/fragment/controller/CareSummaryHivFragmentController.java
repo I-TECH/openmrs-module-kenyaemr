@@ -13,11 +13,15 @@
  */
 package org.openmrs.module.kenyaemr.fragment.controller;
 
+import org.openmrs.Concept;
 import org.openmrs.Patient;
 import org.openmrs.calculation.InvalidCalculationException;
 import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
 import org.openmrs.module.kenyaemr.calculation.KenyaEmrCalculationProvider;
+import org.openmrs.module.kenyaemr.regimen.RegimenChange;
+import org.openmrs.module.kenyaemr.regimen.RegimenChangeHistory;
+import org.openmrs.module.kenyaemr.regimen.RegimenManager;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.FragmentModel;
@@ -40,7 +44,6 @@ public class CareSummaryHivFragmentController {
 
 		if (complete != null && complete.booleanValue()) {
 			calculationResults.put("initialArtRegimen", CalculationUtils.evaluateForPatient(calculationProvider, "initialArtRegimen", null, patient.getPatientId()));
-			calculationResults.put("currentArtRegimen", CalculationUtils.evaluateForPatient(calculationProvider, "currentArtRegimen", null, patient.getPatientId()));
 		}
 
 		calculationResults.put("lastWHOStage", CalculationUtils.evaluateForPatient(calculationProvider, "lastWHOStage", null, patient.getPatientId()));
@@ -48,5 +51,9 @@ public class CareSummaryHivFragmentController {
 		calculationResults.put("lastCD4Percent", CalculationUtils.evaluateForPatient(calculationProvider, "lastCD4Percent", null, patient.getPatientId()));
 
 		model.addAttribute("calculations", calculationResults);
+
+		Concept medSet = RegimenManager.getMasterSetConcept("ARV");
+		RegimenChangeHistory history = RegimenChangeHistory.forPatient(patient, medSet);
+		model.addAttribute("regimenHistory", history);
 	}
 }

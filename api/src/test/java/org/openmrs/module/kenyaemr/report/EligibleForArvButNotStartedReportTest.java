@@ -22,6 +22,7 @@ import org.openmrs.Program;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.kenyaemr.report.patientlist.EligibleForArtReport;
 import org.openmrs.module.kenyaemr.test.TestUtils;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
@@ -33,8 +34,9 @@ import org.openmrs.test.BaseModuleContextSensitiveTest;
 public class EligibleForArvButNotStartedReportTest extends BaseModuleContextSensitiveTest {
 	
 	@Before
-	public void beforeEachTest() throws Exception {
+	public void setup() throws Exception {
 		executeDataSet("test-data.xml");
+		executeDataSet("test-drugdata.xml");
 	}
 	
 	@Test
@@ -42,7 +44,7 @@ public class EligibleForArvButNotStartedReportTest extends BaseModuleContextSens
 
 		// Get HIV Program
 		ProgramWorkflowService pws = Context.getProgramWorkflowService();
-		Program hivProgram = pws.getPrograms("HIV Program").get(0);
+		Program hivProgram = pws.getProgramByUuid(MetadataConstants.HIV_PROGRAM_UUID);
 
 		// Enroll patients #6 and #7 in the HIV Program
 		PatientService ps = Context.getPatientService();

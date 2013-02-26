@@ -13,11 +13,14 @@
  */
 package org.openmrs.module.kenyaemr.fragment.controller;
 
+import org.openmrs.Concept;
 import org.openmrs.Patient;
 import org.openmrs.calculation.InvalidCalculationException;
 import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
 import org.openmrs.module.kenyaemr.calculation.KenyaEmrCalculationProvider;
+import org.openmrs.module.kenyaemr.regimen.RegimenChangeHistory;
+import org.openmrs.module.kenyaemr.regimen.RegimenManager;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.FragmentModel;
@@ -46,5 +49,9 @@ public class CareSummaryTbFragmentController {
 		}
 
 		model.addAttribute("calculations", calculationResults);
+
+		Concept medSet = RegimenManager.getMasterSetConcept("TB");
+		RegimenChangeHistory history = RegimenChangeHistory.forPatient(patient, medSet);
+		model.addAttribute("regimenHistory", history);
 	}
 }

@@ -11,6 +11,7 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.kenyaemr.regimen;
 
 import org.apache.commons.lang.ObjectUtils;
@@ -35,11 +36,11 @@ import java.util.*;
  */
 public class RegimenManager {
 
-	private static final String REGIMENS_FILENAME = "metadata/Kenya_EMR_Regimens.xml";
+	private static final String REGIMENS_FILENAME = "regimens.xml";
 
 	private static Map<String, Integer> masterSetConcepts = new LinkedHashMap<String, Integer>();
 
-	private static Map<String, Map<String, Integer>> drugConcepts = new LinkedHashMap<String, Map<String, Integer>>();
+	private static Map<String, Map<String, DrugReference>> drugs = new LinkedHashMap<String, Map<String, DrugReference>>();
 
 	private static Map<String, List<RegimenDefinitionGroup>> regimenGroups = new LinkedHashMap<String, List<RegimenDefinitionGroup>>();
 
@@ -50,7 +51,7 @@ public class RegimenManager {
 	 * @return the category codes
 	 */
 	public static Set<String> getCategoryCodes() {
-		return drugConcepts.keySet();
+		return masterSetConcepts.keySet();
 	}
 
 	/**
@@ -64,17 +65,12 @@ public class RegimenManager {
 	}
 
 	/**
-	 * Gets the individual drug concepts for the given category
+	 * Gets the individual drugs for the given category
 	 * @param category the category, e.g. "ARV"
 	 * @return the concept ids
 	 */
-	public static List<Concept> getDrugConcepts(String category) {
-		Map<String, Integer> conceptIds = drugConcepts.get(category);
-		List<Concept> drugConcepts = new ArrayList<Concept>();
-		for (Integer conceptId : conceptIds.values()) {
-			drugConcepts.add(Context.getConceptService().getConcept(conceptId));
-		}
-		return drugConcepts;
+	public static Collection<DrugReference> getDrugs(String category) {
+		return drugs.get(category).values();
 	}
 
 	/**
@@ -92,22 +88,6 @@ public class RegimenManager {
 	 */
 	public static int getDefinitionsVersion() {
 		return definitionsVersion;
-	}
-
-	/**
-	 * Looks up the drug code for the given concept
-	 * @param concept the drug concept
-	 * @return the drug code
-	 */
-	public static String findDrugCode(Concept concept) {
-		for (Map<String, Integer> concepts : drugConcepts.values()) {
-			for (Map.Entry<String, Integer> entry : concepts.entrySet()) {
-				if (entry.getValue().equals(concept.getConceptId())) {
-					return entry.getKey();
-				}
-			}
-		}
-		return null;
 	}
 
 	/**
@@ -142,7 +122,10 @@ public class RegimenManager {
 					// Does regimen have a drug order for this component?
 					boolean regimenHasComponent = false;
 					for (DrugOrder order : orders) {
-						if (order.getConcept().getConceptId().equals(component.getConceptId())) {
+						DrugReference componentDrugRef = component.getDrugRef();
+						DrugReference orderDrugRef = DrugReference.fromDrugOrder(order);
+
+						if (componentDrugRef.equals(orderDrugRef)) {
 
 							if (!exact || (ObjectUtils.equals(order.getDose(), component.getDose()) && StringUtils.equals(order.getUnits(), component.getUnits()) && StringUtils.equals(order.getFrequency(), component.getFrequency()))) {
 								regimenHasComponent = true;
@@ -164,6 +147,10 @@ public class RegimenManager {
 		return matches;
 	}
 
+	/**
+	 * Setup the standard regimens from XML
+	 * @throws Exception if error occurs
+	 */
 	public static void setupStandardRegimens() throws Exception {
 		try {
 			InputStream stream = RegimenManager.class.getClassLoader().getResourceAsStream(REGIMENS_FILENAME);
@@ -191,7 +178,8 @@ public class RegimenManager {
 		Element root = document.getDocumentElement();
 		definitionsVersion = Integer.parseInt(root.getAttribute("version"));
 
-		drugConcepts.clear();
+		masterSetConcepts.clear();
+		drugs.clear();
 		regimenGroups.clear();
 
 		// Parse each category
@@ -204,19 +192,20 @@ public class RegimenManager {
 			Concept masterSetConcept = Context.getConceptService().getConceptByUuid(masterSetUuid);
 			masterSetConcepts.put(categoryCode, masterSetConcept.getConceptId());
 
-			Map<String, Integer> drugs = new HashMap<String, Integer>();
-			List<RegimenDefinitionGroup> groups = new ArrayList<RegimenDefinitionGroup>();
+			Map<String, DrugReference> categoryDrugs = new HashMap<String, DrugReference>();
+			List<RegimenDefinitionGroup> categoryGroups = new ArrayList<RegimenDefinitionGroup>();
 
 			// Parse all drug concepts for this category
 			NodeList drugNodes = categoryElement.getElementsByTagName("drug");
 			for (int d = 0; d < drugNodes.getLength(); d++) {
 				Element drugElement = (Element)drugNodes.item(d);
 				String drugCode = drugElement.getAttribute("code");
-				String drugConceptUuid = drugElement.getAttribute("conceptUuid");
+				String drugConceptUuid = drugElement.hasAttribute("conceptUuid") ? drugElement.getAttribute("conceptUuid") : null;
+				String drugDrugUuid = drugElement.hasAttribute("drugUuid") ? drugElement.getAttribute("drugUuid") : null;
 
-				Concept drugConcept = Context.getConceptService().getConceptByUuid(drugConceptUuid);
+				DrugReference drug = (drugDrugUuid != null) ? DrugReference.fromDrugUuid(drugDrugUuid) : DrugReference.fromConceptUuid(drugConceptUuid);
 
-				drugs.put(drugCode, drugConcept.getConceptId());
+				categoryDrugs.put(drugCode, drug);
 			}
 
 			// Parse all groups for this category
@@ -227,7 +216,7 @@ public class RegimenManager {
 				String groupName = groupElement.getAttribute("name");
 
 			   	RegimenDefinitionGroup group = new RegimenDefinitionGroup(groupCode, groupName);
-				groups.add(group);
+				categoryGroups.add(group);
 
 				// Parse all regimen definitions for this group
 				NodeList regimenNodes = groupElement.getElementsByTagName("regimen");
@@ -246,19 +235,19 @@ public class RegimenManager {
 						String units = componentElement.hasAttribute("units") ? componentElement.getAttribute("units") : null;
 						String frequency = componentElement.hasAttribute("frequency") ? componentElement.getAttribute("frequency") : null;
 
-						Integer drugConceptId = drugs.get(drugCode);
-						if (drugConceptId == null)
+						DrugReference drug = categoryDrugs.get(drugCode);
+						if (drug == null)
 							throw new RuntimeException("Regimen component references invalid drug: " + drugCode);
 
-						regimenDefinition.addComponent(drugConceptId, dose, units, frequency);
+						regimenDefinition.addComponent(drug, dose, units, frequency);
 					}
 
 					group.addRegimen(regimenDefinition);
 				}
 			}
 
-			drugConcepts.put(categoryCode, drugs);
-			regimenGroups.put(categoryCode, groups);
+			drugs.put(categoryCode, categoryDrugs);
+			regimenGroups.put(categoryCode, categoryGroups);
 		}
 	}
 }

@@ -36,27 +36,29 @@ import java.util.Map;
  */
 public class AccessReportsByRestWebServiceTest extends BaseModuleWebContextSensitiveTest {
 
-    @Autowired
-    KenyaEmrService service;
+	@Autowired
+	KenyaEmrService service;
 
-    @Autowired
-    DataSetDefinitionController dsdController;
+	@Autowired
+	DataSetDefinitionController dsdController;
 
-    @Autowired
-    EvaluatedDataSetController evalController;
+	@Autowired
+	EvaluatedDataSetController evalController;
 
-    @Before
-    public void setUp() throws Exception {
-        executeDataSet("test-data.xml");
-        service.refreshReportManagers();
-    }
+	@Before
+	public void setup() throws Exception {
+		executeDataSet("test-data.xml");
+		executeDataSet("test-drugdata.xml");
 
-    @Test
-    public void shouldListDataSetDefinitionsByWebService() throws Exception {
-        // equivalent to doing "GET .../datasetdefinition"
-        SimpleObject result = dsdController.getAll(new MockHttpServletRequest(), new MockHttpServletResponse());
+		service.refreshReportManagers();
+	}
 
-        List<SimpleObject> simpleDSDs = (List<SimpleObject>) result.get("results");
+	@Test
+	public void shouldListDataSetDefinitionsByWebService() throws Exception {
+		// equivalent to doing "GET .../datasetdefinition"
+		SimpleObject result = dsdController.getAll(new MockHttpServletRequest(), new MockHttpServletResponse());
+
+		List<SimpleObject> simpleDSDs = (List<SimpleObject>) result.get("results");
 		Assert.assertNotNull(simpleDSDs);
 
 		for (SimpleObject simpleDSD : simpleDSDs) {
@@ -66,16 +68,16 @@ public class AccessReportsByRestWebServiceTest extends BaseModuleWebContextSensi
 			Assert.assertNotNull(simpleDSD.get("links"));
 		}
 
-        //printJson(result);
-    }
+		//printJson(result);
+	}
 
-    @Test
-    public void shouldEvaluateMoh731ReportViaRest() throws Exception {
-        String uuid = Moh731Report.class.getName() + ":" + Moh731Report.NAME_PREFIX + " DSD";
+	@Test
+	public void shouldEvaluateMoh731ReportViaRest() throws Exception {
+		String uuid = Moh731Report.class.getName() + ":" + Moh731Report.NAME_PREFIX + " DSD";
 
-        MockHttpServletRequest request = new MockHttpServletRequest();
-        request.addParameter("startDate", new String[] { "2012-01-01" });
-        request.addParameter("endDate", new String[] { "2012-10-31" });
+		MockHttpServletRequest request = new MockHttpServletRequest();
+		request.addParameter("startDate", new String[] { "2012-01-01" });
+		request.addParameter("endDate", new String[] { "2012-10-31" });
 		SimpleObject evaledReport = (SimpleObject) evalController.retrieve(uuid, request);
 
 		Assert.assertNotNull(evaledReport);
@@ -94,5 +96,5 @@ public class AccessReportsByRestWebServiceTest extends BaseModuleWebContextSensi
 		Assert.assertEquals(1, rows.size());
 
 		//printJson(result);
-    }
+	}
 }

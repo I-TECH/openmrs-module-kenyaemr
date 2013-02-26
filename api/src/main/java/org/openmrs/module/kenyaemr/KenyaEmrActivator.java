@@ -15,13 +15,19 @@ package org.openmrs.module.kenyaemr;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.Concept;
+import org.openmrs.Drug;
 import org.openmrs.GlobalProperty;
+import org.openmrs.User;
 import org.openmrs.api.context.Context;
+import org.openmrs.api.context.UserContext;
+import org.openmrs.api.db.ContextDAO;
 import org.openmrs.module.ModuleActivator;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.module.kenyaemr.datatype.LocationDatatype;
 import org.openmrs.module.kenyaemr.form.FormManager;
 import org.openmrs.module.kenyaemr.regimen.RegimenManager;
+import org.openmrs.module.kenyaemr.util.ContextProvider;
 
 /**
  * This class contains the logic that is run every time this module is either started or stopped.
@@ -61,7 +67,12 @@ public class KenyaEmrActivator implements ModuleActivator {
 
 		log.info("Kenya OpenMRS EMR Module starting...");
 
+		ContextDAO contextDAO = (ContextDAO)ContextProvider.getApplicationContext().getBean("contextDAO");
+
 		try {
+			// Work around until we get TRUNK-3739
+			contextDAO.openSession();
+
 			setupGlobalProperties();
 
 			log.info(" > Setup global properties");
@@ -78,11 +89,13 @@ public class KenyaEmrActivator implements ModuleActivator {
 
 			log.info(" > Setup regimen manager");
 
+			Context.getService(KenyaEmrService.class).refreshReportManagers();
+
 		} catch (Exception ex) {
 			throw new RuntimeException("Failed to setup initial data", ex);
+		} finally {
+			contextDAO.closeSession();
 		}
-
-		Context.getService(KenyaEmrService.class).refreshReportManagers();
 
 		log.info("Kenya OpenMRS EMR Module started");
 	}

@@ -23,7 +23,7 @@ import org.openmrs.util.OpenmrsUtil;
 /**
  * Represents a regimen of drug orders
  */
-public class RegimenOrder {
+public class RegimenOrder implements Comparable<RegimenOrder> {
 	
 	private Set<DrugOrder> drugOrders;
 
@@ -50,14 +50,14 @@ public class RegimenOrder {
 	}
 	
 	/**
-	 * Gets the drug orders in this regimen with the given concept
-	 * @param genericDrug the concept
+	 * Gets the drug orders in this regimen that match the given drug reference
+	 * @param drugRef the drug reference
 	 * @return the drug orders
 	 */
-	public List<DrugOrder> getDrugOrders(Concept genericDrug) {
+	public List<DrugOrder> getDrugOrders(DrugReference drugRef) {
 		List<DrugOrder> ret = new ArrayList<DrugOrder>();
 		for (DrugOrder o : drugOrders) {
-			if (o.getConcept().equals(genericDrug)) {
+			if (DrugReference.fromDrugOrder(o).equals(drugRef)) {
 				ret.add(o);
 			}
 		}
@@ -87,6 +87,34 @@ public class RegimenOrder {
 	public Date getStartDate() {
 		Iterator<DrugOrder> orderIterator = drugOrders.iterator();
 		return orderIterator.hasNext() ? orderIterator.next().getStartDate() : null;
+	}
+
+	/**
+	 * Gets the stop date.. which should be the same across all contained drug orders
+	 * @return the stop date
+	 */
+	public Date getStopDate() {
+		Iterator<DrugOrder> orderIterator = drugOrders.iterator();
+		DrugOrder order = orderIterator.hasNext() ? orderIterator.next() : null;
+		return order.getDiscontinuedDate() != null ? order.getDiscontinuedDate() : order.getAutoExpireDate();
+	}
+
+	/**
+	 * Determines if order was current on the given date
+	 * @param checkDate the date on which to check order. If null, will use current date
+	 * @return true if order was current on the given date
+	 */
+	public boolean isCurrent(Date checkDate) {
+		Iterator<DrugOrder> orderIterator = drugOrders.iterator();
+		return orderIterator.hasNext() ? orderIterator.next().isCurrent(checkDate) : false;
+	}
+
+	/**
+	 * @see Comparable#compareTo(Object)
+	 */
+	@Override
+	public int compareTo(RegimenOrder regimenOrder) {
+		return OpenmrsUtil.compareWithNullAsLatest(getStartDate(), regimenOrder.getStartDate());
 	}
 
 	/**

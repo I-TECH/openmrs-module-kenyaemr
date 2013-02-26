@@ -16,7 +16,6 @@
 			program: hivProgram,
 			registrationFormUuid: MetadataConstants.HIV_PROGRAM_ENROLLMENT_FORM_UUID,
 			exitFormUuid: MetadataConstants.HIV_PROGRAM_DISCONTINUATION_FORM_UUID,
-			overviewContent: ui.includeFragment("kenyaemr", "careSummaryHiv", [ patient: patient, complete: false ]),
 			enrollmentExtra: hivEnrollmentExtraCallback
 		]) }
 
@@ -24,14 +23,18 @@
 			patient: patient,
 			program: tbProgram,
 			registrationFormUuid: MetadataConstants.TB_ENROLLMENT_FORM_UUID,
-			exitFormUuid: MetadataConstants.TB_COMPLETION_FORM_UUID,
-			overviewContent: ui.includeFragment("kenyaemr", "careSummaryTb", [ patient: patient, complete: false ])
+			exitFormUuid: MetadataConstants.TB_COMPLETION_FORM_UUID
 		]) }
 		</td>
 		<td width="60%" valign="top" style="padding-left: 5px">
 		<% if (visit) { %>
 			${ ui.includeFragment("kenyaemr", "visitSummary", [ visit: visit ]) }
-			${ ui.includeFragment("kenyaemr", "arvSummary", [ patient: patient, editable: true ]) }
+			<% if (enrolledInHivProgram) { %>
+				${ ui.includeFragment("kenyaemr", "careSummaryHiv", [ patient: patient, complete: false, allowRegimenEdit: (visit != null) ]) }
+			<% } %>
+			<% if (enrolledInTbProgram) { %>
+				${ ui.includeFragment("kenyaemr", "careSummaryTb", [ patient: patient, complete: false, allowRegimenEdit: (visit != null) ]) }
+			<% } %>
 			${ ui.includeFragment("kenyaemr", "visitAvailableForms", [ visit: visit ]) }
 			${ ui.includeFragment("kenyaemr", "visitCompletedForms", [ visit: visit ]) }
 		<% } else { %>

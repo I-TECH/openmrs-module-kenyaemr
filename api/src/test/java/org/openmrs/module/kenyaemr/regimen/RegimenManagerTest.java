@@ -33,8 +33,6 @@ public class RegimenManagerTest extends BaseModuleContextSensitiveTest {
 
 		Assert.assertEquals(MetadataConstants.ANTIRETROVIRAL_DRUGS_CONCEPT_UUID, RegimenManager.getMasterSetConcept("category1").getUuid());
 
-		Assert.assertEquals(3, RegimenManager.getDrugConcepts("category1").size());
-
 		List<RegimenDefinitionGroup> groups = RegimenManager.getRegimenGroups("category1");
 
 		Assert.assertEquals(2, groups.size());
@@ -49,12 +47,12 @@ public class RegimenManagerTest extends BaseModuleContextSensitiveTest {
 		RegimenDefinition regimen2 = group1.getRegimens().get(1);
 
 		Assert.assertEquals("regimen1", regimen1.getName());
-		Assert.assertEquals(new Integer(86663), regimen1.getComponents().get(0).getConceptId()); // zidovudine
+		Assert.assertEquals(new Integer(86663), regimen1.getComponents().get(0).getDrugRef().getConcept().getConceptId()); // zidovudine
 		Assert.assertEquals(300d, regimen1.getComponents().get(0).getDose(), 0d);
 		Assert.assertEquals("mg", regimen1.getComponents().get(0).getUnits());
 		Assert.assertEquals("OD", regimen1.getComponents().get(0).getFrequency());
 
-		Assert.assertEquals(new Integer(78643), regimen1.getComponents().get(1).getConceptId()); // lamivudine
+		Assert.assertEquals(new Integer(78643), regimen1.getComponents().get(1).getDrugRef().getConcept().getConceptId()); // lamivudine
 		Assert.assertEquals(150d, regimen1.getComponents().get(1).getDose(), 0d);
 		Assert.assertEquals("mg", regimen1.getComponents().get(1).getUnits());
 		Assert.assertEquals("BD", regimen1.getComponents().get(1).getFrequency());
@@ -69,20 +67,10 @@ public class RegimenManagerTest extends BaseModuleContextSensitiveTest {
 
 		Assert.assertEquals("regimen3", regimen3.getName());
 
-		Assert.assertEquals(new Integer(84309), regimen3.getComponents().get(0).getConceptId());
+		Assert.assertEquals(new Integer(84309), regimen3.getComponents().get(0).getDrugRef().getConcept().getConceptId());
 		Assert.assertNull(regimen3.getComponents().get(0).getDose());
 		Assert.assertEquals("tab", regimen3.getComponents().get(0).getUnits());
 		Assert.assertNull(regimen3.getComponents().get(0).getFrequency());
-	}
-
-	/**
-	 * @see RegimenManager#findDrugCode(org.openmrs.Concept)
-	 */
-	@Test
-	public void findDrugCode_shouldFindDrugCodeForConcept() {
-		Assert.assertEquals("3TC", RegimenManager.findDrugCode(Context.getConceptService().getConcept(78643)));
-		Assert.assertEquals("AZT", RegimenManager.findDrugCode(Context.getConceptService().getConcept(86663)));
-		Assert.assertEquals("D4T", RegimenManager.findDrugCode(Context.getConceptService().getConcept(84309)));
 	}
 
 	/**

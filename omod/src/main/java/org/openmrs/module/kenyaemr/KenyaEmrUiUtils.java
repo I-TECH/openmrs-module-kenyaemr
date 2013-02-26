@@ -151,6 +151,15 @@ public class KenyaEmrUiUtils {
 	}
 
 	/**
+	 * Formats a drug reference
+	 * @param drugRef the drug reference
+	 * @return the string value
+	 */
+	public static String formatDrug(DrugReference drugRef, UiUtils ui) {
+		return drugRef.isConceptOnly() ? drugRef.getConcept().getPreferredName(Locale.ENGLISH).getName() : drugRef.getDrug().getName();
+	}
+
+	/**
 	 * Formats a regimen in long format
 	 * @param regimen the regimen
 	 * @param ui the UI utils
@@ -162,9 +171,9 @@ public class KenyaEmrUiUtils {
 		}
 		List<String> components = new ArrayList<String>();
 		for (DrugOrder o : regimen.getDrugOrders()) {
-			ConceptName cn = o.getConcept().getPreferredName(Context.getLocale());
+			ConceptName cn = o.getConcept().getPreferredName(Locale.ENGLISH);
 			if (cn == null) {
-				cn = o.getConcept().getName(Context.getLocale());
+				cn = o.getConcept().getName(Locale.ENGLISH);
 			}
 			components.add(cn.getName());
 		}
@@ -183,17 +192,29 @@ public class KenyaEmrUiUtils {
 		}
 		List<String> components = new ArrayList<String>();
 		for (DrugOrder o : regimen.getDrugOrders()) {
-			String s = RegimenManager.findDrugCode(o.getConcept());
-			if (s == null) {
-				s = o.getConcept().getName(Context.getLocale()).getName();
+			StringBuilder sb = new StringBuilder();
+
+			ConceptName cn = o.getConcept().getShortNameInLocale(Locale.ENGLISH);
+			if (cn == null) {
+				cn = o.getConcept().getName(Locale.ENGLISH);
 			}
+			sb.append(cn.getName());
+
+			if (o.getDrug() != null) {
+				sb.append(" " + o.getDrug().getDoseStrength() + o.getDrug().getUnits());
+			}
+
 			if (o.getDose() != null) {
-				s += " " + ui.format(o.getDose()) + o.getUnits();
+				// If dose is a whole number, don't format with decimals... e.g. 3.0tabs looks weird
+				boolean hasDecimals = Math.floor(o.getDose()) != o.getDose();
+				String dose = hasDecimals ? ui.format(o.getDose()) : ui.format(o.getDose().intValue());
+
+				sb.append(" " + dose + o.getUnits());
 			}
 			if (o.getFrequency() != null) {
-				s += " " + o.getFrequency();
+				sb.append(" " + o.getFrequency());
 			}
-			components.add(s);
+			components.add(sb.toString());
 		}
 		return OpenmrsUtil.join(components, " + ");
 	}
@@ -299,8 +320,28 @@ public class KenyaEmrUiUtils {
 	 * @return a list of objects with { startDate, endDate, shortDisplay, longDisplay, changeReasons[] }
 	 */
 	public static List<SimpleObject> simpleRegimenHistory(RegimenOrderHistory history, UiUtils ui) {
-		List<RegimenChange> changes = history.getChanges();
+		List<RegimenOrder> orders = history.getOrders();
+		List<SimpleObject> ret = new ArrayList<SimpleObject>();
 
+		for (RegimenOrder order : orders) {
+			ret.add(SimpleObject.create(
+					"startDate", KenyaEmrUiUtils.formatDate(order.getStartDate()),
+					"endDate", KenyaEmrUiUtils.formatDate(order.getStopDate()),
+					"regimen", simpleRegimen(order, ui),
+					"changeReasons", "TODO"
+			));
+		}
+		return ret;
+	}
+
+	/**
+	 * Converts the given regimen history to simple objects
+	 * @param history the regimen history
+	 * @param ui the UI utils
+	 * @return a list of objects with { startDate, endDate, shortDisplay, longDisplay, changeReasons[] }
+	 */
+	public static List<SimpleObject> simpleRegimenHistory(RegimenChangeHistory history, UiUtils ui) {
+		List<RegimenChange> changes = history.getChanges();
 		List<SimpleObject> ret = new ArrayList<SimpleObject>();
 
 		if (changes.size() == 0) {
@@ -326,8 +367,8 @@ public class KenyaEmrUiUtils {
 				}
 			}
 			ret.add(SimpleObject.create(
-				"startDate", KenyaEmrUiUtils.formatDateNoTime(startDate),
-				"endDate", KenyaEmrUiUtils.formatDateNoTime(endDate),
+				"startDate", KenyaEmrUiUtils.formatDate(startDate),
+				"endDate", KenyaEmrUiUtils.formatDate(endDate),
 				"regimen", simpleRegimen(regimen, ui),
 				"changeReasons", changeReasons
 			));
@@ -344,7 +385,7 @@ public class KenyaEmrUiUtils {
 	 */
 	public static List<SimpleObject> simpleRegimenDefinitions(Collection<RegimenDefinition> definitions, UiUtils ui) {
 		return SimpleObject.fromCollection(definitions, ui,
-				"name", "group.code", "components.conceptId", "components.dose", "components.units", "components.frequency"
+				"name", "group.code", "components.drugRef", "components.dose", "components.units", "components.frequency"
 		);
 	}
 
