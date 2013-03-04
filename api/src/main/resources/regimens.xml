@@ -214,7 +214,7 @@
 			</regimen>
 		</group>
 
-		<group code="continuation" name="Continuation Phase">
+		<group code="adult-continuation" name="Continuation Phase (Adult)">
 			<regimen name="RHZE (150mg/75mg/400mg/275mg ⨉ 2 tabs)">
 				<component drugCode="R150" dose="2" units="tab" frequency="OD" />
 				<component drugCode="H75" dose="2" units="tab" frequency="OD" />
@@ -248,6 +248,21 @@
 				<component drugCode="H75" dose="4" units="tab" frequency="OD" />
 				<component drugCode="Z400" dose="4" units="tab" frequency="OD" />
 			</regimen>
+			<regimen name="RHE (150mg/75mg/275mg ⨉ 2 tabs)">
+				<component drugCode="R150" dose="2" units="tab" frequency="OD" />
+				<component drugCode="H75" dose="2" units="tab" frequency="OD" />
+				<component drugCode="E275" dose="2" units="tab" frequency="OD" />
+			</regimen>
+			<regimen name="RHE (150mg/75mg/275mg ⨉ 3 tabs)">
+				<component drugCode="R150" dose="3" units="tab" frequency="OD" />
+				<component drugCode="H75" dose="3" units="tab" frequency="OD" />
+				<component drugCode="E275" dose="3" units="tab" frequency="OD" />
+			</regimen>
+			<regimen name="RHE (150mg/75mg/275mg ⨉ 4 tabs)">
+				<component drugCode="R150" dose="4" units="tab" frequency="OD" />
+				<component drugCode="H75" dose="4" units="tab" frequency="OD" />
+				<component drugCode="E275" dose="4" units="tab" frequency="OD" />
+			</regimen>
 			<regimen name="RH (150mg/75mg ⨉ 2 tabs)">
 				<component drugCode="R150" dose="2" units="tab" frequency="OD" />
 				<component drugCode="H75" dose="2" units="tab" frequency="OD" />
@@ -280,6 +295,13 @@
 				<component drugCode="H75" dose="4" units="tab" frequency="OD" />
 				<component drugCode="Z400" dose="4" units="tab" frequency="OD" />
 				<component drugCode="E275" dose="4" units="tab" frequency="OD" />
+			</regimen>
+		</group>
+
+		<group code="child-continuation" name="Continuation Phase (Child)">
+			<regimen name="RH (60mg/30mg)">
+				<component drugCode="R60" units="tab" frequency="OD" />
+				<component drugCode="H30" units="tab" frequency="OD" />
 			</regimen>
 		</group>
 
