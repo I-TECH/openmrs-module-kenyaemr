@@ -51,25 +51,10 @@ public class RegistrationViewPatientPageController {
 		List<Visit> activeVisits = vs.getActiveVisitsByPatient(patient);
 
 		model.addAttribute("activeVisits", activeVisits);
-		
 		if (visit == null && activeVisits.size() > 0) {
 			visit = activeVisits.get(0);
 		}
-		
 		model.addAttribute("visit", visit);
-
-		// Get now time, accurate only to minute
-		Calendar now = Calendar.getInstance();
-		now.set(Calendar.SECOND, 0);
-		now.set(Calendar.MILLISECOND, 0);
-		
-		if (activeVisits.size() == 0) {
-			Visit newVisit = new Visit();
-			newVisit.setPatient(patient);
-			newVisit.setStartDatetime(now.getTime());
-			newVisit.setVisitType(vs.getVisitTypeByUuid(MetadataConstants.OUTPATIENT_VISIT_TYPE_UUID));
-			model.addAttribute("newCurrentVisit", newVisit);
-		}
 
 		ProgramWorkflowService pws = Context.getProgramWorkflowService();
 		Program hivProgram = pws.getProgramByUuid(MetadataConstants.HIV_PROGRAM_UUID);

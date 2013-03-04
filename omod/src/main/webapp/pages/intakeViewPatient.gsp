@@ -22,22 +22,12 @@
 			]) }
 		</td>
 		<td width="60%" valign="top" style="padding-left: 5px">
-		<% if (visit) { %>
-			${ ui.includeFragment("kenyaemr", "visitSummary", [ visit: visit ]) }
+			${ ui.includeFragment("kenyaemr", "visitMenu", [ patient: patient, visit: visit, allowCheckIn: false, allowCheckOut: false ]) }
+
+			<% if (visit) { %>
 			${ ui.includeFragment("kenyaemr", "visitAvailableForms", [ visit: visit ]) }
 			${ ui.includeFragment("kenyaemr", "visitCompletedForms", [ visit: visit ]) }
-		<% } else { %>
-			<div class="panel-frame" style="text-align: right">
-				${ ui.includeFragment("uilibrary", "widget/button", [
-					iconProvider: "kenyaemr",
-					icon: "buttons/registration.png",
-					label: "Go to Registration",
-					classes: [ "padded" ],
-					extra: "to Check In",
-					href: ui.pageLink("kenyaemr", "registrationViewPatient", [ patientId: patient.id ])
-				]) }
-			</div>
-		<% } %>
+			<% } %>
 		</td>
 	</tr>
 </table>

@@ -27,32 +27,19 @@
 		]) }
 		</td>
 		<td width="60%" valign="top" style="padding-left: 5px">
-		<% if (visit) { %>
-			${ ui.includeFragment("kenyaemr", "visitSummary", [ visit: visit ]) }
-		<% } else { %>
-			<div class="panel-frame" style="text-align: right">
-				${ ui.includeFragment("uilibrary", "widget/button", [
-						iconProvider: "kenyaemr",
-						icon: "buttons/registration.png",
-						label: "Go to Registration",
-						classes: [ "padded" ],
-						extra: "to Check In",
-						href: ui.pageLink("kenyaemr", "registrationViewPatient", [ patientId: patient.id ])
-				]) }
-			</div>
-		<% } %>
+			${ ui.includeFragment("kenyaemr", "visitMenu", [ patient: patient, visit: visit, allowCheckIn: false, allowCheckOut: true ]) }
 
-		<% if (enrolledInHivProgram) { %>
+			<% if (enrolledInHivProgram) { %>
 			${ ui.includeFragment("kenyaemr", "careSummaryHiv", [ patient: patient, complete: false, allowRegimenEdit: (visit != null) ]) }
-		<% } %>
-		<% if (enrolledInTbProgram) { %>
+			<% } %>
+			<% if (enrolledInTbProgram) { %>
 			${ ui.includeFragment("kenyaemr", "careSummaryTb", [ patient: patient, complete: false, allowRegimenEdit: (visit != null) ]) }
-		<% } %>
+			<% } %>
 
-		<% if (visit) { %>
+			<% if (visit) { %>
 			${ ui.includeFragment("kenyaemr", "visitAvailableForms", [ visit: visit ]) }
 			${ ui.includeFragment("kenyaemr", "visitCompletedForms", [ visit: visit ]) }
-		<% } %>
+			<% } %>
 		</td>
 	</tr>
 </table>

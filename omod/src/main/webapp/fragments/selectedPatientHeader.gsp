@@ -36,7 +36,7 @@
 	top: 3;
 }
 
-#selected-patient-header #active-visits {
+#selected-patient-header #active-visit {
 	width: 50%;
 	float: right;
 	overflow: auto;
@@ -94,12 +94,12 @@
 
 	${ ui.includeFragment("kenyaemr", "clinicalAlerts") }
 
-	<div id="active-visits">
+	<div id="active-visit">
 		<small>Current visit</small>
-		<% if (activeVisits) {
-			activeVisits.each { visit ->
-				%><span class="active-visit">${ ui.format(visit.visitType) }</span><%
-			}
+		<% if (activeVisit) {
+			def visitStart = kenyaEmrUi.formatTime(activeVisit.startDatetime);
+
+			%><span class="active-visit">${ ui.format(activeVisit.visitType) } since ${ visitStart }</span><%
 		} else {
 			%><span style="font-style: italic">${ ui.message("general.none") }</span><%
 		}

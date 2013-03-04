@@ -46,7 +46,9 @@ public class SelectedPatientHeaderFragmentController {
 		}
 
 		model.addAttribute("patient", patient);
-		model.addAttribute("activeVisits", Context.getVisitService().getActiveVisitsByPatient(patient));
+
+		List<Visit> activeVisits = Context.getVisitService().getActiveVisitsByPatient(patient);
+		model.addAttribute("activeVisit", activeVisits.size() > 0 ? activeVisits.get(0) : null);
 		
 		AppStatus currentApp = AppUiUtil.getCurrentApp(session);
 		if (currentApp != null) {

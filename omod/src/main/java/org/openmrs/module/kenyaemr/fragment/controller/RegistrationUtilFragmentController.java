@@ -266,6 +266,12 @@ public class RegistrationUtilFragmentController {
 		public void validate(Object obj, Errors errors) {
 			Visit visit = (Visit)obj;
 
+			if (visit.getPatient() != null) {
+				if (Context.getVisitService().getActiveVisitsByPatient(visit.getPatient()).size() > 0) {
+					errors.reject("Patient already has an active visit");
+				}
+			}
+
 			if (visit.getStartDatetime().after(new Date())) {
 				errors.rejectValue("startDatetime", "Start date cannot be in the future");
 			}
