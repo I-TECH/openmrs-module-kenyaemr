@@ -1,5 +1,5 @@
 <%
-	ui.decorateWith("kenyaemr", "standardKenyaEmrPage", [ doNotShowApp: true, patient: patient, closeChartUrl: ui.pageLink("kenyaemr", "kenyaHome") ])
+	ui.decorateWith("kenyaemr", "standardPage", [ doNotShowApp: true, patient: patient, closeChartUrl: ui.pageLink("kenyaemr", "home") ])
 	def APPS_PER_ROW = 3;
 %>
 

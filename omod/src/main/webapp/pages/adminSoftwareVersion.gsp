@@ -1,5 +1,5 @@
 <%
-	ui.decorateWith("kenyaemr", "standardKenyaEmrPage")
+	ui.decorateWith("kenyaemr", "standardPage")
 %>
 
 <h2>Software Version</h2>

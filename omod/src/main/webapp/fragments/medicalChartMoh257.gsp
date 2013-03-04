@@ -59,7 +59,7 @@
 							"visitType": [ type: "radio" ],
 					],
 					fieldConfig: [
-							"location": [ fieldFragment: "field/org.openmrs.Location.kenyaemr" ]
+							"location": [ fieldFragment: "field/org.openmrs.Location.autocomplete" ]
 					],
 					fragmentProvider: "kenyaemr",
 					fragment: "medicalChartMoh257",

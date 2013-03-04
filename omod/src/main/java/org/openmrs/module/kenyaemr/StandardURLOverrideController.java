@@ -24,7 +24,7 @@ public class StandardURLOverrideController {
 	
 	@RequestMapping("/index.htm")
 	public String showOurHomepage() {
-		return "forward:/" + KenyaEmrConstants.MODULE_ID + "/kenyaHome.page";
+		return "forward:/" + KenyaEmrConstants.MODULE_ID + "/home.page";
 	}
 	
 	@RequestMapping("/login.htm")
@@ -34,6 +34,6 @@ public class StandardURLOverrideController {
 
 	@RequestMapping("/forgotPassword.form")
 	public String showOurForgotPasswordPage() {
-		return "forward:/" + KenyaEmrConstants.MODULE_ID + "/kenyaForgotPassword.page";
+		return "forward:/" + KenyaEmrConstants.MODULE_ID + "/forgotPassword.page";
 	}
 }

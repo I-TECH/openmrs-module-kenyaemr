@@ -22,7 +22,7 @@ import org.openmrs.ui.framework.fragment.FragmentModel;
 /**
  *
  */
-public class KenyaemrPersonAgeFragmentController {
+public class PersonAgeFragmentController {
 	
 	public void controller(@FragmentParam("person") Person person, FragmentModel model) {
 		Integer ageInYears = person.getAge();

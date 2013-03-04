@@ -1,5 +1,5 @@
 <%
-	ui.decorateWith("kenyaemr", "standardKenyaEmrPage", [ patient: patient, layout: "sidebar" ])
+	ui.decorateWith("kenyaemr", "standardPage", [ patient: patient, layout: "sidebar" ])
 
 	def allowNew = !history.changes
 	def allowChange = history.changes && history.changes.last().started

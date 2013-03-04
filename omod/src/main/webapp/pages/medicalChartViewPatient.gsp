@@ -1,5 +1,5 @@
 <%
-	ui.decorateWith("kenyaemr", "standardKenyaEmrPage", [ patient: patient, layout: "sidebar" ])
+	ui.decorateWith("kenyaemr", "standardPage", [ patient: patient, layout: "sidebar" ])
 
 	def menuItems = [
 			[

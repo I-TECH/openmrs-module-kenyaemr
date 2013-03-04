@@ -35,7 +35,7 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * Home page controller
  */
-public class KenyaHomePageController {
+public class HomePageController {
 	
 	public String controller(@RequestParam(required=false, value="patientId") Patient patient,
 	                         @RequestParam(required=false, value="clearContext") Boolean clearContext,
@@ -45,7 +45,7 @@ public class KenyaHomePageController {
 		// Redirect to login page if no user is logged in
 		if (!Context.isAuthenticated()) {
 			model.addAttribute("remoteAddr", request.getRemoteAddr());
-			return "kenyaLogin";
+			return "login";
 		}
 
 		// Redirect to setup page if module is not yet configured

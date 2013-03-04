@@ -29,10 +29,10 @@
 					
 					<span class="leftText">
 						<span class="title">
-							${ ui.includeFragment("kenyaemr", "kenyaemrPersonName", [ name: it.patient.personName ]) }
+							${ ui.includeFragment("kenyaemr", "personName", [ name: it.patient.personName ]) }
 						</span>
 						<span class="leftDetails">
-							${ ui.includeFragment("kenyaemr", "kenyaemrPersonAgeAndBirthdate", [ person: it.patient ]) }
+							${ ui.includeFragment("kenyaemr", "personAgeAndBirthdate", [ person: it.patient ]) }
 						</span>
 					</span>
 				</td>

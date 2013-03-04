@@ -66,9 +66,9 @@
 		<div class="patient-icon">
 			<img width="32" height="32" src="${ ui.resourceLink("kenyaemr", "images/patient_" + patient.gender.toLowerCase() + ".png") }"/>
 		</div>
-		${ ui.includeFragment("kenyaemr", "kenyaemrPersonName", [ name: patient.personName ]) }<br/>
+		${ ui.includeFragment("kenyaemr", "personName", [ name: patient.personName ]) }<br/>
 		${ patient.gender == 'M' ? "Male" : patient.gender == 'F' ? 'Female' : patient.gender },
-		${ ui.includeFragment("kenyaemr", "kenyaemrPersonAgeAndBirthdate", [ person: patient ]) }
+		${ ui.includeFragment("kenyaemr", "personAgeAndBirthdate", [ person: patient ]) }
 	</div>
 	
 	<div class="identifiers">

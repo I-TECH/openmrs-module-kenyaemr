@@ -1,5 +1,5 @@
 <%
-	ui.decorateWith("kenyaemr", "standardKenyaEmrPage", [ layout: "sidebar" ])
+	ui.decorateWith("kenyaemr", "standardPage", [ layout: "sidebar" ])
 
 	def menuItems =  []
 	if (data) {

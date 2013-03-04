@@ -1,5 +1,5 @@
 <%
-	ui.decorateWith("kenyaemr", "standardKenyaEmrPage")
+	ui.decorateWith("kenyaemr", "standardPage")
 
 	def fields = [
 			[
@@ -7,7 +7,7 @@
 					formFieldName: "defaultLocation",
 					class: org.openmrs.Location,
 					initialValue: defaultLocation,
-					fieldFragment: "field/org.openmrs.Location.kenyaemr"
+					fieldFragment: "field/org.openmrs.Location.autocomplete"
 			]
 	]
 

@@ -1,5 +1,5 @@
 <%
-	ui.decorateWith("kenyaemr", "standardKenyaEmrPage", [ patient: patient ])
+	ui.decorateWith("kenyaemr", "standardPage", [ patient: patient ])
 
 	def hivEnrollmentExtraCallback = { patientProgram ->
 		ui.includeFragment("kenyaemr", "dataPoint", [ label: "Enrollment WHO Stage", value: whoStagesAtEnrollments[patientProgram] ])

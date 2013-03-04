@@ -1,5 +1,5 @@
 <%
-	ui.decorateWith("kenyaemr", "standardKenyaEmrPage", [ patient: patient, visit: visit ])
+	ui.decorateWith("kenyaemr", "standardPage", [ patient: patient, visit: visit ])
 %>
 
 <div style="border-bottom: 2px gray dashed; font-size: 0.8em; margin-bottom: 0.5em;">

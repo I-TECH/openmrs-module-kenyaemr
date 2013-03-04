@@ -1,5 +1,5 @@
 <%
-	ui.decorateWith("kenyaemr", "standardKenyaEmrPage", [ layout: "sidebar" ])
+	ui.decorateWith("kenyaemr", "standardPage", [ layout: "sidebar" ])
 
 	/**
 	 * Formats a list of informational SimpleObjects as a decorated table

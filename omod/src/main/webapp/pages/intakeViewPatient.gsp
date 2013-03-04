@@ -1,5 +1,5 @@
 <%
-	ui.decorateWith("kenyaemr", "standardKenyaEmrPage", [ patient: patient ])
+	ui.decorateWith("kenyaemr", "standardPage", [ patient: patient ])
 %>
 
 <table cellpadding="0" cellspacing="0" border="0" width="100%">

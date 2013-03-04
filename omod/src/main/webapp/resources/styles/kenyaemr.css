@@ -244,7 +244,7 @@ table.table-vertical tbody tr:nth-child(odd) {
 /*** Loading placeholders ***/
 
 .loading-placeholder {
-	/* Actual image URL set in standardKenyaEmrPage.gsp */
+	/* Actual image URL set in standardPage.gsp */
 	background-repeat: no-repeat;
 	background-position: left, top;
 	padding-left: 24px;

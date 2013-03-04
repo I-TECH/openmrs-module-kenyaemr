@@ -53,7 +53,7 @@ public class AdminFirstTimeSetupPageController {
 			}
 			KenyaEmrUiUtils.notifySuccess(session, "First-Time Setup Completed");
 
-			return "redirect:" + ui.pageLink(KenyaEmrConstants.MODULE_ID, "kenyaHome");
+			return "redirect:" + ui.pageLink(KenyaEmrConstants.MODULE_ID, "home");
 		}
 		
 		if (!service.isConfigured()) {

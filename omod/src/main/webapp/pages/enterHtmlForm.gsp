@@ -1,5 +1,5 @@
 <%
-	ui.decorateWith("kenyaemr", "standardKenyaEmrPage", [ patient: patient, visit: visit ])
+	ui.decorateWith("kenyaemr", "standardPage", [ patient: patient, visit: visit ])
 %>
 
 <input id="cancel-form" type="button" value="${ ui.message("htmlformentry.discard") }"/>

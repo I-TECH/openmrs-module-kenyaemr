@@ -10,9 +10,9 @@
 %>
 
 <div class="stack-item">
-	<b>${ ui.includeFragment("kenyaemr", "kenyaemrPersonName", [ name: patient.personName ]) }<br />
+	<b>${ ui.includeFragment("kenyaemr", "personName", [ name: patient.personName ]) }<br />
 	${ ui.message("Patient.gender." + (patient.gender == 'M' ? 'male' : 'female')) },
-	${ ui.includeFragment("kenyaemr", "kenyaemrPersonAgeAndBirthdate", [ person: patient ]) }</b>
+	${ ui.includeFragment("kenyaemr", "personAgeAndBirthdate", [ person: patient ]) }</b>
 </div>
 
 <div class="stack-item">

@@ -33,7 +33,7 @@ import javax.servlet.http.HttpSession;
 /**
  * Forgot password page controller
  */
-public class KenyaForgotPasswordPageController {
+public class ForgotPasswordPageController {
 
 	public String controller(PageModel model,
 						   Session session,

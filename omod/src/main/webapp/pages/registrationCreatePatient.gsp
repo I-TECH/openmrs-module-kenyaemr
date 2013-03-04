@@ -1,5 +1,5 @@
 <%
-	ui.decorateWith("kenyaemr", "standardKenyaEmrPage", [ layout: "sidebar" ])
+	ui.decorateWith("kenyaemr", "standardPage", [ layout: "sidebar" ])
 %>
 
 <div id="content-side"></div>

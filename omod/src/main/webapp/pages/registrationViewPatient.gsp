@@ -1,5 +1,5 @@
 <%
-	ui.decorateWith("kenyaemr", "standardKenyaEmrPage", [ patient: patient ])
+	ui.decorateWith("kenyaemr", "standardPage", [ patient: patient ])
 
 	ui.includeCss("kenyaemr", "kenyaemr.css");
 %>
