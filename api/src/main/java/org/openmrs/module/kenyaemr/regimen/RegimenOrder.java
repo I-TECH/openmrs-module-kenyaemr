@@ -23,7 +23,7 @@ import org.openmrs.util.OpenmrsUtil;
 /**
  * Represents a regimen of drug orders
  */
-public class RegimenOrder implements Comparable<RegimenOrder> {
+public class RegimenOrder {
 	
 	private Set<DrugOrder> drugOrders;
 
@@ -78,43 +78,6 @@ public class RegimenOrder implements Comparable<RegimenOrder> {
 	 */
 	public void addDrugOrder(DrugOrder drugOrder) {
 		drugOrders.add(drugOrder);
-	}
-
-	/**
-	 * Gets the start date.. which should be the same across all contained drug orders
-	 * @return the start date
-	 */
-	public Date getStartDate() {
-		Iterator<DrugOrder> orderIterator = drugOrders.iterator();
-		return orderIterator.hasNext() ? orderIterator.next().getStartDate() : null;
-	}
-
-	/**
-	 * Gets the stop date.. which should be the same across all contained drug orders
-	 * @return the stop date
-	 */
-	public Date getStopDate() {
-		Iterator<DrugOrder> orderIterator = drugOrders.iterator();
-		DrugOrder order = orderIterator.hasNext() ? orderIterator.next() : null;
-		return order.getDiscontinuedDate() != null ? order.getDiscontinuedDate() : order.getAutoExpireDate();
-	}
-
-	/**
-	 * Determines if order was current on the given date
-	 * @param checkDate the date on which to check order. If null, will use current date
-	 * @return true if order was current on the given date
-	 */
-	public boolean isCurrent(Date checkDate) {
-		Iterator<DrugOrder> orderIterator = drugOrders.iterator();
-		return orderIterator.hasNext() ? orderIterator.next().isCurrent(checkDate) : false;
-	}
-
-	/**
-	 * @see Comparable#compareTo(Object)
-	 */
-	@Override
-	public int compareTo(RegimenOrder regimenOrder) {
-		return OpenmrsUtil.compareWithNullAsLatest(getStartDate(), regimenOrder.getStartDate());
 	}
 
 	/**

@@ -136,6 +136,11 @@ public class RegimenUtilFragmentController {
 				if (lastChange != null && OpenmrsUtil.compare(changeDate, lastChange.getDate()) <= 0) {
 					errors.rejectValue("changeDate", "Change date must be after all other changes");
 				}
+
+				// Only TB allows future dates
+				if (!category.equals("TB") && OpenmrsUtil.compare(changeDate, OpenmrsUtil.firstSecondOfDay(new Date())) > 0) {
+					errors.rejectValue("changeDate", "Change date can't be in the future");
+				}
 			}
 
 			// Validate the regimen
@@ -155,7 +160,8 @@ public class RegimenUtilFragmentController {
 		public void apply() {
 			Concept masterSet = RegimenManager.getMasterSetConcept(category);
 			RegimenChangeHistory history = RegimenChangeHistory.forPatient(patient, masterSet);
-			RegimenOrder baseline = history.getRegimenOnDate(changeDate);
+			RegimenChange lastChange = history.getLastChange();
+			RegimenOrder baseline = lastChange != null ? lastChange.getStarted() : null;
 
 			if (baseline == null) {
 				for (RegimenComponent component : regimen.getComponents()) {

@@ -64,7 +64,7 @@ public class RegimenChangeHistory {
 	protected RegimenChangeHistory(Set<Concept> relevantDrugs, List<DrugOrder> allDrugOrders) {
 
 		// Filter the drug orders to only contain orders of relevant drugs
-		List<DrugOrder> relevantDrugOrders = RegimenOrderHistory.filterByConcepts(allDrugOrders, relevantDrugs);
+		List<DrugOrder> relevantDrugOrders = filterByConcepts(allDrugOrders, relevantDrugs);
 
 		// Collect changes for each individual drug orders
 		List<DrugOrderChange> tempChanges = new ArrayList<DrugOrderChange>();
@@ -171,24 +171,22 @@ public class RegimenChangeHistory {
 	}
 
 	/**
-	 * Convenience method to get the current regimen
-	 * @return the regimen
+	 * Convenience method to get the last regimen change before now
+	 * @return the regimen change
 	 */
-	public RegimenOrder getCurrentRegimen() {
-		return getRegimenOnDate(new Date());
+	public RegimenChange getLastChangeBeforeNow() {
+		return getLastChangeBeforeDate(new Date());
 	}
 	
 	/**
-	 * Gets the regimen on the specified date, or now() if null
+	 * Gets the last regimen change before the given date
+	 * @return the regimen change
 	 */
-	public RegimenOrder getRegimenOnDate(Date date) {
-		if (date == null) {
-			date = new Date();
-		}
+	public RegimenChange getLastChangeBeforeDate(Date date) {
 		for (ListIterator<RegimenChange> i = changes.listIterator(changes.size()); i.hasPrevious();) {
 			RegimenChange candidate = i.previous();
 			if (OpenmrsUtil.compare(candidate.getDate(), date) <= 0) {
-				return candidate.getStarted();
+				return candidate;
 			}
 		}
 		return null;
@@ -231,5 +229,21 @@ public class RegimenChangeHistory {
 		public DrugOrder getDrugOrder() {
 			return drugOrder;
 		}
+	}
+
+	/**
+	 * Filters a list of orders by a set of relevant concepts
+	 * @param orders the orders
+	 * @param concepts the relevant concepts
+	 * @return the filtered list of orders
+	 */
+	protected static List<DrugOrder> filterByConcepts(List<DrugOrder> orders, Set<Concept> concepts) {
+		List<DrugOrder> filteredOrders = new ArrayList<DrugOrder>();
+		for (DrugOrder o : orders) {
+			if (concepts.contains(o.getConcept())) {
+				filteredOrders.add(o);
+			}
+		}
+		return filteredOrders;
 	}
 }

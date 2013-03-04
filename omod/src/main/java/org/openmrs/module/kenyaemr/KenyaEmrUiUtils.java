@@ -36,9 +36,11 @@ import org.openmrs.util.OpenmrsUtil;
 import org.openmrs.web.WebConstants;
 
 import javax.servlet.http.HttpSession;
+import java.sql.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.Date;
 
 /**
  * UI utility methods for web pages
@@ -319,27 +321,6 @@ public class KenyaEmrUiUtils {
 	 * @param ui the UI utils
 	 * @return a list of objects with { startDate, endDate, shortDisplay, longDisplay, changeReasons[] }
 	 */
-	public static List<SimpleObject> simpleRegimenHistory(RegimenOrderHistory history, UiUtils ui) {
-		List<RegimenOrder> orders = history.getOrders();
-		List<SimpleObject> ret = new ArrayList<SimpleObject>();
-
-		for (RegimenOrder order : orders) {
-			ret.add(SimpleObject.create(
-					"startDate", KenyaEmrUiUtils.formatDate(order.getStartDate()),
-					"endDate", KenyaEmrUiUtils.formatDate(order.getStopDate()),
-					"regimen", simpleRegimen(order, ui),
-					"changeReasons", "TODO"
-			));
-		}
-		return ret;
-	}
-
-	/**
-	 * Converts the given regimen history to simple objects
-	 * @param history the regimen history
-	 * @param ui the UI utils
-	 * @return a list of objects with { startDate, endDate, shortDisplay, longDisplay, changeReasons[] }
-	 */
 	public static List<SimpleObject> simpleRegimenHistory(RegimenChangeHistory history, UiUtils ui) {
 		List<RegimenChange> changes = history.getChanges();
 		List<SimpleObject> ret = new ArrayList<SimpleObject>();
@@ -347,6 +328,8 @@ public class KenyaEmrUiUtils {
 		if (changes.size() == 0) {
 			return ret;
 		}
+
+		Date now = new Date();
 
 		for (int i = 0; i < changes.size(); ++i) {
 			RegimenChange change = changes.get(i);
@@ -366,11 +349,15 @@ public class KenyaEmrUiUtils {
 					changeReasons.addAll(next.getChangeReasonsNonCoded());
 				}
 			}
+
+			boolean current = OpenmrsUtil.compare(startDate, now) <= 0 && (endDate == null || OpenmrsUtil.compare(endDate, now) > 0);
+
 			ret.add(SimpleObject.create(
 				"startDate", KenyaEmrUiUtils.formatDate(startDate),
 				"endDate", KenyaEmrUiUtils.formatDate(endDate),
 				"regimen", simpleRegimen(regimen, ui),
-				"changeReasons", changeReasons
+				"changeReasons", changeReasons,
+				"current", current
 			));
 		}
 

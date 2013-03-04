@@ -17,8 +17,10 @@ ${ ui.includeFragment("uilibrary", "field/java.util.Date", config) }
 	});
 </script>
 
+<% if (config.presets) { %>
 <i>Use preset: </i>
 <select id="${ config.id }-presets">
 	<option value="">Select...</option>
 	${ presetOptions }
 </select>
+<% } %>

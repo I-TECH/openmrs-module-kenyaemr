@@ -17,7 +17,7 @@
 			<tr><td colspan="4" style="text-align: center; font-style: italic">None</td></tr>
 		<% } %>
 		<% for (def change in simpleHistory) { %>
-	  	<tr>
+	  	<tr <%  if (change.current) { %>style="font-weight: bold"<% } %>>
 			<td>${ change.startDate }</td>
 			<td>${ change.endDate }</td>
 			<td style="text-align: left">${ change.regimen.shortDisplay }<br/><small>${ change.regimen.longDisplay }</small></td>

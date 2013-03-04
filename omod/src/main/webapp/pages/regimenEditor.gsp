@@ -6,26 +6,13 @@
 	def allowRestart = history.changes && !history.changes.last().started
 	def allowUndo = history.changes && history.changes.size() > 0
 
-	/*def tbDatePresets = [
-			[ label: "Today", value: today ],
-			[ label: "Today + 1 month", value: todayPlus1Month ],
-			[ label: "Today + 2 months", value: todayPlus2Months ],
-			[ label: "Today + 6 months", value: todayPlus6Months ]
+	def changeDateField = { label ->
+		[ label: label, formFieldName: "changeDate", class: java.util.Date, initialValue: initialDate, fieldFragment: "field/java.util.Date.withpresets", presets: datePresets ]
+	}
 
-	]
-
-	def dateFieldConfig = null
-
-	if (category == "TB") {
-		dateFieldConfig = [
-				label: "Start Date",
-				formFieldName: "startDate",
-				class: java.util.Date,
-				initialValue: today,
-				fieldFragment: "field/java.util.Date.withpresets",
-				presets: datePresets
-		]
-	}*/
+	def regimenField = {
+		[ label: "Regimen", formFieldName: "regimen", class: "org.openmrs.module.kenyaemr.regimen.Regimen", fieldFragment: "field/Regimen", category: category ]
+	}
 %>
 
 <script type="text/javascript">
@@ -107,8 +94,8 @@
 							[ hiddenInputName: "patient", value: patient.id ],
 							[ hiddenInputName: "changeType", value: "START" ],
 							[ hiddenInputName: "category", value: category ],
-							[ label: "Start Date", formFieldName: "changeDate", class: java.util.Date, initialValue: today ],
-							[ label: "Regimen", formFieldName: "regimen", class: "org.openmrs.module.kenyaemr.regimen.Regimen", fieldFragment: "field/Regimen", category: category ]
+							changeDateField("Start date"),
+							regimenField()
 					],
 					submitLabel: "Save",
 					successCallbacks: [ "ui.reloadPage();" ],
@@ -130,9 +117,9 @@
 							[ hiddenInputName: "patient", value: patient.id ],
 							[ hiddenInputName: "changeType", value: "CHANGE" ],
 							[ hiddenInputName: "category", value: category ],
-							[ label: "Change Date", formFieldName: "changeDate", class: java.util.Date, initialValue: today ],
-							[ label: "Regimen", formFieldName: "regimen", class: "org.openmrs.module.kenyaemr.regimen.Regimen", fieldFragment: "field/Regimen", category: category ],
-							[ label: "Reason for Change", formFieldName: "changeReason", class: java.lang.String ]
+							changeDateField("Change date"),
+							regimenField(),
+							[ label: "Reason for change", formFieldName: "changeReason", class: java.lang.String ]
 					],
 					submitLabel: "Save",
 					successCallbacks: [ "ui.reloadPage();" ],
@@ -152,8 +139,8 @@
 							[ hiddenInputName: "patient", value: patient.id ],
 							[ hiddenInputName: "changeType", value: "STOP" ],
 							[ hiddenInputName: "category", value: category ],
-							[ label: "Stop Date", formFieldName: "changeDate", class: java.util.Date, initialValue: today ],
-							[ label: "Reason for Stop", formFieldName: "changeReason", class: java.lang.String ]
+							changeDateField("Stop date"),
+							[ label: "Reason for stop", formFieldName: "changeReason", class: java.lang.String ]
 					],
 					submitLabel: "Save",
 					successCallbacks: [ "ui.reloadPage();" ],
@@ -175,8 +162,8 @@
 							[ hiddenInputName: "patient", value: patient.id ],
 							[ hiddenInputName: "changeType", value: "RESTART" ],
 							[ hiddenInputName: "category", value: category ],
-							[ label: "Restart Date", formFieldName: "changeDate", class: java.util.Date, initialValue: today ],
-							[ label: "Regimen", formFieldName: "regimen", class: "org.openmrs.module.kenyaemr.regimen.Regimen", fieldFragment: "field/Regimen", category: category ]
+							changeDateField("Restart date"),
+							regimenField()
 					],
 					submitLabel: "Save",
 					successCallbacks: [ "ui.reloadPage();" ],

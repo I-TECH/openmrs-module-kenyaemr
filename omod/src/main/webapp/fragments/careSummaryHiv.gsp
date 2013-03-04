@@ -43,7 +43,7 @@
 
 <%
 	if (regimenHistory.lastChange) {
-		def lastChange = regimenHistory.lastChange
+		def lastChange = regimenHistory.lastChangeBeforeNow
 		def regimen = lastChange.started ? kenyaEmrUi.formatRegimenLong(lastChange.started, ui) : ui.message("general.none")
 		def dateLabel = lastChange.started ? "Started" : "Stopped"
 %>
