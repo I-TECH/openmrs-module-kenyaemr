@@ -11,7 +11,7 @@
 		</a>
 	</div>
 	<div style="float: left">
-		<span style="font-size: 24px;">Kenya EMR</span>
+		<span style="font-size: 24px;">${ ui.message("kenyaemr.title") }</span>
 		<span style="font-size: 10px;">
 			${ moduleVersionFull }, powered by <a style="color: #000; text-decoration: none; border-bottom: 1px dotted #999" href="http://openmrs.org">OpenMRS</a>
 		</span>
@@ -25,9 +25,7 @@
 		<img src="${ ui.resourceLink("kenyaemr", "images/moh_logo.png") }"/>
 	</div>
 	<div style="float: right; text-align: right; font-size: 13px; padding-right: 5px">
-		Government of Kenya<br/>
-		Ministry of Medical Services<br/>
-		Ministry of Public Health and Sanitation
+		${ ui.message("kenyaemr.subtitle") }
 	</div>
 
 	<div style="clear: both"></div>
