@@ -18,6 +18,8 @@ public class RegimenManagerTest extends BaseModuleContextSensitiveTest {
 		executeDataSet("test-data.xml");
 		executeDataSet("test-drugdata.xml");
 
+		RegimenManager.clear();
+
 		InputStream stream = getClass().getClassLoader().getResourceAsStream("test-regimens.xml");
 		RegimenManager.loadDefinitionsFromXML(stream);
 	}
@@ -28,7 +30,6 @@ public class RegimenManagerTest extends BaseModuleContextSensitiveTest {
 	 */
 	@Test
 	public void loadDefinitionsFromXML_shouldLoadAllDefinitions() throws Exception {
-		Assert.assertEquals(1, RegimenManager.getDefinitionsVersion());
 		Assert.assertEquals(1, RegimenManager.getCategoryCodes().size());
 
 		Assert.assertEquals(MetadataConstants.ANTIRETROVIRAL_DRUGS_CONCEPT_UUID, RegimenManager.getMasterSetConcept("category1").getUuid());
@@ -103,5 +104,18 @@ public class RegimenManagerTest extends BaseModuleContextSensitiveTest {
 		Assert.assertEquals(2, defsNonExact.size());
 		Assert.assertEquals("regimen2", defsNonExact.get(0).getName());
 		Assert.assertEquals("regimen3", defsNonExact.get(1).getName());
+	}
+
+	/**
+	 * @see org.openmrs.module.kenyaemr.regimen.RegimenManager#clear()
+	 */
+	@Test
+	public void clear_shouldClearAllRegimenData() {
+		RegimenManager.clear();
+
+		Assert.assertEquals(0, RegimenManager.getCategoryCodes().size());
+		Assert.assertNull(RegimenManager.getMasterSetConcept("category1"));
+		Assert.assertNull(RegimenManager.getDrugs("category1"));
+		Assert.assertNull(RegimenManager.getRegimenGroups("category1"));
 	}
 }

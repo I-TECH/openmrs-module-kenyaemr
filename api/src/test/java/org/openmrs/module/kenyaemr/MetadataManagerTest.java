@@ -21,7 +21,7 @@ import org.openmrs.test.BaseModuleContextSensitiveTest;
 public class MetadataManagerTest extends BaseModuleContextSensitiveTest {
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.MetadataManager#setupMetadataPackages()
+	 * @see org.openmrs.module.kenyaemr.MetadataManager#installMetadataPackageIfNecessary(String, String, ClassLoader)
 	 */
 	@Test
 	public void installMetadataPackageIfNecessary_shouldInstallPackages() throws Exception {
@@ -31,11 +31,11 @@ public class MetadataManagerTest extends BaseModuleContextSensitiveTest {
 
 		// Simulate first time startup
 		Assert.assertNull(Context.getVisitService().getVisitTypeByUuid(MetadataConstants.OUTPATIENT_VISIT_TYPE_UUID));
-		Assert.assertTrue(MetadataManager.installMetadataPackageIfNecessary(PACKAGE_GROUP_UUID, PACKAGE_FILENAME));
+		Assert.assertTrue(MetadataManager.installMetadataPackageIfNecessary(PACKAGE_GROUP_UUID, PACKAGE_FILENAME, null));
 		Assert.assertNotNull(Context.getVisitService().getVisitTypeByUuid(MetadataConstants.OUTPATIENT_VISIT_TYPE_UUID));
 
 		// Simulate starting a second time
-		Assert.assertFalse(MetadataManager.installMetadataPackageIfNecessary(PACKAGE_GROUP_UUID, PACKAGE_FILENAME));
+		Assert.assertFalse(MetadataManager.installMetadataPackageIfNecessary(PACKAGE_GROUP_UUID, PACKAGE_FILENAME, null));
 		Assert.assertNotNull(Context.getVisitService().getVisitTypeByUuid(MetadataConstants.OUTPATIENT_VISIT_TYPE_UUID));
 	}
 }

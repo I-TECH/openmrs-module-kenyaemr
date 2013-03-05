@@ -15,12 +15,8 @@ package org.openmrs.module.kenyaemr;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.Concept;
-import org.openmrs.Drug;
 import org.openmrs.GlobalProperty;
-import org.openmrs.User;
 import org.openmrs.api.context.Context;
-import org.openmrs.api.context.UserContext;
 import org.openmrs.api.db.ContextDAO;
 import org.openmrs.module.ModuleActivator;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
@@ -29,12 +25,18 @@ import org.openmrs.module.kenyaemr.form.FormManager;
 import org.openmrs.module.kenyaemr.regimen.RegimenManager;
 import org.openmrs.module.kenyaemr.util.ContextProvider;
 
+import java.io.InputStream;
+
 /**
  * This class contains the logic that is run every time this module is either started or stopped.
  */
 public class KenyaEmrActivator implements ModuleActivator {
 
 	protected static final Log log = LogFactory.getLog(KenyaEmrActivator.class);
+
+	private static final String PACKAGES_FILENAME = "packages.xml";
+
+	private static final String REGIMENS_FILENAME = "regimens.xml";
 
 	/**
 	 * @see ModuleActivator#willRefreshContext()
@@ -77,15 +79,15 @@ public class KenyaEmrActivator implements ModuleActivator {
 
 			log.info(" > Setup global properties");
 
-			boolean metadataUpdated = MetadataManager.setupMetadataPackages();
+			boolean metadataUpdated = setupStandardMetadata();
 
 			log.info(" > Setup metadata packages (" + (metadataUpdated ? "Imported packages" : "Already up-to-date") + ")");
 
-			FormManager.setupStandardForms();
+			setupStandardForms();
 
 			log.info(" > Setup form manager");
 
-			RegimenManager.setupStandardRegimens();
+			setupStandardRegimens();
 
 			log.info(" > Setup regimen manager");
 
@@ -116,15 +118,72 @@ public class KenyaEmrActivator implements ModuleActivator {
 	}
 
 	/**
-	 * Public for testing
+	 * Setup required global properties
+	 *
+	 * (Public for testing)
 	 */
 	public void setupGlobalProperties() {
-		GlobalProperty gp = Context.getAdministrationService().getGlobalPropertyObject(KenyaEmrConstants.GP_DEFAULT_LOCATION);
+		ensureGlobalPropertyExists(
+				KenyaEmrConstants.GP_DEFAULT_LOCATION,
+				"The facility for which this installation is configured. Visits and encounters will be created with this location value.",
+				LocationDatatype.class
+		);
+	}
+
+	/**
+	 * Setup the standard metadata packages
+	 * @return
+	 */
+	protected boolean setupStandardMetadata() {
+		try {
+			InputStream stream = getClass().getClassLoader().getResourceAsStream(PACKAGES_FILENAME);
+
+			return MetadataManager.loadPackagesFromXML(stream, null);
+		}
+		catch (Exception ex) {
+			throw new RuntimeException("Cannot find " + PACKAGES_FILENAME + ". Make sure it's in api/src/main/resources");
+		}
+	}
+
+	/**
+	 * Setup the standard forms
+	 */
+	protected void setupStandardForms() {
+		FormManager.clear();
+
+		// These could be loaded from XML instead of hard-coding in the manager class
+		FormManager.setupStandardForms();
+	}
+
+	/**
+	 * Setup the standard regimens from XML
+	 * @throws Exception if error occurs
+	 */
+	protected void setupStandardRegimens() {
+		try {
+			RegimenManager.clear();
+
+			InputStream stream = getClass().getClassLoader().getResourceAsStream(REGIMENS_FILENAME);
+			RegimenManager.loadDefinitionsFromXML(stream);
+		}
+		catch (Exception ex) {
+			throw new RuntimeException("Cannot find " + REGIMENS_FILENAME + ". Make sure it's in api/src/main/resources", ex);
+		}
+	}
+
+	/**
+	 * Creates an empty global property if it doesn't exist
+	 * @param property the property name
+	 * @param description the property description
+	 * @param dataType the property value data type
+	 */
+	protected void ensureGlobalPropertyExists(String property, String description, Class dataType) {
+		GlobalProperty gp = Context.getAdministrationService().getGlobalPropertyObject(property);
 		if (gp == null) {
 			gp = new GlobalProperty();
-			gp.setProperty(KenyaEmrConstants.GP_DEFAULT_LOCATION);
-			gp.setDescription("The facility for which this installation is configured. Visits and encounters will be created with this location value.");
-			gp.setDatatypeClassname(LocationDatatype.class.getName());
+			gp.setProperty(property);
+			gp.setDescription(description);
+			gp.setDatatypeClassname(dataType.getName());
 			Context.getAdministrationService().saveGlobalProperty(gp);
 		}
 	}

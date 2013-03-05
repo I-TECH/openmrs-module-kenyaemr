@@ -31,8 +31,6 @@ public class FormManager {
 	 * Called from the module activator to register all forms. In future this could be loaded from an XML file
 	 */
 	public static void setupStandardForms() {
-		forms.clear();
-
 		/**
 		 * Once-ever forms
 		 */
@@ -177,6 +175,13 @@ public class FormManager {
 		}
 
 		forms.put(formUuid, new FormConfig(formUuid, frequency, new HashSet<String>(Arrays.asList(forApps)), forProgramUuid, forGender, iconProvider, icon));
+	}
+
+	/**
+	 * Clears all registered forms
+	 */
+	public static void clear() {
+		forms.clear();
 	}
 
 	/**

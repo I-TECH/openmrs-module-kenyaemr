@@ -67,10 +67,7 @@ public class AdminHomePageController {
 				metadataPackages.add(SimpleObject.fromObject(imported, ui, "name", "version", "imported"));
 			}
 
-			// Regimens aren't actually imported from a metadata package but let's pretend for the sake of simplicity
-			metadataPackages.add(SimpleObject.create("name", "Kenya EMR Regimens", "version", RegimenManager.getDefinitionsVersion(), "imported", true));
-
-			// Nor are concepts...
+			// Concepts aren't actually imported from a metadata package but let's pretend for the sake of simplicity
 			String conceptsVersion = Context.getAdministrationService().getGlobalProperty(KenyaEmrConstants.GP_CONCEPTS_VERSION, null);
 			metadataPackages.add(SimpleObject.create("name", "Kenya EMR Concepts", "version", conceptsVersion, "imported", (conceptsVersion != null)));
 

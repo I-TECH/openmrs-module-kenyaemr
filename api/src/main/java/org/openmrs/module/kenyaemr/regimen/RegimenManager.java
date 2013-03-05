@@ -36,15 +36,11 @@ import java.util.*;
  */
 public class RegimenManager {
 
-	private static final String REGIMENS_FILENAME = "regimens.xml";
-
 	private static Map<String, Integer> masterSetConcepts = new LinkedHashMap<String, Integer>();
 
 	private static Map<String, Map<String, DrugReference>> drugs = new LinkedHashMap<String, Map<String, DrugReference>>();
 
 	private static Map<String, List<RegimenDefinitionGroup>> regimenGroups = new LinkedHashMap<String, List<RegimenDefinitionGroup>>();
-
-	private static int definitionsVersion = 0;
 
 	/**
 	 * Gets the category codes
@@ -67,10 +63,11 @@ public class RegimenManager {
 	/**
 	 * Gets the individual drugs for the given category
 	 * @param category the category, e.g. "ARV"
-	 * @return the concept ids
+	 * @return the concept ids or null if category isn't defined
 	 */
 	public static Collection<DrugReference> getDrugs(String category) {
-		return drugs.get(category).values();
+		Map<String, DrugReference> drugsForCategory = drugs.get(category);
+		return (drugsForCategory != null) ? drugsForCategory.values() : null;
 	}
 
 	/**
@@ -80,14 +77,6 @@ public class RegimenManager {
 	 */
 	public static List<RegimenDefinitionGroup> getRegimenGroups(String category) {
 		return regimenGroups.get(category);
-	}
-
-	/**
-	 * Gets the version number of the definitions (from XML)
-	 * @return the version number
-	 */
-	public static int getDefinitionsVersion() {
-		return definitionsVersion;
 	}
 
 	/**
@@ -148,18 +137,12 @@ public class RegimenManager {
 	}
 
 	/**
-	 * Setup the standard regimens from XML
-	 * @throws Exception if error occurs
+	 * Clears all regimen and drugs
 	 */
-	public static void setupStandardRegimens() throws Exception {
-		try {
-			InputStream stream = RegimenManager.class.getClassLoader().getResourceAsStream(REGIMENS_FILENAME);
-
-			loadDefinitionsFromXML(stream);
-		}
-		catch (IOException ex) {
-			throw new RuntimeException("Cannot find " + REGIMENS_FILENAME + ". Make sure it's in api/src/main/resources/metadata");
-		}
+	public static synchronized void clear() {
+		masterSetConcepts.clear();
+		drugs.clear();
+		regimenGroups.clear();
 	}
 
 	/**
@@ -169,18 +152,13 @@ public class RegimenManager {
 	 * @throws IOException
 	 * @throws SAXException
 	 */
-	public static void loadDefinitionsFromXML(InputStream stream) throws ParserConfigurationException, IOException, SAXException {
+	public static synchronized void loadDefinitionsFromXML(InputStream stream) throws ParserConfigurationException, IOException, SAXException {
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder = dbFactory.newDocumentBuilder();
 
 		Document document = builder.parse(stream);
 
 		Element root = document.getDocumentElement();
-		definitionsVersion = Integer.parseInt(root.getAttribute("version"));
-
-		masterSetConcepts.clear();
-		drugs.clear();
-		regimenGroups.clear();
 
 		// Parse each category
 		NodeList categoryNodes = root.getElementsByTagName("category");

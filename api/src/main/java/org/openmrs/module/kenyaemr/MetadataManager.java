@@ -38,35 +38,30 @@ import java.util.regex.Pattern;
  */
 public class MetadataManager {
 
-	private static final String PACKAGES_FILENAME = "metadata/packages.xml";
-
 	protected static final Log log = LogFactory.getLog(MetadataManager.class);
 
 	/**
+	 * Loads packages specified in an XML packages list
+	 * @param stream the input stream containing the package list
+	 * @param loader the class loader to use for loading the packages (null to use the default)
 	 * @return whether any changes were made to the db
 	 * @throws Exception
 	 */
-	public static boolean setupMetadataPackages() throws Exception {
+	public static synchronized boolean loadPackagesFromXML(InputStream stream, ClassLoader loader) throws Exception {
 		boolean anyChanges = false;
 
-		try {
-			InputStream stream = MetadataManager.class.getClassLoader().getResourceAsStream(PACKAGES_FILENAME);
-			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-			DocumentBuilder builder = dbFactory.newDocumentBuilder();
-			Document document = builder.parse(stream);
-			Element root = document.getDocumentElement();
+		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder builder = dbFactory.newDocumentBuilder();
+		Document document = builder.parse(stream);
+		Element root = document.getDocumentElement();
 
-			NodeList packageNodes = root.getElementsByTagName("package");
-			for (int p = 0; p < packageNodes.getLength(); p++) {
-				Element packageElement = (Element)packageNodes.item(p);
-				String groupUuid = packageElement.getAttribute("groupUuid");
-				String filename = packageElement.getAttribute("filename");
+		NodeList packageNodes = root.getElementsByTagName("package");
+		for (int p = 0; p < packageNodes.getLength(); p++) {
+			Element packageElement = (Element)packageNodes.item(p);
+			String groupUuid = packageElement.getAttribute("groupUuid");
+			String filename = packageElement.getAttribute("filename");
 
-				anyChanges |= installMetadataPackageIfNecessary(groupUuid, "metadata/" + filename);
-			}
-		}
-		catch (IOException ex) {
-			throw new RuntimeException("Cannot find " + PACKAGES_FILENAME + ". Make sure it's in api/src/main/resources/metadata");
+			anyChanges |= installMetadataPackageIfNecessary(groupUuid, filename, loader);
 		}
 
 		return anyChanges;
@@ -76,10 +71,11 @@ public class MetadataManager {
 	 * Checks whether the given version of the MDS package has been installed yet, and if not, install it
 	 * @param groupUuid the package group UUID
 	 * @param filename the package filename
+	 * @param loader the class loader to use for loading the packages (null to use the default)
 	 * @return whether any changes were made to the db
 	 * @throws IOException
 	 */
-	protected static boolean installMetadataPackageIfNecessary(String groupUuid, String filename) throws IOException {
+	protected static boolean installMetadataPackageIfNecessary(String groupUuid, String filename, ClassLoader loader) throws IOException {
 		try {
 			Matcher matcher = Pattern.compile("[\\w/-]+-(\\d+).zip").matcher(filename);
 			if (!matcher.matches())
@@ -92,13 +88,17 @@ public class MetadataManager {
 				return false;
 			}
 
-			if (MetadataManager.class.getClassLoader().getResource(filename) == null) {
+			if (loader == null) {
+				loader = MetadataManager.class.getClassLoader();
+			}
+
+			if (loader.getResource(filename) == null) {
 				throw new RuntimeException("Cannot find " + filename + " for group " + groupUuid);
 			}
 
 			PackageImporter metadataImporter = MetadataSharing.getInstance().newPackageImporter();
 			metadataImporter.setImportConfig(ImportConfig.valueOf(ImportMode.MIRROR));
-			metadataImporter.loadSerializedPackageStream(MetadataManager.class.getClassLoader().getResourceAsStream(filename));
+			metadataImporter.loadSerializedPackageStream(loader.getResourceAsStream(filename));
 			metadataImporter.importPackage();
 			return true;
 		} catch (Exception ex) {
