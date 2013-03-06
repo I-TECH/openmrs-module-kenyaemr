@@ -21,7 +21,7 @@ import org.springframework.stereotype.Component;
  * TB patients report
  */
 @Component
-public class TBPatientsReport extends PatientListReportManager {
+public class TBPatientsReport extends PatientListReportBuilder {
 
     public TBPatientsReport() {
         setCalculation(new TbInProgramCalculation());

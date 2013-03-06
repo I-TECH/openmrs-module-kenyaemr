@@ -17,7 +17,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.kenyaemr.calculation.BaseKenyaEmrCalculation;
 import org.openmrs.module.kenyaemr.report.KenyaEmrCalculationCohortDefinition;
-import org.openmrs.module.kenyaemr.report.ReportManager;
+import org.openmrs.module.kenyaemr.report.ReportBuilder;
 import org.openmrs.module.reporting.data.converter.DataConverter;
 import org.openmrs.module.reporting.data.patient.definition.PatientIdDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.PatientIdentifierDataDefinition;
@@ -35,7 +35,7 @@ import org.openmrs.module.reporting.report.definition.ReportDefinition;
 /**
  * Base implementation for row-per-patient reports based on calculations
  */
-public abstract class PatientListReportManager implements ReportManager {
+public abstract class PatientListReportBuilder implements ReportBuilder {
 	
 	private Boolean configured = Boolean.FALSE;
 	
@@ -44,7 +44,7 @@ public abstract class PatientListReportManager implements ReportManager {
 	protected ReportDefinition reportDefinition;
 	
 	/**
-	 * @see org.openmrs.module.kenyaemr.report.ReportManager#getTags()
+	 * @see org.openmrs.module.kenyaemr.report.ReportBuilder#getTags()
 	 */
 	@Override
 	public String[] getTags() {
@@ -91,7 +91,7 @@ public abstract class PatientListReportManager implements ReportManager {
     }
 
     /**
-	 * @see org.openmrs.module.kenyaemr.report.ReportManager#getReportDefinitionSummary()
+	 * @see org.openmrs.module.kenyaemr.report.ReportBuilder#getReportDefinitionSummary()
 	 */
 	@Override
 	public DefinitionSummary getReportDefinitionSummary() {
@@ -102,7 +102,7 @@ public abstract class PatientListReportManager implements ReportManager {
 	}
 	
 	/**
-	 * @see org.openmrs.module.kenyaemr.report.ReportManager#getReportDefinition()
+	 * @see org.openmrs.module.kenyaemr.report.ReportBuilder#getReportDefinition()
 	 */
 	@Override
 	public ReportDefinition getReportDefinition() {
@@ -131,7 +131,7 @@ public abstract class PatientListReportManager implements ReportManager {
     }
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.report.ReportManager#getExcelTemplate()
+	 * @see org.openmrs.module.kenyaemr.report.ReportBuilder#getExcelTemplate()
 	 */
 	@Override
 	public byte[] getExcelTemplate() {
@@ -139,7 +139,7 @@ public abstract class PatientListReportManager implements ReportManager {
 	}
 	
 	/**
-	 * @see org.openmrs.module.kenyaemr.report.ReportManager#getExcelFilename(org.openmrs.module.reporting.evaluation.EvaluationContext)
+	 * @see org.openmrs.module.kenyaemr.report.ReportBuilder#getExcelFilename(org.openmrs.module.reporting.evaluation.EvaluationContext)
 	 */
 	@Override
 	public String getExcelFilename(EvaluationContext ec) {

@@ -21,7 +21,7 @@ import org.openmrs.LocationAttributeType;
 import org.openmrs.annotation.Authorized;
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.idgen.IdentifierSource;
-import org.openmrs.module.kenyaemr.report.ReportManager;
+import org.openmrs.module.kenyaemr.report.ReportBuilder;
 import org.openmrs.util.PrivilegeConstants;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -104,23 +104,6 @@ public interface KenyaEmrService extends OpenmrsService {
      * @throws ConfigurationRequiredException if the ID source has not be set up yet
      */
     IdentifierSource getHivUniqueIdentifierSource() throws ConfigurationRequiredException;
-
-	/**
-     * Called at spring context refresh to refresh the list of known report managers 
-     */
-    void refreshReportManagers();
-
-    /**
-     * @param className
-     * @return the ReportDefinition that was setup by the {@link ReportManager} with the given classname
-     */
-    ReportManager getReportManager(String className);
-
-	/**
-	 * @param withTag null means get all report managers
-     * @return all registered report managers with the given tag
-     */
-    List<ReportManager> getReportManagersByTag(String withTag);
     
     /**
      * @return the next HIV Unique Patient Number, including both the MFL prefix, and an idgen-generated sequential number

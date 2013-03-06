@@ -66,6 +66,9 @@
 	<concept_name concept_name_id="160541" concept_id="160541" name="TB Program" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="160541-name"/>
 	<program program_id="1" concept_id="160541" outcomes_concept_id="160038" creator="1" date_created="2004-08-12 00:00:00.0" retired="0" name="TB Program" description="TB Treatment Program" uuid="9f144a34-3a4a-44a9-8486-6b7af6cc64f6"/>
 
+	<!-- TB screening encounter type -->
+	<encounter_type encounter_type_id="10" name="TB Screening" description="TB Screening" creator="1" date_created="2005-02-24 00:00:00.0" retired="false" uuid="ed6dacc9-0827-4c82-86be-53c0d8c449be"/>
+
 	<!-- HIV program -->
 	<program program_id="2" concept_id="9" outcomes_concept_id="1695" creator="1" date_created="2004-08-12 00:00:00.0" retired="0" name="HIV Program" description="Program for following or treating HIV-positive patients" uuid="dfdc6d40-2f2f-463d-ba90-cc97350441a8"/>
 

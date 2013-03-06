@@ -17,7 +17,7 @@ import org.openmrs.module.kenyaemr.calculation.WithoutCTXOrDapsoneCalculation;
 import org.springframework.stereotype.Component;
 
 @Component
-public class WithoutCTXOrDapsoneReport extends PatientListReportManager {
+public class WithoutCTXOrDapsoneReport extends PatientListReportBuilder {
 
     public WithoutCTXOrDapsoneReport() {
         setCalculation(new WithoutCTXOrDapsoneCalculation());

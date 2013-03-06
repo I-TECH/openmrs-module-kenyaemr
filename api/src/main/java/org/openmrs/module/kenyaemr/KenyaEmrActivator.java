@@ -23,6 +23,7 @@ import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.module.kenyaemr.datatype.LocationDatatype;
 import org.openmrs.module.kenyaemr.form.FormManager;
 import org.openmrs.module.kenyaemr.regimen.RegimenManager;
+import org.openmrs.module.kenyaemr.report.ReportManager;
 import org.openmrs.module.kenyaemr.util.ContextProvider;
 
 import java.io.InputStream;
@@ -51,7 +52,7 @@ public class KenyaEmrActivator implements ModuleActivator {
 	public void contextRefreshed() {
 		log.info("Kenya OpenMRS EMR Module refreshed");
 
-		Context.getService(KenyaEmrService.class).refreshReportManagers();
+		ReportManager.refreshReportBuilders();
 	}
 
 	/**
@@ -91,7 +92,7 @@ public class KenyaEmrActivator implements ModuleActivator {
 
 			log.info(" > Setup regimen manager");
 
-			Context.getService(KenyaEmrService.class).refreshReportManagers();
+			ReportManager.refreshReportBuilders();
 
 		} catch (Exception ex) {
 			throw new RuntimeException("Failed to setup initial data", ex);

@@ -11,45 +11,63 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.kenyaemr.report;
 
-import java.util.Set;
+import org.openmrs.api.context.Context;
 
-import org.openmrs.module.reporting.definition.DefinitionSummary;
-import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.module.reporting.report.definition.ReportDefinition;
-
+import java.util.*;
 
 /**
- * Implementations of this should be instantiated as spring beans, and expect to function as singletons
+ * Report manager
  */
-public interface ReportManager {
-	
-	/**
-	 * @return tags that categorize this report manager
-	 */
-	public String[] getTags();
-	
-	/**
-	 * @return a lightweight summary of the report definition, suitable for pick lists
-	 */
-	public DefinitionSummary getReportDefinitionSummary();
-	
-	/**
-	 * This method may be slow, so consider calling {@link #getReportDefinitionSummary()} if you don't need to run it
-	 * @return the definition of this report
-	 */
-	public ReportDefinition getReportDefinition();
-	
-	/**
-	 * @return the excel template for rendering this report, or null if excel is not supported 
-	 */
-	public byte[] getExcelTemplate();
+public class ReportManager {
+
+	private static Map<String, ReportBuilder> reportBuilders;
 
 	/**
-     * @param ec
-     * @return the filename for downloading this report as excel, or null if excel is not supported 
-     */
-    public String getExcelFilename(EvaluationContext ec);
-	
+	 * Clears all reports
+	 */
+	public synchronized static void clear() {
+		reportBuilders.clear();
+	}
+
+	/**
+	 * Refreshes the list of report builders from application context
+	 */
+	public synchronized static void refreshReportBuilders() {
+		reportBuilders = new LinkedHashMap<String, ReportBuilder>();
+		for (ReportBuilder manager : Context.getRegisteredComponents(ReportBuilder.class)) {
+			reportBuilders.put(manager.getClass().getName(), manager);
+		}
+	}
+
+	/**
+	 * Gets the report manager with the given name
+	 * @param className the report builder class name
+	 * @return the report builder
+	 */
+	public static ReportBuilder getReportBuilder(String className) {
+		return reportBuilders.get(className);
+	}
+
+	/**
+	 * Gets the report builders with the given tag
+	 * @param tag the tag
+	 * @return the list of report builders
+	 */
+	public static List<ReportBuilder> getReportBuildersByTag(String tag) {
+		if (tag == null) {
+			return new ArrayList<ReportBuilder>(reportBuilders.values());
+		}
+		else {
+			List<ReportBuilder> ret = new ArrayList<ReportBuilder>();
+			for (ReportBuilder candidate : reportBuilders.values()) {
+				if (candidate.getTags() != null && Arrays.asList(candidate.getTags()).contains(tag)) {
+					ret.add(candidate);
+				}
+			}
+			return ret;
+		}
+	}
 }

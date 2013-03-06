@@ -14,14 +14,13 @@
 package org.openmrs.module.kenyaemr.report.patientlist;
 
 import org.openmrs.module.kenyaemr.calculation.art.EligibleForArtCalculation;
-import org.openmrs.module.reporting.definition.DefinitionSummary;
 import org.springframework.stereotype.Component;
 
 /**
  * Eligible for ART report
  */
 @Component
-public class EligibleForArtReport extends PatientListReportManager {
+public class EligibleForArtReport extends PatientListReportBuilder {
 	
 	public EligibleForArtReport() {
 		setCalculation(new EligibleForArtCalculation());

@@ -11,14 +11,14 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.kenyaemr.page.controller;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.openmrs.api.context.Context;
 import org.openmrs.module.appframework.AppUiUtil;
-import org.openmrs.module.kenyaemr.api.KenyaEmrService;
+import org.openmrs.module.kenyaemr.report.ReportBuilder;
 import org.openmrs.module.kenyaemr.report.ReportManager;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.page.PageModel;
@@ -43,8 +43,8 @@ public class ReportsHomePageController {
 	 */
     private List<SimpleObject> getReportDefinitionSummaries(String tag) {
     	List<SimpleObject> ret = new ArrayList<SimpleObject>();
-		for (ReportManager m : Context.getService(KenyaEmrService.class).getReportManagersByTag(tag)) {
-			ret.add(SimpleObject.create("name", m.getReportDefinitionSummary().getName(), "manager", m.getClass().getName()));
+		for (ReportBuilder reportBuilder : ReportManager.getReportBuildersByTag(tag)) {
+			ret.add(SimpleObject.create("name", reportBuilder.getReportDefinitionSummary().getName(), "manager", reportBuilder.getClass().getName()));
 		}
 		return ret;
     }

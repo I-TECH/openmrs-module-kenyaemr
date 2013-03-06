@@ -20,7 +20,9 @@ import org.openmrs.module.ModuleFactory;
 import org.openmrs.module.kenyaemr.KenyaEmrConstants;
 import org.openmrs.util.OpenmrsUtil;
 
+import java.sql.*;
 import java.util.*;
+import java.util.Date;
 
 /**
  * Miscellaneous utility methods
@@ -76,6 +78,15 @@ public class KenyaEmrUtils {
 		return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR)
 				&& cal1.get(Calendar.MONTH) == cal2.get(Calendar.MONTH)
 				&& cal1.get(Calendar.DAY_OF_MONTH) == cal2.get(Calendar.DAY_OF_MONTH);
+	}
+
+	/**
+	 * Checks if a given date is today
+	 * @param date the date
+	 * @return true if date is today
+	 */
+	public static boolean isToday(Date date) {
+		return isSameDay(date, new Date());
 	}
 
 	/**

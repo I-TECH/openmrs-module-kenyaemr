@@ -67,7 +67,7 @@ public class DecliningCD4ReportTest extends BaseModuleContextSensitiveTest {
 
 		Context.flushSession();
 
-		ReportManager report = new DecliningCD4Report();
+		ReportBuilder report = new DecliningCD4Report();
 		ReportDefinition rd = report.getReportDefinition();
 		EvaluationContext ec = new EvaluationContext();
 

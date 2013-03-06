@@ -11,6 +11,7 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.kenyaemr.page.controller;
 
 import java.io.ByteArrayOutputStream;
@@ -18,7 +19,7 @@ import java.io.ByteArrayOutputStream;
 import org.apache.commons.lang3.StringUtils;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appframework.AppUiUtil;
-import org.openmrs.module.kenyaemr.api.KenyaEmrService;
+import org.openmrs.module.kenyaemr.report.ReportBuilder;
 import org.openmrs.module.kenyaemr.report.ReportManager;
 import org.openmrs.module.reporting.common.ContentType;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
@@ -33,7 +34,6 @@ import org.openmrs.ui.framework.page.PageModel;
 import org.openmrs.ui.framework.session.Session;
 import org.springframework.web.bind.annotation.RequestParam;
 
-
 /**
  *
  */
@@ -46,7 +46,7 @@ public class ReportsRunPatientListReportPageController {
 		
 		AppUiUtil.startApp("kenyaemr.reports", session);
 		
-		ReportManager manager = Context.getService(KenyaEmrService.class).getReportManager(managerClassname);
+		ReportBuilder manager = ReportManager.getReportBuilder(managerClassname);
 		ReportDefinition rd = manager.getReportDefinition();
 		
 		model.addAttribute("manager", manager);

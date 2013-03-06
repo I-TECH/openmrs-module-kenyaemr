@@ -11,6 +11,7 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.kenyaemr.api;
 
 import org.apache.commons.lang.StringUtils;
@@ -22,13 +23,11 @@ import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.idgen.IdentifierSource;
 import org.openmrs.module.idgen.service.IdentifierSourceService;
-import org.openmrs.module.idgen.validator.LuhnMod25IdentifierValidator;
 import org.openmrs.module.kenyaemr.KenyaEmrActivator;
 import org.openmrs.module.kenyaemr.KenyaEmrConstants;
 import org.openmrs.module.kenyaemr.MetadataConstants;
-import org.openmrs.module.kenyaemr.report.ReportManager;
+import org.openmrs.module.kenyaemr.report.ReportBuilder;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
-import org.openmrs.ui.framework.session.Session;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -221,25 +220,6 @@ public class KenyaEmrServiceTest extends BaseModuleContextSensitiveTest {
     	Assert.assertEquals("1500100573", service.getNextHivUniquePatientNumber(null));
     	Assert.assertEquals("1500100574", service.getNextHivUniquePatientNumber(null));
     }
-
-	/**
-	 * @see KenyaEmrService#getReportManagersByTag(String)
-	 */
-	@Test
-	public void getReportManagersByTag_shouldGetReportsByTag() {
-
-		service.refreshReportManagers();
-
-		final String[] TEST_TAGS = { "moh", "facility" };
-
-		for (String tag : TEST_TAGS) {
-			List<ReportManager> reports = service.getReportManagersByTag(tag);
-			Assert.assertTrue(reports.size() > 0);
-			for (ReportManager report : reports) {
-				Assert.assertTrue(Arrays.asList(report.getTags()).contains(tag));
-			}
-		}
-	}
 
 	/**
 	 * @see KenyaEmrService#getLocations(String, org.openmrs.Location, java.util.Map, boolean, Integer, Integer)

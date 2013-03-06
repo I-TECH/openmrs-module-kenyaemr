@@ -20,7 +20,7 @@ import org.springframework.stereotype.Component;
  * Never screened for TB report
  */
 @Component
-public class NeverScreenedForTBCalculationReport extends PatientListReportManager {
+public class NeverScreenedForTBCalculationReport extends PatientListReportBuilder {
 
     public NeverScreenedForTBCalculationReport() {
         setCalculation(new TbNeverScreenedCalculation());

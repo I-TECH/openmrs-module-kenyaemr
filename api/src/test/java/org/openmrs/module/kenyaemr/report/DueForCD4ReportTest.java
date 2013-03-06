@@ -54,7 +54,7 @@ public class DueForCD4ReportTest extends BaseModuleContextSensitiveTest {
 			TestUtils.enrollInProgram(ps.getPatient(i), hivProgram, new Date());
 		}
 
-		ReportManager report = new NeedsCD4Report();
+		ReportBuilder report = new NeedsCD4Report();
 		ReportDefinition rd = report.getReportDefinition();
 		
 		EvaluationContext ec = new EvaluationContext();

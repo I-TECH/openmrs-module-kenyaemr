@@ -1,4 +1,4 @@
-/*
+/**
  * The contents of this file are subject to the OpenMRS Public License
  * Version 1.0 (the "License"); you may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
@@ -17,7 +17,7 @@ package org.openmrs.module.kenyaemr.rest;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.module.kenyaemr.api.KenyaEmrService;
+import org.openmrs.module.kenyaemr.report.ReportManager;
 import org.openmrs.module.kenyaemr.report.indicator.Moh731Report;
 import org.openmrs.module.reportingrest.web.controller.DataSetDefinitionController;
 import org.openmrs.module.reportingrest.web.controller.EvaluatedDataSetController;
@@ -37,9 +37,6 @@ import java.util.Map;
 public class AccessReportsByRestWebServiceTest extends BaseModuleWebContextSensitiveTest {
 
 	@Autowired
-	KenyaEmrService service;
-
-	@Autowired
 	DataSetDefinitionController dsdController;
 
 	@Autowired
@@ -50,7 +47,7 @@ public class AccessReportsByRestWebServiceTest extends BaseModuleWebContextSensi
 		executeDataSet("test-data.xml");
 		executeDataSet("test-drugdata.xml");
 
-		service.refreshReportManagers();
+		ReportManager.refreshReportBuilders();
 	}
 
 	@Test

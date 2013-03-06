@@ -52,7 +52,7 @@ public class EligibleForArvButNotStartedReportTest extends BaseModuleContextSens
 			TestUtils.enrollInProgram(ps.getPatient(i), hivProgram, new Date());
 		}
 
-		ReportManager report = new EligibleForArtReport();
+		ReportBuilder report = new EligibleForArtReport();
 		ReportDefinition rd = report.getReportDefinition();
 		
 		EvaluationContext ec = new EvaluationContext();

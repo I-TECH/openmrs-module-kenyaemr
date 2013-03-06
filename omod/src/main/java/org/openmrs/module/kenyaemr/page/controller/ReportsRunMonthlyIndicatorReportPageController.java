@@ -11,6 +11,7 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.kenyaemr.page.controller;
 
 import java.io.ByteArrayOutputStream;
@@ -21,7 +22,7 @@ import java.util.Map;
 
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appframework.AppUiUtil;
-import org.openmrs.module.kenyaemr.api.KenyaEmrService;
+import org.openmrs.module.kenyaemr.report.ReportBuilder;
 import org.openmrs.module.kenyaemr.report.ReportManager;
 import org.openmrs.module.reporting.common.ContentType;
 import org.openmrs.module.reporting.common.DateUtil;
@@ -50,7 +51,7 @@ public class ReportsRunMonthlyIndicatorReportPageController {
 		
 		AppUiUtil.startApp("kenyaemr.reports", session);
 		
-		ReportManager manager = Context.getService(KenyaEmrService.class).getReportManager(managerClassname);
+		ReportBuilder manager = ReportManager.getReportBuilder(managerClassname);
 		ReportDefinition definition = manager.getReportDefinition();
 
 		model.addAttribute("manager", manager);

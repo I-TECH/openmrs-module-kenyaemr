@@ -30,8 +30,7 @@ import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.kenyaemr.api.ConfigurationRequiredException;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.module.kenyaemr.api.db.KenyaEmrDAO;
-import org.openmrs.module.kenyaemr.regimen.RegimenManager;
-import org.openmrs.module.kenyaemr.report.ReportManager;
+import org.openmrs.module.kenyaemr.report.ReportBuilder;
 
 /**
  * Implementations of business methods for the Kenya EMR application
@@ -41,9 +40,6 @@ public class KenyaEmrServiceImpl extends BaseOpenmrsService implements KenyaEmrS
     private static final String OPENMRS_MEDICAL_RECORD_NUMBER_NAME = "Kenya EMR - OpenMRS Medical Record Number";
     private static final String HIV_UNIQUE_PATIENT_NUMBER_NAME = "Kenya EMR - OpenMRS HIV Unique Patient Number";
 	private boolean hasBeenConfigured = false;
-	
-	// maps classname to manager instance
-	private Map<String, ReportManager> reportManagers;
 
 	private KenyaEmrDAO dao;
 
@@ -293,46 +289,6 @@ public class KenyaEmrServiceImpl extends BaseOpenmrsService implements KenyaEmrS
 	    
     	PatientIdentifierType idType = Context.getPatientService().getPatientIdentifierTypeByUuid(MetadataConstants.UNIQUE_PATIENT_NUMBER_UUID);
     	setupIdentifierSource(startFrom, HIV_UNIQUE_PATIENT_NUMBER_NAME, idType, "0123456789");
-	}
-
-	/**
-	 * @see org.openmrs.module.kenyaemr.api.KenyaEmrService#refreshReportManagers()
-	 */
-	@Override
-	public void refreshReportManagers() {
-		synchronized(this) {
-			reportManagers = new LinkedHashMap<String, ReportManager>();
-			for (ReportManager manager : Context.getRegisteredComponents(ReportManager.class)) {
-				reportManagers.put(manager.getClass().getName(), manager);
-			}
-		}
-	}
-	
-	/**
-	 * @see org.openmrs.module.kenyaemr.api.KenyaEmrService#getReportManager(java.lang.String)
-	 */
-	@Override
-	public ReportManager getReportManager(String className) {
-	    return reportManagers.get(className);
-	}
-
-	/**
-	 * @see org.openmrs.module.kenyaemr.api.KenyaEmrService#getReportManagersByTag(String)
-	 */
-	@Override
-	public List<ReportManager> getReportManagersByTag(String tag) {
-		if (tag == null) {
-			return new ArrayList<ReportManager>(reportManagers.values());
-		}
-		else {
-			List<ReportManager> ret = new ArrayList<ReportManager>();
-			for (ReportManager candidate : reportManagers.values()) {
-				if (candidate.getTags() != null && Arrays.asList(candidate.getTags()).contains(tag)) {
-					ret.add(candidate);
-				}
-			}
-			return ret;
-		}
 	}
 	
 	/**

@@ -20,7 +20,7 @@ import org.springframework.stereotype.Component;
  * Due for CD4 test report
  */
 @Component
-public class NeedsCD4Report extends PatientListReportManager {
+public class NeedsCD4Report extends PatientListReportBuilder {
 	
     public NeedsCD4Report() {
 	    setCalculation(new NeedsCD4Calculation());

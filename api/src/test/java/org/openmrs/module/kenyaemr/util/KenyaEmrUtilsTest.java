@@ -56,6 +56,26 @@ public class KenyaEmrUtilsTest extends BaseModuleContextSensitiveTest {
 	}
 
 	/**
+	 * @see KenyaEmrUtils#isSameDay(java.util.Date, java.util.Date)
+	 * @verifies return true only for two dates that are on the same day
+	 */
+	@Test
+	public void isSameDay_shouldReturnTrueOnlyForDatesOnSameDay() {
+		Assert.assertTrue(KenyaEmrUtils.isSameDay(TestUtils.date(2012, 1, 1), TestUtils.date(2012, 1, 1)));
+		Assert.assertTrue(KenyaEmrUtils.isSameDay(TestUtils.date(2012, 1, 1, 10, 30, 0), TestUtils.date(2012, 1, 1, 11, 45, 0)));
+		Assert.assertFalse(KenyaEmrUtils.isSameDay(TestUtils.date(2012, 1, 1), TestUtils.date(2012, 1, 2)));
+	}
+
+	/**
+	 * @see KenyaEmrUtils#isToday(java.util.Date)
+	 * @verifies return true only for dates that are today
+	 */
+	@Test
+	public void isToday_shouldReturnTrueOnlyForDatesThatAreToday() {
+		Assert.assertTrue(KenyaEmrUtils.isToday(new Date()));
+		Assert.assertFalse(KenyaEmrUtils.isToday(TestUtils.date(2012, 1, 1)));
+	}
+	/**
 	 * @see KenyaEmrUtils#fetchConcepts(java.util.Collection)
 	 * @verifies fetch from concepts, integers or strings
 	 */

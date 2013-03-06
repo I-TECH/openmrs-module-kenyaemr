@@ -65,7 +65,7 @@ public class MissedAppointmentsOrDefaultedReportTest extends BaseModuleContextSe
 
 		Context.flushSession();
 
-        ReportManager report = new MissedAppointmentsOrDefaultedReport();
+        ReportBuilder report = new MissedAppointmentsOrDefaultedReport();
         ReportDefinition rd = report.getReportDefinition();
         EvaluationContext ec = new EvaluationContext();
 

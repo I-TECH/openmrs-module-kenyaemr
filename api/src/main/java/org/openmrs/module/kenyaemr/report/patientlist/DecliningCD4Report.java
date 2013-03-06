@@ -29,7 +29,7 @@ import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
 import org.springframework.stereotype.Component;
 
 @Component
-public class DecliningCD4Report extends PatientListReportManager {
+public class DecliningCD4Report extends PatientListReportBuilder {
 
     public DecliningCD4Report() {
         setCalculation(new DecliningCD4Calculation());
