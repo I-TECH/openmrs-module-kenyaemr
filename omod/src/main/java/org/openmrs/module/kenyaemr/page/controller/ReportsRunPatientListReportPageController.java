@@ -16,7 +16,6 @@ package org.openmrs.module.kenyaemr.page.controller;
 
 import java.io.ByteArrayOutputStream;
 
-import org.apache.commons.lang3.StringUtils;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appframework.AppUiUtil;
 import org.openmrs.module.kenyaemr.report.ReportBuilder;
@@ -50,7 +49,6 @@ public class ReportsRunPatientListReportPageController {
 		ReportDefinition rd = manager.getReportDefinition();
 		
 		model.addAttribute("manager", manager);
-		model.addAttribute("supportsExcel", StringUtils.isNotBlank(manager.getExcelFilename(new EvaluationContext())));
 		model.addAttribute("definition", rd);
 		
 		// generate the report
@@ -94,5 +92,4 @@ public class ReportsRunPatientListReportPageController {
 		
 		return null;
 	}
-	
 }

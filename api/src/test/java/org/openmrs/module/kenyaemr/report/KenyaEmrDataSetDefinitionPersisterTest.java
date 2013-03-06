@@ -51,7 +51,7 @@ public class KenyaEmrDataSetDefinitionPersisterTest extends BaseModuleContextSen
 		// Assert that Moh731Report does provide its DSD
 		boolean found = false;
 		for (DataSetDefinition dsd : allDefinitions) {
-			if (dsd.getName().equals(Moh731Report.NAME_PREFIX + " DSD") && dsd instanceof CohortIndicatorDataSetDefinition) {
+			if (dsd.getName().equals("MOH 731 DSD") && dsd instanceof CohortIndicatorDataSetDefinition) {
 				found = true;
 			}
 		}

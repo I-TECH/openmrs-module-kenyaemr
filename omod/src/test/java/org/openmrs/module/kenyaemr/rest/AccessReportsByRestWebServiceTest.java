@@ -70,7 +70,7 @@ public class AccessReportsByRestWebServiceTest extends BaseModuleWebContextSensi
 
 	@Test
 	public void shouldEvaluateMoh731ReportViaRest() throws Exception {
-		String uuid = Moh731Report.class.getName() + ":" + Moh731Report.NAME_PREFIX + " DSD";
+		String uuid = Moh731Report.class.getName() + ":MOH 731 DSD";
 
 		MockHttpServletRequest request = new MockHttpServletRequest();
 		request.addParameter("startDate", new String[] { "2012-01-01" });

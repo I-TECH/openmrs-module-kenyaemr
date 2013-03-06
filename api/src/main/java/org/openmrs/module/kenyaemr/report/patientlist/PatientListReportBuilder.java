@@ -35,13 +35,9 @@ import org.openmrs.module.reporting.report.definition.ReportDefinition;
 /**
  * Base implementation for row-per-patient reports based on calculations
  */
-public abstract class PatientListReportBuilder implements ReportBuilder {
-	
-	private Boolean configured = Boolean.FALSE;
+public abstract class PatientListReportBuilder extends ReportBuilder {
 	
 	private BaseKenyaEmrCalculation calculation;
-	
-	protected ReportDefinition reportDefinition;
 	
 	/**
 	 * @see org.openmrs.module.kenyaemr.report.ReportBuilder#getTags()
@@ -49,6 +45,22 @@ public abstract class PatientListReportBuilder implements ReportBuilder {
 	@Override
 	public String[] getTags() {
 		return new String[] { "facility" };
+	}
+
+	/**
+	 * @see org.openmrs.module.kenyaemr.report.ReportBuilder#getName()
+	 */
+	@Override
+	public String getName() {
+		return calculation.getShortMessage();
+	}
+
+	/**
+	 * @see org.openmrs.module.kenyaemr.report.ReportBuilder#getDescription()
+	 */
+	@Override
+	public String getDescription() {
+		return calculation.getDetailedMessage();
 	}
 	
     /**
@@ -89,70 +101,19 @@ public abstract class PatientListReportBuilder implements ReportBuilder {
             }
         });
     }
-
-    /**
-	 * @see org.openmrs.module.kenyaemr.report.ReportBuilder#getReportDefinitionSummary()
-	 */
-	@Override
-	public DefinitionSummary getReportDefinitionSummary() {
-		DefinitionSummary ret = new DefinitionSummary();
-		ret.setName(calculation.getShortMessage());
-		ret.setDescription(calculation.getDetailedMessage());
-		return ret;
-	}
-	
-	/**
-	 * @see org.openmrs.module.kenyaemr.report.ReportBuilder#getReportDefinition()
-	 */
-	@Override
-	public ReportDefinition getReportDefinition() {
-		synchronized (configured) {
-	        if (!configured) {
-	        	reportDefinition = buildReportDefinition();
-	        	configured = true;
-	        }
-        }
-		
-		return reportDefinition;
-	}
 	
 	/**
      * Constructs the report definitions
      */
-    private ReportDefinition buildReportDefinition() {
+	@Override
+    protected ReportDefinition buildReportDefinition() {
 		PatientDataSetDefinition dsd = new PatientDataSetDefinition(calculation.getDetailedMessage());
 		addColumns(dsd);
 		dsd.addRowFilter(map(new KenyaEmrCalculationCohortDefinition(calculation), null));
 
 		ReportDefinition ret = new ReportDefinition();
-		ret.setName(calculation.getShortMessage());
+		ret.setName(getName());
 		ret.addDataSetDefinition(dsd, null);
 		return ret;
-    }
-
-	/**
-	 * @see org.openmrs.module.kenyaemr.report.ReportBuilder#getExcelTemplate()
-	 */
-	@Override
-	public byte[] getExcelTemplate() {
-		return null;
-	}
-	
-	/**
-	 * @see org.openmrs.module.kenyaemr.report.ReportBuilder#getExcelFilename(org.openmrs.module.reporting.evaluation.EvaluationContext)
-	 */
-	@Override
-	public String getExcelFilename(EvaluationContext ec) {
-		return null;
-	}
-	
-	private <T extends Parameterizable> Mapped<T> map(T parameterizable, String mappings) {
-    	if (parameterizable == null) {
-    		throw new NullPointerException("Programming error: missing parameterizable");
-    	}
-    	if (mappings == null) {
-    		mappings = ""; // probably not necessary, just to be safe
-    	}
-    	return new Mapped<T>(parameterizable, ParameterizableUtil.createParameterMappings(mappings));
     }
 }

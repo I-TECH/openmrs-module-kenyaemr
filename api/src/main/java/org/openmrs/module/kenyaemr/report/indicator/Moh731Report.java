@@ -35,21 +35,16 @@ import org.openmrs.module.reporting.cohort.definition.ProgramEnrollmentCohortDef
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
-import org.openmrs.module.reporting.definition.DefinitionSummary;
-import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.openmrs.module.reporting.indicator.dimension.CohortDefinitionDimension;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
-import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.util.OpenmrsClassLoader;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -58,19 +53,13 @@ import java.util.*;
 @Component
 public class Moh731Report extends IndicatorReportBuilder {
 
-	private Boolean configured = Boolean.FALSE;
+	protected static final Log log = LogFactory.getLog(Moh731Report.class);
 
-	private final Log log = LogFactory.getLog(getClass());
+	protected Map<String, CohortDefinition> cohortDefinitions;
 
-	public static final String NAME_PREFIX = "MOH 731";
+	protected Map<String, CohortDefinitionDimension> dimensions;
 
-	ReportDefinition reportDefinition;
-
-	Map<String, CohortDefinition> cohortDefinitions;
-
-	Map<String, CohortDefinitionDimension> dimensions;
-
-	Map<String, CohortIndicator> indicators;
+	protected Map<String, CohortIndicator> indicators;
 
 	/**
 	 * @see org.openmrs.module.kenyaemr.report.ReportBuilder#getTags()
@@ -81,38 +70,46 @@ public class Moh731Report extends IndicatorReportBuilder {
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.report.ReportBuilder#getReportDefinitionSummary()
+	 * @see org.openmrs.module.kenyaemr.report.indicator.IndicatorReportBuilder#getName()
 	 */
 	@Override
-	public DefinitionSummary getReportDefinitionSummary() {
-		DefinitionSummary ret = new DefinitionSummary();
-		ret.setName(NAME_PREFIX);
-		ret.setUuid(getClass().getName());
-		return ret;
-	}
-
-	public void setup() {
-		log.debug("Setting up cohort definitions");
-		setupCohortDefinitions();
-		log.debug("Setting up dimensions");
-		setupDimensions();
-		log.debug("Setting up indicators");
-		setupIndicators();
-		log.debug("Setting up report definition");
-		reportDefinition = createReportDefinition();
+	public String getName() {
+		return "MOH 731";
 	}
 
 	/**
-	 * @return the reportDefinition
+	 * @see org.openmrs.module.kenyaemr.report.ReportBuilder#getDescription()
 	 */
-	public ReportDefinition getReportDefinition() {
-		synchronized (configured) {
-			if (!configured) {
-				setup();
-				configured = true;
-			}
-		}
-		return reportDefinition;
+	@Override
+	public String getDescription() {
+		return "Comprehensive HIV/AIDS Facility Reporting Form - NASCOP";
+	}
+
+	/**
+	 * @see IndicatorReportBuilder#buildReportDefinition()
+	 */
+	@Override
+	public ReportDefinition buildReportDefinition() {
+		log.debug("Setting up cohort definitions");
+
+		setupCohortDefinitions();
+
+		log.debug("Setting up dimensions");
+
+		setupDimensions();
+
+		log.debug("Setting up indicators");
+
+		setupIndicators();
+
+		log.debug("Setting up report definition");
+
+		ReportDefinition rd = new ReportDefinition();
+		rd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+		rd.addParameter(new Parameter("endDate", "End Date", Date.class));
+		rd.setName(getName());
+		rd.addDataSetDefinition(createDataSet(), ParameterizableUtil.createParameterMappings("startDate=${startDate},endDate=${endDate}"));
+		return rd;
 	}
 
 	private void setupCohortDefinitions() {
@@ -121,6 +118,7 @@ public class Moh731Report extends IndicatorReportBuilder {
 		Program tbProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.TB_PROGRAM_UUID);
 		EncounterType tbScreeningEncType = Context.getEncounterService().getEncounterTypeByUuid(MetadataConstants.TB_SCREENING_ENCOUNTER_TYPE_UUID);
 		Concept transferInDate = Context.getConceptService().getConceptByUuid(MetadataConstants.TRANSFER_IN_DATE_CONCEPT_UUID);
+		Concept condomsProvided = Context.getConceptService().getConceptByUuid(MetadataConstants.CONDOMS_PROVIDED_DURING_VISIT_CONCEPT_UUID);
 
 		cohortDefinitions = new HashMap<String, CohortDefinition>();
 		{
@@ -179,6 +177,15 @@ public class Moh731Report extends IndicatorReportBuilder {
 			cd.setTimeModifier(TimeModifier.ANY);
 			cd.setQuestion(transferInDate);
 			cohortDefinitions.put("transferInBefore", cd);
+		}
+		{
+			DateObsCohortDefinition cd = new DateObsCohortDefinition();
+			cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+			cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+			cd.setName("Condoms provided between dates");
+			cd.setTimeModifier(TimeModifier.ANY);
+			cd.setQuestion(condomsProvided);
+			cohortDefinitions.put("condomsProvidedBetween", cd);
 		}
 		{
 			CompositionCohortDefinition cd = new CompositionCohortDefinition();
@@ -324,20 +331,13 @@ public class Moh731Report extends IndicatorReportBuilder {
 			ind.setCohortDefinition(map(cohortDefinitions.get("tbScreeningEncounterBetween"), "onOrAfter=${startDate},onOrBefore=${endDate}"));
 			indicators.put("screenedForTb", ind);
 		}
-	}
-
-	/**
-	 * Creates the report definition
-	 * @return the definition
-	 */
-	public ReportDefinition createReportDefinition() {
-		ReportDefinition rd = new ReportDefinition();
-		rd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-		rd.addParameter(new Parameter("endDate", "End Date", Date.class));
-		rd.setName(NAME_PREFIX);
-		rd.addDataSetDefinition(createDataSet(),
-				ParameterizableUtil.createParameterMappings("startDate=${startDate},endDate=${endDate}"));
-		return rd;
+		{
+			CohortIndicator ind = new CohortIndicator("Provided with Condoms");
+			ind.addParameter(new Parameter("startDate", "Start Date", Date.class));
+			ind.addParameter(new Parameter("endDate", "End Date", Date.class));
+			ind.setCohortDefinition(map(cohortDefinitions.get("condomsProvidedBetween"), "onOrAfter=${startDate},onOrBefore=${endDate}"));
+			indicators.put("providedWithCondoms", ind);
+		}
 	}
 
 	/**
@@ -346,7 +346,7 @@ public class Moh731Report extends IndicatorReportBuilder {
 	 */
 	private DataSetDefinition createDataSet() {
 		CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
-		dsd.setName(NAME_PREFIX + " DSD");
+		dsd.setName(getName() + " DSD");
 		dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
 
@@ -359,21 +359,21 @@ public class Moh731Report extends IndicatorReportBuilder {
 
 		/////////////// 3.2 (Enrolled in Care) ///////////////
 
-		dsd.addColumn("HV03-08", "Enrolled in Care (<1)", map(indicators.get("enrolledInCare"), "startDate=${startDate},endDate=${endDate}"), "age=<1");
-		dsd.addColumn("HV03-09", "Enrolled in Care (<15, Male)", map(indicators.get("enrolledInCare"), "startDate=${startDate},endDate=${endDate}"), "gender=M|age=<15");
-		dsd.addColumn("HV03-10", "Enrolled in Care (<15, Female)", map(indicators.get("enrolledInCare"), "startDate=${startDate},endDate=${endDate}"), "gender=F|age=<15");
-		dsd.addColumn("HV03-11", "Enrolled in Care (15+, Male)", map(indicators.get("enrolledInCare"), "startDate=${startDate},endDate=${endDate}"), "gender=M|age=15+");
-		dsd.addColumn("HV03-12", "Enrolled in Care (15+, Female)", map(indicators.get("enrolledInCare"), "startDate=${startDate},endDate=${endDate}"), "gender=F|age=15+");
-		dsd.addColumn("HV03-13", "Enrolled in Care (Total)", map(indicators.get("enrolledInCare"), "startDate=${startDate},endDate=${endDate}"), "");
+		dsd.addColumn("HV03-08", "Enrolled in care (<1)", map(indicators.get("enrolledInCare"), "startDate=${startDate},endDate=${endDate}"), "age=<1");
+		dsd.addColumn("HV03-09", "Enrolled in care (<15, Male)", map(indicators.get("enrolledInCare"), "startDate=${startDate},endDate=${endDate}"), "gender=M|age=<15");
+		dsd.addColumn("HV03-10", "Enrolled in care (<15, Female)", map(indicators.get("enrolledInCare"), "startDate=${startDate},endDate=${endDate}"), "gender=F|age=<15");
+		dsd.addColumn("HV03-11", "Enrolled in care (15+, Male)", map(indicators.get("enrolledInCare"), "startDate=${startDate},endDate=${endDate}"), "gender=M|age=15+");
+		dsd.addColumn("HV03-12", "Enrolled in care (15+, Female)", map(indicators.get("enrolledInCare"), "startDate=${startDate},endDate=${endDate}"), "gender=F|age=15+");
+		dsd.addColumn("HV03-13", "Enrolled in care (Total)", map(indicators.get("enrolledInCare"), "startDate=${startDate},endDate=${endDate}"), "");
 
 		/////////////// 3.3 (Currently in Care) ///////////////
 
-		dsd.addColumn("HV03-14", "Currently in Care (<1)", map(indicators.get("currentlyInCare"), "startDate=${startDate},endDate=${endDate}"), "age=<1");
-		dsd.addColumn("HV03-15", "Currently in Care (<15, Male)", map(indicators.get("currentlyInCare"), "startDate=${startDate},endDate=${endDate}"), "gender=M|age=<15");
-		dsd.addColumn("HV03-16", "Currently in Care (<15, Female)", map(indicators.get("currentlyInCare"), "startDate=${startDate},endDate=${endDate}"), "gender=F|age=<15");
-		dsd.addColumn("HV03-17", "Currently in Care (15+, Male)", map(indicators.get("currentlyInCare"), "startDate=${startDate},endDate=${endDate}"), "gender=M|age=15+");
-		dsd.addColumn("HV03-18", "Currently in Care (15+, Female)", map(indicators.get("currentlyInCare"), "startDate=${startDate},endDate=${endDate}"), "gender=F|age=15+");
-		dsd.addColumn("HV03-19", "Currently in Care (Total)", map(indicators.get("currentlyInCare"), "startDate=${startDate},endDate=${endDate}"), "");
+		dsd.addColumn("HV03-14", "Currently in care (<1)", map(indicators.get("currentlyInCare"), "startDate=${startDate},endDate=${endDate}"), "age=<1");
+		dsd.addColumn("HV03-15", "Currently in care (<15, Male)", map(indicators.get("currentlyInCare"), "startDate=${startDate},endDate=${endDate}"), "gender=M|age=<15");
+		dsd.addColumn("HV03-16", "Currently in care (<15, Female)", map(indicators.get("currentlyInCare"), "startDate=${startDate},endDate=${endDate}"), "gender=F|age=<15");
+		dsd.addColumn("HV03-17", "Currently in care (15+, Male)", map(indicators.get("currentlyInCare"), "startDate=${startDate},endDate=${endDate}"), "gender=M|age=15+");
+		dsd.addColumn("HV03-18", "Currently in care (15+, Female)", map(indicators.get("currentlyInCare"), "startDate=${startDate},endDate=${endDate}"), "gender=F|age=15+");
+		dsd.addColumn("HV03-19", "Currently in care (Total)", map(indicators.get("currentlyInCare"), "startDate=${startDate},endDate=${endDate}"), "");
 
 		/////////////// 3.4 (Starting ART) ///////////////
 
@@ -408,11 +408,11 @@ public class Moh731Report extends IndicatorReportBuilder {
 
 		/////////////// 3.7 (Cumulative Ever on ART) ///////////////
 
-		dsd.addColumn("HV03-40", "Cumulative Ever on ART (<15, Male)", map(indicators.get("cumulativeOnArt"), "startDate=${startDate},endDate=${endDate}"), "gender=M|age=<15");
-		dsd.addColumn("HV03-41", "Cumulative Ever on ART (<15, Female)", map(indicators.get("cumulativeOnArt"), "startDate=${startDate},endDate=${endDate}"), "gender=F|age=<15");
-		dsd.addColumn("HV03-42", "Cumulative Ever on ART (15+, Male)", map(indicators.get("cumulativeOnArt"), "startDate=${startDate},endDate=${endDate}"), "gender=M|age=15+");
-		dsd.addColumn("HV03-43", "Cumulative Ever on ART (15+, Female)", map(indicators.get("cumulativeOnArt"), "startDate=${startDate},endDate=${endDate}"), "gender=F|age=15+");
-		dsd.addColumn("HV03-44", "Cumulative Ever on ART (Total)", map(indicators.get("cumulativeOnArt"), "startDate=${startDate},endDate=${endDate}"), "");
+		dsd.addColumn("HV03-40", "Cumulative ever on ART (<15, Male)", map(indicators.get("cumulativeOnArt"), "startDate=${startDate},endDate=${endDate}"), "gender=M|age=<15");
+		dsd.addColumn("HV03-41", "Cumulative ever on ART (<15, Female)", map(indicators.get("cumulativeOnArt"), "startDate=${startDate},endDate=${endDate}"), "gender=F|age=<15");
+		dsd.addColumn("HV03-42", "Cumulative ever on ART (15+, Male)", map(indicators.get("cumulativeOnArt"), "startDate=${startDate},endDate=${endDate}"), "gender=M|age=15+");
+		dsd.addColumn("HV03-43", "Cumulative ever on ART (15+, Female)", map(indicators.get("cumulativeOnArt"), "startDate=${startDate},endDate=${endDate}"), "gender=F|age=15+");
+		dsd.addColumn("HV03-44", "Cumulative ever on ART (Total)", map(indicators.get("cumulativeOnArt"), "startDate=${startDate},endDate=${endDate}"), "");
 
 		/////////////// 3.8 (Survival and Retention on ART at 12 months) ///////////////
 
@@ -430,7 +430,9 @@ public class Moh731Report extends IndicatorReportBuilder {
 
 		/////////////// 3.10 (Prevention with Positives) ///////////////
 
-		// TODO
+		// TODO HV09-04 (Modern contraceptive methods)
+
+		dsd.addColumn("HV09-05", "Provided with condoms", map(indicators.get("providedWithCondoms"), "startDate=${startDate},endDate=${endDate}"), "");
 
 		/////////////// 3.11 (HIV Care Visits) ///////////////
 
@@ -453,14 +455,4 @@ public class Moh731Report extends IndicatorReportBuilder {
 			throw new RuntimeException("Error loading excel template", ex);
 		}
 	}
-
-	/**
-	 * @see org.openmrs.module.kenyaemr.report.ReportBuilder#getExcelFilename(org.openmrs.module.reporting.evaluation.EvaluationContext)
-	 */
-	@Override
-	public String getExcelFilename(EvaluationContext ec) {
-		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM");
-		return NAME_PREFIX + " " + df.format(ec.getParameterValue("startDate")) + ".xls";
-	}
-
 }
