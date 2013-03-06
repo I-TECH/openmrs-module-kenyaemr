@@ -23,12 +23,12 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.appframework.AppStatus;
 import org.openmrs.module.appframework.AppUiUtil;
 import org.openmrs.module.kenyaemr.MetadataConstants;
+import org.openmrs.module.kenyaemr.util.KenyaEmrUtils;
 import org.openmrs.ui.framework.WebConstants;
 import org.openmrs.ui.framework.fragment.FragmentConfiguration;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 import org.openmrs.ui.framework.page.PageModel;
 import org.openmrs.ui.framework.session.Session;
-import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * A thin banner showing which patient this page is in the context of
@@ -48,7 +48,14 @@ public class SelectedPatientHeaderFragmentController {
 		model.addAttribute("patient", patient);
 
 		List<Visit> activeVisits = Context.getVisitService().getActiveVisitsByPatient(patient);
-		model.addAttribute("activeVisit", activeVisits.size() > 0 ? activeVisits.get(0) : null);
+		if (activeVisits.size() > 0) {
+			Visit activeVisit = activeVisits.get(0);
+			model.addAttribute("activeVisit", activeVisit);
+			model.addAttribute("activeVisitStartedToday", KenyaEmrUtils.isToday(activeVisit.getStartDatetime()));
+		}
+		else {
+			model.addAttribute("activeVisit", null);
+		}
 		
 		AppStatus currentApp = AppUiUtil.getCurrentApp(session);
 		if (currentApp != null) {

@@ -47,6 +47,10 @@
 	font-weight: normal;
 }
 
+#active-visit-time {
+	font-weight: bold;
+}
+
 .glowing {
 	text-shadow: 0 0 1px #FFD;
 }
@@ -97,9 +101,9 @@
 	<div id="active-visit">
 		<small>Current visit</small>
 		<% if (activeVisit) {
-			def visitStart = kenyaEmrUi.formatTime(activeVisit.startDatetime);
+			def visitStartStr = activeVisitStartedToday ? kenyaEmrUi.formatTime(activeVisit.startDatetime) : kenyaEmrUi.formatDate(activeVisit.startDatetime);
 
-			%><span class="active-visit">${ ui.format(activeVisit.visitType) } since ${ visitStart }</span><%
+			%><span class="active-visit">${ ui.format(activeVisit.visitType) } since <span id="active-visit-time">${ visitStartStr }</span></span><%
 		} else {
 			%><span style="font-style: italic">${ ui.message("general.none") }</span><%
 		}
