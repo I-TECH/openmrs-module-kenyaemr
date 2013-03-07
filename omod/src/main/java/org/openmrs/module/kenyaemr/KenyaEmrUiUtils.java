@@ -266,11 +266,11 @@ public class KenyaEmrUiUtils {
 		HtmlForm htmlForm = Context.getService(HtmlFormEntryService.class).getHtmlFormByForm(form);
 
 		return SimpleObject.create(
-				"formUuid", config.getFormUuid(),
+				"formUuid", form.getUuid(),
 				"htmlFormId", htmlForm.getId(),
 				"label", htmlForm.getName(),
-				"iconProvider", config.getIconProvider(),
-				"icon", config.getIcon());
+				"iconProvider", (config != null ? config.getIconProvider() : KenyaEmrConstants.MODULE_ID),
+				"icon", (config != null ? config.getIcon() : "forms/generic.png"));
 	}
 
 	/**

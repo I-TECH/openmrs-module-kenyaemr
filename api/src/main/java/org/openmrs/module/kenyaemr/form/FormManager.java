@@ -14,6 +14,7 @@
 package org.openmrs.module.kenyaemr.form;
 
 import org.openmrs.Patient;
+import org.openmrs.module.kenyaemr.KenyaEmrConstants;
 import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.kenyaemr.form.FormConfig.Frequency;
 import org.openmrs.module.kenyaemr.form.FormConfig.Gender;
@@ -156,7 +157,7 @@ public class FormManager {
 	 * @param forApps the applications to use this form
 	 */
 	public static void registerForm(String formUuid, Frequency frequency, String[] forApps) {
-		registerForm(formUuid, frequency, forApps, null, Gender.BOTH, "kenyaemr", "forms/generic.png");
+		registerForm(formUuid, frequency, forApps, null, Gender.BOTH, KenyaEmrConstants.MODULE_ID, "forms/generic.png");
 	}
 
 	/**
