@@ -13,6 +13,9 @@
  */
 package org.openmrs.module.kenyaemr.util;
 
+import org.apache.log4j.Level;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.openmrs.*;
 import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
@@ -153,5 +156,17 @@ public class KenyaEmrUtils {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * Changes a class' log level
+	 * @param level the level
+	 * @return the previous level
+	 */
+	public static Level changeLogLevel(Class clazz, Level level) {
+		Logger classLogger = LogManager.getLogger(clazz);
+		Level current = classLogger.getLevel();
+		LogManager.getLogger(clazz).setLevel(Level.INFO);
+		return current;
 	}
 }

@@ -15,16 +15,15 @@ package org.openmrs.module.kenyaemr;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Level;
 import org.openmrs.GlobalProperty;
 import org.openmrs.api.context.Context;
-import org.openmrs.api.db.ContextDAO;
 import org.openmrs.module.ModuleActivator;
-import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.module.kenyaemr.datatype.LocationDatatype;
 import org.openmrs.module.kenyaemr.form.FormManager;
 import org.openmrs.module.kenyaemr.regimen.RegimenManager;
 import org.openmrs.module.kenyaemr.report.ReportManager;
-import org.openmrs.module.kenyaemr.util.ContextProvider;
+import org.openmrs.module.kenyaemr.util.KenyaEmrUtils;
 
 import java.io.InputStream;
 
@@ -67,42 +66,41 @@ public class KenyaEmrActivator implements ModuleActivator {
 	 * @should install initial data only once
 	 */
 	public void started() {
+		// Temporarily override logging settings to make sure our messages get out
+		Level logLevel = KenyaEmrUtils.changeLogLevel(KenyaEmrActivator.class, Level.INFO);
 
-		log.info("Kenya OpenMRS EMR Module starting...");
-
-		ContextDAO contextDAO = (ContextDAO)ContextProvider.getApplicationContext().getBean("contextDAO");
+		log.info("=========== Kenya OpenMRS EMR Module startup ===========");
 
 		try {
-			// Work around until we get TRUNK-3739
-			contextDAO.openSession();
-
 			setupGlobalProperties();
 
-			log.info(" > Setup global properties");
+			log.info(" > Setup core global properties");
 
 			boolean metadataUpdated = setupStandardMetadata();
 
-			log.info(" > Setup metadata packages (" + (metadataUpdated ? "Imported packages" : "Already up-to-date") + ")");
+			log.info(" > Setup core metadata packages (" + (metadataUpdated ? "imported packages" : "already up-to-date") + ")");
 
 			setupStandardForms();
 
-			log.info(" > Setup form manager");
+			log.info(" > Setup core forms");
 
 			setupStandardRegimens();
 
-			log.info(" > Setup regimen manager");
+			log.info(" > Setup core regimens");
 
 			ReportManager.refreshReportBuilders();
 
+			log.info(" > Setup core reports (found " + ReportManager.getAllReportBuilders().size() +" report builders)");
+
 		} catch (Exception ex) {
 			throw new RuntimeException("Failed to setup initial data", ex);
-		} finally {
-			contextDAO.closeSession();
 		}
 
-		log.info("Kenya OpenMRS EMR Module started");
-	}
+		log.info("=========== Kenya OpenMRS EMR Module started ===========");
 
+		// Restore existing logging settings
+		KenyaEmrUtils.changeLogLevel(KenyaEmrActivator.class, logLevel);
+	}
 
 	/**
 	 * @see ModuleActivator#willStop()
