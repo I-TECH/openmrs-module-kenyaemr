@@ -75,7 +75,7 @@ public class Moh731ReportTest extends BaseModuleContextSensitiveTest {
 
 		TestUtils.printReport(data);
 		
-		byte[] excelTemplate = report.getExcelTemplate();
+		byte[] excelTemplate = report.loadExcelTemplate();
 		
 		ReportDesignResource resource = new ReportDesignResource();
 		resource.setName("template.xls");

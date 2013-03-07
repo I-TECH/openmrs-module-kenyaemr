@@ -37,29 +37,30 @@ import org.springframework.web.bind.annotation.RequestParam;
  *
  */
 public class ReportsRunPatientListReportPageController {
-	
+
 	public Object controller(Session session,
 	                       PageModel model,
-	                       @RequestParam("manager") String managerClassname,
+	                       @RequestParam("builder") String builderClassname,
 	                       @RequestParam(required = false, value = "mode") String mode) throws Exception {
 		
 		AppUiUtil.startApp("kenyaemr.reports", session);
 		
-		ReportBuilder manager = ReportManager.getReportBuilder(managerClassname);
-		ReportDefinition rd = manager.getReportDefinition();
+		ReportBuilder builder = ReportManager.getReportBuilder(builderClassname);
+		ReportDefinition definition = builder.getReportDefinition();
 		
-		model.addAttribute("manager", manager);
-		model.addAttribute("definition", rd);
+		model.addAttribute("builder", builder);
+		model.addAttribute("definition", definition);
 		
 		// generate the report
 		EvaluationContext ec = new EvaluationContext();
-		ReportData data = Context.getService(ReportDefinitionService.class).evaluate(rd, ec);
+		ReportData data = Context.getService(ReportDefinitionService.class).evaluate(definition, ec);
 		
 		if ("excel".equals(mode)) {
-			byte[] excelTemplate = manager.getExcelTemplate();
-			if (excelTemplate == null) {
-				throw new RuntimeException(managerClassname + " does not support Excel output");
+			if (!builder.isExcelRenderable()) {
+				throw new RuntimeException(builderClassname + " does not support Excel output");
 			}
+
+			byte[] excelTemplate = builder.loadExcelTemplate();
 			
 			ExcelTemplateRenderer renderer;
 			{
@@ -70,8 +71,8 @@ public class ReportsRunPatientListReportPageController {
 				resource.setContents(excelTemplate);
 				
 				final ReportDesign design = new ReportDesign();
-				design.setName(rd.getName() + " design");
-				design.setReportDefinition(rd);
+				design.setName(definition.getName() + " design");
+				design.setReportDefinition(definition);
 				design.setRendererType(ExcelTemplateRenderer.class);
 				design.addResource(resource);
 				
@@ -84,7 +85,7 @@ public class ReportsRunPatientListReportPageController {
 			
 			ByteArrayOutputStream out = new ByteArrayOutputStream();
 			renderer.render(data, "xxx:xls", out);
-			return new FileDownload(manager.getExcelFilename(ec), ContentType.EXCEL.getContentType(), out.toByteArray());
+			return new FileDownload(builder.getExcelDownloadFilename(ec), ContentType.EXCEL.getContentType(), out.toByteArray());
 			
 		} else {
 			model.addAttribute("data", data);

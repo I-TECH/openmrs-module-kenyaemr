@@ -44,7 +44,7 @@ public class ReportsHomePageController {
     private List<SimpleObject> getReportDefinitionSummaries(String tag) {
     	List<SimpleObject> ret = new ArrayList<SimpleObject>();
 		for (ReportBuilder reportBuilder : ReportManager.getReportBuildersByTag(tag)) {
-			ret.add(SimpleObject.create("name", reportBuilder.getReportDefinitionSummary().getName(), "manager", reportBuilder.getClass().getName()));
+			ret.add(SimpleObject.create("name", reportBuilder.getReportDefinitionSummary().getName(), "builder", reportBuilder.getClass().getName()));
 		}
 		return ret;
     }

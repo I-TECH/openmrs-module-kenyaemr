@@ -14,7 +14,6 @@
 
 package org.openmrs.module.kenyaemr.report.indicator;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Concept;
@@ -40,11 +39,8 @@ import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.openmrs.module.reporting.indicator.dimension.CohortDefinitionDimension;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
-import org.openmrs.util.OpenmrsClassLoader;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.*;
 
 /**
@@ -83,6 +79,14 @@ public class Moh731Report extends IndicatorReportBuilder {
 	@Override
 	public String getDescription() {
 		return "Comprehensive HIV/AIDS Facility Reporting Form - NASCOP";
+	}
+
+	/**
+	 * @see org.openmrs.module.kenyaemr.report.indicator.IndicatorReportBuilder#getExcelTemplateResourcePath()
+	 */
+	@Override
+	public String getExcelTemplateResourcePath() {
+		return "report_templates/Moh731Report.xls";
 	}
 
 	/**
@@ -439,20 +443,5 @@ public class Moh731Report extends IndicatorReportBuilder {
 		// TODO
 
 		return dsd;
-	}
-
-	/**
-	 * @see org.openmrs.module.kenyaemr.report.ReportBuilder#getExcelTemplate()
-	 */
-	@Override
-	public byte[] getExcelTemplate() {
-		try {
-			InputStream is = OpenmrsClassLoader.getInstance().getResourceAsStream("report_templates/Moh731Report.xls");
-			byte[] contents = IOUtils.toByteArray(is);
-			IOUtils.closeQuietly(is);
-			return contents;
-		} catch (IOException ex) {
-			throw new RuntimeException("Error loading excel template", ex);
-		}
 	}
 }

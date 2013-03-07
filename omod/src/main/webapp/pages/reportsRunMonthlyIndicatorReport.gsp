@@ -3,7 +3,7 @@
 
 	def menuItems =  []
 	if (data) {
-		menuItems << [ iconProvider: "kenyaemr", icon: "buttons/report_configure.png", label: "Change Parameters", href: ui.pageLink("kenyaemr", "reportsRunMonthlyIndicatorReport", [ manager: manager.class ]) ]
+		menuItems << [ iconProvider: "kenyaemr", icon: "buttons/report_configure.png", label: "Change Parameters", href: ui.pageLink("kenyaemr", "reportsRunMonthlyIndicatorReport", [ builder: builder.class ]) ]
 	}
 	menuItems << [ iconProvider: "kenyaemr", icon: "buttons/back.png", label: "Back to Reports", href: ui.pageLink("kenyaemr", "reportsHome") ]
 %>

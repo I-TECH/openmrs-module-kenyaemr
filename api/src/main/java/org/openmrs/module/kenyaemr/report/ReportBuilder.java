@@ -14,6 +14,7 @@
 
 package org.openmrs.module.kenyaemr.report;
 
+import org.apache.commons.io.IOUtils;
 import org.openmrs.module.reporting.definition.DefinitionSummary;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
@@ -21,6 +22,8 @@ import org.openmrs.module.reporting.evaluation.parameter.Parameterizable;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 
 /**
@@ -48,6 +51,22 @@ public abstract class ReportBuilder {
 	 * @return the report description
 	 */
 	public abstract String getDescription();
+
+	/**
+	 * Gets the Excel template resource path
+	 * @return the excel template for rendering this report, or null if excel is not supported
+	 */
+	public String getExcelTemplateResourcePath() {
+		return null;
+	}
+
+	/**
+	 * Convenience method to see if this report can be rendered as Excel
+	 * @return true if report is renderable in Excel
+	 */
+	public boolean isExcelRenderable() {
+		return getExcelTemplateResourcePath() != null;
+	}
 	
 	/**
 	 * Gets a lightweight summary of the report definition
@@ -84,11 +103,23 @@ public abstract class ReportBuilder {
 	protected abstract ReportDefinition buildReportDefinition();
 	
 	/**
-	 * Gets the Excel template
+	 * Loads the Excel template if a resource path is specified, else returns null
 	 * @return the excel template for rendering this report, or null if excel is not supported
 	 */
-	public byte[] getExcelTemplate() {
-		return null;
+	public byte[] loadExcelTemplate() {
+		String templatePath = getExcelTemplateResourcePath();
+		if (templatePath == null) {
+			return null;
+		}
+
+		try {
+			InputStream is = this.getClass().getClassLoader().getResourceAsStream(templatePath);
+			byte[] contents = IOUtils.toByteArray(is);
+			IOUtils.closeQuietly(is);
+			return contents;
+		} catch (IOException ex) {
+			throw new RuntimeException("Error loading excel template", ex);
+		}
 	}
 
 	/**
@@ -96,7 +127,7 @@ public abstract class ReportBuilder {
 	 * @param ec the evaluation context
      * @return the filename
      */
-	public String getExcelFilename(EvaluationContext ec) {
+	public String getExcelDownloadFilename(EvaluationContext ec) {
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM");
 		return getName() + " " + df.format(ec.getParameterValue("startDate")) + ".xls";
 	}

@@ -45,16 +45,16 @@ public class ReportsRunMonthlyIndicatorReportPageController {
 	
 	public Object controller(Session session,
 	                       PageModel model,
-	                       @RequestParam("manager") String managerClassname,
+	                       @RequestParam("builder") String builderClassname,
 	                       @RequestParam(required = false, value = "mode") String mode,
 	                       @RequestParam(required = false, value = "startDate") Date startDate) throws Exception {
 		
 		AppUiUtil.startApp("kenyaemr.reports", session);
 		
-		ReportBuilder manager = ReportManager.getReportBuilder(managerClassname);
-		ReportDefinition definition = manager.getReportDefinition();
+		ReportBuilder builder = ReportManager.getReportBuilder(builderClassname);
+		ReportDefinition definition = builder.getReportDefinition();
 
-		model.addAttribute("manager", manager);
+		model.addAttribute("builder", builder);
 		model.addAttribute("definition", definition);
 		
 		if (startDate != null) {
@@ -65,10 +65,11 @@ public class ReportsRunMonthlyIndicatorReportPageController {
 			ReportData data = Context.getService(ReportDefinitionService.class).evaluate(definition, ec);
 			
 			if ("excel".equals(mode)) {
-				byte[] excelTemplate = manager.getExcelTemplate();
-				if (excelTemplate == null) {
-					throw new RuntimeException(managerClassname + " does not support Excel output");
+				if (!builder.isExcelRenderable()) {
+					throw new RuntimeException(builderClassname + " does not support Excel output");
 				}
+
+				byte[] excelTemplate = builder.loadExcelTemplate();
 				
 				ExcelTemplateRenderer renderer;
 				{
@@ -93,7 +94,7 @@ public class ReportsRunMonthlyIndicatorReportPageController {
 				
 				ByteArrayOutputStream out = new ByteArrayOutputStream();
 				renderer.render(data, "xxx:xls", out);
-				return new FileDownload(manager.getExcelFilename(ec), ContentType.EXCEL.getContentType(), out.toByteArray());
+				return new FileDownload(builder.getExcelDownloadFilename(ec), ContentType.EXCEL.getContentType(), out.toByteArray());
 				
 			} else {
 				model.addAttribute("data", data);
