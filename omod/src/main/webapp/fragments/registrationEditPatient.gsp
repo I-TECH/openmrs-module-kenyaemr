@@ -138,8 +138,6 @@
 
 <script type="text/javascript">
 jq(function() {
-	jq('#edit-patient-form .button').button();
-	
 	jq('#edit-patient-form .cancel-button').click(function() {
 		location.href = '${ returnUrl }';
 	});

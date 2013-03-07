@@ -21,15 +21,14 @@
 	<div class="panel-frame">
 		<div class="panel-heading">${ definition.name }</div>
 		<div class="panel-content">
-
-			<form method="POST">
+			<form method="post" id="generate-report">
 				Period:
 				${ ui.includeFragment("uilibrary", "widget/selectList", [
 						formFieldName: "startDate",
 						options: startDateOptions,
 						optionsValueField: "key",
 						optionsDisplayField: "value"
-					]) }
+				]) }
 				<br/>
 				<br/>
 				${ ui.includeFragment("uilibrary", "widget/radioButtons", [
@@ -39,20 +38,18 @@
 							[ value: "excel", label: "Download as Excel" ]
 						],
 						selected: "view"
-					]) }
+				]) }
 				<br/>
 				<br/>
-				<input type="submit" class="button" value="Generate Report" />
+				${ ui.includeFragment("uilibrary", "widget/button", [
+						iconProvider: "kenyaemr",
+						icon: "buttons/report_generate.png",
+						label: "Generate Report",
+						onClick:"jq('#generate-report').submit()"
+				]) }
 			</form>
-
 		</div>
 	</div>
-	
-	<script type="text/javascript">
-	jq(function() {
-		jq('.button').button();
-	});
-	</script>
 
 <% } %>
 

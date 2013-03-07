@@ -65,6 +65,26 @@
 		border-radius: 3px;
 		border: 0;
 	}
+	/**
+	 * Override styles for widget/button
+	 */
+	input[type="button"], input[type="submit"], input[type="reset"], button {
+		text-align: center;
+		cursor: pointer;
+		padding: 4px;
+		color: #444;
+		border-top: 0px;
+		border-bottom: 1px #BBB solid;
+		border-left: 0px;
+		border-right: 1px #BBB solid;
+		border-radius: 3px;
+		background-color: #e0e0e0;
+		font-weight: bold;
+		font-size: 14px;
+	}
+	input[type="button"]:hover, input[type="submit"]:hover, input[type="reset"]:hover, button:hover {
+		background-color: #E9E9E9;
+	}
 </style>
 
 <script type="text/javascript">
@@ -75,6 +95,9 @@ jq(function() {
 	jq('.panel-frame .panel-editlink').each(function() {
 		jq(this).prepend('<img src="${ ui.resourceLink("kenyaemr", "images/edit.png") }" /> ');
 	});
+
+	jq('button .label').css('font-size', '14px');
+	jq('button .extra').css('font-size', '11px').css('font-weight', 'normal');
 });
 </script>
 

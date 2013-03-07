@@ -5,7 +5,7 @@
 		return """<div class="edit-button"><a href="${ url }">Edit</a></div>"""
 	}
 
-	def discontinueHtml = ui.includeFragment("uilibrary", "widget/button", [
+	def discontinueHtml = "<br />" + ui.includeFragment("uilibrary", "widget/button", [
 			label: "Discontinue Services",
 			href: ui.pageLink("kenyaemr", "enterHtmlForm", [ patientId: patient.id, formUuid: exitFormUuid, returnUrl: ui.thisUrl() ])
 	])
