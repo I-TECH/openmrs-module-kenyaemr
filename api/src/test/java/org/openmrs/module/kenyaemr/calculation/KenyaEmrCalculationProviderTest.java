@@ -14,22 +14,18 @@
 package org.openmrs.module.kenyaemr.calculation;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
-import org.openmrs.module.kenyaemr.util.ContextProvider;
+import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
 import java.util.List;
 
-public class KenyaEmrCalculationProviderTest {
+public class KenyaEmrCalculationProviderTest extends BaseModuleContextSensitiveTest {
 
-	private KenyaEmrCalculationProvider provider;
-
-	@Before
-	public void setup() {
-		provider = (KenyaEmrCalculationProvider) ContextProvider.getApplicationContext().getBean(KenyaEmrCalculationProvider.class);
-	}
+	@Autowired
+	KenyaEmrCalculationProvider provider;
 
 	/**
 	 * @see KenyaEmrCalculationProvider#getAllCalculations()

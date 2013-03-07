@@ -37,11 +37,11 @@ public class KenyaEmrUtilsTest extends BaseModuleContextSensitiveTest {
 	 */
 	@Test
 	public void getModuleBuildProperties_shouldGetBuildProperties() {
-		Map<String, String> properties = KenyaEmrUtils.getModuleBuildProperties();
+		BuildProperties properties = KenyaEmrUtils.getModuleBuildProperties();
 
 		Assert.assertNotNull(properties);
-		Assert.assertNotNull(properties.get("buildDate"));
-		Assert.assertNotNull(properties.get("developer"));
+		Assert.assertNotNull(properties.getBuildDate());
+		Assert.assertNotNull(properties.getDeveloper());
 	}
 
 	/**

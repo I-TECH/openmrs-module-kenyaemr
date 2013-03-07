@@ -43,13 +43,17 @@
 
 	<!-- Build properties -->
 
-	<util:map id="kenyaEmrBuildProperties" map-class="java.util.HashMap" key-type="java.lang.String" value-type="java.lang.String">
-		<entry key="buildDate" value="${moduleBuildDate}"/>
-		<entry key="developer" value="${user.name}"/>
-	</util:map>
+	<bean id="kenyaEmrDateFactory" class="java.text.SimpleDateFormat">
+		<constructor-arg value="yyyy-MM-dd" />
+	</bean>
 
-	<!-- Context provider utility class -->
-
-	<bean class="${project.parent.groupId}.${project.parent.artifactId}.util.ContextProvider" />
+	<bean class="${project.parent.groupId}.${project.parent.artifactId}.util.BuildProperties">
+		<property name="buildDate">
+			<bean factory-bean="kenyaEmrDateFactory" factory-method="parse">
+				<constructor-arg value="${moduleBuildDate}" />
+			</bean>
+		</property>
+		<property name="developer" value="${user.name}"/>
+	</bean>
 
 </beans>

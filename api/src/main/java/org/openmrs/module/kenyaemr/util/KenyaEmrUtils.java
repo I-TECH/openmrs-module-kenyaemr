@@ -23,7 +23,6 @@ import org.openmrs.module.ModuleFactory;
 import org.openmrs.module.kenyaemr.KenyaEmrConstants;
 import org.openmrs.util.OpenmrsUtil;
 
-import java.sql.*;
 import java.util.*;
 import java.util.Date;
 
@@ -42,10 +41,11 @@ public class KenyaEmrUtils {
 
 	/**
 	 * Gets the module build properties
-	 * @return the build properties map
+	 * @return the build properties map or null if not available
 	 */
-	public static Map<String, String> getModuleBuildProperties() {
-		return (Map<String, String>)ContextProvider.getApplicationContext().getBean("kenyaEmrBuildProperties");
+	public static BuildProperties getModuleBuildProperties() {
+		List<BuildProperties> propBeans = Context.getRegisteredComponents(BuildProperties.class);
+		return propBeans.size() > 0 ? propBeans.get(0) : null;
 	}
 
 	/**

@@ -14,27 +14,19 @@
 package org.openmrs.module.kenyaemr.fragment.controller;
 
 import org.openmrs.api.context.Context;
-import org.openmrs.module.ModuleFactory;
-import org.openmrs.module.kenyaemr.KenyaEmrConstants;
+import org.openmrs.module.kenyaemr.util.BuildProperties;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
-import org.openmrs.module.kenyaemr.util.ContextProvider;
 import org.openmrs.module.kenyaemr.util.KenyaEmrUtils;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  *
  */
 public class PageHeaderFragmentController {
 
-	private static final DateFormat buildDateFormat = new SimpleDateFormat("dd-MMM-yyyy");
-	
 	public void controller(FragmentModel model) throws ParseException {
 		// Get module version
 		String moduleVersion = KenyaEmrUtils.getModuleVersion();
@@ -42,8 +34,11 @@ public class PageHeaderFragmentController {
 		// Fetch build date for snapshot versions
 		Date moduleBuildDate = null;
 		if (moduleVersion.endsWith("SNAPSHOT")) {
-			Map<String, String> buildProperties = KenyaEmrUtils.getModuleBuildProperties();
-			moduleBuildDate = buildDateFormat.parse(buildProperties.get("buildDate"));
+			BuildProperties buildProperties = KenyaEmrUtils.getModuleBuildProperties();
+
+			if (buildProperties != null) {
+				moduleBuildDate = buildProperties.getBuildDate();
+			}
 		}
 
 		model.addAttribute("moduleVersion", moduleVersion);

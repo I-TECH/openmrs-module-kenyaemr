@@ -148,7 +148,7 @@ public class KenyaEmrActivator implements ModuleActivator {
 	 * Setup the standard forms
 	 */
 	protected void setupStandardForms() {
-		FormManager.clear();
+		//FormManager.clear();
 
 		// These could be loaded from XML instead of hard-coding in the manager class
 		FormManager.setupStandardForms();
@@ -160,7 +160,7 @@ public class KenyaEmrActivator implements ModuleActivator {
 	 */
 	protected void setupStandardRegimens() {
 		try {
-			RegimenManager.clear();
+			//RegimenManager.clear();
 
 			InputStream stream = getClass().getClassLoader().getResourceAsStream(REGIMENS_FILENAME);
 			RegimenManager.loadDefinitionsFromXML(stream);
