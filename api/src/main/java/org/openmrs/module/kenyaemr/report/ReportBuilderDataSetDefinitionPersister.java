@@ -25,28 +25,34 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Each ReportManager's DSDs are exposed as "${reportbuilderclassname}:${dsdName}"
+ * A ReportBuilder's DSDs aren't persisted in the database so aren't given primary keys or UUIDs. However we
+ * define our own kind of UUID in the format "${reportbuilderclassname}:${dsdName}" which provides enough
+ * information to fetch a DSD from the ReportManager
  */
 @Handler(supports=DataSetDefinition.class)
-public class KenyaEmrDataSetDefinitionPersister implements DataSetDefinitionPersister {
+public class ReportBuilderDataSetDefinitionPersister implements DataSetDefinitionPersister {
 
+	/**
+	 * @see DataSetDefinitionPersister#getDefinitionByUuid(String)
+	 */
 	@Override
-	public DataSetDefinition getDefinition(Integer integer) {
-		// don't allow fetching by PK (we have none)
-		return null;
-	}
-
-	@Override
-	public DataSetDefinition getDefinitionByUuid(String uniqueName) {
-		BuilderAndDsdName builderAndDsdName = new BuilderAndDsdName(uniqueName);
+	public DataSetDefinition getDefinitionByUuid(String uuid) {
+		BuilderAndDsdName builderAndDsdName = new BuilderAndDsdName(uuid);
 		ReportBuilder reportBuilder = ReportManager.getReportBuilder(builderAndDsdName.getBuilderClassname());
+
 		return toDataSetDefinition(reportBuilder, builderAndDsdName.getDsdName());
 	}
 
+	/**
+	 * @see DataSetDefinitionPersister#getAllDefinitions(boolean)
+	 *
+	 * Iterates over all report builders to get all DSDs
+	 */
 	@Override
-	public List<DataSetDefinition> getAllDefinitions(boolean b) {
+	public List<DataSetDefinition> getAllDefinitions(boolean includeRetired) {
 		List<DataSetDefinition> ret = new ArrayList<DataSetDefinition>();
-		for (ReportBuilder reportBuilder : ReportManager.getReportBuildersByTag(null)) {
+
+		for (ReportBuilder reportBuilder : ReportManager.getAllReportBuilders()) {
 			ReportDefinition reportDefinition = reportBuilder.getReportDefinition();
 			if (reportDefinition == null || reportDefinition.getDataSetDefinitions() == null) {
 				continue;
@@ -59,34 +65,57 @@ public class KenyaEmrDataSetDefinitionPersister implements DataSetDefinitionPers
 	}
 
 	@Override
-	public int getNumberOfDefinitions(boolean b) {
-		return getAllDefinitions(b).size();
+	public int getNumberOfDefinitions(boolean includeRetired) {
+		return getAllDefinitions(includeRetired).size();
 	}
 
+	/**
+	 * @see DataSetDefinitionPersister#getDefinition(Integer)
+	 *
+	 * Throws exception as we can't fetch a DSD by primary key
+	 */
 	@Override
-	public List<DataSetDefinition> getDefinitions(String s, boolean b) {
-		// don't allow searching by string
-		return Collections.emptyList();
+	public DataSetDefinition getDefinition(Integer integer) {
+		throw new UnsupportedOperationException();
+	}
+
+	/**
+	 * @see DataSetDefinitionPersister#getDefinitions(String, boolean)
+	 */
+	@Override
+	public List<DataSetDefinition> getDefinitions(String name, boolean exactMatchOnly) {
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public DataSetDefinition saveDefinition(DataSetDefinition dataSetDefinition) {
-		throw new IllegalArgumentException("Not Allowed");
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void purgeDefinition(DataSetDefinition dataSetDefinition) {
-		throw new IllegalArgumentException("Not Allowed");
+		throw new UnsupportedOperationException();
 	}
 
-	private DataSetDefinition toDataSetDefinition(ReportBuilder manager, String dsdName) {
-		Mapped<? extends DataSetDefinition> mapped = manager.getReportDefinition().getDataSetDefinitions().get(dsdName);
+	/**
+	 * Creates a data set definition
+	 * @param builder the report builder
+	 * @param dsdName the DSD name
+	 * @return the data set definition
+	 */
+	private DataSetDefinition toDataSetDefinition(ReportBuilder builder, String dsdName) {
+		Mapped<? extends DataSetDefinition> mapped = builder.getReportDefinition().getDataSetDefinitions().get(dsdName);
 		DataSetDefinition dataSetDefinition = mapped.getParameterizable();
-		// since the ReportBuilder always creates these on the fly, they have arbitrary UUIDs, so we set a known one.
-		dataSetDefinition.setUuid(new BuilderAndDsdName(manager, dsdName).toString());
+
+		// Since the ReportBuilders always creates these on the fly, they have arbitrary UUIDs, so we set a known one.
+		dataSetDefinition.setUuid(new BuilderAndDsdName(builder, dsdName).toUUID());
+
 		return dataSetDefinition;
 	}
 
+	/**
+	 * Helper class for parsing and formatting our own special "UUIDs"
+	 */
 	class BuilderAndDsdName {
 		private String builderClassname;
 		private String dsdName;
@@ -110,8 +139,7 @@ public class KenyaEmrDataSetDefinitionPersister implements DataSetDefinitionPers
 			return dsdName;
 		}
 
-		@Override
-		public String toString() {
+		public String toUUID() {
 			return builderClassname.replaceAll("\\.", "-") + ":" + dsdName;
 		}
 	}

@@ -52,22 +52,25 @@ public class ReportManager {
 	}
 
 	/**
+	 * Gets all report builders
+	 * @@return the list of report builders
+	 */
+	public static List<ReportBuilder> getAllReportBuilders() {
+		return new ArrayList<ReportBuilder>(reportBuilders.values());
+	}
+
+	/**
 	 * Gets the report builders with the given tag
 	 * @param tag the tag
 	 * @return the list of report builders
 	 */
 	public static List<ReportBuilder> getReportBuildersByTag(String tag) {
-		if (tag == null) {
-			return new ArrayList<ReportBuilder>(reportBuilders.values());
-		}
-		else {
-			List<ReportBuilder> ret = new ArrayList<ReportBuilder>();
-			for (ReportBuilder candidate : reportBuilders.values()) {
-				if (candidate.getTags() != null && Arrays.asList(candidate.getTags()).contains(tag)) {
-					ret.add(candidate);
-				}
+		List<ReportBuilder> ret = new ArrayList<ReportBuilder>();
+		for (ReportBuilder candidate : reportBuilders.values()) {
+			if (candidate.getTags() != null && Arrays.asList(candidate.getTags()).contains(tag)) {
+				ret.add(candidate);
 			}
-			return ret;
 		}
+		return ret;
 	}
 }
