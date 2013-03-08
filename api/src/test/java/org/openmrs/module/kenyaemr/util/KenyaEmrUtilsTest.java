@@ -21,6 +21,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.kenyaemr.test.TestUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.util.OpenmrsUtil;
 
 import java.util.*;
 
@@ -91,6 +92,38 @@ public class KenyaEmrUtilsTest extends BaseModuleContextSensitiveTest {
 		}
 		catch (IllegalArgumentException ex) {
 		}
+	}
+
+	/**
+	 * @see org.openmrs.module.kenyaemr.util.KenyaEmrUtils#isRetrospectiveVisit(org.openmrs.Visit)
+	 */
+	@Test
+	public void isRetrospectiveVisit() {
+		Date date1 = TestUtils.date(2011, 1, 1, 10, 0, 0); // Jan 1st, 10:00am
+		Date date2 = TestUtils.date(2011, 1, 1, 11, 0, 0); // Jan 1st, 11:00am
+
+		Visit visit1 = new Visit();
+		visit1.setStartDatetime(date1);
+		visit1.setStopDatetime(date2);
+
+		Assert.assertFalse(KenyaEmrUtils.isRetrospectiveVisit(visit1));
+
+		Visit visit2 = new Visit();
+		visit2.setStartDatetime(OpenmrsUtil.firstSecondOfDay(date1));
+		visit2.setStopDatetime(OpenmrsUtil.getLastMomentOfDay(date1));
+
+		Assert.assertTrue(KenyaEmrUtils.isRetrospectiveVisit(visit2));
+
+		// Check case when stop date has been persisted and lost its milliseconds
+		Calendar stopFromSql = Calendar.getInstance();
+		stopFromSql.setTime(OpenmrsUtil.getLastMomentOfDay(date1));
+		stopFromSql.set(Calendar.MILLISECOND, 0);
+
+		Visit visit3 = new Visit();
+		visit3.setStartDatetime(OpenmrsUtil.firstSecondOfDay(date1));
+		visit3.setStopDatetime(stopFromSql.getTime());
+
+		Assert.assertTrue(KenyaEmrUtils.isRetrospectiveVisit(visit3));
 	}
 
 	/**

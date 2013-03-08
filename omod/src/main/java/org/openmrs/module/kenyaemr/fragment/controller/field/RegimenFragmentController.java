@@ -36,7 +36,8 @@ public class RegimenFragmentController {
 						   @FragmentParam(value = "includeGroups", required = false) Set<String> includeGroups,
 						   FragmentModel model,
 						   UiUtils ui,
-						   @SpringBean KenyaEmr emr) {
+						   @SpringBean KenyaEmr emr,
+						   @SpringBean KenyaEmrUiUtils kenyaUi) {
 
 		List<RegimenDefinitionGroup> regimenGroups = emr.getRegimenManager().getRegimenGroups(category);
 
@@ -52,7 +53,7 @@ public class RegimenFragmentController {
 		model.addAttribute("maxComponents", 4);
 		model.addAttribute("drugs", emr.getRegimenManager().getDrugs(category));
 		model.addAttribute("regimenGroups", regimenGroups);
-		model.addAttribute("regimenDefinitions", KenyaEmrUiUtils.simpleRegimenDefinitions(regimenDefinitions, ui));
+		model.addAttribute("regimenDefinitions", kenyaUi.simpleRegimenDefinitions(regimenDefinitions, ui));
 	}
 
 	/**

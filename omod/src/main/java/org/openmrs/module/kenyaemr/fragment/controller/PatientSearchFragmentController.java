@@ -29,6 +29,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.KenyaEmrUiUtils;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
+import org.openmrs.ui.framework.annotation.SpringBean;
 import org.springframework.web.bind.annotation.RequestParam;
 
 
@@ -44,10 +45,11 @@ public class PatientSearchFragmentController {
 									 @RequestParam(value="which", required=false) String which,
 									 @RequestParam(value="age", required=false) Integer age,
 									 @RequestParam(value="ageWindow", defaultValue="5") int ageWindow,
-									 UiUtils ui) {
+									 UiUtils ui,
+									 @SpringBean KenyaEmrUiUtils kenyaUi) {
 
 		if ("checked-in".equals(which)) {
-			return withActiveVisits(query, age, ageWindow, ui);
+			return withActiveVisits(query, age, ageWindow, ui, kenyaUi);
 		}
 		if (StringUtils.isBlank(query)) {
 			return Collections.emptyList();
@@ -69,7 +71,7 @@ public class PatientSearchFragmentController {
 			patientActiveVisits.put(v.getPatient().getPatientId(), v);
 		}
 		
-		List<SimpleObject> matching = KenyaEmrUiUtils.simplePatients(ret, ui);
+		List<SimpleObject> matching = kenyaUi.simplePatients(ret, ui);
 
 		for (SimpleObject so : matching) {
 			Visit v = patientActiveVisits.get(so.get("patientId"));
@@ -84,11 +86,12 @@ public class PatientSearchFragmentController {
 	public List<SimpleObject> withActiveVisits(@RequestParam(value = "q", required = false) String query,
 	                                           @RequestParam(value = "age", required = false) Integer age,
 	                                           @RequestParam(value = "ageWindow", defaultValue = "5") int ageWindow,
-	                                           UiUtils ui) {
+	                                           UiUtils ui,
+											   @SpringBean KenyaEmrUiUtils kenyaUi) {
 		
 		// TODO refactor so it performs faster
 		
-		List<SimpleObject> matching = search(query, null, age, ageWindow, ui);			
+		List<SimpleObject> matching = search(query, null, age, ageWindow, ui, kenyaUi);
 
 		List<Visit> activeVisits = Context.getVisitService().getVisits(null, null, null, null, null, null, null, null, null, false, false);
 
@@ -99,7 +102,7 @@ public class PatientSearchFragmentController {
 				if (!ret.contains(v.getPatient()))
 					ret.add(v.getPatient());
 			}
-			matching = KenyaEmrUiUtils.simplePatients(ret, ui);
+			matching = kenyaUi.simplePatients(ret, ui);
 		}
 		
 		// intersect query with active visits

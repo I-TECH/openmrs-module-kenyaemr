@@ -51,7 +51,8 @@ public class MedicalChartMoh257FragmentController {
 						   FragmentModel model,
 						   UiUtils ui,
 						   Session session,
-						   @SpringBean KenyaEmr emr) {
+						   @SpringBean KenyaEmr emr,
+						   @SpringBean KenyaEmrUiUtils kenyaUi) {
 
 		model.addAttribute("newREVisit", newRetrospectiveVisitCommandObject(patient));
 
@@ -67,7 +68,7 @@ public class MedicalChartMoh257FragmentController {
 			List<Encounter> formEncounters = getPatientEncounterByForm(patient, Context.getFormService().getFormByUuid(page1FormUuid));
 
 			if (formEncounters.size() == 0) {
-				page1AvailableForms.add(KenyaEmrUiUtils.simpleForm(emr.getFormManager().getFormConfig(page1FormUuid), ui));
+				page1AvailableForms.add(kenyaUi.simpleForm(emr.getFormManager().getFormConfig(page1FormUuid), ui));
 			}
 			else {
 				page1Encounters.addAll(formEncounters);
@@ -105,16 +106,19 @@ public class MedicalChartMoh257FragmentController {
 
 	/**
 	 * Creates a new retrospective visit
-	 * @param ui the UI utils
 	 * @param command the command object
+	 * @param ui the UI utils
 	 * @return the simplified visit
 	 */
-	public SimpleObject createRetrospectiveVisit(UiUtils ui, @MethodParam("newRetrospectiveVisitCommandObject") @BindParams("visit") RetrospectiveVisit command) {
+	public SimpleObject createRetrospectiveVisit(@MethodParam("newRetrospectiveVisitCommandObject")
+												 @BindParams("visit") RetrospectiveVisit command,
+												 UiUtils ui,
+												 @SpringBean KenyaEmrUiUtils kenyaUi) {
 		ui.validate(command, command, "visit");
 
 		Visit visit = command.toVisit();
 		Context.getVisitService().saveVisit(visit);
-		return KenyaEmrUiUtils.simpleVisit(visit, ui);
+		return kenyaUi.simpleVisit(visit, ui);
 	}
 
 	/**

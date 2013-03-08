@@ -34,6 +34,7 @@ import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.util.OpenmrsUtil;
 import org.openmrs.web.WebConstants;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpSession;
 import java.sql.*;
@@ -45,6 +46,7 @@ import java.util.Date;
 /**
  * UI utility methods for web pages
  */
+@Component
 public class KenyaEmrUiUtils {
 
 	private static final DateFormat dateFormatter = new SimpleDateFormat("dd-MMM-yyyy");
@@ -74,7 +76,7 @@ public class KenyaEmrUiUtils {
 	 * @param date the date
 	 * @return the string value
 	 */
-	public static String formatDateTime(Date date) {
+	public String formatDateTime(Date date) {
 		if (date == null)
 			return "";
 
@@ -88,7 +90,7 @@ public class KenyaEmrUiUtils {
 	 * @should format date as a string without time information
 	 * @should format null date as empty string
 	 */
-	public static String formatDate(Date date) {
+	public String formatDate(Date date) {
 		if (date == null)
 			return "";
 
@@ -101,7 +103,7 @@ public class KenyaEmrUiUtils {
 	 * @return the string value
 	 * @should format date as a string without time information
 	 */
-	public static String formatTime(Date date) {
+	public String formatTime(Date date) {
 		if (date == null)
 			return "";
 
@@ -109,17 +111,10 @@ public class KenyaEmrUiUtils {
 	}
 
 	/**
-	 * @deprecated
-	 */
-	public static String formatDateNoTime(Date date) {
-		return formatDate(date);
-	}
-
-	/**
 	 * Formats a date interval
 	 * @param date the date relative to now
 	 */
-	public static String formatInterval(Date date) {
+	public String formatInterval(Date date) {
 		PrettyTime t = new PrettyTime(new Date());
 		return t.format(date);
 	}
@@ -129,8 +124,8 @@ public class KenyaEmrUiUtils {
 	 * @param visit the visit
 	 * @return the string value
 	 */
-	public static String formatVisitDates(Visit visit) {
-		if (isRetrospectiveVisit(visit)) {
+	public String formatVisitDates(Visit visit) {
+		if (KenyaEmrUtils.isRetrospectiveVisit(visit)) {
 			return formatDate(visit.getStartDatetime());
 		}
 		else {
@@ -157,7 +152,7 @@ public class KenyaEmrUiUtils {
 	 * @param drugRef the drug reference
 	 * @return the string value
 	 */
-	public static String formatDrug(DrugReference drugRef, UiUtils ui) {
+	public String formatDrug(DrugReference drugRef, UiUtils ui) {
 		return drugRef.isConceptOnly() ? drugRef.getConcept().getPreferredName(Locale.ENGLISH).getName() : drugRef.getDrug().getName();
 	}
 
@@ -167,7 +162,7 @@ public class KenyaEmrUiUtils {
 	 * @param ui the UI utils
 	 * @return the string value
 	 */
-	public static String formatRegimenShort(RegimenOrder regimen, UiUtils ui) {
+	public String formatRegimenShort(RegimenOrder regimen, UiUtils ui) {
 		if (CollectionUtils.isEmpty(regimen.getDrugOrders())) {
 			return "Empty";
 		}
@@ -188,7 +183,7 @@ public class KenyaEmrUiUtils {
 	 * @param ui the UI utils
 	 * @return the string value
 	 */
-	public static String formatRegimenLong(RegimenOrder regimen, UiUtils ui) {
+	public String formatRegimenLong(RegimenOrder regimen, UiUtils ui) {
 		if (CollectionUtils.isEmpty(regimen.getDrugOrders())) {
 			return "Empty";
 		}
@@ -227,7 +222,7 @@ public class KenyaEmrUiUtils {
 	 * @param ui the UI utils
 	 * @return
 	 */
-	public static List<SimpleObject> simplePatients(Collection<Patient> patients, UiUtils ui) {
+	public List<SimpleObject> simplePatients(Collection<Patient> patients, UiUtils ui) {
 		List<SimpleObject> ret = new ArrayList<SimpleObject>();
 		long now = System.currentTimeMillis();
 		for (Patient patient : patients) {
@@ -247,7 +242,7 @@ public class KenyaEmrUiUtils {
 	 * @param ui the UI utils
 	 * @return the simple object
 	 */
-	public static SimpleObject simpleLocation(Location location, LocationAttributeType mfcAttrType, UiUtils ui) {
+	public SimpleObject simpleLocation(Location location, LocationAttributeType mfcAttrType, UiUtils ui) {
 		List<LocationAttribute> attrs = location.getActiveAttributes(mfcAttrType);
 		String facilityCode = attrs.size() > 0 ? (String)attrs.get(0).getValue() : null;
 		String display = location.getName() + " (" + (facilityCode != null ? facilityCode : "?") + ")";
@@ -261,7 +256,7 @@ public class KenyaEmrUiUtils {
 	 * @param ui the UI utils
 	 * @return the simple object
 	 */
-	public static SimpleObject simpleForm(Form form, UiUtils ui) {
+	public SimpleObject simpleForm(Form form, UiUtils ui) {
 		FormConfig config = KenyaEmr.getInstance().getFormManager().getFormConfig(form.getUuid());
 		HtmlForm htmlForm = Context.getService(HtmlFormEntryService.class).getHtmlFormByForm(form);
 
@@ -279,7 +274,7 @@ public class KenyaEmrUiUtils {
 	 * @param ui the UI utils
 	 * @return the simple object
 	 */
-	public static SimpleObject simpleForm(FormConfig config, UiUtils ui) {
+	public SimpleObject simpleForm(FormConfig config, UiUtils ui) {
 		Form form = Context.getFormService().getFormByUuid(config.getFormUuid());
 		HtmlForm htmlForm = Context.getService(HtmlFormEntryService.class).getHtmlFormByForm(form);
 
@@ -297,7 +292,7 @@ public class KenyaEmrUiUtils {
 	 * @param ui the UI utils
 	 * @return the simple object
 	 */
-	public static SimpleObject simpleVisit(Visit visit, UiUtils ui) {
+	public SimpleObject simpleVisit(Visit visit, UiUtils ui) {
 		return SimpleObject.fromObject(visit, ui, "visitId", "visitType", "startDatetime", "stopDatetime");
 	}
 
@@ -307,7 +302,7 @@ public class KenyaEmrUiUtils {
 	 * @param ui the UI utils
 	 * @return the simple object with { shortDisplay, longDisplay }
 	 */
-	public static SimpleObject simpleRegimen(RegimenOrder regimen, UiUtils ui) {
+	public SimpleObject simpleRegimen(RegimenOrder regimen, UiUtils ui) {
 		if (regimen == null) {
 			return SimpleObject.create("shortDisplay", "None", "longDisplay", "None");
 		} else {
@@ -321,7 +316,7 @@ public class KenyaEmrUiUtils {
 	 * @param ui the UI utils
 	 * @return a list of objects with { startDate, endDate, shortDisplay, longDisplay, changeReasons[] }
 	 */
-	public static List<SimpleObject> simpleRegimenHistory(RegimenChangeHistory history, UiUtils ui) {
+	public List<SimpleObject> simpleRegimenHistory(RegimenChangeHistory history, UiUtils ui) {
 		List<RegimenChange> changes = history.getChanges();
 		List<SimpleObject> ret = new ArrayList<SimpleObject>();
 
@@ -353,8 +348,8 @@ public class KenyaEmrUiUtils {
 			boolean current = OpenmrsUtil.compare(startDate, now) <= 0 && (endDate == null || OpenmrsUtil.compare(endDate, now) > 0);
 
 			ret.add(SimpleObject.create(
-				"startDate", KenyaEmrUiUtils.formatDate(startDate),
-				"endDate", KenyaEmrUiUtils.formatDate(endDate),
+				"startDate", formatDate(startDate),
+				"endDate", formatDate(endDate),
 				"regimen", simpleRegimen(regimen, ui),
 				"changeReasons", changeReasons,
 				"current", current
@@ -370,41 +365,9 @@ public class KenyaEmrUiUtils {
 	 * @param ui the UI utils
 	 * @return a list of objects with { name, suitability, components.conceptId, components.dose, components.units }
 	 */
-	public static List<SimpleObject> simpleRegimenDefinitions(Collection<RegimenDefinition> definitions, UiUtils ui) {
+	public List<SimpleObject> simpleRegimenDefinitions(Collection<RegimenDefinition> definitions, UiUtils ui) {
 		return SimpleObject.fromCollection(definitions, ui,
 				"name", "group.code", "components.drugRef", "components.dose", "components.units", "components.frequency"
 		);
-	}
-
-	/**
-	 * Checks if a visit has been entered retrospectively. Visits entered retrospectively are entered with just a single
-	 * date value and are always stopped
-	 * @param visit the visit
-	 * @return true if visit was entered retrospectively
-	 */
-	public static boolean isRetrospectiveVisit(Visit visit) {
-		if (visit.getStopDatetime() == null) {
-			return false;
-		}
-
-		// Check that start is first second of day
-		// Note that we don't compare milliseconds as these are lost in persistence
-		Calendar start = Calendar.getInstance();
-		start.setTime(visit.getStartDatetime());
-		if (start.get(Calendar.HOUR_OF_DAY) != 0 || start.get(Calendar.MINUTE) != 0 || start.get(Calendar.SECOND) != 0) {
-			return false;
-		}
-
-		// Check that stop is last second of day
-		Calendar stop = Calendar.getInstance();
-		stop.setTime(visit.getStopDatetime());
-		if (stop.get(Calendar.HOUR_OF_DAY) != 23 || stop.get(Calendar.MINUTE) != 59 || stop.get(Calendar.SECOND) != 59) {
-			return false;
-		}
-
-		// Check start is same day as stop
-		return start.get(Calendar.YEAR) == stop.get(Calendar.YEAR)
-				&& start.get(Calendar.MONTH) == stop.get(Calendar.MONTH)
-				&& start.get(Calendar.DAY_OF_MONTH) == stop.get(Calendar.DAY_OF_MONTH);
 	}
 }

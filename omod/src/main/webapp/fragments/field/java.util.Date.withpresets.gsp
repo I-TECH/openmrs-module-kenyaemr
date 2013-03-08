@@ -2,7 +2,7 @@
 	config.require("presets")
 
 	def presetOptions = config.presets.collect({
-		"""<option value="${ kenyaEmrUi.formatDate(it.value) }">${ it.label }</option>"""
+		"""<option value="${ kenyaUi.formatDate(it.value) }">${ it.label }</option>"""
 	}).join()
 %>
 ${ ui.includeFragment("uilibrary", "field/java.util.Date", config) }

@@ -7,7 +7,7 @@
 		def initialArtStartDate = calculations.initialArtRegimen ? calculations.initialArtRegimen.value.startDate : null
 		if (initialArtStartDate) {
 			dataPoints << [ label: "ART start date", value: initialArtStartDate, showDateInterval: true ]
-			dataPoints << [ label: "Initial ART regimen", value: kenyaEmrUi.formatRegimenLong(calculations.initialArtRegimen.value, ui) ]
+			dataPoints << [ label: "Initial ART regimen", value: kenyaUi.formatRegimenLong(calculations.initialArtRegimen.value, ui) ]
 		} else {
 			dataPoints << [ label: "ART start date", value: "Never" ]
 		}
@@ -44,7 +44,7 @@
 <%
 	if (regimenHistory.lastChange) {
 		def lastChange = regimenHistory.lastChangeBeforeNow
-		def regimen = lastChange.started ? kenyaEmrUi.formatRegimenLong(lastChange.started, ui) : ui.message("general.none")
+		def regimen = lastChange.started ? kenyaUi.formatRegimenLong(lastChange.started, ui) : ui.message("general.none")
 		def dateLabel = lastChange.started ? "Started" : "Stopped"
 %>
 ${ ui.includeFragment("kenyaemr", "dataPoint", [ label: "Regimen", value: regimen ]) }

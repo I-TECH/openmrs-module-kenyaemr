@@ -20,7 +20,7 @@
 	<% } %>
 	<% data.each { date, results -> %>
 	<tr>
-		<td nowrap="nowrap" style="vertical-align: top;"><%= kenyaEmrUi.formatDateNoTime(date) %></td>
+		<td nowrap="nowrap" style="vertical-align: top;"><%= kenyaUi.formatDate(date) %></td>
 		<% concepts.each { concept -> %>
 		<td>
 			<%

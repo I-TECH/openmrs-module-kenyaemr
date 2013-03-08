@@ -115,6 +115,38 @@ public class KenyaEmrUtils {
 	}
 
 	/**
+	 * Checks if a visit has been entered retrospectively. Visits entered retrospectively are entered with just a single
+	 * date value and are always stopped
+	 * @param visit the visit
+	 * @return true if visit was entered retrospectively
+	 */
+	public static boolean isRetrospectiveVisit(Visit visit) {
+		if (visit.getStopDatetime() == null) {
+			return false;
+		}
+
+		// Check that start is first second of day
+		// Note that we don't compare milliseconds as these are lost in persistence
+		Calendar start = Calendar.getInstance();
+		start.setTime(visit.getStartDatetime());
+		if (start.get(Calendar.HOUR_OF_DAY) != 0 || start.get(Calendar.MINUTE) != 0 || start.get(Calendar.SECOND) != 0) {
+			return false;
+		}
+
+		// Check that stop is last second of day
+		Calendar stop = Calendar.getInstance();
+		stop.setTime(visit.getStopDatetime());
+		if (stop.get(Calendar.HOUR_OF_DAY) != 23 || stop.get(Calendar.MINUTE) != 59 || stop.get(Calendar.SECOND) != 59) {
+			return false;
+		}
+
+		// Check start is same day as stop
+		return start.get(Calendar.YEAR) == stop.get(Calendar.YEAR)
+				&& start.get(Calendar.MONTH) == stop.get(Calendar.MONTH)
+				&& start.get(Calendar.DAY_OF_MONTH) == stop.get(Calendar.DAY_OF_MONTH);
+	}
+
+	/**
 	 * Checks a new visit to see if it overlaps with any other visit for that patient
 	 * @param visit the new visit
 	 * @return true if new visit will overlap

@@ -11,32 +11,36 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.kenyaemr;
 
 import org.openmrs.ui.framework.fragment.FragmentContext;
 import org.openmrs.ui.framework.fragment.FragmentModelConfigurator;
 import org.openmrs.ui.framework.page.PageContext;
 import org.openmrs.ui.framework.page.PageModelConfigurator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
  * Makes utility classes available to pages and fragments in this module
  */
 @Component
-public class KenyaEmrConfigurator implements PageModelConfigurator, FragmentModelConfigurator {
+public class KenyaEmrModelConfigurator implements PageModelConfigurator, FragmentModelConfigurator {
+
+	@Autowired
+	KenyaEmrUiUtils kenyaEmrUiUtils;
 
 	private static final MetadataConstants METADATA_CONSTANTS = new MetadataConstants();
-	private static final KenyaEmrUiUtils KENYAEMR_UI_UTILS = new KenyaEmrUiUtils();
 
 	@Override
 	public void configureModel(PageContext pageContext) {
 		pageContext.getModel().addAttribute("MetadataConstants", METADATA_CONSTANTS);
-		pageContext.getModel().addAttribute("kenyaEmrUi", KENYAEMR_UI_UTILS);
+		pageContext.getModel().addAttribute("kenyaUi", kenyaEmrUiUtils);
 	}
 
 	@Override
 	public void configureModel(FragmentContext fragmentContext) {
 		fragmentContext.getModel().addAttribute("MetadataConstants", METADATA_CONSTANTS);
-		fragmentContext.getModel().addAttribute("kenyaEmrUi", KENYAEMR_UI_UTILS);
+		fragmentContext.getModel().addAttribute("kenyaUi", kenyaEmrUiUtils);
 	}
 }

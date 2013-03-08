@@ -27,6 +27,7 @@ import org.openmrs.module.kenyaemr.api.ConfigurationRequiredException;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
+import org.openmrs.ui.framework.annotation.SpringBean;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
@@ -39,7 +40,7 @@ public class KenyaEmrUtilFragmentController {
 	 * @param term the search term
 	 * @return the list of locations as simple objects
 	 */
-	public List<SimpleObject> locationSearch(@RequestParam(required = false, value = "term") String term, UiUtils ui) {
+	public List<SimpleObject> locationSearch(@RequestParam(required = false, value = "term") String term, UiUtils ui, @SpringBean KenyaEmrUiUtils kenyaUi) {
 		LocationService svc = Context.getLocationService();
 		LocationAttributeType mflCodeAttrType = svc.getLocationAttributeTypeByUuid(MetadataConstants.MASTER_FACILITY_CODE_LOCATION_ATTRIBUTE_TYPE_UUID);
 
@@ -76,7 +77,7 @@ public class KenyaEmrUtilFragmentController {
 		// Convert to simple objects
 		List<SimpleObject> ret = new ArrayList<SimpleObject>();
 		for (Location l : results) {
-			ret.add(KenyaEmrUiUtils.simpleLocation(l, mflCodeAttrType, ui));
+			ret.add(kenyaUi.simpleLocation(l, mflCodeAttrType, ui));
 		}
 		return ret;
 	}

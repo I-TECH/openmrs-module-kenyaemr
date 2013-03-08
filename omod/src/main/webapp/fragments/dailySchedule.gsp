@@ -7,7 +7,7 @@
 	else if (isYesterday)
 		heading += "Yesterday"
 	else
-		heading += kenyaEmrUi.formatDateNoTime(date)
+		heading += kenyaUi.formatDate(date)
 
 	ui.decorateWith("kenyaemr", "panel", [ heading: heading ])
 

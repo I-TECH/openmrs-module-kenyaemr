@@ -24,13 +24,12 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.regimen.DrugReference;
 import org.openmrs.module.kenyaemr.regimen.RegimenChangeHistory;
 import org.openmrs.module.kenyaemr.regimen.RegimenOrder;
-import org.openmrs.module.kenyaemr.regimen.RegimenManager;
 import org.openmrs.module.kenyaemr.test.TestUtils;
+import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.fragment.FragmentActionUiUtils;
 import org.openmrs.util.OpenmrsUtil;
-import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.xml.sax.SAXException;
 
@@ -42,7 +41,10 @@ import java.util.*;
 /**
  *
  */
-public class KenyaEmrUiUtilsTest extends BaseModuleWebContextSensitiveTest {
+public class KenyaEmrUiUtilsTest extends BaseModuleContextSensitiveTest {
+
+	@Autowired
+	KenyaEmrUiUtils kenyaUi;
 
 	@Autowired
 	KenyaEmr emr;
@@ -55,6 +57,8 @@ public class KenyaEmrUiUtilsTest extends BaseModuleWebContextSensitiveTest {
 	public void setup() throws Exception {
 		executeDataSet("test-data.xml");
 		executeDataSet("test-drugdata.xml");
+
+		emr.getRegimenManager().clear();
 
 		InputStream stream = getClass().getClassLoader().getResourceAsStream("test-regimens.xml");
 		emr.getRegimenManager().loadDefinitionsFromXML(stream);
@@ -91,7 +95,7 @@ public class KenyaEmrUiUtilsTest extends BaseModuleWebContextSensitiveTest {
 		cal.set(Calendar.MINUTE, 30);
 		cal.set(Calendar.SECOND, 12);
 
-		Assert.assertEquals("28-May-1981", KenyaEmrUiUtils.formatDate(cal.getTime()));
+		Assert.assertEquals("28-May-1981", kenyaUi.formatDate(cal.getTime()));
 	}
 
 	/**
@@ -100,7 +104,7 @@ public class KenyaEmrUiUtilsTest extends BaseModuleWebContextSensitiveTest {
 	 */
 	@Test
 	public void formatDate_shouldFormatNullDateAsEmptyString() throws Exception {
-		Assert.assertEquals("", KenyaEmrUiUtils.formatDate(null));
+		Assert.assertEquals("", kenyaUi.formatDate(null));
 	}
 
 	/**
@@ -109,7 +113,7 @@ public class KenyaEmrUiUtilsTest extends BaseModuleWebContextSensitiveTest {
 	 */
 	@Test
 	public void formatMillis_shouldReturnNonEmptyString() throws Exception {
-		Assert.assertTrue(StringUtils.isNotEmpty(KenyaEmrUiUtils.formatInterval(new Date())));
+		Assert.assertTrue(StringUtils.isNotEmpty(kenyaUi.formatInterval(new Date())));
 	}
 
 	/**
@@ -120,11 +124,11 @@ public class KenyaEmrUiUtilsTest extends BaseModuleWebContextSensitiveTest {
 	public void formatDrug_shouldFormatDrugReferenceAsConceptOrDrug() throws Exception {
 		// Test concept only reference
 		DrugReference drugRef1 = DrugReference.fromConceptUuid("84309AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");	// STAVUDINE
-		Assert.assertNotNull(KenyaEmrUiUtils.formatDrug(drugRef1, ui));
+		Assert.assertNotNull(kenyaUi.formatDrug(drugRef1, ui));
 
 		// Test concept only reference
 		DrugReference drugRef2 = DrugReference.fromDrugUuid("a74fefc6-931d-47b9-b282-5d6c8c8d8060"); // Rifampicin (100mg)
-		Assert.assertNotNull(KenyaEmrUiUtils.formatDrug(drugRef2, ui));
+		Assert.assertNotNull(kenyaUi.formatDrug(drugRef2, ui));
 	}
 
 	/**
@@ -133,7 +137,7 @@ public class KenyaEmrUiUtilsTest extends BaseModuleWebContextSensitiveTest {
 	 */
 	@Test
 	public void formatRegimenShort_shouldFormatEmptyListAsEmpty() throws Exception {
-		Assert.assertEquals("Empty", KenyaEmrUiUtils.formatRegimenShort(new RegimenOrder(), ui));
+		Assert.assertEquals("Empty", kenyaUi.formatRegimenShort(new RegimenOrder(), ui));
 	}
 
 	/**
@@ -142,7 +146,7 @@ public class KenyaEmrUiUtilsTest extends BaseModuleWebContextSensitiveTest {
 	 */
 	@Test
 	public void formatRegimenShort_shouldFormatRegimen() throws Exception {
-		Assert.assertNotNull(KenyaEmrUiUtils.formatRegimenShort(regimen, ui));
+		Assert.assertNotNull(kenyaUi.formatRegimenShort(regimen, ui));
 	}
 
 	/**
@@ -151,17 +155,17 @@ public class KenyaEmrUiUtilsTest extends BaseModuleWebContextSensitiveTest {
 	@Test
 	public void simpleRegimen_shouldConvertToSimpleObject() {
 		// Check null regimen
-		SimpleObject obj1 = KenyaEmrUiUtils.simpleRegimen(null, ui);
+		SimpleObject obj1 = kenyaUi.simpleRegimen(null, ui);
 		Assert.assertEquals("None", obj1.get("shortDisplay"));
 		Assert.assertEquals("None", obj1.get("longDisplay"));
 
  		// Check empty regimen
-		SimpleObject obj2 = KenyaEmrUiUtils.simpleRegimen(new RegimenOrder(), ui);
+		SimpleObject obj2 = kenyaUi.simpleRegimen(new RegimenOrder(), ui);
 		Assert.assertEquals("Empty", obj2.get("shortDisplay"));
 		Assert.assertEquals("Empty", obj2.get("longDisplay"));
 
 		// Check normal regimen
-		SimpleObject obj3 = KenyaEmrUiUtils.simpleRegimen(regimen, ui);
+		SimpleObject obj3 = kenyaUi.simpleRegimen(regimen, ui);
 		Assert.assertNotNull(obj3.get("shortDisplay"));
 		Assert.assertNotNull(obj3.get("longDisplay"));
 	}
@@ -175,7 +179,7 @@ public class KenyaEmrUiUtilsTest extends BaseModuleWebContextSensitiveTest {
 
 		// Check empty history
 		RegimenChangeHistory emptyHistory = RegimenChangeHistory.forPatient(Context.getPatientService().getPatient(6), medset);
-		List<SimpleObject> objs = KenyaEmrUiUtils.simpleRegimenHistory(emptyHistory, ui);
+		List<SimpleObject> objs = kenyaUi.simpleRegimenHistory(emptyHistory, ui);
 
 		Assert.assertEquals(0, objs.size());
 	}
@@ -185,41 +189,9 @@ public class KenyaEmrUiUtilsTest extends BaseModuleWebContextSensitiveTest {
 	 */
 	@Test
 	public void simpleRegimenDefinitions_shouldConvertToSimpleObjects() throws IOException, SAXException, ParserConfigurationException {
-		List<SimpleObject> objs = KenyaEmrUiUtils.simpleRegimenDefinitions(emr.getRegimenManager().getRegimenGroups("category1").get(0).getRegimens(), ui);
+		List<SimpleObject> objs = kenyaUi.simpleRegimenDefinitions(emr.getRegimenManager().getRegimenGroups("category1").get(0).getRegimens(), ui);
 
 		Assert.assertEquals("regimen1", objs.get(0).get("name"));
 		Assert.assertEquals("group1", ((Map<String, Object>)objs.get(0).get("group")).get("code"));
-	}
-
-	/**
-	 * @see org.openmrs.module.kenyaemr.KenyaEmrUiUtils#isRetrospectiveVisit(org.openmrs.Visit)
-	 */
-	@Test
-	public void isRetrospectiveVisit() {
-		Date date1 = TestUtils.date(2011, 1, 1, 10, 0, 0); // Jan 1st, 10:00am
-		Date date2 = TestUtils.date(2011, 1, 1, 11, 0, 0); // Jan 1st, 11:00am
-
-		Visit visit1 = new Visit();
-		visit1.setStartDatetime(date1);
-		visit1.setStopDatetime(date2);
-
-		Assert.assertFalse(KenyaEmrUiUtils.isRetrospectiveVisit(visit1));
-
-		Visit visit2 = new Visit();
-		visit2.setStartDatetime(OpenmrsUtil.firstSecondOfDay(date1));
-		visit2.setStopDatetime(OpenmrsUtil.getLastMomentOfDay(date1));
-
-		Assert.assertTrue(KenyaEmrUiUtils.isRetrospectiveVisit(visit2));
-
-		// Check case when stop date has been persisted and lost its milliseconds
-		Calendar stopFromSql = Calendar.getInstance();
-		stopFromSql.setTime(OpenmrsUtil.getLastMomentOfDay(date1));
-		stopFromSql.set(Calendar.MILLISECOND, 0);
-
-		Visit visit3 = new Visit();
-		visit3.setStartDatetime(OpenmrsUtil.firstSecondOfDay(date1));
-		visit3.setStopDatetime(stopFromSql.getTime());
-
-		Assert.assertTrue(KenyaEmrUiUtils.isRetrospectiveVisit(visit3));
 	}
 }

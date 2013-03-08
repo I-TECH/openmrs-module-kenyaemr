@@ -48,12 +48,13 @@ public class VisitAvailableFormsFragmentController {
 						   @FragmentParam("visit") Visit visit,
 						   UiUtils ui,
 						   Session session,
-						   @SpringBean KenyaEmr emr) {
+						   @SpringBean KenyaEmr emr,
+						   @SpringBean KenyaEmrUiUtils kenyaUi) {
 
 		String currentApp = AppUiUtil.getCurrentApp(session).getApp().getId();
 
 		List<FormConfig> availableFormConfigs = emr.getFormManager().getFormsForPatient(currentApp, visit.getPatient(), null);
-		List<SimpleObject> availableForms = getAvailableForms(visit, availableFormConfigs, ui);
+		List<SimpleObject> availableForms = getAvailableForms(visit, availableFormConfigs, ui, kenyaUi);
 
 		model.addAttribute("availableForms", availableForms);
 	}
@@ -64,7 +65,7 @@ public class VisitAvailableFormsFragmentController {
      * @param forms the list of possible forms for the visit type
      * @return
      */
-    private List<SimpleObject> getAvailableForms(Visit visit, List<FormConfig> forms, UiUtils ui) {
+    private List<SimpleObject> getAvailableForms(Visit visit, List<FormConfig> forms, UiUtils ui, KenyaEmrUiUtils kenyaUi) {
     	Set<String> formUuidsThisVisit = new HashSet<String>();
     	for (Encounter e : visit.getEncounters()) {
     		if (!e.getVoided()) {
@@ -128,7 +129,7 @@ public class VisitAvailableFormsFragmentController {
 				if (hf == null) {
 					throw new RuntimeException("No htmlform with uuid " + config.getFormUuid());
 				}
-				ret.add(KenyaEmrUiUtils.simpleForm(config, ui));
+				ret.add(kenyaUi.simpleForm(config, ui));
 			}
 		}
 		

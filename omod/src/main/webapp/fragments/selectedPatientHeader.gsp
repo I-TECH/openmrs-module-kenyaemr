@@ -101,7 +101,7 @@
 	<div id="active-visit">
 		<small>Current visit</small>
 		<% if (activeVisit) {
-			def visitStartStr = activeVisitStartedToday ? kenyaEmrUi.formatTime(activeVisit.startDatetime) : kenyaEmrUi.formatDate(activeVisit.startDatetime);
+			def visitStartStr = activeVisitStartedToday ? kenyaUi.formatTime(activeVisit.startDatetime) : kenyaUi.formatDate(activeVisit.startDatetime);
 
 			%><span class="active-visit">${ ui.format(activeVisit.visitType) } since <span id="active-visit-time">${ visitStartStr }</span></span><%
 		} else {

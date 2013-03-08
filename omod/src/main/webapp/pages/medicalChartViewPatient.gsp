@@ -29,9 +29,9 @@
 	}
 
 	programs.each { prog ->
-		def extra = "from " + kenyaEmrUi.formatDate(prog.dateEnrolled)
+		def extra = "from " + kenyaUi.formatDate(prog.dateEnrolled)
 		if (prog.dateCompleted)
-			extra += " to " + kenyaEmrUi.formatDate(prog.dateCompleted)
+			extra += " to " + kenyaUi.formatDate(prog.dateCompleted)
 		if (prog.outcome)
 			exta += "<br />Outcome: <b>" + ui.format(prog.outcome) + "</b>"
 
@@ -62,7 +62,7 @@
 				print ui.includeFragment("kenyaemr", "widget/panelMenuItem", [
 						label: ui.format(visit.visitType),
 						href: ui.pageLink("kenyaemr", "medicalChartViewPatient", [ patientId: patient.id, visitId: visit.id ]),
-						extra: kenyaEmrUi.formatVisitDates(visit),
+						extra: kenyaUi.formatVisitDates(visit),
 						active: (selection == "visit-" + visit.id)
 				])
 			}
