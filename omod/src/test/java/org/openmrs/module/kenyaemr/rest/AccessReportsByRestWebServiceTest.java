@@ -17,6 +17,7 @@ package org.openmrs.module.kenyaemr.rest;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.module.kenyaemr.KenyaEmr;
 import org.openmrs.module.kenyaemr.report.ReportManager;
 import org.openmrs.module.kenyaemr.report.indicator.Moh731Report;
 import org.openmrs.module.reportingrest.web.controller.DataSetDefinitionController;
@@ -42,12 +43,15 @@ public class AccessReportsByRestWebServiceTest extends BaseModuleWebContextSensi
 	@Autowired
 	EvaluatedDataSetController evalController;
 
+	@Autowired
+	ReportManager reportManager;
+
 	@Before
 	public void setup() throws Exception {
 		executeDataSet("test-data.xml");
 		executeDataSet("test-drugdata.xml");
 
-		ReportManager.refreshReportBuilders();
+		reportManager.refreshReportBuilders();
 	}
 
 	@Test

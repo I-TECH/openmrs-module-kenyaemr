@@ -262,7 +262,7 @@ public class KenyaEmrUiUtils {
 	 * @return the simple object
 	 */
 	public static SimpleObject simpleForm(Form form, UiUtils ui) {
-		FormConfig config = FormManager.getFormConfig(form.getUuid());
+		FormConfig config = KenyaEmr.getInstance().getFormManager().getFormConfig(form.getUuid());
 		HtmlForm htmlForm = Context.getService(HtmlFormEntryService.class).getHtmlFormByForm(form);
 
 		return SimpleObject.create(

@@ -20,9 +20,11 @@ import org.openmrs.Concept;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
+import org.openmrs.module.kenyaemr.KenyaEmr;
 import org.openmrs.module.kenyaemr.regimen.RegimenManager;
 import org.openmrs.module.kenyaemr.test.TestUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.InputStream;
 import java.util.Arrays;
@@ -30,13 +32,18 @@ import java.util.List;
 
 public class OnSecondLineArtCalculationTest extends BaseModuleContextSensitiveTest {
 
+	@Autowired
+	RegimenManager regimenManager;
+
 	@Before
 	public void beforeEachTest() throws Exception {
 		executeDataSet("test-data.xml");
 		executeDataSet("test-drugdata.xml");
 
+		regimenManager.clear();
+
 		InputStream stream = getClass().getClassLoader().getResourceAsStream("regimens.xml");
-		RegimenManager.loadDefinitionsFromXML(stream);
+		regimenManager.loadDefinitionsFromXML(stream);
 	}
 
 	/**

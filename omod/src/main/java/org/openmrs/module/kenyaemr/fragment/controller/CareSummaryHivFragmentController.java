@@ -11,12 +11,14 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.kenyaemr.fragment.controller;
 
 import org.openmrs.Concept;
 import org.openmrs.Patient;
 import org.openmrs.calculation.InvalidCalculationException;
 import org.openmrs.calculation.result.CalculationResult;
+import org.openmrs.module.kenyaemr.KenyaEmr;
 import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
 import org.openmrs.module.kenyaemr.calculation.KenyaEmrCalculationProvider;
 import org.openmrs.module.kenyaemr.regimen.RegimenChange;
@@ -37,7 +39,8 @@ public class CareSummaryHivFragmentController {
 	public void controller(@FragmentParam("patient") Patient patient,
 						   @FragmentParam("complete") Boolean complete,
 						   FragmentModel model,
-						   @SpringBean("org.openmrs.module.kenyaemr.calculation.KenyaEmrCalculationProvider") KenyaEmrCalculationProvider calculationProvider)
+						   @SpringBean("org.openmrs.module.kenyaemr.calculation.KenyaEmrCalculationProvider") KenyaEmrCalculationProvider calculationProvider,
+						   @SpringBean KenyaEmr emr)
 			throws InvalidCalculationException {
 
 		Map<String, CalculationResult> calculationResults = new HashMap<String, CalculationResult>();
@@ -52,7 +55,7 @@ public class CareSummaryHivFragmentController {
 
 		model.addAttribute("calculations", calculationResults);
 
-		Concept medSet = RegimenManager.getMasterSetConcept("ARV");
+		Concept medSet = emr.getRegimenManager().getMasterSetConcept("ARV");
 		RegimenChangeHistory history = RegimenChangeHistory.forPatient(patient, medSet);
 		model.addAttribute("regimenHistory", history);
 	}

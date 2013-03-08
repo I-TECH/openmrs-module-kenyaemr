@@ -19,6 +19,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.openmrs.Concept;
 import org.openmrs.DrugOrder;
 import org.openmrs.api.context.Context;
+import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -34,19 +35,20 @@ import java.util.*;
 /**
  * Manager for regimens
  */
+@Component
 public class RegimenManager {
 
-	private static Map<String, Integer> masterSetConcepts = new LinkedHashMap<String, Integer>();
+	private Map<String, Integer> masterSetConcepts = new LinkedHashMap<String, Integer>();
 
-	private static Map<String, Map<String, DrugReference>> drugs = new LinkedHashMap<String, Map<String, DrugReference>>();
+	private Map<String, Map<String, DrugReference>> drugs = new LinkedHashMap<String, Map<String, DrugReference>>();
 
-	private static Map<String, List<RegimenDefinitionGroup>> regimenGroups = new LinkedHashMap<String, List<RegimenDefinitionGroup>>();
+	private Map<String, List<RegimenDefinitionGroup>> regimenGroups = new LinkedHashMap<String, List<RegimenDefinitionGroup>>();
 
 	/**
 	 * Gets the category codes
 	 * @return the category codes
 	 */
-	public static Set<String> getCategoryCodes() {
+	public Set<String> getCategoryCodes() {
 		return masterSetConcepts.keySet();
 	}
 
@@ -55,7 +57,7 @@ public class RegimenManager {
 	 * @param category the category, e.g. "ARV"
 	 * @return the concept
 	 */
-	public static Concept getMasterSetConcept(String category) {
+	public Concept getMasterSetConcept(String category) {
 		Integer conceptId = masterSetConcepts.get(category);
 		return conceptId != null ? Context.getConceptService().getConcept(conceptId) : null;
 	}
@@ -65,7 +67,7 @@ public class RegimenManager {
 	 * @param category the category, e.g. "ARV"
 	 * @return the concept ids or null if category isn't defined
 	 */
-	public static Collection<DrugReference> getDrugs(String category) {
+	public Collection<DrugReference> getDrugs(String category) {
 		Map<String, DrugReference> drugsForCategory = drugs.get(category);
 		return (drugsForCategory != null) ? drugsForCategory.values() : null;
 	}
@@ -75,7 +77,7 @@ public class RegimenManager {
 	 * @param category the category, e.g. "ARV"
 	 * @return the regimen groups
 	 */
-	public static List<RegimenDefinitionGroup> getRegimenGroups(String category) {
+	public List<RegimenDefinitionGroup> getRegimenGroups(String category) {
 		return regimenGroups.get(category);
 	}
 
@@ -86,7 +88,7 @@ public class RegimenManager {
 	 * @param exact whether matches must be exact (includes dose, units and frequency)
 	 * @return the definitions
 	 */
-	public static List<RegimenDefinition> findDefinitions(String category, RegimenOrder regimenOrder, boolean exact) {
+	public List<RegimenDefinition> findDefinitions(String category, RegimenOrder regimenOrder, boolean exact) {
 		List<RegimenDefinitionGroup> groups = regimenGroups.get(category);
 		if (groups == null) {
 			throw new IllegalArgumentException("No such category: " + category);
@@ -139,7 +141,7 @@ public class RegimenManager {
 	/**
 	 * Clears all regimen and drugs
 	 */
-	public static synchronized void clear() {
+	public synchronized void clear() {
 		masterSetConcepts.clear();
 		drugs.clear();
 		regimenGroups.clear();
@@ -152,7 +154,7 @@ public class RegimenManager {
 	 * @throws IOException
 	 * @throws SAXException
 	 */
-	public static synchronized void loadDefinitionsFromXML(InputStream stream) throws ParserConfigurationException, IOException, SAXException {
+	public synchronized void loadDefinitionsFromXML(InputStream stream) throws ParserConfigurationException, IOException, SAXException {
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder = dbFactory.newDocumentBuilder();
 

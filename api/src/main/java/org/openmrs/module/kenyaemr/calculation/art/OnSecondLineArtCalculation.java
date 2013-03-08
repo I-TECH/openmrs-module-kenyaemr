@@ -1,4 +1,4 @@
-/*
+/**
  * The contents of this file are subject to the OpenMRS Public License
  * Version 1.0 (the "License"); you may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
@@ -11,6 +11,7 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.kenyaemr.calculation.art;
 
 import java.util.Collection;
@@ -20,6 +21,7 @@ import java.util.Map;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
+import org.openmrs.module.kenyaemr.KenyaEmr;
 import org.openmrs.module.kenyaemr.calculation.BaseKenyaEmrCalculation;
 import org.openmrs.module.kenyaemr.calculation.BooleanResult;
 import org.openmrs.module.kenyaemr.regimen.*;
@@ -68,7 +70,7 @@ public class OnSecondLineArtCalculation extends BaseKenyaEmrCalculation {
 			if (arvResult != null) {
 				RegimenOrder currentRegimen = (RegimenOrder) arvResult.getValue();
 
-				List<RegimenDefinition> matchingDefinitions = RegimenManager.findDefinitions("ARV", currentRegimen, false);
+				List<RegimenDefinition> matchingDefinitions = KenyaEmr.getInstance().getRegimenManager().findDefinitions("ARV", currentRegimen, false);
 				for (RegimenDefinition definition : matchingDefinitions) {
 					if ("adult-second".equals(definition.getGroup().getCode())) {
 						onSecondLine = true;

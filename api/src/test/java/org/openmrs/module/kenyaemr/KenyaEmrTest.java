@@ -12,40 +12,31 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.report;
+package org.openmrs.module.kenyaemr;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyaemr.util.BuildProperties;
+import org.openmrs.module.kenyaemr.util.KenyaEmrUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Arrays;
-import java.util.List;
-
-/**
- *
- */
-public class ReportManagerTest extends BaseModuleContextSensitiveTest {
+public class KenyaEmrTest extends BaseModuleContextSensitiveTest {
 
 	@Autowired
-	ReportManager reportManager;
+	KenyaEmr emr;
 
 	/**
-	 * @see ReportManager#getReportBuildersByTag(String)
+	 * @see org.openmrs.module.kenyaemr.KenyaEmr#getModuleBuildProperties()
+	 * @verifies return build properties
 	 */
 	@Test
-	public void getReportBuildersByTag_shouldGetReportBuildersWithTag() {
+	public void getModuleBuildProperties_shouldGetBuildProperties() {
+		BuildProperties properties = emr.getModuleBuildProperties();
 
-		reportManager.refreshReportBuilders();
-
-		final String[] TEST_TAGS = { "moh", "facility" };
-
-		for (String tag : TEST_TAGS) {
-			List<ReportBuilder> reports = reportManager.getReportBuildersByTag(tag);
-			Assert.assertTrue(reports.size() > 0);
-			for (ReportBuilder report : reports) {
-				Assert.assertTrue(Arrays.asList(report.getTags()).contains(tag));
-			}
-		}
+		Assert.assertNotNull(properties);
+		Assert.assertNotNull(properties.getBuildDate());
+		Assert.assertNotNull(properties.getDeveloper());
 	}
 }

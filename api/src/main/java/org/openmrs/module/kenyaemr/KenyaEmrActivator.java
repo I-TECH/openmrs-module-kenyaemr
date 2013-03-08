@@ -16,14 +16,11 @@ package org.openmrs.module.kenyaemr;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.Level;
+import org.apache.log4j.LogManager;
 import org.openmrs.GlobalProperty;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.ModuleActivator;
 import org.openmrs.module.kenyaemr.datatype.LocationDatatype;
-import org.openmrs.module.kenyaemr.form.FormManager;
-import org.openmrs.module.kenyaemr.regimen.RegimenManager;
-import org.openmrs.module.kenyaemr.report.ReportManager;
-import org.openmrs.module.kenyaemr.util.KenyaEmrUtils;
 
 import java.io.InputStream;
 
@@ -38,27 +35,32 @@ public class KenyaEmrActivator implements ModuleActivator {
 
 	private static final String REGIMENS_FILENAME = "regimens.xml";
 
+	static {
+		// Possibly bad practice but we really want to see the log messages
+		LogManager.getLogger(KenyaEmrActivator.class).setLevel(Level.INFO);
+	}
+
 	/**
 	 * @see ModuleActivator#willRefreshContext()
 	 */
 	public void willRefreshContext() {
-		log.info("Refreshing Kenya OpenMRS EMR Module");
+		log.info("Kenya EMR context refreshing...");
 	}
 
 	/**
 	 * @see ModuleActivator#contextRefreshed()
 	 */
 	public void contextRefreshed() {
-		log.info("Kenya OpenMRS EMR Module refreshed");
+		KenyaEmr.getInstance().contextRefreshed();
 
-		ReportManager.refreshReportBuilders();
+		log.info("Kenya EMR context refreshed");
 	}
 
 	/**
 	 * @see ModuleActivator#willStart()
 	 */
 	public void willStart() {
-		log.info("Starting Kenya OpenMRS EMR Module");
+		log.info("Kenya EMR starting...");
 	}
 
 	/**
@@ -66,54 +68,42 @@ public class KenyaEmrActivator implements ModuleActivator {
 	 * @should install initial data only once
 	 */
 	public void started() {
-		// Temporarily override logging settings to make sure our messages get out
-		Level logLevel = KenyaEmrUtils.changeLogLevel(KenyaEmrActivator.class, Level.INFO);
-
-		log.info("=========== Kenya OpenMRS EMR Module startup ===========");
-
 		try {
 			setupGlobalProperties();
 
-			log.info(" > Setup core global properties");
+			log.info("Setup core global properties");
 
 			boolean metadataUpdated = setupStandardMetadata();
 
-			log.info(" > Setup core metadata packages (" + (metadataUpdated ? "imported packages" : "already up-to-date") + ")");
+			log.info("Setup core metadata packages (" + (metadataUpdated ? "imported packages" : "already up-to-date") + ")");
 
 			setupStandardForms();
 
-			log.info(" > Setup core forms");
+			log.info("Setup core forms (" + KenyaEmr.getInstance().getFormManager().getAllFormConfigs().size() + " registered forms)");
 
 			setupStandardRegimens();
 
-			log.info(" > Setup core regimens");
-
-			ReportManager.refreshReportBuilders();
-
-			log.info(" > Setup core reports (found " + ReportManager.getAllReportBuilders().size() +" report builders)");
+			log.info("Setup core regimens");
 
 		} catch (Exception ex) {
 			throw new RuntimeException("Failed to setup initial data", ex);
 		}
 
-		log.info("=========== Kenya OpenMRS EMR Module started ===========");
-
-		// Restore existing logging settings
-		KenyaEmrUtils.changeLogLevel(KenyaEmrActivator.class, logLevel);
+		log.info("Kenya EMR started");
 	}
 
 	/**
 	 * @see ModuleActivator#willStop()
 	 */
 	public void willStop() {
-		log.info("Stopping Kenya OpenMRS EMR Module");
+		log.info("Kenya EMR stopping...");
 	}
 
 	/**
 	 * @see ModuleActivator#stopped()
 	 */
 	public void stopped() {
-		log.info("Kenya OpenMRS EMR Module stopped");
+		log.info("Kenya EMR stopped");
 	}
 
 	/**
@@ -137,7 +127,7 @@ public class KenyaEmrActivator implements ModuleActivator {
 		try {
 			InputStream stream = getClass().getClassLoader().getResourceAsStream(PACKAGES_FILENAME);
 
-			return MetadataManager.loadPackagesFromXML(stream, null);
+			return KenyaEmr.getInstance().getMetadataManager().loadPackagesFromXML(stream, null);
 		}
 		catch (Exception ex) {
 			throw new RuntimeException("Cannot find " + PACKAGES_FILENAME + ". Make sure it's in api/src/main/resources");
@@ -148,10 +138,8 @@ public class KenyaEmrActivator implements ModuleActivator {
 	 * Setup the standard forms
 	 */
 	protected void setupStandardForms() {
-		//FormManager.clear();
-
 		// These could be loaded from XML instead of hard-coding in the manager class
-		FormManager.setupStandardForms();
+		KenyaEmr.getInstance().getFormManager().setupStandardForms();
 	}
 
 	/**
@@ -160,10 +148,8 @@ public class KenyaEmrActivator implements ModuleActivator {
 	 */
 	protected void setupStandardRegimens() {
 		try {
-			//RegimenManager.clear();
-
 			InputStream stream = getClass().getClassLoader().getResourceAsStream(REGIMENS_FILENAME);
-			RegimenManager.loadDefinitionsFromXML(stream);
+			KenyaEmr.getInstance().getRegimenManager().loadDefinitionsFromXML(stream);
 		}
 		catch (Exception ex) {
 			throw new RuntimeException("Cannot find " + REGIMENS_FILENAME + ". Make sure it's in api/src/main/resources", ex);

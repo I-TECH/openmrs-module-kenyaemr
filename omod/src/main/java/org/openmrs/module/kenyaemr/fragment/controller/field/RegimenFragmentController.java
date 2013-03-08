@@ -14,16 +14,16 @@
 
 package org.openmrs.module.kenyaemr.fragment.controller.field;
 
+import org.openmrs.module.kenyaemr.KenyaEmr;
 import org.openmrs.module.kenyaemr.KenyaEmrUiUtils;
 import org.openmrs.module.kenyaemr.regimen.RegimenDefinition;
 import org.openmrs.module.kenyaemr.regimen.RegimenDefinitionGroup;
-import org.openmrs.module.kenyaemr.regimen.RegimenManager;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.FragmentParam;
+import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Set;
 
@@ -34,9 +34,11 @@ public class RegimenFragmentController {
 
 	public void controller(@FragmentParam("category") String category,
 						   @FragmentParam(value = "includeGroups", required = false) Set<String> includeGroups,
-						   FragmentModel model, UiUtils ui) {
+						   FragmentModel model,
+						   UiUtils ui,
+						   @SpringBean KenyaEmr emr) {
 
-		List<RegimenDefinitionGroup> regimenGroups = RegimenManager.getRegimenGroups(category);
+		List<RegimenDefinitionGroup> regimenGroups = emr.getRegimenManager().getRegimenGroups(category);
 
 		if (includeGroups != null) {
 			regimenGroups = filterGroups(regimenGroups, includeGroups);
@@ -48,7 +50,7 @@ public class RegimenFragmentController {
 		}
 
 		model.addAttribute("maxComponents", 4);
-		model.addAttribute("drugs", RegimenManager.getDrugs(category));
+		model.addAttribute("drugs", emr.getRegimenManager().getDrugs(category));
 		model.addAttribute("regimenGroups", regimenGroups);
 		model.addAttribute("regimenDefinitions", KenyaEmrUiUtils.simpleRegimenDefinitions(regimenDefinitions, ui));
 	}

@@ -11,27 +11,34 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.kenyaemr.form;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openmrs.Patient;
 import org.openmrs.module.kenyaemr.KenyaEmrConstants;
 import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.kenyaemr.form.FormConfig.Frequency;
 import org.openmrs.module.kenyaemr.form.FormConfig.Gender;
+import org.springframework.stereotype.Component;
 
 import java.util.*;
 
 /**
  * Forms manager
  */
+@Component
 public class FormManager {
 
-	private static Map<String, FormConfig> forms = new LinkedHashMap<String, FormConfig>();
+	protected static final Log log = LogFactory.getLog(FormManager.class);
+
+	private Map<String, FormConfig> forms = new LinkedHashMap<String, FormConfig>();
 
 	/**
 	 * Called from the module activator to register all forms. In future this could be loaded from an XML file
 	 */
-	public static void setupStandardForms() {
+	public void setupStandardForms() {
 		/**
 		 * Once-ever forms
 		 */
@@ -156,7 +163,7 @@ public class FormManager {
 	 * @param frequency the form usage frequency
 	 * @param forApps the applications to use this form
 	 */
-	public static void registerForm(String formUuid, Frequency frequency, String[] forApps) {
+	public void registerForm(String formUuid, Frequency frequency, String[] forApps) {
 		registerForm(formUuid, frequency, forApps, null, Gender.BOTH, KenyaEmrConstants.MODULE_ID, "forms/generic.png");
 	}
 
@@ -170,18 +177,22 @@ public class FormManager {
 	 * @param iconProvider the icon provider id
 	 * @param icon the icon file
 	 */
-	public static void registerForm(String formUuid, Frequency frequency, String[] forApps, String forProgramUuid, Gender forGender, String iconProvider, String icon) {
+	public void registerForm(String formUuid, Frequency frequency, String[] forApps, String forProgramUuid, Gender forGender, String iconProvider, String icon) {
 		if (forms.containsKey(formUuid)) {
 			throw new RuntimeException("Form already registered");
 		}
 
-		forms.put(formUuid, new FormConfig(formUuid, frequency, new HashSet<String>(Arrays.asList(forApps)), forProgramUuid, forGender, iconProvider, icon));
+		FormConfig formConfig = new FormConfig(formUuid, frequency, new HashSet<String>(Arrays.asList(forApps)), forProgramUuid, forGender, iconProvider, icon);
+
+		forms.put(formUuid, formConfig);
+
+		log.info("Registered form: " + formConfig);
 	}
 
 	/**
 	 * Clears all registered forms
 	 */
-	public static void clear() {
+	public void clear() {
 		forms.clear();
 	}
 
@@ -190,8 +201,16 @@ public class FormManager {
 	 * @param formUuid the form UUID
 	 * @return the form configuration
 	 */
-	public static FormConfig getFormConfig(String formUuid) {
+	public FormConfig getFormConfig(String formUuid) {
 		return forms.get(formUuid);
+	}
+
+	/**
+	 * Gets all registered form configurations
+	 * @return the form configurations
+	 */
+	public List<FormConfig> getAllFormConfigs() {
+		return new ArrayList<FormConfig>(forms.values());
 	}
 
 	/**
@@ -201,7 +220,7 @@ public class FormManager {
 	 * @param includeFrequencies the set of form frequencies to include (may be null)
 	 * @return the forms
 	 */
-	public static List<FormConfig> getFormsForPatient(String appId, Patient patient, Set<Frequency> includeFrequencies) {
+	public List<FormConfig> getFormsForPatient(String appId, Patient patient, Set<Frequency> includeFrequencies) {
 		List<FormConfig> patientForms = new ArrayList<FormConfig>();
 		for (FormConfig form : forms.values()) {
 

@@ -15,11 +15,13 @@ package org.openmrs.module.kenyaemr.page.controller;
 
 import org.openmrs.Concept;
 import org.openmrs.Patient;
+import org.openmrs.module.kenyaemr.KenyaEmr;
 import org.openmrs.module.kenyaemr.regimen.RegimenChange;
 import org.openmrs.module.kenyaemr.regimen.RegimenChangeHistory;
 import org.openmrs.module.kenyaemr.regimen.RegimenManager;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
+import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.page.PageModel;
 import org.openmrs.util.OpenmrsUtil;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -38,13 +40,14 @@ public class RegimenEditorPageController {
 						   @RequestParam("category") String category,
 						   @RequestParam("returnUrl") String returnUrl,
 	                       UiUtils ui,
-	                       PageModel model) {
+	                       PageModel model,
+						   @SpringBean KenyaEmr emr) {
 
 		model.addAttribute("patient", patient);
 		model.addAttribute("category", category);
 		model.addAttribute("returnUrl", returnUrl);
 
-		Concept masterSet = RegimenManager.getMasterSetConcept(category);
+		Concept masterSet = emr.getRegimenManager().getMasterSetConcept(category);
 		RegimenChangeHistory history = RegimenChangeHistory.forPatient(patient, masterSet);
 		model.addAttribute("history", history);
 

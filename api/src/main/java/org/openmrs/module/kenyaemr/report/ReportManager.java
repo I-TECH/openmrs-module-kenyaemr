@@ -15,27 +15,29 @@
 package org.openmrs.module.kenyaemr.report;
 
 import org.openmrs.api.context.Context;
+import org.springframework.stereotype.Component;
 
 import java.util.*;
 
 /**
  * Report manager
  */
+@Component
 public class ReportManager {
 
-	private static Map<String, ReportBuilder> reportBuilders;
+	private Map<String, ReportBuilder> reportBuilders;
 
 	/**
 	 * Clears all reports
 	 */
-	public synchronized static void clear() {
+	public synchronized void clear() {
 		reportBuilders.clear();
 	}
 
 	/**
 	 * Refreshes the list of report builders from application context
 	 */
-	public synchronized static void refreshReportBuilders() {
+	public synchronized void refreshReportBuilders() {
 		reportBuilders = new LinkedHashMap<String, ReportBuilder>();
 		for (ReportBuilder manager : Context.getRegisteredComponents(ReportBuilder.class)) {
 			reportBuilders.put(manager.getClass().getName(), manager);
@@ -47,7 +49,7 @@ public class ReportManager {
 	 * @param className the report builder class name
 	 * @return the report builder
 	 */
-	public static ReportBuilder getReportBuilder(String className) {
+	public ReportBuilder getReportBuilder(String className) {
 		return reportBuilders.get(className);
 	}
 
@@ -55,7 +57,7 @@ public class ReportManager {
 	 * Gets all report builders
 	 * @@return the list of report builders
 	 */
-	public static List<ReportBuilder> getAllReportBuilders() {
+	public List<ReportBuilder> getAllReportBuilders() {
 		return new ArrayList<ReportBuilder>(reportBuilders.values());
 	}
 
@@ -64,7 +66,7 @@ public class ReportManager {
 	 * @param tag the tag
 	 * @return the list of report builders
 	 */
-	public static List<ReportBuilder> getReportBuildersByTag(String tag) {
+	public List<ReportBuilder> getReportBuildersByTag(String tag) {
 		List<ReportBuilder> ret = new ArrayList<ReportBuilder>();
 		for (ReportBuilder candidate : reportBuilders.values()) {
 			if (candidate.getTags() != null && Arrays.asList(candidate.getTags()).contains(tag)) {

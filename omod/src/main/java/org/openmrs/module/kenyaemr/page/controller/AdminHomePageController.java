@@ -20,6 +20,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.Module;
 import org.openmrs.module.ModuleFactory;
 import org.openmrs.module.appframework.AppUiUtil;
+import org.openmrs.module.kenyaemr.KenyaEmr;
 import org.openmrs.module.kenyaemr.KenyaEmrConstants;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.module.kenyaemr.regimen.RegimenManager;
@@ -27,6 +28,7 @@ import org.openmrs.module.metadatasharing.ImportedPackage;
 import org.openmrs.module.metadatasharing.api.MetadataSharingService;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
+import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.page.PageModel;
 import org.openmrs.ui.framework.session.Session;
 import org.openmrs.util.OpenmrsConstants;
@@ -37,7 +39,12 @@ import org.springframework.web.bind.annotation.RequestParam;
  */
 public class AdminHomePageController {
 
-	public void controller(@RequestParam(value = "section", required = false) String section, Session session, UiUtils ui, PageModel model) {
+	public void controller(@RequestParam(value = "section", required = false) String section,
+						   Session session,
+						   UiUtils ui,
+						   PageModel model,
+						   @SpringBean KenyaEmr emr) {
+
 		AppUiUtil.startApp("kenyaemr.admin", session);
 
 		if (StringUtils.isEmpty(section)) {
@@ -63,12 +70,12 @@ public class AdminHomePageController {
 			content.add(SimpleObject.create("label", "Total visits", "value", Context.getVisitService().getAllVisits().size()));
 
 			List<SimpleObject> metadataPackages = new ArrayList<SimpleObject>();
-			for (ImportedPackage imported : Context.getService(MetadataSharingService.class).getAllImportedPackages()) {
+			for (ImportedPackage imported : emr.getMetadataManager().getImportedPackages()) {
 				metadataPackages.add(SimpleObject.fromObject(imported, ui, "name", "version", "imported"));
 			}
 
 			// Concepts aren't actually imported from a metadata package but let's pretend for the sake of simplicity
-			String conceptsVersion = Context.getAdministrationService().getGlobalProperty(KenyaEmrConstants.GP_CONCEPTS_VERSION, null);
+			String conceptsVersion = emr.getMetadataManager().getConceptsVersion();
 			metadataPackages.add(SimpleObject.create("name", "Kenya EMR Concepts", "version", conceptsVersion, "imported", (conceptsVersion != null)));
 
 			infoCategories.put("Server", general);

@@ -15,10 +15,12 @@
 package org.openmrs.module.kenyaemr.report;
 
 import org.openmrs.annotation.Handler;
+import org.openmrs.module.kenyaemr.KenyaEmr;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.persister.DataSetDefinitionPersister;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,13 +34,16 @@ import java.util.List;
 @Handler(supports=DataSetDefinition.class)
 public class ReportBuilderDataSetDefinitionPersister implements DataSetDefinitionPersister {
 
+	@Autowired
+	ReportManager reportManager;
+
 	/**
 	 * @see DataSetDefinitionPersister#getDefinitionByUuid(String)
 	 */
 	@Override
 	public DataSetDefinition getDefinitionByUuid(String uuid) {
 		BuilderAndDsdName builderAndDsdName = new BuilderAndDsdName(uuid);
-		ReportBuilder reportBuilder = ReportManager.getReportBuilder(builderAndDsdName.getBuilderClassname());
+		ReportBuilder reportBuilder = reportManager.getReportBuilder(builderAndDsdName.getBuilderClassname());
 
 		return toDataSetDefinition(reportBuilder, builderAndDsdName.getDsdName());
 	}
@@ -52,7 +57,7 @@ public class ReportBuilderDataSetDefinitionPersister implements DataSetDefinitio
 	public List<DataSetDefinition> getAllDefinitions(boolean includeRetired) {
 		List<DataSetDefinition> ret = new ArrayList<DataSetDefinition>();
 
-		for (ReportBuilder reportBuilder : ReportManager.getAllReportBuilders()) {
+		for (ReportBuilder reportBuilder : reportManager.getAllReportBuilders()) {
 			ReportDefinition reportDefinition = reportBuilder.getReportDefinition();
 			if (reportDefinition == null || reportDefinition.getDataSetDefinitions() == null) {
 				continue;

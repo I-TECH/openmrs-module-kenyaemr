@@ -15,6 +15,7 @@ package org.openmrs.module.kenyaemr.fragment.controller;
 
 import org.openmrs.*;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyaemr.KenyaEmr;
 import org.openmrs.module.kenyaemr.KenyaEmrUiUtils;
 import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.kenyaemr.ValidatingCommandObject;
@@ -28,6 +29,7 @@ import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.BindParams;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.annotation.MethodParam;
+import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 import org.openmrs.ui.framework.session.Session;
 import org.openmrs.util.OpenmrsUtil;
@@ -44,7 +46,12 @@ import java.util.List;
  */
 public class MedicalChartMoh257FragmentController {
 	
-	public void controller(@FragmentParam("patient") Patient patient, FragmentModel model, UiUtils ui, Session session) {
+	public void controller(@FragmentParam("patient")
+						   Patient patient,
+						   FragmentModel model,
+						   UiUtils ui,
+						   Session session,
+						   @SpringBean KenyaEmr emr) {
 
 		model.addAttribute("newREVisit", newRetrospectiveVisitCommandObject(patient));
 
@@ -60,7 +67,7 @@ public class MedicalChartMoh257FragmentController {
 			List<Encounter> formEncounters = getPatientEncounterByForm(patient, Context.getFormService().getFormByUuid(page1FormUuid));
 
 			if (formEncounters.size() == 0) {
-				page1AvailableForms.add(KenyaEmrUiUtils.simpleForm(FormManager.getFormConfig(page1FormUuid), ui));
+				page1AvailableForms.add(KenyaEmrUiUtils.simpleForm(emr.getFormManager().getFormConfig(page1FormUuid), ui));
 			}
 			else {
 				page1Encounters.addAll(formEncounters);
@@ -73,7 +80,7 @@ public class MedicalChartMoh257FragmentController {
 		model.addAttribute("page1Encounters", page1Encounters);
 		model.addAttribute("page2Encounters", moh257VisitSummaryEncounters);
 
-		Concept masterSet = RegimenManager.getMasterSetConcept("ARV");
+		Concept masterSet = emr.getRegimenManager().getMasterSetConcept("ARV");
 		RegimenChangeHistory arvHistory = RegimenChangeHistory.forPatient(patient, masterSet);
 		model.addAttribute("arvHistory", arvHistory);
 	}

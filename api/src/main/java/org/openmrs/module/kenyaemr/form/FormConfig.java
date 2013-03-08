@@ -13,6 +13,8 @@
  */
 package org.openmrs.module.kenyaemr.form;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 import java.util.Set;
 
 /**
@@ -116,5 +118,13 @@ public class FormConfig {
 	 */
 	public String getIcon() {
 		return icon;
+	}
+
+	/**
+	 * @see Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return new ToStringBuilder(this).append("formUuid", formUuid).toString();
 	}
 }

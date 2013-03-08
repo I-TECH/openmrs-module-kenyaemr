@@ -32,19 +32,6 @@ public class KenyaEmrUtilsTest extends BaseModuleContextSensitiveTest {
 	}
 
 	/**
-	 * @see KenyaEmrUtils#getModuleBuildProperties()
-	 * @verifies return build properties
-	 */
-	@Test
-	public void getModuleBuildProperties_shouldGetBuildProperties() {
-		BuildProperties properties = KenyaEmrUtils.getModuleBuildProperties();
-
-		Assert.assertNotNull(properties);
-		Assert.assertNotNull(properties.getBuildDate());
-		Assert.assertNotNull(properties.getDeveloper());
-	}
-
-	/**
 	 * @see KenyaEmrUtils#dateAddDays(java.util.Date, int)
 	 * @verifies shift the date by the number of days
 	 */

@@ -31,6 +31,7 @@ import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.fragment.FragmentActionUiUtils;
 import org.openmrs.util.OpenmrsUtil;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -43,6 +44,9 @@ import java.util.*;
  */
 public class KenyaEmrUiUtilsTest extends BaseModuleWebContextSensitiveTest {
 
+	@Autowired
+	KenyaEmr emr;
+
 	private UiUtils ui;
 
 	private RegimenOrder regimen;
@@ -53,7 +57,7 @@ public class KenyaEmrUiUtilsTest extends BaseModuleWebContextSensitiveTest {
 		executeDataSet("test-drugdata.xml");
 
 		InputStream stream = getClass().getClassLoader().getResourceAsStream("test-regimens.xml");
-		RegimenManager.loadDefinitionsFromXML(stream);
+		emr.getRegimenManager().loadDefinitionsFromXML(stream);
 
 		this.ui = new FragmentActionUiUtils(null, null, null);
 
@@ -181,7 +185,7 @@ public class KenyaEmrUiUtilsTest extends BaseModuleWebContextSensitiveTest {
 	 */
 	@Test
 	public void simpleRegimenDefinitions_shouldConvertToSimpleObjects() throws IOException, SAXException, ParserConfigurationException {
-		List<SimpleObject> objs = KenyaEmrUiUtils.simpleRegimenDefinitions(RegimenManager.getRegimenGroups("category1").get(0).getRegimens(), ui);
+		List<SimpleObject> objs = KenyaEmrUiUtils.simpleRegimenDefinitions(emr.getRegimenManager().getRegimenGroups("category1").get(0).getRegimens(), ui);
 
 		Assert.assertEquals("regimen1", objs.get(0).get("name"));
 		Assert.assertEquals("group1", ((Map<String, Object>)objs.get(0).get("group")).get("code"));

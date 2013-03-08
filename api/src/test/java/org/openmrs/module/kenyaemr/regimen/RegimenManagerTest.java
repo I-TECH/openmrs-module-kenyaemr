@@ -5,23 +5,28 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.DrugOrder;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyaemr.KenyaEmr;
 import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.InputStream;
 import java.util.List;
 
 public class RegimenManagerTest extends BaseModuleContextSensitiveTest {
 
+	@Autowired
+	RegimenManager regimenManager;
+
 	@Before
 	public void beforeEachTest() throws Exception {
 		executeDataSet("test-data.xml");
 		executeDataSet("test-drugdata.xml");
 
-		RegimenManager.clear();
+		regimenManager.clear();
 
 		InputStream stream = getClass().getClassLoader().getResourceAsStream("test-regimens.xml");
-		RegimenManager.loadDefinitionsFromXML(stream);
+		regimenManager.loadDefinitionsFromXML(stream);
 	}
 
 	/**
@@ -30,11 +35,11 @@ public class RegimenManagerTest extends BaseModuleContextSensitiveTest {
 	 */
 	@Test
 	public void loadDefinitionsFromXML_shouldLoadAllDefinitions() throws Exception {
-		Assert.assertEquals(1, RegimenManager.getCategoryCodes().size());
+		Assert.assertEquals(1, regimenManager.getCategoryCodes().size());
 
-		Assert.assertEquals(MetadataConstants.ANTIRETROVIRAL_DRUGS_CONCEPT_UUID, RegimenManager.getMasterSetConcept("category1").getUuid());
+		Assert.assertEquals(MetadataConstants.ANTIRETROVIRAL_DRUGS_CONCEPT_UUID, regimenManager.getMasterSetConcept("category1").getUuid());
 
-		List<RegimenDefinitionGroup> groups = RegimenManager.getRegimenGroups("category1");
+		List<RegimenDefinitionGroup> groups = regimenManager.getRegimenGroups("category1");
 
 		Assert.assertEquals(2, groups.size());
 		RegimenDefinitionGroup group1 = groups.get(0);
@@ -95,12 +100,12 @@ public class RegimenManagerTest extends BaseModuleContextSensitiveTest {
 		regimen.addDrugOrder(stavudine);
 
 		// Test exact match
-		List<RegimenDefinition> defsExact = RegimenManager.findDefinitions("category1", regimen, true);
+		List<RegimenDefinition> defsExact = regimenManager.findDefinitions("category1", regimen, true);
 		Assert.assertEquals(1, defsExact.size());
 		Assert.assertEquals("regimen2", defsExact.get(0).getName());
 
 		// Test non-exact match
-		List<RegimenDefinition> defsNonExact = RegimenManager.findDefinitions("category1", regimen, false);
+		List<RegimenDefinition> defsNonExact = regimenManager.findDefinitions("category1", regimen, false);
 		Assert.assertEquals(2, defsNonExact.size());
 		Assert.assertEquals("regimen2", defsNonExact.get(0).getName());
 		Assert.assertEquals("regimen3", defsNonExact.get(1).getName());
@@ -111,11 +116,11 @@ public class RegimenManagerTest extends BaseModuleContextSensitiveTest {
 	 */
 	@Test
 	public void clear_shouldClearAllRegimenData() {
-		RegimenManager.clear();
+		regimenManager.clear();
 
-		Assert.assertEquals(0, RegimenManager.getCategoryCodes().size());
-		Assert.assertNull(RegimenManager.getMasterSetConcept("category1"));
-		Assert.assertNull(RegimenManager.getDrugs("category1"));
-		Assert.assertNull(RegimenManager.getRegimenGroups("category1"));
+		Assert.assertEquals(0, regimenManager.getCategoryCodes().size());
+		Assert.assertNull(regimenManager.getMasterSetConcept("category1"));
+		Assert.assertNull(regimenManager.getDrugs("category1"));
+		Assert.assertNull(regimenManager.getRegimenGroups("category1"));
 	}
 }

@@ -26,10 +26,12 @@ import org.openmrs.PatientProgram;
 import org.openmrs.Visit;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appframework.AppUiUtil;
+import org.openmrs.module.kenyaemr.KenyaEmr;
 import org.openmrs.module.kenyaemr.form.FormConfig;
 import org.openmrs.module.kenyaemr.form.FormManager;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
+import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.page.PageModel;
 import org.openmrs.ui.framework.session.Session;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -46,7 +48,8 @@ public class MedicalChartViewPatientPageController {
 						   @RequestParam(required = false, value = "section") String section,
 	                       PageModel model,
 	                       UiUtils ui,
-	                       Session session) {
+	                       Session session,
+						   @SpringBean KenyaEmr emr) {
 
 		if ("".equals(formUuid)) {
 			formUuid = null;
@@ -59,7 +62,7 @@ public class MedicalChartViewPatientPageController {
 		model.addAttribute("patient", patient);
 		model.addAttribute("person", patient);
 
-		List<FormConfig> oneTimeFormConfigs = FormManager.getFormsForPatient("kenyaemr.medicalChart", patient, Collections.singleton(FormConfig.Frequency.ONCE_EVER));
+		List<FormConfig> oneTimeFormConfigs = emr.getFormManager().getFormsForPatient("kenyaemr.medicalChart", patient, Collections.singleton(FormConfig.Frequency.ONCE_EVER));
 		List<SimpleObject> oneTimeForms = new ArrayList<SimpleObject>();
 		for (FormConfig formConfig : oneTimeFormConfigs) {
 			Form form = Context.getFormService().getFormByUuid(formConfig.getFormUuid());

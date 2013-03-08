@@ -17,8 +17,12 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class MetadataManagerTest extends BaseModuleContextSensitiveTest {
+
+	@Autowired
+	MetadataManager metadataManager;
 
 	/**
 	 * @see org.openmrs.module.kenyaemr.MetadataManager#installMetadataPackageIfNecessary(String, String, ClassLoader)
@@ -31,11 +35,11 @@ public class MetadataManagerTest extends BaseModuleContextSensitiveTest {
 
 		// Simulate first time startup
 		Assert.assertNull(Context.getVisitService().getVisitTypeByUuid(MetadataConstants.OUTPATIENT_VISIT_TYPE_UUID));
-		Assert.assertTrue(MetadataManager.installMetadataPackageIfNecessary(PACKAGE_GROUP_UUID, PACKAGE_FILENAME, null));
+		Assert.assertTrue(metadataManager.installMetadataPackageIfNecessary(PACKAGE_GROUP_UUID, PACKAGE_FILENAME, null));
 		Assert.assertNotNull(Context.getVisitService().getVisitTypeByUuid(MetadataConstants.OUTPATIENT_VISIT_TYPE_UUID));
 
 		// Simulate starting a second time
-		Assert.assertFalse(MetadataManager.installMetadataPackageIfNecessary(PACKAGE_GROUP_UUID, PACKAGE_FILENAME, null));
+		Assert.assertFalse(metadataManager.installMetadataPackageIfNecessary(PACKAGE_GROUP_UUID, PACKAGE_FILENAME, null));
 		Assert.assertNotNull(Context.getVisitService().getVisitTypeByUuid(MetadataConstants.OUTPATIENT_VISIT_TYPE_UUID));
 	}
 }

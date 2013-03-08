@@ -11,12 +11,15 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.kenyaemr.fragment.controller;
 
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyaemr.KenyaEmr;
 import org.openmrs.module.kenyaemr.util.BuildProperties;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.module.kenyaemr.util.KenyaEmrUtils;
+import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 
 import java.text.ParseException;
@@ -27,14 +30,14 @@ import java.util.Date;
  */
 public class PageHeaderFragmentController {
 
-	public void controller(FragmentModel model) throws ParseException {
+	public void controller(FragmentModel model, @SpringBean KenyaEmr emr) throws ParseException {
 		// Get module version
-		String moduleVersion = KenyaEmrUtils.getModuleVersion();
+		String moduleVersion = emr.getModuleVersion();
 
 		// Fetch build date for snapshot versions
 		Date moduleBuildDate = null;
 		if (moduleVersion.endsWith("SNAPSHOT")) {
-			BuildProperties buildProperties = KenyaEmrUtils.getModuleBuildProperties();
+			BuildProperties buildProperties = emr.getModuleBuildProperties();
 
 			if (buildProperties != null) {
 				moduleBuildDate = buildProperties.getBuildDate();

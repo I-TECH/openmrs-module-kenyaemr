@@ -22,6 +22,7 @@ import org.openmrs.module.metadatasharing.ImportedPackage;
 import org.openmrs.module.metadatasharing.MetadataSharing;
 import org.openmrs.module.metadatasharing.api.MetadataSharingService;
 import org.openmrs.module.metadatasharing.wrapper.PackageImporter;
+import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -30,12 +31,14 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
  * Metadata package manager
  */
+@Component
 public class MetadataManager {
 
 	protected static final Log log = LogFactory.getLog(MetadataManager.class);
@@ -47,7 +50,7 @@ public class MetadataManager {
 	 * @return whether any changes were made to the db
 	 * @throws Exception
 	 */
-	public static synchronized boolean loadPackagesFromXML(InputStream stream, ClassLoader loader) throws Exception {
+	public synchronized boolean loadPackagesFromXML(InputStream stream, ClassLoader loader) throws Exception {
 		boolean anyChanges = false;
 
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -65,6 +68,22 @@ public class MetadataManager {
 		}
 
 		return anyChanges;
+	}
+
+	/**
+	 * Gets the concepts version
+	 * @return the version
+	 */
+	public String getConceptsVersion() {
+		return Context.getAdministrationService().getGlobalProperty(KenyaEmrConstants.GP_CONCEPTS_VERSION);
+	}
+
+	/**
+	 * Gets all imported packages in the system
+	 * @return the packages
+	 */
+	public List<ImportedPackage> getImportedPackages() {
+		return Context.getService(MetadataSharingService.class).getAllImportedPackages();
 	}
 
 	/**
