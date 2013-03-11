@@ -5,7 +5,7 @@
 		return """<div class="edit-button"><a href="${ url }">Edit</a></div>"""
 	}
 
-	def discontinueHtml = "<br />" + ui.includeFragment("uilibrary", "widget/button", [
+	def discontinueHtml = "<br />" + ui.includeFragment("kenyaui", "widget/button", [
 			label: "Discontinue Services",
 			href: ui.pageLink("kenyaemr", "enterHtmlForm", [ patientId: patient.id, formUuid: exitFormUuid, returnUrl: ui.thisUrl() ])
 	])
@@ -42,7 +42,7 @@
 ${ helper(currentEnrollment) }
 <% } else { %>
 <div class="stack-item">
-	${ ui.includeFragment("uilibrary", "widget/button", [
+	${ ui.includeFragment("kenyaui", "widget/button", [
 		label: ui.format(program),
 		classes: [ "padded "],
 		extra: "Enroll",

@@ -1,5 +1,5 @@
 <div class="panel-frame">
-	<%= ui.includeFragment("uilibrary", "widget/popupForm", [
+	<%= ui.includeFragment("kenyaui", "widget/popupForm", [
 		linkConfig: [
 			label: "Edit",
 			classes: [ "panel-editlink", "clickable" ]
@@ -33,7 +33,7 @@
 
 <div class="panel-frame">
 	<% if (user && !user.retired) { %>
-		<%= ui.includeFragment("uilibrary", "widget/popupForm", [
+		<%= ui.includeFragment("kenyaui", "widget/popupForm", [
 			linkConfig: [
 				label: "Edit",
 				classes: [ "panel-editlink", "clickable" ]
@@ -85,7 +85,7 @@
 
 	<% } else { %>
 	
-		<%= ui.includeFragment("uilibrary", "widget/popupForm", [
+		<%= ui.includeFragment("kenyaui", "widget/popupForm", [
 				buttonConfig: [
 					label: "Create Login",
 					iconProvider: "kenyaemr",
@@ -120,7 +120,7 @@
 
 <div class="panel-frame">
 	<% if (provider && !provider.retired) { %>
-		<%= ui.includeFragment("uilibrary", "widget/popupForm", [
+		<%= ui.includeFragment("kenyaui", "widget/popupForm", [
 			linkConfig: [
 				label: "Edit",
 				classes: [ "panel-editlink", "clickable" ]
@@ -147,7 +147,7 @@
 	<% if (provider) { %>
 		${ ui.includeFragment("kenyaemr", "dataPoint", [ label: "Provider ID", value: provider.identifier ]) }
 	<% } else { %>
-		<%= ui.includeFragment("uilibrary", "widget/popupForm", [
+		<%= ui.includeFragment("kenyaui", "widget/popupForm", [
 			buttonConfig: [
 				label: "Make this person a Provider",
 				iconProvider: "kenyaemr",

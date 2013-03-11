@@ -1,12 +1,12 @@
 <%
-	ui.includeCss("uilibrary", "uilibrary.css")
-	ui.includeCss("uilibrary", "toastmessage/css/jquery.toastmessage.css")
+	ui.includeCss("kenyaui", "kenyaui.css")
+	ui.includeCss("kenyaui", "toastmessage/css/jquery.toastmessage.css")
 	ui.includeCss("kenyaemr", "kenyaemr.css");
 
-	ui.includeJavascript("uilibrary", "jquery.js")
-	ui.includeJavascript("uilibrary", "jquery.toastmessage.js")
-	ui.includeJavascript("uilibrary", "uiframework.js")
-	ui.includeJavascript("uilibrary", "ui.js")
+	ui.includeJavascript("kenyaui", "jquery.js")
+	ui.includeJavascript("kenyaui", "jquery.toastmessage.js")
+	ui.includeJavascript("kenyaui", "uiframework.js")
+	ui.includeJavascript("kenyaui", "ui.js")
 	ui.includeJavascript("kenyaemr", "kenyaemr.js")
 %>
 <script type="text/javascript">
@@ -64,7 +64,7 @@ ${ ui.includeFragment("kenyaemr", "pageHeader") }
 				</tr>
 				<tr>
 					<td colspan="3">
-						${ ui.includeFragment("uilibrary", "flashMessage") }
+						${ ui.includeFragment("kenyaui", "flashMessage") }
 					</td>
 				</tr>
 			</table>

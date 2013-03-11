@@ -1,11 +1,11 @@
 <%
-	ui.includeCss("uilibrary", "jquery-ui.css")
+	ui.includeCss("kenyaui", "jquery-ui.css")
 	ui.includeCss("kenyaemr", "kenyaemr.css");
 	
-	ui.includeJavascript("uilibrary", "jquery.js")
-	ui.includeJavascript("uilibrary", "jquery-ui.js")
+	ui.includeJavascript("kenyaui", "jquery.js")
+	ui.includeJavascript("kenyaui", "jquery-ui.js")
 	
-	ui.includeJavascript("uilibrary", "uiframework.js")
+	ui.includeJavascript("kenyaui", "uiframework.js")
 	ui.includeJavascript("kenyaemr", "kenyaemr.js")
 
 	if (config.patient) {
@@ -22,7 +22,7 @@
 		config.beforeContent += ui.includeFragment("kenyaemr", "selectedVisitHeader", [ visit: config.visit ])
 	}
 	
-	ui.decorateWith("uilibrary", "standardPage", config)
+	ui.decorateWith("kenyaui", "standardPage", config)
 %>
 
 <!-- Override content layout from uilibrary based on the layout config value -->

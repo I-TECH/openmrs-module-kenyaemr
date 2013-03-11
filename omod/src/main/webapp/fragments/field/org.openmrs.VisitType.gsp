@@ -6,7 +6,7 @@ if (config?.config?.type == 'radio')
 	widget = "radioButtons"
 %>
 
-<%= ui.includeFragment("uilibrary", "widget/${ widget }", [
+<%= ui.includeFragment("kenyaui", "widget/${ widget }", [
         selected: [ config?.initialValue?.id ],
         formFieldName: config.formFieldName,
         options: context.getVisitService().getAllVisitTypes().findAll { !it.retired },

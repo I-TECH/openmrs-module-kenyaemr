@@ -38,7 +38,7 @@
 	<% } %>
 </div>
 <div class="stack-item">
-	${ ui.includeFragment("uilibrary", "widget/button", [
+	${ ui.includeFragment("kenyaui", "widget/button", [
 			iconProvider: "kenyaemr",
 			icon: "forms/family_history.png",
 			label: "Family History",
@@ -49,8 +49,8 @@
 			])
 	]) }
 	<% if (patient.gender == 'F') { %>
-	${ ui.includeFragment("uilibrary", "widget/button", [
-			iconProvider: "uilibrary",
+	${ ui.includeFragment("kenyaui", "widget/button", [
+			iconProvider: "kenyaui",
 			icon: "home_32.png",
 			label: "Obstetric History",
 			href: ui.pageLink("kenyaemr", "editPatientHtmlForm", [

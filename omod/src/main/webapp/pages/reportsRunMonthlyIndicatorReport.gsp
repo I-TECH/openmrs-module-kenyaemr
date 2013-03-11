@@ -23,7 +23,7 @@
 		<div class="panel-content">
 			<form method="post" id="generate-report">
 				Period:
-				${ ui.includeFragment("uilibrary", "widget/selectList", [
+				${ ui.includeFragment("kenyaui", "widget/selectList", [
 						formFieldName: "startDate",
 						options: startDateOptions,
 						optionsValueField: "key",
@@ -31,7 +31,7 @@
 				]) }
 				<br/>
 				<br/>
-				${ ui.includeFragment("uilibrary", "widget/radioButtons", [
+				${ ui.includeFragment("kenyaui", "widget/radioButtons", [
 						formFieldName: "mode",
 						options: [
 							[ value: "view", label: "View online" ],
@@ -41,7 +41,7 @@
 				]) }
 				<br/>
 				<br/>
-				${ ui.includeFragment("uilibrary", "widget/button", [
+				${ ui.includeFragment("kenyaui", "widget/button", [
 						iconProvider: "kenyaemr",
 						icon: "buttons/report_generate.png",
 						label: "Generate Report",

@@ -1,8 +1,8 @@
 <%
 // supports style (css style)
 
-ui.includeJavascript("uilibrary", "jquery.js")
-ui.includeJavascript("uilibrary", "jquery-ui.js")
+ui.includeJavascript("kenyaui", "jquery.js")
+ui.includeJavascript("kenyaui", "jquery-ui.js")
 ui.includeJavascript("kenyaemr", "dwr-util.js")
 %>
 

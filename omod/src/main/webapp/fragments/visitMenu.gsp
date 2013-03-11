@@ -2,7 +2,7 @@
 	<% if (visit) {
 		if (config.allowCheckOut) {
 	%>
-		${ ui.includeFragment("uilibrary", "widget/popupForm", [
+		${ ui.includeFragment("kenyaui", "widget/popupForm", [
 				id: "check-out-form",
 				buttonConfig: [
 						label: "End Visit",
@@ -27,7 +27,7 @@
 	<%
 		} else {
 	%>
-		${ ui.includeFragment("uilibrary", "widget/button", [
+		${ ui.includeFragment("kenyaui", "widget/button", [
 				iconProvider: "kenyaemr",
 				icon: "buttons/registration.png",
 				label: "Go to Registration",
@@ -41,7 +41,7 @@
 		if (config.allowCheckIn) {
 			def jsSuccess = "location.href = ui.pageLink('kenyaemr', 'registrationViewPatient', " + "{" + "patientId: ${ patient.id }, visitId: data.visitId" + "});"
 	%>
-	<%= ui.includeFragment("uilibrary", "widget/popupForm", [
+	<%= ui.includeFragment("kenyaui", "widget/popupForm", [
 			id: "check-in-form",
 			buttonConfig: [
 					iconProvider: "kenyaemr",
@@ -71,7 +71,7 @@
 			submitLoadingMessage: "Checking In"
 	]) %>
 	<% 	} else { %>
-		${ ui.includeFragment("uilibrary", "widget/button", [
+		${ ui.includeFragment("kenyaui", "widget/button", [
 				iconProvider: "kenyaemr",
 				icon: "buttons/registration.png",
 				label: "Go to Registration",

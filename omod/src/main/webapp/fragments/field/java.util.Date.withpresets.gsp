@@ -5,7 +5,7 @@
 		"""<option value="${ kenyaUi.formatDate(it.value) }">${ it.label }</option>"""
 	}).join()
 %>
-${ ui.includeFragment("uilibrary", "field/java.util.Date", config) }
+${ ui.includeFragment("kenyaui", "field/java.util.Date", config) }
 
 <script type="text/javascript">
 	jq(function() {

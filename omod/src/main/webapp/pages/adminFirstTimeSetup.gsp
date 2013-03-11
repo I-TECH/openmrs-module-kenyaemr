@@ -53,7 +53,7 @@
 	<div class="panel-frame">
 		<div class="panel-heading">First-time Setup</div>
 		<div class="panel-content">
-			${ ui.includeFragment("uilibrary", "widget/form", [
+			${ ui.includeFragment("kenyaui", "widget/form", [
 					pageProvider: "kenyaemr",
 					page: "adminFirstTimeSetup",
 					submitLabel: "Save Settings",

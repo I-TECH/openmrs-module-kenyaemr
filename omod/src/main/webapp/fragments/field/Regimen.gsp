@@ -1,5 +1,5 @@
 <%
-	ui.includeJavascript("uilibrary", "coreFragments.js")
+	ui.includeJavascript("kenyaui", "coreFragments.js")
 
 	def units = [ "mg", "g", "ml", "tab" ]
 

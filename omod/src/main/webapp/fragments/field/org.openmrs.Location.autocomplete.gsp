@@ -1,4 +1,4 @@
-<%= ui.includeFragment("uilibrary", "widget/autocomplete", [
+<%= ui.includeFragment("kenyaui", "widget/autocomplete", [
 		selected: config.initialValue ? [ value: config.initialValue.locationId, label: ui.format(config.initialValue) ] : null,
 		selectedValue: [ config.initialValue?.name ],
         formFieldName: config.formFieldName,

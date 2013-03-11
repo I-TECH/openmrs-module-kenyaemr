@@ -10,7 +10,7 @@
 ${ ui.includeFragment("kenyaemr", "dataPoint", [ label: "Username", value: user.username ]) }
 ${ ui.includeFragment("kenyaemr", "dataPoint", [ label: "Secret question", value: user.secretQuestion ]) }
 
-${ ui.includeFragment("uilibrary", "widget/popupForm", [
+${ ui.includeFragment("kenyaui", "widget/popupForm", [
 		id: "change_password",
 		linkConfig: [
 				label: "",
@@ -34,7 +34,7 @@ ${ ui.includeFragment("uilibrary", "widget/popupForm", [
 		successCallbacks: [ "ui.reloadPage();" ]
 ]) }
 
-${ ui.includeFragment("uilibrary", "widget/popupForm", [
+${ ui.includeFragment("kenyaui", "widget/popupForm", [
 		id: "change_secret_question",
 		linkConfig: [
 				label: "",

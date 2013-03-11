@@ -7,7 +7,7 @@
 <div id="pageheader">
 	<div style="float: left">
 		<a href="/${ contextPath }/index.htm?<% if (config.context) { %>${ config.context }<% } %>">
-			<img src="${ ui.resourceLink("uilibrary", "images/openmrs_logo_white.gif") }" width="50" height="50"/>
+			<img src="${ ui.resourceLink("kenyaui", "images/openmrs_logo_white.gif") }" width="50" height="50"/>
 		</a>
 	</div>
 	<div style="float: left">

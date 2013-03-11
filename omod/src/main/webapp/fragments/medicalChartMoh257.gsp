@@ -41,7 +41,7 @@
 		%>
 		<br />
 		<div align="center">
-			${ ui.includeFragment("uilibrary", "widget/popupForm", [
+			${ ui.includeFragment("kenyaui", "widget/popupForm", [
 					id: "create-retro-visit",
 					buttonConfig: [
 							iconProvider: "kenyaemr",
@@ -80,7 +80,7 @@
 
 		<br />
 		<div align="center">
-			${ ui.includeFragment("uilibrary", "widget/button", [
+			${ ui.includeFragment("kenyaui", "widget/button", [
 					label: "Edit History",
 					extra: "Go to editor",
 					iconProvider: "kenyaemr",

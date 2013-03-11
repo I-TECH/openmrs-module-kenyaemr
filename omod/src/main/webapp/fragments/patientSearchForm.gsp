@@ -4,7 +4,7 @@
 	def defaultWhich = config.defaultWhich ?: "checked-in"
 %>
 
-<%= ui.includeFragment("uilibrary", "widget/form", [
+<%= ui.includeFragment("kenyaui", "widget/form", [
 	id: "patientSearch",
 	fields: [
 		[ label: "Which patients", fragment: "widget/radioButtons", formFieldName: "which",

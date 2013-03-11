@@ -18,7 +18,7 @@ if (config?.config?.type == 'radio')
 	widget = "radioButtons"
 %>
 
-<%= ui.includeFragment("uilibrary", "widget/${ widget }", [
+<%= ui.includeFragment("kenyaui", "widget/${ widget }", [
 		id: config.id,
         selected: [ config?.initialValue?.id ],
         formFieldName: config.formFieldName,

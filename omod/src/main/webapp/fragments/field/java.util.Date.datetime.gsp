@@ -1,5 +1,5 @@
 <%
-	ui.includeJavascript("uilibrary", "coreFragments.js")
+	ui.includeJavascript("kenyaui", "coreFragments.js")
 
 	def initialHour = config.initialValue ? config.initialValue.hours : null
 	def initialMinute = config.initialValue ? config.initialValue.minutes : null

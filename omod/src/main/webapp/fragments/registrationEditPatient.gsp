@@ -11,7 +11,7 @@
 			[ object: command, property: "personName.middleName", label: "Other Name(s)" ]		
 		],
 		[
-			ui.decorate("uilibrary", "labeled", [label: "Sex"], """
+			ui.decorate("kenyaui", "labeled", [label: "Sex"], """
 				<input type="radio" name="gender" value="F" id="gender-F" ${ femaleChecked }/>
 				<label for="gender-F">Female</label>
 				&nbsp;
@@ -93,19 +93,19 @@
 	<table>
 		<tr>
 			<td>${ ui.format(command.patientClinicNumber.identifierType) }</td>
-			<td>${ ui.includeFragment("uilibrary", "widget/field", [ object: command, property: "patientClinicNumber.identifier" ]) }</td>
+			<td>${ ui.includeFragment("kenyaui", "widget/field", [ object: command, property: "patientClinicNumber.identifier" ]) }</td>
 			<td><% if (!command.patientClinicNumber.identifier) { %>(if available)<% } %></td>
 		</tr>
 		<% if (command.inHivProgram) { %>
 			<tr>
 				<td>${ ui.format(command.hivIdNumber.identifierType) }</td>
-				<td>${ ui.includeFragment("uilibrary", "widget/field", [ object: command, property: "hivIdNumber.identifier" ]) }</td>
+				<td>${ ui.includeFragment("kenyaui", "widget/field", [ object: command, property: "hivIdNumber.identifier" ]) }</td>
 				<td>(HIV program<% if (!command.hivIdNumber.identifier) { %>, if assigned<% } %>)</td>
 			</tr>
 		<% } %>
 		<tr>
 			<td>${ ui.format(command.nationalIdNumber.attributeType) } </td>
-			<td>${ ui.includeFragment("uilibrary", "widget/field", [ object: command, property: "nationalIdNumber.value" ]) }</td>
+			<td>${ ui.includeFragment("kenyaui", "widget/field", [ object: command, property: "nationalIdNumber.value" ]) }</td>
 			<td><% if (!command.nationalIdNumber.value) { %>(if available)<% } %></td>
 		</tr>
 		

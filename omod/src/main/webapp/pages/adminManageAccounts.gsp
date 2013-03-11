@@ -6,7 +6,7 @@
 	<div class="panel-frame">
 		<div class="panel-heading">Find an Account</div>
 		<div class="panel-content">
-			<%= ui.includeFragment("uilibrary", "widget/form", [
+			<%= ui.includeFragment("kenyaui", "widget/form", [
 				id: "accountSearch",
 				fields: [
 					[ label: "Name or Username", formFieldName: "q", class: java.lang.String ],

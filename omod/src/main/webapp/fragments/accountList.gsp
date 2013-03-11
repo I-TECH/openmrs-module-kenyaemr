@@ -17,7 +17,7 @@
 %>
 <script type="text/javascript">
 	var accountItemOpts = {
-		icon: '<img width="32" height="32" src="${ ui.resourceLink('uilibrary', 'images/user_business_32.png') }"/>',
+		icon: '<img width="32" height="32" src="${ ui.resourceLink("kenyaui", "images/user_business_32.png") }"/>',
 		title: function(account) {
 			return account.personName + '<input type="hidden" name="personId" value="' + account.personId + '"/>';
 		},

@@ -64,21 +64,21 @@
 
 			<div id="regimen-action-buttons" style="text-align: center">
 			<% if (allowNew) { %>
-			${ ui.includeFragment("uilibrary", "widget/button", [ iconProvider: "kenyaemr", icon: "buttons/regimen_start.png", label: "Start", extra: "a new regimen", onClick: "choseAction('start-new-regimen')" ]) }
+			${ ui.includeFragment("kenyaui", "widget/button", [ iconProvider: "kenyaemr", icon: "buttons/regimen_start.png", label: "Start", extra: "a new regimen", onClick: "choseAction('start-new-regimen')" ]) }
 			<% } %>
 
 			<% if (allowChange) { %>
-			${ ui.includeFragment("uilibrary", "widget/button", [ iconProvider: "kenyaemr", icon: "buttons/regimen_change.png", label: "Change", extra: "the current regimen", onClick: "choseAction('change-regimen')" ]) }
+			${ ui.includeFragment("kenyaui", "widget/button", [ iconProvider: "kenyaemr", icon: "buttons/regimen_change.png", label: "Change", extra: "the current regimen", onClick: "choseAction('change-regimen')" ]) }
 
-			${ ui.includeFragment("uilibrary", "widget/button", [ iconProvider: "kenyaemr", icon: "buttons/regimen_stop.png", label: "Stop", extra: "the current regimen", onClick: "choseAction('stop-regimen')" ]) }
+			${ ui.includeFragment("kenyaui", "widget/button", [ iconProvider: "kenyaemr", icon: "buttons/regimen_stop.png", label: "Stop", extra: "the current regimen", onClick: "choseAction('stop-regimen')" ]) }
 			<% } %>
 
 			<% if (allowRestart) { %>
-			${ ui.includeFragment("uilibrary", "widget/button", [ iconProvider: "kenyaemr", icon: "buttons/regimen_restart.png", label: "Restart", extra: "a new regimen", onClick: "choseAction('restart-regimen')" ]) }
+			${ ui.includeFragment("kenyaui", "widget/button", [ iconProvider: "kenyaemr", icon: "buttons/regimen_restart.png", label: "Restart", extra: "a new regimen", onClick: "choseAction('restart-regimen')" ]) }
 			<% } %>
 
 			<% if (allowUndo) { %>
-			${ ui.includeFragment("uilibrary", "widget/button", [ iconProvider: "kenyaemr", icon: "buttons/undo.png", label: "Undo", extra: "the last change", onClick: "undoLastChange()" ]) }
+			${ ui.includeFragment("kenyaui", "widget/button", [ iconProvider: "kenyaemr", icon: "buttons/undo.png", label: "Undo", extra: "the last change", onClick: "undoLastChange()" ]) }
 			<% } %>
 			</div>
 
@@ -86,7 +86,7 @@
 			<fieldset id="start-new-regimen" class="regimen-action-form" style="display: none">
 				<legend>Start New Regimen</legend>
 
-				${ ui.includeFragment("uilibrary", "widget/form", [
+				${ ui.includeFragment("kenyaui", "widget/form", [
 					fragmentProvider: "kenyaemr",
 					fragment: "regimenUtil",
 					action: "changeRegimen",
@@ -109,7 +109,7 @@
 			<fieldset id="change-regimen" class="regimen-action-form" style="display: none">
 				<legend>Change Regimen</legend>
 
-				${ ui.includeFragment("uilibrary", "widget/form", [
+				${ ui.includeFragment("kenyaui", "widget/form", [
 					fragmentProvider: "kenyaemr",
 					fragment: "regimenUtil",
 					action: "changeRegimen",
@@ -131,7 +131,7 @@
 			<fieldset id="stop-regimen" class="regimen-action-form" style="display: none">
 				<legend>Stop Regimen</legend>
 
-				${ ui.includeFragment("uilibrary", "widget/form", [
+				${ ui.includeFragment("kenyaui", "widget/form", [
 					fragmentProvider: "kenyaemr",
 					fragment: "regimenUtil",
 					action: "changeRegimen",
@@ -154,7 +154,7 @@
 			<fieldset id="restart-regimen" class="regimen-action-form" style="display: none">
 				<legend>Restart Regimen</legend>
 
-				${ ui.includeFragment("uilibrary", "widget/form", [
+				${ ui.includeFragment("kenyaui", "widget/form", [
 					fragmentProvider: "kenyaemr",
 					fragment: "regimenUtil",
 					action: "changeRegimen",
