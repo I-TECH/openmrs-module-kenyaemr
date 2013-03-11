@@ -75,7 +75,10 @@ jq(function() {
 	/**
 	 * Give html buttons same styles as kenyaui controls
 	 */
-	jq('input[type="button"], input[type="submit"], input[type="reset"], button').addClass('ke-control').addClass('ke-button');
+	jq('input[type="button"], input[type="submit"], input[type="reset"]')
+			.addClass('ke-control')
+			.addClass('ke-button')
+			.css('font-weight', 'bold');
 });
 </script>
 
