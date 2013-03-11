@@ -10,7 +10,7 @@
 				<div class="panel-content" style="height: 100%">
 
 					<% mohReports.each { %>
-					<div class="stack-item clickable">
+					<div class="stack-item ke-clickable">
 						<input type="hidden" name="clickUrl" value="${ ui.pageLink("kenyaemr", "reportsRunMonthlyIndicatorReport", [ builder: it.builder ]) }" />
 						<table>
 							<tr>
@@ -30,7 +30,7 @@
 				<div class="panel-content">
 
 					<% facilityReports.each { %>
-					<div class="stack-item clickable" style="overflow: auto">
+					<div class="stack-item ke-clickable" style="overflow: auto">
 						<input type="hidden" name="clickUrl" value="${ ui.pageLink("kenyaemr", "reportsRunPatientListReport", [ builder: it.builder ]) }" />
 						<table>
 							<tr>

@@ -3,25 +3,25 @@
 
 	config.require("label");
 
-	def styles = [ "panel-menuitem" ]
+	def styles = [ "ke-control", "ke-menuitem" ]
 	if (config.active)
-		styles << "panel-menuitem-active"
+		styles << "ke-menuitem-active"
 	if (config.href)
-		styles << "clickable"
+		styles << "ke-clickable"
 %>
 
 <div class="${ styles.join(" ") }">
 	<% if (config.icon && config.iconProvider) { %>
-		<img src="${ ui.resourceLink(config.iconProvider, "images/" + config.icon) }" alt="" />
+		${ ui.includeFragment("kenyaui", "widget/icon", [ iconProvider: config.iconProvider, icon: config.icon ]) }
 	<% }
 
 	if (config.href) { %>
 		<a href="${ config.href }" <% if (!config.extra) { %>style="margin-top: 6px"<% } %> >${ config.label }</a>
 	<% } else { %>
-		<span class="panel-menuitem-text">${ config.label }</span>
+		<span class="ke-label">${ config.label }</span>
 	<% }
 	if (config.extra) { %>
 		<br />
-		<span class="panel-menuitem-description">${ config.extra }</span>
+		<span class="ke-extra">${ config.extra }</span>
 	<% } %>
 </div>

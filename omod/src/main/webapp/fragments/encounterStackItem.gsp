@@ -13,9 +13,9 @@
 	def form = encounter.form ? kenyaUi.simpleForm(encounter.form, ui) : [ iconProvider : "kenyaemr", icon : "forms/generic.png" ]
 %>
 
-<div class="stack-item clickable encounter-item">
+<div class="stack-item ke-clickable encounter-item">
 	<div style="float: left; margin: 3px">
-		${ ui.includeFragment("kenyaemr", "widget/icon", [ iconProvider: form.iconProvider, icon: form.icon, useViewOverlay: true, tooltip: "View Encounter" ]) }
+		${ ui.includeFragment("kenyaui", "widget/icon", [ iconProvider: form.iconProvider, icon: form.icon, useViewOverlay: true, tooltip: "View Encounter" ]) }
 	</div>
 	<input type="hidden" name="encounterId" value="${ encounter.encounterId }"/>
 	<b>${ title }</b> by ${ providers }<br/>

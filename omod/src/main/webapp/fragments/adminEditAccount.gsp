@@ -2,7 +2,7 @@
 	<%= ui.includeFragment("kenyaui", "widget/popupForm", [
 		linkConfig: [
 			label: "Edit",
-			classes: [ "panel-editlink", "clickable" ]
+			classes: [ "panel-editlink", "ke-clickable" ]
 		],
 		fragment: "adminEditAccount",
 		fragmentProvider: "kenyaemr",
@@ -36,7 +36,7 @@
 		<%= ui.includeFragment("kenyaui", "widget/popupForm", [
 			linkConfig: [
 				label: "Edit",
-				classes: [ "panel-editlink", "clickable" ]
+				classes: [ "panel-editlink", "ke-clickable" ]
 			],
 			fragment: "adminEditAccount",
 			fragmentProvider: "kenyaemr",
@@ -123,7 +123,7 @@
 		<%= ui.includeFragment("kenyaui", "widget/popupForm", [
 			linkConfig: [
 				label: "Edit",
-				classes: [ "panel-editlink", "clickable" ]
+				classes: [ "panel-editlink", "ke-clickable" ]
 			],
 			fragmentProvider: "kenyaemr",
 			fragment: "adminEditAccount",

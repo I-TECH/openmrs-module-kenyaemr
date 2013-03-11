@@ -16,9 +16,9 @@
 	config.forms.each { form ->
 		def formOnClick = """enterHtmlForm(${ config.visit ? config.visit.visitId : "null" }, ${ patient.id }, '${ form.formUuid }')"""
 %>
-<div class="stack-item clickable" onclick="${ formOnClick }">
+<div class="stack-item ke-clickable" onclick="${ formOnClick }">
 	<div style="float: left; margin: 3px">
-		${ ui.includeFragment("kenyaemr", "widget/icon", [ iconProvider: form.iconProvider, icon: form.icon, useEditOverlay: true, tooltip: "Enter form" ]) }
+		${ ui.includeFragment("kenyaui", "widget/icon", [ iconProvider: form.iconProvider, icon: form.icon, useEditOverlay: true, tooltip: "Enter form" ]) }
 	</div>
 	<b>${ form.label }</b>
 	<div style="clear: both"></div>

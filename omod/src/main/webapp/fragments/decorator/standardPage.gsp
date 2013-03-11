@@ -72,8 +72,10 @@ jq(function() {
 		jq(this).prepend('<img src="${ ui.resourceLink("kenyaui", "images/edit.png") }" /> ');
 	});
 
-	jq('button .label').css('font-size', '14px');
-	jq('button .extra').css('font-size', '11px').css('font-weight', 'normal');
+	/**
+	 * Give html buttons same styles as kenyaui controls
+	 */
+	jq('input[type="button"], input[type="submit"], input[type="reset"], button').addClass('ke-control').addClass('ke-button');
 });
 </script>
 

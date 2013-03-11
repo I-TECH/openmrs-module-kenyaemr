@@ -18,7 +18,7 @@ var kenyaemr = (function($) {
 		twoColumnStackItemFormatter: function(data, values) {
 			var clickUrl = formatHelper(data, values.clickUrl);
 
-			var ret = '<div class="stack-item clickable">';
+			var ret = '<div class="stack-item ke-clickable">';
 			if (clickUrl) {
 				ret += '<input type="hidden" name="clickUrl" value="' + clickUrl + '" />'
 			}
@@ -41,7 +41,7 @@ var kenyaemr = (function($) {
 		threeColumnStackItemFormatter: function(data, values) {
 			var clickUrl = formatHelper(data, values.clickUrl);
 
-			var ret = '<div class="stack-item clickable">';
+			var ret = '<div class="stack-item ke-clickable">';
 			if (clickUrl) {
 				ret += '<input type="hidden" name="clickUrl" value="' + clickUrl + '" />'
 			}
@@ -108,9 +108,9 @@ var kenyaemr = (function($) {
 
 $(function() {
 	/**
-	 * Clicking anywhere on a panel-menuitem should direct you to the target of it's <a> tag
+	 * Clicking anywhere on a menu item should direct you to the target of it's <a> tag
 	 */
-	$('.panel-menuitem').click(function() {
+	$('.ke-menuitem').click(function() {
 		var a = $(this).find('a').first();
 		var href = (a.length > 0) ? a.attr('href') : null;
 		if (href)
