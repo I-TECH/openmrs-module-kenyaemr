@@ -3,10 +3,10 @@
 
 	def menuItems = []
 	if (builder.excelRenderable) {
-		menuItems.add(0, [ iconProvider: "kenyaemr", icon: "buttons/report_download_excel.png", label: "Download as Excel", href: ui.pageLink("kenyaemr", "reportsRunPatientListReport", [ builder: builder.class, mode: "excel" ]) ])
+		menuItems.add(0, [ iconProvider: "kenyaui", icon: "buttons/report_download_excel.png", label: "Download as Excel", href: ui.pageLink("kenyaemr", "reportsRunPatientListReport", [ builder: builder.class, mode: "excel" ]) ])
 	}
 
-	menuItems << [ iconProvider: "kenyaemr", icon: "buttons/back.png", label: "Back to Reports", href: ui.pageLink("kenyaemr", "reportsHome") ]
+	menuItems << [ iconProvider: "kenyaui", icon: "buttons/back.png", label: "Back to Reports", href: ui.pageLink("kenyaemr", "reportsHome") ]
 %>
 
 <div id="content-side">

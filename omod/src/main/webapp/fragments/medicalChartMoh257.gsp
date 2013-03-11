@@ -44,7 +44,7 @@
 			${ ui.includeFragment("kenyaui", "widget/popupForm", [
 					id: "create-retro-visit",
 					buttonConfig: [
-							iconProvider: "kenyaemr",
+							iconProvider: "kenyaui",
 							icon: "buttons/visit_retrospective.png",
 							label: "Add Visit Summary",
 							extra: "From column",
@@ -83,7 +83,7 @@
 			${ ui.includeFragment("kenyaui", "widget/button", [
 					label: "Edit History",
 					extra: "Go to editor",
-					iconProvider: "kenyaemr",
+					iconProvider: "kenyaui",
 					icon: "buttons/regimen.png",
 					classes: [ "padded" ],
 					href: ui.pageLink("kenyaemr", "regimenEditor", [ patientId: patient, category: "ARV", returnUrl: ui.thisUrl() ])

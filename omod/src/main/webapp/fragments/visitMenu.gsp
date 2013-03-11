@@ -8,7 +8,7 @@
 						label: "End Visit",
 						extra: "Patient going home",
 						classes: [ "padded" ],
-						iconProvider: "kenyaemr",
+						iconProvider: "kenyaui",
 						icon: "buttons/visit_end.png"
 				],
 				popupTitle: "Check Out",
@@ -28,7 +28,7 @@
 		} else {
 	%>
 		${ ui.includeFragment("kenyaui", "widget/button", [
-				iconProvider: "kenyaemr",
+				iconProvider: "kenyaui",
 				icon: "buttons/registration.png",
 				label: "Go to Registration",
 				classes: [ "padded" ],
@@ -44,7 +44,7 @@
 	<%= ui.includeFragment("kenyaui", "widget/popupForm", [
 			id: "check-in-form",
 			buttonConfig: [
-					iconProvider: "kenyaemr",
+					iconProvider: "kenyaui",
 					icon: "buttons/registration.png",
 					label: "Check In For Visit",
 					classes: [ "padded" ],
@@ -72,7 +72,7 @@
 	]) %>
 	<% 	} else { %>
 		${ ui.includeFragment("kenyaui", "widget/button", [
-				iconProvider: "kenyaemr",
+				iconProvider: "kenyaui",
 				icon: "buttons/registration.png",
 				label: "Go to Registration",
 				classes: [ "padded" ],

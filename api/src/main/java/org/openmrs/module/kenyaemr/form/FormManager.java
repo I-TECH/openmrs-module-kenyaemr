@@ -48,7 +48,7 @@ public class FormManager {
 				new String[] { "kenyaemr.medicalChart" },
 				null,
 				Gender.BOTH,
-				"kenyaemr", "forms/family_history.png"
+				"kenyaui", "forms/family_history.png"
 		);
 		registerForm(
 				MetadataConstants.OBSTETRIC_HISTORY_FORM_UUID,
@@ -56,7 +56,7 @@ public class FormManager {
 				new String[] { "kenyaemr.medicalChart" },
 				null,
 				Gender.FEMALE,
-				"kenyaemr", "forms/obstetric.png"
+				"kenyaui", "forms/obstetric.png"
 		);
 
 		/**
@@ -78,7 +78,7 @@ public class FormManager {
 				new String[] { "kenyaemr.medicalEncounter", "kenyaemr.medicalChart" },
 				MetadataConstants.HIV_PROGRAM_UUID,
 				Gender.BOTH,
-				"kenyaemr", "forms/generic.png"
+				"kenyaui", "forms/generic.png"
 		);
 		registerForm(
 				MetadataConstants.OTHER_MEDICATIONS_FORM_UUID,
@@ -91,7 +91,7 @@ public class FormManager {
 				new String[] { "kenyaemr.intake", "kenyaemr.medicalEncounter", "kenyaemr.medicalChart" },
 				null,
 				Gender.BOTH,
-				"kenyaemr", "forms/labresults.png"
+				"kenyaui", "forms/labresults.png"
 		);
 		registerForm(
 				MetadataConstants.PROGRESS_NOTE_FORM_UUID,
@@ -104,7 +104,7 @@ public class FormManager {
 				new String[] { "kenyaemr.medicalChart" },
 				MetadataConstants.HIV_PROGRAM_UUID,
 				Gender.BOTH,
-				"kenyaemr", "forms/moh257.png"
+				"kenyaui", "forms/moh257.png"
 		);
 		registerForm(
 				MetadataConstants.TB_SCREENING_FORM_UUID,
@@ -117,7 +117,7 @@ public class FormManager {
 				new String[] { "kenyaemr.intake", "kenyaemr.medicalEncounter", "kenyaemr.medicalChart" },
 				MetadataConstants.TB_PROGRAM_UUID,
 				Gender.BOTH,
-				"kenyaemr", "forms/generic.png"
+				"kenyaui", "forms/generic.png"
 		);
 
 		/**
@@ -129,7 +129,7 @@ public class FormManager {
 				new String[] { "kenyaemr.medicalChart" },
 				MetadataConstants.HIV_PROGRAM_UUID,
 				Gender.BOTH,
-				"kenyaemr", "forms/generic.png"
+				"kenyaui", "forms/generic.png"
 		);
 		registerForm(
 				MetadataConstants.HIV_PROGRAM_DISCONTINUATION_FORM_UUID,
@@ -137,7 +137,7 @@ public class FormManager {
 				new String[] { "kenyaemr.medicalChart" },
 				MetadataConstants.HIV_PROGRAM_UUID,
 				Gender.BOTH,
-				"kenyaemr", "forms/discontinue.png"
+				"kenyaui", "forms/discontinue.png"
 		);
 		registerForm(
 				MetadataConstants.TB_ENROLLMENT_FORM_UUID,
@@ -145,7 +145,7 @@ public class FormManager {
 				new String[] { "kenyaemr.medicalChart" },
 				MetadataConstants.TB_PROGRAM_UUID,
 				Gender.BOTH,
-				"kenyaemr", "forms/generic.png"
+				"kenyaui", "forms/generic.png"
 		);
 		registerForm(
 				MetadataConstants.TB_COMPLETION_FORM_UUID,
@@ -153,7 +153,7 @@ public class FormManager {
 				new String[] { "kenyaemr.medicalChart" },
 				MetadataConstants.TB_PROGRAM_UUID,
 				Gender.BOTH,
-				"kenyaemr", "forms/discontinue.png"
+				"kenyaui", "forms/discontinue.png"
 		);
 	}
 
@@ -164,7 +164,7 @@ public class FormManager {
 	 * @param forApps the applications to use this form
 	 */
 	public void registerForm(String formUuid, Frequency frequency, String[] forApps) {
-		registerForm(formUuid, frequency, forApps, null, Gender.BOTH, KenyaEmrConstants.MODULE_ID, "forms/generic.png");
+		registerForm(formUuid, frequency, forApps, null, Gender.BOTH, "kenyaui", "forms/generic.png");
 	}
 
 	/**

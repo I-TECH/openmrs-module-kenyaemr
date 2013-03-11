@@ -46,7 +46,7 @@ ${ helper(currentEnrollment) }
 		label: ui.format(program),
 		classes: [ "padded "],
 		extra: "Enroll",
-		iconProvider: "kenyaemr",
+		iconProvider: "kenyaui",
 		icon: "buttons/program_enroll.png",
 		href: ui.pageLink("kenyaemr", "enterHtmlForm", [ patientId: patient.id, formUuid: registrationFormUuid, returnUrl: ui.thisUrl() ])
 	]) }

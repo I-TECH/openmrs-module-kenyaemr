@@ -68,7 +68,7 @@
 <div id="selected-patient-header">
 	<div class="demographics">
 		<div class="patient-icon">
-			<img width="32" height="32" src="${ ui.resourceLink("kenyaemr", "images/patient_" + patient.gender.toLowerCase() + ".png") }"/>
+			<img width="32" height="32" src="${ ui.resourceLink("kenyaui", "images/patient_" + patient.gender.toLowerCase() + ".png") }"/>
 		</div>
 		${ ui.includeFragment("kenyaemr", "personName", [ name: patient.personName ]) }<br/>
 		${ patient.gender == 'M' ? "Male" : patient.gender == 'F' ? 'Female' : patient.gender },
@@ -90,7 +90,7 @@
 	<% if (closeChartUrl) { %>
 		<div id="selected-patient-header-close">
 			<small id="selected-patient-header-close-text">Close chart </small>
-			<a href="${ closeChartUrl }" id="selected-patient-header-close-link"><img title="Close Chart" style="vertical-align: middle" src="${ ui.resourceLink("kenyaemr", "images/buttons/patient_close.png") }"/></a>
+			<a href="${ closeChartUrl }" id="selected-patient-header-close-link"><img title="Close Chart" style="vertical-align: middle" src="${ ui.resourceLink("kenyaui", "images/buttons/patient_close.png") }"/></a>
 		</div>
 	<% } %>
 

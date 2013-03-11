@@ -16,7 +16,7 @@
 				} else if (property == "started" || property == "imported") {
 					// Use icon instead of text
 					def icon = obj[property] ? "success.png" : "alert.png"
-					ret += "<td style=\"text-align: right\"><img src=\"" + ui.resourceLink("kenyaemr", "images/" + icon) + "\" alt=\"\" /></td>"
+					ret += "<td style=\"text-align: right\"><img src=\"" + ui.resourceLink("kenyaui", "images/" + icon) + "\" alt=\"\" /></td>"
 				} else {
 					ret += "<td>${ obj[property] }</td>"
 				}
@@ -33,14 +33,14 @@
 			heading: "Information",
 			items: [
 					[
-							iconProvider: "kenyaemr",
+							iconProvider: "kenyaui",
 							icon: "buttons/admin_overview.png",
 							label: "General",
 							active: (section == "overview"),
 							href: ui.pageLink("kenyaemr", "adminHome")
 					],
 					[
-							iconProvider: "kenyaemr",
+							iconProvider: "kenyaui",
 							icon: "buttons/admin_modules.png",
 							label: "Modules",
 							active: (section == "modules"),
@@ -52,9 +52,9 @@
 	${ ui.includeFragment("kenyaemr", "widget/panelMenu", [
 			heading: "Tasks",
 			items: [
-					[ iconProvider: "kenyaemr", icon: "buttons/users_manage.png", label: "Manage Accounts", href: ui.pageLink("kenyaemr", "adminManageAccounts") ],
-					[ iconProvider: "kenyaemr", icon: "buttons/admin_setup.png", label: "Redo First-time Setup", href: ui.pageLink("kenyaemr", "adminFirstTimeSetup") ],
-					[ iconProvider: "kenyaemr", icon: "buttons/admin_update.png", label: "Install New Software Version", href: ui.pageLink("kenyaemr", "adminSoftwareVersion") ]
+					[ iconProvider: "kenyaui", icon: "buttons/users_manage.png", label: "Manage Accounts", href: ui.pageLink("kenyaemr", "adminManageAccounts") ],
+					[ iconProvider: "kenyaui", icon: "buttons/admin_setup.png", label: "Redo First-time Setup", href: ui.pageLink("kenyaemr", "adminFirstTimeSetup") ],
+					[ iconProvider: "kenyaui", icon: "buttons/admin_update.png", label: "Install New Software Version", href: ui.pageLink("kenyaemr", "adminSoftwareVersion") ]
 			]
 	]) }
 </div>

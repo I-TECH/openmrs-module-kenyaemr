@@ -34,7 +34,7 @@
 	${ ui.includeFragment("kenyaemr", "widget/panelMenu", [
 		heading: "Tasks",
 		items: [
-			[ iconProvider: "kenyaemr", icon: "buttons/account_add.png", label: "Create a New Account", href: ui.pageLink("kenyaemr", "adminEditAccount") ]
+			[ iconProvider: "kenyaui", icon: "buttons/account_add.png", label: "Create a New Account", href: ui.pageLink("kenyaemr", "adminEditAccount") ]
 		]
 	]) }
 </div>

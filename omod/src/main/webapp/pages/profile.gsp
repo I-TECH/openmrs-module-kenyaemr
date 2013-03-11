@@ -7,13 +7,13 @@
 			heading: "My Profile",
 			items: [
 					[
-							iconProvider: "kenyaemr",
+							iconProvider: "kenyaui",
 							icon: "buttons/profile_password.png",
 							label: "Change Password",
 							href: "javascript:showDivAsDialog('#change_password_form', 'Change Password', null)"
 					],
 					[
-							iconProvider: "kenyaemr",
+							iconProvider: "kenyaui",
 							icon: "buttons/profile_secret_question.png",
 							label: "Change Secret Question",
 							href: "javascript:showDivAsDialog('#change_secret_question_form', 'Change Secret Question', null)"

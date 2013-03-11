@@ -28,14 +28,13 @@
 <!-- Override content layout from uilibrary based on the layout config value -->
 
 <style type="text/css">
+
 <% if (config.layout == "sidebar") { %>
 	html {
-		background: #FFF url('${ ui.resourceLink("kenyaemr", "images/background.png") }') repeat-y;
+		background: #FFF url('${ ui.resourceLink("kenyaui", "images/background.png") }') repeat-y;
 	}
 	#content {
-		margin: 0;
 		padding: 0;
-		position: relative;
 	}
 	#content-side {
 		width: 320px;
@@ -48,42 +47,19 @@
 		padding: 5px;
 		overflow: auto;
 	}
-<% } else { %>
-	#content {
-		margin: 0;
-		padding: 5px;
-	}
 <% } %>
+
 	.loading-placeholder {
-		background-image: url('${ ui.resourceLink("kenyaemr", "images/loading.gif") }');
+		background-image: url('${ ui.resourceLink("kenyaui", "images/loading.gif") }');
 	}
-	.field-label {
-		font-size: 12px;
-	}
+
+	/**
+	 * Override styles for toasts
+	 */
 	.toast-item {
 		background-color: #464640;
 		border-radius: 3px;
 		border: 0;
-	}
-	/**
-	 * Override styles for widget/button
-	 */
-	input[type="button"], input[type="submit"], input[type="reset"], button {
-		text-align: center;
-		cursor: pointer;
-		padding: 4px;
-		color: #444;
-		border-top: 0px;
-		border-bottom: 1px #BBB solid;
-		border-left: 0px;
-		border-right: 1px #BBB solid;
-		border-radius: 3px;
-		background-color: #e0e0e0;
-		font-weight: bold;
-		font-size: 14px;
-	}
-	input[type="button"]:hover, input[type="submit"]:hover, input[type="reset"]:hover, button:hover {
-		background-color: #E9E9E9;
 	}
 </style>
 
@@ -93,7 +69,7 @@ jq(function() {
 	 * Add icons to edit links in panel frames
 	 */
 	jq('.panel-frame .panel-editlink').each(function() {
-		jq(this).prepend('<img src="${ ui.resourceLink("kenyaemr", "images/edit.png") }" /> ');
+		jq(this).prepend('<img src="${ ui.resourceLink("kenyaui", "images/edit.png") }" /> ');
 	});
 
 	jq('button .label').css('font-size', '14px');

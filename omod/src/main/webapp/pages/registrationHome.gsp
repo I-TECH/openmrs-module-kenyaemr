@@ -20,7 +20,7 @@
 	${ ui.includeFragment("kenyaemr", "widget/panelMenu", [
 		heading: "Tasks",
 		items: [
-			[ iconProvider: "kenyaemr", icon: "buttons/patient_search.png", label: "Search for a Patient", href: ui.pageLink("kenyaemr", "registrationSearch") ]
+			[ iconProvider: "kenyaui", icon: "buttons/patient_search.png", label: "Search for a Patient", href: ui.pageLink("kenyaemr", "registrationSearch") ]
 		]
 	]) }
 

@@ -80,7 +80,7 @@
 
 		<% if (user.retired) { %>
 			<br/>
-			<img src="${ ui.resourceLink("kenyaemr", "images/alert.png") }" alt="" /> <i>Account is disabled</i>
+			<img src="${ ui.resourceLink("kenyaui", "images/alert.png") }" alt="" /> <i>Account is disabled</i>
 		<% } %>
 
 	<% } else { %>
@@ -88,7 +88,7 @@
 		<%= ui.includeFragment("kenyaui", "widget/popupForm", [
 				buttonConfig: [
 					label: "Create Login",
-					iconProvider: "kenyaemr",
+					iconProvider: "kenyaui",
 					icon: "buttons/user_enable.png"
 				],
 				fragment: "adminEditAccount",
@@ -150,7 +150,7 @@
 		<%= ui.includeFragment("kenyaui", "widget/popupForm", [
 			buttonConfig: [
 				label: "Make this person a Provider",
-				iconProvider: "kenyaemr",
+				iconProvider: "kenyaui",
 				icon: "buttons/provider.png"
 			],
 			fragmentProvider: "kenyaemr",

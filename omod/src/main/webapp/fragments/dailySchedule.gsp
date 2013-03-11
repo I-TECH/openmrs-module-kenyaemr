@@ -24,7 +24,7 @@
 			<tr>
 				<td width="40%">
 					<span class="icon">
-						<img width="32" height="32" src="${ ui.resourceLink("kenyaemr", "images/patient_" + it.patient.gender.toLowerCase() + ".png") }" alt="" />
+						<img width="32" height="32" src="${ ui.resourceLink("kenyaui", "images/patient_" + it.patient.gender.toLowerCase() + ".png") }" alt="" />
 					</span>
 					
 					<span class="leftText">
@@ -46,7 +46,7 @@
 					<% if (it.visits) { %>
 
 						<u>
-							<img src="${ ui.resourceLink("kenyaemr", "images/visit.png") }"/>
+							<img src="${ ui.resourceLink("kenyaui", "images/visit.png") }"/>
 							<small>Seen Today</small>
 						</u>
 						<br/>

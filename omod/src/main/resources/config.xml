@@ -32,11 +32,9 @@
 	
 	<!-- Maps hibernate file's, if present -->
 	<mappingFiles>
-				
 	</mappingFiles>
 
 	<!-- Internationalization -->
-	<!-- All message codes should start with ${project.parent.artifactId}. -->
 	<messages>
 		<lang>en</lang>
 		<file>messages.properties</file>
@@ -44,4 +42,3 @@
 	<!-- /Internationalization -->
 
 </module>
-

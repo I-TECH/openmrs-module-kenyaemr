@@ -6,14 +6,14 @@
 					label: "Overview",
 					href: ui.pageLink("kenyaemr", "medicalChartViewPatient", [ patientId: patient.id, section: "overview" ]),
 					active: (selection == "section-overview"),
-					iconProvider: "kenyaemr",
+					iconProvider: "kenyaui",
 					icon: "buttons/patient_overview.png"
 			],
 	        [
 					label: "MOH 257",
 					href: ui.pageLink("kenyaemr", "medicalChartViewPatient", [ patientId: patient.id, section: "moh257" ]),
 					active: (selection == "section-moh257"),
-					iconProvider: "kenyaemr",
+					iconProvider: "kenyaui",
 					icon: "forms/moh257.png"
 			]
 	];

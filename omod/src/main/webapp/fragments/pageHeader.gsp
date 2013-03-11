@@ -5,9 +5,9 @@
 %>
 
 <div id="pageheader">
-	<div style="float: left">
+	<div style="float: left; padding-right: 3px">
 		<a href="/${ contextPath }/index.htm?<% if (config.context) { %>${ config.context }<% } %>">
-			<img src="${ ui.resourceLink("kenyaui", "images/openmrs_logo_white.gif") }" width="50" height="50"/>
+			<img src="${ ui.resourceLink("kenyaui", "images/openmrs.png") }" width="50" height="50"/>
 		</a>
 	</div>
 	<div style="float: left">
@@ -22,7 +22,7 @@
 	</div>
 
 	<div style="float: right; text-align: right">
-		<img src="${ ui.resourceLink("kenyaemr", "images/moh_logo.png") }"/>
+		<img src="${ ui.resourceLink("kenyaui", "images/moh_logo.png") }"/>
 	</div>
 	<div style="float: right; text-align: right; font-size: 13px; padding-right: 5px">
 		${ ui.message("kenyaemr.subtitle") }

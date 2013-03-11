@@ -14,7 +14,7 @@
 						<input type="hidden" name="clickUrl" value="${ ui.pageLink("kenyaemr", "reportsRunMonthlyIndicatorReport", [ builder: it.builder ]) }" />
 						<table>
 							<tr>
-								<td><img src="${ ui.resourceLink("kenyaemr", "images/reports/moh.png") }" alt="View report" /></td>
+								<td><img src="${ ui.resourceLink("kenyaui", "images/reports/moh.png") }" alt="View report" /></td>
 								<td><b>${ it.name }</b></td>
 							</tr>
 						</table>
@@ -34,7 +34,7 @@
 						<input type="hidden" name="clickUrl" value="${ ui.pageLink("kenyaemr", "reportsRunPatientListReport", [ builder: it.builder ]) }" />
 						<table>
 							<tr>
-								<td><img src="${ ui.resourceLink("kenyaemr", "images/reports/facility.png") }" alt="View report" /></td>
+								<td><img src="${ ui.resourceLink("kenyaui", "images/reports/facility.png") }" alt="View report" /></td>
 								<td><b>${ it.name }</b></td>
 							</tr>
 						</table>

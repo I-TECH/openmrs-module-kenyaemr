@@ -3,13 +3,13 @@
 
 	def menuItems = []
 	if (user && user.retired) {
-		menuItems << [ iconProvider: "kenyaemr", icon: "buttons/user_enable.png", label: "Enable Account", href: "javascript:enableUser()" ]
+		menuItems << [ iconProvider: "kenyaui", icon: "buttons/user_enable.png", label: "Enable Account", href: "javascript:enableUser()" ]
 	}
 	if (user && !user.retired) {
-		menuItems << [ iconProvider: "kenyaemr", icon: "buttons/user_disable.png", label: "Disable Account", href: "javascript:disableUser()" ]
+		menuItems << [ iconProvider: "kenyaui", icon: "buttons/user_disable.png", label: "Disable Account", href: "javascript:disableUser()" ]
 	}
 
-	menuItems << [ iconProvider: "kenyaemr", icon: "buttons/back.png", label: "Back to Accounts", href: ui.pageLink("kenyaemr", "adminManageAccounts") ]
+	menuItems << [ iconProvider: "kenyaui", icon: "buttons/back.png", label: "Back to Accounts", href: ui.pageLink("kenyaemr", "adminManageAccounts") ]
 %>
 
 <div id="content-side">

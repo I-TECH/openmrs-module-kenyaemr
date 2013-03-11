@@ -28,7 +28,7 @@
 	<span class="identifier">
 		<span class="identifier-type">${ ui.format(prefId.identifierType) }:</span>
 		<span class="identifier-value">${ ui.format(prefId.identifier) }</span><br/>
-	</span>
+	</span>         InfoBox
 	<% } %>
 </div>
 
@@ -39,7 +39,7 @@
 </div>
 <div class="stack-item">
 	${ ui.includeFragment("kenyaui", "widget/button", [
-			iconProvider: "kenyaemr",
+			iconProvider: "kenyaui",
 			icon: "forms/family_history.png",
 			label: "Family History",
 			href: ui.pageLink("kenyaemr", "editPatientHtmlForm", [
@@ -51,7 +51,7 @@
 	<% if (patient.gender == 'F') { %>
 	${ ui.includeFragment("kenyaui", "widget/button", [
 			iconProvider: "kenyaui",
-			icon: "home_32.png",
+			icon: "forms/obstetric.png",
 			label: "Obstetric History",
 			href: ui.pageLink("kenyaemr", "editPatientHtmlForm", [
 				patientId: patient.id,

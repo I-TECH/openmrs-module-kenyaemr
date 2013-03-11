@@ -9,7 +9,7 @@
 		heading: "Tasks",
 		items: [
 			[
-				iconProvider: "kenyaemr",
+				iconProvider: "kenyaui",
 				icon: "buttons/patient_add.png",
 				label: "Create New Patient Record",
 				extra: "Patient does not exist yet",

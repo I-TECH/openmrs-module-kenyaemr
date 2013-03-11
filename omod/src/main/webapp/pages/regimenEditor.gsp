@@ -49,7 +49,7 @@
 
 <div id="content-side">
 	<div class="panel-frame">
-		${ ui.includeFragment("kenyaemr", "widget/panelMenuItem", [ iconProvider: "kenyaemr", icon: "buttons/back.png", label: "Back", href: returnUrl ]) }
+		${ ui.includeFragment("kenyaemr", "widget/panelMenuItem", [ iconProvider: "kenyaui", icon: "buttons/back.png", label: "Back", href: returnUrl ]) }
 	</div>
 </div>
 
@@ -64,21 +64,21 @@
 
 			<div id="regimen-action-buttons" style="text-align: center">
 			<% if (allowNew) { %>
-			${ ui.includeFragment("kenyaui", "widget/button", [ iconProvider: "kenyaemr", icon: "buttons/regimen_start.png", label: "Start", extra: "a new regimen", onClick: "choseAction('start-new-regimen')" ]) }
+			${ ui.includeFragment("kenyaui", "widget/button", [ iconProvider: "kenyaui", icon: "buttons/regimen_start.png", label: "Start", extra: "a new regimen", onClick: "choseAction('start-new-regimen')" ]) }
 			<% } %>
 
 			<% if (allowChange) { %>
-			${ ui.includeFragment("kenyaui", "widget/button", [ iconProvider: "kenyaemr", icon: "buttons/regimen_change.png", label: "Change", extra: "the current regimen", onClick: "choseAction('change-regimen')" ]) }
+			${ ui.includeFragment("kenyaui", "widget/button", [ iconProvider: "kenyaui", icon: "buttons/regimen_change.png", label: "Change", extra: "the current regimen", onClick: "choseAction('change-regimen')" ]) }
 
-			${ ui.includeFragment("kenyaui", "widget/button", [ iconProvider: "kenyaemr", icon: "buttons/regimen_stop.png", label: "Stop", extra: "the current regimen", onClick: "choseAction('stop-regimen')" ]) }
+			${ ui.includeFragment("kenyaui", "widget/button", [ iconProvider: "kenyaui", icon: "buttons/regimen_stop.png", label: "Stop", extra: "the current regimen", onClick: "choseAction('stop-regimen')" ]) }
 			<% } %>
 
 			<% if (allowRestart) { %>
-			${ ui.includeFragment("kenyaui", "widget/button", [ iconProvider: "kenyaemr", icon: "buttons/regimen_restart.png", label: "Restart", extra: "a new regimen", onClick: "choseAction('restart-regimen')" ]) }
+			${ ui.includeFragment("kenyaui", "widget/button", [ iconProvider: "kenyaui", icon: "buttons/regimen_restart.png", label: "Restart", extra: "a new regimen", onClick: "choseAction('restart-regimen')" ]) }
 			<% } %>
 
 			<% if (allowUndo) { %>
-			${ ui.includeFragment("kenyaui", "widget/button", [ iconProvider: "kenyaemr", icon: "buttons/undo.png", label: "Undo", extra: "the last change", onClick: "undoLastChange()" ]) }
+			${ ui.includeFragment("kenyaui", "widget/button", [ iconProvider: "kenyaui", icon: "buttons/undo.png", label: "Undo", extra: "the last change", onClick: "undoLastChange()" ]) }
 			<% } %>
 			</div>
 

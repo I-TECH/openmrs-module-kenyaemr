@@ -19,13 +19,6 @@
 		vertical-align: middle;
 		display: table-cell;
 	}
-	
-	#errors {
-		margin: 1em;
-		text-align: center;
-		background-color: #FFFFBB;
-		border: 1px gray solid;
-	}
 
 	#forgot-password {
 		font-size: 12px;
@@ -42,7 +35,7 @@ ${ ui.includeFragment("kenyaemr", "pageHeader") }
 			<table style="margin-left: auto; margin-right: auto;">
 				<tr>
 					<td rowspan="5" width="300">
-						<img src="${ ui.resourceLink("kenyaemr", "images/moh_logo_large.png") }"/>
+						<img src="${ ui.resourceLink("kenyaui", "images/moh_logo_large.png") }"/>
 					</td>
 					<td colspan="2"><div style="height:75px;">&nbsp;</div></td>
 				</tr>
