@@ -1,5 +1,5 @@
 <%
-	ui.decorateWith("kenyaemr", "panel", [ heading: "HIV Care" ])
+	ui.decorateWith("kenyaui", "panel", [ heading: "HIV Care" ])
 
 	def dataPoints = []
 

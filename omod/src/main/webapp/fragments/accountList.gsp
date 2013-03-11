@@ -1,5 +1,5 @@
 <%
-	ui.decorateWith("kenyaemr", "panel", [ heading: config.heading ])
+	ui.decorateWith("kenyaui", "panel", [ heading: config.heading ])
 
 	// config supports "page", which will set up a clickFunction, that will have personId=... appended
 	// provides a default numResultsFormatter to widget/stack unless you override it

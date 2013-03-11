@@ -1,5 +1,5 @@
 <%
-	ui.decorateWith("kenyaemr", "panel", [ heading: "Login Settings" ])
+	ui.decorateWith("kenyaui", "panel", [ heading: "Login Settings" ])
 
 	def checkCurrentPassword = !forcePasswordChange;
 

@@ -1,5 +1,5 @@
 <%
-	ui.decorateWith("kenyaemr", "panel", [ heading: "Visit Summary" ])
+	ui.decorateWith("kenyaui", "panel", [ heading: "Visit Summary" ])
 
 %>
 ${ ui.includeFragment("kenyaemr", "dataPoint", [ label: "Type", value: visit.visitType ]) }

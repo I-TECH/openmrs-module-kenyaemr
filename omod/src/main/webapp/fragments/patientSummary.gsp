@@ -1,5 +1,5 @@
 <%
-	ui.decorateWith("kenyaemr", "panel", [ heading: "Patient Summary", editUrl: ui.pageLink("kenyaemr", "registrationEditPatient", [patientId: patient.id, returnUrl: ui.thisUrl() ]) ])
+	ui.decorateWith("kenyaui", "panel", [ heading: "Patient Summary", editUrl: ui.pageLink("kenyaemr", "registrationEditPatient", [patientId: patient.id, returnUrl: ui.thisUrl() ]) ])
 
 	config.require("patient")
 	def patient = config.patient

@@ -1,5 +1,5 @@
 <%
-	ui.decorateWith("kenyaemr", "panel", [ heading: "Create New Account" ])
+	ui.decorateWith("kenyaui", "panel", [ heading: "Create New Account" ])
 
 	def demographics = [
 		[

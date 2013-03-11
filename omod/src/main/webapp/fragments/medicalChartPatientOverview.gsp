@@ -1,5 +1,5 @@
 <%
-	ui.decorateWith("kenyaemr", "panel", [ heading: "Overview" ])
+	ui.decorateWith("kenyaui", "panel", [ heading: "Overview" ])
 
 	config.require("patient")
 

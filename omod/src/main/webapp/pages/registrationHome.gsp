@@ -24,7 +24,7 @@
 		]
 	]) }
 
-	${ ui.decorate("kenyaemr", "panel", [ heading: "Select Day to View" ], """<div id="calendar"></div>""") }
+	${ ui.decorate("kenyaui", "panel", [ heading: "Select Day to View" ], """<div id="calendar"></div>""") }
 
 	<div class="panel-frame" id="end-of-day">
 		<div class="panel-heading">End of Day</div>

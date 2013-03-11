@@ -1,5 +1,5 @@
 <%
-	ui.decorateWith("kenyaemr", "panel", [ heading: ui.format(program) ])
+	ui.decorateWith("kenyaui", "panel", [ heading: ui.format(program) ])
 
 	def editButton = { url ->
 		return """<div class="edit-button"><a href="${ url }">Edit</a></div>"""

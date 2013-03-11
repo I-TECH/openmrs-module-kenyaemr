@@ -1,7 +1,7 @@
 <%
 	config.require("definition", "data")
 
-	ui.decorateWith("kenyaemr", "panel", [ heading: definition.name ])
+	ui.decorateWith("kenyaui", "panel", [ heading: definition.name ])
 
 	// If report has a single dataset, then it won't be wrapped in a fieldset
 	def singleDataset = (data.dataSets.size() == 1)

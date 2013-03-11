@@ -9,7 +9,7 @@
 	else
 		heading += kenyaUi.formatDate(date)
 
-	ui.decorateWith("kenyaemr", "panel", [ heading: heading ])
+	ui.decorateWith("kenyaui", "panel", [ heading: heading ])
 
 	config.require("page")
 %>
