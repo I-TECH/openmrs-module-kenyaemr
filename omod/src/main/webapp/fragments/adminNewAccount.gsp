@@ -52,7 +52,7 @@
 	<fieldset>
 		<legend>Person Info</legend>
 		<% demographics.each { %>
-			${ ui.includeFragment("kenyaemr", "widget/rowOfFields", [ fields: it ]) }
+			${ ui.includeFragment("kenyaui", "widget/rowOfFields", [ fields: it ]) }
 		<% } %>
 	</fieldset>
 
@@ -61,7 +61,7 @@
 	<fieldset>
 		<legend>Login Info</legend>
 		<% login.each { %>
-			${ ui.includeFragment("kenyaemr", "widget/rowOfFields", [ fields: it ]) }
+			${ ui.includeFragment("kenyaui", "widget/rowOfFields", [ fields: it ]) }
 		<% } %>
 
 		${ ui.decorate("kenyaui", "labeled", [label: "Roles"], roleHtml) }
@@ -72,7 +72,7 @@
 	<fieldset>
 		<legend>Provider Info</legend>
 		<% providerInfo.each { %>
-			${ ui.includeFragment("kenyaemr", "widget/rowOfFields", [ fields: it ]) }
+			${ ui.includeFragment("kenyaui", "widget/rowOfFields", [ fields: it ]) }
 		<% } %>
 	</fieldset>
 
@@ -91,7 +91,6 @@ jq(function() {
 				location.href = ui.pageLink('kenyaemr', 'adminManageAccounts');
 			} else {
 				ui.notifyError('Creating user was successful, but unexpected response');
-				debugObject(data);
 			}
 		}
 	});

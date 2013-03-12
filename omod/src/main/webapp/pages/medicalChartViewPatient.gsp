@@ -45,21 +45,21 @@
 %>
 <div id="content-side">
 
-	<div class="panel-frame">
-		<% menuItems.each { item -> print ui.includeFragment("kenyaemr", "widget/panelMenuItem", item) } %>
+	<div class="ke-panel-frame">
+		<% menuItems.each { item -> print ui.includeFragment("kenyaui", "widget/panelMenuItem", item) } %>
 	</div>
 
-	<div class="panel-frame">
-		<div class="panel-heading">Visits</div>
+	<div class="ke-panel-frame">
+		<div class="ke-panel-heading">Visits</div>
 
 		<% if (!visits) {
-			print ui.includeFragment("kenyaemr", "widget/panelMenuItem", [
+			print ui.includeFragment("kenyaui", "widget/panelMenuItem", [
 				label: ui.message("general.none"),
 			])
 		}
 		else {
 			visits.each { visit ->
-				print ui.includeFragment("kenyaemr", "widget/panelMenuItem", [
+				print ui.includeFragment("kenyaui", "widget/panelMenuItem", [
 						label: ui.format(visit.visitType),
 						href: ui.pageLink("kenyaemr", "medicalChartViewPatient", [ patientId: patient.id, visitId: visit.id ]),
 						extra: kenyaUi.formatVisitDates(visit),
@@ -81,9 +81,9 @@
 
 	<% } else if (form) { %>
 
-		<div class="panel-frame">
-			<div class="panel-heading">${ ui.format(form) }</div>
-			<div class="panel-content">
+		<div class="ke-panel-frame">
+			<div class="ke-panel-heading">${ ui.format(form) }</div>
+			<div class="ke-panel-content">
 
 				<% if (encounter) { %>
 					${ ui.includeFragment("kenyaemr", "showHtmlForm", [ id: "showHtmlForm" ]) }

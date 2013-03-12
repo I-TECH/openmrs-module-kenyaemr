@@ -2,14 +2,14 @@
 	def onAddVisitSuccess = "location.href = ui.pageLink('kenyaemr', 'enterHtmlForm', { patientId: ${ patient.id }, formUuid: '${ MetadataConstants.MOH_257_VISIT_SUMMARY_FORM_UUID }', visitId: data.visitId, returnUrl: location.href })"
 %>
 
-<div class="panel-frame">
-	<div class="panel-heading">Page 1 (Care Summary)</div>
-	<div class="panel-content" style="background-color: #F3F9FF">
+<div class="ke-panel-frame">
+	<div class="ke-panel-heading">Page 1 (Care Summary)</div>
+	<div class="ke-panel-content" style="background-color: #F3F9FF">
 
 		<fieldset>
 			<legend>New Forms</legend>
 
-			${ ui.includeFragment("kenyaemr", "formList", [ visit: null, forms: page1AvailableForms ]) }
+			${ ui.includeFragment("kenyaui", "widget/formStack", [ visit: null, forms: page1AvailableForms ]) }
 		</fieldset>
 		<br />
 		<fieldset>
@@ -27,9 +27,9 @@
 	</div>
 </div>
 
-<div class="panel-frame">
-	<div class="panel-heading">Page 2 (Initial and Followup Visits)</div>
-	<div class="panel-content" style="background-color: #F3F9FF">
+<div class="ke-panel-frame">
+	<div class="ke-panel-heading">Page 2 (Initial and Followup Visits)</div>
+	<div class="ke-panel-content" style="background-color: #F3F9FF">
 		<%
 			if (page2Encounters && page2Encounters.size > 0) {
 				page2Encounters.each {
@@ -58,9 +58,6 @@
 					propConfig: [
 							"visitType": [ type: "radio" ],
 					],
-					fieldConfig: [
-							"location": [ fieldFragment: "field/org.openmrs.Location.autocomplete" ]
-					],
 					fragmentProvider: "kenyaemr",
 					fragment: "medicalChartMoh257",
 					action: "createRetrospectiveVisit",
@@ -73,9 +70,9 @@
 	</div>
 </div>
 
-<div class="panel-frame">
-	<div class="panel-heading">ARV Regimen History</div>
-	<div class="panel-content" style="background-color: #F3F9FF">
+<div class="ke-panel-frame">
+	<div class="ke-panel-heading">ARV Regimen History</div>
+	<div class="ke-panel-content" style="background-color: #F3F9FF">
 		${ ui.includeFragment("kenyaemr", "regimenHistory", [ history: arvHistory ]) }
 
 		<br />

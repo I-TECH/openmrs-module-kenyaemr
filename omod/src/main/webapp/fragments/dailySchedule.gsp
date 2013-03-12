@@ -18,40 +18,30 @@
 	No visits
 <% } %>
 <% scheduled.each { %>
-	<div class="stack-item ke-clickable scheduled-visit">
+	<div class="ke-stack-item ke-clickable">
 		<input type="hidden" name="clickUrl" value="${ ui.pageLink("kenyaemr", config.page, [ patientId: it.patient.id ]) }"/>
 		<table width="100%">
 			<tr>
-				<td width="40%">
-					<span class="icon">
+				<td align="left" width="40%" valign="top">
+					<span class="ke-icon">
 						<img width="32" height="32" src="${ ui.resourceLink("kenyaui", "images/patient_" + it.patient.gender.toLowerCase() + ".png") }" alt="" />
 					</span>
 					
-					<span class="leftText">
-						<span class="title">
-							${ ui.includeFragment("kenyaemr", "personName", [ name: it.patient.personName ]) }
-						</span>
-						<span class="leftDetails">
-							${ ui.includeFragment("kenyaemr", "personAgeAndBirthdate", [ person: it.patient ]) }
-						</span>
-					</span>
+					<b>${ ui.includeFragment("kenyaemr", "personName", [ name: it.patient.personName ]) }</b><br />
+					${ ui.includeFragment("kenyaemr", "personAgeAndBirthdate", [ person: it.patient ]) }
 				</td>
-				<td align="left" width="30%">
+				<td align="left" width="30%" valign="top">
 					<% it.patient.activeIdentifiers.each { %>
-						<span class="identifier-label">${ ui.format(it.identifierType) }:</span><br/>
-						<span class="identifier-value">${ it.identifier }</span><br/>
+						<div class="ke-identifier-type">${ ui.format(it.identifierType) }:</div>
+						<div class="ke-identifier-value">${ it.identifier }</div>
 					<% } %>
 				</td>
-				<td align="right" width="30%">
+				<td align="right" width="30%" valign="top">
 					<% if (it.visits) { %>
-
-						<u>
-							<img src="${ ui.resourceLink("kenyaui", "images/visit.png") }"/>
-							<small>Seen Today</small>
-						</u>
+						<u><small>Seen Today</small></u>
 						<br/>
 						<% it.visits.each { v -> %>
-							<div class="active-visit">
+							<div class="ke-tag ke-visittag">
 								<input type="hidden" name="clickUrl" value="${ ui.pageLink("kenyaemr", config.page, [ patientId: it.patient.id, visitId: v.id ]) }"/>
 								${ ui.format(v.visitType) } visit<br/>
 								<span style="color: gray">
@@ -59,11 +49,8 @@
 								</span>
 							</div>
 						<% } %>
-
 					<% } else { %>
-
 						<i>Not seen today</i>
-						
 					<% } %>
 				</td>
 			</tr>

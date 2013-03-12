@@ -1,73 +1,19 @@
 <%
 	def closeChartUrl = config.closeChartUrl ?: appHomepageUrl
 %>
-<style type="text/css">
-#selected-patient-header {
-	border-bottom: 1px #444 solid;
-	padding: 3px;
-	background-color: #858580;
-	overflow: auto;
-	color: white;
-}
-
-#selected-patient-header > .demographics {
-	float: left;
-	font-weight: bold;
-	width: 35%;
-}
-
-#selected-patient-header .patient-icon {
-	float: left;
-	padding-right: 1em;
-}
-
-#selected-patient-header > .identifiers {
-	float: left;
-	font-weight: bold;
-	width: 30%;
-	text-align: center;
-}
-
-#selected-patient-header #selected-patient-header-close {
-	float: right;
-	padding-left: 0.4em;
-	margin-left: 0.4em;
-	position: relative;
-	top: 3;
-}
-
-#selected-patient-header #active-visit {
-	width: 50%;
-	float: right;
-	overflow: auto;
-	text-align: right;
-}
-
-.header-identifier-type {
-	font-weight: normal;
-}
-
-#active-visit-time {
-	font-weight: bold;
-}
-
-.glowing {
-	text-shadow: 0 0 1px #FFD;
-}
-</style>
 <script type="text/javascript">
 	jq(function() {
 		jq('#selected-patient-header-close-link').hover(function() {
-			jq('#selected-patient-header-close-text').addClass('glowing');
+			jq('#selected-patient-header-close-text').addClass('ke-glowing');
 		}, function() {
-			jq('#selected-patient-header-close-text').removeClass('glowing');
+			jq('#selected-patient-header-close-text').removeClass('ke-glowing');
 		});
 	});
 </script>
 
 <div id="selected-patient-header">
 	<div class="demographics">
-		<div class="patient-icon">
+		<div style="float: left; padding-right: 5px">
 			<img width="32" height="32" src="${ ui.resourceLink("kenyaui", "images/patient_" + patient.gender.toLowerCase() + ".png") }"/>
 		</div>
 		${ ui.includeFragment("kenyaemr", "personName", [ name: patient.personName ]) }<br/>
@@ -77,12 +23,8 @@
 	
 	<div class="identifiers">
 		<% idsToShow.each { %>
-			<span class="header-identifier-type">
-				${ it.identifierType.name }:
-			</span>
-			<span class="header-identifier-value">
-				${ it.identifier }
-			</span>
+			<span class="ke-identifier-type">${ it.identifierType.name }: </span>
+			<span class="ke-identifier-value">${ it.identifier }</span>
 			<br/>
 		<% } %>
 	</div>
@@ -103,7 +45,7 @@
 		<% if (activeVisit) {
 			def visitStartStr = activeVisitStartedToday ? kenyaUi.formatTime(activeVisit.startDatetime) : kenyaUi.formatDate(activeVisit.startDatetime);
 
-			%><span class="active-visit">${ ui.format(activeVisit.visitType) } since <span id="active-visit-time">${ visitStartStr }</span></span><%
+			%><span class="ke-tag ke-visittag">${ ui.format(activeVisit.visitType) } since <b>${ visitStartStr }</b></span><%
 		} else {
 			%><span style="font-style: italic">${ ui.message("general.none") }</span><%
 		}

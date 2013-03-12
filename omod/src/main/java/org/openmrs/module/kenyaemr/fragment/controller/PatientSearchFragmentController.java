@@ -76,7 +76,7 @@ public class PatientSearchFragmentController {
 		for (SimpleObject so : matching) {
 			Visit v = patientActiveVisits.get(so.get("patientId"));
 			if (v != null) {
-				so.put("extra", "<div class='active-visit'>" + ui.format(v.getVisitType()) + "<br/><small>" + ui.format(v.getStartDatetime()) + "</small></div>");
+				so.put("extra", "<div class='ke-tag ke-visittag'>" + ui.format(v.getVisitType()) + "<br/><small>" + ui.format(v.getStartDatetime()) + "</small></div>");
 			}
 		}
 		
@@ -116,7 +116,7 @@ public class PatientSearchFragmentController {
 			if (v == null) {
 				i.remove();
 			} else {
-				candidate.put("extra", "<div class='active-visit'>" + ui.format(v.getVisitType()) + "<br/><small>" + ui.format(v.getStartDatetime()) + "</small></div>");
+				candidate.put("extra", "<div class='ke-tag ke-visittag'>" + ui.format(v.getVisitType()) + "<br/><small>" + ui.format(v.getStartDatetime()) + "</small></div>");
 			}
 		}
 		return matching;

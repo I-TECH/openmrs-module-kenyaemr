@@ -5,7 +5,7 @@
 	ui.includeJavascript("kenyaui", "jquery.js")
 	ui.includeJavascript("kenyaui", "jquery-ui.js")
 	
-	ui.includeJavascript("kenyaui", "uiframework.js")
+	ui.includeJavascript("kenyaui", "kenyaui.js")
 	ui.includeJavascript("kenyaemr", "kenyaemr.js")
 
 	if (config.patient) {
@@ -48,11 +48,6 @@
 		overflow: auto;
 	}
 <% } %>
-
-	.loading-placeholder {
-		background-image: url('${ ui.resourceLink("kenyaui", "images/loading.gif") }');
-	}
-
 	/**
 	 * Override styles for toasts
 	 */
@@ -62,24 +57,5 @@
 		border: 0;
 	}
 </style>
-
-<script type="text/javascript">
-jq(function() {
-	/**
-	 * Add icons to edit links in panel frames
-	 */
-	jq('.panel-frame .panel-editlink').each(function() {
-		jq(this).prepend('<img src="${ ui.resourceLink("kenyaui", "images/edit.png") }" /> ');
-	});
-
-	/**
-	 * Give html buttons same styles as kenyaui controls
-	 */
-	jq('input[type="button"], input[type="submit"], input[type="reset"]')
-			.addClass('ke-control')
-			.addClass('ke-button')
-			.css('font-weight', 'bold');
-});
-</script>
 
 <%= config.content %>

@@ -9,7 +9,7 @@
 %>
 
 <div id="content-side">
-	${ ui.includeFragment("kenyaemr", "widget/panelMenu", [ heading: "Report", items: menuItems ]) }
+	${ ui.includeFragment("kenyaui", "widget/panelMenu", [ heading: "Report", items: menuItems ]) }
 </div>
 
 <div id="content-main">
@@ -18,9 +18,9 @@
 	${ ui.includeFragment("kenyaemr", "reportOutput", [ definition: definition, data: data ]) }
 <% } else { %>
 
-	<div class="panel-frame">
-		<div class="panel-heading">${ definition.name }</div>
-		<div class="panel-content">
+	<div class="ke-panel-frame">
+		<div class="ke-panel-heading">${ definition.name }</div>
+		<div class="ke-panel-content">
 			<form method="post" id="generate-report">
 				Period:
 				${ ui.includeFragment("kenyaui", "widget/selectList", [

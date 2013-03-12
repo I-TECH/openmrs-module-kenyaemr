@@ -13,10 +13,10 @@
 	}
 %>
 
-<div class="panel-frame">
-	<div class="panel-heading">${ ui.format(config.patientProgram.program) }</div>
-	<div class="panel-content">
-	<% dataPoints.each { print ui.includeFragment("kenyaemr", "dataPoint", it) } %>
+<div class="ke-panel-frame">
+	<div class="ke-panel-heading">${ ui.format(config.patientProgram.program) }</div>
+	<div class="ke-panel-content">
+	<% dataPoints.each { print ui.includeFragment("kenyaui", "widget/dataPoint", it) } %>
 	</div>
 </div>
 

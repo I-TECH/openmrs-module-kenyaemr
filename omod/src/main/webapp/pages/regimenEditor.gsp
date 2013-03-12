@@ -48,15 +48,15 @@
 </script>
 
 <div id="content-side">
-	<div class="panel-frame">
-		${ ui.includeFragment("kenyaemr", "widget/panelMenuItem", [ iconProvider: "kenyaui", icon: "buttons/back.png", label: "Back", href: returnUrl ]) }
+	<div class="ke-panel-frame">
+		${ ui.includeFragment("kenyaui", "widget/panelMenuItem", [ iconProvider: "kenyaui", icon: "buttons/back.png", label: "Back", href: returnUrl ]) }
 	</div>
 </div>
 
 <div id="content-main">
-	<div class="panel-frame">
-		<div class="panel-heading">${ category } Regimen History</div>
-		<div class="panel-content">
+	<div class="ke-panel-frame">
+		<div class="ke-panel-heading">${ category } Regimen History</div>
+		<div class="ke-panel-content">
 
 			${ ui.includeFragment("kenyaemr", "regimenHistory", [ history: history ]) }
 

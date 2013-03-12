@@ -114,19 +114,19 @@
 	<h4>Demographics</h4>
 
 	<% demogFieldRows.each { %>
-		${ ui.includeFragment("kenyaemr", "widget/rowOfFields", [ fields: it ]) }
+		${ ui.includeFragment("kenyaui", "widget/rowOfFields", [ fields: it ]) }
 	<% } %>
 
 	<h4>Address</h4>
 	
 	<% addressFieldRows.each { %>
-		${ ui.includeFragment("kenyaemr", "widget/rowOfFields", [ fields: it ]) }
+		${ ui.includeFragment("kenyaui", "widget/rowOfFields", [ fields: it ]) }
 	<% } %>
 	
 	<h4>Next of Kin details</h4>
 	
  	 <% nextOfKinFieldRows.each { %>
- 	   ${ ui.includeFragment("kenyaemr", "widget/rowOfFields", [ fields: it ]) }
+ 	   ${ ui.includeFragment("kenyaui", "widget/rowOfFields", [ fields: it ]) }
  	 <% } %>
  	 
 	<br/>
@@ -152,7 +152,6 @@ jq(function() {
 				<% } %>
 			} else {
 				ui.notifyError('Saving patient was successful, but unexpected response');
-				debugObject(data);
 			}
 		}
 	});

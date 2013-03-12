@@ -18,16 +18,13 @@ var kenyaemr = (function($) {
 		twoColumnStackItemFormatter: function(data, values) {
 			var clickUrl = formatHelper(data, values.clickUrl);
 
-			var ret = '<div class="stack-item ke-clickable">';
+			var ret = '<div class="ke-stack-item ke-clickable">';
 			if (clickUrl) {
 				ret += '<input type="hidden" name="clickUrl" value="' + clickUrl + '" />'
 			}
 			ret += '<table width="100%"><tr valign="top"><td width="50%">';
-			ret += '<span class="icon">' + formatHelper(data, values.icon) + '</span>';
-			ret += '<span class="leftText">';
-			ret += '<span class="title">' + formatHelper(data, values.title) + '</span>';
-			ret += '<span class="leftDetails">' + formatHelper(data, values.leftDetails) + '</span>';
-			ret += '</span>';
+			ret += '  <span class="ke-icon">' + formatHelper(data, values.icon) + '</span>';
+			ret += '  <b>' + formatHelper(data, values.title) + '</b><br />' + formatHelper(data, values.leftDetails);
 			ret += '</td><td align="right" width="50%">';
 			ret += formatHelper(data, values.right);
 			ret += '</td></tr></table>';
@@ -41,16 +38,13 @@ var kenyaemr = (function($) {
 		threeColumnStackItemFormatter: function(data, values) {
 			var clickUrl = formatHelper(data, values.clickUrl);
 
-			var ret = '<div class="stack-item ke-clickable">';
+			var ret = '<div class="ke-stack-item ke-clickable">';
 			if (clickUrl) {
 				ret += '<input type="hidden" name="clickUrl" value="' + clickUrl + '" />'
 			}
 			ret += '<table width="100%"><tr valign="top"><td width="40%">';
-			ret += '<span class="icon">' + formatHelper(data, values.icon) + '</span>';
-			ret += '<span class="leftText">';
-			ret += '<span class="title">' + formatHelper(data, values.title) + '</span>';
-			ret += '<span class="leftDetails">' + formatHelper(data, values.leftDetails) + '</span>';
-			ret += '</span>';
+			ret += '  <span class="ke-icon">' + formatHelper(data, values.icon) + '</span>';
+			ret += '  <b>' + formatHelper(data, values.title) + '</b><br />' + formatHelper(data, values.leftDetails);
 			ret += '</td><td align="center width="30%">';
 			ret += formatHelper(data, values.center);
 			ret += '</td><td align="right" width="30%">';
@@ -107,27 +101,6 @@ var kenyaemr = (function($) {
 })(jQuery);
 
 $(function() {
-	/**
-	 * Clicking anywhere on a menu item should direct you to the target of it's <a> tag
-	 */
-	$('.ke-menuitem').click(function() {
-		var a = $(this).find('a').first();
-		var href = (a.length > 0) ? a.attr('href') : null;
-		if (href)
-			location.href = href;
-	});
-
-	/**
-	 * Clicking on a stack-item should direct you to the URL specified in the clickUrl hidden input
-	 */
-	$('.stack-item').click(function(evt) {
-		var clickUrl = $(this).find('input[name=clickUrl]').first();
-		var url = (clickUrl.length > 0) ? clickUrl.val() : null;
-		if (url) {
-			location.href = url;
-		}
-	});
-
 	/**
 	 * Clicking on an encounter-item should display the encounter as a form in a dialog
 	 */

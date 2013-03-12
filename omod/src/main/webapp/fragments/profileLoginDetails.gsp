@@ -7,14 +7,14 @@
 	def changePasswordHiddenProps = checkCurrentPassword ? [] : [ "oldPassword" ]
 %>
 
-${ ui.includeFragment("kenyaemr", "dataPoint", [ label: "Username", value: user.username ]) }
-${ ui.includeFragment("kenyaemr", "dataPoint", [ label: "Secret question", value: user.secretQuestion ]) }
+${ ui.includeFragment("kenyaui", "widget/dataPoint", [ label: "Username", value: user.username ]) }
+${ ui.includeFragment("kenyaui", "widget/dataPoint", [ label: "Secret question", value: user.secretQuestion ]) }
 
 ${ ui.includeFragment("kenyaui", "widget/popupForm", [
 		id: "change_password",
 		linkConfig: [
 				label: "",
-				classes: [ "hidden" ]
+				classes: [ "ke-hidden" ]
 		],
 		fragmentProvider: "kenyaemr",
 		fragment: "profileLoginDetails",
@@ -38,7 +38,7 @@ ${ ui.includeFragment("kenyaui", "widget/popupForm", [
 		id: "change_secret_question",
 		linkConfig: [
 				label: "",
-				classes: [ "hidden" ]
+				classes: [ "ke-hidden" ]
 		],
 		fragmentProvider: "kenyaemr",
 		fragment: "profileLoginDetails",

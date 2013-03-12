@@ -48,4 +48,4 @@
 	}
 </script>
 
-<%= ui.includeFragment("kenyaemr", "widget/stack", config.merge([ itemFormatter: "formatAccountAsStackItem", clickFunction: clickFunction ])) %>
+<%= ui.includeFragment("kenyaui", "widget/stack", config.merge([ itemFormatter: "formatAccountAsStackItem", clickFunction: clickFunction ])) %>

@@ -39,8 +39,8 @@
 		center: function(patient) {
 			var tmp = "";
 			for (var i = 0; i < patient.activeIdentifiers.length; ++i) {
-				tmp += '<span class="identifier-label">' + patient.activeIdentifiers[i].identifierType + ':</span><br/>';
-				tmp += '<span class="identifier-value">' + patient.activeIdentifiers[i].identifier + '</span>';
+				tmp += '<span class="ke-identifier-type">' + patient.activeIdentifiers[i].identifierType + ':</span><br/>';
+				tmp += '<span class="ke-identifier-value">' + patient.activeIdentifiers[i].identifier + '</span>';
 				tmp += '<br/>';
 			}
 			return tmp;
@@ -55,4 +55,4 @@
 	}
 </script>
 
-<%= ui.includeFragment("kenyaemr", "widget/stack", config.merge([ itemFormatter: "formatPatientAsStackItem", clickFunction: clickFunction ])) %>
+<%= ui.includeFragment("kenyaui", "widget/stack", config.merge([ itemFormatter: "formatPatientAsStackItem", clickFunction: clickFunction ])) %>

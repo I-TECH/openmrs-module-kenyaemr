@@ -3,9 +3,9 @@
 %>
 
 <div id="content-side">
-	<div class="panel-frame">
-		<div class="panel-heading">Find an Account</div>
-		<div class="panel-content">
+	<div class="ke-panel-frame">
+		<div class="ke-panel-heading">Find an Account</div>
+		<div class="ke-panel-content">
 			<%= ui.includeFragment("kenyaui", "widget/form", [
 				id: "accountSearch",
 				fields: [
@@ -31,7 +31,7 @@
 		</div>
 	</div>
 
-	${ ui.includeFragment("kenyaemr", "widget/panelMenu", [
+	${ ui.includeFragment("kenyaui", "widget/panelMenu", [
 		heading: "Tasks",
 		items: [
 			[ iconProvider: "kenyaui", icon: "buttons/account_add.png", label: "Create a New Account", href: ui.pageLink("kenyaemr", "adminEditAccount") ]

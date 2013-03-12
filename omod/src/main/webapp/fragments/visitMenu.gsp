@@ -1,4 +1,4 @@
-<div class="panel-frame" style="text-align: right">
+<div class="ke-panel-frame" style="text-align: right">
 	<% if (visit) {
 		if (config.allowCheckOut) {
 	%>

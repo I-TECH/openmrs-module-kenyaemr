@@ -3,7 +3,7 @@
 %>
 
 <div id="content-side">
-	${ ui.includeFragment("kenyaemr", "widget/panelMenu", [
+	${ ui.includeFragment("kenyaui", "widget/panelMenu", [
 			heading: "My Profile",
 			items: [
 					[
@@ -24,11 +24,11 @@
 
 <div id="content-main">
 
-	<div class="panel-frame">
-		<div class="panel-heading">Personal Details</div>
-		<div class="panel-content">
-			${ ui.includeFragment("kenyaemr", "dataPoint", [ label: "Real name", value: person.personName ]) }
-			${ ui.includeFragment("kenyaemr", "dataPoint", [ label: "Gender", value: (person.gender.toLowerCase() == 'f' ? "Female" : "Male") ]) }
+	<div class="ke-panel-frame">
+		<div class="ke-panel-heading">Personal Details</div>
+		<div class="ke-panel-content">
+			${ ui.includeFragment("kenyaui", "widget/dataPoint", [ label: "Real name", value: person.personName ]) }
+			${ ui.includeFragment("kenyaui", "widget/dataPoint", [ label: "Gender", value: (person.gender.toLowerCase() == 'f' ? "Female" : "Male") ]) }
 		</div>
 	</div>
 

@@ -5,12 +5,12 @@
 <table cellspacing="0" cellpadding="5" width="100%">
 	<tr>
 		<td width="50%" valign="top">
-			<div class="panel-frame">
-				<div class="panel-heading">Ministry of Health Reports</div>
-				<div class="panel-content" style="height: 100%">
+			<div class="ke-panel-frame">
+				<div class="ke-panel-heading">Ministry of Health Reports</div>
+				<div class="ke-panel-content" style="height: 100%">
 
 					<% mohReports.each { %>
-					<div class="stack-item ke-clickable">
+					<div class="ke-stack-item ke-clickable">
 						<input type="hidden" name="clickUrl" value="${ ui.pageLink("kenyaemr", "reportsRunMonthlyIndicatorReport", [ builder: it.builder ]) }" />
 						<table>
 							<tr>
@@ -25,12 +25,12 @@
 			</div>
 		</td>
 		<td width="50%" valign="top">
-			<div class="panel-frame">
-				<div class="panel-heading">Facility Reports</div>
-				<div class="panel-content">
+			<div class="ke-panel-frame">
+				<div class="ke-panel-heading">Facility Reports</div>
+				<div class="ke-panel-content">
 
 					<% facilityReports.each { %>
-					<div class="stack-item ke-clickable" style="overflow: auto">
+					<div class="ke-stack-item ke-clickable" style="overflow: auto">
 						<input type="hidden" name="clickUrl" value="${ ui.pageLink("kenyaemr", "reportsRunPatientListReport", [ builder: it.builder ]) }" />
 						<table>
 							<tr>

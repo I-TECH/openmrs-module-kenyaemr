@@ -5,7 +5,7 @@
 
 	ui.includeJavascript("kenyaui", "jquery.js")
 	ui.includeJavascript("kenyaui", "jquery.toastmessage.js")
-	ui.includeJavascript("kenyaui", "uiframework.js")
+	ui.includeJavascript("kenyaui", "kenyaui.js")
 	ui.includeJavascript("kenyaui", "ui.js")
 	ui.includeJavascript("kenyaemr", "kenyaemr.js")
 %>
@@ -27,6 +27,8 @@
 </style>
 
 ${ ui.includeFragment("kenyaemr", "pageHeader") }
+
+${ ui.includeFragment("kenyaui", "notifications") }
 
 <div class="fullwindow">
 	<!-- Remote address: ${ remoteAddr } -->
@@ -55,13 +57,7 @@ ${ ui.includeFragment("kenyaemr", "pageHeader") }
 					<td></td>
 					<td valign="top"><a id="forgot-password" href="forgotPassword.form">Forgot password?</a></td>
 				</tr>
-				<tr>
-					<td colspan="3">
-						${ ui.includeFragment("kenyaui", "flashMessage") }
-					</td>
-				</tr>
 			</table>
-			
 		</form>
 	</div>
 </div>

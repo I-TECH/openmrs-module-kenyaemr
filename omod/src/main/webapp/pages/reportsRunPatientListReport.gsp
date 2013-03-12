@@ -10,7 +10,7 @@
 %>
 
 <div id="content-side">
-	${ ui.includeFragment("kenyaemr", "widget/panelMenu", [ heading: "Report", items: menuItems ]) }
+	${ ui.includeFragment("kenyaui", "widget/panelMenu", [ heading: "Report", items: menuItems ]) }
 </div>
 
 <div id="content-main">

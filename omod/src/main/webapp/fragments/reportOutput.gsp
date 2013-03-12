@@ -12,7 +12,7 @@
 		<legend>Parameters</legend>
 	
 		<% definition.parameters.each { %>
-			${ ui.includeFragment("kenyaemr", "dataPoint", [ label: it.label, value: data.context.parameterValues[it.name] ]) }
+			${ ui.includeFragment("kenyaui", "widget/dataPoint", [ label: it.label, value: data.context.parameterValues[it.name] ]) }
 		<% } %>
 	</fieldset>
 	<br/>
@@ -29,7 +29,7 @@
 
 	<% if (dsd.class.name == 'org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition') { %>
 		
-		<table class="table-decorated table-vertical">
+		<table class="ke-table-decorated ke-table-vertical">
 			<tbody>
 			<% dsd.columns.each { %>
 				<tr>
@@ -44,7 +44,7 @@
 	<% } else {
 		def cols = ds.metaData.columns
 	%>
-		<table class="table-decorated table-vertical">
+		<table class="ke-table-decorated ke-table-vertical">
 			<thead>
 				<tr>
 					<% cols.each { %>

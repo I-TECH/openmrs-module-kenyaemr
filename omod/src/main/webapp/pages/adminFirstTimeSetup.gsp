@@ -6,8 +6,7 @@
 					label: "What facility is this installation managing?",
 					formFieldName: "defaultLocation",
 					class: org.openmrs.Location,
-					initialValue: defaultLocation,
-					fieldFragment: "field/org.openmrs.Location.autocomplete"
+					initialValue: defaultLocation
 			]
 	]
 
@@ -39,20 +38,11 @@
 		]
 	}
 %>
-
-<style type="text/css">
-.field-label {
-	font-size: 1.2em;
-}
-.field-content {
-	padding: 0.3em;
-}
-</style>
 <div id="content">
 	<% if (isSuperUser) { %>
-	<div class="panel-frame">
-		<div class="panel-heading">First-time Setup</div>
-		<div class="panel-content">
+	<div class="ke-panel-frame">
+		<div class="ke-panel-heading">First-time Setup</div>
+		<div class="ke-panel-content">
 			${ ui.includeFragment("kenyaui", "widget/form", [
 					pageProvider: "kenyaemr",
 					page: "adminFirstTimeSetup",
@@ -61,12 +51,6 @@
 			]) }
 		</div>
 	</div>
-
-	<script type="text/javascript">
-		jq(function() {
-			jq("input[type=submit]").button();
-		});
-	</script>
 
 	<% } else { %>
 	You do not have administrative privileges. Please contact a system administrator to configure the system before it can be used.

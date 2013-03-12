@@ -5,7 +5,7 @@
 	 * Formats a list of informational SimpleObjects as a decorated table
 	 */
 	def formatInfoList = { list ->
-		def ret = "<table class=\"table-decorated table-vertical\"><tbody>"
+		def ret = "<table class=\"ke-table-decorated ke-table-vertical\"><tbody>"
 		list.each { obj ->
 			ret += "<tr>"
 			obj.each { entry ->
@@ -29,7 +29,7 @@
 %>
 
 <div id="content-side">
-	${ ui.includeFragment("kenyaemr", "widget/panelMenu", [
+	${ ui.includeFragment("kenyaui", "widget/panelMenu", [
 			heading: "Information",
 			items: [
 					[
@@ -49,7 +49,7 @@
 			]
 	]) }
 
-	${ ui.includeFragment("kenyaemr", "widget/panelMenu", [
+	${ ui.includeFragment("kenyaui", "widget/panelMenu", [
 			heading: "Tasks",
 			items: [
 					[ iconProvider: "kenyaui", icon: "buttons/users_manage.png", label: "Manage Accounts", href: ui.pageLink("kenyaemr", "adminManageAccounts") ],
@@ -63,9 +63,9 @@
 
 	<% infoCategories.each { %>
 
-	<div class="panel-frame">
-		<div class="panel-heading">${ it.key }</div>
-		<div class="panel-content">
+	<div class="ke-panel-frame">
+		<div class="ke-panel-heading">${ it.key }</div>
+		<div class="ke-panel-content">
 			<% if (it.value instanceof java.util.List) { %>
 				${ formatInfoList(it.value) }
 			<% } else { %>

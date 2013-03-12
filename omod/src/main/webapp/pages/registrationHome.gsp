@@ -17,7 +17,7 @@
 </style>
 
 <div id="content-side">
-	${ ui.includeFragment("kenyaemr", "widget/panelMenu", [
+	${ ui.includeFragment("kenyaui", "widget/panelMenu", [
 		heading: "Tasks",
 		items: [
 			[ iconProvider: "kenyaui", icon: "buttons/patient_search.png", label: "Search for a Patient", href: ui.pageLink("kenyaemr", "registrationSearch") ]
@@ -26,10 +26,10 @@
 
 	${ ui.decorate("kenyaui", "panel", [ heading: "Select Day to View" ], """<div id="calendar"></div>""") }
 
-	<div class="panel-frame" id="end-of-day">
-		<div class="panel-heading">End of Day</div>
+	<div class="ke-panel-frame" id="end-of-day">
+		<div class="ke-panel-heading">End of Day</div>
 
-		<div class="panel-content">
+		<div class="ke-panel-content">
 			Close all open visits of the following types:
 			<form id="close-visits-form" method="post" action="${ ui.actionLink("kenyaemr", "registrationUtil", "closeActiveVisits") }">
 				<div class="form-data"></div>

@@ -5,7 +5,7 @@
 <div id="content-side">
 	${ ui.includeFragment("kenyaemr", "patientSearchForm", [ defaultWhich: "all" ]) }
 
-	${ ui.includeFragment("kenyaemr", "widget/panelMenu", [
+	${ ui.includeFragment("kenyaui", "widget/panelMenu", [
 		heading: "Tasks",
 		items: [
 			[

@@ -49,168 +49,43 @@
 	text-decoration: underline;
 }
 
-/*** Patient header ***/
+/***** Patient header *****/
 
-.patient-alert {
-	color: #332;
-	background-color: yellow;
-	margin-right: 3px;
-	padding: 2px;
-	border-radius: 2px;
-	display: inline-block;
-}
-
-.active-visit {
-	color: #223;
-	background-color: #EEF;
-	margin-left: 3px;
-	padding: 2px;
-	border-radius: 2px;
-	display: inline-block;
-}
-
-/*** Panel style set ***/
-
-.panel-frame {
-	background-color: #D1D0C9;
-	border-radius: 3px;
-	margin-bottom: 5px;
+#selected-patient-header {
+	border-bottom: 1px #444 solid;
 	padding: 3px;
-}
-
-#content-side .panel-frame {
 	background-color: #858580;
-}
-
-.panel-heading {
-	color: #333;
-	padding: 5px;
-	text-align: center;
-	font-weight: bold;
-	font-size: 16px;
-}
-
-.panel-editlink {
-	float: right;
-	background-color: #E8E6DB;
-	padding: 3px;
-	border-radius: 1px;
-	color: black;
-	text-decoration: none;
-}
-
-#content-side .panel-heading {
+	overflow: auto;
 	color: white;
 }
 
-.panel-content {
-	background-color: #FFF;
-	padding: 5px;
-}
-
-/*** Stacks (e.g. patient search results) ***/
-
-.stack-item {
-	border-top: 2px dotted #d1d0c9;
-	padding: 3px;
-}
-
-.stack-item:first-of-type {
-	border-top: 0;
-}
-
-.stack-item .title {
-	display: block;
-	font-weight: bold;
-	font-size: 16px;
-}
-
-.stack-item .icon {
+#selected-patient-header > .demographics {
 	float: left;
-	padding-right: 0.3em;
+	font-weight: bold;
+	width: 35%;
 }
 
-.stack-item .leftText {
+#selected-patient-header > .identifiers {
 	float: left;
+	width: 30%;
+	text-align: center;
 }
 
-.stack-item .one-column {
-	float: left;
-}
-
-/*** Loading placeholders ***/
-
-.loading-placeholder {
-	/* Actual image URL set in standardPage.gsp */
-	background-repeat: no-repeat;
-	background-position: left, top;
-	padding-left: 24px;
-	color: #777;
-	font-style: italic;
-	min-height: 16px;
-}
-
-.loading-placeholder:after {
-	content: "Loading...";
-}
-
-/*** Data points ***/
-
-.datapoint {
-	margin: 1px 0 1px 0;
-}
-
-.datapoint .datapoint-label {
-}
-
-.datapoint .datapoint-value {
-	font-weight: bold;
-}
-
-.datapoint .datapoint-extra {
-	font-size: 12px;
-}
-
-/*** Forms ***/
-
-fieldset {
-	border: 2px solid #D1D0C9;
-}
-
-legend {
-	color: #333;
-	font-weight: bold;
-}
-
-/*** Others... ***/
-
-.identifier-label {
-	color: #888888;
-}
-
-.identifier-value {
-	font-weight: bold;
-}
-
-.editable {
-	position: relative;
-}
-
-.editable .edit-button {
-	position: absolute;
-	top: 0.5em;
-	right: 0.3em;
-	font-size: 0.8em;
-}
-
-.edit-button {
+#selected-patient-header #selected-patient-header-close {
 	float: right;
+	padding-left: 0.4em;
+	margin-left: 0.4em;
+	position: relative;
+	top: 3;
 }
 
-.padded {
-	padding: 1em;
+#selected-patient-header #active-visit {
+	width: 50%;
+	float: right;
+	overflow: auto;
+	text-align: right;
 }
 
-.hidden {
-	display: none;
+#selected-patient-header .ke-identifier-type, #selected-patient-header .ke-identifier-value {
+	color: white;
 }

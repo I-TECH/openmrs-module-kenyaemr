@@ -1,10 +1,6 @@
 <%
 	ui.decorateWith("kenyaui", "panel", [ heading: ui.format(program) ])
 
-	def editButton = { url ->
-		return """<div class="edit-button"><a href="${ url }">Edit</a></div>"""
-	}
-
 	def discontinueHtml = "<br />" + ui.includeFragment("kenyaui", "widget/button", [
 			label: "Discontinue Services",
 			href: ui.pageLink("kenyaemr", "enterHtmlForm", [ patientId: patient.id, formUuid: exitFormUuid, returnUrl: ui.thisUrl() ])
@@ -13,20 +9,22 @@
 	def helper = { enrollment ->
 		def editHtml = ""
 		if (registrationFormUuid) {
-			editHtml = editButton(ui.pageLink("kenyaemr", "editProgramHtmlForm", [ patientId: patient.id, patientProgramId: enrollment.id, formUuid: registrationFormUuid, returnUrl: ui.thisUrl() ]))
+			editHtml = ui.includeFragment("kenyaui", "widget/editButton", [
+					href: ui.pageLink("kenyaemr", "editProgramHtmlForm", [ patientId: patient.id, patientProgramId: enrollment.id, formUuid: registrationFormUuid, returnUrl: ui.thisUrl() ])
+			])
 		}
 
 		def completedHtml = ""
 		if (enrollment.dateCompleted) {
-			completedHtml += ui.includeFragment("kenyaemr", "dataPoint", [ label: "Completed", value: enrollment.dateCompleted ])
-			completedHtml += ui.includeFragment("kenyaemr", "dataPoint", [ label: "Outcome", value: enrollment.outcome ])
+			completedHtml += ui.includeFragment("kenyaui", "widget/dataPoint", [ label: "Completed", value: enrollment.dateCompleted ])
+			completedHtml += ui.includeFragment("kenyaui", "widget/dataPoint", [ label: "Outcome", value: enrollment.outcome ])
 		}
 
 		def enrollmentExtraHtml = config.enrollmentExtra ? (config.enrollmentExtra instanceof Closure ? config.enrollmentExtra(enrollment) : config.enrollmentExtra) : ""
 
-		return """<div class="stack-item">
+		return """<div class="ke-stack-item">
 			${ editHtml }
-		    ${ ui.includeFragment("kenyaemr", "dataPoint", [ label: "Enrolled", value: enrollment.dateEnrolled, showDateInterval: true ]) }
+		    ${ ui.includeFragment("kenyaui", "widget/dataPoint", [ label: "Enrolled", value: enrollment.dateEnrolled, showDateInterval: true ]) }
 			${ enrollmentExtraHtml }
 			${ completedHtml }
 			${ (!enrollment.dateCompleted && exitFormUuid) ? discontinueHtml : "" }
@@ -41,7 +39,7 @@
 <% if (currentEnrollment) { %>
 ${ helper(currentEnrollment) }
 <% } else { %>
-<div class="stack-item">
+<div class="ke-stack-item">
 	${ ui.includeFragment("kenyaui", "widget/button", [
 		label: ui.format(program),
 		classes: [ "padded "],
