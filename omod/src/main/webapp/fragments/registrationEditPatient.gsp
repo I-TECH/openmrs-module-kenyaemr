@@ -6,12 +6,12 @@
 
 	def demogFieldRows = [
 		[
-			[ object: command, property: "personName.familyName", label: "Surname" ],
-			[ object: command, property: "personName.givenName", label: "First Name" ],
+			[ object: command, property: "personName.familyName", label: "Surname *" ],
+			[ object: command, property: "personName.givenName", label: "First Name *" ],
 			[ object: command, property: "personName.middleName", label: "Other Name(s)" ]		
 		],
 		[
-			ui.decorate("kenyaui", "labeled", [label: "Sex"], """
+			ui.decorate("kenyaui", "labeled", [label: "Sex *"], """
 				<input type="radio" name="gender" value="F" id="gender-F" ${ femaleChecked }/>
 				<label for="gender-F">Female</label>
 				&nbsp;
@@ -20,7 +20,7 @@
 				<span class="error" style="display: none"></span>
 			"""),
 			"&nbsp;&nbsp;&nbsp;&nbsp;",
-			[ object: command, property: "birthdate", label: "Birthdate" ],
+			[ object: command, property: "birthdate", label: "Birthdate *" ],
 			[ object: command, property: "birthdateEstimated", label: "Estimated?" ]
 		],
 		[
@@ -81,6 +81,10 @@
 	<div class="global-error-container" style="display: none">
 		${ ui.message("fix.error.plain") }
 		<ul class="global-error-content"></ul>
+	</div>
+
+	<div class="ke-form-instructions">
+		<b>*</b> indicates a required field
 	</div>
 	
 	<fieldset>

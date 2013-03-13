@@ -119,8 +119,6 @@ public class RegistrationEditPatientFragmentController {
 
 		private Boolean birthdateEstimated;
 
-		//private Integer age;
-
 		private String gender;
 
 		private PersonAddress personAddress;
@@ -311,10 +309,12 @@ public class RegistrationEditPatientFragmentController {
 			else {
 				telephoneContact = null;
 			}
+
+			require(errors, "personName.givenName");
+			require(errors, "personName.familyName");
 			require(errors, "gender");
 			require(errors, "birthdate");
 
-			validateField(errors, "personName");
 			validateField(errors, "personAddress");
 			validateField(errors, "patientClinicNumber");
 			validateField(errors, "hivIdNumber");
