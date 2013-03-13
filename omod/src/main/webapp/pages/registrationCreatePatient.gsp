@@ -1,12 +1,8 @@
 <%
-	ui.decorateWith("kenyaemr", "standardPage", [ layout: "sidebar" ])
+	ui.decorateWith("kenyaemr", "standardPage")
 %>
-
-<div id="content-side"></div>
-<div id="content-main">
-	${
-		ui.decorate("kenyaui", "panel", [ heading: "Create a New Patient Record" ],
+<div id="content">
+	${ ui.decorate("kenyaui", "panel", [ heading: "Create a New Patient Record" ],
 			ui.includeFragment("kenyaemr", "registrationEditPatient")
-		)
-	}
+	)}
 </div>

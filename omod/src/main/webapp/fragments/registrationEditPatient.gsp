@@ -71,11 +71,6 @@
 	border: 1px black solid;
 	background-color: #e0e0e0;
 }
-
-#edit-patient-form h4 {
-	text-decoration: underline;
-	margin-bottom: 0.5em;
-}
 </style>
 
 <form id="edit-patient-form" method="post" action="${ ui.actionLink("kenyaemr", "registrationEditPatient", "savePatient") }">
@@ -88,51 +83,62 @@
 		<ul class="global-error-content"></ul>
 	</div>
 	
-	<h4>ID Numbers</h4>
+	<fieldset>
+		<legend>ID Numbers</legend>
 	
-	<table>
-		<tr>
-			<td>${ ui.format(command.patientClinicNumber.identifierType) }</td>
-			<td>${ ui.includeFragment("kenyaui", "widget/field", [ object: command, property: "patientClinicNumber.identifier" ]) }</td>
-			<td><% if (!command.patientClinicNumber.identifier) { %>(if available)<% } %></td>
-		</tr>
-		<% if (command.inHivProgram) { %>
+		<table>
 			<tr>
-				<td>${ ui.format(command.hivIdNumber.identifierType) }</td>
-				<td>${ ui.includeFragment("kenyaui", "widget/field", [ object: command, property: "hivIdNumber.identifier" ]) }</td>
-				<td>(HIV program<% if (!command.hivIdNumber.identifier) { %>, if assigned<% } %>)</td>
+				<td class="ke-field-label">${ ui.format(command.patientClinicNumber.identifierType) }</td>
+				<td>${ ui.includeFragment("kenyaui", "widget/field", [ object: command, property: "patientClinicNumber.identifier" ]) }</td>
+				<td class="ke-field-instructions"><% if (!command.patientClinicNumber.identifier) { %>(if available)<% } %></td>
 			</tr>
+			<% if (command.inHivProgram) { %>
+				<tr>
+					<td class="ke-field-label">${ ui.format(command.hivIdNumber.identifierType) }</td>
+					<td>${ ui.includeFragment("kenyaui", "widget/field", [ object: command, property: "hivIdNumber.identifier" ]) }</td>
+					<td class="ke-field-instructions">(HIV program<% if (!command.hivIdNumber.identifier) { %>, if assigned<% } %>)</td>
+				</tr>
+			<% } %>
+			<tr>
+				<td class="ke-field-label">${ ui.format(command.nationalIdNumber.attributeType) } </td>
+				<td>${ ui.includeFragment("kenyaui", "widget/field", [ object: command, property: "nationalIdNumber.value" ]) }</td>
+				<td class="ke-field-instructions"><% if (!command.nationalIdNumber.value) { %>(if available)<% } %></td>
+			</tr>
+		</table>
+
+	</fieldset>
+
+	<fieldset>
+		<legend>Demographics</legend>
+
+		<% demogFieldRows.each { %>
+			${ ui.includeFragment("kenyaui", "widget/rowOfFields", [ fields: it ]) }
 		<% } %>
-		<tr>
-			<td>${ ui.format(command.nationalIdNumber.attributeType) } </td>
-			<td>${ ui.includeFragment("kenyaui", "widget/field", [ object: command, property: "nationalIdNumber.value" ]) }</td>
-			<td><% if (!command.nationalIdNumber.value) { %>(if available)<% } %></td>
-		</tr>
-		
-	</table>
 
-	<h4>Demographics</h4>
+	</fieldset>
 
-	<% demogFieldRows.each { %>
-		${ ui.includeFragment("kenyaui", "widget/rowOfFields", [ fields: it ]) }
-	<% } %>
+	<fieldset>
+		<legend>Address</legend>
+	
+		<% addressFieldRows.each { %>
+			${ ui.includeFragment("kenyaui", "widget/rowOfFields", [ fields: it ]) }
+		<% } %>
 
-	<h4>Address</h4>
+	</fieldset>
+
+	<fieldset>
+		<legend>Next of Kin Details</legend>
 	
-	<% addressFieldRows.each { %>
-		${ ui.includeFragment("kenyaui", "widget/rowOfFields", [ fields: it ]) }
-	<% } %>
-	
-	<h4>Next of Kin details</h4>
-	
- 	 <% nextOfKinFieldRows.each { %>
- 	   ${ ui.includeFragment("kenyaui", "widget/rowOfFields", [ fields: it ]) }
- 	 <% } %>
- 	 
-	<br/>
-	
-	<input class="button" type="submit" value="${ command.original ? "Save Changes" : "Create Patient" }"/>
-	<input class="button cancel-button" type="button" value="Cancel"/>
+		 <% nextOfKinFieldRows.each { %>
+		   ${ ui.includeFragment("kenyaui", "widget/rowOfFields", [ fields: it ]) }
+		 <% } %>
+
+	</fieldset>
+
+	<div class="ke-form-buttons">
+		<input class="button" type="submit" value="${ command.original ? "Save Changes" : "Create Patient" }"/>
+		<input class="button cancel-button" type="button" value="Cancel"/>
+	</div>
 	
 </form>
 
