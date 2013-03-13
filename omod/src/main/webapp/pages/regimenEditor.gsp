@@ -7,7 +7,7 @@
 	def allowUndo = history.changes && history.changes.size() > 0
 
 	def changeDateField = { label ->
-		[ label: label, formFieldName: "changeDate", class: java.util.Date, initialValue: initialDate, fieldFragment: "field/java.util.Date.withpresets", presets: datePresets ]
+		[ label: label, formFieldName: "changeDate", class: java.util.Date, initialValue: initialDate /*, fieldFragment: "field/java.util.Date.withpresets", presets: datePresets */ ]
 	}
 
 	def regimenField = {
