@@ -52,7 +52,6 @@
 /***** Patient header *****/
 
 #selected-patient-header {
-	border-bottom: 1px #444 solid;
 	padding: 3px;
 	background-color: #858580;
 	overflow: auto;
@@ -87,5 +86,14 @@
 }
 
 #selected-patient-header .ke-identifier-type, #selected-patient-header .ke-identifier-value {
+	color: white;
+}
+
+/***** Visit header *****/
+
+#selected-visit-header {
+	padding: 3px;
+	text-align: center;
+	background-color: #466469;
 	color: white;
 }
