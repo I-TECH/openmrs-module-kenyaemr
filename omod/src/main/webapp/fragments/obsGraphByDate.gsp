@@ -1,6 +1,6 @@
 <%
 	ui.includeJavascript("kenyaui", "jquery.js") // force this include to be first
-	ui.includeJavascript("kenyaemr", "highcharts.js")
+	ui.includeJavascript("kenyaui", "highcharts.js")
 
 	config.require("id")
 	config.require("concepts")
