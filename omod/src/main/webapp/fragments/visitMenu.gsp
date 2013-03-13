@@ -14,7 +14,7 @@
 				popupTitle: "Check Out",
 				fields: [
 						[ hiddenInputName: "visit.visitId", value: visit.visitId ],
-						[ label: "End Date and Time", formFieldName: "visit.stopDatetime", class: java.util.Date, initialValue: new Date(), fieldFragment: "field/java.util.Date.datetime" ]
+						[ label: "End Date and Time", formFieldName: "visit.stopDatetime", class: java.util.Date, initialValue: new Date(), showTime: true ]
 				],
 				fragment: "registrationUtil",
 				fragmentProvider: "kenyaemr",
@@ -60,7 +60,7 @@
 			],
 			fieldConfig: [
 					"visitType": [ label: "Visit Type" ],
-					"startDatetime": [ fieldFragment: "field/java.util.Date.datetime" ]
+					"startDatetime": [ showTime: true ]
 			],
 			fragment: "registrationUtil",
 			fragmentProvider: "kenyaemr",

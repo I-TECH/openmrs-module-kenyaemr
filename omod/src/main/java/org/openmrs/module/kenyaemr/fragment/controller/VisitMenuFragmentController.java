@@ -11,6 +11,7 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.kenyaemr.fragment.controller;
 
 import org.openmrs.Patient;
@@ -20,10 +21,10 @@ import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 
-import java.util.Calendar;
+import java.util.Date;
 
 /**
- *
+ * Visit menu (check-in / check-out etc)
  */
 public class VisitMenuFragmentController {
 	
@@ -32,14 +33,9 @@ public class VisitMenuFragmentController {
 		model.addAttribute("patient", patient);
 		model.addAttribute("visit", visit);
 
-		// Get now time, accurate only to minute
-		Calendar now = Calendar.getInstance();
-		now.set(Calendar.SECOND, 0);
-		now.set(Calendar.MILLISECOND, 0);
-
 		Visit newVisit = new Visit();
 		newVisit.setPatient(patient);
-		newVisit.setStartDatetime(now.getTime());
+		newVisit.setStartDatetime(new Date());
 		newVisit.setVisitType(Context.getVisitService().getVisitTypeByUuid(MetadataConstants.OUTPATIENT_VISIT_TYPE_UUID));
 		model.addAttribute("newCurrentVisit", newVisit);
 	}
