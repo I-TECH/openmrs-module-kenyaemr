@@ -49,6 +49,7 @@ public class KenyaEmrCalculationProvider implements CalculationProvider {
 		map.put("whoStagesAtEnrollments", WHOStagesAtEnrollmentsCalculation.class);
 		map.put("lostToFollowUp", LostToFollowUpCalculation.class);
         map.put("missedAppointmentsOrDefaulted", MissedAppointmentsOrDefaultedCalculation.class);
+		map.put("isPregnant", IsPregnantCalculation.class);
 
 		// ART
 		map.put("currentArtRegimen", CurrentArtRegimenCalculation.class);
