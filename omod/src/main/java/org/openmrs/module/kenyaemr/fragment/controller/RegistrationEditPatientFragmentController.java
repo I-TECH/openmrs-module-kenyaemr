@@ -290,11 +290,31 @@ public class RegistrationEditPatientFragmentController {
 		}
 
 		/**
+		 * Validates a telephone number
+		 * @param errors the errors
+		 * @param telephoneNumber the number to validate
+		 */
+		private void validateTelephoneNumber(Errors errors, String path, String telephoneNumber) {
+			String trimmed = telephoneNumber.trim();
+			if (trimmed.length() != 10) {
+				errors.rejectValue(path, "Phone numbers must be 10 digits long");
+			}
+			if (!trimmed.matches("\\d{10}")) {
+				errors.rejectValue(path, "Phone numbers must only contain numbers");
+			}
+		}
+
+		/**
 		 * @see org.springframework.validation.Validator#validate(java.lang.Object,
 		 *      org.springframework.validation.Errors)
 		 */
 		@Override
 		public void validate(Object target, Errors errors) {
+			require(errors, "personName.givenName");
+			require(errors, "personName.familyName");
+			require(errors, "gender");
+			require(errors, "birthdate");
+
 			if (StringUtils.isBlank(patientClinicNumber.getIdentifier())) {
 				patientClinicNumber = null;
 			}
@@ -302,18 +322,17 @@ public class RegistrationEditPatientFragmentController {
 				hivIdNumber = null;
 			}
 			if (!(StringUtils.isBlank(telephoneContact.getValue()))) {
-				if (!telephoneContact.getValue().trim().matches("\\d{10}")) {
-					errors.rejectValue("telephoneContact", "If Phone Number is provided then it  must be 10 digits long");
-				}
+				validateTelephoneNumber(errors, "telephoneContact", telephoneContact.getValue());
 			}
 			else {
 				telephoneContact = null;
 			}
-
-			require(errors, "personName.givenName");
-			require(errors, "personName.familyName");
-			require(errors, "gender");
-			require(errors, "birthdate");
+			if (!(StringUtils.isBlank(nextOfKinContact.getValue()))) {
+				validateTelephoneNumber(errors, "nextOfKinContact", nextOfKinContact.getValue());
+			}
+			else {
+				nextOfKinContact = null;
+			}
 
 			validateField(errors, "personAddress");
 			validateField(errors, "patientClinicNumber");
