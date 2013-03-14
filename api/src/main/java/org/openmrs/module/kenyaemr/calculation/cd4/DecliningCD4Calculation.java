@@ -34,10 +34,10 @@ import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
 public class DecliningCD4Calculation extends BaseAlertCalculation {
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation#getShortMessage()
+	 * @see org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation#getName()
 	 */
 	@Override
-	public String getShortMessage() {
+	public String getName() {
 		return "Patients with Declining CD4";
 	}
 

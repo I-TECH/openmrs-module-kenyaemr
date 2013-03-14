@@ -33,7 +33,7 @@ import org.openmrs.module.kenyaemr.MetadataConstants;
 public class WithoutCTXOrDapsoneCalculation extends BaseEmrCalculation {
 
 	@Override
-	public String getShortMessage() {
+	public String getName() {
 		return "Patients who have not taken CTX/Dapsone";
 	}
 

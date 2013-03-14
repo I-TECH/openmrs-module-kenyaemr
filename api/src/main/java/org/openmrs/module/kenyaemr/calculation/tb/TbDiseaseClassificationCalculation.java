@@ -28,7 +28,7 @@ import java.util.Map;
 public class TbDiseaseClassificationCalculation extends BaseEmrCalculation {
 
     @Override
-    public String getShortMessage() {
+    public String getName() {
         return "TB Disease Classification";
     }
 

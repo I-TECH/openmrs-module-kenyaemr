@@ -47,7 +47,7 @@ import java.util.*;
  * MOH 731 report
  */
 @Component
-public class Moh731Report extends IndicatorReportBuilder {
+public class Moh731Report extends BaseIndicatorReportBuilder {
 
 	protected static final Log log = LogFactory.getLog(Moh731Report.class);
 
@@ -66,7 +66,7 @@ public class Moh731Report extends IndicatorReportBuilder {
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.report.indicator.IndicatorReportBuilder#getName()
+	 * @see BaseIndicatorReportBuilder#getName()
 	 */
 	@Override
 	public String getName() {
@@ -82,7 +82,7 @@ public class Moh731Report extends IndicatorReportBuilder {
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.report.indicator.IndicatorReportBuilder#getExcelTemplateResourcePath()
+	 * @see BaseIndicatorReportBuilder#getExcelTemplateResourcePath()
 	 */
 	@Override
 	public String getExcelTemplateResourcePath() {
@@ -90,7 +90,7 @@ public class Moh731Report extends IndicatorReportBuilder {
 	}
 
 	/**
-	 * @see IndicatorReportBuilder#buildReportDefinition()
+	 * @see BaseIndicatorReportBuilder#buildReportDefinition()
 	 */
 	@Override
 	public ReportDefinition buildReportDefinition() {

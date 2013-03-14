@@ -17,7 +17,7 @@ import org.openmrs.module.kenyaemr.calculation.MissedAppointmentsOrDefaultedCalc
 import org.springframework.stereotype.Component;
 
 @Component
-public class MissedAppointmentsOrDefaultedReport extends PatientListReportBuilder {
+public class MissedAppointmentsOrDefaultedReport extends BasePatientListReportBuilder {
 
     public MissedAppointmentsOrDefaultedReport() {
         setCalculation(new MissedAppointmentsOrDefaultedCalculation());

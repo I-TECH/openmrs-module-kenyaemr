@@ -20,7 +20,7 @@ import org.springframework.stereotype.Component;
  * Eligible for ART report
  */
 @Component
-public class EligibleForArtReport extends PatientListReportBuilder {
+public class EligibleForArtReport extends BasePatientListReportBuilder {
 	
 	public EligibleForArtReport() {
 		setCalculation(new EligibleForArtCalculation());

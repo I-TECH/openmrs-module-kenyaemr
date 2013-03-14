@@ -28,7 +28,7 @@ import java.util.Map;
 public class LastCD4CountCalculation extends BaseEmrCalculation {
 
     @Override
-    public String getShortMessage() {
+    public String getName() {
         return "Last CD4 Count";
     }
 

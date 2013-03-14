@@ -20,7 +20,7 @@ import org.springframework.stereotype.Component;
  * Patients on second line ART report
  */
 @Component
-public class PatientsOnSecondLineArtReport extends PatientListReportBuilder {
+public class PatientsOnSecondLineArtReport extends BasePatientListReportBuilder {
 
     public PatientsOnSecondLineArtReport() {
         setCalculation(new OnSecondLineArtCalculation());

@@ -35,10 +35,10 @@ import org.openmrs.module.reporting.common.RangeComparator;
 public class ScheduledVisitOnDayCalculation extends BaseEmrCalculation {
 	
 	/**
-	 * @see BaseEmrCalculation#getShortMessage()
+	 * @see BaseEmrCalculation#getName()
 	 */
 	@Override
-	public String getShortMessage() {
+	public String getName() {
 		return "Scheduled for Visit";
 	}
 

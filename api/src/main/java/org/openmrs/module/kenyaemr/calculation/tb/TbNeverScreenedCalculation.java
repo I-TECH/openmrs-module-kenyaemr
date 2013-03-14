@@ -32,7 +32,7 @@ import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
 public class TbNeverScreenedCalculation extends BaseEmrCalculation {
 
     @Override
-    public String getShortMessage() {
+    public String getName() {
         return "HIV Patients Never Screened for TB";
     }
 

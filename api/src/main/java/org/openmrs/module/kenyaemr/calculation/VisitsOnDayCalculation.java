@@ -35,10 +35,10 @@ import org.openmrs.module.reporting.common.DateUtil;
 public class VisitsOnDayCalculation extends BaseEmrCalculation {
 	
 	/**
-	 * @see BaseEmrCalculation#getShortMessage()
+	 * @see BaseEmrCalculation#getName()
 	 */
 	@Override
-	public String getShortMessage() {
+	public String getName() {
 		return "Visit";
 	}
 

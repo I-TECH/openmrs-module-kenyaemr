@@ -33,7 +33,7 @@ import java.util.*;
 public class WHOStagesAtEnrollmentsCalculation extends BaseEmrCalculation {
 
     @Override
-    public String getShortMessage() {
+    public String getName() {
         return "WHO Stages at Enrollments";
     }
 

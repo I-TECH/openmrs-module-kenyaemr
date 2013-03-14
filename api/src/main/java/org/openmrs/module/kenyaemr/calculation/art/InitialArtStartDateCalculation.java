@@ -33,10 +33,10 @@ import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
 public class InitialArtStartDateCalculation extends BaseEmrCalculation {
 	
 	/**
-	 * @see org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation#getShortMessage()
+	 * @see org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation#getName()
 	 */
 	@Override
-	public String getShortMessage() {
+	public String getName() {
 		return "First ART Start Date";
 	}
 

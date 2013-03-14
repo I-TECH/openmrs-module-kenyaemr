@@ -11,6 +11,7 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.kenyaemr.report.patientlist;
 
 import org.openmrs.api.context.Context;
@@ -30,7 +31,7 @@ import org.openmrs.module.reporting.report.definition.ReportDefinition;
 /**
  * Base implementation for row-per-patient reports based on calculations
  */
-public abstract class PatientListReportBuilder extends ReportBuilder {
+public abstract class BasePatientListReportBuilder extends ReportBuilder {
 	
 	private BaseEmrCalculation calculation;
 	
@@ -47,7 +48,7 @@ public abstract class PatientListReportBuilder extends ReportBuilder {
 	 */
 	@Override
 	public String getName() {
-		return calculation.getShortMessage();
+		return calculation.getName();
 	}
 
 	/**
@@ -55,7 +56,7 @@ public abstract class PatientListReportBuilder extends ReportBuilder {
 	 */
 	@Override
 	public String getDescription() {
-		return calculation.getDetailedMessage();
+		return calculation.getDescription();
 	}
 	
     /**
@@ -102,7 +103,7 @@ public abstract class PatientListReportBuilder extends ReportBuilder {
      */
 	@Override
     protected ReportDefinition buildReportDefinition() {
-		PatientDataSetDefinition dsd = new PatientDataSetDefinition(calculation.getDetailedMessage());
+		PatientDataSetDefinition dsd = new PatientDataSetDefinition(calculation.getDescription());
 		addColumns(dsd);
 		dsd.addRowFilter(map(new KenyaEmrCalculationCohortDefinition(calculation), null));
 

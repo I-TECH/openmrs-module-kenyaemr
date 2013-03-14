@@ -30,7 +30,7 @@ import java.util.Map;
 public class IsPregnantCalculation extends BaseAlertCalculation {
 
 	@Override
-	public String getShortMessage() {
+	public String getName() {
 		return "Patients Who Are Pregnant";
 	}
 

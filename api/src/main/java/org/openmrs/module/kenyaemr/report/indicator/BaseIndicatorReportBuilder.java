@@ -19,6 +19,6 @@ import org.openmrs.module.kenyaemr.report.ReportBuilder;
 /**
  * Base implementation for indicator reports
  */
-public abstract class IndicatorReportBuilder extends ReportBuilder {
+public abstract class BaseIndicatorReportBuilder extends ReportBuilder {
 
 }

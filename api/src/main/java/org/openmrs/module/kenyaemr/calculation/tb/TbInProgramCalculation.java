@@ -33,7 +33,7 @@ import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
 public class TbInProgramCalculation extends BaseEmrCalculation {
 
     @Override
-    public String getShortMessage() {
+    public String getName() {
         return "Patients in TB Program";
     }
 

@@ -72,18 +72,17 @@ import org.openmrs.util.OpenmrsUtil;
 public abstract class BaseEmrCalculation extends BaseCalculation implements PatientCalculation {
 
 	/**
-	 * Gets a user-friendly name to display, e.g. "Patients Eligible for ART"
+	 * Gets the user-friendly name to display, e.g. "Patients Eligible for ART"
 	 * @return the name
 	 */
-	public abstract String getShortMessage();
+	public abstract String getName();
 
 	/**
-	 * Gets a possibly-more-detailed message than {@link #getShortMessage()}. The default implementation
-	 * simply delegates to {@link #getShortMessage()}
-	 * @return the possibly-more-detailed message
+	 * Gets the description (may be null)
+	 * @return the description
 	 */
-	public String getDetailedMessage() {
-		return getShortMessage();
+	public String getDescription() {
+		return null;
 	}
 
 	/**

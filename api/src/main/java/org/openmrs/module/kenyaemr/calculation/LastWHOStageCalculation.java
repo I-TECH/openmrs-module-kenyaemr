@@ -27,7 +27,7 @@ import java.util.Map;
 public class LastWHOStageCalculation extends BaseEmrCalculation {
 
     @Override
-    public String getShortMessage() {
+    public String getName() {
         return "Last WHO Stage";
     }
 
