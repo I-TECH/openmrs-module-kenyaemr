@@ -5,6 +5,8 @@
 
 	// If report has a single dataset, then it won't be wrapped in a fieldset
 	def singleDataset = (data.dataSets.size() == 1)
+
+	def formatData = { it -> it ?: "-" }
 %>
 
 <% if (definition.parameters) { %>
@@ -35,7 +37,7 @@
 				<tr>
 					<th>${ it.name }</th>
 					<td style="text-align: left">${ it.label }</td>
-					<td>${ ds.getData(it) }</td>
+					<td>${ formatData(ds.getData(it)) }</td>
 				</tr>
 			<% } %>
 			</tbody>
@@ -56,7 +58,7 @@
 				<% ds.rows.each { row -> %>
 					<tr>
 						<% cols.each { %>
-							<td style="text-align: left">${ row.getColumnValue(it) }</td>
+							<td style="text-align: left">${ formatData(row.getColumnValue(it)) }</td>
 						<% } %>
 					</tr>
 				<% } %>
