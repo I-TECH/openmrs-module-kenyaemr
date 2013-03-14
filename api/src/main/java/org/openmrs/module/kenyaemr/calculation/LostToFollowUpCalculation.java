@@ -29,7 +29,7 @@ import org.openmrs.module.kenyaemr.MetadataConstants;
  * Calculates whether a patient has been lost to follow up. Calculation returns true if patient
  * is alive, enrolled in the HIV program, but hasn't had an encounter in LOST_TO_FOLLOW_UP_THRESHOLD_DAYS days
  */
-public class LostToFollowUpCalculation extends BaseKenyaEmrCalculation {
+public class LostToFollowUpCalculation extends BaseAlertCalculation {
 
 	@Override
 	public String getShortMessage() {
@@ -37,13 +37,13 @@ public class LostToFollowUpCalculation extends BaseKenyaEmrCalculation {
 	}
 
 	@Override
-	public String getSinglePatientMessage() {
+	public String getAlertMessage() {
 		return "Lost to Followup";
 	}
 
 	@Override
 	public String[] getTags() {
-		return new String[] { "alert", "hiv" };
+		return new String[] { "hiv" };
 	}
 
 	/**

@@ -15,7 +15,7 @@ package org.openmrs.module.kenyaemr.report.patientlist;
 
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.MetadataConstants;
-import org.openmrs.module.kenyaemr.calculation.BaseKenyaEmrCalculation;
+import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyaemr.report.KenyaEmrCalculationCohortDefinition;
 import org.openmrs.module.kenyaemr.report.ReportBuilder;
 import org.openmrs.module.reporting.data.converter.DataConverter;
@@ -25,11 +25,6 @@ import org.openmrs.module.reporting.data.person.definition.AgeDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.GenderDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.PreferredNameDataDefinition;
 import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
-import org.openmrs.module.reporting.definition.DefinitionSummary;
-import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.module.reporting.evaluation.parameter.Mapped;
-import org.openmrs.module.reporting.evaluation.parameter.Parameterizable;
-import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 
 /**
@@ -37,7 +32,7 @@ import org.openmrs.module.reporting.report.definition.ReportDefinition;
  */
 public abstract class PatientListReportBuilder extends ReportBuilder {
 	
-	private BaseKenyaEmrCalculation calculation;
+	private BaseEmrCalculation calculation;
 	
 	/**
 	 * @see org.openmrs.module.kenyaemr.report.ReportBuilder#getTags()
@@ -66,7 +61,7 @@ public abstract class PatientListReportBuilder extends ReportBuilder {
     /**
      * @param calculation the calculation to set
      */
-    public void setCalculation(BaseKenyaEmrCalculation calculation) {
+    public void setCalculation(BaseEmrCalculation calculation) {
 	    this.calculation = calculation;
     }
 	

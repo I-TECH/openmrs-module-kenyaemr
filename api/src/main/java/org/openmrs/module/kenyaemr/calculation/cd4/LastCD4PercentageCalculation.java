@@ -17,7 +17,7 @@ package org.openmrs.module.kenyaemr.calculation.cd4;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyaemr.MetadataConstants;
-import org.openmrs.module.kenyaemr.calculation.BaseKenyaEmrCalculation;
+import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 
 import java.util.Collection;
 import java.util.Map;
@@ -25,7 +25,7 @@ import java.util.Map;
 /**
  * Calculates the last CD4 percentage of patients. Calculation returns NULL for patients with no recorded CD4 count
  */
-public class LastCD4PercentageCalculation extends BaseKenyaEmrCalculation {
+public class LastCD4PercentageCalculation extends BaseEmrCalculation {
 
     @Override
     public String getShortMessage() {

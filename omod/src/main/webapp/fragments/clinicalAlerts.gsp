@@ -6,8 +6,8 @@
 jq(function() {
 	ui.getFragmentActionAsJson('kenyaemr', 'clinicalAlerts', 'getAlerts', { patientId: ${ patient.id } }, function(result) {
 		if (result) {
-			var html = jq.map(result, function(alertText) {
-				return '<span class="ke-tag ke-alerttag">' + alertText.singlePatientMessage + '</span>';
+			var html = jq.map(result, function(alert) {
+				return '<span class="ke-tag ke-alerttag">' + alert.message + '</span>';
 			}).join(' ');
 			jq('#patient-alerts-placeholder').append(html).show();
 		}

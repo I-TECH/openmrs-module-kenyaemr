@@ -30,7 +30,7 @@ import java.util.*;
 /**
  * Calculates the last recorded WHO stage of patients. Calculation returns NULL for patients with no recorded WHO stage
  */
-public class WHOStagesAtEnrollmentsCalculation extends BaseKenyaEmrCalculation {
+public class WHOStagesAtEnrollmentsCalculation extends BaseEmrCalculation {
 
     @Override
     public String getShortMessage() {

@@ -17,7 +17,7 @@ package org.openmrs.module.kenyaemr.calculation.tb;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyaemr.MetadataConstants;
-import org.openmrs.module.kenyaemr.calculation.BaseKenyaEmrCalculation;
+import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 
 import java.util.Collection;
 import java.util.Map;
@@ -25,7 +25,7 @@ import java.util.Map;
 /**
  * Calculates patient's TB disease classification
  */
-public class TbPatientClassificationCalculation extends BaseKenyaEmrCalculation {
+public class TbPatientClassificationCalculation extends BaseEmrCalculation {
 
     @Override
     public String getShortMessage() {

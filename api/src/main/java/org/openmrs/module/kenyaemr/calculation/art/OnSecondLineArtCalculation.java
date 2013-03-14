@@ -22,29 +22,21 @@ import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyaemr.KenyaEmr;
-import org.openmrs.module.kenyaemr.calculation.BaseKenyaEmrCalculation;
+import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyaemr.calculation.BooleanResult;
 import org.openmrs.module.kenyaemr.regimen.*;
 
 /**
  * Calculates whether patients are on second-line ART regimens
  */
-public class OnSecondLineArtCalculation extends BaseKenyaEmrCalculation {
+public class OnSecondLineArtCalculation extends BaseEmrCalculation {
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.calculation.BaseKenyaEmrCalculation#getShortMessage()
+	 * @see org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation#getShortMessage()
 	 */
 	@Override
 	public String getShortMessage() {
 		return "Patients on Second Line ART";
-	}
-
-	/**
-	 * @see org.openmrs.module.kenyaemr.calculation.BaseKenyaEmrCalculation#getSinglePatientMessage()
-	 */
-	@Override
-	public String getSinglePatientMessage() {
-		return "On Second Line ART";
 	}
 
 	@Override

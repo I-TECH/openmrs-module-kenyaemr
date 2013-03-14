@@ -69,7 +69,7 @@ import org.openmrs.util.OpenmrsUtil;
 /**
  * Base class for calculations we'll hand-write for this module.
  */
-public abstract class BaseKenyaEmrCalculation extends BaseCalculation implements PatientCalculation {
+public abstract class BaseEmrCalculation extends BaseCalculation implements PatientCalculation {
 
 	/**
 	 * Gets a user-friendly name to display, e.g. "Patients Eligible for ART"
@@ -83,15 +83,6 @@ public abstract class BaseKenyaEmrCalculation extends BaseCalculation implements
 	 * @return the possibly-more-detailed message
 	 */
 	public String getDetailedMessage() {
-		return getShortMessage();
-	}
-
-	/**
-	 * Gets a message suitable for a single patient or alert, e.g. "Eligible for ART"
-	 * The default implementation simply delegates to {@link #getShortMessage()}
-	 * @return the message
-	 */
-	public String getSinglePatientMessage() {
 		return getShortMessage();
 	}
 

@@ -14,15 +14,14 @@
 package org.openmrs.module.kenyaemr.calculation;
 
 import org.openmrs.Concept;
-import org.openmrs.DrugOrder;
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.CalculationProvider;
 import org.openmrs.calculation.InvalidCalculationException;
-import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.*;
+import org.openmrs.module.kenyaemr.KenyaEmr;
 import org.openmrs.util.OpenmrsUtil;
 
 import java.util.*;
@@ -130,15 +129,14 @@ public class CalculationUtils {
 
 	/**
 	 * Evaluates the specified calculation for a single patient
-	 * @param provider the calculation provider
-	 * @param name the calculation name
+	 * @param calculationClass the calculation class
 	 * @param configuration the calculation configuration
 	 * @param patientId the patient id
 	 * @return th calculation result
 	 * @throws InvalidCalculationException if no calculation with that name exists
 	 */
-	public static CalculationResult evaluateForPatient(CalculationProvider provider, String name, String configuration, Integer patientId) throws InvalidCalculationException {
-		BaseKenyaEmrCalculation calculation = (BaseKenyaEmrCalculation)provider.getCalculation(name, configuration);
+	public static CalculationResult evaluateForPatient(Class <? extends BaseEmrCalculation> calculationClass, String configuration, Integer patientId) {
+		BaseEmrCalculation calculation = CalculationManager.instantiateCalculation(calculationClass, configuration);
 		return Context.getService(PatientCalculationService.class).evaluate(patientId, calculation);
 	}
 

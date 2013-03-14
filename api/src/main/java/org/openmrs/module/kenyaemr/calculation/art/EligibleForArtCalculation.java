@@ -11,6 +11,7 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.kenyaemr.calculation.art;
 
 import java.util.Collection;
@@ -23,22 +24,18 @@ import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyaemr.MetadataConstants;
-import org.openmrs.module.kenyaemr.calculation.BaseKenyaEmrCalculation;
-import org.openmrs.module.kenyaemr.calculation.BooleanResult;
-import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
-import org.openmrs.module.kenyaemr.calculation.LastWHOStageCalculation;
+import org.openmrs.module.kenyaemr.calculation.*;
 import org.openmrs.module.kenyaemr.calculation.cd4.LastCD4CountCalculation;
 import org.openmrs.module.kenyaemr.calculation.cd4.LastCD4PercentageCalculation;
 import org.openmrs.module.reporting.common.Age;
 
-
 /**
  *
  */
-public class EligibleForArtCalculation extends BaseKenyaEmrCalculation {
+public class EligibleForArtCalculation extends BaseAlertCalculation {
 	
 	/**
-	 * @see org.openmrs.module.kenyaemr.calculation.BaseKenyaEmrCalculation#getShortMessage()
+	 * @see org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation#getShortMessage()
 	 */
 	@Override
 	public String getShortMessage() {
@@ -46,16 +43,16 @@ public class EligibleForArtCalculation extends BaseKenyaEmrCalculation {
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.calculation.BaseKenyaEmrCalculation#getSinglePatientMessage()
+	 * @see org.openmrs.module.kenyaemr.calculation.BaseAlertCalculation#getAlertMessage()
 	 */
 	@Override
-	public String getSinglePatientMessage() {
+	public String getAlertMessage() {
 		return "Eligible for ART";
 	}
 
 	@Override
 	public String[] getTags() {
-		return new String[] { "alert", "hiv" };
+		return new String[] { "hiv" };
 	}
 	
 	/**

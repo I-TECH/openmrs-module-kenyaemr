@@ -30,7 +30,7 @@ import org.openmrs.module.kenyaemr.MetadataConstants;
 /**
  * Calculates whether patients have taken CTX or Dapsone
  */
-public class WithoutCTXOrDapsoneCalculation extends BaseKenyaEmrCalculation {
+public class WithoutCTXOrDapsoneCalculation extends BaseEmrCalculation {
 
 	@Override
 	public String getShortMessage() {

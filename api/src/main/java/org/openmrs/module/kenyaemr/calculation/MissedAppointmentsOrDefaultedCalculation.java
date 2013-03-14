@@ -32,7 +32,7 @@ import org.openmrs.module.kenyaemr.MetadataConstants;
  * if the patient is alive, enrolled in the HIV program, has a scheduled return visit in the past,
  * and hasn't had an encounter since that date
  */
-public class MissedAppointmentsOrDefaultedCalculation extends BaseKenyaEmrCalculation {
+public class MissedAppointmentsOrDefaultedCalculation extends BaseAlertCalculation {
 
     @Override
     public String getShortMessage() {
@@ -40,13 +40,13 @@ public class MissedAppointmentsOrDefaultedCalculation extends BaseKenyaEmrCalcul
     }
 
 	@Override
-	public String getSinglePatientMessage() {
+	public String getAlertMessage() {
 		return "Missed Appointment";
 	}
 
 	@Override
 	public String[] getTags() {
-		return new String[] { "alert", "hiv" };
+		return new String[] { "hiv" };
 	}
 
     /**

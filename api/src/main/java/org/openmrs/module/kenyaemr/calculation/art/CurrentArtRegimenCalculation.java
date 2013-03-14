@@ -21,7 +21,7 @@ import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.ListResult;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyaemr.MetadataConstants;
-import org.openmrs.module.kenyaemr.calculation.BaseKenyaEmrCalculation;
+import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
 import org.openmrs.module.kenyaemr.regimen.RegimenOrder;
 
@@ -32,10 +32,10 @@ import java.util.Map;
 /**
  * Calculates the current ART regimen of each patient as a list of drug orders. Returns empty list if patient is not on ART
  */
-public class CurrentArtRegimenCalculation extends BaseKenyaEmrCalculation {
+public class CurrentArtRegimenCalculation extends BaseEmrCalculation {
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.calculation.BaseKenyaEmrCalculation#getShortMessage()
+	 * @see org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation#getShortMessage()
 	 */
 	@Override
 	public String getShortMessage() {

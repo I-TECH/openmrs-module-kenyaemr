@@ -13,12 +13,9 @@
  */
 package org.openmrs.module.kenyaemr.page.controller;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.openmrs.Patient;
-import org.openmrs.PatientProgram;
 import org.openmrs.Program;
 import org.openmrs.Visit;
 import org.openmrs.api.ProgramWorkflowService;
@@ -28,14 +25,13 @@ import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.module.appframework.AppUiUtil;
 import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
-import org.openmrs.module.kenyaemr.calculation.KenyaEmrCalculationProvider;
+import org.openmrs.module.kenyaemr.calculation.CalculationManager;
+import org.openmrs.module.kenyaemr.calculation.WHOStagesAtEnrollmentsCalculation;
 import org.openmrs.module.kenyaemr.util.KenyaEmrUtils;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.page.PageModel;
 import org.openmrs.ui.framework.session.Session;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import javax.management.monitor.StringMonitorMBean;
 
 /**
  * Medical encounter view patient page
@@ -45,9 +41,7 @@ public class MedicalEncounterViewPatientPageController {
 	public void controller(@RequestParam("patientId") Patient patient,
 	                       @RequestParam(value="visitId", required=false) Visit visit,
 	                       PageModel model,
-	                       Session session,
-						   @SpringBean("org.openmrs.module.kenyaemr.calculation.KenyaEmrCalculationProvider") KenyaEmrCalculationProvider calculationProvider)
-			throws InvalidCalculationException {
+	                       Session session) {
 		
 		AppUiUtil.startApp("kenyaemr.medicalEncounter", session);
 
@@ -72,7 +66,7 @@ public class MedicalEncounterViewPatientPageController {
 		model.addAttribute("enrolledInHivProgram", KenyaEmrUtils.isPatientInProgram(patient, hivProgram));
 		model.addAttribute("enrolledInTbProgram", KenyaEmrUtils.isPatientInProgram(patient, tbProgram));
 
-		CalculationResult whoStagesAtEnrollments = CalculationUtils.evaluateForPatient(calculationProvider, "whoStagesAtEnrollments", null, patient.getPatientId());
+		CalculationResult whoStagesAtEnrollments = CalculationUtils.evaluateForPatient(WHOStagesAtEnrollmentsCalculation.class, null, patient.getPatientId());
 		model.put("whoStagesAtEnrollments", whoStagesAtEnrollments.getValue());
 	}
 }

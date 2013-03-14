@@ -1,4 +1,4 @@
-/*
+/**
  * The contents of this file are subject to the OpenMRS Public License
  * Version 1.0 (the "License"); you may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
@@ -11,9 +11,11 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.kenyaemr.calculation;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 import org.openmrs.test.BaseModuleContextSensitiveTest;
@@ -22,29 +24,34 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Arrays;
 import java.util.List;
 
-public class KenyaEmrCalculationProviderTest extends BaseModuleContextSensitiveTest {
+public class CalculationManagerTest extends BaseModuleContextSensitiveTest {
 
 	@Autowired
-	KenyaEmrCalculationProvider provider;
+	CalculationManager manager;
 
-	/**
-	 * @see KenyaEmrCalculationProvider#getAllCalculations()
-	 */
-	@Test
-	public void getAllCalculations_shouldReturnAllCalculations() {
-		Assert.assertTrue(provider.getAllCalculations().size() > 0);
+	@Before
+	public void setup() {
+		manager.refreshCalculationClasses();
 	}
 
 	/**
-	 * @see KenyaEmrCalculationProvider#getCalculations(String)
+	 * @see CalculationManager#getAlertCalculations()
+	 */
+	@Test
+	public void getAlertCalculations_shouldReturnAllAlertCalculations() {
+		Assert.assertTrue(manager.getAlertCalculations().size() > 0);
+	}
+
+	/**
+	 * @see CalculationManager#getCalculations(String)
 	 */
 	@Test
 	public void getCalculations_shouldReturnAllCalculationsWithTag() {
-		List<BaseKenyaEmrCalculation> calcs = provider.getCalculations("alert");
+		List<BaseEmrCalculation> calcs = manager.getCalculations("hiv");
 		Assert.assertTrue(calcs.size() > 0);
 
-		for (BaseKenyaEmrCalculation calc : calcs) {
-			Assert.assertTrue(Arrays.asList(calc.getTags()).contains("alert"));
+		for (BaseEmrCalculation calc : calcs) {
+			Assert.assertTrue(Arrays.asList(calc.getTags()).contains("hiv"));
 		}
 	}
 }

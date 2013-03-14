@@ -19,10 +19,12 @@ import org.openmrs.Patient;
 import org.openmrs.calculation.InvalidCalculationException;
 import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.module.kenyaemr.KenyaEmr;
+import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
-import org.openmrs.module.kenyaemr.calculation.KenyaEmrCalculationProvider;
+import org.openmrs.module.kenyaemr.calculation.CalculationManager;
+import org.openmrs.module.kenyaemr.calculation.tb.TbDiseaseClassificationCalculation;
+import org.openmrs.module.kenyaemr.calculation.tb.TbPatientClassificationCalculation;
 import org.openmrs.module.kenyaemr.regimen.RegimenChangeHistory;
-import org.openmrs.module.kenyaemr.regimen.RegimenManager;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.FragmentModel;
@@ -35,21 +37,19 @@ import java.util.Map;
  */
 public class CareSummaryTbFragmentController {
 
-	protected static final String[] calculations = { "tbDiseaseClassification", "tbPatientClassification" };
-
 	public void controller(@FragmentParam("patient") Patient patient,
 						   @FragmentParam("complete") Boolean complete,
 						   FragmentModel model,
-						   @SpringBean("org.openmrs.module.kenyaemr.calculation.KenyaEmrCalculationProvider") KenyaEmrCalculationProvider calculationProvider,
 						   @SpringBean KenyaEmr emr)
 			throws InvalidCalculationException {
 
 		Map<String, Object> calculationResults = new HashMap<String, Object>();
 
-		for (String calculation : calculations) {
-			CalculationResult result = CalculationUtils.evaluateForPatient(calculationProvider, calculation, null, patient.getPatientId());
-			calculationResults.put(calculation, result != null ? result.getValue() : null);
-		}
+		CalculationResult result = CalculationUtils.evaluateForPatient(TbDiseaseClassificationCalculation.class, null, patient.getPatientId());
+		calculationResults.put("tbDiseaseClassification", result != null ? result.getValue() : null);
+
+		result = CalculationUtils.evaluateForPatient(TbPatientClassificationCalculation.class, null, patient.getPatientId());
+		calculationResults.put("tbPatientClassification", result != null ? result.getValue() : null);
 
 		model.addAttribute("calculations", calculationResults);
 

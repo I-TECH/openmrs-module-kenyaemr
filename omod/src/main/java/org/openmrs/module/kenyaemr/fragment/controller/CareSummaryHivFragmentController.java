@@ -20,10 +20,12 @@ import org.openmrs.calculation.InvalidCalculationException;
 import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.module.kenyaemr.KenyaEmr;
 import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
-import org.openmrs.module.kenyaemr.calculation.KenyaEmrCalculationProvider;
-import org.openmrs.module.kenyaemr.regimen.RegimenChange;
+import org.openmrs.module.kenyaemr.calculation.CalculationManager;
+import org.openmrs.module.kenyaemr.calculation.LastWHOStageCalculation;
+import org.openmrs.module.kenyaemr.calculation.art.InitialArtRegimenCalculation;
+import org.openmrs.module.kenyaemr.calculation.cd4.LastCD4CountCalculation;
+import org.openmrs.module.kenyaemr.calculation.cd4.LastCD4PercentageCalculation;
 import org.openmrs.module.kenyaemr.regimen.RegimenChangeHistory;
-import org.openmrs.module.kenyaemr.regimen.RegimenManager;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.FragmentModel;
@@ -39,19 +41,18 @@ public class CareSummaryHivFragmentController {
 	public void controller(@FragmentParam("patient") Patient patient,
 						   @FragmentParam("complete") Boolean complete,
 						   FragmentModel model,
-						   @SpringBean("org.openmrs.module.kenyaemr.calculation.KenyaEmrCalculationProvider") KenyaEmrCalculationProvider calculationProvider,
 						   @SpringBean KenyaEmr emr)
 			throws InvalidCalculationException {
 
 		Map<String, CalculationResult> calculationResults = new HashMap<String, CalculationResult>();
 
 		if (complete != null && complete.booleanValue()) {
-			calculationResults.put("initialArtRegimen", CalculationUtils.evaluateForPatient(calculationProvider, "initialArtRegimen", null, patient.getPatientId()));
+			calculationResults.put("initialArtRegimen", CalculationUtils.evaluateForPatient(InitialArtRegimenCalculation.class, null, patient.getPatientId()));
 		}
 
-		calculationResults.put("lastWHOStage", CalculationUtils.evaluateForPatient(calculationProvider, "lastWHOStage", null, patient.getPatientId()));
-		calculationResults.put("lastCD4Count", CalculationUtils.evaluateForPatient(calculationProvider, "lastCD4Count", null, patient.getPatientId()));
-		calculationResults.put("lastCD4Percent", CalculationUtils.evaluateForPatient(calculationProvider, "lastCD4Percent", null, patient.getPatientId()));
+		calculationResults.put("lastWHOStage", CalculationUtils.evaluateForPatient(LastWHOStageCalculation.class, null, patient.getPatientId()));
+		calculationResults.put("lastCD4Count", CalculationUtils.evaluateForPatient(LastCD4CountCalculation.class, null, patient.getPatientId()));
+		calculationResults.put("lastCD4Percent", CalculationUtils.evaluateForPatient(LastCD4PercentageCalculation.class, null, patient.getPatientId()));
 
 		model.addAttribute("calculations", calculationResults);
 

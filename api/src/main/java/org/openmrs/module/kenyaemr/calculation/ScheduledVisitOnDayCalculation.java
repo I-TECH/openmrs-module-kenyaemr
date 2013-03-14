@@ -32,10 +32,10 @@ import org.openmrs.module.reporting.common.RangeComparator;
 /**
  *
  */
-public class ScheduledVisitOnDayCalculation extends BaseKenyaEmrCalculation {
+public class ScheduledVisitOnDayCalculation extends BaseEmrCalculation {
 	
 	/**
-	 * @see BaseKenyaEmrCalculation#getShortMessage()
+	 * @see BaseEmrCalculation#getShortMessage()
 	 */
 	@Override
 	public String getShortMessage() {

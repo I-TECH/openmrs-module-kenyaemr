@@ -24,7 +24,7 @@ import java.util.Map;
 /**
  * Calculates the last recorded WHO stage of patients. Calculation returns NULL for patients with no recorded WHO stage
  */
-public class LastWHOStageCalculation extends BaseKenyaEmrCalculation {
+public class LastWHOStageCalculation extends BaseEmrCalculation {
 
     @Override
     public String getShortMessage() {

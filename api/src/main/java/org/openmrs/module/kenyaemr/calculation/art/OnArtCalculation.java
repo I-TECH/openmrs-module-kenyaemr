@@ -11,6 +11,7 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.kenyaemr.calculation.art;
 
 import java.util.Collection;
@@ -19,16 +20,16 @@ import java.util.Map;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.calculation.result.CalculationResultMap;
-import org.openmrs.module.kenyaemr.calculation.BaseKenyaEmrCalculation;
+import org.openmrs.module.kenyaemr.calculation.BaseAlertCalculation;
 import org.openmrs.module.kenyaemr.calculation.BooleanResult;
 
 /**
  * Calculates whether patients are on ART
  */
-public class OnArtCalculation extends BaseKenyaEmrCalculation {
+public class OnArtCalculation extends BaseAlertCalculation {
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.calculation.BaseKenyaEmrCalculation#getShortMessage()
+	 * @see org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation#getShortMessage()
 	 */
 	@Override
 	public String getShortMessage() {
@@ -36,10 +37,10 @@ public class OnArtCalculation extends BaseKenyaEmrCalculation {
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.calculation.BaseKenyaEmrCalculation#getSinglePatientMessage()
+	 * @see org.openmrs.module.kenyaemr.calculation.BaseAlertCalculation#getAlertMessage()
 	 */
 	@Override
-	public String getSinglePatientMessage() {
+	public String getAlertMessage() {
 		return "On ART";
 	}
 

@@ -19,8 +19,8 @@ import java.util.List;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResult;
-import org.openmrs.module.kenyaemr.calculation.BaseKenyaEmrCalculation;
-import org.openmrs.module.kenyaemr.calculation.KenyaEmrCalculationProvider;
+import org.openmrs.module.kenyaemr.KenyaEmr;
+import org.openmrs.module.kenyaemr.calculation.BaseAlertCalculation;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.SpringBean;
@@ -39,24 +39,21 @@ public class ClinicalAlertsFragmentController {
 	 * Gets the clinical alerts for the given patient
 	 * @param ptId the patient id
 	 * @param ui the UI utils
-	 * @param calcs the calculation provider
+	 * @param emr the Kenya EMR
 	 * @return the alerts as simple objects
 	 */
-	public List<SimpleObject> getAlerts(@RequestParam("patientId") Integer ptId,
-	                                    UiUtils ui,
-	                                    @SpringBean("org.openmrs.module.kenyaemr.calculation.KenyaEmrCalculationProvider") KenyaEmrCalculationProvider calcs) {
+	public List<SimpleObject> getAlerts(@RequestParam("patientId") Integer ptId,  UiUtils ui, @SpringBean KenyaEmr emr) {
 
-		List<BaseKenyaEmrCalculation> alerts = new ArrayList<BaseKenyaEmrCalculation>();
+		List<SimpleObject> alerts = new ArrayList<SimpleObject>();
 
 		// Gather all alert calculations that evaluate to true
-		for (BaseKenyaEmrCalculation calc : calcs.getCalculations("alert")) {
+		for (BaseAlertCalculation calc : emr.getCalculationManager().getAlertCalculations()) {
 			CalculationResult result = Context.getService(PatientCalculationService.class).evaluate(ptId, calc);
-			if ((Boolean) result.getValue()) {
-				alerts.add(calc);
+			if (result != null && (Boolean) result.getValue()) {
+				alerts.add(SimpleObject.create("message", calc.getAlertMessage()));
 			}
 		}
 
-		// Return as simple objects to be formatted as JSON
-		return SimpleObject.fromCollection(alerts, ui, "singlePatientMessage");
+		return alerts;
 	}
 }

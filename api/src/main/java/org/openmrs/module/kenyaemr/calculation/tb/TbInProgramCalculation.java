@@ -24,13 +24,13 @@ import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyaemr.MetadataConstants;
-import org.openmrs.module.kenyaemr.calculation.BaseKenyaEmrCalculation;
+import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
 
 /**
  * Calculates whether patients are in the TB program
  */
-public class TbInProgramCalculation extends BaseKenyaEmrCalculation {
+public class TbInProgramCalculation extends BaseEmrCalculation {
 
     @Override
     public String getShortMessage() {

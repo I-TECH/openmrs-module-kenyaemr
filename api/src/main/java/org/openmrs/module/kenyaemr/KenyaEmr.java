@@ -16,6 +16,7 @@ package org.openmrs.module.kenyaemr;
 
 import org.openmrs.api.context.Context;
 import org.openmrs.module.ModuleFactory;
+import org.openmrs.module.kenyaemr.calculation.CalculationManager;
 import org.openmrs.module.kenyaemr.form.FormManager;
 import org.openmrs.module.kenyaemr.regimen.RegimenManager;
 import org.openmrs.module.kenyaemr.report.ReportManager;
@@ -39,6 +40,9 @@ public class KenyaEmr {
 
 	@Autowired
 	FormManager formManager;
+
+	@Autowired
+	CalculationManager calculationManager;
 
 	@Autowired
 	ReportManager reportManager;
@@ -85,6 +89,14 @@ public class KenyaEmr {
 	}
 
 	/**
+	 * Gets the calculation manager
+	 * @return the calculation manager
+	 */
+	public CalculationManager getCalculationManager() {
+		return calculationManager;
+	}
+
+	/**
 	 * Gets the report manager
 	 * @return the report manager
 	 */
@@ -105,6 +117,7 @@ public class KenyaEmr {
 	 * Handles a context refresh
 	 */
 	protected void contextRefreshed() {
+		calculationManager.refreshCalculationClasses();
 		reportManager.refreshReportBuilders();
 	}
 }

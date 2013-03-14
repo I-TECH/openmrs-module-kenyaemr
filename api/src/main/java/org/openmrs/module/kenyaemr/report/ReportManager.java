@@ -14,6 +14,8 @@
 
 package org.openmrs.module.kenyaemr.report;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
 import org.springframework.stereotype.Component;
 
@@ -25,7 +27,9 @@ import java.util.*;
 @Component
 public class ReportManager {
 
-	private Map<String, ReportBuilder> reportBuilders;
+	protected static final Log log = LogFactory.getLog(ReportManager.class);
+
+	private Map<String, ReportBuilder> reportBuilders = new LinkedHashMap<String, ReportBuilder>();
 
 	/**
 	 * Clears all reports
@@ -38,9 +42,12 @@ public class ReportManager {
 	 * Refreshes the list of report builders from application context
 	 */
 	public synchronized void refreshReportBuilders() {
-		reportBuilders = new LinkedHashMap<String, ReportBuilder>();
-		for (ReportBuilder manager : Context.getRegisteredComponents(ReportBuilder.class)) {
-			reportBuilders.put(manager.getClass().getName(), manager);
+		clear();
+
+		for (ReportBuilder builder : Context.getRegisteredComponents(ReportBuilder.class)) {
+			reportBuilders.put(builder.getClass().getName(), builder);
+
+			log.info("Found calculation class :" + builder.getClass().getName());
 		}
 	}
 

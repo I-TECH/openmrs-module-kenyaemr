@@ -27,7 +27,7 @@ import java.util.Map;
 /**
  * Calculates the recorded pregnancy status of patients. Calculation returns null for patients with no recorded status
  */
-public class IsPregnantCalculation extends BaseKenyaEmrCalculation {
+public class IsPregnantCalculation extends BaseAlertCalculation {
 
 	@Override
 	public String getShortMessage() {
@@ -35,13 +35,13 @@ public class IsPregnantCalculation extends BaseKenyaEmrCalculation {
 	}
 
 	@Override
-	public String getSinglePatientMessage() {
+	public String getAlertMessage() {
 		return "Pregnant";
 	}
 
 	@Override
 	public String[] getTags() {
-		return new String[] { "alert" };
+		return new String[] { };
 	}
 
     /**
