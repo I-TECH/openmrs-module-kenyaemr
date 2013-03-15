@@ -23,6 +23,7 @@ import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
 import org.openmrs.module.kenyaemr.calculation.CalculationManager;
 import org.openmrs.module.kenyaemr.calculation.LastWHOStageCalculation;
 import org.openmrs.module.kenyaemr.calculation.art.InitialArtRegimenCalculation;
+import org.openmrs.module.kenyaemr.calculation.art.InitialArtStartDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.cd4.LastCD4CountCalculation;
 import org.openmrs.module.kenyaemr.calculation.cd4.LastCD4PercentageCalculation;
 import org.openmrs.module.kenyaemr.regimen.RegimenChangeHistory;
@@ -48,6 +49,7 @@ public class CareSummaryHivFragmentController {
 
 		if (complete != null && complete.booleanValue()) {
 			calculationResults.put("initialArtRegimen", CalculationUtils.evaluateForPatient(InitialArtRegimenCalculation.class, null, patient.getPatientId()));
+			calculationResults.put("initialArtStartDate", CalculationUtils.evaluateForPatient(InitialArtStartDateCalculation.class, null, patient.getPatientId()));
 		}
 
 		calculationResults.put("lastWHOStage", CalculationUtils.evaluateForPatient(LastWHOStageCalculation.class, null, patient.getPatientId()));

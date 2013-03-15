@@ -4,7 +4,7 @@
 	def dataPoints = []
 
 	if (config.complete) {
-		def initialArtStartDate = calculations.initialArtRegimen ? calculations.initialArtRegimen.value.startDate : null
+		def initialArtStartDate = calculations.initialArtStartDate ? calculations.initialArtStartDate.value : null
 		if (initialArtStartDate) {
 			dataPoints << [ label: "ART start date", value: initialArtStartDate, showDateInterval: true ]
 			dataPoints << [ label: "Initial ART regimen", value: kenyaUi.formatRegimenLong(calculations.initialArtRegimen.value, ui) ]

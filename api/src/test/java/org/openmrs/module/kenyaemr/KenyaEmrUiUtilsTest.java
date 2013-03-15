@@ -76,9 +76,7 @@ public class KenyaEmrUiUtilsTest extends BaseModuleContextSensitiveTest {
 		stavudine.setUnits("ml");
 		stavudine.setFrequency("BD");
 
-		regimen = new RegimenOrder();
-		regimen.addDrugOrder(aspirin);
-		regimen.addDrugOrder(stavudine);
+		regimen = new RegimenOrder(new HashSet<DrugOrder>(Arrays.asList(aspirin, stavudine)));
 	}
 
 	/**
@@ -133,15 +131,6 @@ public class KenyaEmrUiUtilsTest extends BaseModuleContextSensitiveTest {
 
 	/**
 	 * @see org.openmrs.module.kenyaemr.KenyaEmrUiUtils#formatRegimenShort(org.openmrs.module.kenyaemr.regimen.RegimenOrder, org.openmrs.ui.framework.UiUtils)
-	 * @verifies format empty list as empty string
-	 */
-	@Test
-	public void formatRegimenShort_shouldFormatEmptyListAsEmpty() throws Exception {
-		Assert.assertEquals("Empty", kenyaUi.formatRegimenShort(new RegimenOrder(), ui));
-	}
-
-	/**
-	 * @see org.openmrs.module.kenyaemr.KenyaEmrUiUtils#formatRegimenShort(org.openmrs.module.kenyaemr.regimen.RegimenOrder, org.openmrs.ui.framework.UiUtils)
 	 * @verifies format regimen
 	 */
 	@Test
@@ -158,11 +147,6 @@ public class KenyaEmrUiUtilsTest extends BaseModuleContextSensitiveTest {
 		SimpleObject obj1 = kenyaUi.simpleRegimen(null, ui);
 		Assert.assertEquals("None", obj1.get("shortDisplay"));
 		Assert.assertEquals("None", obj1.get("longDisplay"));
-
- 		// Check empty regimen
-		SimpleObject obj2 = kenyaUi.simpleRegimen(new RegimenOrder(), ui);
-		Assert.assertEquals("Empty", obj2.get("shortDisplay"));
-		Assert.assertEquals("Empty", obj2.get("longDisplay"));
 
 		// Check normal regimen
 		SimpleObject obj3 = kenyaUi.simpleRegimen(regimen, ui);

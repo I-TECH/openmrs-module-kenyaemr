@@ -28,13 +28,6 @@ public class RegimenOrder {
 	private Set<DrugOrder> drugOrders;
 
 	/**
-	 * Constructs an empty regimen
-	 */
-	public RegimenOrder() {
-		this.drugOrders = new HashSet<DrugOrder>();
-	}
-
-	/**
 	 * Constructs a regimen
 	 * @param drugOrders the drug orders
 	 */
@@ -62,22 +55,6 @@ public class RegimenOrder {
 			}
 		}
 		return ret;
-	}
-	
-	/**
-	 * Sets the drug orders
-	 * @param drugOrders the drug orders
-	 */
-	public void setDrugOrders(Set<DrugOrder> drugOrders) {
-		this.drugOrders = drugOrders;
-	}
-
-	/**
-	 * Adds a drug order
-	 * @param drugOrder the drug order
-	 */
-	public void addDrugOrder(DrugOrder drugOrder) {
-		drugOrders.add(drugOrder);
 	}
 
 	/**

@@ -11,6 +11,8 @@ import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.InputStream;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
 public class RegimenManagerTest extends BaseModuleContextSensitiveTest {
@@ -95,9 +97,7 @@ public class RegimenManagerTest extends BaseModuleContextSensitiveTest {
 		stavudine.setDose(30d);
 		stavudine.setUnits("mg");
 		stavudine.setFrequency("OD");
-		RegimenOrder regimen = new RegimenOrder();
-		regimen.addDrugOrder(lamivudine);
-		regimen.addDrugOrder(stavudine);
+		RegimenOrder regimen = new RegimenOrder(new HashSet<DrugOrder>(Arrays.asList(lamivudine, stavudine)));
 
 		// Test exact match
 		List<RegimenDefinition> defsExact = regimenManager.findDefinitions("category1", regimen, true);
