@@ -22,7 +22,9 @@ import org.openmrs.Program;
 import org.openmrs.api.PatientSetService.TimeModifier;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.MetadataConstants;
+import org.openmrs.module.kenyaemr.calculation.IsPregnantCalculation;
 import org.openmrs.module.kenyaemr.calculation.art.InitialArtStartDateCalculation;
+import org.openmrs.module.kenyaemr.calculation.art.PregnantAtArtStartCalculation;
 import org.openmrs.module.kenyaemr.report.KenyaEmrCalculationCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -211,12 +213,26 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 			cohortDefinitions.put("tbScreeningEncounterBetween", cd);
 		}
 		{ // Started ART
-			InitialArtStartDateCalculation calc = new InitialArtStartDateCalculation();
-			KenyaEmrCalculationCohortDefinition cd = new KenyaEmrCalculationCohortDefinition(calc);
+			KenyaEmrCalculationCohortDefinition cd = new KenyaEmrCalculationCohortDefinition(new InitialArtStartDateCalculation());
 			cd.setName("Started ART between dates");
 			cd.addParameter(new Parameter("resultOnOrBefore", "Before Date", Date.class));
 			cd.addParameter(new Parameter("resultOnOrAfter", "After Date", Date.class));
 			cohortDefinitions.put("startedArtBetween", cd);
+		}
+		{ // Pregnant at start of ART
+			KenyaEmrCalculationCohortDefinition cd = new KenyaEmrCalculationCohortDefinition(new PregnantAtArtStartCalculation());
+			cd.setName("Started ART between dates");
+			cohortDefinitions.put("pregnantAtArtStart", cd);
+		}
+		{ // Started ART and is pregnant
+			CompositionCohortDefinition cd = new CompositionCohortDefinition();
+			cd.addParameter(new Parameter("fromDate", "From Date", Date.class));
+			cd.addParameter(new Parameter("toDate", "To Date", Date.class));
+
+			cd.addSearch("startedArtBetween", map(cohortDefinitions.get("startedArtBetween"), "resultOnOrAfter=${startDate},resultOnOrBefore=${endDate}"));
+			cd.addSearch("pregnantAtArtStart", map(cohortDefinitions.get("pregnantAtArtStart"), ""));
+			cd.setCompositionString("startedArtBetween AND pregnantAtArtStart");
+			cohortDefinitions.put("startedArtAndIsPregnant", cd);
 		}
 		{ // Started ART and is TB patient
 			CompositionCohortDefinition cd = new CompositionCohortDefinition();
@@ -303,6 +319,13 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 			indicators.put("startingArtTbPatient", ind);
 		}
 		{
+			CohortIndicator ind = new CohortIndicator("Starting ART (Pregnant)");
+			ind.addParameter(new Parameter("startDate", "Start Date", Date.class));
+			ind.addParameter(new Parameter("endDate", "End Date", Date.class));
+			ind.setCohortDefinition(map(cohortDefinitions.get("startedArtAndIsPregnant"), "fromDate=${startDate},toDate=${endDate}"));
+			indicators.put("startingArtPregnant", ind);
+		}
+		{
 			CohortIndicator ind = new CohortIndicator("Revisits ART");
 			ind.addParameter(new Parameter("startDate", "Start Date", Date.class));
 			ind.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -382,9 +405,7 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 		dsd.addColumn("HV03-23", "Starting ART (15+, Male)", map(indicators.get("startingArt"), "startDate=${startDate},endDate=${endDate}"), "gender=M|age=15+");
 		dsd.addColumn("HV03-24", "Starting ART (15+, Female)", map(indicators.get("startingArt"), "startDate=${startDate},endDate=${endDate}"), "gender=F|age=15+");
 		dsd.addColumn("HV03-25", "Starting ART (Total)", map(indicators.get("startingArt"), "startDate=${startDate},endDate=${endDate}"), "");
-
-		// TODO HV03-26 (Starting ART (Pregnant))
-
+		dsd.addColumn("HV03-26", "Starting ART (Pregnant)", map(indicators.get("startingArtPregnant"), "startDate=${startDate},endDate=${endDate}"), "");
 		dsd.addColumn("HV03-27", "Starting ART (TB Patient)", map(indicators.get("startingArtTbPatient"), "startDate=${startDate},endDate=${endDate}"), "");
 
 		/////////////// 3.5 (Revisits ART) ///////////////
