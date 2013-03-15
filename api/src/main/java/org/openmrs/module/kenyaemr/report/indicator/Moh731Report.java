@@ -26,13 +26,8 @@ import org.openmrs.module.kenyaemr.calculation.IsPregnantCalculation;
 import org.openmrs.module.kenyaemr.calculation.art.InitialArtStartDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.art.PregnantAtArtStartCalculation;
 import org.openmrs.module.kenyaemr.report.KenyaEmrCalculationCohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.DateObsCohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.EncounterCohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.ProgramEnrollmentCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.*;
+import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
@@ -119,6 +114,8 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 		Program tbProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.TB_PROGRAM_UUID);
 		EncounterType tbScreeningEncType = Context.getEncounterService().getEncounterTypeByUuid(MetadataConstants.TB_SCREENING_ENCOUNTER_TYPE_UUID);
 		Concept transferInDate = Context.getConceptService().getConceptByUuid(MetadataConstants.TRANSFER_IN_DATE_CONCEPT_UUID);
+		Concept yes = Context.getConceptService().getConceptByUuid(MetadataConstants.YES_CONCEPT_UUID);
+		//Concept familyPlanningMethod = Context.getConceptService().getConceptByUuid(MetadataConstants.METHOD_OF_FAMILY_PLANNING);
 		Concept condomsProvided = Context.getConceptService().getConceptByUuid(MetadataConstants.CONDOMS_PROVIDED_DURING_VISIT_CONCEPT_UUID);
 
 		cohortDefinitions = new HashMap<String, CohortDefinition>();
@@ -180,13 +177,24 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 			cohortDefinitions.put("transferInBefore", cd);
 		}
 		{
-			DateObsCohortDefinition cd = new DateObsCohortDefinition();
+			CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
 			cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 			cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 			cd.setName("Condoms provided between dates");
 			cd.setTimeModifier(TimeModifier.ANY);
 			cd.setQuestion(condomsProvided);
+			cd.setValueList(Collections.singletonList(yes));
+			cd.setOperator(SetComparator.IN);
 			cohortDefinitions.put("condomsProvidedBetween", cd);
+		}
+		{
+			//CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
+			//cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+			//cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+			//cd.setName("Family planning provided between dates");
+			//cd.setTimeModifier(TimeModifier.ANY);
+			//cd.setQuestion(familyPlanningMethod);
+			//cohortDefinitions.put("familyPlanningProvidedBetween", cd);
 		}
 		{
 			CompositionCohortDefinition cd = new CompositionCohortDefinition();
@@ -245,8 +253,6 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 			cohortDefinitions.put("startedArtAndIsTbPatient", cd);
 		}
 		{ // Revisits on ART
-			// TODO this seems wrong: "Count all patients where ART visit date is within 90 days and ART start date is before reporting period"
-
 			CompositionCohortDefinition cd = new CompositionCohortDefinition();
 			cd.addParameter(new Parameter("fromDate", "From Date", Date.class));
 			cd.addParameter(new Parameter("toDate", "To Date", Date.class));
@@ -354,11 +360,18 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 			indicators.put("screenedForTb", ind);
 		}
 		{
-			CohortIndicator ind = new CohortIndicator("Provided with Condoms");
+			//CohortIndicator ind = new CohortIndicator("Provided with family planning");
+			//ind.addParameter(new Parameter("startDate", "Start Date", Date.class));
+			//ind.addParameter(new Parameter("endDate", "End Date", Date.class));
+			//ind.setCohortDefinition(map(cohortDefinitions.get("familyPlanningProvidedBetween"), "onOrAfter=${startDate},onOrBefore=${endDate}"));
+			//indicators.put("familyPlanningProvided", ind);
+		}
+		{
+			CohortIndicator ind = new CohortIndicator("Provided with condoms");
 			ind.addParameter(new Parameter("startDate", "Start Date", Date.class));
 			ind.addParameter(new Parameter("endDate", "End Date", Date.class));
 			ind.setCohortDefinition(map(cohortDefinitions.get("condomsProvidedBetween"), "onOrAfter=${startDate},onOrBefore=${endDate}"));
-			indicators.put("providedWithCondoms", ind);
+			indicators.put("condomsProvided", ind);
 		}
 	}
 
@@ -450,9 +463,8 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 
 		/////////////// 3.10 (Prevention with Positives) ///////////////
 
-		// TODO HV09-04 (Modern contraceptive methods)
-
-		dsd.addColumn("HV09-05", "Provided with condoms", map(indicators.get("providedWithCondoms"), "startDate=${startDate},endDate=${endDate}"), "");
+		//dsd.addColumn("HV09-04", "Modern contraceptive methods", map(indicators.get("familyPlanningProvided"), "startDate=${startDate},endDate=${endDate}"), "");
+		dsd.addColumn("HV09-05", "Provided with condoms", map(indicators.get("condomsProvided"), "startDate=${startDate},endDate=${endDate}"), "");
 
 		/////////////// 3.11 (HIV Care Visits) ///////////////
 

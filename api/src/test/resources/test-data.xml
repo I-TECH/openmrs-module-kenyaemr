@@ -24,6 +24,9 @@
 	<concept concept_id="1066" retired="false" datatype_id="4" class_id="5" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 	<concept_name concept_name_id="1066" concept_id="1066" name="NO" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="1066-name"/>
 
+	<concept concept_id="159777" retired="false" datatype_id="2" class_id="7" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="159777AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+	<concept_name concept_name_id="159777" concept_id="159777" name="CONDOMS PROVIDED DURING VISIT" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="159777-name"/>
+
 	<concept concept_id="5272" retired="false" datatype_id="2" class_id="7" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="5272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 	<concept_name concept_name_id="5272" concept_id="5272" name="PREGNANCY STATUS" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="5272-name"/>
 
@@ -53,6 +56,10 @@
 
 	<concept concept_id="1223" retired="false" datatype_id="4" class_id="5" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="1223AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 	<concept_name concept_name_id="1223" concept_id="1223" name="WHO STAGE 4 PEDS" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="1223-name"/>
+
+	<!-- Transfer in date -->
+	<concept concept_id="160534" retired="false" datatype_id="6" class_id="7" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="160534AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+	<concept_name concept_name_id="160534" concept_id="160534" name="TRANSFER IN DATE" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="160534-name"/>
 
 	<!-- Return visit date -->
 	<concept concept_id="5096" retired="false" datatype_id="6" class_id="7" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
