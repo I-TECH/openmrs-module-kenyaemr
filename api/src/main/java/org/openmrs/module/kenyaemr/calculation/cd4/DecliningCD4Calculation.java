@@ -63,8 +63,8 @@ public class DecliningCD4Calculation extends BaseAlertCalculation {
 		Set<Integer> inHivProgram = CalculationUtils.patientsThatPass(lastProgramEnrollment(hivProgram, alive, context));
 
 		// Get the two CD4 obss for comparison
-		CalculationResultMap lastCD4Obss = lastObs(MetadataConstants.CD4_CONCEPT_UUID, inHivProgram, context);
-		CalculationResultMap oldCD4Obss = lastObsAtLeastDaysAgo(MetadataConstants.CD4_CONCEPT_UUID, KenyaEmrConstants.DECLINING_CD4_COUNT_ACROSS_DAYS, inHivProgram, context);
+		CalculationResultMap lastCD4Obss = lastObs(getConcept(MetadataConstants.CD4_CONCEPT_UUID), inHivProgram, context);
+		CalculationResultMap oldCD4Obss = lastObsAtLeastDaysAgo(getConcept(MetadataConstants.CD4_CONCEPT_UUID), KenyaEmrConstants.DECLINING_CD4_COUNT_ACROSS_DAYS, inHivProgram, context);
 
 		CalculationResultMap ret = new CalculationResultMap();
 		for (Integer ptId : cohort) {

@@ -1,4 +1,4 @@
-/*
+/**
  * The contents of this file are subject to the OpenMRS Public License
  * Version 1.0 (the "License"); you may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
@@ -39,6 +39,6 @@ public class TbPatientClassificationCalculation extends BaseEmrCalculation {
 
     @Override
     public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> arg1, PatientCalculationContext context) {
-		return lastObs(MetadataConstants.RESULTS_TUBERCULOSIS_CULTURE_CONCEPT_UUID, cohort, context);
+		return lastObs(getConcept(MetadataConstants.RESULTS_TUBERCULOSIS_CULTURE_CONCEPT_UUID), cohort, context);
     }
 }

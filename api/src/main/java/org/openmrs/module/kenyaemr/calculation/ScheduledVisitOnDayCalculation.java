@@ -55,7 +55,7 @@ public class ScheduledVisitOnDayCalculation extends BaseEmrCalculation {
 		Date startOfDay = DateUtil.getStartOfDay(date);
 		Date endOfDay = DateUtil.getEndOfDay(date);
 		
-		Concept returnVisitDate = Context.getConceptService().getConceptByUuid(MetadataConstants.RETURN_VISIT_DATE_CONCEPT_UUID);
+		Concept returnVisitDate = getConcept(MetadataConstants.RETURN_VISIT_DATE_CONCEPT_UUID);
 		DateObsCohortDefinition cd = new DateObsCohortDefinition();
 		cd.setTimeModifier(TimeModifier.ANY);
 		cd.setQuestion(returnVisitDate);

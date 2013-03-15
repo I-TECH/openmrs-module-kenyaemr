@@ -11,6 +11,7 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.kenyaemr.calculation;
 
 import java.util.Collection;
@@ -51,11 +52,11 @@ public class WithoutCTXOrDapsoneCalculation extends BaseEmrCalculation {
 		Set<Integer> alive = alivePatients(cohort, context);
 		Set<Integer> inHivProgram = CalculationUtils.patientsThatPass(lastProgramEnrollment(hivProgram, alive, context));
 
-		CalculationResultMap medOrdersObss = allObs(MetadataConstants.MEDICATION_ORDERS_CONCEPT_UUID, cohort, context);
+		CalculationResultMap medOrdersObss = allObs(getConcept(MetadataConstants.MEDICATION_ORDERS_CONCEPT_UUID), cohort, context);
 
 		// Get concepts for both kinds of medication
-		Concept dapsone = Context.getConceptService().getConceptByUuid(MetadataConstants.DAPSONE_CONCEPT_UUID);
-		Concept ctx = Context.getConceptService().getConceptByUuid(MetadataConstants.SULFAMETHOXAZOLE_TRIMETHOPRIM_CONCEPT_UUID);
+		Concept dapsone = getConcept(MetadataConstants.DAPSONE_CONCEPT_UUID);
+		Concept ctx = getConcept(MetadataConstants.SULFAMETHOXAZOLE_TRIMETHOPRIM_CONCEPT_UUID);
 
 		CalculationResultMap ret = new CalculationResultMap();
 		for (Integer ptId : cohort) {

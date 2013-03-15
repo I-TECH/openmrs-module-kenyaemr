@@ -65,7 +65,7 @@ public class MissedAppointmentsOrDefaultedCalculation extends BaseAlertCalculati
 
 		Set<Integer> alive = alivePatients(cohort, context);
 		Set<Integer> inHivProgram = CalculationUtils.patientsThatPass(lastProgramEnrollment(hivProgram, alive, context));
-        CalculationResultMap lastReturnDateObss = lastObs(MetadataConstants.RETURN_VISIT_DATE_CONCEPT_UUID, inHivProgram, context);
+        CalculationResultMap lastReturnDateObss = lastObs(getConcept(MetadataConstants.RETURN_VISIT_DATE_CONCEPT_UUID), inHivProgram, context);
         CalculationResultMap lastEncounters = lastEncounter(null, cohort, context);
 
         CalculationResultMap ret = new CalculationResultMap();

@@ -11,6 +11,7 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.kenyaemr.calculation.art;
 
 import org.junit.Assert;
@@ -29,7 +30,7 @@ import java.util.List;
 public class OnArtCalculationTest extends BaseModuleContextSensitiveTest {
 
 	@Before
-	public void beforeEachTest() throws Exception {
+	public void setup() throws Exception {
 		executeDataSet("test-data.xml");
 		executeDataSet("test-drugdata.xml");
 	}

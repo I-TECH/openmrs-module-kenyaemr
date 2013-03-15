@@ -25,12 +25,7 @@ import java.util.Set;
 
 import org.joda.time.DateTime;
 import org.joda.time.Days;
-import org.openmrs.Cohort;
-import org.openmrs.Concept;
-import org.openmrs.DrugOrder;
-import org.openmrs.EncounterType;
-import org.openmrs.Obs;
-import org.openmrs.Program;
+import org.openmrs.*;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.BaseCalculation;
@@ -44,6 +39,7 @@ import org.openmrs.calculation.result.ListResult;
 import org.openmrs.calculation.result.ObsResult;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyaemr.MetadataConstants;
+import org.openmrs.module.kenyaemr.util.KenyaEmrUtils;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
@@ -118,6 +114,7 @@ public abstract class BaseEmrCalculation extends BaseCalculation implements Pati
 		if (encounterType != null)
 			def.addType(encounterType);
 		def.setWhich(TimeQualifier.LAST);
+		def.setOnOrBefore(calculationContext.getNow());
 		return evaluateWithReporting(def, patientIds, new HashMap<String, Object>(), null, calculationContext);
 	}
 
@@ -134,82 +131,84 @@ public abstract class BaseEmrCalculation extends BaseCalculation implements Pati
 		if (encounterType != null)
 			def.addType(encounterType);
 		def.setWhich(TimeQualifier.ANY);
+		def.setOnOrBefore(calculationContext.getNow());
 		return evaluateWithReporting(def, patientIds, new HashMap<String, Object>(), null, calculationContext);
 	}
 
 	/**
 	 * Evaluates the last obs of a given type of each patient
-	 * @param conceptUuid the obs' concept UUID
+	 * @param concept the obs' concept
 	 * @param patientIds the patient ids
 	 * @param calculationContext the calculation context
 	 * @return the obss in a calculation result map
 	 */
-	protected static CalculationResultMap lastObs(String conceptUuid, Collection<Integer> patientIds, PatientCalculationContext calculationContext) {
-		Concept concept = getConcept(conceptUuid);
-		if (concept == null) {
-			throw new RuntimeException("Cannot find concept with uuid = " + conceptUuid);
-		}
+	protected static CalculationResultMap lastObs(Concept concept, Collection<Integer> patientIds, PatientCalculationContext calculationContext) {
 		ObsForPersonDataDefinition def = new ObsForPersonDataDefinition("Last " + concept.getPreferredName(MetadataConstants.LOCALE), TimeQualifier.LAST, concept, calculationContext.getNow(), null);
 		return evaluateWithReporting(def, patientIds, new HashMap<String, Object>(), null, calculationContext);
 	}
 
 	/**
 	 * Evaluates the first obs of a given type of each patient
-	 * @param conceptUuid the obs' concept UUID
+	 * @param concept the obs' concept
 	 * @param patientIds the patient ids
 	 * @param calculationContext the calculation context
 	 * @return the obss in a calculation result map
 	 */
-	protected static CalculationResultMap firstObs(String conceptUuid, Collection<Integer> patientIds, PatientCalculationContext calculationContext) {
-		Concept concept = getConcept(conceptUuid);
+	protected static CalculationResultMap firstObs(Concept concept, Collection<Integer> patientIds, PatientCalculationContext calculationContext) {
 		ObsForPersonDataDefinition def = new ObsForPersonDataDefinition("First " + concept.getPreferredName(MetadataConstants.LOCALE), TimeQualifier.FIRST, concept, calculationContext.getNow(), null);
 		return evaluateWithReporting(def, patientIds, new HashMap<String, Object>(), null, calculationContext);
 	}
 
 	/**
 	 * Evaluates the first obs of a given type of each patient
-	 * @param conceptUuid the obs' concept UUID
+	 * @param concept the obs' concept
 	 * @param patientIds the patient ids
 	 * @param calculationContext the calculation context
 	 * @return the obss in a calculation result map
 	 */
-	protected static CalculationResultMap firstObsOnOrAfterDate(String conceptUuid, Date onOrAfter, Collection<Integer> patientIds, PatientCalculationContext calculationContext) {
-		Concept concept = getConcept(conceptUuid);
+	protected static CalculationResultMap firstObsOnOrAfterDate(Concept concept, Date onOrAfter, Collection<Integer> patientIds, PatientCalculationContext calculationContext) {
 		ObsForPersonDataDefinition def = new ObsForPersonDataDefinition("First " + concept.getPreferredName(MetadataConstants.LOCALE), TimeQualifier.FIRST, concept, calculationContext.getNow(), onOrAfter);
 		return evaluateWithReporting(def, patientIds, new HashMap<String, Object>(), null, calculationContext);
 	}
 
 	/**
 	 * Evaluates the last obs of a given type of each patient that occurred at least the given number of days ago
-	 * @param conceptUuid the obs' concept UUID
+	 * @param concept the obs' concept
+	 * @param onOrBefore the number of days that must be elapsed between now and the observation
+	 * @param patientIds the patient ids
+	 * @param calculationContext the calculation context
+	 * @return the obss in a calculation result map
+	 */
+	protected static CalculationResultMap lastObsOnOrBeforeDate(Concept concept, Date onOrBefore, Collection<Integer> patientIds, PatientCalculationContext calculationContext) {
+		// Only interested in obs before now
+		onOrBefore = CalculationUtils.earliestDate(onOrBefore, calculationContext.getNow());
+
+		ObsForPersonDataDefinition def = new ObsForPersonDataDefinition("Last " + concept.getPreferredName(MetadataConstants.LOCALE) + " on or before " + onOrBefore,
+				TimeQualifier.LAST, concept, onOrBefore, null);
+		return evaluateWithReporting(def, patientIds, new HashMap<String, Object>(), null, calculationContext);
+	}
+
+	/**
+	 * Evaluates the last obs of a given type of each patient that occurred at least the given number of days ago
+	 * @param concept the obs' concept
 	 * @param atLeastDaysAgo the number of days that must be elapsed between now and the observation
 	 * @param patientIds the patient ids
 	 * @param calculationContext the calculation context
 	 * @return the obss in a calculation result map
 	 */
-	protected static CalculationResultMap lastObsAtLeastDaysAgo(String conceptUuid, int atLeastDaysAgo, Collection<Integer> patientIds, PatientCalculationContext calculationContext) {
-		Concept concept = getConcept(conceptUuid);
-		if (concept == null) {
-			throw new RuntimeException("Cannot find concept with uuid = " + conceptUuid);
-		}
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTime(calculationContext.getNow());
-		calendar.add(Calendar.DATE, -atLeastDaysAgo);
-		Date lastPossibleTime = calendar.getTime();
-
-		ObsForPersonDataDefinition def = new ObsForPersonDataDefinition("Last " + concept.getPreferredName(MetadataConstants.LOCALE) + " at least " + atLeastDaysAgo + " days ago", TimeQualifier.LAST, concept, lastPossibleTime, null);
-		return evaluateWithReporting(def, patientIds, new HashMap<String, Object>(), null, calculationContext);
+	protected static CalculationResultMap lastObsAtLeastDaysAgo(Concept concept, int atLeastDaysAgo, Collection<Integer> patientIds, PatientCalculationContext calculationContext) {
+		Date onOrBefore = KenyaEmrUtils.dateAddDays(calculationContext.getNow(), -atLeastDaysAgo);
+		return lastObsOnOrBeforeDate(concept, onOrBefore, patientIds, calculationContext);
 	}
 
 	/**
 	 * Evaluates all obs of a given type of each patient
-	 * @param conceptUuid the obs' concept UUID
+	 * @param concept the obs' concept
 	 * @param patientIds the patient ids
 	 * @param calculationContext the calculation context
 	 * @return the obss in a calculation result map
 	 */
-	protected static CalculationResultMap allObs(String conceptUuid, Collection<Integer> patientIds, PatientCalculationContext calculationContext) {
-		Concept concept = getConcept(conceptUuid);
+	protected static CalculationResultMap allObs(Concept concept, Collection<Integer> patientIds, PatientCalculationContext calculationContext) {
 		ObsForPersonDataDefinition def = new ObsForPersonDataDefinition("All " + concept.getPreferredName(MetadataConstants.LOCALE), TimeQualifier.ANY, concept, calculationContext.getNow(), null);
 		return evaluateWithReporting(def, patientIds, new HashMap<String, Object>(), null, calculationContext);
 	}
@@ -240,6 +239,7 @@ public abstract class BaseEmrCalculation extends BaseCalculation implements Pati
 		ProgramEnrollmentsForPatientDataDefinition def = new ProgramEnrollmentsForPatientDataDefinition("All " + program.getName() + " enrollments");
 		def.setWhichEnrollment(TimeQualifier.ANY);
 		def.setProgram(program);
+		def.setEnrolledOnOrBefore(calculationContext.getNow());
 		return evaluateWithReporting(def, patientIds, new HashMap<String, Object>(), null, calculationContext);
 	}
 
@@ -360,7 +360,11 @@ public abstract class BaseEmrCalculation extends BaseCalculation implements Pati
 	 * @return the concept
 	 */
 	protected static Concept getConcept(String uuid) {
-		return Context.getConceptService().getConceptByUuid(uuid);
+		Concept concept = Context.getConceptService().getConceptByUuid(uuid);
+		if (concept == null) {
+			throw new RuntimeException("Invalid concept: " + uuid);
+		}
+		return concept;
 	}
 
 	/**

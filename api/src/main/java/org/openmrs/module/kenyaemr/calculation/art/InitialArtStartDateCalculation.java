@@ -57,7 +57,7 @@ public class InitialArtStartDateCalculation extends BaseEmrCalculation {
 		CalculationResultMap earliestOrderDates = earliestStartDates(allDrugOrders(arvs, cohort, context), context);
 
 		// Get dates from obs used when patient is transferred in
-		CalculationResultMap obsDates = firstObs(MetadataConstants.ANTIRETROVIRAL_TREATMENT_START_DATE_CONCEPT_UUID, cohort, context);
+		CalculationResultMap obsDates = firstObs(getConcept(MetadataConstants.ANTIRETROVIRAL_TREATMENT_START_DATE_CONCEPT_UUID), cohort, context);
 
 		// Return the earliest of the two
 		CalculationResultMap result = new CalculationResultMap();

@@ -50,20 +50,19 @@ public class IsPregnantCalculation extends BaseAlertCalculation {
      */
     @Override
     public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
-		Concept yes = Context.getConceptService().getConceptByUuid(MetadataConstants.YES_CONCEPT_UUID);
-		CalculationResultMap pregStatusObss = lastObs(MetadataConstants.PREGNANCY_STATUS_CONCEPT_UUID, cohort, context);
+		Concept yes = getConcept(MetadataConstants.YES_CONCEPT_UUID);
+		CalculationResultMap pregStatusObss = lastObs(getConcept(MetadataConstants.PREGNANCY_STATUS_CONCEPT_UUID), cohort, context);
 		CalculationResultMap ret = new CalculationResultMap();
 
 		for (Integer ptId : cohort) {
-
+			BooleanResult result = null;
 			Obs pregStatusObs = CalculationUtils.obsResultForPatient(pregStatusObss, ptId);
 
 			if (pregStatusObs != null) {
-				ret.put(ptId, new BooleanResult(pregStatusObs.getValueCoded().equals(yes), this));
+				result = new BooleanResult(pregStatusObs.getValueCoded().equals(yes), this);
 			}
-			else {
-				ret.put(ptId, null);
-			}
+
+			ret.put(ptId, result);
 		}
 
 		return ret;

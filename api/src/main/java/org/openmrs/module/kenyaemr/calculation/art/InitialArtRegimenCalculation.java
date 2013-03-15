@@ -54,7 +54,7 @@ public class InitialArtRegimenCalculation extends BaseEmrCalculation {
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues,
 	                                     PatientCalculationContext context) {
-		Concept arvs = Context.getConceptService().getConceptByUuid(MetadataConstants.ANTIRETROVIRAL_DRUGS_CONCEPT_UUID);
+		Concept arvs = getConcept(MetadataConstants.ANTIRETROVIRAL_DRUGS_CONCEPT_UUID);
 		CalculationResultMap initialARVDrugOrders = firstDrugOrders(arvs, cohort, context);
 
 		CalculationResultMap ret = new CalculationResultMap();

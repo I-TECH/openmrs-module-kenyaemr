@@ -1,4 +1,4 @@
-/*
+/**
  * The contents of this file are subject to the OpenMRS Public License
  * Version 1.0 (the "License"); you may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
@@ -54,7 +54,7 @@ public class WHOStagesAtEnrollmentsCalculation extends BaseEmrCalculation {
 		CalculationResultMap hivEnrollments = allProgramEnrollments(hivProgram, cohort, context);
 
 		// Get each patients WHO stage obs (these will be ordered by date ascending)
-		CalculationResultMap whoStageObss = allObs(MetadataConstants.WHO_STAGE_CONCEPT_UUID, cohort, context);
+		CalculationResultMap whoStageObss = allObs(getConcept(MetadataConstants.WHO_STAGE_CONCEPT_UUID), cohort, context);
 
 		CalculationResultMap ret = new CalculationResultMap();
 		for (Integer ptId : cohort) {
