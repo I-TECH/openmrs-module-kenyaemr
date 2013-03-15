@@ -91,196 +91,196 @@ public abstract class BaseEmrCalculation extends BaseCalculation implements Pati
 
 	/**
 	 * Evaluates ages of each patient
-	 * @param patientIds the patient ids
+	 * @param cohort the patient ids
 	 * @param calculationContext the calculation context
 	 * @return the ages in a calculation result map
 	 */
-	protected static CalculationResultMap ages(Collection<Integer> patientIds, PatientCalculationContext calculationContext) {
+	protected static CalculationResultMap ages(Collection<Integer> cohort, PatientCalculationContext calculationContext) {
 		AgeDataDefinition def = new AgeDataDefinition();
 		def.setEffectiveDate(calculationContext.getNow());
-		return evaluateWithReporting(def, patientIds, new HashMap<String, Object>(), null, calculationContext);
+		return evaluateWithReporting(def, cohort, new HashMap<String, Object>(), null, calculationContext);
 	}
 
 	/**
 	 * Evaluates the last encounter of a given type of each patient
 	 * @param encounterType the encounter type
-	 * @param patientIds the patient ids
+	 * @param cohort the patient ids
 	 * @param calculationContext the calculation context
 	 * @return the encounters in a calculation result map
 	 */
-	protected static CalculationResultMap lastEncounter(EncounterType encounterType, Collection<Integer> patientIds, PatientCalculationContext calculationContext) {
+	protected static CalculationResultMap lastEncounter(EncounterType encounterType, Collection<Integer> cohort, PatientCalculationContext calculationContext) {
 		String encName = encounterType != null ? encounterType.getName() : "encounter";
 		EncountersForPatientDataDefinition def = new EncountersForPatientDataDefinition("Last " + encName);
 		if (encounterType != null)
 			def.addType(encounterType);
 		def.setWhich(TimeQualifier.LAST);
 		def.setOnOrBefore(calculationContext.getNow());
-		return evaluateWithReporting(def, patientIds, new HashMap<String, Object>(), null, calculationContext);
+		return evaluateWithReporting(def, cohort, new HashMap<String, Object>(), null, calculationContext);
 	}
 
 	/**
 	 * Evaluates all encounters of a given type of each patient
 	 * @param encounterType the encounter type
-	 * @param patientIds the patient ids
+	 * @param cohort the patient ids
 	 * @param calculationContext the calculation context
 	 * @return the encounters in a calculation result map
 	 */
-	protected static CalculationResultMap allEncounters(EncounterType encounterType, Collection<Integer> patientIds, PatientCalculationContext calculationContext) {
+	protected static CalculationResultMap allEncounters(EncounterType encounterType, Collection<Integer> cohort, PatientCalculationContext calculationContext) {
 		String encName = encounterType != null ? encounterType.getName() : "encounters";
 		EncountersForPatientDataDefinition def = new EncountersForPatientDataDefinition("All " + encName);
 		if (encounterType != null)
 			def.addType(encounterType);
 		def.setWhich(TimeQualifier.ANY);
 		def.setOnOrBefore(calculationContext.getNow());
-		return evaluateWithReporting(def, patientIds, new HashMap<String, Object>(), null, calculationContext);
+		return evaluateWithReporting(def, cohort, new HashMap<String, Object>(), null, calculationContext);
 	}
 
 	/**
 	 * Evaluates the last obs of a given type of each patient
 	 * @param concept the obs' concept
-	 * @param patientIds the patient ids
+	 * @param cohort the patient ids
 	 * @param calculationContext the calculation context
 	 * @return the obss in a calculation result map
 	 */
-	protected static CalculationResultMap lastObs(Concept concept, Collection<Integer> patientIds, PatientCalculationContext calculationContext) {
+	protected static CalculationResultMap lastObs(Concept concept, Collection<Integer> cohort, PatientCalculationContext calculationContext) {
 		ObsForPersonDataDefinition def = new ObsForPersonDataDefinition("Last " + concept.getPreferredName(MetadataConstants.LOCALE), TimeQualifier.LAST, concept, calculationContext.getNow(), null);
-		return evaluateWithReporting(def, patientIds, new HashMap<String, Object>(), null, calculationContext);
+		return evaluateWithReporting(def, cohort, new HashMap<String, Object>(), null, calculationContext);
 	}
 
 	/**
 	 * Evaluates the first obs of a given type of each patient
 	 * @param concept the obs' concept
-	 * @param patientIds the patient ids
+	 * @param cohort the patient ids
 	 * @param calculationContext the calculation context
 	 * @return the obss in a calculation result map
 	 */
-	protected static CalculationResultMap firstObs(Concept concept, Collection<Integer> patientIds, PatientCalculationContext calculationContext) {
+	protected static CalculationResultMap firstObs(Concept concept, Collection<Integer> cohort, PatientCalculationContext calculationContext) {
 		ObsForPersonDataDefinition def = new ObsForPersonDataDefinition("First " + concept.getPreferredName(MetadataConstants.LOCALE), TimeQualifier.FIRST, concept, calculationContext.getNow(), null);
-		return evaluateWithReporting(def, patientIds, new HashMap<String, Object>(), null, calculationContext);
+		return evaluateWithReporting(def, cohort, new HashMap<String, Object>(), null, calculationContext);
 	}
 
 	/**
 	 * Evaluates the first obs of a given type of each patient
 	 * @param concept the obs' concept
-	 * @param patientIds the patient ids
+	 * @param cohort the patient ids
 	 * @param calculationContext the calculation context
 	 * @return the obss in a calculation result map
 	 */
-	protected static CalculationResultMap firstObsOnOrAfterDate(Concept concept, Date onOrAfter, Collection<Integer> patientIds, PatientCalculationContext calculationContext) {
+	protected static CalculationResultMap firstObsOnOrAfterDate(Concept concept, Date onOrAfter, Collection<Integer> cohort, PatientCalculationContext calculationContext) {
 		ObsForPersonDataDefinition def = new ObsForPersonDataDefinition("First " + concept.getPreferredName(MetadataConstants.LOCALE), TimeQualifier.FIRST, concept, calculationContext.getNow(), onOrAfter);
-		return evaluateWithReporting(def, patientIds, new HashMap<String, Object>(), null, calculationContext);
+		return evaluateWithReporting(def, cohort, new HashMap<String, Object>(), null, calculationContext);
 	}
 
 	/**
 	 * Evaluates the last obs of a given type of each patient that occurred at least the given number of days ago
 	 * @param concept the obs' concept
 	 * @param onOrBefore the number of days that must be elapsed between now and the observation
-	 * @param patientIds the patient ids
+	 * @param cohort the patient ids
 	 * @param calculationContext the calculation context
 	 * @return the obss in a calculation result map
 	 */
-	protected static CalculationResultMap lastObsOnOrBeforeDate(Concept concept, Date onOrBefore, Collection<Integer> patientIds, PatientCalculationContext calculationContext) {
+	protected static CalculationResultMap lastObsOnOrBeforeDate(Concept concept, Date onOrBefore, Collection<Integer> cohort, PatientCalculationContext calculationContext) {
 		// Only interested in obs before now
 		onOrBefore = CalculationUtils.earliestDate(onOrBefore, calculationContext.getNow());
 
 		ObsForPersonDataDefinition def = new ObsForPersonDataDefinition("Last " + concept.getPreferredName(MetadataConstants.LOCALE) + " on or before " + onOrBefore,
 				TimeQualifier.LAST, concept, onOrBefore, null);
-		return evaluateWithReporting(def, patientIds, new HashMap<String, Object>(), null, calculationContext);
+		return evaluateWithReporting(def, cohort, new HashMap<String, Object>(), null, calculationContext);
 	}
 
 	/**
 	 * Evaluates the last obs of a given type of each patient that occurred at least the given number of days ago
 	 * @param concept the obs' concept
 	 * @param atLeastDaysAgo the number of days that must be elapsed between now and the observation
-	 * @param patientIds the patient ids
+	 * @param cohort the patient ids
 	 * @param calculationContext the calculation context
 	 * @return the obss in a calculation result map
 	 */
-	protected static CalculationResultMap lastObsAtLeastDaysAgo(Concept concept, int atLeastDaysAgo, Collection<Integer> patientIds, PatientCalculationContext calculationContext) {
+	protected static CalculationResultMap lastObsAtLeastDaysAgo(Concept concept, int atLeastDaysAgo, Collection<Integer> cohort, PatientCalculationContext calculationContext) {
 		Date onOrBefore = KenyaEmrUtils.dateAddDays(calculationContext.getNow(), -atLeastDaysAgo);
-		return lastObsOnOrBeforeDate(concept, onOrBefore, patientIds, calculationContext);
+		return lastObsOnOrBeforeDate(concept, onOrBefore, cohort, calculationContext);
 	}
 
 	/**
 	 * Evaluates all obs of a given type of each patient
 	 * @param concept the obs' concept
-	 * @param patientIds the patient ids
+	 * @param cohort the patient ids
 	 * @param calculationContext the calculation context
 	 * @return the obss in a calculation result map
 	 */
-	protected static CalculationResultMap allObs(Concept concept, Collection<Integer> patientIds, PatientCalculationContext calculationContext) {
+	protected static CalculationResultMap allObs(Concept concept, Collection<Integer> cohort, PatientCalculationContext calculationContext) {
 		ObsForPersonDataDefinition def = new ObsForPersonDataDefinition("All " + concept.getPreferredName(MetadataConstants.LOCALE), TimeQualifier.ANY, concept, calculationContext.getNow(), null);
-		return evaluateWithReporting(def, patientIds, new HashMap<String, Object>(), null, calculationContext);
+		return evaluateWithReporting(def, cohort, new HashMap<String, Object>(), null, calculationContext);
 	}
 
 	/**
 	 * Evaluates the last program enrollment on the specified program
 	 * @param program the program
-	 * @param patientIds the patient ids
+	 * @param cohort the patient ids
 	 * @param calculationContext the calculation context
 	 * @return the enrollments in a calculation result map
 	 */
-	protected static CalculationResultMap lastProgramEnrollment(Program program, Collection<Integer> patientIds, PatientCalculationContext calculationContext) {
+	protected static CalculationResultMap lastProgramEnrollment(Program program, Collection<Integer> cohort, PatientCalculationContext calculationContext) {
 		ProgramEnrollmentsForPatientDataDefinition def = new ProgramEnrollmentsForPatientDataDefinition("Last " + program.getName() + " enrollment");
 		def.setWhichEnrollment(TimeQualifier.LAST);
 		def.setProgram(program);
 		def.setActiveOnDate(calculationContext.getNow());
-		return evaluateWithReporting(def, patientIds, new HashMap<String, Object>(), null, calculationContext);
+		return evaluateWithReporting(def, cohort, new HashMap<String, Object>(), null, calculationContext);
 	}
 
 	/**
 	 * Evaluates the all program enrollments on the specified program
 	 * @param program the program
-	 * @param patientIds the patient ids
+	 * @param cohort the patient ids
 	 * @param calculationContext the calculation context
 	 * @return the list results enrollments in a calculation result map
 	 */
-	protected static CalculationResultMap allProgramEnrollments(Program program, Collection<Integer> patientIds, PatientCalculationContext calculationContext) {
+	protected static CalculationResultMap allProgramEnrollments(Program program, Collection<Integer> cohort, PatientCalculationContext calculationContext) {
 		ProgramEnrollmentsForPatientDataDefinition def = new ProgramEnrollmentsForPatientDataDefinition("All " + program.getName() + " enrollments");
 		def.setWhichEnrollment(TimeQualifier.ANY);
 		def.setProgram(program);
 		def.setEnrolledOnOrBefore(calculationContext.getNow());
-		return evaluateWithReporting(def, patientIds, new HashMap<String, Object>(), null, calculationContext);
+		return evaluateWithReporting(def, cohort, new HashMap<String, Object>(), null, calculationContext);
 	}
 
 	/**
 	 * Evaluates the active drug orders for each patient
 	 * @param medSet the medset concept that specifies which drugs to include
-	 * @param patientIds the patient ids
+	 * @param cohort the patient ids
 	 * @param calculationContext the calculation context
 	 * @return the drug orders in a calculation result map
 	 */
-	protected static CalculationResultMap activeDrugOrders(Concept medSet, Collection<Integer> patientIds, PatientCalculationContext calculationContext) {
+	protected static CalculationResultMap activeDrugOrders(Concept medSet, Collection<Integer> cohort, PatientCalculationContext calculationContext) {
 		DrugOrdersForPatientDataDefinition def = new DrugOrdersForPatientDataDefinition("On " + medSet.getName().getName());
 		def.setDrugConceptSetsToInclude(Collections.singletonList(medSet));
 		def.setActiveOnDate(calculationContext.getNow());
-		return evaluateWithReporting(def, patientIds, null, null, calculationContext);
+		return evaluateWithReporting(def, cohort, null, null, calculationContext);
 	}
 
 	/**
 	 * Evaluates all drug orders for each patient
 	 * @param medSet the medset concept that specifies which drugs to include
-	 * @param patientIds the patient ids
+	 * @param cohort the patient ids
 	 * @param calculationContext the calculation context
 	 * @return the drug orders in a calculation result map
 	 */
-	protected static CalculationResultMap allDrugOrders(Concept medSet, Collection<Integer> patientIds, PatientCalculationContext calculationContext) {
+	protected static CalculationResultMap allDrugOrders(Concept medSet, Collection<Integer> cohort, PatientCalculationContext calculationContext) {
 		DrugOrdersForPatientDataDefinition def = new DrugOrdersForPatientDataDefinition("First " + medSet.getName().getName() + " start date");
 		def.setDrugConceptSetsToInclude(Collections.singletonList(medSet));
 		def.setStartedOnOrBefore(calculationContext.getNow());
-		return evaluateWithReporting(def, patientIds, null, null, calculationContext);
+		return evaluateWithReporting(def, cohort, null, null, calculationContext);
 	}
 
 	/**
 	 * Evaluates the first drug orders for each patient
 	 * @param medSet the medset concept that specifies which drugs to include
-	 * @param patientIds the patient ids
+	 * @param cohort the patient ids
 	 * @param calculationContext the calculation context
 	 * @return the drug orders in a calculation result map
 	 */
-	protected static CalculationResultMap firstDrugOrders(Concept medSet, Collection<Integer> patientIds, PatientCalculationContext calculationContext) {
+	protected static CalculationResultMap firstDrugOrders(Concept medSet, Collection<Integer> cohort, PatientCalculationContext calculationContext) {
 		// Get all drug orders
-		CalculationResultMap orders = allDrugOrders(medSet, patientIds, calculationContext);
+		CalculationResultMap orders = allDrugOrders(medSet, cohort, calculationContext);
 
 		// Calculate the earliest start date of any of the orders for each patient
 		CalculationResultMap earliestStartDates = earliestStartDates(orders, calculationContext);
@@ -328,22 +328,22 @@ public abstract class BaseEmrCalculation extends BaseCalculation implements Pati
 	/**
 	 * Evaluates a given calculation on each patient
 	 * @param calculation the calculation
-	 * @param patientIds the patient ids
+	 * @param cohort the patient ids
 	 * @param calculationContext the calculation context
 	 * @return the calculation result map
 	 */
-	protected static CalculationResultMap calculate(PatientCalculation calculation, Collection<Integer> patientIds, PatientCalculationContext calculationContext) {
-		return Context.getService(PatientCalculationService.class).evaluate(patientIds, calculation, calculationContext);
+	protected static CalculationResultMap calculate(PatientCalculation calculation, Collection<Integer> cohort, PatientCalculationContext calculationContext) {
+		return Context.getService(PatientCalculationService.class).evaluate(cohort, calculation, calculationContext);
 	}
 
 	/**
 	 * Extracts only alive patients from a cohort
-	 * @param patientIds the patient ids
+	 * @param cohort the patient ids
 	 * @param calculationContext the calculation context
 	 * @return the extracted patient ids
 	 */
-	protected static Set<Integer> alivePatients(Collection<Integer> patientIds, PatientCalculationContext calculationContext) {
-		CalculationResultMap map = evaluateWithReporting(new VitalStatusDataDefinition(), patientIds, new HashMap<String, Object>(), null, calculationContext);
+	protected static Set<Integer> alivePatients(Collection<Integer> cohort, PatientCalculationContext calculationContext) {
+		CalculationResultMap map = evaluateWithReporting(new VitalStatusDataDefinition(), cohort, new HashMap<String, Object>(), null, calculationContext);
 		Set<Integer> ret = new HashSet<Integer>();
 		for (Map.Entry<Integer, CalculationResult> e : map.entrySet()) {
 			VitalStatus vs = ((VitalStatus) e.getValue().getValue());
@@ -370,15 +370,15 @@ public abstract class BaseEmrCalculation extends BaseCalculation implements Pati
 	/**
 	 * Evaluates a data definition on each patient using a reporting context
 	 * @param dataDefinition the data definition
-	 * @param patientIds the patient ids
+	 * @param cohort the patient ids
 	 * @param parameterValues the parameters for the reporting context
 	 * @param calculation the calculation (optional)
 	 * @param calculationContext the calculation context
 	 * @return the calculation result map
 	 */
-	protected static CalculationResultMap evaluateWithReporting(DataDefinition dataDefinition, Collection<Integer> patientIds, Map<String, Object> parameterValues, PatientCalculation calculation, PatientCalculationContext calculationContext) {
+	protected static CalculationResultMap evaluateWithReporting(DataDefinition dataDefinition, Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculation calculation, PatientCalculationContext calculationContext) {
 		try {
-			EvaluationContext reportingContext = ensureReportingContext(calculationContext, patientIds, parameterValues);
+			EvaluationContext reportingContext = ensureReportingContext(calculationContext, cohort, parameterValues);
 
 			Map<Integer, Object> data;
 			if (dataDefinition instanceof PersonDataDefinition) {
@@ -403,14 +403,14 @@ public abstract class BaseEmrCalculation extends BaseCalculation implements Pati
 	/**
 	 * Evaluates a cohort definition on the given base set of patients using a reporting context
 	 * @param cohortDefinition the cohort definition
-	 * @param patientIds the patient ids
+	 * @param cohort the patient ids
 	 * @param parameterValues the parameters for the reporting context
 	 * @param calculationContext the calculation context
 	 * @return the evaluated cohort
 	 */
-	protected static EvaluatedCohort evaluateWithReporting(CohortDefinition cohortDefinition, Collection<Integer> patientIds, Map<String, Object> parameterValues, PatientCalculationContext calculationContext) {
+	protected static EvaluatedCohort evaluateWithReporting(CohortDefinition cohortDefinition, Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext calculationContext) {
 		try {
-			EvaluationContext reportingContext = ensureReportingContext(calculationContext, patientIds, parameterValues);
+			EvaluationContext reportingContext = ensureReportingContext(calculationContext, cohort, parameterValues);
 			return Context.getService(CohortDefinitionService.class).evaluate(cohortDefinition, reportingContext);
 		} catch (EvaluationException ex) {
 			throw new APIException(ex);
@@ -445,14 +445,14 @@ public abstract class BaseEmrCalculation extends BaseCalculation implements Pati
 	 * (Note: for now we never store this, and always return a new one)
 	 *
 	 * @param calculationContext the calculation context
-	 * @param patientIds the patient ids
+	 * @param cohort the patient ids
 	 * @param parameterValues the parameters for the reporting context
 	 * @return the reporting evaluation context
 	 */
-	protected static EvaluationContext ensureReportingContext(PatientCalculationContext calculationContext, Collection<Integer> patientIds, Map<String, Object> parameterValues) {
+	protected static EvaluationContext ensureReportingContext(PatientCalculationContext calculationContext, Collection<Integer> cohort, Map<String, Object> parameterValues) {
 		EvaluationContext ret = new EvaluationContext();
 		ret.setEvaluationDate(calculationContext.getNow());
-		ret.setBaseCohort(new Cohort(patientIds));
+		ret.setBaseCohort(new Cohort(cohort));
 		ret.setParameterValues(parameterValues);
 		calculationContext.addToCache("reportingEvaluationContext", ret);
 		return ret;

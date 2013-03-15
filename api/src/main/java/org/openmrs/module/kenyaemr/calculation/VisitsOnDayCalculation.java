@@ -46,8 +46,7 @@ public class VisitsOnDayCalculation extends BaseEmrCalculation {
 	 * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
 	 */
 	@Override
-	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues,
-	                                     PatientCalculationContext context) {
+	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
 		Date date = (Date) parameterValues.get("date");
 		if (date == null) {
 			date = new Date();

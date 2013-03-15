@@ -23,9 +23,10 @@ import org.openmrs.module.kenyaemr.MetadataConstants;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 
 /**
- * Calculates the recorded pregnancy status of patients. Calculation returns null for patients with no recorded status
+ * Calculates the recorded pregnancy status of patients
  */
 public class IsPregnantCalculation extends BaseAlertCalculation {
 
@@ -45,13 +46,18 @@ public class IsPregnantCalculation extends BaseAlertCalculation {
 	}
 
     /**
-     * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
-     * @should calculate last recorded WHO stage for all patients
+	 * Evaluates the calculation
+     * @should calculate null for deceased patients
+	 * @should calculate null for patients with no recorded status
+	 * @should calculate last recorded pregnancy status for all patients
      */
     @Override
     public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
+
+		Set<Integer> alive = alivePatients(cohort, context);
+
 		Concept yes = getConcept(MetadataConstants.YES_CONCEPT_UUID);
-		CalculationResultMap pregStatusObss = lastObs(getConcept(MetadataConstants.PREGNANCY_STATUS_CONCEPT_UUID), cohort, context);
+		CalculationResultMap pregStatusObss = lastObs(getConcept(MetadataConstants.PREGNANCY_STATUS_CONCEPT_UUID), alive, context);
 		CalculationResultMap ret = new CalculationResultMap();
 
 		for (Integer ptId : cohort) {

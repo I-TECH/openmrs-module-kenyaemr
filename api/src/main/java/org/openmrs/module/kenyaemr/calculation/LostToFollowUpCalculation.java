@@ -47,7 +47,7 @@ public class LostToFollowUpCalculation extends BaseAlertCalculation {
 	}
 
 	/**
-	 * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
+	 * Evaluates the calculation
 	 * @should calculate false for deceased patients
 	 * @should calculate false for patients not in HIV program
 	 * @should calculate false for patients with an encounter in last LOST_TO_FOLLOW_UP_THRESHOLD_DAYS days

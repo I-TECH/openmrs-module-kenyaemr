@@ -1,4 +1,4 @@
-/*
+/**
  * The contents of this file are subject to the OpenMRS Public License
  * Version 1.0 (the "License"); you may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
@@ -23,7 +23,7 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- * Calculates the last CD4 count of patients. Calculation returns NULL for patients with no recorded CD4 count
+ * Calculates the last CD4 count of patients
  */
 public class LastCD4CountCalculation extends BaseEmrCalculation {
 
@@ -38,8 +38,9 @@ public class LastCD4CountCalculation extends BaseEmrCalculation {
 	}
 
     /**
-     * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
-     * @should calculate last CD4 count for all patients
+     * Evaluates the calculation
+     * @should calculate null for patients with no recorded CD4 count
+	 * @should calculate last CD4 count for all patients with a recorded CD4 count
      */
     @Override
     public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {

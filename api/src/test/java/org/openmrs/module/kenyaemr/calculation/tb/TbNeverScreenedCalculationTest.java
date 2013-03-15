@@ -11,52 +11,54 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.kenyaemr.calculation.tb;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.EncounterType;
 import org.openmrs.Program;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyaemr.MetadataConstants;
+import org.openmrs.module.kenyaemr.calculation.cd4.LastCD4CountCalculation;
 import org.openmrs.module.kenyaemr.test.TestUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 import java.util.Arrays;
 import java.util.List;
 
-public class TbInProgramCalculationTest extends BaseModuleContextSensitiveTest {
+public class TbNeverScreenedCalculationTest extends BaseModuleContextSensitiveTest {
 
 	@Before
-	public void beforeEachTest() throws Exception {
+	public void setup() throws Exception {
 		executeDataSet("test-data.xml");
 	}
 
-	/**
-	 * @see org.openmrs.module.kenyaemr.calculation.art.OnSecondLineArtCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
-	 */
 	@Test
-	public void evaluate_shouldCalculateCurrentArtRegimen() throws Exception {
+	public void evaluate_shouldReturnHivPatientsNotScreenedForTb() throws Exception {
 
-		// Get TB Program
-		Program tbProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.TB_PROGRAM_UUID);
+		// Get HIV Program and TB screening encounter type
+		Program hivProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.HIV_PROGRAM_UUID);
+		EncounterType screeningEncType = Context.getEncounterService().getEncounterTypeByUuid(MetadataConstants.TB_SCREENING_ENCOUNTER_TYPE_UUID);
 
-		// Enroll patient #6
+		// Enroll patients #6 and #7
 		PatientService ps = Context.getPatientService();
-		TestUtils.enrollInProgram(ps.getPatient(6), tbProgram, TestUtils.date(2011, 1, 1));
+		TestUtils.enrollInProgram(ps.getPatient(6), hivProgram, TestUtils.date(2011, 1, 1));
+		TestUtils.enrollInProgram(ps.getPatient(7), hivProgram, TestUtils.date(2011, 1, 1));
 
-		// Enroll patient #7 but complete a year later
-		TestUtils.enrollInProgram(ps.getPatient(7), tbProgram, TestUtils.date(2011, 1, 1), TestUtils.date(2012, 1, 1));
+		// Screen patient #6 for TB a year later
+		TestUtils.saveEncounter(ps.getPatient(6), screeningEncType, TestUtils.date(2012, 1, 1));
 
 		Context.flushSession();
 		
 		List<Integer> cohort = Arrays.asList(6, 7, 8);
-		CalculationResultMap resultMap = Context.getService(PatientCalculationService.class).evaluate(cohort, new TbInProgramCalculation());
-		Assert.assertTrue((Boolean) resultMap.get(6).getValue()); // is still in program
-		Assert.assertFalse((Boolean) resultMap.get(7).getValue()); // discontinued
-		Assert.assertFalse((Boolean) resultMap.get(8).getValue()); // was never in program
+		CalculationResultMap resultMap = Context.getService(PatientCalculationService.class).evaluate(cohort, new TbNeverScreenedCalculation());
+		Assert.assertFalse((Boolean) resultMap.get(6).getValue());
+		Assert.assertTrue((Boolean) resultMap.get(7).getValue());
+		Assert.assertNull(resultMap.get(8)); // not in HIV program
 	}
 }

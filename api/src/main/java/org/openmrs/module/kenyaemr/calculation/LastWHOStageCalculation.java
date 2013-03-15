@@ -1,4 +1,4 @@
-/*
+/**
  * The contents of this file are subject to the OpenMRS Public License
  * Version 1.0 (the "License"); you may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
@@ -22,7 +22,7 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- * Calculates the last recorded WHO stage of patients. Calculation returns NULL for patients with no recorded WHO stage
+ * Calculates the last recorded WHO stage of patients
  */
 public class LastWHOStageCalculation extends BaseEmrCalculation {
 
@@ -37,8 +37,8 @@ public class LastWHOStageCalculation extends BaseEmrCalculation {
 	}
 
     /**
-     * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
-     * @should calculate last recorded WHO stage for all patients
+     * @should calculate null for patients who have recorded WHO stage
+	 * @should calculate last recorded WHO stage for all patients
      */
     @Override
     public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {

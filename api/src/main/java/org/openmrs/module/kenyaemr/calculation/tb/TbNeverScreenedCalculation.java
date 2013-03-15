@@ -14,58 +14,63 @@
 package org.openmrs.module.kenyaemr.calculation.tb;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.openmrs.Encounter;
-import org.openmrs.Form;
+import org.openmrs.EncounterType;
 import org.openmrs.Program;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
-import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
+import org.openmrs.module.kenyaemr.calculation.BooleanResult;
 import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
 
+/**
+ * Calculates HIV patients who have not been screened for TB
+ */
 public class TbNeverScreenedCalculation extends BaseEmrCalculation {
 
-    @Override
-    public String getName() {
-        return "HIV Patients Never Screened for TB";
-    }
+	@Override
+	public String getName() {
+		return "HIV Patients Never Screened for TB";
+	}
 
 	@Override
 	public String[] getTags() {
 		return new String[] { "hiv", "tb" };
 	}
 
-    @Override
-    public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> arg1, PatientCalculationContext context) {
-        Program hivProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.HIV_PROGRAM_UUID);
-        Form tbScreeningForm = Context.getFormService().getFormByUuid(MetadataConstants.TB_SCREENING_FORM_UUID);
+	/**
+	 * Evaluates the calculation
+	 * @param cohort the patient cohort
+	 * @param params the calculation parameters
+	 * @param context the calculation context
+	 * @return the result map
+	 * @should calculate null for patients who are not enrolled in the HIV program or not alive
+	 * @should calculate true for patients who have no TB screening encounter
+	 * @should calculate false for patients who have a TB screening encounter
+	 */
+	@Override
+	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> params, PatientCalculationContext context) {
+		Program hivProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.HIV_PROGRAM_UUID);
+		EncounterType screeningEncType = Context.getEncounterService().getEncounterTypeByUuid(MetadataConstants.TB_SCREENING_ENCOUNTER_TYPE_UUID);
 
-        Set<Integer> inHivProgram = CalculationUtils.patientsThatPass(lastProgramEnrollment(hivProgram, cohort, context));
-        Set<Integer> alive = alivePatients(cohort, context);
+		Set<Integer> alive = alivePatients(cohort, context);
+		Set<Integer> inHivProgram = CalculationUtils.patientsThatPass(lastProgramEnrollment(hivProgram, alive, context));
+		Set<Integer> wasScreened = CalculationUtils.patientsThatPass(allEncounters(screeningEncType, cohort, context));
 
-        // TODO replace the EncounterService search inside the loop with a single reporting query
+		CalculationResultMap ret = new CalculationResultMap();
+		for (Integer ptId : cohort) {
+			BooleanResult result = null;
 
-        CalculationResultMap ret = new CalculationResultMap();
-        for (Integer ptId : cohort) {
-            if (inHivProgram.contains(ptId) && alive.contains(ptId)) {
-                List<Encounter> encounter = Context.getEncounterService().getEncountersByPatientId(ptId);
+			if (inHivProgram.contains(ptId)) {
+				result = new BooleanResult(!wasScreened.contains(ptId), this);
+			}
 
-                boolean noScreeningForm = true;
-                for (Encounter e : encounter) {
-                    if (e.getForm().equals(tbScreeningForm)) {
-                        noScreeningForm = false;
-                        break;
-                    }
-                }
-                ret.put(ptId, new SimpleResult(noScreeningForm, this, context));
-            }
-        }
-        return ret;
-    }
+			ret.put(ptId, result);
+		}
+		return ret;
+	}
 }
