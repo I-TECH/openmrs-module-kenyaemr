@@ -1,4 +1,4 @@
-/*
+/**
  * The contents of this file are subject to the OpenMRS Public License
  * Version 1.0 (the "License"); you may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
@@ -18,9 +18,17 @@ import org.openmrs.module.kenyaemr.calculation.LostToFollowUpCalculation;
 import org.springframework.stereotype.Component;
 
 @Component
-public class LostToFollowUpReport extends BasePatientListReportBuilder {
+public class LostToFollowUpReport extends BasePatientCalculationReportBuilder {
 
     public LostToFollowUpReport() {
-        setCalculation(new LostToFollowUpCalculation());
+		super(new LostToFollowUpCalculation());
     }
+
+	/**
+	 * @see org.openmrs.module.kenyaemr.report.ReportBuilder#getTags()
+	 */
+	@Override
+	public String[] getTags() {
+		return new String[] { "facility", "hiv" };
+	}
 }

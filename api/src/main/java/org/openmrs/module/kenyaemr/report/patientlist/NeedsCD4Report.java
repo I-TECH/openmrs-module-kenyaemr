@@ -11,6 +11,7 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.kenyaemr.report.patientlist;
 
 import org.openmrs.module.kenyaemr.calculation.cd4.NeedsCD4Calculation;
@@ -20,9 +21,17 @@ import org.springframework.stereotype.Component;
  * Due for CD4 test report
  */
 @Component
-public class NeedsCD4Report extends BasePatientListReportBuilder {
+public class NeedsCD4Report extends BasePatientCalculationReportBuilder {
 	
     public NeedsCD4Report() {
-	    setCalculation(new NeedsCD4Calculation());
+		super(new NeedsCD4Calculation());
+	}
+
+	/**
+	 * @see org.openmrs.module.kenyaemr.report.ReportBuilder#getTags()
+	 */
+	@Override
+	public String[] getTags() {
+		return new String[] { "facility", "hiv" };
 	}
 }

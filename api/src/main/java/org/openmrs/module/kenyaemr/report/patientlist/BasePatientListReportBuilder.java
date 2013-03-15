@@ -29,42 +29,9 @@ import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 
 /**
- * Base implementation for row-per-patient reports based on calculations
+ * Base implementation for row-per-patient reports
  */
 public abstract class BasePatientListReportBuilder extends ReportBuilder {
-	
-	private BaseEmrCalculation calculation;
-	
-	/**
-	 * @see org.openmrs.module.kenyaemr.report.ReportBuilder#getTags()
-	 */
-	@Override
-	public String[] getTags() {
-		return new String[] { "facility" };
-	}
-
-	/**
-	 * @see org.openmrs.module.kenyaemr.report.ReportBuilder#getName()
-	 */
-	@Override
-	public String getName() {
-		return calculation.getName();
-	}
-
-	/**
-	 * @see org.openmrs.module.kenyaemr.report.ReportBuilder#getDescription()
-	 */
-	@Override
-	public String getDescription() {
-		return calculation.getDescription();
-	}
-	
-    /**
-     * @param calculation the calculation to set
-     */
-    public void setCalculation(BaseEmrCalculation calculation) {
-	    this.calculation = calculation;
-    }
 	
 	/**
 	 * Override this if you don't want the default (HIV ID, name, sex, age)
@@ -99,17 +66,21 @@ public abstract class BasePatientListReportBuilder extends ReportBuilder {
     }
 	
 	/**
-     * Constructs the report definitions
+     * Builds the report definition
+	 *
      */
 	@Override
     protected ReportDefinition buildReportDefinition() {
-		PatientDataSetDefinition dsd = new PatientDataSetDefinition(calculation.getDescription());
-		addColumns(dsd);
-		dsd.addRowFilter(map(new KenyaEmrCalculationCohortDefinition(calculation), null));
-
-		ReportDefinition ret = new ReportDefinition();
-		ret.setName(getName());
-		ret.addDataSetDefinition(dsd, null);
-		return ret;
+		ReportDefinition rd = new ReportDefinition();
+		rd.setName(getName());
+		rd.setDescription(getDescription());
+		rd.addDataSetDefinition(buildDataSet(), null);
+		return rd;
     }
+
+	/**
+	 * Builds the data set
+	 * @return the data set
+	 */
+	protected abstract PatientDataSetDefinition buildDataSet();
 }

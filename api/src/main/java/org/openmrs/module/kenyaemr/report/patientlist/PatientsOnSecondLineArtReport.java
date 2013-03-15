@@ -1,4 +1,4 @@
-/*
+/**
  * The contents of this file are subject to the OpenMRS Public License
  * Version 1.0 (the "License"); you may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
@@ -11,6 +11,7 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.kenyaemr.report.patientlist;
 
 import org.openmrs.module.kenyaemr.calculation.art.OnSecondLineArtCalculation;
@@ -20,9 +21,17 @@ import org.springframework.stereotype.Component;
  * Patients on second line ART report
  */
 @Component
-public class PatientsOnSecondLineArtReport extends BasePatientListReportBuilder {
+public class PatientsOnSecondLineArtReport extends BasePatientCalculationReportBuilder {
 
     public PatientsOnSecondLineArtReport() {
-        setCalculation(new OnSecondLineArtCalculation());
+		super(new OnSecondLineArtCalculation());
     }
+
+	/**
+	 * @see org.openmrs.module.kenyaemr.report.ReportBuilder#getTags()
+	 */
+	@Override
+	public String[] getTags() {
+		return new String[] { "facility", "hiv" };
+	}
 }

@@ -90,10 +90,10 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 	}
 
 	/**
-	 * @see BaseIndicatorReportBuilder#buildReportDefinition()
+	 * @see org.openmrs.module.kenyaemr.report.indicator.BaseIndicatorReportBuilder#buildDataSet()
 	 */
 	@Override
-	public ReportDefinition buildReportDefinition() {
+	public DataSetDefinition buildDataSet() {
 		log.debug("Setting up cohort definitions");
 
 		setupCohortDefinitions();
@@ -108,12 +108,7 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 
 		log.debug("Setting up report definition");
 
-		ReportDefinition rd = new ReportDefinition();
-		rd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-		rd.addParameter(new Parameter("endDate", "End Date", Date.class));
-		rd.setName(getName());
-		rd.addDataSetDefinition(createDataSet(), ParameterizableUtil.createParameterMappings("startDate=${startDate},endDate=${endDate}"));
-		return rd;
+		return createDataSet();
 	}
 
 	private void setupCohortDefinitions() {

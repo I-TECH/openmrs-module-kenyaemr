@@ -1,4 +1,4 @@
-/*
+/**
  * The contents of this file are subject to the OpenMRS Public License
  * Version 1.0 (the "License"); you may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
@@ -29,11 +29,19 @@ import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
 import org.springframework.stereotype.Component;
 
 @Component
-public class DecliningCD4Report extends BasePatientListReportBuilder {
+public class DecliningCD4Report extends BasePatientCalculationReportBuilder {
 
     public DecliningCD4Report() {
-        setCalculation(new DecliningCD4Calculation());
+        super(new DecliningCD4Calculation());
     }
+
+	/**
+	 * @see org.openmrs.module.kenyaemr.report.ReportBuilder#getTags()
+	 */
+	@Override
+	public String[] getTags() {
+		return new String[] { "facility", "hiv" };
+	}
 
     @Override
     public void addColumns(PatientDataSetDefinition dsd) {

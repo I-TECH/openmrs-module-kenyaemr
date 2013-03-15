@@ -9,6 +9,14 @@
 	def formatData = { it -> it ?: "-" }
 %>
 
+<% if (definition.description) { %>
+<fieldset>
+	<legend>Description</legend>
+	${ definition.description }
+</fieldset>
+<br/>
+<% } %>
+
 <% if (definition.parameters) { %>
 	<fieldset>
 		<legend>Parameters</legend>

@@ -11,6 +11,7 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.kenyaemr.report.patientlist;
 
 import org.openmrs.module.kenyaemr.calculation.art.EligibleForArtCalculation;
@@ -20,9 +21,17 @@ import org.springframework.stereotype.Component;
  * Eligible for ART report
  */
 @Component
-public class EligibleForArtReport extends BasePatientListReportBuilder {
+public class EligibleForArtReport extends BasePatientCalculationReportBuilder {
 	
 	public EligibleForArtReport() {
-		setCalculation(new EligibleForArtCalculation());
+		super(new EligibleForArtCalculation());
+	}
+
+	/**
+	 * @see org.openmrs.module.kenyaemr.report.ReportBuilder#getTags()
+	 */
+	@Override
+	public String[] getTags() {
+		return new String[] { "facility", "hiv" };
 	}
 }
