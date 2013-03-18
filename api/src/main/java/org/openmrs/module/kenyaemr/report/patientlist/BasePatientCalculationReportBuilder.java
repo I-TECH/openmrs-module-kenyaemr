@@ -15,7 +15,7 @@
 package org.openmrs.module.kenyaemr.report.patientlist;
 
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
-import org.openmrs.module.kenyaemr.report.KenyaEmrCalculationCohortDefinition;
+import org.openmrs.module.kenyaemr.report.EmrCalculationCohortDefinition;
 import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
 
 /**
@@ -65,7 +65,7 @@ public abstract class BasePatientCalculationReportBuilder extends BasePatientLis
 	protected PatientDataSetDefinition buildDataSet() {
 		PatientDataSetDefinition dsd = new PatientDataSetDefinition(calculation.getName() + " DSD");
 		addColumns(dsd);
-		dsd.addRowFilter(map(new KenyaEmrCalculationCohortDefinition(calculation), null));
+		dsd.addRowFilter(map(new EmrCalculationCohortDefinition(calculation), null));
 		return dsd;
 	}
 }

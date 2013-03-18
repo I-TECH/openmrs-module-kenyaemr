@@ -16,8 +16,6 @@ package org.openmrs.module.kenyaemr.report.patientlist;
 
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.MetadataConstants;
-import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
-import org.openmrs.module.kenyaemr.report.KenyaEmrCalculationCohortDefinition;
 import org.openmrs.module.kenyaemr.report.ReportBuilder;
 import org.openmrs.module.reporting.data.converter.DataConverter;
 import org.openmrs.module.reporting.data.patient.definition.PatientIdDataDefinition;

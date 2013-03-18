@@ -11,53 +11,34 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.kenyaemr.report;
+
+import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
+import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 
 import java.util.Date;
 
-import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
-import org.openmrs.module.reporting.cohort.definition.BaseCohortDefinition;
-import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
-
 /**
- * Cohort definition based on a calculation
+ * Cohort definition based on a calculation that returns dates
  */
-public class KenyaEmrCalculationCohortDefinition extends BaseCohortDefinition {
-	
-	@ConfigurationProperty(required = true, group = "calculation")
-	private BaseEmrCalculation calculation;
-	
-	@ConfigurationProperty(required = false, group = "date range")
+public class EmrDateCalculationCohortDefinition extends EmrCalculationCohortDefinition {
+
+	@ConfigurationProperty(required = true, group = "date range")
 	private Date resultOnOrAfter;
-	
-	@ConfigurationProperty(required = false, group = "date range")
+
+	@ConfigurationProperty(required = true, group = "date range")
 	private Date resultOnOrBefore;
 
-	public KenyaEmrCalculationCohortDefinition() {
+	public EmrDateCalculationCohortDefinition() {
 	}
-	
+
 	/**
 	 * Constructs a new calculation based cohort definition
 	 * @param calculation the calculation
 	 */
-	public KenyaEmrCalculationCohortDefinition(BaseEmrCalculation calculation) {
-		setCalculation(calculation);
-		setName(calculation.getName());
-		setDescription(calculation.getDescription());
-	}
-	
-	/**
-	 * @return the calculation
-	 */
-	public BaseEmrCalculation getCalculation() {
-		return calculation;
-	}
-
-	/**
-	 * @param calculation the calculation to set
-	 */
-	public void setCalculation(BaseEmrCalculation calculation) {
-		this.calculation = calculation;
+	public EmrDateCalculationCohortDefinition(BaseEmrCalculation calculation) {
+		super(calculation);
 	}
 	
 	/**

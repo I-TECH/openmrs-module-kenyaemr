@@ -22,19 +22,17 @@ import org.openmrs.Program;
 import org.openmrs.api.PatientSetService.TimeModifier;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.MetadataConstants;
-import org.openmrs.module.kenyaemr.calculation.IsPregnantCalculation;
 import org.openmrs.module.kenyaemr.calculation.art.*;
-import org.openmrs.module.kenyaemr.report.KenyaEmrCalculationCohortDefinition;
+import org.openmrs.module.kenyaemr.report.EmrCalculationCohortDefinition;
+import org.openmrs.module.kenyaemr.report.EmrDateCalculationCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.*;
 import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
-import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.openmrs.module.reporting.indicator.dimension.CohortDefinitionDimension;
-import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -220,14 +218,13 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 			cohortDefinitions.put("tbScreeningEncounterBetween", cd);
 		}
 		{ // Started ART
-			KenyaEmrCalculationCohortDefinition cd = new KenyaEmrCalculationCohortDefinition(new InitialArtStartDateCalculation());
+			EmrDateCalculationCohortDefinition cd = new EmrDateCalculationCohortDefinition(new InitialArtStartDateCalculation());
 			cd.addParameter(new Parameter("resultOnOrBefore", "Before Date", Date.class));
 			cd.addParameter(new Parameter("resultOnOrAfter", "After Date", Date.class));
 			cohortDefinitions.put("startedArtBetween", cd);
 		}
 		{ // Pregnant at start of ART
-			KenyaEmrCalculationCohortDefinition cd = new KenyaEmrCalculationCohortDefinition(new PregnantAtArtStartCalculation());
-			cd.setName("Started ART between dates");
+			EmrCalculationCohortDefinition cd = new EmrCalculationCohortDefinition(new PregnantAtArtStartCalculation());
 			cohortDefinitions.put("pregnantAtArtStart", cd);
 		}
 		{ // Started ART and is pregnant
@@ -269,15 +266,15 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 			cohortDefinitions.put("currentlyOnArt", cd);
 		}
 		{ // Taking original 1st line ART
-			KenyaEmrCalculationCohortDefinition cd = new KenyaEmrCalculationCohortDefinition(new OnOriginalFirstLineArtCalculation());
+			EmrCalculationCohortDefinition cd = new EmrCalculationCohortDefinition(new OnOriginalFirstLineArtCalculation());
 			cohortDefinitions.put("currentlyOnOriginalFirstLine", cd);
 		}
 		{ // Taking alternate 1st line ART
-			KenyaEmrCalculationCohortDefinition cd = new KenyaEmrCalculationCohortDefinition(new OnAlternateFirstLineArtCalculation());
+			EmrCalculationCohortDefinition cd = new EmrCalculationCohortDefinition(new OnAlternateFirstLineArtCalculation());
 			cohortDefinitions.put("currentlyOnAlternateFirstLine", cd);
 		}
 		{ // Taking 2nd line ART
-			KenyaEmrCalculationCohortDefinition cd = new KenyaEmrCalculationCohortDefinition(new OnSecondLineArtCalculation());
+			EmrCalculationCohortDefinition cd = new EmrCalculationCohortDefinition(new OnSecondLineArtCalculation());
 			cohortDefinitions.put("currentlyOnSecondLine", cd);
 		}
 		{ // Started ART 12 months ago

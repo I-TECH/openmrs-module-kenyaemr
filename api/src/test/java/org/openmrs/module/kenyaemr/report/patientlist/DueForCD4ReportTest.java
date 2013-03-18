@@ -11,7 +11,8 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.kenyaemr.report;
+
+package org.openmrs.module.kenyaemr.report.patientlist;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -22,6 +23,7 @@ import org.openmrs.Program;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyaemr.report.ReportBuilder;
 import org.openmrs.module.kenyaemr.report.patientlist.NeedsCD4Report;
 import org.openmrs.module.kenyaemr.test.TestUtils;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;

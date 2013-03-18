@@ -32,8 +32,8 @@ import org.openmrs.module.reporting.evaluation.EvaluationException;
 /**
  *
  */
-@Handler(supports = KenyaEmrCalculationCohortDefinition.class)
-public class KenyaEmrCalculationCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
+@Handler(supports = EmrCalculationCohortDefinition.class)
+public class EmrCalculationCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
 	
 	/**
 	 * @see org.openmrs.module.reporting.cohort.definition.evaluator.CohortDefinitionEvaluator#evaluate(org.openmrs.module.reporting.cohort.definition.CohortDefinition,
@@ -41,29 +41,43 @@ public class KenyaEmrCalculationCohortDefinitionEvaluator implements CohortDefin
 	 */
 	@Override
 	public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) throws EvaluationException {
-		KenyaEmrCalculationCohortDefinition cd = (KenyaEmrCalculationCohortDefinition) cohortDefinition;
-		Date date = (Date) context.getParameterValue("date");
-		if (date == null) {
-			date = (Date) context.getParameterValue("endDate");
-		}
-		
-		PatientCalculationService pcs = Context.getService(PatientCalculationService.class);
-		PatientCalculationContext calcContext = pcs.createCalculationContext();
-		if (date != null) {
-			calcContext.setNow(date);
-		}
-		Cohort cohort = context.getBaseCohort();
-		if (cohort == null) {
-			cohort = Context.getPatientSetService().getAllPatients();
-		}
-		CalculationResultMap map = pcs.evaluate(cohort.getMemberIds(), cd.getCalculation(), calcContext);
+		CalculationResultMap map = doCalculation(cohortDefinition, context);
 		Set<Integer> passing;
-		if (cd.getResultOnOrAfter() != null || cd.getResultOnOrBefore() != null) {
+
+		if (cohortDefinition instanceof EmrDateCalculationCohortDefinition) {
+			EmrDateCalculationCohortDefinition cd = (EmrDateCalculationCohortDefinition) cohortDefinition;
 			passing = CalculationUtils.datesWithinRange(map, cd.getResultOnOrAfter(), cd.getResultOnOrBefore());
 		} else {
 			passing = CalculationUtils.patientsThatPass(map);
 		}
-		return new EvaluatedCohort(new Cohort(passing), cd, context);
+		return new EvaluatedCohort(new Cohort(passing), cohortDefinition, context);
 	}
-	
+
+	/**
+	 * Performs the calculation
+	 * @param cohortDefinition the cohort definition
+	 * @param context the evaluation context
+	 * @return the calculation results
+	 */
+	protected CalculationResultMap doCalculation(CohortDefinition cohortDefinition, EvaluationContext context) {
+		EmrCalculationCohortDefinition cd = (EmrCalculationCohortDefinition) cohortDefinition;
+		Date date = (Date) context.getParameterValue("date");
+		if (date == null) {
+			date = (Date) context.getParameterValue("endDate");
+		}
+
+		PatientCalculationService pcs = Context.getService(PatientCalculationService.class);
+		PatientCalculationContext calcContext = pcs.createCalculationContext();
+
+		if (date != null) {
+			calcContext.setNow(date);
+		}
+
+		Cohort cohort = context.getBaseCohort();
+		if (cohort == null) {
+			cohort = Context.getPatientSetService().getAllPatients();
+		}
+
+		return pcs.evaluate(cohort.getMemberIds(), cd.getCalculation(), calcContext);
+	}
 }

@@ -1,4 +1,4 @@
-/*
+/**
  * The contents of this file are subject to the OpenMRS Public License
  * Version 1.0 (the "License"); you may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
@@ -11,7 +11,8 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.kenyaemr.report;
+
+package org.openmrs.module.kenyaemr.report.patientlist;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -20,6 +21,7 @@ import org.openmrs.Program;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyaemr.report.ReportBuilder;
 import org.openmrs.module.kenyaemr.report.patientlist.MissedAppointmentsOrDefaultedReport;
 import org.openmrs.module.kenyaemr.test.TestUtils;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
@@ -35,7 +37,7 @@ import java.util.Date;
 public class MissedAppointmentsOrDefaultedReportTest extends BaseModuleContextSensitiveTest {
 
     @Before
-    public void beforeEachTest() throws Exception {
+    public void setup() throws Exception {
         executeDataSet("test-data.xml");
     }
 

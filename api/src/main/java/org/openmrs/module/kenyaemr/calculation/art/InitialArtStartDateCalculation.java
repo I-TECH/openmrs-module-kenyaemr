@@ -37,7 +37,7 @@ public class InitialArtStartDateCalculation extends BaseEmrCalculation {
 	 */
 	@Override
 	public String getName() {
-		return "First ART Start Date";
+		return "Initial ART Start Date";
 	}
 
 	@Override
