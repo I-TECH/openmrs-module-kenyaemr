@@ -35,7 +35,7 @@ import java.util.Date;
 public class DecliningCD4ReportTest extends BaseModuleContextSensitiveTest {
 
 	@Before
-	public void beforeEachTest() throws Exception {
+	public void setup() throws Exception {
 		executeDataSet("test-data.xml");
 	}
 

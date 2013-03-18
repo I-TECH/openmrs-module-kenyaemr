@@ -11,15 +11,18 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.kenyaemr.calculation.art;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Concept;
+import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
+import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.kenyaemr.test.TestUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
@@ -30,7 +33,7 @@ import java.util.List;
 public class InitialArtStartDateCalculationTest extends BaseModuleContextSensitiveTest {
 
 	@Before
-	public void beforeEachTest() throws Exception {
+	public void setup() throws Exception {
 		executeDataSet("test-data.xml");
 		executeDataSet("test-drugdata.xml");
 	}
@@ -41,28 +44,33 @@ public class InitialArtStartDateCalculationTest extends BaseModuleContextSensiti
 	@Test
 	public void evaluate_shouldCalculateInitialArtStartDate() throws Exception {
 
-		// Put patient #7 on Aspirin
+		PatientService ps = Context.getPatientService();
+		Concept arvStartDate = Context.getConceptService().getConceptByUuid(MetadataConstants.ANTIRETROVIRAL_TREATMENT_START_DATE_CONCEPT_UUID);
+
+		// Put patient #6 on Aspirin
 		Concept aspirin = Context.getConceptService().getConcept(71617);
-		TestUtils.saveDrugOrder(Context.getPatientService().getPatient(7), aspirin, TestUtils.date(2011, 1, 1), null);
+		TestUtils.saveDrugOrder(ps.getPatient(6), aspirin, TestUtils.date(2011, 1, 1), null);
 
-		// Put patient #8 and #999 on Stavudine
+		// Put patient #7 and #8 on Stavudine
 		Concept stavudine = Context.getConceptService().getConcept(84309);
-		TestUtils.saveDrugOrder(Context.getPatientService().getPatient(8), stavudine, TestUtils.date(2011, 1, 1), null);
-		TestUtils.saveDrugOrder(Context.getPatientService().getPatient(999), stavudine, TestUtils.date(2011, 1, 1), null);
+		TestUtils.saveDrugOrder(ps.getPatient(7), stavudine, TestUtils.date(2011, 1, 1), null);
+		TestUtils.saveDrugOrder(ps.getPatient(8), stavudine, TestUtils.date(2011, 1, 1), null);
 
-		// Give patient #999 an earlier date in a recent START DATE obs
-		Concept arvStartDate = Context.getConceptService().getConcept(159599);
-		TestUtils.saveObs(Context.getPatientService().getPatient(999), arvStartDate, TestUtils.date(2007, 7, 7), new Date());
+		// Give patient #8 an earlier date in a recent START DATE obs
+		TestUtils.saveObs(Context.getPatientService().getPatient(8), arvStartDate, TestUtils.date(2007, 7, 7), new Date());
+
+		// Give patient #999 only a date in a recent START DATE obs
+		TestUtils.saveObs(Context.getPatientService().getPatient(999), arvStartDate, TestUtils.date(2008, 8, 8), new Date());
 
 		Context.flushSession();
 		
-		List<Integer> cohort = Arrays.asList(6, 7, 8, 999);
+		List<Integer> cohort = Arrays.asList(2, 6, 7, 8, 999);
 
 		CalculationResultMap resultMap = new InitialArtStartDateCalculation().evaluate(cohort, null, Context.getService(PatientCalculationService.class).createCalculationContext());
-		Assert.assertNull(resultMap.get(6)); // isn't on any drugs
-		Assert.assertNull(resultMap.get(7)); // isn't on any ARTs
-
-		Assert.assertEquals(TestUtils.date(2011, 1, 1), resultMap.get(8).getValue());
-		Assert.assertEquals(TestUtils.date(2007, 7, 7), resultMap.get(999).getValue());
+		Assert.assertNull(resultMap.get(2)); // isn't on any drugs
+		Assert.assertNull(resultMap.get(6)); // isn't on any ART drugs
+		Assert.assertEquals(TestUtils.date(2011, 1, 1), resultMap.get(7).getValue());
+		Assert.assertEquals(TestUtils.date(2007, 7, 7), resultMap.get(8).getValue());
+		Assert.assertEquals(TestUtils.date(2008, 8, 8), resultMap.get(999).getValue());
 	}
 }

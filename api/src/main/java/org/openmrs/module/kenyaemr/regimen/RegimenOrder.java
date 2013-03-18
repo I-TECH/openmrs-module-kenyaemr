@@ -15,6 +15,7 @@ package org.openmrs.module.kenyaemr.regimen;
 
 import java.util.*;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.openmrs.Concept;
 import org.openmrs.DrugOrder;
@@ -55,6 +56,53 @@ public class RegimenOrder {
 			}
 		}
 		return ret;
+	}
+
+	/**
+	 * Gets the drugs in this regimen as references
+	 * @return the drugOrders
+	 */
+	public List<DrugReference> getDrugReferences() {
+		List<DrugReference> drugs = new ArrayList<DrugReference>();
+		for (DrugOrder order : drugOrders) {
+			drugs.add(DrugReference.fromDrugOrder(order));
+		}
+		return drugs;
+	}
+
+	/**
+	 * Checks the equality of regimen orders considering drugs only
+	 * @param order the other order
+	 * @return true if the order has same drugs as this order
+	 */
+	public boolean hasSameDrugs(RegimenOrder order) {
+		if (order == null) {
+			return false;
+		}
+
+		return CollectionUtils.isEqualCollection(getDrugReferences(), order.getDrugReferences());
+	}
+
+	/**
+	 * @see Object#equals(Object)
+	 */
+	@Override
+	public boolean equals(Object o) {
+		if (!(o instanceof RegimenOrder)) {
+			return false;
+		}
+
+		RegimenOrder order = (RegimenOrder) o;
+
+		return drugOrders.equals(order.getDrugOrders());
+	}
+
+	/**
+	 * @see Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		return drugOrders.hashCode();
 	}
 
 	/**

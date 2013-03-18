@@ -22,6 +22,8 @@ import org.openmrs.calculation.InvalidCalculationException;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.*;
 import org.openmrs.module.kenyaemr.KenyaEmr;
+import org.openmrs.module.kenyaemr.regimen.RegimenDefinition;
+import org.openmrs.module.kenyaemr.regimen.RegimenOrder;
 import org.openmrs.util.OpenmrsUtil;
 
 import java.util.*;
@@ -227,5 +229,22 @@ public class CalculationUtils {
 			return (Date) result.getValue();
 		}
 		return null;
+	}
+
+	/**
+	 * Checks if a regimen order matches a definition in a regimen group
+	 * @param order the regimen order
+	 * @param category the regimen category code
+	 * @param groupCode the regimen group code
+	 * @return true if regimen matches any definition in the given group
+	 */
+	public static boolean regimenInGroup(RegimenOrder order, String category, String groupCode) {
+		List<RegimenDefinition> matchingDefinitions = KenyaEmr.getInstance().getRegimenManager().findDefinitions(category, order, false);
+		for (RegimenDefinition definition : matchingDefinitions) {
+			if (groupCode.equals(definition.getGroup().getCode())) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

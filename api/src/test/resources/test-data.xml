@@ -100,4 +100,6 @@
 	<!-- Enable scheduled tasks -->
 	<global_property property="scheduler.username" property_value="admin" uuid="9f39aa0f-77ab-431a-b243-365bf423f266" />
 	<global_property property="scheduler.password" property_value="test" uuid="825f045b-1313-466b-bdfb-f3171e0f5f9b" />
+	<global_property property="report.deleteReportsAgeInHours" property_value="72" uuid="fe963aa5-d653-4368-801a-72519eda24d7" />
+
 </dataset>

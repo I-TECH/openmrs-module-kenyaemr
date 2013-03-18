@@ -11,59 +11,41 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.kenyaemr.report.indicator;
 
-import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
-import java.util.Map;
 
-import org.apache.commons.io.IOUtils;
-import org.junit.Ignore;
+import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyaemr.report.indicator.Moh731Report;
+import org.openmrs.module.kenyaemr.KenyaEmr;
 import org.openmrs.module.kenyaemr.test.TestUtils;
-import org.openmrs.module.reporting.dataset.DataSet;
-import org.openmrs.module.reporting.dataset.DataSetColumn;
-import org.openmrs.module.reporting.dataset.MapDataSet;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.report.ReportData;
-import org.openmrs.module.reporting.report.ReportDesign;
-import org.openmrs.module.reporting.report.ReportDesignResource;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
-import org.openmrs.module.reporting.report.renderer.ExcelTemplateRenderer;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
-import org.openmrs.test.SkipBaseSetup;
-import org.openmrs.test.TestUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  *
  */
-@SkipBaseSetup
-@Ignore
 public class Moh731ReportTest extends BaseModuleContextSensitiveTest {
-	
-	/**
-	 * @see org.openmrs.test.BaseContextSensitiveTest#useInMemoryDatabase()
-	 */
-	@Override
-	public Boolean useInMemoryDatabase() {
-	    return false;
+
+	@Autowired
+	KenyaEmr emr;
+
+	@Before
+	public void setup() throws Exception {
+		executeDataSet("test-data.xml");
+		executeDataSet("test-drugdata.xml");
+
+		emr.contextRefreshed();
 	}
-	
-	/**
-	 * @see org.openmrs.test.BaseContextSensitiveTest#getWebappName()
-	 */
-	@Override
-	public String getWebappName() {
-	    return "openmrs19";
-	}
-	
+
 	@Test
-	public void testRunMoh731Report() throws Exception {
-		authenticate();
-		
+	public void test() throws Exception {
 		Moh731Report report = new Moh731Report();
 		ReportDefinition rd = report.getReportDefinition();
 		
@@ -73,28 +55,6 @@ public class Moh731ReportTest extends BaseModuleContextSensitiveTest {
 		ec.addParameterValue("endDate", ymd.parse("2012-07-31"));
 		ReportData data = Context.getService(ReportDefinitionService.class).evaluate(rd, ec);
 
-		TestUtils.printReport(data);
-		
-		byte[] excelTemplate = report.loadExcelTemplate();
-		
-		ReportDesignResource resource = new ReportDesignResource();
-		resource.setName("template.xls");
-		resource.setContents(excelTemplate);
-		
-		final ReportDesign design = new ReportDesign();
-		design.setName(rd.getName() + " design");
-		design.setReportDefinition(rd);
-		design.setRendererType(ExcelTemplateRenderer.class);
-		design.addResource(resource);
-		
-		ExcelTemplateRenderer renderer = new ExcelTemplateRenderer() {
-			public ReportDesign getDesign(String argument) {
-				return design;
-			}
-		};
-		
-		FileOutputStream fos = new FileOutputStream("/tmp/test.xls"); // You will need to change this if you have no /tmp directory
-		renderer.render(data, "xxx:xls", fos);
-		IOUtils.closeQuietly(fos);
+		//TestUtils.printReport(data);
 	}
 }

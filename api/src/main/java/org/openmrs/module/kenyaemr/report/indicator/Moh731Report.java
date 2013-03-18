@@ -23,8 +23,7 @@ import org.openmrs.api.PatientSetService.TimeModifier;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.kenyaemr.calculation.IsPregnantCalculation;
-import org.openmrs.module.kenyaemr.calculation.art.InitialArtStartDateCalculation;
-import org.openmrs.module.kenyaemr.calculation.art.PregnantAtArtStartCalculation;
+import org.openmrs.module.kenyaemr.calculation.art.*;
 import org.openmrs.module.kenyaemr.report.KenyaEmrCalculationCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.*;
 import org.openmrs.module.reporting.common.SetComparator;
@@ -222,7 +221,6 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 		}
 		{ // Started ART
 			KenyaEmrCalculationCohortDefinition cd = new KenyaEmrCalculationCohortDefinition(new InitialArtStartDateCalculation());
-			cd.setName("Started ART between dates");
 			cd.addParameter(new Parameter("resultOnOrBefore", "Before Date", Date.class));
 			cd.addParameter(new Parameter("resultOnOrAfter", "After Date", Date.class));
 			cohortDefinitions.put("startedArtBetween", cd);
@@ -256,7 +254,6 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 			CompositionCohortDefinition cd = new CompositionCohortDefinition();
 			cd.addParameter(new Parameter("fromDate", "From Date", Date.class));
 			cd.addParameter(new Parameter("toDate", "To Date", Date.class));
-
 			cd.addSearch("startedBefore", map(cohortDefinitions.get("startedArtBetween"), "resultOnOrBefore=${startDate-1d}"));
 			cd.addSearch("recentEncounter", map(cohortDefinitions.get("anyEncounterBetween"), "onOrAfter=${endDate-90d},onOrBefore=${endDate}"));
 			cd.setCompositionString("recentEncounter AND startedBefore");
@@ -266,11 +263,67 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 			CompositionCohortDefinition cd = new CompositionCohortDefinition();
 			cd.addParameter(new Parameter("fromDate", "From Date", Date.class));
 			cd.addParameter(new Parameter("toDate", "To Date", Date.class));
-
-			cd.addSearch("startedArtBetween", map(cohortDefinitions.get("startedArtBetween"), "resultOnOrAfter=${startDate},resultOnOrBefore=${endDate}"));
-			cd.addSearch("revisitsArt", map(cohortDefinitions.get("revisitsArt"), "fromDate=${startDate},toDate=${endDate}"));
+			cd.addSearch("startedArtBetween", map(cohortDefinitions.get("startedArtBetween"), "resultOnOrAfter=${fromDate},resultOnOrBefore=${toDate}"));
+			cd.addSearch("revisitsArt", map(cohortDefinitions.get("revisitsArt"), "fromDate=${fromDate},toDate=${toDate}"));
 			cd.setCompositionString("startedArtBetween OR revisitsArt");
 			cohortDefinitions.put("currentlyOnArt", cd);
+		}
+		{ // Taking original 1st line ART
+			KenyaEmrCalculationCohortDefinition cd = new KenyaEmrCalculationCohortDefinition(new OnOriginalFirstLineArtCalculation());
+			cohortDefinitions.put("currentlyOnOriginalFirstLine", cd);
+		}
+		{ // Taking alternate 1st line ART
+			KenyaEmrCalculationCohortDefinition cd = new KenyaEmrCalculationCohortDefinition(new OnAlternateFirstLineArtCalculation());
+			cohortDefinitions.put("currentlyOnAlternateFirstLine", cd);
+		}
+		{ // Taking 2nd line ART
+			KenyaEmrCalculationCohortDefinition cd = new KenyaEmrCalculationCohortDefinition(new OnSecondLineArtCalculation());
+			cohortDefinitions.put("currentlyOnSecondLine", cd);
+		}
+		{ // Started ART 12 months ago
+			CompositionCohortDefinition cd = new CompositionCohortDefinition();
+			cd.addParameter(new Parameter("fromDate", "From Date", Date.class));
+			cd.addParameter(new Parameter("toDate", "To Date", Date.class));
+			cd.addSearch("startedArt12MonthsAgo", map(cohortDefinitions.get("startedArtBetween"), "resultOnOrAfter=${fromDate-11m},resultOnOrBefore=${toDate-11m}"));
+			cd.setCompositionString("startedArt12MonthsAgo");
+			cohortDefinitions.put("startedArt12MonthsAgo", cd);
+		}
+		{ // Taking original 1st line ART at 12 months
+			CompositionCohortDefinition cd = new CompositionCohortDefinition();
+			cd.addParameter(new Parameter("fromDate", "From Date", Date.class));
+			cd.addParameter(new Parameter("toDate", "To Date", Date.class));
+			cd.addSearch("startedArt12MonthsAgo", map(cohortDefinitions.get("startedArt12MonthsAgo"), "fromDate=${fromDate},toDate=${toDate}"));
+			cd.addSearch("currentlyOnOriginalFirstLine", map(cohortDefinitions.get("currentlyOnOriginalFirstLine"), null));
+			cd.setCompositionString("startedArt12MonthsAgo AND currentlyOnOriginalFirstLine");
+			cohortDefinitions.put("onOriginalFirstLineAt12Months", cd);
+		}
+		{ // Taking alternate 1st line ART at 12 months
+			CompositionCohortDefinition cd = new CompositionCohortDefinition();
+			cd.addParameter(new Parameter("fromDate", "From Date", Date.class));
+			cd.addParameter(new Parameter("toDate", "To Date", Date.class));
+			cd.addSearch("startedArt12MonthsAgo", map(cohortDefinitions.get("startedArt12MonthsAgo"), "fromDate=${fromDate},toDate=${toDate}"));
+			cd.addSearch("currentlyOnAlternateFirstLine", map(cohortDefinitions.get("currentlyOnAlternateFirstLine"), null));
+			cd.setCompositionString("startedArt12MonthsAgo AND currentlyOnAlternateFirstLine");
+			cohortDefinitions.put("onAlternateFirstLineAt12Months", cd);
+		}
+		{ // Taking 2nd line ART at 12 months
+			CompositionCohortDefinition cd = new CompositionCohortDefinition();
+			cd.addParameter(new Parameter("fromDate", "From Date", Date.class));
+			cd.addParameter(new Parameter("toDate", "To Date", Date.class));
+			cd.addSearch("startedArt12MonthsAgo", map(cohortDefinitions.get("startedArt12MonthsAgo"), "fromDate=${fromDate},toDate=${toDate}"));
+			cd.addSearch("currentlyOnSecondLine", map(cohortDefinitions.get("currentlyOnSecondLine"), null));
+			cd.setCompositionString("startedArt12MonthsAgo AND currentlyOnSecondLine");
+			cohortDefinitions.put("onSecondLineAt12Months", cd);
+		}
+		{ // Taking any ART at 12 months
+			CompositionCohortDefinition cd = new CompositionCohortDefinition();
+			cd.addParameter(new Parameter("fromDate", "From Date", Date.class));
+			cd.addParameter(new Parameter("toDate", "To Date", Date.class));
+			cd.addSearch("onOriginalFirstLineAt12Months", map(cohortDefinitions.get("onOriginalFirstLineAt12Months"), "fromDate=${fromDate},toDate=${toDate}"));
+			cd.addSearch("onAlternateFirstLineAt12Months", map(cohortDefinitions.get("onAlternateFirstLineAt12Months"), "fromDate=${fromDate},toDate=${toDate}"));
+			cd.addSearch("onSecondLineAt12Months", map(cohortDefinitions.get("onSecondLineAt12Months"), "fromDate=${fromDate},toDate=${toDate}"));
+			cd.setCompositionString("onOriginalFirstLineAt12Months OR onAlternateFirstLineAt12Months OR onSecondLineAt12Months");
+			cohortDefinitions.put("onTherapyAt12Months", cd);
 		}
 	}
 
@@ -297,81 +350,68 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 	private void setupIndicators() {
 		indicators = new HashMap<String, CohortIndicator>();
 		{
-			CohortIndicator ind = new CohortIndicator("Enrolled in Care (no transfers)");
-			ind.addParameter(new Parameter("startDate", "Start Date", Date.class));
-			ind.addParameter(new Parameter("endDate", "End Date", Date.class));
+			CohortIndicator ind = createIndicator("enrolledInCare", "Enrolled in care (no transfers)");
 			ind.setCohortDefinition(map(cohortDefinitions.get("enrolledNoTransfers"), "fromDate=${startDate},toDate=${endDate}"));
-			indicators.put("enrolledInCare", ind);
 		}
 		{
-			CohortIndicator ind = new CohortIndicator("Currently in Care (includes transfers)");
-			ind.addParameter(new Parameter("startDate", "Start Date", Date.class));
-			ind.addParameter(new Parameter("endDate", "End Date", Date.class));
+			CohortIndicator ind = createIndicator("currentlyInCare", "Currently in care (includes transfers)");
 			ind.setCohortDefinition(map(cohortDefinitions.get("anyEncounterBetween"), "onOrAfter=${endDate-90d},onOrBefore=${endDate}"));
-			indicators.put("currentlyInCare", ind);
 		}
 		{
-			CohortIndicator ind = new CohortIndicator("Starting ART");
-			ind.addParameter(new Parameter("startDate", "Start Date", Date.class));
-			ind.addParameter(new Parameter("endDate", "End Date", Date.class));
+			CohortIndicator ind = createIndicator("startingArt", "Starting ART");
 			ind.setCohortDefinition(map(cohortDefinitions.get("startedArtBetween"), "resultOnOrAfter=${startDate},resultOnOrBefore=${endDate}"));
-			indicators.put("startingArt", ind);
 		}
 		{
-			CohortIndicator ind = new CohortIndicator("Starting ART (TB Patient)");
-			ind.addParameter(new Parameter("startDate", "Start Date", Date.class));
-			ind.addParameter(new Parameter("endDate", "End Date", Date.class));
+			CohortIndicator ind = createIndicator("startingArtTbPatient", "Starting ART (TB Patient)");
 			ind.setCohortDefinition(map(cohortDefinitions.get("startedArtAndIsTbPatient"), "fromDate=${startDate},toDate=${endDate}"));
-			indicators.put("startingArtTbPatient", ind);
 		}
 		{
-			CohortIndicator ind = new CohortIndicator("Starting ART (Pregnant)");
-			ind.addParameter(new Parameter("startDate", "Start Date", Date.class));
-			ind.addParameter(new Parameter("endDate", "End Date", Date.class));
+			CohortIndicator ind = createIndicator("startingArtPregnant", "Starting ART (Pregnant)");
 			ind.setCohortDefinition(map(cohortDefinitions.get("startedArtAndIsPregnant"), "fromDate=${startDate},toDate=${endDate}"));
-			indicators.put("startingArtPregnant", ind);
 		}
 		{
-			CohortIndicator ind = new CohortIndicator("Revisits ART");
-			ind.addParameter(new Parameter("startDate", "Start Date", Date.class));
-			ind.addParameter(new Parameter("endDate", "End Date", Date.class));
+			CohortIndicator ind = createIndicator("revisitsArt", "Revisits ART");
 			ind.setCohortDefinition(map(cohortDefinitions.get("revisitsArt"), "fromDate=${startDate},toDate=${endDate}"));
-			indicators.put("revisitsArt", ind);
 		}
 		{
-			CohortIndicator ind = new CohortIndicator("Currently on ART");
-			ind.addParameter(new Parameter("startDate", "Start Date", Date.class));
-			ind.addParameter(new Parameter("endDate", "End Date", Date.class));
+			CohortIndicator ind = createIndicator("currentlyOnArt", "Currently on ART");
 			ind.setCohortDefinition(map(cohortDefinitions.get("currentlyOnArt"), "fromDate=${startDate},toDate=${endDate}"));
-			indicators.put("currentlyOnArt", ind);
 		}
 		{
-			CohortIndicator ind = new CohortIndicator("Cumulative Ever on ART");
-			ind.addParameter(new Parameter("startDate", "Start Date", Date.class));
-			ind.addParameter(new Parameter("endDate", "End Date", Date.class));
+			CohortIndicator ind = createIndicator("cumulativeOnArt", "Cumulative ever on ART");
 			ind.setCohortDefinition(map(cohortDefinitions.get("startedArtBetween"), "resultOnOrBefore=${endDate}"));
-			indicators.put("cumulativeOnArt", ind);
 		}
 		{
-			CohortIndicator ind = new CohortIndicator("Screened for TB");
-			ind.addParameter(new Parameter("startDate", "Start Date", Date.class));
-			ind.addParameter(new Parameter("endDate", "End Date", Date.class));
+			CohortIndicator ind = createIndicator("startedArt12MonthsAgo", "Started ART 12 months ago");
+			ind.setCohortDefinition(map(cohortDefinitions.get("startedArt12MonthsAgo"), "fromDate=${startDate},toDate=${endDate}"));
+		}
+		{
+			CohortIndicator ind = createIndicator("onOriginalFirstLineAt12Months", "On original 1st line at 12 months");
+			ind.setCohortDefinition(map(cohortDefinitions.get("onOriginalFirstLineAt12Months"), "fromDate=${startDate},toDate=${endDate}"));
+		}
+		{
+			CohortIndicator ind = createIndicator("onAlternateFirstLineAt12Months", "On alternate 1st line at 12 months");
+			ind.setCohortDefinition(map(cohortDefinitions.get("onAlternateFirstLineAt12Months"), "fromDate=${startDate},toDate=${endDate}"));
+		}
+		{
+			CohortIndicator ind = createIndicator("onSecondLineAt12Months", "On 2nd line at 12 months");
+			ind.setCohortDefinition(map(cohortDefinitions.get("onSecondLineAt12Months"), "fromDate=${startDate},toDate=${endDate}"));
+		}
+		{
+			CohortIndicator ind = createIndicator("onTherapyAt12Months", "On therapy at 12 months");
+			ind.setCohortDefinition(map(cohortDefinitions.get("onTherapyAt12Months"), "fromDate=${startDate},toDate=${endDate}"));
+		}
+		{
+			CohortIndicator ind = createIndicator("screenedForTb", "Screened for TB");
 			ind.setCohortDefinition(map(cohortDefinitions.get("tbScreeningEncounterBetween"), "onOrAfter=${startDate},onOrBefore=${endDate}"));
-			indicators.put("screenedForTb", ind);
 		}
 		{
-			//CohortIndicator ind = new CohortIndicator("Provided with family planning");
-			//ind.addParameter(new Parameter("startDate", "Start Date", Date.class));
-			//ind.addParameter(new Parameter("endDate", "End Date", Date.class));
+			//CohortIndicator ind = createIndicator("familyPlanningProvided", "Provided with family planning");
 			//ind.setCohortDefinition(map(cohortDefinitions.get("familyPlanningProvidedBetween"), "onOrAfter=${startDate},onOrBefore=${endDate}"));
-			//indicators.put("familyPlanningProvided", ind);
 		}
 		{
-			CohortIndicator ind = new CohortIndicator("Provided with condoms");
-			ind.addParameter(new Parameter("startDate", "Start Date", Date.class));
-			ind.addParameter(new Parameter("endDate", "End Date", Date.class));
+			CohortIndicator ind = createIndicator("condomsProvided", "Provided with condoms");
 			ind.setCohortDefinition(map(cohortDefinitions.get("condomsProvidedBetween"), "onOrAfter=${startDate},onOrBefore=${endDate}"));
-			indicators.put("condomsProvided", ind);
 		}
 	}
 
@@ -449,7 +489,11 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 
 		/////////////// 3.8 (Survival and Retention on ART at 12 months) ///////////////
 
-		// TODO
+		dsd.addColumn("HV03-46", "ART Net Cohort at 12 months", map(indicators.get("startedArt12MonthsAgo"), "startDate=${startDate},endDate=${endDate}"), "");
+		dsd.addColumn("HV03-46", "On original 1st Line at 12 months", map(indicators.get("onOriginalFirstLineAt12Months"), "startDate=${startDate},endDate=${endDate}"), "");
+		dsd.addColumn("HV03-47", "On alternative 1st Line at 12 months", map(indicators.get("onAlternateFirstLineAt12Months"), "startDate=${startDate},endDate=${endDate}"), "");
+		dsd.addColumn("HV03-48", "On 2nd Line (or higher) at 12 months ", map(indicators.get("onSecondLineAt12Months"), "startDate=${startDate},endDate=${endDate}"), "");
+		dsd.addColumn("HV03-49", "On therapy at 12 months (Total) ", map(indicators.get("onTherapyAt12Months"), "startDate=${startDate},endDate=${endDate}"), "");
 
 		/////////////// 3.9 (Screening) ///////////////
 
@@ -471,5 +515,13 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 		// TODO
 
 		return dsd;
+	}
+
+	protected CohortIndicator createIndicator(String id, String description) {
+		CohortIndicator ind = new CohortIndicator(description);
+		ind.addParameter(new Parameter("startDate", "Start Date", Date.class));
+		ind.addParameter(new Parameter("endDate", "End Date", Date.class));
+		indicators.put(id, ind);
+		return ind;
 	}
 }

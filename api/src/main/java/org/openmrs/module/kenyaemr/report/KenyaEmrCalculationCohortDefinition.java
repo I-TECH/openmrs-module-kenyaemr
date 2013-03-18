@@ -20,7 +20,7 @@ import org.openmrs.module.reporting.cohort.definition.BaseCohortDefinition;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 
 /**
- *
+ * Cohort definition based on a calculation
  */
 public class KenyaEmrCalculationCohortDefinition extends BaseCohortDefinition {
 	
@@ -32,15 +32,18 @@ public class KenyaEmrCalculationCohortDefinition extends BaseCohortDefinition {
 	
 	@ConfigurationProperty(required = false, group = "date range")
 	private Date resultOnOrBefore;
-	
+
 	public KenyaEmrCalculationCohortDefinition() {
 	}
 	
 	/**
-	 * @param calculation
+	 * Constructs a new calculation based cohort definition
+	 * @param calculation the calculation
 	 */
 	public KenyaEmrCalculationCohortDefinition(BaseEmrCalculation calculation) {
 		setCalculation(calculation);
+		setName(calculation.getName());
+		setDescription(calculation.getDescription());
 	}
 	
 	/**
@@ -49,7 +52,7 @@ public class KenyaEmrCalculationCohortDefinition extends BaseCohortDefinition {
 	public BaseEmrCalculation getCalculation() {
 		return calculation;
 	}
-	
+
 	/**
 	 * @param calculation the calculation to set
 	 */
@@ -84,5 +87,4 @@ public class KenyaEmrCalculationCohortDefinition extends BaseCohortDefinition {
 	public void setResultOnOrBefore(Date resultOnOrBefore) {
 		this.resultOnOrBefore = resultOnOrBefore;
 	}
-	
 }

@@ -30,13 +30,13 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 
-public class OnSecondLineArtCalculationTest extends BaseModuleContextSensitiveTest {
+public class OnOriginalFirstLineArtCalculationTest extends BaseModuleContextSensitiveTest {
 
 	@Autowired
 	RegimenManager regimenManager;
 
 	@Before
-	public void beforeEachTest() throws Exception {
+	public void setup() throws Exception {
 		executeDataSet("test-data.xml");
 		executeDataSet("test-drugdata.xml");
 
@@ -47,7 +47,7 @@ public class OnSecondLineArtCalculationTest extends BaseModuleContextSensitiveTe
 	}
 
 	/**
-	 * @see OnSecondLineArtCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
+	 * @see OnAlternateFirstLineArtCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
 	 */
 	@Test
 	public void evaluate_shouldCalculateCurrentArtRegimen() throws Exception {
@@ -56,22 +56,36 @@ public class OnSecondLineArtCalculationTest extends BaseModuleContextSensitiveTe
 		Concept azt = Context.getConceptService().getConcept(86663);
 		Concept _3tc = Context.getConceptService().getConcept(78643);
 		Concept efv = Context.getConceptService().getConcept(75523);
+		Concept nvp = Context.getConceptService().getConcept(80586);
 		Concept lpv = Context.getConceptService().getConcept(79040);
 		Concept rtv = Context.getConceptService().getConcept(83412);
 
-		// Put patient #7 on AZT + 3TC + EFV
-		TestUtils.saveRegimenOrder(ps.getPatient(7), Arrays.asList(azt, _3tc, efv), TestUtils.date(2011, 1, 1), null);
+		// Give patient #6 initial regimen of AZT + 3TC + EFV
+		TestUtils.saveRegimenOrder(ps.getPatient(6), Arrays.asList(azt, _3tc, efv), TestUtils.date(2011, 1, 1), TestUtils.date(2012, 1, 1));
 
-		// Put patient #8 on AZT + 3TC + LPV/r
-		TestUtils.saveRegimenOrder(ps.getPatient(8), Arrays.asList(azt, _3tc, lpv, rtv), TestUtils.date(2011, 1, 1), null);
+		// Give patient #6 current regimen of same regimen
+		TestUtils.saveRegimenOrder(ps.getPatient(6), Arrays.asList(azt, _3tc, efv), TestUtils.date(2012, 1, 1), null);
+
+		// Give patient #7 initial regimen of AZT + 3TC + EFV
+		TestUtils.saveRegimenOrder(ps.getPatient(7), Arrays.asList(azt, _3tc, efv), TestUtils.date(2011, 1, 1), TestUtils.date(2012, 1, 1));
+
+		// Give patient #7 current regimen of AZT + 3TC + NVP (alternate first line)
+		TestUtils.saveRegimenOrder(ps.getPatient(7), Arrays.asList(azt, _3tc, nvp), TestUtils.date(2012, 1, 1), null);
+
+		// Give patient #8 initial regimen of AZT + 3TC + EFV
+		TestUtils.saveRegimenOrder(ps.getPatient(8), Arrays.asList(azt, _3tc, efv), TestUtils.date(2011, 1, 1), TestUtils.date(2012, 1, 1));
+
+		// Give patient #8 current regimen of AZT + 3TC + LPV/r (second line)
+		TestUtils.saveRegimenOrder(ps.getPatient(8), Arrays.asList(azt, _3tc, lpv, rtv), TestUtils.date(2012, 1, 1), null);
 
 		Context.flushSession();
 		
-		List<Integer> cohort = Arrays.asList(6, 7, 8);
+		List<Integer> cohort = Arrays.asList(6, 7, 8, 999);
 
-		CalculationResultMap resultMap = new OnSecondLineArtCalculation().evaluate(cohort, null, Context.getService(PatientCalculationService.class).createCalculationContext());
-		Assert.assertNull(resultMap.get(6)); // isn't on any drugs
-		Assert.assertFalse((Boolean) resultMap.get(7).getValue()); // is on first line regimen
-		Assert.assertTrue((Boolean) resultMap.get(8).getValue()); // is on second line regimen
+		CalculationResultMap resultMap = new OnOriginalFirstLineArtCalculation().evaluate(cohort, null, Context.getService(PatientCalculationService.class).createCalculationContext());
+		Assert.assertTrue((Boolean) resultMap.get(6).getValue());
+		Assert.assertFalse((Boolean) resultMap.get(7).getValue());
+		Assert.assertFalse((Boolean) resultMap.get(8).getValue());
+		Assert.assertNull(resultMap.get(999)); // isn't on any drugs
 	}
 }

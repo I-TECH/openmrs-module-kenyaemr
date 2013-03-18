@@ -188,7 +188,33 @@ public class TestUtils {
 		order.setStartDate(start);
 		order.setDiscontinued(end != null);
 		order.setDiscontinuedDate(end);
-		return (DrugOrder)Context.getOrderService().saveOrder(order);
+		return (DrugOrder) Context.getOrderService().saveOrder(order);
+	}
+
+	/**
+	 * Saves a regimen order
+	 * @param patient the patient
+	 * @param concepts the drug concepts
+	 * @param start the start date
+	 * @param end the end date
+	 * @return the drug order
+	 */
+	public static RegimenOrder saveRegimenOrder(Patient patient, List<Concept> concepts, Date start, Date end) {
+		Set<DrugOrder> orders = new LinkedHashSet<DrugOrder>();
+
+		for (Concept concept : concepts) {
+			DrugOrder order = new DrugOrder();
+			order.setOrderType(Context.getOrderService().getOrderType(2));
+			order.setPatient(patient);
+			order.setOrderer(Context.getUserService().getUser(1));
+			order.setConcept(concept);
+			order.setStartDate(start);
+			order.setDiscontinued(end != null);
+			order.setDiscontinuedDate(end);
+			orders.add((DrugOrder) Context.getOrderService().saveOrder(order));
+		}
+
+		return new RegimenOrder(orders);
 	}
 
 	/**
