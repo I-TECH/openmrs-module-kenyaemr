@@ -28,7 +28,7 @@
 			return patient.personName + ' <input type="hidden" name="patientId" value="' + patient.patientId + '"/>';
 		},
 		icon: function(patient) {
-			return '<img width="32" height="32" src="' + ui.resourceLink('kenyaemr', 'images/patient_' + patient.gender.toLowerCase() + '.png') + '"/>';
+			return '<img width="32" height="32" src="' + ui.resourceLink('kenyaui', 'images/patient_' + patient.gender.toLowerCase() + '.png') + '"/>';
 		},
 		leftDetails: function(patient) {
 			var str = patient.birthdateEstimated ? '~' : '';
