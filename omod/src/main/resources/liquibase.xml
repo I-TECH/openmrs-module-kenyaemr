@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9 http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
+
+	<changeSet id="${project.parent.artifactId}-20130319-0840" author="rowanseymour">
+		<comment>
+			Deletes the old Kenya EMR Forms imported package which was replaced
+		</comment>
+		<delete tableName="metadatasharing_imported_package">
+			<where>group_uuid = 'c66d041c-563e-4438-83eb-ad5f32c6e97a'</where>
+		</delete>
+	</changeSet>
+
+</databaseChangeLog>
