@@ -2,6 +2,18 @@
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9 http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
 
+	<changeSet id="${project.parent.artifactId}-20130319-0912" author="rowanseymour">
+		<comment>
+			Updates the encounter type of all TB Screening form submissions
+		</comment>
+		<sql>
+			SELECT encounter_type_id INTO @SCREENING_ENC_TYPE_ID FROM encounter_type WHERE uuid = 'ed6dacc9-0827-4c82-86be-53c0d8c449be';
+			SELECT form_id INTO @SCREENING_FORM_ID FROM form WHERE uuid = '59ed8e62-7f1f-40ae-a2e3-eabe350277ce';
+
+			UPDATE encounter e SET e.encounter_type = @SCREENING_ENC_TYPE_ID WHERE e.form_id = @SCREENING_FORM_ID;
+		</sql>
+	</changeSet>
+
 	<changeSet id="${project.parent.artifactId}-20130319-0840" author="rowanseymour">
 		<comment>
 			Deletes the old Kenya EMR Forms imported package which was replaced
