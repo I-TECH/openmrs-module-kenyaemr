@@ -127,5 +127,5 @@ public class MetadataConstants {
 	public static final String TB_PROGRAM_UUID = "9f144a34-3a4a-44a9-8486-6b7af6cc64f6";
 
 	// Other
-	public static final Locale LOCALE = Locale.UK;
+	public static final Locale LOCALE = Locale.ENGLISH;
 }

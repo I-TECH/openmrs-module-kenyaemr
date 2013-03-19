@@ -153,7 +153,7 @@ public class KenyaEmrUiUtils {
 	 * @return the string value
 	 */
 	public String formatDrug(DrugReference drugRef, UiUtils ui) {
-		return drugRef.isConceptOnly() ? drugRef.getConcept().getPreferredName(Locale.ENGLISH).getName() : drugRef.getDrug().getName();
+		return drugRef.isConceptOnly() ? drugRef.getConcept().getPreferredName(MetadataConstants.LOCALE).getName() : drugRef.getDrug().getName();
 	}
 
 	/**
@@ -168,9 +168,9 @@ public class KenyaEmrUiUtils {
 		}
 		List<String> components = new ArrayList<String>();
 		for (DrugOrder o : regimen.getDrugOrders()) {
-			ConceptName cn = o.getConcept().getPreferredName(Locale.ENGLISH);
+			ConceptName cn = o.getConcept().getPreferredName(MetadataConstants.LOCALE);
 			if (cn == null) {
-				cn = o.getConcept().getName(Locale.ENGLISH);
+				cn = o.getConcept().getName(MetadataConstants.LOCALE);
 			}
 			components.add(cn.getName());
 		}
@@ -191,9 +191,9 @@ public class KenyaEmrUiUtils {
 		for (DrugOrder o : regimen.getDrugOrders()) {
 			StringBuilder sb = new StringBuilder();
 
-			ConceptName cn = o.getConcept().getShortNameInLocale(Locale.ENGLISH);
+			ConceptName cn = o.getConcept().getShortNameInLocale(MetadataConstants.LOCALE);
 			if (cn == null) {
-				cn = o.getConcept().getName(Locale.ENGLISH);
+				cn = o.getConcept().getName(MetadataConstants.LOCALE);
 			}
 			sb.append(cn.getName());
 
