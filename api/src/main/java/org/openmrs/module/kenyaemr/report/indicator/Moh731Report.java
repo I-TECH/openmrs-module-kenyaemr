@@ -295,8 +295,8 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 			cd.addParameter(new Parameter("fromDate", "From Date", Date.class));
 			cd.addParameter(new Parameter("toDate", "To Date", Date.class));
 			cd.addSearch("startedArt12MonthsAgo", map(cohortDefinitions.get("startedArtBetween"), "resultOnOrAfter=${fromDate-1y},resultOnOrBefore=${toDate-1y}"));
-			cd.addSearch("transferredOut12MonthsAgo", map(cohortDefinitions.get("transferredOutBetween"), "onOrAfter=${fromDate-1y},onOrBefore=${toDate-1y}"));
-			cd.setCompositionString("startedArt12MonthsAgo AND NOT transferredOut12MonthsAgo");
+			cd.addSearch("transferredOut", map(cohortDefinitions.get("transferredOutBetween"), "onOrAfter=${fromDate-1y}"));
+			cd.setCompositionString("startedArt12MonthsAgo AND NOT transferredOut");
 			cohortDefinitions.put("art12MonthNetCohort", cd);
 		}
 		{ // Taking original 1st line ART at 12 months
