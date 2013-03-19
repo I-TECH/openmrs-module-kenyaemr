@@ -111,6 +111,8 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 		Program tbProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.TB_PROGRAM_UUID);
 		EncounterType tbScreeningEncType = Context.getEncounterService().getEncounterTypeByUuid(MetadataConstants.TB_SCREENING_ENCOUNTER_TYPE_UUID);
 		Concept transferInDate = Context.getConceptService().getConceptByUuid(MetadataConstants.TRANSFER_IN_DATE_CONCEPT_UUID);
+		Concept transferredOut = Context.getConceptService().getConceptByUuid(MetadataConstants.TRANSFERRED_OUT_CONCEPT_UUID);
+		Concept reasonForDiscontinue = Context.getConceptService().getConceptByUuid(MetadataConstants.REASON_FOR_PROGRAM_DISCONTINUATION_CONCEPT_UUID);
 		Concept yes = Context.getConceptService().getConceptByUuid(MetadataConstants.YES_CONCEPT_UUID);
 		//Concept familyPlanningMethod = Context.getConceptService().getConceptByUuid(MetadataConstants.METHOD_OF_FAMILY_PLANNING);
 		Concept condomsProvided = Context.getConceptService().getConceptByUuid(MetadataConstants.CONDOMS_PROVIDED_DURING_VISIT_CONCEPT_UUID);
@@ -183,6 +185,17 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 			cd.setValueList(Collections.singletonList(yes));
 			cd.setOperator(SetComparator.IN);
 			cohortDefinitions.put("condomsProvidedBetween", cd);
+		}
+		{
+			CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
+			cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+			cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+			cd.setName("Transferred out between dates");
+			cd.setTimeModifier(TimeModifier.ANY);
+			cd.setQuestion(reasonForDiscontinue);
+			cd.setValueList(Collections.singletonList(transferredOut));
+			cd.setOperator(SetComparator.IN);
+			cohortDefinitions.put("transferredOutBetween", cd);
 		}
 		{
 			//CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
@@ -277,39 +290,40 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 			EmrCalculationCohortDefinition cd = new EmrCalculationCohortDefinition(new OnSecondLineArtCalculation());
 			cohortDefinitions.put("currentlyOnSecondLine", cd);
 		}
-		{ // Started ART 12 months ago
+		{ // ART 12 months Net Cohort (patients who started ART 12 months ago - patients who transferred out 12 months ago)
 			CompositionCohortDefinition cd = new CompositionCohortDefinition();
 			cd.addParameter(new Parameter("fromDate", "From Date", Date.class));
 			cd.addParameter(new Parameter("toDate", "To Date", Date.class));
-			cd.addSearch("startedArt12MonthsAgo", map(cohortDefinitions.get("startedArtBetween"), "resultOnOrAfter=${fromDate-11m},resultOnOrBefore=${toDate-11m}"));
-			cd.setCompositionString("startedArt12MonthsAgo");
-			cohortDefinitions.put("startedArt12MonthsAgo", cd);
+			cd.addSearch("startedArt12MonthsAgo", map(cohortDefinitions.get("startedArtBetween"), "resultOnOrAfter=${fromDate-1y},resultOnOrBefore=${toDate-1y}"));
+			cd.addSearch("transferredOut12MonthsAgo", map(cohortDefinitions.get("transferredOutBetween"), "onOrAfter=${fromDate-1y},onOrBefore=${toDate-1y}"));
+			cd.setCompositionString("startedArt12MonthsAgo AND NOT transferredOut12MonthsAgo");
+			cohortDefinitions.put("art12MonthNetCohort", cd);
 		}
 		{ // Taking original 1st line ART at 12 months
 			CompositionCohortDefinition cd = new CompositionCohortDefinition();
 			cd.addParameter(new Parameter("fromDate", "From Date", Date.class));
 			cd.addParameter(new Parameter("toDate", "To Date", Date.class));
-			cd.addSearch("startedArt12MonthsAgo", map(cohortDefinitions.get("startedArt12MonthsAgo"), "fromDate=${fromDate},toDate=${toDate}"));
+			cd.addSearch("art12MonthNetCohort", map(cohortDefinitions.get("art12MonthNetCohort"), "fromDate=${fromDate},toDate=${toDate}"));
 			cd.addSearch("currentlyOnOriginalFirstLine", map(cohortDefinitions.get("currentlyOnOriginalFirstLine"), null));
-			cd.setCompositionString("startedArt12MonthsAgo AND currentlyOnOriginalFirstLine");
+			cd.setCompositionString("art12MonthNetCohort AND currentlyOnOriginalFirstLine");
 			cohortDefinitions.put("onOriginalFirstLineAt12Months", cd);
 		}
 		{ // Taking alternate 1st line ART at 12 months
 			CompositionCohortDefinition cd = new CompositionCohortDefinition();
 			cd.addParameter(new Parameter("fromDate", "From Date", Date.class));
 			cd.addParameter(new Parameter("toDate", "To Date", Date.class));
-			cd.addSearch("startedArt12MonthsAgo", map(cohortDefinitions.get("startedArt12MonthsAgo"), "fromDate=${fromDate},toDate=${toDate}"));
+			cd.addSearch("art12MonthNetCohort", map(cohortDefinitions.get("art12MonthNetCohort"), "fromDate=${fromDate},toDate=${toDate}"));
 			cd.addSearch("currentlyOnAlternateFirstLine", map(cohortDefinitions.get("currentlyOnAlternateFirstLine"), null));
-			cd.setCompositionString("startedArt12MonthsAgo AND currentlyOnAlternateFirstLine");
+			cd.setCompositionString("art12MonthNetCohort AND currentlyOnAlternateFirstLine");
 			cohortDefinitions.put("onAlternateFirstLineAt12Months", cd);
 		}
 		{ // Taking 2nd line ART at 12 months
 			CompositionCohortDefinition cd = new CompositionCohortDefinition();
 			cd.addParameter(new Parameter("fromDate", "From Date", Date.class));
 			cd.addParameter(new Parameter("toDate", "To Date", Date.class));
-			cd.addSearch("startedArt12MonthsAgo", map(cohortDefinitions.get("startedArt12MonthsAgo"), "fromDate=${fromDate},toDate=${toDate}"));
+			cd.addSearch("art12MonthNetCohort", map(cohortDefinitions.get("art12MonthNetCohort"), "fromDate=${fromDate},toDate=${toDate}"));
 			cd.addSearch("currentlyOnSecondLine", map(cohortDefinitions.get("currentlyOnSecondLine"), null));
-			cd.setCompositionString("startedArt12MonthsAgo AND currentlyOnSecondLine");
+			cd.setCompositionString("art12MonthNetCohort AND currentlyOnSecondLine");
 			cohortDefinitions.put("onSecondLineAt12Months", cd);
 		}
 		{ // Taking any ART at 12 months
@@ -379,8 +393,8 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 			ind.setCohortDefinition(map(cohortDefinitions.get("startedArtBetween"), "resultOnOrBefore=${endDate}"));
 		}
 		{
-			CohortIndicator ind = createIndicator("startedArt12MonthsAgo", "Started ART 12 months ago");
-			ind.setCohortDefinition(map(cohortDefinitions.get("startedArt12MonthsAgo"), "fromDate=${startDate},toDate=${endDate}"));
+			CohortIndicator ind = createIndicator("art12MonthNetCohort", "ART 12 Month Net Cohort");
+			ind.setCohortDefinition(map(cohortDefinitions.get("art12MonthNetCohort"), "fromDate=${startDate},toDate=${endDate}"));
 		}
 		{
 			CohortIndicator ind = createIndicator("onOriginalFirstLineAt12Months", "On original 1st line at 12 months");
@@ -486,7 +500,7 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 
 		/////////////// 3.8 (Survival and Retention on ART at 12 months) ///////////////
 
-		dsd.addColumn("HV03-46", "ART Net Cohort at 12 months", map(indicators.get("startedArt12MonthsAgo"), "startDate=${startDate},endDate=${endDate}"), "");
+		dsd.addColumn("HV03-46", "ART Net Cohort at 12 months", map(indicators.get("art12MonthNetCohort"), "startDate=${startDate},endDate=${endDate}"), "");
 		dsd.addColumn("HV03-46", "On original 1st Line at 12 months", map(indicators.get("onOriginalFirstLineAt12Months"), "startDate=${startDate},endDate=${endDate}"), "");
 		dsd.addColumn("HV03-47", "On alternative 1st Line at 12 months", map(indicators.get("onAlternateFirstLineAt12Months"), "startDate=${startDate},endDate=${endDate}"), "");
 		dsd.addColumn("HV03-48", "On 2nd Line (or higher) at 12 months ", map(indicators.get("onSecondLineAt12Months"), "startDate=${startDate},endDate=${endDate}"), "");
