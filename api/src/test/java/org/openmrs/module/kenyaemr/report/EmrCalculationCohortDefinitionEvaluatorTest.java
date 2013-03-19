@@ -40,16 +40,12 @@ public class EmrCalculationCohortDefinitionEvaluatorTest extends BaseModuleConte
 
 		Concept efv = Context.getConceptService().getConcept(75523);
 		Concept nvp = Context.getConceptService().getConcept(80586);
-		Concept arvStartDate = Context.getConceptService().getConceptByUuid(MetadataConstants.ANTIRETROVIRAL_TREATMENT_START_DATE_CONCEPT_UUID);
 
 		// Give patient #6 drug order of EFV starting 2011-1-1
 		TestUtils.saveDrugOrder(Context.getPatientService().getPatient(6), efv, TestUtils.date(2011, 6, 1), null);
 
 		// Give patient #7 drug order of NVP starting 2012-1-1
 		TestUtils.saveDrugOrder(Context.getPatientService().getPatient(7), nvp, TestUtils.date(2012, 6, 1), null);
-
-		// Give patient #8 a ART started date obs
-		TestUtils.saveObs(Context.getPatientService().getPatient(8), arvStartDate, TestUtils.date(2012, 6, 1), new Date());
 	}
 
 	/**
@@ -87,8 +83,7 @@ public class EmrCalculationCohortDefinitionEvaluatorTest extends BaseModuleConte
 
 		EvaluatedCohort evaluatedCohort = evaluator.evaluate(cohortDefinition, context);
 
-		Assert.assertEquals(2, evaluatedCohort.getSize());
+		Assert.assertEquals(1, evaluatedCohort.getSize());
 		Assert.assertTrue(evaluatedCohort.contains(7));
-		Assert.assertTrue(evaluatedCohort.contains(8));
 	}
 }

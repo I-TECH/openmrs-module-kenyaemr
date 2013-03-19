@@ -27,8 +27,7 @@ import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
 
 /**
- * Calculates the date on which a patient first started ART. Calculation returns the earliest data value for each patient
- * considering all ARV drug orders and ANTIRETROVIRAL_TREATMENT_START_DATE_CONCEPT_UUID obs
+ * Calculates the date on which a patient first started ART
  */
 public class InitialArtStartDateCalculation extends BaseEmrCalculation {
 	
@@ -47,6 +46,8 @@ public class InitialArtStartDateCalculation extends BaseEmrCalculation {
 	
 	/**
 	 * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
+	 * @should return null for patients who have not started ART
+	 * @should return start date for patients who have started ART
 	 */
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues,
@@ -56,17 +57,12 @@ public class InitialArtStartDateCalculation extends BaseEmrCalculation {
 		Concept arvs = Context.getConceptService().getConceptByUuid(MetadataConstants.ANTIRETROVIRAL_DRUGS_CONCEPT_UUID);
 		CalculationResultMap earliestOrderDates = earliestStartDates(allDrugOrders(arvs, cohort, context), context);
 
-		// Get dates from obs used when patient is transferred in
-		CalculationResultMap obsDates = firstObs(getConcept(MetadataConstants.ANTIRETROVIRAL_TREATMENT_START_DATE_CONCEPT_UUID), cohort, context);
-
 		// Return the earliest of the two
 		CalculationResultMap result = new CalculationResultMap();
 		for (Integer ptId : cohort) {
 			Date orderDate = CalculationUtils.datetimeResultForPatient(earliestOrderDates, ptId);
-			Date obsDate = CalculationUtils.datetimeObsResultForPatient(obsDates, ptId);
-			Date earliest = CalculationUtils.earliestDate(orderDate, obsDate);
 
-			result.put(ptId, earliest == null ? null : new SimpleResult(earliest, null));
+			result.put(ptId, orderDate == null ? null : new SimpleResult(orderDate, null));
 		}
 		return result;
 	}

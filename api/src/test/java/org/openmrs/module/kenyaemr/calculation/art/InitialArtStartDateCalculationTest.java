@@ -45,32 +45,26 @@ public class InitialArtStartDateCalculationTest extends BaseModuleContextSensiti
 	public void evaluate_shouldCalculateInitialArtStartDate() throws Exception {
 
 		PatientService ps = Context.getPatientService();
-		Concept arvStartDate = Context.getConceptService().getConceptByUuid(MetadataConstants.ANTIRETROVIRAL_TREATMENT_START_DATE_CONCEPT_UUID);
+		Concept aspirin = Context.getConceptService().getConcept(71617);
+		Concept azt = Context.getConceptService().getConcept(86663);
+		Concept _3tc = Context.getConceptService().getConcept(78643);
+		Concept efv = Context.getConceptService().getConcept(75523);
 
 		// Put patient #6 on Aspirin
-		Concept aspirin = Context.getConceptService().getConcept(71617);
 		TestUtils.saveDrugOrder(ps.getPatient(6), aspirin, TestUtils.date(2011, 1, 1), null);
 
-		// Put patient #7 and #8 on Stavudine
-		Concept stavudine = Context.getConceptService().getConcept(84309);
-		TestUtils.saveDrugOrder(ps.getPatient(7), stavudine, TestUtils.date(2011, 1, 1), null);
-		TestUtils.saveDrugOrder(ps.getPatient(8), stavudine, TestUtils.date(2011, 1, 1), null);
-
-		// Give patient #8 an earlier date in a recent START DATE obs
-		TestUtils.saveObs(Context.getPatientService().getPatient(8), arvStartDate, TestUtils.date(2007, 7, 7), new Date());
-
-		// Give patient #999 only a date in a recent START DATE obs
-		TestUtils.saveObs(Context.getPatientService().getPatient(999), arvStartDate, TestUtils.date(2008, 8, 8), new Date());
+		// Put patient #7 on AZT, then 3TC, then EFV
+		TestUtils.saveDrugOrder(ps.getPatient(7), azt, TestUtils.date(2010, 1, 1), TestUtils.date(2011, 1, 1));
+		TestUtils.saveDrugOrder(ps.getPatient(7), _3tc, TestUtils.date(2011, 1, 1), TestUtils.date(2012, 1, 1));
+		TestUtils.saveDrugOrder(ps.getPatient(7), efv, TestUtils.date(2011, 1, 1), TestUtils.date(2012, 1, 1));
 
 		Context.flushSession();
 		
-		List<Integer> cohort = Arrays.asList(2, 6, 7, 8, 999);
+		List<Integer> cohort = Arrays.asList(2, 6, 7);
 
 		CalculationResultMap resultMap = new InitialArtStartDateCalculation().evaluate(cohort, null, Context.getService(PatientCalculationService.class).createCalculationContext());
 		Assert.assertNull(resultMap.get(2)); // isn't on any drugs
 		Assert.assertNull(resultMap.get(6)); // isn't on any ART drugs
-		Assert.assertEquals(TestUtils.date(2011, 1, 1), resultMap.get(7).getValue());
-		Assert.assertEquals(TestUtils.date(2007, 7, 7), resultMap.get(8).getValue());
-		Assert.assertEquals(TestUtils.date(2008, 8, 8), resultMap.get(999).getValue());
+		Assert.assertEquals(TestUtils.date(2010, 1, 1), resultMap.get(7).getValue());
 	}
 }
