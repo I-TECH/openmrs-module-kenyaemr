@@ -4,7 +4,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Concept;
-import org.openmrs.Obs;
 import org.openmrs.PatientProgram;
 import org.openmrs.Program;
 import org.openmrs.api.PatientService;
@@ -33,7 +32,7 @@ public class WHOStagesAtEnrollmentsCalculationTest extends BaseModuleContextSens
 
 		// Get HIV Program amd WHO STAGE concept
 		Program hivProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.HIV_PROGRAM_UUID);
-		Concept whoStage = Context.getConceptService().getConceptByUuid(MetadataConstants.WHO_STAGE_CONCEPT_UUID);
+		Concept whoStage = Context.getConceptService().getConceptByUuid(MetadataConstants.CURRENT_WHO_STAGE_CONCEPT_UUID);
 
 		// Give patient #6 a WHO PEDS 1 STAGE obs on 2009-1-1
 		Concept whoPeds1 = Context.getConceptService().getConceptByUuid(MetadataConstants.WHO_STAGE_1_PEDS_CONCEPT_UUID);

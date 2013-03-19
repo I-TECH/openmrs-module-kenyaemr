@@ -31,7 +31,7 @@ public class LastWHOStageCalculationTest extends BaseModuleContextSensitiveTest 
 	public void evaluate_shouldCalculateLatestWHOStage() throws Exception {
 
 		PatientService ps = Context.getPatientService();
-		Concept whoStage = Context.getConceptService().getConceptByUuid(MetadataConstants.WHO_STAGE_CONCEPT_UUID);
+		Concept whoStage = Context.getConceptService().getConceptByUuid(MetadataConstants.CURRENT_WHO_STAGE_CONCEPT_UUID);
 
 		// Give patient #6 a recent WHO ADULT 1 STAGE recording
 		Concept whoAdult1 = Context.getConceptService().getConceptByUuid(MetadataConstants.WHO_STAGE_1_ADULT_CONCEPT_UUID);

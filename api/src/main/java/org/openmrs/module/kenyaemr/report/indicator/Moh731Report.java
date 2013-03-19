@@ -110,12 +110,18 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 		Program hivProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.HIV_PROGRAM_UUID);
 		Program tbProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.TB_PROGRAM_UUID);
 		EncounterType tbScreeningEncType = Context.getEncounterService().getEncounterTypeByUuid(MetadataConstants.TB_SCREENING_ENCOUNTER_TYPE_UUID);
-		Concept transferInDate = Context.getConceptService().getConceptByUuid(MetadataConstants.TRANSFER_IN_DATE_CONCEPT_UUID);
-		Concept transferredOut = Context.getConceptService().getConceptByUuid(MetadataConstants.TRANSFERRED_OUT_CONCEPT_UUID);
-		Concept reasonForDiscontinue = Context.getConceptService().getConceptByUuid(MetadataConstants.REASON_FOR_PROGRAM_DISCONTINUATION_CONCEPT_UUID);
-		Concept yes = Context.getConceptService().getConceptByUuid(MetadataConstants.YES_CONCEPT_UUID);
-		//Concept familyPlanningMethod = Context.getConceptService().getConceptByUuid(MetadataConstants.METHOD_OF_FAMILY_PLANNING);
+
 		Concept condomsProvided = Context.getConceptService().getConceptByUuid(MetadataConstants.CONDOMS_PROVIDED_DURING_VISIT_CONCEPT_UUID);
+		Concept methodOfFamilyPlanning = Context.getConceptService().getConceptByUuid(MetadataConstants.METHOD_OF_FAMILY_PLANNING);
+		Concept naturalFamilyPlanning = Context.getConceptService().getConceptByUuid(MetadataConstants.NATURAL_FAMILY_PLANNING_CONCEPT_UUID);
+		Concept none = Context.getConceptService().getConceptByUuid(MetadataConstants.NONE_CONCEPT_UUID);
+		Concept notApplicable = Context.getConceptService().getConceptByUuid(MetadataConstants.NOT_APPLICABLE_CONCEPT_UUID);
+		Concept otherNonCoded = Context.getConceptService().getConceptByUuid(MetadataConstants.OTHER_NON_CODED_CONCEPT_UUID);
+		Concept reasonForDiscontinue = Context.getConceptService().getConceptByUuid(MetadataConstants.REASON_FOR_PROGRAM_DISCONTINUATION_CONCEPT_UUID);
+		Concept transferInDate = Context.getConceptService().getConceptByUuid(MetadataConstants.TRANSFER_IN_DATE_CONCEPT_UUID);
+		Concept sexualAbstinence = Context.getConceptService().getConceptByUuid(MetadataConstants.SEXUAL_ABSTINENCE_CONCEPT_UUID);
+		Concept transferredOut = Context.getConceptService().getConceptByUuid(MetadataConstants.TRANSFERRED_OUT_CONCEPT_UUID);
+		Concept yes = Context.getConceptService().getConceptByUuid(MetadataConstants.YES_CONCEPT_UUID);
 
 		cohortDefinitions = new HashMap<String, CohortDefinition>();
 		{
@@ -198,13 +204,15 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 			cohortDefinitions.put("transferredOutBetween", cd);
 		}
 		{
-			//CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
-			//cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-			//cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
-			//cd.setName("Family planning provided between dates");
-			//cd.setTimeModifier(TimeModifier.ANY);
-			//cd.setQuestion(familyPlanningMethod);
-			//cohortDefinitions.put("familyPlanningProvidedBetween", cd);
+			CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
+			cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+			cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+			cd.setName("Modern contraceptives provided between dates");
+			cd.setTimeModifier(TimeModifier.ANY);
+			cd.setQuestion(methodOfFamilyPlanning);
+			cd.setValueList(Arrays.asList(naturalFamilyPlanning, sexualAbstinence, notApplicable, otherNonCoded, none));
+			cd.setOperator(SetComparator.NOT_IN);
+			cohortDefinitions.put("modernContraceptivesProvidedBetween", cd);
 		}
 		{
 			CompositionCohortDefinition cd = new CompositionCohortDefinition();
@@ -417,8 +425,8 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 			ind.setCohortDefinition(map(cohortDefinitions.get("tbScreeningEncounterBetween"), "onOrAfter=${startDate},onOrBefore=${endDate}"));
 		}
 		{
-			//CohortIndicator ind = createIndicator("familyPlanningProvided", "Provided with family planning");
-			//ind.setCohortDefinition(map(cohortDefinitions.get("familyPlanningProvidedBetween"), "onOrAfter=${startDate},onOrBefore=${endDate}"));
+			CohortIndicator ind = createIndicator("modernContraceptivesProvided", "Modern contraceptives provided");
+			ind.setCohortDefinition(map(cohortDefinitions.get("modernContraceptivesProvidedBetween"), "onOrAfter=${startDate},onOrBefore=${endDate}"));
 		}
 		{
 			CohortIndicator ind = createIndicator("condomsProvided", "Provided with condoms");
@@ -518,7 +526,7 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 
 		/////////////// 3.10 (Prevention with Positives) ///////////////
 
-		//dsd.addColumn("HV09-04", "Modern contraceptive methods", map(indicators.get("familyPlanningProvided"), "startDate=${startDate},endDate=${endDate}"), "");
+		dsd.addColumn("HV09-04", "Modern contraceptive methods", map(indicators.get("modernContraceptivesProvided"), "startDate=${startDate},endDate=${endDate}"), "");
 		dsd.addColumn("HV09-05", "Provided with condoms", map(indicators.get("condomsProvided"), "startDate=${startDate},endDate=${endDate}"), "");
 
 		/////////////// 3.11 (HIV Care Visits) ///////////////

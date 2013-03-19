@@ -14,8 +14,6 @@
 
 package org.openmrs.module.kenyaemr.report.indicator;
 
-import java.text.SimpleDateFormat;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.api.context.Context;
@@ -50,9 +48,9 @@ public class Moh731ReportTest extends BaseModuleContextSensitiveTest {
 		ReportDefinition rd = report.getReportDefinition();
 		
 		EvaluationContext ec = new EvaluationContext();
-		SimpleDateFormat ymd = new SimpleDateFormat("yyyy-MM-dd");
-		ec.addParameterValue("startDate", ymd.parse("2012-07-01"));
-		ec.addParameterValue("endDate", ymd.parse("2012-07-31"));
+		ec.addParameterValue("startDate", TestUtils.date(2012, 7, 1));
+		ec.addParameterValue("endDate", TestUtils.date(2012, 7, 31));
+
 		ReportData data = Context.getService(ReportDefinitionService.class).evaluate(rd, ec);
 
 		//TestUtils.printReport(data);

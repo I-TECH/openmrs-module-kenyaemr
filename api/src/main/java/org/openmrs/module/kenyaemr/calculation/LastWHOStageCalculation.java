@@ -42,6 +42,6 @@ public class LastWHOStageCalculation extends BaseEmrCalculation {
      */
     @Override
     public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
-		return lastObs(getConcept(MetadataConstants.WHO_STAGE_CONCEPT_UUID), cohort, context);
+		return lastObs(getConcept(MetadataConstants.CURRENT_WHO_STAGE_CONCEPT_UUID), cohort, context);
     }
 }
