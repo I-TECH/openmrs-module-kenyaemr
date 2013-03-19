@@ -16,30 +16,20 @@ package org.openmrs.module.kenyaemr;
 import org.apache.commons.collections.CollectionUtils;
 import org.joda.time.Period;
 import org.joda.time.PeriodType;
-import org.ocpsoft.prettytime.PrettyTime;
 import org.openmrs.*;
-import org.openmrs.Concept;
-import org.openmrs.ConceptName;
-import org.openmrs.DrugOrder;
-import org.openmrs.Patient;
-import org.openmrs.Visit;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.htmlformentry.HtmlForm;
 import org.openmrs.module.htmlformentry.HtmlFormEntryService;
 import org.openmrs.module.kenyaemr.form.FormConfig;
-import org.openmrs.module.kenyaemr.form.FormManager;
 import org.openmrs.module.kenyaemr.regimen.*;
 import org.openmrs.module.kenyaemr.util.KenyaEmrUtils;
+import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.util.OpenmrsUtil;
-import org.openmrs.web.WebConstants;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.http.HttpSession;
-import java.sql.*;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.Date;
 
@@ -49,75 +39,8 @@ import java.util.Date;
 @Component
 public class KenyaEmrUiUtils {
 
-	private static final DateFormat dateFormatter = new SimpleDateFormat("dd-MMM-yyyy");
-
-	private static final DateFormat timeFormatter = new SimpleDateFormat("HH:mm");
-
-	/**
-	 * Sets the notification success message
-	 * @param session the session
-	 * @param message the message
-	 */
-	public static void notifySuccess(HttpSession session, String message) {
-		session.setAttribute(WebConstants.OPENMRS_MSG_ATTR, message);
-	}
-
-	/**
-	 * Sets the notification error message
-	 * @param session the session
-	 * @param message the message
-	 */
-	public static void notifyError(HttpSession session, String message) {
-		session.setAttribute(WebConstants.OPENMRS_ERROR_ATTR, message);
-	}
-
-	/**
-	 * Formats a date time
-	 * @param date the date
-	 * @return the string value
-	 */
-	public String formatDateTime(Date date) {
-		if (date == null)
-			return "";
-
-		return dateFormatter.format(date) + " " + timeFormatter.format(date);
-	}
-
-	/**
-	 * Formats a date ignoring any time information
-	 * @param date the date
-	 * @return the string value
-	 * @should format date as a string without time information
-	 * @should format null date as empty string
-	 */
-	public String formatDate(Date date) {
-		if (date == null)
-			return "";
-
-		return dateFormatter.format(date);
-	}
-
-	/**
-	 * Formats a date as a time value only
-	 * @param date the date
-	 * @return the string value
-	 * @should format date as a string without time information
-	 */
-	public String formatTime(Date date) {
-		if (date == null)
-			return "";
-
-		return timeFormatter.format(date);
-	}
-
-	/**
-	 * Formats a date interval
-	 * @param date the date relative to now
-	 */
-	public String formatInterval(Date date) {
-		PrettyTime t = new PrettyTime(new Date());
-		return t.format(date);
-	}
+	@Autowired
+	KenyaUiUtils kenyaUi;
 
 	/**
 	 * Formats the dates of the given visit
@@ -126,20 +49,20 @@ public class KenyaEmrUiUtils {
 	 */
 	public String formatVisitDates(Visit visit) {
 		if (KenyaEmrUtils.isRetrospectiveVisit(visit)) {
-			return formatDate(visit.getStartDatetime());
+			return kenyaUi.formatDate(visit.getStartDatetime());
 		}
 		else {
 			StringBuilder sb = new StringBuilder();
-			sb.append(formatDateTime(visit.getStartDatetime()));
+			sb.append(kenyaUi.formatDateTime(visit.getStartDatetime()));
 
 			if (visit.getStopDatetime() != null) {
 				sb.append(" \u2192 ");
 
 				if (KenyaEmrUtils.isSameDay(visit.getStartDatetime(), visit.getStopDatetime())) {
-					sb.append(formatTime(visit.getStopDatetime()));
+					sb.append(kenyaUi.formatTime(visit.getStopDatetime()));
 				}
 				else {
-					sb.append(formatDateTime(visit.getStopDatetime()));
+					sb.append(kenyaUi.formatDateTime(visit.getStopDatetime()));
 				}
 			}
 
@@ -348,8 +271,8 @@ public class KenyaEmrUiUtils {
 			boolean current = OpenmrsUtil.compare(startDate, now) <= 0 && (endDate == null || OpenmrsUtil.compare(endDate, now) > 0);
 
 			ret.add(SimpleObject.create(
-				"startDate", formatDate(startDate),
-				"endDate", formatDate(endDate),
+				"startDate", kenyaUi.formatDate(startDate),
+				"endDate", kenyaUi.formatDate(endDate),
 				"regimen", simpleRegimen(regimen, ui),
 				"changeReasons", changeReasons,
 				"current", current

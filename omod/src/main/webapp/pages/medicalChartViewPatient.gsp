@@ -62,7 +62,7 @@
 				print ui.includeFragment("kenyaui", "widget/panelMenuItem", [
 						label: ui.format(visit.visitType),
 						href: ui.pageLink("kenyaemr", "medicalChartViewPatient", [ patientId: patient.id, visitId: visit.id ]),
-						extra: kenyaUi.formatVisitDates(visit),
+						extra: kenyaEmrUi.formatVisitDates(visit),
 						active: (selection == "visit-" + visit.id)
 				])
 			}

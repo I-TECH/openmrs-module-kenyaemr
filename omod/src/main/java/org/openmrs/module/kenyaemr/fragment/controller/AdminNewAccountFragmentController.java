@@ -23,16 +23,16 @@ import org.openmrs.Role;
 import org.openmrs.User;
 import org.openmrs.api.PasswordException;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyaemr.KenyaEmrUiUtils;
 import org.openmrs.module.kenyaemr.ValidatingCommandObject;
+import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.BindParams;
 import org.openmrs.ui.framework.annotation.MethodParam;
+import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 import org.openmrs.util.OpenmrsUtil;
 import org.openmrs.validator.ValidateUtil;
-import org.openmrs.web.WebConstants;
 import org.springframework.validation.Errors;
 
 import javax.servlet.http.HttpSession;
@@ -47,7 +47,7 @@ public class AdminNewAccountFragmentController {
 	}
 	
 	public SimpleObject createAccount(@MethodParam("newAccountCommandObject") @BindParams NewAccountCommandObject command,
-	                                  UiUtils ui, HttpSession session) {
+	                                  UiUtils ui, @SpringBean KenyaUiUtils kenyaUi, HttpSession session) {
 		ui.validate(command, command, null);
 		// hopefully we caught any errors in the above validation, because any errors here will have ugly error messages
 		Person person = command.getPerson();
@@ -71,7 +71,7 @@ public class AdminNewAccountFragmentController {
 			provider = Context.getProviderService().saveProvider(provider);
 		}
 
-		KenyaEmrUiUtils.notifySuccess(session, "Account created");
+		kenyaUi.notifySuccess(session, "Account created");
 		
 		return SimpleObject.create("personId", person.getPersonId());
 	}

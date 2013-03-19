@@ -18,7 +18,7 @@
 	<%
 		if (regimenHistory.lastChange) {
 			def lastChange = regimenHistory.lastChangeBeforeNow
-			def regimen = lastChange.started ? kenyaUi.formatRegimenLong(lastChange.started, ui) : ui.message("general.none")
+			def regimen = lastChange.started ? kenyaEmrUi.formatRegimenLong(lastChange.started, ui) : ui.message("general.none")
 			def dateLabel = lastChange.started ? "Started" : "Stopped"
 	%>
 	${ ui.includeFragment("kenyaui", "widget/dataPoint", [ label: "Regimen", value: regimen ]) }

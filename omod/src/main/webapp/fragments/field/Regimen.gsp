@@ -18,7 +18,7 @@
 		it.regimens.collect( { reg -> """<option value="${ refDefIndex++ }">${ reg.name }</option>""" } ).join()
 	}
 
-	def drugOptions = drugs.collect( { """<option value="${ it }">${ kenyaUi.formatDrug(it, ui) }</option>""" } ).join()
+	def drugOptions = drugs.collect( { """<option value="${ it }">${ kenyaEmrUi.formatDrug(it, ui) }</option>""" } ).join()
 	def unitsOptions = units.collect( { """<option value="${ it }">${ it }</option>""" } ).join()
 	def frequencyOptions = frequencies.collect( { """<option value="${ it.key }">${ it.value }</option>""" } ).join()
 %>

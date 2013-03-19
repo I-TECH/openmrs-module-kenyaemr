@@ -1,7 +1,7 @@
 <%
 	config.require("history")
 
-	def simpleHistory = kenyaUi.simpleRegimenHistory(config.history, ui)
+	def simpleHistory = kenyaEmrUi.simpleRegimenHistory(config.history, ui)
 %>
 <table id="regimen-history" class="ke-table-decorated ke-table-vertical">
 	<thead>

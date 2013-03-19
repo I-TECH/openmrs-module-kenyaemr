@@ -35,12 +35,12 @@ public class KenyaEmrModelConfigurator implements PageModelConfigurator, Fragmen
 	@Override
 	public void configureModel(PageContext pageContext) {
 		pageContext.getModel().addAttribute("MetadataConstants", METADATA_CONSTANTS);
-		pageContext.getModel().addAttribute("kenyaUi", kenyaEmrUiUtils);
+		pageContext.getModel().addAttribute("kenyaEmrUi", kenyaEmrUiUtils);
 	}
 
 	@Override
 	public void configureModel(FragmentContext fragmentContext) {
 		fragmentContext.getModel().addAttribute("MetadataConstants", METADATA_CONSTANTS);
-		fragmentContext.getModel().addAttribute("kenyaUi", kenyaEmrUiUtils);
+		fragmentContext.getModel().addAttribute("kenyaEmrUi", kenyaEmrUiUtils);
 	}
 }

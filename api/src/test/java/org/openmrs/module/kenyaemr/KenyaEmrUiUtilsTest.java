@@ -80,41 +80,6 @@ public class KenyaEmrUiUtilsTest extends BaseModuleContextSensitiveTest {
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.KenyaEmrUiUtils#formatDate(java.util.Date)
-	 * @verifies format date as a string without time information
-	 */
-	@Test
-	public void formatDate_shouldFormatDateWithoutTime() throws Exception {
-		GregorianCalendar cal = new GregorianCalendar();
-		cal.set(Calendar.YEAR, 1981);
-		cal.set(Calendar.MONTH, Calendar.MAY);
-		cal.set(Calendar.DAY_OF_MONTH, 28);
-		cal.set(Calendar.HOUR, 7);
-		cal.set(Calendar.MINUTE, 30);
-		cal.set(Calendar.SECOND, 12);
-
-		Assert.assertEquals("28-May-1981", kenyaUi.formatDate(cal.getTime()));
-	}
-
-	/**
-	 * @see org.openmrs.module.kenyaemr.KenyaEmrUiUtils#formatDate(java.util.Date)
-	 * @verifies format null date as empty string
-	 */
-	@Test
-	public void formatDate_shouldFormatNullDateAsEmptyString() throws Exception {
-		Assert.assertEquals("", kenyaUi.formatDate(null));
-	}
-
-	/**
-	 * @see org.openmrs.module.kenyaemr.KenyaEmrUiUtils#formatInterval(java.util.Date)
-	 * @verifies return non-empty string
-	 */
-	@Test
-	public void formatMillis_shouldReturnNonEmptyString() throws Exception {
-		Assert.assertTrue(StringUtils.isNotEmpty(kenyaUi.formatInterval(new Date())));
-	}
-
-	/**
 	 * @see org.openmrs.module.kenyaemr.KenyaEmrUiUtils#formatDrug(org.openmrs.module.kenyaemr.regimen.DrugReference, org.openmrs.ui.framework.UiUtils)
 	 * @verifies format drug reference as concept or drug
 	 */

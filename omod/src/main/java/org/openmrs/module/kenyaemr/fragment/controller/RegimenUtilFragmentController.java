@@ -29,6 +29,7 @@ import org.openmrs.module.kenyaemr.KenyaEmr;
 import org.openmrs.module.kenyaemr.KenyaEmrUiUtils;
 import org.openmrs.module.kenyaemr.ValidatingCommandObject;
 import org.openmrs.module.kenyaemr.regimen.*;
+import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.BindParams;
 import org.openmrs.ui.framework.annotation.MethodParam;
@@ -64,12 +65,12 @@ public class RegimenUtilFragmentController {
 	 * @param patient the patient
 	 * @return the patient's current regimen
 	 */
-	public void undoLastChange(@RequestParam("patient") Patient patient, HttpSession session, @RequestParam("category") String category, @SpringBean KenyaEmr emr) {
+	public void undoLastChange(@RequestParam("patient") Patient patient, HttpSession session, @RequestParam("category") String category, @SpringBean KenyaEmr emr, @SpringBean KenyaUiUtils kenyaUi) {
 		Concept masterSet = emr.getRegimenManager().getMasterSetConcept(category);
 		RegimenChangeHistory history = RegimenChangeHistory.forPatient(patient, masterSet);
 		history.undoLastChange();
 
-		KenyaEmrUiUtils.notifySuccess(session, "Removed last regimen change");
+		kenyaUi.notifySuccess(session, "Removed last regimen change");
 	}
 
 	/**

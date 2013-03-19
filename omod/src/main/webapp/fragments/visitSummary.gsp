@@ -4,6 +4,6 @@
 %>
 ${ ui.includeFragment("kenyaui", "widget/dataPoint", [ label: "Type", value: visit.visitType ]) }
 ${ ui.includeFragment("kenyaui", "widget/dataPoint", [ label: "Location", value: visit.location ]) }
-${ ui.includeFragment("kenyaui", "widget/dataPoint", [ label: "When", value: kenyaUi.formatVisitDates(visit) ]) }
+${ ui.includeFragment("kenyaui", "widget/dataPoint", [ label: "When", value: kenyaEmrUi.formatVisitDates(visit) ]) }
 
 <div style="clear: both"></div>

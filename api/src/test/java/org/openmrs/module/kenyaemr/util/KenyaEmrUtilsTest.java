@@ -63,36 +63,6 @@ public class KenyaEmrUtilsTest extends BaseModuleContextSensitiveTest {
 		Assert.assertTrue(KenyaEmrUtils.isToday(new Date()));
 		Assert.assertFalse(KenyaEmrUtils.isToday(TestUtils.date(2012, 1, 1)));
 	}
-	/**
-	 * @see KenyaEmrUtils#fetchConcepts(java.util.Collection)
-	 * @verifies fetch from concepts, integers or strings
-	 */
-	@Test
-	public void fetchConcepts_shouldFetchFromConceptsIntegersOrStrings() {
-		Concept cd4 = Context.getConceptService().getConcept(5497);
-		List<Object> conceptsOrIds = new ArrayList<Object>();
-		conceptsOrIds.add(cd4);
-		conceptsOrIds.add(5497);
-		conceptsOrIds.add("5497");
-		List<Concept> concepts = KenyaEmrUtils.fetchConcepts(conceptsOrIds);
-		Assert.assertEquals(cd4, concepts.get(0));
-		Assert.assertEquals(cd4, concepts.get(1));
-		Assert.assertEquals(cd4, concepts.get(2));
-	}
-
-	/**
-	 * @see KenyaEmrUtils#fetchConcepts(java.util.Collection)
-	 * @verifies throw exception for non concepts, integers or strings
-	 */
-	@Test
-	public void fetchConcepts_shouldThrowExceptionForNonConceptsIntegersOrString() {
-		try {
-			KenyaEmrUtils.fetchConcepts(Collections.singletonList(new Date()));
-			Assert.fail();
-		}
-		catch (IllegalArgumentException ex) {
-		}
-	}
 
 	/**
 	 * @see org.openmrs.module.kenyaemr.util.KenyaEmrUtils#isRetrospectiveVisit(org.openmrs.Visit)
