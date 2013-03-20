@@ -14,21 +14,23 @@
 
 package org.openmrs.module.kenyaemr.report.indicator;
 
+import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.Program;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.KenyaEmr;
+import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.kenyaemr.test.TestUtils;
+import org.openmrs.module.reporting.dataset.MapDataSet;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.indicator.IndicatorResult;
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
-/**
- *
- */
 public class Moh731ReportTest extends BaseModuleContextSensitiveTest {
 
 	@Autowired
@@ -44,15 +46,26 @@ public class Moh731ReportTest extends BaseModuleContextSensitiveTest {
 
 	@Test
 	public void test() throws Exception {
+
+		// Enroll patient #6 in the HIV program
+		Program hivProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.HIV_PROGRAM_UUID);
+		TestUtils.enrollInProgram(Context.getPatientService().getPatient(6), hivProgram, TestUtils.date(2012, 1, 15), null);
+
 		Moh731Report report = new Moh731Report();
 		ReportDefinition rd = report.getReportDefinition();
-		
 		EvaluationContext ec = new EvaluationContext();
-		ec.addParameterValue("startDate", TestUtils.date(2012, 7, 1));
-		ec.addParameterValue("endDate", TestUtils.date(2012, 7, 31));
+		ec.addParameterValue("startDate", TestUtils.date(2012, 1, 1)); // Run report for Jan 2012
+		ec.addParameterValue("endDate", TestUtils.date(2012, 1, 31));
 
 		ReportData data = Context.getService(ReportDefinitionService.class).evaluate(rd, ec);
 
-		//TestUtils.printReport(data);
+		Assert.assertEquals(1, data.getDataSets().size());
+		MapDataSet dataSet = (MapDataSet) data.getDataSets().get("MOH 731 DSD");
+		Assert.assertNotNull(dataSet);
+
+		Assert.assertEquals(1, ((IndicatorResult) dataSet.getColumnValue(1, "HV03-09")).getValue().intValue());
+		Assert.assertEquals(1, ((IndicatorResult) dataSet.getColumnValue(1, "HV03-13")).getValue().intValue());
+
+		TestUtils.printReport(data);
 	}
 }

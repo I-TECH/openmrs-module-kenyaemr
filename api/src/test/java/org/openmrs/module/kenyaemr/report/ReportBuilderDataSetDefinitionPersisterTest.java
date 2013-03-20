@@ -16,8 +16,6 @@ package org.openmrs.module.kenyaemr.report;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.module.kenyaemr.KenyaEmr;
-import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,7 +52,7 @@ public class ReportBuilderDataSetDefinitionPersisterTest extends BaseModuleConte
 		// Assert that Moh731Report does provide its DSD
 		boolean found = false;
 		for (DataSetDefinition dsd : allDefinitions) {
-			if (dsd.getName().equals("MOH 731 DSD") && dsd instanceof CohortIndicatorDataSetDefinition) {
+			if (dsd.getName().equals("MOH 731 DSD") && dsd instanceof MergingDataSetDefinition) {
 				found = true;
 			}
 		}

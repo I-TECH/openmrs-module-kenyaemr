@@ -37,15 +37,15 @@
 	<fieldset><legend>${ dsd.name }</legend>
 	<% } %>
 
-	<% if (dsd.class.name == 'org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition') { %>
+	<% if (ds.class.name == 'org.openmrs.module.reporting.dataset.MapDataSet') { %>
 		
 		<table class="ke-table-decorated ke-table-vertical">
 			<tbody>
-			<% dsd.columns.each { %>
+			<% ds.metaData.columns.each { col -> %>
 				<tr>
-					<th>${ it.name }</th>
-					<td style="text-align: left">${ it.label }</td>
-					<td>${ formatData(ds.getData(it)) }</td>
+					<th>${ col.name }</th>
+					<td style="text-align: left">${ col.label }</td>
+					<td>${ formatData(ds.getData(col)) }</td>
 				</tr>
 			<% } %>
 			</tbody>
