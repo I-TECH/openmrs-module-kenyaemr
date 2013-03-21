@@ -12,18 +12,18 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.report;
+package org.openmrs.module.kenyaemr.reporting.dataset.definition.persister;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.module.kenyaemr.report.ReportManager;
+import org.openmrs.module.kenyaemr.reporting.dataset.definition.MergingDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
-
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 /**
  *
@@ -44,7 +44,7 @@ public class ReportBuilderDataSetDefinitionPersisterTest extends BaseModuleConte
 	@Test
 	public void shouldListAllKenyaEmrDSDs() throws Exception {
 		List<DataSetDefinition> allDefinitions = persister.getAllDefinitions(true);
-		assertNotNull(allDefinitions);
+		Assert.assertNotNull(allDefinitions);
 
 		// there are some ReportBuilderss that don't actually work, so they provide no DSDs...
 		//assertThat(allDefinitions.size(), is(service.getReportBuildersByTag(null).size()));
@@ -56,6 +56,6 @@ public class ReportBuilderDataSetDefinitionPersisterTest extends BaseModuleConte
 				found = true;
 			}
 		}
-		assertTrue(found);
+		Assert.assertTrue(found);
 	}
 }

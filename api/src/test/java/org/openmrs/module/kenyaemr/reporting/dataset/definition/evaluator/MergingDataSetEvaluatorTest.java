@@ -12,13 +12,14 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.report;
+package org.openmrs.module.kenyaemr.reporting.dataset.definition.evaluator;
 
 import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Cohort;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyaemr.reporting.dataset.definition.MergingDataSetDefinition;
 import org.openmrs.module.kenyaemr.test.TestUtils;
 import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;

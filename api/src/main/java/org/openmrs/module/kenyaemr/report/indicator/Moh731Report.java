@@ -23,10 +23,10 @@ import org.openmrs.api.PatientSetService.TimeModifier;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.kenyaemr.calculation.art.*;
-import org.openmrs.module.kenyaemr.report.EmrCalculationCohortDefinition;
-import org.openmrs.module.kenyaemr.report.EmrDateCalculationCohortDefinition;
-import org.openmrs.module.kenyaemr.report.HivCareVisitIndicator;
-import org.openmrs.module.kenyaemr.report.MergingDataSetDefinition;
+import org.openmrs.module.kenyaemr.reporting.cohort.definition.EmrCalculationCohortDefinition;
+import org.openmrs.module.kenyaemr.reporting.cohort.definition.EmrDateCalculationCohortDefinition;
+import org.openmrs.module.kenyaemr.reporting.indicator.HivCareVisitsIndicator;
+import org.openmrs.module.kenyaemr.reporting.dataset.definition.MergingDataSetDefinition;
 import org.openmrs.module.reporting.cohort.definition.*;
 import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.module.reporting.common.TimeQualifier;
@@ -36,7 +36,6 @@ import org.openmrs.module.reporting.dataset.definition.SimpleIndicatorDataSetDef
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.openmrs.module.reporting.indicator.Indicator;
-import org.openmrs.module.reporting.indicator.SqlIndicator;
 import org.openmrs.module.reporting.indicator.dimension.CohortDefinitionDimension;
 import org.springframework.stereotype.Component;
 
@@ -451,28 +450,28 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 	private void setupNonCohortIndicators() {
 		nonCohortIndicators = new HashMap<String, Indicator>();
 		{
-			HivCareVisitIndicator ind = new HivCareVisitIndicator();
+			HivCareVisitsIndicator ind = new HivCareVisitsIndicator();
 			ind.addParameter(new Parameter("startDate", "Start Date", Date.class));
 			ind.addParameter(new Parameter("endDate", "End Date", Date.class));
-			ind.setFilter(HivCareVisitIndicator.Filter.FEMALES_18_AND_OVER);
+			ind.setFilter(HivCareVisitsIndicator.Filter.FEMALES_18_AND_OVER);
 			nonCohortIndicators.put("hivCareVisitsFemale18", ind);
 		}
 		{
-			HivCareVisitIndicator ind = new HivCareVisitIndicator();
+			HivCareVisitsIndicator ind = new HivCareVisitsIndicator();
 			ind.addParameter(new Parameter("startDate", "Start Date", Date.class));
 			ind.addParameter(new Parameter("endDate", "End Date", Date.class));
-			ind.setFilter(HivCareVisitIndicator.Filter.SCHEDULED);
+			ind.setFilter(HivCareVisitsIndicator.Filter.SCHEDULED);
 			nonCohortIndicators.put("hivCareVisitsScheduled", ind);
 		}
 		{
-			HivCareVisitIndicator ind = new HivCareVisitIndicator();
+			HivCareVisitsIndicator ind = new HivCareVisitsIndicator();
 			ind.addParameter(new Parameter("startDate", "Start Date", Date.class));
 			ind.addParameter(new Parameter("endDate", "End Date", Date.class));
-			ind.setFilter(HivCareVisitIndicator.Filter.UNSCHEDULED);
+			ind.setFilter(HivCareVisitsIndicator.Filter.UNSCHEDULED);
 			nonCohortIndicators.put("hivCareVisitsUnscheduled", ind);
 		}
 		{
-			HivCareVisitIndicator ind = new HivCareVisitIndicator();
+			HivCareVisitsIndicator ind = new HivCareVisitsIndicator();
 			ind.addParameter(new Parameter("startDate", "Start Date", Date.class));
 			ind.addParameter(new Parameter("endDate", "End Date", Date.class));
 			nonCohortIndicators.put("hivCareVisitsTotal", ind);

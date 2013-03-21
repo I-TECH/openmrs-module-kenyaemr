@@ -12,7 +12,7 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.report;
+package org.openmrs.module.kenyaemr.reporting.indicator.evaluator;
 
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.commons.logging.Log;
@@ -25,6 +25,7 @@ import org.openmrs.Obs;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.MetadataConstants;
+import org.openmrs.module.kenyaemr.reporting.indicator.HivCareVisitsIndicator;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -50,17 +51,17 @@ import java.util.List;
 /**
  * Evaluator for HIV care visit indicators
  */
-@Handler(supports = HivCareVisitIndicator.class)
-public class HivCareVisitIndicatorEvaluator implements IndicatorEvaluator {
+@Handler(supports = HivCareVisitsIndicator.class)
+public class HivCareVisitsIndicatorEvaluator implements IndicatorEvaluator {
 
-	protected static final Log log = LogFactory.getLog(HivCareVisitIndicatorEvaluator.class);
+	protected static final Log log = LogFactory.getLog(HivCareVisitsIndicatorEvaluator.class);
 
 	@Autowired
 	SessionFactory sessionFactory;
 
 	@Override
 	public SimpleIndicatorResult evaluate(Indicator indicator, EvaluationContext context) throws EvaluationException {
-		HivCareVisitIndicator visitIndicator = (HivCareVisitIndicator) indicator;
+		HivCareVisitsIndicator visitIndicator = (HivCareVisitsIndicator) indicator;
 
 		List<Form> hivCareForms = Arrays.asList(
 			Context.getFormService().getFormByUuid(MetadataConstants.CLINICAL_ENCOUNTER_HIV_ADDENDUM_FORM_UUID),
@@ -70,10 +71,12 @@ public class HivCareVisitIndicatorEvaluator implements IndicatorEvaluator {
 		Date fromDate = visitIndicator.getStartDate();
 		Date toDate = DateUtil.getEndOfDayIfTimeExcluded(visitIndicator.getEndDate());
 
+		log.warn("Evaluating HIV care visits from " + fromDate + " to " + toDate);
+
 		List<Encounter> hivCareEncounters = Context.getEncounterService().getEncounters(null, null, fromDate, toDate, hivCareForms, null, null, null, null, false);
 		List<Encounter> filtered = new ArrayList<Encounter>();
 
-		if (HivCareVisitIndicator.Filter.FEMALES_18_AND_OVER.equals(visitIndicator.getFilter())) {
+		if (HivCareVisitsIndicator.Filter.FEMALES_18_AND_OVER.equals(visitIndicator.getFilter())) {
 			EvaluatedCohort females18AndOver = females18AndOver(visitIndicator.getEndDate(), context);
 
 			for (Encounter enc : hivCareEncounters) {
@@ -82,14 +85,14 @@ public class HivCareVisitIndicatorEvaluator implements IndicatorEvaluator {
 				}
 			}
 		}
-		else if (HivCareVisitIndicator.Filter.SCHEDULED.equals(visitIndicator.getFilter())) {
+		else if (HivCareVisitsIndicator.Filter.SCHEDULED.equals(visitIndicator.getFilter())) {
 			for (Encounter enc : hivCareEncounters) {
 				if (wasScheduledVisit(enc)) {
 					filtered.add(enc);
 				}
 			}
 		}
-		else if (HivCareVisitIndicator.Filter.UNSCHEDULED.equals(visitIndicator.getFilter())) {
+		else if (HivCareVisitsIndicator.Filter.UNSCHEDULED.equals(visitIndicator.getFilter())) {
 			for (Encounter enc : hivCareEncounters) {
 				if (!wasScheduledVisit(enc)) {
 					filtered.add(enc);

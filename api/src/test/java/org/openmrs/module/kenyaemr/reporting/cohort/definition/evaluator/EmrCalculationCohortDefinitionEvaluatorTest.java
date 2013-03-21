@@ -12,7 +12,7 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.report;
+package org.openmrs.module.kenyaemr.reporting.cohort.definition.evaluator;
 
 import junit.framework.Assert;
 import org.junit.Before;
@@ -20,9 +20,10 @@ import org.junit.Test;
 import org.openmrs.Cohort;
 import org.openmrs.Concept;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.kenyaemr.calculation.art.InitialArtStartDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.art.OnArtCalculation;
+import org.openmrs.module.kenyaemr.reporting.cohort.definition.EmrCalculationCohortDefinition;
+import org.openmrs.module.kenyaemr.reporting.cohort.definition.EmrDateCalculationCohortDefinition;
 import org.openmrs.module.kenyaemr.test.TestUtils;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;

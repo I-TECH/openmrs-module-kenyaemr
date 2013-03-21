@@ -12,7 +12,7 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.report;
+package org.openmrs.module.kenyaemr.reporting.indicator;
 
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 import org.openmrs.module.reporting.indicator.BaseIndicator;
@@ -22,7 +22,7 @@ import java.util.Date;
 /**
  * HIV care visit indicator type
  */
-public class HivCareVisitIndicator extends BaseIndicator {
+public class HivCareVisitsIndicator extends BaseIndicator {
 
 	public enum Filter {
 		FEMALES_18_AND_OVER,

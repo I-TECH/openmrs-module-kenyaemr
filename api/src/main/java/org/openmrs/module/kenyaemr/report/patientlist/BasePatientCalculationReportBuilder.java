@@ -15,7 +15,7 @@
 package org.openmrs.module.kenyaemr.report.patientlist;
 
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
-import org.openmrs.module.kenyaemr.report.EmrCalculationCohortDefinition;
+import org.openmrs.module.kenyaemr.reporting.cohort.definition.EmrCalculationCohortDefinition;
 import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
 
 /**
