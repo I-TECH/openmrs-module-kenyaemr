@@ -90,19 +90,29 @@
 
 	<!-- =========================================== Programs =============================================== -->
 
-	<program program_id="1" concept_id="160541" outcomes_concept_id="160038" creator="1" date_created="2004-08-12 00:00:00.0" retired="0" name="TB Program" description="TB Treatment Program" uuid="9f144a34-3a4a-44a9-8486-6b7af6cc64f6"/>
-	<program program_id="2" concept_id="9" outcomes_concept_id="1695" creator="1" date_created="2004-08-12 00:00:00.0" retired="0" name="HIV Program" description="Program for following or treating HIV-positive patients" uuid="dfdc6d40-2f2f-463d-ba90-cc97350441a8"/>
+	<program program_id="1001" concept_id="160541" outcomes_concept_id="160038" creator="1" date_created="2004-08-12 00:00:00.0" retired="0" name="TB Program" description="TB Treatment Program" uuid="9f144a34-3a4a-44a9-8486-6b7af6cc64f6"/>
+	<program program_id="1002" concept_id="9" outcomes_concept_id="1695" creator="1" date_created="2004-08-12 00:00:00.0" retired="0" name="HIV Program" description="Program for following or treating HIV-positive patients" uuid="dfdc6d40-2f2f-463d-ba90-cc97350441a8"/>
 
 	<!-- =========================================== Patient identifiers =============================================== -->
 
 	<patient_identifier_type patient_identifier_type_id="1001" name="OpenMRS ID" description="Medical Record Number" validator="org.openmrs.module.idgen.validator.LuhnMod25IdentifierValidator" check_digit="0" required="1" creator="1" date_created="2004-08-12 00:00:00.0" retired="0" uuid="dfacd928-0370-4315-99d7-6ec1c9f7ae76"/>
 	<patient_identifier_type patient_identifier_type_id="1002" name="HIV Unique Patient Number" description="Unique Patient Number" check_digit="0" required="1" creator="1" date_created="2004-08-12 00:00:00.0" retired="0" uuid="05ee9cf4-7242-4a17-b4d4-00f707265c8a"/>
 
+	<!-- =========================================== Forms =============================================== -->
+
+	<form form_id="1001" name="Clinical Encounter - HIV Addendum" version="0.1" build="0" published="0" description="Clinical Encounter - HIV Addendum" creator="1" date_created="2005-08-07 00:00:00.0" changed_by="1" date_changed="2007-10-24 14:51:53.0" retired="false" retired_reason="" uuid="bd598114-4ef4-47b1-a746-a616180ccfc0"/>
+
+	<!-- =========================================== Location attributes =============================================== -->
+
 	<location_attribute_type location_attribute_type_id="1" name="Master Facility Code" description="Code for linking to the Ministry of Health's Master Facility List" datatype="org.openmrs.customdatatype.datatype.RegexValidatedTextDatatype" datatype_config="\d{5}" min_occurs="0" max_occurs="1" creator="1" date_created="2005-01-01 00:00:00.0" retired="0" uuid="8a845a89-6aa5-4111-81d3-0af31c45c002" />
+
+	<!-- =========================================== Visits =============================================== -->
 
 	<visit_type visit_type_id="1001" name="Outpatient" description="Outpatient Visit Description" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="3371a4d4-f66f-4454-a86d-92c7b3da990c"/>
 
-	<encounter_type encounter_type_id="10" name="TB Screening" description="TB Screening" creator="1" date_created="2005-02-24 00:00:00.0" retired="false" uuid="ed6dacc9-0827-4c82-86be-53c0d8c449be"/>
+	<!-- =========================================== Encounters =============================================== -->
+
+	<encounter_type encounter_type_id="1001" name="TB Screening" description="TB Screening" creator="1" date_created="2005-02-24 00:00:00.0" retired="false" uuid="ed6dacc9-0827-4c82-86be-53c0d8c449be"/>
 
 	<!-- =========================================== Global properties =============================================== -->
 

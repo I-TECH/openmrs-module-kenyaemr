@@ -102,6 +102,24 @@ public class TestUtils {
 	}
 
 	/**
+	 * Create and save an encounter
+	 * @param patient the patient
+	 * @param form the form
+	 * @param date the encounters date
+	 * @return the saved encounter
+	 */
+	public static Encounter saveEncounter(Patient patient, Form form, Date date) {
+		Encounter encounter = new Encounter();
+		encounter.setPatient(patient);
+		encounter.setProvider(Context.getUserService().getUser(1)); // Super user
+		encounter.setLocation(Context.getLocationService().getLocation(1)); // Unknown Location
+		encounter.setEncounterType(form.getEncounterType());
+		encounter.setForm(form);
+		encounter.setEncounterDatetime(date);
+		return Context.getEncounterService().saveEncounter(encounter);
+	}
+
+	/**
 	 * Enroll a patient in a program
 	 * @param patient the patient
 	 * @param program the program

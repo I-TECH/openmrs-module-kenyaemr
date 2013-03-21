@@ -17,6 +17,7 @@ package org.openmrs.module.kenyaemr.report.indicator;
 import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.Form;
 import org.openmrs.Program;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.KenyaEmr;
@@ -47,9 +48,14 @@ public class Moh731ReportTest extends BaseModuleContextSensitiveTest {
 	@Test
 	public void test() throws Exception {
 
-		// Enroll patient #6 in the HIV program
 		Program hivProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.HIV_PROGRAM_UUID);
+		Form hivAddendum = Context.getFormService().getFormByUuid(MetadataConstants.CLINICAL_ENCOUNTER_HIV_ADDENDUM_FORM_UUID);
+
+		// Enroll patient #6 in the HIV program
 		TestUtils.enrollInProgram(Context.getPatientService().getPatient(6), hivProgram, TestUtils.date(2012, 1, 15), null);
+
+		// Submit an HIV addendum form for patient #6
+		TestUtils.saveEncounter(Context.getPatientService().getPatient(6), hivAddendum, TestUtils.date(2012, 1, 15));
 
 		Moh731Report report = new Moh731Report();
 		ReportDefinition rd = report.getReportDefinition();
