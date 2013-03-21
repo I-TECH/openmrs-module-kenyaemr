@@ -27,6 +27,8 @@ import org.openmrs.module.kenyaemr.reporting.cohort.definition.EmrCalculationCoh
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.EmrDateCalculationCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.indicator.HivCareVisitsIndicator;
 import org.openmrs.module.kenyaemr.reporting.dataset.definition.MergingDataSetDefinition;
+import org.openmrs.module.kenyaemr.reporting.library.KenyaCohortLibrary;
+import org.openmrs.module.kenyaemr.reporting.library.KenyaDimensionLibrary;
 import org.openmrs.module.reporting.cohort.definition.*;
 import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.module.reporting.common.TimeQualifier;
@@ -37,9 +39,12 @@ import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.openmrs.module.reporting.indicator.Indicator;
 import org.openmrs.module.reporting.indicator.dimension.CohortDefinitionDimension;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
+
+import static org.openmrs.module.kenyaemr.reporting.EmrReportingUtils.map;
 
 /**
  * MOH 731 report
@@ -49,13 +54,19 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 
 	protected static final Log log = LogFactory.getLog(Moh731Report.class);
 
-	protected Map<String, CohortDefinition> cohortDefinitions;
+	@Autowired
+	private KenyaCohortLibrary cohortLibrary;
 
-	protected Map<String, CohortDefinitionDimension> dimensions;
+	@Autowired
+	private KenyaDimensionLibrary dimensionLibrary;
 
-	protected Map<String, CohortIndicator> cohortIndicators;
+	private Map<String, CohortDefinition> cohortDefinitions;
 
-	protected Map<String, Indicator> nonCohortIndicators;
+	private Map<String, CohortDefinitionDimension> dimensions;
+
+	private Map<String, CohortIndicator> cohortIndicators;
+
+	private Map<String, Indicator> nonCohortIndicators;
 
 	/**
 	 * @see org.openmrs.module.kenyaemr.report.ReportBuilder#getTags()
@@ -134,39 +145,6 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 		Concept yes = Context.getConceptService().getConceptByUuid(MetadataConstants.YES_CONCEPT_UUID);
 
 		cohortDefinitions = new HashMap<String, CohortDefinition>();
-		{
-			GenderCohortDefinition cd = new GenderCohortDefinition();
-			cd.setName("Gender = Male");
-			cd.setMaleIncluded(true);
-			cohortDefinitions.put("gender.M", cd);
-		}
-		{
-			GenderCohortDefinition cd = new GenderCohortDefinition();
-			cd.setName("Gender = Female");
-			cd.setFemaleIncluded(true);
-			cohortDefinitions.put("gender.F", cd);
-		}
-		{
-			AgeCohortDefinition cd = new AgeCohortDefinition();
-			cd.setName("Age < 1");
-			cd.addParameter(new Parameter("effectiveDate", "Date", Date.class));
-			cd.setMaxAge(0);
-			cohortDefinitions.put("age.<1", cd);
-		}
-		{
-			AgeCohortDefinition cd = new AgeCohortDefinition();
-			cd.setName("Age < 15");
-			cd.addParameter(new Parameter("effectiveDate", "Date", Date.class));
-			cd.setMaxAge(14);
-			cohortDefinitions.put("age.<15", cd);
-		}
-		{
-			AgeCohortDefinition cd = new AgeCohortDefinition();
-			cd.setName("Age 15+");
-			cd.addParameter(new Parameter("effectiveDate", "Date", Date.class));
-			cd.setMinAge(15);
-			cohortDefinitions.put("age.15+", cd);
-		}
 		{
 			ProgramEnrollmentCohortDefinition cd = new ProgramEnrollmentCohortDefinition();
 			cd.setName("Enrolled in HIV Program between dates");
@@ -322,7 +300,7 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 			cd.addParameter(new Parameter("fromDate", "From Date", Date.class));
 			cd.addParameter(new Parameter("toDate", "To Date", Date.class));
 			cd.addSearch("art12MonthNetCohort", map(cohortDefinitions.get("art12MonthNetCohort"), "fromDate=${fromDate},toDate=${toDate}"));
-			cd.addSearch("currentlyOnOriginalFirstLine", map(cohortDefinitions.get("currentlyOnOriginalFirstLine"), null));
+			cd.addSearch("currentlyOnOriginalFirstLine", map(cohortDefinitions.get("currentlyOnOriginalFirstLine")));
 			cd.setCompositionString("art12MonthNetCohort AND currentlyOnOriginalFirstLine");
 			cohortDefinitions.put("onOriginalFirstLineAt12Months", cd);
 		}
@@ -331,7 +309,7 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 			cd.addParameter(new Parameter("fromDate", "From Date", Date.class));
 			cd.addParameter(new Parameter("toDate", "To Date", Date.class));
 			cd.addSearch("art12MonthNetCohort", map(cohortDefinitions.get("art12MonthNetCohort"), "fromDate=${fromDate},toDate=${toDate}"));
-			cd.addSearch("currentlyOnAlternateFirstLine", map(cohortDefinitions.get("currentlyOnAlternateFirstLine"), null));
+			cd.addSearch("currentlyOnAlternateFirstLine", map(cohortDefinitions.get("currentlyOnAlternateFirstLine")));
 			cd.setCompositionString("art12MonthNetCohort AND currentlyOnAlternateFirstLine");
 			cohortDefinitions.put("onAlternateFirstLineAt12Months", cd);
 		}
@@ -340,7 +318,7 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 			cd.addParameter(new Parameter("fromDate", "From Date", Date.class));
 			cd.addParameter(new Parameter("toDate", "To Date", Date.class));
 			cd.addSearch("art12MonthNetCohort", map(cohortDefinitions.get("art12MonthNetCohort"), "fromDate=${fromDate},toDate=${toDate}"));
-			cd.addSearch("currentlyOnSecondLine", map(cohortDefinitions.get("currentlyOnSecondLine"), null));
+			cd.addSearch("currentlyOnSecondLine", map(cohortDefinitions.get("currentlyOnSecondLine")));
 			cd.setCompositionString("art12MonthNetCohort AND currentlyOnSecondLine");
 			cohortDefinitions.put("onSecondLineAt12Months", cd);
 		}
@@ -362,17 +340,10 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 			CohortDefinitionDimension dim = new CohortDefinitionDimension();
 			dim.setName("Age (<1, <15, 15+)");
 			dim.addParameter(new Parameter("date", "Date", Date.class));
-			dim.addCohortDefinition("<1", map(cohortDefinitions.get("age.<1"), "effectiveDate=${date}"));
-			dim.addCohortDefinition("<15", map(cohortDefinitions.get("age.<15"), "effectiveDate=${date}"));
-			dim.addCohortDefinition("15+", map(cohortDefinitions.get("age.15+"), "effectiveDate=${date}"));
+			dim.addCohortDefinition("<1", map(cohortLibrary.agedAtMost(0), "effectiveDate=${date}"));
+			dim.addCohortDefinition("<15", map(cohortLibrary.agedAtMost(14), "effectiveDate=${date}"));
+			dim.addCohortDefinition("15+", map(cohortLibrary.agedAtLeast(15), "effectiveDate=${date}"));
 			dimensions.put("age", dim);
-		}
-		{
-			CohortDefinitionDimension dim = new CohortDefinitionDimension();
-			dim.setName("Gender");
-			dim.addCohortDefinition("M", map(cohortDefinitions.get("gender.M"), null));
-			dim.addCohortDefinition("F", map(cohortDefinitions.get("gender.F"), null));
-			dimensions.put("gender", dim);
 		}
 	}
 
@@ -488,7 +459,7 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 		cohortDsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		cohortDsd.addParameter(new Parameter("endDate", "End Date", Date.class));
 		cohortDsd.addDimension("age", map(dimensions.get("age"), "date=${endDate}"));
-		cohortDsd.addDimension("gender", map(dimensions.get("gender"), null));
+		cohortDsd.addDimension("gender", map(dimensionLibrary.gender()));
 
 		SimpleIndicatorDataSetDefinition nonCohortDsd = new SimpleIndicatorDataSetDefinition();
 		nonCohortDsd.setName(getName() + " Non-cohort DSD");

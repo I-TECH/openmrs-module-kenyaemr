@@ -17,10 +17,8 @@ package org.openmrs.module.kenyaemr.report.indicator;
 import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.Form;
 import org.openmrs.Program;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyaemr.KenyaEmr;
 import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.kenyaemr.test.TestUtils;
 import org.openmrs.module.reporting.dataset.MapDataSet;
@@ -35,29 +33,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class Moh731ReportTest extends BaseModuleContextSensitiveTest {
 
 	@Autowired
-	KenyaEmr emr;
+	private Moh731Report report;
 
 	@Before
 	public void setup() throws Exception {
 		executeDataSet("test-data.xml");
 		executeDataSet("test-drugdata.xml");
-
-		emr.contextRefreshed();
 	}
 
 	@Test
 	public void test() throws Exception {
-
 		Program hivProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.HIV_PROGRAM_UUID);
-		Form hivAddendum = Context.getFormService().getFormByUuid(MetadataConstants.CLINICAL_ENCOUNTER_HIV_ADDENDUM_FORM_UUID);
 
 		// Enroll patient #6 in the HIV program
 		TestUtils.enrollInProgram(Context.getPatientService().getPatient(6), hivProgram, TestUtils.date(2012, 1, 15), null);
 
-		// Submit an HIV addendum form for patient #6
-		TestUtils.saveEncounter(Context.getPatientService().getPatient(6), hivAddendum, TestUtils.date(2012, 1, 15));
-
-		Moh731Report report = new Moh731Report();
 		ReportDefinition rd = report.getReportDefinition();
 		EvaluationContext ec = new EvaluationContext();
 		ec.addParameterValue("startDate", TestUtils.date(2012, 1, 1)); // Run report for Jan 2012

@@ -131,21 +131,4 @@ public abstract class ReportBuilder {
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM");
 		return getName() + " " + df.format(ec.getParameterValue("startDate")) + ".xls";
 	}
-
-	/**
-	 * Maps a parameterizable item using a string list of parameters and values
-	 * @param parameterizable the parameterizable item
-	 * @param mappings the string list of mappings
-	 * @param <T>
-	 * @return the mapped item
-	 */
-	protected static <T extends Parameterizable> Mapped<T> map(T parameterizable, String mappings) {
-		if (parameterizable == null) {
-			throw new NullPointerException("Programming error: missing parameterizable");
-		}
-		if (mappings == null) {
-			mappings = ""; // probably not necessary, just to be safe
-		}
-		return new Mapped<T>(parameterizable, ParameterizableUtil.createParameterMappings(mappings));
-	}
 }
