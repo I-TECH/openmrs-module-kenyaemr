@@ -6,7 +6,7 @@
 	// If report has a single dataset, then it won't be wrapped in a fieldset
 	def singleDataset = (data.dataSets.size() == 1)
 
-	def formatData = { it -> it ?: "-" }
+	def formatData = { result -> (result != null) ? result : "-" }
 %>
 
 <% if (definition.description) { %>
