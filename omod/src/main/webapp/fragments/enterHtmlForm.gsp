@@ -171,17 +171,15 @@ ui.includeJavascript("kenyaemr", "dwr-util.js")
 		jq('#confirmDeleteFormPopup').hide();
 	}
 
-	<% if (visit) { %>
 	/**
 	 * Update blank encounter dates to be visit start date
 	 */
 	jq(function() {
 		var displaySelector = '.default-date-from-visit input[type=text]';
 		if (jq(displaySelector).val() == '') {
-			setDatePickerValue(displaySelector, '${ visit.startDatetime.format("yy-MM-dd") }');
+			setDatePickerValue(displaySelector, '${ (visit ? visit.startDatetime : new java.util.Date()).format("yy-MM-dd") }');
 		}
 	});
-	<% } %>
 </script>
 
 <div id="${ config.id }" <% if (config.style) { %>style="${ config.style }"<% } %>>

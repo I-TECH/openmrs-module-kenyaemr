@@ -150,18 +150,20 @@ public class EnterHtmlFormFragmentController {
 			fes.setReturnUrl(returnUrl);
 		}
 
-		// Validate and return with errors if any are found
-        List<FormSubmissionError> validationErrors = fes.getSubmissionController().validateSubmission(fes.getContext(), request);
-        if (validationErrors.size() > 0) {
-        	return returnHelper(validationErrors, fes.getContext());
-        }
-        
-        // No validation errors found so process form submission
-        fes.prepareForSubmit();
+		// Validate submission
+		List<FormSubmissionError> validationErrors = fes.getSubmissionController().validateSubmission(fes.getContext(), request);
+
+		// If there are validation errors, abort submit and display them
+		if (validationErrors.size() > 0) {
+			return returnHelper(validationErrors, fes.getContext());
+		}
+
+		// No validation errors found so continue process of form submission
+		fes.prepareForSubmit();
 		fes.getSubmissionController().handleFormSubmission(fes, request);
 
 		// Check this form will actually create an encounter if its supposed to
-        if (fes.getContext().getMode() == Mode.ENTER && fes.hasEncouterTag() && (fes.getSubmissionActions().getEncountersToCreate() == null || fes.getSubmissionActions().getEncountersToCreate().size() == 0)) {
+		if (fes.getContext().getMode() == Mode.ENTER && fes.hasEncouterTag() && (fes.getSubmissionActions().getEncountersToCreate() == null || fes.getSubmissionActions().getEncountersToCreate().size() == 0)) {
 			throw new IllegalArgumentException("This form is not going to create an encounter");
 		}
 
@@ -176,13 +178,11 @@ public class EnterHtmlFormFragmentController {
 			if (visit.getStopDatetime() != null && formEncounterDateTime.after(visit.getStopDatetime())) {
 				validationErrors.add(new FormSubmissionError("general-form-error", "Encounter datetime should be before the visit stop date"));
 			}
+		}
 
-			if (validationErrors.size() > 0) {
-				//log.error("Form not submitted due to date errors");
-				//return SimpleObject.create("success", false, "errors", validationErrors);
-
-				return returnHelper(validationErrors, fes.getContext());
-			}
+		// Once again, if there are validation errors, abort submit and display them
+		if (validationErrors.size() > 0) {
+			return returnHelper(validationErrors, fes.getContext());
 		}
 
 		// Do actual encounter creation/updating
