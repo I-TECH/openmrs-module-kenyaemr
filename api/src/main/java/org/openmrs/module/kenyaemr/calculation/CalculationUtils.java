@@ -116,15 +116,17 @@ public class CalculationUtils {
 	}
 
 	/**
-	 * Extracts actual values from a list result
+	 * Extracts actual values from a list result. Always returns a list even if result is null.
 	 * @param result the list result
 	 * @param <T> the type of each value
 	 * @return the list of values
 	 */
 	public static <T> List<T> extractListResultValues(ListResult result) {
 		List<T> values = new ArrayList<T>();
-		for (SimpleResult resultItem : (List<SimpleResult>) result.getValue()) {
-			values.add((T)resultItem.getValue());
+		if (result != null) {
+			for (SimpleResult resultItem : (List<SimpleResult>) result.getValue()) {
+				values.add((T)resultItem.getValue());
+			}
 		}
 		return values;
 	}

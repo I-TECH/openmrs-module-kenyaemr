@@ -68,6 +68,21 @@ public class TestUtils {
 	}
 
 	/**
+	 * Gets a concept but throws exception if it doesn't exist
+	 * @param uuid the concept uuid
+	 * @return the concept
+	 * @throws IllegalArgumentException if concept doesn't exist
+	 */
+	public static Concept getConcept(String uuid) {
+		Concept concept = Context.getConceptService().getConceptByUuid(uuid);
+		if (concept == null) {
+			throw new IllegalArgumentException("No such concept in test data: " + uuid);
+		}
+
+		return concept;
+	}
+
+	/**
 	 * Create and save a visit
 	 * @param patient the patient
 	 * @param type the visit type

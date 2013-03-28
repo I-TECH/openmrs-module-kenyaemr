@@ -27,6 +27,7 @@ import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.kenyaemr.calculation.*;
 import org.openmrs.module.kenyaemr.calculation.cd4.LastCD4CountCalculation;
 import org.openmrs.module.kenyaemr.calculation.cd4.LastCD4PercentageCalculation;
+import org.openmrs.module.kenyaemr.util.KenyaEmrUtils;
 import org.openmrs.module.reporting.common.Age;
 
 /**
@@ -83,7 +84,7 @@ public class EligibleForArtCalculation extends BaseAlertCalculation {
 				int ageInMonths = ((Age) ages.get(ptId).getValue()).getFullMonths();
 				Double cd4 = CalculationUtils.numericObsResultForPatient(lastCd4, ptId);
 				Double cd4Percent = CalculationUtils.numericObsResultForPatient(lastCd4Percent, ptId);
-				Integer whoStage = whoStage(CalculationUtils.codedObsResultForPatient(lastWhoStage, ptId));
+				Integer whoStage = KenyaEmrUtils.whoStage(CalculationUtils.codedObsResultForPatient(lastWhoStage, ptId));
 				eligible = isEligible(ageInMonths, cd4, cd4Percent, whoStage);
 			}
 			ret.put(ptId, new BooleanResult(eligible, this));
@@ -92,56 +93,36 @@ public class EligibleForArtCalculation extends BaseAlertCalculation {
 	}
 
     private boolean isEligible(int ageInMonths, Double cd4, Double cd4Percent, Integer whoStage) {
-	    if (ageInMonths < 24) {
-	    	return true;
-	    } else if (ageInMonths < 60) { // 24-59 months
-	    	if (whoStage != null && (whoStage == 3 || whoStage == 4)) {
-	    		return true;
-	    	}
-	    	if (cd4Percent != null && cd4Percent < 25) {
-	    		return true;
-	    	}
-	    	if (cd4 != null && cd4 < 1000) {
-	    		return true;
-	    	}
-	    } else if (ageInMonths < 155) { // 5-12 years
-	    	if (whoStage != null && (whoStage == 3 || whoStage == 4)) {
-	    		return true;
-	    	}
-	    	if (cd4Percent != null && cd4Percent < 20) {
-	    		return true;
-	    	}
-	    	if (cd4 != null && cd4 < 500) {
-	    		return true;
-	    	}
-	    } else { // 13+ years
-	    	if (whoStage != null && (whoStage == 3 || whoStage == 4)) {
-	    		return true;
-	    	}
-	    	if (cd4 != null && cd4 < 350) {
-	    		return true;
-	    	}
-	    }
-	    return false;
-    }
-
-    private Integer whoStage(Concept c) {
-	    if (c != null) {
-	    	String uuid = c.getUuid();
-	    	if (uuid.equals(MetadataConstants.WHO_STAGE_1_ADULT_CONCEPT_UUID) || uuid.equals(MetadataConstants.WHO_STAGE_1_PEDS_CONCEPT_UUID)) {
-	    		return 1;
-	    	}
-	    	if (uuid.equals(MetadataConstants.WHO_STAGE_2_ADULT_CONCEPT_UUID) || uuid.equals(MetadataConstants.WHO_STAGE_2_PEDS_CONCEPT_UUID)) {
-	    		return 2;
-	    	}
-	    	if (uuid.equals(MetadataConstants.WHO_STAGE_3_ADULT_CONCEPT_UUID) || uuid.equals(MetadataConstants.WHO_STAGE_3_PEDS_CONCEPT_UUID)) {
-	    		return 3;
-	    	}
-	    	if (uuid.equals(MetadataConstants.WHO_STAGE_4_ADULT_CONCEPT_UUID) || uuid.equals(MetadataConstants.WHO_STAGE_4_PEDS_CONCEPT_UUID)) {
-	    		return 4;
-	    	}
-	    }
-	    return null;
-    }
-	
+		if (ageInMonths < 24) {
+			return true;
+		} else if (ageInMonths < 60) { // 24-59 months
+			if (whoStage != null && (whoStage == 3 || whoStage == 4)) {
+				return true;
+			}
+			if (cd4Percent != null && cd4Percent < 25) {
+				return true;
+			}
+			if (cd4 != null && cd4 < 1000) {
+				return true;
+			}
+		} else if (ageInMonths < 155) { // 5-12 years
+			if (whoStage != null && (whoStage == 3 || whoStage == 4)) {
+				return true;
+			}
+			if (cd4Percent != null && cd4Percent < 20) {
+				return true;
+			}
+			if (cd4 != null && cd4 < 500) {
+				return true;
+			}
+		} else { // 13+ years
+			if (whoStage != null && (whoStage == 3 || whoStage == 4)) {
+				return true;
+			}
+			if (cd4 != null && cd4 < 350) {
+				return true;
+			}
+		}
+		return false;
+	}
 }

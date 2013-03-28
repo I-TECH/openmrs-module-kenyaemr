@@ -16,6 +16,7 @@ package org.openmrs.module.kenyaemr.util;
 import org.openmrs.*;
 import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.util.OpenmrsUtil;
 
 import java.util.*;
@@ -138,5 +139,29 @@ public class KenyaEmrUtils {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * Converts a WHO stage concept to a WHO stage number
+	 * @param c the WHO stage concept
+	 * @return the WHO stage number (null if the concept isn't a WHO stage)
+	 */
+	public static Integer whoStage(Concept c) {
+		if (c != null) {
+			String uuid = c.getUuid();
+			if (uuid.equals(MetadataConstants.WHO_STAGE_1_ADULT_CONCEPT_UUID) || uuid.equals(MetadataConstants.WHO_STAGE_1_PEDS_CONCEPT_UUID)) {
+				return 1;
+			}
+			if (uuid.equals(MetadataConstants.WHO_STAGE_2_ADULT_CONCEPT_UUID) || uuid.equals(MetadataConstants.WHO_STAGE_2_PEDS_CONCEPT_UUID)) {
+				return 2;
+			}
+			if (uuid.equals(MetadataConstants.WHO_STAGE_3_ADULT_CONCEPT_UUID) || uuid.equals(MetadataConstants.WHO_STAGE_3_PEDS_CONCEPT_UUID)) {
+				return 3;
+			}
+			if (uuid.equals(MetadataConstants.WHO_STAGE_4_ADULT_CONCEPT_UUID) || uuid.equals(MetadataConstants.WHO_STAGE_4_PEDS_CONCEPT_UUID)) {
+				return 4;
+			}
+		}
+		return null;
 	}
 }

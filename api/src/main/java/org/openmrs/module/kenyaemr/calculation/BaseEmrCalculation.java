@@ -209,7 +209,8 @@ public abstract class BaseEmrCalculation extends BaseCalculation implements Pati
 	 * @return the obss in a calculation result map
 	 */
 	protected static CalculationResultMap allObs(Concept concept, Collection<Integer> cohort, PatientCalculationContext calculationContext) {
-		ObsForPersonDataDefinition def = new ObsForPersonDataDefinition("All " + concept.getPreferredName(MetadataConstants.LOCALE), TimeQualifier.ANY, concept, calculationContext.getNow(), null);
+		ObsForPersonDataDefinition def = new ObsForPersonDataDefinition("All " + concept.getPreferredName(MetadataConstants.LOCALE),
+				TimeQualifier.ANY, concept, calculationContext.getNow(), null);
 		return evaluateWithReporting(def, cohort, new HashMap<String, Object>(), null, calculationContext);
 	}
 

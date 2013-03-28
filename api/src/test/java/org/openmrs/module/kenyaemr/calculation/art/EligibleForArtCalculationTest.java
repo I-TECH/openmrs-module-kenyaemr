@@ -25,7 +25,6 @@ import org.junit.Test;
 import org.openmrs.Concept;
 import org.openmrs.Program;
 import org.openmrs.api.PatientService;
-import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.patient.PatientCalculationService;
