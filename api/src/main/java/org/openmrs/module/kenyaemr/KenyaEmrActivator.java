@@ -19,7 +19,9 @@ import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
 import org.openmrs.GlobalProperty;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.Module;
 import org.openmrs.module.ModuleActivator;
+import org.openmrs.module.ModuleFactory;
 import org.openmrs.module.kenyaemr.datatype.LocationDatatype;
 
 import java.io.InputStream;
@@ -86,6 +88,10 @@ public class KenyaEmrActivator implements ModuleActivator {
 			log.info("Setup core regimens");
 
 		} catch (Exception ex) {
+			// Stop module if exception was thrown
+			Module mod = ModuleFactory.getModuleById(KenyaEmrConstants.MODULE_ID);
+			ModuleFactory.stopModule(mod);
+
 			throw new RuntimeException("Failed to setup initial data", ex);
 		}
 
