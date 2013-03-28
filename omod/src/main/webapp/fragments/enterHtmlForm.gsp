@@ -172,10 +172,10 @@ ui.includeJavascript("kenyaemr", "dwr-util.js")
 	}
 
 	/**
-	 * Update blank encounter dates to be visit start date
+	 * Update blank encounter dates to default to visit start date or current date
 	 */
 	jq(function() {
-		var displaySelector = '.default-date-from-visit input[type=text]';
+		var displaySelector = '#encounter-date input[type=text]';
 		if (jq(displaySelector).val() == '') {
 			setDatePickerValue(displaySelector, '${ (visit ? visit.startDatetime : new java.util.Date()).format("yy-MM-dd") }');
 		}
