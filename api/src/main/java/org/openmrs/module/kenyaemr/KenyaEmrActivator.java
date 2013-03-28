@@ -53,9 +53,14 @@ public class KenyaEmrActivator implements ModuleActivator {
 	 * @see ModuleActivator#contextRefreshed()
 	 */
 	public void contextRefreshed() {
-		KenyaEmr.getInstance().contextRefreshed();
+		try {
+			KenyaEmr.getInstance().contextRefreshed();
 
-		log.info("Kenya EMR context refreshed");
+			log.info("Kenya EMR context refreshed");
+		}
+		catch (Exception ex) {
+			log.error("Error while refreshing Kenya EMR context", ex);
+		}
 	}
 
 	/**
@@ -79,15 +84,13 @@ public class KenyaEmrActivator implements ModuleActivator {
 
 			log.info("Setup core metadata packages (" + (metadataUpdated ? "imported packages" : "already up-to-date") + ")");
 
-			setupStandardForms();
-
-			log.info("Setup core forms (" + KenyaEmr.getInstance().getFormManager().getAllFormConfigs().size() + " registered forms)");
-
 			setupStandardRegimens();
 
 			log.info("Setup core regimens");
 
 		} catch (Exception ex) {
+			log.error("Cancelling module startup due to error");
+
 			// Stop module if exception was thrown
 			Module mod = ModuleFactory.getModuleById(KenyaEmrConstants.MODULE_ID);
 			ModuleFactory.stopModule(mod);

@@ -50,15 +50,6 @@ public class MetadataConstants {
 	public static final String TB_COMPLETION_FORM_UUID = "4b296dd0-f6be-4007-9eb8-d0fd4e94fb3a";
 	public static final String MOH_257_VISIT_SUMMARY_FORM_UUID = "23b4ebbd-29ad-455e-be0e-04aa6bc30798";
 
-	//public static final String MOH_257_ENCOUNTER_ART_HISTORY_FORM_UUID = "b388cd66-8e08-4e8f-97de-7cf10023ed0f";
-	//public static final String MOH_257_ENCOUNTER_PAST_MEDICAL_AND_SURGICAL_HISTORY_FORM_UUID = "4a0d1332-490e-439f-9d14-c782143c94de";
-	//public static final String MOH_257_ART_TREATMENT_INTERUPTION_FORM_UUID = "9e560607-cb99-46b0-8599-5d06110b4742";
-	//public static final String MOH_257_ENCOUNTER_PREGNANCY_DETAILS_FORM_UUID = "c136f6e0-ecd0-4f9e-beeb-a5cab6161f44";
-	//public static final String MOH_257_ENCOUNTER_PATIENTS_DEMOGRAPHICS_FORM_UUID = "8be821d9-8535-4715-9408-6c3112e8245a";
-	//public static final String MOH_257_ENCOUNTER_IMPRESSIONS_AND_DIAGNOSES_FORM_UUID = "46c5acb5-e4ae-4a4a-a9e5-6debf52cd773";
-	//public static final String MOH_257_ENCOUNTER_DECISION_POINTS_FORM_UUID = "5ddb20c1-cd21-49cd-aba2-6bc62e367baf";
-	//public static final String MOH_257_ENCOUNTER_MEDICATION_ORDERS_FORM_UUID = "01f3aa8d-d0b5-4252-a7eb-059fec6633e9";
-
 	// Locations
 	public static final String UNKNOWN_LOCATION_UUID = "8d6c993e-c2cc-11de-8d13-0010c6dffd0f";
 

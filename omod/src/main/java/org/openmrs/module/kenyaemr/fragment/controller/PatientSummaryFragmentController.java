@@ -15,14 +15,11 @@
 package org.openmrs.module.kenyaemr.fragment.controller;
 
 import org.openmrs.Patient;
-import org.openmrs.PatientProgram;
-import org.openmrs.Program;
-import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.KenyaEmr;
 import org.openmrs.module.kenyaemr.KenyaEmrUiUtils;
 import org.openmrs.module.kenyaemr.MetadataConstants;
-import org.openmrs.module.kenyaemr.form.FormConfig;
+import org.openmrs.module.kenyaemr.form.FormDescriptor;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.FragmentParam;
@@ -54,7 +51,7 @@ public class PatientSummaryFragmentController {
 	}
 
 	private static SimpleObject simpleFormByUuid(KenyaEmr emr, KenyaEmrUiUtils kenyaUi, UiUtils ui, String formUuid) {
-		FormConfig formConfig = emr.getFormManager().getFormConfig(formUuid);
-		return kenyaUi.simpleForm(formConfig, ui);
+		FormDescriptor formDescriptor = emr.getFormManager().getFormConfig(formUuid);
+		return kenyaUi.simpleForm(formDescriptor, ui);
 	}
 }

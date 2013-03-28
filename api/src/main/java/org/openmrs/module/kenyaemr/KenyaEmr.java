@@ -116,8 +116,9 @@ public class KenyaEmr {
 	/**
 	 * Handles a context refresh
 	 */
-	public void contextRefreshed() {
+	public void contextRefreshed() throws Exception {
 		calculationManager.refreshCalculationClasses();
+		formManager.refreshFormDescriptors();
 		reportManager.refreshReportBuilders();
 	}
 }

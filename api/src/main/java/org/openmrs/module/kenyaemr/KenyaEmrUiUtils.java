@@ -20,7 +20,7 @@ import org.openmrs.*;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.htmlformentry.HtmlForm;
 import org.openmrs.module.htmlformentry.HtmlFormEntryService;
-import org.openmrs.module.kenyaemr.form.FormConfig;
+import org.openmrs.module.kenyaemr.form.FormDescriptor;
 import org.openmrs.module.kenyaemr.regimen.*;
 import org.openmrs.module.kenyaemr.util.KenyaEmrUtils;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
@@ -180,7 +180,7 @@ public class KenyaEmrUiUtils {
 	 * @return the simple object
 	 */
 	public SimpleObject simpleForm(Form form, UiUtils ui) {
-		FormConfig config = KenyaEmr.getInstance().getFormManager().getFormConfig(form.getUuid());
+		FormDescriptor config = KenyaEmr.getInstance().getFormManager().getFormConfig(form.getUuid());
 		HtmlForm htmlForm = Context.getService(HtmlFormEntryService.class).getHtmlFormByForm(form);
 
 		return SimpleObject.create(
@@ -197,7 +197,7 @@ public class KenyaEmrUiUtils {
 	 * @param ui the UI utils
 	 * @return the simple object
 	 */
-	public SimpleObject simpleForm(FormConfig config, UiUtils ui) {
+	public SimpleObject simpleForm(FormDescriptor config, UiUtils ui) {
 		Form form = Context.getFormService().getFormByUuid(config.getFormUuid());
 		HtmlForm htmlForm = Context.getService(HtmlFormEntryService.class).getHtmlFormByForm(form);
 

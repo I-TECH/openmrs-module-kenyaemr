@@ -16,13 +16,26 @@ package org.openmrs.module.kenyaemr.form;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.EncounterType;
+import org.openmrs.Form;
 import org.openmrs.Patient;
-import org.openmrs.module.kenyaemr.KenyaEmrConstants;
+import org.openmrs.api.context.Context;
+import org.openmrs.module.htmlformentry.HtmlForm;
+import org.openmrs.module.htmlformentry.HtmlFormEntryService;
+import org.openmrs.module.htmlformentry.HtmlFormEntryUtil;
+import org.openmrs.module.kenyaemr.KenyaEmr;
 import org.openmrs.module.kenyaemr.MetadataConstants;
-import org.openmrs.module.kenyaemr.form.FormConfig.Frequency;
-import org.openmrs.module.kenyaemr.form.FormConfig.Gender;
+import org.openmrs.module.kenyaemr.form.FormDescriptor.Frequency;
+import org.openmrs.module.kenyaemr.form.FormDescriptor.Gender;
+import org.openmrs.ui.framework.resource.ResourceFactory;
+import org.openmrs.util.OpenmrsUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -33,7 +46,41 @@ public class FormManager {
 
 	protected static final Log log = LogFactory.getLog(FormManager.class);
 
-	private Map<String, FormConfig> forms = new LinkedHashMap<String, FormConfig>();
+	@Autowired
+	@Qualifier("coreResourceFactory")
+	private ResourceFactory resourceFactory;
+
+	private Map<String, FormDescriptor> forms = new LinkedHashMap<String, FormDescriptor>();
+
+	/**
+	 * Clears all forms
+	 */
+	public synchronized void clear() {
+		forms.clear();
+	}
+
+	/**
+	 * Refreshes the list of form descriptors from the application context
+	 */
+	public synchronized void refreshFormDescriptors() throws Exception {
+		clear();
+
+		for (FormDescriptor formDescriptor : Context.getRegisteredComponents(FormDescriptor.class)) {
+			forms.put(formDescriptor.getFormUuid(), formDescriptor);
+
+			// Load form resource if descriptor specifies one
+			if (formDescriptor.getResourceProvider() != null && formDescriptor.getResource() != null) {
+				loadFormFromUiResource(formDescriptor.getFormUuid(), formDescriptor.getResourceProvider(), formDescriptor.getResource());
+			}
+
+			log.info("Found form descriptor:" + formDescriptor.getFormUuid());
+		}
+
+		/**
+		 * Because we haven't yet made beans for all forms...
+		 */
+		setupStandardForms();
+	}
 
 	/**
 	 * Called from the module activator to register all forms. In future this could be loaded from an XML file
@@ -98,14 +145,14 @@ public class FormManager {
 				Frequency.VISIT,
 				new String[] { "kenyaemr.intake", "kenyaemr.medicalEncounter", "kenyaemr.medicalChart" }
 		);
-		registerForm(
+		/*registerForm(
 				MetadataConstants.MOH_257_VISIT_SUMMARY_FORM_UUID,
 				Frequency.VISIT,
 				new String[] { "kenyaemr.medicalChart" },
 				MetadataConstants.HIV_PROGRAM_UUID,
 				Gender.BOTH,
 				"kenyaui", "forms/moh257.png"
-		);
+		);*/
 		registerForm(
 				MetadataConstants.TB_SCREENING_FORM_UUID,
 				Frequency.VISIT,
@@ -182,18 +229,11 @@ public class FormManager {
 			throw new RuntimeException("Form already registered");
 		}
 
-		FormConfig formConfig = new FormConfig(formUuid, frequency, new HashSet<String>(Arrays.asList(forApps)), forProgramUuid, forGender, iconProvider, icon);
+		FormDescriptor formDescriptor = new FormDescriptor(formUuid, frequency, new HashSet<String>(Arrays.asList(forApps)), forProgramUuid, forGender, iconProvider, icon);
 
-		forms.put(formUuid, formConfig);
+		forms.put(formUuid, formDescriptor);
 
-		log.info("Registered form: " + formConfig);
-	}
-
-	/**
-	 * Clears all registered forms
-	 */
-	public void clear() {
-		forms.clear();
+		log.info("Registered form: " + formDescriptor);
 	}
 
 	/**
@@ -201,7 +241,7 @@ public class FormManager {
 	 * @param formUuid the form UUID
 	 * @return the form configuration
 	 */
-	public FormConfig getFormConfig(String formUuid) {
+	public FormDescriptor getFormConfig(String formUuid) {
 		return forms.get(formUuid);
 	}
 
@@ -209,8 +249,8 @@ public class FormManager {
 	 * Gets all registered form configurations
 	 * @return the form configurations
 	 */
-	public List<FormConfig> getAllFormConfigs() {
-		return new ArrayList<FormConfig>(forms.values());
+	public List<FormDescriptor> getAllFormConfigs() {
+		return new ArrayList<FormDescriptor>(forms.values());
 	}
 
 	/**
@@ -220,12 +260,12 @@ public class FormManager {
 	 * @param includeFrequencies the set of form frequencies to include (may be null)
 	 * @return the forms
 	 */
-	public List<FormConfig> getFormsForPatient(String appId, Patient patient, Set<Frequency> includeFrequencies) {
-		List<FormConfig> patientForms = new ArrayList<FormConfig>();
-		for (FormConfig form : forms.values()) {
+	public List<FormDescriptor> getFormsForPatient(String appId, Patient patient, Set<Frequency> includeFrequencies) {
+		List<FormDescriptor> patientForms = new ArrayList<FormDescriptor>();
+		for (FormDescriptor form : forms.values()) {
 
 			// Filter by app id
-			if (appId != null && !form.getForApps().contains(appId)) {
+			if (appId != null && !form.getApps().contains(appId)) {
 				continue;
 			}
 
@@ -246,5 +286,68 @@ public class FormManager {
 		}
 
 		return patientForms;
+	}
+
+	/**
+	 * Loads a form from a UI resource
+	 * @param formUuid the form UUID to save to
+	 * @param providerName the resource provider name
+	 * @param resourcePath the resource path
+	 * @return the HTML form
+	 * @throws IOException if an error occurs
+	 */
+	public HtmlForm loadFormFromUiResource(String formUuid, String providerName, String resourcePath) throws IOException {
+		String xml = resourceFactory.getResourceAsString(providerName, resourcePath);
+		// should be of the format <htmlform formName="..." formVersion="..." formEncounterType="...">...</htmlform>
+
+		if (xml == null) {
+			throw new IllegalArgumentException("No resource found at " + providerName + ":" + resourcePath);
+		}
+
+		try {
+			Document doc = HtmlFormEntryUtil.stringToDocument(xml);
+			Node htmlFormNode = HtmlFormEntryUtil.findChild(doc, "htmlform");
+
+			String formName = getAttributeValue(htmlFormNode, "formName");
+			String formDescription = getAttributeValue(htmlFormNode, "formDescription");
+			String formVersion = getAttributeValue(htmlFormNode, "formVersion");
+			String formEncounterType = getAttributeValue(htmlFormNode, "formEncounterType");
+
+			Form form = Context.getFormService().getFormByUuid(formUuid);
+			if (form == null) {
+				form = new Form();
+				form.setUuid(formUuid);
+			}
+
+			form.setName(formName);
+			form.setDescription(formDescription);
+			form.setVersion(formVersion);
+			form.setEncounterType(HtmlFormEntryUtil.getEncounterType(formEncounterType));
+			Context.getFormService().saveForm(form);
+
+			HtmlForm htmlForm = Context.getService(HtmlFormEntryService.class).getHtmlFormByForm(form);
+			if (htmlForm == null) {
+				htmlForm = new HtmlForm();
+				htmlForm.setForm(form);
+			}
+			htmlForm.setXmlData(xml);
+
+			Context.getService(HtmlFormEntryService.class).saveHtmlForm(htmlForm);
+			return htmlForm;
+
+		} catch (Exception e) {
+			throw new IllegalArgumentException("Failed to parse XML and build Form and HtmlForm", e);
+		}
+	}
+
+	/**
+	 * Convenience method to get the named attribute value of a DOM node
+	 * @param node the DOM node
+	 * @param attributeName the attribute name
+	 * @return the attribute value
+	 */
+	private static String getAttributeValue(Node node, String attributeName) {
+		Node item = node.getAttributes().getNamedItem(attributeName);
+		return item == null ? null : item.getNodeValue();
 	}
 }

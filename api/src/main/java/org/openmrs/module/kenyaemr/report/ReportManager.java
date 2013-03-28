@@ -47,7 +47,7 @@ public class ReportManager {
 		for (ReportBuilder builder : Context.getRegisteredComponents(ReportBuilder.class)) {
 			reportBuilders.put(builder.getClass().getName(), builder);
 
-			log.info("Found calculation class :" + builder.getClass().getName());
+			log.info("Found report builder class :" + builder.getClass().getName());
 		}
 	}
 

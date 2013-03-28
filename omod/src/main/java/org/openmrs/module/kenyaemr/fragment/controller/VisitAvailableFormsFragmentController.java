@@ -25,9 +25,8 @@ import org.openmrs.module.htmlformentry.HtmlForm;
 import org.openmrs.module.htmlformentry.HtmlFormEntryService;
 import org.openmrs.module.kenyaemr.KenyaEmr;
 import org.openmrs.module.kenyaemr.KenyaEmrUiUtils;
-import org.openmrs.module.kenyaemr.form.FormConfig;
-import org.openmrs.module.kenyaemr.form.FormConfig.Frequency;
-import org.openmrs.module.kenyaemr.form.FormManager;
+import org.openmrs.module.kenyaemr.form.FormDescriptor;
+import org.openmrs.module.kenyaemr.form.FormDescriptor.Frequency;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.FragmentParam;
@@ -53,8 +52,8 @@ public class VisitAvailableFormsFragmentController {
 
 		String currentApp = AppUiUtil.getCurrentApp(session).getApp().getId();
 
-		List<FormConfig> availableFormConfigs = emr.getFormManager().getFormsForPatient(currentApp, visit.getPatient(), null);
-		List<SimpleObject> availableForms = getAvailableForms(visit, availableFormConfigs, ui, kenyaUi);
+		List<FormDescriptor> availableFormDescriptors = emr.getFormManager().getFormsForPatient(currentApp, visit.getPatient(), null);
+		List<SimpleObject> availableForms = getAvailableForms(visit, availableFormDescriptors, ui, kenyaUi);
 
 		model.addAttribute("availableForms", availableForms);
 	}
@@ -65,7 +64,7 @@ public class VisitAvailableFormsFragmentController {
      * @param forms the list of possible forms for the visit type
      * @return
      */
-    private List<SimpleObject> getAvailableForms(Visit visit, List<FormConfig> forms, UiUtils ui, KenyaEmrUiUtils kenyaUi) {
+    private List<SimpleObject> getAvailableForms(Visit visit, List<FormDescriptor> forms, UiUtils ui, KenyaEmrUiUtils kenyaUi) {
     	Set<String> formUuidsThisVisit = new HashSet<String>();
     	for (Encounter e : visit.getEncounters()) {
     		if (!e.getVoided()) {
@@ -104,9 +103,9 @@ public class VisitAvailableFormsFragmentController {
 		
     	List<SimpleObject> ret = new ArrayList<SimpleObject>();
 		
-		for (FormConfig config : forms) {
+		for (FormDescriptor config : forms) {
 			// Get program for form
-			Program formProgram = config.getForProgramUuid() != null ? Context.getProgramWorkflowService().getProgramByUuid(config.getForProgramUuid()) : null;
+			Program formProgram = config.getProgramUuid() != null ? Context.getProgramWorkflowService().getProgramByUuid(config.getProgramUuid()) : null;
 
 			if (formProgram != null && !dateOfActiveEnrollment.keySet().contains(formProgram)) {
 				continue;

@@ -27,8 +27,7 @@ import org.openmrs.Visit;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appframework.AppUiUtil;
 import org.openmrs.module.kenyaemr.KenyaEmr;
-import org.openmrs.module.kenyaemr.form.FormConfig;
-import org.openmrs.module.kenyaemr.form.FormManager;
+import org.openmrs.module.kenyaemr.form.FormDescriptor;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.SpringBean;
@@ -62,11 +61,11 @@ public class MedicalChartViewPatientPageController {
 		model.addAttribute("patient", patient);
 		model.addAttribute("person", patient);
 
-		List<FormConfig> oneTimeFormConfigs = emr.getFormManager().getFormsForPatient("kenyaemr.medicalChart", patient, Collections.singleton(FormConfig.Frequency.ONCE_EVER));
+		List<FormDescriptor> oneTimeFormDescriptors = emr.getFormManager().getFormsForPatient("kenyaemr.medicalChart", patient, Collections.singleton(FormDescriptor.Frequency.ONCE_EVER));
 		List<SimpleObject> oneTimeForms = new ArrayList<SimpleObject>();
-		for (FormConfig formConfig : oneTimeFormConfigs) {
-			Form form = Context.getFormService().getFormByUuid(formConfig.getFormUuid());
-			oneTimeForms.add(SimpleObject.create("formUuid", form.getUuid(), "label", form.getName(), "iconProvider", formConfig.getIconProvider(), "icon", formConfig.getIcon()));
+		for (FormDescriptor formDescriptor : oneTimeFormDescriptors) {
+			Form form = Context.getFormService().getFormByUuid(formDescriptor.getFormUuid());
+			oneTimeForms.add(SimpleObject.create("formUuid", form.getUuid(), "label", form.getName(), "iconProvider", formDescriptor.getIconProvider(), "icon", formDescriptor.getIcon()));
 		}
 		model.addAttribute("oneTimeForms", oneTimeForms);
 
