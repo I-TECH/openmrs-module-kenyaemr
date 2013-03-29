@@ -83,7 +83,7 @@
 			<th colspan="2">Type</th>
 			<td>(b)</td>
 			<td>[TODO]</td>
-			<td><input type="checkbox" /> Scheduled (TODO)</td>
+			<td><obs conceptId="1246AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" /> Scheduled</td>
 		</tr>
 		<tr>
 			<th rowspan="2">Duration Since<br />(in months)</th>
