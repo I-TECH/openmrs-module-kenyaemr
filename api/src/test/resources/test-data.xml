@@ -46,11 +46,26 @@
 	<concept concept_id="5272" retired="false" datatype_id="2" class_id="7" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="5272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 	<concept_name concept_name_id="5272" concept_id="5272" name="PREGNANCY STATUS" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="5272-name"/>
 
+	<concept concept_id="161555" retired="false" datatype_id="2" class_id="11" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="161555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+	<concept_name concept_name_id="161555" concept_id="1695" name="REASON FOR DISCONTINUATION OF PROGRAM" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="161555-name"/>
+
+	<concept concept_id="5096" retired="false" datatype_id="6" class_id="7" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+	<concept_name concept_name_id="5096" concept_id="5096" name="RETURN VISIT DATE" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="5096-name"/>
+
+	<concept concept_id="1246" retired="false" datatype_id="10" class_id="7" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="1246AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+	<concept_name concept_name_id="1246" concept_id="1246" name="SCHEDULED VISIT" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="1246-name"/>
+
 	<concept concept_id="159524" retired="false" datatype_id="4" class_id="5" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="159524AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 	<concept_name concept_name_id="159524" concept_id="159524" name="SEXUAL ABSTINENCE" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="159524-name"/>
 
+	<concept concept_id="160541" retired="false" datatype_id="4" class_id="5" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="160541AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+	<concept_name concept_name_id="160541" concept_id="160541" name="TB PROGRAM" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="160541-name"/>
+
 	<concept concept_id="160534" retired="false" datatype_id="6" class_id="7" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="160534AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 	<concept_name concept_name_id="160534" concept_id="160534" name="TRANSFER IN DATE" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="160534-name"/>
+
+	<concept concept_id="159492" retired="false" datatype_id="4" class_id="11" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="159492AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+	<concept_name concept_name_id="159492" concept_id="159492" name="TRANSFERRED OUT" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="159492-name"/>
 
 	<concept concept_id="1204" retired="false" datatype_id="4" class_id="5" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="1204AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 	<concept_name concept_name_id="1204" concept_id="1204" name="WHO STAGE 1 ADULT" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="1204-name"/>
@@ -75,18 +90,6 @@
 
 	<concept concept_id="1223" retired="false" datatype_id="4" class_id="5" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="1223AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 	<concept_name concept_name_id="1223" concept_id="1223" name="WHO STAGE 4 PEDS" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="1223-name"/>
-
-	<concept concept_id="161555" retired="false" datatype_id="2" class_id="11" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="161555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-	<concept_name concept_name_id="161555" concept_id="1695" name="REASON FOR DISCONTINUATION OF PROGRAM" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="161555-name"/>
-
-	<concept concept_id="5096" retired="false" datatype_id="6" class_id="7" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-	<concept_name concept_name_id="5096" concept_id="5096" name="RETURN VISIT DATE" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="5096-name"/>
-
-	<concept concept_id="160541" retired="false" datatype_id="4" class_id="5" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="160541AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-	<concept_name concept_name_id="160541" concept_id="160541" name="TB PROGRAM" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="160541-name"/>
-
-	<concept concept_id="159492" retired="false" datatype_id="4" class_id="11" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="159492AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-	<concept_name concept_name_id="159492" concept_id="159492" name="TRANSFERRED OUT" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="159492-name"/>
 
 	<concept concept_id="1065" retired="false" datatype_id="4" class_id="5" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 	<concept_name concept_name_id="1065" concept_id="1065" name="YES" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="1065-name"/>

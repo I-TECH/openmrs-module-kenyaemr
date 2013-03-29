@@ -113,6 +113,14 @@ public class HivCareVisitsIndicatorEvaluator implements IndicatorEvaluator {
 	 * @return true if was part of scheduled visit
 	 */
 	private boolean wasScheduledVisit(Encounter encounter) {
+		// Firstly look for a scheduled visit obs which has value = true
+		Concept scheduledVisit = Context.getConceptService().getConceptByUuid(MetadataConstants.SCHEDULED_VISIT_CONCEPT_UUID);
+		for (Obs obs : encounter.getAllObs()) {
+			if (obs.getConcept().equals(scheduledVisit) && obs.getValueBoolean()) {
+				return true;
+			}
+		}
+
 		Date visitDate = (encounter.getVisit() != null) ? encounter.getVisit().getStartDatetime() : encounter.getEncounterDatetime();
 		Concept returnVisitDate = Context.getConceptService().getConceptByUuid(MetadataConstants.RETURN_VISIT_DATE_CONCEPT_UUID);
 		List<Obs> returnVisitObss = Context.getObsService().getObservationsByPersonAndConcept(encounter.getPatient(), returnVisitDate);
