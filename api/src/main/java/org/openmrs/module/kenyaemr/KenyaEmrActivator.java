@@ -53,14 +53,7 @@ public class KenyaEmrActivator implements ModuleActivator {
 	 * @see ModuleActivator#contextRefreshed()
 	 */
 	public void contextRefreshed() {
-		try {
-			KenyaEmr.getInstance().contextRefreshed();
-
-			log.info("Kenya EMR context refreshed");
-		}
-		catch (Exception ex) {
-			log.error("Error while refreshing Kenya EMR context", ex);
-		}
+		log.info("Kenya EMR context refreshed");
 	}
 
 	/**

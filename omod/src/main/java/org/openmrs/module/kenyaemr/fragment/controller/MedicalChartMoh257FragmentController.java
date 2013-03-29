@@ -20,9 +20,7 @@ import org.openmrs.module.kenyaemr.KenyaEmrUiUtils;
 import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.kenyaemr.ValidatingCommandObject;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
-import org.openmrs.module.kenyaemr.form.FormManager;
 import org.openmrs.module.kenyaemr.regimen.RegimenChangeHistory;
-import org.openmrs.module.kenyaemr.regimen.RegimenManager;
 import org.openmrs.module.kenyaemr.util.KenyaEmrUtils;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
@@ -68,7 +66,7 @@ public class MedicalChartMoh257FragmentController {
 			List<Encounter> formEncounters = getPatientEncounterByForm(patient, Context.getFormService().getFormByUuid(page1FormUuid));
 
 			if (formEncounters.size() == 0) {
-				page1AvailableForms.add(kenyaUi.simpleForm(emr.getFormManager().getFormConfig(page1FormUuid), ui));
+				page1AvailableForms.add(kenyaUi.simpleForm(emr.getFormManager().getFormDescriptor(page1FormUuid), ui));
 			}
 			else {
 				page1Encounters.addAll(formEncounters);

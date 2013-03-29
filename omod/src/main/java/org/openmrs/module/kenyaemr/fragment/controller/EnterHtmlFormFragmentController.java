@@ -36,10 +36,14 @@ import org.openmrs.module.htmlformentry.FormSubmissionError;
 import org.openmrs.module.htmlformentry.HtmlForm;
 import org.openmrs.module.htmlformentry.HtmlFormEntryService;
 import org.openmrs.module.htmlformentry.HtmlFormEntryUtil;
+import org.openmrs.module.kenyaemr.KenyaEmr;
+import org.openmrs.module.kenyaemr.form.FormDescriptor;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.annotation.FragmentParam;
+import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.FragmentConfiguration;
 import org.openmrs.ui.framework.fragment.FragmentModel;
+import org.openmrs.ui.framework.resource.ResourceFactory;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
@@ -50,6 +54,8 @@ public class EnterHtmlFormFragmentController {
 	protected final Log log = LogFactory.getLog(EnterHtmlFormFragmentController.class);
 
 	public void controller(FragmentConfiguration config,
+						   @SpringBean KenyaEmr emr,
+						   @SpringBean ResourceFactory resourceFactory,
 	                       @FragmentParam("patient") Patient patient,
 	                       @FragmentParam(value="htmlFormId", required=false) HtmlForm hf,
 	                       @FragmentParam(value="formId", required=false) Form form,
@@ -62,6 +68,7 @@ public class EnterHtmlFormFragmentController {
 
 		config.require("patient", "htmlFormId | formId | formUuid | encounter");
 
+		// Figure out which HTML form to use
 		if (hf == null) {
 			if (form != null) {
 				hf = Context.getService(HtmlFormEntryService.class).getHtmlFormByForm(form);
@@ -79,7 +86,14 @@ public class EnterHtmlFormFragmentController {
 		if (hf == null)
 			throw new RuntimeException("Could not find HTML Form");
 
-		// the code below doesn't handle the HFFS case where you might want to _add_ data to an existing encounter
+		// Check if form XML can be fetched from a resource
+		FormDescriptor descriptor = emr.getFormManager().getFormDescriptor(form.getUuid());
+		if (descriptor != null && descriptor.getResourceProvider() != null && descriptor.getResource() != null) {
+			String xml = resourceFactory.getResourceAsString(descriptor.getResourceProvider(), descriptor.getResource());
+			hf.setXmlData(xml);
+		}
+
+		// The code below doesn't handle the HFFS case where you might want to _add_ data to an existing encounter
 		FormEntrySession fes;
 		if (encounter != null) {
 			fes = new FormEntrySession(patient, encounter, Mode.EDIT, hf, httpSession);

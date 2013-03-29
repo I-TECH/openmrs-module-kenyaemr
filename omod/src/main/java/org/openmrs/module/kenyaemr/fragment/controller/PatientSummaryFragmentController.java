@@ -51,7 +51,7 @@ public class PatientSummaryFragmentController {
 	}
 
 	private static SimpleObject simpleFormByUuid(KenyaEmr emr, KenyaEmrUiUtils kenyaUi, UiUtils ui, String formUuid) {
-		FormDescriptor formDescriptor = emr.getFormManager().getFormConfig(formUuid);
+		FormDescriptor formDescriptor = emr.getFormManager().getFormDescriptor(formUuid);
 		return kenyaUi.simpleForm(formDescriptor, ui);
 	}
 }

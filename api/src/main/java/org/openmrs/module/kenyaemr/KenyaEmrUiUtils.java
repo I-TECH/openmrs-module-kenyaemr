@@ -180,7 +180,7 @@ public class KenyaEmrUiUtils {
 	 * @return the simple object
 	 */
 	public SimpleObject simpleForm(Form form, UiUtils ui) {
-		FormDescriptor config = KenyaEmr.getInstance().getFormManager().getFormConfig(form.getUuid());
+		FormDescriptor config = KenyaEmr.getInstance().getFormManager().getFormDescriptor(form.getUuid());
 		HtmlForm htmlForm = Context.getService(HtmlFormEntryService.class).getHtmlFormByForm(form);
 
 		return SimpleObject.create(
