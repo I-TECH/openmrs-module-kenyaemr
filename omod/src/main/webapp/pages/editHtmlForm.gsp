@@ -6,7 +6,7 @@
 	<div style="float: right">
 		<input id="cancel-form" type="button" value="${ ui.message("htmlformentry.discard") }"/>
 	</div>
-	<i>Editing ${ ui.format(encounter.encounterType) } at ${ ui.format(encounter.location) } on ${ ui.format(encounter.encounterDatetime) }</i>
+	<i>Editing ${ ui.format(encounter.encounterType) } at ${ ui.format(encounter.location) } on ${ kenyaUi.formatDateTime(encounter.encounterDatetime) }</i>
 	<div style="clear: both"></div>
 </div>
 
