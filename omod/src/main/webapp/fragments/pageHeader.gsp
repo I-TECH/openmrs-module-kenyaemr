@@ -1,7 +1,7 @@
 <%
 	def moduleVersionFull = "v" + moduleVersion
 	if (moduleBuildDate)
-		moduleVersionFull += " (" + ui.format(moduleBuildDate) + ")"
+		moduleVersionFull += " (" + kenyaUi.formatDate(moduleBuildDate) + ")"
 %>
 
 <div id="pageheader">
