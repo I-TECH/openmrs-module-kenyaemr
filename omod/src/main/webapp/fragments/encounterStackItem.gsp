@@ -18,7 +18,7 @@
 	${ ui.includeFragment("kenyaui", "widget/icon", [ iconProvider: form.iconProvider, icon: form.icon, useViewOverlay: true, tooltip: "View Encounter" ]) }
 	<b>${ title }</b> by ${ providers }<br/>
 	<span style="color: gray">
-		Entered by ${ ui.format(encounter.creator) } on ${ kenyaUi.formatDateTime(encounter.dateCreated) }<% if (encounter.dateChanged) { %>, last edit by ${ kenyaUi.formatDateTime(encounter.changedBy) } on ${ ui.format(encounter.dateChanged) }<% } %>
+		Entered by ${ ui.format(encounter.creator) } on ${ kenyaUi.formatDateTime(encounter.dateCreated) }<% if (encounter.dateChanged) { %>, last edit by ${ ui.format(encounter.changedBy) } on ${ kenyaUi.formatDateTime(encounter.dateChanged) }<% } %>
 	</span>
 	<div style="clear: both"></div>
 </div>
