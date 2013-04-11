@@ -127,7 +127,13 @@
 			<th rowspan="2">FP Status</th>
 			<th colspan="2">FP/No FP</th>
 			<td>(j)</td>
-			<td colspan="2"><obs conceptId="160653AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+			<td colspan="2">
+				<obs
+					conceptId="160653AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+					answerConceptIds="965AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1360AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+					answerLabels="Currently using Family Planning,Not using Family Planning,Wants Family Planning"
+				/>
+			</td>
 		</tr>
 		<tr>
 			<th colspan="2">Method/Why</th>
