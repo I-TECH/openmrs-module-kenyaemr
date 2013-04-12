@@ -146,14 +146,6 @@ public class FormManager {
 				Frequency.VISIT,
 				new String[] { "kenyaemr.intake", "kenyaemr.medicalEncounter", "kenyaemr.medicalChart" }
 		);
-		/*registerForm(
-				MetadataConstants.MOH_257_VISIT_SUMMARY_FORM_UUID,
-				Frequency.VISIT,
-				new String[] { "kenyaemr.medicalChart" },
-				MetadataConstants.HIV_PROGRAM_UUID,
-				Gender.BOTH,
-				"kenyaui", "forms/moh257.png"
-		);*/
 		registerForm(
 				MetadataConstants.TB_SCREENING_FORM_UUID,
 				Frequency.VISIT,
@@ -184,22 +176,6 @@ public class FormManager {
 				Frequency.PROGRAM,
 				new String[] { "kenyaemr.medicalChart" },
 				MetadataConstants.HIV_PROGRAM_UUID,
-				Gender.BOTH,
-				"kenyaui", "forms/discontinue.png"
-		);
-		registerForm(
-				MetadataConstants.TB_ENROLLMENT_FORM_UUID,
-				Frequency.PROGRAM,
-				new String[] { "kenyaemr.medicalChart" },
-				MetadataConstants.TB_PROGRAM_UUID,
-				Gender.BOTH,
-				"kenyaui", "forms/generic.png"
-		);
-		registerForm(
-				MetadataConstants.TB_COMPLETION_FORM_UUID,
-				Frequency.PROGRAM,
-				new String[] { "kenyaemr.medicalChart" },
-				MetadataConstants.TB_PROGRAM_UUID,
 				Gender.BOTH,
 				"kenyaui", "forms/discontinue.png"
 		);

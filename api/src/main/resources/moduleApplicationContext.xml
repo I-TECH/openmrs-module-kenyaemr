@@ -18,6 +18,28 @@
 		<property name="resource" value="htmlforms/moh257VisitSummary.xml" />
 	</bean>
 
+	<bean class="org.openmrs.module.kenyaemr.form.FormDescriptor">
+		<property name="formUuid" value="89994550-9939-40f3-afa6-173bce445c79" />
+		<property name="frequency" value="PROGRAM" />
+		<property name="apps">
+			<set><value>kenyaemr.medicalChart</value></set>
+		</property>
+		<property name="programUuid" value="9f144a34-3a4a-44a9-8486-6b7af6cc64f6" />
+		<property name="icon" value="forms/generic.png" />
+		<property name="resource" value="htmlforms/tbEnrollment.xml" />
+	</bean>
+
+	<bean class="org.openmrs.module.kenyaemr.form.FormDescriptor">
+		<property name="formUuid" value="4b296dd0-f6be-4007-9eb8-d0fd4e94fb3a" />
+		<property name="frequency" value="PROGRAM" />
+		<property name="apps">
+			<set><value>kenyaemr.medicalChart</value></set>
+		</property>
+		<property name="programUuid" value="9f144a34-3a4a-44a9-8486-6b7af6cc64f6" />
+		<property name="icon" value="forms/discontinue.png" />
+		<property name="resource" value="htmlforms/tbCompletion.xml" />
+	</bean>
+
 	<!-- Module service -->
 
     <bean id="kenyaEmrService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">

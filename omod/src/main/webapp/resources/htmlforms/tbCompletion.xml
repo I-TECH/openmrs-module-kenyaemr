@@ -1,0 +1,137 @@
+<!--
+  ~ The contents of this file are subject to the OpenMRS Public License
+  ~ Version 1.0 (the "License"); you may not use this file except in
+  ~ compliance with the License. You may obtain a copy of the License at
+  ~ http://license.openmrs.org
+  ~
+  ~ Software distributed under the License is distributed on an "AS IS"
+  ~ basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+  ~ License for the specific language governing rights and limitations
+  ~ under the License.
+  ~
+  ~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+  -->
+<htmlform formName="TB Completion" formVersion="0.2" formEncounterType="abfb143c-5b49-41e5-9ead-f47ee4cc57cf">
+
+	<style type="text/css">
+		table.baseline-aligned td {
+		vertical-align: baseline;
+		}
+	</style>
+
+	<script type="text/javascript">
+		$j(document).ready(function() {
+			var tdFortreatmentOutCome_ttle =  document.getElementById("id_treatment_outcome_date_ttle");
+			var tdFortreatmentOutCome_value=  document.getElementById("id_treatment_outcome_date_value");
+
+			//control the date on selection of options
+			$j("#treatment_outcome select").change(function() {
+				var value = '';
+				value += $j(this).val();
+				if (!value) {
+					tdFortreatmentOutCome_ttle.style.display = 'none';
+					tdFortreatmentOutCome_value.style.display = 'none';
+				}
+				else{
+					tdFortreatmentOutCome_ttle.style.display = 'inline';
+					tdFortreatmentOutCome_value.style.display = 'inline';
+				}
+			});
+
+			beforeSubmit.push(function() {
+				var outValue = getValue('treatment_outcome.value');
+				return true;
+			});
+		});
+	</script>
+
+	<fieldset>
+		<table class="baseline-aligned" width="100%">
+			<div class="patient-details">
+				<tr>
+					<td>Name: <lookup class="value" expression="patient.personName"/></td>
+					<td>Gender: <lookup class="value" expression="patient.gender"/></td>
+					<td>Birthdate: <lookup class="value" complexExpression="#if( \$patient.birthdateEstimated ) ~#end"/> <lookup class="value" expression="patient.birthdate"/></td>
+					<td> </td>
+				</tr>
+			</div>
+			<div class="encounter-details">
+				<tr>
+					<td>Date: <encounterDate default="now" showTime="true"/></td>
+					<td>Provider: <encounterProviderAndRole encounterRole="a0b03050-c99b-11e0-9572-0800200c9a66" default="currentUser" required="true"/></td>
+					<td>Location: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete"/></td>
+					<td> </td>
+				</tr>
+			</div>
+		</table>
+	</fieldset>
+	<br/>
+
+	<fieldset><legend>Treatment Outcomes</legend>
+		<table class="baseline-aligned" width="auto" border="0" cellspacing="10">
+			<tr>
+				<td>Treatment Outcome</td>
+				<td><obs conceptId="159786AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  style="dropdown" id="treatment_outcome"  answerConceptIds="159791AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160035AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159874AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160034AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160031AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159492AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Cured(Sm. Negative),Treatment Completed(no smear result),Failure(Sm. Positive),Dead,Defaulted,Transferred Out"/></td>
+
+				<td id ="id_treatment_outcome_date_ttle">Treatment Outcome date</td>
+				<td id ="id_treatment_outcome_date_value"><obs conceptId="159787AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+
+			</tr>
+		</table>
+		<table  class="baseline-aligned" width="auto" border="0" cellspacing="10">
+			<tr>
+				<td colspan="4">
+					<b>Clinical Notes:</b>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<obs conceptId="160029AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="135595AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Loss of Appetite" style="checkbox" /><br />
+					<obs conceptId="160029AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5544AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Weight gain" style="checkbox" /><br />
+					<obs conceptId="160029AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="879AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Pruritus/Itching" style="checkbox" /><br />
+					<obs conceptId="160029AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="143264AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Cough" style="checkbox" /><br />
+					<obs conceptId="160029AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="141723AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Drug-Induced Hepatitis" style="checkbox" /><br />
+					<obs conceptId="160029AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="80AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Joint pain" style="checkbox" />
+
+				</td>
+				<td>
+					<obs conceptId="160029AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="135488AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Lymphadenopathy" style="checkbox" /><br />
+					<obs conceptId="160029AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="136162AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Lactic Acidosis" style="checkbox" /><br />
+					<obs conceptId="160029AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="133027AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Night Sweats" style="checkbox" /><br />
+					<obs conceptId="160029AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="142412AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Diarrhoea" style="checkbox" /><br />
+					<obs conceptId="160029AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="122983AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Vomiting" style="checkbox" /><br />
+					<obs conceptId="160029AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="159438AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Well appearing" style="checkbox" />
+				</td>
+				<td>
+					<obs conceptId="160029AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="151AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Abdominal Pain" style="checkbox" /><br />
+					<obs conceptId="160029AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="140238AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Fever" style="checkbox" /><br />
+					<obs conceptId="160029AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5008AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Hepatomegaly" style="checkbox" /><br />
+					<obs conceptId="160029AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="120749AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Chest Pain" style="checkbox" /><br />
+					<obs conceptId="160029AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="832AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Weight loss" style="checkbox" /><br />
+					<obs conceptId="160029AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="139084AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Headache" style="checkbox" />
+				</td>
+				<td>
+					<obs conceptId="160029AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="512AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Rash" style="checkbox" /><br />
+					<obs conceptId="160029AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="118983AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Peripheral Neuropathy" style="checkbox" /><br />
+					<obs conceptId="160029AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160028AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="IRIS" style="checkbox" /><br />
+					<obs conceptId="160029AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1273AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Patient Hospitalized Location" style="checkbox" /><br />
+					<obs conceptId="160029AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="122496AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Difficulty Breathing" style="checkbox" /><br />
+					<obs conceptId="160029AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Other" style="checkbox" id="other" />
+				</td>
+			</tr>
+			<tr id="specify_other">
+				<td colspan="4">
+					Specify (if not provided):
+					<obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+				</td>
+			</tr>
+		</table>
+	</fieldset>
+
+	<completeProgram programId="9f144a34-3a4a-44a9-8486-6b7af6cc64f6"/>
+
+	<div class="ke-form-buttons">
+		<submit />
+	</div>
+
+</htmlform>
