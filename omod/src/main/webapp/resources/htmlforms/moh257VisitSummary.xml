@@ -27,7 +27,7 @@
 	</style>
 
 	<script type="text/javascript">
-		function bmiChanged() {
+		function onWeightOrHeightChange() {
 			var display = '';
 			var weightKg = parseFloat(getValue('weight.value'));
 			var heightM = parseFloat(getValue('height.value')) / 100;
@@ -40,22 +40,33 @@
 					display = bmi.toFixed(2);
 				}
 			}
-			$j('#bmi-calculated').html(display);
+			$j('#calculated-bmi').html(display);
+		}
+
+		function onEncounterDateChange() {
+			var patientId = <lookup expression="patient.patientId"/>;
+			var encDate = getValue('encounter-date.value');
+
+			$j.getJSON('/' + CONTEXT_PATH + '/kenyaemr/kenyaEmrUtil/durationSinceStartArt.action', { patientId: patientId, now: encDate })
+			.done(function(data) {
+				var msg = data.duration ? data.duration : 'Not started';
+				$j('#calculated-duration-start-art').html(msg);
+			});
+
+			$j.getJSON('/' + CONTEXT_PATH + '/kenyaemr/kenyaEmrUtil/currentArvRegimen.action', { patientId: patientId, now: encDate })
+			.done(function(data) {
+				var msg = data.duration ? (data.regimen +  ' (' + data.duration + ')') : 'None';
+				$j('#calculated-duration-current-regimen').html(msg);
+			});
 		}
 
 		$j(function() {
-			getField('weight.value').change(bmiChanged);
-			getField('height.value').change(bmiChanged);
-			bmiChanged();
+			getField('weight.value').change(onWeightOrHeightChange);
+			getField('height.value').change(onWeightOrHeightChange);
+			getField('encounter-date.value').change(onEncounterDateChange);
 
-			getField('person-present.value').change(function() {
-				var personPresent = getValue('person-present.value');
-				if (personPresent == 5622) { // Other
-		        	$j('#person-present-name-container').show();
-				} else {
-					$j('#person-present-name-container').hide();
-				}
-			});
+			onWeightOrHeightChange();
+			onEncounterDateChange();
 		});
 	</script>
 
@@ -96,12 +107,11 @@
 					id="person-present"
 					conceptId="161643AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 					answerConceptIds="978AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161642AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-					answerLabels="Self (SF),Treatment Supporter (TS),Other"
+					answerLabels="Self (SF),Treatment Supporter (TS),Other (give name)"
 					style="radio"
+					answerSeparator="&lt;br /&gt;"
 				/>
-				<div id="person-present-name-container" style="display:none">
-					Name <obs id="person-present-name" conceptId="160638AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
-				</div>
+				<obs id="person-present-name" conceptId="160638AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
 			</td>
 			<td><obs conceptId="1246AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" /> Scheduled</td>
 		</tr>
@@ -109,12 +119,12 @@
 			<th rowspan="2">Duration Since<br />(in months)</th>
 			<th colspan="2">Start ART</th>
 			<td>(c)</td>
-			<td colspan="2">[TODO: we can calculate this]</td>
+			<td colspan="2"><span id="calculated-duration-start-art" class="value"></span></td>
 		</tr>
 		<tr>
 			<th colspan="2">Current Regimen</th>
 			<td>(d)</td>
-			<td colspan="2">[TODO: we can calculate this]</td>
+			<td colspan="2"><span id="calculated-duration-current-regimen" class="value"></span></td>
 		</tr>
 		<tr>
 			<th colspan="3">Weight (kg) / Blood Pressure</th>
@@ -130,7 +140,7 @@
 		<tr>
 			<th colspan="3">BMI</th>
 			<td>(g)</td>
-			<td colspan="2"><span id="bmi-calculated" class="value"></span></td>
+			<td colspan="2"><span id="calculated-bmi" class="value"></span></td>
 		</tr>
 		<tr>
 			<th rowspan="2">Pregnancy</th>
@@ -151,7 +161,7 @@
 			<td>(i)</td>
 			<td colspan="2">
 				<includeIf velocityTest="$patient.gender == 'F' ">
-					<obs conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+					<obs conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" />
 				</includeIf>
 			</td>
 		</tr>
@@ -190,9 +200,13 @@
 			<td colspan="2">
 				<obs
 					conceptId="1659AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-					answerConceptIds="1660AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,142177AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1662AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-					answerLabels="NO Signs,TB Suspected,TB Rx,Not done (ND)"
+					answerConceptIds="160737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1660AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,142177AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1662AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+					answerLabels="Not done (ND),NO Signs,TB Suspected,TB Rx"
+					style="radio"
+					answerSeparator="&lt;br /&gt;"
 				/>
+
+				[TODO treatment number]
 			</td>
 		</tr>
 		<tr>

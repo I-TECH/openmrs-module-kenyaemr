@@ -11,20 +11,31 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.kenyaemr.fragment.controller;
 
 import java.util.*;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.openmrs.Concept;
 import org.openmrs.Location;
-import org.openmrs.LocationAttribute;
 import org.openmrs.LocationAttributeType;
+import org.openmrs.Patient;
 import org.openmrs.api.LocationService;
 import org.openmrs.api.context.Context;
+import org.openmrs.calculation.result.CalculationResult;
+import org.openmrs.module.kenyaemr.KenyaEmr;
 import org.openmrs.module.kenyaemr.KenyaEmrUiUtils;
 import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.kenyaemr.api.ConfigurationRequiredException;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
+import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
+import org.openmrs.module.kenyaemr.calculation.art.InitialArtStartDateCalculation;
+import org.openmrs.module.kenyaemr.regimen.RegimenChange;
+import org.openmrs.module.kenyaemr.regimen.RegimenChangeHistory;
+import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.SpringBean;
@@ -34,6 +45,8 @@ import org.springframework.web.bind.annotation.RequestParam;
  * Fragment actions generally useful for the Kenya EMR module
  */
 public class KenyaEmrUtilFragmentController {
+
+	protected static final Log log = LogFactory.getLog(KenyaEmrUtilFragmentController.class);
 
 	/**
 	 * Searches for locations by name of MFL code
@@ -83,9 +96,9 @@ public class KenyaEmrUtilFragmentController {
 	}
 
 	/**
-	 *
-	 * @param comment
-	 * @return
+	 * Gets the next HIV patient number from the generator
+	 * @param comment the optional comment
+	 * @return simple object { value: identifier value }
 	 */
 	public SimpleObject nextHivUniquePatientNumber(@RequestParam(required = false, value = "comment") String comment) {
 		if (comment == null) {
@@ -93,5 +106,35 @@ public class KenyaEmrUtilFragmentController {
 		}
 		String id = Context.getService(KenyaEmrService.class).getNextHivUniquePatientNumber(comment);
 		return SimpleObject.create("value", id);
+	}
+
+	/**
+	 * Gets the duration since patient started ART
+	 * @param patient the patient
+	 * @param now the current time reference
+	 * @return
+	 */
+	public SimpleObject currentArvRegimen(@RequestParam("patientId") Patient patient, @RequestParam("now") Date now, @SpringBean KenyaEmr emr, @SpringBean KenyaEmrUiUtils kenyaEmrUi, @SpringBean KenyaUiUtils kenyaUi, UiUtils ui) {
+		Concept arvs = emr.getRegimenManager().getMasterSetConcept("ARV");
+		RegimenChangeHistory history = RegimenChangeHistory.forPatient(patient, arvs);
+		RegimenChange current = history.getLastChangeBeforeDate(now);
+
+		return SimpleObject.create(
+				"regimen", current != null ? kenyaEmrUi.formatRegimenShort(current.getStarted(), ui) : null,
+				"duration", current != null ? kenyaUi.formatInterval(current.getDate(), now) : null
+		);
+	}
+
+	/**
+	 * Gets the duration since patient started ART
+	 * @param patient the patient
+	 * @param now the current time reference
+	 * @return
+	 */
+	public SimpleObject durationSinceStartArt(@RequestParam("patientId") Patient patient, @RequestParam("now") Date now, @SpringBean KenyaUiUtils kenyaUi) {
+		CalculationResult result = CalculationUtils.evaluateForPatient(InitialArtStartDateCalculation.class, null, patient.getPatientId());
+		Date artStartDate = result != null ? (Date) result.getValue() : null;
+
+		return SimpleObject.create("duration", artStartDate != null ? kenyaUi.formatInterval(artStartDate, now) : null);
 	}
 }
