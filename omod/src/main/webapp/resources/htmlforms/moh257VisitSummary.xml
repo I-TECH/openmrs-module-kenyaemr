@@ -197,16 +197,17 @@
 			<th rowspan="2">Tuberculosis Status</th>
 			<th colspan="2">Status</th>
 			<td>(l)</td>
-			<td colspan="2">
+			<td>
 				<obs
 					conceptId="1659AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-					answerConceptIds="160737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1660AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,142177AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1662AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-					answerLabels="Not done (ND),NO Signs,TB Suspected,TB Rx"
+					answerConceptIds="1660AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,142177AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1662AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+					answerLabels="NO Signs,TB Suspected,TB Rx,Not done (ND)"
 					style="radio"
 					answerSeparator="&lt;br /&gt;"
 				/>
-
-				[TODO treatment number]
+			</td>
+			<td>
+				District Reg Num: <patient field="identifier" identifierTypeId="d8ee3b8c-a8fc-4d6b-af6a-9423be5f8906" />
 			</td>
 		</tr>
 		<tr>
@@ -235,7 +236,14 @@
 			<th rowspan="2">Cotrimoxazole</th>
 			<th colspan="2">Adherence</th>
 			<td>(q)</td>
-			<td colspan="2"><obs conceptId="1658AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+			<td colspan="2">
+				<obs
+					conceptId="1658AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+					answerConceptIds="159405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159406AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159407AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+					answerLabels="Good (G),Fair (F),Poor (P)"
+					style="radio"
+				/>
+			</td>
 		</tr>
 		<tr>
 			<th colspan="2">Dispensed</th>
@@ -272,15 +280,24 @@
 			<th rowspan="3">ARV Drugs</th>
 			<th colspan="2">Adherence</th>
 			<td>(u)</td>
-			<td rowspan="3" colspan="2" valign="middle"><span class="ke-field-instructions">Enter using ARV regimen editor</span></td>
+			<td colspan="2">
+				<obs
+					conceptId="1658AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+					answerConceptIds="159405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159406AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159407AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+					answerLabels="Good (G),Fair (F),Poor (P)"
+					style="radio"
+				/>
+			</td>
 		</tr>
 		<tr>
 			<th colspan="2">Why poor/fair</th>
 			<td>(v)</td>
+			<td colspan="2"></td>
 		</tr>
 		<tr>
 			<th colspan="2">Regm/Dose/Days</th>
 			<td>(w)</td>
+			<td colspan="2"><span class="ke-field-instructions">Enter using ARV regimen editor</span></td>
 		</tr>
 		<tr>
 			<th rowspan="5">Laboratory<br />Investigations<br />Done</th>
