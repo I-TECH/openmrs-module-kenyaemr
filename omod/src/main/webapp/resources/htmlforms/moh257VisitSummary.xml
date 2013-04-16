@@ -173,23 +173,37 @@
 				<obs
 					conceptId="160653AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 					answerConceptIds="965AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1360AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-					answerLabels="Currently using Family Planning (FP),Not using Family Planning (NOFP),Wants Family Planning (WFP)"
+					answerLabels="Currently using (FP),Not using (NOFP),Wants (WFP)"
+					style="radio"
 				/>
 			</td>
 		</tr>
 		<tr>
 			<th colspan="2">Method/Why</th>
 			<td>(k)</td>
-			<td colspan="2">
-				<obs
-					conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-					answerConceptIds="190AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160570AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,780AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5279AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1359AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5275AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,136163AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5278AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5277AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1472AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1489AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-					answerLabels="Condoms (C),Emergency Contraceptive Pill (ECP),Oral Contraceptive Pills (OC),Injectables (INJ),Implant (IMP),Intrauterine Devices (IUD),Lactational Amenorrhea (LAM),Diaphragm/Cervical Cap (D),Fertility Awareness Method/Periodic Abstinence (FA),Tubal Ligation/Female Sterilization (TL),Vasectomy (V),Other,Not Applicable"
-				/>
+			<td>
+				<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="190AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Condoms (C)" /><br />
+				<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160570AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Emergency Contraceptive Pill (ECP)" /><br />
+				<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="780AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Oral Contraceptive Pills (OC)" /><br />
+				<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5279AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Injectables (INJ)" /><br />
+				<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1359AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Implant (IMP)" /><br />
+				<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5275AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Intrauterine Devices (IUD)" /><br />
+				<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="136163AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Lactational Amenorrhea (LAM)" /><br />
+				<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5278AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Diaphragm/Cervical Cap (D)" /><br />
+				<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5277AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Fertility Awareness/Periodic Abstinence (FA)" /><br />
+				<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1472AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Tubal Ligation/Female Sterilization (TL)" /><br />
+				<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1489AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Vasectomy (V)" /><br />
+				<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Not Applicable" /><br />
+				<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Other" />
+				[TODO need concept for non-coded]
+			</td>
+			<td>
 				<obs
 					conceptId="160575AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 					answerConceptIds="160571AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160572AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160573AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-					answerLabels="Wants to get pregnant (WP),Thinks can‘t get pregnant (UP),Not sexually active now (NSex)"
+					answerLabels="Wants to get pregnant (WP),Thinks can't get pregnant (UP),Not sexually active now (NSex)"
+					style="radio"
+					answerSeparator="&lt;br /&gt;"
 				/>
 			</td>
 		</tr>
@@ -213,17 +227,17 @@
 		<tr>
 			<th colspan="2">TBRx #</th>
 			<td>(m)</td>
-			<td colspan="2">[TODO: we can calculate this]</td>
+			<td colspan="2"><lookup class="value" expression="fn.latestObs(1113).valueDate" /></td>
 		</tr>
 		<tr>
 			<th colspan="3">Potential Side Effects</th>
 			<td>(n)</td>
-			<td colspan="2">[TODO]</td>
+			<td colspan="2">[TODO need concept]</td>
 		</tr>
 		<tr>
 			<th colspan="3">New OIs &amp; Other Problems</th>
 			<td>(o)</td>
-			<td colspan="2">[TODO]</td>
+			<td colspan="2">[TODO need concept]</td>
 		</tr>
 		<tr>
 			<th colspan="3">WHO Stage</th>
@@ -248,12 +262,12 @@
 		<tr>
 			<th colspan="2">Dispensed</th>
 			<td>(r)</td>
-			<td colspan="2">[TODO]</td>
+			<td colspan="2">[TODO need concept]</td>
 		</tr>
 		<tr>
 			<th colspan="3">INH Dispensed</th>
 			<td>(s)</td>
-			<td colspan="2">[TODO]</td>
+			<td colspan="2">[TODO need concept]</td>
 		</tr>
 		<tr>
 			<th colspan="3">Other Medications Dispensed</th>
@@ -292,7 +306,23 @@
 		<tr>
 			<th colspan="2">Why poor/fair</th>
 			<td>(v)</td>
-			<td colspan="2"></td>
+			<td colspan="2">
+				<obs conceptId="160582AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="102AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Toxicity/side effects (1)" /><br />
+				<obs conceptId="160582AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160583AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Share with others (2)" /><br />
+				<obs conceptId="160582AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160587AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Forgot (3)" /><br />
+				<obs conceptId="160582AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160586AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Felt better (4)" /><br />
+				<obs conceptId="160582AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160585AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Too ill (5)" /><br />
+				<obs conceptId="160582AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160589AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Stigma, disclosure or privacy issues (6)" /><br />
+				<obs conceptId="160582AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1754AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Drug stock out at dispensary (7)" /><br />
+				<obs conceptId="160582AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160584AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Patient lost/ran out of pills (8)" /><br />
+				<obs conceptId="160582AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="820AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Delivery/travel problems (9)" /><br />
+				<obs conceptId="160582AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="819AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Inability to pay (10)" /><br />
+				<obs conceptId="160582AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="121725AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Alcohol (11)" /><br />
+				<obs conceptId="160582AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="119537AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Depression (12)" /><br />
+				<obs conceptId="160582AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160588AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Pill burden (13)" /><br />
+				<obs conceptId="160582AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Other (14)" />
+				[TODO need concept for non-coded]
+			</td>
 		</tr>
 		<tr>
 			<th colspan="2">Regm/Dose/Days</th>
@@ -323,22 +353,30 @@
 		<tr>
 			<th colspan="2">Other</th>
 			<td>(ab)</td>
-			<td colspan="2">[TODO]</td>
+			<td colspan="2"><span class="ke-field-instructions">Enter using Lab Tests form</span></td>
 		</tr>
 		<tr>
 			<th colspan="3">Referral / Hospitalized</th>
 			<td>(ac)</td>
-			<td colspan="2"><obs conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+			<td colspan="2">
+				<obs conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Dental Services" /><br />
+				<obs conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5489AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Mental Health Services" /><br />
+				...<br />
+				[TODO need comprehensive list]<br />
+				...<br />
+				<obs conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Other" />
+				[TODO need concept for non-coded]
+			</td>
 		</tr>
 		<tr>
 			<th colspan="3">At Risk Population</th>
 			<td>(ad)</td>
 			<td colspan="2">
-				<obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="6096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Discordant Couple" style="checkbox" /><br />
-				<obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="105AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Injectable Drug User" style="checkbox" /><br />
-				<obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160578AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Male who has sex with men" style="checkbox" /><br />
-				<obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160579AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Sex Worker" style="checkbox" /><br />
-				<obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160580AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Client of Sex Worker" style="checkbox" />
+				<obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="6096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Discordant Couple (DC)" style="checkbox" /><br />
+				<obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160578AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Male who has sex with men (MSM)" style="checkbox" /><br />
+				<obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="105AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Injectable Drug User (IDU)" style="checkbox" /><br />
+				<obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160579AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Sex Worker (SW)" style="checkbox" /><br />
+				<obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160580AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Client of Sex Worker (cSW)" style="checkbox" />
 			</td>
 		</tr>
 		<tr>
