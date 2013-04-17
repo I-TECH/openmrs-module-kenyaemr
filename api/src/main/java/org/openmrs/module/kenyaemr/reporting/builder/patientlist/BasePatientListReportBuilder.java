@@ -30,51 +30,63 @@ import org.openmrs.module.reporting.report.definition.ReportDefinition;
  * Base implementation for row-per-patient reports
  */
 public abstract class BasePatientListReportBuilder extends ReportBuilder {
-	
+
 	/**
 	 * Override this if you don't want the default (HIV ID, name, sex, age)
 	 * @param dsd this will be modified by having columns added
 	 */
-	public void addColumns(PatientDataSetDefinition dsd) {
+	protected void addColumns(PatientDataSetDefinition dsd) {
+		addStandardColumns(dsd);
+		addViewColumn(dsd);
+	}
+
+	/**
+	 * Adds the standard patient list columns
+	 * @param dsd the data set definition
+	 */
+	protected void addStandardColumns(PatientDataSetDefinition dsd) {
 		dsd.addColumn("HIV Unique ID", new PatientIdentifierDataDefinition("HIV Unique ID", Context.getPatientService().getPatientIdentifierTypeByUuid(MetadataConstants.UNIQUE_PATIENT_NUMBER_UUID)), "");
 		dsd.addColumn("Patient Name", new PreferredNameDataDefinition(), "");
 		dsd.addColumn("Age", new AgeDataDefinition(), "");
 		dsd.addColumn("Sex", new GenderDataDefinition(), "");
-        addViewColumn(dsd);
-    }
+	}
 
-    protected void addViewColumn(PatientDataSetDefinition dsd) {
-        dsd.addColumn("View", new PatientIdDataDefinition(), "", new DataConverter() {
-
-            @Override
-            public Class<?> getInputDataType() {
-                return Integer.class;
-            }
-
-            @Override
-            public Class<?> getDataType() {
-                return String.class;
-            }
-
-            @Override
-            public Object convert(Object input) {
-                return "<a href=\"medicalChartViewPatient.page?patientId=" + input + "\">View</a>";
-            }
-        });
-    }
-	
 	/**
-     * Builds the report definition
+	 * Adds the view column
+	 * @param dsd the data set definition
+	 */
+	protected void addViewColumn(PatientDataSetDefinition dsd) {
+		dsd.addColumn("View", new PatientIdDataDefinition(), "", new DataConverter() {
+
+			@Override
+			public Class<?> getInputDataType() {
+				return Integer.class;
+			}
+
+			@Override
+			public Class<?> getDataType() {
+				return String.class;
+			}
+
+			@Override
+			public Object convert(Object input) {
+				return "<a href=\"medicalChartViewPatient.page?patientId=" + input + "\">View</a>";
+			}
+		});
+	}
+
+	/**
+	 * Builds the report definition
 	 *
-     */
+	 */
 	@Override
-    protected ReportDefinition buildReportDefinition() {
+	protected ReportDefinition buildReportDefinition() {
 		ReportDefinition rd = new ReportDefinition();
 		rd.setName(getName());
 		rd.setDescription(getDescription());
 		rd.addDataSetDefinition(buildDataSet(), null);
 		return rd;
-    }
+	}
 
 	/**
 	 * Builds the data set

@@ -31,9 +31,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class DecliningCD4Report extends BasePatientCalculationReportBuilder {
 
-    public DecliningCD4Report() {
-        super(new DecliningCD4Calculation());
-    }
+	public DecliningCD4Report() {
+		super(new DecliningCD4Calculation());
+	}
 
 	/**
 	 * @see org.openmrs.module.kenyaemr.reporting.builder.ReportBuilder#getTags()
@@ -43,50 +43,49 @@ public class DecliningCD4Report extends BasePatientCalculationReportBuilder {
 		return new String[] { "facility", "hiv" };
 	}
 
-    @Override
-    public void addColumns(PatientDataSetDefinition dsd) {
-        Concept concept = Context.getConceptService().getConceptByUuid(MetadataConstants.CD4_CONCEPT_UUID);
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DATE, -180);
-        Date onOrBefore = calendar.getTime();
+	@Override
+	protected void addColumns(PatientDataSetDefinition dsd) {
+		Concept concept = Context.getConceptService().getConceptByUuid(MetadataConstants.CD4_CONCEPT_UUID);
+		Calendar calendar = Calendar.getInstance();
+		calendar.add(Calendar.DATE, -180);
+		Date onOrBefore = calendar.getTime();
 
-        super.addColumns(dsd);
-        dsd.removeColumnDefinition("View");
+		addStandardColumns(dsd);
 
-        dsd.addColumn("Previous CD4", new ObsForPersonDataDefinition("Previous CD4", TimeQualifier.LAST, concept, onOrBefore, null), "", new DataConverter() {
-            @Override
-            public Class<?> getInputDataType() {
-                return Obs.class;
-            }
+		dsd.addColumn("Previous CD4", new ObsForPersonDataDefinition("Previous CD4", TimeQualifier.LAST, concept, onOrBefore, null), "", new DataConverter() {
+			@Override
+			public Class<?> getInputDataType() {
+				return Obs.class;
+			}
 
-            @Override
-            public Class<?> getDataType() {
-                return Double.class;
-            }
+			@Override
+			public Class<?> getDataType() {
+				return Double.class;
+			}
 
-            @Override
-            public Object convert(Object input) {
-                return ((Obs) input).getValueNumeric();
-            }
-        });
+			@Override
+			public Object convert(Object input) {
+				return ((Obs) input).getValueNumeric();
+			}
+		});
 
-        dsd.addColumn("Current CD4", new ObsForPersonDataDefinition("Current CD4", TimeQualifier.LAST, concept, new Date(), null), "", new DataConverter() {
-            @Override
-            public Class<?> getInputDataType() {
-                return Obs.class;
-            }
+		dsd.addColumn("Current CD4", new ObsForPersonDataDefinition("Current CD4", TimeQualifier.LAST, concept, new Date(), null), "", new DataConverter() {
+			@Override
+			public Class<?> getInputDataType() {
+				return Obs.class;
+			}
 
-            @Override
-            public Class<?> getDataType() {
-                return Double.class;
-            }
+			@Override
+			public Class<?> getDataType() {
+				return Double.class;
+			}
 
-            @Override
-            public Object convert(Object input) {
-                return ((Obs) input).getValueNumeric();
-            }
-        });
+			@Override
+			public Object convert(Object input) {
+				return ((Obs) input).getValueNumeric();
+			}
+		});
 
-        addViewColumn(dsd);
-    }
+		addViewColumn(dsd);
+	}
 }
