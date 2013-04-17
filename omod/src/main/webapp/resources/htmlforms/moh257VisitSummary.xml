@@ -353,18 +353,21 @@
 		<tr>
 			<th colspan="2">Other</th>
 			<td>(ab)</td>
-			<td colspan="2"><span class="ke-field-instructions">Enter using Lab Tests form</span></td>
+			<td colspan="2">
+
+				<span class="ke-field-instructions">Enter using Lab Tests form</span>
+
+				<!--<labTests />-->
+
+			</td>
 		</tr>
 		<tr>
 			<th colspan="3">Referral / Hospitalized</th>
 			<td>(ac)</td>
 			<td colspan="2">
-				<obs conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Dental Services" /><br />
-				<obs conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5489AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Mental Health Services" /><br />
-				...<br />
-				[TODO need comprehensive list]<br />
-				...<br />
-				<obs conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Other" />
+				1. <obs conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><br />
+				2. <obs conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><br />
+				3. <obs conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><br />
 				[TODO need concept for non-coded]
 			</td>
 		</tr>
