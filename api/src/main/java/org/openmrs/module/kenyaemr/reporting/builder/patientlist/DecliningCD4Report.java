@@ -12,7 +12,7 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.report.patientlist;
+package org.openmrs.module.kenyaemr.reporting.builder.patientlist;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -36,7 +36,7 @@ public class DecliningCD4Report extends BasePatientCalculationReportBuilder {
     }
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.report.ReportBuilder#getTags()
+	 * @see org.openmrs.module.kenyaemr.reporting.builder.ReportBuilder#getTags()
 	 */
 	@Override
 	public String[] getTags() {

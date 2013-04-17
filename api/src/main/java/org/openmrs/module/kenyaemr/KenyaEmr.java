@@ -21,7 +21,7 @@ import org.openmrs.module.ModuleFactory;
 import org.openmrs.module.kenyaemr.calculation.CalculationManager;
 import org.openmrs.module.kenyaemr.form.FormManager;
 import org.openmrs.module.kenyaemr.regimen.RegimenManager;
-import org.openmrs.module.kenyaemr.report.ReportManager;
+import org.openmrs.module.kenyaemr.reporting.ReportManager;
 import org.openmrs.module.kenyaemr.util.BuildProperties;
 import org.openmrs.ui.framework.UiContextRefreshedCallback;
 import org.openmrs.ui.framework.fragment.FragmentFactory;

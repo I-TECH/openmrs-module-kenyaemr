@@ -12,20 +12,23 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.report.patientlist;
+package org.openmrs.module.kenyaemr.reporting.builder.patientlist;
 
-import org.openmrs.module.kenyaemr.calculation.LostToFollowUpCalculation;
+import org.openmrs.module.kenyaemr.calculation.art.EligibleForArtCalculation;
 import org.springframework.stereotype.Component;
 
+/**
+ * Eligible for ART report
+ */
 @Component
-public class LostToFollowUpReport extends BasePatientCalculationReportBuilder {
-
-    public LostToFollowUpReport() {
-		super(new LostToFollowUpCalculation());
-    }
+public class EligibleForArtReport extends BasePatientCalculationReportBuilder {
+	
+	public EligibleForArtReport() {
+		super(new EligibleForArtCalculation());
+	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.report.ReportBuilder#getTags()
+	 * @see org.openmrs.module.kenyaemr.reporting.builder.ReportBuilder#getTags()
 	 */
 	@Override
 	public String[] getTags() {

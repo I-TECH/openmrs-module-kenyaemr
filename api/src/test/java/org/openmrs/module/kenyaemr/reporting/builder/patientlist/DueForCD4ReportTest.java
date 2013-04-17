@@ -12,7 +12,7 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.report.patientlist;
+package org.openmrs.module.kenyaemr.reporting.builder.patientlist;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -23,15 +23,13 @@ import org.openmrs.Program;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyaemr.report.ReportBuilder;
-import org.openmrs.module.kenyaemr.report.patientlist.NeedsCD4Report;
+import org.openmrs.module.kenyaemr.reporting.builder.ReportBuilder;
 import org.openmrs.module.kenyaemr.test.TestUtils;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
-
 
 /**
  *

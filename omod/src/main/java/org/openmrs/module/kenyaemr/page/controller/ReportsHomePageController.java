@@ -19,8 +19,7 @@ import java.util.List;
 
 import org.openmrs.module.appframework.AppUiUtil;
 import org.openmrs.module.kenyaemr.KenyaEmr;
-import org.openmrs.module.kenyaemr.report.ReportBuilder;
-import org.openmrs.module.kenyaemr.report.ReportManager;
+import org.openmrs.module.kenyaemr.reporting.builder.ReportBuilder;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.page.PageModel;

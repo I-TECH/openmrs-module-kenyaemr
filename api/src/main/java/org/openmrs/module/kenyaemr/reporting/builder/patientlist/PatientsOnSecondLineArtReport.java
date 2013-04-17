@@ -12,20 +12,23 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.report.patientlist;
+package org.openmrs.module.kenyaemr.reporting.builder.patientlist;
 
-import org.openmrs.module.kenyaemr.calculation.MissedAppointmentsOrDefaultedCalculation;
+import org.openmrs.module.kenyaemr.calculation.art.OnSecondLineArtCalculation;
 import org.springframework.stereotype.Component;
 
+/**
+ * Patients on second line ART report
+ */
 @Component
-public class MissedAppointmentsOrDefaultedReport extends BasePatientCalculationReportBuilder {
+public class PatientsOnSecondLineArtReport extends BasePatientCalculationReportBuilder {
 
-    public MissedAppointmentsOrDefaultedReport() {
-		super(new MissedAppointmentsOrDefaultedCalculation());
+    public PatientsOnSecondLineArtReport() {
+		super(new OnSecondLineArtCalculation());
     }
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.report.ReportBuilder#getTags()
+	 * @see org.openmrs.module.kenyaemr.reporting.builder.ReportBuilder#getTags()
 	 */
 	@Override
 	public String[] getTags() {

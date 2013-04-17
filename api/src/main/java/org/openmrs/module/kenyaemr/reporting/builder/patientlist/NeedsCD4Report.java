@@ -12,7 +12,7 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.report.patientlist;
+package org.openmrs.module.kenyaemr.reporting.builder.patientlist;
 
 import org.openmrs.module.kenyaemr.calculation.cd4.NeedsCD4Calculation;
 import org.springframework.stereotype.Component;
@@ -28,7 +28,7 @@ public class NeedsCD4Report extends BasePatientCalculationReportBuilder {
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.report.ReportBuilder#getTags()
+	 * @see org.openmrs.module.kenyaemr.reporting.builder.ReportBuilder#getTags()
 	 */
 	@Override
 	public String[] getTags() {

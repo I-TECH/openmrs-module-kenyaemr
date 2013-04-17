@@ -12,10 +12,11 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.report;
+package org.openmrs.module.kenyaemr.reporting;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.openmrs.module.kenyaemr.reporting.builder.ReportBuilder;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 

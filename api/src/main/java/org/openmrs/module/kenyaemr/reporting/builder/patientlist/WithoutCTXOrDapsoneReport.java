@@ -12,23 +12,20 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.report.patientlist;
+package org.openmrs.module.kenyaemr.reporting.builder.patientlist;
 
-import org.openmrs.module.kenyaemr.calculation.tb.TbNeverScreenedCalculation;
+import org.openmrs.module.kenyaemr.calculation.WithoutCTXOrDapsoneCalculation;
 import org.springframework.stereotype.Component;
 
-/**
- * Never screened for TB report
- */
 @Component
-public class NeverScreenedForTBCalculationReport extends BasePatientCalculationReportBuilder {
+public class WithoutCTXOrDapsoneReport extends BasePatientCalculationReportBuilder {
 
-    public NeverScreenedForTBCalculationReport() {
-		super(new TbNeverScreenedCalculation());
+    public WithoutCTXOrDapsoneReport() {
+		super(new WithoutCTXOrDapsoneCalculation());
     }
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.report.ReportBuilder#getTags()
+	 * @see org.openmrs.module.kenyaemr.reporting.builder.ReportBuilder#getTags()
 	 */
 	@Override
 	public String[] getTags() {

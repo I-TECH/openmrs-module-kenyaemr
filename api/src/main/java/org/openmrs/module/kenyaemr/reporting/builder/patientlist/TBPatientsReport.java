@@ -12,26 +12,26 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.report.patientlist;
+package org.openmrs.module.kenyaemr.reporting.builder.patientlist;
 
-import org.openmrs.module.kenyaemr.calculation.art.EligibleForArtCalculation;
+import org.openmrs.module.kenyaemr.calculation.tb.TbInProgramCalculation;
 import org.springframework.stereotype.Component;
 
 /**
- * Eligible for ART report
+ * TB patients report
  */
 @Component
-public class EligibleForArtReport extends BasePatientCalculationReportBuilder {
-	
-	public EligibleForArtReport() {
-		super(new EligibleForArtCalculation());
-	}
+public class TBPatientsReport extends BasePatientCalculationReportBuilder {
+
+    public TBPatientsReport() {
+		super(new TbInProgramCalculation());
+    }
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.report.ReportBuilder#getTags()
+	 * @see org.openmrs.module.kenyaemr.reporting.builder.ReportBuilder#getTags()
 	 */
 	@Override
 	public String[] getTags() {
-		return new String[] { "facility", "hiv" };
+		return new String[] { "facility", "tb" };
 	}
 }

@@ -12,7 +12,7 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.report.indicator;
+package org.openmrs.module.kenyaemr.reporting.builder.indicator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -69,7 +69,7 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 	private Map<String, Indicator> nonCohortIndicators;
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.report.ReportBuilder#getTags()
+	 * @see org.openmrs.module.kenyaemr.reporting.builder.ReportBuilder#getTags()
 	 */
 	@Override
 	public String[] getTags() {
@@ -85,7 +85,7 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.report.ReportBuilder#getDescription()
+	 * @see org.openmrs.module.kenyaemr.reporting.builder.ReportBuilder#getDescription()
 	 */
 	@Override
 	public String getDescription() {
@@ -101,7 +101,7 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.report.indicator.BaseIndicatorReportBuilder#buildDataSet()
+	 * @see BaseIndicatorReportBuilder#buildDataSet()
 	 */
 	@Override
 	public DataSetDefinition buildDataSet() {

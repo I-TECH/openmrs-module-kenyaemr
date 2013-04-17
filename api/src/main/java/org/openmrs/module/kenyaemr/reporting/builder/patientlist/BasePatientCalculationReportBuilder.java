@@ -12,7 +12,7 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.report.patientlist;
+package org.openmrs.module.kenyaemr.reporting.builder.patientlist;
 
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.EmrCalculationCohortDefinition;
@@ -44,7 +44,7 @@ public abstract class BasePatientCalculationReportBuilder extends BasePatientLis
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.report.ReportBuilder#getName()
+	 * @see org.openmrs.module.kenyaemr.reporting.builder.ReportBuilder#getName()
 	 */
 	@Override
 	public String getName() {
@@ -52,7 +52,7 @@ public abstract class BasePatientCalculationReportBuilder extends BasePatientLis
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.report.ReportBuilder#getDescription()
+	 * @see org.openmrs.module.kenyaemr.reporting.builder.ReportBuilder#getDescription()
 	 */
 	@Override
 	public String getDescription() {

@@ -12,9 +12,9 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.report.indicator;
+package org.openmrs.module.kenyaemr.reporting.builder.indicator;
 
-import org.openmrs.module.kenyaemr.report.ReportBuilder;
+import org.openmrs.module.kenyaemr.reporting.builder.ReportBuilder;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
@@ -28,7 +28,7 @@ import java.util.Date;
 public abstract class BaseIndicatorReportBuilder extends ReportBuilder {
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.report.ReportBuilder#buildReportDefinition()
+	 * @see org.openmrs.module.kenyaemr.reporting.builder.ReportBuilder#buildReportDefinition()
 	 */
 	@Override
 	protected ReportDefinition buildReportDefinition() {

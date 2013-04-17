@@ -12,56 +12,54 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.report.indicator;
+package org.openmrs.module.kenyaemr.reporting.builder.patientlist;
 
-import junit.framework.Assert;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Program;
+import org.openmrs.api.PatientService;
+import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.MetadataConstants;
+import org.openmrs.module.kenyaemr.reporting.builder.ReportBuilder;
 import org.openmrs.module.kenyaemr.test.TestUtils;
-import org.openmrs.module.reporting.dataset.MapDataSet;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.module.reporting.indicator.IndicatorResult;
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
-import org.springframework.beans.factory.annotation.Autowired;
 
-public class Moh731ReportTest extends BaseModuleContextSensitiveTest {
-
-	@Autowired
-	private Moh731Report report;
-
+public class EligibleForArvReportTest extends BaseModuleContextSensitiveTest {
+	
 	@Before
 	public void setup() throws Exception {
 		executeDataSet("test-data.xml");
 		executeDataSet("test-drugdata.xml");
 	}
-
+	
 	@Test
-	public void test() throws Exception {
-		Program hivProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.HIV_PROGRAM_UUID);
+	public void testReport() throws Exception {
 
-		// Enroll patient #6 in the HIV program
-		TestUtils.enrollInProgram(Context.getPatientService().getPatient(6), hivProgram, TestUtils.date(2012, 1, 15), null);
+		// Get HIV Program
+		ProgramWorkflowService pws = Context.getProgramWorkflowService();
+		Program hivProgram = pws.getProgramByUuid(MetadataConstants.HIV_PROGRAM_UUID);
 
+		// Enroll patients #6 and #7 in the HIV Program
+		PatientService ps = Context.getPatientService();
+		for (int i = 6; i <= 7; ++i) {
+			TestUtils.enrollInProgram(ps.getPatient(i), hivProgram, new Date());
+		}
+
+		ReportBuilder report = new EligibleForArtReport();
 		ReportDefinition rd = report.getReportDefinition();
+		
 		EvaluationContext ec = new EvaluationContext();
-		ec.addParameterValue("startDate", TestUtils.date(2012, 1, 1)); // Run report for Jan 2012
-		ec.addParameterValue("endDate", TestUtils.date(2012, 1, 31));
-
+		SimpleDateFormat ymd = new SimpleDateFormat("yyyy-MM-dd");
 		ReportData data = Context.getService(ReportDefinitionService.class).evaluate(rd, ec);
 
-		Assert.assertEquals(1, data.getDataSets().size());
-		MapDataSet dataSet = (MapDataSet) data.getDataSets().get("MOH 731 DSD");
-		Assert.assertNotNull(dataSet);
-
-		Assert.assertEquals(1, ((IndicatorResult) dataSet.getColumnValue(1, "HV03-09")).getValue().intValue());
-		Assert.assertEquals(1, ((IndicatorResult) dataSet.getColumnValue(1, "HV03-13")).getValue().intValue());
-
-		//TestUtils.printReport(data);
+		TestUtils.printReport(data);
 	}
 }

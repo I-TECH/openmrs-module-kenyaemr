@@ -17,7 +17,7 @@ package org.openmrs.module.kenyaemr.reporting.dataset.definition.persister;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.module.kenyaemr.report.ReportManager;
+import org.openmrs.module.kenyaemr.reporting.ReportManager;
 import org.openmrs.module.kenyaemr.reporting.dataset.definition.MergingDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.test.BaseModuleContextSensitiveTest;

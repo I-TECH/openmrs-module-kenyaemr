@@ -21,7 +21,6 @@ import org.openmrs.LocationAttributeType;
 import org.openmrs.annotation.Authorized;
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.idgen.IdentifierSource;
-import org.openmrs.module.kenyaemr.report.ReportBuilder;
 import org.openmrs.util.PrivilegeConstants;
 import org.springframework.transaction.annotation.Transactional;
 
