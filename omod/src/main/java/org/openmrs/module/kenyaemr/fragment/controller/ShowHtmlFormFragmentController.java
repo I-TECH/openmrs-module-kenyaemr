@@ -11,6 +11,7 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.kenyaemr.fragment.controller;
 
 import java.util.ArrayList;
@@ -21,6 +22,7 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import org.openmrs.Encounter;
+import org.openmrs.Form;
 import org.openmrs.Obs;
 import org.openmrs.User;
 import org.openmrs.api.context.Context;
@@ -28,8 +30,12 @@ import org.openmrs.module.htmlformentry.FormEntryContext.Mode;
 import org.openmrs.module.htmlformentry.FormEntrySession;
 import org.openmrs.module.htmlformentry.HtmlForm;
 import org.openmrs.module.htmlformentry.HtmlFormEntryService;
+import org.openmrs.module.htmlformentry.HtmlFormEntryUtil;
+import org.openmrs.module.kenyaemr.form.FormUtils;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
+import org.openmrs.ui.framework.annotation.SpringBean;
+import org.openmrs.ui.framework.resource.ResourceFactory;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpSession;
@@ -43,8 +49,10 @@ public class ShowHtmlFormFragmentController {
 		// do nothing
 	}
 	
-	public SimpleObject viewFormHtml(@RequestParam("encounterId") Encounter enc, UiUtils ui, HttpSession httpSession) throws Exception {
-		HtmlForm hf = Context.getService(HtmlFormEntryService.class).getHtmlFormByForm(enc.getForm());
+	public SimpleObject viewFormHtml(@RequestParam("encounterId") Encounter enc, UiUtils ui, @SpringBean ResourceFactory resourceFactory, HttpSession httpSession) throws Exception {
+		Form form = enc.getForm();
+		HtmlForm hf = FormUtils.formHasXmlPath(form) ? FormUtils.buildHtmlForm(resourceFactory, form) : HtmlFormEntryUtil.getService().getHtmlFormByForm(form);
+
 		FormEntrySession fes = new FormEntrySession(enc.getPatient(), enc, Mode.VIEW, hf, httpSession);
 		String html = fes.getHtmlToDisplay();
 		return SimpleObject.create("html", html, "editHistory", new EditHistory(enc).simplify(ui));

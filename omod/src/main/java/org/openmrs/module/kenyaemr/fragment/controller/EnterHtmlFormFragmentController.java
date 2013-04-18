@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.kenyaemr.fragment.controller;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -23,10 +24,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.Encounter;
-import org.openmrs.Form;
-import org.openmrs.Patient;
-import org.openmrs.Visit;
+import org.openmrs.*;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.context.ContextAuthenticationException;
 import org.openmrs.module.htmlformentry.FormEntryContext;
@@ -38,6 +36,7 @@ import org.openmrs.module.htmlformentry.HtmlFormEntryService;
 import org.openmrs.module.htmlformentry.HtmlFormEntryUtil;
 import org.openmrs.module.kenyaemr.KenyaEmr;
 import org.openmrs.module.kenyaemr.form.FormDescriptor;
+import org.openmrs.module.kenyaemr.form.FormUtils;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.annotation.SpringBean;
@@ -56,33 +55,27 @@ public class EnterHtmlFormFragmentController {
 	public void controller(FragmentConfiguration config,
 						   @SpringBean KenyaEmr emr,
 						   @SpringBean ResourceFactory resourceFactory,
-	                       @FragmentParam("patient") Patient patient,
-	                       @FragmentParam(value="htmlFormId", required=false) HtmlForm hf,
-	                       @FragmentParam(value="formId", required=false) Form form,
-	                       @FragmentParam(value="formUuid", required=false) String formUuid,
-	                       @FragmentParam(value="encounter", required=false) Encounter encounter,
+						   @FragmentParam("patient") Patient patient,
+						   @FragmentParam(value="formId", required=false) Form form,
+						   @FragmentParam(value="formUuid", required=false) String formUuid,
+						   @FragmentParam(value="encounter", required=false) Encounter encounter,
 						   @FragmentParam(value="visit", required=false) Visit visit,
-	                       @FragmentParam(value="returnUrl", required=false) String returnUrl,
-	                       FragmentModel model,
+						   @FragmentParam(value="returnUrl", required=false) String returnUrl,
+						   FragmentModel model,
 						   HttpSession httpSession) throws Exception {
 
-		config.require("patient", "htmlFormId | formId | formUuid | encounter");
+		config.require("patient", "formId | formUuid | encounter");
 
-		// Figure out which HTML form to use
-		if (hf == null) {
-			if (form != null) {
-				hf = Context.getService(HtmlFormEntryService.class).getHtmlFormByForm(form);
-			} else if (formUuid != null) {
-				form = Context.getFormService().getFormByUuid(formUuid);
-				hf = Context.getService(HtmlFormEntryService.class).getHtmlFormByForm(form);
-			}
-		}
-		if (hf == null && encounter != null) {
+		// Get form
+		if (formUuid != null) {
+			form = Context.getFormService().getFormByUuid(formUuid);
+		} else if (encounter != null) {
 			form = encounter.getForm();
-            hf = HtmlFormEntryUtil.getService().getHtmlFormByForm(encounter.getForm());
-            if (hf == null)
-        		throw new IllegalArgumentException("The form for the specified encounter (" + encounter.getForm() + ") does not have an HtmlForm associated with it");
 		}
+
+		// Get html form
+		HtmlForm hf = FormUtils.formHasXmlPath(form) ? FormUtils.buildHtmlForm(resourceFactory, form) : HtmlFormEntryUtil.getService().getHtmlFormByForm(form);
+
 		if (hf == null)
 			throw new RuntimeException("Could not find HTML Form");
 
@@ -97,7 +90,7 @@ public class EnterHtmlFormFragmentController {
 		FormEntrySession fes;
 		if (encounter != null) {
 			fes = new FormEntrySession(patient, encounter, Mode.EDIT, hf, httpSession);
-		} 
+		}
 		else {
 			fes = new FormEntrySession(patient, hf, httpSession);
 		}
@@ -125,18 +118,18 @@ public class EnterHtmlFormFragmentController {
 	 * @return a simple object to record if successful
 	 */
 	public SimpleObject authenticate(@RequestParam("user") String user, @RequestParam("pass") String pass) {
-        try {
-            Context.authenticate(user, pass);
-        } catch (ContextAuthenticationException ex) {
-        	// do nothing
-        }
-        return checkIfLoggedIn();
-    }
+		try {
+			Context.authenticate(user, pass);
+		} catch (ContextAuthenticationException ex) {
+			// do nothing
+		}
+		return checkIfLoggedIn();
+	}
 
 	/**
 	 * Handles a form submit request
 	 * @param patient
-	 * @param hf
+	 * @param form
 	 * @param encounter
 	 * @param visit
 	 * @param returnUrl
@@ -145,14 +138,17 @@ public class EnterHtmlFormFragmentController {
 	 * @throws Exception
 	 */
 	public Object submit(@RequestParam("personId") Patient patient,
-	                           @RequestParam("htmlFormId") HtmlForm hf,
-	                           @RequestParam(value="encounterId", required=false) Encounter encounter,
-							   @RequestParam(value="visitId", required=false) Visit visit,
-	                           @RequestParam(value="returnUrl", required=false) String returnUrl,
-	                           HttpServletRequest request) throws Exception {
+						 @RequestParam("formId") Form form,
+						 @RequestParam(value="encounterId", required=false) Encounter encounter,
+						 @RequestParam(value="visitId", required=false) Visit visit,
+						 @RequestParam(value="returnUrl", required=false) String returnUrl,
+						 @SpringBean ResourceFactory resourceFactory,
+						 HttpServletRequest request) throws Exception {
 
-		// TDOO formModifiedTimestamp and encounterModifiedTimestamp
-		
+		// TODO formModifiedTimestamp and encounterModifiedTimestamp
+
+		HtmlForm hf = FormUtils.formHasXmlPath(form) ? FormUtils.buildHtmlForm(resourceFactory, form) : HtmlFormEntryUtil.getService().getHtmlFormByForm(form);
+
 		FormEntrySession fes;
 		if (encounter != null) {
 			fes = new FormEntrySession(patient, encounter, Mode.EDIT, hf, request.getSession());
@@ -200,7 +196,7 @@ public class EnterHtmlFormFragmentController {
 		}
 
 		// Do actual encounter creation/updating
-        fes.applyActions();
+		fes.applyActions();
 
 		// Add created encounter to the specified visit
 		if (encounter == null && visit != null) {
@@ -209,22 +205,21 @@ public class EnterHtmlFormFragmentController {
 			Context.getEncounterService().saveEncounter(encounter);
 		}
 
-        return returnHelper(null, null);
+		return returnHelper(null, null);
 	}
 
-    private SimpleObject returnHelper(List<FormSubmissionError> validationErrors, FormEntryContext context) {
-	    if (validationErrors == null || validationErrors.size() == 0) {
-	    	return SimpleObject.create("success", true);
-	    } else {
-	    	Map<String, String> errors = new HashMap<String, String>();
-	    	for (FormSubmissionError err : validationErrors) {
-	    		if (err.getSourceWidget() != null)
-	    			errors.put(context.getErrorFieldId(err.getSourceWidget()), err.getError());
-                else
-                	errors.put(err.getId(), err.getError());
-	    	}
-	    	return SimpleObject.create("success", false, "errors", errors);
-	    }
-    }
-	
+	private SimpleObject returnHelper(List<FormSubmissionError> validationErrors, FormEntryContext context) {
+		if (validationErrors == null || validationErrors.size() == 0) {
+			return SimpleObject.create("success", true);
+		} else {
+			Map<String, String> errors = new HashMap<String, String>();
+			for (FormSubmissionError err : validationErrors) {
+				if (err.getSourceWidget() != null)
+					errors.put(context.getErrorFieldId(err.getSourceWidget()), err.getError());
+				else
+					errors.put(err.getId(), err.getError());
+			}
+			return SimpleObject.create("success", false, "errors", errors);
+		}
+	}
 }

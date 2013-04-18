@@ -11,7 +11,7 @@
   ~
   ~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
   -->
-<htmlform formName="TB Completion" formVersion="0.2" formEncounterType="abfb143c-5b49-41e5-9ead-f47ee4cc57cf">
+<htmlform formName="TB Discontinuation" formVersion="0.2" formEncounterType="d3e3d723-7458-4b4e-8998-408e8a551a84">
 
 	<style type="text/css">
 		table.baseline-aligned td {

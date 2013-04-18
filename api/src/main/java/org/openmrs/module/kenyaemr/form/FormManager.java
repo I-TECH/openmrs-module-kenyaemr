@@ -18,8 +18,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.EncounterType;
 import org.openmrs.Form;
+import org.openmrs.FormResource;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
+import org.openmrs.customdatatype.datatype.FreeTextDatatype;
 import org.openmrs.module.Module;
 import org.openmrs.module.ModuleClassLoader;
 import org.openmrs.module.ModuleFactory;
@@ -63,7 +65,7 @@ public class FormManager {
 	/**
 	 * Refreshes the list of form descriptors from the application context
 	 */
-	public synchronized void refreshFormDescriptors(ResourceFactory resourceFactory) throws Exception {
+	public synchronized void refreshFormDescriptors() throws Exception {
 		clear();
 
 		for (FormDescriptor formDescriptor : Context.getRegisteredComponents(FormDescriptor.class)) {
@@ -71,7 +73,10 @@ public class FormManager {
 
 			// Load form resource if descriptor specifies one
 			if (formDescriptor.getResourceProvider() != null && formDescriptor.getResource() != null) {
-				loadFormFromUiResource(formDescriptor.getFormUuid(), resourceFactory, formDescriptor.getResourceProvider(), formDescriptor.getResource());
+
+				Form form = Context.getFormService().getFormByUuid(formDescriptor.getFormUuid());
+
+				FormUtils.setFormXmlPath(form, formDescriptor.getResourceProvider() + ":" + formDescriptor.getResource());
 			}
 
 			log.info("Found form descriptor:" + formDescriptor.getFormUuid());
@@ -145,19 +150,6 @@ public class FormManager {
 				MetadataConstants.PROGRESS_NOTE_FORM_UUID,
 				Frequency.VISIT,
 				new String[] { "kenyaemr.intake", "kenyaemr.medicalEncounter", "kenyaemr.medicalChart" }
-		);
-		registerForm(
-				MetadataConstants.TB_SCREENING_FORM_UUID,
-				Frequency.VISIT,
-				new String[] { "kenyaemr.intake", "kenyaemr.medicalEncounter", "kenyaemr.medicalChart" }
-		);
-		registerForm(
-				MetadataConstants.TB_VISIT_FORM_UUID,
-				Frequency.VISIT,
-				new String[] { "kenyaemr.intake", "kenyaemr.medicalEncounter", "kenyaemr.medicalChart" },
-				MetadataConstants.TB_PROGRAM_UUID,
-				Gender.BOTH,
-				"kenyaui", "forms/generic.png"
 		);
 
 		/**
@@ -263,78 +255,5 @@ public class FormManager {
 		}
 
 		return patientForms;
-	}
-
-	/**
-	 * Loads a form from a UI resource
-	 * @param formUuid the form UUID to save to
-	 * @apram resourceFactory the resource factory
-	 * @param providerName the resource provider name
-	 * @param resourcePath the resource path
-	 * @return the HTML form
-	 * @throws IOException if an error occurs
-	 */
-	public HtmlForm loadFormFromUiResource(String formUuid, ResourceFactory resourceFactory, String providerName, String resourcePath) throws IOException {
-
-		// TODO temporary workaround until UIFR-102 or TRUNK-3922 is fixed.
-		// Instead of using ResourceFactory.getResourceAsString we manually load the resource
-
-		ModuleClassLoader moduleClassLoader = ModuleFactory.getModuleClassLoader(providerName);
-		moduleClassLoader.findResource("web/module/resources/" + resourcePath);
-		File folderForModule = ModuleClassLoader.getLibCacheFolderForModule(moduleClassLoader.getModule());
-		File resourceFile = new File(folderForModule, "web/module/resources/" + resourcePath);
-		String xml = OpenmrsUtil.getFileAsString(resourceFile);
-
-		//String xml = resourceFactory.getResourceAsString(providerName, resourcePath);
-
-		if (xml == null) {
-			throw new IllegalArgumentException("No resource found at " + providerName + ":" + resourcePath);
-		}
-
-		try {
-			Document doc = HtmlFormEntryUtil.stringToDocument(xml);
-			Node htmlFormNode = HtmlFormEntryUtil.findChild(doc, "htmlform");
-
-			String formName = getAttributeValue(htmlFormNode, "formName");
-			String formDescription = getAttributeValue(htmlFormNode, "formDescription");
-			String formVersion = getAttributeValue(htmlFormNode, "formVersion");
-			String formEncounterType = getAttributeValue(htmlFormNode, "formEncounterType");
-
-			Form form = Context.getFormService().getFormByUuid(formUuid);
-			if (form == null) {
-				form = new Form();
-				form.setUuid(formUuid);
-			}
-
-			form.setName(formName);
-			form.setDescription(formDescription);
-			form.setVersion(formVersion);
-			form.setEncounterType(HtmlFormEntryUtil.getEncounterType(formEncounterType));
-			Context.getFormService().saveForm(form);
-
-			HtmlForm htmlForm = Context.getService(HtmlFormEntryService.class).getHtmlFormByForm(form);
-			if (htmlForm == null) {
-				htmlForm = new HtmlForm();
-				htmlForm.setForm(form);
-			}
-			htmlForm.setXmlData(xml);
-
-			Context.getService(HtmlFormEntryService.class).saveHtmlForm(htmlForm);
-			return htmlForm;
-
-		} catch (Exception e) {
-			throw new IllegalArgumentException("Failed to parse XML and build Form and HtmlForm", e);
-		}
-	}
-
-	/**
-	 * Convenience method to get the named attribute value of a DOM node
-	 * @param node the DOM node
-	 * @param attributeName the attribute name
-	 * @return the attribute value
-	 */
-	private static String getAttributeValue(Node node, String attributeName) {
-		Node item = node.getAttributes().getNamedItem(attributeName);
-		return item == null ? null : item.getNodeValue();
 	}
 }

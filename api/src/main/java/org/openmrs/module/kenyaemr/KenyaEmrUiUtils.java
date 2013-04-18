@@ -181,12 +181,10 @@ public class KenyaEmrUiUtils {
 	 */
 	public SimpleObject simpleForm(Form form, UiUtils ui) {
 		FormDescriptor config = KenyaEmr.getInstance().getFormManager().getFormDescriptor(form.getUuid());
-		HtmlForm htmlForm = Context.getService(HtmlFormEntryService.class).getHtmlFormByForm(form);
 
 		return SimpleObject.create(
 				"formUuid", form.getUuid(),
-				"htmlFormId", htmlForm.getId(),
-				"label", htmlForm.getName(),
+				"label", form.getName(),
 				"iconProvider", (config != null ? config.getIconProvider() : KenyaEmrConstants.MODULE_ID),
 				"icon", (config != null ? config.getIcon() : "forms/generic.png"));
 	}
@@ -199,14 +197,7 @@ public class KenyaEmrUiUtils {
 	 */
 	public SimpleObject simpleForm(FormDescriptor config, UiUtils ui) {
 		Form form = Context.getFormService().getFormByUuid(config.getFormUuid());
-		HtmlForm htmlForm = Context.getService(HtmlFormEntryService.class).getHtmlFormByForm(form);
-
-		return SimpleObject.create(
-				"formUuid", config.getFormUuid(),
-				"htmlFormId", htmlForm.getId(),
-				"label", htmlForm.getName(),
-				"iconProvider", config.getIconProvider(),
-				"icon", config.getIcon());
+		return simpleForm(form, ui);
 	}
 
 	/**

@@ -11,7 +11,7 @@
   ~
   ~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
   -->
-<htmlform formName="MOH 257 Visit Summary" formVersion="0.2" formEncounterType="a0034eee-1940-4e35-847f-97537a35d05e">
+<htmlform>
 
 	<style type="text/css">
 		table.moh257 {
@@ -338,7 +338,7 @@
 		<tr>
 			<th colspan="2">Hgb</th>
 			<td>(y)</td>
-			<td colspan="2"><obs conceptId="21AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+			<td colspan="2"><!--<obs conceptId="21AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />--></td>
 		</tr>
 		<tr>
 			<th colspan="2">RPR</th>
@@ -354,11 +354,7 @@
 			<th colspan="2">Other</th>
 			<td>(ab)</td>
 			<td colspan="2">
-
-				<span class="ke-field-instructions">Enter using Lab Tests form</span>
-
-				<!--<labTests />-->
-
+				<labTests />
 			</td>
 		</tr>
 		<tr>

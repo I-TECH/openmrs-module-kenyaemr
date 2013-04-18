@@ -11,6 +11,7 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.kenyaemr.fragment.controller;
 
 import org.apache.commons.logging.Log;
@@ -95,11 +96,6 @@ public class VisitAvailableFormsFragmentController {
 			}
 			formUuidsByProgram.put(e.getKey(), formUuids);
 		}
-    	
-		Map<String, HtmlForm> formByUuid = new HashMap<String, HtmlForm>();
-		for (HtmlForm hf : Context.getService(HtmlFormEntryService.class).getAllHtmlForms()) {
-			formByUuid.put(hf.getForm().getUuid(), hf);
-		}
 		
     	List<SimpleObject> ret = new ArrayList<SimpleObject>();
 		
@@ -124,10 +120,6 @@ public class VisitAvailableFormsFragmentController {
 				throw new RuntimeException("Unknown Frequency");
 			}
 			if (allowed) {
-				HtmlForm hf = formByUuid.get(config.getFormUuid());
-				if (hf == null) {
-					throw new RuntimeException("No htmlform with uuid " + config.getFormUuid());
-				}
 				ret.add(kenyaUi.simpleForm(config, ui));
 			}
 		}

@@ -188,7 +188,7 @@ ui.includeJavascript("kenyaemr", "dwr-util.js")
 
 	<form id="htmlform" method="post" action="${ ui.actionLink("kenyaemr", "enterHtmlForm", "submit") }" onSubmit="submitHtmlForm(); return false;">
 		<input type="hidden" name="personId" value="${ command.patient.personId }"/>
-		<input type="hidden" name="htmlFormId" value="${ command.htmlFormId }"/>
+		<input type="hidden" name="formId" value="${ command.form.formId }"/>
 		<input type="hidden" name="formModifiedTimestamp" value="${ command.formModifiedTimestamp }"/>
 		<input type="hidden" name="encounterModifiedTimestamp" value="${ command.encounterModifiedTimestamp }"/>
 		<% if (command.encounter) { %>

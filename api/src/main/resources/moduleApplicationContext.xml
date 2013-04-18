@@ -19,6 +19,16 @@
 	</bean>
 
 	<bean class="org.openmrs.module.kenyaemr.form.FormDescriptor">
+		<property name="formUuid" value="59ed8e62-7f1f-40ae-a2e3-eabe350277ce" />
+		<property name="frequency" value="VISIT" />
+		<property name="apps">
+			<set><value>kenyaemr.intake</value><value>kenyaemr.medicalEncounter</value><value>kenyaemr.medicalChart</value></set>
+		</property>
+		<property name="icon" value="forms/generic.png" />
+		<property name="resource" value="htmlforms/tbScreening.xml" />
+	</bean>
+
+	<bean class="org.openmrs.module.kenyaemr.form.FormDescriptor">
 		<property name="formUuid" value="89994550-9939-40f3-afa6-173bce445c79" />
 		<property name="frequency" value="PROGRAM" />
 		<property name="apps">
@@ -30,6 +40,17 @@
 	</bean>
 
 	<bean class="org.openmrs.module.kenyaemr.form.FormDescriptor">
+		<property name="formUuid" value="2daabb77-7ad6-4952-864b-8d23e109c69d" />
+		<property name="frequency" value="PROGRAM" />
+		<property name="apps">
+			<set><value>kenyaemr.intake</value><value>kenyaemr.medicalEncounter</value><value>kenyaemr.medicalChart</value></set>
+		</property>
+		<property name="programUuid" value="9f144a34-3a4a-44a9-8486-6b7af6cc64f6" />
+		<property name="icon" value="forms/generic.png" />
+		<property name="resource" value="htmlforms/tbFollowupVisit.xml" />
+	</bean>
+
+	<bean class="org.openmrs.module.kenyaemr.form.FormDescriptor">
 		<property name="formUuid" value="4b296dd0-f6be-4007-9eb8-d0fd4e94fb3a" />
 		<property name="frequency" value="PROGRAM" />
 		<property name="apps">
@@ -37,7 +58,7 @@
 		</property>
 		<property name="programUuid" value="9f144a34-3a4a-44a9-8486-6b7af6cc64f6" />
 		<property name="icon" value="forms/discontinue.png" />
-		<property name="resource" value="htmlforms/tbCompletion.xml" />
+		<property name="resource" value="htmlforms/tbDiscontinuation.xml" />
 	</bean>
 
 	<!-- Module service -->

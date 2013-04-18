@@ -11,7 +11,7 @@
   ~
   ~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
   -->
-<htmlform formName="TB Enrollment" formVersion="0.2" formEncounterType="de78a6be-bfc5-4634-adc3-5f1a280455cc">
+<htmlform formName="TB Enrollment" formVersion="0.2" formEncounterType="9d8498a4-372d-4dc4-a809-513a2434621e">
 
 	<style type="text/css">
 		table.baseline-aligned td {

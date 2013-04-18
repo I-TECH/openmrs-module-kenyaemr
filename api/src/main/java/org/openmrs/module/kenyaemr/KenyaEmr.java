@@ -127,7 +127,7 @@ public class KenyaEmr implements UiContextRefreshedCallback {
 	public void afterContextRefreshed(PageFactory pageFactory, FragmentFactory fragmentFactory, ResourceFactory resourceFactory) {
 		try {
 			calculationManager.refreshCalculationClasses();
-			formManager.refreshFormDescriptors(resourceFactory);
+			formManager.refreshFormDescriptors();
 			reportManager.refreshReportBuilders();
 		}
 		catch (Exception ex) {

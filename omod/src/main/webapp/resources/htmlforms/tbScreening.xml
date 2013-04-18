@@ -1,0 +1,162 @@
+<!--
+  ~ The contents of this file are subject to the OpenMRS Public License
+  ~ Version 1.0 (the "License"); you may not use this file except in
+  ~ compliance with the License. You may obtain a copy of the License at
+  ~ http://license.openmrs.org
+  ~
+  ~ Software distributed under the License is distributed on an "AS IS"
+  ~ basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+  ~ License for the specific language governing rights and limitations
+  ~ under the License.
+  ~
+  ~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+  -->
+<htmlform formName="TB Screening" formVersion="0.2" formEncounterType="ed6dacc9-0827-4c82-86be-53c0d8c449be">
+
+	<style type="text/css">
+		table.baseline-aligned td {
+			vertical-align: baseline;
+		}
+	</style>
+
+	<script type="text/javascript">
+		$j(function() {
+			var valbirthdate = "<lookup  expression="patient.birthdate" />"
+			var valChangedToDateFormat = new Date(valbirthdate).getTime();
+
+			beforeSubmit.push(function() {
+				var valonform = getValue('tbrxdate.value');
+				var valChangedToDateFormatOnForm=new Date(valonform).getTime();
+
+				//tb rx date should be later than date of birth
+				if (valChangedToDateFormatOnForm &lt; valChangedToDateFormat) {
+					getField('tbrxdate.error').html('TB Rx date, should not be earlier than date of birth').show();
+					return false;
+				}
+				//tb rx date cannot be same as birth date
+				if (valChangedToDateFormatOnForm  == valChangedToDateFormat) {
+					getField('tbrxdate.error').html('TB Rx date, should not be same as  date of birth').show();
+					return false;
+				}
+				return true;
+			});
+		});
+	</script>
+
+	<div class="patient-details">
+		<table class="baseline-aligned" width="100%">
+			<tr>
+				<td>Name: <lookup class="value" expression="patient.personName"/></td>
+				<td>Gender: <lookup class="value" expression="patient.gender"/></td>
+				<td>Birthdate: <lookup class="value" complexExpression="#if( \$patient.birthdateEstimated ) ~#end"/> <lookup class="value" expression="patient.birthdate" id="birthdate"/>
+				</td>
+			</tr>
+		</table>
+	</div>
+
+	<div class="encounter-details">
+		<table class="baseline-aligned" width="100%">
+			<tr>
+				<td>Date: <encounterDate default="now" showTime="true"/></td>
+				<td>Provider: <encounterProviderAndRole encounterRole="a0b03050-c99b-11e0-9572-0800200c9a66" default="currentUser" required="true"/></td>
+				<td>Location: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete" /></td>
+			</tr>
+		</table>
+	</div>
+
+	<table style="width: 100%" border="0" align="center">
+		<tbody>
+			<tr>
+				<td style="font-family: Trebuchet MS,serif;">
+					<fieldset >
+						<table>
+							<tr>
+								<obsgroup groupingConceptId="1727AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+									<span style="display: none">
+										<obs conceptId="1728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="159799AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" defaultValue="159799"/>
+									</span>
+									<td>Cough for 2 weeks or more:</td>
+									<td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
+								</obsgroup>
+							</tr>
+							<tr>
+								<obsgroup groupingConceptId="1727AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+									<span style="display: none">
+										<obs conceptId="1728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  answerConceptId="124068AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" defaultValue="124068"/>
+									</span>
+									<td>History of close contact with confirmed TB:</td>
+									<td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
+								</obsgroup>
+							</tr>
+							<tr>
+								<obsgroup groupingConceptId="1727AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+									<span style="display: none">
+										<obs conceptId="1728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="145455AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" defaultValue="145455"/>
+									</span>
+									<td>Chronic cough?</td>
+									<td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
+								</obsgroup>
+							</tr>
+							<tr>
+								<obsgroup groupingConceptId="1727AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+									<span style="display: none">
+										<obs conceptId="1728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1494AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" defaultValue="1494"/>
+									</span>
+									<td>Fever for 2 weeks or more:</td>
+									<td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
+								</obsgroup>
+							</tr>
+							<tr>
+								<obsgroup groupingConceptId="1727AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+									<span style="display: none">
+										<obs conceptId="1728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="832AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" defaultValue="832"/>
+									</span>
+									<td>Noticeable weight loss:</td>
+									<td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
+								</obsgroup>
+							</tr>
+							<tr>
+								<obsgroup groupingConceptId="1727AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+									<span style="display: none">
+										<obs conceptId="1728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="120749AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" defaultValue="120749"/>
+									</span>
+									<td>Chest Pain or Breathlessness:</td>
+									<td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
+								</obsgroup>
+							</tr>
+							<tr>
+								<obsgroup groupingConceptId="1727AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+									<span style="display: none">
+										<obs conceptId="1728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="133027AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" defaultValue="133027"/>
+									</span>
+									<td>Night sweat for 2 weeks or more:</td>
+									<td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
+								</obsgroup>
+							</tr>
+							<tr>
+								<td colspan="2"><hr/></td>
+							</tr>
+							<tr>
+								<td colspan="2">
+									<obs conceptId="1659AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText="Resulting TB Status:" answerConceptIds="1660AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,142177AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1662AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1663AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="No Signs,Suspect,TB Rx,Not Done" />
+								</td>
+							</tr>
+							<tr>
+								<td colspan="2"> <p></p></td>
+							</tr>
+							<tr>
+								<td width="30%" style="text-align: left"><obs  conceptId="1113AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText="TB Rx date: " id="tbrxdate"/> </td>
+								<td><obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText="TB Rx:"/></td>
+							</tr>
+						</table>
+					</fieldset>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<div class="ke-form-buttons">
+		<submit />
+	</div>
+
+</htmlform>

@@ -1,0 +1,76 @@
+<!--
+  ~ The contents of this file are subject to the OpenMRS Public License
+  ~ Version 1.0 (the "License"); you may not use this file except in
+  ~ compliance with the License. You may obtain a copy of the License at
+  ~ http://license.openmrs.org
+  ~
+  ~ Software distributed under the License is distributed on an "AS IS"
+  ~ basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+  ~ License for the specific language governing rights and limitations
+  ~ under the License.
+  ~
+  ~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+  -->
+<htmlform formName="TB Followup Visit" formVersion="0.2" formEncounterType="fbf0bfce-e9f4-45bb-935a-59195d8a0e35">
+
+	<style type="text/css">
+		table.baseline-aligned td {
+			vertical-align: baseline;
+		}
+	</style>
+
+	<fieldset>
+		<table class="baseline-aligned" width="100%">
+			<div class="patient-details">
+				<tr>
+					<td width="30%"> </td>
+					<td width="20%"> </td>
+					<td width="20%"></td>
+					<td width="30%"> </td>
+				</tr>
+				<tr>
+					<td>Name: <lookup class="value" expression="patient.personName"/></td>
+					<td>Gender: <lookup class="value" expression="patient.gender"/></td>
+					<td>Birthdate: <lookup class="value" complexExpression="#if( \$patient.birthdateEstimated ) ~#end"/> <lookup class="value" expression="patient.birthdate"/></td>
+					<td> </td>
+				</tr>
+			</div>
+			<div class="encounter-details">
+				<tr>
+					<td>Date: <encounterDate default="now" showTime="true"/></td>
+					<td>Provider: <encounterProviderAndRole encounterRole="a0b03050-c99b-11e0-9572-0800200c9a66" default="currentUser" required="true"/></td>
+					<td>Location: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete" /></td>
+					<td> </td>
+				</tr>
+			</div>
+		</table>
+	</fieldset>
+
+	<br/>
+
+	<fieldset><legend><i>Lab Tests &amp; Outcomes</i></legend>
+		<table class="baseline-aligned" width="100%">
+			<tr>
+				<td width="15%"></td>
+				<td width=""></td>
+			</tr>
+			<tr>
+				<td>Test:</td>
+				<td><obs conceptId="1271AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
+			</tr>
+			<tr>
+				<td>Result:</td>
+				<td><obs conceptId="159982AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
+			</tr>
+			<tr>
+				<td>Date Collected <i style="font-size: xx-small;">(if not today)</i>:</td>
+				<td><obs conceptId="159963AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
+			</tr>
+		</table>
+	</fieldset>
+
+	<div class="ke-form-buttons">
+		<submit />
+	</div>
+
+</htmlform>
