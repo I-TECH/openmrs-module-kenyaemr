@@ -20,6 +20,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.ModuleFactory;
 import org.openmrs.module.kenyaemr.calculation.CalculationManager;
 import org.openmrs.module.kenyaemr.form.FormManager;
+import org.openmrs.module.kenyaemr.lab.LabManager;
 import org.openmrs.module.kenyaemr.regimen.RegimenManager;
 import org.openmrs.module.kenyaemr.reporting.ReportManager;
 import org.openmrs.module.kenyaemr.util.BuildProperties;
@@ -54,6 +55,9 @@ public class KenyaEmr implements UiContextRefreshedCallback {
 
 	@Autowired
 	ReportManager reportManager;
+
+	@Autowired
+	LabManager labManager;
 
 	/**
 	 * Gets the module version
@@ -113,8 +117,16 @@ public class KenyaEmr implements UiContextRefreshedCallback {
 	}
 
 	/**
+	 * Gets the lab manager
+	 * @return the lab manager
+	 */
+	public LabManager getLabManager() {
+		return labManager;
+	}
+
+	/**
 	 * Utility method to get the singleton instance from the application context in situations where you
-	 * can't use @Autowired or @SpringBean
+	 * can't use @Autowired or @SpringBean. Use as a last resort.
 	 * @return the singleton instance
 	 */
 	public static KenyaEmr getInstance() {
@@ -127,7 +139,7 @@ public class KenyaEmr implements UiContextRefreshedCallback {
 	public void afterContextRefreshed(PageFactory pageFactory, FragmentFactory fragmentFactory, ResourceFactory resourceFactory) {
 		try {
 			calculationManager.refreshCalculationClasses();
-			formManager.refreshFormDescriptors();
+			formManager.refresh();
 			reportManager.refreshReportBuilders();
 		}
 		catch (Exception ex) {

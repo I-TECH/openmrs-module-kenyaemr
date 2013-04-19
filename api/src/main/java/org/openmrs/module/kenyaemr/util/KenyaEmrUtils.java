@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.kenyaemr.util;
 
+import org.apache.commons.lang3.StringUtils;
 import org.openmrs.*;
 import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
@@ -163,5 +164,28 @@ public class KenyaEmrUtils {
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * Parses a CSV list of concept ids or UUIDs
+	 * @param value the string
+	 * @return the concepts
+	 */
+	public static List<Concept> parseConceptList(String value) {
+		List<Concept> concepts = new ArrayList<Concept>();
+
+		for (String token : value.split(",")) {
+			token = token.trim();
+
+			if (!StringUtils.isEmpty(token)) {
+				if (StringUtils.isNumeric(token)) {
+					concepts.add(Context.getConceptService().getConcept(Integer.valueOf(token)));
+				}
+				else {
+					concepts.add(Context.getConceptService().getConceptByUuid(token));
+				}
+			}
+		}
+		return concepts;
 	}
 }

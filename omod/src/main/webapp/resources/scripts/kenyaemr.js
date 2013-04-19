@@ -80,6 +80,10 @@ var kenyaemr = (function($) {
 			return typeof listOfItems.length === 'number' ? (listOfItems.length + ' result(s)') : '';
 		},
 
+		/**
+		 * Updates the value of a regimen field from its displayed controls
+		 * @param fieldId the regimen field id
+		 */
 		updateRegimenFromDisplay: function(fieldId) {
 			var regimenStr = '';
 
@@ -95,6 +99,23 @@ var kenyaemr = (function($) {
 			});
 
 			$('#' + fieldId).val(regimenStr);
+		},
+
+		/**
+		 * Creates a dynamic obs field
+		 * @param parentId the container element id
+		 * @param fieldName the field name
+		 * @param conceptId the concept id
+		 * @param initialValue the initial field value (may be null)
+		 */
+		dynamicObsField: function(parentId, fieldName, conceptId, initialValue) {
+			var placeHolderId = kenyaui.generateId();
+			$('#' + parentId).append('<div id="' + placeHolderId + '" class="ke-loading ke-form-dynamic-field">&nbsp;</div>');
+			$j.get('/' + CONTEXT_PATH + '/kenyaemr/generateField.htm', { name: fieldName, conceptId: conceptId, initialValue: initialValue })
+			.done(function (html) {
+				$j('#' + placeHolderId).removeClass('ke-loading');
+				$j('#' + placeHolderId).html(html);
+			});
 		}
 	};
 

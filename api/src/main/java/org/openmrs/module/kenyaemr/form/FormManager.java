@@ -19,9 +19,12 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.Form;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.htmlformentry.HtmlFormEntryUtil;
 import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.kenyaemr.form.FormDescriptor.Frequency;
 import org.openmrs.module.kenyaemr.form.FormDescriptor.Gender;
+import org.openmrs.module.kenyaemr.form.handler.DynamicObsContainerTagHandler;
+import org.openmrs.module.kenyaemr.form.handler.LabTestPickerTagHandler;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -44,11 +47,12 @@ public class FormManager {
 	}
 
 	/**
-	 * Refreshes the list of form descriptors from the application context
+	 * Updates form manager after context refresh
 	 */
-	public synchronized void refreshFormDescriptors() throws Exception {
+	public synchronized void refresh() throws Exception {
 		clear();
 
+		// Load form descriptor beans
 		for (FormDescriptor formDescriptor : Context.getRegisteredComponents(FormDescriptor.class)) {
 			forms.put(formDescriptor.getFormUuid(), formDescriptor);
 
@@ -63,10 +67,12 @@ public class FormManager {
 			log.info("Found form descriptor:" + formDescriptor.getFormUuid());
 		}
 
-		/**
-		 * Because we haven't yet made beans for all forms...
-		 */
+		// Because we haven't yet made beans for all forms...
 		setupStandardForms();
+
+		// Register custom tags
+		HtmlFormEntryUtil.getService().addHandler("dynamicObsContainer", new DynamicObsContainerTagHandler());
+		HtmlFormEntryUtil.getService().addHandler("labTestPicker", new LabTestPickerTagHandler());
 	}
 
 	/**

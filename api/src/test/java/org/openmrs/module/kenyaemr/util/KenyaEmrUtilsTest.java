@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.kenyaemr.util;
 
+import com.sun.corba.se.impl.orb.ParserTable;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -139,5 +140,29 @@ public class KenyaEmrUtilsTest extends BaseModuleContextSensitiveTest {
 
 		// Check overlapping itself doesn't return true
 		Assert.assertFalse(KenyaEmrUtils.visitWillOverlap(visit2));
+	}
+
+	/**
+	 * @see KenyaEmrUtils#parseConceptList(String)
+	 */
+	@Test
+	public void parseConceptList_shouldParseListCorrectly() {
+		// Empty list
+		List<Concept> concepts = KenyaEmrUtils.parseConceptList("");
+		Assert.assertEquals(0, concepts.size());
+
+		// No spaces
+		concepts = KenyaEmrUtils.parseConceptList("5497,730AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5356");
+		Assert.assertEquals(3, concepts.size());
+		Assert.assertEquals(TestUtils.getConcept("5497AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), concepts.get(0));
+		Assert.assertEquals(TestUtils.getConcept("730AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), concepts.get(1));
+		Assert.assertEquals(TestUtils.getConcept("5356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), concepts.get(2));
+
+		// Some spaces
+		concepts = KenyaEmrUtils.parseConceptList(" 5497,  730AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\t , 5356   \t");
+		Assert.assertEquals(3, concepts.size());
+		Assert.assertEquals(TestUtils.getConcept("5497AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), concepts.get(0));
+		Assert.assertEquals(TestUtils.getConcept("730AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), concepts.get(1));
+		Assert.assertEquals(TestUtils.getConcept("5356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), concepts.get(2));
 	}
 }

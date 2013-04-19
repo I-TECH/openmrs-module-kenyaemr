@@ -18,7 +18,7 @@
 			border-collapse: collapse;
 			background-color: #F3F9FF;
 		}
-		table.moh257 td, table.moh257 th {
+		table.moh257 > tbody > tr > td, table.moh257 > tbody > tr > th {
 			border: 1px solid black;
 			vertical-align: baseline;
 			padding: 4px;
@@ -93,311 +93,318 @@
 	<br />
 
 	<table class="moh257" align="center">
-		<tr>
-			<th rowspan="2">Visit Details</th>
-			<th colspan="2">Date</th>
-			<td>(a)</td>
-			<td colspan="2"><encounterDate id="encounter-date" /></td>
-		</tr>
-		<tr>
-			<th colspan="2">Type</th>
-			<td>(b)</td>
-			<td>
-				<obs
-					id="person-present"
-					conceptId="161643AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-					answerConceptIds="978AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161642AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-					answerLabels="Self (SF),Treatment Supporter (TS),Other (give name)"
-					style="radio"
-					answerSeparator="&lt;br /&gt;"
-				/>
-				<obs id="person-present-name" conceptId="160638AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
-			</td>
-			<td><obs conceptId="1246AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" /> Scheduled</td>
-		</tr>
-		<tr>
-			<th rowspan="2">Duration Since<br />(in months)</th>
-			<th colspan="2">Start ART</th>
-			<td>(c)</td>
-			<td colspan="2"><span id="calculated-duration-start-art" class="value"></span></td>
-		</tr>
-		<tr>
-			<th colspan="2">Current Regimen</th>
-			<td>(d)</td>
-			<td colspan="2"><span id="calculated-duration-current-regimen" class="value"></span></td>
-		</tr>
-		<tr>
-			<th colspan="3">Weight (kg) / Blood Pressure</th>
-			<td>(e)</td>
-			<td><obs conceptId="5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="weight" /></td>
-			<td><obs conceptId="5085AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />/<obs conceptId="5086AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
-		</tr>
-		<tr>
-			<th colspan="3">Height (cm)</th>
-			<td>(f)</td>
-			<td colspan="2"><obs conceptId="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="height" /></td>
-		</tr>
-		<tr>
-			<th colspan="3">BMI</th>
-			<td>(g)</td>
-			<td colspan="2"><span id="calculated-bmi" class="value"></span></td>
-		</tr>
-		<tr>
-			<th rowspan="2">Pregnancy</th>
-			<th colspan="2">Status</th>
-			<td>(h)</td>
-			<td colspan="2">
-				<includeIf velocityTest="$patient.gender == 'F' ">
+		<tbody>
+			<tr>
+				<th rowspan="2">Visit Details</th>
+				<th colspan="2">Date</th>
+				<td>(a)</td>
+				<td colspan="2"><encounterDate id="encounter-date" /></td>
+			</tr>
+			<tr>
+				<th colspan="2">Type</th>
+				<td>(b)</td>
+				<td>
 					<obs
-						conceptId="5272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-						answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-						answerLabels="Yes,No,Unknown" style="radio"
+						id="person-present"
+						conceptId="161643AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+						answerConceptIds="978AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161642AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+						answerLabels="Self (SF),Treatment Supporter (TS),Other (give name)"
+						style="radio"
+						answerSeparator="&lt;br /&gt;"
 					/>
-				</includeIf>
-			</td>
-		</tr>
-		<tr>
-			<th colspan="2">EDD</th>
-			<td>(i)</td>
-			<td colspan="2">
-				<includeIf velocityTest="$patient.gender == 'F' ">
-					<obs conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" />
-				</includeIf>
-			</td>
-		</tr>
-		<tr>
-			<th rowspan="2">FP Status</th>
-			<th colspan="2">FP/No FP</th>
-			<td>(j)</td>
-			<td colspan="2">
-				<obs
-					conceptId="160653AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-					answerConceptIds="965AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1360AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-					answerLabels="Currently using (FP),Not using (NOFP),Wants (WFP)"
-					style="radio"
-				/>
-			</td>
-		</tr>
-		<tr>
-			<th colspan="2">Method/Why</th>
-			<td>(k)</td>
-			<td>
-				<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="190AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Condoms (C)" /><br />
-				<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160570AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Emergency Contraceptive Pill (ECP)" /><br />
-				<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="780AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Oral Contraceptive Pills (OC)" /><br />
-				<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5279AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Injectables (INJ)" /><br />
-				<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1359AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Implant (IMP)" /><br />
-				<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5275AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Intrauterine Devices (IUD)" /><br />
-				<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="136163AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Lactational Amenorrhea (LAM)" /><br />
-				<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5278AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Diaphragm/Cervical Cap (D)" /><br />
-				<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5277AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Fertility Awareness/Periodic Abstinence (FA)" /><br />
-				<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1472AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Tubal Ligation/Female Sterilization (TL)" /><br />
-				<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1489AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Vasectomy (V)" /><br />
-				<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Not Applicable" /><br />
-				<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Other" />
-				[TODO need concept for non-coded]
-			</td>
-			<td>
-				<obs
-					conceptId="160575AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-					answerConceptIds="160571AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160572AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160573AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-					answerLabels="Wants to get pregnant (WP),Thinks can't get pregnant (UP),Not sexually active now (NSex)"
-					style="radio"
-					answerSeparator="&lt;br /&gt;"
-				/>
-			</td>
-		</tr>
-		<tr>
-			<th rowspan="2">Tuberculosis Status</th>
-			<th colspan="2">Status</th>
-			<td>(l)</td>
-			<td>
-				<obs
-					conceptId="1659AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-					answerConceptIds="1660AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,142177AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1662AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-					answerLabels="NO Signs,TB Suspected,TB Rx,Not done (ND)"
-					style="radio"
-					answerSeparator="&lt;br /&gt;"
-				/>
-			</td>
-			<td>
-				District Reg Num: <patient field="identifier" identifierTypeId="d8ee3b8c-a8fc-4d6b-af6a-9423be5f8906" />
-			</td>
-		</tr>
-		<tr>
-			<th colspan="2">TBRx #</th>
-			<td>(m)</td>
-			<td colspan="2"><lookup class="value" expression="fn.latestObs(1113).valueDate" /></td>
-		</tr>
-		<tr>
-			<th colspan="3">Potential Side Effects</th>
-			<td>(n)</td>
-			<td colspan="2">[TODO need concept]</td>
-		</tr>
-		<tr>
-			<th colspan="3">New OIs &amp; Other Problems</th>
-			<td>(o)</td>
-			<td colspan="2">[TODO need concept]</td>
-		</tr>
-		<tr>
-			<th colspan="3">WHO Stage</th>
-			<td>(p)</td>
-			<td colspan="2">
-				<obs conceptId="5356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
-			</td>
-		</tr>
-		<tr>
-			<th rowspan="2">Cotrimoxazole</th>
-			<th colspan="2">Adherence</th>
-			<td>(q)</td>
-			<td colspan="2">
-				<obs
-					conceptId="1658AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-					answerConceptIds="159405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159406AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159407AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-					answerLabels="Good (G),Fair (F),Poor (P)"
-					style="radio"
-				/>
-			</td>
-		</tr>
-		<tr>
-			<th colspan="2">Dispensed</th>
-			<td>(r)</td>
-			<td colspan="2">[TODO need concept]</td>
-		</tr>
-		<tr>
-			<th colspan="3">INH Dispensed</th>
-			<td>(s)</td>
-			<td colspan="2">[TODO need concept]</td>
-		</tr>
-		<tr>
-			<th colspan="3">Other Medications Dispensed</th>
-			<td>(s)</td>
-			<td colspan="2">
-				<repeat>
-					<template>
-						<obsgroup groupingConceptId="1442AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-							<div>
-								Drug: <obs conceptId="1282AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerClasses="Drug" style="autocomplete" />
-								Dispensed: <obs conceptId="1443AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
-							</div>
-						</obsgroup>
-					</template>
-					<render n="1" concept="Drug"/>
-					<render n="2" concept="Drug"/>
-					<render n="3" concept="Drug"/>
-					<render n="4" concept="Drug"/>
-					<render n="5" concept="Drug"/>
-				</repeat>
-			</td>
-		</tr>
-		<tr>
-			<th rowspan="3">ARV Drugs</th>
-			<th colspan="2">Adherence</th>
-			<td>(u)</td>
-			<td colspan="2">
-				<obs
-					conceptId="1658AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-					answerConceptIds="159405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159406AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159407AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-					answerLabels="Good (G),Fair (F),Poor (P)"
-					style="radio"
-				/>
-			</td>
-		</tr>
-		<tr>
-			<th colspan="2">Why poor/fair</th>
-			<td>(v)</td>
-			<td colspan="2">
-				<obs conceptId="160582AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="102AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Toxicity/side effects (1)" /><br />
-				<obs conceptId="160582AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160583AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Share with others (2)" /><br />
-				<obs conceptId="160582AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160587AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Forgot (3)" /><br />
-				<obs conceptId="160582AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160586AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Felt better (4)" /><br />
-				<obs conceptId="160582AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160585AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Too ill (5)" /><br />
-				<obs conceptId="160582AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160589AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Stigma, disclosure or privacy issues (6)" /><br />
-				<obs conceptId="160582AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1754AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Drug stock out at dispensary (7)" /><br />
-				<obs conceptId="160582AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160584AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Patient lost/ran out of pills (8)" /><br />
-				<obs conceptId="160582AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="820AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Delivery/travel problems (9)" /><br />
-				<obs conceptId="160582AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="819AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Inability to pay (10)" /><br />
-				<obs conceptId="160582AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="121725AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Alcohol (11)" /><br />
-				<obs conceptId="160582AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="119537AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Depression (12)" /><br />
-				<obs conceptId="160582AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160588AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Pill burden (13)" /><br />
-				<obs conceptId="160582AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Other (14)" />
-				[TODO need concept for non-coded]
-			</td>
-		</tr>
-		<tr>
-			<th colspan="2">Regm/Dose/Days</th>
-			<td>(w)</td>
-			<td colspan="2"><span class="ke-field-instructions">Enter using ARV regimen editor</span></td>
-		</tr>
-		<tr>
-			<th rowspan="5">Laboratory<br />Investigations<br />Done</th>
-			<th colspan="2">CD4 (# or %)</th>
-			<td>(x)</td>
-			<td colspan="2">Count: <obs conceptId="5497AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /> or <obs conceptId="730AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />%</td>
-		</tr>
-		<tr>
-			<th colspan="2">Hgb</th>
-			<td>(y)</td>
-			<td colspan="2"><!--<obs conceptId="21AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />--></td>
-		</tr>
-		<tr>
-			<th colspan="2">RPR</th>
-			<td>(z)</td>
-			<td colspan="2"><obs conceptId="1619AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
-		</tr>
-		<tr>
-			<th colspan="2">TB Sputum</th>
-			<td>(aa)</td>
-			<td colspan="2"><obs conceptId="307AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
-		</tr>
-		<tr>
-			<th colspan="2">Other</th>
-			<td>(ab)</td>
-			<td colspan="2">
-				<labTests />
-			</td>
-		</tr>
-		<tr>
-			<th colspan="3">Referral / Hospitalized</th>
-			<td>(ac)</td>
-			<td colspan="2">
-				1. <obs conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><br />
-				2. <obs conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><br />
-				3. <obs conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><br />
-				[TODO need concept for non-coded]
-			</td>
-		</tr>
-		<tr>
-			<th colspan="3">At Risk Population</th>
-			<td>(ad)</td>
-			<td colspan="2">
-				<obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="6096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Discordant Couple (DC)" style="checkbox" /><br />
-				<obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160578AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Male who has sex with men (MSM)" style="checkbox" /><br />
-				<obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="105AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Injectable Drug User (IDU)" style="checkbox" /><br />
-				<obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160579AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Sex Worker (SW)" style="checkbox" /><br />
-				<obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160580AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Client of Sex Worker (cSW)" style="checkbox" />
-			</td>
-		</tr>
-		<tr>
-			<th rowspan="2">PwP<br />Services<br />(&#10003;)</th>
-			<th>Disclosure</th>
-			<th>Partner Tested</th>
-			<td>(ae)</td>
-			<td><obs conceptId="159423AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Yes" style="checkbox" /></td>
-			<td><obs conceptId="161557AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Yes" style="checkbox" /></td>
-		</tr>
-		<tr>
-			<th>Condoms</th>
-			<th>Screened STI</th>
-			<td>(af)</td>
-			<td><obs conceptId="159777AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Yes" style="checkbox" /></td>
-			<td><obs conceptId="161558AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Yes" style="checkbox" /></td>
-		</tr>
-		<tr>
-			<th colspan="3">Date of Next Appointment</th>
-			<td>(ag)</td>
-			<td colspan="2"><obs conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" /></td>
-		</tr>
+					<obs id="person-present-name" conceptId="160638AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+				</td>
+				<td><obs conceptId="1246AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" /> Scheduled</td>
+			</tr>
+			<tr>
+				<th rowspan="2">Duration Since<br />(in months)</th>
+				<th colspan="2">Start ART</th>
+				<td>(c)</td>
+				<td colspan="2"><span id="calculated-duration-start-art" class="value"></span></td>
+			</tr>
+			<tr>
+				<th colspan="2">Current Regimen</th>
+				<td>(d)</td>
+				<td colspan="2"><span id="calculated-duration-current-regimen" class="value"></span></td>
+			</tr>
+			<tr>
+				<th colspan="3">Weight (kg) / Blood Pressure</th>
+				<td>(e)</td>
+				<td><obs conceptId="5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="weight" /></td>
+				<td><obs conceptId="5085AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />/<obs conceptId="5086AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+			</tr>
+			<tr>
+				<th colspan="3">Height (cm)</th>
+				<td>(f)</td>
+				<td colspan="2"><obs conceptId="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="height" /></td>
+			</tr>
+			<tr>
+				<th colspan="3">BMI</th>
+				<td>(g)</td>
+				<td colspan="2"><span id="calculated-bmi" class="value"></span></td>
+			</tr>
+			<tr>
+				<th rowspan="2">Pregnancy</th>
+				<th colspan="2">Status</th>
+				<td>(h)</td>
+				<td colspan="2">
+					<includeIf velocityTest="$patient.gender == 'F' ">
+						<obs
+							conceptId="5272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							answerLabels="Yes,No,Unknown" style="radio"
+						/>
+					</includeIf>
+				</td>
+			</tr>
+			<tr>
+				<th colspan="2">EDD</th>
+				<td>(i)</td>
+				<td colspan="2">
+					<includeIf velocityTest="$patient.gender == 'F' ">
+						<obs conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" />
+					</includeIf>
+				</td>
+			</tr>
+			<tr>
+				<th rowspan="2">FP Status</th>
+				<th colspan="2">FP/No FP</th>
+				<td>(j)</td>
+				<td colspan="2">
+					<obs
+						conceptId="160653AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+						answerConceptIds="965AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1360AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+						answerLabels="Currently using (FP),Not using (NOFP),Wants (WFP)"
+						style="radio"
+					/>
+				</td>
+			</tr>
+			<tr>
+				<th colspan="2">Method/Why</th>
+				<td>(k)</td>
+				<td>
+					<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="190AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Condoms (C)" /><br />
+					<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160570AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Emergency Contraceptive Pill (ECP)" /><br />
+					<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="780AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Oral Contraceptive Pills (OC)" /><br />
+					<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5279AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Injectables (INJ)" /><br />
+					<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1359AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Implant (IMP)" /><br />
+					<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5275AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Intrauterine Devices (IUD)" /><br />
+					<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="136163AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Lactational Amenorrhea (LAM)" /><br />
+					<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5278AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Diaphragm/Cervical Cap (D)" /><br />
+					<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5277AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Fertility Awareness/Periodic Abstinence (FA)" /><br />
+					<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1472AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Tubal Ligation/Female Sterilization (TL)" /><br />
+					<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1489AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Vasectomy (V)" /><br />
+					<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Not Applicable" /><br />
+					<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Other" />
+					[TODO need concept for non-coded]
+				</td>
+				<td>
+					<obs
+						conceptId="160575AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+						answerConceptIds="160571AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160572AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160573AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+						answerLabels="Wants to get pregnant (WP),Thinks can't get pregnant (UP),Not sexually active now (NSex)"
+						style="radio"
+						answerSeparator="&lt;br /&gt;"
+					/>
+				</td>
+			</tr>
+			<tr>
+				<th rowspan="2">Tuberculosis Status</th>
+				<th colspan="2">Status</th>
+				<td>(l)</td>
+				<td>
+					<obs
+						conceptId="1659AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+						answerConceptIds="1660AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,142177AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1662AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+						answerLabels="NO Signs,TB Suspected,TB Rx,Not done (ND)"
+						style="radio"
+						answerSeparator="&lt;br /&gt;"
+					/>
+				</td>
+				<td>
+					District Reg Num: <patient field="identifier" identifierTypeId="d8ee3b8c-a8fc-4d6b-af6a-9423be5f8906" />
+				</td>
+			</tr>
+			<tr>
+				<th colspan="2">TBRx #</th>
+				<td>(m)</td>
+				<td colspan="2"><lookup class="value" expression="fn.latestObs(1113).valueDate" /></td>
+			</tr>
+			<tr>
+				<th colspan="3">Potential Side Effects</th>
+				<td>(n)</td>
+				<td colspan="2">[TODO need concept]</td>
+			</tr>
+			<tr>
+				<th colspan="3">New OIs &amp; Other Problems</th>
+				<td>(o)</td>
+				<td colspan="2">[TODO need concept]</td>
+			</tr>
+			<tr>
+				<th colspan="3">WHO Stage</th>
+				<td>(p)</td>
+				<td colspan="2">
+					<obs conceptId="5356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+				</td>
+			</tr>
+			<tr>
+				<th rowspan="2">Cotrimoxazole</th>
+				<th colspan="2">Adherence</th>
+				<td>(q)</td>
+				<td colspan="2">
+					<obs
+						conceptId="1658AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+						answerConceptIds="159405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159406AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159407AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+						answerLabels="Good (G),Fair (F),Poor (P)"
+						style="radio"
+					/>
+				</td>
+			</tr>
+			<tr>
+				<th colspan="2">Dispensed</th>
+				<td>(r)</td>
+				<td colspan="2">[TODO need concept]</td>
+			</tr>
+			<tr>
+				<th colspan="3">INH Dispensed</th>
+				<td>(s)</td>
+				<td colspan="2">[TODO need concept]</td>
+			</tr>
+			<tr>
+				<th colspan="3">Other Medications Dispensed</th>
+				<td>(s)</td>
+				<td colspan="2">
+					<repeat>
+						<template>
+							<obsgroup groupingConceptId="1442AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+								<div>
+									Drug: <obs conceptId="1282AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerClasses="Drug" style="autocomplete" />
+									Dispensed: <obs conceptId="1443AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+								</div>
+							</obsgroup>
+						</template>
+						<render n="1" concept="Drug"/>
+						<render n="2" concept="Drug"/>
+						<render n="3" concept="Drug"/>
+						<render n="4" concept="Drug"/>
+						<render n="5" concept="Drug"/>
+					</repeat>
+				</td>
+			</tr>
+			<tr>
+				<th rowspan="3">ARV Drugs</th>
+				<th colspan="2">Adherence</th>
+				<td>(u)</td>
+				<td colspan="2">
+					<obs
+						conceptId="1658AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+						answerConceptIds="159405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159406AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159407AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+						answerLabels="Good (G),Fair (F),Poor (P)"
+						style="radio"
+					/>
+				</td>
+			</tr>
+			<tr>
+				<th colspan="2">Why poor/fair</th>
+				<td>(v)</td>
+				<td colspan="2">
+					<obs conceptId="160582AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="102AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Toxicity/side effects (1)" /><br />
+					<obs conceptId="160582AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160583AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Share with others (2)" /><br />
+					<obs conceptId="160582AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160587AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Forgot (3)" /><br />
+					<obs conceptId="160582AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160586AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Felt better (4)" /><br />
+					<obs conceptId="160582AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160585AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Too ill (5)" /><br />
+					<obs conceptId="160582AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160589AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Stigma, disclosure or privacy issues (6)" /><br />
+					<obs conceptId="160582AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1754AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Drug stock out at dispensary (7)" /><br />
+					<obs conceptId="160582AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160584AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Patient lost/ran out of pills (8)" /><br />
+					<obs conceptId="160582AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="820AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Delivery/travel problems (9)" /><br />
+					<obs conceptId="160582AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="819AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Inability to pay (10)" /><br />
+					<obs conceptId="160582AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="121725AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Alcohol (11)" /><br />
+					<obs conceptId="160582AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="119537AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Depression (12)" /><br />
+					<obs conceptId="160582AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160588AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Pill burden (13)" /><br />
+					<obs conceptId="160582AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Other (14)" />
+					[TODO need concept for non-coded]
+				</td>
+			</tr>
+			<tr>
+				<th colspan="2">Regm/Dose/Days</th>
+				<td>(w)</td>
+				<td colspan="2"><span class="ke-field-instructions">Enter using ARV regimen editor</span></td>
+			</tr>
+			<tr>
+				<th rowspan="5">Laboratory<br />Investigations<br />Done</th>
+				<th colspan="2">CD4 (# or %)</th>
+				<td>(x)</td>
+				<td colspan="2">Count: <obs conceptId="5497AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /> or <obs conceptId="730AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />%</td>
+			</tr>
+			<tr>
+				<th colspan="2">Hgb</th>
+				<td>(y)</td>
+				<td colspan="2"><obs conceptId="21AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+			</tr>
+			<tr>
+				<th colspan="2">RPR</th>
+				<td>(z)</td>
+				<td colspan="2"><obs conceptId="1619AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+			</tr>
+			<tr>
+				<th colspan="2">TB Sputum</th>
+				<td>(aa)</td>
+				<td colspan="2"><obs conceptId="307AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+			</tr>
+			<tr>
+				<th colspan="2">Other</th>
+				<td>(ab)</td>
+				<td colspan="2">
+					<dynamicObsContainer id="other-lab-tests" />
+
+					<div style="text-align: right">
+						<span class="ke-field-instructions">Add new result for</span>
+						<labTestPicker dynamicObsContainerId="other-lab-tests" excludeTests="5497AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,730AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,21AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1619AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,307AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<th colspan="3">Referral / Hospitalized</th>
+				<td>(ac)</td>
+				<td colspan="2">
+					1. <obs conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><br />
+					2. <obs conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><br />
+					3. <obs conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><br />
+					[TODO need concept for non-coded]
+				</td>
+			</tr>
+			<tr>
+				<th colspan="3">At Risk Population</th>
+				<td>(ad)</td>
+				<td colspan="2">
+					<obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="6096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Discordant Couple (DC)" style="checkbox" /><br />
+					<obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160578AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Male who has sex with men (MSM)" style="checkbox" /><br />
+					<obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="105AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Injectable Drug User (IDU)" style="checkbox" /><br />
+					<obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160579AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Sex Worker (SW)" style="checkbox" /><br />
+					<obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160580AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Client of Sex Worker (cSW)" style="checkbox" />
+				</td>
+			</tr>
+			<tr>
+				<th rowspan="2">PwP<br />Services<br />(&#10003;)</th>
+				<th>Disclosure</th>
+				<th>Partner Tested</th>
+				<td>(ae)</td>
+				<td><obs conceptId="159423AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Yes" style="checkbox" /></td>
+				<td><obs conceptId="161557AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Yes" style="checkbox" /></td>
+			</tr>
+			<tr>
+				<th>Condoms</th>
+				<th>Screened STI</th>
+				<td>(af)</td>
+				<td><obs conceptId="159777AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Yes" style="checkbox" /></td>
+				<td><obs conceptId="161558AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Yes" style="checkbox" /></td>
+			</tr>
+			<tr>
+				<th colspan="3">Date of Next Appointment</th>
+				<td>(ag)</td>
+				<td colspan="2"><obs conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" /></td>
+			</tr>
+		</tbody>
 	</table>
 
 	<div class="ke-form-buttons">

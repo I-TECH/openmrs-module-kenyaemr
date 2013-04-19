@@ -97,3 +97,10 @@
 	background-color: #466469;
 	color: white;
 }
+
+/***** Dynamic form fields *****/
+
+.ke-form-dynamic-field {
+	display: block;
+	margin: 5px 0 5px 0;
+}
