@@ -13,7 +13,6 @@
  */
 package org.openmrs.module.kenyaemr.fragment.controller;
 
-import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -32,7 +31,6 @@ import org.openmrs.module.htmlformentry.FormEntryContext.Mode;
 import org.openmrs.module.htmlformentry.FormEntrySession;
 import org.openmrs.module.htmlformentry.FormSubmissionError;
 import org.openmrs.module.htmlformentry.HtmlForm;
-import org.openmrs.module.htmlformentry.HtmlFormEntryService;
 import org.openmrs.module.htmlformentry.HtmlFormEntryUtil;
 import org.openmrs.module.kenyaemr.KenyaEmr;
 import org.openmrs.module.kenyaemr.form.FormDescriptor;
@@ -73,8 +71,8 @@ public class EnterHtmlFormFragmentController {
 			form = encounter.getForm();
 		}
 
-		// Get html form
-		HtmlForm hf = FormUtils.formHasXmlPath(form) ? FormUtils.buildHtmlForm(resourceFactory, form) : HtmlFormEntryUtil.getService().getHtmlFormByForm(form);
+		// Get html form from database or UI resource
+		HtmlForm hf = FormUtils.getHtmlForm(form, resourceFactory);
 
 		if (hf == null)
 			throw new RuntimeException("Could not find HTML Form");
@@ -147,7 +145,8 @@ public class EnterHtmlFormFragmentController {
 
 		// TODO formModifiedTimestamp and encounterModifiedTimestamp
 
-		HtmlForm hf = FormUtils.formHasXmlPath(form) ? FormUtils.buildHtmlForm(resourceFactory, form) : HtmlFormEntryUtil.getService().getHtmlFormByForm(form);
+		// Get html form from database or UI resource
+		HtmlForm hf = FormUtils.getHtmlForm(form, resourceFactory);
 
 		FormEntrySession fes;
 		if (encounter != null) {

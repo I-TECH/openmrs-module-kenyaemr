@@ -19,6 +19,7 @@ import org.openmrs.FormResource;
 import org.openmrs.api.context.Context;
 import org.openmrs.customdatatype.datatype.FreeTextDatatype;
 import org.openmrs.module.htmlformentry.HtmlForm;
+import org.openmrs.module.htmlformentry.HtmlFormEntryService;
 import org.openmrs.ui.framework.resource.ResourceFactory;
 
 import java.io.IOException;
@@ -28,29 +29,30 @@ import java.io.IOException;
  */
 public class FormUtils {
 
-	private static final String RESOURCE_XML_PATH = "xmlPath";
+	protected static final String RESOURCE_HFE_XML_PATH = "hfeXmlPath";
 
 	/**
-	 * Checks if the given form has an XML path resource
+	 * Gets the XML resource path of the given form (null if form doesn't have an XML resource)
 	 * @param form the form
-	 * @return true if form has an XML path
+	 * @return the XML resource path
 	 */
-	public static boolean formHasXmlPath(Form form) {
-		return Context.getFormService().getFormResource(form, RESOURCE_XML_PATH) != null;
+	public static String getFormXmlPath(Form form) {
+		FormResource resource = Context.getFormService().getFormResource(form, RESOURCE_HFE_XML_PATH);
+		return resource != null ? ((String) resource.getValue()) : null;
 	}
 
 	/**
-	 * Sets the XML resource path
+	 * Set the XML resource path of the given form
 	 * @param form the form
 	 * @param xmlPath the path
 	 */
 	public static void setFormXmlPath(Form form, String xmlPath) {
-		FormResource resXmlPath = Context.getFormService().getFormResource(form, "xmlPath");
+		FormResource resXmlPath = Context.getFormService().getFormResource(form, RESOURCE_HFE_XML_PATH);
 
 		if (resXmlPath == null) {
 			resXmlPath = new FormResource();
 			resXmlPath.setForm(form);
-			resXmlPath.setName("xmlPath");
+			resXmlPath.setName(RESOURCE_HFE_XML_PATH);
 			resXmlPath.setDatatypeClassname(FreeTextDatatype.class.getName());
 		}
 
@@ -60,19 +62,26 @@ public class FormUtils {
 	}
 
 	/**
-	 * Dynamically builds an HtmlForm object from a form which contains a XML path resource
-	 * @param resourceFactory the resourceFactory
+	 * Gets an HTML from a form. If form has an XML path resource, then HTML form is created dynamically,
+	 * otherwise tries to load HTML form from database.
 	 * @param form the form
+	 * @param resourceFactory the resourceFactory
 	 * @return the Html form
 	 */
-	public static HtmlForm buildHtmlForm(ResourceFactory resourceFactory, Form form) throws IOException {
-		FormResource resXmlPath = Context.getFormService().getFormResource(form, RESOURCE_XML_PATH);
-		String pathVal = (String) resXmlPath.getValue();
+	public static HtmlForm getHtmlForm(Form form, ResourceFactory resourceFactory) throws IOException {
+		String xmlPath = getFormXmlPath(form);
 
-		String[] pathTokens = pathVal.split(":");
+		if (xmlPath == null) {
+			// No form resource so try regular load from database
+			return Context.getService(HtmlFormEntryService.class).getHtmlFormByForm(form);
+		}
+		else if (!xmlPath.contains(":")) {
+			throw new RuntimeException("Form XML resource path '" + xmlPath + "' should use format <provider>:<path>");
+		}
+
+		String[] pathTokens = xmlPath.split(":");
 		String providerName = pathTokens[0];
 		String resourcePath = pathTokens[1];
-
 		String xml = resourceFactory.getResourceAsString(providerName, resourcePath);
 
 		HtmlForm hf = new HtmlForm();

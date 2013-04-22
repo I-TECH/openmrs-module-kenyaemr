@@ -22,9 +22,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.Module;
 import org.openmrs.module.ModuleActivator;
 import org.openmrs.module.ModuleFactory;
-import org.openmrs.module.htmlformentry.HtmlFormEntryUtil;
 import org.openmrs.module.kenyaemr.datatype.LocationDatatype;
-import org.openmrs.module.kenyaemr.form.handler.LabTestsTagHandler;
 
 import java.io.InputStream;
 
@@ -82,8 +80,6 @@ public class KenyaEmrActivator implements ModuleActivator {
 			setupStandardRegimens();
 
 			log.info("Setup core regimens");
-
-			HtmlFormEntryUtil.getService().addHandler("labTests", new LabTestsTagHandler());
 
 		} catch (Exception ex) {
 			log.error("Cancelling module startup due to error");

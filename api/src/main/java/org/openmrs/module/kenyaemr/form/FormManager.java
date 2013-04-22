@@ -16,33 +16,14 @@ package org.openmrs.module.kenyaemr.form;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.EncounterType;
 import org.openmrs.Form;
-import org.openmrs.FormResource;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
-import org.openmrs.customdatatype.datatype.FreeTextDatatype;
-import org.openmrs.module.Module;
-import org.openmrs.module.ModuleClassLoader;
-import org.openmrs.module.ModuleFactory;
-import org.openmrs.module.htmlformentry.HtmlForm;
-import org.openmrs.module.htmlformentry.HtmlFormEntryService;
-import org.openmrs.module.htmlformentry.HtmlFormEntryUtil;
-import org.openmrs.module.kenyaemr.KenyaEmr;
 import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.kenyaemr.form.FormDescriptor.Frequency;
 import org.openmrs.module.kenyaemr.form.FormDescriptor.Gender;
-import org.openmrs.ui.framework.resource.ResourceFactory;
-import org.openmrs.util.OpenmrsUtil;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
 import java.util.*;
 
 /**

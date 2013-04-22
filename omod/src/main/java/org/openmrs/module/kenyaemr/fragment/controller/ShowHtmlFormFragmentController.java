@@ -29,7 +29,6 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.htmlformentry.FormEntryContext.Mode;
 import org.openmrs.module.htmlformentry.FormEntrySession;
 import org.openmrs.module.htmlformentry.HtmlForm;
-import org.openmrs.module.htmlformentry.HtmlFormEntryService;
 import org.openmrs.module.htmlformentry.HtmlFormEntryUtil;
 import org.openmrs.module.kenyaemr.form.FormUtils;
 import org.openmrs.ui.framework.SimpleObject;
@@ -51,7 +50,12 @@ public class ShowHtmlFormFragmentController {
 	
 	public SimpleObject viewFormHtml(@RequestParam("encounterId") Encounter enc, UiUtils ui, @SpringBean ResourceFactory resourceFactory, HttpSession httpSession) throws Exception {
 		Form form = enc.getForm();
-		HtmlForm hf = FormUtils.formHasXmlPath(form) ? FormUtils.buildHtmlForm(resourceFactory, form) : HtmlFormEntryUtil.getService().getHtmlFormByForm(form);
+
+		// Get html form from database or UI resource
+		HtmlForm hf = FormUtils.getHtmlForm(form, resourceFactory);
+
+		if (hf == null)
+			throw new RuntimeException("Could not find HTML Form");
 
 		FormEntrySession fes = new FormEntrySession(enc.getPatient(), enc, Mode.VIEW, hf, httpSession);
 		String html = fes.getHtmlToDisplay();
