@@ -233,12 +233,22 @@
 			<tr>
 				<th colspan="3">Potential Side Effects</th>
 				<td>(n)</td>
-				<td colspan="2">[TODO need concept]</td>
+				<td colspan="2">
+					<obs conceptId="159935AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5978AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Nausea (N)" /><br />
+					<obs conceptId="159935AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="139534AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Headache (H)" /><br />
+					[TODO find concepts for all options]
+				</td>
 			</tr>
 			<tr>
 				<th colspan="3">New OIs &amp; Other Problems</th>
 				<td>(o)</td>
-				<td colspan="2">[TODO need concept]</td>
+				<td colspan="2">
+					<obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerClasses="Diagnosis" style="autocomplete" /><br/>
+					<obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerClasses="Diagnosis" style="autocomplete" /><br/>
+					<obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerClasses="Diagnosis" style="autocomplete" /><br/>
+					<obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerClasses="Diagnosis" style="autocomplete" /><br/>
+					<obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerClasses="Diagnosis" style="autocomplete" />
+				</td>
 			</tr>
 			<tr>
 				<th colspan="3">WHO Stage</th>
