@@ -41,6 +41,27 @@ def returnUrl = config.returnUrl ?: ui.thisUrl()
 	\$j = jQuery;
 	var propertyAccessorInfo = new Array();
 
+	/**
+	 * Overrides standard HFE method to work in view mode
+	 */
+	function getField(elementAndProperty) {
+	 	return jq(); // Don't return anything (no fields in view mode)
+	}
+
+	/**
+	 * Overrides standard HFE method to work in view mode
+	 */
+	function getValue(elementAndProperty) {
+		var fieldId = elementAndProperty.split(".")[0];
+		var fieldValue = jq('#' + fieldId + ' span.value').text(); // Value from span text
+
+		if (fieldId == 'encounter-date') {
+			return jq.datepicker.formatDate(jq.datepicker.W3C, new Date(fieldValue)); // Re-format date
+		}
+
+		return fieldValue;
+	}
+
 	// TODO move to js resource
 	function confirmDeleteEncounter(encounterId, returnUrl) {
 		var doIt = confirm('Are you sure you want to delete this form?');
