@@ -368,7 +368,9 @@
 					<dynamicObsContainer id="other-lab-tests" />
 
 					<div style="text-align: right">
-						<span class="ke-field-instructions">Add new result for</span>
+						<ifMode mode="VIEW" include="false">
+							<span class="ke-field-instructions">Add new result for</span>
+						</ifMode>
 						<labTestPicker dynamicObsContainerId="other-lab-tests" excludeTests="5497AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,730AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,21AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1619AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,307AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
 					</div>
 				</td>

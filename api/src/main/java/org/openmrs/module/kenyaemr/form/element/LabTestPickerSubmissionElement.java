@@ -83,10 +83,11 @@ public class LabTestPickerSubmissionElement implements HtmlGeneratorElement, For
 	@Override
 	public String generateHtml(FormEntryContext context) {
 		StringBuilder sb = new StringBuilder();
+		boolean viewMode = context.getMode().equals(FormEntryContext.Mode.VIEW);
 
 		LabManager labManager = KenyaEmr.getInstance().getLabManager();
 
-		if (!context.getMode().equals(FormEntryContext.Mode.VIEW)) {
+		if (!viewMode) {
 			// Generate HTML for new test control
 			sb.append("<span>\n");
 			sb.append("  <select id=\"ke-lab-testlist\">\n");
@@ -113,19 +114,15 @@ public class LabTestPickerSubmissionElement implements HtmlGeneratorElement, For
 		sb.append("\n");
 		sb.append("  function ke_labAddNewTest(conceptId, initialValue) {\n");
 		sb.append("    var fieldName = '" + dynamicObsContainerId + "-' + conceptId;\n");
-		sb.append("    kenyaemr.dynamicObsField('" + dynamicObsContainerId + "', fieldName, conceptId, initialValue);\n");
+		sb.append("    kenyaemr.dynamicObsField('" + dynamicObsContainerId + "', fieldName, conceptId, initialValue, " + (viewMode ? "true" : "false") + ");\n");
 		sb.append("  }\n");
 		sb.append("\n");
 		sb.append("  $j(function() {\n");
 
-		if (!context.getMode().equals(FormEntryContext.Mode.VIEW)) {
+		if (!viewMode) {
 			sb.append("    $j('#ke-lab-addnew').click(function() {\n");
 			sb.append("      var newConceptId = $j('#ke-lab-testlist').val();\n");
 			sb.append("      ke_labAddNewTest(newConceptId, null);\n");
-			//sb.append("      $j('#ke-lab-testlist option[value=' + newConceptId + ']').remove();\n");
-			//sb.append("      if ($('#ke-lab-testlist').get(0).options.length == 0) {\n");
-			//sb.append("        $('#ke-lab-controls').hide();");
-			//sb.append("      }\n");
 			sb.append("    });\n");
 		}
 

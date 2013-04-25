@@ -42,10 +42,14 @@ public class FieldGeneratorController {
 								@RequestParam(value = "name", required = true) String name,
 								@RequestParam(value = "conceptId", required = true) Concept concept,
 								@RequestParam(value = "initialValue", required = false) String initialValueText,
+								@RequestParam(value = "readOnly", required = false) Boolean readOnly,
 								Model model) {
 
 		if (id == null) {
 			id = UUID.randomUUID().toString();
+		}
+		if (readOnly == null) {
+			readOnly = false;
 		}
 
 		Object initialValue = null;
@@ -70,6 +74,7 @@ public class FieldGeneratorController {
 		model.addAttribute("name", name);
 		model.addAttribute("concept", concept);
 		model.addAttribute("initialValue", initialValue);
+		model.addAttribute("readOnly", readOnly);
 
 		return VIEW_PATH;
 	}

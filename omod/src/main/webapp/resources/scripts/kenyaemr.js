@@ -107,11 +107,12 @@ var kenyaemr = (function($) {
 		 * @param fieldName the field name
 		 * @param conceptId the concept id
 		 * @param initialValue the initial field value (may be null)
+		 * @param readOnly true if control should be read only
 		 */
-		dynamicObsField: function(parentId, fieldName, conceptId, initialValue) {
+		dynamicObsField: function(parentId, fieldName, conceptId, initialValue, readOnly) {
 			var placeHolderId = kenyaui.generateId();
 			$('#' + parentId).append('<div id="' + placeHolderId + '" class="ke-loading ke-form-dynamic-field">&nbsp;</div>');
-			$j.get('/' + CONTEXT_PATH + '/kenyaemr/generateField.htm', { name: fieldName, conceptId: conceptId, initialValue: initialValue })
+			$j.get('/' + CONTEXT_PATH + '/kenyaemr/generateField.htm', { name: fieldName, conceptId: conceptId, initialValue: initialValue, readOnly : readOnly })
 			.done(function (html) {
 				$j('#' + placeHolderId).removeClass('ke-loading');
 				$j('#' + placeHolderId).html(html);

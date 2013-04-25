@@ -24,6 +24,7 @@ import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.kenyaemr.form.FormDescriptor.Frequency;
 import org.openmrs.module.kenyaemr.form.FormDescriptor.Gender;
 import org.openmrs.module.kenyaemr.form.handler.DynamicObsContainerTagHandler;
+import org.openmrs.module.kenyaemr.form.handler.IfModeTagHandler;
 import org.openmrs.module.kenyaemr.form.handler.LabTestPickerTagHandler;
 import org.springframework.stereotype.Component;
 
@@ -73,6 +74,7 @@ public class FormManager {
 		// Register custom tags
 		HtmlFormEntryUtil.getService().addHandler("dynamicObsContainer", new DynamicObsContainerTagHandler());
 		HtmlFormEntryUtil.getService().addHandler("labTestPicker", new LabTestPickerTagHandler());
+		HtmlFormEntryUtil.getService().addHandler("ifMode", new IfModeTagHandler()); // Override one from HFE
 	}
 
 	/**
