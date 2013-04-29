@@ -46,7 +46,7 @@ public class MetadataConstants {
 	public static final String PROGRESS_NOTE_FORM_UUID = "0038a296-62f8-4099-80e5-c9ea7590c157";
 	public static final String OBSTETRIC_HISTORY_FORM_UUID = "8e4e1abf-7c08-4ba8-b6d8-19a9f1ccb6c9";
 	public static final String FAMILY_HISTORY_FORM_UUID = "7efa0ee0-6617-4cd7-8310-9f95dfee7a82";
-	public static final String MOH_257_ENCOUNTER_ORDER_LAB_INVESTIGATIONS_FORM_UUID = "7e603909-9ed5-4d0c-a688-26ecb05d8b6e";
+	public static final String LAB_RESULTS_FORM_UUID = "7e603909-9ed5-4d0c-a688-26ecb05d8b6e";
 	public static final String OTHER_MEDICATIONS_FORM_UUID = "d4ff8ad1-19f8-484f-9395-04c755de9a47";
 	public static final String TB_SCREENING_FORM_UUID = "59ed8e62-7f1f-40ae-a2e3-eabe350277ce";
 	public static final String TB_ENROLLMENT_FORM_UUID = "89994550-9939-40f3-afa6-173bce445c79";

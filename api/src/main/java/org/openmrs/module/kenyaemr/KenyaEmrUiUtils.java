@@ -42,6 +42,9 @@ public class KenyaEmrUiUtils {
 	@Autowired
 	KenyaUiUtils kenyaUi;
 
+	@Autowired
+	KenyaEmr emr;
+
 	/**
 	 * Formats the dates of the given visit
 	 * @param visit the visit
@@ -180,13 +183,8 @@ public class KenyaEmrUiUtils {
 	 * @return the simple object
 	 */
 	public SimpleObject simpleForm(Form form, UiUtils ui) {
-		FormDescriptor config = KenyaEmr.getInstance().getFormManager().getFormDescriptor(form.getUuid());
-
-		return SimpleObject.create(
-				"formUuid", form.getUuid(),
-				"label", form.getName(),
-				"iconProvider", (config != null ? config.getIconProvider() : KenyaEmrConstants.MODULE_ID),
-				"icon", (config != null ? config.getIcon() : "forms/generic.png"));
+		FormDescriptor config = emr.getFormManager().getFormDescriptor(form.getUuid());
+		return SimpleObject.create("formUuid", form.getUuid(), "label", form.getName(), "iconProvider", config.getIconProvider(), "icon", config.getIcon());
 	}
 
 	/**

@@ -1,12 +1,104 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
 	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	   xmlns:context="http://www.springframework.org/schema/context"
-	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
-			http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
 	<!-- Form descriptors -->
 
+	<!-- Family History -->
+	<bean class="org.openmrs.module.kenyaemr.form.FormDescriptor">
+		<property name="formUuid" value="7efa0ee0-6617-4cd7-8310-9f95dfee7a82" />
+		<property name="frequency" value="ONCE_EVER" />
+		<property name="apps">
+			<set><value>kenyaemr.medicalChart</value></set>
+		</property>
+		<property name="icon" value="forms/family_history.png" />
+	</bean>
+
+	<!-- Obstetric History -->
+	<bean class="org.openmrs.module.kenyaemr.form.FormDescriptor">
+		<property name="formUuid" value="8e4e1abf-7c08-4ba8-b6d8-19a9f1ccb6c9" />
+		<property name="frequency" value="ONCE_EVER" />
+		<property name="gender" value="FEMALE" />
+		<property name="apps">
+			<set><value>kenyaemr.medicalChart</value></set>
+		</property>
+		<property name="icon" value="forms/obstetric.png" />
+	</bean>
+
+	<!-- Triage -->
+	<bean class="org.openmrs.module.kenyaemr.form.FormDescriptor">
+		<property name="formUuid" value="37f6bd8d-586a-4169-95fa-5781f987fe62" />
+		<property name="frequency" value="VISIT" />
+		<property name="apps">
+			<set><value>kenyaemr.intake</value><value>kenyaemr.medicalChart</value></set>
+		</property>
+		<property name="order" value="3001" />
+	</bean>
+
+	<!-- Clinical Encounter -->
+	<bean class="org.openmrs.module.kenyaemr.form.FormDescriptor">
+		<property name="formUuid" value="e958f902-64df-4819-afd4-7fb061f59308" />
+		<property name="frequency" value="VISIT" />
+		<property name="apps">
+			<set><value>kenyaemr.medicalEncounter</value><value>kenyaemr.medicalChart</value></set>
+		</property>
+		<property name="order" value="3002" />
+	</bean>
+
+	<!-- Clinical Encounter - HIV Addendum -->
+	<bean class="org.openmrs.module.kenyaemr.form.FormDescriptor">
+		<property name="formUuid" value="bd598114-4ef4-47b1-a746-a616180ccfc0" />
+		<property name="frequency" value="VISIT" />
+		<property name="apps">
+			<set><value>kenyaemr.medicalEncounter</value><value>kenyaemr.medicalChart</value></set>
+		</property>
+		<property name="programUuid" value="dfdc6d40-2f2f-463d-ba90-cc97350441a8" />
+		<property name="order" value="3003" />
+	</bean>
+
+	<!-- Lab Results -->
+	<bean class="org.openmrs.module.kenyaemr.form.FormDescriptor">
+		<property name="formUuid" value="7e603909-9ed5-4d0c-a688-26ecb05d8b6e" />
+		<property name="frequency" value="VISIT" />
+		<property name="apps">
+			<set><value>kenyaemr.intake</value><value>kenyaemr.medicalEncounter</value><value>kenyaemr.medicalChart</value></set>
+		</property>
+		<property name="icon" value="forms/labresults.png" />
+		<property name="order" value="3004" />
+	</bean>
+
+	<!-- Other Medications -->
+	<bean class="org.openmrs.module.kenyaemr.form.FormDescriptor">
+		<property name="formUuid" value="d4ff8ad1-19f8-484f-9395-04c755de9a47" />
+		<property name="frequency" value="VISIT" />
+		<property name="apps">
+			<set><value>kenyaemr.medicalEncounter</value><value>kenyaemr.medicalChart</value></set>
+		</property>
+		<property name="order" value="3005" />
+	</bean>
+
+	<!-- Progress Note -->
+	<bean class="org.openmrs.module.kenyaemr.form.FormDescriptor">
+		<property name="formUuid" value="0038a296-62f8-4099-80e5-c9ea7590c157" />
+		<property name="frequency" value="VISIT" />
+		<property name="apps">
+			<set><value>kenyaemr.intake</value><value>kenyaemr.medicalEncounter</value><value>kenyaemr.medicalChart</value></set>
+		</property>
+		<property name="order" value="3006" />
+	</bean>
+
+	<!-- HIV Enrollment -->
+	<bean class="org.openmrs.module.kenyaemr.form.FormDescriptor">
+		<property name="formUuid" value="e4b506c1-7379-42b6-a374-284469cba8da" />
+		<property name="frequency" value="PROGRAM" />
+		<property name="apps">
+			<set><value>kenyaemr.medicalChart</value></set>
+		</property>
+		<property name="programUuid" value="dfdc6d40-2f2f-463d-ba90-cc97350441a8" />
+	</bean>
+
+	<!-- MOH257 Visit Summary -->
 	<bean class="org.openmrs.module.kenyaemr.form.FormDescriptor">
 		<property name="formUuid" value="23b4ebbd-29ad-455e-be0e-04aa6bc30798" />
 		<property name="frequency" value="VISIT" />
@@ -18,16 +110,28 @@
 		<property name="resource" value="htmlforms/moh257VisitSummary.xml" />
 	</bean>
 
+	<!-- HIV Discontinuation -->
+	<bean class="org.openmrs.module.kenyaemr.form.FormDescriptor">
+		<property name="formUuid" value="e3237ede-fa70-451f-9e6c-0908bc39f8b9" />
+		<property name="frequency" value="PROGRAM" />
+		<property name="apps">
+			<set><value>kenyaemr.medicalChart</value></set>
+		</property>
+		<property name="programUuid" value="dfdc6d40-2f2f-463d-ba90-cc97350441a8" />
+		<property name="icon" value="forms/discontinue.png" />
+	</bean>
+
+	<!-- TB Screening-->
 	<bean class="org.openmrs.module.kenyaemr.form.FormDescriptor">
 		<property name="formUuid" value="59ed8e62-7f1f-40ae-a2e3-eabe350277ce" />
 		<property name="frequency" value="VISIT" />
 		<property name="apps">
 			<set><value>kenyaemr.intake</value><value>kenyaemr.medicalEncounter</value><value>kenyaemr.medicalChart</value></set>
 		</property>
-		<property name="icon" value="forms/generic.png" />
 		<property name="resource" value="htmlforms/tbScreening.xml" />
 	</bean>
 
+	<!-- TB Enrollment-->
 	<bean class="org.openmrs.module.kenyaemr.form.FormDescriptor">
 		<property name="formUuid" value="89994550-9939-40f3-afa6-173bce445c79" />
 		<property name="frequency" value="PROGRAM" />
@@ -35,21 +139,21 @@
 			<set><value>kenyaemr.medicalChart</value></set>
 		</property>
 		<property name="programUuid" value="9f144a34-3a4a-44a9-8486-6b7af6cc64f6" />
-		<property name="icon" value="forms/generic.png" />
 		<property name="resource" value="htmlforms/tbEnrollment.xml" />
 	</bean>
 
+	<!-- TB Followup Visit -->
 	<bean class="org.openmrs.module.kenyaemr.form.FormDescriptor">
 		<property name="formUuid" value="2daabb77-7ad6-4952-864b-8d23e109c69d" />
 		<property name="frequency" value="PROGRAM" />
 		<property name="apps">
-			<set><value>kenyaemr.intake</value><value>kenyaemr.medicalEncounter</value><value>kenyaemr.medicalChart</value></set>
+			<set><value>kenyaemr.medicalEncounter</value><value>kenyaemr.medicalChart</value></set>
 		</property>
 		<property name="programUuid" value="9f144a34-3a4a-44a9-8486-6b7af6cc64f6" />
-		<property name="icon" value="forms/generic.png" />
 		<property name="resource" value="htmlforms/tbFollowupVisit.xml" />
 	</bean>
 
+	<!-- TB Discontinuation -->
 	<bean class="org.openmrs.module.kenyaemr.form.FormDescriptor">
 		<property name="formUuid" value="4b296dd0-f6be-4007-9eb8-d0fd4e94fb3a" />
 		<property name="frequency" value="PROGRAM" />
@@ -63,26 +167,26 @@
 
 	<!-- Module service -->
 
-    <bean id="kenyaEmrService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
-        <property name="transactionManager">
-            <ref bean="transactionManager" />
-        </property>
-        <property name="target">
-            <bean class="${project.parent.groupId}.${project.parent.artifactId}.api.impl.KenyaEmrServiceImpl">
+	<bean id="kenyaEmrService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+		<property name="transactionManager">
+			<ref bean="transactionManager" />
+		</property>
+		<property name="target">
+			<bean class="${project.parent.groupId}.${project.parent.artifactId}.api.impl.KenyaEmrServiceImpl">
 				<property name="kenyaEmrDAO">
 					<bean class="${project.parent.groupId}.${project.parent.artifactId}.api.db.hibernate.HibernateKenyaEmrDAO">
 						<property name="sessionFactory"><ref bean="sessionFactory"/></property>
 					</bean>
 				</property>
 			</bean>
-        </property>
-        <property name="preInterceptors">
-            <ref bean="serviceInterceptors" />
-        </property>
-        <property name="transactionAttributeSource">
-            <ref bean="transactionAttributeSource" />
-        </property>
-    </bean>
+		</property>
+		<property name="preInterceptors">
+			<ref bean="serviceInterceptors" />
+		</property>
+		<property name="transactionAttributeSource">
+			<ref bean="transactionAttributeSource" />
+		</property>
+	</bean>
 
 	<!-- Register service with OpenMRS -->
 

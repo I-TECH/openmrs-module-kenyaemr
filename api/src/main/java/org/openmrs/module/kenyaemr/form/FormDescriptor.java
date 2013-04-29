@@ -16,13 +16,14 @@ package org.openmrs.module.kenyaemr.form;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.openmrs.module.kenyaemr.KenyaEmrConstants;
 import org.openmrs.module.kenyaui.KenyaUiConstants;
+import org.openmrs.util.OpenmrsUtil;
 
 import java.util.Set;
 
 /**
  * Describes how a form can be used in the EMR
  */
-public class FormDescriptor {
+public class FormDescriptor implements Comparable<FormDescriptor> {
 
 	/**
 	 * Possible usage frequencies for a form
@@ -56,30 +57,12 @@ public class FormDescriptor {
 
 	private String resource;
 
+	private Integer order;
+
 	/**
 	 * Default constructor
 	 */
 	public FormDescriptor() {
-	}
-
-	/**
-	 * Creates a new form descriptor
-	 * @param formUuid the form UUID
-	 * @param frequency the form usage frequency
-	 * @apram apps the app ids
-	 * @param programUuid the form program usage (may be null)
-	 * @param gender the gender usage
-	 * @param iconProvider the icon provider id
-	 * @param icon the icon file
-	 */
-	public FormDescriptor(String formUuid, Frequency frequency, Set<String> apps, String programUuid, Gender gender, String iconProvider, String icon) {
-		this.formUuid = formUuid;
-		this.frequency = frequency;
-		this.apps = apps;
-		this.programUuid = programUuid;
-		this.gender = gender;
-		this.iconProvider = iconProvider;
-		this.icon = icon;
 	}
 
 	/**
@@ -224,6 +207,30 @@ public class FormDescriptor {
 	 */
 	public void setResource(String resource) {
 		this.resource = resource;
+	}
+
+	/**
+	 * Gets the order
+	 * @return the order
+	 */
+	public Integer getOrder() {
+		return order;
+	}
+
+	/**
+	 * Sets the order
+	 * @param order the order
+	 */
+	public void setOrder(Integer order) {
+		this.order = order;
+	}
+
+	/**
+	 * @see Comparable#compareTo(Object)
+	 */
+	@Override
+	public int compareTo(FormDescriptor form) {
+		return OpenmrsUtil.compareWithNullAsGreatest(order, form.order);
 	}
 
 	/**
