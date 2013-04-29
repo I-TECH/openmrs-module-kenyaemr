@@ -37,7 +37,7 @@ public class ReportManagerTest extends BaseModuleContextSensitiveTest {
 	@Test
 	public void getReportBuildersByTag_shouldGetReportBuildersWithTag() {
 
-		reportManager.refreshReportBuilders();
+		reportManager.refresh();
 
 		final String[] TEST_TAGS = { "moh", "facility" };
 

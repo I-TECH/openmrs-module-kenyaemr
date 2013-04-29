@@ -18,6 +18,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.ModuleFactory;
+import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.module.kenyaemr.calculation.CalculationManager;
 import org.openmrs.module.kenyaemr.form.FormManager;
 import org.openmrs.module.kenyaemr.lab.LabManager;
@@ -72,8 +73,7 @@ public class KenyaEmr implements UiContextRefreshedCallback {
 	 * @return the build properties map or null if not available
 	 */
 	public BuildProperties getModuleBuildProperties() {
-		List<BuildProperties> propBeans = Context.getRegisteredComponents(BuildProperties.class);
-		return propBeans.size() > 0 ? propBeans.get(0) : null;
+		return getSingletonComponent(BuildProperties.class);
 	}
 
 	/**
@@ -125,12 +125,20 @@ public class KenyaEmr implements UiContextRefreshedCallback {
 	}
 
 	/**
+	 * Gets the EMR service
+	 * @return the service
+	 */
+	public KenyaEmrService getEmrServicee() {
+		return Context.getService(KenyaEmrService.class);
+	}
+
+	/**
 	 * Utility method to get the singleton instance from the application context in situations where you
 	 * can't use @Autowired or @SpringBean. Use as a last resort.
 	 * @return the singleton instance
 	 */
 	public static KenyaEmr getInstance() {
-		return Context.getRegisteredComponents(KenyaEmr.class).get(0);
+		return getSingletonComponent(KenyaEmr.class);
 	}
 
 	/**
@@ -138,12 +146,33 @@ public class KenyaEmr implements UiContextRefreshedCallback {
 	 */
 	public void afterContextRefreshed(PageFactory pageFactory, FragmentFactory fragmentFactory, ResourceFactory resourceFactory) {
 		try {
-			calculationManager.refreshCalculationClasses();
+			calculationManager.refresh();
 			formManager.refresh();
-			reportManager.refreshReportBuilders();
+			reportManager.refresh();
 		}
 		catch (Exception ex) {
 			log.error("Error during Kenya EMR context refresh", ex);
+		}
+	}
+
+	/**
+	 * Fetches a singleton component from the application context
+	 * @param clazz the class of the component
+	 * @param <T> the class of the component
+	 * @return the singleton instance
+	 * @throws RuntimeException if no such instance exists or more than one instance exists
+	 */
+	protected static <T> T getSingletonComponent(Class<T> clazz) {
+		List<T> all = Context.getRegisteredComponents(clazz);
+		if (all.size() == 0) {
+			throw new RuntimeException("No such object in the application context");
+		}
+		// Because of TRUNK-3889, singleton beans get instantiated twice
+		//else if (all.size() > 1) {
+		//	throw new RuntimeException("Object is not a singleton in the application context");
+		//}
+		else {
+			return all.get(0);
 		}
 	}
 }

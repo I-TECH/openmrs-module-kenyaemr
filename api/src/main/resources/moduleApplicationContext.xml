@@ -101,7 +101,7 @@
 		<constructor-arg value="yyyy-MM-dd" />
 	</bean>
 
-	<bean class="${project.parent.groupId}.${project.parent.artifactId}.util.BuildProperties">
+	<bean id="kenyaEmrBuildProperties" class="${project.parent.groupId}.${project.parent.artifactId}.util.BuildProperties">
 		<property name="buildDate">
 			<bean factory-bean="kenyaEmrDateFactory" factory-method="parse">
 				<constructor-arg value="${moduleBuildDate}" />

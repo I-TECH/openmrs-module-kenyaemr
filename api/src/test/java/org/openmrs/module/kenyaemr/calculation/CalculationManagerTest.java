@@ -31,7 +31,7 @@ public class CalculationManagerTest extends BaseModuleContextSensitiveTest {
 
 	@Before
 	public void setup() {
-		manager.refreshCalculationClasses();
+		manager.refresh();
 	}
 
 	/**

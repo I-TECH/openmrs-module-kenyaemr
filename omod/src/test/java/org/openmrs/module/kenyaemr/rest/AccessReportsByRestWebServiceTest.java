@@ -50,7 +50,7 @@ public class AccessReportsByRestWebServiceTest extends BaseModuleWebContextSensi
 		executeDataSet("test-data.xml");
 		executeDataSet("test-drugdata.xml");
 
-		reportManager.refreshReportBuilders();
+		reportManager.refresh();
 	}
 
 	@Test

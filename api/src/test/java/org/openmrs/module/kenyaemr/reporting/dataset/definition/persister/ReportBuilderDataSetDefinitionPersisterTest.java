@@ -38,7 +38,7 @@ public class ReportBuilderDataSetDefinitionPersisterTest extends BaseModuleConte
 
 	@Before
 	public void setup() {
-		reportManager.refreshReportBuilders();
+		reportManager.refresh();
 	}
 
 	@Test

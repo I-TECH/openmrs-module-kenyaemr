@@ -42,7 +42,7 @@ public class ReportManager {
 	/**
 	 * Refreshes the list of report builders from application context
 	 */
-	public synchronized void refreshReportBuilders() {
+	public synchronized void refresh() {
 		clear();
 
 		for (ReportBuilder builder : Context.getRegisteredComponents(ReportBuilder.class)) {

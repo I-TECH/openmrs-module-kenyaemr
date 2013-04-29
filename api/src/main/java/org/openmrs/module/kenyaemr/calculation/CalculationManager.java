@@ -40,7 +40,7 @@ public class CalculationManager implements CalculationProvider {
 	/**
 	 * Refreshes registered calculation classes
 	 */
-	public synchronized void refreshCalculationClasses() {
+	public synchronized void refresh() {
 		clear();
 
 		ClassPathScanningCandidateComponentProvider scanner = new ClassPathScanningCandidateComponentProvider(false);
