@@ -195,8 +195,11 @@
 					<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1472AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Tubal Ligation/Female Sterilization (TL)" /><br />
 					<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1489AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Vasectomy (V)" /><br />
 					<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Not Applicable" /><br />
-					<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Other" />
-					[TODO need concept for non-coded]
+					<!--<obsgroup groupingConceptId="????">
+						<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Other" />
+						<obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+					</obsgroup>-->
+					[TODO need construct concept]
 				</td>
 				<td>
 					<obs
@@ -222,7 +225,7 @@
 					/>
 				</td>
 				<td>
-					District Reg Num: <patient field="identifier" identifierTypeId="d8ee3b8c-a8fc-4d6b-af6a-9423be5f8906" />
+					TB Treatment No. [TODO need obs for TB case Id]
 				</td>
 			</tr>
 			<tr>
@@ -243,10 +246,12 @@
 				<th colspan="3">New OIs &amp; Other Problems</th>
 				<td>(o)</td>
 				<td colspan="2">
-					<obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerClasses="Diagnosis" style="autocomplete" /><br/>
-					<obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerClasses="Diagnosis" style="autocomplete" /><br/>
-					<obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerClasses="Diagnosis" style="autocomplete" /><br/>
-					<obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerClasses="Diagnosis" style="autocomplete" /><br/>
+					<obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="123358AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Zoster (Z)" /><br/>
+					<obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5334AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Thrush - oral" /><br/>
+					<obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="298AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Thrush - vaginal" /><br/>
+					<obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="143264AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Cough" /><br/>
+					Other <obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerClasses="Diagnosis" style="autocomplete" />,
+					<obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerClasses="Diagnosis" style="autocomplete" />,
 					<obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerClasses="Diagnosis" style="autocomplete" />
 				</td>
 			</tr>
