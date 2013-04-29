@@ -116,7 +116,7 @@ public class HivCareVisitsIndicatorEvaluator implements IndicatorEvaluator {
 		// Firstly look for a scheduled visit obs which has value = true
 		Concept scheduledVisit = Context.getConceptService().getConceptByUuid(MetadataConstants.SCHEDULED_VISIT_CONCEPT_UUID);
 		for (Obs obs : encounter.getAllObs()) {
-			if (obs.getConcept().equals(scheduledVisit) && obs.getValueBoolean()) {
+			if (obs.getConcept().equals(scheduledVisit) && obs.getValueAsBoolean()) {
 				return true;
 			}
 		}
