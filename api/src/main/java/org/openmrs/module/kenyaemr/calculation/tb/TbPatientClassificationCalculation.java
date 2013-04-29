@@ -23,13 +23,13 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- * Calculates patient's TB disease classification
+ * Calculates patient's TB classification
  */
 public class TbPatientClassificationCalculation extends BaseEmrCalculation {
 
     @Override
     public String getName() {
-        return "TB Disease Classification";
+        return "TB Patient Classification";
     }
 
 	@Override
@@ -39,6 +39,6 @@ public class TbPatientClassificationCalculation extends BaseEmrCalculation {
 
     @Override
     public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> arg1, PatientCalculationContext context) {
-		return lastObs(getConcept(MetadataConstants.RESULTS_TUBERCULOSIS_CULTURE_CONCEPT_UUID), cohort, context);
+		return lastObs(getConcept(MetadataConstants.TYPE_OF_TB_PATIENT_CONCEPT_UUID), cohort, context);
     }
 }
