@@ -37,7 +37,7 @@ public class MetadataConstants {
 	public static final String LAB_RESULTS_ENCOUNTER_TYPE_UUID = "17a381d1-7e29-406a-b782-aa903b963c28";
 	public static final String CHECK_OUT_ENCOUNTER_TYPE_UUID ="abfb143c-5b49-41e5-9ead-f47ee4cc57cf";
 
-	// HTML Forms
+	// Forms
 	public static final String HIV_PROGRAM_ENROLLMENT_FORM_UUID = "e4b506c1-7379-42b6-a374-284469cba8da";
 	public static final String HIV_PROGRAM_DISCONTINUATION_FORM_UUID = "e3237ede-fa70-451f-9e6c-0908bc39f8b9";
 	public static final String TRIAGE_FORM_UUID = "37f6bd8d-586a-4169-95fa-5781f987fe62";

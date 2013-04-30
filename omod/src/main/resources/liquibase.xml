@@ -3,6 +3,17 @@
 				   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 				   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9 http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
 
+	<changeSet id="${project.parent.artifactId}-20130430-1401" author="rowanseymour">
+		<comment>
+			Updates the encounter type of all HIV Discontinuation form submissions
+		</comment>
+		<sql>
+			SELECT encounter_type_id INTO @HIVEXIT_ENC_TYPE_ID FROM encounter_type WHERE uuid = '2bdada65-4c72-4a48-8730-859890e25cee';
+			SELECT form_id INTO @HIVEXIT_FORM_ID FROM form WHERE uuid = 'e3237ede-fa70-451f-9e6c-0908bc39f8b9';
+			UPDATE encounter e SET e.encounter_type = @HIVEXIT_ENC_TYPE_ID WHERE e.form_id = @HIVEXIT_FORM_ID;
+		</sql>
+	</changeSet>
+
 	<changeSet id="${project.parent.artifactId}-20130430-1111" author="rowanseymour">
 		<comment>
 			Deletes all htmlform records. Html forms now all loaded from xml resources
