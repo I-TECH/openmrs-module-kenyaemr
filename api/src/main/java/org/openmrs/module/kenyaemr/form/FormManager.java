@@ -90,6 +90,15 @@ public class FormManager {
 	}
 
 	/**
+	 * Gets the form descriptor for the given form
+	 * @param form the form
+	 * @return the form descriptor
+	 */
+	public FormDescriptor getFormDescriptor(Form form) {
+		return getFormDescriptor(form.getUuid());
+	}
+
+	/**
 	 * Gets all registered form descriptors
 	 * @return the form descriptors
 	 */
@@ -98,19 +107,33 @@ public class FormManager {
 	}
 
 	/**
+	 * Gets all registered form descriptors for the given app
+	 * @return the form descriptors
+	 */
+	public List<FormDescriptor> getFormDescriptorsForApp(String appKey) {
+		List<FormDescriptor> descriptors = new ArrayList<FormDescriptor>();
+		for (FormDescriptor descriptor : forms.values()) {
+			if (descriptor.getApps().contains(appKey)) {
+				descriptors.add(descriptor);
+			}
+		}
+		return descriptors;
+	}
+
+	/**
 	 * Gets the forms for the given application and patient
-	 * @param appId the application ID
+	 * @param appKey the application key
 	 * @param patient the patient
 	 * @param includeFrequencies the set of form frequencies to include (may be null)
 	 * @return the forms
 	 */
-	public List<FormDescriptor> getFormsForPatient(String appId, Patient patient, Set<Frequency> includeFrequencies) {
+	public List<FormDescriptor> getFormsForPatient(String appKey, Patient patient, Set<Frequency> includeFrequencies) {
 		List<FormDescriptor> patientForms = new ArrayList<FormDescriptor>();
 		for (Map.Entry<String, FormDescriptor> entry : forms.entrySet()) {
 			FormDescriptor form = entry.getValue();
 
 			// Filter by app id
-			if (appId != null && !form.getApps().contains(appId)) {
+			if (appKey != null && !form.getApps().contains(appKey)) {
 				continue;
 			}
 

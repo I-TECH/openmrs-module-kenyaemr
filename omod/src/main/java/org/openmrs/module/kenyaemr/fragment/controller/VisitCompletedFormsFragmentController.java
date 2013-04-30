@@ -11,13 +11,17 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.kenyaemr.fragment.controller;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.Predicate;
 import org.openmrs.Encounter;
+import org.openmrs.Form;
 import org.openmrs.Visit;
+import org.openmrs.module.appframework.AppUiUtil;
+import org.openmrs.module.kenyaemr.KenyaEmr;
+import org.openmrs.module.kenyaemr.form.FormDescriptor;
 import org.openmrs.ui.framework.annotation.FragmentParam;
+import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 import org.openmrs.ui.framework.session.Session;
 
@@ -27,18 +31,37 @@ import java.util.Comparator;
 import java.util.List;
 
 /**
- *
+ * Fragment to display completed forms for a given visit
  */
 public class VisitCompletedFormsFragmentController {
 	
-	public void controller(FragmentModel model, @FragmentParam("visit") Visit visit) {
-		List<Encounter> encounters = new ArrayList<Encounter>(visit.getEncounters());
-		CollectionUtils.filter(encounters, new Predicate() {
-			@Override
-			public boolean evaluate(Object enc) {
-				return !((Encounter) enc).getVoided();
+	public void controller(FragmentModel model,
+						   Session session,
+						   @FragmentParam("visit") Visit visit,
+						   @SpringBean KenyaEmr emr) {
+
+		List<Encounter> allEncounters = new ArrayList<Encounter>(visit.getEncounters());
+
+		final String currentApp = AppUiUtil.getCurrentApp(session).getApp().getId();
+		List<FormDescriptor> descriptorsForApp = emr.getFormManager().getFormDescriptorsForApp(currentApp);
+
+		List<Encounter> encounters = new ArrayList<Encounter>();
+		for (Encounter encounter : allEncounters) {
+			if (encounter.isVoided()) {
+				continue;
 			}
-		});
+
+			Form form = encounter.getForm();
+			if (form != null) {
+				FormDescriptor descriptor = emr.getFormManager().getFormDescriptor(form);
+				if (!descriptorsForApp.contains(descriptor)) {
+					continue;
+				}
+			}
+
+			encounters.add(encounter);
+		}
+
 		Collections.sort(encounters, new Comparator<Encounter>() {
 			@Override
 			public int compare(Encounter left, Encounter right) {
