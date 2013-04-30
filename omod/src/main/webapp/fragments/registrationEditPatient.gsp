@@ -140,8 +140,8 @@
 	</fieldset>
 
 	<div class="ke-form-buttons">
-		<input class="button" type="submit" value="${ command.original ? "Save Changes" : "Create Patient" }"/>
-		<input class="button cancel-button" type="button" value="Cancel"/>
+		<input class="ke-button" type="submit" value="${ command.original ? "Save Changes" : "Create Patient" }"/>
+		<input class="ke-button cancel-button" type="button" value="Cancel"/>
 	</div>
 	
 </form>
