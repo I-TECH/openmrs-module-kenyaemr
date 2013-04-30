@@ -13,7 +13,6 @@
  */
 package org.openmrs.module.kenyaemr.page.controller;
 
-import java.io.IOException;
 import java.util.*;
 
 import org.apache.commons.lang3.StringUtils;
@@ -22,16 +21,11 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.Module;
 import org.openmrs.module.ModuleFactory;
 import org.openmrs.module.appframework.AppUiUtil;
-import org.openmrs.module.htmlformentry.HtmlForm;
 import org.openmrs.module.kenyaemr.KenyaEmr;
-import org.openmrs.module.kenyaemr.KenyaEmrConstants;
-import org.openmrs.module.kenyaemr.KenyaEmrUiUtils;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.module.kenyaemr.form.FormDescriptor;
 import org.openmrs.module.kenyaemr.form.FormUtils;
-import org.openmrs.module.kenyaemr.regimen.RegimenManager;
 import org.openmrs.module.metadatasharing.ImportedPackage;
-import org.openmrs.module.metadatasharing.api.MetadataSharingService;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.SpringBean;
@@ -51,7 +45,6 @@ public class AdminHomePageController {
 						   UiUtils ui,
 						   PageModel model,
 						   @SpringBean KenyaEmr emr,
-						   @SpringBean KenyaEmrUiUtils kenyaEmrUi,
 						   @SpringBean ResourceFactory resourceFactory) {
 
 		AppUiUtil.startApp("kenyaemr.admin", session);
@@ -78,18 +71,9 @@ public class AdminHomePageController {
 			content.add(SimpleObject.create("label", "Total users", "value", Context.getUserService().getAllUsers().size()));
 			content.add(SimpleObject.create("label", "Total visits", "value", Context.getVisitService().getAllVisits().size()));
 
-			List<SimpleObject> metadataPackages = new ArrayList<SimpleObject>();
-			for (ImportedPackage imported : emr.getMetadataManager().getImportedPackages()) {
-				metadataPackages.add(SimpleObject.create("name", imported.getName(), "version", imported.getVersion(), "status", Boolean.TRUE));
-			}
-
-			// Concepts aren't actually imported from a metadata package but let's pretend for the sake of simplicity
-			String conceptsVersion = emr.getMetadataManager().getConceptsVersion();
-			metadataPackages.add(SimpleObject.create("name", "Kenya EMR Concepts", "version", conceptsVersion, "status", (conceptsVersion != null)));
 
 			infoCategories.put("Server", general);
 			infoCategories.put("Database", content);
-			infoCategories.put("Metadata Packages", metadataPackages);
 		}
 		else if (section.equals("modules")) {
 
@@ -101,6 +85,16 @@ public class AdminHomePageController {
 			infoCategories.put("Modules", modules);
 		}
 		else if (section.equals("content")) {
+
+			List<SimpleObject> metadataPackages = new ArrayList<SimpleObject>();
+			for (ImportedPackage imported : emr.getMetadataManager().getImportedPackages()) {
+				metadataPackages.add(SimpleObject.create("name", imported.getName(), "version", imported.getVersion(), "status", Boolean.TRUE));
+			}
+
+			// Concepts aren't actually imported from a metadata package but let's pretend for the sake of simplicity
+			String conceptsVersion = emr.getMetadataManager().getConceptsVersion();
+			metadataPackages.add(SimpleObject.create("name", "Kenya EMR Concepts", "version", conceptsVersion, "status", (conceptsVersion != null)));
+
 
 			List<SimpleObject> forms = new ArrayList<SimpleObject>();
 			for (FormDescriptor descriptor : emr.getFormManager().getAllFormDescriptors()) {
@@ -115,6 +109,7 @@ public class AdminHomePageController {
 				forms.add(SimpleObject.create("name", name, "version", form.getVersion(), "status", status));
 			}
 
+			infoCategories.put("Metadata Packages", metadataPackages);
 			infoCategories.put("Forms", forms);
 		}
 
