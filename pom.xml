@@ -36,7 +36,7 @@
 	<properties>
 		<openMRSVersion>1.9.3</openMRSVersion>
 		<uiframeworkVersion>2.5</uiframeworkVersion>
-		<kenyauiVersion>1.3.3</kenyauiVersion>
+		<kenyauiVersion>1.3.4</kenyauiVersion>
 		<appframeworkVersion>1.5</appframeworkVersion>
 		<metadatamappingVersion>1.0.1</metadatamappingVersion>
 		<metadatasharingVersion>1.1.3</metadatasharingVersion>
