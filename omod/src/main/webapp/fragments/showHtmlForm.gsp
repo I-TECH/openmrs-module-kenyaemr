@@ -39,7 +39,11 @@ def returnUrl = config.returnUrl ?: ui.thisUrl()
 
 <script type="text/javascript">
 	\$j = jQuery;
+
+	// These might be used by in-form scripts
 	var propertyAccessorInfo = new Array();
+	var beforeValidation = new Array();
+	var beforeSubmit = new Array();
 
 	/**
 	 * Overrides standard HFE method to work in view mode
@@ -60,6 +64,14 @@ def returnUrl = config.returnUrl ?: ui.thisUrl()
 		}
 
 		return fieldValue;
+	}
+
+	/**
+	 * Overrides standard HFE method to work in view mode
+	 */
+	function setValue(elementAndProperty, value) {
+		var fieldId = elementAndProperty.split(".")[0];
+		jq('#' + fieldId + ' span.value').text(value);
 	}
 
 	// TODO move to js resource

@@ -23,7 +23,7 @@
 		$j(document).ready(function(){
 			var pbirthdate = new Date("<lookup expression="patient.birthdate" />").getTime();
 			var pweight = "<lookup expression="fn.latestObs(5089).valueNumeric"/>"
-			setValue('weight_value.value', pweight);
+			setValue('weight.value', pweight);
 			var encounterdate;
 			var dstartoftreatment;
 			var dcured;
@@ -123,7 +123,7 @@
 				<tr>
 					<td>Name: <lookup class="value" expression="patient.personName"/></td>
 					<td>Gender: <lookup class="value" expression="patient.gender"/></td>
-					<td>Birthdate: <lookup class="value" complexExpression="#if( \$patient.birthdateEstimated ) ~#end"/> <lookup class="value"  			expression="patient.birthdate"/></td>
+					<td>Birthdate: <lookup class="value" complexExpression="#if( \$patient.birthdateEstimated ) ~#end"/> <lookup class="value" expression="patient.birthdate"/></td>
 					<td> </td>
 				</tr>
 			</div>
@@ -187,9 +187,8 @@
 					<obs conceptId="161561AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="datereferredby" />
 				</td>
 				<td>Body Weight (Kg)</td>
-				<td><obs conceptId="5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  id="weight_value"/></td>
+				<td><obs conceptId="5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="weight" /></td>
 				<td width="20%"></td>
-
 			</tr>
 		</table>
 	</fieldset>
