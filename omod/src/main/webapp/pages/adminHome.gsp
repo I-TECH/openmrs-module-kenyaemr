@@ -13,10 +13,16 @@
 				if (property == "version") {
 					// Version numbers look best left-aligned
 					ret += "<td style=\"text-align: left\">${ obj[property] != null ? obj[property] : "-" }</td>"
-				} else if (property == "started" || property == "imported") {
-					// Use icon instead of text
-					def icon = obj[property] ? "success.png" : "alert.png"
-					ret += "<td style=\"text-align: right\"><img src=\"" + ui.resourceLink("kenyaui", "images/" + icon) + "\" alt=\"\" /></td>"
+				} else if (property == "status") {
+					ret += "<td style=\"text-align: right\">"
+					if (obj[property] instanceof Boolean) {
+						// Use icon instead of text
+						def icon = obj[property] ? "success.png" : "alert.png"
+						ret += "<img src=\"" + ui.resourceLink("kenyaui", "images/" + icon) + "\" alt=\"\" />"
+					} else {
+						ret += "<img src=\"" + ui.resourceLink("kenyaui", "images/alert.png") + "\" alt=\"" + obj[property] + "\" />"
+					}
+					ret += "</td>"
 				} else {
 					ret += "<td>${ obj[property] }</td>"
 				}
@@ -45,6 +51,13 @@
 							label: "Modules",
 							active: (section == "modules"),
 							href: ui.pageLink("kenyaemr", "adminHome", [ section: "modules" ])
+					],
+					[
+							iconProvider: "kenyaui",
+							icon: "buttons/admin_content.png",
+							label: "Content",
+							active: (section == "content"),
+							href: ui.pageLink("kenyaemr", "adminHome", [ section: "content" ])
 					]
 			]
 	]) }

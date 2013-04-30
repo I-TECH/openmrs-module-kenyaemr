@@ -62,27 +62,30 @@ public class FormUtils {
 	}
 
 	/**
-	 * Gets an HTML from a form. If form has an XML path resource, then HTML form is created dynamically,
-	 * otherwise tries to load HTML form from database.
+	 * Gets an HTML from a form
 	 * @param form the form
 	 * @param resourceFactory the resourceFactory
 	 * @return the Html form
+	 * @throws RuntimeException if form has no xml path or path is invalid
 	 */
 	public static HtmlForm getHtmlForm(Form form, ResourceFactory resourceFactory) throws IOException {
 		String xmlPath = getFormXmlPath(form);
 
 		if (xmlPath == null) {
-			// No form resource so try regular load from database
-			return Context.getService(HtmlFormEntryService.class).getHtmlFormByForm(form);
+			throw new RuntimeException("Form has no XML path");
 		}
 		else if (!xmlPath.contains(":")) {
-			throw new RuntimeException("Form XML resource path '" + xmlPath + "' should use format <provider>:<path>");
+			throw new RuntimeException("Form XML path '" + xmlPath + "' must use format <provider>:<path>");
 		}
 
 		String[] pathTokens = xmlPath.split(":");
 		String providerName = pathTokens[0];
 		String resourcePath = pathTokens[1];
 		String xml = resourceFactory.getResourceAsString(providerName, resourcePath);
+
+		if (xml == null) {
+			throw new RuntimeException("Form XML could not be loaded from path '" + xmlPath + "'");
+		}
 
 		HtmlForm hf = new HtmlForm();
 		hf.setForm(form);

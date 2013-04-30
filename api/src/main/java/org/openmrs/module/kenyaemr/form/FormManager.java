@@ -46,8 +46,13 @@ public class FormManager {
 	public synchronized void refresh() throws Exception {
 		forms.clear();
 
+		List<FormDescriptor> descriptors = Context.getRegisteredComponents(FormDescriptor.class);
+
+		// Sort by form descriptor order
+		Collections.sort(descriptors);
+
 		// Load form descriptor beans
-		for (FormDescriptor formDescriptor : Context.getRegisteredComponents(FormDescriptor.class)) {
+		for (FormDescriptor formDescriptor : descriptors) {
 			Form form = Context.getFormService().getFormByUuid(formDescriptor.getFormUuid());
 
 			if (form == null) {
@@ -124,9 +129,6 @@ public class FormManager {
 
 			patientForms.add(form);
 		}
-
-		// Sort by form descriptor order
-		Collections.sort(patientForms);
 
 		return patientForms;
 	}

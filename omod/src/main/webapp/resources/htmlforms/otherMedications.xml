@@ -1,0 +1,81 @@
+<!--
+  ~ The contents of this file are subject to the OpenMRS Public License
+  ~ Version 1.0 (the "License"); you may not use this file except in
+  ~ compliance with the License. You may obtain a copy of the License at
+  ~ http://license.openmrs.org
+  ~
+  ~ Software distributed under the License is distributed on an "AS IS"
+  ~ basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+  ~ License for the specific language governing rights and limitations
+  ~ under the License.
+  ~
+  ~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+-->
+<htmlform>
+
+	<style type="text/css">
+		table.baseline-aligned td {
+			vertical-align: baseline;
+		}
+	</style>
+
+	<div class="patient-details">
+		<table class="baseline-aligned" width="100%">
+			<tr>
+				<td>Name: <lookup class="value" expression="patient.personName"/></td>
+				<td>Gender: <lookup class="value" expression="patient.gender"/></td>
+				<td>Birthdate: <lookup class="value" complexExpression="#if( \$patient.birthdateEstimated ) ~#end"/> <lookup class="value" expression="patient.birthdate"/>
+				</td>
+			</tr>
+		</table>
+	</div>
+
+	<div class="encounter-details">
+		<table class="baseline-aligned" width="100%">
+			<tr>
+				<td>Date: <encounterDate default="now" showTime="true"/></td>
+				<td>Provider: <encounterProviderAndRole encounterRole="a0b03050-c99b-11e0-9572-0800200c9a66" 					default="currentUser" required="true"/>
+				</td>
+				<td>Location: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete" /></td>
+			</tr>
+		</table>
+	</div>
+
+	<fieldset>
+		<table>
+			<tr>
+				<th style="background-color: #696969; color: #ffffff;">Drug Prescribed</th>
+				<th style="background-color: #696969; color: #ffffff;">Dose Prescribed</th>
+				<th style="background-color: #696969; color: #ffffff;">Dispensed Units</th>
+				<th style="background-color: #696969; color: #ffffff;">Frequency Prescribed</th>
+			</tr>
+			<repeat>
+				<template>
+					<obsgroup groupingConceptId="1442AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+						<tr>
+							<td><obs conceptId="1282AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="autocomplete" answerClasses="Drug"/></td>
+							<td><obs conceptId="1443AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labetText=""/></td>
+							<td><obs conceptId="1444AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="5" /></td>
+							<td><obs conceptId="160855AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="160862AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160863AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160864AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160865AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160861AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160860AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160859AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160858AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160866AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160867AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160868AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160869AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160870AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160871AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160872AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160857AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="OD,qHS,qPM,qAM,BIDWM,BIDPC,BIDAC,BD,TID,TIDPC,TIDAC,TIDWM,QID,QIDPCHS,QIDACHS,PRN" /></td>
+						</tr>
+					</obsgroup>
+				</template>
+				<render />
+				<render />
+				<render />
+				<render />
+				<render />
+				<render />
+				<render />
+				<render />
+				<render />
+				<render />
+			</repeat>
+		</table>
+	</fieldset >
+
+	<div class="ke-form-buttons">
+		<submit />
+	</div>
+
+</htmlform>

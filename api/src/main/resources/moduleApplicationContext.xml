@@ -5,16 +5,6 @@
 
 	<!-- Form descriptors -->
 
-	<!-- Family History -->
-	<bean class="org.openmrs.module.kenyaemr.form.FormDescriptor">
-		<property name="formUuid" value="7efa0ee0-6617-4cd7-8310-9f95dfee7a82" />
-		<property name="frequency" value="ONCE_EVER" />
-		<property name="apps">
-			<set><value>kenyaemr.medicalChart</value></set>
-		</property>
-		<property name="icon" value="forms/family_history.png" />
-	</bean>
-
 	<!-- Obstetric History -->
 	<bean class="org.openmrs.module.kenyaemr.form.FormDescriptor">
 		<property name="formUuid" value="8e4e1abf-7c08-4ba8-b6d8-19a9f1ccb6c9" />
@@ -24,6 +14,7 @@
 			<set><value>kenyaemr.medicalChart</value></set>
 		</property>
 		<property name="icon" value="forms/obstetric.png" />
+		<property name="resource" value="htmlforms/obstetricHistory.xml" />
 	</bean>
 
 	<!-- Triage -->
@@ -33,6 +24,7 @@
 		<property name="apps">
 			<set><value>kenyaemr.intake</value><value>kenyaemr.medicalChart</value></set>
 		</property>
+		<property name="resource" value="htmlforms/triage.xml" />
 		<property name="order" value="3001" />
 	</bean>
 
@@ -43,6 +35,7 @@
 		<property name="apps">
 			<set><value>kenyaemr.medicalEncounter</value><value>kenyaemr.medicalChart</value></set>
 		</property>
+		<property name="resource" value="htmlforms/clinicalEncounter.xml" />
 		<property name="order" value="3002" />
 	</bean>
 
@@ -54,6 +47,7 @@
 			<set><value>kenyaemr.medicalEncounter</value><value>kenyaemr.medicalChart</value></set>
 		</property>
 		<property name="programUuid" value="dfdc6d40-2f2f-463d-ba90-cc97350441a8" />
+		<property name="resource" value="htmlforms/hiv/hivClinicalEncounterAddendum.xml" />
 		<property name="order" value="3003" />
 	</bean>
 
@@ -65,6 +59,7 @@
 			<set><value>kenyaemr.intake</value><value>kenyaemr.medicalEncounter</value><value>kenyaemr.medicalChart</value></set>
 		</property>
 		<property name="icon" value="forms/labresults.png" />
+		<property name="resource" value="htmlforms/labResults.xml" />
 		<property name="order" value="3004" />
 	</bean>
 
@@ -75,6 +70,7 @@
 		<property name="apps">
 			<set><value>kenyaemr.medicalEncounter</value><value>kenyaemr.medicalChart</value></set>
 		</property>
+		<property name="resource" value="htmlforms/otherMedications.xml" />
 		<property name="order" value="3005" />
 	</bean>
 
@@ -85,6 +81,7 @@
 		<property name="apps">
 			<set><value>kenyaemr.intake</value><value>kenyaemr.medicalEncounter</value><value>kenyaemr.medicalChart</value></set>
 		</property>
+		<property name="resource" value="htmlforms/progressNote.xml" />
 		<property name="order" value="3006" />
 	</bean>
 
@@ -96,6 +93,21 @@
 			<set><value>kenyaemr.medicalChart</value></set>
 		</property>
 		<property name="programUuid" value="dfdc6d40-2f2f-463d-ba90-cc97350441a8" />
+		<property name="resource" value="htmlforms/hiv/hivEnrollment.xml" />
+		<property name="order" value="2101" />
+	</bean>
+
+	<!-- Family History -->
+	<bean class="org.openmrs.module.kenyaemr.form.FormDescriptor">
+		<property name="formUuid" value="7efa0ee0-6617-4cd7-8310-9f95dfee7a82" />
+		<property name="frequency" value="ONCE_EVER" />
+		<property name="apps">
+			<set><value>kenyaemr.medicalChart</value></set>
+		</property>
+		<property name="programUuid" value="dfdc6d40-2f2f-463d-ba90-cc97350441a8" />
+		<property name="icon" value="forms/family_history.png" />
+		<property name="resource" value="htmlforms/hiv/hivFamilyHistory.xml" />
+		<property name="order" value="2102" />
 	</bean>
 
 	<!-- MOH257 Visit Summary -->
@@ -107,7 +119,8 @@
 		</property>
 		<property name="programUuid" value="dfdc6d40-2f2f-463d-ba90-cc97350441a8" />
 		<property name="icon" value="forms/moh257.png" />
-		<property name="resource" value="htmlforms/moh257VisitSummary.xml" />
+		<property name="resource" value="htmlforms/hiv/moh257VisitSummary.xml" />
+		<property name="order" value="3007" />
 	</bean>
 
 	<!-- HIV Discontinuation -->
@@ -119,6 +132,7 @@
 		</property>
 		<property name="programUuid" value="dfdc6d40-2f2f-463d-ba90-cc97350441a8" />
 		<property name="icon" value="forms/discontinue.png" />
+		<property name="resource" value="htmlforms/hiv/hivDiscontinuation.xml" />
 	</bean>
 
 	<!-- TB Screening-->
@@ -128,7 +142,7 @@
 		<property name="apps">
 			<set><value>kenyaemr.intake</value><value>kenyaemr.medicalEncounter</value><value>kenyaemr.medicalChart</value></set>
 		</property>
-		<property name="resource" value="htmlforms/tbScreening.xml" />
+		<property name="resource" value="htmlforms/tb/tbScreening.xml" />
 	</bean>
 
 	<!-- TB Enrollment-->
@@ -139,7 +153,7 @@
 			<set><value>kenyaemr.medicalChart</value></set>
 		</property>
 		<property name="programUuid" value="9f144a34-3a4a-44a9-8486-6b7af6cc64f6" />
-		<property name="resource" value="htmlforms/tbEnrollment.xml" />
+		<property name="resource" value="htmlforms/tb/tbEnrollment.xml" />
 	</bean>
 
 	<!-- TB Followup Visit -->
@@ -150,7 +164,7 @@
 			<set><value>kenyaemr.medicalEncounter</value><value>kenyaemr.medicalChart</value></set>
 		</property>
 		<property name="programUuid" value="9f144a34-3a4a-44a9-8486-6b7af6cc64f6" />
-		<property name="resource" value="htmlforms/tbFollowupVisit.xml" />
+		<property name="resource" value="htmlforms/tb/tbFollowupVisit.xml" />
 	</bean>
 
 	<!-- TB Discontinuation -->
@@ -162,7 +176,7 @@
 		</property>
 		<property name="programUuid" value="9f144a34-3a4a-44a9-8486-6b7af6cc64f6" />
 		<property name="icon" value="forms/discontinue.png" />
-		<property name="resource" value="htmlforms/tbDiscontinuation.xml" />
+		<property name="resource" value="htmlforms/tb/tbDiscontinuation.xml" />
 	</bean>
 
 	<!-- Module service -->

@@ -1,0 +1,159 @@
+<!--
+  ~ The contents of this file are subject to the OpenMRS Public License
+  ~ Version 1.0 (the "License"); you may not use this file except in
+  ~ compliance with the License. You may obtain a copy of the License at
+  ~ http://license.openmrs.org
+  ~
+  ~ Software distributed under the License is distributed on an "AS IS"
+  ~ basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+  ~ License for the specific language governing rights and limitations
+  ~ under the License.
+  ~
+  ~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+-->
+<htmlform>
+
+	<macros>
+		paperFormId = (Fill this in)
+		headerColor =#009d8e
+		fontOnHeaderColor = white
+	</macros>
+
+	<style type="text/css">
+		.section {
+			border: 1px solid $headerColor;
+			padding: 2px;
+			text-align: left;
+			margin-bottom: 1em;
+		}
+		.sectionHeader {
+			background-color: $headerColor;
+			color: $fontOnHeaderColor;
+			display: block;
+			padding: 2px;
+			font-weight: bold;
+		}
+		table.baseline-aligned td {
+			vertical-align: baseline;
+		}
+	</style>
+
+	<script type="text/javascript">
+		var motherName="<lookup class="value" expression="personAttributes.get('Mother's Name')"/>"
+	</script>
+
+	<!-- <span style="float:right">Paper Form ID: $paperFormId</span> -->
+	<section headerLabel="Encounter Details">
+		<table class="baseline-aligned">
+			<tr>
+				<td>Date:</td>
+				<td><encounterDate default="today"/></td>
+
+				<td>Location:</td>
+				<td><encounterLocation type="autocomplete"/></td>
+
+				<td>Provider:</td>
+				<td><encounterProvider/></td>
+			</tr>
+		</table>
+	</section>
+
+	<section headerLabel="Patient Profile">
+		<br />
+		<fieldset>
+			<table class="baseline-aligned">
+				<tr>
+					<td>Cohort by Month and Year of Birth</td>
+					<td>"month and year"</td>
+
+					<td>HEI ID Number:</td>
+					<td></td>
+				</tr>
+			</table>
+		</fieldset>
+		<br />
+		<fieldset>
+			<legend><b>Patient Locators</b></legend>
+			<table>
+				<tr>
+					<td>Parent/Gurdian Name:</td>
+					<td><obs conceptId="160638AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+					<td>Parent/Gurdian telephone number:</td>
+					<td><obs conceptId="160642AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+				</tr>
+				<tr>
+					<td>House/Plot #</td>
+					<td><input type="text" /></td>
+					<td>Sub/Chief's Name</td>
+					<td><input type="text" /></td>
+				</tr>
+
+			</table>
+		</fieldset>
+		<br />
+		<fieldset>
+			<legend><b>Family History/Parent Profile</b></legend>
+			<table border="0">
+				<tr>
+					<td>Mother's Name:</td>
+					<td><obs conceptId="1593AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
+					<td>Is the mother alive?</td>
+					<td><obs conceptId="160429AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="yes_no" /></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Mother Received Drugs for PMTCT?</td>
+					<td><obs conceptId="5576AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  style="yes_no" /></td>
+					<td>Drug Combination</td>
+					<td><obs conceptId="1086AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>On ART at Enrollment of Infant?</td>
+					<td><obs conceptId="160117AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+					<td>Enter Regimen</td>
+					<td><obs conceptId="1088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+					<td>CCC Number</td>
+					<td><obs conceptId="160752AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+				</tr>
+				<tr>
+					<td>Mode of Delivery</td>
+					<td><obs conceptId="5630AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+					<td>Place of Delivery</td>
+					<td><obs conceptId="1572AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+					<td></td>
+					<td></td>
+				</tr>
+			</table>
+		</fieldset>
+		<br />
+		<fieldset>
+			<legend><b>Immunization History</b></legend>
+			<table>
+				<obsgroup groupingConceptId="1421AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+					<tr>
+						<td>
+							<obs conceptId="1198AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="886AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								 answerLabel="BCG" style="checkbox" /><br />
+							<obs conceptId="1198AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="783AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								 answerLabel="OPV" style="checkbox" /><br/>
+							<obs conceptId="1198AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="36AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								 answerLabel="Measles" style="checkbox" /><br/>
+							<obs conceptId="1198AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								 answerLabel="Other(Specify)" style="checkbox" />
+							<obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+
+						</td>
+					</tr>
+				</obsgroup>
+			</table>
+		</fieldset>
+	</section>
+
+	<div class="ke-form-buttons">
+		<submit />
+	</div>
+
+</htmlform>

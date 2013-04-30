@@ -13,16 +13,22 @@
  */
 package org.openmrs.module.kenyaemr.page.controller;
 
+import java.io.IOException;
 import java.util.*;
 
 import org.apache.commons.lang3.StringUtils;
+import org.openmrs.Form;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.Module;
 import org.openmrs.module.ModuleFactory;
 import org.openmrs.module.appframework.AppUiUtil;
+import org.openmrs.module.htmlformentry.HtmlForm;
 import org.openmrs.module.kenyaemr.KenyaEmr;
 import org.openmrs.module.kenyaemr.KenyaEmrConstants;
+import org.openmrs.module.kenyaemr.KenyaEmrUiUtils;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
+import org.openmrs.module.kenyaemr.form.FormDescriptor;
+import org.openmrs.module.kenyaemr.form.FormUtils;
 import org.openmrs.module.kenyaemr.regimen.RegimenManager;
 import org.openmrs.module.metadatasharing.ImportedPackage;
 import org.openmrs.module.metadatasharing.api.MetadataSharingService;
@@ -30,6 +36,7 @@ import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.page.PageModel;
+import org.openmrs.ui.framework.resource.ResourceFactory;
 import org.openmrs.ui.framework.session.Session;
 import org.openmrs.util.OpenmrsConstants;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -43,7 +50,9 @@ public class AdminHomePageController {
 						   Session session,
 						   UiUtils ui,
 						   PageModel model,
-						   @SpringBean KenyaEmr emr) {
+						   @SpringBean KenyaEmr emr,
+						   @SpringBean KenyaEmrUiUtils kenyaEmrUi,
+						   @SpringBean ResourceFactory resourceFactory) {
 
 		AppUiUtil.startApp("kenyaemr.admin", session);
 
@@ -71,12 +80,12 @@ public class AdminHomePageController {
 
 			List<SimpleObject> metadataPackages = new ArrayList<SimpleObject>();
 			for (ImportedPackage imported : emr.getMetadataManager().getImportedPackages()) {
-				metadataPackages.add(SimpleObject.fromObject(imported, ui, "name", "version", "imported"));
+				metadataPackages.add(SimpleObject.create("name", imported.getName(), "version", imported.getVersion(), "status", Boolean.TRUE));
 			}
 
 			// Concepts aren't actually imported from a metadata package but let's pretend for the sake of simplicity
 			String conceptsVersion = emr.getMetadataManager().getConceptsVersion();
-			metadataPackages.add(SimpleObject.create("name", "Kenya EMR Concepts", "version", conceptsVersion, "imported", (conceptsVersion != null)));
+			metadataPackages.add(SimpleObject.create("name", "Kenya EMR Concepts", "version", conceptsVersion, "status", (conceptsVersion != null)));
 
 			infoCategories.put("Server", general);
 			infoCategories.put("Database", content);
@@ -86,10 +95,27 @@ public class AdminHomePageController {
 
 			List<SimpleObject> modules = new ArrayList<SimpleObject>();
 			for (Module mod : ModuleFactory.getLoadedModules()) {
-				modules.add(SimpleObject.fromObject(mod, ui, "name", "version", "started"));
+				modules.add(SimpleObject.create("name", mod.getName(), "version", mod.getVersion(), "status", mod.isStarted()));
 			}
 
 			infoCategories.put("Modules", modules);
+		}
+		else if (section.equals("content")) {
+
+			List<SimpleObject> forms = new ArrayList<SimpleObject>();
+			for (FormDescriptor descriptor : emr.getFormManager().getAllFormDescriptors()) {
+				Form form = Context.getFormService().getFormByUuid(descriptor.getFormUuid());
+				Object status = Boolean.TRUE;
+				try {
+					FormUtils.getHtmlForm(form, resourceFactory);
+				} catch (Exception ex) {
+					status = "Unable to load XML";
+				}
+				String name = form.getName() + " (&rarr; " + form.getEncounterType().getName() + ")";
+				forms.add(SimpleObject.create("name", name, "version", form.getVersion(), "status", status));
+			}
+
+			infoCategories.put("Forms", forms);
 		}
 
 		model.addAttribute("section", section);
