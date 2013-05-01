@@ -27,7 +27,7 @@
 		${ appMenuItems.join("&nbsp;&nbsp;&#187;&nbsp;&nbsp;") }
 	</div>
 	<div id="appheader-usermenu">
-		${ userMenuItems.join(" | ") }
+		${ userMenuItems.join("&nbsp;&nbsp;|&nbsp;&nbsp;") }
 	</div>
 
 	<div style="clear: both"></div>
