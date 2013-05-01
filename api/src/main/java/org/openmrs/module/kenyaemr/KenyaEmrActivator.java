@@ -72,6 +72,8 @@ public class KenyaEmrActivator implements ModuleActivator {
 	 */
 	public void started() {
 		try {
+			checkRequirements();
+
 			setupGlobalProperties();
 
 			log.info("Setup core global properties");
@@ -95,7 +97,7 @@ public class KenyaEmrActivator implements ModuleActivator {
 			Module mod = ModuleFactory.getModuleById(KenyaEmrConstants.MODULE_ID);
 			ModuleFactory.stopModule(mod);
 
-			throw new RuntimeException("Failed to setup initial data", ex);
+			throw new RuntimeException("Failed to start Kenya EMR module", ex);
 		}
 
 		log.info("Kenya EMR started");
@@ -113,6 +115,20 @@ public class KenyaEmrActivator implements ModuleActivator {
 	 */
 	public void stopped() {
 		log.info("Kenya EMR stopped");
+	}
+
+	/**
+	 * Checks the requirements of this module
+	 */
+	protected void checkRequirements() {
+		// Check concept dictionary version
+   		String conceptsVersion = Context.getAdministrationService().getGlobalProperty(KenyaEmrConstants.GP_CONCEPTS_VERSION);
+		if (conceptsVersion == null || !conceptsVersion.equals(KenyaEmrConstants.REQUIRED_CONCEPTS_VERSION)) {
+			throw new RuntimeException("Module requires concepts version: " + KenyaEmrConstants.REQUIRED_CONCEPTS_VERSION);
+		}
+		else {
+			log.info("Detected concept dictionary version " + conceptsVersion);
+		}
 	}
 
 	/**
