@@ -14,7 +14,6 @@
 
 package org.openmrs.module.kenyaemr.form;
 
-
 import junit.framework.Assert;
 import org.junit.Test;
 import org.openmrs.Form;
@@ -22,8 +21,10 @@ import org.openmrs.FormResource;
 import org.openmrs.api.context.Context;
 import org.openmrs.customdatatype.datatype.FreeTextDatatype;
 import org.openmrs.module.htmlformentry.HtmlForm;
-import org.openmrs.module.htmlformentry.HtmlFormEntryService;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.ui.framework.resource.ResourceFactory;
+
+import static org.mockito.Mockito.*;
 
 public class FormUtilsTest extends BaseModuleContextSensitiveTest {
 
@@ -57,14 +58,15 @@ public class FormUtilsTest extends BaseModuleContextSensitiveTest {
 	@Test
 	public void getHtmlForm_shouldCreateValidHtmlForm() throws Exception {
 		Form form = Context.getFormService().getForm(1);
+		FormUtils.setFormXmlPath(form, "kenyaemr:test3.xml");
 
-		HtmlForm hf = new HtmlForm();
-		hf.setForm(form);
-		hf.setXmlData("<htmlform></htmlform>");
-		Context.getService(HtmlFormEntryService.class).saveHtmlForm(hf);
+		// Mock the resource factory so it will provide this xml content at kenyaemr:test3.xml
+		String xmlContent = "<htmlform>Test</htmlform>";
+		ResourceFactory resourceFactory = mock(ResourceFactory.class);
+		when(resourceFactory.getResourceAsString("kenyaemr", "test3.xml")).thenReturn(xmlContent);
 
-		Assert.assertEquals(hf, FormUtils.getHtmlForm(form, null));
-
-		// TODO figure out how to unit test loading through UI framework module
+		HtmlForm hf = FormUtils.getHtmlForm(form, resourceFactory);
+		Assert.assertEquals(form, hf.getForm());
+		Assert.assertEquals(xmlContent, hf.getXmlData());
 	}
 }
