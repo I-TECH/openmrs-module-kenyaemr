@@ -11,17 +11,17 @@
 	});
 </script>
 
-<div id="selected-patient-header">
-	<div class="demographics">
+<div class="ke-patientheader">
+	<div style="float: left; width: 35%;">
 		<div style="float: left; padding-right: 5px">
 			<img width="32" height="32" src="${ ui.resourceLink("kenyaui", "images/patient_" + patient.gender.toLowerCase() + ".png") }"/>
 		</div>
-		${ ui.includeFragment("kenyaemr", "personName", [ name: patient.personName ]) }<br/>
-		${ patient.gender == 'M' ? "Male" : patient.gender == 'F' ? 'Female' : patient.gender },
-		${ ui.includeFragment("kenyaemr", "personAgeAndBirthdate", [ person: patient ]) }
+		<span class="ke-patient-name">${ ui.includeFragment("kenyaemr", "personName", [ name: patient.personName ]) }</span><br/>
+		<span class="ke-patient-gender">${ patient.gender == 'M' ? "Male" : patient.gender == 'F' ? 'Female' : patient.gender }</span>,
+		<span class="ke-patient-age">${ ui.includeFragment("kenyaemr", "personAgeAndBirthdate", [ person: patient ]) }</span>
 	</div>
 	
-	<div class="identifiers">
+	<div style="float: left; width: 30%; text-align: center">
 		<% idsToShow.each { %>
 			<span class="ke-identifier-type">${ it.identifierType.name }: </span>
 			<span class="ke-identifier-value">${ it.identifier }</span>
@@ -30,7 +30,7 @@
 	</div>
 	
 	<% if (closeChartUrl) { %>
-		<div id="selected-patient-header-close">
+		<div style="float: right">
 			<small id="selected-patient-header-close-text">Close chart </small>
 			<a href="${ closeChartUrl }" id="selected-patient-header-close-link"><img title="Close Chart" style="vertical-align: middle" src="${ ui.resourceLink("kenyaui", "images/buttons/patient_close.png") }"/></a>
 		</div>

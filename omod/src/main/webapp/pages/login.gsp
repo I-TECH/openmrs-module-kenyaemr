@@ -34,28 +34,31 @@ ${ ui.includeFragment("kenyaui", "notifications") }
 	<!-- Remote address: ${ remoteAddr } -->
 	<div class="centered">
 		<form method="post" action="/${ contextPath }/loginServlet" autocomplete="off">
-			<table style="margin-left: auto; margin-right: auto;">
+			<table style="margin-left: auto; margin-right: auto; border: 0" cellpadding="3" cellspacing="0">
 				<tr>
-					<td rowspan="5" width="300">
+					<td style="padding-right: 15px">
 						<img src="${ ui.resourceLink("kenyaui", "images/moh_logo_large.png") }"/>
 					</td>
-					<td colspan="2"><div style="height:75px;">&nbsp;</div></td>
-				</tr>
-				<tr>
-					<th>Username</th>
-					<td><input id="uname" type="text" name="uname"/></td>
-				</tr>
-				<tr>
-					<th>Password</th>
-					<td><input type="password" name="pw"/></td>
-				</tr>
-				<tr>
-					<td></td>
-					<td><input type="submit" value="Login"/></td>
-				</tr>
-				<tr>
-					<td></td>
-					<td valign="top"><a id="forgot-password" href="forgotPassword.form">Forgot password?</a></td>
+					<td style="padding-left: 15px; padding-top: 75px" valign="top">
+						<table border="0" cellpadding="3" cellspacing="0">
+							<tr>
+								<th>Username</th>
+								<td><input id="uname" type="text" name="uname" style="width: 200px"/></td>
+							</tr>
+							<tr>
+								<th>Password</th>
+								<td><input type="password" name="pw" style="width: 200px" /></td>
+							</tr>
+							<tr>
+								<td></td>
+								<td><input type="submit" value="Login"/></td>
+							</tr>
+							<tr>
+								<td></td>
+								<td valign="top"><a id="forgot-password" href="forgotPassword.form">Forgot password?</a></td>
+							</tr>
+						</table>
+					</td>
 				</tr>
 			</table>
 		</form>
