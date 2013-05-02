@@ -3,10 +3,10 @@
 %>
 <script type="text/javascript">
 	jq(function() {
-		jq('#selected-patient-header-close-link').hover(function() {
-			jq('#selected-patient-header-close-text').addClass('ke-glowing');
+		jq('#patient-record-close-link').hover(function() {
+			jq('#patient-record-close-text').addClass('ke-glowing');
 		}, function() {
-			jq('#selected-patient-header-close-text').removeClass('ke-glowing');
+			jq('#patient-record-close-text').removeClass('ke-glowing');
 		});
 	});
 </script>
@@ -21,18 +21,16 @@
 		<span class="ke-patient-age">${ ui.includeFragment("kenyaemr", "personAgeAndBirthdate", [ person: patient ]) }</span>
 	</div>
 	
-	<div style="float: left; width: 30%; text-align: center">
+	<div style="float: left; width: 30%">
 		<% idsToShow.each { %>
-			<span class="ke-identifier-type">${ it.identifierType.name }: </span>
-			<span class="ke-identifier-value">${ it.identifier }</span>
-			<br/>
+			<div style="text-align: center"><span class="ke-identifier-type">${ it.identifierType.name }</span> <span class="ke-identifier-value">${ it.identifier }</span></div>
 		<% } %>
 	</div>
 	
 	<% if (closeChartUrl) { %>
 		<div style="float: right">
-			<small id="selected-patient-header-close-text">Close chart </small>
-			<a href="${ closeChartUrl }" id="selected-patient-header-close-link"><img title="Close Chart" style="vertical-align: middle" src="${ ui.resourceLink("kenyaui", "images/buttons/patient_close.png") }"/></a>
+			<span id="patient-record-close-text" class="ke-tip">Close chart </span>
+			<a href="${ closeChartUrl }" id="patient-record-close-link"><img title="Close this patient chart" style="vertical-align: middle" src="${ ui.resourceLink("kenyaui", "images/buttons/patient_close.png") }"/></a>
 		</div>
 	<% } %>
 
@@ -41,7 +39,7 @@
 	${ ui.includeFragment("kenyaemr", "clinicalAlerts") }
 
 	<div id="active-visit">
-		<small>Current visit</small>
+		<span class="ke-tip">Current visit</span>
 		<% if (activeVisit) {
 			def visitStartStr = activeVisitStartedToday ? kenyaUi.formatTime(activeVisit.startDatetime) : kenyaUi.formatDate(activeVisit.startDatetime);
 

@@ -51,6 +51,10 @@
 
 /***** Patient header *****/
 
+.ke-tip {
+	font-size: 12px;
+}
+
 .ke-patientheader {
 	padding: 4px;
 	background-color: #7f7b72;
@@ -70,7 +74,11 @@
 	text-align: right;
 }
 
-.ke-patientheader .ke-identifier-type, .ke-patientheader .ke-identifier-value {
+.ke-patientheader .ke-identifier-type, .ke-patientheader .ke-patient-gender, .ke-patientheader .ke-patient-age, .ke-patientheader .ke-tip {
+	color: #dfdbd2;
+}
+
+.ke-patientheader .ke-identifier-value {
 	color: white;
 }
 
