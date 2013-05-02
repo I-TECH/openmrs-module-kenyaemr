@@ -21,6 +21,7 @@ import org.openmrs.FormResource;
 import org.openmrs.api.context.Context;
 import org.openmrs.customdatatype.datatype.FreeTextDatatype;
 import org.openmrs.module.htmlformentry.HtmlForm;
+import org.openmrs.module.htmlformentry.HtmlFormEntryService;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.ui.framework.resource.ResourceFactory;
 
@@ -56,7 +57,7 @@ public class FormUtilsTest extends BaseModuleContextSensitiveTest {
 	}
 
 	@Test
-	public void getHtmlForm_shouldCreateValidHtmlForm() throws Exception {
+	public void getHtmlForm_shouldCreateDynamicHtmlFormFormXmlPathResource() throws Exception {
 		Form form = Context.getFormService().getForm(1);
 		FormUtils.setFormXmlPath(form, "kenyaemr:test3.xml");
 
@@ -68,5 +69,37 @@ public class FormUtilsTest extends BaseModuleContextSensitiveTest {
 		HtmlForm hf = FormUtils.getHtmlForm(form, resourceFactory);
 		Assert.assertEquals(form, hf.getForm());
 		Assert.assertEquals(xmlContent, hf.getXmlData());
+	}
+
+	@Test
+	public void getHtmlForm_shouldLoadExistingPersistedHtmlForm() throws Exception {
+		Form form = Context.getFormService().getForm(1);
+
+		// Persist an html form
+		String xmlContent = "<htmlform>Test</htmlform>";
+		HtmlForm hf1 = new HtmlForm();
+		hf1.setForm(form);
+		hf1.setXmlData(xmlContent);
+		Context.getService(HtmlFormEntryService.class).saveHtmlForm(hf1);
+
+		// Mock the resource factory
+		ResourceFactory resourceFactory = mock(ResourceFactory.class);
+
+		HtmlForm hf2 = FormUtils.getHtmlForm(form, resourceFactory);
+		Assert.assertEquals(form, hf2.getForm());
+		Assert.assertEquals(xmlContent, hf2.getXmlData());
+	}
+
+	@Test
+	public void getHtmlForm_shouldThrowExceptionIfNoPathOrPersistedHtmlForm() throws Exception {
+		Form form = Context.getFormService().getForm(1);
+		ResourceFactory resourceFactory = mock(ResourceFactory.class);
+
+		try {
+			FormUtils.getHtmlForm(form, resourceFactory);
+			Assert.fail();
+		}
+		catch (Exception ex) {
+		}
 	}
 }
