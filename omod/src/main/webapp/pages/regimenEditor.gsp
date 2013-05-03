@@ -7,11 +7,20 @@
 	def allowUndo = history.changes && history.changes.size() > 0
 
 	def changeDateField = { label ->
-		[ label: label, formFieldName: "changeDate", class: java.util.Date, initialValue: initialDate /*, fieldFragment: "field/java.util.Date.withpresets", presets: datePresets */ ]
+		[ label: label, formFieldName: "changeDate", class: java.util.Date, initialValue: initialDate ]
 	}
 
 	def regimenField = {
 		[ label: "Regimen", formFieldName: "regimen", class: "org.openmrs.module.kenyaemr.regimen.Regimen", fieldFragment: "field/Regimen", category: category ]
+	}
+
+	def reasonFields = { reasonType ->
+		ui.includeFragment("kenyaui", "widget/rowOfFields", [
+			fields: [
+				[ label: "Reason", formFieldName: "changeReason", class: "org.openmrs.Concept", fieldFragment: "field/RegimenChangeReason", category: category, reasonType: reasonType ],
+				[ label: "Reason (Other)", formFieldName: "changeReasonNonCoded", class: java.lang.String ]
+			]
+		]);
 	}
 %>
 
@@ -119,7 +128,7 @@
 							[ hiddenInputName: "category", value: category ],
 							changeDateField("Change date"),
 							regimenField(),
-							[ label: "Reason for change", formFieldName: "changeReason", class: java.lang.String ]
+							[ value: reasonFields("change") ]
 					],
 					submitLabel: "Save",
 					successCallbacks: [ "ui.reloadPage();" ],
@@ -140,7 +149,7 @@
 							[ hiddenInputName: "changeType", value: "STOP" ],
 							[ hiddenInputName: "category", value: category ],
 							changeDateField("Stop date"),
-							[ label: "Reason for stop", formFieldName: "changeReason", class: java.lang.String ]
+							[ value: reasonFields("stop") ]
 					],
 					submitLabel: "Save",
 					successCallbacks: [ "ui.reloadPage();" ],

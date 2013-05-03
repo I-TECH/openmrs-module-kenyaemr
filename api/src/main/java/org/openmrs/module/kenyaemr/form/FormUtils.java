@@ -20,6 +20,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.customdatatype.datatype.FreeTextDatatype;
 import org.openmrs.module.htmlformentry.HtmlForm;
 import org.openmrs.module.htmlformentry.HtmlFormEntryService;
+import org.openmrs.module.htmlformentry.HtmlFormEntryUtil;
 import org.openmrs.ui.framework.resource.ResourceFactory;
 
 import java.io.IOException;
@@ -72,7 +73,12 @@ public class FormUtils {
 		String xmlPath = getFormXmlPath(form);
 
 		if (xmlPath == null) {
-			throw new RuntimeException("Form has no XML path");
+			// Look in the database
+			HtmlForm hf = HtmlFormEntryUtil.getService().getHtmlFormByForm(form);
+			if (hf != null)
+				return hf;
+
+			throw new RuntimeException("Form has no XML path or persisted html form");
 		}
 		else if (!xmlPath.contains(":")) {
 			throw new RuntimeException("Form XML path '" + xmlPath + "' must use format <provider>:<path>");

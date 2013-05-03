@@ -103,8 +103,10 @@ public class RegimenUtilFragmentController {
 		private RegimenChangeType changeType;
 		
 		private Date changeDate;
+
+		private Concept changeReason;
 		
-		private String changeReason;
+		private String changeReasonNonCoded;
 
 		private Regimen regimen;
 
@@ -120,7 +122,7 @@ public class RegimenUtilFragmentController {
 
 			// Reason is only required for stopping or changing
 			if (changeType == RegimenChangeType.STOP || changeType == RegimenChangeType.CHANGE) {
-				require(errors, "changeReason");
+				requireAny(errors, "changeReason", "changeReasonNonCoded");
 			}
 
 			if (category != null && changeDate != null) {
@@ -140,10 +142,10 @@ public class RegimenUtilFragmentController {
 					errors.rejectValue("changeDate", "Change date must be after all other changes");
 				}
 
-				// Only TB allows future dates
-				//if (!category.equals("TB") && OpenmrsUtil.compare(changeDate, OpenmrsUtil.firstSecondOfDay(new Date())) > 0) {
-				//	errors.rejectValue("changeDate", "Change date can't be in the future");
-				//}
+				// Don't allow future dates
+				if (OpenmrsUtil.compare(changeDate, OpenmrsUtil.firstSecondOfDay(new Date())) > 0) {
+					errors.rejectValue("changeDate", "Change date can't be in the future");
+				}
 
 				// Don't allow future dates
 				if (OpenmrsUtil.compare(changeDate, OpenmrsUtil.firstSecondOfDay(new Date())) > 0) {
@@ -200,7 +202,8 @@ public class RegimenUtilFragmentController {
 					o.setDiscontinued(true);
 					o.setDiscontinuedDate(changeDate);
 					o.setDiscontinuedBy(Context.getAuthenticatedUser());
-					o.setDiscontinuedReasonNonCoded(changeReason);
+					o.setDiscontinuedReason(changeReason);
+					o.setDiscontinuedReasonNonCoded(changeReasonNonCoded);
 					os.saveOrder(o);
 				}
 
@@ -281,7 +284,7 @@ public class RegimenUtilFragmentController {
 		 * Gets the change reason
 		 * @return the change reason
 		 */
-		public String getChangeReason() {
+		public Concept getChangeReason() {
 			return changeReason;
 		}
 		
@@ -289,8 +292,24 @@ public class RegimenUtilFragmentController {
 		 * Sets the change reason
 		 * @param changeReason the change reason
 		 */
-		public void setChangeReason(String changeReason) {
+		public void setChangeReason(Concept changeReason) {
 			this.changeReason = changeReason;
+		}
+
+		/**
+		 * Gets the non-coded change reason
+		 * @return the non-coded change reason
+		 */
+		public String getChangeReasonNonCoded() {
+			return changeReasonNonCoded;
+		}
+
+		/**
+		 * Sets the non-coded change reason
+		 * @param changeReasonNonCoded the non-coded change reason
+		 */
+		public void setChangeReasonNonCoded(String changeReasonNonCoded) {
+			this.changeReasonNonCoded = changeReasonNonCoded;
 		}
 
 		/**

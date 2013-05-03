@@ -147,13 +147,19 @@
 				<th rowspan="2">Pregnancy</th>
 				<th colspan="2">Status</th>
 				<td>(h)</td>
-				<td colspan="2">
+				<td>
 					<includeIf velocityTest="$patient.gender == 'F' ">
 						<obs
 							conceptId="5272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 							answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 							answerLabels="Yes,No,Unknown" style="radio"
 						/>
+						<br />[ TODO Abortion and miscarriage ]
+					</includeIf>
+				</td>
+				<td>
+					<includeIf velocityTest="$patient.gender == 'F' ">
+						ANC No. <obs conceptId="161655AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
 					</includeIf>
 				</td>
 			</tr>
@@ -225,7 +231,7 @@
 					/>
 				</td>
 				<td>
-					TB Treatment No. [TODO need obs for TB case Id]
+					Treatment No. <obs conceptId="161654AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
 				</td>
 			</tr>
 			<tr>

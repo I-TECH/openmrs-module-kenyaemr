@@ -15,6 +15,7 @@ package org.openmrs.module.kenyaemr.page.controller;
 
 import org.openmrs.Concept;
 import org.openmrs.Patient;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.KenyaEmr;
 import org.openmrs.module.kenyaemr.regimen.RegimenChange;
 import org.openmrs.module.kenyaemr.regimen.RegimenChangeHistory;
@@ -57,21 +58,5 @@ public class RegimenEditorPageController {
 		boolean futureChanges = OpenmrsUtil.compareWithNullAsEarliest(lastChangeDate, today) >= 0;
 
 		model.addAttribute("initialDate", futureChanges ? lastChange.getDate() : today);
-
-		List<SimpleObject> datePresets = new ArrayList<SimpleObject>();
-		model.addAttribute("datePresets", datePresets);
-
-		if (category.equals("TB")) {
-			datePresets.add(SimpleObject.create("label", "Today", "value", today));
-
-			Calendar calendar = Calendar.getInstance();
-
-			calendar.add(Calendar.MONTH, 1);
-			datePresets.add(SimpleObject.create("label", "Today + 1 month", "value", OpenmrsUtil.firstSecondOfDay(calendar.getTime())));
-			calendar.add(Calendar.MONTH, 1);
-			datePresets.add(SimpleObject.create("label", "Today + 2 months", "value", OpenmrsUtil.firstSecondOfDay(calendar.getTime())));
-			calendar.add(Calendar.MONTH, 4);
-			datePresets.add(SimpleObject.create("label", "Today + 6 months", "value", OpenmrsUtil.firstSecondOfDay(calendar.getTime())));
-		}
 	}
 }

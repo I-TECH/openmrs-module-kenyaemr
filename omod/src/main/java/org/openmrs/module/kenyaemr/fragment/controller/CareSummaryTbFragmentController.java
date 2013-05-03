@@ -24,6 +24,7 @@ import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
 import org.openmrs.module.kenyaemr.calculation.CalculationManager;
 import org.openmrs.module.kenyaemr.calculation.tb.TbDiseaseClassificationCalculation;
 import org.openmrs.module.kenyaemr.calculation.tb.TbPatientClassificationCalculation;
+import org.openmrs.module.kenyaemr.calculation.tb.TbTreatmentNumberCalculation;
 import org.openmrs.module.kenyaemr.regimen.RegimenChangeHistory;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.annotation.SpringBean;
@@ -50,6 +51,9 @@ public class CareSummaryTbFragmentController {
 
 		result = CalculationUtils.evaluateForPatient(TbPatientClassificationCalculation.class, null, patient.getPatientId());
 		calculationResults.put("tbPatientClassification", result != null ? result.getValue() : null);
+
+		result = CalculationUtils.evaluateForPatient(TbTreatmentNumberCalculation.class, null, patient.getPatientId());
+		calculationResults.put("tbTreatmentNumber", result != null ? result.getValue() : null);
 
 		model.addAttribute("calculations", calculationResults);
 

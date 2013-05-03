@@ -51,41 +51,34 @@
 
 /***** Patient header *****/
 
-#selected-patient-header {
-	padding: 3px;
-	background-color: #858580;
+.ke-tip {
+	font-size: 12px;
+}
+
+.ke-patientheader {
+	padding: 4px;
+	background-color: #7f7b72;
 	overflow: auto;
 	color: white;
 }
 
-#selected-patient-header > .demographics {
-	float: left;
+.ke-patientheader .ke-patient-name {
+	font-size: 18px;
 	font-weight: bold;
-	width: 35%;
 }
 
-#selected-patient-header > .identifiers {
-	float: left;
-	width: 30%;
-	text-align: center;
-}
-
-#selected-patient-header #selected-patient-header-close {
-	float: right;
-	padding-left: 0.4em;
-	margin-left: 0.4em;
-	position: relative;
-	top: 3;
-}
-
-#selected-patient-header #active-visit {
+.ke-patientheader #active-visit {
 	width: 50%;
 	float: right;
 	overflow: auto;
 	text-align: right;
 }
 
-#selected-patient-header .ke-identifier-type, #selected-patient-header .ke-identifier-value {
+.ke-patientheader .ke-identifier-type, .ke-patientheader .ke-patient-gender, .ke-patientheader .ke-patient-age, .ke-patientheader .ke-tip {
+	color: #dfdbd2;
+}
+
+.ke-patientheader .ke-identifier-value {
 	color: white;
 }
 

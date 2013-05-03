@@ -1,4 +1,8 @@
 <%
+/**
+ * This is current not used or displayed
+ */
+
 	ui.decorateWith("kenyaemr", "standardPage")
 %>
 

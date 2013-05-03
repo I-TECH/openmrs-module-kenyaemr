@@ -22,8 +22,6 @@ import org.openmrs.Program;
 import org.openmrs.Visit;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appframework.AppUiUtil;
-import org.openmrs.module.htmlformentry.HtmlForm;
-import org.openmrs.module.htmlformentry.HtmlFormEntryService;
 import org.openmrs.module.kenyaemr.KenyaEmr;
 import org.openmrs.module.kenyaemr.KenyaEmrUiUtils;
 import org.openmrs.module.kenyaemr.form.FormDescriptor;
@@ -38,7 +36,7 @@ import org.openmrs.ui.framework.session.Session;
 import java.util.*;
 
 /**
- *
+ * Fragment to display available forms for a given visit
  */
 public class VisitAvailableFormsFragmentController {
 

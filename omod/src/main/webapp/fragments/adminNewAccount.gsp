@@ -56,8 +56,6 @@
 		<% } %>
 	</fieldset>
 
-	<br/>
-
 	<fieldset>
 		<legend>Login Info</legend>
 		<% login.each { %>
@@ -67,8 +65,6 @@
 		${ ui.decorate("kenyaui", "labeled", [label: "Roles"], roleHtml) }
 	</fieldset>
 
-	<br/>
-
 	<fieldset>
 		<legend>Provider Info</legend>
 		<% providerInfo.each { %>
@@ -76,9 +72,9 @@
 		<% } %>
 	</fieldset>
 
-	<br/>
-
-	<input type="submit" value="Create Account"/>
+	<div class="ke-form-buttons">
+		<input type="submit" value="Create Account"/>
+	</div>
 </form>
 
 <script type="text/javascript">

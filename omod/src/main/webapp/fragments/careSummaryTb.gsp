@@ -3,6 +3,7 @@
 
 	def dataPoints = []
 
+	dataPoints << [ label: "Treatment Number", value: calculations.tbTreatmentNumber ]
 	dataPoints << [ label: "Disease classification", value: calculations.tbDiseaseClassification ]
 	dataPoints << [ label: "Patient classification", value: calculations.tbPatientClassification ]
 %>

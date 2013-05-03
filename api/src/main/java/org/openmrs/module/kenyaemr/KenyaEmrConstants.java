@@ -31,6 +31,11 @@ public class KenyaEmrConstants {
 	public static final String GP_CONCEPTS_VERSION = "ciel.conceptsVersion";
 
 	/**
+	 * Required concepts version
+	 */
+	public static final String REQUIRED_CONCEPTS_VERSION = "201300429";
+
+	/**
 	 * Number of days without an encounter before a patient is consider lost to follow up
 	 */
 	public static final int LOST_TO_FOLLOW_UP_THRESHOLD_DAYS = 90;
