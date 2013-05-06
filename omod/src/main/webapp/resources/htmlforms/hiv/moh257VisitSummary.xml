@@ -593,6 +593,11 @@
 				<td>(ag)</td>
 				<td colspan="2"><obs conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" /></td>
 			</tr>
+			<tr>
+				<th colspan="3">Clinician Initials</th>
+				<td>(ah)</td>
+				<td colspan="2"><obs conceptId="1473AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+			</tr>
 		</tbody>
 	</table>
 
