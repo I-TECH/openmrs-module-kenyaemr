@@ -5,27 +5,24 @@
 
 	// If report has a single dataset, then it won't be wrapped in a fieldset
 	def singleDataset = (data.dataSets.size() == 1)
-
-	def formatData = { result -> (result != null) ? result : "-" }
 %>
 
 <% if (definition.description) { %>
 <fieldset>
 	<legend>Description</legend>
+
 	${ definition.description }
 </fieldset>
-<br/>
 <% } %>
 
 <% if (definition.parameters) { %>
-	<fieldset>
-		<legend>Parameters</legend>
-	
-		<% definition.parameters.each { %>
-			${ ui.includeFragment("kenyaui", "widget/dataPoint", [ label: it.label, value: data.context.parameterValues[it.name] ]) }
-		<% } %>
-	</fieldset>
-	<br/>
+<fieldset>
+	<legend>Parameters</legend>
+
+	<% definition.parameters.each { %>
+		${ ui.includeFragment("kenyaui", "widget/dataPoint", [ label: it.label, value: data.context.parameterValues[it.name] ]) }
+	<% } %>
+</fieldset>
 <% } %>
 
 <% data.dataSets.each {
@@ -37,43 +34,32 @@
 	<fieldset><legend>${ dsd.name }</legend>
 	<% } %>
 
-	<% if (ds.class.name == 'org.openmrs.module.reporting.dataset.MapDataSet') { %>
-		
-		<table class="ke-table-decorated ke-table-vertical">
-			<tbody>
-			<% ds.metaData.columns.each { col -> %>
-				<tr>
-					<th>${ col.name }</th>
-					<td style="text-align: left">${ col.label }</td>
-					<td>${ formatData(ds.getData(col)) }</td>
-				</tr>
-			<% } %>
-			</tbody>
-		</table>
-		
-	<% } else {
-		def cols = ds.metaData.columns
-	%>
-		<table class="ke-table-decorated ke-table-vertical">
-			<thead>
-				<tr>
-					<% cols.each { %>
-						<th style="text-align: left">${ it.label }</th>
-					<% } %>
-				</tr>
-			</thead>
-			<tbody>
-				<% ds.rows.each { row -> %>
-					<tr>
-						<% cols.each { %>
-							<td style="text-align: left">${ formatData(row.getColumnValue(it)) }</td>
-						<% } %>
-					</tr>
-				<% } %>
-			</tbody>
-		</table>
+	<%
+	if (dsd.class.name == "org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition") {
 
+		def total = ds.rows.size(), males = 0, females = 0
+		ds.rows.each {
+			def gender = it.getColumnValue("Sex");
+			if (gender.equals("M")) {
+				++males
+			} else if (gender.equals("F")) {
+				++females
+			}
+		}
+	%>
+	<fieldset>
+		<legend>Summary</legend>
+		<table>
+			<tr>
+				<td style="padding-right: 20px">${ ui.includeFragment("kenyaui", "widget/dataPoint", [ label: "Total", value: total ]) }</td>
+				<td style="padding-right: 20px">${ ui.includeFragment("kenyaui", "widget/dataPoint", [ label: "Males", value: males ]) }</td>
+				<td>${ ui.includeFragment("kenyaui", "widget/dataPoint", [ label: "Females", value: females ]) }</td>
+			</tr>
+		</table>
+	</fieldset>
 	<% } %>
+
+	${ ui.includeFragment("kenyaemr", "reportDataSet", [ dataSet: ds ]) }
 
 	<% if (!singleDataset) { %>
 	</fieldset>
