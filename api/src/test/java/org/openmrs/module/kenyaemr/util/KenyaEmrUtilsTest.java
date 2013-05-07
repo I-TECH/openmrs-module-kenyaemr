@@ -11,9 +11,9 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.kenyaemr.util;
 
-import com.sun.corba.se.impl.orb.ParserTable;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -164,5 +164,77 @@ public class KenyaEmrUtilsTest extends BaseModuleContextSensitiveTest {
 		Assert.assertEquals(TestUtils.getConcept("5497AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), concepts.get(0));
 		Assert.assertEquals(TestUtils.getConcept("730AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), concepts.get(1));
 		Assert.assertEquals(TestUtils.getConcept("5356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), concepts.get(2));
+	}
+
+	@Test
+	public void firstObsInEncounter_shouldFindFirstObsWithConcept() {
+		Encounter e = new Encounter();
+
+		// Test empty encounter
+		Assert.assertNull(KenyaEmrUtils.firstObsInEncounter(e, TestUtils.getConcept(MetadataConstants.CD4_CONCEPT_UUID)));
+
+		// Add obs to encounter
+		Obs obs0 = new Obs();
+		obs0.setConcept(TestUtils.getConcept(MetadataConstants.CD4_PERCENT_CONCEPT_UUID));
+		obs0.setValueNumeric(50.0);
+		e.addObs(obs0);
+		Obs obs1 = new Obs();
+		obs1.setConcept(TestUtils.getConcept(MetadataConstants.CD4_CONCEPT_UUID));
+		obs1.setValueNumeric(123.0);
+		e.addObs(obs1);
+
+		Assert.assertEquals(new Double(123.0), KenyaEmrUtils.firstObsInEncounter(e, TestUtils.getConcept(MetadataConstants.CD4_CONCEPT_UUID)).getValueNumeric());
+	}
+
+	@Test
+	public void firstObsInProgram_shouldFindFirstObsWithConcept() {
+		Patient patient = Context.getPatientService().getPatient(6);
+		Program tbProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.TB_PROGRAM_UUID);
+
+		PatientProgram enrollment = TestUtils.enrollInProgram(patient, tbProgram, TestUtils.date(2012, 1, 1), TestUtils.date(2012, 4, 1));
+
+		// Test with no saved obs
+		Assert.assertNull(KenyaEmrUtils.firstObsInProgram(enrollment, TestUtils.getConcept(MetadataConstants.CD4_CONCEPT_UUID)));
+
+		// Before enrollment
+		Obs obs0 = TestUtils.saveObs(patient, TestUtils.getConcept(MetadataConstants.CD4_CONCEPT_UUID), 123.0, TestUtils.date(2011, 12, 1));
+		// Wrong concept
+		Obs obs1 = TestUtils.saveObs(patient, TestUtils.getConcept(MetadataConstants.CD4_PERCENT_CONCEPT_UUID), 50.0, TestUtils.date(2012, 1, 15));
+		// During enrollment
+		Obs obs2 = TestUtils.saveObs(patient, TestUtils.getConcept(MetadataConstants.CD4_CONCEPT_UUID), 234.0, TestUtils.date(2012, 2, 1));
+		Obs obs3 = TestUtils.saveObs(patient, TestUtils.getConcept(MetadataConstants.CD4_CONCEPT_UUID), 345.0, TestUtils.date(2012, 3, 1));
+
+		Assert.assertEquals(obs2, KenyaEmrUtils.firstObsInProgram(enrollment, TestUtils.getConcept(MetadataConstants.CD4_CONCEPT_UUID)));
+
+		// Test again with no enrollment end date
+		enrollment = TestUtils.enrollInProgram(patient, tbProgram, TestUtils.date(2012, 1, 1));
+		Assert.assertEquals(obs2, KenyaEmrUtils.firstObsInProgram(enrollment, TestUtils.getConcept(MetadataConstants.CD4_CONCEPT_UUID)));
+	}
+
+	@Test
+	public void lastEncounterInProgram_shouldFindLastEncounterWithType() {
+		Patient patient = Context.getPatientService().getPatient(6);
+		Program tbProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.TB_PROGRAM_UUID);
+		EncounterType tbScreenEncType = Context.getEncounterService().getEncounterTypeByUuid(MetadataConstants.TB_SCREENING_ENCOUNTER_TYPE_UUID);
+
+		PatientProgram enrollment = TestUtils.enrollInProgram(patient, tbProgram, TestUtils.date(2012, 1, 1), TestUtils.date(2012, 4, 1));
+
+		// Test with no saved encounters
+		Assert.assertNull(KenyaEmrUtils.lastEncounterInProgram(enrollment, tbScreenEncType));
+
+		// Before enrollment
+		Encounter enc0 = TestUtils.saveEncounter(patient, tbScreenEncType, TestUtils.date(2011, 12, 1));
+		// During enrollment
+		Encounter enc1 = TestUtils.saveEncounter(patient, tbScreenEncType, TestUtils.date(2012, 2, 1));
+		Encounter enc2 = TestUtils.saveEncounter(patient, tbScreenEncType, TestUtils.date(2012, 3, 1));
+		// After enrollment
+		Encounter enc3 = TestUtils.saveEncounter(patient, tbScreenEncType, TestUtils.date(2012, 5, 1));
+
+		Assert.assertEquals(enc2, KenyaEmrUtils.lastEncounterInProgram(enrollment, tbScreenEncType));
+
+		// Test again with no enrollment end date
+		enrollment = TestUtils.enrollInProgram(patient, tbProgram, TestUtils.date(2012, 1, 1));
+		Assert.assertEquals(enc3, KenyaEmrUtils.lastEncounterInProgram(enrollment, tbScreenEncType));
+
 	}
 }

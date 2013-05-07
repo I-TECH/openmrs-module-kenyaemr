@@ -20,15 +20,9 @@ import org.openmrs.Program;
 import org.openmrs.Visit;
 import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
-import org.openmrs.calculation.InvalidCalculationException;
-import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.module.appframework.AppUiUtil;
 import org.openmrs.module.kenyaemr.MetadataConstants;
-import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
-import org.openmrs.module.kenyaemr.calculation.CalculationManager;
-import org.openmrs.module.kenyaemr.calculation.WHOStagesAtEnrollmentsCalculation;
 import org.openmrs.module.kenyaemr.util.KenyaEmrUtils;
-import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.page.PageModel;
 import org.openmrs.ui.framework.session.Session;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -65,8 +59,5 @@ public class MedicalEncounterViewPatientPageController {
 
 		model.addAttribute("enrolledInHivProgram", KenyaEmrUtils.isPatientInProgram(patient, hivProgram));
 		model.addAttribute("enrolledInTbProgram", KenyaEmrUtils.isPatientInProgram(patient, tbProgram));
-
-		CalculationResult whoStagesAtEnrollments = CalculationUtils.evaluateForPatient(WHOStagesAtEnrollmentsCalculation.class, null, patient.getPatientId());
-		model.put("whoStagesAtEnrollments", whoStagesAtEnrollments.getValue());
 	}
 }

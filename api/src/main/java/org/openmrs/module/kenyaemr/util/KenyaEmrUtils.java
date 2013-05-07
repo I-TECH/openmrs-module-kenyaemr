@@ -188,4 +188,52 @@ public class KenyaEmrUtils {
 		}
 		return concepts;
 	}
+
+	/**
+	 * Finds the first obs in an encounter with the given concept
+	 * @param encounter the encounter
+	 * @param concept the obs concept
+	 * @return the encounter
+	 */
+	public static Obs firstObsInEncounter(Encounter encounter, Concept concept) {
+		for (Obs obs : encounter.getAllObs()) {
+			if (obs.getConcept().equals(concept)) {
+				return obs;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Finds the first obs during a program enrollment with the given concept
+	 * @param enrollment the program enrollment
+	 * @param concept the obs concept
+	 * @return the obs
+	 */
+	public static Obs firstObsInProgram(PatientProgram enrollment, Concept concept) {
+		List<Obs> obss = Context.getObsService().getObservationsByPersonAndConcept(enrollment.getPatient(), concept);
+		Collections.reverse(obss); // Obs come desc by date
+		for (Obs obs : obss) {
+			if (obs.getObsDatetime().compareTo(enrollment.getDateEnrolled()) >= 0 && (enrollment.getDateCompleted() == null || obs.getObsDatetime().compareTo(enrollment.getDateCompleted()) < 0)) {
+				return obs;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Finds the last encounter during a program enrollment with the given encounter type
+	 * @param enrollment the program enrollment
+	 * @param type the encounter type
+	 * @return the encounter
+	 */
+	public static Encounter lastEncounterInProgram(PatientProgram enrollment, EncounterType type) {
+		List<Encounter> encounters = Context.getEncounterService().getEncounters(enrollment.getPatient(), null, enrollment.getDateEnrolled(), enrollment.getDateCompleted(), null, Collections.singleton(type), null, null, null, false);
+		if (encounters.size() == 0) {
+			return null;
+		}
+		else {
+			return encounters.get(encounters.size() - 1);
+		}
+	}
 }

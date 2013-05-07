@@ -11,48 +11,49 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.kenyaemr.fragment.controller;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
-import org.openmrs.Patient;
-import org.openmrs.PatientProgram;
-import org.openmrs.Program;
+import org.openmrs.*;
 import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 
-
 /**
- * 
+ * Program history fragment
  */
-public class ProgramSummaryFragmentController {
-	
+public class ProgramHistoryFragmentController {
+
 	public void controller(FragmentModel model,
-	                       @FragmentParam("patient") Patient patient,
-	                       @FragmentParam("program") Program program,
-	                       @FragmentParam(required=false, value="registrationFormUuid") String regFormUuid,
-	                       @FragmentParam(required=false, value="exitFormUuid") String exitFormUuid) {
-		
-		ProgramWorkflowService pws = Context.getProgramWorkflowService();
-		PatientProgram currentEnrollment = null;
-		List<PatientProgram> pastEnrollments = new ArrayList<PatientProgram>();
-		for (PatientProgram pp : pws.getPatientPrograms(patient, program, null, null, null, null, false)) {
-			if (pp.getActive()) {
-				currentEnrollment = pp;
-			} else {
-				pastEnrollments.add(pp);
-			}
-		}
-	
+						   @FragmentParam("patient") Patient patient,
+						   @FragmentParam("program") Program program,
+						   @FragmentParam("complete") boolean complete,
+						   @FragmentParam("enrollmentFormUuid") String enrollmentFormUuid,
+						   @FragmentParam("discontinuationFormUuid") String discontinuationFormUuid) {
+
 		model.addAttribute("patient", patient);
 		model.addAttribute("program", program);
-		model.addAttribute("registrationFormUuid", regFormUuid);
-		model.addAttribute("exitFormUuid", exitFormUuid);
+		model.addAttribute("complete", complete);
+		model.addAttribute("enrollmentForm", Context.getFormService().getFormByUuid(enrollmentFormUuid));
+		model.addAttribute("discontinuationForm", Context.getFormService().getFormByUuid(discontinuationFormUuid));
+
+		ProgramWorkflowService pws = Context.getProgramWorkflowService();
+		PatientProgram currentEnrollment = null;
+
+		// Gather all program enrollments for this patient and program
+		List<PatientProgram> enrollments = new ArrayList<PatientProgram>();
+		for (PatientProgram pp : pws.getPatientPrograms(patient, program, null, null, null, null, false)) {
+			enrollments.add(pp);
+
+			if (pp.getActive()) {
+				currentEnrollment = pp;
+			}
+		}
+
 		model.addAttribute("currentEnrollment", currentEnrollment);
-		model.addAttribute("pastEnrollments", pastEnrollments);
+		model.addAttribute("enrollments", enrollments);
 	}
-	
 }
