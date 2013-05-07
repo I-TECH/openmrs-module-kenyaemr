@@ -50,13 +50,36 @@ public class NeedsSputumCalculation extends BaseAlertCalculation {
 		Set<Integer> alive = alivePatients(cohort, context);
 
 		// get concept for disease suspect
-		Concept tbsuspect = Context.getConceptService().getConceptByUuid(
+		Concept tbsuspect = getConcept(
 				MetadataConstants.DISEASE_SUSPECTED_CONCEPT_UUID);
+		//get concept for pulmonary tb
+		Concept pulmonaryTb = getConcept(MetadataConstants.PULMONARY_TB_CONCEPT_UUID);
+		//get smear positive concept
+		Concept smearPositive = getConcept(MetadataConstants.POSITIVE_CONCEPT_UUID);
 
 		// check if there is any observation recorded per the tuberculosis
 		// disease status
 		CalculationResultMap lastObsTbDiseaseStatus = lastObs(
 				getConcept(MetadataConstants.TUBERCULOSIS_DISEASE_STATUS_CONCEPT_UUID),
+				cohort, context);
+		// get last observations for disease classification, patient
+		// classification
+		// and pulmonary tb positive to determine when sputum will be due for
+		// patients
+		// in future
+		CalculationResultMap lastDiseaseClassiffication = lastObs(
+				getConcept(MetadataConstants.SITE_OF_TUBERCULOSIS_DISEASE_CONCEPT_UUID),
+				cohort, context);
+		CalculationResultMap lastPatientClassification = lastObs(
+				getConcept(MetadataConstants.TYPE_OF_TB_PATIENT_CONCEPT_UUID),
+				cohort, context);
+		CalculationResultMap lastTbPulmonayResult = lastObs(
+				getConcept(MetadataConstants.RESULTS_TUBERCULOSIS_CULTURE_CONCEPT_UUID),
+				cohort, context);
+		// get the first observation ever the patient had a sputum results for
+		// month 0
+		CalculationResultMap sputumResultsForMonthZero = firstObs(
+				getConcept(MetadataConstants.SPUTUM_FOR_ACID_FAST_BACILLI_CONCEPT_UUID),
 				cohort, context);
 
 		CalculationResultMap ret = new CalculationResultMap();
@@ -84,8 +107,22 @@ public class NeedsSputumCalculation extends BaseAlertCalculation {
 					}
 
 				}
-				//getting sputum alerts for already enrolled patients
-				
+				// getting sputum alerts for already enrolled patients
+				// get the observations based on disease classification,patient
+				// classification and results of tuberculosis
+				ObsResult diseaseClassification = (ObsResult) lastDiseaseClassiffication
+						.get(ptId);
+				ObsResult patientClassification = (ObsResult) lastPatientClassification
+						.get(ptId);
+				ObsResult tbResults = (ObsResult) lastTbPulmonayResult
+						.get(ptId);
+				// get the obsresult for month zero
+				ObsResult resultsForMonthZero = (ObsResult) sputumResultsForMonthZero
+						.get(ptId);
+				if (resultsForMonthZero != null && diseaseClassification.getValue().getValueCoded().equals(pulmonaryTb) && tbResults !=null && tbResults.getValue().getValueCoded().equals(smearPositive)) {
+					needsSputum = true;
+
+				}
 
 			}
 			ret.put(ptId, new BooleanResult(needsSputum, this, context));
