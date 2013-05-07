@@ -14,21 +14,18 @@
 package org.openmrs.module.kenyaemr.calculation.tb;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 
 import org.openmrs.Concept;
-import org.openmrs.EncounterType;
-import org.openmrs.Obs;
-import org.openmrs.Program;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
-import org.openmrs.calculation.result.ListResult;
+import org.openmrs.calculation.result.ObsResult;
 import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.kenyaemr.calculation.BaseAlertCalculation;
 import org.openmrs.module.kenyaemr.calculation.BooleanResult;
-import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
 
 /**
  * Calculate whether patients are due for a sputum test. Calculation returns
@@ -48,80 +45,50 @@ public class NeedsSputumCalculation extends BaseAlertCalculation {
 	public CalculationResultMap evaluate(Collection<Integer> cohort,
 			Map<String, Object> parameterValues,
 			PatientCalculationContext context) {
-		// get into the tb program
-		Program tbProgram = Context.getProgramWorkflowService()
-				.getProgramByUuid(MetadataConstants.TB_PROGRAM_UUID);
-		// get the tb screening encounter type
-		EncounterType screeningEncType = Context.getEncounterService()
-				.getEncounterTypeByUuid(
-						MetadataConstants.TB_SCREENING_ENCOUNTER_TYPE_UUID);
+
 		// get set of patients who are alive
 		Set<Integer> alive = alivePatients(cohort, context);
-		// only patients who are screened for Tb
-		Set<Integer> wasScreened = CalculationUtils
-				.patientsThatPass(allEncounters(screeningEncType, cohort,
-						context));
-		// get concept for cough for two weeks and with the response yes
-		Concept twoWeeksCough = Context.getConceptService().getConceptByUuid(
-				MetadataConstants.COUGH_LASTING_MORE_THAN_TWO_WEEKS_UUID);
-		Concept YES = Context.getConceptService().getConceptByUuid(
-				MetadataConstants.YES_CONCEPT_UUID);
-		// find patients who are in TB program
-		Set<Integer> inTbProgram = CalculationUtils
-				.patientsThatPass(lastProgramEnrollment(tbProgram, alive,
-						context));
-		// check if there is any observation recorded per the sputum results for
-		// only patients enrolled in tb progarm and were screened
-		CalculationResultMap lastObs_sputum = lastObs(
-				getConcept(MetadataConstants.SPUTUM_FOR_ACID_FAST_BACILLI_CONCEPT_UUID),
-				inTbProgram, context);
-		// get all the observations per the symptom name concept,only screened
-		// patient
-		CalculationResultMap lastObs_sign_symptom_name = allObs(
-				getConcept(MetadataConstants.SIGN_SYMPTOM_NAME_CONCEPT_UUID),
-				wasScreened, context);
-		// get all obs per the symptom present and screened for tb
-		CalculationResultMap lastObs_sign_symptom_present = allObs(
-				getConcept(MetadataConstants.SIGN_SYMPTOM_PRESENT_CONCEPT_UUID),
-				wasScreened, context);
+
+		// get concept for disease suspect
+		Concept tbsuspect = Context.getConceptService().getConceptByUuid(
+				MetadataConstants.DISEASE_SUSPECTED_CONCEPT_UUID);
+
+		// check if there is any observation recorded per the tuberculosis
+		// disease status
+		CalculationResultMap lastObsTbDiseaseStatus = lastObs(
+				getConcept(MetadataConstants.TUBERCULOSIS_DISEASE_STATUS_CONCEPT_UUID),
+				cohort, context);
+
 		CalculationResultMap ret = new CalculationResultMap();
 		for (Integer ptId : cohort) {
-			boolean needsSputum_cough = false;
-			boolean hasTwoWeeksCough = false;
-			Obs sameObsGroup = null;
+			boolean needsSputum = false;
 
 			// check if a patient is alive
 			if (alive.contains(ptId)) {
-				// get the list of all the observations per the symptom name
-				ListResult symptomNameObss = (ListResult) lastObs_sign_symptom_name
-						.get(ptId);
-				// get observation of coughing more that 2 weeks from a
-				// collection
-				for (Obs obsName : CalculationUtils
-						.<Obs> extractListResultValues(symptomNameObss)) {
-					if (obsName.getValueCoded() == twoWeeksCough) {
-						sameObsGroup = obsName.getObsGroup();
-					}
-				}
-				// get the list of all the observations per the present symptoms
-				// and should not have had any sputum results
-				ListResult symptomPresentObss = (ListResult) lastObs_sign_symptom_present
-						.get(ptId);
-				for (Obs obsPresent : CalculationUtils
-						.<Obs> extractListResultValues(symptomPresentObss)) {
-					if (obsPresent.getValueCoded() == YES
-							&& obsPresent.getObsGroup() == sameObsGroup
-							&& (lastObs_sputum.isEmpty())) {
-						hasTwoWeeksCough = true;
-					}
-				}
+				// is the patient suspected of TB?
+				ObsResult r = (ObsResult) lastObsTbDiseaseStatus.get(ptId);
+				if (r != null
+						&& (r.getValue().getValueCoded().equals(tbsuspect))) {
 
-				if (hasTwoWeeksCough) {
-					needsSputum_cough = true;
+					// get the last observation of sputum since tb was suspected
+					CalculationResultMap firstObsSinceSuspected = firstObsOnOrAfterDate(
+							getConcept(MetadataConstants.SPUTUM_FOR_ACID_FAST_BACILLI_CONCEPT_UUID),
+							r.getDateOfResult(), cohort, context);
+					// get the first observation of sputum since the patient was
+					// suspected
+					ObsResult results = (ObsResult) firstObsSinceSuspected
+							.get(ptId);
+
+					if (results == null) {
+						needsSputum = true;
+					}
+
 				}
+				//getting sputum alerts for already enrolled patients
+				
 
 			}
-			ret.put(ptId, new BooleanResult(needsSputum_cough, this, context));
+			ret.put(ptId, new BooleanResult(needsSputum, this, context));
 		}
 		return ret;
 	}
