@@ -15,12 +15,11 @@ package org.openmrs.module.kenyaemr.calculation.art;
 
 import org.openmrs.Concept;
 import org.openmrs.DrugOrder;
-import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.ListResult;
 import org.openmrs.calculation.result.SimpleResult;
-import org.openmrs.module.kenyaemr.MetadataConstants;
+import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
 import org.openmrs.module.kenyaemr.regimen.RegimenOrder;
@@ -54,7 +53,7 @@ public class CurrentArtRegimenCalculation extends BaseEmrCalculation {
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues,
 	                                     PatientCalculationContext context) {
-		Concept arvs = getConcept(MetadataConstants.ANTIRETROVIRAL_DRUGS_CONCEPT_UUID);
+		Concept arvs = getConcept(Dictionary.ANTIRETROVIRAL_DRUGS);
 		CalculationResultMap currentARVDrugOrders = activeDrugOrders(arvs, cohort, context);
 
 		CalculationResultMap ret = new CalculationResultMap();

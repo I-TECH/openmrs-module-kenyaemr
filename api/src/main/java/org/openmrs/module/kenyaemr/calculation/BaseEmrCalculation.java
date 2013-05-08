@@ -38,6 +38,7 @@ import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.ListResult;
 import org.openmrs.calculation.result.ObsResult;
 import org.openmrs.calculation.result.SimpleResult;
+import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.kenyaemr.util.KenyaEmrUtils;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
@@ -356,16 +357,12 @@ public abstract class BaseEmrCalculation extends BaseCalculation implements Pati
 	}
 
 	/**
-	 * Convenience method to fetch a a concept by UUID
-	 * @param uuid the concept UUID
+	 * Convenience method to fetch a a concept by identifer
+	 * @param identifier the concept identifier
 	 * @return the concept
 	 */
-	protected static Concept getConcept(String uuid) {
-		Concept concept = Context.getConceptService().getConceptByUuid(uuid);
-		if (concept == null) {
-			throw new RuntimeException("Invalid concept: " + uuid);
-		}
-		return concept;
+	protected static Concept getConcept(String identifier) {
+		return Dictionary.getConcept(identifier);
 	}
 
 	/**

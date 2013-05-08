@@ -16,10 +16,9 @@ package org.openmrs.module.kenyaemr.calculation;
 
 import org.openmrs.Concept;
 import org.openmrs.Obs;
-import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
-import org.openmrs.module.kenyaemr.MetadataConstants;
+import org.openmrs.module.kenyaemr.Dictionary;
 
 import java.util.Collection;
 import java.util.Map;
@@ -56,8 +55,8 @@ public class IsPregnantCalculation extends BaseAlertCalculation {
 
 		Set<Integer> alive = alivePatients(cohort, context);
 
-		Concept yes = getConcept(MetadataConstants.YES_CONCEPT_UUID);
-		CalculationResultMap pregStatusObss = lastObs(getConcept(MetadataConstants.PREGNANCY_STATUS_CONCEPT_UUID), alive, context);
+		Concept yes = getConcept(Dictionary.YES);
+		CalculationResultMap pregStatusObss = lastObs(getConcept(Dictionary.PREGNANCY_STATUS), alive, context);
 		CalculationResultMap ret = new CalculationResultMap();
 
 		for (Integer ptId : cohort) {

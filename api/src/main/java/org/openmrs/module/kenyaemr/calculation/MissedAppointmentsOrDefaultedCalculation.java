@@ -1,4 +1,4 @@
-/*
+/**
  * The contents of this file are subject to the OpenMRS Public License
  * Version 1.0 (the "License"); you may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
@@ -25,6 +25,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
+import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.MetadataConstants;
 
 /**
@@ -65,7 +66,7 @@ public class MissedAppointmentsOrDefaultedCalculation extends BaseAlertCalculati
 
 		Set<Integer> alive = alivePatients(cohort, context);
 		Set<Integer> inHivProgram = CalculationUtils.patientsThatPass(lastProgramEnrollment(hivProgram, alive, context));
-        CalculationResultMap lastReturnDateObss = lastObs(getConcept(MetadataConstants.RETURN_VISIT_DATE_CONCEPT_UUID), inHivProgram, context);
+        CalculationResultMap lastReturnDateObss = lastObs(getConcept(Dictionary.RETURN_VISIT_DATE), inHivProgram, context);
         CalculationResultMap lastEncounters = lastEncounter(null, cohort, context);
 
         CalculationResultMap ret = new CalculationResultMap();

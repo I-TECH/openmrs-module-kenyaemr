@@ -22,7 +22,7 @@ import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
-import org.openmrs.module.kenyaemr.MetadataConstants;
+import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.test.TestUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
@@ -48,15 +48,15 @@ public class EligibleForArtTriggerCalculationTest extends BaseModuleContextSensi
 		PatientService ps = Context.getPatientService();
 
 		// Confirm patient #6 HIV+ when they're 1 year old and give them very low CD4 soon after
-		TestUtils.saveObs(ps.getPatient(6), TestUtils.getConcept(MetadataConstants.DATE_OF_HIV_DIAGNOSIS_CONCEPT_UUID), TestUtils.date(2008, 05, 27), TestUtils.date(2010, 1, 1));
-		TestUtils.saveObs(ps.getPatient(6), TestUtils.getConcept(MetadataConstants.CD4_CONCEPT_UUID), 300.0, TestUtils.date(2009, 1, 1));
+		TestUtils.saveObs(ps.getPatient(6), Dictionary.getConcept(Dictionary.DATE_OF_HIV_DIAGNOSIS), TestUtils.date(2008, 05, 27), TestUtils.date(2010, 1, 1));
+		TestUtils.saveObs(ps.getPatient(6), Dictionary.getConcept(Dictionary.CD4_COUNT), 300.0, TestUtils.date(2009, 1, 1));
 
 		// Give patient #7 low CD4 when they're 3 years old and very low CD4 after
-		TestUtils.saveObs(ps.getPatient(7), TestUtils.getConcept(MetadataConstants.CD4_CONCEPT_UUID), 900.0, TestUtils.date(1979, 8, 25));
-		TestUtils.saveObs(ps.getPatient(7), TestUtils.getConcept(MetadataConstants.CD4_CONCEPT_UUID), 300.0, TestUtils.date(2009, 1, 1));
+		TestUtils.saveObs(ps.getPatient(7), Dictionary.getConcept(Dictionary.CD4_COUNT), 900.0, TestUtils.date(1979, 8, 25));
+		TestUtils.saveObs(ps.getPatient(7), Dictionary.getConcept(Dictionary.CD4_COUNT), 300.0, TestUtils.date(2009, 1, 1));
 
 		// Give patient #8 WHO stage of 3
-		TestUtils.saveObs(ps.getPatient(8), TestUtils.getConcept(MetadataConstants.CURRENT_WHO_STAGE_CONCEPT_UUID), TestUtils.getConcept(MetadataConstants.WHO_STAGE_3_PEDS_CONCEPT_UUID), TestUtils.date(2009, 1, 1));
+		TestUtils.saveObs(ps.getPatient(8), Dictionary.getConcept(Dictionary.CURRENT_WHO_STAGE), Dictionary.getConcept(Dictionary.WHO_STAGE_3_PEDS), TestUtils.date(2009, 1, 1));
 
 		Context.flushSession();
 		
@@ -65,15 +65,15 @@ public class EligibleForArtTriggerCalculationTest extends BaseModuleContextSensi
 		CalculationResultMap resultMap = new EligibleForArtTriggerCalculation().evaluate(cohort, null, Context.getService(PatientCalculationService.class).createCalculationContext());
 
 		Obs patient6Trigger = (Obs) resultMap.get(6).getValue(); // Eligible through HIV confirmation
-		Assert.assertEquals(MetadataConstants.DATE_OF_HIV_DIAGNOSIS_CONCEPT_UUID, patient6Trigger.getConcept().getUuid());
+		Assert.assertEquals(Dictionary.DATE_OF_HIV_DIAGNOSIS, patient6Trigger.getConcept().getUuid());
 		Assert.assertEquals(TestUtils.date(2008, 05, 27), patient6Trigger.getValueDate());
 
 		Obs patient7Trigger = (Obs) resultMap.get(7).getValue(); // Eligible through CD4 count
-		Assert.assertEquals(MetadataConstants.CD4_CONCEPT_UUID, patient7Trigger.getConcept().getUuid());
+		Assert.assertEquals(Dictionary.CD4_COUNT, patient7Trigger.getConcept().getUuid());
 		Assert.assertEquals(TestUtils.date(1979, 8, 25), patient7Trigger.getObsDatetime());
 
 		Obs patient8Trigger = (Obs) resultMap.get(8).getValue(); // Eligible through WHO stage
-		Assert.assertEquals(MetadataConstants.CURRENT_WHO_STAGE_CONCEPT_UUID, patient8Trigger.getConcept().getUuid());
+		Assert.assertEquals(Dictionary.CURRENT_WHO_STAGE, patient8Trigger.getConcept().getUuid());
 		Assert.assertEquals(TestUtils.date(2009, 1, 1), patient8Trigger.getObsDatetime());
 
 		Assert.assertNull(resultMap.get(999)); // Was never eligible for ART

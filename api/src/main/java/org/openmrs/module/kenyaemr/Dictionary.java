@@ -41,13 +41,13 @@ public class Dictionary {
 		}
 
 		if (concept == null) {
-			throw new RuntimeException("No concept with identifier '" + identifier + "'");
+			throw new IllegalArgumentException("No concept with identifier '" + identifier + "'");
 		}
 
 		return concept;
 	}
 
-	// Concept uuids (A-Z)
+	// Concept identifiers (A-Z)
 	public static final String ANTENATAL_CASE_NUMBER = "161655AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 	public static final String ANTIRETROVIRAL_DRUGS = "1085AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 	public static final String ANTIRETROVIRAL_TREATMENT_START_DATE = "159599AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";

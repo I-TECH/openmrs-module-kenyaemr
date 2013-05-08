@@ -26,6 +26,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.ListResult;
+import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.MetadataConstants;
 
 /**
@@ -52,11 +53,11 @@ public class WithoutCTXOrDapsoneCalculation extends BaseEmrCalculation {
 		Set<Integer> alive = alivePatients(cohort, context);
 		Set<Integer> inHivProgram = CalculationUtils.patientsThatPass(lastProgramEnrollment(hivProgram, alive, context));
 
-		CalculationResultMap medOrdersObss = allObs(getConcept(MetadataConstants.MEDICATION_ORDERS_CONCEPT_UUID), cohort, context);
+		CalculationResultMap medOrdersObss = allObs(getConcept(Dictionary.MEDICATION_ORDERS), cohort, context);
 
 		// Get concepts for both kinds of medication
-		Concept dapsone = getConcept(MetadataConstants.DAPSONE_CONCEPT_UUID);
-		Concept ctx = getConcept(MetadataConstants.SULFAMETHOXAZOLE_TRIMETHOPRIM_CONCEPT_UUID);
+		Concept dapsone = getConcept(Dictionary.DAPSONE);
+		Concept ctx = getConcept(Dictionary.SULFAMETHOXAZOLE_TRIMETHOPRIM);
 
 		CalculationResultMap ret = new CalculationResultMap();
 		for (Integer ptId : cohort) {

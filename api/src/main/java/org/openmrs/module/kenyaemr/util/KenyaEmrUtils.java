@@ -11,20 +11,19 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.kenyaemr.util;
 
 import org.apache.commons.lang3.StringUtils;
 import org.openmrs.*;
 import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyaemr.MetadataConstants;
+import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.util.OpenmrsUtil;
 
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.Date;
 
 /**
  * Miscellaneous utility methods
@@ -152,17 +151,16 @@ public class KenyaEmrUtils {
 	 */
 	public static Integer whoStage(Concept c) {
 		if (c != null) {
-			String uuid = c.getUuid();
-			if (uuid.equals(MetadataConstants.WHO_STAGE_1_ADULT_CONCEPT_UUID) || uuid.equals(MetadataConstants.WHO_STAGE_1_PEDS_CONCEPT_UUID)) {
+			if (c.equals(Dictionary.getConcept(Dictionary.WHO_STAGE_1_ADULT)) || c.equals(Dictionary.getConcept(Dictionary.WHO_STAGE_1_PEDS))) {
 				return 1;
 			}
-			if (uuid.equals(MetadataConstants.WHO_STAGE_2_ADULT_CONCEPT_UUID) || uuid.equals(MetadataConstants.WHO_STAGE_2_PEDS_CONCEPT_UUID)) {
+			if (c.equals(Dictionary.getConcept(Dictionary.WHO_STAGE_2_ADULT)) || c.equals(Dictionary.getConcept(Dictionary.WHO_STAGE_2_PEDS))) {
 				return 2;
 			}
-			if (uuid.equals(MetadataConstants.WHO_STAGE_3_ADULT_CONCEPT_UUID) || uuid.equals(MetadataConstants.WHO_STAGE_3_PEDS_CONCEPT_UUID)) {
+			if (c.equals(Dictionary.getConcept(Dictionary.WHO_STAGE_3_ADULT)) || c.equals(Dictionary.getConcept(Dictionary.WHO_STAGE_3_PEDS))) {
 				return 3;
 			}
-			if (uuid.equals(MetadataConstants.WHO_STAGE_4_ADULT_CONCEPT_UUID) || uuid.equals(MetadataConstants.WHO_STAGE_4_PEDS_CONCEPT_UUID)) {
+			if (c.equals(Dictionary.getConcept(Dictionary.WHO_STAGE_4_ADULT)) || c.equals(Dictionary.getConcept(Dictionary.WHO_STAGE_4_PEDS))) {
 				return 4;
 			}
 		}
@@ -170,7 +168,7 @@ public class KenyaEmrUtils {
 	}
 
 	/**
-	 * Parses a CSV list of concept ids or UUIDs
+	 * Parses a CSV list of concept ids, UUIDs or mappings
 	 * @param value the string
 	 * @return the concepts
 	 */
@@ -185,7 +183,7 @@ public class KenyaEmrUtils {
 					concepts.add(Context.getConceptService().getConcept(Integer.valueOf(token)));
 				}
 				else {
-					concepts.add(Context.getConceptService().getConceptByUuid(token));
+					concepts.add(Dictionary.getConcept(token));
 				}
 			}
 		}

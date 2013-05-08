@@ -11,6 +11,7 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.kenyaemr.test;
 
 import org.codehaus.jackson.map.ObjectMapper;
@@ -27,6 +28,7 @@ import org.openmrs.PatientIdentifier;
 import org.openmrs.PatientProgram;
 import org.openmrs.Program;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.regimen.RegimenOrder;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.DataSetRow;
@@ -65,21 +67,6 @@ public class TestUtils {
 	 */
 	public static Date date(int year, int month, int day, int hour, int minute, int second) {
 		return new GregorianCalendar(year, month - 1, day, hour, minute, second).getTime();
-	}
-
-	/**
-	 * Gets a concept but throws exception if it doesn't exist
-	 * @param uuid the concept uuid
-	 * @return the concept
-	 * @throws IllegalArgumentException if concept doesn't exist
-	 */
-	public static Concept getConcept(String uuid) {
-		Concept concept = Context.getConceptService().getConceptByUuid(uuid);
-		if (concept == null) {
-			throw new IllegalArgumentException("No such concept in test data: " + uuid);
-		}
-
-		return concept;
 	}
 
 	/**

@@ -16,7 +16,7 @@ package org.openmrs.module.kenyaemr.calculation.tb;
 
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
-import org.openmrs.module.kenyaemr.MetadataConstants;
+import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 
 import java.util.Collection;
@@ -39,6 +39,6 @@ public class TbTreatmentNumberCalculation extends BaseEmrCalculation {
 
     @Override
     public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> arg1, PatientCalculationContext context) {
-		return lastObs(getConcept(MetadataConstants.TUBERCULOSIS_TREATMENT_NUMBER_CONCEPT_UUID), cohort, context);
+		return lastObs(getConcept(Dictionary.TUBERCULOSIS_TREATMENT_NUMBER), cohort, context);
     }
 }

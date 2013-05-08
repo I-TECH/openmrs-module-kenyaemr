@@ -1,4 +1,4 @@
-/*
+/**
  * The contents of this file are subject to the OpenMRS Public License
  * Version 1.0 (the "License"); you may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
@@ -11,6 +11,7 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.kenyaemr.calculation.cd4;
 
 import java.util.Collection;
@@ -21,6 +22,7 @@ import org.openmrs.Program;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
+import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.KenyaEmrConstants;
 import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.kenyaemr.calculation.BaseAlertCalculation;
@@ -63,8 +65,8 @@ public class DecliningCD4Calculation extends BaseAlertCalculation {
 		Set<Integer> inHivProgram = CalculationUtils.patientsThatPass(lastProgramEnrollment(hivProgram, alive, context));
 
 		// Get the two CD4 obss for comparison
-		CalculationResultMap lastCD4Obss = lastObs(getConcept(MetadataConstants.CD4_CONCEPT_UUID), inHivProgram, context);
-		CalculationResultMap oldCD4Obss = lastObsAtLeastDaysAgo(getConcept(MetadataConstants.CD4_CONCEPT_UUID), KenyaEmrConstants.DECLINING_CD4_COUNT_ACROSS_DAYS, inHivProgram, context);
+		CalculationResultMap lastCD4Obss = lastObs(getConcept(Dictionary.CD4_COUNT), inHivProgram, context);
+		CalculationResultMap oldCD4Obss = lastObsAtLeastDaysAgo(getConcept(Dictionary.CD4_COUNT), KenyaEmrConstants.DECLINING_CD4_COUNT_ACROSS_DAYS, inHivProgram, context);
 
 		CalculationResultMap ret = new CalculationResultMap();
 		for (Integer ptId : cohort) {

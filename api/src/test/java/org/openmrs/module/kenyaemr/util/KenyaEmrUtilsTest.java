@@ -19,12 +19,15 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.*;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.kenyaemr.test.TestUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.util.OpenmrsUtil;
 
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 public class KenyaEmrUtilsTest extends BaseModuleContextSensitiveTest {
 
@@ -142,6 +145,13 @@ public class KenyaEmrUtilsTest extends BaseModuleContextSensitiveTest {
 		Assert.assertFalse(KenyaEmrUtils.visitWillOverlap(visit2));
 	}
 
+	@Test
+	public void whoStage_shouldConvertConceptToInteger() {
+		Assert.assertNull(KenyaEmrUtils.whoStage(Dictionary.getConcept(Dictionary.CD4_COUNT)));
+		Assert.assertEquals(new Integer(2), KenyaEmrUtils.whoStage(Dictionary.getConcept(Dictionary.WHO_STAGE_2_ADULT)));
+		Assert.assertEquals(new Integer(3), KenyaEmrUtils.whoStage(Dictionary.getConcept(Dictionary.WHO_STAGE_3_PEDS)));
+	}
+
 	/**
 	 * @see KenyaEmrUtils#parseConceptList(String)
 	 */
@@ -154,16 +164,16 @@ public class KenyaEmrUtilsTest extends BaseModuleContextSensitiveTest {
 		// No spaces
 		concepts = KenyaEmrUtils.parseConceptList("5497,730AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5356");
 		Assert.assertEquals(3, concepts.size());
-		Assert.assertEquals(TestUtils.getConcept("5497AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), concepts.get(0));
-		Assert.assertEquals(TestUtils.getConcept("730AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), concepts.get(1));
-		Assert.assertEquals(TestUtils.getConcept("5356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), concepts.get(2));
+		Assert.assertEquals(Dictionary.getConcept("5497AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), concepts.get(0));
+		Assert.assertEquals(Dictionary.getConcept("730AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), concepts.get(1));
+		Assert.assertEquals(Dictionary.getConcept("5356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), concepts.get(2));
 
 		// Some spaces
 		concepts = KenyaEmrUtils.parseConceptList(" 5497,  730AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\t , 5356   \t");
 		Assert.assertEquals(3, concepts.size());
-		Assert.assertEquals(TestUtils.getConcept("5497AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), concepts.get(0));
-		Assert.assertEquals(TestUtils.getConcept("730AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), concepts.get(1));
-		Assert.assertEquals(TestUtils.getConcept("5356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), concepts.get(2));
+		Assert.assertEquals(Dictionary.getConcept("5497AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), concepts.get(0));
+		Assert.assertEquals(Dictionary.getConcept("730AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), concepts.get(1));
+		Assert.assertEquals(Dictionary.getConcept("5356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), concepts.get(2));
 	}
 
 	@Test
@@ -171,19 +181,19 @@ public class KenyaEmrUtilsTest extends BaseModuleContextSensitiveTest {
 		Encounter e = new Encounter();
 
 		// Test empty encounter
-		Assert.assertNull(KenyaEmrUtils.firstObsInEncounter(e, TestUtils.getConcept(MetadataConstants.CD4_CONCEPT_UUID)));
+		Assert.assertNull(KenyaEmrUtils.firstObsInEncounter(e, Dictionary.getConcept(MetadataConstants.CD4_CONCEPT_UUID)));
 
 		// Add obs to encounter
 		Obs obs0 = new Obs();
-		obs0.setConcept(TestUtils.getConcept(MetadataConstants.CD4_PERCENT_CONCEPT_UUID));
+		obs0.setConcept(Dictionary.getConcept(MetadataConstants.CD4_PERCENT_CONCEPT_UUID));
 		obs0.setValueNumeric(50.0);
 		e.addObs(obs0);
 		Obs obs1 = new Obs();
-		obs1.setConcept(TestUtils.getConcept(MetadataConstants.CD4_CONCEPT_UUID));
+		obs1.setConcept(Dictionary.getConcept(MetadataConstants.CD4_CONCEPT_UUID));
 		obs1.setValueNumeric(123.0);
 		e.addObs(obs1);
 
-		Assert.assertEquals(new Double(123.0), KenyaEmrUtils.firstObsInEncounter(e, TestUtils.getConcept(MetadataConstants.CD4_CONCEPT_UUID)).getValueNumeric());
+		Assert.assertEquals(new Double(123.0), KenyaEmrUtils.firstObsInEncounter(e, Dictionary.getConcept(MetadataConstants.CD4_CONCEPT_UUID)).getValueNumeric());
 	}
 
 	@Test
@@ -194,21 +204,21 @@ public class KenyaEmrUtilsTest extends BaseModuleContextSensitiveTest {
 		PatientProgram enrollment = TestUtils.enrollInProgram(patient, tbProgram, TestUtils.date(2012, 1, 1), TestUtils.date(2012, 4, 1));
 
 		// Test with no saved obs
-		Assert.assertNull(KenyaEmrUtils.firstObsInProgram(enrollment, TestUtils.getConcept(MetadataConstants.CD4_CONCEPT_UUID)));
+		Assert.assertNull(KenyaEmrUtils.firstObsInProgram(enrollment, Dictionary.getConcept(MetadataConstants.CD4_CONCEPT_UUID)));
 
 		// Before enrollment
-		Obs obs0 = TestUtils.saveObs(patient, TestUtils.getConcept(MetadataConstants.CD4_CONCEPT_UUID), 123.0, TestUtils.date(2011, 12, 1));
+		Obs obs0 = TestUtils.saveObs(patient, Dictionary.getConcept(MetadataConstants.CD4_CONCEPT_UUID), 123.0, TestUtils.date(2011, 12, 1));
 		// Wrong concept
-		Obs obs1 = TestUtils.saveObs(patient, TestUtils.getConcept(MetadataConstants.CD4_PERCENT_CONCEPT_UUID), 50.0, TestUtils.date(2012, 1, 15));
+		Obs obs1 = TestUtils.saveObs(patient, Dictionary.getConcept(MetadataConstants.CD4_PERCENT_CONCEPT_UUID), 50.0, TestUtils.date(2012, 1, 15));
 		// During enrollment
-		Obs obs2 = TestUtils.saveObs(patient, TestUtils.getConcept(MetadataConstants.CD4_CONCEPT_UUID), 234.0, TestUtils.date(2012, 2, 1));
-		Obs obs3 = TestUtils.saveObs(patient, TestUtils.getConcept(MetadataConstants.CD4_CONCEPT_UUID), 345.0, TestUtils.date(2012, 3, 1));
+		Obs obs2 = TestUtils.saveObs(patient, Dictionary.getConcept(MetadataConstants.CD4_CONCEPT_UUID), 234.0, TestUtils.date(2012, 2, 1));
+		Obs obs3 = TestUtils.saveObs(patient, Dictionary.getConcept(MetadataConstants.CD4_CONCEPT_UUID), 345.0, TestUtils.date(2012, 3, 1));
 
-		Assert.assertEquals(obs2, KenyaEmrUtils.firstObsInProgram(enrollment, TestUtils.getConcept(MetadataConstants.CD4_CONCEPT_UUID)));
+		Assert.assertEquals(obs2, KenyaEmrUtils.firstObsInProgram(enrollment, Dictionary.getConcept(MetadataConstants.CD4_CONCEPT_UUID)));
 
 		// Test again with no enrollment end date
 		enrollment = TestUtils.enrollInProgram(patient, tbProgram, TestUtils.date(2012, 1, 1));
-		Assert.assertEquals(obs2, KenyaEmrUtils.firstObsInProgram(enrollment, TestUtils.getConcept(MetadataConstants.CD4_CONCEPT_UUID)));
+		Assert.assertEquals(obs2, KenyaEmrUtils.firstObsInProgram(enrollment, Dictionary.getConcept(MetadataConstants.CD4_CONCEPT_UUID)));
 	}
 
 	@Test
