@@ -235,6 +235,18 @@ public class KenyaEmrUtilsTest extends BaseModuleContextSensitiveTest {
 		// Test again with no enrollment end date
 		enrollment = TestUtils.enrollInProgram(patient, tbProgram, TestUtils.date(2012, 1, 1));
 		Assert.assertEquals(enc3, KenyaEmrUtils.lastEncounterInProgram(enrollment, tbScreenEncType));
+	}
 
+	@Test
+	public void checkCielVersion_shouldReturnFalseIfVersionIsNotParseable() {
+		Assert.assertFalse(KenyaEmrUtils.checkCielVersions("20130101", null));
+		Assert.assertFalse(KenyaEmrUtils.checkCielVersions("20130101", "x"));
+	}
+
+	@Test
+	public void checkCielVersion_shouldReturnTrueIfFoundVersionIsGreaterOrEqual() {
+		Assert.assertFalse(KenyaEmrUtils.checkCielVersions("20130101", "20121201"));
+		Assert.assertTrue(KenyaEmrUtils.checkCielVersions("20130101", "20130101"));
+		Assert.assertTrue(KenyaEmrUtils.checkCielVersions("20130101", "20130102"));
 	}
 }

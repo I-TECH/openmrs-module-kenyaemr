@@ -24,8 +24,13 @@ import org.openmrs.module.Module;
 import org.openmrs.module.ModuleActivator;
 import org.openmrs.module.ModuleFactory;
 import org.openmrs.module.kenyaemr.datatype.LocationDatatype;
+import org.openmrs.module.kenyaemr.util.KenyaEmrUtils;
 
 import java.io.InputStream;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * This class contains the logic that is run every time this module is either started or stopped.
@@ -123,7 +128,7 @@ public class KenyaEmrActivator implements ModuleActivator {
 	protected void checkRequirements() {
 		// Check concept dictionary version
    		String conceptsVersion = Context.getAdministrationService().getGlobalProperty(KenyaEmrConstants.GP_CONCEPTS_VERSION);
-		if (conceptsVersion == null || !conceptsVersion.equals(KenyaEmrConstants.REQUIRED_CONCEPTS_VERSION)) {
+		if (conceptsVersion == null || !KenyaEmrUtils.checkCielVersions(KenyaEmrConstants.REQUIRED_CONCEPTS_VERSION, conceptsVersion)) {
 			throw new RuntimeException("Module requires concepts version: " + KenyaEmrConstants.REQUIRED_CONCEPTS_VERSION);
 		}
 		else {

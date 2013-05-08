@@ -20,6 +20,9 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.util.OpenmrsUtil;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.Date;
 
@@ -234,6 +237,24 @@ public class KenyaEmrUtils {
 		}
 		else {
 			return encounters.get(encounters.size() - 1);
+		}
+	}
+
+	/**
+	 * Checks found CIEL version against the required version.
+	 * @param required the required version
+	 * @param found the found version
+	 * @return true if found version is equal or greater to the required version
+	 */
+	public static boolean checkCielVersions(String required, String found) {
+		DateFormat format = new SimpleDateFormat("yyyyMMdd");
+		try {
+			Date requiredDate = format.parse(required);
+			Date foundDate = format.parse(found);
+
+			return foundDate.equals(requiredDate) || foundDate.after(requiredDate);
+		} catch (Exception e) {
+			return false;
 		}
 	}
 }
