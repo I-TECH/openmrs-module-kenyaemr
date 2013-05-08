@@ -30,13 +30,13 @@ public class ProgramHistoryFragmentController {
 	public void controller(FragmentModel model,
 						   @FragmentParam("patient") Patient patient,
 						   @FragmentParam("program") Program program,
-						   @FragmentParam("complete") boolean complete,
+						   @FragmentParam("showClinicalData") boolean showClinicalData,
 						   @FragmentParam("enrollmentFormUuid") String enrollmentFormUuid,
 						   @FragmentParam("discontinuationFormUuid") String discontinuationFormUuid) {
 
 		model.addAttribute("patient", patient);
 		model.addAttribute("program", program);
-		model.addAttribute("complete", complete);
+		model.addAttribute("showClinicalData", showClinicalData);
 		model.addAttribute("enrollmentForm", Context.getFormService().getFormByUuid(enrollmentFormUuid));
 		model.addAttribute("discontinuationForm", Context.getFormService().getFormByUuid(discontinuationFormUuid));
 

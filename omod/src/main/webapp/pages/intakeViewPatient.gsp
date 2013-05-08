@@ -12,7 +12,7 @@
 					program: hivProgram,
 					enrollmentFormUuid: MetadataConstants.HIV_PROGRAM_ENROLLMENT_FORM_UUID,
 					discontinuationFormUuid: MetadataConstants.HIV_PROGRAM_DISCONTINUATION_FORM_UUID,
-					complete: false
+					showClinicalData: true
 			]) }
 
 			${ ui.includeFragment("kenyaemr", "programHistory", [
@@ -20,7 +20,7 @@
 					program: tbProgram,
 					enrollmentFormUuid: MetadataConstants.TB_ENROLLMENT_FORM_UUID,
 					discontinuationFormUuid: MetadataConstants.TB_COMPLETION_FORM_UUID,
-					complete: false
+					showClinicalData: true
 			]) }
 		</td>
 		<td width="60%" valign="top" style="padding-left: 5px">

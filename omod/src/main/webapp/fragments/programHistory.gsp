@@ -23,10 +23,10 @@
 <% enrollments.reverse().each { enrollment -> %>
 	<% if (enrollment.dateCompleted) { %>
 	<div class="ke-stack-item">
-		${ ui.includeFragment("kenyaemr", "patientProgramDiscontinuation", [ patientProgram: enrollment, encounterType: discontinuationForm.encounterType, complete: config.complete ]) }
+		${ ui.includeFragment("kenyaemr", "patientProgramDiscontinuation", [ patientProgram: enrollment, encounterType: discontinuationForm.encounterType, showClinicalData: config.showClinicalData ]) }
 	</div>
 	<% } %>
 <div class="ke-stack-item">
-	${ ui.includeFragment("kenyaemr", "patientProgramEnrollment", [ patientProgram: enrollment, encounterType: enrollmentForm.encounterType, complete: config.complete ]) }
+	${ ui.includeFragment("kenyaemr", "patientProgramEnrollment", [ patientProgram: enrollment, encounterType: enrollmentForm.encounterType, showClinicalData: config.showClinicalData ]) }
 </div>
 <% } %>
