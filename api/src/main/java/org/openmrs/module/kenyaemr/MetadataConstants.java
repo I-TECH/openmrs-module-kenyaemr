@@ -73,7 +73,18 @@ public class MetadataConstants {
 	public static final String NEXT_OF_KIN_CONTACT_UUID = "342a1d39-c541-4b29-8818-930916f4c2dc";
 	public static final String NEXT_OF_KIN_ADDRESS_UUID = "7cf22bec-d90a-46ad-9f48-035952261294";
 
-	// Concepts (A-Z)
+	// Programs
+	public static final String HIV_PROGRAM_UUID = "dfdc6d40-2f2f-463d-ba90-cc97350441a8";
+	public static final String TB_PROGRAM_UUID = "9f144a34-3a4a-44a9-8486-6b7af6cc64f6";
+
+	// Other
+	public static final Locale LOCALE = Locale.ENGLISH;
+
+	// Concepts should now be listed in Dictionary instead..
+	//
+	// In the future we should have mappings on concepts so that they can referenced using those. For now
+	// you should access using Dictionary.getConcept(Dictionary.YES); etc
+	//
 	public static final String ANTENATAL_CASE_NUMBER_CONCEPT_UUID = "161655AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 	public static final String ANTIRETROVIRAL_DRUGS_CONCEPT_UUID = "1085AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 	public static final String ANTIRETROVIRAL_TREATMENT_START_DATE_CONCEPT_UUID = "159599AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
@@ -127,11 +138,4 @@ public class MetadataConstants {
 	public static final String WHO_STAGE_4_ADULT_CONCEPT_UUID = "1207AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 	public static final String WHO_STAGE_4_PEDS_CONCEPT_UUID = "1223AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 	public static final String YES_CONCEPT_UUID = "1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
-
-	// Programs
-	public static final String HIV_PROGRAM_UUID = "dfdc6d40-2f2f-463d-ba90-cc97350441a8";
-	public static final String TB_PROGRAM_UUID = "9f144a34-3a4a-44a9-8486-6b7af6cc64f6";
-
-	// Other
-	public static final Locale LOCALE = Locale.ENGLISH;
 }
