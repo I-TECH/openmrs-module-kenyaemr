@@ -7,18 +7,20 @@
 		<td width="40%" valign="top">
 			${ ui.includeFragment("kenyaemr", "patientSummary", [ patient: patient ]) }
 
-			${ ui.includeFragment("kenyaemr", "programSummary", [
-				patient: patient,
-				program: hivProgram,
-				registrationFormUuid: MetadataConstants.HIV_PROGRAM_ENROLLMENT_FORM_UUID,
-				exitFormUuid: MetadataConstants.HIV_PROGRAM_DISCONTINUATION_FORM_UUID
+			${ ui.includeFragment("kenyaemr", "programHistory", [
+					patient: patient,
+					program: hivProgram,
+					enrollmentFormUuid: MetadataConstants.HIV_PROGRAM_ENROLLMENT_FORM_UUID,
+					discontinuationFormUuid: MetadataConstants.HIV_PROGRAM_DISCONTINUATION_FORM_UUID,
+					showClinicalData: true
 			]) }
 
-			${ ui.includeFragment("kenyaemr", "programSummary", [
-				patient: patient,
-				program: tbProgram,
-				registrationFormUuid: MetadataConstants.TB_ENROLLMENT_FORM_UUID,
-				exitFormUuid: MetadataConstants.TB_COMPLETION_FORM_UUID
+			${ ui.includeFragment("kenyaemr", "programHistory", [
+					patient: patient,
+					program: tbProgram,
+					enrollmentFormUuid: MetadataConstants.TB_ENROLLMENT_FORM_UUID,
+					discontinuationFormUuid: MetadataConstants.TB_COMPLETION_FORM_UUID,
+					showClinicalData: true
 			]) }
 		</td>
 		<td width="60%" valign="top" style="padding-left: 5px">

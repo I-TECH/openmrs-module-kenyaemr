@@ -450,17 +450,7 @@
 			<tr>
 				<th colspan="2">Dispensed</th>
 				<td>(r)</td>
-				<td colspan="2">[TODO need concept]</td>
-			</tr>
-			<tr>
-				<th colspan="3">INH Dispensed</th>
-				<td>(s)</td>
-				<td colspan="2">[TODO need concept]</td>
-			</tr>
-			<tr>
-				<th colspan="3">Other Medications Dispensed</th>
-				<td>(s)</td>
-				<td colspan="2">
+				<td colspan="2" rowspan="3">
 					<repeat>
 						<template>
 							<obsgroup groupingConceptId="1442AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
@@ -477,6 +467,14 @@
 						<render n="5" concept="Drug"/>
 					</repeat>
 				</td>
+			</tr>
+			<tr>
+				<th colspan="3">INH Dispensed</th>
+				<td>(s)</td>
+			</tr>
+			<tr>
+				<th colspan="3">Other Medications Dispensed</th>
+				<td>(t)</td>
 			</tr>
 			<tr>
 				<th rowspan="3">ARV Drugs</th>

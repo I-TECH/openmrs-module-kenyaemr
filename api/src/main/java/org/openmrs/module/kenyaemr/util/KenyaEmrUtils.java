@@ -11,17 +11,19 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.kenyaemr.util;
 
 import org.apache.commons.lang3.StringUtils;
 import org.openmrs.*;
 import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyaemr.MetadataConstants;
+import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.util.OpenmrsUtil;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.Date;
 
 /**
  * Miscellaneous utility methods
@@ -149,17 +151,16 @@ public class KenyaEmrUtils {
 	 */
 	public static Integer whoStage(Concept c) {
 		if (c != null) {
-			String uuid = c.getUuid();
-			if (uuid.equals(MetadataConstants.WHO_STAGE_1_ADULT_CONCEPT_UUID) || uuid.equals(MetadataConstants.WHO_STAGE_1_PEDS_CONCEPT_UUID)) {
+			if (c.equals(Dictionary.getConcept(Dictionary.WHO_STAGE_1_ADULT)) || c.equals(Dictionary.getConcept(Dictionary.WHO_STAGE_1_PEDS))) {
 				return 1;
 			}
-			if (uuid.equals(MetadataConstants.WHO_STAGE_2_ADULT_CONCEPT_UUID) || uuid.equals(MetadataConstants.WHO_STAGE_2_PEDS_CONCEPT_UUID)) {
+			if (c.equals(Dictionary.getConcept(Dictionary.WHO_STAGE_2_ADULT)) || c.equals(Dictionary.getConcept(Dictionary.WHO_STAGE_2_PEDS))) {
 				return 2;
 			}
-			if (uuid.equals(MetadataConstants.WHO_STAGE_3_ADULT_CONCEPT_UUID) || uuid.equals(MetadataConstants.WHO_STAGE_3_PEDS_CONCEPT_UUID)) {
+			if (c.equals(Dictionary.getConcept(Dictionary.WHO_STAGE_3_ADULT)) || c.equals(Dictionary.getConcept(Dictionary.WHO_STAGE_3_PEDS))) {
 				return 3;
 			}
-			if (uuid.equals(MetadataConstants.WHO_STAGE_4_ADULT_CONCEPT_UUID) || uuid.equals(MetadataConstants.WHO_STAGE_4_PEDS_CONCEPT_UUID)) {
+			if (c.equals(Dictionary.getConcept(Dictionary.WHO_STAGE_4_ADULT)) || c.equals(Dictionary.getConcept(Dictionary.WHO_STAGE_4_PEDS))) {
 				return 4;
 			}
 		}
@@ -167,7 +168,7 @@ public class KenyaEmrUtils {
 	}
 
 	/**
-	 * Parses a CSV list of concept ids or UUIDs
+	 * Parses a CSV list of concept ids, UUIDs or mappings
 	 * @param value the string
 	 * @return the concepts
 	 */
@@ -182,10 +183,76 @@ public class KenyaEmrUtils {
 					concepts.add(Context.getConceptService().getConcept(Integer.valueOf(token)));
 				}
 				else {
-					concepts.add(Context.getConceptService().getConceptByUuid(token));
+					concepts.add(Dictionary.getConcept(token));
 				}
 			}
 		}
 		return concepts;
+	}
+
+	/**
+	 * Finds the first obs in an encounter with the given concept
+	 * @param encounter the encounter
+	 * @param concept the obs concept
+	 * @return the encounter
+	 */
+	public static Obs firstObsInEncounter(Encounter encounter, Concept concept) {
+		for (Obs obs : encounter.getAllObs()) {
+			if (obs.getConcept().equals(concept)) {
+				return obs;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Finds the first obs during a program enrollment with the given concept
+	 * @param enrollment the program enrollment
+	 * @param concept the obs concept
+	 * @return the obs
+	 */
+	public static Obs firstObsInProgram(PatientProgram enrollment, Concept concept) {
+		List<Obs> obss = Context.getObsService().getObservationsByPersonAndConcept(enrollment.getPatient(), concept);
+		Collections.reverse(obss); // Obs come desc by date
+		for (Obs obs : obss) {
+			if (obs.getObsDatetime().compareTo(enrollment.getDateEnrolled()) >= 0 && (enrollment.getDateCompleted() == null || obs.getObsDatetime().compareTo(enrollment.getDateCompleted()) < 0)) {
+				return obs;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Finds the last encounter during a program enrollment with the given encounter type
+	 * @param enrollment the program enrollment
+	 * @param type the encounter type
+	 * @return the encounter
+	 */
+	public static Encounter lastEncounterInProgram(PatientProgram enrollment, EncounterType type) {
+		List<Encounter> encounters = Context.getEncounterService().getEncounters(enrollment.getPatient(), null, enrollment.getDateEnrolled(), enrollment.getDateCompleted(), null, Collections.singleton(type), null, null, null, false);
+		if (encounters.size() == 0) {
+			return null;
+		}
+		else {
+			return encounters.get(encounters.size() - 1);
+		}
+	}
+
+	/**
+	 * Checks found CIEL version against the required version.
+	 * @param required the required version
+	 * @param found the found version
+	 * @return true if found version is equal or greater to the required version
+	 */
+	public static boolean checkCielVersions(String required, String found) {
+		DateFormat format = new SimpleDateFormat("yyyyMMdd");
+		try {
+			Date requiredDate = format.parse(required);
+			Date foundDate = format.parse(found);
+
+			return foundDate.equals(requiredDate) || foundDate.after(requiredDate);
+		} catch (Exception e) {
+			return false;
+		}
 	}
 }

@@ -22,6 +22,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
+import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
@@ -54,7 +55,7 @@ public class InitialArtStartDateCalculation extends BaseEmrCalculation {
 	                                     PatientCalculationContext context) {
 
 		// Get earliest dates from orders
-		Concept arvs = Context.getConceptService().getConceptByUuid(MetadataConstants.ANTIRETROVIRAL_DRUGS_CONCEPT_UUID);
+		Concept arvs = getConcept(Dictionary.ANTIRETROVIRAL_DRUGS);
 		CalculationResultMap earliestOrderDates = earliestStartDates(allDrugOrders(arvs, cohort, context), context);
 
 		// Return the earliest of the two

@@ -23,6 +23,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.ObsResult;
+import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.KenyaEmrConstants;
 import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.kenyaemr.calculation.BaseAlertCalculation;
@@ -68,7 +69,7 @@ public class NeedsCD4Calculation extends BaseAlertCalculation {
 
 		Set<Integer> alive = alivePatients(cohort, context);
 		Set<Integer> inHivProgram = CalculationUtils.patientsThatPass(lastProgramEnrollment(hivProgram, alive, context));
-		CalculationResultMap lastObs = lastObs(getConcept(MetadataConstants.CD4_CONCEPT_UUID), cohort, context);
+		CalculationResultMap lastObs = lastObs(getConcept(Dictionary.CD4_COUNT), cohort, context);
 
 		CalculationResultMap ret = new CalculationResultMap();
 		for (Integer ptId : cohort) {

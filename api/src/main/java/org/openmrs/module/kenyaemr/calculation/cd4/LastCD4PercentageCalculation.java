@@ -1,4 +1,4 @@
-/*
+/**
  * The contents of this file are subject to the OpenMRS Public License
  * Version 1.0 (the "License"); you may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
@@ -16,7 +16,7 @@ package org.openmrs.module.kenyaemr.calculation.cd4;
 
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
-import org.openmrs.module.kenyaemr.MetadataConstants;
+import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 
 import java.util.Collection;
@@ -43,6 +43,6 @@ public class LastCD4PercentageCalculation extends BaseEmrCalculation {
      */
     @Override
     public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
-		return lastObs(getConcept(MetadataConstants.CD4_PERCENT_CONCEPT_UUID), cohort, context);
+		return lastObs(getConcept(Dictionary.CD4_PERCENT), cohort, context);
     }
 }

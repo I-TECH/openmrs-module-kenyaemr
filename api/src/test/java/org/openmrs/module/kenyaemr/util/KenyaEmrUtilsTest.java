@@ -11,20 +11,23 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.kenyaemr.util;
 
-import com.sun.corba.se.impl.orb.ParserTable;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.*;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.kenyaemr.test.TestUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.util.OpenmrsUtil;
 
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 public class KenyaEmrUtilsTest extends BaseModuleContextSensitiveTest {
 
@@ -142,6 +145,13 @@ public class KenyaEmrUtilsTest extends BaseModuleContextSensitiveTest {
 		Assert.assertFalse(KenyaEmrUtils.visitWillOverlap(visit2));
 	}
 
+	@Test
+	public void whoStage_shouldConvertConceptToInteger() {
+		Assert.assertNull(KenyaEmrUtils.whoStage(Dictionary.getConcept(Dictionary.CD4_COUNT)));
+		Assert.assertEquals(new Integer(2), KenyaEmrUtils.whoStage(Dictionary.getConcept(Dictionary.WHO_STAGE_2_ADULT)));
+		Assert.assertEquals(new Integer(3), KenyaEmrUtils.whoStage(Dictionary.getConcept(Dictionary.WHO_STAGE_3_PEDS)));
+	}
+
 	/**
 	 * @see KenyaEmrUtils#parseConceptList(String)
 	 */
@@ -154,15 +164,99 @@ public class KenyaEmrUtilsTest extends BaseModuleContextSensitiveTest {
 		// No spaces
 		concepts = KenyaEmrUtils.parseConceptList("5497,730AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5356");
 		Assert.assertEquals(3, concepts.size());
-		Assert.assertEquals(TestUtils.getConcept("5497AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), concepts.get(0));
-		Assert.assertEquals(TestUtils.getConcept("730AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), concepts.get(1));
-		Assert.assertEquals(TestUtils.getConcept("5356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), concepts.get(2));
+		Assert.assertEquals(Dictionary.getConcept("5497AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), concepts.get(0));
+		Assert.assertEquals(Dictionary.getConcept("730AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), concepts.get(1));
+		Assert.assertEquals(Dictionary.getConcept("5356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), concepts.get(2));
 
 		// Some spaces
 		concepts = KenyaEmrUtils.parseConceptList(" 5497,  730AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\t , 5356   \t");
 		Assert.assertEquals(3, concepts.size());
-		Assert.assertEquals(TestUtils.getConcept("5497AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), concepts.get(0));
-		Assert.assertEquals(TestUtils.getConcept("730AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), concepts.get(1));
-		Assert.assertEquals(TestUtils.getConcept("5356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), concepts.get(2));
+		Assert.assertEquals(Dictionary.getConcept("5497AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), concepts.get(0));
+		Assert.assertEquals(Dictionary.getConcept("730AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), concepts.get(1));
+		Assert.assertEquals(Dictionary.getConcept("5356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), concepts.get(2));
+	}
+
+	@Test
+	public void firstObsInEncounter_shouldFindFirstObsWithConcept() {
+		Encounter e = new Encounter();
+
+		// Test empty encounter
+		Assert.assertNull(KenyaEmrUtils.firstObsInEncounter(e, Dictionary.getConcept(MetadataConstants.CD4_CONCEPT_UUID)));
+
+		// Add obs to encounter
+		Obs obs0 = new Obs();
+		obs0.setConcept(Dictionary.getConcept(MetadataConstants.CD4_PERCENT_CONCEPT_UUID));
+		obs0.setValueNumeric(50.0);
+		e.addObs(obs0);
+		Obs obs1 = new Obs();
+		obs1.setConcept(Dictionary.getConcept(MetadataConstants.CD4_CONCEPT_UUID));
+		obs1.setValueNumeric(123.0);
+		e.addObs(obs1);
+
+		Assert.assertEquals(new Double(123.0), KenyaEmrUtils.firstObsInEncounter(e, Dictionary.getConcept(MetadataConstants.CD4_CONCEPT_UUID)).getValueNumeric());
+	}
+
+	@Test
+	public void firstObsInProgram_shouldFindFirstObsWithConcept() {
+		Patient patient = Context.getPatientService().getPatient(6);
+		Program tbProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.TB_PROGRAM_UUID);
+
+		PatientProgram enrollment = TestUtils.enrollInProgram(patient, tbProgram, TestUtils.date(2012, 1, 1), TestUtils.date(2012, 4, 1));
+
+		// Test with no saved obs
+		Assert.assertNull(KenyaEmrUtils.firstObsInProgram(enrollment, Dictionary.getConcept(MetadataConstants.CD4_CONCEPT_UUID)));
+
+		// Before enrollment
+		Obs obs0 = TestUtils.saveObs(patient, Dictionary.getConcept(MetadataConstants.CD4_CONCEPT_UUID), 123.0, TestUtils.date(2011, 12, 1));
+		// Wrong concept
+		Obs obs1 = TestUtils.saveObs(patient, Dictionary.getConcept(MetadataConstants.CD4_PERCENT_CONCEPT_UUID), 50.0, TestUtils.date(2012, 1, 15));
+		// During enrollment
+		Obs obs2 = TestUtils.saveObs(patient, Dictionary.getConcept(MetadataConstants.CD4_CONCEPT_UUID), 234.0, TestUtils.date(2012, 2, 1));
+		Obs obs3 = TestUtils.saveObs(patient, Dictionary.getConcept(MetadataConstants.CD4_CONCEPT_UUID), 345.0, TestUtils.date(2012, 3, 1));
+
+		Assert.assertEquals(obs2, KenyaEmrUtils.firstObsInProgram(enrollment, Dictionary.getConcept(MetadataConstants.CD4_CONCEPT_UUID)));
+
+		// Test again with no enrollment end date
+		enrollment = TestUtils.enrollInProgram(patient, tbProgram, TestUtils.date(2012, 1, 1));
+		Assert.assertEquals(obs2, KenyaEmrUtils.firstObsInProgram(enrollment, Dictionary.getConcept(MetadataConstants.CD4_CONCEPT_UUID)));
+	}
+
+	@Test
+	public void lastEncounterInProgram_shouldFindLastEncounterWithType() {
+		Patient patient = Context.getPatientService().getPatient(6);
+		Program tbProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.TB_PROGRAM_UUID);
+		EncounterType tbScreenEncType = Context.getEncounterService().getEncounterTypeByUuid(MetadataConstants.TB_SCREENING_ENCOUNTER_TYPE_UUID);
+
+		PatientProgram enrollment = TestUtils.enrollInProgram(patient, tbProgram, TestUtils.date(2012, 1, 1), TestUtils.date(2012, 4, 1));
+
+		// Test with no saved encounters
+		Assert.assertNull(KenyaEmrUtils.lastEncounterInProgram(enrollment, tbScreenEncType));
+
+		// Before enrollment
+		Encounter enc0 = TestUtils.saveEncounter(patient, tbScreenEncType, TestUtils.date(2011, 12, 1));
+		// During enrollment
+		Encounter enc1 = TestUtils.saveEncounter(patient, tbScreenEncType, TestUtils.date(2012, 2, 1));
+		Encounter enc2 = TestUtils.saveEncounter(patient, tbScreenEncType, TestUtils.date(2012, 3, 1));
+		// After enrollment
+		Encounter enc3 = TestUtils.saveEncounter(patient, tbScreenEncType, TestUtils.date(2012, 5, 1));
+
+		Assert.assertEquals(enc2, KenyaEmrUtils.lastEncounterInProgram(enrollment, tbScreenEncType));
+
+		// Test again with no enrollment end date
+		enrollment = TestUtils.enrollInProgram(patient, tbProgram, TestUtils.date(2012, 1, 1));
+		Assert.assertEquals(enc3, KenyaEmrUtils.lastEncounterInProgram(enrollment, tbScreenEncType));
+	}
+
+	@Test
+	public void checkCielVersion_shouldReturnFalseIfVersionIsNotParseable() {
+		Assert.assertFalse(KenyaEmrUtils.checkCielVersions("20130101", null));
+		Assert.assertFalse(KenyaEmrUtils.checkCielVersions("20130101", "x"));
+	}
+
+	@Test
+	public void checkCielVersion_shouldReturnTrueIfFoundVersionIsGreaterOrEqual() {
+		Assert.assertFalse(KenyaEmrUtils.checkCielVersions("20130101", "20121201"));
+		Assert.assertTrue(KenyaEmrUtils.checkCielVersions("20130101", "20130101"));
+		Assert.assertTrue(KenyaEmrUtils.checkCielVersions("20130101", "20130102"));
 	}
 }

@@ -19,6 +19,7 @@ import org.openmrs.Obs;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
+import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyaemr.calculation.BooleanResult;
@@ -53,8 +54,8 @@ public class PregnantAtArtStartCalculation extends BaseEmrCalculation {
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
 
-		Concept yes = getConcept(MetadataConstants.YES_CONCEPT_UUID);
-		Concept pregnancyStatus = getConcept(MetadataConstants.PREGNANCY_STATUS_CONCEPT_UUID);
+		Concept yes = getConcept(Dictionary.YES);
+		Concept pregnancyStatus = getConcept(Dictionary.PREGNANCY_STATUS);
 		CalculationResultMap artStartDates = calculate(new InitialArtStartDateCalculation(), cohort, context);
 
 		// Return the earliest of the two

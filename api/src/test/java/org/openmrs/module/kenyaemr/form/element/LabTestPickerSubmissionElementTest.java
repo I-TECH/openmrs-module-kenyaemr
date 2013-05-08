@@ -22,7 +22,7 @@ import org.openmrs.Concept;
 import org.openmrs.Obs;
 import org.openmrs.module.htmlformentry.FormEntryContext;
 import org.openmrs.module.htmlformentry.FormSubmissionError;
-import org.openmrs.module.kenyaemr.test.TestUtils;
+import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 import java.util.*;
@@ -60,11 +60,11 @@ public class LabTestPickerSubmissionElementTest extends BaseModuleContextSensiti
 
 		element = new LabTestPickerSubmissionElement(context, parameters);
 
-		freeText = TestUtils.getConcept("160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"); // Text
-		cd4 = TestUtils.getConcept("5497AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"); // Numeric
-		fpMethod = TestUtils.getConcept("374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"); // Coded
-		fpNatural = TestUtils.getConcept("5277AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"); // Answer #1
-		otherNonCoded = TestUtils.getConcept("5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"); // Answer #2
+		freeText = Dictionary.getConcept("160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"); // Text
+		cd4 = Dictionary.getConcept("5497AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"); // Numeric
+		fpMethod = Dictionary.getConcept("374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"); // Coded
+		fpNatural = Dictionary.getConcept("5277AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"); // Answer #1
+		otherNonCoded = Dictionary.getConcept("5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"); // Answer #2
 	}
 
 	@Test

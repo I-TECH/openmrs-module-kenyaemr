@@ -20,15 +20,13 @@ import java.util.Map;
 
 import org.openmrs.Concept;
 import org.openmrs.api.PatientSetService.TimeModifier;
-import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
-import org.openmrs.module.kenyaemr.MetadataConstants;
+import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.DateObsCohortDefinition;
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.RangeComparator;
-
 
 /**
  *
@@ -55,7 +53,7 @@ public class ScheduledVisitOnDayCalculation extends BaseEmrCalculation {
 		Date startOfDay = DateUtil.getStartOfDay(date);
 		Date endOfDay = DateUtil.getEndOfDay(date);
 		
-		Concept returnVisitDate = getConcept(MetadataConstants.RETURN_VISIT_DATE_CONCEPT_UUID);
+		Concept returnVisitDate = getConcept(Dictionary.RETURN_VISIT_DATE);
 		DateObsCohortDefinition cd = new DateObsCohortDefinition();
 		cd.setTimeModifier(TimeModifier.ANY);
 		cd.setQuestion(returnVisitDate);
@@ -72,5 +70,4 @@ public class ScheduledVisitOnDayCalculation extends BaseEmrCalculation {
 		}
 		return ret;
 	}
-	
 }

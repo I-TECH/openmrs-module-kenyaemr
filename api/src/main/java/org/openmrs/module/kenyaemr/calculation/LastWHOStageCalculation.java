@@ -16,7 +16,7 @@ package org.openmrs.module.kenyaemr.calculation;
 
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
-import org.openmrs.module.kenyaemr.MetadataConstants;
+import org.openmrs.module.kenyaemr.Dictionary;
 
 import java.util.Collection;
 import java.util.Map;
@@ -42,6 +42,6 @@ public class LastWHOStageCalculation extends BaseEmrCalculation {
      */
     @Override
     public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
-		return lastObs(getConcept(MetadataConstants.CURRENT_WHO_STAGE_CONCEPT_UUID), cohort, context);
+		return lastObs(getConcept(Dictionary.CURRENT_WHO_STAGE), cohort, context);
     }
 }
