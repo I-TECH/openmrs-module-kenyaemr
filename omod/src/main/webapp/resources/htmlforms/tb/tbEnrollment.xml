@@ -1,16 +1,21 @@
-<!-- ~ The contents of this file are subject to the OpenMRS Public License 
-	~ Version 1.0 (the "License"); you may not use this file except in ~ compliance 
-	with the License. You may obtain a copy of the License at ~ http://license.openmrs.org 
-	~ ~ Software distributed under the License is distributed on an "AS IS" ~ 
-	basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the ~ 
-	License for the specific language governing rights and limitations ~ under 
-	the License. ~ ~ Copyright (C) OpenMRS, LLC. All Rights Reserved. -->
-<htmlform formName="TB Enrollment" formVersion="0.2"
-	formEncounterType="9d8498a4-372d-4dc4-a809-513a2434621e">
+<!--
+  ~ The contents of this file are subject to the OpenMRS Public License
+  ~ Version 1.0 (the "License"); you may not use this file except in
+  ~ compliance with the License. You may obtain a copy of the License at
+  ~ http://license.openmrs.org
+  ~
+  ~ Software distributed under the License is distributed on an "AS IS"
+  ~ basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+  ~ License for the specific language governing rights and limitations
+  ~ under the License.
+  ~
+  ~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+  -->
+<htmlform>
 
 	<style type="text/css">
 		table.baseline-aligned td {
-		vertical-align: baseline;
+			vertical-align: baseline;
 		}
 		.tblFormat {
 			background-color: #FFFF00;
@@ -19,100 +24,101 @@
 
 	<script type="text/javascript">
 		$j(document).ready(function(){
-		var pbirthdate = new Date("<lookup expression="patient.birthdate" />").getTime();
-		var pweight = "<lookup expression="fn.latestObs(5089).valueNumeric" />"
-		setValue('weight.value', pweight);
-		var encounterdate;
-		var dstartoftreatment;
-		var dcured;
-		var dreferredby;
-		var dreferredto;
-		var transferindate;
-		var dfirstenrolled;
-		var dcollected;
-		var dropdownval;
-		var pulmonryOps;
-		var tdForPulmonaryTB = document.getElementById("idPulmonaryTb");
-		var tdForExtraPulmonaryTB =	document.getElementById("idExtraPulmonaryTb");
-		dropdownval = getValue('classification.value');
+			var pbirthdate = new Date("<lookup expression="patient.birthdate" />").getTime();
+			var pweight = "<lookup expression="fn.latestObs(5089).valueNumeric" />"
+			setValue('weight.value', pweight);
+			var encounterdate;
+			var dstartoftreatment;
+			var dcured;
+			var dreferredby;
+			var dreferredto;
+			var transferindate;
+			var dfirstenrolled;
+			var dcollected;
+			var dropdownval;
+			var pulmonryOps;
+			var tdForPulmonaryTB = document.getElementById("idPulmonaryTb");
+			var tdForExtraPulmonaryTB =	document.getElementById("idExtraPulmonaryTb");
+			dropdownval = getValue('classification.value');
 
-		if (dropdownval == 42) {
-		tdForPulmonaryTB.style.display = 'inline';
-		tdForExtraPulmonaryTB.style.display = 'none';
-		}
-		else if (dropdownval == 5042){
-		tdForExtraPulmonaryTB.style.display = 'inline';
-		tdForPulmonaryTB.style.display = 'none';
+			if (dropdownval == 42) {
+			tdForPulmonaryTB.style.display = 'inline';
+			tdForExtraPulmonaryTB.style.display = 'none';
+			}
+			else if (dropdownval == 5042){
+			tdForExtraPulmonaryTB.style.display = 'inline';
+			tdForPulmonaryTB.style.display = 'none';
 
-		}
-		else{
-		tdForExtraPulmonaryTB.style.display = 'none';
-		tdForPulmonaryTB.style.display = 'none';
+			}
+			else{
+			tdForExtraPulmonaryTB.style.display = 'none';
+			tdForPulmonaryTB.style.display = 'none';
 
-		}
+			}
 
-		getField('classification.value').change(function() {
-		dropdownval = getValue('classification.value');
-		pulmonryOps = getValue(pulmonaryOptions.value);
-		if (dropdownval == 42) {
-		tdForPulmonaryTB.style.display = 'inline';
-		tdForExtraPulmonaryTB.style.display = 'none';
+			getField('classification.value').change(function() {
+			dropdownval = getValue('classification.value');
+			pulmonryOps = getValue(pulmonaryOptions.value);
+			if (dropdownval == 42) {
+			tdForPulmonaryTB.style.display = 'inline';
+			tdForExtraPulmonaryTB.style.display = 'none';
 
-		}
-		else if(dropdownval == 5042) {
-		tdForExtraPulmonaryTB.style.display = 'inline';
-		tdForPulmonaryTB.style.display='none';
+			}
+			else if(dropdownval == 5042) {
+			tdForExtraPulmonaryTB.style.display = 'inline';
+			tdForPulmonaryTB.style.display='none';
 
-		}
-		else{
-		tdForExtraPulmonaryTB.style.display = 'none';
-		tdForPulmonaryTB.style.display = 'none';
-		initialsputum.style.display = 'none';
-		}
-		});
+			}
+			else{
+			tdForExtraPulmonaryTB.style.display = 'none';
+			tdForPulmonaryTB.style.display = 'none';
+			initialsputum.style.display = 'none';
+			}
+			});
 
-		getField('pulmonaryOptions.value').change(function() {
-		pulmonryOps = getValue('pulmonaryOptions.value');
-		if(pulmonryOps == 703) {
+			getField('pulmonaryOptions.value').change(function() {
+			pulmonryOps = getValue('pulmonaryOptions.value');
+			if(pulmonryOps == 703) {
 
-		}
+			}
 
-		});
+			});
 
-		beforeSubmit.push(function() {
-		encounterdate = new Date(getValue('encounterdate.value')).getTime();
-		dstartoftreatment = new
-		Date(getValue('datestartoftreatment.value')).getTime();
-		dreferredby = new Date(getValue('datereferredby.value')).getTime();
-		transferindate = new Date(getValue('transferindate.value')).getTime();
-		dfirstenrolled = new
-		Date(getValue('datefirstenrolled.value')).getTime();
+			beforeSubmit.push(function() {
+			encounterdate = new Date(getValue('encounterdate.value')).getTime();
+			dstartoftreatment = new
+			Date(getValue('datestartoftreatment.value')).getTime();
+			dreferredby = new Date(getValue('datereferredby.value')).getTime();
+			transferindate = new Date(getValue('transferindate.value')).getTime();
+			dfirstenrolled = new
+			Date(getValue('datefirstenrolled.value')).getTime();
 
-		if (encounterdate &lt; pbirthdate) {
-		getField('encounterdate.error').html('Encounter datetime should be after the birth date/visit start date').show();
-		return false;
-		}
-		if (dstartoftreatment &lt; pbirthdate){
-		getField('datestartoftreatment.error').html('Date start of treatment should be after the birth date/visit start date').show();
-		return false;
-		}
-		if (dreferredby &lt; pbirthdate){
-		getField('datereferredby.error').html('Date referred by should be after the birth date/visit start date').show();
-		return false;
-		}
-		if (transferindate &lt; pbirthdate){
-		getField('transferindate.error').html('Transfer in date should be after the birth date/visit start date').show();
-		return false;
-		}
-		if (dfirstenrolled &lt; pbirthdate){
-		getField('datefirstenrolled.error').html('Date first enrolled should be after the birth date/visit start date').show();
-		return false;
-		}
-		return true;
-		});
+			if (encounterdate &lt; pbirthdate) {
+			getField('encounterdate.error').html('Encounter datetime should be after the birth date/visit start date').show();
+			return false;
+			}
+			if (dstartoftreatment &lt; pbirthdate){
+			getField('datestartoftreatment.error').html('Date start of treatment should be after the birth date/visit start date').show();
+			return false;
+			}
+			if (dreferredby &lt; pbirthdate){
+			getField('datereferredby.error').html('Date referred by should be after the birth date/visit start date').show();
+			return false;
+			}
+			if (transferindate &lt; pbirthdate){
+			getField('transferindate.error').html('Transfer in date should be after the birth date/visit start date').show();
+			return false;
+			}
+			if (dfirstenrolled &lt; pbirthdate){
+			getField('datefirstenrolled.error').html('Date first enrolled should be after the birth date/visit start date').show();
+			return false;
+			}
+			return true;
+			});
 
 		});
 	</script>
+
 <table class="tblFormat" width="70%" align="center">
 	<tr>
 		<td>

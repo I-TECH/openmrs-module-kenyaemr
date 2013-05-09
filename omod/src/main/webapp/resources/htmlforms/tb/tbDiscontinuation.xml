@@ -11,11 +11,11 @@
   ~
   ~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
   -->
-<htmlform formName="TB Discontinuation" formVersion="0.2" formEncounterType="d3e3d723-7458-4b4e-8998-408e8a551a84">
+<htmlform>
 
 	<style type="text/css">
 		table.baseline-aligned td {
-		vertical-align: baseline;
+			vertical-align: baseline;
 		}
 	</style>
 
