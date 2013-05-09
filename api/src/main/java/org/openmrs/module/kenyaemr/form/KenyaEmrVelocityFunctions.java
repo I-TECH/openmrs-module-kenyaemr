@@ -11,19 +11,18 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.kenyaemr.form;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import org.openmrs.Concept;
-import org.openmrs.Encounter;
-import org.openmrs.Obs;
-import org.openmrs.PatientIdentifierType;
-import org.openmrs.Person;
+import org.openmrs.*;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.htmlformentry.FormEntrySession;
+import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.reporting.common.DateUtil;
 
@@ -31,41 +30,92 @@ import org.openmrs.module.reporting.common.DateUtil;
  * Velocity functions for adding logic to HTML forms
  */
 public class KenyaEmrVelocityFunctions {
-	
+
 	FormEntrySession session;
-	
+
 	/**
-     * Constructs a new functions provider
+	 * Constructs a new functions provider
 	 * @param session the form entry session
-     */
-    public KenyaEmrVelocityFunctions(FormEntrySession session) {
-	    this.session = session;
-    }
+	 */
+	public KenyaEmrVelocityFunctions(FormEntrySession session) {
+		this.session = session;
+	}
 
 	/**
 	 * Checks whether the patient has HIV identifier
 	 * @return true if patient has such an identifier
 	 */
-    public boolean hasHivUniquePatientNumber() {
-    	if (session.getPatient() == null) {
-    		return false;
-    	} else {
-    		PatientIdentifierType pit = Context.getPatientService().getPatientIdentifierTypeByUuid(MetadataConstants.UNIQUE_PATIENT_NUMBER_UUID);
-    		return session.getPatient().getPatientIdentifier(pit) != null;
-    	}
-    }
+	public boolean hasHivUniquePatientNumber() {
+		if (session.getPatient() == null) {
+			return false;
+		} else {
+			PatientIdentifierType pit = Context.getPatientService().getPatientIdentifierTypeByUuid(MetadataConstants.UNIQUE_PATIENT_NUMBER_UUID);
+			return session.getPatient().getPatientIdentifier(pit) != null;
+		}
+	}
 
-    /**
-     * Looks for an obs on the same calendar day as today, that is not in the same encounter being edited (if any)
-     * @param conceptId the obs's concept id
-     * @return the obs
-     */
-	public Obs obsToday(Integer conceptId) {
+	/**
+	 * Fetches a concept from its identifier
+	 * @param conceptIdentifier the concept identifier
+	 * @return the concept
+	 */
+	public Concept getConcept(Object conceptIdentifier) {
+		return Dictionary.getConcept(conceptIdentifier);
+	}
+
+	/**
+	 * Gets all of the obs with the given concept for the current patient
+	 * @param conceptIdentifier the concept identifier
+	 * @return the list of obs
+	 */
+	public List<Obs> allObs(Object conceptIdentifier) {
+		if (session.getPatient() == null)
+			return new ArrayList<Obs>();
+
+		Patient p = session.getPatient();
+		if (p == null)
+			return new ArrayList<Obs>();
+		else
+			return Context.getObsService().getObservationsByPersonAndConcept(p, getConcept(conceptIdentifier));
+	}
+
+	/**
+	 * Gets the latest obs with the given concept for the current patient
+	 * @param conceptIdentifier the concept identifier
+	 * @return the most recent obs
+	 */
+	public Obs latestObs(Object conceptIdentifier) {
+		List<Obs> obs = allObs(conceptIdentifier);
+		if (obs == null || obs.isEmpty())
+			return null;
+		else
+			return obs.get(0);
+	}
+
+	/**
+	 * Gets the earliest obs with the given concept for the current patient
+	 * @param conceptIdentifier the concept identifier
+	 * @return the earliest obs
+	 */
+	public Obs earliestObs(Object conceptIdentifier) {
+		List<Obs> obs = allObs(conceptIdentifier);
+		if (obs == null || obs.isEmpty())
+			return null;
+		else
+			return obs.get(obs.size() - 1);
+	}
+
+	/**
+	 * Looks for an obs on the same calendar day as today, that is not in the same encounter being edited (if any)
+	 * @param conceptIdentifier the obs's concept id, mapping or UUID
+	 * @return the obs
+	 */
+	public Obs obsToday(Object conceptIdentifier) {
 		Encounter toSkip = session.getEncounter();
 		List<Person> p = Collections.singletonList((Person) session.getPatient());
-		List<Concept> c = Collections.singletonList(Context.getConceptService().getConcept(conceptId));
+		Concept concept = Dictionary.getConcept(conceptIdentifier);
 		Date startOfDay = DateUtil.getStartOfDay(new Date());
-		List<Obs> candidates = Context.getObsService().getObservations(p, null, c, null, null, null, null, null, null, startOfDay, null, false);
+		List<Obs> candidates = Context.getObsService().getObservations(p, null, Collections.singletonList(concept), null, null, null, null, null, null, startOfDay, null, false);
 		for (Obs candidate : candidates) {
 			if (toSkip == null || candidate.getEncounter() == null || !candidate.getEncounter().equals(toSkip)) {
 				return candidate;

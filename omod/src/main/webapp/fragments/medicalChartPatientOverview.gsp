@@ -3,7 +3,7 @@
 
 	config.require("patient")
 
-	def conceptList = [ MetadataConstants.WEIGHT_KG_CONCEPT_UUID, MetadataConstants.CD4_CONCEPT_UUID, MetadataConstants.CD4_PERCENT_CONCEPT_UUID ]
+	def conceptList = [ dictionary.WEIGHT_KG, dictionary.CD4_COUNT, dictionary.CD4_PERCENT ]
 %>
 
 <table width="100%" border="0">

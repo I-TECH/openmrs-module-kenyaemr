@@ -27,13 +27,22 @@ public class DictionaryTest extends BaseModuleContextSensitiveTest {
 	}
 
 	/**
-	 * @see Dictionary#getConcept(String)
+	 * @see Dictionary#getConcept(Object)
 	 */
 	@Test
 	public void getConcept() {
 
+		// Check lookup by id
+		Assert.assertEquals(Dictionary.CD4_COUNT, Dictionary.getConcept(5497).getUuid());
+
 		// Check lookup by UUID
 		Assert.assertEquals(Dictionary.CD4_COUNT, Dictionary.getConcept(Dictionary.CD4_COUNT).getUuid());
+
+		try {
+			// Check that id with no concept throws exception
+			Dictionary.getConcept(-1123);
+			Assert.fail();
+		} catch (Exception ex) {}
 
 		try {
 			// Check that valid uuid with no concept throws exception

@@ -31,16 +31,19 @@ public class KenyaEmrModelConfigurator implements PageModelConfigurator, Fragmen
 	KenyaEmrUiUtils kenyaEmrUiUtils;
 
 	private static final MetadataConstants METADATA_CONSTANTS = new MetadataConstants();
+	private static final Dictionary DICTIONARY = new Dictionary();
 
 	@Override
 	public void configureModel(PageContext pageContext) {
 		pageContext.getModel().addAttribute("MetadataConstants", METADATA_CONSTANTS);
+		pageContext.getModel().addAttribute("dictionary", DICTIONARY);
 		pageContext.getModel().addAttribute("kenyaEmrUi", kenyaEmrUiUtils);
 	}
 
 	@Override
 	public void configureModel(FragmentContext fragmentContext) {
 		fragmentContext.getModel().addAttribute("MetadataConstants", METADATA_CONSTANTS);
+		fragmentContext.getModel().addAttribute("dictionary", DICTIONARY);
 		fragmentContext.getModel().addAttribute("kenyaEmrUi", kenyaEmrUiUtils);
 	}
 }
