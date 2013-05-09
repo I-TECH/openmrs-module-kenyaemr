@@ -49,4 +49,31 @@ public class KenyaEmrConstants {
 	 * Number of days between old CD4 count and current CD4 count to determine declining status
 	 */
 	public static final int DECLINING_CD4_COUNT_ACROSS_DAYS = 180;
+	/**
+	 * Number of days between sputum results duration taken before carrying out
+	 * another sputum at month 2 for new patient classification
+	 */
+	public static final int MONTH_TWO_SPUTUM_TEST = 60;
+	/**
+	 * Number of days between sputum results duration taken before carrying out
+	 * another sputum at month 5 for all patient classification
+	 */
+	public static final int MONTH_FIVE_SPUTUM_TEST = 150;
+	/**
+	 * Number of days between sputum results duration taken before carrying out
+	 * another sputum at month 6 for new patient classification
+	 */
+	public static final int MONTH_SIX_SPUTUM_TEST = 180;
+	/**
+	 * Number of days between sputum results duration taken before carrying out
+	 * another sputum at month 3 for smear positive relapse,failure and resumed
+	 * patient classification
+	 */
+	public static final int MONTH_THREE_SPUTUM_TEST = 90;
+	/**
+	 * Number of days between sputum results duration taken before carrying out
+	 * another sputum at month 8 for smear positive relapse,failure and resumed
+	 * patient classification
+	 */
+	public static final int MONTH_EIGHT_SPUTUM_TEST = 240;
 }
