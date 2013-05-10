@@ -17,9 +17,6 @@ package org.openmrs.module.kenyaemr.reporting.builder;
 import org.apache.commons.io.IOUtils;
 import org.openmrs.module.reporting.definition.DefinitionSummary;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.module.reporting.evaluation.parameter.Mapped;
-import org.openmrs.module.reporting.evaluation.parameter.Parameterizable;
-import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 
 import java.io.IOException;

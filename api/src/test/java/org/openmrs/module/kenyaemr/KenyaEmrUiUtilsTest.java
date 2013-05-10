@@ -11,9 +11,9 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.kenyaemr;
 
-import org.apache.commons.lang.StringUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -76,7 +76,34 @@ public class KenyaEmrUiUtilsTest extends BaseModuleContextSensitiveTest {
 		stavudine.setUnits("ml");
 		stavudine.setFrequency("BD");
 
-		regimen = new RegimenOrder(new HashSet<DrugOrder>(Arrays.asList(aspirin, stavudine)));
+		regimen = new RegimenOrder(new LinkedHashSet<DrugOrder>(Arrays.asList(aspirin, stavudine)));
+	}
+
+	/**
+	 * @see KenyaEmrUiUtils#formatVisitDates(org.openmrs.Visit)
+	 */
+	@Test
+	public void formatVisitDates() {
+		// Check a retrospective visit
+		Visit visit = new Visit();
+		visit.setStartDatetime(OpenmrsUtil.firstSecondOfDay(TestUtils.date(2011, 1, 1)));
+		visit.setStopDatetime(OpenmrsUtil.getLastMomentOfDay(TestUtils.date(2011, 1, 1)));
+		Assert.assertEquals("01-Jan-2011", kenyaUi.formatVisitDates(visit));
+
+		// Check a regular visit on single day
+		visit.setStartDatetime(TestUtils.date(2011, 1, 1, 10, 0, 0));
+		visit.setStopDatetime(TestUtils.date(2011, 1, 1, 11, 0, 0));
+		Assert.assertEquals("01-Jan-2011 10:00 → 11:00", kenyaUi.formatVisitDates(visit));
+
+		// Check a regular visit spanning multiple days
+		visit.setStartDatetime(TestUtils.date(2011, 1, 1, 10, 0, 0));
+		visit.setStopDatetime(TestUtils.date(2011, 1, 2, 11, 0, 0));
+		Assert.assertEquals("01-Jan-2011 10:00 → 02-Jan-2011 11:00", kenyaUi.formatVisitDates(visit));
+
+		// Check a visit with no end
+		visit.setStartDatetime(TestUtils.date(2011, 1, 1, 10, 0, 0));
+		visit.setStopDatetime(null);
+		Assert.assertEquals("01-Jan-2011 10:00", kenyaUi.formatVisitDates(visit));
 	}
 
 	/**
@@ -100,7 +127,25 @@ public class KenyaEmrUiUtilsTest extends BaseModuleContextSensitiveTest {
 	 */
 	@Test
 	public void formatRegimenShort_shouldFormatRegimen() throws Exception {
-		Assert.assertNotNull(kenyaUi.formatRegimenShort(regimen, ui));
+		// Check empty regimen
+		RegimenOrder empty = new RegimenOrder(new HashSet<DrugOrder>());
+		Assert.assertEquals("Empty", kenyaUi.formatRegimenShort(empty, ui));
+
+		// Check regular regimen
+		Assert.assertEquals("ASPIRIN, STAVUDINE", kenyaUi.formatRegimenShort(regimen, ui));
+	}
+
+	/**
+	 * @see KenyaEmrUiUtils#formatRegimenLong(org.openmrs.module.kenyaemr.regimen.RegimenOrder, org.openmrs.ui.framework.UiUtils)
+	 */
+	@Test
+	public void formatRegimenLong() {
+		// Check empty regimen
+		RegimenOrder empty = new RegimenOrder(new HashSet<DrugOrder>());
+		Assert.assertEquals("Empty", kenyaUi.formatRegimenLong(empty, ui));
+
+		// Check regular regimen
+		Assert.assertEquals("ASPIRIN 100mg OD + STAVUDINE 30ml BD", kenyaUi.formatRegimenLong(regimen, ui));
 	}
 
 	/**

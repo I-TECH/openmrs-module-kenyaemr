@@ -11,15 +11,14 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.kenyaemr.regimen;
 
 import java.util.*;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.openmrs.Concept;
 import org.openmrs.DrugOrder;
-import org.openmrs.util.OpenmrsUtil;
 
 /**
  * Represents a regimen of drug orders

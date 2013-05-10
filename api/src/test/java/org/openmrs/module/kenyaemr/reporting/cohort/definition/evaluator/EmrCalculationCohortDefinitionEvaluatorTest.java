@@ -53,7 +53,7 @@ public class EmrCalculationCohortDefinitionEvaluatorTest extends BaseModuleConte
 	 * Tests evaluation of the OnArt calculation
 	 */
 	@Test
-	public void evaluate_regularCalculation() throws EvaluationException {
+	public void mevaluate_regularCalculation() throws EvaluationException {
 	 	EmrCalculationCohortDefinition cohortDefinition = new EmrCalculationCohortDefinition(new OnArtCalculation());
 
 		EmrCalculationCohortDefinitionEvaluator evaluator = new EmrCalculationCohortDefinitionEvaluator();

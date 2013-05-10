@@ -16,18 +16,44 @@ package org.openmrs.module.kenyaemr;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mockito;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.Module;
+import org.openmrs.module.ModuleFactory;
 import org.openmrs.module.kenyaemr.form.FormManager;
 import org.openmrs.module.kenyaemr.reporting.builder.ReportBuilder;
+import org.openmrs.module.kenyaemr.test.TestUtils;
 import org.openmrs.module.kenyaemr.util.BuildProperties;
 import org.openmrs.module.kenyaemr.util.KenyaEmrUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class KenyaEmrTest extends BaseModuleContextSensitiveTest {
+import java.util.Collections;
 
-	@Autowired
-	KenyaEmr emr;
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({ ModuleFactory.class, Context.class})
+public class KenyaEmrTest /*extends BaseModuleContextSensitiveTest*/ {
+
+	KenyaEmr emr = new KenyaEmr();
+
+	/**
+	 * @see org.openmrs.module.kenyaemr.KenyaEmr#getModuleVersion()
+	 */
+	@Test
+	public void getModuleVersion() {
+		PowerMockito.mockStatic(ModuleFactory.class);
+
+		Module testMod = new Module("Test", "test", "org.openmrs.module", "Bob", "Testing", "1.1");
+		Mockito.when(ModuleFactory.getModuleById("kenyaemr")).thenReturn(testMod);
+
+		// Will always return null when run from unit test
+		Assert.assertEquals("1.1", emr.getModuleVersion());
+	}
 
 	/**
 	 * @see org.openmrs.module.kenyaemr.KenyaEmr#getModuleBuildProperties()
@@ -35,6 +61,13 @@ public class KenyaEmrTest extends BaseModuleContextSensitiveTest {
 	 */
 	@Test
 	public void getModuleBuildProperties_shouldGetBuildProperties() {
+		PowerMockito.mockStatic(Context.class);
+
+		BuildProperties testProps = new BuildProperties();
+		testProps.setBuildDate(TestUtils.date(2012, 1, 1));
+		testProps.setDeveloper("Test");
+		Mockito.when(Context.getRegisteredComponents(BuildProperties.class)).thenReturn(Collections.singletonList(testProps));
+
 		BuildProperties properties = emr.getModuleBuildProperties();
 
 		Assert.assertNotNull(properties);
@@ -44,12 +77,14 @@ public class KenyaEmrTest extends BaseModuleContextSensitiveTest {
 
 	@Test
 	public void getSingletonComponent() {
-		// Test with known singletons
-		Assert.assertNotNull(KenyaEmr.getSingletonComponent(FormManager.class));
-		Assert.assertNotNull(KenyaEmr.getSingletonComponent(BuildProperties.class));
+		PowerMockito.mockStatic(Context.class);
+		Mockito.when(Context.getRegisteredComponents(Integer.class)).thenReturn(Collections.singletonList(123));
+
+		// Test with class with a registered components
+		Assert.assertEquals(new Integer(123), KenyaEmr.getSingletonComponent(Integer.class));
 
 		try {
-			// Test with class known to have no components
+			// Test with class with no components
 			KenyaEmr.getSingletonComponent(MetadataConstants.class);
 			Assert.fail();
 		}

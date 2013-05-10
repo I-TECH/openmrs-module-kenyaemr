@@ -11,15 +11,13 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.kenyaemr;
 
 import java.util.Date;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.openmrs.OpenmrsData;
-import org.openmrs.PersonAttribute;
 import org.openmrs.api.context.Context;
 import org.openmrs.util.OpenmrsUtil;
 import org.openmrs.validator.ValidateUtil;

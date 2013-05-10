@@ -26,6 +26,11 @@ public class DictionaryTest extends BaseModuleContextSensitiveTest {
 		executeDataSet("test-data.xml");
 	}
 
+	@Test
+	public void integration() {
+		new Dictionary();
+	}
+
 	/**
 	 * @see Dictionary#getConcept(Object)
 	 */

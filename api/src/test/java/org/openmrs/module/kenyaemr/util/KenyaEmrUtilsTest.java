@@ -36,6 +36,11 @@ public class KenyaEmrUtilsTest extends BaseModuleContextSensitiveTest {
 		executeDataSet("test-data.xml");
 	}
 
+	@Test
+	public void integration() {
+		new KenyaEmrUtils();
+	}
+
 	/**
 	 * @see KenyaEmrUtils#dateAddDays(java.util.Date, int)
 	 * @verifies shift the date by the number of days
@@ -45,6 +50,16 @@ public class KenyaEmrUtilsTest extends BaseModuleContextSensitiveTest {
 		Assert.assertEquals(TestUtils.date(2012, 1, 2), KenyaEmrUtils.dateAddDays(TestUtils.date(2012, 1, 1), 1));
 		Assert.assertEquals(TestUtils.date(2012, 2, 1), KenyaEmrUtils.dateAddDays(TestUtils.date(2012, 1, 1), 31));
 		Assert.assertEquals(TestUtils.date(2011, 12, 31), KenyaEmrUtils.dateAddDays(TestUtils.date(2012, 1, 1), -1));
+	}
+
+	/**
+	 * @see KenyaEmrUtils#isSameDay(java.util.Date, java.util.Date)
+	 * @verifies return false if either date is null
+	 */
+	@Test
+	public void isSameDay_shouldReturnFalseIfEitherDateIsNull() {
+		Assert.assertFalse(KenyaEmrUtils.isSameDay(null, TestUtils.date(2012, 1, 2)));
+		Assert.assertFalse(KenyaEmrUtils.isSameDay(TestUtils.date(2012, 1, 2), null));
 	}
 
 	/**
@@ -69,6 +84,26 @@ public class KenyaEmrUtilsTest extends BaseModuleContextSensitiveTest {
 	}
 
 	/**
+	 * @see KenyaEmrUtils#isPatientInProgram(org.openmrs.Patient, org.openmrs.Program)
+	 */
+	@Test
+	public void isPatientInProgram() {
+		Program tbProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.TB_PROGRAM_UUID);
+		Patient patient = Context.getPatientService().getPatient(6);
+
+		// Check with no enrollments
+		Assert.assertFalse(KenyaEmrUtils.isPatientInProgram(patient, tbProgram));
+
+		// Check with non-active enrollment
+		TestUtils.enrollInProgram(patient, tbProgram, TestUtils.date(2011, 1, 1), TestUtils.date(2011, 12, 1));
+		Assert.assertFalse(KenyaEmrUtils.isPatientInProgram(patient, tbProgram));
+
+		// Check with active enrollment
+		TestUtils.enrollInProgram(patient, tbProgram, TestUtils.date(2012, 1, 1));
+		Assert.assertTrue(KenyaEmrUtils.isPatientInProgram(patient, tbProgram));
+	}
+
+	/**
 	 * @see org.openmrs.module.kenyaemr.util.KenyaEmrUtils#isRetrospectiveVisit(org.openmrs.Visit)
 	 */
 	@Test
@@ -76,28 +111,34 @@ public class KenyaEmrUtilsTest extends BaseModuleContextSensitiveTest {
 		Date date1 = TestUtils.date(2011, 1, 1, 10, 0, 0); // Jan 1st, 10:00am
 		Date date2 = TestUtils.date(2011, 1, 1, 11, 0, 0); // Jan 1st, 11:00am
 
-		Visit visit1 = new Visit();
-		visit1.setStartDatetime(date1);
-		visit1.setStopDatetime(date2);
+		// Check visit with no stop date
+		Visit visit = new Visit();
+		visit.setStartDatetime(date1);
+		Assert.assertFalse(KenyaEmrUtils.isRetrospectiveVisit(visit));
 
-		Assert.assertFalse(KenyaEmrUtils.isRetrospectiveVisit(visit1));
+		// Check visit with regular stop and start times
+		visit.setStartDatetime(date1);
+		visit.setStopDatetime(date2);
+		Assert.assertFalse(KenyaEmrUtils.isRetrospectiveVisit(visit));
 
-		Visit visit2 = new Visit();
-		visit2.setStartDatetime(OpenmrsUtil.firstSecondOfDay(date1));
-		visit2.setStopDatetime(OpenmrsUtil.getLastMomentOfDay(date1));
+		// Check visit with absolute start but regular end date
+		visit.setStartDatetime(OpenmrsUtil.firstSecondOfDay(date1));
+		visit.setStopDatetime(date2);
+		Assert.assertFalse(KenyaEmrUtils.isRetrospectiveVisit(visit));
 
-		Assert.assertTrue(KenyaEmrUtils.isRetrospectiveVisit(visit2));
+		// Check visit with absolute start and end dates
+		visit.setStartDatetime(OpenmrsUtil.firstSecondOfDay(date1));
+		visit.setStopDatetime(OpenmrsUtil.getLastMomentOfDay(date1));
+		Assert.assertTrue(KenyaEmrUtils.isRetrospectiveVisit(visit));
 
 		// Check case when stop date has been persisted and lost its milliseconds
 		Calendar stopFromSql = Calendar.getInstance();
 		stopFromSql.setTime(OpenmrsUtil.getLastMomentOfDay(date1));
 		stopFromSql.set(Calendar.MILLISECOND, 0);
 
-		Visit visit3 = new Visit();
-		visit3.setStartDatetime(OpenmrsUtil.firstSecondOfDay(date1));
-		visit3.setStopDatetime(stopFromSql.getTime());
-
-		Assert.assertTrue(KenyaEmrUtils.isRetrospectiveVisit(visit3));
+		visit.setStartDatetime(OpenmrsUtil.firstSecondOfDay(date1));
+		visit.setStopDatetime(stopFromSql.getTime());
+		Assert.assertTrue(KenyaEmrUtils.isRetrospectiveVisit(visit));
 	}
 
 	/**
@@ -148,8 +189,10 @@ public class KenyaEmrUtilsTest extends BaseModuleContextSensitiveTest {
 	@Test
 	public void whoStage_shouldConvertConceptToInteger() {
 		Assert.assertNull(KenyaEmrUtils.whoStage(Dictionary.getConcept(Dictionary.CD4_COUNT)));
+		Assert.assertEquals(new Integer(1), KenyaEmrUtils.whoStage(Dictionary.getConcept(Dictionary.WHO_STAGE_1_PEDS)));
 		Assert.assertEquals(new Integer(2), KenyaEmrUtils.whoStage(Dictionary.getConcept(Dictionary.WHO_STAGE_2_ADULT)));
 		Assert.assertEquals(new Integer(3), KenyaEmrUtils.whoStage(Dictionary.getConcept(Dictionary.WHO_STAGE_3_PEDS)));
+		Assert.assertEquals(new Integer(4), KenyaEmrUtils.whoStage(Dictionary.getConcept(Dictionary.WHO_STAGE_4_ADULT)));
 	}
 
 	/**
