@@ -116,13 +116,14 @@
 					<obs conceptId="160029AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160028AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="IRIS" style="checkbox" /><br />
 					<obs conceptId="160029AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1273AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Patient Hospitalized Location" style="checkbox" /><br />
 					<obs conceptId="160029AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="122496AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Difficulty Breathing" style="checkbox" /><br />
-					<obs conceptId="160029AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Other" style="checkbox" id="other" />
 				</td>
 			</tr>
 			<tr id="specify_other">
-				<td colspan="4">
-					Specify (if not provided): TO DO(Need a concept that will store this)
-					
+				<td>
+					Other ()Specify) 
+				</td>
+				<td colspan="3">
+					<obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="5" cols="50" />
 				</td>
 			</tr>
 		</table>
