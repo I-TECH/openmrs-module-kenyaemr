@@ -69,46 +69,6 @@ public interface KenyaEmrService extends OpenmrsService {
 	 * @should return null if no location has that code
 	 */
 	Location getLocationByMflCode(String mflCode);
-	
-	/**
-	 * Sets up a new idgen identifier source for our auto-generated medical record numbers
-	 * 
-	 * @param startFrom the first identifier to use
-	 * 
-	 * @should set up an identifier source
-	 * @should fail if already set up
-	 */
-	@Transactional
-	void setupMrnIdentifierSource(String startFrom);
-	
-	/**
-	 * Sets up a new idgen identifier source for our auto-generated HIV Unique Patient Numbers
-	 * 
-	 * @param startFrom the first identifier to use
-	 * 
-	 * @should set up an identifier source
-	 * @should fail if already set up
-	 */
-	@Transactional
-	void setupHivUniqueIdentifierSource(String startFrom);
-
-	/**
-     * @return the ID generator for Medical Record Numbers (OpenMRS IDs)
-     * @throws ConfigurationRequiredException if the ID source has not be set up yet
-     */
-    IdentifierSource getMrnIdentifierSource() throws ConfigurationRequiredException;
-    
-    /**
-     * @return the ID generator for HIV Unique Patient Numbers
-     * @throws ConfigurationRequiredException if the ID source has not be set up yet
-     */
-    IdentifierSource getHivUniqueIdentifierSource() throws ConfigurationRequiredException;
-    
-    /**
-     * @return the next HIV Unique Patient Number, including both the MFL prefix, and an idgen-generated sequential number
-     * @should get sequential numbers with mfl prefix
-     */
-    String getNextHivUniquePatientNumber(String comment);
 
 	/**
 	 * Gets the locations matching the specified arguments

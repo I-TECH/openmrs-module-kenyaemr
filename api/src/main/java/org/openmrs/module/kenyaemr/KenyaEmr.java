@@ -21,6 +21,7 @@ import org.openmrs.module.ModuleFactory;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.module.kenyaemr.calculation.CalculationManager;
 import org.openmrs.module.kenyaemr.form.FormManager;
+import org.openmrs.module.kenyaemr.identifier.IdentifierManager;
 import org.openmrs.module.kenyaemr.lab.LabManager;
 import org.openmrs.module.kenyaemr.regimen.RegimenManager;
 import org.openmrs.module.kenyaemr.reporting.ReportManager;
@@ -43,22 +44,25 @@ public class KenyaEmr implements UiContextRefreshedCallback {
 	protected static final Log log = LogFactory.getLog(KenyaEmrActivator.class);
 
 	@Autowired
-	MetadataManager metadataManager;
+	private MetadataManager metadataManager;
 
 	@Autowired
-	RegimenManager regimenManager;
+	private IdentifierManager identifierManager;
 
 	@Autowired
-	FormManager formManager;
+	private RegimenManager regimenManager;
 
 	@Autowired
-	CalculationManager calculationManager;
+	private FormManager formManager;
 
 	@Autowired
-	ReportManager reportManager;
+	private CalculationManager calculationManager;
 
 	@Autowired
-	LabManager labManager;
+	private ReportManager reportManager;
+
+	@Autowired
+	private LabManager labManager;
 
 	/**
 	 * Gets the module version
@@ -82,6 +86,14 @@ public class KenyaEmr implements UiContextRefreshedCallback {
 	 */
 	public MetadataManager getMetadataManager() {
 		return metadataManager;
+	}
+
+	/**
+	 * Gets the identifier manager
+	 * @return the identifier manager
+	 */
+	public IdentifierManager getIdentifierManager() {
+		return identifierManager;
 	}
 
 	/**
