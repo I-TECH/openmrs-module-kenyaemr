@@ -72,7 +72,6 @@
 			else{
 			tdForExtraPulmonaryTB.style.display = 'none';
 			tdForPulmonaryTB.style.display = 'none';
-			initialsputum.style.display = 'none';
 			}
 			});
 

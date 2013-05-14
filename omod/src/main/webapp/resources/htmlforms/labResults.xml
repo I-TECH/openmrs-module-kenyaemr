@@ -18,6 +18,19 @@
 			vertical-align: baseline;
 		}
 	</style>
+	<script type="text/javascript">
+		$j(document).ready(function(){
+			var sensitivityLbl = document.getElementById("sensitivity");
+			var growthPresent = getValue('growth_no_growth.value');
+			if (growthPresent == 703) {
+				sensitivityLbl.style.display = 'inline';
+			}
+			else{
+				sensitivityLbl.style.display = 'none'
+			}
+			
+		});
+	</script>
 
 	<div class="patient-details">
 		<table class="baseline-aligned" width="100%">
@@ -45,12 +58,12 @@
 			<tr>
 				
 				<td width="50%" style="font-family: Trebuchet MS,serif; font-size: text-align: left;">
-						<table style="width: 80%; height: 44px;" border="0" align="center">
+						<table style="width: 80%; height: 44px;" border="0" align="center" cellpadding="0" cellspacing="0">
 							<tr>
-								<td width="1%" style="background-color: #696969; color: #ffffff;"> </td>
-								<td width="5%" style="background-color: #696969; color: #ffffff;">Test</td>
-								<td width="5%" style="background-color: #696969; color: #ffffff;">Result</td>
-								<td width="18%" style="background-color: #696969; color: #ffffff;">Date Collected (if not today)</td>
+								<th width="1%" style="background-color: #696969; color: #ffffff;"> </th>
+								<th width="2%" style="background-color: #696969; color: #ffffff;">Test</th>
+								<th width="7%" style="background-color: #696969; color: #ffffff;">Result</th>
+								<th width="5%" style="background-color: #696969; color: #ffffff;">Date Collected (if not today)</th>
 							</tr>
 							<tr>
 								<td>01.</td>
@@ -111,16 +124,46 @@
 								<td><obs conceptId="32AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" dateLabel="&lt;/td&gt;&lt;td&gt;"/></td>
 								
 							</tr>
-							<obsgroup groupingConceptId="159981AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+							<obsgroup groupingConceptId="159960AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
 								<tr>
 									<td>11.</td>
 									<td>Results Sputum</td>
 									<td>
-										<obs conceptId="307AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
 										Serial No:<obs conceptId="159968AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+										Type:<obs conceptId="1271AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="307AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161880AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="ZN,FM" />
+										Result:<obs conceptId="307AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="159985AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Scanty,+,++,+++,Negative"/>
+										Quantity:<obs conceptId="160023AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
 									</td>
 									<td><obs conceptId="159965AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
 								</tr>
+							</obsgroup>
+							<obsgroup groupingConceptId="159981AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+								<tr>
+									<td>12.</td>
+									<td>Culture/Sensitivity Results</td>
+									<td>
+										Bacterial Colonies growth<obs conceptId="159982AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Growth,No growth" id="growth_no_growth"/>
+										Colonies<obs conceptId="159952AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+									</td>
+									<td><obs conceptId="159964AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+								</tr>
+								<span id="sensitivity">
+								<tr>
+										<td colspan="4" align="center">
+											Resistant (R)
+												<obs conceptId="159956AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="84360AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="S" style="checkbox" />
+												<obs conceptId="159956AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="767AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="R" style="checkbox" />
+												<obs conceptId="159956AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="78280AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="INH" style="checkbox" />
+												<obs conceptId="159956AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="75948AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="E" style="checkbox" />
+												<br />
+											Sensitive (S)
+												<obs conceptId="159958AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="84360AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="S" style="checkbox" />
+												<obs conceptId="159958AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="767AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="R" style="checkbox" />
+												<obs conceptId="159958AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="78280AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="INH" style="checkbox" />
+												<obs conceptId="159958AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="75948AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="E" style="checkbox" />
+										</td>
+								</tr>
+								</span>
 							</obsgroup>
 						</table>
 				</td>
