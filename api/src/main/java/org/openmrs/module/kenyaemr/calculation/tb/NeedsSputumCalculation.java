@@ -30,7 +30,6 @@ import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.KenyaEmrConstants;
 import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.kenyaemr.calculation.BaseAlertCalculation;
-import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyaemr.calculation.BooleanResult;
 import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
 
