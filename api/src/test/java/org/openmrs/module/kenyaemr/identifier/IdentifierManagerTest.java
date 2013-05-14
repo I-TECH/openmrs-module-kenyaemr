@@ -1,94 +1,45 @@
+/**
+ * The contents of this file are subject to the OpenMRS Public License
+ * Version 1.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ * http://license.openmrs.org
+ *
+ * Software distributed under the License is distributed on an "AS IS"
+ * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+ * License for the specific language governing rights and limitations
+ * under the License.
+ *
+ * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ */
+
 package org.openmrs.module.kenyaemr.identifier;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.hibernate.cfg.Environment;
-import org.hibernate.dialect.H2Dialect;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Location;
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.ModuleConstants;
 import org.openmrs.module.idgen.IdentifierSource;
-import org.openmrs.module.idgen.SequentialIdentifierGenerator;
-import org.openmrs.module.idgen.processor.SequentialIdentifierGeneratorProcessor;
 import org.openmrs.module.idgen.service.IdentifierSourceService;
 import org.openmrs.module.kenyaemr.KenyaEmrActivator;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
-import org.openmrs.test.TestUtil;
-import org.openmrs.util.OpenmrsConstants;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.Properties;
 
 /**
  *
  */
 public class IdentifierManagerTest extends BaseModuleContextSensitiveTest {
 
-	protected static final Log log = LogFactory.getLog(IdentifierManagerTest.class);
-
 	@Autowired
-	IdentifierManager identifierManager;
+	private IdentifierManager identifierManager;
 
 	@Before
 	public void setup() throws Exception {
 		executeDataSet("test-data.xml");
 
 		new KenyaEmrActivator().setupGlobalProperties();
-
-		Context.getService(IdentifierSourceService.class).registerProcessor(SequentialIdentifierGenerator.class, new SequentialIdentifierGeneratorProcessor());
-	}
-
-	@Override
-	public Properties getRuntimeProperties() {
-
-		// cache the properties for subsequent calls
-		if (runtimeProperties == null)
-			runtimeProperties = TestUtil.getRuntimeProperties(getWebappName());
-
-		// if we're using the in-memory hypersonic database, add those
-		// connection properties here to override what is in the runtime
-		// properties
-		if (useInMemoryDatabase() == true) {
-			runtimeProperties.setProperty(Environment.DIALECT, H2Dialect.class.getName());
-			runtimeProperties.setProperty(Environment.URL, "jdbc:h2:mem:openmrs;MVCC=true;DB_CLOSE_DELAY=30");
-			runtimeProperties.setProperty(Environment.DRIVER, "org.h2.Driver");
-			runtimeProperties.setProperty(Environment.USER, "sa");
-			runtimeProperties.setProperty(Environment.PASS, "");
-
-			// these two properties need to be set in case the user has this exact
-			// phrasing in their runtime file.
-			runtimeProperties.setProperty("connection.username", "sa");
-			runtimeProperties.setProperty("connection.password", "");
-
-			// automatically create the tables defined in the hbm files
-			runtimeProperties.setProperty(Environment.HBM2DDL_AUTO, "create-drop");
-		}
-
-		// we don't want to try to load core modules in tests
-		runtimeProperties.setProperty(ModuleConstants.IGNORE_CORE_MODULES_PROPERTY, "true");
-
-		try {
-			File tempappdir = File.createTempFile("appdir-for-unit-tests-", "");
-			tempappdir.delete(); // so we can make it into a directory
-			tempappdir.mkdir(); // turn it into a directory
-			tempappdir.deleteOnExit(); // clean up when we're done with tests
-
-			runtimeProperties.setProperty(OpenmrsConstants.APPLICATION_DATA_DIRECTORY_RUNTIME_PROPERTY, tempappdir
-					.getAbsolutePath());
-			OpenmrsConstants.APPLICATION_DATA_DIRECTORY = tempappdir.getAbsolutePath();
-		}
-		catch (IOException e) {
-			log.error("Unable to create temp dir", e);
-		}
-
-		return runtimeProperties;
 	}
 
 	/**
