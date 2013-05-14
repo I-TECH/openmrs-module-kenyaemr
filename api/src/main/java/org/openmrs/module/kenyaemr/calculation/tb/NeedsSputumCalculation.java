@@ -145,6 +145,8 @@ public class NeedsSputumCalculation extends BaseAlertCalculation {
 
 				if ((resultsForMonthZero != null)
 						&& (treatmentStartDateObs != null)
+						&& (diseaseClassification != null)
+						&& (tbResults != null)
 						&& (diseaseClassification.getValue().getValueCoded()
 								.equals(pulmonaryTb))
 						&& (tbResults.getValue().getValueCoded()
@@ -159,7 +161,8 @@ public class NeedsSputumCalculation extends BaseAlertCalculation {
 					// sputum in month 2,5 and 6
 					// repeating sputum test at month 2 for new patient
 					// classification
-					if ((patientClassification.getValue().getValueCoded()
+					if ((patientClassification != null)
+							&& (patientClassification.getValue().getValueCoded()
 							.equals(smearPositiveNew))
 							&& (numberOfDaysSinceTreatmentStarted >= KenyaEmrConstants.MONTH_TWO_SPUTUM_TEST)) {
 						// check for the first obs since
@@ -189,7 +192,8 @@ public class NeedsSputumCalculation extends BaseAlertCalculation {
 
 					}
 					// Repeat for month 5 for new patient classification
-					if ((patientClassification.getValue().getValueCoded()
+					if ((patientClassification != null)
+							&& (patientClassification.getValue().getValueCoded()
 							.equals(smearPositiveNew))
 							&& (numberOfDaysSinceTreatmentStarted >= KenyaEmrConstants.MONTH_FIVE_SPUTUM_TEST)) {
 						// get the date at month 5 since treatment started
@@ -216,7 +220,8 @@ public class NeedsSputumCalculation extends BaseAlertCalculation {
 					// Repeat for month 6 for new patient classification and
 					// sputum
 					// is said to be completed
-					if ((patientClassification.getValue().getValueCoded()
+					if ((patientClassification != null)
+							&& (patientClassification.getValue().getValueCoded()
 							.equals(smearPositiveNew))
 							&& (numberOfDaysSinceTreatmentStarted >= KenyaEmrConstants.MONTH_SIX_SPUTUM_TEST)) {
 						// get the date at month 6 since treatment started
@@ -245,12 +250,13 @@ public class NeedsSputumCalculation extends BaseAlertCalculation {
 					// classification smear positive relapse, failure and
 					// resumed
 					// test repeat in month 3,5 and 8
-					if ((patientClassification.getValue().getValueCoded()
+					if ((patientClassification != null)
+							&& ((patientClassification.getValue().getValueCoded()
 							.equals(relapseSmearPositive))
 							|| (patientClassification.getValue().getValueCoded()
 									.equals(treatmentFailure))
 							|| (patientClassification.getValue().getValueCoded()
-									.equals(retreatmentAfterDefault))) {
+									.equals(retreatmentAfterDefault)))) {
 						// check for the days elapsed since treatment was commenced
 						// will target 3rd month
 						if (numberOfDaysSinceTreatmentStarted >= KenyaEmrConstants.MONTH_THREE_SPUTUM_TEST) {
