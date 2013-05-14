@@ -92,7 +92,7 @@
 		function setPregDateField(option) {
 			var options = [ 'yes', 'no', 'ab', 'mc' ];
 			var labels = { 'yes' : 'EDD', 'no' : '', 'ab' : 'Date of abortion', 'mc' : 'Date of miscarriage' };
-			var fields = { 'yes' : 'pregdate-yes', 'no' : null, 'ab' : 'pregdate-ab', 'mc' : 'pregdate-mc' };
+			var fields = { 'yes' : 'pregdate-yes', 'no' : null, 'ab' : 'pregdate-abmc', 'mc' : 'pregdate-abmc' };
 
 			// Update field label
 			$j('#pregdate-label').text(labels[option]);
@@ -105,14 +105,17 @@
 
 			// Clear values and hide containers of the other option fields
 			for (var o = 0; o &lt; options.length; ++o) {
-				var option = options[o];
-				if (fields[option]) {
-					setValue(fields[option] + '.value', null);
+				var opt = options[o];
+				if (fields[opt] &amp;&amp; (fields[opt] != fields[option])) {
+					setValue(fields[opt] + '.value', null);
+					$j('#' + fields[opt] + '-container').hide();
 				}
-				$j('#' + fields[option] + '-container').hide();
 			}
 		}
 
+		/**
+		 * TODO use a lookup tag to get these concept ids. Will require HTML-463
+		 */
 		var YES_CONCEPT_ID = 1065;
 		var NO_CONCEPT_ID = 1066;
 		var ABORTION_CONCEPT_ID = 159896;
@@ -127,6 +130,11 @@
 			onEncounterDateChange();
 
 			<includeIf velocityTest="$patient.gender == 'F' ">
+
+			// Because of bug HTML-469, we need a hack to set the right property accessor for datetime obs
+			var realId = $j('span#pregdate-abmc input[type=hidden]').attr('name');
+			propertyAccessorInfo['pregdate-abmc.value'] = { id: realId , field: dateFieldGetterFunction, setter: dateSetterFunction };
+
 			$j('input[name=pregoption]').click(function() {
 				var option = $('input[name=pregoption]:checked').val();
 				setPregOption(option);
@@ -272,29 +280,22 @@
 					<includeIf velocityTest="$patient.gender == 'F' ">
 						<ifMode mode="VIEW">
 							EDD: <obs conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><br />
-							Date of abortion: <obs conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><br />
-							Date of miscarriage: <obs conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+							Date of abortion/miscarriage: <obs conceptId="5599AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><br />
 						</ifMode>
 						<ifMode mode="ENTER">
 							<div id="pregdate-yes-container" style="display: none">
 								<obs id="pregdate-yes" conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" />
 							</div>
-							<div id="pregdate-ab-container" style="display: none">
-								<obs id="pregdate-ab" conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
-							</div>
-							<div id="pregdate-mc-container" style="display: none">
-								<obs id="pregdate-mc" conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+							<div id="pregdate-abmc-container" style="display: none">
+								<obs id="pregdate-abmc" conceptId="5599AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
 							</div>
 						</ifMode>
 						<ifMode mode="EDIT">
 							<div id="pregdate-yes-container" style="display: none">
 								<obs id="pregdate-yes" conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" />
 							</div>
-							<div id="pregdate-ab-container" style="display: none">
-								<obs id="pregdate-ab" conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
-							</div>
-							<div id="pregdate-mc-container" style="display: none">
-								<obs id="pregdate-mc" conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+							<div id="pregdate-abmc-container" style="display: none">
+								<obs id="pregdate-abmc" conceptId="5599AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
 							</div>
 						</ifMode>
 					</includeIf>
@@ -329,11 +330,6 @@
 					<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1472AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Tubal Ligation/Female Sterilization (TL)" /><br />
 					<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1489AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Vasectomy (V)" /><br />
 					<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Not Applicable" /><br />
-					<!--<obsgroup groupingConceptId="????">
-						<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Other" />
-						<obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
-					</obsgroup>-->
-					[TODO need construct concept]
 				</td>
 				<td>
 					<obs
@@ -389,7 +385,10 @@
 						<obs conceptId="159935AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="120069AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="CNS Symptoms (Dizzy, Anxiety, Nightmare, Depression)" /><br />
 					</div>
 
-					[TODO concept for other]
+					Other:
+					<obsgroup groupingConceptId="161879AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+						<obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+					</obsgroup>
 				</td>
 			</tr>
 			<tr>
@@ -506,8 +505,12 @@
 					<obs conceptId="160582AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="121725AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Alcohol (11)" /><br />
 					<obs conceptId="160582AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="119537AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Depression (12)" /><br />
 					<obs conceptId="160582AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160588AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Pill burden (13)" /><br />
-					<obs conceptId="160582AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Other (14)" />
-					[TODO need concept for non-coded]
+					<obs conceptId="160582AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Other (14)" /><br />
+
+					Other:
+					<obsgroup groupingConceptId="161881AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+						<obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+					</obsgroup>
 				</td>
 			</tr>
 			<tr>
@@ -557,7 +560,10 @@
 					1. <obs conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><br />
 					2. <obs conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><br />
 					3. <obs conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><br />
-					[TODO need concept for non-coded]
+					Other:
+					<obsgroup groupingConceptId="161360AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+						<obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+					</obsgroup>
 				</td>
 			</tr>
 			<tr>
