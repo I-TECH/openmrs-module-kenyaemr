@@ -75,13 +75,11 @@ public class KenyaEmrActivator implements ModuleActivator {
 		try {
 			checkRequirements();
 
-			setupGlobalProperties();
-
 			log.info("Setup core global properties");
 
 			boolean metadataUpdated = setupStandardMetadata();
 
-			log.info("Setup core metadata packages (" + (metadataUpdated ? "imported packages" : "already up-to-date") + ")");
+			log.info("Setup core metadata (" + (metadataUpdated ? "imported packages" : "already up-to-date") + ")");
 
 			setupStandardRegimens();
 
@@ -133,23 +131,13 @@ public class KenyaEmrActivator implements ModuleActivator {
 	}
 
 	/**
-	 * Setup required global properties
-	 *
-	 * (Public for testing)
-	 */
-	public void setupGlobalProperties() {
-		ensureGlobalPropertyExists(
-				KenyaEmrConstants.GP_DEFAULT_LOCATION,
-				"The facility for which this installation is configured. Visits and encounters will be created with this location value.",
-				LocationDatatype.class
-		);
-	}
-
-	/**
-	 * Setup the standard metadata packages
-	 * @return
+	 * Setup the standard metadata (global properties and packages)
+	 * @return number of packages updated
 	 */
 	protected boolean setupStandardMetadata() {
+		// Setup required global properties
+		KenyaEmr.getInstance().getMetadataManager().setupGlobalProperties();
+
 		try {
 			InputStream stream = getClass().getClassLoader().getResourceAsStream(PACKAGES_FILENAME);
 			return KenyaEmr.getInstance().getMetadataManager().loadPackagesFromXML(stream, null);
@@ -183,23 +171,6 @@ public class KenyaEmrActivator implements ModuleActivator {
 		}
 		catch (Exception ex) {
 			throw new RuntimeException("Cannot find " + REGIMENS_FILENAME + ". Make sure it's in api/src/main/resources", ex);
-		}
-	}
-
-	/**
-	 * Creates an empty global property if it doesn't exist
-	 * @param property the property name
-	 * @param description the property description
-	 * @param dataType the property value data type
-	 */
-	protected void ensureGlobalPropertyExists(String property, String description, Class dataType) {
-		GlobalProperty gp = Context.getAdministrationService().getGlobalPropertyObject(property);
-		if (gp == null) {
-			gp = new GlobalProperty();
-			gp.setProperty(property);
-			gp.setDescription(description);
-			gp.setDatatypeClassname(dataType.getName());
-			Context.getAdministrationService().saveGlobalProperty(gp);
 		}
 	}
 }

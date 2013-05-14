@@ -11,6 +11,7 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.kenyaemr.fragment.controller;
 
 import org.openmrs.*;
@@ -42,7 +43,7 @@ import java.util.List;
 /**
  *
  */
-public class MedicalChartMoh257FragmentController {
+public class Moh257FragmentController {
 	
 	public void controller(@FragmentParam("patient")
 						   Patient patient,
@@ -114,8 +115,7 @@ public class MedicalChartMoh257FragmentController {
 												 @SpringBean KenyaEmrUiUtils kenyaUi) {
 		ui.validate(command, command, "visit");
 
-		Visit visit = command.toVisit();
-		Context.getVisitService().saveVisit(visit);
+		Visit visit = command.applyAndReturnVisit();
 		return kenyaUi.simpleVisit(visit, ui);
 	}
 
@@ -148,24 +148,30 @@ public class MedicalChartMoh257FragmentController {
 			if (visitDate.after(OpenmrsUtil.firstSecondOfDay(new Date()))) {
 				errors.rejectValue("visitDate", "Date cannot be in the future");
 			}
-
-			if (KenyaEmrUtils.visitWillOverlap(toVisit())) {
-				errors.rejectValue("visitDate", "Date cannot overlap with the patient's existing visits");
-			}
 		}
 
 		/**
-		 * Converts command object to actual visit
-		 * @return the actual visit
+		 * Converts command object to actual visit. If there are no existing visits on that date, it will create a new visit
+		 * otherwise it returns the first visit on that date
+		 * @return the visit
 		 */
-		public Visit toVisit() {
-			Visit visit = new Visit();
-			visit.setVisitType(visitType);
-			visit.setLocation(location);
-			visit.setPatient(patient);
-			visit.setStartDatetime(OpenmrsUtil.firstSecondOfDay(visitDate));
-			visit.setStopDatetime(OpenmrsUtil.getLastMomentOfDay(visitDate));
-			return visit;
+		public Visit applyAndReturnVisit() {
+			List<Visit> existingVisitsOnDay = Context.getService(KenyaEmrService.class).getVisitsByPatientAndDay(patient, visitDate);
+
+			if (existingVisitsOnDay.size() == 0) {
+				Visit visit = new Visit();
+				visit.setVisitType(visitType);
+				visit.setLocation(location);
+				visit.setPatient(patient);
+				visit.setStartDatetime(OpenmrsUtil.firstSecondOfDay(visitDate));
+				visit.setStopDatetime(OpenmrsUtil.getLastMomentOfDay(visitDate));
+				Context.getVisitService().saveVisit(visit);
+				return visit;
+			}
+			else {
+				// Return first visit from that day
+				return existingVisitsOnDay.get(0);
+			}
 		}
 
 		public Integer getPatientId() {

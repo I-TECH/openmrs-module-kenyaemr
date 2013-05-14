@@ -190,7 +190,7 @@
 				<th rowspan="2">Visit Details</th>
 				<th colspan="2">Date</th>
 				<td>(a)</td>
-				<td colspan="2"><encounterDate id="encounter-date" /></td>
+				<td colspan="2"><encounterDate id="encounter-date" showTime="true" /></td>
 			</tr>
 			<tr>
 				<th colspan="2">Type</th>

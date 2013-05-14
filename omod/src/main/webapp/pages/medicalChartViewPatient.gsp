@@ -110,7 +110,7 @@
 
 	<% } else if (section == "moh257") { %>
 
-		${ ui.includeFragment("kenyaemr", "medicalChartMoh257", [ patient: patient ]) }
+		${ ui.includeFragment("kenyaemr", "moh257", [ patient: patient ]) }
 
 	<% } %>
 
