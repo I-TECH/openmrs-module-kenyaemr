@@ -19,6 +19,7 @@ import org.openmrs.*;
 import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.Dictionary;
+import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.util.OpenmrsUtil;
 
 import java.text.DateFormat;

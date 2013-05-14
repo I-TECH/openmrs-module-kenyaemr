@@ -13,14 +13,20 @@
  */
 package org.openmrs.module.kenyaemr.api;
 
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import org.openmrs.Location;
 import org.openmrs.LocationAttributeType;
+import org.openmrs.Patient;
+import org.openmrs.Visit;
 import org.openmrs.annotation.Authorized;
 import org.openmrs.api.OpenmrsService;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.idgen.IdentifierSource;
+import org.openmrs.util.OpenmrsUtil;
 import org.openmrs.util.PrivilegeConstants;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -52,7 +58,7 @@ public interface KenyaEmrService extends OpenmrsService {
 	 * @should throw an exception if the default location has not been set
 	 * @should get the default location when set
 	 */
-	@Transactional(readOnly=true)
+	@Transactional(readOnly = true)
 	Location getDefaultLocation();
 
 	/**
@@ -69,6 +75,14 @@ public interface KenyaEmrService extends OpenmrsService {
 	 * @should return null if no location has that code
 	 */
 	Location getLocationByMflCode(String mflCode);
+
+	/**
+	 * Gets the visits that occurred for the given patient on the given date
+	 * @param patient the patient
+	 * @param date the day
+	 * @return the visits
+	 */
+	List<Visit> getVisitsByPatientAndDay(Patient patient, Date date);
 
 	/**
 	 * Gets the locations matching the specified arguments

@@ -172,12 +172,24 @@ ui.includeJavascript("kenyaemr", "dwr-util.js")
 	}
 
 	/**
+	 * Because setValue doesn't work for datetime fields
+	 */
+	function setDatetimeValue(elementAndProperty, value) {
+		var fieldId = elementAndProperty.split(".")[0];
+
+		jq('#' + fieldId + ' input[type=text]').datepicker('setDate', value);
+
+		jq('#' + fieldId + ' select[name\$=hours]').val(value.getHours());
+		jq('#' + fieldId + ' select[name\$=minutes]').val(value.getMinutes());
+		jq('#' + fieldId + ' select[name\$=seconds]').val(value.getSeconds());
+	}
+
+	/**
 	 * Update blank encounter dates to default to visit start date or current date
 	 */
 	jq(function() {
-		var displaySelector = '#encounter-date input[type=text]';
-		if (jq(displaySelector).val() == '') {
-			setDatePickerValue(displaySelector, '${ (visit ? visit.startDatetime : new java.util.Date()).format("yy-MM-dd") }');
+		if (getValue('encounter-date.value') == '') {
+			setDatetimeValue('encounter-date.value', new Date(${ visit ? ("'" + visit.startDatetime + "'") : '' }));
 		}
 	});
 </script>

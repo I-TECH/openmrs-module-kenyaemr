@@ -22,24 +22,27 @@ import org.openmrs.PatientIdentifierType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.idgen.IdentifierSource;
 import org.openmrs.module.idgen.service.IdentifierSourceService;
-import org.openmrs.module.kenyaemr.KenyaEmrActivator;
+import org.openmrs.module.kenyaemr.KenyaEmr;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- *
+ * Tests for {@link IdentifierManager}
  */
 public class IdentifierManagerTest extends BaseModuleContextSensitiveTest {
 
 	@Autowired
 	private IdentifierManager identifierManager;
 
+	@Autowired
+	private KenyaEmr emr;
+
 	@Before
 	public void setup() throws Exception {
 		executeDataSet("test-data.xml");
 
-		new KenyaEmrActivator().setupGlobalProperties();
+		emr.getMetadataManager().setupGlobalProperties();
 	}
 
 	/**

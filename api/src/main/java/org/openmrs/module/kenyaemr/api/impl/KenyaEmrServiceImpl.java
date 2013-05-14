@@ -32,6 +32,7 @@ import org.openmrs.module.kenyaemr.api.ConfigurationRequiredException;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.module.kenyaemr.api.db.KenyaEmrDAO;
 import org.openmrs.module.kenyaemr.identifier.IdentifierManager;
+import org.openmrs.util.OpenmrsUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -135,6 +136,20 @@ public class KenyaEmrServiceImpl extends BaseOpenmrsService implements KenyaEmrS
 		List<Location> locations = getLocations(null, null, attrVals, false, null, null);
 
 		return locations.size() > 0 ? locations.get(0) : null;
+	}
+
+	/**
+	 * @see KenyaEmrService#getVisitsByPatientAndDay(org.openmrs.Patient, java.util.Date)
+	 */
+	@Override
+	public List<Visit> getVisitsByPatientAndDay(Patient patient, Date date) {
+		Date startOfDay = OpenmrsUtil.firstSecondOfDay(date);
+		Date endOfDay = OpenmrsUtil.getLastMomentOfDay(date);
+
+		// look for visits that started before endOfDay and ended after startOfDay
+		List<Visit> visits = Context.getVisitService().getVisits(null, Collections.singleton(patient), null, null, null, endOfDay, startOfDay, null, null, true, false);
+		Collections.reverse(visits); // We want by date asc
+		return visits;
 	}
 
 	/**

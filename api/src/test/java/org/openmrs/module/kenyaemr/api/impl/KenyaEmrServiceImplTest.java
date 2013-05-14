@@ -12,7 +12,7 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.api;
+package org.openmrs.module.kenyaemr.api.impl;
 
 import org.apache.commons.lang.StringUtils;
 import org.junit.Assert;
@@ -27,6 +27,8 @@ import org.openmrs.module.kenyaemr.KenyaEmr;
 import org.openmrs.module.kenyaemr.KenyaEmrActivator;
 import org.openmrs.module.kenyaemr.KenyaEmrConstants;
 import org.openmrs.module.kenyaemr.MetadataConstants;
+import org.openmrs.module.kenyaemr.api.KenyaEmrService;
+import org.openmrs.module.kenyaemr.test.TestUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -34,7 +36,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class KenyaEmrServiceTest extends BaseModuleContextSensitiveTest {
+public class KenyaEmrServiceImplTest extends BaseModuleContextSensitiveTest {
 
 	@Autowired
 	private KenyaEmrService service;
@@ -43,24 +45,24 @@ public class KenyaEmrServiceTest extends BaseModuleContextSensitiveTest {
 	private KenyaEmr emr;
 
 	@Before
-	public void beforeEachTest() throws Exception {
+	public void setup() throws Exception {
 		executeDataSet("test-data.xml");
 
-		new KenyaEmrActivator().setupGlobalProperties();
+		emr.getMetadataManager().setupGlobalProperties();
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.api.KenyaEmrService#getDefaultLocation()
+	 * @see KenyaEmrServiceImpl#getDefaultLocation()
 	 * @verifies throw an exception if the default location has not been set
 	 */
-	@Test(expected=APIException.class)
+	@Test(expected = APIException.class)
 	public void getDefaultLocation_shouldThrowAnExceptionIfTheDefaultLocationHasNotBeenSet() throws Exception {
 		Assert.assertTrue(StringUtils.isEmpty(Context.getAdministrationService().getGlobalProperty(KenyaEmrConstants.GP_DEFAULT_LOCATION)));
 		service.getDefaultLocation();
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.api.KenyaEmrService#getDefaultLocation()
+	 * @see KenyaEmrServiceImpl#getDefaultLocation()
 	 * @verifies get the default location when set
 	 */
 	@Test
@@ -76,7 +78,7 @@ public class KenyaEmrServiceTest extends BaseModuleContextSensitiveTest {
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.api.KenyaEmrService#getLocationByMflCode(String)
+	 * @see KenyaEmrServiceImpl#getLocationByMflCode(String)
 	 * @verifies find the location with that code
 	 * @verifies return null if no location has that code
 	 */
@@ -88,7 +90,7 @@ public class KenyaEmrServiceTest extends BaseModuleContextSensitiveTest {
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.api.KenyaEmrService#isConfigured()
+	 * @see KenyaEmrServiceImpl#isConfigured()
 	 * @verifies return false before default location has been set
 	 */
 	@Test
@@ -97,7 +99,7 @@ public class KenyaEmrServiceTest extends BaseModuleContextSensitiveTest {
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.api.KenyaEmrService#isConfigured()
+	 * @see KenyaEmrServiceImpl#isConfigured()
 	 * @verifies return true after everything is configured
 	 */
 	@Test
@@ -119,7 +121,35 @@ public class KenyaEmrServiceTest extends BaseModuleContextSensitiveTest {
 	}
 
 	/**
-	 * @see KenyaEmrService#getLocations(String, org.openmrs.Location, java.util.Map, boolean, Integer, Integer)
+	 * @see KenyaEmrServiceImpl#getVisitsByPatientAndDay(org.openmrs.Patient, java.util.Date)
+	 */
+	@Test
+	public void getVisitsByPatientAndDay_shouldGetVisitsOnDayWithPatient() {
+		Patient patient = Context.getPatientService().getPatient(7);
+		VisitType outpatientType = Context.getVisitService().getVisitTypeByUuid(MetadataConstants.OUTPATIENT_VISIT_TYPE_UUID);
+
+		// Save visit from 10-11am and another from 12 onwards (no end)
+		Visit visit1 = TestUtils.saveVisit(patient, outpatientType, TestUtils.date(2012, 1, 1, 10, 0, 0), TestUtils.date(2012, 1, 1, 11, 0, 0));
+		Visit visit2 = TestUtils.saveVisit(patient, outpatientType, TestUtils.date(2012, 1, 1, 12, 0, 0), null);
+
+		// Check no visits on day before
+		List<Visit> visits = service.getVisitsByPatientAndDay(patient, TestUtils.date(2011, 12, 31));
+		Assert.assertEquals(0, visits.size());
+
+		// Check two visits on that day
+		visits = service.getVisitsByPatientAndDay(patient, TestUtils.date(2012, 1, 1));
+		Assert.assertEquals(2, visits.size());
+		Assert.assertEquals(visit1, visits.get(0));
+		Assert.assertEquals(visit2, visits.get(1));
+
+		// Check only the ongoing visit the next day
+		visits = service.getVisitsByPatientAndDay(patient, TestUtils.date(2012, 1, 2));
+		Assert.assertEquals(1, visits.size());
+		Assert.assertEquals(visit2, visits.get(0));
+	}
+
+	/**
+	 * @see KenyaEmrServiceImpl#getLocations(String, org.openmrs.Location, java.util.Map, boolean, Integer, Integer)
 	 */
 	@Test
 	public void getLocations_shouldGetAllLocationsWithMatchingArguments() {
@@ -146,6 +176,9 @@ public class KenyaEmrServiceTest extends BaseModuleContextSensitiveTest {
 		Assert.assertEquals(new Integer(3), locations.get(0).getLocationId());
 	}
 
+	/**
+	 * @see KenyaEmrServiceImpl#getLocations(String, org.openmrs.Location, java.util.Map, boolean, Integer, Integer)
+	 */
 	@Test
 	public void getLocations_shouldGetAllLocationsWithAllGivenAttributeValues() {
 		LocationAttributeType mflCodeAttrType = Context.getLocationService().getLocationAttributeTypeByUuid(MetadataConstants.MASTER_FACILITY_CODE_LOCATION_ATTRIBUTE_TYPE_UUID);
@@ -184,7 +217,7 @@ public class KenyaEmrServiceTest extends BaseModuleContextSensitiveTest {
 	}
 
 	/**
-	 * @see KenyaEmrService#getLocations(String, org.openmrs.Location, java.util.Map, boolean, Integer, Integer)
+	 * @see KenyaEmrServiceImpl#getLocations(String, org.openmrs.Location, java.util.Map, boolean, Integer, Integer)
 	 */
 	@Test
 	public void getLocations_shouldNotFindAnyLocationsIfNoneHaveGivenAttributeValues() {

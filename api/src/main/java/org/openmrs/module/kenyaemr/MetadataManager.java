@@ -15,7 +15,9 @@ package org.openmrs.module.kenyaemr;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.GlobalProperty;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyaemr.datatype.LocationDatatype;
 import org.openmrs.module.metadatasharing.ImportConfig;
 import org.openmrs.module.metadatasharing.ImportMode;
 import org.openmrs.module.metadatasharing.ImportedPackage;
@@ -79,6 +81,17 @@ public class MetadataManager {
 	}
 
 	/**
+	 * Setup required global properties
+	 */
+	public void setupGlobalProperties() {
+		ensureGlobalPropertyExists(
+				KenyaEmrConstants.GP_DEFAULT_LOCATION,
+				"The facility for which this installation is configured. Visits and encounters will be created with this location value.",
+				LocationDatatype.class
+		);
+	}
+
+	/**
 	 * Gets all imported packages in the system
 	 * @return the packages
 	 */
@@ -123,6 +136,23 @@ public class MetadataManager {
 		} catch (Exception ex) {
 			log.error("Failed to install metadata package " + filename, ex);
 			return false;
+		}
+	}
+
+	/**
+	 * Creates an empty global property if it doesn't exist
+	 * @param property the property name
+	 * @param description the property description
+	 * @param dataType the property value data type
+	 */
+	protected void ensureGlobalPropertyExists(String property, String description, Class dataType) {
+		GlobalProperty gp = Context.getAdministrationService().getGlobalPropertyObject(property);
+		if (gp == null) {
+			gp = new GlobalProperty();
+			gp.setProperty(property);
+			gp.setDescription(description);
+			gp.setDatatypeClassname(dataType.getName());
+			Context.getAdministrationService().saveGlobalProperty(gp);
 		}
 	}
 }

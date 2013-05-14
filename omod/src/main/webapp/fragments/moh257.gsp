@@ -59,7 +59,7 @@
 							"visitType": [ type: "radio" ],
 					],
 					fragmentProvider: "kenyaemr",
-					fragment: "medicalChartMoh257",
+					fragment: "moh257",
 					action: "createRetrospectiveVisit",
 					successCallbacks: [ onAddVisitSuccess ],
 					submitLabel: ui.message("general.submit"),
