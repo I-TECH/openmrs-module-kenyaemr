@@ -18,7 +18,6 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
-import org.openmrs.Concept;
 import org.openmrs.Program;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;

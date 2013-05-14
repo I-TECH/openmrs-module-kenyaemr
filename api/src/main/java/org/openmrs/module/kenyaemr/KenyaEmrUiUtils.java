@@ -18,8 +18,6 @@ import org.joda.time.Period;
 import org.joda.time.PeriodType;
 import org.openmrs.*;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.htmlformentry.HtmlForm;
-import org.openmrs.module.htmlformentry.HtmlFormEntryService;
 import org.openmrs.module.kenyaemr.form.FormDescriptor;
 import org.openmrs.module.kenyaemr.regimen.*;
 import org.openmrs.module.kenyaemr.util.KenyaEmrUtils;

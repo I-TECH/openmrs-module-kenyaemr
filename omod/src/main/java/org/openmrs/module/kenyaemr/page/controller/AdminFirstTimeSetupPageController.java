@@ -11,12 +11,14 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.kenyaemr.page.controller;
 
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.idgen.IdentifierSource;
+import org.openmrs.module.kenyaemr.KenyaEmr;
 import org.openmrs.module.kenyaemr.KenyaEmrConstants;
 import org.openmrs.module.kenyaemr.api.ConfigurationRequiredException;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
@@ -33,7 +35,9 @@ import javax.servlet.http.HttpSession;
  */
 public class AdminFirstTimeSetupPageController {
 	
-	public String controller(HttpSession session, PageModel model, UiUtils ui, @SpringBean KenyaUiUtils kenyaUi,
+	public String controller(HttpSession session, PageModel model, UiUtils ui,
+							 @SpringBean KenyaUiUtils kenyaUi,
+							 @SpringBean KenyaEmr emr,
 	                         @RequestParam(required = false, value = "defaultLocation") Location defaultLocation,
 	                         @RequestParam(required = false, value = "mrnIdentifierSourceStart") String mrnIdentifierSourceStart,
 	                         @RequestParam(required = false, value = "hivIdentifierSourceStart") String hivIdentifierSourceStart) {
@@ -46,10 +50,10 @@ public class AdminFirstTimeSetupPageController {
 				service.setDefaultLocation(defaultLocation);
 			}
 			if (StringUtils.isNotEmpty(mrnIdentifierSourceStart)) {
-				service.setupMrnIdentifierSource(mrnIdentifierSourceStart);
+				emr.getIdentifierManager().setupMrnIdentifierSource(mrnIdentifierSourceStart);
 			}
 			if (StringUtils.isNotEmpty(hivIdentifierSourceStart)) {
-				service.setupHivUniqueIdentifierSource(hivIdentifierSourceStart);
+				emr.getIdentifierManager().setupHivUniqueIdentifierSource(hivIdentifierSourceStart);
 			}
 			kenyaUi.notifySuccess(session, "First-Time Setup Completed");
 
@@ -68,14 +72,14 @@ public class AdminFirstTimeSetupPageController {
 		
 		IdentifierSource mrnIdentifierSource = null;
 		try {
-			mrnIdentifierSource = service.getMrnIdentifierSource();
+			mrnIdentifierSource = emr.getIdentifierManager().getMrnIdentifierSource();
 		} catch (ConfigurationRequiredException ex) {
 			// pass
 		}
 		
 		IdentifierSource hivIdentifierSource = null;
 		try {
-			hivIdentifierSource = service.getHivUniqueIdentifierSource();
+			hivIdentifierSource = emr.getIdentifierManager().getHivUniqueIdentifierSource();
 		} catch (ConfigurationRequiredException ex) {
 			// pass
 		}

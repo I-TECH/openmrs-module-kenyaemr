@@ -11,27 +11,15 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.kenyaemr.page.controller;
 
-import org.apache.commons.lang.StringUtils;
-import org.openmrs.Person;
 import org.openmrs.User;
 import org.openmrs.api.APIAuthenticationException;
-import org.openmrs.api.PasswordException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appframework.AppUiUtil;
-import org.openmrs.module.kenyaemr.ValidatingCommandObject;
-import org.openmrs.ui.framework.UiUtils;
-import org.openmrs.ui.framework.annotation.BindParams;
-import org.openmrs.ui.framework.annotation.MethodParam;
-import org.openmrs.ui.framework.fragment.action.SuccessResult;
 import org.openmrs.ui.framework.page.PageModel;
 import org.openmrs.ui.framework.session.Session;
-import org.openmrs.util.OpenmrsUtil;
-import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.RequestParam;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * My profile page controller

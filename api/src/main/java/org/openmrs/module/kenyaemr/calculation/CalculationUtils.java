@@ -11,14 +11,13 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.kenyaemr.calculation;
 
 import org.openmrs.Concept;
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.api.context.Context;
-import org.openmrs.calculation.CalculationProvider;
-import org.openmrs.calculation.InvalidCalculationException;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.*;
 import org.openmrs.module.kenyaemr.KenyaEmr;
@@ -136,8 +135,7 @@ public class CalculationUtils {
 	 * @param calculationClass the calculation class
 	 * @param configuration the calculation configuration
 	 * @param patientId the patient id
-	 * @return th calculation result
-	 * @throws InvalidCalculationException if no calculation with that name exists
+	 * @return the calculation result
 	 */
 	public static CalculationResult evaluateForPatient(Class <? extends BaseEmrCalculation> calculationClass, String configuration, Integer patientId) {
 		BaseEmrCalculation calculation = CalculationManager.instantiateCalculation(calculationClass, configuration);

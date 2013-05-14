@@ -11,6 +11,7 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.kenyaemr.page.controller;
 
 import org.apache.commons.lang.StringUtils;
@@ -19,14 +20,12 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.appframework.AppUiUtil;
 import org.openmrs.module.kenyaemr.IPAccessSecurity;
 import org.openmrs.module.kenyaemr.KenyaEmrConstants;
-import org.openmrs.module.kenyaemr.KenyaEmrUiUtils;
 import org.openmrs.module.kenyaemr.KenyaEmrWebConstants;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.page.PageModel;
 import org.openmrs.ui.framework.session.Session;
 import org.openmrs.util.PrivilegeConstants;
-import org.openmrs.web.WebConstants;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;

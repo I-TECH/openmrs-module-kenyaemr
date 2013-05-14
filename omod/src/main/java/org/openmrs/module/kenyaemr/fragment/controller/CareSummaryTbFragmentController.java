@@ -16,12 +16,9 @@ package org.openmrs.module.kenyaemr.fragment.controller;
 
 import org.openmrs.Concept;
 import org.openmrs.Patient;
-import org.openmrs.calculation.InvalidCalculationException;
 import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.module.kenyaemr.KenyaEmr;
-import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
-import org.openmrs.module.kenyaemr.calculation.CalculationManager;
 import org.openmrs.module.kenyaemr.calculation.tb.TbDiseaseClassificationCalculation;
 import org.openmrs.module.kenyaemr.calculation.tb.TbPatientClassificationCalculation;
 import org.openmrs.module.kenyaemr.calculation.tb.TbTreatmentNumberCalculation;
@@ -41,8 +38,7 @@ public class CareSummaryTbFragmentController {
 	public void controller(@FragmentParam("patient") Patient patient,
 						   @FragmentParam("complete") Boolean complete,
 						   FragmentModel model,
-						   @SpringBean KenyaEmr emr)
-			throws InvalidCalculationException {
+						   @SpringBean KenyaEmr emr) {
 
 		Map<String, Object> calculationResults = new HashMap<String, Object>();
 

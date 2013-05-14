@@ -27,10 +27,6 @@ import org.openmrs.module.kenyaemr.datatype.LocationDatatype;
 import org.openmrs.module.kenyaemr.util.KenyaEmrUtils;
 
 import java.io.InputStream;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 /**
  * This class contains the logic that is run every time this module is either started or stopped.

@@ -20,7 +20,6 @@ import org.openmrs.Form;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.htmlformentry.HtmlFormEntryUtil;
-import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.kenyaemr.form.FormDescriptor.Frequency;
 import org.openmrs.module.kenyaemr.form.FormDescriptor.Gender;
 import org.openmrs.module.kenyaemr.form.handler.DynamicObsContainerTagHandler;

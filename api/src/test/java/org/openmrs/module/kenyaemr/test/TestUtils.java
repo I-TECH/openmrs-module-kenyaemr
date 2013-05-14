@@ -28,6 +28,7 @@ import org.openmrs.PatientIdentifier;
 import org.openmrs.PatientProgram;
 import org.openmrs.Program;
 import org.openmrs.api.context.Context;
+import org.openmrs.customdatatype.CustomDatatype;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.regimen.RegimenOrder;
 import org.openmrs.module.reporting.dataset.DataSet;
@@ -238,18 +239,35 @@ public class TestUtils {
 	}
 
 	/**
-	 * Saves a global property
+	 * Saves an untyped global property
 	 * @param property the property name
 	 * @param value the property value
-	 * @return
+	 * @return the global property
 	 */
-	public static GlobalProperty saveGlobalProperty(String property, Object value) {
+	public static GlobalProperty saveGlobalProperty(String property, String value) {
 		GlobalProperty gp = Context.getAdministrationService().getGlobalPropertyObject(property);
 		if (gp == null) {
 			gp = new GlobalProperty();
 			gp.setProperty(property);
 		}
 		gp.setPropertyValue(String.valueOf(value));
+		return Context.getAdministrationService().saveGlobalProperty(gp);
+	}
+
+	/**
+	 * Saves a typed global property
+	 * @param property the property name
+	 * @param value the property value
+	 * @return the global property
+	 */
+	public static GlobalProperty saveGlobalProperty(String property, Object value, Class<? extends CustomDatatype> datatypeClass) {
+		GlobalProperty gp = Context.getAdministrationService().getGlobalPropertyObject(property);
+		if (gp == null) {
+			gp = new GlobalProperty();
+			gp.setProperty(property);
+		}
+		gp.setValue(value);
+		gp.setDatatypeClassname(datatypeClass.getName());
 		return Context.getAdministrationService().saveGlobalProperty(gp);
 	}
 

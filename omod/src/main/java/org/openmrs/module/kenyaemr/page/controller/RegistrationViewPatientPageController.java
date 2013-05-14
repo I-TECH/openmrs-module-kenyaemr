@@ -11,10 +11,9 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.kenyaemr.page.controller;
 
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import org.openmrs.Patient;

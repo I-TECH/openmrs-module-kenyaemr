@@ -100,11 +100,13 @@ public class KenyaEmrUtilFragmentController {
 	 * @param comment the optional comment
 	 * @return simple object { value: identifier value }
 	 */
-	public SimpleObject nextHivUniquePatientNumber(@RequestParam(required = false, value = "comment") String comment) {
+	public SimpleObject nextHivUniquePatientNumber(
+			@SpringBean KenyaEmr emr,
+			@RequestParam(required = false, value = "comment") String comment) {
 		if (comment == null) {
 			comment = "Kenya EMR UI";
 		}
-		String id = Context.getService(KenyaEmrService.class).getNextHivUniquePatientNumber(comment);
+		String id = emr.getIdentifierManager().getNextHivUniquePatientNumber(comment);
 		return SimpleObject.create("value", id);
 	}
 

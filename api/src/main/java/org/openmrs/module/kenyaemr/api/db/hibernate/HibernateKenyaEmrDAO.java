@@ -11,19 +11,16 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.kenyaemr.api.db.hibernate;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.*;
 import org.openmrs.Location;
-import org.openmrs.LocationAttribute;
 import org.openmrs.LocationAttributeType;
-import org.openmrs.api.db.hibernate.AttributeMatcherPredicate;
-import org.openmrs.attribute.Attribute;
 import org.openmrs.attribute.AttributeType;
 import org.openmrs.module.kenyaemr.api.db.KenyaEmrDAO;
 
@@ -37,10 +34,18 @@ public class HibernateKenyaEmrDAO implements KenyaEmrDAO {
 
 	private SessionFactory sessionFactory;
 
+	/**
+	 * Sets the session factory
+	 * @param sessionFactory the session factory
+	 */
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
 	}
 
+	/**
+	 * Convenience method to get current session
+	 * @return the session
+	 */
 	private Session getCurrentSession() {
 		return sessionFactory.getCurrentSession();
 	}

@@ -44,10 +44,10 @@
 		<htmlformentry19extVersion>0.9</htmlformentry19extVersion>
 		<moduledistroVersion>1.2</moduledistroVersion>
 		<calculationVersion>1.0</calculationVersion>
-		<reportingVersion>0.7.5</reportingVersion>
+		<reportingVersion>0.7.6</reportingVersion>
 		<htmlwidgetsVersion>1.6.4</htmlwidgetsVersion>
 		<serializationxstreamVersion>0.2.7</serializationxstreamVersion>
-		<idgenVersion>2.1</idgenVersion>
+		<idgenVersion>2.3</idgenVersion>
 		<logicVersion>0.5.2</logicVersion>
 		<webservicesRestVersion>1.1</webservicesRestVersion>
 		<webservicesRestVersionRepo>1.1.29293</webservicesRestVersionRepo>
@@ -146,7 +146,7 @@
 
 		<dependency>
 			<groupId>org.openmrs.module</groupId>
-			<artifactId>idgen</artifactId>
+			<artifactId>idgen-api</artifactId>
 			<version>${idgenVersion}</version>
 			<scope>provided</scope>
 		</dependency>
@@ -164,14 +164,6 @@
 			<version>${reportingrestVersion}</version>
 			<scope>provided</scope>
 		</dependency>
-		<!--		
-		<dependency>
-			<groupId>org.openmrs.module</groupId>
-			<artifactId>idgen-api</artifactId>
-			<version>2.2</version>
-			<scope>provided</scope>
-		</dependency>
-		 -->
 
 		<!-- End OpenMRS modules -->
 
