@@ -33,7 +33,7 @@ public class KenyaEmrConstants {
 	/**
 	 * Required concepts version
 	 */
-	public static final String REQUIRED_CONCEPTS_VERSION = "20130429";
+	public static final String REQUIRED_CONCEPTS_VERSION = "20130513";
 
 	/**
 	 * Number of days without an encounter before a patient is consider lost to follow up

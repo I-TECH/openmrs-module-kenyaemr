@@ -30,6 +30,7 @@ import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.KenyaEmrConstants;
 import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.kenyaemr.calculation.BaseAlertCalculation;
+import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyaemr.calculation.BooleanResult;
 import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
 
@@ -39,15 +40,15 @@ import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
  * duration probably 2 weeks during the 2 weeks then there should have been no
  * sputum results recorded
  */
-public class NeedsSputumCalculation extends BaseAlertCalculation {
+public class NeedsSputumCalculation extends BaseEmrCalculation /*BaseAlertCalculation*/ {
 
 	/**
 	 * @see org.openmrs.module.kenyaemr.calculation.BaseAlertCalculation#getAlertMessage()
 	 */
-	@Override
-	public String getAlertMessage() {
-		return "Due for Sputum";
-	}
+	//@Override
+	//public String getAlertMessage() {
+	//	return "Due for Sputum";
+	//}
 
 	/**
 	 * @see org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation#getName()
