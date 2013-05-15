@@ -77,6 +77,9 @@ public class MetadataConstants {
 	public static final String HIV_PROGRAM_UUID = "dfdc6d40-2f2f-463d-ba90-cc97350441a8";
 	public static final String TB_PROGRAM_UUID = "9f144a34-3a4a-44a9-8486-6b7af6cc64f6";
 
+	// Providers
+	public static final String UNKNOWN_PROVIDER_UUID = "ae01b8ff-a4cc-4012-bcf7-72359e852e14";
+
 	// Other
 	public static final Locale LOCALE = Locale.ENGLISH;
 

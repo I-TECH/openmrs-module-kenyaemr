@@ -162,27 +162,11 @@
 		});
 	</script>
 
-	<div class="patient-details">
-		<table width="100%">
-			<tr>
-				<td>Name: <lookup class="value" expression="patient.personName"/></td>
-				<td>Gender: <lookup class="value" expression="patient.gender"/></td>
-				<td>Birthdate: <lookup class="value" complexExpression="#if( \$patient.birthdateEstimated ) ~#end"/> <lookup class="value" expression="patient.birthdate"/>
-				</td>
-			</tr>
-		</table>
+	<!-- For now HFE requires encounter location and providers, so set these to the "Unknown" values and hide them (see HTML-471) -->
+	<div style="display: none">
+		<encounterProviderAndRole encounterRole="a0b03050-c99b-11e0-9572-0800200c9a66" default="ae01b8ff-a4cc-4012-bcf7-72359e852e14"  />
+		<encounterLocation default="8d6c993e-c2cc-11de-8d13-0010c6dffd0f" />
 	</div>
-
-	<div class="encounter-details">
-		<table width="100%">
-			<tr>
-				<td>Provider: <encounterProviderAndRole encounterRole="a0b03050-c99b-11e0-9572-0800200c9a66" default="currentUser" /></td>
-				<td>Location: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete" /></td>
-			</tr>
-		</table>
-	</div>
-
-	<br />
 
 	<table class="moh257" align="center">
 		<tbody>
