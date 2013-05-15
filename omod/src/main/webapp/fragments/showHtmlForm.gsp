@@ -41,6 +41,7 @@ def returnUrl = config.returnUrl ?: ui.thisUrl()
 	\$j = jQuery;
 
 	// These might be used by in-form scripts
+	var ke_formMode = 'VIEW';
 	var propertyAccessorInfo = new Array();
 	var beforeValidation = new Array();
 	var beforeSubmit = new Array();
@@ -57,7 +58,9 @@ def returnUrl = config.returnUrl ?: ui.thisUrl()
 	 */
 	function getValue(elementAndProperty) {
 		var fieldId = elementAndProperty.split(".")[0];
-		var fieldValue = jq('#' + fieldId + ' span.value').text(); // Value from span text
+		var fieldValue = jq('#' + fieldId + ' span.value').map(function() {
+			return jq(this).text();
+		}).get().join(' '); // Value from span.value texts
 
 		if (fieldId == 'encounter-date') {
 			return jq.datepicker.formatDate(jq.datepicker.W3C, new Date(fieldValue)); // Re-format date
