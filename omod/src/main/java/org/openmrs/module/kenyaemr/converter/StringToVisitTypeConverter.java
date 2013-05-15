@@ -11,13 +11,14 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.kenyaemr.converter;
 
+import org.apache.commons.lang3.StringUtils;
 import org.openmrs.VisitType;
 import org.openmrs.api.context.Context;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
-
 
 /**
  * Converts String to VisitType, interpreting it as a VisitType.id
@@ -26,11 +27,14 @@ import org.springframework.stereotype.Component;
 public class StringToVisitTypeConverter implements Converter<String, VisitType> {
 
 	/**
-     * @see org.springframework.core.convert.converter.Converter#convert(java.lang.Object)
-     */
-    @Override
-    public VisitType convert(String source) {
-	    return Context.getVisitService().getVisitType(Integer.valueOf(source));
-    }
-	
+	 * @see org.springframework.core.convert.converter.Converter#convert(java.lang.Object)
+	 */
+	@Override
+	public VisitType convert(String source) {
+		if (StringUtils.isEmpty(source)) {
+			return null;
+		}
+
+		return Context.getVisitService().getVisitType(Integer.valueOf(source));
+	}
 }
