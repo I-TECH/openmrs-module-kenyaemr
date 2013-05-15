@@ -22,19 +22,40 @@
 	<script type="text/javascript">
 		$j(document).ready(function() {
 			var tdFortreatmentOutCome_ttle =  document.getElementById("id_treatment_outcome_date_ttle");
-			var tdFortreatmentOutCome_value=  document.getElementById("id_treatment_outcome_date_value");
-
-			//control the date on selection of options
-			$j("#treatment_outcome select").change(function() {
-				var value = '';
-				value += $j(this).val();
-				if (!value) {
+			var tdFortreatmentOutCome_value =  document.getElementById("id_treatment_outcome_date_value");
+			var transferout = document.getElementById("transferout");
+			// when it loading for the first time
+			if (getValue('treatment_outcome.value') == "") {
 					tdFortreatmentOutCome_ttle.style.display = 'none';
 					tdFortreatmentOutCome_value.style.display = 'none';
+					transferout.style.display = 'none';
 				}
-				else{
+				else {
 					tdFortreatmentOutCome_ttle.style.display = 'inline';
 					tdFortreatmentOutCome_value.style.display = 'inline';
+				}
+				if (getValue('treatment_outcome.value') == 159492){
+					transferout.style.display = 'inline';
+				}
+				else{
+					transferout.style.display = 'none';
+				}
+			//control the date on selection of options
+			$j("#treatment_outcome select").change(function() {
+				if (getValue('treatment_outcome.value') == "") {
+					tdFortreatmentOutCome_ttle.style.display = 'none';
+					tdFortreatmentOutCome_value.style.display = 'none';
+					transferout.style.display = 'none';
+				}
+				else {
+					tdFortreatmentOutCome_ttle.style.display = 'inline';
+					tdFortreatmentOutCome_value.style.display = 'inline';
+				}
+				if (getValue('treatment_outcome.value') == 159492){
+					transferout.style.display = 'inline';
+				}
+				else{
+					transferout.style.display = 'none';
 				}
 			});
 
@@ -71,7 +92,7 @@
 		<table class="baseline-aligned" width="auto" border="0" cellspacing="10">
 			<tr>
 				<td>Treatment Outcome</td>
-				<td><obs conceptId="159786AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  style="dropdown" id="treatment_outcome"  answerConceptIds="159791AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160035AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159874AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160034AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160031AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159492AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Cured(Sm. Negative),Treatment Completed(no smear result),Failure(Sm. Positive),Dead,Defaulted,Transferred Out"/></td>
+				<td><obs conceptId="159786AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  style="dropdown" id="treatment_outcome"  answerConceptIds="159791AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160035AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159874AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160034AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160031AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159492AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Cured(Smear. Negative),Treatment Completed(no smear result),Failure(Smear. Positive),Dead,Defaulted,Transferred Out"/></td>
 
 				<td id ="id_treatment_outcome_date_ttle">Treatment Outcome date</td>
 				<td id ="id_treatment_outcome_date_value"><obs conceptId="159787AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
@@ -79,51 +100,25 @@
 			</tr>
 		</table>
 		<table  class="baseline-aligned" width="auto" border="0" cellspacing="10">
-			<tr>
-				<td colspan="4">
-					<b>Clinical Notes:</b>
+			<tr id="transferout">
+				<td>
+				<table>
+					<td>Transferred out to:</td>
+					<td><obs conceptId="159495AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "/></td>
+				</table>
 				</td>
+				<td></td>
 			</tr>
 			<tr>
 				<td>
-					<obs conceptId="160029AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="135595AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Loss of Appetite" style="checkbox" /><br />
-					<obs conceptId="160029AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5544AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Weight gain" style="checkbox" /><br />
-					<obs conceptId="160029AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="879AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Pruritus/Itching" style="checkbox" /><br />
-					<obs conceptId="160029AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="143264AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Cough" style="checkbox" /><br />
-					<obs conceptId="160029AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="141723AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Drug-Induced Hepatitis" style="checkbox" /><br />
-					<obs conceptId="160029AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="80AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Joint pain" style="checkbox" />
-
+					<table>
+						<td valign="top"><b>Notes:</b></td>
+						<td><obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="5" cols="50" /></td>
+					</table>
+					
 				</td>
 				<td>
-					<obs conceptId="160029AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="135488AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Lymphadenopathy" style="checkbox" /><br />
-					<obs conceptId="160029AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="136162AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Lactic Acidosis" style="checkbox" /><br />
-					<obs conceptId="160029AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="133027AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Night Sweats" style="checkbox" /><br />
-					<obs conceptId="160029AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="142412AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Diarrhoea" style="checkbox" /><br />
-					<obs conceptId="160029AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="122983AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Vomiting" style="checkbox" /><br />
-					<obs conceptId="160029AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="159438AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Well appearing" style="checkbox" />
-				</td>
-				<td>
-					<obs conceptId="160029AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="151AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Abdominal Pain" style="checkbox" /><br />
-					<obs conceptId="160029AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="140238AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Fever" style="checkbox" /><br />
-					<obs conceptId="160029AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5008AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Hepatomegaly" style="checkbox" /><br />
-					<obs conceptId="160029AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="120749AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Chest Pain" style="checkbox" /><br />
-					<obs conceptId="160029AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="832AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Weight loss" style="checkbox" /><br />
-					<obs conceptId="160029AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="139084AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Headache" style="checkbox" />
-				</td>
-				<td>
-					<obs conceptId="160029AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="512AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Rash" style="checkbox" /><br />
-					<obs conceptId="160029AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="118983AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Peripheral Neuropathy" style="checkbox" /><br />
-					<obs conceptId="160029AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160028AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="IRIS" style="checkbox" /><br />
-					<obs conceptId="160029AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1273AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Patient Hospitalized Location" style="checkbox" /><br />
-					<obs conceptId="160029AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="122496AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Difficulty Breathing" style="checkbox" /><br />
-				</td>
-			</tr>
-			<tr id="specify_other">
-				<td>
-					Other ()Specify) 
-				</td>
-				<td colspan="3">
-					<obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="5" cols="50" />
+					
 				</td>
 			</tr>
 		</table>
