@@ -11,13 +11,14 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.kenyaemr.converter;
 
+import org.apache.commons.lang3.StringUtils;
 import org.openmrs.Role;
 import org.openmrs.api.context.Context;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
-
 
 /**
  * Convert from {@link String} to {@link Role}, interpreting it as a Role.role
@@ -26,11 +27,14 @@ import org.springframework.stereotype.Component;
 public class StringToRoleConverter implements Converter<String, Role> {
 
 	/**
-     * @see org.springframework.core.convert.converter.Converter#convert(java.lang.Object)
-     */
-    @Override
-    public Role convert(String source) {
-	    return Context.getUserService().getRole(source);
-    }
-	
+	 * @see org.springframework.core.convert.converter.Converter#convert(java.lang.Object)
+	 */
+	@Override
+	public Role convert(String source) {
+		if (StringUtils.isEmpty(source)) {
+			return null;
+		}
+
+		return Context.getUserService().getRole(source);
+	}
 }

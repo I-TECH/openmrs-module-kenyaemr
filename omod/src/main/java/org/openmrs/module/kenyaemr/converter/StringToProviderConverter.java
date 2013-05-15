@@ -11,13 +11,14 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.kenyaemr.converter;
 
+import org.apache.commons.lang3.StringUtils;
 import org.openmrs.Provider;
 import org.openmrs.api.context.Context;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
-
 
 /**
  * Convert from {@link String} to {@link Provider}, interpreting it as a Provider.providerId
@@ -26,11 +27,14 @@ import org.springframework.stereotype.Component;
 public class StringToProviderConverter implements Converter<String, Provider> {
 
 	/**
-     * @see org.springframework.core.convert.converter.Converter#convert(java.lang.Object)
-     */
-    @Override
-    public Provider convert(String source) {
-	    return Context.getProviderService().getProvider(Integer.valueOf(source));
-    }
-	
+	 * @see org.springframework.core.convert.converter.Converter#convert(java.lang.Object)
+	 */
+	@Override
+	public Provider convert(String source) {
+		if (StringUtils.isEmpty(source)) {
+			return null;
+		}
+
+		return Context.getProviderService().getProvider(Integer.valueOf(source));
+	}
 }
