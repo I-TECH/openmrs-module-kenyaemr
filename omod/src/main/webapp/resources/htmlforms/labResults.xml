@@ -26,8 +26,17 @@
 				sensitivityLbl.style.display = 'inline';
 			}
 			else{
-				sensitivityLbl.style.display = 'none'
+				sensitivityLbl.style.display = 'none';
 			}
+			
+			getField('growth_no_growth.value').change(function() {
+				if (getValue('growth_no_growth.value') == 703) {
+					sensitivityLbl.style.display = 'inline';
+				}
+				else{
+				sensitivityLbl.style.display = 'none';
+				}
+			});
 			
 		});
 	</script>
@@ -53,12 +62,12 @@
 		</table>
 	</div>
 
-	<table style="width: 100%; height: 44px;" border="0" align="center">
+	<table style="width: 80%; height: 44px;" border="0" align="center">
 		<tbody>
 			<tr>
 				
-				<td width="50%" style="font-family: Trebuchet MS,serif; font-size: text-align: left;">
-						<table style="width: 80%; height: 44px;" border="0" align="center" cellpadding="0" cellspacing="0">
+				<td style="font-family: Trebuchet MS,serif; font-size: text-align: left;">
+						<table style="width: 100%; height: 44px;" border="0" align="center" cellpadding="5" cellspacing="2">
 							<tr>
 								<th width="1%" style="background-color: #696969; color: #ffffff;"> </th>
 								<th width="2%" style="background-color: #696969; color: #ffffff;">Test</th>
@@ -147,9 +156,10 @@
 									</td>
 									<td><obs conceptId="159964AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
 								</tr>
-								<span id="sensitivity">
 								<tr>
-										<td colspan="4" align="center">
+										<td></td>
+										<td></td>
+										<td align="center" id="sensitivity">
 											Resistant (R)
 												<obs conceptId="159956AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="84360AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="S" style="checkbox" />
 												<obs conceptId="159956AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="767AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="R" style="checkbox" />
@@ -162,8 +172,8 @@
 												<obs conceptId="159958AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="78280AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="INH" style="checkbox" />
 												<obs conceptId="159958AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="75948AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="E" style="checkbox" />
 										</td>
+										<td></td>
 								</tr>
-								</span>
 							</obsgroup>
 						</table>
 				</td>
