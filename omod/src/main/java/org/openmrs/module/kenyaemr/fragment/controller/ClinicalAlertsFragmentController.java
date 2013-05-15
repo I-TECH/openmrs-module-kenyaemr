@@ -11,11 +11,15 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.kenyaemr.fragment.controller;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResult;
@@ -30,30 +34,39 @@ import org.springframework.web.bind.annotation.RequestParam;
  * Controller for requests for clinical alerts
  */
 public class ClinicalAlertsFragmentController {
-	
+
+	protected static final Log log = LogFactory.getLog(ClinicalAlertsFragmentController.class);
+
+	/**
+	 * Do nothing, this will load via ajax
+	 */
 	public void controller() {
-		// Do nothing, this will load via ajax
 	}
 
 	/**
-	 * Gets the clinical alerts for the given patient
-	 * @param ptId the patient id
-	 * @param ui the UI utils
+	 * Gets the clinical alerts for the given patient. If any of the calculations throws an exception, this will return a single
+	 * alert message with the name of the offending calculation
+	 * @param patientId the patient id
 	 * @param emr the Kenya EMR
 	 * @return the alerts as simple objects
 	 */
-	public List<SimpleObject> getAlerts(@RequestParam("patientId") Integer ptId,  UiUtils ui, @SpringBean KenyaEmr emr) {
+	public List<SimpleObject> getAlerts(@RequestParam("patientId") Integer patientId, @SpringBean KenyaEmr emr) {
 
 		List<SimpleObject> alerts = new ArrayList<SimpleObject>();
 
 		// Gather all alert calculations that evaluate to true
 		for (BaseAlertCalculation calc : emr.getCalculationManager().getAlertCalculations()) {
-			CalculationResult result = Context.getService(PatientCalculationService.class).evaluate(ptId, calc);
-			if (result != null && (Boolean) result.getValue()) {
-				alerts.add(SimpleObject.create("message", calc.getAlertMessage()));
+			try {
+				CalculationResult result = Context.getService(PatientCalculationService.class).evaluate(patientId, calc);
+				if (result != null && (Boolean) result.getValue()) {
+						alerts.add(SimpleObject.create("message", calc.getAlertMessage()));
+				}
+			}
+			catch (Exception ex) {
+				log.error("Error evaluating " + calc.getClass(), ex);
+				return Collections.singletonList(SimpleObject.create("message", "ERROR EVALUATING '" + calc.getAlertMessage() + "'"));
 			}
 		}
-
 		return alerts;
 	}
 }

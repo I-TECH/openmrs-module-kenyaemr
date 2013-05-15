@@ -54,7 +54,7 @@ public class NeedsSputumCalculation extends BaseAlertCalculation {
 	 */
 	@Override
 	public String getName() {
-		return "Patients Due for Sputum";
+		return "Patients Due for Sputum Test";
 	}
 
 	@Override
