@@ -30,7 +30,6 @@ import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.KenyaEmrConstants;
 import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.kenyaemr.calculation.BaseAlertCalculation;
-import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyaemr.calculation.BooleanResult;
 import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
 
@@ -40,15 +39,15 @@ import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
  * duration probably 2 weeks during the 2 weeks then there should have been no
  * sputum results recorded
  */
-public class NeedsSputumCalculation extends BaseEmrCalculation /*BaseAlertCalculation*/ {
+public class NeedsSputumCalculation extends BaseAlertCalculation {
 
 	/**
 	 * @see org.openmrs.module.kenyaemr.calculation.BaseAlertCalculation#getAlertMessage()
 	 */
-	//@Override
-	//public String getAlertMessage() {
-	//	return "Due for Sputum";
-	//}
+	@Override
+	public String getAlertMessage() {
+		return "Due for Sputum";
+	}
 
 	/**
 	 * @see org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation#getName()
@@ -146,6 +145,8 @@ public class NeedsSputumCalculation extends BaseEmrCalculation /*BaseAlertCalcul
 
 				if ((resultsForMonthZero != null)
 						&& (treatmentStartDateObs != null)
+						&& (diseaseClassification != null)
+						&& (tbResults != null)
 						&& (diseaseClassification.getValue().getValueCoded()
 								.equals(pulmonaryTb))
 						&& (tbResults.getValue().getValueCoded()
@@ -160,7 +161,8 @@ public class NeedsSputumCalculation extends BaseEmrCalculation /*BaseAlertCalcul
 					// sputum in month 2,5 and 6
 					// repeating sputum test at month 2 for new patient
 					// classification
-					if ((patientClassification.getValue().getValueCoded()
+					if ((patientClassification != null)
+							&& (patientClassification.getValue().getValueCoded()
 							.equals(smearPositiveNew))
 							&& (numberOfDaysSinceTreatmentStarted >= KenyaEmrConstants.MONTH_TWO_SPUTUM_TEST)) {
 						// check for the first obs since
@@ -190,7 +192,8 @@ public class NeedsSputumCalculation extends BaseEmrCalculation /*BaseAlertCalcul
 
 					}
 					// Repeat for month 5 for new patient classification
-					if ((patientClassification.getValue().getValueCoded()
+					if ((patientClassification != null)
+							&& (patientClassification.getValue().getValueCoded()
 							.equals(smearPositiveNew))
 							&& (numberOfDaysSinceTreatmentStarted >= KenyaEmrConstants.MONTH_FIVE_SPUTUM_TEST)) {
 						// get the date at month 5 since treatment started
@@ -217,7 +220,8 @@ public class NeedsSputumCalculation extends BaseEmrCalculation /*BaseAlertCalcul
 					// Repeat for month 6 for new patient classification and
 					// sputum
 					// is said to be completed
-					if ((patientClassification.getValue().getValueCoded()
+					if ((patientClassification != null)
+							&& (patientClassification.getValue().getValueCoded()
 							.equals(smearPositiveNew))
 							&& (numberOfDaysSinceTreatmentStarted >= KenyaEmrConstants.MONTH_SIX_SPUTUM_TEST)) {
 						// get the date at month 6 since treatment started
@@ -246,12 +250,13 @@ public class NeedsSputumCalculation extends BaseEmrCalculation /*BaseAlertCalcul
 					// classification smear positive relapse, failure and
 					// resumed
 					// test repeat in month 3,5 and 8
-					if ((patientClassification.getValue().getValueCoded()
+					if ((patientClassification != null)
+							&& ((patientClassification.getValue().getValueCoded()
 							.equals(relapseSmearPositive))
 							|| (patientClassification.getValue().getValueCoded()
 									.equals(treatmentFailure))
 							|| (patientClassification.getValue().getValueCoded()
-									.equals(retreatmentAfterDefault))) {
+									.equals(retreatmentAfterDefault)))) {
 						// check for the days elapsed since treatment was commenced
 						// will target 3rd month
 						if (numberOfDaysSinceTreatmentStarted >= KenyaEmrConstants.MONTH_THREE_SPUTUM_TEST) {
