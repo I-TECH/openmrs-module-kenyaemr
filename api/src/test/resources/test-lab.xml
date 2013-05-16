@@ -1,0 +1,14 @@
+<!--
+	Defines the Kenya EMR laboratory tests
+-->
+<lab xmlns="http://www.kenyaemr.org/lab">
+	<tests>
+		<category name="category1">
+			<test concept="5497AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><!-- CD4 COUNT -->
+			<test concept="730AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" name="test-name" /><!-- CD4 PERCENT -->
+		</category>
+		<category name="category2">
+			<test concept="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><!-- FREE TEXT -->
+		</category>
+	</tests>
+</lab>

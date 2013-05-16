@@ -29,6 +29,7 @@ import org.openmrs.module.htmlformentry.element.HtmlGeneratorElement;
 import org.openmrs.module.kenyaemr.KenyaEmr;
 import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.kenyaemr.lab.LabManager;
+import org.openmrs.module.kenyaemr.lab.LabTestDefinition;
 import org.openmrs.module.kenyaemr.util.KenyaEmrUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -95,9 +96,9 @@ public class LabTestPickerSubmissionElement implements HtmlGeneratorElement, For
 			for (String category : labManager.getCategories()) {
 				sb.append("    <optgroup label=\"" + category + "\">\n");
 
-				for (Concept testConcept : labManager.getTests(category)) {
-					if (!excludeTests.contains(testConcept)) {
-						sb.append("      <option value=\"" + testConcept.getConceptId() + "\">" + testConcept.getPreferredName(MetadataConstants.LOCALE).getName() + "</option>\n");
+				for (LabTestDefinition labTest : labManager.getTests(category)) {
+					if (!excludeTests.contains(labTest.getConcept())) {
+						sb.append("      <option value=\"" + labTest.getConcept().getConceptId() + "\">" + labTest.getName() + "</option>\n");
 					}
 				}
 

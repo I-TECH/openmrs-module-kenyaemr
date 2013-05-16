@@ -14,6 +14,7 @@
 
 package org.openmrs.module.kenyaemr.lab;
 
+import org.apache.commons.lang3.StringUtils;
 import org.openmrs.Concept;
 import org.openmrs.api.context.Context;
 import org.openmrs.util.OpenmrsUtil;
@@ -34,43 +35,62 @@ import java.util.List;
 import java.util.Map;
 
 /**
- *
+ * Lab manager
  */
 @Component
 public class LabManager {
 
-	private Map<String, List<Integer>> tests = new LinkedHashMap<String, List<Integer>>();
+	private Map<String, List<LabTestDefinition>> tests = new LinkedHashMap<String, List<LabTestDefinition>>();
 
+	/**
+	 * Gets the categories
+	 * @return the list of categories
+	 */
 	public List<String> getCategories() {
 		List<String> categories = new ArrayList<String>();
 		categories.addAll(tests.keySet());
 		return categories;
 	}
 
-	public List<Concept> getTests(String category) {
-		List<Concept> testsForCategory = new ArrayList<Concept>();
-		for (Integer conceptId : tests.get(category)) {
-			testsForCategory.add(Context.getConceptService().getConcept(conceptId));
-		}
-		return testsForCategory;
+	/**
+	 * Gets the lab tests for the given category
+	 * @param category
+	 * @return the list of tests
+	 */
+	public List<LabTestDefinition> getTests(String category) {
+		return tests.get(category);
 	}
 
+	/**
+	 * Gets whether the given concept is a registered lab test concept
+	 * @param concept the concept
+	 * @return true if concept is a lab test
+	 */
 	public boolean isLabTest(Concept concept) {
-		for (Map.Entry<String, List<Integer>> entry : tests.entrySet()) {
-			for (Integer testConceptId : entry.getValue()) {
-				if (concept.getConceptId().equals(testConceptId)) {
+		for (Map.Entry<String, List<LabTestDefinition>> entry : tests.entrySet()) {
+			for (LabTestDefinition test : entry.getValue()) {
+				if (test.getConcept().equals(concept)) {
 					return true;
 				}
 			}
 		}
-
 		return false;
 	}
 
+	/**
+	 * Clears the list of tests
+	 */
 	public synchronized void clear() {
 		tests.clear();
 	}
 
+	/**
+	 * Loads the lab definitions from an XML resource
+	 * @param stream the stream containing the XML
+	 * @throws ParserConfigurationException
+	 * @throws IOException
+	 * @throws SAXException
+	 */
 	public synchronized void loadTestsFromXML(InputStream stream) throws ParserConfigurationException, IOException, SAXException {
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder = dbFactory.newDocumentBuilder();
@@ -85,16 +105,23 @@ public class LabManager {
 			Element categoryElement = (Element) categoryNodes.item(c);
 			String categoryName = categoryElement.getAttribute("name");
 
-			List<Integer> testsForCategory = new ArrayList<Integer>();
+			List<LabTestDefinition> testsForCategory = new ArrayList<LabTestDefinition>();
 
 			// Parse all tests for this category
 			NodeList testNodes = categoryElement.getElementsByTagName("test");
 			for (int t = 0; t < testNodes.getLength(); t++) {
 				Element testElement = (Element) testNodes.item(t);
-				String testConceptUuid = testElement.getAttribute("conceptUuid");
+				String testConceptIdentifier = testElement.getAttribute("concept");
+				String testName = testElement.getAttribute("name");
 
-				Concept testConcept = Context.getConceptService().getConceptByUuid(testConceptUuid);
-				testsForCategory.add(testConcept.getConceptId());
+				LabTestDefinition testDefinition;
+				if (StringUtils.isEmpty(testName)) {
+					testDefinition = new LabTestDefinition(testConceptIdentifier);
+				} else {
+					testDefinition = new LabTestDefinition(testConceptIdentifier, testName);
+				}
+
+				testsForCategory.add(testDefinition);
 			}
 
 			tests.put(categoryName, testsForCategory);
