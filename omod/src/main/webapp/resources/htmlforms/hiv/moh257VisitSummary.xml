@@ -475,7 +475,9 @@
 					<table cellspacing="0">
 						<tr>
 							<th style="color: #888">Drug</th>
-							<th style="color: #888; text-align: center">Quantity</th>
+							<th style="color: #888; text-align: center">Dose</th>
+							<th style="color: #888; text-align: center">Units</th>
+							<th style="color: #888; text-align: center">Frequency</th>
 							<th style="color: #888; text-align: center">Days</th>
 						</tr>
 						<repeat>
@@ -484,6 +486,14 @@
 									<tr>
 										<td><obs conceptId="1282AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerClasses="Drug" style="autocomplete" /></td>
 										<td><obs conceptId="1443AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+										<td><obs conceptId="1444AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="5" /></td>
+										<td>
+											<obs
+												conceptId="160855AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+												answerConceptIds="160862AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160863AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160864AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160865AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160858AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160866AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160870AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+												answerLabels="Once daily,Once daily at bedtime,Once daily in the evening,Once daily in the morning,Twice daily,Thrice daily,Four times daily"
+											/>
+										</td>
 										<td><obs conceptId="159368AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
 									</tr>
 								</obsgroup>
