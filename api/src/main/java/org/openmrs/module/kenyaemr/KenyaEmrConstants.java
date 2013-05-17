@@ -36,6 +36,12 @@ public class KenyaEmrConstants {
 	public static final String REQUIRED_CONCEPTS_VERSION = "20130513";
 
 	/**
+	 * Support contact details
+	 */
+	public static final String SUPPORT_PHONE_NUMBER = "024-xxxxxxx";
+	public static final String SUPPORT_EMAIL_ADDRESS = "help@kenyaemr.org";
+
+	/**
 	 * Number of days without an encounter before a patient is consider lost to follow up
 	 */
 	public static final int LOST_TO_FOLLOW_UP_THRESHOLD_DAYS = 90;

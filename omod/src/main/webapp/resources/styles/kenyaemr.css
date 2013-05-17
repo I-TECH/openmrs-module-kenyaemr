@@ -22,33 +22,6 @@
 	background-color: #FFF;
 }
 
-/*** App header ***/
-
-#appheader {
-	font-size: 14px;
-	color: white;
-	background-color: #464640;
-	padding: 5px 5px 5px 5px;
-}
-
-#appheader-appmenu {
-	float: left;
-}
-
-#appheader-usermenu {
-	float: right;
-}
-
-#appheader a {
-	color: white;
-	font-weight: bold;
-	text-decoration: none;
-}
-
-#appheader a:hover {
-	text-decoration: underline;
-}
-
 /***** Patient header *****/
 
 .ke-patientheader {
