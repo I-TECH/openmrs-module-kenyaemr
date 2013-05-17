@@ -93,12 +93,12 @@ public class KenyaEmrUiUtilsTest extends BaseModuleContextSensitiveTest {
 		// Check a regular visit on single day
 		visit.setStartDatetime(TestUtils.date(2011, 1, 1, 10, 0, 0));
 		visit.setStopDatetime(TestUtils.date(2011, 1, 1, 11, 0, 0));
-		Assert.assertEquals("01-Jan-2011 10:00 → 11:00", kenyaUi.formatVisitDates(visit));
+		Assert.assertEquals("01-Jan-2011 10:00 \u2192 11:00", kenyaUi.formatVisitDates(visit));
 
 		// Check a regular visit spanning multiple days
 		visit.setStartDatetime(TestUtils.date(2011, 1, 1, 10, 0, 0));
 		visit.setStopDatetime(TestUtils.date(2011, 1, 2, 11, 0, 0));
-		Assert.assertEquals("01-Jan-2011 10:00 → 02-Jan-2011 11:00", kenyaUi.formatVisitDates(visit));
+		Assert.assertEquals("01-Jan-2011 10:00 \u2192 02-Jan-2011 11:00", kenyaUi.formatVisitDates(visit));
 
 		// Check a visit with no end
 		visit.setStartDatetime(TestUtils.date(2011, 1, 1, 10, 0, 0));
