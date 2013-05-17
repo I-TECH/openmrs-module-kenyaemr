@@ -38,7 +38,7 @@ public class KenyaEmrConstants {
 	/**
 	 * Support contact details
 	 */
-	public static final String SUPPORT_PHONE_NUMBER = "024-xxxxxxx";
+	public static final String SUPPORT_PHONE_NUMBER = "0800720701";
 	public static final String SUPPORT_EMAIL_ADDRESS = "help@kenyaemr.org";
 
 	/**
