@@ -30,9 +30,11 @@ public class HelpPageController {
 		AppUiUtil.endCurrentApp(session);
 
 		String facilityCode = Context.getService(KenyaEmrService.class).getDefaultLocationMflCode();
+		String supportNumber = Context.getAdministrationService().getGlobalProperty(KenyaEmrConstants.GP_SUPPORT_PHONE_NUMBER, KenyaEmrConstants.DEFAULT_SUPPORT_PHONE_NUMBER);
+		String supportEmail = Context.getAdministrationService().getGlobalProperty(KenyaEmrConstants.GP_SUPPORT_EMAIL_ADDRESS, KenyaEmrConstants.DEFAULT_SUPPORT_EMAIL_ADDRESS);
 
 		model.put("facilityCode", facilityCode);
-		model.put("supportNumber", KenyaEmrConstants.SUPPORT_PHONE_NUMBER);
-		model.put("supportEmail", KenyaEmrConstants.SUPPORT_EMAIL_ADDRESS);
+		model.put("supportNumber", supportNumber);
+		model.put("supportEmail", supportEmail);
 	}
 }
