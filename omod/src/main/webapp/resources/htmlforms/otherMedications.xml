@@ -48,6 +48,8 @@
 				<th style="background-color: #696969; color: #ffffff;">Dose Prescribed</th>
 				<th style="background-color: #696969; color: #ffffff;">Dispensed Units</th>
 				<th style="background-color: #696969; color: #ffffff;">Frequency Prescribed</th>
+				<th style="background-color: #696969; color: #ffffff;">Duration</th>
+				<th style="background-color: #696969; color: #ffffff;">Duration Units</th>
 			</tr>
 			<repeat>
 				<template>
@@ -55,7 +57,7 @@
 						<tr>
 							<td><obs conceptId="1282AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="autocomplete" answerClasses="Drug"/></td>
 							<td><obs conceptId="1443AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labetText=""/></td>
-							<td><obs conceptId="1444AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="5" /></td>
+							<td><obs conceptId="1444AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="10" /></td>
 							<td>
 								<obs
 									conceptId="160855AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
@@ -63,6 +65,8 @@
 									answerLabels="Once daily,Once daily at bedtime,Once daily in the evening,Once daily in the morning,Twice daily,Thrice daily,Four times daily"
 								/>
 							</td>
+							<td><obs conceptId="159368AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="10" /></td>
+							<td><obs conceptId="1732AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
 						</tr>
 					</obsgroup>
 				</template>

@@ -40,13 +40,14 @@ import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
  * sputum results recorded
  */
 public class NeedsSputumCalculation extends BaseAlertCalculation {
+	String reason = "";
 
 	/**
 	 * @see org.openmrs.module.kenyaemr.calculation.BaseAlertCalculation#getAlertMessage()
 	 */
 	@Override
 	public String getAlertMessage() {
-		return "Due for Sputum";
+		return "Due for TB Sputum "+reason;
 	}
 
 	/**
@@ -54,7 +55,7 @@ public class NeedsSputumCalculation extends BaseAlertCalculation {
 	 */
 	@Override
 	public String getName() {
-		return "Patients Due for Sputum Test";
+		return "Patients Due for TB Sputum Test";
 	}
 
 	@Override
@@ -92,9 +93,9 @@ public class NeedsSputumCalculation extends BaseAlertCalculation {
 
 		// get last observations for disease classification, patient classification
 		// and pulmonary tb positive to determine when sputum will be due for patients in future
-		CalculationResultMap lastDiseaseClassiffication = lastObs(getConcept(Dictionary.SITE_OF_TUBERCULOSIS_DISEASE), alive, context);
-		CalculationResultMap lastPatientClassification = lastObs(getConcept(Dictionary.TYPE_OF_TB_PATIENT), alive, context);
-		CalculationResultMap lastTbPulmonayResult = lastObs(getConcept(Dictionary.RESULTS_TUBERCULOSIS_CULTURE), alive, context);
+		CalculationResultMap lastDiseaseClassiffication = lastObs(getConcept(Dictionary.SITE_OF_TUBERCULOSIS_DISEASE), inTbProgram, context);
+		CalculationResultMap lastPatientClassification = lastObs(getConcept(Dictionary.TYPE_OF_TB_PATIENT), inTbProgram, context);
+		CalculationResultMap lastTbPulmonayResult = lastObs(getConcept(Dictionary.RESULTS_TUBERCULOSIS_CULTURE), inTbProgram, context);
 
 		// get the first observation ever the patient had a sputum results for month 0
 		CalculationResultMap sputumResultsForMonthZero = firstObs(getConcept(Dictionary.SPUTUM_FOR_ACID_FAST_BACILLI), alive, context);
@@ -120,6 +121,7 @@ public class NeedsSputumCalculation extends BaseAlertCalculation {
 					ObsResult results = (ObsResult) firstObsSinceSuspected.get(ptId);
 
 					if (results == null) {
+						reason = "Suspect";
 						needsSputum = true;
 					}
 				}
@@ -142,6 +144,7 @@ public class NeedsSputumCalculation extends BaseAlertCalculation {
 				// start
 				// date
 				Calendar c = Calendar.getInstance();
+				
 
 				if ((resultsForMonthZero != null)
 						&& (treatmentStartDateObs != null)
@@ -151,7 +154,6 @@ public class NeedsSputumCalculation extends BaseAlertCalculation {
 								.equals(pulmonaryTb))
 						&& (tbResults.getValue().getValueCoded()
 								.equals(smearPositive))) {
-
 					c.setTime(treatmentStartDateObs.getValue().getValueDate());
 
 					Integer numberOfDaysSinceTreatmentStarted = daysSince(
@@ -186,7 +188,7 @@ public class NeedsSputumCalculation extends BaseAlertCalculation {
 						if (resultAfterTwomonthsOnOrAfterdateAfterTwomonths == null
 								|| resultAfterTwomonthsOnOrAfterdateAfterTwomonths
 										.isEmpty()) {
-
+							reason = "Month 2";
 							needsSputum = true;
 						}
 
@@ -212,6 +214,7 @@ public class NeedsSputumCalculation extends BaseAlertCalculation {
 						if (resultAfterFivemonthsOnOrAfterdateAfterFivemonths == null
 								|| resultAfterFivemonthsOnOrAfterdateAfterFivemonths
 										.isEmpty()) {
+							reason = "Month 5";
 							needsSputum = true;
 
 						}
@@ -241,6 +244,7 @@ public class NeedsSputumCalculation extends BaseAlertCalculation {
 						if (resultAfterSixmonthsOnOrAfterdateAfterSixmonths == null
 								|| resultAfterSixmonthsOnOrAfterdateAfterSixmonths
 										.isEmpty()) {
+							reason = "Month 6";
 							needsSputum = true;
 
 						}
@@ -277,6 +281,7 @@ public class NeedsSputumCalculation extends BaseAlertCalculation {
 							if (resultAfterThreemonthsOnOrAfterdateAfterThreemonths == null
 									|| resultAfterThreemonthsOnOrAfterdateAfterThreemonths
 											.isEmpty()) {
+								reason = "Month 3";
 								needsSputum = true;
 
 							}
@@ -302,6 +307,7 @@ public class NeedsSputumCalculation extends BaseAlertCalculation {
 							if (resultAfterFivemonthsOnOrAfterdateAfterFivemonths == null
 									|| resultAfterFivemonthsOnOrAfterdateAfterFivemonths
 											.isEmpty()) {
+								reason = "Month 5";
 								needsSputum = true;
 
 							}
@@ -328,6 +334,7 @@ public class NeedsSputumCalculation extends BaseAlertCalculation {
 							if (resultAfterEightmonthsOnOrAfterdateAfterEightmonths == null
 									|| resultAfterEightmonthsOnOrAfterdateAfterEightmonths
 											.isEmpty()) {
+								reason = "Month 8";
 								needsSputum = true;
 
 							}
