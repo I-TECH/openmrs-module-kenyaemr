@@ -23,7 +23,7 @@ import org.openmrs.module.kenyaemr.MetadataConstants;
  */
 public class LabTestDefinition {
 
-	private Object conceptIdentifier;
+	private String conceptIdentifier;
 
 	private String name;
 
@@ -31,7 +31,7 @@ public class LabTestDefinition {
 	 * Constructs a lab test definition
 	 * @param conceptIdentifier the concept identifier
 	 */
-	public LabTestDefinition(Object conceptIdentifier)  {
+	public LabTestDefinition(String conceptIdentifier)  {
 		this.conceptIdentifier = conceptIdentifier;
 		this.name = getConcept().getPreferredName(MetadataConstants.LOCALE).getName();
 	}
@@ -41,7 +41,7 @@ public class LabTestDefinition {
 	 * @param conceptIdentifier the concept identifier
 	 * @param name the name
 	 */
-	public LabTestDefinition(Object conceptIdentifier, String name)  {
+	public LabTestDefinition(String conceptIdentifier, String name)  {
 		this.conceptIdentifier = conceptIdentifier;
 		this.name = name;
 	}

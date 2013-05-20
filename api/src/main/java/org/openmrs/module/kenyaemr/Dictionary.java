@@ -23,28 +23,21 @@ import org.openmrs.api.context.Context;
 public class Dictionary {
 
 	/**
-	 * Gets a concept by an identifier (id, mapping or UUID)
+	 * Gets a concept by an identifier (mapping or UUID)
 	 * @param identifier the identifier
 	 * @return the concept
-	 * @throws RuntimeException if no concept could be found
+	 * @throws IllegalArgumentException if no concept could be found
 	 */
-	public static Concept getConcept(Object identifier) {
+	public static Concept getConcept(String identifier) {
 		Concept concept = null;
 
-		if (identifier instanceof Integer) {
-			concept = Context.getConceptService().getConcept((Integer) identifier);
+		if (identifier.contains(":")) {
+			String[] tokens = identifier.split(":");
+			concept = Context.getConceptService().getConceptByMapping(tokens[1].trim(), tokens[0].trim());
 		}
-		else if (identifier instanceof String) {
-			String str = (String) identifier;
-
-			if (str.contains(":")) {
-				String[] tokens = str.split(":");
-				concept = Context.getConceptService().getConceptByMapping(tokens[1].trim(), tokens[0].trim());
-			}
-			else {
-				// Assume its a UUID
-				concept = Context.getConceptService().getConceptByUuid(str);
-			}
+		else {
+			// Assume its a UUID
+			concept = Context.getConceptService().getConceptByUuid(identifier);
 		}
 
 		if (concept == null) {
