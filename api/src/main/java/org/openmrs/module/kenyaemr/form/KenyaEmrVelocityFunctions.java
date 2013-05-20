@@ -59,7 +59,7 @@ public class KenyaEmrVelocityFunctions {
 	 * @param conceptIdentifier the concept identifier
 	 * @return the concept
 	 */
-	public Concept getConcept(Object conceptIdentifier) {
+	public Concept getConcept(String conceptIdentifier) {
 		return Dictionary.getConcept(conceptIdentifier);
 	}
 
@@ -68,7 +68,7 @@ public class KenyaEmrVelocityFunctions {
 	 * @param conceptIdentifier the concept identifier
 	 * @return the list of obs
 	 */
-	public List<Obs> allObs(Object conceptIdentifier) {
+	public List<Obs> allObs(String conceptIdentifier) {
 		if (session.getPatient() == null)
 			return new ArrayList<Obs>();
 
@@ -84,7 +84,7 @@ public class KenyaEmrVelocityFunctions {
 	 * @param conceptIdentifier the concept identifier
 	 * @return the most recent obs
 	 */
-	public Obs latestObs(Object conceptIdentifier) {
+	public Obs latestObs(String conceptIdentifier) {
 		List<Obs> obs = allObs(conceptIdentifier);
 		if (obs == null || obs.isEmpty())
 			return null;
@@ -97,7 +97,7 @@ public class KenyaEmrVelocityFunctions {
 	 * @param conceptIdentifier the concept identifier
 	 * @return the earliest obs
 	 */
-	public Obs earliestObs(Object conceptIdentifier) {
+	public Obs earliestObs(String conceptIdentifier) {
 		List<Obs> obs = allObs(conceptIdentifier);
 		if (obs == null || obs.isEmpty())
 			return null;
@@ -110,7 +110,7 @@ public class KenyaEmrVelocityFunctions {
 	 * @param conceptIdentifier the obs's concept id, mapping or UUID
 	 * @return the obs
 	 */
-	public Obs obsToday(Object conceptIdentifier) {
+	public Obs obsToday(String conceptIdentifier) {
 		Encounter toSkip = session.getEncounter();
 		List<Person> p = Collections.singletonList((Person) session.getPatient());
 		Concept concept = Dictionary.getConcept(conceptIdentifier);

@@ -17,10 +17,14 @@ package org.openmrs.module.kenyaemr;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.api.context.Context;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 public class DictionaryTest extends BaseModuleContextSensitiveTest {
 
+	/**
+	 * Setup each test
+	 */
 	@Before
 	public void setup() throws Exception {
 		executeDataSet("test-data.xml");
@@ -32,22 +36,12 @@ public class DictionaryTest extends BaseModuleContextSensitiveTest {
 	}
 
 	/**
-	 * @see Dictionary#getConcept(Object)
+	 * @see Dictionary#getConcept(String)
 	 */
 	@Test
-	public void getConcept() {
-
-		// Check lookup by id
-		Assert.assertEquals(Dictionary.CD4_COUNT, Dictionary.getConcept(5497).getUuid());
-
+	public void getConcept_shouldFetchConceptByMappingOrUuid() {
 		// Check lookup by UUID
 		Assert.assertEquals(Dictionary.CD4_COUNT, Dictionary.getConcept(Dictionary.CD4_COUNT).getUuid());
-
-		try {
-			// Check that id with no concept throws exception
-			Dictionary.getConcept(-1123);
-			Assert.fail();
-		} catch (Exception ex) {}
 
 		try {
 			// Check that valid uuid with no concept throws exception
