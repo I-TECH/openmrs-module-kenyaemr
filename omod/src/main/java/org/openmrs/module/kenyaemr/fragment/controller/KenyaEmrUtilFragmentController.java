@@ -114,7 +114,7 @@ public class KenyaEmrUtilFragmentController {
 	 * Gets the duration since patient started ART
 	 * @param patient the patient
 	 * @param now the current time reference
-	 * @return
+	 * @return the regimen and duration
 	 */
 	public SimpleObject currentArvRegimen(@RequestParam("patientId") Patient patient, @RequestParam("now") Date now, @SpringBean KenyaEmr emr, @SpringBean KenyaEmrUiUtils kenyaEmrUi, @SpringBean KenyaUiUtils kenyaUi, UiUtils ui) {
 		Concept arvs = emr.getRegimenManager().getMasterSetConcept("ARV");
@@ -131,12 +131,22 @@ public class KenyaEmrUtilFragmentController {
 	 * Gets the duration since patient started ART
 	 * @param patient the patient
 	 * @param now the current time reference
-	 * @return
+	 * @return the duration interval
 	 */
 	public SimpleObject durationSinceStartArt(@RequestParam("patientId") Patient patient, @RequestParam("now") Date now, @SpringBean KenyaUiUtils kenyaUi) {
 		CalculationResult result = CalculationUtils.evaluateForPatient(InitialArtStartDateCalculation.class, null, patient.getPatientId());
 		Date artStartDate = result != null ? (Date) result.getValue() : null;
 
 		return SimpleObject.create("duration", artStartDate != null ? kenyaUi.formatInterval(artStartDate, now) : null);
+	}
+
+	/**
+	 * Gets the patient's age on the given date
+	 * @param patient the patient
+	 * @param now the current time reference
+	 * @return
+	 */
+	public SimpleObject age(@RequestParam("patientId") Patient patient, @RequestParam("now") Date now) {
+		return SimpleObject.create("age", patient.getAge(now));
 	}
 }

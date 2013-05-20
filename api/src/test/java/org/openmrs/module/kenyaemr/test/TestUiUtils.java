@@ -14,6 +14,7 @@
 
 package org.openmrs.module.kenyaemr.test;
 
+import org.junit.Ignore;
 import org.mockito.Mockito;
 import org.openmrs.api.AdministrationService;
 import org.openmrs.module.kenyaui.KenyaUiConstants;
@@ -26,6 +27,7 @@ import static org.mockito.Mockito.mock;
 /**
  * Basic UiUtils implementation for unit tests
  */
+@Ignore
 public class TestUiUtils extends BasicUiUtils {
 
 	/**

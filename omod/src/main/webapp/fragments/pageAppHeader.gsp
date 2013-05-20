@@ -6,7 +6,7 @@
 	def appLabel = running ? (appStatus?.app?.label ?: ui.message("appFramework.runningApp.unknownApp")) : null
 
 	def appMenuItems = [
-		"""<a href="/${ contextPath }/index.htm?${ config.context ? config.context : "" }">Home</a>"""
+		"""<a href="/${ contextPath }/index.htm?${ config.context ? config.context : "" }"><img src="${ ui.resourceLink("kenyaui", "images/toolbar/home.png") }" width="12" height="12" />&nbsp;&nbsp;Home</a>"""
 	]
 	if (running && showApp) {
 		appMenuItems << """<a href="/${ contextPath }/${ appStatus.app.homepageUrl }">${ appLabel }</a>"""
@@ -14,21 +14,21 @@
 
 	def userMenuItems = []
 	if (context.authenticatedUser) {
-		userMenuItems << """Logged in as <i>${ context.authenticatedUser.personName }</i>"""
+		userMenuItems << """<span>Logged in as <i>${ context.authenticatedUser.personName }</i></span>"""
 		userMenuItems << """<a href="${ ui.pageLink("kenyaemr", "profile") }">My Profile</a>"""
 		userMenuItems << """<a href="/${ contextPath }/logout">Log Out</a>"""
+		userMenuItems << """<a href="${ ui.pageLink("kenyaemr", "help") }"><img src="${ ui.resourceLink("kenyaui", "images/toolbar/help.png") }" width="12" height="12" />&nbsp;&nbsp;Help</a>"""
 	} else {
 		userMenuItems << "Not Logged In"
 	}
 %>
 
-<div id="appheader">
-	<div id="appheader-appmenu">
-		${ appMenuItems.join("&nbsp;&nbsp;&#187;&nbsp;&nbsp;") }
+<div class="ke-toolbar">
+	<div class="ke-apptoolbar">
+		<% appMenuItems.each { item -> %><div class="ke-toolbar-item">${ item }</div><% } %>
 	</div>
-	<div id="appheader-usermenu">
-		${ userMenuItems.join("&nbsp;&nbsp;|&nbsp;&nbsp;") }
+	<div class="ke-usertoolbar">
+		<% userMenuItems.each { item -> %><div class="ke-toolbar-item">${ item }</div><% } %>
 	</div>
-
 	<div style="clear: both"></div>
 </div>

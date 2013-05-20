@@ -27,6 +27,24 @@
 	</style>
 
 	<script type="text/javascript">
+		/**
+		 * TODO use a lookup tag to get these concept ids. Will require HTML-463
+		 */
+		var YES_CONCEPT_ID = 1065;
+		var NO_CONCEPT_ID = 1066;
+		var ABORTION_CONCEPT_ID = 159896;
+		var MISCARRIAGE_CONCEPT_ID = 126127;
+		var WHO_STAGE_1_PEDS_CONCEPT_ID = 1220;
+		var WHO_STAGE_2_PEDS_CONCEPT_ID = 1221;
+		var WHO_STAGE_3_PEDS_CONCEPT_ID = 1222;
+		var WHO_STAGE_4_PEDS_CONCEPT_ID = 1223;
+		var WHO_STAGE_1_ADULT_CONCEPT_ID = 1204;
+		var WHO_STAGE_2_ADULT_CONCEPT_ID = 1205;
+		var WHO_STAGE_3_ADULT_CONCEPT_ID = 1206;
+		var WHO_STAGE_4_ADULT_CONCEPT_ID = 1207;
+		var WHO_STAGES_PEDS = [ WHO_STAGE_1_PEDS_CONCEPT_ID, WHO_STAGE_2_PEDS_CONCEPT_ID, WHO_STAGE_3_PEDS_CONCEPT_ID, WHO_STAGE_4_PEDS_CONCEPT_ID ];
+		var WHO_STAGES_ADULT = [ WHO_STAGE_1_ADULT_CONCEPT_ID, WHO_STAGE_2_ADULT_CONCEPT_ID, WHO_STAGE_3_ADULT_CONCEPT_ID, WHO_STAGE_4_ADULT_CONCEPT_ID ];
+
 		function onWeightOrHeightChange() {
 			var display = '';
 			var weightKg = parseFloat(getValue('weight.value'));
@@ -43,6 +61,9 @@
 			$j('#calculated-bmi').html(display);
 		}
 
+		/**
+		 * Updates the form due to an encounter date change
+		 */
 		function onEncounterDateChange() {
 			var patientId = <lookup expression="patient.patientId"/>;
 			var encDate = getValue('encounter-date.value');
@@ -58,6 +79,30 @@
 				var msg = data.duration ? (data.regimen +  ' (' + data.duration + ')') : 'None';
 				$j('#calculated-duration-current-regimen').html(msg);
 			});
+
+			$j.getJSON('/' + CONTEXT_PATH + '/kenyaemr/kenyaEmrUtil/age.action', { patientId: patientId, now: encDate })
+			.done(function(data) {
+				onPatientAgeUpdate(data.age);
+			});
+		}
+
+		/**
+		 * Updates the form due to a patient age change
+		 */
+		function onPatientAgeUpdate(age) {
+			var isPediatric = (age &lt; 15);
+			jq('#whostage select option').each(function() {
+				var concept = parseInt(jq(this).prop('value'));
+
+				if (WHO_STAGES_PEDS.indexOf(concept) >= 0) {
+					jq(this).prop('disabled', !isPediatric);
+				}
+				else if (WHO_STAGES_ADULT.indexOf(concept) >= 0) {
+					jq(this).prop('disabled', isPediatric);
+				}
+			});
+
+			$j('#calculated-age').html(age + '/' + (isPediatric ? 'PEDS' : 'ADULT'));
 		}
 
 		/**
@@ -112,14 +157,6 @@
 				}
 			}
 		}
-
-		/**
-		 * TODO use a lookup tag to get these concept ids. Will require HTML-463
-		 */
-		var YES_CONCEPT_ID = 1065;
-		var NO_CONCEPT_ID = 1066;
-		var ABORTION_CONCEPT_ID = 159896;
-		var MISCARRIAGE_CONCEPT_ID = 126127;
 
 		$j(function() {
 			getField('weight.value').change(onWeightOrHeightChange);
@@ -414,7 +451,8 @@
 				<th colspan="3">WHO Stage</th>
 				<td>(p)</td>
 				<td colspan="2">
-					<obs conceptId="5356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+					<obs id="whostage" conceptId="5356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+					(age: <span id="calculated-age" class="value" />)
 				</td>
 			</tr>
 			<tr>
@@ -434,21 +472,39 @@
 				<th colspan="2">Dispensed</th>
 				<td>(r)</td>
 				<td colspan="2" rowspan="3">
-					<repeat>
-						<template>
-							<obsgroup groupingConceptId="1442AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-								<div>
-									Drug: <obs conceptId="1282AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerClasses="Drug" style="autocomplete" />
-									Dispensed: <obs conceptId="1443AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
-								</div>
-							</obsgroup>
-						</template>
-						<render n="1" concept="Drug"/>
-						<render n="2" concept="Drug"/>
-						<render n="3" concept="Drug"/>
-						<render n="4" concept="Drug"/>
-						<render n="5" concept="Drug"/>
-					</repeat>
+					<table cellspacing="0">
+						<tr>
+							<th style="color: #888">Drug</th>
+							<th style="color: #888; text-align: center">Dose</th>
+							<th style="color: #888; text-align: center">Units</th>
+							<th style="color: #888; text-align: center">Frequency</th>
+							<th style="color: #888; text-align: center">Days</th>
+						</tr>
+						<repeat>
+							<template>
+								<obsgroup groupingConceptId="1442AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+									<tr>
+										<td><obs conceptId="1282AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerClasses="Drug" style="autocomplete" /></td>
+										<td><obs conceptId="1443AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+										<td><obs conceptId="1444AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="5" /></td>
+										<td>
+											<obs
+												conceptId="160855AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+												answerConceptIds="160862AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160863AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160864AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160865AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160858AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160866AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160870AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+												answerLabels="Once daily,Once daily at bedtime,Once daily in the evening,Once daily in the morning,Twice daily,Thrice daily,Four times daily"
+											/>
+										</td>
+										<td><obs conceptId="159368AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+									</tr>
+								</obsgroup>
+							</template>
+							<render n="1" concept="Drug"/>
+							<render n="2" concept="Drug"/>
+							<render n="3" concept="Drug"/>
+							<render n="4" concept="Drug"/>
+							<render n="5" concept="Drug"/>
+						</repeat>
+					</table>
 				</td>
 			</tr>
 			<tr>
@@ -500,7 +556,8 @@
 			<tr>
 				<th colspan="2">Regm/Dose/Days</th>
 				<td>(w)</td>
-				<td colspan="2"><span class="ke-field-instructions">Enter using ARV regimen editor</span></td>
+				<td><span class="ke-field-instructions">Regimen and dose entered via ARV regimen editor</span></td>
+				<td>Days <obs conceptId="159368AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /> [TODO needs concept!]</td>
 			</tr>
 			<tr>
 				<th rowspan="5">Laboratory<br />Investigations<br />Done</th>
