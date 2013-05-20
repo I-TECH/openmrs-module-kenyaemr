@@ -14,11 +14,18 @@
 <htmlform>
 
 	<style type="text/css">
-		table.baseline-aligned td {
-			vertical-align: baseline;
-		}
-		.tblFormat {
+		table.tb {
 			background-color: #FFFF00;
+			}
+		table.tb1{
+			border: 1px solid black;
+			vertical-align: baseline;
+			padding: 0;
+			text-align: left;
+		}
+		table.tb1 tr th{
+			border: 1px solid black;
+			padding: 0;
 		}
 	</style>
 
@@ -26,448 +33,287 @@
 		$j(document).ready(function(){
 			var pbirthdate = new Date("<lookup expression="patient.birthdate" />").getTime();
 			var pweight = "<lookup expression="fn.latestObs(5089).valueNumeric" />"
+			var pheight = "<lookup expression="fn.latestObs(5090).valueNumeric" />"
 			setValue('weight.value', pweight);
-			var encounterdate;
-			var dstartoftreatment;
-			var dcured;
-			var dreferredby;
-			var dreferredto;
-			var transferindate;
-			var dfirstenrolled;
-			var dcollected;
-			var dropdownval;
-			var pulmonryOps;
-			var tdForPulmonaryTB = document.getElementById("idPulmonaryTb");
-			var tdForExtraPulmonaryTB =	document.getElementById("idExtraPulmonaryTb");
-			dropdownval = getValue('classification.value');
-
-			if (dropdownval == 42) {
-			tdForPulmonaryTB.style.display = 'inline';
-			tdForExtraPulmonaryTB.style.display = 'none';
-			}
-			else if (dropdownval == 5042){
-			tdForExtraPulmonaryTB.style.display = 'inline';
-			tdForPulmonaryTB.style.display = 'none';
-
-			}
-			else{
-			tdForExtraPulmonaryTB.style.display = 'none';
-			tdForPulmonaryTB.style.display = 'none';
-
-			}
-
-			getField('classification.value').change(function() {
-			dropdownval = getValue('classification.value');
-			pulmonryOps = getValue(pulmonaryOptions.value);
-			if (dropdownval == 42) {
-			tdForPulmonaryTB.style.display = 'inline';
-			tdForExtraPulmonaryTB.style.display = 'none';
-
-			}
-			else if(dropdownval == 5042) {
-			tdForExtraPulmonaryTB.style.display = 'inline';
-			tdForPulmonaryTB.style.display='none';
-
-			}
-			else{
-			tdForExtraPulmonaryTB.style.display = 'none';
-			tdForPulmonaryTB.style.display = 'none';
-			}
+			setValue('height.value', pheight);
+			var pulmodiv = document.getElementById('iddivPulmonary');
+			var expulmodiv = document.getElementById('expul');
+			
+			//getting the values of the disease classification option buttons
+			var optValues = getValue('dclassification.value');
+				if (optValues == 42){
+					pulmodiv.style.display = 'inline';
+    				expulmodiv.style.display = 'none';
+				}
+				if (optValues == 5042 ){
+					pulmodiv.style.display = 'none';
+    				expulmodiv.style.display = 'inline';
+				}
+			
+			$('#dclassification input:radio').click(function() {
+			
+    			if ($(this).val() == 42) {
+    				pulmodiv.style.display = 'inline';
+    				expulmodiv.style.display = 'none';
+    			}
+    			if ($(this).val() == 5042) {
+    				pulmodiv.style.display = 'none';
+    				expulmodiv.style.display = 'inline';
+    			}
 			});
-
-			getField('pulmonaryOptions.value').change(function() {
-			pulmonryOps = getValue('pulmonaryOptions.value');
-			if(pulmonryOps == 703) {
-
-			}
-
-			});
-
-			beforeSubmit.push(function() {
-			encounterdate = new Date(getValue('encounterdate.value')).getTime();
-			dstartoftreatment = new
-			Date(getValue('datestartoftreatment.value')).getTime();
-			dreferredby = new Date(getValue('datereferredby.value')).getTime();
-			transferindate = new Date(getValue('transferindate.value')).getTime();
-			dfirstenrolled = new
-			Date(getValue('datefirstenrolled.value')).getTime();
-
-			if (encounterdate &lt; pbirthdate) {
-			getField('encounterdate.error').html('Encounter datetime should be after the birth date/visit start date').show();
-			return false;
-			}
-			if (dstartoftreatment &lt; pbirthdate){
-			getField('datestartoftreatment.error').html('Date start of treatment should be after the birth date/visit start date').show();
-			return false;
-			}
-			if (dreferredby &lt; pbirthdate){
-			getField('datereferredby.error').html('Date referred by should be after the birth date/visit start date').show();
-			return false;
-			}
-			if (transferindate &lt; pbirthdate){
-			getField('transferindate.error').html('Transfer in date should be after the birth date/visit start date').show();
-			return false;
-			}
-			if (dfirstenrolled &lt; pbirthdate){
-			getField('datefirstenrolled.error').html('Date first enrolled should be after the birth date/visit start date').show();
-			return false;
-			}
-			return true;
-			});
-
 		});
 	</script>
+	<div>
+		<encounterProviderAndRole encounterRole="a0b03050-c99b-11e0-9572-0800200c9a66" default="ae01b8ff-a4cc-4012-bcf7-72359e852e14"  />
+	</div>
 
-<table class="tblFormat" width="70%" align="center">
-	<tr>
+<table align="center"  border="0" class="tb">
+	<tr id="topMost">
 		<td>
-
-		<table class="baseline-aligned" width="80%" border="0"	cellspacing="0" background-color="#FFFF00">
-			<tr>
-				<td>
-				<fieldset>
-					<table>
-						<tr>
-							<td>
-								Name:
-								<lookup class="value" expression="patient.personName" />
-							</td>
-							<td>
-								Gender:
-								<lookup class="value" expression="patient.gender" />
-							</td>
-						</tr>
-						<tr>
-							<td>
-								Birthdate:
-								<lookup class="value" complexExpression="#if( \$patient.birthdateEstimated ) ~#end" />
-								<lookup class="value" expression="patient.birthdate" />
-							</td>
-						</tr>
-						<tr></tr>
-					</table>
-				</fieldset>
-				</td>
-				<td>
-				<fieldset>
-					<table>
-						<tr>
-							<td>
-								Date:
-								<encounterDate default="now" showTime="true" id="encounterdate" />
-							</td>
-						</tr>
-						<tr>	
-							<td>
-								Provider:
-								<encounterProviderAndRole encounterRole="a0b03050-c99b-11e0-9572-0800200c9a66"	default="currentUser" required="true" />
-							</td>
-						</tr>
-					</table>
-				</fieldset>
-				</td>
-			</tr>
+			<table border="0" width="100%">
+				<tr>
+					<td>
+						<table class="tb1">
+							<tr>
+								<td>
+									Clinic/facility:<encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete" size="50"/>
+								<hr />
+								</td>
+							</tr>
+							<tr>
+								<td>Date Start of Treatment:<obs conceptId="1113AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="datestartoftreatment" /></td>
+							</tr>
+						</table>
+					</td>
+					<td>
+						<table class="tb1">
+							<tr>
+								<td>District:<hr /></td>
+							</tr>
+							<tr>
+								<td><obs conceptId="161564AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="30" /></td>
+							</tr>
+						</table>
+					</td>
+					<td>
+						<table class="tb1">
+							<tr>
+								<td>District Reg Number: <hr /></td>
+							</tr>
+							<tr>
+								<td>
+									<span id="district-reg-id">
+										<patient field="identifier" identifierTypeId="d8ee3b8c-a8fc-4d6b-af6a-9423be5f8906" />
+									</span>
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+			<br />
+			<table class="tb1">
+				<tr>
+					<th>Patient referred by</th>
+					<th>Date referred:<obs conceptId="161561AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="datereferredby" /></th>
+				</tr>
+				<tr>
+					<td colspan="2">
+							<obs conceptId="159371AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								answerConceptIds="159940AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160631AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160546AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161359AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160538AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1725AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1744AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160551AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								answerLabels="VCT center,HIV care clinic,STI Clinic,Home Based Care,Antenatal/PMTCT Clinic,Private Sector,Chemist/pharmacist,Self referral,Community Health worker(CHW)" style="radio" answerSeparator="&lt;br /&gt;&lt;hr /&gt;" />	
+					</td>
+				</tr>
+			</table>
+			<br />
+			<table width="100%" id="patientAddress" class="tb1" border="0">
+				
+				<tr>
+					<td width="20%"></td>
+					<td align="right">Body weight (Kg)<obs conceptId="5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="weight" /></td>
+					<td align="right">Height (Meters)<obs id="height" conceptId="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "/></td>
+				</tr>
+				<tr>
+					<td width="20%">Patient address</td>
+					<td width="30%">
+						<b><lookup expression="patient.personAddress.address1"/></b>
+					</td>
+					<td align="left"><i>edit at registration</i></td>
+				</tr>
+				<tr>
+					<td width="20%">School/Employers address</td>
+					<td width="30%">
+						<b><lookup expression="patient.personAddress.address3"/></b>
+					</td>
+					<td align="left"><i>edit at registration</i></td>
+				</tr>
+				<tr>
+					<td width="20%">Cell phone Number</td>
+					<td width="30%">
+						<b><lookup expression="personAttributes.get('Telephone Contact')"/></b>
+					</td>
+					<td align="left"><i>edit at registration</i></td>
+				</tr>
+			</table>
+			<br />	
+			<table width="100%" class="tb1" id="treatmentSupporter">
+				
+					<tr>
+						<td>Treatment supporters Name</td>
+						<td><obs conceptId="160638AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="40" /></td>
+						<td>Relation to patient</td>
+						<td><obs conceptId="160640AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+					</tr>
+					<tr>
+						<td>Treatment supporters address</td>
+						<td colspan="3">
+							<obs conceptId="160641AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="40" />
+						</td>
+					</tr>
+					<tr>
+						<td>Treatment supporters cell phone number</td>
+						<td colspan="3">
+							<obs conceptId="160642AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+						</td>
+					</tr>
 		</table>
-	<br />
-
-	<table class="baseline-aligned" width="80%" border="0"
-		cellspacing="0">
-		<tr>
-			<td>
-				<fieldset>
-					<table>
+		<br />
+		<table width="100%" border="0">
+			<tr id="pclasdclas">
+				<td>
+					<table class="tb1" border="0">
 						<tr>
-							<td>Clinic:</td>
-							<td>
-								<encounterLocation default="GlobalProperty:kenyaemr.defaultLocation"
-									type="autocomplete" />
-							</td>
-
+							<th colspan="2" align="center">Disease Classification</th>
 						</tr>
 						<tr>
-							<td>Date Start of Treatment:</td>
+							<td colspan="2" align="center">
+								<obs conceptId="160040AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="42AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Pulmonary TB,Extra-Pulmonary TB" style="radio" id="dclassification"/>
+								<hr />
+							</td>	
+						</tr>
+						
+						<tr>
+							<td valign="top">
+							<div id="iddivPulmonary">
+								<table>
+										<tr>
+											<td>
+												<obs conceptId="159982AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1118AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Smear Positive,Smear Negative,Smear not done" style="radio" answerSeparator="&lt;br /&gt;&lt;hr /&gt;"  id="pulmonaryoptions" />
+											</td>
+										</tr>
+								</table>
+							</div>	
+							</td>
 							<td>
-								<obs conceptId="1113AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="datestartoftreatment" />
+							<div id="expul">
+							<table id="extrapulmonaryoptions">
+										<tr>
+											
+											<td>
+												<obsgroup groupingConceptId="159947AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+														<obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="130059AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Pleural effusion" style="checkbox" />
+												</obsgroup>
+											</td>
+											<td>
+												<obsgroup groupingConceptId="159947AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+														<obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="115753AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Milliary" style="checkbox" />
+												</obsgroup>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<obsgroup groupingConceptId="159947AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+														<obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="111953AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Lymph nodes" style="checkbox" />
+												</obsgroup>
+											</td>
+											<td>
+												<obsgroup groupingConceptId="159947AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+														<obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="111967AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Meningitis" style="checkbox" />
+												</obsgroup>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<obsgroup groupingConceptId="159947AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+														<obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="112116AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Skeleton" style="checkbox" />
+												</obsgroup>
+											</td>
+											<td>
+												<obsgroup groupingConceptId="159947AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+														<obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1350AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Abdominal" style="checkbox" />
+												</obsgroup>
+											</td>
+										</tr>
+										<tr>
+											<td valign="top">Others( Specify )</td>
+											<td>
+											
+												<obsgroup groupingConceptId="159947AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+													<obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="autocomplete" answerClasses="Diagnosis" />
+												</obsgroup>
+												<br />
+												<obsgroup groupingConceptId="159947AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+													<obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="autocomplete" answerClasses="Diagnosis" />
+												</obsgroup>
+												<br />
+												<obsgroup groupingConceptId="159947AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+													<obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="autocomplete" answerClasses="Diagnosis" />
+												</obsgroup>
+											</td>
+										</tr>									
+							</table>
+							</div>
 							</td>
 						</tr>
-					</table>
-				</fieldset>
+				</table>
 			</td>
-			<td>
-				<fieldset>
-					<table>
-						<tr>
-							<td>District:</td>
-							<td>
-								<obs conceptId="161564AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="30" />
-							</td>
-						</tr>
-						<tr>
-							<td>District Reg Number: </td>
-							<td>
-								<span id="district-reg-id">
-									<patient field="identifier" identifierTypeId="d8ee3b8c-a8fc-4d6b-af6a-9423be5f8906" />
-								</span>
-							</td>
-
-						</tr>
-					</table>
-				</fieldset>
-			</td>
-			<td></td>
+			<td valign="top" align="right">
+				<table class="tb1" border="0">
+					<tr>
+						<th><b>Patient Classification</b></th>
+					</tr>
+					<tr>
+						<td>
+						<obs conceptId="159871AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="159878AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159877AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159876AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159874AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159873AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159872AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio"  
+						answerLabels="New,Smear positive Relapse,Smear negative Relapse,Failure,Treatment resumed after defaulting,Transfer in" answerSeparator="&lt;br /&gt;&lt;hr /&gt;" />
+						</td>
+					</tr>
+				</table>
+			</td>	
 		</tr>
 	</table>
 	<br />
-	
-		<table class="baseline-aligned" width="80%" border="0"	cellspacing="0">
-			<tr>
-				<td>
-					<fieldset>
-						<table>
-							<tr>
-							<td>Patient referred by</td>
-							<td>
-								<obs conceptId="159371AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-								answerConceptIds="159940AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160631AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160546AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161359AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160538AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1725AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1744AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160551AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-								answerLabels="VCT center,HIV care clinic,STI Clinic,Home Based Care,Antenatal/PMTCT Clinic,Private Sector,Chemist/pharmacist,Self referral,Community Health worker(CHW)" />
-								<obs conceptId="161561AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="datereferredby" />
-							</td>
-							</tr>
-						</table>
-					</fieldset>
-				</td>
-				<td>
-				<fieldset>
-					<table>
-						<td>Body Weight (Kg)</td>
+	<table>	
+		<tr id="transferoutdetails">
+			<td colspan="3">
+				<table class="tb1">
+					<tr>
+						<td align="left" colspan="8"><b>If transferred in</b></td>
+					</tr>
+					<tr>
+						<td>Transfer In Date</td>
 						<td>
-							<obs conceptId="5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="weight" />
+							<obs conceptId="160534AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="transferindate" />
 						</td>
-						<td width="20%"></td>
-					</table>
-				</fieldset>
-				</td>
-			</tr>
-	</table>
-	
-	<br />
-	
-		<table class="baseline-aligned" width="80%" border="0"	cellspacing="0">
-			<tr>
-				<td>
-					<fieldset>
-						<table>
-							<tr>
-								<td>Treatment supporters Name:</td>
-								<td>
-									<obs conceptId="160638AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="40" />
-								</td>
-							</tr>
-							<tr>
-								<td>Treatment supporters address:</td>
-								<td>
-									<obs conceptId="160641AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="40" />
-								</td>
-							</tr>
-						</table>
-					</fieldset>
-				</td>
-				<td>
-					<fieldset>
-						<table>	
-							<tr>
-								<td>Relation to patient</td>
-								<td>
-									<obs conceptId="160640AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
-								</td>
-							</tr>
-							<tr>	
-								<td>Telephone number:</td>	
-								<td>
-									<obs conceptId="160642AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
-								</td>
-							</tr>
-						</table>
-					</fieldset>
-				</td>
-			</tr>
-		</table>
-	<br />
-
-		<table class="baseline-aligned" width="80%" border="0"	cellspacing="0">
-			<tr>
-				<td>
-					<fieldset>
-					<table>
-						<tr>
-							<td>Disease Classification: </td>
-							<td>
-								<obs conceptId="160040AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="classification"
-								answerConceptIds="42AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-								answerLabels="Pulmonary TB,Extra-Pulmonary TB" style="dropdown" />
-							</td>
-							<td id="idPulmonaryTb">
-								<obs conceptId="159982AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="pulmonaryOptions"
-								answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1118AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-								answerLabels="Smear pos,Smear neg,Smear not done" style="dropdown" />
-							</td>
-				
-							<td id="idExtraPulmonaryTb">
-								<table>
-									<tr>
-										<td>
-											<obsgroup groupingConceptId="159947AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-												<obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-													answerConceptId="130059AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-													answerLabel="Pleural effusion" style="checkbox" />
-											</obsgroup>
-										</td>
-										<td>
-											<obsgroup groupingConceptId="159947AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-												<obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-													answerConceptId="111953AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-													answerLabel="Lymph nodes" style="checkbox" />
-											</obsgroup>
-										</td>
-									</tr>
-									<tr>
-										<td>
-											<obsgroup groupingConceptId="159947AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-												<obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-													answerConceptId="112116AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-													answerLabel="Skeleton" style="checkbox" />
-											</obsgroup>
-										</td>
-										<td>
-											<obsgroup groupingConceptId="159947AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-												<obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-													answerConceptId="115753AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-													answerLabel="Milliary" style="checkbox" />
-											</obsgroup>
-										</td>
-									</tr>
-									<tr>
-										<td>
-											<obsgroup groupingConceptId="159947AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-												<obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-													answerConceptId="111967AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-													answerLabel="Meningitis" style="checkbox" />
-											</obsgroup>
-										</td>
-										<td>
-											<obsgroup groupingConceptId="159947AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-												<obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-													answerConceptId="1350AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-													answerLabel="Abdominal" style="checkbox" />
-											</obsgroup>
-										</td>
-									</tr>
-									<tr>
-										<td>Others( Specify )</td>
-										<obsgroup groupingConceptId="159947AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-											<td>
-												<obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-													style="autocomplete" answerClasses="Diagnosis" />
-											</td>
-										</obsgroup>
-									</tr>
-									<tr>
-										<td></td>
-										<obsgroup groupingConceptId="159947AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-											<td>
-												<obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-													style="autocomplete" answerClasses="Diagnosis" />
-											</td>
-										</obsgroup>
-									</tr>
-									<tr>
-										<td></td>
-										<obsgroup groupingConceptId="159947AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-											<td>
-												<obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-													style="autocomplete" answerClasses="Diagnosis" />
-											</td>
-										</obsgroup>
-			
-									</tr>
-								</table>
-							</td>
-						</tr>
-					</table>
-					</fieldset>	
-					<td>
-					<fieldset>
-						<table>	
-							<tr>
-							
-								<td>Patient Classification: </td>
-								<td>
-									<obs conceptId="159871AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-									answerConceptIds="159878AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159877AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159876AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159874AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159873AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159872AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-									answerLabels="New,Smear pos.Relapse,Smear neg Relapse,Failure,Treatment resumed after defaulting,Transfer in" />
-								</td>
-								<td></td>
-								<td></td>
-							</tr>
-						</table>
-					</fieldset>	
-				</td>
+						<td>....From Facility</td>
+						<td>
+							<obs conceptId="160535AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+						</td>
+						<td>District</td>
+						<td><obs conceptId="161551AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+						<td>Date<i>first</i>enrolled in TB Care</td>
+						<td>
+							<obs conceptId="161552AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="datefirstenrolled" />
+						</td>
+					</tr>
+				</table>
 			</td>
-		</tr>					
+		</tr>
 	</table>
-	<br />
-	<div id="ifTransferredFromAnotherFacility">
-			<table class="baseline-aligned" width="80%" border="0"	cellspacing="0">
-				<tr>
-					<td>
-						<fieldset>
-							<legend>
-								<b>If Transferred from another Facility</b>
-							</legend>
-							<table>
-								<tr>
-									<td>Transfer In Date:</td>
-									<td>
-										<obs conceptId="160534AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="transferindate" />
-									</td>
-								</tr>
-								<tr>
-									<td>....From Facility:</td>
-									<td>
-										<obs conceptId="160535AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
-									</td>
-								</tr>
-							</table>
-						</fieldset>
-					</td>
-					<td>
-						<fieldset>
-							<legend>
-								<b>If Transferred from another Facility</b>
-							</legend>
-						
-							<table>
-								<tr>
-									<td>District:</td>
-									<td><obs conceptId="161551AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
-								</tr>
-								<tr>
-									<td>Date<i>first</i>enrolled in TB Care:</td>
-									<td>
-										<obs conceptId="161552AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="datefirstenrolled" />
-									</td>
-								</tr>
-							
-							</table>
-						</fieldset>
-					</td>
-				</tr>
-
-			</table>
-	</div>
-	</td>
-	</tr>
+</td>
+</tr>
 </table>
+
 	<enrollInProgram programId="9f144a34-3a4a-44a9-8486-6b7af6cc64f6" />
 	<div class="ke-form-buttons">
 		<submit />

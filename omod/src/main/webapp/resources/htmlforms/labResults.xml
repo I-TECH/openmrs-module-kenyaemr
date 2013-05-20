@@ -138,8 +138,8 @@
 									<td>11.</td>
 									<td>Results Sputum</td>
 									<td>
-										Serial No:<obs conceptId="159968AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
 										Type:<obs conceptId="1271AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="307AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161880AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="ZN,FM" />
+										Serial No:<obs conceptId="159968AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
 										Result:<obs conceptId="307AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="159985AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Scanty,+,++,+++,Negative"/>
 										Quantity:<obs conceptId="160023AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" dateLabel="&lt;/td&gt;&lt;td&gt;" />
 									</td>
@@ -151,7 +151,7 @@
 									<td>Culture/Sensitivity Results</td>
 									<td>
 										Bacterial Colonies growth<obs conceptId="159982AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Growth,No growth" id="growth_no_growth"/>
-										Colonies<obs conceptId="159952AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" dateLabel="&lt;/td&gt;&lt;td&gt;" />
+										Colonies#<obs conceptId="159952AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" dateLabel="&lt;/td&gt;&lt;td&gt;" />
 									</td>
 								</tr>
 								<tr> 
