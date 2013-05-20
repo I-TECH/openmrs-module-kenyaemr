@@ -262,21 +262,11 @@
 				<td>(h)</td>
 				<td>
 					<includeIf velocityTest="$patient.gender == 'F' ">
-						<ifMode mode="VIEW">
+						<ifMode mode="VIEW" include="true">
 							Pregnant: <obs id="pregstatus" conceptId="5272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><br />
 							Outcome: <obs id="pregoutcome" conceptId="161033AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
 						</ifMode>
-						<ifMode mode="ENTER">
-							<input id="pregoption-yes" type="radio" name="pregoption" value="yes" /> Pregnant<br />
-							<input id="pregoption-no" type="radio" name="pregoption" value="no" /> Not pregnant<br />
-							<input id="pregoption-ab" type="radio" name="pregoption" value="ab" /> Abortion (AB)<br />
-							<input id="pregoption-mc" type="radio" name="pregoption" value="mc" /> Miscarriage (MC)
-							<div style="display: none">
-								<obs id="pregstatus" conceptId="5272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
-								<obs id="pregoutcome" conceptId="161033AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
-							</div>
-						</ifMode>
-						<ifMode mode="EDIT">
+						<ifMode mode="VIEW" include="false">
 							<input id="pregoption-yes" type="radio" name="pregoption" value="yes" /> Pregnant<br />
 							<input id="pregoption-no" type="radio" name="pregoption" value="no" /> Not pregnant<br />
 							<input id="pregoption-ab" type="radio" name="pregoption" value="ab" /> Abortion (AB)<br />
@@ -299,24 +289,16 @@
 				<td>(i)</td>
 				<td colspan="2">
 					<includeIf velocityTest="$patient.gender == 'F' ">
-						<ifMode mode="VIEW">
+						<ifMode mode="VIEW" include="true">
 							EDD: <obs conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><br />
 							Date of abortion/miscarriage: <obs conceptId="5599AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><br />
 						</ifMode>
-						<ifMode mode="ENTER">
+						<ifMode mode="VIEW" include="false">
 							<div id="pregdate-yes-container" style="display: none">
 								<obs id="pregdate-yes" conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" />
 							</div>
 							<div id="pregdate-abmc-container" style="display: none">
-								<obs id="pregdate-abmc" conceptId="5599AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
-							</div>
-						</ifMode>
-						<ifMode mode="EDIT">
-							<div id="pregdate-yes-container" style="display: none">
-								<obs id="pregdate-yes" conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" />
-							</div>
-							<div id="pregdate-abmc-container" style="display: none">
-								<obs id="pregdate-abmc" conceptId="5599AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+								<obs id="pregdate-abmc" conceptId="5599AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="false" allowTime="false" />
 							</div>
 						</ifMode>
 					</includeIf>
