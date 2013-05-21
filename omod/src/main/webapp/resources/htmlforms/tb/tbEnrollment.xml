@@ -63,9 +63,16 @@
 			});
 		});
 	</script>
-	<div>
-		<encounterProviderAndRole encounterRole="a0b03050-c99b-11e0-9572-0800200c9a66" default="ae01b8ff-a4cc-4012-bcf7-72359e852e14"  />
-	</div>
+	<table align="center">
+		<tr>
+			<td>
+				<encounterProviderAndRole encounterRole="a0b03050-c99b-11e0-9572-0800200c9a66" default="ae01b8ff-a4cc-4012-bcf7-72359e852e14"  />
+			</td>
+			<td>	
+				<b>Encounter date:</b> <encounterDate default="now" showTime="true" id="encounterdate"/>
+			</td>
+		</tr>		
+	</table>
 
 <table align="center"  border="0" class="tb">
 	<tr id="topMost">
@@ -77,7 +84,7 @@
 							<tr>
 								<td>
 									Clinic/facility:<encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete" size="50"/>
-								<hr />
+								<!-- <hr /> -->
 								</td>
 							</tr>
 							<tr>
@@ -88,7 +95,7 @@
 					<td>
 						<table class="tb1">
 							<tr>
-								<td>District:<hr /></td>
+								<td>District:<!-- <hr /> --></td>
 							</tr>
 							<tr>
 								<td><obs conceptId="161564AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="30" /></td>
@@ -98,7 +105,7 @@
 					<td>
 						<table class="tb1">
 							<tr>
-								<td>District Reg Number: <hr /></td>
+								<td>District Reg Number: <!-- <hr /> --></td>
 							</tr>
 							<tr>
 								<td>
@@ -114,14 +121,16 @@
 			<br />
 			<table class="tb1">
 				<tr>
-					<th>Patient referred by</th>
-					<th>Date referred:<obs conceptId="161561AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="datereferredby" /></th>
+					<th>
+						Patient referred by:
+						Date referred:<obs conceptId="161561AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="datereferredby" />
+					</th>
 				</tr>
 				<tr>
 					<td colspan="2">
 							<obs conceptId="159371AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 								answerConceptIds="159940AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160631AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160546AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161359AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160538AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1725AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1744AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160551AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-								answerLabels="VCT center,HIV care clinic,STI Clinic,Home Based Care,Antenatal/PMTCT Clinic,Private Sector,Chemist/pharmacist,Self referral,Community Health worker(CHW)" style="radio" answerSeparator="&lt;br /&gt;&lt;hr /&gt;" />	
+								answerLabels="VCT center,HIV care clinic,STI Clinic,Home Based Care,Antenatal/PMTCT Clinic,Private Sector,Chemist/pharmacist,Self referral,Community Health worker(CHW)" style="radio" answerSeparator="&lt;br /&gt;" />	
 					</td>
 				</tr>
 			</table>
@@ -188,7 +197,7 @@
 						<tr>
 							<td colspan="2" align="center">
 								<obs conceptId="160040AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="42AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Pulmonary TB,Extra-Pulmonary TB" style="radio" id="dclassification"/>
-								<hr />
+								<!-- <hr /> -->
 							</td>	
 						</tr>
 						
@@ -198,7 +207,7 @@
 								<table>
 										<tr>
 											<td>
-												<obs conceptId="159982AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1118AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Smear Positive,Smear Negative,Smear not done" style="radio" answerSeparator="&lt;br /&gt;&lt;hr /&gt;"  id="pulmonaryoptions" />
+												<obs conceptId="159982AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1118AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Smear Positive,Smear Negative,Smear not done" style="radio" answerSeparator="&lt;br /&gt;"  id="pulmonaryoptions" />
 											</td>
 										</tr>
 								</table>
@@ -267,7 +276,7 @@
 						</tr>
 				</table>
 			</td>
-			<td valign="top" align="right">
+			<td valign="top">
 				<table class="tb1" border="0">
 					<tr>
 						<th><b>Patient Classification</b></th>
@@ -275,7 +284,7 @@
 					<tr>
 						<td>
 						<obs conceptId="159871AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="159878AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159877AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159876AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159874AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159873AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159872AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio"  
-						answerLabels="New,Smear positive Relapse,Smear negative Relapse,Failure,Treatment resumed after defaulting,Transfer in" answerSeparator="&lt;br /&gt;&lt;hr /&gt;" />
+						answerLabels="New,Smear positive Relapse,Smear negative Relapse,Failure,Treatment resumed after defaulting,Transfer in" answerSeparator="&lt;br /&gt;" />
 						</td>
 					</tr>
 				</table>
