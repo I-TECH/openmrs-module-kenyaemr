@@ -61,6 +61,46 @@
     				expulmodiv.style.display = 'inline';
     			}
 			});
+			//create some variable that will control the dates on the form not to be ealier than DOB
+			var pbirthdate = new Date("<lookup expression="patient.birthdate" />").getTime();
+			var encounterdate;
+			var dstartoftreatment;
+			var dreferredby;
+			var transferindate;
+			var dfirstenrolled;
+		
+			beforeSubmit.push (function() {
+				encounterdate = new Date(getValue('encounterdate.value')).getTime();
+       			dstartoftreatment = new Date(getValue('datestartoftreatment.value')).getTime();
+       			dreferredby = new Date(getValue('datereferredby.value')).getTime();
+       			transferindate  = new Date(getValue('transferindate.value')).getTime();
+       			dfirstenrolled = new Date(getValue('datefirstenrolled.value')).getTime();
+       			
+       			if (encounterdate &lt; pbirthdate) {
+               		getField('encounterdate.error').html('Encounter datetime should be after the birth date/visit start date').show();
+                   	return false
+         		}
+         		
+          		if (dstartoftreatment &lt; pbirthdate) {
+               		getField('datestartoftreatment.error').html('Date start of treatment should be after the birth date/visit start date').show();
+                   	return false
+         		}
+         
+        		if (dreferredby &lt; pbirthdate) {
+               		getField('datereferredby.error').html('Date referred by should be after the birth date/visit start date').show();
+                   	return false
+         		}
+         		
+         		if (transferindate &lt; pbirthdate) {
+               		getField('transferindate.error').html('Transfer in date should be after the birth date/visit start date').show();
+                   	return false
+         		}
+          		if (dfirstenrolled &lt; pbirthdate){
+               		getField('datefirstenrolled.error').html('Date first enrolled should be after the birth date/visit start date').show();
+                   	return false
+         		}
+    			return true;
+			});
 		});
 	</script>
 	<table align="center">
@@ -84,7 +124,6 @@
 							<tr>
 								<td>
 									Clinic/facility:<encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete" size="50"/>
-								<!-- <hr /> -->
 								</td>
 							</tr>
 							<tr>
@@ -197,7 +236,7 @@
 						<tr>
 							<td colspan="2" align="center">
 								<obs conceptId="160040AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="42AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Pulmonary TB,Extra-Pulmonary TB" style="radio" id="dclassification"/>
-								<!-- <hr /> -->
+								<hr />
 							</td>	
 						</tr>
 						
@@ -310,7 +349,7 @@
 						</td>
 						<td>District</td>
 						<td><obs conceptId="161551AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
-						<td>Date<i>first</i>enrolled in TB Care</td>
+						<td>Date <i>first</i> enrolled in TB Care</td>
 						<td>
 							<obs conceptId="161552AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="datefirstenrolled" />
 						</td>
