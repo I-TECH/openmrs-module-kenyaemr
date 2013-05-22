@@ -1,5 +1,6 @@
 Kenya EMR OpenMRS Module
 ========================
+<a href="http://codequal.kenyaemr.org/viewType.html?buildTypeId=bt2"><img src="http://codequal.kenyaemr.org/app/rest/builds/buildType:bt2/statusIcon"/></a>
 
 Overview
 --------
