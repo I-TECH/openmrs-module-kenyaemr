@@ -124,7 +124,6 @@
 							<tr>
 								<td>
 									Clinic/facility:<encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete" size="50"/>
-								<!-- <hr /> -->
 								</td>
 							</tr>
 							<tr>
