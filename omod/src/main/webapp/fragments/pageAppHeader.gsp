@@ -17,7 +17,7 @@
 		userMenuItems << """<span>Logged in as <i>${ context.authenticatedUser.personName }</i></span>"""
 		userMenuItems << """<a href="${ ui.pageLink("kenyaemr", "profile") }">My Profile</a>"""
 		userMenuItems << """<a href="/${ contextPath }/logout">Log Out</a>"""
-		userMenuItems << """<a href="${ ui.pageLink("kenyaemr", "help") }"><img src="${ ui.resourceLink("kenyaui", "images/toolbar/help.png") }" width="12" height="12" />&nbsp;&nbsp;Help</a>"""
+		userMenuItems << """<a href="javascript:ke_showHelp()"><img src="${ ui.resourceLink("kenyaui", "images/toolbar/help.png") }" width="12" height="12" />&nbsp;&nbsp;Help</a>"""
 	} else {
 		userMenuItems << "Not Logged In"
 	}
@@ -32,3 +32,16 @@
 	</div>
 	<div style="clear: both"></div>
 </div>
+<div id="help-content" style="display: none">
+	${ui.includeFragment("kenyaemr", "help") }
+</div>
+<script type="text/javascript">
+	function ke_showHelp() {
+		kenyaui.openPanelDialog('Help', jq('#help-content').html(), 90, 90);
+
+		// The regular button handler won't work as this part of the DOM is being duplicated, ids included
+		jq('.close-help-button').click(function() {
+			kenyaui.closeModalDialog();
+		});
+	}
+</script>

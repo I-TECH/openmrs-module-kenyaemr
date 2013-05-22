@@ -43,7 +43,7 @@
 <script type="text/javascript">
 jq(function() {
 	jq('#file-upload-form').submit(function() {
-		ui.openLoadingDialog('Uploading. This may take a while...');
+		kenyaui.openLoadingDialog('Uploading. This may take a while...');
 	});
 });
 </script>

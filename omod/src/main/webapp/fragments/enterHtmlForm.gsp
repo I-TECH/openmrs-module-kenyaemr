@@ -134,7 +134,7 @@ ui.includeJavascript("kenyaemr", "dwr-util.js")
 		// only do the submit if all the beforeSubmit functions returned "true"
 		if (state_beforeSubmit){
 			var form = jq('#htmlform');
-			ui.openLoadingDialog('Submitting Form');
+			kenyaui.openLoadingDialog('Submitting Form');
 			jq.post(form.attr('action'), form.serialize(), function(result) {
 				if (result.success) {
 					<% if (command.returnUrl) { %>
@@ -147,7 +147,7 @@ ui.includeJavascript("kenyaemr", "dwr-util.js")
 						}
 					<% } %>
 				} else {
-					ui.closeLoadingDialog();
+					kenyaui.closeModalDialog();
 					for (key in result.errors) {
 						showError(key, result.errors[key]);
 					}
@@ -155,7 +155,7 @@ ui.includeJavascript("kenyaemr", "dwr-util.js")
 				}
 			}, 'json')
 			.error(function(jqXHR, textStatus, errorThrown) {
-				ui.closeLoadingDialog();
+				kenyaui.closeModalDialog();
 				ui.enableConfirmBeforeNavigating();
 				window.alert('Unexpected error, please contact your System Administrator: ' + textStatus);
 			});

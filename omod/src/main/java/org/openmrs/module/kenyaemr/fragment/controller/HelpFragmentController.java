@@ -12,23 +12,19 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.page.controller;
+package org.openmrs.module.kenyaemr.fragment.controller;
 
 import org.openmrs.api.context.Context;
-import org.openmrs.module.appframework.AppUiUtil;
 import org.openmrs.module.kenyaemr.KenyaEmrConstants;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
-import org.openmrs.ui.framework.page.PageModel;
-import org.openmrs.ui.framework.session.Session;
+import org.openmrs.ui.framework.fragment.FragmentModel;
 
 /**
- * Controller for help page
+ * Controller for help fragment
  */
-public class HelpPageController {
+public class HelpFragmentController {
 
-	public void controller(PageModel model, Session session) {
-		AppUiUtil.endCurrentApp(session);
-
+	public void controller(FragmentModel model) {
 		String facilityCode = Context.getService(KenyaEmrService.class).getDefaultLocationMflCode();
 		String supportNumber = Context.getAdministrationService().getGlobalProperty(KenyaEmrConstants.GP_SUPPORT_PHONE_NUMBER, KenyaEmrConstants.DEFAULT_SUPPORT_PHONE_NUMBER);
 		String supportEmail = Context.getAdministrationService().getGlobalProperty(KenyaEmrConstants.GP_SUPPORT_EMAIL_ADDRESS, KenyaEmrConstants.DEFAULT_SUPPORT_EMAIL_ADDRESS);

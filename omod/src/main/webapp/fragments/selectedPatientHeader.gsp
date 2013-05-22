@@ -30,7 +30,7 @@
 	<% if (closeChartUrl) { %>
 		<div style="float: right">
 			<span id="patient-record-close-text" class="ke-tip">Close chart </span>
-			<a href="${ closeChartUrl }" id="patient-record-close-link"><img title="Close this patient chart" style="vertical-align: middle" src="${ ui.resourceLink("kenyaui", "images/buttons/patient_close.png") }"/></a>
+			<a href="${ closeChartUrl }" id="patient-record-close-link"><img title="Close this patient chart" style="vertical-align: middle" src="${ ui.resourceLink("kenyaui", "images/buttons/close.png") }"/></a>
 		</div>
 	<% } %>
 
