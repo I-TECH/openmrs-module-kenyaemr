@@ -28,8 +28,6 @@ public class HelpFragmentController {
 	public void controller(FragmentModel model) {
 
 		try {
-			Context.addProxyPrivilege(PrivilegeConstants.VIEW_LOCATIONS);
-			Context.addProxyPrivilege(PrivilegeConstants.VIEW_LOCATION_ATTRIBUTE_TYPES);
 			Context.addProxyPrivilege(PrivilegeConstants.VIEW_GLOBAL_PROPERTIES);
 
 			String facilityCode = Context.getService(KenyaEmrService.class).getDefaultLocationMflCode();
@@ -40,12 +38,7 @@ public class HelpFragmentController {
 			model.put("supportNumber", supportNumber);
 			model.put("supportEmail", supportEmail);
 		}
-		catch (Exception ex) {
-			System.out.println(ex);
-		}
 		finally {
-			Context.removeProxyPrivilege(PrivilegeConstants.VIEW_LOCATIONS);
-			Context.removeProxyPrivilege(PrivilegeConstants.VIEW_LOCATION_ATTRIBUTE_TYPES);
 			Context.removeProxyPrivilege(PrivilegeConstants.VIEW_GLOBAL_PROPERTIES);
 		}
 	}

@@ -47,11 +47,7 @@ public class PageHeaderFragmentController {
 		model.addAttribute("moduleVersion", moduleVersion);
 		model.addAttribute("moduleBuildDate", moduleBuildDate);
 
-		try {
-			model.addAttribute("systemLocation", Context.getService(KenyaEmrService.class).getDefaultLocation());
-		} catch (Exception ex) {
-			// don't complain about privilege exceptions if not logged in
-			model.addAttribute("systemLocation", null);
-		}
+		model.addAttribute("systemLocation", Context.getService(KenyaEmrService.class).getDefaultLocation());
+		model.addAttribute("systemLocationCode", Context.getService(KenyaEmrService.class).getDefaultLocationMflCode());
 	}
 }
