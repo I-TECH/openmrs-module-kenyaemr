@@ -21,14 +21,15 @@ import org.openmrs.EncounterType;
 import org.openmrs.Program;
 import org.openmrs.api.PatientSetService.TimeModifier;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.kenyaemr.calculation.art.*;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.EmrCalculationCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.EmrDateCalculationCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.indicator.HivCareVisitsIndicator;
 import org.openmrs.module.kenyaemr.reporting.dataset.definition.MergingDataSetDefinition;
-import org.openmrs.module.kenyaemr.reporting.library.KenyaCohortLibrary;
-import org.openmrs.module.kenyaemr.reporting.library.KenyaDimensionLibrary;
+import org.openmrs.module.kenyaemr.reporting.library.cohort.CommonCohortLibrary;
+import org.openmrs.module.kenyaemr.reporting.library.dimension.CommonDimensionLibrary;
 import org.openmrs.module.reporting.cohort.definition.*;
 import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.module.reporting.common.TimeQualifier;
@@ -38,7 +39,6 @@ import org.openmrs.module.reporting.dataset.definition.SimpleIndicatorDataSetDef
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.openmrs.module.reporting.indicator.Indicator;
-import org.openmrs.module.reporting.indicator.dimension.CohortDefinitionDimension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -55,17 +55,16 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 	protected static final Log log = LogFactory.getLog(Moh731Report.class);
 
 	@Autowired
-	private KenyaCohortLibrary cohortLibrary;
+	private CommonCohortLibrary commonCohorts;
 
 	@Autowired
-	private KenyaDimensionLibrary dimensionLibrary;
+	private CommonDimensionLibrary commonDimensions;
 
+	/**
+	 * Report specific cohorts and indicators
+	 */
 	private Map<String, CohortDefinition> cohortDefinitions;
-
-	private Map<String, CohortDefinitionDimension> dimensions;
-
 	private Map<String, CohortIndicator> cohortIndicators;
-
 	private Map<String, Indicator> nonCohortIndicators;
 
 	/**
@@ -109,10 +108,6 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 
 		setupCohortDefinitions();
 
-		log.debug("Setting up dimensions");
-
-		setupDimensions();
-
 		log.debug("Setting up cohort indicators");
 
 		setupCohortIndicators();
@@ -132,35 +127,19 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 		Program tbProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.TB_PROGRAM_UUID);
 		EncounterType tbScreeningEncType = Context.getEncounterService().getEncounterTypeByUuid(MetadataConstants.TB_SCREENING_ENCOUNTER_TYPE_UUID);
 
-		Concept condomsProvided = Context.getConceptService().getConceptByUuid(MetadataConstants.CONDOMS_PROVIDED_DURING_VISIT_CONCEPT_UUID);
-		Concept methodOfFamilyPlanning = Context.getConceptService().getConceptByUuid(MetadataConstants.METHOD_OF_FAMILY_PLANNING);
-		Concept naturalFamilyPlanning = Context.getConceptService().getConceptByUuid(MetadataConstants.NATURAL_FAMILY_PLANNING_CONCEPT_UUID);
-		Concept none = Context.getConceptService().getConceptByUuid(MetadataConstants.NONE_CONCEPT_UUID);
-		Concept notApplicable = Context.getConceptService().getConceptByUuid(MetadataConstants.NOT_APPLICABLE_CONCEPT_UUID);
-		Concept otherNonCoded = Context.getConceptService().getConceptByUuid(MetadataConstants.OTHER_NON_CODED_CONCEPT_UUID);
-		Concept reasonForDiscontinue = Context.getConceptService().getConceptByUuid(MetadataConstants.REASON_FOR_PROGRAM_DISCONTINUATION_CONCEPT_UUID);
-		Concept transferInDate = Context.getConceptService().getConceptByUuid(MetadataConstants.TRANSFER_IN_DATE_CONCEPT_UUID);
-		Concept sexualAbstinence = Context.getConceptService().getConceptByUuid(MetadataConstants.SEXUAL_ABSTINENCE_CONCEPT_UUID);
-		Concept transferredOut = Context.getConceptService().getConceptByUuid(MetadataConstants.TRANSFERRED_OUT_CONCEPT_UUID);
-		Concept yes = Context.getConceptService().getConceptByUuid(MetadataConstants.YES_CONCEPT_UUID);
+		Concept condomsProvided = Dictionary.getConcept(Dictionary.CONDOMS_PROVIDED_DURING_VISIT);
+		Concept methodOfFamilyPlanning = Dictionary.getConcept(Dictionary.METHOD_OF_FAMILY_PLANNING);
+		Concept naturalFamilyPlanning = Dictionary.getConcept(Dictionary.NATURAL_FAMILY_PLANNING);
+		Concept none = Dictionary.getConcept(Dictionary.NONE);
+		Concept notApplicable = Dictionary.getConcept(Dictionary.NOT_APPLICABLE);
+		Concept otherNonCoded = Dictionary.getConcept(Dictionary.OTHER_NON_CODED);
+		Concept reasonForDiscontinue = Dictionary.getConcept(Dictionary.REASON_FOR_PROGRAM_DISCONTINUATION);
+		Concept transferInDate = Dictionary.getConcept(Dictionary.TRANSFER_IN_DATE);
+		Concept sexualAbstinence = Dictionary.getConcept(Dictionary.SEXUAL_ABSTINENCE);
+		Concept transferredOut = Dictionary.getConcept(Dictionary.TRANSFERRED_OUT);
+		Concept yes = Dictionary.getConcept(Dictionary.YES);
 
 		cohortDefinitions = new HashMap<String, CohortDefinition>();
-		{
-			ProgramEnrollmentCohortDefinition cd = new ProgramEnrollmentCohortDefinition();
-			cd.setName("Enrolled in HIV Program between dates");
-			cd.addParameter(new Parameter("enrolledOnOrAfter", "From Date", Date.class));
-			cd.addParameter(new Parameter("enrolledOnOrBefore", "To Date", Date.class));
-			cd.setPrograms(Collections.singletonList(hivProgram));
-			cohortDefinitions.put("enrolledInHivProgram", cd);
-		}
-		{
-			ProgramEnrollmentCohortDefinition cd = new ProgramEnrollmentCohortDefinition();
-			cd.setName("Enrolled in TB Program between dates");
-			cd.addParameter(new Parameter("enrolledOnOrAfter", "From Date", Date.class));
-			cd.addParameter(new Parameter("enrolledOnOrBefore", "To Date", Date.class));
-			cd.setPrograms(Collections.singletonList(tbProgram));
-			cohortDefinitions.put("enrolledInTbProgram", cd);
-		}
 		{
 			DateObsCohortDefinition cd = new DateObsCohortDefinition();
 			cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
@@ -206,7 +185,7 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 			CompositionCohortDefinition cd = new CompositionCohortDefinition();
 			cd.addParameter(new Parameter("fromDate", "From Date", Date.class));
 			cd.addParameter(new Parameter("toDate", "To Date", Date.class));
-			cd.addSearch("enrolled", map(cohortDefinitions.get("enrolledInHivProgram"), "enrolledOnOrAfter=${fromDate},enrolledOnOrBefore=${toDate}"));
+			cd.addSearch("enrolled", map(commonCohorts.enrolledInProgram(hivProgram), "enrolledOnOrAfter=${fromDate},enrolledOnOrBefore=${toDate}"));
 			cd.addSearch("transferIn", map(cohortDefinitions.get("transferInBefore"), "onOrBefore=${toDate}"));
 			cd.setCompositionString("enrolled AND NOT transferIn");
 			cohortDefinitions.put("enrolledNoTransfers", cd);
@@ -252,7 +231,7 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 			cd.addParameter(new Parameter("toDate", "To Date", Date.class));
 
 			cd.addSearch("startedArtBetween", map(cohortDefinitions.get("startedArtBetween"), "resultOnOrAfter=${startDate},resultOnOrBefore=${endDate}"));
-			cd.addSearch("enrolledInTb", map(cohortDefinitions.get("enrolledInTbProgram"), "enrolledOnOrAfter=${fromDate},enrolledOnOrBefore=${toDate}"));
+			cd.addSearch("enrolledInTb", map(commonCohorts.enrolledInProgram(tbProgram), "enrolledOnOrAfter=${fromDate},enrolledOnOrBefore=${toDate}"));
 			cd.setCompositionString("startedArtBetween AND enrolledInTb");
 			cohortDefinitions.put("startedArtAndIsTbPatient", cd);
 		}
@@ -331,19 +310,6 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 			cd.addSearch("onSecondLineAt12Months", map(cohortDefinitions.get("onSecondLineAt12Months"), "fromDate=${fromDate},toDate=${toDate}"));
 			cd.setCompositionString("onOriginalFirstLineAt12Months OR onAlternateFirstLineAt12Months OR onSecondLineAt12Months");
 			cohortDefinitions.put("onTherapyAt12Months", cd);
-		}
-	}
-
-	private void setupDimensions() {
-		dimensions = new HashMap<String, CohortDefinitionDimension>();
-		{
-			CohortDefinitionDimension dim = new CohortDefinitionDimension();
-			dim.setName("Age (<1, <15, 15+)");
-			dim.addParameter(new Parameter("date", "Date", Date.class));
-			dim.addCohortDefinition("<1", map(cohortLibrary.agedAtMost(0), "effectiveDate=${date}"));
-			dim.addCohortDefinition("<15", map(cohortLibrary.agedAtMost(14), "effectiveDate=${date}"));
-			dim.addCohortDefinition("15+", map(cohortLibrary.agedAtLeast(15), "effectiveDate=${date}"));
-			dimensions.put("age", dim);
 		}
 	}
 
@@ -458,8 +424,8 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 		cohortDsd.setName(getName() + " Cohort DSD");
 		cohortDsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		cohortDsd.addParameter(new Parameter("endDate", "End Date", Date.class));
-		cohortDsd.addDimension("age", map(dimensions.get("age"), "date=${endDate}"));
-		cohortDsd.addDimension("gender", map(dimensionLibrary.gender()));
+		cohortDsd.addDimension("age", map(commonDimensions.age(), "date=${endDate}"));
+		cohortDsd.addDimension("gender", map(commonDimensions.gender()));
 
 		SimpleIndicatorDataSetDefinition nonCohortDsd = new SimpleIndicatorDataSetDefinition();
 		nonCohortDsd.setName(getName() + " Non-cohort DSD");

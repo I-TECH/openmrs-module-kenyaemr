@@ -33,6 +33,7 @@ import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.regimen.RegimenOrder;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.DataSetRow;
+import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.renderer.TsvReportRenderer;
 
@@ -272,30 +273,6 @@ public class TestUtils {
 	}
 
 	/**
-	 * Checks a patient alert list report
-	 * @param expectedPatientIdentifiers the set of HIV identifiers of expected patients
-	 * @param identifierColumn the name of column containing patient identifiers
-	 * @param data the report data
-	 */
-	public static void checkPatientAlertListReport(Set<String> expectedPatientIdentifiers, String identifierColumn, ReportData data) {
-		// Check report has one data set
-		Assert.assertEquals(1, data.getDataSets().values().size());
-		DataSet set = data.getDataSets().values().iterator().next();
-
-		// Make mutable copy
-		expectedPatientIdentifiers = new HashSet<String>(expectedPatientIdentifiers);
-
-		// Check the patient name of each row is in the expected set
-		for (DataSetRow row : set) {
-			List<PatientIdentifier> patientIdentifiers = (List<PatientIdentifier>)row.getColumnValue(identifierColumn);
-			PatientIdentifier patientIdentifier = patientIdentifiers.get(0);
-			String patientIdentifierVal = patientIdentifier != null ? patientIdentifier.getIdentifier() : null;
-			Assert.assertTrue("Patient identifier '" + patientIdentifierVal + "' not expected", expectedPatientIdentifiers.contains(patientIdentifierVal));
-			expectedPatientIdentifiers.remove(patientIdentifierVal);
-		}
-	}
-
-	/**
 	 * Asserts that the given regimen contains only the given drug orders
 	 * @param reg
 	 * @param drugOrders
@@ -305,17 +282,6 @@ public class TestUtils {
 		for (DrugOrder o : drugOrders) {
 			Assert.assertTrue(reg.getDrugOrders().contains(o));
 		}
-	}
-
-	/**
-	 * Prints report data to the console
-	 * @param data the report data
-	 * @throws java.io.IOException if error occurs
-	 */
-	public static void printReport(ReportData data) throws IOException {
-		System.out.println("------------ " + data.getDefinition().getName() + " -------------");
-		new TsvReportRenderer().render(data, null, System.out);
-		System.out.println("-------------------------------");
 	}
 
 	/**

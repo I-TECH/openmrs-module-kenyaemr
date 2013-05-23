@@ -23,7 +23,7 @@ import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.kenyaemr.reporting.indicator.HivCareVisitsIndicator;
-import org.openmrs.module.kenyaemr.reporting.library.KenyaCohortLibrary;
+import org.openmrs.module.kenyaemr.reporting.library.cohort.CommonCohortLibrary;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.common.DateUtil;
@@ -51,7 +51,7 @@ public class HivCareVisitsIndicatorEvaluator implements IndicatorEvaluator {
 	SessionFactory sessionFactory;
 
 	@Autowired
-	KenyaCohortLibrary cohortLibrary;
+	CommonCohortLibrary cohortLibrary;
 
 	@Override
 	public SimpleIndicatorResult evaluate(Indicator indicator, EvaluationContext context) throws EvaluationException {
