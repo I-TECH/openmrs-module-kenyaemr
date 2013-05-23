@@ -17,7 +17,6 @@ package org.openmrs.module.kenyaemr.reporting.builder.indicator;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Concept;
-import org.openmrs.EncounterType;
 import org.openmrs.Program;
 import org.openmrs.api.PatientSetService.TimeModifier;
 import org.openmrs.api.context.Context;
@@ -25,14 +24,14 @@ import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.kenyaemr.calculation.art.*;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.EmrCalculationCohortDefinition;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.EmrDateCalculationCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.indicator.HivCareVisitsIndicator;
 import org.openmrs.module.kenyaemr.reporting.dataset.definition.MergingDataSetDefinition;
+import org.openmrs.module.kenyaemr.reporting.library.cohort.ArtCohortLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.cohort.CommonCohortLibrary;
+import org.openmrs.module.kenyaemr.reporting.library.cohort.TbCohortLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.dimension.CommonDimensionLibrary;
 import org.openmrs.module.reporting.cohort.definition.*;
 import org.openmrs.module.reporting.common.SetComparator;
-import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.SimpleIndicatorDataSetDefinition;
@@ -56,6 +55,12 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 
 	@Autowired
 	private CommonCohortLibrary commonCohorts;
+
+	@Autowired
+	private ArtCohortLibrary artCohorts;
+
+	@Autowired
+	private TbCohortLibrary tbCohorts;
 
 	@Autowired
 	private CommonDimensionLibrary commonDimensions;
@@ -125,7 +130,6 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 
 		Program hivProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.HIV_PROGRAM_UUID);
 		Program tbProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.TB_PROGRAM_UUID);
-		EncounterType tbScreeningEncType = Context.getEncounterService().getEncounterTypeByUuid(MetadataConstants.TB_SCREENING_ENCOUNTER_TYPE_UUID);
 
 		Concept condomsProvided = Dictionary.getConcept(Dictionary.CONDOMS_PROVIDED_DURING_VISIT);
 		Concept methodOfFamilyPlanning = Dictionary.getConcept(Dictionary.METHOD_OF_FAMILY_PLANNING);
@@ -134,20 +138,11 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 		Concept notApplicable = Dictionary.getConcept(Dictionary.NOT_APPLICABLE);
 		Concept otherNonCoded = Dictionary.getConcept(Dictionary.OTHER_NON_CODED);
 		Concept reasonForDiscontinue = Dictionary.getConcept(Dictionary.REASON_FOR_PROGRAM_DISCONTINUATION);
-		Concept transferInDate = Dictionary.getConcept(Dictionary.TRANSFER_IN_DATE);
 		Concept sexualAbstinence = Dictionary.getConcept(Dictionary.SEXUAL_ABSTINENCE);
 		Concept transferredOut = Dictionary.getConcept(Dictionary.TRANSFERRED_OUT);
 		Concept yes = Dictionary.getConcept(Dictionary.YES);
 
 		cohortDefinitions = new HashMap<String, CohortDefinition>();
-		{
-			DateObsCohortDefinition cd = new DateObsCohortDefinition();
-			cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-			cd.setName("Transfer in before date");
-			cd.setTimeModifier(TimeModifier.ANY);
-			cd.setQuestion(transferInDate);
-			cohortDefinitions.put("transferInBefore", cd);
-		}
 		{
 			CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
 			cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
@@ -186,30 +181,9 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 			cd.addParameter(new Parameter("fromDate", "From Date", Date.class));
 			cd.addParameter(new Parameter("toDate", "To Date", Date.class));
 			cd.addSearch("enrolled", map(commonCohorts.enrolledInProgram(hivProgram), "enrolledOnOrAfter=${fromDate},enrolledOnOrBefore=${toDate}"));
-			cd.addSearch("transferIn", map(cohortDefinitions.get("transferInBefore"), "onOrBefore=${toDate}"));
+			cd.addSearch("transferIn", map(commonCohorts.transferredInBefore(), "transferredOnOrBefore=${toDate}"));
 			cd.setCompositionString("enrolled AND NOT transferIn");
 			cohortDefinitions.put("enrolledNoTransfers", cd);
-		}
-		{
-			EncounterCohortDefinition cd = new EncounterCohortDefinition();
-			cd.setTimeQualifier(TimeQualifier.ANY);
-			cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-			cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
-			cohortDefinitions.put("anyEncounterBetween", cd);
-		}
-		{
-			EncounterCohortDefinition cd = new EncounterCohortDefinition();
-			cd.setTimeQualifier(TimeQualifier.ANY);
-			cd.setEncounterTypeList(Collections.singletonList(tbScreeningEncType));
-			cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-			cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
-			cohortDefinitions.put("tbScreeningEncounterBetween", cd);
-		}
-		{ // Started ART
-			EmrDateCalculationCohortDefinition cd = new EmrDateCalculationCohortDefinition(new InitialArtStartDateCalculation());
-			cd.addParameter(new Parameter("resultOnOrBefore", "Before Date", Date.class));
-			cd.addParameter(new Parameter("resultOnOrAfter", "After Date", Date.class));
-			cohortDefinitions.put("startedArtBetween", cd);
 		}
 		{ // Pregnant at start of ART
 			EmrCalculationCohortDefinition cd = new EmrCalculationCohortDefinition(new PregnantAtArtStartCalculation());
@@ -220,9 +194,9 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 			cd.addParameter(new Parameter("fromDate", "From Date", Date.class));
 			cd.addParameter(new Parameter("toDate", "To Date", Date.class));
 
-			cd.addSearch("startedArtBetween", map(cohortDefinitions.get("startedArtBetween"), "resultOnOrAfter=${startDate},resultOnOrBefore=${endDate}"));
+			cd.addSearch("startedArt", map(artCohorts.startedArt(), "onOrAfter=${startDate},onOrBefore=${endDate}"));
 			cd.addSearch("pregnantAtArtStart", map(cohortDefinitions.get("pregnantAtArtStart"), ""));
-			cd.setCompositionString("startedArtBetween AND pregnantAtArtStart");
+			cd.setCompositionString("startedArt AND pregnantAtArtStart");
 			cohortDefinitions.put("startedArtAndIsPregnant", cd);
 		}
 		{ // Started ART and is TB patient
@@ -230,17 +204,17 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 			cd.addParameter(new Parameter("fromDate", "From Date", Date.class));
 			cd.addParameter(new Parameter("toDate", "To Date", Date.class));
 
-			cd.addSearch("startedArtBetween", map(cohortDefinitions.get("startedArtBetween"), "resultOnOrAfter=${startDate},resultOnOrBefore=${endDate}"));
+			cd.addSearch("startedArt", map(artCohorts.startedArt(), "onOrAfter=${startDate},onOrBefore=${endDate}"));
 			cd.addSearch("enrolledInTb", map(commonCohorts.enrolledInProgram(tbProgram), "enrolledOnOrAfter=${fromDate},enrolledOnOrBefore=${toDate}"));
-			cd.setCompositionString("startedArtBetween AND enrolledInTb");
+			cd.setCompositionString("startedArt AND enrolledInTb");
 			cohortDefinitions.put("startedArtAndIsTbPatient", cd);
 		}
 		{ // Revisits on ART
 			CompositionCohortDefinition cd = new CompositionCohortDefinition();
 			cd.addParameter(new Parameter("fromDate", "From Date", Date.class));
 			cd.addParameter(new Parameter("toDate", "To Date", Date.class));
-			cd.addSearch("startedBefore", map(cohortDefinitions.get("startedArtBetween"), "resultOnOrBefore=${startDate-1d}"));
-			cd.addSearch("recentEncounter", map(cohortDefinitions.get("anyEncounterBetween"), "onOrAfter=${endDate-90d},onOrBefore=${endDate}"));
+			cd.addSearch("startedBefore", map(artCohorts.startedArt(), "onOrBefore=${startDate-1d}"));
+			cd.addSearch("recentEncounter", map(commonCohorts.hasEncounter(), "onOrAfter=${endDate-90d},onOrBefore=${endDate}"));
 			cd.setCompositionString("recentEncounter AND startedBefore");
 			cohortDefinitions.put("revisitsArt", cd);
 		}
@@ -248,9 +222,9 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 			CompositionCohortDefinition cd = new CompositionCohortDefinition();
 			cd.addParameter(new Parameter("fromDate", "From Date", Date.class));
 			cd.addParameter(new Parameter("toDate", "To Date", Date.class));
-			cd.addSearch("startedArtBetween", map(cohortDefinitions.get("startedArtBetween"), "resultOnOrAfter=${fromDate},resultOnOrBefore=${toDate}"));
+			cd.addSearch("startedArt", map(artCohorts.startedArt(), "onOrAfter=${fromDate},onOrBefore=${toDate}"));
 			cd.addSearch("revisitsArt", map(cohortDefinitions.get("revisitsArt"), "fromDate=${fromDate},toDate=${toDate}"));
-			cd.setCompositionString("startedArtBetween OR revisitsArt");
+			cd.setCompositionString("startedArt OR revisitsArt");
 			cohortDefinitions.put("currentlyOnArt", cd);
 		}
 		{ // Taking original 1st line ART
@@ -269,7 +243,7 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 			CompositionCohortDefinition cd = new CompositionCohortDefinition();
 			cd.addParameter(new Parameter("fromDate", "From Date", Date.class));
 			cd.addParameter(new Parameter("toDate", "To Date", Date.class));
-			cd.addSearch("startedArt12MonthsAgo", map(cohortDefinitions.get("startedArtBetween"), "resultOnOrAfter=${fromDate-1y},resultOnOrBefore=${toDate-1y}"));
+			cd.addSearch("startedArt12MonthsAgo", map(artCohorts.startedArt(), "onOrAfter=${fromDate-1y},onOrBefore=${toDate-1y}"));
 			cd.addSearch("transferredOut", map(cohortDefinitions.get("transferredOutBetween"), "onOrAfter=${fromDate-1y}"));
 			cd.setCompositionString("startedArt12MonthsAgo AND NOT transferredOut");
 			cohortDefinitions.put("art12MonthNetCohort", cd);
@@ -321,11 +295,11 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 		}
 		{
 			CohortIndicator ind = createCohortIndicator("currentlyInCare", "Currently in care (includes transfers)");
-			ind.setCohortDefinition(map(cohortDefinitions.get("anyEncounterBetween"), "onOrAfter=${endDate-90d},onOrBefore=${endDate}"));
+			ind.setCohortDefinition(map(commonCohorts.hasEncounter(), "onOrAfter=${endDate-90d},onOrBefore=${endDate}"));
 		}
 		{
 			CohortIndicator ind = createCohortIndicator("startingArt", "Starting ART");
-			ind.setCohortDefinition(map(cohortDefinitions.get("startedArtBetween"), "resultOnOrAfter=${startDate},resultOnOrBefore=${endDate}"));
+			ind.setCohortDefinition(map(artCohorts.startedArt(), "onOrAfter=${startDate},onOrBefore=${endDate}"));
 		}
 		{
 			CohortIndicator ind = createCohortIndicator("startingArtTbPatient", "Starting ART (TB Patient)");
@@ -345,7 +319,7 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 		}
 		{
 			CohortIndicator ind = createCohortIndicator("cumulativeOnArt", "Cumulative ever on ART");
-			ind.setCohortDefinition(map(cohortDefinitions.get("startedArtBetween"), "resultOnOrBefore=${endDate}"));
+			ind.setCohortDefinition(map(artCohorts.startedArt(), "onOrBefore=${endDate}"));
 		}
 		{
 			CohortIndicator ind = createCohortIndicator("art12MonthNetCohort", "ART 12 Month Net Cohort");
@@ -369,7 +343,7 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 		}
 		{
 			CohortIndicator ind = createCohortIndicator("screenedForTb", "Screened for TB");
-			ind.setCohortDefinition(map(cohortDefinitions.get("tbScreeningEncounterBetween"), "onOrAfter=${startDate},onOrBefore=${endDate}"));
+			ind.setCohortDefinition(map(tbCohorts.screenedForTb(), "onOrAfter=${startDate},onOrBefore=${endDate}"));
 		}
 		{
 			CohortIndicator ind = createCohortIndicator("modernContraceptivesProvided", "Modern contraceptives provided");

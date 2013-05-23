@@ -119,13 +119,18 @@
 
 	<location_attribute_type location_attribute_type_id="1" name="Master Facility Code" description="Code for linking to the Ministry of Health's Master Facility List" datatype="org.openmrs.customdatatype.datatype.RegexValidatedTextDatatype" datatype_config="\d{5}" min_occurs="0" max_occurs="1" creator="1" date_created="2005-01-01 00:00:00.0" retired="0" uuid="8a845a89-6aa5-4111-81d3-0af31c45c002" />
 
-	<!-- =========================================== Visits =============================================== -->
+	<!-- =========================================== Visit types =============================================== -->
 
 	<visit_type visit_type_id="1001" name="Outpatient" description="Outpatient Visit Description" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="3371a4d4-f66f-4454-a86d-92c7b3da990c"/>
 
-	<!-- =========================================== Encounters =============================================== -->
+	<!-- =========================================== Encounter types =============================================== -->
 
-	<encounter_type encounter_type_id="1001" name="TB Screening" description="TB Screening" creator="1" date_created="2005-02-24 00:00:00.0" retired="false" uuid="ed6dacc9-0827-4c82-86be-53c0d8c449be"/>
+	<encounter_type encounter_type_id="1001" name="Registration" description="Registration" creator="1" date_created="2005-02-24 00:00:00.0" retired="false" uuid="de1f9d67-b73e-4e1b-90d0-036166fc6995" />
+	<encounter_type encounter_type_id="1002" name="Triage" description="Triage" creator="1" date_created="2005-02-24 00:00:00.0" retired="false" uuid="d1059fb9-a079-4feb-a749-eedd709ae542" />
+	<encounter_type encounter_type_id="1003" name="Consultation" description="Consultation" creator="1" date_created="2005-02-24 00:00:00.0" retired="false" uuid="465a92f2-baf8-42e9-9612-53064be868e8" />
+	<encounter_type encounter_type_id="1004" name="HIV Enrollment" description="HIV Enrollment" creator="1" date_created="2005-02-24 00:00:00.0" retired="false" uuid="cb93cdea-6d03-4283-9996-c9f3dc77cec3" />
+	<encounter_type encounter_type_id="1005" name="HIV Consultation" description="HIV Consultation" creator="1" date_created="2005-02-24 00:00:00.0" retired="false" uuid="a0034eee-1940-4e35-847f-97537a35d05e" />
+	<encounter_type encounter_type_id="1006" name="TB Screening" description="TB Screening" creator="1" date_created="2005-02-24 00:00:00.0" retired="false" uuid="ed6dacc9-0827-4c82-86be-53c0d8c449be" />
 
 	<!-- =========================================== Global properties =============================================== -->
 

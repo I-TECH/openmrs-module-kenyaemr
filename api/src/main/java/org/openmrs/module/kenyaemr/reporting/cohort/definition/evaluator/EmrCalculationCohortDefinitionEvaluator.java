@@ -48,7 +48,7 @@ public class EmrCalculationCohortDefinitionEvaluator implements CohortDefinition
 
 		if (cohortDefinition instanceof EmrDateCalculationCohortDefinition) {
 			EmrDateCalculationCohortDefinition cd = (EmrDateCalculationCohortDefinition) cohortDefinition;
-			passing = CalculationUtils.datesWithinRange(map, cd.getResultOnOrAfter(), cd.getResultOnOrBefore());
+			passing = CalculationUtils.datesWithinRange(map, cd.getOnOrAfter(), cd.getOnOrBefore());
 		} else {
 			passing = CalculationUtils.patientsThatPass(map);
 		}

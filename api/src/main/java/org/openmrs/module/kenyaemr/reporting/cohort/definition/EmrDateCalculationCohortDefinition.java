@@ -24,11 +24,11 @@ import java.util.Date;
  */
 public class EmrDateCalculationCohortDefinition extends EmrCalculationCohortDefinition {
 
-	@ConfigurationProperty(required = true, group = "date range")
-	private Date resultOnOrAfter;
+	@ConfigurationProperty(required = false, group = "date range")
+	private Date onOrAfter;
 
-	@ConfigurationProperty(required = true, group = "date range")
-	private Date resultOnOrBefore;
+	@ConfigurationProperty(required = false, group = "date range")
+	private Date onOrBefore;
 
 	public EmrDateCalculationCohortDefinition() {
 	}
@@ -42,30 +42,30 @@ public class EmrDateCalculationCohortDefinition extends EmrCalculationCohortDefi
 	}
 	
 	/**
-	 * @return the resultOnOrAfter
+	 * @return the onOrAfter
 	 */
-	public Date getResultOnOrAfter() {
-		return resultOnOrAfter;
+	public Date getOnOrAfter() {
+		return onOrAfter;
 	}
 	
 	/**
-	 * @param resultOnOrAfter the resultOnOrAfter to set
+	 * @param onOrAfter the onOrAfter to set
 	 */
-	public void setResultOnOrAfter(Date resultOnOrAfter) {
-		this.resultOnOrAfter = resultOnOrAfter;
+	public void setOnOrAfter(Date onOrAfter) {
+		this.onOrAfter = onOrAfter;
 	}
 	
 	/**
-	 * @return the resultOnOrBefore
+	 * @return the onOrBefore
 	 */
-	public Date getResultOnOrBefore() {
-		return resultOnOrBefore;
+	public Date getOnOrBefore() {
+		return onOrBefore;
 	}
 	
 	/**
-	 * @param resultOnOrBefore the resultOnOrBefore to set
+	 * @param onOrBefore the onOrBefore to set
 	 */
-	public void setResultOnOrBefore(Date resultOnOrBefore) {
-		this.resultOnOrBefore = resultOnOrBefore;
+	public void setOnOrBefore(Date onOrBefore) {
+		this.onOrBefore = onOrBefore;
 	}
 }

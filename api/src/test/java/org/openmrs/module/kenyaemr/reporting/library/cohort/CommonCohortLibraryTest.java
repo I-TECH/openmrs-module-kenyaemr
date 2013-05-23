@@ -16,7 +16,12 @@ package org.openmrs.module.kenyaemr.reporting.library.cohort;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.Concept;
+import org.openmrs.EncounterType;
+import org.openmrs.Program;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyaemr.Dictionary;
+import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.kenyaemr.test.ReportingTestUtils;
 import org.openmrs.module.kenyaemr.test.TestUtils;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
@@ -42,13 +47,15 @@ public class CommonCohortLibraryTest extends BaseModuleContextSensitiveTest {
 	 * Setup each test
 	 */
 	@Before
-	public void setup() {
+	public void setup() throws Exception {
+		executeDataSet("test-data.xml");
+
 		List<Integer> cohort = Arrays.asList(2, 6, 7, 8, 999);
-		context = ReportingTestUtils.reportingContext(cohort, TestUtils.date(2012, 1, 1), TestUtils.date(2012, 1, 31));
+		context = ReportingTestUtils.reportingContext(cohort, TestUtils.date(2012, 6, 1), TestUtils.date(2012, 6, 30));
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.reporting.library.cohort.CommonCohortLibrary#males()
+	 * @see CommonCohortLibrary#males()
 	 */
 	@Test
 	public void males_shouldReturnAllMalePatients() throws Exception {
@@ -56,11 +63,11 @@ public class CommonCohortLibraryTest extends BaseModuleContextSensitiveTest {
 		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
 
 		// #7 and #8 are female, #999 is voided
-		ReportingTestUtils.assertCohortContainsAll(Arrays.asList(2, 6), evaluated);
+		ReportingTestUtils.assertCohortEquals(Arrays.asList(2, 6), evaluated);
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.reporting.library.cohort.CommonCohortLibrary#females()
+	 * @see CommonCohortLibrary#females()
 	 */
 	@Test
 	public void females_shouldReturnAllFemalePatients() throws Exception {
@@ -68,11 +75,11 @@ public class CommonCohortLibraryTest extends BaseModuleContextSensitiveTest {
 		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
 
 		// #2 and #6 are male, #999 is voided
-		ReportingTestUtils.assertCohortContainsAll(Arrays.asList(7, 8), evaluated);
+		ReportingTestUtils.assertCohortEquals(Arrays.asList(7, 8), evaluated);
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.reporting.library.cohort.CommonCohortLibrary#agedAtMost(int)
+	 * @see CommonCohortLibrary#agedAtMost(int)
 	 */
 	@Test
 	public void ageAtMost_shouldReturnAllPatientsAgedAtMost() throws Exception {
@@ -81,11 +88,11 @@ public class CommonCohortLibraryTest extends BaseModuleContextSensitiveTest {
 		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
 
 		// #6 will be 5, #7 will be 35, #8 has no birthdate, #999 is voided
-		ReportingTestUtils.assertCohortContainsAll(Arrays.asList(6, 7), evaluated);
+		ReportingTestUtils.assertCohortEquals(Arrays.asList(6, 7), evaluated);
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.reporting.library.cohort.CommonCohortLibrary#agedAtLeast(int)
+	 * @see CommonCohortLibrary#agedAtLeast(int)
 	 */
 	@Test
 	public void ageAtLeast_shouldReturnAllPatientsAgedAtLeast() throws Exception {
@@ -94,11 +101,11 @@ public class CommonCohortLibraryTest extends BaseModuleContextSensitiveTest {
 		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
 
 		// #7 will be 35, #8 has no birthdate, #999 is voided
-		ReportingTestUtils.assertCohortContainsAll(Arrays.asList(2, 7), evaluated);
+		ReportingTestUtils.assertCohortEquals(Arrays.asList(2, 7), evaluated);
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.reporting.library.cohort.CommonCohortLibrary#agedAtLeast(int)
+	 * @see CommonCohortLibrary#agedAtLeast(int)
 	 */
 	@Test
 	public void femalesAgedAtLeast18_shouldReturnAllPatientsAgedAtLeast() throws Exception {
@@ -107,6 +114,109 @@ public class CommonCohortLibraryTest extends BaseModuleContextSensitiveTest {
 		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
 
 		// #7 will be 35, #8 has no birthdate, #999 is voided
-		ReportingTestUtils.assertCohortContainsAll(Arrays.asList(7), evaluated);
+		ReportingTestUtils.assertCohortEquals(Arrays.asList(7), evaluated);
+	}
+
+	/**
+	 * @see CommonCohortLibrary#hasEncounter(org.openmrs.EncounterType...)
+	 */
+	@Test
+	public void hasEncounter() throws Exception {
+		EncounterType registrationType = Context.getEncounterService().getEncounterTypeByUuid(MetadataConstants.REGISTRATION_ENCOUNTER_TYPE_UUID);
+		EncounterType triageType = Context.getEncounterService().getEncounterTypeByUuid(MetadataConstants.TRIAGE_ENCOUNTER_TYPE_UUID);
+
+		// Give #6 registration encounter on June 1st
+		TestUtils.saveEncounter(Context.getPatientService().getPatient(6), registrationType, TestUtils.date(2012, 6, 1));
+
+		// Give #7 registration encounter on July 1st
+		TestUtils.saveEncounter(Context.getPatientService().getPatient(7), registrationType, TestUtils.date(2012, 7, 1));
+
+		// Give #8 triage encounter on June 1st
+		TestUtils.saveEncounter(Context.getPatientService().getPatient(8), triageType, TestUtils.date(2012, 6, 1));
+
+		CohortDefinition cd = commonCohortLibrary.hasEncounter(registrationType);
+		context.addParameterValue("onOrAfter", TestUtils.date(2012, 6, 1));
+		context.addParameterValue("onOrBefore", TestUtils.date(2012, 6, 30));
+		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
+		ReportingTestUtils.assertCohortEquals(Arrays.asList(6), evaluated);
+	}
+
+	/**
+	 * @see CommonCohortLibrary#hasDateObsValueBetween(org.openmrs.Concept)
+	 */
+	@Test
+	public void hasDateObsValueBetween() throws Exception {
+		Concept transferInDate = Dictionary.getConcept(Dictionary.TRANSFER_IN_DATE);
+
+		// Transfer in #6 on June 1st (obs recorded on July 1st)
+		TestUtils.saveObs(Context.getPatientService().getPatient(6), transferInDate, TestUtils.date(2012, 6, 1),  TestUtils.date(2012, 7, 1));
+
+		// Transfer in #7 on July 1st (obs recorded on June 1st)
+		TestUtils.saveObs(Context.getPatientService().getPatient(6), transferInDate, TestUtils.date(2012, 7, 1),  TestUtils.date(2012, 6, 1));
+
+		CohortDefinition cd = commonCohortLibrary.hasDateObsValueBetween(transferInDate);
+		context.addParameterValue("value1", TestUtils.date(2012, 6, 1));
+		context.addParameterValue("value2", TestUtils.date(2012, 6, 30));
+		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
+		ReportingTestUtils.assertCohortEquals(Arrays.asList(6), evaluated);
+	}
+
+	/**
+	 * @see CommonCohortLibrary#enrolledInProgram(org.openmrs.Program)
+	 */
+	@Test
+	public void enrolledInProgram() throws Exception {
+		Program hivProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.HIV_PROGRAM_UUID);
+
+		// Enroll patient 2 on May 31st
+		TestUtils.enrollInProgram(Context.getPatientService().getPatient(2), hivProgram, TestUtils.date(2012, 5, 31));
+
+		// Enroll patient 6 on June 1st
+		TestUtils.enrollInProgram(Context.getPatientService().getPatient(6), hivProgram, TestUtils.date(2012, 6, 1));
+
+		// Enroll patient 7 on June 30th
+		TestUtils.enrollInProgram(Context.getPatientService().getPatient(7), hivProgram, TestUtils.date(2012, 6, 30));
+
+		// Enroll patient 8 on July 1st
+		TestUtils.enrollInProgram(Context.getPatientService().getPatient(8), hivProgram, TestUtils.date(2012, 7, 1));
+
+		// Check with startDate only
+		CohortDefinition cd = commonCohortLibrary.enrolledInProgram(hivProgram);
+		context.addParameterValue("enrolledOnOrAfter", context.getParameterValue("startDate"));
+		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
+		ReportingTestUtils.assertCohortEquals(Arrays.asList(6, 7, 8), evaluated);
+
+		// Check with endDate only
+		cd = commonCohortLibrary.enrolledInProgram(hivProgram);
+		context.addParameterValue("enrolledOnOrBefore", context.getParameterValue("endDate"));
+		context.addParameterValue("enrolledOnOrAfter", null);
+		evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
+		ReportingTestUtils.assertCohortEquals(Arrays.asList(2, 6, 7), evaluated);
+
+		// Check both
+		cd = commonCohortLibrary.enrolledInProgram(hivProgram);
+		context.addParameterValue("enrolledOnOrAfter", context.getParameterValue("startDate"));
+		context.addParameterValue("enrolledOnOrBefore", context.getParameterValue("endDate"));
+		evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
+		ReportingTestUtils.assertCohortEquals(Arrays.asList(6, 7), evaluated);
+	}
+
+	/**
+	 * @see CommonCohortLibrary#transferredInBefore()
+	 */
+	@Test
+	public void transferredInBefore() throws Exception {
+		Concept transferInDate = Dictionary.getConcept(Dictionary.TRANSFER_IN_DATE);
+
+		// Transfer in #6 on June 1st (obs recorded on July 1st)
+		TestUtils.saveObs(Context.getPatientService().getPatient(6), transferInDate, TestUtils.date(2012, 6, 1),  TestUtils.date(2012, 7, 1));
+
+		// Transfer in #7 on July 1st (obs recorded on June 1st)
+		TestUtils.saveObs(Context.getPatientService().getPatient(6), transferInDate, TestUtils.date(2012, 7, 1),  TestUtils.date(2012, 6, 1));
+
+		CohortDefinition cd = commonCohortLibrary.transferredInBefore();
+		context.addParameterValue("transferredOnOrBefore", TestUtils.date(2012, 6, 30));
+		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
+		ReportingTestUtils.assertCohortEquals(Arrays.asList(6), evaluated);
 	}
 }

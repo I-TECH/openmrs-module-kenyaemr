@@ -6,6 +6,12 @@
 		menuItems << [ iconProvider: "kenyaui", icon: "buttons/report_configure.png", label: "Change Parameters", href: ui.pageLink("kenyaemr", "reportsRunMonthlyIndicatorReport", [ builder: builder.class ]) ]
 	}
 	menuItems << [ iconProvider: "kenyaui", icon: "buttons/back.png", label: "Back to Reports", href: ui.pageLink("kenyaemr", "reportsHome") ]
+
+	def renderOptions = [ [ value: "view", label: "View online" ] ]
+
+	if (builder.excelRenderable) {
+		renderOptions << [ value: "excel", label: "Download as Excel" ]
+	}
 %>
 
 <div id="content-side">
@@ -33,10 +39,7 @@
 				<br/>
 				${ ui.includeFragment("kenyaui", "widget/radioButtons", [
 						formFieldName: "mode",
-						options: [
-							[ value: "view", label: "View online" ],
-							[ value: "excel", label: "Download as Excel" ]
-						],
+						options: renderOptions,
 						selected: "view"
 				]) }
 				<br/>
