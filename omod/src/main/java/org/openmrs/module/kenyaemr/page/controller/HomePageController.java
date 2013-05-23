@@ -38,9 +38,10 @@ import javax.servlet.http.HttpServletRequest;
 public class HomePageController {
 	
 	public String controller(@RequestParam(required=false, value="patientId") Patient patient,
-	                         @RequestParam(required=false, value="clearContext") Boolean clearContext,
 	                         PageModel model, Session session, UiUtils ui,
 							 HttpServletRequest request) throws Redirect {
+
+		AppUiUtil.endCurrentApp(session);
 
 		// Redirect to login page if no user is logged in
 		if (!Context.isAuthenticated()) {
@@ -51,10 +52,6 @@ public class HomePageController {
 		// Redirect to setup page if module is not yet configured
 		if (!Context.getService(KenyaEmrService.class).isConfigured()) {
 			return "redirect:" + ui.pageLink(KenyaEmrConstants.MODULE_ID, "adminFirstTimeSetup");
-		}
-		
-		if (clearContext != null && clearContext) {
-			AppUiUtil.endCurrentApp(session);
 		}
 		
 		AppFrameworkService appService = Context.getService(AppFrameworkService.class);
