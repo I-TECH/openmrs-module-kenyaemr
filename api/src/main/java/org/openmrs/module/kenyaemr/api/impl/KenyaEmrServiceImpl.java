@@ -16,6 +16,8 @@ package org.openmrs.module.kenyaemr.api.impl;
 
 import java.util.*;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openmrs.*;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
@@ -33,12 +35,15 @@ import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.module.kenyaemr.api.db.KenyaEmrDAO;
 import org.openmrs.module.kenyaemr.identifier.IdentifierManager;
 import org.openmrs.util.OpenmrsUtil;
+import org.openmrs.util.PrivilegeConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Implementations of business methods for the Kenya EMR application
  */
 public class KenyaEmrServiceImpl extends BaseOpenmrsService implements KenyaEmrService {
+
+	protected static final Log log = LogFactory.getLog(KenyaEmrServiceImpl.class);
 
 	@Autowired
 	private IdentifierManager identifierManager;
@@ -100,14 +105,23 @@ public class KenyaEmrServiceImpl extends BaseOpenmrsService implements KenyaEmrS
 	 */
 	@Override
 	public Location getDefaultLocation() {
-		GlobalProperty gp = Context.getAdministrationService().getGlobalPropertyObject(KenyaEmrConstants.GP_DEFAULT_LOCATION);
-		if (gp != null) {
-			Location ret = (Location) gp.getValue();
-			if (ret != null) {
-				return ret;
+		try {
+			Context.addProxyPrivilege(PrivilegeConstants.VIEW_LOCATIONS);
+			Context.addProxyPrivilege(PrivilegeConstants.VIEW_GLOBAL_PROPERTIES);
+
+			GlobalProperty gp = Context.getAdministrationService().getGlobalPropertyObject(KenyaEmrConstants.GP_DEFAULT_LOCATION);
+			if (gp != null) {
+				Location ret = (Location) gp.getValue();
+				if (ret != null) {
+					return ret;
+				}
 			}
+			throw new ConfigurationRequiredException("Global Property: " + KenyaEmrConstants.GP_DEFAULT_LOCATION);
 		}
-		throw new ConfigurationRequiredException("Global Property: " + KenyaEmrConstants.GP_DEFAULT_LOCATION);
+		finally {
+			Context.removeProxyPrivilege(PrivilegeConstants.VIEW_LOCATIONS);
+			Context.removeProxyPrivilege(PrivilegeConstants.VIEW_GLOBAL_PROPERTIES);
+		}
 	}
 	
 	/**
@@ -115,13 +129,20 @@ public class KenyaEmrServiceImpl extends BaseOpenmrsService implements KenyaEmrS
 	 */
 	@Override
 	public String getDefaultLocationMflCode() {
-		LocationAttributeType mflCodeAttrType = Context.getLocationService().getLocationAttributeTypeByUuid(MetadataConstants.MASTER_FACILITY_CODE_LOCATION_ATTRIBUTE_TYPE_UUID);
-	    Location location = getDefaultLocation();
-	    List<LocationAttribute> list = location.getActiveAttributes(mflCodeAttrType);
-	    if (list.size() == 0) {
-	    	throw new ConfigurationRequiredException("Default location (" + location.getName() + ") does not have an " + mflCodeAttrType.getName());
-	    }
-	    return (String) list.get(0).getValue();
+		try {
+			Context.addProxyPrivilege(PrivilegeConstants.VIEW_LOCATION_ATTRIBUTE_TYPES);
+
+			LocationAttributeType mflCodeAttrType = Context.getLocationService().getLocationAttributeTypeByUuid(MetadataConstants.MASTER_FACILITY_CODE_LOCATION_ATTRIBUTE_TYPE_UUID);
+			Location location = getDefaultLocation();
+			List<LocationAttribute> list = location.getActiveAttributes(mflCodeAttrType);
+			if (list.size() == 0) {
+				throw new ConfigurationRequiredException("Default location (" + location.getName() + ") does not have an " + mflCodeAttrType.getName());
+			}
+			return (String) list.get(0).getValue();
+		}
+		finally {
+			Context.removeProxyPrivilege(PrivilegeConstants.VIEW_LOCATION_ATTRIBUTE_TYPES);
+		}
 	}
 
 	/**

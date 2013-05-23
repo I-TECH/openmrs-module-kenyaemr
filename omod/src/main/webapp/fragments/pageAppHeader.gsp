@@ -1,26 +1,26 @@
 <%
-	// supports doNotShowApp (default false, to just show a bar, and login info, but not the running app)
-	def showApp = config.doNotShowApp != true
-	
 	def running = appStatus != null;
 	def appLabel = running ? (appStatus?.app?.label ?: ui.message("appFramework.runningApp.unknownApp")) : null
 
-	def appMenuItems = [
-		"""<a href="/${ contextPath }/index.htm?${ config.context ? config.context : "" }"><img src="${ ui.resourceLink("kenyaui", "images/toolbar/home.png") }" width="12" height="12" />&nbsp;&nbsp;Home</a>"""
-	]
-	if (running && showApp) {
-		appMenuItems << """<a href="/${ contextPath }/${ appStatus.app.homepageUrl }">${ appLabel }</a>"""
-	}
-
+	def appMenuItems = []
 	def userMenuItems = []
+
 	if (context.authenticatedUser) {
+
+		appMenuItems << """<a href="/${ contextPath }/index.htm?${ config.context ? config.context : "" }"><img src="${ ui.resourceLink("kenyaui", "images/toolbar/home.png") }" width="12" height="12" />&nbsp;&nbsp;Home</a>"""
+
+		if (running) {
+			appMenuItems << """<a href="/${ contextPath }/${ appStatus.app.homepageUrl }">${ appLabel }</a>"""
+		}
+
 		userMenuItems << """<span>Logged in as <i>${ context.authenticatedUser.personName }</i></span>"""
 		userMenuItems << """<a href="${ ui.pageLink("kenyaemr", "profile") }">My Profile</a>"""
 		userMenuItems << """<a href="/${ contextPath }/logout">Log Out</a>"""
-		userMenuItems << """<a href="javascript:ke_showHelp()"><img src="${ ui.resourceLink("kenyaui", "images/toolbar/help.png") }" width="12" height="12" />&nbsp;&nbsp;Help</a>"""
 	} else {
-		userMenuItems << "Not Logged In"
+		userMenuItems << "<span><em>Not Logged In</em></span>"
 	}
+
+	userMenuItems << """<a href="javascript:ke_showHelp()"><img src="${ ui.resourceLink("kenyaui", "images/toolbar/help.png") }" width="12" height="12" />&nbsp;&nbsp;Help</a>"""
 %>
 
 <div class="ke-toolbar">
@@ -33,7 +33,7 @@
 	<div style="clear: both"></div>
 </div>
 <div id="help-content" style="display: none">
-	${ui.includeFragment("kenyaemr", "help") }
+	${ ui.includeFragment("kenyaemr", "help") }
 </div>
 <script type="text/javascript">
 	function ke_showHelp() {

@@ -22,6 +22,7 @@ import org.openmrs.api.PatientService;
 import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.reporting.builder.ReportBuilder;
+import org.openmrs.module.kenyaemr.test.ReportingTestUtils;
 import org.openmrs.module.kenyaemr.test.TestUtils;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.report.ReportData;
@@ -75,8 +76,8 @@ public class DecliningCD4ReportTest extends BaseModuleContextSensitiveTest {
 		try {
 			ReportData data = Context.getService(ReportDefinitionService.class).evaluate(rd, ec);
 
-			TestUtils.checkPatientAlertListReport(Collections.singleton("1321200001"), "HIV Unique ID", data);
-			TestUtils.printReport(data);
+			ReportingTestUtils.checkPatientAlertListReport(Collections.singleton("1321200001"), "HIV Unique ID", data);
+			ReportingTestUtils.printReport(data);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

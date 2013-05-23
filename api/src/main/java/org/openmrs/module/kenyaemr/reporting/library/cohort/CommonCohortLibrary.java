@@ -12,27 +12,27 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.reporting.library;
+package org.openmrs.module.kenyaemr.reporting.library.cohort;
 
-import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
+import org.openmrs.Program;
+import org.openmrs.module.reporting.cohort.definition.*;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
 import java.util.Date;
 
 import static org.openmrs.module.kenyaemr.reporting.EmrReportingUtils.map;
 
 /**
- * Library of cohort definitions
+ * Library of common cohort definitions
  */
 @Component
-public class KenyaCohortLibrary {
+public class CommonCohortLibrary {
 
 	/**
 	 * Patients who are female
+	 * @return the cohort definition
 	 */
 	public CohortDefinition females() {
 		GenderCohortDefinition cd = new GenderCohortDefinition();
@@ -43,6 +43,7 @@ public class KenyaCohortLibrary {
 
 	/**
 	 * Patients who are male
+	 * @return the cohort definition
 	 */
 	public CohortDefinition males() {
 		GenderCohortDefinition cd = new GenderCohortDefinition();
@@ -52,7 +53,8 @@ public class KenyaCohortLibrary {
 	}
 
 	/**
-	 * Patients who are less than maxAge years old on ${effectiveDate}
+	 * Patients who at most maxAge years old on ${effectiveDate}
+	 * @return the cohort definition
 	 */
 	public CohortDefinition agedAtMost(int maxAge) {
 		AgeCohortDefinition cd = new AgeCohortDefinition();
@@ -64,6 +66,7 @@ public class KenyaCohortLibrary {
 
 	/**
 	 * Patients who are at least minAge years old on ${effectiveDate}
+	 * @return the cohort definition
 	 */
 	public CohortDefinition agedAtLeast(int minAge) {
 		AgeCohortDefinition cd = new AgeCohortDefinition();
@@ -75,6 +78,7 @@ public class KenyaCohortLibrary {
 
 	/**
 	 * Patients who are female and at least 18 years old on ${effectiveDate}
+	 * @return the cohort definition
 	 */
 	public CohortDefinition femalesAgedAtLeast18() {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
@@ -83,6 +87,19 @@ public class KenyaCohortLibrary {
 		cd.addSearch("females", map(females()));
 		cd.addSearch("agedAtLeast18", map(agedAtLeast(18), "effectiveDate=${effectiveDate}"));
 		cd.setCompositionString("females AND agedAtLeast18");
+		return cd;
+	}
+
+	/**
+	 * Patients who are enrolled on the given program between ${enrolledOnOrAfter} and ${enrolledOnOrBefore}
+	 * @return the cohort definition
+	 */
+	public CohortDefinition enrolledInProgram(Program program) {
+		ProgramEnrollmentCohortDefinition cd = new ProgramEnrollmentCohortDefinition();
+		cd.setName("enrolled in Program between dates");
+		cd.addParameter(new Parameter("enrolledOnOrAfter", "From Date", Date.class));
+		cd.addParameter(new Parameter("enrolledOnOrBefore", "To Date", Date.class));
+		cd.setPrograms(Collections.singletonList(program));
 		return cd;
 	}
 }

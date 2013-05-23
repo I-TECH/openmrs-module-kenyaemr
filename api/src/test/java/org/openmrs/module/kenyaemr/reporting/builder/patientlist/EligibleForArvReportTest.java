@@ -25,6 +25,7 @@ import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.kenyaemr.reporting.builder.ReportBuilder;
+import org.openmrs.module.kenyaemr.test.ReportingTestUtils;
 import org.openmrs.module.kenyaemr.test.TestUtils;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.report.ReportData;
@@ -60,6 +61,6 @@ public class EligibleForArvReportTest extends BaseModuleContextSensitiveTest {
 		SimpleDateFormat ymd = new SimpleDateFormat("yyyy-MM-dd");
 		ReportData data = Context.getService(ReportDefinitionService.class).evaluate(rd, ec);
 
-		TestUtils.printReport(data);
+		ReportingTestUtils.printReport(data);
 	}
 }

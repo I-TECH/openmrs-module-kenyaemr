@@ -4,17 +4,6 @@
  *
  ********************************************/
 
-/*** Full window views (used for login and forgot password pages) ***/
-
-.fullwindow {
-	left: 0;
-	width: 100%;
-	height: 100%;
-	display: table;
-	position: absolute;
-	background-color: #e0d8cd;
-}
-
 /*** Page header ***/
 
 #pageheader {
@@ -22,7 +11,7 @@
 	background-color: #FFF;
 }
 
-/***** Patient header *****/
+/*** Patient header ***/
 
 .ke-patientheader {
 	padding: 4px;
