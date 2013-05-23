@@ -42,25 +42,25 @@
 			//getting the values of the disease classification option buttons
 			var optValues = getValue('dclassification.value');
 				if (optValues == 42){
-					pulmodiv.style.display = 'inline';
-    				expulmodiv.style.display = 'none';
+					$('#expul :input').prop('disabled', true);
+    				$('#iddivPulmonary :input').prop('disabled', false);
 				}
 				if (optValues == 5042 ){
-					pulmodiv.style.display = 'none';
-    				expulmodiv.style.display = 'inline';
+					$('#iddivPulmonary :input').prop('disabled', true);
+    				$('#expul :input').prop('disabled', false);
 				}
-			
-			$('#dclassification input:radio').click(function() {
-			
-    			if ($(this).val() == 42) {
-    				pulmodiv.style.display = 'inline';
-    				expulmodiv.style.display = 'none';
-    			}
-    			if ($(this).val() == 5042) {
-    				pulmodiv.style.display = 'none';
-    				expulmodiv.style.display = 'inline';
-    			}
-			});
+				
+    			$('#dclassification input:radio').click(function() {
+    				if ($(this).val() == 42) {
+    					$('#expul :input').prop('disabled', true);
+    					$('#iddivPulmonary :input').prop('disabled', false);
+    				}
+    				if ($(this).val() == 5042) {
+    					$('#iddivPulmonary :input').prop('disabled', true);
+    					$('#expul :input').prop('disabled', false);
+    				}
+    			});
+
 			//create some variable that will control the dates on the form not to be ealier than DOB
 			var pbirthdate = new Date("<lookup expression="patient.birthdate" />").getTime();
 			var encounterdate;
@@ -258,37 +258,37 @@
 										<tr>
 											
 											<td>
-												<obsgroup groupingConceptId="159947AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-														<obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="130059AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Pleural effusion" style="checkbox" />
+												<obsgroup groupingConceptId="161357AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+														<obs conceptId="161356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="130059AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Pleural effusion" style="checkbox" />
 												</obsgroup>
 											</td>
 											<td>
-												<obsgroup groupingConceptId="159947AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-														<obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="115753AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Milliary" style="checkbox" />
-												</obsgroup>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<obsgroup groupingConceptId="159947AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-														<obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="111953AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Lymph nodes" style="checkbox" />
-												</obsgroup>
-											</td>
-											<td>
-												<obsgroup groupingConceptId="159947AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-														<obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="111967AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Meningitis" style="checkbox" />
+												<obsgroup groupingConceptId="161357AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+														<obs conceptId="161356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="115753AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Milliary" style="checkbox" />
 												</obsgroup>
 											</td>
 										</tr>
 										<tr>
 											<td>
-												<obsgroup groupingConceptId="159947AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-														<obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="112116AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Skeleton" style="checkbox" />
+												<obsgroup groupingConceptId="161357AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+														<obs conceptId="161356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="111953AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Lymph nodes" style="checkbox" />
 												</obsgroup>
 											</td>
 											<td>
-												<obsgroup groupingConceptId="159947AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-														<obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1350AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Abdominal" style="checkbox" />
+												<obsgroup groupingConceptId="161357AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+														<obs conceptId="161356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="111967AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Meningitis" style="checkbox" />
+												</obsgroup>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<obsgroup groupingConceptId="161357AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+														<obs conceptId="161356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="112116AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Skeleton" style="checkbox" />
+												</obsgroup>
+											</td>
+											<td>
+												<obsgroup groupingConceptId="161357AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+														<obs conceptId="161356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1350AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Abdominal" style="checkbox" />
 												</obsgroup>
 											</td>
 										</tr>
@@ -296,16 +296,16 @@
 											<td valign="top">Others( Specify )</td>
 											<td>
 											
-												<obsgroup groupingConceptId="159947AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-													<obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="autocomplete" answerClasses="Diagnosis" />
+												<obsgroup groupingConceptId="161357AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+													<obs conceptId="161356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="autocomplete" answerClasses="Diagnosis" />
 												</obsgroup>
 												<br />
-												<obsgroup groupingConceptId="159947AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-													<obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="autocomplete" answerClasses="Diagnosis" />
+												<obsgroup groupingConceptId="161357AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+													<obs conceptId="161356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="autocomplete" answerClasses="Diagnosis" />
 												</obsgroup>
 												<br />
-												<obsgroup groupingConceptId="159947AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-													<obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="autocomplete" answerClasses="Diagnosis" />
+												<obsgroup groupingConceptId="161357AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+													<obs conceptId="161356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="autocomplete" answerClasses="Diagnosis" />
 												</obsgroup>
 											</td>
 										</tr>									
@@ -323,7 +323,7 @@
 					<tr>
 						<td>
 						<obs conceptId="159871AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="159878AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159877AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159876AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159874AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159873AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159872AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio"  
-						answerLabels="New,Smear positive Relapse,Smear negative Relapse,Failure,Treatment resumed after defaulting,Transfer in" answerSeparator="&lt;br /&gt;" />
+						answerLabels="New,Smear positive Relapse,Smear negative Relapse,Failure,Treatment resumed after defaulting,Transfer in" answerSeparator="&lt;br /&gt;&lt;br /&gt;" />
 						</td>
 					</tr>
 				</table>
