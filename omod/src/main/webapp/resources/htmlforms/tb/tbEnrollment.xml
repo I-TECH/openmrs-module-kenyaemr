@@ -61,6 +61,25 @@
     					$('#expul :input').prop('disabled', false);
     				}
     			});
+   			//activating the transfer in details only when the patient classification is transfer in
+   			//patientClassification
+   			var optpatientclassification = getValue('patientClassification.value');
+   				if (optpatientclassification == 159872 ) {
+   					$('#transferInDetails :input').prop('disabled', false);
+   				}
+   				else {
+   					$('#transferInDetails :input').prop('disabled', true)
+   				}
+   				
+   				$('#patientClassification input:radio').click(function() {
+   					if ($(this).val() == 159872){
+   						$('#transferInDetails :input').prop('disabled', false);
+   					}
+   					else {
+   						$('#transferInDetails :input').prop('disabled', true);
+   					}
+   				});
+    			
 
 			//create some variable that will control the dates on the form not to be ealier than DOB
 			var pbirthdate = new Date("<lookup expression="patient.birthdate" />").getTime();
@@ -311,7 +330,7 @@
 						<tr>
 							<td>
 								<obs conceptId="159871AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="159878AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159877AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159876AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159874AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159873AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159872AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio"  
-								answerLabels="New,Smear positive Relapse,Smear negative Relapse,Failure,Treatment resumed after defaulting,Transfer in" answerSeparator="&lt;br /&gt;&lt;br /&gt;" />
+								answerLabels="New,Smear positive Relapse,Smear negative Relapse,Failure,Treatment resumed after defaulting,Transfer in" id="patientClassification" answerSeparator="&lt;br /&gt;&lt;br /&gt;" />
 							</td>
 						</tr>
 						<tr><td></td></tr>
@@ -324,7 +343,7 @@
 		<td>
 			<fielset>
 				<legend>Transfer In Information (Enter onlyif patient ai a Transfer In)</legend>
-					<table class="tb1" border="0" width="100%">
+					<table class="tb1" border="0" width="100%" id="transferInDetails">
 						<tr>
 							<td>Date Transferred In</td>
 							<td><obs conceptId="160534AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="transferindate" /></td>
