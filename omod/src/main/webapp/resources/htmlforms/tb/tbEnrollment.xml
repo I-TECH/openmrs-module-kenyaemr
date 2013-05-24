@@ -79,6 +79,18 @@
    						$('#transferInDetails :input').prop('disabled', true);
    					}
    				});
+ 			//hide the div tags that hold errors on the start of the form
+ 			$('#startOfTreatmentDateError').hide();
+ 			$('#referalDateError').hide();
+ 			$('#transferInDatesError').hide();
+ 			
+ 			//control the transfer in option 
+ 			$('#referredByOptions1 input:radio').click(function() {
+ 				$( '#referredByOptions2 input:radio' ).prop( "checked", false );
+ 			});
+ 			$('#referredByOptions2 input:radio').click(function() {
+ 				$( '#referredByOptions1 input:radio' ).prop( "checked", false );
+ 			});
     			
 
 			//create some variable that will control the dates on the form not to be ealier than DOB
@@ -102,21 +114,25 @@
          		}
          		
           		if (dstartoftreatment &lt; pbirthdate) {
-               		getField('datestartoftreatment.error').html('Date start of treatment should be after the birth date/visit start date').show();
+          			$('#startOfTreatmentDateError').show();
+               		$('#startOfTreatmentDateError').html('Date start of treatment should be after the birth date/visit start date');
                    	return false
          		}
          
         		if (dreferredby &lt; pbirthdate) {
-               		getField('datereferredby.error').html('Date referred by should be after the birth date/visit start date').show();
+        			$('#referalDateError').show();
+               		$('#referalDateError').html('Date referred by should be after the birth date/visit start date');
                    	return false
          		}
          		
          		if (transferindate &lt; pbirthdate) {
-               		getField('transferindate.error').html('Transfer in date should be after the birth date/visit start date').show();
+         			$('#transferInDatesError').show();
+               		$('#transferInDatesError').html('Transfer in date should be after the birth date/visit start date');
                    	return false
          		}
           		if (dfirstenrolled &lt; pbirthdate){
-               		getField('datefirstenrolled.error').html('Date first enrolled should be after the birth date/visit start date').show();
+          			$('#transferInDatesError').show();
+               		$('#transferInDatesError').html('Date first enrolled should be after the birth date/visit start date');
                    	return false
          		}
     			return true;
@@ -161,7 +177,9 @@
 						<td>District Reg Number:</td>
 						<td><patient field="identifier" identifierTypeId="d8ee3b8c-a8fc-4d6b-af6a-9423be5f8906" /></td>
 					</tr>
-					<tr><td></td></tr>
+					<tr>
+						<td colspan="2"><div id="startOfTreatmentDateError" class="error"></div></td>
+					</tr>
 				</table>
 			</fielset>	
 		</td>
@@ -170,24 +188,31 @@
 			<legend>Patient Referral Information</legend>
 				<table class="tb1" width="100%">
 					<tr>
-						<td colspan="2">Date referred:<obs conceptId="161561AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="datereferredby" /></td>
-					</tr>
-					<tr>
-						<td colspan="2">Referred by:</td>
+						<td colspan="2">
+							Date referred:<obs conceptId="161561AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="datereferredby" />
+							<br /><br />
+							<b>Referred by:</b>
+						</td>
 					</tr>
 					<tr>
 						<td>
-							<obs conceptId="159371AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-								answerConceptIds="159940AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160631AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160546AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161359AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160538AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-								answerLabels="VCT center,HIV care clinic,STI Clinic,Home Based Care,Antenatal/PMTCT Clinic" style="radio" answerSeparator="&lt;br /&gt;" />	
+							<div id="referredByOptions1">
+								<obs conceptId="159371AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									answerConceptIds="159940AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160631AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160546AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161359AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160538AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									answerLabels="VCT center,HIV care clinic,STI Clinic,Home Based Care,Antenatal/PMTCT Clinic" style="radio" id="optgroup1" answerSeparator="&lt;br /&gt;" />	
+							</div>
 						</td>
 						<td>
-							<obs conceptId="159371AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-								answerConceptIds="1725AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1744AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160551AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-								answerLabels="Private Sector,Chemist/pharmacist,Self referral,Community Health worker(CHW)" style="radio" answerSeparator="&lt;br /&gt;" />	
+							<div id="referredByOptions2">
+								<obs conceptId="159371AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									answerConceptIds="1725AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1744AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160551AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									answerLabels="Private Sector,Chemist/pharmacist,Self referral,Community Health worker(CHW)" style="radio" id="optgroup2" answerSeparator="&lt;br /&gt;" />	
+							</div>
 						</td>
 					</tr>
-					<tr><td></td></tr>
+					<tr>
+						<td colspan="2"><div id="referalDateError" class="error"></div></td>
+					</tr>
 				</table>
 			</fielset>	
 		</td>
@@ -360,6 +385,7 @@
 							<td>Date first Enrolled in TB Care</td>
 							<td><obs conceptId="161552AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="datefirstenrolled" /></td>
 						</tr>
+						<td colspan="2"><div id="transferInDatesError" class="error"></div></td>
 					</table>
 				</fielset>	
 		</td>
