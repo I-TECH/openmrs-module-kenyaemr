@@ -243,7 +243,7 @@
 							<td><obs conceptId="5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="weight" /></td>
 						</tr>
 						<tr>	
-							<td>Height in Meters</td>
+							<td>Height in centimeters</td>
 							<td><obs id="height" conceptId="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "/></td>
 						</tr>
 					</table>
