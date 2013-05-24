@@ -17,6 +17,15 @@
 		table.baseline-aligned td {
 			vertical-align: baseline;
 		}
+		table.tb {
+			background-color: #FFFFCC;
+			}
+		table.tb1{
+			border: 1px solid black;
+			vertical-align: baseline;
+			padding: 0;
+			text-align: left;
+		}
 	</style>
 
 	<script type="text/javascript">
@@ -26,36 +35,32 @@
 			var transferout = document.getElementById("transferout");
 			// when it loading for the first time
 			if (getValue('treatment_outcome.value') == "") {
-					tdFortreatmentOutCome_ttle.style.display = 'none';
-					tdFortreatmentOutCome_value.style.display = 'none';
-					transferout.style.display = 'none';
+					$('#id_treatment_outcome_date_value :input').prop('disabled', true);
+					$('#transferout :input').prop('disabled', true);	
 				}
 				else {
-					tdFortreatmentOutCome_ttle.style.display = 'inline';
-					tdFortreatmentOutCome_value.style.display = 'inline';
+					$('#id_treatment_outcome_date_value :input').prop('disabled', false);
 				}
 				if (getValue('treatment_outcome.value') == 159492){
-					transferout.style.display = 'inline';
+					$('#transferout :input').prop('disabled', false);
 				}
 				else{
-					transferout.style.display = 'none';
+					$('#transferout :input').prop('disabled', true);
 				}
 			//control the date on selection of options
 			$j("#treatment_outcome select").change(function() {
 				if (getValue('treatment_outcome.value') == "") {
-					tdFortreatmentOutCome_ttle.style.display = 'none';
-					tdFortreatmentOutCome_value.style.display = 'none';
-					transferout.style.display = 'none';
+					$('#transferout :input').prop('disabled', true);
+					$('#id_treatment_outcome_date_value :input').prop('disabled', true);
 				}
 				else {
-					tdFortreatmentOutCome_ttle.style.display = 'inline';
-					tdFortreatmentOutCome_value.style.display = 'inline';
+					$('#id_treatment_outcome_date_value :input').prop('disabled', false);
 				}
 				if (getValue('treatment_outcome.value') == 159492){
-					transferout.style.display = 'inline';
+					$('#transferout :input').prop('disabled', false);
 				}
 				else{
-					transferout.style.display = 'none';
+					$('#transferout :input').prop('disabled', true);
 				}
 			});
 
@@ -79,27 +84,16 @@
 			});
 		});
 	</script>
-
-	<fieldset>
-		<table class="baseline-aligned" width="100%">
-			<div class="patient-details">
+<table align="center"  border="0" class="tb">
+	<tr>
+		<td>
+			<table class="tb1">
 				<tr>
-					<td>Name: <lookup class="value" expression="patient.personName"/></td>
-					<td>Gender: <lookup class="value" expression="patient.gender"/></td>
-					<td>Birthdate: <lookup class="value" complexExpression="#if( \$patient.birthdateEstimated ) ~#end"/> <lookup class="value" expression="patient.birthdate"/></td>
-					<td> </td>
-				</tr>
-			</div>
-			<div class="encounter-details">
-				<tr>
-					<td>Date: <encounterDate default="now" showTime="true"/></td>
+					<td>Encounter Date: <encounterDate default="now" showTime="true"/></td>
 					<td>Provider: <encounterProviderAndRole encounterRole="a0b03050-c99b-11e0-9572-0800200c9a66" default="currentUser" required="true"/></td>
 					<td>Location: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete"/></td>
-					<td> </td>
 				</tr>
-			</div>
-		</table>
-	</fieldset>
+			</table>
 	<br/>
 
 	<fieldset><legend>Treatment Outcomes</legend>
@@ -114,12 +108,16 @@
 			</tr>
 		</table>
 		<table  class="baseline-aligned" width="auto" border="0" cellspacing="10">
-			<tr id="transferout">
+			<tr>
 				<td>
-				<table>
-					<td>Transferred out to:</td>
-					<td><obs conceptId="159495AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " id="transferredoutto"/></td>
-				</table>
+				<div id="transferout">
+					<table>
+						<tr>
+							<td>Transferred out to:</td>
+							<td><obs conceptId="159495AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " id="transferredoutto"/></td>
+						</tr>	
+					</table>
+				</div>
 				</td>
 				<td></td>
 			</tr>
@@ -137,6 +135,9 @@
 			</tr>
 		</table>
 	</fieldset>
+		</td>
+	</tr>
+</table>
 
 	<completeProgram programId="9f144a34-3a4a-44a9-8486-6b7af6cc64f6"/>
 
