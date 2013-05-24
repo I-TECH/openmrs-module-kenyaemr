@@ -46,9 +46,13 @@
 					$('#expul :input').prop('disabled', true);
     				$('#iddivPulmonary :input').prop('disabled', false);
 				}
-				if (optValues == 5042 ){
+				else if (optValues == 5042 ){
 					$('#iddivPulmonary :input').prop('disabled', true);
     				$('#expul :input').prop('disabled', false);
+				}
+				else {
+					$('#iddivPulmonary :input').prop('disabled', true);
+    				$('#expul :input').prop('disabled', true);
 				}
 				
     			$('#dclassification input:radio').click(function() {
