@@ -19,8 +19,10 @@ import org.openmrs.EncounterType;
 import org.openmrs.Program;
 import org.openmrs.api.PatientSetService;
 import org.openmrs.module.kenyaemr.Dictionary;
+import org.openmrs.module.kenyaemr.reporting.cohort.definition.DateObsValueBetweenCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.*;
 import org.openmrs.module.reporting.common.RangeComparator;
+import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.stereotype.Component;
@@ -114,25 +116,6 @@ public class CommonCohortLibrary {
 	}
 
 	/**
-	 * Patients who have a date obs between ${onOrAfter} and ${onOrBefore} with value between ${value1} and ${value2}
-	 * @param question the question concept
-	 * @return the cohort definition
-	 */
-	public CohortDefinition hasDateObsValueBetween(Concept question) {
-		DateObsCohortDefinition cd = new DateObsCohortDefinition();
-		cd.setName("obs between dates");
-		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
-		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-		cd.setOperator1(RangeComparator.GREATER_EQUAL);
-		cd.addParameter(new Parameter("value1", "Value After", Date.class));
-		cd.setOperator2(RangeComparator.LESS_EQUAL);
-		cd.addParameter(new Parameter("value2", "Value Before", Date.class));
-		cd.setTimeModifier(PatientSetService.TimeModifier.ANY);
-		cd.setQuestion(question);
-		return cd;
-	}
-
-	/**
 	 * Patients who are enrolled on the given program between ${enrolledOnOrAfter} and ${enrolledOnOrBefore}
 	 * @return the cohort definition
 	 */
@@ -146,18 +129,36 @@ public class CommonCohortLibrary {
 	}
 
 	/**
-	 * Patients who transferred in before ${transferredOnOrBefore}
+	 * Patients who transferred in between ${onOrAfter} and ${onOrBefore}
 	 * @return the cohort definition
-	 *
-	 * TODO figure out how to make this a generic transferredIn cohort definition that can optionally take before and after dates
 	 */
-	public CohortDefinition transferredInBefore() {
+	public CohortDefinition transferredIn() {
 		Concept transferInDate = Dictionary.getConcept(Dictionary.TRANSFER_IN_DATE);
-		CompositionCohortDefinition cd = new CompositionCohortDefinition(); // Wrap so it can have more meaningfully named parameters
-		cd.setName("transferred in before date");
-		cd.addParameter(new Parameter("transferredOnOrBefore", "Before Date", Date.class));
-		cd.addSearch("hasTransferObs", map(hasDateObsValueBetween(transferInDate), "value2=${transferredOnOrBefore}"));
-		cd.setCompositionString("hasTransferObs");
+
+		DateObsValueBetweenCohortDefinition cd = new DateObsValueBetweenCohortDefinition();
+		cd.setName("transferred in between dates");
+		cd.setQuestion(transferInDate);
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		return cd;
+	}
+
+	/**
+	 * Patients who transferred in between ${onOrAfter} and ${onOrBefore}
+	 * @return the cohort definition
+	 */
+	public CohortDefinition transferredOut() {
+		Concept reasonForDiscontinue = Dictionary.getConcept(Dictionary.REASON_FOR_PROGRAM_DISCONTINUATION);
+		Concept transferredOut = Dictionary.getConcept(Dictionary.TRANSFERRED_OUT);
+
+		CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.setName("transferred out between dates");
+		cd.setTimeModifier(PatientSetService.TimeModifier.ANY);
+		cd.setQuestion(reasonForDiscontinue);
+		cd.setOperator(SetComparator.IN);
+		cd.setValueList(Collections.singletonList(transferredOut));
 		return cd;
 	}
 }

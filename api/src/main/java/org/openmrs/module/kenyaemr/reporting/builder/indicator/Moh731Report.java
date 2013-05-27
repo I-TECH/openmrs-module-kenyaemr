@@ -28,6 +28,7 @@ import org.openmrs.module.kenyaemr.reporting.indicator.HivCareVisitsIndicator;
 import org.openmrs.module.kenyaemr.reporting.dataset.definition.MergingDataSetDefinition;
 import org.openmrs.module.kenyaemr.reporting.library.cohort.ArtCohortLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.cohort.CommonCohortLibrary;
+import org.openmrs.module.kenyaemr.reporting.library.cohort.PwpCohortLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.cohort.TbCohortLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.dimension.CommonDimensionLibrary;
 import org.openmrs.module.reporting.cohort.definition.*;
@@ -61,6 +62,9 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 
 	@Autowired
 	private TbCohortLibrary tbCohorts;
+
+	@Autowired
+	private PwpCohortLibrary pwpCohorts;
 
 	@Autowired
 	private CommonDimensionLibrary commonDimensions;
@@ -127,67 +131,18 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 	}
 
 	private void setupCohortDefinitions() {
-
 		Program hivProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.HIV_PROGRAM_UUID);
 		Program tbProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.TB_PROGRAM_UUID);
 
-		Concept condomsProvided = Dictionary.getConcept(Dictionary.CONDOMS_PROVIDED_DURING_VISIT);
-		Concept methodOfFamilyPlanning = Dictionary.getConcept(Dictionary.METHOD_OF_FAMILY_PLANNING);
-		Concept naturalFamilyPlanning = Dictionary.getConcept(Dictionary.NATURAL_FAMILY_PLANNING);
-		Concept none = Dictionary.getConcept(Dictionary.NONE);
-		Concept notApplicable = Dictionary.getConcept(Dictionary.NOT_APPLICABLE);
-		Concept otherNonCoded = Dictionary.getConcept(Dictionary.OTHER_NON_CODED);
-		Concept reasonForDiscontinue = Dictionary.getConcept(Dictionary.REASON_FOR_PROGRAM_DISCONTINUATION);
-		Concept sexualAbstinence = Dictionary.getConcept(Dictionary.SEXUAL_ABSTINENCE);
-		Concept transferredOut = Dictionary.getConcept(Dictionary.TRANSFERRED_OUT);
-		Concept yes = Dictionary.getConcept(Dictionary.YES);
-
 		cohortDefinitions = new HashMap<String, CohortDefinition>();
-		{
-			CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
-			cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-			cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
-			cd.setName("Condoms provided between dates");
-			cd.setTimeModifier(TimeModifier.ANY);
-			cd.setQuestion(condomsProvided);
-			cd.setValueList(Collections.singletonList(yes));
-			cd.setOperator(SetComparator.IN);
-			cohortDefinitions.put("condomsProvidedBetween", cd);
-		}
-		{
-			CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
-			cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-			cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
-			cd.setName("Transferred out between dates");
-			cd.setTimeModifier(TimeModifier.ANY);
-			cd.setQuestion(reasonForDiscontinue);
-			cd.setValueList(Collections.singletonList(transferredOut));
-			cd.setOperator(SetComparator.IN);
-			cohortDefinitions.put("transferredOutBetween", cd);
-		}
-		{
-			CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
-			cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-			cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
-			cd.setName("Modern contraceptives provided between dates");
-			cd.setTimeModifier(TimeModifier.ANY);
-			cd.setQuestion(methodOfFamilyPlanning);
-			cd.setValueList(Arrays.asList(naturalFamilyPlanning, sexualAbstinence, notApplicable, otherNonCoded, none));
-			cd.setOperator(SetComparator.NOT_IN);
-			cohortDefinitions.put("modernContraceptivesProvidedBetween", cd);
-		}
 		{
 			CompositionCohortDefinition cd = new CompositionCohortDefinition();
 			cd.addParameter(new Parameter("fromDate", "From Date", Date.class));
 			cd.addParameter(new Parameter("toDate", "To Date", Date.class));
 			cd.addSearch("enrolled", map(commonCohorts.enrolledInProgram(hivProgram), "enrolledOnOrAfter=${fromDate},enrolledOnOrBefore=${toDate}"));
-			cd.addSearch("transferIn", map(commonCohorts.transferredInBefore(), "transferredOnOrBefore=${toDate}"));
+			cd.addSearch("transferIn", map(commonCohorts.transferredIn(), "onOrBefore=${toDate}"));
 			cd.setCompositionString("enrolled AND NOT transferIn");
 			cohortDefinitions.put("enrolledNoTransfers", cd);
-		}
-		{ // Pregnant at start of ART
-			EmrCalculationCohortDefinition cd = new EmrCalculationCohortDefinition(new PregnantAtArtStartCalculation());
-			cohortDefinitions.put("pregnantAtArtStart", cd);
 		}
 		{ // Started ART and is pregnant
 			CompositionCohortDefinition cd = new CompositionCohortDefinition();
@@ -195,7 +150,7 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 			cd.addParameter(new Parameter("toDate", "To Date", Date.class));
 
 			cd.addSearch("startedArt", map(artCohorts.startedArt(), "onOrAfter=${startDate},onOrBefore=${endDate}"));
-			cd.addSearch("pregnantAtArtStart", map(cohortDefinitions.get("pregnantAtArtStart"), ""));
+			cd.addSearch("pregnantAtArtStart", map(artCohorts.pregnantAtArtStart()));
 			cd.setCompositionString("startedArt AND pregnantAtArtStart");
 			cohortDefinitions.put("startedArtAndIsPregnant", cd);
 		}
@@ -218,7 +173,7 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 			cd.setCompositionString("recentEncounter AND startedBefore");
 			cohortDefinitions.put("revisitsArt", cd);
 		}
-		{ // Currently on ART
+		{ // Currently on ART.. we could calculate this several ways...
 			CompositionCohortDefinition cd = new CompositionCohortDefinition();
 			cd.addParameter(new Parameter("fromDate", "From Date", Date.class));
 			cd.addParameter(new Parameter("toDate", "To Date", Date.class));
@@ -227,33 +182,12 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 			cd.setCompositionString("startedArt OR revisitsArt");
 			cohortDefinitions.put("currentlyOnArt", cd);
 		}
-		{ // Taking original 1st line ART
-			EmrCalculationCohortDefinition cd = new EmrCalculationCohortDefinition(new OnOriginalFirstLineArtCalculation());
-			cohortDefinitions.put("currentlyOnOriginalFirstLine", cd);
-		}
-		{ // Taking alternate 1st line ART
-			EmrCalculationCohortDefinition cd = new EmrCalculationCohortDefinition(new OnAlternateFirstLineArtCalculation());
-			cohortDefinitions.put("currentlyOnAlternateFirstLine", cd);
-		}
-		{ // Taking 2nd line ART
-			EmrCalculationCohortDefinition cd = new EmrCalculationCohortDefinition(new OnSecondLineArtCalculation());
-			cohortDefinitions.put("currentlyOnSecondLine", cd);
-		}
-		{ // ART 12 months Net Cohort (patients who started ART 12 months ago - patients who transferred out 12 months ago)
-			CompositionCohortDefinition cd = new CompositionCohortDefinition();
-			cd.addParameter(new Parameter("fromDate", "From Date", Date.class));
-			cd.addParameter(new Parameter("toDate", "To Date", Date.class));
-			cd.addSearch("startedArt12MonthsAgo", map(artCohorts.startedArt(), "onOrAfter=${fromDate-1y},onOrBefore=${toDate-1y}"));
-			cd.addSearch("transferredOut", map(cohortDefinitions.get("transferredOutBetween"), "onOrAfter=${fromDate-1y}"));
-			cd.setCompositionString("startedArt12MonthsAgo AND NOT transferredOut");
-			cohortDefinitions.put("art12MonthNetCohort", cd);
-		}
 		{ // Taking original 1st line ART at 12 months
 			CompositionCohortDefinition cd = new CompositionCohortDefinition();
 			cd.addParameter(new Parameter("fromDate", "From Date", Date.class));
 			cd.addParameter(new Parameter("toDate", "To Date", Date.class));
-			cd.addSearch("art12MonthNetCohort", map(cohortDefinitions.get("art12MonthNetCohort"), "fromDate=${fromDate},toDate=${toDate}"));
-			cd.addSearch("currentlyOnOriginalFirstLine", map(cohortDefinitions.get("currentlyOnOriginalFirstLine")));
+			cd.addSearch("art12MonthNetCohort", map(artCohorts.netCohort12Months(), "onDate=${toDate}"));
+			cd.addSearch("currentlyOnOriginalFirstLine", map(artCohorts.onOriginalFirstLine(), "onDate=${toDate}"));
 			cd.setCompositionString("art12MonthNetCohort AND currentlyOnOriginalFirstLine");
 			cohortDefinitions.put("onOriginalFirstLineAt12Months", cd);
 		}
@@ -261,8 +195,8 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 			CompositionCohortDefinition cd = new CompositionCohortDefinition();
 			cd.addParameter(new Parameter("fromDate", "From Date", Date.class));
 			cd.addParameter(new Parameter("toDate", "To Date", Date.class));
-			cd.addSearch("art12MonthNetCohort", map(cohortDefinitions.get("art12MonthNetCohort"), "fromDate=${fromDate},toDate=${toDate}"));
-			cd.addSearch("currentlyOnAlternateFirstLine", map(cohortDefinitions.get("currentlyOnAlternateFirstLine")));
+			cd.addSearch("art12MonthNetCohort", map(artCohorts.netCohort12Months(), "onDate=${toDate}"));
+			cd.addSearch("currentlyOnAlternateFirstLine", map(artCohorts.onAlternateFirstLine(), "onDate=${toDate}"));
 			cd.setCompositionString("art12MonthNetCohort AND currentlyOnAlternateFirstLine");
 			cohortDefinitions.put("onAlternateFirstLineAt12Months", cd);
 		}
@@ -270,8 +204,8 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 			CompositionCohortDefinition cd = new CompositionCohortDefinition();
 			cd.addParameter(new Parameter("fromDate", "From Date", Date.class));
 			cd.addParameter(new Parameter("toDate", "To Date", Date.class));
-			cd.addSearch("art12MonthNetCohort", map(cohortDefinitions.get("art12MonthNetCohort"), "fromDate=${fromDate},toDate=${toDate}"));
-			cd.addSearch("currentlyOnSecondLine", map(cohortDefinitions.get("currentlyOnSecondLine")));
+			cd.addSearch("art12MonthNetCohort", map(artCohorts.netCohort12Months(), "onDate=${toDate}"));
+			cd.addSearch("currentlyOnSecondLine", map(artCohorts.onSecondLine(), "onDate=${toDate}"));
 			cd.setCompositionString("art12MonthNetCohort AND currentlyOnSecondLine");
 			cohortDefinitions.put("onSecondLineAt12Months", cd);
 		}
@@ -279,10 +213,9 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 			CompositionCohortDefinition cd = new CompositionCohortDefinition();
 			cd.addParameter(new Parameter("fromDate", "From Date", Date.class));
 			cd.addParameter(new Parameter("toDate", "To Date", Date.class));
-			cd.addSearch("onOriginalFirstLineAt12Months", map(cohortDefinitions.get("onOriginalFirstLineAt12Months"), "fromDate=${fromDate},toDate=${toDate}"));
-			cd.addSearch("onAlternateFirstLineAt12Months", map(cohortDefinitions.get("onAlternateFirstLineAt12Months"), "fromDate=${fromDate},toDate=${toDate}"));
-			cd.addSearch("onSecondLineAt12Months", map(cohortDefinitions.get("onSecondLineAt12Months"), "fromDate=${fromDate},toDate=${toDate}"));
-			cd.setCompositionString("onOriginalFirstLineAt12Months OR onAlternateFirstLineAt12Months OR onSecondLineAt12Months");
+			cd.addSearch("art12MonthNetCohort", map(artCohorts.netCohort12Months(), "onDate=${toDate}"));
+			cd.addSearch("currentlyOnArt", map(artCohorts.onArt(), "onDate=${toDate}"));
+			cd.setCompositionString("art12MonthNetCohort AND currentlyOnArt");
 			cohortDefinitions.put("onTherapyAt12Months", cd);
 		}
 	}
@@ -323,7 +256,7 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 		}
 		{
 			CohortIndicator ind = createCohortIndicator("art12MonthNetCohort", "ART 12 Month Net Cohort");
-			ind.setCohortDefinition(map(cohortDefinitions.get("art12MonthNetCohort"), "fromDate=${startDate},toDate=${endDate}"));
+			ind.setCohortDefinition(map(artCohorts.netCohort12Months(), "onDate=${endDate}"));
 		}
 		{
 			CohortIndicator ind = createCohortIndicator("onOriginalFirstLineAt12Months", "On original 1st line at 12 months");
@@ -347,11 +280,11 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 		}
 		{
 			CohortIndicator ind = createCohortIndicator("modernContraceptivesProvided", "Modern contraceptives provided");
-			ind.setCohortDefinition(map(cohortDefinitions.get("modernContraceptivesProvidedBetween"), "onOrAfter=${startDate},onOrBefore=${endDate}"));
+			ind.setCohortDefinition(map(pwpCohorts.modernContraceptivesProvided(), "onOrAfter=${startDate},onOrBefore=${endDate}"));
 		}
 		{
 			CohortIndicator ind = createCohortIndicator("condomsProvided", "Provided with condoms");
-			ind.setCohortDefinition(map(cohortDefinitions.get("condomsProvidedBetween"), "onOrAfter=${startDate},onOrBefore=${endDate}"));
+			ind.setCohortDefinition(map(pwpCohorts.condomsProvided(), "onOrAfter=${startDate},onOrBefore=${endDate}"));
 		}
 	}
 

@@ -14,13 +14,17 @@
 
 package org.openmrs.module.kenyaemr.reporting.library.cohort;
 
-import org.openmrs.module.kenyaemr.calculation.art.InitialArtStartDateCalculation;
+import org.openmrs.module.kenyaemr.calculation.art.*;
+import org.openmrs.module.kenyaemr.reporting.cohort.definition.EmrCalculationCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.EmrDateCalculationCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.*;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+
+import static org.openmrs.module.kenyaemr.reporting.EmrReportingUtils.map;
 
 /**
  * Library of ART related definitions
@@ -28,14 +32,86 @@ import java.util.Date;
 @Component
 public class ArtCohortLibrary {
 
+	@Autowired
+	private CommonCohortLibrary commonCohorts;
+
 	/**
 	 * Patients who started ART between ${onOrAfter} and ${onOrBefore}
 	 * @return the cohort definition
 	 */
 	public CohortDefinition startedArt() {
 		EmrDateCalculationCohortDefinition cd = new EmrDateCalculationCohortDefinition(new InitialArtStartDateCalculation());
+		cd.setName("started ART between dates");
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		return cd;
+	}
+
+	/**
+	 * Patients who were pregnant when started ART
+	 * @return the cohort definition
+	 */
+	public CohortDefinition pregnantAtArtStart() {
+		EmrCalculationCohortDefinition cd = new EmrCalculationCohortDefinition(new PregnantAtArtStartCalculation());
+		cd.setName("pregnant at start of ART");
+		return cd;
+	}
+
+	/**
+	 * Patients who are on ART on ${onDate}
+	 * @return the cohort definition
+	 */
+	public CohortDefinition onArt() {
+		EmrCalculationCohortDefinition cd = new EmrCalculationCohortDefinition(new OnArtCalculation());
+		cd.setName("on ART on date");
+		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
+		return cd;
+	}
+
+	/**
+	 * Patients who are taking their original first line regimen on ${onDate}
+	 * @return the cohort definition
+	 */
+	public CohortDefinition onOriginalFirstLine() {
+		EmrCalculationCohortDefinition cd = new EmrCalculationCohortDefinition(new OnOriginalFirstLineArtCalculation());
+		cd.setName("on original first line regimen on date");
+		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
+		return cd;
+	}
+
+	/**
+	 * Patients who are taking an alternate first line regimen on ${onDate}
+	 * @return the cohort definition
+	 */
+	public CohortDefinition onAlternateFirstLine() {
+		EmrCalculationCohortDefinition cd = new EmrCalculationCohortDefinition(new OnAlternateFirstLineArtCalculation());
+		cd.setName("on alternate first line regimen on date");
+		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
+		return cd;
+	}
+
+	/**
+	 * Patients who are taking a second line regimen on ${onDate}
+	 * @return the cohort definition
+	 */
+	public CohortDefinition onSecondLine() {
+		EmrCalculationCohortDefinition cd = new EmrCalculationCohortDefinition(new OnSecondLineArtCalculation());
+		cd.setName("on second line regimen on date");
+		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
+		return cd;
+	}
+
+	/**
+	 * Patients who are in the "12 month net cohort" on ${onDate}
+	 * @return the cohort definition
+	 */
+	public CohortDefinition netCohort12Months() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("in 12 net cohort on date");
+		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
+		cd.addSearch("startedArt12MonthsAgo", map(startedArt(), "onOrAfter=${onDate-13m},onOrBefore=${onDate-12m}"));
+		cd.addSearch("transferredOut", map(commonCohorts.transferredOut(), "onOrAfter=${onDate-13m}"));
+		cd.setCompositionString("startedArt12MonthsAgo AND NOT transferredOut");
 		return cd;
 	}
 }

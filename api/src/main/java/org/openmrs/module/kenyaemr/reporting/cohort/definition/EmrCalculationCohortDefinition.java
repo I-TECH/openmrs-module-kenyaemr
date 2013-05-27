@@ -18,6 +18,8 @@ import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.reporting.cohort.definition.BaseCohortDefinition;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 
+import java.util.Date;
+
 /**
  * Cohort definition based on a calculation
  */
@@ -26,10 +28,14 @@ public class EmrCalculationCohortDefinition extends BaseCohortDefinition {
 	@ConfigurationProperty(required = true, group = "calculation")
 	private BaseEmrCalculation calculation;
 
+	@ConfigurationProperty(group = "calculation")
+	private Date onDate;
+
 	public EmrCalculationCohortDefinition() {
 	}
-	
+
 	/**
+
 	 * Constructs a new calculation based cohort definition
 	 * @param calculation the calculation
 	 */
@@ -51,5 +57,21 @@ public class EmrCalculationCohortDefinition extends BaseCohortDefinition {
 	 */
 	public void setCalculation(BaseEmrCalculation calculation) {
 		this.calculation = calculation;
+	}
+
+	/**
+	 * Gets the date for which to calculate
+	 * @return the date
+	 */
+	public Date getOnDate() {
+		return onDate;
+	}
+
+	/**
+	 * Sets the date for which to calculate
+	 * @param onDate the date
+	 */
+	public void setOnDate(Date onDate) {
+		this.onDate = onDate;
 	}
 }

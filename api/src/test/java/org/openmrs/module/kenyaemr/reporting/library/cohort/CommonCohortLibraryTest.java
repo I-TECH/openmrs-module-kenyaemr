@@ -144,7 +144,7 @@ public class CommonCohortLibraryTest extends BaseModuleContextSensitiveTest {
 	/**
 	 * @see CommonCohortLibrary#hasDateObsValueBetween(org.openmrs.Concept)
 	 */
-	@Test
+	/*@Test
 	public void hasDateObsValueBetween() throws Exception {
 		Concept transferInDate = Dictionary.getConcept(Dictionary.TRANSFER_IN_DATE);
 
@@ -159,7 +159,7 @@ public class CommonCohortLibraryTest extends BaseModuleContextSensitiveTest {
 		context.addParameterValue("value2", TestUtils.date(2012, 6, 30));
 		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
 		ReportingTestUtils.assertCohortEquals(Arrays.asList(6), evaluated);
-	}
+	}*/
 
 	/**
 	 * @see CommonCohortLibrary#enrolledInProgram(org.openmrs.Program)
@@ -202,10 +202,10 @@ public class CommonCohortLibraryTest extends BaseModuleContextSensitiveTest {
 	}
 
 	/**
-	 * @see CommonCohortLibrary#transferredInBefore()
+	 * @see CommonCohortLibrary#transferredIn()
 	 */
 	@Test
-	public void transferredInBefore() throws Exception {
+	public void transferredIn() throws Exception {
 		Concept transferInDate = Dictionary.getConcept(Dictionary.TRANSFER_IN_DATE);
 
 		// Transfer in #6 on June 1st (obs recorded on July 1st)
@@ -214,8 +214,11 @@ public class CommonCohortLibraryTest extends BaseModuleContextSensitiveTest {
 		// Transfer in #7 on July 1st (obs recorded on June 1st)
 		TestUtils.saveObs(Context.getPatientService().getPatient(6), transferInDate, TestUtils.date(2012, 7, 1),  TestUtils.date(2012, 6, 1));
 
-		CohortDefinition cd = commonCohortLibrary.transferredInBefore();
-		context.addParameterValue("transferredOnOrBefore", TestUtils.date(2012, 6, 30));
+		CohortDefinition cd = commonCohortLibrary.transferredIn();
+		context.addParameterValue("value2", TestUtils.date(2012, 6, 30));
+
+		System.out.println(cd);
+
 		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
 		ReportingTestUtils.assertCohortEquals(Arrays.asList(6), evaluated);
 	}
