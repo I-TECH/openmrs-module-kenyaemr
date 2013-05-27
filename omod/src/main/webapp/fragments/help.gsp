@@ -16,7 +16,7 @@ If those do not resolve your problem, then you can submit a support ticket. To d
 <br />
 
 <div style="width:450px; margin:0 auto; text-align: center; background-color: #e8e7e2; padding: 10px; border-radius: 4px">
-	<img src="${ ui.resourceLink("kenyaui", "images/glyphs/phone.png") }" style="vertical-align: text-bottom" /> Call the help desk tariff free at <strong>${ supportNumber }</strong><br />
+	<img src="${ ui.resourceLink("kenyaui", "images/glyphs/phone.png") }" style="vertical-align: text-bottom" /> Call the help desk for free at <strong>${ supportNumber }</strong><br />
 	or<br />
 	<img src="${ ui.resourceLink("kenyaui", "images/glyphs/email.png") }" style="vertical-align: text-bottom" /> Email <a href="mailto:${ supportEmail }">${ supportEmail }</a>
 	<br />
