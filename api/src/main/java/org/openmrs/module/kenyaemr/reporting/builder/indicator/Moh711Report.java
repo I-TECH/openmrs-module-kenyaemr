@@ -28,6 +28,7 @@ import org.openmrs.module.kenyaemr.reporting.cohort.definition.EmrCalculationCoh
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.EmrDateCalculationCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.dataset.definition.MergingDataSetDefinition;
 import org.openmrs.module.kenyaemr.reporting.indicator.HivCareVisitsIndicator;
+import org.openmrs.module.kenyaemr.reporting.library.cohort.ArtCohortLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.cohort.CommonCohortLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.dimension.CommonDimensionLibrary;
 import org.openmrs.module.reporting.cohort.definition.*;
@@ -56,6 +57,9 @@ public class Moh711Report extends BaseIndicatorReportBuilder {
 
 	@Autowired
 	private CommonCohortLibrary commonCohorts;
+
+	@Autowired
+	private ArtCohortLibrary artCohorts;
 
 	@Autowired
 	private CommonDimensionLibrary commonDimensions;
@@ -109,36 +113,14 @@ public class Moh711Report extends BaseIndicatorReportBuilder {
 	}
 
 	private void setupCohortDefinitions() {
-
-		Program hivProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.HIV_PROGRAM_UUID);
-
-		Concept transferInDate = Dictionary.getConcept(Dictionary.TRANSFER_IN_DATE);
-
 		cohortDefinitions = new HashMap<String, CohortDefinition>();
-		{
-			DateObsCohortDefinition cd = new DateObsCohortDefinition();
-			cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-			cd.setName("Transfer in before date");
-			cd.setTimeModifier(TimeModifier.ANY);
-			cd.setQuestion(transferInDate);
-			cohortDefinitions.put("transferInBefore", cd);
-		}
-		{
-			CompositionCohortDefinition cd = new CompositionCohortDefinition();
-			cd.addParameter(new Parameter("fromDate", "From Date", Date.class));
-			cd.addParameter(new Parameter("toDate", "To Date", Date.class));
-			cd.addSearch("enrolled", map(commonCohorts.enrolledInProgram(hivProgram), "enrolledOnOrAfter=${fromDate},enrolledOnOrBefore=${toDate}"));
-			cd.addSearch("transferIn", map(cohortDefinitions.get("transferInBefore"), "onOrBefore=${toDate}"));
-			cd.setCompositionString("enrolled AND NOT transferIn");
-			cohortDefinitions.put("enrolledNoTransfers", cd);
-		}
 	}
 
 	private void setupCohortIndicators() {
 		cohortIndicators = new HashMap<String, CohortIndicator>();
 		{
-			CohortIndicator ind = createCohortIndicator("enrolledInCare", "Enrolled in care");
-			ind.setCohortDefinition(map(cohortDefinitions.get("enrolledNoTransfers"), "fromDate=${startDate},toDate=${endDate}"));
+			CohortIndicator ind = createCohortIndicator("enrolledInCare", "Number of new patients enrolled");
+			ind.setCohortDefinition(map(artCohorts.enrolled(), "onOrAfter=${startDate},onOrBefore=${endDate}"));
 		}
 	}
 
@@ -151,7 +133,7 @@ public class Moh711Report extends BaseIndicatorReportBuilder {
 		cohortDsd.setName(getName() + " Cohort DSD");
 		cohortDsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		cohortDsd.addParameter(new Parameter("endDate", "End Date", Date.class));
-		cohortDsd.addDimension("age", map(commonDimensions.age(), "date=${endDate}"));
+		cohortDsd.addDimension("age", map(commonDimensions.age(), "onDate=${endDate}"));
 		cohortDsd.addDimension("gender", map(commonDimensions.gender()));
 
 		MergingDataSetDefinition mergedDsd = new MergingDataSetDefinition();
@@ -161,15 +143,15 @@ public class Moh711Report extends BaseIndicatorReportBuilder {
 		mergedDsd.addDataSetDefinition(cohortDsd);
 		mergedDsd.setMergeOrder(MergingDataSetDefinition.MergeOrder.NAME);
 
-		/////////////// K2 (Cumulative Enrolled in Care) ///////////////
+		/////////////// K1 (Number of new patients enrolled) ///////////////
 
-		cohortDsd.addColumn("K2-1", "Enrolled in care (0-14 years, Female)", map(cohortIndicators.get("enrolledInCare"), "startDate=${startDate},endDate=${endDate}"), "gender=F|age=<15");
-		cohortDsd.addColumn("K2-2", "Enrolled in care (0-14 years, Male)", map(cohortIndicators.get("enrolledInCare"), "startDate=${startDate},endDate=${endDate}"), "gender=M|age=<15");
-		cohortDsd.addColumn("K2-3", "Enrolled in care (>14 years, Female)", map(cohortIndicators.get("enrolledInCare"), "startDate=${startDate},endDate=${endDate}"), "gender=F|age=15+");
-		cohortDsd.addColumn("K2-4", "Enrolled in care (>14 years, Male)", map(cohortIndicators.get("enrolledInCare"), "startDate=${startDate},endDate=${endDate}"), "gender=M|age=15+");
-		cohortDsd.addColumn("K2-5", "Enrolled in care (Totals, Female)", map(cohortIndicators.get("enrolledInCare"), "startDate=${startDate},endDate=${endDate}"), "gender=F");
-		cohortDsd.addColumn("K2-6", "Enrolled in care (Totals, Male)", map(cohortIndicators.get("enrolledInCare"), "startDate=${startDate},endDate=${endDate}"), "gender=M");
-		cohortDsd.addColumn("K2-7", "Enrolled in care (Grand Total)", map(cohortIndicators.get("enrolledInCare"), "startDate=${startDate},endDate=${endDate}"), "");
+		cohortDsd.addColumn("K1-7-1", "New enrollments - sub total (0-14 years, Female)", map(cohortIndicators.get("enrolledInCare"), "startDate=${startDate},endDate=${endDate}"), "gender=F|age=<15");
+		cohortDsd.addColumn("K1-7-2", "New enrollments - sub total (0-14 years, Male)", map(cohortIndicators.get("enrolledInCare"), "startDate=${startDate},endDate=${endDate}"), "gender=M|age=<15");
+		cohortDsd.addColumn("K1-7-3", "New enrollments - sub total (>14 years, Female)", map(cohortIndicators.get("enrolledInCare"), "startDate=${startDate},endDate=${endDate}"), "gender=F|age=15+");
+		cohortDsd.addColumn("K1-7-4", "New enrollments - sub total (>14 years, Male)", map(cohortIndicators.get("enrolledInCare"), "startDate=${startDate},endDate=${endDate}"), "gender=M|age=15+");
+		cohortDsd.addColumn("K1-7-5", "New enrollments - sub total (Totals, Female)", map(cohortIndicators.get("enrolledInCare"), "startDate=${startDate},endDate=${endDate}"), "gender=F");
+		cohortDsd.addColumn("K1-7-6", "New enrollments - sub total (Totals, Male)", map(cohortIndicators.get("enrolledInCare"), "startDate=${startDate},endDate=${endDate}"), "gender=M");
+		cohortDsd.addColumn("K1-7-7", "New enrollments - sub total (Grand Total)", map(cohortIndicators.get("enrolledInCare"), "startDate=${startDate},endDate=${endDate}"), "");
 
 		return mergedDsd;
 	}

@@ -117,6 +117,7 @@ public class CommonCohortLibrary {
 
 	/**
 	 * Patients who are enrolled on the given program between ${enrolledOnOrAfter} and ${enrolledOnOrBefore}
+	 * @param program the program
 	 * @return the cohort definition
 	 */
 	public CohortDefinition enrolledInProgram(Program program) {
@@ -159,6 +160,22 @@ public class CommonCohortLibrary {
 		cd.setQuestion(reasonForDiscontinue);
 		cd.setOperator(SetComparator.IN);
 		cd.setValueList(Collections.singletonList(transferredOut));
+		return cd;
+	}
+
+	/**
+	 * Patients who are enrolled on the given program between ${fromDate} and ${toDate} and are not transfer ins
+	 * @param program the program
+	 * @return the cohort definition
+	 */
+	public CohortDefinition enrolledButNotTransferIn(Program program) {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("enrolled excluding transfers in program between dates");
+		cd.addParameter(new Parameter("onOrAfter", "From Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "To Date", Date.class));
+		cd.addSearch("enrolled", map(enrolledInProgram(program), "enrolledOnOrAfter=${onOrAfter},enrolledOnOrBefore=${onOrBefore}"));
+		cd.addSearch("transferIn", map(transferredIn(), "onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("enrolled AND NOT transferIn");
 		return cd;
 	}
 }

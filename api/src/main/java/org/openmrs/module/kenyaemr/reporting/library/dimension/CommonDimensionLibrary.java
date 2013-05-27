@@ -52,10 +52,10 @@ public class CommonDimensionLibrary {
 	public CohortDefinitionDimension age() {
 		CohortDefinitionDimension dim = new CohortDefinitionDimension();
 		dim.setName("Age (<1, <15, 15+)");
-		dim.addParameter(new Parameter("date", "Date", Date.class));
-		dim.addCohortDefinition("<1", map(commonCohortLibrary.agedAtMost(0), "effectiveDate=${date}"));
-		dim.addCohortDefinition("<15", map(commonCohortLibrary.agedAtMost(14), "effectiveDate=${date}"));
-		dim.addCohortDefinition("15+", map(commonCohortLibrary.agedAtLeast(15), "effectiveDate=${date}"));
+		dim.addParameter(new Parameter("onDate", "Date", Date.class));
+		dim.addCohortDefinition("<1", map(commonCohortLibrary.agedAtMost(0), "effectiveDate=${onDate}"));
+		dim.addCohortDefinition("<15", map(commonCohortLibrary.agedAtMost(14), "effectiveDate=${onDate}"));
+		dim.addCohortDefinition("15+", map(commonCohortLibrary.agedAtLeast(15), "effectiveDate=${onDate}"));
 		return dim;
 	}
 }

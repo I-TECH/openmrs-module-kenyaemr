@@ -27,23 +27,23 @@ import java.util.Map;
  */
 public class LastCD4CountCalculation extends BaseEmrCalculation {
 
-    @Override
-    public String getName() {
-        return "Last CD4 Count";
-    }
+	@Override
+	public String getName() {
+		return "Last CD4 Count";
+	}
 
 	@Override
 	public String[] getTags() {
 		return new String[] { "hiv" };
 	}
 
-    /**
-     * Evaluates the calculation
-     * @should calculate null for patients with no recorded CD4 count
+	/**
+	 * Evaluates the calculation
+	 * @should calculate null for patients with no recorded CD4 count
 	 * @should calculate last CD4 count for all patients with a recorded CD4 count
-     */
-    @Override
-    public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
+	 */
+	@Override
+	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
 		return lastObs(getConcept(Dictionary.CD4_COUNT), cohort, context);
-    }
+	}
 }

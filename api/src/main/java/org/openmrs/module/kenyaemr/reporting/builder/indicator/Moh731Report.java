@@ -131,19 +131,9 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 	}
 
 	private void setupCohortDefinitions() {
-		Program hivProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.HIV_PROGRAM_UUID);
 		Program tbProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.TB_PROGRAM_UUID);
 
 		cohortDefinitions = new HashMap<String, CohortDefinition>();
-		{
-			CompositionCohortDefinition cd = new CompositionCohortDefinition();
-			cd.addParameter(new Parameter("fromDate", "From Date", Date.class));
-			cd.addParameter(new Parameter("toDate", "To Date", Date.class));
-			cd.addSearch("enrolled", map(commonCohorts.enrolledInProgram(hivProgram), "enrolledOnOrAfter=${fromDate},enrolledOnOrBefore=${toDate}"));
-			cd.addSearch("transferIn", map(commonCohorts.transferredIn(), "onOrBefore=${toDate}"));
-			cd.setCompositionString("enrolled AND NOT transferIn");
-			cohortDefinitions.put("enrolledNoTransfers", cd);
-		}
 		{ // Started ART and is pregnant
 			CompositionCohortDefinition cd = new CompositionCohortDefinition();
 			cd.addParameter(new Parameter("fromDate", "From Date", Date.class));
@@ -224,7 +214,7 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 		cohortIndicators = new HashMap<String, CohortIndicator>();
 		{
 			CohortIndicator ind = createCohortIndicator("enrolledInCare", "Enrolled in care (no transfers)");
-			ind.setCohortDefinition(map(cohortDefinitions.get("enrolledNoTransfers"), "fromDate=${startDate},toDate=${endDate}"));
+			ind.setCohortDefinition(map(artCohorts.enrolled(), "onOrAfter=${startDate},onOrBefore=${endDate}"));
 		}
 		{
 			CohortIndicator ind = createCohortIndicator("currentlyInCare", "Currently in care (includes transfers)");
@@ -331,7 +321,7 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 		cohortDsd.setName(getName() + " Cohort DSD");
 		cohortDsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		cohortDsd.addParameter(new Parameter("endDate", "End Date", Date.class));
-		cohortDsd.addDimension("age", map(commonDimensions.age(), "date=${endDate}"));
+		cohortDsd.addDimension("age", map(commonDimensions.age(), "onDate=${endDate}"));
 		cohortDsd.addDimension("gender", map(commonDimensions.gender()));
 
 		SimpleIndicatorDataSetDefinition nonCohortDsd = new SimpleIndicatorDataSetDefinition();

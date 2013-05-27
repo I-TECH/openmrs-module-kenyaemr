@@ -182,21 +182,21 @@ public class CommonCohortLibraryTest extends BaseModuleContextSensitiveTest {
 
 		// Check with startDate only
 		CohortDefinition cd = commonCohortLibrary.enrolledInProgram(hivProgram);
-		context.addParameterValue("enrolledOnOrAfter", context.getParameterValue("startDate"));
+		context.addParameterValue("enrolledOnOrAfter", TestUtils.date(2012, 6, 1));
 		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
 		ReportingTestUtils.assertCohortEquals(Arrays.asList(6, 7, 8), evaluated);
 
 		// Check with endDate only
 		cd = commonCohortLibrary.enrolledInProgram(hivProgram);
-		context.addParameterValue("enrolledOnOrBefore", context.getParameterValue("endDate"));
+		context.addParameterValue("enrolledOnOrBefore", TestUtils.date(2012, 6, 30));
 		context.addParameterValue("enrolledOnOrAfter", null);
 		evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
 		ReportingTestUtils.assertCohortEquals(Arrays.asList(2, 6, 7), evaluated);
 
 		// Check both
 		cd = commonCohortLibrary.enrolledInProgram(hivProgram);
-		context.addParameterValue("enrolledOnOrAfter", context.getParameterValue("startDate"));
-		context.addParameterValue("enrolledOnOrBefore", context.getParameterValue("endDate"));
+		context.addParameterValue("enrolledOnOrAfter", TestUtils.date(2012, 6, 1));
+		context.addParameterValue("enrolledOnOrBefore", TestUtils.date(2012, 6, 30));
 		evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
 		ReportingTestUtils.assertCohortEquals(Arrays.asList(6, 7), evaluated);
 	}
@@ -219,6 +219,31 @@ public class CommonCohortLibraryTest extends BaseModuleContextSensitiveTest {
 
 		System.out.println(cd);
 
+		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
+		ReportingTestUtils.assertCohortEquals(Arrays.asList(6), evaluated);
+	}
+
+	/**
+	 * @see CommonCohortLibrary#enrolledButNotTransferIn(org.openmrs.Program)
+	 */
+	@Test
+	public void enrolledButNotTransferIn() throws Exception {
+		Program hivProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.HIV_PROGRAM_UUID);
+		Concept transferInDate = Dictionary.getConcept(Dictionary.TRANSFER_IN_DATE);
+
+		// Enroll #6 on June 1st
+		TestUtils.enrollInProgram(Context.getPatientService().getPatient(6), hivProgram, TestUtils.date(2012, 6, 1));
+
+		// Enroll #7 on June 1st as a transfer in
+		TestUtils.enrollInProgram(Context.getPatientService().getPatient(7), hivProgram, TestUtils.date(2012, 6, 1));
+		TestUtils.saveObs(Context.getPatientService().getPatient(7), transferInDate, TestUtils.date(2012, 6, 1),  TestUtils.date(2012, 6, 1));
+
+		// Enroll #8 on July 1st
+		TestUtils.enrollInProgram(Context.getPatientService().getPatient(8), hivProgram, TestUtils.date(2012, 7, 1));
+
+		CohortDefinition cd = commonCohortLibrary.enrolledButNotTransferIn(hivProgram);
+		context.addParameterValue("onOrAfter", TestUtils.date(2012, 6, 1));
+		context.addParameterValue("onOrBefore", TestUtils.date(2012, 6, 30));
 		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
 		ReportingTestUtils.assertCohortEquals(Arrays.asList(6), evaluated);
 	}
