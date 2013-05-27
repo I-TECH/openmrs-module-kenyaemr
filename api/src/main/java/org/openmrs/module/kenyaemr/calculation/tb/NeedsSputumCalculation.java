@@ -40,14 +40,13 @@ import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
  * sputum results recorded
  */
 public class NeedsSputumCalculation extends BaseAlertCalculation {
-	String reason = "";
 
 	/**
 	 * @see org.openmrs.module.kenyaemr.calculation.BaseAlertCalculation#getAlertMessage()
 	 */
 	@Override
 	public String getAlertMessage() {
-		return "Due for TB Sputum "+reason;
+		return "Due for TB Sputum";
 	}
 
 	/**
@@ -121,7 +120,6 @@ public class NeedsSputumCalculation extends BaseAlertCalculation {
 					ObsResult results = (ObsResult) firstObsSinceSuspected.get(ptId);
 
 					if (results == null) {
-						reason = "Suspect";
 						needsSputum = true;
 					}
 				}
@@ -188,7 +186,6 @@ public class NeedsSputumCalculation extends BaseAlertCalculation {
 						if (resultAfterTwomonthsOnOrAfterdateAfterTwomonths == null
 								|| resultAfterTwomonthsOnOrAfterdateAfterTwomonths
 										.isEmpty()) {
-							reason = "Month 2";
 							needsSputum = true;
 						}
 
@@ -214,7 +211,6 @@ public class NeedsSputumCalculation extends BaseAlertCalculation {
 						if (resultAfterFivemonthsOnOrAfterdateAfterFivemonths == null
 								|| resultAfterFivemonthsOnOrAfterdateAfterFivemonths
 										.isEmpty()) {
-							reason = "Month 5";
 							needsSputum = true;
 
 						}
@@ -244,7 +240,6 @@ public class NeedsSputumCalculation extends BaseAlertCalculation {
 						if (resultAfterSixmonthsOnOrAfterdateAfterSixmonths == null
 								|| resultAfterSixmonthsOnOrAfterdateAfterSixmonths
 										.isEmpty()) {
-							reason = "Month 6";
 							needsSputum = true;
 
 						}
@@ -281,7 +276,6 @@ public class NeedsSputumCalculation extends BaseAlertCalculation {
 							if (resultAfterThreemonthsOnOrAfterdateAfterThreemonths == null
 									|| resultAfterThreemonthsOnOrAfterdateAfterThreemonths
 											.isEmpty()) {
-								reason = "Month 3";
 								needsSputum = true;
 
 							}
@@ -307,7 +301,6 @@ public class NeedsSputumCalculation extends BaseAlertCalculation {
 							if (resultAfterFivemonthsOnOrAfterdateAfterFivemonths == null
 									|| resultAfterFivemonthsOnOrAfterdateAfterFivemonths
 											.isEmpty()) {
-								reason = "Month 5";
 								needsSputum = true;
 
 							}
@@ -334,7 +327,6 @@ public class NeedsSputumCalculation extends BaseAlertCalculation {
 							if (resultAfterEightmonthsOnOrAfterdateAfterEightmonths == null
 									|| resultAfterEightmonthsOnOrAfterdateAfterEightmonths
 											.isEmpty()) {
-								reason = "Month 8";
 								needsSputum = true;
 
 							}
