@@ -66,7 +66,11 @@
 								/>
 							</td>
 							<td><obs conceptId="159368AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="10" /></td>
-							<td><obs conceptId="1732AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+							<td>
+								<obs conceptId="1732AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" 
+								answerConceptIds="1822AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1072AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1073AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1074AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" 
+								answerLabels="Hours,Days,Weeks,Months" />
+							</td>
 						</tr>
 					</obsgroup>
 				</template>
