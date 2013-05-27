@@ -64,18 +64,20 @@ public class EmrCalculationCohortDefinitionEvaluator implements CohortDefinition
 	protected CalculationResultMap doCalculation(CohortDefinition cohortDefinition, EvaluationContext context) {
 		EmrCalculationCohortDefinition cd = (EmrCalculationCohortDefinition) cohortDefinition;
 
-		// Use date from cohort definition, or from ${date} or ${endDate}
+		// Use date from cohort definition, or from ${date} or ${endDate} or now
 		Date onDate = cd.getOnDate();
 		if (onDate == null) {
 			onDate = (Date) context.getParameterValue("date");
 			if (onDate == null) {
 				onDate = (Date) context.getParameterValue("endDate");
+				if (onDate == null) {
+					onDate = new Date();
+				}
 			}
 		}
 
 		PatientCalculationService pcs = Context.getService(PatientCalculationService.class);
 		PatientCalculationContext calcContext = pcs.createCalculationContext();
-
 		calcContext.setNow(onDate);
 
 		Cohort cohort = context.getBaseCohort();
