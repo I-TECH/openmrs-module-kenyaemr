@@ -44,6 +44,7 @@ public class ReportingTestUtils {
 		EvaluationContext context = new EvaluationContext();
 		context.addParameterValue("startDate", startDate);
 		context.addParameterValue("endDate", endDate);
+		context.setNow(endDate);
 		context.setEvaluationDate(endDate);
 		context.setBaseCohort(new Cohort(cohort));
 		return context;
@@ -54,7 +55,7 @@ public class ReportingTestUtils {
 	 * @param expected the expected member ids
 	 * @param actual the actual cohort
 	 */
-	public static void assertCohortContainsAll(Collection<Integer> expected, Cohort actual) {
+	public static void assertCohortEquals(Collection<Integer> expected, Cohort actual) {
 		Assert.assertEquals(new HashSet<Integer>(expected), actual.getMemberIds());
 	}
 

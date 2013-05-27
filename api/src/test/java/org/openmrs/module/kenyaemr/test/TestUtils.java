@@ -52,9 +52,10 @@ public class TestUtils {
 	 * @param month the month
 	 * @param day the day
 	 * @return the date
+	 * @throws IllegalArgumentException if date values are not valid
 	 */
 	public static Date date(int year, int month, int day) {
-		return new GregorianCalendar(year, month - 1, day).getTime();
+		return date(year, month, day, 0, 0, 0);
 	}
 
 	/**
@@ -66,9 +67,12 @@ public class TestUtils {
 	 * @param minute the minute
 	 * @param second the second
 	 * @return the date
+	 * @throws IllegalArgumentException if date values are not valid
 	 */
 	public static Date date(int year, int month, int day, int hour, int minute, int second) {
-		return new GregorianCalendar(year, month - 1, day, hour, minute, second).getTime();
+		Calendar cal = new GregorianCalendar(year, month - 1, day, hour, minute, second);
+		cal.setLenient(false);
+		return cal.getTime();
 	}
 
 	/**
@@ -221,7 +225,7 @@ public class TestUtils {
 	 * @param end the end date
 	 * @return the drug order
 	 */
-	public static RegimenOrder saveRegimenOrder(Patient patient, List<Concept> concepts, Date start, Date end) {
+	public static RegimenOrder saveRegimenOrder(Patient patient, Collection<Concept> concepts, Date start, Date end) {
 		Set<DrugOrder> orders = new LinkedHashSet<DrugOrder>();
 
 		for (Concept concept : concepts) {

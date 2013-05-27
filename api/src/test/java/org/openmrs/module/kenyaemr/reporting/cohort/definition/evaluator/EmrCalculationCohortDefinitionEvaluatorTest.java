@@ -14,25 +14,31 @@
 
 package org.openmrs.module.kenyaemr.reporting.cohort.definition.evaluator;
 
-import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.Cohort;
 import org.openmrs.Concept;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.calculation.art.InitialArtStartDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.art.OnArtCalculation;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.EmrCalculationCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.EmrDateCalculationCohortDefinition;
+import org.openmrs.module.kenyaemr.test.ReportingTestUtils;
 import org.openmrs.module.kenyaemr.test.TestUtils;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
-import java.util.Date;
+import java.util.Arrays;
 
+/**
+ * Tests for {@link EmrCalculationCohortDefinitionEvaluator}
+ */
 public class EmrCalculationCohortDefinitionEvaluatorTest extends BaseModuleContextSensitiveTest {
+
+	private EvaluationContext context;
+
+	private EmrCalculationCohortDefinitionEvaluator evaluator;
 
 	@Before
 	public void setup() throws Exception {
@@ -42,30 +48,26 @@ public class EmrCalculationCohortDefinitionEvaluatorTest extends BaseModuleConte
 		Concept efv = Context.getConceptService().getConcept(75523);
 		Concept nvp = Context.getConceptService().getConcept(80586);
 
-		// Give patient #6 drug order of EFV starting 2011-1-1
-		TestUtils.saveDrugOrder(Context.getPatientService().getPatient(6), efv, TestUtils.date(2011, 6, 1), null);
+		// Give patient #6 drug order of EFV starting Dec 31st 2011
+		TestUtils.saveDrugOrder(Context.getPatientService().getPatient(6), efv, TestUtils.date(2011, 12, 31), null);
 
-		// Give patient #7 drug order of NVP starting 2012-1-1
-		TestUtils.saveDrugOrder(Context.getPatientService().getPatient(7), nvp, TestUtils.date(2012, 6, 1), null);
+		// Give patient #7 drug order of NVP starting Jan 1st
+		TestUtils.saveDrugOrder(Context.getPatientService().getPatient(7), nvp, TestUtils.date(2012, 1, 1), null);
+
+		context = ReportingTestUtils.reportingContext(Arrays.asList(2, 6, 7, 8, 999), TestUtils.date(2012, 1, 1), TestUtils.date(2012, 1, 31));
+		evaluator = new EmrCalculationCohortDefinitionEvaluator();
 	}
 
 	/**
-	 * Tests evaluation of the OnArt calculation
+	 * Tests evaluation of the onArt calculation
 	 */
 	@Test
-	public void mevaluate_regularCalculation() throws EvaluationException {
+	public void evaluate_regularCalculation() throws EvaluationException {
 	 	EmrCalculationCohortDefinition cohortDefinition = new EmrCalculationCohortDefinition(new OnArtCalculation());
 
-		EmrCalculationCohortDefinitionEvaluator evaluator = new EmrCalculationCohortDefinitionEvaluator();
-		EvaluationContext context = new EvaluationContext();
-		context.addParameterValue("date", new Date());
-		context.setBaseCohort(new Cohort(Context.getPatientService().getAllPatients()));
+		EvaluatedCohort evaluated = evaluator.evaluate(cohortDefinition, context);
 
-		EvaluatedCohort evaluatedCohort = evaluator.evaluate(cohortDefinition, context);
-
-		Assert.assertEquals(2, evaluatedCohort.getSize());
-		Assert.assertTrue(evaluatedCohort.contains(6));
-		Assert.assertTrue(evaluatedCohort.contains(7));
+		ReportingTestUtils.assertCohortEquals(Arrays.asList(6, 7), evaluated);
 	}
 
 	/**
@@ -74,17 +76,11 @@ public class EmrCalculationCohortDefinitionEvaluatorTest extends BaseModuleConte
 	@Test
 	public void evaluate_dateCalculation() throws EvaluationException {
 		EmrDateCalculationCohortDefinition cohortDefinition = new EmrDateCalculationCohortDefinition(new InitialArtStartDateCalculation());
-		cohortDefinition.setResultOnOrAfter(TestUtils.date(2012, 1, 1));
-		cohortDefinition.setResultOnOrBefore(TestUtils.date(2012, 12, 31));
+		cohortDefinition.setOnOrAfter(TestUtils.date(2012, 1, 1));
+		cohortDefinition.setOnOrBefore(TestUtils.date(2012, 12, 31));
 
-		EmrCalculationCohortDefinitionEvaluator evaluator = new EmrCalculationCohortDefinitionEvaluator();
-		EvaluationContext context = new EvaluationContext();
-		context.addParameterValue("date", new Date());
-		context.setBaseCohort(new Cohort(Context.getPatientService().getAllPatients()));
+		EvaluatedCohort evaluated = evaluator.evaluate(cohortDefinition, context);
 
-		EvaluatedCohort evaluatedCohort = evaluator.evaluate(cohortDefinition, context);
-
-		Assert.assertEquals(1, evaluatedCohort.getSize());
-		Assert.assertTrue(evaluatedCohort.contains(7));
+		ReportingTestUtils.assertCohortEquals(Arrays.asList(7), evaluated);
 	}
 }

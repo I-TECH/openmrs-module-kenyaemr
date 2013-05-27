@@ -55,7 +55,8 @@ public class InitialArtStartDateCalculation extends BaseEmrCalculation {
 
 		// Get earliest dates from orders
 		Concept arvs = getConcept(Dictionary.ANTIRETROVIRAL_DRUGS);
-		CalculationResultMap earliestOrderDates = earliestStartDates(allDrugOrders(arvs, cohort, context), context);
+		CalculationResultMap allDrugOrders = allDrugOrders(arvs, cohort, context);
+		CalculationResultMap earliestOrderDates = earliestStartDates(allDrugOrders, context);
 
 		// Return the earliest of the two
 		CalculationResultMap result = new CalculationResultMap();

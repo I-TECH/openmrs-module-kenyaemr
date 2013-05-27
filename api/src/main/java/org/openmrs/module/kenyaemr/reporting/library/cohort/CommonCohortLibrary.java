@@ -14,11 +14,20 @@
 
 package org.openmrs.module.kenyaemr.reporting.library.cohort;
 
+import org.openmrs.Concept;
+import org.openmrs.EncounterType;
 import org.openmrs.Program;
+import org.openmrs.api.PatientSetService;
+import org.openmrs.module.kenyaemr.Dictionary;
+import org.openmrs.module.kenyaemr.reporting.cohort.definition.DateObsValueBetweenCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.*;
+import org.openmrs.module.reporting.common.RangeComparator;
+import org.openmrs.module.reporting.common.SetComparator;
+import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 
@@ -91,15 +100,82 @@ public class CommonCohortLibrary {
 	}
 
 	/**
+	 * Patients who have an encounter between ${onOrAfter} and ${onOrBefore}
+	 * @param types the encounter types
+	 * @return the cohort definition
+	 */
+	public CohortDefinition hasEncounter(EncounterType... types) {
+		EncounterCohortDefinition cd = new EncounterCohortDefinition();
+		cd.setTimeQualifier(TimeQualifier.ANY);
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		if (types.length > 0) {
+			cd.setEncounterTypeList(Arrays.asList(types));
+		}
+		return cd;
+	}
+
+	/**
 	 * Patients who are enrolled on the given program between ${enrolledOnOrAfter} and ${enrolledOnOrBefore}
+	 * @param program the program
 	 * @return the cohort definition
 	 */
 	public CohortDefinition enrolledInProgram(Program program) {
 		ProgramEnrollmentCohortDefinition cd = new ProgramEnrollmentCohortDefinition();
-		cd.setName("enrolled in Program between dates");
-		cd.addParameter(new Parameter("enrolledOnOrAfter", "From Date", Date.class));
-		cd.addParameter(new Parameter("enrolledOnOrBefore", "To Date", Date.class));
+		cd.setName("enrolled in program between dates");
+		cd.addParameter(new Parameter("enrolledOnOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("enrolledOnOrBefore", "Before Date", Date.class));
 		cd.setPrograms(Collections.singletonList(program));
+		return cd;
+	}
+
+	/**
+	 * Patients who transferred in between ${onOrAfter} and ${onOrBefore}
+	 * @return the cohort definition
+	 */
+	public CohortDefinition transferredIn() {
+		Concept transferInDate = Dictionary.getConcept(Dictionary.TRANSFER_IN_DATE);
+
+		DateObsValueBetweenCohortDefinition cd = new DateObsValueBetweenCohortDefinition();
+		cd.setName("transferred in between dates");
+		cd.setQuestion(transferInDate);
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		return cd;
+	}
+
+	/**
+	 * Patients who transferred in between ${onOrAfter} and ${onOrBefore}
+	 * @return the cohort definition
+	 */
+	public CohortDefinition transferredOut() {
+		Concept reasonForDiscontinue = Dictionary.getConcept(Dictionary.REASON_FOR_PROGRAM_DISCONTINUATION);
+		Concept transferredOut = Dictionary.getConcept(Dictionary.TRANSFERRED_OUT);
+
+		CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.setName("transferred out between dates");
+		cd.setTimeModifier(PatientSetService.TimeModifier.ANY);
+		cd.setQuestion(reasonForDiscontinue);
+		cd.setOperator(SetComparator.IN);
+		cd.setValueList(Collections.singletonList(transferredOut));
+		return cd;
+	}
+
+	/**
+	 * Patients who are enrolled on the given program between ${fromDate} and ${toDate} and are not transfer ins
+	 * @param program the program
+	 * @return the cohort definition
+	 */
+	public CohortDefinition enrolledButNotTransferIn(Program program) {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("enrolled excluding transfers in program between dates");
+		cd.addParameter(new Parameter("onOrAfter", "From Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "To Date", Date.class));
+		cd.addSearch("enrolled", map(enrolledInProgram(program), "enrolledOnOrAfter=${onOrAfter},enrolledOnOrBefore=${onOrBefore}"));
+		cd.addSearch("transferIn", map(transferredIn(), "onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("enrolled AND NOT transferIn");
 		return cd;
 	}
 }

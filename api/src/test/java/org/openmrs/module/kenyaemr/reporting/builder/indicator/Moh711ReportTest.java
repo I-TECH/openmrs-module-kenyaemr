@@ -14,7 +14,6 @@
 
 package org.openmrs.module.kenyaemr.reporting.builder.indicator;
 
-import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Program;
@@ -22,9 +21,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.kenyaemr.test.ReportingTestUtils;
 import org.openmrs.module.kenyaemr.test.TestUtils;
-import org.openmrs.module.reporting.dataset.MapDataSet;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.module.reporting.indicator.IndicatorResult;
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
@@ -34,12 +31,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Arrays;
 
 /**
- * Tests for {@link Moh731Report}
+ * Tests for {@link Moh711Report}
  */
-public class Moh731ReportTest extends BaseModuleContextSensitiveTest {
+public class Moh711ReportTest extends BaseModuleContextSensitiveTest {
 
 	@Autowired
-	private Moh731Report report;
+	private Moh711Report report;
 
 	@Before
 	public void setup() throws Exception {
@@ -61,13 +58,6 @@ public class Moh731ReportTest extends BaseModuleContextSensitiveTest {
 
 		ReportData data = Context.getService(ReportDefinitionService.class).evaluate(rd, context);
 
-		Assert.assertEquals(1, data.getDataSets().size());
-		MapDataSet dataSet = (MapDataSet) data.getDataSets().get("MOH 731 DSD");
-		Assert.assertNotNull(dataSet);
-
-		Assert.assertEquals(1, ((IndicatorResult) dataSet.getColumnValue(1, "HV03-09")).getValue().intValue());
-		Assert.assertEquals(1, ((IndicatorResult) dataSet.getColumnValue(1, "HV03-13")).getValue().intValue());
-
-		//ReportingTestUtils.printReport(data);
+		ReportingTestUtils.printReport(data);
 	}
 }
