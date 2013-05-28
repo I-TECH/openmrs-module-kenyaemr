@@ -97,7 +97,7 @@
  			});
     			
 
-			//create some variable that will control the dates on the form not to be ealier than DOB
+			//create some variable that will control the dates on the form not to be earlier than DOB
 			var pbirthdate = new Date("<lookup expression="patient.birthdate" />").getTime();
 			var encounterdate;
 			var dstartoftreatment;
@@ -201,16 +201,16 @@
 					<tr>
 						<td>
 							<div id="referredByOptions1">
-								<obs conceptId="159371AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								<obs conceptId="160540AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 									answerConceptIds="159940AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160631AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160546AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161359AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160538AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-									answerLabels="VCT center,HIV care clinic,STI Clinic,Home Based Care,Antenatal/PMTCT Clinic" style="radio" id="optgroup1" answerSeparator="&lt;br /&gt;" />	
+									answerLabels="VCT center,HIV care clinic,STI Clinic,Home Based Care,Antenatal/PMTCT Clinic" style="radio"  answerSeparator="&lt;br /&gt;" />	
 							</div>
 						</td>
 						<td>
 							<div id="referredByOptions2">
-								<obs conceptId="159371AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								<obs conceptId="160540AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 									answerConceptIds="1725AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1744AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160551AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-									answerLabels="Private Sector,Chemist/pharmacist,Self referral,Community Health worker(CHW)" style="radio" id="optgroup2" answerSeparator="&lt;br /&gt;" />	
+									answerLabels="Private Sector,Chemist/pharmacist,Self referral,Community Health worker(CHW)" style="radio"  answerSeparator="&lt;br /&gt;" />	
 							</div>
 						</td>
 					</tr>
@@ -371,7 +371,7 @@
 	<tr>
 		<td>
 			<fielset>
-				<legend>Transfer In Information (Enter onlyif patient ai a Transfer In)</legend>
+				<legend>Transfer In Information (Enter only if patient is a Transfer In)</legend>
 					<table class="tb1" border="0" width="100%" id="transferInDetails">
 						<tr>
 							<td>Date Transferred In</td>
