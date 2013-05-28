@@ -126,13 +126,21 @@ public class ArtCohortLibrary {
 	}
 
 	/**
-	 * Patients enrolled in HIV care (excluding transfers) between ${onOrAfter} and ${onOrBefore}
+	 * Patients who were enrolled in HIV care (including transfers) between ${onOrAfter} and ${onOrBefore}
+	 * @return the cohort definition
+	 */
+	public CohortDefinition enrolled() {
+		Program hivProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.HIV_PROGRAM_UUID);
+		return commonCohorts.enrolled(hivProgram);
+	}
+
+	/**
+	 * Patients who were enrolled in HIV care (excluding transfers) between ${onOrAfter} and ${onOrBefore}
 	 * @return the cohort definition
 	 */
 	public CohortDefinition enrolledExcludingTransfers() {
 		Program hivProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.HIV_PROGRAM_UUID);
-		CohortDefinition cd = commonCohorts.enrolledExcludingTransfers(hivProgram);
-		return cd;
+		return commonCohorts.enrolledExcludingTransfers(hivProgram);
 	}
 
 	/**

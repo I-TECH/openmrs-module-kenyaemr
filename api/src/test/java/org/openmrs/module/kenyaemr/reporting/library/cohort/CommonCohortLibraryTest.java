@@ -142,30 +142,10 @@ public class CommonCohortLibraryTest extends BaseModuleContextSensitiveTest {
 	}
 
 	/**
-	 * @see CommonCohortLibrary#hasDateObsValueBetween(org.openmrs.Concept)
-	 */
-	/*@Test
-	public void hasDateObsValueBetween() throws Exception {
-		Concept transferInDate = Dictionary.getConcept(Dictionary.TRANSFER_IN_DATE);
-
-		// Transfer in #6 on June 1st (obs recorded on July 1st)
-		TestUtils.saveObs(Context.getPatientService().getPatient(6), transferInDate, TestUtils.date(2012, 6, 1),  TestUtils.date(2012, 7, 1));
-
-		// Transfer in #7 on July 1st (obs recorded on June 1st)
-		TestUtils.saveObs(Context.getPatientService().getPatient(6), transferInDate, TestUtils.date(2012, 7, 1),  TestUtils.date(2012, 6, 1));
-
-		CohortDefinition cd = commonCohortLibrary.hasDateObsValueBetween(transferInDate);
-		context.addParameterValue("value1", TestUtils.date(2012, 6, 1));
-		context.addParameterValue("value2", TestUtils.date(2012, 6, 30));
-		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
-		ReportingTestUtils.assertCohortEquals(Arrays.asList(6), evaluated);
-	}*/
-
-	/**
-	 * @see CommonCohortLibrary#enrolledInProgram(org.openmrs.Program)
+	 * @see CommonCohortLibrary#enrolled(org.openmrs.Program...)
 	 */
 	@Test
-	public void enrolledInProgram() throws Exception {
+	public void enrolled() throws Exception {
 		Program hivProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.HIV_PROGRAM_UUID);
 
 		// Enroll patient 2 on May 31st
@@ -181,20 +161,20 @@ public class CommonCohortLibraryTest extends BaseModuleContextSensitiveTest {
 		TestUtils.enrollInProgram(Context.getPatientService().getPatient(8), hivProgram, TestUtils.date(2012, 7, 1));
 
 		// Check with startDate only
-		CohortDefinition cd = commonCohortLibrary.enrolledInProgram(hivProgram);
+		CohortDefinition cd = commonCohortLibrary.enrolled(hivProgram);
 		context.addParameterValue("enrolledOnOrAfter", TestUtils.date(2012, 6, 1));
 		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
 		ReportingTestUtils.assertCohortEquals(Arrays.asList(6, 7, 8), evaluated);
 
 		// Check with endDate only
-		cd = commonCohortLibrary.enrolledInProgram(hivProgram);
+		cd = commonCohortLibrary.enrolled(hivProgram);
 		context.addParameterValue("enrolledOnOrBefore", TestUtils.date(2012, 6, 30));
 		context.addParameterValue("enrolledOnOrAfter", null);
 		evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
 		ReportingTestUtils.assertCohortEquals(Arrays.asList(2, 6, 7), evaluated);
 
 		// Check both
-		cd = commonCohortLibrary.enrolledInProgram(hivProgram);
+		cd = commonCohortLibrary.enrolled(hivProgram);
 		context.addParameterValue("enrolledOnOrAfter", TestUtils.date(2012, 6, 1));
 		context.addParameterValue("enrolledOnOrBefore", TestUtils.date(2012, 6, 30));
 		evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
@@ -224,10 +204,10 @@ public class CommonCohortLibraryTest extends BaseModuleContextSensitiveTest {
 	}
 
 	/**
-	 * @see CommonCohortLibrary#enrolledExcludingTransfers(org.openmrs.Program)
+	 * @see CommonCohortLibrary#enrolledExcludingTransfers(org.openmrs.Program...)
 	 */
 	@Test
-	public void enrolledButNotTransferIn() throws Exception {
+	public void enrolledExcludingTransfers() throws Exception {
 		Program hivProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.HIV_PROGRAM_UUID);
 		Concept transferInDate = Dictionary.getConcept(Dictionary.TRANSFER_IN_DATE);
 

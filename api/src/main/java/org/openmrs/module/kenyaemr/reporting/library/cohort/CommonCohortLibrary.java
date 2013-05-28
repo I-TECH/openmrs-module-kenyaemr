@@ -106,26 +106,13 @@ public class CommonCohortLibrary {
 	 */
 	public CohortDefinition hasEncounter(EncounterType... types) {
 		EncounterCohortDefinition cd = new EncounterCohortDefinition();
+		cd.setName("has encounter between dates");
 		cd.setTimeQualifier(TimeQualifier.ANY);
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		if (types.length > 0) {
 			cd.setEncounterTypeList(Arrays.asList(types));
 		}
-		return cd;
-	}
-
-	/**
-	 * Patients who are enrolledExcludingTransfers on the given program between ${enrolledOnOrAfter} and ${enrolledOnOrBefore}
-	 * @param program the program
-	 * @return the cohort definition
-	 */
-	public CohortDefinition enrolledInProgram(Program program) {
-		ProgramEnrollmentCohortDefinition cd = new ProgramEnrollmentCohortDefinition();
-		cd.setName("enrolledExcludingTransfers in program between dates");
-		cd.addParameter(new Parameter("enrolledOnOrAfter", "After Date", Date.class));
-		cd.addParameter(new Parameter("enrolledOnOrBefore", "Before Date", Date.class));
-		cd.setPrograms(Collections.singletonList(program));
 		return cd;
 	}
 
@@ -164,18 +151,34 @@ public class CommonCohortLibrary {
 	}
 
 	/**
-	 * Patients who are enrolled on the given program (excluding transfers) between ${fromDate} and ${toDate}
-	 * @param program the program
+	 * Patients who were enrolled on the given programs between ${enrolledOnOrAfter} and ${enrolledOnOrBefore}
+	 * @param programs the programs
 	 * @return the cohort definition
 	 */
-	public CohortDefinition enrolledExcludingTransfers(Program program) {
+	public CohortDefinition enrolled(Program... programs) {
+		ProgramEnrollmentCohortDefinition cd = new ProgramEnrollmentCohortDefinition();
+		cd.setName("enrolled in program between dates");
+		cd.addParameter(new Parameter("enrolledOnOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("enrolledOnOrBefore", "Before Date", Date.class));
+		if (programs.length > 0) {
+			cd.setPrograms(Arrays.asList(programs));
+		}
+		return cd;
+	}
+
+	/**
+	 * Patients who were enrolled on the given programs (excluding transfers) between ${fromDate} and ${toDate}
+	 * @param programs the programs
+	 * @return the cohort definition
+	 */
+	public CohortDefinition enrolledExcludingTransfers(Program... programs) {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
-		cd.setName("enrolledExcludingTransfers excluding transfers in program between dates");
+		cd.setName("enrolled excluding transfers in program between dates");
 		cd.addParameter(new Parameter("onOrAfter", "From Date", Date.class));
 		cd.addParameter(new Parameter("onOrBefore", "To Date", Date.class));
-		cd.addSearch("enrolledExcludingTransfers", map(enrolledInProgram(program), "enrolledOnOrAfter=${onOrAfter},enrolledOnOrBefore=${onOrBefore}"));
+		cd.addSearch("enrolled", map(enrolled(programs), "enrolledOnOrAfter=${onOrAfter},enrolledOnOrBefore=${onOrBefore}"));
 		cd.addSearch("transferIn", map(transferredIn(), "onOrBefore=${onOrBefore}"));
-		cd.setCompositionString("enrolledExcludingTransfers AND NOT transferIn");
+		cd.setCompositionString("enrolled AND NOT transferIn");
 		return cd;
 	}
 }

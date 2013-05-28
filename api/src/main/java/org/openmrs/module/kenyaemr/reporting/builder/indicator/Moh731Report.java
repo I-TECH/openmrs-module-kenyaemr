@@ -111,10 +111,10 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 	}
 
 	/**
-	 * @see BaseIndicatorReportBuilder#buildDataSet()
+	 * @see BaseIndicatorReportBuilder#buildDataSets()
 	 */
 	@Override
-	public DataSetDefinition buildDataSet() {
+	public List<DataSetDefinition> buildDataSets() {
 		log.debug("Setting up cohort definitions");
 
 		setupCohortDefinitions();
@@ -129,12 +129,10 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 
 		log.debug("Setting up report definition");
 
-		return createDataSet();
+		return Arrays.asList(createDataSet());
 	}
 
 	private void setupCohortDefinitions() {
-		Program tbProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.TB_PROGRAM_UUID);
-
 		cohortDefinitions = new HashMap<String, CohortDefinition>();
 		{ // Started ART and is pregnant
 			CompositionCohortDefinition cd = new CompositionCohortDefinition();
@@ -152,7 +150,7 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 			cd.addParameter(new Parameter("toDate", "To Date", Date.class));
 
 			cd.addSearch("startedArt", map(artCohorts.startedArt(), "onOrAfter=${startDate},onOrBefore=${endDate}"));
-			cd.addSearch("enrolledInTb", map(commonCohorts.enrolledInProgram(tbProgram), "enrolledOnOrAfter=${fromDate},enrolledOnOrBefore=${toDate}"));
+			cd.addSearch("enrolledInTb", map(tbCohorts.enrolled(), "enrolledOnOrAfter=${fromDate},enrolledOnOrBefore=${toDate}"));
 			cd.setCompositionString("startedArt AND enrolledInTb");
 			cohortDefinitions.put("startedArtAndIsTbPatient", cd);
 		}

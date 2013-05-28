@@ -21,6 +21,7 @@ import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Base implementation for indicator reports
@@ -37,13 +38,16 @@ public abstract class BaseIndicatorReportBuilder extends ReportBuilder {
 		rd.addParameter(new Parameter("endDate", "End Date", Date.class));
 		rd.setName(getName());
 		rd.setDescription(getDescription());
-		rd.addDataSetDefinition(buildDataSet(), ParameterizableUtil.createParameterMappings("startDate=${startDate},endDate=${endDate}"));
+
+		for (DataSetDefinition dsd : buildDataSets()) {
+			rd.addDataSetDefinition(dsd, ParameterizableUtil.createParameterMappings("startDate=${startDate},endDate=${endDate}"));
+		}
 		return rd;
 	}
 
 	/**
-	 * Builds the data set
-	 * @return the data set
+	 * Builds the data sets
+	 * @return the data sets
 	 */
-	protected abstract DataSetDefinition buildDataSet();
+	protected abstract List<DataSetDefinition> buildDataSets();
 }

@@ -38,12 +38,21 @@ public class ArtIndicatorLibrary {
 	private ArtCohortLibrary artCohorts;
 
 	/**
-	 * Number of patients enrolled in HIV care (excluding transfers)
+	 * Number of new patients enrolled in HIV care (excluding transfers)
 	 * @return the indicator
 	 */
 	public CohortIndicator enrolledExcludingTransfers() {
 		Program hivProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.HIV_PROGRAM_UUID);
 		return commonIndicators.enrolledExcludingTransfers(hivProgram);
+	}
+
+	/**
+	 * Number of patients ever enrolled in HIV care (including transfers) up to ${endDate}
+	 * @return the indicator
+	 */
+	public CohortIndicator enrolledCumulative() {
+		Program hivProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.HIV_PROGRAM_UUID);
+		return commonIndicators.enrolledCumulative(hivProgram);
 	}
 
 	/**

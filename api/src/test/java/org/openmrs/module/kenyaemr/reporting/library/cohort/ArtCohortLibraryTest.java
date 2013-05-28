@@ -110,7 +110,7 @@ public class ArtCohortLibraryTest extends BaseModuleContextSensitiveTest {
 	 * @see org.openmrs.module.kenyaemr.reporting.library.cohort.ArtCohortLibrary#enrolledExcludingTransfers()
 	 */
 	@Test
-	public void enrolled() throws Exception {
+	public void enrolledExcludingTransfers() throws Exception {
 		Program hivProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.HIV_PROGRAM_UUID);
 		Concept transferInDate = Dictionary.getConcept(Dictionary.TRANSFER_IN_DATE);
 
