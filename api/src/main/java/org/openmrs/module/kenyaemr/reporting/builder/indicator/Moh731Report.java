@@ -16,14 +16,9 @@ package org.openmrs.module.kenyaemr.reporting.builder.indicator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.Concept;
 import org.openmrs.Program;
-import org.openmrs.api.PatientSetService.TimeModifier;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.MetadataConstants;
-import org.openmrs.module.kenyaemr.calculation.art.*;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.EmrCalculationCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.indicator.HivCareVisitsIndicator;
 import org.openmrs.module.kenyaemr.reporting.dataset.definition.MergingDataSetDefinition;
 import org.openmrs.module.kenyaemr.reporting.library.cohort.ArtCohortLibrary;
@@ -31,8 +26,9 @@ import org.openmrs.module.kenyaemr.reporting.library.cohort.CommonCohortLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.cohort.PwpCohortLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.cohort.TbCohortLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.dimension.CommonDimensionLibrary;
+import org.openmrs.module.kenyaemr.reporting.library.indicator.ArtIndicatorLibrary;
+import org.openmrs.module.kenyaemr.reporting.library.indicator.CommonIndicatorLibrary;
 import org.openmrs.module.reporting.cohort.definition.*;
-import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.SimpleIndicatorDataSetDefinition;
@@ -58,16 +54,22 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 	private CommonCohortLibrary commonCohorts;
 
 	@Autowired
+	private CommonDimensionLibrary commonDimensions;
+
+	@Autowired
+	private CommonIndicatorLibrary commonIndicators;
+
+	@Autowired
 	private ArtCohortLibrary artCohorts;
+
+	@Autowired
+	private ArtIndicatorLibrary artIndicators;
 
 	@Autowired
 	private TbCohortLibrary tbCohorts;
 
 	@Autowired
 	private PwpCohortLibrary pwpCohorts;
-
-	@Autowired
-	private CommonDimensionLibrary commonDimensions;
 
 	/**
 	 * Report specific cohorts and indicators
@@ -213,16 +215,8 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 	private void setupCohortIndicators() {
 		cohortIndicators = new HashMap<String, CohortIndicator>();
 		{
-			CohortIndicator ind = createCohortIndicator("enrolledInCare", "Enrolled in care (no transfers)");
-			ind.setCohortDefinition(map(artCohorts.enrolled(), "onOrAfter=${startDate},onOrBefore=${endDate}"));
-		}
-		{
 			CohortIndicator ind = createCohortIndicator("currentlyInCare", "Currently in care (includes transfers)");
 			ind.setCohortDefinition(map(commonCohorts.hasEncounter(), "onOrAfter=${endDate-90d},onOrBefore=${endDate}"));
-		}
-		{
-			CohortIndicator ind = createCohortIndicator("startingArt", "Starting ART");
-			ind.setCohortDefinition(map(artCohorts.startedArt(), "onOrAfter=${startDate},onOrBefore=${endDate}"));
 		}
 		{
 			CohortIndicator ind = createCohortIndicator("startingArtTbPatient", "Starting ART (TB Patient)");
@@ -343,12 +337,12 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 
 		/////////////// 3.2 (Enrolled in Care) ///////////////
 
-		cohortDsd.addColumn("HV03-08", "Enrolled in care (<1)", map(cohortIndicators.get("enrolledInCare"), "startDate=${startDate},endDate=${endDate}"), "age=<1");
-		cohortDsd.addColumn("HV03-09", "Enrolled in care (<15, Male)", map(cohortIndicators.get("enrolledInCare"), "startDate=${startDate},endDate=${endDate}"), "gender=M|age=<15");
-		cohortDsd.addColumn("HV03-10", "Enrolled in care (<15, Female)", map(cohortIndicators.get("enrolledInCare"), "startDate=${startDate},endDate=${endDate}"), "gender=F|age=<15");
-		cohortDsd.addColumn("HV03-11", "Enrolled in care (15+, Male)", map(cohortIndicators.get("enrolledInCare"), "startDate=${startDate},endDate=${endDate}"), "gender=M|age=15+");
-		cohortDsd.addColumn("HV03-12", "Enrolled in care (15+, Female)", map(cohortIndicators.get("enrolledInCare"), "startDate=${startDate},endDate=${endDate}"), "gender=F|age=15+");
-		cohortDsd.addColumn("HV03-13", "Enrolled in care (Total)", map(cohortIndicators.get("enrolledInCare"), "startDate=${startDate},endDate=${endDate}"), "");
+		cohortDsd.addColumn("HV03-08", "Enrolled in care (<1)", map(artIndicators.enrolledExcludingTransfers(), "startDate=${startDate},endDate=${endDate}"), "age=<1");
+		cohortDsd.addColumn("HV03-09", "Enrolled in care (<15, Male)", map(artIndicators.enrolledExcludingTransfers(), "startDate=${startDate},endDate=${endDate}"), "gender=M|age=<15");
+		cohortDsd.addColumn("HV03-10", "Enrolled in care (<15, Female)", map(artIndicators.enrolledExcludingTransfers(), "startDate=${startDate},endDate=${endDate}"), "gender=F|age=<15");
+		cohortDsd.addColumn("HV03-11", "Enrolled in care (15+, Male)", map(artIndicators.enrolledExcludingTransfers(), "startDate=${startDate},endDate=${endDate}"), "gender=M|age=15+");
+		cohortDsd.addColumn("HV03-12", "Enrolled in care (15+, Female)", map(artIndicators.enrolledExcludingTransfers(), "startDate=${startDate},endDate=${endDate}"), "gender=F|age=15+");
+		cohortDsd.addColumn("HV03-13", "Enrolled in care (Total)", map(artIndicators.enrolledExcludingTransfers(), "startDate=${startDate},endDate=${endDate}"), "");
 
 		/////////////// 3.3 (Currently in Care) ///////////////
 
@@ -361,12 +355,12 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 
 		/////////////// 3.4 (Starting ART) ///////////////
 
-		cohortDsd.addColumn("HV03-20", "Starting ART (<1)", map(cohortIndicators.get("startingArt"), "startDate=${startDate},endDate=${endDate}"), "age=<1");
-		cohortDsd.addColumn("HV03-21", "Starting ART (<15, Male)", map(cohortIndicators.get("startingArt"), "startDate=${startDate},endDate=${endDate}"), "gender=M|age=<15");
-		cohortDsd.addColumn("HV03-22", "Starting ART (<15, Female)", map(cohortIndicators.get("startingArt"), "startDate=${startDate},endDate=${endDate}"), "gender=F|age=<15");
-		cohortDsd.addColumn("HV03-23", "Starting ART (15+, Male)", map(cohortIndicators.get("startingArt"), "startDate=${startDate},endDate=${endDate}"), "gender=M|age=15+");
-		cohortDsd.addColumn("HV03-24", "Starting ART (15+, Female)", map(cohortIndicators.get("startingArt"), "startDate=${startDate},endDate=${endDate}"), "gender=F|age=15+");
-		cohortDsd.addColumn("HV03-25", "Starting ART (Total)", map(cohortIndicators.get("startingArt"), "startDate=${startDate},endDate=${endDate}"), "");
+		cohortDsd.addColumn("HV03-20", "Starting ART (<1)", map(artIndicators.startedArt(), "startDate=${startDate},endDate=${endDate}"), "age=<1");
+		cohortDsd.addColumn("HV03-21", "Starting ART (<15, Male)", map(artIndicators.startedArt(), "startDate=${startDate},endDate=${endDate}"), "gender=M|age=<15");
+		cohortDsd.addColumn("HV03-22", "Starting ART (<15, Female)", map(artIndicators.startedArt(), "startDate=${startDate},endDate=${endDate}"), "gender=F|age=<15");
+		cohortDsd.addColumn("HV03-23", "Starting ART (15+, Male)", map(artIndicators.startedArt(), "startDate=${startDate},endDate=${endDate}"), "gender=M|age=15+");
+		cohortDsd.addColumn("HV03-24", "Starting ART (15+, Female)", map(artIndicators.startedArt(), "startDate=${startDate},endDate=${endDate}"), "gender=F|age=15+");
+		cohortDsd.addColumn("HV03-25", "Starting ART (Total)", map(artIndicators.startedArt(), "startDate=${startDate},endDate=${endDate}"), "");
 		cohortDsd.addColumn("HV03-26", "Starting ART (Pregnant)", map(cohortIndicators.get("startingArtPregnant"), "startDate=${startDate},endDate=${endDate}"), "");
 		cohortDsd.addColumn("HV03-27", "Starting ART (TB Patient)", map(cohortIndicators.get("startingArtTbPatient"), "startDate=${startDate},endDate=${endDate}"), "");
 

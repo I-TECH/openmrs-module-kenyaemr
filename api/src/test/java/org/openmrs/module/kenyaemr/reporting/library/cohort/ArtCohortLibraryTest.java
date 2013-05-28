@@ -107,7 +107,7 @@ public class ArtCohortLibraryTest extends BaseModuleContextSensitiveTest {
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.reporting.library.cohort.ArtCohortLibrary#enrolled()
+	 * @see org.openmrs.module.kenyaemr.reporting.library.cohort.ArtCohortLibrary#enrolledExcludingTransfers()
 	 */
 	@Test
 	public void enrolled() throws Exception {
@@ -124,7 +124,7 @@ public class ArtCohortLibraryTest extends BaseModuleContextSensitiveTest {
 		// Enroll #8 on July 1st
 		TestUtils.enrollInProgram(Context.getPatientService().getPatient(8), hivProgram, TestUtils.date(2012, 7, 1));
 
-		CohortDefinition cd = artCohortLibrary.enrolled();
+		CohortDefinition cd = artCohortLibrary.enrolledExcludingTransfers();
 		context.addParameterValue("onOrAfter", TestUtils.date(2012, 6, 1));
 		context.addParameterValue("onOrBefore", TestUtils.date(2012, 6, 30));
 		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);

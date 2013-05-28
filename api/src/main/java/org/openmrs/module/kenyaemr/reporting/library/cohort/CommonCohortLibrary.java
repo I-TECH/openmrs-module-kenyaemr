@@ -116,13 +116,13 @@ public class CommonCohortLibrary {
 	}
 
 	/**
-	 * Patients who are enrolled on the given program between ${enrolledOnOrAfter} and ${enrolledOnOrBefore}
+	 * Patients who are enrolledExcludingTransfers on the given program between ${enrolledOnOrAfter} and ${enrolledOnOrBefore}
 	 * @param program the program
 	 * @return the cohort definition
 	 */
 	public CohortDefinition enrolledInProgram(Program program) {
 		ProgramEnrollmentCohortDefinition cd = new ProgramEnrollmentCohortDefinition();
-		cd.setName("enrolled in program between dates");
+		cd.setName("enrolledExcludingTransfers in program between dates");
 		cd.addParameter(new Parameter("enrolledOnOrAfter", "After Date", Date.class));
 		cd.addParameter(new Parameter("enrolledOnOrBefore", "Before Date", Date.class));
 		cd.setPrograms(Collections.singletonList(program));
@@ -164,18 +164,18 @@ public class CommonCohortLibrary {
 	}
 
 	/**
-	 * Patients who are enrolled on the given program between ${fromDate} and ${toDate} and are not transfer ins
+	 * Patients who are enrolled on the given program (excluding transfers) between ${fromDate} and ${toDate}
 	 * @param program the program
 	 * @return the cohort definition
 	 */
-	public CohortDefinition enrolledButNotTransferIn(Program program) {
+	public CohortDefinition enrolledExcludingTransfers(Program program) {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
-		cd.setName("enrolled excluding transfers in program between dates");
+		cd.setName("enrolledExcludingTransfers excluding transfers in program between dates");
 		cd.addParameter(new Parameter("onOrAfter", "From Date", Date.class));
 		cd.addParameter(new Parameter("onOrBefore", "To Date", Date.class));
-		cd.addSearch("enrolled", map(enrolledInProgram(program), "enrolledOnOrAfter=${onOrAfter},enrolledOnOrBefore=${onOrBefore}"));
+		cd.addSearch("enrolledExcludingTransfers", map(enrolledInProgram(program), "enrolledOnOrAfter=${onOrAfter},enrolledOnOrBefore=${onOrBefore}"));
 		cd.addSearch("transferIn", map(transferredIn(), "onOrBefore=${onOrBefore}"));
-		cd.setCompositionString("enrolled AND NOT transferIn");
+		cd.setCompositionString("enrolledExcludingTransfers AND NOT transferIn");
 		return cd;
 	}
 }

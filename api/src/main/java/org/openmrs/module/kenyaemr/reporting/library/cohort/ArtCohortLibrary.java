@@ -37,7 +37,7 @@ import java.util.Date;
 import static org.openmrs.module.kenyaemr.reporting.EmrReportingUtils.map;
 
 /**
- * Library of ART related definitions
+ * Library of ART related cohort definitions
  */
 @Component
 public class ArtCohortLibrary {
@@ -129,9 +129,9 @@ public class ArtCohortLibrary {
 	 * Patients enrolled in HIV care (excluding transfers) between ${onOrAfter} and ${onOrBefore}
 	 * @return the cohort definition
 	 */
-	public CohortDefinition enrolled() {
+	public CohortDefinition enrolledExcludingTransfers() {
 		Program hivProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.HIV_PROGRAM_UUID);
-		CohortDefinition cd = commonCohorts.enrolledButNotTransferIn(hivProgram);
+		CohortDefinition cd = commonCohorts.enrolledExcludingTransfers(hivProgram);
 		return cd;
 	}
 

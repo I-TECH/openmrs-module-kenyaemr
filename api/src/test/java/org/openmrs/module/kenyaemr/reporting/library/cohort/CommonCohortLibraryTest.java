@@ -224,7 +224,7 @@ public class CommonCohortLibraryTest extends BaseModuleContextSensitiveTest {
 	}
 
 	/**
-	 * @see CommonCohortLibrary#enrolledButNotTransferIn(org.openmrs.Program)
+	 * @see CommonCohortLibrary#enrolledExcludingTransfers(org.openmrs.Program)
 	 */
 	@Test
 	public void enrolledButNotTransferIn() throws Exception {
@@ -241,7 +241,7 @@ public class CommonCohortLibraryTest extends BaseModuleContextSensitiveTest {
 		// Enroll #8 on July 1st
 		TestUtils.enrollInProgram(Context.getPatientService().getPatient(8), hivProgram, TestUtils.date(2012, 7, 1));
 
-		CohortDefinition cd = commonCohortLibrary.enrolledButNotTransferIn(hivProgram);
+		CohortDefinition cd = commonCohortLibrary.enrolledExcludingTransfers(hivProgram);
 		context.addParameterValue("onOrAfter", TestUtils.date(2012, 6, 1));
 		context.addParameterValue("onOrBefore", TestUtils.date(2012, 6, 30));
 		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);

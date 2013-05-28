@@ -16,30 +16,17 @@ package org.openmrs.module.kenyaemr.reporting.builder.indicator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.Concept;
-import org.openmrs.EncounterType;
-import org.openmrs.Program;
-import org.openmrs.api.PatientSetService.TimeModifier;
-import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.MetadataConstants;
-import org.openmrs.module.kenyaemr.calculation.art.*;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.EmrCalculationCohortDefinition;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.EmrDateCalculationCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.dataset.definition.MergingDataSetDefinition;
-import org.openmrs.module.kenyaemr.reporting.indicator.HivCareVisitsIndicator;
 import org.openmrs.module.kenyaemr.reporting.library.cohort.ArtCohortLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.cohort.CommonCohortLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.dimension.CommonDimensionLibrary;
+import org.openmrs.module.kenyaemr.reporting.library.indicator.ArtIndicatorLibrary;
+import org.openmrs.module.kenyaemr.reporting.library.indicator.CommonIndicatorLibrary;
 import org.openmrs.module.reporting.cohort.definition.*;
-import org.openmrs.module.reporting.common.SetComparator;
-import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
-import org.openmrs.module.reporting.dataset.definition.SimpleIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
-import org.openmrs.module.reporting.indicator.Indicator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -59,10 +46,16 @@ public class Moh711Report extends BaseIndicatorReportBuilder {
 	private CommonCohortLibrary commonCohorts;
 
 	@Autowired
-	private ArtCohortLibrary artCohorts;
+	private CommonIndicatorLibrary commonIndicators;
 
 	@Autowired
 	private CommonDimensionLibrary commonDimensions;
+
+	@Autowired
+	private ArtCohortLibrary artCohorts;
+
+	@Autowired
+	private ArtIndicatorLibrary artIndicators;
 
 	/**
 	 * Report specific cohorts and indicators
@@ -118,10 +111,6 @@ public class Moh711Report extends BaseIndicatorReportBuilder {
 
 	private void setupCohortIndicators() {
 		cohortIndicators = new HashMap<String, CohortIndicator>();
-		{
-			CohortIndicator ind = createCohortIndicator("enrolledInCare", "Number of new patients enrolled");
-			ind.setCohortDefinition(map(artCohorts.enrolled(), "onOrAfter=${startDate},onOrBefore=${endDate}"));
-		}
 	}
 
 	/**
@@ -143,24 +132,24 @@ public class Moh711Report extends BaseIndicatorReportBuilder {
 		mergedDsd.addDataSetDefinition(cohortDsd);
 		mergedDsd.setMergeOrder(MergingDataSetDefinition.MergeOrder.NAME);
 
-		/////////////// K1 (Number of new patients enrolled) ///////////////
+		/////////////// K1 (Number of new patients enrolled excluding transfers) ///////////////
 
-		cohortDsd.addColumn("K1-7-1", "New enrollments - sub total (0-14 years, Female)", map(cohortIndicators.get("enrolledInCare"), "startDate=${startDate},endDate=${endDate}"), "gender=F|age=<15");
-		cohortDsd.addColumn("K1-7-2", "New enrollments - sub total (0-14 years, Male)", map(cohortIndicators.get("enrolledInCare"), "startDate=${startDate},endDate=${endDate}"), "gender=M|age=<15");
-		cohortDsd.addColumn("K1-7-3", "New enrollments - sub total (>14 years, Female)", map(cohortIndicators.get("enrolledInCare"), "startDate=${startDate},endDate=${endDate}"), "gender=F|age=15+");
-		cohortDsd.addColumn("K1-7-4", "New enrollments - sub total (>14 years, Male)", map(cohortIndicators.get("enrolledInCare"), "startDate=${startDate},endDate=${endDate}"), "gender=M|age=15+");
-		cohortDsd.addColumn("K1-7-5", "New enrollments - sub total (Totals, Female)", map(cohortIndicators.get("enrolledInCare"), "startDate=${startDate},endDate=${endDate}"), "gender=F");
-		cohortDsd.addColumn("K1-7-6", "New enrollments - sub total (Totals, Male)", map(cohortIndicators.get("enrolledInCare"), "startDate=${startDate},endDate=${endDate}"), "gender=M");
-		cohortDsd.addColumn("K1-7-7", "New enrollments - sub total (Grand Total)", map(cohortIndicators.get("enrolledInCare"), "startDate=${startDate},endDate=${endDate}"), "");
+		cohortDsd.addColumn("K1-7-1", "New enrollments - sub total (0-14 years, Female)", map(artIndicators.enrolledExcludingTransfers(), "startDate=${startDate},endDate=${endDate}"), "gender=F|age=<15");
+		cohortDsd.addColumn("K1-7-2", "New enrollments - sub total (0-14 years, Male)", map(artIndicators.enrolledExcludingTransfers(), "startDate=${startDate},endDate=${endDate}"), "gender=M|age=<15");
+		cohortDsd.addColumn("K1-7-3", "New enrollments - sub total (>14 years, Female)", map(artIndicators.enrolledExcludingTransfers(), "startDate=${startDate},endDate=${endDate}"), "gender=F|age=15+");
+		cohortDsd.addColumn("K1-7-4", "New enrollments - sub total (>14 years, Male)", map(artIndicators.enrolledExcludingTransfers(), "startDate=${startDate},endDate=${endDate}"), "gender=M|age=15+");
+		cohortDsd.addColumn("K1-7-5", "New enrollments - sub total (Totals, Female)", map(artIndicators.enrolledExcludingTransfers(), "startDate=${startDate},endDate=${endDate}"), "gender=F");
+		cohortDsd.addColumn("K1-7-6", "New enrollments - sub total (Totals, Male)", map(artIndicators.enrolledExcludingTransfers(), "startDate=${startDate},endDate=${endDate}"), "gender=M");
+		cohortDsd.addColumn("K1-7-7", "New enrollments - sub total (Grand Total)", map(artIndicators.enrolledExcludingTransfers(), "startDate=${startDate},endDate=${endDate}"), "");
+
+		cohortDsd.addColumn("K3-5-1", "Starting ARVs - sub total (0-14 years, Female)", map(artIndicators.startedArt(), "startDate=${startDate},endDate=${endDate}"), "gender=F|age=<15");
+		cohortDsd.addColumn("K3-5-2", "Starting ARVs - sub total (0-14 years, Male)", map(artIndicators.startedArt(), "startDate=${startDate},endDate=${endDate}"), "gender=M|age=<15");
+		cohortDsd.addColumn("K3-5-3", "Starting ARVs - sub total (>14 years, Female)", map(artIndicators.startedArt(), "startDate=${startDate},endDate=${endDate}"), "gender=F|age=15+");
+		cohortDsd.addColumn("K3-5-4", "Starting ARVs - sub total (>14 years, Male)", map(artIndicators.startedArt(), "startDate=${startDate},endDate=${endDate}"), "gender=M|age=15+");
+		cohortDsd.addColumn("K3-5-5", "Starting ARVs - sub total (Totals, Female)", map(artIndicators.startedArt(), "startDate=${startDate},endDate=${endDate}"), "gender=F");
+		cohortDsd.addColumn("K3-5-6", "Starting ARVs - sub total (Totals, Male)", map(artIndicators.startedArt(), "startDate=${startDate},endDate=${endDate}"), "gender=M");
+		cohortDsd.addColumn("K3-5-7", "Starting ARVs - sub total (Grand Total)", map(artIndicators.startedArt(), "startDate=${startDate},endDate=${endDate}"), "");
 
 		return mergedDsd;
-	}
-
-	protected CohortIndicator createCohortIndicator(String id, String description) {
-		CohortIndicator ind = new CohortIndicator(description);
-		ind.addParameter(new Parameter("startDate", "Start Date", Date.class));
-		ind.addParameter(new Parameter("endDate", "End Date", Date.class));
-		cohortIndicators.put(id, ind);
-		return ind;
 	}
 }
