@@ -371,7 +371,7 @@
 	<tr>
 		<td>
 			<fielset>
-				<legend>Transfer In Information (Enter only if patient ai a Transfer In)</legend>
+				<legend>Transfer In Information (Enter only if patient is a Transfer In)</legend>
 					<table class="tb1" border="0" width="100%" id="transferInDetails">
 						<tr>
 							<td>Date Transferred In</td>
