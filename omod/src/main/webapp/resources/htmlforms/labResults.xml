@@ -231,7 +231,7 @@
 									<td valign="top">11.</td>
 									<td valign="top">Results Sputum</td>
 									<td colspan="2" valign="top">
-										<table border = "0">
+										<table border = "0" width="80%">
 											<tr>
 												<td>Type:</td>
 												<td>
@@ -245,7 +245,7 @@
 												<td><obs conceptId="307AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="sputumResults" answerConceptIds="159985AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Scanty,+,++,+++,Negative"/></td>
 												<td>Quantity:</td>
 												<td><obs conceptId="160023AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="quantity" /></td>
-												<td width="32%"><div id="hpfValues" class="div"></div></td>
+												<td  width="15%"><div id="hpfValues" class="div"></div></td>
 											</tr>
 										</table>		
 									</td>
@@ -256,15 +256,15 @@
 									<td valign="top">12.</td>
 									<td valign="top">Culture/Sensitivity Results</td>
 									<td colspan="2">
-										<table border="0">
+										<table border="0" width="80%">
 											<tr>
-												<td width="17%">Bacterial Colonies growth</td>
+												<td>Bacterial Colonies growth</td>
 												<td><obs conceptId="159982AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Growth,No growth" id="growth_no_growth" dateLabel="&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;"/></td>
 											</tr>	
 											<tr>
-												<td width="17%">Number of Colonies</td>
+												<td>Number of Colonies</td>
 												<td><obs conceptId="159952AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  /></td>
-												<td width="35%"></td>
+												<td width="30%"></td>
 											</tr>
 										</table>		
 									</td>
