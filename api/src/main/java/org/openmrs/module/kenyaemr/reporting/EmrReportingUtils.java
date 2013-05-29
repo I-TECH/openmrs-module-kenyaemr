@@ -1,10 +1,13 @@
 package org.openmrs.module.kenyaemr.reporting;
 
+import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameterizable;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
+import org.openmrs.module.reporting.indicator.CohortIndicator;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -61,5 +64,21 @@ public class EmrReportingUtils {
 			paramMap.put(param, value);
 		}
 		return new Mapped<T>(parameterizable, paramMap);
+	}
+
+	/**
+	 * Adds a row to a dataset based on an indicator and a list of column parameters
+	 * @param cohortDsd the dataset
+	 * @param baseName the base columm name
+	 * @param baseLabel the base column label
+	 * @param indicator the indicator
+	 * @param columns the column parameters
+	 */
+	public static void addRow(CohortIndicatorDataSetDefinition cohortDsd, String baseName, String baseLabel, Mapped<CohortIndicator> indicator, List<ColumnParameters> columns) {
+		for (ColumnParameters column : columns) {
+			String name = baseName + "-" + column.getName();
+			String label = baseLabel + " (" + column.getLabel() + ")";
+			cohortDsd.addColumn(name, label, indicator, column.getDimensions());
+		}
 	}
 }

@@ -15,6 +15,7 @@
 package org.openmrs.module.kenyaemr.reporting.library.cohort;
 
 import org.openmrs.EncounterType;
+import org.openmrs.Program;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -29,6 +30,15 @@ public class TbCohortLibrary {
 
 	@Autowired
 	private CommonCohortLibrary commonCohorts;
+
+	/**
+	 * Patients who were enrolled in TB program (including transfers) between ${onOrAfter} and ${onOrBefore}
+	 * @return the cohort definition
+	 */
+	public CohortDefinition enrolled() {
+		Program tbProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.TB_PROGRAM_UUID);
+		return commonCohorts.enrolled(tbProgram);
+	}
 
 	/**
 	 * Patients who were screened for TB between ${onOrAfter} and ${onOrBefore}

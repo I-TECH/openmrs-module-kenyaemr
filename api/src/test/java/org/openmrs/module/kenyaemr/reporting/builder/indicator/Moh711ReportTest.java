@@ -14,6 +14,7 @@
 
 package org.openmrs.module.kenyaemr.reporting.builder.indicator;
 
+import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Program;
@@ -21,7 +22,9 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.kenyaemr.test.ReportingTestUtils;
 import org.openmrs.module.kenyaemr.test.TestUtils;
+import org.openmrs.module.reporting.dataset.MapDataSet;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.indicator.IndicatorResult;
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
@@ -48,16 +51,24 @@ public class Moh711ReportTest extends BaseModuleContextSensitiveTest {
 	public void test() throws Exception {
 		Program hivProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.HIV_PROGRAM_UUID);
 
-		// Enroll patient #6 in the HIV program
-		TestUtils.enrollInProgram(Context.getPatientService().getPatient(6), hivProgram, TestUtils.date(2012, 1, 15), null);
+		// Enroll #6 in the HIV program on June 15th
+		TestUtils.enrollInProgram(Context.getPatientService().getPatient(6), hivProgram, TestUtils.date(2012, 6, 15), null);
 
 		ReportDefinition rd = report.getReportDefinition();
 
-		// Run report on all patients for Jan 2012
-		EvaluationContext context = ReportingTestUtils.reportingContext(Arrays.asList(2, 6, 7, 8, 999), TestUtils.date(2012, 1, 1), TestUtils.date(2012, 1, 31));
+		// Run report on all patients for June 2012
+		EvaluationContext context = ReportingTestUtils.reportingContext(Arrays.asList(2, 6, 7, 8, 999), TestUtils.date(2012, 6, 1), TestUtils.date(2012, 6, 30));
 
 		ReportData data = Context.getService(ReportDefinitionService.class).evaluate(rd, context);
 
 		ReportingTestUtils.printReport(data);
+
+		Assert.assertEquals(2, data.getDataSets().size());
+		MapDataSet dataSet = (MapDataSet) data.getDataSets().get("K: ART");
+		Assert.assertNotNull(dataSet);
+
+		Assert.assertEquals(1, ((IndicatorResult) dataSet.getColumnValue(1, "K1-7-MP")).getValue().intValue());
+		Assert.assertEquals(1, ((IndicatorResult) dataSet.getColumnValue(1, "K1-7-M")).getValue().intValue());
+		Assert.assertEquals(1, ((IndicatorResult) dataSet.getColumnValue(1, "K1-7-T")).getValue().intValue());
 	}
 }
