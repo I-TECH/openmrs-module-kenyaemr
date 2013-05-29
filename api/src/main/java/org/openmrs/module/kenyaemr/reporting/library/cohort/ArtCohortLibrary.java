@@ -46,14 +46,92 @@ public class ArtCohortLibrary {
 	private CommonCohortLibrary commonCohorts;
 
 	/**
-	 * Patients who started ART between ${onOrAfter} and ${onOrBefore}
+	 * Patients referred from the given entry point onto the HIV program
+	 * @param entryPoints the entry point concepts
 	 * @return the cohort definition
 	 */
-	public CohortDefinition startedArt() {
-		EmrDateCalculationCohortDefinition cd = new EmrDateCalculationCohortDefinition(new InitialArtStartDateCalculation());
-		cd.setName("started ART between dates");
+	public CohortDefinition referredFrom(Concept... entryPoints) {
+		EncounterType hivEnrollEncType = Context.getEncounterService().getEncounterTypeByUuid(MetadataConstants.HIV_ENROLLMENT_ENCOUNTER_TYPE_UUID);
+		Concept methodOfEnrollment = Dictionary.getConcept(Dictionary.METHOD_OF_ENROLLMENT);
+
+		CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
+		cd.setName("entered care between dates");
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.setTimeModifier(PatientSetService.TimeModifier.ANY);
+		cd.setQuestion(methodOfEnrollment);
+		cd.setValueList(Arrays.asList(entryPoints));
+		cd.setOperator(SetComparator.IN);
+		cd.setEncounterTypeList(Collections.singletonList(hivEnrollEncType));
+		return cd;
+	}
+
+	/**
+	 * Patients referred from the given entry point onto the HIV program
+	 * @param entryPoints the entry point concepts
+	 * @return the cohort definition
+	 */
+	public CohortDefinition referredNotFrom(Concept... entryPoints) {
+		EncounterType hivEnrollEncType = Context.getEncounterService().getEncounterTypeByUuid(MetadataConstants.HIV_ENROLLMENT_ENCOUNTER_TYPE_UUID);
+		Concept methodOfEnrollment = Dictionary.getConcept(Dictionary.METHOD_OF_ENROLLMENT);
+
+		CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
+		cd.setName("entered care between dates");
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.setTimeModifier(PatientSetService.TimeModifier.ANY);
+		cd.setQuestion(methodOfEnrollment);
+		cd.setValueList(Arrays.asList(entryPoints));
+		cd.setOperator(SetComparator.NOT_IN);
+		cd.setEncounterTypeList(Collections.singletonList(hivEnrollEncType));
+		return cd;
+	}
+
+	/**
+	 * Patients who were enrolled in HIV care (including transfers) between ${onOrAfter} and ${onOrBefore}
+	 * @return the cohort definition
+	 */
+	public CohortDefinition enrolled() {
+		Program hivProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.HIV_PROGRAM_UUID);
+		return commonCohorts.enrolled(hivProgram);
+	}
+
+	/**
+	 * Patients who were enrolled in HIV care (excluding transfers) between ${onOrAfter} and ${onOrBefore}
+	 * @return the cohort definition
+	 */
+	public CohortDefinition enrolledExcludingTransfers() {
+		Program hivProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.HIV_PROGRAM_UUID);
+		return commonCohorts.enrolledExcludingTransfers(hivProgram);
+	}
+
+	/**
+	 * Patients who were enrolled in HIV care (excluding transfers) from the given entry points between ${onOrAfter} and ${onOrBefore}
+	 * @return the cohort definition
+	 */
+	public CohortDefinition enrolledExcludingTransfersAndReferredFrom(Concept... entryPoints) {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("enrolled excluding transfers in HIV care from entry points between dates");
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("enrolledExcludingTransfers", map(enrolledExcludingTransfers(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("referredFrom", map(referredFrom(entryPoints), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("enrolledExcludingTransfers AND referredFrom");
+		return cd;
+	}
+
+	/**
+	 * Patients who were enrolled in HIV care (excluding transfers) not from the given entry points between ${onOrAfter} and ${onOrBefore}
+	 * @return the cohort definition
+	 */
+	public CohortDefinition enrolledExcludingTransfersAndNotReferredFrom(Concept... entryPoints) {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("enrolled excluding transfers in HIV care not from entry points between dates");
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("enrolledExcludingTransfers", map(enrolledExcludingTransfers(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("referredNotFrom", map(referredNotFrom(entryPoints), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("enrolledExcludingTransfers AND referredNotFrom");
 		return cd;
 	}
 
@@ -68,6 +146,70 @@ public class ArtCohortLibrary {
 	}
 
 	/**
+	 * Patients with given WHO stage when started ART
+	 * @return the cohort definition
+	 */
+	public CohortDefinition whoStageAtArtStart(int stage) {
+		EmrCalculationCohortDefinition cd = new EmrCalculationCohortDefinition(new WhoStageAtArtStartCalculation());
+		cd.setName("who stage " + stage + " at start of ART");
+		cd.setWithResult(stage);
+		return cd;
+	}
+
+	/**
+	 * Patients who started ART between ${onOrAfter} and ${onOrBefore}
+	 * @return the cohort definition
+	 */
+	public CohortDefinition startedArt() {
+		EmrDateCalculationCohortDefinition cd = new EmrDateCalculationCohortDefinition(new InitialArtStartDateCalculation());
+		cd.setName("started ART between dates");
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		return cd;
+	}
+
+	/**
+	 * Patients who started ART while pregnant between ${onOrAfter} and ${onOrBefore}
+	 * @return the cohort definition
+	 */
+	public CohortDefinition startedArtWhilePregnant() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("started ART while pregnant between dates");
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("startedArt", map(startedArt(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("pregnantAtArtStart", map(pregnantAtArtStart()));
+		cd.setCompositionString("startedArt AND pregnantAtArtStart");
+		return cd;
+	}
+
+	/**
+	 * Patients who started ART with the given WHO stage between ${onOrAfter} and ${onOrBefore}
+	 * @return the cohort definition
+	 */
+	public CohortDefinition startedArtWithWhoStage(int stage) {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("started ART with WHO stage between dates");
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("startedArt", map(startedArt(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("withWhoStage", map(whoStageAtArtStart(stage)));
+		cd.setCompositionString("startedArt AND withWhoStage");
+		return cd;
+	}
+
+	/**
+	 * Patients who are eligible for ART on ${onDate}
+	 * @return the cohort definition
+	 */
+	public CohortDefinition eligibleForArt() {
+		EmrCalculationCohortDefinition cd = new EmrCalculationCohortDefinition(new EligibleForArtCalculation());
+		cd.setName("eligible for ART on date");
+		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
+		return cd;
+	}
+
+	/**
 	 * Patients who are on ART on ${onDate}
 	 * @return the cohort definition
 	 */
@@ -75,6 +217,20 @@ public class ArtCohortLibrary {
 		EmrCalculationCohortDefinition cd = new EmrCalculationCohortDefinition(new OnArtCalculation());
 		cd.setName("on ART on date");
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
+		return cd;
+	}
+
+	/**
+	 * Patients who are on ART and pregnant on ${onDate}
+	 * @return the cohort definition
+	 */
+	public CohortDefinition onArtAndPregnant() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("on ART and pregnant on date");
+		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
+		cd.addSearch("onArt", map(onArt(), "onDate=${onDate}"));
+		cd.addSearch("pregnant", map(commonCohorts.pregnant(), "onDate=${onDate}"));
+		cd.setCompositionString("onArt AND pregnant");
 		return cd;
 	}
 
@@ -122,45 +278,6 @@ public class ArtCohortLibrary {
 		cd.addSearch("startedArt12MonthsAgo", map(startedArt(), "onOrAfter=${onDate-13m},onOrBefore=${onDate-12m}"));
 		cd.addSearch("transferredOut", map(commonCohorts.transferredOut(), "onOrAfter=${onDate-13m}"));
 		cd.setCompositionString("startedArt12MonthsAgo AND NOT transferredOut");
-		return cd;
-	}
-
-	/**
-	 * Patients who were enrolled in HIV care (including transfers) between ${onOrAfter} and ${onOrBefore}
-	 * @return the cohort definition
-	 */
-	public CohortDefinition enrolled() {
-		Program hivProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.HIV_PROGRAM_UUID);
-		return commonCohorts.enrolled(hivProgram);
-	}
-
-	/**
-	 * Patients who were enrolled in HIV care (excluding transfers) between ${onOrAfter} and ${onOrBefore}
-	 * @return the cohort definition
-	 */
-	public CohortDefinition enrolledExcludingTransfers() {
-		Program hivProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.HIV_PROGRAM_UUID);
-		return commonCohorts.enrolledExcludingTransfers(hivProgram);
-	}
-
-	/**
-	 * Patients referred from the given entry point onto the HIV program
-	 * @param entryPoints the entry point concepts
-	 * @return the cohort definition
-	 */
-	public CohortDefinition referredFrom(Concept... entryPoints) {
-		EncounterType hivEnrollEncType = Context.getEncounterService().getEncounterTypeByUuid(MetadataConstants.HIV_ENROLLMENT_ENCOUNTER_TYPE_UUID);
-		Concept methodOfEnrollment = Dictionary.getConcept(Dictionary.METHOD_OF_ENROLLMENT);
-
-		CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
-		cd.setName("entered care between dates");
-		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
-		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-		cd.setTimeModifier(PatientSetService.TimeModifier.ANY);
-		cd.setQuestion(methodOfEnrollment);
-		cd.setValueList(Arrays.asList(entryPoints));
-		cd.setOperator(SetComparator.IN);
-		cd.setEncounterTypeList(Collections.singletonList(hivEnrollEncType));
 		return cd;
 	}
 }

@@ -31,6 +31,9 @@ public class EmrCalculationCohortDefinition extends BaseCohortDefinition {
 	@ConfigurationProperty(group = "calculation")
 	private Date onDate;
 
+	@ConfigurationProperty(group = "calculation")
+	private Object withResult;
+
 	public EmrCalculationCohortDefinition() {
 	}
 
@@ -73,5 +76,21 @@ public class EmrCalculationCohortDefinition extends BaseCohortDefinition {
 	 */
 	public void setOnDate(Date onDate) {
 		this.onDate = onDate;
+	}
+
+	/**
+	 * Gets the result value required for inclusion in the cohort
+	 * @return the result value
+	 */
+	public Object getWithResult() {
+		return withResult;
+	}
+
+	/**
+	 * Sets the result value required for inclusion in the cohort
+	 * @param withResult the result value
+	 */
+	public void setWithResult(Object withResult) {
+		this.withResult = withResult;
 	}
 }

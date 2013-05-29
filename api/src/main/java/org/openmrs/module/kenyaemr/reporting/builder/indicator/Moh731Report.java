@@ -134,16 +134,6 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 
 	private void setupCohortDefinitions() {
 		cohortDefinitions = new HashMap<String, CohortDefinition>();
-		{ // Started ART and is pregnant
-			CompositionCohortDefinition cd = new CompositionCohortDefinition();
-			cd.addParameter(new Parameter("fromDate", "From Date", Date.class));
-			cd.addParameter(new Parameter("toDate", "To Date", Date.class));
-
-			cd.addSearch("startedArt", map(artCohorts.startedArt(), "onOrAfter=${startDate},onOrBefore=${endDate}"));
-			cd.addSearch("pregnantAtArtStart", map(artCohorts.pregnantAtArtStart()));
-			cd.setCompositionString("startedArt AND pregnantAtArtStart");
-			cohortDefinitions.put("startedArtAndIsPregnant", cd);
-		}
 		{ // Started ART and is TB patient
 			CompositionCohortDefinition cd = new CompositionCohortDefinition();
 			cd.addParameter(new Parameter("fromDate", "From Date", Date.class));
@@ -219,10 +209,6 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 		{
 			CohortIndicator ind = createCohortIndicator("startingArtTbPatient", "Starting ART (TB Patient)");
 			ind.setCohortDefinition(map(cohortDefinitions.get("startedArtAndIsTbPatient"), "fromDate=${startDate},toDate=${endDate}"));
-		}
-		{
-			CohortIndicator ind = createCohortIndicator("startingArtPregnant", "Starting ART (Pregnant)");
-			ind.setCohortDefinition(map(cohortDefinitions.get("startedArtAndIsPregnant"), "fromDate=${startDate},toDate=${endDate}"));
 		}
 		{
 			CohortIndicator ind = createCohortIndicator("revisitsArt", "Revisits ART");
@@ -359,7 +345,7 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 		cohortDsd.addColumn("HV03-23", "Starting ART (15+, Male)", map(artIndicators.startedArt(), "startDate=${startDate},endDate=${endDate}"), "gender=M|age=15+");
 		cohortDsd.addColumn("HV03-24", "Starting ART (15+, Female)", map(artIndicators.startedArt(), "startDate=${startDate},endDate=${endDate}"), "gender=F|age=15+");
 		cohortDsd.addColumn("HV03-25", "Starting ART (Total)", map(artIndicators.startedArt(), "startDate=${startDate},endDate=${endDate}"), "");
-		cohortDsd.addColumn("HV03-26", "Starting ART (Pregnant)", map(cohortIndicators.get("startingArtPregnant"), "startDate=${startDate},endDate=${endDate}"), "");
+		cohortDsd.addColumn("HV03-26", "Starting ART (Pregnant)", map(artIndicators.startedArtWhilePregnant(), "startDate=${startDate},endDate=${endDate}"), "");
 		cohortDsd.addColumn("HV03-27", "Starting ART (TB Patient)", map(cohortIndicators.get("startingArtTbPatient"), "startDate=${startDate},endDate=${endDate}"), "");
 
 		/////////////// 3.5 (Revisits ART) ///////////////

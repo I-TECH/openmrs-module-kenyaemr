@@ -14,6 +14,7 @@
 
 package org.openmrs.module.kenyaemr.reporting.library.indicator;
 
+import org.openmrs.Concept;
 import org.openmrs.Program;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.MetadataConstants;
@@ -56,10 +57,68 @@ public class ArtIndicatorLibrary {
 	}
 
 	/**
+	 * Number of patients who were enrolled (excluding transfers) after referral from the given entry points
+	 * @return the indicator
+	 */
+	public CohortIndicator enrolledExcludingTransfersAndReferredFrom(Concept... entryPoints) {
+		return createCohortIndicator("Number of newly enrolled patients referred from",
+				map(artCohorts.enrolledExcludingTransfersAndReferredFrom(entryPoints), "onOrAfter=${startDate},onOrBefore=${endDate}"));
+	}
+
+	/**
+	 * Number of patients who were enrolled (excluding transfers) after referral from services other than the given entry points
+	 * @return the indicator
+	 */
+	public CohortIndicator enrolledExcludingTransfersAndNotReferredFrom(Concept... entryPoints) {
+		return createCohortIndicator("Number of newly enrolled patients referred from",
+				map(artCohorts.enrolledExcludingTransfersAndNotReferredFrom(entryPoints), "onOrAfter=${startDate},onOrBefore=${endDate}"));
+	}
+
+	/**
 	 * Number of patients who started ART
 	 * @return the indicator
 	 */
 	public CohortIndicator startedArt() {
 		return createCohortIndicator("Number of patients who started ART", map(artCohorts.startedArt(), "onOrAfter=${startDate},onOrBefore=${endDate}"));
+	}
+
+	/**
+	 * Number of patients who started ART while pregnant
+	 * @return the indicator
+	 */
+	public CohortIndicator startedArtWhilePregnant() {
+		return createCohortIndicator("Number of patients who started ART while pregnant", map(artCohorts.startedArtWhilePregnant(), "onOrAfter=${startDate},onOrBefore=${endDate}"));
+	}
+
+	/**
+	 * Number of patients who started ART with given WHO stage
+	 * @return the indicator
+	 */
+	public CohortIndicator startedArtWithWhoStage(int stage) {
+		return createCohortIndicator("Number of patients who started ART with WHO stage " + stage, map(artCohorts.startedArtWithWhoStage(stage), "onOrAfter=${startDate},onOrBefore=${endDate}"));
+	}
+
+	/**
+	 * Number of patients who are eligible for ART
+	 * @return the indicator
+	 */
+	public CohortIndicator eligibleForArt() {
+		return createCohortIndicator("Number of patients eligible for ART", map(artCohorts.eligibleForArt(), "onDate=${endDate}"));
+	}
+
+	/**
+	 * Number of patients who are currently on ART
+	 * @return the indicator
+	 */
+	public CohortIndicator onArt() {
+		return createCohortIndicator("Number of patients currently on ART", map(artCohorts.onArt(), "onDate=${endDate}"));
+	}
+
+	/**
+	 * Number of patients who are currently on ART and pregnant
+	 * @return the indicator
+	 */
+	public CohortIndicator onArtAndPregnant() {
+		return createCohortIndicator("Number of patients currently on ART and pregnant", map(artCohorts.onArtAndPregnant(), "onDate=${endDate}"));
 	}
 }

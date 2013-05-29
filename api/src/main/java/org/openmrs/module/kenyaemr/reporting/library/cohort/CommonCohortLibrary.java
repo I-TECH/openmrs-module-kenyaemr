@@ -19,7 +19,9 @@ import org.openmrs.EncounterType;
 import org.openmrs.Program;
 import org.openmrs.api.PatientSetService;
 import org.openmrs.module.kenyaemr.Dictionary;
+import org.openmrs.module.kenyaemr.calculation.art.OnAlternateFirstLineArtCalculation;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.DateObsValueBetweenCohortDefinition;
+import org.openmrs.module.kenyaemr.reporting.cohort.definition.EmrCalculationCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.*;
 import org.openmrs.module.reporting.common.RangeComparator;
 import org.openmrs.module.reporting.common.SetComparator;
@@ -179,6 +181,17 @@ public class CommonCohortLibrary {
 		cd.addSearch("enrolled", map(enrolled(programs), "enrolledOnOrAfter=${onOrAfter},enrolledOnOrBefore=${onOrBefore}"));
 		cd.addSearch("transferIn", map(transferredIn(), "onOrBefore=${onOrBefore}"));
 		cd.setCompositionString("enrolled AND NOT transferIn");
+		return cd;
+	}
+
+	/**
+	 * Patients who are pregnant on ${onDate}
+	 * @return the cohort definition
+	 */
+	public CohortDefinition pregnant() {
+		EmrCalculationCohortDefinition cd = new EmrCalculationCohortDefinition(new OnAlternateFirstLineArtCalculation());
+		cd.setName("pregnant on date");
+		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
 		return cd;
 	}
 }
