@@ -32,22 +32,22 @@
 				});
 			});
 
-			var value;
+			//when the form is loading for the first time
+				if(getValue('idEntryPoint.value') == 5622) {
+					$('#idTransferredFromAnotherClinic :input').prop('disabled', false);
+				}
+				else {
+					$('#idTransferredFromAnotherClinic :input').prop('disabled', true);
+				}
+				$j("#idEntryPoint select").change(function() {
 
-			$j("#idEntryPoint select").change(function() {
-
-				$j("#idEntryPoint select option:selected").each(function () {
-					value += $j(this).val();
-					if (value == 5622) {
-						idTransferredFromAnotherClinic.style.display='inline'
+					if(getValue('idEntryPoint.value') == 5622) {
+						$('#idTransferredFromAnotherClinic :input').prop('disabled', false);
 					}
 					else {
-						idTransferredFromAnotherClinic.style.display='none'
+						$('#idTransferredFromAnotherClinic :input').prop('disabled', true);
 					}
 				});
-
-				value="";
-			});
 
 			var pencounterDate;
 			var pbirthdate = new Date("<lookup expression="patient.birthdate" />").getTime();
@@ -77,32 +77,23 @@
 			});
 
 			//checking if a patient has been ever on arvs
-			var yesno;
-			$j("input[type='radio']").change(function(){
-				if($j(this).is(':checked'))
-					yesno = $j(this).val();
-				if(yesno == 'true'){
-					idArvHistory.style.display='inline';
+				if((getValue('artHistoryYesNo.value')) == 'true'){
+					$('#idArvHistory :input').prop('disabled', false);
 				}
-				else{
-					idArvHistory.style.display='none';
+				else {
+					$('#idArvHistory :input').prop('disabled', true);
 				}
-				//alert(yesno);
-			});
-			yesno="";
+				$('#artHistoryYesNo input:radio').click(function() {
+					if((getValue('artHistoryYesNo.value')) == 'true'){
+						$('#idArvHistory :input').prop('disabled', false);
+					}
+					else {
+						$('#idArvHistory :input').prop('disabled', true);
+					}
+				});
+		
 		});
 	</script>
-
-	<div class="patient-details">
-		<table class="baseline-aligned" width="100%">
-			<tr>
-				<td>Name: <lookup class="value" expression="patient.personName"/></td>
-				<td>Gender: <lookup class="value" expression="patient.gender"/></td>
-				<td>Birthdate: <lookup class="value" complexExpression="#if( \$patient.birthdateEstimated ) ~#end"/> <lookup class="value" expression="patient.birthdate"/>
-				</td>
-			</tr>
-		</table>
-	</div>
 
 	Unique Patient Number:
 	<includeIf velocityTest="$kenyaemr.hasHivUniquePatientNumber()">
@@ -254,6 +245,7 @@
 	</fieldset>
 
 	<enrollInProgram programId="dfdc6d40-2f2f-463d-ba90-cc97350441a8"/>
+	
 
 	<div class="ke-form-buttons">
 		<submit />

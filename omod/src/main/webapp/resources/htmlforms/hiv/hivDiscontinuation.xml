@@ -22,27 +22,32 @@
 	<script type="text/javascript">
 		var value1;
 		$j(document).ready(function(){
+			if((getValue('idReason.value')) == 160034) {
+				$('#pdied :input').prop('disabled', false);
+				$('#ptransferred :input').prop('disabled', true);
+			}
+			else if((getValue('idReason.value')) == 159492) {
+				$('#pdied :input').prop('disabled', true);
+				$('#ptransferred :input').prop('disabled', false);
+			}
+			else {
+				$('#pdied :input').prop('disabled', true);
+				$('#ptransferred :input').prop('disabled', true);
+			}
 			$j("#idReason select").change(function() {
 
-				$j("#idReason select option:selected").each(function () {
-
-					value1 += $(this).val();
-
-					if(value1 == 159492){
-						ptransferred.style.display='inline'
-						pdied.style.display='none'
-					}
-					else if(value1 == 160034){
-						pdied.style.display='inline'
-						ptransferred.style.display='none'
-					}
-					else{
-						pdied.style.display='none'
-						ptransferred.style.display='none'
-					}
-				});
-
-				value1="";
+				if((getValue('idReason.value')) == 160034) {
+					$('#pdied :input').prop('disabled', false);
+					$('#ptransferred :input').prop('disabled', true);
+				}
+				else if((getValue('idReason.value')) == 159492) {
+					$('#pdied :input').prop('disabled', true);
+					$('#ptransferred :input').prop('disabled', false);
+				}
+				else {
+					$('#pdied :input').prop('disabled', true);
+					$('#ptransferred :input').prop('disabled', true);
+				}
 			});
 
 			var pbirthdate = new Date("<lookup expression="patient.birthdate" />").getTime();
@@ -61,82 +66,65 @@
 		});
 	</script>
 
-	<div class="patient-details">
-		<table class="baseline-aligned" width="100%">
-			<tr>
-				<td>Name: <lookup class="value" expression="patient.personName"/></td>
-				<td>Gender: <lookup class="value" expression="patient.gender"/></td>
-				<td>Birthdate: <lookup class="value" complexExpression="#if( \$patient.birthdateEstimated ) ~#end"/> <lookup class="value" expression="patient.birthdate"/>
-				</td>
-			</tr>
-		</table>
-	</div>
+		
+<table align="center">
+	<tr>
+		<td>
+			<fieldset>
+				<legend>Discontinue HIV Care</legend>
+					<table class="baseline-aligned" width="100%" border="0">
+						<tr>
+							<td>Date:</td>
+							<td> <encounterDate default="now" showTime="false" id="discontinueDate"/></td>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>Reason:</td>
+							<td><obs conceptId="161555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="idReason"/></td>
+							<td></td>
+							<td></td>
+						</tr>
+					</table>
+					<div id="pdied">
+						<table>
+							<tr>
+								<td>If Patient Died, please provide Date of Death if Known:</td>
+								<td><obs conceptId="1543AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+								<td></td>
+								<td></td>
 
-	<div class="encounter-details">
-		<table class="baseline-aligned" width="100%">
-			<tr>
-				<td></td>
-				<td></td>
-				<td></td>
-			</tr>
-		</table>
-	</div>
+							</tr>
+						</table>
+					</div>
 
-	<fieldset>
-		<legend>Discontinue HIV Care</legend>
-		<table class="baseline-aligned" width="100%" border="0">
-			<tr>
-				<td width="12%">Date:</td>
-				<td width="17%"> <encounterDate default="now" showTime="false" id="discontinueDate"/></td>
-				<td></td>
-				<td></td>
-			</tr>
-			<tr>
-				<td>Reason:</td>
-				<td>
-					<obs conceptId="161555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="idReason"/>
-				</td>
-				<td></td>
-				<td></td>
-			</tr>
-		</table>
-		<div id="pdied">
-			<table>
-				<tr>
+					<div id="ptransferred">
+						<table>
+							<tr>
+								<td><i>(If transferred out)</i> <br/>Transfer to Facility:</td>
+								<td ><br/><obs conceptId="159495AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "/></td>
+								<td></td>
+								<td></td>
 
-					<td>If Patient Died, please provide Date of Death if Known:</td>
-					<td><obs conceptId="1543AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
-					<td></td>
-					<td></td>
+							</tr>
 
-				</tr>
-			</table>
-		</div>
+						</table>
+					</div>
+					<br/>
+					<hr/>
+					<br/>
 
-		<div id="ptransferred">
-			<table>
-				<tr>
-					<td><i>(If transferred out)</i> <br/>Transfer to Facility:</td>
-					<td ><br/><obs conceptId="159495AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "/></td>
-					<td></td>
-					<td></td>
+				Signed by <encounterProviderAndRole encounterRole="a0b03050-c99b-11e0-9572-0800200c9a66" default="currentUser" required="true"/> at <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete"/>
+				
 
-				</tr>
+				<br/>
+				<br/>
 
-			</table>
-		</div>
-		<br/>
-		<hr/>
-		<br/>
-
-		Signed by <encounterProviderAndRole encounterRole="a0b03050-c99b-11e0-9572-0800200c9a66" default="currentUser" required="true"/> at <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete"/>
-		<completeProgram programId="dfdc6d40-2f2f-463d-ba90-cc97350441a8"/>
-
-		<br/>
-		<br/>
-
-	</fieldset>
-
+			</fieldset>
+		</td>
+	</tr>
+</table>
+<completeProgram programId="dfdc6d40-2f2f-463d-ba90-cc97350441a8"/>
 	<div class="ke-form-buttons">
 		<submit />
 	</div>
