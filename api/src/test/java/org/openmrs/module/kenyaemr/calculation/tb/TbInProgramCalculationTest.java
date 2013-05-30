@@ -11,6 +11,7 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.kenyaemr.calculation.tb;
 
 import org.junit.Assert;
@@ -21,7 +22,7 @@ import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
-import org.openmrs.module.kenyaemr.MetadataConstants;
+import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.test.TestUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
@@ -42,7 +43,7 @@ public class TbInProgramCalculationTest extends BaseModuleContextSensitiveTest {
 	public void evaluate_shouldCalculateCurrentArtRegimen() throws Exception {
 
 		// Get TB Program
-		Program tbProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.TB_PROGRAM_UUID);
+		Program tbProgram = Metadata.getProgram(Metadata.TB_PROGRAM);
 
 		// Enroll patient #6
 		PatientService ps = Context.getPatientService();

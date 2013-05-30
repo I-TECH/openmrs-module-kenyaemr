@@ -19,10 +19,9 @@ import java.util.Map;
 import java.util.Set;
 
 import org.openmrs.Program;
-import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
-import org.openmrs.module.kenyaemr.MetadataConstants;
+import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.calculation.*;
 import org.openmrs.module.kenyaemr.calculation.cd4.LastCD4CountCalculation;
 import org.openmrs.module.kenyaemr.calculation.cd4.LastCD4PercentageCalculation;
@@ -64,7 +63,7 @@ public class EligibleForArtCalculation extends BaseAlertCalculation {
 	                                     PatientCalculationContext context) {
 
 		// only applies to patients in the HIV program
-		Program hivProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.HIV_PROGRAM_UUID);
+		Program hivProgram = Metadata.getProgram(Metadata.HIV_PROGRAM);
 		Set<Integer> inHivProgram = CalculationUtils.patientsThatPass(lastProgramEnrollment(hivProgram, cohort, context));
 		
 		// need to exclude those on ART already

@@ -22,8 +22,7 @@ import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
-import org.openmrs.module.kenyaemr.MetadataConstants;
-import org.openmrs.module.kenyaemr.calculation.IsPregnantCalculation;
+import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.test.TestUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
@@ -46,9 +45,9 @@ public class PregnantAtArtStartCalculationTest extends BaseModuleContextSensitiv
 	public void evaluate_shouldCalculatePregnancyStatusAtArtStart() throws Exception {
 
 		PatientService ps = Context.getPatientService();
-		Concept pregnancyStatus = Context.getConceptService().getConceptByUuid(MetadataConstants.PREGNANCY_STATUS_CONCEPT_UUID);
-		Concept yes = Context.getConceptService().getConceptByUuid(MetadataConstants.YES_CONCEPT_UUID);
-		Concept no = Context.getConceptService().getConceptByUuid(MetadataConstants.NO_CONCEPT_UUID);
+		Concept pregnancyStatus = Dictionary.getConcept(Dictionary.PREGNANCY_STATUS);
+		Concept yes = Dictionary.getConcept(Dictionary.YES);
+		Concept no = Dictionary.getConcept(Dictionary.NO);
 		Concept stavudine = Context.getConceptService().getConcept(84309);
 
 		// Give patient #2 a YES status on same day as ART start

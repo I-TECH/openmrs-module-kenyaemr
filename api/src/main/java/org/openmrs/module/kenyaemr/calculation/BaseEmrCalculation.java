@@ -39,7 +39,7 @@ import org.openmrs.calculation.result.ListResult;
 import org.openmrs.calculation.result.ObsResult;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.MetadataConstants;
+import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.util.KenyaEmrUtils;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -144,7 +144,7 @@ public abstract class BaseEmrCalculation extends BaseCalculation implements Pati
 	 * @return the obss in a calculation result map
 	 */
 	protected static CalculationResultMap lastObs(Concept concept, Collection<Integer> cohort, PatientCalculationContext calculationContext) {
-		ObsForPersonDataDefinition def = new ObsForPersonDataDefinition("Last " + concept.getPreferredName(MetadataConstants.LOCALE), TimeQualifier.LAST, concept, calculationContext.getNow(), null);
+		ObsForPersonDataDefinition def = new ObsForPersonDataDefinition("Last " + concept.getPreferredName(Metadata.LOCALE), TimeQualifier.LAST, concept, calculationContext.getNow(), null);
 		return evaluateWithReporting(def, cohort, new HashMap<String, Object>(), null, calculationContext);
 	}
 
@@ -156,7 +156,7 @@ public abstract class BaseEmrCalculation extends BaseCalculation implements Pati
 	 * @return the obss in a calculation result map
 	 */
 	protected static CalculationResultMap firstObs(Concept concept, Collection<Integer> cohort, PatientCalculationContext calculationContext) {
-		ObsForPersonDataDefinition def = new ObsForPersonDataDefinition("First " + concept.getPreferredName(MetadataConstants.LOCALE), TimeQualifier.FIRST, concept, calculationContext.getNow(), null);
+		ObsForPersonDataDefinition def = new ObsForPersonDataDefinition("First " + concept.getPreferredName(Metadata.LOCALE), TimeQualifier.FIRST, concept, calculationContext.getNow(), null);
 		return evaluateWithReporting(def, cohort, new HashMap<String, Object>(), null, calculationContext);
 	}
 
@@ -168,7 +168,7 @@ public abstract class BaseEmrCalculation extends BaseCalculation implements Pati
 	 * @return the obss in a calculation result map
 	 */
 	protected static CalculationResultMap firstObsOnOrAfterDate(Concept concept, Date onOrAfter, Collection<Integer> cohort, PatientCalculationContext calculationContext) {
-		ObsForPersonDataDefinition def = new ObsForPersonDataDefinition("First " + concept.getPreferredName(MetadataConstants.LOCALE), TimeQualifier.FIRST, concept, calculationContext.getNow(), onOrAfter);
+		ObsForPersonDataDefinition def = new ObsForPersonDataDefinition("First " + concept.getPreferredName(Metadata.LOCALE), TimeQualifier.FIRST, concept, calculationContext.getNow(), onOrAfter);
 		return evaluateWithReporting(def, cohort, new HashMap<String, Object>(), null, calculationContext);
 	}
 
@@ -184,7 +184,7 @@ public abstract class BaseEmrCalculation extends BaseCalculation implements Pati
 		// Only interested in obs before now
 		onOrBefore = CalculationUtils.earliestDate(onOrBefore, calculationContext.getNow());
 
-		ObsForPersonDataDefinition def = new ObsForPersonDataDefinition("Last " + concept.getPreferredName(MetadataConstants.LOCALE) + " on or before " + onOrBefore,
+		ObsForPersonDataDefinition def = new ObsForPersonDataDefinition("Last " + concept.getPreferredName(Metadata.LOCALE) + " on or before " + onOrBefore,
 				TimeQualifier.LAST, concept, onOrBefore, null);
 		return evaluateWithReporting(def, cohort, new HashMap<String, Object>(), null, calculationContext);
 	}
@@ -210,7 +210,7 @@ public abstract class BaseEmrCalculation extends BaseCalculation implements Pati
 	 * @return the obss in a calculation result map
 	 */
 	protected static CalculationResultMap allObs(Concept concept, Collection<Integer> cohort, PatientCalculationContext calculationContext) {
-		ObsForPersonDataDefinition def = new ObsForPersonDataDefinition("All " + concept.getPreferredName(MetadataConstants.LOCALE),
+		ObsForPersonDataDefinition def = new ObsForPersonDataDefinition("All " + concept.getPreferredName(Metadata.LOCALE),
 				TimeQualifier.ANY, concept, calculationContext.getNow(), null);
 		return evaluateWithReporting(def, cohort, new HashMap<String, Object>(), null, calculationContext);
 	}

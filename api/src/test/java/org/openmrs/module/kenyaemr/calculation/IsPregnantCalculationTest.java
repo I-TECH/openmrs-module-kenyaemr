@@ -18,20 +18,20 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Concept;
-import org.openmrs.Obs;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
-import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
-import org.openmrs.module.kenyaemr.MetadataConstants;
+import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.test.TestUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
+/**
+ * Tests for {@link IsPregnantCalculation}
+ */
 public class IsPregnantCalculationTest extends BaseModuleContextSensitiveTest {
 
 	@Before
@@ -47,9 +47,9 @@ public class IsPregnantCalculationTest extends BaseModuleContextSensitiveTest {
 	public void evaluate_shouldCalculatePregnancyStatus() throws Exception {
 
 		PatientService ps = Context.getPatientService();
-		Concept pregnancyStatus = Context.getConceptService().getConceptByUuid(MetadataConstants.PREGNANCY_STATUS_CONCEPT_UUID);
-		Concept yes = Context.getConceptService().getConceptByUuid(MetadataConstants.YES_CONCEPT_UUID);
-		Concept no = Context.getConceptService().getConceptByUuid(MetadataConstants.NO_CONCEPT_UUID);
+		Concept pregnancyStatus = Dictionary.getConcept(Dictionary.PREGNANCY_STATUS);
+		Concept yes = Dictionary.getConcept(Dictionary.YES);
+		Concept no = Dictionary.getConcept(Dictionary.NO);
 
 		// Give patient #6 a recent YES recording
 		TestUtils.saveObs(ps.getPatient(6), pregnancyStatus, yes, TestUtils.date(2012, 12, 1));

@@ -169,7 +169,7 @@ public class KenyaEmrUiUtilsTest extends BaseModuleContextSensitiveTest {
 	 */
 	@Test
 	public void simpleRegimenHistory_shouldConvertToSimpleObjects() throws IOException, SAXException, ParserConfigurationException {
-		Concept medset = Context.getConceptService().getConceptByUuid(MetadataConstants.ANTIRETROVIRAL_DRUGS_CONCEPT_UUID);
+		Concept medset = Dictionary.getConcept(Dictionary.ANTIRETROVIRAL_DRUGS);
 
 		// Check empty history
 		RegimenChangeHistory emptyHistory = RegimenChangeHistory.forPatient(Context.getPatientService().getPatient(6), medset);

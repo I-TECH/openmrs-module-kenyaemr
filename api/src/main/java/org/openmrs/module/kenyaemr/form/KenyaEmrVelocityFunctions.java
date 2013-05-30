@@ -23,7 +23,7 @@ import org.openmrs.*;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.htmlformentry.FormEntrySession;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.MetadataConstants;
+import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.reporting.common.DateUtil;
 
 /**
@@ -49,7 +49,7 @@ public class KenyaEmrVelocityFunctions {
 		if (session.getPatient() == null) {
 			return false;
 		} else {
-			PatientIdentifierType pit = Context.getPatientService().getPatientIdentifierTypeByUuid(MetadataConstants.UNIQUE_PATIENT_NUMBER_UUID);
+			PatientIdentifierType pit = Metadata.getPatientIdentifierType(Metadata.UNIQUE_PATIENT_NUMBER_IDENTIFIER_TYPE);
 			return session.getPatient().getPatientIdentifier(pit) != null;
 		}
 	}

@@ -16,12 +16,9 @@ package org.openmrs.module.kenyaemr.reporting.library.cohort;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.Concept;
 import org.openmrs.EncounterType;
-import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.Metadata;
-import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.kenyaemr.test.ReportingTestUtils;
 import org.openmrs.module.kenyaemr.test.TestUtils;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;

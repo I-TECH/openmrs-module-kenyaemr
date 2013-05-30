@@ -21,7 +21,8 @@ import org.hibernate.SessionFactory;
 import org.openmrs.*;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyaemr.MetadataConstants;
+import org.openmrs.module.kenyaemr.Dictionary;
+import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.reporting.indicator.HivCareVisitsIndicator;
 import org.openmrs.module.kenyaemr.reporting.library.cohort.CommonCohortLibrary;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
@@ -58,8 +59,8 @@ public class HivCareVisitsIndicatorEvaluator implements IndicatorEvaluator {
 		HivCareVisitsIndicator visitIndicator = (HivCareVisitsIndicator) indicator;
 
 		List<Form> hivCareForms = Arrays.asList(
-			Context.getFormService().getFormByUuid(MetadataConstants.CLINICAL_ENCOUNTER_HIV_ADDENDUM_FORM_UUID),
-			Context.getFormService().getFormByUuid(MetadataConstants.MOH_257_VISIT_SUMMARY_FORM_UUID)
+			Metadata.getForm(Metadata.CLINICAL_ENCOUNTER_HIV_ADDENDUM_FORM),
+			Metadata.getForm(Metadata.MOH_257_VISIT_SUMMARY_FORM)
 		);
 
 		Date fromDate = visitIndicator.getStartDate();
@@ -114,7 +115,7 @@ public class HivCareVisitsIndicatorEvaluator implements IndicatorEvaluator {
 	 */
 	private boolean wasScheduledVisit(Encounter encounter) {
 		// Firstly look for a scheduled visit obs which has value = true
-		Concept scheduledVisit = Context.getConceptService().getConceptByUuid(MetadataConstants.SCHEDULED_VISIT_CONCEPT_UUID);
+		Concept scheduledVisit = Dictionary.getConcept(Dictionary.SCHEDULED_VISIT);
 		for (Obs obs : encounter.getAllObs()) {
 			if (obs.getConcept().equals(scheduledVisit) && obs.getValueAsBoolean()) {
 				return true;
@@ -122,7 +123,7 @@ public class HivCareVisitsIndicatorEvaluator implements IndicatorEvaluator {
 		}
 
 		Date visitDate = (encounter.getVisit() != null) ? encounter.getVisit().getStartDatetime() : encounter.getEncounterDatetime();
-		Concept returnVisitDate = Context.getConceptService().getConceptByUuid(MetadataConstants.RETURN_VISIT_DATE_CONCEPT_UUID);
+		Concept returnVisitDate = Dictionary.getConcept(Dictionary.RETURN_VISIT_DATE);
 		List<Obs> returnVisitObss = Context.getObsService().getObservationsByPersonAndConcept(encounter.getPatient(), returnVisitDate);
 
 		for (Obs returnVisitObs : returnVisitObss) {

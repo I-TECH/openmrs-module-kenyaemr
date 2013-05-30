@@ -39,6 +39,19 @@ public class Metadata {
 	}
 
 	/**
+	 * Gets the specified form
+	 * @param identifier the identifier
+	 * @return the form
+	 */
+	public static Form getForm(String identifier) {
+		Form ret = Context.getFormService().getFormByUuid(identifier);
+		if (ret == null) {
+			throw new IllegalArgumentException("No such form with identifier " + identifier);
+		}
+		return ret;
+	}
+
+	/**
 	 * Gets the specified location
 	 * @param identifier the identifier
 	 * @return the location

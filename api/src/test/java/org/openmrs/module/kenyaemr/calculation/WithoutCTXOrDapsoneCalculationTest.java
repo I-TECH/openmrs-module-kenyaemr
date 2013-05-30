@@ -22,7 +22,8 @@ import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
-import org.openmrs.module.kenyaemr.MetadataConstants;
+import org.openmrs.module.kenyaemr.Dictionary;
+import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.test.TestUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
@@ -44,7 +45,7 @@ public class WithoutCTXOrDapsoneCalculationTest extends BaseModuleContextSensiti
 	public void evaluate_shouldCalculateInitialArtStartDate() throws Exception {
 
 		// Get HIV Program
-		Program hivProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.HIV_PROGRAM_UUID);
+		Program hivProgram = Metadata.getProgram(Metadata.HIV_PROGRAM);
 
 		// Enroll patients #6, #7, #8 in the HIV Program
 		PatientService ps = Context.getPatientService();
@@ -53,8 +54,8 @@ public class WithoutCTXOrDapsoneCalculationTest extends BaseModuleContextSensiti
 		}
 
 		// Put patient #7 on Dapsone
-		Concept medOrders = Context.getConceptService().getConceptByUuid(MetadataConstants.MEDICATION_ORDERS_CONCEPT_UUID);
-		Concept dapsone = Context.getConceptService().getConceptByUuid(MetadataConstants.DAPSONE_CONCEPT_UUID);
+		Concept medOrders = Dictionary.getConcept(Dictionary.MEDICATION_ORDERS);
+		Concept dapsone = Dictionary.getConcept(Dictionary.DAPSONE);
 		TestUtils.saveObs(ps.getPatient(7), medOrders, dapsone, TestUtils.date(2011, 1, 1));
 
 		// Put patient #8 on Aspirin

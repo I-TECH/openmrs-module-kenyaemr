@@ -15,10 +15,7 @@
 package org.openmrs.module.kenyaemr.reporting.library.indicator;
 
 import org.openmrs.Concept;
-import org.openmrs.Program;
-import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.Metadata;
-import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.kenyaemr.reporting.library.cohort.ArtCohortLibrary;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.springframework.beans.factory.annotation.Autowired;

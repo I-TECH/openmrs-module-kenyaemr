@@ -15,7 +15,7 @@
 package org.openmrs.module.kenyaemr;
 
 /**
- * Constants for everything that is _not_ {@link MetadataConstants}
+ * Constants for everything that is not {@link Dictionary} or {@link Metadata}
  */
 public class KenyaEmrConstants {
 

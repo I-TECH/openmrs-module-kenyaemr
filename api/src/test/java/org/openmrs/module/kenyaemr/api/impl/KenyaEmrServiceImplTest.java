@@ -21,12 +21,7 @@ import org.junit.Test;
 import org.openmrs.*;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.idgen.IdentifierSource;
-import org.openmrs.module.idgen.service.IdentifierSourceService;
-import org.openmrs.module.kenyaemr.KenyaEmr;
-import org.openmrs.module.kenyaemr.KenyaEmrActivator;
-import org.openmrs.module.kenyaemr.KenyaEmrConstants;
-import org.openmrs.module.kenyaemr.MetadataConstants;
+import org.openmrs.module.kenyaemr.*;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.module.kenyaemr.test.TestUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
@@ -36,6 +31,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Tests for {@link KenyaEmrServiceImpl}
+ */
 public class KenyaEmrServiceImplTest extends BaseModuleContextSensitiveTest {
 
 	@Autowired
@@ -126,7 +124,7 @@ public class KenyaEmrServiceImplTest extends BaseModuleContextSensitiveTest {
 	@Test
 	public void getVisitsByPatientAndDay_shouldGetVisitsOnDayWithPatient() {
 		Patient patient = Context.getPatientService().getPatient(7);
-		VisitType outpatientType = Context.getVisitService().getVisitTypeByUuid(MetadataConstants.OUTPATIENT_VISIT_TYPE_UUID);
+		VisitType outpatientType = Metadata.getVisitType(Metadata.OUTPATIENT_VISIT_TYPE);
 
 		// Save visit from 10-11am and another from 12 onwards (no end)
 		Visit visit1 = TestUtils.saveVisit(patient, outpatientType, TestUtils.date(2012, 1, 1, 10, 0, 0), TestUtils.date(2012, 1, 1, 11, 0, 0));
@@ -153,7 +151,7 @@ public class KenyaEmrServiceImplTest extends BaseModuleContextSensitiveTest {
 	 */
 	@Test
 	public void getLocations_shouldGetAllLocationsWithMatchingArguments() {
-		LocationAttributeType mflCodeAttrType = Context.getLocationService().getLocationAttributeTypeByUuid(MetadataConstants.MASTER_FACILITY_CODE_LOCATION_ATTRIBUTE_TYPE_UUID);
+		LocationAttributeType mflCodeAttrType = Metadata.getLocationAttributeType(Metadata.MASTER_FACILITY_CODE_LOCATION_ATTRIBUTE_TYPE);
 
 		// Search for location #1 by MFL code and don't include retired
 		Map<LocationAttributeType, Object> attrValues = new HashMap<LocationAttributeType, Object>();
@@ -181,7 +179,7 @@ public class KenyaEmrServiceImplTest extends BaseModuleContextSensitiveTest {
 	 */
 	@Test
 	public void getLocations_shouldGetAllLocationsWithAllGivenAttributeValues() {
-		LocationAttributeType mflCodeAttrType = Context.getLocationService().getLocationAttributeTypeByUuid(MetadataConstants.MASTER_FACILITY_CODE_LOCATION_ATTRIBUTE_TYPE_UUID);
+		LocationAttributeType mflCodeAttrType = Metadata.getLocationAttributeType(Metadata.MASTER_FACILITY_CODE_LOCATION_ATTRIBUTE_TYPE);
 
 		// Save new phone number attribute type
 		LocationAttributeType phoneAttrType = new LocationAttributeType();
@@ -221,7 +219,7 @@ public class KenyaEmrServiceImplTest extends BaseModuleContextSensitiveTest {
 	 */
 	@Test
 	public void getLocations_shouldNotFindAnyLocationsIfNoneHaveGivenAttributeValues() {
-		LocationAttributeType mflCodeAttrType = Context.getLocationService().getLocationAttributeTypeByUuid(MetadataConstants.MASTER_FACILITY_CODE_LOCATION_ATTRIBUTE_TYPE_UUID);
+		LocationAttributeType mflCodeAttrType = Metadata.getLocationAttributeType(Metadata.MASTER_FACILITY_CODE_LOCATION_ATTRIBUTE_TYPE);
 		Map<LocationAttributeType, Object> attrValues = new HashMap<LocationAttributeType, Object>();
 		attrValues.put(mflCodeAttrType, "xxxxxx");
 		List<Location> locations = service.getLocations(null, null, attrValues, true, null, null);

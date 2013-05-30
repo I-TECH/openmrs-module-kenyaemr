@@ -16,12 +16,9 @@ package org.openmrs.module.kenyaemr.reporting.library.cohort;
 
 import org.openmrs.Concept;
 import org.openmrs.EncounterType;
-import org.openmrs.Program;
 import org.openmrs.api.PatientSetService;
-import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.Metadata;
-import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.kenyaemr.calculation.art.*;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.EmrCalculationCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.EmrDateCalculationCohortDefinition;
