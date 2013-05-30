@@ -23,6 +23,8 @@ import org.openmrs.Program;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyaemr.Metadata;
+import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.kenyaemr.reporting.builder.ReportBuilder;
 import org.openmrs.module.kenyaemr.test.ReportingTestUtils;
 import org.openmrs.module.kenyaemr.test.TestUtils;
@@ -33,21 +35,19 @@ import org.openmrs.module.reporting.report.definition.service.ReportDefinitionSe
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 /**
- *
+ * Tests for {@link EligibleForArtReport}
  */
-public class DueForCD4ReportTest extends BaseModuleContextSensitiveTest {
-
+public class EligibleForArtReportTest extends BaseModuleContextSensitiveTest {
+	
 	@Before
-	public void beforeEachTest() throws Exception {
+	public void setup() throws Exception {
 		executeDataSet("test-data.xml");
+		executeDataSet("test-drugdata.xml");
 	}
 	
 	@Test
 	public void testReport() throws Exception {
-
-		// Get HIV Program
-		ProgramWorkflowService pws = Context.getProgramWorkflowService();
-		Program hivProgram = pws.getPrograms("HIV Program").get(0);
+		Program hivProgram = Metadata.getProgram(Metadata.HIV_PROGRAM);
 
 		// Enroll patients #6 and #7 in the HIV Program
 		PatientService ps = Context.getPatientService();
@@ -55,7 +55,7 @@ public class DueForCD4ReportTest extends BaseModuleContextSensitiveTest {
 			TestUtils.enrollInProgram(ps.getPatient(i), hivProgram, new Date());
 		}
 
-		ReportBuilder report = new NeedsCD4Report();
+		ReportBuilder report = new EligibleForArtReport();
 		ReportDefinition rd = report.getReportDefinition();
 		
 		EvaluationContext ec = new EvaluationContext();

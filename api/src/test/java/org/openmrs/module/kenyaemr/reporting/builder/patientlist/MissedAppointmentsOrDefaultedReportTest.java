@@ -21,6 +21,7 @@ import org.openmrs.Program;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.reporting.builder.ReportBuilder;
 import org.openmrs.module.kenyaemr.test.ReportingTestUtils;
 import org.openmrs.module.kenyaemr.test.TestUtils;
@@ -34,19 +35,19 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 
+/**
+ * Tests for {@link MissedAppointmentsOrDefaultedReport}
+ */
 public class MissedAppointmentsOrDefaultedReportTest extends BaseModuleContextSensitiveTest {
 
-    @Before
-    public void setup() throws Exception {
-        executeDataSet("test-data.xml");
-    }
+	@Before
+	public void setup() throws Exception {
+		executeDataSet("test-data.xml");
+	}
 
-    @Test
-    public void testReport() throws Exception {
-
-		// Get HIV Program
-		ProgramWorkflowService pws = Context.getProgramWorkflowService();
-		Program hivProgram = pws.getPrograms("HIV Program").get(0);
+	@Test
+	public void testReport() throws Exception {
+		Program hivProgram = Metadata.getProgram(Metadata.HIV_PROGRAM);
 
 		// Enroll patients #6 and #7 in the HIV Program
 		PatientService ps = Context.getPatientService();
@@ -67,17 +68,17 @@ public class MissedAppointmentsOrDefaultedReportTest extends BaseModuleContextSe
 
 		Context.flushSession();
 
-        ReportBuilder report = new MissedAppointmentsOrDefaultedReport();
-        ReportDefinition rd = report.getReportDefinition();
-        EvaluationContext ec = new EvaluationContext();
+		ReportBuilder report = new MissedAppointmentsOrDefaultedReport();
+		ReportDefinition rd = report.getReportDefinition();
+		EvaluationContext ec = new EvaluationContext();
 
-        try {
-            ReportData data = Context.getService(ReportDefinitionService.class).evaluate(rd, ec);
+		try {
+			ReportData data = Context.getService(ReportDefinitionService.class).evaluate(rd, ec);
 
 			ReportingTestUtils.checkPatientAlertListReport(Collections.singleton("1321200001"), "HIV Unique ID", data);
 			ReportingTestUtils.printReport(data);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }

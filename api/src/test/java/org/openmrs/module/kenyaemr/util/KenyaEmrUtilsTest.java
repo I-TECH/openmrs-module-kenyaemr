@@ -20,6 +20,7 @@ import org.junit.Test;
 import org.openmrs.*;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.Dictionary;
+import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.kenyaemr.test.TestUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
@@ -29,6 +30,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Tests for {@link KenyaEmrUtils}
+ */
 public class KenyaEmrUtilsTest extends BaseModuleContextSensitiveTest {
 
 	@Before
@@ -88,7 +92,7 @@ public class KenyaEmrUtilsTest extends BaseModuleContextSensitiveTest {
 	 */
 	@Test
 	public void isPatientInProgram() {
-		Program tbProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.TB_PROGRAM_UUID);
+		Program tbProgram = Metadata.getProgram(Metadata.TB_PROGRAM);
 		Patient patient = Context.getPatientService().getPatient(6);
 
 		// Check with no enrollments
@@ -148,7 +152,7 @@ public class KenyaEmrUtilsTest extends BaseModuleContextSensitiveTest {
 	public void visitWillOverlap_shouldReturnTrueIfVisitOverlaps() {
 
 		Patient patient8 = Context.getPatientService().getPatient(8);
-		VisitType outpatient = Context.getVisitService().getVisitTypeByUuid(MetadataConstants.OUTPATIENT_VISIT_TYPE_UUID);
+		VisitType outpatient = Metadata.getVisitType(Metadata.OUTPATIENT_VISIT_TYPE);
 
 		Visit visit1 = TestUtils.saveVisit(patient8, outpatient, TestUtils.date(2011, 1, 1), TestUtils.date(2011, 1, 3));
 		Visit visit2 = TestUtils.saveVisit(patient8, outpatient, TestUtils.date(2011, 1, 7), TestUtils.date(2011, 1, 10));
@@ -224,51 +228,51 @@ public class KenyaEmrUtilsTest extends BaseModuleContextSensitiveTest {
 		Encounter e = new Encounter();
 
 		// Test empty encounter
-		Assert.assertNull(KenyaEmrUtils.firstObsInEncounter(e, Dictionary.getConcept(MetadataConstants.CD4_CONCEPT_UUID)));
+		Assert.assertNull(KenyaEmrUtils.firstObsInEncounter(e, Dictionary.getConcept(Dictionary.CD4_COUNT)));
 
 		// Add obs to encounter
 		Obs obs0 = new Obs();
-		obs0.setConcept(Dictionary.getConcept(MetadataConstants.CD4_PERCENT_CONCEPT_UUID));
+		obs0.setConcept(Dictionary.getConcept(Dictionary.CD4_PERCENT));
 		obs0.setValueNumeric(50.0);
 		e.addObs(obs0);
 		Obs obs1 = new Obs();
-		obs1.setConcept(Dictionary.getConcept(MetadataConstants.CD4_CONCEPT_UUID));
+		obs1.setConcept(Dictionary.getConcept(Dictionary.CD4_COUNT));
 		obs1.setValueNumeric(123.0);
 		e.addObs(obs1);
 
-		Assert.assertEquals(new Double(123.0), KenyaEmrUtils.firstObsInEncounter(e, Dictionary.getConcept(MetadataConstants.CD4_CONCEPT_UUID)).getValueNumeric());
+		Assert.assertEquals(new Double(123.0), KenyaEmrUtils.firstObsInEncounter(e, Dictionary.getConcept(Dictionary.CD4_COUNT)).getValueNumeric());
 	}
 
 	@Test
 	public void firstObsInProgram_shouldFindFirstObsWithConcept() {
 		Patient patient = Context.getPatientService().getPatient(6);
-		Program tbProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.TB_PROGRAM_UUID);
+		Program tbProgram = Metadata.getProgram(Metadata.TB_PROGRAM);
 
 		PatientProgram enrollment = TestUtils.enrollInProgram(patient, tbProgram, TestUtils.date(2012, 1, 1), TestUtils.date(2012, 4, 1));
 
 		// Test with no saved obs
-		Assert.assertNull(KenyaEmrUtils.firstObsInProgram(enrollment, Dictionary.getConcept(MetadataConstants.CD4_CONCEPT_UUID)));
+		Assert.assertNull(KenyaEmrUtils.firstObsInProgram(enrollment, Dictionary.getConcept(Dictionary.CD4_COUNT)));
 
 		// Before enrollment
-		Obs obs0 = TestUtils.saveObs(patient, Dictionary.getConcept(MetadataConstants.CD4_CONCEPT_UUID), 123.0, TestUtils.date(2011, 12, 1));
+		Obs obs0 = TestUtils.saveObs(patient, Dictionary.getConcept(Dictionary.CD4_COUNT), 123.0, TestUtils.date(2011, 12, 1));
 		// Wrong concept
-		Obs obs1 = TestUtils.saveObs(patient, Dictionary.getConcept(MetadataConstants.CD4_PERCENT_CONCEPT_UUID), 50.0, TestUtils.date(2012, 1, 15));
+		Obs obs1 = TestUtils.saveObs(patient, Dictionary.getConcept(Dictionary.CD4_PERCENT), 50.0, TestUtils.date(2012, 1, 15));
 		// During enrollment
-		Obs obs2 = TestUtils.saveObs(patient, Dictionary.getConcept(MetadataConstants.CD4_CONCEPT_UUID), 234.0, TestUtils.date(2012, 2, 1));
-		Obs obs3 = TestUtils.saveObs(patient, Dictionary.getConcept(MetadataConstants.CD4_CONCEPT_UUID), 345.0, TestUtils.date(2012, 3, 1));
+		Obs obs2 = TestUtils.saveObs(patient, Dictionary.getConcept(Dictionary.CD4_COUNT), 234.0, TestUtils.date(2012, 2, 1));
+		Obs obs3 = TestUtils.saveObs(patient, Dictionary.getConcept(Dictionary.CD4_COUNT), 345.0, TestUtils.date(2012, 3, 1));
 
-		Assert.assertEquals(obs2, KenyaEmrUtils.firstObsInProgram(enrollment, Dictionary.getConcept(MetadataConstants.CD4_CONCEPT_UUID)));
+		Assert.assertEquals(obs2, KenyaEmrUtils.firstObsInProgram(enrollment, Dictionary.getConcept(Dictionary.CD4_COUNT)));
 
 		// Test again with no enrollment end date
 		enrollment = TestUtils.enrollInProgram(patient, tbProgram, TestUtils.date(2012, 1, 1));
-		Assert.assertEquals(obs2, KenyaEmrUtils.firstObsInProgram(enrollment, Dictionary.getConcept(MetadataConstants.CD4_CONCEPT_UUID)));
+		Assert.assertEquals(obs2, KenyaEmrUtils.firstObsInProgram(enrollment, Dictionary.getConcept(Dictionary.CD4_COUNT)));
 	}
 
 	@Test
 	public void lastEncounterInProgram_shouldFindLastEncounterWithType() {
 		Patient patient = Context.getPatientService().getPatient(6);
-		Program tbProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.TB_PROGRAM_UUID);
-		EncounterType tbScreenEncType = Context.getEncounterService().getEncounterTypeByUuid(MetadataConstants.TB_SCREENING_ENCOUNTER_TYPE_UUID);
+		Program tbProgram = Metadata.getProgram(Metadata.TB_PROGRAM);
+		EncounterType tbScreenEncType = Metadata.getEncounterType(Metadata.TB_SCREENING_ENCOUNTER_TYPE);
 
 		PatientProgram enrollment = TestUtils.enrollInProgram(patient, tbProgram, TestUtils.date(2012, 1, 1), TestUtils.date(2012, 4, 1));
 

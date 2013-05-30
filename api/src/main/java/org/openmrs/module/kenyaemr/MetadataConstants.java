@@ -16,8 +16,9 @@ package org.openmrs.module.kenyaemr;
 import java.util.Locale;
 
 /**
- *
+ * This has been replaced by {@link Dictionary} and {@link Metadata}
  */
+@Deprecated
 public class MetadataConstants {
 
 	// Visit Types

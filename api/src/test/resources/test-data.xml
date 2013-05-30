@@ -176,6 +176,9 @@
 
 	<!-- =========================================== Misc =============================================== -->
 
+	<!-- Unknown Location in standard test data has the wrong uuid -->
+	<location location_id="1001" name="Unknown Location" description="" address1="" address2="" city_village="" state_province="" postal_code="" country="" creator="1" date_created="2005-09-22 00:00:00.0" retired="false" uuid="8d6c993e-c2cc-11de-8d13-0010c6dffd0f" />
+
 	<location_attribute location_attribute_id="1001" location_id="1" attribute_type_id="1" value_reference="15001" creator="1" date_created="2005-01-01 00:00:00.0" voided="0" uuid="1001-mflcode"/>
 	<location_attribute location_attribute_id="1002" location_id="2" attribute_type_id="1" value_reference="15002" creator="1" date_created="2005-01-01 00:00:00.0" voided="0" uuid="1002-mflcode"/>
 	<location_attribute location_attribute_id="1003" location_id="3" attribute_type_id="1" value_reference="15003" creator="1" date_created="2005-01-01 00:00:00.0" voided="0" uuid="1003-mflcode"/>

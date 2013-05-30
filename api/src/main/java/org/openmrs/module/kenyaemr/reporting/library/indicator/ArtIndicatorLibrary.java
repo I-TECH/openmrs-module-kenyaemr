@@ -17,6 +17,7 @@ package org.openmrs.module.kenyaemr.reporting.library.indicator;
 import org.openmrs.Concept;
 import org.openmrs.Program;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.kenyaemr.reporting.library.cohort.ArtCohortLibrary;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
@@ -43,8 +44,7 @@ public class ArtIndicatorLibrary {
 	 * @return the indicator
 	 */
 	public CohortIndicator enrolledExcludingTransfers() {
-		Program hivProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.HIV_PROGRAM_UUID);
-		return commonIndicators.enrolledExcludingTransfers(hivProgram);
+		return commonIndicators.enrolledExcludingTransfers(Metadata.getProgram(Metadata.HIV_PROGRAM));
 	}
 
 	/**
@@ -52,8 +52,7 @@ public class ArtIndicatorLibrary {
 	 * @return the indicator
 	 */
 	public CohortIndicator enrolledCumulative() {
-		Program hivProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.HIV_PROGRAM_UUID);
-		return commonIndicators.enrolledCumulative(hivProgram);
+		return commonIndicators.enrolledCumulative(Metadata.getProgram(Metadata.HIV_PROGRAM));
 	}
 
 	/**

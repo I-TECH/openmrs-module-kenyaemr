@@ -24,12 +24,12 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- *
+ * Tests for {@link ReportManager}
  */
 public class ReportManagerTest extends BaseModuleContextSensitiveTest {
 
 	@Autowired
-	ReportManager reportManager;
+	private ReportManager reportManager;
 
 	/**
 	 * @see ReportManager#getReportBuildersByTag(String)
