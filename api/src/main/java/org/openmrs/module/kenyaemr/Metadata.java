@@ -119,18 +119,18 @@ public class Metadata {
 	}
 
 	// Encounter Types
-	public static final String REGISTRATION_ENCOUNTER_TYPE = "de1f9d67-b73e-4e1b-90d0-036166fc6995";
-	public static final String TRIAGE_ENCOUNTER_TYPE = "d1059fb9-a079-4feb-a749-eedd709ae542";
+	public static final String CHECK_OUT_ENCOUNTER_TYPE ="abfb143c-5b49-41e5-9ead-f47ee4cc57cf";
 	public static final String CONSULTATION_ENCOUNTER_TYPE = "465a92f2-baf8-42e9-9612-53064be868e8";
-	public static final String HIV_ENROLLMENT_ENCOUNTER_TYPE = "cb93cdea-6d03-4283-9996-c9f3dc77cec3";
 	public static final String HIV_CONSULTATION_ENCOUNTER_TYPE = "a0034eee-1940-4e35-847f-97537a35d05e";
 	public static final String HIV_DISCONTINUATION_ENCOUNTER_TYPE = "2bdada65-4c72-4a48-8730-859890e25cee";
-	public static final String TB_SCREENING_ENCOUNTER_TYPE = "ed6dacc9-0827-4c82-86be-53c0d8c449be";
-	public static final String TB_ENROLLMENT_ENCOUNTER_TYPE = "9d8498a4-372d-4dc4-a809-513a2434621e";
+	public static final String HIV_ENROLLMENT_ENCOUNTER_TYPE = "de78a6be-bfc5-4634-adc3-5f1a280455cc";
+	public static final String LAB_RESULTS_ENCOUNTER_TYPE = "17a381d1-7e29-406a-b782-aa903b963c28";
+	public static final String REGISTRATION_ENCOUNTER_TYPE = "de1f9d67-b73e-4e1b-90d0-036166fc6995";
 	public static final String TB_CONSULTATION_ENCOUNTER_TYPE = "fbf0bfce-e9f4-45bb-935a-59195d8a0e35";
 	public static final String TB_DISCONTINUATION_ENCOUNTER_TYPE = "d3e3d723-7458-4b4e-8998-408e8a551a84";
-	public static final String LAB_RESULTS_ENCOUNTER_TYPE = "17a381d1-7e29-406a-b782-aa903b963c28";
-	public static final String CHECK_OUT_ENCOUNTER_TYPE ="abfb143c-5b49-41e5-9ead-f47ee4cc57cf";
+	public static final String TB_ENROLLMENT_ENCOUNTER_TYPE = "9d8498a4-372d-4dc4-a809-513a2434621e";
+	public static final String TB_SCREENING_ENCOUNTER_TYPE = "ed6dacc9-0827-4c82-86be-53c0d8c449be";
+	public static final String TRIAGE_ENCOUNTER_TYPE = "d1059fb9-a079-4feb-a749-eedd709ae542";
 
 	// Forms
 	public static final String HIV_PROGRAM_ENROLLMENT_FORM = "e4b506c1-7379-42b6-a374-284469cba8da";
