@@ -161,7 +161,7 @@
 		</td>
 	</tr>	
 	<tr id="topMost">
-		<td>
+		<td valign="top">
 			<fielset>
 				<legend>Clinic and Encounter Details</legend>
 				<table border="0" class="tb1" width="100%">
@@ -187,7 +187,7 @@
 				</table>
 			</fielset>	
 		</td>
-		<td>
+		<td valign="top">
 		<fielset>
 			<legend>Patient Referral Information</legend>
 				<table class="tb1" width="100%">
@@ -222,7 +222,7 @@
 		</td>
 	</tr>
 	<tr>
-		<td>
+		<td valign="top">
 			<fielset>
 				<legend>Patient Information (Edit Address using the Registration screen)</legend>
 					<table id="patientAddress" class="tb1" border="0" width="100%">
@@ -249,7 +249,7 @@
 					</table>
 				</fielset>	
 			</td>
-		<td>
+		<td valign="top">
 			<fielset>
 				<legend>Treatment Supported Information</legend>
 					<table width="100%" class="tb1" id="treatmentSupporter">
@@ -275,7 +275,7 @@
 		</td>
 	</tr>
 	<tr>
-		<td>
+		<td valign="top">
 			<fielset>
 				<legend>Disease Classification</legend>
 					<table class="tb1" border="0" width="100%">
@@ -369,7 +369,7 @@
 		</td>	
 	</tr>
 	<tr>
-		<td>
+		<td valign="top">
 			<fielset>
 				<legend>Transfer In Information (Enter only if patient is a Transfer In)</legend>
 					<table class="tb1" border="0" width="100%" id="transferInDetails">
