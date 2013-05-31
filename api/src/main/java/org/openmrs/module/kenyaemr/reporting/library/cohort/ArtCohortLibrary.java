@@ -16,11 +16,9 @@ package org.openmrs.module.kenyaemr.reporting.library.cohort;
 
 import org.openmrs.Concept;
 import org.openmrs.EncounterType;
-import org.openmrs.Program;
 import org.openmrs.api.PatientSetService;
-import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.MetadataConstants;
+import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.calculation.art.*;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.EmrCalculationCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.EmrDateCalculationCohortDefinition;
@@ -51,7 +49,7 @@ public class ArtCohortLibrary {
 	 * @return the cohort definition
 	 */
 	public CohortDefinition referredFrom(Concept... entryPoints) {
-		EncounterType hivEnrollEncType = Context.getEncounterService().getEncounterTypeByUuid(MetadataConstants.HIV_ENROLLMENT_ENCOUNTER_TYPE_UUID);
+		EncounterType hivEnrollEncType = Metadata.getEncounterType(Metadata.HIV_ENROLLMENT_ENCOUNTER_TYPE);
 		Concept methodOfEnrollment = Dictionary.getConcept(Dictionary.METHOD_OF_ENROLLMENT);
 
 		CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
@@ -72,7 +70,7 @@ public class ArtCohortLibrary {
 	 * @return the cohort definition
 	 */
 	public CohortDefinition referredNotFrom(Concept... entryPoints) {
-		EncounterType hivEnrollEncType = Context.getEncounterService().getEncounterTypeByUuid(MetadataConstants.HIV_ENROLLMENT_ENCOUNTER_TYPE_UUID);
+		EncounterType hivEnrollEncType = Metadata.getEncounterType(Metadata.HIV_ENROLLMENT_ENCOUNTER_TYPE);
 		Concept methodOfEnrollment = Dictionary.getConcept(Dictionary.METHOD_OF_ENROLLMENT);
 
 		CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
@@ -92,8 +90,7 @@ public class ArtCohortLibrary {
 	 * @return the cohort definition
 	 */
 	public CohortDefinition enrolled() {
-		Program hivProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.HIV_PROGRAM_UUID);
-		return commonCohorts.enrolled(hivProgram);
+		return commonCohorts.enrolled(Metadata.getProgram(Metadata.HIV_PROGRAM));
 	}
 
 	/**
@@ -101,8 +98,7 @@ public class ArtCohortLibrary {
 	 * @return the cohort definition
 	 */
 	public CohortDefinition enrolledExcludingTransfers() {
-		Program hivProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.HIV_PROGRAM_UUID);
-		return commonCohorts.enrolledExcludingTransfers(hivProgram);
+		return commonCohorts.enrolledExcludingTransfers(Metadata.getProgram(Metadata.HIV_PROGRAM));
 	}
 
 	/**

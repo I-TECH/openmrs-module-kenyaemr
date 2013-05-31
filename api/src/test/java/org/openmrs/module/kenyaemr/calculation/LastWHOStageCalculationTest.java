@@ -1,3 +1,17 @@
+/**
+ * The contents of this file are subject to the OpenMRS Public License
+ * Version 1.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ * http://license.openmrs.org
+ *
+ * Software distributed under the License is distributed on an "AS IS"
+ * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+ * License for the specific language governing rights and limitations
+ * under the License.
+ *
+ * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ */
+
 package org.openmrs.module.kenyaemr.calculation;
 
 import org.junit.Assert;
@@ -9,13 +23,16 @@ import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
-import org.openmrs.module.kenyaemr.MetadataConstants;
+import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.test.TestUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Tests for {@link LastWHOStageCalculation}
+ */
 public class LastWHOStageCalculationTest extends BaseModuleContextSensitiveTest {
 
 	@Before
@@ -31,14 +48,14 @@ public class LastWHOStageCalculationTest extends BaseModuleContextSensitiveTest 
 	public void evaluate_shouldCalculateLatestWHOStage() throws Exception {
 
 		PatientService ps = Context.getPatientService();
-		Concept whoStage = Context.getConceptService().getConceptByUuid(MetadataConstants.CURRENT_WHO_STAGE_CONCEPT_UUID);
+		Concept whoStage = Dictionary.getConcept(Dictionary.CURRENT_WHO_STAGE);
 
 		// Give patient #6 a recent WHO ADULT 1 STAGE recording
-		Concept whoAdult1 = Context.getConceptService().getConceptByUuid(MetadataConstants.WHO_STAGE_1_ADULT_CONCEPT_UUID);
+		Concept whoAdult1 = Dictionary.getConcept(Dictionary.WHO_STAGE_1_ADULT);
 		TestUtils.saveObs(ps.getPatient(6), whoStage, whoAdult1, TestUtils.date(2012, 12, 1));
 
 		// Give patient #6 an older WHO ADULT 2 STAGE recording
-		Concept whoAdult2 = Context.getConceptService().getConceptByUuid(MetadataConstants.WHO_STAGE_2_ADULT_CONCEPT_UUID);
+		Concept whoAdult2 = Dictionary.getConcept(Dictionary.WHO_STAGE_2_ADULT);
 		TestUtils.saveObs(ps.getPatient(6), whoStage, whoAdult2, TestUtils.date(2010, 11, 1));
 		
 		Context.flushSession();

@@ -14,10 +14,7 @@
 
 package org.openmrs.module.kenyaemr.reporting.library.cohort;
 
-import org.openmrs.EncounterType;
-import org.openmrs.Program;
-import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyaemr.MetadataConstants;
+import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -36,8 +33,7 @@ public class TbCohortLibrary {
 	 * @return the cohort definition
 	 */
 	public CohortDefinition enrolled() {
-		Program tbProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.TB_PROGRAM_UUID);
-		return commonCohorts.enrolled(tbProgram);
+		return commonCohorts.enrolled(Metadata.getProgram(Metadata.TB_PROGRAM));
 	}
 
 	/**
@@ -45,7 +41,6 @@ public class TbCohortLibrary {
 	 * @return the cohort definition
 	 */
 	public CohortDefinition screenedForTb() {
-		EncounterType tbScreeningEncType = Context.getEncounterService().getEncounterTypeByUuid(MetadataConstants.TB_SCREENING_ENCOUNTER_TYPE_UUID);
-		return commonCohorts.hasEncounter(tbScreeningEncType);
+		return commonCohorts.hasEncounter(Metadata.getEncounterType(Metadata.TB_SCREENING_ENCOUNTER_TYPE));
 	}
 }

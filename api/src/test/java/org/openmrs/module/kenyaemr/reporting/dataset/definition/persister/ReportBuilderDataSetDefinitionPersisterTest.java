@@ -1,4 +1,4 @@
-/*
+/**
  * The contents of this file are subject to the OpenMRS Public License
  * Version 1.0 (the "License"); you may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
@@ -18,44 +18,44 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.module.kenyaemr.reporting.ReportManager;
-import org.openmrs.module.kenyaemr.reporting.dataset.definition.MergingDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
+import static org.hamcrest.CoreMatchers.*;
+
 /**
- *
+ * Tests for {@link ReportBuilderDataSetDefinitionPersister}
  */
 public class ReportBuilderDataSetDefinitionPersisterTest extends BaseModuleContextSensitiveTest {
 
 	@Autowired
-	ReportManager reportManager;
+	private ReportManager reportManager;
 
 	@Autowired
-	ReportBuilderDataSetDefinitionPersister persister;
+	private ReportBuilderDataSetDefinitionPersister persister;
 
+	/**
+	 * Setup each test
+	 */
 	@Before
-	public void setup() {
+	public void setup() throws Exception {
+		executeDataSet("test-data.xml");
+		executeDataSet("test-drugdata.xml");
+
 		reportManager.refresh();
 	}
 
+	/**
+	 * @see ReportBuilderDataSetDefinitionPersister#getAllDefinitions(boolean)
+	 */
 	@Test
-	public void shouldListAllKenyaEmrDSDs() throws Exception {
+	public void getAllDefinitions_shouldListAllKenyaEmrDSDs() throws Exception {
 		List<DataSetDefinition> allDefinitions = persister.getAllDefinitions(true);
-		Assert.assertNotNull(allDefinitions);
 
-		// there are some ReportBuilderss that don't actually work, so they provide no DSDs...
-		//assertThat(allDefinitions.size(), is(service.getReportBuildersByTag(null).size()));
-
-		// Assert that Moh731Report does provide its DSD
-		boolean found = false;
-		for (DataSetDefinition dsd : allDefinitions) {
-			if (dsd.getName().equals("MOH 731 DSD") && dsd instanceof MergingDataSetDefinition) {
-				found = true;
-			}
-		}
-		Assert.assertTrue(found);
+		Assert.assertThat(allDefinitions, notNullValue());
+		Assert.assertThat(allDefinitions.size(), not(0));
 	}
 }

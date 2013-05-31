@@ -20,6 +20,9 @@ import org.junit.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
+/**
+ * Tests for {@link Dictionary}
+ */
 public class DictionaryTest extends BaseModuleContextSensitiveTest {
 
 	/**
@@ -39,20 +42,16 @@ public class DictionaryTest extends BaseModuleContextSensitiveTest {
 	 * @see Dictionary#getConcept(String)
 	 */
 	@Test
-	public void getConcept_shouldFetchConceptByMappingOrUuid() {
+	public void getConcept_shouldFetchByMappingOrUuid() {
 		// Check lookup by UUID
 		Assert.assertEquals(Dictionary.CD4_COUNT, Dictionary.getConcept(Dictionary.CD4_COUNT).getUuid());
+	}
 
-		try {
-			// Check that valid uuid with no concept throws exception
-			Dictionary.getConcept("79BC2641-C169-4780-BBA9-796DEAE9055D");
-			Assert.fail();
-		} catch (Exception ex) {}
-
-		try {
-			// Check that valid mapping with no concept throws exception
-			Dictionary.getConcept("PIH:XXXXXXXXXXXXXXX");
-			Assert.fail();
-		} catch (Exception ex) {}
+	/**
+	 * @see Dictionary#getConcept(String)
+	 */
+	@Test(expected = IllegalArgumentException.class)
+	public void getConcept_shouldThrowExceptionForNonExistent() {
+		Dictionary.getConcept("PIH:XXXXXXXXXXXXXXX");
 	}
 }

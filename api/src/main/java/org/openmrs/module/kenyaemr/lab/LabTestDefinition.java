@@ -16,7 +16,7 @@ package org.openmrs.module.kenyaemr.lab;
 
 import org.openmrs.Concept;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.MetadataConstants;
+import org.openmrs.module.kenyaemr.Metadata;
 
 /**
  * Lab test definition
@@ -33,7 +33,7 @@ public class LabTestDefinition {
 	 */
 	public LabTestDefinition(String conceptIdentifier)  {
 		this.conceptIdentifier = conceptIdentifier;
-		this.name = getConcept().getPreferredName(MetadataConstants.LOCALE).getName();
+		this.name = getConcept().getPreferredName(Metadata.LOCALE).getName();
 	}
 
 	/**

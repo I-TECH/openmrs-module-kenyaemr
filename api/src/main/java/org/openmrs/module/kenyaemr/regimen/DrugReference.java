@@ -18,6 +18,7 @@ import org.openmrs.Concept;
 import org.openmrs.Drug;
 import org.openmrs.DrugOrder;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.util.OpenmrsUtil;
 
 /**
@@ -25,18 +26,18 @@ import org.openmrs.util.OpenmrsUtil;
  */
 public class DrugReference {
 
-	private String conceptUuid;
+	private String conceptIdentifier;
 
-	private String drugUuid;
+	private String drugIdentifier;
 
 	/**
 	 * Constructs a drug reference
-	 * @param conceptUuid the concept UUID
-	 * @param drugUuid the drug UUID
+	 * @param conceptIdentifier the concept identifier
+	 * @param drugIdentifier the drug UUID
 	 */
-	private DrugReference(String conceptUuid, String drugUuid) {
-		this.conceptUuid = conceptUuid;
-		this.drugUuid = drugUuid;
+	private DrugReference(String conceptIdentifier, String drugIdentifier) {
+		this.conceptIdentifier = conceptIdentifier;
+		this.drugIdentifier = drugIdentifier;
 	}
 
 	/**
@@ -72,7 +73,7 @@ public class DrugReference {
 	 * @return true if reference is to a concept only
 	 */
 	public boolean isConceptOnly() {
-		return drugUuid == null;
+		return drugIdentifier == null;
 	}
 
 	/**
@@ -80,7 +81,7 @@ public class DrugReference {
 	 * @return the concept
 	 */
 	public Concept getConcept() {
-		return Context.getConceptService().getConceptByUuid(conceptUuid);
+		return Dictionary.getConcept(conceptIdentifier);
 	}
 
 	/**
@@ -88,7 +89,7 @@ public class DrugReference {
 	 * @return the drug
 	 */
 	public Drug getDrug() {
-		return Context.getConceptService().getDrugByUuid(drugUuid);
+		return Context.getConceptService().getDrugByUuid(drugIdentifier);
 	}
 
 	/**
@@ -102,11 +103,11 @@ public class DrugReference {
 
 		DrugReference drugRef = (DrugReference)o;
 
-		if (!this.conceptUuid.equals(drugRef.conceptUuid)) {
+		if (!this.conceptIdentifier.equals(drugRef.conceptIdentifier)) {
 			return false;
 		}
 
-		return OpenmrsUtil.nullSafeEquals(this.drugUuid, drugRef.drugUuid);
+		return OpenmrsUtil.nullSafeEquals(this.drugIdentifier, drugRef.drugIdentifier);
 	}
 
 	/**
@@ -114,7 +115,7 @@ public class DrugReference {
 	 */
 	@Override
 	public int hashCode() {
-		return conceptUuid.hashCode() + (drugUuid != null ? drugUuid.hashCode() : 0);
+		return conceptIdentifier.hashCode() + (drugIdentifier != null ? drugIdentifier.hashCode() : 0);
 	}
 
 	/**
@@ -122,6 +123,6 @@ public class DrugReference {
 	 */
 	@Override
 	public String toString() {
-		return isConceptOnly() ? ("C$" + conceptUuid) : ("D$" + drugUuid);
+		return isConceptOnly() ? ("C$" + conceptIdentifier) : ("D$" + drugIdentifier);
 	}
 }

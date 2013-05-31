@@ -21,7 +21,8 @@ import org.openmrs.Cohort;
 import org.openmrs.Concept;
 import org.openmrs.Form;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyaemr.MetadataConstants;
+import org.openmrs.module.kenyaemr.Dictionary;
+import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.reporting.indicator.HivCareVisitsIndicator;
 import org.openmrs.module.kenyaemr.test.TestUtils;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
@@ -44,9 +45,9 @@ public class HivCareVisitsIndicatorEvaluatorTest extends BaseModuleContextSensit
 		executeDataSet("test-data.xml");
 		executeDataSet("test-drugdata.xml");
 
-		Form hivAddendum = Context.getFormService().getFormByUuid(MetadataConstants.CLINICAL_ENCOUNTER_HIV_ADDENDUM_FORM_UUID);
-		Form moh257 = Context.getFormService().getFormByUuid(MetadataConstants.MOH_257_VISIT_SUMMARY_FORM_UUID);
-		Concept returnVisitDate = Context.getConceptService().getConceptByUuid(MetadataConstants.RETURN_VISIT_DATE_CONCEPT_UUID);
+		Form hivAddendum = Metadata.getForm(Metadata.CLINICAL_ENCOUNTER_HIV_ADDENDUM_FORM);
+		Form moh257 = Metadata.getForm(Metadata.MOH_257_VISIT_SUMMARY_FORM);
+		Concept returnVisitDate = Dictionary.getConcept(Dictionary.RETURN_VISIT_DATE);
 
 		// Schedule a return visit for patient #6 on 10-Jan-2012
 		TestUtils.saveObs(Context.getPatientService().getPatient(6), returnVisitDate, TestUtils.date(2012, 1, 10), TestUtils.date(2012, 1, 1));

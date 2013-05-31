@@ -85,7 +85,7 @@ public class KenyaEmrTest /*extends BaseModuleContextSensitiveTest*/ {
 
 		try {
 			// Test with class with no components
-			KenyaEmr.getSingletonComponent(MetadataConstants.class);
+			KenyaEmr.getSingletonComponent(Metadata.class);
 			Assert.fail();
 		}
 		catch (Exception ex) {

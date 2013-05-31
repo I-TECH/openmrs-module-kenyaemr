@@ -27,7 +27,6 @@ import org.openmrs.module.htmlformentry.FormSubmissionError;
 import org.openmrs.module.htmlformentry.action.FormSubmissionControllerAction;
 import org.openmrs.module.htmlformentry.element.HtmlGeneratorElement;
 import org.openmrs.module.kenyaemr.KenyaEmr;
-import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.kenyaemr.lab.LabManager;
 import org.openmrs.module.kenyaemr.lab.LabTestDefinition;
 import org.openmrs.module.kenyaemr.util.KenyaEmrUtils;

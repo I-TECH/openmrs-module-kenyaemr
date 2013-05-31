@@ -20,7 +20,7 @@ import org.junit.Test;
 import org.openmrs.DrugOrder;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.MetadataConstants;
+import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -61,7 +61,7 @@ public class LabManagerTest extends BaseModuleContextSensitiveTest {
 		List<LabTestDefinition> tests = labManager.getTests("category1");
 		Assert.assertEquals(2, tests.size());
 		Assert.assertEquals(Dictionary.getConcept(Dictionary.CD4_COUNT), tests.get(0).getConcept());
-		Assert.assertEquals(Dictionary.getConcept(Dictionary.CD4_COUNT).getPreferredName(MetadataConstants.LOCALE).getName(), tests.get(0).getName());
+		Assert.assertEquals(Dictionary.getConcept(Dictionary.CD4_COUNT).getPreferredName(Metadata.LOCALE).getName(), tests.get(0).getName());
 		Assert.assertEquals(Dictionary.getConcept(Dictionary.CD4_PERCENT), tests.get(1).getConcept());
 		Assert.assertEquals("test-name", tests.get(1).getName());
 

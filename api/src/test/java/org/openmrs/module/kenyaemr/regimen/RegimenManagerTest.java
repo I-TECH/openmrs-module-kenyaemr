@@ -19,8 +19,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.DrugOrder;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyaemr.KenyaEmr;
-import org.openmrs.module.kenyaemr.MetadataConstants;
+import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -59,7 +58,7 @@ public class RegimenManagerTest extends BaseModuleContextSensitiveTest {
 	public void loadDefinitionsFromXML_shouldLoadAllDefinitions() throws Exception {
 		Assert.assertEquals(1, regimenManager.getCategoryCodes().size());
 
-		Assert.assertEquals(MetadataConstants.ANTIRETROVIRAL_DRUGS_CONCEPT_UUID, regimenManager.getMasterSetConcept("category1").getUuid());
+		Assert.assertEquals(Dictionary.ANTIRETROVIRAL_DRUGS, regimenManager.getMasterSetConcept("category1").getUuid());
 
 		List<RegimenDefinitionGroup> groups = regimenManager.getRegimenGroups("category1");
 

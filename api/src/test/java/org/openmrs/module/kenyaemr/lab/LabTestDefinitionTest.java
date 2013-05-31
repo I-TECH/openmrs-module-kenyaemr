@@ -18,7 +18,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.MetadataConstants;
+import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 /**
@@ -39,7 +39,7 @@ public class LabTestDefinitionTest extends BaseModuleContextSensitiveTest {
 		// Check with concept uuid
 		LabTestDefinition def = new LabTestDefinition(Dictionary.CD4_COUNT);
 		Assert.assertEquals(Dictionary.getConcept(Dictionary.CD4_COUNT), def.getConcept());
-		Assert.assertEquals(Dictionary.getConcept(Dictionary.CD4_COUNT).getPreferredName(MetadataConstants.LOCALE).getName(), def.getName());
+		Assert.assertEquals(Dictionary.getConcept(Dictionary.CD4_COUNT).getPreferredName(Metadata.LOCALE).getName(), def.getName());
 
 		// Check with concept uuid and name
 		def = new LabTestDefinition(Dictionary.CD4_COUNT, "test-name");

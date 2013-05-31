@@ -21,7 +21,7 @@ import org.openmrs.EncounterType;
 import org.openmrs.Program;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.MetadataConstants;
+import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.test.ReportingTestUtils;
 import org.openmrs.module.kenyaemr.test.TestUtils;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
@@ -122,8 +122,8 @@ public class CommonCohortLibraryTest extends BaseModuleContextSensitiveTest {
 	 */
 	@Test
 	public void hasEncounter() throws Exception {
-		EncounterType registrationType = Context.getEncounterService().getEncounterTypeByUuid(MetadataConstants.REGISTRATION_ENCOUNTER_TYPE_UUID);
-		EncounterType triageType = Context.getEncounterService().getEncounterTypeByUuid(MetadataConstants.TRIAGE_ENCOUNTER_TYPE_UUID);
+		EncounterType registrationType = Metadata.getEncounterType(Metadata.REGISTRATION_ENCOUNTER_TYPE);
+		EncounterType triageType = Metadata.getEncounterType(Metadata.TRIAGE_ENCOUNTER_TYPE);
 
 		// Give #6 registration encounter on June 1st
 		TestUtils.saveEncounter(Context.getPatientService().getPatient(6), registrationType, TestUtils.date(2012, 6, 1));
@@ -146,7 +146,7 @@ public class CommonCohortLibraryTest extends BaseModuleContextSensitiveTest {
 	 */
 	@Test
 	public void enrolled() throws Exception {
-		Program hivProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.HIV_PROGRAM_UUID);
+		Program hivProgram = Metadata.getProgram(Metadata.HIV_PROGRAM);
 
 		// Enroll patient 2 on May 31st
 		TestUtils.enrollInProgram(Context.getPatientService().getPatient(2), hivProgram, TestUtils.date(2012, 5, 31));
@@ -208,7 +208,7 @@ public class CommonCohortLibraryTest extends BaseModuleContextSensitiveTest {
 	 */
 	@Test
 	public void enrolledExcludingTransfers() throws Exception {
-		Program hivProgram = Context.getProgramWorkflowService().getProgramByUuid(MetadataConstants.HIV_PROGRAM_UUID);
+		Program hivProgram = Metadata.getProgram(Metadata.HIV_PROGRAM);
 		Concept transferInDate = Dictionary.getConcept(Dictionary.TRANSFER_IN_DATE);
 
 		// Enroll #6 on June 1st

@@ -38,10 +38,10 @@ import java.util.Date;
 public class KenyaEmrUiUtils {
 
 	@Autowired
-	KenyaUiUtils kenyaUi;
+	private KenyaUiUtils kenyaUi;
 
 	@Autowired
-	KenyaEmr emr;
+	private KenyaEmr emr;
 
 	/**
 	 * Formats the dates of the given visit
@@ -77,7 +77,7 @@ public class KenyaEmrUiUtils {
 	 * @return the string value
 	 */
 	public String formatDrug(DrugReference drugRef, UiUtils ui) {
-		return drugRef.isConceptOnly() ? drugRef.getConcept().getPreferredName(MetadataConstants.LOCALE).getName() : drugRef.getDrug().getName();
+		return drugRef.isConceptOnly() ? drugRef.getConcept().getPreferredName(Metadata.LOCALE).getName() : drugRef.getDrug().getName();
 	}
 
 	/**
@@ -92,9 +92,9 @@ public class KenyaEmrUiUtils {
 		}
 		List<String> components = new ArrayList<String>();
 		for (DrugOrder o : regimen.getDrugOrders()) {
-			ConceptName cn = o.getConcept().getPreferredName(MetadataConstants.LOCALE);
+			ConceptName cn = o.getConcept().getPreferredName(Metadata.LOCALE);
 			if (cn == null) {
-				cn = o.getConcept().getName(MetadataConstants.LOCALE);
+				cn = o.getConcept().getName(Metadata.LOCALE);
 			}
 			components.add(cn.getName());
 		}
@@ -115,9 +115,9 @@ public class KenyaEmrUiUtils {
 		for (DrugOrder o : regimen.getDrugOrders()) {
 			StringBuilder sb = new StringBuilder();
 
-			ConceptName cn = o.getConcept().getShortNameInLocale(MetadataConstants.LOCALE);
+			ConceptName cn = o.getConcept().getShortNameInLocale(Metadata.LOCALE);
 			if (cn == null) {
-				cn = o.getConcept().getName(MetadataConstants.LOCALE);
+				cn = o.getConcept().getName(Metadata.LOCALE);
 			}
 			sb.append(cn.getName());
 
