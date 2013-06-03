@@ -66,10 +66,12 @@ public class Moh257FragmentController {
 			}
 		}
 
-		List<Encounter> moh257VisitSummaryEncounters = getPatientEncounterByForm(patient, Metadata.getForm(Metadata.MOH_257_VISIT_SUMMARY_FORM));
+		Form moh257VisitForm = Metadata.getForm(Metadata.MOH_257_VISIT_SUMMARY_FORM);
+		List<Encounter> moh257VisitSummaryEncounters = getPatientEncounterByForm(patient, moh257VisitForm);
 
 		model.addAttribute("page1AvailableForms", page1AvailableForms);
 		model.addAttribute("page1Encounters", page1Encounters);
+		model.addAttribute("page2Form", moh257VisitForm);
 		model.addAttribute("page2Encounters", moh257VisitSummaryEncounters);
 
 		Concept masterSet = emr.getRegimenManager().getMasterSetConcept("ARV");

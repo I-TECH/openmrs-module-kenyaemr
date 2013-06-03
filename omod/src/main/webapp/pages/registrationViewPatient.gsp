@@ -12,16 +12,16 @@
 			${ ui.includeFragment("kenyaemr", "programHistory", [
 					patient: patient,
 					program: hivProgram,
-					enrollmentFormUuid: MetadataConstants.HIV_PROGRAM_ENROLLMENT_FORM_UUID,
-					discontinuationFormUuid: MetadataConstants.HIV_PROGRAM_DISCONTINUATION_FORM_UUID,
+					enrollmentForm: Metadata.getForm(Metadata.HIV_PROGRAM_ENROLLMENT_FORM),
+					discontinuationForm: Metadata.getForm(Metadata.HIV_PROGRAM_DISCONTINUATION_FORM),
 					showClinicalData: false
 			]) }
 
 			${ ui.includeFragment("kenyaemr", "programHistory", [
 					patient: patient,
 					program: tbProgram,
-					enrollmentFormUuid: MetadataConstants.TB_ENROLLMENT_FORM_UUID,
-					discontinuationFormUuid: MetadataConstants.TB_COMPLETION_FORM_UUID,
+					enrollmentForm: Metadata.getForm(Metadata.TB_ENROLLMENT_FORM),
+					discontinuationForm: Metadata.getForm(Metadata.TB_COMPLETION_FORM),
 					showClinicalData: false
 			]) }
 		</td>

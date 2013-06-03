@@ -31,14 +31,14 @@ public class ProgramHistoryFragmentController {
 						   @FragmentParam("patient") Patient patient,
 						   @FragmentParam("program") Program program,
 						   @FragmentParam("showClinicalData") boolean showClinicalData,
-						   @FragmentParam("enrollmentFormUuid") String enrollmentFormUuid,
-						   @FragmentParam("discontinuationFormUuid") String discontinuationFormUuid) {
+						   @FragmentParam("enrollmentForm") Form enrollmentForm,
+						   @FragmentParam("discontinuationForm") Form discontinuationForm) {
 
 		model.addAttribute("patient", patient);
 		model.addAttribute("program", program);
 		model.addAttribute("showClinicalData", showClinicalData);
-		model.addAttribute("enrollmentForm", Context.getFormService().getFormByUuid(enrollmentFormUuid));
-		model.addAttribute("discontinuationForm", Context.getFormService().getFormByUuid(discontinuationFormUuid));
+		model.addAttribute("enrollmentForm", enrollmentForm);
+		model.addAttribute("discontinuationForm", discontinuationForm);
 
 		ProgramWorkflowService pws = Context.getProgramWorkflowService();
 		PatientProgram currentEnrollment = null;

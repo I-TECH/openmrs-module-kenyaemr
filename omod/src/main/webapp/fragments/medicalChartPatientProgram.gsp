@@ -20,9 +20,8 @@
 	</div>
 </div>
 
-<% if (config.patientProgram.program.uuid == MetadataConstants.HIV_PROGRAM_UUID) { %>
+<% if (Metadata.hasIdentity(config.patientProgram.program, Metadata.HIV_PROGRAM)) { %>
 	${ ui.includeFragment("kenyaemr", "careSummaryHiv", [ patient: patient, complete: true ]) }
-<% } else if (config.patientProgram.program.uuid == MetadataConstants.TB_PROGRAM_UUID) { %>
+<% } else if (Metadata.hasIdentity(config.patientProgram.program, Metadata.TB_PROGRAM)) { %>
 	${ ui.includeFragment("kenyaemr", "careSummaryTb", [ patient: patient, complete: true ]) }
 <% } %>
-

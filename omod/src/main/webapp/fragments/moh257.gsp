@@ -1,5 +1,5 @@
 <%
-	def onAddVisitSuccess = "location.href = ui.pageLink('kenyaemr', 'enterHtmlForm', { patientId: ${ patient.id }, formUuid: '${ MetadataConstants.MOH_257_VISIT_SUMMARY_FORM_UUID }', visitId: data.visitId, returnUrl: location.href })"
+	def onAddVisitSuccess = "location.href = ui.pageLink('kenyaemr', 'enterHtmlForm', { patientId: ${ patient.id }, formUuid: '${ page2Form.uuid }', visitId: data.visitId, returnUrl: location.href })"
 %>
 
 <div class="ke-panel-frame">
