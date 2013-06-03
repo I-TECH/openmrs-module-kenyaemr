@@ -17,12 +17,8 @@ package org.openmrs.module.kenyaemr.converter;
 import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.Patient;
-import org.openmrs.Visit;
 import org.openmrs.VisitType;
-import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyaemr.MetadataConstants;
-import org.openmrs.module.kenyaemr.test.TestUtils;
+import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 
 /**
@@ -32,6 +28,9 @@ public class StringToVisitTypeConverterTest extends BaseModuleWebContextSensitiv
 
 	private StringToVisitTypeConverter converter;
 
+	/**
+	 * Setup each test
+	 */
 	@Before
 	public void setup() throws Exception {
 		executeDataSet("test-data.xml");
@@ -48,7 +47,7 @@ public class StringToVisitTypeConverterTest extends BaseModuleWebContextSensitiv
 		Assert.assertNull(converter.convert(""));
 
 		// Check actual visit type
-		VisitType outpatientType = Context.getVisitService().getVisitTypeByUuid(MetadataConstants.OUTPATIENT_VISIT_TYPE_UUID);
+		VisitType outpatientType = Metadata.getVisitType(Metadata.OUTPATIENT_VISIT_TYPE);
 
 		Assert.assertEquals(outpatientType, converter.convert(outpatientType.getVisitTypeId().toString()));
 	}

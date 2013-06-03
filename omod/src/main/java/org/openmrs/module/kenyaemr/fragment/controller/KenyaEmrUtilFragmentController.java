@@ -28,6 +28,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.module.kenyaemr.KenyaEmr;
 import org.openmrs.module.kenyaemr.KenyaEmrUiUtils;
+import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.kenyaemr.api.ConfigurationRequiredException;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
@@ -55,9 +56,9 @@ public class KenyaEmrUtilFragmentController {
 	 */
 	public List<SimpleObject> locationSearch(@RequestParam(required = false, value = "term") String term, UiUtils ui, @SpringBean KenyaEmrUiUtils kenyaUi) {
 		LocationService svc = Context.getLocationService();
-		LocationAttributeType mflCodeAttrType = svc.getLocationAttributeTypeByUuid(MetadataConstants.MASTER_FACILITY_CODE_LOCATION_ATTRIBUTE_TYPE_UUID);
+		LocationAttributeType mflCodeAttrType = Metadata.getLocationAttributeType(Metadata.MASTER_FACILITY_CODE_LOCATION_ATTRIBUTE_TYPE);
 
-		// Results will be sorted by name
+				// Results will be sorted by name
 		Set<Location> results = new TreeSet<Location>(new Comparator<Location>() {
 			@Override
 			public int compare(Location location1, Location location2) {

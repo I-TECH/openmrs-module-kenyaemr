@@ -17,13 +17,8 @@ package org.openmrs.module.kenyaemr.converter;
 import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.Patient;
 import org.openmrs.Role;
-import org.openmrs.Visit;
-import org.openmrs.VisitType;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyaemr.MetadataConstants;
-import org.openmrs.module.kenyaemr.test.TestUtils;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 
 /**
@@ -33,6 +28,9 @@ public class StringToRoleConverterTest extends BaseModuleWebContextSensitiveTest
 
 	private StringToRoleConverter converter;
 
+	/**
+	 * Setup each test
+	 */
 	@Before
 	public void setup() throws Exception {
 		converter = new StringToRoleConverter();

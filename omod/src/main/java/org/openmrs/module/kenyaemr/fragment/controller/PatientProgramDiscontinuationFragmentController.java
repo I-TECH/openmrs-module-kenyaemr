@@ -15,7 +15,6 @@
 package org.openmrs.module.kenyaemr.fragment.controller;
 
 import org.openmrs.*;
-import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.MetadataConstants;
 import org.openmrs.module.kenyaemr.util.KenyaEmrUtils;

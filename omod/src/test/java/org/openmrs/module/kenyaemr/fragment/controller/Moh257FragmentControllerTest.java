@@ -24,7 +24,7 @@ import org.openmrs.VisitType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.KenyaEmr;
 import org.openmrs.module.kenyaemr.KenyaEmrUiUtils;
-import org.openmrs.module.kenyaemr.MetadataConstants;
+import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.module.kenyaemr.test.TestUiUtils;
 import org.openmrs.module.kenyaemr.test.TestUtils;
@@ -77,7 +77,7 @@ public class Moh257FragmentControllerTest extends BaseModuleWebContextSensitiveT
 	@Test
 	public void createRetrospectiveVisit() {
 		Patient patient = Context.getPatientService().getPatient(7);
-		VisitType outpatientType = Context.getVisitService().getVisitTypeByUuid(MetadataConstants.OUTPATIENT_VISIT_TYPE_UUID);
+		VisitType outpatientType = Metadata.getVisitType(Metadata.OUTPATIENT_VISIT_TYPE);
 
 		// Save an existing visit on 1-May-2012 10-11am
 		Visit existingVisit = TestUtils.saveVisit(patient, outpatientType, TestUtils.date(2012, 5, 1, 10, 0, 0), TestUtils.date(2012, 5, 1, 11, 0, 0));

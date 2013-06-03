@@ -16,13 +16,9 @@ package org.openmrs.module.kenyaemr.fragment.controller;
 
 import org.openmrs.*;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyaemr.KenyaEmr;
-import org.openmrs.module.kenyaemr.KenyaEmrUiUtils;
-import org.openmrs.module.kenyaemr.MetadataConstants;
-import org.openmrs.module.kenyaemr.ValidatingCommandObject;
+import org.openmrs.module.kenyaemr.*;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.module.kenyaemr.regimen.RegimenChangeHistory;
-import org.openmrs.module.kenyaemr.util.KenyaEmrUtils;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.BindParams;
@@ -134,7 +130,7 @@ public class Moh257FragmentController {
 
 		public RetrospectiveVisit(Patient patient) {
 			this.patient = patient;
-			this.visitType = Context.getVisitService().getVisitTypeByUuid(MetadataConstants.OUTPATIENT_VISIT_TYPE_UUID);
+			this.visitType = Metadata.getVisitType(Metadata.OUTPATIENT_VISIT_TYPE);
 			this.location = Context.getService(KenyaEmrService.class).getDefaultLocation();
 			this.visitDate = OpenmrsUtil.firstSecondOfDay(new Date());
 		}
