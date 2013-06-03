@@ -17,16 +17,18 @@ package org.openmrs.module.kenyaemr.identifier;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.Location;
-import org.openmrs.PatientIdentifierType;
+import org.openmrs.PatientIdentifier;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.idgen.IdentifierSource;
-import org.openmrs.module.idgen.service.IdentifierSourceService;
 import org.openmrs.module.kenyaemr.KenyaEmr;
+import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.api.ConfigurationRequiredException;
-import org.openmrs.module.kenyaemr.api.KenyaEmrService;
+import org.openmrs.module.kenyaemr.test.TestUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
+
+import static org.hamcrest.Matchers.*;
 
 /**
  * Tests for {@link IdentifierManager}
@@ -44,6 +46,26 @@ public class IdentifierManagerTest extends BaseModuleContextSensitiveTest {
 		executeDataSet("test-data.xml");
 
 		emr.getMetadataManager().setupGlobalProperties();
+	}
+
+	/**
+	 * @see IdentifierManager#getPatientDisplayIdentifiers(org.openmrs.Patient)
+	 */
+	@Test
+	public void getPatientDisplayIdentifiers() {
+		// Give #6 a single OpenMRS ID
+		Context.getPatientService().voidPatientIdentifier(Context.getPatientService().getPatient(6).getPatientIdentifier(), "test");
+		PatientIdentifier pidOMRS = TestUtils.savePatientIdentifier(Context.getPatientService().getPatient(6), Metadata.getPatientIdentifierType(Metadata.OPENMRS_ID_IDENTIFIER_TYPE), "M3G");
+
+		List<PatientIdentifier> ids = identifierManager.getPatientDisplayIdentifiers(Context.getPatientService().getPatient(6));
+		Assert.assertThat(ids, containsInAnyOrder(pidOMRS));
+
+		// Give #6 additional identifiers
+		PatientIdentifier pidUPN = TestUtils.savePatientIdentifier(Context.getPatientService().getPatient(6), Metadata.getPatientIdentifierType(Metadata.UNIQUE_PATIENT_NUMBER_IDENTIFIER_TYPE), "1321200009");
+		PatientIdentifier pidPCN = TestUtils.savePatientIdentifier(Context.getPatientService().getPatient(6), Metadata.getPatientIdentifierType(Metadata.PATIENT_CLINIC_NUMBER_IDENTIFIER_TYPE), "4646422");
+
+		ids = identifierManager.getPatientDisplayIdentifiers(Context.getPatientService().getPatient(6));
+		Assert.assertThat(ids, containsInAnyOrder(pidUPN, pidPCN));
 	}
 
 	/**

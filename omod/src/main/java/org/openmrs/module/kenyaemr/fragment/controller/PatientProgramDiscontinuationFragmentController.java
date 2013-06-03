@@ -16,7 +16,7 @@ package org.openmrs.module.kenyaemr.fragment.controller;
 
 import org.openmrs.*;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.MetadataConstants;
+import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.util.KenyaEmrUtils;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.fragment.FragmentModel;
@@ -45,10 +45,10 @@ public class PatientProgramDiscontinuationFragmentController {
 			dataPoints.put("Outcome", enrollment.getOutcome());
 		}
 
-		if (enrollment.getProgram().getUuid().equals(MetadataConstants.HIV_PROGRAM_UUID)) {
+		if (Metadata.hasIdentity(enrollment.getProgram(), Metadata.HIV_PROGRAM)) {
 			addHivDataPoints(dataPoints, enrollment, encounter, showClinicalData);
 		}
-		else if (enrollment.getProgram().getUuid().equals(MetadataConstants.TB_PROGRAM_UUID)) {
+		else if (Metadata.hasIdentity(enrollment.getProgram(), Metadata.TB_PROGRAM)) {
 			addTbDataPoints(dataPoints, enrollment, encounter, showClinicalData);
 		}
 

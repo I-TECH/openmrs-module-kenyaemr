@@ -128,6 +128,25 @@ public class TestUtils {
 	}
 
 	/**
+	 * Create and save a patient identifier
+	 * @param patient the patient
+	 * @param type the identifier type
+	 * @param value the identifier value
+	 * @return the saved encounter
+	 */
+	public static PatientIdentifier savePatientIdentifier(Patient patient, PatientIdentifierType type, String value) {
+		PatientIdentifier pid = new PatientIdentifier();
+		pid.setPatient(patient);
+		pid.setIdentifierType(type);
+		pid.setIdentifier(value);
+		pid.setLocation(Context.getLocationService().getLocation(1)); // Unknown Location
+
+		patient.addIdentifier(pid);
+
+		return Context.getPatientService().savePatientIdentifier(pid);
+	}
+
+	/**
 	 * Enroll a patient in a program
 	 * @param patient the patient
 	 * @param program the program

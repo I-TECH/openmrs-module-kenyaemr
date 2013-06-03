@@ -17,6 +17,7 @@ package org.openmrs.module.kenyaemr;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.EncounterType;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 /**
@@ -35,6 +36,23 @@ public class MetadataTest extends BaseModuleContextSensitiveTest {
 	@Test
 	public void integration() {
 		new Metadata();
+	}
+
+	/**
+	 * @see Metadata#hasIdentity(org.openmrs.OpenmrsObject, String)
+	 */
+	@Test
+	public void hasIdentity_shouldReturnTrueIfIdentifierMatchesObject() {
+		EncounterType et = Metadata.getEncounterType(Metadata.TB_SCREENING_ENCOUNTER_TYPE);
+
+		Assert.assertTrue(Metadata.hasIdentity(et, Metadata.TB_SCREENING_ENCOUNTER_TYPE));
+		Assert.assertFalse(Metadata.hasIdentity(et, Metadata.REGISTRATION_ENCOUNTER_TYPE));
+
+		// Check null object
+		Assert.assertFalse(Metadata.hasIdentity(null, Metadata.TB_SCREENING_ENCOUNTER_TYPE));
+
+		// Check null UUID
+		Assert.assertFalse(Metadata.hasIdentity(new EncounterType(), Metadata.TB_SCREENING_ENCOUNTER_TYPE));
 	}
 
 	/**

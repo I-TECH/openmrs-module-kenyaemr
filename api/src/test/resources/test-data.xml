@@ -144,7 +144,8 @@
 	<!-- =========================================== Patient identifiers =============================================== -->
 
 	<patient_identifier_type patient_identifier_type_id="1001" name="OpenMRS ID" description="Medical Record Number" validator="org.openmrs.module.idgen.validator.LuhnMod25IdentifierValidator" check_digit="0" required="1" creator="1" date_created="2004-08-12 00:00:00.0" retired="0" uuid="dfacd928-0370-4315-99d7-6ec1c9f7ae76"/>
-	<patient_identifier_type patient_identifier_type_id="1002" name="HIV Unique Patient Number" description="Unique Patient Number" check_digit="0" required="1" creator="1" date_created="2004-08-12 00:00:00.0" retired="0" uuid="05ee9cf4-7242-4a17-b4d4-00f707265c8a"/>
+	<patient_identifier_type patient_identifier_type_id="1002" name="HIV Unique Patient Number" description="Unique Patient Number" format="\d+" check_digit="0" required="0" creator="1" date_created="2004-08-12 00:00:00.0" retired="0" uuid="05ee9cf4-7242-4a17-b4d4-00f707265c8a"/>
+	<patient_identifier_type patient_identifier_type_id="1003" name="Patient Clinic Number" description="Patient Clinic Number" check_digit="0" required="1" creator="1" date_created="2004-08-12 00:00:00.0" retired="0" uuid="b4d66522-11fc-45c7-83e3-39a1af21ae0d"/>
 
 	<!-- =========================================== Forms =============================================== -->
 

@@ -11,34 +11,35 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.kenyaemr.fragment.controller;
 
-import java.util.Iterator;
 import java.util.List;
 
 import org.openmrs.Patient;
-import org.openmrs.PatientIdentifier;
 import org.openmrs.Visit;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appframework.AppStatus;
 import org.openmrs.module.appframework.AppUiUtil;
-import org.openmrs.module.kenyaemr.MetadataConstants;
+import org.openmrs.module.kenyaemr.KenyaEmr;
 import org.openmrs.module.kenyaemr.util.KenyaEmrUtils;
 import org.openmrs.ui.framework.WebConstants;
+import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.FragmentConfiguration;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 import org.openmrs.ui.framework.page.PageModel;
 import org.openmrs.ui.framework.session.Session;
 
 /**
- * A thin banner showing which patient this page is in the context of
+ * Banner showing which patient this page is in the context of
  */
 public class SelectedPatientHeaderFragmentController {
 
 	public void controller(PageModel sharedPageModel,
 	                       FragmentConfiguration config,
 	                       FragmentModel model,
-	                       Session session) {
+	                       Session session,
+						   @SpringBean KenyaEmr emr) {
 
 		Patient patient = (Patient) config.get("patient");
 		if (patient == null) {
@@ -63,19 +64,8 @@ public class SelectedPatientHeaderFragmentController {
 		} else {
 			model.addAttribute("appHomepageUrl", null);
 		}
-		
-		// TODO: utility to get identifiers besides OpenMRS ID (or get that if it's the only one)
-		List<PatientIdentifier> idsToShow = patient.getActiveIdentifiers();
-		for (Iterator<PatientIdentifier> i = idsToShow.iterator(); i.hasNext(); ) {
-			if (i.next().getIdentifierType().getUuid().equals(MetadataConstants.OPENMRS_ID_UUID)) {
-				i.remove();
-			}
-		}
-		if (idsToShow.isEmpty()) {
-			idsToShow.add(patient.getPatientIdentifier());
-		}
-		// TODO: end utility
-		model.addAttribute("idsToShow", idsToShow);
+
+		model.addAttribute("idsToShow", emr.getIdentifierManager().getPatientDisplayIdentifiers(patient));
 	}
 
 }

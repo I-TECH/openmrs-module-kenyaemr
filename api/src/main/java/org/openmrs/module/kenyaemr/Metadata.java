@@ -25,6 +25,17 @@ import java.util.Locale;
 public class Metadata {
 
 	/**
+	 * Checks the identity of an OpenMRS object against the given identifier (null safe)
+	 * @param object the object to check
+	 * @param identifier the identifier
+	 * @return true if the object matches the identifier
+	 */
+	public static boolean hasIdentity(OpenmrsObject object, String identifier) {
+		// For now we assume that every identifier is a UUID
+		return (object != null) && (object.getUuid() != null) && object.getUuid().equals(identifier);
+	}
+
+	/**
 	 * Gets the specified encounter type
 	 * @param identifier the identifier
 	 * @return the encounter type

@@ -45,32 +45,28 @@ public class Moh257FragmentController {
 						   Patient patient,
 						   FragmentModel model,
 						   UiUtils ui,
-						   Session session,
 						   @SpringBean KenyaEmr emr,
 						   @SpringBean KenyaEmrUiUtils kenyaUi) {
 
 		model.addAttribute("newREVisit", newRetrospectiveVisitCommandObject(patient));
 
-		String[] page1FormUuids = {
-				MetadataConstants.FAMILY_HISTORY_FORM_UUID,
-				MetadataConstants.HIV_PROGRAM_ENROLLMENT_FORM_UUID
-		};
+		String[] page1Forms = { Metadata.FAMILY_HISTORY_FORM, Metadata.HIV_PROGRAM_ENROLLMENT_FORM };
 
 		List<SimpleObject> page1AvailableForms = new ArrayList<SimpleObject>();
 		List<Encounter> page1Encounters = new ArrayList<Encounter>();
 
-		for (String page1FormUuid : page1FormUuids) {
-			List<Encounter> formEncounters = getPatientEncounterByForm(patient, Context.getFormService().getFormByUuid(page1FormUuid));
+		for (String page1Form : page1Forms) {
+			List<Encounter> formEncounters = getPatientEncounterByForm(patient, Metadata.getForm(page1Form));
 
 			if (formEncounters.size() == 0) {
-				page1AvailableForms.add(kenyaUi.simpleForm(emr.getFormManager().getFormDescriptor(page1FormUuid), ui));
+				page1AvailableForms.add(kenyaUi.simpleForm(emr.getFormManager().getFormDescriptor(page1Form), ui));
 			}
 			else {
 				page1Encounters.addAll(formEncounters);
 			}
 		}
 
-		List<Encounter> moh257VisitSummaryEncounters = getPatientEncounterByForm(patient, Context.getFormService().getFormByUuid(MetadataConstants.MOH_257_VISIT_SUMMARY_FORM_UUID));
+		List<Encounter> moh257VisitSummaryEncounters = getPatientEncounterByForm(patient, Metadata.getForm(Metadata.MOH_257_VISIT_SUMMARY_FORM));
 
 		model.addAttribute("page1AvailableForms", page1AvailableForms);
 		model.addAttribute("page1Encounters", page1Encounters);

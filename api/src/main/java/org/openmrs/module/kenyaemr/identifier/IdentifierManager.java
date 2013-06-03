@@ -14,6 +14,8 @@
 
 package org.openmrs.module.kenyaemr.identifier;
 
+import org.openmrs.Patient;
+import org.openmrs.PatientIdentifier;
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
@@ -27,6 +29,9 @@ import org.openmrs.module.kenyaemr.api.ConfigurationRequiredException;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Patient identifier manager
  */
@@ -35,6 +40,30 @@ public class IdentifierManager {
 
 	private static final String OPENMRS_MEDICAL_RECORD_NUMBER_NAME = "Kenya EMR - OpenMRS Medical Record Number";
 	private static final String HIV_UNIQUE_PATIENT_NUMBER_NAME = "Kenya EMR - OpenMRS HIV Unique Patient Number";
+
+	/**
+	 * Gets the identifiers to be displayed for the given patient
+	 * @param patient the patient
+	 * @return the identifiers
+	 */
+	public List<PatientIdentifier> getPatientDisplayIdentifiers(Patient patient) {
+		List<PatientIdentifier> activeIds = patient.getActiveIdentifiers();
+		List<PatientIdentifier> displayIds = new ArrayList<PatientIdentifier>();
+
+		// Patient has more than one active id, ignore the OpenMRS ID
+		if (activeIds.size() > 1) {
+			for (PatientIdentifier pid : activeIds) {
+				if (!Metadata.hasIdentity(pid.getIdentifierType(), Metadata.OPENMRS_ID_IDENTIFIER_TYPE)) {
+					displayIds.add(pid);
+				}
+			}
+		}
+		else {
+			displayIds.addAll(activeIds);
+		}
+
+		return displayIds;
+	}
 
 	/**
 	 * Gets whether all identifier types are configured
