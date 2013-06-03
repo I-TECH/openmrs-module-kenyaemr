@@ -64,7 +64,7 @@ public class MissedAppointmentsOrDefaultedCalculation extends BaseAlertCalculati
 		Program hivProgram = Metadata.getProgram(Metadata.HIV_PROGRAM);
 
 		Set<Integer> alive = alivePatients(cohort, context);
-		Set<Integer> inHivProgram = CalculationUtils.patientsThatPass(lastProgramEnrollment(hivProgram, alive, context));
+		Set<Integer> inHivProgram = CalculationUtils.patientsThatPass(activeEnrollment(hivProgram, alive, context));
         CalculationResultMap lastReturnDateObss = lastObs(getConcept(Dictionary.RETURN_VISIT_DATE), inHivProgram, context);
         CalculationResultMap lastEncounters = lastEncounter(null, cohort, context);
 

@@ -76,7 +76,7 @@ public class EmrReportingUtils {
 	 */
 	public static void addRow(CohortIndicatorDataSetDefinition cohortDsd, String baseName, String baseLabel, Mapped<CohortIndicator> indicator, List<ColumnParameters> columns) {
 		for (ColumnParameters column : columns) {
-			String name = baseName + "-" + column.getName();
+			String name = baseName + (column.getName() != null ? ("-" + column.getName()) : "");
 			String label = baseLabel + " (" + column.getLabel() + ")";
 			cohortDsd.addColumn(name, label, indicator, column.getDimensions());
 		}

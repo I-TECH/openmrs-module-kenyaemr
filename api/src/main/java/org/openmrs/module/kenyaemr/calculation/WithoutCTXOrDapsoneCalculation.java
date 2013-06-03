@@ -50,7 +50,7 @@ public class WithoutCTXOrDapsoneCalculation extends BaseEmrCalculation {
 		Program hivProgram = Metadata.getProgram(Metadata.HIV_PROGRAM);
 
 		Set<Integer> alive = alivePatients(cohort, context);
-		Set<Integer> inHivProgram = CalculationUtils.patientsThatPass(lastProgramEnrollment(hivProgram, alive, context));
+		Set<Integer> inHivProgram = CalculationUtils.patientsThatPass(activeEnrollment(hivProgram, alive, context));
 
 		CalculationResultMap medOrdersObss = allObs(getConcept(Dictionary.MEDICATION_ORDERS), cohort, context);
 

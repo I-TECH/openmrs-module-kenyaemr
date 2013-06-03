@@ -64,7 +64,7 @@ public class EligibleForArtCalculation extends BaseAlertCalculation {
 
 		// only applies to patients in the HIV program
 		Program hivProgram = Metadata.getProgram(Metadata.HIV_PROGRAM);
-		Set<Integer> inHivProgram = CalculationUtils.patientsThatPass(lastProgramEnrollment(hivProgram, cohort, context));
+		Set<Integer> inHivProgram = CalculationUtils.patientsThatPass(activeEnrollment(hivProgram, cohort, context));
 		
 		// need to exclude those on ART already
 		Set<Integer> onArt = CalculationUtils.patientsThatPass(calculate(new OnArtCalculation(), cohort, context));

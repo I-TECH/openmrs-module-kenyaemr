@@ -63,7 +63,7 @@ public class Moh711ReportTest extends BaseModuleContextSensitiveTest {
 
 		ReportingTestUtils.printReport(data);
 
-		Assert.assertEquals(2, data.getDataSets().size());
+		Assert.assertEquals(1, data.getDataSets().size());
 		MapDataSet dataSet = (MapDataSet) data.getDataSets().get("K: ART");
 		Assert.assertNotNull(dataSet);
 

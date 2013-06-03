@@ -68,7 +68,7 @@ public class MissingTbSputumResultsCalculation extends BaseAlertCalculation {
 
 		// Get all patients who are alive and in TB program
 		Set<Integer> alive = alivePatients(cohort, context);
-		Set<Integer> inTbProgram = CalculationUtils.patientsThatPass(lastProgramEnrollment(tbProgram, alive, context));
+		Set<Integer> inTbProgram = CalculationUtils.patientsThatPass(activeEnrollment(tbProgram, alive, context));
 		
 		//get last disease classification
 		CalculationResultMap lastDiseaseClassiffication = lastObs(getConcept(Dictionary.SITE_OF_TUBERCULOSIS_DISEASE), inTbProgram, context);

@@ -87,11 +87,27 @@ public class ArtIndicatorLibrary {
 	}
 
 	/**
+	 * Number of patients who started ART while being a TB patient
+	 * @return the indicator
+	 */
+	public CohortIndicator startedArtWhileTbPatient() {
+		return createCohortIndicator("Number of patients who started ART while being a TB patient", map(artCohorts.startedArtWhileTbPatient(), "onOrAfter=${startDate},onOrBefore=${endDate}"));
+	}
+
+	/**
 	 * Number of patients who started ART with given WHO stage
 	 * @return the indicator
 	 */
 	public CohortIndicator startedArtWithWhoStage(int stage) {
 		return createCohortIndicator("Number of patients who started ART with WHO stage " + stage, map(artCohorts.startedArtWithWhoStage(stage), "onOrAfter=${startDate},onOrBefore=${endDate}"));
+	}
+
+	/**
+	 * Number of patients who have ever started ART
+	 * @return the indicator
+	 */
+	public CohortIndicator startedArtCumulative() {
+		return createCohortIndicator("Number of patients who have ever started ART", map(artCohorts.startedArt(), "onOrBefore=${endDate}"));
 	}
 
 	/**
@@ -116,5 +132,13 @@ public class ArtIndicatorLibrary {
 	 */
 	public CohortIndicator onArtAndPregnant() {
 		return createCohortIndicator("Number of patients currently on ART and pregnant", map(artCohorts.onArtAndPregnant(), "onDate=${endDate}"));
+	}
+
+	/**
+	 * Number of patients who are currently on ART and pregnant
+	 * @return the indicator
+	 */
+	public CohortIndicator onArtAndNotPregnant() {
+		return createCohortIndicator("Number of patients currently on ART and not pregnant", map(artCohorts.onArtAndNotPregnant(), "onDate=${endDate}"));
 	}
 }

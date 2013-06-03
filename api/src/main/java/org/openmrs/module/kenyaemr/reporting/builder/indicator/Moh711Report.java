@@ -61,12 +61,6 @@ public class Moh711Report extends BaseIndicatorReportBuilder {
 	private ArtIndicatorLibrary artIndicators;
 
 	/**
-	 * Report specific cohorts and indicators
-	 */
-	private Map<String, CohortDefinition> cohortDefinitions;
-	private Map<String, CohortIndicator> cohortIndicators;
-
-	/**
 	 * @see org.openmrs.module.kenyaemr.reporting.builder.ReportBuilder#getTags()
 	 */
 	@Override
@@ -95,35 +89,17 @@ public class Moh711Report extends BaseIndicatorReportBuilder {
 	 */
 	@Override
 	public List<DataSetDefinition> buildDataSets() {
-		log.debug("Setting up cohort definitions");
-
-		//setupCohortDefinitions();
-
-		log.debug("Setting up cohort indicators");
-
-		//setupCohortIndicators();
-
-		log.debug("Setting up data set definitions");
-
 		return Arrays.asList(
-				createTbDataSet(),
+				/*createTbDataSet(),*/
 				createArtDataSet()
 		);
 	}
-
-	/*private void setupCohortDefinitions() {
-		cohortDefinitions = new HashMap<String, CohortDefinition>();
-	}
-
-	private void setupCohortIndicators() {
-		cohortIndicators = new HashMap<String, CohortIndicator>();
-	}*/
 
 	/**
 	 * Creates the ART data set
 	 * @return the data set
 	 */
-	private DataSetDefinition createTbDataSet() {
+	/*private DataSetDefinition createTbDataSet() {
 		CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
 		dsd.setName("G: TB");
 		dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -139,7 +115,7 @@ public class Moh711Report extends BaseIndicatorReportBuilder {
 		columns.add(new ColumnParameters("T", "grand total", ""));
 
 		return dsd;
-	}
+	}*/
 
 	/**
 	 * Creates the ART data set
@@ -187,9 +163,9 @@ public class Moh711Report extends BaseIndicatorReportBuilder {
 		EmrReportingUtils.addRow(dsd, "K3-3", "Starting ARVs - WHO stage 3", map(artIndicators.startedArtWithWhoStage(3), indParams), allColumns);
 		EmrReportingUtils.addRow(dsd, "K3-4", "Starting ARVs - WHO stage 4", map(artIndicators.startedArtWithWhoStage(4), indParams), allColumns);
 		EmrReportingUtils.addRow(dsd, "K3-5", "Starting ARVs - Sub total", map(artIndicators.startedArt(), indParams), allColumns);
-		//EmrReportingUtils.addRow(dsd, "K4", "Cumulative started ARV", map(artIndicators.startedArtCumulative(), indParams), allColumns);
+		EmrReportingUtils.addRow(dsd, "K4", "Cumulative started ARV", map(artIndicators.startedArtCumulative(), indParams), allColumns);
 		EmrReportingUtils.addRow(dsd, "K5-1", "Currently on ARVs - Pregnant women", map(artIndicators.onArtAndPregnant(), indParams), femaleColumns);
-		//EmrReportingUtils.addRow(dsd, "K5-2", "Currently on ARVs - All others", map(artIndicators.onArtAndNotPregnant(), indParams), allColumns);
+		EmrReportingUtils.addRow(dsd, "K5-2", "Currently on ARVs - All others", map(artIndicators.onArtAndNotPregnant(), indParams), allColumns);
 		EmrReportingUtils.addRow(dsd, "K5-3", "Currently on ARVs - Sub total", map(artIndicators.onArt(), indParams), allColumns);
 		EmrReportingUtils.addRow(dsd, "K6", "Eligible for ART", map(artIndicators.eligibleForArt(), indParams), allColumns);
 

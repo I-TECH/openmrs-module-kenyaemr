@@ -47,7 +47,7 @@ public class TbInProgramCalculation extends BaseEmrCalculation {
 		Program tbProgram = Metadata.getProgram(Metadata.TB_PROGRAM);
 
 		Set<Integer> alive = alivePatients(cohort, context);
-		Set<Integer> inTbProgram = CalculationUtils.patientsThatPass(lastProgramEnrollment(tbProgram, alive, context));
+		Set<Integer> inTbProgram = CalculationUtils.patientsThatPass(activeEnrollment(tbProgram, alive, context));
 
         CalculationResultMap ret = new CalculationResultMap();
         for (Integer ptId : cohort) {

@@ -76,6 +76,6 @@ public class PregnantAtArtStartCalculationTest extends BaseModuleContextSensitiv
 		Assert.assertTrue((Boolean) resultMap.get(6).getValue());
 		Assert.assertFalse((Boolean) resultMap.get(7).getValue());
 		Assert.assertTrue((Boolean) resultMap.get(8).getValue());
-		Assert.assertNull(resultMap.get(999)); // has no recorded status
+		Assert.assertFalse((Boolean) resultMap.get(999).getValue()); // has no recorded status
 	}
 }

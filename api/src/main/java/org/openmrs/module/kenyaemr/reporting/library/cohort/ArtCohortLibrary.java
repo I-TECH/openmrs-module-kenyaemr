@@ -132,12 +132,22 @@ public class ArtCohortLibrary {
 	}
 
 	/**
-	 * Patients who were pregnant when started ART
+	 * Patients who were pregnant when they started ART
 	 * @return the cohort definition
 	 */
 	public CohortDefinition pregnantAtArtStart() {
 		EmrCalculationCohortDefinition cd = new EmrCalculationCohortDefinition(new PregnantAtArtStartCalculation());
 		cd.setName("pregnant at start of ART");
+		return cd;
+	}
+
+	/**
+	 * Patients who were TB patients when they started ART
+	 * @return the cohort definition
+	 */
+	public CohortDefinition tbPatientAtArtStart() {
+		EmrCalculationCohortDefinition cd = new EmrCalculationCohortDefinition(new TbPatientAtArtStartCalculation());
+		cd.setName("TB patient at start of ART");
 		return cd;
 	}
 
@@ -176,6 +186,21 @@ public class ArtCohortLibrary {
 		cd.addSearch("startedArt", map(startedArt(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
 		cd.addSearch("pregnantAtArtStart", map(pregnantAtArtStart()));
 		cd.setCompositionString("startedArt AND pregnantAtArtStart");
+		return cd;
+	}
+
+	/**
+	 * Patients who started ART while being a TB patient between ${onOrAfter} and ${onOrBefore}
+	 * @return the cohort definition
+	 */
+	public CohortDefinition startedArtWhileTbPatient() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("started ART while being TB patient between dates");
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("startedArt", map(startedArt(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("tbPatientAtArtStart", map(tbPatientAtArtStart()));
+		cd.setCompositionString("startedArt AND tbPatientAtArtStart");
 		return cd;
 	}
 
@@ -227,6 +252,20 @@ public class ArtCohortLibrary {
 		cd.addSearch("onArt", map(onArt(), "onDate=${onDate}"));
 		cd.addSearch("pregnant", map(commonCohorts.pregnant(), "onDate=${onDate}"));
 		cd.setCompositionString("onArt AND pregnant");
+		return cd;
+	}
+
+	/**
+	 * Patients who are on ART and not pregnant on ${onDate}
+	 * @return the cohort definition
+	 */
+	public CohortDefinition onArtAndNotPregnant() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("on ART and not pregnant on date");
+		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
+		cd.addSearch("onArt", map(onArt(), "onDate=${onDate}"));
+		cd.addSearch("pregnant", map(commonCohorts.pregnant(), "onDate=${onDate}"));
+		cd.setCompositionString("onArt AND NOT pregnant");
 		return cd;
 	}
 

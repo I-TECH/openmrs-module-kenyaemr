@@ -16,6 +16,8 @@ package org.openmrs.module.kenyaemr.reporting.builder.indicator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.module.kenyaemr.reporting.ColumnParameters;
+import org.openmrs.module.kenyaemr.reporting.EmrReportingUtils;
 import org.openmrs.module.kenyaemr.reporting.indicator.HivCareVisitsIndicator;
 import org.openmrs.module.kenyaemr.reporting.dataset.definition.MergingDataSetDefinition;
 import org.openmrs.module.kenyaemr.reporting.library.cohort.ArtCohortLibrary;
@@ -25,6 +27,7 @@ import org.openmrs.module.kenyaemr.reporting.library.cohort.TbCohortLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.dimension.CommonDimensionLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.indicator.ArtIndicatorLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.indicator.CommonIndicatorLibrary;
+import org.openmrs.module.kenyaemr.reporting.library.indicator.TbIndicatorLibrary;
 import org.openmrs.module.reporting.cohort.definition.*;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
@@ -63,7 +66,7 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 	private ArtIndicatorLibrary artIndicators;
 
 	@Autowired
-	private TbCohortLibrary tbCohorts;
+	private TbIndicatorLibrary tbIndicators;
 
 	@Autowired
 	private PwpCohortLibrary pwpCohorts;
@@ -131,16 +134,6 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 
 	private void setupCohortDefinitions() {
 		cohortDefinitions = new HashMap<String, CohortDefinition>();
-		{ // Started ART and is TB patient
-			CompositionCohortDefinition cd = new CompositionCohortDefinition();
-			cd.addParameter(new Parameter("fromDate", "From Date", Date.class));
-			cd.addParameter(new Parameter("toDate", "To Date", Date.class));
-
-			cd.addSearch("startedArt", map(artCohorts.startedArt(), "onOrAfter=${startDate},onOrBefore=${endDate}"));
-			cd.addSearch("enrolledInTb", map(tbCohorts.enrolled(), "enrolledOnOrAfter=${fromDate},enrolledOnOrBefore=${toDate}"));
-			cd.setCompositionString("startedArt AND enrolledInTb");
-			cohortDefinitions.put("startedArtAndIsTbPatient", cd);
-		}
 		{ // Revisits on ART
 			CompositionCohortDefinition cd = new CompositionCohortDefinition();
 			cd.addParameter(new Parameter("fromDate", "From Date", Date.class));
@@ -204,10 +197,6 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 			ind.setCohortDefinition(map(commonCohorts.hasEncounter(), "onOrAfter=${endDate-90d},onOrBefore=${endDate}"));
 		}
 		{
-			CohortIndicator ind = createCohortIndicator("startingArtTbPatient", "Starting ART (TB Patient)");
-			ind.setCohortDefinition(map(cohortDefinitions.get("startedArtAndIsTbPatient"), "fromDate=${startDate},toDate=${endDate}"));
-		}
-		{
 			CohortIndicator ind = createCohortIndicator("revisitsArt", "Revisits ART");
 			ind.setCohortDefinition(map(cohortDefinitions.get("revisitsArt"), "fromDate=${startDate},toDate=${endDate}"));
 		}
@@ -238,10 +227,6 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 		{
 			CohortIndicator ind = createCohortIndicator("onTherapyAt12Months", "On therapy at 12 months");
 			ind.setCohortDefinition(map(cohortDefinitions.get("onTherapyAt12Months"), "fromDate=${startDate},toDate=${endDate}"));
-		}
-		{
-			CohortIndicator ind = createCohortIndicator("screenedForTb", "Screened for TB");
-			ind.setCohortDefinition(map(tbCohorts.screenedForTb(), "onOrAfter=${startDate},onOrBefore=${endDate}"));
 		}
 		{
 			CohortIndicator ind = createCohortIndicator("modernContraceptivesProvided", "Modern contraceptives provided");
@@ -312,94 +297,106 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 		mergedDsd.addDataSetDefinition(nonCohortDsd);
 		mergedDsd.setMergeOrder(MergingDataSetDefinition.MergeOrder.NAME);
 
+		/*ColumnParameters colInfants = new ColumnParameters(null, "<1", "age=<1");
+		ColumnParameters colMPeds = new ColumnParameters(null, "<15, Male", "gender=M|age=<15");
+		ColumnParameters colFPeds = new ColumnParameters(null, "<15, Female", "gender=F|age=<15");
+		ColumnParameters colMAdults = new ColumnParameters(null, "15+, Male", "gender=M|age=15+");
+		ColumnParameters colFAdults = new ColumnParameters(null, "15+, Female", "gender=F|age=15+");
+		ColumnParameters colTotal = new ColumnParameters(null, "Total", "");
+
+		List<ColumnParameters> allColumns = Arrays.asList(colInfants, colMPeds, colFPeds, colMAdults, colFAdults, colTotal);
+		List<ColumnParameters> nonInfantColumns = Arrays.asList(colInfants, colMPeds, colFPeds, colMAdults, colFAdults, colTotal);*/
+		
+		String indParams = "startDate=${startDate},endDate=${endDate}";
+
 		/////////////// 3.1 (On Cotrimoxazole Prophylaxis) ///////////////
 
 		// TODO
 
 		/////////////// 3.2 (Enrolled in Care) ///////////////
 
-		cohortDsd.addColumn("HV03-08", "Enrolled in care (<1)", map(artIndicators.enrolledExcludingTransfers(), "startDate=${startDate},endDate=${endDate}"), "age=<1");
-		cohortDsd.addColumn("HV03-09", "Enrolled in care (<15, Male)", map(artIndicators.enrolledExcludingTransfers(), "startDate=${startDate},endDate=${endDate}"), "gender=M|age=<15");
-		cohortDsd.addColumn("HV03-10", "Enrolled in care (<15, Female)", map(artIndicators.enrolledExcludingTransfers(), "startDate=${startDate},endDate=${endDate}"), "gender=F|age=<15");
-		cohortDsd.addColumn("HV03-11", "Enrolled in care (15+, Male)", map(artIndicators.enrolledExcludingTransfers(), "startDate=${startDate},endDate=${endDate}"), "gender=M|age=15+");
-		cohortDsd.addColumn("HV03-12", "Enrolled in care (15+, Female)", map(artIndicators.enrolledExcludingTransfers(), "startDate=${startDate},endDate=${endDate}"), "gender=F|age=15+");
-		cohortDsd.addColumn("HV03-13", "Enrolled in care (Total)", map(artIndicators.enrolledExcludingTransfers(), "startDate=${startDate},endDate=${endDate}"), "");
+		cohortDsd.addColumn("HV03-08", "Enrolled in care (<1)", map(artIndicators.enrolledExcludingTransfers(), indParams), "age=<1");
+		cohortDsd.addColumn("HV03-09", "Enrolled in care (<15, Male)", map(artIndicators.enrolledExcludingTransfers(), indParams), "gender=M|age=<15");
+		cohortDsd.addColumn("HV03-10", "Enrolled in care (<15, Female)", map(artIndicators.enrolledExcludingTransfers(), indParams), "gender=F|age=<15");
+		cohortDsd.addColumn("HV03-11", "Enrolled in care (15+, Male)", map(artIndicators.enrolledExcludingTransfers(), indParams), "gender=M|age=15+");
+		cohortDsd.addColumn("HV03-12", "Enrolled in care (15+, Female)", map(artIndicators.enrolledExcludingTransfers(), indParams), "gender=F|age=15+");
+		cohortDsd.addColumn("HV03-13", "Enrolled in care (Total)", map(artIndicators.enrolledExcludingTransfers(), indParams), "");
 
 		/////////////// 3.3 (Currently in Care) ///////////////
 
-		cohortDsd.addColumn("HV03-14", "Currently in care (<1)", map(cohortIndicators.get("currentlyInCare"), "startDate=${startDate},endDate=${endDate}"), "age=<1");
-		cohortDsd.addColumn("HV03-15", "Currently in care (<15, Male)", map(cohortIndicators.get("currentlyInCare"), "startDate=${startDate},endDate=${endDate}"), "gender=M|age=<15");
-		cohortDsd.addColumn("HV03-16", "Currently in care (<15, Female)", map(cohortIndicators.get("currentlyInCare"), "startDate=${startDate},endDate=${endDate}"), "gender=F|age=<15");
-		cohortDsd.addColumn("HV03-17", "Currently in care (15+, Male)", map(cohortIndicators.get("currentlyInCare"), "startDate=${startDate},endDate=${endDate}"), "gender=M|age=15+");
-		cohortDsd.addColumn("HV03-18", "Currently in care (15+, Female)", map(cohortIndicators.get("currentlyInCare"), "startDate=${startDate},endDate=${endDate}"), "gender=F|age=15+");
-		cohortDsd.addColumn("HV03-19", "Currently in care (Total)", map(cohortIndicators.get("currentlyInCare"), "startDate=${startDate},endDate=${endDate}"), "");
+		cohortDsd.addColumn("HV03-14", "Currently in care (<1)", map(cohortIndicators.get("currentlyInCare"), indParams), "age=<1");
+		cohortDsd.addColumn("HV03-15", "Currently in care (<15, Male)", map(cohortIndicators.get("currentlyInCare"), indParams), "gender=M|age=<15");
+		cohortDsd.addColumn("HV03-16", "Currently in care (<15, Female)", map(cohortIndicators.get("currentlyInCare"), indParams), "gender=F|age=<15");
+		cohortDsd.addColumn("HV03-17", "Currently in care (15+, Male)", map(cohortIndicators.get("currentlyInCare"), indParams), "gender=M|age=15+");
+		cohortDsd.addColumn("HV03-18", "Currently in care (15+, Female)", map(cohortIndicators.get("currentlyInCare"), indParams), "gender=F|age=15+");
+		cohortDsd.addColumn("HV03-19", "Currently in care (Total)", map(cohortIndicators.get("currentlyInCare"), indParams), "");
 
 		/////////////// 3.4 (Starting ART) ///////////////
 
-		cohortDsd.addColumn("HV03-20", "Starting ART (<1)", map(artIndicators.startedArt(), "startDate=${startDate},endDate=${endDate}"), "age=<1");
-		cohortDsd.addColumn("HV03-21", "Starting ART (<15, Male)", map(artIndicators.startedArt(), "startDate=${startDate},endDate=${endDate}"), "gender=M|age=<15");
-		cohortDsd.addColumn("HV03-22", "Starting ART (<15, Female)", map(artIndicators.startedArt(), "startDate=${startDate},endDate=${endDate}"), "gender=F|age=<15");
-		cohortDsd.addColumn("HV03-23", "Starting ART (15+, Male)", map(artIndicators.startedArt(), "startDate=${startDate},endDate=${endDate}"), "gender=M|age=15+");
-		cohortDsd.addColumn("HV03-24", "Starting ART (15+, Female)", map(artIndicators.startedArt(), "startDate=${startDate},endDate=${endDate}"), "gender=F|age=15+");
-		cohortDsd.addColumn("HV03-25", "Starting ART (Total)", map(artIndicators.startedArt(), "startDate=${startDate},endDate=${endDate}"), "");
-		cohortDsd.addColumn("HV03-26", "Starting ART (Pregnant)", map(artIndicators.startedArtWhilePregnant(), "startDate=${startDate},endDate=${endDate}"), "");
-		cohortDsd.addColumn("HV03-27", "Starting ART (TB Patient)", map(cohortIndicators.get("startingArtTbPatient"), "startDate=${startDate},endDate=${endDate}"), "");
+		cohortDsd.addColumn("HV03-20", "Starting ART (<1)", map(artIndicators.startedArt(), indParams), "age=<1");
+		cohortDsd.addColumn("HV03-21", "Starting ART (<15, Male)", map(artIndicators.startedArt(), indParams), "gender=M|age=<15");
+		cohortDsd.addColumn("HV03-22", "Starting ART (<15, Female)", map(artIndicators.startedArt(), indParams), "gender=F|age=<15");
+		cohortDsd.addColumn("HV03-23", "Starting ART (15+, Male)", map(artIndicators.startedArt(), indParams), "gender=M|age=15+");
+		cohortDsd.addColumn("HV03-24", "Starting ART (15+, Female)", map(artIndicators.startedArt(), indParams), "gender=F|age=15+");
+		cohortDsd.addColumn("HV03-25", "Starting ART (Total)", map(artIndicators.startedArt(), indParams), "");
+		cohortDsd.addColumn("HV03-26", "Starting ART (Pregnant)", map(artIndicators.startedArtWhilePregnant(), indParams), "");
+		cohortDsd.addColumn("HV03-27", "Starting ART (TB Patient)", map(artIndicators.startedArtWhileTbPatient(), indParams), "");
 
 		/////////////// 3.5 (Revisits ART) ///////////////
 
-		cohortDsd.addColumn("HV03-28", "Revisits ART (<1)", map(cohortIndicators.get("revisitsArt"), "startDate=${startDate},endDate=${endDate}"), "age=<1");
-		cohortDsd.addColumn("HV03-29", "Revisits ART (<15, Male)", map(cohortIndicators.get("revisitsArt"), "startDate=${startDate},endDate=${endDate}"), "gender=M|age=<15");
-		cohortDsd.addColumn("HV03-30", "Revisits ART (<15, Female)", map(cohortIndicators.get("revisitsArt"), "startDate=${startDate},endDate=${endDate}"), "gender=F|age=<15");
-		cohortDsd.addColumn("HV03-31", "Revisits ART (15+, Male)", map(cohortIndicators.get("revisitsArt"), "startDate=${startDate},endDate=${endDate}"), "gender=M|age=15+");
-		cohortDsd.addColumn("HV03-32", "Revisits ART (15+, Female)", map(cohortIndicators.get("revisitsArt"), "startDate=${startDate},endDate=${endDate}"), "gender=F|age=15+");
-		cohortDsd.addColumn("HV03-33", "Revisits ART (Total)", map(cohortIndicators.get("revisitsArt"), "startDate=${startDate},endDate=${endDate}"), "");
+		cohortDsd.addColumn("HV03-28", "Revisits ART (<1)", map(cohortIndicators.get("revisitsArt"), indParams), "age=<1");
+		cohortDsd.addColumn("HV03-29", "Revisits ART (<15, Male)", map(cohortIndicators.get("revisitsArt"), indParams), "gender=M|age=<15");
+		cohortDsd.addColumn("HV03-30", "Revisits ART (<15, Female)", map(cohortIndicators.get("revisitsArt"), indParams), "gender=F|age=<15");
+		cohortDsd.addColumn("HV03-31", "Revisits ART (15+, Male)", map(cohortIndicators.get("revisitsArt"), indParams), "gender=M|age=15+");
+		cohortDsd.addColumn("HV03-32", "Revisits ART (15+, Female)", map(cohortIndicators.get("revisitsArt"), indParams), "gender=F|age=15+");
+		cohortDsd.addColumn("HV03-33", "Revisits ART (Total)", map(cohortIndicators.get("revisitsArt"), indParams), "");
 
 		/////////////// 3.6 (Currently on ART [All]) ///////////////
 
-		cohortDsd.addColumn("HV03-28", "Currently on ART [All] (<1)", map(cohortIndicators.get("currentlyOnArt"), "startDate=${startDate},endDate=${endDate}"), "age=<1");
-		cohortDsd.addColumn("HV03-35", "Currently on ART [All] (<15, Male)", map(cohortIndicators.get("currentlyOnArt"), "startDate=${startDate},endDate=${endDate}"), "gender=M|age=<15");
-		cohortDsd.addColumn("HV03-36", "Currently on ART [All] (<15, Female)", map(cohortIndicators.get("currentlyOnArt"), "startDate=${startDate},endDate=${endDate}"), "gender=F|age=<15");
-		cohortDsd.addColumn("HV03-37", "Currently on ART [All] (15+, Male)", map(cohortIndicators.get("currentlyOnArt"), "startDate=${startDate},endDate=${endDate}"), "gender=M|age=15+");
-		cohortDsd.addColumn("HV03-38", "Currently on ART [All] (15+, Female)", map(cohortIndicators.get("currentlyOnArt"), "startDate=${startDate},endDate=${endDate}"), "gender=F|age=15+");
-		cohortDsd.addColumn("HV03-39", "Currently on ART [All] (Total)", map(cohortIndicators.get("currentlyOnArt"), "startDate=${startDate},endDate=${endDate}"), "");
+		cohortDsd.addColumn("HV03-28", "Currently on ART [All] (<1)", map(cohortIndicators.get("currentlyOnArt"), indParams), "age=<1");
+		cohortDsd.addColumn("HV03-35", "Currently on ART [All] (<15, Male)", map(cohortIndicators.get("currentlyOnArt"), indParams), "gender=M|age=<15");
+		cohortDsd.addColumn("HV03-36", "Currently on ART [All] (<15, Female)", map(cohortIndicators.get("currentlyOnArt"), indParams), "gender=F|age=<15");
+		cohortDsd.addColumn("HV03-37", "Currently on ART [All] (15+, Male)", map(cohortIndicators.get("currentlyOnArt"), indParams), "gender=M|age=15+");
+		cohortDsd.addColumn("HV03-38", "Currently on ART [All] (15+, Female)", map(cohortIndicators.get("currentlyOnArt"), indParams), "gender=F|age=15+");
+		cohortDsd.addColumn("HV03-39", "Currently on ART [All] (Total)", map(cohortIndicators.get("currentlyOnArt"), indParams), "");
 
 		/////////////// 3.7 (Cumulative Ever on ART) ///////////////
 
-		cohortDsd.addColumn("HV03-40", "Cumulative ever on ART (<15, Male)", map(cohortIndicators.get("cumulativeOnArt"), "startDate=${startDate},endDate=${endDate}"), "gender=M|age=<15");
-		cohortDsd.addColumn("HV03-41", "Cumulative ever on ART (<15, Female)", map(cohortIndicators.get("cumulativeOnArt"), "startDate=${startDate},endDate=${endDate}"), "gender=F|age=<15");
-		cohortDsd.addColumn("HV03-42", "Cumulative ever on ART (15+, Male)", map(cohortIndicators.get("cumulativeOnArt"), "startDate=${startDate},endDate=${endDate}"), "gender=M|age=15+");
-		cohortDsd.addColumn("HV03-43", "Cumulative ever on ART (15+, Female)", map(cohortIndicators.get("cumulativeOnArt"), "startDate=${startDate},endDate=${endDate}"), "gender=F|age=15+");
-		cohortDsd.addColumn("HV03-44", "Cumulative ever on ART (Total)", map(cohortIndicators.get("cumulativeOnArt"), "startDate=${startDate},endDate=${endDate}"), "");
+		cohortDsd.addColumn("HV03-40", "Cumulative ever on ART (<15, Male)", map(cohortIndicators.get("cumulativeOnArt"), indParams), "gender=M|age=<15");
+		cohortDsd.addColumn("HV03-41", "Cumulative ever on ART (<15, Female)", map(cohortIndicators.get("cumulativeOnArt"), indParams), "gender=F|age=<15");
+		cohortDsd.addColumn("HV03-42", "Cumulative ever on ART (15+, Male)", map(cohortIndicators.get("cumulativeOnArt"), indParams), "gender=M|age=15+");
+		cohortDsd.addColumn("HV03-43", "Cumulative ever on ART (15+, Female)", map(cohortIndicators.get("cumulativeOnArt"), indParams), "gender=F|age=15+");
+		cohortDsd.addColumn("HV03-44", "Cumulative ever on ART (Total)", map(cohortIndicators.get("cumulativeOnArt"), indParams), "");
 
 		/////////////// 3.8 (Survival and Retention on ART at 12 months) ///////////////
 
-		cohortDsd.addColumn("HV03-46", "ART Net Cohort at 12 months", map(cohortIndicators.get("art12MonthNetCohort"), "startDate=${startDate},endDate=${endDate}"), "");
-		cohortDsd.addColumn("HV03-46", "On original 1st Line at 12 months", map(cohortIndicators.get("onOriginalFirstLineAt12Months"), "startDate=${startDate},endDate=${endDate}"), "");
-		cohortDsd.addColumn("HV03-47", "On alternative 1st Line at 12 months", map(cohortIndicators.get("onAlternateFirstLineAt12Months"), "startDate=${startDate},endDate=${endDate}"), "");
-		cohortDsd.addColumn("HV03-48", "On 2nd Line (or higher) at 12 months ", map(cohortIndicators.get("onSecondLineAt12Months"), "startDate=${startDate},endDate=${endDate}"), "");
-		cohortDsd.addColumn("HV03-49", "On therapy at 12 months (Total) ", map(cohortIndicators.get("onTherapyAt12Months"), "startDate=${startDate},endDate=${endDate}"), "");
+		cohortDsd.addColumn("HV03-46", "ART Net Cohort at 12 months", map(cohortIndicators.get("art12MonthNetCohort"), indParams), "");
+		cohortDsd.addColumn("HV03-46", "On original 1st Line at 12 months", map(cohortIndicators.get("onOriginalFirstLineAt12Months"), indParams), "");
+		cohortDsd.addColumn("HV03-47", "On alternative 1st Line at 12 months", map(cohortIndicators.get("onAlternateFirstLineAt12Months"), indParams), "");
+		cohortDsd.addColumn("HV03-48", "On 2nd Line (or higher) at 12 months ", map(cohortIndicators.get("onSecondLineAt12Months"), indParams), "");
+		cohortDsd.addColumn("HV03-49", "On therapy at 12 months (Total) ", map(cohortIndicators.get("onTherapyAt12Months"), indParams), "");
 
 		/////////////// 3.9 (Screening) ///////////////
 
-		cohortDsd.addColumn("HV03-50", "Screened for TB (<15, Male)", map(cohortIndicators.get("screenedForTb"), "startDate=${startDate},endDate=${endDate}"), "gender=M|age=<15");
-		cohortDsd.addColumn("HV03-51", "Screened for TB (<15, Female)", map(cohortIndicators.get("screenedForTb"), "startDate=${startDate},endDate=${endDate}"), "gender=F|age=<15");
-		cohortDsd.addColumn("HV03-52", "Screened for TB (15+, Male)", map(cohortIndicators.get("screenedForTb"), "startDate=${startDate},endDate=${endDate}"), "gender=M|age=15+");
-		cohortDsd.addColumn("HV03-53", "Screened for TB (15+, Female)", map(cohortIndicators.get("screenedForTb"), "startDate=${startDate},endDate=${endDate}"), "gender=F|age=15+");
-		cohortDsd.addColumn("HV03-54", "Screened for TB (Total)", map(cohortIndicators.get("screenedForTb"), "startDate=${startDate},endDate=${endDate}"), "");
+		cohortDsd.addColumn("HV03-50", "Screened for TB (<15, Male)", map(tbIndicators.screenedForTb(), indParams), "gender=M|age=<15");
+		cohortDsd.addColumn("HV03-51", "Screened for TB (<15, Female)", map(tbIndicators.screenedForTb(), indParams), "gender=F|age=<15");
+		cohortDsd.addColumn("HV03-52", "Screened for TB (15+, Male)", map(tbIndicators.screenedForTb(), indParams), "gender=M|age=15+");
+		cohortDsd.addColumn("HV03-53", "Screened for TB (15+, Female)", map(tbIndicators.screenedForTb(), indParams), "gender=F|age=15+");
+		cohortDsd.addColumn("HV03-54", "Screened for TB (Total)", map(tbIndicators.screenedForTb(), indParams), "");
 
 		// TODO HV03-55 (Screened for cervical cancer (F 18+))
 
 		/////////////// 3.10 (Prevention with Positives) ///////////////
 
-		cohortDsd.addColumn("HV09-04", "Modern contraceptive methods", map(cohortIndicators.get("modernContraceptivesProvided"), "startDate=${startDate},endDate=${endDate}"), "");
-		cohortDsd.addColumn("HV09-05", "Provided with condoms", map(cohortIndicators.get("condomsProvided"), "startDate=${startDate},endDate=${endDate}"), "");
+		cohortDsd.addColumn("HV09-04", "Modern contraceptive methods", map(cohortIndicators.get("modernContraceptivesProvided"), indParams), "");
+		cohortDsd.addColumn("HV09-05", "Provided with condoms", map(cohortIndicators.get("condomsProvided"), indParams), "");
 
 		/////////////// 3.11 (HIV Care Visits) ///////////////
 
-		nonCohortDsd.addColumn("HV03-70", "HIV care visits (Females 18+)", map(nonCohortIndicators.get("hivCareVisitsFemale18"), "startDate=${startDate},endDate=${endDate}"));
-		nonCohortDsd.addColumn("HV03-71", "HIV care visits (Scheduled)", map(nonCohortIndicators.get("hivCareVisitsScheduled"), "startDate=${startDate},endDate=${endDate}"));
-		nonCohortDsd.addColumn("HV03-72", "HIV care visits (Unscheduled)", map(nonCohortIndicators.get("hivCareVisitsUnscheduled"), "startDate=${startDate},endDate=${endDate}"));
-		nonCohortDsd.addColumn("HV03-73", "HIV care visits (Total)", map(nonCohortIndicators.get("hivCareVisitsTotal"), "startDate=${startDate},endDate=${endDate}"));
+		nonCohortDsd.addColumn("HV03-70", "HIV care visits (Females 18+)", map(nonCohortIndicators.get("hivCareVisitsFemale18"), indParams));
+		nonCohortDsd.addColumn("HV03-71", "HIV care visits (Scheduled)", map(nonCohortIndicators.get("hivCareVisitsScheduled"), indParams));
+		nonCohortDsd.addColumn("HV03-72", "HIV care visits (Unscheduled)", map(nonCohortIndicators.get("hivCareVisitsUnscheduled"), indParams));
+		nonCohortDsd.addColumn("HV03-73", "HIV care visits (Total)", map(nonCohortIndicators.get("hivCareVisitsTotal"), indParams));
 
 		return mergedDsd;
 	}

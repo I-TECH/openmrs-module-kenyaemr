@@ -16,12 +16,15 @@ package org.openmrs.module.kenyaemr.calculation.art;
 
 import org.openmrs.Concept;
 import org.openmrs.Obs;
+import org.openmrs.Program;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyaemr.Dictionary;
+import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyaemr.calculation.BooleanResult;
 import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
+import org.openmrs.module.kenyaemr.util.KenyaEmrUtils;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -29,16 +32,16 @@ import java.util.Date;
 import java.util.Map;
 
 /**
- * Calculates whether a patient was pregnant on the date they started ARTs
+ * Calculates whether a patient was a TB patient on the date they started ARTs
  */
-public class PregnantAtArtStartCalculation extends BaseEmrCalculation {
+public class TbPatientAtArtStartCalculation extends BaseEmrCalculation {
 	
 	/**
 	 * @see org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation#getName()
 	 */
 	@Override
 	public String getName() {
-		return "Pregnant On ART Start Date";
+		return "TB Patient On ART Start Date";
 	}
 
 	@Override
@@ -52,22 +55,19 @@ public class PregnantAtArtStartCalculation extends BaseEmrCalculation {
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
 
-		Concept yes = getConcept(Dictionary.YES);
-		Concept pregnancyStatus = getConcept(Dictionary.PREGNANCY_STATUS);
+		Program tbProgram = Metadata.getProgram(Metadata.TB_PROGRAM);
 		CalculationResultMap artStartDates = calculate(new InitialArtStartDateCalculation(), cohort, context);
 
-		// Return the earliest of the two
 		CalculationResultMap ret = new CalculationResultMap();
 		for (Integer ptId : cohort) {
 			boolean result = false;
 			Date artStartDate = CalculationUtils.datetimeResultForPatient(artStartDates, ptId);
 
 			if (artStartDate != null) {
-				CalculationResultMap pregStatusObss = lastObsOnOrBeforeDate(pregnancyStatus, artStartDate, Collections.singleton(ptId), context);
-				Obs pregStatusObs = CalculationUtils.obsResultForPatient(pregStatusObss, ptId);
+				CalculationResultMap enrollment = activeEnrollmentOnDate(tbProgram, artStartDate, Collections.singleton(ptId), context);
 
-				if (pregStatusObs != null) {
-					result = pregStatusObs.getValueCoded().equals(yes);
+				if (enrollment.get(ptId) != null) {
+					result = true;
 				}
 			}
 

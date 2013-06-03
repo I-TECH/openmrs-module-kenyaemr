@@ -216,17 +216,28 @@ public abstract class BaseEmrCalculation extends BaseCalculation implements Pati
 	}
 
 	/**
+	 * Evaluates the active program enrollment of the specified program
+	 * @param program the program
+	 * @param cohort the patient ids
+	 * @param calculationContext the calculation context
+	 * @return the enrollments in a calculation result map
+	 */
+	protected static CalculationResultMap activeEnrollment(Program program, Collection<Integer> cohort, PatientCalculationContext calculationContext) {
+		return activeEnrollmentOnDate(program, calculationContext.getNow(), cohort, calculationContext);
+	}
+
+	/**
 	 * Evaluates the last program enrollment on the specified program
 	 * @param program the program
 	 * @param cohort the patient ids
 	 * @param calculationContext the calculation context
 	 * @return the enrollments in a calculation result map
 	 */
-	protected static CalculationResultMap lastProgramEnrollment(Program program, Collection<Integer> cohort, PatientCalculationContext calculationContext) {
-		ProgramEnrollmentsForPatientDataDefinition def = new ProgramEnrollmentsForPatientDataDefinition("Last " + program.getName() + " enrollment");
+	protected static CalculationResultMap activeEnrollmentOnDate(Program program, Date onDate, Collection<Integer> cohort, PatientCalculationContext calculationContext) {
+		ProgramEnrollmentsForPatientDataDefinition def = new ProgramEnrollmentsForPatientDataDefinition("Active " + program.getName() + " enrollment");
 		def.setWhichEnrollment(TimeQualifier.LAST);
 		def.setProgram(program);
-		def.setActiveOnDate(calculationContext.getNow());
+		def.setActiveOnDate(onDate);
 		return evaluateWithReporting(def, cohort, new HashMap<String, Object>(), null, calculationContext);
 	}
 

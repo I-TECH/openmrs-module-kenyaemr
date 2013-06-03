@@ -58,7 +58,7 @@ public class TbNeverScreenedCalculation extends BaseEmrCalculation {
 		EncounterType screeningEncType = Metadata.getEncounterType(Metadata.TB_SCREENING_ENCOUNTER_TYPE);
 
 		Set<Integer> alive = alivePatients(cohort, context);
-		Set<Integer> inHivProgram = CalculationUtils.patientsThatPass(lastProgramEnrollment(hivProgram, alive, context));
+		Set<Integer> inHivProgram = CalculationUtils.patientsThatPass(activeEnrollment(hivProgram, alive, context));
 		Set<Integer> wasScreened = CalculationUtils.patientsThatPass(allEncounters(screeningEncType, cohort, context));
 
 		CalculationResultMap ret = new CalculationResultMap();

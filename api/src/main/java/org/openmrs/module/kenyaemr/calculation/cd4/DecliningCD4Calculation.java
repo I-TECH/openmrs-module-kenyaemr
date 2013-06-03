@@ -61,7 +61,7 @@ public class DecliningCD4Calculation extends BaseAlertCalculation {
 		Program hivProgram = Metadata.getProgram(Metadata.HIV_PROGRAM);
 
 		Set<Integer> alive = alivePatients(cohort, context);
-		Set<Integer> inHivProgram = CalculationUtils.patientsThatPass(lastProgramEnrollment(hivProgram, alive, context));
+		Set<Integer> inHivProgram = CalculationUtils.patientsThatPass(activeEnrollment(hivProgram, alive, context));
 
 		// Get the two CD4 obss for comparison
 		CalculationResultMap lastCD4Obss = lastObs(getConcept(Dictionary.CD4_COUNT), inHivProgram, context);

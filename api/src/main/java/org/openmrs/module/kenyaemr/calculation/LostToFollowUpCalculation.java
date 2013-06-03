@@ -58,7 +58,7 @@ public class LostToFollowUpCalculation extends BaseAlertCalculation {
 		Program hivProgram = Metadata.getProgram(Metadata.HIV_PROGRAM);
 
 		Set<Integer> alive = alivePatients(cohort, context);
-		Set<Integer> inHivProgram = CalculationUtils.patientsThatPass(lastProgramEnrollment(hivProgram, alive, context));
+		Set<Integer> inHivProgram = CalculationUtils.patientsThatPass(activeEnrollment(hivProgram, alive, context));
 		CalculationResultMap lastEncounters = lastEncounter(null, inHivProgram, context);
 
 		CalculationResultMap ret = new CalculationResultMap();
