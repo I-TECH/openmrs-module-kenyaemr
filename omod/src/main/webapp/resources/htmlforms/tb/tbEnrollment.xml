@@ -35,8 +35,10 @@
 			var pbirthdate = new Date("<lookup expression="patient.birthdate" />").getTime();
 			var pweight = "<lookup expression="fn.latestObs(5089).valueNumeric" />"
 			var pheight = "<lookup expression="fn.latestObs(5090).valueNumeric" />"
+			var tbrx = "<lookup class="value" expression="fn.latestObs(1113).valueDate" />";
 			setValue('weight.value', pweight);
 			setValue('height.value', pheight);
+			setValue('datestartoftreatment.value', tbrx);
 			var pulmodiv = document.getElementById('iddivPulmonary');
 			var expulmodiv = document.getElementById('expul');
 			
