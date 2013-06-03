@@ -161,7 +161,7 @@
 		</td>
 	</tr>	
 	<tr id="topMost">
-		<td>
+		<td valign="top">
 			<fielset>
 				<legend>Clinic and Encounter Details</legend>
 				<table border="0" class="tb1" width="100%">
@@ -187,7 +187,7 @@
 				</table>
 			</fielset>	
 		</td>
-		<td>
+		<td valign="top">
 		<fielset>
 			<legend>Patient Referral Information</legend>
 				<table class="tb1" width="100%">
@@ -200,19 +200,19 @@
 					</tr>
 					<tr>
 						<td>
-							<div id="referredByOptions1">
+							<div id="referredByOptions">
 								<obs conceptId="160540AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-									answerConceptIds="159940AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160631AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160546AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161359AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160538AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-									answerLabels="VCT center,HIV care clinic,STI Clinic,Home Based Care,Antenatal/PMTCT Clinic" style="radio"  answerSeparator="&lt;br /&gt;" />	
+									answerConceptIds="159940AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160631AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160546AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161359AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160538AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1725AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1744AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160551AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									answerLabels="VCT center,HIV care clinic,STI Clinic,Home Based Care,Antenatal/PMTCT Clinic,Private Sector,Chemist/pharmacist,Self referral,Community Health worker(CHW)" style="radio"  answerSeparator="&lt;br /&gt;" />	
 							</div>
 						</td>
-						<td>
+						<!-- <td>
 							<div id="referredByOptions2">
 								<obs conceptId="160540AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 									answerConceptIds="1725AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1744AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160551AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 									answerLabels="Private Sector,Chemist/pharmacist,Self referral,Community Health worker(CHW)" style="radio"  answerSeparator="&lt;br /&gt;" />	
 							</div>
-						</td>
+						</td> -->
 					</tr>
 					<tr>
 						<td colspan="2"><div id="referalDateError" class="error"></div></td>
@@ -222,7 +222,7 @@
 		</td>
 	</tr>
 	<tr>
-		<td>
+		<td valign="top">
 			<fielset>
 				<legend>Patient Information (Edit Address using the Registration screen)</legend>
 					<table id="patientAddress" class="tb1" border="0" width="100%">
@@ -249,7 +249,7 @@
 					</table>
 				</fielset>	
 			</td>
-		<td>
+		<td valign="top">
 			<fielset>
 				<legend>Treatment Supported Information</legend>
 					<table width="100%" class="tb1" id="treatmentSupporter">
@@ -275,7 +275,7 @@
 		</td>
 	</tr>
 	<tr>
-		<td>
+		<td valign="top">
 			<fielset>
 				<legend>Disease Classification</legend>
 					<table class="tb1" border="0" width="100%">
@@ -369,7 +369,7 @@
 		</td>	
 	</tr>
 	<tr>
-		<td>
+		<td valign="top">
 			<fielset>
 				<legend>Transfer In Information (Enter only if patient is a Transfer In)</legend>
 					<table class="tb1" border="0" width="100%" id="transferInDetails">
