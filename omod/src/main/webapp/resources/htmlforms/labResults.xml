@@ -44,16 +44,16 @@
 			var sputumResult = getValue('sputumResults.value');
 			var quantityvalue = getValue('quantity.value') ;
 			
-			if(testType == 160022 &amp;&amp; (sputumResult == 159985 || sputumResult == 1362 ) &amp;&amp; quantityvalue != '' ) {
+			if(testType == 160022 &amp;&amp; (sputumResult == 159985 || sputumResult == 1362 )) {
 				$('#hpfValues').html('AFBs/100hpf');
 			}
-			else if (testType == 160022 &amp;&amp; (sputumResult == 1363 || sputumResult == 1364 ) &amp;&amp; quantityvalue != '' ) {
+			else if (testType == 160022 &amp;&amp; (sputumResult == 1363 || sputumResult == 1364 )) {
 				$('#hpfValues').html('AFBs/hpf');
 			}
-			else if (testType == 161880 &amp;&amp; (sputumResult == 159985 || sputumResult == 1362 ) &amp;&amp; quantityvalue != '' ) {
+			else if (testType == 161880 &amp;&amp; (sputumResult == 159985 || sputumResult == 1362 )) {
 				$('#hpfValues').html('AFBs/40hpf');
 			}
-			else if (testType == 161880 &amp;&amp; (sputumResult == 1363 || sputumResult == 1364 ) &amp;&amp; quantityvalue != '' ) {
+			else if (testType == 161880 &amp;&amp; (sputumResult == 1363 || sputumResult == 1364 )) {
 				$('#hpfValues').html('AFBs/hpf');
 			}
 			else {
@@ -65,16 +65,16 @@
 				var sputumResult1 = getValue('sputumResults.value');
 				var quantityvalue1 = getValue('quantity.value') ;
 				
-				if(testType1 == 160022 &amp;&amp; (sputumResult1 == 159985 || sputumResult1 == 1362 ) &amp;&amp; quantityvalue1 != '' ) {
+				if(testType1 == 160022 &amp;&amp; (sputumResult1 == 159985 || sputumResult1 == 1362 )) {
 					$('#hpfValues').html('AFBs/100hpf');
 				}
-				else if (testType1 == 160022 &amp;&amp; (sputumResult1 == 1363 || sputumResult1 == 1364 ) &amp;&amp; quantityvalue1 != '' ) {
+				else if (testType1 == 160022 &amp;&amp; (sputumResult1 == 1363 || sputumResult1 == 1364 )) {
 					$('#hpfValues').html('AFBs/hpf');
 				}
-				else if (testType1 == 161880 &amp;&amp; (sputumResult1 == 159985 || sputumResult1 == 1362 ) &amp;&amp; quantityvalue1 != '' ) {
+				else if (testType1 == 161880 &amp;&amp; (sputumResult1 == 159985 || sputumResult1 == 1362 )) {
 					$('#hpfValues').html('AFBs/40hpf');
 				}
-				else if (testType1 == 161880 &amp;&amp; (sputumResult1 == 1363 || sputumResult1 == 1364 ) &amp;&amp; quantityvalue1 != '' ) {
+				else if (testType1 == 161880 &amp;&amp; (sputumResult1 == 1363 || sputumResult1 == 1364 )) {
 					$('#hpfValues').html('AFBs/hpf');
 				}
 				else {
@@ -88,214 +88,183 @@
 				var sputumResult2 = getValue('sputumResults.value');
 				var quantityvalue2 = getValue('quantity.value') ;
 				
-				if(testType2 == 160022 &amp;&amp; (sputumResult2 == 159985 || sputumResult2 == 1362 ) &amp;&amp; quantityvalue2 != '' ) {
+				if(testType2 == 160022 &amp;&amp; (sputumResult2 == 159985 || sputumResult2 == 1362 )) {
 					$('#hpfValues').html('AFBs/100hpf');
 				}
-				else if (testType2 == 160022 &amp;&amp; (sputumResult2 == 1363 || sputumResult2 == 1364 ) &amp;&amp; quantityvalue2 != '' ) {
+				else if (testType2 == 160022 &amp;&amp; (sputumResult2 == 1363 || sputumResult2 == 1364 )) {
 					$('#hpfValues').html('AFBs/hpf');
 				}
-				else if (testType2 == 161880 &amp;&amp; (sputumResult2 == 159985 || sputumResult2 == 1362 ) &amp;&amp; quantityvalue2 != '' ) {
+				else if (testType2 == 161880 &amp;&amp; (sputumResult2 == 159985 || sputumResult2 == 1362 )) {
 					$('#hpfValues').html('AFBs/40hpf');
 				}
-				else if (testType2 == 161880 &amp;&amp; (sputumResult2 == 1363 || sputumResult2 == 1364 ) &amp;&amp; quantityvalue2 != '' ) {
+				else if (testType2 == 161880 &amp;&amp; (sputumResult2 == 1363 || sputumResult2 == 1364 )) {
 					$('#hpfValues').html('AFBs/hpf');
 				}
 				else {
 					$('#hpfValues').html(' ');
 				}
 				
-			});
-			//change event of the quantity amount
-			getField('quantity.value').change(function() {
-				var testType3 = getValue('testType.value');
-				var sputumResult3 = getValue('sputumResults.value');
-				var quantityvalue3 = getValue('quantity.value') ;
-				
-				if(testType3 == 160022 &amp;&amp; (sputumResult3 == 159985 || sputumResult3 == 1362 ) &amp;&amp; quantityvalue3 != '' ) {
-					$('#hpfValues').html('AFBs/100hpf');
-				}
-				else if (testType3 == 160022 &amp;&amp; (sputumResult3 == 1363 || sputumResult3 == 1364 ) &amp;&amp; quantityvalue3 != '' ) {
-					$('#hpfValues').html('AFBs/hpf');
-				}
-				else if (testType3 == 161880 &amp;&amp; (sputumResult3 == 159985 || sputumResult3 == 1362 ) &amp;&amp; quantityvalue3 != '' ) {
-					$('#hpfValues').html('AFBs/40hpf');
-				}
-				else if (testType3 == 161880 &amp;&amp; (sputumResult3 == 1363 || sputumResult3 == 1364 ) &amp;&amp; quantityvalue3 != '' ) {
-					$('#hpfValues').html('AFBs/hpf');
-				}
-				else {
-					$('#hpfValues').html(' ');
-				}
-				
-			});
-			
+			});	
 			
 			
 		});
 	</script>
-
-	<div class="patient-details">
-		<table class="baseline-aligned" width="100%">
-			<tr>
-				<td>Name: <lookup class="value" expression="patient.personName"/></td>
-				<td>Gender: <lookup class="value" expression="patient.gender"/></td>
-				<td>Birthdate: <lookup class="value" complexExpression="#if( \$patient.birthdateEstimated ) ~#end"/> <lookup class="value" expression="patient.birthdate"/>
-				</td>
-			</tr>
-		</table>
-	</div>
-
-	<div class="encounter-details">
-		<table class="baseline-aligned" width="100%" border="0">
-			<tr>
-				<td>Date: <encounterDate default="now" showTime="true"/></td>
-				<td>Provider: <encounterProviderAndRole encounterRole="a0b03050-c99b-11e0-9572-0800200c9a66" default="currentUser" required="true"/></td>
-				<td>Location: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete" /></td>
-			</tr>
-		</table>
-	</div>
-
-	<table style="width: 80%; height: 44px;" border="0" align="center">
-		<tbody>
-			<tr>
-				
-				<td style="font-family: Trebuchet MS,serif; font-size: text-align: left;">
-						<table style="width: 100%; height: 44px;" border="0" align="center" cellpadding="5" cellspacing="2">
-							<tr>
-								<th width="1%" style="background-color: #696969; color: #ffffff;"> </th>
-								<th width="2%" style="background-color: #696969; color: #ffffff;">Test</th>
-								<th width="6%" style="background-color: #696969; color: #ffffff;">Result</th>
-								<th width="5%" style="background-color: #696969; color: #ffffff;">Date Collected (if not today)</th>
-							</tr>
-							<tr>
-								<td>01.</td>
-								<td>CD4 Count</td>
-								<td><obs conceptId="5497AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" showUnits="true" dateLabel="&lt;/td&gt;&lt;td&gt;"/></td>
-							</tr>
-							<tr>
-								<td>02.</td>
-								<td>CD4%</td>
-								<td><obs conceptId="730AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" showUnits="true" dateLabel="&lt;/td&gt;&lt;td&gt;"/></td>
-								
-							</tr>
-							<tr>
-								<td>03.</td>
-								<td>VDRL</td>
-								<td><obs conceptId="299AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" dateLabel="&lt;/td&gt;&lt;td&gt;"/></td>
-								
-							</tr>
-							<tr>
-								<td>04.</td>
-								<td>ALT</td>
-								<td><obs conceptId="654AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" showUnits="true" dateLabel="&lt;/td&gt;&lt;td&gt;"/></td>
-								
-							</tr>
-							<tr>
-								<td>05.</td>
-								<td>Creatinine</td>
-								<td><obs conceptId="790AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" showUnits="true" dateLabel="&lt;/td&gt;&lt;td&gt;"/></td>
-								
-							</tr>
-							<tr>
-								<td>06.</td>
-								<td>HIV Viral Load</td>
-								<td><obs conceptId="856AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" showUnits="true" dateLabel="&lt;/td&gt;&lt;td&gt;"/></td>
-								
-							</tr>
-							<tr>
-								<td>07.</td>
-								<td>HIV DNA PCR</td>
-								<td><obs conceptId="1030AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" dateLabel="&lt;/td&gt;&lt;td&gt;"/></td>
-								
-							</tr>
-							<tr>
-								<td>08.</td>
-								<td>Hemoglobin</td>
-								<td><obs conceptId="21AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" dateLabel="&lt;/td&gt;&lt;td&gt;"/></td>
-							
-							</tr>
-							<tr>
-								<td>09.</td>
-								<td>Urinalysis</td>
-								<td><obs conceptId="302AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" dateLabel="&lt;/td&gt;&lt;td&gt;"/></td>
-								
-							</tr>
-							<tr>
-								<td>10.</td>
-								<td>Malaria Smear</td>
-								<td><obs conceptId="32AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" dateLabel="&lt;/td&gt;&lt;td&gt;"/></td>
-								
-							</tr>
-							<obsgroup groupingConceptId="159960AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-								<tr>
-									<td valign="top">11.</td>
-									<td valign="top">Results Sputum</td>
-									<td colspan="2" valign="top">
-										<table border = "0" width="80%">
-											<tr>
-												<td>Type:</td>
-												<td>
-													<obs conceptId="159961AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="testType" answerConceptIds="160022AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161880AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="ZN Smear Microscopy,Fluorescence Microscopy" />
-												</td>
-												<td>Serial No:</td>
-												<td><obs conceptId="159968AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" dateLabel="&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;" /></td>
-											</tr>
-											<tr>
-												<td>Result:</td>	
-												<td><obs conceptId="307AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="sputumResults" answerConceptIds="159985AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Scanty,+,++,+++,Negative"/></td>
-												<td>Quantity:</td>
-												<td><obs conceptId="160023AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="quantity" /></td>
-												<td  width="15%"><div id="hpfValues" class="div"></div></td>
-											</tr>
-										</table>		
-									</td>
-								</tr>
-							</obsgroup>
-							<obsgroup groupingConceptId="159981AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-								<tr>
-									<td valign="top">12.</td>
-									<td valign="top">Culture/Sensitivity Results</td>
-									<td colspan="2">
-										<table border="0" width="80%">
-											<tr>
-												<td>Bacterial Colonies growth</td>
-												<td><obs conceptId="159982AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Growth,No growth" id="growth_no_growth" dateLabel="&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;"/></td>
-											</tr>	
-											<tr>
-												<td>Number of Colonies</td>
-												<td><obs conceptId="159952AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  /></td>
-												<td width="30%"></td>
-											</tr>
-										</table>		
-									</td>
-								</tr>
-								<tr> 
-										<td></td>
-										<td></td>
-										<td align="center" id="sensitivity">
-											Resistant (R)
-												<obs conceptId="159956AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="84360AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="S" style="checkbox" />
-												<obs conceptId="159956AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="767AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="R" style="checkbox" />
-												<obs conceptId="159956AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="78280AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="INH" style="checkbox" />
-												<obs conceptId="159956AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="75948AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="E" style="checkbox" />
-												<br />
-											Sensitive (S)
-												<obs conceptId="159958AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="84360AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="S" style="checkbox" />
-												<obs conceptId="159958AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="767AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="R" style="checkbox" />
-												<obs conceptId="159958AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="78280AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="INH" style="checkbox" />
-												<obs conceptId="159958AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="75948AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="E" style="checkbox" />
+<table align="center" width="80%">
+	<tr>
+		<td>
+			<div class="encounter-details">
+				<table class="baseline-aligned" width="100%" border="0" cellpadding="0">
+					<tr>
+						<td>Date: <encounterDate default="now" showTime="true"/></td>
+						<td>Provider: <encounterProviderAndRole encounterRole="a0b03050-c99b-11e0-9572-0800200c9a66" default="currentUser" required="true"/></td>
+						<td>Location: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete" /></td>
+					</tr>
+				</table>
+			</div>
+		</td>
+	</tr>
+</table>
+<br />			
+<table style="width: 80%; height: 44px;" border="0" align="center">
+	<tbody>
+		<tr>			
+			<td style="font-family: Trebuchet MS,serif; font-size: text-align: left;">
+				<table style="width: 100%; height: 44px;" border="0" align="center" cellpadding="5" cellspacing="2">
+					<tr>
+						<th width="1%" style="background-color: #696969; color: #ffffff;"> </th>
+						<th width="2%" style="background-color: #696969; color: #ffffff;">Test</th>
+						<th width="6%" style="background-color: #696969; color: #ffffff;">Result</th>
+						<th width="5%" style="background-color: #696969; color: #ffffff;">Date Collected (if not today)</th>
+					</tr>
+					<tr>
+						<td>01.</td>
+						<td>CD4 Count</td>
+						<td><obs conceptId="5497AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" showUnits="true" dateLabel="&lt;/td&gt;&lt;td&gt;"/></td>
+					</tr>
+					<tr>
+						<td>02.</td>
+						<td>CD4%</td>
+						<td><obs conceptId="730AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" showUnits="true" dateLabel="&lt;/td&gt;&lt;td&gt;"/></td>
+						
+					</tr>
+					<tr>
+						<td>03.</td>
+						<td>VDRL</td>
+						<td><obs conceptId="299AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" dateLabel="&lt;/td&gt;&lt;td&gt;"/></td>
+						
+					</tr>
+					<tr>
+						<td>04.</td>
+						<td>ALT</td>
+						<td><obs conceptId="654AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" showUnits="true" dateLabel="&lt;/td&gt;&lt;td&gt;"/></td>
+						
+					</tr>
+					<tr>
+						<td>05.</td>
+						<td>Creatinine</td>
+						<td><obs conceptId="790AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" showUnits="true" dateLabel="&lt;/td&gt;&lt;td&gt;"/></td>
+						
+					</tr>
+					<tr>
+						<td>06.</td>
+						<td>HIV Viral Load</td>
+						<td><obs conceptId="856AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" showUnits="true" dateLabel="&lt;/td&gt;&lt;td&gt;"/></td>
+						
+					</tr>
+					<tr>
+						<td>07.</td>
+						<td>HIV DNA PCR</td>
+						<td><obs conceptId="1030AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" dateLabel="&lt;/td&gt;&lt;td&gt;"/></td>
+						
+					</tr>
+					<tr>
+						<td>08.</td>
+						<td>Hemoglobin</td>
+						<td><obs conceptId="21AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" dateLabel="&lt;/td&gt;&lt;td&gt;"/></td>
+					
+					</tr>
+					<tr>
+						<td>09.</td>
+						<td>Urinalysis</td>
+						<td><obs conceptId="302AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" dateLabel="&lt;/td&gt;&lt;td&gt;"/></td>
+						
+					</tr>
+					<tr>
+						<td>10.</td>
+						<td>Malaria Smear</td>
+						<td><obs conceptId="32AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" dateLabel="&lt;/td&gt;&lt;td&gt;"/></td>
+						
+					</tr>
+					<obsgroup groupingConceptId="159960AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+						<tr>
+							<td valign="top">11.</td>
+							<td valign="top">Results Sputum</td>
+							<td colspan="2" valign="top">
+								<table border = "0" width="80%">
+									<tr>
+										<td>Type:</td>
+										<td>
+											<obs conceptId="159961AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="testType" answerConceptIds="160022AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161880AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="ZN Smear Microscopy,Fluorescence Microscopy" />
 										</td>
-										<td></td>
-								</tr>
-							</obsgroup>
-						</table>
-				</td>
-			</tr>
-		</tbody>
-	</table>
+										<td>Serial No:</td>
+										<td><obs conceptId="159968AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" dateLabel="&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;" /></td>
+									</tr>
+									<tr>
+										<td>Result:</td>	
+										<td><obs conceptId="307AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="sputumResults" answerConceptIds="159985AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Scanty,+,++,+++,Negative"/></td>
+										<td>Quantity:</td>
+										<td><obs conceptId="160023AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="quantity" /></td>
+										<td  width="15%"><div id="hpfValues" class="div"></div></td>
+									</tr>
+								</table>		
+							</td>
+						</tr>
+					</obsgroup>
+					<obsgroup groupingConceptId="159981AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+						<tr>
+							<td valign="top">12.</td>
+							<td valign="top">Culture/Sensitivity Results</td>
+							<td colspan="2">
+								<table border="0" width="80%">
+									<tr>
+										<td>Bacterial Colonies growth</td>
+										<td><obs conceptId="159982AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Growth,No growth" id="growth_no_growth" dateLabel="&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;"/></td>
+									</tr>	
+									<tr>
+										<td>Number of Colonies</td>
+										<td><obs conceptId="159952AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  /></td>
+										<td width="30%"></td>
+									</tr>
+								</table>		
+							</td>
+						</tr>
+						<tr> 
+								<td></td>
+								<td></td>
+								<td align="center" id="sensitivity">
+									Resistant (R)
+										<obs conceptId="159956AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="84360AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="S" style="checkbox" />
+										<obs conceptId="159956AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="767AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="R" style="checkbox" />
+										<obs conceptId="159956AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="78280AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="INH" style="checkbox" />
+										<obs conceptId="159956AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="75948AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="E" style="checkbox" />
+										<br />
+									Sensitive (S)
+										<obs conceptId="159958AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="84360AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="S" style="checkbox" />
+										<obs conceptId="159958AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="767AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="R" style="checkbox" />
+										<obs conceptId="159958AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="78280AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="INH" style="checkbox" />
+										<obs conceptId="159958AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="75948AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="E" style="checkbox" />
+								</td>
+								<td></td>
+						</tr>
+					</obsgroup>
+				</table>
+			</td>
+		</tr>
+	</tbody>
+</table>
 
-	<div class="ke-form-buttons">
-		<submit />
-	</div>
+<div class="ke-form-buttons">
+	<submit />
+</div>
 
 </htmlform>
