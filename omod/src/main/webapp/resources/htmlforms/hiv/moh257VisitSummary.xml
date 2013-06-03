@@ -460,7 +460,8 @@
 							<th style="color: #888; text-align: center">Dose</th>
 							<th style="color: #888; text-align: center">Units</th>
 							<th style="color: #888; text-align: center">Frequency</th>
-							<th style="color: #888; text-align: center">Days</th>
+							<th style="color: #888; text-align: center">Duration</th>
+							<th style="color: #888; text-align: center">Duration units</th>
 						</tr>
 						<repeat>
 							<template>
@@ -477,6 +478,11 @@
 											/>
 										</td>
 										<td><obs conceptId="159368AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+										<td>
+											<obs conceptId="1732AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+												 answerConceptIds="1822AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1072AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1073AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1074AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+												 answerLabels="Hours,Days,Weeks,Months" />
+										</td>
 									</tr>
 								</obsgroup>
 							</template>
