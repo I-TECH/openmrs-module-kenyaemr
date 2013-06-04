@@ -44,6 +44,11 @@ public class KenyaEmrConstants {
 	public static final String DEFAULT_SUPPORT_EMAIL_ADDRESS = "help@kenyaemr.org";
 
 	/**
+	 * Number of days in which a patient has to visit to be considered active
+	 */
+	public static final int PATIENT_ACTIVE_VISIT_THRESHOLD_DAYS = 90;
+
+	/**
 	 * Number of days without an encounter before a patient is consider lost to follow up
 	 */
 	public static final int LOST_TO_FOLLOW_UP_THRESHOLD_DAYS = 90;

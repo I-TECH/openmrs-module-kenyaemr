@@ -175,12 +175,7 @@ public class CalculationUtils {
 	 * @return the obs result
 	 */
 	public static Obs obsResultForPatient(CalculationResultMap results, Integer patientId) {
-		CalculationResult result = results.get(patientId);
-		if (result != null && !result.isEmpty()) {
-			Obs val = (Obs) result.getValue();
-			return val;
-		}
-		return null;
+		return resultForPatient(results, patientId);
 	}
 
 	/**
@@ -223,11 +218,7 @@ public class CalculationUtils {
 	 * @return the encounter result
 	 */
 	public static Encounter encounterResultForPatient(CalculationResultMap results, Integer patientId) {
-		CalculationResult result = results.get(patientId);
-		if (result != null && !result.isEmpty()) {
-			return (Encounter) result.getValue();
-		}
-		return null;
+		return resultForPatient(results, patientId);
 	}
 
 	/**
@@ -237,9 +228,19 @@ public class CalculationUtils {
 	 * @return the date result
 	 */
 	public static Date datetimeResultForPatient(CalculationResultMap results, Integer patientId) {
+		return resultForPatient(results, patientId);
+	}
+
+	/**
+	 * Convenience method to fetch a patient result value
+	 * @param results the calculation result map
+	 * @param patientId the patient id
+	 * @return the result value
+	 */
+	public static <T> T resultForPatient(CalculationResultMap results, Integer patientId) {
 		CalculationResult result = results.get(patientId);
 		if (result != null && !result.isEmpty()) {
-			return (Date) result.getValue();
+			return (T) result.getValue();
 		}
 		return null;
 	}

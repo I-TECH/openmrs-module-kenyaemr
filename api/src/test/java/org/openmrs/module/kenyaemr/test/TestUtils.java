@@ -28,6 +28,9 @@ import org.openmrs.PatientIdentifier;
 import org.openmrs.PatientProgram;
 import org.openmrs.Program;
 import org.openmrs.api.context.Context;
+import org.openmrs.calculation.CalculationContext;
+import org.openmrs.calculation.patient.PatientCalculationContext;
+import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.customdatatype.CustomDatatype;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.regimen.RegimenOrder;
@@ -83,12 +86,18 @@ public class TestUtils {
 	 * @param stop the stop date
 	 * @return the aved visit
 	 */
-	public static Visit saveVisit(Patient patient, VisitType type, Date start, Date stop) {
+	public static Visit saveVisit(Patient patient, VisitType type, Date start, Date stop, Encounter... encounters) {
 		Visit visit = new Visit();
 		visit.setPatient(patient);
 		visit.setVisitType(type);
 		visit.setStartDatetime(start);
 		visit.setStopDatetime(stop);
+		Context.getVisitService().saveVisit(visit);
+
+		for (Encounter encounter : encounters) {
+			visit.addEncounter(encounter);
+		}
+
 		return Context.getVisitService().saveVisit(visit);
 	}
 
@@ -99,14 +108,8 @@ public class TestUtils {
 	 * @param date the encounter date
 	 * @return the saved encounter
 	 */
-	public static Encounter saveEncounter(Patient patient, EncounterType type, Date date) {
-		Encounter encounter = new Encounter();
-		encounter.setPatient(patient);
-		encounter.setProvider(Context.getUserService().getUser(1)); // Super user
-		encounter.setLocation(Context.getLocationService().getLocation(1)); // Unknown Location
-		encounter.setEncounterType(type);
-		encounter.setEncounterDatetime(date);
-		return Context.getEncounterService().saveEncounter(encounter);
+	public static Encounter saveEncounter(Patient patient, EncounterType type, Date date, Obs... obss) {
+		return saveEncounter(patient, type, null, date, obss);
 	}
 
 	/**
@@ -116,14 +119,32 @@ public class TestUtils {
 	 * @param date the encounters date
 	 * @return the saved encounter
 	 */
-	public static Encounter saveEncounter(Patient patient, Form form, Date date) {
+	public static Encounter saveEncounter(Patient patient, Form form, Date date, Obs... obss) {
+		return saveEncounter(patient, form.getEncounterType(), form, date, obss);
+	}
+
+	/**
+	 * Create and save an encounter
+	 * @param patient the patient
+	 * @param type the encounter type
+	 * @param form the form
+	 * @param date the encounters date
+	 * @return the saved encounter
+	 */
+	public static Encounter saveEncounter(Patient patient, EncounterType type, Form form, Date date, Obs... obss) {
 		Encounter encounter = new Encounter();
 		encounter.setPatient(patient);
 		encounter.setProvider(Context.getUserService().getUser(1)); // Super user
 		encounter.setLocation(Context.getLocationService().getLocation(1)); // Unknown Location
-		encounter.setEncounterType(form.getEncounterType());
+		encounter.setEncounterType(type);
 		encounter.setForm(form);
 		encounter.setEncounterDatetime(date);
+		Context.getEncounterService().saveEncounter(encounter);
+
+		for (Obs obs : obss) {
+			encounter.addObs(obs);
+		}
+
 		return Context.getEncounterService().saveEncounter(encounter);
 	}
 
@@ -305,6 +326,17 @@ public class TestUtils {
 		for (DrugOrder o : drugOrders) {
 			Assert.assertTrue(reg.getDrugOrders().contains(o));
 		}
+	}
+
+	/**
+	 * Creates a calculation context
+	 * @param now the now date
+	 * @return the context
+	 */
+	public static PatientCalculationContext calculationContext(Date now) {
+		PatientCalculationContext context = Context.getService(PatientCalculationService.class).createCalculationContext();
+		context.setNow(now);
+		return context;
 	}
 
 	/**

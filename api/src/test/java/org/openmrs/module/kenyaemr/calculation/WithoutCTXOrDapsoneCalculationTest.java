@@ -11,6 +11,7 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.kenyaemr.calculation;
 
 import org.junit.Assert;
@@ -30,19 +31,25 @@ import org.openmrs.test.BaseModuleContextSensitiveTest;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Tests for {@link WithoutCTXOrDapsoneCalculation}
+ */
 public class WithoutCTXOrDapsoneCalculationTest extends BaseModuleContextSensitiveTest {
 
+	/**
+	 * Setup each test
+	 */
 	@Before
-	public void beforeEachTest() throws Exception {
+	public void setup() throws Exception {
 		executeDataSet("test-data.xml");
 		executeDataSet("test-drugdata.xml");
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.calculation.art.InitialArtStartDateCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
+	 * @see org.openmrs.module.kenyaemr.calculation.WithoutCTXOrDapsoneCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
 	 */
 	@Test
-	public void evaluate_shouldCalculateInitialArtStartDate() throws Exception {
+	public void evaluate() throws Exception {
 
 		// Get HIV Program
 		Program hivProgram = Metadata.getProgram(Metadata.HIV_PROGRAM);

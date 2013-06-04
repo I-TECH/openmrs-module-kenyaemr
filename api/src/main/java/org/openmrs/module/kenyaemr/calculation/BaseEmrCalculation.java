@@ -112,8 +112,9 @@ public abstract class BaseEmrCalculation extends BaseCalculation implements Pati
 	protected static CalculationResultMap lastEncounter(EncounterType encounterType, Collection<Integer> cohort, PatientCalculationContext calculationContext) {
 		String encName = encounterType != null ? encounterType.getName() : "encounter";
 		EncountersForPatientDataDefinition def = new EncountersForPatientDataDefinition("Last " + encName);
-		if (encounterType != null)
+		if (encounterType != null) {
 			def.addType(encounterType);
+		}
 		def.setWhich(TimeQualifier.LAST);
 		def.setOnOrBefore(calculationContext.getNow());
 		return evaluateWithReporting(def, cohort, new HashMap<String, Object>(), null, calculationContext);
@@ -129,8 +130,9 @@ public abstract class BaseEmrCalculation extends BaseCalculation implements Pati
 	protected static CalculationResultMap allEncounters(EncounterType encounterType, Collection<Integer> cohort, PatientCalculationContext calculationContext) {
 		String encName = encounterType != null ? encounterType.getName() : "encounters";
 		EncountersForPatientDataDefinition def = new EncountersForPatientDataDefinition("All " + encName);
-		if (encounterType != null)
+		if (encounterType != null) {
 			def.addType(encounterType);
+		}
 		def.setWhich(TimeQualifier.ANY);
 		def.setOnOrBefore(calculationContext.getNow());
 		return evaluateWithReporting(def, cohort, new HashMap<String, Object>(), null, calculationContext);
