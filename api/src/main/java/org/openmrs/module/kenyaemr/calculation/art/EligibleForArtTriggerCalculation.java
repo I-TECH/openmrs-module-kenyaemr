@@ -32,14 +32,6 @@ import java.util.*;
  * Calculates the obs which triggered each patient to become eligible for ART
  */
 public class EligibleForArtTriggerCalculation extends BaseEmrCalculation {
-	
-	/**
-	 * @see org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation#getName()
-	 */
-	@Override
-	public String getName() {
-		return "Date Patients Became Eligible for ART";
-	}
 
 	/**
 	 * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)

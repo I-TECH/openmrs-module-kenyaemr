@@ -35,6 +35,14 @@ public class DecliningCD4Report extends BasePatientCalculationReportBuilder {
 	}
 
 	/**
+	 * @see org.openmrs.module.kenyaemr.reporting.builder.ReportBuilder#getName()
+	 */
+	@Override
+	public String getName() {
+		return "Patients with declining CD4";
+	}
+
+	/**
 	 * @see org.openmrs.module.kenyaemr.reporting.builder.ReportBuilder#getTags()
 	 */
 	@Override

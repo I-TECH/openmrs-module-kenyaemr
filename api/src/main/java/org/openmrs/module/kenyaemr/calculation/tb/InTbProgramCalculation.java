@@ -28,11 +28,6 @@ import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 public class InTbProgramCalculation extends BaseEmrCalculation {
 
 	@Override
-	public String getName() {
-		return "Patients in TB Program";
-	}
-
-	@Override
 	public String[] getTags() {
 		return new String[] { "tb" };
 	}

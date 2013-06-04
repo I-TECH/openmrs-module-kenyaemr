@@ -21,7 +21,6 @@ import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
-import org.openmrs.module.kenyaemr.calculation.BooleanResult;
 import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
 import org.openmrs.module.kenyaemr.util.KenyaEmrUtils;
 
@@ -34,14 +33,6 @@ import java.util.Map;
  * Calculates a patient's WHO stage on the date they started ARTs
  */
 public class WhoStageAtArtStartCalculation extends BaseEmrCalculation {
-	
-	/**
-	 * @see org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation#getName()
-	 */
-	@Override
-	public String getName() {
-		return "WHO Stage On ART Start Date";
-	}
 
 	@Override
 	public String[] getTags() {

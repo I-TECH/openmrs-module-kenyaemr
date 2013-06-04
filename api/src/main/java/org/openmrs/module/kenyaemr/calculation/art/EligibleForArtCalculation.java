@@ -32,14 +32,6 @@ import org.openmrs.module.reporting.common.Age;
  *
  */
 public class EligibleForArtCalculation extends BaseAlertCalculation {
-	
-	/**
-	 * @see org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation#getName()
-	 */
-	@Override
-	public String getName() {
-		return "Patients Eligible for ART";
-	}
 
 	/**
 	 * @see org.openmrs.module.kenyaemr.calculation.BaseAlertCalculation#getAlertMessage()

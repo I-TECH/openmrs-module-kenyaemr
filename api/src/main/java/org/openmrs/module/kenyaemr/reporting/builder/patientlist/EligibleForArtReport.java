@@ -28,6 +28,14 @@ public class EligibleForArtReport extends BasePatientCalculationReportBuilder {
 	}
 
 	/**
+	 * @see org.openmrs.module.kenyaemr.reporting.builder.ReportBuilder#getName()
+	 */
+	@Override
+	public String getName() {
+		return "Patients eligible for ART";
+	}
+
+	/**
 	 * @see org.openmrs.module.kenyaemr.reporting.builder.ReportBuilder#getTags()
 	 */
 	@Override

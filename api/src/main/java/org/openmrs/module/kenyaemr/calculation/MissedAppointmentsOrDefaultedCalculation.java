@@ -34,11 +34,6 @@ import org.openmrs.module.kenyaemr.Metadata;
  */
 public class MissedAppointmentsOrDefaultedCalculation extends BaseAlertCalculation {
 
-    @Override
-    public String getName() {
-        return "Patients With Missed Appointments";
-    }
-
 	@Override
 	public String getAlertMessage() {
 		return "Missed Appointment";

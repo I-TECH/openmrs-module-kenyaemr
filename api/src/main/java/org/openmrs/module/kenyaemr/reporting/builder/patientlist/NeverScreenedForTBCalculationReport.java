@@ -23,9 +23,17 @@ import org.springframework.stereotype.Component;
 @Component
 public class NeverScreenedForTBCalculationReport extends BasePatientCalculationReportBuilder {
 
-    public NeverScreenedForTBCalculationReport() {
+	public NeverScreenedForTBCalculationReport() {
 		super(new TbNeverScreenedCalculation());
-    }
+	}
+
+	/**
+	 * @see org.openmrs.module.kenyaemr.reporting.builder.ReportBuilder#getName()
+	 */
+	@Override
+	public String getName() {
+		return "Patients who have never been screened for TB";
+	}
 
 	/**
 	 * @see org.openmrs.module.kenyaemr.reporting.builder.ReportBuilder#getTags()

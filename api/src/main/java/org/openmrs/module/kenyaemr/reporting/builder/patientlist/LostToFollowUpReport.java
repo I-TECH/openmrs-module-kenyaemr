@@ -20,9 +20,17 @@ import org.springframework.stereotype.Component;
 @Component
 public class LostToFollowUpReport extends BasePatientCalculationReportBuilder {
 
-    public LostToFollowUpReport() {
+	public LostToFollowUpReport() {
 		super(new LostToFollowUpCalculation());
-    }
+	}
+
+	/**
+	 * @see org.openmrs.module.kenyaemr.reporting.builder.ReportBuilder#getName()
+	 */
+	@Override
+	public String getName() {
+		return "Patients who are lost to followup";
+	}
 
 	/**
 	 * @see org.openmrs.module.kenyaemr.reporting.builder.ReportBuilder#getTags()

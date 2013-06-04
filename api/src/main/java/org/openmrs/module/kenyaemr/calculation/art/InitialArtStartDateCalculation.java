@@ -30,14 +30,6 @@ import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
  * Calculates the date on which a patient first started ART
  */
 public class InitialArtStartDateCalculation extends BaseEmrCalculation {
-	
-	/**
-	 * @see org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation#getName()
-	 */
-	@Override
-	public String getName() {
-		return "Initial ART Start Date";
-	}
 
 	@Override
 	public String[] getTags() {

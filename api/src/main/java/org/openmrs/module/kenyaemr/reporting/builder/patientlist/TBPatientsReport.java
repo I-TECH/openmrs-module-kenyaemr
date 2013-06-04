@@ -23,9 +23,17 @@ import org.springframework.stereotype.Component;
 @Component
 public class TBPatientsReport extends BasePatientCalculationReportBuilder {
 
-    public TBPatientsReport() {
+	public TBPatientsReport() {
 		super(new InTbProgramCalculation());
-    }
+	}
+
+	/**
+	 * @see org.openmrs.module.kenyaemr.reporting.builder.ReportBuilder#getName()
+	 */
+	@Override
+	public String getName() {
+		return "Patients in TB program";
+	}
 
 	/**
 	 * @see org.openmrs.module.kenyaemr.reporting.builder.ReportBuilder#getTags()

@@ -23,9 +23,17 @@ import org.springframework.stereotype.Component;
 @Component
 public class PatientsOnSecondLineArtReport extends BasePatientCalculationReportBuilder {
 
-    public PatientsOnSecondLineArtReport() {
+	public PatientsOnSecondLineArtReport() {
 		super(new OnSecondLineArtCalculation());
-    }
+	}
+
+	/**
+	 * @see org.openmrs.module.kenyaemr.reporting.builder.ReportBuilder#getName()
+	 */
+	@Override
+	public String getName() {
+		return "Patients on second line ART";
+	}
 
 	/**
 	 * @see org.openmrs.module.kenyaemr.reporting.builder.ReportBuilder#getTags()

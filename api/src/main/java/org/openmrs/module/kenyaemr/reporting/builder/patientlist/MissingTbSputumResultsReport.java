@@ -23,6 +23,14 @@ public class MissingTbSputumResultsReport extends BasePatientCalculationReportBu
 	public MissingTbSputumResultsReport() {
 		super(new MissingTbSputumResultsCalculation());
 	}
+
+	/**
+	 * @see org.openmrs.module.kenyaemr.reporting.builder.ReportBuilder#getName()
+	 */
+	@Override
+	public String getName() {
+		return "Patients with missing TB sputum results";
+	}
 	
 	/**
 	 * @see org.openmrs.module.kenyaemr.reporting.builder.ReportBuilder#getTags()

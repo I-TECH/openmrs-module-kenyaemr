@@ -22,9 +22,17 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class NeedsCD4Report extends BasePatientCalculationReportBuilder {
-	
-    public NeedsCD4Report() {
+
+	public NeedsCD4Report() {
 		super(new NeedsCD4Calculation());
+	}
+
+	/**
+	 * @see org.openmrs.module.kenyaemr.reporting.builder.ReportBuilder#getName()
+	 */
+	@Override
+	public String getName() {
+		return "Patients due for CD4 test";
 	}
 
 	/**

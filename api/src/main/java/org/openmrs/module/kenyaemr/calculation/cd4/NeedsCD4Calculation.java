@@ -36,14 +36,6 @@ import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
 public class NeedsCD4Calculation extends BaseAlertCalculation {
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation#getName()
-	 */
-	@Override
-	public String getName() {
-		return "Patients Due for CD4";
-	}
-
-	/**
 	 * @see org.openmrs.module.kenyaemr.calculation.BaseAlertCalculation#getAlertMessage()
 	 */
 	@Override

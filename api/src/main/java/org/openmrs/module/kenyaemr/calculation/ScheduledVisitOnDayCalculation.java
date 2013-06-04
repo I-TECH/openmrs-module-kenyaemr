@@ -32,14 +32,6 @@ import org.openmrs.module.reporting.common.RangeComparator;
  *
  */
 public class ScheduledVisitOnDayCalculation extends BaseEmrCalculation {
-	
-	/**
-	 * @see BaseEmrCalculation#getName()
-	 */
-	@Override
-	public String getName() {
-		return "Scheduled for Visit";
-	}
 
 	/**
 	 * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)

@@ -23,8 +23,16 @@ import org.springframework.stereotype.Component;
 @Component
 public class NeedsSputumTestReport extends BasePatientCalculationReportBuilder {
 
-    public NeedsSputumTestReport() {
+	public NeedsSputumTestReport() {
 		super(new NeedsSputumCalculation());
+	}
+
+	/**
+	 * @see org.openmrs.module.kenyaemr.reporting.builder.ReportBuilder#getName()
+	 */
+	@Override
+	public String getName() {
+		return "Patients due for TB sputum test";
 	}
 
 	/**

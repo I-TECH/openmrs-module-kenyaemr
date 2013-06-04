@@ -46,14 +46,11 @@ public class EmrCalculationCohortDefinition extends BaseCohortDefinition {
 	}
 
 	/**
-
 	 * Constructs a new calculation based cohort definition
 	 * @param calculation the calculation
 	 */
 	public EmrCalculationCohortDefinition(BaseEmrCalculation calculation) {
 		setCalculation(calculation);
-		setName(calculation.getName());
-		setDescription(calculation.getDescription());
 	}
 	
 	/**

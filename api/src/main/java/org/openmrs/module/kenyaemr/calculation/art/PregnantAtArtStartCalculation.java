@@ -32,14 +32,6 @@ import java.util.Map;
  * Calculates whether a patient was pregnant on the date they started ARTs
  */
 public class PregnantAtArtStartCalculation extends BaseEmrCalculation {
-	
-	/**
-	 * @see org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation#getName()
-	 */
-	@Override
-	public String getName() {
-		return "Pregnant On ART Start Date";
-	}
 
 	@Override
 	public String[] getTags() {

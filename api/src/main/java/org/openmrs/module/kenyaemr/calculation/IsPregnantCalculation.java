@@ -30,11 +30,6 @@ import java.util.Set;
 public class IsPregnantCalculation extends BaseAlertCalculation {
 
 	@Override
-	public String getName() {
-		return "Patients Who Are Pregnant";
-	}
-
-	@Override
 	public String getAlertMessage() {
 		return "Pregnant";
 	}

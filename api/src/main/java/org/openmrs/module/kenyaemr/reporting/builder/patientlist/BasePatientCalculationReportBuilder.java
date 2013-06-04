@@ -46,19 +46,11 @@ public abstract class BasePatientCalculationReportBuilder extends BasePatientLis
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.reporting.builder.ReportBuilder#getName()
-	 */
-	@Override
-	public String getName() {
-		return calculation.getName();
-	}
-
-	/**
 	 * @see org.openmrs.module.kenyaemr.reporting.builder.ReportBuilder#getDescription()
 	 */
 	@Override
 	public String getDescription() {
-		return calculation.getDescription();
+		return null;
 	}
 
 	/**
@@ -68,8 +60,9 @@ public abstract class BasePatientCalculationReportBuilder extends BasePatientLis
 	@Override
 	protected PatientDataSetDefinition buildDataSet() {
 		EmrCalculationCohortDefinition cd = new EmrCalculationCohortDefinition(getCalculation());
+		cd.setName(getName());
 
-		PatientDataSetDefinition dsd = new PatientDataSetDefinition(calculation.getName() + " DSD");
+		PatientDataSetDefinition dsd = new PatientDataSetDefinition(getName() + " DSD");
 		dsd.addRowFilter(map(cd));
 		addColumns(dsd);
 		return dsd;

@@ -27,11 +27,6 @@ import java.util.Map;
  */
 public class TbTreatmentNumberCalculation extends BaseEmrCalculation {
 
-    @Override
-    public String getName() {
-        return "TB Treatment Number";
-    }
-
 	@Override
 	public String[] getTags() {
 		return new String[] { "tb" };

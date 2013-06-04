@@ -31,11 +31,6 @@ import org.openmrs.module.kenyaemr.Metadata;
 public class LostToFollowUpCalculation extends BaseAlertCalculation {
 
 	@Override
-	public String getName() {
-		return "Patients Lost to Followup";
-	}
-
-	@Override
 	public String getAlertMessage() {
 		return "Lost to Followup";
 	}

@@ -30,11 +30,6 @@ import java.util.*;
 public class OnMedicationCalculation extends BaseEmrCalculation {
 
 	@Override
-	public String getName() {
-		return "Patients who are on medication";
-	}
-
-	@Override
 	public String[] getTags() {
 		return new String[] { };
 	}

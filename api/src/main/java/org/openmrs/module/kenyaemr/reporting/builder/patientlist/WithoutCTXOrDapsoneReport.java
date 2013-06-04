@@ -20,9 +20,17 @@ import org.springframework.stereotype.Component;
 @Component
 public class WithoutCTXOrDapsoneReport extends BasePatientCalculationReportBuilder {
 
-    public WithoutCTXOrDapsoneReport() {
+	public WithoutCTXOrDapsoneReport() {
 		super(new WithoutCTXOrDapsoneCalculation());
-    }
+	}
+
+	/**
+	 * @see org.openmrs.module.kenyaemr.reporting.builder.ReportBuilder#getName()
+	 */
+	@Override
+	public String getName() {
+		return "Patients who have never taken CTX or Dapsone";
+	}
 
 	/**
 	 * @see org.openmrs.module.kenyaemr.reporting.builder.ReportBuilder#getTags()

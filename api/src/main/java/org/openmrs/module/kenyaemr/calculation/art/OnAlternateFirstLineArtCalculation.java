@@ -30,14 +30,6 @@ import java.util.Map;
  */
 public class OnAlternateFirstLineArtCalculation extends BaseEmrCalculation {
 
-	/**
-	 * @see org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation#getName()
-	 */
-	@Override
-	public String getName() {
-		return "Patients on Alternate First Line ART";
-	}
-
 	@Override
 	public String[] getTags() {
 		return new String[] { "hiv" };

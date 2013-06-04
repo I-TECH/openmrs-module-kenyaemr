@@ -27,11 +27,6 @@ import java.util.Map;
 public class InProgramCalculation extends BaseEmrCalculation {
 
 	@Override
-	public String getName() {
-		return "Patients in program";
-	}
-
-	@Override
 	public String[] getTags() {
 		return new String[] { };
 	}

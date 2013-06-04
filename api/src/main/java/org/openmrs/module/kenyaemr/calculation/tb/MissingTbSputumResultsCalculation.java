@@ -41,13 +41,6 @@ public class MissingTbSputumResultsCalculation extends BaseAlertCalculation {
 	public String getAlertMessage() {
 		return "Missing TB Sputum Results";
 	}
-	/**
-	 * @see org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation#getName()
-	 */
-	@Override
-	public String getName() {
-		return "Patients With Missing TB Sputum Results";
-	}
 
 	@Override
 	public String[] getTags() {

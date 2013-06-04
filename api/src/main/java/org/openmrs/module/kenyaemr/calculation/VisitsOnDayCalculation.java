@@ -11,6 +11,7 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.kenyaemr.calculation;
 
 import java.util.ArrayList;
@@ -28,19 +29,10 @@ import org.openmrs.calculation.result.ListResult;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.reporting.common.DateUtil;
 
-
 /**
  *
  */
 public class VisitsOnDayCalculation extends BaseEmrCalculation {
-	
-	/**
-	 * @see BaseEmrCalculation#getName()
-	 */
-	@Override
-	public String getName() {
-		return "Visit";
-	}
 
 	/**
 	 * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)

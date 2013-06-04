@@ -29,14 +29,6 @@ import org.openmrs.module.kenyaemr.calculation.BooleanResult;
 public class OnArtCalculation extends BaseAlertCalculation {
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation#getName()
-	 */
-	@Override
-	public String getName() {
-		return "Patients on ART";
-	}
-
-	/**
 	 * @see org.openmrs.module.kenyaemr.calculation.BaseAlertCalculation#getAlertMessage()
 	 */
 	@Override

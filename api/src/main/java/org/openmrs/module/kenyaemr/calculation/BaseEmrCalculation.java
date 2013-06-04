@@ -65,20 +65,6 @@ import org.openmrs.util.OpenmrsUtil;
 public abstract class BaseEmrCalculation extends BaseCalculation implements PatientCalculation {
 
 	/**
-	 * Gets the user-friendly name to display, e.g. "Patients Eligible for ART"
-	 * @return the name
-	 */
-	public abstract String getName();
-
-	/**
-	 * Gets the description (may be null)
-	 * @return the description
-	 */
-	public String getDescription() {
-		return null;
-	}
-
-	/**
 	 * Gets an array of string tags associated with this calculation. The default implementation returns an empty array.
 	 * @return the tags
 	 */

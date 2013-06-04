@@ -28,11 +28,6 @@ import java.util.Map;
 public class LastCD4CountCalculation extends BaseEmrCalculation {
 
 	@Override
-	public String getName() {
-		return "Last CD4 Count";
-	}
-
-	@Override
 	public String[] getTags() {
 		return new String[] { "hiv" };
 	}

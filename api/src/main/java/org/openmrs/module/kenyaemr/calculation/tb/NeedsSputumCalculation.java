@@ -48,14 +48,6 @@ public class NeedsSputumCalculation extends BaseAlertCalculation {
 		return "Due for TB Sputum";
 	}
 
-	/**
-	 * @see org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation#getName()
-	 */
-	@Override
-	public String getName() {
-		return "Patients Due for TB Sputum Test";
-	}
-
 	@Override
 	public String[] getTags() {
 		return new String[] { "tb" };
