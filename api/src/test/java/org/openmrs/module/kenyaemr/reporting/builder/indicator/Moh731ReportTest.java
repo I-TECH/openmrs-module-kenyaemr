@@ -68,6 +68,6 @@ public class Moh731ReportTest extends BaseModuleContextSensitiveTest {
 		Assert.assertEquals(1, ((IndicatorResult) dataSet.getColumnValue(1, "HV03-09")).getValue().intValue());
 		Assert.assertEquals(1, ((IndicatorResult) dataSet.getColumnValue(1, "HV03-13")).getValue().intValue());
 
-		//ReportingTestUtils.printReport(data);
+		ReportingTestUtils.printReport(data);
 	}
 }
