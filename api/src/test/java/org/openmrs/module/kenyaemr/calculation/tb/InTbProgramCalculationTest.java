@@ -29,20 +29,25 @@ import org.openmrs.test.BaseModuleContextSensitiveTest;
 import java.util.Arrays;
 import java.util.List;
 
-public class TbInProgramCalculationTest extends BaseModuleContextSensitiveTest {
+/**
+ * Tests for {@link InTbProgramCalculation}
+ */
+public class InTbProgramCalculationTest extends BaseModuleContextSensitiveTest {
 
+	/**
+	 * Setup each test
+	 */
 	@Before
-	public void beforeEachTest() throws Exception {
+	public void setup() throws Exception {
 		executeDataSet("test-data.xml");
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.calculation.art.OnSecondLineArtCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
+	 * @see org.openmrs.module.kenyaemr.calculation.tb.InTbProgramCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
 	 */
 	@Test
-	public void evaluate_shouldCalculateCurrentArtRegimen() throws Exception {
+	public void evaluate() throws Exception {
 
-		// Get TB Program
 		Program tbProgram = Metadata.getProgram(Metadata.TB_PROGRAM);
 
 		// Enroll patient #6
@@ -51,11 +56,9 @@ public class TbInProgramCalculationTest extends BaseModuleContextSensitiveTest {
 
 		// Enroll patient #7 but complete a year later
 		TestUtils.enrollInProgram(ps.getPatient(7), tbProgram, TestUtils.date(2011, 1, 1), TestUtils.date(2012, 1, 1));
-
-		Context.flushSession();
 		
 		List<Integer> cohort = Arrays.asList(6, 7, 8);
-		CalculationResultMap resultMap = Context.getService(PatientCalculationService.class).evaluate(cohort, new TbInProgramCalculation());
+		CalculationResultMap resultMap = Context.getService(PatientCalculationService.class).evaluate(cohort, new InTbProgramCalculation());
 		Assert.assertTrue((Boolean) resultMap.get(6).getValue()); // is still in program
 		Assert.assertFalse((Boolean) resultMap.get(7).getValue()); // discontinued
 		Assert.assertFalse((Boolean) resultMap.get(8).getValue()); // was never in program

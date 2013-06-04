@@ -14,7 +14,7 @@
 
 package org.openmrs.module.kenyaemr.reporting.builder.patientlist;
 
-import org.openmrs.module.kenyaemr.calculation.tb.TbInProgramCalculation;
+import org.openmrs.module.kenyaemr.calculation.tb.InTbProgramCalculation;
 import org.springframework.stereotype.Component;
 
 /**
@@ -24,7 +24,7 @@ import org.springframework.stereotype.Component;
 public class TBPatientsReport extends BasePatientCalculationReportBuilder {
 
     public TBPatientsReport() {
-		super(new TbInProgramCalculation());
+		super(new InTbProgramCalculation());
     }
 
 	/**

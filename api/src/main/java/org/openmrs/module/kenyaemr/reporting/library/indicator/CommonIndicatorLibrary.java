@@ -14,6 +14,7 @@
 
 package org.openmrs.module.kenyaemr.reporting.library.indicator;
 
+import org.openmrs.Concept;
 import org.openmrs.Program;
 import org.openmrs.module.kenyaemr.reporting.library.cohort.CommonCohortLibrary;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -64,6 +65,15 @@ public class CommonIndicatorLibrary {
 	public CohortIndicator enrolledCumulative(Program program) {
 		return createCohortIndicator("Number of patients ever enrolled in " + program.getName() + " excluding transfers",
 				map(commonCohorts.enrolled(program), "enrolledOnOrBefore=${endDate}"));
+	}
+
+	/**
+	 * Number of patients on the specified medication
+	 * @param concepts the drug concepts
+	 * @return the indicator
+	 */
+	public CohortIndicator onMedication(Concept... concepts) {
+		return createCohortIndicator("Number of patients on medication", map(commonCohorts.onMedication(concepts), "onDate=${endDate}"));
 	}
 
 	/**

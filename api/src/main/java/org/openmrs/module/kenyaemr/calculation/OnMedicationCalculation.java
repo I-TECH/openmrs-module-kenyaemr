@@ -25,13 +25,13 @@ import org.openmrs.module.kenyaemr.Metadata;
 import java.util.*;
 
 /**
- * Calculates whether patients are considered to be taking a specified drug
+ * Calculates whether patients are considered to be on a specified medication
  */
-public class TakingDrugCalculation extends BaseEmrCalculation {
+public class OnMedicationCalculation extends BaseEmrCalculation {
 
 	@Override
 	public String getName() {
-		return "Patients who are taking a drug";
+		return "Patients who are on medication";
 	}
 
 	@Override
@@ -43,7 +43,7 @@ public class TakingDrugCalculation extends BaseEmrCalculation {
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> params, PatientCalculationContext context) {
 
-		Concept drug = Dictionary.getConcept((String) params.get("drugConcept"));
+		Set<Concept> drugs = (Set<Concept>) params.get("drugs");
 		Concept medOrders = Dictionary.getConcept(Dictionary.MEDICATION_ORDERS);
 		EncounterType consultation = Metadata.getEncounterType(Metadata.CONSULTATION_ENCOUNTER_TYPE);
 
@@ -53,12 +53,12 @@ public class TakingDrugCalculation extends BaseEmrCalculation {
 		for (Integer ptId : cohort) {
 			boolean takingDrug = false;
 			Encounter lastConsultation = CalculationUtils.resultForPatient(lastConsultations, ptId);
-			if (daysSince(lastConsultation.getEncounterDatetime(), context) <= KenyaEmrConstants.PATIENT_ACTIVE_VISIT_THRESHOLD_DAYS) {
+			if (lastConsultation != null && daysSince(lastConsultation.getEncounterDatetime(), context) <= KenyaEmrConstants.PATIENT_ACTIVE_VISIT_THRESHOLD_DAYS) {
 				Set<Encounter> encountersInRefVisit = lastConsultation.getVisit().getEncounters();
 
 				for (Encounter enc: encountersInRefVisit) {
 					for (Obs obs : enc.getAllObs()) {
-						if (obs.getConcept().equals(medOrders) && obs.getValueCoded().equals(drug)) {
+						if (obs.getConcept().equals(medOrders) && drugs.contains(obs.getValueCoded())) {
 							takingDrug = true;
 							break;
 						}

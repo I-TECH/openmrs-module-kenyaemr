@@ -11,6 +11,7 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.kenyaemr.reporting.cohort.definition.evaluator;
 
 import java.util.Date;
@@ -32,7 +33,7 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 
 /**
- *
+ * Evaluator for calculation based cohorts
  */
 @Handler(supports = EmrCalculationCohortDefinition.class)
 public class EmrCalculationCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
@@ -86,6 +87,6 @@ public class EmrCalculationCohortDefinitionEvaluator implements CohortDefinition
 			cohort = Context.getPatientSetService().getAllPatients();
 		}
 
-		return pcs.evaluate(cohort.getMemberIds(), cd.getCalculation(), calcContext);
+		return pcs.evaluate(cohort.getMemberIds(), cd.getCalculation(), cd.getCalculationParameters(), calcContext);
 	}
 }

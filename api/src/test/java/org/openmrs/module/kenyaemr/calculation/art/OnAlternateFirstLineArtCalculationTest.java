@@ -11,6 +11,7 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.kenyaemr.calculation.art;
 
 import org.junit.Assert;
@@ -30,11 +31,17 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 
-public class OnAlternativeFirstLineArtCalculationTest extends BaseModuleContextSensitiveTest {
+/**
+ * Tests for {@link OnAlternateFirstLineArtCalculation}
+ */
+public class OnAlternateFirstLineArtCalculationTest extends BaseModuleContextSensitiveTest {
 
 	@Autowired
-	RegimenManager regimenManager;
+	private RegimenManager regimenManager;
 
+	/**
+	 * Setup each test
+	 */
 	@Before
 	public void setup() throws Exception {
 		executeDataSet("test-data.xml");

@@ -33,11 +33,7 @@ import org.openmrs.calculation.CalculationContext;
 import org.openmrs.calculation.patient.PatientCalculation;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.patient.PatientCalculationService;
-import org.openmrs.calculation.result.CalculationResult;
-import org.openmrs.calculation.result.CalculationResultMap;
-import org.openmrs.calculation.result.ListResult;
-import org.openmrs.calculation.result.ObsResult;
-import org.openmrs.calculation.result.SimpleResult;
+import org.openmrs.calculation.result.*;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.util.KenyaEmrUtils;
@@ -305,16 +301,33 @@ public abstract class BaseEmrCalculation extends BaseCalculation implements Pati
 		for (Integer ptId : orders.keySet()) {
 			ListResult allOrders = (ListResult) orders.get(ptId);
 			ListResult earliestOrders = new ListResult();
-			Date earliestStartDate = (Date) earliestStartDates.get(ptId).getValue();
+			CalculationResult earliestDateResult = earliestStartDates.get(ptId);
 
-			for (SimpleResult r : (List<SimpleResult>) allOrders.getValue()) {
-				DrugOrder order = (DrugOrder) r.getValue();
-				if (order.getStartDate().equals(earliestStartDate)) {
-					earliestOrders.add(new SimpleResult(order, null));
+			if (earliestDateResult != null) {
+				Date earliestStartDate = (Date) earliestDateResult.getValue();
+
+				for (SimpleResult r : (List<SimpleResult>) allOrders.getValue()) {
+					DrugOrder order = (DrugOrder) r.getValue();
+					if (order.getStartDate().equals(earliestStartDate)) {
+						earliestOrders.add(new SimpleResult(order, null));
+					}
 				}
 			}
 
 			ret.put(ptId, earliestOrders);
+		}
+		return ret;
+	}
+
+	/**
+	 * Filters a calculation result map to reduce results to booleans
+	 * @param results the result map
+	 * @return the reduced result map
+	 */
+	protected static CalculationResultMap passing(CalculationResultMap results) {
+		CalculationResultMap ret = new CalculationResultMap();
+		for (Map.Entry<Integer, CalculationResult> e : results.entrySet()) {
+			ret.put(e.getKey(), new BooleanResult(ResultUtil.isTrue(e.getValue()), null));
 		}
 		return ret;
 	}
@@ -331,9 +344,12 @@ public abstract class BaseEmrCalculation extends BaseCalculation implements Pati
 			Integer ptId = e.getKey();
 			ListResult result = (ListResult) e.getValue();
 			Date earliest = null;
-			for (SimpleResult r : (List<SimpleResult>) result.getValue()) {
-				Date candidate = ((DrugOrder) r.getValue()).getStartDate();
-				earliest = CalculationUtils.earliestDate(earliest, candidate);
+
+			if (result != null) {
+				for (SimpleResult r : (List<SimpleResult>) result.getValue()) {
+					Date candidate = ((DrugOrder) r.getValue()).getStartDate();
+					earliest = CalculationUtils.earliestDate(earliest, candidate);
+				}
 			}
 			ret.put(ptId, earliest == null ? null : new SimpleResult(earliest, null));
 		}
@@ -361,9 +377,11 @@ public abstract class BaseEmrCalculation extends BaseCalculation implements Pati
 		CalculationResultMap map = evaluateWithReporting(new VitalStatusDataDefinition(), cohort, new HashMap<String, Object>(), null, calculationContext);
 		Set<Integer> ret = new HashSet<Integer>();
 		for (Map.Entry<Integer, CalculationResult> e : map.entrySet()) {
-			VitalStatus vs = ((VitalStatus) e.getValue().getValue());
-			if (!vs.getDead() || OpenmrsUtil.compareWithNullAsEarliest(vs.getDeathDate(), calculationContext.getNow()) > 0) {
-				ret.add(e.getKey());
+			if (e.getValue() != null) {
+				VitalStatus vs = ((VitalStatus) e.getValue().getValue());
+				if (!vs.getDead() || OpenmrsUtil.compareWithNullAsEarliest(vs.getDeathDate(), calculationContext.getNow()) > 0) {
+					ret.add(e.getKey());
+				}
 			}
 		}
 		return ret;
@@ -402,8 +420,9 @@ public abstract class BaseEmrCalculation extends BaseCalculation implements Pati
 				throw new RuntimeException("Unknown DataDefinition type: " + dataDefinition.getClass());
 			}
 			CalculationResultMap ret = new CalculationResultMap();
-			for (Map.Entry<Integer, Object> e : data.entrySet()) {
-				ret.put(e.getKey(), toCalculationResult(e.getValue(), calculation, calculationContext));
+			for (Integer ptId : cohort) {
+				Object reportingResult = data.get(ptId);
+				ret.put(ptId, toCalculationResult(reportingResult, calculation, calculationContext));
 			}
 			return ret;
 		} catch (EvaluationException ex) {
@@ -436,9 +455,13 @@ public abstract class BaseEmrCalculation extends BaseCalculation implements Pati
 	 * @return the calculation result
 	 */
 	protected static CalculationResult toCalculationResult(Object obj, PatientCalculation calculation, PatientCalculationContext calculationContext) {
-		if (obj instanceof Obs) {
+		if (obj == null) {
+			return null;
+		}
+		else if (obj instanceof Obs) {
 			return new ObsResult((Obs) obj, calculation, calculationContext);
-		} else if (obj instanceof Collection) {
+		}
+		else if (obj instanceof Collection) {
 			ListResult ret = new ListResult();
 			for (Object item : (Collection) obj) {
 				ret.add(toCalculationResult(item, calculation, calculationContext));

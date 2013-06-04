@@ -15,8 +15,11 @@
 package org.openmrs.module.kenyaemr.reporting.library.indicator;
 
 import org.openmrs.Concept;
+import org.openmrs.Program;
+import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.reporting.library.cohort.ArtCohortLibrary;
+import org.openmrs.module.kenyaemr.reporting.library.cohort.CommonCohortLibrary;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -119,26 +122,53 @@ public class ArtIndicatorLibrary {
 	}
 
 	/**
-	 * Number of patients who are currently on ART
+	 * Number of patients who are on ART
 	 * @return the indicator
 	 */
 	public CohortIndicator onArt() {
-		return createCohortIndicator("Number of patients currently on ART", map(artCohorts.onArt(), "onDate=${endDate}"));
+		return createCohortIndicator("Number of patients on ART", map(artCohorts.onArt(), "onDate=${endDate}"));
 	}
 
 	/**
-	 * Number of patients who are currently on ART and pregnant
+	 * Number of patients who are on ART and pregnant
 	 * @return the indicator
 	 */
 	public CohortIndicator onArtAndPregnant() {
-		return createCohortIndicator("Number of patients currently on ART and pregnant", map(artCohorts.onArtAndPregnant(), "onDate=${endDate}"));
+		return createCohortIndicator("Number of patients on ART and pregnant", map(artCohorts.onArtAndPregnant(), "onDate=${endDate}"));
 	}
 
 	/**
-	 * Number of patients who are currently on ART and pregnant
+	 * Number of patients who are on ART and pregnant
 	 * @return the indicator
 	 */
 	public CohortIndicator onArtAndNotPregnant() {
-		return createCohortIndicator("Number of patients currently on ART and not pregnant", map(artCohorts.onArtAndNotPregnant(), "onDate=${endDate}"));
+		return createCohortIndicator("Number of patients on ART and not pregnant", map(artCohorts.onArtAndNotPregnant(), "onDate=${endDate}"));
+	}
+
+	/**
+	 * Number of patients who are on Cotrimoxazole prophylaxis
+	 * @return the indicator
+	 */
+	public CohortIndicator onCotrimoxazoleProphylaxis() {
+		Concept[] drugs = { Dictionary.getConcept(Dictionary.SULFAMETHOXAZOLE_TRIMETHOPRIM) };
+		return createCohortIndicator("Number of patients on Cotrimoxazole", map(artCohorts.inHivProgramAndOnMedication(drugs), "onDate=${endDate}"));
+	}
+
+	/**
+	 * Number of patients who are on Fluconazole prophylaxis
+	 * @return the indicator
+	 */
+	public CohortIndicator onFluconazoleProphylaxis() {
+		Concept[] drugs = { Dictionary.getConcept(Dictionary.FLUCONAZOLE) };
+		return createCohortIndicator("Number of patients on Fluconazole", map(artCohorts.inHivProgramAndOnMedication(drugs), "onDate=${endDate}"));
+	}
+
+	/**
+	 * Number of patients who are on any form of prophylaxis
+	 * @return the indicator
+	 */
+	public CohortIndicator onProphylaxis() {
+		Concept[] drugs = { Dictionary.getConcept(Dictionary.FLUCONAZOLE), Dictionary.getConcept(Dictionary.SULFAMETHOXAZOLE_TRIMETHOPRIM) };
+		return createCohortIndicator("Number of patients on prophylaxis", map(artCohorts.inHivProgramAndOnMedication(drugs), "onDate=${endDate}"));
 	}
 }

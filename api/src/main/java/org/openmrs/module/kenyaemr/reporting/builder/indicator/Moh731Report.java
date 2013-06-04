@@ -300,7 +300,10 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 		
 		String indParams = "startDate=${startDate},endDate=${endDate}";
 
-		// TODO 3.1 (On Cotrimoxazole Prophylaxis)
+		// TODO HV03-01 and HV03-2 (HIV Exposed Infants)
+
+		// 3.1 (On CTX Prophylaxis)
+		EmrReportingUtils.addRow(cohortDsd, "HV03", "On CTX Prophylaxis", map(artIndicators.onCotrimoxazoleProphylaxis(), indParams), nonInfantColumns, Arrays.asList("03", "04", "05", "06", "07"));
 
 		// 3.2 (Enrolled in Care)
 		EmrReportingUtils.addRow(cohortDsd, "HV03", "Enrolled in care", map(artIndicators.enrolledExcludingTransfers(), indParams), allColumns, Arrays.asList("08", "09", "10", "11", "12", "13"));

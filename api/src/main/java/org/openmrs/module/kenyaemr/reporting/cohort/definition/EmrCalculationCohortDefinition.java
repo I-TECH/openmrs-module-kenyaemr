@@ -19,6 +19,8 @@ import org.openmrs.module.reporting.cohort.definition.BaseCohortDefinition;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Cohort definition based on a calculation
@@ -34,6 +36,12 @@ public class EmrCalculationCohortDefinition extends BaseCohortDefinition {
 	@ConfigurationProperty(group = "calculation")
 	private Object withResult;
 
+	@ConfigurationProperty(group = "calculation")
+	private Map<String, Object> calculationParameters;
+
+	/**
+	 * Default constructor
+	 */
 	public EmrCalculationCohortDefinition() {
 	}
 
@@ -68,6 +76,7 @@ public class EmrCalculationCohortDefinition extends BaseCohortDefinition {
 	 */
 	public Date getOnDate() {
 		return onDate;
+
 	}
 
 	/**
@@ -92,5 +101,34 @@ public class EmrCalculationCohortDefinition extends BaseCohortDefinition {
 	 */
 	public void setWithResult(Object withResult) {
 		this.withResult = withResult;
+	}
+
+	/**
+	 * Gets the calculation parameters
+	 * @return the calculation parameters
+	 */
+	public Map<String, Object> getCalculationParameters() {
+		return calculationParameters;
+	}
+
+	/**
+	 * Sets the calculation parameters
+	 * @param calculationParameters the calculation parameters
+	 */
+	public void setCalculationParameters(Map<String, Object> calculationParameters) {
+		this.calculationParameters = calculationParameters;
+	}
+
+	/**
+	 * Adds a calculation parameter
+	 * @param name the name
+	 * @param value the value
+	 */
+	public void addCalculationParameter(String name, Object value) {
+		if (calculationParameters == null) {
+			calculationParameters = new HashMap<String, Object>();
+		}
+
+		calculationParameters.put(name, value);
 	}
 }

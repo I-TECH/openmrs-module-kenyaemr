@@ -18,13 +18,15 @@ import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.EmrCalculationCohortDefinition;
 import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
 
+import java.util.Map;
+
 import static org.openmrs.module.kenyaemr.reporting.EmrReportingUtils.map;
 
 /**
  * Base implementation for row-per-patient reports based on calculations
  */
 public abstract class BasePatientCalculationReportBuilder extends BasePatientListReportBuilder {
-	
+
 	private BaseEmrCalculation calculation;
 
 	/**
@@ -65,9 +67,11 @@ public abstract class BasePatientCalculationReportBuilder extends BasePatientLis
 	 */
 	@Override
 	protected PatientDataSetDefinition buildDataSet() {
+		EmrCalculationCohortDefinition cd = new EmrCalculationCohortDefinition(getCalculation());
+
 		PatientDataSetDefinition dsd = new PatientDataSetDefinition(calculation.getName() + " DSD");
+		dsd.addRowFilter(map(cd));
 		addColumns(dsd);
-		dsd.addRowFilter(map(new EmrCalculationCohortDefinition(calculation)));
 		return dsd;
 	}
 }

@@ -19,11 +19,13 @@ import org.openmrs.EncounterType;
 import org.openmrs.Program;
 import org.openmrs.api.PatientSetService;
 import org.openmrs.module.kenyaemr.Dictionary;
+import org.openmrs.module.kenyaemr.Metadata;
+import org.openmrs.module.kenyaemr.calculation.InProgramCalculation;
+import org.openmrs.module.kenyaemr.calculation.OnMedicationCalculation;
 import org.openmrs.module.kenyaemr.calculation.art.OnAlternateFirstLineArtCalculation;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.DateObsValueBetweenCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.EmrCalculationCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.*;
-import org.openmrs.module.reporting.common.RangeComparator;
 import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
@@ -32,6 +34,7 @@ import org.springframework.stereotype.Component;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 
 import static org.openmrs.module.kenyaemr.reporting.EmrReportingUtils.map;
 
@@ -192,6 +195,32 @@ public class CommonCohortLibrary {
 		EmrCalculationCohortDefinition cd = new EmrCalculationCohortDefinition(new OnAlternateFirstLineArtCalculation());
 		cd.setName("pregnant on date");
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
+		return cd;
+	}
+
+	/**
+	 * Patients who are in the specified program on ${onDate}
+	 * @param program the program
+	 * @return
+	 */
+	public CohortDefinition inProgram(Program program) {
+		EmrCalculationCohortDefinition cd = new EmrCalculationCohortDefinition(new InProgramCalculation());
+		cd.setName("in " + program.getName() + " on date");
+		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
+		cd.addCalculationParameter("program", program);
+		return cd;
+	}
+
+	/**
+	 * Patients who are on the specified medication on ${onDate}
+	 * @param concepts the drug concepts
+	 * @return the cohort definition
+	 */
+	public CohortDefinition onMedication(Concept... concepts) {
+		EmrCalculationCohortDefinition cd = new EmrCalculationCohortDefinition(new OnMedicationCalculation());
+		cd.setName("taking drug on date");
+		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
+		cd.addCalculationParameter("drugs", new HashSet<Concept>(Arrays.asList(concepts)));
 		return cd;
 	}
 }

@@ -29,15 +29,12 @@ import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.test.TestUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
- * Tests for {@link TakingDrugCalculation}
+ * Tests for {@link OnMedicationCalculation}
  */
-public class TakingDrugCalculationTest extends BaseModuleContextSensitiveTest {
+public class OnMedicationCalculationTest extends BaseModuleContextSensitiveTest {
 
 	@Before
 	public void setup() throws Exception {
@@ -46,7 +43,7 @@ public class TakingDrugCalculationTest extends BaseModuleContextSensitiveTest {
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.calculation.TakingDrugCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
+	 * @see OnMedicationCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
 	 */
 	@Test
 	public void evaluate() throws Exception {
@@ -91,10 +88,10 @@ public class TakingDrugCalculationTest extends BaseModuleContextSensitiveTest {
 		List<Integer> cohort = Arrays.asList(2, 6, 7, 8);
 
 		Map<String, Object> params = new HashMap<String, Object>();
-		params.put("drugConcept", dapsone.getUuid());
+		params.put("drugs", Collections.singleton(dapsone));
 		PatientCalculationContext context = TestUtils.calculationContext(TestUtils.date(2012, 6, 30));
 
-		CalculationResultMap resultMap = new TakingDrugCalculation().evaluate(cohort, params, context);
+		CalculationResultMap resultMap = new OnMedicationCalculation().evaluate(cohort, params, context);
 		Assert.assertTrue((Boolean) resultMap.get(2).getValue());
 		Assert.assertFalse((Boolean) resultMap.get(6).getValue()); // subsequent visit
 		Assert.assertFalse((Boolean) resultMap.get(7).getValue()); // wrong drug

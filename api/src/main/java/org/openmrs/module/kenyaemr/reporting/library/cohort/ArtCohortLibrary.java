@@ -16,6 +16,7 @@ package org.openmrs.module.kenyaemr.reporting.library.cohort;
 
 import org.openmrs.Concept;
 import org.openmrs.EncounterType;
+import org.openmrs.Program;
 import org.openmrs.api.PatientSetService;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.Metadata;
@@ -313,6 +314,21 @@ public class ArtCohortLibrary {
 		cd.addSearch("startedArt12MonthsAgo", map(startedArt(), "onOrAfter=${onDate-13m},onOrBefore=${onDate-12m}"));
 		cd.addSearch("transferredOut", map(commonCohorts.transferredOut(), "onOrAfter=${onDate-13m}"));
 		cd.setCompositionString("startedArt12MonthsAgo AND NOT transferredOut");
+		return cd;
+	}
+
+	/**
+	 * Patients who are in HIV care and are on the specified medication on ${onDate}
+	 * @return
+	 */
+	public CohortDefinition inHivProgramAndOnMedication(Concept... concepts) {
+		Program hivProgram = Metadata.getProgram(Metadata.HIV_PROGRAM);
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("in HIV program and on medication between dates");
+		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
+		cd.addSearch("inProgram", map(commonCohorts.inProgram(hivProgram), "onDate=${onDate}"));
+		cd.addSearch("onMedication", map(commonCohorts.onMedication(concepts), "onDate=${onDate}"));
+		cd.setCompositionString("inProgram AND onMedication");
 		return cd;
 	}
 }
