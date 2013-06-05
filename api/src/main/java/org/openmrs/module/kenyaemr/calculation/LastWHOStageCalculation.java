@@ -26,11 +26,6 @@ import java.util.Map;
  */
 public class LastWHOStageCalculation extends BaseEmrCalculation {
 
-	@Override
-	public String[] getTags() {
-		return new String[] { "hiv" };
-	}
-
     /**
      * @should calculate null for patients who have recorded WHO stage
 	 * @should calculate last recorded WHO stage for all patients

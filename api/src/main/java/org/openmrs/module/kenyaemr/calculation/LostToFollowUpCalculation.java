@@ -35,11 +35,6 @@ public class LostToFollowUpCalculation extends BaseAlertCalculation {
 		return "Lost to Followup";
 	}
 
-	@Override
-	public String[] getTags() {
-		return new String[] { "hiv" };
-	}
-
 	/**
 	 * Evaluates the calculation
 	 * @should calculate false for deceased patients

@@ -27,11 +27,6 @@ import java.util.Map;
  */
 public class LastCD4CountCalculation extends BaseEmrCalculation {
 
-	@Override
-	public String[] getTags() {
-		return new String[] { "hiv" };
-	}
-
 	/**
 	 * Evaluates the calculation
 	 * @should calculate null for patients with no recorded CD4 count

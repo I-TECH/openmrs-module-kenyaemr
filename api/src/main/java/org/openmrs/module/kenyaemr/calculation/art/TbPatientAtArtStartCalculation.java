@@ -31,11 +31,6 @@ import java.util.Map;
  * Calculates whether a patient was a TB patient on the date they started ARTs
  */
 public class TbPatientAtArtStartCalculation extends BaseEmrCalculation {
-
-	@Override
-	public String[] getTags() {
-		return new String[] { "hiv" };
-	}
 	
 	/**
 	 * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)

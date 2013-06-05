@@ -29,11 +29,6 @@ import java.util.*;
  */
 public class OnMedicationCalculation extends BaseEmrCalculation {
 
-	@Override
-	public String[] getTags() {
-		return new String[] { };
-	}
-
 	@SuppressWarnings("unchecked")
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> params, PatientCalculationContext context) {

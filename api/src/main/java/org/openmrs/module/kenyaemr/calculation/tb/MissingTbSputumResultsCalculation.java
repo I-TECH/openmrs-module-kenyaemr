@@ -42,11 +42,6 @@ public class MissingTbSputumResultsCalculation extends BaseAlertCalculation {
 		return "Missing TB Sputum Results";
 	}
 
-	@Override
-	public String[] getTags() {
-		return new String[] { "tb" };
-	}
-
 	/**
 	 * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
 	 * @should determine with missing sputum results

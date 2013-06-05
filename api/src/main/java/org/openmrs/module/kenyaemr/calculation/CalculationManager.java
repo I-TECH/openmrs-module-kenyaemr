@@ -80,28 +80,6 @@ public class CalculationManager implements CalculationProvider {
 
 		return ret;
 	}
-
-	/**
-	 * Gets new instances of all calculations in this module with the given tag
-	 * @return list of calculation instances
-	 */
-	public List<BaseEmrCalculation> getCalculations(String tag) {
-		List<BaseEmrCalculation> ret = new ArrayList<BaseEmrCalculation>();
-		for (String calcName : calculationClasses.keySet()) {
-			try {
-				BaseEmrCalculation calc = (BaseEmrCalculation) getCalculation(calcName, null);
-
-				// Check against the calculations tags if a tag was specified
-				if (tag == null || (calc.getTags().length > 0 && Arrays.asList(calc.getTags()).contains(tag))) {
-					ret.add(calc);
-				}
-			}
-			catch (InvalidCalculationException ex) {
-				log.warn("Invalid calculation defined", ex);
-			}
-		}
-		return ret;
-	}
 	
 	/**
 	 * @see org.openmrs.calculation.CalculationProvider#getCalculation(java.lang.String, java.lang.String)

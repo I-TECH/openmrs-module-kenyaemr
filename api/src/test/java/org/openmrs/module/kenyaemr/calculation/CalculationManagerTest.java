@@ -24,11 +24,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Tests for {@link CalculationManager}
+ */
 public class CalculationManagerTest extends BaseModuleContextSensitiveTest {
 
 	@Autowired
-	CalculationManager manager;
+	private CalculationManager manager;
 
+	/**
+	 * Setup each test
+	 */
 	@Before
 	public void setup() {
 		manager.refresh();
@@ -40,18 +46,5 @@ public class CalculationManagerTest extends BaseModuleContextSensitiveTest {
 	@Test
 	public void getAlertCalculations_shouldReturnAllAlertCalculations() {
 		Assert.assertTrue(manager.getAlertCalculations().size() > 0);
-	}
-
-	/**
-	 * @see CalculationManager#getCalculations(String)
-	 */
-	@Test
-	public void getCalculations_shouldReturnAllCalculationsWithTag() {
-		List<BaseEmrCalculation> calcs = manager.getCalculations("hiv");
-		Assert.assertTrue(calcs.size() > 0);
-
-		for (BaseEmrCalculation calc : calcs) {
-			Assert.assertTrue(Arrays.asList(calc.getTags()).contains("hiv"));
-		}
 	}
 }

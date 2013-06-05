@@ -35,11 +35,6 @@ public class OnArtCalculation extends BaseAlertCalculation {
 	public String getAlertMessage() {
 		return "On ART";
 	}
-
-	@Override
-	public String[] getTags() {
-		return new String[] { "hiv" };
-	}
 	
 	/**
 	 * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(java.util.Collection,

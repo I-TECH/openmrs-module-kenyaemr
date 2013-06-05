@@ -33,11 +33,6 @@ import java.util.Map;
  * Calculates the initial ART regimen of each patient as a list of drug orders. Returns empty list if patient was never on ART
  */
 public class InitialArtRegimenCalculation extends BaseEmrCalculation {
-
-	@Override
-	public String[] getTags() {
-		return new String[] { "hiv" };
-	}
 	
 	/**
 	 * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(java.util.Collection,

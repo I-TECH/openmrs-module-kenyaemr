@@ -34,11 +34,6 @@ public class IsPregnantCalculation extends BaseAlertCalculation {
 		return "Pregnant";
 	}
 
-	@Override
-	public String[] getTags() {
-		return new String[] { };
-	}
-
     /**
 	 * Evaluates the calculation
      * @should calculate null for deceased patients

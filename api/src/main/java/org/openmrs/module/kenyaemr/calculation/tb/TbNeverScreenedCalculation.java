@@ -32,11 +32,6 @@ import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
  */
 public class TbNeverScreenedCalculation extends BaseEmrCalculation {
 
-	@Override
-	public String[] getTags() {
-		return new String[] { "hiv", "tb" };
-	}
-
 	/**
 	 * Evaluates the calculation
 	 * @param cohort the patient cohort

@@ -65,14 +65,6 @@ import org.openmrs.util.OpenmrsUtil;
 public abstract class BaseEmrCalculation extends BaseCalculation implements PatientCalculation {
 
 	/**
-	 * Gets an array of string tags associated with this calculation. The default implementation returns an empty array.
-	 * @return the tags
-	 */
-	public String[] getTags() {
-		return new String[] {};
-	}
-
-	/**
 	 * Evaluates ages of each patient
 	 * @param cohort the patient ids
 	 * @param calculationContext the calculation context

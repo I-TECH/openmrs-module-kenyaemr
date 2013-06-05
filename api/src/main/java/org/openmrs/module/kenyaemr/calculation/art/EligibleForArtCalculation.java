@@ -40,11 +40,6 @@ public class EligibleForArtCalculation extends BaseAlertCalculation {
 	public String getAlertMessage() {
 		return "Eligible for ART";
 	}
-
-	@Override
-	public String[] getTags() {
-		return new String[] { "hiv" };
-	}
 	
 	/**
 	 * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)

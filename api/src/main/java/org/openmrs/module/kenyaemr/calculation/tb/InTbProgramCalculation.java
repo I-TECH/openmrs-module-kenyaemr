@@ -28,11 +28,6 @@ import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 public class InTbProgramCalculation extends BaseEmrCalculation {
 
 	@Override
-	public String[] getTags() {
-		return new String[] { "tb" };
-	}
-
-	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> params, PatientCalculationContext context) {
 		return passing(activeEnrollment(Metadata.getProgram(Metadata.TB_PROGRAM), alivePatients(cohort, context), context));
 	}

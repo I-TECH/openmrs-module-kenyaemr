@@ -32,11 +32,6 @@ import java.util.Map;
  * Calculates the current ART regimen of each patient as a list of drug orders. Returns empty list if patient is not on ART
  */
 public class CurrentArtRegimenCalculation extends BaseEmrCalculation {
-
-	@Override
-	public String[] getTags() {
-		return new String[] { "hiv" };
-	}
 	
 	/**
 	 * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(java.util.Collection,

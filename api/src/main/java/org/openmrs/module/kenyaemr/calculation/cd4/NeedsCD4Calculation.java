@@ -42,11 +42,6 @@ public class NeedsCD4Calculation extends BaseAlertCalculation {
 	public String getAlertMessage() {
 		return "Due for CD4";
 	}
-
-	@Override
-	public String[] getTags() {
-		return new String[] { "alert", "hiv" };
-	}
 	
 	/**
 	 * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(java.util.Collection,

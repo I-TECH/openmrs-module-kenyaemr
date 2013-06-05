@@ -27,11 +27,6 @@ import java.util.Map;
 public class InProgramCalculation extends BaseEmrCalculation {
 
 	@Override
-	public String[] getTags() {
-		return new String[] { };
-	}
-
-	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> params, PatientCalculationContext context) {
 		Program program = (Program) params.get("program");
 		return passing(activeEnrollment(program, alivePatients(cohort, context), context));

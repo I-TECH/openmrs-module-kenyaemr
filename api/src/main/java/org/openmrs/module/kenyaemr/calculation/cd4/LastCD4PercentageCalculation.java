@@ -27,11 +27,6 @@ import java.util.Map;
  */
 public class LastCD4PercentageCalculation extends BaseEmrCalculation {
 
-	@Override
-	public String[] getTags() {
-		return new String[] { "hiv" };
-	}
-
     /**
      * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
      * @should calculate last CD4 percentage for all patients

@@ -33,11 +33,6 @@ import java.util.Map;
  * Calculates a patient's WHO stage on the date they started ARTs
  */
 public class WhoStageAtArtStartCalculation extends BaseEmrCalculation {
-
-	@Override
-	public String[] getTags() {
-		return new String[] { "hiv" };
-	}
 	
 	/**
 	 * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)

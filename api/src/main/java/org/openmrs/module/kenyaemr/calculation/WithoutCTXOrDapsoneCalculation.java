@@ -33,11 +33,6 @@ import org.openmrs.module.kenyaemr.Metadata;
  */
 public class WithoutCTXOrDapsoneCalculation extends BaseEmrCalculation {
 
-	@Override
-	public String[] getTags() {
-		return new String[] {"hiv"};
-	}
-
 	@SuppressWarnings("unchecked")
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {

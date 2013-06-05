@@ -27,11 +27,6 @@ import java.util.Map;
  */
 public class TbTreatmentNumberCalculation extends BaseEmrCalculation {
 
-	@Override
-	public String[] getTags() {
-		return new String[] { "tb" };
-	}
-
     @Override
     public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> arg1, PatientCalculationContext context) {
 		return lastObs(getConcept(Dictionary.TUBERCULOSIS_TREATMENT_NUMBER), cohort, context);

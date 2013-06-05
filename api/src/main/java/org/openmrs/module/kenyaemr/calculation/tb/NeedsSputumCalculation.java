@@ -48,11 +48,6 @@ public class NeedsSputumCalculation extends BaseAlertCalculation {
 		return "Due for TB Sputum";
 	}
 
-	@Override
-	public String[] getTags() {
-		return new String[] { "tb" };
-	}
-
 	/**
 	 * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
 	 * @should determine whether patients need sputum test
