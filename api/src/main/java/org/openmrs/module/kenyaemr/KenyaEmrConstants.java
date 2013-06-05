@@ -30,12 +30,6 @@ public class KenyaEmrConstants {
 	public static final String GP_DEFAULT_LOCATION = MODULE_ID + ".defaultLocation";
 	public static final String GP_SUPPORT_PHONE_NUMBER = MODULE_ID + ".supportPhoneNumber";
 	public static final String GP_SUPPORT_EMAIL_ADDRESS = MODULE_ID + ".supportEmailAddress";
-	public static final String GP_CONCEPTS_VERSION = "ciel.conceptsVersion";
-
-	/**
-	 * Required concepts version
-	 */
-	public static final String REQUIRED_CONCEPTS_VERSION = "20130513";
 
 	/**
 	 * Default support contact details

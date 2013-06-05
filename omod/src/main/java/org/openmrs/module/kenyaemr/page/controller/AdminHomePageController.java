@@ -21,6 +21,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.Module;
 import org.openmrs.module.ModuleFactory;
 import org.openmrs.module.appframework.AppUiUtil;
+import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.KenyaEmr;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.module.kenyaemr.form.FormDescriptor;
@@ -92,7 +93,7 @@ public class AdminHomePageController {
 			}
 
 			// Concepts aren't actually imported from a metadata package but let's pretend for the sake of simplicity
-			String conceptsVersion = emr.getMetadataManager().getConceptsVersion();
+			String conceptsVersion = Dictionary.getDatabaseVersion();
 			metadataPackages.add(SimpleObject.create("name", "Kenya EMR Concepts", "version", conceptsVersion, "status", (conceptsVersion != null)));
 
 

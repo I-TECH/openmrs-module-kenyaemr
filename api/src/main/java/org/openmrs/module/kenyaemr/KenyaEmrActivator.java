@@ -18,12 +18,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
-import org.openmrs.GlobalProperty;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.Module;
 import org.openmrs.module.ModuleActivator;
 import org.openmrs.module.ModuleFactory;
-import org.openmrs.module.kenyaemr.datatype.LocationDatatype;
 import org.openmrs.module.kenyaemr.util.KenyaEmrUtils;
 
 import java.io.InputStream;
@@ -120,10 +118,9 @@ public class KenyaEmrActivator implements ModuleActivator {
 	 * Checks the requirements of this module
 	 */
 	protected void checkRequirements() {
-		// Check concept dictionary version
-   		String conceptsVersion = Context.getAdministrationService().getGlobalProperty(KenyaEmrConstants.GP_CONCEPTS_VERSION);
-		if (conceptsVersion == null || !KenyaEmrUtils.checkCielVersions(KenyaEmrConstants.REQUIRED_CONCEPTS_VERSION, conceptsVersion)) {
-			throw new RuntimeException("Module requires concepts version: " + KenyaEmrConstants.REQUIRED_CONCEPTS_VERSION);
+		String conceptsVersion = Dictionary.getDatabaseVersion();
+		if (conceptsVersion == null || !KenyaEmrUtils.checkCielVersions(Dictionary.REQUIRED_DATABASE_VERSION, conceptsVersion)) {
+			throw new RuntimeException("Module requires concepts version: " + Dictionary.REQUIRED_DATABASE_VERSION);
 		}
 		else {
 			log.info("Detected concept dictionary version " + conceptsVersion);

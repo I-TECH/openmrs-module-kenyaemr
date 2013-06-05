@@ -73,14 +73,6 @@ public class MetadataManager {
 	}
 
 	/**
-	 * Gets the concepts version
-	 * @return the version
-	 */
-	public String getConceptsVersion() {
-		return Context.getAdministrationService().getGlobalProperty(KenyaEmrConstants.GP_CONCEPTS_VERSION);
-	}
-
-	/**
 	 * Setup required global properties
 	 */
 	public void setupGlobalProperties() {

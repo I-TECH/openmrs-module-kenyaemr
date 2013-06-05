@@ -16,11 +16,30 @@ package org.openmrs.module.kenyaemr;
 
 import org.openmrs.Concept;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyaemr.util.KenyaEmrUtils;
 
 /**
  * Dictionary for concepts used by Kenya EMR
  */
 public class Dictionary {
+
+	/**
+	 * Name of global property that stores database concepts version
+	 */
+	private static final String GP_CONCEPTS_VERSION = "ciel.conceptsVersion";
+
+	/**
+	 * Required concepts version
+	 */
+	public static final String REQUIRED_DATABASE_VERSION = "20130604";
+
+	/**
+	 * Gets the database version of the concepts
+	 * @return the version
+	 */
+	public static String getDatabaseVersion() {
+		return Context.getAdministrationService().getGlobalProperty(GP_CONCEPTS_VERSION);
+	}
 
 	/**
 	 * Gets a concept by an identifier (mapping or UUID)
