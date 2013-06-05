@@ -14,7 +14,7 @@
 
 package org.openmrs.module.kenyaemr.reporting.builder.patientlist;
 
-import org.openmrs.module.kenyaemr.calculation.tb.TbNeverScreenedCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.tb.NeverScreenedForTbCalculation;
 import org.springframework.stereotype.Component;
 
 /**
@@ -24,7 +24,7 @@ import org.springframework.stereotype.Component;
 public class NeverScreenedForTBCalculationReport extends BasePatientCalculationReportBuilder {
 
 	public NeverScreenedForTBCalculationReport() {
-		super(new TbNeverScreenedCalculation());
+		super(new NeverScreenedForTbCalculation());
 	}
 
 	/**

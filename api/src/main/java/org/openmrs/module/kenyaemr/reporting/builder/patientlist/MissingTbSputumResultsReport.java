@@ -14,7 +14,7 @@
 
 package org.openmrs.module.kenyaemr.reporting.builder.patientlist;
 
-import org.openmrs.module.kenyaemr.calculation.tb.MissingTbSputumResultsCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.tb.MissingTbSputumResultsCalculation;
 import org.springframework.stereotype.Component;
 
 @Component

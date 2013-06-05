@@ -14,7 +14,7 @@
 
 package org.openmrs.module.kenyaemr.reporting.builder.patientlist;
 
-import org.openmrs.module.kenyaemr.calculation.LostToFollowUpCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.art.LostToFollowUpCalculation;
 import org.springframework.stereotype.Component;
 
 @Component

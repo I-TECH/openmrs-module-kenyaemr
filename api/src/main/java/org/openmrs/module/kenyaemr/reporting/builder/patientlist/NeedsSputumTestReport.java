@@ -14,7 +14,7 @@
 
 package org.openmrs.module.kenyaemr.reporting.builder.patientlist;
 
-import org.openmrs.module.kenyaemr.calculation.tb.NeedsSputumCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.tb.NeedsTbSputumTestCalculation;
 import org.springframework.stereotype.Component;
 
 /**
@@ -24,7 +24,7 @@ import org.springframework.stereotype.Component;
 public class NeedsSputumTestReport extends BasePatientCalculationReportBuilder {
 
 	public NeedsSputumTestReport() {
-		super(new NeedsSputumCalculation());
+		super(new NeedsTbSputumTestCalculation());
 	}
 
 	/**

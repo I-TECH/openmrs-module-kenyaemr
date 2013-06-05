@@ -1,4 +1,4 @@
-/*
+/**
  * The contents of this file are subject to the OpenMRS Public License
  * Version 1.0 (the "License"); you may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
@@ -11,6 +11,7 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.kenyaemr.calculation;
 
 import org.junit.Assert;
@@ -27,10 +28,16 @@ import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 import java.util.*;
 
+/**
+ * Tests for {@link BaseEmrCalculation}
+ */
 public class BaseEmrCalculationTest extends BaseModuleContextSensitiveTest {
 
+	/**
+	 * Setup each test
+	 */
 	@Before
-	public void beforeEachTest() throws Exception {
+	public void setup() throws Exception {
 		executeDataSet("test-data.xml");
 	}
 

@@ -32,7 +32,7 @@ import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.api.ConfigurationRequiredException;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
-import org.openmrs.module.kenyaemr.calculation.art.InitialArtStartDateCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.art.InitialArtStartDateCalculation;
 import org.openmrs.module.kenyaemr.regimen.RegimenChange;
 import org.openmrs.module.kenyaemr.regimen.RegimenChangeHistory;
 import org.openmrs.module.kenyaui.KenyaUiUtils;

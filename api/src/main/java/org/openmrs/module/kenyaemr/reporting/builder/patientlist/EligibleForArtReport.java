@@ -14,7 +14,7 @@
 
 package org.openmrs.module.kenyaemr.reporting.builder.patientlist;
 
-import org.openmrs.module.kenyaemr.calculation.art.EligibleForArtCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.art.EligibleForArtCalculation;
 import org.springframework.stereotype.Component;
 
 /**

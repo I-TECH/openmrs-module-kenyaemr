@@ -14,7 +14,7 @@
 
 package org.openmrs.module.kenyaemr.reporting.builder.patientlist;
 
-import org.openmrs.module.kenyaemr.calculation.cd4.NeedsCD4Calculation;
+import org.openmrs.module.kenyaemr.calculation.library.art.NeedsCd4TestCalculation;
 import org.springframework.stereotype.Component;
 
 /**
@@ -24,7 +24,7 @@ import org.springframework.stereotype.Component;
 public class NeedsCD4Report extends BasePatientCalculationReportBuilder {
 
 	public NeedsCD4Report() {
-		super(new NeedsCD4Calculation());
+		super(new NeedsCd4TestCalculation());
 	}
 
 	/**
