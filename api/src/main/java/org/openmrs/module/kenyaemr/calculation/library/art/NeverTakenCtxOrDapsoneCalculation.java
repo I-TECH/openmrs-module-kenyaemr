@@ -34,7 +34,7 @@ import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
 /**
  * Calculates whether patients have taken CTX or Dapsone
  */
-public class WithoutCtxOrDapsoneCalculation extends BaseEmrCalculation {
+public class NeverTakenCtxOrDapsoneCalculation extends BaseEmrCalculation {
 
 	@SuppressWarnings("unchecked")
 	@Override

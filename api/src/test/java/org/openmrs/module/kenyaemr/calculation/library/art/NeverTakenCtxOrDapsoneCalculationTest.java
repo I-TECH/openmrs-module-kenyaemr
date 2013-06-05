@@ -25,7 +25,6 @@ import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.Metadata;
-import org.openmrs.module.kenyaemr.calculation.library.art.WithoutCtxOrDapsoneCalculation;
 import org.openmrs.module.kenyaemr.test.TestUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
@@ -33,9 +32,9 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Tests for {@link org.openmrs.module.kenyaemr.calculation.library.art.WithoutCtxOrDapsoneCalculation}
+ * Tests for {@link NeverTakenCtxOrDapsoneCalculation}
  */
-public class WithoutCtxOrDapsoneCalculationTest extends BaseModuleContextSensitiveTest {
+public class NeverTakenCtxOrDapsoneCalculationTest extends BaseModuleContextSensitiveTest {
 
 	/**
 	 * Setup each test
@@ -47,7 +46,7 @@ public class WithoutCtxOrDapsoneCalculationTest extends BaseModuleContextSensiti
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.calculation.library.art.WithoutCtxOrDapsoneCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
+	 * @see NeverTakenCtxOrDapsoneCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
 	 */
 	@Test
 	public void evaluate() throws Exception {
@@ -74,7 +73,7 @@ public class WithoutCtxOrDapsoneCalculationTest extends BaseModuleContextSensiti
 		
 		List<Integer> cohort = Arrays.asList(6, 7, 8, 999);
 
-		CalculationResultMap resultMap = new WithoutCtxOrDapsoneCalculation().evaluate(cohort, null, Context.getService(PatientCalculationService.class).createCalculationContext());
+		CalculationResultMap resultMap = new NeverTakenCtxOrDapsoneCalculation().evaluate(cohort, null, Context.getService(PatientCalculationService.class).createCalculationContext());
 		Assert.assertTrue((Boolean) resultMap.get(6).getValue()); // isn't on any drugs
 		Assert.assertFalse((Boolean) resultMap.get(7).getValue()); // is taking Dapsone
 		Assert.assertTrue((Boolean) resultMap.get(8).getValue()); // is taking just Aspirin

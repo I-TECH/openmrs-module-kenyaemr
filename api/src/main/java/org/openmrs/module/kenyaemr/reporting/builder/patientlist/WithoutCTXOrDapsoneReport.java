@@ -14,14 +14,14 @@
 
 package org.openmrs.module.kenyaemr.reporting.builder.patientlist;
 
-import org.openmrs.module.kenyaemr.calculation.library.art.WithoutCtxOrDapsoneCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.art.NeverTakenCtxOrDapsoneCalculation;
 import org.springframework.stereotype.Component;
 
 @Component
 public class WithoutCTXOrDapsoneReport extends BasePatientCalculationReportBuilder {
 
 	public WithoutCTXOrDapsoneReport() {
-		super(new WithoutCtxOrDapsoneCalculation());
+		super(new NeverTakenCtxOrDapsoneCalculation());
 	}
 
 	/**
