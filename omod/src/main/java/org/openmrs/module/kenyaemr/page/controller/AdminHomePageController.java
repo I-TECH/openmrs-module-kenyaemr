@@ -87,15 +87,14 @@ public class AdminHomePageController {
 		}
 		else if (section.equals("content")) {
 
+			List<SimpleObject> conceptDictionary = new ArrayList<SimpleObject>();
+			String conceptsVersion = Dictionary.getDatabaseVersion();
+			conceptDictionary.add(SimpleObject.create("name", "CIEL", "version", conceptsVersion, "status", (conceptsVersion != null)));
+
 			List<SimpleObject> metadataPackages = new ArrayList<SimpleObject>();
 			for (ImportedPackage imported : emr.getMetadataManager().getImportedPackages()) {
 				metadataPackages.add(SimpleObject.create("name", imported.getName(), "version", imported.getVersion(), "status", Boolean.TRUE));
 			}
-
-			// Concepts aren't actually imported from a metadata package but let's pretend for the sake of simplicity
-			String conceptsVersion = Dictionary.getDatabaseVersion();
-			metadataPackages.add(SimpleObject.create("name", "Kenya EMR Concepts", "version", conceptsVersion, "status", (conceptsVersion != null)));
-
 
 			List<SimpleObject> forms = new ArrayList<SimpleObject>();
 			for (FormDescriptor descriptor : emr.getFormManager().getAllFormDescriptors()) {
@@ -110,6 +109,7 @@ public class AdminHomePageController {
 				forms.add(SimpleObject.create("name", name, "version", form.getVersion(), "status", status));
 			}
 
+			infoCategories.put("Concepts", conceptDictionary);
 			infoCategories.put("Metadata Packages", metadataPackages);
 			infoCategories.put("Forms", forms);
 		}
