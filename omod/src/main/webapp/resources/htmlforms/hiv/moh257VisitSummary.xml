@@ -542,10 +542,15 @@
 				</td>
 			</tr>
 			<tr>
-				<th colspan="2">Regm/Dose/Days</th>
+				<th colspan="2">Regm/Dose/Duration</th>
 				<td>(w)</td>
 				<td><span class="ke-field-instructions">Regimen and dose entered via ARV regimen editor</span></td>
-				<td>Days <obs conceptId="159368AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /> [TODO needs concept!]</td>
+				<td>Duration
+					<obsgroup groupingConceptId="161888AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+						<obs conceptId="159368AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+						Units: <obs conceptId="1732AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+					</obsgroup>
+				</td>
 			</tr>
 			<tr>
 				<th rowspan="5">Laboratory<br />Investigations<br />Done</th>
