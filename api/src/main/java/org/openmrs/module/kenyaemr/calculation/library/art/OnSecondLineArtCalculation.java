@@ -49,7 +49,7 @@ public class OnSecondLineArtCalculation extends BaseEmrCalculation {
 			if (currentArvResult != null) {
 				RegimenOrder currentRegimen = (RegimenOrder) currentArvResult.getValue();
 
-				boolean isSecondLine = CalculationUtils.regimenInGroup(currentRegimen, "ARV", "adult-second");;
+				boolean isSecondLine = CalculationUtils.regimenInGroup(currentRegimen, "ARV", "adult-second");
 				result = new BooleanResult(isSecondLine, this, context);
 			}
 

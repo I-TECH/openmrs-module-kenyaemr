@@ -56,14 +56,12 @@ public class DecliningCd4Calculation extends BaseAlertCalculation {
 
 		CalculationResultMap ret = new CalculationResultMap();
 		for (Integer ptId : cohort) {
-			Double lastCD4Count = 0.0;
-			Double oldCD4Count = 0.0;
 			boolean declining = false;
 
 			// Is patient alive and in HIV program?
 			if (inHivProgram.contains(ptId)) {
-				lastCD4Count = CalculationUtils.numericObsResultForPatient(lastCD4Obss, ptId);
-				oldCD4Count = CalculationUtils.numericObsResultForPatient(oldCD4Obss, ptId);
+				Double lastCD4Count = CalculationUtils.numericObsResultForPatient(lastCD4Obss, ptId);
+				Double oldCD4Count = CalculationUtils.numericObsResultForPatient(oldCD4Obss, ptId);
 
 				if (lastCD4Count != null && oldCD4Count != null) {
 					declining = lastCD4Count < oldCD4Count;
