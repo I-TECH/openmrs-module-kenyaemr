@@ -39,7 +39,6 @@
 			setValue('height.value', pheight);
 			var pulmodiv = document.getElementById('iddivPulmonary');
 			var expulmodiv = document.getElementById('expul');
-			
 			//getting the values of the disease classification option buttons
 			var optValues = getValue('dclassification.value');
 				if (optValues == 42){
@@ -172,6 +171,10 @@
 					<tr>
 						<td>Date Start of Treatment:</td>
 						<td><obs conceptId="1113AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="datestartoftreatment" /></td>
+					</tr>
+					<tr>
+						<td></td>
+						<td><lookup class="value" expression="fn.latestObs(1113).valueDate" /></td>
 					</tr>
 					<tr>
 						<td>District:</td>
