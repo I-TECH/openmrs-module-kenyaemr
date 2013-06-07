@@ -25,7 +25,6 @@ import org.openmrs.module.idgen.SequentialIdentifierGenerator;
 import org.openmrs.module.idgen.service.IdentifierSourceService;
 import org.openmrs.module.idgen.validator.LuhnModNIdentifierValidator;
 import org.openmrs.module.kenyaemr.Metadata;
-import org.openmrs.module.kenyaemr.api.ConfigurationRequiredException;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.springframework.stereotype.Component;
 
@@ -70,13 +69,7 @@ public class IdentifierManager {
 	 * @return true if all types are configured
 	 */
 	public boolean isConfigured() {
-		try {
-			getMrnIdentifierSource();
-			getHivUniqueIdentifierSource();
-			return true;
-		} catch (ConfigurationRequiredException ex) {
-			return false;
-		}
+		return getMrnIdentifierSource() != null && getHivUniqueIdentifierSource() != null;
 	}
 
 	/**
@@ -84,23 +77,15 @@ public class IdentifierManager {
 	 * @return the identifier source
 	 */
 	public IdentifierSource getMrnIdentifierSource() {
-		IdentifierSource source = getIdentifierSource(OPENMRS_MEDICAL_RECORD_NUMBER_NAME);
-		if (source == null) {
-			throw new ConfigurationRequiredException("MRN Identifier Source not configured");
-		}
-		return source;
+		return getIdentifierSource(OPENMRS_MEDICAL_RECORD_NUMBER_NAME);
 	}
 
 	/**
 	 * Gets the unique patient number identifier source
 	 * @return the identifier source
 	 */
-	public IdentifierSource getHivUniqueIdentifierSource() throws ConfigurationRequiredException {
-		IdentifierSource source = getIdentifierSource(HIV_UNIQUE_PATIENT_NUMBER_NAME);
-		if (source == null) {
-			throw new ConfigurationRequiredException("HIV Unique Patient Number Identifier Source not configured");
-		}
-		return source;
+	public IdentifierSource getHivUniqueIdentifierSource() {
+		return getIdentifierSource(HIV_UNIQUE_PATIENT_NUMBER_NAME);
 	}
 
 	/**
@@ -108,12 +93,8 @@ public class IdentifierManager {
 	 * @param startFrom the base identifier to start from
 	 */
 	public void setupMrnIdentifierSource(String startFrom) {
-		try {
-			IdentifierSource source = getMrnIdentifierSource();
-			throw new APIException(source.getName() + " is already set up");
-		}
-		catch (ConfigurationRequiredException ex) {
-			// this is the good case: we are only allowed to configure this if it isn't set up yet
+		if (getMrnIdentifierSource() != null) {
+			throw new APIException("MRN identifier source is already set up");
 		}
 
 		PatientIdentifierType idType = Metadata.getPatientIdentifierType(Metadata.OPENMRS_ID_IDENTIFIER_TYPE);
@@ -125,13 +106,10 @@ public class IdentifierManager {
 	 * @param startFrom the base identifier to start from
 	 */
 	public void setupHivUniqueIdentifierSource(String startFrom) {
-		try {
-			IdentifierSource source = getHivUniqueIdentifierSource();
-			throw new APIException(source.getName() + " is already set up");
+		if (getHivUniqueIdentifierSource() != null) {
+			throw new APIException("UPN identifier source is already set up");
 		}
-		catch (ConfigurationRequiredException ex) {
-			// this is the good case: we are only allowed to configure this if it isn't set up yet
-		}
+
 		if (startFrom == null) {
 			startFrom = "00001";
 		}

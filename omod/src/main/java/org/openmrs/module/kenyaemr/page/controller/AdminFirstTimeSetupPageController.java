@@ -20,7 +20,6 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.idgen.IdentifierSource;
 import org.openmrs.module.kenyaemr.KenyaEmr;
 import org.openmrs.module.kenyaemr.KenyaEmrConstants;
-import org.openmrs.module.kenyaemr.api.ConfigurationRequiredException;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.ui.framework.UiUtils;
@@ -64,25 +63,9 @@ public class AdminFirstTimeSetupPageController {
 			kenyaUi.notifySuccess(session, "First-Time Setup Needed");
 		}
 		
-		try {
-			defaultLocation = service.getDefaultLocation();
-		} catch (ConfigurationRequiredException ex) {
-			// pass
-		}
-		
-		IdentifierSource mrnIdentifierSource = null;
-		try {
-			mrnIdentifierSource = emr.getIdentifierManager().getMrnIdentifierSource();
-		} catch (ConfigurationRequiredException ex) {
-			// pass
-		}
-		
-		IdentifierSource hivIdentifierSource = null;
-		try {
-			hivIdentifierSource = emr.getIdentifierManager().getHivUniqueIdentifierSource();
-		} catch (ConfigurationRequiredException ex) {
-			// pass
-		}
+		defaultLocation = service.getDefaultLocation();
+		IdentifierSource mrnIdentifierSource = emr.getIdentifierManager().getMrnIdentifierSource();
+		IdentifierSource hivIdentifierSource = emr.getIdentifierManager().getHivUniqueIdentifierSource();
 		
 		model.addAttribute("isSuperUser", Context.getAuthenticatedUser().isSuperUser());
 		model.addAttribute("defaultLocation", defaultLocation);

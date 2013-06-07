@@ -21,7 +21,6 @@ import org.openmrs.PatientIdentifier;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.KenyaEmr;
 import org.openmrs.module.kenyaemr.Metadata;
-import org.openmrs.module.kenyaemr.api.ConfigurationRequiredException;
 import org.openmrs.module.kenyaemr.test.TestUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,14 +78,6 @@ public class IdentifierManagerTest extends BaseModuleContextSensitiveTest {
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.identifier.IdentifierManager#getMrnIdentifierSource()
-	 */
-	@Test(expected = ConfigurationRequiredException.class)
-	public void getMrnIdentifierSource_shouldThrowExceptionIfSourceNotSetup() {
-		identifierManager.getMrnIdentifierSource();
-	}
-
-	/**
 	 * @see org.openmrs.module.kenyaemr.identifier.IdentifierManager#getHivUniqueIdentifierSource()
 	 */
 	@Test
@@ -94,14 +85,6 @@ public class IdentifierManagerTest extends BaseModuleContextSensitiveTest {
 		identifierManager.setupHivUniqueIdentifierSource("00517");
 
 		Assert.assertNotNull(identifierManager.getHivUniqueIdentifierSource());
-	}
-
-	/**
-	 * @see org.openmrs.module.kenyaemr.identifier.IdentifierManager#getHivUniqueIdentifierSource()
-	 */
-	@Test(expected = ConfigurationRequiredException.class)
-	public void getHivUniqueIdentifierSource_shouldThrowExceptionIfSourceNotSetup() {
-		identifierManager.getHivUniqueIdentifierSource();
 	}
 
 	/**

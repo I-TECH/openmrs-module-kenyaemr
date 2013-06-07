@@ -14,12 +14,10 @@
 
 package org.openmrs.module.kenyaemr.api.impl;
 
-import org.apache.commons.lang.StringUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.*;
-import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.*;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
@@ -30,6 +28,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static org.hamcrest.Matchers.*;
 
 /**
  * Tests for {@link KenyaEmrServiceImpl}
@@ -42,6 +42,9 @@ public class KenyaEmrServiceImplTest extends BaseModuleContextSensitiveTest {
 	@Autowired
 	private KenyaEmr emr;
 
+	/**
+	 * Setup each test
+	 */
 	@Before
 	public void setup() throws Exception {
 		executeDataSet("test-data.xml");
@@ -50,29 +53,35 @@ public class KenyaEmrServiceImplTest extends BaseModuleContextSensitiveTest {
 	}
 
 	/**
-	 * @see KenyaEmrServiceImpl#getDefaultLocation()
-	 * @verifies throw an exception if the default location has not been set
-	 */
-	@Test(expected = APIException.class)
-	public void getDefaultLocation_shouldThrowAnExceptionIfTheDefaultLocationHasNotBeenSet() throws Exception {
-		Assert.assertTrue(StringUtils.isEmpty(Context.getAdministrationService().getGlobalProperty(KenyaEmrConstants.GP_DEFAULT_LOCATION)));
-		service.getDefaultLocation();
-	}
-
-	/**
-	 * @see KenyaEmrServiceImpl#getDefaultLocation()
+	 * @see org.openmrs.module.kenyaemr.api.impl.KenyaEmrServiceImpl#getDefaultLocation()
 	 * @verifies get the default location when set
 	 */
 	@Test
 	public void getDefaultLocation_shouldGetTheDefaultLocationWhenSet() throws Exception {
-		// setup data
+		// Check when not configured
+		Assert.assertNull(service.getDefaultLocation());
+
+		// Configure default location
 		Location loc = Context.getLocationService().getLocation(1);
-		Assert.assertNotNull(loc);
 		service.setDefaultLocation(loc);
 
-		// test
-		Location defaultLocation = service.getDefaultLocation();
-		Assert.assertEquals(loc, defaultLocation);
+		Assert.assertThat(service.getDefaultLocation(), is(loc));
+	}
+
+	/**
+	 * @see org.openmrs.module.kenyaemr.api.impl.KenyaEmrServiceImpl#getDefaultLocationMflCode()
+	 * @verifies get the default location mfl code when set
+	 */
+	@Test
+	public void getDefaultLocationMflCode_shouldGetTheDefaultLocationWhenSet() throws Exception {
+		// Check when not configured
+		Assert.assertNull(service.getDefaultLocationMflCode());
+
+		// Configure default location
+		Location loc = Context.getLocationService().getLocation(1);
+		service.setDefaultLocation(loc);
+
+		Assert.assertThat(service.getDefaultLocationMflCode(), is("15001"));
 	}
 
 	/**

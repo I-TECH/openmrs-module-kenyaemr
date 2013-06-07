@@ -29,7 +29,6 @@ import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.module.kenyaemr.KenyaEmr;
 import org.openmrs.module.kenyaemr.KenyaEmrUiUtils;
 import org.openmrs.module.kenyaemr.Metadata;
-import org.openmrs.module.kenyaemr.api.ConfigurationRequiredException;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
 import org.openmrs.module.kenyaemr.calculation.library.art.InitialArtStartDateCalculation;
@@ -66,12 +65,10 @@ public class KenyaEmrUtilFragmentController {
 		});
 
 		// Add default location and its sub-locations
-		try {
-			Location defaultLocation = Context.getService(KenyaEmrService.class).getDefaultLocation();
+		Location defaultLocation = Context.getService(KenyaEmrService.class).getDefaultLocation();
+		if (defaultLocation != null) {
 			results.add(defaultLocation);
 			results.addAll(defaultLocation.getChildLocations(false));
-		} catch (ConfigurationRequiredException ex) {
-			// pass
 		}
 
 		// If term looks like an MFL code, add location with that code

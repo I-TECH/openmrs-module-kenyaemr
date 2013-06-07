@@ -24,7 +24,6 @@ import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.customdatatype.CustomDatatypeUtil;
 import org.openmrs.module.kenyaemr.KenyaEmrConstants;
 import org.openmrs.module.kenyaemr.Metadata;
-import org.openmrs.module.kenyaemr.api.ConfigurationRequiredException;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.module.kenyaemr.api.db.KenyaEmrDAO;
 import org.openmrs.module.kenyaemr.identifier.IdentifierManager;
@@ -61,28 +60,13 @@ public class KenyaEmrServiceImpl extends BaseOpenmrsService implements KenyaEmrS
 	public boolean isConfigured() {
 		// Assuming that it's not possible to _un_configure after having configured, i.e. after the first
 		// time we return true we can save time by not re-checking things
-
 		if (hasBeenConfigured) {
 			return true;
 		}
 
-		hasBeenConfigured = isConfiguredDefaultLocation() && identifierManager.isConfigured();
+		hasBeenConfigured = (getDefaultLocation() != null) && identifierManager.isConfigured();
 		return hasBeenConfigured;
 	}
-	
-
-	/**
-     * @return whether or not the defaultLocation is configured
-     */
-    boolean isConfiguredDefaultLocation() {
-		try {
-			getDefaultLocation();
-			hasBeenConfigured = true;
-			return true;
-		} catch (ConfigurationRequiredException ex) {
-			return false;
-		}
-    }
 
 	/**
 	 * @see org.openmrs.module.kenyaemr.api.KenyaEmrService#setDefaultLocation(org.openmrs.Location)
@@ -104,13 +88,7 @@ public class KenyaEmrServiceImpl extends BaseOpenmrsService implements KenyaEmrS
 			Context.addProxyPrivilege(PrivilegeConstants.VIEW_GLOBAL_PROPERTIES);
 
 			GlobalProperty gp = Context.getAdministrationService().getGlobalPropertyObject(KenyaEmrConstants.GP_DEFAULT_LOCATION);
-			if (gp != null) {
-				Location ret = (Location) gp.getValue();
-				if (ret != null) {
-					return ret;
-				}
-			}
-			throw new ConfigurationRequiredException("Global Property: " + KenyaEmrConstants.GP_DEFAULT_LOCATION);
+			return gp != null ? ((Location) gp.getValue()) : null;
 		}
 		finally {
 			Context.removeProxyPrivilege(PrivilegeConstants.VIEW_LOCATIONS);
@@ -128,11 +106,11 @@ public class KenyaEmrServiceImpl extends BaseOpenmrsService implements KenyaEmrS
 
 			LocationAttributeType mflCodeAttrType = Metadata.getLocationAttributeType(Metadata.MASTER_FACILITY_CODE_LOCATION_ATTRIBUTE_TYPE);
 			Location location = getDefaultLocation();
-			List<LocationAttribute> list = location.getActiveAttributes(mflCodeAttrType);
-			if (list.size() == 0) {
-				throw new ConfigurationRequiredException("Default location (" + location.getName() + ") does not have an " + mflCodeAttrType.getName());
+			if (location != null) {
+				List<LocationAttribute> list = location.getActiveAttributes(mflCodeAttrType);
+				return (list.size() > 0) ? ((String) list.get(0).getValue()) : null;
 			}
-			return (String) list.get(0).getValue();
+			return null;
 		}
 		finally {
 			Context.removeProxyPrivilege(PrivilegeConstants.VIEW_LOCATION_ATTRIBUTE_TYPES);

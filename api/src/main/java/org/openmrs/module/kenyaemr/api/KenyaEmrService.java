@@ -13,7 +13,6 @@
  */
 package org.openmrs.module.kenyaemr.api;
 
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -24,15 +23,13 @@ import org.openmrs.Patient;
 import org.openmrs.Visit;
 import org.openmrs.annotation.Authorized;
 import org.openmrs.api.OpenmrsService;
-import org.openmrs.api.context.Context;
-import org.openmrs.module.idgen.IdentifierSource;
-import org.openmrs.util.OpenmrsUtil;
 import org.openmrs.util.PrivilegeConstants;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Business methods for the Kenya EMR application
  */
+@Transactional
 public interface KenyaEmrService extends OpenmrsService {
 	
 	/**
@@ -41,6 +38,7 @@ public interface KenyaEmrService extends OpenmrsService {
 	 * @should return false before default location has been set
 	 * @should return true after everything is configured
 	 */
+	@Transactional(readOnly = true)
 	boolean isConfigured();
 	
 	/**
@@ -48,14 +46,11 @@ public interface KenyaEmrService extends OpenmrsService {
 	 * encounters, visits, etc.
 	 * @param location the location
 	 */
-	@Transactional
 	void setDefaultLocation(Location location);
 
 	/**
 	 * Gets the default location for this server.
 	 * @return the default location
-	 * @throws ConfigurationRequiredException if default location is not configured
-	 * @should throw an exception if the default location has not been set
 	 * @should get the default location when set
 	 */
 	@Transactional(readOnly = true)
@@ -64,8 +59,8 @@ public interface KenyaEmrService extends OpenmrsService {
 	/**
 	 * Gets the Master Facility List code for the default location for this server
 	 * @return the Master Facility List code
-	 * @throws ConfigurationRequiredException if default location is not configured
 	 */
+	@Transactional(readOnly = true)
 	String getDefaultLocationMflCode();
 
 	/**
@@ -74,6 +69,7 @@ public interface KenyaEmrService extends OpenmrsService {
 	 * @should find the location with that code
 	 * @should return null if no location has that code
 	 */
+	@Transactional(readOnly = true)
 	Location getLocationByMflCode(String mflCode);
 
 	/**
@@ -82,6 +78,7 @@ public interface KenyaEmrService extends OpenmrsService {
 	 * @param date the day
 	 * @return the visits
 	 */
+	@Transactional(readOnly = true)
 	List<Visit> getVisitsByPatientAndDay(Patient patient, Date date);
 
 	/**
