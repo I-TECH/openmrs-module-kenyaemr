@@ -11,23 +11,24 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.kenyaemr.page.controller;
 
-import org.openmrs.module.appframework.AppUiUtil;
+import org.openmrs.module.kenyaemr.EmrWebConstants;
 import org.openmrs.module.kenyaemr.KenyaEmrConstants;
+import org.openmrs.module.kenyaui.annotation.AppPage;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
-import org.openmrs.ui.framework.session.Session;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
- * Homepage for the "Medical Encounter" app
+ * Homepage for the medical encounter app
  */
+@AppPage(EmrWebConstants.APP_MEDICAL_ENCOUNTER)
 public class MedicalEncounterHomePageController {
 
-	public String controller(Session session, UiUtils ui,
-	                       @RequestParam(required=false, value="patientId") Integer patientId) {
-		AppUiUtil.startApp("kenyaemr.medicalEncounter", session);
+	public String controller(UiUtils ui, @RequestParam(required=false, value="patientId") Integer patientId) {
+
 		if (patientId != null) {
 			return "redirect:" + ui.pageLink(KenyaEmrConstants.MODULE_ID, "medicalEncounterViewPatient", SimpleObject.create("patientId", patientId));
 		} else {

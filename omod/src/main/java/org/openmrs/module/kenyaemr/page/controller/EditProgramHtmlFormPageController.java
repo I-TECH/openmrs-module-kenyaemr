@@ -11,6 +11,7 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.kenyaemr.page.controller;
 
 import java.util.Collections;
@@ -21,32 +22,38 @@ import org.openmrs.Form;
 import org.openmrs.Patient;
 import org.openmrs.PatientProgram;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyaemr.EmrWebConstants;
 import org.openmrs.module.kenyaemr.KenyaEmrConstants;
+import org.openmrs.module.kenyaui.annotation.SharedPage;
 import org.openmrs.ui.framework.page.PageModel;
 import org.springframework.web.bind.annotation.RequestParam;
-
 
 /**
  *
  */
+/*@SharedPage({EmrWebConstants.APP_REGISTRATION, EmrWebConstants.APP_INTAKE, EmrWebConstants.APP_MEDICAL_ENCOUNTER, EmrWebConstants.APP_MEDICAL_CHART})*/
 public class EditProgramHtmlFormPageController {
 
-	public String controller(@RequestParam("patientId") Patient patient,
-	                       @RequestParam("patientProgramId") PatientProgram enrollment,
-	                       @RequestParam("formUuid") String formUuid,
-	                       @RequestParam("returnUrl") String returnUrl,
-	                       PageModel model) {
+	public String controller(@RequestParam("appId") String appId,
+							 @RequestParam("patientId") Patient patient,
+							 @RequestParam("patientProgramId") PatientProgram enrollment,
+							 @RequestParam("formUuid") String formUuid,
+							 @RequestParam("returnUrl") String returnUrl) {
+
 		Form form = Context.getFormService().getFormByUuid(formUuid);
 		if (form == null) {
 			throw new IllegalArgumentException("Cannot find form with uuid = " + formUuid);
 		}
+
 		List<Encounter> encounters = Context.getEncounterService().getEncounters(patient, null, enrollment.getDateEnrolled(), enrollment.getDateCompleted(), Collections.singleton(form), null, null, null, null, false);
+
 		if (encounters.size() == 0) {
 			throw new RuntimeException("Cannot find the encounter for this registration");
-		} else {
+		}
+		else {
 			// in case there are more than one, we pick the last one
 			Encounter encounter = encounters.get(encounters.size() - 1);
-			return "redirect:" + KenyaEmrConstants.MODULE_ID + "/editHtmlForm.page?patientId=" + patient.getId() + "&encounterId=" + encounter.getEncounterId() + "&returnUrl=" + java.net.URLEncoder.encode(returnUrl);
+			return "redirect:" + KenyaEmrConstants.MODULE_ID + "/editHtmlForm.page?appId=" + appId + "&patientId=" + patient.getId() + "&encounterId=" + encounter.getEncounterId() + "&returnUrl=" + java.net.URLEncoder.encode(returnUrl);
 		}
 	}
 }

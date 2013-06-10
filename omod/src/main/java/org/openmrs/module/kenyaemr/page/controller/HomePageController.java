@@ -11,6 +11,7 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.kenyaemr.page.controller;
 
 import java.util.Collections;
@@ -20,14 +21,12 @@ import java.util.List;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appframework.AppDescriptor;
-import org.openmrs.module.appframework.AppUiUtil;
 import org.openmrs.module.appframework.api.AppFrameworkService;
 import org.openmrs.module.kenyaemr.KenyaEmrConstants;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.page.PageModel;
 import org.openmrs.ui.framework.page.Redirect;
-import org.openmrs.ui.framework.session.Session;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
@@ -38,16 +37,8 @@ import javax.servlet.http.HttpServletRequest;
 public class HomePageController {
 	
 	public String controller(@RequestParam(required=false, value="patientId") Patient patient,
-	                         PageModel model, Session session, UiUtils ui,
+	                         PageModel model, UiUtils ui,
 							 HttpServletRequest request) throws Redirect {
-
-		AppUiUtil.endCurrentApp(session);
-
-		// Redirect to login page if no user is logged in
-		if (!Context.isAuthenticated()) {
-			model.addAttribute("remoteAddr", request.getRemoteAddr());
-			return "login";
-		}
 
 		// Redirect to setup page if module is not yet configured
 		if (!Context.getService(KenyaEmrService.class).isConfigured()) {

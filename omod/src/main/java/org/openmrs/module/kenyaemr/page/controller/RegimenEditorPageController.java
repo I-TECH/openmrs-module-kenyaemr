@@ -16,9 +16,11 @@ package org.openmrs.module.kenyaemr.page.controller;
 
 import org.openmrs.Concept;
 import org.openmrs.Patient;
+import org.openmrs.module.kenyaemr.EmrWebConstants;
 import org.openmrs.module.kenyaemr.KenyaEmr;
 import org.openmrs.module.kenyaemr.regimen.RegimenChange;
 import org.openmrs.module.kenyaemr.regimen.RegimenChangeHistory;
+import org.openmrs.module.kenyaui.annotation.SharedPage;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.page.PageModel;
@@ -30,13 +32,14 @@ import java.util.Date;
 /**
  * Controller for regimen editor page
  */
+@SharedPage({EmrWebConstants.APP_MEDICAL_ENCOUNTER, EmrWebConstants.APP_MEDICAL_CHART})
 public class RegimenEditorPageController {
 
 	public void controller(@RequestParam("patientId") Patient patient,
 						   @RequestParam("category") String category,
 						   @RequestParam("returnUrl") String returnUrl,
-	                       UiUtils ui,
-	                       PageModel model,
+						   UiUtils ui,
+						   PageModel model,
 						   @SpringBean KenyaEmr emr) {
 
 		model.addAttribute("patient", patient);

@@ -19,23 +19,21 @@ import java.util.List;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.appframework.AppUiUtil;
+import org.openmrs.module.kenyaemr.EmrWebConstants;
 import org.openmrs.module.kenyaemr.Metadata;
+import org.openmrs.module.kenyaui.annotation.AppPage;
 import org.openmrs.ui.framework.page.PageModel;
-import org.openmrs.ui.framework.session.Session;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
- *
+ * View patient page for intake app
  */
+@AppPage(EmrWebConstants.APP_INTAKE)
 public class IntakeViewPatientPageController {
 
 	public void controller(@RequestParam("patientId") Patient patient,
 	                       @RequestParam(value="visitId", required=false) Visit visit,
-	                       PageModel model,
-	                       Session session) {
-		
-		AppUiUtil.startApp("kenyaemr.intake", session);
+	                       PageModel model) {
 
 		model.addAttribute("patient", patient);
 		model.addAttribute("person", patient);

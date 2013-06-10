@@ -1,5 +1,5 @@
 <%
-	ui.decorateWith("kenyaemr", "standardPage", [ allowAnonymous: true ])
+	ui.decorateWith("kenyaemr", "standardPage")
 %>
 <style type="text/css">
 	body {
@@ -40,7 +40,7 @@
 </div>
 
 <script type="text/javascript">
-	jQuery(function() {
-		jQuery('#uname').focus();
+	jq(function() {
+		jq('#uname').focus();
 	});
 </script>

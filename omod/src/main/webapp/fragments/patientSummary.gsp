@@ -11,17 +11,18 @@
 	<% } %>
 </div>
 <div class="ke-stack-item">
-	<% forms.each { form -> %>
+<% forms.each { form -> %>
 	${ ui.includeFragment("kenyaui", "widget/button", [
 			iconProvider: form.iconProvider,
 			icon: form.icon,
 			label: form.label,
 			extra: "Edit form",
 			href: ui.pageLink("kenyaemr", "editPatientHtmlForm", [
+				appId: currentApp.id,
 				patientId: patient.id,
 				formUuid: form.formUuid,
 				returnUrl: ui.thisUrl()
 			])
 	]) }
-	<% } %>
+<% } %>
 </div>

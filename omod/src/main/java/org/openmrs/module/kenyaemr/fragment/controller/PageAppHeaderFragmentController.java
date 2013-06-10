@@ -11,18 +11,14 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.kenyaemr.fragment.controller;
 
-import org.openmrs.module.appframework.AppUiUtil;
-import org.openmrs.ui.framework.fragment.FragmentModel;
-import org.openmrs.ui.framework.session.Session;
+package org.openmrs.module.kenyaemr.fragment.controller;
 
 /**
  * Controller for the app header, which includes user menu
  */
 public class PageAppHeaderFragmentController {
-	
-	public void controller(FragmentModel model, Session session) {
-		model.addAttribute("appStatus", AppUiUtil.getCurrentApp(session));
+
+	public void controller() {
 	}
 }

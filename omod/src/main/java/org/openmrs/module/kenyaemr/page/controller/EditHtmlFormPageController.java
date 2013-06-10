@@ -15,12 +15,15 @@ package org.openmrs.module.kenyaemr.page.controller;
 
 import org.openmrs.Encounter;
 import org.openmrs.Visit;
+import org.openmrs.module.kenyaemr.EmrWebConstants;
+import org.openmrs.module.kenyaui.annotation.SharedPage;
 import org.openmrs.ui.framework.page.PageModel;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * Controller for editing an existing HTML form
  */
+/*@SharedPage({EmrWebConstants.APP_REGISTRATION, EmrWebConstants.APP_INTAKE, EmrWebConstants.APP_MEDICAL_ENCOUNTER, EmrWebConstants.APP_MEDICAL_CHART})*/
 public class EditHtmlFormPageController {
 	
 	public void controller(@RequestParam("encounterId") Encounter encounter,

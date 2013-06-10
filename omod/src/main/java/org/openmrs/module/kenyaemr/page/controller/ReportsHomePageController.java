@@ -17,22 +17,21 @@ package org.openmrs.module.kenyaemr.page.controller;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.openmrs.module.appframework.AppUiUtil;
+import org.openmrs.module.kenyaemr.EmrWebConstants;
 import org.openmrs.module.kenyaemr.KenyaEmr;
 import org.openmrs.module.kenyaemr.reporting.builder.ReportBuilder;
+import org.openmrs.module.kenyaui.annotation.AppPage;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.page.PageModel;
-import org.openmrs.ui.framework.session.Session;
 
 /**
- * Homepage for the "Reports" app
+ * Homepage for the reports app
  */
+@AppPage(EmrWebConstants.APP_REPORTS)
 public class ReportsHomePageController {
 
-	public void controller(Session session, PageModel model, @SpringBean KenyaEmr emr) {
-		AppUiUtil.startApp("kenyaemr.reports", session);
-		
+	public void controller(PageModel model, @SpringBean KenyaEmr emr) {
 		model.addAttribute("mohReports", getReportDefinitionSummaries(emr, "moh"));
 		model.addAttribute("facilityReports", getReportDefinitionSummaries(emr, "facility"));
 	}

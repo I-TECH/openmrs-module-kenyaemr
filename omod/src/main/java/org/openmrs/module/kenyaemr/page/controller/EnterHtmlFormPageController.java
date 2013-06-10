@@ -11,16 +11,20 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.kenyaemr.page.controller;
 
 import org.openmrs.Patient;
 import org.openmrs.Visit;
+import org.openmrs.module.kenyaemr.EmrWebConstants;
+import org.openmrs.module.kenyaui.annotation.SharedPage;
 import org.openmrs.ui.framework.page.PageModel;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * Controller for entering a new HTML form
  */
+/*@SharedPage({EmrWebConstants.APP_REGISTRATION, EmrWebConstants.APP_INTAKE, EmrWebConstants.APP_MEDICAL_ENCOUNTER, EmrWebConstants.APP_MEDICAL_CHART})*/
 public class EnterHtmlFormPageController {
 
 	public void controller(@RequestParam("patientId") Patient patient,

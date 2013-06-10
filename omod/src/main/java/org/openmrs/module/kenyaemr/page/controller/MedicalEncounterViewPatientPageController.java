@@ -21,24 +21,22 @@ import org.openmrs.Program;
 import org.openmrs.Visit;
 import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.appframework.AppUiUtil;
+import org.openmrs.module.kenyaemr.EmrWebConstants;
 import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.util.KenyaEmrUtils;
+import org.openmrs.module.kenyaui.annotation.AppPage;
 import org.openmrs.ui.framework.page.PageModel;
-import org.openmrs.ui.framework.session.Session;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
- * Medical encounter view patient page
+ * View patient page for medical encounter app
  */
+@AppPage(EmrWebConstants.APP_MEDICAL_ENCOUNTER)
 public class MedicalEncounterViewPatientPageController {
 	
 	public void controller(@RequestParam("patientId") Patient patient,
 	                       @RequestParam(value="visitId", required=false) Visit visit,
-	                       PageModel model,
-	                       Session session) {
-		
-		AppUiUtil.startApp("kenyaemr.medicalEncounter", session);
+	                       PageModel model) {
 
 		model.addAttribute("patient", patient);
 		model.addAttribute("person", patient);

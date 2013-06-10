@@ -20,9 +20,11 @@ import org.openmrs.Visit;
 import org.openmrs.module.appframework.AppUiUtil;
 import org.openmrs.module.kenyaemr.KenyaEmr;
 import org.openmrs.module.kenyaemr.form.FormDescriptor;
+import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.FragmentModel;
+import org.openmrs.ui.framework.page.PageRequest;
 import org.openmrs.ui.framework.session.Session;
 
 import java.util.ArrayList;
@@ -36,13 +38,14 @@ import java.util.List;
 public class VisitCompletedFormsFragmentController {
 	
 	public void controller(FragmentModel model,
-						   Session session,
 						   @FragmentParam("visit") Visit visit,
-						   @SpringBean KenyaEmr emr) {
+						   PageRequest request,
+						   @SpringBean KenyaEmr emr,
+						   @SpringBean KenyaUiUtils kenyaUi) {
 
 		List<Encounter> allEncounters = new ArrayList<Encounter>(visit.getEncounters());
 
-		final String currentApp = AppUiUtil.getCurrentApp(session).getApp().getId();
+		final String currentApp = kenyaUi.getCurrentApp(request).getId();
 		List<FormDescriptor> descriptorsForApp = emr.getFormManager().getFormDescriptorsForApp(currentApp);
 
 		List<Encounter> encounters = new ArrayList<Encounter>();

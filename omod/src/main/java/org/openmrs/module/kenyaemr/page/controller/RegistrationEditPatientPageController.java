@@ -11,25 +11,24 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.kenyaemr.page.controller;
 
 import org.openmrs.Patient;
-import org.openmrs.module.appframework.AppUiUtil;
+import org.openmrs.module.kenyaemr.EmrWebConstants;
+import org.openmrs.module.kenyaui.annotation.AppPage;
 import org.openmrs.ui.framework.page.PageModel;
-import org.openmrs.ui.framework.session.Session;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * Edit patient page controller
  */
+@AppPage(EmrWebConstants.APP_REGISTRATION)
 public class RegistrationEditPatientPageController {
 	
-	public void controller(Session session,
-						   @RequestParam("patientId") Patient patient,
+	public void controller(@RequestParam("patientId") Patient patient,
 	                       @RequestParam(required = false, value = "returnUrl") String returnUrl,
 	                       PageModel model) {
-
-		AppUiUtil.startApp("kenyaemr.registration", session);
 
 		model.addAttribute("patient", patient);
 		model.addAttribute("returnUrl", returnUrl);

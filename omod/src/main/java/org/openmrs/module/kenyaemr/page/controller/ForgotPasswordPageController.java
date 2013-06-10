@@ -18,10 +18,11 @@ import org.apache.commons.lang.StringUtils;
 import org.openmrs.User;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appframework.AppUiUtil;
+import org.openmrs.module.kenyaemr.EmrWebConstants;
 import org.openmrs.module.kenyaemr.IPAccessSecurity;
 import org.openmrs.module.kenyaemr.KenyaEmrConstants;
-import org.openmrs.module.kenyaemr.KenyaEmrWebConstants;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
+import org.openmrs.module.kenyaui.annotation.PublicPage;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.page.PageModel;
 import org.openmrs.ui.framework.session.Session;
@@ -34,16 +35,14 @@ import javax.servlet.http.HttpSession;
 /**
  * Forgot password page controller
  */
+@PublicPage
 public class ForgotPasswordPageController {
 
 	public String controller(PageModel model,
-						   Session session,
 						   @RequestParam(value = "uname", required = false) String username,
 						   @RequestParam(value = "secretAnswer", required = false) String secretAnswer,
 						   @SpringBean KenyaUiUtils kenyaUi,
 						   HttpServletRequest request) {
-
-		AppUiUtil.endCurrentApp(session);
 
 		model.addAttribute("username", username);
 		model.addAttribute("secretQuestion", null);
@@ -60,7 +59,7 @@ public class ForgotPasswordPageController {
 		HttpSession httpSession = request.getSession();
 
 		// User already has a reset password... go change it...
-		if (httpSession.getAttribute(KenyaEmrWebConstants.SESSION_ATTR_RESET_PASSWORD) != null) {
+		if (httpSession.getAttribute(EmrWebConstants.SESSION_ATTR_RESET_PASSWORD) != null) {
 			return "redirect:/" + KenyaEmrConstants.MODULE_ID + "/profile.page";
 		}
 
@@ -126,7 +125,7 @@ public class ForgotPasswordPageController {
 					}
 
 					IPAccessSecurity.registerSuccessfulAccess(ipAddress);
-					httpSession.setAttribute(KenyaEmrWebConstants.SESSION_ATTR_RESET_PASSWORD, randomPassword);
+					httpSession.setAttribute(EmrWebConstants.SESSION_ATTR_RESET_PASSWORD, randomPassword);
 					kenyaUi.notifySuccess(httpSession, "auth.password.reset");
 					Context.authenticate(username, randomPassword);
 					httpSession.setAttribute("loginAttempts", 0);

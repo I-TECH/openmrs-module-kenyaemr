@@ -17,7 +17,6 @@ package org.openmrs.module.kenyaemr.page.controller;
 import org.openmrs.User;
 import org.openmrs.api.APIAuthenticationException;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.appframework.AppUiUtil;
 import org.openmrs.ui.framework.page.PageModel;
 import org.openmrs.ui.framework.session.Session;
 
@@ -27,8 +26,6 @@ import org.openmrs.ui.framework.session.Session;
 public class ProfilePageController {
 
 	public void controller(PageModel model, Session session) {
-
-		AppUiUtil.endCurrentApp(session);
 
 		User user = Context.getUserContext().getAuthenticatedUser();
 		if (user != null) {

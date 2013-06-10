@@ -16,10 +16,10 @@ package org.openmrs.module.kenyaemr;
 
 import org.junit.Test;
 
-public class KenyaEmrWebConstantsTest {
+public class EmrWebConstantsTest {
 
 	@Test
 	public void integration() {
-		new KenyaEmrWebConstants();
+		new EmrWebConstants();
 	}
 }

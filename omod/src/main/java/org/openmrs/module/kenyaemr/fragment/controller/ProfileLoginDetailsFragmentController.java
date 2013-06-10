@@ -17,7 +17,7 @@ import org.openmrs.User;
 import org.openmrs.api.PasswordException;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.db.DAOException;
-import org.openmrs.module.kenyaemr.KenyaEmrWebConstants;
+import org.openmrs.module.kenyaemr.EmrWebConstants;
 import org.openmrs.module.kenyaemr.ValidatingCommandObject;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.BindParams;
@@ -41,12 +41,12 @@ public class ProfileLoginDetailsFragmentController {
 		model.addAttribute("user", Context.getAuthenticatedUser());
 
 		// If temp password is being passed, in tell view to display change password dialog
-		model.addAttribute("forcePasswordChange", (httpSession.getAttribute(KenyaEmrWebConstants.SESSION_ATTR_RESET_PASSWORD) != null));
+		model.addAttribute("forcePasswordChange", (httpSession.getAttribute(EmrWebConstants.SESSION_ATTR_RESET_PASSWORD) != null));
 
 		model.addAttribute("changePasswordForm", newChangePasswordForm(httpSession));
 		model.addAttribute("changeSecretQuestionForm", newChangeSecretQuestionForm());
 
-		httpSession.removeAttribute(KenyaEmrWebConstants.SESSION_ATTR_RESET_PASSWORD);
+		httpSession.removeAttribute(EmrWebConstants.SESSION_ATTR_RESET_PASSWORD);
 	}
 
 	/**
@@ -95,7 +95,7 @@ public class ProfileLoginDetailsFragmentController {
 	 */
 	public ChangePasswordForm newChangePasswordForm(HttpSession httpSession) {
 
-		String resetPassword = (String)httpSession.getAttribute(KenyaEmrWebConstants.SESSION_ATTR_RESET_PASSWORD);
+		String resetPassword = (String)httpSession.getAttribute(EmrWebConstants.SESSION_ATTR_RESET_PASSWORD);
 
 		return new ChangePasswordForm(Context.getAuthenticatedUser(), resetPassword);
 	}

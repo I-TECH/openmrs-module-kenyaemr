@@ -11,6 +11,7 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.kenyaemr.page.controller;
 
 import java.io.File;
@@ -24,6 +25,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.io.FileUtils;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.ModuleFactory;
+import org.openmrs.module.kenyaemr.EmrWebConstants;
+import org.openmrs.module.kenyaui.annotation.AppPage;
 import org.openmrs.module.moduledistro.api.ModuleDistroService;
 import org.openmrs.ui.framework.page.PageModel;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -33,6 +36,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 /**
  *
  */
+@AppPage(EmrWebConstants.APP_ADMIN)
 public class AdminSoftwareVersionPageController {
 	
 	public void controller(PageModel model,

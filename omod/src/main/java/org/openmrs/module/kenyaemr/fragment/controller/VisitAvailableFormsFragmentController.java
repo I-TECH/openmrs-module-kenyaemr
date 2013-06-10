@@ -26,11 +26,13 @@ import org.openmrs.module.kenyaemr.KenyaEmr;
 import org.openmrs.module.kenyaemr.KenyaEmrUiUtils;
 import org.openmrs.module.kenyaemr.form.FormDescriptor;
 import org.openmrs.module.kenyaemr.form.FormDescriptor.Frequency;
+import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.FragmentModel;
+import org.openmrs.ui.framework.page.PageRequest;
 import org.openmrs.ui.framework.session.Session;
 
 import java.util.*;
@@ -45,14 +47,15 @@ public class VisitAvailableFormsFragmentController {
 	public void controller(FragmentModel model,
 						   @FragmentParam("visit") Visit visit,
 						   UiUtils ui,
-						   Session session,
+						   PageRequest request,
 						   @SpringBean KenyaEmr emr,
-						   @SpringBean KenyaEmrUiUtils kenyaUi) {
+						   @SpringBean KenyaUiUtils kenyaUi,
+						   @SpringBean KenyaEmrUiUtils kenyaEmrUi) {
 
-		String currentApp = AppUiUtil.getCurrentApp(session).getApp().getId();
+		String currentApp = kenyaUi.getCurrentApp(request).getId();
 
 		List<FormDescriptor> availableFormDescriptors = emr.getFormManager().getFormsForPatient(currentApp, visit.getPatient(), null);
-		List<SimpleObject> availableForms = getAvailableForms(visit, availableFormDescriptors, ui, kenyaUi);
+		List<SimpleObject> availableForms = getAvailableForms(visit, availableFormDescriptors, ui, kenyaEmrUi);
 
 		model.addAttribute("availableForms", availableForms);
 	}

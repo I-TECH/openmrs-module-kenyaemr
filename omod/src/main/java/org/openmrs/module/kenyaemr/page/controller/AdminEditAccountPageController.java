@@ -11,6 +11,7 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.kenyaemr.page.controller;
 
 import java.util.Collection;
@@ -20,12 +21,15 @@ import org.openmrs.Person;
 import org.openmrs.Provider;
 import org.openmrs.User;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyaemr.EmrWebConstants;
+import org.openmrs.module.kenyaui.annotation.AppPage;
 import org.openmrs.ui.framework.page.PageModel;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
- * For editing user and provider accounts
+ * Editing user and provider accounts page
  */
+@AppPage(EmrWebConstants.APP_ADMIN)
 public class AdminEditAccountPageController {
 	
 	public void controller(@RequestParam(value = "personId", required = false) Person person,

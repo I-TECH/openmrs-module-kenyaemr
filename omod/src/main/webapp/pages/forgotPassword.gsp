@@ -1,5 +1,5 @@
 <%
-	ui.decorateWith("kenyaemr", "standardPage", [ allowAnonymous: true ])
+	ui.decorateWith("kenyaemr", "standardPage")
 %>
 <style type="text/css">
 	body {

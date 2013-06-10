@@ -1,7 +1,4 @@
 <%
-	def running = appStatus != null;
-	def appLabel = running ? (appStatus?.app?.label ?: ui.message("appFramework.runningApp.unknownApp")) : null
-
 	def appMenuItems = []
 	def userMenuItems = []
 
@@ -9,8 +6,8 @@
 
 		appMenuItems << """<a href="/${ contextPath }/index.htm?${ config.context ? config.context : "" }"><img src="${ ui.resourceLink("kenyaui", "images/toolbar/home.png") }" width="12" height="12" />&nbsp;&nbsp;Home</a>"""
 
-		if (running) {
-			appMenuItems << """<a href="/${ contextPath }/${ appStatus.app.homepageUrl }">${ appLabel }</a>"""
+		if (currentApp) {
+			appMenuItems << """<a href="/${ contextPath }/${ currentApp.homepageUrl }">${ currentApp.label }</a>"""
 		}
 
 		userMenuItems << """<span>Logged in as <i>${ context.authenticatedUser.personName }</i></span>"""

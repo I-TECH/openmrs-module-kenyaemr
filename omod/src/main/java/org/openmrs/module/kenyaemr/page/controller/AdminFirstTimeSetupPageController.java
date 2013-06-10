@@ -19,10 +19,12 @@ import org.openmrs.Location;
 import org.openmrs.User;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.idgen.IdentifierSource;
+import org.openmrs.module.kenyaemr.EmrWebConstants;
 import org.openmrs.module.kenyaemr.KenyaEmr;
 import org.openmrs.module.kenyaemr.KenyaEmrConstants;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
+import org.openmrs.module.kenyaui.annotation.AppPage;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.page.PageModel;
@@ -33,6 +35,7 @@ import javax.servlet.http.HttpSession;
 /**
  * Controller for the guided first-time configuration
  */
+@AppPage(EmrWebConstants.APP_ADMIN)
 public class AdminFirstTimeSetupPageController {
 	
 	public String controller(HttpSession session, PageModel model, UiUtils ui,

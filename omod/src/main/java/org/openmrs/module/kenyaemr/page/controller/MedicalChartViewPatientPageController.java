@@ -11,6 +11,7 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.kenyaemr.page.controller;
 
 import java.util.ArrayList;
@@ -25,9 +26,10 @@ import org.openmrs.Patient;
 import org.openmrs.PatientProgram;
 import org.openmrs.Visit;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.appframework.AppUiUtil;
+import org.openmrs.module.kenyaemr.EmrWebConstants;
 import org.openmrs.module.kenyaemr.KenyaEmr;
 import org.openmrs.module.kenyaemr.form.FormDescriptor;
+import org.openmrs.module.kenyaui.annotation.AppPage;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.SpringBean;
@@ -38,6 +40,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 /**
  * Viewing a patient's record, in the medicalChart app
  */
+@AppPage(EmrWebConstants.APP_MEDICAL_CHART)
 public class MedicalChartViewPatientPageController {
 
 	public void controller(@RequestParam("patientId") Patient patient,
@@ -53,8 +56,6 @@ public class MedicalChartViewPatientPageController {
 		if ("".equals(formUuid)) {
 			formUuid = null;
 		}
-
-		AppUiUtil.startApp("kenyaemr.medicalChart", session);
 		
 		recentlyViewed(patient, session);
 		

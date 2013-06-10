@@ -11,6 +11,7 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.kenyaemr.page.controller;
 
 import java.util.*;
@@ -20,35 +21,31 @@ import org.openmrs.Form;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.Module;
 import org.openmrs.module.ModuleFactory;
-import org.openmrs.module.appframework.AppUiUtil;
 import org.openmrs.module.kenyaemr.Dictionary;
+import org.openmrs.module.kenyaemr.EmrWebConstants;
 import org.openmrs.module.kenyaemr.KenyaEmr;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.module.kenyaemr.form.FormDescriptor;
 import org.openmrs.module.kenyaemr.form.FormUtils;
+import org.openmrs.module.kenyaui.annotation.AppPage;
 import org.openmrs.module.metadatasharing.ImportedPackage;
 import org.openmrs.ui.framework.SimpleObject;
-import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.page.PageModel;
 import org.openmrs.ui.framework.resource.ResourceFactory;
-import org.openmrs.ui.framework.session.Session;
 import org.openmrs.util.OpenmrsConstants;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
- * Homepage for the "Admin" app
+ * Homepage for the admin app
  */
+@AppPage(EmrWebConstants.APP_ADMIN)
 public class AdminHomePageController {
 
 	public void controller(@RequestParam(value = "section", required = false) String section,
-						   Session session,
-						   UiUtils ui,
 						   PageModel model,
 						   @SpringBean KenyaEmr emr,
 						   @SpringBean ResourceFactory resourceFactory) {
-
-		AppUiUtil.startApp("kenyaemr.admin", session);
 
 		if (StringUtils.isEmpty(section)) {
 			section = "overview";

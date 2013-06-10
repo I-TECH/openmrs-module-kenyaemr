@@ -29,7 +29,7 @@ public class StandardURLOverrideController {
 	
 	@RequestMapping("/login.htm")
 	public String showLoginHomepage() {
-		return showOurHomepage();
+		return "forward:/" + KenyaEmrConstants.MODULE_ID + "/login.page";
 	}
 
 	@RequestMapping("/forgotPassword.form")

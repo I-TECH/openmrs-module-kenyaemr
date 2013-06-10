@@ -17,9 +17,10 @@ package org.openmrs.module.kenyaemr.page.controller;
 import java.io.ByteArrayOutputStream;
 
 import org.openmrs.api.context.Context;
-import org.openmrs.module.appframework.AppUiUtil;
+import org.openmrs.module.kenyaemr.EmrWebConstants;
 import org.openmrs.module.kenyaemr.KenyaEmr;
 import org.openmrs.module.kenyaemr.reporting.builder.ReportBuilder;
+import org.openmrs.module.kenyaui.annotation.AppPage;
 import org.openmrs.module.reporting.common.ContentType;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.report.ReportData;
@@ -31,22 +32,19 @@ import org.openmrs.module.reporting.report.renderer.ExcelTemplateRenderer;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.page.FileDownload;
 import org.openmrs.ui.framework.page.PageModel;
-import org.openmrs.ui.framework.session.Session;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  *
  */
+@AppPage(EmrWebConstants.APP_REPORTS)
 public class ReportsRunPatientListReportPageController {
 
-	public Object controller(Session session,
-				PageModel model,
+	public Object controller(PageModel model,
 				@SpringBean KenyaEmr emr,
 				@RequestParam("builder") String builderClassname,
 				@RequestParam(required = false, value = "mode") String mode) throws Exception {
-		
-		AppUiUtil.startApp("kenyaemr.reports", session);
-		
+
 		ReportBuilder builder = emr.getReportManager().getReportBuilder(builderClassname);
 		ReportDefinition definition = builder.getReportDefinition();
 		

@@ -14,15 +14,14 @@
 
 package org.openmrs.module.kenyaemr.page.controller;
 
-import org.openmrs.module.kenyaemr.EmrWebConstants;
-import org.openmrs.module.kenyaui.annotation.AppPage;
+import org.openmrs.module.kenyaui.annotation.PublicPage;
 
 /**
- * Create patient page controller
+ * Forgot password page controller
  */
-@AppPage(EmrWebConstants.APP_REGISTRATION)
-public class RegistrationCreatePatientPageController {
-	
+@PublicPage
+public class LoginPageController {
+
 	public void controller() {
 	}
 }

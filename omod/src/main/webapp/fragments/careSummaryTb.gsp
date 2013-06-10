@@ -13,7 +13,7 @@
 </div>
 <div class="ke-stack-item">
 	<% if (config.allowRegimenEdit) { %>
-		${ ui.includeFragment("kenyaui", "widget/editButton", [ href: ui.pageLink("kenyaemr", "regimenEditor", [ patientId: patient.id, category: "TB", returnUrl: ui.thisUrl() ]) ]) }
+		${ ui.includeFragment("kenyaui", "widget/editButton", [ href: ui.pageLink("kenyaemr", "regimenEditor", [ patientId: patient.id, category: "TB", appId: currentApp.id, returnUrl: ui.thisUrl() ]) ]) }
 	<% } %>
 
 	<%

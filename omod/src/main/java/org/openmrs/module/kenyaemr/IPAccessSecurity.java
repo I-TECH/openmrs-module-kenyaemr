@@ -63,7 +63,7 @@ public class IPAccessSecurity {
 
 			// Has lockout time expired?
 			Date lockedOutTime = lockoutTimeByIP.get(ipAddress);
-			if (lockedOutTime != null && System.currentTimeMillis() - lockedOutTime.getTime() > KenyaEmrWebConstants.FAILED_LOGIN_LOCKOUT_TIME) {
+			if (lockedOutTime != null && System.currentTimeMillis() - lockedOutTime.getTime() > EmrWebConstants.FAILED_LOGIN_LOCKOUT_TIME) {
 
 				// End lock out, but register a failed attempt
 				endLockOut(ipAddress);
@@ -120,7 +120,7 @@ public class IPAccessSecurity {
 	 */
 	public static boolean isLockedOut(String ipAddress) {
 		Date lockedOutTime = lockoutTimeByIP.get(ipAddress);
-		return (lockedOutTime != null && (System.currentTimeMillis() - lockedOutTime.getTime()) < KenyaEmrWebConstants.FAILED_LOGIN_LOCKOUT_TIME);
+		return (lockedOutTime != null && (System.currentTimeMillis() - lockedOutTime.getTime()) < EmrWebConstants.FAILED_LOGIN_LOCKOUT_TIME);
 	}
 
 	/**
