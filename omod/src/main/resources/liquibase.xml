@@ -31,6 +31,19 @@
 		<delete tableName="htmlformentry_html_form" />
 	</changeSet>
 
+	<changeSet id="${project.parent.artifactId}-20130430-1400" author="rowanseymour">
+		<preConditions onFail="MARK_RAN" onError="WARN">
+			<sqlCheck expectedResult="0">SELECT COUNT(*) FROM encounter_type WHERE uuid = '2bdada65-4c72-4a48-8730-859890e25cee';</sqlCheck>
+		</preConditions>
+		<comment>
+			Creates the HIV Discontinuation encounter type if it doesn't exist
+		</comment>
+		<sql>
+			INSERT INTO encounter_type (`name`, `description`, `creator`, `date_created`, `retired`, `uuid`)
+				VALUES ('HIV Discontinuation', 'Discontinuation from the HIV program', '1', '2013-03-06 10:04:31', '0', '2bdada65-4c72-4a48-8730-859890e25cee');
+		</sql>
+	</changeSet>
+
 	<changeSet id="${project.parent.artifactId}-20130430-1401" author="rowanseymour">
 		<comment>
 			Updates the encounter type of all HIV Discontinuation form submissions
