@@ -3,22 +3,13 @@
 				   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 				   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9 http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
 
-	<changeSet id="${project.parent.artifactId}-20130430-1401" author="rowanseymour">
+	<changeSet id="${project.parent.artifactId}-20130319-0840" author="rowanseymour">
 		<comment>
-			Updates the encounter type of all HIV Discontinuation form submissions
+			Deletes the old Kenya EMR Forms imported package which was replaced
 		</comment>
-		<sql>
-			SELECT encounter_type_id INTO @HIVEXIT_ENC_TYPE_ID FROM encounter_type WHERE uuid = '2bdada65-4c72-4a48-8730-859890e25cee';
-			SELECT form_id INTO @HIVEXIT_FORM_ID FROM form WHERE uuid = 'e3237ede-fa70-451f-9e6c-0908bc39f8b9';
-			UPDATE encounter e SET e.encounter_type = @HIVEXIT_ENC_TYPE_ID WHERE e.form_id = @HIVEXIT_FORM_ID;
-		</sql>
-	</changeSet>
-
-	<changeSet id="${project.parent.artifactId}-20130430-1111" author="rowanseymour">
-		<comment>
-			Deletes all htmlform records. Html forms now all loaded from xml resources
-		</comment>
-		<delete tableName="htmlformentry_html_form" />
+		<delete tableName="metadatasharing_imported_package">
+			<where>group_uuid = 'c66d041c-563e-4438-83eb-ad5f32c6e97a'</where>
+		</delete>
 	</changeSet>
 
 	<changeSet id="${project.parent.artifactId}-20130319-0912" author="rowanseymour">
@@ -33,13 +24,34 @@
 		</sql>
 	</changeSet>
 
-	<changeSet id="${project.parent.artifactId}-20130319-0840" author="rowanseymour">
+	<changeSet id="${project.parent.artifactId}-20130430-1111" author="rowanseymour">
 		<comment>
-			Deletes the old Kenya EMR Forms imported package which was replaced
+			Deletes all htmlform records. Html forms now all loaded from xml resources
 		</comment>
-		<delete tableName="metadatasharing_imported_package">
-			<where>group_uuid = 'c66d041c-563e-4438-83eb-ad5f32c6e97a'</where>
-		</delete>
+		<delete tableName="htmlformentry_html_form" />
+	</changeSet>
+
+	<changeSet id="${project.parent.artifactId}-20130430-1401" author="rowanseymour">
+		<comment>
+			Updates the encounter type of all HIV Discontinuation form submissions
+		</comment>
+		<sql>
+			SELECT encounter_type_id INTO @HIVEXIT_ENC_TYPE_ID FROM encounter_type WHERE uuid = '2bdada65-4c72-4a48-8730-859890e25cee';
+			SELECT form_id INTO @HIVEXIT_FORM_ID FROM form WHERE uuid = 'e3237ede-fa70-451f-9e6c-0908bc39f8b9';
+			UPDATE encounter e SET e.encounter_type = @HIVEXIT_ENC_TYPE_ID WHERE e.form_id = @HIVEXIT_FORM_ID;
+		</sql>
+	</changeSet>
+
+	<changeSet id="${project.parent.artifactId}-20130610-1706" author="rowanseymour">
+		<comment>
+			Updates HIV entry point obs with wrong answer for PMTCT
+		</comment>
+		<sql>
+			SELECT concept_id INTO @PMTCT_VISIT_CONCEPT_ID FROM concept WHERE uuid = '160528AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';
+			SELECT concept_id INTO @PMTCT_PROGRAM_CONCEPT_ID FROM concept WHERE uuid = '160538AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';
+			SELECT concept_id INTO @ENTRY_POINT_CONCEPT_ID FROM concept WHERE uuid = '160540AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';
+			UPDATE obs o SET o.value_coded = @PMTCT_PROGRAM_CONCEPT_ID WHERE o.concept_id = @ENTRY_POINT_CONCEPT_ID AND o.value_coded = @PMTCT_VISIT_CONCEPT_ID;
+		</sql>
 	</changeSet>
 
 </databaseChangeLog>
