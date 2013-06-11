@@ -17,7 +17,7 @@ package org.openmrs.module.kenyaemr.lab;
 import org.apache.commons.lang3.StringUtils;
 import org.openmrs.Concept;
 import org.openmrs.api.context.Context;
-import org.openmrs.util.OpenmrsUtil;
+import org.openmrs.module.ModuleFactory;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -78,10 +78,21 @@ public class LabManager {
 	}
 
 	/**
-	 * Clears the list of tests
+	 * Reloads all lab data from configurations
 	 */
-	public synchronized void clear() {
+	public synchronized void refresh() {
 		tests.clear();
+
+		for (LabConfiguration configuration : Context.getRegisteredComponents(LabConfiguration.class)) {
+			try {
+				ClassLoader loader = configuration.getClassLoader();
+				InputStream stream = loader.getResourceAsStream(configuration.getPath());
+				loadTestsFromXML(stream);
+			}
+			catch (Exception ex) {
+				throw new RuntimeException("Cannot find " + configuration.getModuleId() + ":" + configuration.getPath() + ". Make sure it's in api/src/main/resources");
+			}
+		}
 	}
 
 	/**
@@ -91,7 +102,7 @@ public class LabManager {
 	 * @throws IOException
 	 * @throws SAXException
 	 */
-	public synchronized void loadTestsFromXML(InputStream stream) throws ParserConfigurationException, IOException, SAXException {
+	public void loadTestsFromXML(InputStream stream) throws ParserConfigurationException, IOException, SAXException {
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder = dbFactory.newDocumentBuilder();
 

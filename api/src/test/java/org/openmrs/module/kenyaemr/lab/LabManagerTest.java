@@ -44,8 +44,6 @@ public class LabManagerTest extends BaseModuleContextSensitiveTest {
 	public void setup() throws Exception {
 		executeDataSet("test-data.xml");
 
-		labManager.clear();
-
 		InputStream stream = getClass().getClassLoader().getResourceAsStream("test-lab.xml");
 		labManager.loadTestsFromXML(stream);
 	}
@@ -67,17 +65,6 @@ public class LabManagerTest extends BaseModuleContextSensitiveTest {
 
 		tests = labManager.getTests("category2");
 		Assert.assertEquals(1, tests.size());
-	}
-
-	/**
-	 * @see org.openmrs.module.kenyaemr.lab.LabManager#clear()
-	 */
-	@Test
-	public void clear_shouldClearAllTestData() {
-		labManager.clear();
-
-		Assert.assertEquals(0, labManager.getCategories().size());
-		Assert.assertNull(labManager.getTests("category1"));
 	}
 
 	/**

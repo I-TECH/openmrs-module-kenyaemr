@@ -23,13 +23,10 @@ import org.openmrs.module.kenyaemr.calculation.CalculationManager;
 import org.openmrs.module.kenyaemr.form.FormManager;
 import org.openmrs.module.kenyaemr.identifier.IdentifierManager;
 import org.openmrs.module.kenyaemr.lab.LabManager;
+import org.openmrs.module.kenyaemr.metadata.MetadataManager;
 import org.openmrs.module.kenyaemr.regimen.RegimenManager;
 import org.openmrs.module.kenyaemr.reporting.ReportManager;
 import org.openmrs.module.kenyaemr.util.BuildProperties;
-import org.openmrs.ui.framework.UiContextRefreshedCallback;
-import org.openmrs.ui.framework.fragment.FragmentFactory;
-import org.openmrs.ui.framework.page.PageFactory;
-import org.openmrs.ui.framework.resource.ResourceFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -39,7 +36,7 @@ import java.util.List;
  * Kenya EMR master content manager, used as a registered singleton
  */
 @Component
-public class KenyaEmr implements UiContextRefreshedCallback {
+public class KenyaEmr {
 
 	protected static final Log log = LogFactory.getLog(KenyaEmrActivator.class);
 
@@ -154,17 +151,15 @@ public class KenyaEmr implements UiContextRefreshedCallback {
 	}
 
 	/**
-	 * Handles a context refresh
+	 * Refresh all content
 	 */
-	public void afterContextRefreshed(PageFactory pageFactory, FragmentFactory fragmentFactory, ResourceFactory resourceFactory) {
-		try {
-			calculationManager.refresh();
-			formManager.refresh();
-			reportManager.refresh();
-		}
-		catch (Exception ex) {
-			log.error("Error during Kenya EMR context refresh", ex);
-		}
+	public void refresh() {
+		metadataManager.refresh(); // First because others will use metadata loaded by it
+		labManager.refresh();
+		regimenManager.refresh();
+		calculationManager.refresh();
+		formManager.refresh();
+		reportManager.refresh();
 	}
 
 	/**

@@ -12,16 +12,17 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr;
+package org.openmrs.module.kenyaemr.metadata;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyaemr.Metadata;
+import org.openmrs.module.kenyaemr.metadata.MetadataManager;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * Tests for {@link MetadataManager}
+ * Tests for {@link org.openmrs.module.kenyaemr.metadata.MetadataManager}
  */
 public class MetadataManagerTest extends BaseModuleContextSensitiveTest {
 
@@ -29,7 +30,7 @@ public class MetadataManagerTest extends BaseModuleContextSensitiveTest {
 	private MetadataManager metadataManager;
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.MetadataManager#installMetadataPackageIfNecessary(String, String, ClassLoader)
+	 * @see org.openmrs.module.kenyaemr.metadata.MetadataManager#installMetadataPackageIfNecessary(String, String, ClassLoader)
 	 */
 	@Test
 	public void installMetadataPackageIfNecessary_shouldInstallPackages() throws Exception {

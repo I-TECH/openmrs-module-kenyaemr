@@ -44,10 +44,10 @@ import java.util.*;
 public class KenyaEmrUiUtilsTest extends BaseModuleContextSensitiveTest {
 
 	@Autowired
-	KenyaEmrUiUtils kenyaUi;
+	private KenyaEmrUiUtils kenyaUi;
 
 	@Autowired
-	KenyaEmr emr;
+	private KenyaEmr emr;
 
 	private UiUtils ui;
 
@@ -57,8 +57,6 @@ public class KenyaEmrUiUtilsTest extends BaseModuleContextSensitiveTest {
 	public void setup() throws Exception {
 		executeDataSet("test-data.xml");
 		executeDataSet("test-drugdata.xml");
-
-		emr.getRegimenManager().clear();
 
 		InputStream stream = getClass().getClassLoader().getResourceAsStream("test-regimens.xml");
 		emr.getRegimenManager().loadDefinitionsFromXML(stream);

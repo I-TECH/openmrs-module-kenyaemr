@@ -34,14 +34,12 @@ import java.util.List;
 public class OnSecondLineArtCalculationTest extends BaseModuleContextSensitiveTest {
 
 	@Autowired
-	RegimenManager regimenManager;
+	private RegimenManager regimenManager;
 
 	@Before
 	public void beforeEachTest() throws Exception {
 		executeDataSet("test-data.xml");
 		executeDataSet("test-drugdata.xml");
-
-		regimenManager.clear();
 
 		InputStream stream = getClass().getClassLoader().getResourceAsStream("regimens.xml");
 		regimenManager.loadDefinitionsFromXML(stream);

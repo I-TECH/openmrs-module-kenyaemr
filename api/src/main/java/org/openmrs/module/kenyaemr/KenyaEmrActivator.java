@@ -18,13 +18,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
-import org.openmrs.api.context.Context;
-import org.openmrs.module.Module;
 import org.openmrs.module.ModuleActivator;
-import org.openmrs.module.ModuleFactory;
 import org.openmrs.module.kenyaemr.util.KenyaEmrUtils;
-
-import java.io.InputStream;
 
 /**
  * This class contains the logic that is run every time this module is either started or stopped.
@@ -32,12 +27,6 @@ import java.io.InputStream;
 public class KenyaEmrActivator implements ModuleActivator {
 
 	protected static final Log log = LogFactory.getLog(KenyaEmrActivator.class);
-
-	private static final String PACKAGES_FILENAME = "packages.xml";
-
-	private static final String REGIMENS_FILENAME = "regimens.xml";
-
-	private static final String LABTESTS_FILENAME = "lab.xml";
 
 	static {
 		// Possibly bad practice but we really want to see the log messages
@@ -52,13 +41,6 @@ public class KenyaEmrActivator implements ModuleActivator {
 	}
 
 	/**
-	 * @see ModuleActivator#contextRefreshed()
-	 */
-	public void contextRefreshed() {
-		log.info("Kenya EMR context refreshed");
-	}
-
-	/**
 	 * @see ModuleActivator#willStart()
 	 */
 	public void willStart() {
@@ -66,36 +48,24 @@ public class KenyaEmrActivator implements ModuleActivator {
 	}
 
 	/**
+	 * @see ModuleActivator#contextRefreshed()
+	 */
+	public void contextRefreshed() {
+		log.info("Context refreshed. Refreshing all content managers...");
+
+		KenyaEmr.getInstance().refresh();
+
+		log.info("Refreshed all content managers");
+	}
+
+	/**
 	 * @see ModuleActivator#started()
-	 * @should install initial data only once
 	 */
 	public void started() {
-		try {
-			checkRequirements();
+		checkRequirements();
 
-			log.info("Setup core global properties");
-
-			boolean metadataUpdated = setupStandardMetadata();
-
-			log.info("Setup core metadata (" + (metadataUpdated ? "imported packages" : "already up-to-date") + ")");
-
-			setupStandardRegimens();
-
-			log.info("Setup core regimens");
-
-			setupStandardLabTests();
-
-			log.info("Setup core lab tests");
-
-		} catch (Exception ex) {
-			log.error("Cancelling module startup due to error");
-
-			// Stop module if exception was thrown
-			Module mod = ModuleFactory.getModuleById(KenyaEmrConstants.MODULE_ID);
-			ModuleFactory.stopModule(mod);
-
-			throw new RuntimeException("Failed to start Kenya EMR module", ex);
-		}
+		// Setup required global properties
+		KenyaEmr.getInstance().getMetadataManager().setupGlobalProperties();
 
 		log.info("Kenya EMR started");
 	}
@@ -124,50 +94,6 @@ public class KenyaEmrActivator implements ModuleActivator {
 		}
 		else {
 			log.info("Detected concept dictionary version " + conceptsVersion);
-		}
-	}
-
-	/**
-	 * Setup the standard metadata (global properties and packages)
-	 * @return number of packages updated
-	 */
-	protected boolean setupStandardMetadata() {
-		// Setup required global properties
-		KenyaEmr.getInstance().getMetadataManager().setupGlobalProperties();
-
-		try {
-			InputStream stream = getClass().getClassLoader().getResourceAsStream(PACKAGES_FILENAME);
-			return KenyaEmr.getInstance().getMetadataManager().loadPackagesFromXML(stream, null);
-		}
-		catch (Exception ex) {
-			throw new RuntimeException("Cannot find " + PACKAGES_FILENAME + ". Make sure it's in api/src/main/resources");
-		}
-	}
-
-	/**
-	 * Setup the standard lab tests
-	 */
-	protected void setupStandardLabTests() {
-		try {
-			InputStream stream = getClass().getClassLoader().getResourceAsStream(LABTESTS_FILENAME);
-			KenyaEmr.getInstance().getLabManager().loadTestsFromXML(stream);
-		}
-		catch (Exception ex) {
-			throw new RuntimeException("Cannot find " + LABTESTS_FILENAME + ". Make sure it's in api/src/main/resources");
-		}
-	}
-
-	/**
-	 * Setup the standard regimens from XML
-	 * @throws Exception if error occurs
-	 */
-	protected void setupStandardRegimens() {
-		try {
-			InputStream stream = getClass().getClassLoader().getResourceAsStream(REGIMENS_FILENAME);
-			KenyaEmr.getInstance().getRegimenManager().loadDefinitionsFromXML(stream);
-		}
-		catch (Exception ex) {
-			throw new RuntimeException("Cannot find " + REGIMENS_FILENAME + ". Make sure it's in api/src/main/resources", ex);
 		}
 	}
 }

@@ -19,6 +19,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.openmrs.Concept;
 import org.openmrs.DrugOrder;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.ModuleFactory;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -139,12 +140,23 @@ public class RegimenManager {
 	}
 
 	/**
-	 * Clears all regimen and drugs
+	 * Refreshes all regimen and drugs
 	 */
-	public synchronized void clear() {
+	public synchronized void refresh() {
 		masterSetConcepts.clear();
 		drugs.clear();
 		regimenGroups.clear();
+
+		for (RegimenConfiguration configuration : Context.getRegisteredComponents(RegimenConfiguration.class)) {
+			try {
+				ClassLoader loader = configuration.getClassLoader();
+				InputStream stream = loader.getResourceAsStream(configuration.getPath());
+				loadDefinitionsFromXML(stream);
+			}
+			catch (Exception ex) {
+				throw new RuntimeException("Cannot find " + configuration.getModuleId() + ":" + configuration.getPath() + ". Make sure it's in api/src/main/resources");
+			}
+		}
 	}
 
 	/**
@@ -154,7 +166,7 @@ public class RegimenManager {
 	 * @throws IOException
 	 * @throws SAXException
 	 */
-	public synchronized void loadDefinitionsFromXML(InputStream stream) throws ParserConfigurationException, IOException, SAXException {
+	public void loadDefinitionsFromXML(InputStream stream) throws ParserConfigurationException, IOException, SAXException {
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder = dbFactory.newDocumentBuilder();
 

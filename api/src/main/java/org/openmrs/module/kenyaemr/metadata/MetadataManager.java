@@ -11,12 +11,14 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.kenyaemr;
+
+package org.openmrs.module.kenyaemr.metadata;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.GlobalProperty;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyaemr.KenyaEmrConstants;
 import org.openmrs.module.kenyaemr.datatype.LocationDatatype;
 import org.openmrs.module.metadatasharing.ImportConfig;
 import org.openmrs.module.metadatasharing.ImportMode;
@@ -46,13 +48,31 @@ public class MetadataManager {
 	protected static final Log log = LogFactory.getLog(MetadataManager.class);
 
 	/**
+	 * Refreshes all metadata
+	 */
+	public synchronized void refresh() {
+		for (MetadataConfiguration configuration : Context.getRegisteredComponents(MetadataConfiguration.class)) {
+			log.warn("Loading metadata package set from " + configuration.getModuleId() + ":" + configuration.getPath());
+
+			try {
+				ClassLoader loader = configuration.getClassLoader();
+				InputStream stream = loader.getResourceAsStream(configuration.getPath());
+				loadPackagesFromXML(stream, loader);
+			}
+			catch (Exception ex) {
+				throw new RuntimeException("Cannot find " + configuration.getModuleId() + ":" + configuration.getPath() + ". Make sure it's in api/src/main/resources");
+			}
+		}
+	}
+
+	/**
 	 * Loads packages specified in an XML packages list
 	 * @param stream the input stream containing the package list
 	 * @param loader the class loader to use for loading the packages (null to use the default)
 	 * @return whether any changes were made to the db
 	 * @throws Exception
 	 */
-	public synchronized boolean loadPackagesFromXML(InputStream stream, ClassLoader loader) throws Exception {
+	protected synchronized boolean loadPackagesFromXML(InputStream stream, ClassLoader loader) throws Exception {
 		boolean anyChanges = false;
 
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();

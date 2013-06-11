@@ -48,8 +48,6 @@ public class OnAlternateFirstLineArtCalculationTest extends BaseModuleContextSen
 		executeDataSet("test-data.xml");
 		executeDataSet("test-drugdata.xml");
 
-		regimenManager.clear();
-
 		InputStream stream = getClass().getClassLoader().getResourceAsStream("regimens.xml");
 		regimenManager.loadDefinitionsFromXML(stream);
 	}

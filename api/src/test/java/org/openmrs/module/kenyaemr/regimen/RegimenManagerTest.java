@@ -23,10 +23,11 @@ import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.io.InputStream;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+
+import static org.hamcrest.Matchers.*;
 
 /**
  * Tests for {@link RegimenManager}
@@ -44,10 +45,7 @@ public class RegimenManagerTest extends BaseModuleContextSensitiveTest {
 		executeDataSet("test-data.xml");
 		executeDataSet("test-drugdata.xml");
 
-		regimenManager.clear();
-
-		InputStream stream = getClass().getClassLoader().getResourceAsStream("test-regimens.xml");
-		regimenManager.loadDefinitionsFromXML(stream);
+		regimenManager.refresh();
 	}
 
 	/**
@@ -56,7 +54,7 @@ public class RegimenManagerTest extends BaseModuleContextSensitiveTest {
 	 */
 	@Test
 	public void loadDefinitionsFromXML_shouldLoadAllDefinitions() throws Exception {
-		Assert.assertEquals(1, regimenManager.getCategoryCodes().size());
+		Assert.assertThat(regimenManager.getCategoryCodes().size(), greaterThan(0));
 
 		Assert.assertEquals(Dictionary.ANTIRETROVIRAL_DRUGS, regimenManager.getMasterSetConcept("category1").getUuid());
 
@@ -128,18 +126,5 @@ public class RegimenManagerTest extends BaseModuleContextSensitiveTest {
 		Assert.assertEquals(2, defsNonExact.size());
 		Assert.assertEquals("regimen2", defsNonExact.get(0).getName());
 		Assert.assertEquals("regimen3", defsNonExact.get(1).getName());
-	}
-
-	/**
-	 * @see org.openmrs.module.kenyaemr.regimen.RegimenManager#clear()
-	 */
-	@Test
-	public void clear_shouldClearAllRegimenData() {
-		regimenManager.clear();
-
-		Assert.assertEquals(0, regimenManager.getCategoryCodes().size());
-		Assert.assertNull(regimenManager.getMasterSetConcept("category1"));
-		Assert.assertNull(regimenManager.getDrugs("category1"));
-		Assert.assertNull(regimenManager.getRegimenGroups("category1"));
 	}
 }

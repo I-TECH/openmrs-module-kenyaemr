@@ -3,6 +3,18 @@
 	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
+	<bean id="kenyaemr-metadata-config" class="org.openmrs.module.kenyaemr.metadata.MetadataConfiguration">
+		<property name="path" value="packages.xml" />
+	</bean>
+
+	<bean id="kenyaemr-lab-config" class="org.openmrs.module.kenyaemr.lab.LabConfiguration">
+		<property name="path" value="lab.xml" />
+	</bean>
+
+	<bean id="kenyaemr-regimen-config" class="org.openmrs.module.kenyaemr.regimen.RegimenConfiguration">
+		<property name="path" value="regimens.xml" />
+	</bean>
+
 	<!-- Form descriptors -->
 
 	<!-- Obstetric History -->

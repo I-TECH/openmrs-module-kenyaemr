@@ -42,7 +42,7 @@ public class FormManager {
 	/**
 	 * Updates form manager after context refresh
 	 */
-	public synchronized void refresh() throws Exception {
+	public synchronized void refresh() {
 		forms.clear();
 
 		List<FormDescriptor> descriptors = Context.getRegisteredComponents(FormDescriptor.class);
