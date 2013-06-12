@@ -11,9 +11,11 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.kenyaemr;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.joda.time.Period;
 import org.joda.time.PeriodType;
 import org.openmrs.*;
@@ -42,6 +44,52 @@ public class KenyaEmrUiUtils {
 
 	@Autowired
 	private KenyaEmr emr;
+
+	/**
+	 * Formats a person's name
+	 * @param name the person name
+	 * @return the string value
+	 */
+	public String formatPersonName(PersonName name) {
+		List<String> items = new ArrayList<String>();
+		if (name.getFamilyName() != null) {
+			items.add(name.getFamilyName() + ",");
+		}
+		if (name.getGivenName() != null) {
+			items.add(name.getGivenName());
+		}
+		if (name.getMiddleName() != null) {
+			items.add(name.getMiddleName());
+		}
+		return OpenmrsUtil.join(items, " ");
+	}
+
+	/**
+	 * Formats a person's age
+	 * @param person the person
+	 * @return the string value
+	 */
+	public String formatPersonAge(Person person) {
+		String prefix = BooleanUtils.isTrue(person.isBirthdateEstimated()) ? "~" : "";
+		int ageYears = person.getAge();
+
+		if (ageYears < 1) {
+			Period p = new Period(person.getBirthdate().getTime(), System.currentTimeMillis(), PeriodType.yearMonthDay());
+			return prefix + p.getMonths() + " month(s), " + p.getDays() + " day(s)";
+		}
+		else {
+			return prefix + ageYears + " year(s)";
+		}
+	}
+
+	/**
+	 * Formats a person's birth date
+	 * @param person the person
+	 * @return the string value
+	 */
+	public String formatPersonBirthdate(Person person) {
+		return (BooleanUtils.isTrue(person.isBirthdateEstimated()) ? "approx " : "") + kenyaUi.formatDate(person.getBirthdate());
+	}
 
 	/**
 	 * Formats the dates of the given visit
@@ -148,15 +196,32 @@ public class KenyaEmrUiUtils {
 	 */
 	public List<SimpleObject> simplePatients(Collection<Patient> patients, UiUtils ui) {
 		List<SimpleObject> ret = new ArrayList<SimpleObject>();
-		long now = System.currentTimeMillis();
 		for (Patient patient : patients) {
-			SimpleObject so = SimpleObject.fromObject(patient, ui, "patientId", "personName", "age", "birthdate", "birthdateEstimated", "gender", "activeIdentifiers.identifierType", "activeIdentifiers.identifier");
-			Period p = new Period(patient.getBirthdate().getTime(), now, PeriodType.yearMonthDay());
-			so.put("ageMonths", p.getMonths());
-			so.put("ageDays", p.getDays());
-			ret.add(so);
+			ret.add(simplePatient(patient, ui));
 		}
 		return ret;
+	}
+
+	/**
+	 * Simplifies a patient
+	 * @param patient the patient
+	 * @param ui the UI utils
+	 * @return the simple object
+	 */
+	public SimpleObject simplePatient(Patient patient, UiUtils ui) {
+		List<PatientIdentifier> identifiers = emr.getIdentifierManager().getPatientDisplayIdentifiers(patient);
+
+		SimpleObject so = SimpleObject.fromObject(patient, ui, "patientId", "gender");
+
+		// Add formatted name, age and birth date values
+		so.put("name", formatPersonName(patient.getPersonName()));
+		so.put("age", formatPersonAge(patient));
+		so.put("birthdate", formatPersonBirthdate(patient));
+
+		// Add display identifiers
+		so.put("identifiers", SimpleObject.fromCollection(identifiers, ui, "identifierType", "identifier"));
+
+		return so;
 	}
 
 	/**

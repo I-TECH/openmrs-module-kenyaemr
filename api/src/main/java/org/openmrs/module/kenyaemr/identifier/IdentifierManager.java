@@ -26,10 +26,10 @@ import org.openmrs.module.idgen.service.IdentifierSourceService;
 import org.openmrs.module.idgen.validator.LuhnModNIdentifierValidator;
 import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
+import org.openmrs.module.kenyaemr.form.FormDescriptor;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Patient identifier manager
@@ -37,8 +37,25 @@ import java.util.List;
 @Component
 public class IdentifierManager {
 
-	private static final String OPENMRS_MEDICAL_RECORD_NUMBER_NAME = "Kenya EMR - OpenMRS Medical Record Number";
-	private static final String HIV_UNIQUE_PATIENT_NUMBER_NAME = "Kenya EMR - OpenMRS HIV Unique Patient Number";
+	protected Map<String, IdentifierDescriptor> identifiers = new LinkedHashMap<String, IdentifierDescriptor>();
+
+	/**
+	 * Updates this manager after context refresh
+	 */
+	public synchronized void refresh() {
+		identifiers.clear();
+
+		List<IdentifierDescriptor> descriptors = Context.getRegisteredComponents(IdentifierDescriptor.class);
+
+		// Sort by identifier descriptor order
+		Collections.sort(descriptors);
+
+		for (IdentifierDescriptor descriptor : descriptors) {
+			PatientIdentifierType identifierType = Metadata.getPatientIdentifierType(descriptor.getIdentifierTypeUuid());
+
+			identifiers.put(identifierType.getUuid(), descriptor);
+		}
+	}
 
 	/**
 	 * Gets the identifiers to be displayed for the given patient
@@ -46,23 +63,88 @@ public class IdentifierManager {
 	 * @return the identifiers
 	 */
 	public List<PatientIdentifier> getPatientDisplayIdentifiers(Patient patient) {
-		List<PatientIdentifier> activeIds = patient.getActiveIdentifiers();
-		List<PatientIdentifier> displayIds = new ArrayList<PatientIdentifier>();
+		List<PatientIdentifier> displayIds = getPatientIdentifiers(patient, true);
 
-		// Patient has more than one active id, ignore the OpenMRS ID
-		if (activeIds.size() > 1) {
-			for (PatientIdentifier pid : activeIds) {
-				if (!Metadata.hasIdentity(pid.getIdentifierType(), Metadata.OPENMRS_ID_IDENTIFIER_TYPE)) {
-					displayIds.add(pid);
-				}
-			}
-		}
-		else {
-			displayIds.addAll(activeIds);
+		if (displayIds.size() == 0) {
+			displayIds = getPatientIdentifiers(patient, false);
 		}
 
 		return displayIds;
 	}
+
+	/**
+	 * Gets the identifiers to be displayed for the given patient
+	 * @param patient the patient
+	 * @param withOrder true if only identifiers with order values should be returned
+	 * @return the identifiers
+	 */
+	public List<PatientIdentifier> getPatientIdentifiers(Patient patient, boolean withOrder) {
+		List<PatientIdentifier> identifiers = new ArrayList<PatientIdentifier>();
+
+		for (IdentifierDescriptor descriptor : this.identifiers.values()) {
+			PatientIdentifierType identifierType = Metadata.getPatientIdentifierType(descriptor.getIdentifierTypeUuid());
+			PatientIdentifier identifier = patient.getPatientIdentifier(identifierType);
+
+			if (identifier != null && (!withOrder || descriptor.getOrder() != null)) {
+				identifiers.add(identifier);
+			}
+		}
+
+		return identifiers;
+	}
+
+	/**
+	 * Setup an identifier source
+	 * @param idType the patient identifier type
+	 * @param startFrom the base identifier to start from
+	 * @param name the identifier source name
+	 * @param baseCharacterSet the base character set
+	 * @param prefix the prefix
+	 */
+	protected void setupIdentifierSource(PatientIdentifierType idType, String startFrom, String name, String baseCharacterSet, String prefix) {
+		String validatorClass = idType.getValidator();
+		LuhnModNIdentifierValidator validator = null;
+		if (validatorClass != null) {
+			try {
+				validator = (LuhnModNIdentifierValidator) Context.loadClass(validatorClass).newInstance();
+			} catch (Exception e) {
+				throw new APIException("Unexpected Identifier Validator (" + validatorClass + ") for " + idType.getName(), e);
+			}
+		}
+
+		if (startFrom == null) {
+			if (validator != null) {
+				startFrom = validator.getBaseCharacters().substring(0, 1);
+			} else {
+				throw new RuntimeException("startFrom is required if this isn't using a LuhnModNIdentifierValidator");
+			}
+		}
+
+		if (baseCharacterSet == null) {
+			baseCharacterSet = validator.getBaseCharacters();
+		}
+
+		IdentifierSourceService idService = Context.getService(IdentifierSourceService.class);
+
+		SequentialIdentifierGenerator idGen = new SequentialIdentifierGenerator();
+		idGen.setPrefix(prefix);
+		idGen.setName(name);
+		idGen.setDescription("Identifier Generator for " + idType.getName());
+		idGen.setIdentifierType(idType);
+		idGen.setBaseCharacterSet(baseCharacterSet);
+		idGen.setFirstIdentifierBase(startFrom);
+		idService.saveIdentifierSource(idGen);
+
+		AutoGenerationOption auto = new AutoGenerationOption(idType, idGen, true, true);
+		idService.saveAutoGenerationOption(auto);
+	}
+
+	/**
+	 * TODO Everything below here needs refactored to put all metadata dependencies into the application context
+	 */
+
+	protected static final String OPENMRS_MEDICAL_RECORD_NUMBER_NAME = "Kenya EMR - OpenMRS Medical Record Number";
+	protected static final String HIV_UNIQUE_PATIENT_NUMBER_NAME = "Kenya EMR - OpenMRS HIV Unique Patient Number";
 
 	/**
 	 * Gets whether all identifier types are configured
@@ -98,7 +180,7 @@ public class IdentifierManager {
 		}
 
 		PatientIdentifierType idType = Metadata.getPatientIdentifierType(Metadata.OPENMRS_ID_IDENTIFIER_TYPE);
-		setupIdentifierSource(startFrom, OPENMRS_MEDICAL_RECORD_NUMBER_NAME, idType, null);
+		setupIdentifierSource(idType, startFrom, OPENMRS_MEDICAL_RECORD_NUMBER_NAME, null, "M");
 	}
 
 	/**
@@ -115,7 +197,7 @@ public class IdentifierManager {
 		}
 
 		PatientIdentifierType idType = Metadata.getPatientIdentifierType(Metadata.UNIQUE_PATIENT_NUMBER_IDENTIFIER_TYPE);
-		setupIdentifierSource(startFrom, HIV_UNIQUE_PATIENT_NUMBER_NAME, idType, "0123456789");
+		setupIdentifierSource(idType, startFrom, HIV_UNIQUE_PATIENT_NUMBER_NAME, "0123456789", null);
 	}
 
 	/**
@@ -145,60 +227,5 @@ public class IdentifierManager {
 			}
 		}
 		return null;
-	}
-
-	/**
-	 * Setup an identifier source
-	 * @param startFrom the base identifier to start from
-	 * @param name the identifier source name
-	 * @param idType the patient identifier type
-	 * @param baseCharacterSet the base character set
-	 */
-	protected void setupIdentifierSource(String startFrom, String name, PatientIdentifierType idType, String baseCharacterSet) {
-		String validatorClass = idType.getValidator();
-		LuhnModNIdentifierValidator validator = null;
-		if (validatorClass != null) {
-			try {
-				validator = (LuhnModNIdentifierValidator) Context.loadClass(validatorClass).newInstance();
-			} catch (Exception e) {
-				throw new APIException("Unexpected Identifier Validator (" + validatorClass + ") for " + idType.getName(), e);
-			}
-		}
-
-		if (startFrom == null) {
-			if (validator != null) {
-				startFrom = validator.getBaseCharacters().substring(0, 1);
-			} else {
-				throw new RuntimeException("startFrom is required if this isn't using a LuhnModNIdentifierValidator");
-			}
-		}
-
-		if (baseCharacterSet == null) {
-			baseCharacterSet = validator.getBaseCharacters();
-		}
-
-		IdentifierSourceService idService = Context.getService(IdentifierSourceService.class);
-
-		SequentialIdentifierGenerator idGen;
-		if (OPENMRS_MEDICAL_RECORD_NUMBER_NAME.equals(name)) {
-			idGen = new SequentialIdentifierGenerator();
-			idGen.setPrefix("M");
-		} else if (HIV_UNIQUE_PATIENT_NUMBER_NAME.equals(name)) {
-			// Can't do this because it can't be persisted to hibernate
-			// idGen = new HivUniquePatientNumberGenerator();
-			idGen = new SequentialIdentifierGenerator();
-		} else {
-			throw new RuntimeException("Programming error: don't know how to create identifier source: " + name);
-		}
-
-		idGen.setName(name);
-		idGen.setDescription("Identifier Generator for " + idType.getName());
-		idGen.setIdentifierType(idType);
-		idGen.setBaseCharacterSet(baseCharacterSet);
-		idGen.setFirstIdentifierBase(startFrom);
-		idService.saveIdentifierSource(idGen);
-
-		AutoGenerationOption auto = new AutoGenerationOption(idType, idGen, true, true);
-		idService.saveAutoGenerationOption(auto);
 	}
 }

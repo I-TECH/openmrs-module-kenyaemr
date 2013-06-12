@@ -16,9 +16,9 @@
 		<div style="float: left; padding-right: 5px">
 			<img width="32" height="32" src="${ ui.resourceLink("kenyaui", "images/patient_" + patient.gender.toLowerCase() + ".png") }"/>
 		</div>
-		<span class="ke-patient-name">${ ui.includeFragment("kenyaemr", "personName", [ name: patient.personName ]) }</span><br/>
+		<span class="ke-patient-name">${ kenyaEmrUi.formatPersonName(patient.personName) }</span><br/>
 		<span class="ke-patient-gender">${ patient.gender == 'M' ? "Male" : patient.gender == 'F' ? 'Female' : patient.gender }</span>,
-		<span class="ke-patient-age">${ ui.includeFragment("kenyaemr", "personAgeAndBirthdate", [ person: patient ]) }</span>
+		<span class="ke-patient-age">${ kenyaEmrUi.formatPersonAge(patient) } <small>(${ kenyaEmrUi.formatPersonBirthdate(patient) })</small></span>
 	</div>
 	
 	<div style="float: left; width: 30%">

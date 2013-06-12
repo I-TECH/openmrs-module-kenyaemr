@@ -25,22 +25,19 @@
 <script type="text/javascript">
 	var patientItemOpts = {
 		title: function(patient) {
-			return patient.personName + ' <input type="hidden" name="patientId" value="' + patient.patientId + '"/>';
+			return patient.name + ' <input type="hidden" name="patientId" value="' + patient.patientId + '"/>';
 		},
 		icon: function(patient) {
 			return '<img width="32" height="32" src="' + ui.resourceLink('kenyaui', 'images/patient_' + patient.gender.toLowerCase() + '.png') + '"/>';
 		},
 		leftDetails: function(patient) {
-			var str = patient.birthdateEstimated ? '~' : '';
-			str += (patient.age < 1) ? (patient.ageMonths + ' month(s), ' + patient.ageDays + ' day(s)') : (patient.age + ' year(s)');
-			str += ' <small>(' + (patient.birthdateEstimated ? "approx " : "") + patient.birthdate + ')</small>';
-			return str;
+			return patient.age + ' <small>(DOB ' + patient.birthdate + ')</small>';
 		},
 		center: function(patient) {
 			var tmp = "";
-			for (var i = 0; i < patient.activeIdentifiers.length; ++i) {
-				tmp += '<span class="ke-identifier-type">' + patient.activeIdentifiers[i].identifierType + ':</span><br/>';
-				tmp += '<span class="ke-identifier-value">' + patient.activeIdentifiers[i].identifier + '</span>';
+			for (var i = 0; i < patient.identifiers.length; ++i) {
+				tmp += '<span class="ke-identifier-type">' + patient.identifiers[i].identifierType + ':</span><br/>';
+				tmp += '<span class="ke-identifier-value">' + patient.identifiers[i].identifier + '</span>';
 				tmp += '<br/>';
 			}
 			return tmp;

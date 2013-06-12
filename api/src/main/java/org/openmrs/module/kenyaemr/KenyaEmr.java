@@ -134,14 +134,6 @@ public class KenyaEmr {
 	}
 
 	/**
-	 * Gets the EMR service
-	 * @return the service
-	 */
-	public KenyaEmrService getEmrServicee() {
-		return Context.getService(KenyaEmrService.class);
-	}
-
-	/**
 	 * Utility method to get the singleton instance from the application context in situations where you
 	 * can't use @Autowired or @SpringBean. Use as a last resort.
 	 * @return the singleton instance
@@ -157,6 +149,7 @@ public class KenyaEmr {
 		metadataManager.refresh(); // First because others will use metadata loaded by it
 		labManager.refresh();
 		regimenManager.refresh();
+		identifierManager.refresh();
 		calculationManager.refresh();
 		formManager.refresh();
 		reportManager.refresh();

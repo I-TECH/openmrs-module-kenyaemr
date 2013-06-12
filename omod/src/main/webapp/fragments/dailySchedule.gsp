@@ -19,7 +19,7 @@
 <% } %>
 <% scheduled.each { %>
 	<div class="ke-stack-item ke-clickable">
-		<input type="hidden" name="clickUrl" value="${ ui.pageLink("kenyaemr", config.page, [ patientId: it.patient.id ]) }"/>
+		<input type="hidden" name="clickUrl" value="${ ui.pageLink("kenyaemr", config.page, [ patientId: it.patient.patientId ]) }"/>
 		<table width="100%">
 			<tr>
 				<td align="left" width="40%" valign="top">
@@ -27,11 +27,11 @@
 						<img width="32" height="32" src="${ ui.resourceLink("kenyaui", "images/patient_" + it.patient.gender.toLowerCase() + ".png") }" alt="" />
 					</span>
 					
-					<b>${ ui.includeFragment("kenyaemr", "personName", [ name: it.patient.personName ]) }</b><br />
-					${ ui.includeFragment("kenyaemr", "personAgeAndBirthdate", [ person: it.patient ]) }
+					<b>${ it.patient.name }</b><br />
+					${ it.patient.age } <small>(${ it.patient.birthdate })</small>
 				</td>
 				<td align="left" width="30%" valign="top">
-					<% it.patient.activeIdentifiers.each { %>
+					<% it.patient.identifiers.each { %>
 						<div class="ke-identifier-type">${ ui.format(it.identifierType) }:</div>
 						<div class="ke-identifier-value">${ it.identifier }</div>
 					<% } %>
@@ -42,7 +42,7 @@
 						<br/>
 						<% it.visits.each { v -> %>
 							<div class="ke-tag ke-visittag">
-								<input type="hidden" name="clickUrl" value="${ ui.pageLink("kenyaemr", config.page, [ patientId: it.patient.id, visitId: v.id ]) }"/>
+								<input type="hidden" name="clickUrl" value="${ ui.pageLink("kenyaemr", config.page, [ patientId: it.patient.patientId, visitId: v.id ]) }"/>
 								${ ui.format(v.visitType) } visit<br/>
 								<span style="color: gray">
 									<%= v.encounters.collect { ui.format(it.form ?: it.encounterType) } .join(", ") %>

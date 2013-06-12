@@ -27,12 +27,15 @@ import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.ListResult;
+import org.openmrs.module.kenyaemr.KenyaEmrUiUtils;
 import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
 import org.openmrs.module.kenyaemr.calculation.library.ScheduledVisitOnDayCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.VisitsOnDayCalculation;
 import org.openmrs.module.kenyaemr.util.KenyaEmrUtils;
 import org.openmrs.ui.framework.SimpleObject;
+import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.FragmentParam;
+import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 import org.openmrs.util.OpenmrsUtil;
 import org.openmrs.util.PersonByNameComparator;
@@ -44,7 +47,9 @@ public class DailyScheduleFragmentController {
 	
 	public void controller(FragmentModel model,
 	                       @FragmentParam("page") String pageWhenClicked,
-	                       @FragmentParam(value = "date", required = false) Date date) {
+	                       @FragmentParam(value = "date", required = false) Date date,
+						   @SpringBean KenyaEmrUiUtils kenyaEmrUi,
+						   UiUtils ui) {
 
 		Date today = OpenmrsUtil.firstSecondOfDay(new Date());
 		Date tomorrow = KenyaEmrUtils.dateAddDays(today, 1);
@@ -74,7 +79,7 @@ public class DailyScheduleFragmentController {
 		List<SimpleObject> list = new ArrayList<SimpleObject>();
 		for (Patient p : scheduledPatients) {
 			SimpleObject so = new SimpleObject();
-			so.put("patient", p);
+			so.put("patient", kenyaEmrUi.simplePatient(p, ui));
 			so.put("visits", ((ListResult) actual.get(p.getPatientId())).getValues());
 			list.add(so);
 		}

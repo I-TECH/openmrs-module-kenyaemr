@@ -17,9 +17,7 @@ package org.openmrs.module.kenyaemr;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.Concept;
-import org.openmrs.DrugOrder;
-import org.openmrs.Visit;
+import org.openmrs.*;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.regimen.DrugReference;
 import org.openmrs.module.kenyaemr.regimen.RegimenChangeHistory;
@@ -37,6 +35,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
+
+import static org.hamcrest.Matchers.*;
 
 /**
  *
@@ -75,6 +75,39 @@ public class KenyaEmrUiUtilsTest extends BaseModuleContextSensitiveTest {
 		stavudine.setFrequency("BD");
 
 		regimen = new RegimenOrder(new LinkedHashSet<DrugOrder>(Arrays.asList(aspirin, stavudine)));
+	}
+
+	/**
+	 * @see KenyaEmrUiUtils#formatPersonName(org.openmrs.PersonName)
+	 */
+	@Test
+	public void formatPersonName() {
+		PersonName pn = new PersonName();
+		pn.setFamilyName("fff");
+		pn.setGivenName("ggg");
+		pn.setMiddleName("mmm");
+		Assert.assertThat(kenyaUi.formatPersonName(pn), is("fff, ggg mmm"));
+
+		// Check no middle name
+		pn = new PersonName();
+		pn.setFamilyName("fff");
+		pn.setGivenName("ggg");
+		Assert.assertThat(kenyaUi.formatPersonName(pn), is("fff, ggg"));
+	}
+
+	/**
+	 * @see KenyaEmrUiUtils#formatPersonBirthdate(org.openmrs.Person)
+	 */
+	@Test
+	public void formatPersonBirthdate() {
+		Person p = new Person();
+		p.setBirthdate(TestUtils.date(2000, 1, 1));
+		Assert.assertThat(kenyaUi.formatPersonBirthdate(p), is("01-Jan-2000"));
+
+		p = new Person();
+		p.setBirthdate(TestUtils.date(1980, 6, 30));
+		p.setBirthdateEstimated(true);
+		Assert.assertThat(kenyaUi.formatPersonBirthdate(p), is("approx 30-Jun-1980"));
 	}
 
 	/**
