@@ -93,6 +93,15 @@
 				});
 			}
 		});
+
+		/**
+		 * Convenience method for printing lookup values which are non-precise
+		 */
+		function printNonPreciseVal(str) {
+			if (str) {
+				document.write(parseInt(str));
+			}
+		}
 	</script>
 
 	<div class="patient-details">
@@ -189,11 +198,10 @@
 			Weight: <lookup expression="fn.latestObs(5089).valueNumeric"/> <br/>
 			Height: <lookup expression="fn.latestObs(5090).valueNumeric"/> <br/>
 			Temp: <lookup expression="fn.latestObs(5088).valueNumeric"/> <br/>
-			Pulse: <lookup expression="fn.latestObs(5087).valueNumeric"/> <br/>
-			BP: <lookup expression="fn.latestObs(5085).valueNumeric"/>/
-			<lookup expression="fn.latestObs(5086).valueNumeric"/> <br />
-			RR: <lookup expression="fn.latestObs(5242).valueNumeric"/> <br/>
-			O2Sat: <lookup expression="fn.latestObs(5092).valueNumeric"/> <br/>
+			Pulse: <script>printNonPreciseVal("<lookup expression="fn.latestObs(5087).valueNumeric"/>");</script><br/>
+			BP: <script>printNonPreciseVal("<lookup expression="fn.latestObs(5085).valueNumeric"/>");</script>/<script>printNonPreciseVal("<lookup expression="fn.latestObs(5086).valueNumeric"/>");</script><br />
+			RR: <script>printNonPreciseVal("<lookup expression="fn.latestObs(5242).valueNumeric"/>");</script><br/>
+			O2Sat: <script>printNonPreciseVal("<lookup expression="fn.latestObs(5092).valueNumeric"/>");</script><br/>
 			MUAC: <lookup expression="fn.latestObs(1343).valueNumeric"/> <br/>
 		</div>
 	</fieldset>
