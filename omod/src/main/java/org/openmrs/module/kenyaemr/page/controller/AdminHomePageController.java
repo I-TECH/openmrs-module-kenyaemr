@@ -88,8 +88,7 @@ public class AdminHomePageController {
 		else if (section.equals("content")) {
 
 			List<SimpleObject> conceptDictionary = new ArrayList<SimpleObject>();
-			String conceptsVersion = Dictionary.getDatabaseVersion();
-			conceptDictionary.add(SimpleObject.create("name", "CIEL", "version", conceptsVersion, "status", (conceptsVersion != null)));
+			conceptDictionary.add(SimpleObject.create("name", "CIEL", "version", Dictionary.getDatabaseVersion(), "status", Dictionary.hasRequiredDatabaseVersion()));
 
 			List<SimpleObject> metadataPackages = new ArrayList<SimpleObject>();
 			for (ImportedPackage imported : emr.getMetadataManager().getImportedPackages()) {

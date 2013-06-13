@@ -42,6 +42,15 @@ public class Dictionary {
 	}
 
 	/**
+	 * Checks if the database version meets the requirements
+	 * @return true if database version is sufficient
+	 */
+	public static boolean hasRequiredDatabaseVersion() {
+		String conceptsVersion = Dictionary.getDatabaseVersion();
+		return conceptsVersion != null && KenyaEmrUtils.checkCielVersions(Dictionary.REQUIRED_DATABASE_VERSION, conceptsVersion);
+	}
+
+	/**
 	 * Gets a concept by an identifier (mapping or UUID)
 	 * @param identifier the identifier
 	 * @return the concept

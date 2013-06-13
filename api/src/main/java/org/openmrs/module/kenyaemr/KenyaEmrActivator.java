@@ -88,12 +88,11 @@ public class KenyaEmrActivator implements ModuleActivator {
 	 * Checks the requirements of this module
 	 */
 	protected void checkRequirements() {
-		String conceptsVersion = Dictionary.getDatabaseVersion();
-		if (conceptsVersion == null || !KenyaEmrUtils.checkCielVersions(Dictionary.REQUIRED_DATABASE_VERSION, conceptsVersion)) {
+		if (!Dictionary.hasRequiredDatabaseVersion()) {
 			throw new RuntimeException("Module requires concepts version: " + Dictionary.REQUIRED_DATABASE_VERSION);
 		}
 		else {
-			log.info("Detected concept dictionary version " + conceptsVersion);
+			log.info("Detected concept dictionary version " + Dictionary.getDatabaseVersion());
 		}
 	}
 }
