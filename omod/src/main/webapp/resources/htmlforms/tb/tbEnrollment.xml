@@ -126,14 +126,7 @@
                		$('#startOfTreatmentDateError').html('Date start of treatment should be after the birth date/visit start date');
                    	return false
          		}
-         		//check that the treatment value entered is valid date
-         		var validDate = getValue('dstartoftreatment.value');
-         		alert(validDate);
-         		if (!(validDate)) {
-         			$('#startOfTreatmentDateError').html('Date start of treatment date is invalid');
-        			return false;
-    			}
-         
+         	         
         		if (dreferredby &lt; pbirthdate) {
         			$('#referalDateError').show();
                		$('#referalDateError').html('Date referred by should be after the birth date/visit start date');
