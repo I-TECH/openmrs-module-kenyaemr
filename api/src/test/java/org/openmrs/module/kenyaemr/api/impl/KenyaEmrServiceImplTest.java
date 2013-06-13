@@ -21,6 +21,7 @@ import org.openmrs.*;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.*;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
+import org.openmrs.module.kenyaemr.datatype.LocationDatatype;
 import org.openmrs.module.kenyaemr.test.TestUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +50,7 @@ public class KenyaEmrServiceImplTest extends BaseModuleContextSensitiveTest {
 	public void setup() throws Exception {
 		executeDataSet("test-data.xml");
 
-		emr.getMetadataManager().setupGlobalProperties();
+		TestUtils.saveGlobalProperty(KenyaEmrConstants.GP_DEFAULT_LOCATION, null, LocationDatatype.class);
 	}
 
 	/**

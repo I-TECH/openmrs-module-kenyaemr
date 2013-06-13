@@ -18,7 +18,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
+import org.openmrs.GlobalProperty;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.ModuleActivator;
+import org.openmrs.module.kenyaemr.datatype.LocationDatatype;
 import org.openmrs.module.kenyaemr.util.KenyaEmrUtils;
 
 /**
@@ -53,6 +56,8 @@ public class KenyaEmrActivator implements ModuleActivator {
 	public void contextRefreshed() {
 		log.info("Context refreshed. Refreshing all content managers...");
 
+		configure();
+
 		KenyaEmr.getInstance().refresh();
 
 		log.info("Refreshed all content managers");
@@ -63,9 +68,6 @@ public class KenyaEmrActivator implements ModuleActivator {
 	 */
 	public void started() {
 		checkRequirements();
-
-		// Setup required global properties
-		KenyaEmr.getInstance().getMetadataManager().setupGlobalProperties();
 
 		log.info("Kenya EMR started");
 	}
@@ -93,6 +95,34 @@ public class KenyaEmrActivator implements ModuleActivator {
 		}
 		else {
 			log.info("Detected concept dictionary version " + Dictionary.getDatabaseVersion());
+		}
+	}
+
+	/**
+	 * Setup required global properties
+	 */
+	protected void configure() {
+		ensureGlobalPropertyExists(
+				KenyaEmrConstants.GP_DEFAULT_LOCATION,
+				"The facility for which this installation is configured. Visits and encounters will be created with this location value.",
+				LocationDatatype.class
+		);
+	}
+
+	/**
+	 * Creates an empty global property if it doesn't exist
+	 * @param property the property name
+	 * @param description the property description
+	 * @param dataType the property value data type
+	 */
+	protected void ensureGlobalPropertyExists(String property, String description, Class dataType) {
+		GlobalProperty gp = Context.getAdministrationService().getGlobalPropertyObject(property);
+		if (gp == null) {
+			gp = new GlobalProperty();
+			gp.setProperty(property);
+			gp.setDescription(description);
+			gp.setDatatypeClassname(dataType.getName());
+			Context.getAdministrationService().saveGlobalProperty(gp);
 		}
 	}
 }

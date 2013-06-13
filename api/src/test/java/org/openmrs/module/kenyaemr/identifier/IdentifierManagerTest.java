@@ -44,8 +44,6 @@ public class IdentifierManagerTest extends BaseModuleContextSensitiveTest {
 	public void setup() throws Exception {
 		executeDataSet("test-data.xml");
 
-		emr.getMetadataManager().setupGlobalProperties();
-
 		identifierManager.refresh();
 	}
 

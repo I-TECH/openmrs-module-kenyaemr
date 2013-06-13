@@ -311,7 +311,9 @@ public class TestUtils {
 			gp = new GlobalProperty();
 			gp.setProperty(property);
 		}
-		gp.setValue(value);
+		if (value != null) {
+			gp.setValue(value);
+		}
 		gp.setDatatypeClassname(datatypeClass.getName());
 		return Context.getAdministrationService().saveGlobalProperty(gp);
 	}
