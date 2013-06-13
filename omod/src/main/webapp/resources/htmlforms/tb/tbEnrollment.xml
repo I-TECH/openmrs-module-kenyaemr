@@ -35,8 +35,13 @@
 			var pbirthdate = new Date("<lookup expression="patient.birthdate" />").getTime();
 			var pweight = "<lookup expression="fn.latestObs(5089).valueNumeric" />"
 			var pheight = "<lookup expression="fn.latestObs(5090).valueNumeric" />"
+			//check if the date of tb treatment already exists
+			var treatmentDate = "<lookup expression="fn.latestObs(1113).valueDate" />"
 			setValue('weight.value', pweight);
 			setValue('height.value', pheight);
+			//set the value of the treatment date if available
+			setValue('dstartoftreatment.value', treatmentDate);
+			
 			var pulmodiv = document.getElementById('iddivPulmonary');
 			var expulmodiv = document.getElementById('expul');
 			//getting the values of the disease classification option buttons
@@ -106,7 +111,7 @@
 		
 			beforeSubmit.push (function() {
 				encounterdate = new Date(getValue('encounterdate.value')).getTime();
-       			dstartoftreatment = new Date(getValue('datestartoftreatment.value')).getTime();
+       			datestartoftreatment = new Date(getValue('dstartoftreatment.value')).getTime();
        			dreferredby = new Date(getValue('datereferredby.value')).getTime();
        			transferindate  = new Date(getValue('transferindate.value')).getTime();
        			dfirstenrolled = new Date(getValue('datefirstenrolled.value')).getTime();
@@ -116,11 +121,18 @@
                    	return false
          		}
          		
-          		if (dstartoftreatment &lt; pbirthdate) {
+          		if (datestartoftreatment &lt; pbirthdate) {
           			$('#startOfTreatmentDateError').show();
                		$('#startOfTreatmentDateError').html('Date start of treatment should be after the birth date/visit start date');
                    	return false
          		}
+         		//check that the treatment value entered is valid date
+         		var validDate = getValue('dstartoftreatment.value');
+         		alert(validDate);
+         		if (!(validDate)) {
+         			$('#startOfTreatmentDateError').html('Date start of treatment date is invalid');
+        			return false;
+    			}
          
         		if (dreferredby &lt; pbirthdate) {
         			$('#referalDateError').show();
@@ -170,11 +182,7 @@
 					</tr>
 					<tr>
 						<td>Date Start of Treatment:</td>
-						<td><obs conceptId="1113AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="datestartoftreatment" /></td>
-					</tr>
-					<tr>
-						<td></td>
-						<td><lookup class="value" expression="fn.latestObs(1113).valueDate" /></td>
+						<td><obs conceptId="1113AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="dstartoftreatment" /></td>
 					</tr>
 					<tr>
 						<td>District:</td>

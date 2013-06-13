@@ -212,7 +212,7 @@
 					<tr>
 						<td><obs conceptId="1148AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"    answerConceptId="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="PMTCT"/></td>
 
-						<td><obs conceptId="966AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" dateLabel="" /></td>
+						<td><obs conceptId="966AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" dateLabel=""  defaultDatetime=""/></td>
 						<td></td>
 
 					</tr>
