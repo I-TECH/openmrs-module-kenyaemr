@@ -23,9 +23,11 @@ import org.openmrs.Visit;
 import org.openmrs.VisitType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.KenyaEmr;
+import org.openmrs.module.kenyaemr.KenyaEmrConstants;
 import org.openmrs.module.kenyaemr.KenyaEmrUiUtils;
 import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
+import org.openmrs.module.kenyaemr.datatype.LocationDatatype;
 import org.openmrs.module.kenyaemr.test.TestUiUtils;
 import org.openmrs.module.kenyaemr.test.TestUtils;
 import org.openmrs.ui.framework.SimpleObject;
@@ -56,7 +58,7 @@ public class Moh257FragmentControllerTest extends BaseModuleWebContextSensitiveT
 
 		controller = new Moh257FragmentController();
 
-		emr.getMetadataManager().setupGlobalProperties();
+		TestUtils.saveGlobalProperty(KenyaEmrConstants.GP_DEFAULT_LOCATION, null, LocationDatatype.class);
 
 		location = Context.getLocationService().getLocation(1);
 		Context.getService(KenyaEmrService.class).setDefaultLocation(location);
