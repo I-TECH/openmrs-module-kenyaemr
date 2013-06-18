@@ -118,4 +118,34 @@ public class CalculationUtilsTest {
 		Assert.assertEquals(date1, CalculationUtils.earliestDate(date1, date2));
 		Assert.assertEquals(date1, CalculationUtils.earliestDate(date2, date1));
 	}
+	//tests for latest obs date
+	/**
+	 * @see CalculationUtils#latestDate(java.util.Date, java.util.Date)
+	 * @verifies return null if both dates are null
+	 */
+	@Test
+	public void latestDate_shouldReturnNullIfBothDatesAreNull() {
+		Assert.assertNull(CalculationUtils.latestDate(null, null));
+	}
+	/**
+	 * @see CalculationUtils#latestDate(java.util.Date, java.util.Date)
+	 * @verifies return non-null date if one date is null
+	 */
+	@Test
+	public void latestDate_shouldReturnNonNullIfOneDateIsNull() {
+		Date date = TestUtils.date(2010, 11, 22);
+		Assert.assertEquals(date, CalculationUtils.latestDate(null, date));
+		Assert.assertEquals(date, CalculationUtils.latestDate(date, null));
+	}
+	/**
+	 * @see CalculationUtils#latestDate(java.util.Date, java.util.Date)
+	 * @verifies return latest date of two non-null dates
+	 */
+	@Test
+	public void latestDate_shouldReturnLateststDateOfTwoNonNullDates() {
+		Date date1 = TestUtils.date(2010, 11, 22);
+		Date date2 = TestUtils.date(2011, 2, 20);
+		Assert.assertEquals(date2, CalculationUtils.latestDate(date1, date2));
+		Assert.assertEquals(date2, CalculationUtils.latestDate(date2, date1));
+	}
 }

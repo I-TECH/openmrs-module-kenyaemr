@@ -167,6 +167,19 @@ public class CalculationUtils {
 	public static Date earliestDate(Date d1, Date d2) {
 		return OpenmrsUtil.compareWithNullAsLatest(d1, d2) >= 0 ? d2 : d1;
 	}
+	
+	/**
+	 * Calculates the latest date of two given dates, ignoring null values
+	 * @param d1 the first date
+	 * @param d2 the second date
+	 * @return the latest date value
+	 * @should return null if both dates are null
+	 * @should return non-null date if one date is null
+	 * @should return latest date of two non-null dates
+	 */
+	public static Date latestDate(Date d1, Date d2) {
+		return OpenmrsUtil.compareWithNullAsEarliest(d1, d2) >= 0 ? d1 : d2;
+	}
 
 	/**
 	 * Convenience method to fetch a patient result as an obs
