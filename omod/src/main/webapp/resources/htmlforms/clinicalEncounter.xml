@@ -50,30 +50,50 @@
 			onWeightOrHeightChange();
 
 			var strtext = "";
+			var familyPlanningOption = getValue('fplanning.value');
+				if (familyPlanningOption == ""){
+					$('#onFp :input').prop('disabled', true);
+					$('#notOnFp :input').prop('disabled', true);
+				}
+				if (familyPlanningOption == "965") {
+					$('#onFp :input').prop('disabled', false);
+					$('#notOnFp :input').prop('disabled', true);
+				}
+				if (familyPlanningOption == "160652") {
+					$('#onFp :input').prop('disabled', true);
+					$('#notOnFp :input').prop('disabled', false);
+				}
+				if (familyPlanningOption == "1360") {
+					$('#onFp :input').prop('disabled', false);
+					$('#notOnFp :input').prop('disabled', true);
+				}
 
 			$j("#fplanning select ").change(function() {
-				var onFpDiv=document.getElementById("onFp");
-				var notOnFpDiv=document.getElementById("notOnFp");
 
 				$j("#fplanning select option:selected").each(function () {
 					strtext += $(this).val();
 				});
 
 				if (strtext == ""){
-					onFpDiv.style.display='none';
-					notOnFpDiv.style.display='none';
+					$('#notOnFp :input').prop('checked', false);
+					$('#onFp :input').prop('checked', false);
+					$('#onFp :input').prop('disabled', true);
+					$('#notOnFp :input').prop('disabled', true);
 				}
 				if (strtext == "965") {
-					onFpDiv.style.display='inline';
-					notOnFpDiv.style.display='none';
+					$('#notOnFp :input').prop('checked', false);
+					$('#onFp :input').prop('disabled', false);
+					$('#notOnFp :input').prop('disabled', true);
 				}
 				if (strtext == "160652") {
-					onFpDiv.style.display='none';
-					notOnFpDiv.style.display='inline';
+					$('#onFp :input').prop('checked', false);
+					$('#onFp :input').prop('disabled', true);
+					$('#notOnFp :input').prop('disabled', false);
 				}
 				if (strtext == "1360") {
-					onFpDiv.style.display='inline';
-					notOnFpDiv.style.display='none';
+					$('#notOnFp :input').prop('checked', false);
+					$('#onFp :input').prop('disabled', false);
+					$('#notOnFp :input').prop('disabled', true);
 				}
 
 				strtext = "";
@@ -195,6 +215,7 @@
 
 		<div style="float: left; margin-left: 3em; padding: 0.5em; border: 1px gray solid; background-color: lightyellow;">
 			<u>Other Vitals Recorded Recently</u> <br/><br/>
+			Reason for Visit:  <lookup expression="fn.latestObs(160430).valueText"/> <br/>
 			Weight: <lookup expression="fn.latestObs(5089).valueNumeric"/> <br/>
 			Height: <lookup expression="fn.latestObs(5090).valueNumeric"/> <br/>
 			Temp: <lookup expression="fn.latestObs(5088).valueNumeric"/> <br/>
