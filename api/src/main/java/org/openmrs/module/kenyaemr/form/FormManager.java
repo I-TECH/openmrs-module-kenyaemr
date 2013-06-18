@@ -14,17 +14,16 @@
 
 package org.openmrs.module.kenyaemr.form;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Form;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.htmlformentry.HtmlFormEntryUtil;
+import org.openmrs.module.htmlformentry.handler.TagHandler;
 import org.openmrs.module.kenyaemr.form.FormDescriptor.Frequency;
 import org.openmrs.module.kenyaemr.form.FormDescriptor.Gender;
-import org.openmrs.module.kenyaemr.form.handler.DynamicObsContainerTagHandler;
-import org.openmrs.module.kenyaemr.form.handler.IfModeTagHandler;
-import org.openmrs.module.kenyaemr.form.handler.LabTestPickerTagHandler;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -36,6 +35,8 @@ import java.util.*;
 public class FormManager {
 
 	protected static final Log log = LogFactory.getLog(FormManager.class);
+
+	protected static final String tagHandlerClassSuffix = "TagHandler";
 
 	private Map<String, FormDescriptor> forms = new LinkedHashMap<String, FormDescriptor>();
 
@@ -58,7 +59,7 @@ public class FormManager {
 				throw new RuntimeException("No such form with UUID: " + formDescriptor.getFormUuid());
 			}
 
-			// Because of TRUNK-3889, singleton beans get instantiated twice. Re-enable this check once fixed.
+			// TODO because of TRUNK-3889, singleton beans get instantiated twice. Re-enable this check once fixed.
 			//if (forms.containsKey(formDescriptor.getFormUuid())) {
 			//	throw new RuntimeException("Form " + formDescriptor.getFormUuid() + " already registered");
 			//}
@@ -73,10 +74,25 @@ public class FormManager {
 			log.warn("Registered form '" + form.getName() + "' (" + form.getUuid() + ")");
 		}
 
-		// Register custom tags
-		HtmlFormEntryUtil.getService().addHandler("dynamicObsContainer", new DynamicObsContainerTagHandler());
-		HtmlFormEntryUtil.getService().addHandler("labTestPicker", new LabTestPickerTagHandler());
-		HtmlFormEntryUtil.getService().addHandler("ifMode", new IfModeTagHandler()); // Override one from HFE
+		refreshTagHandlers();
+	}
+
+	/**
+	 * Refreshes tag handler components
+	 */
+	private void refreshTagHandlers() {
+		for (TagHandler tagHandler : Context.getRegisteredComponents(TagHandler.class)) {
+			String className = tagHandler.getClass().getSimpleName();
+
+			if (className.endsWith(tagHandlerClassSuffix)) {
+				String tagName = StringUtils.uncapitalize(className.substring(0, className.length() - tagHandlerClassSuffix.length()));
+				HtmlFormEntryUtil.getService().addHandler(tagName, tagHandler);
+				log.info("Registered tag handler class " + className + " for tag <" + tagName + ">");
+			}
+			else {
+				log.warn("Not registering tag handler class " + className + ". Name does not end with " + tagHandlerClassSuffix);
+			}
+		}
 	}
 
 	/**

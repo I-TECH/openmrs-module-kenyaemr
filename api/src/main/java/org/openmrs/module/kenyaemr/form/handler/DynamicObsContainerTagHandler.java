@@ -19,12 +19,14 @@ import org.openmrs.module.htmlformentry.FormEntrySession;
 import org.openmrs.module.htmlformentry.FormSubmissionController;
 import org.openmrs.module.htmlformentry.handler.SubstitutionTagHandler;
 import org.openmrs.module.kenyaemr.form.element.DynamicObsContainerElement;
+import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
 /**
  * Dynamic obs tab handler
  */
+@Component
 public class DynamicObsContainerTagHandler extends SubstitutionTagHandler {
 
 	@Override

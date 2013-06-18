@@ -19,12 +19,14 @@ import org.openmrs.module.htmlformentry.FormEntrySession;
 import org.openmrs.module.htmlformentry.FormSubmissionController;
 import org.openmrs.module.htmlformentry.handler.SubstitutionTagHandler;
 import org.openmrs.module.kenyaemr.form.element.LabTestPickerSubmissionElement;
+import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
 /**
  * Lab test picker tag handler
  */
+@Component
 public class LabTestPickerTagHandler extends SubstitutionTagHandler {
 
 	@Override
