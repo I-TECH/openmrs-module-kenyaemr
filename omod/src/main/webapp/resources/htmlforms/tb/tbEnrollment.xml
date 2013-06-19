@@ -155,7 +155,7 @@
 			<table align="center" width="100%" class="tb1">
 				<tr>
 					<td>
-						Provider:<encounterProviderAndRole encounterRole="a0b03050-c99b-11e0-9572-0800200c9a66" default="ae01b8ff-a4cc-4012-bcf7-72359e852e14"  />
+						Provider:<encounterProviderAndRole encounterRole="a0b03050-c99b-11e0-9572-0800200c9a66" default="currentUser"  />
 					</td>
 					<td>	
 						Encounter date:<encounterDate default="now" showTime="true" id="encounterdate"/>
