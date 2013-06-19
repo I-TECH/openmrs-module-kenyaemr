@@ -36,7 +36,7 @@
 	<properties>
 		<openMRSVersion>1.9.3</openMRSVersion>
 		<uiframeworkVersion>2.5.2</uiframeworkVersion>
-		<kenyauiVersion>1.3.11</kenyauiVersion>
+		<kenyauiVersion>1.3.12</kenyauiVersion>
 		<appframeworkVersion>1.5</appframeworkVersion>
 		<metadatamappingVersion>1.0.1</metadatamappingVersion>
 		<metadatasharingVersion>1.1.8</metadatasharingVersion>
@@ -229,13 +229,6 @@
 			<groupId>org.apache.poi</groupId>
 			<artifactId>poi</artifactId>
 			<version>3.2-FINAL</version>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.hamcrest</groupId>
-			<artifactId>hamcrest-all</artifactId>
-			<version>1.3</version>
 			<scope>test</scope>
 		</dependency>
 
