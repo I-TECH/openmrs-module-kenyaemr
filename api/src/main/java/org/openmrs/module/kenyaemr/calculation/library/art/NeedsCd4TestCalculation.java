@@ -57,8 +57,7 @@ public class NeedsCd4TestCalculation extends BaseAlertCalculation {
 
 		Set<Integer> alive = alivePatients(cohort, context);
 		Set<Integer> inHivProgram = CalculationUtils.patientsThatPass(activeEnrollment(hivProgram, alive, context));
-		CalculationResultMap lastObs = lastObs(getConcept(Dictionary.CD4_COUNT), cohort, context);
-		//get the CD4% CalculationResultMap
+		CalculationResultMap lastObsCount = lastObs(getConcept(Dictionary.CD4_COUNT), cohort, context);
 		CalculationResultMap lastObsPercent = lastObs(getConcept(Dictionary.CD4_PERCENT), cohort, context);
 
 		CalculationResultMap ret = new CalculationResultMap();
@@ -68,25 +67,21 @@ public class NeedsCd4TestCalculation extends BaseAlertCalculation {
 			// Is patient alive and in the HIV program
 			if (inHivProgram.contains(ptId)) {
 
-					// Does patient have CD4 or CD4% result in the last X days
-					ObsResult r = (ObsResult) lastObs.get(ptId);
-					ObsResult p = (ObsResult) lastObsPercent.get(ptId);
-					
-					Date dateCount = r != null ? r.getDateOfResult() : null;
-					Date datePercent = p != null ? p.getDateOfResult() : null;
-					
-					Date lastResultDate = CalculationUtils.latestDate(dateCount,datePercent);
-					
-					if ((r == null && p == null) || (daysSince(lastResultDate, context) > KenyaEmrConstants.NEEDS_CD4_COUNT_AFTER_DAYS)) {
-							
-						needsCD4 = true;
-					}
-					
-					
+				// Does patient have CD4 or CD4% result in the last X days
+				ObsResult r = (ObsResult) lastObsCount.get(ptId);
+				ObsResult p = (ObsResult) lastObsPercent.get(ptId);
+
+				Date dateCount = r != null ? r.getDateOfResult() : null;
+				Date datePercent = p != null ? p.getDateOfResult() : null;
+
+				Date lastResultDate = CalculationUtils.latestDate(dateCount, datePercent);
+
+				if (lastResultDate == null || (daysSince(lastResultDate, context) > KenyaEmrConstants.NEEDS_CD4_COUNT_AFTER_DAYS)) {
+					needsCD4 = true;
 				}
-				ret.put(ptId, new BooleanResult(needsCD4, this, context));
-				
 			}
+			ret.put(ptId, new BooleanResult(needsCD4, this, context));
+		}
 		return ret;
 	}
 }
