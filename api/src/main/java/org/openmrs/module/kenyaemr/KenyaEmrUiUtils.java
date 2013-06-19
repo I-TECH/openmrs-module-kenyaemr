@@ -234,9 +234,7 @@ public class KenyaEmrUiUtils {
 	public SimpleObject simpleLocation(Location location, LocationAttributeType mfcAttrType, UiUtils ui) {
 		List<LocationAttribute> attrs = location.getActiveAttributes(mfcAttrType);
 		String facilityCode = attrs.size() > 0 ? (String)attrs.get(0).getValue() : null;
-		String display = location.getName() + " (" + (facilityCode != null ? facilityCode : "?") + ")";
-
-		return SimpleObject.create("value", location.getLocationId(), "label", display);
+		return SimpleObject.create("id", location.getId(), "name", location.getName(), "code", (facilityCode != null ? facilityCode : "?"));
 	}
 
 	/**

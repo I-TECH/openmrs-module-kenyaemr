@@ -48,6 +48,18 @@ public class KenyaEmrUtilFragmentController {
 	protected static final Log log = LogFactory.getLog(KenyaEmrUtilFragmentController.class);
 
 	/**
+	 * Gets a location by it's id
+	 * @param location the location
+	 * @param ui
+	 * @param kenyaUi
+	 * @return the simplified location
+	 */
+	public SimpleObject locationGet(@RequestParam("id") Location location, UiUtils ui, @SpringBean KenyaEmrUiUtils kenyaUi) {
+		LocationAttributeType mflCodeAttrType = Metadata.getLocationAttributeType(Metadata.MASTER_FACILITY_CODE_LOCATION_ATTRIBUTE_TYPE);
+		return kenyaUi.simpleLocation(location, mflCodeAttrType, ui);
+	}
+
+	/**
 	 * Searches for locations by name of MFL code
 	 * @param term the search term
 	 * @return the list of locations as simple objects
@@ -65,11 +77,11 @@ public class KenyaEmrUtilFragmentController {
 		});
 
 		// Add default location and its sub-locations
-		Location defaultLocation = Context.getService(KenyaEmrService.class).getDefaultLocation();
+		/*Location defaultLocation = Context.getService(KenyaEmrService.class).getDefaultLocation();
 		if (defaultLocation != null) {
 			results.add(defaultLocation);
 			results.addAll(defaultLocation.getChildLocations(false));
-		}
+		}*/
 
 		// If term looks like an MFL code, add location with that code
 		if (StringUtils.isNumeric(term) && term.length() >= 5) {

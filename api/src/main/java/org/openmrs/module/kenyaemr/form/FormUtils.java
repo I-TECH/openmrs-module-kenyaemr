@@ -22,8 +22,12 @@ import org.openmrs.module.htmlformentry.HtmlForm;
 import org.openmrs.module.htmlformentry.HtmlFormEntryService;
 import org.openmrs.module.htmlformentry.HtmlFormEntryUtil;
 import org.openmrs.ui.framework.resource.ResourceFactory;
+import org.openmrs.util.OpenmrsUtil;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Form utility methods
@@ -101,5 +105,26 @@ public class FormUtils {
 		hf.setDateChanged(form.getDateChanged());
 		hf.setXmlData(xml);
 		return hf;
+	}
+
+	/**
+	 * Renders an HTML tag
+	 * @param name the tag name
+	 * @param attributes the tag attributes
+	 * @param closed whether tag should be closed
+	 * @return start tag html
+	 */
+	public static String htmlTag(String name, Map<String, Object> attributes, boolean closed) {
+		List<String> items = new ArrayList<String>();
+		items.add(name);
+
+		if (attributes != null) {
+			for (Map.Entry<String, Object> attribute : attributes.entrySet()) {
+				String val = attribute.getValue().toString().replace("\"", "&#34;");
+				items.add(attribute.getKey() + "=\"" + val + "\"");
+			}
+		}
+
+		return "<" + OpenmrsUtil.join(items, " ") + (closed ? " />" : ">");
 	}
 }

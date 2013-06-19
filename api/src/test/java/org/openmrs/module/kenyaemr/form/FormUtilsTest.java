@@ -25,6 +25,9 @@ import org.openmrs.module.htmlformentry.HtmlFormEntryService;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.ui.framework.resource.ResourceFactory;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import static org.mockito.Mockito.*;
 
 public class FormUtilsTest extends BaseModuleContextSensitiveTest {
@@ -101,5 +104,19 @@ public class FormUtilsTest extends BaseModuleContextSensitiveTest {
 		}
 		catch (Exception ex) {
 		}
+	}
+
+	@Test
+	public void htmlTag() {
+		Assert.assertEquals("<test>", FormUtils.htmlTag("test", null, false));
+		Assert.assertEquals("<test />", FormUtils.htmlTag("test", null, true));
+
+		Map<String, Object> attributes = new LinkedHashMap<String, Object>();
+		attributes.put("a1", "hello");
+		attributes.put("a2", 123);
+		attributes.put("a3", "x\"x");
+
+		Assert.assertEquals("<test a1=\"hello\" a2=\"123\" a3=\"x&#34;x\">", FormUtils.htmlTag("test", attributes, false));
+		Assert.assertEquals("<test a1=\"hello\" a2=\"123\" a3=\"x&#34;x\" />", FormUtils.htmlTag("test", attributes, true));
 	}
 }

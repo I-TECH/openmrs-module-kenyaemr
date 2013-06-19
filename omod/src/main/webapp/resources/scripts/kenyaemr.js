@@ -1,11 +1,22 @@
 /**
+ * Configure search types
+ */
+kenyaui.configureSearch('location', function() {
+	return {
+		search: ui.fragmentActionLink('kenyaemr', 'kenyaEmrUtil', 'locationSearch'),
+		fetch: ui.fragmentActionLink('kenyaemr', 'kenyaEmrUtil', 'locationGet'),
+		format: function(object) { return object.name + ' <span style="color: #999">' + object.code + '</span>'; }
+	};
+});
+
+/**
  * Page initialization tasks
  */
-$(function() {
+jq(function() {
 	/**
 	 * Clicking on an encounter-item should display the encounter as a form in a dialog
 	 */
-	$('.encounter-item').click(function(event) {
+	jq('.encounter-item').click(function(event) {
 		var encId = $(this).find('input[name=encounterId]').val();
 		var title = $(this).find('input[name=title]').val();
 		publish('showHtmlForm/showEncounter', { encounterId: encId, editButtonLabel: 'Edit', deleteButtonLabel: 'Delete' });
@@ -17,7 +28,7 @@ $(function() {
 /**
  * Utility methods
  */
-var kenyaemr = (function($) {
+var kenyaemr = (function(jq) {
 
 	var formatHelper = function(data, formatter) {
 		if (data === null || typeof formatter === 'undefined') {
@@ -111,11 +122,11 @@ var kenyaemr = (function($) {
 		 */
 		dynamicObsField: function(parentId, fieldName, conceptId, initialValue, readOnly) {
 			var placeHolderId = kenyaui.generateId();
-			$('#' + parentId).append('<div id="' + placeHolderId + '" class="ke-loading ke-form-dynamic-field">&nbsp;</div>');
-			$j.get('/' + CONTEXT_PATH + '/kenyaemr/generateField.htm', { name: fieldName, conceptId: conceptId, initialValue: initialValue, readOnly : readOnly })
+			jq('#' + parentId).append('<div id="' + placeHolderId + '" class="ke-loading ke-form-dynamic-field">&nbsp;</div>');
+			jq.get('/' + CONTEXT_PATH + '/kenyaemr/generateField.htm', { name: fieldName, conceptId: conceptId, initialValue: initialValue, readOnly : readOnly })
 			.done(function (html) {
-				$j('#' + placeHolderId).removeClass('ke-loading');
-				$j('#' + placeHolderId).html(html);
+				jq('#' + placeHolderId).removeClass('ke-loading');
+				jq('#' + placeHolderId).html(html);
 			});
 		}
 	};
