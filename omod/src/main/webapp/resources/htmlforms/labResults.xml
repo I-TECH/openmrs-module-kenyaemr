@@ -31,6 +31,7 @@
 			}
 			else{
 				$('#sensitivity :input').prop('disabled', true);
+				$('#numberOfColonies :input').prop('disabled', true);
 			}
 			
 			getField('growth_no_growth.value').change(function() {
@@ -38,7 +39,8 @@
 					$('#sensitivity :input').prop('disabled', false);
 				}
 				else{
-				$('#sensitivity :input').prop('disabled', true);
+					$('#sensitivity :input').prop('disabled', true);
+					$('#numberOfColonies :input').prop('disabled', true);
 				}
 			});
 			var testType = getValue('testType.value');
@@ -106,8 +108,6 @@
 				}
 				
 			});	
-			
-			
 		});
 	</script>
 <table align="center" width="80%">
@@ -201,7 +201,7 @@
 							<td valign="top">11.</td>
 							<td valign="top">Results Sputum</td>
 							<td colspan="2" valign="top">
-								<table border = "1" width="80%">
+								<table border = "0" width="80%">
 									<tr>
 										<td>Type:</td>
 										<td>
@@ -233,7 +233,7 @@
 									</tr>	
 									<tr>
 										<td>Number of Colonies</td>
-										<td><obs conceptId="159952AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  /></td>
+										<td><obs conceptId="159952AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="numberOfColonies" /></td>
 										<td width="30%"></td>
 									</tr>
 								</table>		
