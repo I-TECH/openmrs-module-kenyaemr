@@ -15,6 +15,7 @@
 package org.openmrs.module.kenyaemr.calculation.library.art;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 
@@ -28,6 +29,7 @@ import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.calculation.BaseAlertCalculation;
 import org.openmrs.module.kenyaemr.calculation.BooleanResult;
 import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
+import org.openmrs.util.OpenmrsUtil;
 
 /**
  * Calculate whether patients are due for a CD4 count. Calculation returns true if if the patient
@@ -56,6 +58,8 @@ public class NeedsCd4TestCalculation extends BaseAlertCalculation {
 		Set<Integer> alive = alivePatients(cohort, context);
 		Set<Integer> inHivProgram = CalculationUtils.patientsThatPass(activeEnrollment(hivProgram, alive, context));
 		CalculationResultMap lastObs = lastObs(getConcept(Dictionary.CD4_COUNT), cohort, context);
+		//get the CD4% CalculationResultMap
+		CalculationResultMap lastObsPercent = lastObs(getConcept(Dictionary.CD4_PERCENT), cohort, context);
 
 		CalculationResultMap ret = new CalculationResultMap();
 		for (Integer ptId : cohort) {
@@ -64,13 +68,25 @@ public class NeedsCd4TestCalculation extends BaseAlertCalculation {
 			// Is patient alive and in the HIV program
 			if (inHivProgram.contains(ptId)) {
 
-				// Does patient have CD4 result in the last X days
-				ObsResult r = (ObsResult) lastObs.get(ptId);
-				needsCD4 = r == null || r.isEmpty() || daysSince(r.getDateOfResult(), context) > KenyaEmrConstants.NEEDS_CD4_COUNT_AFTER_DAYS;
+					// Does patient have CD4 or CD4% result in the last X days
+					ObsResult r = (ObsResult) lastObs.get(ptId);
+					ObsResult p = (ObsResult) lastObsPercent.get(ptId);
+					
+					Date dateCount = r != null ? r.getDateOfResult() : null;
+					Date datePercent = p != null ? p.getDateOfResult() : null;
+					
+					Date lastResultDate = CalculationUtils.latestDate(dateCount,datePercent);
+					
+					if ((r == null && p == null) || (daysSince(lastResultDate, context) > KenyaEmrConstants.NEEDS_CD4_COUNT_AFTER_DAYS)) {
+							
+						needsCD4 = true;
+					}
+					
+					
+				}
+				ret.put(ptId, new BooleanResult(needsCD4, this, context));
+				
 			}
-
-			ret.put(ptId, new BooleanResult(needsCD4, this, context));
-		}
 		return ret;
 	}
 }
