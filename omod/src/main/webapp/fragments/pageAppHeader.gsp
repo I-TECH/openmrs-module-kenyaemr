@@ -37,11 +37,11 @@
 </div>
 <script type="text/javascript">
 	function ke_showHelp() {
-		kenyaui.openPanelDialog('Help', jq('#help-content').html(), 90, 90);
-
-		// The regular button handler won't work as this part of the DOM is being duplicated, ids included
-		jq('.close-help-button').click(function() {
-			kenyaui.closeModalDialog();
-		});
+		kenyaui.openPanelDialog('Help', helpDialogHtml, 90, 90);
 	}
+
+	jq(function(){
+		helpDialogHtml = jq('#help-content').html();
+		jq('#help-content').remove();
+	});
 </script>

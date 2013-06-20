@@ -1,5 +1,5 @@
 <%
-	/* ui.decorateWith("kenyaemr", "panel") */
+	// Help dialog content - loaded into a modal dialog
 %>
 If you are experiencing a problem you should contact your clinic's IT admin for support.
 You may also find the following resources helpful <em>(all links open in new windows)</em>:
@@ -25,5 +25,5 @@ If those do not resolve your problem, then you can submit a support ticket. To d
 </div>
 <br />
 <div style="text-align: center">
-	${ ui.includeFragment("kenyaui", "widget/button", [ label: "Close", classes: [ "close-help-button" ] ]) }
+	${ ui.includeFragment("kenyaui", "widget/button", [ label: "Close", onClick: "kenyaui.closeModalDialog();" ]) }
 </div>
