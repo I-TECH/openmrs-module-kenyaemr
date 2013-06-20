@@ -19,6 +19,7 @@
 		}
 		.div {
 			font-weight: bold;
+			text-align: left;
 		}
 	</style>
 	<script type="text/javascript">
@@ -30,6 +31,7 @@
 			}
 			else{
 				$('#sensitivity :input').prop('disabled', true);
+				$('#numberOfColonies :input').prop('disabled', true);
 			}
 			
 			getField('growth_no_growth.value').change(function() {
@@ -37,7 +39,8 @@
 					$('#sensitivity :input').prop('disabled', false);
 				}
 				else{
-				$('#sensitivity :input').prop('disabled', true);
+					$('#sensitivity :input').prop('disabled', true);
+					$('#numberOfColonies :input').prop('disabled', true);
 				}
 			});
 			var testType = getValue('testType.value');
@@ -105,8 +108,6 @@
 				}
 				
 			});	
-			
-			
 		});
 	</script>
 <table align="center" width="80%">
@@ -206,15 +207,15 @@
 										<td>
 											<obs conceptId="159961AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="testType" answerConceptIds="160022AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161880AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="ZN Smear Microscopy,Fluorescence Microscopy" />
 										</td>
-										<td>Serial No:</td>
-										<td><obs conceptId="159968AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" dateLabel="&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;" /></td>
-									</tr>
-									<tr>
 										<td>Result:</td>	
-										<td><obs conceptId="307AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="sputumResults" answerConceptIds="159985AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Scanty,+,++,+++,Negative"/></td>
+										<td><obs conceptId="307AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="sputumResults" answerConceptIds="159985AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Scanty,+,++,+++,Negative" dateLabel="&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;"/></td>
+										</tr>
+									<tr>
+										<td>Serial No:</td>
+										<td><obs conceptId="159968AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  /></td>
 										<td>Quantity:</td>
 										<td><obs conceptId="160023AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="quantity" /></td>
-										<td  width="15%"><div id="hpfValues" class="div"></div></td>
+										<td  width="10%" id="hpfValues" class="div"></td>
 									</tr>
 								</table>		
 							</td>
@@ -232,7 +233,7 @@
 									</tr>	
 									<tr>
 										<td>Number of Colonies</td>
-										<td><obs conceptId="159952AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  /></td>
+										<td><obs conceptId="159952AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="numberOfColonies" /></td>
 										<td width="30%"></td>
 									</tr>
 								</table>		
