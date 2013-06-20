@@ -108,6 +108,8 @@
 			var dreferredby;
 			var transferindate;
 			var dfirstenrolled;
+            var treatmentSupporterNumber;
+            var regex = /^\+?\d{7,13}$/
 		
 			beforeSubmit.push (function() {
 				encounterdate = new Date(getValue('encounterdate.value')).getTime();
@@ -115,7 +117,12 @@
        			dreferredby = new Date(getValue('datereferredby.value')).getTime();
        			transferindate  = new Date(getValue('transferindate.value')).getTime();
        			dfirstenrolled = new Date(getValue('datefirstenrolled.value')).getTime();
-       			
+                treatmentSupporterNumber = getValue('treatmentSupportedNumber.value');
+
+                if (treatmentSupporterNumber != '' &amp;&amp; !regex.test(treatmentSupporterNumber)){
+                    $('#treatmentsupportError').html('Please provide valid phone Number');
+                    return false;
+                }
        			if (encounterdate &lt; pbirthdate) {
                		getField('encounterdate.error').html('Encounter datetime should be after the birth date/visit start date').show();
                    	return false
@@ -143,6 +150,7 @@
                		$('#transferInDatesError').html('Date first enrolled should be after the birth date/visit start date');
                    	return false
          		}
+
     			return true;
 			});
 		});
@@ -259,14 +267,18 @@
 							<td><obs conceptId="160640AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
 						</tr>
 						<tr>
-							<td>Supporter's Address</td>
+							<td>Address</td>
 							<td><obs conceptId="160641AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="40" /></td>
 						</tr>
 						<tr>
-							<td>Supporter's Cell Phone Number</td>
-							<td><obs conceptId="160642AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+							<td>Cell Phone</td>
+							<td><obs conceptId="160642AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  id="treatmentSupportedNumber" /></td>
 						</tr>
-						<tr><td></td></tr>
+						<tr>
+                            <td colspan="2">
+                                <div id="treatmentsupportError" class="error"></div>
+                            </td>
+                        </tr>
 					</table>
 			</fielset>	
 		</td>
