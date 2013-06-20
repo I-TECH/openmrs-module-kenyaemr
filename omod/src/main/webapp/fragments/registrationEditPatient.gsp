@@ -151,8 +151,8 @@ jq(function() {
 	jq('#edit-patient-form .cancel-button').click(function() {
 		location.href = '${ returnUrl }';
 	});
-	
-	ui.setupAjaxPost('#edit-patient-form', {
+
+	kenyaui.setupAjaxPost('#edit-patient-form', {
 		onSuccess: function(data) {
 			if (data.patientId) {
 				<% if (returnUrl.indexOf('patientId') > 0) { %>

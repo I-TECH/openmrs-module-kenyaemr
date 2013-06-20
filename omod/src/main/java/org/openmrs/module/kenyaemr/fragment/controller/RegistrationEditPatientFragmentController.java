@@ -15,6 +15,7 @@
 package org.openmrs.module.kenyaemr.fragment.controller;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -31,6 +32,7 @@ import org.openmrs.PersonAttribute;
 import org.openmrs.PersonAttributeType;
 import org.openmrs.PersonName;
 import org.openmrs.Program;
+import org.openmrs.api.APIException;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
@@ -85,10 +87,10 @@ public class RegistrationEditPatientFragmentController {
 	}
 
 	public SimpleObject savePatient(@MethodParam("commandObject") @BindParams EditPatientCommand command, UiUtils ui) {
-
 		ui.validate(command, command, null);
 
 		Patient saved = command.save();
+
 		return SimpleObject.fromObject(saved, ui, "patientId");
 	}
 
@@ -331,6 +333,20 @@ public class RegistrationEditPatientFragmentController {
 			validateField(errors, "personAddress");
 			validateField(errors, "patientClinicNumber");
 			validateField(errors, "hivIdNumber");
+
+			// check birth date against future dates and really old dates
+			if (birthdate != null) {
+				if (birthdate.after(new Date()))
+					errors.rejectValue("birthdate", "error.date.future");
+				else {
+					Calendar c = Calendar.getInstance();
+					c.setTime(new Date());
+					c.add(Calendar.YEAR, -120); // person cannot be older than 120 years old
+					if (birthdate.before(c.getTime())) {
+						errors.rejectValue("birthdate", "error.date.nonsensical");
+					}
+				}
+			}
 		}
 
 		public Patient save() {

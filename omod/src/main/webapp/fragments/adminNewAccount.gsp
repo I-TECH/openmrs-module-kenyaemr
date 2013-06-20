@@ -81,7 +81,7 @@
 jq(function() {
 	jq('#create-user-form input[type=submit]').button();
 	
-	ui.setupAjaxPost('#create-account-form', {
+	kenyaui.setupAjaxPost('#create-account-form', {
 		onSuccess: function(data) {
 			if (data.personId) {
 				location.href = ui.pageLink('kenyaemr', 'adminManageAccounts');

@@ -60,7 +60,7 @@
 			}
 		});
 
-		ui.setupAjaxPost('#close-visits-form', {
+		kenyaui.setupAjaxPost('#close-visits-form', {
 			onSuccess: function (result) {
 				loadActiveVisitTypes();
 				ui.notifySuccess(result.message);
