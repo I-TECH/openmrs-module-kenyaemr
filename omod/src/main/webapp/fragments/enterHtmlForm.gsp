@@ -13,13 +13,11 @@ ui.includeJavascript("kenyaemr", "dwr-util.js")
 	\$j = jQuery;
 
 	function showDiv(id) {
-		var div = document.getElementById(id);
-		if ( div ) { div.style.display = ""; }
+		jq('#' + id).show();
 	}
 	
 	function hideDiv(id) {
-		var div = document.getElementById(id);
-		if ( div ) { div.style.display = "none"; }
+		jq('#' + id).hide();
 	}
 
 	var propertyAccessorInfo = new Array();
@@ -30,15 +28,55 @@ ui.includeJavascript("kenyaemr", "dwr-util.js")
 	var beforeSubmit = new Array(); 		// a list of functions that will be executed before the submission of a form
 
 	var tryingToSubmit = false;
-	
+
 	function submitHtmlForm() {
-	    if (!tryingToSubmit) {
-	        tryingToSubmit = true;
-	        ui.disableConfirmBeforeNavigating();
-	        jq.getJSON(ui.fragmentActionLink('kenyaemr', 'enterHtmlForm', 'checkIfLoggedIn'), function(result) {
-	        	checkIfLoggedInAndErrorsCallback(result.isLoggedIn);
-	        });
-	    }
+		if (!tryingToSubmit) {
+			tryingToSubmit = true;
+			ui.disableConfirmBeforeNavigating();
+			jq.getJSON(ui.fragmentActionLink('kenyaemr', 'kenyaEmrUtil', 'isAuthenticated'), function(result) {
+				checkIfLoggedInAndErrorsCallback(result.authenticated);
+			});
+		}
+	}
+
+	/*
+		It seems the logic of  showAuthenticateDialog and 
+		findAndHighlightErrors should be in the same callback function.
+		i.e. only authenticated user can see the error msg of
+	*/
+	function checkIfLoggedInAndErrorsCallback(authenticated) {
+		var state_beforeValidation = true;
+		
+		if (!authenticated) {
+			showAuthenticateDialog();
+		}
+		else {
+			// first call any beforeValidation functions that may have been defined by the html form
+			if (beforeValidation.length > 0){
+				for (var i = 0, l = beforeValidation.length; i < l; i++){
+					if (state_beforeValidation){
+						var fncn = beforeValidation[i];
+						state_beforeValidation = eval(fncn);
+					}
+					else {
+						i = l; // forces the end of the loop
+					}
+				}
+			}
+			
+			// only do the validation if all the beforeValidation functions returned "true"
+			if (state_beforeValidation) {
+				var anyErrors = findAndHighlightErrors();
+			
+				if (anyErrors) {
+					tryingToSubmit = false;
+					return;
+				}
+				else {
+					doSubmitHtmlForm();
+				}
+			}
+		}
 	}
 
 	function findAndHighlightErrors(){
@@ -59,59 +97,19 @@ ui.includeJavascript("kenyaemr", "dwr-util.js")
 		return containError;
 	}
 
-	/*
-		It seems the logic of  showAuthenticateDialog and 
-		findAndHighlightErrors should be in the same callback function.
-		i.e. only authenticated user can see the error msg of
-	*/
-	function checkIfLoggedInAndErrorsCallback(isLoggedIn) {
-		
-		var state_beforeValidation=true;
-		
-		if (!isLoggedIn) {
-			showAuthenticateDialog();
-		}else{
-			
-			// first call any beforeValidation functions that may have been defined by the html form
-			if (beforeValidation.length > 0){
-				for (var i=0, l = beforeValidation.length; i < l; i++){
-					if (state_beforeValidation){
-						var fncn=beforeValidation[i];						
-						state_beforeValidation=eval(fncn);
-					}
-					else{
-						// forces the end of the loop
-						i=l;
-					}
-				}
-			}
-			
-			// only do the validation if all the beforeValidationk functions returned "true"
-			if (state_beforeValidation){
-				var anyErrors = findAndHighlightErrors();
-			
-        		if (anyErrors) {
-            		tryingToSubmit = false;
-            		return;
-        		}else{
-        			doSubmitHtmlForm();
-        		}
-			}
-		}
-	}
-
 	function showAuthenticateDialog() {
-		jq('#passwordPopup').show();
+		kenyaui.openPanelDialog('Login Required', authenticationDialogHtml, 50, 10);
 		tryingToSubmit = false;
 	}
 
-	function loginThenSubmitHtmlForm() {
-		jq('#passwordPopup').hide();
-		var username = jq('#passwordPopupUsername').val();
-		var password = jq('#passwordPopupPassword').val();
-		jq('#passwordPopupUsername').val('');
-		jq('#passwordPopupPassword').val('');
-		jq.getJSON(ui.fragmentActionLink('kenyaemr', 'enterHtmlForm', 'checkIfLoggedIn', { user: username, pass: password }), submitHtmlForm);
+	function onSubmitAuthenticationDialog() {
+		var username = jq('#authentication-dialog-username').val();
+		var password = jq('#authentication-dialog-password').val();
+
+		kenyaui.closeModalDialog();
+
+		// Try authenticating and then submitting again...
+		jq.getJSON(ui.fragmentActionLink('kenyaemr', 'kenyaEmrUtil', 'authenticate', { username: username, password: password }), submitHtmlForm);
 	}
 
 	function doSubmitHtmlForm() {
@@ -188,6 +186,9 @@ ui.includeJavascript("kenyaemr", "dwr-util.js")
 	 * Update blank encounter dates to default to visit start date or current date
 	 */
 	jq(function() {
+		authenticationDialogHtml = jq('#authentication-dialog').html();
+		jq('#authentication-dialog').empty();
+
 		if (getValue('encounter-date.value') == '') {
 			setDatetimeValue('encounter-date.value', new Date(${ visit ? ("'" + visit.startDatetime + "'") : '' }));
 		}
@@ -216,25 +217,23 @@ ui.includeJavascript("kenyaemr", "dwr-util.js")
 
 		${ command.htmlToDisplay }
 		
-		<div id="passwordPopup" style="position: absolute; z-axis: 1; bottom: 25px; background-color: #ffff00; border: 2px black solid; display: none; padding: 10px">
-			<center>
-				<table>
-					<tr>
-						<td colspan="2"><b><spring:message code="htmlformentry.loginAgainMessage"/></b></td>
-					</tr>
+		<div id="authentication-dialog" style="display: none">
+			<div style="padding-bottom: 12px; text-align: center">${ ui.message("kenyaemr.authenticateForFormSubmission") }</div>
+			<div align="center">
+				<table border="0">
 					<tr>
 						<td align="right"><b>Username:</b></td>
-						<td><input type="text" id="passwordPopupUsername"/></td>
+						<td><input type="text" id="authentication-dialog-username"/></td>
 					</tr>
 					<tr>
 						<td align="right"><b>Password:</b></td>
-						<td><input type="password" id="passwordPopupPassword"/></td>
+						<td><input type="password" id="authentication-dialog-password"/></td>
 					</tr>
 					<tr>
-						<td colspan="2" align="center"><input type="button" value="Submit" onClick="loginThenSubmitHtmlForm()"/></td>
+						<td colspan="2" align="center"><input type="button" value="Submit" onClick="onSubmitAuthenticationDialog()"/></td>
 					</tr>
 				</table>
-			</center>
+			</div>
 		</div>
 	</form>
 </div>
