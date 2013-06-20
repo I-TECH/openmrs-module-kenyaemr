@@ -65,7 +65,7 @@
 		<property name="formUuid" value="37f6bd8d-586a-4169-95fa-5781f987fe62" />
 		<property name="frequency" value="VISIT" />
 		<property name="apps">
-			<set><value>kenyaemr.registration</value><value>kenyaemr.intake</value><value>kenyaemr.medicalChart</value></set>
+			<set><value>kenyaemr.registration</value><value>kenyaemr.intake</value><value>kenyaemr.medicalEncounter</value><value>kenyaemr.medicalChart</value></set>
 		</property>
 		<property name="resource" value="htmlforms/triage.xml" />
 		<property name="order" value="3001" />
