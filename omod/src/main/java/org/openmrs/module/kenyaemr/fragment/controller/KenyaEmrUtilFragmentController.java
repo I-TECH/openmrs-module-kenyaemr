@@ -20,6 +20,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Concept;
 import org.openmrs.Patient;
+import org.openmrs.api.context.Context;
+import org.openmrs.api.context.ContextAuthenticationException;
 import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.module.kenyaemr.KenyaEmr;
 import org.openmrs.module.kenyaemr.KenyaEmrUiUtils;
@@ -39,6 +41,29 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class KenyaEmrUtilFragmentController {
 
 	protected static final Log log = LogFactory.getLog(KenyaEmrUtilFragmentController.class);
+
+	/**
+	 * Checks if current user session is authenticated
+	 * @return simple object {authenticated: true/false}
+	 */
+	public SimpleObject isAuthenticated() {
+		return SimpleObject.create("authenticated", Context.isAuthenticated());
+	}
+
+	/**
+	 * Attempt to authenticate current user session with the given credentials
+	 * @param username the username
+	 * @param password the password
+	 * @return simple object {authenticated: true/false}
+	 */
+	public SimpleObject authenticate(@RequestParam("username") String username, @RequestParam("password") String password) {
+		try {
+			Context.authenticate(username, password);
+		} catch (ContextAuthenticationException ex) {
+			// do nothing
+		}
+		return isAuthenticated();
+	}
 
 	/**
 	 * Gets the next HIV patient number from the generator

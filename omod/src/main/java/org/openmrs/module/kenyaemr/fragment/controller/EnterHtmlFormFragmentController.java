@@ -102,29 +102,6 @@ public class EnterHtmlFormFragmentController {
 	}
 
 	/**
-	 * Creates a simple object to record if there is an authenticated user
-	 * @return the simple object
-	 */
-	public SimpleObject checkIfLoggedIn() {
-		return SimpleObject.create("isLoggedIn", Context.isAuthenticated());
-	}
-
-	/**
-	 * Tries to authenticate with the given credentials
-	 * @param user the username
-	 * @param pass the password
-	 * @return a simple object to record if successful
-	 */
-	public SimpleObject authenticate(@RequestParam("user") String user, @RequestParam("pass") String pass) {
-		try {
-			Context.authenticate(user, pass);
-		} catch (ContextAuthenticationException ex) {
-			// do nothing
-		}
-		return checkIfLoggedIn();
-	}
-
-	/**
 	 * Handles a form submit request
 	 * @param patient
 	 * @param form
