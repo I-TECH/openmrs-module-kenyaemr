@@ -124,30 +124,30 @@
                     return false;
                 }
        			if (encounterdate &lt; pbirthdate) {
-               		getField('encounterdate.error').html('Encounter datetime should be after the birth date/visit start date').show();
+               		getField('encounterdate.error').html('Encounter datetime should be after the birth date').show();
                    	return false
          		}
          		
           		if (datestartoftreatment &lt; pbirthdate) {
           			$('#startOfTreatmentDateError').show();
-               		$('#startOfTreatmentDateError').html('Date start of treatment should be after the birth date/visit start date');
+               		$('#startOfTreatmentDateError').html('Date start of treatment should be after the birth date');
                    	return false
          		}
          	         
         		if (dreferredby &lt; pbirthdate) {
         			$('#referalDateError').show();
-               		$('#referalDateError').html('Date referred by should be after the birth date/visit start date');
+               		$('#referalDateError').html('Date referred by should be after the birth date');
                    	return false
          		}
          		
          		if (transferindate &lt; pbirthdate) {
          			$('#transferInDatesError').show();
-               		$('#transferInDatesError').html('Transfer in date should be after the birth date/visit start date');
+               		$('#transferInDatesError').html('Transfer in date should be after the birth date');
                    	return false
          		}
           		if (dfirstenrolled &lt; pbirthdate){
           			$('#transferInDatesError').show();
-               		$('#transferInDatesError').html('Date first enrolled should be after the birth date/visit start date');
+               		$('#transferInDatesError').html('Date first enrolled should be after the birth date');
                    	return false
          		}
 
@@ -158,6 +158,13 @@
 	
 
 <table align="center"  border="0" class="tb" cellspacing="10">
+    <tr>
+        <td colspan="2">
+            <div class="ke-form-instructions">
+                <b>*</b> indicates a required field
+            </div>
+        </td>
+    </tr>
 	<tr>
 		<td colspan="2">
 			<table align="center" width="100%" class="tb1">
@@ -190,7 +197,7 @@
 						<td><obs conceptId="161564AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="30" /></td>
 					</tr>
 					<tr>
-						<td>District Reg Number:</td>
+						<td>District Reg Number*</td>
 						<td><patient field="identifier" identifierTypeId="d8ee3b8c-a8fc-4d6b-af6a-9423be5f8906" /></td>
 					</tr>
 					<tr>
