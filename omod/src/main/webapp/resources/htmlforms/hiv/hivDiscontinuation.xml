@@ -66,65 +66,60 @@
 		});
 	</script>
 
-		
-<table align="center">
-	<tr>
-		<td>
-			<fieldset>
-				<legend>Discontinue HIV Care</legend>
-					<table class="baseline-aligned" width="100%" border="0">
-						<tr>
-							<td>Date:</td>
-							<td> <encounterDate default="now" showTime="false" id="discontinueDate"/></td>
-							<td></td>
-							<td></td>
-						</tr>
-						<tr>
-							<td>Reason:</td>
-							<td><obs conceptId="161555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="idReason"/></td>
-							<td></td>
-							<td></td>
-						</tr>
-					</table>
-					<div id="pdied">
-						<table>
+	<table align="center">
+		<tr>
+			<td>
+				<fieldset>
+					<legend>Discontinue HIV Care</legend>
+						<table class="baseline-aligned" width="100%" border="0">
 							<tr>
-								<td>If Patient Died, please provide Date of Death if Known:</td>
-								<td><obs conceptId="1543AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+								<td>Date:</td>
+								<td><encounterDate default="now" showTime="true" id="discontinueDate" /></td>
 								<td></td>
 								<td></td>
-
+							</tr>
+							<tr>
+								<td>Reason:</td>
+								<td><obs conceptId="161555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="idReason" /></td>
+								<td></td>
+								<td></td>
 							</tr>
 						</table>
-					</div>
+						<div id="pdied">
+							<table>
+								<tr>
+									<td>If Patient Died, please provide Date of Death if Known:</td>
+									<td><obs conceptId="1543AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+									<td></td>
+									<td></td>
+								</tr>
+							</table>
+						</div>
 
-					<div id="ptransferred">
-						<table>
-							<tr>
-								<td><i>(If transferred out)</i> <br/>Transfer to Facility:</td>
-								<td ><br/><obs conceptId="159495AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "/></td>
-								<td></td>
-								<td></td>
+						<div id="ptransferred">
+							<table>
+								<tr>
+									<td><i>(If transferred out)</i> <br/>Transfer to Facility:</td>
+									<td ><br/><obs conceptId="159495AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "/></td>
+									<td></td>
+									<td></td>
+								</tr>
+							</table>
+						</div>
+						<br/>
+						<hr/>
+						<br/>
 
-							</tr>
+					Signed by <encounterProviderAndRole encounterRole="a0b03050-c99b-11e0-9572-0800200c9a66" default="currentUser" required="true"/> at <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete"/>
 
-						</table>
-					</div>
 					<br/>
-					<hr/>
 					<br/>
 
-				Signed by <encounterProviderAndRole encounterRole="a0b03050-c99b-11e0-9572-0800200c9a66" default="currentUser" required="true"/> at <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete"/>
-				
-
-				<br/>
-				<br/>
-
-			</fieldset>
-		</td>
-	</tr>
-</table>
-<completeProgram programId="dfdc6d40-2f2f-463d-ba90-cc97350441a8"/>
+				</fieldset>
+			</td>
+		</tr>
+	</table>
+	<completeProgram programId="dfdc6d40-2f2f-463d-ba90-cc97350441a8" />
 	<div class="ke-form-buttons">
 		<submit />
 	</div>
