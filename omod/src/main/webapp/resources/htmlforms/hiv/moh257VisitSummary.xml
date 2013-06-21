@@ -571,7 +571,7 @@
 			<tr>
 				<th colspan="2">TB Sputum</th>
 				<td>(aa)</td>
-				<td colspan="2"><obs conceptId="307AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+				<td colspan="2"><obs conceptId="307AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="sputumResults" answerConceptIds="159985AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Scanty,+,++,+++,Negative" /></td>
 			</tr>
 			<tr>
 				<th colspan="2">Other</th>
