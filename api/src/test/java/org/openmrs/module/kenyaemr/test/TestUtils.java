@@ -79,6 +79,20 @@ public class TestUtils {
 	}
 
 	/**
+	 * Gets a patient from the test data
+	 * @param id the patient id
+	 * @return the patient
+	 * @throws IllegalArgumentException if patient doesn't exist
+	 */
+	public static Patient getPatient(int id) {
+		Patient patient = Context.getPatientService().getPatient(id);
+		if (patient == null) {
+			throw new IllegalArgumentException("No such patient with id " + id);
+		}
+		return patient;
+	}
+
+	/**
 	 * Create and save a visit
 	 * @param patient the patient
 	 * @param type the visit type
