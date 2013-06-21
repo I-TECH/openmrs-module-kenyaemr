@@ -56,6 +56,18 @@ public class KenyaEmrUtilsTest extends BaseModuleContextSensitiveTest {
 	}
 
 	/**
+	 * @see KenyaEmrUtils#dateHasTime(java.util.Date)
+	 * @verifies return true only if date has time
+	 */
+	@Test
+	public void dateHasTime_shouldReturnTrueOnlyInDateHasTime() {
+		Assert.assertFalse(KenyaEmrUtils.dateHasTime(TestUtils.date(2012, 1, 1)));
+		Assert.assertTrue(KenyaEmrUtils.dateHasTime(TestUtils.date(2012, 1, 1, 10, 0, 0)));
+		Assert.assertTrue(KenyaEmrUtils.dateHasTime(TestUtils.date(2012, 1, 1, 0, 10, 0)));
+		Assert.assertTrue(KenyaEmrUtils.dateHasTime(TestUtils.date(2012, 1, 1, 0, 0, 10)));
+	}
+
+	/**
 	 * @see KenyaEmrUtils#isSameDay(java.util.Date, java.util.Date)
 	 * @verifies return false if either date is null
 	 */

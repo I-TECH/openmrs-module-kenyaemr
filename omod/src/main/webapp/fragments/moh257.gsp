@@ -1,7 +1,3 @@
-<%
-	def onAddVisitSuccess = "location.href = ui.pageLink('kenyaemr', 'enterHtmlForm', { patientId: ${ patient.id }, formUuid: '${ page2Form.uuid }', visitId: data.visitId, returnUrl: location.href })"
-%>
-
 <div class="ke-panel-frame">
 	<div class="ke-panel-heading">Page 1 (Care Summary)</div>
 	<div class="ke-panel-content" style="background-color: #F3F9FF">
@@ -41,30 +37,12 @@
 		%>
 		<br />
 		<div align="center">
-			${ ui.includeFragment("kenyaui", "widget/popupForm", [
-					id: "create-retro-visit",
-					buttonConfig: [
-							iconProvider: "kenyaui",
-							icon: "buttons/visit_retrospective.png",
-							label: "Add Visit Summary",
-							extra: "From column",
-							classes: [ "padded" ]
-					],
-					popupTitle: "Visit Summary Details",
-					prefix: "visit",
-					commandObject: newREVisit,
-					hiddenProperties: [ "patientId" ],
-					properties: [ "visitType", "location", "visitDate" ],
-					propConfig: [
-							"visitType": [ type: "radio" ],
-					],
-					fragmentProvider: "kenyaemr",
-					fragment: "moh257",
-					action: "createRetrospectiveVisit",
-					successCallbacks: [ onAddVisitSuccess ],
-					submitLabel: ui.message("general.submit"),
-					cancelLabel: ui.message("general.cancel"),
-					submitLoadingMessage: "Creating retrospective visit"
+			${ ui.includeFragment("kenyaui", "widget/button", [
+					label: "Add Visit Summary",
+					extra: "From column",
+					iconProvider: "kenyaui",
+					icon: "buttons/visit_retrospective.png",
+					href: ui.pageLink("kenyaemr", "enterHtmlForm", [ patientId: patient, formUuid: page2Form.uuid, returnUrl: ui.thisUrl() ])
 			]) }
 		</div>
 	</div>

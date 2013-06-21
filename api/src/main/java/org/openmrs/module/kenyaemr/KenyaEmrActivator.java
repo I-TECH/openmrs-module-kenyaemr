@@ -22,7 +22,9 @@ import org.openmrs.GlobalProperty;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.ModuleActivator;
 import org.openmrs.module.kenyaemr.datatype.LocationDatatype;
+import org.openmrs.module.kenyaemr.form.EmrVisitAssignmentHandler;
 import org.openmrs.module.kenyaemr.util.KenyaEmrUtils;
+import org.openmrs.util.OpenmrsConstants;
 
 /**
  * This class contains the logic that is run every time this module is either started or stopped.
@@ -107,6 +109,8 @@ public class KenyaEmrActivator implements ModuleActivator {
 				"The facility for which this installation is configured. Visits and encounters will be created with this location value.",
 				LocationDatatype.class
 		);
+
+		setExistingGlobalProperty(OpenmrsConstants.GP_VISIT_ASSIGNMENT_HANDLER, EmrVisitAssignmentHandler.class.getName());
 	}
 
 	/**
@@ -124,5 +128,21 @@ public class KenyaEmrActivator implements ModuleActivator {
 			gp.setDatatypeClassname(dataType.getName());
 			Context.getAdministrationService().saveGlobalProperty(gp);
 		}
+	}
+
+	/**
+	 * Saves an untyped global property
+	 * @param property the property name
+	 * @param value the property value
+	 * @return the global property
+	 */
+	protected void setExistingGlobalProperty(String property, Object value) {
+		GlobalProperty gp = Context.getAdministrationService().getGlobalPropertyObject(property);
+		if (gp == null) {
+			throw new IllegalArgumentException("Cannot find global property '" + property + "'");
+		}
+
+		gp.setPropertyValue(String.valueOf(value));
+		Context.getAdministrationService().saveGlobalProperty(gp);
 	}
 }

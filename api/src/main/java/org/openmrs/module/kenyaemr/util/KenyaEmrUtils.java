@@ -46,6 +46,16 @@ public class KenyaEmrUtils {
 	}
 
 	/**
+	 * Checks whether a date has any time value
+	 * @param date the date
+	 * @return true if the date has time
+	 * @should return true only if date has time
+	 */
+	public static boolean dateHasTime(Date date) {
+		return !date.equals(OpenmrsUtil.firstSecondOfDay(date));
+	}
+
+	/**
 	 * Checks if two dates are the same day
 	 * @param date1 the first date
 	 * @param date2 the second date

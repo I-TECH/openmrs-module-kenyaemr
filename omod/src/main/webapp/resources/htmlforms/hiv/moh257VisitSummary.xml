@@ -199,10 +199,9 @@
 		});
 	</script>
 
-	<!-- For now HFE requires encounter location and providers, so set these to the "Unknown" values and hide them (see HTML-471) -->
+	<!-- For now HFE requires encounter provider, so set theis to the "Unknown Provider" and hide it (see HTML-471) -->
 	<div style="display: none">
 		<encounterProviderAndRole encounterRole="a0b03050-c99b-11e0-9572-0800200c9a66" default="ae01b8ff-a4cc-4012-bcf7-72359e852e14"  />
-		<encounterLocation default="8d6c993e-c2cc-11de-8d13-0010c6dffd0f" />
 	</div>
 
 	<table class="moh257" align="center">
@@ -211,7 +210,8 @@
 				<th rowspan="2">Visit Details</th>
 				<th colspan="2">Date</th>
 				<td>(a)</td>
-				<td colspan="2"><encounterDate id="encounter-date" showTime="true" /></td>
+				<td><encounterDate id="encounter-date" showTime="false" /></td>
+				<td><encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" /></td>
 			</tr>
 			<tr>
 				<th colspan="2">Type</th>

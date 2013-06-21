@@ -161,6 +161,7 @@
 			<set><value>kenyaemr.medicalChart</value></set>
 		</property>
 		<property name="programUuid" value="dfdc6d40-2f2f-463d-ba90-cc97350441a8" />
+		<property name="autoCreateVisitTypeUuid" value="3371a4d4-f66f-4454-a86d-92c7b3da990c" />
 		<property name="icon" value="forms/moh257.png" />
 		<property name="resource" value="htmlforms/hiv/moh257VisitSummary.xml" />
 		<property name="order" value="3007" />

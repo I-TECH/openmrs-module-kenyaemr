@@ -14,7 +14,9 @@
 package org.openmrs.module.kenyaemr.form;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.openmrs.VisitType;
 import org.openmrs.module.kenyaemr.KenyaEmrConstants;
+import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaui.KenyaUiConstants;
 import org.openmrs.util.OpenmrsUtil;
 
@@ -48,6 +50,8 @@ public class FormDescriptor implements Comparable<FormDescriptor> {
 	private String programUuid;
 
 	private Gender gender = Gender.BOTH;
+
+	private String autoCreateVisitTypeUuid;
 
 	private String iconProvider = KenyaUiConstants.MODULE_ID;
 
@@ -143,6 +147,30 @@ public class FormDescriptor implements Comparable<FormDescriptor> {
 	 */
 	public void setGender(Gender gender) {
 		this.gender = gender;
+	}
+
+	/**
+	 * Sets the auto-create visit type UUID
+	 * @return the visit type UUID
+	 */
+	public String getAutoCreateVisitTypeUuid() {
+		return autoCreateVisitTypeUuid;
+	}
+
+	/**
+	 * Gets the auto-create visit type UUID
+	 * @param autoCreateVisitTypeUuid the visit type UUID
+	 */
+	public void setAutoCreateVisitTypeUuid(String autoCreateVisitTypeUuid) {
+		this.autoCreateVisitTypeUuid = autoCreateVisitTypeUuid;
+	}
+
+	/**
+	 * Sets the auto-create visit type
+	 * @return the visit type
+	 */
+	public VisitType getAutoCreateVisitType() {
+		return Metadata.getVisitType(autoCreateVisitTypeUuid);
 	}
 
 	/**
