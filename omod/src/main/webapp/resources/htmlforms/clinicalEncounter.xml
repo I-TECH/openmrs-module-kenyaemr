@@ -51,6 +51,10 @@
 
 			var strtext = "";
 			var familyPlanningOption = getValue('fplanning.value');
+			var pregnancyOption = getValue('pregnancyOption.value');
+				if (pregnancyOption == 1066){
+		           $('#pregnancyOptionValues :input').prop('disabled', true);
+				}
 				if (familyPlanningOption == ""){
 					$('#onFp :input').prop('disabled', true);
 					$('#notOnFp :input').prop('disabled', true);
@@ -67,6 +71,14 @@
 					$('#onFp :input').prop('disabled', false);
 					$('#notOnFp :input').prop('disabled', true);
 				}
+			$j('#pregnancyOption input:radio').click(function() {
+				if((getValue('pregnancyOption.value')) == 1066){
+				$('#pregnancyOptionValues :input').prop('disabled', true);
+				}
+				else {
+				$('#pregnancyOptionValues :input').prop('disabled', false);
+				}
+			});
 
 			$j("#fplanning select ").change(function() {
 
@@ -236,9 +248,11 @@
 				<tr>
 					<td colspan="2" style="text-align: left"><obs conceptId="5272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 																  labelText="Is Patient Pregnant?: " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-																  style="radio" answerLabels="Yes,NO" /></td>
+																  style="radio" answerLabels="Yes,NO" id="pregnancyOption"/></td>
 					<td></td>
 				</tr>
+			</table>
+			<table id="pregnancyOptionValues">
 				<tr>
 					<td width="8%" style="text-align: left">ANC Number:</td>
 					<td><obs conceptId="1425AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " /></td>
