@@ -323,6 +323,8 @@
 												 style="checkbox" /><br/>
 											<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1472AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 												 answerLabel="Tubal Ligation" style="checkbox" /><br/>
+											<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+												 answerConceptId="190AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Condoms" style="checkbox" /><br />
 
 											<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 												 answerLabel="Undecided" style="checkbox" /></td>
