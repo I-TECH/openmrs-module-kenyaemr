@@ -58,7 +58,7 @@ public class KenyaEmrActivator implements ModuleActivator {
 	public void contextRefreshed() {
 		log.info("Context refreshed. Refreshing all content managers...");
 
-		configure();
+		Configuration.configure();
 
 		KenyaEmr.getInstance().refresh();
 
@@ -98,51 +98,5 @@ public class KenyaEmrActivator implements ModuleActivator {
 		else {
 			log.info("Detected concept dictionary version " + Dictionary.getDatabaseVersion());
 		}
-	}
-
-	/**
-	 * Setup required global properties
-	 */
-	protected void configure() {
-		ensureGlobalPropertyExists(
-				KenyaEmrConstants.GP_DEFAULT_LOCATION,
-				"The facility for which this installation is configured. Visits and encounters will be created with this location value.",
-				LocationDatatype.class
-		);
-
-		setExistingGlobalProperty(OpenmrsConstants.GP_VISIT_ASSIGNMENT_HANDLER, EmrVisitAssignmentHandler.class.getName());
-	}
-
-	/**
-	 * Creates an empty global property if it doesn't exist
-	 * @param property the property name
-	 * @param description the property description
-	 * @param dataType the property value data type
-	 */
-	protected void ensureGlobalPropertyExists(String property, String description, Class dataType) {
-		GlobalProperty gp = Context.getAdministrationService().getGlobalPropertyObject(property);
-		if (gp == null) {
-			gp = new GlobalProperty();
-			gp.setProperty(property);
-			gp.setDescription(description);
-			gp.setDatatypeClassname(dataType.getName());
-			Context.getAdministrationService().saveGlobalProperty(gp);
-		}
-	}
-
-	/**
-	 * Saves an untyped global property
-	 * @param property the property name
-	 * @param value the property value
-	 * @return the global property
-	 */
-	protected void setExistingGlobalProperty(String property, Object value) {
-		GlobalProperty gp = Context.getAdministrationService().getGlobalPropertyObject(property);
-		if (gp == null) {
-			throw new IllegalArgumentException("Cannot find global property '" + property + "'");
-		}
-
-		gp.setPropertyValue(String.valueOf(value));
-		Context.getAdministrationService().saveGlobalProperty(gp);
 	}
 }

@@ -23,6 +23,7 @@ import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.Metadata;
+import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.module.kenyaemr.reporting.indicator.HivCareVisitsIndicator;
 import org.openmrs.module.kenyaemr.reporting.library.cohort.CommonCohortLibrary;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
@@ -49,10 +50,10 @@ public class HivCareVisitsIndicatorEvaluator implements IndicatorEvaluator {
 	protected static final Log log = LogFactory.getLog(HivCareVisitsIndicatorEvaluator.class);
 
 	@Autowired
-	SessionFactory sessionFactory;
+	private KenyaEmrService kenyaEmrService;
 
 	@Autowired
-	CommonCohortLibrary cohortLibrary;
+	private CommonCohortLibrary cohortLibrary;
 
 	@Override
 	public SimpleIndicatorResult evaluate(Indicator indicator, EvaluationContext context) throws EvaluationException {
@@ -66,9 +67,9 @@ public class HivCareVisitsIndicatorEvaluator implements IndicatorEvaluator {
 		Date fromDate = visitIndicator.getStartDate();
 		Date toDate = DateUtil.getEndOfDayIfTimeExcluded(visitIndicator.getEndDate());
 
-		log.debug("Evaluating HIV care visits from " + fromDate + " to " + toDate);
+		Location defaultLocation = kenyaEmrService.getDefaultLocation();
 
-		List<Encounter> hivCareEncounters = Context.getEncounterService().getEncounters(null, null, fromDate, toDate, hivCareForms, null, null, null, null, false);
+		List<Encounter> hivCareEncounters = Context.getEncounterService().getEncounters(null, defaultLocation, fromDate, toDate, hivCareForms, null, null, null, null, false);
 		List<Encounter> filtered = new ArrayList<Encounter>();
 
 		if (HivCareVisitsIndicator.Filter.FEMALES_18_AND_OVER.equals(visitIndicator.getFilter())) {

@@ -60,10 +60,9 @@ public class EmrVisitAssignmentHandler extends ExistingVisitAssignmentHandler {
 		// Some forms can auto-create visits
 		if (encounter.getForm() != null) {
 			FormDescriptor fd = KenyaEmr.getInstance().getFormManager().getFormDescriptor(encounter.getForm());
-			VisitType autoCreateVisitType = fd.getAutoCreateVisitType();
 
-			if (autoCreateVisitType != null) {
-				useNewVisit(encounter, autoCreateVisitType);
+			if (fd != null && fd.getAutoCreateVisitType() != null) {
+				useNewVisit(encounter, fd.getAutoCreateVisitType());
 			}
 		}
 	}
@@ -96,8 +95,13 @@ public class EmrVisitAssignmentHandler extends ExistingVisitAssignmentHandler {
 			List<Visit> existingVisitsOnDay = Context.getService(KenyaEmrService.class).getVisitsByPatientAndDay(encounter.getPatient(), encounter.getEncounterDatetime());
 			if (existingVisitsOnDay.size() > 0) {
 				Visit visit = existingVisitsOnDay.get(0);
-				encounter.setEncounterDatetime(visit.getStartDatetime());
 				encounter.setVisit(visit);
+
+				// Adjust encounter start if its before visit start
+				if (encounter.getEncounterDatetime().before(visit.getStartDatetime())) {
+					encounter.setEncounterDatetime(visit.getStartDatetime());
+				}
+
 				return true;
 			}
 		}

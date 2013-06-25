@@ -17,12 +17,15 @@ package org.openmrs.module.kenyaemr.reporting.indicator.evaluator;
 import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.Cohort;
-import org.openmrs.Concept;
-import org.openmrs.Form;
+import org.openmrs.*;
+import org.openmrs.api.EncounterService;
+import org.openmrs.api.LocationService;
+import org.openmrs.api.VisitService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyaemr.Configuration;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.Metadata;
+import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.module.kenyaemr.reporting.indicator.HivCareVisitsIndicator;
 import org.openmrs.module.kenyaemr.test.TestUtils;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
@@ -31,40 +34,75 @@ import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.indicator.IndicatorResult;
 import org.openmrs.module.reporting.indicator.service.IndicatorService;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
 
+/**
+ * Tests for {@link HivCareVisitsIndicatorEvaluator}
+ */
 public class HivCareVisitsIndicatorEvaluatorTest extends BaseModuleContextSensitiveTest {
 
 	private EvaluationContext evaluationContext;
 
 	private HivCareVisitsIndicator indicator;
 
+	@Autowired
+	private KenyaEmrService kenyaEmrService;
+
+	@Autowired
+	private EncounterService encounterService;
+
+	@Autowired
+	private VisitService visitService;
+
+	@Autowired
+	private LocationService locationService;
+
+	@Autowired
+	private IndicatorService indicatorService;
+
 	@Before
 	public void setup() throws Exception {
 		executeDataSet("test-data.xml");
 		executeDataSet("test-drugdata.xml");
+
+		// Void all existing visits in test data
+		for (Visit visit : visitService.getAllVisits()) {
+			visit.setVoided(true);
+			visit.setVoidReason("Because");
+			visitService.saveVisit(visit);
+		}
+
+		Configuration.configure();
 
 		Form hivAddendum = Metadata.getForm(Metadata.CLINICAL_ENCOUNTER_HIV_ADDENDUM_FORM);
 		Form moh257 = Metadata.getForm(Metadata.MOH_257_VISIT_SUMMARY_FORM);
 		Concept returnVisitDate = Dictionary.getConcept(Dictionary.RETURN_VISIT_DATE);
 
 		// Schedule a return visit for patient #6 on 10-Jan-2012
-		TestUtils.saveObs(Context.getPatientService().getPatient(6), returnVisitDate, TestUtils.date(2012, 1, 10), TestUtils.date(2012, 1, 1));
+		TestUtils.saveObs(TestUtils.getPatient(6), returnVisitDate, TestUtils.date(2012, 1, 10), TestUtils.date(2012, 1, 1));
 
 		// Submit two HIV addendum forms for patients #6 and #7 (who is female 18 +) on 10-Jan-2012
-		TestUtils.saveEncounter(Context.getPatientService().getPatient(6), hivAddendum, TestUtils.date(2012, 1, 10));
-		TestUtils.saveEncounter(Context.getPatientService().getPatient(7), hivAddendum, TestUtils.date(2012, 1, 10));
+		Encounter e = TestUtils.saveEncounter(TestUtils.getPatient(6), hivAddendum, TestUtils.date(2012, 1, 10));
+		e = TestUtils.saveEncounter(TestUtils.getPatient(7), hivAddendum, TestUtils.date(2012, 1, 10));
 
 		// And again on 20-Jan-2012
-		TestUtils.saveEncounter(Context.getPatientService().getPatient(6), hivAddendum, TestUtils.date(2012, 1, 20));
-		TestUtils.saveEncounter(Context.getPatientService().getPatient(7), hivAddendum, TestUtils.date(2012, 1, 20));
+		TestUtils.saveEncounter(TestUtils.getPatient(6), hivAddendum, TestUtils.date(2012, 1, 20));
+		TestUtils.saveEncounter(TestUtils.getPatient(7), hivAddendum, TestUtils.date(2012, 1, 20));
 
-		// Submit an moh257 form for patient #6 on the last day of the reporting period
-		TestUtils.saveEncounter(Context.getPatientService().getPatient(6), moh257, TestUtils.date(2012, 1, 31));
+		// Submit a MOH257 form for patient #6 on the last day of the reporting period
+		TestUtils.saveEncounter(TestUtils.getPatient(6), moh257, TestUtils.date(2012, 1, 31));
 
-		// Submit an moh257 form for patient #8 outside of the reporting period
-		TestUtils.saveEncounter(Context.getPatientService().getPatient(8), moh257, TestUtils.date(2011, 1, 1));
+		// Submit a MOH257 form for patient #8 outside of the reporting period
+		TestUtils.saveEncounter(TestUtils.getPatient(8), moh257, TestUtils.date(2011, 1, 1));
+
+		// Submit a MOH257 form but for wrong location
+		Encounter enc = TestUtils.saveEncounter(TestUtils.getPatient(7), moh257, TestUtils.date(2012, 1, 20));
+		enc.setLocation(locationService.getLocation(2));
+		encounterService.saveEncounter(enc);
+
+		kenyaEmrService.setDefaultLocation(locationService.getLocation(1));
 
 		evaluationContext = new EvaluationContext();
 		evaluationContext.addParameterValue("startDate", TestUtils.date(2012, 1, 1));
@@ -79,25 +117,25 @@ public class HivCareVisitsIndicatorEvaluatorTest extends BaseModuleContextSensit
 	@Test
 	public void evaluate_shouldCalculateValueBasedOnDatesAndFilter() throws EvaluationException {
 		// No filtering
-		IndicatorResult result = Context.getService(IndicatorService.class).evaluate(indicator, evaluationContext);
+		IndicatorResult result = indicatorService.evaluate(indicator, evaluationContext);
 		Assert.assertEquals(5, result.getValue().intValue());
 
 		// Filter by females 18+ (i.e. only patient #7)
 		indicator.setFilter(HivCareVisitsIndicator.Filter.FEMALES_18_AND_OVER);
 
-		result = Context.getService(IndicatorService.class).evaluate(indicator, evaluationContext);
+		result = indicatorService.evaluate(indicator, evaluationContext);
 		Assert.assertEquals(2, result.getValue().intValue());
 
 		// Filter by scheduled visits only
 		indicator.setFilter(HivCareVisitsIndicator.Filter.SCHEDULED);
 
-		result = Context.getService(IndicatorService.class).evaluate(indicator, evaluationContext);
+		result = indicatorService.evaluate(indicator, evaluationContext);
 		Assert.assertEquals(1, result.getValue().intValue());
 
 		// Filter by unscheduled visits only
 		indicator.setFilter(HivCareVisitsIndicator.Filter.UNSCHEDULED);
 
-		result = Context.getService(IndicatorService.class).evaluate(indicator, evaluationContext);
+		result = indicatorService.evaluate(indicator, evaluationContext);
 		Assert.assertEquals(4, result.getValue().intValue());
 	}
 }
