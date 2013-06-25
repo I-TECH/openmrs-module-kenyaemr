@@ -24,13 +24,6 @@
 		</sql>
 	</changeSet>
 
-	<changeSet id="${project.parent.artifactId}-20130430-1111" author="rowanseymour">
-		<comment>
-			Deletes all htmlform records. Html forms now all loaded from xml resources
-		</comment>
-		<delete tableName="htmlformentry_html_form" />
-	</changeSet>
-
 	<changeSet id="${project.parent.artifactId}-20130430-1400" author="rowanseymour">
 		<preConditions onFail="MARK_RAN" onError="WARN">
 			<sqlCheck expectedResult="0">SELECT COUNT(*) FROM encounter_type WHERE uuid = '2bdada65-4c72-4a48-8730-859890e25cee';</sqlCheck>
