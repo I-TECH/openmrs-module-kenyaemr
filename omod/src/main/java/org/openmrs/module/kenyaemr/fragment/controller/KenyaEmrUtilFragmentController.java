@@ -20,6 +20,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Concept;
 import org.openmrs.Patient;
+import org.openmrs.Visit;
+import org.openmrs.api.VisitService;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.context.ContextAuthenticationException;
 import org.openmrs.calculation.result.CalculationResult;
@@ -78,6 +80,20 @@ public class KenyaEmrUtilFragmentController {
 		}
 		String id = emr.getIdentifierManager().getNextHivUniquePatientNumber(comment);
 		return SimpleObject.create("value", id);
+	}
+
+	/**
+	 * Voids the given visit
+	 * @param visit the visit
+	 * @param reason the reason for voiding
+	 * @return the simplified visit
+	 */
+	public SimpleObject voidVisit(@RequestParam("visitId") Visit visit, @RequestParam("reason") String reason, @SpringBean KenyaEmrUiUtils kenyaEmrUiUtils, UiUtils ui) {
+		visit.setVoided(true);
+		visit.setVoidedBy(Context.getAuthenticatedUser());
+		visit.setVoidReason(reason);
+		Context.getVisitService().saveVisit(visit);
+		return kenyaEmrUiUtils.simpleVisit(visit, ui);
 	}
 
 	/**
