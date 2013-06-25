@@ -26,47 +26,54 @@
 	</style>
 	<script type="text/javascript">
 	</script>
-
-	<div class="patient-details">
-		<table class="baseline-aligned" width="100%">
-			<tr>
-				<td>Name: <lookup class="value" expression="patient.personName"/></td>
-				<td>Gender: <lookup class="value" expression="patient.gender"/></td>
-				<td>Birthdate: <lookup class="value" complexExpression="#if( \$patient.birthdateEstimated ) ~#end"/> <lookup class="value" expression="patient.birthdate"/>
-				</td>
-			</tr>
-		</table>
+	<div style="display:none">
+		Provider: <encounterProviderAndRole encounterRole="a0b03050-c99b-11e0-9572-0800200c9a66" default="currentUser" required="true" />
 	</div>
-
-	<div class="encounter-details">
-		<table class="baseline-aligned" width="100%">
+	<table align="center">
 			<tr>
-				<td>Date: <encounterDate default="now" showTime="true"/></td>
-				<td>Provider: <encounterProviderAndRole encounterRole="a0b03050-c99b-11e0-9572-0800200c9a66" default="currentUser" required="true"/></td>
-				<td>Location: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete" /></td>
-			</tr>
-		</table>
-	</div>
+					<td>
+						<div class="patient-details">
+							<table class="baseline-aligned" width="100%">
+								<tr>
+									<td>Name: <lookup class="value" expression="patient.personName"/></td>
+									<td>Gender: <lookup class="value" expression="patient.gender"/></td>
+									<td>Birthdate: <lookup class="value" complexExpression="#if( \$patient.birthdateEstimated ) ~#end"/> <lookup class="value" expression="patient.birthdate"/>
+									</td>
+								</tr>
+							</table>
+						</div>
 
-	<table style="width: 100%; height: 44px;" border="0" align="center">
-		<tbody>
-			<tr>
-				<td>
-					<fieldset >
-						<table>
-							<tr>
-								<td>
-									<div class="displaySettings">
-										<obs conceptId="159395AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="15" cols="170" style="textarea" id="progressnotes" />
-									</div>
-								</td>
-							</tr>
+						<div class="encounter-details">
+							<table class="baseline-aligned" width="100%">
+								<tr>
+									<td>Date: <encounterDate default="now" showTime="true"/></td>
+									<td>Location: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete" /></td>
+								</tr>
+							</table>
+						</div>
+
+						<table style="width: 100%; height: 44px;" border="0" align="center">
+							<tbody>
+								<tr>
+									<td>
+										<fieldset >
+											<table>
+												<tr>
+													<td>
+														<div class="displaySettings">
+															<obs conceptId="159395AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="15" cols="170" style="textarea" id="progressnotes" />
+														</div>
+													</td>
+												</tr>
+											</table>
+										</fieldset>
+									</td>
+								</tr>
+							</tbody>
 						</table>
-					</fieldset>
-				</td>
-			</tr>
-		</tbody>
-	</table>
+		</td>
+	</tr>
+</table>
 
 	<div class="ke-form-buttons">
 		<submit />

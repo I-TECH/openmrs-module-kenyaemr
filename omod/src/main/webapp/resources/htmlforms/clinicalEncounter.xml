@@ -135,276 +135,281 @@
 			}
 		}
 	</script>
+  <table align="center">
+		  <tr>
+				  <td>
+						<div class="patient-details">
+							<table class="baseline-aligned" width="100%">
+								<tr>
+									<td>Name: <lookup class="value" expression="patient.personName" /></td>
+									<td>Gender: <lookup class="value" expression="patient.gender" /></td>
+									<td>Birthdate: <lookup class="value"
+														   complexExpression="#if( \$patient.birthdateEstimated ) ~#end" /> <lookup
+											class="value" expression="patient.birthdate" />
+									</td>
+								</tr>
+							</table>
+						</div>
+						<div style="display:none">
+							Provider: <encounterProviderAndRole encounterRole="a0b03050-c99b-11e0-9572-0800200c9a66" default="currentUser" required="true" />
+						</div>
+						<div class="encounter-details">
+							<table class="baseline-aligned" width="100%">
+								<tr>
+									<td>Date: <encounterDate default="now" showTime="true" /></td>
+									<td>Location: <encounterLocation
+											default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete" /></td>
+								</tr>
+							</table>
+						</div>
 
-	<div class="patient-details">
-		<table class="baseline-aligned" width="100%">
-			<tr>
-				<td>Name: <lookup class="value" expression="patient.personName" /></td>
-				<td>Gender: <lookup class="value" expression="patient.gender" /></td>
-				<td>Birthdate: <lookup class="value"
-									   complexExpression="#if( \$patient.birthdateEstimated ) ~#end" /> <lookup
-						class="value" expression="patient.birthdate" />
-				</td>
-			</tr>
-		</table>
-	</div>
+						<fieldset>
+							<legend>Vital Signs</legend>
+							<div style="clear: both">
+								Chief complaint / Reason for visit: <br />
+								<obs conceptId="160531AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="4" cols="80" />
+							</div>
 
-	<div class="encounter-details">
-		<table class="baseline-aligned" width="100%">
-			<tr>
-				<td>Date: <encounterDate default="now" showTime="true" /></td>
-				<td>Provider: <encounterProviderAndRole
-						encounterRole="a0b03050-c99b-11e0-9572-0800200c9a66"
-						default="currentUser" required="true" /></td>
-				<td>Location: <encounterLocation
-						default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete" /></td>
-			</tr>
-		</table>
-	</div>
+							<table class="right-aligned-first" style="float: left">
+								<tr>
+									<td colspan="2" style="text-align: left;"><i>Repeat vital signs if desired</i></td>
+								</tr>
+								<tr>
+									<td style="text-align: left;">Weight:</td>
+									<td style="text-align: left;"><obs id="weight" conceptId="5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+																	   labelText=" " />kg</td>
+								</tr>
+								<tr>
+									<td style="text-align: left;">Height:</td>
+									<td style="text-align: left;"><obs id="height" conceptId="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+																	   labelText=" " />cm</td>
+								</tr>
+								<tr>
+									<td style="text-align: left;">BMI:</td>
+									<td style="text-align: left;"><span id="calculated-bmi" class="value"></span></td>
+								</tr>
+								<tr>
+									<td style="text-align: left;">Temp:</td>
+									<td style="text-align: left;"><obs conceptId="5088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+																	   labelText=" " /> &#176;C</td>
+								</tr>
+								<tr>
+									<td style="text-align: left;">Pulse Rate:</td>
+									<td style="text-align: left;"><obs conceptId="5087AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+																	   labelText=" " /></td>
+								</tr>
+								<tr>
+									<td style="text-align: left;">BP:</td>
+									<td style="text-align: left;"><obs conceptId="5085AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /> / <obs
+											conceptId="5086AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+								</tr>
+								<tr>
+									<td style="text-align: left;">Respiratory Rate:</td>
+									<td style="text-align: left;"><obs conceptId="5242AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+																	   labelText=" " /></td>
+								</tr>
+								<tr>
+									<td style="text-align: left;">Oxygen Saturation:</td>
+									<td style="text-align: left;"><obs conceptId="5092AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText="" /></td>
+								</tr>
+								<tr>
+									<td style="text-align: left;">MUAC:</td>
+									<td style="text-align: left;"><obs conceptId="1343AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+																	   labelText=" " /></td>
+								</tr>
+								<includeIf velocityTest="$patient.gender == 'F' ">
+									<tr>
+										<td style="text-align: left;">LMP:</td>
+										<td style="text-align: left;"><obs conceptId="1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="idLmp"
+																		   labelText=" " /></td>
+									</tr>
+								</includeIf>
+							</table>
 
-	<fieldset>
-		<legend>Vital Signs</legend>
-		<div style="clear: both">
-			Chief complaint / Reason for visit: <br />
-			<obs conceptId="160531AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="4" cols="80" />
-		</div>
+							<div style="float: left; margin-left: 3em; padding: 0.5em; border: 1px gray solid; background-color: lightyellow;">
+								<u>Other Vitals Recorded Recently</u> <br/><br/>
+								Reason for Visit:  <lookup expression="fn.latestObs(160430).valueText"/> <br/>
+								Weight: <lookup expression="fn.latestObs(5089).valueNumeric"/> <br/>
+								Height: <lookup expression="fn.latestObs(5090).valueNumeric"/> <br/>
+								Temp: <lookup expression="fn.latestObs(5088).valueNumeric"/> <br/>
+								Pulse: <script>printNonPreciseVal("<lookup expression="fn.latestObs(5087).valueNumeric"/>");</script><br/>
+								BP: <script>printNonPreciseVal("<lookup expression="fn.latestObs(5085).valueNumeric"/>");</script>/<script>printNonPreciseVal("<lookup expression="fn.latestObs(5086).valueNumeric"/>");</script><br />
+								RR: <script>printNonPreciseVal("<lookup expression="fn.latestObs(5242).valueNumeric"/>");</script><br/>
+								O2Sat: <script>printNonPreciseVal("<lookup expression="fn.latestObs(5092).valueNumeric"/>");</script><br/>
+								MUAC: <lookup expression="fn.latestObs(1343).valueNumeric"/> <br/>
+							</div>
+						</fieldset>
 
-		<table class="right-aligned-first" style="float: left">
-			<tr>
-				<td colspan="2" style="text-align: left;"><i>Repeat vital signs if desired</i></td>
-			</tr>
-			<tr>
-				<td style="text-align: left;">Weight:</td>
-				<td style="text-align: left;"><obs id="weight" conceptId="5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-												   labelText=" " />kg</td>
-			</tr>
-			<tr>
-				<td style="text-align: left;">Height:</td>
-				<td style="text-align: left;"><obs id="height" conceptId="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-												   labelText=" " />cm</td>
-			</tr>
-			<tr>
-				<td style="text-align: left;">BMI:</td>
-				<td style="text-align: left;"><span id="calculated-bmi" class="value"></span></td>
-			</tr>
-			<tr>
-				<td style="text-align: left;">Temp:</td>
-				<td style="text-align: left;"><obs conceptId="5088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-												   labelText=" " /> &#176;C</td>
-			</tr>
-			<tr>
-				<td style="text-align: left;">Pulse Rate:</td>
-				<td style="text-align: left;"><obs conceptId="5087AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-												   labelText=" " /></td>
-			</tr>
-			<tr>
-				<td style="text-align: left;">BP:</td>
-				<td style="text-align: left;"><obs conceptId="5085AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /> / <obs
-						conceptId="5086AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
-			</tr>
-			<tr>
-				<td style="text-align: left;">Respiratory Rate:</td>
-				<td style="text-align: left;"><obs conceptId="5242AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-												   labelText=" " /></td>
-			</tr>
-			<tr>
-				<td style="text-align: left;">Oxygen Saturation:</td>
-				<td style="text-align: left;"><obs conceptId="5092AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText="" /></td>
-			</tr>
-			<tr>
-				<td style="text-align: left;">MUAC:</td>
-				<td style="text-align: left;"><obs conceptId="1343AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-												   labelText=" " /></td>
-			</tr>
-			<includeIf velocityTest="$patient.gender == 'F' ">
-				<tr>
-					<td style="text-align: left;">LMP:</td>
-					<td style="text-align: left;"><obs conceptId="1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="idLmp"
-													   labelText=" " /></td>
-				</tr>
-			</includeIf>
-		</table>
+						<br />
 
-		<div style="float: left; margin-left: 3em; padding: 0.5em; border: 1px gray solid; background-color: lightyellow;">
-			<u>Other Vitals Recorded Recently</u> <br/><br/>
-			Reason for Visit:  <lookup expression="fn.latestObs(160430).valueText"/> <br/>
-			Weight: <lookup expression="fn.latestObs(5089).valueNumeric"/> <br/>
-			Height: <lookup expression="fn.latestObs(5090).valueNumeric"/> <br/>
-			Temp: <lookup expression="fn.latestObs(5088).valueNumeric"/> <br/>
-			Pulse: <script>printNonPreciseVal("<lookup expression="fn.latestObs(5087).valueNumeric"/>");</script><br/>
-			BP: <script>printNonPreciseVal("<lookup expression="fn.latestObs(5085).valueNumeric"/>");</script>/<script>printNonPreciseVal("<lookup expression="fn.latestObs(5086).valueNumeric"/>");</script><br />
-			RR: <script>printNonPreciseVal("<lookup expression="fn.latestObs(5242).valueNumeric"/>");</script><br/>
-			O2Sat: <script>printNonPreciseVal("<lookup expression="fn.latestObs(5092).valueNumeric"/>");</script><br/>
-			MUAC: <lookup expression="fn.latestObs(1343).valueNumeric"/> <br/>
-		</div>
-	</fieldset>
-
-	<br />
-
-	<includeIf velocityTest="$patient.gender == 'F' ">
-		<fieldset>
-			<legend>Pregnancy Details</legend>
-			<table class="right-aligned-first" style="width: 100%;" border="0">
-				<tr>
-					<td colspan="2" style="text-align: left"><obs conceptId="5272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-																  labelText="Is Patient Pregnant?: " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-																  style="radio" answerLabels="Yes,NO" id="pregnancyOption"/></td>
-					<td></td>
-				</tr>
-			</table>
-			<table id="pregnancyOptionValues">
-				<tr>
-					<td width="8%" style="text-align: left">ANC Number:</td>
-					<td><obs conceptId="1425AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " /></td>
-					<td></td>
-				</tr>
-				<tr>
-					<td style="text-align: left">EDD:</td>
-					<td colspan="2"><obs conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" showTime="false" allowFutureDates="true" labelText=" " /></td>
-				</tr>
-				<tr>
-					<td style="text-align: left">Gravida:</td>
-					<td><obs conceptId="5624AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " /></td>
-					<td></td>
-				</tr>
-				<tr>
-					<td style="text-align: left">Parity:</td>
-					<td><obs conceptId="1053AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " /></td>
-					<td></td>
-				</tr>
-			</table>
-		</fieldset>
-
-		<br />
-
-	</includeIf>
-
-	<br />
-
-	<fieldset>
-		<legend>Family Planning Status</legend>
-		<table>
-
-			<tr>
-				<td colspan="2">
-					Family Planning Status :
-					<obs conceptId="160653AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"   id="fplanning"  answerConceptIds="965AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1360AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="dropdown" answerLabels="On Family Planning,Not using Family Planning,Wants Family Planning"  /> <hr/><br/>
-				</td>
-			</tr>
-
-			<tr>
-
-				<td colspan="2">
-					<div id="onFp">
-						If currently using Family Planning, or wants Family Planning, specify which method(s)<hr/>
 						<includeIf velocityTest="$patient.gender == 'F' ">
-							<table class="right-aligned-first" style="width: 100%;" border="0">
-								<obsgroup groupingConceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+							<fieldset>
+								<legend>Pregnancy Details</legend>
+								<table class="right-aligned-first" style="width: 100%;" border="0">
 									<tr>
-										<td width="10%"></td>
-
-										<td style="text-align: left">
-											<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160570AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-												 answerLabel="Emergency contraceptive pills" style="checkbox" /><br/>
-											<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="780AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-												 answerLabel="Oral Contraceptives Pills" style="checkbox" /><br/>
-											<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5279AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-												 answerLabel="Injectible" style="checkbox" /><br/>
-											<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-												 answerConceptId="1359AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Implant" style="checkbox" /><br/>
-											<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5275AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-												 answerLabel="Intrauterine Device" style="checkbox" /><br/>
-											<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="136163AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-												 answerLabel="Lactational Amenorhea Method" style="checkbox" /><br/>
-											<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5278AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-												 answerLabel="Diaphram/Cervical Cap" style="checkbox" /><br/>
-											<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-												 answerConceptId="159524AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Fertility Awareness"
-												 style="checkbox" /><br/>
-											<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1472AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-												 answerLabel="Tubal Ligation" style="checkbox" /><br/>
-											<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-												 answerConceptId="190AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Condoms" style="checkbox" /><br />
-
-											<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-												 answerLabel="Undecided" style="checkbox" /></td>
-
+										<td colspan="2" style="text-align: left"><obs conceptId="5272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+																					  labelText="Is Patient Pregnant?: " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+																					  style="radio" answerLabels="Yes,NO" id="pregnancyOption"/></td>
+										<td></td>
 									</tr>
+								</table>
+								<table id="pregnancyOptionValues">
+									<tr>
+										<td width="8%" style="text-align: left">ANC Number:</td>
+										<td><obs conceptId="1425AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " /></td>
+										<td></td>
+									</tr>
+									<tr>
+										<td style="text-align: left">EDD:</td>
+										<td colspan="2"><obs conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" showTime="false" allowFutureDates="true" labelText=" " /></td>
+									</tr>
+									<tr>
+										<td style="text-align: left">Gravida:</td>
+										<td><obs conceptId="5624AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " /></td>
+										<td></td>
+									</tr>
+									<tr>
+										<td style="text-align: left">Parity:</td>
+										<td><obs conceptId="1053AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " /></td>
+										<td></td>
+									</tr>
+								</table>
+							</fieldset>
 
-								</obsgroup>
-							</table>
+							<br />
+
 						</includeIf>
 
-						<includeIf velocityTest="$patient.gender == 'M' ">
-							<table class="right-aligned-first" style="width: 100%;" border="0">
-								<obsgroup groupingConceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-									<tr>
-										<td width="10%"></td>
+						<br />
 
-										<td style="text-align: left">
-											<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-												 answerConceptId="190AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Condoms" style="checkbox" /><br/>
-											<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1489AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-												 answerLabel="Vasectomy" style="checkbox" /><br />
-											<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-												 answerLabel="Undecided" style="checkbox" />
-										</td>
+						<fieldset>
+							<legend>Family Planning Status</legend>
+							<table>
 
-									</tr>
-								</obsgroup>
+								<tr>
+									<td colspan="2">
+										Family Planning Status :
+										<obs conceptId="160653AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"   id="fplanning"  answerConceptIds="965AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1360AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="dropdown" answerLabels="On Family Planning,Not using Family Planning,Wants Family Planning"  /> <hr/><br/>
+									</td>
+								</tr>
+
+								<tr>
+
+									<td colspan="2">
+										<div id="onFp">
+											If currently using Family Planning, or wants Family Planning, specify which method(s)<hr/>
+											<includeIf velocityTest="$patient.gender == 'F' ">
+												<table class="right-aligned-first" style="width: 100%;" border="0">
+													<obsgroup groupingConceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+														<tr>
+															<td width="10%"></td>
+
+															<td style="text-align: left">
+																<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160570AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+																	 answerLabel="Emergency contraceptive pills" style="checkbox" /><br/>
+																<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="780AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+																	 answerLabel="Oral Contraceptives Pills" style="checkbox" /><br/>
+																<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5279AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+																	 answerLabel="Injectible" style="checkbox" /><br/>
+																<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+																	 answerConceptId="1359AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Implant" style="checkbox" /><br/>
+																<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5275AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+																	 answerLabel="Intrauterine Device" style="checkbox" /><br/>
+																<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="136163AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+																	 answerLabel="Lactational Amenorhea Method" style="checkbox" /><br/>
+																<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5278AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+																	 answerLabel="Diaphram/Cervical Cap" style="checkbox" /><br/>
+																<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+																	 answerConceptId="159524AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Fertility Awareness"
+																	 style="checkbox" /><br/>
+																<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1472AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+																	 answerLabel="Tubal Ligation" style="checkbox" /><br/>
+																<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+																	 answerConceptId="190AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Condoms" style="checkbox" /><br />
+																<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1489AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+																	 answerLabel="Vasectomy(Patiners)" style="checkbox" /><br />
+																<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+																	 answerLabel="Undecided" style="checkbox" /></td>
+
+														</tr>
+
+													</obsgroup>
+												</table>
+											</includeIf>
+
+											<includeIf velocityTest="$patient.gender == 'M' ">
+												<table class="right-aligned-first" style="width: 100%;" border="0">
+													<obsgroup groupingConceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+														<tr>
+															<td width="10%"></td>
+
+															<td style="text-align: left">
+																<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+																	 answerConceptId="190AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Condoms" style="checkbox" /><br/>
+																<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1489AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+																	 answerLabel="Vasectomy" style="checkbox" /><br />
+																<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+																	 answerLabel="Undecided" style="checkbox" />
+															</td>
+
+														</tr>
+													</obsgroup>
+												</table>
+
+											</includeIf>
+										</div>
+									</td>
+
+								</tr>
+
+								<tr>
+									<td colspan="2">
+										<div id="notOnFp">
+											<br/>Not using Family Planning? Specify reason(s)<hr/>
+											<includeIf velocityTest="$patient.gender == 'F' ">
+												<table style="width: 100%" border="0">
+													<obsgroup groupingConceptId="160575AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+														<tr>
+															<td width="10%"></td>
+															<td>
+																<obs conceptId="160575AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+																	 answerConceptId="160571AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Wants to get Pregnant"
+																	 style="checkbox" /><br/>
+																<obs conceptId="160575AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+																	 answerConceptId="160572AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Thinks can't get pregnant"
+																	 style="checkbox" /><br/>
+																<obs conceptId="160575AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+																	 answerConceptId="160573AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Not sexually active now"
+																	 style="checkbox" /><br/>
+															</td>
+														</tr>
+													</obsgroup>
+												</table>
+											</includeIf>
+											<includeIf velocityTest="$patient.gender == 'M' ">
+												<table style="width: 100%" border="0">
+													<obsgroup groupingConceptId="160575AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+														<tr>
+															<td width="10%"></td>
+															<td>
+																<obs conceptId="160575AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+																	 answerConceptId="160573AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Not sexually active now"
+																	 style="checkbox" />
+															</td>
+														</tr>
+													</obsgroup>
+												</table>
+
+											</includeIf>
+										</div>
+									</td>
+								</tr>
+
 							</table>
-
-						</includeIf>
-					</div>
-				</td>
-
-			</tr>
-
-			<tr>
-				<td colspan="2">
-					<div id="notOnFp">
-						<br/>Not using Family Planning? Specify reason(s)<hr/>
-						<includeIf velocityTest="$patient.gender == 'F' ">
-							<table style="width: 100%" border="0">
-								<obsgroup groupingConceptId="160575AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-									<tr>
-										<td width="10%"></td>
-										<td>
-											<obs conceptId="160575AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-												 answerConceptId="160571AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Wants to get Pregnant"
-												 style="checkbox" /><br/>
-											<obs conceptId="160575AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-												 answerConceptId="160572AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Thinks can't get pregnant"
-												 style="checkbox" /><br/>
-											<obs conceptId="160575AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-												 answerConceptId="160573AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Not sexually active now"
-												 style="checkbox" /><br/>
-										</td>
-									</tr>
-								</obsgroup>
-							</table>
-						</includeIf>
-						<includeIf velocityTest="$patient.gender == 'M' ">
-							<table style="width: 100%" border="0">
-								<obsgroup groupingConceptId="160575AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-									<tr>
-										<td width="10%"></td>
-										<td>
-											<obs conceptId="160575AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-												 answerConceptId="160573AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Not sexually active now"
-												 style="checkbox" />
-										</td>
-									</tr>
-								</obsgroup>
-							</table>
-
-						</includeIf>
-					</div>
-				</td>
-			</tr>
-
-		</table>
-	</fieldset>
+						</fieldset>
+		</td>
+	</tr>
+	</table>
 
 	<div class="ke-form-buttons">
 		<submit />
