@@ -24,7 +24,7 @@
 			[ object: command, property: "birthdateEstimated", label: "Estimated?" ]
 		],
 		[
-			[ object: command, property: "maritalStatus", label: "Marital Status", config: [ answerTo: civilStatusConcept ] ],
+			[ object: command, property: "maritalStatus", label: "Marital Status", config: [ options: maritalStatusOptions ] ],
 			[ object: command, property: "occupation", label: "Occupation", config: [ answerTo: occupationConcept ] ],
 			[ object: command, property: "education", label: "Education", config: [ options: educationOptions ] ]
 		]
