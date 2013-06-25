@@ -42,7 +42,9 @@
 		var motherName="<lookup class="value" expression="personAttributes.get('Mother's Name')"/>"
 	</script>
 
-	<!-- <span style="float:right">Paper Form ID: $paperFormId</span> -->
+	<div style="display:none">
+		Provider: <encounterProviderAndRole encounterRole="a0b03050-c99b-11e0-9572-0800200c9a66" default="currentUser" required="true" />
+	</div>
 	<section headerLabel="Encounter Details">
 		<table class="baseline-aligned">
 			<tr>
@@ -51,9 +53,6 @@
 
 				<td>Location:</td>
 				<td><encounterLocation type="autocomplete"/></td>
-
-				<td>Provider:</td>
-				<td><encounterProvider/></td>
 			</tr>
 		</table>
 	</section>

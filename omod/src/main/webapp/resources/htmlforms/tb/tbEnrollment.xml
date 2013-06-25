@@ -155,8 +155,10 @@
 			});
 		});
 	</script>
-	
 
+<div style="display:none">
+	Provider: <encounterProviderAndRole encounterRole="a0b03050-c99b-11e0-9572-0800200c9a66" default="currentUser" required="true" />
+</div>
 <table align="center"  border="0" class="tb" cellspacing="10">
     <tr>
         <td colspan="2">
@@ -169,9 +171,6 @@
 		<td colspan="2">
 			<table align="center" width="100%" class="tb1">
 				<tr>
-					<td>
-						Provider:<encounterProviderAndRole encounterRole="a0b03050-c99b-11e0-9572-0800200c9a66" default="currentUser"  />
-					</td>
 					<td>	
 						Encounter date:<encounterDate default="now" showTime="true" id="encounterdate"/>
 					</td>

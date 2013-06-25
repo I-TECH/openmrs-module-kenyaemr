@@ -18,75 +18,75 @@
 			vertical-align: baseline;
 		}
 	</style>
-
-
-	<div class="patient-details">
-		<table class="baseline-aligned" width="100%">
-			<tr>
-				<td>Name: <lookup class="value" expression="patient.personName"/></td>
-				<td>Gender: <lookup class="value" expression="patient.gender"/></td>
-				<td>Birthdate: <lookup class="value" complexExpression="#if( \$patient.birthdateEstimated ) ~#end"/> <lookup class="value" expression="patient.birthdate"/>
-				</td>
-			</tr>
-		</table>
+	<div style="display:none">
+		Provider: <encounterProviderAndRole encounterRole="a0b03050-c99b-11e0-9572-0800200c9a66" default="currentUser" required="true" />
 	</div>
-
-	<div class="encounter-details">
-		<table class="baseline-aligned" width="100%">
+	<table align="center">
 			<tr>
-				<td>Date: <encounterDate default="now" showTime="true"/></td>
-				<td>Provider: <encounterProviderAndRole encounterRole="a0b03050-c99b-11e0-9572-0800200c9a66" default="currentUser" required="true"/></td>
-				<td>Location: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete" /></td>
-			</tr>
-		</table>
-	</div>
+					<td>
+						<div class="patient-details">
+							<table class="baseline-aligned" width="100%">
+								<tr>
+									<td>Name: <lookup class="value" expression="patient.personName"/></td>
+									<td>Gender: <lookup class="value" expression="patient.gender"/></td>
+									<td>Birthdate: <lookup class="value" complexExpression="#if( \$patient.birthdateEstimated ) ~#end"/> <lookup class="value" expression="patient.birthdate"/>
+									</td>
+								</tr>
+							</table>
+						</div>
+
+						<div class="encounter-details">
+							<table class="baseline-aligned" width="100%">
+								<tr>
+									<td>Date: <encounterDate default="now" showTime="true"/></td>
+									<td>Location: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete" /></td>
+								</tr>
+							</table>
+						</div>
 
 
-	<fieldset>
-		List all previous pregnancies:
-		<table>
-			<tr>
-				<td>
-					<table style="width: 100%; height: 44px;" border="0" align="center">
-						<tr>
-							<td width="5%" style="background-color: #696969; color: #ffffff;"> </td>
-							<td width="75%" style="background-color: #696969; color: #ffffff;">Year of Pregnancy (dd/mm/yyyy)</td>
-							<td width="20%" style="background-color: #696969; color: #ffffff;">Outcome</td>
-						</tr>
-						<repeat>
-							<template>
-								<obsgroup groupingConceptId="160593AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-									<tr>
-										<td> </td>
-										<td><obs conceptId="160602AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=""/></td>
-										<td><obs conceptId="159917AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="159035AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159916AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,126127AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,48AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Live Birth,Still Birth,Abortion,Miscarriage"/></td>
+						<fieldset>
+							List all previous pregnancies:
+										<table style="width: 100%; height: 44px;" border="0" align="center">
+											<tr>
+												<td style="background-color: #696969; color: #ffffff;"> </td>
+												<td style="background-color: #696969; color: #ffffff;">Year of Pregnancy (dd/mm/yyyy)</td>
+												<td style="background-color: #696969; color: #ffffff;">Outcome</td>
+											</tr>
+											<repeat>
+												<template>
+													<obsgroup groupingConceptId="160593AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+														<tr>
+															<td> </td>
+															<td><obs conceptId="160602AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=""/></td>
+															<td><obs conceptId="159917AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="159035AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159916AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,126127AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,48AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Live Birth,Still Birth,Abortion,Miscarriage"/></td>
 
-									</tr>
-								</obsgroup>
-							</template>
-							<render n="1" concept=" " />
-							<render n="2" concept=" " />
-							<render n="3" concept=" " />
-							<render n="4" concept=" " />
-							<render n="5" concept=" " />
-							<render n="6" concept=" " />
-							<render n="7" concept=" " />
-							<render n="8" concept=" " />
-							<render n="9" concept=" " />
-							<render n="10" concept=" " />
-							<render n="11" concept=" " />
-							<render n="12" concept=" " />
-							<render n="13" concept=" " />
-							<render n="14" concept=" " />
-							<render n="15" concept=" " />
-						</repeat>
+														</tr>
+													</obsgroup>
+												</template>
+												<render n="1" concept=" " />
+												<render n="2" concept=" " />
+												<render n="3" concept=" " />
+												<render n="4" concept=" " />
+												<render n="5" concept=" " />
+												<render n="6" concept=" " />
+												<render n="7" concept=" " />
+												<render n="8" concept=" " />
+												<render n="9" concept=" " />
+												<render n="10" concept=" " />
+												<render n="11" concept=" " />
+												<render n="12" concept=" " />
+												<render n="13" concept=" " />
+												<render n="14" concept=" " />
+												<render n="15" concept=" " />
+											</repeat>
 
 
-					</table>
-				</td>
-			</tr>
-		</table>
-	</fieldset>
+										</table>
+						</fieldset>
+		</td>
+	</tr>
+</table>
 
 	<div class="ke-form-buttons">
 		<submit />

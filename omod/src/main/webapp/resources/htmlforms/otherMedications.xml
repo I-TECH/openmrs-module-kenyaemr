@@ -18,6 +18,9 @@
 			vertical-align: baseline;
 		}
 	</style>
+<div style="display:none">
+	Provider: <encounterProviderAndRole encounterRole="a0b03050-c99b-11e0-9572-0800200c9a66" default="currentUser" required="true" />
+</div>
 <table>
 	<tr>
 		<td>
@@ -25,7 +28,6 @@
 				<table class="baseline-aligned" width="100%">
 					<tr>
 						<td>Date: <encounterDate default="now" showTime="true"/></td>
-						<td>Provider: <encounterProviderAndRole encounterRole="a0b03050-c99b-11e0-9572-0800200c9a66" default="currentUser" required="true"/></td>
 						<td>Location: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete" /></td>
 					</tr>
 				</table>

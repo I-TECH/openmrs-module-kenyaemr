@@ -65,7 +65,9 @@
 			});
 		});
 	</script>
-
+	<div style="display:none">
+		Provider: <encounterProviderAndRole encounterRole="a0b03050-c99b-11e0-9572-0800200c9a66" default="currentUser" required="true" />
+	</div>
 	<table align="center">
 		<tr>
 			<td>
@@ -110,7 +112,7 @@
 						<hr/>
 						<br/>
 
-					Signed by <encounterProviderAndRole encounterRole="a0b03050-c99b-11e0-9572-0800200c9a66" default="currentUser" required="true"/> at <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete"/>
+					Signed  at <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete"/>
 
 					<br/>
 					<br/>

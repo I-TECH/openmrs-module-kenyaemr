@@ -41,6 +41,9 @@
 	<!-- <span style="float:right">Paper Form ID: $paperFormId</span> -->
 	<h2>HEI Discharge Form (v1)</h2>
 	<!-- provide the patient details -->
+	<div style="display:none">
+		Provider: <encounterProviderAndRole encounterRole="a0b03050-c99b-11e0-9572-0800200c9a66" default="currentUser" required="true" />
+	</div>
 	<div class="patient-details">
 		<table class="baseline-aligned" width="100%">
 			<tr>
@@ -76,7 +79,7 @@
 		<table>
 			<tr>
 				<td>
-					Signed by <encounterProviderAndRole encounterRole="a0b03050-c99b-11e0-9572-0800200c9a66" default="currentUser" required="true"/> at <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete"/>
+					Signed at <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete"/>
 				</td>
 			</tr>
 		</table>
