@@ -5,7 +5,9 @@
 		<%= ui.includeFragment("kenyaui", "widget/popupForm", [
 				buttonConfig: [
 						label: "Edit",
-						classes: [ "ke-editbutton" ]
+						classes: [ "ke-editbutton" ],
+						iconProvider: "kenyaui",
+						icon: "edit.png"
 				],
 				fragment: "adminEditAccount",
 				fragmentProvider: "kenyaemr",
@@ -42,7 +44,9 @@
 			<%= ui.includeFragment("kenyaui", "widget/popupForm", [
 					buttonConfig: [
 							label: "Edit",
-							classes: [ "ke-editbutton" ]
+							classes: [ "ke-editbutton" ],
+							iconProvider: "kenyaui",
+							icon: "edit.png"
 					],
 					fragment: "adminEditAccount",
 					fragmentProvider: "kenyaemr",
@@ -57,7 +61,7 @@
 							secretAnswer: [ type: "password" ]
 					],
 					fieldConfig: [
-							roles: [ fieldFragment: "field/RoleCollection" ]
+							roles: [ fieldFragment: "field/RoleCollection", hideRoles: [ "Anonymous", "Authenticated", "API Privileges", "API Privileges (View and Edit)" ] ]
 					],
 					extraFields: [
 							[ hiddenInputName: "personId", value: person.id ]
@@ -131,7 +135,9 @@
 			<%= ui.includeFragment("kenyaui", "widget/popupForm", [
 					buttonConfig: [
 							label: "Edit",
-							classes: [ "ke-editbutton" ]
+							classes: [ "ke-editbutton" ],
+							iconProvider: "kenyaui",
+							icon: "edit.png"
 					],
 					fragmentProvider: "kenyaemr",
 					fragment: "adminEditAccount",
