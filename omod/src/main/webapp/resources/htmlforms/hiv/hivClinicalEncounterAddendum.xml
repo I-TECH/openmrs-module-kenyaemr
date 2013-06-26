@@ -32,9 +32,20 @@
 			if (pAge &lt; 15) {
 				whoAdult.style.display='none';
 			}
+			beforeSubmit.push(function() {
+				var returnDate = new Date(getValue('returnVisitDate.value')).getTime();
+				var encounterDate = new Date(getValue('encounterDate.value')).getTime();
+				//var fourMonthsFromEncounterDate = encounterDate.setDate(encounterDate.getDate() + 120);
+					//fourMonthsFromEncounterDate = new Date(fourMonthsFromEncounterDate);
+				if (returnDate &lt; encounterDate) {
+					getField('returnVisitDate.error').html('Return Visit date should be after encounter date and NOT more than four months from Encounter Date').show();
+					return false;
+					}
+				return true;
+			});
 		});
 	</script>
-	<div style="display:none">
+	<div style="display: none">
 		Provider: <encounterProviderAndRole encounterRole="a0b03050-c99b-11e0-9572-0800200c9a66" default="currentUser" required="true" />
 	</div>
 <table align="center">
@@ -54,7 +65,7 @@
 			<div class="encounter-details">
 				<table class="baseline-aligned" width="100%">
 					<tr>
-						<td>Date: <encounterDate default="now" showTime="true"/></td>
+						<td>Date: <encounterDate default="now" showTime="true" id="encounterDate" /></td>
 						<td>Location: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete"/></td>
 					</tr>
 				</table>
@@ -178,7 +189,7 @@
 									</tr>
 									<tr>
 										<td>Return Visit Date:</td>
-										<td><obs conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" labelText=" " /> </td>
+										<td><obs conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" labelText=" " id="returnVisitDate" /> </td>
 									</tr>
 								</table>
 							</fieldset>
