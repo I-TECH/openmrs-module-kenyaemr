@@ -2,14 +2,22 @@
 	ui.decorateWith("kenyaemr", "standardPage", [ patient: patient, closeChartUrl: ui.pageLink("kenyaemr", "home") ])
 %>
 <div>
-	<% apps.eachWithIndex { app, i -> %>
-	<div class="ke-control ke-button ke-app-button" onclick="location.href='/${ contextPath }/${ app.homepageUrl }<% if (patient) { %>?patientId=${ patient.id }<% } %>'">
-		<% if (app.iconUrl) { %>
-			<img src="/${ contextPath }/${ app.iconUrl }" alt="${ app.label }" /><br/>
-		<% } %>
-		<div class="ke-label" style="margin-top: 5px;">
-			${ app.label }
-		</div>
+	<% apps.eachWithIndex { app, i ->
+		def onClick = "location.href='/" + contextPath + "/" + app.homepageUrl + (patient ? ("?patientId=" + patient.id) : "") + "'"
+		def iconUrlTokens = app.iconUrl.split(":")
+		def iconProvider, icon
+		if (iconUrlTokens.length == 2) {
+			iconProvider = iconUrlTokens[0]
+			icon = iconUrlTokens[1]
+
+			// Strip the images/ part
+			if (icon.startsWith("images/")) {
+				icon = icon.substring(7);
+			}
+		}
+	%>
+	<div style="float: left; margin: 7px;" >
+		${ ui.includeFragment("kenyaui", "widget/appButton", [ label: app.label, iconProvider: iconProvider, icon: icon, onClick: onClick ]) }
 	</div>
 	<% } %>
 </div>
