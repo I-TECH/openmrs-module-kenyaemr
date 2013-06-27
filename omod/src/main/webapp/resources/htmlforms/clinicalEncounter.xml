@@ -124,6 +124,11 @@
 					return true;
 				});
 			}
+		//get the most recent value of the height
+		var previousHeight = '<lookup expression="fn.latestObs(5090).valueNumeric"/>';
+		//setting the value of height field
+		setValue('height.value', previousHeight);
+
 		});
 
 		/**
@@ -327,7 +332,7 @@
 																<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 																	 answerConceptId="190AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Condoms" style="checkbox" /><br />
 																<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1489AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-																	 answerLabel="Vasectomy(Patiners)" style="checkbox" /><br />
+																	 answerLabel="Vasectomy(Partner)" style="checkbox" /><br />
 																<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 																	 answerLabel="Undecided" style="checkbox" /></td>
 
