@@ -35,9 +35,9 @@
 			beforeSubmit.push(function() {
 				var returnDate = new Date(getValue('returnVisitDate.value')).getTime();
 				var encounterDate = new Date(getValue('encounterDate.value')).getTime();
-				//var fourMonthsFromEncounterDate = encounterDate.setDate(encounterDate.getDate() + 120);
-					//fourMonthsFromEncounterDate = new Date(fourMonthsFromEncounterDate);
-				if (returnDate &lt; encounterDate) {
+				var encouterDateValue = new Date(getValue('encounterDate.value'));
+				var fourMonthsFromEncounterDate = encouterDateValue.setDate(encouterDateValue.getDate() + 120);
+				if ((returnDate &lt; encounterDate) || (returnDate &gt; fourMonthsFromEncounterDate)) {
 					getField('returnVisitDate.error').html('Return Visit date should be after encounter date and NOT more than four months from Encounter Date').show();
 					return false;
 					}
