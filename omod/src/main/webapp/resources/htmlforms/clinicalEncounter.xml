@@ -124,6 +124,11 @@
 					return true;
 				});
 			}
+		//get the most recent value of the height
+		var previousHeight = '<lookup expression="fn.latestObs(5090).valueNumeric"/>';
+		//setting the value of height field
+		setValue('height.value', previousHeight);
+
 		});
 
 		/**
