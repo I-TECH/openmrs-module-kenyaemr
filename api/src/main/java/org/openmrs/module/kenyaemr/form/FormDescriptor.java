@@ -166,14 +166,6 @@ public class FormDescriptor implements Comparable<FormDescriptor> {
 	}
 
 	/**
-	 * Sets the auto-create visit type
-	 * @return the visit type
-	 */
-	public VisitType getAutoCreateVisitType() {
-		return Metadata.getVisitType(autoCreateVisitTypeUuid);
-	}
-
-	/**
 	 * Gets the icon provider
 	 * @return the iconProvider
 	 */

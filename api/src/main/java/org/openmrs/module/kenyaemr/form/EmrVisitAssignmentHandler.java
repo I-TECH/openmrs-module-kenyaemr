@@ -21,6 +21,7 @@ import org.openmrs.VisitType;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.handler.ExistingVisitAssignmentHandler;
 import org.openmrs.module.kenyaemr.KenyaEmr;
+import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.module.kenyaemr.util.KenyaEmrUtils;
 import org.openmrs.util.OpenmrsUtil;
@@ -61,8 +62,9 @@ public class EmrVisitAssignmentHandler extends ExistingVisitAssignmentHandler {
 		if (encounter.getForm() != null) {
 			FormDescriptor fd = KenyaEmr.getInstance().getFormManager().getFormDescriptor(encounter.getForm());
 
-			if (fd != null && fd.getAutoCreateVisitType() != null) {
-				useNewVisit(encounter, fd.getAutoCreateVisitType());
+			if (fd != null && fd.getAutoCreateVisitTypeUuid() != null) {
+				VisitType visitType = Metadata.getVisitType(fd.getAutoCreateVisitTypeUuid());
+				useNewVisit(encounter, visitType);
 			}
 		}
 	}
