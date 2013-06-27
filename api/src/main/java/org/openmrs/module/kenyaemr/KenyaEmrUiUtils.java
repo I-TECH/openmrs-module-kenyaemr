@@ -255,7 +255,7 @@ public class KenyaEmrUiUtils {
 	 * @return the simple object
 	 */
 	public SimpleObject simpleForm(FormDescriptor config, UiUtils ui) {
-		Form form = Context.getFormService().getFormByUuid(config.getFormUuid());
+		Form form = Metadata.getForm(config.getFormUuid());
 		return simpleForm(form, ui);
 	}
 
