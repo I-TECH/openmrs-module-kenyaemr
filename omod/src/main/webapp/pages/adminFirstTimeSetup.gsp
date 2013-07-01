@@ -39,9 +39,13 @@
 	}
 %>
 <div id="content">
+
 	<% if (isSuperUser) { %>
+
+	${ ui.includeFragment("kenyaemr", "systemRequirements") }
+
 	<div class="ke-panel-frame">
-		<div class="ke-panel-heading">First-time Setup</div>
+		<div class="ke-panel-heading">${ ui.message("kenyaemr.admin.firstTimeSetup") }</div>
 		<div class="ke-panel-content">
 			${ ui.includeFragment("kenyaui", "widget/form", [
 					pageProvider: "kenyaemr",

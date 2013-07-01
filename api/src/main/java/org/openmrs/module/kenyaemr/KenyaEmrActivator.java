@@ -26,6 +26,8 @@ import org.openmrs.module.kenyaemr.form.EmrVisitAssignmentHandler;
 import org.openmrs.module.kenyaemr.util.KenyaEmrUtils;
 import org.openmrs.util.OpenmrsConstants;
 
+import java.util.Map;
+
 /**
  * This class contains the logic that is run every time this module is either started or stopped.
  */
@@ -69,7 +71,18 @@ public class KenyaEmrActivator implements ModuleActivator {
 	 * @see ModuleActivator#started()
 	 */
 	public void started() {
-		checkRequirements();
+		log.info("Checking Kenya EMR requirements...");
+
+		for (Configuration.Requirement requirement : Configuration.checkRequirements()) {
+			String status = requirement.isPass() ? "PASS" : "FAIL";
+			String message = " * " + requirement.getName() + " " + requirement.getVersionRequired() + ", found " + requirement.getVersionFound() + " (" + status + ")";
+
+			if (requirement.isPass()) {
+				log.info(message);
+			} else {
+				log.warn(message);
+			}
+		}
 
 		log.info("Kenya EMR started");
 	}
@@ -86,17 +99,5 @@ public class KenyaEmrActivator implements ModuleActivator {
 	 */
 	public void stopped() {
 		log.info("Kenya EMR stopped");
-	}
-
-	/**
-	 * Checks the requirements of this module
-	 */
-	protected void checkRequirements() {
-		if (!Dictionary.hasRequiredDatabaseVersion()) {
-			throw new RuntimeException("Module requires concepts version: " + Dictionary.REQUIRED_DATABASE_VERSION);
-		}
-		else {
-			log.info("Detected concept dictionary version " + Dictionary.getDatabaseVersion());
-		}
 	}
 }

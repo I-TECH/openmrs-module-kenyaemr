@@ -14,16 +14,36 @@
 
 package org.openmrs.module.kenyaemr;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openmrs.GlobalProperty;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.datatype.LocationDatatype;
 import org.openmrs.module.kenyaemr.form.EmrVisitAssignmentHandler;
 import org.openmrs.util.OpenmrsConstants;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Manages the Kenya EMR configuration
  */
 public class Configuration {
+
+	protected static final Log log = LogFactory.getLog(Configuration.class);
+
+	/**
+	 * Checks the requirements of this module
+	 */
+	public static List<Requirement> checkRequirements() {
+		List<Requirement> requirements = new ArrayList<Requirement>();
+
+		requirements.add(new Requirement("CIEL concept dictionary", Dictionary.REQUIRED_DATABASE_VERSION, Dictionary.getDatabaseVersion(), Dictionary.hasRequiredDatabaseVersion()));
+
+		return requirements;
+	}
 
 	/**
 	 * Setup required global properties
@@ -69,5 +89,39 @@ public class Configuration {
 
 		gp.setPropertyValue(String.valueOf(value));
 		Context.getAdministrationService().saveGlobalProperty(gp);
+	}
+
+	/**
+	 * Represents an external requirement of the Kenya EMR
+	 */
+	public static class Requirement {
+
+		private String name;
+		private String versionRequired;
+		private String versionFound;
+		private boolean pass;
+
+		public Requirement(String name, String versionRequired, String versionFound, boolean pass) {
+			this.name = name;
+			this.versionRequired = versionRequired;
+			this.versionFound = versionFound;
+			this.pass = pass;
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		public String getVersionRequired() {
+			return versionRequired;
+		}
+
+		public String getVersionFound() {
+			return versionFound;
+		}
+
+		public boolean isPass() {
+			return pass;
+		}
 	}
 }
