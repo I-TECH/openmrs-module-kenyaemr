@@ -16,6 +16,7 @@ package org.openmrs.module.kenyaemr.page.controller;
 
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.Location;
+import org.openmrs.User;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.idgen.IdentifierSource;
 import org.openmrs.module.kenyaemr.KenyaEmr;
@@ -66,8 +67,10 @@ public class AdminFirstTimeSetupPageController {
 		defaultLocation = service.getDefaultLocation();
 		IdentifierSource mrnIdentifierSource = emr.getIdentifierManager().getMrnIdentifierSource();
 		IdentifierSource hivIdentifierSource = emr.getIdentifierManager().getHivUniqueIdentifierSource();
+
+		User authenticatedUser = Context.getAuthenticatedUser();
 		
-		model.addAttribute("isSuperUser", Context.getAuthenticatedUser().isSuperUser());
+		model.addAttribute("isSuperUser", authenticatedUser != null ? Context.getAuthenticatedUser().isSuperUser() : false);
 		model.addAttribute("defaultLocation", defaultLocation);
 		model.addAttribute("mrnIdentifierSource", mrnIdentifierSource);
 		model.addAttribute("hivIdentifierSource", hivIdentifierSource);
