@@ -12,7 +12,7 @@
 		<table style="margin-left: auto; margin-right: auto; border: 0" cellpadding="3" cellspacing="0">
 			<tr>
 				<td style="padding-right: 15px">
-					<img src="${ ui.resourceLink("kenyaui", "images/moh_logo_large.png") }"/>
+					<img src="${ ui.resourceLink("kenyaui", "images/logos/moh_large.png") }"/>
 				</td>
 				<td style="padding-left: 15px; padding-top: 75px" valign="top">
 					<table border="0" cellpadding="3" cellspacing="0">
