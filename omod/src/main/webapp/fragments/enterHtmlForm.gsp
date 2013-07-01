@@ -131,8 +131,10 @@ ui.includeJavascript("kenyaemr", "dwr-util.js")
 		
 		// only do the submit if all the beforeSubmit functions returned "true"
 		if (state_beforeSubmit){
+			kenyaui.openLoadingDialog('Submitting form...');
+			kenyaui.clearFormErrors('htmlform');
+
 			var form = jq('#htmlform');
-			kenyaui.openLoadingDialog('Submitting Form');
 			jq.post(form.attr('action'), form.serialize(), function(result) {
 				if (result.success) {
 					<% if (command.returnUrl) { %>

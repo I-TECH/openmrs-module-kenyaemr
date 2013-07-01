@@ -44,10 +44,7 @@
 %>
 
 <form id="create-account-form" method="post" action="${ ui.actionLink("kenyaemr", "adminNewAccount", "createAccount") }">
-	<div class="global-error-container" style="display: none">
-		${ ui.message("fix.error.plain") }
-		<ul class="global-error-content"></ul>
-	</div>
+	<div class="ke-form-globalerrors" style="display: none"></div>
 
 	<fieldset>
 		<legend>Person Info</legend>
@@ -81,7 +78,7 @@
 jq(function() {
 	jq('#create-user-form input[type=submit]').button();
 	
-	kenyaui.setupAjaxPost('#create-account-form', {
+	kenyaui.setupAjaxPost('create-account-form', {
 		onSuccess: function(data) {
 			if (data.personId) {
 				location.href = ui.pageLink('kenyaemr', 'adminManageAccounts');

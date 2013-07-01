@@ -122,7 +122,7 @@ public class RegimenUtilFragmentController {
 
 			// Reason is only required for stopping or changing
 			if (changeType == RegimenChangeType.STOP || changeType == RegimenChangeType.CHANGE) {
-				requireAny(errors, "changeReason", "changeReasonNonCoded");
+				requireAny(errors, "changeReasonNonCoded", "changeReason");
 			}
 
 			if (category != null && changeDate != null) {

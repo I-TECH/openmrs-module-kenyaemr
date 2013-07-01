@@ -34,10 +34,7 @@
 			<form id="close-visits-form" method="post" action="${ ui.actionLink("kenyaemr", "registrationUtil", "closeActiveVisits") }">
 				<div class="form-data"></div>
 				<input type="submit" value="Close Visits" />
-				<div class="global-error-container" style="display: none">
-					${ ui.message("fix.error.plain") }
-					<ul class="global-error-content"></ul>
-				</div>
+				<div class="ke-form-globalerrors" style="display: none"></div>
 			</form>
 		</div>
 	</div>
@@ -60,7 +57,7 @@
 			}
 		});
 
-		kenyaui.setupAjaxPost('#close-visits-form', {
+		kenyaui.setupAjaxPost('close-visits-form', {
 			onSuccess: function (result) {
 				loadActiveVisitTypes();
 				ui.notifySuccess(result.message);

@@ -90,14 +90,6 @@
 			jq('#${ config.id } input, #${ config.id } select').val('');
 		});
 
-		subscribe('${ config.parentFormId }.clear-errors', function() {
-			jq('#${ config.id }-error').html("").hide();
-		});
-
-		subscribe('${ config.parentFormId }/${ config.formFieldName }.show-errors', function(message, payload) {
-			FieldUtils.showErrorList('${ config.id }-error', payload);
-		});
-
 		jq('#${ config.id }').change(function() {
 			publish('${ config.parentFormId }/changed');
 		});

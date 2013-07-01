@@ -78,10 +78,7 @@
 		<input type="hidden" name="patientId" value="${ command.original.patientId }"/>
 	<% } %>
 
-	<div class="global-error-container" style="display: none">
-		${ ui.message("fix.error.plain") }
-		<ul class="global-error-content"></ul>
-	</div>
+	<div class="ke-form-globalerrors" style="display: none"></div>
 
 	<div class="ke-form-instructions">
 		<b>*</b> indicates a required field
@@ -152,7 +149,7 @@ jq(function() {
 		location.href = '${ returnUrl }';
 	});
 
-	kenyaui.setupAjaxPost('#edit-patient-form', {
+	kenyaui.setupAjaxPost('edit-patient-form', {
 		onSuccess: function(data) {
 			if (data.patientId) {
 				<% if (returnUrl.indexOf('patientId') > 0) { %>
