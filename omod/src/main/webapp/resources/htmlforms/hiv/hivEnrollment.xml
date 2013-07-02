@@ -55,12 +55,12 @@
 			var dateEnrolledIntocare;
 
 			beforeSubmit.push(function() {
-				pencounterDate = new Date(getValue('idEncounterDate.value')).getTime();
+				pencounterDate = new Date(getValue('encounter-date.value')).getTime();
 				datePatientConfirmed = new Date(getValue('dateConfirmedPositive.value')).getTime();
 				dateEnrolledIntocare ="";
 
 				if (pencounterDate &lt; pbirthdate) {
-					getField('idEncounterDate.error').html('Encounter date, should not be earlier than Birth date').show();
+					getField('encounter-date.error').html('Encounter date, should not be earlier than Birth date').show();
 					return false;
 				}
 
@@ -107,7 +107,7 @@
 		<legend>At <i>This</i> Facility</legend>
 		<table width="100%">
 			<tr>
-				<td>Enrollment Date: <encounterDate default="now" showTime="true" id="idEncounterDate"/></td>
+				<td>Enrollment Date: <encounterDate id="encounter-date" showTime="true" /></td>
 				<td>
 					<span class="encounter-details">
 						Enrolled by: <encounterProviderAndRole encounterRole="a0b03050-c99b-11e0-9572-0800200c9a66" default="currentUser" required="true"/> <br/>

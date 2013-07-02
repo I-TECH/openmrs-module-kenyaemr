@@ -54,7 +54,7 @@
 			var discontinueDate;
 
 			beforeSubmit.push(function() {
-				discontinueDate = new Date(getValue('discontinueDate.value')).getTime();
+				discontinueDate = new Date(getValue('encounter-date.value')).getTime();
 
 				if(discontinueDate &lt; pbirthdate){
 					getField('discontinueDate.error').html('Discontinue date, should not be earlier than Birth date').show();
@@ -76,7 +76,7 @@
 						<table class="baseline-aligned" width="100%" border="0">
 							<tr>
 								<td>Date:</td>
-								<td><encounterDate default="now" showTime="true" id="discontinueDate" /></td>
+								<td><encounterDate id="encounter-date" showTime="true" /></td>
 								<td></td>
 								<td></td>
 							</tr>

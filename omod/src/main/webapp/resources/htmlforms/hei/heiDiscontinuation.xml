@@ -60,7 +60,7 @@
 		<table>
 			<tr>
 				<td>Exit Date</td>
-				<td><encounterDate default="now" showTime="false" id="discontinueDate"/></td>
+				<td><encounterDate id="encounter-date" showTime="false" id="discontinueDate"/></td>
 			</tr>
 			<td>HIV Status</td>
 			<td><obs conceptId="1169AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  /></td>

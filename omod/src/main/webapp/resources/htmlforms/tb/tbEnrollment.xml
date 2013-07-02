@@ -112,7 +112,7 @@
             var regex = /^\+?\d{7,13}$/
 		
 			beforeSubmit.push (function() {
-				encounterdate = new Date(getValue('encounterdate.value')).getTime();
+				encounterdate = new Date(getValue('encounter-date.value')).getTime();
        			datestartoftreatment = new Date(getValue('dstartoftreatment.value')).getTime();
        			dreferredby = new Date(getValue('datereferredby.value')).getTime();
        			transferindate  = new Date(getValue('transferindate.value')).getTime();
@@ -124,7 +124,7 @@
                     return false;
                 }
        			if (encounterdate &lt; pbirthdate) {
-               		getField('encounterdate.error').html('Encounter datetime should be after the birth date').show();
+               		getField('encounter-date.error').html('Encounter datetime should be after the birth date').show();
                    	return false
          		}
          		
@@ -172,7 +172,7 @@
 			<table align="center" width="100%" class="tb1">
 				<tr>
 					<td>	
-						Encounter date:<encounterDate default="now" showTime="true" id="encounterdate"/>
+						Encounter date:<encounterDate id="encounter-date" showTime="true" />
 					</td>
 				</tr>		
 			</table>

@@ -39,7 +39,7 @@
 			</div>
 			<div class="encounter-details">
 				<tr>
-					<td>Date: <encounterDate default="now" showTime="true"/></td>
+					<td>Date: <encounterDate id="encounter-date" showTime="true"/></td>
 					<td>Location: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete" /></td>
 					<td> </td>
 				</tr>

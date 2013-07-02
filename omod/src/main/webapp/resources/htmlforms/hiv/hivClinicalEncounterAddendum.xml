@@ -34,8 +34,8 @@
 			}
 			beforeSubmit.push(function() {
 				var returnDate = new Date(getValue('returnVisitDate.value')).getTime();
-				var encounterDate = new Date(getValue('encounterDate.value')).getTime();
-				var encouterDateValue = new Date(getValue('encounterDate.value'));
+				var encounterDate = new Date(getValue('encounter-date.value')).getTime();
+				var encouterDateValue = new Date(getValue('encounter-date.value'));
 				var fourMonthsFromEncounterDate = encouterDateValue.setDate(encouterDateValue.getDate() + 120);
 				if ((returnDate &lt; encounterDate) || (returnDate &gt; fourMonthsFromEncounterDate)) {
 					getField('returnVisitDate.error').html('Return Visit date should be after encounter date and NOT more than four months from Encounter Date').show();
@@ -65,8 +65,8 @@
 			<div class="encounter-details">
 				<table class="baseline-aligned" width="100%">
 					<tr>
-						<td>Date: <encounterDate default="now" showTime="true" id="encounterDate" /></td>
-						<td>Location: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete"/></td>
+						<td>Date: <encounterDate id="encounter-date" showTime="true" /></td>
+						<td>Location: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete" /></td>
 					</tr>
 				</table>
 			</div>

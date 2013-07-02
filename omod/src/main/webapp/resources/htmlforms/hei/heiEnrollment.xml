@@ -49,7 +49,7 @@
 		<table class="baseline-aligned">
 			<tr>
 				<td>Date:</td>
-				<td><encounterDate default="today"/></td>
+				<td><encounterDate id="encounter-date" /></td>
 
 				<td>Location:</td>
 				<td><encounterLocation type="autocomplete"/></td>
