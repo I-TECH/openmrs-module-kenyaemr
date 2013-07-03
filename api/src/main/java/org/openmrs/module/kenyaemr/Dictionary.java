@@ -31,7 +31,7 @@ public class Dictionary {
 	/**
 	 * Required concepts version
 	 */
-	public static final String REQUIRED_DATABASE_VERSION = "20130604";
+	public static final String REQUIRED_DATABASE_VERSION = "20130702";
 
 	/**
 	 * Gets the database version of the concepts
