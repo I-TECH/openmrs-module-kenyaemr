@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Manages the Kenya EMR configuration
+ * Manages the KenyaEMR configuration
  */
 public class Configuration {
 
@@ -92,7 +92,7 @@ public class Configuration {
 	}
 
 	/**
-	 * Represents an external requirement of the Kenya EMR
+	 * Represents an external requirement of KenyaEMR
 	 */
 	public static class Requirement {
 

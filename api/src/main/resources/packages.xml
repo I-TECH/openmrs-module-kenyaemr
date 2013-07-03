@@ -1,5 +1,5 @@
 <!--
-	Defines the Kenya EMR metadata packages
+	Defines the KenyaEMR metadata packages
 -->
 <packages xmlns="http://www.kenyaemr.org/packages">
 	<package groupUuid="29177ba6-a634-42d5-9314-e12689856ff1" filename="metadata/Kenya_EMR_Core_Metadata-25.zip" />

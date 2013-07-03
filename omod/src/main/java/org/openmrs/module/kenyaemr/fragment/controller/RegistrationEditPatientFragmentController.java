@@ -471,11 +471,11 @@ public class RegistrationEditPatientFragmentController {
 			handleOncePerPatientObs(ret, obsToSave, obsToVoid, Dictionary.getConcept(Dictionary.EDUCATION), savedEducation, education);
 
 			for (Obs o : obsToVoid) {
-				Context.getObsService().voidObs(o, "Kenya EMR edit patient");
+				Context.getObsService().voidObs(o, "KenyaEMR edit patient");
 			}
 
 			for (Obs o : obsToSave) {
-				Context.getObsService().saveObs(o, "Kenya EMR edit patient");
+				Context.getObsService().saveObs(o, "KenyaEMR edit patient");
 			}
 
 			return ret;

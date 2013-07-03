@@ -32,7 +32,7 @@ import org.openmrs.util.PrivilegeConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * Implementations of business methods for the Kenya EMR application
+ * Implementations of business logic methods for KenyaEMR
  */
 public class KenyaEmrServiceImpl extends BaseOpenmrsService implements KenyaEmrService {
 

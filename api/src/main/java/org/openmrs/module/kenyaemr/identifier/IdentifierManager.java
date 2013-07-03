@@ -207,7 +207,7 @@ public class IdentifierManager {
 	 */
 	public String getNextHivUniquePatientNumber(String comment) {
 		if (comment == null) {
-			comment = "Kenya EMR Service";
+			comment = "KenyaEMR Service";
 		}
 		IdentifierSource source = getHivUniqueIdentifierSource();
 		String prefix = Context.getService(KenyaEmrService.class).getDefaultLocationMflCode();

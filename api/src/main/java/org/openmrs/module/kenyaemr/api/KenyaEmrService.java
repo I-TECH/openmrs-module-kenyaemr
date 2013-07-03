@@ -27,7 +27,7 @@ import org.openmrs.util.PrivilegeConstants;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Business methods for the Kenya EMR application
+ * Business logic methods for KenyaEMR
  */
 @Transactional
 public interface KenyaEmrService extends OpenmrsService {

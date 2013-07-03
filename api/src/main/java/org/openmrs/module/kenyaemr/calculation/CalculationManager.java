@@ -28,7 +28,7 @@ import org.springframework.core.type.filter.AssignableTypeFilter;
 import org.springframework.stereotype.Component;
 
 /**
- * Manager for calculations used by the Kenya EMR
+ * Manager for calculations used by KenyaEMR
  */
 @Component
 public class CalculationManager implements CalculationProvider {

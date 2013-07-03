@@ -9,8 +9,8 @@
 
 	<artifactId>kenyaemr-api</artifactId>
 	<packaging>jar</packaging>
-	<name>Kenya OpenMRS EMR Module API</name>
-	<description>API project for Kenya OpenMRS EMR</description>
+	<name>KenyaEMR Module API</name>
+	<description>API project for KenyaEMR Module</description>
 	
 	<build>
 		<pluginManagement>

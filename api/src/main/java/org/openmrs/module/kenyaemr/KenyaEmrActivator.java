@@ -44,14 +44,14 @@ public class KenyaEmrActivator implements ModuleActivator {
 	 * @see ModuleActivator#willRefreshContext()
 	 */
 	public void willRefreshContext() {
-		log.info("Kenya EMR context refreshing...");
+		log.info("KenyaEMR context refreshing...");
 	}
 
 	/**
 	 * @see ModuleActivator#willStart()
 	 */
 	public void willStart() {
-		log.info("Kenya EMR starting...");
+		log.info("KenyaEMR starting...");
 	}
 
 	/**
@@ -71,7 +71,7 @@ public class KenyaEmrActivator implements ModuleActivator {
 	 * @see ModuleActivator#started()
 	 */
 	public void started() {
-		log.info("Checking Kenya EMR requirements...");
+		log.info("Checking KenyaEMR requirements...");
 
 		for (Configuration.Requirement requirement : Configuration.checkRequirements()) {
 			String status = requirement.isPass() ? "PASS" : "FAIL";
@@ -84,20 +84,20 @@ public class KenyaEmrActivator implements ModuleActivator {
 			}
 		}
 
-		log.info("Kenya EMR started");
+		log.info("KenyaEMR started");
 	}
 
 	/**
 	 * @see ModuleActivator#willStop()
 	 */
 	public void willStop() {
-		log.info("Kenya EMR stopping...");
+		log.info("KenyaEMR stopping...");
 	}
 
 	/**
 	 * @see ModuleActivator#stopped()
 	 */
 	public void stopped() {
-		log.info("Kenya EMR stopped");
+		log.info("KenyaEMR stopped");
 	}
 }

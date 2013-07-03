@@ -4,7 +4,7 @@
 
 	<!-- Module Properties -->
 	<id>${project.parent.artifactId}</id>
-	<name>Kenya EMR</name>
+	<name>KenyaEMR</name>
 	<version>${project.parent.version}</version>
 	<package>${project.parent.groupId}.${project.parent.artifactId}</package>
 	<author>I-TECH</author>

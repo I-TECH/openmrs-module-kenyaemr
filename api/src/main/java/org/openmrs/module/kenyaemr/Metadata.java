@@ -20,7 +20,7 @@ import org.openmrs.api.context.Context;
 import java.util.Locale;
 
 /**
- * Provides access to the core metadata in Kenya EMR
+ * Provides access to the core metadata in KenyaEMR
  */
 public class Metadata {
 

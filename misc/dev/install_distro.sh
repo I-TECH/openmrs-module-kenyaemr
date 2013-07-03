@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Installs a Kenya EMR distribution zip to OpenMRS
+# Installs a KenyaEMR distribution zip to OpenMRS
 
 MOD_DIR=/usr/share/tomcat6/.OpenMRS/modules
 

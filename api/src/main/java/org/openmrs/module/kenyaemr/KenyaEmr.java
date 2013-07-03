@@ -33,7 +33,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 /**
- * Kenya EMR master content manager, used as a registered singleton
+ * KenyaEMR master content manager, used as a registered singleton
  */
 @Component
 public class KenyaEmr {

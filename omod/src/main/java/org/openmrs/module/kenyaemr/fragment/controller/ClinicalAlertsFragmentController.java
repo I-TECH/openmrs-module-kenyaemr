@@ -47,7 +47,7 @@ public class ClinicalAlertsFragmentController {
 	 * Gets the clinical alerts for the given patient. If any of the calculations throws an exception, this will return a single
 	 * alert message with the name of the offending calculation
 	 * @param patientId the patient id
-	 * @param emr the Kenya EMR
+	 * @param emr the KenyaEMR
 	 * @return the alerts as simple objects
 	 */
 	public List<SimpleObject> getAlerts(@RequestParam("patientId") Integer patientId, @SpringBean KenyaEmr emr) {

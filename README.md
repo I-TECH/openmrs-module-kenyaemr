@@ -1,10 +1,10 @@
-Kenya EMR OpenMRS Module
-========================
+KenyaEMR Distribution: OpenMRS Module
+=====================================
 <a href="http://ci.kenyaemr.org/viewType.html?buildTypeId=bt2"><img src="http://ci.kenyaemr.org/app/rest/builds/buildType:bt2/statusIcon"/></a>
 
 Overview
 --------
-Initial ITECH work on an OpenMRS-based EMR for the Kenya MoH, along with the [Kenya UI](https://github.com/I-TECH/openmrs-module-kenyaui)
+Initial ITECH work on an OpenMRS-based EMR for the Kenya MoH, along with the [KenyaUI](https://github.com/I-TECH/openmrs-module-kenyaui)
 module.
 
 Requirements

@@ -9,8 +9,8 @@
 
 	<artifactId>kenyaemr-distro</artifactId>
 	<packaging>pom</packaging>
-	<name>Kenya OpenMRS EMR Distribution</name>
-	<description>Distro project for Kenya OpenMRS EMR</description>
+	<name>KenyaEMR Distribution</name>
+	<description>Distro project for KenyaEMR Module</description>
 
 	<profiles>
 		<profile>

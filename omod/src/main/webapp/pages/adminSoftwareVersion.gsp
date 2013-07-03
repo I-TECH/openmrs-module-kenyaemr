@@ -26,7 +26,7 @@
 <br/>
 
 <fieldset>
-	<legend>Update Kenya EMR Distribution zip file</legend>
+	<legend>Update KenyaEMR Distribution zip file</legend>
 	<form id="file-upload-form" method="post" enctype="multipart/form-data">
 		<input type="hidden" name="priorVersion" value="${ priorVersion }"/>
 		<input type="file" name="distributionZip"/>

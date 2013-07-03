@@ -9,8 +9,8 @@
 
 	<artifactId>kenyaemr-installation</artifactId>
 	<packaging>pom</packaging>
-	<name>Kenya OpenMRS EMR Installation (optional)</name>
-	<description>Installation tools for Kenya OpenMRS EMR</description>
+	<name>KenyaEMR Installation (optional)</name>
+	<description>Installation tools for KenyaEMR</description>
 
 	<properties>
 		<dbUser>openmrs</dbUser>

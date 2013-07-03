@@ -19,7 +19,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.util.KenyaEmrUtils;
 
 /**
- * Dictionary for concepts used by Kenya EMR
+ * Dictionary for concepts used by KenyaEMR
  */
 public class Dictionary {
 

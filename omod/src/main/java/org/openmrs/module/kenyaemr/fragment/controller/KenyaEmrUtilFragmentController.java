@@ -38,7 +38,7 @@ import org.openmrs.ui.framework.annotation.SpringBean;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
- * Fragment actions generally useful for the Kenya EMR module
+ * Fragment actions generally useful for KenyaEMR
  */
 public class KenyaEmrUtilFragmentController {
 
