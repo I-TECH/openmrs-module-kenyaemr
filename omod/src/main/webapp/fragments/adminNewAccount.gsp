@@ -31,16 +31,10 @@
 			[formFieldName: "password", label: "Password", class: java.lang.String, config: [ type: "password" ]],
 			[formFieldName: "confirmPassword", label: "Confirm Password", class: java.lang.String, config: [ type: "password" ]]
 		],
+		[
+			[formFieldName: "roles", label: "Roles", class: java.util.List, fieldFragment: "field/RoleCollection", hideRoles: [ "Anonymous", "Authenticated", "API Privileges", "API Privileges (View and Edit)" ] ]
+		]
 	]
-
-	def roleHtml = context.userService.allRoles.findAll {
-		it.role != "Anonymous" && it.role != "Authenticated"
-	}.collect {
-		"""<input type="checkbox" name="roles" value="${ it.role }" id="role-${ it.uuid }"/>
-			<label for="role-${ it.uuid }">${ it.role }</label>"""
-	}.join("<br/>")
-	roleHtml += """<br/><span class="error" style="display: none"></span>"""
-	
 %>
 
 <form id="create-account-form" method="post" action="${ ui.actionLink("kenyaemr", "adminNewAccount", "createAccount") }">
@@ -58,8 +52,6 @@
 		<% login.each { %>
 			${ ui.includeFragment("kenyaui", "widget/rowOfFields", [ fields: it ]) }
 		<% } %>
-
-		${ ui.decorate("kenyaui", "labeled", [label: "Roles"], roleHtml) }
 	</fieldset>
 
 	<fieldset>
