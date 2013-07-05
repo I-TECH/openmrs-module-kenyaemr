@@ -24,8 +24,12 @@ import org.openmrs.ui.framework.fragment.FragmentModel;
 public class SystemHeaderFragmentController {
 	
 	public void controller(FragmentModel model, @SpringBean KenyaEmr emr) {
+		String systemMessage = null;
+
 		if (!emr.isRefreshed()) {
-			model.put("systemMessage", "System did not properly load. Please inform a system administrator immediately.");
+			systemMessage = "System did not properly load. Please inform a system administrator immediately.";
 		}
+
+		model.put("systemMessage", systemMessage);
 	}
 }
