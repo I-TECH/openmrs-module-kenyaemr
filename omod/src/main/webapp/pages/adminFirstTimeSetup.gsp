@@ -33,7 +33,7 @@
 		fields << [
 				label: "(HIV Unique Patient Number Generator) First ID Number",
 				formFieldName: "hivIdentifierSourceStart",
-				initialValue: "00001",
+				initialValue: "30001",
 				class: java.lang.String
 		]
 	}
