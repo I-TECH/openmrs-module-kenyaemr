@@ -52,15 +52,19 @@ public class MetadataManager {
 	 */
 	public synchronized void refresh() {
 		for (MetadataConfiguration configuration : Context.getRegisteredComponents(MetadataConfiguration.class)) {
-			log.warn("Loading metadata package set from " + configuration.getModuleId() + ":" + configuration.getPath());
-
 			try {
 				ClassLoader loader = configuration.getClassLoader();
 				InputStream stream = loader.getResourceAsStream(configuration.getPath());
-				loadPackagesFromXML(stream, loader);
+
+				if (stream != null) {
+					loadPackagesFromXML(stream ,loader);
+				}
+				else {
+					throw new RuntimeException("Cannot find " + configuration.getModuleId() + ":" + configuration.getPath() + ". Make sure it's in api/src/main/resources");
+				}
 			}
 			catch (Exception ex) {
-				throw new RuntimeException("Cannot find " + configuration.getModuleId() + ":" + configuration.getPath() + ". Make sure it's in api/src/main/resources");
+				throw new RuntimeException("Unable to load " + configuration.getModuleId() + ":" + configuration.getPath(), ex);
 			}
 		}
 	}
@@ -134,9 +138,9 @@ public class MetadataManager {
 			metadataImporter.loadSerializedPackageStream(loader.getResourceAsStream(filename));
 			metadataImporter.importPackage();
 			return true;
+
 		} catch (Exception ex) {
-			log.error("Failed to install metadata package " + filename, ex);
-			return false;
+			throw new RuntimeException("Failed to install metadata package " + filename, ex);
 		}
 	}
 }

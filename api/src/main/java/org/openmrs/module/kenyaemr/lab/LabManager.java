@@ -87,10 +87,16 @@ public class LabManager {
 			try {
 				ClassLoader loader = configuration.getClassLoader();
 				InputStream stream = loader.getResourceAsStream(configuration.getPath());
-				loadTestsFromXML(stream);
+
+				if (stream != null) {
+					loadTestsFromXML(stream);
+				}
+				else {
+					throw new RuntimeException("Cannot find " + configuration.getModuleId() + ":" + configuration.getPath() + ". Make sure it's in api/src/main/resources");
+				}
 			}
 			catch (Exception ex) {
-				throw new RuntimeException("Cannot find " + configuration.getModuleId() + ":" + configuration.getPath() + ". Make sure it's in api/src/main/resources");
+				throw new RuntimeException("Unable to load " + configuration.getModuleId() + ":" + configuration.getPath(), ex);
 			}
 		}
 	}

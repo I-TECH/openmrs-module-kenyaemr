@@ -59,3 +59,10 @@
 .ke-search {
 	width: 300px;
 }
+
+.ke-system-header {
+	padding: 3px;
+	text-align: center;
+	background-color: #AA0000;
+	color: white;
+}

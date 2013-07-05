@@ -18,7 +18,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.ModuleFactory;
-import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.module.kenyaemr.calculation.CalculationManager;
 import org.openmrs.module.kenyaemr.form.FormManager;
 import org.openmrs.module.kenyaemr.identifier.IdentifierManager;
@@ -60,6 +59,8 @@ public class KenyaEmr {
 
 	@Autowired
 	private LabManager labManager;
+
+	boolean refreshed = false;
 
 	/**
 	 * Gets the module version
@@ -145,7 +146,9 @@ public class KenyaEmr {
 	/**
 	 * Refresh all content
 	 */
-	public void refresh() {
+	public synchronized void refresh() {
+		refreshed = false;
+
 		metadataManager.refresh(); // First because others will use metadata loaded by it
 		labManager.refresh();
 		regimenManager.refresh();
@@ -153,6 +156,16 @@ public class KenyaEmr {
 		calculationManager.refresh();
 		formManager.refresh();
 		reportManager.refresh();
+
+		refreshed = true;
+	}
+
+	/**
+	 * Returns whether all content was successfully refreshed
+	 * @return
+	 */
+	public boolean isRefreshed() {
+		return refreshed;
 	}
 
 	/**

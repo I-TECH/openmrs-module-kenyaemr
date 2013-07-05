@@ -13,6 +13,9 @@
 	}
 
 	config.beforeContent = ui.includeFragment("kenyaemr", "pageHeader", config)
+
+	config.beforeContent += ui.includeFragment("kenyaemr", "systemHeader", config)
+
 	config.beforeContent += ui.includeFragment("kenyaemr", "pageAppHeader", config)
 
 	if (config.patient) {

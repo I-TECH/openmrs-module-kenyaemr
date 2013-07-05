@@ -14,15 +14,18 @@
 
 package org.openmrs.module.kenyaemr.fragment.controller;
 
-import org.openmrs.module.kenyaemr.Configuration;
+import org.openmrs.module.kenyaemr.KenyaEmr;
+import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 
 /**
- * System requirements
+ * System header - used to display a system wide error message
  */
-public class SystemRequirementsFragmentController {
+public class SystemHeaderFragmentController {
 	
-	public void controller(FragmentModel model) {
-		model.put("requirements", Configuration.checkRequirements());
+	public void controller(FragmentModel model, @SpringBean KenyaEmr emr) {
+		if (!emr.isRefreshed()) {
+			model.put("systemMessage", "System did not properly load. Please inform a system administrator immediately.");
+		}
 	}
 }
