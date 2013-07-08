@@ -13,238 +13,219 @@
 -->
 <htmlform>
 
-	<style type="text/css">
-		table.baseline-aligned td {
-			vertical-align: baseline;
-		}
-		table.right-first td:first-child {
-			text-align: right;
-		}
-	</style>
-
 	<script type="text/javascript">
+		/**
+		 * TODO use a lookup tag to get these concept ids. Will require HTML-463
+		 */
+		var YES_CONCEPT_ID = 1065;
+		var NO_CONCEPT_ID = 1066;
+
 		var ctxPath = typeof openmrsContextPath === 'string' ? openmrsContextPath : CONTEXT_PATH;
-		$j(function() {
-			$j('#generate-hiv-id').click(function() {
-				$j.getJSON('/' + ctxPath + '/kenyaemr/kenyaEmrUtil/nextHivUniquePatientNumber.action', function(data) {
-					$j('#hiv-id input[type=text]').val(data.value);
-					$j('#generate-hiv-id').hide();
-				});
+
+		function onTransferStatusChange() {
+			if (getValue('transfer-status.value') == NO_CONCEPT_ID) {
+				jq('#transfer-details').hide();
+				jq('#generate-hiv-id').show();
+			} else if (getValue('transfer-status.value') == YES_CONCEPT_ID) {
+				jq('#transfer-details').show();
+				jq('#generate-hiv-id').hide();
+			} else {
+				jq('#transfer-details').hide();
+				jq('#generate-hiv-id').hide();
+			}
+		}
+
+		function onArtStatusChange() {
+			if (getValue('art-status.value') == 'true') {
+				jq('#art-history').show();
+			} else {
+				jq('#art-history').hide();
+			}
+		}
+
+		function onUpnGenerateClick() {
+			kenyaui.openConfirmDialog({
+				heading: 'KenyaEMR',
+				message: 'This should only be used for new patients. If the patient already has a UPN, please enter that instead.',
+				okLabel: 'Continue',
+				okCallback: function() {
+					jq.getJSON('/' + ctxPath + '/kenyaemr/kenyaEmrUtil/nextHivUniquePatientNumber.action', function(data) {
+						jq('#hiv-id input[type=text]').val(data.value);
+						jq('#generate-hiv-id').hide();
+					});
+				}
 			});
+		}
 
-			//when the form is loading for the first time
-				if(getValue('idEntryPoint.value') == 5622) {
-					$('#idTransferredFromAnotherClinic :input').prop('disabled', false);
-				}
-				else {
-					$('#idTransferredFromAnotherClinic :input').prop('disabled', true);
-				}
-				$j("#idEntryPoint select").change(function() {
+		jq(function() {
+			jq('#transfer-status input').click(onTransferStatusChange);
+			jq('#art-status input').click(onArtStatusChange);
+			jq('#generate-hiv-id').click(onUpnGenerateClick);
 
-					if(getValue('idEntryPoint.value') == 5622) {
-						$('#idTransferredFromAnotherClinic :input').prop('disabled', false);
-					}
-					else {
-						$('#idTransferredFromAnotherClinic :input').prop('disabled', true);
-					}
-				});
-
-			var pencounterDate;
-			var pbirthdate = new Date("<lookup expression="patient.birthdate" />").getTime();
-			var datePatientConfirmed
-			var dateEnrolledIntocare;
+			onTransferStatusChange();
+			onArtStatusChange();
 
 			beforeSubmit.push(function() {
-				pencounterDate = new Date(getValue('encounter-date.value')).getTime();
-				datePatientConfirmed = new Date(getValue('dateConfirmedPositive.value')).getTime();
-				dateEnrolledIntocare ="";
+				var birthDate = new Date("<lookup expression="patient.birthdate" />").getTime();
+				var encounterDate = new Date(getValue('encounter-date.value')).getTime();
+				var confirmedPveDate = new Date(getValue('confirmed-positive-date.value')).getTime();
 
-				if (pencounterDate &lt; pbirthdate) {
-					getField('encounter-date.error').html('Encounter date, should not be earlier than Birth date').show();
+				if (encounterDate &lt; birthDate) {
+					getField('encounter-date.error').html('Encounter date, should not be earlier than birth date').show();
 					return false;
 				}
-
-				if(datePatientConfirmed &lt; pbirthdate){
-					getField('dateConfirmedPositive.error').html('Confirmed HIV+ date, should not be earlier than Birth date').show();
+				if (confirmedPveDate &lt; birthDate){
+					getField('confirmed-positive-date.error').html('Confirmed HIV+ date, should not be earlier than birth date').show();
 					return false;
 				}
-
-				if(datePatientConfirmed &gt; pencounterDate){
-					getField('dateConfirmedPositive.error').html('Confirmed HIV+ date, should not be later than HIV enrollment Date').show();
+				if (confirmedPveDate &gt; encounterDate){
+					getField('confirmed-positive-date.error').html('Confirmed HIV+ date, should not be later than HIV enrollment Date').show();
 					return false;
 				}
 				return true;
 			});
-
-			//checking if a patient has been ever on arvs
-				if((getValue('artHistoryYesNo.value')) == 'true'){
-					$('#idArvHistory :input').prop('disabled', false);
-				}
-				else {
-					$('#idArvHistory :input').prop('disabled', true);
-				}
-				$('#artHistoryYesNo input:radio').click(function() {
-					if((getValue('artHistoryYesNo.value')) == 'true'){
-						$('#idArvHistory :input').prop('disabled', false);
-					}
-					else {
-						$('#idArvHistory :input').prop('disabled', true);
-					}
-				});
-		
 		});
 	</script>
 
-	<excludeIf velocityTest="$kenyaemr.hasHivUniquePatientNumber()">
-	  Unique Patient Number:
-	  <span id="hiv-id">
-	    <patient field="identifier" identifierTypeId="05ee9cf4-7242-4a17-b4d4-00f707265c8a"/>
-	  </span>
-	  <input type="button" id="generate-hiv-id" value="Generate"/>
-	</excludeIf>
-
-	<fieldset>
-		<legend>At <i>This</i> Facility</legend>
-		<table width="100%">
+	<div class="ke-form-header">
+		<table style="width: 100%; border: 0">
 			<tr>
-				<td>Enrollment Date: <encounterDate id="encounter-date" showTime="true" /></td>
-				<td>
-					<span class="encounter-details">
-						Enrolled by: <encounterProviderAndRole encounterRole="a0b03050-c99b-11e0-9572-0800200c9a66" default="currentUser" required="true"/> <br/>
-						Enrolled at: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete"/>
-					</span>
-				</td>
+				<td align="left">Enrollment date: <encounterDate id="encounter-date" showTime="true" /></td>
+				<td align="center">Enrolled by: <encounterProviderAndRole encounterRole="a0b03050-c99b-11e0-9572-0800200c9a66" default="currentUser" required="true" /></td>
+				<td align="right">Enrolled at: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" /></td>
 			</tr>
 		</table>
+	</div>
 
-		<table class="baseline-aligned right-first">
+	<fieldset>
+		<legend>Patient Source</legend>
+
+		<table>
 			<tr>
-				<td>What date was patient confirmed HIV+:</td>
-				<td><obs conceptId="160554AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="dateConfirmedPositive" /></td>
+				<td>Entry point</td>
+				<td>
+					<obs style="radio" answerSeparator=" "
+						 conceptId="160540AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+						 answerConceptIds="160538AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160536AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160541AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160542AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160539AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160537AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160544AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+						 answerLabels="PMTCT,IPD-Ad,TB Clinic,OPD,VCT,IPD-Ch,MCH Child,Other"
+					/>
+				</td>
 			</tr>
 			<tr>
-				<td>Where was confirmation done?</td>
+				<td>Transfer in</td>
+				<td>
+					<obs
+						id="transfer-status" conceptId="160563AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio"
+						answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+						answerLabels="Yes,No"
+					/>
+				</td>
+			</tr>
+			<excludeIf velocityTest="$kenyaemr.hasHivUniquePatientNumber()">
+				<tr>
+					<td>Unique Patient Number (UPN)</td>
+					<td>
+						<span id="hiv-id"><patient field="identifier" identifierTypeId="05ee9cf4-7242-4a17-b4d4-00f707265c8a" /></span>
+						<input type="button" id="generate-hiv-id" value="Generate"/>
+					</td>
+				</tr>
+			</excludeIf>
+		</table>
+
+		<div id="transfer-details">
+			<table>
+				<tr>
+					<td>Transfer in date:</td>
+					<td><obs conceptId="160534AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+				</tr>
+				<tr>
+					<td>Transferred from facility:</td>
+					<td><obs conceptId="160535AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /> in district: <obs conceptId="161551AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+				</tr>
+				<tr>
+					<td>Date <i>first</i> enrolled in HIV care:</td>
+					<td><obs conceptId="160555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+				</tr>
+				<tr>
+					<td>Date started ART at transferring facility:</td>
+					<td><obs conceptId="159599AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+				</tr>
+			</table>
+		</div>
+	</fieldset>
+
+	<fieldset>
+		<legend>ART History</legend>
+
+		<table>
+			<tr>
+				<td>Date patient was confirmed HIV+</td>
+				<td><obs conceptId="160554AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="confirmed-positive-date" /></td>
+			</tr>
+			<tr>
+				<td>Facility where confirmation done</td>
 				<td>
 					<obs conceptId="159936AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
 				</td>
 			</tr>
 			<tr>
-				<td>Entry Point:</td>
+				<td>Patient has been on ARVs (inc. PEP &amp; PMTCT)</td>
 				<td>
-					<obs style="dropdown" answerSeparator="&lt;br/&gt;" conceptId="160540AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  id="idEntryPoint" answerConceptIds="160538AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160536AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160541AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160542AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160539AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160537AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160544AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="PMTCT,IPD-Ad,TB Clinic,OPD,VCT,IPD-Ch,MCH Child,Other" />
+					<obs id="art-status" conceptId="160533AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="yes_no" />
 				</td>
 			</tr>
 		</table>
-	</fieldset>
 
-	<br/>
+		<br />
+
+		<table id="art-history" border="0" style="background-color: #EEE">
+			<tr>
+				<td style="background-color: #696969; color: #ffffff;">Purpose</td>
+				<td style="background-color: #696969; color: #ffffff;">List Drug Names and Dates Last Used</td>
+			</tr>
+			<obsgroup groupingConceptId="160741AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+				<tr>
+					<td><obs conceptId="1148AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="PMTCT" /></td>
+					<td><obs conceptId="966AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" dateLabel="" defaultDatetime=""/></td>
+				</tr>
+			</obsgroup>
+			<obsgroup groupingConceptId="160741AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+				<tr>
+					<td><obs conceptId="1691AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox"  labelText="PEP" /></td>
+					<td><obs conceptId="1088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" dateLabel="" /></td>
+				</tr>
+			</obsgroup>
+			<obsgroup groupingConceptId="1085AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+				<tr>
+					<td><obs conceptId="1181AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"    answerConceptId="1185AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="HAART"/></td>
+					<td><obs conceptId="1088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" dateLabel="" /></td>
+				</tr>
+			</obsgroup>
+		</table>
+	</fieldset>
 
 	<fieldset>
 		<legend>Treatment Supporter</legend>
+
 		<table>
 			<tr>
-				<td style="text-align: left;">Name:</td>
+				<td style="text-align: left;">Name</td>
 				<td><obs conceptId="160638AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="40"/></td>
-			</tr>
-			<tr>
-				<td style="text-align: left;">Relationship:</td>
+				<td style="text-align: left;">Relationship</td>
 				<td><obs conceptId="160640AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
 			</tr>
 			<tr>
-				<td style="text-align: left;">Postal Address:</td>
+				<td style="text-align: left;">Postal Address</td>
 				<td><obs conceptId="160641AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="40"/></td>
-			</tr>
-			<!-- tr>
-					  <td style="text-align: left;">Postal Address:</td>
-					  <td><obs conceptId="160641AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="textarea" rows="3" cols="20"/></td>
-			   </tr -->
-			<tr>
-				<td style="text-align: left;">Telephone number:</td>
+				<td style="text-align: left;">Telephone number</td>
 				<td><obs conceptId="160642AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
 			</tr>
 		</table>
 	</fieldset>
-	<div id="idTransferredFromAnotherClinic">
-		<br/>
-
-		<fieldset>
-			<legend>If Transferred from another facility</legend>
-			<table>
-				<tr>
-					<td>Transfer In Date: <obs conceptId="160534AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "/></td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>......from: Facility:<obs conceptId="160535AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
-					<td > District:<obs conceptId="161551AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
-				</tr>
-				<tr>
-					<td>Date <i>first</i> enrolled in HIV care:</td>
-					<td><obs conceptId="160555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "/></td>
-				</tr>
-				<tr>
-					<td>Date Started ART at transferring facility:</td>
-					<td><obs conceptId="159599AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "/></td>
-				</tr>
-			</table>
-		</fieldset>
-	</div>
-	<br/>
-
-	<fieldset ><legend>ART History</legend>
-		<table>
-			<tr>
-				<td colspan="2"><obs conceptId="160533AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText="Has this patient been on ARVs (including PEP &amp; PMTCT)? " style="yes_no" id="artHistoryYesNo" /> </td>
-			</tr>
-
-			<tr>
-				<td colspan="2"> </td>
-			</tr>
-		</table>
-		<div id="idArvHistory">
-			<table style="width: 100%; height: 44px;" border="0" align="center">
-				<tr>
-					<td style="background-color: #696969; color: #ffffff;">Purpose</td>
-					<td style="background-color: #696969; color: #ffffff;">List Drug Names and Dates Last Used</td>
-					<td></td>
-				</tr>
-				<obsgroup groupingConceptId="160741AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-					<tr>
-						<td><obs conceptId="1148AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"    answerConceptId="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="PMTCT"/></td>
-
-						<td><obs conceptId="966AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" dateLabel=""  defaultDatetime=""/></td>
-						<td></td>
-
-					</tr>
-				</obsgroup>
-				<obsgroup groupingConceptId="160741AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-
-					<tr>
-						<td><obs conceptId="1691AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox"  labelText="PEP" /></td>
-
-						<td><obs conceptId="1088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" dateLabel="" /></td>
-						<td></td>
-
-					</tr>
-
-				</obsgroup>
-				<obsgroup groupingConceptId="1085AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-					<tr>
-						<td><obs conceptId="1181AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"    answerConceptId="1185AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="HAART"/></td>
-
-						<td><obs conceptId="1088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" dateLabel="" /></td>
-						<td></td>
-
-					</tr>
-				</obsgroup>
-			</table>
-		</div>
-	</fieldset>
 
 	<enrollInProgram programId="dfdc6d40-2f2f-463d-ba90-cc97350441a8"/>
-	
 
-	<div class="ke-form-buttons">
+	<div class="ke-form-footer">
 		<submit />
 	</div>
 
