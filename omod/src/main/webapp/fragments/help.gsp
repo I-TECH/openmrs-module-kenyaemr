@@ -66,5 +66,5 @@ If those do not resolve your problem, then you can submit a support ticket. To d
 </div>
 <br />
 <div style="text-align: center">
-	${ ui.includeFragment("kenyaui", "widget/button", [ label: "Close", onClick: "kenyaui.closeModalDialog();" ]) }
+	${ ui.includeFragment("kenyaui", "widget/button", [ label: "Close", onClick: "kenyaui.closeDialog();" ]) }
 </div>

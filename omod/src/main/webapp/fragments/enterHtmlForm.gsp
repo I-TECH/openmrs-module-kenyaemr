@@ -106,7 +106,7 @@ ui.includeJavascript("kenyaemr", "dwr-util.js")
 		var username = jq('#authentication-dialog-username').val();
 		var password = jq('#authentication-dialog-password').val();
 
-		kenyaui.closeModalDialog();
+		kenyaui.closeDialog();
 
 		// Try authenticating and then submitting again...
 		jq.getJSON(ui.fragmentActionLink('kenyaemr', 'kenyaEmrUtil', 'authenticate', { username: username, password: password }), submitHtmlForm);
@@ -131,7 +131,7 @@ ui.includeJavascript("kenyaemr", "dwr-util.js")
 		
 		// only do the submit if all the beforeSubmit functions returned "true"
 		if (state_beforeSubmit){
-			kenyaui.openLoadingDialog('Submitting form...');
+			kenyaui.openLoadingDialog({ message: 'Submitting form...' });
 			kenyaui.clearFormErrors('htmlform');
 
 			var form = jq('#htmlform');
@@ -147,7 +147,7 @@ ui.includeJavascript("kenyaemr", "dwr-util.js")
 						}
 					<% } %>
 				} else {
-					kenyaui.closeModalDialog();
+					kenyaui.closeDialog();
 					for (key in result.errors) {
 						showError(key, result.errors[key]);
 					}
@@ -155,7 +155,7 @@ ui.includeJavascript("kenyaemr", "dwr-util.js")
 				}
 			}, 'json')
 			.error(function(jqXHR, textStatus, errorThrown) {
-				kenyaui.closeModalDialog();
+				kenyaui.closeDialog();
 				ui.enableConfirmBeforeNavigating();
 				window.alert('Unexpected error, please contact your System Administrator: ' + textStatus);
 			});

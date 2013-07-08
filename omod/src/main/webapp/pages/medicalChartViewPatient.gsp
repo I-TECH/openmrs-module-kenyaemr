@@ -81,7 +81,11 @@
 
 		<script type="text/javascript">
 			function onVoidVisit(visitId) {
-				kenyaui.openConfirmDialog('KenyaEMR', '${ ui.message("kenyaemr.confirmVoidVisit") }', function() { doVisitVoid(visitId); });
+				kenyaui.openConfirmDialog({
+					heading: 'KenyaEMR',
+					message: '${ ui.message("kenyaemr.confirmVoidVisit") }',
+					okCallback: function() { doVisitVoid(visitId); }
+				});
 			}
 
 			function doVisitVoid(visitId) {
