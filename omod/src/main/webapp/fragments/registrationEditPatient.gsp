@@ -17,7 +17,8 @@
 				&nbsp;
 				<input type="radio" name="gender" value="M" id="gender-M" ${ maleChecked }/>
 				<label for="gender-M">Male</label>
-				<span class="error" style="display: none"></span>
+				<span id="gender-F-error" class="error" style="display: none"></span>
+				<span id="gender-M-error" class="error" style="display: none"></span>
 			"""),
 			"&nbsp;&nbsp;&nbsp;&nbsp;",
 			[ object: command, property: "birthdate", label: "Birthdate *" ],
