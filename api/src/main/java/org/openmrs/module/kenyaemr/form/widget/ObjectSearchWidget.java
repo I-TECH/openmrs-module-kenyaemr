@@ -70,7 +70,9 @@ public class ObjectSearchWidget implements Widget {
 				attributes.put("value", initialValue.getId());
 			}
 
+			sb.append("<span style=\"text-align: left\">");
 			sb.append(FormUtils.htmlTag("input", attributes, true));
+			sb.append("</span>");
 		}
 		return sb.toString();
 	}
