@@ -3,7 +3,7 @@
 
 	<groupId>org.openmrs.module</groupId>
 	<artifactId>kenyaemr</artifactId>
-	<version>2013.2-SNAPSHOT</version>
+	<version>2013.2</version>
 
 	<packaging>pom</packaging>
 	<name>KenyaEMR</name>
@@ -24,7 +24,8 @@
 		<connection>scm:git:git@github.com:I-TECH/openmrs-module-kenyaemr.git</connection>
 		<developerConnection>scm:git:git@github.com:I-TECH/openmrs-module-kenyaemr.git</developerConnection>
 		<url>scm:git:git@github.com:I-TECH/openmrs-module-kenyaemr.git</url>
-	</scm>
+	  <tag>2013.2</tag>
+  </scm>
 
 	<modules>
 		<module>api</module>
