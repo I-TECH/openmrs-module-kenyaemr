@@ -6,7 +6,7 @@ MOD_DIR=/usr/share/tomcat6/.OpenMRS/modules
 
 echo "[$HOSTNAME] Installing $1 ..."
 
-rm "$MOD_DIR/*.omod"
+rm $MOD_DIR/*.omod
 
 echo "[$HOSTNAME] Deleted existing omods"
 
