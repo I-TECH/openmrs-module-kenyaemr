@@ -2,18 +2,14 @@
 
 <module configVersion="1.2">
 
-	<!-- Module Properties -->
 	<id>${project.parent.artifactId}</id>
-	<name>KenyaEMR</name>
-	<version>20${project.parent.version}</version>
+	<name>${project.parent.name}</name>
+	<version>${project.parent.version}</version>
 	<package>${project.parent.groupId}.${project.parent.artifactId}</package>
-	<author>I-TECH</author>
+	<author>${project.parent.organization.name}</author>
 	<description>${project.parent.description}</description>
-	<updateURL>https://dev.openmrs.org/modules/download/${project.parent.artifactId}/update.rdf</updateURL>
-	<require_version>1.9</require_version>
-	<!-- / Module Properties -->
+	<require_version>${openMRSVersion}</require_version>
 
-	<!-- Required Modules -->
 	<require_modules>
 		<require_module version="${uiframeworkVersion}">org.openmrs.module.uiframework</require_module>
 		<require_module version="${kenyauiVersion}">org.openmrs.module.kenyaui</require_module>
@@ -25,20 +21,15 @@
 		<require_module version="${reportingVersion}">org.openmrs.module.reporting</require_module>
 		<require_module version="${idgenVersion}">org.openmrs.module.idgen</require_module>
 	</require_modules>
-	<!-- / Required Modules -->
-	
-	<!-- Module Activator -->
+
 	<activator>${project.parent.groupId}.${project.parent.artifactId}.KenyaEmrActivator</activator>
-	
-	<!-- Maps hibernate file's, if present -->
+
 	<mappingFiles>
 	</mappingFiles>
 
-	<!-- Internationalization -->
 	<messages>
 		<lang>en</lang>
 		<file>messages.properties</file>
 	</messages>
-	<!-- /Internationalization -->
 
 </module>
