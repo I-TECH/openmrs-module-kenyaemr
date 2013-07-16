@@ -15,13 +15,13 @@
 package org.openmrs.module.kenyaemr.calculation;
 
 /**
- * Calculation class which is displayed as an alert
+ * Calculation class which is is treated as a flag
  */
-public abstract class BaseAlertCalculation extends BaseEmrCalculation {
+public abstract class BaseFlagCalculation extends BaseEmrCalculation {
 
 	/**
-	 * Gets a message suitable for a single patient or alert, e.g. "Eligible for ART"
+	 * Gets a message suitable for a single patient or flag, e.g. "Eligible for ART"
 	 * @return the message
 	 */
-	public abstract String getAlertMessage();
+	public abstract String getFlagMessage();
 }

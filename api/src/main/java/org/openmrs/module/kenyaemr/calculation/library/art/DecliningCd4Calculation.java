@@ -24,7 +24,7 @@ import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.KenyaEmrConstants;
 import org.openmrs.module.kenyaemr.Metadata;
-import org.openmrs.module.kenyaemr.calculation.BaseAlertCalculation;
+import org.openmrs.module.kenyaemr.calculation.BaseFlagCalculation;
 import org.openmrs.module.kenyaemr.calculation.BooleanResult;
 import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
 
@@ -32,13 +32,13 @@ import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
  * Calculates whether a patient has a declining CD4 count. Calculation returns true if patient
  * is alive, enrolled in the HIV program and last CD4 count is less than CD4 count from 6 months ago
  */
-public class DecliningCd4Calculation extends BaseAlertCalculation {
+public class DecliningCd4Calculation extends BaseFlagCalculation {
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.calculation.BaseAlertCalculation#getAlertMessage()
+	 * @see org.openmrs.module.kenyaemr.calculation.BaseFlagCalculation#getFlagMessage()
 	 */
 	@Override
-	public String getAlertMessage() {
+	public String getFlagMessage() {
 		return "Declining CD4";
 	}
 

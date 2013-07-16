@@ -28,7 +28,7 @@ import org.openmrs.calculation.result.ObsResult;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.KenyaEmrConstants;
 import org.openmrs.module.kenyaemr.Metadata;
-import org.openmrs.module.kenyaemr.calculation.BaseAlertCalculation;
+import org.openmrs.module.kenyaemr.calculation.BaseFlagCalculation;
 import org.openmrs.module.kenyaemr.calculation.BooleanResult;
 import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
 
@@ -38,13 +38,13 @@ import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
  * duration probably 2 weeks during the 2 weeks then there should have been no
  * sputum results recorded
  */
-public class NeedsTbSputumTestCalculation extends BaseAlertCalculation {
+public class NeedsTbSputumTestCalculation extends BaseFlagCalculation {
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.calculation.BaseAlertCalculation#getAlertMessage()
+	 * @see org.openmrs.module.kenyaemr.calculation.BaseFlagCalculation#getFlagMessage()
 	 */
 	@Override
-	public String getAlertMessage() {
+	public String getFlagMessage() {
 		return "Due for TB Sputum";
 	}
 

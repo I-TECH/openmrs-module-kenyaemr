@@ -25,20 +25,20 @@ import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.ObsResult;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.Metadata;
-import org.openmrs.module.kenyaemr.calculation.BaseAlertCalculation;
+import org.openmrs.module.kenyaemr.calculation.BaseFlagCalculation;
 import org.openmrs.module.kenyaemr.calculation.BooleanResult;
 import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
 
 /**
  * Calculates which patients are missing TB sputum results
  */
-public class MissingTbSputumResultsCalculation extends BaseAlertCalculation {
+public class MissingTbSputumResultsCalculation extends BaseFlagCalculation {
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.calculation.BaseAlertCalculation#getAlertMessage()
+	 * @see org.openmrs.module.kenyaemr.calculation.BaseFlagCalculation#getFlagMessage()
 	 */
 	@Override
-	public String getAlertMessage() {
+	public String getFlagMessage() {
 		return "Missing TB Sputum Results";
 	}
 

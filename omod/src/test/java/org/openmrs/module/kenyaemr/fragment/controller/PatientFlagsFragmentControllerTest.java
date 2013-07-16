@@ -25,11 +25,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
 
 /**
- * Tests for {@link ClinicalAlertsFragmentController}
+ * Tests for {@link PatientFlagsFragmentController}
  */
-public class ClinicalAlertsFragmentControllerTest extends BaseModuleWebContextSensitiveTest {
+public class PatientFlagsFragmentControllerTest extends BaseModuleWebContextSensitiveTest {
 
-	private ClinicalAlertsFragmentController controller;
+	private PatientFlagsFragmentController controller;
 
 	@Autowired
 	private KenyaEmr emr;
@@ -42,24 +42,24 @@ public class ClinicalAlertsFragmentControllerTest extends BaseModuleWebContextSe
 		executeDataSet("test-data.xml");
 		executeDataSet("test-drugdata.xml");
 
-		controller = new ClinicalAlertsFragmentController();
+		controller = new PatientFlagsFragmentController();
 
 		emr.getCalculationManager().refresh();
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.fragment.controller.ClinicalAlertsFragmentController#controller()
+	 * @see PatientFlagsFragmentController#controller()
 	 */
 	@Test
 	public void controller() {
 	}
 
 	/**
-	 * @see ClinicalAlertsFragmentController#getAlerts(Integer, org.openmrs.module.kenyaemr.KenyaEmr)
+	 * @see PatientFlagsFragmentController#getFlags(Integer, org.openmrs.module.kenyaemr.KenyaEmr)
 	 */
 	@Test
 	public void getAlerts() {
-		List<SimpleObject> alerts = controller.getAlerts(7, emr);
+		List<SimpleObject> alerts = controller.getFlags(7, emr);
 
 		Assert.assertTrue(alerts.size() >= 1);
 		Assert.assertTrue(alerts.get(0).containsKey("message"));

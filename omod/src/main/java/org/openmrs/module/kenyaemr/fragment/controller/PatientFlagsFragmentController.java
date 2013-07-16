@@ -24,18 +24,17 @@ import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.module.kenyaemr.KenyaEmr;
-import org.openmrs.module.kenyaemr.calculation.BaseAlertCalculation;
+import org.openmrs.module.kenyaemr.calculation.BaseFlagCalculation;
 import org.openmrs.ui.framework.SimpleObject;
-import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
- * Controller for requests for clinical alerts
+ * Controller for patient flags
  */
-public class ClinicalAlertsFragmentController {
+public class PatientFlagsFragmentController {
 
-	protected static final Log log = LogFactory.getLog(ClinicalAlertsFragmentController.class);
+	protected static final Log log = LogFactory.getLog(PatientFlagsFragmentController.class);
 
 	/**
 	 * Do nothing, this will load via ajax
@@ -44,27 +43,27 @@ public class ClinicalAlertsFragmentController {
 	}
 
 	/**
-	 * Gets the clinical alerts for the given patient. If any of the calculations throws an exception, this will return a single
-	 * alert message with the name of the offending calculation
+	 * Gets the patient flags for the given patient. If any of the calculations throws an exception, this will return a single
+	 * flag with a message with the name of the offending calculation
 	 * @param patientId the patient id
 	 * @param emr the KenyaEMR
-	 * @return the alerts as simple objects
+	 * @return the flags as simple objects
 	 */
-	public List<SimpleObject> getAlerts(@RequestParam("patientId") Integer patientId, @SpringBean KenyaEmr emr) {
+	public List<SimpleObject> getFlags(@RequestParam("patientId") Integer patientId, @SpringBean KenyaEmr emr) {
 
 		List<SimpleObject> alerts = new ArrayList<SimpleObject>();
 
-		// Gather all alert calculations that evaluate to true
-		for (BaseAlertCalculation calc : emr.getCalculationManager().getAlertCalculations()) {
+		// Gather all flag calculations that evaluate to true
+		for (BaseFlagCalculation calc : emr.getCalculationManager().getFlagCalculations()) {
 			try {
 				CalculationResult result = Context.getService(PatientCalculationService.class).evaluate(patientId, calc);
 				if (result != null && (Boolean) result.getValue()) {
-						alerts.add(SimpleObject.create("message", calc.getAlertMessage()));
+						alerts.add(SimpleObject.create("message", calc.getFlagMessage()));
 				}
 			}
 			catch (Exception ex) {
 				log.error("Error evaluating " + calc.getClass(), ex);
-				return Collections.singletonList(SimpleObject.create("message", "ERROR EVALUATING '" + calc.getAlertMessage() + "'"));
+				return Collections.singletonList(SimpleObject.create("message", "ERROR EVALUATING '" + calc.getFlagMessage() + "'"));
 			}
 		}
 		return alerts;

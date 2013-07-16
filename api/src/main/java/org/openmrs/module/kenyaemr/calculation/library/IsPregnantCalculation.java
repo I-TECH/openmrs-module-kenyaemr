@@ -19,7 +19,7 @@ import org.openmrs.Obs;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.calculation.BaseAlertCalculation;
+import org.openmrs.module.kenyaemr.calculation.BaseFlagCalculation;
 import org.openmrs.module.kenyaemr.calculation.BooleanResult;
 import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
 
@@ -30,10 +30,10 @@ import java.util.Set;
 /**
  * Calculates the recorded pregnancy status of patients
  */
-public class IsPregnantCalculation extends BaseAlertCalculation {
+public class IsPregnantCalculation extends BaseFlagCalculation {
 
 	@Override
-	public String getAlertMessage() {
+	public String getFlagMessage() {
 		return "Pregnant";
 	}
 

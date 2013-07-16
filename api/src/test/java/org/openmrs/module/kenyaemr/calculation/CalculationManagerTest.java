@@ -21,9 +21,6 @@ import org.junit.Test;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Arrays;
-import java.util.List;
-
 /**
  * Tests for {@link CalculationManager}
  */
@@ -41,10 +38,10 @@ public class CalculationManagerTest extends BaseModuleContextSensitiveTest {
 	}
 
 	/**
-	 * @see CalculationManager#getAlertCalculations()
+	 * @see CalculationManager#getFlagCalculations()
 	 */
 	@Test
 	public void getAlertCalculations_shouldReturnAllAlertCalculations() {
-		Assert.assertTrue(manager.getAlertCalculations().size() > 0);
+		Assert.assertTrue(manager.getFlagCalculations().size() > 0);
 	}
 }

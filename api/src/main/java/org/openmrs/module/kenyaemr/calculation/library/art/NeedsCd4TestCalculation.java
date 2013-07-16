@@ -26,22 +26,21 @@ import org.openmrs.calculation.result.ObsResult;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.KenyaEmrConstants;
 import org.openmrs.module.kenyaemr.Metadata;
-import org.openmrs.module.kenyaemr.calculation.BaseAlertCalculation;
+import org.openmrs.module.kenyaemr.calculation.BaseFlagCalculation;
 import org.openmrs.module.kenyaemr.calculation.BooleanResult;
 import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
-import org.openmrs.util.OpenmrsUtil;
 
 /**
  * Calculate whether patients are due for a CD4 count. Calculation returns true if if the patient
  * is alive, enrolled in the HIV program, and has not had a CD4 count in the last 180 days
  */
-public class NeedsCd4TestCalculation extends BaseAlertCalculation {
+public class NeedsCd4TestCalculation extends BaseFlagCalculation {
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.calculation.BaseAlertCalculation#getAlertMessage()
+	 * @see org.openmrs.module.kenyaemr.calculation.BaseFlagCalculation#getFlagMessage()
 	 */
 	@Override
-	public String getAlertMessage() {
+	public String getFlagMessage() {
 		return "Due for CD4";
 	}
 	

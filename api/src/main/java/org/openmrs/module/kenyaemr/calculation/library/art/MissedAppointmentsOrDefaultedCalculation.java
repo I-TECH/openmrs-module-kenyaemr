@@ -26,7 +26,7 @@ import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.Metadata;
-import org.openmrs.module.kenyaemr.calculation.BaseAlertCalculation;
+import org.openmrs.module.kenyaemr.calculation.BaseFlagCalculation;
 import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
 
 /**
@@ -34,10 +34,10 @@ import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
  * if the patient is alive, enrolled in the HIV program, has a scheduled return visit in the past,
  * and hasn't had an encounter since that date
  */
-public class MissedAppointmentsOrDefaultedCalculation extends BaseAlertCalculation {
+public class MissedAppointmentsOrDefaultedCalculation extends BaseFlagCalculation {
 
 	@Override
-	public String getAlertMessage() {
+	public String getFlagMessage() {
 		return "Missed Appointment";
 	}
 

@@ -29,13 +29,13 @@ import org.openmrs.module.reporting.common.Age;
 /**
  *
  */
-public class EligibleForArtCalculation extends BaseAlertCalculation {
+public class EligibleForArtCalculation extends BaseFlagCalculation {
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.calculation.BaseAlertCalculation#getAlertMessage()
+	 * @see org.openmrs.module.kenyaemr.calculation.BaseFlagCalculation#getFlagMessage()
 	 */
 	@Override
-	public String getAlertMessage() {
+	public String getFlagMessage() {
 		return "Eligible for ART";
 	}
 	

@@ -66,15 +66,15 @@ public class CalculationManager implements CalculationProvider {
 	}
 
 	/**
-	 * Gets new instances of all alert calculations in this module
-	 * @return list of alert calculation instances
+	 * Gets new instances of all patient flag calculations in this module
+	 * @return list of flag calculation instances
 	 */
-	public List<BaseAlertCalculation> getAlertCalculations() {
-		List<BaseAlertCalculation> ret = new ArrayList<BaseAlertCalculation>();
+	public List<BaseFlagCalculation> getFlagCalculations() {
+		List<BaseFlagCalculation> ret = new ArrayList<BaseFlagCalculation>();
 
 		for (Class<? extends BaseEmrCalculation> calculationClass : calculationClasses.values()) {
-			if (BaseAlertCalculation.class.isAssignableFrom(calculationClass)) {
-				ret.add((BaseAlertCalculation)instantiateCalculation(calculationClass, null));
+			if (BaseFlagCalculation.class.isAssignableFrom(calculationClass)) {
+				ret.add((BaseFlagCalculation)instantiateCalculation(calculationClass, null));
 			}
 		}
 
