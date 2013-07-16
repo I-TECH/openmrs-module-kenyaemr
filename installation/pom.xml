@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.openmrs.module</groupId>
 		<artifactId>kenyaemr</artifactId>
-		<version>13.2.2</version>
+		<version>13.3-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>kenyaemr-installation</artifactId>
