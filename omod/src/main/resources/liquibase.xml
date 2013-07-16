@@ -12,6 +12,19 @@
 		</delete>
 	</changeSet>
 
+	<changeSet id="${project.parent.artifactId}-20130319-0911" author="rowanseymour">
+		<preConditions onFail="MARK_RAN" onError="WARN">
+			<sqlCheck expectedResult="0">SELECT COUNT(*) FROM encounter_type WHERE uuid = 'ed6dacc9-0827-4c82-86be-53c0d8c449be';</sqlCheck>
+		</preConditions>
+		<comment>
+			Creates the TB Screening encounter type if it doesn't exist
+		</comment>
+		<sql>
+			INSERT INTO encounter_type (`name`, `description`, `creator`, `date_created`, `retired`, `uuid`)
+				VALUES ('TB Screening', 'Screening of patient for TB', '1', '2013-03-06 10:04:31', '0', 'ed6dacc9-0827-4c82-86be-53c0d8c449be');
+		</sql>
+	</changeSet>
+
 	<changeSet id="${project.parent.artifactId}-20130319-0912" author="rowanseymour">
 		<comment>
 			Updates the encounter type of all TB Screening form submissions
