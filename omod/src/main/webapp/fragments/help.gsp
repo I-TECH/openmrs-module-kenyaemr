@@ -1,7 +1,7 @@
 <%
 	// Help dialog content - loaded into a modal dialog
 
-	def helpBaseUrl = "http://localhost/help/"
+	def helpBaseUrl = "../../help/"
 
 	def resourceFiles = [
 			"How to Create a Patient Record": "K_JobAid_1_CreatePt_13.2.pdf",
