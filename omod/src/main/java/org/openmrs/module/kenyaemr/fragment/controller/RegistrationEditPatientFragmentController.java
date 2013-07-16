@@ -79,14 +79,12 @@ public class RegistrationEditPatientFragmentController {
 
 		//create a list of marital status answer concepts
 		List<Concept> maritalStatusOptions = new ArrayList<Concept>();
-		maritalStatusOptions.add(Dictionary.getConcept(Dictionary.SEPARATED));
+		maritalStatusOptions.add(Dictionary.getConcept(Dictionary.MARRIED_POLYGAMOUS));
 		maritalStatusOptions.add(Dictionary.getConcept(Dictionary.MARRIED_MONOGAMOUS));
-		maritalStatusOptions.add(Dictionary.getConcept(Dictionary.NEVER_MARRIED));
 		maritalStatusOptions.add(Dictionary.getConcept(Dictionary.DIVORCED));
 		maritalStatusOptions.add(Dictionary.getConcept(Dictionary.WIDOWED));
-		maritalStatusOptions.add(Dictionary.getConcept(Dictionary.MARRIED_POLYGAMOUS));
-		maritalStatusOptions.add(Dictionary.getConcept(Dictionary.LIVES_ALONE));
-		maritalStatusOptions.add(Dictionary.getConcept(Dictionary.OTHER_NON_CODED));
+		maritalStatusOptions.add(Dictionary.getConcept(Dictionary.LIVING_WITH_PARTNER));
+		maritalStatusOptions.add(Dictionary.getConcept(Dictionary.NEVER_MARRIED));
 		model.addAttribute("maritalStatusOptions", maritalStatusOptions);
 
 		// Fetch person attributes
