@@ -46,7 +46,7 @@ public class OnMedicationCalculation extends BaseEmrCalculation {
 		for (Integer ptId : cohort) {
 			boolean takingDrug = false;
 			Encounter lastConsultation = CalculationUtils.resultForPatient(lastConsultations, ptId);
-			if (lastConsultation != null && daysSince(lastConsultation.getEncounterDatetime(), context) <= KenyaEmrConstants.PATIENT_ACTIVE_VISIT_THRESHOLD_DAYS) {
+			if (lastConsultation != null && lastConsultation.getVisit() != null && daysSince(lastConsultation.getEncounterDatetime(), context) <= KenyaEmrConstants.PATIENT_ACTIVE_VISIT_THRESHOLD_DAYS) {
 				Set<Encounter> encountersInRefVisit = lastConsultation.getVisit().getEncounters();
 
 				for (Encounter enc: encountersInRefVisit) {
