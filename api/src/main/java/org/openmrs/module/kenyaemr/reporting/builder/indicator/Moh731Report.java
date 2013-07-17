@@ -327,7 +327,7 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 		EmrReportingUtils.addRow(cohortDsd, "HV03", "Cumulative ever on ART", map(cohortIndicators.get("cumulativeOnArt"), indParams), nonInfantColumns, Arrays.asList("40", "41", "42", "43", "44"));
 
 		// 3.8 (Survival and Retention on ART at 12 months)
-		cohortDsd.addColumn("HV03-46", "ART Net Cohort at 12 months", map(cohortIndicators.get("art12MonthNetCohort"), indParams), "");
+		cohortDsd.addColumn("HV03-45", "ART Net Cohort at 12 months", map(cohortIndicators.get("art12MonthNetCohort"), indParams), "");
 		cohortDsd.addColumn("HV03-46", "On original 1st Line at 12 months", map(cohortIndicators.get("onOriginalFirstLineAt12Months"), indParams), "");
 		cohortDsd.addColumn("HV03-47", "On alternative 1st Line at 12 months", map(cohortIndicators.get("onAlternateFirstLineAt12Months"), indParams), "");
 		cohortDsd.addColumn("HV03-48", "On 2nd Line (or higher) at 12 months ", map(cohortIndicators.get("onSecondLineAt12Months"), indParams), "");
