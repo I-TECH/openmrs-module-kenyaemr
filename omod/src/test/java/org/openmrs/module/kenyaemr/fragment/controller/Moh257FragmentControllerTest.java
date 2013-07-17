@@ -31,6 +31,7 @@ import org.openmrs.module.kenyaemr.datatype.LocationDatatype;
 import org.openmrs.module.kenyaemr.test.TestUiUtils;
 import org.openmrs.module.kenyaemr.test.TestUtils;
 import org.openmrs.ui.framework.SimpleObject;
+import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -45,6 +46,9 @@ public class Moh257FragmentControllerTest extends BaseModuleWebContextSensitiveT
 
 	@Autowired
 	private KenyaEmr emr;
+
+	@Autowired
+	private UiUtils ui;
 
 	@Autowired
 	private KenyaEmrUiUtils kenyaEmrUiUtils;
@@ -90,9 +94,9 @@ public class Moh257FragmentControllerTest extends BaseModuleWebContextSensitiveT
 		reVisit.setVisitType(outpatientType);
 		reVisit.setVisitDate(TestUtils.date(2012, 1, 1));
 
-		SimpleObject simpleVisit = controller.createRetrospectiveVisit(reVisit, new TestUiUtils(), kenyaEmrUiUtils);
+		SimpleObject simpleVisit = controller.createRetrospectiveVisit(reVisit, ui, kenyaEmrUiUtils);
 
-		Assert.assertNotNull(simpleVisit.get("visitId"));
+		Assert.assertNotNull(simpleVisit.get("id"));
 		Assert.assertEquals("Outpatient", simpleVisit.get("visitType"));
 		Assert.assertEquals("01-Jan-2012", simpleVisit.get("startDatetime"));
 		Assert.assertEquals("01-Jan-2012 23:59", simpleVisit.get("stopDatetime"));
@@ -103,10 +107,10 @@ public class Moh257FragmentControllerTest extends BaseModuleWebContextSensitiveT
 		reVisit.setVisitType(outpatientType);
 		reVisit.setVisitDate(TestUtils.date(2012, 5, 1));
 
-		simpleVisit = controller.createRetrospectiveVisit(reVisit, new TestUiUtils(), kenyaEmrUiUtils);
+		simpleVisit = controller.createRetrospectiveVisit(reVisit, ui, kenyaEmrUiUtils);
 
 		// Assert that returned visit is the existing visit
-		Assert.assertEquals(existingVisit.getVisitId(), simpleVisit.get("visitId"));
+		Assert.assertEquals(existingVisit.getVisitId(), simpleVisit.get("id"));
 		Assert.assertEquals("Outpatient", simpleVisit.get("visitType"));
 		Assert.assertEquals("01-May-2012 10:00", simpleVisit.get("startDatetime"));
 		Assert.assertEquals("01-May-2012 11:00", simpleVisit.get("stopDatetime"));

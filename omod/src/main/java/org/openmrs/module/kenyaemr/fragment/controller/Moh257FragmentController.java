@@ -110,7 +110,7 @@ public class Moh257FragmentController {
 		ui.validate(command, command, "visit");
 
 		Visit visit = command.applyAndReturnVisit();
-		return kenyaUi.simpleVisit(visit, ui);
+		return ui.convert(visit, SimpleObject.class);
 	}
 
 	/**

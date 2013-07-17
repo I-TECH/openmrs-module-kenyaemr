@@ -21,6 +21,9 @@ import org.openmrs.module.kenyaui.KenyaUiConstants;
 import org.openmrs.ui.framework.BasicUiUtils;
 import org.openmrs.ui.framework.FormatterImpl;
 import org.openmrs.ui.framework.UiFrameworkConstants;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.convert.ConversionService;
+import org.springframework.stereotype.Component;
 
 import static org.mockito.Mockito.mock;
 
@@ -28,6 +31,7 @@ import static org.mockito.Mockito.mock;
  * Basic UiUtils implementation for unit tests
  */
 @Ignore
+@Component
 public class TestUiUtils extends BasicUiUtils {
 
 	/**

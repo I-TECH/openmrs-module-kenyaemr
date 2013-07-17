@@ -196,8 +196,8 @@ public class RegistrationUtilFragmentController {
 
 		ui.validate(visit, new RegistrationVisitValidator(), "visit");
 
-		Visit saved = Context.getVisitService().saveVisit(visit);
-		return kenyaUi.simpleVisit(saved, ui);
+		Context.getVisitService().saveVisit(visit);
+		return ui.convert(visit, SimpleObject.class);
 	}
 	
 	/**
@@ -209,8 +209,8 @@ public class RegistrationUtilFragmentController {
 	public SimpleObject editVisit(@RequestParam("visit.visitId") @BindParams("visit") @Validate Visit visit, UiUtils ui, @SpringBean KenyaEmrUiUtils kenyaUi) {
 		ui.validate(visit, new RegistrationVisitValidator(), "visit");
 
-		Visit saved = Context.getVisitService().saveVisit(visit);
-		return kenyaUi.simpleVisit(saved, ui);
+		Context.getVisitService().saveVisit(visit);
+		return ui.convert(visit, SimpleObject.class);
 	}
     
     /**

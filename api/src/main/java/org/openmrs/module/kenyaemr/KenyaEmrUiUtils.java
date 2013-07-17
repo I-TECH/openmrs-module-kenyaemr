@@ -260,16 +260,6 @@ public class KenyaEmrUiUtils {
 	}
 
 	/**
-	 * Simplifies a visit
-	 * @param visit the visit
-	 * @param ui the UI utils
-	 * @return the simple object
-	 */
-	public SimpleObject simpleVisit(Visit visit, UiUtils ui) {
-		return SimpleObject.fromObject(visit, ui, "visitId", "visitType", "startDatetime", "stopDatetime");
-	}
-
-	/**
 	 * Creates a simple regimen object
 	 * @param regimen the regimen
 	 * @param ui the UI utils

@@ -93,7 +93,7 @@ public class KenyaEmrUtilFragmentController {
 		visit.setVoidedBy(Context.getAuthenticatedUser());
 		visit.setVoidReason(reason);
 		Context.getVisitService().saveVisit(visit);
-		return kenyaEmrUiUtils.simpleVisit(visit, ui);
+		return ui.convert(visit, SimpleObject.class);
 	}
 
 	/**
