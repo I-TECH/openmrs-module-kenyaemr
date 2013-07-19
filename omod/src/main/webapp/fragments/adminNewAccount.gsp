@@ -12,7 +12,8 @@
 				<label for="gender-F">Female</label>
 				<input type="radio" name="gender" value="M" id="gender-M"/>
 				<label for="gender-M">Male</label>
-				<span class="error" style="display: none"></span>
+				<span id="gender-F-error" class="error" style="display: none"></span>
+				<span id="gender-M-error" class="error" style="display: none"></span>
 			""")
 		]
 	]

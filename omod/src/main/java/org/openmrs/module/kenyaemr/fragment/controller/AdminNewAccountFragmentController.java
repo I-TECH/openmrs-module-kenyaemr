@@ -55,9 +55,11 @@ public class AdminNewAccountFragmentController {
 		Provider provider = command.getProvider(person);
 		
 		ValidateUtil.validate(person);
+
 		if (user != null) {
 			ValidateUtil.validate(user);
 		}
+
 		if (provider != null) {
 			ValidateUtil.validate(provider);
 		}
@@ -109,6 +111,7 @@ public class AdminNewAccountFragmentController {
 			// annoyingly, PersonNameValidator.validate doesn't behave right, so I can't do: validateField(errors, "personName");
 			require(errors, "personName.givenName");
 			require(errors, "personName.familyName");
+			require(errors, "gender");
 			
 			boolean hasUser = false;
 			if (StringUtils.isNotEmpty(username)) {
