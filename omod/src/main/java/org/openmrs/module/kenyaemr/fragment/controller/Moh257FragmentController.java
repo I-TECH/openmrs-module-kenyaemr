@@ -45,10 +45,7 @@ public class Moh257FragmentController {
 						   Patient patient,
 						   FragmentModel model,
 						   UiUtils ui,
-						   @SpringBean KenyaEmr emr,
-						   @SpringBean KenyaEmrUiUtils kenyaUi) {
-
-		model.addAttribute("newREVisit", newRetrospectiveVisitCommandObject(patient));
+						   @SpringBean KenyaEmr emr) {
 
 		String[] page1FormUuids = { Metadata.FAMILY_HISTORY_FORM, Metadata.HIV_PROGRAM_ENROLLMENT_FORM };
 
@@ -88,113 +85,5 @@ public class Moh257FragmentController {
 	 */
 	private static List<Encounter> getPatientEncounterByForm(Patient patient, Form form) {
 		return Context.getEncounterService().getEncounters(patient, null, null, null, Collections.singleton(form), null, null, null, null, false);
-	}
-
-	/**
-	 * Helper method to create a new form object
-	 * @return the form object
-	 */
-	public RetrospectiveVisit newRetrospectiveVisitCommandObject(@RequestParam("visit.patientId") Patient patient) {
-		return new RetrospectiveVisit(patient);
-	}
-
-	/**
-	 * Creates a new retrospective visit
-	 * @param command the command object
-	 * @param ui the UI utils
-	 * @return the simplified visit
-	 */
-	public SimpleObject createRetrospectiveVisit(@MethodParam("newRetrospectiveVisitCommandObject")
-												 @BindParams("visit") RetrospectiveVisit command,
-												 UiUtils ui,
-												 @SpringBean KenyaEmrUiUtils kenyaUi) {
-		ui.validate(command, command, "visit");
-
-		Visit visit = command.applyAndReturnVisit();
-		return ui.simplifyObject(visit);
-	}
-
-	/**
-	 * We'll create retrospective visits with a single date value, rather than start/stop times
-	 */
-	public class RetrospectiveVisit extends ValidatingCommandObject {
-
-		private Patient patient;
-
-		private VisitType visitType;
-
-		private Location location;
-
-		private Date visitDate;
-
-		public RetrospectiveVisit(Patient patient) {
-			this.patient = patient;
-			this.visitType = Metadata.getVisitType(Metadata.OUTPATIENT_VISIT_TYPE);
-			this.location = Context.getService(KenyaEmrService.class).getDefaultLocation();
-			this.visitDate = OpenmrsUtil.firstSecondOfDay(new Date());
-		}
-
-		@Override
-		public void validate(Object o, Errors errors) {
-			require(errors, "visitType");
-			require(errors, "location");
-			require(errors, "visitDate");
-
-			if (visitDate.after(OpenmrsUtil.firstSecondOfDay(new Date()))) {
-				errors.rejectValue("visitDate", "Date cannot be in the future");
-			}
-		}
-
-		/**
-		 * Converts command object to actual visit. If there are no existing visits on that date, it will create a new visit
-		 * otherwise it returns the first visit on that date
-		 * @return the visit
-		 */
-		public Visit applyAndReturnVisit() {
-			List<Visit> existingVisitsOnDay = Context.getService(KenyaEmrService.class).getVisitsByPatientAndDay(patient, visitDate);
-
-			if (existingVisitsOnDay.size() == 0) {
-				Visit visit = new Visit();
-				visit.setVisitType(visitType);
-				visit.setLocation(location);
-				visit.setPatient(patient);
-				visit.setStartDatetime(OpenmrsUtil.firstSecondOfDay(visitDate));
-				visit.setStopDatetime(OpenmrsUtil.getLastMomentOfDay(visitDate));
-				Context.getVisitService().saveVisit(visit);
-				return visit;
-			}
-			else {
-				// Return first visit from that day
-				return existingVisitsOnDay.get(0);
-			}
-		}
-
-		public Integer getPatientId() {
-			return patient.getPatientId();
-		}
-
-		public VisitType getVisitType() {
-			return visitType;
-		}
-
-		public void setVisitType(VisitType visitType) {
-			this.visitType = visitType;
-		}
-
-		public Location getLocation() {
-			return location;
-		}
-
-		public void setLocation(Location location) {
-			this.location = location;
-		}
-
-		public Date getVisitDate() {
-			return visitDate;
-		}
-
-		public void setVisitDate(Date visitDate) {
-			this.visitDate = visitDate;
-		}
 	}
 }

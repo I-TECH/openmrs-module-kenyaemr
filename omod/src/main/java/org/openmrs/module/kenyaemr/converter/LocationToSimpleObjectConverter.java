@@ -38,6 +38,11 @@ public class LocationToSimpleObjectConverter implements Converter<Location, Simp
 		LocationAttributeType mflCodeAttrType = Metadata.getLocationAttributeType(Metadata.MASTER_FACILITY_CODE_LOCATION_ATTRIBUTE_TYPE);
 		List<LocationAttribute> attrs = location.getActiveAttributes(mflCodeAttrType);
 		String facilityCode = attrs.size() > 0 ? (String)attrs.get(0).getValue() : null;
-		return SimpleObject.create("id", location.getId(), "name", location.getName(), "code", (facilityCode != null ? facilityCode : "?"));
+
+		SimpleObject ret = new SimpleObject();
+		ret.put("id", location.getId());
+		ret.put("name", location.getName());
+		ret.put("code", facilityCode != null ? facilityCode : "?");
+		return ret;
 	}
 }

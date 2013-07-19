@@ -15,8 +15,8 @@
 package org.openmrs.module.kenyaemr.converter;
 
 import org.openmrs.Visit;
+import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.ui.framework.SimpleObject;
-import org.openmrs.ui.framework.UiUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
@@ -28,13 +28,18 @@ import org.springframework.stereotype.Component;
 public class VisitToSimpleObjectConverter implements Converter<Visit, SimpleObject> {
 
 	@Autowired
-	private UiUtils ui;
+	private KenyaUiUtils kenyaUi;
 
 	/**
 	 * @see org.springframework.core.convert.converter.Converter#convert(Object)
 	 */
 	@Override
 	public SimpleObject convert(Visit visit) {
-		return SimpleObject.fromObject(visit, ui, "id", "visitType", "startDatetime", "stopDatetime");
+		SimpleObject ret = new SimpleObject();
+		ret.put("id", visit.getId());
+		ret.put("visitType", visit.getVisitType().getName());
+		ret.put("startDatetime", kenyaUi.formatDateTime(visit.getStartDatetime()));
+		ret.put("stopDatetime", kenyaUi.formatDateTime(visit.getStopDatetime()));
+		return ret;
 	}
 }

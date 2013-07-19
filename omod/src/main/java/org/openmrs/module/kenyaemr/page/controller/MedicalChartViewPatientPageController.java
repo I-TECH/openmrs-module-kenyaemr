@@ -62,11 +62,11 @@ public class MedicalChartViewPatientPageController {
 		model.addAttribute("patient", patient);
 		model.addAttribute("person", patient);
 
-		List<FormDescriptor> oneTimeFormDescriptors = emr.getFormManager().getFormsForPatient("kenyaemr.medicalChart", patient, Collections.singleton(FormDescriptor.Frequency.ONCE_EVER));
+		List<FormDescriptor> oneTimeFormDescriptors = emr.getFormManager().getFormsForPatient(EmrWebConstants.APP_MEDICAL_CHART, patient, Collections.singleton(FormDescriptor.Frequency.ONCE_EVER));
 		List<SimpleObject> oneTimeForms = new ArrayList<SimpleObject>();
 		for (FormDescriptor formDescriptor : oneTimeFormDescriptors) {
 			Form form = Context.getFormService().getFormByUuid(formDescriptor.getFormUuid());
-			oneTimeForms.add(SimpleObject.create("formUuid", form.getUuid(), "label", form.getName(), "iconProvider", formDescriptor.getIconProvider(), "icon", formDescriptor.getIcon()));
+			oneTimeForms.add(ui.simplifyObject(form));
 		}
 		model.addAttribute("oneTimeForms", oneTimeForms);
 
