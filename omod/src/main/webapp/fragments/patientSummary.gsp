@@ -4,7 +4,7 @@
 <div class="ke-stack-item">
 	${ ui.includeFragment("kenyaui", "widget/editButton", [ href: ui.pageLink("kenyaemr", "registrationEditPatient", [ patientId: patient.id, returnUrl: ui.thisUrl() ]) ]) }
 
-	${ ui.includeFragment("kenyaui", "widget/dataPoint", [ label: "Name", value: kenyaEmrUi.formatPersonName(patient.personName) ]) }
+	${ ui.includeFragment("kenyaui", "widget/dataPoint", [ label: "Name", value: kenyaUi.formatPersonName(patient) ]) }
 
 	<% patient.activeAttributes.each { %>
 	${ ui.includeFragment("kenyaui", "widget/dataPoint", [ label: ui.format(it.attributeType), value: it ]) }

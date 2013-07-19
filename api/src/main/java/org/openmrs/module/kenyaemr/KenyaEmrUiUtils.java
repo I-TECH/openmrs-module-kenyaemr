@@ -15,9 +15,6 @@
 package org.openmrs.module.kenyaemr;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.BooleanUtils;
-import org.joda.time.Period;
-import org.joda.time.PeriodType;
 import org.openmrs.*;
 import org.openmrs.module.kenyaemr.regimen.*;
 import org.openmrs.module.kenyaemr.util.KenyaEmrUtils;
@@ -39,52 +36,6 @@ public class KenyaEmrUiUtils {
 
 	@Autowired
 	private KenyaUiUtils kenyaUi;
-
-	/**
-	 * Formats a person's name
-	 * @param name the person name
-	 * @return the string value
-	 */
-	public String formatPersonName(PersonName name) {
-		List<String> items = new ArrayList<String>();
-		if (name.getFamilyName() != null) {
-			items.add(name.getFamilyName() + ",");
-		}
-		if (name.getGivenName() != null) {
-			items.add(name.getGivenName());
-		}
-		if (name.getMiddleName() != null) {
-			items.add(name.getMiddleName());
-		}
-		return OpenmrsUtil.join(items, " ");
-	}
-
-	/**
-	 * Formats a person's age
-	 * @param person the person
-	 * @return the string value
-	 */
-	public String formatPersonAge(Person person) {
-		String prefix = BooleanUtils.isTrue(person.isBirthdateEstimated()) ? "~" : "";
-		int ageYears = person.getAge();
-
-		if (ageYears < 1) {
-			Period p = new Period(person.getBirthdate().getTime(), System.currentTimeMillis(), PeriodType.yearMonthDay());
-			return prefix + p.getMonths() + " month(s), " + p.getDays() + " day(s)";
-		}
-		else {
-			return prefix + ageYears + " year(s)";
-		}
-	}
-
-	/**
-	 * Formats a person's birth date
-	 * @param person the person
-	 * @return the string value
-	 */
-	public String formatPersonBirthdate(Person person) {
-		return (BooleanUtils.isTrue(person.isBirthdateEstimated()) ? "approx " : "") + kenyaUi.formatDate(person.getBirthdate());
-	}
 
 	/**
 	 * Formats the dates of the given visit

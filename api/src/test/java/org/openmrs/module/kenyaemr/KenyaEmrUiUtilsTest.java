@@ -78,39 +78,6 @@ public class KenyaEmrUiUtilsTest extends BaseModuleContextSensitiveTest {
 	}
 
 	/**
-	 * @see KenyaEmrUiUtils#formatPersonName(org.openmrs.PersonName)
-	 */
-	@Test
-	public void formatPersonName() {
-		PersonName pn = new PersonName();
-		pn.setFamilyName("fff");
-		pn.setGivenName("ggg");
-		pn.setMiddleName("mmm");
-		Assert.assertThat(kenyaUi.formatPersonName(pn), is("fff, ggg mmm"));
-
-		// Check no middle name
-		pn = new PersonName();
-		pn.setFamilyName("fff");
-		pn.setGivenName("ggg");
-		Assert.assertThat(kenyaUi.formatPersonName(pn), is("fff, ggg"));
-	}
-
-	/**
-	 * @see KenyaEmrUiUtils#formatPersonBirthdate(org.openmrs.Person)
-	 */
-	@Test
-	public void formatPersonBirthdate() {
-		Person p = new Person();
-		p.setBirthdate(TestUtils.date(2000, 1, 1));
-		Assert.assertThat(kenyaUi.formatPersonBirthdate(p), is("01-Jan-2000"));
-
-		p = new Person();
-		p.setBirthdate(TestUtils.date(1980, 6, 30));
-		p.setBirthdateEstimated(true);
-		Assert.assertThat(kenyaUi.formatPersonBirthdate(p), is("approx 30-Jun-1980"));
-	}
-
-	/**
 	 * @see KenyaEmrUiUtils#formatVisitDates(org.openmrs.Visit)
 	 */
 	@Test

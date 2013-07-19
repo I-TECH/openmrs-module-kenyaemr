@@ -18,6 +18,7 @@ import org.openmrs.Patient;
 import org.openmrs.PatientIdentifier;
 import org.openmrs.module.kenyaemr.KenyaEmrUiUtils;
 import org.openmrs.module.kenyaemr.identifier.IdentifierManager;
+import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +38,7 @@ public class PatientToSimpleObjectConverter implements Converter<Patient, Simple
 	private UiUtils ui;
 
 	@Autowired
-	private KenyaEmrUiUtils kenyaEmrUi;
+	private KenyaUiUtils kenyaUi;
 
 	@Autowired
 	private IdentifierManager identifierManager;
@@ -52,9 +53,9 @@ public class PatientToSimpleObjectConverter implements Converter<Patient, Simple
 		ret.put("gender", patient.getGender());
 
 		// Add formatted name, age and birth date values
-		ret.put("name", kenyaEmrUi.formatPersonName(patient.getPersonName()));
-		ret.put("age", kenyaEmrUi.formatPersonAge(patient));
-		ret.put("birthdate", kenyaEmrUi.formatPersonBirthdate(patient));
+		ret.put("name", kenyaUi.formatPersonName(patient));
+		ret.put("age", kenyaUi.formatPersonAge(patient));
+		ret.put("birthdate", kenyaUi.formatPersonBirthdate(patient));
 
 		// Add display identifiers
 		List<SimpleObject> simpleIdentifiers = new ArrayList<SimpleObject>();
