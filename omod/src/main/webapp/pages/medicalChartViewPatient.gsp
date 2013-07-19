@@ -20,7 +20,7 @@
 
 	oneTimeForms.each { form ->
 		menuItems << [
-				label: form.label,
+				label: form.name,
 				href: ui.pageLink("kenyaemr", "medicalChartViewPatient", [ patientId: patient.id, formUuid: form.formUuid ]),
 				active: (selection == "form-" + form.formUuid),
 				iconProvider: form.iconProvider,

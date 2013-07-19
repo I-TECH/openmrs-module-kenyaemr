@@ -19,8 +19,6 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.joda.time.Period;
 import org.joda.time.PeriodType;
 import org.openmrs.*;
-import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyaemr.form.FormDescriptor;
 import org.openmrs.module.kenyaemr.regimen.*;
 import org.openmrs.module.kenyaemr.util.KenyaEmrUtils;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
@@ -41,9 +39,6 @@ public class KenyaEmrUiUtils {
 
 	@Autowired
 	private KenyaUiUtils kenyaUi;
-
-	@Autowired
-	private KenyaEmr emr;
 
 	/**
 	 * Formats a person's name
@@ -186,77 +181,6 @@ public class KenyaEmrUiUtils {
 			components.add(sb.toString());
 		}
 		return OpenmrsUtil.join(components, " + ");
-	}
-
-	/**
-	 * Simplifies a list of patients
-	 * @param patients the patients
-	 * @param ui the UI utils
-	 * @return
-	 */
-	public List<SimpleObject> simplePatients(Collection<Patient> patients, UiUtils ui) {
-		List<SimpleObject> ret = new ArrayList<SimpleObject>();
-		for (Patient patient : patients) {
-			ret.add(simplePatient(patient, ui));
-		}
-		return ret;
-	}
-
-	/**
-	 * Simplifies a patient
-	 * @param patient the patient
-	 * @param ui the UI utils
-	 * @return the simple object
-	 */
-	public SimpleObject simplePatient(Patient patient, UiUtils ui) {
-		List<PatientIdentifier> identifiers = emr.getIdentifierManager().getPatientDisplayIdentifiers(patient);
-
-		SimpleObject so = SimpleObject.fromObject(patient, ui, "patientId", "gender");
-
-		// Add formatted name, age and birth date values
-		so.put("name", formatPersonName(patient.getPersonName()));
-		so.put("age", formatPersonAge(patient));
-		so.put("birthdate", formatPersonBirthdate(patient));
-
-		// Add display identifiers
-		so.put("identifiers", SimpleObject.fromCollection(identifiers, ui, "identifierType", "identifier"));
-
-		return so;
-	}
-
-	/**
-	 * Simplifies a location
-	 * @param location the location
-	 * @param mfcAttrType the MFL code attribute type
-	 * @param ui the UI utils
-	 * @return the simple object
-	 */
-	public SimpleObject simpleLocation(Location location, LocationAttributeType mfcAttrType, UiUtils ui) {
-		List<LocationAttribute> attrs = location.getActiveAttributes(mfcAttrType);
-		String facilityCode = attrs.size() > 0 ? (String)attrs.get(0).getValue() : null;
-		return SimpleObject.create("id", location.getId(), "name", location.getName(), "code", (facilityCode != null ? facilityCode : "?"));
-	}
-
-	/**
-	 * Simplifies a form
-	 * @param form the form
-	 * @param ui the UI utils
-	 * @return the simple object
-	 */
-	public SimpleObject simpleForm(Form form, UiUtils ui) {
-		FormDescriptor config = emr.getFormManager().getFormDescriptor(form.getUuid());
-		return SimpleObject.create("formUuid", form.getUuid(), "label", form.getName(), "iconProvider", config.getIconProvider(), "icon", config.getIcon());
-	}
-
-	/**
-	 * Simplifies a form
-	 * @param config the form config
-	 * @param ui the UI utils
-	 * @return the simple object
-	 */
-	public SimpleObject simpleForm(FormDescriptor config, UiUtils ui) {
-		Form form = Metadata.getForm(config.getFormUuid());
-		return simpleForm(form, ui);
 	}
 
 	/**

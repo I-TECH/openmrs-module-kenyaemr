@@ -19,9 +19,9 @@
 		[ label: "ID or Name", formFieldName: "q", class: java.lang.String ],
 		[ label: "Age", formFieldName: "age", class: java.lang.Integer ]
 	],
-	fragment: "patientSearch",
 	fragmentProvider: "kenyaemr",
-	action: "search",
+	fragment: "search",
+	action: "patients",
 	submitOnEvent: "patientSearch/changed",
 	resetOnSubmit: false,
 	successEvent: "patientSearch/results"

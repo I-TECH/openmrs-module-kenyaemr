@@ -15,14 +15,10 @@
 package org.openmrs.module.kenyaemr.fragment.controller;
 
 import org.openmrs.Patient;
-import org.openmrs.module.kenyaemr.KenyaEmr;
-import org.openmrs.module.kenyaemr.KenyaEmrUiUtils;
 import org.openmrs.module.kenyaemr.Metadata;
-import org.openmrs.module.kenyaemr.form.FormDescriptor;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.FragmentParam;
-import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 
 import java.util.ArrayList;
@@ -33,13 +29,14 @@ import java.util.List;
  */
 public class PatientSummaryFragmentController {
 	
-	public void controller(@FragmentParam("patient") Patient patient, @SpringBean KenyaEmr emr, @SpringBean KenyaEmrUiUtils kenyaUi, UiUtils ui, FragmentModel model) {
+	public void controller(@FragmentParam("patient") Patient patient, UiUtils ui, FragmentModel model) {
 
 		List<SimpleObject> forms = new ArrayList<SimpleObject>();
-		forms.add(simpleForm(emr, kenyaUi, ui, Metadata.FAMILY_HISTORY_FORM));
+
+		forms.add(ui.simplifyObject(Metadata.getForm(Metadata.FAMILY_HISTORY_FORM)));
 
 		if (patient.getGender().equals("F")) {
-			forms.add(simpleForm(emr, kenyaUi, ui, Metadata.OBSTETRIC_HISTORY_FORM));
+			forms.add(ui.simplifyObject(Metadata.getForm(Metadata.OBSTETRIC_HISTORY_FORM)));
 		}
 
 		model.addAttribute("patient", patient);
@@ -47,10 +44,5 @@ public class PatientSummaryFragmentController {
 
 		model.addAttribute("clinicNumberIdType", Metadata.getPatientIdentifierType(Metadata.PATIENT_CLINIC_NUMBER_IDENTIFIER_TYPE));
 		model.addAttribute("hivNumberIdType", Metadata.getPatientIdentifierType(Metadata.UNIQUE_PATIENT_NUMBER_IDENTIFIER_TYPE));
-	}
-
-	private static SimpleObject simpleForm(KenyaEmr emr, KenyaEmrUiUtils kenyaUi, UiUtils ui, String formIdentifier) {
-		FormDescriptor formDescriptor = emr.getFormManager().getFormDescriptor(formIdentifier);
-		return kenyaUi.simpleForm(formDescriptor, ui);
 	}
 }

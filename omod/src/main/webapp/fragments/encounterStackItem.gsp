@@ -10,7 +10,7 @@
 
 	def providers = encounter.providersByRoles.values().collectAll { ui.format(it) }.flatten().join(", ")
 
-	def form = encounter.form ? kenyaEmrUi.simpleForm(encounter.form, ui) : [ iconProvider : "kenyaemr", icon : "forms/generic.png" ]
+	def form = encounter.form ? ui.simplifyObject(encounter.form) : [ iconProvider : "kenyaemr", icon : "forms/generic.png" ]
 %>
 
 <div class="ke-stack-item ke-clickable encounter-item">

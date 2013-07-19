@@ -21,9 +21,8 @@ import org.openmrs.PatientProgram;
 import org.openmrs.Program;
 import org.openmrs.Visit;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.appframework.AppUiUtil;
 import org.openmrs.module.kenyaemr.KenyaEmr;
-import org.openmrs.module.kenyaemr.KenyaEmrUiUtils;
+import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.form.FormDescriptor;
 import org.openmrs.module.kenyaemr.form.FormDescriptor.Frequency;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
@@ -33,7 +32,6 @@ import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 import org.openmrs.ui.framework.page.PageRequest;
-import org.openmrs.ui.framework.session.Session;
 
 import java.util.*;
 
@@ -49,13 +47,12 @@ public class VisitAvailableFormsFragmentController {
 						   UiUtils ui,
 						   PageRequest request,
 						   @SpringBean KenyaEmr emr,
-						   @SpringBean KenyaUiUtils kenyaUi,
-						   @SpringBean KenyaEmrUiUtils kenyaEmrUi) {
+						   @SpringBean KenyaUiUtils kenyaUi) {
 
 		String currentApp = kenyaUi.getCurrentApp(request).getId();
 
 		List<FormDescriptor> availableFormDescriptors = emr.getFormManager().getFormsForPatient(currentApp, visit.getPatient(), null);
-		List<SimpleObject> availableForms = getAvailableForms(visit, availableFormDescriptors, ui, kenyaEmrUi);
+		List<SimpleObject> availableForms = getAvailableForms(visit, availableFormDescriptors, ui);
 
 		model.addAttribute("availableForms", availableForms);
 	}
@@ -66,7 +63,7 @@ public class VisitAvailableFormsFragmentController {
      * @param forms the list of possible forms for the visit type
      * @return
      */
-    private List<SimpleObject> getAvailableForms(Visit visit, List<FormDescriptor> forms, UiUtils ui, KenyaEmrUiUtils kenyaUi) {
+    private List<SimpleObject> getAvailableForms(Visit visit, List<FormDescriptor> forms, UiUtils ui) {
     	Set<String> formUuidsThisVisit = new HashSet<String>();
     	for (Encounter e : visit.getEncounters()) {
     		if (!e.getVoided()) {
@@ -100,28 +97,28 @@ public class VisitAvailableFormsFragmentController {
 		
     	List<SimpleObject> ret = new ArrayList<SimpleObject>();
 		
-		for (FormDescriptor config : forms) {
+		for (FormDescriptor descriptor : forms) {
 			// Get program for form
-			Program formProgram = config.getProgramUuid() != null ? Context.getProgramWorkflowService().getProgramByUuid(config.getProgramUuid()) : null;
+			Program formProgram = descriptor.getProgramUuid() != null ? Context.getProgramWorkflowService().getProgramByUuid(descriptor.getProgramUuid()) : null;
 
 			if (formProgram != null && !dateOfActiveEnrollment.keySet().contains(formProgram)) {
 				continue;
 			}
 			boolean allowed = false;
-			if (config.getFrequency().equals(Frequency.UNLIMITED)) {
+			if (descriptor.getFrequency().equals(Frequency.UNLIMITED)) {
 				allowed = true;
-			} else if (config.getFrequency().equals(Frequency.VISIT)) {
-				allowed = !formUuidsThisVisit.contains(config.getFormUuid());
-			} else if (config.getFrequency().equals(Frequency.PROGRAM)) {
+			} else if (descriptor.getFrequency().equals(Frequency.VISIT)) {
+				allowed = !formUuidsThisVisit.contains(descriptor.getFormUuid());
+			} else if (descriptor.getFrequency().equals(Frequency.PROGRAM)) {
 				Set<String> formsForProgram = formUuidsByProgram.get(formProgram);
-				allowed = formsForProgram == null || !formsForProgram.contains(config.getFormUuid());
-			} else if (config.getFrequency().equals(Frequency.ONCE_EVER)) {
-				allowed = !allFormUuids.contains(config.getFormUuid());
+				allowed = formsForProgram == null || !formsForProgram.contains(descriptor.getFormUuid());
+			} else if (descriptor.getFrequency().equals(Frequency.ONCE_EVER)) {
+				allowed = !allFormUuids.contains(descriptor.getFormUuid());
 			} else {
-				throw new RuntimeException("Unknown Frequency");
+				throw new RuntimeException("Unknown form frequency");
 			}
 			if (allowed) {
-				ret.add(kenyaUi.simpleForm(config, ui));
+				ret.add(ui.simplifyObject(Metadata.getForm(descriptor.getFormUuid())));
 			}
 		}
 		

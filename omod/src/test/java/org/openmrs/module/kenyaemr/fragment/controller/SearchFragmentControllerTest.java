@@ -37,7 +37,7 @@ public class SearchFragmentControllerTest extends BaseModuleWebContextSensitiveT
 	private SearchFragmentController controller;
 
 	@Autowired
-	private KenyaEmrUiUtils kenyaEmrUiUtils;
+	private TestUiUtils ui;
 
 	/**
 	 * Setup each test
@@ -52,7 +52,7 @@ public class SearchFragmentControllerTest extends BaseModuleWebContextSensitiveT
 	@Test
 	public void location_shouldSimplifyLocation() {
 		Location location = Context.getLocationService().getLocation(1);
-		SimpleObject result = controller.location(location, new TestUiUtils(), kenyaEmrUiUtils);
+		SimpleObject result = controller.location(location, ui);
 		Assert.assertThat(result, hasEntry("id", (Object) new Integer(1)));
 		Assert.assertThat(result, hasEntry("name", (Object) "Unknown Location"));
 		Assert.assertThat(result, hasEntry("code", (Object) "15001"));
@@ -60,7 +60,7 @@ public class SearchFragmentControllerTest extends BaseModuleWebContextSensitiveT
 
 	@Test
 	public void locations_shouldMatchByPartialName() {
-		List<SimpleObject> result = controller.locations("Xan", new TestUiUtils(), kenyaEmrUiUtils);
+		List<SimpleObject> result = controller.locations("Xan", ui);
 		Assert.assertThat(result, hasSize(1));
 		Assert.assertThat(result.get(0), hasEntry("id", (Object) new Integer(2)));
 		Assert.assertThat(result.get(0), hasEntry("name", (Object) "Xanadu"));
@@ -69,7 +69,7 @@ public class SearchFragmentControllerTest extends BaseModuleWebContextSensitiveT
 
 	@Test
 	public void locations_shouldMatchByCompleteMflCode() {
-		List<SimpleObject> result = controller.locations("15002", new TestUiUtils(), kenyaEmrUiUtils);
+		List<SimpleObject> result = controller.locations("15002", ui);
 		Assert.assertThat(result, hasSize(1));
 		Assert.assertThat(result.get(0), hasEntry("id", (Object) new Integer(2)));
 		Assert.assertThat(result.get(0), hasEntry("name", (Object) "Xanadu"));

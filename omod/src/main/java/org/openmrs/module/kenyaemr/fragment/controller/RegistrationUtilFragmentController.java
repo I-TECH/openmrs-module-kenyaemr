@@ -197,7 +197,7 @@ public class RegistrationUtilFragmentController {
 		ui.validate(visit, new RegistrationVisitValidator(), "visit");
 
 		Context.getVisitService().saveVisit(visit);
-		return ui.convert(visit, SimpleObject.class);
+		return ui.simplifyObject(visit);
 	}
 	
 	/**
@@ -210,7 +210,7 @@ public class RegistrationUtilFragmentController {
 		ui.validate(visit, new RegistrationVisitValidator(), "visit");
 
 		Context.getVisitService().saveVisit(visit);
-		return ui.convert(visit, SimpleObject.class);
+		return ui.simplifyObject(visit);
 	}
     
     /**

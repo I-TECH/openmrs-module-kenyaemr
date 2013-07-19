@@ -19,15 +19,18 @@ import java.util.List;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.appframework.AppDescriptor;
 import org.openmrs.module.appframework.AppStatus;
 import org.openmrs.module.appframework.AppUiUtil;
 import org.openmrs.module.kenyaemr.KenyaEmr;
 import org.openmrs.module.kenyaemr.util.KenyaEmrUtils;
+import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.ui.framework.WebConstants;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.FragmentConfiguration;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 import org.openmrs.ui.framework.page.PageModel;
+import org.openmrs.ui.framework.page.PageRequest;
 import org.openmrs.ui.framework.session.Session;
 
 /**
@@ -36,9 +39,10 @@ import org.openmrs.ui.framework.session.Session;
 public class SelectedPatientHeaderFragmentController {
 
 	public void controller(PageModel sharedPageModel,
-	                       FragmentConfiguration config,
-	                       FragmentModel model,
-	                       Session session,
+						   FragmentConfiguration config,
+						   FragmentModel model,
+						   PageRequest pageRequest,
+						   @SpringBean KenyaUiUtils kenyaUi,
 						   @SpringBean KenyaEmr emr) {
 
 		Patient patient = (Patient) config.get("patient");
@@ -58,14 +62,14 @@ public class SelectedPatientHeaderFragmentController {
 			model.addAttribute("activeVisit", null);
 		}
 		
-		AppStatus currentApp = AppUiUtil.getCurrentApp(session);
+		AppDescriptor currentApp = kenyaUi.getCurrentApp(pageRequest);
+
 		if (currentApp != null) {
-			model.addAttribute("appHomepageUrl", "/" + WebConstants.CONTEXT_PATH + "/" + currentApp.getApp().getHomepageUrl());
+			model.addAttribute("appHomepageUrl", "/" + WebConstants.CONTEXT_PATH + "/" + currentApp.getHomepageUrl());
 		} else {
 			model.addAttribute("appHomepageUrl", null);
 		}
 
 		model.addAttribute("idsToShow", emr.getIdentifierManager().getPatientDisplayIdentifiers(patient));
 	}
-
 }

@@ -19,7 +19,7 @@
 <% } %>
 <% scheduled.each { %>
 	<div class="ke-stack-item ke-clickable">
-		<input type="hidden" name="clickUrl" value="${ ui.pageLink("kenyaemr", config.page, [ patientId: it.patient.patientId ]) }"/>
+		<input type="hidden" name="clickUrl" value="${ ui.pageLink("kenyaemr", config.page, [ patientId: it.patient.id ]) }"/>
 		<table width="100%">
 			<tr>
 				<td align="left" width="40%" valign="top">

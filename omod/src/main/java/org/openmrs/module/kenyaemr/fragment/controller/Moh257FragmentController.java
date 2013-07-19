@@ -50,16 +50,17 @@ public class Moh257FragmentController {
 
 		model.addAttribute("newREVisit", newRetrospectiveVisitCommandObject(patient));
 
-		String[] page1Forms = { Metadata.FAMILY_HISTORY_FORM, Metadata.HIV_PROGRAM_ENROLLMENT_FORM };
+		String[] page1FormUuids = { Metadata.FAMILY_HISTORY_FORM, Metadata.HIV_PROGRAM_ENROLLMENT_FORM };
 
 		List<SimpleObject> page1AvailableForms = new ArrayList<SimpleObject>();
 		List<Encounter> page1Encounters = new ArrayList<Encounter>();
 
-		for (String page1Form : page1Forms) {
-			List<Encounter> formEncounters = getPatientEncounterByForm(patient, Metadata.getForm(page1Form));
+		for (String page1FormUuid : page1FormUuids) {
+			Form page1Form = Metadata.getForm(page1FormUuid);
+			List<Encounter> formEncounters = getPatientEncounterByForm(patient, page1Form);
 
 			if (formEncounters.size() == 0) {
-				page1AvailableForms.add(kenyaUi.simpleForm(emr.getFormManager().getFormDescriptor(page1Form), ui));
+				page1AvailableForms.add(ui.simplifyObject(page1Form));
 			}
 			else {
 				page1Encounters.addAll(formEncounters);
@@ -110,7 +111,7 @@ public class Moh257FragmentController {
 		ui.validate(command, command, "visit");
 
 		Visit visit = command.applyAndReturnVisit();
-		return ui.convert(visit, SimpleObject.class);
+		return ui.simplifyObject(visit);
 	}
 
 	/**

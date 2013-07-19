@@ -18,15 +18,13 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Location;
-import org.openmrs.LocationAttributeType;
+import org.openmrs.Patient;
+import org.openmrs.Visit;
 import org.openmrs.api.LocationService;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyaemr.KenyaEmrUiUtils;
-import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
-import org.openmrs.ui.framework.annotation.SpringBean;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.*;
@@ -39,25 +37,96 @@ public class SearchFragmentController {
 	protected static final Log log = LogFactory.getLog(SearchFragmentController.class);
 
 	/**
-	 * Gets a location by it's id
-	 * @param location the location
-	 * @param ui
-	 * @param kenyaUi
+	 * Gets a patient by their id
+	 * @param patient the patient
+	 * @param ui the UI utils
 	 * @return the simplified location
 	 */
-	public SimpleObject location(@RequestParam("id") Location location, UiUtils ui, @SpringBean KenyaEmrUiUtils kenyaUi) {
-		LocationAttributeType mflCodeAttrType = Metadata.getLocationAttributeType(Metadata.MASTER_FACILITY_CODE_LOCATION_ATTRIBUTE_TYPE);
-		return kenyaUi.simpleLocation(location, mflCodeAttrType, ui);
+	public SimpleObject patient(@RequestParam("id") Patient patient, UiUtils ui) {
+		return ui.simplifyObject(patient);
 	}
 
 	/**
-	 * Searches for locations by name of MFL code
-	 * @param term the search term
+	 * Searches for patients by name, identifier, age, visit status
+	 * @param query the name or identifier
+	 * @param which "checked-in" to return only those patients with an active visit
+	 * @param age
+	 * @param ageWindow
+	 * @param ui the UI utils
+	 * @return the simple patients
+	 */
+	public List<SimpleObject> patients(@RequestParam(value = "q", required = false) String query,
+									   @RequestParam(value = "which", required = false) String which,
+									   @RequestParam(value = "age", required = false) Integer age,
+									   @RequestParam(value = "ageWindow", defaultValue = "5") int ageWindow,
+									   UiUtils ui) {
+
+		if (StringUtils.isBlank(query)) {
+			return Collections.emptyList();
+		}
+
+		boolean onlyCheckedIn = "checked-in".equals(which);
+
+		// Run main patient search query based on id/name
+		List<Patient> matchingPatients = Context.getPatientService().getPatients(query);
+
+		// Augment age query
+		if (age != null) {
+			List<Patient> similar = new ArrayList<Patient>();
+			for (Patient p : matchingPatients) {
+				if (Math.abs(p.getAge() - age) <= ageWindow)
+					similar.add(p);
+			}
+			matchingPatients = similar;
+		}
+
+		// Gather up active visits for all patients
+		List<Visit> activeVisits = Context.getVisitService().getVisits(null, null, null, null, null, null, null, null, null, false, false);
+		final Map<Integer, Visit> patientActiveVisits = new HashMap<Integer, Visit>();
+		for (Visit v : activeVisits) {
+			patientActiveVisits.put(v.getPatient().getPatientId(), v);
+		}
+
+		List<SimpleObject> simplePatients = new ArrayList<SimpleObject>();
+
+		// Attach active visits to patient objects
+		for (Patient patient : matchingPatients) {
+			Visit activeVisit = patientActiveVisits.get(patient.getId());
+
+			if (onlyCheckedIn && activeVisit == null) {
+				continue;
+			}
+
+			SimpleObject simplePatient = ui.simplifyObject(patient);
+
+			if (activeVisit != null) {
+				simplePatient.put("extra", "<div class='ke-tag ke-visittag'>" + ui.format(activeVisit.getVisitType()) + "<br/><small>" + ui.format(activeVisit.getStartDatetime()) + "</small></div>");
+			}
+
+			simplePatients.add(simplePatient);
+		}
+
+		return simplePatients;
+	}
+
+	/**
+	 * Gets a location by it's id
+	 * @param location the location
+	 * @param ui the UI utils
+	 * @return the simplified location
+	 */
+	public SimpleObject location(@RequestParam("id") Location location, UiUtils ui) {
+		return ui.simplifyObject(location);
+	}
+
+	/**
+	 * Searches for locations by name or MFL code
+	 * @param query the search query
+	 * @param ui the UI utils
 	 * @return the list of locations as simple objects
 	 */
-	public List<SimpleObject> locations(@RequestParam("term") String term, UiUtils ui, @SpringBean KenyaEmrUiUtils kenyaUi) {
+	public List<SimpleObject> locations(@RequestParam("q") String query, UiUtils ui) {
 		LocationService svc = Context.getLocationService();
-		LocationAttributeType mflCodeAttrType = Metadata.getLocationAttributeType(Metadata.MASTER_FACILITY_CODE_LOCATION_ATTRIBUTE_TYPE);
 
 		// Results will be sorted by name
 		Set<Location> results = new TreeSet<Location>(new Comparator<Location>() {
@@ -68,22 +137,22 @@ public class SearchFragmentController {
 		});
 
 		// If term looks like an MFL code, add location with that code
-		if (StringUtils.isNumeric(term) && term.length() >= 5) {
-			Location locationByMflCode = Context.getService(KenyaEmrService.class).getLocationByMflCode(term);
+		if (StringUtils.isNumeric(query) && query.length() >= 5) {
+			Location locationByMflCode = Context.getService(KenyaEmrService.class).getLocationByMflCode(query);
 			if (locationByMflCode != null) {
 				results.add(locationByMflCode);
 			}
 		}
 
 		// Add first 20 results of search by name
-		if (StringUtils.isNotBlank(term)) {
-			results.addAll(svc.getLocations(term, true, 0, 20));
+		if (StringUtils.isNotBlank(query)) {
+			results.addAll(svc.getLocations(query, true, 0, 20));
 		}
 
 		// Convert to simple objects
 		List<SimpleObject> ret = new ArrayList<SimpleObject>();
 		for (Location l : results) {
-			ret.add(kenyaUi.simpleLocation(l, mflCodeAttrType, ui));
+			ret.add(ui.simplifyObject(l));
 		}
 		return ret;
 	}

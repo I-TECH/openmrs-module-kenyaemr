@@ -15,7 +15,7 @@
 	${ ui.includeFragment("kenyaui", "widget/button", [
 			iconProvider: form.iconProvider,
 			icon: form.icon,
-			label: form.label,
+			label: form.name,
 			extra: "Edit form",
 			href: ui.pageLink("kenyaemr", "editPatientHtmlForm", [
 				appId: currentApp.id,
