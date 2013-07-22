@@ -14,8 +14,8 @@
 
 package org.openmrs.module.kenyaemr.page.controller;
 
+import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyaemr.EmrWebConstants;
-import org.openmrs.module.kenyaemr.KenyaEmrConstants;
 import org.openmrs.module.kenyaui.annotation.AppPage;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
@@ -30,7 +30,7 @@ public class MedicalChartHomePageController {
 	public String controller(UiUtils ui, @RequestParam(required=false, value="patientId") Integer patientId) {
 
 		if (patientId != null) {
-			return "redirect:" + ui.pageLink(KenyaEmrConstants.MODULE_ID, "medicalChartViewPatient", SimpleObject.create("patientId", patientId));
+			return "redirect:" + ui.pageLink(EmrConstants.MODULE_ID, "medicalChartViewPatient", SimpleObject.create("patientId", patientId));
 		} else {
 			return null;
 		}

@@ -17,9 +17,9 @@ package org.openmrs.module.kenyaemr.page.controller;
 import org.openmrs.Concept;
 import org.openmrs.Patient;
 import org.openmrs.module.kenyaemr.EmrWebConstants;
-import org.openmrs.module.kenyaemr.KenyaEmr;
-import org.openmrs.module.kenyaemr.regimen.RegimenChange;
-import org.openmrs.module.kenyaemr.regimen.RegimenChangeHistory;
+import org.openmrs.module.kenyacore.CoreContext;
+import org.openmrs.module.kenyacore.regimen.RegimenChange;
+import org.openmrs.module.kenyacore.regimen.RegimenChangeHistory;
 import org.openmrs.module.kenyaui.annotation.SharedPage;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.SpringBean;
@@ -40,7 +40,7 @@ public class RegimenEditorPageController {
 						   @RequestParam("returnUrl") String returnUrl,
 						   UiUtils ui,
 						   PageModel model,
-						   @SpringBean KenyaEmr emr) {
+						   @SpringBean CoreContext emr) {
 
 		model.addAttribute("patient", patient);
 		model.addAttribute("category", category);

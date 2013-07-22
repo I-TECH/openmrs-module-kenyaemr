@@ -16,8 +16,13 @@ package org.openmrs.module.kenyaemr;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.openmrs.*;
-import org.openmrs.module.kenyaemr.regimen.*;
-import org.openmrs.module.kenyaemr.util.KenyaEmrUtils;
+import org.openmrs.module.kenyacore.CoreConstants;
+import org.openmrs.module.kenyacore.regimen.DrugReference;
+import org.openmrs.module.kenyacore.regimen.RegimenChange;
+import org.openmrs.module.kenyacore.regimen.RegimenChangeHistory;
+import org.openmrs.module.kenyacore.regimen.RegimenDefinition;
+import org.openmrs.module.kenyacore.regimen.RegimenOrder;
+import org.openmrs.module.kenyaemr.util.EmrUtils;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
@@ -43,7 +48,7 @@ public class KenyaEmrUiUtils {
 	 * @return the string value
 	 */
 	public String formatVisitDates(Visit visit) {
-		if (KenyaEmrUtils.isRetrospectiveVisit(visit)) {
+		if (EmrUtils.isRetrospectiveVisit(visit)) {
 			return kenyaUi.formatDate(visit.getStartDatetime());
 		}
 		else {
@@ -53,7 +58,7 @@ public class KenyaEmrUiUtils {
 			if (visit.getStopDatetime() != null) {
 				sb.append(" \u2192 ");
 
-				if (KenyaEmrUtils.isSameDay(visit.getStartDatetime(), visit.getStopDatetime())) {
+				if (EmrUtils.isSameDay(visit.getStartDatetime(), visit.getStopDatetime())) {
 					sb.append(kenyaUi.formatTime(visit.getStopDatetime()));
 				}
 				else {
@@ -71,7 +76,7 @@ public class KenyaEmrUiUtils {
 	 * @return the string value
 	 */
 	public String formatDrug(DrugReference drugRef, UiUtils ui) {
-		return drugRef.isConceptOnly() ? drugRef.getConcept().getPreferredName(Metadata.LOCALE).getName() : drugRef.getDrug().getName();
+		return drugRef.isConceptOnly() ? drugRef.getConcept().getPreferredName(CoreConstants.LOCALE).getName() : drugRef.getDrug().getName();
 	}
 
 	/**
@@ -86,9 +91,9 @@ public class KenyaEmrUiUtils {
 		}
 		List<String> components = new ArrayList<String>();
 		for (DrugOrder o : regimen.getDrugOrders()) {
-			ConceptName cn = o.getConcept().getPreferredName(Metadata.LOCALE);
+			ConceptName cn = o.getConcept().getPreferredName(CoreConstants.LOCALE);
 			if (cn == null) {
-				cn = o.getConcept().getName(Metadata.LOCALE);
+				cn = o.getConcept().getName(CoreConstants.LOCALE);
 			}
 			components.add(cn.getName());
 		}
@@ -109,9 +114,9 @@ public class KenyaEmrUiUtils {
 		for (DrugOrder o : regimen.getDrugOrders()) {
 			StringBuilder sb = new StringBuilder();
 
-			ConceptName cn = o.getConcept().getShortNameInLocale(Metadata.LOCALE);
+			ConceptName cn = o.getConcept().getShortNameInLocale(CoreConstants.LOCALE);
 			if (cn == null) {
-				cn = o.getConcept().getName(Metadata.LOCALE);
+				cn = o.getConcept().getName(CoreConstants.LOCALE);
 			}
 			sb.append(cn.getName());
 

@@ -14,7 +14,7 @@
 
 package org.openmrs.module.kenyaemr.fragment.controller;
 
-import org.openmrs.module.kenyaemr.KenyaEmr;
+import org.openmrs.module.kenyacore.CoreContext;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 
@@ -23,7 +23,7 @@ import org.openmrs.ui.framework.fragment.FragmentModel;
  */
 public class SystemHeaderFragmentController {
 	
-	public void controller(FragmentModel model, @SpringBean KenyaEmr emr) {
+	public void controller(FragmentModel model, @SpringBean CoreContext emr) {
 		String systemMessage = null;
 
 		if (!emr.isRefreshed()) {

@@ -19,6 +19,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Role;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyaemr.converter.StringToRoleConverter;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 
 /**
@@ -37,7 +38,7 @@ public class StringToRoleConverterTest extends BaseModuleWebContextSensitiveTest
 	}
 
 	/**
-	 * @see StringToVisitConverter#convert(String)
+	 * @see org.openmrs.module.kenyaemr.converter.StringToVisitConverter#convert(String)
 	 */
 	@Test
 	public void convert_shouldConvertString() {

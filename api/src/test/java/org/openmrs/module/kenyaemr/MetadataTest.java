@@ -14,124 +14,16 @@
 
 package org.openmrs.module.kenyaemr;
 
-import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.EncounterType;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.module.kenyaemr.Metadata;
 
 /**
- * Tests for {@link Metadata}
+ * Tests for {@link org.openmrs.module.kenyaemr.Dictionary}
  */
-public class MetadataTest extends BaseModuleContextSensitiveTest {
-
-	/**
-	 * Setup each test
-	 */
-	@Before
-	public void setup() throws Exception {
-		executeDataSet("test-data.xml");
-	}
+public class MetadataTest {
 
 	@Test
 	public void integration() {
 		new Metadata();
-	}
-
-	/**
-	 * @see Metadata#hasIdentity(org.openmrs.OpenmrsObject, String)
-	 */
-	@Test
-	public void hasIdentity_shouldReturnTrueIfIdentifierMatchesObject() {
-		EncounterType et = Metadata.getEncounterType(Metadata.TB_SCREENING_ENCOUNTER_TYPE);
-
-		Assert.assertTrue(Metadata.hasIdentity(et, Metadata.TB_SCREENING_ENCOUNTER_TYPE));
-		Assert.assertFalse(Metadata.hasIdentity(et, Metadata.REGISTRATION_ENCOUNTER_TYPE));
-
-		// Check null object
-		Assert.assertFalse(Metadata.hasIdentity(null, Metadata.TB_SCREENING_ENCOUNTER_TYPE));
-
-		// Check null UUID
-		Assert.assertFalse(Metadata.hasIdentity(new EncounterType(), Metadata.TB_SCREENING_ENCOUNTER_TYPE));
-	}
-
-	/**
-	 * @see Metadata#getEncounterType(String)
-	 */
-	@Test
-	public void getEncounterType_shouldFetchByMappingOrUuid() {
-		Assert.assertNotNull(Metadata.getEncounterType(Metadata.TB_SCREENING_ENCOUNTER_TYPE));
-	}
-
-	/**
-	 * @see Metadata#getEncounterType(String)
-	 */
-	@Test(expected = IllegalArgumentException.class)
-	public void getEncounterType_shouldThrowExceptionForNonExistent() {
-		Metadata.getEncounterType("XXXXX");
-	}
-
-	/**
-	 * @see Metadata#getLocation(String)
-	 */
-	@Test
-	public void getLocation_shouldFetchByMappingOrUuid() {
-		Assert.assertNotNull(Metadata.getLocation(Metadata.UNKNOWN_LOCATION));
-	}
-
-	/**
-	 * @see Metadata#getLocation(String)
-	 */
-	@Test(expected = IllegalArgumentException.class)
-	public void getLocation_shouldThrowExceptionForNonExistent() {
-		Metadata.getLocation("XXXXX");
-	}
-
-	/**
-	 * @see Metadata#getLocationAttributeType(String)
-	 */
-	@Test
-	public void getLocationAttributeType_shouldFetchByMappingOrUuid() {
-		Assert.assertNotNull(Metadata.getLocationAttributeType(Metadata.MASTER_FACILITY_CODE_LOCATION_ATTRIBUTE_TYPE));
-	}
-
-	/**
-	 * @see Metadata#getLocationAttributeType(String)
-	 */
-	@Test(expected = IllegalArgumentException.class)
-	public void getLocationAttributeType_shouldThrowExceptionForNonExistent() {
-		Metadata.getLocationAttributeType("XXXXX");
-	}
-
-	/**
-	 * @see Metadata#getProgram(String)
-	 */
-	@Test
-	public void getProgram_shouldFetchByMappingOrUuid() {
-		Assert.assertNotNull(Metadata.getProgram(Metadata.TB_PROGRAM));
-	}
-
-	/**
-	 * @see Metadata#getProgram(String)
-	 */
-	@Test(expected = IllegalArgumentException.class)
-	public void getProgram_shouldThrowExceptionForNonExistent() {
-		Metadata.getProgram("XXXXX");
-	}
-
-	/**
-	 * @see Metadata#getVisitType(String)
-	 */
-	@Test
-	public void getVisitType_shouldFetchByMappingOrUuid() {
-		Assert.assertNotNull(Metadata.getVisitType(Metadata.OUTPATIENT_VISIT_TYPE));
-	}
-
-	/**
-	 * @see Metadata#getVisitType(String)
-	 */
-	@Test(expected = IllegalArgumentException.class)
-	public void getVisitType_shouldThrowExceptionForNonExistent() {
-		Metadata.getVisitType("XXXXX");
 	}
 }

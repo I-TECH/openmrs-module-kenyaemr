@@ -16,6 +16,7 @@ package org.openmrs.module.kenyaemr.reporting.library.indicator;
 
 import org.openmrs.Concept;
 import org.openmrs.Program;
+import org.openmrs.module.kenyaemr.reporting.EmrReportingUtils;
 import org.openmrs.module.kenyaemr.reporting.library.cohort.CommonCohortLibrary;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
@@ -44,7 +45,7 @@ public class CommonIndicatorLibrary {
 	 */
 	public CohortIndicator enrolled(Program program) {
 		return createCohortIndicator("Number of new patients enrolled in " + program.getName() + " including transfers",
-				map(commonCohorts.enrolledExcludingTransfers(program), "onOrAfter=${startDate},onOrBefore=${endDate}"));
+				EmrReportingUtils.map(commonCohorts.enrolledExcludingTransfers(program), "onOrAfter=${startDate},onOrBefore=${endDate}"));
 	}
 
 	/**
@@ -54,7 +55,7 @@ public class CommonIndicatorLibrary {
 	 */
 	public CohortIndicator enrolledExcludingTransfers(Program program) {
 		return createCohortIndicator("Number of new patients enrolled in " + program.getName() + " excluding transfers",
-				map(commonCohorts.enrolledExcludingTransfers(program), "onOrAfter=${startDate},onOrBefore=${endDate}"));
+				EmrReportingUtils.map(commonCohorts.enrolledExcludingTransfers(program), "onOrAfter=${startDate},onOrBefore=${endDate}"));
 	}
 
 	/**
@@ -64,7 +65,7 @@ public class CommonIndicatorLibrary {
 	 */
 	public CohortIndicator enrolledCumulative(Program program) {
 		return createCohortIndicator("Number of patients ever enrolled in " + program.getName() + " excluding transfers",
-				map(commonCohorts.enrolled(program), "enrolledOnOrBefore=${endDate}"));
+				EmrReportingUtils.map(commonCohorts.enrolled(program), "enrolledOnOrBefore=${endDate}"));
 	}
 
 	/**
@@ -73,7 +74,7 @@ public class CommonIndicatorLibrary {
 	 * @return the indicator
 	 */
 	public CohortIndicator onMedication(Concept... concepts) {
-		return createCohortIndicator("Number of patients on medication", map(commonCohorts.onMedication(concepts), "onDate=${endDate}"));
+		return createCohortIndicator("Number of patients on medication", EmrReportingUtils.map(commonCohorts.onMedication(concepts), "onDate=${endDate}"));
 	}
 
 	/**

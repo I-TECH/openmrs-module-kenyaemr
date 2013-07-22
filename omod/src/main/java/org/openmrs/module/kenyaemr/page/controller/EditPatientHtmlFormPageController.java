@@ -21,10 +21,7 @@ import org.openmrs.Encounter;
 import org.openmrs.Form;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyaemr.EmrWebConstants;
-import org.openmrs.module.kenyaemr.KenyaEmrConstants;
-import org.openmrs.module.kenyaui.annotation.SharedPage;
-import org.openmrs.ui.framework.page.PageModel;
+import org.openmrs.module.kenyaemr.EmrConstants;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
@@ -43,7 +40,7 @@ public class EditPatientHtmlFormPageController {
 				throw new IllegalArgumentException("Cannot find form with uuid = " + formUuid);
 			}
 
-			StringBuilder sb = new StringBuilder("redirect:" + KenyaEmrConstants.MODULE_ID + "/");
+			StringBuilder sb = new StringBuilder("redirect:" + EmrConstants.MODULE_ID + "/");
 
 			List<Encounter> encounters = Context.getEncounterService().getEncounters(patient, null, null, null, Collections.singleton(form), null, null, null, null, false);
 			if (encounters.size() == 0) {

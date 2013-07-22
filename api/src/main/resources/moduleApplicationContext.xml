@@ -3,223 +3,282 @@
 	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
-	<bean id="kenyaemr-metadata-config" class="org.openmrs.module.kenyaemr.metadata.MetadataConfiguration">
+	<bean id="kenyaemr-metadata-config" class="org.openmrs.module.kenyacore.metadata.MetadataConfiguration">
 		<property name="path" value="packages.xml" />
 	</bean>
 
-	<bean id="kenyaemr-lab-config" class="org.openmrs.module.kenyaemr.lab.LabConfiguration">
+	<bean id="kenyaemr-lab-config" class="org.openmrs.module.kenyacore.lab.LabConfiguration">
 		<property name="path" value="lab.xml" />
 	</bean>
 
-	<bean id="kenyaemr-regimen-config" class="org.openmrs.module.kenyaemr.regimen.RegimenConfiguration">
+	<bean id="kenyaemr-regimen-config" class="org.openmrs.module.kenyacore.regimen.RegimenConfiguration">
 		<property name="path" value="regimens.xml" />
+	</bean>
+
+	<!-- ===================== Program descriptors ===================== -->
+
+	<!-- HIV -->
+	<bean id="kenyaemr.program.hiv" class="org.openmrs.module.kenyacore.program.ProgramDescriptor">
+		<property name="targetUuid" value="dfdc6d40-2f2f-463d-ba90-cc97350441a8" />
+		<property name="eligibilityCalculation" value="org.openmrs.module.kenyaemr.calculation.library.tb.EligibleForHivProgramCalculation" />
+		<property name="enrollmentForm" ref="kenyaemr.form.hivEnrollment" />
+		<property name="discontinuationForm" ref="kenyaemr.form.hivDiscontinuation" />
+		<property name="order" value="1001" />
+	</bean>
+
+	<!-- TB -->
+	<bean id="kenyaemr.program.tb" class="org.openmrs.module.kenyacore.program.ProgramDescriptor">
+		<property name="targetUuid" value="9f144a34-3a4a-44a9-8486-6b7af6cc64f6" />
+		<property name="eligibilityCalculation" value="org.openmrs.module.kenyaemr.calculation.library.tb.EligibleForTbProgramCalculation" />
+		<property name="enrollmentForm" ref="kenyaemr.form.tbEnrollment" />
+		<property name="discontinuationForm" ref="kenyaemr.form.tbDiscontinuation" />
+		<property name="order" value="1002" />
 	</bean>
 
 	<!-- ===================== Identifier descriptors ===================== -->
 
 	<!-- Unique Patient Number -->
-	<bean class="org.openmrs.module.kenyaemr.identifier.IdentifierDescriptor">
-		<property name="identifierTypeUuid" value="05ee9cf4-7242-4a17-b4d4-00f707265c8a" />
+	<bean id="kenyaemr.identifier.upn" class="org.openmrs.module.kenyacore.identifier.IdentifierDescriptor">
+		<property name="targetUuid" value="05ee9cf4-7242-4a17-b4d4-00f707265c8a" />
 		<property name="order" value="1001" />
 	</bean>
 
 	<!-- District Registration Number -->
-	<bean class="org.openmrs.module.kenyaemr.identifier.IdentifierDescriptor">
-		<property name="identifierTypeUuid" value="d8ee3b8c-a8fc-4d6b-af6a-9423be5f8906" />
+	<bean id="kenyaemr.identifier.tbDistrictRegistration" class="org.openmrs.module.kenyacore.identifier.IdentifierDescriptor">
+		<property name="targetUuid" value="d8ee3b8c-a8fc-4d6b-af6a-9423be5f8906" />
 		<property name="order" value="1002" />
 	</bean>
 
 	<!-- Patient Clinic Number -->
-	<bean class="org.openmrs.module.kenyaemr.identifier.IdentifierDescriptor">
-		<property name="identifierTypeUuid" value="b4d66522-11fc-45c7-83e3-39a1af21ae0d" />
+	<bean id="kenyaemr.identifier.pcn" class="org.openmrs.module.kenyacore.identifier.IdentifierDescriptor">
+		<property name="targetUuid" value="b4d66522-11fc-45c7-83e3-39a1af21ae0d" />
 		<property name="order" value="1003" />
 	</bean>
 
 	<!-- Old Identification Number -->
-	<bean class="org.openmrs.module.kenyaemr.identifier.IdentifierDescriptor">
-		<property name="identifierTypeUuid" value="8d79403a-c2cc-11de-8d13-0010c6dffd0f" />
+	<bean id="kenyaemr.identifier.old" class="org.openmrs.module.kenyacore.identifier.IdentifierDescriptor">
+		<property name="targetUuid" value="8d79403a-c2cc-11de-8d13-0010c6dffd0f" />
 		<property name="order" value="1004" />
 	</bean>
 
 	<!-- OpenMRS ID -->
-	<bean class="org.openmrs.module.kenyaemr.identifier.IdentifierDescriptor">
-		<property name="identifierTypeUuid" value="dfacd928-0370-4315-99d7-6ec1c9f7ae76" />
+	<bean id="kenyaemr.identifier.mrn" class="org.openmrs.module.kenyacore.identifier.IdentifierDescriptor">
+		<property name="targetUuid" value="dfacd928-0370-4315-99d7-6ec1c9f7ae76" />
 	</bean>
 
 	<!-- ===================== Form descriptors ===================== -->
 
 	<!-- Obstetric History -->
-	<bean class="org.openmrs.module.kenyaemr.form.FormDescriptor">
-		<property name="formUuid" value="8e4e1abf-7c08-4ba8-b6d8-19a9f1ccb6c9" />
+	<bean id="kenyaemr.form.obstetricHistory" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="8e4e1abf-7c08-4ba8-b6d8-19a9f1ccb6c9" />
 		<property name="frequency" value="ONCE_EVER" />
 		<property name="gender" value="FEMALE" />
 		<property name="apps">
 			<set><value>kenyaemr.medicalChart</value></set>
 		</property>
+		<property name="iconProvider" value="kenyaui" />
 		<property name="icon" value="forms/obstetric.png" />
+		<property name="resourceProvider" value="kenyaemr" />
 		<property name="resource" value="htmlforms/obstetricHistory.xml" />
 	</bean>
 
 	<!-- Triage -->
-	<bean class="org.openmrs.module.kenyaemr.form.FormDescriptor">
-		<property name="formUuid" value="37f6bd8d-586a-4169-95fa-5781f987fe62" />
+	<bean id="kenyaemr.form.triage" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="37f6bd8d-586a-4169-95fa-5781f987fe62" />
 		<property name="frequency" value="VISIT" />
 		<property name="apps">
 			<set><value>kenyaemr.registration</value><value>kenyaemr.intake</value><value>kenyaemr.medicalEncounter</value><value>kenyaemr.medicalChart</value></set>
 		</property>
+		<property name="iconProvider" value="kenyaui" />
+		<property name="icon" value="forms/generic.png" />
+		<property name="resourceProvider" value="kenyaemr" />
 		<property name="resource" value="htmlforms/triage.xml" />
 		<property name="order" value="3001" />
 	</bean>
 
 	<!-- Clinical Encounter -->
-	<bean class="org.openmrs.module.kenyaemr.form.FormDescriptor">
-		<property name="formUuid" value="e958f902-64df-4819-afd4-7fb061f59308" />
+	<bean id="kenyaemr.form.clinicalEncounter" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="e958f902-64df-4819-afd4-7fb061f59308" />
 		<property name="frequency" value="VISIT" />
 		<property name="apps">
 			<set><value>kenyaemr.medicalEncounter</value><value>kenyaemr.medicalChart</value></set>
 		</property>
+		<property name="iconProvider" value="kenyaui" />
+		<property name="icon" value="forms/generic.png" />
+		<property name="resourceProvider" value="kenyaemr" />
 		<property name="resource" value="htmlforms/clinicalEncounter.xml" />
 		<property name="order" value="3002" />
 	</bean>
 
 	<!-- Clinical Encounter - HIV Addendum -->
-	<bean class="org.openmrs.module.kenyaemr.form.FormDescriptor">
-		<property name="formUuid" value="bd598114-4ef4-47b1-a746-a616180ccfc0" />
+	<bean id="kenyaemr.form.hivClinicalEncounterAddendum" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="bd598114-4ef4-47b1-a746-a616180ccfc0" />
 		<property name="frequency" value="VISIT" />
 		<property name="apps">
 			<set><value>kenyaemr.medicalEncounter</value><value>kenyaemr.medicalChart</value></set>
 		</property>
-		<property name="programUuid" value="dfdc6d40-2f2f-463d-ba90-cc97350441a8" />
+		<property name="program" ref="kenyaemr.program.hiv" />
+		<property name="iconProvider" value="kenyaui" />
+		<property name="icon" value="forms/generic.png" />
+		<property name="resourceProvider" value="kenyaemr" />
 		<property name="resource" value="htmlforms/hiv/hivClinicalEncounterAddendum.xml" />
 		<property name="order" value="3003" />
 	</bean>
 
 	<!-- Lab Results -->
-	<bean class="org.openmrs.module.kenyaemr.form.FormDescriptor">
-		<property name="formUuid" value="7e603909-9ed5-4d0c-a688-26ecb05d8b6e" />
+	<bean id="kenyaemr.form.labResults" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="7e603909-9ed5-4d0c-a688-26ecb05d8b6e" />
 		<property name="frequency" value="VISIT" />
 		<property name="apps">
 			<set><value>kenyaemr.intake</value><value>kenyaemr.medicalEncounter</value><value>kenyaemr.medicalChart</value></set>
 		</property>
+		<property name="iconProvider" value="kenyaui" />
 		<property name="icon" value="forms/labresults.png" />
+		<property name="resourceProvider" value="kenyaemr" />
 		<property name="resource" value="htmlforms/labResults.xml" />
 		<property name="order" value="3004" />
 	</bean>
 
 	<!-- Other Medications -->
-	<bean class="org.openmrs.module.kenyaemr.form.FormDescriptor">
-		<property name="formUuid" value="d4ff8ad1-19f8-484f-9395-04c755de9a47" />
+	<bean id="kenyaemr.form.otherMedications" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="d4ff8ad1-19f8-484f-9395-04c755de9a47" />
 		<property name="frequency" value="VISIT" />
 		<property name="apps">
 			<set><value>kenyaemr.medicalEncounter</value><value>kenyaemr.medicalChart</value></set>
 		</property>
+		<property name="iconProvider" value="kenyaui" />
+		<property name="icon" value="forms/generic.png" />
+		<property name="resourceProvider" value="kenyaemr" />
 		<property name="resource" value="htmlforms/otherMedications.xml" />
 		<property name="order" value="3005" />
 	</bean>
 
 	<!-- Progress Note -->
-	<bean class="org.openmrs.module.kenyaemr.form.FormDescriptor">
-		<property name="formUuid" value="0038a296-62f8-4099-80e5-c9ea7590c157" />
+	<bean id="kenyaemr.form.progressNote" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="0038a296-62f8-4099-80e5-c9ea7590c157" />
 		<property name="frequency" value="VISIT" />
 		<property name="apps">
 			<set><value>kenyaemr.intake</value><value>kenyaemr.medicalEncounter</value><value>kenyaemr.medicalChart</value></set>
 		</property>
+		<property name="iconProvider" value="kenyaui" />
+		<property name="icon" value="forms/generic.png" />
+		<property name="resourceProvider" value="kenyaemr" />
 		<property name="resource" value="htmlforms/progressNote.xml" />
 		<property name="order" value="3006" />
 	</bean>
 
 	<!-- HIV Enrollment -->
-	<bean class="org.openmrs.module.kenyaemr.form.FormDescriptor">
-		<property name="formUuid" value="e4b506c1-7379-42b6-a374-284469cba8da" />
+	<bean id="kenyaemr.form.hivEnrollment" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="e4b506c1-7379-42b6-a374-284469cba8da" />
 		<property name="frequency" value="PROGRAM" />
 		<property name="apps">
 			<set><value>kenyaemr.medicalChart</value></set>
 		</property>
-		<property name="programUuid" value="dfdc6d40-2f2f-463d-ba90-cc97350441a8" />
+		<property name="program" ref="kenyaemr.program.hiv" />
+		<property name="iconProvider" value="kenyaui" />
+		<property name="icon" value="forms/generic.png" />
+		<property name="resourceProvider" value="kenyaemr" />
 		<property name="resource" value="htmlforms/hiv/hivEnrollment.xml" />
 		<property name="order" value="2101" />
 	</bean>
 
 	<!-- Family History -->
-	<bean class="org.openmrs.module.kenyaemr.form.FormDescriptor">
-		<property name="formUuid" value="7efa0ee0-6617-4cd7-8310-9f95dfee7a82" />
+	<bean id="kenyaemr.form.hivFamilyHistory" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="7efa0ee0-6617-4cd7-8310-9f95dfee7a82" />
 		<property name="frequency" value="ONCE_EVER" />
 		<property name="apps">
 			<set><value>kenyaemr.medicalChart</value></set>
 		</property>
-		<property name="programUuid" value="dfdc6d40-2f2f-463d-ba90-cc97350441a8" />
+		<property name="program" ref="kenyaemr.program.hiv" />
+		<property name="iconProvider" value="kenyaui" />
 		<property name="icon" value="forms/family_history.png" />
+		<property name="resourceProvider" value="kenyaemr" />
 		<property name="resource" value="htmlforms/hiv/hivFamilyHistory.xml" />
 		<property name="order" value="2102" />
 	</bean>
 
 	<!-- MOH257 Visit Summary -->
-	<bean class="org.openmrs.module.kenyaemr.form.FormDescriptor">
-		<property name="formUuid" value="23b4ebbd-29ad-455e-be0e-04aa6bc30798" />
+	<bean id="kenyaemr.form.moh257VisitSummary" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="23b4ebbd-29ad-455e-be0e-04aa6bc30798" />
 		<property name="frequency" value="VISIT" />
 		<property name="apps">
 			<set><value>kenyaemr.medicalChart</value></set>
 		</property>
-		<property name="programUuid" value="dfdc6d40-2f2f-463d-ba90-cc97350441a8" />
+		<property name="program" ref="kenyaemr.program.hiv" />
 		<property name="autoCreateVisitTypeUuid" value="3371a4d4-f66f-4454-a86d-92c7b3da990c" />
+		<property name="iconProvider" value="kenyaui" />
 		<property name="icon" value="forms/moh257.png" />
+		<property name="resourceProvider" value="kenyaemr" />
 		<property name="resource" value="htmlforms/hiv/moh257VisitSummary.xml" />
 		<property name="order" value="3007" />
 	</bean>
 
 	<!-- HIV Discontinuation -->
-	<bean class="org.openmrs.module.kenyaemr.form.FormDescriptor">
-		<property name="formUuid" value="e3237ede-fa70-451f-9e6c-0908bc39f8b9" />
+	<bean id="kenyaemr.form.hivDiscontinuation" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="e3237ede-fa70-451f-9e6c-0908bc39f8b9" />
 		<property name="frequency" value="PROGRAM" />
 		<property name="apps">
 			<set><value>kenyaemr.medicalChart</value></set>
 		</property>
-		<property name="programUuid" value="dfdc6d40-2f2f-463d-ba90-cc97350441a8" />
+		<property name="program" ref="kenyaemr.program.hiv" />
+		<property name="iconProvider" value="kenyaui" />
 		<property name="icon" value="forms/discontinue.png" />
+		<property name="resourceProvider" value="kenyaemr" />
 		<property name="resource" value="htmlforms/hiv/hivDiscontinuation.xml" />
 	</bean>
 
 	<!-- TB Screening-->
-	<bean class="org.openmrs.module.kenyaemr.form.FormDescriptor">
-		<property name="formUuid" value="59ed8e62-7f1f-40ae-a2e3-eabe350277ce" />
+	<bean id="kenyaemr.form.tbScreening" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="59ed8e62-7f1f-40ae-a2e3-eabe350277ce" />
 		<property name="frequency" value="VISIT" />
 		<property name="apps">
 			<set><value>kenyaemr.intake</value><value>kenyaemr.medicalEncounter</value><value>kenyaemr.medicalChart</value></set>
 		</property>
+		<property name="iconProvider" value="kenyaui" />
+		<property name="icon" value="forms/generic.png" />
+		<property name="resourceProvider" value="kenyaemr" />
 		<property name="resource" value="htmlforms/tb/tbScreening.xml" />
 	</bean>
 
 	<!-- TB Enrollment-->
-	<bean class="org.openmrs.module.kenyaemr.form.FormDescriptor">
-		<property name="formUuid" value="89994550-9939-40f3-afa6-173bce445c79" />
+	<bean id="kenyaemr.form.tbEnrollment" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="89994550-9939-40f3-afa6-173bce445c79" />
 		<property name="frequency" value="PROGRAM" />
 		<property name="apps">
 			<set><value>kenyaemr.medicalChart</value></set>
 		</property>
-		<property name="programUuid" value="9f144a34-3a4a-44a9-8486-6b7af6cc64f6" />
+		<property name="program" ref="kenyaemr.program.tb" />
+		<property name="iconProvider" value="kenyaui" />
+		<property name="icon" value="forms/generic.png" />
+		<property name="resourceProvider" value="kenyaemr" />
 		<property name="resource" value="htmlforms/tb/tbEnrollment.xml" />
 	</bean>
 
 	<!-- TB Followup Visit -->
-	<bean class="org.openmrs.module.kenyaemr.form.FormDescriptor">
-		<property name="formUuid" value="2daabb77-7ad6-4952-864b-8d23e109c69d" />
+	<bean id="kenyaemr.form.tbFollowupVisit" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="2daabb77-7ad6-4952-864b-8d23e109c69d" />
 		<property name="frequency" value="PROGRAM" />
 		<property name="apps">
 			<set><value>kenyaemr.medicalEncounter</value><value>kenyaemr.medicalChart</value></set>
 		</property>
-		<property name="programUuid" value="9f144a34-3a4a-44a9-8486-6b7af6cc64f6" />
+		<property name="program" ref="kenyaemr.program.tb" />
+		<property name="iconProvider" value="kenyaui" />
+		<property name="icon" value="forms/generic.png" />
+		<property name="resourceProvider" value="kenyaemr" />
 		<property name="resource" value="htmlforms/tb/tbFollowupVisit.xml" />
 	</bean>
 
 	<!-- TB Discontinuation -->
-	<bean class="org.openmrs.module.kenyaemr.form.FormDescriptor">
-		<property name="formUuid" value="4b296dd0-f6be-4007-9eb8-d0fd4e94fb3a" />
+	<bean id="kenyaemr.form.tbDiscontinuation" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="4b296dd0-f6be-4007-9eb8-d0fd4e94fb3a" />
 		<property name="frequency" value="PROGRAM" />
 		<property name="apps">
 			<set><value>kenyaemr.medicalChart</value></set>
 		</property>
-		<property name="programUuid" value="9f144a34-3a4a-44a9-8486-6b7af6cc64f6" />
+		<property name="program" ref="kenyaemr.program.tb" />
+		<property name="iconProvider" value="kenyaui" />
 		<property name="icon" value="forms/discontinue.png" />
+		<property name="resourceProvider" value="kenyaemr" />
 		<property name="resource" value="htmlforms/tb/tbDiscontinuation.xml" />
 	</bean>
 
@@ -230,9 +289,9 @@
 			<ref bean="transactionManager" />
 		</property>
 		<property name="target">
-			<bean class="${project.parent.groupId}.${project.parent.artifactId}.api.impl.KenyaEmrServiceImpl">
+			<bean class="org.openmrs.module.kenyaemr.api.impl.KenyaEmrServiceImpl">
 				<property name="kenyaEmrDAO">
-					<bean class="${project.parent.groupId}.${project.parent.artifactId}.api.db.hibernate.HibernateKenyaEmrDAO">
+					<bean class="org.openmrs.module.kenyaemr.api.db.hibernate.HibernateKenyaEmrDAO">
 						<property name="sessionFactory"><ref bean="sessionFactory"/></property>
 					</bean>
 				</property>
@@ -251,7 +310,7 @@
 	<bean parent="serviceContext">
 		<property name="moduleService">
 			<list>
-				<value>${project.parent.groupId}.${project.parent.artifactId}.api.KenyaEmrService</value>
+				<value>org.openmrs.module.kenyaemr.api.KenyaEmrService</value>
 				<ref local="kenyaEmrService"/>
 			</list>
 		</property>
@@ -263,7 +322,7 @@
 		<constructor-arg value="yyyy-MM-dd" />
 	</bean>
 
-	<bean id="kenyaEmrBuildProperties" class="${project.parent.groupId}.${project.parent.artifactId}.util.BuildProperties">
+	<bean id="kenyaEmrBuildProperties" class="org.openmrs.module.kenyaemr.util.BuildProperties">
 		<property name="buildDate">
 			<bean factory-bean="kenyaEmrDateFactory" factory-method="parse">
 				<constructor-arg value="${moduleBuildDate}" />

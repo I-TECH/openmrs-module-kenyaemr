@@ -14,7 +14,7 @@
 
 package org.openmrs.module.kenyaemr.reporting.builder.patientlist;
 
-import org.openmrs.module.kenyaemr.calculation.library.art.EligibleForArtCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.EligibleForArtCalculation;
 import org.springframework.stereotype.Component;
 
 /**
@@ -28,7 +28,7 @@ public class EligibleForArtReport extends BasePatientCalculationReportBuilder {
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.reporting.builder.ReportBuilder#getName()
+	 * @see org.openmrs.module.kenyacore.reporting.ReportBuilder#getName()
 	 */
 	@Override
 	public String getName() {
@@ -36,7 +36,7 @@ public class EligibleForArtReport extends BasePatientCalculationReportBuilder {
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.reporting.builder.ReportBuilder#getTags()
+	 * @see org.openmrs.module.kenyacore.reporting.ReportBuilder#getTags()
 	 */
 	@Override
 	public String[] getTags() {

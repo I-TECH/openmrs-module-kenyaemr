@@ -25,12 +25,13 @@ import org.openmrs.Program;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.ObsResult;
+import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.KenyaEmrConstants;
+import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyaemr.Metadata;
-import org.openmrs.module.kenyaemr.calculation.BaseFlagCalculation;
-import org.openmrs.module.kenyaemr.calculation.BooleanResult;
-import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
+import org.openmrs.module.kenyacore.calculation.BaseFlagCalculation;
+import org.openmrs.module.kenyacore.calculation.BooleanResult;
+import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 
 /**
  * Calculate whether patients are due for a sputum test. Calculation returns
@@ -41,7 +42,7 @@ import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
 public class NeedsTbSputumTestCalculation extends BaseFlagCalculation {
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.calculation.BaseFlagCalculation#getFlagMessage()
+	 * @see org.openmrs.module.kenyacore.calculation.BaseFlagCalculation#getFlagMessage()
 	 */
 	@Override
 	public String getFlagMessage() {
@@ -55,7 +56,7 @@ public class NeedsTbSputumTestCalculation extends BaseFlagCalculation {
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
 		// Get TB program
-		Program tbProgram = Metadata.getProgram(Metadata.TB_PROGRAM);
+		Program tbProgram = MetadataUtils.getProgram(Metadata.TB_PROGRAM);
 
 		// Get all patients who are alive and in TB program
 		Set<Integer> alive = alivePatients(cohort, context);
@@ -150,13 +151,13 @@ public class NeedsTbSputumTestCalculation extends BaseFlagCalculation {
 					if ((patientClassification != null)
 							&& (patientClassification.getValue().getValueCoded()
 							.equals(smearPositiveNew))
-							&& (numberOfDaysSinceTreatmentStarted >= KenyaEmrConstants.MONTH_TWO_SPUTUM_TEST)) {
+							&& (numberOfDaysSinceTreatmentStarted >= EmrConstants.MONTH_TWO_SPUTUM_TEST)) {
 						// check for the first obs since
 						// numberOfDaysSinceTreatmentStarted elaspses, first
 						// encounter on or after 2 month
 						// get the date two months after start of treatment
 						c.add(Calendar.DATE,
-								KenyaEmrConstants.MONTH_TWO_SPUTUM_TEST);
+								EmrConstants.MONTH_TWO_SPUTUM_TEST);
 						Date dateAfterTwomonths = c.getTime();
 						// now find the first obs recorded on or after
 						// dateAfterTwomonths based on sputum ie it should be
@@ -180,10 +181,10 @@ public class NeedsTbSputumTestCalculation extends BaseFlagCalculation {
 					if ((patientClassification != null)
 							&& (patientClassification.getValue().getValueCoded()
 							.equals(smearPositiveNew))
-							&& (numberOfDaysSinceTreatmentStarted >= KenyaEmrConstants.MONTH_FIVE_SPUTUM_TEST)) {
+							&& (numberOfDaysSinceTreatmentStarted >= EmrConstants.MONTH_FIVE_SPUTUM_TEST)) {
 						// get the date at month 5 since treatment started
 						c.add(Calendar.DATE,
-								KenyaEmrConstants.MONTH_FIVE_SPUTUM_TEST);
+								EmrConstants.MONTH_FIVE_SPUTUM_TEST);
 						Date dateAfterFiveMonths = c.getTime();
 						// check if any obs is collected on or after this date
 						CalculationResultMap firstObsAfterFivemonthsOnOrAfterdateAfterFivemonths = firstObsOnOrAfterDate(
@@ -208,10 +209,10 @@ public class NeedsTbSputumTestCalculation extends BaseFlagCalculation {
 					if ((patientClassification != null)
 							&& (patientClassification.getValue().getValueCoded()
 							.equals(smearPositiveNew))
-							&& (numberOfDaysSinceTreatmentStarted >= KenyaEmrConstants.MONTH_SIX_SPUTUM_TEST)) {
+							&& (numberOfDaysSinceTreatmentStarted >= EmrConstants.MONTH_SIX_SPUTUM_TEST)) {
 						// get the date at month 6 since treatment started
 						c.add(Calendar.DATE,
-								KenyaEmrConstants.MONTH_SIX_SPUTUM_TEST);
+								EmrConstants.MONTH_SIX_SPUTUM_TEST);
 						Date dateAfterSixMonths = c.getTime();
 						// check if there is any observation on or after this
 						// date
@@ -244,10 +245,10 @@ public class NeedsTbSputumTestCalculation extends BaseFlagCalculation {
 									.equals(retreatmentAfterDefault)))) {
 						// check for the days elapsed since treatment was commenced
 						// will target 3rd month
-						if (numberOfDaysSinceTreatmentStarted >= KenyaEmrConstants.MONTH_THREE_SPUTUM_TEST) {
+						if (numberOfDaysSinceTreatmentStarted >= EmrConstants.MONTH_THREE_SPUTUM_TEST) {
 							// get the date at Month 3 since the treatment started
 							c.add(Calendar.DATE,
-									KenyaEmrConstants.MONTH_THREE_SPUTUM_TEST);
+									EmrConstants.MONTH_THREE_SPUTUM_TEST);
 							Date dateAfterThreeMonths = c.getTime();
 							// get the first observation of sputum on or after the
 							// date
@@ -268,11 +269,11 @@ public class NeedsTbSputumTestCalculation extends BaseFlagCalculation {
 
 						}
 						// check for the days in the 5th month
-						if (numberOfDaysSinceTreatmentStarted >= KenyaEmrConstants.MONTH_FIVE_SPUTUM_TEST) {
+						if (numberOfDaysSinceTreatmentStarted >= EmrConstants.MONTH_FIVE_SPUTUM_TEST) {
 							// get the date after 5 month since the retreatment
 							// started
 							c.add(Calendar.DATE,
-									KenyaEmrConstants.MONTH_FIVE_SPUTUM_TEST);
+									EmrConstants.MONTH_FIVE_SPUTUM_TEST);
 							Date dateAfterFiveMonths = c.getTime();
 							// get the first observation of sputum on or after the
 							// date
@@ -294,11 +295,11 @@ public class NeedsTbSputumTestCalculation extends BaseFlagCalculation {
 						}
 						// check for the days in the 8th month and it will be
 						// considered complete treatment
-						if (numberOfDaysSinceTreatmentStarted >= KenyaEmrConstants.MONTH_EIGHT_SPUTUM_TEST) {
+						if (numberOfDaysSinceTreatmentStarted >= EmrConstants.MONTH_EIGHT_SPUTUM_TEST) {
 							// get the date after 8 month since the retreatment
 							// started
 							c.add(Calendar.DATE,
-									KenyaEmrConstants.MONTH_EIGHT_SPUTUM_TEST);
+									EmrConstants.MONTH_EIGHT_SPUTUM_TEST);
 							Date dateAfterEightMonths = c.getTime();
 							// get the first observation of sputum on or after the
 							// date

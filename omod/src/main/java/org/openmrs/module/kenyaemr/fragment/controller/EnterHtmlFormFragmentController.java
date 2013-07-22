@@ -25,16 +25,14 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.*;
 import org.openmrs.api.context.Context;
-import org.openmrs.api.context.ContextAuthenticationException;
 import org.openmrs.module.htmlformentry.FormEntryContext;
 import org.openmrs.module.htmlformentry.FormEntryContext.Mode;
 import org.openmrs.module.htmlformentry.FormEntrySession;
 import org.openmrs.module.htmlformentry.FormSubmissionError;
 import org.openmrs.module.htmlformentry.HtmlForm;
-import org.openmrs.module.htmlformentry.HtmlFormEntryUtil;
-import org.openmrs.module.kenyaemr.KenyaEmr;
-import org.openmrs.module.kenyaemr.form.FormDescriptor;
-import org.openmrs.module.kenyaemr.form.FormUtils;
+import org.openmrs.module.kenyacore.CoreContext;
+import org.openmrs.module.kenyacore.form.FormDescriptor;
+import org.openmrs.module.kenyacore.form.FormUtils;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.annotation.SpringBean;
@@ -51,7 +49,7 @@ public class EnterHtmlFormFragmentController {
 	protected final Log log = LogFactory.getLog(EnterHtmlFormFragmentController.class);
 
 	public void controller(FragmentConfiguration config,
-						   @SpringBean KenyaEmr emr,
+						   @SpringBean CoreContext emr,
 						   @SpringBean ResourceFactory resourceFactory,
 						   @FragmentParam("patient") Patient patient,
 						   @FragmentParam(value="formId", required=false) Form form,

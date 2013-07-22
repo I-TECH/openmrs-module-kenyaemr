@@ -22,63 +22,44 @@ import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appframework.AppDescriptor;
 import org.openmrs.module.appframework.api.AppFrameworkService;
-import org.openmrs.module.kenyaemr.KenyaEmrConstants;
+import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
+import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.ui.framework.UiUtils;
+import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.page.PageModel;
-import org.openmrs.ui.framework.page.Redirect;
+import org.openmrs.util.OpenmrsUtil;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 /**
  * Home page controller
  */
 public class HomePageController {
 	
-	public String controller(@RequestParam(required=false, value="patientId") Patient patient,
-	                         PageModel model, UiUtils ui,
-							 HttpServletRequest request) throws Redirect {
+	public String controller(@RequestParam(required=false, value="patientId") Patient patient, PageModel model, UiUtils ui, HttpSession session, @SpringBean KenyaUiUtils kenyaUi) {
 
 		// Redirect to setup page if module is not yet configured
-		if (!Context.getService(KenyaEmrService.class).isConfigured()) {
-			return "redirect:" + ui.pageLink(KenyaEmrConstants.MODULE_ID, "adminFirstTimeSetup");
+		if (Context.getService(KenyaEmrService.class).isSetupRequired()) {
+			kenyaUi.notifySuccess(session, "First-Time Setup Needed");
+			return "redirect:" + ui.pageLink(EmrConstants.MODULE_ID, "adminFirstTimeSetup");
 		}
-		
-		AppFrameworkService appService = Context.getService(AppFrameworkService.class);
-		List<AppDescriptor> apps = appService.getAppsForUser(Context.getAuthenticatedUser());
-		if (apps.size() == 0) {
-			// for testing purposes, if we haven't configured this, show all apps
-			apps.addAll(appService.getAllApps());
-		}
+
+		// Get apps for the current user
+		List<AppDescriptor> apps = Context.getService(AppFrameworkService.class).getAppsForUser(Context.getAuthenticatedUser());
+
+		// Sort by order property
 		Collections.sort(apps, new Comparator<AppDescriptor>() {
-			
-			Integer getScore(AppDescriptor app) {
-				if ("kenyaemr.registration".equals(app.getId()))
-					return 0;
-				else if ("kenyaemr.intake".equals(app.getId()))
-					return 1;
-				else if ("kenyaemr.medicalEncounter".equals(app.getId()))
-					return 2;
-				else if ("kenyaemr.medicalChart".equals(app.getId()))
-					return 3;
-				else if ("kenyaemr.reports".equals(app.getId()))
-					return 4;
-				else if ("kenyaemr.admin".equals(app.getId()))
-					return 5;
-				else
-					return Integer.MAX_VALUE;
-			}
-			
 			@Override
-            public int compare(AppDescriptor left, AppDescriptor right) {
-	            return getScore(left).compareTo(getScore(right));
-            }
+			public int compare(AppDescriptor left, AppDescriptor right) {
+				return OpenmrsUtil.compareWithNullAsGreatest(left.getOrder(), right.getOrder());
+			}
 		});
 
 		model.addAttribute("apps", apps);
 		model.addAttribute("patient", patient);
 		
-		return null; // default view
+		return null;
 	}
 }

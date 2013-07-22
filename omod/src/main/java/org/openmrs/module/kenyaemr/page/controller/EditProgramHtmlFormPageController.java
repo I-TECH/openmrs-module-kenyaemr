@@ -22,10 +22,7 @@ import org.openmrs.Form;
 import org.openmrs.Patient;
 import org.openmrs.PatientProgram;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyaemr.EmrWebConstants;
-import org.openmrs.module.kenyaemr.KenyaEmrConstants;
-import org.openmrs.module.kenyaui.annotation.SharedPage;
-import org.openmrs.ui.framework.page.PageModel;
+import org.openmrs.module.kenyaemr.EmrConstants;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
@@ -53,7 +50,7 @@ public class EditProgramHtmlFormPageController {
 		else {
 			// in case there are more than one, we pick the last one
 			Encounter encounter = encounters.get(encounters.size() - 1);
-			return "redirect:" + KenyaEmrConstants.MODULE_ID + "/editHtmlForm.page?appId=" + appId + "&patientId=" + patient.getId() + "&encounterId=" + encounter.getEncounterId() + "&returnUrl=" + java.net.URLEncoder.encode(returnUrl);
+			return "redirect:" + EmrConstants.MODULE_ID + "/editHtmlForm.page?appId=" + appId + "&patientId=" + patient.getId() + "&encounterId=" + encounter.getEncounterId() + "&returnUrl=" + java.net.URLEncoder.encode(returnUrl);
 		}
 	}
 }

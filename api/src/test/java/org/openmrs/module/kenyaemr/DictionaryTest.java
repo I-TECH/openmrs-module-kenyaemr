@@ -17,11 +17,11 @@ package org.openmrs.module.kenyaemr;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 /**
- * Tests for {@link Dictionary}
+ * Tests for {@link org.openmrs.module.kenyaemr.Dictionary}
  */
 public class DictionaryTest extends BaseModuleContextSensitiveTest {
 

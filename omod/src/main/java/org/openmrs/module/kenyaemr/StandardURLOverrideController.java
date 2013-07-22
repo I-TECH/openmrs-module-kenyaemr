@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.kenyaemr;
 
+import org.openmrs.module.kenyaemr.EmrConstants;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -24,16 +25,16 @@ public class StandardURLOverrideController {
 	
 	@RequestMapping("/index.htm")
 	public String showOurHomepage() {
-		return "forward:/" + KenyaEmrConstants.MODULE_ID + "/home.page";
+		return "forward:/" + EmrConstants.MODULE_ID + "/home.page";
 	}
 	
 	@RequestMapping("/login.htm")
 	public String showLoginHomepage() {
-		return "forward:/" + KenyaEmrConstants.MODULE_ID + "/login.page";
+		return "forward:/" + EmrConstants.MODULE_ID + "/login.page";
 	}
 
 	@RequestMapping("/forgotPassword.form")
 	public String showOurForgotPasswordPage() {
-		return "forward:/" + KenyaEmrConstants.MODULE_ID + "/forgotPassword.page";
+		return "forward:/" + EmrConstants.MODULE_ID + "/forgotPassword.page";
 	}
 }

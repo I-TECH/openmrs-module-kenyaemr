@@ -15,16 +15,15 @@
 package org.openmrs.module.kenyaemr.reporting.library.indicator;
 
 import org.openmrs.Concept;
-import org.openmrs.Program;
+import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.Metadata;
+import org.openmrs.module.kenyaemr.reporting.EmrReportingUtils;
 import org.openmrs.module.kenyaemr.reporting.library.cohort.ArtCohortLibrary;
-import org.openmrs.module.kenyaemr.reporting.library.cohort.CommonCohortLibrary;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import static org.openmrs.module.kenyaemr.reporting.library.indicator.CommonIndicatorLibrary.createCohortIndicator;
 import static org.openmrs.module.kenyaemr.reporting.EmrReportingUtils.map;
 
 /**
@@ -44,7 +43,7 @@ public class ArtIndicatorLibrary {
 	 * @return the indicator
 	 */
 	public CohortIndicator enrolledExcludingTransfers() {
-		return commonIndicators.enrolledExcludingTransfers(Metadata.getProgram(Metadata.HIV_PROGRAM));
+		return commonIndicators.enrolledExcludingTransfers(MetadataUtils.getProgram(Metadata.HIV_PROGRAM));
 	}
 
 	/**
@@ -52,7 +51,7 @@ public class ArtIndicatorLibrary {
 	 * @return the indicator
 	 */
 	public CohortIndicator enrolledCumulative() {
-		return commonIndicators.enrolledCumulative(Metadata.getProgram(Metadata.HIV_PROGRAM));
+		return commonIndicators.enrolledCumulative(MetadataUtils.getProgram(Metadata.HIV_PROGRAM));
 	}
 
 	/**
@@ -60,8 +59,8 @@ public class ArtIndicatorLibrary {
 	 * @return the indicator
 	 */
 	public CohortIndicator enrolledExcludingTransfersAndReferredFrom(Concept... entryPoints) {
-		return createCohortIndicator("Number of newly enrolled patients referred from",
-				map(artCohorts.enrolledExcludingTransfersAndReferredFrom(entryPoints), "onOrAfter=${startDate},onOrBefore=${endDate}"));
+		return CommonIndicatorLibrary.createCohortIndicator("Number of newly enrolled patients referred from",
+				EmrReportingUtils.map(artCohorts.enrolledExcludingTransfersAndReferredFrom(entryPoints), "onOrAfter=${startDate},onOrBefore=${endDate}"));
 	}
 
 	/**
@@ -69,8 +68,8 @@ public class ArtIndicatorLibrary {
 	 * @return the indicator
 	 */
 	public CohortIndicator enrolledExcludingTransfersAndNotReferredFrom(Concept... entryPoints) {
-		return createCohortIndicator("Number of newly enrolled patients referred from",
-				map(artCohorts.enrolledExcludingTransfersAndNotReferredFrom(entryPoints), "onOrAfter=${startDate},onOrBefore=${endDate}"));
+		return CommonIndicatorLibrary.createCohortIndicator("Number of newly enrolled patients referred from",
+				EmrReportingUtils.map(artCohorts.enrolledExcludingTransfersAndNotReferredFrom(entryPoints), "onOrAfter=${startDate},onOrBefore=${endDate}"));
 	}
 
 	/**
@@ -78,7 +77,7 @@ public class ArtIndicatorLibrary {
 	 * @return the indicator
 	 */
 	public CohortIndicator startedArt() {
-		return createCohortIndicator("Number of patients who started ART", map(artCohorts.startedArt(), "onOrAfter=${startDate},onOrBefore=${endDate}"));
+		return CommonIndicatorLibrary.createCohortIndicator("Number of patients who started ART", EmrReportingUtils.map(artCohorts.startedArt(), "onOrAfter=${startDate},onOrBefore=${endDate}"));
 	}
 
 	/**
@@ -86,7 +85,7 @@ public class ArtIndicatorLibrary {
 	 * @return the indicator
 	 */
 	public CohortIndicator startedArtWhilePregnant() {
-		return createCohortIndicator("Number of patients who started ART while pregnant", map(artCohorts.startedArtWhilePregnant(), "onOrAfter=${startDate},onOrBefore=${endDate}"));
+		return CommonIndicatorLibrary.createCohortIndicator("Number of patients who started ART while pregnant", EmrReportingUtils.map(artCohorts.startedArtWhilePregnant(), "onOrAfter=${startDate},onOrBefore=${endDate}"));
 	}
 
 	/**
@@ -94,7 +93,7 @@ public class ArtIndicatorLibrary {
 	 * @return the indicator
 	 */
 	public CohortIndicator startedArtWhileTbPatient() {
-		return createCohortIndicator("Number of patients who started ART while being a TB patient", map(artCohorts.startedArtWhileTbPatient(), "onOrAfter=${startDate},onOrBefore=${endDate}"));
+		return CommonIndicatorLibrary.createCohortIndicator("Number of patients who started ART while being a TB patient", EmrReportingUtils.map(artCohorts.startedArtWhileTbPatient(), "onOrAfter=${startDate},onOrBefore=${endDate}"));
 	}
 
 	/**
@@ -102,7 +101,7 @@ public class ArtIndicatorLibrary {
 	 * @return the indicator
 	 */
 	public CohortIndicator startedArtWithWhoStage(int stage) {
-		return createCohortIndicator("Number of patients who started ART with WHO stage " + stage, map(artCohorts.startedArtWithWhoStage(stage), "onOrAfter=${startDate},onOrBefore=${endDate}"));
+		return CommonIndicatorLibrary.createCohortIndicator("Number of patients who started ART with WHO stage " + stage, EmrReportingUtils.map(artCohorts.startedArtWithWhoStage(stage), "onOrAfter=${startDate},onOrBefore=${endDate}"));
 	}
 
 	/**
@@ -110,7 +109,7 @@ public class ArtIndicatorLibrary {
 	 * @return the indicator
 	 */
 	public CohortIndicator startedArtCumulative() {
-		return createCohortIndicator("Number of patients who have ever started ART", map(artCohorts.startedArt(), "onOrBefore=${endDate}"));
+		return CommonIndicatorLibrary.createCohortIndicator("Number of patients who have ever started ART", EmrReportingUtils.map(artCohorts.startedArt(), "onOrBefore=${endDate}"));
 	}
 
 	/**
@@ -118,7 +117,7 @@ public class ArtIndicatorLibrary {
 	 * @return the indicator
 	 */
 	public CohortIndicator eligibleForArt() {
-		return createCohortIndicator("Number of patients eligible for ART", map(artCohorts.eligibleForArt(), "onDate=${endDate}"));
+		return CommonIndicatorLibrary.createCohortIndicator("Number of patients eligible for ART", EmrReportingUtils.map(artCohorts.eligibleForArt(), "onDate=${endDate}"));
 	}
 
 	/**
@@ -126,7 +125,7 @@ public class ArtIndicatorLibrary {
 	 * @return the indicator
 	 */
 	public CohortIndicator onArt() {
-		return createCohortIndicator("Number of patients on ART", map(artCohorts.onArt(), "onDate=${endDate}"));
+		return CommonIndicatorLibrary.createCohortIndicator("Number of patients on ART", EmrReportingUtils.map(artCohorts.onArt(), "onDate=${endDate}"));
 	}
 
 	/**
@@ -134,7 +133,7 @@ public class ArtIndicatorLibrary {
 	 * @return the indicator
 	 */
 	public CohortIndicator onArtAndPregnant() {
-		return createCohortIndicator("Number of patients on ART and pregnant", map(artCohorts.onArtAndPregnant(), "onDate=${endDate}"));
+		return CommonIndicatorLibrary.createCohortIndicator("Number of patients on ART and pregnant", EmrReportingUtils.map(artCohorts.onArtAndPregnant(), "onDate=${endDate}"));
 	}
 
 	/**
@@ -142,7 +141,7 @@ public class ArtIndicatorLibrary {
 	 * @return the indicator
 	 */
 	public CohortIndicator onArtAndNotPregnant() {
-		return createCohortIndicator("Number of patients on ART and not pregnant", map(artCohorts.onArtAndNotPregnant(), "onDate=${endDate}"));
+		return CommonIndicatorLibrary.createCohortIndicator("Number of patients on ART and not pregnant", EmrReportingUtils.map(artCohorts.onArtAndNotPregnant(), "onDate=${endDate}"));
 	}
 
 	/**
@@ -151,7 +150,7 @@ public class ArtIndicatorLibrary {
 	 */
 	public CohortIndicator onCotrimoxazoleProphylaxis() {
 		Concept[] drugs = { Dictionary.getConcept(Dictionary.SULFAMETHOXAZOLE_TRIMETHOPRIM) };
-		return createCohortIndicator("Number of patients on Cotrimoxazole", map(artCohorts.inHivProgramAndOnMedication(drugs), "onDate=${endDate}"));
+		return CommonIndicatorLibrary.createCohortIndicator("Number of patients on Cotrimoxazole", EmrReportingUtils.map(artCohorts.inHivProgramAndOnMedication(drugs), "onDate=${endDate}"));
 	}
 
 	/**
@@ -160,7 +159,7 @@ public class ArtIndicatorLibrary {
 	 */
 	public CohortIndicator onFluconazoleProphylaxis() {
 		Concept[] drugs = { Dictionary.getConcept(Dictionary.FLUCONAZOLE) };
-		return createCohortIndicator("Number of patients on Fluconazole", map(artCohorts.inHivProgramAndOnMedication(drugs), "onDate=${endDate}"));
+		return CommonIndicatorLibrary.createCohortIndicator("Number of patients on Fluconazole", EmrReportingUtils.map(artCohorts.inHivProgramAndOnMedication(drugs), "onDate=${endDate}"));
 	}
 
 	/**
@@ -169,6 +168,6 @@ public class ArtIndicatorLibrary {
 	 */
 	public CohortIndicator onProphylaxis() {
 		Concept[] drugs = { Dictionary.getConcept(Dictionary.FLUCONAZOLE), Dictionary.getConcept(Dictionary.SULFAMETHOXAZOLE_TRIMETHOPRIM) };
-		return createCohortIndicator("Number of patients on prophylaxis", map(artCohorts.inHivProgramAndOnMedication(drugs), "onDate=${endDate}"));
+		return CommonIndicatorLibrary.createCohortIndicator("Number of patients on prophylaxis", EmrReportingUtils.map(artCohorts.inHivProgramAndOnMedication(drugs), "onDate=${endDate}"));
 	}
 }

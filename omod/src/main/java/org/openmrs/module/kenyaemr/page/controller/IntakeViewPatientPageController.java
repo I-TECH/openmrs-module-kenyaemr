@@ -19,6 +19,7 @@ import java.util.List;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.EmrWebConstants;
 import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaui.annotation.AppPage;
@@ -48,7 +49,7 @@ public class IntakeViewPatientPageController {
 		
 		model.addAttribute("visit", visit);
 
-		model.addAttribute("hivProgram", Metadata.getProgram(Metadata.HIV_PROGRAM));
-		model.addAttribute("tbProgram", Metadata.getProgram(Metadata.TB_PROGRAM));
+		model.addAttribute("hivProgram", MetadataUtils.getProgram(Metadata.HIV_PROGRAM));
+		model.addAttribute("tbProgram", MetadataUtils.getProgram(Metadata.TB_PROGRAM));
 	}
 }

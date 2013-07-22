@@ -18,8 +18,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Concept;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyaemr.calculation.library.art.InitialArtStartDateCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.art.OnArtCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtStartDateCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.OnArtCalculation;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.EmrCalculationCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.EmrDateCalculationCohortDefinition;
 import org.openmrs.module.kenyaemr.test.ReportingTestUtils;
@@ -32,7 +32,7 @@ import org.openmrs.test.BaseModuleContextSensitiveTest;
 import java.util.Arrays;
 
 /**
- * Tests for {@link EmrCalculationCohortDefinitionEvaluator}
+ * Tests for {@link org.openmrs.module.kenyaemr.reporting.cohort.definition.evaluator.EmrCalculationCohortDefinitionEvaluator}
  */
 public class EmrCalculationCohortDefinitionEvaluatorTest extends BaseModuleContextSensitiveTest {
 

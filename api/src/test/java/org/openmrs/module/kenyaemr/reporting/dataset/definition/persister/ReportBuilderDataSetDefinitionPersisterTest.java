@@ -17,7 +17,7 @@ package org.openmrs.module.kenyaemr.reporting.dataset.definition.persister;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.module.kenyaemr.reporting.ReportManager;
+import org.openmrs.module.kenyacore.reporting.ReportManager;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +27,7 @@ import java.util.List;
 import static org.hamcrest.CoreMatchers.*;
 
 /**
- * Tests for {@link ReportBuilderDataSetDefinitionPersister}
+ * Tests for {@link org.openmrs.module.kenyaemr.reporting.dataset.definition.persister.ReportBuilderDataSetDefinitionPersister}
  */
 public class ReportBuilderDataSetDefinitionPersisterTest extends BaseModuleContextSensitiveTest {
 

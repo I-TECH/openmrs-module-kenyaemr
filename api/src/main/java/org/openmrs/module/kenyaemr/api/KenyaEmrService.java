@@ -39,7 +39,7 @@ public interface KenyaEmrService extends OpenmrsService {
 	 * @should return true after everything is configured
 	 */
 	@Transactional(readOnly = true)
-	boolean isConfigured();
+	boolean isSetupRequired();
 	
 	/**
 	 * Sets the default location for this server, i.e. the value that should be auto-set for new
@@ -73,6 +73,13 @@ public interface KenyaEmrService extends OpenmrsService {
 	Location getLocationByMflCode(String mflCode);
 
 	/**
+	 * Generates the next unique patient number identifier value
+	 * @param comment the reference comment
+	 * @return the identifier value
+	 */
+	String getNextHivUniquePatientNumber(String comment);
+
+	/**
 	 * Gets the visits that occurred for the given patient on the given date
 	 * @param patient the patient
 	 * @param date the day
@@ -80,6 +87,18 @@ public interface KenyaEmrService extends OpenmrsService {
 	 */
 	@Transactional(readOnly = true)
 	List<Visit> getVisitsByPatientAndDay(Patient patient, Date date);
+
+	/**
+	 * Setup the medical record number identifier source
+	 * @param startFrom the base identifier to start from
+	 */
+	void setupMrnIdentifierSource(String startFrom);
+
+	/**
+	 * Setup the unique patient number identifier source
+	 * @param startFrom the base identifier to start from
+	 */
+	void setupHivUniqueIdentifierSource(String startFrom);
 
 	/**
 	 * Gets the locations matching the specified arguments

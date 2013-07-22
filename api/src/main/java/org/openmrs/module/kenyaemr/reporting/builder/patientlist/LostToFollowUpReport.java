@@ -14,7 +14,7 @@
 
 package org.openmrs.module.kenyaemr.reporting.builder.patientlist;
 
-import org.openmrs.module.kenyaemr.calculation.library.art.LostToFollowUpCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.LostToFollowUpCalculation;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -25,7 +25,7 @@ public class LostToFollowUpReport extends BasePatientCalculationReportBuilder {
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.reporting.builder.ReportBuilder#getName()
+	 * @see org.openmrs.module.kenyacore.reporting.ReportBuilder#getName()
 	 */
 	@Override
 	public String getName() {
@@ -33,7 +33,7 @@ public class LostToFollowUpReport extends BasePatientCalculationReportBuilder {
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.reporting.builder.ReportBuilder#getTags()
+	 * @see org.openmrs.module.kenyacore.reporting.ReportBuilder#getTags()
 	 */
 	@Override
 	public String[] getTags() {

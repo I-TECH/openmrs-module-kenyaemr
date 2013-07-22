@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 /**
  *
  */
-@Component
+
 public class ClassToStringConverter implements Converter<Class, String> {
 
 	/**

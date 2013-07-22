@@ -15,8 +15,8 @@
 package org.openmrs.module.kenyaemr.converter;
 
 import org.openmrs.Form;
-import org.openmrs.module.kenyaemr.form.FormDescriptor;
-import org.openmrs.module.kenyaemr.form.FormManager;
+import org.openmrs.module.kenyacore.form.FormDescriptor;
+import org.openmrs.module.kenyacore.form.FormManager;
 import org.openmrs.ui.framework.SimpleObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;

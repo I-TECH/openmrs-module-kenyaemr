@@ -18,8 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openmrs.module.kenyaemr.EmrWebConstants;
-import org.openmrs.module.kenyaemr.KenyaEmr;
-import org.openmrs.module.kenyaemr.reporting.builder.ReportBuilder;
+import org.openmrs.module.kenyacore.CoreContext;
+import org.openmrs.module.kenyacore.reporting.ReportBuilder;
 import org.openmrs.module.kenyaui.annotation.AppPage;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.annotation.SpringBean;
@@ -31,7 +31,7 @@ import org.openmrs.ui.framework.page.PageModel;
 @AppPage(EmrWebConstants.APP_REPORTS)
 public class ReportsHomePageController {
 
-	public void controller(PageModel model, @SpringBean KenyaEmr emr) {
+	public void controller(PageModel model, @SpringBean CoreContext emr) {
 		model.addAttribute("mohReports", getReportDefinitionSummaries(emr, "moh"));
 		model.addAttribute("facilityReports", getReportDefinitionSummaries(emr, "facility"));
 	}
@@ -41,7 +41,7 @@ public class ReportsHomePageController {
 	 * @param tag the report tag
 	 * @return the definition summaries
 	 */
-    private List<SimpleObject> getReportDefinitionSummaries(KenyaEmr emr, String tag) {
+    private List<SimpleObject> getReportDefinitionSummaries(CoreContext emr, String tag) {
     	List<SimpleObject> ret = new ArrayList<SimpleObject>();
 		for (ReportBuilder reportBuilder : emr.getReportManager().getReportBuildersByTag(tag)) {
 			ret.add(SimpleObject.create("name", reportBuilder.getReportDefinitionSummary().getName(), "builder", reportBuilder.getClass().getName()));

@@ -22,8 +22,8 @@ import java.util.Map;
 
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.EmrWebConstants;
-import org.openmrs.module.kenyaemr.KenyaEmr;
-import org.openmrs.module.kenyaemr.reporting.builder.ReportBuilder;
+import org.openmrs.module.kenyacore.CoreContext;
+import org.openmrs.module.kenyacore.reporting.ReportBuilder;
 import org.openmrs.module.kenyaui.annotation.AppPage;
 import org.openmrs.module.reporting.common.ContentType;
 import org.openmrs.module.reporting.common.DateUtil;
@@ -46,7 +46,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class ReportsRunMonthlyIndicatorReportPageController {
 	
 	public Object controller(PageModel model,
-					@SpringBean KenyaEmr emr,
+					@SpringBean CoreContext emr,
 					@RequestParam("builder") String builderClassname,
 					@RequestParam(required = false, value = "mode") String mode,
 					@RequestParam(required = false, value = "startDate") Date startDate) throws Exception {

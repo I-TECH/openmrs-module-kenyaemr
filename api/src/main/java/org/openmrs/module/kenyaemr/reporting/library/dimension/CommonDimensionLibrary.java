@@ -14,6 +14,7 @@
 
 package org.openmrs.module.kenyaemr.reporting.library.dimension;
 
+import org.openmrs.module.kenyaemr.reporting.EmrReportingUtils;
 import org.openmrs.module.kenyaemr.reporting.library.cohort.CommonCohortLibrary;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.indicator.dimension.CohortDefinitionDimension;
@@ -40,8 +41,8 @@ public class CommonDimensionLibrary {
 	public CohortDefinitionDimension gender() {
 		CohortDefinitionDimension dim = new CohortDefinitionDimension();
 		dim.setName("Gender");
-		dim.addCohortDefinition("M", map(commonCohortLibrary.males()));
-		dim.addCohortDefinition("F", map(commonCohortLibrary.females()));
+		dim.addCohortDefinition("M", EmrReportingUtils.map(commonCohortLibrary.males()));
+		dim.addCohortDefinition("F", EmrReportingUtils.map(commonCohortLibrary.females()));
 		return dim;
 	}
 
@@ -53,9 +54,9 @@ public class CommonDimensionLibrary {
 		CohortDefinitionDimension dim = new CohortDefinitionDimension();
 		dim.setName("Age (<1, <15, 15+)");
 		dim.addParameter(new Parameter("onDate", "Date", Date.class));
-		dim.addCohortDefinition("<1", map(commonCohortLibrary.agedAtMost(0), "effectiveDate=${onDate}"));
-		dim.addCohortDefinition("<15", map(commonCohortLibrary.agedAtMost(14), "effectiveDate=${onDate}"));
-		dim.addCohortDefinition("15+", map(commonCohortLibrary.agedAtLeast(15), "effectiveDate=${onDate}"));
+		dim.addCohortDefinition("<1", EmrReportingUtils.map(commonCohortLibrary.agedAtMost(0), "effectiveDate=${onDate}"));
+		dim.addCohortDefinition("<15", EmrReportingUtils.map(commonCohortLibrary.agedAtMost(14), "effectiveDate=${onDate}"));
+		dim.addCohortDefinition("15+", EmrReportingUtils.map(commonCohortLibrary.agedAtLeast(15), "effectiveDate=${onDate}"));
 		return dim;
 	}
 }

@@ -14,8 +14,9 @@
 
 package org.openmrs.module.kenyaemr.reporting.builder.patientlist;
 
+import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.Metadata;
-import org.openmrs.module.kenyaemr.reporting.builder.ReportBuilder;
+import org.openmrs.module.kenyacore.reporting.ReportBuilder;
 import org.openmrs.module.reporting.data.converter.DataConverter;
 import org.openmrs.module.reporting.data.patient.definition.PatientIdDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.PatientIdentifierDataDefinition;
@@ -44,7 +45,7 @@ public abstract class BasePatientListReportBuilder extends ReportBuilder {
 	 * @param dsd the data set definition
 	 */
 	protected void addStandardColumns(PatientDataSetDefinition dsd) {
-		dsd.addColumn("HIV Unique ID", new PatientIdentifierDataDefinition("HIV Unique ID", Metadata.getPatientIdentifierType(Metadata.UNIQUE_PATIENT_NUMBER_IDENTIFIER_TYPE)), "");
+		dsd.addColumn("HIV Unique ID", new PatientIdentifierDataDefinition("HIV Unique ID", MetadataUtils.getPatientIdentifierType(Metadata.UNIQUE_PATIENT_NUMBER_IDENTIFIER_TYPE)), "");
 		dsd.addColumn("Patient Name", new PreferredNameDataDefinition(), "");
 		dsd.addColumn("Age", new AgeDataDefinition(), "");
 		dsd.addColumn("Sex", new GenderDataDefinition(), "");

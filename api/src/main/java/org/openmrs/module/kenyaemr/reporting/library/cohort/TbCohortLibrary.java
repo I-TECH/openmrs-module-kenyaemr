@@ -14,6 +14,7 @@
 
 package org.openmrs.module.kenyaemr.reporting.library.cohort;
 
+import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +34,7 @@ public class TbCohortLibrary {
 	 * @return the cohort definition
 	 */
 	public CohortDefinition enrolled() {
-		return commonCohorts.enrolled(Metadata.getProgram(Metadata.TB_PROGRAM));
+		return commonCohorts.enrolled(MetadataUtils.getProgram(Metadata.TB_PROGRAM));
 	}
 
 	/**
@@ -41,6 +42,6 @@ public class TbCohortLibrary {
 	 * @return the cohort definition
 	 */
 	public CohortDefinition screenedForTb() {
-		return commonCohorts.hasEncounter(Metadata.getEncounterType(Metadata.TB_SCREENING_ENCOUNTER_TYPE));
+		return commonCohorts.hasEncounter(MetadataUtils.getEncounterType(Metadata.TB_SCREENING_ENCOUNTER_TYPE));
 	}
 }

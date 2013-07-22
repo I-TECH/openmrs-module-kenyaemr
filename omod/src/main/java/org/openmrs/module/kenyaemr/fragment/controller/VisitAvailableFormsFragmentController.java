@@ -21,10 +21,9 @@ import org.openmrs.PatientProgram;
 import org.openmrs.Program;
 import org.openmrs.Visit;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyaemr.KenyaEmr;
-import org.openmrs.module.kenyaemr.Metadata;
-import org.openmrs.module.kenyaemr.form.FormDescriptor;
-import org.openmrs.module.kenyaemr.form.FormDescriptor.Frequency;
+import org.openmrs.module.kenyacore.CoreContext;
+import org.openmrs.module.kenyacore.form.FormDescriptor;
+import org.openmrs.module.kenyacore.form.FormDescriptor.Frequency;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
@@ -46,7 +45,7 @@ public class VisitAvailableFormsFragmentController {
 						   @FragmentParam("visit") Visit visit,
 						   UiUtils ui,
 						   PageRequest request,
-						   @SpringBean KenyaEmr emr,
+						   @SpringBean CoreContext emr,
 						   @SpringBean KenyaUiUtils kenyaUi) {
 
 		String currentApp = kenyaUi.getCurrentApp(request).getId();
@@ -99,7 +98,7 @@ public class VisitAvailableFormsFragmentController {
 		
 		for (FormDescriptor descriptor : forms) {
 			// Get program for form
-			Program formProgram = descriptor.getProgramUuid() != null ? Context.getProgramWorkflowService().getProgramByUuid(descriptor.getProgramUuid()) : null;
+			Program formProgram = descriptor.getProgram() != null ? descriptor.getProgram().getTarget() : null;
 
 			if (formProgram != null && !dateOfActiveEnrollment.keySet().contains(formProgram)) {
 				continue;
@@ -108,17 +107,17 @@ public class VisitAvailableFormsFragmentController {
 			if (descriptor.getFrequency().equals(Frequency.UNLIMITED)) {
 				allowed = true;
 			} else if (descriptor.getFrequency().equals(Frequency.VISIT)) {
-				allowed = !formUuidsThisVisit.contains(descriptor.getFormUuid());
+				allowed = !formUuidsThisVisit.contains(descriptor.getTargetUuid());
 			} else if (descriptor.getFrequency().equals(Frequency.PROGRAM)) {
 				Set<String> formsForProgram = formUuidsByProgram.get(formProgram);
-				allowed = formsForProgram == null || !formsForProgram.contains(descriptor.getFormUuid());
+				allowed = formsForProgram == null || !formsForProgram.contains(descriptor.getTargetUuid());
 			} else if (descriptor.getFrequency().equals(Frequency.ONCE_EVER)) {
-				allowed = !allFormUuids.contains(descriptor.getFormUuid());
+				allowed = !allFormUuids.contains(descriptor.getTargetUuid());
 			} else {
 				throw new RuntimeException("Unknown form frequency");
 			}
 			if (allowed) {
-				ret.add(ui.simplifyObject(Metadata.getForm(descriptor.getFormUuid())));
+				ret.add(ui.simplifyObject(descriptor.getTarget()));
 			}
 		}
 		

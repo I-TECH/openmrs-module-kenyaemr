@@ -17,7 +17,7 @@ package org.openmrs.module.kenyaemr.calculation.library;
 import org.openmrs.Program;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
-import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
+import org.openmrs.module.kenyacore.calculation.BaseEmrCalculation;
 
 import java.util.Collection;
 import java.util.Map;

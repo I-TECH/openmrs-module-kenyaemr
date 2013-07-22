@@ -14,10 +14,10 @@
 
 package org.openmrs.module.kenyaemr.fragment.controller.field;
 
-import org.openmrs.module.kenyaemr.KenyaEmr;
+import org.openmrs.module.kenyacore.CoreContext;
 import org.openmrs.module.kenyaemr.KenyaEmrUiUtils;
-import org.openmrs.module.kenyaemr.regimen.RegimenDefinition;
-import org.openmrs.module.kenyaemr.regimen.RegimenDefinitionGroup;
+import org.openmrs.module.kenyacore.regimen.RegimenDefinition;
+import org.openmrs.module.kenyacore.regimen.RegimenDefinitionGroup;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.annotation.SpringBean;
@@ -36,7 +36,7 @@ public class RegimenFragmentController {
 						   @FragmentParam(value = "includeGroups", required = false) Set<String> includeGroups,
 						   FragmentModel model,
 						   UiUtils ui,
-						   @SpringBean KenyaEmr emr,
+						   @SpringBean CoreContext emr,
 						   @SpringBean KenyaEmrUiUtils kenyaUi) {
 
 		List<RegimenDefinitionGroup> regimenGroups = emr.getRegimenManager().getRegimenGroups(category);

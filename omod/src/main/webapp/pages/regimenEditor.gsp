@@ -11,7 +11,7 @@
 	}
 
 	def regimenField = {
-		[ label: "Regimen", formFieldName: "regimen", class: "org.openmrs.module.kenyaemr.regimen.Regimen", fieldFragment: "field/Regimen", category: category ]
+		[ label: "Regimen", formFieldName: "regimen", class: "org.openmrs.module.kenyabase.regimen.Regimen", fieldFragment: "field/Regimen", category: category ]
 	}
 
 	def reasonFields = { reasonType ->

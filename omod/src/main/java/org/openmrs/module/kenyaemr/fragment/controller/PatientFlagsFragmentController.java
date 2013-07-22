@@ -23,8 +23,8 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResult;
-import org.openmrs.module.kenyaemr.KenyaEmr;
-import org.openmrs.module.kenyaemr.calculation.BaseFlagCalculation;
+import org.openmrs.module.kenyacore.CoreContext;
+import org.openmrs.module.kenyacore.calculation.BaseFlagCalculation;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -49,7 +49,7 @@ public class PatientFlagsFragmentController {
 	 * @param emr the KenyaEMR
 	 * @return the flags as simple objects
 	 */
-	public List<SimpleObject> getFlags(@RequestParam("patientId") Integer patientId, @SpringBean KenyaEmr emr) {
+	public List<SimpleObject> getFlags(@RequestParam("patientId") Integer patientId, @SpringBean CoreContext emr) {
 
 		List<SimpleObject> alerts = new ArrayList<SimpleObject>();
 

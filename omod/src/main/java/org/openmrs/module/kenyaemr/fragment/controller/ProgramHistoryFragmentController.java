@@ -19,6 +19,7 @@ import java.util.*;
 import org.openmrs.*;
 import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 
@@ -31,14 +32,14 @@ public class ProgramHistoryFragmentController {
 						   @FragmentParam("patient") Patient patient,
 						   @FragmentParam("program") Program program,
 						   @FragmentParam("showClinicalData") boolean showClinicalData,
-						   @FragmentParam("enrollmentForm") Form enrollmentForm,
-						   @FragmentParam("discontinuationForm") Form discontinuationForm) {
+						   @FragmentParam("enrollmentFormUuid") String enrollmentFormUuid,
+						   @FragmentParam("discontinuationFormUuid") String discontinuationFormUuid) {
 
 		model.addAttribute("patient", patient);
 		model.addAttribute("program", program);
 		model.addAttribute("showClinicalData", showClinicalData);
-		model.addAttribute("enrollmentForm", enrollmentForm);
-		model.addAttribute("discontinuationForm", discontinuationForm);
+		model.addAttribute("enrollmentForm", MetadataUtils.getForm(enrollmentFormUuid));
+		model.addAttribute("discontinuationForm", MetadataUtils.getForm(discontinuationFormUuid));
 
 		ProgramWorkflowService pws = Context.getProgramWorkflowService();
 		PatientProgram currentEnrollment = null;

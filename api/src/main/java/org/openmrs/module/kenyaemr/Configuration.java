@@ -17,15 +17,20 @@ package org.openmrs.module.kenyaemr;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.GlobalProperty;
+import org.openmrs.PatientIdentifierType;
+import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.idgen.AutoGenerationOption;
+import org.openmrs.module.idgen.SequentialIdentifierGenerator;
+import org.openmrs.module.idgen.service.IdentifierSourceService;
+import org.openmrs.module.idgen.validator.LuhnModNIdentifierValidator;
+import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.datatype.LocationDatatype;
 import org.openmrs.module.kenyaemr.form.EmrVisitAssignmentHandler;
 import org.openmrs.util.OpenmrsConstants;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Manages the KenyaEMR configuration
@@ -50,7 +55,7 @@ public class Configuration {
 	 */
 	public static void configure() {
 		ensureGlobalPropertyExists(
-				KenyaEmrConstants.GP_DEFAULT_LOCATION,
+				EmrConstants.GP_DEFAULT_LOCATION,
 				"The facility for which this installation is configured. Visits and encounters will be created with this location value.",
 				LocationDatatype.class
 		);

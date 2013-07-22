@@ -17,7 +17,8 @@ package org.openmrs.module.kenyaemr.converter;
 import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.module.kenyaemr.regimen.Regimen;
+import org.openmrs.module.kenyacore.regimen.Regimen;
+import org.openmrs.module.kenyaemr.converter.StringToRegimenConverter;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 
 /**

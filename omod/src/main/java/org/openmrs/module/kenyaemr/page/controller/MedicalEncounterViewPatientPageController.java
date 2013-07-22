@@ -19,11 +19,11 @@ import java.util.List;
 import org.openmrs.Patient;
 import org.openmrs.Program;
 import org.openmrs.Visit;
-import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyacore.metadata.MetadataUtils;
+import org.openmrs.module.kenyaemr.util.EmrUtils;
 import org.openmrs.module.kenyaemr.EmrWebConstants;
 import org.openmrs.module.kenyaemr.Metadata;
-import org.openmrs.module.kenyaemr.util.KenyaEmrUtils;
 import org.openmrs.module.kenyaui.annotation.AppPage;
 import org.openmrs.ui.framework.page.PageModel;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -35,7 +35,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class MedicalEncounterViewPatientPageController {
 	
 	public void controller(@RequestParam("patientId") Patient patient,
-	                       @RequestParam(value="visitId", required=false) Visit visit,
+	                       @RequestParam(value = "visitId", required = false) Visit visit,
 	                       PageModel model) {
 
 		model.addAttribute("patient", patient);
@@ -49,14 +49,13 @@ public class MedicalEncounterViewPatientPageController {
 		
 		model.addAttribute("visit", visit);
 
-		ProgramWorkflowService pws = Context.getProgramWorkflowService();
-		Program hivProgram = Metadata.getProgram(Metadata.HIV_PROGRAM);
+		Program hivProgram = MetadataUtils.getProgram(Metadata.HIV_PROGRAM);
 		model.addAttribute("hivProgram", hivProgram);
 
-		Program tbProgram = Metadata.getProgram(Metadata.TB_PROGRAM);
+		Program tbProgram = MetadataUtils.getProgram(Metadata.TB_PROGRAM);
 		model.addAttribute("tbProgram", tbProgram);
 
-		model.addAttribute("enrolledInHivProgram", KenyaEmrUtils.isPatientInProgram(patient, hivProgram));
-		model.addAttribute("enrolledInTbProgram", KenyaEmrUtils.isPatientInProgram(patient, tbProgram));
+		model.addAttribute("enrolledInHivProgram", EmrUtils.isPatientInProgram(patient, hivProgram));
+		model.addAttribute("enrolledInTbProgram", EmrUtils.isPatientInProgram(patient, tbProgram));
 	}
 }

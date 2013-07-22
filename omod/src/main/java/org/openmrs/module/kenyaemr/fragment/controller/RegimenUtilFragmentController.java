@@ -25,10 +25,14 @@ import org.openmrs.DrugOrder;
 import org.openmrs.Patient;
 import org.openmrs.api.OrderService;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyaemr.KenyaEmr;
-import org.openmrs.module.kenyaemr.KenyaEmrUiUtils;
+import org.openmrs.module.kenyacore.CoreContext;
+import org.openmrs.module.kenyacore.regimen.Regimen;
+import org.openmrs.module.kenyacore.regimen.RegimenChange;
+import org.openmrs.module.kenyacore.regimen.RegimenChangeHistory;
+import org.openmrs.module.kenyacore.regimen.RegimenComponent;
+import org.openmrs.module.kenyacore.regimen.RegimenOrder;
+import org.openmrs.module.kenyacore.regimen.RegimenValidator;
 import org.openmrs.module.kenyaemr.ValidatingCommandObject;
-import org.openmrs.module.kenyaemr.regimen.*;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.BindParams;
@@ -65,7 +69,7 @@ public class RegimenUtilFragmentController {
 	 * @param patient the patient
 	 * @return the patient's current regimen
 	 */
-	public void undoLastChange(@RequestParam("patient") Patient patient, HttpSession session, @RequestParam("category") String category, @SpringBean KenyaEmr emr, @SpringBean KenyaUiUtils kenyaUi) {
+	public void undoLastChange(@RequestParam("patient") Patient patient, HttpSession session, @RequestParam("category") String category, @SpringBean CoreContext emr, @SpringBean KenyaUiUtils kenyaUi) {
 		Concept masterSet = emr.getRegimenManager().getMasterSetConcept(category);
 		RegimenChangeHistory history = RegimenChangeHistory.forPatient(patient, masterSet);
 		history.undoLastChange();
@@ -127,7 +131,7 @@ public class RegimenUtilFragmentController {
 
 			if (category != null && changeDate != null) {
 				// Get patient regimen history
-				Concept masterSet = KenyaEmr.getInstance().getRegimenManager().getMasterSetConcept(category);
+				Concept masterSet = CoreContext.getInstance().getRegimenManager().getMasterSetConcept(category);
 				RegimenChangeHistory history = RegimenChangeHistory.forPatient(patient, masterSet);
 				RegimenChange lastChange = history.getLastChange();
 				boolean onRegimen = lastChange != null && lastChange.getStarted() != null;
@@ -168,7 +172,7 @@ public class RegimenUtilFragmentController {
 		 * Applies this regimen change
 		 */
 		public void apply() {
-			Concept masterSet = KenyaEmr.getInstance().getRegimenManager().getMasterSetConcept(category);
+			Concept masterSet = CoreContext.getInstance().getRegimenManager().getMasterSetConcept(category);
 			RegimenChangeHistory history = RegimenChangeHistory.forPatient(patient, masterSet);
 			RegimenChange lastChange = history.getLastChange();
 			RegimenOrder baseline = lastChange != null ? lastChange.getStarted() : null;

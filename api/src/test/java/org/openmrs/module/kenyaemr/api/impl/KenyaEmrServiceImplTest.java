@@ -19,7 +19,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.*;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyaemr.*;
+import org.openmrs.module.kenyacore.CoreContext;
+import org.openmrs.module.kenyacore.metadata.MetadataUtils;
+import org.openmrs.module.kenyaemr.EmrConstants;
+import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.module.kenyaemr.datatype.LocationDatatype;
 import org.openmrs.module.kenyaemr.test.TestUtils;
@@ -33,7 +36,7 @@ import java.util.Map;
 import static org.hamcrest.Matchers.*;
 
 /**
- * Tests for {@link KenyaEmrServiceImpl}
+ * Tests for {@link org.openmrs.module.kenyaemr.api.impl.KenyaEmrServiceImpl}
  */
 public class KenyaEmrServiceImplTest extends BaseModuleContextSensitiveTest {
 
@@ -41,7 +44,7 @@ public class KenyaEmrServiceImplTest extends BaseModuleContextSensitiveTest {
 	private KenyaEmrService service;
 
 	@Autowired
-	private KenyaEmr emr;
+	private CoreContext emr;
 
 	/**
 	 * Setup each test
@@ -50,7 +53,7 @@ public class KenyaEmrServiceImplTest extends BaseModuleContextSensitiveTest {
 	public void setup() throws Exception {
 		executeDataSet("test-data.xml");
 
-		TestUtils.saveGlobalProperty(KenyaEmrConstants.GP_DEFAULT_LOCATION, null, LocationDatatype.class);
+		TestUtils.saveGlobalProperty(EmrConstants.GP_DEFAULT_LOCATION, null, LocationDatatype.class);
 	}
 
 	/**
@@ -86,7 +89,7 @@ public class KenyaEmrServiceImplTest extends BaseModuleContextSensitiveTest {
 	}
 
 	/**
-	 * @see KenyaEmrServiceImpl#getLocationByMflCode(String)
+	 * @see org.openmrs.module.kenyaemr.api.impl.KenyaEmrServiceImpl#getLocationByMflCode(String)
 	 * @verifies find the location with that code
 	 * @verifies return null if no location has that code
 	 */
@@ -98,21 +101,12 @@ public class KenyaEmrServiceImplTest extends BaseModuleContextSensitiveTest {
 	}
 
 	/**
-	 * @see KenyaEmrServiceImpl#isConfigured()
-	 * @verifies return false before default location has been set
-	 */
-	@Test
-	public void isConfigured_shouldReturnFalseBeforeDefaultLocationHasBeenSet() throws Exception {
-		Assert.assertFalse(service.isConfigured());
-	}
-
-	/**
-	 * @see KenyaEmrServiceImpl#isConfigured()
+	 * @see KenyaEmrServiceImpl#isSetupRequired()
 	 * @verifies return true after everything is configured
 	 */
 	@Test
-	public void isConfigured_shouldReturnTrueAfterEverythingIsConfigured() throws Exception {
-		Assert.assertFalse(service.isConfigured());
+	public void isSetupRequired_shouldReturnFalseOnlyAfterEverythingIsConfigured() throws Exception {
+		Assert.assertTrue(service.isSetupRequired());
 
 		// default location
 		Location loc = Context.getLocationService().getLocation(1);
@@ -120,21 +114,60 @@ public class KenyaEmrServiceImplTest extends BaseModuleContextSensitiveTest {
 		service.setDefaultLocation(loc);
 
 		// MRN ID source
-		emr.getIdentifierManager().setupMrnIdentifierSource(null);
+		service.setupMrnIdentifierSource(null);
 
 		// HIV ID source
-		emr.getIdentifierManager().setupHivUniqueIdentifierSource(null);
+		service.setupHivUniqueIdentifierSource("00001");
 
-		Assert.assertTrue(service.isConfigured());
+		Assert.assertFalse(service.isSetupRequired());
 	}
 
 	/**
-	 * @see KenyaEmrServiceImpl#getVisitsByPatientAndDay(org.openmrs.Patient, java.util.Date)
+	 * @see KenyaEmrServiceImpl#setupMrnIdentifierSource(String)
+	 * @verifies fail if already set up
+	 */
+	@Test(expected = Exception.class)
+	public void setupMrnIdentifierSource_shouldFailIfAlreadySetup() throws Exception {
+		service.setupMrnIdentifierSource("4");
+		service.setupMrnIdentifierSource("4");
+	}
+
+	/**
+	 * @see KenyaEmrServiceImpl#setupHivUniqueIdentifierSource(String)
+	 * @verifies fail if already set up
+	 */
+	@Test(expected = Exception.class)
+	public void setupHivUniqueIdentifierSource_shouldFailIfAlreadySetup() throws Exception {
+		service.setupHivUniqueIdentifierSource("00517");
+		service.setupHivUniqueIdentifierSource("00517");
+	}
+
+	/**
+	 * @see KenyaEmrServiceImpl#getNextHivUniquePatientNumber(String)
+	 * @verifies get sequential numbers with mfl prefix
+	 *
+	 * TODO latest versions of idgen won't let you setup source and generate identifier in same session. Figure out workaround to enable better unit testing
+	 */
+	/*@Test
+	public void getNextHivUniquePatientNumber_shouldGetSequentialNumbersWithMflPrefix() throws Exception {
+		Location loc = Context.getLocationService().getLocation(1);
+		Assert.assertNotNull(loc);
+		Context.getService(KenyaEmrService.class).setDefaultLocation(loc);
+
+		identifierManager.setupHivUniqueIdentifierSource("00571");
+		Assert.assertEquals("1500100571", identifierManager.getNextHivUniquePatientNumber(null));
+		Assert.assertEquals("1500100572", identifierManager.getNextHivUniquePatientNumber(null));
+		Assert.assertEquals("1500100573", identifierManager.getNextHivUniquePatientNumber(null));
+		Assert.assertEquals("1500100574", identifierManager.getNextHivUniquePatientNumber(null));
+	}*/
+
+	/**
+	 * @see org.openmrs.module.kenyaemr.api.impl.KenyaEmrServiceImpl#getVisitsByPatientAndDay(org.openmrs.Patient, java.util.Date)
 	 */
 	@Test
 	public void getVisitsByPatientAndDay_shouldGetVisitsOnDayWithPatient() {
 		Patient patient = Context.getPatientService().getPatient(7);
-		VisitType outpatientType = Metadata.getVisitType(Metadata.OUTPATIENT_VISIT_TYPE);
+		VisitType outpatientType = MetadataUtils.getVisitType(Metadata.OUTPATIENT_VISIT_TYPE);
 
 		// Save visit from 10-11am and another from 12 onwards (no end)
 		Visit visit1 = TestUtils.saveVisit(patient, outpatientType, TestUtils.date(2012, 1, 1, 10, 0, 0), TestUtils.date(2012, 1, 1, 11, 0, 0));
@@ -157,11 +190,11 @@ public class KenyaEmrServiceImplTest extends BaseModuleContextSensitiveTest {
 	}
 
 	/**
-	 * @see KenyaEmrServiceImpl#getLocations(String, org.openmrs.Location, java.util.Map, boolean, Integer, Integer)
+	 * @see org.openmrs.module.kenyaemr.api.impl.KenyaEmrServiceImpl#getLocations(String, org.openmrs.Location, java.util.Map, boolean, Integer, Integer)
 	 */
 	@Test
 	public void getLocations_shouldGetAllLocationsWithMatchingArguments() {
-		LocationAttributeType mflCodeAttrType = Metadata.getLocationAttributeType(Metadata.MASTER_FACILITY_CODE_LOCATION_ATTRIBUTE_TYPE);
+		LocationAttributeType mflCodeAttrType = MetadataUtils.getLocationAttributeType(Metadata.MASTER_FACILITY_CODE_LOCATION_ATTRIBUTE_TYPE);
 
 		// Search for location #1 by MFL code and don't include retired
 		Map<LocationAttributeType, Object> attrValues = new HashMap<LocationAttributeType, Object>();
@@ -185,11 +218,11 @@ public class KenyaEmrServiceImplTest extends BaseModuleContextSensitiveTest {
 	}
 
 	/**
-	 * @see KenyaEmrServiceImpl#getLocations(String, org.openmrs.Location, java.util.Map, boolean, Integer, Integer)
+	 * @see org.openmrs.module.kenyaemr.api.impl.KenyaEmrServiceImpl#getLocations(String, org.openmrs.Location, java.util.Map, boolean, Integer, Integer)
 	 */
 	@Test
 	public void getLocations_shouldGetAllLocationsWithAllGivenAttributeValues() {
-		LocationAttributeType mflCodeAttrType = Metadata.getLocationAttributeType(Metadata.MASTER_FACILITY_CODE_LOCATION_ATTRIBUTE_TYPE);
+		LocationAttributeType mflCodeAttrType = MetadataUtils.getLocationAttributeType(Metadata.MASTER_FACILITY_CODE_LOCATION_ATTRIBUTE_TYPE);
 
 		// Save new phone number attribute type
 		LocationAttributeType phoneAttrType = new LocationAttributeType();
@@ -225,11 +258,11 @@ public class KenyaEmrServiceImplTest extends BaseModuleContextSensitiveTest {
 	}
 
 	/**
-	 * @see KenyaEmrServiceImpl#getLocations(String, org.openmrs.Location, java.util.Map, boolean, Integer, Integer)
+	 * @see org.openmrs.module.kenyaemr.api.impl.KenyaEmrServiceImpl#getLocations(String, org.openmrs.Location, java.util.Map, boolean, Integer, Integer)
 	 */
 	@Test
 	public void getLocations_shouldNotFindAnyLocationsIfNoneHaveGivenAttributeValues() {
-		LocationAttributeType mflCodeAttrType = Metadata.getLocationAttributeType(Metadata.MASTER_FACILITY_CODE_LOCATION_ATTRIBUTE_TYPE);
+		LocationAttributeType mflCodeAttrType = MetadataUtils.getLocationAttributeType(Metadata.MASTER_FACILITY_CODE_LOCATION_ATTRIBUTE_TYPE);
 		Map<LocationAttributeType, Object> attrValues = new HashMap<LocationAttributeType, Object>();
 		attrValues.put(mflCodeAttrType, "xxxxxx");
 		List<Location> locations = service.getLocations(null, null, attrValues, true, null, null);

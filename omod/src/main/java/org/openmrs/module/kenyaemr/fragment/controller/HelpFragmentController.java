@@ -15,7 +15,7 @@
 package org.openmrs.module.kenyaemr.fragment.controller;
 
 import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyaemr.KenyaEmrConstants;
+import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 import org.openmrs.util.PrivilegeConstants;
@@ -31,8 +31,8 @@ public class HelpFragmentController {
 			Context.addProxyPrivilege(PrivilegeConstants.VIEW_GLOBAL_PROPERTIES);
 
 			String facilityCode = Context.getService(KenyaEmrService.class).getDefaultLocationMflCode();
-			String supportNumber = Context.getAdministrationService().getGlobalProperty(KenyaEmrConstants.GP_SUPPORT_PHONE_NUMBER, KenyaEmrConstants.DEFAULT_SUPPORT_PHONE_NUMBER);
-			String supportEmail = Context.getAdministrationService().getGlobalProperty(KenyaEmrConstants.GP_SUPPORT_EMAIL_ADDRESS, KenyaEmrConstants.DEFAULT_SUPPORT_EMAIL_ADDRESS);
+			String supportNumber = Context.getAdministrationService().getGlobalProperty(EmrConstants.GP_SUPPORT_PHONE_NUMBER, EmrConstants.DEFAULT_SUPPORT_PHONE_NUMBER);
+			String supportEmail = Context.getAdministrationService().getGlobalProperty(EmrConstants.GP_SUPPORT_EMAIL_ADDRESS, EmrConstants.DEFAULT_SUPPORT_EMAIL_ADDRESS);
 
 			model.put("facilityCode", facilityCode);
 			model.put("supportNumber", supportNumber);

@@ -18,6 +18,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.EncounterType;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.test.ReportingTestUtils;
 import org.openmrs.module.kenyaemr.test.TestUtils;
@@ -32,7 +33,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Tests for {@link TbCohortLibrary}
+ * Tests for {@link org.openmrs.module.kenyaemr.reporting.library.cohort.TbCohortLibrary}
  */
 public class TbCohortLibraryTest extends BaseModuleContextSensitiveTest {
 
@@ -48,7 +49,7 @@ public class TbCohortLibraryTest extends BaseModuleContextSensitiveTest {
 	public void setup() throws Exception {
 		executeDataSet("test-data.xml");
 
-		EncounterType tbScreeningEncType = Metadata.getEncounterType(Metadata.TB_SCREENING_ENCOUNTER_TYPE);
+		EncounterType tbScreeningEncType = MetadataUtils.getEncounterType(Metadata.TB_SCREENING_ENCOUNTER_TYPE);
 
 		// Screen patient #2 on May 31st
 		TestUtils.saveEncounter(Context.getPatientService().getPatient(2), tbScreeningEncType, TestUtils.date(2012, 5, 31));

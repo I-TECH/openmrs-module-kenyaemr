@@ -19,8 +19,9 @@ import java.util.Map;
 
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
+import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.Metadata;
-import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
+import org.openmrs.module.kenyacore.calculation.BaseEmrCalculation;
 
 /**
  * Calculates whether patients are (alive and) in the TB program
@@ -29,6 +30,6 @@ public class InTbProgramCalculation extends BaseEmrCalculation {
 
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> params, PatientCalculationContext context) {
-		return passing(activeEnrollment(Metadata.getProgram(Metadata.TB_PROGRAM), alivePatients(cohort, context), context));
+		return passing(activeEnrollment(MetadataUtils.getProgram(Metadata.TB_PROGRAM), alivePatients(cohort, context), context));
 	}
 }

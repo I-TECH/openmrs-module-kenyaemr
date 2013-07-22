@@ -16,6 +16,7 @@ package org.openmrs.module.kenyaemr;
 
 import junit.framework.Assert;
 import org.junit.Test;
+import org.openmrs.module.kenyaemr.StandardURLOverrideController;
 
 public class StandardURLOverrideControllerTest {
 

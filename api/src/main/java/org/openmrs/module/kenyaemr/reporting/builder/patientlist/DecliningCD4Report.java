@@ -20,7 +20,7 @@ import java.util.Date;
 import org.openmrs.Concept;
 import org.openmrs.Obs;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.calculation.library.art.DecliningCd4Calculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.DecliningCd4Calculation;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.data.converter.DataConverter;
 import org.openmrs.module.reporting.data.person.definition.ObsForPersonDataDefinition;
@@ -35,7 +35,7 @@ public class DecliningCD4Report extends BasePatientCalculationReportBuilder {
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.reporting.builder.ReportBuilder#getName()
+	 * @see org.openmrs.module.kenyacore.reporting.ReportBuilder#getName()
 	 */
 	@Override
 	public String getName() {
@@ -43,7 +43,7 @@ public class DecliningCD4Report extends BasePatientCalculationReportBuilder {
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.reporting.builder.ReportBuilder#getTags()
+	 * @see org.openmrs.module.kenyacore.reporting.ReportBuilder#getTags()
 	 */
 	@Override
 	public String[] getTags() {

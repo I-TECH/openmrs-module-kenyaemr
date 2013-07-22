@@ -9,12 +9,23 @@
 		http://www.springframework.org/schema/util
 		http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
-	<bean class="org.openmrs.module.kenyaemr.lab.LabConfiguration">
+	<bean class="org.openmrs.module.kenyacore.lab.LabConfiguration">
 		<property name="path" value="test-lab.xml" />
 	</bean>
 
-	<bean class="org.openmrs.module.kenyaemr.regimen.RegimenConfiguration">
+	<bean class="org.openmrs.module.kenyacore.regimen.RegimenConfiguration">
 		<property name="path" value="test-regimens.xml" />
+	</bean>
+
+	<!-- OpenMRS Identification Number -->
+	<bean id="test.identifier.openmrs" class="org.openmrs.module.kenyacore.identifier.IdentifierDescriptor">
+		<property name="targetUuid" value="1a339fe9-38bc-4ab3-b180-320988c0b968" />
+		<property name="order" value="1001" />
+	</bean>
+
+	<!-- Old Identification Number -->
+	<bean id="test.identifier.old" class="org.openmrs.module.kenyacore.identifier.IdentifierDescriptor">
+		<property name="targetUuid" value="2f470aa8-1d73-43b7-81b5-01f0c0dfa53c" />
 	</bean>
 
 	<!-- Conversion Service, will autowire converters -->

@@ -32,11 +32,11 @@ import org.openmrs.PersonAttribute;
 import org.openmrs.PersonAttributeType;
 import org.openmrs.PersonName;
 import org.openmrs.Program;
-import org.openmrs.api.APIException;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.idgen.service.IdentifierSourceService;
+import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.ValidatingCommandObject;
@@ -88,12 +88,12 @@ public class RegistrationEditPatientFragmentController {
 		model.addAttribute("maritalStatusOptions", maritalStatusOptions);
 
 		// Fetch person attributes
-		model.addAttribute("telephoneContactAttrType", Metadata.getPersonAttributeType(Metadata.TELEPHONE_CONTACT_PERSON_ATTRIBUTE_TYPE));
-		model.addAttribute("nationalIdNumberAttrType", Metadata.getPersonAttributeType(Metadata.NATIONAL_ID_NUMBER_PERSON_ATTRIBUTE_TYPE));
-		model.addAttribute("nameOfNextOfKinAttrType", Metadata.getPersonAttributeType(Metadata.NAME_OF_NEXT_OF_KIN_PERSON_ATTRIBUTE_TYPE));
-		model.addAttribute("nextOfKinRelationshipAttrType", Metadata.getPersonAttributeType(Metadata.NEXT_OF_KIN_RELATIONSHIP_PERSON_ATTRIBUTE_TYPE));
-		model.addAttribute("nextOfKinContactAttrType", Metadata.getPersonAttributeType(Metadata.NEXT_OF_KIN_CONTACT_PERSON_ATTRIBUTE_TYPE));
-		model.addAttribute("nextOfKinAddressAttrType", Metadata.getPersonAttributeType(Metadata.NEXT_OF_KIN_ADDRESS_PERSON_ATTRIBUTE_TYPE));
+		model.addAttribute("telephoneContactAttrType", MetadataUtils.getPersonAttributeType(Metadata.TELEPHONE_CONTACT_PERSON_ATTRIBUTE_TYPE));
+		model.addAttribute("nationalIdNumberAttrType", MetadataUtils.getPersonAttributeType(Metadata.NATIONAL_ID_NUMBER_PERSON_ATTRIBUTE_TYPE));
+		model.addAttribute("nameOfNextOfKinAttrType", MetadataUtils.getPersonAttributeType(Metadata.NAME_OF_NEXT_OF_KIN_PERSON_ATTRIBUTE_TYPE));
+		model.addAttribute("nextOfKinRelationshipAttrType", MetadataUtils.getPersonAttributeType(Metadata.NEXT_OF_KIN_RELATIONSHIP_PERSON_ATTRIBUTE_TYPE));
+		model.addAttribute("nextOfKinContactAttrType", MetadataUtils.getPersonAttributeType(Metadata.NEXT_OF_KIN_CONTACT_PERSON_ATTRIBUTE_TYPE));
+		model.addAttribute("nextOfKinAddressAttrType", MetadataUtils.getPersonAttributeType(Metadata.NEXT_OF_KIN_ADDRESS_PERSON_ATTRIBUTE_TYPE));
 	}
 
 	public SimpleObject savePatient(@MethodParam("commandObject") @BindParams EditPatientCommand command, UiUtils ui) {
@@ -163,26 +163,26 @@ public class RegistrationEditPatientFragmentController {
 
 			personName = new PersonName();
 			personAddress = new PersonAddress();
-			patientClinicNumber = new PatientIdentifier(null, Metadata.getPatientIdentifierType(Metadata.PATIENT_CLINIC_NUMBER_IDENTIFIER_TYPE), location);
-			hivIdNumber = new PatientIdentifier(null, Metadata.getPatientIdentifierType(Metadata.UNIQUE_PATIENT_NUMBER_IDENTIFIER_TYPE), location);
+			patientClinicNumber = new PatientIdentifier(null, MetadataUtils.getPatientIdentifierType(Metadata.PATIENT_CLINIC_NUMBER_IDENTIFIER_TYPE), location);
+			hivIdNumber = new PatientIdentifier(null, MetadataUtils.getPatientIdentifierType(Metadata.UNIQUE_PATIENT_NUMBER_IDENTIFIER_TYPE), location);
 
 			telephoneContact = new PersonAttribute();
-			telephoneContact.setAttributeType(Metadata.getPersonAttributeType(Metadata.TELEPHONE_CONTACT_PERSON_ATTRIBUTE_TYPE));
+			telephoneContact.setAttributeType(MetadataUtils.getPersonAttributeType(Metadata.TELEPHONE_CONTACT_PERSON_ATTRIBUTE_TYPE));
 
 			nationalIdNumber = new PersonAttribute();
-			nationalIdNumber.setAttributeType(Metadata.getPersonAttributeType(Metadata.NATIONAL_ID_NUMBER_PERSON_ATTRIBUTE_TYPE));
+			nationalIdNumber.setAttributeType(MetadataUtils.getPersonAttributeType(Metadata.NATIONAL_ID_NUMBER_PERSON_ATTRIBUTE_TYPE));
 
 			nameOfNextOfKin = new PersonAttribute();
-			nameOfNextOfKin.setAttributeType(Metadata.getPersonAttributeType(Metadata.NAME_OF_NEXT_OF_KIN_PERSON_ATTRIBUTE_TYPE));
+			nameOfNextOfKin.setAttributeType(MetadataUtils.getPersonAttributeType(Metadata.NAME_OF_NEXT_OF_KIN_PERSON_ATTRIBUTE_TYPE));
 
 			nextOfKinRelationship = new PersonAttribute();
-			nextOfKinRelationship.setAttributeType(Metadata.getPersonAttributeType(Metadata.NEXT_OF_KIN_RELATIONSHIP_PERSON_ATTRIBUTE_TYPE));
+			nextOfKinRelationship.setAttributeType(MetadataUtils.getPersonAttributeType(Metadata.NEXT_OF_KIN_RELATIONSHIP_PERSON_ATTRIBUTE_TYPE));
 
 			nextOfKinContact = new PersonAttribute();
-			nextOfKinContact.setAttributeType(Metadata.getPersonAttributeType(Metadata.NEXT_OF_KIN_CONTACT_PERSON_ATTRIBUTE_TYPE));
+			nextOfKinContact.setAttributeType(MetadataUtils.getPersonAttributeType(Metadata.NEXT_OF_KIN_CONTACT_PERSON_ATTRIBUTE_TYPE));
 
 			nextOfKinAddress = new PersonAttribute();
-			nextOfKinAddress.setAttributeType(Metadata.getPersonAttributeType(Metadata.NEXT_OF_KIN_ADDRESS_PERSON_ATTRIBUTE_TYPE));
+			nextOfKinAddress.setAttributeType(MetadataUtils.getPersonAttributeType(Metadata.NEXT_OF_KIN_ADDRESS_PERSON_ATTRIBUTE_TYPE));
 
 		}
 
@@ -207,21 +207,21 @@ public class RegistrationEditPatientFragmentController {
 			birthdate = patient.getBirthdate();
 			birthdateEstimated = patient.getBirthdateEstimated();
 
-			PatientIdentifier id = patient.getPatientIdentifier(Metadata.getPatientIdentifierType(Metadata.PATIENT_CLINIC_NUMBER_IDENTIFIER_TYPE));
+			PatientIdentifier id = patient.getPatientIdentifier(MetadataUtils.getPatientIdentifierType(Metadata.PATIENT_CLINIC_NUMBER_IDENTIFIER_TYPE));
 			if (id != null) {
 				patientClinicNumber = id;
 			} else {
 				patientClinicNumber.setPatient(patient);
 			}
 
-			id = patient.getPatientIdentifier(Metadata.getPatientIdentifierType(Metadata.UNIQUE_PATIENT_NUMBER_IDENTIFIER_TYPE));
+			id = patient.getPatientIdentifier(MetadataUtils.getPatientIdentifierType(Metadata.UNIQUE_PATIENT_NUMBER_IDENTIFIER_TYPE));
 			if (id != null) {
 				hivIdNumber = id;
 			} else {
 				hivIdNumber.setPatient(patient);
 			}
 
-			PersonAttribute attr = patient.getAttribute(Metadata.getPersonAttributeType(Metadata.TELEPHONE_CONTACT_PERSON_ATTRIBUTE_TYPE));
+			PersonAttribute attr = patient.getAttribute(MetadataUtils.getPersonAttributeType(Metadata.TELEPHONE_CONTACT_PERSON_ATTRIBUTE_TYPE));
 			if (attr != null) {
 				telephoneContact = attr;
 			} else {
@@ -243,7 +243,7 @@ public class RegistrationEditPatientFragmentController {
 				education = savedEducation.getValueCoded();
 			}
 
-			PersonAttribute attrNationalId = patient.getAttribute(Metadata.getPersonAttributeType(Metadata.NATIONAL_ID_NUMBER_PERSON_ATTRIBUTE_TYPE));
+			PersonAttribute attrNationalId = patient.getAttribute(MetadataUtils.getPersonAttributeType(Metadata.NATIONAL_ID_NUMBER_PERSON_ATTRIBUTE_TYPE));
 			if (attrNationalId != null) {
 				nationalIdNumber = attrNationalId;
 			}
@@ -252,7 +252,7 @@ public class RegistrationEditPatientFragmentController {
 			}
 
 			// Next of kin details
-			PersonAttribute attrNameOfNextOfKin = patient.getAttribute(Metadata.getPersonAttributeType(Metadata.NAME_OF_NEXT_OF_KIN_PERSON_ATTRIBUTE_TYPE));
+			PersonAttribute attrNameOfNextOfKin = patient.getAttribute(MetadataUtils.getPersonAttributeType(Metadata.NAME_OF_NEXT_OF_KIN_PERSON_ATTRIBUTE_TYPE));
 			if (attrNameOfNextOfKin != null) {
 				nameOfNextOfKin = attrNameOfNextOfKin;
 			}
@@ -260,7 +260,7 @@ public class RegistrationEditPatientFragmentController {
 				nameOfNextOfKin.setPerson(patient);
 			}
 
-			PersonAttribute attrNextOfKinRelationship = patient.getAttribute(Metadata.getPersonAttributeType(Metadata.NEXT_OF_KIN_RELATIONSHIP_PERSON_ATTRIBUTE_TYPE));
+			PersonAttribute attrNextOfKinRelationship = patient.getAttribute(MetadataUtils.getPersonAttributeType(Metadata.NEXT_OF_KIN_RELATIONSHIP_PERSON_ATTRIBUTE_TYPE));
 			if (attrNextOfKinRelationship != null) {
 				nextOfKinRelationship = attrNextOfKinRelationship;
 			}
@@ -268,7 +268,7 @@ public class RegistrationEditPatientFragmentController {
 				nextOfKinRelationship.setPerson(patient);
 			}
 
-			PersonAttribute attrNextOfKinContact = patient.getAttribute(Metadata.getPersonAttributeType(Metadata.NEXT_OF_KIN_CONTACT_PERSON_ATTRIBUTE_TYPE));
+			PersonAttribute attrNextOfKinContact = patient.getAttribute(MetadataUtils.getPersonAttributeType(Metadata.NEXT_OF_KIN_CONTACT_PERSON_ATTRIBUTE_TYPE));
 			if (attrNextOfKinContact != null) {
 				nextOfKinContact = attrNextOfKinContact;
 			}
@@ -276,7 +276,7 @@ public class RegistrationEditPatientFragmentController {
 				nextOfKinContact.setPerson(patient);
 			}
 
-			PersonAttribute attrNextOfKinAddress = patient.getAttribute(Metadata.getPersonAttributeType(Metadata.NEXT_OF_KIN_ADDRESS_PERSON_ATTRIBUTE_TYPE));
+			PersonAttribute attrNextOfKinAddress = patient.getAttribute(MetadataUtils.getPersonAttributeType(Metadata.NEXT_OF_KIN_ADDRESS_PERSON_ATTRIBUTE_TYPE));
 			if (attrNextOfKinAddress != null) {
 				nextOfKinAddress = attrNextOfKinAddress;
 			}
@@ -368,7 +368,7 @@ public class RegistrationEditPatientFragmentController {
 			toSave.setBirthdate(birthdate);
 			toSave.setBirthdateEstimated(birthdateEstimated);
 
-			PatientIdentifier oldPatientClinicNumber = toSave.getPatientIdentifier(Metadata.getPatientIdentifierType(Metadata.PATIENT_CLINIC_NUMBER_IDENTIFIER_TYPE));
+			PatientIdentifier oldPatientClinicNumber = toSave.getPatientIdentifier(MetadataUtils.getPatientIdentifierType(Metadata.PATIENT_CLINIC_NUMBER_IDENTIFIER_TYPE));
 			if (anyChanges(oldPatientClinicNumber, patientClinicNumber, "identifier")) {
 				if (oldPatientClinicNumber != null) {
 					voidData(oldPatientClinicNumber);
@@ -376,7 +376,7 @@ public class RegistrationEditPatientFragmentController {
 				toSave.addIdentifier(patientClinicNumber);
 			}
 
-			PatientIdentifier oldHivId = toSave.getPatientIdentifier(Metadata.getPatientIdentifierType(Metadata.UNIQUE_PATIENT_NUMBER_IDENTIFIER_TYPE));
+			PatientIdentifier oldHivId = toSave.getPatientIdentifier(MetadataUtils.getPatientIdentifierType(Metadata.UNIQUE_PATIENT_NUMBER_IDENTIFIER_TYPE));
 			if (anyChanges(oldHivId, hivIdNumber, "identifier")) {
 				if (oldHivId != null) {
 					voidData(oldHivId);
@@ -385,7 +385,7 @@ public class RegistrationEditPatientFragmentController {
 			}
 
 			{ // make sure everyone gets an OpenMRS ID
-				PatientIdentifierType openmrsIdType = Metadata.getPatientIdentifierType(Metadata.OPENMRS_ID_IDENTIFIER_TYPE);
+				PatientIdentifierType openmrsIdType = MetadataUtils.getPatientIdentifierType(Metadata.OPENMRS_ID_IDENTIFIER_TYPE);
 				if (toSave.getPatientIdentifier(openmrsIdType) == null) {
 					String generated = Context.getService(IdentifierSourceService.class).generateIdentifier(openmrsIdType, "Registration Create/Edit Patient");
 					PatientIdentifier generatedOpenmrsId = new PatientIdentifier(generated, openmrsIdType, location);
@@ -411,7 +411,7 @@ public class RegistrationEditPatientFragmentController {
 				toSave.addAddress(personAddress);
 			}
 
-			PersonAttributeType telContact = Metadata.getPersonAttributeType(Metadata.TELEPHONE_CONTACT_PERSON_ATTRIBUTE_TYPE);
+			PersonAttributeType telContact = MetadataUtils.getPersonAttributeType(Metadata.TELEPHONE_CONTACT_PERSON_ATTRIBUTE_TYPE);
 			if (anyChanges(toSave.getAttribute(telContact), telephoneContact, "value")) {
 				if (toSave.getAttribute(telContact) != null) {
 					voidData(toSave.getAttribute(telContact));
@@ -419,7 +419,7 @@ public class RegistrationEditPatientFragmentController {
 				toSave.addAttribute(telephoneContact);
 			}
 			//additions
-			PersonAttributeType nationalId = Metadata.getPersonAttributeType(Metadata.NATIONAL_ID_NUMBER_PERSON_ATTRIBUTE_TYPE);
+			PersonAttributeType nationalId = MetadataUtils.getPersonAttributeType(Metadata.NATIONAL_ID_NUMBER_PERSON_ATTRIBUTE_TYPE);
 			if (anyChanges(toSave.getAttribute(nationalId), nationalIdNumber, "value")) {
 				if (toSave.getAttribute(nationalId) != null) {
 					voidData(toSave.getAttribute(nationalId));
@@ -427,7 +427,7 @@ public class RegistrationEditPatientFragmentController {
 				toSave.addAttribute(nationalIdNumber);
 			}
 			//next of kin included here
-			PersonAttributeType nameOfNextOfkinpat = Metadata.getPersonAttributeType(Metadata.NAME_OF_NEXT_OF_KIN_PERSON_ATTRIBUTE_TYPE);
+			PersonAttributeType nameOfNextOfkinpat = MetadataUtils.getPersonAttributeType(Metadata.NAME_OF_NEXT_OF_KIN_PERSON_ATTRIBUTE_TYPE);
 			if (anyChanges(toSave.getAttribute(nameOfNextOfkinpat), this.nameOfNextOfKin, "value")) {
 				if (toSave.getAttribute(nameOfNextOfkinpat) != null) {
 					voidData(toSave.getAttribute(nameOfNextOfkinpat));
@@ -435,7 +435,7 @@ public class RegistrationEditPatientFragmentController {
 				toSave.addAttribute(this.nameOfNextOfKin);
 			}
 
-			PersonAttributeType nextOfkinRelationshippat = Metadata.getPersonAttributeType(Metadata.NEXT_OF_KIN_RELATIONSHIP_PERSON_ATTRIBUTE_TYPE);
+			PersonAttributeType nextOfkinRelationshippat = MetadataUtils.getPersonAttributeType(Metadata.NEXT_OF_KIN_RELATIONSHIP_PERSON_ATTRIBUTE_TYPE);
 			if (anyChanges(toSave.getAttribute(nextOfkinRelationshippat), this.nextOfKinRelationship, "value")) {
 				if (toSave.getAttribute(nextOfkinRelationshippat) != null) {
 					voidData(toSave.getAttribute(nextOfkinRelationshippat));
@@ -443,7 +443,7 @@ public class RegistrationEditPatientFragmentController {
 				toSave.addAttribute(this.nextOfKinRelationship);
 			}
 
-			PersonAttributeType nextOfkinContactpat = Metadata.getPersonAttributeType(Metadata.NEXT_OF_KIN_CONTACT_PERSON_ATTRIBUTE_TYPE);
+			PersonAttributeType nextOfkinContactpat = MetadataUtils.getPersonAttributeType(Metadata.NEXT_OF_KIN_CONTACT_PERSON_ATTRIBUTE_TYPE);
 			if (anyChanges(toSave.getAttribute(nextOfkinContactpat), this.nextOfKinContact, "value")) {
 				if (toSave.getAttribute(nextOfkinContactpat) != null) {
 					voidData(toSave.getAttribute(nextOfkinContactpat));
@@ -451,7 +451,7 @@ public class RegistrationEditPatientFragmentController {
 				toSave.addAttribute(this.nextOfKinContact);
 			}
 
-			PersonAttributeType nextOfkinAddresspat = Metadata.getPersonAttributeType(Metadata.NEXT_OF_KIN_ADDRESS_PERSON_ATTRIBUTE_TYPE);
+			PersonAttributeType nextOfkinAddresspat = MetadataUtils.getPersonAttributeType(Metadata.NEXT_OF_KIN_ADDRESS_PERSON_ATTRIBUTE_TYPE);
 			if (anyChanges(toSave.getAttribute(nextOfkinAddresspat), this.nextOfKinAddress, "value")) {
 				if (toSave.getAttribute(nextOfkinAddresspat) != null) {
 					voidData(toSave.getAttribute(nextOfkinAddresspat));
@@ -504,7 +504,7 @@ public class RegistrationEditPatientFragmentController {
 				return false;
 			}
 			ProgramWorkflowService pws = Context.getProgramWorkflowService();
-			Program hivProgram = Metadata.getProgram(Metadata.HIV_PROGRAM);
+			Program hivProgram = MetadataUtils.getProgram(Metadata.HIV_PROGRAM);
 			for (PatientProgram pp : pws.getPatientPrograms(original, hivProgram, null, null, null, null, false)) {
 				if (pp.getActive()) {
 					return true;

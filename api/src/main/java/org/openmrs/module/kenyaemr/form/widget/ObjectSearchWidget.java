@@ -18,7 +18,7 @@ import org.openmrs.BaseOpenmrsObject;
 import org.openmrs.module.htmlformentry.FormEntryContext;
 import org.openmrs.module.htmlformentry.widget.Widget;
 import org.openmrs.module.htmlformentry.widget.WidgetFactory;
-import org.openmrs.module.kenyaemr.form.FormUtils;
+import org.openmrs.module.kenyacore.form.FormUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.LinkedHashMap;

@@ -14,7 +14,7 @@
 
 package org.openmrs.module.kenyaemr.reporting.builder.patientlist;
 
-import org.openmrs.module.kenyaemr.calculation.library.art.NeedsCd4TestCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.NeedsCd4TestCalculation;
 import org.springframework.stereotype.Component;
 
 /**
@@ -28,7 +28,7 @@ public class NeedsCD4Report extends BasePatientCalculationReportBuilder {
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.reporting.builder.ReportBuilder#getName()
+	 * @see org.openmrs.module.kenyacore.reporting.ReportBuilder#getName()
 	 */
 	@Override
 	public String getName() {
@@ -36,7 +36,7 @@ public class NeedsCD4Report extends BasePatientCalculationReportBuilder {
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.reporting.builder.ReportBuilder#getTags()
+	 * @see org.openmrs.module.kenyacore.reporting.ReportBuilder#getTags()
 	 */
 	@Override
 	public String[] getTags() {

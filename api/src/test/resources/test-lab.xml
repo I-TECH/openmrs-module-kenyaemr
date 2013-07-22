@@ -4,11 +4,10 @@
 <lab xmlns="http://www.kenyaemr.org/lab">
 	<tests>
 		<category name="category1">
-			<test concept="5497AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><!-- CD4 COUNT -->
-			<test concept="730AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" name="test-name" /><!-- CD4 PERCENT -->
+			<test concept="c607c80f-1ea9-4da3-bb88-6276ce8868dd" /><!-- WEIGHT (KG) -->
+			<test concept="a09ab2c5-878e-4905-b25d-5784167d0216" name="test-name" /><!-- CD4 COUNT -->
 		</category>
 		<category name="category2">
-			<test concept="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><!-- FREE TEXT -->
 		</category>
 	</tests>
 </lab>

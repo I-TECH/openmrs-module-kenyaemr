@@ -15,6 +15,7 @@
 package org.openmrs.module.kenyaemr.fragment.controller;
 
 import org.openmrs.Patient;
+import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
@@ -33,16 +34,16 @@ public class PatientSummaryFragmentController {
 
 		List<SimpleObject> forms = new ArrayList<SimpleObject>();
 
-		forms.add(ui.simplifyObject(Metadata.getForm(Metadata.FAMILY_HISTORY_FORM)));
+		forms.add(ui.simplifyObject(MetadataUtils.getForm(Metadata.FAMILY_HISTORY_FORM)));
 
 		if (patient.getGender().equals("F")) {
-			forms.add(ui.simplifyObject(Metadata.getForm(Metadata.OBSTETRIC_HISTORY_FORM)));
+			forms.add(ui.simplifyObject(MetadataUtils.getForm(Metadata.OBSTETRIC_HISTORY_FORM)));
 		}
 
 		model.addAttribute("patient", patient);
 		model.addAttribute("forms", forms);
 
-		model.addAttribute("clinicNumberIdType", Metadata.getPatientIdentifierType(Metadata.PATIENT_CLINIC_NUMBER_IDENTIFIER_TYPE));
-		model.addAttribute("hivNumberIdType", Metadata.getPatientIdentifierType(Metadata.UNIQUE_PATIENT_NUMBER_IDENTIFIER_TYPE));
+		model.addAttribute("clinicNumberIdType", MetadataUtils.getPatientIdentifierType(Metadata.PATIENT_CLINIC_NUMBER_IDENTIFIER_TYPE));
+		model.addAttribute("hivNumberIdType", MetadataUtils.getPatientIdentifierType(Metadata.UNIQUE_PATIENT_NUMBER_IDENTIFIER_TYPE));
 	}
 }

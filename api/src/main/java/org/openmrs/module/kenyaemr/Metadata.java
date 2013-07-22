@@ -14,133 +14,12 @@
 
 package org.openmrs.module.kenyaemr;
 
-import org.openmrs.*;
-import org.openmrs.api.context.Context;
-
 import java.util.Locale;
 
 /**
  * Provides access to the core metadata in KenyaEMR
  */
 public class Metadata {
-
-	/**
-	 * Checks the identity of an OpenMRS object against the given identifier (null safe)
-	 * @param object the object to check
-	 * @param identifier the identifier
-	 * @return true if the object matches the identifier
-	 */
-	public static boolean hasIdentity(OpenmrsObject object, String identifier) {
-		// For now we assume that every identifier is a UUID
-		return (object != null) && (object.getUuid() != null) && object.getUuid().equals(identifier);
-	}
-
-	/**
-	 * Gets the specified encounter type
-	 * @param identifier the identifier
-	 * @return the encounter type
-	 * @throws IllegalArgumentException if no such encounter type exists
-	 */
-	public static EncounterType getEncounterType(String identifier) {
-		EncounterType ret = Context.getEncounterService().getEncounterTypeByUuid(identifier);
-		if (ret == null) {
-			throw new IllegalArgumentException("No such encounter type with identifier " + identifier);
-		}
-		return ret;
-	}
-
-	/**
-	 * Gets the specified form
-	 * @param identifier the identifier
-	 * @return the form
-	 */
-	public static Form getForm(String identifier) {
-		Form ret = Context.getFormService().getFormByUuid(identifier);
-		if (ret == null) {
-			throw new IllegalArgumentException("No such form with identifier " + identifier);
-		}
-		return ret;
-	}
-
-	/**
-	 * Gets the specified location
-	 * @param identifier the identifier
-	 * @return the location
-	 */
-	public static Location getLocation(String identifier) {
-		Location ret = Context.getLocationService().getLocationByUuid(identifier);
-		if (ret == null) {
-			throw new IllegalArgumentException("No such location with identifier " + identifier);
-		}
-		return ret;
-	}
-
-	/**
-	 * Gets the specified location attribute type
-	 * @param identifier the identifier
-	 * @return the location attribute type
-	 */
-	public static LocationAttributeType getLocationAttributeType(String identifier) {
-		LocationAttributeType ret = Context.getLocationService().getLocationAttributeTypeByUuid(identifier);
-		if (ret == null) {
-			throw new IllegalArgumentException("No such location attribute type with identifier " + identifier);
-		}
-		return ret;
-	}
-
-	/**
-	 * Gets the specified patient identifier type
-	 * @param identifier the identifier
-	 * @return the patient identifier type
-	 * @throws IllegalArgumentException if no such patient identifier type exists
-	 */
-	public static PatientIdentifierType getPatientIdentifierType(String identifier) {
-		PatientIdentifierType ret = Context.getPatientService().getPatientIdentifierTypeByUuid(identifier);
-		if (ret == null) {
-			throw new IllegalArgumentException("No such patient identifier type with identifier " + identifier);
-		}
-		return ret;
-	}
-
-	/**
-	 * Gets the specified person attribute type
-	 * @param identifier the identifier
-	 * @return the person attribute type
-	 */
-	public static PersonAttributeType getPersonAttributeType(String identifier) {
-		PersonAttributeType ret = Context.getPersonService().getPersonAttributeTypeByUuid(identifier);
-		if (ret == null) {
-			throw new IllegalArgumentException("No such person attribute type with identifier " + identifier);
-		}
-		return ret;
-	}
-
-	/**
-	 * Gets the specified program
-	 * @param identifier the identifier
-	 * @return the program
-	 */
-	public static Program getProgram(String identifier) {
-		Program ret = Context.getProgramWorkflowService().getProgramByUuid(identifier);
-		if (ret == null) {
-			throw new IllegalArgumentException("No such program with identifier " + identifier);
-		}
-		return ret;
-	}
-
-	/**
-	 * Gets the specified visit type
-	 * @param identifier the identifier
-	 * @return the visit type
-	 * @throws IllegalArgumentException if no such visit type exists
-	 */
-	public static VisitType getVisitType(String identifier) {
-		VisitType ret = Context.getVisitService().getVisitTypeByUuid(identifier);
-		if (ret == null) {
-			throw new IllegalArgumentException("No such visit type with identifier " + identifier);
-		}
-		return ret;
-	}
 
 	// Encounter Types
 	public static final String CHECK_OUT_ENCOUNTER_TYPE ="abfb143c-5b49-41e5-9ead-f47ee4cc57cf";
@@ -201,7 +80,4 @@ public class Metadata {
 
 	// Visit Types
 	public static final String OUTPATIENT_VISIT_TYPE = "3371a4d4-f66f-4454-a86d-92c7b3da990c";
-
-	// Other
-	public static final Locale LOCALE = Locale.ENGLISH;
 }

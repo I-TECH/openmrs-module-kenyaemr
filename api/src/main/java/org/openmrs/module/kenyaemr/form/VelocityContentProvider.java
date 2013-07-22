@@ -16,7 +16,7 @@ package org.openmrs.module.kenyaemr.form;
 import org.apache.velocity.VelocityContext;
 import org.openmrs.module.htmlformentry.FormEntrySession;
 import org.openmrs.module.htmlformentry.velocity.VelocityContextContentProvider;
-import org.openmrs.module.kenyaemr.KenyaEmrConstants;
+import org.openmrs.module.kenyaemr.EmrConstants;
 import org.springframework.stereotype.Component;
 
 /**
@@ -30,6 +30,6 @@ public class VelocityContentProvider implements VelocityContextContentProvider {
 	 */
 	@Override
 	public void populateContext(FormEntrySession session, VelocityContext velocityContext) {
-		velocityContext.put(KenyaEmrConstants.MODULE_ID, new KenyaEmrVelocityFunctions(session));
+		velocityContext.put(EmrConstants.MODULE_ID, new EmrVelocityFunctions(session));
 	}
 }

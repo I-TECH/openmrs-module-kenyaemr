@@ -21,7 +21,8 @@ import org.openmrs.api.PatientSetService;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.library.InProgramCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.OnMedicationCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.art.OnAlternateFirstLineArtCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.OnAlternateFirstLineArtCalculation;
+import org.openmrs.module.kenyaemr.reporting.EmrReportingUtils;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.DateObsValueBetweenCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.EmrCalculationCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.*;
@@ -97,8 +98,8 @@ public class CommonCohortLibrary {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.setName("females aged at least 18");
 		cd.addParameter(new Parameter("effectiveDate", "Effective Date", Date.class));
-		cd.addSearch("females", map(females()));
-		cd.addSearch("agedAtLeast18", map(agedAtLeast(18), "effectiveDate=${effectiveDate}"));
+		cd.addSearch("females", EmrReportingUtils.map(females()));
+		cd.addSearch("agedAtLeast18", EmrReportingUtils.map(agedAtLeast(18), "effectiveDate=${effectiveDate}"));
 		cd.setCompositionString("females AND agedAtLeast18");
 		return cd;
 	}
@@ -180,8 +181,8 @@ public class CommonCohortLibrary {
 		cd.setName("enrolled excluding transfers in program between dates");
 		cd.addParameter(new Parameter("onOrAfter", "From Date", Date.class));
 		cd.addParameter(new Parameter("onOrBefore", "To Date", Date.class));
-		cd.addSearch("enrolled", map(enrolled(programs), "enrolledOnOrAfter=${onOrAfter},enrolledOnOrBefore=${onOrBefore}"));
-		cd.addSearch("transferIn", map(transferredIn(), "onOrBefore=${onOrBefore}"));
+		cd.addSearch("enrolled", EmrReportingUtils.map(enrolled(programs), "enrolledOnOrAfter=${onOrAfter},enrolledOnOrBefore=${onOrBefore}"));
+		cd.addSearch("transferIn", EmrReportingUtils.map(transferredIn(), "onOrBefore=${onOrBefore}"));
 		cd.setCompositionString("enrolled AND NOT transferIn");
 		return cd;
 	}

@@ -18,8 +18,8 @@ import java.io.ByteArrayOutputStream;
 
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.EmrWebConstants;
-import org.openmrs.module.kenyaemr.KenyaEmr;
-import org.openmrs.module.kenyaemr.reporting.builder.ReportBuilder;
+import org.openmrs.module.kenyacore.CoreContext;
+import org.openmrs.module.kenyacore.reporting.ReportBuilder;
 import org.openmrs.module.kenyaui.annotation.AppPage;
 import org.openmrs.module.reporting.common.ContentType;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
@@ -41,7 +41,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class ReportsRunPatientListReportPageController {
 
 	public Object controller(PageModel model,
-				@SpringBean KenyaEmr emr,
+				@SpringBean CoreContext emr,
 				@RequestParam("builder") String builderClassname,
 				@RequestParam(required = false, value = "mode") String mode) throws Exception {
 

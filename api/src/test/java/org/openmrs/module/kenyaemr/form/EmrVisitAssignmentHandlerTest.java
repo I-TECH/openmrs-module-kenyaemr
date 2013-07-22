@@ -19,6 +19,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Encounter;
 import org.openmrs.Visit;
+import org.openmrs.module.kenyacore.form.FormManager;
+import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.test.TestUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
@@ -28,7 +30,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import static org.hamcrest.Matchers.*;
 
 /**
- * Tests for {@link EmrVisitAssignmentHandler}
+ * Tests for {@link org.openmrs.module.kenyaemr.form.EmrVisitAssignmentHandler}
  */
 public class EmrVisitAssignmentHandlerTest extends BaseModuleContextSensitiveTest {
 
@@ -49,19 +51,19 @@ public class EmrVisitAssignmentHandlerTest extends BaseModuleContextSensitiveTes
 		TestUtils.saveGlobalProperty(OpenmrsConstants.GP_VISIT_ASSIGNMENT_HANDLER, EmrVisitAssignmentHandler.class.getName());
 
 		// Give patient #2 a visit from 10am-12pm on 5th June
-		Visit visit1 = TestUtils.saveVisit(TestUtils.getPatient(2), Metadata.getVisitType(Metadata.OUTPATIENT_VISIT_TYPE), TestUtils.date(2012, 6, 5, 10, 0, 0), TestUtils.date(2012, 6, 5, 12, 0, 0));
+		Visit visit1 = TestUtils.saveVisit(TestUtils.getPatient(2), MetadataUtils.getVisitType(Metadata.OUTPATIENT_VISIT_TYPE), TestUtils.date(2012, 6, 5, 10, 0, 0), TestUtils.date(2012, 6, 5, 12, 0, 0));
 
 		// Give patient #2 an unclosed visit from 10am onward on 7th June
-		Visit visit2 = TestUtils.saveVisit(TestUtils.getPatient(2), Metadata.getVisitType(Metadata.OUTPATIENT_VISIT_TYPE), TestUtils.date(2012, 6, 7, 10, 0, 0), null);
+		Visit visit2 = TestUtils.saveVisit(TestUtils.getPatient(2), MetadataUtils.getVisitType(Metadata.OUTPATIENT_VISIT_TYPE), TestUtils.date(2012, 6, 7, 10, 0, 0), null);
 
 		// Give patient #2 an encounter at 11am on 5th June
-		Encounter enc1 = TestUtils.saveEncounter(TestUtils.getPatient(2), Metadata.getEncounterType(Metadata.TB_SCREENING_ENCOUNTER_TYPE), TestUtils.date(2012, 6, 5, 11, 0, 0));
+		Encounter enc1 = TestUtils.saveEncounter(TestUtils.getPatient(2), MetadataUtils.getEncounterType(Metadata.TB_SCREENING_ENCOUNTER_TYPE), TestUtils.date(2012, 6, 5, 11, 0, 0));
 
 		// Check that encounter was saved into visit #1
 		Assert.assertThat(enc1.getVisit(), is(visit1));
 
 		// Give patient #2 an encounter at 9am on 10th June
-		Encounter enc2 = TestUtils.saveEncounter(TestUtils.getPatient(2), Metadata.getEncounterType(Metadata.TB_SCREENING_ENCOUNTER_TYPE), TestUtils.date(2012, 6, 10, 9, 0, 0));
+		Encounter enc2 = TestUtils.saveEncounter(TestUtils.getPatient(2), MetadataUtils.getEncounterType(Metadata.TB_SCREENING_ENCOUNTER_TYPE), TestUtils.date(2012, 6, 10, 9, 0, 0));
 
 		// Check that encounter was saved into visit #2
 		Assert.assertThat(enc2.getVisit(), is(visit2));

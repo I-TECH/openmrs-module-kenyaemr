@@ -16,16 +16,16 @@ package org.openmrs.module.kenyaemr.reporting.builder.indicator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.module.kenyaemr.reporting.ColumnParameters;
 import org.openmrs.module.kenyaemr.reporting.EmrReportingUtils;
-import org.openmrs.module.kenyaemr.reporting.indicator.HivCareVisitsIndicator;
 import org.openmrs.module.kenyaemr.reporting.dataset.definition.MergingDataSetDefinition;
+import org.openmrs.module.kenyaemr.reporting.library.indicator.PwpIndicatorLibrary;
+import org.openmrs.module.kenyaemr.reporting.ColumnParameters;
+import org.openmrs.module.kenyaemr.reporting.indicator.HivCareVisitsIndicator;
 import org.openmrs.module.kenyaemr.reporting.library.cohort.ArtCohortLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.cohort.CommonCohortLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.dimension.CommonDimensionLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.indicator.ArtIndicatorLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.indicator.CommonIndicatorLibrary;
-import org.openmrs.module.kenyaemr.reporting.library.indicator.PwpIndicatorLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.indicator.TbIndicatorLibrary;
 import org.openmrs.module.reporting.cohort.definition.*;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
@@ -78,7 +78,7 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 	private Map<String, Indicator> nonCohortIndicators;
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.reporting.builder.ReportBuilder#getTags()
+	 * @see org.openmrs.module.kenyacore.reporting.ReportBuilder#getTags()
 	 */
 	@Override
 	public String[] getTags() {
@@ -94,7 +94,7 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.reporting.builder.ReportBuilder#getDescription()
+	 * @see org.openmrs.module.kenyacore.reporting.ReportBuilder#getDescription()
 	 */
 	@Override
 	public String getDescription() {
@@ -137,8 +137,8 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 			CompositionCohortDefinition cd = new CompositionCohortDefinition();
 			cd.addParameter(new Parameter("fromDate", "From Date", Date.class));
 			cd.addParameter(new Parameter("toDate", "To Date", Date.class));
-			cd.addSearch("startedBefore", map(artCohorts.startedArt(), "onOrBefore=${startDate-1d}"));
-			cd.addSearch("recentEncounter", map(commonCohorts.hasEncounter(), "onOrAfter=${endDate-90d},onOrBefore=${endDate}"));
+			cd.addSearch("startedBefore", EmrReportingUtils.map(artCohorts.startedArt(), "onOrBefore=${startDate-1d}"));
+			cd.addSearch("recentEncounter", EmrReportingUtils.map(commonCohorts.hasEncounter(), "onOrAfter=${endDate-90d},onOrBefore=${endDate}"));
 			cd.setCompositionString("recentEncounter AND startedBefore");
 			cohortDefinitions.put("revisitsArt", cd);
 		}
@@ -146,8 +146,8 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 			CompositionCohortDefinition cd = new CompositionCohortDefinition();
 			cd.addParameter(new Parameter("fromDate", "From Date", Date.class));
 			cd.addParameter(new Parameter("toDate", "To Date", Date.class));
-			cd.addSearch("startedArt", map(artCohorts.startedArt(), "onOrAfter=${fromDate},onOrBefore=${toDate}"));
-			cd.addSearch("revisitsArt", map(cohortDefinitions.get("revisitsArt"), "fromDate=${fromDate},toDate=${toDate}"));
+			cd.addSearch("startedArt", EmrReportingUtils.map(artCohorts.startedArt(), "onOrAfter=${fromDate},onOrBefore=${toDate}"));
+			cd.addSearch("revisitsArt", EmrReportingUtils.map(cohortDefinitions.get("revisitsArt"), "fromDate=${fromDate},toDate=${toDate}"));
 			cd.setCompositionString("startedArt OR revisitsArt");
 			cohortDefinitions.put("currentlyOnArt", cd);
 		}
@@ -155,8 +155,8 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 			CompositionCohortDefinition cd = new CompositionCohortDefinition();
 			cd.addParameter(new Parameter("fromDate", "From Date", Date.class));
 			cd.addParameter(new Parameter("toDate", "To Date", Date.class));
-			cd.addSearch("art12MonthNetCohort", map(artCohorts.netCohort12Months(), "onDate=${toDate}"));
-			cd.addSearch("currentlyOnOriginalFirstLine", map(artCohorts.onOriginalFirstLine(), "onDate=${toDate}"));
+			cd.addSearch("art12MonthNetCohort", EmrReportingUtils.map(artCohorts.netCohort12Months(), "onDate=${toDate}"));
+			cd.addSearch("currentlyOnOriginalFirstLine", EmrReportingUtils.map(artCohorts.onOriginalFirstLine(), "onDate=${toDate}"));
 			cd.setCompositionString("art12MonthNetCohort AND currentlyOnOriginalFirstLine");
 			cohortDefinitions.put("onOriginalFirstLineAt12Months", cd);
 		}
@@ -164,8 +164,8 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 			CompositionCohortDefinition cd = new CompositionCohortDefinition();
 			cd.addParameter(new Parameter("fromDate", "From Date", Date.class));
 			cd.addParameter(new Parameter("toDate", "To Date", Date.class));
-			cd.addSearch("art12MonthNetCohort", map(artCohorts.netCohort12Months(), "onDate=${toDate}"));
-			cd.addSearch("currentlyOnAlternateFirstLine", map(artCohorts.onAlternateFirstLine(), "onDate=${toDate}"));
+			cd.addSearch("art12MonthNetCohort", EmrReportingUtils.map(artCohorts.netCohort12Months(), "onDate=${toDate}"));
+			cd.addSearch("currentlyOnAlternateFirstLine", EmrReportingUtils.map(artCohorts.onAlternateFirstLine(), "onDate=${toDate}"));
 			cd.setCompositionString("art12MonthNetCohort AND currentlyOnAlternateFirstLine");
 			cohortDefinitions.put("onAlternateFirstLineAt12Months", cd);
 		}
@@ -173,8 +173,8 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 			CompositionCohortDefinition cd = new CompositionCohortDefinition();
 			cd.addParameter(new Parameter("fromDate", "From Date", Date.class));
 			cd.addParameter(new Parameter("toDate", "To Date", Date.class));
-			cd.addSearch("art12MonthNetCohort", map(artCohorts.netCohort12Months(), "onDate=${toDate}"));
-			cd.addSearch("currentlyOnSecondLine", map(artCohorts.onSecondLine(), "onDate=${toDate}"));
+			cd.addSearch("art12MonthNetCohort", EmrReportingUtils.map(artCohorts.netCohort12Months(), "onDate=${toDate}"));
+			cd.addSearch("currentlyOnSecondLine", EmrReportingUtils.map(artCohorts.onSecondLine(), "onDate=${toDate}"));
 			cd.setCompositionString("art12MonthNetCohort AND currentlyOnSecondLine");
 			cohortDefinitions.put("onSecondLineAt12Months", cd);
 		}
@@ -182,8 +182,8 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 			CompositionCohortDefinition cd = new CompositionCohortDefinition();
 			cd.addParameter(new Parameter("fromDate", "From Date", Date.class));
 			cd.addParameter(new Parameter("toDate", "To Date", Date.class));
-			cd.addSearch("art12MonthNetCohort", map(artCohorts.netCohort12Months(), "onDate=${toDate}"));
-			cd.addSearch("currentlyOnArt", map(artCohorts.onArt(), "onDate=${toDate}"));
+			cd.addSearch("art12MonthNetCohort", EmrReportingUtils.map(artCohorts.netCohort12Months(), "onDate=${toDate}"));
+			cd.addSearch("currentlyOnArt", EmrReportingUtils.map(artCohorts.onArt(), "onDate=${toDate}"));
 			cd.setCompositionString("art12MonthNetCohort AND currentlyOnArt");
 			cohortDefinitions.put("onTherapyAt12Months", cd);
 		}
@@ -193,39 +193,39 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 		cohortIndicators = new HashMap<String, CohortIndicator>();
 		{
 			CohortIndicator ind = createCohortIndicator("currentlyInCare", "Currently in care (includes transfers)");
-			ind.setCohortDefinition(map(commonCohorts.hasEncounter(), "onOrAfter=${endDate-90d},onOrBefore=${endDate}"));
+			ind.setCohortDefinition(EmrReportingUtils.map(commonCohorts.hasEncounter(), "onOrAfter=${endDate-90d},onOrBefore=${endDate}"));
 		}
 		{
 			CohortIndicator ind = createCohortIndicator("revisitsArt", "Revisits ART");
-			ind.setCohortDefinition(map(cohortDefinitions.get("revisitsArt"), "fromDate=${startDate},toDate=${endDate}"));
+			ind.setCohortDefinition(EmrReportingUtils.map(cohortDefinitions.get("revisitsArt"), "fromDate=${startDate},toDate=${endDate}"));
 		}
 		{
 			CohortIndicator ind = createCohortIndicator("currentlyOnArt", "Currently on ART");
-			ind.setCohortDefinition(map(cohortDefinitions.get("currentlyOnArt"), "fromDate=${startDate},toDate=${endDate}"));
+			ind.setCohortDefinition(EmrReportingUtils.map(cohortDefinitions.get("currentlyOnArt"), "fromDate=${startDate},toDate=${endDate}"));
 		}
 		{
 			CohortIndicator ind = createCohortIndicator("cumulativeOnArt", "Cumulative ever on ART");
-			ind.setCohortDefinition(map(artCohorts.startedArt(), "onOrBefore=${endDate}"));
+			ind.setCohortDefinition(EmrReportingUtils.map(artCohorts.startedArt(), "onOrBefore=${endDate}"));
 		}
 		{
 			CohortIndicator ind = createCohortIndicator("art12MonthNetCohort", "ART 12 Month Net Cohort");
-			ind.setCohortDefinition(map(artCohorts.netCohort12Months(), "onDate=${endDate}"));
+			ind.setCohortDefinition(EmrReportingUtils.map(artCohorts.netCohort12Months(), "onDate=${endDate}"));
 		}
 		{
 			CohortIndicator ind = createCohortIndicator("onOriginalFirstLineAt12Months", "On original 1st line at 12 months");
-			ind.setCohortDefinition(map(cohortDefinitions.get("onOriginalFirstLineAt12Months"), "fromDate=${startDate},toDate=${endDate}"));
+			ind.setCohortDefinition(EmrReportingUtils.map(cohortDefinitions.get("onOriginalFirstLineAt12Months"), "fromDate=${startDate},toDate=${endDate}"));
 		}
 		{
 			CohortIndicator ind = createCohortIndicator("onAlternateFirstLineAt12Months", "On alternate 1st line at 12 months");
-			ind.setCohortDefinition(map(cohortDefinitions.get("onAlternateFirstLineAt12Months"), "fromDate=${startDate},toDate=${endDate}"));
+			ind.setCohortDefinition(EmrReportingUtils.map(cohortDefinitions.get("onAlternateFirstLineAt12Months"), "fromDate=${startDate},toDate=${endDate}"));
 		}
 		{
 			CohortIndicator ind = createCohortIndicator("onSecondLineAt12Months", "On 2nd line at 12 months");
-			ind.setCohortDefinition(map(cohortDefinitions.get("onSecondLineAt12Months"), "fromDate=${startDate},toDate=${endDate}"));
+			ind.setCohortDefinition(EmrReportingUtils.map(cohortDefinitions.get("onSecondLineAt12Months"), "fromDate=${startDate},toDate=${endDate}"));
 		}
 		{
 			CohortIndicator ind = createCohortIndicator("onTherapyAt12Months", "On therapy at 12 months");
-			ind.setCohortDefinition(map(cohortDefinitions.get("onTherapyAt12Months"), "fromDate=${startDate},toDate=${endDate}"));
+			ind.setCohortDefinition(EmrReportingUtils.map(cohortDefinitions.get("onTherapyAt12Months"), "fromDate=${startDate},toDate=${endDate}"));
 		}
 	}
 
@@ -272,8 +272,8 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 		cohortDsd.setName(getName() + " Cohort DSD");
 		cohortDsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		cohortDsd.addParameter(new Parameter("endDate", "End Date", Date.class));
-		cohortDsd.addDimension("age", map(commonDimensions.age(), "onDate=${endDate}"));
-		cohortDsd.addDimension("gender", map(commonDimensions.gender()));
+		cohortDsd.addDimension("age", EmrReportingUtils.map(commonDimensions.age(), "onDate=${endDate}"));
+		cohortDsd.addDimension("gender", EmrReportingUtils.map(commonDimensions.gender()));
 
 		SimpleIndicatorDataSetDefinition nonCohortDsd = new SimpleIndicatorDataSetDefinition();
 		nonCohortDsd.setName(getName() + " Non-cohort DSD");
@@ -309,7 +309,7 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 		EmrReportingUtils.addRow(cohortDsd, "HV03", "Enrolled in care", map(artIndicators.enrolledExcludingTransfers(), indParams), allColumns, Arrays.asList("08", "09", "10", "11", "12", "13"));
 
 		// 3.3 (Currently in Care)
-		EmrReportingUtils.addRow(cohortDsd, "HV03", "Currently in care", map(cohortIndicators.get("currentlyInCare"), indParams), allColumns, Arrays.asList("14", "15", "16", "17", "18", "19"));
+		EmrReportingUtils.addRow(cohortDsd, "HV03", "Currently in care", EmrReportingUtils.map(cohortIndicators.get("currentlyInCare"), indParams), allColumns, Arrays.asList("14", "15", "16", "17", "18", "19"));
 
 		// 3.4 (Starting ART)
 		EmrReportingUtils.addRow(cohortDsd, "HV03", "Starting ART", map(artIndicators.startedArt(), indParams), allColumns, Arrays.asList("20", "21", "22", "23", "24", "25"));
@@ -318,35 +318,35 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 		cohortDsd.addColumn("HV03-27", "Starting ART (TB Patient)", map(artIndicators.startedArtWhileTbPatient(), indParams), "");
 
 		// 3.5 (Revisits ART)
-		EmrReportingUtils.addRow(cohortDsd, "HV03", "Revisits ART", map(cohortIndicators.get("revisitsArt"), indParams), allColumns, Arrays.asList("28", "29", "30", "31", "32", "33"));
+		EmrReportingUtils.addRow(cohortDsd, "HV03", "Revisits ART", EmrReportingUtils.map(cohortIndicators.get("revisitsArt"), indParams), allColumns, Arrays.asList("28", "29", "30", "31", "32", "33"));
 
 		// 3.6 (Currently on ART [All])
-		EmrReportingUtils.addRow(cohortDsd, "HV03", "Currently on ART [All]", map(cohortIndicators.get("currentlyOnArt"), indParams), allColumns, Arrays.asList("34", "35", "36", "37", "38", "39"));
+		EmrReportingUtils.addRow(cohortDsd, "HV03", "Currently on ART [All]", EmrReportingUtils.map(cohortIndicators.get("currentlyOnArt"), indParams), allColumns, Arrays.asList("34", "35", "36", "37", "38", "39"));
 
 		// 3.7 (Cumulative Ever on ART)
-		EmrReportingUtils.addRow(cohortDsd, "HV03", "Cumulative ever on ART", map(cohortIndicators.get("cumulativeOnArt"), indParams), nonInfantColumns, Arrays.asList("40", "41", "42", "43", "44"));
+		EmrReportingUtils.addRow(cohortDsd, "HV03", "Cumulative ever on ART", EmrReportingUtils.map(cohortIndicators.get("cumulativeOnArt"), indParams), nonInfantColumns, Arrays.asList("40", "41", "42", "43", "44"));
 
 		// 3.8 (Survival and Retention on ART at 12 months)
-		cohortDsd.addColumn("HV03-45", "ART Net Cohort at 12 months", map(cohortIndicators.get("art12MonthNetCohort"), indParams), "");
-		cohortDsd.addColumn("HV03-46", "On original 1st Line at 12 months", map(cohortIndicators.get("onOriginalFirstLineAt12Months"), indParams), "");
-		cohortDsd.addColumn("HV03-47", "On alternative 1st Line at 12 months", map(cohortIndicators.get("onAlternateFirstLineAt12Months"), indParams), "");
-		cohortDsd.addColumn("HV03-48", "On 2nd Line (or higher) at 12 months ", map(cohortIndicators.get("onSecondLineAt12Months"), indParams), "");
-		cohortDsd.addColumn("HV03-49", "On therapy at 12 months (Total) ", map(cohortIndicators.get("onTherapyAt12Months"), indParams), "");
+		cohortDsd.addColumn("HV03-45", "ART Net Cohort at 12 months", EmrReportingUtils.map(cohortIndicators.get("art12MonthNetCohort"), indParams), "");
+		cohortDsd.addColumn("HV03-46", "On original 1st Line at 12 months", EmrReportingUtils.map(cohortIndicators.get("onOriginalFirstLineAt12Months"), indParams), "");
+		cohortDsd.addColumn("HV03-47", "On alternative 1st Line at 12 months", EmrReportingUtils.map(cohortIndicators.get("onAlternateFirstLineAt12Months"), indParams), "");
+		cohortDsd.addColumn("HV03-48", "On 2nd Line (or higher) at 12 months ", EmrReportingUtils.map(cohortIndicators.get("onSecondLineAt12Months"), indParams), "");
+		cohortDsd.addColumn("HV03-49", "On therapy at 12 months (Total) ", EmrReportingUtils.map(cohortIndicators.get("onTherapyAt12Months"), indParams), "");
 
 		// 3.9 (Screening)
-		EmrReportingUtils.addRow(cohortDsd, "HV03", "Screened for TB", map(tbIndicators.screenedForTb(), indParams), nonInfantColumns, Arrays.asList("50", "51", "52", "53", "54"));
+		EmrReportingUtils.addRow(cohortDsd, "HV03", "Screened for TB", EmrReportingUtils.map(tbIndicators.screenedForTb(), indParams), nonInfantColumns, Arrays.asList("50", "51", "52", "53", "54"));
 
 		// TODO HV03-55 (Screened for cervical cancer (F 18+))
 
 		// 3.10 (Prevention with Positives)
-		cohortDsd.addColumn("HV09-04", "Modern contraceptive methods", map(pwpIndicators.modernContraceptivesProvided(), indParams), "");
-		cohortDsd.addColumn("HV09-05", "Provided with condoms", map(pwpIndicators.condomsProvided(), indParams), "");
+		cohortDsd.addColumn("HV09-04", "Modern contraceptive methods", EmrReportingUtils.map(pwpIndicators.modernContraceptivesProvided(), indParams), "");
+		cohortDsd.addColumn("HV09-05", "Provided with condoms", EmrReportingUtils.map(pwpIndicators.condomsProvided(), indParams), "");
 
 		// 3.11 (HIV Care Visits)
-		nonCohortDsd.addColumn("HV03-70", "HIV care visits (Females 18+)", map(nonCohortIndicators.get("hivCareVisitsFemale18"), indParams));
-		nonCohortDsd.addColumn("HV03-71", "HIV care visits (Scheduled)", map(nonCohortIndicators.get("hivCareVisitsScheduled"), indParams));
-		nonCohortDsd.addColumn("HV03-72", "HIV care visits (Unscheduled)", map(nonCohortIndicators.get("hivCareVisitsUnscheduled"), indParams));
-		nonCohortDsd.addColumn("HV03-73", "HIV care visits (Total)", map(nonCohortIndicators.get("hivCareVisitsTotal"), indParams));
+		nonCohortDsd.addColumn("HV03-70", "HIV care visits (Females 18+)", EmrReportingUtils.map(nonCohortIndicators.get("hivCareVisitsFemale18"), indParams));
+		nonCohortDsd.addColumn("HV03-71", "HIV care visits (Scheduled)", EmrReportingUtils.map(nonCohortIndicators.get("hivCareVisitsScheduled"), indParams));
+		nonCohortDsd.addColumn("HV03-72", "HIV care visits (Unscheduled)", EmrReportingUtils.map(nonCohortIndicators.get("hivCareVisitsUnscheduled"), indParams));
+		nonCohortDsd.addColumn("HV03-73", "HIV care visits (Total)", EmrReportingUtils.map(nonCohortIndicators.get("hivCareVisitsTotal"), indParams));
 
 		return mergedDsd;
 	}

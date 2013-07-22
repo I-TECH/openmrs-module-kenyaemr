@@ -28,10 +28,9 @@ import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.ListResult;
-import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
+import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyaemr.calculation.library.ScheduledVisitOnDayCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.VisitsOnDayCalculation;
-import org.openmrs.module.kenyaemr.util.KenyaEmrUtils;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.FragmentParam;
@@ -49,8 +48,8 @@ public class DailyScheduleFragmentController {
 						   UiUtils ui) {
 
 		Date today = OpenmrsUtil.firstSecondOfDay(new Date());
-		Date tomorrow = KenyaEmrUtils.dateAddDays(today, 1);
-		Date yesterday = KenyaEmrUtils.dateAddDays(today, -1);
+		Date tomorrow = CalculationUtils.dateAddDays(today, 1);
+		Date yesterday = CalculationUtils.dateAddDays(today, -1);
 
 		// Date defaults to today
 		if (date == null) {

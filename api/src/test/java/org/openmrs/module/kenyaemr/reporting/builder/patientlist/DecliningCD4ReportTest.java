@@ -19,10 +19,10 @@ import org.junit.Test;
 import org.openmrs.Concept;
 import org.openmrs.Program;
 import org.openmrs.api.PatientService;
-import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.Metadata;
-import org.openmrs.module.kenyaemr.reporting.builder.ReportBuilder;
+import org.openmrs.module.kenyacore.reporting.ReportBuilder;
 import org.openmrs.module.kenyaemr.test.ReportingTestUtils;
 import org.openmrs.module.kenyaemr.test.TestUtils;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
@@ -36,7 +36,7 @@ import java.util.Collections;
 import java.util.Date;
 
 /**
- * Tests for {@link DecliningCD4Report}
+ * Tests for {@link org.openmrs.module.kenyaemr.reporting.builder.patientlist.DecliningCD4Report}
  */
 public class DecliningCD4ReportTest extends BaseModuleContextSensitiveTest {
 
@@ -47,7 +47,7 @@ public class DecliningCD4ReportTest extends BaseModuleContextSensitiveTest {
 
 	@Test
 	public void testReport() throws Exception {
-		Program hivProgram = Metadata.getProgram(Metadata.HIV_PROGRAM);
+		Program hivProgram = MetadataUtils.getProgram(Metadata.HIV_PROGRAM);
 
 		// Enroll patients #6, #7 and #8 in the HIV Program
 		PatientService ps = Context.getPatientService();

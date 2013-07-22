@@ -19,9 +19,11 @@ import org.openmrs.Location;
 import org.openmrs.User;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.idgen.IdentifierSource;
+import org.openmrs.module.kenyacore.metadata.MetadataUtils;
+import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyaemr.EmrWebConstants;
-import org.openmrs.module.kenyaemr.KenyaEmr;
-import org.openmrs.module.kenyaemr.KenyaEmrConstants;
+import org.openmrs.module.kenyacore.CoreContext;
+import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.module.kenyaui.annotation.AppPage;
@@ -40,7 +42,7 @@ public class AdminFirstTimeSetupPageController {
 	
 	public String controller(HttpSession session, PageModel model, UiUtils ui,
 							 @SpringBean KenyaUiUtils kenyaUi,
-							 @SpringBean KenyaEmr emr,
+							 @SpringBean CoreContext emr,
 	                         @RequestParam(required = false, value = "defaultLocation") Location defaultLocation,
 	                         @RequestParam(required = false, value = "mrnIdentifierSourceStart") String mrnIdentifierSourceStart,
 	                         @RequestParam(required = false, value = "hivIdentifierSourceStart") String hivIdentifierSourceStart) {
@@ -53,23 +55,19 @@ public class AdminFirstTimeSetupPageController {
 				service.setDefaultLocation(defaultLocation);
 			}
 			if (StringUtils.isNotEmpty(mrnIdentifierSourceStart)) {
-				emr.getIdentifierManager().setupMrnIdentifierSource(mrnIdentifierSourceStart);
+				service.setupMrnIdentifierSource(mrnIdentifierSourceStart);
 			}
 			if (StringUtils.isNotEmpty(hivIdentifierSourceStart)) {
-				emr.getIdentifierManager().setupHivUniqueIdentifierSource(hivIdentifierSourceStart);
+				service.setupHivUniqueIdentifierSource(hivIdentifierSourceStart);
 			}
 			kenyaUi.notifySuccess(session, "First-Time Setup Completed");
 
-			return "redirect:" + ui.pageLink(KenyaEmrConstants.MODULE_ID, "home");
-		}
-		
-		if (!service.isConfigured()) {
-			kenyaUi.notifySuccess(session, "First-Time Setup Needed");
+			return "redirect:" + ui.pageLink(EmrConstants.MODULE_ID, "home");
 		}
 		
 		defaultLocation = service.getDefaultLocation();
-		IdentifierSource mrnIdentifierSource = emr.getIdentifierManager().getMrnIdentifierSource();
-		IdentifierSource hivIdentifierSource = emr.getIdentifierManager().getHivUniqueIdentifierSource();
+		IdentifierSource mrnIdentifierSource = emr.getIdentifierManager().getIdentifierSource(MetadataUtils.getPatientIdentifierType(Metadata.OPENMRS_ID_IDENTIFIER_TYPE));
+		IdentifierSource hivIdentifierSource = emr.getIdentifierManager().getIdentifierSource(MetadataUtils.getPatientIdentifierType(Metadata.UNIQUE_PATIENT_NUMBER_IDENTIFIER_TYPE));
 
 		User authenticatedUser = Context.getAuthenticatedUser();
 		

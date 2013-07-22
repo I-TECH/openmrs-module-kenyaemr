@@ -20,7 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import static org.openmrs.module.kenyaemr.reporting.EmrReportingUtils.map;
-import static org.openmrs.module.kenyaemr.reporting.library.indicator.CommonIndicatorLibrary.createCohortIndicator;
 
 /**
  * Library of PwP related indicator definitions. All indicators require parameters ${startDate} and ${endDate}
@@ -36,7 +35,7 @@ public class PwpIndicatorLibrary {
 	 * @return the indicator
 	 */
 	public CohortIndicator condomsProvided() {
-		return createCohortIndicator("Number of patients provided with condoms", map(pwpCohorts.condomsProvided(), "onOrAfter=${startDate},onOrBefore=${endDate}"));
+		return CommonIndicatorLibrary.createCohortIndicator("Number of patients provided with condoms", map(pwpCohorts.condomsProvided(), "onOrAfter=${startDate},onOrBefore=${endDate}"));
 	}
 
 	/**
@@ -44,6 +43,6 @@ public class PwpIndicatorLibrary {
 	 * @return the indicator
 	 */
 	public CohortIndicator modernContraceptivesProvided() {
-		return createCohortIndicator("Number of patients provided with modern contraceptives", map(pwpCohorts.modernContraceptivesProvided(), "onOrAfter=${startDate},onOrBefore=${endDate}"));
+		return CommonIndicatorLibrary.createCohortIndicator("Number of patients provided with modern contraceptives", map(pwpCohorts.modernContraceptivesProvided(), "onOrAfter=${startDate},onOrBefore=${endDate}"));
 	}
 }

@@ -16,24 +16,18 @@ package org.openmrs.module.kenyaemr.fragment.controller;
 
 import org.openmrs.*;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyaemr.*;
-import org.openmrs.module.kenyaemr.api.KenyaEmrService;
-import org.openmrs.module.kenyaemr.regimen.RegimenChangeHistory;
+import org.openmrs.module.kenyacore.CoreContext;
+import org.openmrs.module.kenyacore.metadata.MetadataUtils;
+import org.openmrs.module.kenyaemr.Metadata;
+import org.openmrs.module.kenyacore.regimen.RegimenChangeHistory;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
-import org.openmrs.ui.framework.annotation.BindParams;
 import org.openmrs.ui.framework.annotation.FragmentParam;
-import org.openmrs.ui.framework.annotation.MethodParam;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.FragmentModel;
-import org.openmrs.ui.framework.session.Session;
-import org.openmrs.util.OpenmrsUtil;
-import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -45,7 +39,7 @@ public class Moh257FragmentController {
 						   Patient patient,
 						   FragmentModel model,
 						   UiUtils ui,
-						   @SpringBean KenyaEmr emr) {
+						   @SpringBean CoreContext emr) {
 
 		String[] page1FormUuids = { Metadata.FAMILY_HISTORY_FORM, Metadata.HIV_PROGRAM_ENROLLMENT_FORM };
 
@@ -53,7 +47,7 @@ public class Moh257FragmentController {
 		List<Encounter> page1Encounters = new ArrayList<Encounter>();
 
 		for (String page1FormUuid : page1FormUuids) {
-			Form page1Form = Metadata.getForm(page1FormUuid);
+			Form page1Form = MetadataUtils.getForm(page1FormUuid);
 			List<Encounter> formEncounters = getPatientEncounterByForm(patient, page1Form);
 
 			if (formEncounters.size() == 0) {
@@ -64,7 +58,7 @@ public class Moh257FragmentController {
 			}
 		}
 
-		Form moh257VisitForm = Metadata.getForm(Metadata.MOH_257_VISIT_SUMMARY_FORM);
+		Form moh257VisitForm = MetadataUtils.getForm(Metadata.MOH_257_VISIT_SUMMARY_FORM);
 		List<Encounter> moh257VisitSummaryEncounters = getPatientEncounterByForm(patient, moh257VisitForm);
 
 		model.addAttribute("page1AvailableForms", page1AvailableForms);

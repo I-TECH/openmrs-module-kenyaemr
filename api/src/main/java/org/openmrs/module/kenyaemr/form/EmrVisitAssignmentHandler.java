@@ -20,10 +20,11 @@ import org.openmrs.Visit;
 import org.openmrs.VisitType;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.handler.ExistingVisitAssignmentHandler;
-import org.openmrs.module.kenyaemr.KenyaEmr;
-import org.openmrs.module.kenyaemr.Metadata;
+import org.openmrs.module.kenyacore.CoreContext;
+import org.openmrs.module.kenyacore.form.FormDescriptor;
+import org.openmrs.module.kenyacore.metadata.MetadataUtils;
+import org.openmrs.module.kenyaemr.util.EmrUtils;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
-import org.openmrs.module.kenyaemr.util.KenyaEmrUtils;
 import org.openmrs.util.OpenmrsUtil;
 
 import java.util.Collections;
@@ -60,10 +61,10 @@ public class EmrVisitAssignmentHandler extends ExistingVisitAssignmentHandler {
 
 		// Some forms can auto-create visits
 		if (encounter.getForm() != null) {
-			FormDescriptor fd = KenyaEmr.getInstance().getFormManager().getFormDescriptor(encounter.getForm());
+			FormDescriptor fd = CoreContext.getInstance().getFormManager().getFormDescriptor(encounter.getForm());
 
 			if (fd != null && fd.getAutoCreateVisitTypeUuid() != null) {
-				VisitType visitType = Metadata.getVisitType(fd.getAutoCreateVisitTypeUuid());
+				VisitType visitType = MetadataUtils.getVisitType(fd.getAutoCreateVisitTypeUuid());
 				useNewVisit(encounter, visitType);
 			}
 		}
@@ -76,7 +77,7 @@ public class EmrVisitAssignmentHandler extends ExistingVisitAssignmentHandler {
 	 */
 	protected boolean useExistingVisit(Encounter encounter) {
 		// If encounter has time, then we need an exact fit for an existing visit
-		if (KenyaEmrUtils.dateHasTime(encounter.getEncounterDatetime())) {
+		if (EmrUtils.dateHasTime(encounter.getEncounterDatetime())) {
 			List<Visit> visits = Context.getVisitService().getVisits(null, Collections.singletonList(encounter.getPatient()), null, null, null,
 					encounter.getEncounterDatetime(), null, null, null, true, false);
 

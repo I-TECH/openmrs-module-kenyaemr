@@ -19,6 +19,7 @@ import org.junit.Test;
 import org.openmrs.*;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.test.ReportingTestUtils;
@@ -111,7 +112,7 @@ public class ArtCohortLibraryTest extends BaseModuleContextSensitiveTest {
 	 */
 	@Test
 	public void enrolledExcludingTransfers() throws Exception {
-		Program hivProgram = Metadata.getProgram(Metadata.HIV_PROGRAM);
+		Program hivProgram = MetadataUtils.getProgram(Metadata.HIV_PROGRAM);
 		Concept transferInDate = Dictionary.getConcept(Dictionary.TRANSFER_IN_DATE);
 
 		// Enroll #6 on June 1st
@@ -136,7 +137,7 @@ public class ArtCohortLibraryTest extends BaseModuleContextSensitiveTest {
 	 */
 	@Test
 	public void referredFrom_shouldReturnPatientsWithSpecifiedEntryPoint() throws Exception {
-		EncounterType hivEnrollEncType = Metadata.getEncounterType(Metadata.HIV_ENROLLMENT_ENCOUNTER_TYPE);
+		EncounterType hivEnrollEncType = MetadataUtils.getEncounterType(Metadata.HIV_ENROLLMENT_ENCOUNTER_TYPE);
 		Concept method = Dictionary.getConcept(Dictionary.METHOD_OF_ENROLLMENT);
 		Concept pmtct = Dictionary.getConcept(Dictionary.PMTCT_PROGRAM);
 		Concept other = Dictionary.getConcept(Dictionary.OTHER_NON_CODED);

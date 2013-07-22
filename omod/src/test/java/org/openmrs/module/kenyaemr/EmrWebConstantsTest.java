@@ -15,6 +15,7 @@
 package org.openmrs.module.kenyaemr;
 
 import org.junit.Test;
+import org.openmrs.module.kenyaemr.EmrWebConstants;
 
 public class EmrWebConstantsTest {
 

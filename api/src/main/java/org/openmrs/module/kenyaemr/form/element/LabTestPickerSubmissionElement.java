@@ -26,10 +26,10 @@ import org.openmrs.module.htmlformentry.FormEntrySession;
 import org.openmrs.module.htmlformentry.FormSubmissionError;
 import org.openmrs.module.htmlformentry.action.FormSubmissionControllerAction;
 import org.openmrs.module.htmlformentry.element.HtmlGeneratorElement;
-import org.openmrs.module.kenyaemr.KenyaEmr;
-import org.openmrs.module.kenyaemr.lab.LabManager;
-import org.openmrs.module.kenyaemr.lab.LabTestDefinition;
-import org.openmrs.module.kenyaemr.util.KenyaEmrUtils;
+import org.openmrs.module.kenyacore.CoreContext;
+import org.openmrs.module.kenyacore.lab.LabManager;
+import org.openmrs.module.kenyacore.lab.LabTestDefinition;
+import org.openmrs.module.kenyaemr.util.EmrUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
@@ -54,13 +54,13 @@ public class LabTestPickerSubmissionElement implements HtmlGeneratorElement, For
 
 		// The set of test concepts to exclude
 		if (parameters.containsKey("excludeTests")) {
-			excludeTests = new HashSet(KenyaEmrUtils.parseConceptList(parameters.get("excludeTests")));
+			excludeTests = new HashSet(EmrUtils.parseConceptList(parameters.get("excludeTests")));
 		}
 		else {
 			excludeTests = new HashSet<Concept>();
 		}
 
-		LabManager labManager = KenyaEmr.getInstance().getLabManager();
+		LabManager labManager = CoreContext.getInstance().getLabManager();
 
 		// Claim all relevant existing concept/obs
 		if (!FormEntryContext.Mode.ENTER.equals(context.getMode())) {
@@ -85,7 +85,7 @@ public class LabTestPickerSubmissionElement implements HtmlGeneratorElement, For
 		StringBuilder sb = new StringBuilder();
 		boolean viewMode = context.getMode().equals(FormEntryContext.Mode.VIEW);
 
-		LabManager labManager = KenyaEmr.getInstance().getLabManager();
+		LabManager labManager = CoreContext.getInstance().getLabManager();
 
 		if (!viewMode) {
 			// Generate HTML for new test control

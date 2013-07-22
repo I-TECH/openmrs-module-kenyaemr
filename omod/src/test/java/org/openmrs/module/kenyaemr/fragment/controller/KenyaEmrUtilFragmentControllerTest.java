@@ -19,7 +19,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyaemr.KenyaEmr;
+import org.openmrs.module.kenyacore.CoreContext;
 import org.openmrs.module.kenyaemr.test.TestUtils;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
@@ -33,7 +33,7 @@ public class KenyaEmrUtilFragmentControllerTest extends BaseModuleWebContextSens
 	private KenyaEmrUtilFragmentController controller;
 
 	@Autowired
-	private KenyaEmr emr;
+	private CoreContext emr;
 
 	/**
 	 * Setup each test

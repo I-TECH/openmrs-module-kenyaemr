@@ -14,11 +14,10 @@
 
 package org.openmrs.module.kenyaemr.reporting.builder.patientlist;
 
-import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
+import org.openmrs.module.kenyacore.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.EmrCalculationCohortDefinition;
+import org.openmrs.module.kenyaemr.reporting.EmrReportingUtils;
 import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
-
-import java.util.Map;
 
 import static org.openmrs.module.kenyaemr.reporting.EmrReportingUtils.map;
 
@@ -46,7 +45,7 @@ public abstract class BasePatientCalculationReportBuilder extends BasePatientLis
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.reporting.builder.ReportBuilder#getDescription()
+	 * @see org.openmrs.module.kenyacore.reporting.ReportBuilder#getDescription()
 	 */
 	@Override
 	public String getDescription() {
@@ -63,7 +62,7 @@ public abstract class BasePatientCalculationReportBuilder extends BasePatientLis
 		cd.setName(getName());
 
 		PatientDataSetDefinition dsd = new PatientDataSetDefinition(getName() + " DSD");
-		dsd.addRowFilter(map(cd));
+		dsd.addRowFilter(EmrReportingUtils.map(cd));
 		addColumns(dsd);
 		return dsd;
 	}

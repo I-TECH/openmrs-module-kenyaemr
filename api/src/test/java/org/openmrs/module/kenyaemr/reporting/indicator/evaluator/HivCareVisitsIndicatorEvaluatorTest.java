@@ -22,6 +22,7 @@ import org.openmrs.api.EncounterService;
 import org.openmrs.api.LocationService;
 import org.openmrs.api.VisitService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.Configuration;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.Metadata;
@@ -39,7 +40,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Date;
 
 /**
- * Tests for {@link HivCareVisitsIndicatorEvaluator}
+ * Tests for {@link org.openmrs.module.kenyaemr.reporting.indicator.evaluator.HivCareVisitsIndicatorEvaluator}
  */
 public class HivCareVisitsIndicatorEvaluatorTest extends BaseModuleContextSensitiveTest {
 
@@ -76,8 +77,8 @@ public class HivCareVisitsIndicatorEvaluatorTest extends BaseModuleContextSensit
 
 		Configuration.configure();
 
-		Form hivAddendum = Metadata.getForm(Metadata.CLINICAL_ENCOUNTER_HIV_ADDENDUM_FORM);
-		Form moh257 = Metadata.getForm(Metadata.MOH_257_VISIT_SUMMARY_FORM);
+		Form hivAddendum = MetadataUtils.getForm(Metadata.CLINICAL_ENCOUNTER_HIV_ADDENDUM_FORM);
+		Form moh257 = MetadataUtils.getForm(Metadata.MOH_257_VISIT_SUMMARY_FORM);
 		Concept returnVisitDate = Dictionary.getConcept(Dictionary.RETURN_VISIT_DATE);
 
 		// Schedule a return visit for patient #6 on 10-Jan-2012

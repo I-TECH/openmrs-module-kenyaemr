@@ -17,10 +17,11 @@ package org.openmrs.module.kenyaemr.datatype;
 import junit.framework.Assert;
 import org.junit.Test;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyaemr.datatype.LocationDatatype;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 /**
- * Tests for {@link LocationDatatype}
+ * Tests for {@link org.openmrs.module.kenyaemr.datatype.LocationDatatype}
  */
 public class LocationDatatypeTest extends BaseModuleContextSensitiveTest {
 

@@ -17,14 +17,14 @@ package org.openmrs.module.kenyaemr.fragment.controller;
 import org.openmrs.Concept;
 import org.openmrs.Patient;
 import org.openmrs.calculation.result.CalculationResult;
-import org.openmrs.module.kenyaemr.KenyaEmr;
-import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
-import org.openmrs.module.kenyaemr.calculation.library.art.LastWhoStageCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.art.InitialArtRegimenCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.art.InitialArtStartDateCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.art.LastCd4CountCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.art.LastCd4PercentageCalculation;
-import org.openmrs.module.kenyaemr.regimen.RegimenChangeHistory;
+import org.openmrs.module.kenyacore.CoreContext;
+import org.openmrs.module.kenyacore.calculation.CalculationUtils;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.LastWhoStageCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtRegimenCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtStartDateCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.LastCd4CountCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.LastCd4PercentageCalculation;
+import org.openmrs.module.kenyacore.regimen.RegimenChangeHistory;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.FragmentModel;
@@ -40,18 +40,18 @@ public class CareSummaryHivFragmentController {
 	public void controller(@FragmentParam("patient") Patient patient,
 						   @FragmentParam("complete") Boolean complete,
 						   FragmentModel model,
-						   @SpringBean KenyaEmr emr) {
+						   @SpringBean CoreContext emr) {
 
 		Map<String, CalculationResult> calculationResults = new HashMap<String, CalculationResult>();
 
 		if (complete != null && complete.booleanValue()) {
-			calculationResults.put("initialArtRegimen", CalculationUtils.evaluateForPatient(InitialArtRegimenCalculation.class, null, patient.getPatientId()));
-			calculationResults.put("initialArtStartDate", CalculationUtils.evaluateForPatient(InitialArtStartDateCalculation.class, null, patient.getPatientId()));
+			calculationResults.put("initialArtRegimen", CalculationUtils.evaluateForPatient(InitialArtRegimenCalculation.class, null, patient));
+			calculationResults.put("initialArtStartDate", CalculationUtils.evaluateForPatient(InitialArtStartDateCalculation.class, null, patient));
 		}
 
-		calculationResults.put("lastWHOStage", CalculationUtils.evaluateForPatient(LastWhoStageCalculation.class, null, patient.getPatientId()));
-		calculationResults.put("lastCD4Count", CalculationUtils.evaluateForPatient(LastCd4CountCalculation.class, null, patient.getPatientId()));
-		calculationResults.put("lastCD4Percent", CalculationUtils.evaluateForPatient(LastCd4PercentageCalculation.class, null, patient.getPatientId()));
+		calculationResults.put("lastWHOStage", CalculationUtils.evaluateForPatient(LastWhoStageCalculation.class, null, patient));
+		calculationResults.put("lastCD4Count", CalculationUtils.evaluateForPatient(LastCd4CountCalculation.class, null, patient));
+		calculationResults.put("lastCD4Percent", CalculationUtils.evaluateForPatient(LastCd4PercentageCalculation.class, null, patient));
 
 		model.addAttribute("calculations", calculationResults);
 

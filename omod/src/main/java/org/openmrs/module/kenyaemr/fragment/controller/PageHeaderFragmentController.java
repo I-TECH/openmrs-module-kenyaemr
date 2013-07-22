@@ -15,29 +15,27 @@
 package org.openmrs.module.kenyaemr.fragment.controller;
 
 import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyaemr.KenyaEmr;
 import org.openmrs.module.kenyaemr.util.BuildProperties;
+import org.openmrs.module.kenyaemr.util.EmrUtils;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
-import org.openmrs.module.kenyaemr.util.KenyaEmrUtils;
-import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 
 import java.text.ParseException;
 import java.util.Date;
 
 /**
- *
+ * Controller for page header
  */
 public class PageHeaderFragmentController {
 
-	public void controller(FragmentModel model, @SpringBean KenyaEmr emr) throws ParseException {
+	public void controller(FragmentModel model) throws ParseException {
 		// Get module version
-		String moduleVersion = emr.getModuleVersion();
+		String moduleVersion = EmrUtils.getModuleVersion();
 
 		// Fetch build date for snapshot versions
 		Date moduleBuildDate = null;
 		if (moduleVersion.endsWith("SNAPSHOT")) {
-			BuildProperties buildProperties = emr.getModuleBuildProperties();
+			BuildProperties buildProperties = EmrUtils.getModuleBuildProperties();
 
 			if (buildProperties != null) {
 				moduleBuildDate = buildProperties.getBuildDate();

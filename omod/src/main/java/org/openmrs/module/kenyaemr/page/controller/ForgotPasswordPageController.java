@@ -17,15 +17,13 @@ package org.openmrs.module.kenyaemr.page.controller;
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.User;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.appframework.AppUiUtil;
+import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyaemr.EmrWebConstants;
 import org.openmrs.module.kenyaemr.IPAccessSecurity;
-import org.openmrs.module.kenyaemr.KenyaEmrConstants;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.module.kenyaui.annotation.PublicPage;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.page.PageModel;
-import org.openmrs.ui.framework.session.Session;
 import org.openmrs.util.PrivilegeConstants;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -60,7 +58,7 @@ public class ForgotPasswordPageController {
 
 		// User already has a reset password... go change it...
 		if (httpSession.getAttribute(EmrWebConstants.SESSION_ATTR_RESET_PASSWORD) != null) {
-			return "redirect:/" + KenyaEmrConstants.MODULE_ID + "/profile.page";
+			return "redirect:/" + EmrConstants.MODULE_ID + "/profile.page";
 		}
 
 		String ipAddress = request.getRemoteAddr();
@@ -129,7 +127,7 @@ public class ForgotPasswordPageController {
 					kenyaUi.notifySuccess(httpSession, "auth.password.reset");
 					Context.authenticate(username, randomPassword);
 					httpSession.setAttribute("loginAttempts", 0);
-					return "redirect:/" + KenyaEmrConstants.MODULE_ID + "/profile.page";
+					return "redirect:/" + EmrConstants.MODULE_ID + "/profile.page";
 				} else {
 					kenyaUi.notifyError(httpSession, "auth.answer.invalid");
 					model.addAttribute("secretQuestion", user.getSecretQuestion());

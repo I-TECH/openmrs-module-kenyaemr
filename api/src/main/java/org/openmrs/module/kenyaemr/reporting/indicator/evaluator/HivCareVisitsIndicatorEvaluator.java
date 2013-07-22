@@ -17,15 +17,16 @@ package org.openmrs.module.kenyaemr.reporting.indicator.evaluator;
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.SessionFactory;
 import org.openmrs.*;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
-import org.openmrs.module.kenyaemr.reporting.indicator.HivCareVisitsIndicator;
+import org.openmrs.module.kenyaemr.reporting.EmrReportingUtils;
 import org.openmrs.module.kenyaemr.reporting.library.cohort.CommonCohortLibrary;
+import org.openmrs.module.kenyaemr.reporting.indicator.HivCareVisitsIndicator;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.common.DateUtil;
@@ -60,8 +61,8 @@ public class HivCareVisitsIndicatorEvaluator implements IndicatorEvaluator {
 		HivCareVisitsIndicator visitIndicator = (HivCareVisitsIndicator) indicator;
 
 		List<Form> hivCareForms = Arrays.asList(
-			Metadata.getForm(Metadata.CLINICAL_ENCOUNTER_HIV_ADDENDUM_FORM),
-			Metadata.getForm(Metadata.MOH_257_VISIT_SUMMARY_FORM)
+			MetadataUtils.getForm(Metadata.CLINICAL_ENCOUNTER_HIV_ADDENDUM_FORM),
+			MetadataUtils.getForm(Metadata.MOH_257_VISIT_SUMMARY_FORM)
 		);
 
 		Date fromDate = visitIndicator.getStartDate();
@@ -74,7 +75,7 @@ public class HivCareVisitsIndicatorEvaluator implements IndicatorEvaluator {
 
 		if (HivCareVisitsIndicator.Filter.FEMALES_18_AND_OVER.equals(visitIndicator.getFilter())) {
 			EvaluatedCohort females18AndOver = Context.getService(CohortDefinitionService.class).evaluate(
-					map(cohortLibrary.femalesAgedAtLeast18(), "effectiveDate", "${endDate}"), context
+					EmrReportingUtils.map(cohortLibrary.femalesAgedAtLeast18(), "effectiveDate", "${endDate}"), context
 			);
 
 			for (Encounter enc : hivCareEncounters) {

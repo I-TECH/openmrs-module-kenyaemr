@@ -22,8 +22,8 @@ import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
+import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.Metadata;
-import org.openmrs.module.kenyaemr.calculation.library.tb.InTbProgramCalculation;
 import org.openmrs.module.kenyaemr.test.TestUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
@@ -49,7 +49,7 @@ public class InTbProgramCalculationTest extends BaseModuleContextSensitiveTest {
 	@Test
 	public void evaluate() throws Exception {
 
-		Program tbProgram = Metadata.getProgram(Metadata.TB_PROGRAM);
+		Program tbProgram = MetadataUtils.getProgram(Metadata.TB_PROGRAM);
 
 		// Enroll patient #6
 		PatientService ps = Context.getPatientService();

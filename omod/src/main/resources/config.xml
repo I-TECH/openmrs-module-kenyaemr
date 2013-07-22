@@ -22,7 +22,7 @@
 		<require_module version="${idgenVersion}">org.openmrs.module.idgen</require_module>
 	</require_modules>
 
-	<activator>${project.parent.groupId}.${project.parent.artifactId}.KenyaEmrActivator</activator>
+	<activator>org.openmrs.module.kenyaemr.EmrActivator</activator>
 
 	<mappingFiles>
 	</mappingFiles>

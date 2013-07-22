@@ -23,10 +23,10 @@ import org.openmrs.module.Module;
 import org.openmrs.module.ModuleFactory;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.EmrWebConstants;
-import org.openmrs.module.kenyaemr.KenyaEmr;
+import org.openmrs.module.kenyacore.CoreContext;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
-import org.openmrs.module.kenyaemr.form.FormDescriptor;
-import org.openmrs.module.kenyaemr.form.FormUtils;
+import org.openmrs.module.kenyacore.form.FormDescriptor;
+import org.openmrs.module.kenyacore.form.FormUtils;
 import org.openmrs.module.kenyaui.annotation.AppPage;
 import org.openmrs.module.metadatasharing.ImportedPackage;
 import org.openmrs.ui.framework.SimpleObject;
@@ -44,7 +44,7 @@ public class AdminHomePageController {
 
 	public void controller(@RequestParam(value = "section", required = false) String section,
 						   PageModel model,
-						   @SpringBean KenyaEmr emr,
+						   @SpringBean CoreContext emr,
 						   @SpringBean ResourceFactory resourceFactory) {
 
 		if (StringUtils.isEmpty(section)) {
@@ -94,7 +94,7 @@ public class AdminHomePageController {
 
 			List<SimpleObject> forms = new ArrayList<SimpleObject>();
 			for (FormDescriptor descriptor : emr.getFormManager().getAllFormDescriptors()) {
-				Form form = Context.getFormService().getFormByUuid(descriptor.getFormUuid());
+				Form form = descriptor.getTarget();
 				Object status = Boolean.TRUE;
 				try {
 					FormUtils.getHtmlForm(form, resourceFactory);

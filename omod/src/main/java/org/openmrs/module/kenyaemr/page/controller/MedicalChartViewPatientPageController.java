@@ -27,8 +27,8 @@ import org.openmrs.PatientProgram;
 import org.openmrs.Visit;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.EmrWebConstants;
-import org.openmrs.module.kenyaemr.KenyaEmr;
-import org.openmrs.module.kenyaemr.form.FormDescriptor;
+import org.openmrs.module.kenyacore.CoreContext;
+import org.openmrs.module.kenyacore.form.FormDescriptor;
 import org.openmrs.module.kenyaui.annotation.AppPage;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
@@ -51,7 +51,7 @@ public class MedicalChartViewPatientPageController {
 	                       PageModel model,
 	                       UiUtils ui,
 	                       Session session,
-						   @SpringBean KenyaEmr emr) {
+						   @SpringBean CoreContext emr) {
 
 		if ("".equals(formUuid)) {
 			formUuid = null;
@@ -65,7 +65,7 @@ public class MedicalChartViewPatientPageController {
 		List<FormDescriptor> oneTimeFormDescriptors = emr.getFormManager().getFormsForPatient(EmrWebConstants.APP_MEDICAL_CHART, patient, Collections.singleton(FormDescriptor.Frequency.ONCE_EVER));
 		List<SimpleObject> oneTimeForms = new ArrayList<SimpleObject>();
 		for (FormDescriptor formDescriptor : oneTimeFormDescriptors) {
-			Form form = Context.getFormService().getFormByUuid(formDescriptor.getFormUuid());
+			Form form = formDescriptor.getTarget();
 			oneTimeForms.add(ui.simplifyObject(form));
 		}
 		model.addAttribute("oneTimeForms", oneTimeForms);

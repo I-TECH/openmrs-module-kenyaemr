@@ -22,8 +22,9 @@ import org.junit.Test;
 import org.openmrs.Program;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.Metadata;
-import org.openmrs.module.kenyaemr.reporting.builder.ReportBuilder;
+import org.openmrs.module.kenyacore.reporting.ReportBuilder;
 import org.openmrs.module.kenyaemr.test.ReportingTestUtils;
 import org.openmrs.module.kenyaemr.test.TestUtils;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
@@ -33,7 +34,7 @@ import org.openmrs.module.reporting.report.definition.service.ReportDefinitionSe
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 /**
- * Tests for {@link EligibleForArtReport}
+ * Tests for {@link org.openmrs.module.kenyaemr.reporting.builder.patientlist.EligibleForArtReport}
  */
 public class EligibleForArtReportTest extends BaseModuleContextSensitiveTest {
 	
@@ -45,7 +46,7 @@ public class EligibleForArtReportTest extends BaseModuleContextSensitiveTest {
 	
 	@Test
 	public void testReport() throws Exception {
-		Program hivProgram = Metadata.getProgram(Metadata.HIV_PROGRAM);
+		Program hivProgram = MetadataUtils.getProgram(Metadata.HIV_PROGRAM);
 
 		// Enroll patients #6 and #7 in the HIV Program
 		PatientService ps = Context.getPatientService();

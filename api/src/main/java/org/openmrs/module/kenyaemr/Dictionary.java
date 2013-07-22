@@ -16,7 +16,8 @@ package org.openmrs.module.kenyaemr;
 
 import org.openmrs.Concept;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyaemr.util.KenyaEmrUtils;
+import org.openmrs.module.kenyacore.metadata.MetadataUtils;
+import org.openmrs.module.kenyaemr.util.EmrUtils;
 
 /**
  * Dictionary for concepts used by KenyaEMR
@@ -47,7 +48,7 @@ public class Dictionary {
 	 */
 	public static boolean hasRequiredDatabaseVersion() {
 		String conceptsVersion = Dictionary.getDatabaseVersion();
-		return conceptsVersion != null && KenyaEmrUtils.checkCielVersions(Dictionary.REQUIRED_DATABASE_VERSION, conceptsVersion);
+		return conceptsVersion != null && EmrUtils.checkCielVersions(Dictionary.REQUIRED_DATABASE_VERSION, conceptsVersion);
 	}
 
 	/**
@@ -57,22 +58,7 @@ public class Dictionary {
 	 * @throws IllegalArgumentException if no concept could be found
 	 */
 	public static Concept getConcept(String identifier) {
-		Concept concept = null;
-
-		if (identifier.contains(":")) {
-			String[] tokens = identifier.split(":");
-			concept = Context.getConceptService().getConceptByMapping(tokens[1].trim(), tokens[0].trim());
-		}
-		else {
-			// Assume its a UUID
-			concept = Context.getConceptService().getConceptByUuid(identifier);
-		}
-
-		if (concept == null) {
-			throw new IllegalArgumentException("No concept with identifier '" + identifier + "'");
-		}
-
-		return concept;
+		return MetadataUtils.getConcept(identifier);
 	}
 
 	// Concept identifiers (A-Z)

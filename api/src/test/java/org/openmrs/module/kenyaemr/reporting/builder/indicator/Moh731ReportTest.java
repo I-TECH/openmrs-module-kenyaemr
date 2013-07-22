@@ -19,6 +19,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Program;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.test.ReportingTestUtils;
 import org.openmrs.module.kenyaemr.test.TestUtils;
@@ -34,7 +35,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Arrays;
 
 /**
- * Tests for {@link Moh731Report}
+ * Tests for {@link org.openmrs.module.kenyaemr.reporting.builder.indicator.Moh731Report}
  */
 public class Moh731ReportTest extends BaseModuleContextSensitiveTest {
 
@@ -49,7 +50,7 @@ public class Moh731ReportTest extends BaseModuleContextSensitiveTest {
 
 	@Test
 	public void test() throws Exception {
-		Program hivProgram = Metadata.getProgram(Metadata.HIV_PROGRAM);
+		Program hivProgram = MetadataUtils.getProgram(Metadata.HIV_PROGRAM);
 
 		// Enroll patient #6 in the HIV program
 		TestUtils.enrollInProgram(Context.getPatientService().getPatient(6), hivProgram, TestUtils.date(2012, 1, 15), null);

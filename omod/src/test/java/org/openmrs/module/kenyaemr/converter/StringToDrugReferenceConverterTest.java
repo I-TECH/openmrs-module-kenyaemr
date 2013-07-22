@@ -18,7 +18,8 @@ import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyaemr.regimen.DrugReference;
+import org.openmrs.module.kenyacore.regimen.DrugReference;
+import org.openmrs.module.kenyaemr.converter.StringToDrugReferenceConverter;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 
 /**

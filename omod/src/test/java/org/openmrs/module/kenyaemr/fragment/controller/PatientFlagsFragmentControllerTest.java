@@ -17,7 +17,7 @@ package org.openmrs.module.kenyaemr.fragment.controller;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.module.kenyaemr.KenyaEmr;
+import org.openmrs.module.kenyacore.CoreContext;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +32,7 @@ public class PatientFlagsFragmentControllerTest extends BaseModuleWebContextSens
 	private PatientFlagsFragmentController controller;
 
 	@Autowired
-	private KenyaEmr emr;
+	private CoreContext emr;
 
 	/**
 	 * Setup each test
@@ -55,7 +55,7 @@ public class PatientFlagsFragmentControllerTest extends BaseModuleWebContextSens
 	}
 
 	/**
-	 * @see PatientFlagsFragmentController#getFlags(Integer, org.openmrs.module.kenyaemr.KenyaEmr)
+	 * @see PatientFlagsFragmentController#getFlags(Integer, org.openmrs.module.kenyacore.CoreContext)
 	 */
 	@Test
 	public void getAlerts() {

@@ -18,18 +18,16 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Concept;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.reporting.ColumnParameters;
 import org.openmrs.module.kenyaemr.reporting.EmrReportingUtils;
+import org.openmrs.module.kenyaemr.reporting.ColumnParameters;
 import org.openmrs.module.kenyaemr.reporting.library.cohort.ArtCohortLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.cohort.CommonCohortLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.dimension.CommonDimensionLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.indicator.ArtIndicatorLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.indicator.CommonIndicatorLibrary;
-import org.openmrs.module.reporting.cohort.definition.*;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
-import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -61,7 +59,7 @@ public class Moh711Report extends BaseIndicatorReportBuilder {
 	private ArtIndicatorLibrary artIndicators;
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.reporting.builder.ReportBuilder#getTags()
+	 * @see org.openmrs.module.kenyacore.reporting.ReportBuilder#getTags()
 	 */
 	@Override
 	public String[] getTags() {
@@ -69,7 +67,7 @@ public class Moh711Report extends BaseIndicatorReportBuilder {
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.reporting.builder.indicator.BaseIndicatorReportBuilder#getName()
+	 * @see BaseIndicatorReportBuilder#getName()
 	 */
 	@Override
 	public String getName() {
@@ -77,7 +75,7 @@ public class Moh711Report extends BaseIndicatorReportBuilder {
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.reporting.builder.ReportBuilder#getDescription()
+	 * @see org.openmrs.module.kenyacore.reporting.ReportBuilder#getDescription()
 	 */
 	@Override
 	public String getDescription() {
@@ -126,8 +124,8 @@ public class Moh711Report extends BaseIndicatorReportBuilder {
 		dsd.setName("K: ART");
 		dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
-		dsd.addDimension("age", map(commonDimensions.age(), "onDate=${endDate}"));
-		dsd.addDimension("gender", map(commonDimensions.gender()));
+		dsd.addDimension("age", EmrReportingUtils.map(commonDimensions.age(), "onDate=${endDate}"));
+		dsd.addDimension("gender", EmrReportingUtils.map(commonDimensions.gender()));
 
 		ColumnParameters colFPeds = new ColumnParameters("FP", "0-14 years, female", "gender=F|age=<15");
 		ColumnParameters colMPeds = new ColumnParameters("MP", "0-14 years, male", "gender=M|age=<15");
@@ -150,31 +148,31 @@ public class Moh711Report extends BaseIndicatorReportBuilder {
 
 		String indParams = "startDate=${startDate},endDate=${endDate}";
 
-		EmrReportingUtils.addRow(dsd, "K1-1", "New enrollments - PMTCT", map(artIndicators.enrolledExcludingTransfersAndReferredFrom(pmtct), indParams), femaleColumns);
-		EmrReportingUtils.addRow(dsd, "K1-2", "New enrollments - VCT", map(artIndicators.enrolledExcludingTransfersAndReferredFrom(vct), indParams), allColumns);
-		EmrReportingUtils.addRow(dsd, "K1-3", "New enrollments - TB", map(artIndicators.enrolledExcludingTransfersAndReferredFrom(tb), indParams), allColumns);
-		EmrReportingUtils.addRow(dsd, "K1-4", "New enrollments - In Patient", map(artIndicators.enrolledExcludingTransfersAndReferredFrom(inpatient), indParams), allColumns);
-		EmrReportingUtils.addRow(dsd, "K1-5", "New enrollments - CWC", map(artIndicators.enrolledExcludingTransfersAndReferredFrom(cwc), indParams), pedsColumns);
-		EmrReportingUtils.addRow(dsd, "K1-6", "New enrollments - All others", map(artIndicators.enrolledExcludingTransfersAndNotReferredFrom(all), indParams), allColumns);
-		EmrReportingUtils.addRow(dsd, "K1-7", "New enrollments - Sub-total", map(artIndicators.enrolledExcludingTransfers(), indParams), allColumns);
-		EmrReportingUtils.addRow(dsd, "K2", "Cumulative enrolled", map(artIndicators.enrolledCumulative(), indParams), allColumns);
-		EmrReportingUtils.addRow(dsd, "K3-1", "Starting ARVs - WHO stage 1", map(artIndicators.startedArtWithWhoStage(1), indParams), allColumns);
-		EmrReportingUtils.addRow(dsd, "K3-2", "Starting ARVs - WHO stage 2", map(artIndicators.startedArtWithWhoStage(2), indParams), allColumns);
-		EmrReportingUtils.addRow(dsd, "K3-3", "Starting ARVs - WHO stage 3", map(artIndicators.startedArtWithWhoStage(3), indParams), allColumns);
-		EmrReportingUtils.addRow(dsd, "K3-4", "Starting ARVs - WHO stage 4", map(artIndicators.startedArtWithWhoStage(4), indParams), allColumns);
-		EmrReportingUtils.addRow(dsd, "K3-5", "Starting ARVs - Sub-total", map(artIndicators.startedArt(), indParams), allColumns);
-		EmrReportingUtils.addRow(dsd, "K4", "Cumulative started ARV", map(artIndicators.startedArtCumulative(), indParams), allColumns);
-		EmrReportingUtils.addRow(dsd, "K5-1", "Currently on ARVs - Pregnant women", map(artIndicators.onArtAndPregnant(), indParams), femaleColumns);
-		EmrReportingUtils.addRow(dsd, "K5-2", "Currently on ARVs - All others", map(artIndicators.onArtAndNotPregnant(), indParams), allColumns);
-		EmrReportingUtils.addRow(dsd, "K5-3", "Currently on ARVs - Sub-total", map(artIndicators.onArt(), indParams), allColumns);
-		EmrReportingUtils.addRow(dsd, "K6", "Eligible for ART", map(artIndicators.eligibleForArt(), indParams), allColumns);
+		EmrReportingUtils.addRow(dsd, "K1-1", "New enrollments - PMTCT", EmrReportingUtils.map(artIndicators.enrolledExcludingTransfersAndReferredFrom(pmtct), indParams), femaleColumns);
+		EmrReportingUtils.addRow(dsd, "K1-2", "New enrollments - VCT", EmrReportingUtils.map(artIndicators.enrolledExcludingTransfersAndReferredFrom(vct), indParams), allColumns);
+		EmrReportingUtils.addRow(dsd, "K1-3", "New enrollments - TB", EmrReportingUtils.map(artIndicators.enrolledExcludingTransfersAndReferredFrom(tb), indParams), allColumns);
+		EmrReportingUtils.addRow(dsd, "K1-4", "New enrollments - In Patient", EmrReportingUtils.map(artIndicators.enrolledExcludingTransfersAndReferredFrom(inpatient), indParams), allColumns);
+		EmrReportingUtils.addRow(dsd, "K1-5", "New enrollments - CWC", EmrReportingUtils.map(artIndicators.enrolledExcludingTransfersAndReferredFrom(cwc), indParams), pedsColumns);
+		EmrReportingUtils.addRow(dsd, "K1-6", "New enrollments - All others", EmrReportingUtils.map(artIndicators.enrolledExcludingTransfersAndNotReferredFrom(all), indParams), allColumns);
+		EmrReportingUtils.addRow(dsd, "K1-7", "New enrollments - Sub-total", EmrReportingUtils.map(artIndicators.enrolledExcludingTransfers(), indParams), allColumns);
+		EmrReportingUtils.addRow(dsd, "K2", "Cumulative enrolled", EmrReportingUtils.map(artIndicators.enrolledCumulative(), indParams), allColumns);
+		EmrReportingUtils.addRow(dsd, "K3-1", "Starting ARVs - WHO stage 1", EmrReportingUtils.map(artIndicators.startedArtWithWhoStage(1), indParams), allColumns);
+		EmrReportingUtils.addRow(dsd, "K3-2", "Starting ARVs - WHO stage 2", EmrReportingUtils.map(artIndicators.startedArtWithWhoStage(2), indParams), allColumns);
+		EmrReportingUtils.addRow(dsd, "K3-3", "Starting ARVs - WHO stage 3", EmrReportingUtils.map(artIndicators.startedArtWithWhoStage(3), indParams), allColumns);
+		EmrReportingUtils.addRow(dsd, "K3-4", "Starting ARVs - WHO stage 4", EmrReportingUtils.map(artIndicators.startedArtWithWhoStage(4), indParams), allColumns);
+		EmrReportingUtils.addRow(dsd, "K3-5", "Starting ARVs - Sub-total", EmrReportingUtils.map(artIndicators.startedArt(), indParams), allColumns);
+		EmrReportingUtils.addRow(dsd, "K4", "Cumulative started ARV", EmrReportingUtils.map(artIndicators.startedArtCumulative(), indParams), allColumns);
+		EmrReportingUtils.addRow(dsd, "K5-1", "Currently on ARVs - Pregnant women", EmrReportingUtils.map(artIndicators.onArtAndPregnant(), indParams), femaleColumns);
+		EmrReportingUtils.addRow(dsd, "K5-2", "Currently on ARVs - All others", EmrReportingUtils.map(artIndicators.onArtAndNotPregnant(), indParams), allColumns);
+		EmrReportingUtils.addRow(dsd, "K5-3", "Currently on ARVs - Sub-total", EmrReportingUtils.map(artIndicators.onArt(), indParams), allColumns);
+		EmrReportingUtils.addRow(dsd, "K6", "Eligible for ART", EmrReportingUtils.map(artIndicators.eligibleForArt(), indParams), allColumns);
 		//EmrReportingUtils.addRow(dsd, "K7-1", "Post-exposure prophylaxis..", map(???, indParams), allColumns);
 		//EmrReportingUtils.addRow(dsd, "K7-2", "Post-exposure prophylaxis..", map(???, indParams), allColumns);
 		//EmrReportingUtils.addRow(dsd, "K7-3", "Post-exposure prophylaxis..", map(???, indParams), allColumns);
 		//EmrReportingUtils.addRow(dsd, "K7-4", "Post-exposure prophylaxis..", map(???, indParams), allColumns);
-		EmrReportingUtils.addRow(dsd, "K8-1", "On prophylaxis - Cotrimoxazole", map(artIndicators.onCotrimoxazoleProphylaxis(), indParams), allColumns);
-		EmrReportingUtils.addRow(dsd, "K8-2", "On prophylaxis - Fluconazole", map(artIndicators.onFluconazoleProphylaxis(), indParams), allColumns);
-		EmrReportingUtils.addRow(dsd, "K8-3", "On prophylaxis - Sub-total", map(artIndicators.onProphylaxis(), indParams), allColumns);
+		EmrReportingUtils.addRow(dsd, "K8-1", "On prophylaxis - Cotrimoxazole", EmrReportingUtils.map(artIndicators.onCotrimoxazoleProphylaxis(), indParams), allColumns);
+		EmrReportingUtils.addRow(dsd, "K8-2", "On prophylaxis - Fluconazole", EmrReportingUtils.map(artIndicators.onFluconazoleProphylaxis(), indParams), allColumns);
+		EmrReportingUtils.addRow(dsd, "K8-3", "On prophylaxis - Sub-total", EmrReportingUtils.map(artIndicators.onProphylaxis(), indParams), allColumns);
 
 		return dsd;
 	}

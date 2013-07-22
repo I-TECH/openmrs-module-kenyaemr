@@ -17,13 +17,13 @@ package org.openmrs.module.kenyaemr.calculation.library;
 import org.openmrs.*;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
-import org.openmrs.calculation.result.ListResult;
+import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.KenyaEmrConstants;
+import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyaemr.Metadata;
-import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
-import org.openmrs.module.kenyaemr.calculation.BooleanResult;
-import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
+import org.openmrs.module.kenyacore.calculation.BaseEmrCalculation;
+import org.openmrs.module.kenyacore.calculation.BooleanResult;
+import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 
 import java.util.*;
 
@@ -38,7 +38,7 @@ public class OnMedicationCalculation extends BaseEmrCalculation {
 
 		Set<Concept> drugs = (Set<Concept>) params.get("drugs");
 		Concept medOrders = Dictionary.getConcept(Dictionary.MEDICATION_ORDERS);
-		EncounterType consultation = Metadata.getEncounterType(Metadata.CONSULTATION_ENCOUNTER_TYPE);
+		EncounterType consultation = MetadataUtils.getEncounterType(Metadata.CONSULTATION_ENCOUNTER_TYPE);
 
 		CalculationResultMap lastConsultations = lastEncounter(consultation, cohort, context);
 
@@ -46,7 +46,7 @@ public class OnMedicationCalculation extends BaseEmrCalculation {
 		for (Integer ptId : cohort) {
 			boolean takingDrug = false;
 			Encounter lastConsultation = CalculationUtils.resultForPatient(lastConsultations, ptId);
-			if (lastConsultation != null && lastConsultation.getVisit() != null && daysSince(lastConsultation.getEncounterDatetime(), context) <= KenyaEmrConstants.PATIENT_ACTIVE_VISIT_THRESHOLD_DAYS) {
+			if (lastConsultation != null && lastConsultation.getVisit() != null && daysSince(lastConsultation.getEncounterDatetime(), context) <= EmrConstants.PATIENT_ACTIVE_VISIT_THRESHOLD_DAYS) {
 				Set<Encounter> encountersInRefVisit = lastConsultation.getVisit().getEncounters();
 
 				for (Encounter enc: encountersInRefVisit) {
