@@ -15,6 +15,7 @@
 package org.openmrs.module.kenyacore.form;
 
 import org.openmrs.Form;
+import org.openmrs.module.appframework.AppDescriptor;
 import org.openmrs.module.kenyacore.AbstractEntityDescriptor;
 import org.openmrs.module.kenyacore.UIResource;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
@@ -35,7 +36,7 @@ public class FormDescriptor extends AbstractEntityDescriptor<Form> {
 		BOTH, MALE, FEMALE
 	}
 
-	private Set<String> apps;
+	private Set<AppDescriptor> apps;
 
 	private Gender gender = Gender.BOTH;
 
@@ -54,18 +55,18 @@ public class FormDescriptor extends AbstractEntityDescriptor<Form> {
 	}
 
 	/**
-	 * Gets the app ids
-	 * @return the app ids
+	 * Gets the apps
+	 * @return the apps descriptors
 	 */
-	public Set<String> getApps() {
+	public Set<AppDescriptor> getApps() {
 		return apps;
 	}
 
 	/**
-	 * Sets the app ids
-	 * @param apps the app ids
+	 * Sets the apps
+	 * @param apps the app descriptors
 	 */
-	public void setApps(Set<String> apps) {
+	public void setApps(Set<AppDescriptor> apps) {
 		this.apps = apps;
 	}
 

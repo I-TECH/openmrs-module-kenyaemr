@@ -204,7 +204,7 @@ public class FormManager implements ContentManager {
 				FormDescriptor descriptor = getFormDescriptor(encounter.getForm());
 
 				// Filter by app
-				if (descriptor.getApps().contains(app.getId())) {
+				if (descriptor.getApps().contains(app)) {
 					completedForms.add(descriptor);
 				}
 			}
@@ -223,7 +223,7 @@ public class FormManager implements ContentManager {
 		List<FormDescriptor> filtered = new ArrayList<FormDescriptor>();
 		for (FormDescriptor descriptor : descriptors) {
 			// Filter by app id
-			if (app != null && !descriptor.getApps().contains(app.getId())) {
+			if (app != null && !descriptor.getApps().contains(app)) {
 				continue;
 			}
 

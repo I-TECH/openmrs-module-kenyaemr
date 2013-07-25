@@ -14,8 +14,6 @@
 
 package org.openmrs.module.kenyaemr;
 
-import org.openmrs.module.kenyaemr.EmrConstants;
-
 /**
  * Web related module constants
  */
@@ -35,10 +33,10 @@ public class EmrWebConstants {
 	/**
 	 * Application ids
 	 */
-	public static final String APP_REGISTRATION = EmrConstants.MODULE_ID + ".registration";
-	public static final String APP_INTAKE = EmrConstants.MODULE_ID + ".intake";
-	public static final String APP_MEDICAL_CHART = EmrConstants.MODULE_ID + ".medicalChart";
-	public static final String APP_MEDICAL_ENCOUNTER = EmrConstants.MODULE_ID + ".medicalEncounter";
-	public static final String APP_REPORTS = EmrConstants.MODULE_ID + ".reports";
-	public static final String APP_ADMIN = EmrConstants.MODULE_ID + ".admin";
+	public static final String APP_REGISTRATION = EmrConstants.MODULE_ID + ".app.registration";
+	public static final String APP_INTAKE = EmrConstants.MODULE_ID + ".app.intake";
+	public static final String APP_MEDICAL_CHART = EmrConstants.MODULE_ID + ".app.chart";
+	public static final String APP_MEDICAL_ENCOUNTER = EmrConstants.MODULE_ID + ".app.clinician";
+	public static final String APP_REPORTS = EmrConstants.MODULE_ID + ".app.reports";
+	public static final String APP_ADMIN = EmrConstants.MODULE_ID + ".app.admin";
 }
