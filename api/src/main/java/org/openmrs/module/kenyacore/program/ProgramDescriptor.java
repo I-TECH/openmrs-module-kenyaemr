@@ -15,6 +15,7 @@
 package org.openmrs.module.kenyacore.program;
 
 import org.openmrs.Program;
+import org.openmrs.module.kenyacore.UIResource;
 import org.openmrs.module.kenyacore.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyacore.form.FormDescriptor;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
@@ -32,7 +33,7 @@ public class ProgramDescriptor extends AbstractEntityDescriptor<Program> {
 
 	private FormDescriptor discontinuationForm;
 
-	private String careSummaryFragment;
+	private UIResource careSummaryFragment;
 
 	/**
 	 * @see org.openmrs.module.kenyacore.AbstractEntityDescriptor#getTarget()
@@ -91,18 +92,18 @@ public class ProgramDescriptor extends AbstractEntityDescriptor<Program> {
 	}
 
 	/**
-	 * Gets the care summary fragment (provider:fragment)
+	 * Gets the care summary fragment resource
 	 * @return the fragment
 	 */
-	public String getCareSummaryFragment() {
+	public UIResource getCareSummaryFragment() {
 		return careSummaryFragment;
 	}
 
 	/**
-	 * Sets the care summary fragment (provider:fragment)
+	 * Sets the care summary fragment resource
 	 * @param careSummaryFragment the care summary fragment
 	 */
-	public void setCareSummaryFragment(String careSummaryFragment) {
+	public void setCareSummaryFragment(UIResource careSummaryFragment) {
 		this.careSummaryFragment = careSummaryFragment;
 	}
 }

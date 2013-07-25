@@ -78,10 +78,8 @@
 		<property name="apps">
 			<set><value>kenyaemr.medicalChart</value></set>
 		</property>
-		<property name="iconProvider" value="kenyaui" />
-		<property name="icon" value="forms/obstetric.png" />
-		<property name="resourceProvider" value="kenyaemr" />
-		<property name="resource" value="htmlforms/obstetricHistory.xml" />
+		<property name="icon" value="kenyaui:forms/obstetric.png" />
+		<property name="htmlform" value="kenyaemr:obstetricHistory.xml" />
 	</bean>
 
 	<!-- Triage -->
@@ -91,10 +89,8 @@
 		<property name="apps">
 			<set><value>kenyaemr.registration</value><value>kenyaemr.intake</value><value>kenyaemr.medicalEncounter</value><value>kenyaemr.medicalChart</value></set>
 		</property>
-		<property name="iconProvider" value="kenyaui" />
-		<property name="icon" value="forms/generic.png" />
-		<property name="resourceProvider" value="kenyaemr" />
-		<property name="resource" value="htmlforms/triage.xml" />
+		<property name="icon" value="kenyaui:forms/generic.png" />
+		<property name="htmlform" value="kenyaemr:triage.xml" />
 		<property name="order" value="3001" />
 	</bean>
 
@@ -105,10 +101,8 @@
 		<property name="apps">
 			<set><value>kenyaemr.medicalEncounter</value><value>kenyaemr.medicalChart</value></set>
 		</property>
-		<property name="iconProvider" value="kenyaui" />
-		<property name="icon" value="forms/generic.png" />
-		<property name="resourceProvider" value="kenyaemr" />
-		<property name="resource" value="htmlforms/clinicalEncounter.xml" />
+		<property name="icon" value="kenyaui:forms/generic.png" />
+		<property name="htmlform" value="kenyaemr:clinicalEncounter.xml" />
 		<property name="order" value="3002" />
 	</bean>
 
@@ -120,10 +114,8 @@
 			<set><value>kenyaemr.medicalEncounter</value><value>kenyaemr.medicalChart</value></set>
 		</property>
 		<property name="program" ref="kenyaemr.program.hiv" />
-		<property name="iconProvider" value="kenyaui" />
-		<property name="icon" value="forms/generic.png" />
-		<property name="resourceProvider" value="kenyaemr" />
-		<property name="resource" value="htmlforms/hiv/hivClinicalEncounterAddendum.xml" />
+		<property name="icon" value="kenyaui:forms/generic.png" />
+		<property name="htmlform" value="kenyaemr:hiv/hivClinicalEncounterAddendum.xml" />
 		<property name="order" value="3003" />
 	</bean>
 
@@ -134,10 +126,8 @@
 		<property name="apps">
 			<set><value>kenyaemr.intake</value><value>kenyaemr.medicalEncounter</value><value>kenyaemr.medicalChart</value></set>
 		</property>
-		<property name="iconProvider" value="kenyaui" />
-		<property name="icon" value="forms/labresults.png" />
-		<property name="resourceProvider" value="kenyaemr" />
-		<property name="resource" value="htmlforms/labResults.xml" />
+		<property name="icon" value="kenyaui:forms/labresults.png" />
+		<property name="htmlform" value="kenyaemr:labResults.xml" />
 		<property name="order" value="3004" />
 	</bean>
 
@@ -148,10 +138,8 @@
 		<property name="apps">
 			<set><value>kenyaemr.medicalEncounter</value><value>kenyaemr.medicalChart</value></set>
 		</property>
-		<property name="iconProvider" value="kenyaui" />
-		<property name="icon" value="forms/generic.png" />
-		<property name="resourceProvider" value="kenyaemr" />
-		<property name="resource" value="htmlforms/otherMedications.xml" />
+		<property name="icon" value="kenyaui:forms/generic.png" />
+		<property name="htmlform" value="kenyaemr:otherMedications.xml" />
 		<property name="order" value="3005" />
 	</bean>
 
@@ -162,10 +150,8 @@
 		<property name="apps">
 			<set><value>kenyaemr.intake</value><value>kenyaemr.medicalEncounter</value><value>kenyaemr.medicalChart</value></set>
 		</property>
-		<property name="iconProvider" value="kenyaui" />
-		<property name="icon" value="forms/generic.png" />
-		<property name="resourceProvider" value="kenyaemr" />
-		<property name="resource" value="htmlforms/progressNote.xml" />
+		<property name="icon" value="kenyaui:forms/generic.png" />
+		<property name="htmlform" value="kenyaemr:progressNote.xml" />
 		<property name="order" value="3006" />
 	</bean>
 
@@ -177,10 +163,8 @@
 			<set><value>kenyaemr.medicalChart</value></set>
 		</property>
 		<property name="program" ref="kenyaemr.program.hiv" />
-		<property name="iconProvider" value="kenyaui" />
-		<property name="icon" value="forms/generic.png" />
-		<property name="resourceProvider" value="kenyaemr" />
-		<property name="resource" value="htmlforms/hiv/hivEnrollment.xml" />
+		<property name="icon" value="kenyaui:forms/generic.png" />
+		<property name="htmlform" value="kenyaemr:hiv/hivEnrollment.xml" />
 		<property name="order" value="2101" />
 	</bean>
 
@@ -192,10 +176,8 @@
 			<set><value>kenyaemr.medicalChart</value></set>
 		</property>
 		<property name="program" ref="kenyaemr.program.hiv" />
-		<property name="iconProvider" value="kenyaui" />
-		<property name="icon" value="forms/family_history.png" />
-		<property name="resourceProvider" value="kenyaemr" />
-		<property name="resource" value="htmlforms/hiv/hivFamilyHistory.xml" />
+		<property name="icon" value="kenyaui:forms/family_history.png" />
+		<property name="htmlform" value="kenyaemr:hiv/hivFamilyHistory.xml" />
 		<property name="order" value="2102" />
 	</bean>
 
@@ -208,10 +190,8 @@
 		</property>
 		<property name="program" ref="kenyaemr.program.hiv" />
 		<property name="autoCreateVisitTypeUuid" value="3371a4d4-f66f-4454-a86d-92c7b3da990c" />
-		<property name="iconProvider" value="kenyaui" />
-		<property name="icon" value="forms/moh257.png" />
-		<property name="resourceProvider" value="kenyaemr" />
-		<property name="resource" value="htmlforms/hiv/moh257VisitSummary.xml" />
+		<property name="icon" value="kenyaui:forms/moh257.png" />
+		<property name="htmlform" value="kenyaemr:hiv/moh257VisitSummary.xml" />
 		<property name="order" value="3007" />
 	</bean>
 
@@ -223,10 +203,8 @@
 			<set><value>kenyaemr.medicalChart</value></set>
 		</property>
 		<property name="program" ref="kenyaemr.program.hiv" />
-		<property name="iconProvider" value="kenyaui" />
-		<property name="icon" value="forms/discontinue.png" />
-		<property name="resourceProvider" value="kenyaemr" />
-		<property name="resource" value="htmlforms/hiv/hivDiscontinuation.xml" />
+		<property name="icon" value="kenyaui:forms/discontinue.png" />
+		<property name="htmlform" value="kenyaemr:hiv/hivDiscontinuation.xml" />
 	</bean>
 
 	<!-- TB Screening-->
@@ -236,10 +214,8 @@
 		<property name="apps">
 			<set><value>kenyaemr.intake</value><value>kenyaemr.medicalEncounter</value><value>kenyaemr.medicalChart</value></set>
 		</property>
-		<property name="iconProvider" value="kenyaui" />
-		<property name="icon" value="forms/generic.png" />
-		<property name="resourceProvider" value="kenyaemr" />
-		<property name="resource" value="htmlforms/tb/tbScreening.xml" />
+		<property name="icon" value="kenyaui:forms/generic.png" />
+		<property name="htmlform" value="kenyaemr:tb/tbScreening.xml" />
 	</bean>
 
 	<!-- TB Enrollment-->
@@ -250,10 +226,8 @@
 			<set><value>kenyaemr.medicalChart</value></set>
 		</property>
 		<property name="program" ref="kenyaemr.program.tb" />
-		<property name="iconProvider" value="kenyaui" />
-		<property name="icon" value="forms/generic.png" />
-		<property name="resourceProvider" value="kenyaemr" />
-		<property name="resource" value="htmlforms/tb/tbEnrollment.xml" />
+		<property name="icon" value="kenyaui:forms/generic.png" />
+		<property name="htmlform" value="kenyaemr:tb/tbEnrollment.xml" />
 	</bean>
 
 	<!-- TB Followup Visit -->
@@ -264,10 +238,8 @@
 			<set><value>kenyaemr.medicalEncounter</value><value>kenyaemr.medicalChart</value></set>
 		</property>
 		<property name="program" ref="kenyaemr.program.tb" />
-		<property name="iconProvider" value="kenyaui" />
-		<property name="icon" value="forms/generic.png" />
-		<property name="resourceProvider" value="kenyaemr" />
-		<property name="resource" value="htmlforms/tb/tbFollowupVisit.xml" />
+		<property name="icon" value="kenyaui:forms/generic.png" />
+		<property name="htmlform" value="kenyaemr:tb/tbFollowupVisit.xml" />
 	</bean>
 
 	<!-- TB Discontinuation -->
@@ -278,10 +250,8 @@
 			<set><value>kenyaemr.medicalChart</value></set>
 		</property>
 		<property name="program" ref="kenyaemr.program.tb" />
-		<property name="iconProvider" value="kenyaui" />
-		<property name="icon" value="forms/discontinue.png" />
-		<property name="resourceProvider" value="kenyaemr" />
-		<property name="resource" value="htmlforms/tb/tbDiscontinuation.xml" />
+		<property name="icon" value="kenyaui:forms/discontinue.png" />
+		<property name="htmlform" value="kenyaemr:tb/tbDiscontinuation.xml" />
 	</bean>
 
 	<!-- Module service -->

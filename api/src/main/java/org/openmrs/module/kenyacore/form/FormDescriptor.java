@@ -16,6 +16,7 @@ package org.openmrs.module.kenyacore.form;
 
 import org.openmrs.Form;
 import org.openmrs.module.kenyacore.AbstractEntityDescriptor;
+import org.openmrs.module.kenyacore.UIResource;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyacore.program.ProgramDescriptor;
 
@@ -51,13 +52,9 @@ public class FormDescriptor extends AbstractEntityDescriptor<Form> {
 
 	private String autoCreateVisitTypeUuid;
 
-	private String iconProvider;
+	private UIResource icon;
 
-	private String icon;
-
-	private String resourceProvider;
-
-	private String resource;
+	private UIResource htmlform;
 
 	/**
 	 * @see org.openmrs.module.kenyacore.AbstractEntityDescriptor#getTarget()
@@ -148,66 +145,34 @@ public class FormDescriptor extends AbstractEntityDescriptor<Form> {
 	}
 
 	/**
-	 * Gets the icon provider
-	 * @return the iconProvider
-	 */
-	public String getIconProvider() {
-		return iconProvider;
-	}
-
-	/**
-	 * Sets the icon provider
-	 * @param iconProvider the icon provider
-	 */
-	public void setIconProvider(String iconProvider) {
-		this.iconProvider = iconProvider;
-	}
-
-	/**
-	 * Gets the icon
+	 * Gets the icon resource
 	 * @return the icon
 	 */
-	public String getIcon() {
+	public UIResource getIcon() {
 		return icon;
 	}
 
 	/**
-	 * Sets the icon
+	 * Sets the icon resource
 	 * @param icon the icon
 	 */
-	public void setIcon(String icon) {
+	public void setIcon(UIResource icon) {
 		this.icon = icon;
 	}
 
 	/**
-	 * Gets the resource provider
-	 * @return the resource provider
+	 * Gets the htmlform resource
+	 * @return the htmlform
 	 */
-	public String getResourceProvider() {
-		return resourceProvider;
+	public UIResource getHtmlform() {
+		return htmlform;
 	}
 
 	/**
-	 * Sets the resource provider
-	 * @param resourceProvider the resource provider
+	 * Sets the htmlform resource
+	 * @param htmlform the htmlform
 	 */
-	public void setResourceProvider(String resourceProvider) {
-		this.resourceProvider = resourceProvider;
-	}
-
-	/**
-	 * Gets the resource
-	 * @return the resource
-	 */
-	public String getResource() {
-		return resource;
-	}
-
-	/**
-	 * Sets the resource
-	 * @param resource the resource
-	 */
-	public void setResource(String resource) {
-		this.resource = resource;
+	public void setHtmlform(UIResource htmlform) {
+		this.htmlform = htmlform;
 	}
 }

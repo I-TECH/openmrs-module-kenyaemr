@@ -68,8 +68,8 @@ public class FormManager implements ContentManager {
 			forms.put(form.getUuid(), formDescriptor);
 
 			// Attach form resource if descriptor specifies one
-			if (formDescriptor.getResourceProvider() != null && formDescriptor.getResource() != null) {
-				FormUtils.setFormXmlPath(form, formDescriptor.getResourceProvider() + ":" + formDescriptor.getResource());
+			if (formDescriptor.getHtmlform() != null) {
+				FormUtils.setFormXmlResource(form, formDescriptor.getHtmlform());
 			}
 
 			log.warn("Registered form '" + form.getName() + "' (" + form.getUuid() + ")");
@@ -94,15 +94,6 @@ public class FormManager implements ContentManager {
 				log.warn("Not registering tag handler class " + className + ". Name does not end with " + tagHandlerClassSuffix);
 			}
 		}
-	}
-
-	/**
-	 * Gets the form descriptor for the form with the given UUID
-	 * @param formUuid the form UUID
-	 * @return the form descriptor
-	 */
-	public FormDescriptor getFormDescriptor(String formUuid) {
-		return forms.get(formUuid);
 	}
 
 	/**

@@ -20,6 +20,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.customdatatype.datatype.FreeTextDatatype;
 import org.openmrs.module.htmlformentry.HtmlForm;
 import org.openmrs.module.htmlformentry.HtmlFormEntryUtil;
+import org.openmrs.module.kenyacore.UIResource;
 import org.openmrs.ui.framework.resource.ResourceFactory;
 import org.openmrs.util.OpenmrsUtil;
 
@@ -38,19 +39,19 @@ public class FormUtils {
 	/**
 	 * Gets the XML resource path of the given form (null if form doesn't have an XML resource)
 	 * @param form the form
-	 * @return the XML resource path
+	 * @return the XML resource
 	 */
-	public static String getFormXmlPath(Form form) {
+	public static UIResource getFormXmlResource(Form form) {
 		FormResource resource = Context.getFormService().getFormResource(form, RESOURCE_HFE_XML_PATH);
-		return resource != null ? ((String) resource.getValue()) : null;
+		return resource != null ? new UIResource((String) resource.getValue()) : null;
 	}
 
 	/**
 	 * Set the XML resource path of the given form
 	 * @param form the form
-	 * @param xmlPath the path
+	 * @param xmlResource the UI resource
 	 */
-	public static void setFormXmlPath(Form form, String xmlPath) {
+	public static void setFormXmlResource(Form form, UIResource xmlResource) {
 		FormResource resXmlPath = Context.getFormService().getFormResource(form, RESOURCE_HFE_XML_PATH);
 
 		if (resXmlPath == null) {
@@ -60,7 +61,7 @@ public class FormUtils {
 			resXmlPath.setDatatypeClassname(FreeTextDatatype.class.getName());
 		}
 
-		resXmlPath.setValue(xmlPath);
+		resXmlPath.setValue(xmlResource.toString());
 
 		Context.getFormService().saveFormResource(resXmlPath);
 	}
@@ -73,27 +74,22 @@ public class FormUtils {
 	 * @throws RuntimeException if form has no xml path or path is invalid
 	 */
 	public static HtmlForm getHtmlForm(Form form, ResourceFactory resourceFactory) throws IOException {
-		String xmlPath = getFormXmlPath(form);
+		UIResource xmlResource = getFormXmlResource(form);
 
-		if (xmlPath == null) {
+		if (xmlResource == null) {
 			// Look in the database
 			HtmlForm hf = HtmlFormEntryUtil.getService().getHtmlFormByForm(form);
-			if (hf != null)
+			if (hf != null) {
 				return hf;
+			}
 
 			throw new RuntimeException("Form has no XML path or persisted html form");
 		}
-		else if (!xmlPath.contains(":")) {
-			throw new RuntimeException("Form XML path '" + xmlPath + "' must use format <provider>:<path>");
-		}
 
-		String[] pathTokens = xmlPath.split(":");
-		String providerName = pathTokens[0];
-		String resourcePath = pathTokens[1];
-		String xml = resourceFactory.getResourceAsString(providerName, resourcePath);
+		String xml = resourceFactory.getResourceAsString(xmlResource.getProvider(), "htmlforms/" + xmlResource.getPath());
 
 		if (xml == null) {
-			throw new RuntimeException("Form XML could not be loaded from path '" + xmlPath + "'");
+			throw new RuntimeException("Form XML could not be loaded from path " + xmlResource + "");
 		}
 
 		HtmlForm hf = new HtmlForm();

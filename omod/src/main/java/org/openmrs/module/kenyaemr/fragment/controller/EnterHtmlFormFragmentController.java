@@ -75,13 +75,6 @@ public class EnterHtmlFormFragmentController {
 		if (hf == null)
 			throw new RuntimeException("Could not find HTML Form");
 
-		// Check if form XML can be fetched from a resource
-		FormDescriptor descriptor = emr.getFormManager().getFormDescriptor(form.getUuid());
-		if (descriptor != null && descriptor.getResourceProvider() != null && descriptor.getResource() != null) {
-			String xml = resourceFactory.getResourceAsString(descriptor.getResourceProvider(), descriptor.getResource());
-			hf.setXmlData(xml);
-		}
-
 		// The code below doesn't handle the HFFS case where you might want to _add_ data to an existing encounter
 		FormEntrySession fes;
 		if (encounter != null) {

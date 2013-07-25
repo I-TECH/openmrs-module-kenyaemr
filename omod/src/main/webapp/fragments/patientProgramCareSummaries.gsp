@@ -1,6 +1,7 @@
-<% programs.each { programDescriptor ->
-	def fragment = programDescriptor.careSummaryFragment.split(":")
-%>
-
-	${ ui.includeFragment(fragment[0], fragment[1], [ patient: patient, complete: complete, allowRegimenEdit: (visit != null)]) }
+<% programs.each { programDescriptor -> %>
+	${ ui.includeFragment(
+			programDescriptor.careSummaryFragment.provider,
+			programDescriptor.careSummaryFragment.path,
+			[ patient: patient, complete: complete, allowRegimenEdit: (visit != null)]
+	)}
 <% } %>

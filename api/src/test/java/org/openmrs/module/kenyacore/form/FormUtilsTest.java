@@ -22,6 +22,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.customdatatype.datatype.FreeTextDatatype;
 import org.openmrs.module.htmlformentry.HtmlForm;
 import org.openmrs.module.htmlformentry.HtmlFormEntryService;
+import org.openmrs.module.kenyacore.UIResource;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.ui.framework.resource.ResourceFactory;
 
@@ -36,12 +37,12 @@ import static org.mockito.Mockito.*;
 public class FormUtilsTest extends BaseModuleContextSensitiveTest {
 
 	/**
-	 * @see org.openmrs.module.kenyacore.form.FormUtils#getFormXmlPath(org.openmrs.Form)
+	 * @see org.openmrs.module.kenyacore.form.FormUtils#getFormXmlResource(org.openmrs.Form)
 	 */
 	@Test
 	public void getFormXmlPath_shouldReturnXmlPathIfExists() {
 		Form form = Context.getFormService().getForm(1);
-		Assert.assertNull(FormUtils.getFormXmlPath(form));
+		Assert.assertNull(FormUtils.getFormXmlResource(form));
 
 		FormResource resource = new FormResource();
 		resource.setForm(form);
@@ -50,13 +51,13 @@ public class FormUtilsTest extends BaseModuleContextSensitiveTest {
 		resource.setValue("kenyacore:test1.xml");
 		Context.getFormService().saveFormResource(resource);
 
-		Assert.assertEquals("kenyacore:test1.xml", FormUtils.getFormXmlPath(form));
+		Assert.assertEquals(new UIResource("kenyacore", "test1.xml"), FormUtils.getFormXmlResource(form));
 	}
 
 	@Test
 	public void setFormXmlPath_shouldSetPathAsFormResource() {
 		Form form = Context.getFormService().getForm(1);
-		FormUtils.setFormXmlPath(form, "kenyacore:test2.xml");
+		FormUtils.setFormXmlResource(form, new UIResource("kenyacore", "test2.xml"));
 
 		FormResource resource = Context.getFormService().getFormResource(form, FormUtils.RESOURCE_HFE_XML_PATH);
 		Assert.assertEquals("kenyacore:test2.xml", resource.getValue());
@@ -65,12 +66,12 @@ public class FormUtilsTest extends BaseModuleContextSensitiveTest {
 	@Test
 	public void getHtmlForm_shouldCreateDynamicHtmlFormFormXmlPathResource() throws Exception {
 		Form form = Context.getFormService().getForm(1);
-		FormUtils.setFormXmlPath(form, "kenyacore:test3.xml");
+		FormUtils.setFormXmlResource(form, new UIResource("kenyacore", "test3.xml"));
 
 		// Mock the resource factory so it will provide this xml content at kenyacore:test3.xml
 		String xmlContent = "<htmlform>Test</htmlform>";
 		ResourceFactory resourceFactory = mock(ResourceFactory.class);
-		when(resourceFactory.getResourceAsString("kenyacore", "test3.xml")).thenReturn(xmlContent);
+		when(resourceFactory.getResourceAsString("kenyacore", "htmlforms/test3.xml")).thenReturn(xmlContent);
 
 		HtmlForm hf = FormUtils.getHtmlForm(form, resourceFactory);
 		Assert.assertEquals(form, hf.getForm());

@@ -38,10 +38,10 @@ public class FormToSimpleObjectConverter implements Converter<Form, SimpleObject
 	public SimpleObject convert(Form form) {
 		SimpleObject so = SimpleObject.create("formUuid", form.getUuid(), "name", form.getName());
 
-		FormDescriptor descriptor = formManager.getFormDescriptor(form.getUuid());
+		FormDescriptor descriptor = formManager.getFormDescriptor(form);
 		if (descriptor != null) {
-			so.put("iconProvider", descriptor.getIconProvider());
-			so.put("icon", descriptor.getIcon());
+			so.put("iconProvider", descriptor.getIcon().getProvider());
+			so.put("icon", descriptor.getIcon().getPath());
 		}
 
 		return so;
