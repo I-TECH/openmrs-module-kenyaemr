@@ -17,6 +17,7 @@ package org.openmrs.module.kenyaemr.fragment.controller;
 import org.openmrs.Encounter;
 import org.openmrs.Form;
 import org.openmrs.Visit;
+import org.openmrs.module.appframework.AppDescriptor;
 import org.openmrs.module.kenyacore.CoreContext;
 import org.openmrs.module.kenyacore.form.FormDescriptor;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
@@ -43,24 +44,23 @@ public class VisitCompletedFormsFragmentController {
 
 		List<Encounter> allEncounters = new ArrayList<Encounter>(visit.getEncounters());
 
-		final String currentApp = kenyaUi.getCurrentApp(request).getId();
-		List<FormDescriptor> descriptorsForApp = emr.getFormManager().getFormDescriptorsForApp(currentApp);
+		final AppDescriptor currentApp = kenyaUi.getCurrentApp(request);
+
+		List<FormDescriptor> completedForms = emr.getFormManager().getCompletedFormsForVisit(currentApp, visit);
 
 		List<Encounter> encounters = new ArrayList<Encounter>();
 		for (Encounter encounter : allEncounters) {
-			if (encounter.isVoided()) {
+			Form form = encounter.getForm();
+
+			if (encounter.isVoided() || form == null) {
 				continue;
 			}
 
-			Form form = encounter.getForm();
-			if (form != null) {
-				FormDescriptor descriptor = emr.getFormManager().getFormDescriptor(form);
-				if (!descriptorsForApp.contains(descriptor)) {
-					continue;
-				}
-			}
+			FormDescriptor descriptor = emr.getFormManager().getFormDescriptor(form);
 
-			encounters.add(encounter);
+			if (completedForms.contains(descriptor)) {
+				encounters.add(encounter);
+			}
 		}
 
 		Collections.sort(encounters, new Comparator<Encounter>() {

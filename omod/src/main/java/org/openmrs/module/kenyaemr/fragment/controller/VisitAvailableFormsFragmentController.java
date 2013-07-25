@@ -16,14 +16,10 @@ package org.openmrs.module.kenyaemr.fragment.controller;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.Encounter;
-import org.openmrs.PatientProgram;
-import org.openmrs.Program;
 import org.openmrs.Visit;
-import org.openmrs.api.context.Context;
+import org.openmrs.module.appframework.AppDescriptor;
 import org.openmrs.module.kenyacore.CoreContext;
 import org.openmrs.module.kenyacore.form.FormDescriptor;
-import org.openmrs.module.kenyacore.form.FormDescriptor.Frequency;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
@@ -48,79 +44,14 @@ public class VisitAvailableFormsFragmentController {
 						   @SpringBean CoreContext emr,
 						   @SpringBean KenyaUiUtils kenyaUi) {
 
-		String currentApp = kenyaUi.getCurrentApp(request).getId();
+		AppDescriptor currentApp = kenyaUi.getCurrentApp(request);
 
-		List<FormDescriptor> availableFormDescriptors = emr.getFormManager().getFormsForPatient(currentApp, visit.getPatient(), null);
-		List<SimpleObject> availableForms = getAvailableForms(visit, availableFormDescriptors, ui);
+		List<SimpleObject> availableForms = new ArrayList<SimpleObject>();
+
+		for (FormDescriptor descriptor : emr.getFormManager().getUncompletedFormsForVisit(currentApp, visit)) {
+			availableForms.add(ui.simplifyObject(descriptor.getTarget()));
+		}
 
 		model.addAttribute("availableForms", availableForms);
 	}
-	
-	/**
-     * Gets the list of forms that are actually allowed for the given visit, and converts them to simple objects
-	 * @param visit the visit
-     * @param forms the list of possible forms for the visit type
-     * @return
-     */
-    private List<SimpleObject> getAvailableForms(Visit visit, List<FormDescriptor> forms, UiUtils ui) {
-    	Set<String> formUuidsThisVisit = new HashSet<String>();
-    	for (Encounter e : visit.getEncounters()) {
-    		if (!e.getVoided()) {
-    			formUuidsThisVisit.add(e.getForm().getUuid());
-    		}
-    	}
-    	
-    	List<Encounter> encs = Context.getEncounterService().getEncountersByPatient(visit.getPatient());
-    	Set<String> allFormUuids = new HashSet<String>();
-    	for (Encounter e : encs) {
-    		allFormUuids.add(e.getForm().getUuid());
-    	}
-    	
-    	Map<Program, Date> dateOfActiveEnrollment = new HashMap<Program, Date>();
-    	for (PatientProgram pp : Context.getProgramWorkflowService().getPatientPrograms(visit.getPatient(), null, null, null, null, null, false)) {
-    		if (pp.getDateCompleted() == null) {
-    			dateOfActiveEnrollment.put(pp.getProgram(), pp.getDateEnrolled());
-    		}
-    	}
-    	Map<Program, Set<String>> formUuidsByProgram = new HashMap<Program, Set<String>>();
-		for (Map.Entry<Program, Date> e : dateOfActiveEnrollment.entrySet()) {
-			Date started = e.getValue();
-			Set<String> formUuids = new HashSet<String>();
-			for (Encounter enc : encs) {
-				if (enc.getEncounterDatetime().compareTo(started) >= 0) {
-					formUuids.add(enc.getForm().getUuid());
-				}
-			}
-			formUuidsByProgram.put(e.getKey(), formUuids);
-		}
-		
-    	List<SimpleObject> ret = new ArrayList<SimpleObject>();
-		
-		for (FormDescriptor descriptor : forms) {
-			// Get program for form
-			Program formProgram = descriptor.getProgram() != null ? descriptor.getProgram().getTarget() : null;
-
-			if (formProgram != null && !dateOfActiveEnrollment.keySet().contains(formProgram)) {
-				continue;
-			}
-			boolean allowed = false;
-			if (descriptor.getFrequency().equals(Frequency.UNLIMITED)) {
-				allowed = true;
-			} else if (descriptor.getFrequency().equals(Frequency.VISIT)) {
-				allowed = !formUuidsThisVisit.contains(descriptor.getTargetUuid());
-			} else if (descriptor.getFrequency().equals(Frequency.PROGRAM)) {
-				Set<String> formsForProgram = formUuidsByProgram.get(formProgram);
-				allowed = formsForProgram == null || !formsForProgram.contains(descriptor.getTargetUuid());
-			} else if (descriptor.getFrequency().equals(Frequency.ONCE_EVER)) {
-				allowed = !allFormUuids.contains(descriptor.getTargetUuid());
-			} else {
-				throw new RuntimeException("Unknown form frequency");
-			}
-			if (allowed) {
-				ret.add(ui.simplifyObject(descriptor.getTarget()));
-			}
-		}
-		
-		return ret;
-    }
 }

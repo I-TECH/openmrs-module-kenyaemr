@@ -26,6 +26,8 @@ import org.openmrs.Patient;
 import org.openmrs.PatientProgram;
 import org.openmrs.Visit;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.appframework.AppDescriptor;
+import org.openmrs.module.appframework.api.AppFrameworkService;
 import org.openmrs.module.kenyaemr.EmrWebConstants;
 import org.openmrs.module.kenyacore.CoreContext;
 import org.openmrs.module.kenyacore.form.FormDescriptor;
@@ -62,7 +64,9 @@ public class MedicalChartViewPatientPageController {
 		model.addAttribute("patient", patient);
 		model.addAttribute("person", patient);
 
-		List<FormDescriptor> oneTimeFormDescriptors = emr.getFormManager().getFormsForPatient(EmrWebConstants.APP_MEDICAL_CHART, patient, Collections.singleton(FormDescriptor.Frequency.ONCE_EVER));
+		AppDescriptor thisApp = Context.getService(AppFrameworkService.class).getAppById(EmrWebConstants.APP_MEDICAL_CHART);
+
+		List<FormDescriptor> oneTimeFormDescriptors = emr.getFormManager().getFormsForPatient(thisApp, patient);
 		List<SimpleObject> oneTimeForms = new ArrayList<SimpleObject>();
 		for (FormDescriptor formDescriptor : oneTimeFormDescriptors) {
 			Form form = formDescriptor.getTarget();

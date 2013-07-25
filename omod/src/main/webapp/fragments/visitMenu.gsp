@@ -39,7 +39,7 @@
 		}
 	} else {
 		if (config.allowCheckIn) {
-			def jsSuccess = "location.href = ui.pageLink('kenyaemr', 'registrationViewPatient', " + "{" + "patientId: ${ patient.id }, visitId: data.visitId" + "});"
+			def jsSuccess = "location.href = ui.pageLink('kenyaemr', 'registrationViewPatient', " + "{" + "patientId: ${ patient.id } });"
 	%>
 	<%= ui.includeFragment("kenyaui", "widget/popupForm", [
 			id: "check-in-form",

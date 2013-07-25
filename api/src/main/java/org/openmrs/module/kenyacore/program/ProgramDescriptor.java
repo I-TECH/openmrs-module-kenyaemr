@@ -21,6 +21,8 @@ import org.openmrs.module.kenyacore.form.FormDescriptor;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyacore.AbstractEntityDescriptor;
 
+import java.util.List;
+
 /**
  * Describes how a program can be used in the EMR. Each program should have a component of this type in the application
  * context.
@@ -32,6 +34,8 @@ public class ProgramDescriptor extends AbstractEntityDescriptor<Program> {
 	private FormDescriptor enrollmentForm;
 
 	private FormDescriptor discontinuationForm;
+
+	private List<FormDescriptor> visitForms;
 
 	private UIResource careSummaryFragment;
 
@@ -105,5 +109,21 @@ public class ProgramDescriptor extends AbstractEntityDescriptor<Program> {
 	 */
 	public void setCareSummaryFragment(UIResource careSummaryFragment) {
 		this.careSummaryFragment = careSummaryFragment;
+	}
+
+	/**
+	 * Gets the visit forms
+	 * @return the visit forms
+	 */
+	public List<FormDescriptor> getVisitForms() {
+		return visitForms;
+	}
+
+	/**
+	 * Sets the visit forms
+	 * @param visitForms the visit forms
+	 */
+	public void setVisitForms(List<FormDescriptor> visitForms) {
+		this.visitForms = visitForms;
 	}
 }

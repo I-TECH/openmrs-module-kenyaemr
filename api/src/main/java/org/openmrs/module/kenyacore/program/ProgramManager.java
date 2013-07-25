@@ -29,6 +29,7 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -96,16 +97,26 @@ public class ProgramManager implements ContentManager {
 	}
 
 	/**
-	 * Gets program descriptors for all programs which the given patient is actively enrolled in
+	 * Gets program descriptors for all programs which the given patient is currently enrolled in
 	 * @param patient the patient
 	 * @return the program descriptors
 	 */
 	public List<ProgramDescriptor> getPatientActivePrograms(Patient patient) {
+		return getPatientActivePrograms(patient, new Date());
+	}
+
+	/**
+	 * Gets program descriptors for all programs which the given patient was enrolled in on given date
+	 * @param patient the patient
+	 * @param onDate the date
+	 * @return the program descriptors
+	 */
+	public List<ProgramDescriptor> getPatientActivePrograms(Patient patient, Date onDate) {
 		List<ProgramDescriptor> activeIn = new ArrayList<ProgramDescriptor>();
 
 		ProgramWorkflowService pws = Context.getProgramWorkflowService();
 		for (PatientProgram pp : pws.getPatientPrograms(patient, null, null, null, null, null, false)) {
-			if (pp.getActive()) {
+			if (pp.getActive(onDate)) {
 				ProgramDescriptor descriptor = getProgramDescriptor(pp.getProgram());
 				if (descriptor != null) {
 					activeIn.add(descriptor);

@@ -29,20 +29,11 @@ import java.util.Set;
 public class FormDescriptor extends AbstractEntityDescriptor<Form> {
 
 	/**
-	 * Possible usage frequencies for a form
-	 */
-	public enum Frequency {
-		ONCE_EVER, PROGRAM, VISIT, UNLIMITED
-	}
-
-	/**
 	 * Possible gender usages for a form
 	 */
 	public enum Gender {
 		BOTH, MALE, FEMALE
 	}
-
-	private Frequency frequency = Frequency.UNLIMITED;
 
 	private Set<String> apps;
 
@@ -62,22 +53,6 @@ public class FormDescriptor extends AbstractEntityDescriptor<Form> {
 	@Override
 	public Form getTarget() {
 		return MetadataUtils.getForm(targetUuid);
-	}
-
-	/**
-	 * Gets the frequency
-	 * @return the frequency
-	 */
-	public Frequency getFrequency() {
-		return frequency;
-	}
-
-	/**
-	 * Sets the frequency
-	 * @param frequency the frequency
-	 */
-	public void setFrequency(Frequency frequency) {
-		this.frequency = frequency;
 	}
 
 	/**

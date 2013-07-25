@@ -17,14 +17,20 @@ package org.openmrs.module.kenyacore.form;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.Encounter;
 import org.openmrs.Form;
 import org.openmrs.Patient;
+import org.openmrs.Visit;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.appframework.AppDescriptor;
 import org.openmrs.module.htmlformentry.HtmlFormEntryUtil;
 import org.openmrs.module.htmlformentry.handler.TagHandler;
 import org.openmrs.module.kenyacore.ContentManager;
-import org.openmrs.module.kenyacore.form.FormDescriptor.Frequency;
 import org.openmrs.module.kenyacore.form.FormDescriptor.Gender;
+import org.openmrs.module.kenyacore.program.ProgramDescriptor;
+import org.openmrs.module.kenyacore.program.ProgramManager;
+import org.openmrs.module.kenyaemr.util.EmrUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -41,19 +47,26 @@ public class FormManager implements ContentManager {
 
 	private Map<String, FormDescriptor> forms = new LinkedHashMap<String, FormDescriptor>();
 
+	private List<FormDescriptor> generalPatientForms = new ArrayList<FormDescriptor>();
+	private List<FormDescriptor> generalVisitForms = new ArrayList<FormDescriptor>();
+
+	@Autowired
+	private ProgramManager programManager;
+
 	/**
 	 * Updates form manager after context refresh
 	 */
 	@Override
 	public synchronized void refresh() {
 		forms.clear();
+		generalVisitForms.clear();
 
 		List<FormDescriptor> descriptors = Context.getRegisteredComponents(FormDescriptor.class);
 
 		// Sort by form descriptor order
 		Collections.sort(descriptors);
 
-		// Load form descriptor beans
+		// Process form descriptor beans
 		for (FormDescriptor formDescriptor : descriptors) {
 			Form form = Context.getFormService().getFormByUuid(formDescriptor.getTargetUuid());
 
@@ -74,6 +87,15 @@ public class FormManager implements ContentManager {
 
 			log.warn("Registered form '" + form.getName() + "' (" + form.getUuid() + ")");
 		}
+
+		// Process form configuration beans
+		for (FormConfiguration configuration : Context.getRegisteredComponents(FormConfiguration.class)) {
+			generalPatientForms.addAll(configuration.getGeneralPatientForms());
+			generalVisitForms.addAll(configuration.getGeneralVisitForms());
+		}
+
+		generalPatientForms = EmrUtils.merge(generalPatientForms); // Sorts and removes duplicates
+		generalVisitForms = EmrUtils.merge(generalVisitForms);
 
 		refreshTagHandlers();
 	}
@@ -114,52 +136,108 @@ public class FormManager implements ContentManager {
 	}
 
 	/**
-	 * Gets all registered form descriptors for the given app
+	 * Gets all per-patient forms
+	 * @param app the current application
+	 * @param patient the patient
 	 * @return the form descriptors
 	 */
-	public List<FormDescriptor> getFormDescriptorsForApp(String appKey) {
-		List<FormDescriptor> descriptors = new ArrayList<FormDescriptor>();
-		for (FormDescriptor descriptor : forms.values()) {
-			if (descriptor.getApps().contains(appKey)) {
-				descriptors.add(descriptor);
-			}
-		}
-		return descriptors;
+	public List<FormDescriptor> getFormsForPatient(AppDescriptor app, Patient patient) {
+		return filterForms(generalPatientForms, app, patient);
 	}
 
 	/**
-	 * Gets the forms for the given application and patient
-	 * @param appKey the application key
-	 * @param patient the patient
-	 * @param includeFrequencies the set of form frequencies to include (may be null)
-	 * @return the forms
+	 * Gets all uncompleted per-visit forms appropriate for the given visit
+	 * @param app the current application
+	 * @param visit the visit
+	 * @return the form descriptors
 	 */
-	public List<FormDescriptor> getFormsForPatient(String appKey, Patient patient, Set<Frequency> includeFrequencies) {
-		List<FormDescriptor> patientForms = new ArrayList<FormDescriptor>();
-		for (Map.Entry<String, FormDescriptor> entry : forms.entrySet()) {
-			FormDescriptor form = entry.getValue();
+	public List<FormDescriptor> getUncompletedFormsForVisit(AppDescriptor app, Visit visit) {
+		List<FormDescriptor> uncompletedForms = new ArrayList<FormDescriptor>();
+		Set<Form> completedForms = new HashSet<Form>();
 
+		// Gather up all completed forms
+		for (Encounter encounter : visit.getEncounters()) {
+			if (encounter.getForm() != null) {
+				completedForms.add(encounter.getForm());
+			}
+		}
+
+		// Include only forms that haven't been completed for this visit
+		for (FormDescriptor suitableForms : getFormsForVisit(app, visit)) {
+			if (!completedForms.contains(suitableForms.getTarget())) {
+				uncompletedForms.add(suitableForms);
+			}
+		}
+
+		return uncompletedForms;
+	}
+
+	/**
+	 * Gets all per-visit forms appropriate for the given visit
+	 * @param app the current application
+	 * @param visit the visit
+	 * @return the form descriptors
+	 */
+	public List<FormDescriptor> getFormsForVisit(AppDescriptor app, Visit visit) {
+		Set<FormDescriptor> forms = new TreeSet<FormDescriptor>();
+
+		forms.addAll(generalVisitForms);
+
+		for (ProgramDescriptor activeProgram : programManager.getPatientActivePrograms(visit.getPatient(), visit.getStartDatetime())) {
+			forms.addAll(activeProgram.getVisitForms());
+		}
+
+		return filterForms(forms, app, visit.getPatient());
+	}
+
+	/**
+	 * Gets all completed per-visit forms appropriate for the given visit
+	 * @param app the current application
+	 * @param visit the visit
+	 * @return the form descriptors
+	 */
+	public List<FormDescriptor> getCompletedFormsForVisit(AppDescriptor app, Visit visit) {
+		List<FormDescriptor> completedForms = new ArrayList<FormDescriptor>();
+
+		for (Encounter encounter : visit.getEncounters()) {
+			if (encounter.getForm() != null) {
+				FormDescriptor descriptor = getFormDescriptor(encounter.getForm());
+
+				// Filter by app
+				if (descriptor.getApps().contains(app.getId())) {
+					completedForms.add(descriptor);
+				}
+			}
+		}
+
+		return completedForms;
+	}
+
+	/**
+	 * Filters the given collection of forms to those applicable for the given application and patient
+	 * @param app the application
+	 * @param patient the patient
+	 * @return the filtered forms
+	 */
+	protected List<FormDescriptor> filterForms(Collection<FormDescriptor> descriptors, AppDescriptor app, Patient patient) {
+		List<FormDescriptor> filtered = new ArrayList<FormDescriptor>();
+		for (FormDescriptor descriptor : descriptors) {
 			// Filter by app id
-			if (appKey != null && !form.getApps().contains(appKey)) {
+			if (app != null && !descriptor.getApps().contains(app.getId())) {
 				continue;
 			}
 
 			// Filter by patient gender
 			if (patient.getGender() != null) {
-				if (patient.getGender().equals("F") && form.getGender() == Gender.MALE)
+				if (patient.getGender().equals("F") && descriptor.getGender() == Gender.MALE)
 					continue;
-				else if (patient.getGender().equals("M") && form.getGender() == Gender.FEMALE)
+				else if (patient.getGender().equals("M") && descriptor.getGender() == Gender.FEMALE)
 					continue;
 			}
 
-			// Filter by frequency
-			if (includeFrequencies != null && !includeFrequencies.contains(form.getFrequency())) {
-				continue;
-			}
-
-			patientForms.add(form);
+			filtered.add(descriptor);
 		}
 
-		return patientForms;
+		return filtered;
 	}
 }
