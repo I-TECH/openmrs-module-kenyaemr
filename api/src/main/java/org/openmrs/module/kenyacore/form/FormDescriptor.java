@@ -37,8 +37,6 @@ public class FormDescriptor extends AbstractEntityDescriptor<Form> {
 
 	private Set<String> apps;
 
-	private ProgramDescriptor program;
-
 	private Gender gender = Gender.BOTH;
 
 	private String autoCreateVisitTypeUuid;
@@ -69,22 +67,6 @@ public class FormDescriptor extends AbstractEntityDescriptor<Form> {
 	 */
 	public void setApps(Set<String> apps) {
 		this.apps = apps;
-	}
-
-	/**
-	 * Gets the program
-	 * @return the program
-	 */
-	public ProgramDescriptor getProgram() {
-		return program;
-	}
-
-	/**
-	 * Set the program
-	 * @param program the program
-	 */
-	public void setProgram(ProgramDescriptor program) {
-		this.program = program;
 	}
 
 	/**
