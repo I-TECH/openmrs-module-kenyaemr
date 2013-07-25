@@ -16,47 +16,47 @@
 		<property name="id" value="kenyaemr.registration"/>
 		<property name="label" value="Registration"/>
 		<property name="homepageUrl" value="kenyaemr/registrationHome.page"/>
-		<property name="iconUrl" value="kenyaui:images/apps/registration.png"/>
-		<property name="order" value="1001"/>
+		<property name="iconUrl" value="kenyaui:apps/registration.png"/>
+		<property name="order" value="100"/>
 	</bean>
 	<bean id="kenyaemr.app.intake" class="org.openmrs.module.appframework.SimpleAppDescriptor">
 		<property name="id" value="kenyaemr.intake"/>
 		<property name="label" value="Triage"/>
 		<property name="homepageUrl" value="kenyaemr/intakeHome.page"/>
-		<property name="iconUrl" value="kenyaui:images/apps/intake.png"/>
-		<property name="order" value="1002"/>
+		<property name="iconUrl" value="kenyaui:apps/intake.png"/>
+		<property name="order" value="200"/>
 	</bean>
 	
 	<bean id="kenyaemr.app.clinician" class="org.openmrs.module.appframework.SimpleAppDescriptor">
 		<property name="id" value="kenyaemr.medicalEncounter"/>
 		<property name="label" value="Clinician"/>
 		<property name="homepageUrl" value="kenyaemr/medicalEncounterHome.page"/>
-		<property name="iconUrl" value="kenyaui:images/apps/medicalEncounter.png"/>
-		<property name="order" value="1003"/>
+		<property name="iconUrl" value="kenyaui:apps/medicalEncounter.png"/>
+		<property name="order" value="300"/>
 	</bean>
 	
 	<bean id="kenyaemr.app.chart" class="org.openmrs.module.appframework.SimpleAppDescriptor">
 		<property name="id" value="kenyaemr.medicalChart"/>
 		<property name="label" value="Medical Chart"/>
 		<property name="homepageUrl" value="kenyaemr/medicalChartHome.page"/>
-		<property name="iconUrl" value="kenyaui:images/apps/medicalChart.png"/>
-		<property name="order" value="1004"/>
+		<property name="iconUrl" value="kenyaui:apps/medicalChart.png"/>
+		<property name="order" value="400"/>
 	</bean>
 	
 	<bean id="kenyaemr.app.reports" class="org.openmrs.module.appframework.SimpleAppDescriptor">
 		<property name="id" value="kenyaemr.reports"/>
 		<property name="label" value="Reports"/>
 		<property name="homepageUrl" value="kenyaemr/reportsHome.page"/>
-		<property name="iconUrl" value="kenyaui:images/apps/reports.png"/>
-		<property name="order" value="1005"/>
+		<property name="iconUrl" value="kenyaui:apps/reports.png"/>
+		<property name="order" value="500"/>
 	</bean>
 	
 	<bean id="kenyaemr.app.admin" class="org.openmrs.module.appframework.SimpleAppDescriptor">
 		<property name="id" value="kenyaemr.admin"/>
 		<property name="label" value="Admin"/>
 		<property name="homepageUrl" value="kenyaemr/adminHome.page"/>
-		<property name="iconUrl" value="kenyaui:images/apps/admin.png"/>
-		<property name="order" value="1006"/>
+		<property name="iconUrl" value="kenyaui:apps/admin.png"/>
+		<property name="order" value="600"/>
 	</bean>
 
 </beans>

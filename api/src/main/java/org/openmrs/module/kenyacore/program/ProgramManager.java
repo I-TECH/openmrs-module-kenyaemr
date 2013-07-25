@@ -15,6 +15,9 @@
 package org.openmrs.module.kenyacore.program;
 
 import org.openmrs.Patient;
+import org.openmrs.PatientProgram;
+import org.openmrs.Program;
+import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.calculation.result.ResultUtil;
@@ -56,35 +59,60 @@ public class ProgramManager implements ContentManager {
 	}
 
 	/**
-	 * Gets all of the programs
-	 * @return the programs
+	 * Gets all program descriptors
+	 * @return the program descriptors
 	 */
-	public Collection<ProgramDescriptor> getAllPrograms() {
+	public Collection<ProgramDescriptor> getAllProgramDescriptors() {
 		return programs.values();
 	}
 
 	/**
-	 * Gets all programs for which the given patient is eligible
+	 * Gets the program descriptor for the given program
+	 * @param program the program
+	 * @return the program descriptor
+	 */
+	public ProgramDescriptor getProgramDescriptor(Program program) {
+		return programs.get(program.getUuid());
+	}
+
+	/**
+	 * Gets program descriptors for all programs which the given patient is eligible for
 	 * @param patient the patient
-	 * @return the programs
+	 * @return the program descriptors
 	 */
 	public List<ProgramDescriptor> getPatientEligiblePrograms(Patient patient) {
 		List<ProgramDescriptor> eligibleFor = new ArrayList<ProgramDescriptor>();
 
 		for (ProgramDescriptor programDescriptor : programs.values()) {
-			try {
-				Class<? extends BaseEmrCalculation> clazz = (Class<? extends BaseEmrCalculation>) Context.loadClass(programDescriptor.getEligibilityCalculation());
+			Class<? extends BaseEmrCalculation> clazz = programDescriptor.getEligibilityCalculation();
 
-				CalculationResult result = CalculationUtils.evaluateForPatient(clazz, null, patient);
-				if (ResultUtil.isTrue(result)) {
-					eligibleFor.add(programDescriptor);
-				}
-			}
-			catch (ClassNotFoundException ex) {
-				throw new RuntimeException(ex);
+			CalculationResult result = CalculationUtils.evaluateForPatient(clazz, null, patient);
+			if (ResultUtil.isTrue(result)) {
+				eligibleFor.add(programDescriptor);
 			}
 		}
 
 		return eligibleFor;
+	}
+
+	/**
+	 * Gets program descriptors for all programs which the given patient is actively enrolled in
+	 * @param patient the patient
+	 * @return the program descriptors
+	 */
+	public List<ProgramDescriptor> getPatientActivePrograms(Patient patient) {
+		List<ProgramDescriptor> activeIn = new ArrayList<ProgramDescriptor>();
+
+		ProgramWorkflowService pws = Context.getProgramWorkflowService();
+		for (PatientProgram pp : pws.getPatientPrograms(patient, null, null, null, null, null, false)) {
+			if (pp.getActive()) {
+				ProgramDescriptor descriptor = getProgramDescriptor(pp.getProgram());
+				if (descriptor != null) {
+					activeIn.add(descriptor);
+				}
+			}
+		}
+
+		return activeIn;
 	}
 }

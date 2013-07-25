@@ -61,10 +61,9 @@ public class FormManager implements ContentManager {
 				throw new RuntimeException("No such form with UUID: " + formDescriptor.getTargetUuid());
 			}
 
-			// TODO because of TRUNK-3889, singleton beans get instantiated twice. Re-enable this check once fixed.
-			//if (forms.containsKey(formDescriptor.getFormUuid())) {
-			//	throw new RuntimeException("Form " + formDescriptor.getFormUuid() + " already registered");
-			//}
+			if (forms.containsKey(formDescriptor.getTargetUuid())) {
+				throw new RuntimeException("Form " + formDescriptor.getTargetUuid() + " already registered");
+			}
 
 			forms.put(form.getUuid(), formDescriptor);
 
@@ -112,7 +111,7 @@ public class FormManager implements ContentManager {
 	 * @return the form descriptor
 	 */
 	public FormDescriptor getFormDescriptor(Form form) {
-		return getFormDescriptor(form.getUuid());
+		return forms.get(form.getUuid());
 	}
 
 	/**

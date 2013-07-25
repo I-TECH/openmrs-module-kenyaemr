@@ -31,9 +31,12 @@ import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.util.OpenmrsUtil;
 import org.powermock.api.mockito.PowerMockito;
 
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+
+import static org.hamcrest.Matchers.*;
 
 /**
  * Tests for {@link org.openmrs.module.kenyaemr.util.EmrUtils}
@@ -341,5 +344,16 @@ public class EmrUtilsTest extends BaseModuleContextSensitiveTest {
 		Assert.assertFalse(EmrUtils.checkCielVersions("20130101", "20121201"));
 		Assert.assertTrue(EmrUtils.checkCielVersions("20130101", "20130101"));
 		Assert.assertTrue(EmrUtils.checkCielVersions("20130101", "20130102"));
+	}
+
+	/**
+	 * @see EmrUtils#merge(java.util.Collection[])
+	 */
+	@Test
+	public void merge_shouldMergeByNaturalOrder() {
+		List<Integer> list1 = Arrays.asList(2, 5, 9);
+		List<Integer> list2 = Arrays.asList(1, 3, 10);
+
+		Assert.assertThat(EmrUtils.merge(list1, list2), contains(1, 2, 3, 5, 9, 10));
 	}
 }

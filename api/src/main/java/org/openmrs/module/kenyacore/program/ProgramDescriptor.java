@@ -15,6 +15,7 @@
 package org.openmrs.module.kenyacore.program;
 
 import org.openmrs.Program;
+import org.openmrs.module.kenyacore.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyacore.form.FormDescriptor;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyacore.AbstractEntityDescriptor;
@@ -25,11 +26,13 @@ import org.openmrs.module.kenyacore.AbstractEntityDescriptor;
  */
 public class ProgramDescriptor extends AbstractEntityDescriptor<Program> {
 
+	private Class<? extends BaseEmrCalculation> eligibilityCalculation;
+
 	private FormDescriptor enrollmentForm;
 
 	private FormDescriptor discontinuationForm;
 
-	private String eligibilityCalculation;
+	private String careSummaryFragment;
 
 	/**
 	 * @see org.openmrs.module.kenyacore.AbstractEntityDescriptor#getTarget()
@@ -40,18 +43,18 @@ public class ProgramDescriptor extends AbstractEntityDescriptor<Program> {
 	}
 
 	/**
-	 * Gets the eligibility calculation class name
-	 * @return the eligibility calculation class name
+	 * Gets the eligibility calculation class
+	 * @return the eligibility calculation class
 	 */
-	public String getEligibilityCalculation() {
+	public Class<? extends BaseEmrCalculation> getEligibilityCalculation() {
 		return eligibilityCalculation;
 	}
 
 	/**
-	 * Sets the eligibility calculation class name
-	 * @param eligibilityCalculation the eligibility calculation class name
+	 * Sets the eligibility calculation class
+	 * @param eligibilityCalculation the eligibility calculation class
 	 */
-	public void setEligibilityCalculation(String eligibilityCalculation) {
+	public void setEligibilityCalculation(Class<? extends BaseEmrCalculation> eligibilityCalculation) {
 		this.eligibilityCalculation = eligibilityCalculation;
 	}
 
@@ -75,7 +78,7 @@ public class ProgramDescriptor extends AbstractEntityDescriptor<Program> {
 	 * Gets the discontinuation form
 	 * @return the discontinuation form
 	 */
-	public FormDescriptor getDiscontinuation() {
+	public FormDescriptor getDiscontinuationForm() {
 		return discontinuationForm;
 	}
 
@@ -85,5 +88,21 @@ public class ProgramDescriptor extends AbstractEntityDescriptor<Program> {
 	 */
 	public void setDiscontinuationForm(FormDescriptor discontinuationForm) {
 		this.discontinuationForm = discontinuationForm;
+	}
+
+	/**
+	 * Gets the care summary fragment (provider:fragment)
+	 * @return the fragment
+	 */
+	public String getCareSummaryFragment() {
+		return careSummaryFragment;
+	}
+
+	/**
+	 * Sets the care summary fragment (provider:fragment)
+	 * @param careSummaryFragment the care summary fragment
+	 */
+	public void setCareSummaryFragment(String careSummaryFragment) {
+		this.careSummaryFragment = careSummaryFragment;
 	}
 }

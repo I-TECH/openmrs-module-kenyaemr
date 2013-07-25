@@ -9,11 +9,6 @@
 		if (iconUrlTokens.length == 2) {
 			iconProvider = iconUrlTokens[0]
 			icon = iconUrlTokens[1]
-
-			// Strip the images/ part
-			if (icon.startsWith("images/")) {
-				icon = icon.substring(7);
-			}
 		}
 	%>
 	<div style="float: left; margin: 7px;" >

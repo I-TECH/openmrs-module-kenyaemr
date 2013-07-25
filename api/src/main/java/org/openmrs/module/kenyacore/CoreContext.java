@@ -116,6 +116,14 @@ public class CoreContext {
 	 * Gets the lab manager
 	 * @return the lab manager
 	 */
+	public ProgramManager getProgramManager() {
+		return programManager;
+	}
+
+	/**
+	 * Gets the lab manager
+	 * @return the lab manager
+	 */
 	public LabManager getLabManager() {
 		return labManager;
 	}

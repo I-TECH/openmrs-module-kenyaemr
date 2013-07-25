@@ -20,10 +20,11 @@
 	<!-- HIV -->
 	<bean id="kenyaemr.program.hiv" class="org.openmrs.module.kenyacore.program.ProgramDescriptor">
 		<property name="targetUuid" value="dfdc6d40-2f2f-463d-ba90-cc97350441a8" />
-		<property name="eligibilityCalculation" value="org.openmrs.module.kenyaemr.calculation.library.tb.EligibleForHivProgramCalculation" />
+		<property name="eligibilityCalculation" value="org.openmrs.module.kenyaemr.calculation.library.hiv.EligibleForHivProgramCalculation" />
 		<property name="enrollmentForm" ref="kenyaemr.form.hivEnrollment" />
 		<property name="discontinuationForm" ref="kenyaemr.form.hivDiscontinuation" />
-		<property name="order" value="1001" />
+		<property name="careSummaryFragment" value="kenyaemr:careSummaryHiv" />
+		<property name="order" value="100" />
 	</bean>
 
 	<!-- TB -->
@@ -32,7 +33,8 @@
 		<property name="eligibilityCalculation" value="org.openmrs.module.kenyaemr.calculation.library.tb.EligibleForTbProgramCalculation" />
 		<property name="enrollmentForm" ref="kenyaemr.form.tbEnrollment" />
 		<property name="discontinuationForm" ref="kenyaemr.form.tbDiscontinuation" />
-		<property name="order" value="1002" />
+		<property name="careSummaryFragment" value="kenyaemr:careSummaryTb" />
+		<property name="order" value="200" />
 	</bean>
 
 	<!-- ===================== Identifier descriptors ===================== -->
@@ -40,25 +42,25 @@
 	<!-- Unique Patient Number -->
 	<bean id="kenyaemr.identifier.upn" class="org.openmrs.module.kenyacore.identifier.IdentifierDescriptor">
 		<property name="targetUuid" value="05ee9cf4-7242-4a17-b4d4-00f707265c8a" />
-		<property name="order" value="1001" />
+		<property name="order" value="100" />
 	</bean>
 
 	<!-- District Registration Number -->
 	<bean id="kenyaemr.identifier.tbDistrictRegistration" class="org.openmrs.module.kenyacore.identifier.IdentifierDescriptor">
 		<property name="targetUuid" value="d8ee3b8c-a8fc-4d6b-af6a-9423be5f8906" />
-		<property name="order" value="1002" />
+		<property name="order" value="200" />
 	</bean>
 
 	<!-- Patient Clinic Number -->
 	<bean id="kenyaemr.identifier.pcn" class="org.openmrs.module.kenyacore.identifier.IdentifierDescriptor">
 		<property name="targetUuid" value="b4d66522-11fc-45c7-83e3-39a1af21ae0d" />
-		<property name="order" value="1003" />
+		<property name="order" value="300" />
 	</bean>
 
 	<!-- Old Identification Number -->
 	<bean id="kenyaemr.identifier.old" class="org.openmrs.module.kenyacore.identifier.IdentifierDescriptor">
 		<property name="targetUuid" value="8d79403a-c2cc-11de-8d13-0010c6dffd0f" />
-		<property name="order" value="1004" />
+		<property name="order" value="400" />
 	</bean>
 
 	<!-- OpenMRS ID -->

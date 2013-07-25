@@ -17,7 +17,6 @@ package org.openmrs.module.kenyacore.program;
 import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.module.kenyacore.program.ProgramManager;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -38,6 +37,6 @@ public class ProgramManagerTest extends BaseModuleContextSensitiveTest {
 
 	@Test
 	public void getAllPrograms() {
-		Assert.assertNotNull(programManager.getAllPrograms());
+		Assert.assertNotNull(programManager.getAllProgramDescriptors());
 	}
 }

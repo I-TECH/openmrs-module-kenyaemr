@@ -269,4 +269,22 @@ public class EmrUtils {
 			return false;
 		}
 	}
+
+	/**
+	 * Merges multiple collections into a list with natural ordering of elements
+	 * @param collections the collections
+	 * @param <T> the element type
+	 * @return the merged list
+	 */
+	public static <T extends Comparable> List<T> merge(Collection<T>... collections) {
+		Set<T> merged = new TreeSet<T>();
+
+		for (Collection<T> list : collections) {
+			for (T element : list) {
+				merged.add(element);
+			}
+		}
+
+		return new ArrayList(merged);
+	}
 }
