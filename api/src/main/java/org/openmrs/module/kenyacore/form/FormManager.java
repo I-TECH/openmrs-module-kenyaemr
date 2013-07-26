@@ -85,7 +85,7 @@ public class FormManager implements ContentManager {
 				FormUtils.setFormXmlResource(form, formDescriptor.getHtmlform());
 			}
 
-			log.warn("Registered form '" + form.getName() + "' (" + form.getUuid() + ")");
+			log.info("Registered form '" + form.getName() + "' (" + form.getUuid() + ")");
 		}
 
 		// Process form configuration beans
