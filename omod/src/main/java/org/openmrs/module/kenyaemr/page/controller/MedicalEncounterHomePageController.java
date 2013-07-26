@@ -15,7 +15,6 @@
 package org.openmrs.module.kenyaemr.page.controller;
 
 import org.openmrs.module.kenyaemr.EmrConstants;
-import org.openmrs.module.kenyaemr.EmrWebConstants;
 import org.openmrs.module.kenyaui.annotation.AppPage;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
@@ -24,7 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 /**
  * Homepage for the medical encounter app
  */
-@AppPage(EmrWebConstants.APP_MEDICAL_ENCOUNTER)
+@AppPage(EmrConstants.APP_CLINICIAN)
 public class MedicalEncounterHomePageController {
 
 	public String controller(UiUtils ui, @RequestParam(required=false, value="patientId") Integer patientId) {

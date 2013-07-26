@@ -16,7 +16,7 @@ package org.openmrs.module.kenyaemr.page.controller;
 
 import org.openmrs.Concept;
 import org.openmrs.Patient;
-import org.openmrs.module.kenyaemr.EmrWebConstants;
+import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyacore.CoreContext;
 import org.openmrs.module.kenyacore.regimen.RegimenChange;
 import org.openmrs.module.kenyacore.regimen.RegimenChangeHistory;
@@ -32,7 +32,7 @@ import java.util.Date;
 /**
  * Controller for regimen editor page
  */
-@SharedPage({EmrWebConstants.APP_MEDICAL_ENCOUNTER, EmrWebConstants.APP_MEDICAL_CHART})
+@SharedPage({EmrConstants.APP_CLINICIAN, EmrConstants.APP_CHART})
 public class RegimenEditorPageController {
 
 	public void controller(@RequestParam("patientId") Patient patient,

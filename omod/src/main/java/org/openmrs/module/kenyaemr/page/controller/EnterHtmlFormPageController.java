@@ -16,13 +16,15 @@ package org.openmrs.module.kenyaemr.page.controller;
 
 import org.openmrs.Patient;
 import org.openmrs.Visit;
+import org.openmrs.module.kenyaemr.EmrConstants;
+import org.openmrs.module.kenyaui.annotation.SharedPage;
 import org.openmrs.ui.framework.page.PageModel;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * Controller for entering a new HTML form
  */
-/*@SharedPage({EmrWebConstants.APP_REGISTRATION, EmrWebConstants.APP_INTAKE, EmrWebConstants.APP_MEDICAL_ENCOUNTER, EmrWebConstants.APP_MEDICAL_CHART})*/
+@SharedPage({EmrConstants.APP_REGISTRATION, EmrConstants.APP_INTAKE, EmrConstants.APP_CLINICIAN, EmrConstants.APP_CHART})
 public class EnterHtmlFormPageController {
 
 	public void controller(@RequestParam("patientId") Patient patient,

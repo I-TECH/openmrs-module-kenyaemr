@@ -25,14 +25,21 @@ import org.openmrs.Encounter;
 import org.openmrs.Form;
 import org.openmrs.Obs;
 import org.openmrs.User;
+import org.openmrs.api.APIAuthenticationException;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.appframework.AppDescriptor;
 import org.openmrs.module.htmlformentry.FormEntryContext.Mode;
 import org.openmrs.module.htmlformentry.FormEntrySession;
 import org.openmrs.module.htmlformentry.HtmlForm;
+import org.openmrs.module.kenyacore.CoreContext;
+import org.openmrs.module.kenyacore.form.FormDescriptor;
 import org.openmrs.module.kenyacore.form.FormUtils;
+import org.openmrs.module.kenyaemr.KenyaEmrUiUtils;
+import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.SpringBean;
+import org.openmrs.ui.framework.page.PageRequest;
 import org.openmrs.ui.framework.resource.ResourceFactory;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -46,9 +53,21 @@ public class ShowHtmlFormFragmentController {
 	public void controller() {
 		// do nothing
 	}
-	
-	public SimpleObject viewFormHtml(@RequestParam("encounterId") Encounter enc, UiUtils ui, @SpringBean ResourceFactory resourceFactory, HttpSession httpSession) throws Exception {
-		Form form = enc.getForm();
+
+	/**
+	 * Fetches the html to display the specified form submission
+	 * @param encounter the encounter
+	 * @return simple object { html, editHistory }
+	 */
+	public SimpleObject viewFormHtml(@RequestParam("encounterId") Encounter encounter,
+									 @SpringBean ResourceFactory resourceFactory,
+									 UiUtils ui,
+									 HttpSession httpSession) throws Exception {
+		Form form = encounter.getForm();
+
+		// TODO check that form can be accessed in the current app context.
+		// This may require UIFR-122 so that this action request has an associated app
+		//emrUi.checkFormAccess(pageRequest, form);
 
 		// Get html form from database or UI resource
 		HtmlForm hf = FormUtils.getHtmlForm(form, resourceFactory);
@@ -56,16 +75,24 @@ public class ShowHtmlFormFragmentController {
 		if (hf == null)
 			throw new RuntimeException("Could not find HTML Form");
 
-		FormEntrySession fes = new FormEntrySession(enc.getPatient(), enc, Mode.VIEW, hf, httpSession);
+		FormEntrySession fes = new FormEntrySession(encounter.getPatient(), encounter, Mode.VIEW, hf, httpSession);
 		String html = fes.getHtmlToDisplay();
-		return SimpleObject.create("html", html, "editHistory", new EditHistory(enc).simplify(ui));
+		return SimpleObject.create("html", html, "editHistory", new EditHistory(encounter).simplify(ui));
 	}
-	
-	public SimpleObject deleteEncounter(@RequestParam("encounterId") Encounter enc) {
-		Context.getEncounterService().voidEncounter(enc, "KenyaEMR UI");
-		return SimpleObject.create("encounterId", enc.getEncounterId());
+
+	/**
+	 * Deletes (i.e. voids) the specified encounter
+	 * @param encounter the encounter
+	 * @return simple object { encounterId }
+	 */
+	public SimpleObject deleteEncounter(@RequestParam("encounterId") Encounter encounter) {
+		Context.getEncounterService().voidEncounter(encounter, "KenyaEMR UI");
+		return SimpleObject.create("encounterId", encounter.getEncounterId());
 	}
-	
+
+	/**
+	 * Represents the submission history of a form
+	 */
 	public class EditHistory {
 		
 		private SortedMap<UserAndTimestamp, List<Object>> edits = new TreeMap<UserAndTimestamp, List<Object>>();
@@ -153,5 +180,4 @@ public class ShowHtmlFormFragmentController {
 		}
 		
 	}
-	
 }

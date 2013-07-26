@@ -29,14 +29,4 @@ public class EmrWebConstants {
 	 * Name of session attribute for temporary reset passwords
 	 */
 	public static final String SESSION_ATTR_RESET_PASSWORD = "resetPassword";
-
-	/**
-	 * Application ids
-	 */
-	public static final String APP_REGISTRATION = EmrConstants.MODULE_ID + ".app.registration";
-	public static final String APP_INTAKE = EmrConstants.MODULE_ID + ".app.intake";
-	public static final String APP_MEDICAL_CHART = EmrConstants.MODULE_ID + ".app.chart";
-	public static final String APP_MEDICAL_ENCOUNTER = EmrConstants.MODULE_ID + ".app.clinician";
-	public static final String APP_REPORTS = EmrConstants.MODULE_ID + ".app.reports";
-	public static final String APP_ADMIN = EmrConstants.MODULE_ID + ".app.admin";
 }

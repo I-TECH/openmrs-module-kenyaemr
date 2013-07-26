@@ -15,7 +15,6 @@
 package org.openmrs.module.kenyaemr.page.controller;
 
 import org.openmrs.module.kenyaemr.EmrConstants;
-import org.openmrs.module.kenyaemr.EmrWebConstants;
 import org.openmrs.module.kenyaui.annotation.AppPage;
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.ui.framework.SimpleObject;
@@ -28,7 +27,7 @@ import java.util.Date;
 /**
  * Controller for the registration homepage
  */
-@AppPage(EmrWebConstants.APP_REGISTRATION)
+@AppPage(EmrConstants.APP_REGISTRATION)
 public class RegistrationHomePageController {
 
 	public String controller(UiUtils ui,

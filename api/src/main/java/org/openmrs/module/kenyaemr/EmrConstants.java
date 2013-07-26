@@ -25,6 +25,16 @@ public class EmrConstants {
 	public static final String MODULE_ID = "kenyaemr";
 
 	/**
+	 * Application IDs
+	 */
+	public static final String APP_REGISTRATION = MODULE_ID + ".app.registration";
+	public static final String APP_INTAKE = MODULE_ID + ".app.intake";
+	public static final String APP_CLINICIAN = MODULE_ID + ".app.clinician";
+	public static final String APP_CHART = MODULE_ID + ".app.chart";
+	public static final String APP_REPORTS = MODULE_ID + ".app.reports";
+	public static final String APP_ADMIN = MODULE_ID + ".app.admin";
+
+	/**
 	 * Global property names
 	 */
 	public static final String GP_DEFAULT_LOCATION = MODULE_ID + ".defaultLocation";

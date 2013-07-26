@@ -94,7 +94,7 @@ def returnUrl = config.returnUrl ?: ui.thisUrl()
 			if (payload.editButtonLabel || payload.deleteButtonLabel) {
 				toShow += '<div class="html-form-buttons">';
 				if (payload.editButtonLabel) {
-					var onClick = "location.href = '" + ui.pageLink('kenyaemr', 'editHtmlForm', { encounterId: payload.encounterId, returnUrl: '${ returnUrl }' }) + "';";
+					var onClick = "location.href = '" + ui.pageLink('kenyaemr', 'editHtmlForm', { encounterId: payload.encounterId, appId: '${ currentApp.id }', returnUrl: '${ returnUrl }' }) + "';";
 					toShow += '<input type="button" value="' + ui.escapeHtmlAttribute(payload.editButtonLabel) + '" onClick="' + onClick + '"/>';
 				}
 				if (payload.deleteButtonLabel) {

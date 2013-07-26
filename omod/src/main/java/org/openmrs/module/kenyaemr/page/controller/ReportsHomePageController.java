@@ -17,7 +17,7 @@ package org.openmrs.module.kenyaemr.page.controller;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.openmrs.module.kenyaemr.EmrWebConstants;
+import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyacore.CoreContext;
 import org.openmrs.module.kenyacore.reporting.ReportBuilder;
 import org.openmrs.module.kenyaui.annotation.AppPage;
@@ -28,7 +28,7 @@ import org.openmrs.ui.framework.page.PageModel;
 /**
  * Homepage for the reports app
  */
-@AppPage(EmrWebConstants.APP_REPORTS)
+@AppPage(EmrConstants.APP_REPORTS)
 public class ReportsHomePageController {
 
 	public void controller(PageModel model, @SpringBean CoreContext emr) {

@@ -173,6 +173,9 @@
 		<property name="gender" value="FEMALE" />
 		<property name="apps">
 			<set>
+				<ref bean="kenyaemr.app.registration" />
+				<ref bean="kenyaemr.app.intake" />
+				<ref bean="kenyaemr.app.clinician" />
 				<ref bean="kenyaemr.app.chart" />
 			</set>
 		</property>
@@ -259,7 +262,12 @@
 	<bean id="kenyaemr.form.hivEnrollment" class="org.openmrs.module.kenyacore.form.FormDescriptor">
 		<property name="targetUuid" value="e4b506c1-7379-42b6-a374-284469cba8da" />
 		<property name="apps">
-			<set></set>
+			<set>
+				<ref bean="kenyaemr.app.registration" />
+				<ref bean="kenyaemr.app.intake" />
+				<ref bean="kenyaemr.app.clinician" />
+				<ref bean="kenyaemr.app.chart" />
+			</set>
 		</property>
 		<property name="icon" value="kenyaui:forms/generic.png" />
 		<property name="htmlform" value="kenyaemr:hiv/hivEnrollment.xml" />
@@ -312,7 +320,12 @@
 	<bean id="kenyaemr.form.hivDiscontinuation" class="org.openmrs.module.kenyacore.form.FormDescriptor">
 		<property name="targetUuid" value="e3237ede-fa70-451f-9e6c-0908bc39f8b9" />
 		<property name="apps">
-			<set></set>
+			<set>
+				<ref bean="kenyaemr.app.registration" />
+				<ref bean="kenyaemr.app.intake" />
+				<ref bean="kenyaemr.app.clinician" />
+				<ref bean="kenyaemr.app.chart" />
+			</set>
 		</property>
 		<property name="icon" value="kenyaui:forms/discontinue.png" />
 		<property name="htmlform" value="kenyaemr:hiv/hivDiscontinuation.xml" />
@@ -322,7 +335,12 @@
 	<bean id="kenyaemr.form.tbEnrollment" class="org.openmrs.module.kenyacore.form.FormDescriptor">
 		<property name="targetUuid" value="89994550-9939-40f3-afa6-173bce445c79" />
 		<property name="apps">
-			<set></set>
+			<set>
+				<ref bean="kenyaemr.app.registration" />
+				<ref bean="kenyaemr.app.intake" />
+				<ref bean="kenyaemr.app.clinician" />
+				<ref bean="kenyaemr.app.chart" />
+			</set>
 		</property>
 		<property name="icon" value="kenyaui:forms/generic.png" />
 		<property name="htmlform" value="kenyaemr:tb/tbEnrollment.xml" />
@@ -346,7 +364,12 @@
 	<bean id="kenyaemr.form.tbDiscontinuation" class="org.openmrs.module.kenyacore.form.FormDescriptor">
 		<property name="targetUuid" value="4b296dd0-f6be-4007-9eb8-d0fd4e94fb3a" />
 		<property name="apps">
-			<set></set>
+			<set>
+				<ref bean="kenyaemr.app.registration" />
+				<ref bean="kenyaemr.app.intake" />
+				<ref bean="kenyaemr.app.clinician" />
+				<ref bean="kenyaemr.app.chart" />
+			</set>
 		</property>
 		<property name="icon" value="kenyaui:forms/discontinue.png" />
 		<property name="htmlform" value="kenyaemr:tb/tbDiscontinuation.xml" />

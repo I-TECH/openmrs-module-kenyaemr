@@ -22,7 +22,7 @@ import org.openmrs.api.PatientService;
 import org.openmrs.api.VisitService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
-import org.openmrs.module.kenyaemr.EmrWebConstants;
+import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaui.annotation.AppPage;
 import org.openmrs.ui.framework.page.PageModel;
@@ -31,7 +31,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 /**
  * View patient page for registration app
  */
-@AppPage(EmrWebConstants.APP_REGISTRATION)
+@AppPage(EmrConstants.APP_REGISTRATION)
 public class RegistrationViewPatientPageController {
 	
 	public void controller(@RequestParam("patientId") Patient patient,

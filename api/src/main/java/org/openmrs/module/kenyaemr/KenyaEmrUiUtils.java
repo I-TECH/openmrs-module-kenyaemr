@@ -16,7 +16,11 @@ package org.openmrs.module.kenyaemr;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.openmrs.*;
+import org.openmrs.api.APIAuthenticationException;
+import org.openmrs.module.appframework.AppDescriptor;
 import org.openmrs.module.kenyacore.CoreConstants;
+import org.openmrs.module.kenyacore.CoreContext;
+import org.openmrs.module.kenyacore.form.FormDescriptor;
 import org.openmrs.module.kenyacore.regimen.DrugReference;
 import org.openmrs.module.kenyacore.regimen.RegimenChange;
 import org.openmrs.module.kenyacore.regimen.RegimenChangeHistory;
@@ -26,6 +30,7 @@ import org.openmrs.module.kenyaemr.util.EmrUtils;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
+import org.openmrs.ui.framework.page.PageRequest;
 import org.openmrs.util.OpenmrsUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -38,6 +43,9 @@ import java.util.Date;
  */
 @Component
 public class KenyaEmrUiUtils {
+
+	@Autowired
+	private CoreContext emr;
 
 	@Autowired
 	private KenyaUiUtils kenyaUi;
@@ -212,5 +220,20 @@ public class KenyaEmrUiUtils {
 		return SimpleObject.fromCollection(definitions, ui,
 				"name", "group.code", "components.drugRef", "components.dose", "components.units", "components.frequency"
 		);
+	}
+
+	/**
+	 * Checks that the specified form can be accessed by this request
+	 * @param pageRequest the page request
+	 * @param form the form
+	 * @throws org.openmrs.api.APIAuthenticationException if access is not allowed
+	 */
+	public void checkFormAccess(PageRequest pageRequest, Form form) {
+		AppDescriptor appDescriptor = kenyaUi.getCurrentApp(pageRequest);
+		FormDescriptor formDescriptor = emr.getFormManager().getFormDescriptor(form);
+
+		if (formDescriptor == null || !formDescriptor.getApps().contains(appDescriptor)) {
+			throw new APIAuthenticationException("Form " + form.getName() + " cannot be accessed from " + appDescriptor.getLabel());
+		}
 	}
 }

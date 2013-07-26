@@ -21,7 +21,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyaemr.EmrWebConstants;
+import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyacore.CoreContext;
 import org.openmrs.module.kenyacore.reporting.ReportBuilder;
 import org.openmrs.module.kenyaui.annotation.AppPage;
@@ -42,7 +42,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 /**
  * Rum monthly indicator report page controller
  */
-@AppPage(EmrWebConstants.APP_REPORTS)
+@AppPage(EmrConstants.APP_REPORTS)
 public class ReportsRunMonthlyIndicatorReportPageController {
 	
 	public Object controller(PageModel model,

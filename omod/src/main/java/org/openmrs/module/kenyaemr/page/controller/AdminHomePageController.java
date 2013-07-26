@@ -22,7 +22,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.Module;
 import org.openmrs.module.ModuleFactory;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.EmrWebConstants;
+import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyacore.CoreContext;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.module.kenyacore.form.FormDescriptor;
@@ -39,7 +39,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 /**
  * Homepage for the admin app
  */
-@AppPage(EmrWebConstants.APP_ADMIN)
+@AppPage(EmrConstants.APP_ADMIN)
 public class AdminHomePageController {
 
 	public void controller(@RequestParam(value = "section", required = false) String section,

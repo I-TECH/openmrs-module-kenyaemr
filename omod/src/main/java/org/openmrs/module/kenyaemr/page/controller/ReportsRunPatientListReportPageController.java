@@ -17,7 +17,7 @@ package org.openmrs.module.kenyaemr.page.controller;
 import java.io.ByteArrayOutputStream;
 
 import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyaemr.EmrWebConstants;
+import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyacore.CoreContext;
 import org.openmrs.module.kenyacore.reporting.ReportBuilder;
 import org.openmrs.module.kenyaui.annotation.AppPage;
@@ -37,7 +37,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 /**
  *
  */
-@AppPage(EmrWebConstants.APP_REPORTS)
+@AppPage(EmrConstants.APP_REPORTS)
 public class ReportsRunPatientListReportPageController {
 
 	public Object controller(PageModel model,

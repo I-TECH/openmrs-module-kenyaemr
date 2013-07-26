@@ -11,6 +11,7 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.kenyaemr.fragment.controller;
 
 import java.util.Date;
@@ -18,7 +19,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
@@ -30,14 +30,14 @@ import org.openmrs.module.htmlformentry.FormEntryContext.Mode;
 import org.openmrs.module.htmlformentry.FormEntrySession;
 import org.openmrs.module.htmlformentry.FormSubmissionError;
 import org.openmrs.module.htmlformentry.HtmlForm;
-import org.openmrs.module.kenyacore.CoreContext;
-import org.openmrs.module.kenyacore.form.FormDescriptor;
 import org.openmrs.module.kenyacore.form.FormUtils;
+import org.openmrs.module.kenyaemr.KenyaEmrUiUtils;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.FragmentConfiguration;
 import org.openmrs.ui.framework.fragment.FragmentModel;
+import org.openmrs.ui.framework.page.PageRequest;
 import org.openmrs.ui.framework.resource.ResourceFactory;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -48,32 +48,32 @@ public class EnterHtmlFormFragmentController {
 
 	protected final Log log = LogFactory.getLog(EnterHtmlFormFragmentController.class);
 
-	public void controller(FragmentConfiguration config,
-						   @SpringBean CoreContext emr,
+	public void controller(@FragmentParam("patient") Patient patient,
+						   @FragmentParam(value = "formUuid", required = false) String formUuid,
+						   @FragmentParam(value = "encounter", required = false) Encounter encounter,
+						   @FragmentParam(value = "visit", required = false) Visit visit,
+						   @FragmentParam(value = "returnUrl", required = false) String returnUrl,
 						   @SpringBean ResourceFactory resourceFactory,
-						   @FragmentParam("patient") Patient patient,
-						   @FragmentParam(value="formId", required=false) Form form,
-						   @FragmentParam(value="formUuid", required=false) String formUuid,
-						   @FragmentParam(value="encounter", required=false) Encounter encounter,
-						   @FragmentParam(value="visit", required=false) Visit visit,
-						   @FragmentParam(value="returnUrl", required=false) String returnUrl,
+						   @SpringBean KenyaEmrUiUtils emrUi,
+						   FragmentConfiguration config,
 						   FragmentModel model,
-						   HttpSession httpSession) throws Exception {
+						   HttpSession httpSession,
+						   PageRequest pageRequest) throws Exception {
 
-		config.require("patient", "formId | formUuid | encounter");
+		config.require("patient", "formUuid | encounter");
 
-		// Get form
-		if (formUuid != null) {
-			form = Context.getFormService().getFormByUuid(formUuid);
-		} else if (encounter != null) {
-			form = encounter.getForm();
-		}
+		// Get form from either the encounter or the form UUID
+		Form form = (encounter != null) ? encounter.getForm() : Context.getFormService().getFormByUuid(formUuid);
+
+		// Check that form can be accessed in the current app context
+		emrUi.checkFormAccess(pageRequest, form);
 
 		// Get html form from database or UI resource
 		HtmlForm hf = FormUtils.getHtmlForm(form, resourceFactory);
 
-		if (hf == null)
-			throw new RuntimeException("Could not find HTML Form");
+		if (hf == null) {
+			throw new RuntimeException("Form " + form.getName() + " has no associated htmlform");
+		}
 
 		// The code below doesn't handle the HFFS case where you might want to _add_ data to an existing encounter
 		FormEntrySession fes;
@@ -93,23 +93,21 @@ public class EnterHtmlFormFragmentController {
 	}
 
 	/**
-	 * Handles a form submit request
-	 * @param patient
-	 * @param form
-	 * @param encounter
-	 * @param visit
-	 * @param returnUrl
-	 * @param request
-	 * @return
+	 * Handles a form submission
+	 * @return form errors in a simple object
 	 * @throws Exception
 	 */
 	public Object submit(@RequestParam("personId") Patient patient,
 						 @RequestParam("formId") Form form,
-						 @RequestParam(value="encounterId", required=false) Encounter encounter,
-						 @RequestParam(value="visitId", required=false) Visit visit,
-						 @RequestParam(value="returnUrl", required=false) String returnUrl,
+						 @RequestParam(value = "encounterId", required = false) Encounter encounter,
+						 @RequestParam(value = "visitId", required = false) Visit visit,
+						 @RequestParam(value = "returnUrl", required = false) String returnUrl,
 						 @SpringBean ResourceFactory resourceFactory,
-						 HttpServletRequest request) throws Exception {
+						 @SpringBean KenyaEmrUiUtils emrUi,
+						 PageRequest pageRequest) throws Exception {
+
+		// Check that form can be accessed in the current app context
+		emrUi.checkFormAccess(pageRequest, form);
 
 		// TODO formModifiedTimestamp and encounterModifiedTimestamp
 
@@ -118,9 +116,9 @@ public class EnterHtmlFormFragmentController {
 
 		FormEntrySession fes;
 		if (encounter != null) {
-			fes = new FormEntrySession(patient, encounter, Mode.EDIT, hf, request.getSession());
+			fes = new FormEntrySession(patient, encounter, Mode.EDIT, hf, pageRequest.getRequest().getSession());
 		} else {
-			fes = new FormEntrySession(patient, hf, Mode.ENTER, request.getSession());
+			fes = new FormEntrySession(patient, hf, Mode.ENTER, pageRequest.getRequest().getSession());
 		}
 
 		if (returnUrl != null) {
@@ -128,7 +126,7 @@ public class EnterHtmlFormFragmentController {
 		}
 
 		// Validate submission
-		List<FormSubmissionError> validationErrors = fes.getSubmissionController().validateSubmission(fes.getContext(), request);
+		List<FormSubmissionError> validationErrors = fes.getSubmissionController().validateSubmission(fes.getContext(), pageRequest.getRequest());
 
 		// If there are validation errors, abort submit and display them
 		if (validationErrors.size() > 0) {
@@ -137,7 +135,7 @@ public class EnterHtmlFormFragmentController {
 
 		// No validation errors found so continue process of form submission
 		fes.prepareForSubmit();
-		fes.getSubmissionController().handleFormSubmission(fes, request);
+		fes.getSubmissionController().handleFormSubmission(fes, pageRequest.getRequest());
 
 		// Check this form will actually create an encounter if its supposed to
 		if (fes.getContext().getMode() == Mode.ENTER && fes.hasEncouterTag() && (fes.getSubmissionActions().getEncountersToCreate() == null || fes.getSubmissionActions().getEncountersToCreate().size() == 0)) {
@@ -175,6 +173,12 @@ public class EnterHtmlFormFragmentController {
 		return returnHelper(null, null);
 	}
 
+	/**
+	 *
+	 * @param validationErrors
+	 * @param context
+	 * @return
+	 */
 	private SimpleObject returnHelper(List<FormSubmissionError> validationErrors, FormEntryContext context) {
 		if (validationErrors == null || validationErrors.size() == 0) {
 			return SimpleObject.create("success", true);

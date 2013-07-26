@@ -28,7 +28,7 @@ import org.openmrs.Visit;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appframework.AppDescriptor;
 import org.openmrs.module.appframework.api.AppFrameworkService;
-import org.openmrs.module.kenyaemr.EmrWebConstants;
+import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyacore.CoreContext;
 import org.openmrs.module.kenyacore.form.FormDescriptor;
 import org.openmrs.module.kenyaui.annotation.AppPage;
@@ -42,7 +42,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 /**
  * Viewing a patient's record, in the medicalChart app
  */
-@AppPage(EmrWebConstants.APP_MEDICAL_CHART)
+@AppPage(EmrConstants.APP_CHART)
 public class MedicalChartViewPatientPageController {
 
 	public void controller(@RequestParam("patientId") Patient patient,
@@ -64,7 +64,7 @@ public class MedicalChartViewPatientPageController {
 		model.addAttribute("patient", patient);
 		model.addAttribute("person", patient);
 
-		AppDescriptor thisApp = Context.getService(AppFrameworkService.class).getAppById(EmrWebConstants.APP_MEDICAL_CHART);
+		AppDescriptor thisApp = Context.getService(AppFrameworkService.class).getAppById(EmrConstants.APP_CHART);
 
 		List<FormDescriptor> oneTimeFormDescriptors = emr.getFormManager().getFormsForPatient(thisApp, patient);
 		List<SimpleObject> oneTimeForms = new ArrayList<SimpleObject>();

@@ -14,13 +14,13 @@
 
 package org.openmrs.module.kenyaemr.page.controller;
 
-import org.openmrs.module.kenyaemr.EmrWebConstants;
+import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyaui.annotation.AppPage;
 
 /**
  * Create patient page controller
  */
-@AppPage(EmrWebConstants.APP_REGISTRATION)
+@AppPage(EmrConstants.APP_REGISTRATION)
 public class RegistrationCreatePatientPageController {
 	
 	public void controller() {
