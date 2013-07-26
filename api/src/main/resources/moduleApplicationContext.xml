@@ -38,7 +38,7 @@
 	<!-- ===================== App descriptors ===================== -->
 
 	<bean id="kenyaemr.app.registration" class="org.openmrs.module.appframework.SimpleAppDescriptor">
-		<property name="id" value="kenyaemr.app.registration"/>
+		<property name="id" value="kenyaemr.registration"/>
 		<property name="label" value="Registration"/>
 		<property name="homepageUrl" value="kenyaemr/registrationHome.page"/>
 		<property name="iconUrl" value="kenyaui:apps/registration.png"/>
@@ -46,7 +46,7 @@
 	</bean>
 
 	<bean id="kenyaemr.app.intake" class="org.openmrs.module.appframework.SimpleAppDescriptor">
-		<property name="id" value="kenyaemr.app.intake"/>
+		<property name="id" value="kenyaemr.intake"/>
 		<property name="label" value="Triage"/>
 		<property name="homepageUrl" value="kenyaemr/intakeHome.page"/>
 		<property name="iconUrl" value="kenyaui:apps/intake.png"/>
@@ -54,7 +54,7 @@
 	</bean>
 
 	<bean id="kenyaemr.app.clinician" class="org.openmrs.module.appframework.SimpleAppDescriptor">
-		<property name="id" value="kenyaemr.app.clinician"/>
+		<property name="id" value="kenyaemr.medicalEncounter"/>
 		<property name="label" value="Clinician"/>
 		<property name="homepageUrl" value="kenyaemr/medicalEncounterHome.page"/>
 		<property name="iconUrl" value="kenyaui:apps/medicalEncounter.png"/>
@@ -62,7 +62,7 @@
 	</bean>
 
 	<bean id="kenyaemr.app.chart" class="org.openmrs.module.appframework.SimpleAppDescriptor">
-		<property name="id" value="kenyaemr.app.chart"/>
+		<property name="id" value="kenyaemr.medicalChart"/>
 		<property name="label" value="Medical Chart"/>
 		<property name="homepageUrl" value="kenyaemr/medicalChartHome.page"/>
 		<property name="iconUrl" value="kenyaui:apps/medicalChart.png"/>
@@ -70,7 +70,7 @@
 	</bean>
 
 	<bean id="kenyaemr.app.reports" class="org.openmrs.module.appframework.SimpleAppDescriptor">
-		<property name="id" value="kenyaemr.app.reports"/>
+		<property name="id" value="kenyaemr.reports"/>
 		<property name="label" value="Reports"/>
 		<property name="homepageUrl" value="kenyaemr/reportsHome.page"/>
 		<property name="iconUrl" value="kenyaui:apps/reports.png"/>
@@ -78,7 +78,7 @@
 	</bean>
 
 	<bean id="kenyaemr.app.admin" class="org.openmrs.module.appframework.SimpleAppDescriptor">
-		<property name="id" value="kenyaemr.app.admin"/>
+		<property name="id" value="kenyaemr.admin"/>
 		<property name="label" value="Admin"/>
 		<property name="homepageUrl" value="kenyaemr/adminHome.page"/>
 		<property name="iconUrl" value="kenyaui:apps/admin.png"/>
@@ -91,15 +91,21 @@
 	<bean id="kenyaemr.program.hiv" class="org.openmrs.module.kenyacore.program.ProgramDescriptor">
 		<property name="targetUuid" value="dfdc6d40-2f2f-463d-ba90-cc97350441a8" />
 		<property name="eligibilityCalculation" value="org.openmrs.module.kenyaemr.calculation.library.hiv.EligibleForHivProgramCalculation" />
-		<property name="enrollmentForm" ref="kenyaemr.form.hivEnrollment" />
-		<property name="discontinuationForm" ref="kenyaemr.form.hivDiscontinuation" />
+		<property name="defaultEnrollmentForm" ref="kenyaemr.form.hivEnrollment" />
+		<property name="defaultCompletionForm" ref="kenyaemr.form.hivCompletion" />
 		<property name="visitForms">
 			<util:list>
 				<ref bean="kenyaemr.form.hivClinicalEncounterAddendum" />
 				<ref bean="kenyaemr.form.tbScreening" />
 			</util:list>
 		</property>
-		<property name="careSummaryFragment" value="kenyaemr:careSummaryHiv" />
+		<property name="fragments">
+			<util:map>
+				<entry key="enrollment-summary" value="kenyaemr:program/hiv/hivEnrollmentSummary" />
+				<entry key="care-panel" value="kenyaemr:program/hiv/hivCarePanel" />
+				<entry key="completion-summary" value="kenyaemr:program/hiv/hivCompletionSummary" />
+			</util:map>
+		</property>
 		<property name="order" value="100" />
 	</bean>
 
@@ -107,14 +113,20 @@
 	<bean id="kenyaemr.program.tb" class="org.openmrs.module.kenyacore.program.ProgramDescriptor">
 		<property name="targetUuid" value="9f144a34-3a4a-44a9-8486-6b7af6cc64f6" />
 		<property name="eligibilityCalculation" value="org.openmrs.module.kenyaemr.calculation.library.tb.EligibleForTbProgramCalculation" />
-		<property name="enrollmentForm" ref="kenyaemr.form.tbEnrollment" />
-		<property name="discontinuationForm" ref="kenyaemr.form.tbDiscontinuation" />
+		<property name="defaultEnrollmentForm" ref="kenyaemr.form.tbEnrollment" />
+		<property name="defaultCompletionForm" ref="kenyaemr.form.tbCompletion" />
 		<property name="visitForms">
 			<util:list>
 				<ref bean="kenyaemr.form.tbFollowupVisit" />
 			</util:list>
 		</property>
-		<property name="careSummaryFragment" value="kenyaemr:careSummaryTb" />
+		<property name="fragments">
+			<util:map>
+				<entry key="enrollment-summary" value="kenyaemr:program/tb/tbEnrollmentSummary" />
+				<entry key="care-panel" value="kenyaemr:program/tb/tbCarePanel" />
+				<entry key="completion-summary" value="kenyaemr:program/tb/tbCompletionSummary" />
+			</util:map>
+		</property>
 		<property name="order" value="200" />
 	</bean>
 
@@ -316,8 +328,8 @@
 		<property name="order" value="201030" />
 	</bean>
 
-	<!-- HIV Discontinuation -->
-	<bean id="kenyaemr.form.hivDiscontinuation" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+	<!-- HIV Completion -->
+	<bean id="kenyaemr.form.hivCompletion" class="org.openmrs.module.kenyacore.form.FormDescriptor">
 		<property name="targetUuid" value="e3237ede-fa70-451f-9e6c-0908bc39f8b9" />
 		<property name="apps">
 			<set>
@@ -360,8 +372,8 @@
 		<property name="order" value="202010" />
 	</bean>
 
-	<!-- TB Discontinuation -->
-	<bean id="kenyaemr.form.tbDiscontinuation" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+	<!-- TB Completion -->
+	<bean id="kenyaemr.form.tbCompletion" class="org.openmrs.module.kenyacore.form.FormDescriptor">
 		<property name="targetUuid" value="4b296dd0-f6be-4007-9eb8-d0fd4e94fb3a" />
 		<property name="apps">
 			<set>

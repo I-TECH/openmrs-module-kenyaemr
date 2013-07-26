@@ -12,11 +12,12 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.fragment.controller;
+package org.openmrs.module.kenyaemr.fragment.controller.program.hiv;
 
-import org.openmrs.*;
+import org.openmrs.Encounter;
+import org.openmrs.Obs;
+import org.openmrs.PatientProgram;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.util.EmrUtils;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.fragment.FragmentModel;
@@ -25,33 +26,18 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * Patient program enrollment fragment
+ * HIV program enrollment summary fragment
  */
-public class PatientProgramEnrollmentFragmentController {
+public class HivEnrollmentSummaryFragmentController {
 	
-	public void controller(@FragmentParam("patientProgram") PatientProgram enrollment,
-						   @FragmentParam("encounterType") EncounterType encounterType,
+	public String controller(@FragmentParam("patientProgram") PatientProgram enrollment,
+						   @FragmentParam(value = "encounter", required = false) Encounter encounter,
 						   @FragmentParam("showClinicalData") boolean showClinicalData,
 						   FragmentModel model) {
 
-		Encounter encounter = EmrUtils.lastEncounterInProgram(enrollment, encounterType);
-
 		Map<String, Object> dataPoints = new LinkedHashMap<String, Object>();
-
 		dataPoints.put("Enrolled", enrollment.getDateEnrolled());
 
-		if (Metadata.HIV_PROGRAM.equals(enrollment.getProgram().getUuid())) {
-			addHivDataPoints(dataPoints, enrollment, encounter, showClinicalData);
-		}
-		else if (Metadata.TB_PROGRAM.equals(enrollment.getProgram().getUuid())) {
-			addTbDataPoints(dataPoints, enrollment, encounter, showClinicalData);
-		}
-
-		model.put("encounter", encounter);
-		model.put("dataPoints", dataPoints);
-	}
-
-	private void addHivDataPoints(Map<String, Object> dataPoints, PatientProgram enrollment, Encounter encounter, boolean showClinicalData) {
 		if (encounter != null) {
 			Obs o = EmrUtils.firstObsInEncounter(encounter, Dictionary.getConcept(Dictionary.METHOD_OF_ENROLLMENT));
 			if (o != null) {
@@ -65,12 +51,8 @@ public class PatientProgramEnrollmentFragmentController {
 				dataPoints.put("WHO stage", o.getValueCoded());
 			}
 		}
-	}
 
-	private void addTbDataPoints(Map<String, Object> dataPoints, PatientProgram enrollment, Encounter encounter, boolean showClinicalData) {
-		Obs o = EmrUtils.firstObsInProgram(enrollment, Dictionary.getConcept(Dictionary.REFERRING_CLINIC_OR_HOSPITAL));
-		if (o != null) {
-			dataPoints.put("Referred from", o.getValueCoded());
-		}
+		model.put("dataPoints", dataPoints);
+		return "view/dataPoints";
 	}
 }

@@ -12,7 +12,7 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.fragment.controller;
+package org.openmrs.module.kenyaemr.fragment.controller.program.tb;
 
 import org.openmrs.Concept;
 import org.openmrs.Patient;
@@ -33,7 +33,7 @@ import java.util.Map;
 /**
  * Controller for TB care summary
  */
-public class CareSummaryTbFragmentController {
+public class TbCarePanelFragmentController {
 
 	public void controller(@FragmentParam("patient") Patient patient,
 						   @FragmentParam("complete") Boolean complete,

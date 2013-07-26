@@ -66,7 +66,7 @@ public class ShowHtmlFormFragmentController {
 		Form form = encounter.getForm();
 
 		// TODO check that form can be accessed in the current app context.
-		// This may require UIFR-122 so that this action request has an associated app
+		// This will require UIFR-122 so that this action request has an associated app
 		//emrUi.checkFormAccess(pageRequest, form);
 
 		// Get html form from database or UI resource

@@ -6,12 +6,12 @@
 	<tr>
 		<td width="40%" valign="top">
 			${ ui.includeFragment("kenyaemr", "patientSummary", [ patient: patient ]) }
-			${ ui.includeFragment("kenyaemr", "patientProgramHistories", [ patient: patient, showClinicalData: true ]) }
+			${ ui.includeFragment("kenyaemr", "program/programHistories", [ patient: patient, showClinicalData: true ]) }
 		</td>
 		<td width="60%" valign="top" style="padding-left: 5px">
 			${ ui.includeFragment("kenyaemr", "visitMenu", [ patient: patient, visit: visit, allowCheckIn: false, allowCheckOut: true ]) }
 
-			${ ui.includeFragment("kenyaemr", "patientProgramCareSummaries", [ patient: patient, complete: false ]) }
+			${ ui.includeFragment("kenyaemr", "program/programCarePanels", [ patient: patient, complete: false ]) }
 
 			<% if (visit) { %>
 			${ ui.includeFragment("kenyaemr", "visitAvailableForms", [ visit: visit ]) }

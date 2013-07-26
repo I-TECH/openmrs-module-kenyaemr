@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
@@ -103,11 +104,11 @@ public class EnterHtmlFormFragmentController {
 						 @RequestParam(value = "visitId", required = false) Visit visit,
 						 @RequestParam(value = "returnUrl", required = false) String returnUrl,
 						 @SpringBean ResourceFactory resourceFactory,
-						 @SpringBean KenyaEmrUiUtils emrUi,
-						 PageRequest pageRequest) throws Exception {
+						 HttpServletRequest request) throws Exception {
 
-		// Check that form can be accessed in the current app context
-		emrUi.checkFormAccess(pageRequest, form);
+		// TODO Check that form can be accessed in the current app context.
+		// This will require UIFR-122 so that this action request has an associated app
+		//emrUi.checkFormAccess(pageRequest, form);
 
 		// TODO formModifiedTimestamp and encounterModifiedTimestamp
 
@@ -116,9 +117,9 @@ public class EnterHtmlFormFragmentController {
 
 		FormEntrySession fes;
 		if (encounter != null) {
-			fes = new FormEntrySession(patient, encounter, Mode.EDIT, hf, pageRequest.getRequest().getSession());
+			fes = new FormEntrySession(patient, encounter, Mode.EDIT, hf, request.getSession());
 		} else {
-			fes = new FormEntrySession(patient, hf, Mode.ENTER, pageRequest.getRequest().getSession());
+			fes = new FormEntrySession(patient, hf, Mode.ENTER, request.getSession());
 		}
 
 		if (returnUrl != null) {
@@ -126,7 +127,7 @@ public class EnterHtmlFormFragmentController {
 		}
 
 		// Validate submission
-		List<FormSubmissionError> validationErrors = fes.getSubmissionController().validateSubmission(fes.getContext(), pageRequest.getRequest());
+		List<FormSubmissionError> validationErrors = fes.getSubmissionController().validateSubmission(fes.getContext(), request);
 
 		// If there are validation errors, abort submit and display them
 		if (validationErrors.size() > 0) {
@@ -135,7 +136,7 @@ public class EnterHtmlFormFragmentController {
 
 		// No validation errors found so continue process of form submission
 		fes.prepareForSubmit();
-		fes.getSubmissionController().handleFormSubmission(fes, pageRequest.getRequest());
+		fes.getSubmissionController().handleFormSubmission(fes, request);
 
 		// Check this form will actually create an encounter if its supposed to
 		if (fes.getContext().getMode() == Mode.ENTER && fes.hasEncouterTag() && (fes.getSubmissionActions().getEncountersToCreate() == null || fes.getSubmissionActions().getEncountersToCreate().size() == 0)) {

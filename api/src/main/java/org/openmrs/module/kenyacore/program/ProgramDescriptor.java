@@ -22,6 +22,7 @@ import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyacore.AbstractEntityDescriptor;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Describes how a program can be used in the EMR. Each program should have a component of this type in the application
@@ -31,13 +32,13 @@ public class ProgramDescriptor extends AbstractEntityDescriptor<Program> {
 
 	private Class<? extends BaseEmrCalculation> eligibilityCalculation;
 
-	private FormDescriptor enrollmentForm;
+	private FormDescriptor defaultEnrollmentForm;
 
-	private FormDescriptor discontinuationForm;
+	private FormDescriptor defaultCompletionForm;
 
 	private List<FormDescriptor> visitForms;
 
-	private UIResource careSummaryFragment;
+	private Map<String, UIResource> fragments;
 
 	/**
 	 * @see org.openmrs.module.kenyacore.AbstractEntityDescriptor#getTarget()
@@ -64,51 +65,35 @@ public class ProgramDescriptor extends AbstractEntityDescriptor<Program> {
 	}
 
 	/**
-	 * Gets the enrollment form
-	 * @return the enrollment form
+	 * Gets the default enrollment form
+	 * @return the form
 	 */
-	public FormDescriptor getEnrollmentForm() {
-		return enrollmentForm;
+	public FormDescriptor getDefaultEnrollmentForm() {
+		return defaultEnrollmentForm;
 	}
 
 	/**
-	 * Sets the enrollment form
-	 * @param enrollmentForm the enrollment form
+	 * Sets the default enrollment form
+	 * @param defaultEnrollmentForm the form
 	 */
-	public void setEnrollmentForm(FormDescriptor enrollmentForm) {
-		this.enrollmentForm = enrollmentForm;
+	public void setDefaultEnrollmentForm(FormDescriptor defaultEnrollmentForm) {
+		this.defaultEnrollmentForm = defaultEnrollmentForm;
 	}
 
 	/**
-	 * Gets the discontinuation form
-	 * @return the discontinuation form
+	 * Gets the default completion form
+	 * @return the form
 	 */
-	public FormDescriptor getDiscontinuationForm() {
-		return discontinuationForm;
+	public FormDescriptor getDefaultCompletionForm() {
+		return defaultCompletionForm;
 	}
 
 	/**
-	 * Sets the discontinuation form
-	 * @param discontinuationForm the discontinuation form
+	 * Sets the default completion form
+	 * @param defaultCompletionForm the form
 	 */
-	public void setDiscontinuationForm(FormDescriptor discontinuationForm) {
-		this.discontinuationForm = discontinuationForm;
-	}
-
-	/**
-	 * Gets the care summary fragment resource
-	 * @return the fragment
-	 */
-	public UIResource getCareSummaryFragment() {
-		return careSummaryFragment;
-	}
-
-	/**
-	 * Sets the care summary fragment resource
-	 * @param careSummaryFragment the care summary fragment
-	 */
-	public void setCareSummaryFragment(UIResource careSummaryFragment) {
-		this.careSummaryFragment = careSummaryFragment;
+	public void setDefaultCompletionForm(FormDescriptor defaultCompletionForm) {
+		this.defaultCompletionForm = defaultCompletionForm;
 	}
 
 	/**
@@ -125,5 +110,21 @@ public class ProgramDescriptor extends AbstractEntityDescriptor<Program> {
 	 */
 	public void setVisitForms(List<FormDescriptor> visitForms) {
 		this.visitForms = visitForms;
+	}
+
+	/**
+	 * Gets the fragments
+	 * @return the fragment resources
+	 */
+	public Map<String, UIResource> getFragments() {
+		return fragments;
+	}
+
+	/**
+	 * Sets the fragments
+	 * @param fragments the fragment resources
+	 */
+	public void setFragments(Map<String, UIResource> fragments) {
+		this.fragments = fragments;
 	}
 }

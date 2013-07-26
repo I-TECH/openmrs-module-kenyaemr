@@ -12,38 +12,41 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.fragment.controller;
+package org.openmrs.module.kenyaemr.fragment.controller.program;
 
 import org.openmrs.Patient;
+import org.openmrs.Program;
 import org.openmrs.module.kenyacore.CoreContext;
+import org.openmrs.module.kenyacore.UIResource;
 import org.openmrs.module.kenyacore.program.ProgramDescriptor;
-import org.openmrs.module.kenyaemr.util.EmrUtils;
+import org.openmrs.module.kenyaemr.EmrWebConstants;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.Map;
 
 /**
- * Program history fragment
+ * Program care summaries fragment
  */
-public class PatientProgramHistoriesFragmentController {
+public class ProgramCarePanelsFragmentController {
 
 	public void controller(FragmentModel model,
 						   @FragmentParam("patient") Patient patient,
-						   @FragmentParam("showClinicalData") boolean showClinicalData,
+						   @FragmentParam("complete") boolean complete,
 						   @SpringBean CoreContext emr) {
 
-		List<ProgramDescriptor> activePrograms = emr.getProgramManager().getPatientActivePrograms(patient);
-		List<ProgramDescriptor> eligiblePrograms = emr.getProgramManager().getPatientEligiblePrograms(patient);
-		List<ProgramDescriptor> programs = EmrUtils.merge(activePrograms, eligiblePrograms);
+		List<UIResource> carePanels = new ArrayList<UIResource>();
+
+		for (ProgramDescriptor programDescriptor : emr.getProgramManager().getPatientActivePrograms(patient)) {
+			carePanels.add(programDescriptor.getFragments().get(EmrWebConstants.PROGRAM_CARE_PANEL_FRAGMENT));
+		}
 
 		model.addAttribute("patient", patient);
-		model.addAttribute("programs", programs);
-		model.addAttribute("showClinicalData", showClinicalData);
+		model.addAttribute("carePanels", carePanels);
+		model.addAttribute("complete", complete);
 	}
 }

@@ -12,31 +12,38 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.fragment.controller;
+package org.openmrs.module.kenyaemr.fragment.controller.program;
 
 import org.openmrs.Patient;
 import org.openmrs.module.kenyacore.CoreContext;
 import org.openmrs.module.kenyacore.program.ProgramDescriptor;
+import org.openmrs.module.kenyaemr.util.EmrUtils;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
- * Program care summaries fragment
+ * Program history fragment
  */
-public class PatientProgramCareSummariesFragmentController {
+public class ProgramHistoriesFragmentController {
 
 	public void controller(FragmentModel model,
 						   @FragmentParam("patient") Patient patient,
-						   @FragmentParam("complete") boolean complete,
+						   @FragmentParam("showClinicalData") boolean showClinicalData,
 						   @SpringBean CoreContext emr) {
 
-		List<ProgramDescriptor> programs = emr.getProgramManager().getPatientActivePrograms(patient);
+		List<ProgramDescriptor> activePrograms = emr.getProgramManager().getPatientActivePrograms(patient);
+		List<ProgramDescriptor> eligiblePrograms = emr.getProgramManager().getPatientEligiblePrograms(patient);
+		List<ProgramDescriptor> programs = EmrUtils.merge(activePrograms, eligiblePrograms);
 
 		model.addAttribute("patient", patient);
 		model.addAttribute("programs", programs);
-		model.addAttribute("complete", complete);
+		model.addAttribute("showClinicalData", showClinicalData);
 	}
 }

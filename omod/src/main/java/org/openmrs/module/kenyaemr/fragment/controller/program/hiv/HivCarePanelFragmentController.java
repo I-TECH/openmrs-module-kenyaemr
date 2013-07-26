@@ -12,7 +12,7 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.fragment.controller;
+package org.openmrs.module.kenyaemr.fragment.controller.program.hiv;
 
 import org.openmrs.Concept;
 import org.openmrs.Patient;
@@ -35,7 +35,7 @@ import java.util.Map;
 /**
  * Controller for HIV care summary
  */
-public class CareSummaryHivFragmentController {
+public class HivCarePanelFragmentController {
 
 	public void controller(@FragmentParam("patient") Patient patient,
 						   @FragmentParam("complete") Boolean complete,

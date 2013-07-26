@@ -29,4 +29,11 @@ public class EmrWebConstants {
 	 * Name of session attribute for temporary reset passwords
 	 */
 	public static final String SESSION_ATTR_RESET_PASSWORD = "resetPassword";
+
+	/**
+	 * Fragment identifiers
+	 */
+	public static final String PROGRAM_ENROLLMENT_SUMMARY_FRAGMENT = "enrollment-summary";
+	public static final String PROGRAM_CARE_PANEL_FRAGMENT = "care-panel";
+	public static final String PROGRAM_COMPLETION_SUMMARY_FRAGMENT = "completion-summary";
 }

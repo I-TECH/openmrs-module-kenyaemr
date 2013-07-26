@@ -12,7 +12,7 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.fragment.controller;
+package org.openmrs.module.kenyaemr.fragment.controller.program;
 
 import java.util.*;
 
@@ -26,19 +26,19 @@ import org.openmrs.ui.framework.fragment.FragmentModel;
 /**
  * Patient program history fragment
  */
-public class PatientProgramHistoryFragmentController {
+public class ProgramHistoryFragmentController {
 
 	public void controller(FragmentModel model,
 						   @FragmentParam("patient") Patient patient,
 						   @FragmentParam("program") Program program,
-						   @FragmentParam("enrollmentForm") Form enrollmentForm,
-						   @FragmentParam("discontinuationForm") Form discontinuationForm,
+						   @FragmentParam("defaultEnrollmentForm") Form defaultEnrollmentForm,
+						   @FragmentParam("defaultCompletionForm") Form defaultCompletionForm,
 						   @FragmentParam("showClinicalData") boolean showClinicalData) {
 
 		model.addAttribute("patient", patient);
 		model.addAttribute("program", program);
-		model.addAttribute("enrollmentForm", enrollmentForm);
-		model.addAttribute("discontinuationForm", discontinuationForm);
+		model.addAttribute("defaultEnrollmentForm", defaultEnrollmentForm);
+		model.addAttribute("defaultCompletionForm", defaultCompletionForm);
 		model.addAttribute("showClinicalData", showClinicalData);
 
 		ProgramWorkflowService pws = Context.getProgramWorkflowService();

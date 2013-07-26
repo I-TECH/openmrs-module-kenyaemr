@@ -27,12 +27,12 @@ public class EmrConstants {
 	/**
 	 * Application IDs
 	 */
-	public static final String APP_REGISTRATION = MODULE_ID + ".app.registration";
-	public static final String APP_INTAKE = MODULE_ID + ".app.intake";
-	public static final String APP_CLINICIAN = MODULE_ID + ".app.clinician";
-	public static final String APP_CHART = MODULE_ID + ".app.chart";
-	public static final String APP_REPORTS = MODULE_ID + ".app.reports";
-	public static final String APP_ADMIN = MODULE_ID + ".app.admin";
+	public static final String APP_REGISTRATION = MODULE_ID + ".registration";
+	public static final String APP_INTAKE = MODULE_ID + ".intake";
+	public static final String APP_CLINICIAN = MODULE_ID + ".medicalEncounter";
+	public static final String APP_CHART = MODULE_ID + ".medicalChart";
+	public static final String APP_REPORTS = MODULE_ID + ".reports";
+	public static final String APP_ADMIN = MODULE_ID + ".admin";
 
 	/**
 	 * Global property names

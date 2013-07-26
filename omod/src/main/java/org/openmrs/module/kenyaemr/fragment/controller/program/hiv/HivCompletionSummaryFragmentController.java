@@ -12,11 +12,12 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.fragment.controller;
+package org.openmrs.module.kenyaemr.fragment.controller.program.hiv;
 
-import org.openmrs.*;
+import org.openmrs.Encounter;
+import org.openmrs.Obs;
+import org.openmrs.PatientProgram;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.util.EmrUtils;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.fragment.FragmentModel;
@@ -25,19 +26,16 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * Patient program discontinuation fragment
+ * HIV program discontinuation summary fragment
  */
-public class PatientProgramDiscontinuationFragmentController {
+public class HivCompletionSummaryFragmentController {
 	
-	public void controller(@FragmentParam("patientProgram") PatientProgram enrollment,
-						   @FragmentParam("encounterType") EncounterType encounterType,
+	public String controller(@FragmentParam("patientProgram") PatientProgram enrollment,
+						   @FragmentParam(value = "encounter", required = false) Encounter encounter,
 						   @FragmentParam("showClinicalData") boolean showClinicalData,
 						   FragmentModel model) {
 
-		Encounter encounter = EmrUtils.lastEncounterInProgram(enrollment, encounterType);
-
 		Map<String, Object> dataPoints = new LinkedHashMap<String, Object>();
-
 
 		dataPoints.put("Completed", enrollment.getDateCompleted());
 
@@ -45,34 +43,14 @@ public class PatientProgramDiscontinuationFragmentController {
 			dataPoints.put("Outcome", enrollment.getOutcome());
 		}
 
-		if (Metadata.HIV_PROGRAM.equals(enrollment.getProgram().getUuid())) {
-			addHivDataPoints(dataPoints, enrollment, encounter, showClinicalData);
-		}
-		else if (Metadata.TB_PROGRAM.equals(enrollment.getProgram().getUuid())) {
-			addTbDataPoints(dataPoints, enrollment, encounter, showClinicalData);
-		}
-
-		model.put("encounter", encounter);
-		model.put("dataPoints", dataPoints);
-	}
-
-	private void addHivDataPoints(Map<String, Object> dataPoints, PatientProgram enrollment, Encounter encounter, boolean showClinicalData) {
 		if (encounter != null) {
 			Obs reasonObs = EmrUtils.firstObsInEncounter(encounter, Dictionary.getConcept(Dictionary.REASON_FOR_PROGRAM_DISCONTINUATION));
 			if (reasonObs != null) {
 				dataPoints.put("Reason", reasonObs.getValueCoded());
 			}
 		}
-	}
 
-	private void addTbDataPoints(Map<String, Object> dataPoints, PatientProgram enrollment, Encounter encounter, boolean showClinicalData) {
-		if (showClinicalData) {
-			if (encounter != null) {
-				Obs outcomeObs = EmrUtils.firstObsInEncounter(encounter, Dictionary.getConcept(Dictionary.TUBERCULOSIS_TREATMENT_OUTCOME));
-				if (outcomeObs != null) {
-					dataPoints.put("Outcome", outcomeObs.getValueCoded());
-				}
-			}
-		}
+		model.put("dataPoints", dataPoints);
+		return "view/dataPoints";
 	}
 }
