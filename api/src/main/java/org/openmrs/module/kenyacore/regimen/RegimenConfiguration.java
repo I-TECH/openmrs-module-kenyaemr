@@ -17,7 +17,7 @@ package org.openmrs.module.kenyacore.regimen;
 import org.openmrs.module.kenyacore.AbstractResourceConfiguration;
 
 /**
- * Configuration component for regimens
+ * Configuration bean class for regimens
  */
 public class RegimenConfiguration extends AbstractResourceConfiguration {
 }

@@ -28,14 +28,14 @@ public class MetadataManagerTest extends BaseModuleContextSensitiveTest {
 	private MetadataManager metadataManager;
 
 	/**
-	 * @see MetadataManager#installMetadataPackageIfNecessary(String, String, ClassLoader)
+	 * @see MetadataManager#ensurePackageInstalled(String, String, ClassLoader)
 	 */
 	@Test
-	public void installMetadataPackageIfNecessary_shouldInstallPackages() throws Exception {
+	public void ensurePackageInstalled_shouldInstallPackagesOnlyIfNecessary() throws Exception {
 
 		// Test package contains visit type { name: "Outpatient", uuid: "3371a4d4-f66f-4454-a86d-92c7b3da990c" }
-		final String PACKAGE_GROUP_UUID = "5c7fd8e7-e9a5-43a2-8ba5-c7694fc8db4a";
-		final String PACKAGE_FILENAME = "test-package-1.zip";
+		final String TEST_PACKAGE_GROUP_UUID = "5c7fd8e7-e9a5-43a2-8ba5-c7694fc8db4a";
+		final String TEST_PACKAGE_FILENAME = "test-package-1.zip";
 
 		try {
 			// Check data isn't there
@@ -46,11 +46,11 @@ public class MetadataManagerTest extends BaseModuleContextSensitiveTest {
 		}
 
 		// Simulate first time startup
-		Assert.assertTrue(metadataManager.installMetadataPackageIfNecessary(PACKAGE_GROUP_UUID, PACKAGE_FILENAME, null));
+		Assert.assertTrue(metadataManager.ensurePackageInstalled(TEST_PACKAGE_GROUP_UUID, TEST_PACKAGE_FILENAME, null));
 		Assert.assertNotNull(MetadataUtils.getVisitType("3371a4d4-f66f-4454-a86d-92c7b3da990c"));
 
 		// Simulate starting a second time
-		Assert.assertFalse(metadataManager.installMetadataPackageIfNecessary(PACKAGE_GROUP_UUID, PACKAGE_FILENAME, null));
+		Assert.assertFalse(metadataManager.ensurePackageInstalled(TEST_PACKAGE_GROUP_UUID, TEST_PACKAGE_FILENAME, null));
 		Assert.assertNotNull(MetadataUtils.getVisitType("3371a4d4-f66f-4454-a86d-92c7b3da990c"));
 	}
 }

@@ -17,7 +17,7 @@ package org.openmrs.module.kenyacore.lab;
 import org.openmrs.module.kenyacore.AbstractResourceConfiguration;
 
 /**
- * Configuration component for lab
+ * Configuration bean class for lab
  */
 public class LabConfiguration extends AbstractResourceConfiguration {
 }
