@@ -59,6 +59,7 @@ public class FormManager implements ContentManager {
 	@Override
 	public synchronized void refresh() {
 		forms.clear();
+		generalPatientForms.clear();
 		generalVisitForms.clear();
 
 		List<FormDescriptor> descriptors = Context.getRegisteredComponents(FormDescriptor.class);
@@ -90,8 +91,12 @@ public class FormManager implements ContentManager {
 
 		// Process form configuration beans
 		for (FormConfiguration configuration : Context.getRegisteredComponents(FormConfiguration.class)) {
-			generalPatientForms.addAll(configuration.getGeneralPatientForms());
-			generalVisitForms.addAll(configuration.getGeneralVisitForms());
+			if (configuration.getGeneralPatientForms() != null) {
+				generalPatientForms.addAll(configuration.getGeneralPatientForms());
+			}
+			if (configuration.getGeneralVisitForms() != null) {
+				generalVisitForms.addAll(configuration.getGeneralVisitForms());
+			}
 		}
 
 		generalPatientForms = EmrUtils.merge(generalPatientForms); // Sorts and removes duplicates
