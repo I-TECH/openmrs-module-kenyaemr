@@ -23,6 +23,7 @@ import org.openmrs.module.kenyacore.AbstractEntityDescriptor;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Describes how a program can be used in the EMR. Each program should have a component of this type in the application
@@ -36,7 +37,7 @@ public class ProgramDescriptor extends AbstractEntityDescriptor<Program> {
 
 	private FormDescriptor defaultCompletionForm;
 
-	private List<FormDescriptor> visitForms;
+	private Set<FormDescriptor> visitForms;
 
 	private Map<String, UIResource> fragments;
 
@@ -100,7 +101,7 @@ public class ProgramDescriptor extends AbstractEntityDescriptor<Program> {
 	 * Gets the visit forms
 	 * @return the visit forms
 	 */
-	public List<FormDescriptor> getVisitForms() {
+	public Set<FormDescriptor> getVisitForms() {
 		return visitForms;
 	}
 
@@ -108,7 +109,7 @@ public class ProgramDescriptor extends AbstractEntityDescriptor<Program> {
 	 * Sets the visit forms
 	 * @param visitForms the visit forms
 	 */
-	public void setVisitForms(List<FormDescriptor> visitForms) {
+	public void setVisitForms(Set<FormDescriptor> visitForms) {
 		this.visitForms = visitForms;
 	}
 

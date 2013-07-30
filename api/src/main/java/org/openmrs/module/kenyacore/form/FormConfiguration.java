@@ -16,7 +16,6 @@ package org.openmrs.module.kenyacore.form;
 
 import org.openmrs.module.kenyacore.program.ProgramDescriptor;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -25,33 +24,57 @@ import java.util.Set;
  */
 public class FormConfiguration {
 
-	private List<FormDescriptor> generalPatientForms;
+	private Set<FormDescriptor> generalPatientForms;
 
-	private List<FormDescriptor> generalVisitForms;
+	private Set<FormDescriptor> generalVisitForms;
 
-	private Map<ProgramDescriptor, Set<FormDescriptor>> additionalProgramForms;
+	private Map<ProgramDescriptor, Set<FormDescriptor>> programVisitForms;
 
-	public List<FormDescriptor> getGeneralPatientForms() {
+	/**
+	 * Gets the general per-patient forms
+	 * @return the form descriptors
+	 */
+	public Set<FormDescriptor> getGeneralPatientForms() {
 		return generalPatientForms;
 	}
 
-	public void setGeneralPatientForms(List<FormDescriptor> generalPatientForms) {
+	/**
+	 * Sets the general per-patient forms
+	 * @param generalPatientForms the form descriptors
+	 */
+	public void setGeneralPatientForms(Set<FormDescriptor> generalPatientForms) {
 		this.generalPatientForms = generalPatientForms;
 	}
 
-	public List<FormDescriptor> getGeneralVisitForms() {
+	/**
+	 * Gets the general pre-visit forms
+	 * @return the form descriptors
+	 */
+	public Set<FormDescriptor> getGeneralVisitForms() {
 		return generalVisitForms;
 	}
 
-	public void setGeneralVisitForms(List<FormDescriptor> generalVisitForms) {
+	/**
+	 * Sets the general per-visit forms
+	 * @param generalVisitForms the form descriptors
+	 */
+	public void setGeneralVisitForms(Set<FormDescriptor> generalVisitForms) {
 		this.generalVisitForms = generalVisitForms;
 	}
 
-	public Map<ProgramDescriptor, Set<FormDescriptor>> getAdditionalProgramForms() {
-		return additionalProgramForms;
+	/**
+	 * Gets the program specific per-visit forms
+	 * @return the map of program and form descriptors
+	 */
+	public Map<ProgramDescriptor, Set<FormDescriptor>> getProgramVisitForms() {
+		return programVisitForms;
 	}
 
-	public void setAdditionalProgramForms(Map<ProgramDescriptor, Set<FormDescriptor>> additionalProgramForms) {
-		this.additionalProgramForms = additionalProgramForms;
+	/**
+	 * Sets the program specific per-visit forms
+	 * @param programVisitForms the map of program and form descriptors
+	 */
+	public void setProgramVisitForms(Map<ProgramDescriptor, Set<FormDescriptor>> programVisitForms) {
+		this.programVisitForms = programVisitForms;
 	}
 }

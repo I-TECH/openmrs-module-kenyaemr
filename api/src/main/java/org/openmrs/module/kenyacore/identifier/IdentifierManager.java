@@ -24,6 +24,7 @@ import org.openmrs.module.kenyacore.ContentManager;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -50,8 +51,20 @@ public class IdentifierManager implements ContentManager {
 		Collections.sort(descriptors);
 
 		for (IdentifierDescriptor descriptor : descriptors) {
+			if (identifiers.containsKey(descriptor.getTargetUuid())) {
+				throw new RuntimeException("Identifier type " + descriptor.getTargetUuid() + " already registered");
+			}
+
 			identifiers.put(descriptor.getTargetUuid(), descriptor);
 		}
+	}
+
+	/**
+	 * Gets all registered identifier descriptors
+	 * @return the identifier descriptors
+	 */
+	public Collection<IdentifierDescriptor> getAllIdentifierDescriptors() {
+		return identifiers.values();
 	}
 
 	/**

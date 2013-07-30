@@ -97,9 +97,11 @@ public class FormManager implements ContentManager {
 			if (configuration.getGeneralVisitForms() != null) {
 				generalVisitForms.addAll(configuration.getGeneralVisitForms());
 			}
-			if (configuration.getAdditionalProgramForms() != null) {
-				for (ProgramDescriptor programDescriptor : configuration.getAdditionalProgramForms().keySet()) {
-					Set<FormDescriptor> additionalForms = configuration.getAdditionalProgramForms().get(programDescriptor);
+			if (configuration.getProgramVisitForms() != null) {
+				Map<ProgramDescriptor, Set<FormDescriptor>> programVisitForms = configuration.getProgramVisitForms();
+
+				for (ProgramDescriptor programDescriptor : programVisitForms.keySet()) {
+					Set<FormDescriptor> additionalForms = programVisitForms.get(programDescriptor);
 					programDescriptor.getVisitForms().addAll(additionalForms);
 				}
 			}

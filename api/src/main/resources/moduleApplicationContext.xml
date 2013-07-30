@@ -26,19 +26,19 @@
 
 	<bean id="kenyaemr.config.form" class="org.openmrs.module.kenyacore.form.FormConfiguration">
 		<property name="generalPatientForms">
-			<list>
+			<set>
 				<ref bean="kenyaemr.form.hivFamilyHistory" />
 				<ref bean="kenyaemr.form.obstetricHistory" />
-			</list>
+			</set>
 		</property>
 		<property name="generalVisitForms">
-			<list>
+			<set>
 				<ref bean="kenyaemr.form.triage" />
 				<ref bean="kenyaemr.form.clinicalEncounter" />
 				<ref bean="kenyaemr.form.labResults" />
 				<ref bean="kenyaemr.form.otherMedications" />
 				<ref bean="kenyaemr.form.progressNote" />
-			</list>
+			</set>
 		</property>
 	</bean>
 
@@ -101,10 +101,10 @@
 		<property name="defaultEnrollmentForm" ref="kenyaemr.form.hivEnrollment" />
 		<property name="defaultCompletionForm" ref="kenyaemr.form.hivCompletion" />
 		<property name="visitForms">
-			<list>
+			<set>
 				<ref bean="kenyaemr.form.hivClinicalEncounterAddendum" />
 				<ref bean="kenyaemr.form.tbScreening" />
-			</list>
+			</set>
 		</property>
 		<property name="fragments">
 			<map>
@@ -123,9 +123,9 @@
 		<property name="defaultEnrollmentForm" ref="kenyaemr.form.tbEnrollment" />
 		<property name="defaultCompletionForm" ref="kenyaemr.form.tbCompletion" />
 		<property name="visitForms">
-			<list>
+			<set>
 				<ref bean="kenyaemr.form.tbFollowupVisit" />
-			</list>
+			</set>
 		</property>
 		<property name="fragments">
 			<map>
