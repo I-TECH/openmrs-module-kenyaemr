@@ -97,6 +97,12 @@ public class FormManager implements ContentManager {
 			if (configuration.getGeneralVisitForms() != null) {
 				generalVisitForms.addAll(configuration.getGeneralVisitForms());
 			}
+			if (configuration.getAdditionalProgramForms() != null) {
+				for (ProgramDescriptor programDescriptor : configuration.getAdditionalProgramForms().keySet()) {
+					Set<FormDescriptor> additionalForms = configuration.getAdditionalProgramForms().get(programDescriptor);
+					programDescriptor.getVisitForms().addAll(additionalForms);
+				}
+			}
 		}
 
 		generalPatientForms = EmrUtils.merge(generalPatientForms); // Sorts and removes duplicates
@@ -136,8 +142,8 @@ public class FormManager implements ContentManager {
 	 * Gets all registered form descriptors
 	 * @return the form descriptors
 	 */
-	public List<FormDescriptor> getAllFormDescriptors() {
-		return new ArrayList<FormDescriptor>(forms.values());
+	public Collection<FormDescriptor> getAllFormDescriptors() {
+		return forms.values();
 	}
 
 	/**

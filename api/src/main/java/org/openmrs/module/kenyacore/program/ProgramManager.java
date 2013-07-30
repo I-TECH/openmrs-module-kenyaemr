@@ -24,6 +24,7 @@ import org.openmrs.calculation.result.ResultUtil;
 import org.openmrs.module.kenyacore.ContentManager;
 import org.openmrs.module.kenyacore.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyacore.calculation.CalculationUtils;
+import org.openmrs.module.kenyacore.form.FormConfiguration;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -55,6 +56,10 @@ public class ProgramManager implements ContentManager {
 		Collections.sort(descriptors);
 
 		for (ProgramDescriptor descriptor : descriptors) {
+			if (programs.containsKey(descriptor.getTargetUuid())) {
+				throw new RuntimeException("Program " + descriptor.getTargetUuid() + " already registered");
+			}
+
 			programs.put(descriptor.getTargetUuid(), descriptor);
 		}
 	}

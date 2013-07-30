@@ -14,7 +14,11 @@
 
 package org.openmrs.module.kenyacore.form;
 
+import org.openmrs.module.kenyacore.program.ProgramDescriptor;
+
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Configuration for forms
@@ -24,6 +28,8 @@ public class FormConfiguration {
 	private List<FormDescriptor> generalPatientForms;
 
 	private List<FormDescriptor> generalVisitForms;
+
+	private Map<ProgramDescriptor, Set<FormDescriptor>> additionalProgramForms;
 
 	public List<FormDescriptor> getGeneralPatientForms() {
 		return generalPatientForms;
@@ -39,5 +45,13 @@ public class FormConfiguration {
 
 	public void setGeneralVisitForms(List<FormDescriptor> generalVisitForms) {
 		this.generalVisitForms = generalVisitForms;
+	}
+
+	public Map<ProgramDescriptor, Set<FormDescriptor>> getAdditionalProgramForms() {
+		return additionalProgramForms;
+	}
+
+	public void setAdditionalProgramForms(Map<ProgramDescriptor, Set<FormDescriptor>> additionalProgramForms) {
+		this.additionalProgramForms = additionalProgramForms;
 	}
 }

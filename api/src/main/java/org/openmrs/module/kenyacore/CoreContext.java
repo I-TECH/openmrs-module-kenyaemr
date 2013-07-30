@@ -148,8 +148,8 @@ public class CoreContext {
 		regimenManager.refresh();
 		identifierManager.refresh();
 		calculationManager.refresh();
-		formManager.refresh();
 		programManager.refresh();
+		formManager.refresh();
 		reportManager.refresh();
 
 		refreshed = true;
