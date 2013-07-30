@@ -15,12 +15,16 @@
 package org.openmrs.module.kenyaemr.fragment.controller;
 
 import org.openmrs.Patient;
-import org.openmrs.module.kenyacore.metadata.MetadataUtils;
-import org.openmrs.module.kenyaemr.Metadata;
+import org.openmrs.module.appframework.AppDescriptor;
+import org.openmrs.module.kenyacore.CoreContext;
+import org.openmrs.module.kenyacore.form.FormDescriptor;
+import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.FragmentParam;
+import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.FragmentModel;
+import org.openmrs.ui.framework.page.PageRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,20 +34,22 @@ import java.util.List;
  */
 public class PatientSummaryFragmentController {
 	
-	public void controller(@FragmentParam("patient") Patient patient, UiUtils ui, FragmentModel model) {
+	public void controller(@FragmentParam("patient") Patient patient,
+						   @SpringBean CoreContext emr,
+						   @SpringBean KenyaUiUtils kenyaUi,
+						   PageRequest pageRequest,
+						   UiUtils ui,
+						   FragmentModel model) {
+
+		AppDescriptor currentApp = kenyaUi.getCurrentApp(pageRequest);
 
 		List<SimpleObject> forms = new ArrayList<SimpleObject>();
 
-		forms.add(ui.simplifyObject(MetadataUtils.getForm(Metadata.FAMILY_HISTORY_FORM)));
-
-		if (patient.getGender().equals("F")) {
-			forms.add(ui.simplifyObject(MetadataUtils.getForm(Metadata.OBSTETRIC_HISTORY_FORM)));
+		for (FormDescriptor formDescriptor : emr.getFormManager().getFormsForPatient(currentApp, patient)) {
+			forms.add(ui.simplifyObject(formDescriptor.getTarget()));
 		}
 
 		model.addAttribute("patient", patient);
 		model.addAttribute("forms", forms);
-
-		model.addAttribute("clinicNumberIdType", MetadataUtils.getPatientIdentifierType(Metadata.PATIENT_CLINIC_NUMBER_IDENTIFIER_TYPE));
-		model.addAttribute("hivNumberIdType", MetadataUtils.getPatientIdentifierType(Metadata.UNIQUE_PATIENT_NUMBER_IDENTIFIER_TYPE));
 	}
 }
