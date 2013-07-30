@@ -22,7 +22,7 @@
 					]
 				],
 				fragmentProvider: "kenyaemr",
-				fragment: "adminUtil",
+				fragment: "admin/adminUtil",
 				action: "accountSearch",
 				submitOnEvent: "accountSearch/changed",
 				resetOnSubmit: false,

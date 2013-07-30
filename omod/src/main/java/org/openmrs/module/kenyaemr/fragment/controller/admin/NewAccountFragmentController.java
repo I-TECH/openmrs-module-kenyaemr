@@ -11,7 +11,7 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.kenyaemr.fragment.controller;
+package org.openmrs.module.kenyaemr.fragment.controller.admin;
 
 import java.util.Set;
 
@@ -40,7 +40,7 @@ import javax.servlet.http.HttpSession;
 /**
  * Create new account fragment controller
  */
-public class AdminNewAccountFragmentController {
+public class NewAccountFragmentController {
 	
 	public void controller(FragmentModel model) {
 		model.addAttribute("account", newAccountCommandObject());

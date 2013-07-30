@@ -18,26 +18,26 @@
 
 <div id="content-main">
 <% if (person) { %>
-	${ ui.includeFragment("kenyaemr", "adminEditAccount") }
+	${ ui.includeFragment("kenyaemr", "admin/editAccount") }
 <% } else { %>
-	${ ui.includeFragment("kenyaemr", "adminNewAccount") }
+	${ ui.includeFragment("kenyaemr", "admin/newAccount") }
 <% } %>
 </div>
 
 <% if (user) { %>
-<script type="text/javascript">
-	function enableUser() {
-		jq('#enable_user_form').submit();
-	}
-	function disableUser() {
-		jq('#disable_user_form').submit();
-	}
-</script>
-<form id="enable_user_form" method="post" action="${ ui.actionLink("kenyaemr", "adminEditAccount", "unretireUser") }" style="display: none">
-	<input type="hidden" name="userId" value="${ user.userId }"/>
-</form>
-<form id="disable_user_form" method="post" action="${ ui.actionLink("kenyaemr", "adminEditAccount", "retireUser") }" style="display: none">
-	<input type="hidden" name="userId" value="${ user.userId }"/>
-</form>
+	<script type="text/javascript">
+		function enableUser() {
+			jq('#enable_user_form').submit();
+		}
+		function disableUser() {
+			jq('#disable_user_form').submit();
+		}
+	</script>
+	<form id="enable_user_form" method="post" action="${ ui.actionLink("kenyaemr", "admin/editAccount", "unretireUser") }" style="display: none">
+		<input type="hidden" name="userId" value="${ user.userId }"/>
+	</form>
+	<form id="disable_user_form" method="post" action="${ ui.actionLink("kenyaemr", "admin/editAccount", "retireUser") }" style="display: none">
+		<input type="hidden" name="userId" value="${ user.userId }"/>
+	</form>
 <% } %>
 

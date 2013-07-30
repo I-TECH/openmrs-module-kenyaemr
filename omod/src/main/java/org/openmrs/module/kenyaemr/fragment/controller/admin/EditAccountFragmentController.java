@@ -11,7 +11,7 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.kenyaemr.fragment.controller;
+package org.openmrs.module.kenyaemr.fragment.controller.admin;
 
 import java.util.Set;
 
@@ -38,7 +38,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 /**
  *
  */
-public class AdminEditAccountFragmentController {
+public class EditAccountFragmentController {
 	
 	public void controller(PageModel sharedPageModel, FragmentModel model) {
 		Person person = (Person) sharedPageModel.getAttribute("person");

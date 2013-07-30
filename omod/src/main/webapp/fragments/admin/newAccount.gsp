@@ -38,7 +38,7 @@
 	]
 %>
 
-<form id="create-account-form" method="post" action="${ ui.actionLink("kenyaemr", "adminNewAccount", "createAccount") }">
+<form id="create-account-form" method="post" action="${ ui.actionLink("kenyaemr", "admin/newAccount", "createAccount") }">
 	<div class="ke-form-globalerrors" style="display: none"></div>
 
 	<fieldset>

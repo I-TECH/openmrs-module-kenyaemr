@@ -9,7 +9,7 @@
 						iconProvider: "kenyaui",
 						icon: "edit.png"
 				],
-				fragment: "adminEditAccount",
+				fragment: "admin/editAccount",
 				fragmentProvider: "kenyaemr",
 				action: "editPersonDetails",
 				prefix: "editPersonDetails",
@@ -48,7 +48,7 @@
 							iconProvider: "kenyaui",
 							icon: "edit.png"
 					],
-					fragment: "adminEditAccount",
+					fragment: "admin/editAccount",
 					fragmentProvider: "kenyaemr",
 					action: "editLoginDetails",
 					prefix: "editLoginDetails",
@@ -99,7 +99,7 @@
 							iconProvider: "kenyaui",
 							icon: "buttons/user_enable.png"
 						],
-						fragment: "adminEditAccount",
+						fragment: "admin/editAccount",
 						fragmentProvider: "kenyaemr",
 						action: "editLoginDetails",
 						prefix: "editLoginDetails",
@@ -140,7 +140,7 @@
 							icon: "edit.png"
 					],
 					fragmentProvider: "kenyaemr",
-					fragment: "adminEditAccount",
+					fragment: "admin/editAccount",
 					action: "editProviderDetails",
 					prefix: "editProviderDetails",
 					commandObject: editProviderDetails,
@@ -166,7 +166,7 @@
 						icon: "buttons/provider.png"
 					],
 					fragmentProvider: "kenyaemr",
-					fragment: "adminEditAccount",
+					fragment: "admin/editAccount",
 					action: "editProviderDetails",
 					prefix: "editProviderDetails",
 					commandObject: editProviderDetails,
