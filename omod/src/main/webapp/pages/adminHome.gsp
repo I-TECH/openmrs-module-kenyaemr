@@ -74,18 +74,27 @@
 
 <div id="content-main">
 
-	<% infoCategories.each { %>
+	<% if (section == "content") { %>
 
-	<div class="ke-panel-frame">
-		<div class="ke-panel-heading">${ it.key }</div>
-		<div class="ke-panel-content">
-			<% if (it.value instanceof java.util.List) { %>
-				${ formatInfoList(it.value) }
-			<% } else { %>
-				${ ui.format(it.value) }
-			<% } %>
+		${ ui.includeFragment("kenyaemr", "admin/packagesContent") }
+		${ ui.includeFragment("kenyaemr", "admin/programsContent") }
+		${ ui.includeFragment("kenyaemr", "admin/formsContent") }
+		${ ui.includeFragment("kenyaemr", "admin/identifiersContent") }
+
+	<% } else { %>
+
+		<% infoCategories.each { %>
+		<div class="ke-panel-frame">
+			<div class="ke-panel-heading">${ it.key }</div>
+			<div class="ke-panel-content">
+				<% if (it.value instanceof java.util.List) { %>
+					${ formatInfoList(it.value) }
+				<% } else { %>
+					${ ui.format(it.value) }
+				<% } %>
+			</div>
 		</div>
-	</div>
+		<% } %>
 
 	<% } %>
 

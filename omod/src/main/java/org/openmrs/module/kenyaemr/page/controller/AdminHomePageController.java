@@ -16,11 +16,15 @@ package org.openmrs.module.kenyaemr.page.controller;
 
 import java.util.*;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Transformer;
 import org.apache.commons.lang3.StringUtils;
 import org.openmrs.Form;
+import org.openmrs.Program;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.Module;
 import org.openmrs.module.ModuleFactory;
+import org.openmrs.module.kenyacore.program.ProgramDescriptor;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyacore.CoreContext;
@@ -34,6 +38,7 @@ import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.page.PageModel;
 import org.openmrs.ui.framework.resource.ResourceFactory;
 import org.openmrs.util.OpenmrsConstants;
+import org.openmrs.util.OpenmrsUtil;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
@@ -62,6 +67,7 @@ public class AdminHomePageController {
 			general.add(SimpleObject.create("label", "OpenMRS version", "value", OpenmrsConstants.OPENMRS_VERSION));
 			general.add(SimpleObject.create("label", "Facility", "value", facility));
 			general.add(SimpleObject.create("label", "Server timezone", "value", Calendar.getInstance().getTimeZone().getDisplayName()));
+			general.add(SimpleObject.create("label", "CIEL", "value", Dictionary.getDatabaseVersion()));
 
 			List<SimpleObject> content = new ArrayList<SimpleObject>();
 			content.add(SimpleObject.create("label", "Total patients", "value", Context.getPatientSetService().getPatientsByCharacteristics(null, null, null).size()));
@@ -81,33 +87,6 @@ public class AdminHomePageController {
 			}
 
 			infoCategories.put("Modules", modules);
-		}
-		else if (section.equals("content")) {
-
-			List<SimpleObject> conceptDictionary = new ArrayList<SimpleObject>();
-			conceptDictionary.add(SimpleObject.create("name", "CIEL", "version", Dictionary.getDatabaseVersion(), "status", Dictionary.hasRequiredDatabaseVersion()));
-
-			List<SimpleObject> metadataPackages = new ArrayList<SimpleObject>();
-			for (ImportedPackage imported : emr.getMetadataManager().getImportedPackages()) {
-				metadataPackages.add(SimpleObject.create("name", imported.getName(), "version", imported.getVersion(), "status", Boolean.TRUE));
-			}
-
-			List<SimpleObject> forms = new ArrayList<SimpleObject>();
-			for (FormDescriptor descriptor : emr.getFormManager().getAllFormDescriptors()) {
-				Form form = descriptor.getTarget();
-				Object status = Boolean.TRUE;
-				try {
-					FormUtils.getHtmlForm(form, resourceFactory);
-				} catch (Exception ex) {
-					status = "Unable to load XML";
-				}
-				String name = form.getName() + " (&rarr; " + form.getEncounterType().getName() + ")";
-				forms.add(SimpleObject.create("name", name, "version", form.getVersion(), "status", status));
-			}
-
-			infoCategories.put("Concepts", conceptDictionary);
-			infoCategories.put("Metadata Packages", metadataPackages);
-			infoCategories.put("Forms", forms);
 		}
 
 		model.addAttribute("section", section);
