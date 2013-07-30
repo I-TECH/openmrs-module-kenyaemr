@@ -10,19 +10,21 @@
 	${ ui.includeFragment("kenyaui", "widget/dataPoint", [ label: ui.format(it.attributeType), value: it ]) }
 	<% } %>
 </div>
+<% if (forms) { %>
 <div class="ke-stack-item">
-<% forms.each { form -> %>
-	${ ui.includeFragment("kenyaui", "widget/button", [
-			iconProvider: form.iconProvider,
-			icon: form.icon,
-			label: form.name,
-			extra: "Edit form",
-			href: ui.pageLink("kenyaemr", "editPatientHtmlForm", [
-				appId: currentApp.id,
-				patientId: patient.id,
-				formUuid: form.formUuid,
-				returnUrl: ui.thisUrl()
-			])
-	]) }
-<% } %>
+	<% forms.each { form -> %>
+		${ ui.includeFragment("kenyaui", "widget/button", [
+				iconProvider: form.iconProvider,
+				icon: form.icon,
+				label: form.name,
+				extra: "Edit form",
+				href: ui.pageLink("kenyaemr", "editPatientHtmlForm", [
+					appId: currentApp.id,
+					patientId: patient.id,
+					formUuid: form.formUuid,
+					returnUrl: ui.thisUrl()
+				])
+		]) }
+	<% } %>
 </div>
+<% } %>
