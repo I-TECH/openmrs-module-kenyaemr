@@ -12,7 +12,7 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.fragment.controller;
+package org.openmrs.module.kenyaemr.fragment.controller.header;
 
 import java.util.List;
 
@@ -33,7 +33,7 @@ import org.openmrs.ui.framework.page.PageRequest;
 /**
  * Banner showing which patient this page is in the context of
  */
-public class SelectedPatientHeaderFragmentController {
+public class PatientHeaderFragmentController {
 
 	public void controller(PageModel sharedPageModel,
 						   FragmentConfiguration config,

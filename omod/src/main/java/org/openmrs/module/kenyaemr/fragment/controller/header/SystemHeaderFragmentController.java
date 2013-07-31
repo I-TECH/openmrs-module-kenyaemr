@@ -12,7 +12,7 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.fragment.controller;
+package org.openmrs.module.kenyaemr.fragment.controller.header;
 
 import org.openmrs.module.kenyacore.CoreContext;
 import org.openmrs.ui.framework.annotation.SpringBean;

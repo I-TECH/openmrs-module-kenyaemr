@@ -12,12 +12,12 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.fragment.controller;
+package org.openmrs.module.kenyaemr.fragment.controller.header;
 
 /**
  * Controller for the app header, which includes user menu
  */
-public class PageAppHeaderFragmentController {
+public class HeaderMenuFragmentController {
 
 	public void controller() {
 	}

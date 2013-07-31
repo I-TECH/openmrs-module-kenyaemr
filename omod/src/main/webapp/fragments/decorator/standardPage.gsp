@@ -12,23 +12,23 @@
 		config.context = "patientId=${ patient.id }"
 	}
 
-	config.beforeContent = ui.includeFragment("kenyaemr", "pageHeader", config)
+	config.beforeContent = ui.includeFragment("kenyaemr", "header/pageHeader", config)
 
-	config.beforeContent += ui.includeFragment("kenyaemr", "systemHeader", config)
+	config.beforeContent += ui.includeFragment("kenyaemr", "header/systemHeader", config)
 
-	config.beforeContent += ui.includeFragment("kenyaemr", "pageAppHeader", config)
+	config.beforeContent += ui.includeFragment("kenyaemr", "header/headerMenu", config)
 
 	if (config.patient) {
-		config.beforeContent += ui.includeFragment("kenyaemr", "selectedPatientHeader", [ closeChartUrl: config.closeChartUrl ])
+		config.beforeContent += ui.includeFragment("kenyaemr", "header/patientHeader", [ closeChartUrl: config.closeChartUrl ])
 	}
 	if (config.visit) {
-		config.beforeContent += ui.includeFragment("kenyaemr", "selectedVisitHeader", [ visit: config.visit ])
+		config.beforeContent += ui.includeFragment("kenyaemr", "header/visitHeader", [ visit: config.visit ])
 	}
 	
 	ui.decorateWith("kenyaui", "standardPage", config)
 %>
 
-<!-- Override content layout from uilibrary based on the layout config value -->
+<!-- Override content layout from kenyaui based on the layout config value -->
 
 <style type="text/css">
 
