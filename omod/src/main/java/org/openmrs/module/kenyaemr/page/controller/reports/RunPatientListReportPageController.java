@@ -35,7 +35,7 @@ import org.openmrs.ui.framework.page.PageModel;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
- *
+ * Run patient list report page
  */
 @AppPage(EmrConstants.APP_REPORTS)
 public class RunPatientListReportPageController {

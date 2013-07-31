@@ -76,10 +76,10 @@
 
 	<% if (section == "content") { %>
 
-		${ ui.includeFragment("kenyaemr", "admin/packagesContent") }
-		${ ui.includeFragment("kenyaemr", "admin/programsContent") }
-		${ ui.includeFragment("kenyaemr", "admin/formsContent") }
-		${ ui.includeFragment("kenyaemr", "admin/identifiersContent") }
+		${ ui.includeFragment("kenyaemr", "content/packagesContent") }
+		${ ui.includeFragment("kenyaemr", "content/programsContent") }
+		${ ui.includeFragment("kenyaemr", "content/formsContent") }
+		${ ui.includeFragment("kenyaemr", "content/identifiersContent") }
 
 	<% } else { %>
 

@@ -6,7 +6,7 @@
 	${ ui.includeFragment("kenyaui", "widget/button", [
 			label: "Discontinue",
 			extra: "Exit from program",
-			icon: "buttons/program_discontinue.png",
+			icon: "buttons/program_complete.png",
 			iconProvider: "kenyaui",
 			href: ui.pageLink("kenyaemr", "enterHtmlForm", [ patientId: patient.id, formUuid: defaultCompletionForm.uuid, appId: currentApp.id, returnUrl: ui.thisUrl() ])
 	]) }

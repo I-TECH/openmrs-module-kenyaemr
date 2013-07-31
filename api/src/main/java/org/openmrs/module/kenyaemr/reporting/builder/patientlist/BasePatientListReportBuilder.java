@@ -70,7 +70,7 @@ public abstract class BasePatientListReportBuilder extends ReportBuilder {
 
 			@Override
 			public Object convert(Object input) {
-				return "<a href=\"medicalChartViewPatient.page?patientId=" + input + "\">View</a>";
+				return "<a href=\"chart/chartViewPatient.page?patientId=" + input + "\">View</a>";
 			}
 		});
 	}

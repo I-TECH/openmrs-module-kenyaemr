@@ -22,7 +22,7 @@
 					]
 				],
 				fragmentProvider: "kenyaemr",
-				fragment: "admin/adminUtil",
+				fragment: "adminUtil",
 				action: "accountSearch",
 				submitOnEvent: "accountSearch/changed",
 				resetOnSubmit: false,
@@ -41,7 +41,7 @@
 
 
 <div id="content-main">
-	${ ui.includeFragment("kenyaemr", "accountList", [ id: "results", page: "admin/editAccount", heading: "Matching Accounts" ]) }
+	${ ui.includeFragment("kenyaemr", "account/accountList", [ id: "results", page: "admin/editAccount", heading: "Matching Accounts" ]) }
 </div>
 
 <script type="text/javascript">

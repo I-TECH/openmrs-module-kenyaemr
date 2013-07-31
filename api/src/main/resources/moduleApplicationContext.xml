@@ -49,7 +49,7 @@
 	<bean id="kenyaemr.app.registration" class="org.openmrs.module.appframework.SimpleAppDescriptor">
 		<property name="id" value="kenyaemr.registration"/>
 		<property name="label" value="Registration"/>
-		<property name="homepageUrl" value="kenyaemr/registrationHome.page"/>
+		<property name="homepageUrl" value="kenyaemr/registration/registrationHome.page"/>
 		<property name="iconUrl" value="kenyaui:apps/registration.png"/>
 		<property name="order" value="100"/>
 	</bean>
@@ -57,7 +57,7 @@
 	<bean id="kenyaemr.app.intake" class="org.openmrs.module.appframework.SimpleAppDescriptor">
 		<property name="id" value="kenyaemr.intake"/>
 		<property name="label" value="Triage"/>
-		<property name="homepageUrl" value="kenyaemr/intakeHome.page"/>
+		<property name="homepageUrl" value="kenyaemr/intake/intakeHome.page"/>
 		<property name="iconUrl" value="kenyaui:apps/intake.png"/>
 		<property name="order" value="200"/>
 	</bean>
@@ -65,16 +65,16 @@
 	<bean id="kenyaemr.app.clinician" class="org.openmrs.module.appframework.SimpleAppDescriptor">
 		<property name="id" value="kenyaemr.medicalEncounter"/>
 		<property name="label" value="Clinician"/>
-		<property name="homepageUrl" value="kenyaemr/medicalEncounterHome.page"/>
-		<property name="iconUrl" value="kenyaui:apps/medicalEncounter.png"/>
+		<property name="homepageUrl" value="kenyaemr/clinician/clinicianHome.page"/>
+		<property name="iconUrl" value="kenyaui:apps/clinician.png"/>
 		<property name="order" value="300"/>
 	</bean>
 
 	<bean id="kenyaemr.app.chart" class="org.openmrs.module.appframework.SimpleAppDescriptor">
 		<property name="id" value="kenyaemr.medicalChart"/>
 		<property name="label" value="Medical Chart"/>
-		<property name="homepageUrl" value="kenyaemr/medicalChartHome.page"/>
-		<property name="iconUrl" value="kenyaui:apps/medicalChart.png"/>
+		<property name="homepageUrl" value="kenyaemr/chart/chartHome.page"/>
+		<property name="iconUrl" value="kenyaui:apps/chart.png"/>
 		<property name="order" value="400"/>
 	</bean>
 
@@ -346,7 +346,7 @@
 				<ref bean="kenyaemr.app.chart" />
 			</set>
 		</property>
-		<property name="icon" value="kenyaui:forms/discontinue.png" />
+		<property name="icon" value="kenyaui:forms/completion.png" />
 		<property name="htmlform" value="kenyaemr:hiv/hivDiscontinuation.xml" />
 	</bean>
 
@@ -390,7 +390,7 @@
 				<ref bean="kenyaemr.app.chart" />
 			</set>
 		</property>
-		<property name="icon" value="kenyaui:forms/discontinue.png" />
+		<property name="icon" value="kenyaui:forms/completion.png" />
 		<property name="htmlform" value="kenyaemr:tb/tbDiscontinuation.xml" />
 	</bean>
 

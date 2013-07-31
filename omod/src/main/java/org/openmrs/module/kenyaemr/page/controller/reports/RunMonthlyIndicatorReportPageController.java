@@ -40,7 +40,7 @@ import org.openmrs.ui.framework.page.PageModel;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
- * Rum monthly indicator report page controller
+ * Rum monthly indicator report page
  */
 @AppPage(EmrConstants.APP_REPORTS)
 public class RunMonthlyIndicatorReportPageController {

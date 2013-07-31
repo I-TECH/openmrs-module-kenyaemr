@@ -18,9 +18,9 @@
 
 <div id="content-main">
 <% if (person) { %>
-	${ ui.includeFragment("kenyaemr", "admin/editAccount") }
+	${ ui.includeFragment("kenyaemr", "account/editAccount") }
 <% } else { %>
-	${ ui.includeFragment("kenyaemr", "admin/newAccount") }
+	${ ui.includeFragment("kenyaemr", "account/newAccount") }
 <% } %>
 </div>
 
@@ -33,10 +33,10 @@
 			jq('#disable_user_form').submit();
 		}
 	</script>
-	<form id="enable_user_form" method="post" action="${ ui.actionLink("kenyaemr", "admin/editAccount", "unretireUser") }" style="display: none">
+	<form id="enable_user_form" method="post" action="${ ui.actionLink("kenyaemr", "account/editAccount", "unretireUser") }" style="display: none">
 		<input type="hidden" name="userId" value="${ user.userId }"/>
 	</form>
-	<form id="disable_user_form" method="post" action="${ ui.actionLink("kenyaemr", "admin/editAccount", "retireUser") }" style="display: none">
+	<form id="disable_user_form" method="post" action="${ ui.actionLink("kenyaemr", "account/editAccount", "retireUser") }" style="display: none">
 		<input type="hidden" name="userId" value="${ user.userId }"/>
 	</form>
 <% } %>

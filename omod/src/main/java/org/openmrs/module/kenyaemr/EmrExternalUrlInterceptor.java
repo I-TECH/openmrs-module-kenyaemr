@@ -49,6 +49,11 @@ public class EmrExternalUrlInterceptor extends HandlerInterceptorAdapter {
 			return true;
 		}
 
+		// Allow any request to /module/kenyaemr/generateField.htm
+		if (handler instanceof FieldGeneratorController) {
+			return true;
+		}
+
 		// TODO implement a whitelist which allows only certain uiframework managed controllers.
 		// Not so important for now whilst all uiframework managed content is valid. Could use method below to parse URL
 		// to get moduleid and whitelist those
