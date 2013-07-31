@@ -13,7 +13,6 @@
  */
 package org.openmrs.module.kenyaemr;
 
-import org.openmrs.module.kenyaemr.EmrConstants;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -21,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * Overrides /index.htm, /login.htm and /forgotPassword.form so users don't see the legacy OpenMRS UI
  */
 @Controller
-public class StandardURLOverrideController {
+public class EmrURLOverrideController {
 	
 	@RequestMapping("/index.htm")
 	public String showOurHomepage() {

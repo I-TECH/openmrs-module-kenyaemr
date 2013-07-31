@@ -15,12 +15,20 @@
 package org.openmrs.module.kenyaemr;
 
 import junit.framework.Assert;
+import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.module.kenyaemr.StandardURLOverrideController;
 
-public class StandardURLOverrideControllerTest {
+/**
+ * Tests for {@link EmrURLOverrideController]}
+ */
+public class EmrURLOverrideControllerTest {
 
-	StandardURLOverrideController controller = new StandardURLOverrideController();
+	private EmrURLOverrideController controller;
+
+	@Before
+	public void setup() {
+		controller = new EmrURLOverrideController();
+	}
 
 	@Test
 	public void showOurHomepage() {
