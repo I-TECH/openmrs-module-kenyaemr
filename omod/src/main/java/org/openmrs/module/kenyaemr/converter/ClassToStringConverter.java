@@ -11,15 +11,16 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.kenyaemr.converter;
 
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
 /**
- *
+ * Converts a Class to a String
  */
-
+@Component
 public class ClassToStringConverter implements Converter<Class, String> {
 
 	/**
