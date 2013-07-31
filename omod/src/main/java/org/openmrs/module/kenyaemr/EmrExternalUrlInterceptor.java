@@ -18,6 +18,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.User;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyaui.KenyaUiUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
@@ -27,6 +29,9 @@ import javax.servlet.http.HttpServletResponse;
  * Interceptor to catch requests to controllers outside of KenyaEMR and any add-on modules
  */
 public class EmrExternalUrlInterceptor extends HandlerInterceptorAdapter {
+
+	@Autowired
+	private KenyaUiUtils kenyaUi;
 
 	protected static final Log log = LogFactory.getLog(EmrExternalUrlInterceptor.class);
 
@@ -61,6 +66,7 @@ public class EmrExternalUrlInterceptor extends HandlerInterceptorAdapter {
 			log.warn("Prevented request to " + request.getRequestURI() + " by non-super user");
 
 			// Redirect to login page
+			kenyaUi.notifyError(request.getSession(), "Invalid external page access by non-super user");
 			response.sendRedirect(request.getContextPath() + "/login.htm");
 		}
 
