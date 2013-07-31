@@ -12,7 +12,7 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.page.controller;
+package org.openmrs.module.kenyaemr.page.controller.reports;
 
 import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
@@ -43,7 +43,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  * Rum monthly indicator report page controller
  */
 @AppPage(EmrConstants.APP_REPORTS)
-public class ReportsRunMonthlyIndicatorReportPageController {
+public class RunMonthlyIndicatorReportPageController {
 	
 	public Object controller(PageModel model,
 					@SpringBean CoreContext emr,

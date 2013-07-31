@@ -3,9 +3,9 @@
 
 	def menuItems =  []
 	if (data) {
-		menuItems << [ iconProvider: "kenyaui", icon: "buttons/report_configure.png", label: "Change Parameters", href: ui.pageLink("kenyaemr", "reportsRunMonthlyIndicatorReport", [ builder: builder.class ]) ]
+		menuItems << [ iconProvider: "kenyaui", icon: "buttons/report_configure.png", label: "Change Parameters", href: ui.pageLink("kenyaemr", "reports/runMonthlyIndicatorReport", [ builder: builder.class ]) ]
 	}
-	menuItems << [ iconProvider: "kenyaui", icon: "buttons/back.png", label: "Back to Reports", href: ui.pageLink("kenyaemr", "reportsHome") ]
+	menuItems << [ iconProvider: "kenyaui", icon: "buttons/back.png", label: "Back to Reports", href: ui.pageLink("kenyaemr", "reports/reportsHome") ]
 
 	def renderOptions = [ [ value: "view", label: "View online" ] ]
 

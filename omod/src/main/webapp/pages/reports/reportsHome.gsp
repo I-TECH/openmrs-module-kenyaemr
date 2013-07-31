@@ -11,7 +11,7 @@
 
 					<% mohReports.each { %>
 					<div class="ke-stack-item ke-clickable">
-						<input type="hidden" name="clickUrl" value="${ ui.pageLink("kenyaemr", "reportsRunMonthlyIndicatorReport", [ builder: it.builder ]) }" />
+						<input type="hidden" name="clickUrl" value="${ ui.pageLink("kenyaemr", "reports/runMonthlyIndicatorReport", [ builder: it.builder ]) }" />
 						<table>
 							<tr>
 								<td><img src="${ ui.resourceLink("kenyaui", "images/reports/moh.png") }" alt="View report" /></td>
@@ -31,7 +31,7 @@
 
 					<% facilityReports.each { %>
 					<div class="ke-stack-item ke-clickable" style="overflow: auto">
-						<input type="hidden" name="clickUrl" value="${ ui.pageLink("kenyaemr", "reportsRunPatientListReport", [ builder: it.builder ]) }" />
+						<input type="hidden" name="clickUrl" value="${ ui.pageLink("kenyaemr", "reports/runPatientListReport", [ builder: it.builder ]) }" />
 						<table>
 							<tr>
 								<td><img src="${ ui.resourceLink("kenyaui", "images/reports/facility.png") }" alt="View report" /></td>

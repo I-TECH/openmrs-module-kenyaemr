@@ -81,7 +81,7 @@
 	<bean id="kenyaemr.app.reports" class="org.openmrs.module.appframework.SimpleAppDescriptor">
 		<property name="id" value="kenyaemr.reports"/>
 		<property name="label" value="Reports"/>
-		<property name="homepageUrl" value="kenyaemr/reportsHome.page"/>
+		<property name="homepageUrl" value="kenyaemr/reports/reportsHome.page"/>
 		<property name="iconUrl" value="kenyaui:apps/reports.png"/>
 		<property name="order" value="500"/>
 	</bean>

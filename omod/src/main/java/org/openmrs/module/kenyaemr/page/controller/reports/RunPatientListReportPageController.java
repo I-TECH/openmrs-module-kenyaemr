@@ -12,7 +12,7 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.page.controller;
+package org.openmrs.module.kenyaemr.page.controller.reports;
 
 import java.io.ByteArrayOutputStream;
 
@@ -38,7 +38,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  *
  */
 @AppPage(EmrConstants.APP_REPORTS)
-public class ReportsRunPatientListReportPageController {
+public class RunPatientListReportPageController {
 
 	public Object controller(PageModel model,
 				@SpringBean CoreContext emr,
