@@ -6,7 +6,7 @@
 		<tr>
 			<th>Name</th>
 			<th style="text-align: left">Encounter Type</th>
-			<th>Status</th>
+			<th style="text-align: left">Allowed Apps</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -14,7 +14,7 @@
 		<tr>
 			<td>${ form.name }</td>
 			<td style="text-align: left">${ form.encounterType }</td>
-			<td><img src="${ ui.resourceLink("kenyaui", "images/" + (form.loaded ? "success.png" : "alert.png")) }" alt="${ form.error ?: "" }" /></td>
+			<td style="text-align: left">${ form.allowedApps.join("<br />") }</td>
 		</tr>
 	<% } %>
 	</tbody>

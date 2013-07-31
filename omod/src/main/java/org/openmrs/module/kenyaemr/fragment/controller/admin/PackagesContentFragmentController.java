@@ -31,7 +31,7 @@ public class PackagesContentFragmentController {
 	public void controller(FragmentModel model, @SpringBean CoreContext emr) {
 		List<SimpleObject> packages = new ArrayList<SimpleObject>();
 		for (ImportedPackage imported : emr.getMetadataManager().getImportedPackages()) {
-			packages.add(SimpleObject.create("name", imported.getName(), "version", imported.getVersion(), "imported", Boolean.TRUE));
+			packages.add(SimpleObject.create("name", imported.getName(), "version", imported.getVersion()));
 		}
 
 		model.addAttribute("packages", packages);

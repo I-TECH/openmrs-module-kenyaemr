@@ -48,9 +48,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class AdminHomePageController {
 
 	public void controller(@RequestParam(value = "section", required = false) String section,
-						   PageModel model,
-						   @SpringBean CoreContext emr,
-						   @SpringBean ResourceFactory resourceFactory) {
+						   PageModel model) {
 
 		if (StringUtils.isEmpty(section)) {
 			section = "overview";

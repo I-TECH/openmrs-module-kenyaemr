@@ -15,9 +15,7 @@
 		<tr>
 			<td>${ program.name }</td>
 			<td style="text-align: left">${ program.enrollmentForm }</td>
-			<td style="text-align: left">
-				${ program.visitForms.join("<br />") }
-			</td>
+			<td style="text-align: left">${ program.visitForms.join("<br />") }</td>
 			<td style="text-align: left">${ program.completionForm }</td>
 		</tr>
 	<% } %>

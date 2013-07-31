@@ -14,16 +14,18 @@
 
 package org.openmrs.module.kenyaemr.fragment.controller.admin;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Transformer;
 import org.openmrs.Form;
+import org.openmrs.module.appframework.AppDescriptor;
 import org.openmrs.module.kenyacore.CoreContext;
 import org.openmrs.module.kenyacore.form.FormDescriptor;
-import org.openmrs.module.kenyacore.form.FormUtils;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.FragmentModel;
-import org.openmrs.ui.framework.resource.ResourceFactory;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -31,19 +33,19 @@ import java.util.List;
  */
 public class FormsContentFragmentController {
 
-	public void controller(FragmentModel model, @SpringBean CoreContext emr, @SpringBean ResourceFactory resourceFactory) {
+	public void controller(FragmentModel model, @SpringBean CoreContext emr) {
 		List<SimpleObject> forms = new ArrayList<SimpleObject>();
 		for (FormDescriptor descriptor : emr.getFormManager().getAllFormDescriptors()) {
 			Form form = descriptor.getTarget();
-			boolean loaded = true;
-			String error = null;
-			try {
-				FormUtils.getHtmlForm(form, resourceFactory);
-			} catch (Exception ex) {
-				loaded = false;
-				error = "Unable to load XML";
-			}
-			forms.add(SimpleObject.create("name", form.getName(), "encounterType", form.getEncounterType().getName(), "loaded", loaded, "error", error));
+
+			Collection<String> allowedApps = CollectionUtils.collect(descriptor.getApps(), new Transformer() {
+				@Override
+				public Object transform(Object o) {
+					return ((AppDescriptor) o).getLabel();
+				}
+			});
+
+			forms.add(SimpleObject.create("name", form.getName(), "encounterType", form.getEncounterType().getName(), "allowedApps", allowedApps));
 		}
 
 		model.addAttribute("forms", forms);
