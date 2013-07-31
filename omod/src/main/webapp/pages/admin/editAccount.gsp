@@ -9,7 +9,7 @@
 		menuItems << [ iconProvider: "kenyaui", icon: "buttons/user_disable.png", label: "Disable Account", href: "javascript:disableUser()" ]
 	}
 
-	menuItems << [ iconProvider: "kenyaui", icon: "buttons/back.png", label: "Back to Accounts", href: ui.pageLink("kenyaemr", "adminManageAccounts") ]
+	menuItems << [ iconProvider: "kenyaui", icon: "buttons/back.png", label: "Back to Accounts", href: ui.pageLink("kenyaemr", "admin/manageAccounts") ]
 %>
 
 <div id="content-side">

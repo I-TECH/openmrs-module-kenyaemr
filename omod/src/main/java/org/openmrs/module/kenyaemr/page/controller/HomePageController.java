@@ -43,7 +43,7 @@ public class HomePageController {
 		// Redirect to setup page if module is not yet configured
 		if (Context.getService(KenyaEmrService.class).isSetupRequired()) {
 			kenyaUi.notifySuccess(session, "First-Time Setup Needed");
-			return "redirect:" + ui.pageLink(EmrConstants.MODULE_ID, "adminFirstTimeSetup");
+			return "redirect:" + ui.pageLink(EmrConstants.MODULE_ID, "admin/firstTimeSetup");
 		}
 
 		// Get apps for the current user

@@ -43,21 +43,21 @@
 							icon: "buttons/admin_overview.png",
 							label: "General",
 							active: (section == "overview"),
-							href: ui.pageLink("kenyaemr", "adminHome")
+							href: ui.pageLink("kenyaemr", "admin/adminHome")
 					],
 					[
 							iconProvider: "kenyaui",
 							icon: "buttons/admin_modules.png",
 							label: "Modules",
 							active: (section == "modules"),
-							href: ui.pageLink("kenyaemr", "adminHome", [ section: "modules" ])
+							href: ui.pageLink("kenyaemr", "admin/adminHome", [ section: "modules" ])
 					],
 					[
 							iconProvider: "kenyaui",
 							icon: "buttons/admin_content.png",
 							label: "Content",
 							active: (section == "content"),
-							href: ui.pageLink("kenyaemr", "adminHome", [ section: "content" ])
+							href: ui.pageLink("kenyaemr", "admin/adminHome", [ section: "content" ])
 					]
 			]
 	]) }
@@ -65,9 +65,9 @@
 	${ ui.includeFragment("kenyaui", "widget/panelMenu", [
 			heading: "Tasks",
 			items: [
-					[ iconProvider: "kenyaui", icon: "buttons/users_manage.png", label: "Manage Accounts", href: ui.pageLink("kenyaemr", "adminManageAccounts") ],
-					[ iconProvider: "kenyaui", icon: "buttons/admin_setup.png", label: "Redo First-time Setup", href: ui.pageLink("kenyaemr", "adminFirstTimeSetup") ]/*,
-					[ iconProvider: "kenyaui", icon: "buttons/admin_update.png", label: "Install New Software Version", href: ui.pageLink("kenyaemr", "adminSoftwareVersion") ]*/
+					[ iconProvider: "kenyaui", icon: "buttons/users_manage.png", label: "Manage Accounts", href: ui.pageLink("kenyaemr", "admin/manageAccounts") ],
+					[ iconProvider: "kenyaui", icon: "buttons/admin_setup.png", label: "Redo First-time Setup", href: ui.pageLink("kenyaemr", "admin/firstTimeSetup") ]/*,
+					[ iconProvider: "kenyaui", icon: "buttons/admin_update.png", label: "Install New Software Version", href: ui.pageLink("kenyaemr", "admin/softwareVersion") ]*/
 			]
 	]) }
 </div>

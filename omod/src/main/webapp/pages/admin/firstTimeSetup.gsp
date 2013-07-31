@@ -49,7 +49,7 @@
 		<div class="ke-panel-content">
 			${ ui.includeFragment("kenyaui", "widget/form", [
 					pageProvider: "kenyaemr",
-					page: "adminFirstTimeSetup",
+					page: "admin/firstTimeSetup",
 					submitLabel: "Save Settings",
 					fields: fields
 			]) }

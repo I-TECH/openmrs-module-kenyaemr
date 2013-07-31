@@ -12,7 +12,7 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.page.controller;
+package org.openmrs.module.kenyaemr.page.controller.admin;
 
 import java.io.File;
 import java.io.PrintWriter;
@@ -37,7 +37,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
  *
  */
 @AppPage(EmrConstants.APP_ADMIN)
-public class AdminSoftwareVersionPageController {
+public class SoftwareVersionPageController {
 	
 	public void controller(PageModel model,
 	                       @RequestParam(value="priorVersion", required=false) String priorVersion,

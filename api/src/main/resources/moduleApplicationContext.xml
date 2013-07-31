@@ -89,7 +89,7 @@
 	<bean id="kenyaemr.app.admin" class="org.openmrs.module.appframework.SimpleAppDescriptor">
 		<property name="id" value="kenyaemr.admin"/>
 		<property name="label" value="Admin"/>
-		<property name="homepageUrl" value="kenyaemr/adminHome.page"/>
+		<property name="homepageUrl" value="kenyaemr/admin/adminHome.page"/>
 		<property name="iconUrl" value="kenyaui:apps/admin.png"/>
 		<property name="order" value="600"/>
 	</bean>

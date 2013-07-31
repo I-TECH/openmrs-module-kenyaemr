@@ -12,7 +12,7 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.page.controller;
+package org.openmrs.module.kenyaemr.page.controller.admin;
 
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.Location;
@@ -37,7 +37,7 @@ import javax.servlet.http.HttpSession;
  * Controller for the guided first-time configuration
  */
 @AppPage(EmrConstants.APP_ADMIN)
-public class AdminFirstTimeSetupPageController {
+public class FirstTimeSetupPageController {
 	
 	public String controller(HttpSession session, PageModel model, UiUtils ui,
 							 @SpringBean KenyaUiUtils kenyaUi,

@@ -12,7 +12,7 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.page.controller;
+package org.openmrs.module.kenyaemr.page.controller.admin;
 
 import java.util.Collection;
 import java.util.List;
@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  * Editing user and provider accounts page
  */
 @AppPage(EmrConstants.APP_ADMIN)
-public class AdminEditAccountPageController {
+public class EditAccountPageController {
 	
 	public void controller(@RequestParam(value = "personId", required = false) Person person,
 	                       PageModel model) {

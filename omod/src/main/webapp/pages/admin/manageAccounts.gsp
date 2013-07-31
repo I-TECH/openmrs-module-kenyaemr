@@ -34,14 +34,14 @@
 	${ ui.includeFragment("kenyaui", "widget/panelMenu", [
 		heading: "Tasks",
 		items: [
-			[ iconProvider: "kenyaui", icon: "buttons/account_add.png", label: "Create a New Account", href: ui.pageLink("kenyaemr", "adminEditAccount") ]
+			[ iconProvider: "kenyaui", icon: "buttons/account_add.png", label: "Create a New Account", href: ui.pageLink("kenyaemr", "admin/editAccount") ]
 		]
 	]) }
 </div>
 
 
 <div id="content-main">
-	${ ui.includeFragment("kenyaemr", "accountList", [ id: "results", page: "adminEditAccount", heading: "Matching Accounts" ]) }
+	${ ui.includeFragment("kenyaemr", "accountList", [ id: "results", page: "admin/editAccount", heading: "Matching Accounts" ]) }
 </div>
 
 <script type="text/javascript">
