@@ -36,7 +36,7 @@
 
 	<div style="clear: both; height: 5px;"></div>
 
-	${ ui.includeFragment("kenyaemr", "patientFlags") }
+	${ ui.includeFragment("kenyaemr", "header/patientFlags") }
 
 	<div id="active-visit">
 		<span class="ke-tip">Current visit</span>

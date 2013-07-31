@@ -25,6 +25,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.api.context.ContextAuthenticationException;
 import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.module.kenyacore.CoreContext;
+import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyaemr.KenyaEmrUiUtils;
 import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
@@ -35,14 +36,15 @@ import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.SpringBean;
+import org.openmrs.ui.framework.session.Session;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * Fragment actions generally useful for KenyaEMR
  */
-public class KenyaEmrUtilFragmentController {
+public class EmrUtilsFragmentController {
 
-	protected static final Log log = LogFactory.getLog(KenyaEmrUtilFragmentController.class);
+	protected static final Log log = LogFactory.getLog(EmrUtilsFragmentController.class);
 
 	/**
 	 * Checks if current user session is authenticated
@@ -72,11 +74,9 @@ public class KenyaEmrUtilFragmentController {
 	 * @param comment the optional comment
 	 * @return simple object { value: identifier value }
 	 */
-	public SimpleObject nextHivUniquePatientNumber(@SpringBean CoreContext emr,
-			@RequestParam(required = false, value = "comment") String comment) {
-
+	public SimpleObject nextHivUniquePatientNumber(@RequestParam(required = false, value = "comment") String comment) {
 		if (comment == null) {
-			comment = "Kenya EMR UI";
+			comment = "KenyaEMR UI";
 		}
 
 		String id = Context.getService(KenyaEmrService.class).getNextHivUniquePatientNumber(comment);
@@ -128,12 +128,20 @@ public class KenyaEmrUtilFragmentController {
 	}
 
 	/**
-	 * Gets the patient's age on the given date
-	 * @param patient the patient
-	 * @param now the current time reference
-	 * @return
+	 * Gets the recently viewed patient list
+	 * @return the simple patients
 	 */
-	public SimpleObject age(@RequestParam("patientId") Patient patient, @RequestParam("now") Date now) {
-		return SimpleObject.create("age", patient.getAge(now));
+	public SimpleObject[] recentlyViewed(UiUtils ui, Session session) {
+		String attrName = EmrConstants.APP_CHART + ".recentlyViewedPatients";
+
+		List<Integer> recent = session.getAttribute(attrName, List.class);
+		List<Patient> pats = new ArrayList<Patient>();
+		if (recent != null) {
+			for (Integer ptId : recent) {
+				pats.add(Context.getPatientService().getPatient(ptId));
+			}
+		}
+
+		return ui.simplifyCollection(pats);
 	}
 }

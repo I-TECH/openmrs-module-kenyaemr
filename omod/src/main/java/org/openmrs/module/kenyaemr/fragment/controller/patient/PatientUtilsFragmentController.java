@@ -12,14 +12,16 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.fragment.controller;
+package org.openmrs.module.kenyaemr.fragment.controller.patient;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResult;
@@ -30,17 +32,11 @@ import org.openmrs.ui.framework.annotation.SpringBean;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
- * Controller for patient flags
+ * AJAX utility methods for patients
  */
-public class PatientFlagsFragmentController {
+public class PatientUtilsFragmentController {
 
-	protected static final Log log = LogFactory.getLog(PatientFlagsFragmentController.class);
-
-	/**
-	 * Do nothing, this will load via ajax
-	 */
-	public void controller() {
-	}
+	protected static final Log log = LogFactory.getLog(PatientUtilsFragmentController.class);
 
 	/**
 	 * Gets the patient flags for the given patient. If any of the calculations throws an exception, this will return a single
@@ -49,7 +45,7 @@ public class PatientFlagsFragmentController {
 	 * @param emr the KenyaEMR
 	 * @return the flags as simple objects
 	 */
-	public List<SimpleObject> getFlags(@RequestParam("patientId") Integer patientId, @SpringBean CoreContext emr) {
+	public List<SimpleObject> flags(@RequestParam("patientId") Integer patientId, @SpringBean CoreContext emr) {
 
 		List<SimpleObject> alerts = new ArrayList<SimpleObject>();
 
@@ -67,5 +63,15 @@ public class PatientFlagsFragmentController {
 			}
 		}
 		return alerts;
+	}
+
+	/**
+	 * Gets the patient's age on the given date
+	 * @param patient the patient
+	 * @param now the current time reference
+	 * @return
+	 */
+	public SimpleObject age(@RequestParam("patientId") Patient patient, @RequestParam("now") Date now) {
+		return SimpleObject.create("age", patient.getAge(now));
 	}
 }

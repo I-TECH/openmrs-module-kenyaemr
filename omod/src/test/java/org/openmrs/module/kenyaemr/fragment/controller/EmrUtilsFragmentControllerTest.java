@@ -14,22 +14,19 @@
 
 package org.openmrs.module.kenyaemr.fragment.controller;
 
-import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Test;
+import org.junit.Ignore;
 import org.openmrs.module.kenyacore.CoreContext;
-import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.List;
-
 /**
- * Tests for {@link PatientFlagsFragmentController}
+ * Tests for {@link EmrUtilsFragmentController}
  */
-public class PatientFlagsFragmentControllerTest extends BaseModuleWebContextSensitiveTest {
+@Ignore
+public class EmrUtilsFragmentControllerTest extends BaseModuleWebContextSensitiveTest {
 
-	private PatientFlagsFragmentController controller;
+	private EmrUtilsFragmentController controller;
 
 	@Autowired
 	private CoreContext emr;
@@ -42,31 +39,6 @@ public class PatientFlagsFragmentControllerTest extends BaseModuleWebContextSens
 		executeDataSet("test-data.xml");
 		executeDataSet("test-drugdata.xml");
 
-		controller = new PatientFlagsFragmentController();
-
-		emr.getCalculationManager().refresh();
-	}
-
-	/**
-	 * @see PatientFlagsFragmentController#controller()
-	 */
-	@Test
-	public void controller() {
-	}
-
-	/**
-	 * @see PatientFlagsFragmentController#getFlags(Integer, org.openmrs.module.kenyacore.CoreContext)
-	 */
-	@Test
-	public void getAlerts() {
-		List<SimpleObject> alerts = controller.getFlags(7, emr);
-
-		Assert.assertTrue(alerts.size() >= 1);
-		Assert.assertTrue(alerts.get(0).containsKey("message"));
-
-		// TODO once we get all calculations working with the test data, check each one is not an error
-	 	//for (SimpleObject obj : alerts) {
-			//System.out.println(obj.toJson());
-		//}
+		controller = new EmrUtilsFragmentController();
 	}
 }

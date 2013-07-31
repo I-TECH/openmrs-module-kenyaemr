@@ -49,7 +49,7 @@
 				message: 'This should only be used for new patients. If the patient already has a UPN, please enter that instead.',
 				okLabel: 'Continue',
 				okCallback: function() {
-					jq.getJSON('/' + ctxPath + '/kenyaemr/kenyaEmrUtil/nextHivUniquePatientNumber.action', function(data) {
+					jq.getJSON('/' + ctxPath + '/kenyaemr/emrUtils/nextHivUniquePatientNumber.action', function(data) {
 						jq('#hiv-id input[type=text]').val(data.value);
 						jq('#generate-hiv-id').hide();
 					});

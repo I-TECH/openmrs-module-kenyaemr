@@ -362,7 +362,12 @@ public class TestUtils {
 	 * @param object the object
 	 * @throws IOException
 	 */
-	public static void printJson(Object object) throws IOException {
-		System.out.println(new ObjectMapper().writeValueAsString(object));
+	public static void printJson(Object object) {
+		try {
+			System.out.println(new ObjectMapper().writeValueAsString(object));
+		}
+		catch (IOException ex) {
+			ex.printStackTrace();
+		}
 	}
 }

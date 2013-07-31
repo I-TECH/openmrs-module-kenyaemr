@@ -68,19 +68,19 @@
 			var patientId = <lookup expression="patient.patientId"/>;
 			var encDate = getValue('encounter-date.value');
 
-			$j.getJSON('/' + CONTEXT_PATH + '/kenyaemr/kenyaEmrUtil/durationSinceStartArt.action', { patientId: patientId, now: encDate })
+			$j.getJSON('/' + CONTEXT_PATH + '/kenyaemr/emrUtils/durationSinceStartArt.action', { patientId: patientId, now: encDate })
 			.done(function(data) {
 				var msg = data.duration ? data.duration : 'Not started';
 				$j('#calculated-duration-start-art').html(msg);
 			});
 
-			$j.getJSON('/' + CONTEXT_PATH + '/kenyaemr/kenyaEmrUtil/currentArvRegimen.action', { patientId: patientId, now: encDate })
+			$j.getJSON('/' + CONTEXT_PATH + '/kenyaemr/emrUtils/currentArvRegimen.action', { patientId: patientId, now: encDate })
 			.done(function(data) {
 				var msg = data.duration ? (data.regimen +  ' (' + data.duration + ')') : 'None';
 				$j('#calculated-duration-current-regimen').html(msg);
 			});
 
-			$j.getJSON('/' + CONTEXT_PATH + '/kenyaemr/kenyaEmrUtil/age.action', { patientId: patientId, now: encDate })
+			$j.getJSON('/' + CONTEXT_PATH + '/kenyaemr/patient/patientUtils/age.action', { patientId: patientId, now: encDate })
 			.done(function(data) {
 				onPatientAgeUpdate(data.age);
 			});

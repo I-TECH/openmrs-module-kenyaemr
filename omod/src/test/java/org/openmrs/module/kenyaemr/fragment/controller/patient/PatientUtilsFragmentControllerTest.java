@@ -12,25 +12,26 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.fragment.controller;
+package org.openmrs.module.kenyaemr.fragment.controller.patient;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Patient;
-import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyacore.CoreContext;
 import org.openmrs.module.kenyaemr.test.TestUtils;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
-/**
- * Tests for {@link KenyaEmrUtilFragmentController}
- */
-public class KenyaEmrUtilFragmentControllerTest extends BaseModuleWebContextSensitiveTest {
+import java.util.List;
 
-	private KenyaEmrUtilFragmentController controller;
+/**
+ * Tests for {@link org.openmrs.module.kenyaemr.fragment.controller.patient.PatientUtilsFragmentController}
+ */
+public class PatientUtilsFragmentControllerTest extends BaseModuleWebContextSensitiveTest {
+
+	private PatientUtilsFragmentController controller;
 
 	@Autowired
 	private CoreContext emr;
@@ -43,20 +44,38 @@ public class KenyaEmrUtilFragmentControllerTest extends BaseModuleWebContextSens
 		executeDataSet("test-data.xml");
 		executeDataSet("test-drugdata.xml");
 
-		controller = new KenyaEmrUtilFragmentController();
+		controller = new PatientUtilsFragmentController();
+
+		emr.getCalculationManager().refresh();
 	}
 
 	/**
-	 * @see KenyaEmrUtilFragmentController#age(org.openmrs.Patient, java.util.Date)
+	 * @see PatientUtilsFragmentController#age(org.openmrs.Patient, java.util.Date)
 	 */
 	@Test
 	public void age_shouldCalculatePatientAgeOnDate() {
-		Patient patient = Context.getPatientService().getPatient(7);
+		Patient patient = TestUtils.getPatient(7);
 		patient.setBirthdate(TestUtils.date(2000, 1, 1));
 
 		SimpleObject response = controller.age(patient, TestUtils.date(2010, 1, 1)); // Would be exactly 10
 		Assert.assertEquals(10, response.get("age"));
 		response = controller.age(patient, TestUtils.date(2010, 6, 1)); // Would be 10.5 years
 		Assert.assertEquals(10, response.get("age"));
+	}
+
+	/**
+	 * @see PatientUtilsFragmentController#flags(Integer, org.openmrs.module.kenyacore.CoreContext)
+	 */
+	@Test
+	public void flags_shouldReturnAllFlags() {
+		List<SimpleObject> result = controller.flags(7, emr);
+
+		Assert.assertTrue(result.size() >= 1);
+		Assert.assertTrue(result.get(0).containsKey("message"));
+
+		// TODO once we get all calculations working with the test data, check each one is not an error
+	 	//for (SimpleObject obj : alerts) {
+			//System.out.println(obj.toJson());
+		//}
 	}
 }

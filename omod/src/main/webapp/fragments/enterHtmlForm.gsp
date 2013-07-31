@@ -33,7 +33,7 @@ ui.includeJavascript("kenyaemr", "dwr-util.js")
 		if (!tryingToSubmit) {
 			tryingToSubmit = true;
 			ui.disableConfirmBeforeNavigating();
-			jq.getJSON(ui.fragmentActionLink('kenyaemr', 'kenyaEmrUtil', 'isAuthenticated'), function(result) {
+			jq.getJSON(ui.fragmentActionLink('kenyaemr', 'emrUtils', 'isAuthenticated'), function(result) {
 				checkIfLoggedInAndErrorsCallback(result.authenticated);
 			});
 		}
@@ -109,7 +109,7 @@ ui.includeJavascript("kenyaemr", "dwr-util.js")
 		kenyaui.closeDialog();
 
 		// Try authenticating and then submitting again...
-		jq.getJSON(ui.fragmentActionLink('kenyaemr', 'kenyaEmrUtil', 'authenticate', { username: username, password: password }), submitHtmlForm);
+		jq.getJSON(ui.fragmentActionLink('kenyaemr', 'emrUtils', 'authenticate', { username: username, password: password }), submitHtmlForm);
 	}
 
 	function doSubmitHtmlForm() {

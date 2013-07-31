@@ -17,5 +17,5 @@
 
 
 <script type="text/javascript">
-	getJsonAsEvent(ui.fragmentActionLink('kenyaemr', 'chartUtil', 'recentlyViewed'), 'recentlyViewedPatients/show');
+	getJsonAsEvent(ui.fragmentActionLink('kenyaemr', 'emrUtils', 'recentlyViewed'), 'recentlyViewedPatients/show');
 </script>

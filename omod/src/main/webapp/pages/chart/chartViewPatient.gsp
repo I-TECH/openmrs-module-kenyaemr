@@ -89,7 +89,7 @@
 			}
 
 			function doVisitVoid(visitId) {
-				ui.getFragmentActionAsJson('kenyaemr', 'kenyaEmrUtil', 'voidVisit', { visitId: visitId, reason: 'Data entry error' }, function() {
+				ui.getFragmentActionAsJson('kenyaemr', 'emrUtils', 'voidVisit', { visitId: visitId, reason: 'Data entry error' }, function() {
 					ui.reloadPage();
 				});
 			}
