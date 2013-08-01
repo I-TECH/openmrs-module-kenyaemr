@@ -3,12 +3,6 @@
 %>
 
 <style type="text/css">
-#end-of-day {
-	display: none;
-}
-#end-of-day .spaced {
-	padding: 0.3em;
-}
 #calendar .ui-widget-content {
 	border: 0;
 	background: inherit;
@@ -16,7 +10,7 @@
 }
 </style>
 
-<div id="content-side">
+<div class="ke-page-sidebar">
 	${ ui.includeFragment("kenyaui", "widget/panelMenu", [
 		heading: "Tasks",
 		items: [
@@ -40,10 +34,8 @@
 	</div>
 </div>
 
-<div id="content-main">
-
+<div class="ke-page-content">
 	${ ui.includeFragment("kenyaemr", "dailySchedule", [ id: "schedule", page: "registration/registrationViewPatient", date: scheduleDate ]) }
-
 </div>
 
 <script type="text/javascript">

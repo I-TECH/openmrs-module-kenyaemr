@@ -18,9 +18,6 @@
 	});
 </script>
 
-${ ui.includeFragment("kenyaemr", "enterHtmlForm", [
-	patient: patient,
-	encounter: encounter,
-	visit: visit,
-	returnUrl: returnUrl
-]) }
+<div class="ke-page-content">
+	${ ui.includeFragment("kenyaemr", "enterHtmlForm", [ patient: patient, encounter: encounter, visit: visit, returnUrl: returnUrl ]) }
+</div>

@@ -36,29 +36,8 @@
 	html {
 		background: #FFF url('${ ui.resourceLink("kenyaui", "images/background.png") }') repeat-y;
 	}
-	#content {
-		padding: 0;
-	}
-	#content-side {
-		width: 320px;
-		position: absolute;
-		padding: 5px;
-		overflow: auto;
-	}
-	#content-main {
-		margin-left: 330px;
-		padding: 5px;
-		overflow: auto;
-	}
 <% } %>
-	/**
-	 * Override styles for toasts
-	 */
-	.toast-item {
-		background-color: #464640;
-		border-radius: 3px;
-		border: 0;
-	}
+
 </style>
 
 <%= config.content %>

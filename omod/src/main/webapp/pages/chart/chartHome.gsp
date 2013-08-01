@@ -2,7 +2,7 @@
 	ui.decorateWith("kenyaemr", "standardPage", [ layout: "sidebar" ])
 %>
 
-<div id="content-side">
+<div class="ke-page-sidebar">
 	${ ui.includeFragment("kenyaui", "widget/panelMenu", [
 		heading: "Tasks",
 		items: [
@@ -11,7 +11,7 @@
 	]) }
 </div>
 
-<div id="content-main">
+<div class="ke-page-content">
 	${ ui.includeFragment("kenyaemr", "patient/patientList", [ id: "recentlyViewedPatients", page: "chart/chartViewPatient", heading: "Recently Viewed Patients" ]) }
 </div>
 

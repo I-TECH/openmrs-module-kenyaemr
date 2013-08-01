@@ -43,7 +43,7 @@
 		]
 	}
 %>
-<div id="content-side">
+<div class="ke-page-sidebar">
 
 	<div class="ke-panel-frame">
 		<% menuItems.each { item -> print ui.includeFragment("kenyaui", "widget/panelMenuItem", item) } %>
@@ -71,7 +71,7 @@
 
 </div>
 
-<div id="content-main">
+<div class="ke-page-content">
 
 	<% if (visit) { %>
 

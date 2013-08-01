@@ -2,7 +2,7 @@
 	ui.decorateWith("kenyaemr", "standardPage", [ layout: "sidebar" ])
 %>
 
-<div id="content-side">
+<div class="ke-page-sidebar">
 	${ ui.includeFragment("kenyaui", "widget/panelMenu", [
 			heading: "My Profile",
 			items: [
@@ -22,7 +22,7 @@
 	]) }
 </div>
 
-<div id="content-main">
+<div class="ke-page-content">
 
 	<div class="ke-panel-frame">
 		<div class="ke-panel-heading">Personal Details</div>

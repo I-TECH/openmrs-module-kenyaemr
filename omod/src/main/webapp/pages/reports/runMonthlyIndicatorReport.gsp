@@ -14,11 +14,11 @@
 	}
 %>
 
-<div id="content-side">
+<div class="ke-page-sidebar">
 	${ ui.includeFragment("kenyaui", "widget/panelMenu", [ heading: "Report", items: menuItems ]) }
 </div>
 
-<div id="content-main">
+<div class="ke-page-content">
 
 <% if (data) { %>
 	${ ui.includeFragment("kenyaemr", "reportOutput", [ definition: definition, data: data ]) }

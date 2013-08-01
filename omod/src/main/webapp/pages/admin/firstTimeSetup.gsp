@@ -38,7 +38,7 @@
 		]
 	}
 %>
-<div id="content">
+<div class="ke-page-content">
 
 	<% if (isSuperUser) { %>
 

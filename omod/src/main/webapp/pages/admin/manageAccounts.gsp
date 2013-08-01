@@ -2,7 +2,7 @@
 	ui.decorateWith("kenyaemr", "standardPage", [ layout: "sidebar" ])
 %>
 
-<div id="content-side">
+<div class="ke-page-sidebar">
 	<div class="ke-panel-frame">
 		<div class="ke-panel-heading">Find an Account</div>
 		<div class="ke-panel-content">
@@ -40,7 +40,7 @@
 </div>
 
 
-<div id="content-main">
+<div class="ke-page-content">
 	${ ui.includeFragment("kenyaemr", "account/accountList", [ id: "results", page: "admin/editAccount", heading: "Matching Accounts" ]) }
 </div>
 

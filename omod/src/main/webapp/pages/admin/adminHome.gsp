@@ -34,7 +34,7 @@
 	}
 %>
 
-<div id="content-side">
+<div class="ke-page-sidebar">
 	${ ui.includeFragment("kenyaui", "widget/panelMenu", [
 			heading: "Information",
 			items: [
@@ -72,14 +72,23 @@
 	]) }
 </div>
 
-<div id="content-main">
+<div class="ke-page-content">
 
 	<% if (section == "content") { %>
 
-		${ ui.includeFragment("kenyaemr", "content/packagesContent") }
-		${ ui.includeFragment("kenyaemr", "content/programsContent") }
-		${ ui.includeFragment("kenyaemr", "content/formsContent") }
-		${ ui.includeFragment("kenyaemr", "content/identifiersContent") }
+		<div class="ke-page-tabs">
+			<div class="ke-page-tab" data-tabid="metadata">Metadata</div>
+			<div class="ke-page-tab" data-tabid="programs">Programs</div>
+			<div class="ke-page-tab" data-tabid="forms">Forms</div>
+			<div class="ke-page-tab" data-tabid="identifiers">Identifiers</div>
+		</div>
+
+		<div class="ke-page-tabcontents">
+			<div class="ke-page-tabcontent" data-tabid="metadata">${ ui.includeFragment("kenyaemr", "content/packagesContent") }</div>
+			<div class="ke-page-tabcontent" data-tabid="programs">${ ui.includeFragment("kenyaemr", "content/programsContent") }</div>
+			<div class="ke-page-tabcontent" data-tabid="forms">${ ui.includeFragment("kenyaemr", "content/formsContent") }</div>
+			<div class="ke-page-tabcontent" data-tabid="identifiers">${ ui.includeFragment("kenyaemr", "content/identifiersContent") }</div>
+		</div>
 
 	<% } else { %>
 

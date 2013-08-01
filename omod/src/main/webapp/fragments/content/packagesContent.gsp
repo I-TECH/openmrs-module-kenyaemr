@@ -1,5 +1,5 @@
 <%
-	ui.decorateWith("kenyaui", "panel", [ heading: "Metadata Packages" ])
+	ui.decorateWith("kenyaui", "panel", [ heading: "Packages" ])
 %>
 <table class="ke-table-decorated ke-table-vertical">
 	<thead>

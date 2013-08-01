@@ -12,10 +12,6 @@
 	});
 </script>
 
-${ ui.includeFragment("kenyaemr", "enterHtmlForm", [
-		patient: patient,
-		formUuid: formUuid,
-		htmlFormId: htmlFormId,
-		visit: visit,
-		returnUrl: returnUrl
-]) }
+<div class="ke-page-content">
+	${ ui.includeFragment("kenyaemr", "enterHtmlForm", [ patient: patient, formUuid: formUuid, visit: visit, returnUrl: returnUrl ]) }
+</div>

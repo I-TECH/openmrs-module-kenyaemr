@@ -56,13 +56,13 @@
 	}
 </script>
 
-<div id="content-side">
+<div class="ke-page-sidebar">
 	<div class="ke-panel-frame">
 		${ ui.includeFragment("kenyaui", "widget/panelMenuItem", [ iconProvider: "kenyaui", icon: "buttons/back.png", label: "Back", href: returnUrl ]) }
 	</div>
 </div>
 
-<div id="content-main">
+<div class="ke-page-content">
 	<div class="ke-panel-frame">
 		<div class="ke-panel-heading">${ category } Regimen History</div>
 		<div class="ke-panel-content">
