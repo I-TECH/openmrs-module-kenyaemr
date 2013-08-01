@@ -72,7 +72,7 @@
 
 	<bean id="kenyaemr.app.chart" class="org.openmrs.module.appframework.SimpleAppDescriptor">
 		<property name="id" value="kenyaemr.medicalChart"/>
-		<property name="label" value="Medical Chart"/>
+		<property name="label" value="Chart"/>
 		<property name="homepageUrl" value="kenyaemr/chart/chartHome.page"/>
 		<property name="iconUrl" value="kenyaui:apps/chart.png"/>
 		<property name="order" value="400"/>
