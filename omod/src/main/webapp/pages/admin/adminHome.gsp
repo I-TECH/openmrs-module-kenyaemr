@@ -66,8 +66,7 @@
 			heading: "Tasks",
 			items: [
 					[ iconProvider: "kenyaui", icon: "buttons/users_manage.png", label: "Manage Accounts", href: ui.pageLink("kenyaemr", "admin/manageAccounts") ],
-					[ iconProvider: "kenyaui", icon: "buttons/admin_setup.png", label: "Redo First-time Setup", href: ui.pageLink("kenyaemr", "admin/firstTimeSetup") ]/*,
-					[ iconProvider: "kenyaui", icon: "buttons/admin_update.png", label: "Install New Software Version", href: ui.pageLink("kenyaemr", "admin/softwareVersion") ]*/
+					[ iconProvider: "kenyaui", icon: "buttons/admin_setup.png", label: "Redo First-time Setup", href: ui.pageLink("kenyaemr", "admin/firstTimeSetup") ]
 			]
 	]) }
 </div>
@@ -76,19 +75,17 @@
 
 	<% if (section == "content") { %>
 
-		<div class="ke-page-tabs">
-			<div class="ke-page-tab" data-tabid="metadata">Metadata</div>
-			<div class="ke-page-tab" data-tabid="programs">Programs</div>
-			<div class="ke-page-tab" data-tabid="forms">Forms</div>
-			<div class="ke-page-tab" data-tabid="identifiers">Identifiers</div>
-		</div>
+		${ ui.includeFragment("kenyaui", "widget/tabMenu", [ items: [
+				[ label: "Metadata", tabid: "metadata" ],
+				[ label: "Programs", tabid: "programs" ],
+				[ label: "Forms", tabid: "forms" ],
+				[ label: "Identifiers", tabid: "identifiers" ]
+		] ]) }
 
-		<div class="ke-page-tabcontents">
-			<div class="ke-page-tabcontent" data-tabid="metadata">${ ui.includeFragment("kenyaemr", "content/packagesContent") }</div>
-			<div class="ke-page-tabcontent" data-tabid="programs">${ ui.includeFragment("kenyaemr", "content/programsContent") }</div>
-			<div class="ke-page-tabcontent" data-tabid="forms">${ ui.includeFragment("kenyaemr", "content/formsContent") }</div>
-			<div class="ke-page-tabcontent" data-tabid="identifiers">${ ui.includeFragment("kenyaemr", "content/identifiersContent") }</div>
-		</div>
+		<div class="ke-tab" data-tabid="metadata">${ ui.includeFragment("kenyaemr", "content/packagesContent") }</div>
+		<div class="ke-tab" data-tabid="programs">${ ui.includeFragment("kenyaemr", "content/programsContent") }</div>
+		<div class="ke-tab" data-tabid="forms">${ ui.includeFragment("kenyaemr", "content/formsContent") }</div>
+		<div class="ke-tab" data-tabid="identifiers">${ ui.includeFragment("kenyaemr", "content/identifiersContent") }</div>
 
 	<% } else { %>
 
