@@ -142,6 +142,7 @@ public class EmrUtilsFragmentController {
 			}
 		}
 
-		return ui.simplifyCollection(pats);
+		// Until UIFR-126, simplifyCollection can't handle empty collections
+		return pats.size() > 0 ? ui.simplifyCollection(pats) : new SimpleObject[] {};
 	}
 }
