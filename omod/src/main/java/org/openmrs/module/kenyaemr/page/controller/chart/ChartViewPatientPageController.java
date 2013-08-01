@@ -15,22 +15,30 @@
 package org.openmrs.module.kenyaemr.page.controller.chart;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.openmrs.Encounter;
 import org.openmrs.Form;
 import org.openmrs.Patient;
 import org.openmrs.PatientProgram;
+import org.openmrs.Program;
 import org.openmrs.Visit;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appframework.AppDescriptor;
 import org.openmrs.module.appframework.api.AppFrameworkService;
+import org.openmrs.module.kenyacore.program.ProgramDescriptor;
 import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyacore.CoreContext;
 import org.openmrs.module.kenyacore.form.FormDescriptor;
+import org.openmrs.module.kenyaemr.util.EmrUtils;
+import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.module.kenyaui.annotation.AppPage;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
@@ -48,11 +56,12 @@ public class ChartViewPatientPageController {
 	public void controller(@RequestParam("patientId") Patient patient,
 	                       @RequestParam(required = false, value = "visitId") Visit visit,
 	                       @RequestParam(required = false, value = "formUuid") String formUuid,
-	                       @RequestParam(required = false, value = "patientProgramId") PatientProgram pp,
+	                       @RequestParam(required = false, value = "programId") Program program,
 						   @RequestParam(required = false, value = "section") String section,
 	                       PageModel model,
 	                       UiUtils ui,
 	                       Session session,
+						   @SpringBean KenyaUiUtils kenyaUi,
 						   @SpringBean CoreContext emr) {
 
 		if ("".equals(formUuid)) {
@@ -74,7 +83,10 @@ public class ChartViewPatientPageController {
 		}
 		model.addAttribute("oneTimeForms", oneTimeForms);
 
-		model.addAttribute("programs", Context.getProgramWorkflowService().getPatientPrograms(patient, null, null, null, null, null, false));
+		Collection<ProgramDescriptor> progams = emr.getProgramManager().getPatientPrograms(patient);
+
+		model.addAttribute("programs", progams);
+		model.addAttribute("programSummaries", programSummaries(patient, progams, emr, kenyaUi));
 		model.addAttribute("visits", Context.getVisitService().getVisitsByPatient(patient));
 		
 		Form form = null;
@@ -91,8 +103,8 @@ public class ChartViewPatientPageController {
 			Encounter encounter = encounters.size() > 0 ? encounters.get(0) : null;
 			model.addAttribute("encounter", encounter);
 		}
-		else if (pp != null) {
-			selection = "program-" + pp.getPatientProgramId();
+		else if (program != null) {
+			selection = "program-" + program.getProgramId();
 		}
 		else {
 			if (StringUtils.isEmpty(section)) {
@@ -103,7 +115,7 @@ public class ChartViewPatientPageController {
 
 		model.addAttribute("form", form);
 		model.addAttribute("visit", visit);
-		model.addAttribute("program", pp);
+		model.addAttribute("program", program);
 		model.addAttribute("section", section);
 		model.addAttribute("selection", selection);
 	}
@@ -125,5 +137,26 @@ public class ChartViewPatientPageController {
 		recent.add(0, patient.getPatientId());
 		while (recent.size() > 10)
 			recent.removeLast();
+	}
+
+	/**
+	 * Creates a one line summary for each program
+	 * @return the map of programs to summaries
+	 */
+	private Map<Program, String> programSummaries(Patient patient, Collection<ProgramDescriptor> programs, CoreContext emr, KenyaUiUtils kenyaUi) {
+		Map<Program, String> summaries = new HashMap<Program, String>();
+
+		for (ProgramDescriptor descriptor : programs) {
+			Program program = descriptor.getTarget();
+			List<PatientProgram> allEnrollments = emr.getProgramManager().getPatientEnrollments(patient, program);
+			PatientProgram lastEnrollment = allEnrollments.get(allEnrollments.size() - 1);
+			String summary = lastEnrollment.getActive()
+					? "Enrolled on " + kenyaUi.formatDate(lastEnrollment.getDateEnrolled())
+					: "Completed on " + kenyaUi.formatDate(lastEnrollment.getDateCompleted());
+
+			summaries.put(descriptor.getTarget(), summary);
+		}
+
+		return summaries;
 	}
 }

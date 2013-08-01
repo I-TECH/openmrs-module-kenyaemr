@@ -25,6 +25,7 @@ import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,11 +38,16 @@ public class ProgramCarePanelsFragmentController {
 	public void controller(FragmentModel model,
 						   @FragmentParam("patient") Patient patient,
 						   @FragmentParam("complete") boolean complete,
+						   @FragmentParam("activeOnly") boolean activeOnly,
 						   @SpringBean CoreContext emr) {
 
 		List<UIResource> carePanels = new ArrayList<UIResource>();
 
-		for (ProgramDescriptor programDescriptor : emr.getProgramManager().getPatientActivePrograms(patient)) {
+		Collection<ProgramDescriptor> programs = activeOnly
+				? emr.getProgramManager().getPatientActivePrograms(patient)
+				: emr.getProgramManager().getPatientPrograms(patient);
+
+		for (ProgramDescriptor programDescriptor : programs) {
 			carePanels.add(programDescriptor.getFragments().get(EmrWebConstants.PROGRAM_CARE_PANEL_FRAGMENT));
 		}
 

@@ -28,18 +28,12 @@
 		]
 	}
 
-	programs.each { prog ->
-		def extra = "from " + kenyaUi.formatDate(prog.dateEnrolled)
-		if (prog.dateCompleted)
-			extra += " to " + kenyaUi.formatDate(prog.dateCompleted)
-		if (prog.outcome)
-			exta += "<br />Outcome: <b>" + ui.format(prog.outcome) + "</b>"
-
+	programs.each { program ->
 		menuItems << [
-				label: ui.format(prog.program),
-				extra: extra,
-				href: ui.pageLink("kenyaemr", "chart/chartViewPatient", [ patientId: patient.id, patientProgramId: prog.id ]),
-				active: (selection == "program-" + prog.id)
+				label: ui.format(program.target),
+				extra: programSummaries[program.target],
+				href: ui.pageLink("kenyaemr", "chart/chartViewPatient", [ patientId: patient.id, programId: program.target.id ]),
+				active: (selection == "program-" + program.target.id)
 		]
 	}
 %>
@@ -138,11 +132,11 @@
 
 	<% } else if (program) { %>
 
-		${ ui.includeFragment("kenyaemr", "chartPatientProgram", [ patientProgram: program ]) }
+		${ ui.includeFragment("kenyaemr", "program/programHistory", [ patient: patient, program: program, showClinicalData: true ]) }
 
 	<% } else if (section == "overview") { %>
 
-		${ ui.includeFragment("kenyaemr", "chartPatientOverview", [ patient: patient ]) }
+		${ ui.includeFragment("kenyaemr", "program/programCarePanels", [ patient: patient, complete: true, activeOnly: false ]) }
 
 	<% } else if (section == "moh257") { %>
 

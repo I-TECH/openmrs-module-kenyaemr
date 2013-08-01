@@ -38,8 +38,8 @@ public class ProgramHistoriesFragmentController {
 						   @FragmentParam("showClinicalData") boolean showClinicalData,
 						   @SpringBean CoreContext emr) {
 
-		List<ProgramDescriptor> activePrograms = emr.getProgramManager().getPatientActivePrograms(patient);
-		List<ProgramDescriptor> eligiblePrograms = emr.getProgramManager().getPatientEligiblePrograms(patient);
+		Collection<ProgramDescriptor> activePrograms = emr.getProgramManager().getPatientActivePrograms(patient);
+		Collection<ProgramDescriptor> eligiblePrograms = emr.getProgramManager().getPatientEligiblePrograms(patient);
 		List<ProgramDescriptor> programs = EmrUtils.merge(activePrograms, eligiblePrograms);
 
 		model.addAttribute("patient", patient);

@@ -19,8 +19,11 @@ import java.util.*;
 import org.openmrs.*;
 import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyacore.CoreContext;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
+import org.openmrs.module.kenyacore.program.ProgramDescriptor;
 import org.openmrs.ui.framework.annotation.FragmentParam;
+import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 
 /**
@@ -31,29 +34,29 @@ public class ProgramHistoryFragmentController {
 	public void controller(FragmentModel model,
 						   @FragmentParam("patient") Patient patient,
 						   @FragmentParam("program") Program program,
-						   @FragmentParam("defaultEnrollmentForm") Form defaultEnrollmentForm,
-						   @FragmentParam("defaultCompletionForm") Form defaultCompletionForm,
-						   @FragmentParam("showClinicalData") boolean showClinicalData) {
+						   @FragmentParam("showClinicalData") boolean showClinicalData,
+						   @SpringBean CoreContext emr) {
 
-		model.addAttribute("patient", patient);
-		model.addAttribute("program", program);
-		model.addAttribute("defaultEnrollmentForm", defaultEnrollmentForm);
-		model.addAttribute("defaultCompletionForm", defaultCompletionForm);
-		model.addAttribute("showClinicalData", showClinicalData);
+		ProgramDescriptor descriptor = emr.getProgramManager().getProgramDescriptor(program);
+		boolean patientIsEligible = emr.getProgramManager().isPatientEligibleFor(patient, program);
 
 		ProgramWorkflowService pws = Context.getProgramWorkflowService();
 		PatientProgram currentEnrollment = null;
 
 		// Gather all program enrollments for this patient and program
-		List<PatientProgram> enrollments = new ArrayList<PatientProgram>();
-		for (PatientProgram pp : pws.getPatientPrograms(patient, program, null, null, null, null, false)) {
-			enrollments.add(pp);
-
-			if (pp.getActive()) {
-				currentEnrollment = pp;
+		List<PatientProgram> enrollments = emr.getProgramManager().getPatientEnrollments(patient, program);
+		for (PatientProgram enrollment : enrollments) {
+			if (enrollment.getActive()) {
+				currentEnrollment = enrollment;
 			}
 		}
 
+		model.addAttribute("patient", patient);
+		model.addAttribute("program", program);
+		model.addAttribute("defaultEnrollmentForm", descriptor.getDefaultCompletionForm().getTarget());
+		model.addAttribute("defaultCompletionForm", descriptor.getDefaultCompletionForm().getTarget());
+		model.addAttribute("showClinicalData", showClinicalData);
+		model.addAttribute("patientIsEligible", patientIsEligible);
 		model.addAttribute("currentEnrollment", currentEnrollment);
 		model.addAttribute("enrollments", enrollments);
 	}

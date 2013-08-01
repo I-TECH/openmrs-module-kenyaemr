@@ -10,7 +10,7 @@
 			iconProvider: "kenyaui",
 			href: ui.pageLink("kenyaemr", "enterHtmlForm", [ patientId: patient.id, formUuid: defaultCompletionForm.uuid, appId: currentApp.id, returnUrl: ui.thisUrl() ])
 	]) }
-<% } else { %>
+<% } else if (patientIsEligible) { %>
 	${ ui.includeFragment("kenyaui", "widget/button", [
 			label: "Enroll",
 			extra: "Register on program",

@@ -19,6 +19,7 @@ import org.openmrs.Patient;
 import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.module.kenyacore.CoreContext;
 import org.openmrs.module.kenyacore.calculation.CalculationUtils;
+import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.LastWhoStageCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtRegimenCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtStartDateCalculation;
@@ -29,6 +30,7 @@ import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -58,5 +60,7 @@ public class HivCarePanelFragmentController {
 		Concept medSet = emr.getRegimenManager().getMasterSetConcept("ARV");
 		RegimenChangeHistory history = RegimenChangeHistory.forPatient(patient, medSet);
 		model.addAttribute("regimenHistory", history);
+
+		model.addAttribute("graphingConcepts", Arrays.asList(Dictionary.WEIGHT_KG, Dictionary.CD4_COUNT, Dictionary.CD4_PERCENT));
 	}
 }

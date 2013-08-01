@@ -20,7 +20,7 @@
 				<td width="60%" valign="top" style="padding-left: 5px">
 					${ ui.includeFragment("kenyaemr", "visitMenu", [ patient: patient, visit: visit, allowCheckIn: false, allowCheckOut: true ]) }
 
-					${ ui.includeFragment("kenyaemr", "program/programCarePanels", [ patient: patient, complete: false ]) }
+					${ ui.includeFragment("kenyaemr", "program/programCarePanels", [ patient: patient, complete: false, activeOnly: true ]) }
 
 					<% if (visit) { %>
 					${ ui.includeFragment("kenyaemr", "visitAvailableForms", [ visit: visit ]) }

@@ -25,13 +25,16 @@ import org.openmrs.module.kenyacore.ContentManager;
 import org.openmrs.module.kenyacore.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.form.FormConfiguration;
+import org.openmrs.util.OpenmrsUtil;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -82,19 +85,50 @@ public class ProgramManager implements ContentManager {
 	}
 
 	/**
+	 * Gets program descriptors for all programs which the given patient has ever been enrolled in
+	 * @param patient the patient
+	 * @return the program descriptors
+	 */
+	public Collection<ProgramDescriptor> getPatientPrograms(Patient patient) {
+		Collection<ProgramDescriptor> everIn = new LinkedHashSet<ProgramDescriptor>();
+
+		ProgramWorkflowService pws = Context.getProgramWorkflowService();
+		for (PatientProgram pp : pws.getPatientPrograms(patient, null, null, null, null, null, false)) {
+			ProgramDescriptor descriptor = getProgramDescriptor(pp.getProgram());
+			if (descriptor != null) {
+				everIn.add(descriptor);
+			}
+		}
+
+		return everIn;
+	}
+
+	/**
+	 * Checks whether patient is eligible to enroll in the given program
+	 * @param patient the patient
+	 * @param program the program
+	 * @return true if patient can enroll
+	 */
+	public boolean isPatientEligibleFor(Patient patient, Program program) {
+		ProgramDescriptor descriptor = getProgramDescriptor(program);
+
+		Class<? extends BaseEmrCalculation> clazz = descriptor.getEligibilityCalculation();
+
+		CalculationResult result = CalculationUtils.evaluateForPatient(clazz, null, patient);
+		return ResultUtil.isTrue(result);
+	}
+
+	/**
 	 * Gets program descriptors for all programs which the given patient is eligible for
 	 * @param patient the patient
 	 * @return the program descriptors
 	 */
-	public List<ProgramDescriptor> getPatientEligiblePrograms(Patient patient) {
+	public Collection<ProgramDescriptor> getPatientEligiblePrograms(Patient patient) {
 		List<ProgramDescriptor> eligibleFor = new ArrayList<ProgramDescriptor>();
 
-		for (ProgramDescriptor programDescriptor : programs.values()) {
-			Class<? extends BaseEmrCalculation> clazz = programDescriptor.getEligibilityCalculation();
-
-			CalculationResult result = CalculationUtils.evaluateForPatient(clazz, null, patient);
-			if (ResultUtil.isTrue(result)) {
-				eligibleFor.add(programDescriptor);
+		for (ProgramDescriptor descriptor : programs.values()) {
+			if (isPatientEligibleFor(patient, descriptor.getTarget())) {
+				eligibleFor.add(descriptor);
 			}
 		}
 
@@ -106,7 +140,7 @@ public class ProgramManager implements ContentManager {
 	 * @param patient the patient
 	 * @return the program descriptors
 	 */
-	public List<ProgramDescriptor> getPatientActivePrograms(Patient patient) {
+	public Collection<ProgramDescriptor> getPatientActivePrograms(Patient patient) {
 		return getPatientActivePrograms(patient, new Date());
 	}
 
@@ -116,7 +150,7 @@ public class ProgramManager implements ContentManager {
 	 * @param onDate the date
 	 * @return the program descriptors
 	 */
-	public List<ProgramDescriptor> getPatientActivePrograms(Patient patient, Date onDate) {
+	public Collection<ProgramDescriptor> getPatientActivePrograms(Patient patient, Date onDate) {
 		List<ProgramDescriptor> activeIn = new ArrayList<ProgramDescriptor>();
 
 		ProgramWorkflowService pws = Context.getProgramWorkflowService();
@@ -130,5 +164,24 @@ public class ProgramManager implements ContentManager {
 		}
 
 		return activeIn;
+	}
+
+	/**
+	 * Gets all enrollments for the given patient in the given program, in chronological order
+	 * @param patient the patient
+	 * @param program the program
+	 * @return the enrollments
+	 */
+	public List<PatientProgram> getPatientEnrollments(Patient patient, Program program) {
+		List<PatientProgram> enrollments = Context.getProgramWorkflowService().getPatientPrograms(patient, program, null, null, null, null, false);
+
+		Collections.sort(enrollments, new Comparator<PatientProgram>() {
+			@Override
+			public int compare(PatientProgram pp1, PatientProgram pp2) {
+				return OpenmrsUtil.compare(pp1.getDateEnrolled(), pp2.getDateEnrolled());
+			}
+		});
+
+		return enrollments;
 	}
 }

@@ -1,9 +1,3 @@
-<% programs.each { programDescriptor -> %>
-${ ui.includeFragment("kenyaemr", "program/programHistory", [
-		patient: patient,
-		program: programDescriptor.target,
-		defaultEnrollmentForm: programDescriptor.defaultEnrollmentForm.target,
-		defaultCompletionForm: programDescriptor.defaultCompletionForm.target,
-		showClinicalData: showClinicalData
-]) }
+<% programs.each { descriptor -> %>
+${ ui.includeFragment("kenyaemr", "program/programHistory", [ patient: patient, program: descriptor.target, showClinicalData: showClinicalData ]) }
 <% } %>

@@ -14,9 +14,6 @@
 
 package org.openmrs.module.kenyaemr;
 
-import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.KenyaEmrUiUtils;
-import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.ui.framework.fragment.FragmentContext;
 import org.openmrs.ui.framework.fragment.FragmentModelConfigurator;
 import org.openmrs.ui.framework.page.PageContext;
@@ -33,20 +30,13 @@ public class EmrModelConfigurator implements PageModelConfigurator, FragmentMode
 	@Autowired
 	private KenyaEmrUiUtils kenyaEmrUiUtils;
 
-	private static final Dictionary DICTIONARY = new Dictionary();
-	private static final Metadata METADATA = new Metadata();
-
 	@Override
 	public void configureModel(PageContext pageContext) {
-		pageContext.getModel().addAttribute("Metadata", METADATA);
-		pageContext.getModel().addAttribute("dictionary", DICTIONARY);
 		pageContext.getModel().addAttribute("kenyaEmrUi", kenyaEmrUiUtils);
 	}
 
 	@Override
 	public void configureModel(FragmentContext fragmentContext) {
-		fragmentContext.getModel().addAttribute("Metadata", METADATA);
-		fragmentContext.getModel().addAttribute("dictionary", DICTIONARY);
 		fragmentContext.getModel().addAttribute("kenyaEmrUi", kenyaEmrUiUtils);
 	}
 }
