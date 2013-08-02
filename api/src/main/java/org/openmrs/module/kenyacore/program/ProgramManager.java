@@ -24,7 +24,6 @@ import org.openmrs.calculation.result.ResultUtil;
 import org.openmrs.module.kenyacore.ContentManager;
 import org.openmrs.module.kenyacore.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyacore.calculation.CalculationUtils;
-import org.openmrs.module.kenyacore.form.FormConfiguration;
 import org.openmrs.util.OpenmrsUtil;
 import org.springframework.stereotype.Component;
 
@@ -167,7 +166,8 @@ public class ProgramManager implements ContentManager {
 	}
 
 	/**
-	 * Gets all enrollments for the given patient in the given program, in chronological order
+	 * Gets all enrollments for the given patient in the given program, in chronological order. Regular service method
+	 * doesn't guarantee order.
 	 * @param patient the patient
 	 * @param program the program
 	 * @return the enrollments
@@ -175,6 +175,7 @@ public class ProgramManager implements ContentManager {
 	public List<PatientProgram> getPatientEnrollments(Patient patient, Program program) {
 		List<PatientProgram> enrollments = Context.getProgramWorkflowService().getPatientPrograms(patient, program, null, null, null, null, false);
 
+		// Sort by enrollment date ascending
 		Collections.sort(enrollments, new Comparator<PatientProgram>() {
 			@Override
 			public int compare(PatientProgram pp1, PatientProgram pp2) {

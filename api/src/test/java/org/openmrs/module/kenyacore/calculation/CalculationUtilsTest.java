@@ -19,7 +19,7 @@ import org.junit.Test;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.ListResult;
 import org.openmrs.calculation.result.SimpleResult;
-import org.openmrs.module.kenyaemr.test.TestUtils;
+import org.openmrs.module.kenyacore.test.TestUtils;
 
 import java.util.Arrays;
 import java.util.Date;

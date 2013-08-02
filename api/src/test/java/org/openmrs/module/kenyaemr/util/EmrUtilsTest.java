@@ -127,26 +127,6 @@ public class EmrUtilsTest extends BaseModuleContextSensitiveTest {
 	}
 
 	/**
-	 * @see EmrUtils#isPatientInProgram(org.openmrs.Patient, org.openmrs.Program)
-	 */
-	@Test
-	public void isPatientInProgram() {
-		Program tbProgram = MetadataUtils.getProgram(Metadata.TB_PROGRAM);
-		Patient patient = Context.getPatientService().getPatient(6);
-
-		// Check with no enrollments
-		Assert.assertFalse(EmrUtils.isPatientInProgram(patient, tbProgram));
-
-		// Check with non-active enrollment
-		TestUtils.enrollInProgram(patient, tbProgram, TestUtils.date(2011, 1, 1), TestUtils.date(2011, 12, 1));
-		Assert.assertFalse(EmrUtils.isPatientInProgram(patient, tbProgram));
-
-		// Check with active enrollment
-		TestUtils.enrollInProgram(patient, tbProgram, TestUtils.date(2012, 1, 1));
-		Assert.assertTrue(EmrUtils.isPatientInProgram(patient, tbProgram));
-	}
-
-	/**
 	 * @see EmrUtils#isRetrospectiveVisit(org.openmrs.Visit)
 	 */
 	@Test

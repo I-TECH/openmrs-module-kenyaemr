@@ -89,22 +89,6 @@ public class EmrUtils {
 	}
 
 	/**
-	 * Determines if patient is currently enrolled in the given program
-	 * @param patient the patient
-	 * @param program the program
-	 * @return true if patient is currently in the program
-	 */
-	public static boolean isPatientInProgram(Patient patient, Program program) {
-		ProgramWorkflowService pws = Context.getProgramWorkflowService();
-		for (PatientProgram pp : pws.getPatientPrograms(patient, program, null, null, null, null, false)) {
-			if (pp.getActive()) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	/**
 	 * Checks if a visit has been entered retrospectively. Visits entered retrospectively are entered with just a single
 	 * date value and are always stopped
 	 * @param visit the visit

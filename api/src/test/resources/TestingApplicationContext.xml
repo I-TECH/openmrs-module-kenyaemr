@@ -1,13 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:util="http://www.springframework.org/schema/util"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans 
-		http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
-		http://www.springframework.org/schema/context
-		http://www.springframework.org/schema/context/spring-context-3.0.xsd
-		http://www.springframework.org/schema/util
-		http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
 	<bean class="org.openmrs.module.kenyacore.lab.LabConfiguration">
 		<property name="path" value="test-lab.xml" />
@@ -16,6 +10,15 @@
 	<bean class="org.openmrs.module.kenyacore.regimen.RegimenConfiguration">
 		<property name="path" value="test-regimens.xml" />
 	</bean>
+
+	<!-- ==================== Programs ======================== -->
+
+	<bean id="test.program.hiv" class="org.openmrs.module.kenyacore.program.ProgramDescriptor">
+		<property name="targetUuid" value="da4a0391-ba62-4fad-ad66-1e3722d16380" />
+		<property name="order" value="100" />
+	</bean>
+
+	<!-- ==================== Identifiers ======================== -->
 
 	<!-- OpenMRS Identification Number -->
 	<bean id="test.identifier.openmrs" class="org.openmrs.module.kenyacore.identifier.IdentifierDescriptor">

@@ -14,11 +14,16 @@
 
 package org.openmrs.module.kenyacore.program;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.Patient;
+import org.openmrs.module.kenyacore.metadata.MetadataUtils;
+import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import static org.hamcrest.Matchers.*;
 
 /**
  * Tests for {@link org.openmrs.module.kenyacore.program.ProgramManager}
@@ -38,5 +43,22 @@ public class ProgramManagerTest extends BaseModuleContextSensitiveTest {
 	@Test
 	public void getAllPrograms() {
 		Assert.assertNotNull(programManager.getAllProgramDescriptors());
+	}
+
+	@Test
+	public void getPatientPrograms() {
+		ProgramDescriptor hivProgram = programManager.getProgramDescriptor(MetadataUtils.getProgram("da4a0391-ba62-4fad-ad66-1e3722d16380"));
+		Patient patient = TestUtils.getPatient(6);
+
+		// Check with no enrollments
+		Assert.assertEquals(0, programManager.getPatientPrograms(patient).size());
+
+		// Check with non-active enrollment
+		TestUtils.enrollInProgram(patient, hivProgram.getTarget(), TestUtils.date(2011, 1, 1), TestUtils.date(2011, 12, 1));
+		Assert.assertThat(programManager.getPatientPrograms(patient), contains(hivProgram));
+
+		// Check with active enrollment
+		TestUtils.enrollInProgram(patient, hivProgram.getTarget(), TestUtils.date(2012, 1, 1));
+		Assert.assertThat(programManager.getPatientPrograms(patient), contains(hivProgram));
 	}
 }
