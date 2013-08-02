@@ -7,7 +7,7 @@
 </div>
 
 <div class="ke-page-content">
-	${ ui.includeFragment("kenyaemr", "patient/patientList", [ id: "results", showNumResults: true, page: "chart/chartViewPatient", heading: "Matching Patients"]) }
+	${ ui.includeFragment("kenyaemr", "patient/patientList", [ id: "results", showNumResults: true, page: "clinician/clinicianViewPatient", heading: "Matching Patients"]) }
 </div>
 
 <script type="text/javascript">
