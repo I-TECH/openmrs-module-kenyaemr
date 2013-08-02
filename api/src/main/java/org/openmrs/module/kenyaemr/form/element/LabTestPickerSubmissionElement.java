@@ -96,8 +96,9 @@ public class LabTestPickerSubmissionElement implements HtmlGeneratorElement, For
 				sb.append("    <optgroup label=\"" + category + "\">\n");
 
 				for (LabTestDefinition labTest : labManager.getTests(category)) {
+					Concept testConcept = labTest.getConcept();
 					if (!excludeTests.contains(labTest.getConcept())) {
-						sb.append("      <option value=\"" + labTest.getConcept().getConceptId() + "\">" + labTest.getName() + "</option>\n");
+						sb.append("      <option value=\"" + testConcept.getConceptId() + "\">" + testConcept.getName() + "</option>\n");
 					}
 				}
 

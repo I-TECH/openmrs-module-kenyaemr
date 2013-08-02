@@ -34,11 +34,5 @@ public class LabTestDefinitionTest extends BaseModuleContextSensitiveTest {
 		// Check with concept uuid
 		LabTestDefinition def = new LabTestDefinition(cd4Uuid);
 		Assert.assertEquals(cd4, def.getConcept());
-		Assert.assertEquals(cd4.getPreferredName(CoreConstants.LOCALE).getName(), def.getName());
-
-		// Check with concept uuid and name
-		def = new LabTestDefinition(cd4Uuid, "test-name");
-		Assert.assertEquals(cd4, def.getConcept());
-		Assert.assertEquals("test-name", def.getName());
 	}
 }

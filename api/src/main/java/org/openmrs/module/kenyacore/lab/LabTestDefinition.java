@@ -25,25 +25,12 @@ public class LabTestDefinition {
 
 	private String conceptIdentifier;
 
-	private String name;
-
 	/**
 	 * Constructs a lab test definition
 	 * @param conceptIdentifier the concept identifier
 	 */
 	public LabTestDefinition(String conceptIdentifier)  {
 		this.conceptIdentifier = conceptIdentifier;
-		this.name = getConcept().getPreferredName(CoreConstants.LOCALE).getName();
-	}
-
-	/**
-	 * Constructs a lab test definition with an explicit name
-	 * @param conceptIdentifier the concept identifier
-	 * @param name the name
-	 */
-	public LabTestDefinition(String conceptIdentifier, String name)  {
-		this.conceptIdentifier = conceptIdentifier;
-		this.name = name;
 	}
 
 	/**
@@ -52,13 +39,5 @@ public class LabTestDefinition {
 	 */
 	public Concept getConcept() {
 		return MetadataUtils.getConcept(conceptIdentifier);
-	}
-
-	/**
-	 * Gets the display name
-	 * @return the name
-	 */
-	public String getName() {
-		return name;
 	}
 }

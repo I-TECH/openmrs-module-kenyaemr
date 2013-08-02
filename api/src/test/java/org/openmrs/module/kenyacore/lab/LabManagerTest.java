@@ -53,9 +53,7 @@ public class LabManagerTest extends BaseModuleContextSensitiveTest {
 		List<LabTestDefinition> tests = labManager.getTests("category1");
 		Assert.assertEquals(2, tests.size());
 		Assert.assertEquals(Context.getConceptService().getConcept(5089), tests.get(0).getConcept());
-		Assert.assertEquals(Context.getConceptService().getConcept(5089).getPreferredName(CoreConstants.LOCALE).getName(), tests.get(0).getName());
 		Assert.assertEquals(Context.getConceptService().getConcept(5497), tests.get(1).getConcept());
-		Assert.assertEquals("test-name", tests.get(1).getName());
 
 		tests = labManager.getTests("category2");
 		Assert.assertEquals(0, tests.size());

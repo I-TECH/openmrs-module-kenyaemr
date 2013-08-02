@@ -130,14 +130,8 @@ public class LabManager implements ContentManager {
 			for (int t = 0; t < testNodes.getLength(); t++) {
 				Element testElement = (Element) testNodes.item(t);
 				String testConceptIdentifier = testElement.getAttribute("concept");
-				String testName = testElement.getAttribute("name");
 
-				LabTestDefinition testDefinition;
-				if (StringUtils.isEmpty(testName)) {
-					testDefinition = new LabTestDefinition(testConceptIdentifier);
-				} else {
-					testDefinition = new LabTestDefinition(testConceptIdentifier, testName);
-				}
+				LabTestDefinition testDefinition = new LabTestDefinition(testConceptIdentifier);
 
 				testsForCategory.add(testDefinition);
 			}
