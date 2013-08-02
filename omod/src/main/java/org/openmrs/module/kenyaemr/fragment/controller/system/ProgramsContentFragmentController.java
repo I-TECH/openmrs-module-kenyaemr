@@ -12,14 +12,14 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.fragment.controller.content;
+package org.openmrs.module.kenyaemr.fragment.controller.system;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Transformer;
-import org.openmrs.Form;
-import org.openmrs.module.appframework.AppDescriptor;
+import org.openmrs.Program;
 import org.openmrs.module.kenyacore.CoreContext;
 import org.openmrs.module.kenyacore.form.FormDescriptor;
+import org.openmrs.module.kenyacore.program.ProgramDescriptor;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.FragmentModel;
@@ -29,25 +29,30 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * Controller for displaying all form content
+ * Controller for displaying all program content
  */
-public class FormsContentFragmentController {
+public class ProgramsContentFragmentController {
 
 	public void controller(FragmentModel model, @SpringBean CoreContext emr) {
-		List<SimpleObject> forms = new ArrayList<SimpleObject>();
-		for (FormDescriptor descriptor : emr.getFormManager().getAllFormDescriptors()) {
-			Form form = descriptor.getTarget();
+		List<SimpleObject> programs = new ArrayList<SimpleObject>();
+		for (ProgramDescriptor descriptor : emr.getProgramManager().getAllProgramDescriptors()) {
+			Program program = descriptor.getTarget();
 
-			Collection<String> allowedApps = CollectionUtils.collect(descriptor.getApps(), new Transformer() {
+			Collection<String> visitForms = CollectionUtils.collect(descriptor.getVisitForms(), new Transformer() {
 				@Override
 				public Object transform(Object o) {
-					return ((AppDescriptor) o).getLabel();
+					return ((FormDescriptor) o).getTarget().getName();
 				}
 			});
 
-			forms.add(SimpleObject.create("name", form.getName(), "encounterType", form.getEncounterType().getName(), "allowedApps", allowedApps));
+			programs.add(SimpleObject.create(
+					"name", program.getName(),
+					"enrollmentForm", descriptor.getDefaultEnrollmentForm().getTarget().getName(),
+					"visitForms", visitForms,
+					"completionForm", descriptor.getDefaultCompletionForm().getTarget().getName()
+			));
 		}
 
-		model.addAttribute("forms", forms);
+		model.addAttribute("programs", programs);
 	}
 }

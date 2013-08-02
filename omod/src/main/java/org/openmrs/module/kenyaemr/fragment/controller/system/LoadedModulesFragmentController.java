@@ -12,11 +12,12 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.fragment.controller.content;
+package org.openmrs.module.kenyaemr.fragment.controller.system;
 
-import org.openmrs.PatientIdentifierType;
+import org.openmrs.module.Module;
+import org.openmrs.module.ModuleFactory;
 import org.openmrs.module.kenyacore.CoreContext;
-import org.openmrs.module.kenyacore.identifier.IdentifierDescriptor;
+import org.openmrs.module.kenyacore.calculation.BaseFlagCalculation;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.FragmentModel;
@@ -25,18 +26,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Controller for displaying all identifier content
+ * Fragment for displaying all loaded modules
  */
-public class IdentifiersContentFragmentController {
+public class LoadedModulesFragmentController {
 
-	public void controller(FragmentModel model, @SpringBean CoreContext emr) {
-		List<SimpleObject> identifiers = new ArrayList<SimpleObject>();
-		for (IdentifierDescriptor descriptor : emr.getIdentifierManager().getAllIdentifierDescriptors()) {
-			PatientIdentifierType pidType = descriptor.getTarget();
-
-			identifiers.add(SimpleObject.create("name", pidType.getName()));
+	public void controller(FragmentModel model) {
+		List<SimpleObject> modules = new ArrayList<SimpleObject>();
+		for (Module mod : ModuleFactory.getLoadedModules()) {
+			modules.add(SimpleObject.create("name", mod.getName(), "version", mod.getVersion(), "started", mod.isStarted()));
 		}
 
-		model.addAttribute("identifiers", identifiers);
+		model.addAttribute("modules", modules);
 	}
 }

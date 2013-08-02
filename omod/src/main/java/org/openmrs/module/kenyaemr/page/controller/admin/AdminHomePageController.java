@@ -77,15 +77,6 @@ public class AdminHomePageController {
 			infoCategories.put("Server", general);
 			infoCategories.put("Database", content);
 		}
-		else if (section.equals("modules")) {
-
-			List<SimpleObject> modules = new ArrayList<SimpleObject>();
-			for (Module mod : ModuleFactory.getLoadedModules()) {
-				modules.add(SimpleObject.create("name", mod.getName(), "version", mod.getVersion(), "status", mod.isStarted()));
-			}
-
-			infoCategories.put("Modules", modules);
-		}
 
 		model.addAttribute("section", section);
 		model.addAttribute("infoCategories", infoCategories);

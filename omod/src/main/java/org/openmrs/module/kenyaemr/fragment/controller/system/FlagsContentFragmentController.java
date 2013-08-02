@@ -12,10 +12,10 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.fragment.controller.content;
+package org.openmrs.module.kenyaemr.fragment.controller.system;
 
 import org.openmrs.module.kenyacore.CoreContext;
-import org.openmrs.module.metadatasharing.ImportedPackage;
+import org.openmrs.module.kenyacore.calculation.BaseFlagCalculation;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.FragmentModel;
@@ -24,16 +24,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Controller for displaying all metadata package content
+ * Controller for displaying all patient flag content
  */
-public class PackagesContentFragmentController {
+public class FlagsContentFragmentController {
 
 	public void controller(FragmentModel model, @SpringBean CoreContext emr) {
-		List<SimpleObject> packages = new ArrayList<SimpleObject>();
-		for (ImportedPackage imported : emr.getMetadataManager().getImportedPackages()) {
-			packages.add(SimpleObject.create("name", imported.getName(), "version", imported.getVersion()));
+		List<SimpleObject> flags = new ArrayList<SimpleObject>();
+		for (BaseFlagCalculation calculation : emr.getCalculationManager().getFlagCalculations()) {
+
+			flags.add(SimpleObject.create("className", calculation.getClass().getSimpleName(), "message", calculation.getFlagMessage()));
 		}
 
-		model.addAttribute("packages", packages);
+		model.addAttribute("flags", flags);
 	}
 }

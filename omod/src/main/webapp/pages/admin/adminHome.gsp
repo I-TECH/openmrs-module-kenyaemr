@@ -73,35 +73,41 @@
 
 <div class="ke-page-content">
 
-	<% if (section == "content") { %>
+<% if (section == "content") { %>
 
-		${ ui.includeFragment("kenyaui", "widget/tabMenu", [ items: [
-				[ label: "Metadata", tabid: "metadata" ],
-				[ label: "Programs", tabid: "programs" ],
-				[ label: "Forms", tabid: "forms" ],
-				[ label: "Identifiers", tabid: "identifiers" ]
-		] ]) }
+	${ ui.includeFragment("kenyaui", "widget/tabMenu", [ items: [
+			[ label: "Metadata", tabid: "metadata" ],
+			[ label: "Programs", tabid: "programs" ],
+			[ label: "Forms", tabid: "forms" ],
+			[ label: "Identifiers", tabid: "identifiers" ],
+			[ label: "Flags", tabid: "flags" ]
+	] ]) }
 
-		<div class="ke-tab" data-tabid="metadata">${ ui.includeFragment("kenyaemr", "content/packagesContent") }</div>
-		<div class="ke-tab" data-tabid="programs">${ ui.includeFragment("kenyaemr", "content/programsContent") }</div>
-		<div class="ke-tab" data-tabid="forms">${ ui.includeFragment("kenyaemr", "content/formsContent") }</div>
-		<div class="ke-tab" data-tabid="identifiers">${ ui.includeFragment("kenyaemr", "content/identifiersContent") }</div>
+	<div class="ke-tab" data-tabid="metadata">${ ui.includeFragment("kenyaemr", "system/packagesContent") }</div>
+	<div class="ke-tab" data-tabid="programs">${ ui.includeFragment("kenyaemr", "system/programsContent") }</div>
+	<div class="ke-tab" data-tabid="forms">${ ui.includeFragment("kenyaemr", "system/formsContent") }</div>
+	<div class="ke-tab" data-tabid="identifiers">${ ui.includeFragment("kenyaemr", "system/identifiersContent") }</div>
+	<div class="ke-tab" data-tabid="flags">${ ui.includeFragment("kenyaemr", "system/flagsContent") }</div>
 
-	<% } else { %>
+<% } else if (section == "modules") { %>
 
-		<% infoCategories.each { %>
-		<div class="ke-panel-frame">
-			<div class="ke-panel-heading">${ it.key }</div>
-			<div class="ke-panel-content">
-				<% if (it.value instanceof java.util.List) { %>
-					${ formatInfoList(it.value) }
-				<% } else { %>
-					${ ui.format(it.value) }
-				<% } %>
-			</div>
+	${ ui.includeFragment("kenyaemr", "system/loadedModules") }
+
+<% } else { %>
+
+	<% infoCategories.each { %>
+	<div class="ke-panel-frame">
+		<div class="ke-panel-heading">${ it.key }</div>
+		<div class="ke-panel-content">
+			<% if (it.value instanceof java.util.List) { %>
+				${ formatInfoList(it.value) }
+			<% } else { %>
+				${ ui.format(it.value) }
+			<% } %>
 		</div>
-		<% } %>
-
+	</div>
 	<% } %>
+
+<% } %>
 
 </div>
