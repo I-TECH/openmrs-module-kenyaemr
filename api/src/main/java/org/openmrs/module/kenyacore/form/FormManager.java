@@ -216,8 +216,8 @@ public class FormManager implements ContentManager {
 			if (encounter.getForm() != null) {
 				FormDescriptor descriptor = getFormDescriptor(encounter.getForm());
 
-				// Filter by app
-				if (descriptor.getApps().contains(app)) {
+				// Filter by app and ignore forms with no descriptor
+				if (descriptor != null && descriptor.getApps().contains(app)) {
 					completedForms.add(descriptor);
 				}
 			}
