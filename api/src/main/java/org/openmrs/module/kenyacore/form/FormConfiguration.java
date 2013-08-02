@@ -14,6 +14,7 @@
 
 package org.openmrs.module.kenyacore.form;
 
+import org.openmrs.module.kenyacore.AbstractContentConfiguration;
 import org.openmrs.module.kenyacore.program.ProgramDescriptor;
 
 import java.util.Map;
@@ -22,7 +23,7 @@ import java.util.Set;
 /**
  * Configuration for forms
  */
-public class FormConfiguration {
+public class FormConfiguration extends AbstractContentConfiguration {
 
 	private Set<FormDescriptor> generalPatientForms;
 

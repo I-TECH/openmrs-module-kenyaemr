@@ -19,11 +19,11 @@
 	</bean>
 
 	<bean id="kenyaemr.config.lab" class="org.openmrs.module.kenyacore.lab.LabConfiguration">
-		<property name="path" value="lab.xml" />
+		<property name="definitionsPath" value="lab.xml" />
 	</bean>
 
 	<bean id="kenyaemr.config.regimen" class="org.openmrs.module.kenyacore.regimen.RegimenConfiguration">
-		<property name="path" value="regimens.xml" />
+		<property name="definitionsPath" value="regimens.xml" />
 	</bean>
 
 	<bean id="kenyaemr.config.form" class="org.openmrs.module.kenyacore.form.FormConfiguration">

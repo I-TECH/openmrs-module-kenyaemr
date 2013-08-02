@@ -87,17 +87,12 @@ public class LabManager implements ContentManager {
 		for (LabConfiguration configuration : Context.getRegisteredComponents(LabConfiguration.class)) {
 			try {
 				ClassLoader loader = configuration.getClassLoader();
-				InputStream stream = loader.getResourceAsStream(configuration.getPath());
+				InputStream stream = loader.getResourceAsStream(configuration.getDefinitionsPath());
 
-				if (stream != null) {
-					loadTestsFromXML(stream);
-				}
-				else {
-					throw new RuntimeException("Cannot find " + configuration.getModuleId() + ":" + configuration.getPath() + ". Make sure it's in api/src/main/resources");
-				}
+				loadTestsFromXML(stream);
 			}
 			catch (Exception ex) {
-				throw new RuntimeException("Unable to load " + configuration.getModuleId() + ":" + configuration.getPath(), ex);
+				throw new RuntimeException("Unable to load " + configuration.getModuleId() + ":" + configuration.getDefinitionsPath(), ex);
 			}
 		}
 	}

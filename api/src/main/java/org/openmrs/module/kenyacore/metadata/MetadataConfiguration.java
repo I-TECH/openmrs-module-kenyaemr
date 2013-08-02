@@ -14,32 +14,16 @@
 
 package org.openmrs.module.kenyacore.metadata;
 
+import org.openmrs.module.kenyacore.AbstractContentConfiguration;
+
 import java.util.Map;
 
 /**
  * Configuration bean class for metadata
  */
-public class MetadataConfiguration {
-
-	private String moduleId;
+public class MetadataConfiguration extends AbstractContentConfiguration {
 
 	private Map<String, String> packages;
-
-	/**
-	 * Gets the module id of the owner module
-	 * @return the module id
-	 */
-	public String getModuleId() {
-		return moduleId;
-	}
-
-	/**
-	 * Sets the module id of the owner module
-	 * @param moduleId the module id
-	 */
-	public void setModuleId(String moduleId) {
-		this.moduleId = moduleId;
-	}
 
 	/**
 	 * Gets the packages

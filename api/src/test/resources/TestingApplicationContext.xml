@@ -4,11 +4,11 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
 	<bean class="org.openmrs.module.kenyacore.lab.LabConfiguration">
-		<property name="path" value="test-lab.xml" />
+		<property name="definitionsPath" value="test-lab.xml" />
 	</bean>
 
 	<bean class="org.openmrs.module.kenyacore.regimen.RegimenConfiguration">
-		<property name="path" value="test-regimens.xml" />
+		<property name="definitionsPath" value="test-regimens.xml" />
 	</bean>
 
 	<!-- ==================== Programs ======================== -->

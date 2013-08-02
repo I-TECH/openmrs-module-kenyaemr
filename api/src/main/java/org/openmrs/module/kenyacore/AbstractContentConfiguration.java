@@ -5,11 +5,9 @@ import org.openmrs.module.ModuleFactory;
 /**
  * Abstract base class for configuration components based on a single external resource
  */
-public abstract class AbstractResourceConfiguration {
+public abstract class AbstractContentConfiguration {
 
 	private String moduleId;
-
-	private String path;
 
 	/**
 	 * Gets the class loader to use with this configuration
@@ -33,21 +31,5 @@ public abstract class AbstractResourceConfiguration {
 	 */
 	public void setModuleId(String moduleId) {
 		this.moduleId = moduleId;
-	}
-
-	/**
-	 * Gets the path to the resource
-	 * @return the path
-	 */
-	public String getPath() {
-		return path;
-	}
-
-	/**
-	 * Sets the path to the resource
-	 * @param path the path
-	 */
-	public void setPath(String path) {
-		this.path = path;
 	}
 }

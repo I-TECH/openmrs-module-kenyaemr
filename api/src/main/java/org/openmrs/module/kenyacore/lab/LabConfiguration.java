@@ -14,10 +14,28 @@
 
 package org.openmrs.module.kenyacore.lab;
 
-import org.openmrs.module.kenyacore.AbstractResourceConfiguration;
+import org.openmrs.module.kenyacore.AbstractContentConfiguration;
 
 /**
  * Configuration bean class for lab
  */
-public class LabConfiguration extends AbstractResourceConfiguration {
+public class LabConfiguration extends AbstractContentConfiguration {
+
+	private String definitionsPath;
+
+	/**
+	 * Gets the path to the definitions XML
+	 * @return the path
+	 */
+	public String getDefinitionsPath() {
+		return definitionsPath;
+	}
+
+	/**
+	 * Sets the path to the definitions XML
+	 * @param definitionsPath the path
+	 */
+	public void setDefinitionsPath(String definitionsPath) {
+		this.definitionsPath = definitionsPath;
+	}
 }
