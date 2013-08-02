@@ -11,12 +11,11 @@
 	<require_version>${openMRSVersion}</require_version>
 
 	<require_modules>
-		<require_module version="${uiframeworkVersion}">org.openmrs.module.uiframework</require_module>
 		<require_module version="${kenyauiVersion}">org.openmrs.module.kenyaui</require_module>
+		<require_module version="${uiframeworkVersion}">org.openmrs.module.uiframework</require_module>
 		<require_module version="${appframeworkVersion}">org.openmrs.module.appframework</require_module>
 		<require_module version="${metadatasharingVersion}">org.openmrs.module.metadatasharing</require_module>
 		<require_module version="${htmlformentryVersion}">org.openmrs.module.htmlformentry</require_module>
-		<require_module version="${moduledistroVersion}">org.openmrs.module.moduledistro</require_module>
 		<require_module version="${calculationVersion}">org.openmrs.calculation</require_module>
 		<require_module version="${reportingVersion}">org.openmrs.module.reporting</require_module>
 		<require_module version="${idgenVersion}">org.openmrs.module.idgen</require_module>

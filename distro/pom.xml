@@ -39,22 +39,21 @@
 								<configuration>
 									<target>
 										<get dest="target/distro" verbose="true" usetimestamp="true">
-											<url url="https://modules.openmrs.org/modules/download/uiframework/uiframework-${uiframeworkVersion}.omod" />
 											<url url="https://modules.openmrs.org/modules/download/kenyaui/kenyaui-${kenyauiVersion}.omod" />
+											<url url="https://modules.openmrs.org/modules/download/uiframework/uiframework-${uiframeworkVersion}.omod" />
 											<url url="https://modules.openmrs.org/modules/download/appframework/appframework-${appframeworkVersion}.omod" />
 											<url url="https://modules.openmrs.org/modules/download/htmlformentry19ext/htmlformentry19ext-${htmlformentry19extVersion}.omod" />
+											<url url="https://modules.openmrs.org/modules/download/htmlformentry/htmlformentry-${htmlformentryVersion}.omod" />
 											<url url="https://modules.openmrs.org/modules/download/reporting/reporting-${reportingVersion}.omod" />
 											<url url="https://modules.openmrs.org/modules/download/htmlwidgets/htmlwidgets-${htmlwidgetsVersion}.omod" />
 											<url url="https://modules.openmrs.org/modules/download/serialization.xstream/serialization.xstream-${serializationxstreamVersion}.omod" />
 											<url url="https://modules.openmrs.org/modules/download/metadatamapping/metadatamapping-${metadatamappingVersion}.omod" />
 											<url url="https://modules.openmrs.org/modules/download/metadatasharing/metadatasharing-${metadatasharingVersion}.omod" />
 											<url url="https://modules.openmrs.org/modules/download/idgen/idgen-${idgenVersion}.omod" />
-											<url url="https://modules.openmrs.org/modules/download/htmlformentry/htmlformentry-${htmlformentryVersion}.omod" />
 											<url url="https://modules.openmrs.org/modules/download/calculation/calculation-${calculationVersion}.omod" />
-											<url url="https://modules.openmrs.org/modules/download/moduledistro/moduledistro-${moduledistroVersion}.omod" />
-                                            <url url="https://modules.openmrs.org/modules/download/logic/logic-${logicVersion}.omod" />
-                                            <url url="https://modules.openmrs.org/modules/download/webservices.rest/webservices.rest-${webservicesRestVersionRepo}.omod" />
-                                            <url url="https://modules.openmrs.org/modules/download/reportingrest/reportingrest-${reportingrestVersion}.omod" />
+											<url url="https://modules.openmrs.org/modules/download/logic/logic-${logicVersion}.omod" />
+											<url url="https://modules.openmrs.org/modules/download/webservices.rest/webservices.rest-${webservicesRestVersionRepo}.omod" />
+											<url url="https://modules.openmrs.org/modules/download/reportingrest/reportingrest-${reportingrestVersion}.omod" />
 										</get>
 									</target>
 								</configuration>

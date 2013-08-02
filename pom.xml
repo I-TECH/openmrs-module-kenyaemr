@@ -43,7 +43,6 @@
 		<metadatasharingVersion>1.1.8</metadatasharingVersion>
 		<htmlformentryVersion>2.1</htmlformentryVersion>
 		<htmlformentry19extVersion>0.9</htmlformentry19extVersion>
-		<moduledistroVersion>1.2</moduledistroVersion>
 		<calculationVersion>1.0</calculationVersion>
 		<reportingVersion>0.7.6</reportingVersion>
 		<htmlwidgetsVersion>1.6.4</htmlwidgetsVersion>
@@ -103,17 +102,11 @@
 			<version>${htmlformentryVersion}</version>
 			<scope>provided</scope>
 		</dependency>
+
 		<dependency>
 			<groupId>org.openmrs.module</groupId>
 			<artifactId>htmlformentry-omod</artifactId>
 			<version>${htmlformentryVersion}</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.openmrs.module</groupId>
-			<artifactId>moduledistro-api</artifactId>
-			<version>${moduledistroVersion}</version>
 			<scope>provided</scope>
 		</dependency>
 
