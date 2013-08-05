@@ -11,27 +11,32 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.kenyaemr.page.controller;
 
-import org.openmrs.Encounter;
+import org.openmrs.Patient;
+import org.openmrs.Visit;
 import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyaui.annotation.SharedPage;
 import org.openmrs.ui.framework.page.PageModel;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
- * Controller for editing an existing HTML form
+ * Page for entering a new form
  */
-@SharedPage({EmrConstants.APP_REGISTRATION, EmrConstants.APP_INTAKE, EmrConstants.APP_CLINICIAN, EmrConstants.APP_CHART})
-public class EditHtmlFormPageController {
-	
-	public void controller(@RequestParam("encounterId") Encounter encounter,
+@SharedPage
+public class EnterFormPageController {
+
+	public void controller(@RequestParam("patientId") Patient patient,
+	                       @RequestParam(value = "formUuid", required = false) String formUuid,
+						   @RequestParam(value = "visitId", required = false) Visit visit,
 	                       @RequestParam("returnUrl") String returnUrl,
 	                       PageModel model) {
-		model.addAttribute("encounter", encounter);
-		model.addAttribute("patient", encounter.getPatient());
-		model.addAttribute("person", encounter.getPatient());
-		model.addAttribute("visit", encounter.getVisit());
+
+		model.addAttribute("formUuid", formUuid);
+		model.addAttribute("patient", patient);
+		model.addAttribute("person", patient);
+		model.addAttribute("visit", visit);
 		model.addAttribute("returnUrl", returnUrl);
 	}
 }

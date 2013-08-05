@@ -26,10 +26,10 @@ import org.openmrs.module.kenyaui.annotation.SharedPage;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
- * Handles form enter/edit requests
+ * Page for editing a per-patient form
  */
-@SharedPage({EmrConstants.APP_REGISTRATION, EmrConstants.APP_INTAKE, EmrConstants.APP_CLINICIAN, EmrConstants.APP_CHART})
-public class EditPatientHtmlFormPageController {
+@SharedPage
+public class EditPatientFormPageController {
 	
 	public String controller(@RequestParam("appId") String appId,
 							 @RequestParam("patientId") Patient patient,
@@ -45,11 +45,11 @@ public class EditPatientHtmlFormPageController {
 
 			List<Encounter> encounters = Context.getEncounterService().getEncounters(patient, null, null, null, Collections.singleton(form), null, null, null, null, false);
 			if (encounters.size() == 0) {
-				sb.append("enterHtmlForm.page?formUuid=" + formUuid);
+				sb.append("enterForm.page?formUuid=" + formUuid);
 			} else {
 				// in case there are more than one, we pick the last one
 				Encounter encounter = encounters.get(encounters.size() - 1);
-				sb.append("editHtmlForm.page?encounterId=" + encounter.getEncounterId());
+				sb.append("editForm.page?encounterId=" + encounter.getEncounterId());
 			}
 
 			sb.append("&appId=" + appId);

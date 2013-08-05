@@ -18,7 +18,7 @@
 				icon: form.icon,
 				label: form.name,
 				extra: "Edit form",
-				href: ui.pageLink("kenyaemr", "editPatientHtmlForm", [
+				href: ui.pageLink("kenyaemr", "editPatientForm", [
 					appId: currentApp.id,
 					patientId: patient.id,
 					formUuid: form.formUuid,

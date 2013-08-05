@@ -8,7 +8,7 @@
 			extra: "Exit from program",
 			icon: "buttons/program_complete.png",
 			iconProvider: "kenyaui",
-			href: ui.pageLink("kenyaemr", "enterHtmlForm", [ patientId: patient.id, formUuid: defaultCompletionForm.uuid, appId: currentApp.id, returnUrl: ui.thisUrl() ])
+			href: ui.pageLink("kenyaemr", "enterForm", [ patientId: patient.id, formUuid: defaultCompletionForm.uuid, appId: currentApp.id, returnUrl: ui.thisUrl() ])
 	]) }
 <% } else if (patientIsEligible) { %>
 	${ ui.includeFragment("kenyaui", "widget/button", [
@@ -16,7 +16,7 @@
 			extra: "Register on program",
 			icon: "buttons/program_enroll.png",
 			iconProvider: "kenyaui",
-			href: ui.pageLink("kenyaemr", "enterHtmlForm", [ patientId: patient.id, formUuid: defaultEnrollmentForm.uuid, appId: currentApp.id, returnUrl: ui.thisUrl() ])
+			href: ui.pageLink("kenyaemr", "enterForm", [ patientId: patient.id, formUuid: defaultEnrollmentForm.uuid, appId: currentApp.id, returnUrl: ui.thisUrl() ])
 	]) }
 <% } %>
 </div>

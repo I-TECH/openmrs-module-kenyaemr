@@ -27,10 +27,10 @@ import org.openmrs.module.kenyaui.annotation.SharedPage;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
- *
+ * Page for editing a per-program form
  */
-@SharedPage({EmrConstants.APP_REGISTRATION, EmrConstants.APP_INTAKE, EmrConstants.APP_CLINICIAN, EmrConstants.APP_CHART})
-public class EditProgramHtmlFormPageController {
+@SharedPage
+public class EditProgramFormPageController {
 
 	public String controller(@RequestParam("appId") String appId,
 							 @RequestParam("patientId") Patient patient,
@@ -46,12 +46,12 @@ public class EditProgramHtmlFormPageController {
 		List<Encounter> encounters = Context.getEncounterService().getEncounters(patient, null, enrollment.getDateEnrolled(), enrollment.getDateCompleted(), Collections.singleton(form), null, null, null, null, false);
 
 		if (encounters.size() == 0) {
-			throw new RuntimeException("Cannot find the encounter for this registration");
+			throw new RuntimeException("Cannot find the encounter for this enrollment");
 		}
 		else {
 			// in case there are more than one, we pick the last one
 			Encounter encounter = encounters.get(encounters.size() - 1);
-			return "redirect:" + EmrConstants.MODULE_ID + "/editHtmlForm.page?appId=" + appId + "&patientId=" + patient.getId() + "&encounterId=" + encounter.getEncounterId() + "&returnUrl=" + java.net.URLEncoder.encode(returnUrl);
+			return "redirect:" + EmrConstants.MODULE_ID + "/editForm.page?appId=" + appId + "&patientId=" + patient.getId() + "&encounterId=" + encounter.getEncounterId() + "&returnUrl=" + java.net.URLEncoder.encode(returnUrl);
 		}
 	}
 }

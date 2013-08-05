@@ -2,7 +2,7 @@
 	def onFormClick = { form ->
 		def visitId = visit ? visit.id : null
 		def opts = [ appId: currentApp.id, patientId: patient.id, formUuid: form.formUuid, returnUrl: ui.thisUrl() ]
-		"""location.href = '${ ui.pageLink('kenyaemr', 'enterHtmlForm', opts) }';"""
+		"""location.href = '${ ui.pageLink('kenyaemr', 'enterForm', opts) }';"""
 	}
 %>
 <div class="ke-panel-frame">
@@ -49,7 +49,7 @@
 					extra: "From column",
 					iconProvider: "kenyaui",
 					icon: "buttons/visit_retrospective.png",
-					href: ui.pageLink("kenyaemr", "enterHtmlForm", [ appId: currentApp.id, patientId: patient, formUuid: page2Form.uuid, returnUrl: ui.thisUrl() ])
+					href: ui.pageLink("kenyaemr", "enterForm", [ appId: currentApp.id, patientId: patient, formUuid: page2Form.uuid, returnUrl: ui.thisUrl() ])
 			]) }
 		</div>
 	</div>
