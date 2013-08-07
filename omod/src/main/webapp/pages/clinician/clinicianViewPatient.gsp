@@ -6,8 +6,8 @@
 
 	${ ui.includeFragment("kenyaui", "widget/tabMenu", [ items: [
 			[ label: "Overview", tabid: "overview" ],
-			[ label: "Lab Tests", tabid: "lab" ],
-			[ label: "Medications", tabid: "meds" ]
+			[ label: "Lab Tests", tabid: "labtests" ],
+			[ label: "Prescriptions", tabid: "prescriptions" ]
 	] ]) }
 
 	<div class="ke-tab" data-tabid="overview">
@@ -31,11 +31,11 @@
 		</table>
 	</div>
 
-	<div class="ke-tab" data-tabid="lab">
+	<div class="ke-tab" data-tabid="labtests">
 		TODO
 	</div>
-	<div class="ke-tab" data-tabid="meds">
-		TODO
+	<div class="ke-tab" data-tabid="prescriptions">
+		${ ui.includeFragment("kenyaemr", "prescription/patientPrescriptions", [ patient: patient ]) }
 	</div>
 
 </div>
