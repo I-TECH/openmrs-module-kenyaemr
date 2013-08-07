@@ -53,7 +53,7 @@ public class ProgramHistoryFragmentController {
 
 		model.addAttribute("patient", patient);
 		model.addAttribute("program", program);
-		model.addAttribute("defaultEnrollmentForm", descriptor.getDefaultCompletionForm().getTarget());
+		model.addAttribute("defaultEnrollmentForm", descriptor.getDefaultEnrollmentForm().getTarget());
 		model.addAttribute("defaultCompletionForm", descriptor.getDefaultCompletionForm().getTarget());
 		model.addAttribute("showClinicalData", showClinicalData);
 		model.addAttribute("patientIsEligible", patientIsEligible);
