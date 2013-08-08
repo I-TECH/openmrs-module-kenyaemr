@@ -18,7 +18,7 @@
 	No visits
 <% } %>
 <% scheduled.each { %>
-	<div class="ke-stack-item ke-clickable">
+	<div class="ke-stack-item ke-navigable">
 		<input type="hidden" name="clickUrl" value="${ ui.pageLink("kenyaemr", config.page, [ patientId: it.patient.id ]) }"/>
 		<table width="100%">
 			<tr>

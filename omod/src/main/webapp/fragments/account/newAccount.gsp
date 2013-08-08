@@ -78,7 +78,7 @@
 		<% } %>
 	</fieldset>
 
-	<div class="ke-form-buttons">
+	<div class="ke-form-footer">
 		<input type="submit" value="Create Account"/>
 	</div>
 </form>

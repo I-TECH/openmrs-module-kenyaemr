@@ -5,7 +5,7 @@
 %>
 <% if (config.dataSet.class.name == 'org.openmrs.module.reporting.dataset.MapDataSet') { %>
 		
-	<table class="ke-table-decorated ke-table-vertical">
+	<table class="ke-table-vertical">
 		<thead>
 			<tr>
 				<th style="text-align: left">Indicator</th>
@@ -27,7 +27,7 @@
 <% } else {
 	def cols = config.dataSet.metaData.columns
 %>
-	<table class="ke-table-decorated ke-table-vertical">
+	<table class="ke-table-vertical">
 		<thead>
 			<tr>
 			<% cols.each { %>

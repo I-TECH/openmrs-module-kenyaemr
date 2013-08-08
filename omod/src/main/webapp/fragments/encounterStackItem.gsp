@@ -13,7 +13,7 @@
 	def form = encounter.form ? ui.simplifyObject(encounter.form) : [ iconProvider : "kenyaemr", icon : "forms/generic.png" ]
 %>
 
-<div class="ke-stack-item ke-clickable encounter-item">
+<div class="ke-stack-item ke-navigable encounter-item">
 	<input type="hidden" name="encounterId" value="${ encounter.encounterId }"/>
 	${ ui.includeFragment("kenyaui", "widget/icon", [ iconProvider: form.iconProvider, icon: form.icon, useViewOverlay: true, tooltip: "View Encounter" ]) }
 	<b>${ title }</b> by ${ providers }<br/>

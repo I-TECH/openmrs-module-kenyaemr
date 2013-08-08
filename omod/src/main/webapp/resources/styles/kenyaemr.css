@@ -6,9 +6,9 @@
 
 /*** Page header ***/
 
-#pageheader {
-	border: 5px solid #FFF;
-	background-color: #FFF;
+.ke-page-header {
+	border: 5px solid #ffffff;
+	background-color: #ffffff;
 }
 
 /*** Patient header ***/
@@ -40,9 +40,18 @@
 	color: white;
 }
 
+/***** System header *****/
+
+.ke-system-header {
+	padding: 3px;
+	text-align: center;
+	background-color: #AA0000;
+	color: white;
+}
+
 /***** Visit header *****/
 
-#selected-visit-header {
+.ke-visit-header {
 	padding: 3px;
 	text-align: center;
 	background-color: #466469;
@@ -54,15 +63,4 @@
 .ke-form-dynamic-field {
 	display: block;
 	margin: 5px 0 5px 0;
-}
-
-.ke-search {
-	width: 300px;
-}
-
-.ke-system-header {
-	padding: 3px;
-	text-align: center;
-	background-color: #AA0000;
-	color: white;
 }

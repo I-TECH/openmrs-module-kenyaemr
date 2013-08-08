@@ -34,7 +34,7 @@
 </div>
 <script type="text/javascript">
 	function ke_showHelp() {
-		kenyaui.openPanelDialog('Help', helpDialogHtml, 90, 90);
+		kenyaui.openPanelDialog({ header: 'Help', content: helpDialogHtml, width: 90, height: 90 });
 	}
 
 	jq(function(){

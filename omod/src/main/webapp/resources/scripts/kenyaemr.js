@@ -46,7 +46,7 @@ var kenyaemr = (function(jq) {
 		twoColumnStackItemFormatter: function(data, values) {
 			var clickUrl = formatHelper(data, values.clickUrl);
 
-			var ret = '<div class="ke-stack-item ke-clickable">';
+			var ret = '<div class="ke-stack-item ke-navigable">';
 			if (clickUrl) {
 				ret += '<input type="hidden" name="clickUrl" value="' + clickUrl + '" />'
 			}
@@ -66,7 +66,7 @@ var kenyaemr = (function(jq) {
 		threeColumnStackItemFormatter: function(data, values) {
 			var clickUrl = formatHelper(data, values.clickUrl);
 
-			var ret = '<div class="ke-stack-item ke-clickable">';
+			var ret = '<div class="ke-stack-item ke-navigable">';
 			if (clickUrl) {
 				ret += '<input type="hidden" name="clickUrl" value="' + clickUrl + '" />'
 			}

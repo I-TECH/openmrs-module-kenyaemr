@@ -5,7 +5,7 @@
 	 * Formats a list of informational SimpleObjects as a decorated table
 	 */
 	def formatInfoList = { list ->
-		def ret = "<table class=\"ke-table-decorated ke-table-vertical\"><tbody>"
+		def ret = "<table class=\"ke-table-vertical\"><tbody>"
 		list.each { obj ->
 			ret += "<tr>"
 			obj.each { entry ->

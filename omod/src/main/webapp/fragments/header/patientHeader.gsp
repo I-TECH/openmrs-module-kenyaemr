@@ -43,7 +43,7 @@
 		<% if (activeVisit) {
 			def visitStartStr = activeVisitStartedToday ? kenyaUi.formatTime(activeVisit.startDatetime) : kenyaUi.formatDate(activeVisit.startDatetime);
 
-			%><span class="ke-tag ke-visittag">${ ui.format(activeVisit.visitType) } since <b>${ visitStartStr }</b></span><%
+			%><span class="ke-visittag">${ ui.format(activeVisit.visitType) } since <b>${ visitStartStr }</b></span><%
 		} else {
 			%><span style="font-style: italic">${ ui.message("general.none") }</span><%
 		}

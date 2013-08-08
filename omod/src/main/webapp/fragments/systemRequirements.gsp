@@ -1,7 +1,7 @@
 <%
 	ui.decorateWith("kenyaui", "panel", [ heading: ui.message("kenyaemr.admin.systemRequirements") ])
 %>
-<table class="ke-table-decorated ke-table-vertical">
+<table class="ke-table-vertical">
 	<thead>
 		<th style="text-align: left; width: 32px">&nbsp;</th>
 		<th style="text-align: left">Name</th>

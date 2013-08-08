@@ -3,7 +3,7 @@
 
 	ui.decorateWith("kenyaui", "panel", [ heading: config.heading ])
 %>
-<table class="ke-table-decorated ke-table-vertical">
+<table class="ke-table-vertical">
 	<thead>
 		<th>Drug</th>
 		<th>Dose</th>

@@ -3,7 +3,7 @@
 
 	def simpleHistory = kenyaEmrUi.simpleRegimenHistory(config.history, ui)
 %>
-<table id="regimen-history" class="ke-table-decorated ke-table-vertical">
+<table id="regimen-history" class="ke-table-vertical">
 	<thead>
 		<tr>
 			<th>Start</th>

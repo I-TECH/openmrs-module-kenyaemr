@@ -11,7 +11,7 @@
 					<div class="ke-panel-content" style="height: 100%">
 
 						<% mohReports.each { %>
-						<div class="ke-stack-item ke-clickable">
+						<div class="ke-stack-item ke-navigable">
 							<input type="hidden" name="clickUrl" value="${ ui.pageLink("kenyaemr", "reports/runMonthlyIndicatorReport", [ builder: it.builder ]) }" />
 							<table>
 								<tr>
@@ -31,7 +31,7 @@
 					<div class="ke-panel-content">
 
 						<% facilityReports.each { %>
-						<div class="ke-stack-item ke-clickable" style="overflow: auto">
+						<div class="ke-stack-item ke-navigable" style="overflow: auto">
 							<input type="hidden" name="clickUrl" value="${ ui.pageLink("kenyaemr", "reports/runPatientListReport", [ builder: it.builder ]) }" />
 							<table>
 								<tr>
