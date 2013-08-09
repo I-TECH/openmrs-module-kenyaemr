@@ -36,6 +36,9 @@
 
 	<properties>
 		<openMRSVersion>1.9.3</openMRSVersion>
+
+		<!-- Module dependencies -->
+		<kenyacoreVersion>0.1</kenyacoreVersion>
 		<kenyauiVersion>1.8</kenyauiVersion>
 		<uiframeworkVersion>2.6</uiframeworkVersion>
 		<appframeworkVersion>1.5</appframeworkVersion>
@@ -60,6 +63,13 @@
 
 	<dependencies>
 		<!-- Begin OpenMRS modules -->
+
+		<dependency>
+			<groupId>org.openmrs.module</groupId>
+			<artifactId>kenyacore-api</artifactId>
+			<version>${kenyacoreVersion}</version>
+			<scope>provided</scope>
+		</dependency>
 
 		<dependency>
 			<groupId>org.openmrs.module</groupId>

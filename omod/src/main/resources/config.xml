@@ -11,6 +11,7 @@
 	<require_version>${openMRSVersion}</require_version>
 
 	<require_modules>
+		<require_module version="${kenyacoreVersion}">org.openmrs.module.kenyacore</require_module>
 		<require_module version="${kenyauiVersion}">org.openmrs.module.kenyaui</require_module>
 		<require_module version="${uiframeworkVersion}">org.openmrs.module.uiframework</require_module>
 		<require_module version="${appframeworkVersion}">org.openmrs.module.appframework</require_module>
