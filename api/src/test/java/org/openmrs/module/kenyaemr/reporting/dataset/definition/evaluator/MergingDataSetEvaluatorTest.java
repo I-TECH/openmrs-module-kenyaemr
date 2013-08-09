@@ -20,7 +20,7 @@ import org.junit.Test;
 import org.openmrs.Cohort;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.reporting.dataset.definition.MergingDataSetDefinition;
-import org.openmrs.module.kenyaemr.test.TestUtils;
+import org.openmrs.module.kenyautil.test.TestUtils;
 import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
 import org.openmrs.module.reporting.dataset.DataSetColumn;

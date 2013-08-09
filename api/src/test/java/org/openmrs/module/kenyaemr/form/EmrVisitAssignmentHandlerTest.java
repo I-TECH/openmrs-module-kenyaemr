@@ -22,7 +22,7 @@ import org.openmrs.Visit;
 import org.openmrs.module.kenyacore.form.FormManager;
 import org.openmrs.module.kenyautil.MetadataUtils;
 import org.openmrs.module.kenyaemr.Metadata;
-import org.openmrs.module.kenyaemr.test.TestUtils;
+import org.openmrs.module.kenyautil.test.TestUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.util.OpenmrsConstants;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -24,7 +24,7 @@ import org.openmrs.module.kenyautil.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.test.ReportingTestUtils;
-import org.openmrs.module.kenyaemr.test.TestUtils;
+import org.openmrs.module.kenyautil.test.TestUtils;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;

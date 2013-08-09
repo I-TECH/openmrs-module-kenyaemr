@@ -28,7 +28,8 @@ import org.openmrs.DrugOrder;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.test.TestUtils;
+import org.openmrs.module.kenyaemr.test.EmrTestUtils;
+import org.openmrs.module.kenyautil.test.TestUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 public class RegimenChangeHistoryTest extends BaseModuleContextSensitiveTest {
@@ -89,23 +90,23 @@ public class RegimenChangeHistoryTest extends BaseModuleContextSensitiveTest {
 		// Change #1 should be null > drug1
 		Assert.assertEquals(t0, changes.get(0).getDate());
 		Assert.assertNull(changes.get(0).getStopped());
-		TestUtils.assertRegimenContainsDrugOrders(changes.get(0).getStarted(), order1);
+		EmrTestUtils.assertRegimenContainsDrugOrders(changes.get(0).getStarted(), order1);
 
 		// Change #2 should be drug1 > drug1, drug2
 		Assert.assertEquals(t1, changes.get(1).getDate());
 		Assert.assertSame(changes.get(0).getStarted(), changes.get(1).getStopped());
-		TestUtils.assertRegimenContainsDrugOrders(changes.get(1).getStarted(), order1, order2);
+		EmrTestUtils.assertRegimenContainsDrugOrders(changes.get(1).getStarted(), order1, order2);
 
 		// Change #3 should be drug1, drug2 > drug2, drug3
 		Assert.assertEquals(t2, changes.get(2).getDate());
 		Assert.assertSame(changes.get(1).getStarted(), changes.get(2).getStopped());
-		TestUtils.assertRegimenContainsDrugOrders(changes.get(2).getStarted(), order2, order3);
+		EmrTestUtils.assertRegimenContainsDrugOrders(changes.get(2).getStarted(), order2, order3);
 		Assert.assertEquals(1, changes.get(2).getChangeReasonsNonCoded().size());
 
 		// Change #4 should be drug2, drug3 > drug3
 		Assert.assertEquals(t3, changes.get(3).getDate());
 		Assert.assertSame(changes.get(2).getStarted(), changes.get(3).getStopped());
-		TestUtils.assertRegimenContainsDrugOrders(changes.get(3).getStarted(), order3);
+		EmrTestUtils.assertRegimenContainsDrugOrders(changes.get(3).getStarted(), order3);
 		Assert.assertEquals(1, changes.get(3).getChangeReasons().size());
 	}
 
@@ -136,7 +137,7 @@ public class RegimenChangeHistoryTest extends BaseModuleContextSensitiveTest {
 		Assert.assertEquals(3, changes.size());
 
 		// Change #3 should still start drug2, drug3
-		TestUtils.assertRegimenContainsDrugOrders(changes.get(2).getStarted(), order2, order3);
+		EmrTestUtils.assertRegimenContainsDrugOrders(changes.get(2).getStarted(), order2, order3);
 
 		// But drug2 doesn't discontinue now
 		Assert.assertFalse(order2.getDiscontinued());

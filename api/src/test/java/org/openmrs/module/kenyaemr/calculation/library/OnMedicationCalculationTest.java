@@ -24,10 +24,11 @@ import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
+import org.openmrs.module.kenyaemr.test.EmrTestUtils;
 import org.openmrs.module.kenyautil.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.Metadata;
-import org.openmrs.module.kenyaemr.test.TestUtils;
+import org.openmrs.module.kenyautil.test.TestUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 import java.util.*;
@@ -90,7 +91,7 @@ public class OnMedicationCalculationTest extends BaseModuleContextSensitiveTest 
 
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("drugs", Collections.singleton(dapsone));
-		PatientCalculationContext context = TestUtils.calculationContext(TestUtils.date(2012, 6, 30));
+		PatientCalculationContext context = EmrTestUtils.calculationContext(TestUtils.date(2012, 6, 30));
 
 		CalculationResultMap resultMap = new OnMedicationCalculation().evaluate(cohort, params, context);
 		Assert.assertTrue((Boolean) resultMap.get(2).getValue());

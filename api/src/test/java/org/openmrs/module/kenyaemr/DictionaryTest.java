@@ -17,7 +17,6 @@ package org.openmrs.module.kenyaemr;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 /**

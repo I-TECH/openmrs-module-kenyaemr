@@ -23,7 +23,7 @@ import org.openmrs.module.kenyacore.CoreContext;
 import org.openmrs.module.kenyacore.regimen.DrugReference;
 import org.openmrs.module.kenyacore.regimen.RegimenChangeHistory;
 import org.openmrs.module.kenyacore.regimen.RegimenOrder;
-import org.openmrs.module.kenyaemr.test.TestUtils;
+import org.openmrs.module.kenyautil.test.TestUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;

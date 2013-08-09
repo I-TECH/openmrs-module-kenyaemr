@@ -23,7 +23,8 @@ import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyacore.regimen.RegimenManager;
-import org.openmrs.module.kenyaemr.test.TestUtils;
+import org.openmrs.module.kenyaemr.test.EmrTestUtils;
+import org.openmrs.module.kenyautil.test.TestUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -66,22 +67,22 @@ public class OnAlternateFirstLineArtCalculationTest extends BaseModuleContextSen
 		Concept rtv = Context.getConceptService().getConcept(83412);
 
 		// Give patient #6 initial regimen of AZT + 3TC + EFV
-		TestUtils.saveRegimenOrder(ps.getPatient(6), Arrays.asList(azt, _3tc, efv), TestUtils.date(2011, 1, 1), TestUtils.date(2012, 1, 1));
+		EmrTestUtils.saveRegimenOrder(ps.getPatient(6), Arrays.asList(azt, _3tc, efv), TestUtils.date(2011, 1, 1), TestUtils.date(2012, 1, 1));
 
 		// Give patient #6 current regimen of AZT + 3TC + NVP (alternate first line)
-		TestUtils.saveRegimenOrder(ps.getPatient(6), Arrays.asList(azt, _3tc, nvp), TestUtils.date(2012, 1, 1), null);
+		EmrTestUtils.saveRegimenOrder(ps.getPatient(6), Arrays.asList(azt, _3tc, nvp), TestUtils.date(2012, 1, 1), null);
 
 		// Give patient #7 initial regimen of AZT + 3TC + EFV
-		TestUtils.saveRegimenOrder(ps.getPatient(7), Arrays.asList(azt, _3tc, efv), TestUtils.date(2011, 1, 1), TestUtils.date(2012, 1, 1));
+		EmrTestUtils.saveRegimenOrder(ps.getPatient(7), Arrays.asList(azt, _3tc, efv), TestUtils.date(2011, 1, 1), TestUtils.date(2012, 1, 1));
 
 		// Give patient #7 current regimen of same regimen
-		TestUtils.saveRegimenOrder(ps.getPatient(7), Arrays.asList(azt, _3tc, efv), TestUtils.date(2012, 1, 1), null);
+		EmrTestUtils.saveRegimenOrder(ps.getPatient(7), Arrays.asList(azt, _3tc, efv), TestUtils.date(2012, 1, 1), null);
 
 		// Give patient #8 initial regimen of AZT + 3TC + EFV
-		TestUtils.saveRegimenOrder(ps.getPatient(8), Arrays.asList(azt, _3tc, efv), TestUtils.date(2011, 1, 1), TestUtils.date(2012, 1, 1));
+		EmrTestUtils.saveRegimenOrder(ps.getPatient(8), Arrays.asList(azt, _3tc, efv), TestUtils.date(2011, 1, 1), TestUtils.date(2012, 1, 1));
 
 		// Give patient #8 current regimen of AZT + 3TC + LPV/r (second line)
-		TestUtils.saveRegimenOrder(ps.getPatient(8), Arrays.asList(azt, _3tc, lpv, rtv), TestUtils.date(2012, 1, 1), null);
+		EmrTestUtils.saveRegimenOrder(ps.getPatient(8), Arrays.asList(azt, _3tc, lpv, rtv), TestUtils.date(2012, 1, 1), null);
 
 		Context.flushSession();
 		

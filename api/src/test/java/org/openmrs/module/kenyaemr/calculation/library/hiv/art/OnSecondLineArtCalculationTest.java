@@ -22,7 +22,8 @@ import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyacore.regimen.RegimenManager;
-import org.openmrs.module.kenyaemr.test.TestUtils;
+import org.openmrs.module.kenyaemr.test.EmrTestUtils;
+import org.openmrs.module.kenyautil.test.TestUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -58,10 +59,10 @@ public class OnSecondLineArtCalculationTest extends BaseModuleContextSensitiveTe
 		Concept rtv = Context.getConceptService().getConcept(83412);
 
 		// Put patient #7 on AZT + 3TC + EFV
-		TestUtils.saveRegimenOrder(ps.getPatient(7), Arrays.asList(azt, _3tc, efv), TestUtils.date(2011, 1, 1), null);
+		EmrTestUtils.saveRegimenOrder(ps.getPatient(7), Arrays.asList(azt, _3tc, efv), TestUtils.date(2011, 1, 1), null);
 
 		// Put patient #8 on AZT + 3TC + LPV/r
-		TestUtils.saveRegimenOrder(ps.getPatient(8), Arrays.asList(azt, _3tc, lpv, rtv), TestUtils.date(2011, 1, 1), null);
+		EmrTestUtils.saveRegimenOrder(ps.getPatient(8), Arrays.asList(azt, _3tc, lpv, rtv), TestUtils.date(2011, 1, 1), null);
 
 		Context.flushSession();
 		
