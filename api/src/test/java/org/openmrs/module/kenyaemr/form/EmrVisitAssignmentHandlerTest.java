@@ -20,7 +20,7 @@ import org.junit.Test;
 import org.openmrs.Encounter;
 import org.openmrs.Visit;
 import org.openmrs.module.kenyacore.form.FormManager;
-import org.openmrs.module.kenyacore.metadata.MetadataUtils;
+import org.openmrs.module.kenyautil.MetadataUtils;
 import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.test.TestUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;

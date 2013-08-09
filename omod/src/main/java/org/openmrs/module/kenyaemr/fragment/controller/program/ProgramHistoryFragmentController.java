@@ -20,7 +20,7 @@ import org.openmrs.*;
 import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyacore.CoreContext;
-import org.openmrs.module.kenyacore.metadata.MetadataUtils;
+import org.openmrs.module.kenyautil.MetadataUtils;
 import org.openmrs.module.kenyacore.program.ProgramDescriptor;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.annotation.SpringBean;

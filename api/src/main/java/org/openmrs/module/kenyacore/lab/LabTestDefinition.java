@@ -16,7 +16,7 @@ package org.openmrs.module.kenyacore.lab;
 
 import org.openmrs.Concept;
 import org.openmrs.module.kenyacore.CoreConstants;
-import org.openmrs.module.kenyacore.metadata.MetadataUtils;
+import org.openmrs.module.kenyautil.MetadataUtils;
 
 /**
  * Lab test definition

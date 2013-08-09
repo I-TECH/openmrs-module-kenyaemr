@@ -18,7 +18,7 @@ import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.VisitType;
-import org.openmrs.module.kenyacore.metadata.MetadataUtils;
+import org.openmrs.module.kenyautil.MetadataUtils;
 import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.converter.StringToVisitTypeConverter;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;

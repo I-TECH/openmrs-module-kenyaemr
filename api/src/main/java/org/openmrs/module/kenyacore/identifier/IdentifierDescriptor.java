@@ -15,7 +15,7 @@
 package org.openmrs.module.kenyacore.identifier;
 
 import org.openmrs.PatientIdentifierType;
-import org.openmrs.module.kenyacore.metadata.MetadataUtils;
+import org.openmrs.module.kenyautil.MetadataUtils;
 import org.openmrs.module.kenyacore.AbstractEntityDescriptor;
 
 /**
