@@ -19,9 +19,11 @@ import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
+import org.openmrs.calculation.patient.PatientCalculation;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.*;
 import org.openmrs.module.kenyacore.CoreContext;
+import org.openmrs.module.kenyacore.CoreUtils;
 import org.openmrs.module.kenyacore.regimen.RegimenDefinition;
 import org.openmrs.module.kenyacore.regimen.RegimenOrder;
 import org.openmrs.util.OpenmrsUtil;
@@ -151,8 +153,8 @@ public class CalculationUtils {
 	 * @param patient the patient
 	 * @return the calculation result
 	 */
-	public static CalculationResult evaluateForPatient(Class <? extends BaseEmrCalculation> calculationClass, String configuration, Patient patient) {
-		BaseEmrCalculation calculation = CalculationManager.instantiateCalculation(calculationClass, configuration);
+	public static CalculationResult evaluateForPatient(Class <? extends PatientCalculation> calculationClass, String configuration, Patient patient) {
+		PatientCalculation calculation = CoreUtils.instantiateCalculation(calculationClass, configuration);
 		return Context.getService(PatientCalculationService.class).evaluate(patient.getId(), calculation);
 	}
 

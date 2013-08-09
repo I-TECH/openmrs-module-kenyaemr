@@ -20,9 +20,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.calculation.Calculation;
 import org.openmrs.calculation.CalculationProvider;
-import org.openmrs.calculation.ConfigurableCalculation;
 import org.openmrs.calculation.InvalidCalculationException;
+import org.openmrs.calculation.patient.PatientCalculation;
 import org.openmrs.module.kenyacore.ContentManager;
+import org.openmrs.module.kenyacore.CoreUtils;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.core.type.filter.AssignableTypeFilter;
@@ -36,7 +37,7 @@ public class CalculationManager implements CalculationProvider, ContentManager {
 	
 	protected static final Log log = LogFactory.getLog(CalculationManager.class);
 	
-	private Map<String, Class<? extends BaseEmrCalculation>> calculationClasses = new HashMap<String, Class<? extends BaseEmrCalculation>>();
+	private Map<String, Class<? extends PatientCalculation>> calculationClasses = new HashMap<String, Class<? extends PatientCalculation>>();
 
 	/**
 	 * Refreshes registered calculation classes
@@ -46,7 +47,7 @@ public class CalculationManager implements CalculationProvider, ContentManager {
 		clear();
 
 		ClassPathScanningCandidateComponentProvider scanner = new ClassPathScanningCandidateComponentProvider(false);
-		scanner.addIncludeFilter(new AssignableTypeFilter(BaseEmrCalculation.class));
+		scanner.addIncludeFilter(new AssignableTypeFilter(PatientCalculation.class));
 
 		for (BeanDefinition bd : scanner.findCandidateComponents("org.openmrs.module")) {
 			try {
@@ -74,9 +75,9 @@ public class CalculationManager implements CalculationProvider, ContentManager {
 	public List<BaseFlagCalculation> getFlagCalculations() {
 		List<BaseFlagCalculation> ret = new ArrayList<BaseFlagCalculation>();
 
-		for (Class<? extends BaseEmrCalculation> calculationClass : calculationClasses.values()) {
+		for (Class<? extends PatientCalculation> calculationClass : calculationClasses.values()) {
 			if (BaseFlagCalculation.class.isAssignableFrom(calculationClass)) {
-				ret.add((BaseFlagCalculation)instantiateCalculation(calculationClass, null));
+				ret.add((BaseFlagCalculation) CoreUtils.instantiateCalculation(calculationClass, null));
 			}
 		}
 
@@ -88,31 +89,10 @@ public class CalculationManager implements CalculationProvider, ContentManager {
 	 */
 	@Override
 	public Calculation getCalculation(String calculationName, String configuration) throws InvalidCalculationException {
-		Class<? extends BaseEmrCalculation> clazz = calculationClasses.get(calculationName);
+		Class<? extends PatientCalculation> clazz = calculationClasses.get(calculationName);
 		if (clazz == null)
 			throw new InvalidCalculationException("Not Found: " + calculationName + " (valid values are: " + calculationClasses.keySet() + ")");
 
-		return instantiateCalculation(clazz, configuration);
-	}
-
-	/**
-	 * Instantiates and configures a calculation
-	 * @param clazz the calculation class
-	 * @param configuration the configuration
-	 * @return the calculation instance
-	 */
-	public static BaseEmrCalculation instantiateCalculation(Class<? extends BaseEmrCalculation> clazz, String configuration) {
-		try {
-			BaseEmrCalculation calc = clazz.newInstance();
-
-			if (configuration != null && clazz.isAssignableFrom(ConfigurableCalculation.class)) {
-				((ConfigurableCalculation) calc).setConfiguration(configuration);
-			}
-
-			return calc;
-		}
-		catch (Exception ex) {
-			return null;
-		}
+		return CoreUtils.instantiateCalculation(clazz, configuration);
 	}
 }

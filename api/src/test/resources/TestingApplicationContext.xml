@@ -11,26 +11,6 @@
 		<property name="definitionsPath" value="test-regimens.xml" />
 	</bean>
 
-	<!-- ==================== Programs ======================== -->
-
-	<bean id="test.program.hiv" class="org.openmrs.module.kenyacore.program.ProgramDescriptor">
-		<property name="targetUuid" value="da4a0391-ba62-4fad-ad66-1e3722d16380" />
-		<property name="order" value="100" />
-	</bean>
-
-	<!-- ==================== Identifiers ======================== -->
-
-	<!-- OpenMRS Identification Number -->
-	<bean id="test.identifier.openmrs" class="org.openmrs.module.kenyacore.identifier.IdentifierDescriptor">
-		<property name="targetUuid" value="1a339fe9-38bc-4ab3-b180-320988c0b968" />
-		<property name="order" value="1001" />
-	</bean>
-
-	<!-- Old Identification Number -->
-	<bean id="test.identifier.old" class="org.openmrs.module.kenyacore.identifier.IdentifierDescriptor">
-		<property name="targetUuid" value="2f470aa8-1d73-43b7-81b5-01f0c0dfa53c" />
-	</bean>
-
 	<!-- Conversion Service, will autowire converters -->
 	<bean id="conversionService" class="org.openmrs.module.uiframework.UiFrameworkConversionServiceFactoryBean"/>
 

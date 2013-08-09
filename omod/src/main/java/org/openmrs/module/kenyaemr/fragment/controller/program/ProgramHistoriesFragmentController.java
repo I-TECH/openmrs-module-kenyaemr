@@ -16,17 +16,14 @@ package org.openmrs.module.kenyaemr.fragment.controller.program;
 
 import org.openmrs.Patient;
 import org.openmrs.module.kenyacore.CoreContext;
+import org.openmrs.module.kenyacore.CoreUtils;
 import org.openmrs.module.kenyacore.program.ProgramDescriptor;
-import org.openmrs.module.kenyaemr.util.EmrUtils;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
 
 /**
  * Program history fragment
@@ -40,7 +37,7 @@ public class ProgramHistoriesFragmentController {
 
 		Collection<ProgramDescriptor> activePrograms = emr.getProgramManager().getPatientActivePrograms(patient);
 		Collection<ProgramDescriptor> eligiblePrograms = emr.getProgramManager().getPatientEligiblePrograms(patient);
-		List<ProgramDescriptor> programs = EmrUtils.merge(activePrograms, eligiblePrograms);
+		List<ProgramDescriptor> programs = CoreUtils.merge(activePrograms, eligiblePrograms);
 
 		model.addAttribute("patient", patient);
 		model.addAttribute("programs", programs);
