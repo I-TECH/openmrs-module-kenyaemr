@@ -14,19 +14,8 @@
 
 package org.openmrs.module.kenyaemr.page.controller.clinician;
 
-import java.util.List;
-
-import org.openmrs.Patient;
-import org.openmrs.Program;
-import org.openmrs.Visit;
-import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyautil.MetadataUtils;
 import org.openmrs.module.kenyaemr.EmrConstants;
-import org.openmrs.module.kenyaemr.util.EmrUtils;
-import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaui.annotation.AppPage;
-import org.openmrs.ui.framework.page.PageModel;
-import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * View patient page for clinician app
@@ -34,19 +23,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 @AppPage(EmrConstants.APP_CLINICIAN)
 public class ClinicianViewPatientPageController {
 	
-	public void controller(@RequestParam("patientId") Patient patient,
-	                       @RequestParam(value = "visitId", required = false) Visit visit,
-	                       PageModel model) {
-
-		model.addAttribute("patient", patient);
-		model.addAttribute("person", patient);
-
-		// Visit to be viewed defaults to first active visit if there is one
-		List<Visit> activeVisits = Context.getVisitService().getActiveVisitsByPatient(patient);
-		if (visit == null && activeVisits.size() > 0) {
-			visit = activeVisits.get(0);
-		}
-		
-		model.addAttribute("visit", visit);
+	public void controller() {
 	}
 }

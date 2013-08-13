@@ -14,10 +14,12 @@
 
 package org.openmrs.module.kenyaemr.page.controller.chart;
 
+import org.openmrs.Patient;
 import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyaui.annotation.AppPage;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
+import org.openmrs.ui.framework.page.PageModel;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
@@ -26,10 +28,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 @AppPage(EmrConstants.APP_CHART)
 public class ChartHomePageController {
 
-	public String controller(UiUtils ui, @RequestParam(required=false, value="patientId") Integer patientId) {
+	public String controller(UiUtils ui, PageModel model) {
+		Patient patient = (Patient) model.getAttribute("patient");
 
-		if (patientId != null) {
-			return "redirect:" + ui.pageLink(EmrConstants.MODULE_ID, "chart/chartViewPatient", SimpleObject.create("patientId", patientId));
+		if (patient != null) {
+			return "redirect:" + ui.pageLink(EmrConstants.MODULE_ID, "chart/chartViewPatient", SimpleObject.create("patientId", patient.getId()));
 		} else {
 			return null;
 		}

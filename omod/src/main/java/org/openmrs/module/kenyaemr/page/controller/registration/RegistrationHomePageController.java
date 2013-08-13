@@ -14,6 +14,7 @@
 
 package org.openmrs.module.kenyaemr.page.controller.registration;
 
+import org.openmrs.Patient;
 import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyaui.annotation.AppPage;
 import org.openmrs.module.reporting.common.DateUtil;
@@ -32,8 +33,9 @@ public class RegistrationHomePageController {
 
 	public String controller(UiUtils ui,
 							 @RequestParam(required = false, value = "scheduleDate") Date scheduleDate,
-	                         @RequestParam(required = false, value = "patientId") Integer patientId,
-							 PageModel model) {
+	                         PageModel model) {
+
+		Patient patient = (Patient) model.getAttribute("patient");
 
 		// Get the date for schedule view
 		if (scheduleDate == null) {
@@ -42,8 +44,8 @@ public class RegistrationHomePageController {
 		scheduleDate = DateUtil.getStartOfDay(scheduleDate);
 		model.addAttribute("scheduleDate", scheduleDate);
 
-		if (patientId != null) {
-			return "redirect:" + ui.pageLink(EmrConstants.MODULE_ID, "registration/registrationViewPatient", SimpleObject.create("patientId", patientId));
+		if (patient != null) {
+			return "redirect:" + ui.pageLink(EmrConstants.MODULE_ID, "registration/registrationViewPatient", SimpleObject.create("patientId", patient.getId()));
 		} else {
 			return null;
 		}

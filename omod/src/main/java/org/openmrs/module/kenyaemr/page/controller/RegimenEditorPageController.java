@@ -35,14 +35,13 @@ import java.util.Date;
 @SharedPage({EmrConstants.APP_CLINICIAN, EmrConstants.APP_CHART})
 public class RegimenEditorPageController {
 
-	public void controller(@RequestParam("patientId") Patient patient,
-						   @RequestParam("category") String category,
+	public void controller(@RequestParam("category") String category,
 						   @RequestParam("returnUrl") String returnUrl,
-						   UiUtils ui,
 						   PageModel model,
 						   @SpringBean CoreContext emr) {
 
-		model.addAttribute("patient", patient);
+		Patient patient = (Patient) model.getAttribute("patient");
+
 		model.addAttribute("category", category);
 		model.addAttribute("returnUrl", returnUrl);
 

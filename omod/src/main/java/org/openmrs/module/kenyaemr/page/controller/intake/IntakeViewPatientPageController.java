@@ -14,17 +14,8 @@
 
 package org.openmrs.module.kenyaemr.page.controller.intake;
 
-import java.util.List;
-
-import org.openmrs.Patient;
-import org.openmrs.Visit;
-import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyautil.MetadataUtils;
 import org.openmrs.module.kenyaemr.EmrConstants;
-import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaui.annotation.AppPage;
-import org.openmrs.ui.framework.page.PageModel;
-import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * View patient page for intake app
@@ -32,21 +23,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 @AppPage(EmrConstants.APP_INTAKE)
 public class IntakeViewPatientPageController {
 
-	public void controller(@RequestParam("patientId") Patient patient,
-	                       @RequestParam(value = "visitId", required = false) Visit visit,
-	                       PageModel model) {
-
-		model.addAttribute("patient", patient);
-		model.addAttribute("person", patient);
-		
-		List<Visit> activeVisits = Context.getVisitService().getActiveVisitsByPatient(patient);
-
-		model.addAttribute("activeVisits", activeVisits);
-		
-		if (visit == null && activeVisits.size() > 0) {
-			visit = activeVisits.get(0);
-		}
-		
-		model.addAttribute("visit", visit);
+	public void controller() {
 	}
 }
