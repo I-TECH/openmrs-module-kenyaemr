@@ -33,7 +33,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class EditProgramFormPageController {
 
 	public String controller(@RequestParam("appId") String appId,
-							 @RequestParam("patientId") Patient patient,
 							 @RequestParam("patientProgramId") PatientProgram enrollment,
 							 @RequestParam("formUuid") String formUuid,
 							 @RequestParam("returnUrl") String returnUrl) {
@@ -43,15 +42,24 @@ public class EditProgramFormPageController {
 			throw new IllegalArgumentException("Cannot find form with uuid = " + formUuid);
 		}
 
-		List<Encounter> encounters = Context.getEncounterService().getEncounters(patient, null, enrollment.getDateEnrolled(), enrollment.getDateCompleted(), Collections.singleton(form), null, null, null, null, false);
+		Patient patient = enrollment.getPatient();
+		StringBuilder sb = new StringBuilder("redirect:" + EmrConstants.MODULE_ID + "/");
+
+		// Find encounter for this form within the enrollment. If there are more than one candidate, pick the last one
+		List<Encounter> encounters = Context.getEncounterService().getEncounters(patient, null, enrollment.getDateEnrolled(),
+				enrollment.getDateCompleted(), Collections.singleton(form), null, null, null, null, false);
 
 		if (encounters.size() == 0) {
-			throw new RuntimeException("Cannot find the encounter for this enrollment");
-		}
-		else {
+			sb.append("enterForm.page?formUuid=" + formUuid);
+		} else {
 			// in case there are more than one, we pick the last one
 			Encounter encounter = encounters.get(encounters.size() - 1);
-			return "redirect:" + EmrConstants.MODULE_ID + "/editForm.page?appId=" + appId + "&patientId=" + patient.getId() + "&encounterId=" + encounter.getEncounterId() + "&returnUrl=" + java.net.URLEncoder.encode(returnUrl);
+			sb.append("editForm.page?encounterId=" + encounter.getEncounterId());
 		}
+
+		sb.append("&appId=" + appId);
+		sb.append("&patientId=" + patient.getId());
+		sb.append("&returnUrl=" + java.net.URLEncoder.encode(returnUrl));
+		return sb.toString();
 	}
 }
