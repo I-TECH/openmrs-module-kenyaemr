@@ -38,8 +38,8 @@
 		<openMRSVersion>1.9.3</openMRSVersion>
 
 		<!-- Module dependencies -->
-		<kenyautilVersion>0.2.2</kenyautilVersion>
-		<kenyacoreVersion>0.3.1</kenyacoreVersion>
+		<kenyautilVersion>0.2.3</kenyautilVersion>
+		<kenyacoreVersion>0.3.2</kenyacoreVersion>
 		<kenyauiVersion>1.8.1</kenyauiVersion>
 		<uiframeworkVersion>2.6</uiframeworkVersion>
 		<appframeworkVersion>1.5</appframeworkVersion>
