@@ -1,0 +1,156 @@
+<!--
+  ~ The contents of this file are subject to the OpenMRS Public License
+  ~ Version 1.0 (the "License"); you may not use this file except in
+  ~ compliance with the License. You may obtain a copy of the License at
+  ~ http://license.openmrs.org
+  ~
+  ~ Software distributed under the License is distributed on an "AS IS"
+  ~ basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+  ~ License for the specific language governing rights and limitations
+  ~ under the License.
+  ~
+  ~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+  -->
+<htmlform>
+
+	<style type="text/css">
+		table.tb {
+		background-color: #FFFFCC;
+		border: 1px solid black;
+		}
+		table.tb1{
+		border: 1px solid black;
+		vertical-align: baseline;
+		text-align: left;
+		background-color: #FFFFFF;
+		}
+		table.tb1 tr th,table.tb1 tr td{
+		border: 0;
+		padding: 10px;
+		}
+	</style>
+
+	<div style="display:none">
+		Provider:
+		<encounterProviderAndRole encounterRole="a0b03050-c99b-11e0-9572-0800200c9a66" default="currentUser"
+								  required="true"/>
+	</div>
+	<table align="center" border="0" class="tb" cellspacing="10">
+		<tr>
+			<td colspan="2">
+				<div class="ke-form-instructions">
+					<b>*</b>
+					indicates a required field
+				</div>
+			</td>
+		</tr>
+		<td colspan="2">
+			<legend>Basic Details</legend>
+			<table align="center" width="100%" class="tb1">
+				<tr>
+					<td width="250">
+						Enrollment Date:
+					</td>
+					<td>
+						<encounterDate id="encounter-date" showTime="true"/>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Enrollment Facility:
+					</td>
+					<td>
+						<encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete"
+										   size="50"/>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Enrollment Provider:
+					</td>
+					<td>
+						<encounterProvider/>
+					</td>
+				</tr>
+			</table>
+			<br/>
+			<legend>Maternal Profile</legend>
+			<table align="center" width="100%" class="tb1">
+				<tr>
+					<td width="250">
+						ANC No:
+					</td>
+					<td>
+						<obs conceptId="161655AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Gravida:
+					</td>
+					<td>
+						<obs conceptId="5624AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Parity:
+					</td>
+					<td>
+						<obs conceptId="1053AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						L.M.P:
+					</td>
+					<td>
+						<obs conceptId="1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						EDD:
+					</td>
+					<td>
+						<obs conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+					</td>
+				</tr>
+			</table>
+			<br/>
+			<legend>Birth Details</legend>
+			<table align="center" width="100%" class="tb1">
+				<tr>
+					<td width="250">
+						Name of Child (after birth):
+					</td>
+					<td>
+						<obs conceptId="161564AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Birth Notification No:
+					</td>
+					<td>
+						<obs conceptId="161564AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Certificate of Birth Registration No:
+					</td>
+					<td>
+						<obs conceptId="161564AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+					</td>
+				</tr>
+			</table>
+		</td>
+	</table>
+
+	<enrollInProgra programId="0783b5f2-e3c4-420b-808d-7df5f243031a"/>
+	<div class="ke-form-footer">
+		<submit/>
+	</div>
+
+</htmlform>
