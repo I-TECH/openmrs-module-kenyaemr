@@ -12,7 +12,7 @@
 </div>
 
 <div class="ke-page-content">
-	${ ui.includeFragment("kenyaemr", "patient/patientList", [ id: "recentlyViewedPatients", page: "chart/chartViewPatient", heading: "Recently Viewed Patients" ]) }
+	${ ui.includeFragment("kenyaemr", "patient/patientList", [ id: "recentlyViewedPatients", pageProvider: "kenyaemr", page: "chart/chartViewPatient", heading: "Recently Viewed Patients" ]) }
 </div>
 
 

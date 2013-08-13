@@ -6,7 +6,7 @@
 	def clickFunction = null
 	if (config.page) {
 		clickFunction = """function () {
-				location.href = ui.pageLink('kenyaemr', '${ config.page }', { patientId: jq(this).find('input[name=patientId]').val() });
+				location.href = ui.pageLink('${ config.pageProvider }', '${ config.page }', { patientId: jq(this).find('input[name=patientId]').val() });
 			}"""
 	}
 
