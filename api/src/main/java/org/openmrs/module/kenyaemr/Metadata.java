@@ -14,8 +14,6 @@
 
 package org.openmrs.module.kenyaemr;
 
-import java.util.Locale;
-
 /**
  * Provides access to the core metadata in KenyaEMR
  */
@@ -58,7 +56,11 @@ public class Metadata {
 	// Location Attribute Types
 	public static final String MASTER_FACILITY_CODE_LOCATION_ATTRIBUTE_TYPE = "8a845a89-6aa5-4111-81d3-0af31c45c002";
 
-	// Patient Identifier Types
+	// Order Types
+	public static final String DRUG_ORDER_TYPE = "131168f4-15f5-102d-96e4-000c29c2a5d7";
+	public static final String LAB_ORDER_TYPE = "8ab58c6f-0d07-4a80-bb60-895639c1e66e";
+
+	// Patient Identifier types
 	public static final String UNIQUE_PATIENT_NUMBER_IDENTIFIER_TYPE = "05ee9cf4-7242-4a17-b4d4-00f707265c8a";
 	public static final String PATIENT_CLINIC_NUMBER_IDENTIFIER_TYPE = "b4d66522-11fc-45c7-83e3-39a1af21ae0d";
 	public static final String OPENMRS_ID_IDENTIFIER_TYPE = "dfacd928-0370-4315-99d7-6ec1c9f7ae76";

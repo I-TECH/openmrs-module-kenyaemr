@@ -18,7 +18,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appframework.AppDescriptor;
 import org.openmrs.module.appframework.api.AppFrameworkService;
@@ -29,7 +28,6 @@ import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.page.PageModel;
 import org.openmrs.util.OpenmrsUtil;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpSession;
 
@@ -38,7 +36,7 @@ import javax.servlet.http.HttpSession;
  */
 public class HomePageController {
 	
-	public String controller(@RequestParam(required=false, value="patientId") Patient patient, PageModel model, UiUtils ui, HttpSession session, @SpringBean KenyaUiUtils kenyaUi) {
+	public String controller(PageModel model, UiUtils ui, HttpSession session, @SpringBean KenyaUiUtils kenyaUi) {
 
 		// Redirect to setup page if module is not yet configured
 		if (Context.getService(KenyaEmrService.class).isSetupRequired()) {
@@ -58,7 +56,6 @@ public class HomePageController {
 		});
 
 		model.addAttribute("apps", apps);
-		model.addAttribute("patient", patient);
 		
 		return null;
 	}

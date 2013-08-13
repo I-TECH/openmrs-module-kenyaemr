@@ -14,7 +14,6 @@
 
 package org.openmrs.module.kenyaemr.page.controller.registration;
 
-import org.openmrs.Patient;
 import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyaui.annotation.AppPage;
 import org.openmrs.ui.framework.page.PageModel;
@@ -26,11 +25,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 @AppPage(EmrConstants.APP_REGISTRATION)
 public class EditPatientPageController {
 	
-	public void controller(@RequestParam("patientId") Patient patient,
-	                       @RequestParam(required = false, value = "returnUrl") String returnUrl,
+	public void controller(@RequestParam(required = false, value = "returnUrl") String returnUrl,
 	                       PageModel model) {
 
-		model.addAttribute("patient", patient);
 		model.addAttribute("returnUrl", returnUrl);
 	}
 }

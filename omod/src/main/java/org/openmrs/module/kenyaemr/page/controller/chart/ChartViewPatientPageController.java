@@ -53,8 +53,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @AppPage(EmrConstants.APP_CHART)
 public class ChartViewPatientPageController {
 
-	public void controller(@RequestParam("patientId") Patient patient,
-	                       @RequestParam(required = false, value = "visitId") Visit visit,
+	public void controller(@RequestParam(required = false, value = "visitId") Visit visit,
 	                       @RequestParam(required = false, value = "formUuid") String formUuid,
 	                       @RequestParam(required = false, value = "programId") Program program,
 						   @RequestParam(required = false, value = "section") String section,
@@ -67,11 +66,11 @@ public class ChartViewPatientPageController {
 		if ("".equals(formUuid)) {
 			formUuid = null;
 		}
+
+		Patient patient = (Patient) model.getAttribute("patient");
 		
 		recentlyViewed(patient, session);
-		
-		model.addAttribute("patient", patient);
-		model.addAttribute("person", patient);
+
 
 		AppDescriptor thisApp = Context.getService(AppFrameworkService.class).getAppById(EmrConstants.APP_CHART);
 
