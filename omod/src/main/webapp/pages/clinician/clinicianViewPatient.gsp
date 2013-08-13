@@ -32,7 +32,7 @@
 	</div>
 
 	<div class="ke-tab" data-tabid="labtests">
-		TODO
+		${ ui.includeFragment("kenyalab", "patientLabTests", [ patient: patient ]) }
 	</div>
 	<div class="ke-tab" data-tabid="prescriptions">
 		${ ui.includeFragment("kenyaemr", "prescription/patientPrescriptions", [ patient: patient ]) }
