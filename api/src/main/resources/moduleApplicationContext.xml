@@ -139,6 +139,28 @@
 		<property name="order" value="200" />
 	</bean>
 
+	<!-- MCH -->
+	<bean id="kenyaemr.program.mch" class="org.openmrs.module.kenyacore.program.ProgramDescriptor">
+		<property name="targetUuid" value="0783b5f2-e3c4-420b-808d-7df5f243031a" />
+		<property name="eligibilityCalculation" value="org.openmrs.module.kenyaemr.calculation.library.hiv.EligibleForHivProgramCalculation" />
+		<property name="defaultEnrollmentForm" ref="kenyaemr.form.mchEnrollment" />
+		<property name="defaultCompletionForm" ref="kenyaemr.form.mchCompletion" />
+		<property name="visitForms">
+			<set>
+				<ref bean="kenyaemr.form.mchVisit" />
+				<ref bean="kenyaemr.form.progressNote" />
+			</set>
+		</property>
+		<property name="fragments">
+			<map>
+				<entry key="enrollment-summary" value="kenyaemr:program/mch/mchEnrollmentSummary" />
+				<entry key="care-panel" value="kenyaemr:program/mch/mchCarePanel" />
+				<entry key="completion-summary" value="kenyaemr:program/mch/mchCompletionSummary" />
+			</map>
+		</property>
+		<property name="order" value="300" />
+	</bean>
+
 	<!-- ===================== Identifier descriptors ===================== -->
 
 	<!-- Unique Patient Number -->
@@ -392,6 +414,49 @@
 		</property>
 		<property name="icon" value="kenyaui:forms/completion.png" />
 		<property name="htmlform" value="kenyaemr:tb/tbDiscontinuation.xml" />
+	</bean>
+	
+	<!-- MCH Enrollment-->
+	<bean id="kenyaemr.form.mchEnrollment" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="90fa041a-acc4-4378-b246-5949bd4b7ea7" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.registration" />
+				<ref bean="kenyaemr.app.intake" />
+				<ref bean="kenyaemr.app.clinician" />
+				<ref bean="kenyaemr.app.chart" />
+			</set>
+		</property>
+		<property name="icon" value="kenyaui:forms/generic.png" />
+		<property name="htmlform" value="kenyaemr:mch/mchEnrollment.xml" />
+	</bean>
+
+	<!-- MCH Visit-->
+	<bean id="kenyaemr.form.mchVisit" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="ba3678a2-54c9-4ea4-821a-f7e6f29fb770" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.clinician" />
+				<ref bean="kenyaemr.app.chart" />
+			</set>
+		</property>
+		<property name="icon" value="kenyaui:forms/generic.png" />
+		<property name="htmlform" value="kenyaemr:mch/mchVisit.xml" />
+	</bean>
+
+	<!-- MCH Completion -->
+	<bean id="kenyaemr.form.mchCompletion" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="58780380-bf7c-4712-954f-183793169658" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.registration" />
+				<ref bean="kenyaemr.app.intake" />
+				<ref bean="kenyaemr.app.clinician" />
+				<ref bean="kenyaemr.app.chart" />
+			</set>
+		</property>
+		<property name="icon" value="kenyaui:forms/completion.png" />
+		<property name="htmlform" value="kenyaemr:mch/mchDiscontinuation.xml" />
 	</bean>
 
 	<!-- Module service -->
