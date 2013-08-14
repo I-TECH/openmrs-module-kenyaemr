@@ -74,107 +74,11 @@
 				</tr>
 			</table>
 			<br/>
-			<legend>Maternal Profile</legend>
+			<legend>Infant Feeding</legend>
 			<table align="center" width="100%" class="tb1">
 				<tr>
 					<td width="250">
-						ANC No:
-					</td>
-					<td>
-						<obs conceptId="161655AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						Gravida:
-					</td>
-					<td>
-						<obs conceptId="5624AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						Parity:
-					</td>
-					<td>
-						<obs conceptId="1053AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						L.M.P:
-					</td>
-					<td>
-						<obs conceptId="1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						EDD:
-					</td>
-					<td>
-						<obs conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-					</td>
-				</tr>
-			</table>
-			<br/>
-			<legend>Antenatal Profile</legend>
-			<table align="center" width="100%" class="tb1">
-				<tr>
-					<td width="250">
-						Blood Group/Rhesus:
-					</td>
-					<td>
-						<obs conceptId="300AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						Serology:
-					</td>
-					<td>
-						<obs conceptId="1035AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						TB Screening:
-					</td>
-					<td>
-						<obs conceptId="160108AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						HIV:
-					</td>
-					<td>
-						<obs conceptId="159427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						Urinalysis:
-					</td>
-					<td>
-						<obs conceptId="160987AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						BS for MPS:
-					</td>
-					<td>
-						<obs conceptId="32AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-					</td>
-				</tr>
-			</table>
-			<br/>
-			<legend>Birth Details</legend>
-			<table align="center" width="100%" class="tb1">
-				<tr>
-					<td width="250">
-						Name of Child (after birth):
+						Infant feeding counselling done:
 					</td>
 					<td>
 						<obs conceptId="161564AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
@@ -200,7 +104,6 @@
 		</td>
 	</table>
 
-	<enrollInProgram programId="0783b5f2-e3c4-420b-808d-7df5f243031a"/>
 	<div class="ke-form-footer">
 		<submit/>
 	</div>

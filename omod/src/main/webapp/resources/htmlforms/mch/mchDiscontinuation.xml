@@ -10,120 +10,86 @@
   ~ under the License.
   ~
   ~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
--->
+  -->
 <htmlform>
 
 	<style type="text/css">
-		table.baseline-aligned td {
+		table.tb {
+		background-color: #FFFFCC;
+		border: 1px solid black;
+		}
+		table.tb1{
+		border: 1px solid black;
 		vertical-align: baseline;
+		text-align: left;
+		background-color: #FFFFFF;
+		}
+		table.tb1 tr th,table.tb1 tr td{
+		border: 0;
+		padding: 10px;
 		}
 	</style>
 
-	<script type="text/javascript">
-		var value1;
-		$j(document).ready(function(){
-		if((getValue('idReason.value')) == 160034) {
-		$('#pdied :input').prop('disabled', false);
-		$('#ptransferred :input').prop('disabled', true);
-		}
-		else if((getValue('idReason.value')) == 159492) {
-		$('#pdied :input').prop('disabled', true);
-		$('#ptransferred :input').prop('disabled', false);
-		}
-		else {
-		$('#pdied :input').prop('disabled', true);
-		$('#ptransferred :input').prop('disabled', true);
-		}
-		$j("#idReason select").change(function() {
-
-		if((getValue('idReason.value')) == 160034) {
-		$('#pdied :input').prop('disabled', false);
-		$('#ptransferred :input').prop('disabled', true);
-		}
-		else if((getValue('idReason.value')) == 159492) {
-		$('#pdied :input').prop('disabled', true);
-		$('#ptransferred :input').prop('disabled', false);
-		}
-		else {
-		$('#pdied :input').prop('disabled', true);
-		$('#ptransferred :input').prop('disabled', true);
-		}
-		});
-
-		var pbirthdate = new Date("<lookup expression="patient.birthdate" />").getTime();
-		var discontinueDate;
-
-		beforeSubmit.push(function() {
-		discontinueDate = new Date(getValue('encounter-date.value')).getTime();
-
-		if(discontinueDate &lt; pbirthdate){
-		getField('discontinueDate.error').html('Discontinue date, should not be earlier than Birth date').show();
-		return false;
-		}
-		// alert(pbirthdate+" and "+discontinueDate);
-		return true;
-		});
-		});
-	</script>
 	<div style="display:none">
-		Provider: <encounterProviderAndRole encounterRole="a0b03050-c99b-11e0-9572-0800200c9a66" default="currentUser" required="true" />
+		Provider:
+		<encounterProviderAndRole encounterRole="a0b03050-c99b-11e0-9572-0800200c9a66" default="currentUser"
+								  required="true"/>
 	</div>
-	<table align="center">
+	<table align="center" border="0" class="tb" cellspacing="10">
 		<tr>
-			<td>
-				<fieldset>
-					<legend>Discontinue HIV Care</legend>
-					<table class="baseline-aligned" width="100%" border="0">
-						<tr>
-							<td>Date:</td>
-							<td><encounterDate id="encounter-date" showTime="true" /></td>
-							<td></td>
-							<td></td>
-						</tr>
-						<tr>
-							<td>Reason:</td>
-							<td><obs conceptId="161555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="idReason" /></td>
-							<td></td>
-							<td></td>
-						</tr>
-					</table>
-					<div id="pdied">
-						<table>
-							<tr>
-								<td>If Patient Died, please provide Date of Death if Known:</td>
-								<td><obs conceptId="1543AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
-								<td></td>
-								<td></td>
-							</tr>
-						</table>
-					</div>
-
-					<div id="ptransferred">
-						<table>
-							<tr>
-								<td><i>(If transferred out)</i> <br/>Transfer to Facility:</td>
-								<td ><br/><obs conceptId="159495AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "/></td>
-								<td></td>
-								<td></td>
-							</tr>
-						</table>
-					</div>
-					<br/>
-					<hr/>
-					<br/>
-
-					Signed  at <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete"/>
-
-					<br/>
-					<br/>
-
-				</fieldset>
+			<td colspan="2">
+				<div class="ke-form-instructions">
+					<b>*</b>
+					indicates a required field
+				</div>
 			</td>
 		</tr>
+		<td colspan="2">
+			<legend>Basic Details</legend>
+			<table align="center" width="100%" class="tb1">
+				<tr>
+					<td width="250">
+						Date:
+					</td>
+					<td>
+						<encounterDate id="encounter-date" showTime="true"/>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Facility:
+					</td>
+					<td>
+						<encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete"
+										   size="50"/>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Provider:
+					</td>
+					<td>
+						<encounterProvider/>
+					</td>
+				</tr>
+			</table>
+			<br/>
+			<legend>Reason for Discontinuation</legend>
+			<table align="center" width="100%" class="tb1">
+				<tr>
+					<td width="250">
+						Reason:
+					</td>
+					<td>
+						<obs conceptId="161555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+					</td>
+				</tr>
+			</table>
+		</td>
 	</table>
-	<completeProgram programId="0783b5f2-e3c4-420b-808d-7df5f243031a" />
+
 	<div class="ke-form-footer">
-		<submit />
+		<submit/>
 	</div>
 
 </htmlform>

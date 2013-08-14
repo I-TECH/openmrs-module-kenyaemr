@@ -49,7 +49,7 @@
 			<table align="center" width="100%" class="tb1">
 				<tr>
 					<td width="250">
-						Enrollment Date:
+						Date:
 					</td>
 					<td>
 						<encounterDate id="encounter-date" showTime="true"/>
@@ -57,7 +57,7 @@
 				</tr>
 				<tr>
 					<td>
-						Enrollment Facility:
+						Facility:
 					</td>
 					<td>
 						<encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete"
@@ -66,7 +66,7 @@
 				</tr>
 				<tr>
 					<td>
-						Enrollment Provider:
+						Provider:
 					</td>
 					<td>
 						<encounterProvider/>
@@ -74,27 +74,39 @@
 				</tr>
 			</table>
 			<br/>
-			<legend>Maternal Profile</legend>
+			<legend>Vitals</legend>
 			<table align="center" width="100%" class="tb1">
 				<tr>
 					<td width="250">
-						ANC No:
+						Weight:
 					</td>
 					<td>
-						<obs conceptId="161655AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						Gravida:
-					</td>
-					<td>
-						<obs conceptId="5624AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+						<obs conceptId="5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 					</td>
 				</tr>
 				<tr>
 					<td>
-						Parity:
+						B.P.:
+					</td>
+					<td>
+						<obs  conceptId="5085AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/> / <obs  conceptId="5086AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+					</td>
+				</tr>
+			</table>
+			<br/>
+			<legend>Other Observations</legend>
+			<table align="center" width="100%" class="tb1">
+				<tr>
+					<td width="250">
+						Urine:
+					</td>
+					<td>
+						<obs conceptId="161564AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						H.b.:
 					</td>
 					<td>
 						<obs conceptId="1053AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
@@ -102,27 +114,31 @@
 				</tr>
 				<tr>
 					<td>
-						L.M.P:
+						Pallor:
 					</td>
 					<td>
-						<obs conceptId="1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+						<obs conceptId="161564AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 					</td>
 				</tr>
 				<tr>
 					<td>
-						EDD:
+						Maturity:
 					</td>
 					<td>
 						<obs conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 					</td>
 				</tr>
-			</table>
-			<br/>
-			<legend>Birth Details</legend>
-			<table align="center" width="100%" class="tb1">
 				<tr>
-					<td width="250">
-						Name of Child (after birth):
+					<td>
+						Fundal Height:
+					</td>
+					<td>
+						<obs conceptId="1439AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Presentation:
 					</td>
 					<td>
 						<obs conceptId="161564AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
@@ -130,25 +146,32 @@
 				</tr>
 				<tr>
 					<td>
-						Birth Notification No:
+						Lie:
 					</td>
 					<td>
-						<obs conceptId="161564AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+						<obs conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 					</td>
 				</tr>
 				<tr>
 					<td>
-						Certificate of Birth Registration No:
+						Foetal Heart Rate:
 					</td>
 					<td>
-						<obs conceptId="161564AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+						<obs conceptId="1440AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Foetal Movement:
+					</td>
+					<td>
+						<obs conceptId="160743AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 					</td>
 				</tr>
 			</table>
 		</td>
 	</table>
 
-	<enrollInProgra programId="0783b5f2-e3c4-420b-808d-7df5f243031a"/>
 	<div class="ke-form-footer">
 		<submit/>
 	</div>

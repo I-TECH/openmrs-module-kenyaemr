@@ -151,6 +151,12 @@
 				<ref bean="kenyaemr.form.progressNote" />
 			</set>
 		</property>
+		<property name="patientForms">
+			<set>
+				<ref bean="kenyaemr.form.mchInfantFeeding" />
+				<ref bean="kenyaemr.form.mchPreventiveServices" />
+			</set>
+		</property>
 		<property name="fragments">
 			<map>
 				<entry key="enrollment-summary" value="kenyaemr:program/mch/mchEnrollmentSummary" />
@@ -442,6 +448,34 @@
 		</property>
 		<property name="icon" value="kenyaui:forms/generic.png" />
 		<property name="htmlform" value="kenyaemr:mch/mchVisit.xml" />
+		<property name="order" value="1" />
+	</bean>
+
+	<!-- MCH InfantFeeding-->
+	<bean id="kenyaemr.form.mchInfantFeeding" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="6a3a081d-ba6f-441b-a843-5af48223f7c9" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.clinician" />
+				<ref bean="kenyaemr.app.chart" />
+			</set>
+		</property>
+		<property name="icon" value="kenyaui:forms/generic.png" />
+		<property name="htmlform" value="kenyaemr:mch/mchInfantFeeding.xml" />
+		<property name="order" value="2" />
+	</bean>
+
+	<!-- MCH PreventiveServices-->
+	<bean id="kenyaemr.form.mchPreventiveServices" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="884e532a-be13-46d9-8172-1615bba55659" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.clinician" />
+				<ref bean="kenyaemr.app.chart" />
+			</set>
+		</property>
+		<property name="icon" value="kenyaui:forms/generic.png" />
+		<property name="htmlform" value="kenyaemr:mch/mchPreventiveServices.xml" />
 	</bean>
 
 	<!-- MCH Completion -->
