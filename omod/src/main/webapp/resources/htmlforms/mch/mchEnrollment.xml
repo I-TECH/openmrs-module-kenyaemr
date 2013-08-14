@@ -113,7 +113,7 @@
 						EDD:
 					</td>
 					<td>
-						<obs conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+						<obs conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true"/>
 					</td>
 				</tr>
 			</table>
@@ -166,34 +166,6 @@
 					</td>
 					<td>
 						<obs conceptId="32AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-					</td>
-				</tr>
-			</table>
-			<br/>
-			<legend>Birth Details</legend>
-			<table align="center" width="100%" class="tb1">
-				<tr>
-					<td width="250">
-						Name of Child (after birth):
-					</td>
-					<td>
-						<obs conceptId="161564AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						Birth Notification No:
-					</td>
-					<td>
-						<obs conceptId="161564AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						Certificate of Birth Registration No:
-					</td>
-					<td>
-						<obs conceptId="161564AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 					</td>
 				</tr>
 			</table>

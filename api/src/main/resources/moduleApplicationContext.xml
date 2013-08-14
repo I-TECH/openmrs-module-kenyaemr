@@ -153,6 +153,7 @@
 		</property>
 		<property name="patientForms">
 			<set>
+				<ref bean="kenyaemr.form.mchBirths" />
 				<ref bean="kenyaemr.form.mchInfantFeeding" />
 				<ref bean="kenyaemr.form.mchPreventiveServices" />
 			</set>
@@ -448,6 +449,20 @@
 		</property>
 		<property name="icon" value="kenyaui:forms/generic.png" />
 		<property name="htmlform" value="kenyaemr:mch/mchVisit.xml" />
+		<!--<property name="order" value="1" />-->
+	</bean>
+
+	<!-- MCH Births-->
+	<bean id="kenyaemr.form.mchBirths" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="cfadd119-0087-429d-bf60-e3474e4319eb" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.clinician" />
+				<ref bean="kenyaemr.app.chart" />
+			</set>
+		</property>
+		<property name="icon" value="kenyaui:forms/generic.png" />
+		<property name="htmlform" value="kenyaemr:mch/mchBirths.xml" />
 		<property name="order" value="1" />
 	</bean>
 
@@ -476,6 +491,7 @@
 		</property>
 		<property name="icon" value="kenyaui:forms/generic.png" />
 		<property name="htmlform" value="kenyaemr:mch/mchPreventiveServices.xml" />
+		<property name="order" value="3" />
 	</bean>
 
 	<!-- MCH Completion -->

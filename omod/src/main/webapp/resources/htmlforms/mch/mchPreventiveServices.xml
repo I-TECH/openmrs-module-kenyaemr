@@ -74,30 +74,114 @@
 				</tr>
 			</table>
 			<br/>
-			<legend>Infant Feeding</legend>
+			<legend>General</legend>
 			<table align="center" width="100%" class="tb1">
 				<tr>
 					<td width="250">
-						Infant feeding counselling done:
+						Tetanus Toxoid 1:
 					</td>
 					<td>
-						<obs conceptId="161564AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						Birth Notification No:
-					</td>
-					<td>
-						<obs conceptId="161564AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+						<obs conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 					</td>
 				</tr>
 				<tr>
 					<td>
-						Certificate of Birth Registration No:
+						Tetanus Toxoid 2:
 					</td>
 					<td>
-						<obs conceptId="161564AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+						<obs conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Tetanus Toxoid 3:
+					</td>
+					<td>
+						<obs conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Tetanus Toxoid 4:
+					</td>
+					<td>
+						<obs conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Tetanus Toxoid 5:
+					</td>
+					<td>
+						<obs conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Malaria Prophylaxis (IPT1):
+					</td>
+					<td>
+						<obs conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Malaria Prophylaxis (IPT2):
+					</td>
+					<td>
+						<obs conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Malaria Prophylaxis (IPT3):
+					</td>
+					<td>
+						<obs conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Iron and Folate:
+					</td>
+					<td>
+						<obs conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Deworming (Mebendazole 500gms):
+					</td>
+					<td>
+						<obs conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Insecticide Treated Net (ITN):
+					</td>
+					<td>
+						<obs conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+					</td>
+				</tr>
+			</table>
+			<br/>
+			<legend>HIV</legend>
+			<table align="center" width="100%" class="tb1">
+				<tr>
+					<td width="250">
+						Mother on ARV Prophylaxis:
+					</td>
+					<td>
+						<obs conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Mother on HAART (ARV):
+					</td>
+					<td>
+						<obs conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 					</td>
 				</tr>
 			</table>

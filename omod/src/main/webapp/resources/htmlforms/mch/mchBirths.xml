@@ -74,44 +74,49 @@
 				</tr>
 			</table>
 			<br/>
-			<legend>Infant Feeding</legend>
-			<table align="center" width="100%" class="tb1">
-				<tr>
-					<td width="250">
-						Infant feeding counselling done (all mothers):
-					</td>
-					<td>
-						<obs conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						Counselling on exclusive breastfeeding done:
-					</td>
-					<td>
-						<obs conceptId="161096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						Infant feeding options for HIV infected discussed:
-					</td>
-					<td>
-						<obs conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						If yes, mother decision:
-					</td>
-					<td>
-						<obs conceptId="1151AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-					</td>
-				</tr>
-			</table>
+			<fieldset>
+				List of All Births for this Pregnancy(after birth):
+				<legend>Birth Details</legend>
+				<table align="center" width="100%" class="tb1">
+					<tr>
+						<!--<td style="background-color: #696969; color: #ffffff;"> </td>-->
+						<td style="background-color: #696969; color: #ffffff;">Name of Child </td>
+						<td style="background-color: #696969; color: #ffffff;">Birth Notification No:</td>
+						<td style="background-color: #696969; color: #ffffff;">Certificate of Birth Registration No:</td>
+					</tr>
+					<repeat>
+						<template>
+							<obsgroup groupingConceptId="160593AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+								<tr>
+									<td>
+										<obs conceptId="161564AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+									</td>
+
+									<td>
+										<obs conceptId="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+									</td>
+
+									<td>
+										<obs conceptId="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+									</td>
+								</tr>
+							</obsgroup>
+						</template>
+						<render n="1" concept=" "/>
+						<render n="2" concept=" "/>
+						<render n="3" concept=" "/>
+						<render n="4" concept=" "/>
+						<render n="5" concept=" "/>
+						<render n="6" concept=" "/>
+						<render n="7" concept=" "/>
+						<render n="8" concept=" "/>
+						<render n="9" concept=" "/>
+						<render n="10" concept=" "/>
+					</repeat>
+				</table>
+			</fieldset>
 		</td>
 	</table>
-
 	<div class="ke-form-footer">
 		<submit/>
 	</div>
