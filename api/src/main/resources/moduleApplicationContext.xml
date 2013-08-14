@@ -142,7 +142,7 @@
 	<!-- MCH -->
 	<bean id="kenyaemr.program.mch" class="org.openmrs.module.kenyacore.program.ProgramDescriptor">
 		<property name="targetUuid" value="0783b5f2-e3c4-420b-808d-7df5f243031a" />
-		<property name="eligibilityCalculation" value="org.openmrs.module.kenyaemr.calculation.library.hiv.EligibleForHivProgramCalculation" />
+		<property name="eligibilityCalculation" value="org.openmrs.module.kenyaemr.calculation.library.mch.EligibleForMchProgramCalculation" />
 		<property name="defaultEnrollmentForm" ref="kenyaemr.form.mchEnrollment" />
 		<property name="defaultCompletionForm" ref="kenyaemr.form.mchCompletion" />
 		<property name="visitForms">
