@@ -1,0 +1,181 @@
+<!--
+  ~ The contents of this file are subject to the OpenMRS Public License
+  ~ Version 1.0 (the "License"); you may not use this file except in
+  ~ compliance with the License. You may obtain a copy of the License at
+  ~ http://license.openmrs.org
+  ~
+  ~ Software distributed under the License is distributed on an "AS IS"
+  ~ basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+  ~ License for the specific language governing rights and limitations
+  ~ under the License.
+  ~
+  ~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+  -->
+<htmlform>
+
+	<style type="text/css">
+		table.tb {
+		background-color: #FFEFF2;
+		border: 1px solid black;
+		}
+		table.tb1{
+		border: 1px solid black;
+		vertical-align: baseline;
+		text-align: left;
+		background-color: #FFFFFF;
+		}
+		table.tb1 tr th,table.tb1 tr td{
+		border: 0;
+		padding: 10px;
+		}
+	</style>
+
+	<div style="display:none">
+		Provider:
+		<encounterProviderAndRole encounterRole="a0b03050-c99b-11e0-9572-0800200c9a66" default="currentUser"
+								  required="true"/>
+	</div>
+	<table align="center" border="0" class="tb" cellspacing="10">
+		<tr>
+			<td colspan="2">
+				<div class="ke-form-instructions">
+					<b>*</b>
+					indicates a required field
+				</div>
+			</td>
+		</tr>
+		<td colspan="2">
+			<legend>Basic Details</legend>
+			<table align="center" width="100%" class="tb1">
+				<tr>
+					<td width="250">
+						Date:
+					</td>
+					<td>
+						<encounterDate id="encounter-date" showTime="true"/>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Facility:
+					</td>
+					<td>
+						<encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete"
+										   size="50"/>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Provider:
+					</td>
+					<td>
+						<encounterProvider/>
+					</td>
+				</tr>
+			</table>
+			<br/>
+			<legend>Vitals</legend>
+			<table align="center" width="100%" class="tb1">
+				<tr>
+					<td width="250">
+						Weight:
+					</td>
+					<td>
+						<obs conceptId="5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						B.P.:
+					</td>
+					<td>
+						<obs conceptId="5085AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+						/
+						<obs conceptId="5086AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+					</td>
+				</tr>
+			</table>
+			<br/>
+			<legend>Other Observations</legend>
+			<table align="center" width="100%" class="tb1">
+				<tr>
+					<td width="250">
+						Urine:
+					</td>
+					<td>
+						<obs conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						H.b.:
+					</td>
+					<td>
+						<obs conceptId="21AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Pallor:
+					</td>
+					<td>
+						<obs conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Maturity:
+					</td>
+					<td>
+						<obs conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Fundal Height:
+					</td>
+					<td>
+						<obs conceptId="1439AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Presentation:
+					</td>
+					<td>
+						<obs conceptId="160090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Lie:
+					</td>
+					<td>
+						<obs conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Foetal Heart Rate:
+					</td>
+					<td>
+						<obs conceptId="1440AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Foetal Movement:
+					</td>
+					<td>
+						<obs conceptId="160743AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+					</td>
+				</tr>
+			</table>
+		</td>
+	</table>
+
+	<div class="ke-form-footer">
+		<submit/>
+	</div>
+
+</htmlform>

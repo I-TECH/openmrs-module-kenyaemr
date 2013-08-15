@@ -1,0 +1,125 @@
+<!--
+  ~ The contents of this file are subject to the OpenMRS Public License
+  ~ Version 1.0 (the "License"); you may not use this file except in
+  ~ compliance with the License. You may obtain a copy of the License at
+  ~ http://license.openmrs.org
+  ~
+  ~ Software distributed under the License is distributed on an "AS IS"
+  ~ basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+  ~ License for the specific language governing rights and limitations
+  ~ under the License.
+  ~
+  ~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+  -->
+<htmlform>
+
+	<style type="text/css">
+		table.tb {
+		background-color: #FFEFF2;
+		border: 1px solid black;
+		}
+		table.tb1{
+		border: 1px solid black;
+		vertical-align: baseline;
+		text-align: left;
+		background-color: #FFFFFF;
+		}
+		table.tb1 tr th,table.tb1 tr td{
+		border: 0;
+		padding: 10px;
+		}
+	</style>
+
+	<div style="display:none">
+		Provider:
+		<encounterProviderAndRole encounterRole="a0b03050-c99b-11e0-9572-0800200c9a66" default="currentUser"
+								  required="true"/>
+	</div>
+	<table align="center" border="0" class="tb" cellspacing="10">
+		<tr>
+			<td colspan="2">
+				<div class="ke-form-instructions">
+					<b>*</b>
+					indicates a required field
+				</div>
+			</td>
+		</tr>
+		<td colspan="2">
+			<legend>Basic Details</legend>
+			<table align="center" width="100%" class="tb1">
+				<tr>
+					<td width="250">
+						Date:
+					</td>
+					<td>
+						<encounterDate id="encounter-date" showTime="true"/>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Facility:
+					</td>
+					<td>
+						<encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete"
+										   size="50"/>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Provider:
+					</td>
+					<td>
+						<encounterProvider/>
+					</td>
+				</tr>
+			</table>
+			<br/>
+			<fieldset>
+				List of All Births for this Pregnancy(after birth):
+				<legend>Birth Details</legend>
+				<table align="center" width="100%" class="tb1">
+					<tr>
+						<!--<td style="background-color: #696969; color: #ffffff;"> </td>-->
+						<td style="background-color: #696969; color: #ffffff;">Name of Child</td>
+						<td style="background-color: #696969; color: #ffffff;">Birth Notification No:</td>
+						<td style="background-color: #696969; color: #ffffff;">Certificate of Birth Registration No:
+						</td>
+					</tr>
+					<repeat>
+						<template>
+							<obsgroup groupingConceptId="160593AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+								<tr>
+									<td>
+										<obs conceptId="161564AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+									</td>
+
+									<td>
+										<obs conceptId="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+									</td>
+
+									<td>
+										<obs conceptId="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+									</td>
+								</tr>
+							</obsgroup>
+						</template>
+						<render n="1" concept=" "/>
+						<render n="2" concept=" "/>
+						<render n="3" concept=" "/>
+						<render n="4" concept=" "/>
+						<render n="5" concept=" "/>
+						<render n="6" concept=" "/>
+						<render n="7" concept=" "/>
+						<render n="8" concept=" "/>
+						<render n="9" concept=" "/>
+						<render n="10" concept=" "/>
+					</repeat>
+				</table>
+			</fieldset>
+		</td>
+	</table>
+	<div class="ke-form-footer">
+		<submit/>
+	</div>
+
+</htmlform>
