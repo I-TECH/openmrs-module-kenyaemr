@@ -56,7 +56,6 @@ public class Metadata {
 	public static final String MOH_257_VISIT_SUMMARY_FORM = "23b4ebbd-29ad-455e-be0e-04aa6bc30798";
 	public static final String HEI_ENROLLMENT_FORM = "8553d869-bdc8-4287-8505-910c7c998aff";
 	public static final String HEI_DISCONTINUATION_FORM = "1dd02c43-904b-4206-8378-7b1a8414c326";
-	public static final String HEI_DISCONTINUATION_FORM = "1dd02c43-904b-4206-8378-7b1a8414c326";
 	public static final String HEI_FOLLOW_UP_FORM = "755b59e6-acbb-4853-abaf-be302039f902";
 	public static final String HEI_IMMUNIZATION_FORM = "b4f3859e-861c-4a63-bdff-eb7392030d47";
 
