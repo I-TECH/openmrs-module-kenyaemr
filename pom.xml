@@ -39,7 +39,7 @@
 
 		<!-- Module dependencies -->
 		<kenyautilVersion>0.2.3</kenyautilVersion>
-		<kenyacoreVersion>0.4.2</kenyacoreVersion>
+		<kenyacoreVersion>0.5-SNAPSHOT</kenyacoreVersion>
 		<kenyauiVersion>1.8.1</kenyauiVersion>
 		<uiframeworkVersion>2.6</uiframeworkVersion>
 		<appframeworkVersion>1.5</appframeworkVersion>
