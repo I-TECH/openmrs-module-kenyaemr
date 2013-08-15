@@ -642,7 +642,7 @@
 			</set>
 		</property>
 		<property name="icon" value="kenyaui:forms/generic.png" />
-		<property name="htmlform" value="kenyaemr:hei/heiImmunization.xml" />
+		<property name="htmlform" value="kenyaemr:hei/heiDiscontinuation.xml" />
 	</bean>
 
 
