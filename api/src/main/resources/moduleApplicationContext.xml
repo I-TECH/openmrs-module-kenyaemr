@@ -224,6 +224,10 @@
 		<property name="eligibilityCalculation" value="org.openmrs.module.kenyaemr.calculation.library.hei.EligibleForHeiProgramCalculation" />
 		<property name="defaultEnrollmentForm" ref="kenyaemr.form.heiEnrollment" />
 		<property name="defaultCompletionForm" ref="kenyaemr.form.heiDiscontinuation" />
+		<property name="visitForms">
+			<set>
+			</set>
+		</property>
 		<property name="patientForms">
 			<set>
 				<ref bean="kenyaemr.form.heiImmunization" />
