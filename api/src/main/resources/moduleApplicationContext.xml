@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
 	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:p="http://www.springframework.org/schema/p"
 	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
 	<!-- ===================== Configurations ===================== -->
@@ -18,12 +19,16 @@
 		</property>
 	</bean>
 
-	<bean id="kenyaemr.config.lab" class="org.openmrs.module.kenyacore.lab.LabConfiguration">
-		<property name="definitionsPath" value="lab.xml" />
-	</bean>
-
 	<bean id="kenyaemr.config.regimen" class="org.openmrs.module.kenyacore.regimen.RegimenConfiguration">
 		<property name="definitionsPath" value="regimens.xml" />
+	</bean>
+
+	<bean id="kenyaemr.config.lab" class="org.openmrs.module.kenyacore.lab.LabConfiguration">
+		<property name="generalCatalogs">
+			<set>
+				<ref bean="kenyaemr.catalog.standard" />
+			</set>
+		</property>
 	</bean>
 
 	<bean id="kenyaemr.config.form" class="org.openmrs.module.kenyacore.form.FormConfiguration">
@@ -92,6 +97,51 @@
 		<property name="homepageUrl" value="kenyaemr/admin/adminHome.page"/>
 		<property name="iconUrl" value="kenyaui:apps/admin.png"/>
 		<property name="order" value="600"/>
+	</bean>
+
+	<!-- ===================== Lab test catalogs ===================== -->
+
+	<!-- Acts as a base class and means we can avoid specifying the full class name each time -->
+	<bean name="TestDefinition" class="org.openmrs.module.kenyacore.lab.LabTestDefinition" abstract="true" />
+
+	<bean id="kenyaemr.catalog.standard" class="org.openmrs.module.kenyacore.lab.LabTestCatalog">
+		<property name="tests">
+			<map>
+				<entry key="Urine Tests">
+					<list>
+						<bean parent="TestDefinition" p:concept="302AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><!-- URINALYSIS -->
+						<bean parent="TestDefinition" p:concept="45AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><!-- URINE PREGNANCY TEST -->
+					</list>
+				</entry>
+				<entry key="Blood Tests">
+					<list>
+						<bean parent="TestDefinition" p:concept="21AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><!-- HAEMOGLOBIN -->
+						<bean parent="TestDefinition" p:concept="21AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><!-- LYMPHOCYTE COUNT -->
+						<!-- Missing: Serum Cryptococcal Antigen -->
+						<bean parent="TestDefinition" p:concept="856AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><!-- HIV VIRAL LOAD -->
+						<bean parent="TestDefinition" p:concept="855AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><!-- ERYTHROCYTE SEDIMENTATION RATE -->
+						<bean parent="TestDefinition" p:concept="857AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><!-- BLOOD UREA NITROGEN -->
+					</list>
+				</entry>
+				<entry key="Biochemistry">
+					<list>
+						<bean parent="TestDefinition" p:concept="1012AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><!-- SERUM LACTATE -->
+						<bean parent="TestDefinition" p:concept="887AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><!-- SERUM GLUCOSE -->
+						<bean parent="TestDefinition" p:concept="654AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><!-- SERUM GLUTAMIC-PYRUVIC TRANSAMINASE -->
+						<bean parent="TestDefinition" p:concept="790AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><!-- SERUM CREATININE -->
+						<!-- Missing: Lipid profile -->
+						<bean parent="TestDefinition" p:concept="1299AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><!-- AMYLASE -->
+					</list>
+				</entry>
+				<entry key="Parasitology and Microbiology">
+					<list>
+						<bean parent="TestDefinition" p:concept="304AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><!-- STOOL EXAM -->
+						<!-- Missing: Stool Cultures -->
+						<bean parent="TestDefinition" p:concept="32AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><!-- MALARIAL SMEAR -->
+					</list>
+				</entry>
+			</map>
+		</property>
 	</bean>
 
 	<!-- ===================== Program descriptors ===================== -->

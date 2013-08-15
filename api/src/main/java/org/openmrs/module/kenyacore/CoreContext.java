@@ -19,7 +19,7 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyacore.form.FormManager;
 import org.openmrs.module.kenyacore.identifier.IdentifierManager;
-import org.openmrs.module.kenyacore.reporting.ReportManager;
+import org.openmrs.module.kenyacore.report.ReportManager;
 import org.openmrs.module.kenyacore.calculation.CalculationManager;
 import org.openmrs.module.kenyacore.lab.LabManager;
 import org.openmrs.module.kenyacore.metadata.MetadataManager;
