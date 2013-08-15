@@ -14,36 +14,24 @@
 
 package org.openmrs.module.kenyaemr.converter;
 
-import org.openmrs.Form;
-import org.openmrs.module.kenyacore.form.FormDescriptor;
-import org.openmrs.module.kenyacore.form.FormManager;
-import org.openmrs.ui.framework.SimpleObject;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.commons.lang3.StringUtils;
+import org.openmrs.Concept;
+import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyacore.regimen.DrugReference;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
 /**
- * Converts a form to a simple object
+ * Converts String to DrugReference
  */
 @Component
-public class FormToSimpleObjectConverter implements Converter<Form, SimpleObject> {
-
-	@Autowired
-	private FormManager formManager;
+public class StringToConceptConverter implements Converter<String, Concept> {
 
 	/**
 	 * @see org.springframework.core.convert.converter.Converter#convert(Object)
 	 */
 	@Override
-	public SimpleObject convert(Form form) {
-		SimpleObject so = SimpleObject.create("formUuid", form.getUuid(), "name", form.getName());
-
-		FormDescriptor descriptor = formManager.getFormDescriptor(form);
-		if (descriptor != null) {
-			so.put("iconProvider", descriptor.getIcon().getProvider());
-			so.put("icon", descriptor.getIcon().getPath());
-		}
-
-		return so;
+	public Concept convert(String s) {
+		return StringUtils.isEmpty(s) ? null : Context.getConceptService().getConcept(Integer.valueOf(s));
 	}
 }

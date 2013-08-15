@@ -6,6 +6,11 @@ kenyaui.configureSearch('location', {
 	searchFragment: 'search',
 	format: function(object) { return object.name + ' <span style="color: #999">' + object.code + '</span>'; }
 });
+kenyaui.configureSearch('concept', {
+	searchProvider: 'kenyaemr',
+	searchFragment: 'search',
+	format: function(object) { return object.name; }
+});
 
 /**
  * Page initialization tasks
