@@ -29,11 +29,11 @@ import java.util.Map;
  * TB program discontinuation summary fragment
  */
 public class MchCompletionSummaryFragmentController {
-	
+
 	public String controller(@FragmentParam("patientProgram") PatientProgram enrollment,
-						   @FragmentParam(value = "encounter", required = false) Encounter encounter,
-						   @FragmentParam("showClinicalData") boolean showClinicalData,
-						   FragmentModel model) {
+							 @FragmentParam(value = "encounter", required = false) Encounter encounter,
+							 @FragmentParam("showClinicalData") boolean showClinicalData,
+							 FragmentModel model) {
 
 		Map<String, Object> dataPoints = new LinkedHashMap<String, Object>();
 

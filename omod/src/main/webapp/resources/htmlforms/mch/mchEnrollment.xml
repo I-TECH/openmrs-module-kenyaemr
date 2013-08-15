@@ -31,21 +31,6 @@
 	</style>
 
 	<script type="text/javascript">
-		function onWeightOrHeightChange() {
-			var display = '';
-			var weightKg = parseFloat(getValue('weight.value'));
-			var heightM = parseFloat(getValue('height.value')) / 100;
-			if (!isNaN(weightKg) &amp;&amp; !isNaN(heightM)) {
-			var bmi = weightKg / (heightM * heightM);
-			if (isNaN(bmi) || bmi &lt; 10 || bmi &gt; 50) {
-			display = 'Abnormal value. Were height and height entered correctly?';
-			}
-			else {
-			display = bmi.toFixed(2);
-			}
-			}
-			$j('#calculated-bmi').html(display);
-		}
 
 		function onLmpChange() {
 			var display = 'EDD could not be calculated!';
@@ -60,9 +45,9 @@
 
 		function daysInMonth(month,year) {
 			var dim = 31;
-		    if (month == 1) {
-		    	if (year % 4 == 0) {
-		        	dim = 29;
+			if (month == 1) {
+				if (year % 4 == 0) {
+					dim = 29;
 				} else {
 					dim = 28;
 				}
@@ -81,19 +66,20 @@
 			var monthOffset = -2;
 			var yearOffset = 1;
 
-		    var eddDay = lmpDay + dayOffset;
+			var eddDay = lmpDay + dayOffset;
 			var dim = daysInMonth(lmpMonth, lmpYear);
 			if (eddDay &gt; dim) {
 				eddDay -= dim;
 				monthOffset++;
 			}
-			var eddMonth = lmpMonth + monthOffset;
-			if (eddMonth &lt;= 0) {
+				var eddMonth = lmpMonth + monthOffset;
+				if (eddMonth &lt;= 0) {
 				eddMonth += 12;
 				yearOffset--;
 			}
 			var eddYear = lmpYear + yearOffset;
-			return (eddDay &lt;= 9 ? '0' + eddDay : eddDay) + '-' + (eddMonth &lt;= 9 ? '0' + eddMonth : eddMonth) + '-' + eddYear;
+			return (eddDay &lt;= 9 ? '0' + eddDay : eddDay) + '-' + (eddMonth &lt;= 9 ? '0' + eddMonth : eddMonth) + '-' +
+			eddYear;
 		}
 
 		$j(function() {
@@ -104,7 +90,7 @@
 	<div style="display:none">
 		Provider:
 		<encounterProviderAndRole encounterRole="a0b03050-c99b-11e0-9572-0800200c9a66" default="currentUser"
-			required="true"/>
+								  required="true"/>
 	</div>
 	<table align="center" border="0" class="tb" cellspacing="10">
 		<tr>

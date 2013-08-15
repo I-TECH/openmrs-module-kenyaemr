@@ -80,9 +80,10 @@
 				<table align="center" width="100%" class="tb1">
 					<tr>
 						<!--<td style="background-color: #696969; color: #ffffff;"> </td>-->
-						<td style="background-color: #696969; color: #ffffff;">Name of Child </td>
+						<td style="background-color: #696969; color: #ffffff;">Name of Child</td>
 						<td style="background-color: #696969; color: #ffffff;">Birth Notification No:</td>
-						<td style="background-color: #696969; color: #ffffff;">Certificate of Birth Registration No:</td>
+						<td style="background-color: #696969; color: #ffffff;">Certificate of Birth Registration No:
+						</td>
 					</tr>
 					<repeat>
 						<template>
