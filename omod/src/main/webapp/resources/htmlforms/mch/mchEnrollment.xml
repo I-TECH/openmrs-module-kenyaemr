@@ -30,10 +30,81 @@
 		}
 	</style>
 
+	<script type="text/javascript">
+		function onWeightOrHeightChange() {
+			var display = '';
+			var weightKg = parseFloat(getValue('weight.value'));
+			var heightM = parseFloat(getValue('height.value')) / 100;
+			if (!isNaN(weightKg) &amp;&amp; !isNaN(heightM)) {
+			var bmi = weightKg / (heightM * heightM);
+			if (isNaN(bmi) || bmi &lt; 10 || bmi &gt; 50) {
+			display = 'Abnormal value. Were height and height entered correctly?';
+			}
+			else {
+			display = bmi.toFixed(2);
+			}
+			}
+			$j('#calculated-bmi').html(display);
+		}
+
+		function onLmpChange() {
+			var display = 'EDD could not be calculated!';
+			var lmpValue = getValue('lmp.value');
+			if (lmpValue) {
+				var lmp = Date.parse(getValue('lmp.value'));
+				var edd = lmp;
+				display = calculateEdd(new Date(lmp));
+			}
+			$j('#calculated-edd').html(display);
+		}
+
+		function daysInMonth(month,year) {
+			var dim = 31;
+		    if (month == 1) {
+		    	if (year % 4 == 0) {
+		        	dim = 29;
+				} else {
+					dim = 28;
+				}
+			} else if (month == 3 || month == 5 || month == 8 || month == 10) {
+				dim = 30;
+			}
+			return dim;
+		}
+
+		function calculateEdd(lmp) {
+			var lmpDay = lmp.getDate();
+			var lmpMonth = lmp.getMonth();
+			var lmpYear = lmp.getFullYear();
+
+			var dayOffset = 7;
+			var monthOffset = -2;
+			var yearOffset = 1;
+
+		    var eddDay = lmpDay + dayOffset;
+			var dim = daysInMonth(lmpMonth, lmpYear);
+			if (eddDay &gt; dim) {
+				eddDay -= dim;
+				monthOffset++;
+			}
+			var eddMonth = lmpMonth + monthOffset;
+			if (eddMonth &lt;= 0) {
+				eddMonth += 12;
+				yearOffset--;
+			}
+			var eddYear = lmpYear + yearOffset;
+			return (eddDay &lt;= 9 ? '0' + eddDay : eddDay) + '-' + (eddMonth &lt;= 9 ? '0' + eddMonth : eddMonth) + '-' + eddYear;
+		}
+
+		$j(function() {
+			getField('lmp.value').change(onLmpChange);
+		});
+	</script>
+
 	<div style="display:none">
 		Provider:
 		<encounterProviderAndRole encounterRole="a0b03050-c99b-11e0-9572-0800200c9a66" default="currentUser"
-								  required="true"/>
+			required="true"/>
 	</div>
 	<table align="center" border="0" class="tb" cellspacing="10">
 		<tr>
@@ -105,15 +176,16 @@
 						L.M.P:
 					</td>
 					<td>
-						<obs conceptId="1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+						<obs conceptId="1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="lmp"/>
 					</td>
 				</tr>
 				<tr>
 					<td>
-						EDD:
+						EDD (calculated from L.M.P):
 					</td>
 					<td>
-						<obs conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true"/>
+						<span id="calculated-edd" class="value"></span>
+						<!--<obs conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="edd" allowFutureDates="true"/>-->
 					</td>
 				</tr>
 			</table>
@@ -172,7 +244,7 @@
 		</td>
 	</table>
 
-	<enrollInProgram programId="0783b5f2-e3c4-420b-808d-7df5f243031a"/>
+	<enrollInProgram programId="b5d9e05f-f5ab-4612-98dd-adb75438ed34"/>
 	<div class="ke-form-footer">
 		<submit/>
 	</div>

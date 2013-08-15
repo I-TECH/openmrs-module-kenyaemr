@@ -42,13 +42,6 @@ public class MchCompletionSummaryFragmentController {
 		if (showClinicalData && enrollment.getOutcome() != null) {
 			dataPoints.put("Outcome", enrollment.getOutcome());
 		}
-//
-//		if (encounter != null) {
-//			Obs outcomeObs = EmrUtils.firstObsInEncounter(encounter, Dictionary.getConcept(Dictionary.TUBERCULOSIS_TREATMENT_OUTCOME));
-//			if (outcomeObs != null) {
-//				dataPoints.put("Outcome", outcomeObs.getValueCoded());
-//			}
-//		}
 
 		model.put("dataPoints", dataPoints);
 		return "view/dataPoints";
