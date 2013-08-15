@@ -16,7 +16,7 @@ package org.openmrs.module.kenyaemr.reporting.builder.patientlist;
 
 import org.openmrs.module.kenyautil.MetadataUtils;
 import org.openmrs.module.kenyaemr.Metadata;
-import org.openmrs.module.kenyacore.reporting.ReportBuilder;
+import org.openmrs.module.kenyacore.report.ReportBuilder;
 import org.openmrs.module.reporting.data.converter.DataConverter;
 import org.openmrs.module.reporting.data.patient.definition.PatientIdDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.PatientIdentifierDataDefinition;

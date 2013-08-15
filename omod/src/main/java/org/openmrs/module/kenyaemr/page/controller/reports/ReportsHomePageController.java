@@ -19,7 +19,7 @@ import java.util.List;
 
 import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyacore.CoreContext;
-import org.openmrs.module.kenyacore.reporting.ReportBuilder;
+import org.openmrs.module.kenyacore.report.ReportBuilder;
 import org.openmrs.module.kenyaui.annotation.AppPage;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.annotation.SpringBean;

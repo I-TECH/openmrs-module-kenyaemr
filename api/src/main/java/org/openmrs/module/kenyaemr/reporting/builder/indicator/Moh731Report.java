@@ -78,7 +78,7 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 	private Map<String, Indicator> nonCohortIndicators;
 
 	/**
-	 * @see org.openmrs.module.kenyacore.reporting.ReportBuilder#getTags()
+	 * @see org.openmrs.module.kenyacore.report.ReportBuilder#getTags()
 	 */
 	@Override
 	public String[] getTags() {
@@ -94,7 +94,7 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyacore.reporting.ReportBuilder#getDescription()
+	 * @see org.openmrs.module.kenyacore.report.ReportBuilder#getDescription()
 	 */
 	@Override
 	public String getDescription() {

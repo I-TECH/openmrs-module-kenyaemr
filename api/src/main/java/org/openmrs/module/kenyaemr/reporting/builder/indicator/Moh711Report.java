@@ -59,7 +59,7 @@ public class Moh711Report extends BaseIndicatorReportBuilder {
 	private ArtIndicatorLibrary artIndicators;
 
 	/**
-	 * @see org.openmrs.module.kenyacore.reporting.ReportBuilder#getTags()
+	 * @see org.openmrs.module.kenyacore.report.ReportBuilder#getTags()
 	 */
 	@Override
 	public String[] getTags() {
@@ -75,7 +75,7 @@ public class Moh711Report extends BaseIndicatorReportBuilder {
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyacore.reporting.ReportBuilder#getDescription()
+	 * @see org.openmrs.module.kenyacore.report.ReportBuilder#getDescription()
 	 */
 	@Override
 	public String getDescription() {

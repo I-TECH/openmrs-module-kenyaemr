@@ -35,7 +35,7 @@ public class DecliningCD4Report extends BasePatientCalculationReportBuilder {
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyacore.reporting.ReportBuilder#getName()
+	 * @see org.openmrs.module.kenyacore.report.ReportBuilder#getName()
 	 */
 	@Override
 	public String getName() {
@@ -43,7 +43,7 @@ public class DecliningCD4Report extends BasePatientCalculationReportBuilder {
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyacore.reporting.ReportBuilder#getTags()
+	 * @see org.openmrs.module.kenyacore.report.ReportBuilder#getTags()
 	 */
 	@Override
 	public String[] getTags() {

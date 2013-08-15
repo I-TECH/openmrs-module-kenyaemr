@@ -23,7 +23,7 @@ import java.util.Map;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyacore.CoreContext;
-import org.openmrs.module.kenyacore.reporting.ReportBuilder;
+import org.openmrs.module.kenyacore.report.ReportBuilder;
 import org.openmrs.module.kenyaui.annotation.AppPage;
 import org.openmrs.module.reporting.common.ContentType;
 import org.openmrs.module.reporting.common.DateUtil;
