@@ -15,8 +15,8 @@
 package org.openmrs.module.kenyaemr.reporting.dataset.definition.persister;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.kenyacore.reporting.ReportBuilder;
-import org.openmrs.module.kenyacore.reporting.ReportManager;
+import org.openmrs.module.kenyacore.report.ReportBuilder;
+import org.openmrs.module.kenyacore.report.ReportManager;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.persister.DataSetDefinitionPersister;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;

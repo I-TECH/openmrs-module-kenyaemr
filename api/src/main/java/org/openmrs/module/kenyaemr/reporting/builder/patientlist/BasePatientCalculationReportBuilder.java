@@ -45,7 +45,7 @@ public abstract class BasePatientCalculationReportBuilder extends BasePatientLis
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyacore.reporting.ReportBuilder#getDescription()
+	 * @see org.openmrs.module.kenyacore.report.ReportBuilder#getDescription()
 	 */
 	@Override
 	public String getDescription() {

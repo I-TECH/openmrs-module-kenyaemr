@@ -23,7 +23,7 @@ import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyautil.MetadataUtils;
 import org.openmrs.module.kenyaemr.Metadata;
-import org.openmrs.module.kenyacore.reporting.ReportBuilder;
+import org.openmrs.module.kenyacore.report.ReportBuilder;
 import org.openmrs.module.kenyaemr.test.ReportingTestUtils;
 import org.openmrs.module.kenyautil.test.TestUtils;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;

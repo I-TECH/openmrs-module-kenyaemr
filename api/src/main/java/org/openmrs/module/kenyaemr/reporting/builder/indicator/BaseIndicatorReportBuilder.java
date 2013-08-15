@@ -14,7 +14,7 @@
 
 package org.openmrs.module.kenyaemr.reporting.builder.indicator;
 
-import org.openmrs.module.kenyacore.reporting.ReportBuilder;
+import org.openmrs.module.kenyacore.report.ReportBuilder;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
@@ -29,7 +29,7 @@ import java.util.List;
 public abstract class BaseIndicatorReportBuilder extends ReportBuilder {
 
 	/**
-	 * @see org.openmrs.module.kenyacore.reporting.ReportBuilder#buildReportDefinition()
+	 * @see org.openmrs.module.kenyacore.report.ReportBuilder#buildReportDefinition()
 	 */
 	@Override
 	protected ReportDefinition buildReportDefinition() {
