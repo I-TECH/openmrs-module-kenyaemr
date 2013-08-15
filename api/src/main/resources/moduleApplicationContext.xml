@@ -141,7 +141,7 @@
 
 	<!-- HEI -->
 	<bean id="kenyaemr.program.hei" class="org.openmrs.module.kenyacore.program.ProgramDescriptor">
-		<property name="targetUuid" value="30adff43-0bbf-4feb-92b5-2d440c84ac12" />
+		<property name="targetUuid" value="c2ecdf11-97cd-432a-a971-cfd9bd296b83" />
 		<property name="eligibilityCalculation" value="org.openmrs.module.kenyaemr.calculation.library.hei.EligibleForHeiProgramCalculation" />
 		<property name="defaultEnrollmentForm" ref="kenyaemr.form.heiEnrollment" />
 		<property name="defaultCompletionForm" ref="kenyaemr.form.heiDiscontinuation" />

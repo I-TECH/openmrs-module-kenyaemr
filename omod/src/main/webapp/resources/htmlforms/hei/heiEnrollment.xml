@@ -5,7 +5,7 @@
   ~ http://license.openmrs.org
   ~
   ~ Software distributed under the License is distributed on an "AS IS"
-  ~ basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+  ~ basis, WITHOUT WARRANTY OF ANY KIND, either express or impliediaxd. See the
   ~ License for the specific language governing rights and limitations
   ~ under the License.
   ~
@@ -13,146 +13,126 @@
 -->
 <htmlform>
 
-	<macros>
-		paperFormId = (Fill this in)
-		headerColor =#009d8e
-		fontOnHeaderColor = white
-	</macros>
-
 	<style type="text/css">
-		.section {
-			border: 1px solid $headerColor;
-			padding: 2px;
-			text-align: left;
-			margin-bottom: 1em;
+		table.hei {
+		border-collapse: collapse;
+		background-color: #fff0f7;
 		}
-		.sectionHeader {
-			background-color: $headerColor;
-			color: $fontOnHeaderColor;
-			display: block;
-			padding: 2px;
-			font-weight: bold;
-		}
-		table.baseline-aligned td {
-			vertical-align: baseline;
+		table.hei > tbody > tr > td, table.hei > tbody > tr > th {
+		border: 1px solid black;
+		vertical-align: baseline;
+		padding: 4px;
+		text-align: left;
 		}
 	</style>
 
-	<script type="text/javascript">
-		var motherName="<lookup class="value" expression="personAttributes.get('Mother's Name')"/>"
-	</script>
-
-	<div style="display:none">
-		Provider: <encounterProviderAndRole encounterRole="a0b03050-c99b-11e0-9572-0800200c9a66" default="currentUser" required="true" />
-	</div>
-	<section headerLabel="Encounter Details">
-		<table class="baseline-aligned">
+	<table class="hei" align="center">
+		<tbody>
 			<tr>
-				<td>Date:</td>
-				<td><encounterDate id="encounter-date" /></td>
-
-				<td>Location:</td>
-				<td><encounterLocation type="autocomplete"/></td>
+				<td colspan="15" style="background-color: #696969; color: #ffffff; text-align:center;">
+					HIV Exposed Infant (HEI) Follow-up Card(Enrollment)
+				</td>
 			</tr>
-		</table>
-	</section>
+			<tr>
+				<td colspan="15">
+					<table border="0" width="100%">
+						<tr>
+							<td>Enrollment Date <encounterDate id="encounter-date" showTime="true" /></td>
+							<td>Name of the Facility <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" /></td>
+							<td>Enrolled by: <encounterProviderAndRole encounterRole="a0b03050-c99b-11e0-9572-0800200c9a66" default="currentUser" required="true" /></td>
+						</tr>
+						<tr><td colspan="3"><hr /></td></tr>
+						<tr>
+							<td colspan="3"> Cohort by month and year of Birth:   MM - YYYY <obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+						</tr>
+					</table>
 
-	<section headerLabel="Patient Profile">
-		<br />
-		<fieldset>
-			<table class="baseline-aligned">
-				<tr>
-					<td>Cohort by Month and Year of Birth</td>
-					<td>"month and year"</td>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="15" style="background-color: #696969; color: #ffffff;">
+					INFANT PROFILE
+				</td>
+			</tr>
+			<tr>
+				<td>
+					HEI Unique ID Number
+					<patient field="identifier" identifierTypeId="0691f522-dd67-4eeb-92c8-af5083baf338" />
+				</td>
+				<td colspan="5">Birth Weight: (kg)<obs conceptId="5916AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/> </td>
+			</tr>
+			<tr>
+				<td>Source of Referral</td>
+				<td colspan="15">	<obs style="radio" answerSeparator=" "
+						 conceptId="160540AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+						 answerConceptIds="160537AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160542AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160538AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+						 answerLabels="Paediatric,OPD,Maternity,CCC,MCH/PMTCT,Other"
+							/>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="15">
+					ARV Prophylaxis:
+					<obs conceptId="966AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="80586AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Sd NVP Only" style="checkbox"/>
+					<obs conceptId="966AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="sd NVP+AZT+3TC" style="checkbox"/>
+					<obs conceptId="966AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1148AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="NVP for 6 weeks(Mother on HAART or No BF)" style="checkbox"/>
+					<obs conceptId="966AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="NVP during BF" style="checkbox"/>
+					<obs conceptId="966AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="None" style="checkbox"/>
+					<obs conceptId="966AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Other / Specify __________________" style="checkbox"/>
 
-					<td>HEI ID Number:</td>
-					<td></td>
-				</tr>
-			</table>
-		</fieldset>
-		<br />
-		<fieldset>
-			<legend><b>Patient Locators</b></legend>
-			<table>
-				<tr>
-					<td>Parent/Gurdian Name:</td>
-					<td><obs conceptId="160638AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
-					<td>Parent/Gurdian telephone number:</td>
-					<td><obs conceptId="160642AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
-				</tr>
-				<tr>
-					<td>House/Plot #</td>
-					<td><input type="text" /></td>
-					<td>Sub/Chief's Name</td>
-					<td><input type="text" /></td>
-				</tr>
-
-			</table>
-		</fieldset>
-		<br />
-		<fieldset>
-			<legend><b>Family History/Parent Profile</b></legend>
-			<table border="0">
-				<tr>
-					<td>Mother's Name:</td>
-					<td><obs conceptId="1593AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
-					<td>Is the mother alive?</td>
-					<td><obs conceptId="160429AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="yes_no" /></td>
-					<td></td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Mother Received Drugs for PMTCT?</td>
-					<td><obs conceptId="5576AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  style="yes_no" /></td>
-					<td>Drug Combination</td>
-					<td><obs conceptId="1086AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
-					<td></td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>On ART at Enrollment of Infant?</td>
-					<td><obs conceptId="160117AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
-					<td>Enter Regimen</td>
-					<td><obs conceptId="1088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
-					<td>CCC Number</td>
-					<td><obs conceptId="160752AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
-				</tr>
-				<tr>
-					<td>Mode of Delivery</td>
-					<td><obs conceptId="5630AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
-					<td>Place of Delivery</td>
-					<td><obs conceptId="1572AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
-					<td></td>
-					<td></td>
-				</tr>
-			</table>
-		</fieldset>
-		<br />
-		<fieldset>
-			<legend><b>Immunization History</b></legend>
-			<table>
-				<obsgroup groupingConceptId="1421AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-					<tr>
-						<td>
-							<obs conceptId="1198AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="886AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-								 answerLabel="BCG" style="checkbox" /><br />
-							<obs conceptId="1198AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="783AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-								 answerLabel="OPV" style="checkbox" /><br/>
-							<obs conceptId="1198AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="36AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-								 answerLabel="Measles" style="checkbox" /><br/>
-							<obs conceptId="1198AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-								 answerLabel="Other(Specify)" style="checkbox" />
-							<obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
-
-						</td>
-					</tr>
-				</obsgroup>
-			</table>
-		</fieldset>
-	</section>
-
-	<div class="ke-form-footer">
-		<submit />
-	</div>
-
+				</td>
+			</tr>
+			<tr>
+				<td colspan="7">
+					History of TB Contact in Household? <obs conceptId="152460AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio"/>
+				</td>
+				<td colspan="8">If  YES, screen for TB; and appropriately refer for INH prophylaxis</td>
+			</tr>
+			<tr>
+				<td colspan="15" style="background-color: #696969; color: #ffffff;">
+					PARENT'S PROFILE
+				</td>
+			</tr>
+			<tr>
+				<td colspan="8">
+					Name of Mother <obs conceptId="1593AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+				</td>
+				<td colspan="7">Alive? <obs conceptId="160429AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  style="yes_no"/></td>
+			</tr>
+			<tr>
+				<td colspan="15">
+					Mother received Drugs for PMTCT?  <obs conceptId="1148AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio"/>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="15">
+					If Yes, select the combination
+					<obs conceptId="1086AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="80586AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Sd NVP Only" style="checkbox"/>
+					<obs conceptId="1086AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="AZT+NVP+3TC" style="checkbox"/>
+					<obs conceptId="1086AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1148AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Haart" style="checkbox"/>
+					<obs conceptId="1086AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Interrupted Haart" style="checkbox"/>
+					<obs conceptId="1086AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="None" style="checkbox"/>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="5"> On ART at enrollment of infant
+					<obs conceptId="1147AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1149AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio"/>
+				</td>
+				<td colspan="5">If Yes enter regimen <obs conceptId="1088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
+				<td colspan="5">Parent's CCC No. <obs conceptId="160752AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="5"/></td>
+			</tr>
+			<tr>
+				<td colspan="8">Mode of Delivery <obs conceptId="5630AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1170AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1171AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="SVD,C-Section" style="radio"/></td>
+				<td colspan="7">Place of Delivery <obs conceptId="1572AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1589AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1536AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Facility,Home" style="radio"/></td>
+			</tr>
+			<enrollInProgram programId="c2ecdf11-97cd-432a-a971-cfd9bd296b83"/>
+			<tr>
+				<td colspan="15" style="text-align:center;">
+					<div class="ke-form-footer">
+						<submit />
+					</div>
+				</td>
+			</tr>
+		</tbody>
+	</table>
 </htmlform>
