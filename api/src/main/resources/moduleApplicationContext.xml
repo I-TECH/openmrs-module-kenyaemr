@@ -139,6 +139,32 @@
 		<property name="order" value="200" />
 	</bean>
 
+	<!-- HEI -->
+	<bean id="kenyaemr.program.hei" class="org.openmrs.module.kenyacore.program.ProgramDescriptor">
+		<property name="targetUuid" value="30adff43-0bbf-4feb-92b5-2d440c84ac12" />
+		<property name="eligibilityCalculation" value="org.openmrs.module.kenyaemr.calculation.library.hei.EligibleForHeiProgramCalculation" />
+		<property name="defaultEnrollmentForm" ref="kenyaemr.form.heiEnrollment" />
+		<property name="defaultCompletionForm" ref="kenyaemr.form.heiDiscontinuation" />
+		<property name="visitForms">
+			<set>
+				<ref bean="kenyaemr.form.heiFollowupVisit" />
+			</set>
+		</property>
+		<property name="patientForms">
+			<set>
+				<ref bean="kenyaemr.form.heiImmunization" />
+			</set>
+		</property>
+		<property name="fragments">
+			<map>
+				<entry key="enrollment-summary" value="kenyaemr:program/hei/heiEnrollmentSummary" />
+				<entry key="care-panel" value="kenyaemr:program/hei/heiCarePanel" />
+				<entry key="completion-summary" value="kenyaemr:program/hei/heiCompletionSummary" />
+			</map>
+		</property>
+		<property name="order" value="400" />
+	</bean>
+
 	<!-- ===================== Identifier descriptors ===================== -->
 
 	<!-- Unique Patient Number -->
@@ -392,6 +418,66 @@
 		</property>
 		<property name="icon" value="kenyaui:forms/completion.png" />
 		<property name="htmlform" value="kenyaemr:tb/tbDiscontinuation.xml" />
+	</bean>
+
+	<!-- HEI Enrollment -->
+	<bean id="kenyaemr.form.heiEnrollment" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="8553d869-bdc8-4287-8505-910c7c998aff" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.registration" />
+				<ref bean="kenyaemr.app.intake" />
+				<ref bean="kenyaemr.app.clinician" />
+				<ref bean="kenyaemr.app.chart" />
+			</set>
+		</property>
+		<property name="icon" value="kenyaui:forms/generic.png" />
+		<property name="htmlform" value="kenyaemr:hei/heiEnrollment.xml" />
+	</bean>
+
+	<!-- HEI follow up -->
+	<bean id="kenyaemr.form.heiFollowupVisit" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="755b59e6-acbb-4853-abaf-be302039f902" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.registration" />
+				<ref bean="kenyaemr.app.intake" />
+				<ref bean="kenyaemr.app.clinician" />
+				<ref bean="kenyaemr.app.chart" />
+			</set>
+		</property>
+		<property name="icon" value="kenyaui:forms/generic.png" />
+		<property name="htmlform" value="kenyaemr:hei/heiFollowupvisit.xml" />
+	</bean>
+
+	<!-- HEI immunization -->
+	<bean id="kenyaemr.form.heiImmunization" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="b4f3859e-861c-4a63-bdff-eb7392030d47" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.registration" />
+				<ref bean="kenyaemr.app.intake" />
+				<ref bean="kenyaemr.app.clinician" />
+				<ref bean="kenyaemr.app.chart" />
+			</set>
+		</property>
+		<property name="icon" value="kenyaui:forms/generic.png" />
+		<property name="htmlform" value="kenyaemr:hei/heiImmunization.xml" />
+	</bean>
+
+	<!-- HEI discontinuation -->
+	<bean id="kenyaemr.form.heiDiscontinuation" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="1dd02c43-904b-4206-8378-7b1a8414c326" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.registration" />
+				<ref bean="kenyaemr.app.intake" />
+				<ref bean="kenyaemr.app.clinician" />
+				<ref bean="kenyaemr.app.chart" />
+			</set>
+		</property>
+		<property name="icon" value="kenyaui:forms/generic.png" />
+		<property name="htmlform" value="kenyaemr:hei/heiImmunization.xml" />
 	</bean>
 
 	<!-- Module service -->
