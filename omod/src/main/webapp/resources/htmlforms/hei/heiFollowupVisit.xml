@@ -18,18 +18,77 @@
 		border-collapse: collapse;
 		background-color: #fff0f7;
 		}
-		table.hei > tbody > tr > td, table.hei > tbody > tr > th {
+		table.hei > tbody > tr > td, table.hei > tbody > tr > th, table.hei > tbody > tr > td > table > tr > td {
 		border: 1px solid black;
 		vertical-align: baseline;
 		padding: 4px;
 		text-align: left;
 		}
 	</style>
-	<table border="0" width="100%">
-		<tr>
-			<td>Enrollment Date <encounterDate id="encounter-date" showTime="true" /></td>
-			<td>Name of the Facility <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" /></td>
-			<td>Enrolled by: <encounterProviderAndRole encounterRole="a0b03050-c99b-11e0-9572-0800200c9a66" default="currentUser" required="true" /></td>
-		</tr>
+	<table border="0" class="hei" align="center">
+		<tbody>
+			<tr>
+				<td colspan="3" style="background-color: #696969; color: #ffffff;text-align:center;">
+					GROWTH, NUTRITION AND DEVELOPMENT MONITORING
+				</td>
+			</tr>
+			<tr>
+				<td>Enrollment Date <encounterDate id="encounter-date" showTime="true" /></td>
+				<td>Name of the Facility <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" /></td>
+				<td>Provider <encounterProviderAndRole encounterRole="a0b03050-c99b-11e0-9572-0800200c9a66" default="currentUser" required="true" /></td>
+			</tr>
+
+			<tr>
+				<td colspan="3">
+					<table class="hei" width="100%">
+						<tbody>
+							<tr>
+								<td rowspan="2" style="text-align:center;">Date</td>
+								<td rowspan="2" style="text-align:center;">Age <br/>(Wks/Mths)</td>
+								<td rowspan="2" style="text-align:center;">Temp <br/>(C)</td>
+								<td rowspan="2" style="text-align:center;">Weight <br/>(Kg)</td>
+								<td rowspan="2" style="text-align:center;">Height <br/>(cm)</td>
+								<td rowspan="2" style="text-align:center;">Infant <br/> Feeding</td>
+								<td colspan="3" style="text-align:center;">Medication Indicate Dose</td>
+								<td rowspan="2" style="text-align:center;">NVP <br/>Doses <br/>Missed</td>
+								<td rowspan="2" style="text-align:center;">TB Assessment <br/> Outcome</td>
+								<td rowspan="2" style="text-align:center;">Milestones <br/> Normal(N) <br/> Delayed(D) <br/> Regressed(R)</td>
+								<td rowspan="2" style="text-align:center;">Next <br/>Appointment</td>
+								<td rowspan="2" colspan="2" style="text-align:center;">NVP <br/>Toxicity</td>
+							</tr>
+							<tr>
+								<td style="text-align:center;">NVP <br/> (mls)</td>
+								<td style="text-align:center;">CTX <br/>(mls/mg)</td>
+								<td style="text-align:center;">M/vit</td>
+							</tr>
+							<tr>
+								<td style="text-align:center;">(a)</td>
+								<td style="text-align:center;">(b)</td>
+								<td style="text-align:center;"></td>
+								<td style="text-align:center;">(c)</td>
+								<td style="text-align:center;">(d)</td>
+								<td style="text-align:center;">(e)</td>
+								<td style="text-align:center;">(f)</td>
+								<td style="text-align:center;">(g)</td>
+								<td style="text-align:center;">(h)</td>
+								<td style="text-align:center;"></td>
+								<td style="text-align:center;">(i)</td>
+								<td style="text-align:center;">(j)</td>
+								<td style="text-align:center;">(k)</td>
+								<td colspan="2"></td>
+
+							</tr>
+						</tbody>
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="3">
+					<div class="ke-form-footer">
+						<submit />
+					</div>
+				</td>
+			</tr>
+		</tbody>
 	</table>
 </htmlform>
