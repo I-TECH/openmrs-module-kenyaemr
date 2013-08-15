@@ -5,7 +5,7 @@
   ~ http://license.openmrs.org
   ~
   ~ Software distributed under the License is distributed on an "AS IS"
-  ~ basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+  ~ basis, WITHOUT WARRANTY OF ANY KIND, either express or impliediaxd. See the
   ~ License for the specific language governing rights and limitations
   ~ under the License.
   ~
@@ -13,80 +13,66 @@
 -->
 <htmlform>
 
-	<macros>
-		paperFormId = (Fill this in)
-		headerColor =#009d8e
-		fontOnHeaderColor = white
-	</macros>
-
 	<style type="text/css">
-		.section {
-			border: 1px solid $headerColor;
-			padding: 2px;
-			text-align: left;
-			margin-bottom: 1em;
+		table.hei {
+		border-collapse: collapse;
+		background-color: #fff0f7;
 		}
-		.sectionHeader {
-			background-color: $headerColor;
-			color: $fontOnHeaderColor;
-			display: block;
-			padding: 2px;
-			font-weight: bold;
-		}
-		table.baseline-aligned td {
-			vertical-align: baseline;
+		table.hei > tbody > tr > td, table.hei > tbody > tr > th {
+		border: 1px solid black;
+		vertical-align: baseline;
+		padding: 4px;
+		text-align: left;
 		}
 	</style>
-
-	<!-- <span style="float:right">Paper Form ID: $paperFormId</span> -->
-	<h2>HEI Discharge Form (v1)</h2>
-	<!-- provide the patient details -->
-	<div style="display:none">
-		Provider: <encounterProviderAndRole encounterRole="a0b03050-c99b-11e0-9572-0800200c9a66" default="currentUser" required="true" />
-	</div>
-	<div class="patient-details">
-		<table class="baseline-aligned" width="100%">
-			<tr>
-				<td>Name: <lookup class="value" expression="patient.personName"/></td>
-				<td>Gender: <lookup class="value" expression="patient.gender"/></td>
-				<td>Birthdate: <lookup class="value" complexExpression="#if( \$patient.birthdateEstimated ) ~#end"/> <lookup class="value" expression="patient.birthdate"/>
-				</td>
-			</tr>
-		</table>
-	</div>
-	<br />
-	<fieldset>
-		<legend><b>Discontinue HEI Care</b></legend>
-		<table>
-			<tr>
-				<td>Exit Date</td>
-				<td><encounterDate id="encounter-date" showTime="false" id="discontinueDate"/></td>
-			</tr>
-			<td>HIV Status</td>
-			<td><obs conceptId="1169AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  /></td>
-			<tr>
-			</tr>
-			<tr>
-				<td>Exit Criteria</td>
-				<td>
-					<obs conceptId="161555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="idReason" style="dropdown"
-						 answerConceptIds="1403AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,138571AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5240AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160432AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159492AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-						 answerLabels="HIV Neg age &gt; 18 mo,Confirmed HIV Positive,Lost,Death,Transfer Out"
-					/>
-				</td>
-			</tr>
-		</table>
-		<table>
-			<tr>
-				<td>
-					Signed at <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete"/>
-				</td>
-			</tr>
-		</table>
-	</fieldset>
+<table class="hei" align="center">
+	<tbody>
+		<h2>HEI Discharge Form (v1)</h2>
+		<div style="display:none">
+			Provider: <encounterProviderAndRole encounterRole="a0b03050-c99b-11e0-9572-0800200c9a66" default="currentUser" required="true" />
+			Location  <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete"/>
+		</div>
+		<div class="patient-details">
+			<table class="baseline-aligned" width="100%">
+				<tr>
+					<td>Name: <lookup class="value" expression="patient.personName"/></td>
+					<td>Gender: <lookup class="value" expression="patient.gender"/></td>
+					<td>Birthdate: <lookup class="value" complexExpression="#if( \$patient.birthdateEstimated ) ~#end"/> <lookup class="value" expression="patient.birthdate"/>
+					</td>
+				</tr>
+			</table>
+		</div>
+		<br />
+		<fieldset>
+			<legend><b>Discontinue HEI Care</b></legend>
+			<table>
+				<tr>
+					<td>Exit Date</td>
+					<td><encounterDate  id="discontinueDate"/></td>
+				</tr>
+				<td>HIV Status</td>
+				<td><obs conceptId="1169AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  /></td>
+				<tr>
+				</tr>
+				<tr>
+					<td>Exit Criteria</td>
+					<td>
+						<obs conceptId="161555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="idReason" style="dropdown"
+							 answerConceptIds="1403AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,138571AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5240AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160432AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159492AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 answerLabels="HIV Neg age &gt; 18 mo,Confirmed HIV Positive,Lost,Death,Transfer Out"
+						/>
+					</td>
+				</tr>
+			</table>
+			<table>
+			</table>
+			<completeProgram programId="c2ecdf11-97cd-432a-a971-cfd9bd296b83" />
+		</fieldset>
 
 	<div class="ke-form-footer">
 		<submit />
 	</div>
+	</tbody>
+</table>
 
 </htmlform>
