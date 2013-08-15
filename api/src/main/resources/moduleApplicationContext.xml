@@ -612,7 +612,7 @@
 			</set>
 		</property>
 		<property name="icon" value="kenyaui:forms/generic.png" />
-		<property name="htmlform" value="kenyaemr:hei/heiFollowupvisit.xml" />
+		<property name="htmlform" value="kenyaemr:hei/heiFollowupVisit.xml" />
 	</bean>
 
 	<!-- HEI immunization -->

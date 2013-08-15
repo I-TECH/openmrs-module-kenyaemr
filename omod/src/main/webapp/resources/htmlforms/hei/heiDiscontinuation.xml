@@ -24,48 +24,50 @@
 		padding: 4px;
 		text-align: left;
 		}
-	</style>	<h2>HEI Discharge Form (v1)</h2>
-	<!-- provide the patient details -->
-	<div style="display:none">
-		Provider: <encounterProviderAndRole encounterRole="a0b03050-c99b-11e0-9572-0800200c9a66" default="currentUser" required="true" />
-		Location  <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete"/>
-	</div>
-	<div class="patient-details">
-		<table class="baseline-aligned" width="100%">
-			<tr>
-				<td>Name: <lookup class="value" expression="patient.personName"/></td>
-				<td>Gender: <lookup class="value" expression="patient.gender"/></td>
-				<td>Birthdate: <lookup class="value" complexExpression="#if( \$patient.birthdateEstimated ) ~#end"/> <lookup class="value" expression="patient.birthdate"/>
-				</td>
-			</tr>
-		</table>
-	</div>
-	<br />
-	<fieldset>
-		<legend><b>Discontinue HEI Care</b></legend>
-		<table>
-			<tr>
-				<td>Exit Date</td>
-				<td><encounterDate id="encounter-date" showTime="false" id="discontinueDate"/></td>
-			</tr>
-			<td>HIV Status</td>
-			<td><obs conceptId="1169AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  /></td>
-			<tr>
-			</tr>
-			<tr>
-				<td>Exit Criteria</td>
-				<td>
-					<obs conceptId="161555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="idReason" style="dropdown"
-						 answerConceptIds="1403AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,138571AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5240AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160432AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159492AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-						 answerLabels="HIV Neg age &gt; 18 mo,Confirmed HIV Positive,Lost,Death,Transfer Out"
-					/>
-				</td>
-			</tr>
-		</table>
-		<table>
-		</table>
-		<completeProgram programId="c2ecdf11-97cd-432a-a971-cfd9bd296b83" />
-	</fieldset>
+	</style>
+<table class="hei" align="center">
+	<tbody>
+		<h2>HEI Discharge Form (v1)</h2>
+		<div style="display:none">
+			Provider: <encounterProviderAndRole encounterRole="a0b03050-c99b-11e0-9572-0800200c9a66" default="currentUser" required="true" />
+			Location  <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete"/>
+		</div>
+		<div class="patient-details">
+			<table class="baseline-aligned" width="100%">
+				<tr>
+					<td>Name: <lookup class="value" expression="patient.personName"/></td>
+					<td>Gender: <lookup class="value" expression="patient.gender"/></td>
+					<td>Birthdate: <lookup class="value" complexExpression="#if( \$patient.birthdateEstimated ) ~#end"/> <lookup class="value" expression="patient.birthdate"/>
+					</td>
+				</tr>
+			</table>
+		</div>
+		<br />
+		<fieldset>
+			<legend><b>Discontinue HEI Care</b></legend>
+			<table>
+				<tr>
+					<td>Exit Date</td>
+					<td><encounterDate  id="discontinueDate"/></td>
+				</tr>
+				<td>HIV Status</td>
+				<td><obs conceptId="1169AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  /></td>
+				<tr>
+				</tr>
+				<tr>
+					<td>Exit Criteria</td>
+					<td>
+						<obs conceptId="161555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="idReason" style="dropdown"
+							 answerConceptIds="1403AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,138571AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5240AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160432AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159492AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 answerLabels="HIV Neg age &gt; 18 mo,Confirmed HIV Positive,Lost,Death,Transfer Out"
+						/>
+					</td>
+				</tr>
+			</table>
+			<table>
+			</table>
+			<completeProgram programId="c2ecdf11-97cd-432a-a971-cfd9bd296b83" />
+		</fieldset>
 
 	<div class="ke-form-footer">
 		<submit />
