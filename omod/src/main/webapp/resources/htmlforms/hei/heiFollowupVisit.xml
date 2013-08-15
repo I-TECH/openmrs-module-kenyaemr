@@ -1,0 +1,35 @@
+<!--
+		~ The contents of this file are subject to the OpenMRS Public License
+		~ Version 1.0 (the "License"); you may not use this file except in
+		~ compliance with the License. You may obtain a copy of the License at
+		~ http://license.openmrs.org
+		~
+		~ Software distributed under the License is distributed on an "AS IS"
+		~ basis, WITHOUT WARRANTY OF ANY KIND, either express or impliediaxd. See the
+		~ License for the specific language governing rights and limitations
+		~ under the License.
+		~
+		~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+		-->
+<htmlform>
+
+	<style type="text/css">
+		table.hei {
+		border-collapse: collapse;
+		background-color: #fff0f7;
+		}
+		table.hei > tbody > tr > td, table.hei > tbody > tr > th {
+		border: 1px solid black;
+		vertical-align: baseline;
+		padding: 4px;
+		text-align: left;
+		}
+	</style>
+	<table border="0" width="100%">
+		<tr>
+			<td>Enrollment Date <encounterDate id="encounter-date" showTime="true" /></td>
+			<td>Name of the Facility <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" /></td>
+			<td>Enrolled by: <encounterProviderAndRole encounterRole="a0b03050-c99b-11e0-9572-0800200c9a66" default="currentUser" required="true" /></td>
+		</tr>
+	</table>
+</htmlform>

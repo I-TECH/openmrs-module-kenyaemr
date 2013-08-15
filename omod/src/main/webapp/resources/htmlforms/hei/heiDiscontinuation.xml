@@ -5,7 +5,7 @@
   ~ http://license.openmrs.org
   ~
   ~ Software distributed under the License is distributed on an "AS IS"
-  ~ basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+  ~ basis, WITHOUT WARRANTY OF ANY KIND, either express or impliediaxd. See the
   ~ License for the specific language governing rights and limitations
   ~ under the License.
   ~
@@ -13,36 +13,22 @@
 -->
 <htmlform>
 
-	<macros>
-		paperFormId = (Fill this in)
-		headerColor =#009d8e
-		fontOnHeaderColor = white
-	</macros>
-
 	<style type="text/css">
-		.section {
-			border: 1px solid $headerColor;
-			padding: 2px;
-			text-align: left;
-			margin-bottom: 1em;
+		table.hei {
+		border-collapse: collapse;
+		background-color: #fff0f7;
 		}
-		.sectionHeader {
-			background-color: $headerColor;
-			color: $fontOnHeaderColor;
-			display: block;
-			padding: 2px;
-			font-weight: bold;
+		table.hei > tbody > tr > td, table.hei > tbody > tr > th {
+		border: 1px solid black;
+		vertical-align: baseline;
+		padding: 4px;
+		text-align: left;
 		}
-		table.baseline-aligned td {
-			vertical-align: baseline;
-		}
-	</style>
-
-	<!-- <span style="float:right">Paper Form ID: $paperFormId</span> -->
-	<h2>HEI Discharge Form (v1)</h2>
+	</style>	<h2>HEI Discharge Form (v1)</h2>
 	<!-- provide the patient details -->
 	<div style="display:none">
 		Provider: <encounterProviderAndRole encounterRole="a0b03050-c99b-11e0-9572-0800200c9a66" default="currentUser" required="true" />
+		Location  <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete"/>
 	</div>
 	<div class="patient-details">
 		<table class="baseline-aligned" width="100%">
@@ -77,12 +63,8 @@
 			</tr>
 		</table>
 		<table>
-			<tr>
-				<td>
-					Signed at <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete"/>
-				</td>
-			</tr>
 		</table>
+		<completeProgram programId="c2ecdf11-97cd-432a-a971-cfd9bd296b83" />
 	</fieldset>
 
 	<div class="ke-form-footer">

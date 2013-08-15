@@ -17,7 +17,7 @@ package org.openmrs.module.kenyaemr.fragment.controller.program.hei;
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.PatientProgram;
-import org.openmrs.module.kenyaemr.Dictionary;
+import org.openmr.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.util.EmrUtils;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.fragment.FragmentModel;
