@@ -39,7 +39,6 @@
 								<configuration>
 									<target>
 										<get dest="target/distro" verbose="true" usetimestamp="true">
-											<url url="https://modules.openmrs.org/modules/download/kenyautil/kenyautil-${kenyautilVersion}.omod" />
 											<url url="https://modules.openmrs.org/modules/download/kenyacore/kenyacore-${kenyacoreVersion}.omod" />
 											<url url="https://modules.openmrs.org/modules/download/kenyaui/kenyaui-${kenyauiVersion}.omod" />
 											<url url="https://modules.openmrs.org/modules/download/uiframework/uiframework-${uiframeworkVersion}.omod" />
