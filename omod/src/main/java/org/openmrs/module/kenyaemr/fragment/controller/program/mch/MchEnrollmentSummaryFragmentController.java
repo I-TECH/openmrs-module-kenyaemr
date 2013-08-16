@@ -29,7 +29,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
- * Patient program enrollment fragment
+ * MCH program enrollment fragment
  */
 public class MchEnrollmentSummaryFragmentController {
 

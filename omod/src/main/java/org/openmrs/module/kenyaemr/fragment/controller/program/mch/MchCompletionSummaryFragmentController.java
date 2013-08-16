@@ -26,7 +26,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * TB program discontinuation summary fragment
+ * MCH program discontinuation summary fragment
  */
 public class MchCompletionSummaryFragmentController {
 

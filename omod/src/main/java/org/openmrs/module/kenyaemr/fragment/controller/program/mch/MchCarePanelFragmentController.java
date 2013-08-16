@@ -31,7 +31,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Controller for TB care summary
+ * Controller for MCH care summary
  */
 public class MchCarePanelFragmentController {
 

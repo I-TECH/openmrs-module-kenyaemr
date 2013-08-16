@@ -1,11 +1,11 @@
 <%
-	ui.decorateWith("kenyaui", "panel", [heading: "TB Care"])
+	ui.decorateWith("kenyaui", "panel", [heading: "MCH Care"])
 
 	def dataPoints = []
 
-	dataPoints << [label: "Treatment Number", value: calculations.tbTreatmentNumber]
-	dataPoints << [label: "Disease classification", value: calculations.tbDiseaseClassification]
-	dataPoints << [label: "Patient classification", value: calculations.tbPatientClassification]
+	dataPoints << [label: "ANC No.", value: calculations.tbTreatmentNumber]
+	dataPoints << [label: "LMP", value: calculations.tbDiseaseClassification]
+	dataPoints << [label: "EDD", value: calculations.tbPatientClassification]
 %>
 
 <div class="ke-stack-item">
