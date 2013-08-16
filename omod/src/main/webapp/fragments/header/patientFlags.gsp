@@ -1,6 +1,4 @@
-<div style="width: 50%; float: left; overflow: auto; text-align: left">
-	<div id="patient-flags-placeholder" style="display: none"></div>
-</div>
+<div id="patient-flags-placeholder" style="display: none"></div>
 
 <script type="text/javascript">
 jq(function() {
