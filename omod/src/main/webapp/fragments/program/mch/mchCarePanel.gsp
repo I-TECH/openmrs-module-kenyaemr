@@ -13,7 +13,7 @@
 </div>
 
 <div class="ke-stack-item">
-	<% if (currentVisit) { %>
+	<% if (activeVisit) { %>
 	${ui.includeFragment("kenyaui", "widget/editButton", [href: ui.pageLink("kenyaemr", "regimenEditor", [patientId: currentPatient.id, category: "TB", appId: currentApp.id, returnUrl: ui.thisUrl()])])}
 	<% } %>
 
