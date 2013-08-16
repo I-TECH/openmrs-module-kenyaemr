@@ -37,6 +37,7 @@ import org.openmrs.module.kenyacore.program.ProgramDescriptor;
 import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyacore.CoreContext;
 import org.openmrs.module.kenyacore.form.FormDescriptor;
+import org.openmrs.module.kenyaemr.EmrWebConstants;
 import org.openmrs.module.kenyaemr.util.EmrUtils;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.module.kenyaui.annotation.AppPage;
@@ -67,7 +68,7 @@ public class ChartViewPatientPageController {
 			formUuid = null;
 		}
 
-		Patient patient = (Patient) model.getAttribute("patient");
+		Patient patient = (Patient) model.getAttribute(EmrWebConstants.MODEL_ATTR_CURRENT_PATIENT);
 		
 		recentlyViewed(patient, session);
 

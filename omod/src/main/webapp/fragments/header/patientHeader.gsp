@@ -36,14 +36,14 @@
 
 	<div style="clear: both; height: 5px;"></div>
 
-	${ ui.includeFragment("kenyaemr", "header/patientFlags") }
+	${ ui.includeFragment("kenyaemr", "header/patientFlags", [ patient: patient ]) }
 
 	<div id="active-visit">
 		<span class="ke-tip">Current visit</span>
-		<% if (activeVisit) {
-			def visitStartStr = activeVisitStartedToday ? kenyaUi.formatTime(activeVisit.startDatetime) : kenyaUi.formatDate(activeVisit.startDatetime);
+		<% if (visit) {
+			def visitStartStr = visitStartedToday ? kenyaUi.formatTime(visit.startDatetime) : kenyaUi.formatDate(visit.startDatetime);
 
-			%><span class="ke-visittag">${ ui.format(activeVisit.visitType) } since <b>${ visitStartStr }</b></span><%
+			%><span class="ke-visittag">${ ui.format(visit.visitType) } since <b>${ visitStartStr }</b></span><%
 		} else {
 			%><span style="font-style: italic">${ ui.message("general.none") }</span><%
 		}
