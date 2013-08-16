@@ -15,9 +15,8 @@
 package org.openmrs.module.kenyaemr.fragment.controller.program;
 
 import org.openmrs.Patient;
-import org.openmrs.Program;
 import org.openmrs.module.kenyacore.CoreContext;
-import org.openmrs.module.kenyacore.UIResource;
+import org.openmrs.module.kenyacore.UiResource;
 import org.openmrs.module.kenyacore.program.ProgramDescriptor;
 import org.openmrs.module.kenyaemr.EmrWebConstants;
 import org.openmrs.ui.framework.annotation.FragmentParam;
@@ -26,9 +25,7 @@ import org.openmrs.ui.framework.fragment.FragmentModel;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Program care summaries fragment
@@ -41,7 +38,7 @@ public class ProgramCarePanelsFragmentController {
 						   @FragmentParam("activeOnly") boolean activeOnly,
 						   @SpringBean CoreContext emr) {
 
-		List<UIResource> carePanels = new ArrayList<UIResource>();
+		List<UiResource> carePanels = new ArrayList<UiResource>();
 
 		Collection<ProgramDescriptor> programs = activeOnly
 				? emr.getProgramManager().getPatientActivePrograms(patient)
