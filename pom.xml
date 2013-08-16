@@ -38,24 +38,23 @@
 		<openMRSVersion>1.9.3</openMRSVersion>
 
 		<!-- Module dependencies -->
-		<kenyautilVersion>0.2.3</kenyautilVersion>
-		<kenyacoreVersion>0.5</kenyacoreVersion>
-		<kenyauiVersion>1.9</kenyauiVersion>
-		<uiframeworkVersion>2.6</uiframeworkVersion>
 		<appframeworkVersion>1.5</appframeworkVersion>
-		<metadatamappingVersion>1.0.1</metadatamappingVersion>
-		<metadatasharingVersion>1.1.8</metadatasharingVersion>
+		<calculationVersion>1.0</calculationVersion>
 		<htmlformentryVersion>2.1</htmlformentryVersion>
 		<htmlformentry19extVersion>0.9</htmlformentry19extVersion>
-		<calculationVersion>1.0</calculationVersion>
-		<reportingVersion>0.7.6</reportingVersion>
 		<htmlwidgetsVersion>1.6.4</htmlwidgetsVersion>
-		<serializationxstreamVersion>0.2.7</serializationxstreamVersion>
 		<idgenVersion>2.5</idgenVersion>
+		<kenyacoreVersion>0.6</kenyacoreVersion>
+		<kenyauiVersion>1.9</kenyauiVersion>
 		<logicVersion>0.5.2</logicVersion>
+		<metadatamappingVersion>1.0.1</metadatamappingVersion>
+		<metadatasharingVersion>1.1.8</metadatasharingVersion>
+		<reportingVersion>0.7.6</reportingVersion>
+		<reportingrestVersion>1.2</reportingrestVersion>
+		<serializationxstreamVersion>0.2.7</serializationxstreamVersion>
+		<uiframeworkVersion>2.6</uiframeworkVersion>
 		<webservicesRestVersion>1.1</webservicesRestVersion>
 		<webservicesRestVersionRepo>1.1.29293</webservicesRestVersionRepo>
-		<reportingrestVersion>1.2</reportingrestVersion>
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.build.timestamp.format>yyyy-MM-dd</maven.build.timestamp.format>
@@ -67,41 +66,6 @@
 
 		<dependency>
 			<groupId>org.openmrs.module</groupId>
-			<artifactId>kenyautil-api</artifactId>
-			<version>${kenyautilVersion}</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.openmrs.module</groupId>
-			<artifactId>kenyautil-test</artifactId>
-			<version>${kenyautilVersion}</version>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.openmrs.module</groupId>
-			<artifactId>kenyacore-api</artifactId>
-			<version>${kenyacoreVersion}</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.openmrs.module</groupId>
-			<artifactId>kenyaui-api</artifactId>
-			<version>${kenyauiVersion}</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.openmrs.module</groupId>
-			<artifactId>uiframework-api</artifactId>
-			<version>${uiframeworkVersion}</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.openmrs.module</groupId>
 			<artifactId>appframework-api</artifactId>
 			<version>${appframeworkVersion}</version>
 			<scope>provided</scope>
@@ -109,15 +73,8 @@
 
 		<dependency>
 			<groupId>org.openmrs.module</groupId>
-			<artifactId>metadatamapping-api</artifactId>
-			<version>${metadatamappingVersion}</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.openmrs.module</groupId>
-			<artifactId>metadatasharing-api</artifactId>
-			<version>${metadatasharingVersion}</version>
+			<artifactId>calculation-api</artifactId>
+			<version>${calculationVersion}</version>
 			<scope>provided</scope>
 		</dependency>
 
@@ -137,29 +94,8 @@
 
 		<dependency>
 			<groupId>org.openmrs.module</groupId>
-			<artifactId>calculation-api</artifactId>
-			<version>${calculationVersion}</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.openmrs.module</groupId>
-			<artifactId>reporting-api</artifactId>
-			<version>${reportingVersion}</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.openmrs.module</groupId>
 			<artifactId>htmlwidgets-api</artifactId>
 			<version>${htmlwidgetsVersion}</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.openmrs.module</groupId>
-			<artifactId>serialization.xstream-api</artifactId>
-			<version>${serializationxstreamVersion}</version>
 			<scope>provided</scope>
 		</dependency>
 
@@ -172,8 +108,50 @@
 
 		<dependency>
 			<groupId>org.openmrs.module</groupId>
-			<artifactId>webservices.rest-api</artifactId>
-			<version>${webservicesRestVersion}</version>
+			<artifactId>kenyacore-api</artifactId>
+			<version>${kenyacoreVersion}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.openmrs.module</groupId>
+			<artifactId>kenyacore-test</artifactId>
+			<version>${kenyacoreVersion}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.openmrs.module</groupId>
+			<artifactId>kenyaui-api</artifactId>
+			<version>${kenyauiVersion}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.openmrs.module</groupId>
+			<artifactId>uiframework-api</artifactId>
+			<version>${uiframeworkVersion}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.openmrs.module</groupId>
+			<artifactId>metadatamapping-api</artifactId>
+			<version>${metadatamappingVersion}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.openmrs.module</groupId>
+			<artifactId>metadatasharing-api</artifactId>
+			<version>${metadatasharingVersion}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.openmrs.module</groupId>
+			<artifactId>reporting-api</artifactId>
+			<version>${reportingVersion}</version>
 			<scope>provided</scope>
 		</dependency>
 
@@ -181,6 +159,20 @@
 			<groupId>org.openmrs.module</groupId>
 			<artifactId>reportingrest-api</artifactId>
 			<version>${reportingrestVersion}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.openmrs.module</groupId>
+			<artifactId>serialization.xstream-api</artifactId>
+			<version>${serializationxstreamVersion}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.openmrs.module</groupId>
+			<artifactId>webservices.rest-api</artifactId>
+			<version>${webservicesRestVersion}</version>
 			<scope>provided</scope>
 		</dependency>
 

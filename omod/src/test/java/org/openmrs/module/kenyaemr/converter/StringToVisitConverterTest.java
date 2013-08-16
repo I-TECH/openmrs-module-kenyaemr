@@ -22,8 +22,8 @@ import org.openmrs.Visit;
 import org.openmrs.VisitType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.Metadata;
-import org.openmrs.module.kenyautil.MetadataUtils;
-import org.openmrs.module.kenyautil.test.TestUtils;
+import org.openmrs.module.kenyacore.metadata.MetadataUtils;
+import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 
 /**

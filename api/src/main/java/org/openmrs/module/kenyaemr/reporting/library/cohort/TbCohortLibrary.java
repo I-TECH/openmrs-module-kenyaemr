@@ -14,7 +14,7 @@
 
 package org.openmrs.module.kenyaemr.reporting.library.cohort;
 
-import org.openmrs.module.kenyautil.MetadataUtils;
+import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
