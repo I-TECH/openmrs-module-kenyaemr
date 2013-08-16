@@ -19,7 +19,7 @@ import java.util.Map;
 
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
-import org.openmrs.module.kenyautil.MetadataUtils;
+import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyacore.calculation.BaseEmrCalculation;
 

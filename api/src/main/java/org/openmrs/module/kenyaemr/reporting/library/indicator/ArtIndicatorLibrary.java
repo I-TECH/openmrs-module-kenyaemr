@@ -15,7 +15,7 @@
 package org.openmrs.module.kenyaemr.reporting.library.indicator;
 
 import org.openmrs.Concept;
-import org.openmrs.module.kenyautil.MetadataUtils;
+import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.reporting.EmrReportingUtils;
