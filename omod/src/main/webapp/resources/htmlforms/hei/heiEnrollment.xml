@@ -27,13 +27,78 @@
 	</style>
 
 	<script type="text/javascript">
-		jq(function() {
+
 			var birthdate = new Date("<lookup expression="patient.birthdate" />");
-			var month = new String(birthdate.getMonth()+1);
-				if(month.length == 1)
-				month = '0'+month;
-			var cohort = month +"-"+ (birthdate.getUTCFullYear()+1);
-			$j('#calculated-cohort').html(cohort);
+
+			var YES_CONCEPT_ID = 1065;
+			var NO_CONCEPT_ID = 1066;
+
+			function onTransferStatusChange() {
+				if (getValue('transfer-status.value') == NO_CONCEPT_ID) {
+					jq('#transfer-details :input').prop('disabled', true);
+				}
+				else if (getValue('transfer-status.value') == YES_CONCEPT_ID) {
+					jq('#transfer-details :input').prop('disabled', false);
+				}
+				else {
+					jq('#transfer-details :input').prop('disabled', true);
+				}
+			}
+		    function getCohort(){
+				var month = new String(birthdate.getMonth()+1);
+					if(month.length == 1)
+					month = '0'+month;
+				var cohort = month +"-"+ (birthdate.getUTCFullYear()+1);
+				$j('#calculated-cohort').html(cohort);
+			}
+			function tbContactInHouseHold(){
+				if (getValue('tbcontact.value') == NO_CONCEPT_ID) {
+				jq('#yesTbContact').hide();
+				}
+				else if (getValue('tbcontact.value') == YES_CONCEPT_ID) {
+					jq('#yesTbContact').show();
+				}
+				else {
+					jq('#yesTbContact').hide();
+				}
+			}
+			function pmtctDrugsForMother(){
+				if (getValue('pmtctDrugsReceived.value') == NO_CONCEPT_ID) {
+					jq('#mother-art-details :input').prop('disabled', true);
+				}
+				else if (getValue('pmtctDrugsReceived.value') == YES_CONCEPT_ID) {
+					jq('#mother-art-details :input').prop('disabled', false);
+				}
+				else {
+					jq('#mother-art-details :input').prop('disabled', true);
+				}
+			}
+			function onARTatEnrollment(){
+				if (getValue('onART.value') == NO_CONCEPT_ID) {
+					jq('#mohter-on-art-at-enrollment :input').prop('disabled', true);
+					jq('#mohter-on-art-at-enrollment1 :input').prop('disabled', true);
+				}
+				else if (getValue('onART.value') == YES_CONCEPT_ID) {
+					jq('#mohter-on-art-at-enrollment :input').prop('disabled', false);
+					jq('#mohter-on-art-at-enrollment1 :input').prop('disabled',false);
+				}
+				else {
+					jq('#mohter-on-art-at-enrollment :input').prop('disabled', true);
+					jq('#mohter-on-art-at-enrollment1 :input').prop('disabled', true);
+				}
+			}
+		jq(function() {
+			//get cohort
+			getCohort()
+			//validate transfer in details
+			onTransferStatusChange()
+			jq('#transfer-status input').click(onTransferStatusChange);
+			tbContactInHouseHold();
+			jq('#tbcontact input').click(tbContactInHouseHold);
+			pmtctDrugsForMother();
+			jq('#pmtctDrugsReceived input').click(pmtctDrugsForMother);
+			onARTatEnrollment();
+			jq('#onART input').click(onARTatEnrollment);
 		});
 	</script>
 
@@ -146,9 +211,9 @@
 			</tr>
 			<tr>
 				<td>
-					History of TB Contact in Household? <obs conceptId="152460AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio"/>
+					History of TB Contact in Household? <obs conceptId="152460AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" id="tbcontact"/>
 				</td>
-				<td colspan="2">If  YES, screen for TB; and appropriately refer for INH prophylaxis</td>
+				<td colspan="2"><span id="yesTbContact" class="value">Screen for TB; and appropriately refer for INH Prophylaxis</span></td>
 			</tr>
 			<tr>
 				<td colspan="3" style="background-color: #696969; color: #ffffff;">
@@ -164,11 +229,11 @@
 			</tr>
 			<tr>
 				<td>
-					Mother received Drugs for PMTCT?  <obs conceptId="1148AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio"/>
+					Mother received Drugs for PMTCT?  <obs conceptId="1148AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" id="pmtctDrugsReceived"/>
 				</td>
 				<td colspan="2">
 					<div id="mother-art-details">
-						If Yes, select the combination
+						Select the combination
 						<obs conceptId="1086AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="80586AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1148AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 							 answerLabels="Sd NVP Only,AZT+NVP+3TC,Haart,Interrupted,Haart,None" style="radio"/>
 					</div>
@@ -176,12 +241,10 @@
 			</tr>
 			<tr>
 				<td> On ART at enrollment of infant
-					<obs conceptId="1147AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1149AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio"/>
+					<obs conceptId="1147AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1149AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" id="onART"/>
 				</td>
-				<div id="mohter-on-art-at-enrollment">
-					<td>If Yes enter regimen <obs conceptId="1088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
-					<td>Parent's CCC No. <obs conceptId="160752AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="5"/></td>
-				</div>
+					<td id="mohter-on-art-at-enrollment">Enter regimen <obs conceptId="1088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
+					<td id="mohter-on-art-at-enrollment1">Parent's CCC No. <obs conceptId="160752AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="5"/></td>
 			</tr>
 			<tr>
 				<td>Mode of Delivery <obs conceptId="5630AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1170AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1171AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="SVD,C-Section" style="radio"/></td>
