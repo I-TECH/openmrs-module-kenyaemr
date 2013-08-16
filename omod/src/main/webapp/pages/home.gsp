@@ -1,9 +1,9 @@
 <%
-	ui.decorateWith("kenyaemr", "standardPage", [ patient: patient, closeChartUrl: ui.pageLink("kenyaemr", "home") ])
+	ui.decorateWith("kenyaemr", "standardPage", [ patient: currentPatient, closeChartUrl: ui.pageLink("kenyaemr", "home") ])
 %>
 <div class="ke-page-content">
 	<% apps.eachWithIndex { app, i ->
-		def onClick = "location.href='/" + contextPath + "/" + app.homepageUrl + (patient ? ("?patientId=" + patient.id) : "") + "'"
+		def onClick = "location.href='/" + contextPath + "/" + app.homepageUrl + (currentPatient ? ("?patientId=" + currentPatient.id) : "") + "'"
 		def iconUrlTokens = app.iconUrl.split(":")
 		def iconProvider, icon
 		if (iconUrlTokens.length == 2) {

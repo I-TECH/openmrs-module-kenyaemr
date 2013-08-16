@@ -9,7 +9,7 @@
 	ui.includeJavascript("kenyaemr", "kenyaemr.js")
 
 	if (config.patient) {
-		config.context = "patientId=${ patient.id }"
+		config.context = "patientId=${ config.patient.id }"
 	}
 
 	config.beforeContent = ui.includeFragment("kenyaemr", "header/pageHeader", config)
@@ -19,7 +19,7 @@
 	config.beforeContent += ui.includeFragment("kenyaemr", "header/headerMenu", config)
 
 	if (config.patient) {
-		config.beforeContent += ui.includeFragment("kenyaemr", "header/patientHeader", [ closeChartUrl: config.closeChartUrl ])
+		config.beforeContent += ui.includeFragment("kenyaemr", "header/patientHeader", [ patient: config.patient, visit: activeVisit, closeChartUrl: config.closeChartUrl ])
 	}
 	if (config.visit) {
 		config.beforeContent += ui.includeFragment("kenyaemr", "header/visitHeader", [ visit: config.visit ])
