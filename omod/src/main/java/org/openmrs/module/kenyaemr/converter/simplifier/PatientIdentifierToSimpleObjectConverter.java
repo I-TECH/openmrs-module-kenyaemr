@@ -12,7 +12,7 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.converter;
+package org.openmrs.module.kenyaemr.converter.simplifier;
 
 import org.openmrs.PatientIdentifier;
 import org.openmrs.ui.framework.SimpleObject;

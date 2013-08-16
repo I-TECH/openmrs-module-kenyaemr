@@ -25,9 +25,9 @@
 			[ object: command, property: "birthdateEstimated", label: "Estimated?" ]
 		],
 		[
-			[ object: command, property: "maritalStatus", label: "Marital Status", config: [ options: maritalStatusOptions ] ],
-			[ object: command, property: "occupation", label: "Occupation", config: [ answerTo: occupationConcept ] ],
-			[ object: command, property: "education", label: "Education", config: [ options: educationOptions ] ]
+			[ object: command, property: "maritalStatus", label: "Marital Status", config: [ style: "list", options: maritalStatusOptions ] ],
+			[ object: command, property: "occupation", label: "Occupation", config: [ style: "list", answerTo: occupationConcept ] ],
+			[ object: command, property: "education", label: "Education", config: [ style: "list", options: educationOptions ] ]
 		]
 	]
 	def nextOfKinFieldRows = [

@@ -14,32 +14,23 @@
 
 package org.openmrs.module.kenyaemr.converter;
 
-import org.openmrs.Visit;
-import org.openmrs.module.kenyaui.KenyaUiUtils;
-import org.openmrs.ui.framework.SimpleObject;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.commons.lang3.StringUtils;
+import org.openmrs.ConceptClass;
+import org.openmrs.api.context.Context;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
 /**
- * Converts visit to simple object
+ * Converts string to concept class
  */
 @Component
-public class VisitToSimpleObjectConverter implements Converter<Visit, SimpleObject> {
-
-	@Autowired
-	private KenyaUiUtils kenyaUi;
+public class StringToConceptClassConverter implements Converter<String, ConceptClass> {
 
 	/**
 	 * @see org.springframework.core.convert.converter.Converter#convert(Object)
 	 */
 	@Override
-	public SimpleObject convert(Visit visit) {
-		SimpleObject ret = new SimpleObject();
-		ret.put("id", visit.getId());
-		ret.put("visitType", visit.getVisitType().getName());
-		ret.put("startDatetime", kenyaUi.formatDateTime(visit.getStartDatetime()));
-		ret.put("stopDatetime", kenyaUi.formatDateTime(visit.getStopDatetime()));
-		return ret;
+	public ConceptClass convert(String s) {
+		return StringUtils.isEmpty(s) ? null : Context.getConceptService().getConceptClass(Integer.valueOf(s));
 	}
 }

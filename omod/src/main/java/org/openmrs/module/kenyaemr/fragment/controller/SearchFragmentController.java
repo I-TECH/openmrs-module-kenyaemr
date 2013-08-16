@@ -17,17 +17,23 @@ package org.openmrs.module.kenyaemr.fragment.controller;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.Concept;
+import org.openmrs.ConceptClass;
+import org.openmrs.ConceptSearchResult;
 import org.openmrs.Location;
 import org.openmrs.Patient;
 import org.openmrs.Person;
 import org.openmrs.Provider;
 import org.openmrs.User;
 import org.openmrs.Visit;
+import org.openmrs.api.ConceptService;
 import org.openmrs.api.LocationService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyacore.CoreConstants;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
+import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.util.PersonByNameComparator;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -53,7 +59,7 @@ public class SearchFragmentController {
 	/**
 	 * Searches for patients by name, identifier, age, visit status
 	 * @param query the name or identifier
-	 * @param which "checked-in" to return only those patients with an active visit
+	 * @param which checked-in|all
 	 * @param age
 	 * @param ageWindow
 	 * @param ui the UI utils
@@ -127,7 +133,7 @@ public class SearchFragmentController {
 	 * Searches for locations by name or MFL code
 	 * @param query the search query
 	 * @param ui the UI utils
-	 * @return the list of locations as simple objects
+	 * @return the simplified locations
 	 */
 	public List<SimpleObject> locations(@RequestParam("q") String query, UiUtils ui) {
 		LocationService svc = Context.getLocationService();
@@ -163,8 +169,8 @@ public class SearchFragmentController {
 
 	/**
 	 * Searches for accounts by name
-	 * @param query
-	 * @param which
+	 * @param query the name query
+	 * @param which users|providers|both
 	 * @param ui
 	 * @return
 	 */
@@ -212,5 +218,44 @@ public class SearchFragmentController {
 		}
 
 		return ret;
+	}
+
+	/**
+	 * Gets a concept by it's id
+	 * @param concept the concept
+	 * @param ui the UI utils
+	 * @return the simplified concept
+	 */
+	public SimpleObject concept(@RequestParam("id") Concept concept, UiUtils ui) {
+		return ui.simplifyObject(concept);
+	}
+
+	/**
+	 * Searches for concept by name and class
+	 * @param query the name query
+	 * @param conceptClass the concept class
+	 * @param ui the UI utils
+	 * @return the simplified concepts
+	 */
+	public List<SimpleObject> concepts(@RequestParam(value = "q", required = false) String query,
+									   @RequestParam(value = "class", required = false) ConceptClass conceptClass,
+									   @RequestParam(value = "answerTo", required = false) Concept answerTo,
+									   @RequestParam(value = "size", required = false) Integer size,
+									   UiUtils ui) {
+
+		ConceptService conceptService = Context.getConceptService();
+
+		List<ConceptClass> conceptClasses = conceptClass != null ? Collections.singletonList(conceptClass) : null;
+
+		List<ConceptSearchResult> results = conceptService.getConcepts(query, Collections.singletonList(CoreConstants.LOCALE), false,
+				conceptClasses, null, null, null, answerTo, 0, size);
+
+		// Simplify results
+		List<SimpleObject> simpleConcepts = new ArrayList<SimpleObject>();
+		for (ConceptSearchResult result : results) {
+			simpleConcepts.add(ui.simplifyObject(result.getConcept()));
+		}
+
+		return simpleConcepts;
 	}
 }
