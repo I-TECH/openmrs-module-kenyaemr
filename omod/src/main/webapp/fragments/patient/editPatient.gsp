@@ -28,6 +28,11 @@
 			[ object: command, property: "maritalStatus", label: "Marital Status", config: [ style: "list", options: maritalStatusOptions ] ],
 			[ object: command, property: "occupation", label: "Occupation", config: [ style: "list", answerTo: occupationConcept ] ],
 			[ object: command, property: "education", label: "Education", config: [ style: "list", options: educationOptions ] ]
+		],
+		[
+			[ object: command, property: "dead", label: "Deceased" ],
+			[ object: command, property: "deathDate", label: "Date of death" ],
+			[ object: command, property: "causeOfDeath", label: "Cause of death", config: [ style: "list", options: causeOfDeathOptions ] ]
 		]
 	]
 	def nextOfKinFieldRows = [
