@@ -18,7 +18,7 @@
 		border-collapse: collapse;
 		background-color: #fff0f7;
 		}
-		table.hei > tbody > tr > td, table.hei > tbody > tr > th, table.hei > tbody > tr > td > table > tr > td {
+		table.hei > tbody > tr > td, table.hei > tbody > tr > th{
 		border: 1px solid black;
 		vertical-align: baseline;
 		padding: 4px;
