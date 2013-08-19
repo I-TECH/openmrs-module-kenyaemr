@@ -36,9 +36,15 @@
 
 	<div style="clear: both; height: 5px;"></div>
 
-	${ ui.includeFragment("kenyaemr", "header/patientFlags", [ patient: patient ]) }
+	<div style="width: 50%; float: left; overflow: auto; text-align: left">
+	<% if (patient.dead) { %>
+		<span class="ke-tag" style="background-color: #FF5153; color: #000">Deceased since <strong>${ kenyaUi.formatDate(patient.deathDate) }</strong></span>
+	<% } else { %>
+		${ ui.includeFragment("kenyaemr", "header/patientFlags", [ patient: patient ]) }
+	<% } %>
+	</div>
 
-	<div id="active-visit">
+	<div style="width: 50%; float: right; overflow: auto; text-align: right">
 		<span class="ke-tip">Current visit</span>
 		<% if (visit) {
 			def visitStartStr = visitStartedToday ? kenyaUi.formatTime(visit.startDatetime) : kenyaUi.formatDate(visit.startDatetime);

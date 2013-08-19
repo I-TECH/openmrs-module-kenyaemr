@@ -22,6 +22,7 @@ import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -37,7 +38,16 @@ public class ProgramHistoriesFragmentController {
 
 		Collection<ProgramDescriptor> activePrograms = emr.getProgramManager().getPatientActivePrograms(patient);
 		Collection<ProgramDescriptor> eligiblePrograms = emr.getProgramManager().getPatientEligiblePrograms(patient);
-		List<ProgramDescriptor> programs = CoreUtils.merge(activePrograms, eligiblePrograms);
+
+		// Display active programs on top
+		List<ProgramDescriptor> programs = new ArrayList<ProgramDescriptor>(activePrograms);
+
+		// Don't add duplicates for programs for which patient is both active and eligible
+		for (ProgramDescriptor descriptor : eligiblePrograms) {
+			if (!programs.contains(descriptor)) {
+				programs.add(descriptor);
+			}
+		}
 
 		model.addAttribute("patient", patient);
 		model.addAttribute("programs", programs);
