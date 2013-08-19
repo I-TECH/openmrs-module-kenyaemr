@@ -33,9 +33,6 @@ import java.util.*;
  */
 public class MchEnrollmentSummaryFragmentController {
 
-	private final int TOO_LONG_AGO = 8;
-	private final int DAYS_IN_WEEK = 7;
-
 	public String controller(@FragmentParam("patientProgram") PatientProgram enrollment,
 							 @FragmentParam(value = "encounter", required = false) Encounter encounter,
 							 @FragmentParam("showClinicalData") boolean showClinicalData,
@@ -50,31 +47,12 @@ public class MchEnrollmentSummaryFragmentController {
 		}
 		Obs lmpObs = EmrUtils.firstObsInProgram(enrollment, Dictionary.getConcept("1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"));
 		Date edd;
-		String eddPeriod = "";
 		if (lmpObs != null) {
 			edd = calculateEdd(lmpObs.getValueDate());
-			if (edd != null) {
-				Date today = new Date();
-				int daysBetween = Days.daysBetween(new DateTime(today), new DateTime(edd)).getDays();
-				String suffix;
-				if (daysBetween == 0) {
-					eddPeriod = "TODAY";
-				} else {
-					if (daysBetween > 0) {
-						suffix = "away";
-					} else {
-						suffix = "ago";
-					}
-					daysBetween = Math.abs(daysBetween);
-					int weeks = (int) Math.ceil(daysBetween / DAYS_IN_WEEK);
-					int days = daysBetween % DAYS_IN_WEEK;
-					eddPeriod = formatPeriod(weeks, days, suffix);
-				}
-			}
 			if (edd == null) {
 				dataPoints.put("EDD: ", "Unknown (Missing L.M.P.)");
 			} else {
-				dataPoints.put("EDD: ", new SimpleDateFormat("dd-MM-YYYY").format(edd) + " (" + eddPeriod + ")");
+				dataPoints.put("EDD: ", edd);
 			}
 		}
 		model.put("dataPoints", dataPoints);
@@ -112,34 +90,5 @@ public class MchEnrollmentSummaryFragmentController {
 			System.out.println(pe.getMessage());
 		}
 		return edd;
-	}
-
-	private String formatPeriod(int weeksPeriod, int daysPeriod, String suffix) {
-		String periodMessage;
-		if ("ago".equals(suffix) && weeksPeriod > TOO_LONG_AGO) {
-			return "more than " + TOO_LONG_AGO + " weeks ago";
-		}
-		if (weeksPeriod == 0) {
-			if (daysPeriod == 1) {
-				periodMessage = daysPeriod + " day " + suffix;
-			} else {
-				periodMessage = daysPeriod + " days " + suffix;
-			}
-		} else {
-			if (weeksPeriod == 1) {
-				periodMessage = weeksPeriod + " week " + suffix;
-			} else {
-				periodMessage = weeksPeriod + " weeks " + suffix;
-			}
-			if (daysPeriod != 0) {
-				periodMessage = periodMessage.replaceAll(suffix, "");
-				if (daysPeriod == 1) {
-					periodMessage += daysPeriod + " day " + suffix;
-				} else if (daysPeriod > 1) {
-					periodMessage += daysPeriod + " days " + suffix;
-				}
-			}
-		}
-		return periodMessage;
 	}
 }
