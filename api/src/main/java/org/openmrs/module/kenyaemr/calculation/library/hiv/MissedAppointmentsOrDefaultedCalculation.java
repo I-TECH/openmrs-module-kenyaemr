@@ -24,18 +24,19 @@ import org.openmrs.Program;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
+import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.Metadata;
-import org.openmrs.module.kenyacore.calculation.BaseFlagCalculation;
-import org.openmrs.module.kenyacore.calculation.CalculationUtils;
+import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
+import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 
 /**
  * Calculates whether patients have missed their last scheduled return visit. Calculation returns true
  * if the patient is alive, enrolled in the HIV program, has a scheduled return visit in the past,
  * and hasn't had an encounter since that date
  */
-public class MissedAppointmentsOrDefaultedCalculation extends BaseFlagCalculation {
+public class MissedAppointmentsOrDefaultedCalculation extends BaseEmrCalculation implements PatientFlagCalculation {
 
 	@Override
 	public String getFlagMessage() {

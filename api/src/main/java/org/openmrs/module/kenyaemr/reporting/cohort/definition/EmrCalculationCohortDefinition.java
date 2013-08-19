@@ -14,7 +14,7 @@
 
 package org.openmrs.module.kenyaemr.reporting.cohort.definition;
 
-import org.openmrs.module.kenyacore.calculation.BaseEmrCalculation;
+import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.reporting.cohort.definition.BaseCohortDefinition;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 

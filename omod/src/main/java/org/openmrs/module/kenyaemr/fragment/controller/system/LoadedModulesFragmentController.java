@@ -16,10 +16,7 @@ package org.openmrs.module.kenyaemr.fragment.controller.system;
 
 import org.openmrs.module.Module;
 import org.openmrs.module.ModuleFactory;
-import org.openmrs.module.kenyacore.CoreContext;
-import org.openmrs.module.kenyacore.calculation.BaseFlagCalculation;
 import org.openmrs.ui.framework.SimpleObject;
-import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 
 import java.util.ArrayList;
