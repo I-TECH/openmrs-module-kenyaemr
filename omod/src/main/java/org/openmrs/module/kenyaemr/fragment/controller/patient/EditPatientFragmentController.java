@@ -77,7 +77,7 @@ public class EditPatientFragmentController {
 		educationOptions.add(Dictionary.getConcept(Dictionary.UNIVERSITY_COMPLETE));
 		model.addAttribute("educationOptions", educationOptions);
 
-		//create a list of marital status answer concepts
+		// Create a list of marital status answer concepts
 		List<Concept> maritalStatusOptions = new ArrayList<Concept>();
 		maritalStatusOptions.add(Dictionary.getConcept(Dictionary.MARRIED_POLYGAMOUS));
 		maritalStatusOptions.add(Dictionary.getConcept(Dictionary.MARRIED_MONOGAMOUS));
@@ -86,6 +86,11 @@ public class EditPatientFragmentController {
 		maritalStatusOptions.add(Dictionary.getConcept(Dictionary.LIVING_WITH_PARTNER));
 		maritalStatusOptions.add(Dictionary.getConcept(Dictionary.NEVER_MARRIED));
 		model.addAttribute("maritalStatusOptions", maritalStatusOptions);
+
+		// Create a list of cause of death answer concepts
+		List<Concept> causeOfDeathOptions = new ArrayList<Concept>();
+		causeOfDeathOptions.add(Dictionary.getConcept(Dictionary.UNKNOWN));
+		model.addAttribute("causeOfDeathOptions", causeOfDeathOptions);
 
 		// Fetch person attributes
 		model.addAttribute("telephoneContactAttrType", MetadataUtils.getPersonAttributeType(Metadata.TELEPHONE_CONTACT_PERSON_ATTRIBUTE_TYPE));
@@ -145,6 +150,12 @@ public class EditPatientFragmentController {
 		private Obs savedOccupation;
 
 		private Obs savedEducation;
+
+		private Boolean dead = false;
+
+		private Date deathDate;
+
+		private Concept causeOfDeath;
 
 		//additional member variables
 
@@ -206,6 +217,9 @@ public class EditPatientFragmentController {
 			gender = patient.getGender();
 			birthdate = patient.getBirthdate();
 			birthdateEstimated = patient.getBirthdateEstimated();
+			dead = patient.isDead();
+			deathDate = patient.getDeathDate();
+			causeOfDeath = patient.getCauseOfDeath();
 
 			PatientIdentifier id = patient.getPatientIdentifier(MetadataUtils.getPatientIdentifierType(Metadata.PATIENT_CLINIC_NUMBER_IDENTIFIER_TYPE));
 			if (id != null) {
@@ -321,6 +335,12 @@ public class EditPatientFragmentController {
 			require(errors, "gender");
 			require(errors, "birthdate");
 
+			// Require death details if patient is deceased
+			if (dead) {
+				require(errors, "deathDate");
+				require(errors, "causeOfDeath");
+			}
+
 			if (StringUtils.isBlank(patientClinicNumber.getIdentifier())) {
 				patientClinicNumber = null;
 			}
@@ -359,14 +379,19 @@ public class EditPatientFragmentController {
 			}
 		}
 
+		/**
+		 * Saves the patient
+		 * @return
+		 */
 		public Patient save() {
-			PatientService ps = Context.getPatientService();
-
 			Patient toSave = original != null ? original : new Patient();
 
 			toSave.setGender(gender);
 			toSave.setBirthdate(birthdate);
 			toSave.setBirthdateEstimated(birthdateEstimated);
+			toSave.setDead(dead);
+			toSave.setDeathDate(deathDate);
+			toSave.setCauseOfDeath(causeOfDeath);
 
 			PatientIdentifier oldPatientClinicNumber = toSave.getPatientIdentifier(MetadataUtils.getPatientIdentifierType(Metadata.PATIENT_CLINIC_NUMBER_IDENTIFIER_TYPE));
 			if (anyChanges(oldPatientClinicNumber, patientClinicNumber, "identifier")) {
@@ -680,60 +705,94 @@ public class EditPatientFragmentController {
 		public void setTelephoneContact(PersonAttribute telephoneContact) {
 			this.telephoneContact = telephoneContact;
 		}
+
+		public Boolean getDead() {
+			return dead;
+		}
+
+		public void setDead(Boolean dead) {
+			this.dead = dead;
+		}
+
+		public Date getDeathDate() {
+			return deathDate;
+		}
+
+		public void setDeathDate(Date deathDate) {
+			this.deathDate = deathDate;
+		}
+
+		public Concept getCauseOfDeath() {
+			return causeOfDeath;
+		}
+
+		public void setCauseOfDeath(Concept causeOfDeath) {
+			this.causeOfDeath = causeOfDeath;
+		}
+
 		/**
 		 * @return the nationalIdNumber
 		 */
 		public PersonAttribute getNationalIdNumber() {
 			return nationalIdNumber;
 		}
+
 		/**
 		 * @param nationalIdNumber the nationalIdNumber to set
 		 */
 		public void setNationalIdNumber(PersonAttribute nationalIdNumber) {
 			this.nationalIdNumber = nationalIdNumber;
 		}
+
 		/**
 		 * @return the nameOfNextOfKin
 		 */
 		public PersonAttribute getNameOfNextOfKin() {
 			return nameOfNextOfKin;
 		}
+
 		/**
 		 * @param nameOfNextOfKin the nameOfNextOfKin to set
 		 */
 		public void setNameOfNextOfKin(PersonAttribute nameOfNextOfKin) {
 			this.nameOfNextOfKin = nameOfNextOfKin;
 		}
+
 		/**
 		 * @return the nextOfKinRelationship
 		 */
 		public PersonAttribute getNextOfKinRelationship() {
 			return nextOfKinRelationship;
 		}
+
 		/**
 		 * @param nextOfKinRelationship the nextOfKinRelationship to set
 		 */
 		public void setNextOfKinRelationship(PersonAttribute nextOfKinRelationship) {
 			this.nextOfKinRelationship = nextOfKinRelationship;
 		}
+
 		/**
 		 * @return the nextOfKinContact
 		 */
 		public PersonAttribute getNextOfKinContact() {
 			return nextOfKinContact;
 		}
+
 		/**
 		 * @param nextOfKinContact the nextOfKinContact to set
 		 */
 		public void setNextOfKinContact(PersonAttribute nextOfKinContact) {
 			this.nextOfKinContact = nextOfKinContact;
 		}
+
 		/**
 		 * @return the nextOfKinAddress
 		 */
 		public PersonAttribute getNextOfKinAddress() {
 			return nextOfKinAddress;
 		}
+
 		/**
 		 * @param nextOfKinAddress the nextOfKinAddress to set
 		 */
