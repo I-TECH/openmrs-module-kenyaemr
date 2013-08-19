@@ -40,10 +40,10 @@
 	<table width="100%" border="0">
 		<tr>
 			<td width="50%" valign="top">
-				${ ui.includeFragment("kenyaui", "widget/obsHistoryTable", [ id: "tblhistory", patient: patient, concepts: graphingConcepts ]) }
+				${ ui.includeFragment("kenyaui", "widget/obsHistoryTable", [ id: "tblhistory", patient: currentPatient, concepts: graphingConcepts ]) }
 			</td>
 			<td width="50%" valign="top">
-				${ ui.includeFragment("kenyaui", "widget/obsHistoryGraph", [ id: "cd4graph", patient: patient, concepts: graphingConcepts, showUnits: true, style: "height: 300px" ]) }
+				${ ui.includeFragment("kenyaui", "widget/obsHistoryGraph", [ id: "cd4graph", patient: currentPatient, concepts: graphingConcepts, showUnits: true, style: "height: 300px" ]) }
 			</td>
 		</tr>
 	</table>
@@ -53,8 +53,8 @@
 	<% dataPoints.each { print ui.includeFragment("kenyaui", "widget/dataPoint", it) } %>
 </div>
 <div class="ke-stack-item">
-	<% if (visit) { %>
-	${ ui.includeFragment("kenyaui", "widget/editButton", [ href: ui.pageLink("kenyaemr", "regimenEditor", [ patientId: patient.id, category: "ARV", appId: currentApp.id, returnUrl: ui.thisUrl() ]) ]) }
+	<% if (activeVisit) { %>
+	${ ui.includeFragment("kenyaui", "widget/editButton", [ href: ui.pageLink("kenyaemr", "regimenEditor", [ patientId: currentPatient.id, category: "ARV", appId: currentApp.id, returnUrl: ui.thisUrl() ]) ]) }
 	<% } %>
 
 	<%

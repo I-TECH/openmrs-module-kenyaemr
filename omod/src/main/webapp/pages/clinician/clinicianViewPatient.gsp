@@ -1,5 +1,5 @@
 <%
-	ui.decorateWith("kenyaemr", "standardPage", [ patient: patient ])
+	ui.decorateWith("kenyaemr", "standardPage", [ patient: currentPatient ])
 %>
 
 <div class="ke-page-content">
@@ -14,17 +14,17 @@
 		<table cellpadding="0" cellspacing="0" border="0" width="100%">
 			<tr>
 				<td width="40%" valign="top">
-					${ ui.includeFragment("kenyaemr", "patientSummary", [ patient: patient ]) }
-					${ ui.includeFragment("kenyaemr", "program/programHistories", [ patient: patient, showClinicalData: true ]) }
+					${ ui.includeFragment("kenyaemr", "patientSummary", [ patient: currentPatient ]) }
+					${ ui.includeFragment("kenyaemr", "program/programHistories", [ patient: currentPatient, showClinicalData: true ]) }
 				</td>
 				<td width="60%" valign="top" style="padding-left: 5px">
-					${ ui.includeFragment("kenyaemr", "visitMenu", [ patient: patient, visit: visit, allowCheckIn: false, allowCheckOut: true ]) }
+					${ ui.includeFragment("kenyaemr", "visitMenu", [ patient: currentPatient, visit: activeVisit, allowCheckIn: false, allowCheckOut: true ]) }
 
-					${ ui.includeFragment("kenyaemr", "program/programCarePanels", [ patient: patient, complete: false, activeOnly: true ]) }
+					${ ui.includeFragment("kenyaemr", "program/programCarePanels", [ patient: currentPatient, complete: false, activeOnly: true ]) }
 
-					<% if (visit) { %>
-					${ ui.includeFragment("kenyaemr", "visitAvailableForms", [ visit: visit ]) }
-					${ ui.includeFragment("kenyaemr", "visitCompletedForms", [ visit: visit ]) }
+					<% if (activeVisit) { %>
+					${ ui.includeFragment("kenyaemr", "visitAvailableForms", [ visit: activeVisit ]) }
+					${ ui.includeFragment("kenyaemr", "visitCompletedForms", [ visit: activeVisit ]) }
 					<% } %>
 				</td>
 			</tr>
@@ -35,12 +35,10 @@
 		TODO
 	</div>
 	<div class="ke-tab" data-tabid="prescriptions">
-		${ ui.includeFragment("kenyaemr", "prescription/patientPrescriptions", [ patient: patient ]) }
+		${ ui.includeFragment("kenyaemr", "prescription/patientPrescriptions", [ patient: currentPatient ]) }
 	</div>
 
 </div>
 
-<% if (visit) { %>
-	${ ui.includeFragment("kenyaemr", "showHtmlForm", [ id: "showHtmlForm", style: "display: none" ]) }
-	${ ui.includeFragment("kenyaemr", "dialogSupport") }
-<% } %>
+${ ui.includeFragment("kenyaemr", "showHtmlForm", [ id: "showHtmlForm", style: "display: none" ]) }
+${ ui.includeFragment("kenyaemr", "dialogSupport") }

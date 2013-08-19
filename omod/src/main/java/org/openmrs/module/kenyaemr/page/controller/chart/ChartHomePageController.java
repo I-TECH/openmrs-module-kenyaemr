@@ -16,6 +16,7 @@ package org.openmrs.module.kenyaemr.page.controller.chart;
 
 import org.openmrs.Patient;
 import org.openmrs.module.kenyaemr.EmrConstants;
+import org.openmrs.module.kenyaemr.EmrWebConstants;
 import org.openmrs.module.kenyaui.annotation.AppPage;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
@@ -29,7 +30,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class ChartHomePageController {
 
 	public String controller(UiUtils ui, PageModel model) {
-		Patient patient = (Patient) model.getAttribute("patient");
+		Patient patient = (Patient) model.getAttribute(EmrWebConstants.MODEL_ATTR_CURRENT_PATIENT);
 
 		if (patient != null) {
 			return "redirect:" + ui.pageLink(EmrConstants.MODULE_ID, "chart/chartViewPatient", SimpleObject.create("patientId", patient.getId()));

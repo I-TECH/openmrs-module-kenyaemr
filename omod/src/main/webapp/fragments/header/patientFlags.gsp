@@ -1,10 +1,8 @@
-<div style="width: 50%; float: left; overflow: auto; text-align: left">
-	<div id="patient-flags-placeholder" style="display: none"></div>
-</div>
+<div id="patient-flags-placeholder" style="display: none"></div>
 
 <script type="text/javascript">
 jq(function() {
-	ui.getFragmentActionAsJson('kenyaemr', 'patient/patientUtils', 'flags', { patientId: ${ patient.id } }, function(result) {
+	ui.getFragmentActionAsJson('kenyaemr', 'patient/patientUtils', 'flags', { patientId: ${ config.patient.id } }, function(result) {
 		if (result) {
 			var html = jq.map(result, function(alert) {
 				return '<span class="ke-flagtag">' + alert.message + '</span>';

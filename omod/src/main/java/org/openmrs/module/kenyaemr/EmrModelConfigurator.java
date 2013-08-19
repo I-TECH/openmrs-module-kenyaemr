@@ -19,6 +19,7 @@ import org.openmrs.Patient;
 import org.openmrs.Visit;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.appframework.AppDescriptor;
 import org.openmrs.module.kenyaemr.converter.StringToVisitConverter;
 import org.openmrs.ui.framework.fragment.FragmentContext;
 import org.openmrs.ui.framework.fragment.FragmentModelConfigurator;
@@ -53,30 +54,41 @@ public class EmrModelConfigurator implements PageModelConfigurator, FragmentMode
 		String patientId = pageContext.getRequest().getRequest().getParameter("patientId");
 		String visitId = pageContext.getRequest().getRequest().getParameter("visitId");
 
-		Patient patient = null;
-		Visit visit = null;
+		// Look for current app as set by KenyaUI
+		AppDescriptor currentApp = (AppDescriptor) pageContext.getRequest().getRequest().getAttribute("currentApp");
 
-		if (!StringUtils.isEmpty(patientId) && !StringUtils.isEmpty(visitId)) {
-			patient = patientFromParam(patientId);
-			visit = stringToVisitConverter.convert(visitId);
+		Patient currentPatient = null;
+		Visit currentVisit = null, activeVisit = null;
 
-			if (!patient.equals(visit.getPatient())) {
+		// Look for a current patient
+		if (!StringUtils.isEmpty(patientId)) {
+			currentPatient = patientFromParam(patientId);
+		}
+
+		// Look for a current visit
+		if (!StringUtils.isEmpty(visitId)) {
+			currentVisit = stringToVisitConverter.convert(visitId);
+
+			// We can infer patient from current visit
+			if (currentPatient == null) {
+				currentPatient = currentVisit.getPatient();
+			}
+			else if (!currentPatient.equals(currentVisit.getPatient())) {
 				throw new RuntimeException("Mismatch between patient and visit request parameters");
 			}
 		}
-		else if (!StringUtils.isEmpty(patientId)) {
-			patient = patientFromParam(patientId);
 
-			List<Visit> activeVisits = Context.getVisitService().getActiveVisitsByPatient(patient);
-			visit = activeVisits.size() > 0 ? activeVisits.get(0) : null;
-		}
-		else if (!StringUtils.isEmpty(visitId)) {
-			visit = stringToVisitConverter.convert(visitId);
-			patient = visit.getPatient();
+		// If we have a patient, we can look for an active visit
+		if (currentPatient != null) {
+			List<Visit> activeVisits = Context.getVisitService().getActiveVisitsByPatient(currentPatient);
+			activeVisit = activeVisits.size() > 0 ? activeVisits.get(0) : null;
 		}
 
-		pageContext.getModel().addAttribute("patient", patient);
-		pageContext.getModel().addAttribute("visit", visit);
+		pageContext.getModel().addAttribute(EmrWebConstants.MODEL_ATTR_CURRENT_APP, currentApp);
+		pageContext.getModel().addAttribute(EmrWebConstants.MODEL_ATTR_CURRENT_PATIENT, currentPatient);
+		pageContext.getModel().addAttribute(EmrWebConstants.MODEL_ATTR_CURRENT_VISIT, currentVisit);
+		pageContext.getModel().addAttribute(EmrWebConstants.MODEL_ATTR_ACTIVE_VISIT, activeVisit);
+
 		pageContext.getModel().addAttribute("kenyaEmrUi", kenyaEmrUiUtils);
 	}
 

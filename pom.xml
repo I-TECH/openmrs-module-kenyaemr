@@ -44,8 +44,8 @@
 		<htmlformentry19extVersion>0.9</htmlformentry19extVersion>
 		<htmlwidgetsVersion>1.6.4</htmlwidgetsVersion>
 		<idgenVersion>2.5</idgenVersion>
-		<kenyacoreVersion>0.6</kenyacoreVersion>
-		<kenyauiVersion>1.9</kenyauiVersion>
+		<kenyacoreVersion>0.6.1</kenyacoreVersion>
+		<kenyauiVersion>1.9.1</kenyauiVersion>
 		<logicVersion>0.5.2</logicVersion>
 		<metadatamappingVersion>1.0.1</metadatamappingVersion>
 		<metadatasharingVersion>1.1.8</metadatasharingVersion>

@@ -25,13 +25,6 @@
 	font-weight: bold;
 }
 
-.ke-patientheader #active-visit {
-	width: 50%;
-	float: right;
-	overflow: auto;
-	text-align: right;
-}
-
 .ke-patientheader .ke-identifier-type, .ke-patientheader .ke-patient-gender, .ke-patientheader .ke-patient-age, .ke-patientheader .ke-tip {
 	color: #dfdbd2;
 }
