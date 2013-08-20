@@ -28,9 +28,9 @@ import org.openmrs.calculation.result.ListResult;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.Metadata;
-import org.openmrs.module.kenyacore.calculation.BaseEmrCalculation;
+import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
-import org.openmrs.module.kenyacore.calculation.CalculationUtils;
+import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
 
 /**
  * Calculates whether patients have taken CTX or Dapsone

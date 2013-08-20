@@ -1,7 +1,7 @@
 <%
 	def onFormClick = { form ->
 		def visitId = visit ? visit.id : null
-		def opts = [ appId: currentApp.id, patientId: patient.id, formUuid: form.formUuid, returnUrl: ui.thisUrl() ]
+		def opts = [ appId: currentApp.id, patientId: currentPatient.id, formUuid: form.formUuid, returnUrl: ui.thisUrl() ]
 		"""location.href = '${ ui.pageLink('kenyaemr', 'enterForm', opts) }';"""
 	}
 %>
@@ -49,7 +49,7 @@
 					extra: "From column",
 					iconProvider: "kenyaui",
 					icon: "buttons/visit_retrospective.png",
-					href: ui.pageLink("kenyaemr", "enterForm", [ appId: currentApp.id, patientId: patient, formUuid: page2Form.uuid, returnUrl: ui.thisUrl() ])
+					href: ui.pageLink("kenyaemr", "enterForm", [ appId: currentApp.id, patientId: currentPatient, formUuid: page2Form.uuid, returnUrl: ui.thisUrl() ])
 			]) }
 		</div>
 	</div>
@@ -68,7 +68,7 @@
 					iconProvider: "kenyaui",
 					icon: "buttons/regimen.png",
 					classes: [ "padded" ],
-					href: ui.pageLink("kenyaemr", "regimenEditor", [ appId: currentApp.id, patientId: patient, category: "ARV", returnUrl: ui.thisUrl() ])
+					href: ui.pageLink("kenyaemr", "regimenEditor", [ appId: currentApp.id, patientId: currentPatient, category: "ARV", returnUrl: ui.thisUrl() ])
 			]) }
 		</div>
 	</div>

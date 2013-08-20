@@ -21,22 +21,23 @@ import java.util.Set;
 import org.openmrs.Program;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
+import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyaemr.Metadata;
-import org.openmrs.module.kenyacore.calculation.BaseFlagCalculation;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
-import org.openmrs.module.kenyacore.calculation.CalculationUtils;
+import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
+import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 
 /**
  * Calculates whether a patient has a declining CD4 count. Calculation returns true if patient
  * is alive, enrolled in the HIV program and last CD4 count is less than CD4 count from 6 months ago
  */
-public class DecliningCd4Calculation extends BaseFlagCalculation {
+public class DecliningCd4Calculation extends BaseEmrCalculation implements PatientFlagCalculation {
 
 	/**
-	 * @see org.openmrs.module.kenyacore.calculation.BaseFlagCalculation#getFlagMessage()
+	 * @see org.openmrs.module.kenyacore.calculation.PatientFlagCalculation#getFlagMessage()
 	 */
 	@Override
 	public String getFlagMessage() {

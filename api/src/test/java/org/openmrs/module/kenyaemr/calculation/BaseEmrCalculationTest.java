@@ -12,7 +12,7 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyacore.calculation;
+package org.openmrs.module.kenyaemr.calculation;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -23,12 +23,13 @@ import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyacore.test.TestUtils;
+import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 import java.util.*;
 
 /**
- * Tests for {@link org.openmrs.module.kenyacore.calculation.BaseEmrCalculation}
+ * Tests for {@link org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation}
  */
 public class BaseEmrCalculationTest extends BaseModuleContextSensitiveTest {
 

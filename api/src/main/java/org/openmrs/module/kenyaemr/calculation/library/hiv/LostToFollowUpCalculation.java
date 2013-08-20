@@ -21,17 +21,18 @@ import org.openmrs.Program;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
+import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyaemr.Metadata;
-import org.openmrs.module.kenyacore.calculation.BaseFlagCalculation;
-import org.openmrs.module.kenyacore.calculation.CalculationUtils;
+import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
+import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 
 /**
  * Calculates whether a patient has been lost to follow up. Calculation returns true if patient
  * is alive, enrolled in the HIV program, but hasn't had an encounter in LOST_TO_FOLLOW_UP_THRESHOLD_DAYS days
  */
-public class LostToFollowUpCalculation extends BaseFlagCalculation {
+public class LostToFollowUpCalculation extends BaseEmrCalculation implements PatientFlagCalculation {
 
 	@Override
 	public String getFlagMessage() {

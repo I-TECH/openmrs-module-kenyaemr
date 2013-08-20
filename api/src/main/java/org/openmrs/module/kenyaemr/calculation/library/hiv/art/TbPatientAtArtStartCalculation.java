@@ -19,9 +19,9 @@ import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.Metadata;
-import org.openmrs.module.kenyacore.calculation.BaseEmrCalculation;
+import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
-import org.openmrs.module.kenyacore.calculation.CalculationUtils;
+import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
 
 import java.util.Collection;
 import java.util.Collections;

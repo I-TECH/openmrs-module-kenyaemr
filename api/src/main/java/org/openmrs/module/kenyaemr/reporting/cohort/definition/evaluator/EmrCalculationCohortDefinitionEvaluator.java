@@ -23,7 +23,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
-import org.openmrs.module.kenyacore.calculation.CalculationUtils;
+import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.EmrCalculationCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.EmrDateCalculationCohortDefinition;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;

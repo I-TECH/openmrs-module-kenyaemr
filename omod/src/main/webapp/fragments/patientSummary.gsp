@@ -2,6 +2,12 @@
 	ui.decorateWith("kenyaui", "panel", [ heading: "Patient Summary" ])
 %>
 <div class="ke-stack-item">
+	<% if (recordedAsDeceased) { %>
+	<div class="ke-warning" style="margin-bottom: 5px">
+		Patient has been recorded as deceased in a program form. Please update the registration form.
+	</div>
+	<% } %>
+
 	${ ui.includeFragment("kenyaui", "widget/editButton", [ href: ui.pageLink("kenyaemr", "registration/editPatient", [ patientId: patient.id, returnUrl: ui.thisUrl() ]) ]) }
 
 	${ ui.includeFragment("kenyaui", "widget/dataPoint", [ label: "Name", value: kenyaUi.formatPersonName(patient) ]) }

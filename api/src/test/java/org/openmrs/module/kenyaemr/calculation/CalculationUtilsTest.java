@@ -12,13 +12,14 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyacore.calculation;
+package org.openmrs.module.kenyaemr.calculation;
 
 import org.junit.Assert;
 import org.junit.Test;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.ListResult;
 import org.openmrs.calculation.result.SimpleResult;
+import org.openmrs.module.kenyacore.calculation.BooleanResult;
 import org.openmrs.module.kenyacore.test.TestUtils;
 
 import java.util.Arrays;
@@ -26,12 +27,12 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Tests for {@link org.openmrs.module.kenyacore.calculation.CalculationUtils}
+ * Tests for {@link org.openmrs.module.kenyaemr.calculation.CalculationUtils}
  */
 public class CalculationUtilsTest {
 
 	/**
-	 * @see org.openmrs.module.kenyacore.calculation.CalculationUtils#dateAddDays(java.util.Date, int)
+	 * @see org.openmrs.module.kenyaemr.calculation.CalculationUtils#dateAddDays(java.util.Date, int)
 	 * @verifies shift the date by the number of days
 	 */
 	@Test
