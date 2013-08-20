@@ -23,20 +23,21 @@ import org.openmrs.Program;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.ObsResult;
+import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.Metadata;
-import org.openmrs.module.kenyacore.calculation.BaseFlagCalculation;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
-import org.openmrs.module.kenyacore.calculation.CalculationUtils;
+import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
+import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 
 /**
  * Calculates which patients are missing TB sputum results
  */
-public class MissingTbSputumResultsCalculation extends BaseFlagCalculation {
+public class MissingTbSputumResultsCalculation extends BaseEmrCalculation implements PatientFlagCalculation {
 
 	/**
-	 * @see org.openmrs.module.kenyacore.calculation.BaseFlagCalculation#getFlagMessage()
+	 * @see org.openmrs.module.kenyacore.calculation.PatientFlagCalculation#getFlagMessage()
 	 */
 	@Override
 	public String getFlagMessage() {

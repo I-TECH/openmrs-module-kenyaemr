@@ -20,16 +20,17 @@ import java.util.Map;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.calculation.result.CalculationResultMap;
-import org.openmrs.module.kenyacore.calculation.BaseFlagCalculation;
+import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
+import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 
 /**
  * Calculates whether patients are on ART
  */
-public class OnArtCalculation extends BaseFlagCalculation {
+public class OnArtCalculation extends BaseEmrCalculation implements PatientFlagCalculation {
 
 	/**
-	 * @see org.openmrs.module.kenyacore.calculation.BaseFlagCalculation#getFlagMessage()
+	 * @see org.openmrs.module.kenyacore.calculation.PatientFlagCalculation#getFlagMessage()
 	 */
 	@Override
 	public String getFlagMessage() {

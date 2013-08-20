@@ -14,8 +14,8 @@
 
 package org.openmrs.module.kenyaemr.fragment.controller.system;
 
-import org.openmrs.module.kenyacore.CoreContext;
-import org.openmrs.module.kenyacore.calculation.BaseFlagCalculation;
+import org.openmrs.module.kenyacore.calculation.CalculationManager;
+import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.FragmentModel;
@@ -28,11 +28,11 @@ import java.util.List;
  */
 public class FlagsContentFragmentController {
 
-	public void controller(FragmentModel model, @SpringBean CoreContext emr) {
+	public void controller(FragmentModel model, @SpringBean CalculationManager calculationManager) {
 		List<SimpleObject> flags = new ArrayList<SimpleObject>();
-		for (BaseFlagCalculation calculation : emr.getCalculationManager().getFlagCalculations()) {
+		for (PatientFlagCalculation calc : calculationManager.getFlagCalculations()) {
 
-			flags.add(SimpleObject.create("className", calculation.getClass().getSimpleName(), "message", calculation.getFlagMessage()));
+			flags.add(SimpleObject.create("className", calc.getClass().getSimpleName(), "message", calc.getFlagMessage()));
 		}
 
 		model.addAttribute("flags", flags);

@@ -19,6 +19,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Patient;
 import org.openmrs.module.kenyacore.CoreContext;
+import org.openmrs.module.kenyacore.calculation.CalculationManager;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
@@ -34,7 +35,7 @@ public class PatientUtilsFragmentControllerTest extends BaseModuleWebContextSens
 	private PatientUtilsFragmentController controller;
 
 	@Autowired
-	private CoreContext emr;
+	private CalculationManager calculationManager;
 
 	/**
 	 * Setup each test
@@ -46,7 +47,7 @@ public class PatientUtilsFragmentControllerTest extends BaseModuleWebContextSens
 
 		controller = new PatientUtilsFragmentController();
 
-		emr.getCalculationManager().refresh();
+		calculationManager.refresh();
 	}
 
 	/**
@@ -64,11 +65,11 @@ public class PatientUtilsFragmentControllerTest extends BaseModuleWebContextSens
 	}
 
 	/**
-	 * @see PatientUtilsFragmentController#flags(Integer, org.openmrs.module.kenyacore.CoreContext)
+	 * @see PatientUtilsFragmentController#flags(Integer, org.openmrs.module.kenyacore.calculation.CalculationManager)
 	 */
 	@Test
 	public void flags_shouldReturnAllFlags() {
-		List<SimpleObject> result = controller.flags(7, emr);
+		List<SimpleObject> result = controller.flags(7, calculationManager);
 
 		Assert.assertTrue(result.size() >= 1);
 		Assert.assertTrue(result.get(0).containsKey("message"));

@@ -14,12 +14,8 @@
 
 package org.openmrs.module.kenyaemr.fragment.controller.program.hei;
 
-import org.openmrs.Concept;
 import org.openmrs.Patient;
-import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.module.kenyacore.CoreContext;
-import org.openmrs.module.kenyacore.calculation.CalculationUtils;
-import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.FragmentModel;

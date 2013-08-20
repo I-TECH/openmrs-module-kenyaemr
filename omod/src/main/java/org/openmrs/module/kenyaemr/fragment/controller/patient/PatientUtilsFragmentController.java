@@ -25,8 +25,8 @@ import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResult;
-import org.openmrs.module.kenyacore.CoreContext;
-import org.openmrs.module.kenyacore.calculation.BaseFlagCalculation;
+import org.openmrs.module.kenyacore.calculation.CalculationManager;
+import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -42,27 +42,27 @@ public class PatientUtilsFragmentController {
 	 * Gets the patient flags for the given patient. If any of the calculations throws an exception, this will return a single
 	 * flag with a message with the name of the offending calculation
 	 * @param patientId the patient id
-	 * @param emr the KenyaEMR
+	 * @param calculationManager the calculation manager
 	 * @return the flags as simple objects
 	 */
-	public List<SimpleObject> flags(@RequestParam("patientId") Integer patientId, @SpringBean CoreContext emr) {
+	public List<SimpleObject> flags(@RequestParam("patientId") Integer patientId, @SpringBean CalculationManager calculationManager) {
 
-		List<SimpleObject> alerts = new ArrayList<SimpleObject>();
+		List<SimpleObject> flags = new ArrayList<SimpleObject>();
 
 		// Gather all flag calculations that evaluate to true
-		for (BaseFlagCalculation calc : emr.getCalculationManager().getFlagCalculations()) {
+		for (PatientFlagCalculation calc : calculationManager.getFlagCalculations()) {
 			try {
 				CalculationResult result = Context.getService(PatientCalculationService.class).evaluate(patientId, calc);
 				if (result != null && (Boolean) result.getValue()) {
-						alerts.add(SimpleObject.create("message", calc.getFlagMessage()));
+					flags.add(SimpleObject.create("message", calc.getFlagMessage()));
 				}
 			}
 			catch (Exception ex) {
 				log.error("Error evaluating " + calc.getClass(), ex);
-				return Collections.singletonList(SimpleObject.create("message", "ERROR EVALUATING '" + calc.getFlagMessage() + "'"));
+				return Collections.singletonList(SimpleObject.create("message", "ERROR EVALUATING '" +  calc.getFlagMessage() + "'"));
 			}
 		}
-		return alerts;
+		return flags;
 	}
 
 	/**

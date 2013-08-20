@@ -15,9 +15,16 @@
 package org.openmrs.module.kenyaemr.fragment.controller;
 
 import org.openmrs.Patient;
+import org.openmrs.api.context.Context;
+import org.openmrs.calculation.patient.PatientCalculation;
+import org.openmrs.calculation.patient.PatientCalculationService;
+import org.openmrs.calculation.result.CalculationResult;
+import org.openmrs.calculation.result.ResultUtil;
 import org.openmrs.module.appframework.AppDescriptor;
 import org.openmrs.module.kenyacore.CoreContext;
+import org.openmrs.module.kenyacore.CoreUtils;
 import org.openmrs.module.kenyacore.form.FormDescriptor;
+import org.openmrs.module.kenyaemr.calculation.library.RecordedDeceasedCalculation;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
@@ -41,6 +48,8 @@ public class PatientSummaryFragmentController {
 						   UiUtils ui,
 						   FragmentModel model) {
 
+		model.addAttribute("recordedAsDeceased", hasBeenRecordedAsDeceased(patient));
+
 		AppDescriptor currentApp = kenyaUi.getCurrentApp(pageRequest);
 
 		List<SimpleObject> forms = new ArrayList<SimpleObject>();
@@ -51,5 +60,15 @@ public class PatientSummaryFragmentController {
 
 		model.addAttribute("patient", patient);
 		model.addAttribute("forms", forms);
+	}
+
+	/**
+	 * Checks if a patient has been recorded as deceased by a program
+	 * @param patient the patient
+	 * @return true if patient was recorded as deceased
+	 */
+	protected boolean hasBeenRecordedAsDeceased(Patient patient) {
+		PatientCalculation calc = CoreUtils.instantiateCalculation(RecordedDeceasedCalculation.class, null);
+		return ResultUtil.isTrue(Context.getService(PatientCalculationService.class).evaluate(patient.getId(), calc));
 	}
 }
