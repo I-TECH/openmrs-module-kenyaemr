@@ -1,16 +1,16 @@
 <!--
-		~ The contents of this file are subject to the OpenMRS Public License
-		~ Version 1.0 (the "License"); you may not use this file except in
-		~ compliance with the License. You may obtain a copy of the License at
-		~ http://license.openmrs.org
-		~
-		~ Software distributed under the License is distributed on an "AS IS"
-		~ basis, WITHOUT WARRANTY OF ANY KIND, either express or impliediaxd. See the
-		~ License for the specific language governing rights and limitations
-		~ under the License.
-		~
-		~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
-		-->
+  ~ The contents of this file are subject to the OpenMRS Public License
+  ~ Version 1.0 (the "License"); you may not use this file except in
+  ~ compliance with the License. You may obtain a copy of the License at
+  ~ http://license.openmrs.org
+  ~
+  ~ Software distributed under the License is distributed on an "AS IS"
+  ~ basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+  ~ License for the specific language governing rights and limitations
+  ~ under the License.
+  ~
+  ~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+-->
 <htmlform>
 
 	<style type="text/css">
@@ -18,18 +18,98 @@
 		border-collapse: collapse;
 		background-color: #fff0f7;
 		}
-		table.hei > tbody > tr > td, table.hei > tbody > tr > th {
+		table.hei > tbody > tr > td, table.hei > tbody > tr > th{
 		border: 1px solid black;
 		vertical-align: baseline;
 		padding: 4px;
 		text-align: left;
 		}
 	</style>
-	<table border="0" width="100%">
-		<tr>
-			<td>Enrollment Date <encounterDate id="encounter-date" showTime="true" /></td>
-			<td>Name of the Facility <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" /></td>
-			<td>Enrolled by: <encounterProviderAndRole encounterRole="a0b03050-c99b-11e0-9572-0800200c9a66" default="currentUser" required="true" /></td>
-		</tr>
+	<table border="0" class="hei" align="center">
+		<tbody>
+			<tr>
+				<td colspan="3" style="background-color: #696969; color: #ffffff;text-align:center;">
+					GROWTH, NUTRITION AND DEVELOPMENT MONITORING
+				</td>
+			</tr>
+			<tr>
+				<td colspan="3">
+					Name of the Facility <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" />
+					Provider <encounterProviderAndRole encounterRole="a0b03050-c99b-11e0-9572-0800200c9a66" default="currentUser" required="true" />
+				</td>
+			</tr>
+			<tr>
+				<td colspan="3" style="background-color: #696969; color: #ffffff;text-align:center;"></td>
+			</tr>
+			<tr>
+				<td colspan="3">
+					<table class="hei" width="100%">
+						<tbody>
+							<tr>
+								<td rowspan="2" style="text-align:center;">Visit<br />Date</td>
+								<td rowspan="2" style="text-align:center;">Age <br/>(Wks/Mths)</td>
+								<td rowspan="2" style="text-align:center;">Weight <br/>(Kgs)</td>
+								<td rowspan="2" style="text-align:center;">Height <br/>(Cms)</td>
+								<td rowspan="2" style="text-align:center;">Infant <br/> Feeding</td>
+								<td colspan="3" style="text-align:center;">Medication Given</td>
+								<td rowspan="2" style="text-align:center;">TB <br />Assessment <br/> Outcome</td>
+								<td rowspan="2" style="text-align:center;">Achieving Milestones? <br/> Normal(N) <br/> Delayed(D) <br/> Regressed(R)</td>
+								<td rowspan="2" style="text-align:center;">Development Milestones<br />by<br />Age</td>
+								<td rowspan="2" style="text-align:center;">Date of Next <br/>Appointment</td>
+
+							</tr>
+							<tr>
+								<td style="text-align:center;">NVP <br/> (mls)</td>
+								<td style="text-align:center;">CTX <br/>(mls/mg)</td>
+								<td style="text-align:center;">M/vit</td>
+							</tr>
+							<tr>
+								<td style="text-align:center;">(a)</td>
+								<td style="text-align:center;">(b)</td>
+								<td style="text-align:center;">(c)</td>
+								<td style="text-align:center;">(d)</td>
+								<td style="text-align:center;">(e)</td>
+								<td style="text-align:center;">(f)</td>
+								<td style="text-align:center;">(g)</td>
+								<td style="text-align:center;">(h)</td>
+								<td style="text-align:center;">(i)</td>
+								<td style="text-align:center;">(j)</td>
+								<td style="text-align:center;"></td>
+								<td style="text-align:center;">(k)</td>
+
+							</tr>
+							<tr>
+								<td><encounterDate id="encounter-date" showTime="false" /></td>
+								<td><obs conceptId="154384AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="3" /><obs conceptId="1732AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1073AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1074AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Wks,Mths" /></td>
+								<td><obs conceptId="5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="2" /></td>
+								<td><obs conceptId="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="3" /></td>
+								<td><obs conceptId="1151AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerConceptIds="5526AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1595AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,6046AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Exclusive Breastfeeding(EBF),Exclusive Replacement(ERF),Mixed Feeding(MF)" answerSeparator="&lt;br/&gt;" /></td>
+								<td><obs conceptId="1276AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="80586AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="" style="checkbox" /></td>
+								<td><obs conceptId="1276AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="105281AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="" style="checkbox" /></td>
+								<td><obs conceptId="1276AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="461AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="" style="checkbox" /></td>
+								<td><obs conceptId="1659AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerConceptIds="1660AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,142177AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1661AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1662AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1679AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="No signs,Suspect,Confirmed,TB Rx,INH,Not done" answerSeparator="&lt;br/&gt;" /></td>
+								<td><obs conceptId="1189AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerConceptIds="1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,6022AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,6025AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Normal(N),Delayed(D),Regressed(R)" answerSeparator="&lt;br/&gt;"/></td>
+								<td><obs conceptId="1200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerConceptIds="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159630AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159310AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Social Smile,Head Holding/Control,Turns towards the origin of sound,Extends hand to grasp a toy,Sitting,Standing,Walking,Talking" answerSeparator="&lt;br/&gt;"/></td>
+								<td><obs conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" /></td>
+							</tr>
+
+						</tbody>
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="3" style="background-color: #696969; color: #ffffff;text-align:center;">Clinician's Notes</td>
+			</tr>
+			<tr>
+				<td><obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" cols="80" rows="10"/></td>
+			</tr>
+			<tr>
+				<td colspan="3">
+					<div class="ke-form-footer">
+						<submit />
+					</div>
+				</td>
+			</tr>
+		</tbody>
 	</table>
 </htmlform>

@@ -5,7 +5,7 @@
   ~ http://license.openmrs.org
   ~
   ~ Software distributed under the License is distributed on an "AS IS"
-  ~ basis, WITHOUT WARRANTY OF ANY KIND, either express or impliediaxd. See the
+  ~ basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
   ~ License for the specific language governing rights and limitations
   ~ under the License.
   ~
@@ -26,15 +26,91 @@
 		}
 	</style>
 
+	<script type="text/javascript">
+
+			var birthdate = new Date("<lookup expression="patient.birthdate" />");
+
+			var YES_CONCEPT_ID = 1065;
+			var NO_CONCEPT_ID = 1066;
+
+			function onTransferStatusChange() {
+				if (getValue('transfer-status.value') == NO_CONCEPT_ID) {
+					jq('#transfer-details :input').prop('disabled', true);
+				}
+				else if (getValue('transfer-status.value') == YES_CONCEPT_ID) {
+					jq('#transfer-details :input').prop('disabled', false);
+				}
+				else {
+					jq('#transfer-details :input').prop('disabled', true);
+				}
+			}
+		    function getCohort(){
+				var month = new String(birthdate.getMonth()+1);
+					if(month.length == 1)
+					month = '0'+month;
+				var cohort = month +"-"+ (birthdate.getUTCFullYear()+1);
+				$j('#calculated-cohort').html(cohort);
+			}
+			function tbContactInHouseHold(){
+				if (getValue('tbcontact.value') == NO_CONCEPT_ID) {
+				jq('#yesTbContact').hide();
+				}
+				else if (getValue('tbcontact.value') == YES_CONCEPT_ID) {
+					jq('#yesTbContact').show();
+				}
+				else {
+					jq('#yesTbContact').hide();
+				}
+			}
+			function pmtctDrugsForMother(){
+				if (getValue('pmtctDrugsReceived.value') == NO_CONCEPT_ID) {
+					jq('#mother-art-details :input').prop('disabled', true);
+				}
+				else if (getValue('pmtctDrugsReceived.value') == YES_CONCEPT_ID) {
+					jq('#mother-art-details :input').prop('disabled', false);
+				}
+				else {
+					jq('#mother-art-details :input').prop('disabled', true);
+				}
+			}
+			function onARTatEnrollment(){
+				if (getValue('onART.value') == NO_CONCEPT_ID) {
+					jq('#mohter-on-art-at-enrollment :input').prop('disabled', true);
+					jq('#mohter-on-art-at-enrollment1 :input').prop('disabled', true);
+				}
+				else if (getValue('onART.value') == YES_CONCEPT_ID) {
+					jq('#mohter-on-art-at-enrollment :input').prop('disabled', false);
+					jq('#mohter-on-art-at-enrollment1 :input').prop('disabled',false);
+				}
+				else {
+					jq('#mohter-on-art-at-enrollment :input').prop('disabled', true);
+					jq('#mohter-on-art-at-enrollment1 :input').prop('disabled', true);
+				}
+			}
+		jq(function() {
+			//get cohort
+			getCohort()
+			//validate transfer in details
+			onTransferStatusChange()
+			jq('#transfer-status input').click(onTransferStatusChange);
+			tbContactInHouseHold();
+			jq('#tbcontact input').click(tbContactInHouseHold);
+			pmtctDrugsForMother();
+			jq('#pmtctDrugsReceived input').click(pmtctDrugsForMother);
+			onARTatEnrollment();
+			jq('#onART input').click(onARTatEnrollment);
+		});
+	</script>
+
 	<table class="hei" align="center">
 		<tbody>
 			<tr>
-				<td colspan="15" style="background-color: #696969; color: #ffffff; text-align:center;">
+				<td colspan="3" style="background-color: #696969; color: #ffffff; text-align:center;">
 					HIV Exposed Infant (HEI) Follow-up Card(Enrollment)
 				</td>
 			</tr>
 			<tr>
-				<td colspan="15">
+				<td colspan="3">
 					<table border="0" width="100%">
 						<tr>
 							<td>Enrollment Date <encounterDate id="encounter-date" showTime="true" /></td>
@@ -43,91 +119,140 @@
 						</tr>
 						<tr><td colspan="3"><hr /></td></tr>
 						<tr>
-							<td colspan="3"> Cohort by month and year of Birth:   MM - YYYY <obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+							<td> Cohort by month and year of Birth:   MM-YYYY</td>
+							<td><span id="calculated-cohort" class="value"></span></td>
+							<td></td>
 						</tr>
 					</table>
 
 				</td>
 			</tr>
 			<tr>
-				<td colspan="15" style="background-color: #696969; color: #ffffff;">
+				<td colspan="3" style="background-color: #696969; color: #ffffff;">
 					INFANT PROFILE
 				</td>
 			</tr>
 			<tr>
 				<td>
-					HEI Unique ID Number
-					<patient field="identifier" identifierTypeId="0691f522-dd67-4eeb-92c8-af5083baf338" />
+					Child Exposed?<obs conceptId="1405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="yes_no" />
+
 				</td>
-				<td colspan="5">Birth Weight: (kg)<obs conceptId="5916AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/> </td>
-			</tr>
-			<tr>
-				<td>Source of Referral</td>
-				<td colspan="15">	<obs style="radio" answerSeparator=" "
-						 conceptId="160540AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-						 answerConceptIds="160537AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160542AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160538AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-						 answerLabels="Paediatric,OPD,Maternity,CCC,MCH/PMTCT,Other"
-							/>
-				</td>
-			</tr>
-			<tr>
-				<td colspan="15">
-					ARV Prophylaxis:
-					<obs conceptId="966AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="80586AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Sd NVP Only" style="checkbox"/>
-					<obs conceptId="966AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="sd NVP+AZT+3TC" style="checkbox"/>
-					<obs conceptId="966AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1148AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="NVP for 6 weeks(Mother on HAART or No BF)" style="checkbox"/>
-					<obs conceptId="966AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="NVP during BF" style="checkbox"/>
-					<obs conceptId="966AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="None" style="checkbox"/>
-					<obs conceptId="966AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Other / Specify __________________" style="checkbox"/>
+				<td colspan="2">
+					<table>
+						<tr>
+							<td>HEI ID Number</td>
+							<td><patient field="identifier" identifierTypeId="0691f522-dd67-4eeb-92c8-af5083baf338" /></td>
+							<td>SPD No</td>
+							<td><obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+							<td>Birth Weight: (kg)</td>
+							<td><obs conceptId="5916AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
+						</tr>
+						<tr>
+							<td>Gestation at birth(weeks)</td>
+							<td><obs conceptId="1409AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /> </td>
+							<td>Date first seen</td>
+							<td><obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/> </td>
+						</tr>
+					</table>
 
 				</td>
 			</tr>
 			<tr>
-				<td colspan="7">
-					History of TB Contact in Household? <obs conceptId="152460AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio"/>
+				<td>Source of Referral</td>
+				<td colspan="2">
+					<table>
+						<tr>
+							<td>
+								<obs style="radio" answerSeparator=" "
+								 conceptId="160540AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								 answerConceptIds="160537AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160542AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160538AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								 answerLabels="Paediatric,OPD,Maternity,CCC,MCH/PMTCT,Other"
+								/>
+							</td>
+						</tr>
+						<tr>
+							<td>Transfer in?
+
+								<obs id="transfer-status" conceptId="160563AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio"
+								answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								answerLabels="Yes,No"
+								/>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div id="transfer-details">
+									<table>
+										<tr>
+											<td>Transfer in date:</td>
+											<td><obs conceptId="160534AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+											<td>Transferred from facility:</td>
+											<td><obs conceptId="160535AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+										</tr>
+										<tr>
+											<td>in district:</td>
+											<td> <obs conceptId="161551AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+											<td>Date <i>first</i> enrolled in HEI care:</td>
+											<td><obs conceptId="160555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+										</tr>
+									</table>
+								</div>
+							</td>
+						</tr>
+					</table>
 				</td>
-				<td colspan="8">If  YES, screen for TB; and appropriately refer for INH prophylaxis</td>
 			</tr>
 			<tr>
-				<td colspan="15" style="background-color: #696969; color: #ffffff;">
+				<td>ARV Prophylaxis</td>
+				<td colspan="2">
+					<obs conceptId="966AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="80586AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1148AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+						 answerLabels="Sd NVP Only,sd NVP+AZT+3TC,NVP for 6 weeks(Mother on HAART or No BF),NVP during BF,None,Other" style="radio"/>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					History of TB Contact in Household? <obs conceptId="152460AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" id="tbcontact"/>
+				</td>
+				<td colspan="2"><span id="yesTbContact" class="value">Screen for TB; and appropriately refer for INH Prophylaxis</span></td>
+			</tr>
+			<tr>
+				<td colspan="3" style="background-color: #696969; color: #ffffff;">
 					PARENT'S PROFILE
 				</td>
 			</tr>
 			<tr>
-				<td colspan="8">
+				<td>
 					Name of Mother <obs conceptId="1593AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
 				</td>
-				<td colspan="7">Alive? <obs conceptId="160429AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  style="yes_no"/></td>
+				<td>Mother Alive? <obs conceptId="160429AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  style="yes_no"/></td>
+				<td>Name of Father <obs conceptId="1593AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
 			</tr>
 			<tr>
-				<td colspan="15">
-					Mother received Drugs for PMTCT?  <obs conceptId="1148AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio"/>
+				<td>
+					Mother received Drugs for PMTCT?  <obs conceptId="1148AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" id="pmtctDrugsReceived"/>
+				</td>
+				<td colspan="2">
+					<div id="mother-art-details">
+						Select the combination
+						<obs conceptId="1086AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="80586AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1148AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 answerLabels="Sd NVP Only,AZT+NVP+3TC,Haart,Interrupted,Haart,None" style="radio"/>
+					</div>
 				</td>
 			</tr>
 			<tr>
-				<td colspan="15">
-					If Yes, select the combination
-					<obs conceptId="1086AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="80586AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Sd NVP Only" style="checkbox"/>
-					<obs conceptId="1086AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="AZT+NVP+3TC" style="checkbox"/>
-					<obs conceptId="1086AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1148AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Haart" style="checkbox"/>
-					<obs conceptId="1086AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Interrupted Haart" style="checkbox"/>
-					<obs conceptId="1086AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="None" style="checkbox"/>
+				<td> On ART at enrollment of infant
+					<obs conceptId="1147AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1149AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" id="onART"/>
 				</td>
+					<td id="mohter-on-art-at-enrollment">Enter regimen <obs conceptId="1088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
+					<td id="mohter-on-art-at-enrollment1">Parent's CCC No. <obs conceptId="160752AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="5"/></td>
 			</tr>
 			<tr>
-				<td colspan="5"> On ART at enrollment of infant
-					<obs conceptId="1147AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1149AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio"/>
-				</td>
-				<td colspan="5">If Yes enter regimen <obs conceptId="1088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
-				<td colspan="5">Parent's CCC No. <obs conceptId="160752AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="5"/></td>
-			</tr>
-			<tr>
-				<td colspan="8">Mode of Delivery <obs conceptId="5630AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1170AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1171AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="SVD,C-Section" style="radio"/></td>
-				<td colspan="7">Place of Delivery <obs conceptId="1572AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1589AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1536AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Facility,Home" style="radio"/></td>
+				<td>Mode of Delivery <obs conceptId="5630AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1170AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1171AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="SVD,C-Section" style="radio"/></td>
+				<td colspan="2">Place of Delivery <obs conceptId="1572AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1589AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1536AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Facility,Home" style="radio"/></td>
 			</tr>
 			<enrollInProgram programId="c2ecdf11-97cd-432a-a971-cfd9bd296b83"/>
 			<tr>
-				<td colspan="15" style="text-align:center;">
+				<td colspan="3" style="text-align:center;">
 					<div class="ke-form-footer">
 						<submit />
 					</div>

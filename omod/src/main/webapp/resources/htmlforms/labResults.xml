@@ -34,9 +34,10 @@
 				$('#numberOfColonies :input').prop('disabled', true);
 			}
 			
-			getField('growth_no_growth.value').change(function() {
+			getField('growth_no_growth.value').click(function() {
 				if (getValue('growth_no_growth.value') == 703) {
 					$('#sensitivity :input').prop('disabled', false);
+					$('#numberOfColonies :input').prop('disabled', false);
 				}
 				else{
 					$('#sensitivity :input').prop('disabled', true);
@@ -258,6 +259,9 @@
 										<obs conceptId="159958AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="75948AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="E" style="checkbox" />
 								</td>
 								<td></td>
+						</tr>
+						<tr>
+							<td></td>
 						</tr>
 					</obsgroup>
 				</table>
