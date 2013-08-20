@@ -74,33 +74,11 @@
 				</tr>
 			</table>
 			<br/>
-			<legend>Vitals</legend>
+			<legend>Infant Feeding</legend>
 			<table align="center" width="100%" class="tb1">
 				<tr>
 					<td width="250">
-						Weight:
-					</td>
-					<td>
-						<obs conceptId="5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						B.P.:
-					</td>
-					<td>
-						<obs conceptId="5085AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-						/
-						<obs conceptId="5086AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-					</td>
-				</tr>
-			</table>
-			<br/>
-			<legend>Other Observations</legend>
-			<table align="center" width="100%" class="tb1">
-				<tr>
-					<td width="250">
-						Urine:
+						Infant feeding counselling done (all mothers):
 					</td>
 					<td>
 						<obs conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
@@ -108,15 +86,15 @@
 				</tr>
 				<tr>
 					<td>
-						H.b.:
+						Counselling on exclusive breastfeeding done:
 					</td>
 					<td>
-						<obs conceptId="21AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+						<obs conceptId="161096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 					</td>
 				</tr>
 				<tr>
 					<td>
-						Pallor:
+						Infant feeding options for HIV infected discussed:
 					</td>
 					<td>
 						<obs conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
@@ -124,59 +102,10 @@
 				</tr>
 				<tr>
 					<td>
-						Maturity:
+						If yes, mother decision:
 					</td>
 					<td>
-						<obs conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						Fundal Height:
-					</td>
-					<td>
-						<obs conceptId="1439AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						Presentation:
-					</td>
-					<td>
-						<obs conceptId="160090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						Lie:
-					</td>
-					<td>
-						<obs conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						Foetal Heart Rate:
-					</td>
-					<td>
-						<obs conceptId="1440AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						Foetal Movement:
-					</td>
-					<td>
-						<obs conceptId="160743AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-					</td>
-				</tr>
-			</table>
-			<br/>
-			<legend>Clinical Notes</legend>
-			<table align="center" width="100%" class="tb1">
-				<tr>
-					<td>
-						<obs conceptId="159395AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="10" cols="75" style="textarea" />
+						<obs conceptId="1151AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 					</td>
 				</tr>
 			</table>
