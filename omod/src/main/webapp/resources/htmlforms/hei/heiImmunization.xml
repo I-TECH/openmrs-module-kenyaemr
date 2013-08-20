@@ -32,43 +32,84 @@
 			</tr>
 			<tr>
 				<td>
-					Enrollment Date <encounterDate id="encounter-date" showTime="true" />
 					Name of the Facility <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" />
 					Enrolled by: <encounterProviderAndRole encounterRole="a0b03050-c99b-11e0-9572-0800200c9a66" default="currentUser" required="true" />
 				</td>
 			</tr>
 			<tr>
 					<td>
-						<table>
+						<table cellpadding="10">
 							<tr>
 								<td>
 									<table class="hei">
 										<tbody>
 											<tr>
 												<th>BCG VACCINE: at birth</th>
-												<th rowspan="2">Date Given</th>
-												<th rowspan="2">Date of next visit</th>
 											</tr>
 											<tr>
 												<th><i>(intra-dermal left fore arm)</i></th>
+											</tr>
+											<tr>
+												 <td>BCG-Scar Checked?</td>
+												 <td>Date checked</td>
+												 <td>Date BCG repeated</td>
+											</tr>
+											<tr>
+												<td>PRESENT <br />ABSENT</td>
+												<td></td>
+												<td></td>
 											</tr>
 										</tbody>
 									</table>
 								</td>
 								<td>
+
+								</td>
+							</tr>
+							<tr>
+								<td>
 									<table class="hei">
 										<tbody>
 											<tr>
 												<th>ORAL POLIO VACCINE(OPV)</th>
-												<th rowspan="2">Date Given</th>
-												<th rowspan="2">Date of next visit</th>
 											</tr>
 											<tr>
 												<th><i>Dose: 2 drops orally</i></th>
 											</tr>
+											<tr>
+												<td>Birth Dose: at birth or within 2 wks(OPV 0)</td>
+												<td></td>
+											</tr>
+											<tr>
+												<td>1st dose at 6 weeks(OPV 1)</td>
+												<td></td>
+											</tr>
+											<tr>
+												<td>2nd dose at 10 weeks(OPV 2)</td>
+												<td></td>
+											</tr>
+											<tr>
+												<td>3rd dose at 14 weeks(OPV 3)</td>
+												<td></td>
+											</tr>
 										</tbody>
 									</table>
 								</td>
+							</tr>
+							<tr>
+								<td>
+									<table class="hei">
+										<tbody>
+											<tr>
+												<th>DIPHTHERIA/PERTUSSIS/TETANUS<br />HEPATITIS B/HAEMOPHILUS INFLUENZA Type b</th>
+											</tr>
+										</tbody>
+									</table>
+								</td>
+							</tr>
+							<tr>
+								<td>Date Given<encounterDate id="encounter-date" /></td>
+								<td>Date of next visit<obs conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
 							</tr>
 						</table>
 					</td>

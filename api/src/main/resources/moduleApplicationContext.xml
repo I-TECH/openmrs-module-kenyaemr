@@ -226,12 +226,12 @@
 		<property name="defaultCompletionForm" ref="kenyaemr.form.heiDiscontinuation" />
 		<property name="visitForms">
 			<set>
+				<ref bean="kenyaemr.form.heiFollowupVisit" />
 			</set>
 		</property>
 		<property name="patientForms">
 			<set>
 				<ref bean="kenyaemr.form.heiImmunization" />
-				<ref bean="kenyaemr.form.heiFollowupVisit" />
 			</set>
 		</property>
 		<property name="fragments">
