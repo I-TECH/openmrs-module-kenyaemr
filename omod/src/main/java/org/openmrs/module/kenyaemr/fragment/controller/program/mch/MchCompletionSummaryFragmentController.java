@@ -15,10 +15,7 @@
 package org.openmrs.module.kenyaemr.fragment.controller.program.mch;
 
 import org.openmrs.Encounter;
-import org.openmrs.Obs;
 import org.openmrs.PatientProgram;
-import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.util.EmrUtils;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 
@@ -26,7 +23,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * TB program discontinuation summary fragment
+ * MCH program discontinuation summary fragment
  */
 public class MchCompletionSummaryFragmentController {
 
