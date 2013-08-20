@@ -78,7 +78,7 @@
 			<table align="center" width="100%" class="tb1">
 				<tr>
 					<td width="250">
-						Infant feeding counselling done (all mothers):
+						Duration of Pregnancy (in weeks):
 					</td>
 					<td>
 						<obs conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
@@ -86,7 +86,7 @@
 				</tr>
 				<tr>
 					<td>
-						Counselling on exclusive breastfeeding done:
+						Mode of Delivery:
 					</td>
 					<td>
 						<obs conceptId="161096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
@@ -94,7 +94,23 @@
 				</tr>
 				<tr>
 					<td>
-						Infant feeding options for HIV infected discussed:
+						Date of Delivery:
+					</td>
+					<td>
+						<obs conceptId="161096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Blood Loss::
+					</td>
+					<td>
+						<obs conceptId="161096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Condition of Mother:
 					</td>
 					<td>
 						<obs conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
@@ -102,7 +118,15 @@
 				</tr>
 				<tr>
 					<td>
-						If yes, mother decision:
+						Place of Delivery:
+					</td>
+					<td>
+						<obs conceptId="1151AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Delivery Conducted By:
 					</td>
 					<td>
 						<obs conceptId="1151AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
