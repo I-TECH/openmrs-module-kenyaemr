@@ -270,6 +270,12 @@
 		<property name="order" value="400" />
 	</bean>
 
+	<!-- HEI unique Number -->
+	<bean id="kenyaemr.identifier.hei" class="org.openmrs.module.kenyacore.identifier.IdentifierDescriptor">
+		<property name="targetUuid" value="0691f522-dd67-4eeb-92c8-af5083baf338" />
+		<property name="order" value="500" />
+	</bean>
+
 	<!-- OpenMRS ID -->
 	<bean id="kenyaemr.identifier.mrn" class="org.openmrs.module.kenyacore.identifier.IdentifierDescriptor">
 		<property name="targetUuid" value="dfacd928-0370-4315-99d7-6ec1c9f7ae76" />
