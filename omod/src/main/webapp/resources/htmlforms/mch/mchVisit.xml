@@ -15,14 +15,14 @@
 
 	<style type="text/css">
 		table.tb {
-		background-color: #FFEFF2;
+		background-color: #B3C2F0;
 		border: 1px solid black;
 		}
 		table.tb1{
 		border: 1px solid black;
 		vertical-align: baseline;
 		text-align: left;
-		background-color: #FFFFFF;
+		background-color: #E1E1FF;
 		}
 		table.tb1 tr th,table.tb1 tr td{
 		border: 0;

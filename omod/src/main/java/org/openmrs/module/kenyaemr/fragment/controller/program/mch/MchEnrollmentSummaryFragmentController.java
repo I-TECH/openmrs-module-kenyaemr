@@ -19,8 +19,10 @@ import org.joda.time.Days;
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.PatientProgram;
+import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.util.EmrUtils;
+import org.openmrs.module.kenyaui.KenyaUiConstants;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 
@@ -43,52 +45,13 @@ public class MchEnrollmentSummaryFragmentController {
 
 		Obs ancNoObs = EmrUtils.firstObsInProgram(enrollment, Dictionary.getConcept(Dictionary.ANTENATAL_CASE_NUMBER));
 		if (ancNoObs != null) {
-			dataPoints.put("ANC No. ", ancNoObs.getValueNumeric());
+			dataPoints.put("ANC No", ancNoObs.getValueNumeric());
 		}
 		Obs lmpObs = EmrUtils.firstObsInProgram(enrollment, Dictionary.getConcept("1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"));
-		Date edd;
 		if (lmpObs != null) {
-			edd = calculateEdd(lmpObs.getValueDate());
-			if (edd == null) {
-				dataPoints.put("EDD: ", "Unknown (Missing L.M.P.)");
-			} else {
-				dataPoints.put("EDD: ", edd);
-			}
+			dataPoints.put("EDD", CalculationUtils.dateAddDays(lmpObs.getValueDate(), 280));
 		}
 		model.put("dataPoints", dataPoints);
 		return "view/dataPoints";
-	}
-
-	private Date calculateEdd(Date lmp) {
-		Date edd = null;
-		Calendar calendar = new GregorianCalendar();
-		calendar.setTime(lmp);
-		int lmpDay = calendar.get(Calendar.DAY_OF_MONTH);
-		int lmpMonth = calendar.get(Calendar.MONTH);
-		int lmpYear = calendar.get(Calendar.YEAR);
-
-		int dayOffset = 7;
-		int monthOffset = -2;
-		int yearOffset = 1;
-
-		int eddDay = lmpDay + dayOffset;
-		int dim = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
-		if (eddDay > dim) {
-			eddDay -= dim;
-			monthOffset++;
-		}
-		int eddMonth = lmpMonth + monthOffset;
-		if (eddMonth <= 0) {
-			eddMonth += 12;
-			yearOffset--;
-		}
-		int eddYear = lmpYear + yearOffset;
-		try {
-			String eddDateString = (eddDay <= 9 ? "0" + eddDay : eddDay) + "-" + (eddMonth <= 9 ? "0" + eddMonth : eddMonth) + "-" + eddYear;
-			edd = new SimpleDateFormat("dd-MM-yyyy").parse(eddDateString);
-		} catch (ParseException pe) {
-			System.out.println(pe.getMessage());
-		}
-		return edd;
 	}
 }
