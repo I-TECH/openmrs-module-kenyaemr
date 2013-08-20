@@ -20,6 +20,9 @@ import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -28,8 +31,16 @@ import java.util.List;
 public class LoadedModulesFragmentController {
 
 	public void controller(FragmentModel model) {
+		List<Module> sortedModules = new ArrayList(ModuleFactory.getLoadedModules());
+		Collections.sort(sortedModules, new Comparator<Module>() {
+			@Override
+			public int compare(Module module, Module module2) {
+				return module.getName().compareTo(module2.getName());
+			}
+		});
+
 		List<SimpleObject> modules = new ArrayList<SimpleObject>();
-		for (Module mod : ModuleFactory.getLoadedModules()) {
+		for (Module mod : sortedModules) {
 			modules.add(SimpleObject.create("name", mod.getName(), "version", mod.getVersion(), "started", mod.isStarted()));
 		}
 
