@@ -12,9 +12,11 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.fragment.controller;
+package org.openmrs.module.kenyaemr.fragment.controller.patient;
 
 import org.openmrs.Patient;
+import org.openmrs.Person;
+import org.openmrs.Relationship;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculation;
 import org.openmrs.calculation.patient.PatientCalculationService;
@@ -26,6 +28,7 @@ import org.openmrs.module.kenyacore.CoreUtils;
 import org.openmrs.module.kenyacore.form.FormDescriptor;
 import org.openmrs.module.kenyaemr.calculation.library.RecordedDeceasedCalculation;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
+import org.openmrs.ui.framework.Link;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.FragmentParam;
@@ -34,7 +37,9 @@ import org.openmrs.ui.framework.fragment.FragmentModel;
 import org.openmrs.ui.framework.page.PageRequest;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Patient summary fragment
@@ -48,17 +53,16 @@ public class PatientSummaryFragmentController {
 						   UiUtils ui,
 						   FragmentModel model) {
 
-		model.addAttribute("recordedAsDeceased", hasBeenRecordedAsDeceased(patient));
-
 		AppDescriptor currentApp = kenyaUi.getCurrentApp(pageRequest);
 
+		// Get all suitable per-patient forms as simple objects
 		List<SimpleObject> forms = new ArrayList<SimpleObject>();
-
 		for (FormDescriptor formDescriptor : emr.getFormManager().getFormsForPatient(currentApp, patient)) {
 			forms.add(ui.simplifyObject(formDescriptor.getTarget()));
 		}
 
 		model.addAttribute("patient", patient);
+		model.addAttribute("recordedAsDeceased", hasBeenRecordedAsDeceased(patient));
 		model.addAttribute("forms", forms);
 	}
 
