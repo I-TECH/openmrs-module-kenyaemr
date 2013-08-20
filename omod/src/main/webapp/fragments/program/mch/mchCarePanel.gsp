@@ -3,9 +3,9 @@
 
 	def dataPoints = []
 
-	dataPoints << [label: "ANC No.", value: calculations.tbTreatmentNumber]
-	dataPoints << [label: "LMP", value: calculations.tbDiseaseClassification]
-	dataPoints << [label: "EDD", value: calculations.tbPatientClassification]
+//	dataPoints << [label: "LMP", value: calculations.tbTreatmentNumber]
+//	dataPoints << [label: "Gestation", value: calculations.tbDiseaseClassification]
+//	dataPoints << [label: "Gravida", value: calculations.tbPatientClassification]
 %>
 
 <div class="ke-stack-item">
