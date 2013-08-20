@@ -14,20 +14,15 @@
 
 package org.openmrs.module.kenyaemr.fragment.controller.program.mch;
 
-import org.joda.time.DateTime;
-import org.joda.time.Days;
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.PatientProgram;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
 import org.openmrs.module.kenyaemr.util.EmrUtils;
-import org.openmrs.module.kenyaui.KenyaUiConstants;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -47,7 +42,7 @@ public class MchEnrollmentSummaryFragmentController {
 		if (ancNoObs != null) {
 			dataPoints.put("ANC No", ancNoObs.getValueNumeric());
 		}
-		Obs lmpObs = EmrUtils.firstObsInProgram(enrollment, Dictionary.getConcept("1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"));
+		Obs lmpObs = EmrUtils.firstObsInProgram(enrollment, Dictionary.getConcept(Dictionary.LAST_MONTHLY_PERIOD));
 		if (lmpObs != null) {
 			dataPoints.put("EDD", CalculationUtils.dateAddDays(lmpObs.getValueDate(), 280));
 		}
