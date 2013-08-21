@@ -15,14 +15,16 @@
 package org.openmrs.module.kenyaemr.fragment.controller.program.mch;
 
 import org.openmrs.Concept;
+import org.openmrs.Obs;
 import org.openmrs.Patient;
 import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.module.kenyacore.CoreContext;
 import org.openmrs.module.kenyacore.regimen.RegimenChangeHistory;
+import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
-import org.openmrs.module.kenyaemr.calculation.library.tb.TbDiseaseClassificationCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.tb.TbPatientClassificationCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.tb.TbTreatmentNumberCalculation;
+import org.openmrs.module.kenyaemr.util.EmrUtils;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.FragmentModel;
@@ -40,10 +42,17 @@ public class MchCarePanelFragmentController {
 						   FragmentModel model,
 						   @SpringBean CoreContext emr) {
 		//TODO: Rewrite method for MCH
+
 		Map<String, Object> calculationResults = new HashMap<String, Object>();
 
-		CalculationResult result = CalculationUtils.evaluateForPatient(TbDiseaseClassificationCalculation.class, null, patient);
-		calculationResults.put("tbDiseaseClassification", result != null ? result.getValue() : null);
+		CalculationResult result = CalculationUtils.evaluateForPatient(TbPatientClassificationCalculation.class, null, patient);
+
+//		Obs lmpObs = EmrUtils.firstObsInProgram(enrollment, Dictionary.getConcept(Dictionary.LAST_MONTHLY_PERIOD));
+//		if (lmpObs != null) {
+//			calculationResults.put("gestation", lmpObs.getValueDate());
+//		}
+
+//		calculationResults.put("gestation", result != null ? result.getValue() : null);
 
 		result = CalculationUtils.evaluateForPatient(TbPatientClassificationCalculation.class, null, patient);
 		calculationResults.put("tbPatientClassification", result != null ? result.getValue() : null);
