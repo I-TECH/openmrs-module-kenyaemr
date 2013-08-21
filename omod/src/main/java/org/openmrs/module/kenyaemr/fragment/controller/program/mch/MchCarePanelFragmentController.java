@@ -14,9 +14,11 @@
 
 package org.openmrs.module.kenyaemr.fragment.controller.program.mch;
 
-import org.openmrs.Concept;
-import org.openmrs.Obs;
-import org.openmrs.Patient;
+import org.joda.time.DateTime;
+import org.joda.time.Days;
+import org.openmrs.*;
+import org.openmrs.api.EncounterService;
+import org.openmrs.api.context.Context;
 import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.module.kenyacore.CoreContext;
 import org.openmrs.module.kenyacore.regimen.RegimenChangeHistory;
@@ -29,6 +31,7 @@ import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,26 +44,21 @@ public class MchCarePanelFragmentController {
 						   @FragmentParam("complete") Boolean complete,
 						   FragmentModel model,
 						   @SpringBean CoreContext emr) {
-		//TODO: Rewrite method for MCH
+		Map<String, Object> calculations = new HashMap<String, Object>();
 
-		Map<String, Object> calculationResults = new HashMap<String, Object>();
+		EncounterService encounterService = Context.getEncounterService();
+		EncounterType encounterType = encounterService.getEncounterTypeByUuid("3ee036d8-7c13-4393-b5d6-036f2fe45126");
+		Encounter lastMchEncounter = EmrUtils.lastEncounter(patient, encounterType);
+		Obs lmpObs = EmrUtils.firstObsInEncounter(lastMchEncounter, Dictionary.getConcept(Dictionary.LAST_MONTHLY_PERIOD));
+		if (lmpObs != null) {
+			int daysDiff = Days.daysBetween(new DateTime(lmpObs.getValueDate()), new DateTime(new Date())).getDays();
+			calculations.put("gestation", Math.ceil(daysDiff / 7));
+		}
 
-		CalculationResult result = CalculationUtils.evaluateForPatient(TbPatientClassificationCalculation.class, null, patient);
+		calculations.put("onPmtct", "TODO");
+		calculations.put("onArv", "TODO");
 
-//		Obs lmpObs = EmrUtils.firstObsInProgram(enrollment, Dictionary.getConcept(Dictionary.LAST_MONTHLY_PERIOD));
-//		if (lmpObs != null) {
-//			calculationResults.put("gestation", lmpObs.getValueDate());
-//		}
-
-//		calculationResults.put("gestation", result != null ? result.getValue() : null);
-
-		result = CalculationUtils.evaluateForPatient(TbPatientClassificationCalculation.class, null, patient);
-		calculationResults.put("tbPatientClassification", result != null ? result.getValue() : null);
-
-		result = CalculationUtils.evaluateForPatient(TbTreatmentNumberCalculation.class, null, patient);
-		calculationResults.put("tbTreatmentNumber", result != null ? result.getValue() : null);
-
-		model.addAttribute("calculations", calculationResults);
+		model.addAttribute("calculations", calculations);
 
 		Concept medSet = emr.getRegimenManager().getMasterSetConcept("TB");
 		RegimenChangeHistory history = RegimenChangeHistory.forPatient(patient, medSet);
