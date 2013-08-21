@@ -18,14 +18,16 @@ import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.PatientProgram;
 import org.openmrs.module.kenyaemr.Dictionary;
+import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
 import org.openmrs.module.kenyaemr.util.EmrUtils;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
- * Patient program enrollment fragment
+ * MCH program enrollment fragment
  */
 public class MchEnrollmentSummaryFragmentController {
 
@@ -39,41 +41,13 @@ public class MchEnrollmentSummaryFragmentController {
 
 		Obs ancNoObs = EmrUtils.firstObsInProgram(enrollment, Dictionary.getConcept(Dictionary.ANTENATAL_CASE_NUMBER));
 		if (ancNoObs != null) {
-			dataPoints.put("ANC No. ", ancNoObs.getValueNumeric());
+			dataPoints.put("ANC No", ancNoObs.getValueNumeric());
 		}
-		Obs lmpObs = EmrUtils.firstObsInProgram(enrollment, Dictionary.getConcept("1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"));
-		;
+		Obs lmpObs = EmrUtils.firstObsInProgram(enrollment, Dictionary.getConcept(Dictionary.LAST_MONTHLY_PERIOD));
 		if (lmpObs != null) {
-			dataPoints.put("EDD: ", calculateEdd(lmpObs.getValueDate()));
+			dataPoints.put("EDD", CalculationUtils.dateAddDays(lmpObs.getValueDate(), 280));
 		}
-
 		model.put("dataPoints", dataPoints);
 		return "view/dataPoints";
-	}
-
-	private String calculateEdd(Date lmp) {
-		Calendar calendar = new GregorianCalendar();
-		calendar.setTime(lmp);
-		int lmpDay = calendar.get(Calendar.DAY_OF_MONTH);
-		int lmpMonth = calendar.get(Calendar.MONTH);
-		int lmpYear = calendar.get(Calendar.YEAR);
-
-		int dayOffset = 7;
-		int monthOffset = -2;
-		int yearOffset = 1;
-
-		int eddDay = lmpDay + dayOffset;
-		int dim = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);//daysInMonth(lmpMonth, lmpYear);
-		if (eddDay > dim) {
-			eddDay -= dim;
-			monthOffset++;
-		}
-		int eddMonth = lmpMonth + monthOffset;
-		if (eddMonth <= 0) {
-			eddMonth += 12;
-			yearOffset--;
-		}
-		int eddYear = lmpYear + yearOffset;
-		return (eddDay <= 9 ? "0" + eddDay : eddDay) + "-" + (eddMonth <= 9 ? "0" + eddMonth : eddMonth) + "-" + eddYear;
 	}
 }

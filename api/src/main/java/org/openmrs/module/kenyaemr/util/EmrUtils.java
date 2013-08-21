@@ -221,6 +221,17 @@ public class EmrUtils {
 	}
 
 	/**
+	 * Finds the last encounter with the given patient and encounter type
+	 * @param patient the patient
+	 * @param type the encounter type
+	 * @return the encounter
+	 */
+	public static Encounter lastEncounter(Patient patient, EncounterType type) {
+		List<Encounter> encounters = Context.getEncounterService().getEncounters(patient, null, null, null, null, Collections.singleton(type), null, null, null, false);
+		return encounters.size() > 0 ? encounters.get(encounters.size() - 1) : null;
+	}
+
+	/**
 	 * Finds the last encounter during a program enrollment with the given encounter type
 	 * @param enrollment the program enrollment
 	 * @param type the encounter type
@@ -228,12 +239,7 @@ public class EmrUtils {
 	 */
 	public static Encounter lastEncounterInProgram(PatientProgram enrollment, EncounterType type) {
 		List<Encounter> encounters = Context.getEncounterService().getEncounters(enrollment.getPatient(), null, enrollment.getDateEnrolled(), enrollment.getDateCompleted(), null, Collections.singleton(type), null, null, null, false);
-		if (encounters.size() == 0) {
-			return null;
-		}
-		else {
-			return encounters.get(encounters.size() - 1);
-		}
+		return encounters.size() > 0 ? encounters.get(encounters.size() - 1) : null;
 	}
 
 	/**

@@ -1,5 +1,5 @@
 <%
-	ui.decorateWith("kenyaui", "panel", [ heading: "Available Forms" ])
+	ui.decorateWith("kenyaui", "panel", [ heading: "Available Visit Forms" ])
 
 	config.require("visit")
 
