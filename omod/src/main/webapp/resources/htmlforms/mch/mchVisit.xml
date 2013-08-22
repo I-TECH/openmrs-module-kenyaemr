@@ -77,8 +77,50 @@
 			<legend>Vitals</legend>
 			<table align="center" width="100%" class="tb1">
 				<tr>
-					<td width="250">
-						Weight:
+					<td>
+						Temperature
+					</td>
+					<td>
+						<obs conceptId="5088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Pulse Rate
+					</td>
+					<td>
+						<obs conceptId="5087AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+					</td>
+				</tr>
+				<tr>
+					<td>
+						B.P.
+					</td>
+					<td>
+						<obs conceptId="5085AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+						/
+						<obs conceptId="5086AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Respiratory Rate
+					</td>
+					<td>
+						<obs conceptId="5242AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Oxygen Saturation
+					</td>
+					<td>
+						<obs conceptId="5092AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Weight
 					</td>
 					<td>
 						<obs conceptId="5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
@@ -86,12 +128,26 @@
 				</tr>
 				<tr>
 					<td>
-						B.P.:
+						Height
 					</td>
 					<td>
-						<obs conceptId="5085AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-						/
-						<obs conceptId="5086AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+						<obs conceptId="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+					</td>
+				</tr>
+				<tr>
+					<td>
+						BMI
+					</td>
+					<td>
+						TODO
+					</td>
+				</tr>
+				<tr>
+					<td>
+						MUAC
+					</td>
+					<td>
+						<obs conceptId="1343AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
 					</td>
 				</tr>
 			</table>
