@@ -32,6 +32,9 @@ public class Metadata {
 	public static final String TB_ENROLLMENT_ENCOUNTER_TYPE = "9d8498a4-372d-4dc4-a809-513a2434621e";
 	public static final String TB_SCREENING_ENCOUNTER_TYPE = "ed6dacc9-0827-4c82-86be-53c0d8c449be";
 	public static final String TRIAGE_ENCOUNTER_TYPE = "d1059fb9-a079-4feb-a749-eedd709ae542";
+	public static String MCH_ENROLLMENT = "3ee036d8-7c13-4393-b5d6-036f2fe45126";
+	public static String MCH_CONSULTATION = "c6d09e05-1f25-4164-8860-9f32c5a02df0";
+	public static String MCH_DISCONTINUATION = "7c426cfc-3b47-4481-b55f-89860c21c7de";
 	public static final String HEI_ENROLLMENT_ENCOUNTER_TYPE = "415f5136-ca4a-49a8-8db3-f994187c3af6";
 	public static final String HEI_DISCONTINUATION_ENCOUNTER_TYPE = "5feee3f1-aa16-4513-8bd0-5d9b27ef1208";
 	public static final String HEI_CONSULTATION_ENCOUNTER_TYPE = "bcc6da85-72f2-4291-b206-789b8186a021";

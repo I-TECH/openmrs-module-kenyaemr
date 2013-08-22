@@ -16,12 +16,14 @@ package org.openmrs.module.kenyaemr.fragment.controller.program.mch;
 
 import org.joda.time.DateTime;
 import org.joda.time.Days;
+import org.joda.time.Weeks;
 import org.openmrs.*;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyacore.CoreContext;
 import org.openmrs.module.kenyacore.regimen.RegimenChangeHistory;
 import org.openmrs.module.kenyaemr.Dictionary;
+import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.util.EmrUtils;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.annotation.SpringBean;
@@ -43,12 +45,12 @@ public class MchCarePanelFragmentController {
 		Map<String, Object> calculations = new HashMap<String, Object>();
 
 		EncounterService encounterService = Context.getEncounterService();
-		EncounterType encounterType = encounterService.getEncounterTypeByUuid("3ee036d8-7c13-4393-b5d6-036f2fe45126");
+		EncounterType encounterType = encounterService.getEncounterTypeByUuid(Metadata.MCH_ENROLLMENT);
 		Encounter lastMchEncounter = EmrUtils.lastEncounter(patient, encounterType);
 		Obs lmpObs = EmrUtils.firstObsInEncounter(lastMchEncounter, Dictionary.getConcept(Dictionary.LAST_MONTHLY_PERIOD));
 		if (lmpObs != null) {
-			int daysDiff = Days.daysBetween(new DateTime(lmpObs.getValueDate()), new DateTime(new Date())).getDays();
-			calculations.put("gestation", Math.ceil(daysDiff / 7));
+			Weeks weeks = Weeks.weeksBetween(new DateTime(lmpObs.getValueDate()), new DateTime(new Date()));
+			calculations.put("gestation", weeks.getWeeks());
 		}
 
 		calculations.put("onPmtct", "TODO");
