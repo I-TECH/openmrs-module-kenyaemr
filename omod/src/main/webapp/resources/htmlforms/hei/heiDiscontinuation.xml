@@ -27,17 +27,17 @@
 	</style>
 <table class="hei" align="center">
 	<tbody>
-		<tr><td colspan="2"><b>HEI Discharge Form</b></td></tr>
+		<tr><td colspan="2"><b>HEI EXIT Form</b></td></tr>
 		<tr>
 			<td>Provider: <encounterProviderAndRole encounterRole="a0b03050-c99b-11e0-9572-0800200c9a66" default="currentUser" required="true" /></td>
 			<td>Location  <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete"/> </td>
 		</tr>
 		<tr>
-			<td colspan="2"><b>Discontinue HEI Care</b></td>
+			<td colspan="2"><b>HEI FINAL OUTCOME</b></td>
 		</tr>
 		<tr>
 			<td>Exit Date</td>
-			<td><encounterDate  id="discontinueDate"/></td>
+			<td><encounterDate  id="exitDate"/></td>
 		</tr>
 		<tr>
 		<td>HIV Status</td>
@@ -52,7 +52,6 @@
 				/>
 			</td>
 		</tr>
-		<completeProgram programId="c2ecdf11-97cd-432a-a971-cfd9bd296b83" />
 		<tr>
 			<td colspan="2">
 				<div class="ke-form-footer">
