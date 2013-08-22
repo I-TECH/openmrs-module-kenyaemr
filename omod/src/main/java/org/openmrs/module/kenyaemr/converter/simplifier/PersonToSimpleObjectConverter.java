@@ -14,48 +14,35 @@
 
 package org.openmrs.module.kenyaemr.converter.simplifier;
 
-import org.openmrs.Patient;
-import org.openmrs.PatientIdentifier;
-import org.openmrs.module.kenyacore.identifier.IdentifierManager;
+import org.openmrs.Person;
+import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.ui.framework.SimpleObject;
-import org.openmrs.ui.framework.UiUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
- * Converts a patient to a simple object
+ * Converts a person to a simple object
  */
 @Component
-public class PatientToSimpleObjectConverter implements Converter<Patient, SimpleObject> {
+public class PersonToSimpleObjectConverter implements Converter<Person, SimpleObject> {
 
 	@Autowired
-	private UiUtils ui;
-
-	@Autowired
-	private PersonToSimpleObjectConverter personSimplifier;
-
-	@Autowired
-	private IdentifierManager identifierManager;
+	private KenyaUiUtils kenyaUi;
 
 	/**
 	 * @see org.springframework.core.convert.converter.Converter#convert(Object)
 	 */
 	@Override
-	public SimpleObject convert(Patient patient) {
-		// Convert as person first
-		SimpleObject ret = personSimplifier.convert(patient);
+	public SimpleObject convert(Person person) {
+		SimpleObject ret = new SimpleObject();
+		ret.put("id", person.getId());
+		ret.put("gender", person.getGender());
 
-		// Add display identifiers
-		List<SimpleObject> simpleIdentifiers = new ArrayList<SimpleObject>();
-		for (PatientIdentifier identifier : identifierManager.getPatientDisplayIdentifiers(patient)) {
-			simpleIdentifiers.add(ui.simplifyObject(identifier));
-		}
-
-		ret.put("identifiers", simpleIdentifiers);
+		// Add formatted name, age and birth date values
+		ret.put("name", kenyaUi.formatPersonName(person));
+		ret.put("age", kenyaUi.formatPersonAge(person));
+		ret.put("birthdate", kenyaUi.formatPersonBirthdate(person));
 		return ret;
 	}
 }

@@ -20,6 +20,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Concept;
 import org.openmrs.Patient;
+import org.openmrs.Relationship;
 import org.openmrs.Visit;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.context.ContextAuthenticationException;
@@ -36,6 +37,7 @@ import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.SpringBean;
+import org.openmrs.ui.framework.fragment.action.SuccessResult;
 import org.openmrs.ui.framework.session.Session;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -84,17 +86,25 @@ public class EmrUtilsFragmentController {
 	}
 
 	/**
+	 * Voids the given relationship
+	 * @param relationship the relationship
+	 * @param reason the reason for voiding
+	 * @return the simplified visit
+	 */
+	public SuccessResult voidRelationship(@RequestParam("relationshipId") Relationship relationship, @RequestParam("reason") String reason) {
+		Context.getPersonService().voidRelationship(relationship, reason);
+		return new SuccessResult("Relationship voided");
+	}
+
+	/**
 	 * Voids the given visit
 	 * @param visit the visit
 	 * @param reason the reason for voiding
 	 * @return the simplified visit
 	 */
-	public SimpleObject voidVisit(@RequestParam("visitId") Visit visit, @RequestParam("reason") String reason, @SpringBean KenyaEmrUiUtils kenyaEmrUiUtils, UiUtils ui) {
-		visit.setVoided(true);
-		visit.setVoidedBy(Context.getAuthenticatedUser());
-		visit.setVoidReason(reason);
-		Context.getVisitService().saveVisit(visit);
-		return ui.simplifyObject(visit);
+	public SuccessResult voidVisit(@RequestParam("visitId") Visit visit, @RequestParam("reason") String reason) {
+		Context.getVisitService().voidVisit(visit, reason);
+		return new SuccessResult("Visit voided");
 	}
 
 	/**

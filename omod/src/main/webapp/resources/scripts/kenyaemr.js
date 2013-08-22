@@ -1,12 +1,17 @@
 /**
  * Configure search types
  */
+kenyaui.configureSearch('concept', {
+	searchProvider: 'kenyaemr',
+	searchFragment: 'search',
+	format: function(object) { return object.name; }
+});
 kenyaui.configureSearch('location', {
 	searchProvider: 'kenyaemr',
 	searchFragment: 'search',
 	format: function(object) { return object.name + ' <span style="color: #999">' + object.code + '</span>'; }
 });
-kenyaui.configureSearch('concept', {
+kenyaui.configureSearch('person', {
 	searchProvider: 'kenyaemr',
 	searchFragment: 'search',
 	format: function(object) { return object.name; }

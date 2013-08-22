@@ -1,25 +1,43 @@
 <%
-	ui.decorateWith("kenyaui", "panel", [ heading: ui.format(program) ])
+	ui.decorateWith("kenyaui", "panel", [ heading: ui.format(program), frameOnly: true ])
 %>
-<div class="ke-stack-item">
-<% if (currentEnrollment) { %>
-	<% patientForms.each { form -> %>
-
-		${ ui.includeFragment("kenyaui", "widget/button", [
-				iconProvider: form.iconProvider,
-				icon: form.icon,
-				label: form.name,
-				extra: "Edit form",
-				href: ui.pageLink("kenyaemr", "editProgramForm", [
-						appId: currentApp.id,
-						patientProgramId: currentEnrollment.id,
-						formUuid: form.formUuid,
-						returnUrl: ui.thisUrl()
-				])
-		]) }
-
+<% if (patientForms || enrollments) { %>
+<div class="ke-panel-content">
+	<% if (patientForms) { %>
+	<div class="ke-stack-item">
+		<% patientForms.each { form -> %>
+			${ ui.includeFragment("kenyaui", "widget/button", [
+					iconProvider: form.iconProvider,
+					icon: form.icon,
+					label: form.name,
+					extra: "Edit form",
+					href: ui.pageLink("kenyaemr", "editProgramForm", [
+							appId: currentApp.id,
+							patientProgramId: currentEnrollment.id,
+							formUuid: form.formUuid,
+							returnUrl: ui.thisUrl()
+					])
+			]) }
+		<% } %>
+	</div>
 	<% } %>
 
+	<% enrollments.reverse().each { enrollment -> %>
+		<% if (enrollment.dateCompleted) { %>
+		<div class="ke-stack-item">
+			${ ui.includeFragment("kenyaemr", "program/programCompletion", [ patientProgram: enrollment, showClinicalData: config.showClinicalData ]) }
+		</div>
+		<% } %>
+		<div class="ke-stack-item">
+			${ ui.includeFragment("kenyaemr", "program/programEnrollment", [ patientProgram: enrollment, showClinicalData: config.showClinicalData ]) }
+		</div>
+	<% } %>
+</div>
+<% } %>
+
+<% if (currentEnrollment || patientIsEligible) { %>
+<div class="ke-panel-footer">
+	<% if (currentEnrollment) { %>
 	${ ui.includeFragment("kenyaui", "widget/button", [
 			label: "Discontinue",
 			extra: "Exit from program",
@@ -28,7 +46,7 @@
 			href: ui.pageLink("kenyaemr", "enterForm", [ patientId: patient.id, formUuid: defaultCompletionForm.targetUuid, appId: currentApp.id, returnUrl: ui.thisUrl() ])
 	]) }
 
-<% } else if (patientIsEligible) { %>
+	<% } else if (patientIsEligible) { %>
 
 	${ ui.includeFragment("kenyaui", "widget/button", [
 			label: "Enroll",
@@ -38,15 +56,6 @@
 			href: ui.pageLink("kenyaemr", "enterForm", [ patientId: patient.id, formUuid: defaultEnrollmentForm.targetUuid, appId: currentApp.id, returnUrl: ui.thisUrl() ])
 	]) }
 
-<% } %>
-</div>
-<% enrollments.reverse().each { enrollment -> %>
-	<% if (enrollment.dateCompleted) { %>
-	<div class="ke-stack-item">
-		${ ui.includeFragment("kenyaemr", "program/programCompletion", [ patientProgram: enrollment, showClinicalData: config.showClinicalData ]) }
-	</div>
 	<% } %>
-<div class="ke-stack-item">
-	${ ui.includeFragment("kenyaemr", "program/programEnrollment", [ patientProgram: enrollment, showClinicalData: config.showClinicalData ]) }
 </div>
 <% } %>
