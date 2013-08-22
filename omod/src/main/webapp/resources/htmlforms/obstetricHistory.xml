@@ -49,18 +49,33 @@
 							List all previous pregnancies:
 										<table style="width: 100%; height: 44px;" border="0" align="center">
 											<tr>
-												<td style="background-color: #696969; color: #ffffff;"> </td>
-												<td style="background-color: #696969; color: #ffffff;">Year of Pregnancy (dd/mm/yyyy)</td>
+												<td style="background-color: #696969; color: #ffffff;">Pregnancy Order</td>
+												<td style="background-color: #696969; color: #ffffff;">Year(dd/mm/yyyy)</td>
+												<td style="background-color: #696969; color: #ffffff;">Number of Times ANC Attended</td>
+												<td style="background-color: #696969; color: #ffffff;">Place of delivery</td>
+												<td style="background-color: #696969; color: #ffffff;">Maturity</td>
+												<td style="background-color: #696969; color: #ffffff;">Duration of Labor</td>
+												<td style="background-color: #696969; color: #ffffff;">Type of Delivery</td>
+												<td style="background-color: #696969; color: #ffffff;">Birth Weight (Kg)</td>
+												<td style="background-color: #696969; color: #ffffff;">Sex</td>
 												<td style="background-color: #696969; color: #ffffff;">Outcome</td>
+												<td style="background-color: #696969; color: #ffffff;">Puerperium</td>
 											</tr>
 											<repeat>
 												<template>
 													<obsgroup groupingConceptId="160593AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
 														<tr>
-															<td> </td>
+															<td>Missing Concept</td>
 															<td><obs conceptId="160602AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=""/></td>
+															<td><obs conceptId="1425AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+															<td><obs conceptId="159758AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+															<td><obs conceptId="1409AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+															<td><obs conceptId="159616AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+															<td><obs conceptId="5630AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
+															<td><obs conceptId="5916AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+															<td><obs conceptId="1587AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=""/></td>
 															<td><obs conceptId="159917AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="159035AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159916AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,126127AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,48AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Live Birth,Still Birth,Abortion,Miscarriage"/></td>
-
+															<td>Missing Concept</td>
 														</tr>
 													</obsgroup>
 												</template>

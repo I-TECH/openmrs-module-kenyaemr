@@ -100,76 +100,77 @@
 			<table align="center" width="100%" class="tb1">
 				<tr>
 					<td width="250">
-						Urine:
+						General Condition:
 					</td>
 					<td>
-						<obs conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+						Missing Concept
 					</td>
 				</tr>
 				<tr>
 					<td>
-						H.b.:
+					   Breast
 					</td>
 					<td>
-						<obs conceptId="21AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+						Missing Concept
 					</td>
 				</tr>
 				<tr>
 					<td>
-						Pallor:
+						C/S Scar
 					</td>
 					<td>
-						<obs conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+
 					</td>
 				</tr>
 				<tr>
 					<td>
-						Maturity:
+
 					</td>
 					<td>
-						<obs conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+
 					</td>
 				</tr>
 				<tr>
 					<td>
-						Fundal Height:
+
 					</td>
 					<td>
-						<obs conceptId="1439AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+
 					</td>
 				</tr>
 				<tr>
 					<td>
-						Presentation:
+
 					</td>
 					<td>
-						<obs conceptId="160090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+
 					</td>
 				</tr>
 				<tr>
 					<td>
-						Lie:
+
 					</td>
 					<td>
-						<obs conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+
 					</td>
 				</tr>
 				<tr>
 					<td>
-						Foetal Heart Rate:
+
 					</td>
 					<td>
-						<obs conceptId="1440AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+
 					</td>
 				</tr>
 				<tr>
 					<td>
-						Foetal Movement:
+
 					</td>
 					<td>
-						<obs conceptId="160743AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+
 					</td>
 				</tr>
+
 			</table>
 		</td>
 	</table>
