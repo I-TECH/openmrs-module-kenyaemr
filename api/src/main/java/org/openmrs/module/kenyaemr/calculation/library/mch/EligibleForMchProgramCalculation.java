@@ -26,7 +26,7 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- * Calculates whether patients are eligible for the HIV program
+ * Calculates whether patients are eligible for the MCH program
  */
 public class EligibleForMchProgramCalculation extends BaseEmrCalculation {
 

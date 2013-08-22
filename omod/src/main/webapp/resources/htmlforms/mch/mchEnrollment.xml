@@ -82,9 +82,21 @@
 			eddYear;
 		}
 
-		$j(function() {
+		jq(function() {
+			onLmpChange();
 			getField('lmp.value').change(onLmpChange);
 		});
+
+		beforeSubmit.push(function() {
+			var gravida = getValue('gravida.value');
+			var parity = getValue('parity.value');
+			if (parity &gt; gravida) {
+				getField('parity.error').html('Parity should be less or equal to Gravida.').show();
+		  		return false;
+			}
+			return true;
+		});
+
 	</script>
 
 	<div style="display:none">
@@ -138,7 +150,7 @@
 						ANC No:
 					</td>
 					<td>
-						<obs conceptId="161655AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+						<obs conceptId="161655AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true" />
 					</td>
 				</tr>
 				<tr>
@@ -146,7 +158,7 @@
 						Gravida:
 					</td>
 					<td>
-						<obs conceptId="5624AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+						<obs conceptId="5624AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true" id="gravida" />
 					</td>
 				</tr>
 				<tr>
@@ -154,7 +166,7 @@
 						Parity:
 					</td>
 					<td>
-						<obs conceptId="1053AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+						<obs conceptId="1053AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true" id="parity" />
 					</td>
 				</tr>
 				<tr>
@@ -162,7 +174,15 @@
 						L.M.P:
 					</td>
 					<td>
-						<obs conceptId="1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="lmp"/>
+						<obs conceptId="1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="lmp" required="true"/>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						L.M.P Estimated:
+					</td>
+					<td>
+						Missing Concept
 					</td>
 				</tr>
 				<tr>
