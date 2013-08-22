@@ -45,7 +45,16 @@ public class MchEnrollmentSummaryFragmentController {
 		}
 		Obs lmpObs = EmrUtils.firstObsInProgram(enrollment, Dictionary.getConcept(Dictionary.LAST_MONTHLY_PERIOD));
 		if (lmpObs != null) {
+			dataPoints.put("LMP", lmpObs.getValueDate());
 			dataPoints.put("EDD", CalculationUtils.dateAddDays(lmpObs.getValueDate(), 280));
+		}
+		Obs gravidaObs = EmrUtils.firstObsInProgram(enrollment, Dictionary.getConcept(Dictionary.GRAVIDA));
+		if (gravidaObs != null) {
+			dataPoints.put("Gravida", gravidaObs.getValueNumeric());
+		}
+		Obs parityObs = EmrUtils.firstObsInProgram(enrollment, Dictionary.getConcept(Dictionary.PARITY));
+		if (parityObs != null) {
+			dataPoints.put("Parity", parityObs.getValueNumeric());
 		}
 		model.put("dataPoints", dataPoints);
 		return "view/dataPoints";
