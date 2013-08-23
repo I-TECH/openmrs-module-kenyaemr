@@ -98,7 +98,7 @@
 									<obs conceptId="1410AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
 								</td>
 								<td>
-									<obs conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+									<obs conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" />
 								</td>
 							</tr>
 						</obsgroup>

@@ -179,19 +179,19 @@
 				</tr>
 				<tr>
 					<td>
-						L.M.P Estimated:
-					</td>
-					<td>
-						Missing Concept
-					</td>
-				</tr>
-				<tr>
-					<td>
-						EDD (calculated from L.M.P):
+						EDD (Calculated from L.M.P):
 					</td>
 					<td>
 						<span id="calculated-edd" class="value"></span>
 						<!--<obs conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="edd" allowFutureDates="true"/>-->
+					</td>
+				</tr>
+				<tr>
+					<td>
+						EDD (Ultrasound):
+					</td>
+					<td>
+						<obs conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true"/>
 					</td>
 				</tr>
 			</table>
