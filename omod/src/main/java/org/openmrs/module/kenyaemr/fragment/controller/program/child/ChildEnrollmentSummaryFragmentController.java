@@ -12,7 +12,7 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.fragment.controller.program.hei;
+package org.openmrs.module.kenyaemr.fragment.controller.program.child;
 
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
@@ -26,10 +26,10 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * HEI program discontinuation summary fragment
+ * HEI program enrollment summary fragment
  */
 
-public class HeiCompletionSummaryFragmentController {
+public class ChildEnrollmentSummaryFragmentController {
 
 	public String controller(@FragmentParam("patientProgram") PatientProgram enrollment,
 							 @FragmentParam(value = "encounter", required = false) Encounter encounter,
@@ -37,17 +37,12 @@ public class HeiCompletionSummaryFragmentController {
 							 FragmentModel model) {
 
 		Map<String, Object> dataPoints = new LinkedHashMap<String, Object>();
-
-		dataPoints.put("Completed", enrollment.getDateCompleted());
-
-		if (showClinicalData && enrollment.getOutcome() != null) {
-			dataPoints.put("Outcome", enrollment.getOutcome());
-		}
+		dataPoints.put("Enrolled", enrollment.getDateEnrolled());
 
 		if (encounter != null) {
-			Obs reasonObs = EmrUtils.firstObsInEncounter(encounter, Dictionary.getConcept(Dictionary.REASON_FOR_PROGRAM_DISCONTINUATION));
-			if (reasonObs != null) {
-				dataPoints.put("Reason", reasonObs.getValueCoded());
+			Obs o = EmrUtils.firstObsInEncounter(encounter, Dictionary.getConcept(Dictionary.METHOD_OF_ENROLLMENT));
+			if (o != null) {
+				dataPoints.put("Entry point", o.getValueCoded());
 			}
 		}
 

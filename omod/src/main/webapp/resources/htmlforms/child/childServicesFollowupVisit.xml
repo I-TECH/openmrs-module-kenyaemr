@@ -25,6 +25,15 @@
 		text-align: left;
 		}
 	</style>
+	<script type="text/javascript">
+
+		jq(function(){
+		var age = "<lookup expression="patient.age"/>"
+			jq('#age').html(age+"Y(s)");
+		});
+
+
+	</script>
 	<table border="0" class="hei" align="center">
 		<tbody>
 			<tr>
@@ -51,10 +60,8 @@
 								<td rowspan="2" style="text-align:center;">Weight <br/>(Kgs)</td>
 								<td rowspan="2" style="text-align:center;">Height <br/>(Cms)</td>
 								<td rowspan="2" style="text-align:center;">Infant <br/> Feeding</td>
-								<td colspan="3" style="text-align:center;">Medication Given</td>
+								<td colspan="3" style="text-align:center;">Medication Given<br /> <i>If HIV Exposed</i></td>
 								<td rowspan="2" style="text-align:center;">TB <br />Assessment <br/> Outcome</td>
-								<td rowspan="2" style="text-align:center;">Achieving Milestones? <br/> Normal(N) <br/> Delayed(D) <br/> Regressed(R)</td>
-								<td rowspan="2" style="text-align:center;">Development Milestones<br />by<br />Age</td>
 								<td rowspan="2" style="text-align:center;">Date of Next <br/>Appointment</td>
 
 							</tr>
@@ -74,13 +81,11 @@
 								<td style="text-align:center;">(h)</td>
 								<td style="text-align:center;">(i)</td>
 								<td style="text-align:center;">(j)</td>
-								<td style="text-align:center;"></td>
-								<td style="text-align:center;">(k)</td>
 
 							</tr>
 							<tr>
 								<td><encounterDate id="encounter-date" showTime="false" /></td>
-								<td><obs conceptId="154384AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="3" /><obs conceptId="1732AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1073AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1074AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Wks,Mths" /></td>
+								<td><div id="age" class="value"></div></td>
 								<td><obs conceptId="5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="2" /></td>
 								<td><obs conceptId="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="3" /></td>
 								<td><obs conceptId="1151AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerConceptIds="5526AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1595AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,6046AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Exclusive Breastfeeding(EBF),Exclusive Replacement(ERF),Mixed Feeding(MF)" answerSeparator="&lt;br/&gt;" /></td>
@@ -88,11 +93,87 @@
 								<td><obs conceptId="1276AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="105281AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="" style="checkbox" /></td>
 								<td><obs conceptId="1276AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="461AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="" style="checkbox" /></td>
 								<td><obs conceptId="1659AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerConceptIds="1660AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,142177AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1661AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1662AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1679AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="No signs,Suspect,Confirmed,TB Rx,INH,Not done" answerSeparator="&lt;br/&gt;" /></td>
-								<td><obs conceptId="1189AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerConceptIds="1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,6022AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,6025AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Normal(N),Delayed(D),Regressed(R)" answerSeparator="&lt;br/&gt;"/></td>
-								<td><obs conceptId="1200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerConceptIds="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159630AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159310AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Social Smile,Head Holding/Control,Turns towards the origin of sound,Extends hand to grasp a toy,Sitting,Standing,Walking,Talking" answerSeparator="&lt;br/&gt;"/></td>
 								<td><obs conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" /></td>
 							</tr>
 
+						</tbody>
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="3" style="background-color: #696969; color: #ffffff;text-align:center;">MileStones</td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					<table width="80%" border="0">
+						<tr>
+							<th colspan="2" style="text-align:center;">Development Milestones by Age</th>
+							<th>Achieving Milestones?</th>
+						</tr>
+						<tr>
+							<td>
+								<obs conceptId="1200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" answerConceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Social Smile" />  <br />
+								<obs conceptId="1200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" answerConceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Head Holding/Control" /> <br />
+								<obs conceptId="1200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" answerConceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Turns towards the origin of sound" /> <br />
+								<obs conceptId="1200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" answerConceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Extends hand to grasp a toy" />
+							</td>
+							<td>
+								<obs conceptId="1200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" answerConceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Sitting" />  <br />
+								<obs conceptId="1200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" answerConceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Standing" /><br />
+								<obs conceptId="1200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" answerConceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Walking" /> <br />
+								<obs conceptId="1200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" answerConceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Talking" />
+							</td>
+							<td><obs conceptId="1189AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerConceptIds="1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,6022AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,6025AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Normal(N),Delayed(D),Regressed(R)" answerSeparator="&lt;br/&gt;"/></td>
+						</tr>
+					</table>
+
+				</td>
+
+			</tr>
+			<tr>
+				<td colspan="3" style="background-color: #696969; color: #ffffff;text-align:center;">Early Eye Examination and Deworming </td>
+			</tr>
+			<tr>
+				<td>
+					<table border="1" class="hei">
+						<tbody>
+							<tr>
+								<th colspan="3">EYE CARE ASSESSMENT</th>
+							</tr>
+							<tr>
+								<td>Tetracycline<br /> Eye Ointment<br />(TEO) Give?</td>
+								<td>TEO</td>
+								<td>Only at Birth</td>
+							</tr>
+							<tr>
+								<td>PUPIL</td>
+								<td>Black<br />White</td>
+								<td>If White Refer</td>
+							</tr>
+							<tr>
+								<td>SIGHT</td>
+								<td>Following Objects<br />Not Following Objects</td>
+								<td>Refer to Eye Clinic</td>
+							</tr>
+							<tr>
+								<td>SQUINT<br />(Crossed Eyes)</td>
+								<td>Squint<br />No Squint</td>
+								<td>Refer to Eye Clinic</td>
+							</tr>
+							<tr>
+								<td>ANY Other Problems</td>
+								<td>Yes<br />No</td>
+								<td>Refer to Eye Clinic</td>
+							</tr>
+						</tbody>
+					</table>
+				</td>
+				<td>
+					<table>
+						<tbody>
+							<tr>
+								<th>DEWORMING FROM 1 YEAR</th>
+							</tr>
 						</tbody>
 					</table>
 				</td>

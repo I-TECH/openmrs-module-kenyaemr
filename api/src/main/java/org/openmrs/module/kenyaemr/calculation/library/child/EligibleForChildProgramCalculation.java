@@ -12,7 +12,7 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.calculation.library.hei;
+package org.openmrs.module.kenyaemr.calculation.library.child;
 
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
@@ -24,10 +24,10 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- * Calculates whether patients are eligible for the HEI program
+ * Calculates whether patients are eligible for the Child services  program
  */
 
-public class EligibleForHeiProgramCalculation extends BaseEmrCalculation {
+public class EligibleForChildProgramCalculation extends BaseEmrCalculation {
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> params, PatientCalculationContext context) {
 		CalculationResultMap ret = new CalculationResultMap();

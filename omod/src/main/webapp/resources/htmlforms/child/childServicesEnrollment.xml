@@ -30,8 +30,8 @@
 
 			var birthdate = new Date("<lookup expression="patient.birthdate" />");
 
-			var YES_CONCEPT_ID = 1065;
-			var NO_CONCEPT_ID = 1066;
+			var YES_CONCEPT_ID = 1149;
+			var NO_CONCEPT_ID = 1107;
 
 			function onTransferStatusChange() {
 				if (getValue('transfer-status.value') == NO_CONCEPT_ID) {
@@ -164,6 +164,35 @@
 						</tr>
 					</table>
 
+				</td>
+			</tr>
+			<tr>
+				<td>Child need special care?<obs conceptId="161601AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio"/> </td>
+				<td colspan="2">
+					<table>
+						<tbody>
+							<tr>
+								<th colpan="2">Reasons For  Special Care(<i>Tick as appropriate</i>)</th>
+							</tr>
+							<tr>
+								<td>
+									Birth weight less than 2.5 kg <br />
+									Birth less than 2 years after last birth <br />
+									Fifth or more child<br />
+									Teenage mother <br />
+									Brother or sisters undernourished <br />
+								</td>
+								<td>
+									Multiple births(Twins,triplets)<br />
+									Child in family dead <br />
+									Orphan   <br />
+									Child has disability <br />
+									Parent HIV positive   <br />
+									History/signs of child abuse/neglect
+								</td>
+							</tr>
+						</tbody>
+					</table>
 				</td>
 			</tr>
 			<tr>

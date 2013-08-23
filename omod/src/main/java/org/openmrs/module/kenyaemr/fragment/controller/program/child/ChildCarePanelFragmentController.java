@@ -12,7 +12,7 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.fragment.controller.program.hei;
+package org.openmrs.module.kenyaemr.fragment.controller.program.child;
 
 import org.openmrs.Patient;
 import org.openmrs.module.kenyacore.CoreContext;
@@ -20,9 +20,9 @@ import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 /**
- * Controller for Hei care summary
+ * Controller for child services care summary
  */
-public class HeiCarePanelFragmentController {
+public class ChildCarePanelFragmentController {
 
 	public void controller(@FragmentParam("patient") Patient patient,
 						   @FragmentParam("complete") Boolean complete,
