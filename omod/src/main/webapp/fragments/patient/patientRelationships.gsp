@@ -1,22 +1,25 @@
 <%
 	ui.decorateWith("kenyaui", "panel", [ heading: "Relationships", frameOnly: true ])
 %>
-<div class="ke-panel-content">
-	<script type="text/javascript">
-		function onVoidRelationship(relId) {
-			kenyaui.openConfirmDialog({
-				heading: 'KenyaEMR',
-				message: '${ ui.message("kenyaemr.confirmVoidRelationship") }',
-				okCallback: function() { doRelationshipVoid(relId); }
-			});
-		}
+<script type="text/javascript">
+	function onVoidRelationship(relId) {
+		kenyaui.openConfirmDialog({
+			heading: 'KenyaEMR',
+			message: '${ ui.message("kenyaemr.confirmVoidRelationship") }',
+			okCallback: function() { doRelationshipVoid(relId); }
+		});
+	}
 
-		function doRelationshipVoid(relId) {
-			ui.getFragmentActionAsJson('kenyaemr', 'emrUtils', 'voidRelationship', { relationshipId: relId, reason: 'Data entry error' }, function() {
-				ui.reloadPage();
-			});
-		}
-	</script>
+	function doRelationshipVoid(relId) {
+		ui.getFragmentActionAsJson('kenyaemr', 'emrUtils', 'voidRelationship', { relationshipId: relId, reason: 'Data entry error' }, function() {
+			ui.reloadPage();
+		});
+	}
+</script>
+
+<% if (relationships) { %>
+<div class="ke-panel-content">
+
 	<% relationships.each { rel -> %>
 	<div class="ke-stack-item">
 		${ ui.includeFragment("kenyaui", "widget/buttonlet", [ type: "void",
@@ -38,6 +41,8 @@
 	</div>
 	<% } %>
 </div>
+<% } %>
+
 <div class="ke-panel-footer">
 	${ ui.includeFragment("kenyaui", "widget/buttonlet", [ type: "add", label: "Add",
 			href: ui.pageLink("kenyaemr", "registration/editRelationship", [ patientId: patient.id, appId: currentApp.id, returnUrl: ui.thisUrl() ])

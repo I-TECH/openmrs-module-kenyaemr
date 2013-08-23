@@ -18,6 +18,7 @@ import org.openmrs.Patient;
 import org.openmrs.Person;
 import org.openmrs.Relationship;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.ui.framework.Link;
 import org.openmrs.ui.framework.SimpleObject;
@@ -58,10 +59,23 @@ public class PatientRelationshipsFragmentController {
 				type = relationship.getRelationshipType().getaIsToB();
 			}
 
-			Map<String, Object> params = new HashMap<String, Object>();
-			params.put("patientId", person.getId());
-			String linkUrl = ui.pageLink(pageRequest.getProviderName(), pageRequest.getPageName(), params);
-			Link link = new Link(kenyaUi.formatPersonName(person), linkUrl, null);
+			String genderCode = person.getGender().toLowerCase();
+			String linkUrl, linkIcon;
+
+			if (person.isPatient()) {
+				Map<String, Object> params = new HashMap<String, Object>();
+				params.put("patientId", person.getId());
+				linkUrl = ui.pageLink(pageRequest.getProviderName(), pageRequest.getPageName(), params);
+				linkIcon = ui.resourceLink("kenyaui", "images/glyphs/patient_" + genderCode + ".png");
+			}
+			else {
+				Map<String, Object> params = new HashMap<String, Object>();
+				params.put("personId", person.getId());
+				linkUrl = ui.pageLink(EmrConstants.MODULE_ID, "admin/editAccount", params);
+				linkIcon = ui.resourceLink("kenyaui", "images/glyphs/person_" + genderCode + ".png");
+			}
+
+			Link link = new Link(kenyaUi.formatPersonName(person), linkUrl, linkIcon);
 
 			relationships.add(SimpleObject.create(
 					"relationshipId", relationship.getId(),

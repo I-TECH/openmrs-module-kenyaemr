@@ -4,17 +4,25 @@
 kenyaui.configureSearch('concept', {
 	searchProvider: 'kenyaemr',
 	searchFragment: 'search',
-	format: function(object) { return object.name; }
+	format: function(concept) { return concept.name; }
 });
 kenyaui.configureSearch('location', {
 	searchProvider: 'kenyaemr',
 	searchFragment: 'search',
-	format: function(object) { return object.name + ' <span style="color: #999">' + object.code + '</span>'; }
+	format: function(location) { return location.name + ' <span style="color: #999">' + location.code + '</span>'; }
 });
 kenyaui.configureSearch('person', {
 	searchProvider: 'kenyaemr',
 	searchFragment: 'search',
-	format: function(object) { return object.name; }
+	format: function(person) {
+		var icon = (person.isPatient ? 'patient' : 'person') + '_' + (person.gender == 'M' ? 'm' : 'f');
+		var src = ui.resourceLink('kenyaui', 'images/glyphs/' + icon + '.png');
+		var html = '<img src="' + src + '" class="ke-glyph" /> ' + person.name;
+		if (person.age) {
+			html += ' <span style="color: #999">' + person.age + '</span>';
+		}
+		return html;
+	}
 });
 
 /**

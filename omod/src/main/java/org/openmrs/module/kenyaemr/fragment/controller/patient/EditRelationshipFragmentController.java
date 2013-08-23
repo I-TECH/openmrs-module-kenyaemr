@@ -54,7 +54,7 @@ public class EditRelationshipFragmentController {
 	public Object saveRelationship(@MethodParam("getEditRelationshipForm") @BindParams EditRelationshipForm form,
 								   UiUtils ui) {
 
-		ui.validate(form, form, "");
+		ui.validate(form, form, null);
 		form.save();
 
 		return new SuccessResult("Saved relationship");

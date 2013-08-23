@@ -1,5 +1,5 @@
 <%
-	ui.decorateWith("kenyaui", "panel", [ heading: "Registration", frameOnly: true ])
+	ui.decorateWith("kenyaui", "panel", [ heading: "Information", frameOnly: true ])
 %>
 <div class="ke-panel-content">
 	<div class="ke-stack-item">

@@ -14,7 +14,7 @@
 <div class="ke-patientheader">
 	<div style="float: left; width: 35%;">
 		<div style="float: left; padding-right: 5px">
-			<img width="32" height="32" src="${ ui.resourceLink("kenyaui", "images/patient_" + patient.gender.toLowerCase() + ".png") }"/>
+			<img width="32" height="32" src="${ ui.resourceLink("kenyaui", "images/buttons/patient_" + patient.gender.toLowerCase() + ".png") }"/>
 		</div>
 		<span class="ke-patient-name">${ kenyaUi.formatPersonName(patient) }</span><br/>
 		<span class="ke-patient-gender">${ patient.gender == 'M' ? "Male" : patient.gender == 'F' ? 'Female' : patient.gender }</span>,
