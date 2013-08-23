@@ -30,6 +30,17 @@
 		}
 	</style>
 
+	<script type="text/javascript">
+		beforeSubmit.push(function() {
+			var fundalHeight = getValue('fundal.value');
+			if (fundalHeight &lt; 0 || fundalHeight &gt; 40) {
+				getField('fundal.error').html('Fundal Height should be between 0 and 40.').show();
+				return false;
+			}
+			return true;
+		});
+	</script>
+
 	<div style="display:none">
 		Provider:
 		<encounterProviderAndRole encounterRole="a0b03050-c99b-11e0-9572-0800200c9a66" default="currentUser"
@@ -185,7 +196,7 @@
 						Urine:
 					</td>
 					<td>
-						<obs conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+						Follow up with Patrick
 					</td>
 				</tr>
 				<tr>
@@ -214,10 +225,10 @@
 				</tr>
 				<tr>
 					<td>
-						Fundal Height:
+						Fundal Height (Weeks):
 					</td>
 					<td>
-						<obs conceptId="1439AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+						<obs conceptId="1439AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="fundal"/>
 					</td>
 				</tr>
 				<tr>
@@ -225,7 +236,8 @@
 						Presentation:
 					</td>
 					<td>
-						<obs conceptId="160090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+						<obs conceptId="160090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 answerConceptIds="139814AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160091AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
 					</td>
 				</tr>
 				<tr>
@@ -249,7 +261,8 @@
 						Foetal Movement:
 					</td>
 					<td>
-						<obs conceptId="160743AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+						<obs conceptId="160743AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 answerConceptIds="1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,113377AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1452AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
 					</td>
 				</tr>
 			</table>
