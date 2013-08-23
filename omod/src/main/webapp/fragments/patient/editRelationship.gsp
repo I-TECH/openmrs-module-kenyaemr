@@ -23,11 +23,11 @@
 
 	<div class="ke-panel-content">
 
-	<div class="ke-form-globalerrors" style="display: none"></div>
+		<div class="ke-form-globalerrors" style="display: none"></div>
 
-	<% rows.each { %>
-	${ ui.includeFragment("kenyaui", "widget/rowOfFields", [ fields: it ]) }
-	<% } %>
+		<% rows.each { %>
+		${ ui.includeFragment("kenyaui", "widget/rowOfFields", [ fields: it ]) }
+		<% } %>
 
 	</div>
 	<div class="ke-panel-footer">

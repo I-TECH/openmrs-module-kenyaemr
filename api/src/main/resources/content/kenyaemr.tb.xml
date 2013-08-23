@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+	<!-- ===================== Program ===================== -->
+
+	<bean id="kenyaemr.program.tb" class="org.openmrs.module.kenyacore.program.ProgramDescriptor">
+		<property name="targetUuid" value="9f144a34-3a4a-44a9-8486-6b7af6cc64f6" />
+		<property name="eligibilityCalculation" value="org.openmrs.module.kenyaemr.calculation.library.tb.EligibleForTbProgramCalculation" />
+		<property name="defaultEnrollmentForm" ref="kenyaemr.form.tbEnrollment" />
+		<property name="defaultCompletionForm" ref="kenyaemr.form.tbCompletion" />
+		<property name="visitForms">
+			<set>
+				<ref bean="kenyaemr.form.tbFollowupVisit" />
+			</set>
+		</property>
+		<property name="fragments">
+			<map>
+				<entry key="enrollment-summary" value="kenyaemr:program/tb/tbEnrollmentSummary" />
+				<entry key="care-panel" value="kenyaemr:program/tb/tbCarePanel" />
+				<entry key="completion-summary" value="kenyaemr:program/tb/tbCompletionSummary" />
+			</map>
+		</property>
+		<property name="order" value="200" />
+	</bean>
+
+	<!-- ===================== Identifiers ===================== -->
+
+	<!-- District Registration Number -->
+	<bean id="kenyaemr.identifier.tbDistrictRegistration" class="org.openmrs.module.kenyacore.identifier.IdentifierDescriptor">
+		<property name="targetUuid" value="d8ee3b8c-a8fc-4d6b-af6a-9423be5f8906" />
+		<property name="order" value="200" />
+	</bean>
+
+	<!-- ===================== Forms ===================== -->
+
+	<!-- TB Enrollment -->
+	<bean id="kenyaemr.form.tbEnrollment" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="89994550-9939-40f3-afa6-173bce445c79" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.registration" />
+				<ref bean="kenyaemr.app.intake" />
+				<ref bean="kenyaemr.app.clinician" />
+				<ref bean="kenyaemr.app.chart" />
+			</set>
+		</property>
+		<property name="icon" value="kenyaui:forms/generic.png" />
+		<property name="htmlform" value="kenyaemr:tb/tbEnrollment.xml" />
+	</bean>
+
+	<!-- TB Followup Visit -->
+	<bean id="kenyaemr.form.tbFollowupVisit" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="2daabb77-7ad6-4952-864b-8d23e109c69d" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.clinician" />
+				<ref bean="kenyaemr.app.chart" />
+			</set>
+		</property>
+		<property name="icon" value="kenyaui:forms/generic.png" />
+		<property name="htmlform" value="kenyaemr:tb/tbFollowupVisit.xml" />
+		<property name="order" value="202010" />
+	</bean>
+
+	<!-- TB Completion -->
+	<bean id="kenyaemr.form.tbCompletion" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="4b296dd0-f6be-4007-9eb8-d0fd4e94fb3a" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.registration" />
+				<ref bean="kenyaemr.app.intake" />
+				<ref bean="kenyaemr.app.clinician" />
+				<ref bean="kenyaemr.app.chart" />
+			</set>
+		</property>
+		<property name="icon" value="kenyaui:forms/completion.png" />
+		<property name="htmlform" value="kenyaemr:tb/tbDiscontinuation.xml" />
+	</bean>
+
+</beans>

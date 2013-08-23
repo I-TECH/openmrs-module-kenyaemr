@@ -36,13 +36,21 @@ public class PersonToSimpleObjectConverter implements Converter<Person, SimpleOb
 	@Override
 	public SimpleObject convert(Person person) {
 		SimpleObject ret = new SimpleObject();
-		ret.put("id", person.getId());
-		ret.put("gender", person.getGender());
 
-		// Add formatted name, age and birth date values
+		ret.put("id", person.getId());
 		ret.put("name", kenyaUi.formatPersonName(person));
-		ret.put("age", kenyaUi.formatPersonAge(person));
-		ret.put("birthdate", kenyaUi.formatPersonBirthdate(person));
+		ret.put("gender", person.getGender());
+		ret.put("isPatient", person.isPatient());
+
+		// Add formatted age and birth date values
+		if (person.getBirthdate() != null) {
+			ret.put("birthdate", kenyaUi.formatPersonBirthdate(person));
+			ret.put("age", kenyaUi.formatPersonAge(person));
+		} else {
+			ret.put("birthdate", null);
+			ret.put("age", null);
+		}
+
 		return ret;
 	}
 }
