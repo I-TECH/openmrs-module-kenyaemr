@@ -74,97 +74,49 @@
 				</tr>
 			</table>
 			<br/>
+			<fieldset>
 			<legend>General</legend>
 			<table align="center" width="100%" class="tb1">
 				<tr>
-					<td width="250">
-						Tetanus Toxoid 1:
-					</td>
-					<td>
-						Missing Concept
-					</td>
+					<td style="background-color: #696969; color: #ffffff;">Vaccine</td>
+					<td style="background-color: #696969; color: #ffffff;">Sequence No.</td>
+					<td style="background-color: #696969; color: #ffffff;">Date</td>
+					<td style="background-color: #696969; color: #ffffff;">Next <Visit></Visit></td>
 				</tr>
-				<tr>
-					<td>
-						Tetanus Toxoid 2:
-					</td>
-					<td>
-						Missing Concept
-					</td>
-				</tr>
-				<tr>
-					<td>
-						Tetanus Toxoid 3:
-					</td>
-					<td>
-						Missing Concept
-					</td>
-				</tr>
-				<tr>
-					<td>
-						Tetanus Toxoid 4:
-					</td>
-					<td>
-						Missing Concept
-					</td>
-				</tr>
-				<tr>
-					<td>
-						Tetanus Toxoid 5:
-					</td>
-					<td>
-						Missing Concept
-					</td>
-				</tr>
-				<tr>
-					<td>
-						Malaria Prophylaxis (IPT1):
-					</td>
-					<td>
-						Missing Concept
-					</td>
-				</tr>
-				<tr>
-					<td>
-						Malaria Prophylaxis (IPT2):
-					</td>
-					<td>
-						Missing Concept
-					</td>
-				</tr>
-				<tr>
-					<td>
-						Malaria Prophylaxis (IPT3):
-					</td>
-					<td>
-						Missing Concept
-					</td>
-				</tr>
-				<tr>
-					<td>
-						Iron and Folate:
-					</td>
-					<td>
-						Missing Concept
-					</td>
-				</tr>
-				<tr>
-					<td>
-						Deworming (Mebendazole 500gms):
-					</td>
-					<td>
-						Missing Concept
-					</td>
-				</tr>
-				<tr>
-					<td>
-						Insecticide Treated Net (ITN):
-					</td>
-					<td>
-						Missing Concept
-					</td>
-				</tr>
+				<repeat>
+					<template>
+						<obsgroup groupingConceptId="160593AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+							<tr>
+								<td>
+									<obs conceptId="984AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										 answerConceptIds="84879AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159610AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,104677AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,79413AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160428AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+								</td>
+								<td>
+									<obs conceptId="1418AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+								</td>
+								<td>
+									<obs conceptId="1410AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+								</td>
+								<td>
+									<obs conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+								</td>
+							</tr>
+						</obsgroup>
+					</template>
+					<render n="1" concept=" "/>
+					<render n="2" concept=" "/>
+					<render n="3" concept=" "/>
+					<render n="4" concept=" "/>
+					<render n="5" concept=" "/>
+					<render n="6" concept=" "/>
+					<render n="7" concept=" "/>
+					<render n="8" concept=" "/>
+					<render n="9" concept=" "/>
+					<render n="10" concept=" "/>
+					<render n="11" concept=" "/>
+				</repeat>
 			</table>
+			</fieldset>
 			<br/>
 			<legend>HIV</legend>
 			<table align="center" width="100%" class="tb1">
