@@ -47,15 +47,15 @@ public class PatientRelationshipsFragmentController {
 		List<SimpleObject> relationships = new ArrayList<SimpleObject>();
 		for (Relationship relationship : Context.getPersonService().getRelationshipsByPerson(patient)) {
 			Person person = null;
-			String rel = null;
+			String type = null;
 
 			if (patient.equals(relationship.getPersonA())) {
 				person = relationship.getPersonB();
-				rel = relationship.getRelationshipType().getbIsToA();
+				type = relationship.getRelationshipType().getbIsToA();
 			}
 			else if (patient.equals(relationship.getPersonB())) {
 				person = relationship.getPersonA();
-				rel = relationship.getRelationshipType().getaIsToB();
+				type = relationship.getRelationshipType().getaIsToB();
 			}
 
 			Map<String, Object> params = new HashMap<String, Object>();
@@ -63,7 +63,13 @@ public class PatientRelationshipsFragmentController {
 			String linkUrl = ui.pageLink(pageRequest.getProviderName(), pageRequest.getPageName(), params);
 			Link link = new Link(kenyaUi.formatPersonName(person), linkUrl, null);
 
-			relationships.add(SimpleObject.create("relationship", rel, "link", link));
+			relationships.add(SimpleObject.create(
+					"relationshipId", relationship.getId(),
+					"type", type,
+					"personLink", link,
+					"startDate", relationship.getStartDate(),
+					"endDate", relationship.getEndDate()
+			));
 		}
 
 		model.addAttribute("patient", patient);

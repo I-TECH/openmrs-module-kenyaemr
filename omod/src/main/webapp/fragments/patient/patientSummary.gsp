@@ -1,23 +1,23 @@
 <%
-	ui.decorateWith("kenyaui", "panel", [ heading: "Patient Summary" ])
+	ui.decorateWith("kenyaui", "panel", [ heading: "Registration", frameOnly: true ])
 %>
-<div class="ke-stack-item">
-	<% if (recordedAsDeceased) { %>
-	<div class="ke-warning" style="margin-bottom: 5px">
-		Patient has been recorded as deceased in a program form. Please update the registration form.
+<div class="ke-panel-content">
+	<div class="ke-stack-item">
+		<% if (recordedAsDeceased) { %>
+		<div class="ke-warning" style="margin-bottom: 5px">
+			Patient has been recorded as deceased in a program form. Please update the registration form.
+		</div>
+		<% } %>
+
+		${ ui.includeFragment("kenyaui", "widget/buttonlet", [ type: "edit", href: ui.pageLink("kenyaemr", "registration/editPatient", [ patientId: patient.id, returnUrl: ui.thisUrl() ]) ]) }
+
+		<% patient.activeAttributes.each { %>
+		${ ui.includeFragment("kenyaui", "widget/dataPoint", [ label: ui.format(it.attributeType), value: it ]) }
+		<% } %>
 	</div>
-	<% } %>
-
-	${ ui.includeFragment("kenyaui", "widget/editButton", [ href: ui.pageLink("kenyaemr", "registration/editPatient", [ patientId: patient.id, returnUrl: ui.thisUrl() ]) ]) }
-
-	${ ui.includeFragment("kenyaui", "widget/dataPoint", [ label: "Name", value: kenyaUi.formatPersonName(patient) ]) }
-
-	<% patient.activeAttributes.each { %>
-	${ ui.includeFragment("kenyaui", "widget/dataPoint", [ label: ui.format(it.attributeType), value: it ]) }
-	<% } %>
 </div>
 <% if (forms) { %>
-<div class="ke-stack-item">
+<div class="ke-panel-footer">
 	<% forms.each { form -> %>
 		${ ui.includeFragment("kenyaui", "widget/button", [
 				iconProvider: form.iconProvider,
@@ -33,4 +33,5 @@
 		]) }
 	<% } %>
 </div>
+
 <% } %>

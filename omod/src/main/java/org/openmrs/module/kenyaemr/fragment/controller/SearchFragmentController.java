@@ -28,6 +28,7 @@ import org.openmrs.User;
 import org.openmrs.Visit;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.LocationService;
+import org.openmrs.api.PersonService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyacore.CoreConstants;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
@@ -117,6 +118,36 @@ public class SearchFragmentController {
 		}
 
 		return simplePatients;
+	}
+
+	/**
+	 * Gets a person by their id
+	 * @param person the person
+	 * @param ui the UI utils
+	 * @return the simplified person
+	 */
+	public SimpleObject person(@RequestParam("id") Person person, UiUtils ui) {
+		return ui.simplifyObject(person);
+	}
+
+	/**
+	 * Searches for persons by name
+	 * @param query the name
+	 * @param ui the UI utils
+	 * @return the simple patients
+	 */
+	public List<SimpleObject> persons(@RequestParam(value = "q", required = false) String query,
+									  UiUtils ui) {
+
+		List<Person> results = Context.getPersonService().getPeople(query, null);
+
+		// Convert to simple objects
+		List<SimpleObject> ret = new ArrayList<SimpleObject>();
+		for (Person p : results) {
+			ret.add(ui.simplifyObject(p));
+		}
+		return ret;
+
 	}
 
 	/**
