@@ -12,6 +12,7 @@ def returnUrl = config.returnUrl ?: ui.thisUrl()
 	position: absolute;
 	top: 0px;
 	right: 0px;
+	padding: 5px;
 }
 
 .html-form-edit-history {
@@ -34,8 +35,7 @@ def returnUrl = config.returnUrl ?: ui.thisUrl()
 <script type="text/javascript" src="/${ contextPath }/moduleResources/htmlformentry/htmlFormEntry.js"></script>
 <link href="/${ contextPath }/moduleResources/htmlformentry/htmlFormEntry.css" type="text/css" rel="stylesheet" />
 
-<div id="${ config.id }" <% if (config.style) { %>style="${ config.style }"<% } %>>
-</div>
+<div id="${ config.id }" <% if (config.style) { %>style="${ config.style }"<% } %>></div>
 
 <script type="text/javascript">
 	\$j = jQuery;
@@ -95,10 +95,10 @@ def returnUrl = config.returnUrl ?: ui.thisUrl()
 				toShow += '<div class="html-form-buttons">';
 				if (payload.editButtonLabel) {
 					var onClick = "location.href = '" + ui.pageLink('kenyaemr', 'editForm', { encounterId: payload.encounterId, appId: '${ currentApp.id }', returnUrl: '${ returnUrl }' }) + "';";
-					toShow += '<input type="button" value="' + ui.escapeHtmlAttribute(payload.editButtonLabel) + '" onClick="' + onClick + '"/>';
+					toShow += ' <input type="button" value="' + ui.escapeHtmlAttribute(payload.editButtonLabel) + '" onClick="' + onClick + '"/>';
 				}
 				if (payload.deleteButtonLabel) {
-					toShow += '<input class="delete-button" type="button" value="' + ui.escapeHtmlAttribute(payload.deleteButtonLabel) + '"/>';
+					toShow += ' <input class="delete-button" type="button" value="' + ui.escapeHtmlAttribute(payload.deleteButtonLabel) + '"/>';
 				}
 				toShow += '</div>';
 			}
