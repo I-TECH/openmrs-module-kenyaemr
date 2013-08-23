@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+	<!-- ===================== Program ===================== -->
+
+	<bean id="kenyaemr.program.hei" class="org.openmrs.module.kenyacore.program.ProgramDescriptor">
+		<property name="targetUuid" value="c2ecdf11-97cd-432a-a971-cfd9bd296b83" />
+		<property name="eligibilityCalculation" value="org.openmrs.module.kenyaemr.calculation.library.hei.EligibleForHeiProgramCalculation" />
+		<property name="defaultEnrollmentForm" ref="kenyaemr.form.heiEnrollment" />
+		<property name="defaultCompletionForm" ref="kenyaemr.form.heiCompletion" />
+		<property name="patientForms">
+			<set>
+				<ref bean="kenyaemr.form.heiImmunization" />
+				<ref bean="kenyaemr.form.heiFollowupVisit" />
+			</set>
+		</property>
+		<property name="visitForms">
+			<set>
+			</set>
+		</property>
+		<property name="fragments">
+			<map>
+				<entry key="enrollment-summary" value="kenyaemr:program/hei/heiEnrollmentSummary" />
+				<entry key="care-panel" value="kenyaemr:program/hei/heiCarePanel" />
+				<entry key="completion-summary" value="kenyaemr:program/hei/heiCompletionSummary" />
+			</map>
+		</property>
+		<property name="order" value="400" />
+	</bean>
+
+	<!-- ===================== Identifiers ===================== -->
+
+	<!-- HEI unique Number -->
+	<bean id="kenyaemr.identifier.hei" class="org.openmrs.module.kenyacore.identifier.IdentifierDescriptor">
+		<property name="targetUuid" value="0691f522-dd67-4eeb-92c8-af5083baf338" />
+		<property name="order" value="500" />
+	</bean>
+
+	<!-- ===================== Forms ===================== -->
+
+	<!-- HEI Enrollment -->
+	<bean id="kenyaemr.form.heiEnrollment" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="8553d869-bdc8-4287-8505-910c7c998aff" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.registration" />
+				<ref bean="kenyaemr.app.intake" />
+				<ref bean="kenyaemr.app.clinician" />
+				<ref bean="kenyaemr.app.chart" />
+			</set>
+		</property>
+		<property name="icon" value="kenyaui:forms/generic.png" />
+		<property name="htmlform" value="kenyaemr:hei/heiEnrollment.xml" />
+	</bean>
+
+	<!-- HEI Follow up -->
+	<bean id="kenyaemr.form.heiFollowupVisit" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="755b59e6-acbb-4853-abaf-be302039f902" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.registration" />
+				<ref bean="kenyaemr.app.intake" />
+				<ref bean="kenyaemr.app.clinician" />
+				<ref bean="kenyaemr.app.chart" />
+			</set>
+		</property>
+		<property name="icon" value="kenyaui:forms/generic.png" />
+		<property name="htmlform" value="kenyaemr:hei/heiFollowupVisit.xml" />
+	</bean>
+
+	<!-- HEI Immunization -->
+	<bean id="kenyaemr.form.heiImmunization" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="b4f3859e-861c-4a63-bdff-eb7392030d47" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.registration" />
+				<ref bean="kenyaemr.app.intake" />
+				<ref bean="kenyaemr.app.clinician" />
+				<ref bean="kenyaemr.app.chart" />
+			</set>
+		</property>
+		<property name="icon" value="kenyaui:forms/generic.png" />
+		<property name="htmlform" value="kenyaemr:hei/heiImmunization.xml" />
+	</bean>
+
+	<!-- HEI Completion -->
+	<bean id="kenyaemr.form.heiCompletion" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="1dd02c43-904b-4206-8378-7b1a8414c326" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.registration" />
+				<ref bean="kenyaemr.app.intake" />
+				<ref bean="kenyaemr.app.clinician" />
+				<ref bean="kenyaemr.app.chart" />
+			</set>
+		</property>
+		<property name="icon" value="kenyaui:forms/generic.png" />
+		<property name="htmlform" value="kenyaemr:hei/heiDiscontinuation.xml" />
+	</bean>
+
+</beans>
