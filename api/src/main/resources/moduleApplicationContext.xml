@@ -153,7 +153,6 @@
 		</property>
 	</bean>
 
-<<<<<<< HEAD
 	<!-- ===================== Program descriptors ===================== -->
 
 	<!-- HIV -->
@@ -616,7 +615,7 @@
 		<property name="htmlform" value="kenyaemr:mch/mchDiscontinuation.xml" />
 	</bean>
 
-	<!-- HEI Enrollment -->
+	<!-- Child Services  Enrollment -->
 	<bean id="kenyaemr.form.childServicesEnrollment" class="org.openmrs.module.kenyacore.form.FormDescriptor">
 		<property name="targetUuid" value="8553d869-bdc8-4287-8505-910c7c998aff" />
 		<property name="apps">
@@ -646,7 +645,7 @@
 		<property name="htmlform" value="kenyaemr:child/childServicesFollowupVisit.xml" />
 	</bean>
 
-	<!-- HEI immunization -->
+	<!-- Child immunization -->
 	<bean id="kenyaemr.form.childImmunization" class="org.openmrs.module.kenyacore.form.FormDescriptor">
 		<property name="targetUuid" value="b4f3859e-861c-4a63-bdff-eb7392030d47" />
 		<property name="apps">
@@ -692,7 +691,7 @@
 		<property name="order" value="100030" />
 	</bean>
 
-	<!-- Hei Outcomes -->
+	<!-- Hei child Outcomes -->
 
 	<bean id="kenyaemr.form.heioutcomes" class="org.openmrs.module.kenyacore.form.FormDescriptor">
 		<property name="targetUuid" value="be198dbb-8cc2-4d8c-97b7-19d4db9419b0" />
@@ -708,8 +707,6 @@
 		<property name="htmlform" value="kenyaemr:child/heiOutcomes.xml" />
 	</bean>
 
-=======
->>>>>>> 770a4bb82e4ad8ae1dc0ae61e89368168473878b
 	<!-- Module service -->
 
 	<bean id="kenyaEmrService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
