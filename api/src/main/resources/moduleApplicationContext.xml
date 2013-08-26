@@ -44,6 +44,7 @@
 			<set>
 				<ref bean="kenyaemr.form.hivFamilyHistory" />
 				<ref bean="kenyaemr.form.obstetricHistory" />
+				<ref bean="kenyaemr.form.medicalAndSurgicalHistory" />
 			</set>
 		</property>
 		<property name="generalVisitForms">
