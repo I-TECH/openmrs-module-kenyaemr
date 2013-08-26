@@ -30,8 +30,8 @@
 
 			var birthdate = new Date("<lookup expression="patient.birthdate" />");
 
-			var YES_CONCEPT_ID = 1149;
-			var NO_CONCEPT_ID = 1107;
+			var YES_CONCEPT_ID = 1065;
+			var NO_CONCEPT_ID = 1066;
 
 			function onTransferStatusChange() {
 				if (getValue('transfer-status.value') == NO_CONCEPT_ID) {
@@ -87,6 +87,17 @@
 					jq('#mohter-on-art-at-enrollment1 :input').prop('disabled', true);
 				}
 			}
+			function needSpecialCare(){
+				if (getValue('specialCare.value') == NO_CONCEPT_ID) {
+					jq('#reasonsForSpecialCare :input').prop('disabled', true);
+				}
+				else if (getValue('specialCare.value') == YES_CONCEPT_ID) {
+					jq('#reasonsForSpecialCare :input').prop('disabled', false);
+				}
+				else {
+					jq('#reasonsForSpecialCare :input').prop('disabled', true);
+				}
+			}
 		jq(function() {
 			//get cohort
 			getCohort()
@@ -99,9 +110,10 @@
 			jq('#pmtctDrugsReceived input').click(pmtctDrugsForMother);
 			onARTatEnrollment();
 			jq('#onART input').click(onARTatEnrollment);
+			needSpecialCare();
+			jq('#specialCare input').click(needSpecialCare);
 		});
 	</script>
-
 	<table class="hei" align="center">
 		<tbody>
 			<tr>
@@ -111,21 +123,24 @@
 			</tr>
 			<tr>
 				<td colspan="3">
-					<table border="0" width="100%">
-						<tr>
-							<td>Enrollment Date <encounterDate id="encounter-date" showTime="true" /></td>
-							<td>Name of the Facility <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" /></td>
-							<td>Enrolled by: <encounterProviderAndRole encounterRole="a0b03050-c99b-11e0-9572-0800200c9a66" default="currentUser" required="true" /></td>
-						</tr>
-						<tr><td colspan="3"><hr /></td></tr>
-						<tr>
-							<td> Cohort by month and year of Birth:   MM-YYYY</td>
-							<td><span id="calculated-cohort" class="value"></span></td>
-							<td></td>
-						</tr>
-					</table>
-
+					<div class="ke-form-header">
+						<table border="0" width="100%">
+							<tr>
+								<td>Enrollment Date <encounterDate id="encounter-date" showTime="true" /></td>
+								<td>Name of the Facility <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" /></td>
+								<td>Enrolled by: <encounterProviderAndRole encounterRole="a0b03050-c99b-11e0-9572-0800200c9a66" default="currentUser" required="true" /></td>
+							</tr>
+						</table>
+					</div>
 				</td>
+			</tr>
+
+			<tr>
+				<td colspan="3">
+					Cohort by month and year of Birth:   MM-YYYY
+					<span id="calculated-cohort" class="value"></span>
+				</td>
+
 			</tr>
 			<tr>
 				<td colspan="3" style="background-color: #696969; color: #ffffff;">
@@ -152,24 +167,25 @@
 							<td><obs conceptId="1409AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /> </td>
 							<td>Date first seen</td>
 							<td><obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/> </td>
-							<td>Birth Notification Number</td>
-							<td><obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
 						</tr>
 						<tr>
-
-							<td colspan="6">Certificate of Birth Registration Number:(after acquiring a certificate) </td>
-						</tr>
-						<tr>
-							<td colspan="6"><obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="70"/></td>
+							<td>
+								Birth Notification Number<br />
+								<obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+							</td>
+							<td></td>
+							<td colspan="5">
+								Certificate of Birth Registration Number:(after acquiring a certificate) <br />
+								<obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="70"/></td>
 						</tr>
 					</table>
 
 				</td>
 			</tr>
 			<tr>
-				<td>Child need special care?<obs conceptId="161601AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio"/> </td>
+				<td>Child need special care?<obs conceptId="161601AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" id="specialCare"/> </td>
 				<td colspan="2">
-					<table>
+					<table id="reasonsForSpecialCare">
 						<tbody>
 							<tr>
 								<th colpan="2">Reasons For  Special Care(<i>Tick as appropriate</i>)</th>
@@ -279,7 +295,7 @@
 			</tr>
 			<tr>
 				<td> On ART at enrollment of infant
-					<obs conceptId="1147AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1149AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" id="onART"/>
+					<obs conceptId="1147AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" id="onART"/>
 				</td>
 					<td id="mohter-on-art-at-enrollment">Enter regimen <obs conceptId="1088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
 					<td id="mohter-on-art-at-enrollment1">Parent's CCC No. <obs conceptId="160752AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="15"/></td>

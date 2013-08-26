@@ -33,7 +33,7 @@
 				<td>Location  <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete"/> </td>
 			</tr>
 			<tr>
-				<td colspan="2"><b>HEI FINAL OUTCOME</b></td>
+				<td colspan="2"><b>FINAL OUTCOME</b></td>
 			</tr>
 			<tr>
 				<td>Exit Date</td>

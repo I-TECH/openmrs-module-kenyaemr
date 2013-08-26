@@ -42,7 +42,7 @@ public class EligibleForChildProgramCalculation extends BaseEmrCalculation {
 	}
 
 	private boolean isEligible(Integer ageInMonths) {
-		if (ageInMonths != null && ageInMonths <= 18) {
+		if (ageInMonths != null && ageInMonths <= 60) {
 			return true;
 		}
 		return false;
