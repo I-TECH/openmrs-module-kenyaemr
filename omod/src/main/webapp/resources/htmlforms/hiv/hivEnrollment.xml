@@ -91,7 +91,7 @@
 		<table style="width: 100%">
 			<tr>
 				<td>Enrollment date: <encounterDate id="encounter-date" showTime="true" /></td>
-				<td>Enrolled by: <encounterProviderAndRole encounterRole="a0b03050-c99b-11e0-9572-0800200c9a66" default="currentUser" required="true" /></td>
+				<td>Enrolled by: <encounterProvider default="currentUser" /></td>
 				<td>Enrolled at: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" /></td>
 			</tr>
 		</table>

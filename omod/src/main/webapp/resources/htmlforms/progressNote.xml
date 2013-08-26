@@ -19,8 +19,9 @@
 		}
 	</style>
 
+	<!-- Should always be the current user -->
 	<div style="display:none">
-		Provider: <encounterProviderAndRole encounterRole="a0b03050-c99b-11e0-9572-0800200c9a66" default="currentUser" required="true" />
+		<encounterProvider default="currentUser" />
 	</div>
 
 	<div class="ke-form-header">

@@ -200,9 +200,9 @@
 		});
 	</script>
 
-	<!-- For now HFE requires encounter provider, so set theis to the "Unknown Provider" and hide it (see HTML-471) -->
-	<div style="display: none">
-		<encounterProviderAndRole encounterRole="a0b03050-c99b-11e0-9572-0800200c9a66" default="ae01b8ff-a4cc-4012-bcf7-72359e852e14"  />
+	<!-- For now HFE requires encounter provider, so we set this to the "Unknown Provider" and hide it (see HTML-471) -->
+	<div style="display:none">
+		<encounterProvider default="currentUser" />
 	</div>
 
 	<div class="ke-form-content">
