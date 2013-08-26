@@ -3,9 +3,10 @@
 
 	def dataPoints = []
 
-//	dataPoints << [label: "LMP", value: calculations.tbTreatmentNumber]
-//	dataPoints << [label: "Gestation", value: calculations.tbDiseaseClassification]
-//	dataPoints << [label: "Gravida", value: calculations.tbPatientClassification]
+	dataPoints << [label: "Gestation", value: calculations.gestation]
+	dataPoints << [label: "On PMTCT", value: calculations.onPmtct]
+	dataPoints << [label: "On ARV", value: calculations.onArv]
+
 %>
 
 <div class="ke-stack-item">

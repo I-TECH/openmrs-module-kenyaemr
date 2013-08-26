@@ -24,7 +24,7 @@
 			<tr>
 				<td align="left" width="40%" valign="top">
 					<span class="ke-icon">
-						<img width="32" height="32" src="${ ui.resourceLink("kenyaui", "images/patient_" + it.patient.gender.toLowerCase() + ".png") }" alt="" />
+						<img width="32" height="32" src="${ ui.resourceLink("kenyaui", "images/buttons/patient_" + it.patient.gender.toLowerCase() + ".png") }" alt="" />
 					</span>
 					
 					<b>${ it.patient.name }</b><br />

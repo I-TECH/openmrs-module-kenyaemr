@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+	<!-- ===================== Program ===================== -->
+
+	<bean id="kenyaemr.program.hiv" class="org.openmrs.module.kenyacore.program.ProgramDescriptor">
+		<property name="targetUuid" value="dfdc6d40-2f2f-463d-ba90-cc97350441a8" />
+		<property name="eligibilityCalculation" value="org.openmrs.module.kenyaemr.calculation.library.hiv.EligibleForHivProgramCalculation" />
+		<property name="defaultEnrollmentForm" ref="kenyaemr.form.hivEnrollment" />
+		<property name="defaultCompletionForm" ref="kenyaemr.form.hivCompletion" />
+		<property name="visitForms">
+			<set>
+				<ref bean="kenyaemr.form.hivClinicalEncounterAddendum" />
+				<ref bean="kenyaemr.form.tbScreening" />
+			</set>
+		</property>
+		<property name="fragments">
+			<map>
+				<entry key="enrollment-summary" value="kenyaemr:program/hiv/hivEnrollmentSummary" />
+				<entry key="care-panel" value="kenyaemr:program/hiv/hivCarePanel" />
+				<entry key="completion-summary" value="kenyaemr:program/hiv/hivCompletionSummary" />
+			</map>
+		</property>
+		<property name="order" value="100" />
+	</bean>
+
+	<!-- ===================== Identifiers ===================== -->
+
+	<!-- Unique Patient Number -->
+	<bean id="kenyaemr.identifier.upn" class="org.openmrs.module.kenyacore.identifier.IdentifierDescriptor">
+		<property name="targetUuid" value="05ee9cf4-7242-4a17-b4d4-00f707265c8a" />
+		<property name="order" value="100" />
+	</bean>
+
+	<!-- ===================== Forms ===================== -->
+
+	<!-- HIV Enrollment -->
+	<bean id="kenyaemr.form.hivEnrollment" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="e4b506c1-7379-42b6-a374-284469cba8da" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.registration" />
+				<ref bean="kenyaemr.app.intake" />
+				<ref bean="kenyaemr.app.clinician" />
+				<ref bean="kenyaemr.app.chart" />
+			</set>
+		</property>
+		<property name="icon" value="kenyaui:forms/generic.png" />
+		<property name="htmlform" value="kenyaemr:hiv/hivEnrollment.xml" />
+	</bean>
+
+	<!-- Clinical Encounter - HIV Addendum -->
+	<bean id="kenyaemr.form.hivClinicalEncounterAddendum" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="bd598114-4ef4-47b1-a746-a616180ccfc0" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.clinician" />
+				<ref bean="kenyaemr.app.chart" />
+			</set>
+		</property>
+		<property name="icon" value="kenyaui:forms/generic.png" />
+		<property name="htmlform" value="kenyaemr:hiv/hivClinicalEncounterAddendum.xml" />
+		<property name="order" value="201010" />
+	</bean>
+
+	<!-- MOH257 Visit Summary -->
+	<bean id="kenyaemr.form.moh257VisitSummary" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="23b4ebbd-29ad-455e-be0e-04aa6bc30798" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.chart" />
+			</set>
+		</property>
+		<property name="autoCreateVisitTypeUuid" value="3371a4d4-f66f-4454-a86d-92c7b3da990c" />
+		<property name="icon" value="kenyaui:forms/moh257.png" />
+		<property name="htmlform" value="kenyaemr:hiv/moh257VisitSummary.xml" />
+		<property name="order" value="201030" />
+	</bean>
+
+	<!-- HIV Completion -->
+	<bean id="kenyaemr.form.hivCompletion" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="e3237ede-fa70-451f-9e6c-0908bc39f8b9" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.registration" />
+				<ref bean="kenyaemr.app.intake" />
+				<ref bean="kenyaemr.app.clinician" />
+				<ref bean="kenyaemr.app.chart" />
+			</set>
+		</property>
+		<property name="icon" value="kenyaui:forms/completion.png" />
+		<property name="htmlform" value="kenyaemr:hiv/hivDiscontinuation.xml" />
+	</bean>
+
+</beans>

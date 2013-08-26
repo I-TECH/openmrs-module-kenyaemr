@@ -4,6 +4,14 @@
 	   xmlns:p="http://www.springframework.org/schema/p"
 	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
+	<!-- ===================== Content ===================== -->
+
+	<import resource="content/kenyaemr.general.xml" />
+	<import resource="content/kenyaemr.hiv.xml" />
+	<import resource="content/kenyaemr.mch.xml" />
+	<import resource="content/kenyaemr.hei.xml" />
+	<import resource="content/kenyaemr.tb.xml" />
+
 	<!-- ===================== Configurations ===================== -->
 
 	<bean id="kenyaemr.config.metadata" class="org.openmrs.module.kenyacore.metadata.MetadataConfiguration">
@@ -145,6 +153,7 @@
 		</property>
 	</bean>
 
+<<<<<<< HEAD
 	<!-- ===================== Program descriptors ===================== -->
 
 	<!-- HIV -->
@@ -199,14 +208,14 @@
 		<property name="visitForms">
 			<set>
 				<ref bean="kenyaemr.form.mchVisit" />
-				<!--<ref bean="kenyaemr.form.mchPostnatalExamination" />-->
+				<ref bean="kenyaemr.form.mchPostnatalExamination" />
 			</set>
 		</property>
 		<property name="patientForms">
 			<set>
 				<ref bean="kenyaemr.form.mchInfantFeeding" />
 				<ref bean="kenyaemr.form.mchPreventiveServices" />
-				<!--<ref bean="kenyaemr.form.mchDelivery" />-->
+				<ref bean="kenyaemr.form.mchDelivery" />
 			</set>
 		</property>
 		<property name="fragments">
@@ -537,7 +546,7 @@
 	</bean>
 
 	<!-- MCH Postnatal Examination-->
-	<!--<bean id="kenyaemr.form.mchPostnatalExamination" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+	<bean id="kenyaemr.form.mchPostnatalExamination" class="org.openmrs.module.kenyacore.form.FormDescriptor">
 		<property name="targetUuid" value="72aa78e0-ee4b-47c3-9073-26f3b9ecc4a7" />
 		<property name="apps">
 			<set>
@@ -548,7 +557,7 @@
 		<property name="icon" value="kenyaui:forms/generic.png" />
 		<property name="htmlform" value="kenyaemr:mch/mchPostnatalExamination.xml" />
 		<property name="order" value="3" />
-	</bean>-->
+	</bean>
 
 	<!-- MCH Preventive Services-->
 	<bean id="kenyaemr.form.mchPreventiveServices" class="org.openmrs.module.kenyacore.form.FormDescriptor">
@@ -564,7 +573,7 @@
 		<property name="order" value="1" />
 	</bean>
 
-	<!--&lt;!&ndash; MCH Delivery&ndash;&gt;
+	<!-- MCH Delivery -->
 	<bean id="kenyaemr.form.mchDelivery" class="org.openmrs.module.kenyacore.form.FormDescriptor">
 		<property name="targetUuid" value="496c7cc3-0eea-4e84-a04c-2292949e2f7f" />
 		<property name="apps">
@@ -576,7 +585,7 @@
 		<property name="icon" value="kenyaui:forms/generic.png" />
 		<property name="htmlform" value="kenyaemr:mch/mchDelivery.xml" />
 		<property name="order" value="2" />
-	</bean>-->
+	</bean>
 
 	<!-- MCH InfantFeeding-->
 	<bean id="kenyaemr.form.mchInfantFeeding" class="org.openmrs.module.kenyacore.form.FormDescriptor">
@@ -699,6 +708,8 @@
 		<property name="htmlform" value="kenyaemr:child/heiOutcomes.xml" />
 	</bean>
 
+=======
+>>>>>>> 770a4bb82e4ad8ae1dc0ae61e89368168473878b
 	<!-- Module service -->
 
 	<bean id="kenyaEmrService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">

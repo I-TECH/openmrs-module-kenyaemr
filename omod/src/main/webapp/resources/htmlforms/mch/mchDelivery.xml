@@ -81,7 +81,7 @@
 						Duration of Pregnancy (in weeks):
 					</td>
 					<td>
-						<obs conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+						<obs conceptId="1789AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 					</td>
 				</tr>
 				<tr>
@@ -89,7 +89,7 @@
 						Mode of Delivery:
 					</td>
 					<td>
-						<obs conceptId="161096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+						<obs conceptId="5630AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 					</td>
 				</tr>
 				<tr>
@@ -97,7 +97,7 @@
 						Date of Delivery:
 					</td>
 					<td>
-						<obs conceptId="161096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+						<obs conceptId="5599AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 					</td>
 				</tr>
 				<tr>
@@ -105,7 +105,7 @@
 						Blood Loss::
 					</td>
 					<td>
-						<obs conceptId="161096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+						Missing Concept
 					</td>
 				</tr>
 				<tr>
@@ -113,15 +113,55 @@
 						Condition of Mother:
 					</td>
 					<td>
-						<obs conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+						Missing Concept
 					</td>
 				</tr>
 				<tr>
 					<td>
-						Place of Delivery:
+						Apgar Score (1 min):
 					</td>
 					<td>
-						<obs conceptId="1151AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+						<obs conceptId="159603AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Apgar Score (5 min):
+					</td>
+					<td>
+						<obs conceptId="159604AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Apgar Score (10 min):
+					</td>
+					<td>
+						<obs conceptId="159605AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Resuscitation Done:
+					</td>
+					<td>
+						Missing Concept
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Drugs Administered at Delivery (Mother):
+					</td>
+					<td>
+						Missing Concept
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Drugs Administered at Delivery (Child):
+					</td>
+					<td>
+						Missing Concept
 					</td>
 				</tr>
 				<tr>
@@ -129,7 +169,7 @@
 						Delivery Conducted By:
 					</td>
 					<td>
-						<obs conceptId="1151AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+						<obs conceptId="1573AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 					</td>
 				</tr>
 			</table>
