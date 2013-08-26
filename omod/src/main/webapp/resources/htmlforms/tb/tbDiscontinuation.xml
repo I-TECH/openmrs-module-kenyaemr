@@ -14,9 +14,6 @@
 <htmlform>
 
 	<style type="text/css">
-		table.baseline-aligned td {
-			vertical-align: baseline;
-		}
 		table.tb {
 			background-color: #FFFFCC;
 			}
@@ -29,38 +26,38 @@
 	</style>
 
 	<script type="text/javascript">
-		$j(document).ready(function() {
+		jq(document).ready(function() {
 			var tdFortreatmentOutCome_ttle =  document.getElementById("id_treatment_outcome_date_ttle");
 			var tdFortreatmentOutCome_value =  document.getElementById("id_treatment_outcome_date_value");
 			var transferout = document.getElementById("transferout");
 			// when it loading for the first time
 			if (getValue('treatment_outcome.value') == "") {
-					$('#id_treatment_outcome_date_value :input').prop('disabled', true);
-					$('#transferout :input').prop('disabled', true);	
+					jq('#id_treatment_outcome_date_value :input').prop('disabled', true);
+					jq('#transferout :input').prop('disabled', true);
 				}
 				else {
-					$('#id_treatment_outcome_date_value :input').prop('disabled', false);
+					jq('#id_treatment_outcome_date_value :input').prop('disabled', false);
 				}
 				if (getValue('treatment_outcome.value') == 159492){
-					$('#transferout :input').prop('disabled', false);
+					jq('#transferout :input').prop('disabled', false);
 				}
 				else{
-					$('#transferout :input').prop('disabled', true);
+					jq('#transferout :input').prop('disabled', true);
 				}
 			//control the date on selection of options
-			$j("#treatment_outcome select").change(function() {
+			jqj("#treatment_outcome select").change(function() {
 				if (getValue('treatment_outcome.value') == "") {
-					$('#transferout :input').prop('disabled', true);
-					$('#id_treatment_outcome_date_value :input').prop('disabled', true);
+					jq('#transferout :input').prop('disabled', true);
+					jq('#id_treatment_outcome_date_value :input').prop('disabled', true);
 				}
 				else {
-					$('#id_treatment_outcome_date_value :input').prop('disabled', false);
+					jq('#id_treatment_outcome_date_value :input').prop('disabled', false);
 				}
 				if (getValue('treatment_outcome.value') == 159492){
-					$('#transferout :input').prop('disabled', false);
+					jq('#transferout :input').prop('disabled', false);
 				}
 				else{
-					$('#transferout :input').prop('disabled', true);
+					jq('#transferout :input').prop('disabled', true);
 				}
 			});
 
@@ -84,64 +81,66 @@
 			});
 		});
 	</script>
-<div style="display:none">
-	Provider: <encounterProviderAndRole encounterRole="a0b03050-c99b-11e0-9572-0800200c9a66" default="currentUser" required="true" />
-</div>
-<table align="center"  border="0" class="tb">
-	<tr>
-		<td>
-			<table class="tb1">
+
+	<!-- Should always be the current user -->
+	<div style="display:none">
+		<encounterProvider default="currentUser" />
+	</div>
+
+	<div class="ke-form-header">
+		<table width="100%">
+			<tr>
+				<td>Date <encounterDate id="encounter-date" showTime="true" /></td>
+				<td>Location <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete" /></td>
+			</tr>
+		</table>
+	</div>
+
+	<div class="ke-form-content">
+		<fieldset>
+			<legend>Treatment Outcomes</legend>
+
+			<table class="baseline-aligned" width="auto" border="0" cellspacing="10">
 				<tr>
-					<td>Encounter Date: <encounterDate id="encounter-date" showTime="true"/></td>
-					<td>Location: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete"/></td>
+					<td>Treatment Outcome</td>
+					<td><obs conceptId="159786AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  style="dropdown" id="treatment_outcome"  answerConceptIds="159791AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160035AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159874AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160034AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160031AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159492AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Cured(Smear. Negative),Treatment Completed(no smear result),Failure(Smear. Positive),Dead,Defaulted,Transferred Out"/></td>
+
+					<td id ="id_treatment_outcome_date_ttle">Treatment Outcome date</td>
+					<td id ="id_treatment_outcome_date_value"><obs conceptId="159787AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="treatmentoutcomedate"/></td>
+
 				</tr>
 			</table>
-	<br/>
+			<table  class="baseline-aligned" width="auto" border="0" cellspacing="10">
+				<tr>
+					<td>
+					<div id="transferout">
+						<table>
+							<tr>
+								<td>Transferred out to:</td>
+								<td><obs conceptId="159495AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " id="transferredoutto"/></td>
+							</tr>
+						</table>
+					</div>
+					</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>
+						<table>
+							<td valign="top"><b>Notes:</b></td>
+							<td><obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="5" cols="50" /></td>
+						</table>
 
-	<fieldset><legend>Treatment Outcomes</legend>
-		<table class="baseline-aligned" width="auto" border="0" cellspacing="10">
-			<tr>
-				<td>Treatment Outcome</td>
-				<td><obs conceptId="159786AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  style="dropdown" id="treatment_outcome"  answerConceptIds="159791AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160035AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159874AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160034AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160031AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159492AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Cured(Smear. Negative),Treatment Completed(no smear result),Failure(Smear. Positive),Dead,Defaulted,Transferred Out"/></td>
+					</td>
+					<td>
 
-				<td id ="id_treatment_outcome_date_ttle">Treatment Outcome date</td>
-				<td id ="id_treatment_outcome_date_value"><obs conceptId="159787AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="treatmentoutcomedate"/></td>
+					</td>
+				</tr>
+			</table>
+		</fieldset>
 
-			</tr>
-		</table>
-		<table  class="baseline-aligned" width="auto" border="0" cellspacing="10">
-			<tr>
-				<td>
-				<div id="transferout">
-					<table>
-						<tr>
-							<td>Transferred out to:</td>
-							<td><obs conceptId="159495AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " id="transferredoutto"/></td>
-						</tr>	
-					</table>
-				</div>
-				</td>
-				<td></td>
-			</tr>
-			<tr>
-				<td>
-					<table>
-						<td valign="top"><b>Notes:</b></td>
-						<td><obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="5" cols="50" /></td>
-					</table>
-					
-				</td>
-				<td>
-					
-				</td>
-			</tr>
-		</table>
-	</fieldset>
-		</td>
-	</tr>
-</table>
-
-	<completeProgram programId="9f144a34-3a4a-44a9-8486-6b7af6cc64f6"/>
+		<completeProgram programId="9f144a34-3a4a-44a9-8486-6b7af6cc64f6"/>
+	</div>
 
 	<div class="ke-form-footer">
 		<submit />

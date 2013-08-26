@@ -13,79 +13,56 @@
 -->
 <htmlform>
 
-	<style type="text/css">
-		table.baseline-aligned td {
-			vertical-align: baseline;
-		}
-	</style>
-<table>
-    <tr>
-        <td>
-            <div class="patient-details">
-                <table class="baseline-aligned" width="100%">
-                    <tr>
-                        <td>Name: <lookup class="value" expression="patient.personName"/></td>
-                        <td>Gender: <lookup class="value" expression="patient.gender"/></td>
-                        <td>Birthdate: <lookup class="value" complexExpression="#if( \$patient.birthdateEstimated ) ~#end"/> <lookup class="value" expression="patient.birthdate"/>
-                        </td>
-                    </tr>
-                </table>
-            </div>
+	<div class="ke-form-header">
+		<table width="100%">
+			<tr>
+				<td>Date: <encounterDate id="encounter-date" showTime="true" /></td>
+				<td>Provider: <encounterProvider default="currentUser" /></td>
+				<td>Location: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete"/></td>
+			</tr>
+		</table>
+	</div>
 
-            <div class="encounter-details">
-                <table class="baseline-aligned" width="100%">
-                    <tr>
-                        <td>Date: <encounterDate id="encounter-date" showTime="true" /></td>
-                        <td>Provider: <encounterProviderAndRole encounterRole="a0b03050-c99b-11e0-9572-0800200c9a66" default="currentUser" required="true"/></td>
-                        <td>Location: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete"/></td>
-                    </tr>
-                </table>
-            </div>
-        </td>
-    </tr>
-</table>
-
-
-<fieldset><legend>HIV Status of Family Members</legend>
-
-    <table style="width: 100%; height: 44px;" border="0" align="center">
-
-        <tr>
-            <td width="10%" style="background-color: #696969; color: #ffffff;">Name of Members</td>
-            <td width="15%" style="background-color: #696969; color: #ffffff;" align="center">Age</td>
-            <td width="5%" style="background-color: #696969; color: #ffffff;">Relation</td>
-            <td width="10%" style="background-color: #696969; color: #ffffff;">HIV Result</td>
-            <td width="15%" style="background-color: #696969; color: #ffffff;">In Care?</td>
-            <td width="10%" style="background-color: #696969; color: #ffffff;">CCC Number</td>
-            <td></td>
-        </tr>
-        <repeat>
-            <template>
-                <obsgroup groupingConceptId="160593AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-                    <tr>
-                        <td><obs conceptId="160750AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labetText=" "/></td>
-                        <td><obs conceptId="160617AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Age"/><obs conceptId="1732AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1734AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1074AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="dropdown" answerLabels="Years,Months" /> </td>
-                        <td><obs conceptId="1560AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="970AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,971AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159772AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160273AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,972AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1528AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,975AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,974AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160727AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160730AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5617AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Mother,Father,Grandmother,Grandfather,Sibling,Child,Aunt,Uncle,Son,Daughter,Brother,Sister,Spouse" /></td>
-                        <td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="dropdown" answerLabels="P,N,E,DK"/></td>
-                        <td><obs conceptId="159811AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="dropdown" answerLabels="YES,NO,UNKNOWN"/></td>
-                        <td><obs conceptId="160752AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=""/></td>
-
-                    </tr>
-                </obsgroup>
-            </template>
-            <render n="1" concept=" " />
-            <render n="2" concept=" " />
-            <render n="3" concept=" " />
-            <render n="4" concept=" " />
-            <render n="5" concept=" " />
-            <render n="6" concept=" " />
-            <render n="7" concept=" " />
-            <render n="8" concept=" " />
-            <render n="9" concept=" " />
-            <render n="10" concept=" " />
-        </repeat>
-    </table>
-</fieldset>
+	<div class="ke-form-content">
+		<table width="100%">
+			<thead>
+				<tr>
+					<th>Name of Members</th>
+					<th>Age</th>
+					<th>Relation</th>
+					<th>HIV Result</th>
+					<th>In Care?</th>
+					<th>CCC Number</th>
+				</tr>
+			</thead>
+			<tbody>
+				<repeat>
+					<template>
+						<obsgroup groupingConceptId="160593AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+							<tr>
+								<td><obs conceptId="160750AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labetText=" "/></td>
+								<td><obs conceptId="160617AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Age"/><obs conceptId="1732AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1734AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1074AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="dropdown" answerLabels="Years,Months" /> </td>
+								<td><obs conceptId="1560AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="970AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,971AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159772AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160273AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,972AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1528AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,975AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,974AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160727AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160730AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5617AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Mother,Father,Grandmother,Grandfather,Sibling,Child,Aunt,Uncle,Son,Daughter,Brother,Sister,Spouse" /></td>
+								<td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="dropdown" answerLabels="P,N,E,DK"/></td>
+								<td><obs conceptId="159811AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="dropdown" answerLabels="YES,NO,UNKNOWN"/></td>
+								<td><obs conceptId="160752AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=""/></td>
+							</tr>
+						</obsgroup>
+					</template>
+					<render n="1" concept=" " />
+					<render n="2" concept=" " />
+					<render n="3" concept=" " />
+					<render n="4" concept=" " />
+					<render n="5" concept=" " />
+					<render n="6" concept=" " />
+					<render n="7" concept=" " />
+					<render n="8" concept=" " />
+					<render n="9" concept=" " />
+					<render n="10" concept=" " />
+				</repeat>
+			</tbody>
+		</table>
+	</div>
 
 	<div class="ke-form-footer">
 		<submit />
