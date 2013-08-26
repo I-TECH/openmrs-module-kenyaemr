@@ -13,128 +13,92 @@
 -->
 <htmlform>
 
-	<style type="text/css">
-		table.baseline-aligned td {
-		vertical-align: baseline;
-		}
-	</style>
 	<div style="display:none">
-		Provider:
-		<encounterProviderAndRole encounterRole="a0b03050-c99b-11e0-9572-0800200c9a66" default="currentUser"
-								  required="true"/>
+		<encounterProviderAndRole encounterRole="a0b03050-c99b-11e0-9572-0800200c9a66" default="currentUser" required="true"/>
 	</div>
-	<table align="center">
-		<tr>
-			<td>
-				<div class="patient-details">
-					<table class="baseline-aligned" width="100%">
-						<tr>
-							<td>Name:
-								<lookup class="value" expression="patient.personName"/>
-							</td>
-							<td>Gender:
-								<lookup class="value" expression="patient.gender"/>
-							</td>
-							<td>Birthdate:
-								<lookup class="value" complexExpression="#if( \$patient.birthdateEstimated ) ~#end"/>
-								<lookup class="value" expression="patient.birthdate"/>
-							</td>
-						</tr>
-					</table>
-				</div>
 
-				<div class="encounter-details">
-					<table class="baseline-aligned" width="100%">
-						<tr>
-							<td>Date:
-								<encounterDate id="encounter-date" showTime="true"/>
-							</td>
-							<td>Location:
-								<encounterLocation default="GlobalProperty:kenyaemr.defaultLocation"
-												   type="autocomplete"/>
-							</td>
-						</tr>
-					</table>
-				</div>
+	<div class="ke-form-header">
+		<table width="100%">
+			<tr>
+				<td>Date: <encounterDate id="encounter-date" showTime="true"/></td>
+				<td>Location: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete"/></td>
+			</tr>
+		</table>
+	</div>
 
-
-				<fieldset>
-					List all previous pregnancies:
-					<table style="width: 100%; height: 44px;" border="0" align="center">
+	<div class="ke-form-content">
+		<table style="width: 100%; height: 44px;" border="0" align="center">
+			<tr>
+				<td style="background-color: #696969; color: #ffffff;">Pregnancy Order</td>
+				<td style="background-color: #696969; color: #ffffff;">Year(dd/mm/yyyy)</td>
+				<td style="background-color: #696969; color: #ffffff;">Number of Times ANC Attended</td>
+				<td style="background-color: #696969; color: #ffffff;">Place of delivery</td>
+				<td style="background-color: #696969; color: #ffffff;">Maturity</td>
+				<td style="background-color: #696969; color: #ffffff;">Duration of Labor</td>
+				<td style="background-color: #696969; color: #ffffff;">Type of Delivery</td>
+				<td style="background-color: #696969; color: #ffffff;">Birth Weight (Kg)</td>
+				<td style="background-color: #696969; color: #ffffff;">Sex</td>
+				<td style="background-color: #696969; color: #ffffff;">Outcome</td>
+				<td style="background-color: #696969; color: #ffffff;">Puerperium</td>
+			</tr>
+			<repeat>
+				<template>
+					<obsgroup groupingConceptId="160593AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
 						<tr>
-							<td style="background-color: #696969; color: #ffffff;">Pregnancy Order</td>
-							<td style="background-color: #696969; color: #ffffff;">Year(dd/mm/yyyy)</td>
-							<td style="background-color: #696969; color: #ffffff;">Number of Times ANC Attended</td>
-							<td style="background-color: #696969; color: #ffffff;">Place of delivery</td>
-							<td style="background-color: #696969; color: #ffffff;">Maturity</td>
-							<td style="background-color: #696969; color: #ffffff;">Duration of Labor</td>
-							<td style="background-color: #696969; color: #ffffff;">Type of Delivery</td>
-							<td style="background-color: #696969; color: #ffffff;">Birth Weight (Kg)</td>
-							<td style="background-color: #696969; color: #ffffff;">Sex</td>
-							<td style="background-color: #696969; color: #ffffff;">Outcome</td>
-							<td style="background-color: #696969; color: #ffffff;">Puerperium</td>
+							<td>
+								<obs conceptId="5624AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+							</td>
+							<td>
+								<obs conceptId="160602AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=""/>
+							</td>
+							<td>
+								<obs conceptId="1425AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+							</td>
+							<td>
+								<obs conceptId="1572AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+							</td>
+							<td>
+								<obs conceptId="1409AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+							</td>
+							<td>
+								<obs conceptId="159616AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+							</td>
+							<td>
+								<obs conceptId="5630AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+							</td>
+							<td>
+								<obs conceptId="5916AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+							</td>
+							<td>
+								<obs conceptId="1587AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=""/>
+							</td>
+							<td>
+								<obs conceptId="159917AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									 answerConceptIds="159035AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159916AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,126127AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,48AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									 answerLabels="Live Birth,Still Birth,Abortion,Miscarriage"/>
+							</td>
+							<td>Missing Concept</td>
 						</tr>
-						<repeat>
-							<template>
-								<obsgroup groupingConceptId="160593AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-									<tr>
-										<td>
-											<obs conceptId="5624AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-										</td>
-										<td>
-											<obs conceptId="160602AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=""/>
-										</td>
-										<td>
-											<obs conceptId="1425AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-										</td>
-										<td>
-											<obs conceptId="1572AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-										</td>
-										<td>
-											<obs conceptId="1409AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-										</td>
-										<td>
-											<obs conceptId="159616AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-										</td>
-										<td>
-											<obs conceptId="5630AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-										</td>
-										<td>
-											<obs conceptId="5916AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-										</td>
-										<td>
-											<obs conceptId="1587AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=""/>
-										</td>
-										<td>
-											<obs conceptId="159917AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-												 answerConceptIds="159035AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159916AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,126127AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,48AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-												 answerLabels="Live Birth,Still Birth,Abortion,Miscarriage"/>
-										</td>
-										<td>Missing Concept</td>
-									</tr>
-								</obsgroup>
-							</template>
-							<render n="1" concept=" "/>
-							<render n="2" concept=" "/>
-							<render n="3" concept=" "/>
-							<render n="4" concept=" "/>
-							<render n="5" concept=" "/>
-							<render n="6" concept=" "/>
-							<render n="7" concept=" "/>
-							<render n="8" concept=" "/>
-							<render n="9" concept=" "/>
-							<render n="10" concept=" "/>
-							<render n="11" concept=" "/>
-							<render n="12" concept=" "/>
-							<render n="13" concept=" "/>
-							<render n="14" concept=" "/>
-							<render n="15" concept=" "/>
-						</repeat>
-					</table>
-				</fieldset>
-			</td>
-		</tr>
-	</table>
+					</obsgroup>
+				</template>
+				<render n="1" concept=" "/>
+				<render n="2" concept=" "/>
+				<render n="3" concept=" "/>
+				<render n="4" concept=" "/>
+				<render n="5" concept=" "/>
+				<render n="6" concept=" "/>
+				<render n="7" concept=" "/>
+				<render n="8" concept=" "/>
+				<render n="9" concept=" "/>
+				<render n="10" concept=" "/>
+				<render n="11" concept=" "/>
+				<render n="12" concept=" "/>
+				<render n="13" concept=" "/>
+				<render n="14" concept=" "/>
+				<render n="15" concept=" "/>
+			</repeat>
+		</table>
+	</div>
 
 	<div class="ke-form-footer">
 		<submit/>

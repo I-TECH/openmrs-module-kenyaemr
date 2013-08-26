@@ -10,7 +10,7 @@ ui.includeJavascript("kenyaemr", "dwr-util.js")
 <link href="/${ contextPath }/moduleResources/htmlformentry/htmlFormEntry.css" type="text/css" rel="stylesheet" />
 
 <script type="text/javascript">
-	\$j = jQuery;
+	\$j = jQuery; // Forms should use jq like everything else, but for backwards compatibility we allow this for now
 
 	function showDiv(id) {
 		jq('#' + id).show();
@@ -199,8 +199,6 @@ ui.includeJavascript("kenyaemr", "dwr-util.js")
 
 <div id="${ config.id }" <% if (config.style) { %>style="${ config.style }"<% } %>>
 
-	<span class="error" style="display: none" id="general-form-error"></span>
-
 	<form id="htmlform" method="post" action="${ ui.actionLink("kenyaemr", "enterHtmlForm", "submit") }" onSubmit="submitHtmlForm(); return false;">
 		<input type="hidden" name="personId" value="${ command.patient.personId }"/>
 		<input type="hidden" name="formId" value="${ command.form.formId }"/>
@@ -217,27 +215,36 @@ ui.includeJavascript("kenyaemr", "dwr-util.js")
 		<% } %>
 		<input type="hidden" name="closeAfterSubmission" value="${ config.closeAfterSubmission }"/>
 
-		${ command.htmlToDisplay }
-		
-		<div id="authentication-dialog" style="display: none">
-			<div style="padding-bottom: 12px; text-align: center">${ ui.message("kenyaemr.authenticateForFormSubmission") }</div>
-			<div align="center">
-				<table border="0">
-					<tr>
-						<td align="right"><b>Username:</b></td>
-						<td><input type="text" id="authentication-dialog-username"/></td>
-					</tr>
-					<tr>
-						<td align="right"><b>Password:</b></td>
-						<td><input type="password" id="authentication-dialog-password"/></td>
-					</tr>
-					<tr>
-						<td colspan="2" align="center"><input type="button" value="Submit" onClick="onSubmitAuthenticationDialog()"/></td>
-					</tr>
-				</table>
+		<div class="ke-panel-frame">
+			<div class="ke-panel-heading">${ command.form.name }</div>
+
+			<span class="error" style="display: none" id="general-form-error"></span>
+
+			<div style="background-color: white"><!-- Because not all forms use .ke-form-content like they should -->
+				${ command.htmlToDisplay }
 			</div>
 		</div>
+
 	</form>
+</div>
+
+<div id="authentication-dialog" style="display: none">
+	<div style="padding-bottom: 12px; text-align: center">${ ui.message("kenyaemr.authenticateForFormSubmission") }</div>
+	<div align="center">
+		<table border="0">
+			<tr>
+				<td align="right"><b>Username:</b></td>
+				<td><input type="text" id="authentication-dialog-username"/></td>
+			</tr>
+			<tr>
+				<td align="right"><b>Password:</b></td>
+				<td><input type="password" id="authentication-dialog-password"/></td>
+			</tr>
+			<tr>
+				<td colspan="2" align="center"><input type="button" value="Submit" onClick="onSubmitAuthenticationDialog()"/></td>
+			</tr>
+		</table>
+	</div>
 </div>
 
 <% if (command.fieldAccessorJavascript) { %>

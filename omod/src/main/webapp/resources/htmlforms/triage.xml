@@ -42,7 +42,7 @@
 	</div>
 
 	<div class="ke-form-header">
-		<table style="width: 100%; border: 0">
+		<table style="width: 100%">
 			<tr>
 				<td align="left">Date: <encounterDate id="encounter-date" showTime="true"/></td>
 				<td align="right">Location: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete" /></td>
@@ -50,82 +50,84 @@
 		</table>
 	</div>
 
-	<fieldset>
-		<legend>Reason</legend>
+	<div class="ke-form-content">
+		<fieldset>
+			<legend>Reason</legend>
 
-		<table>
-			<tr>
-				<td>Reason for visit</td>
-				<td><obs conceptId="160430AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="2" cols="80"/></td>
-			</tr>
-		</table>
-	</fieldset>
-
-	<fieldset>
-		<legend>Vital Signs</legend>
-
-		<table>
-			<tr>
-				<td>Temp</td>
-				<td><obs conceptId="5088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /> &#176;C</td>
-			</tr>
-			<tr>
-				<td>Pulse Rate</td>
-				<td><obs conceptId="5087AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
-			</tr>
-			<tr>
-				<td>BP</td>
-				<td><obs  conceptId="5085AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/> / <obs conceptId="5086AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
-			</tr>
-			<tr>
-				<td>Respiratory Rate</td>
-				<td><obs conceptId="5242AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
-			</tr>
-			<tr>
-				<td>Oxygen Saturation</td>
-				<td><obs conceptId="5092AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
-			</tr>
-		</table>
-	</fieldset>
-
-	<fieldset>
-		<legend>Other Recordings</legend>
-
-		<table>
-			<tr>
-				<th style="background-color: #EEE"></th>
-				<th style="background-color: #EEE">Current</th>
-				<th style="background-color: #EEE">Previous</th>
-			</tr>
-			<tr>
-				<td>Weight</td>
-				<td><obs id="weight" conceptId="5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />kg</td>
-				<td><lookup expression="fn.latestObs(5089).valueNumeric"/></td>
-			</tr>
-			<tr>
-				<td>Height</td>
-				<td><obs id="height" conceptId="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />cm</td>
-				<td><lookup expression="fn.latestObs(5090).valueNumeric"/></td>
-			</tr>
-			<tr>
-				<td>BMI</td>
-				<td><span id="calculated-bmi" class="value"></span></td>
-				<td>-</td>
-			</tr>
-			<tr>
-				<td>MUAC</td>
-				<td><obs conceptId="1343AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
-				<td><lookup expression="fn.latestObs(1343).valueNumeric"/></td>
-			</tr>
-			<includeIf velocityTest="$patient.gender == 'F' ">
+			<table>
 				<tr>
-					<td>LMP</td>
-					<td><obs conceptId="1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
-					<td><lookup expression="fn.latestObs(1427).valueNumeric"/></td>
+					<td>Reason for visit</td>
+					<td><obs conceptId="160430AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="2" cols="80"/></td>
 				</tr>
-			</includeIf>
-		</table>
-	</fieldset>
+			</table>
+		</fieldset>
+
+		<fieldset>
+			<legend>Vital Signs</legend>
+
+			<table>
+				<tr>
+					<td>Temp</td>
+					<td><obs conceptId="5088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /> &#176;C</td>
+				</tr>
+				<tr>
+					<td>Pulse Rate</td>
+					<td><obs conceptId="5087AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+				</tr>
+				<tr>
+					<td>BP</td>
+					<td><obs  conceptId="5085AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/> / <obs conceptId="5086AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
+				</tr>
+				<tr>
+					<td>Respiratory Rate</td>
+					<td><obs conceptId="5242AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+				</tr>
+				<tr>
+					<td>Oxygen Saturation</td>
+					<td><obs conceptId="5092AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+				</tr>
+			</table>
+		</fieldset>
+
+		<fieldset>
+			<legend>Other Recordings</legend>
+
+			<table>
+				<tr>
+					<th> </th>
+					<th>Current</th>
+					<th>Previous</th>
+				</tr>
+				<tr>
+					<td>Weight</td>
+					<td><obs id="weight" conceptId="5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />kg</td>
+					<td><lookup expression="fn.latestObs(5089).valueNumeric"/></td>
+				</tr>
+				<tr>
+					<td>Height</td>
+					<td><obs id="height" conceptId="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />cm</td>
+					<td><lookup expression="fn.latestObs(5090).valueNumeric"/></td>
+				</tr>
+				<tr>
+					<td>BMI</td>
+					<td><span id="calculated-bmi" class="value"></span></td>
+					<td>-</td>
+				</tr>
+				<tr>
+					<td>MUAC</td>
+					<td><obs conceptId="1343AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+					<td><lookup expression="fn.latestObs(1343).valueNumeric"/></td>
+				</tr>
+				<includeIf velocityTest="$patient.gender == 'F' ">
+					<tr>
+						<td>LMP</td>
+						<td><obs conceptId="1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+						<td><lookup expression="fn.latestObs(1427).valueNumeric"/></td>
+					</tr>
+				</includeIf>
+			</table>
+		</fieldset>
+	</div>
 
 	<div class="ke-form-footer">
 		<submit />

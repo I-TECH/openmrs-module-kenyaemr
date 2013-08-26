@@ -13,40 +13,34 @@
 -->
 <htmlform>
 
-	<style type="text/css">
-		table.baseline-aligned td {
-			vertical-align: baseline;
-		}
-	</style>
-
 	<script type="text/javascript">
 		var value1;
-		$j(document).ready(function(){
-			if((getValue('idReason.value')) == 160034) {
-				$('#pdied :input').prop('disabled', false);
-				$('#ptransferred :input').prop('disabled', true);
+		jq(document).ready(function(){
+			if ((getValue('idReason.value')) == 160034) {
+				jq('#pdied :input').prop('disabled', false);
+				jq('#ptransferred :input').prop('disabled', true);
 			}
 			else if((getValue('idReason.value')) == 159492) {
-				$('#pdied :input').prop('disabled', true);
-				$('#ptransferred :input').prop('disabled', false);
+				jq('#pdied :input').prop('disabled', true);
+				jq('#ptransferred :input').prop('disabled', false);
 			}
 			else {
-				$('#pdied :input').prop('disabled', true);
-				$('#ptransferred :input').prop('disabled', true);
+				jq('#pdied :input').prop('disabled', true);
+				jq('#ptransferred :input').prop('disabled', true);
 			}
-			$j("#idReason select").change(function() {
 
-				if((getValue('idReason.value')) == 160034) {
-					$('#pdied :input').prop('disabled', false);
-					$('#ptransferred :input').prop('disabled', true);
+			jq("#idReason select").change(function() {
+				if ((getValue('idReason.value')) == 160034) {
+					jq('#pdied :input').prop('disabled', false);
+					jq('#ptransferred :input').prop('disabled', true);
 				}
 				else if((getValue('idReason.value')) == 159492) {
-					$('#pdied :input').prop('disabled', true);
-					$('#ptransferred :input').prop('disabled', false);
+					jq('#pdied :input').prop('disabled', true);
+					jq('#ptransferred :input').prop('disabled', false);
 				}
 				else {
-					$('#pdied :input').prop('disabled', true);
-					$('#ptransferred :input').prop('disabled', true);
+					jq('#pdied :input').prop('disabled', true);
+					jq('#ptransferred :input').prop('disabled', true);
 				}
 			});
 
@@ -65,63 +59,62 @@
 			});
 		});
 	</script>
+
 	<div style="display:none">
 		Provider: <encounterProviderAndRole encounterRole="a0b03050-c99b-11e0-9572-0800200c9a66" default="currentUser" required="true" />
 	</div>
-	<table align="center">
-		<tr>
-			<td>
-				<fieldset>
-					<legend>Discontinue HIV Care</legend>
-						<table class="baseline-aligned" width="100%" border="0">
-							<tr>
-								<td>Date:</td>
-								<td><encounterDate id="encounter-date" showTime="true" /></td>
-								<td></td>
-								<td></td>
-							</tr>
-							<tr>
-								<td>Reason:</td>
-								<td><obs conceptId="161555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="idReason" /></td>
-								<td></td>
-								<td></td>
-							</tr>
-						</table>
-						<div id="pdied">
-							<table>
-								<tr>
-									<td>If Patient Died, please provide Date of Death if Known:</td>
-									<td><obs conceptId="1543AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
-									<td></td>
-									<td></td>
-								</tr>
-							</table>
-						</div>
 
-						<div id="ptransferred">
-							<table>
-								<tr>
-									<td><i>(If transferred out)</i> <br/>Transfer to Facility:</td>
-									<td ><br/><obs conceptId="159495AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "/></td>
-									<td></td>
-									<td></td>
-								</tr>
-							</table>
-						</div>
-						<br/>
-						<hr/>
-						<br/>
+	<div class="ke-form-content">
+		<fieldset>
+			<legend>Discontinue HIV Care</legend>
+				<table class="baseline-aligned" width="100%" border="0">
+					<tr>
+						<td>Date:</td>
+						<td><encounterDate id="encounter-date" showTime="true" /></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>Reason:</td>
+						<td><obs conceptId="161555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="idReason" /></td>
+						<td></td>
+						<td></td>
+					</tr>
+				</table>
+				<div id="pdied">
+					<table>
+						<tr>
+							<td>If Patient Died, please provide Date of Death if Known:</td>
+							<td><obs conceptId="1543AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+							<td></td>
+							<td></td>
+						</tr>
+					</table>
+				</div>
 
-					Signed  at <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete"/>
+				<div id="ptransferred">
+					<table>
+						<tr>
+							<td><i>(If transferred out)</i> <br/>Transfer to Facility:</td>
+							<td ><br/><obs conceptId="159495AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "/></td>
+							<td></td>
+							<td></td>
+						</tr>
+					</table>
+				</div>
+				<br/>
+				<hr/>
+				<br/>
 
-					<br/>
-					<br/>
+			Signed  at <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete"/>
 
-				</fieldset>
-			</td>
-		</tr>
-	</table>
-	<completeProgram programId="dfdc6d40-2f2f-463d-ba90-cc97350441a8" />
+			<br/>
+
+		</fieldset>
+
+		<completeProgram programId="dfdc6d40-2f2f-463d-ba90-cc97350441a8" />
+	</div>
+
 	<div class="ke-form-footer">
 		<submit />
 	</div>
