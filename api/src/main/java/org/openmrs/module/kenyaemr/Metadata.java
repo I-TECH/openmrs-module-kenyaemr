@@ -38,7 +38,7 @@ public class Metadata {
 	public static final String CHILD_IMMUNIZATION_ENCOUNTER_TYPE = "82169b8d-c945-4c41-be62-433dfd9d6c86";
 	public static final String MCH_ENROLLMENT = "3ee036d8-7c13-4393-b5d6-036f2fe45126";
 	public static final String MCH_CONSULTATION = "c6d09e05-1f25-4164-8860-9f32c5a02df0";
-	public static final String MCH_DISCONTINUATION = "7c426cfc-3b47-4481-b55f-89860c21c7de"
+	public static final String MCH_DISCONTINUATION = "7c426cfc-3b47-4481-b55f-89860c21c7de";
 
 	// Forms
 	public static final String HIV_PROGRAM_ENROLLMENT_FORM = "e4b506c1-7379-42b6-a374-284469cba8da";
