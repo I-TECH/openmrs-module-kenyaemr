@@ -12,7 +12,7 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyacore.regimen;
+package org.openmrs.module.kenyaemr.regimen;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -74,7 +74,7 @@ public class RegimenChangeHistoryTest extends BaseModuleContextSensitiveTest {
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyacore.regimen.RegimenChangeHistory#RegimenChangeHistory(java.util.Set, java.util.List)
+	 * @see org.openmrs.module.kenyaemr.regimen.RegimenChangeHistory#RegimenChangeHistory(java.util.Set, java.util.List)
 	 * @verifies create regimen history based on all relevant drug orders
 	 */
 	@Test

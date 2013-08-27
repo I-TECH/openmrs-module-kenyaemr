@@ -25,14 +25,13 @@ import org.openmrs.DrugOrder;
 import org.openmrs.Patient;
 import org.openmrs.api.OrderService;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyacore.CoreContext;
-import org.openmrs.module.kenyacore.regimen.Regimen;
-import org.openmrs.module.kenyacore.regimen.RegimenChange;
-import org.openmrs.module.kenyacore.regimen.RegimenChangeHistory;
-import org.openmrs.module.kenyacore.regimen.RegimenComponent;
-import org.openmrs.module.kenyacore.regimen.RegimenManager;
-import org.openmrs.module.kenyacore.regimen.RegimenOrder;
-import org.openmrs.module.kenyacore.regimen.RegimenValidator;
+import org.openmrs.module.kenyaemr.regimen.Regimen;
+import org.openmrs.module.kenyaemr.regimen.RegimenChange;
+import org.openmrs.module.kenyaemr.regimen.RegimenChangeHistory;
+import org.openmrs.module.kenyaemr.regimen.RegimenComponent;
+import org.openmrs.module.kenyaemr.regimen.RegimenManager;
+import org.openmrs.module.kenyaemr.regimen.RegimenOrder;
+import org.openmrs.module.kenyaemr.regimen.RegimenValidator;
 import org.openmrs.module.kenyaemr.ValidatingCommandObject;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.ui.framework.UiUtils;
@@ -82,8 +81,8 @@ public class RegimenUtilFragmentController {
 	 * Helper method to create a new form object
 	 * @return the form object
 	 */
-	public RegimenChangeCommandObject newRegimenChangeCommandObject() {
-		return new RegimenChangeCommandObject();
+	public RegimenChangeCommandObject newRegimenChangeCommandObject(@SpringBean RegimenManager regimenManager) {
+		return new RegimenChangeCommandObject(regimenManager);
 	}
 
 	/**
@@ -101,6 +100,8 @@ public class RegimenUtilFragmentController {
 	 */
 	public class RegimenChangeCommandObject extends ValidatingCommandObject {
 
+		private RegimenManager regimenManager;
+
 		private Patient patient;
 
 		private String category;
@@ -114,6 +115,10 @@ public class RegimenUtilFragmentController {
 		private String changeReasonNonCoded;
 
 		private Regimen regimen;
+
+		public RegimenChangeCommandObject(RegimenManager regimenManager) {
+			this.regimenManager = regimenManager;
+		}
 
 		/**
 		 * @see org.springframework.validation.Validator#validate(java.lang.Object,org.springframework.validation.Errors)
@@ -132,7 +137,7 @@ public class RegimenUtilFragmentController {
 
 			if (category != null && changeDate != null) {
 				// Get patient regimen history
-				Concept masterSet = CoreContext.getInstance().getRegimenManager().getMasterSetConcept(category);
+				Concept masterSet = regimenManager.getMasterSetConcept(category);
 				RegimenChangeHistory history = RegimenChangeHistory.forPatient(patient, masterSet);
 				RegimenChange lastChange = history.getLastChange();
 				boolean onRegimen = lastChange != null && lastChange.getStarted() != null;
@@ -173,14 +178,13 @@ public class RegimenUtilFragmentController {
 		 * Applies this regimen change
 		 */
 		public void apply() {
-			Concept masterSet = CoreContext.getInstance().getRegimenManager().getMasterSetConcept(category);
+			Concept masterSet = regimenManager.getMasterSetConcept(category);
 			RegimenChangeHistory history = RegimenChangeHistory.forPatient(patient, masterSet);
 			RegimenChange lastChange = history.getLastChange();
 			RegimenOrder baseline = lastChange != null ? lastChange.getStarted() : null;
 
 			if (baseline == null) {
 				for (RegimenComponent component : regimen.getComponents()) {
-					Concept concept = component.getDrugRef().getConcept();
 					DrugOrder o = component.toDrugOrder(patient, changeDate);
 					Context.getOrderService().saveOrder(o);
 				}

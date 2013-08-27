@@ -14,32 +14,22 @@
 
 package org.openmrs.module.kenyaemr.page.controller.admin;
 
-import java.util.*;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.Transformer;
 import org.apache.commons.lang3.StringUtils;
-import org.openmrs.Form;
-import org.openmrs.Program;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.Module;
-import org.openmrs.module.ModuleFactory;
-import org.openmrs.module.kenyacore.program.ProgramDescriptor;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.EmrConstants;
-import org.openmrs.module.kenyacore.CoreContext;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
-import org.openmrs.module.kenyacore.form.FormDescriptor;
-import org.openmrs.module.kenyacore.form.FormUtils;
 import org.openmrs.module.kenyaui.annotation.AppPage;
-import org.openmrs.module.metadatasharing.ImportedPackage;
 import org.openmrs.ui.framework.SimpleObject;
-import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.page.PageModel;
-import org.openmrs.ui.framework.resource.ResourceFactory;
 import org.openmrs.util.OpenmrsConstants;
-import org.openmrs.util.OpenmrsUtil;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Homepage for the admin app

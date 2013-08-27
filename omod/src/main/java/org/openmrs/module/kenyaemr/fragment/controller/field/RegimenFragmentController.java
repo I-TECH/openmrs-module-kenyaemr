@@ -14,10 +14,10 @@
 
 package org.openmrs.module.kenyaemr.fragment.controller.field;
 
-import org.openmrs.module.kenyacore.regimen.RegimenManager;
+import org.openmrs.module.kenyaemr.regimen.RegimenManager;
 import org.openmrs.module.kenyaemr.KenyaEmrUiUtils;
-import org.openmrs.module.kenyacore.regimen.RegimenDefinition;
-import org.openmrs.module.kenyacore.regimen.RegimenDefinitionGroup;
+import org.openmrs.module.kenyaemr.regimen.RegimenDefinition;
+import org.openmrs.module.kenyaemr.regimen.RegimenDefinitionGroup;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.annotation.SpringBean;

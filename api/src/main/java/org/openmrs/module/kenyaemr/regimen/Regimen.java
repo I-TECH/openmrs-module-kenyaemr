@@ -12,30 +12,29 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyacore.regimen;
+package org.openmrs.module.kenyaemr.regimen;
 
-import org.openmrs.module.kenyacore.AbstractContentConfiguration;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Configuration bean class for regimens
+ * Represents prescribable regimen of drugs
  */
-public class RegimenConfiguration extends AbstractContentConfiguration {
+public class Regimen {
 
-	private String definitionsPath;
+	protected List<RegimenComponent> components = new ArrayList<RegimenComponent>();
 
-	/**
-	 * Gets the path to the definitions XML
-	 * @return the path
-	 */
-	public String getDefinitionsPath() {
-		return definitionsPath;
+	public List<RegimenComponent> getComponents() {
+		return components;
 	}
 
 	/**
-	 * Sets the path to the definitions XML
-	 * @param definitionsPath the path
+	 * @see Object#toString()
 	 */
-	public void setDefinitionsPath(String definitionsPath) {
-		this.definitionsPath = definitionsPath;
+	@Override
+	public String toString() {
+		return new ToStringBuilder(this).append("components", components).toString();
 	}
 }

@@ -16,10 +16,10 @@ package org.openmrs.module.kenyaemr.page.controller;
 
 import org.openmrs.Concept;
 import org.openmrs.Patient;
-import org.openmrs.module.kenyacore.regimen.RegimenManager;
+import org.openmrs.module.kenyaemr.regimen.RegimenManager;
 import org.openmrs.module.kenyaemr.EmrConstants;
-import org.openmrs.module.kenyacore.regimen.RegimenChange;
-import org.openmrs.module.kenyacore.regimen.RegimenChangeHistory;
+import org.openmrs.module.kenyaemr.regimen.RegimenChange;
+import org.openmrs.module.kenyaemr.regimen.RegimenChangeHistory;
 import org.openmrs.module.kenyaemr.EmrWebConstants;
 import org.openmrs.module.kenyaui.annotation.SharedPage;
 import org.openmrs.ui.framework.annotation.SpringBean;

@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
-	<bean class="org.openmrs.module.kenyacore.regimen.RegimenConfiguration">
+	<bean class="org.openmrs.module.kenyaemr.regimen.RegimenConfiguration">
 		<property name="definitionsPath" value="test-regimens.xml" />
 	</bean>
 

@@ -24,7 +24,7 @@ import org.openmrs.module.kenyacore.calculation.CalculationManager;
 import org.openmrs.module.kenyacore.lab.LabManager;
 import org.openmrs.module.kenyacore.metadata.MetadataManager;
 import org.openmrs.module.kenyacore.program.ProgramManager;
-import org.openmrs.module.kenyacore.regimen.RegimenManager;
+import org.openmrs.module.kenyaemr.regimen.RegimenManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

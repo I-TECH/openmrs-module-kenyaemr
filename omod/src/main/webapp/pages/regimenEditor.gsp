@@ -11,7 +11,7 @@
 	}
 
 	def regimenField = {
-		[ label: "Regimen", formFieldName: "regimen", class: "org.openmrs.module.kenyabase.regimen.Regimen", fieldFragment: "field/Regimen", category: category ]
+		[ label: "Regimen", formFieldName: "regimen", class: "org.openmrs.module.kenyaemr.regimen.Regimen", fieldFragment: "field/Regimen", category: category ]
 	}
 
 	def reasonFields = { reasonType ->
@@ -49,7 +49,7 @@
 
 	function undoLastChange() {
 		if (confirm('Undo the last regimen change?')) {
-			ui.getFragmentActionAsJson('kenyaemr', 'regimenUtil', 'undoLastChange', { patient: ${ patient.patientId }, category: '${ category }' }, function (data) {
+			ui.getFragmentActionAsJson('kenyaemr', 'regimenUtil', 'undoLastChange', { patient: ${ currentPatient.patientId }, category: '${ category }' }, function (data) {
 				ui.reloadPage();
 			});
 		}
@@ -100,7 +100,7 @@
 					fragment: "regimenUtil",
 					action: "changeRegimen",
 					fields: [
-							[ hiddenInputName: "patient", value: patient.id ],
+							[ hiddenInputName: "patient", value: currentPatient.id ],
 							[ hiddenInputName: "changeType", value: "START" ],
 							[ hiddenInputName: "category", value: category ],
 							changeDateField("Start date"),
@@ -123,7 +123,7 @@
 					fragment: "regimenUtil",
 					action: "changeRegimen",
 					fields: [
-							[ hiddenInputName: "patient", value: patient.id ],
+							[ hiddenInputName: "patient", value: currentPatient.id ],
 							[ hiddenInputName: "changeType", value: "CHANGE" ],
 							[ hiddenInputName: "category", value: category ],
 							changeDateField("Change date"),
@@ -145,7 +145,7 @@
 					fragment: "regimenUtil",
 					action: "changeRegimen",
 					fields: [
-							[ hiddenInputName: "patient", value: patient.id ],
+							[ hiddenInputName: "patient", value: currentPatient.id ],
 							[ hiddenInputName: "changeType", value: "STOP" ],
 							[ hiddenInputName: "category", value: category ],
 							changeDateField("Stop date"),
@@ -168,7 +168,7 @@
 					fragment: "regimenUtil",
 					action: "changeRegimen",
 					fields: [
-							[ hiddenInputName: "patient", value: patient.id ],
+							[ hiddenInputName: "patient", value: currentPatient.id ],
 							[ hiddenInputName: "changeType", value: "RESTART" ],
 							[ hiddenInputName: "category", value: category ],
 							changeDateField("Restart date"),
