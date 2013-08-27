@@ -19,8 +19,8 @@ import org.openmrs.*;
 import org.openmrs.api.APIAuthenticationException;
 import org.openmrs.module.appframework.AppDescriptor;
 import org.openmrs.module.kenyacore.CoreConstants;
-import org.openmrs.module.kenyacore.CoreContext;
 import org.openmrs.module.kenyacore.form.FormDescriptor;
+import org.openmrs.module.kenyacore.form.FormManager;
 import org.openmrs.module.kenyaemr.regimen.DrugReference;
 import org.openmrs.module.kenyaemr.regimen.RegimenChange;
 import org.openmrs.module.kenyaemr.regimen.RegimenChangeHistory;
@@ -45,7 +45,7 @@ import java.util.Date;
 public class KenyaEmrUiUtils {
 
 	@Autowired
-	private CoreContext emr;
+	private FormManager formManager;
 
 	@Autowired
 	private KenyaUiUtils kenyaUi;
@@ -230,7 +230,7 @@ public class KenyaEmrUiUtils {
 	 */
 	public void checkFormAccess(PageRequest pageRequest, Form form) {
 		AppDescriptor appDescriptor = kenyaUi.getCurrentApp(pageRequest);
-		FormDescriptor formDescriptor = emr.getFormManager().getFormDescriptor(form);
+		FormDescriptor formDescriptor = formManager.getFormDescriptor(form);
 
 		if (formDescriptor == null || !formDescriptor.getApps().contains(appDescriptor)) {
 			throw new APIAuthenticationException("Form " + form.getName() + " cannot be accessed from " + appDescriptor.getLabel());

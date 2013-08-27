@@ -60,7 +60,7 @@ public class LabTestPickerSubmissionElement implements HtmlGeneratorElement, For
 			excludeTests = new HashSet<Concept>();
 		}
 
-		LabManager labManager = CoreContext.getInstance().getLabManager();
+		LabManager labManager = CoreContext.getInstance().getManager(LabManager.class);
 
 		// Claim all relevant existing concept/obs
 		if (!FormEntryContext.Mode.ENTER.equals(context.getMode())) {
@@ -85,7 +85,7 @@ public class LabTestPickerSubmissionElement implements HtmlGeneratorElement, For
 		StringBuilder sb = new StringBuilder();
 		boolean viewMode = context.getMode().equals(FormEntryContext.Mode.VIEW);
 
-		LabManager labManager = CoreContext.getInstance().getLabManager();
+		LabManager labManager = CoreContext.getInstance().getManager(LabManager.class);
 
 		if (!viewMode) {
 			// Generate HTML for new test control
