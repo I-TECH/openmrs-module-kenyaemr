@@ -27,16 +27,16 @@
 	<div class="ke-form-header">
 		<table style="width: 100%">
 			<tr>
-				<td>Enrollment date: <encounterDate id="encounter-date" showTime="true" /></td>
-				<td>Enrolled by: <encounterProvider default="currentUser" /></td>
-				<td>Enrolled at: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" /></td>
+				<td>Date: <encounterDate id="encounter-date" showTime="true" /></td>
+				<td>Provider: <encounterProvider default="currentUser" /></td>
+				<td>Location: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" /></td>
 			</tr>
 		</table>
 	</div>
 	<div class="ke-form-content">
 		<table class="hei" align="center">
 			<tbody>
-
+				<p>Content to be defined</p>
 			</tbody>
 		</table>
 	</div>

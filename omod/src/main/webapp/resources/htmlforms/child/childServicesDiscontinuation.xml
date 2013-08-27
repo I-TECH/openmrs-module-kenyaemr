@@ -29,7 +29,7 @@
 		<table style="width: 100%">
 			<tr>
 				<td>Provider: <encounterProvider default="currentUser" /></td>
-				<td>Facility: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" /></td>
+				<td>Location: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" /></td>
 			</tr>
 		</table>
 	</div>

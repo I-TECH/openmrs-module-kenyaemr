@@ -24,12 +24,52 @@
 		padding: 4px;
 		text-align: left;
 		}
+
 	</style>
 	<script type="text/javascript">
+		function displayDate(birthDate)
+		{
+			var d1 = new Date(birthDate);
+			var d2 = new Date(); //to date yyyy-MM-dd (taken currentdate)
+			var Months = d2.getMonth() - d1.getMonth();
+			var Years = d2.getFullYear() - d1.getFullYear();
+			var Days = d2.getDate() - d1.getDate();
+			var wks = Math.floor(Days/7);
+			var remDays =  Math.floor(Days%7);
+			Months = (d2.getMonth() + 12 * d2.getFullYear()) -(d1.getMonth() + 12 * d1.getFullYear());
 
+			var MonthOverflow = 0;
+			if (Months - (Years * 12) &lt; 0)
+				MonthOverFlow = -1;
+			else
+				MonthOverFlow = 1;
+			if (MonthOverFlow &lt; 0)
+				Years = Years - 1; Months = Months - (Years * 12);
+				var LastDayOfMonth = new Date(d2.getFullYear(),
+				d2.getMonth() + 1, 0, 23, 59, 59);
+				LastDayOfMonth = LastDayOfMonth.getDate();
+			if (MonthOverFlow &lt;0 &amp;&amp; (d1.getDate() &gt; d2.getDate())) {
+				Days = LastDayOfMonth + (d2.getDate() - d1.getDate()) - 1;
+			}
+			else
+				Days = d2.getDate() - d1.getDate();
+			if (Days &lt; 0)
+				Months = Months - 1;
+			var l = new Date(d2.getFullYear(), d2.getMonth(), 0);
+			var l1 = new Date(d1.getFullYear(), d1.getMonth() + 1, 0);
+			if (Days &lt; 0)
+			{
+				if (l1 &gt; l)
+					Days = l1.getDate() + Days;
+				else
+					Days = l.getDate() + Days;
+			}
+			return Years +" Y(s)"+"<br />" + Months + " Mnth(s)" +"<br />"+ wks + " wk(s)" +"<br />"+ remDays +" Day(s)";
+		}
 		jq(function(){
-		var age = "<lookup expression="patient.age"/>"
-			jq('#age').html(age+"Y(s)");
+			var birthDate = "<lookup expression="patient.birthdate" />";
+			jq('#age').html(displayDate(birthDate));
+			jq('#calculated-age-deworming').html(displayDate(birthDate));
 		});
 	</script>
 	<div class="ke-form-header">
@@ -56,32 +96,32 @@
 						<table class="hei" width="100%">
 							<tbody>
 								<tr>
-									<td rowspan="2" style="text-align:center;">Visit<br />Date</td>
-									<td rowspan="2" style="text-align:center;">Age <br/>(Wks/Mths)</td>
-									<td rowspan="2" style="text-align:center;">Weight <br/>(Kgs)</td>
-									<td rowspan="2" style="text-align:center;">Height <br/>(Cms)</td>
-									<td rowspan="2" style="text-align:center;">Infant <br/> Feeding</td>
-									<td colspan="3" style="text-align:center;">Medication Given<br /> <i>If HIV Exposed</i></td>
-									<td rowspan="2" style="text-align:center;">TB <br />Assessment <br/> Outcome</td>
-									<td rowspan="2" style="text-align:center;">Date of Next <br/>Appointment</td>
+									<td rowspan="2">Visit<br />Date</td>
+									<td rowspan="2">Age <br/>(Wks/Mths)</td>
+									<td rowspan="2">Weight <br/>(Kgs)</td>
+									<td rowspan="2">Height <br/>(Cms)</td>
+									<td rowspan="2">Infant <br/> Feeding</td>
+									<td colspan="3">Medication Given<br /> <i>If HIV Exposed</i></td>
+									<td rowspan="2">TB <br />Assessment <br/> Outcome</td>
+									<td rowspan="2">Date of Next <br/>Appointment</td>
 
 								</tr>
 								<tr>
-									<td style="text-align:center;">NVP <br/> (mls)</td>
-									<td style="text-align:center;">CTX <br/>(mls/mg)</td>
-									<td style="text-align:center;">M/vit</td>
+									<td>NVP <br/> (mls)</td>
+									<td>CTX <br/>(mls/mg)</td>
+									<td>M/vit</td>
 								</tr>
 								<tr>
-									<td style="text-align:center;">(a)</td>
-									<td style="text-align:center;">(b)</td>
-									<td style="text-align:center;">(c)</td>
-									<td style="text-align:center;">(d)</td>
-									<td style="text-align:center;">(e)</td>
-									<td style="text-align:center;">(f)</td>
-									<td style="text-align:center;">(g)</td>
-									<td style="text-align:center;">(h)</td>
-									<td style="text-align:center;">(i)</td>
-									<td style="text-align:center;">(j)</td>
+									<td>(a)</td>
+									<td>(b)</td>
+									<td>(c)</td>
+									<td>(d)</td>
+									<td>(e)</td>
+									<td>(f)</td>
+									<td>(g)</td>
+									<td>(h)</td>
+									<td>(i)</td>
+									<td>(j)</td>
 
 								</tr>
 								<tr>
@@ -102,27 +142,30 @@
 					</td>
 				</tr>
 				<tr>
-					<td colspan="3" style="background-color: #696969; color: #ffffff;text-align:center;">MileStones</td>
+					<td colspan="3" style="background-color: #696969; color: #ffffff;">MileStones</td>
 				</tr>
 				<tr>
 					<td colspan="2">
-						<table width="80%" border="0">
+						<table width="100%">
 							<tr>
-								<th colspan="2" style="text-align:center;">Development Milestones by Age</th>
+								<th colspan="2">Development Milestones by Age</th>
 								<th>Achieving Milestones?</th>
 							</tr>
 							<tr>
-								<td>
-									<obs conceptId="1200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" answerConceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Social Smile" />  <br />
-									<obs conceptId="1200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" answerConceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Head Holding/Control" /> <br />
-									<obs conceptId="1200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" answerConceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Turns towards the origin of sound" /> <br />
-									<obs conceptId="1200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" answerConceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Extends hand to grasp a toy" />
-								</td>
-								<td>
-									<obs conceptId="1200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" answerConceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Sitting" />  <br />
-									<obs conceptId="1200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" answerConceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Standing" /><br />
-									<obs conceptId="1200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" answerConceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Walking" /> <br />
-									<obs conceptId="1200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" answerConceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Talking" />
+								<td colspan="2">
+									<div style="float: left; padding-right: 30px">
+										<obs conceptId="1200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" answerConceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Social Smile" /><br />
+										<obs conceptId="1200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" answerConceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Head Holding/Control" /><br />
+										<obs conceptId="1200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" answerConceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Turns towards the origin of sound" /><br />
+										<obs conceptId="1200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" answerConceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Extends hand to grasp a toy" /> <br />
+
+									</div>
+									<div style="float: left">
+										<obs conceptId="1200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" answerConceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Sitting" /> <br />
+										<obs conceptId="1200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" answerConceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Standing" /><br />
+										<obs conceptId="1200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" answerConceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Walking" /> <br />
+										<obs conceptId="1200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" answerConceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Talking" /> <br />
+									</div>
 								</td>
 								<td><obs conceptId="1189AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerConceptIds="1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,6022AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,6025AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Normal(N),Delayed(D),Regressed(R)" answerSeparator="&lt;br/&gt;"/></td>
 							</tr>
@@ -135,55 +178,77 @@
 					<td colspan="3" style="background-color: #696969; color: #ffffff;text-align:center;">Early Eye Examination and Deworming </td>
 				</tr>
 				<tr>
-					<td>
-						<table border="1" class="hei">
-							<tbody>
+					<td colspan="2">
+						<div style="float: left; padding-right: 70px">
+							<table border="1" class="hei">
+								<tbody>
+									<tr>
+										<th colspan="3">EYE CARE ASSESSMENT</th>
+									</tr>
+									<tr>
+										<td>Tetracycline<br /> Eye Ointment<br />(TEO) Given?</td>
+										<td>Yes/No</td>
+										<td id="teo-given" class="value">Only at Birth</td>
+									</tr>
+									<tr>
+										<td>PUPIL</td>
+										<td>Black<br />White</td>
+										<td id="white-pupil" class="value">If White Refer</td>
+									</tr>
+									<tr>
+										<td>SIGHT</td>
+										<td>Following Objects<br />Not Following Objects</td>
+										<td id="not-following-objects" class="value">Refer to Eye Clinic</td>
+									</tr>
+									<tr>
+										<td>SQUINT<br />(Crossed Eyes)</td>
+										<td>Squint<br />No Squint</td>
+										<td id="squint-eyes" class="value">Refer to Eye Clinic</td>
+									</tr>
+									<tr>
+										<td>ANY Other Problems</td>
+										<td>Yes<br />No</td>
+										<td id="other-problems" class="value">Refer to Eye Clinic</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+						<div style="float: left">
+							<table class="hei">
 								<tr>
-									<th colspan="3">EYE CARE ASSESSMENT</th>
+									<th colspan="2">DEWORMING</th>
+									<th rowspan="2"></th>
+									<th></th>
+
 								</tr>
 								<tr>
-									<td>Tetracycline<br /> Eye Ointment<br />(TEO) Give?</td>
-									<td>TEO</td>
-									<td>Only at Birth</td>
+									<td colspan="2">
+										<p>Give once every six months to all children one year and <br />above: If Mebendazole 500mg or Albendazole 200mg<br />for children 1 to 2 years and 400mg for children 2 years<br />and above</p>
+									</td>
+									<th rowspan="2">Date of Next Visit</th>
 								</tr>
 								<tr>
-									<td>PUPIL</td>
-									<td>Black<br />White</td>
-									<td>If White Refer</td>
+									<th>Age</th>
+									<th>Drug</th>
+									<th>Dosage</th>
 								</tr>
-								<tr>
-									<td>SIGHT</td>
-									<td>Following Objects<br />Not Following Objects</td>
-									<td>Refer to Eye Clinic</td>
-								</tr>
-								<tr>
-									<td>SQUINT<br />(Crossed Eyes)</td>
-									<td>Squint<br />No Squint</td>
-									<td>Refer to Eye Clinic</td>
-								</tr>
-								<tr>
-									<td>ANY Other Problems</td>
-									<td>Yes<br />No</td>
-									<td>Refer to Eye Clinic</td>
-								</tr>
-							</tbody>
-						</table>
-					</td>
-					<td>
-						<table>
-							<tbody>
-								<tr>
-									<th>DEWORMING FROM 1 YEAR</th>
-								</tr>
-							</tbody>
-						</table>
+								<obsgroup groupingConceptId="1442AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+									<tr>
+										<td id="calculated-age-deworming" class="value"></td>
+										<td><obs conceptId="1282AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerClasses="Drug" style="autocomplete" /></td>
+										<td><obs conceptId="1443AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+										<td><obs conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" /></td>
+									</tr>
+								</obsgroup>
+							</table>
+						</div>
 					</td>
 				</tr>
 				<tr>
 					<td colspan="3" style="background-color: #696969; color: #ffffff;text-align:center;">Clinician's Notes</td>
 				</tr>
 				<tr>
-					<td><obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" cols="80" rows="10"/></td>
+					<td><obs conceptId="159395AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" cols="80" rows="10"/></td>
 				</tr>
 			</tbody>
 		</table>
