@@ -24,20 +24,23 @@
 		text-align: left;
 		}
 	</style>
-<table class="hei" align="center">
-	<tbody>
-		<tr>
-			<td>Date <encounterDate id="encounter-date" showTime="true" /></td>
-			<td>Name of the Facility <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" /></td>
-			<td>Provider: <encounterProviderAndRole encounterRole="a0b03050-c99b-11e0-9572-0800200c9a66" default="currentUser" required="true" /></td>
-		</tr>
-		<tr>
-			<td colspan="3">
-				<div class="ke-form-footer">
-					<submit />
-				</div>
-			</td>
-		</tr>
-	</tbody>
-</table>
+	<div class="ke-form-header">
+		<table style="width: 100%">
+			<tr>
+				<td>Enrollment date: <encounterDate id="encounter-date" showTime="true" /></td>
+				<td>Enrolled by: <encounterProvider default="currentUser" /></td>
+				<td>Enrolled at: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" /></td>
+			</tr>
+		</table>
+	</div>
+	<div class="ke-form-content">
+		<table class="hei" align="center">
+			<tbody>
+
+			</tbody>
+		</table>
+	</div>
+	<div class="ke-form-footer">
+		<submit />
+	</div>
 </htmlform>
