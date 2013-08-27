@@ -21,6 +21,7 @@ import org.openmrs.module.kenyacore.calculation.BooleanResult;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Calculates whether patients are eligible for the TB program
@@ -30,9 +31,12 @@ public class EligibleForTbProgramCalculation extends BaseEmrCalculation {
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> params, PatientCalculationContext context) {
 		CalculationResultMap ret = new CalculationResultMap();
+		Set<Integer> alive = alivePatients(cohort, context);
 
 		for (int ptId : cohort) {
-			ret.put(ptId, new BooleanResult(true, this));
+			boolean eligible = alive.contains(ptId);
+
+			ret.put(ptId, new BooleanResult(eligible, this));
 		}
 
 		return ret;
