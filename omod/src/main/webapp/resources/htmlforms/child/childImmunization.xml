@@ -37,85 +37,82 @@
 		<table border="0"  class="hei" align="center">
 			<tbody>
 				<tr>
-					<td  style="background-color: #696969; color: #ffffff;text-align:center;">IMMUNIZATIONS(PROTECT YOUR CHILD)</td>
+					<th colspan="4" style="background-color: #696969; color: #ffffff;text-align:center;">IMMUNIZATIONS(PROTECT YOUR CHILD)</th>
 				</tr>
 				<tr>
-						<td>
-							<table cellpadding="10">
-								<tr>
-									<td>
-										<table class="hei">
-											<tbody>
-												<tr>
-													<th>BCG VACCINE: at birth</th>
-												</tr>
-												<tr>
-													<th><i>(intra-dermal left fore arm)</i></th>
-												</tr>
-												<tr>
-													 <td>BCG-Scar Checked?</td>
-													 <td>Date checked</td>
-													 <td>Date BCG repeated</td>
-												</tr>
-												<tr>
-													<td>PRESENT <br />ABSENT</td>
-													<td></td>
-													<td></td>
-												</tr>
-											</tbody>
-										</table>
-									</td>
-									<td>
-
-									</td>
-								</tr>
-								<tr>
-									<td>
-										<table class="hei">
-											<tbody>
-												<tr>
-													<th>ORAL POLIO VACCINE(OPV)</th>
-												</tr>
-												<tr>
-													<th><i>Dose: 2 drops orally</i></th>
-												</tr>
-												<tr>
-													<td>Birth Dose: at birth or within 2 wks(OPV 0)</td>
-													<td></td>
-												</tr>
-												<tr>
-													<td>1st dose at 6 weeks(OPV 1)</td>
-													<td></td>
-												</tr>
-												<tr>
-													<td>2nd dose at 10 weeks(OPV 2)</td>
-													<td></td>
-												</tr>
-												<tr>
-													<td>3rd dose at 14 weeks(OPV 3)</td>
-													<td></td>
-												</tr>
-											</tbody>
-										</table>
-									</td>
-								</tr>
-								<tr>
-									<td>
-										<table class="hei">
-											<tbody>
-												<tr>
-													<th>DIPHTHERIA/PERTUSSIS/TETANUS<br />HEPATITIS B/HAEMOPHILUS INFLUENZA Type b</th>
-												</tr>
-											</tbody>
-										</table>
-									</td>
-								</tr>
-								<tr>
-									<td>Date Given<encounterDate id="encounter-date" /></td>
-									<td>Date of next visit<obs conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
-								</tr>
-							</table>
-						</td>
+					<th>Vaccine</th>
+					<th>Sequence No</th>
+					<th>Date Given</th>
+					<th>Date of Next Visit</th>
+				</tr>
+				<repeat>
+					<template>
+						<obsgroup groupingConceptId="1441AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+							<tr>
+								<td>
+									<obs conceptId="984AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										 answerClasses="Drug,Procedure" style="autocomplete" />
+								</td>
+								<td>
+									<obs conceptId="1418AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+								</td>
+								<td>
+									<obs conceptId="1410AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+								</td>
+								<td>
+									<obs conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" />
+								</td>
+							</tr>
+						</obsgroup>
+					</template>
+					<render n="1" concept=" "/>
+					<render n="2" concept=" "/>
+					<render n="3" concept=" "/>
+					<render n="4" concept=" "/>
+					<render n="5" concept=" "/>
+					<render n="6" concept=" "/>
+					<render n="7" concept=" "/>
+					<render n="8" concept=" "/>
+					<render n="9" concept=" "/>
+					<render n="10" concept=" "/>
+				</repeat>
+			</tbody>
+		</table>
+		<br />
+		<table class="hei" align="center">
+			<tbody>
+				<tr>
+					<td>BCG-Scar checked</td>
+					<td>Date checked</td>
+					<td>Date BCG repeated</td>
+				</tr>
+			</tbody>
+		</table>
+		<br />
+		<table class="hei" align="center">
+			<tbody>
+				<tr>
+					<th colspan="4" style="background-color: #696969; color: #ffffff;text-align:center;">VITAMIN A CAPSULES FROM 6 MONTHS</th>
+				</tr>
+				<tr>
+					<th colspan="2">VITAMIN A CAPSULE: Given orally</th>
+					<th rowspan="2">Tick Age given</th>
+					<th rowspan="2">Date of next visit</th>
+				</tr>
+				<tr>
+					<td colspan="2">At 6 months or at first contact thereafter</td>
+				</tr>
+				<tr>
+					<th>Dose</th>
+					<th>Age</th>
+					<th></th>
+					<th></th>
+				</tr>
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td><obs conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" /></td>
 				</tr>
 			</tbody>
 		</table>
