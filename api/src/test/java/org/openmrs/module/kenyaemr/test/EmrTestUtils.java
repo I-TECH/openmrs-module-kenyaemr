@@ -22,7 +22,7 @@ import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.patient.PatientCalculationService;
-import org.openmrs.module.kenyacore.regimen.RegimenOrder;
+import org.openmrs.module.kenyaemr.regimen.RegimenOrder;
 
 import java.util.Collection;
 import java.util.Date;

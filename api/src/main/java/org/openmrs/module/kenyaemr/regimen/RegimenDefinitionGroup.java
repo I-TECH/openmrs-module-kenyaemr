@@ -12,7 +12,7 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyacore.regimen;
+package org.openmrs.module.kenyaemr.regimen;
 
 import java.util.ArrayList;
 import java.util.List;

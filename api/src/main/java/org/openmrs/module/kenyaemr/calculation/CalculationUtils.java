@@ -24,8 +24,8 @@ import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.*;
 import org.openmrs.module.kenyacore.CoreContext;
 import org.openmrs.module.kenyacore.CoreUtils;
-import org.openmrs.module.kenyacore.regimen.RegimenDefinition;
-import org.openmrs.module.kenyacore.regimen.RegimenOrder;
+import org.openmrs.module.kenyaemr.regimen.RegimenDefinition;
+import org.openmrs.module.kenyaemr.regimen.RegimenOrder;
 import org.openmrs.util.OpenmrsUtil;
 
 import java.util.*;

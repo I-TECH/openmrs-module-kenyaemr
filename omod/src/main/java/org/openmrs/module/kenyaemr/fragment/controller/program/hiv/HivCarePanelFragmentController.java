@@ -17,7 +17,7 @@ package org.openmrs.module.kenyaemr.fragment.controller.program.hiv;
 import org.openmrs.Concept;
 import org.openmrs.Patient;
 import org.openmrs.calculation.result.CalculationResult;
-import org.openmrs.module.kenyacore.CoreContext;
+import org.openmrs.module.kenyaemr.regimen.RegimenManager;
 import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.LastWhoStageCalculation;
@@ -25,7 +25,7 @@ import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtRegimen
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtStartDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.LastCd4CountCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.LastCd4PercentageCalculation;
-import org.openmrs.module.kenyacore.regimen.RegimenChangeHistory;
+import org.openmrs.module.kenyaemr.regimen.RegimenChangeHistory;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.FragmentModel;
@@ -42,7 +42,7 @@ public class HivCarePanelFragmentController {
 	public void controller(@FragmentParam("patient") Patient patient,
 						   @FragmentParam("complete") Boolean complete,
 						   FragmentModel model,
-						   @SpringBean CoreContext emr) {
+						   @SpringBean RegimenManager regimenManager) {
 
 		Map<String, CalculationResult> calculationResults = new HashMap<String, CalculationResult>();
 
@@ -57,7 +57,7 @@ public class HivCarePanelFragmentController {
 
 		model.addAttribute("calculations", calculationResults);
 
-		Concept medSet = emr.getRegimenManager().getMasterSetConcept("ARV");
+		Concept medSet = regimenManager.getMasterSetConcept("ARV");
 		RegimenChangeHistory history = RegimenChangeHistory.forPatient(patient, medSet);
 		model.addAttribute("regimenHistory", history);
 

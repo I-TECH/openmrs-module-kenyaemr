@@ -15,8 +15,8 @@
 package org.openmrs.module.kenyaemr.fragment.controller.system;
 
 import org.openmrs.PatientIdentifierType;
-import org.openmrs.module.kenyacore.CoreContext;
 import org.openmrs.module.kenyacore.identifier.IdentifierDescriptor;
+import org.openmrs.module.kenyacore.identifier.IdentifierManager;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.FragmentModel;
@@ -29,9 +29,9 @@ import java.util.List;
  */
 public class IdentifiersContentFragmentController {
 
-	public void controller(FragmentModel model, @SpringBean CoreContext emr) {
+	public void controller(FragmentModel model, @SpringBean IdentifierManager identifierManager) {
 		List<SimpleObject> identifiers = new ArrayList<SimpleObject>();
-		for (IdentifierDescriptor descriptor : emr.getIdentifierManager().getAllIdentifierDescriptors()) {
+		for (IdentifierDescriptor descriptor : identifierManager.getAllIdentifierDescriptors()) {
 			PatientIdentifierType pidType = descriptor.getTarget();
 
 			identifiers.add(SimpleObject.create("name", pidType.getName(), "format", pidType.getFormat()));

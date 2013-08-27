@@ -17,9 +17,9 @@ package org.openmrs.module.kenyaemr.fragment.controller.system;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Transformer;
 import org.openmrs.Program;
-import org.openmrs.module.kenyacore.CoreContext;
 import org.openmrs.module.kenyacore.form.FormDescriptor;
 import org.openmrs.module.kenyacore.program.ProgramDescriptor;
+import org.openmrs.module.kenyacore.program.ProgramManager;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.FragmentModel;
@@ -33,9 +33,9 @@ import java.util.List;
  */
 public class ProgramsContentFragmentController {
 
-	public void controller(FragmentModel model, @SpringBean CoreContext emr) {
+	public void controller(FragmentModel model, @SpringBean ProgramManager programManager) {
 		List<SimpleObject> programs = new ArrayList<SimpleObject>();
-		for (ProgramDescriptor descriptor : emr.getProgramManager().getAllProgramDescriptors()) {
+		for (ProgramDescriptor descriptor : programManager.getAllProgramDescriptors()) {
 			Program program = descriptor.getTarget();
 
 			Collection<String> visitForms = CollectionUtils.collect(descriptor.getVisitForms(), new Transformer() {

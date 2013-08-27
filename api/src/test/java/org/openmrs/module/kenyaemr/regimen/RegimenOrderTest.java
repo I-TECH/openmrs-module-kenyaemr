@@ -12,21 +12,20 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyacore.regimen;
+package org.openmrs.module.kenyaemr.regimen;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.DrugOrder;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyacore.regimen.RegimenOrder;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 
 /**
- * Tests for {@link org.openmrs.module.kenyacore.regimen.RegimenOrder}
+ * Tests for {@link RegimenOrder}
  */
 public class RegimenOrderTest extends BaseModuleContextSensitiveTest {
 

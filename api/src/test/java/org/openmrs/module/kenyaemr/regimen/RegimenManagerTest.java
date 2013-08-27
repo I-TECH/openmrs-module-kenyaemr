@@ -12,7 +12,7 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyacore.regimen;
+package org.openmrs.module.kenyaemr.regimen;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -30,7 +30,7 @@ import java.util.List;
 import static org.hamcrest.Matchers.*;
 
 /**
- * Tests for {@link org.openmrs.module.kenyacore.regimen.RegimenManager}
+ * Tests for {@link RegimenManager}
  */
 public class RegimenManagerTest extends BaseModuleContextSensitiveTest {
 
@@ -99,7 +99,7 @@ public class RegimenManagerTest extends BaseModuleContextSensitiveTest {
 	}
 
 	/**
-	 * @see RegimenManager#findDefinitions(String, org.openmrs.module.kenyacore.regimen.RegimenOrder, boolean)
+	 * @see RegimenManager#findDefinitions(String, org.openmrs.module.kenyaemr.regimen.RegimenOrder, boolean)
 	 */
 	@Test
 	public void findDefinitions_shouldFindDefinitionsForRegimen() {

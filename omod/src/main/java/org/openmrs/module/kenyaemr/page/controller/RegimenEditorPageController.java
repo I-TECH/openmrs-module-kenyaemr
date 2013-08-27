@@ -16,13 +16,12 @@ package org.openmrs.module.kenyaemr.page.controller;
 
 import org.openmrs.Concept;
 import org.openmrs.Patient;
+import org.openmrs.module.kenyaemr.regimen.RegimenManager;
 import org.openmrs.module.kenyaemr.EmrConstants;
-import org.openmrs.module.kenyacore.CoreContext;
-import org.openmrs.module.kenyacore.regimen.RegimenChange;
-import org.openmrs.module.kenyacore.regimen.RegimenChangeHistory;
+import org.openmrs.module.kenyaemr.regimen.RegimenChange;
+import org.openmrs.module.kenyaemr.regimen.RegimenChangeHistory;
 import org.openmrs.module.kenyaemr.EmrWebConstants;
 import org.openmrs.module.kenyaui.annotation.SharedPage;
-import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.page.PageModel;
 import org.openmrs.util.OpenmrsUtil;
@@ -39,14 +38,14 @@ public class RegimenEditorPageController {
 	public void controller(@RequestParam("category") String category,
 						   @RequestParam("returnUrl") String returnUrl,
 						   PageModel model,
-						   @SpringBean CoreContext emr) {
+						   @SpringBean RegimenManager regimenManager) {
 
 		Patient patient = (Patient) model.getAttribute(EmrWebConstants.MODEL_ATTR_CURRENT_PATIENT);
 
 		model.addAttribute("category", category);
 		model.addAttribute("returnUrl", returnUrl);
 
-		Concept masterSet = emr.getRegimenManager().getMasterSetConcept(category);
+		Concept masterSet = regimenManager.getMasterSetConcept(category);
 		RegimenChangeHistory history = RegimenChangeHistory.forPatient(patient, masterSet);
 		model.addAttribute("history", history);
 

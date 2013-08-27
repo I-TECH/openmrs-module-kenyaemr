@@ -20,9 +20,9 @@ import org.junit.Test;
 import org.openmrs.*;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyacore.CoreContext;
-import org.openmrs.module.kenyacore.regimen.DrugReference;
-import org.openmrs.module.kenyacore.regimen.RegimenChangeHistory;
-import org.openmrs.module.kenyacore.regimen.RegimenOrder;
+import org.openmrs.module.kenyaemr.regimen.DrugReference;
+import org.openmrs.module.kenyaemr.regimen.RegimenChangeHistory;
+import org.openmrs.module.kenyaemr.regimen.RegimenOrder;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.ui.framework.SimpleObject;
@@ -104,7 +104,7 @@ public class KenyaEmrUiUtilsTest extends BaseModuleContextSensitiveTest {
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.KenyaEmrUiUtils#formatDrug(org.openmrs.module.kenyacore.regimen.DrugReference, org.openmrs.ui.framework.UiUtils)
+	 * @see org.openmrs.module.kenyaemr.KenyaEmrUiUtils#formatDrug(org.openmrs.module.kenyaemr.regimen.DrugReference, org.openmrs.ui.framework.UiUtils)
 	 * @verifies format drug reference as concept or drug
 	 */
 	@Test
@@ -119,7 +119,7 @@ public class KenyaEmrUiUtilsTest extends BaseModuleContextSensitiveTest {
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.KenyaEmrUiUtils#formatRegimenShort(org.openmrs.module.kenyacore.regimen.RegimenOrder, org.openmrs.ui.framework.UiUtils)
+	 * @see org.openmrs.module.kenyaemr.KenyaEmrUiUtils#formatRegimenShort(org.openmrs.module.kenyaemr.regimen.RegimenOrder, org.openmrs.ui.framework.UiUtils)
 	 * @verifies format regimen
 	 */
 	@Test
@@ -133,7 +133,7 @@ public class KenyaEmrUiUtilsTest extends BaseModuleContextSensitiveTest {
 	}
 
 	/**
-	 * @see KenyaEmrUiUtils#formatRegimenLong(org.openmrs.module.kenyacore.regimen.RegimenOrder, org.openmrs.ui.framework.UiUtils)
+	 * @see KenyaEmrUiUtils#formatRegimenLong(org.openmrs.module.kenyaemr.regimen.RegimenOrder, org.openmrs.ui.framework.UiUtils)
 	 */
 	@Test
 	public void formatRegimenLong() {
@@ -146,7 +146,7 @@ public class KenyaEmrUiUtilsTest extends BaseModuleContextSensitiveTest {
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.KenyaEmrUiUtils#simpleRegimen(org.openmrs.module.kenyacore.regimen.RegimenOrder, org.openmrs.ui.framework.UiUtils)
+	 * @see org.openmrs.module.kenyaemr.KenyaEmrUiUtils#simpleRegimen(org.openmrs.module.kenyaemr.regimen.RegimenOrder, org.openmrs.ui.framework.UiUtils)
 	 */
 	@Test
 	public void simpleRegimen_shouldConvertToSimpleObject() {
@@ -162,7 +162,7 @@ public class KenyaEmrUiUtilsTest extends BaseModuleContextSensitiveTest {
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.KenyaEmrUiUtils#simpleRegimenHistory(org.openmrs.module.kenyacore.regimen.RegimenChangeHistory, org.openmrs.ui.framework.UiUtils)
+	 * @see org.openmrs.module.kenyaemr.KenyaEmrUiUtils#simpleRegimenHistory(org.openmrs.module.kenyaemr.regimen.RegimenChangeHistory, org.openmrs.ui.framework.UiUtils)
 	 */
 	@Test
 	public void simpleRegimenHistory_shouldConvertToSimpleObjects() throws IOException, SAXException, ParserConfigurationException {

@@ -15,10 +15,9 @@
 package org.openmrs.module.kenyaemr.fragment.controller.program.child;
 
 import org.openmrs.Patient;
-import org.openmrs.module.kenyacore.CoreContext;
 import org.openmrs.ui.framework.annotation.FragmentParam;
-import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.FragmentModel;
+
 /**
  * Controller for child services care summary
  */
@@ -26,8 +25,7 @@ public class ChildCarePanelFragmentController {
 
 	public void controller(@FragmentParam("patient") Patient patient,
 						   @FragmentParam("complete") Boolean complete,
-						   FragmentModel model,
-						   @SpringBean CoreContext emr) {
+						   FragmentModel model) {
 
 	}
 

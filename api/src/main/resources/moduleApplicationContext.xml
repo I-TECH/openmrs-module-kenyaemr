@@ -27,18 +27,6 @@
 		</property>
 	</bean>
 
-	<bean id="kenyaemr.config.regimen" class="org.openmrs.module.kenyacore.regimen.RegimenConfiguration">
-		<property name="definitionsPath" value="regimens.xml" />
-	</bean>
-
-	<bean id="kenyaemr.config.lab" class="org.openmrs.module.kenyacore.lab.LabConfiguration">
-		<property name="generalCatalogs">
-			<set>
-				<ref bean="kenyaemr.catalog.standard" />
-			</set>
-		</property>
-	</bean>
-
 	<bean id="kenyaemr.config.form" class="org.openmrs.module.kenyacore.form.FormConfiguration">
 		<property name="generalPatientForms">
 			<set>
@@ -54,6 +42,18 @@
 				<ref bean="kenyaemr.form.labResults" />
 				<ref bean="kenyaemr.form.otherMedications" />
 				<ref bean="kenyaemr.form.progressNote" />
+			</set>
+		</property>
+	</bean>
+
+	<bean id="kenyaemr.config.regimen" class="org.openmrs.module.kenyaemr.regimen.RegimenConfiguration">
+		<property name="definitionsPath" value="regimens.xml" />
+	</bean>
+
+	<bean id="kenyaemr.config.lab" class="org.openmrs.module.kenyacore.lab.LabConfiguration">
+		<property name="generalCatalogs">
+			<set>
+				<ref bean="kenyaemr.catalog.standard" />
 			</set>
 		</property>
 	</bean>

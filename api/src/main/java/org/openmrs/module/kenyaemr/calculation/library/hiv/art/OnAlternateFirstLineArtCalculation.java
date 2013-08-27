@@ -20,7 +20,7 @@ import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
 import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
-import org.openmrs.module.kenyacore.regimen.RegimenOrder;
+import org.openmrs.module.kenyaemr.regimen.RegimenOrder;
 
 import java.util.Collection;
 import java.util.Map;

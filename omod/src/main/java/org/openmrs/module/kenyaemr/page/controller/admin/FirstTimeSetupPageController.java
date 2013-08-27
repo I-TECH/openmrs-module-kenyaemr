@@ -19,9 +19,9 @@ import org.openmrs.Location;
 import org.openmrs.User;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.idgen.IdentifierSource;
+import org.openmrs.module.kenyacore.identifier.IdentifierManager;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.EmrConstants;
-import org.openmrs.module.kenyacore.CoreContext;
 import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
@@ -41,7 +41,7 @@ public class FirstTimeSetupPageController {
 	
 	public String controller(HttpSession session, PageModel model, UiUtils ui,
 							 @SpringBean KenyaUiUtils kenyaUi,
-							 @SpringBean CoreContext emr,
+							 @SpringBean IdentifierManager identifierManager,
 	                         @RequestParam(required = false, value = "defaultLocation") Location defaultLocation,
 	                         @RequestParam(required = false, value = "mrnIdentifierSourceStart") String mrnIdentifierSourceStart,
 	                         @RequestParam(required = false, value = "hivIdentifierSourceStart") String hivIdentifierSourceStart) {
@@ -65,8 +65,8 @@ public class FirstTimeSetupPageController {
 		}
 		
 		defaultLocation = service.getDefaultLocation();
-		IdentifierSource mrnIdentifierSource = emr.getIdentifierManager().getIdentifierSource(MetadataUtils.getPatientIdentifierType(Metadata.OPENMRS_ID_IDENTIFIER_TYPE));
-		IdentifierSource hivIdentifierSource = emr.getIdentifierManager().getIdentifierSource(MetadataUtils.getPatientIdentifierType(Metadata.UNIQUE_PATIENT_NUMBER_IDENTIFIER_TYPE));
+		IdentifierSource mrnIdentifierSource = identifierManager.getIdentifierSource(MetadataUtils.getPatientIdentifierType(Metadata.OPENMRS_ID_IDENTIFIER_TYPE));
+		IdentifierSource hivIdentifierSource = identifierManager.getIdentifierSource(MetadataUtils.getPatientIdentifierType(Metadata.UNIQUE_PATIENT_NUMBER_IDENTIFIER_TYPE));
 
 		User authenticatedUser = Context.getAuthenticatedUser();
 		

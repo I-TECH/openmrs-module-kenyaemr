@@ -14,7 +14,7 @@
 
 package org.openmrs.module.kenyaemr.converter;
 
-import org.openmrs.module.kenyacore.regimen.DrugReference;
+import org.openmrs.module.kenyaemr.regimen.DrugReference;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 

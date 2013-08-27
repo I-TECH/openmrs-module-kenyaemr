@@ -17,8 +17,8 @@ package org.openmrs.module.kenyaemr.page.controller.reports;
 import java.io.ByteArrayOutputStream;
 
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyacore.report.ReportManager;
 import org.openmrs.module.kenyaemr.EmrConstants;
-import org.openmrs.module.kenyacore.CoreContext;
 import org.openmrs.module.kenyacore.report.ReportBuilder;
 import org.openmrs.module.kenyaui.annotation.AppPage;
 import org.openmrs.module.reporting.common.ContentType;
@@ -41,11 +41,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class RunPatientListReportPageController {
 
 	public Object controller(PageModel model,
-				@SpringBean CoreContext emr,
+				@SpringBean ReportManager reportManager,
 				@RequestParam("builder") String builderClassname,
 				@RequestParam(required = false, value = "mode") String mode) throws Exception {
 
-		ReportBuilder builder = emr.getReportManager().getReportBuilder(builderClassname);
+		ReportBuilder builder = reportManager.getReportBuilder(builderClassname);
 		ReportDefinition definition = builder.getReportDefinition();
 		
 		model.addAttribute("builder", builder);

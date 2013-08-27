@@ -18,8 +18,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Visit;
 import org.openmrs.module.appframework.AppDescriptor;
-import org.openmrs.module.kenyacore.CoreContext;
 import org.openmrs.module.kenyacore.form.FormDescriptor;
+import org.openmrs.module.kenyacore.form.FormManager;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
@@ -41,14 +41,14 @@ public class VisitAvailableFormsFragmentController {
 						   @FragmentParam("visit") Visit visit,
 						   UiUtils ui,
 						   PageRequest request,
-						   @SpringBean CoreContext emr,
+						   @SpringBean FormManager formManager,
 						   @SpringBean KenyaUiUtils kenyaUi) {
 
 		AppDescriptor currentApp = kenyaUi.getCurrentApp(request);
 
 		List<SimpleObject> availableForms = new ArrayList<SimpleObject>();
 
-		for (FormDescriptor descriptor : emr.getFormManager().getUncompletedFormsForVisit(currentApp, visit)) {
+		for (FormDescriptor descriptor : formManager.getUncompletedFormsForVisit(currentApp, visit)) {
 			availableForms.add(ui.simplifyObject(descriptor.getTarget()));
 		}
 

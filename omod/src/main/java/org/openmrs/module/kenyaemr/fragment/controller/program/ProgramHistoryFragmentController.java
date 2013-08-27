@@ -17,12 +17,9 @@ package org.openmrs.module.kenyaemr.fragment.controller.program;
 import java.util.*;
 
 import org.openmrs.*;
-import org.openmrs.api.ProgramWorkflowService;
-import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyacore.CoreContext;
 import org.openmrs.module.kenyacore.form.FormDescriptor;
-import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyacore.program.ProgramDescriptor;
+import org.openmrs.module.kenyacore.program.ProgramManager;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.FragmentParam;
@@ -39,15 +36,15 @@ public class ProgramHistoryFragmentController {
 						   @FragmentParam("program") Program program,
 						   @FragmentParam("showClinicalData") boolean showClinicalData,
 						   UiUtils ui,
-						   @SpringBean CoreContext emr) {
+						   @SpringBean ProgramManager programManager) {
 
-		ProgramDescriptor descriptor = emr.getProgramManager().getProgramDescriptor(program);
-		boolean patientIsEligible = emr.getProgramManager().isPatientEligibleFor(patient, program);
+		ProgramDescriptor descriptor = programManager.getProgramDescriptor(program);
+		boolean patientIsEligible = programManager.isPatientEligibleFor(patient, program);
 
 		PatientProgram currentEnrollment = null;
 
 		// Gather all program enrollments for this patient and program
-		List<PatientProgram> enrollments = emr.getProgramManager().getPatientEnrollments(patient, program);
+		List<PatientProgram> enrollments = programManager.getPatientEnrollments(patient, program);
 		for (PatientProgram enrollment : enrollments) {
 			if (enrollment.getActive()) {
 				currentEnrollment = enrollment;
