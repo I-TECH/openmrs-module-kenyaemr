@@ -18,8 +18,8 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Transformer;
 import org.openmrs.Form;
 import org.openmrs.module.appframework.AppDescriptor;
-import org.openmrs.module.kenyacore.CoreContext;
 import org.openmrs.module.kenyacore.form.FormDescriptor;
+import org.openmrs.module.kenyacore.form.FormManager;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.FragmentModel;
@@ -33,9 +33,9 @@ import java.util.List;
  */
 public class FormsContentFragmentController {
 
-	public void controller(FragmentModel model, @SpringBean CoreContext emr) {
+	public void controller(FragmentModel model, @SpringBean FormManager formManager) {
 		List<SimpleObject> forms = new ArrayList<SimpleObject>();
-		for (FormDescriptor descriptor : emr.getFormManager().getAllFormDescriptors()) {
+		for (FormDescriptor descriptor : formManager.getAllFormDescriptors()) {
 			Form form = descriptor.getTarget();
 
 			Collection<String> allowedApps = CollectionUtils.collect(descriptor.getApps(), new Transformer() {

@@ -16,8 +16,8 @@ package org.openmrs.module.kenyaemr.fragment.controller;
 
 import org.openmrs.*;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyacore.CoreContext;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
+import org.openmrs.module.kenyacore.regimen.RegimenManager;
 import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyacore.regimen.RegimenChangeHistory;
 import org.openmrs.ui.framework.SimpleObject;
@@ -39,7 +39,7 @@ public class Moh257FragmentController {
 						   Patient patient,
 						   FragmentModel model,
 						   UiUtils ui,
-						   @SpringBean CoreContext emr) {
+						   @SpringBean RegimenManager regimenManager) {
 
 		String[] page1FormUuids = { Metadata.FAMILY_HISTORY_FORM, Metadata.HIV_PROGRAM_ENROLLMENT_FORM };
 
@@ -66,7 +66,7 @@ public class Moh257FragmentController {
 		model.addAttribute("page2Form", moh257VisitForm);
 		model.addAttribute("page2Encounters", moh257VisitSummaryEncounters);
 
-		Concept masterSet = emr.getRegimenManager().getMasterSetConcept("ARV");
+		Concept masterSet = regimenManager.getMasterSetConcept("ARV");
 		RegimenChangeHistory arvHistory = RegimenChangeHistory.forPatient(patient, masterSet);
 		model.addAttribute("arvHistory", arvHistory);
 	}

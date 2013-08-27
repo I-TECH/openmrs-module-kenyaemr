@@ -14,7 +14,7 @@
 
 package org.openmrs.module.kenyaemr.fragment.controller.field;
 
-import org.openmrs.module.kenyacore.CoreContext;
+import org.openmrs.module.kenyacore.regimen.RegimenManager;
 import org.openmrs.module.kenyaemr.KenyaEmrUiUtils;
 import org.openmrs.module.kenyacore.regimen.RegimenDefinition;
 import org.openmrs.module.kenyacore.regimen.RegimenDefinitionGroup;
@@ -36,10 +36,10 @@ public class RegimenFragmentController {
 						   @FragmentParam(value = "includeGroups", required = false) Set<String> includeGroups,
 						   FragmentModel model,
 						   UiUtils ui,
-						   @SpringBean CoreContext emr,
+						   @SpringBean RegimenManager regimenManager,
 						   @SpringBean KenyaEmrUiUtils kenyaUi) {
 
-		List<RegimenDefinitionGroup> regimenGroups = emr.getRegimenManager().getRegimenGroups(category);
+		List<RegimenDefinitionGroup> regimenGroups = regimenManager.getRegimenGroups(category);
 
 		if (includeGroups != null) {
 			regimenGroups = filterGroups(regimenGroups, includeGroups);
@@ -51,7 +51,7 @@ public class RegimenFragmentController {
 		}
 
 		model.addAttribute("maxComponents", 4);
-		model.addAttribute("drugs", emr.getRegimenManager().getDrugs(category));
+		model.addAttribute("drugs", regimenManager.getDrugs(category));
 		model.addAttribute("regimenGroups", regimenGroups);
 		model.addAttribute("regimenDefinitions", kenyaUi.simpleRegimenDefinitions(regimenDefinitions, ui));
 	}

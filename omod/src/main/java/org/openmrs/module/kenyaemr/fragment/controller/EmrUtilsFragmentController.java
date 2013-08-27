@@ -25,7 +25,7 @@ import org.openmrs.Visit;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.context.ContextAuthenticationException;
 import org.openmrs.calculation.result.CalculationResult;
-import org.openmrs.module.kenyacore.CoreContext;
+import org.openmrs.module.kenyacore.regimen.RegimenManager;
 import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyaemr.KenyaEmrUiUtils;
 import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
@@ -113,8 +113,8 @@ public class EmrUtilsFragmentController {
 	 * @param now the current time reference
 	 * @return the regimen and duration
 	 */
-	public SimpleObject currentArvRegimen(@RequestParam("patientId") Patient patient, @RequestParam("now") Date now, @SpringBean CoreContext emr, @SpringBean KenyaEmrUiUtils kenyaEmrUi, @SpringBean KenyaUiUtils kenyaUi, UiUtils ui) {
-		Concept arvs = emr.getRegimenManager().getMasterSetConcept("ARV");
+	public SimpleObject currentArvRegimen(@RequestParam("patientId") Patient patient, @RequestParam("now") Date now, @SpringBean RegimenManager regimenManager, @SpringBean KenyaEmrUiUtils kenyaEmrUi, @SpringBean KenyaUiUtils kenyaUi, UiUtils ui) {
+		Concept arvs = regimenManager.getMasterSetConcept("ARV");
 		RegimenChangeHistory history = RegimenChangeHistory.forPatient(patient, arvs);
 		RegimenChange current = history.getLastChangeBeforeDate(now);
 

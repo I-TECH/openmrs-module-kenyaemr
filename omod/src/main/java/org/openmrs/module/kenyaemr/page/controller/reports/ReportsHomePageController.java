@@ -17,8 +17,8 @@ package org.openmrs.module.kenyaemr.page.controller.reports;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openmrs.module.kenyacore.report.ReportManager;
 import org.openmrs.module.kenyaemr.EmrConstants;
-import org.openmrs.module.kenyacore.CoreContext;
 import org.openmrs.module.kenyacore.report.ReportBuilder;
 import org.openmrs.module.kenyaui.annotation.AppPage;
 import org.openmrs.ui.framework.SimpleObject;
@@ -31,9 +31,9 @@ import org.openmrs.ui.framework.page.PageModel;
 @AppPage(EmrConstants.APP_REPORTS)
 public class ReportsHomePageController {
 
-	public void controller(PageModel model, @SpringBean CoreContext emr) {
-		model.addAttribute("mohReports", getReportDefinitionSummaries(emr, "moh"));
-		model.addAttribute("facilityReports", getReportDefinitionSummaries(emr, "facility"));
+	public void controller(PageModel model, @SpringBean ReportManager reportManager) {
+		model.addAttribute("mohReports", getReportDefinitionSummaries(reportManager, "moh"));
+		model.addAttribute("facilityReports", getReportDefinitionSummaries(reportManager, "facility"));
 	}
 
 	/**
@@ -41,9 +41,9 @@ public class ReportsHomePageController {
 	 * @param tag the report tag
 	 * @return the definition summaries
 	 */
-    private List<SimpleObject> getReportDefinitionSummaries(CoreContext emr, String tag) {
+    private List<SimpleObject> getReportDefinitionSummaries(ReportManager reportManager, String tag) {
     	List<SimpleObject> ret = new ArrayList<SimpleObject>();
-		for (ReportBuilder reportBuilder : emr.getReportManager().getReportBuildersByTag(tag)) {
+		for (ReportBuilder reportBuilder : reportManager.getReportBuildersByTag(tag)) {
 			ret.add(SimpleObject.create("name", reportBuilder.getReportDefinitionSummary().getName(), "builder", reportBuilder.getClass().getName()));
 		}
 		return ret;

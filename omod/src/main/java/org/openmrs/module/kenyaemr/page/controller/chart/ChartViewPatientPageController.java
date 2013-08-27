@@ -33,7 +33,9 @@ import org.openmrs.Visit;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appframework.AppDescriptor;
 import org.openmrs.module.appframework.api.AppFrameworkService;
+import org.openmrs.module.kenyacore.form.FormManager;
 import org.openmrs.module.kenyacore.program.ProgramDescriptor;
+import org.openmrs.module.kenyacore.program.ProgramManager;
 import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyacore.CoreContext;
 import org.openmrs.module.kenyacore.form.FormDescriptor;
@@ -62,7 +64,8 @@ public class ChartViewPatientPageController {
 	                       UiUtils ui,
 	                       Session session,
 						   @SpringBean KenyaUiUtils kenyaUi,
-						   @SpringBean CoreContext emr) {
+						   @SpringBean FormManager formManager,
+						   @SpringBean ProgramManager programManager) {
 
 		if ("".equals(formUuid)) {
 			formUuid = null;
@@ -75,7 +78,7 @@ public class ChartViewPatientPageController {
 
 		AppDescriptor thisApp = Context.getService(AppFrameworkService.class).getAppById(EmrConstants.APP_CHART);
 
-		List<FormDescriptor> oneTimeFormDescriptors = emr.getFormManager().getFormsForPatient(thisApp, patient);
+		List<FormDescriptor> oneTimeFormDescriptors = formManager.getFormsForPatient(thisApp, patient);
 		List<SimpleObject> oneTimeForms = new ArrayList<SimpleObject>();
 		for (FormDescriptor formDescriptor : oneTimeFormDescriptors) {
 			Form form = formDescriptor.getTarget();
@@ -83,10 +86,10 @@ public class ChartViewPatientPageController {
 		}
 		model.addAttribute("oneTimeForms", oneTimeForms);
 
-		Collection<ProgramDescriptor> progams = emr.getProgramManager().getPatientPrograms(patient);
+		Collection<ProgramDescriptor> progams = programManager.getPatientPrograms(patient);
 
 		model.addAttribute("programs", progams);
-		model.addAttribute("programSummaries", programSummaries(patient, progams, emr, kenyaUi));
+		model.addAttribute("programSummaries", programSummaries(patient, progams, programManager, kenyaUi));
 		model.addAttribute("visits", Context.getVisitService().getVisitsByPatient(patient));
 		
 		Form form = null;
@@ -143,12 +146,12 @@ public class ChartViewPatientPageController {
 	 * Creates a one line summary for each program
 	 * @return the map of programs to summaries
 	 */
-	private Map<Program, String> programSummaries(Patient patient, Collection<ProgramDescriptor> programs, CoreContext emr, KenyaUiUtils kenyaUi) {
+	private Map<Program, String> programSummaries(Patient patient, Collection<ProgramDescriptor> programs, ProgramManager programManager, KenyaUiUtils kenyaUi) {
 		Map<Program, String> summaries = new HashMap<Program, String>();
 
 		for (ProgramDescriptor descriptor : programs) {
 			Program program = descriptor.getTarget();
-			List<PatientProgram> allEnrollments = emr.getProgramManager().getPatientEnrollments(patient, program);
+			List<PatientProgram> allEnrollments = programManager.getPatientEnrollments(patient, program);
 			PatientProgram lastEnrollment = allEnrollments.get(allEnrollments.size() - 1);
 			String summary = lastEnrollment.getActive()
 					? "Enrolled on " + kenyaUi.formatDate(lastEnrollment.getDateEnrolled())

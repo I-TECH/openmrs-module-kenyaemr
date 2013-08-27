@@ -30,6 +30,7 @@ import org.openmrs.module.kenyacore.regimen.Regimen;
 import org.openmrs.module.kenyacore.regimen.RegimenChange;
 import org.openmrs.module.kenyacore.regimen.RegimenChangeHistory;
 import org.openmrs.module.kenyacore.regimen.RegimenComponent;
+import org.openmrs.module.kenyacore.regimen.RegimenManager;
 import org.openmrs.module.kenyacore.regimen.RegimenOrder;
 import org.openmrs.module.kenyacore.regimen.RegimenValidator;
 import org.openmrs.module.kenyaemr.ValidatingCommandObject;
@@ -69,8 +70,8 @@ public class RegimenUtilFragmentController {
 	 * @param patient the patient
 	 * @return the patient's current regimen
 	 */
-	public void undoLastChange(@RequestParam("patient") Patient patient, HttpSession session, @RequestParam("category") String category, @SpringBean CoreContext emr, @SpringBean KenyaUiUtils kenyaUi) {
-		Concept masterSet = emr.getRegimenManager().getMasterSetConcept(category);
+	public void undoLastChange(@RequestParam("patient") Patient patient, HttpSession session, @RequestParam("category") String category, @SpringBean RegimenManager regimenManager, @SpringBean KenyaUiUtils kenyaUi) {
+		Concept masterSet = regimenManager.getMasterSetConcept(category);
 		RegimenChangeHistory history = RegimenChangeHistory.forPatient(patient, masterSet);
 		history.undoLastChange();
 

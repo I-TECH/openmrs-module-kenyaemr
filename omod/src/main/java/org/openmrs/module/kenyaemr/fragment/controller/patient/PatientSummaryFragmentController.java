@@ -15,20 +15,16 @@
 package org.openmrs.module.kenyaemr.fragment.controller.patient;
 
 import org.openmrs.Patient;
-import org.openmrs.Person;
-import org.openmrs.Relationship;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculation;
 import org.openmrs.calculation.patient.PatientCalculationService;
-import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.calculation.result.ResultUtil;
 import org.openmrs.module.appframework.AppDescriptor;
-import org.openmrs.module.kenyacore.CoreContext;
 import org.openmrs.module.kenyacore.CoreUtils;
 import org.openmrs.module.kenyacore.form.FormDescriptor;
+import org.openmrs.module.kenyacore.form.FormManager;
 import org.openmrs.module.kenyaemr.calculation.library.RecordedDeceasedCalculation;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
-import org.openmrs.ui.framework.Link;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.FragmentParam;
@@ -37,9 +33,7 @@ import org.openmrs.ui.framework.fragment.FragmentModel;
 import org.openmrs.ui.framework.page.PageRequest;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Patient summary fragment
@@ -47,7 +41,7 @@ import java.util.Map;
 public class PatientSummaryFragmentController {
 	
 	public void controller(@FragmentParam("patient") Patient patient,
-						   @SpringBean CoreContext emr,
+						   @SpringBean FormManager formManager,
 						   @SpringBean KenyaUiUtils kenyaUi,
 						   PageRequest pageRequest,
 						   UiUtils ui,
@@ -57,7 +51,7 @@ public class PatientSummaryFragmentController {
 
 		// Get all suitable per-patient forms as simple objects
 		List<SimpleObject> forms = new ArrayList<SimpleObject>();
-		for (FormDescriptor formDescriptor : emr.getFormManager().getFormsForPatient(currentApp, patient)) {
+		for (FormDescriptor formDescriptor : formManager.getFormsForPatient(currentApp, patient)) {
 			forms.add(ui.simplifyObject(formDescriptor.getTarget()));
 		}
 

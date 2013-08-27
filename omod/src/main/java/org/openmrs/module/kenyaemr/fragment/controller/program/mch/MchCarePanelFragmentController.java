@@ -16,20 +16,16 @@ package org.openmrs.module.kenyaemr.fragment.controller.program.mch;
 
 import org.joda.time.DateTime;
 import org.joda.time.Weeks;
-import org.openmrs.Concept;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
 import org.openmrs.Obs;
 import org.openmrs.Patient;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyacore.CoreContext;
-import org.openmrs.module.kenyacore.regimen.RegimenChangeHistory;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.util.EmrUtils;
 import org.openmrs.ui.framework.annotation.FragmentParam;
-import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 
 import java.util.Date;
@@ -43,8 +39,7 @@ public class MchCarePanelFragmentController {
 
 	public void controller(@FragmentParam("patient") Patient patient,
 						   @FragmentParam("complete") Boolean complete,
-						   FragmentModel model,
-						   @SpringBean CoreContext emr) {
+						   FragmentModel model) {
 		Map<String, Object> calculations = new HashMap<String, Object>();
 
 		EncounterService encounterService = Context.getEncounterService();
@@ -60,9 +55,5 @@ public class MchCarePanelFragmentController {
 		calculations.put("onArv", "TODO");
 
 		model.addAttribute("calculations", calculations);
-
-		Concept medSet = emr.getRegimenManager().getMasterSetConcept("TB");
-		RegimenChangeHistory history = RegimenChangeHistory.forPatient(patient, medSet);
-		model.addAttribute("regimenHistory", history);
 	}
 }

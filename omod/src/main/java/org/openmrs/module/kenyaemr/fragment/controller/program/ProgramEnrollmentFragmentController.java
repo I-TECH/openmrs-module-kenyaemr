@@ -14,9 +14,11 @@
 
 package org.openmrs.module.kenyaemr.fragment.controller.program;
 
-import org.openmrs.*;
-import org.openmrs.module.kenyacore.CoreContext;
+import org.openmrs.Encounter;
+import org.openmrs.Form;
+import org.openmrs.PatientProgram;
 import org.openmrs.module.kenyacore.program.ProgramDescriptor;
+import org.openmrs.module.kenyacore.program.ProgramManager;
 import org.openmrs.module.kenyaemr.EmrWebConstants;
 import org.openmrs.module.kenyaemr.util.EmrUtils;
 import org.openmrs.ui.framework.annotation.FragmentParam;
@@ -30,10 +32,10 @@ public class ProgramEnrollmentFragmentController {
 	
 	public void controller(@FragmentParam("patientProgram") PatientProgram enrollment,
 						   @FragmentParam("showClinicalData") boolean showClinicalData,
-						   @SpringBean CoreContext emr,
+						   @SpringBean ProgramManager programManager,
 						   FragmentModel model) {
 
-		ProgramDescriptor programDescriptor = emr.getProgramManager().getProgramDescriptor(enrollment.getProgram());
+		ProgramDescriptor programDescriptor = programManager.getProgramDescriptor(enrollment.getProgram());
 		Form defaultEnrollmentForm = programDescriptor.getDefaultEnrollmentForm().getTarget();
 
 		// Might not be the default enrollment form, but should have the same encounter type

@@ -15,9 +15,8 @@
 package org.openmrs.module.kenyaemr.fragment.controller.program;
 
 import org.openmrs.Patient;
-import org.openmrs.module.kenyacore.CoreContext;
-import org.openmrs.module.kenyacore.CoreUtils;
 import org.openmrs.module.kenyacore.program.ProgramDescriptor;
+import org.openmrs.module.kenyacore.program.ProgramManager;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.FragmentModel;
@@ -34,10 +33,10 @@ public class ProgramHistoriesFragmentController {
 	public void controller(FragmentModel model,
 						   @FragmentParam("patient") Patient patient,
 						   @FragmentParam("showClinicalData") boolean showClinicalData,
-						   @SpringBean CoreContext emr) {
+						   @SpringBean ProgramManager programManager) {
 
-		Collection<ProgramDescriptor> activePrograms = emr.getProgramManager().getPatientActivePrograms(patient);
-		Collection<ProgramDescriptor> eligiblePrograms = emr.getProgramManager().getPatientEligiblePrograms(patient);
+		Collection<ProgramDescriptor> activePrograms = programManager.getPatientActivePrograms(patient);
+		Collection<ProgramDescriptor> eligiblePrograms = programManager.getPatientEligiblePrograms(patient);
 
 		// Display active programs on top
 		List<ProgramDescriptor> programs = new ArrayList<ProgramDescriptor>(activePrograms);

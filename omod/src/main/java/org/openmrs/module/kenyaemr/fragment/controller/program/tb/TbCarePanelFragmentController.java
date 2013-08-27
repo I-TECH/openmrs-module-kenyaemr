@@ -17,7 +17,7 @@ package org.openmrs.module.kenyaemr.fragment.controller.program.tb;
 import org.openmrs.Concept;
 import org.openmrs.Patient;
 import org.openmrs.calculation.result.CalculationResult;
-import org.openmrs.module.kenyacore.CoreContext;
+import org.openmrs.module.kenyacore.regimen.RegimenManager;
 import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
 import org.openmrs.module.kenyaemr.calculation.library.tb.TbDiseaseClassificationCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.tb.TbPatientClassificationCalculation;
@@ -38,7 +38,7 @@ public class TbCarePanelFragmentController {
 	public void controller(@FragmentParam("patient") Patient patient,
 						   @FragmentParam("complete") Boolean complete,
 						   FragmentModel model,
-						   @SpringBean CoreContext emr) {
+						   @SpringBean RegimenManager regimenManager) {
 
 		Map<String, Object> calculationResults = new HashMap<String, Object>();
 
@@ -53,7 +53,7 @@ public class TbCarePanelFragmentController {
 
 		model.addAttribute("calculations", calculationResults);
 
-		Concept medSet = emr.getRegimenManager().getMasterSetConcept("TB");
+		Concept medSet = regimenManager.getMasterSetConcept("TB");
 		RegimenChangeHistory history = RegimenChangeHistory.forPatient(patient, medSet);
 		model.addAttribute("regimenHistory", history);
 	}
