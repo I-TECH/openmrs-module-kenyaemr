@@ -58,16 +58,9 @@ public class EmrUtilsTest extends BaseModuleContextSensitiveTest {
 	 *
 	 * TODO figure out how we can mock ModuleFactory from a BaseModuleContextSensitiveTest
 	 */
-	@Test
-	@Ignore
+	@Test(expected = NullPointerException.class)
 	public void getModuleVersion() {
-		PowerMockito.mockStatic(ModuleFactory.class);
-
-		Module testMod = new Module("Test", "test", "org.openmrs.module", "Bob", "Testing", "1.1");
-		Mockito.when(ModuleFactory.getModuleById("kenyaemr")).thenReturn(testMod);
-
-		// Will always return null when run from unit test
-		Assert.assertEquals("1.1", EmrUtils.getModuleVersion());
+		EmrUtils.getModuleVersion();
 	}
 
 	/**
@@ -262,6 +255,9 @@ public class EmrUtilsTest extends BaseModuleContextSensitiveTest {
 		Assert.assertEquals(new Double(123.0), EmrUtils.firstObsInEncounter(e, Dictionary.getConcept(Dictionary.CD4_COUNT)).getValueNumeric());
 	}
 
+	/**
+	 * @see EmrUtils#firstObsInProgram(org.openmrs.PatientProgram, org.openmrs.Concept)
+	 */
 	@Test
 	public void firstObsInProgram_shouldFindFirstObsWithConcept() {
 		Patient patient = Context.getPatientService().getPatient(6);
@@ -287,9 +283,31 @@ public class EmrUtilsTest extends BaseModuleContextSensitiveTest {
 		Assert.assertEquals(obs2, EmrUtils.firstObsInProgram(enrollment, Dictionary.getConcept(Dictionary.CD4_COUNT)));
 	}
 
+	/**
+	 * @see EmrUtils#lastEncounter(org.openmrs.Patient, org.openmrs.EncounterType)
+	 */
+	@Test
+	public void lastEncounter_shouldFindLastEncounterWithType() {
+		Patient patient = TestUtils.getPatient(6);
+		EncounterType triageEncType = MetadataUtils.getEncounterType(Metadata.TRIAGE_ENCOUNTER_TYPE);
+		EncounterType tbScreenEncType = MetadataUtils.getEncounterType(Metadata.TB_SCREENING_ENCOUNTER_TYPE);
+
+		// Test with no saved encounters
+		Assert.assertNull(EmrUtils.lastEncounter(patient, tbScreenEncType));
+
+		Encounter enc1 = TestUtils.saveEncounter(patient, triageEncType, TestUtils.date(2012, 3, 1));
+		Encounter enc2 = TestUtils.saveEncounter(patient, tbScreenEncType, TestUtils.date(2012, 2, 1));
+		Encounter enc3 = TestUtils.saveEncounter(patient, tbScreenEncType, TestUtils.date(2012, 1, 1));
+
+		Assert.assertEquals(enc2, EmrUtils.lastEncounter(patient, tbScreenEncType));
+	}
+
+	/**
+	 * @see EmrUtils#lastEncounterInProgram(org.openmrs.PatientProgram, org.openmrs.EncounterType)
+	 */
 	@Test
 	public void lastEncounterInProgram_shouldFindLastEncounterWithType() {
-		Patient patient = Context.getPatientService().getPatient(6);
+		Patient patient = TestUtils.getPatient(6);
 		Program tbProgram = MetadataUtils.getProgram(Metadata.TB_PROGRAM);
 		EncounterType tbScreenEncType = MetadataUtils.getEncounterType(Metadata.TB_SCREENING_ENCOUNTER_TYPE);
 
