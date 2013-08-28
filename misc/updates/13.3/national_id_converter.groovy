@@ -33,15 +33,33 @@ if (!defaultLocation) {
 	return "Default location must be set"
 }
 
-// Go through each patient...
+// Map of national id values to patients
+def idPatientMap = [:]
+
+// Check for non-unique attribute values
 for (def patient : Context.patientService.allPatients) {
+	def attribute = patient.getAttribute(nationalIdAttrType)
+	if (attribute) {
+		def otherPatient = idPatientMap.get(attribute.value)
+		if (otherPatient) {
+			return "Found non-unique attribute value: " + attribute.value + " (patient #" + patient.id + " and patient #" + otherPatient.id + ")"
+		}
+
+		idPatientMap.put(attribute.value, patient)
+	}
+}
+
+println "Found no non-unique attribute values"
+
+int numConverted = 0, numPreviouslyConverted = 0
+
+// Go through each patient...
+for (def patient : idPatientMap.values()) {
 	def attribute = patient.getAttribute(nationalIdAttrType)
 	def identifier = patient.getPatientIdentifier(nationalIdIdentifierType)
 
-	// Only convert if attribute exists but identifier doesn't
-	if (attribute && !identifier) {
-
-		// Create identifier and assign to patient
+	// Only convert if identifier doesn't already exist
+	if (!identifier) {
 		identifier = new PatientIdentifier()
 		identifier.setPatient(patient)
 		identifier.setIdentifierType(nationalIdIdentifierType)
@@ -51,14 +69,23 @@ for (def patient : Context.patientService.allPatients) {
 
 		Context.patientService.savePatientIdentifier(identifier)
 
-		// Mark attribute as voided
-		attribute.setVoided(true);
-		attribute.setVoidedBy(Context.getAuthenticatedUser())
-		attribute.setVoidReason("Converted to identifier")
-		attribute.setDateVoided(new Date())
-
-		Context.patientService.savePatient(patient)
-
 		println "Converted national ID value '" + attribute.value + "' for patient " + patient.id
+		numConverted++
 	}
+	else {
+		numPreviouslyConverted++
+	}
+
+	// Mark attribute as voided
+	attribute.setVoided(true);
+	attribute.setVoidedBy(Context.getAuthenticatedUser())
+	attribute.setVoidReason("Converted to identifier")
+	attribute.setDateVoided(new Date())
+
+	Context.patientService.savePatient(patient)
 }
+
+println "=================== Summary ======================"
+println "Patients with national ID attributes: " + idPatientMap.size()
+println "Already converted to identifiers: " + numPreviouslyConverted
+println "Converted this time: " + numConverted
