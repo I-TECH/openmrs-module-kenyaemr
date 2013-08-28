@@ -46,6 +46,36 @@ public class RegimenManager implements ContentManager {
 	private Map<String, List<RegimenDefinitionGroup>> regimenGroups = new LinkedHashMap<String, List<RegimenDefinitionGroup>>();
 
 	/**
+	 * @see org.openmrs.module.kenyacore.ContentManager#getPriority()
+	 */
+	@Override
+	public int getPriority() {
+		return 30;
+	}
+
+	/**
+	 * @see org.openmrs.module.kenyacore.ContentManager#refresh()
+	 */
+	@Override
+	public synchronized void refresh() {
+		masterSetConcepts.clear();
+		drugs.clear();
+		regimenGroups.clear();
+
+		for (RegimenConfiguration configuration : Context.getRegisteredComponents(RegimenConfiguration.class)) {
+			try {
+				ClassLoader loader = configuration.getClassLoader();
+				InputStream stream = loader.getResourceAsStream(configuration.getDefinitionsPath());
+
+				loadDefinitionsFromXML(stream);
+			}
+			catch (Exception ex) {
+				throw new RuntimeException("Unable to load " + configuration.getModuleId() + ":" + configuration.getDefinitionsPath(), ex);
+			}
+		}
+	}
+
+	/**
 	 * Gets the category codes
 	 * @return the category codes
 	 */
@@ -137,28 +167,6 @@ public class RegimenManager implements ContentManager {
 		}
 
 		return matches;
-	}
-
-	/**
-	 * Refreshes all regimen and drugs
-	 */
-	@Override
-	public synchronized void refresh() {
-		masterSetConcepts.clear();
-		drugs.clear();
-		regimenGroups.clear();
-
-		for (RegimenConfiguration configuration : Context.getRegisteredComponents(RegimenConfiguration.class)) {
-			try {
-				ClassLoader loader = configuration.getClassLoader();
-				InputStream stream = loader.getResourceAsStream(configuration.getDefinitionsPath());
-
-				loadDefinitionsFromXML(stream);
-			}
-			catch (Exception ex) {
-				throw new RuntimeException("Unable to load " + configuration.getModuleId() + ":" + configuration.getDefinitionsPath(), ex);
-			}
-		}
 	}
 
 	/**

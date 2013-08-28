@@ -21,14 +21,26 @@ import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculation;
 import org.openmrs.calculation.patient.PatientCalculationService;
-import org.openmrs.calculation.result.*;
+import org.openmrs.calculation.result.CalculationResult;
+import org.openmrs.calculation.result.CalculationResultMap;
+import org.openmrs.calculation.result.ListResult;
+import org.openmrs.calculation.result.ResultUtil;
+import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyacore.CoreContext;
 import org.openmrs.module.kenyacore.CoreUtils;
 import org.openmrs.module.kenyaemr.regimen.RegimenDefinition;
+import org.openmrs.module.kenyaemr.regimen.RegimenManager;
 import org.openmrs.module.kenyaemr.regimen.RegimenOrder;
 import org.openmrs.util.OpenmrsUtil;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Calculation utility methods, also used by some reporting classes
@@ -269,7 +281,9 @@ public class CalculationUtils {
 	 * @return true if regimen matches any definition in the given group
 	 */
 	public static boolean regimenInGroup(RegimenOrder order, String category, String groupCode) {
-		List<RegimenDefinition> matchingDefinitions = CoreContext.getInstance().getRegimenManager().findDefinitions(category, order, false);
+		RegimenManager regimenManager = CoreContext.getInstance().getManager(RegimenManager.class);
+
+		List<RegimenDefinition> matchingDefinitions = regimenManager.findDefinitions(category, order, false);
 		for (RegimenDefinition definition : matchingDefinitions) {
 			if (groupCode.equals(definition.getGroup().getCode())) {
 				return true;

@@ -22,6 +22,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.api.handler.ExistingVisitAssignmentHandler;
 import org.openmrs.module.kenyacore.CoreContext;
 import org.openmrs.module.kenyacore.form.FormDescriptor;
+import org.openmrs.module.kenyacore.form.FormManager;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.util.EmrUtils;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
@@ -61,7 +62,9 @@ public class EmrVisitAssignmentHandler extends ExistingVisitAssignmentHandler {
 
 		// Some forms can auto-create visits
 		if (encounter.getForm() != null) {
-			FormDescriptor fd = CoreContext.getInstance().getFormManager().getFormDescriptor(encounter.getForm());
+			FormManager formManager = CoreContext.getInstance().getManager(FormManager.class);
+
+			FormDescriptor fd = formManager.getFormDescriptor(encounter.getForm());
 
 			if (fd != null && fd.getAutoCreateVisitTypeUuid() != null) {
 				VisitType visitType = MetadataUtils.getVisitType(fd.getAutoCreateVisitTypeUuid());

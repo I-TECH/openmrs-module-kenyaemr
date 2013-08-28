@@ -19,7 +19,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.*;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyacore.CoreContext;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyaemr.Metadata;
@@ -42,9 +41,6 @@ public class KenyaEmrServiceImplTest extends BaseModuleContextSensitiveTest {
 
 	@Autowired
 	private KenyaEmrService service;
-
-	@Autowired
-	private CoreContext emr;
 
 	/**
 	 * Setup each test

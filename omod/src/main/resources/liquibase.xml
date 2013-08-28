@@ -73,4 +73,15 @@
 		</sql>
 	</changeSet>
 
+	<changeSet id="${project.parent.artifactId}-20130828-1013" author="rowanseymour">
+		<comment>
+			Retires the National ID person attribute type which became an identifier
+		</comment>
+		<sql>
+			UPDATE person_attribute_type
+			SET retired = 1, retired_by = 1, date_retired = NOW(), retire_reason = 'Became patient identifier'
+			WHERE uuid = '73d34479-2f9e-4de3-a5e6-1f79a17459bb';
+		</sql>
+	</changeSet>
+
 </databaseChangeLog>

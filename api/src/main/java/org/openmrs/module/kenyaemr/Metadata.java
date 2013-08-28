@@ -61,7 +61,6 @@ public class Metadata {
 	public static final String MCHCS_FOLLOW_UP_FORM = "755b59e6-acbb-4853-abaf-be302039f902";
 	public static final String MCHCS_IMMUNIZATION_FORM = "b4f3859e-861c-4a63-bdff-eb7392030d47";
 
-
 	// Locations
 	public static final String UNKNOWN_LOCATION = "8d6c993e-c2cc-11de-8d13-0010c6dffd0f";
 
@@ -73,17 +72,17 @@ public class Metadata {
 	public static final String LAB_ORDER_TYPE = "8ab58c6f-0d07-4a80-bb60-895639c1e66e";
 
 	// Patient Identifier types
-	public static final String UNIQUE_PATIENT_NUMBER_IDENTIFIER_TYPE = "05ee9cf4-7242-4a17-b4d4-00f707265c8a";
-	public static final String PATIENT_CLINIC_NUMBER_IDENTIFIER_TYPE = "b4d66522-11fc-45c7-83e3-39a1af21ae0d";
+	public static final String NATIONAL_IDENTIFIER_TYPE = "49af6cdc-7968-4abb-bf46-de10d7f4859f";
 	public static final String OPENMRS_ID_IDENTIFIER_TYPE = "dfacd928-0370-4315-99d7-6ec1c9f7ae76";
+	public static final String PATIENT_CLINIC_NUMBER_IDENTIFIER_TYPE = "b4d66522-11fc-45c7-83e3-39a1af21ae0d";
+	public static final String UNIQUE_PATIENT_NUMBER_IDENTIFIER_TYPE = "05ee9cf4-7242-4a17-b4d4-00f707265c8a";
 
 	// Person Attribute Types
-	public static final String TELEPHONE_CONTACT_PERSON_ATTRIBUTE_TYPE = "b2c38640-2603-4629-aebd-3b54f33f1e3a";
-	public static final String NATIONAL_ID_NUMBER_PERSON_ATTRIBUTE_TYPE = "73d34479-2f9e-4de3-a5e6-1f79a17459bb";
-	public static final String NAME_OF_NEXT_OF_KIN_PERSON_ATTRIBUTE_TYPE = "830bef6d-b01f-449d-9f8d-ac0fede8dbd3";
-	public static final String NEXT_OF_KIN_RELATIONSHIP_PERSON_ATTRIBUTE_TYPE = "d0aa9fd1-2ac5-45d8-9c5e-4317c622c8f5";
-	public static final String NEXT_OF_KIN_CONTACT_PERSON_ATTRIBUTE_TYPE = "342a1d39-c541-4b29-8818-930916f4c2dc";
 	public static final String NEXT_OF_KIN_ADDRESS_PERSON_ATTRIBUTE_TYPE = "7cf22bec-d90a-46ad-9f48-035952261294";
+	public static final String NEXT_OF_KIN_CONTACT_PERSON_ATTRIBUTE_TYPE = "342a1d39-c541-4b29-8818-930916f4c2dc";
+	public static final String NEXT_OF_KIN_NAME_PERSON_ATTRIBUTE_TYPE = "830bef6d-b01f-449d-9f8d-ac0fede8dbd3";
+	public static final String NEXT_OF_KIN_RELATIONSHIP_PERSON_ATTRIBUTE_TYPE = "d0aa9fd1-2ac5-45d8-9c5e-4317c622c8f5";
+	public static final String TELEPHONE_CONTACT_PERSON_ATTRIBUTE_TYPE = "b2c38640-2603-4629-aebd-3b54f33f1e3a";
 
 	// Programs
 	public static final String HIV_PROGRAM = "dfdc6d40-2f2f-463d-ba90-cc97350441a8";

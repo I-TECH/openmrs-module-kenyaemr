@@ -17,11 +17,13 @@ package org.openmrs.module.kenyaemr;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.*;
+import org.openmrs.Concept;
+import org.openmrs.DrugOrder;
+import org.openmrs.Visit;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyacore.CoreContext;
 import org.openmrs.module.kenyaemr.regimen.DrugReference;
 import org.openmrs.module.kenyaemr.regimen.RegimenChangeHistory;
+import org.openmrs.module.kenyaemr.regimen.RegimenManager;
 import org.openmrs.module.kenyaemr.regimen.RegimenOrder;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
@@ -35,10 +37,14 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
 
 /**
- *
+ * Tests for {@link KenyaEmrUiUtils}
  */
 public class KenyaEmrUiUtilsTest extends BaseModuleContextSensitiveTest {
 
@@ -46,7 +52,7 @@ public class KenyaEmrUiUtilsTest extends BaseModuleContextSensitiveTest {
 	private KenyaEmrUiUtils kenyaUi;
 
 	@Autowired
-	private CoreContext emr;
+	private RegimenManager regimenManager;
 
 	private UiUtils ui;
 
@@ -58,7 +64,7 @@ public class KenyaEmrUiUtilsTest extends BaseModuleContextSensitiveTest {
 		executeDataSet("test-drugdata.xml");
 
 		InputStream stream = getClass().getClassLoader().getResourceAsStream("test-regimens.xml");
-		emr.getRegimenManager().loadDefinitionsFromXML(stream);
+		regimenManager.loadDefinitionsFromXML(stream);
 
 		this.ui = new FragmentActionUiUtils(null, null, null);
 
@@ -180,7 +186,7 @@ public class KenyaEmrUiUtilsTest extends BaseModuleContextSensitiveTest {
 	 */
 	@Test
 	public void simpleRegimenDefinitions_shouldConvertToSimpleObjects() throws IOException, SAXException, ParserConfigurationException {
-		List<SimpleObject> objs = kenyaUi.simpleRegimenDefinitions(emr.getRegimenManager().getRegimenGroups("category1").get(0).getRegimens(), ui);
+		List<SimpleObject> objs = kenyaUi.simpleRegimenDefinitions(regimenManager.getRegimenGroups("category1").get(0).getRegimens(), ui);
 
 		Assert.assertEquals("regimen1", objs.get(0).get("name"));
 		Assert.assertEquals("group1", ((Map<String, Object>)objs.get(0).get("group")).get("code"));
