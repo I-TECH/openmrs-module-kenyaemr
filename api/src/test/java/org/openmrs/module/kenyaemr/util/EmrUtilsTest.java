@@ -312,17 +312,4 @@ public class EmrUtilsTest extends BaseModuleContextSensitiveTest {
 		enrollment = TestUtils.enrollInProgram(patient, tbProgram, TestUtils.date(2012, 1, 1));
 		Assert.assertEquals(enc3, EmrUtils.lastEncounterInProgram(enrollment, tbScreenEncType));
 	}
-
-	@Test
-	public void checkCielVersion_shouldReturnFalseIfVersionIsNotParseable() {
-		Assert.assertFalse(EmrUtils.checkCielVersions("20130101", null));
-		Assert.assertFalse(EmrUtils.checkCielVersions("20130101", "x"));
-	}
-
-	@Test
-	public void checkCielVersion_shouldReturnTrueIfFoundVersionIsGreaterOrEqual() {
-		Assert.assertFalse(EmrUtils.checkCielVersions("20130101", "20121201"));
-		Assert.assertTrue(EmrUtils.checkCielVersions("20130101", "20130101"));
-		Assert.assertTrue(EmrUtils.checkCielVersions("20130101", "20130102"));
-	}
 }

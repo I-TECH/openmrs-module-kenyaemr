@@ -20,6 +20,7 @@ import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
 import org.openmrs.module.ModuleActivator;
 import org.openmrs.module.kenyacore.CoreContext;
+import org.openmrs.module.kenyaemr.system.ExternalRequirement;
 
 /**
  * This class contains the logic that is run every time this module is either started or stopped.
@@ -66,11 +67,12 @@ public class EmrActivator implements ModuleActivator {
 	public void started() {
 		log.info("Checking KenyaEMR requirements...");
 
-		for (Configuration.Requirement requirement : Configuration.checkRequirements()) {
-			String status = requirement.isPass() ? "PASS" : "FAIL";
-			String message = " * " + requirement.getName() + " " + requirement.getVersionRequired() + ", found " + requirement.getVersionFound() + " (" + status + ")";
+		for (ExternalRequirement requirement : Configuration.getExternalRequirements()) {
+			boolean satisfied = requirement.isSatisfied();
+			String status = satisfied ? "PASS" : "FAIL";
+			String message = " * " + requirement.getName() + " " + requirement.getRequiredVersion() + ", found " + requirement.getFoundVersion() + " (" + status + ")";
 
-			if (requirement.isPass()) {
+			if (satisfied) {
 				log.info(message);
 			} else {
 				log.warn(message);

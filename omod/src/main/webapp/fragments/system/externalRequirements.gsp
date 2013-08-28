@@ -11,10 +11,10 @@
 	<tbody>
 		<% requirements.each { requirement -> %>
 		<tr>
-			<td style="text-align: left"><img src="${ ui.resourceLink("kenyaui", "images/" + (requirement.pass ? "success.png" : "alert.png")) }" /></td>
+			<td style="text-align: left"><img src="${ ui.resourceLink("kenyaui", "images/" + (requirement.satisfied ? "success.png" : "alert.png")) }" /></td>
 			<td style="text-align: left">${ requirement.name }</td>
-			<td>${ requirement.versionRequired }</td>
-			<td>${ requirement.versionFound ?: "<i>None</i>" }</td>
+			<td>${ requirement.requiredVersion }</td>
+			<td>${ requirement.foundVersion ?: "<i>None</i>" }</td>
 		</tr>
 		<% } %>
 	</tbody>

@@ -16,7 +16,6 @@ package org.openmrs.module.kenyaemr.page.controller.admin;
 
 import org.apache.commons.lang3.StringUtils;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.module.kenyaui.annotation.AppPage;
@@ -55,7 +54,6 @@ public class AdminHomePageController {
 			general.add(SimpleObject.create("label", "OpenMRS version", "value", OpenmrsConstants.OPENMRS_VERSION));
 			general.add(SimpleObject.create("label", "Facility", "value", facility));
 			general.add(SimpleObject.create("label", "Server timezone", "value", Calendar.getInstance().getTimeZone().getDisplayName()));
-			general.add(SimpleObject.create("label", "CIEL", "value", Dictionary.getDatabaseVersion()));
 
 			List<SimpleObject> content = new ArrayList<SimpleObject>();
 			content.add(SimpleObject.create("label", "Total patients", "value", Context.getPatientSetService().getPatientsByCharacteristics(null, null, null).size()));
