@@ -30,7 +30,7 @@
 	<!-- District Registration Number -->
 	<bean id="kenyaemr.identifier.tbDistrictRegistration" class="org.openmrs.module.kenyacore.identifier.IdentifierDescriptor">
 		<property name="targetUuid" value="d8ee3b8c-a8fc-4d6b-af6a-9423be5f8906" />
-		<property name="order" value="200" />
+		<property name="order" value="60" />
 	</bean>
 
 	<!-- ===================== Forms ===================== -->

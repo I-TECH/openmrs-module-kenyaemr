@@ -90,11 +90,6 @@
 			<legend>ID Numbers</legend>
 
 			<table>
-				<tr>
-					<td class="ke-field-label">${ ui.format(command.patientClinicNumber.identifierType) }</td>
-					<td>${ ui.includeFragment("kenyaui", "widget/field", [ object: command, property: "patientClinicNumber.identifier" ]) }</td>
-					<td class="ke-field-instructions"><% if (!command.patientClinicNumber.identifier) { %>(if available)<% } %></td>
-				</tr>
 				<% if (command.inHivProgram) { %>
 					<tr>
 						<td class="ke-field-label">${ ui.format(command.hivIdNumber.identifierType) }</td>
@@ -103,9 +98,14 @@
 					</tr>
 				<% } %>
 				<tr>
-					<td class="ke-field-label">${ ui.format(command.nationalIdNumber.attributeType) } </td>
-					<td>${ ui.includeFragment("kenyaui", "widget/field", [ object: command, property: "nationalIdNumber.value" ]) }</td>
-					<td class="ke-field-instructions"><% if (!command.nationalIdNumber.value) { %>(if available)<% } %></td>
+					<td class="ke-field-label">${ ui.format(command.patientClinicNumber.identifierType) }</td>
+					<td>${ ui.includeFragment("kenyaui", "widget/field", [ object: command, property: "patientClinicNumber.identifier" ]) }</td>
+					<td class="ke-field-instructions"><% if (!command.patientClinicNumber.identifier) { %>(if available)<% } %></td>
+				</tr>
+				<tr>
+					<td class="ke-field-label">${ ui.format(command.nationalIdNumber.identifierType) } </td>
+					<td>${ ui.includeFragment("kenyaui", "widget/field", [ object: command, property: "nationalIdNumber.identifier" ]) }</td>
+					<td class="ke-field-instructions"><% if (!command.nationalIdNumber.identifier) { %>(if available)<% } %></td>
 				</tr>
 			</table>
 

@@ -32,7 +32,6 @@ import org.openmrs.PersonAttribute;
 import org.openmrs.PersonAttributeType;
 import org.openmrs.PersonName;
 import org.openmrs.Program;
-import org.openmrs.api.PatientService;
 import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.idgen.service.IdentifierSourceService;
@@ -58,11 +57,7 @@ public class EditPatientFragmentController {
 
 	public void controller(FragmentModel model, @FragmentParam(required=false, value="patient") Patient patient) {
 
-		if (patient != null) {
-			model.addAttribute("command", new EditPatientCommand(patient));
-		} else {
-			model.addAttribute("command", new EditPatientCommand());
-		}
+		model.addAttribute("command", newEditPatientForm(patient));
 
 		model.addAttribute("civilStatusConcept", Dictionary.getConcept(Dictionary.CIVIL_STATUS));
 		model.addAttribute("occupationConcept", Dictionary.getConcept(Dictionary.OCCUPATION));
@@ -101,7 +96,7 @@ public class EditPatientFragmentController {
 		model.addAttribute("nextOfKinAddressAttrType", MetadataUtils.getPersonAttributeType(Metadata.NEXT_OF_KIN_ADDRESS_PERSON_ATTRIBUTE_TYPE));
 	}
 
-	public SimpleObject savePatient(@MethodParam("commandObject") @BindParams EditPatientCommand command, UiUtils ui) {
+	public SimpleObject savePatient(@MethodParam("newEditPatientForm") @BindParams EditPatientForm command, UiUtils ui) {
 		ui.validate(command, command, null);
 
 		Patient saved = command.save();
@@ -109,21 +104,31 @@ public class EditPatientFragmentController {
 		return SimpleObject.fromObject(saved, ui, "patientId");
 	}
 
-	public EditPatientCommand commandObject(@RequestParam(required=false, value="patientId") Patient patient) {
+	/**
+	 * Creates an edit patient form
+	 * @param patient the patient
+	 * @return the form
+	 */
+	public EditPatientForm newEditPatientForm(@RequestParam(required=false, value="patientId") Patient patient) {
 		if (patient != null) {
-			return new EditPatientCommand(patient);
+			return new EditPatientForm(patient);
 		} else {
-			return new EditPatientCommand();
+			return new EditPatientForm();
 		}
 	}
 
-	public class EditPatientCommand extends ValidatingCommandObject {
+	/**
+	 * The form command object for editing patients
+	 */
+	public class EditPatientForm extends ValidatingCommandObject {
 
 		private Patient original;
 
 		private Location location;
 
 		private PersonName personName;
+
+		private PatientIdentifier nationalIdNumber;
 
 		private PatientIdentifier patientClinicNumber;
 
@@ -157,10 +162,6 @@ public class EditPatientFragmentController {
 
 		private Concept causeOfDeath;
 
-		//additional member variables
-
-		private PersonAttribute nationalIdNumber;
-
 		private PersonAttribute nameOfNextOfKin;
 
 		private PersonAttribute nextOfKinRelationship;
@@ -169,19 +170,21 @@ public class EditPatientFragmentController {
 
 		private PersonAttribute nextOfKinAddress;
 
-		public EditPatientCommand() {
+		/**
+		 * Creates an edit form for a new patient
+		 */
+		public EditPatientForm() {
 			location = Context.getService(KenyaEmrService.class).getDefaultLocation();
 
 			personName = new PersonName();
 			personAddress = new PersonAddress();
+
+			nationalIdNumber = new PatientIdentifier(null, MetadataUtils.getPatientIdentifierType(Metadata.NATIONAL_IDENTIFIER_TYPE), location);
 			patientClinicNumber = new PatientIdentifier(null, MetadataUtils.getPatientIdentifierType(Metadata.PATIENT_CLINIC_NUMBER_IDENTIFIER_TYPE), location);
 			hivIdNumber = new PatientIdentifier(null, MetadataUtils.getPatientIdentifierType(Metadata.UNIQUE_PATIENT_NUMBER_IDENTIFIER_TYPE), location);
 
 			telephoneContact = new PersonAttribute();
 			telephoneContact.setAttributeType(MetadataUtils.getPersonAttributeType(Metadata.TELEPHONE_CONTACT_PERSON_ATTRIBUTE_TYPE));
-
-			nationalIdNumber = new PersonAttribute();
-			nationalIdNumber.setAttributeType(MetadataUtils.getPersonAttributeType(Metadata.NATIONAL_ID_NUMBER_PERSON_ATTRIBUTE_TYPE));
 
 			nameOfNextOfKin = new PersonAttribute();
 			nameOfNextOfKin.setAttributeType(MetadataUtils.getPersonAttributeType(Metadata.NAME_OF_NEXT_OF_KIN_PERSON_ATTRIBUTE_TYPE));
@@ -197,7 +200,10 @@ public class EditPatientFragmentController {
 
 		}
 
-		public EditPatientCommand(Patient patient) {
+		/**
+		 * Creates an edit form for an existing patient
+		 */
+		public EditPatientForm(Patient patient) {
 			this();
 
 			original = patient;
@@ -235,6 +241,13 @@ public class EditPatientFragmentController {
 				hivIdNumber.setPatient(patient);
 			}
 
+			id = patient.getPatientIdentifier(MetadataUtils.getPatientIdentifierType(Metadata.NATIONAL_IDENTIFIER_TYPE));
+			if (id != null) {
+				nationalIdNumber = id;
+			} else {
+				nationalIdNumber.setPatient(patient);
+			}
+
 			PersonAttribute attr = patient.getAttribute(MetadataUtils.getPersonAttributeType(Metadata.TELEPHONE_CONTACT_PERSON_ATTRIBUTE_TYPE));
 			if (attr != null) {
 				telephoneContact = attr;
@@ -255,14 +268,6 @@ public class EditPatientFragmentController {
 			savedEducation = getLatestObs(patient, Dictionary.EDUCATION);
 			if (savedEducation != null) {
 				education = savedEducation.getValueCoded();
-			}
-
-			PersonAttribute attrNationalId = patient.getAttribute(MetadataUtils.getPersonAttributeType(Metadata.NATIONAL_ID_NUMBER_PERSON_ATTRIBUTE_TYPE));
-			if (attrNationalId != null) {
-				nationalIdNumber = attrNationalId;
-			}
-			else {
-				nationalIdNumber.setPerson(patient);
 			}
 
 			// Next of kin details
@@ -341,11 +346,14 @@ public class EditPatientFragmentController {
 				require(errors, "causeOfDeath");
 			}
 
-			if (StringUtils.isBlank(patientClinicNumber.getIdentifier())) {
-				patientClinicNumber = null;
-			}
 			if (StringUtils.isBlank(hivIdNumber.getIdentifier())) {
 				hivIdNumber = null;
+			}
+			if (StringUtils.isBlank(nationalIdNumber.getIdentifier())) {
+				nationalIdNumber = null;
+			}
+			if (StringUtils.isBlank(patientClinicNumber.getIdentifier())) {
+				patientClinicNumber = null;
 			}
 			if (!(StringUtils.isBlank(telephoneContact.getValue()))) {
 				validateTelephoneNumber(errors, "telephoneContact", telephoneContact.getValue());
@@ -361,8 +369,9 @@ public class EditPatientFragmentController {
 			}
 
 			validateField(errors, "personAddress");
-			validateField(errors, "patientClinicNumber");
 			validateField(errors, "hivIdNumber");
+			validateField(errors, "nationalIdNumber");
+			validateField(errors, "patientClinicNumber");
 
 			// check birth date against future dates and really old dates
 			if (birthdate != null) {
@@ -393,20 +402,28 @@ public class EditPatientFragmentController {
 			toSave.setDeathDate(deathDate);
 			toSave.setCauseOfDeath(causeOfDeath);
 
-			PatientIdentifier oldPatientClinicNumber = toSave.getPatientIdentifier(MetadataUtils.getPatientIdentifierType(Metadata.PATIENT_CLINIC_NUMBER_IDENTIFIER_TYPE));
-			if (anyChanges(oldPatientClinicNumber, patientClinicNumber, "identifier")) {
-				if (oldPatientClinicNumber != null) {
-					voidData(oldPatientClinicNumber);
-				}
-				toSave.addIdentifier(patientClinicNumber);
-			}
-
 			PatientIdentifier oldHivId = toSave.getPatientIdentifier(MetadataUtils.getPatientIdentifierType(Metadata.UNIQUE_PATIENT_NUMBER_IDENTIFIER_TYPE));
 			if (anyChanges(oldHivId, hivIdNumber, "identifier")) {
 				if (oldHivId != null) {
 					voidData(oldHivId);
 				}
 				toSave.addIdentifier(hivIdNumber);
+			}
+
+			PatientIdentifier oldNationalId = toSave.getPatientIdentifier(MetadataUtils.getPatientIdentifierType(Metadata.NATIONAL_IDENTIFIER_TYPE));
+			if (anyChanges(oldNationalId, nationalIdNumber, "identifier")) {
+				if (oldNationalId != null) {
+					voidData(oldNationalId);
+				}
+				toSave.addIdentifier(nationalIdNumber);
+			}
+
+			PatientIdentifier oldPatientClinicNumber = toSave.getPatientIdentifier(MetadataUtils.getPatientIdentifierType(Metadata.PATIENT_CLINIC_NUMBER_IDENTIFIER_TYPE));
+			if (anyChanges(oldPatientClinicNumber, patientClinicNumber, "identifier")) {
+				if (oldPatientClinicNumber != null) {
+					voidData(oldPatientClinicNumber);
+				}
+				toSave.addIdentifier(patientClinicNumber);
 			}
 
 			{ // make sure everyone gets an OpenMRS ID
@@ -443,14 +460,7 @@ public class EditPatientFragmentController {
 				}
 				toSave.addAttribute(telephoneContact);
 			}
-			//additions
-			PersonAttributeType nationalId = MetadataUtils.getPersonAttributeType(Metadata.NATIONAL_ID_NUMBER_PERSON_ATTRIBUTE_TYPE);
-			if (anyChanges(toSave.getAttribute(nationalId), nationalIdNumber, "value")) {
-				if (toSave.getAttribute(nationalId) != null) {
-					voidData(toSave.getAttribute(nationalId));
-				}
-				toSave.addAttribute(nationalIdNumber);
-			}
+
 			//next of kin included here
 			PersonAttributeType nameOfNextOfkinpat = MetadataUtils.getPersonAttributeType(Metadata.NAME_OF_NEXT_OF_KIN_PERSON_ATTRIBUTE_TYPE);
 			if (anyChanges(toSave.getAttribute(nameOfNextOfkinpat), this.nameOfNextOfKin, "value")) {
@@ -595,6 +605,20 @@ public class EditPatientFragmentController {
 		}
 
 		/**
+		 * @return the nationalIdNumber
+		 */
+		public PatientIdentifier getNationalIdNumber() {
+			return nationalIdNumber;
+		}
+
+		/**
+		 * @param nationalIdNumber the nationalIdNumber to set
+		 */
+		public void setNationalIdNumber(PatientIdentifier nationalIdNumber) {
+			this.nationalIdNumber = nationalIdNumber;
+		}
+
+		/**
 		 * @return the birthdate
 		 */
 		public Date getBirthdate() {
@@ -728,20 +752,6 @@ public class EditPatientFragmentController {
 
 		public void setCauseOfDeath(Concept causeOfDeath) {
 			this.causeOfDeath = causeOfDeath;
-		}
-
-		/**
-		 * @return the nationalIdNumber
-		 */
-		public PersonAttribute getNationalIdNumber() {
-			return nationalIdNumber;
-		}
-
-		/**
-		 * @param nationalIdNumber the nationalIdNumber to set
-		 */
-		public void setNationalIdNumber(PersonAttribute nationalIdNumber) {
-			this.nationalIdNumber = nationalIdNumber;
 		}
 
 		/**
