@@ -28,20 +28,23 @@
 	<div class="ke-form-header">
 		<table style="width: 100%">
 			<tr>
+				<td>Encounter Date: <encounterDate id="encounter-date" showTime="false" /></td>
 				<td>Provider: <encounterProvider default="currentUser" /></td>
 				<td>Location: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" /></td>
+
 			</tr>
 		</table>
 	</div>
 	<div class="ke-form-content">
-		<table border="0"  class="hei" align="center">
+		<table border="0"  class="hei" align="center" width="70%">
 			<tbody>
 				<tr>
-					<th colspan="4" style="background-color: #696969; color: #ffffff;text-align:center;">IMMUNIZATIONS(PROTECT YOUR CHILD)</th>
+					<th colspan="5" style="background-color: #696969; color: #ffffff;text-align:center;">IMMUNIZATIONS(PROTECT YOUR CHILD)</th>
 				</tr>
 				<tr>
 					<th>Vaccine</th>
 					<th>Sequence No</th>
+					<th>Dose/ Units</th>
 					<th>Date Given</th>
 					<th>Date of Next Visit</th>
 				</tr>
@@ -55,6 +58,10 @@
 								</td>
 								<td>
 									<obs conceptId="1418AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+								</td>
+								<td>
+									<obs conceptId="1443AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+									<obs conceptId="1444AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="5" />
 								</td>
 								<td>
 									<obs conceptId="1410AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
@@ -79,7 +86,7 @@
 			</tbody>
 		</table>
 		<br />
-		<table class="hei" align="center">
+		<table class="hei" align="center" width="70%">
 			<tbody>
 				<tr>
 					<td>BCG-Scar checked</td>
@@ -89,7 +96,7 @@
 			</tbody>
 		</table>
 		<br />
-		<table class="hei" align="center">
+		<table class="hei" align="center" width="70%">
 			<tbody>
 				<tr>
 					<th colspan="4" style="background-color: #696969; color: #ffffff;text-align:center;">VITAMIN A CAPSULES FROM 6 MONTHS</th>

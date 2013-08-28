@@ -26,16 +26,16 @@ public class Metadata {
 	public static final String HIV_DISCONTINUATION_ENCOUNTER_TYPE = "2bdada65-4c72-4a48-8730-859890e25cee";
 	public static final String HIV_ENROLLMENT_ENCOUNTER_TYPE = "de78a6be-bfc5-4634-adc3-5f1a280455cc";
 	public static final String LAB_RESULTS_ENCOUNTER_TYPE = "17a381d1-7e29-406a-b782-aa903b963c28";
+	public static final String MCHCS_CONSULTATION_ENCOUNTER_TYPE = "bcc6da85-72f2-4291-b206-789b8186a021";
+	public static final String MCHCS_DISCONTINUATION_ENCOUNTER_TYPE = "5feee3f1-aa16-4513-8bd0-5d9b27ef1208";
+	public static final String MCHCS_ENROLLMENT_ENCOUNTER_TYPE = "415f5136-ca4a-49a8-8db3-f994187c3af6";
+	public static final String MCHCS_IMMUNIZATION_ENCOUNTER_TYPE = "82169b8d-c945-4c41-be62-433dfd9d6c86";
 	public static final String REGISTRATION_ENCOUNTER_TYPE = "de1f9d67-b73e-4e1b-90d0-036166fc6995";
 	public static final String TB_CONSULTATION_ENCOUNTER_TYPE = "fbf0bfce-e9f4-45bb-935a-59195d8a0e35";
 	public static final String TB_DISCONTINUATION_ENCOUNTER_TYPE = "d3e3d723-7458-4b4e-8998-408e8a551a84";
 	public static final String TB_ENROLLMENT_ENCOUNTER_TYPE = "9d8498a4-372d-4dc4-a809-513a2434621e";
 	public static final String TB_SCREENING_ENCOUNTER_TYPE = "ed6dacc9-0827-4c82-86be-53c0d8c449be";
 	public static final String TRIAGE_ENCOUNTER_TYPE = "d1059fb9-a079-4feb-a749-eedd709ae542";
-	public static final String CHILD_ENROLLMENT_ENCOUNTER_TYPE = "415f5136-ca4a-49a8-8db3-f994187c3af6";
-	public static final String CHILD_DISCONTINUATION_ENCOUNTER_TYPE = "5feee3f1-aa16-4513-8bd0-5d9b27ef1208";
-	public static final String CHILD_CONSULTATION_ENCOUNTER_TYPE = "bcc6da85-72f2-4291-b206-789b8186a021";
-	public static final String CHILD_IMMUNIZATION_ENCOUNTER_TYPE = "82169b8d-c945-4c41-be62-433dfd9d6c86";
 	public static final String MCH_ENROLLMENT = "3ee036d8-7c13-4393-b5d6-036f2fe45126";
 	public static final String MCH_CONSULTATION = "c6d09e05-1f25-4164-8860-9f32c5a02df0";
 	public static final String MCH_DISCONTINUATION = "7c426cfc-3b47-4481-b55f-89860c21c7de";
@@ -56,10 +56,10 @@ public class Metadata {
 	public static final String TB_VISIT_FORM = "2daabb77-7ad6-4952-864b-8d23e109c69d";
 	public static final String TB_COMPLETION_FORM = "4b296dd0-f6be-4007-9eb8-d0fd4e94fb3a";
 	public static final String MOH_257_VISIT_SUMMARY_FORM = "23b4ebbd-29ad-455e-be0e-04aa6bc30798";
-	public static final String CHILD_ENROLLMENT_FORM = "8553d869-bdc8-4287-8505-910c7c998aff";
-	public static final String CHILD_DISCONTINUATION_FORM = "1dd02c43-904b-4206-8378-7b1a8414c326";
-	public static final String CHILD_SERVICES_FOLLOW_UP_FORM = "755b59e6-acbb-4853-abaf-be302039f902";
-	public static final String CHILD_IMMUNIZATION_FORM = "b4f3859e-861c-4a63-bdff-eb7392030d47";
+	public static final String MCHCS_ENROLLMENT_FORM = "8553d869-bdc8-4287-8505-910c7c998aff";
+	public static final String MCHCS_DISCONTINUATION_FORM = "1dd02c43-904b-4206-8378-7b1a8414c326";
+	public static final String MCHCS_FOLLOW_UP_FORM = "755b59e6-acbb-4853-abaf-be302039f902";
+	public static final String MCHCS_IMMUNIZATION_FORM = "b4f3859e-861c-4a63-bdff-eb7392030d47";
 
 
 	// Locations

@@ -7,26 +7,26 @@
 
 	<bean id="kenyaemr.program.hei" class="org.openmrs.module.kenyacore.program.ProgramDescriptor">
 		<property name="targetUuid" value="c2ecdf11-97cd-432a-a971-cfd9bd296b83" />
-		<property name="eligibilityCalculation" value="org.openmrs.module.kenyaemr.calculation.library.child.EligibleForChildProgramCalculation" />
-		<property name="defaultEnrollmentForm" ref="kenyaemr.form.childServicesEnrollment" />
-		<property name="defaultCompletionForm" ref="kenyaemr.form.childServicesCompletion" />
+		<property name="eligibilityCalculation" value="org.openmrs.module.kenyaemr.calculation.library.mchcs.EligibleForMchcsProgramCalculation" />
+		<property name="defaultEnrollmentForm" ref="kenyaemr.form.mchcsEnrollment" />
+		<property name="defaultCompletionForm" ref="kenyaemr.form.mchcsCompletion" />
 		<property name="patientForms">
 			<set>
-				<ref bean="kenyaemr.form.childServicesImmunization" />
-				<ref bean="kenyaemr.form.childHeiExit" />
+				<ref bean="kenyaemr.form.mchcsImmunization" />
+				<ref bean="kenyaemr.form.mchcsHeiExit" />
 
 			</set>
 		</property>
 		<property name="visitForms">
 			<set>
-				<ref bean="kenyaemr.form.childServicesFollowupVisit" />
+				<ref bean="kenyaemr.form.mchcsFollowupVisit" />
 			</set>
 		</property>
 		<property name="fragments">
 			<map>
-				<entry key="enrollment-summary" value="kenyaemr:program/child/childEnrollmentSummary" />
-				<entry key="care-panel" value="kenyaemr:program/child/childCarePanel" />
-				<entry key="completion-summary" value="kenyaemr:program/child/childCompletionSummary" />
+				<entry key="enrollment-summary" value="kenyaemr:program/mchcs/mchcsEnrollmentSummary" />
+				<entry key="care-panel" value="kenyaemr:program/mchcs/mchcsCarePanel" />
+				<entry key="completion-summary" value="kenyaemr:program/mchcs/mchcsCompletionSummary" />
 			</map>
 		</property>
 		<property name="order" value="400" />
@@ -42,8 +42,8 @@
 
 	<!-- ===================== Forms ===================== -->
 
-	<!-- MCH Child services Enrollment -->
-	<bean id="kenyaemr.form.childServicesEnrollment" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+	<!--  mchcs  Enrollment -->
+	<bean id="kenyaemr.form.mchcsEnrollment" class="org.openmrs.module.kenyacore.form.FormDescriptor">
 		<property name="targetUuid" value="8553d869-bdc8-4287-8505-910c7c998aff" />
 		<property name="apps">
 			<set>
@@ -54,11 +54,11 @@
 			</set>
 		</property>
 		<property name="icon" value="kenyaui:forms/generic.png" />
-		<property name="htmlform" value="kenyaemr:child/childServicesEnrollment.xml" />
+		<property name="htmlform" value="kenyaemr:mchcs/mchcsEnrollment.xml" />
 	</bean>
 
-	<!--MCH Child services Follow up -->
-	<bean id="kenyaemr.form.childServicesFollowupVisit" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+	<!-- mchcs  Follow up -->
+	<bean id="kenyaemr.form.mchcsFollowupVisit" class="org.openmrs.module.kenyacore.form.FormDescriptor">
 		<property name="targetUuid" value="755b59e6-acbb-4853-abaf-be302039f902" />
 		<property name="apps">
 			<set>
@@ -69,11 +69,11 @@
 			</set>
 		</property>
 		<property name="icon" value="kenyaui:forms/generic.png" />
-		<property name="htmlform" value="kenyaemr:child/childServicesFollowupVisit.xml" />
+		<property name="htmlform" value="kenyaemr:mchcs/mchcsFollowupVisit.xml" />
 	</bean>
 
-	<!-- MCH Child services Immunization -->
-	<bean id="kenyaemr.form.childServicesImmunization" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+	<!--  mchcs  Immunization -->
+	<bean id="kenyaemr.form.mchcsImmunization" class="org.openmrs.module.kenyacore.form.FormDescriptor">
 		<property name="targetUuid" value="b4f3859e-861c-4a63-bdff-eb7392030d47" />
 		<property name="apps">
 			<set>
@@ -84,11 +84,11 @@
 			</set>
 		</property>
 		<property name="icon" value="kenyaui:forms/generic.png" />
-		<property name="htmlform" value="kenyaemr:child/childImmunization.xml" />
+		<property name="htmlform" value="kenyaemr:mchcs/mchcsImmunization.xml" />
 	</bean>
 
-	<!--MCH Child services Completion -->
-	<bean id="kenyaemr.form.childServicesCompletion" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+	<!-- mchcs  Completion -->
+	<bean id="kenyaemr.form.mchcsCompletion" class="org.openmrs.module.kenyacore.form.FormDescriptor">
 		<property name="targetUuid" value="1dd02c43-904b-4206-8378-7b1a8414c326" />
 		<property name="apps">
 			<set>
@@ -99,12 +99,12 @@
 			</set>
 		</property>
 		<property name="icon" value="kenyaui:forms/generic.png" />
-		<property name="htmlform" value="kenyaemr:child/childServicesDiscontinuation.xml" />
+		<property name="htmlform" value="kenyaemr:mchcs/mchcsDiscontinuation.xml" />
 	</bean>
 
 
-	<!-- HEI exit form  -->
-	<bean id="kenyaemr.form.childHeiExit" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+	<!-- mchcs HEI exit form  -->
+	<bean id="kenyaemr.form.mchcsHeiExit" class="org.openmrs.module.kenyacore.form.FormDescriptor">
 		<property name="targetUuid" value="d823f1ef-0973-44ee-b113-7090dc23257b" />
 		<property name="apps">
 			<set>
@@ -115,7 +115,7 @@
 			</set>
 		</property>
 		<property name="icon" value="kenyaui:forms/generic.png" />
-		<property name="htmlform" value="kenyaemr:child/heiOutcomes.xml" />
+		<property name="htmlform" value="kenyaemr:mchcs/mchcsHeiOutcomes.xml" />
 	</bean>
 
 </beans>
