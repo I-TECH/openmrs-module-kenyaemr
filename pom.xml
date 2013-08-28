@@ -31,7 +31,6 @@
 		<module>api</module>
 		<module>omod</module>
 		<module>distro</module>
-		<module>installation</module>
 	</modules>
 
 	<properties>
