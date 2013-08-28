@@ -32,6 +32,7 @@
 
 			var YES_CONCEPT_ID = 1065;
 			var NO_CONCEPT_ID = 1066;
+			var EXPOSURE_TO_HIV_ID = 822;
 
 			function onTransferStatusChange() {
 				if (getValue('transfer-status.value') == NO_CONCEPT_ID) {
@@ -98,9 +99,18 @@
 					jq('#reasonsForSpecialCare :input').prop('disabled', true);
 				}
 			}
+			function hivExposed(){
+				if (getValue('hiv-exposed-child.value') == EXPOSURE_TO_HIV_ID) {
+					jq('#hei-id :input').prop('disabled', false);
+				}
+				else {
+					jq('#hei-id :input').prop('disabled', true);
+				}
+			}
 		jq(function() {
 			//get cohort
 			getCohort()
+			jq('#child-status-required').hide();
 			//validate transfer in details
 			onTransferStatusChange()
 			jq('#transfer-status input').click(onTransferStatusChange);
@@ -112,6 +122,20 @@
 			jq('#onART input').click(onARTatEnrollment);
 			needSpecialCare();
 			jq('#specialCare input').click(needSpecialCare);
+			hivExposed();
+			jq('#hiv-exposed-child input').click(hivExposed);
+
+			beforeSubmit.push(function() {
+				if (getValue('hiv-exposed-child.value') == "") {
+					jq('#child-status-required').show();
+					jq('#child-status-required').html('Please specify the condition of the child');
+					return false;
+				}
+				if (getValue('hiv-exposed-child.value') == NO_CONCEPT_ID &amp;&amp; (getValue('hei-id.value') == "")) {
+					return true;
+				}
+		        return true;
+			});
 		});
 	</script>
 	<div class="ke-form-header">
@@ -128,7 +152,7 @@
 			<tbody>
 				<tr>
 					<td colspan="3" style="background-color: #696969; color: #ffffff; text-align:center;">
-						HIV Exposed Infant (HEI) Follow-up Card(Enrollment)
+						Mch Child Services Follow-up Card(Enrollment)
 					</td>
 				</tr>
 
@@ -146,14 +170,15 @@
 				</tr>
 				<tr>
 					<td>
-						Child Exposed?<obs conceptId="1405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="yes_no" />
+						Child Exposed?<obs conceptId="5303AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="822AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" id="hiv-exposed-child" style="radio" /><br />
+						<div id="child-status-required" class="error"></div>
 
 					</td>
 					<td colspan="2">
 						<table>
 							<tr>
 								<td>HEI ID Number</td>
-								<td><patient field="identifier" identifierTypeId="0691f522-dd67-4eeb-92c8-af5083baf338" /></td>
+								<td><span id="hei-id"><patient field="identifier" identifierTypeId="0691f522-dd67-4eeb-92c8-af5083baf338" /></span>	</td>
 								<td>SPD No</td>
 								<td><obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
 								<td>Birth Weight: (kg)</td>
