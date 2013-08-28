@@ -89,17 +89,22 @@ public class EditPatientFragmentController {
 
 		// Fetch person attributes
 		model.addAttribute("telephoneContactAttrType", MetadataUtils.getPersonAttributeType(Metadata.TELEPHONE_CONTACT_PERSON_ATTRIBUTE_TYPE));
-		model.addAttribute("nationalIdNumberAttrType", MetadataUtils.getPersonAttributeType(Metadata.NATIONAL_ID_NUMBER_PERSON_ATTRIBUTE_TYPE));
-		model.addAttribute("nameOfNextOfKinAttrType", MetadataUtils.getPersonAttributeType(Metadata.NAME_OF_NEXT_OF_KIN_PERSON_ATTRIBUTE_TYPE));
+		model.addAttribute("nameOfNextOfKinAttrType", MetadataUtils.getPersonAttributeType(Metadata.NEXT_OF_KIN_NAME_PERSON_ATTRIBUTE_TYPE));
 		model.addAttribute("nextOfKinRelationshipAttrType", MetadataUtils.getPersonAttributeType(Metadata.NEXT_OF_KIN_RELATIONSHIP_PERSON_ATTRIBUTE_TYPE));
 		model.addAttribute("nextOfKinContactAttrType", MetadataUtils.getPersonAttributeType(Metadata.NEXT_OF_KIN_CONTACT_PERSON_ATTRIBUTE_TYPE));
 		model.addAttribute("nextOfKinAddressAttrType", MetadataUtils.getPersonAttributeType(Metadata.NEXT_OF_KIN_ADDRESS_PERSON_ATTRIBUTE_TYPE));
 	}
 
-	public SimpleObject savePatient(@MethodParam("newEditPatientForm") @BindParams EditPatientForm command, UiUtils ui) {
-		ui.validate(command, command, null);
+	/**
+	 * Saves the patient being edited by this form
+	 * @param form the edit patient form
+	 * @param ui the UI utils
+	 * @return a simple object { patientId }
+	 */
+	public SimpleObject savePatient(@MethodParam("newEditPatientForm") @BindParams EditPatientForm form, UiUtils ui) {
+		ui.validate(form, form, null);
 
-		Patient saved = command.save();
+		Patient saved = form.save();
 
 		return SimpleObject.fromObject(saved, ui, "patientId");
 	}
@@ -187,7 +192,7 @@ public class EditPatientFragmentController {
 			telephoneContact.setAttributeType(MetadataUtils.getPersonAttributeType(Metadata.TELEPHONE_CONTACT_PERSON_ATTRIBUTE_TYPE));
 
 			nameOfNextOfKin = new PersonAttribute();
-			nameOfNextOfKin.setAttributeType(MetadataUtils.getPersonAttributeType(Metadata.NAME_OF_NEXT_OF_KIN_PERSON_ATTRIBUTE_TYPE));
+			nameOfNextOfKin.setAttributeType(MetadataUtils.getPersonAttributeType(Metadata.NEXT_OF_KIN_NAME_PERSON_ATTRIBUTE_TYPE));
 
 			nextOfKinRelationship = new PersonAttribute();
 			nextOfKinRelationship.setAttributeType(MetadataUtils.getPersonAttributeType(Metadata.NEXT_OF_KIN_RELATIONSHIP_PERSON_ATTRIBUTE_TYPE));
@@ -271,7 +276,7 @@ public class EditPatientFragmentController {
 			}
 
 			// Next of kin details
-			PersonAttribute attrNameOfNextOfKin = patient.getAttribute(MetadataUtils.getPersonAttributeType(Metadata.NAME_OF_NEXT_OF_KIN_PERSON_ATTRIBUTE_TYPE));
+			PersonAttribute attrNameOfNextOfKin = patient.getAttribute(MetadataUtils.getPersonAttributeType(Metadata.NEXT_OF_KIN_NAME_PERSON_ATTRIBUTE_TYPE));
 			if (attrNameOfNextOfKin != null) {
 				nameOfNextOfKin = attrNameOfNextOfKin;
 			}
@@ -462,7 +467,7 @@ public class EditPatientFragmentController {
 			}
 
 			//next of kin included here
-			PersonAttributeType nameOfNextOfkinpat = MetadataUtils.getPersonAttributeType(Metadata.NAME_OF_NEXT_OF_KIN_PERSON_ATTRIBUTE_TYPE);
+			PersonAttributeType nameOfNextOfkinpat = MetadataUtils.getPersonAttributeType(Metadata.NEXT_OF_KIN_NAME_PERSON_ATTRIBUTE_TYPE);
 			if (anyChanges(toSave.getAttribute(nameOfNextOfkinpat), this.nameOfNextOfKin, "value")) {
 				if (toSave.getAttribute(nameOfNextOfkinpat) != null) {
 					voidData(toSave.getAttribute(nameOfNextOfkinpat));
