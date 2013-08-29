@@ -23,6 +23,7 @@ import org.openmrs.api.VisitService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appframework.AppDescriptor;
 import org.openmrs.module.kenyaemr.converter.StringToVisitConverter;
+import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.ui.framework.fragment.FragmentContext;
 import org.openmrs.ui.framework.fragment.FragmentModelConfigurator;
 import org.openmrs.ui.framework.page.PageContext;
@@ -46,6 +47,9 @@ import java.util.List;
 public class EmrModelConfigurator implements PageModelConfigurator, FragmentModelConfigurator {
 
 	@Autowired
+	private KenyaUiUtils kenyaUi;
+
+	@Autowired
 	private KenyaEmrUiUtils kenyaEmrUiUtils;
 
 	@Autowired
@@ -60,7 +64,7 @@ public class EmrModelConfigurator implements PageModelConfigurator, FragmentMode
 		String visitId = pageContext.getRequest().getRequest().getParameter("visitId");
 
 		// Look for current app as set by KenyaUI
-		AppDescriptor currentApp = (AppDescriptor) pageContext.getRequest().getRequest().getAttribute("currentApp");
+		AppDescriptor currentApp = kenyaUi.getCurrentApp(pageContext.getRequest());
 
 		Patient currentPatient = null;
 		Visit currentVisit = null, activeVisit = null;
@@ -94,7 +98,6 @@ public class EmrModelConfigurator implements PageModelConfigurator, FragmentMode
 			}
 		}
 
-		pageContext.getModel().addAttribute(EmrWebConstants.MODEL_ATTR_CURRENT_APP, currentApp);
 		pageContext.getModel().addAttribute(EmrWebConstants.MODEL_ATTR_CURRENT_PATIENT, currentPatient);
 		pageContext.getModel().addAttribute(EmrWebConstants.MODEL_ATTR_CURRENT_VISIT, currentVisit);
 		pageContext.getModel().addAttribute(EmrWebConstants.MODEL_ATTR_ACTIVE_VISIT, activeVisit);

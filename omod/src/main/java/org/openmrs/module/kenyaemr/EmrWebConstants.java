@@ -33,7 +33,6 @@ public class EmrWebConstants {
 	/**
 	 * Page model attributes
 	 */
-	public static final String MODEL_ATTR_CURRENT_APP = "currentApp";
 	public static final String MODEL_ATTR_CURRENT_PATIENT = "currentPatient";
 	public static final String MODEL_ATTR_CURRENT_VISIT = "currentVisit";
 	public static final String MODEL_ATTR_ACTIVE_VISIT = "activeVisit";

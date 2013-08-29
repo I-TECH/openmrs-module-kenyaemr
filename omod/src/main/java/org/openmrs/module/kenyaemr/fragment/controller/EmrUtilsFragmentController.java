@@ -67,7 +67,8 @@ public class EmrUtilsFragmentController {
 	 * @return simple object {authenticated: true/false}
 	 */
 	@PublicAction
-	public SimpleObject authenticate(@RequestParam("username") String username, @RequestParam("password") String password) {
+	public SimpleObject authenticate(@RequestParam(value = "username", required = false) String username,
+									 @RequestParam(value = "password", required = false) String password) {
 		try {
 			Context.authenticate(username, password);
 		} catch (ContextAuthenticationException ex) {
