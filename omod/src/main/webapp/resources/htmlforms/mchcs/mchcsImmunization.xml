@@ -1,0 +1,130 @@
+<!--
+  ~ The contents of this file are subject to the OpenMRS Public License
+  ~ Version 1.0 (the "License"); you may not use this file except in
+  ~ compliance with the License. You may obtain a copy of the License at
+  ~ http://license.openmrs.org
+  ~
+  ~ Software distributed under the License is distributed on an "AS IS"
+  ~ basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+  ~ License for the specific language governing rights and limitations
+  ~ under the License.
+  ~
+  ~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+-->
+<htmlform>
+
+	<style type="text/css">
+		table.hei {
+		border-collapse: collapse;
+		background-color: #fff0f7
+		}
+		table.hei > tbody > tr > td, table.hei > tbody > tr > th {
+		border: 1px solid black;
+		vertical-align: baseline;
+		padding: 4px;
+		text-align: left;
+		}
+	</style>
+	<div class="ke-form-header">
+		<table style="width: 100%">
+			<tr>
+				<td>Encounter Date: <encounterDate id="encounter-date" showTime="false" /></td>
+				<td>Provider: <encounterProvider default="currentUser" /></td>
+				<td>Location: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" /></td>
+
+			</tr>
+		</table>
+	</div>
+	<div class="ke-form-content">
+		<table border="0"  class="hei" align="center" width="70%">
+			<tbody>
+				<tr>
+					<th colspan="5" style="background-color: #696969; color: #ffffff;text-align:center;">IMMUNIZATIONS(PROTECT YOUR CHILD)</th>
+				</tr>
+				<tr>
+					<th>Vaccine</th>
+					<th>Sequence No</th>
+					<th>Dose/ Units</th>
+					<th>Date Given</th>
+					<th>Date of Next Visit</th>
+				</tr>
+				<repeat>
+					<template>
+						<obsgroup groupingConceptId="1441AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+							<tr>
+								<td>
+									<obs conceptId="984AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										 answerClasses="Drug,Procedure" style="autocomplete" />
+								</td>
+								<td>
+									<obs conceptId="1418AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+								</td>
+								<td>
+									<obs conceptId="1443AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+									<obs conceptId="1444AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="5" />
+								</td>
+								<td>
+									<obs conceptId="1410AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+								</td>
+								<td>
+									<obs conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" />
+								</td>
+							</tr>
+						</obsgroup>
+					</template>
+					<render n="1" concept=" "/>
+					<render n="2" concept=" "/>
+					<render n="3" concept=" "/>
+					<render n="4" concept=" "/>
+					<render n="5" concept=" "/>
+					<render n="6" concept=" "/>
+					<render n="7" concept=" "/>
+					<render n="8" concept=" "/>
+					<render n="9" concept=" "/>
+					<render n="10" concept=" "/>
+				</repeat>
+			</tbody>
+		</table>
+		<br />
+		<table class="hei" align="center" width="70%">
+			<tbody>
+				<tr>
+					<td>BCG-Scar checked</td>
+					<td>Date checked</td>
+					<td>Date BCG repeated</td>
+				</tr>
+			</tbody>
+		</table>
+		<br />
+		<table class="hei" align="center" width="70%">
+			<tbody>
+				<tr>
+					<th colspan="4" style="background-color: #696969; color: #ffffff;text-align:center;">VITAMIN A CAPSULES FROM 6 MONTHS</th>
+				</tr>
+				<tr>
+					<th colspan="2">VITAMIN A CAPSULE: Given orally</th>
+					<th rowspan="2">Tick Age given</th>
+					<th rowspan="2">Date of next visit</th>
+				</tr>
+				<tr>
+					<td colspan="2">At 6 months or at first contact thereafter</td>
+				</tr>
+				<tr>
+					<th>Dose</th>
+					<th>Age</th>
+					<th></th>
+					<th></th>
+				</tr>
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td><obs conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" /></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<div class="ke-form-footer">
+		<submit />
+	</div>
+</htmlform>

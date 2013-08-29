@@ -12,16 +12,16 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.fragment.controller.program.hei;
+package org.openmrs.module.kenyaemr.fragment.controller.program.mchcs;
 
 import org.openmrs.Patient;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 
 /**
- * Controller for Hei care summary
+ * Controller for child services care summary
  */
-public class HeiCarePanelFragmentController {
+public class MchcsCarePanelFragmentController {
 
 	public void controller(@FragmentParam("patient") Patient patient,
 						   @FragmentParam("complete") Boolean complete,

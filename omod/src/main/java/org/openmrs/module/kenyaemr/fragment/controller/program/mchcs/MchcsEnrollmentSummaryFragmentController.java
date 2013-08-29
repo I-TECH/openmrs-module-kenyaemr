@@ -12,7 +12,7 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.fragment.controller.program.hei;
+package org.openmrs.module.kenyaemr.fragment.controller.program.mchcs;
 
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
@@ -29,7 +29,7 @@ import java.util.Map;
  * HEI program enrollment summary fragment
  */
 
-public class HeiEnrollmentSummaryFragmentController {
+public class MchcsEnrollmentSummaryFragmentController {
 
 	public String controller(@FragmentParam("patientProgram") PatientProgram enrollment,
 							 @FragmentParam(value = "encounter", required = false) Encounter encounter,
