@@ -8,7 +8,7 @@
 </style>
 
 <div style="text-align: center; padding-top: 100px">
-	<form method="post" action="/${ contextPath }/loginServlet" autocomplete="off">
+	<form method="post" action="${ loginServletUrl }" autocomplete="off">
 		<table style="margin-left: auto; margin-right: auto; border: 0" cellpadding="3" cellspacing="0">
 			<tr>
 				<td style="padding-right: 15px">

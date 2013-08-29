@@ -46,14 +46,14 @@
 		<idgenVersion>2.5</idgenVersion>
 		<kenyacoreVersion>0.8</kenyacoreVersion>
 		<kenyalabVersion>0.1.2</kenyalabVersion>
-		<kenyauiVersion>1.10.2</kenyauiVersion>
+		<kenyauiVersion>1.11</kenyauiVersion>
 		<logicVersion>0.5.2</logicVersion>
 		<metadatamappingVersion>1.0.1</metadatamappingVersion>
 		<metadatasharingVersion>1.1.8</metadatasharingVersion>
 		<reportingVersion>0.7.6</reportingVersion>
 		<reportingrestVersion>1.2</reportingrestVersion>
 		<serializationxstreamVersion>0.2.7</serializationxstreamVersion>
-		<uiframeworkVersion>2.6</uiframeworkVersion>
+		<uiframeworkVersion>3.0</uiframeworkVersion>
 		<webservicesRestVersion>1.1</webservicesRestVersion>
 		<webservicesRestVersionRepo>1.1.29293</webservicesRestVersionRepo>
 

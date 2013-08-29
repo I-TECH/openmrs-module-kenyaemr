@@ -98,7 +98,7 @@ ui.includeJavascript("kenyaemr", "dwr-util.js")
 	}
 
 	function showAuthenticateDialog() {
-		kenyaui.openPanelDialog('Login Required', authenticationDialogHtml, 50, 10);
+		kenyaui.openPanelDialog({ heading: 'Login Required', content: authenticationDialogHtml, width: 50, height: 15 });
 		tryingToSubmit = false;
 	}
 
@@ -229,9 +229,10 @@ ui.includeJavascript("kenyaemr", "dwr-util.js")
 </div>
 
 <div id="authentication-dialog" style="display: none">
-	<div style="padding-bottom: 12px; text-align: center">${ ui.message("kenyaemr.authenticateForFormSubmission") }</div>
-	<div align="center">
-		<table border="0">
+	<div class="ke-panel-content">
+		<div style="padding-bottom: 12px; text-align: center">${ ui.message("kenyaemr.authenticateForFormSubmission") }</div>
+		<div id="authentication-dialog-error" class="error" style="display: none"></div>
+		<table border="0" align="center">
 			<tr>
 				<td align="right"><b>Username:</b></td>
 				<td><input type="text" id="authentication-dialog-username"/></td>
@@ -240,10 +241,10 @@ ui.includeJavascript("kenyaemr", "dwr-util.js")
 				<td align="right"><b>Password:</b></td>
 				<td><input type="password" id="authentication-dialog-password"/></td>
 			</tr>
-			<tr>
-				<td colspan="2" align="center"><input type="button" value="Submit" onClick="onSubmitAuthenticationDialog()"/></td>
-			</tr>
 		</table>
+	</div>
+	<div class="ke-panel-controls">
+		<input type="button" value="Submit" onClick="onSubmitAuthenticationDialog()"/>
 	</div>
 </div>
 

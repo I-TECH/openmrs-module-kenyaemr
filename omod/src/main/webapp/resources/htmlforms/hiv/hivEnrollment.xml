@@ -20,7 +20,7 @@
 		var YES_CONCEPT_ID = 1065;
 		var NO_CONCEPT_ID = 1066;
 
-		var ctxPath = typeof openmrsContextPath === 'string' ? openmrsContextPath : CONTEXT_PATH;
+		var ctxPath = typeof openmrsContextPath === 'string' ? openmrsContextPath : OPENMRS_CONTEXT_PATH;
 
 		function onTransferStatusChange() {
 			if (getValue('transfer-status.value') == NO_CONCEPT_ID) {
