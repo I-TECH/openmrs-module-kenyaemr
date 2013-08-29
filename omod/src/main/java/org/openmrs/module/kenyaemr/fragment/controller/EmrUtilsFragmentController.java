@@ -14,8 +14,6 @@
 
 package org.openmrs.module.kenyaemr.fragment.controller;
 
-import java.util.*;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Concept;
@@ -34,12 +32,17 @@ import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtStartDa
 import org.openmrs.module.kenyaemr.regimen.RegimenChange;
 import org.openmrs.module.kenyaemr.regimen.RegimenChangeHistory;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
+import org.openmrs.module.kenyaui.annotation.PublicAction;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.action.SuccessResult;
 import org.openmrs.ui.framework.session.Session;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Fragment actions generally useful for KenyaEMR
@@ -52,6 +55,7 @@ public class EmrUtilsFragmentController {
 	 * Checks if current user session is authenticated
 	 * @return simple object {authenticated: true/false}
 	 */
+	@PublicAction
 	public SimpleObject isAuthenticated() {
 		return SimpleObject.create("authenticated", Context.isAuthenticated());
 	}
@@ -62,6 +66,7 @@ public class EmrUtilsFragmentController {
 	 * @param password the password
 	 * @return simple object {authenticated: true/false}
 	 */
+	@PublicAction
 	public SimpleObject authenticate(@RequestParam("username") String username, @RequestParam("password") String password) {
 		try {
 			Context.authenticate(username, password);
@@ -152,7 +157,6 @@ public class EmrUtilsFragmentController {
 			}
 		}
 
-		// Until UIFR-126, simplifyCollection can't handle empty collections
-		return pats.size() > 0 ? ui.simplifyCollection(pats) : new SimpleObject[] {};
+		return ui.simplifyCollection(pats);
 	}
 }

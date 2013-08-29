@@ -139,7 +139,7 @@ var kenyaemr = (function(jq) {
 		dynamicObsField: function(parentId, fieldName, conceptId, initialValue, readOnly) {
 			var placeHolderId = kenyaui.generateId();
 			jq('#' + parentId).append('<div id="' + placeHolderId + '" class="ke-loading ke-form-dynamic-field">&nbsp;</div>');
-			jq.get('/' + CONTEXT_PATH + '/kenyaemr/generateField.htm', { name: fieldName, conceptId: conceptId, initialValue: initialValue, readOnly : readOnly })
+			jq.get('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/generateField.htm', { name: fieldName, conceptId: conceptId, initialValue: initialValue, readOnly : readOnly })
 			.done(function (html) {
 				jq('#' + placeHolderId).removeClass('ke-loading');
 				jq('#' + placeHolderId).html(html);
