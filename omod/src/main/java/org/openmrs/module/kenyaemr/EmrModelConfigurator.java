@@ -17,7 +17,9 @@ package org.openmrs.module.kenyaemr;
 import org.apache.commons.lang3.StringUtils;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
+import org.openmrs.api.APIAuthenticationException;
 import org.openmrs.api.PatientService;
+import org.openmrs.api.VisitService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appframework.AppDescriptor;
 import org.openmrs.module.kenyaemr.converter.StringToVisitConverter;
@@ -36,6 +38,9 @@ import java.util.List;
  * Page models will always contain the following attributes:
  *  - patient (loaded from visit, patientId request parameter, or null if neither specified)
  *  - visit (loaded from visitId request parameter, patient active visit, or null if not specified)
+ *
+ * This class should not throw an APIAuthenticationException but should always save nulls if objects can't be resolved.
+ * In this way the page interceptor can handle the authentication check and make a suitable redirect to the login page.
  */
 @Component
 public class EmrModelConfigurator implements PageModelConfigurator, FragmentModelConfigurator {
@@ -47,7 +52,7 @@ public class EmrModelConfigurator implements PageModelConfigurator, FragmentMode
 	private PatientService patientService;
 
 	@Autowired
-	private StringToVisitConverter stringToVisitConverter;
+	private VisitService visitService;
 
 	@Override
 	public void configureModel(PageContext pageContext) {
@@ -67,7 +72,7 @@ public class EmrModelConfigurator implements PageModelConfigurator, FragmentMode
 
 		// Look for a current visit
 		if (!StringUtils.isEmpty(visitId)) {
-			currentVisit = stringToVisitConverter.convert(visitId);
+			currentVisit = visitFromParam(visitId);
 
 			// We can infer patient from current visit
 			if (currentPatient == null) {
@@ -80,8 +85,13 @@ public class EmrModelConfigurator implements PageModelConfigurator, FragmentMode
 
 		// If we have a patient, we can look for an active visit
 		if (currentPatient != null) {
-			List<Visit> activeVisits = Context.getVisitService().getActiveVisitsByPatient(currentPatient);
-			activeVisit = activeVisits.size() > 0 ? activeVisits.get(0) : null;
+			try {
+				List<Visit> activeVisits = Context.getVisitService().getActiveVisitsByPatient(currentPatient);
+				activeVisit = activeVisits.size() > 0 ? activeVisits.get(0) : null;
+			}
+			catch (APIAuthenticationException ex) {
+				// Swallow API authentication exceptions
+			}
 		}
 
 		pageContext.getModel().addAttribute(EmrWebConstants.MODEL_ATTR_CURRENT_APP, currentApp);
@@ -98,14 +108,39 @@ public class EmrModelConfigurator implements PageModelConfigurator, FragmentMode
 	}
 
 	/**
-	 * Using this instead of the string to patient converter in UIFR as it isn't accessible during testing
+	 * Using this instead of the string to patient converter in UIFR as it isn't accessible during testing and we
+	 * don't want to throw a APIAuthenticationException
 	 * @param id the request parameter value
 	 * @return the patient
 	 */
-	private Patient patientFromParam(String id) {
+	protected Patient patientFromParam(String id) {
 		if (StringUtils.isEmpty(id)) {
 			return null;
 		}
-		return patientService.getPatient(Integer.valueOf(id));
+		try {
+			return patientService.getPatient(Integer.valueOf(id));
+		}
+		catch (APIAuthenticationException ex) {
+			// Swallow API authentication exceptions
+			return null;
+		}
+	}
+
+	/**
+	 * Using this instead of the string to visit converter as we don't want to throw a APIAuthenticationException
+	 * @param id the request parameter value
+	 * @return the visit
+	 */
+	protected Visit visitFromParam(String id) {
+		if (StringUtils.isEmpty(id)) {
+			return null;
+		}
+		try {
+			return visitService.getVisit(Integer.valueOf(id));
+		}
+		catch (APIAuthenticationException ex) {
+			// Swallow API authentication exceptions
+			return null;
+		}
 	}
 }
