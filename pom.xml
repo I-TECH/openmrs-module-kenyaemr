@@ -31,7 +31,6 @@
 		<module>api</module>
 		<module>omod</module>
 		<module>distro</module>
-		<module>installation</module>
 	</modules>
 
 	<properties>
@@ -40,6 +39,7 @@
 		<!-- Module dependencies -->
 		<appframeworkVersion>1.5</appframeworkVersion>
 		<calculationVersion>1.0</calculationVersion>
+		<groovyVersion>2.2.4</groovyVersion>
 		<htmlformentryVersion>2.1</htmlformentryVersion>
 		<htmlformentry19extVersion>0.9</htmlformentry19extVersion>
 		<htmlwidgetsVersion>1.6.4</htmlwidgetsVersion>

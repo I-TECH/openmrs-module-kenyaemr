@@ -18,11 +18,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.GlobalProperty;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyaemr.system.ExternalRequirement;
 import org.openmrs.module.kenyaemr.datatype.LocationDatatype;
 import org.openmrs.module.kenyaemr.form.EmrVisitAssignmentHandler;
 import org.openmrs.util.OpenmrsConstants;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -33,14 +33,11 @@ public class Configuration {
 	protected static final Log log = LogFactory.getLog(Configuration.class);
 
 	/**
-	 * Checks the requirements of this module
+	 * Gets the external requirements
+	 * @return the external requirements
 	 */
-	public static List<Requirement> checkRequirements() {
-		List<Requirement> requirements = new ArrayList<Requirement>();
-
-		requirements.add(new Requirement("CIEL concept dictionary", Dictionary.REQUIRED_DATABASE_VERSION, Dictionary.getDatabaseVersion(), Dictionary.hasRequiredDatabaseVersion()));
-
-		return requirements;
+	public static List<ExternalRequirement> getExternalRequirements() {
+		return Context.getRegisteredComponents(ExternalRequirement.class);
 	}
 
 	/**
@@ -87,39 +84,5 @@ public class Configuration {
 
 		gp.setPropertyValue(String.valueOf(value));
 		Context.getAdministrationService().saveGlobalProperty(gp);
-	}
-
-	/**
-	 * Represents an external requirement of KenyaEMR
-	 */
-	public static class Requirement {
-
-		private String name;
-		private String versionRequired;
-		private String versionFound;
-		private boolean pass;
-
-		public Requirement(String name, String versionRequired, String versionFound, boolean pass) {
-			this.name = name;
-			this.versionRequired = versionRequired;
-			this.versionFound = versionFound;
-			this.pass = pass;
-		}
-
-		public String getName() {
-			return name;
-		}
-
-		public String getVersionRequired() {
-			return versionRequired;
-		}
-
-		public String getVersionFound() {
-			return versionFound;
-		}
-
-		public boolean isPass() {
-			return pass;
-		}
 	}
 }

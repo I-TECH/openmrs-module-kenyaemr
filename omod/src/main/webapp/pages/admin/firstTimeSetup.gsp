@@ -42,7 +42,7 @@
 
 	<% if (isSuperUser) { %>
 
-	${ ui.includeFragment("kenyaemr", "systemRequirements") }
+	${ ui.includeFragment("kenyaemr", "system/externalRequirements") }
 
 	<div class="ke-panel-frame">
 		<div class="ke-panel-heading">${ ui.message("kenyaemr.admin.firstTimeSetup") }</div>

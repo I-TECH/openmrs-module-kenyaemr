@@ -41,6 +41,7 @@
 										<get dest="target/distro" verbose="true" usetimestamp="true">
 											<url url="https://modules.openmrs.org/modules/download/appframework/appframework-${appframeworkVersion}.omod" />
 											<url url="https://modules.openmrs.org/modules/download/calculation/calculation-${calculationVersion}.omod" />
+											<url url="https://modules.openmrs.org/modules/download/groovy/groovy-${groovyVersion}.omod" />
 											<url url="https://modules.openmrs.org/modules/download/htmlformentry/htmlformentry-${htmlformentryVersion}.omod" />
 											<url url="https://modules.openmrs.org/modules/download/htmlformentry19ext/htmlformentry19ext-${htmlformentry19extVersion}.omod" />
 											<url url="https://modules.openmrs.org/modules/download/htmlwidgets/htmlwidgets-${htmlwidgetsVersion}.omod" />

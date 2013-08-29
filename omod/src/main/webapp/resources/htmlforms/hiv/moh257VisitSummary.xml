@@ -202,7 +202,7 @@
 
 	<!-- For now HFE requires encounter provider, so we set this to the "Unknown Provider" and hide it (see HTML-471) -->
 	<div style="display:none">
-		<encounterProvider default="currentUser" />
+		<encounterProvider default="1cc7dc79-ad09-4897-8a1d-0b3d3226e9ee" />
 	</div>
 
 	<div class="ke-form-content">

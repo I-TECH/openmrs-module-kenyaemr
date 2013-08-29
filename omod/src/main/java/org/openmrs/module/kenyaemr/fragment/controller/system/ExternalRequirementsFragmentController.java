@@ -12,7 +12,7 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.fragment.controller;
+package org.openmrs.module.kenyaemr.fragment.controller.system;
 
 import org.openmrs.module.kenyaemr.Configuration;
 import org.openmrs.ui.framework.fragment.FragmentModel;
@@ -20,9 +20,9 @@ import org.openmrs.ui.framework.fragment.FragmentModel;
 /**
  * System requirements
  */
-public class SystemRequirementsFragmentController {
+public class ExternalRequirementsFragmentController {
 	
 	public void controller(FragmentModel model) {
-		model.put("requirements", Configuration.checkRequirements());
+		model.put("requirements", Configuration.getExternalRequirements());
 	}
 }

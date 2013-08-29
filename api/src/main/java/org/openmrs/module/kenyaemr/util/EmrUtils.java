@@ -241,22 +241,4 @@ public class EmrUtils {
 		List<Encounter> encounters = Context.getEncounterService().getEncounters(enrollment.getPatient(), null, enrollment.getDateEnrolled(), enrollment.getDateCompleted(), null, Collections.singleton(type), null, null, null, false);
 		return encounters.size() > 0 ? encounters.get(encounters.size() - 1) : null;
 	}
-
-	/**
-	 * Checks found CIEL version against the required version.
-	 * @param required the required version
-	 * @param found the found version
-	 * @return true if found version is equal or greater to the required version
-	 */
-	public static boolean checkCielVersions(String required, String found) {
-		DateFormat format = new SimpleDateFormat("yyyyMMdd");
-		try {
-			Date requiredDate = format.parse(required);
-			Date foundDate = format.parse(found);
-
-			return foundDate.equals(requiredDate) || foundDate.after(requiredDate);
-		} catch (Exception e) {
-			return false;
-		}
-	}
 }

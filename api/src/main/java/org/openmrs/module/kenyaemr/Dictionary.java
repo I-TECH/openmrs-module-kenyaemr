@@ -25,31 +25,9 @@ import org.openmrs.module.kenyaemr.util.EmrUtils;
 public class Dictionary {
 
 	/**
-	 * Name of global property that stores database concepts version
-	 */
-	private static final String GP_CONCEPTS_VERSION = "ciel.conceptsVersion";
-
-	/**
 	 * Required concepts version
 	 */
 	public static final String REQUIRED_DATABASE_VERSION = "20130702";
-
-	/**
-	 * Gets the database version of the concepts
-	 * @return the version
-	 */
-	public static String getDatabaseVersion() {
-		return Context.getAdministrationService().getGlobalProperty(GP_CONCEPTS_VERSION);
-	}
-
-	/**
-	 * Checks if the database version meets the requirements
-	 * @return true if database version is sufficient
-	 */
-	public static boolean hasRequiredDatabaseVersion() {
-		String conceptsVersion = Dictionary.getDatabaseVersion();
-		return conceptsVersion != null && EmrUtils.checkCielVersions(Dictionary.REQUIRED_DATABASE_VERSION, conceptsVersion);
-	}
 
 	/**
 	 * Gets a concept by an identifier (mapping or UUID)
