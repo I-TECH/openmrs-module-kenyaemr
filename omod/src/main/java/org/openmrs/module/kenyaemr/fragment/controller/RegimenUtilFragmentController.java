@@ -32,7 +32,7 @@ import org.openmrs.module.kenyaemr.regimen.RegimenComponent;
 import org.openmrs.module.kenyaemr.regimen.RegimenManager;
 import org.openmrs.module.kenyaemr.regimen.RegimenOrder;
 import org.openmrs.module.kenyaemr.regimen.RegimenValidator;
-import org.openmrs.module.kenyaemr.ValidatingCommandObject;
+import org.openmrs.module.kenyaui.validator.ValidatingCommandObject;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.BindParams;

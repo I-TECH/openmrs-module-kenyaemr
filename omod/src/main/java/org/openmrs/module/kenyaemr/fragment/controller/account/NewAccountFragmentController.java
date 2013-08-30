@@ -23,7 +23,7 @@ import org.openmrs.Role;
 import org.openmrs.User;
 import org.openmrs.api.PasswordException;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyaemr.ValidatingCommandObject;
+import org.openmrs.module.kenyaui.validator.ValidatingCommandObject;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
