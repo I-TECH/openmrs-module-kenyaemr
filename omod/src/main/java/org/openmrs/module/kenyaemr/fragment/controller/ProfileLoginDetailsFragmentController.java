@@ -18,7 +18,7 @@ import org.openmrs.api.PasswordException;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.db.DAOException;
 import org.openmrs.module.kenyaemr.EmrWebConstants;
-import org.openmrs.module.kenyaemr.ValidatingCommandObject;
+import org.openmrs.module.kenyaui.validator.ValidatingCommandObject;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.BindParams;
 import org.openmrs.ui.framework.annotation.MethodParam;
