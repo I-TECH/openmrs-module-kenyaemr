@@ -8,7 +8,7 @@
 
 	<import resource="content/kenyaemr.general.xml" />
 	<import resource="content/kenyaemr.hiv.xml" />
-	<import resource="content/kenyaemr.mch.xml" />
+	<import resource="content/kenyaemr.mchms.xml" />
 	<import resource="content/kenyaemr.mchcs.xml" />
 	<import resource="content/kenyaemr.tb.xml" />
 

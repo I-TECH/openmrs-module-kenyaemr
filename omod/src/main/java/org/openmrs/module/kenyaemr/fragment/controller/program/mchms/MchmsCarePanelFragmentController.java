@@ -12,7 +12,7 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.fragment.controller.program.mch;
+package org.openmrs.module.kenyaemr.fragment.controller.program.mchms;
 
 import org.joda.time.DateTime;
 import org.joda.time.Weeks;
@@ -35,7 +35,7 @@ import java.util.Map;
 /**
  * Controller for MCH care summary
  */
-public class MchCarePanelFragmentController {
+public class MchmsCarePanelFragmentController {
 
 	public void controller(@FragmentParam("patient") Patient patient,
 						   @FragmentParam("complete") Boolean complete,
