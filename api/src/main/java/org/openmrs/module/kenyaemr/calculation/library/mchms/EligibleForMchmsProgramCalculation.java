@@ -12,7 +12,7 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.calculation.library.mch;
+package org.openmrs.module.kenyaemr.calculation.library.mchms;
 
 import org.openmrs.Person;
 import org.openmrs.api.PersonService;
@@ -26,15 +26,16 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- * Calculates whether patients are eligible for the MCH program
+ * Calculates whether patients are eligible for the MCH mother services program
  */
-public class EligibleForMchProgramCalculation extends BaseEmrCalculation {
+public class EligibleForMchmsProgramCalculation extends BaseEmrCalculation {
 
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> params, PatientCalculationContext context) {
 		CalculationResultMap ret = new CalculationResultMap();
 
 		for (int ptId : cohort) {
+			// TODO rework so that we don't have to load each patient from database individually
 			PersonService personService = Context.getPersonService();
 			Person person = personService.getPerson(ptId);
 			if (person.getGender().equals("F")) {

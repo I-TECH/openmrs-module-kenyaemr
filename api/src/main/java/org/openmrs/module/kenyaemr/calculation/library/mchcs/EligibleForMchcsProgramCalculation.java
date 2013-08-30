@@ -24,27 +24,21 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- * Calculates whether patients are eligible for the Child services  program
+ * Calculates whether patients are eligible for the MCH child services program
  */
-
 public class EligibleForMchcsProgramCalculation extends BaseEmrCalculation {
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> params, PatientCalculationContext context) {
 		CalculationResultMap ret = new CalculationResultMap();
-		//get patient ages in a calculation map
-		CalculationResultMap ages = ages(cohort,context);
+
+		CalculationResultMap ages = ages(cohort, context);
+
 		for (int ptId : cohort) {
 			Integer ageInMonths = ((Age) ages.get(ptId).getValue()).getFullMonths();
-			boolean eligible = isEligible(ageInMonths);
+			boolean eligible = (ageInMonths != null && ageInMonths <= 60);
+
 			ret.put(ptId, new BooleanResult(eligible, this));
 		}
 		return ret;
-	}
-
-	private boolean isEligible(Integer ageInMonths) {
-		if (ageInMonths != null && ageInMonths <= 60) {
-			return true;
-		}
-		return false;
 	}
 }
