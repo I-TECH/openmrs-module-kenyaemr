@@ -1,0 +1,259 @@
+<!--
+  ~ The contents of this file are subject to the OpenMRS Public License
+  ~ Version 1.0 (the "License"); you may not use this file except in
+  ~ compliance with the License. You may obtain a copy of the License at
+  ~ http://license.openmrs.org
+  ~
+  ~ Software distributed under the License is distributed on an "AS IS"
+  ~ basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+  ~ License for the specific language governing rights and limitations
+  ~ under the License.
+  ~
+  ~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+-->
+<htmlform>
+
+	<style type="text/css">
+		table.hei {
+		border-collapse: collapse;
+		background-color: #fff0f7;
+		}
+		table.hei > tbody > tr > td, table.hei > tbody > tr > th{
+		border: 1px solid black;
+		vertical-align: baseline;
+		padding: 4px;
+		text-align: left;
+		}
+
+	</style>
+	<script type="text/javascript">
+		function displayDate(birthDate)
+		{
+			var d1 = new Date(birthDate);
+			var d2 = new Date(); //to date yyyy-MM-dd (taken currentdate)
+			var Months = d2.getMonth() - d1.getMonth();
+			var Years = d2.getFullYear() - d1.getFullYear();
+			var Days = d2.getDate() - d1.getDate();
+			var wks = Math.floor(Days/7);
+			var remDays =  Math.floor(Days%7);
+			Months = (d2.getMonth() + 12 * d2.getFullYear()) -(d1.getMonth() + 12 * d1.getFullYear());
+
+			var MonthOverflow = 0;
+			if (Months - (Years * 12) &lt; 0)
+				MonthOverFlow = -1;
+			else
+				MonthOverFlow = 1;
+			if (MonthOverFlow &lt; 0)
+				Years = Years - 1; Months = Months - (Years * 12);
+				var LastDayOfMonth = new Date(d2.getFullYear(),
+				d2.getMonth() + 1, 0, 23, 59, 59);
+				LastDayOfMonth = LastDayOfMonth.getDate();
+			if (MonthOverFlow &lt;0 &amp;&amp; (d1.getDate() &gt; d2.getDate())) {
+				Days = LastDayOfMonth + (d2.getDate() - d1.getDate()) - 1;
+			}
+			else
+				Days = d2.getDate() - d1.getDate();
+			if (Days &lt; 0)
+				Months = Months - 1;
+			var l = new Date(d2.getFullYear(), d2.getMonth(), 0);
+			var l1 = new Date(d1.getFullYear(), d1.getMonth() + 1, 0);
+			if (Days &lt; 0)
+			{
+				if (l1 &gt; l)
+					Days = l1.getDate() + Days;
+				else
+					Days = l.getDate() + Days;
+			}
+			return Years +" Y(s)"+"<br />" + Months + " Mnth(s)" +"<br />"+ wks + " wk(s)" +"<br />"+ remDays +" Day(s)";
+		}
+		jq(function(){
+			var birthDate = "<lookup expression="patient.birthdate" />";
+			jq('#age').html(displayDate(birthDate));
+			jq('#calculated-age-deworming').html(displayDate(birthDate));
+		});
+	</script>
+	<div class="ke-form-header">
+		<table style="width: 100%">
+			<tr>
+				<td>Provider: <encounterProvider default="currentUser" /></td>
+				<td>Location: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" /></td>
+			</tr>
+		</table>
+	</div>
+	<div class="ke-form-content">
+		<table border="0" class="hei" align="center">
+			<tbody>
+				<tr>
+					<td colspan="3" style="background-color: #696969; color: #ffffff;text-align:center;">
+						GROWTH, NUTRITION AND DEVELOPMENT MONITORING
+					</td>
+				</tr>
+				<tr>
+					<td colspan="3" style="background-color: #696969; color: #ffffff;text-align:center;"></td>
+				</tr>
+				<tr>
+					<td colspan="3">
+						<table class="hei" width="100%">
+							<tbody>
+								<tr>
+									<td rowspan="2">Visit<br />Date</td>
+									<td rowspan="2">Age <br/>(Wks/Mths)</td>
+									<td rowspan="2">Weight <br/>(Kgs)</td>
+									<td rowspan="2">Height <br/>(Cms)</td>
+									<td rowspan="2">Infant <br/> Feeding</td>
+									<td colspan="3">Medication Given<br /> <i>If HIV Exposed</i></td>
+									<td rowspan="2">TB <br />Assessment <br/> Outcome</td>
+									<td rowspan="2">Date of Next <br/>Appointment</td>
+
+								</tr>
+								<tr>
+									<td>NVP <br/> (mls)</td>
+									<td>CTX <br/>(mls/mg)</td>
+									<td>M/vit</td>
+								</tr>
+								<tr>
+									<td>(a)</td>
+									<td>(b)</td>
+									<td>(c)</td>
+									<td>(d)</td>
+									<td>(e)</td>
+									<td>(f)</td>
+									<td>(g)</td>
+									<td>(h)</td>
+									<td>(i)</td>
+									<td>(j)</td>
+
+								</tr>
+								<tr>
+									<td><encounterDate id="encounter-date" showTime="false" /></td>
+									<td><div id="age" class="value"></div></td>
+									<td><obs conceptId="5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="2" /></td>
+									<td><obs conceptId="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="3" /></td>
+									<td><obs conceptId="1151AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerConceptIds="5526AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1595AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,6046AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Exclusive Breastfeeding(EBF),Exclusive Replacement(ERF),Mixed Feeding(MF)" answerSeparator="&lt;br/&gt;" /></td>
+									<td><obs conceptId="1276AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="80586AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="" style="checkbox" /></td>
+									<td><obs conceptId="1276AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="105281AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="" style="checkbox" /></td>
+									<td><obs conceptId="1276AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="461AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="" style="checkbox" /></td>
+									<td><obs conceptId="1659AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerConceptIds="1660AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,142177AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1661AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1662AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1679AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="No signs,Suspect,Confirmed,TB Rx,INH,Not done" answerSeparator="&lt;br/&gt;" /></td>
+									<td><obs conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" /></td>
+								</tr>
+
+							</tbody>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="3" style="background-color: #696969; color: #ffffff;">MileStones</td>
+				</tr>
+				<tr>
+					<td colspan="2">
+						<table width="100%">
+							<tr>
+								<th colspan="2">Development Milestones by Age</th>
+								<th>Achieving Milestones?</th>
+							</tr>
+							<tr>
+								<td colspan="2">
+									<div style="float: left; padding-right: 30px">
+										<obs conceptId="1200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" answerConceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Social Smile" /><br />
+										<obs conceptId="1200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" answerConceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Head Holding/Control" /><br />
+										<obs conceptId="1200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" answerConceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Turns towards the origin of sound" /><br />
+										<obs conceptId="1200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" answerConceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Extends hand to grasp a toy" /> <br />
+
+									</div>
+									<div style="float: left">
+										<obs conceptId="1200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" answerConceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Sitting" /> <br />
+										<obs conceptId="1200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" answerConceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Standing" /><br />
+										<obs conceptId="1200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" answerConceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Walking" /> <br />
+										<obs conceptId="1200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" answerConceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Talking" /> <br />
+									</div>
+								</td>
+								<td><obs conceptId="1189AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerConceptIds="1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,6022AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,6025AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Normal(N),Delayed(D),Regressed(R)" answerSeparator="&lt;br/&gt;"/></td>
+							</tr>
+						</table>
+
+					</td>
+
+				</tr>
+				<tr>
+					<td colspan="3" style="background-color: #696969; color: #ffffff;text-align:center;">Early Eye Examination and Deworming </td>
+				</tr>
+				<tr>
+					<td colspan="2">
+						<div style="float: left; padding-right: 70px">
+							<table border="1" class="hei">
+								<tbody>
+									<tr>
+										<th colspan="3">EYE CARE ASSESSMENT</th>
+									</tr>
+									<tr>
+										<td>Tetracycline<br /> Eye Ointment<br />(TEO) Given?</td>
+										<td>Yes/No</td>
+										<td id="teo-given" class="value">Only at Birth</td>
+									</tr>
+									<tr>
+										<td>PUPIL</td>
+										<td>Black<br />White</td>
+										<td id="white-pupil" class="value">If White Refer</td>
+									</tr>
+									<tr>
+										<td>SIGHT</td>
+										<td>Following Objects<br />Not Following Objects</td>
+										<td id="not-following-objects" class="value">Refer to Eye Clinic</td>
+									</tr>
+									<tr>
+										<td>SQUINT<br />(Crossed Eyes)</td>
+										<td>Squint<br />No Squint</td>
+										<td id="squint-eyes" class="value">Refer to Eye Clinic</td>
+									</tr>
+									<tr>
+										<td>ANY Other Problems</td>
+										<td>Yes<br />No</td>
+										<td id="other-problems" class="value">Refer to Eye Clinic</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+						<div style="float: left">
+							<table class="hei">
+								<tr>
+									<th colspan="2">DEWORMING</th>
+									<th rowspan="2"></th>
+									<th></th>
+
+								</tr>
+								<tr>
+									<td colspan="2">
+										<p>Give once every six months to all children one year and <br />above: If Mebendazole 500mg or Albendazole 200mg<br />for children 1 to 2 years and 400mg for children 2 years<br />and above</p>
+									</td>
+									<th rowspan="2">Date of Next Visit</th>
+								</tr>
+								<tr>
+									<th>Age</th>
+									<th>Drug</th>
+									<th>Dosage</th>
+								</tr>
+								<obsgroup groupingConceptId="1442AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+									<tr>
+										<td id="calculated-age-deworming" class="value"></td>
+										<td><obs conceptId="1282AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerClasses="Drug" style="autocomplete" /></td>
+										<td><obs conceptId="1443AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+										<td><obs conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" /></td>
+									</tr>
+								</obsgroup>
+							</table>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="3" style="background-color: #696969; color: #ffffff;text-align:center;">Clinician's Notes</td>
+				</tr>
+				<tr>
+					<td><obs conceptId="159395AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" cols="80" rows="10"/></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<div class="ke-form-footer">
+		<submit />
+	</div>
+</htmlform>

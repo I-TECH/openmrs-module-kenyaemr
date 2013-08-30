@@ -150,4 +150,20 @@
 		<property name="order" value="201020" />
 	</bean>
 
+	<!-- medical and surgical history -->
+	<bean id="kenyaemr.form.medicalAndSurgicalHistory" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="4f3c9bd8-c117-4a5e-a7eb-12a627c29de6" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.registration" />
+				<ref bean="kenyaemr.app.intake" />
+				<ref bean="kenyaemr.app.clinician" />
+				<ref bean="kenyaemr.app.chart" />
+			</set>
+		</property>
+		<property name="icon" value="kenyaui:forms/generic.png" />
+		<property name="htmlform" value="kenyaemr:medicalAndSurgicalHistory.xml" />
+		<property name="order" value="100030" />
+	</bean>
+
 </beans>

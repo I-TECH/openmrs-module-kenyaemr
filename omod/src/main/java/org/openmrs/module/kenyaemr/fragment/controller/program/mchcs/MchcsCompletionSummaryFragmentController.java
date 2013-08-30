@@ -12,7 +12,7 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.fragment.controller.program.hei;
+package org.openmrs.module.kenyaemr.fragment.controller.program.mchcs;
 
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
@@ -26,10 +26,10 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * HEI program discontinuation summary fragment
+ * Child services program discontinuation summary fragment
  */
 
-public class HeiCompletionSummaryFragmentController {
+public class MchcsCompletionSummaryFragmentController {
 
 	public String controller(@FragmentParam("patientProgram") PatientProgram enrollment,
 							 @FragmentParam(value = "encounter", required = false) Encounter encounter,
@@ -44,12 +44,12 @@ public class HeiCompletionSummaryFragmentController {
 			dataPoints.put("Outcome", enrollment.getOutcome());
 		}
 
-		if (encounter != null) {
+		/*if (encounter != null) {
 			Obs reasonObs = EmrUtils.firstObsInEncounter(encounter, Dictionary.getConcept(Dictionary.REASON_FOR_PROGRAM_DISCONTINUATION));
 			if (reasonObs != null) {
 				dataPoints.put("Reason", reasonObs.getValueCoded());
 			}
-		}
+		}*/
 
 		model.put("dataPoints", dataPoints);
 		return "view/dataPoints";
