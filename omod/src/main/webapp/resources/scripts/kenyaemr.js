@@ -24,6 +24,19 @@ kenyaui.configureSearch('person', {
 		return html;
 	}
 });
+kenyaui.configureSearch('patient', {
+	searchProvider: 'kenyaemr',
+	searchFragment: 'search',
+	format: function(patient) {
+		var icon = 'patient_' + (patient.gender == 'M' ? 'm' : 'f');
+		var src = ui.resourceLink('kenyaui', 'images/glyphs/' + icon + '.png');
+		var html = '<img src="' + src + '" class="ke-glyph" /> ' + patient.name;
+		if (patient.age) {
+			html += ' <span style="color: #999">' + patient.age + '</span>';
+		}
+		return html;
+	}
+});
 
 /**
  * Page initialization tasks
