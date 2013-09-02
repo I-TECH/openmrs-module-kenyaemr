@@ -19,8 +19,9 @@
 		</property>
 		<property name="visitForms">
 			<set>
-				<ref bean="kenyaemr.form.mchmsVisit" />
-				<ref bean="kenyaemr.form.mchmsPostnatalExamination" />
+				<ref bean="kenyaemr.form.mchmsAntenatalVisit" />
+				<ref bean="kenyaemr.form.mchmsPostnatalVisit" />
+				<ref bean="kenyaemr.form.tbScreening" />
 			</set>
 		</property>
 		<property name="fragments">
@@ -53,8 +54,8 @@
 		<property name="htmlform" value="kenyaemr:mchms/mchmsEnrollment.xml" />
 	</bean>
 
-	<!-- MCHMS Visit -->
-	<bean id="kenyaemr.form.mchmsVisit" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+	<!-- MCHMS Antenatal Visit -->
+	<bean id="kenyaemr.form.mchmsAntenatalVisit" class="org.openmrs.module.kenyacore.form.FormDescriptor">
 		<property name="targetUuid" value="e8f98494-af35-4bb8-9fc7-c409c8fed843" />
 		<property name="apps">
 			<set>
@@ -63,12 +64,12 @@
 			</set>
 		</property>
 		<property name="icon" value="kenyaui:forms/generic.png" />
-		<property name="htmlform" value="kenyaemr:mchms/mchmsVisit.xml" />
-		<!--<property name="order" value="1" />-->
+		<property name="htmlform" value="kenyaemr:mchms/mchmsAntenatalVisit.xml" />
+		<property name="order" value="1" />
 	</bean>
 
-	<!-- MCHMS Postnatal Examination -->
-	<bean id="kenyaemr.form.mchmsPostnatalExamination" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+	<!-- MCHMS Postnatal Visit -->
+	<bean id="kenyaemr.form.mchmsPostnatalVisit" class="org.openmrs.module.kenyacore.form.FormDescriptor">
 		<property name="targetUuid" value="72aa78e0-ee4b-47c3-9073-26f3b9ecc4a7" />
 		<property name="apps">
 			<set>
@@ -77,7 +78,7 @@
 			</set>
 		</property>
 		<property name="icon" value="kenyaui:forms/generic.png" />
-		<property name="htmlform" value="kenyaemr:mchms/mchmsPostnatalExamination.xml" />
+		<property name="htmlform" value="kenyaemr:mchms/mchmsPostnatalVisit.xml" />
 		<property name="order" value="3" />
 	</bean>
 

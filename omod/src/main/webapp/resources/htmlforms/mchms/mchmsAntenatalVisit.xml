@@ -1,0 +1,295 @@
+<!--
+  ~ The contents of this file are subject to the OpenMRS Public License
+  ~ Version 1.0 (the "License"); you may not use this file except in
+  ~ compliance with the License. You may obtain a copy of the License at
+  ~ http://license.openmrs.org
+  ~
+  ~ Software distributed under the License is distributed on an "AS IS"
+  ~ basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+  ~ License for the specific language governing rights and limitations
+  ~ under the License.
+  ~
+  ~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+  -->
+<htmlform>
+
+	<style type="text/css">
+		table.tb {
+		background-color: #B3C2F0;
+		border: 1px solid black;
+		}
+		table.tb1{
+		border: 1px solid black;
+		vertical-align: baseline;
+		text-align: left;
+		background-color: #E1E1FF;
+		}
+		table.tb1 tr th,table.tb1 tr td{
+		border: 0;
+		padding: 10px;
+		}
+	</style>
+
+	<script type="text/javascript">
+		beforeSubmit.push(function() {
+			var fundalHeight = getValue('fundal.value');
+			if (fundalHeight &lt; 0 || fundalHeight &gt; 40) {
+				getField('fundal.error').html('Fundal Height should be between 0 and 40.').show();
+				return false;
+			}
+			return true;
+		});
+	</script>
+
+	<div class="ke-form-header">
+		<table style="width: 100%">
+			<tr>
+				<td>Date:
+					<encounterDate id="encounter-date" showTime="true"/>
+				</td>
+				<td>Provider:
+					<encounterProvider default="currentUser"/>
+				</td>
+				<td>Location:
+					<encounterLocation default="GlobalProperty:kenyaemr.defaultLocation"/>
+				</td>
+			</tr>
+		</table>
+	</div>
+
+	<div class="ke-form-content">
+		<table align="center" border="0" class="tb" cellspacing="10">
+			<tr>
+				<td colspan="2">
+					<div class="ke-form-instructions">
+						<b>*</b>
+						indicates a required field
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<legend>Vitals</legend>
+					<table align="center" width="100%" class="tb1">
+						<tr>
+							<td>
+								<table>
+									<tr>
+										<td width="250">
+											Temperature
+										</td>
+										<td>
+											<obs conceptId="5088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											Pulse Rate
+										</td>
+										<td>
+											<obs conceptId="5087AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											B.P.
+										</td>
+										<td>
+											<obs conceptId="5085AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+											/
+											<obs conceptId="5086AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											Respiratory Rate
+										</td>
+										<td>
+											<obs conceptId="5242AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											Oxygen Saturation
+										</td>
+										<td>
+											<obs conceptId="5092AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											Weight
+										</td>
+										<td>
+											<obs conceptId="5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											Height
+										</td>
+										<td>
+											<obs conceptId="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											BMI
+										</td>
+										<td>
+											TODO
+										</td>
+									</tr>
+									<tr>
+										<td>
+											MUAC
+										</td>
+										<td>
+											<obs conceptId="1343AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+										</td>
+									</tr>
+								</table>
+							</td>
+							<td>
+								<table border="1">
+									<tr>
+										<td>
+											<u>
+												Other Vitals Recorded Recently
+											</u>
+											<br/>
+											<br/>
+											Temperature:
+											<lookup expression="fn.latestObs(5088).valueNumeric"/>
+											<br/>
+											Pulse:
+											<lookup expression="fn.latestObs(5087).valueNumeric"/>
+											<br/>
+											B.P.:<lookup expression="fn.latestObs(5085).valueNumeric"/>/
+											<lookup expression="fn.latestObs(5086).valueNumeric"/>
+											<br/>
+											Respiratory Rate:
+											<lookup expression="fn.latestObs(5242).valueNumeric"/>
+											<br/>
+											Oxygen Saturation:
+											<lookup expression="fn.latestObs(5092).valueNumeric"/>
+											<br/>
+											Weight:
+											<lookup expression="fn.latestObs(5089).valueNumeric"/>
+											<br/>
+											Height:
+											<lookup expression="fn.latestObs(5090).valueNumeric"/>
+											<br/>
+											MUAC:
+											<lookup expression="fn.latestObs(1343).valueNumeric"/>
+											<br/>
+										</td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<legend>Other Observations</legend>
+					<table align="center" width="100%" class="tb1">
+						<tr>
+							<td width="250">
+								Urine:
+							</td>
+							<td>
+								Follow up with Patrick
+							</td>
+						</tr>
+						<tr>
+							<td>
+								H.b.:
+							</td>
+							<td>
+								<obs conceptId="21AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								Pallor:
+							</td>
+							<td>
+								Missing Concept
+							</td>
+						</tr>
+						<tr>
+							<td>
+								Maturity:
+							</td>
+							<td>
+								<obs conceptId="1438AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								Fundal Height (Weeks):
+							</td>
+							<td>
+								<obs conceptId="1439AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="fundal"/>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								Presentation:
+							</td>
+							<td>
+								<obs conceptId="160090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									 answerConceptIds="139814AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160091AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								Lie:
+							</td>
+							<td>
+								Missing Concept
+							</td>
+						</tr>
+						<tr>
+							<td>
+								Foetal Heart Rate:
+							</td>
+							<td>
+								<obs conceptId="1440AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								Foetal Movement:
+							</td>
+							<td>
+								<obs conceptId="160743AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									 answerConceptIds="1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,113377AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1452AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<legend>Clinical Notes</legend>
+					<table align="center" width="100%" class="tb1">
+						<tr>
+							<td>
+								<obs conceptId="159395AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="10" cols="85"
+									 style="textarea"/>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+	</div>
+
+	<div class="ke-form-footer">
+		<submit/>
+	</div>
+
+</htmlform>

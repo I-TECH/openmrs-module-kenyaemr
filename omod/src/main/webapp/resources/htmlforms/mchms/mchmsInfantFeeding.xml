@@ -30,88 +30,74 @@
 		}
 	</style>
 
-	<div style="display:none">
-		Provider:
-		<encounterProviderAndRole encounterRole="a0b03050-c99b-11e0-9572-0800200c9a66" default="currentUser"
-								  required="true"/>
+	<div class="ke-form-header">
+		<table style="width: 100%">
+			<tr>
+				<td>Date:
+					<encounterDate id="encounter-date" showTime="true"/>
+				</td>
+				<td>Provider:
+					<encounterProvider default="currentUser"/>
+				</td>
+				<td>Location:
+					<encounterLocation default="GlobalProperty:kenyaemr.defaultLocation"/>
+				</td>
+			</tr>
+		</table>
 	</div>
-	<table align="center" border="0" class="tb" cellspacing="10">
-		<tr>
-			<td colspan="2">
-				<div class="ke-form-instructions">
-					<b>*</b>
-					indicates a required field
-				</div>
-			</td>
-		</tr>
-		<td colspan="2">
-			<legend>Basic Details</legend>
-			<table align="center" width="100%" class="tb1">
-				<tr>
-					<td width="250">
-						Date:
-					</td>
-					<td>
-						<encounterDate id="encounter-date" showTime="true"/>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						Facility:
-					</td>
-					<td>
-						<encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete"
-										   size="50"/>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						Provider:
-					</td>
-					<td>
-						<encounterProvider/>
-					</td>
-				</tr>
-			</table>
-			<br/>
-			<legend>Infant Feeding</legend>
-			<table align="center" width="100%" class="tb1">
-				<tr>
-					<td width="250">
-						Infant feeding counselling done (all mothers):
-					</td>
-					<td>
-						<obs conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						Counselling on exclusive breastfeeding done:
-					</td>
-					<td>
-						<obs conceptId="161096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						Infant feeding options for HIV infected discussed:
-					</td>
-					<td>
-						Missing Concept
-					</td>
-				</tr>
-				<tr>
-					<td>
-						If yes, mother decision:
-					</td>
-					<td>
-						<obs conceptId="1151AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-							 answerConceptIds="5526AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1595AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,6046AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159418AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-					</td>
-				</tr>
-			</table>
-		</td>
-	</table>
+
+	<div class="ke-form-content">
+		<table align="center" border="0" class="tb" cellspacing="10">
+			<tr>
+				<td colspan="2">
+					<div class="ke-form-instructions">
+						<b>*</b>
+						indicates a required field
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<legend>Infant Feeding</legend>
+					<table align="center" width="100%" class="tb1">
+						<tr>
+							<td width="250">
+								Infant feeding counselling done (all mothers):
+							</td>
+							<td>
+								<obs conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								Counselling on exclusive breastfeeding done:
+							</td>
+							<td>
+								<obs conceptId="161096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								Infant feeding options for HIV infected discussed:
+							</td>
+							<td>
+								Missing Concept
+							</td>
+						</tr>
+						<tr>
+							<td>
+								If yes, mother decision:
+							</td>
+							<td>
+								<obs conceptId="1151AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									 answerConceptIds="5526AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1595AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,6046AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159418AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+	</div>
 
 	<div class="ke-form-footer">
 		<submit/>
