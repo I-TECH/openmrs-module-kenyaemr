@@ -46,7 +46,11 @@ public class MchmsEnrollmentSummaryFragmentController {
 		Obs lmpObs = EmrUtils.firstObsInProgram(enrollment, Dictionary.getConcept(Dictionary.LAST_MONTHLY_PERIOD));
 		if (lmpObs != null) {
 			dataPoints.put("LMP", lmpObs.getValueDate());
-			dataPoints.put("EDD", CalculationUtils.dateAddDays(lmpObs.getValueDate(), 280));
+			dataPoints.put("EDD (LMP)", CalculationUtils.dateAddDays(lmpObs.getValueDate(), 280));
+		}
+		Obs eddUsoundObs = EmrUtils.firstObsInProgram(enrollment, Dictionary.getConcept(Dictionary.EXPECTED_DATE_OF_DELIVERY));
+		if (eddUsoundObs != null) {
+			dataPoints.put("EDD (Ultrasound)", eddUsoundObs.getValueDate());
 		}
 		Obs gravidaObs = EmrUtils.firstObsInProgram(enrollment, Dictionary.getConcept(Dictionary.GRAVIDA));
 		if (gravidaObs != null) {
