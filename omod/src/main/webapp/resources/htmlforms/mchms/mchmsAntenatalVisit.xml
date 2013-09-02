@@ -44,9 +44,15 @@
 	<div class="ke-form-header">
 		<table style="width: 100%">
 			<tr>
-				<td>Date: <encounterDate id="encounter-date" showTime="true" /></td>
-				<td>Provider: <encounterProvider default="currentUser" /></td>
-				<td>Location: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" /></td>
+				<td>Date:
+					<encounterDate id="encounter-date" showTime="true"/>
+				</td>
+				<td>Provider:
+					<encounterProvider default="currentUser"/>
+				</td>
+				<td>Location:
+					<encounterLocation default="GlobalProperty:kenyaemr.defaultLocation"/>
+				</td>
 			</tr>
 		</table>
 	</div>
@@ -73,7 +79,7 @@
 											Temperature
 										</td>
 										<td>
-											<obs conceptId="5088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+											<obs conceptId="5088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 										</td>
 									</tr>
 									<tr>
@@ -81,7 +87,7 @@
 											Pulse Rate
 										</td>
 										<td>
-											<obs conceptId="5087AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+											<obs conceptId="5087AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 										</td>
 									</tr>
 									<tr>
@@ -99,7 +105,7 @@
 											Respiratory Rate
 										</td>
 										<td>
-											<obs conceptId="5242AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+											<obs conceptId="5242AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 										</td>
 									</tr>
 									<tr>
@@ -107,7 +113,7 @@
 											Oxygen Saturation
 										</td>
 										<td>
-											<obs conceptId="5092AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+											<obs conceptId="5092AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 										</td>
 									</tr>
 									<tr>
@@ -123,7 +129,7 @@
 											Height
 										</td>
 										<td>
-											<obs conceptId="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+											<obs conceptId="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 										</td>
 									</tr>
 									<tr>
@@ -139,7 +145,7 @@
 											MUAC
 										</td>
 										<td>
-											<obs conceptId="1343AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+											<obs conceptId="1343AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 										</td>
 									</tr>
 								</table>
@@ -151,15 +157,32 @@
 											<u>
 												Other Vitals Recorded Recently
 											</u>
-											<br/><br/>
-											Temperature: <lookup expression="fn.latestObs(5088).valueNumeric"/> <br/>
-											Pulse:<lookup expression="fn.latestObs(5087).valueNumeric"/><br/>
-											B.P.: <lookup expression="fn.latestObs(5085).valueNumeric"/>/<lookup expression="fn.latestObs(5086).valueNumeric"/><br />
-											Respiratory Rate: <lookup expression="fn.latestObs(5242).valueNumeric"/><br/>
-											Oxygen Saturation: <lookup expression="fn.latestObs(5092).valueNumeric"/><br/>
-											Weight: <lookup expression="fn.latestObs(5089).valueNumeric"/> <br/>
-											Height: <lookup expression="fn.latestObs(5090).valueNumeric"/> <br/>
-											MUAC: <lookup expression="fn.latestObs(1343).valueNumeric"/> <br/>
+											<br/>
+											<br/>
+											Temperature:
+											<lookup expression="fn.latestObs(5088).valueNumeric"/>
+											<br/>
+											Pulse:
+											<lookup expression="fn.latestObs(5087).valueNumeric"/>
+											<br/>
+											B.P.:<lookup expression="fn.latestObs(5085).valueNumeric"/>/
+											<lookup expression="fn.latestObs(5086).valueNumeric"/>
+											<br/>
+											Respiratory Rate:
+											<lookup expression="fn.latestObs(5242).valueNumeric"/>
+											<br/>
+											Oxygen Saturation:
+											<lookup expression="fn.latestObs(5092).valueNumeric"/>
+											<br/>
+											Weight:
+											<lookup expression="fn.latestObs(5089).valueNumeric"/>
+											<br/>
+											Height:
+											<lookup expression="fn.latestObs(5090).valueNumeric"/>
+											<br/>
+											MUAC:
+											<lookup expression="fn.latestObs(1343).valueNumeric"/>
+											<br/>
 										</td>
 									</tr>
 								</table>
@@ -218,7 +241,7 @@
 							</td>
 							<td>
 								<obs conceptId="160090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-									 answerConceptIds="139814AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160091AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+									 answerConceptIds="139814AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160091AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 							</td>
 						</tr>
 						<tr>
@@ -243,7 +266,7 @@
 							</td>
 							<td>
 								<obs conceptId="160743AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-									 answerConceptIds="1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,113377AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1452AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+									 answerConceptIds="1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,113377AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1452AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 							</td>
 						</tr>
 					</table>
@@ -255,7 +278,8 @@
 					<table align="center" width="100%" class="tb1">
 						<tr>
 							<td>
-								<obs conceptId="159395AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="10" cols="85" style="textarea" />
+								<obs conceptId="159395AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="10" cols="85"
+									 style="textarea"/>
 							</td>
 						</tr>
 					</table>

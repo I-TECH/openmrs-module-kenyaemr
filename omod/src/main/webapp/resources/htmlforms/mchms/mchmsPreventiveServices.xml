@@ -33,9 +33,15 @@
 	<div class="ke-form-header">
 		<table style="width: 100%">
 			<tr>
-				<td>Date: <encounterDate id="encounter-date" showTime="true" /></td>
-				<td>Provider: <encounterProvider default="currentUser" /></td>
-				<td>Location: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" /></td>
+				<td>Date:
+					<encounterDate id="encounter-date" showTime="true"/>
+				</td>
+				<td>Provider:
+					<encounterProvider default="currentUser"/>
+				</td>
+				<td>Location:
+					<encounterLocation default="GlobalProperty:kenyaemr.defaultLocation"/>
+				</td>
 			</tr>
 		</table>
 	</div>
@@ -59,7 +65,9 @@
 								<td style="background-color: #696969; color: #ffffff;">Vaccine</td>
 								<td style="background-color: #696969; color: #ffffff;">Sequence No.</td>
 								<td style="background-color: #696969; color: #ffffff;">Date</td>
-								<td style="background-color: #696969; color: #ffffff;">Next <Visit></Visit></td>
+								<td style="background-color: #696969; color: #ffffff;">Next
+									<Visit></Visit>
+								</td>
 							</tr>
 							<repeat>
 								<template>
@@ -70,13 +78,14 @@
 													 answerConceptIds="84879AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159610AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,104677AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,79413AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160428AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 											</td>
 											<td>
-												<obs conceptId="1418AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+												<obs conceptId="1418AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 											</td>
 											<td>
-												<obs conceptId="1410AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+												<obs conceptId="1410AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 											</td>
 											<td>
-												<obs conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" />
+												<obs conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+													 allowFutureDates="true"/>
 											</td>
 										</tr>
 									</obsgroup>
