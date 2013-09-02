@@ -47,7 +47,8 @@
 											<url url="https://modules.openmrs.org/modules/download/htmlwidgets/htmlwidgets-${htmlwidgetsVersion}.omod" />
 											<url url="https://modules.openmrs.org/modules/download/idgen/idgen-${idgenVersion}.omod" />
 											<url url="https://modules.openmrs.org/modules/download/kenyacore/kenyacore-${kenyacoreVersion}.omod" />
-											<url url="https://modules.openmrs.org/modules/download/kenyalab/kenyalab-${kenyalabVersion}.omod" />
+											<url url="https://modules.openmrs.org/modules/download/kenyadq/kenyadq-${kenyadqVersion}.omod" />
+											<!--<url url="https://modules.openmrs.org/modules/download/kenyalab/kenyalab-${kenyalabVersion}.omod" />-->
 											<url url="https://modules.openmrs.org/modules/download/kenyaui/kenyaui-${kenyauiVersion}.omod" />
 											<url url="https://modules.openmrs.org/modules/download/logic/logic-${logicVersion}.omod" />
 											<url url="https://modules.openmrs.org/modules/download/metadatamapping/metadatamapping-${metadatamappingVersion}.omod" />
