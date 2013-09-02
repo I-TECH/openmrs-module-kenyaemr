@@ -21,6 +21,7 @@
 			<set>
 				<ref bean="kenyaemr.form.mchmsAntenatalVisit" />
 				<ref bean="kenyaemr.form.mchmsPostnatalVisit" />
+				<ref bean="kenyaemr.form.tbScreening" />
 			</set>
 		</property>
 		<property name="fragments">
