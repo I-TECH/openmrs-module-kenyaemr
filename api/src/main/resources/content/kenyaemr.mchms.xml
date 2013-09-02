@@ -65,7 +65,7 @@
 		</property>
 		<property name="icon" value="kenyaui:forms/generic.png" />
 		<property name="htmlform" value="kenyaemr:mchms/mchmsAntenatalVisit.xml" />
-		<!--<property name="order" value="1" />-->
+		<property name="order" value="1" />
 	</bean>
 
 	<!-- MCHMS Postnatal Visit -->
