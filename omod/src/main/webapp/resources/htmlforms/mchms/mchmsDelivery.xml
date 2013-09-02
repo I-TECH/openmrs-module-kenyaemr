@@ -40,20 +40,6 @@
 		</table>
 	</div>
 
-	<!--<div class="ke-form-content">-->
-		<!--<table align="center" border="0" class="tb" cellspacing="10">-->
-			<!--<tr>-->
-				<!--<td colspan="2">-->
-					<!--<div class="ke-form-instructions">-->
-						<!--<b>*</b>-->
-						<!--indicates a required field-->
-					<!--</div>-->
-				<!--</td>-->
-			<!--</tr>-->
-
-		<!--</table>-->
-	<!--</div>-->
-
 	<div class="ke-form-content">
 		<table align="center" border="0" class="tb" cellspacing="10">
 			<tr>
@@ -176,118 +162,6 @@
 			</tr>
 		</table>
 	</div>
-
-	<!--<table align="center" border="0" class="tb" cellspacing="10">-->
-		<!--<tr>-->
-			<!--<td colspan="2">-->
-				<!--<div class="ke-form-instructions">-->
-					<!--<b>*</b>-->
-					<!--indicates a required field-->
-				<!--</div>-->
-			<!--</td>-->
-		<!--</tr>-->
-		<!--<td colspan="2">-->
-			<!--<legend>Infant Feeding</legend>-->
-			<!--<table align="center" width="100%" class="tb1">-->
-				<!--<tr>-->
-					<!--<td width="250">-->
-						<!--Duration of Pregnancy (in weeks):-->
-					<!--</td>-->
-					<!--<td>-->
-						<!--<obs conceptId="1789AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>-->
-					<!--</td>-->
-				<!--</tr>-->
-				<!--<tr>-->
-					<!--<td>-->
-						<!--Mode of Delivery:-->
-					<!--</td>-->
-					<!--<td>-->
-						<!--<obs conceptId="5630AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>-->
-					<!--</td>-->
-				<!--</tr>-->
-				<!--<tr>-->
-					<!--<td>-->
-						<!--Date of Delivery:-->
-					<!--</td>-->
-					<!--<td>-->
-						<!--<obs conceptId="5599AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>-->
-					<!--</td>-->
-				<!--</tr>-->
-				<!--<tr>-->
-					<!--<td>-->
-						<!--Blood Loss::-->
-					<!--</td>-->
-					<!--<td>-->
-						<!--Missing Concept-->
-					<!--</td>-->
-				<!--</tr>-->
-				<!--<tr>-->
-					<!--<td>-->
-						<!--Condition of Mother:-->
-					<!--</td>-->
-					<!--<td>-->
-						<!--Missing Concept-->
-					<!--</td>-->
-				<!--</tr>-->
-				<!--<tr>-->
-					<!--<td>-->
-						<!--Apgar Score (1 min):-->
-					<!--</td>-->
-					<!--<td>-->
-						<!--<obs conceptId="159603AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>-->
-					<!--</td>-->
-				<!--</tr>-->
-				<!--<tr>-->
-					<!--<td>-->
-						<!--Apgar Score (5 min):-->
-					<!--</td>-->
-					<!--<td>-->
-						<!--<obs conceptId="159604AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>-->
-					<!--</td>-->
-				<!--</tr>-->
-				<!--<tr>-->
-					<!--<td>-->
-						<!--Apgar Score (10 min):-->
-					<!--</td>-->
-					<!--<td>-->
-						<!--<obs conceptId="159605AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>-->
-					<!--</td>-->
-				<!--</tr>-->
-				<!--<tr>-->
-					<!--<td>-->
-						<!--Resuscitation Done:-->
-					<!--</td>-->
-					<!--<td>-->
-						<!--Missing Concept-->
-					<!--</td>-->
-				<!--</tr>-->
-				<!--<tr>-->
-					<!--<td>-->
-						<!--Drugs Administered at Delivery (Mother):-->
-					<!--</td>-->
-					<!--<td>-->
-						<!--Missing Concept-->
-					<!--</td>-->
-				<!--</tr>-->
-				<!--<tr>-->
-					<!--<td>-->
-						<!--Drugs Administered at Delivery (Child):-->
-					<!--</td>-->
-					<!--<td>-->
-						<!--Missing Concept-->
-					<!--</td>-->
-				<!--</tr>-->
-				<!--<tr>-->
-					<!--<td>-->
-						<!--Delivery Conducted By:-->
-					<!--</td>-->
-					<!--<td>-->
-						<!--<obs conceptId="1573AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>-->
-					<!--</td>-->
-				<!--</tr>-->
-			<!--</table>-->
-		<!--</td>-->
-	<!--</table>-->
 
 	<div class="ke-form-footer">
 		<submit/>
