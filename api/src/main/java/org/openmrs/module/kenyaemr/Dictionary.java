@@ -19,6 +19,9 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.util.EmrUtils;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Dictionary for concepts used by KenyaEMR
  */
@@ -33,10 +36,24 @@ public class Dictionary {
 	 * Gets a concept by an identifier (mapping or UUID)
 	 * @param identifier the identifier
 	 * @return the concept
-	 * @throws IllegalArgumentException if no concept could be found
+	 * @throws IllegalArgumentException if the concept could not be found
 	 */
 	public static Concept getConcept(String identifier) {
 		return MetadataUtils.getConcept(identifier);
+	}
+
+	/**
+	 * Convenience method to fetch a list of concepts
+	 * @param identifiers the concept identifiers
+	 * @return the concepts
+	 * @throws IllegalArgumentException if a concept could not be found
+	 */
+	public static List<Concept> getConcepts(String... identifiers) {
+		List<Concept> concepts = new ArrayList<Concept>();
+		for (String identifier : identifiers) {
+			concepts.add(getConcept(identifier));
+		}
+		return concepts;
 	}
 
 	// Concept identifiers (A-Z)
