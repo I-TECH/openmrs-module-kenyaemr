@@ -30,115 +30,98 @@
 		}
 	</style>
 
-	<div style="display:none">
-		Provider:
-		<encounterProviderAndRole encounterRole="a0b03050-c99b-11e0-9572-0800200c9a66" default="currentUser"
-								  required="true"/>
+	<div class="ke-form-header">
+		<table style="width: 100%">
+			<tr>
+				<td>Enrollment date: <encounterDate id="encounter-date" showTime="true" /></td>
+				<td>Enrolled by: <encounterProvider default="currentUser" /></td>
+				<td>Enrolled at: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" /></td>
+			</tr>
+		</table>
 	</div>
-	<table align="center" border="0" class="tb" cellspacing="10">
-		<tr>
-			<td colspan="2">
-				<div class="ke-form-instructions">
-					<b>*</b>
-					indicates a required field
-				</div>
-			</td>
-		</tr>
-		<td colspan="2">
-			<legend>Basic Details</legend>
-			<table align="center" width="100%" class="tb1">
-				<tr>
-					<td width="250">
-						Date:
-					</td>
-					<td>
-						<encounterDate id="encounter-date" showTime="true"/>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						Facility:
-					</td>
-					<td>
-						<encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete"
-										   size="50"/>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						Provider:
-					</td>
-					<td>
-						<encounterProvider/>
-					</td>
-				</tr>
-			</table>
-			<br/>
-			<fieldset>
-			<legend>General</legend>
-			<table align="center" width="100%" class="tb1">
-				<tr>
-					<td style="background-color: #696969; color: #ffffff;">Vaccine</td>
-					<td style="background-color: #696969; color: #ffffff;">Sequence No.</td>
-					<td style="background-color: #696969; color: #ffffff;">Date</td>
-					<td style="background-color: #696969; color: #ffffff;">Next <Visit></Visit></td>
-				</tr>
-				<repeat>
-					<template>
-						<obsgroup groupingConceptId="160593AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+
+	<div class="ke-form-content">
+		<table align="center" border="0" class="tb" cellspacing="10">
+			<tr>
+				<td colspan="2">
+					<div class="ke-form-instructions">
+						<b>*</b>
+						indicates a required field
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<fieldset>
+						<legend>General</legend>
+						<table align="center" width="100%" class="tb1">
 							<tr>
-								<td>
-									<obs conceptId="984AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-										 answerConceptIds="84879AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159610AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,104677AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,79413AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160428AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-								</td>
-								<td>
-									<obs conceptId="1418AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
-								</td>
-								<td>
-									<obs conceptId="1410AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
-								</td>
-								<td>
-									<obs conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" />
-								</td>
+								<td style="background-color: #696969; color: #ffffff;">Vaccine</td>
+								<td style="background-color: #696969; color: #ffffff;">Sequence No.</td>
+								<td style="background-color: #696969; color: #ffffff;">Date</td>
+								<td style="background-color: #696969; color: #ffffff;">Next <Visit></Visit></td>
 							</tr>
-						</obsgroup>
-					</template>
-					<render n="1" concept=" "/>
-					<render n="2" concept=" "/>
-					<render n="3" concept=" "/>
-					<render n="4" concept=" "/>
-					<render n="5" concept=" "/>
-					<render n="6" concept=" "/>
-					<render n="7" concept=" "/>
-					<render n="8" concept=" "/>
-					<render n="9" concept=" "/>
-					<render n="10" concept=" "/>
-					<render n="11" concept=" "/>
-				</repeat>
-			</table>
-			</fieldset>
-			<br/>
-			<legend>HIV</legend>
-			<table align="center" width="100%" class="tb1">
-				<tr>
-					<td width="250">
-						Mother on ARV Prophylaxis:
-					</td>
-					<td>
-						Missing Concept
-					</td>
-				</tr>
-				<tr>
-					<td>
-						Mother on HAART (ARV):
-					</td>
-					<td>
-						Missing Concept
-					</td>
-				</tr>
-			</table>
-		</td>
-	</table>
+							<repeat>
+								<template>
+									<obsgroup groupingConceptId="160593AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+										<tr>
+											<td>
+												<obs conceptId="984AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+													 answerConceptIds="84879AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159610AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,104677AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,79413AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160428AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+											</td>
+											<td>
+												<obs conceptId="1418AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+											</td>
+											<td>
+												<obs conceptId="1410AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+											</td>
+											<td>
+												<obs conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" />
+											</td>
+										</tr>
+									</obsgroup>
+								</template>
+								<render n="1" concept=" "/>
+								<render n="2" concept=" "/>
+								<render n="3" concept=" "/>
+								<render n="4" concept=" "/>
+								<render n="5" concept=" "/>
+								<render n="6" concept=" "/>
+								<render n="7" concept=" "/>
+								<render n="8" concept=" "/>
+								<render n="9" concept=" "/>
+								<render n="10" concept=" "/>
+								<render n="11" concept=" "/>
+							</repeat>
+						</table>
+					</fieldset>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<legend>HIV</legend>
+					<table align="center" width="100%" class="tb1">
+						<tr>
+							<td width="250">
+								Mother on ARV Prophylaxis:
+							</td>
+							<td>
+								Missing Concept
+							</td>
+						</tr>
+						<tr>
+							<td>
+								Mother on HAART (ARV):
+							</td>
+							<td>
+								Missing Concept
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+	</div>
 
 	<div class="ke-form-footer">
 		<submit/>
