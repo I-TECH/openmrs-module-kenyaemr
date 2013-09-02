@@ -30,64 +30,45 @@
 		}
 	</style>
 
-	<div style="display:none">
-		Provider:
-		<encounterProviderAndRole encounterRole="a0b03050-c99b-11e0-9572-0800200c9a66" default="currentUser"
-								  required="true"/>
+	<div class="ke-form-header">
+		<table style="width: 100%">
+			<tr>
+				<td>Enrollment date: <encounterDate id="encounter-date" showTime="true" /></td>
+				<td>Enrolled by: <encounterProvider default="currentUser" /></td>
+				<td>Enrolled at: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" /></td>
+			</tr>
+		</table>
 	</div>
-	<table align="center" border="0" class="tb" cellspacing="10">
-		<tr>
-			<td colspan="2">
-				<div class="ke-form-instructions">
-					<b>*</b>
-					indicates a required field
-				</div>
-			</td>
-		</tr>
-		<td colspan="2">
-			<legend>Basic Details</legend>
-			<table align="center" width="100%" class="tb1">
-				<tr>
-					<td width="250">
-						Date:
-					</td>
-					<td>
-						<encounterDate id="encounter-date" showTime="true"/>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						Facility:
-					</td>
-					<td>
-						<encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete"
-										   size="50"/>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						Provider:
-					</td>
-					<td>
-						<encounterProvider/>
-					</td>
-				</tr>
-			</table>
-			<br/>
-			<legend>Reason for Discontinuation</legend>
-			<table align="center" width="100%" class="tb1">
-				<tr>
-					<td width="250">
-						Reason:
-					</td>
-					<td>
-						<obs conceptId="161555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-					</td>
-				</tr>
-			</table>
-		</td>
-	</table>
-	<completeProgram programId="b5d9e05f-f5ab-4612-98dd-adb75438ed34"/>
+
+	<div class="ke-form-content">
+		<table align="center" border="0" class="tb" cellspacing="10">
+			<tr>
+				<td colspan="2">
+					<div class="ke-form-instructions">
+						<b>*</b>
+						indicates a required field
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<legend>Reason for Discontinuation</legend>
+					<table align="center" width="100%" class="tb1">
+						<tr>
+							<td width="250">
+								Reason:
+							</td>
+							<td>
+								<obs conceptId="161555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+		<completeProgram programId="b5d9e05f-f5ab-4612-98dd-adb75438ed34"/>
+	</div>
+
 	<div class="ke-form-footer">
 		<submit/>
 	</div>
