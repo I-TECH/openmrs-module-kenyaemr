@@ -45,7 +45,7 @@
 		<htmlwidgetsVersion>1.6.4</htmlwidgetsVersion>
 		<idgenVersion>2.5</idgenVersion>
 		<kenyacoreVersion>0.8.1</kenyacoreVersion>
-		<kenyalabVersion>0.1.2</kenyalabVersion>
+		<!--<kenyalabVersion>0.1.2</kenyalabVersion>-->
 		<kenyauiVersion>1.12.2</kenyauiVersion>
 		<logicVersion>0.5.2</logicVersion>
 		<metadatamappingVersion>1.0.1</metadatamappingVersion>
@@ -121,12 +121,12 @@
 			<scope>test</scope>
 		</dependency>
 
-		<dependency>
+		<!--<dependency>
 			<groupId>org.openmrs.module</groupId>
 			<artifactId>kenyalab-api</artifactId>
 			<version>${kenyalabVersion}</version>
 			<scope>provided</scope>
-		</dependency>
+		</dependency>-->
 
 		<dependency>
 			<groupId>org.openmrs.module</groupId>
