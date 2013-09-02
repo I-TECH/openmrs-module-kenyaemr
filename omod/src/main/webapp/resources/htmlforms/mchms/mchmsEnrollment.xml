@@ -99,158 +99,138 @@
 
 	</script>
 
-	<div style="display:none">
-		Provider:
-		<encounterProviderAndRole encounterRole="a0b03050-c99b-11e0-9572-0800200c9a66" default="currentUser"
-								  required="true"/>
+	<div class="ke-form-header">
+		<table style="width: 100%">
+			<tr>
+				<td>Enrollment date: <encounterDate id="encounter-date" showTime="true" /></td>
+				<td>Enrolled by: <encounterProvider default="currentUser" /></td>
+				<td>Enrolled at: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" /></td>
+			</tr>
+		</table>
 	</div>
-	<table align="center" border="0" class="tb" cellspacing="10">
-		<tr>
-			<td colspan="2">
-				<div class="ke-form-instructions">
-					<b>*</b>
-					indicates a required field
-				</div>
-			</td>
-		</tr>
-		<td colspan="2">
-			<legend>Basic Details</legend>
-			<table align="center" width="100%" class="tb1">
-				<tr>
-					<td width="250">
-						Date:
-					</td>
-					<td>
-						<encounterDate id="encounter-date" showTime="true"/>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						Facility:
-					</td>
-					<td>
-						<encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete"
-										   size="50"/>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						Provider:
-					</td>
-					<td>
-						<encounterProvider/>
-					</td>
-				</tr>
-			</table>
-			<br/>
-			<legend>Maternal Profile</legend>
-			<table align="center" width="100%" class="tb1">
-				<tr>
-					<td width="250">
-						ANC No:
-					</td>
-					<td>
-						<obs conceptId="161655AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true" />
-					</td>
-				</tr>
-				<tr>
-					<td>
-						Gravida:
-					</td>
-					<td>
-						<obs conceptId="5624AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true" id="gravida" />
-					</td>
-				</tr>
-				<tr>
-					<td>
-						Parity:
-					</td>
-					<td>
-						<obs conceptId="1053AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true" id="parity" />
-					</td>
-				</tr>
-				<tr>
-					<td>
-						L.M.P:
-					</td>
-					<td>
-						<obs conceptId="1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="lmp" required="true"/>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						EDD (Calculated from L.M.P):
-					</td>
-					<td>
-						<span id="calculated-edd" class="value"></span>
-						<!--<obs conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="edd" allowFutureDates="true"/>-->
-					</td>
-				</tr>
-				<tr>
-					<td>
-						EDD (Ultrasound):
-					</td>
-					<td>
-						<obs conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true"/>
-					</td>
-				</tr>
-			</table>
-			<br/>
-			<legend>Antenatal Profile</legend>
-			<table align="center" width="100%" class="tb1">
-				<tr>
-					<td width="250">
-						Blood Group/Rhesus:
-					</td>
-					<td>
-						<obs conceptId="300AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						Serology:
-					</td>
-					<td>
-						<obs conceptId="1035AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						TB Screening:
-					</td>
-					<td>
-						<obs conceptId="160108AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						HIV:
-					</td>
-					<td>
-						<obs conceptId="159427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						Urinalysis:
-					</td>
-					<td>
-						<obs conceptId="160987AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						BS for MPS:
-					</td>
-					<td>
-						<obs conceptId="32AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-					</td>
-				</tr>
-			</table>
-		</td>
-	</table>
 
-	<enrollInProgram programId="b5d9e05f-f5ab-4612-98dd-adb75438ed34"/>
+	<div class="ke-form-content">
+		<table align="center" border="0" class="tb" cellspacing="10">
+			<tr>
+				<td colspan="2">
+					<div class="ke-form-instructions">
+						<b>*</b>
+						indicates a required field
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<legend>Maternal Profile</legend>
+					<table align="center" width="100%" class="tb1">
+						<tr>
+							<td width="250">
+								ANC No:
+							</td>
+							<td>
+								<obs conceptId="161655AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true"/>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								Gravida:
+							</td>
+							<td>
+								<obs conceptId="5624AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true" id="gravida"/>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								Parity:
+							</td>
+							<td>
+								<obs conceptId="1053AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true" id="parity"/>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								L.M.P:
+							</td>
+							<td>
+								<obs conceptId="1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="lmp" required="true"/>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								EDD (Calculated from L.M.P):
+							</td>
+							<td>
+								<span id="calculated-edd" class="value"></span>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								EDD (Ultrasound):
+							</td>
+							<td>
+								<obs conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true"/>
+							</td>
+						</tr>
+					</table>
+				</td>
+				<td>
+					<legend>Antenatal Profile</legend>
+					<table align="center" width="100%" class="tb1">
+						<tr>
+							<td width="250">
+								Blood Group/Rhesus:
+							</td>
+							<td>
+								<obs conceptId="300AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								Serology:
+							</td>
+							<td>
+								<obs conceptId="1035AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								TB Screening:
+							</td>
+							<td>
+								<obs conceptId="160108AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								HIV:
+							</td>
+							<td>
+								<obs conceptId="159427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								Urinalysis:
+							</td>
+							<td>
+								<obs conceptId="160987AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								BS for MPS:
+							</td>
+							<td>
+								<obs conceptId="32AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+		<enrollInProgram programId="b5d9e05f-f5ab-4612-98dd-adb75438ed34"/>
+	</div>
+
 	<div class="ke-form-footer">
 		<submit/>
 	</div>
