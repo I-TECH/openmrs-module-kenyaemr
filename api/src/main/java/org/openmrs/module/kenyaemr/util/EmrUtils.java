@@ -19,8 +19,10 @@ import org.openmrs.*;
 import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.ModuleFactory;
+import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.EmrConstants;
+import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.util.OpenmrsUtil;
 
 import java.text.DateFormat;
@@ -89,11 +91,25 @@ public class EmrUtils {
 	}
 
 	/**
+	 * Gets the source form for the given visit (may be null)
+	 * @param visit the visit
+	 * @return source form
+	 */
+	public static Form getVisitSourceForm(Visit visit) {
+		VisitAttributeType sourceAttrType = MetadataUtils.getVisitAttributeType(Metadata.VisitAttributeType.SOURCE_FORM);
+		List<VisitAttribute> attrs =  visit.getActiveAttributes(sourceAttrType);
+		return attrs.size() > 0 ? (Form) attrs.get(0).getValue() : null;
+	}
+
+	/**
 	 * Checks if a visit has been entered retrospectively. Visits entered retrospectively are entered with just a single
 	 * date value and are always stopped
 	 * @param visit the visit
 	 * @return true if visit was entered retrospectively
+	 *
+	 * @deprecated use getVisitSourceForm instead
 	 */
+	@Deprecated
 	public static boolean isRetrospectiveVisit(Visit visit) {
 		if (visit.getStopDatetime() == null) {
 			return false;

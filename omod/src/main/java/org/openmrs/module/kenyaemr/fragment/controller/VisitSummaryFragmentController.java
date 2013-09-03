@@ -12,21 +12,21 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr;
+package org.openmrs.module.kenyaemr.fragment.controller;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.openmrs.Visit;
+import org.openmrs.module.kenyaemr.util.EmrUtils;
+import org.openmrs.ui.framework.annotation.FragmentParam;
+import org.openmrs.ui.framework.fragment.FragmentModel;
 
 /**
- * Tests for {@link Metadata}
+ * Visit summary fragment
  */
-public class MetadataTest {
+public class VisitSummaryFragmentController {
+	
+	public void controller(@FragmentParam("visit") Visit visit, FragmentModel model) {
 
-	@Test
-	public void integration() {
-		new Metadata();
-
-		// Check access to nested class constant
-		Assert.assertNotNull(Metadata.VisitAttributeType.SOURCE_FORM);
+		model.addAttribute("visit", visit);
+		model.addAttribute("sourceForm", EmrUtils.getVisitSourceForm(visit));
 	}
 }

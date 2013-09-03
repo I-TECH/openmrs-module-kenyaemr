@@ -43,6 +43,9 @@ import static org.hamcrest.Matchers.*;
  */
 public class EmrUtilsTest extends BaseModuleContextSensitiveTest {
 
+	/**
+	 * Setup each test
+	 */
 	@Before
 	public void setup() throws Exception {
 		executeDataSet("test-data.xml");
@@ -117,6 +120,31 @@ public class EmrUtilsTest extends BaseModuleContextSensitiveTest {
 	public void isToday_shouldReturnTrueOnlyForDatesThatAreToday() {
 		Assert.assertTrue(EmrUtils.isToday(new Date()));
 		Assert.assertFalse(EmrUtils.isToday(TestUtils.date(2012, 1, 1)));
+	}
+
+	/**
+	 * @see EmrUtils#getVisitSourceForm(org.openmrs.Visit)
+	 */
+	@Test
+	public void getVisitSourceForm_shouldReturnTheSourceFormIfThereIsOne() {
+		Patient patient = Context.getPatientService().getPatient(8);
+		VisitType outpatient = MetadataUtils.getVisitType(Metadata.OUTPATIENT_VISIT_TYPE);
+		Visit visit = TestUtils.saveVisit(patient, outpatient, TestUtils.date(2011, 1, 1), null);
+
+		// Check no attribute returns null
+		Assert.assertThat(EmrUtils.getVisitSourceForm(visit), is(nullValue()));
+
+		Form moh257 = MetadataUtils.getForm(Metadata.MOH_257_VISIT_SUMMARY_FORM);
+
+		VisitAttribute sourceAttr = new VisitAttribute();
+		sourceAttr.setAttributeType(MetadataUtils.getVisitAttributeType("8bfab185-6947-4958-b7ab-dfafae1a3e3d"));
+		sourceAttr.setOwner(visit);
+		sourceAttr.setValue(moh257);
+		visit.addAttribute(sourceAttr);
+
+		Context.getVisitService().saveVisit(visit);
+
+		Assert.assertThat(EmrUtils.getVisitSourceForm(visit), is(moh257));
 	}
 
 	/**

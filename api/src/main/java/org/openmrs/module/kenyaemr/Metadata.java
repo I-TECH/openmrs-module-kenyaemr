@@ -93,4 +93,8 @@ public class Metadata {
 
 	// Visit Types
 	public static final String OUTPATIENT_VISIT_TYPE = "3371a4d4-f66f-4454-a86d-92c7b3da990c";
+
+	public static final class VisitAttributeType {
+		public static final String SOURCE_FORM = "8bfab185-6947-4958-b7ab-dfafae1a3e3d";
+	}
 }

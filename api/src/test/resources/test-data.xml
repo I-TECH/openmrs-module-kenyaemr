@@ -149,6 +149,15 @@
 	<patient_identifier_type patient_identifier_type_id="1004" name="District Registration Number" description="..." check_digit="0" required="0" creator="1" date_created="2004-08-12 00:00:00.0" retired="0" uuid="d8ee3b8c-a8fc-4d6b-af6a-9423be5f8906" />
 	<patient_identifier_type patient_identifier_type_id="1005" name="Old Identification Number" description="..." check_digit="0" required="0" creator="1" date_created="2004-08-12 00:00:00.0" retired="0" uuid="8d79403a-c2cc-11de-8d13-0010c6dffd0f" />
 
+	<!-- =========================================== Encounter types =============================================== -->
+
+	<encounter_type encounter_type_id="1001" name="Registration" description="Registration" creator="1" date_created="2005-02-24 00:00:00.0" retired="false" uuid="de1f9d67-b73e-4e1b-90d0-036166fc6995" />
+	<encounter_type encounter_type_id="1002" name="Triage" description="Triage" creator="1" date_created="2005-02-24 00:00:00.0" retired="false" uuid="d1059fb9-a079-4feb-a749-eedd709ae542" />
+	<encounter_type encounter_type_id="1003" name="Consultation" description="Consultation" creator="1" date_created="2005-02-24 00:00:00.0" retired="false" uuid="465a92f2-baf8-42e9-9612-53064be868e8" />
+	<encounter_type encounter_type_id="1004" name="HIV Enrollment" description="HIV Enrollment" creator="1" date_created="2005-02-24 00:00:00.0" retired="false" uuid="de78a6be-bfc5-4634-adc3-5f1a280455cc" />
+	<encounter_type encounter_type_id="1005" name="HIV Consultation" description="HIV Consultation" creator="1" date_created="2005-02-24 00:00:00.0" retired="false" uuid="a0034eee-1940-4e35-847f-97537a35d05e" />
+	<encounter_type encounter_type_id="1006" name="TB Screening" description="TB Screening" creator="1" date_created="2005-02-24 00:00:00.0" retired="false" uuid="ed6dacc9-0827-4c82-86be-53c0d8c449be" />
+
 	<!-- =========================================== Forms =============================================== -->
 
 	<form form_id="1001" name="Clinical Encounter - HIV Addendum" encounter_type="1005" version="0.1" build="0" published="0" description="Clinical Encounter - HIV Addendum" creator="1" date_created="2005-08-07 00:00:00.0" changed_by="1" date_changed="2007-10-24 14:51:53.0" retired="false" retired_reason="" uuid="bd598114-4ef4-47b1-a746-a616180ccfc0"/>
@@ -162,14 +171,9 @@
 
 	<visit_type visit_type_id="1001" name="Outpatient" description="Outpatient Visit Description" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="3371a4d4-f66f-4454-a86d-92c7b3da990c"/>
 
-	<!-- =========================================== Encounter types =============================================== -->
+	<!-- =========================================== Visit attribute types =============================================== -->
 
-	<encounter_type encounter_type_id="1001" name="Registration" description="Registration" creator="1" date_created="2005-02-24 00:00:00.0" retired="false" uuid="de1f9d67-b73e-4e1b-90d0-036166fc6995" />
-	<encounter_type encounter_type_id="1002" name="Triage" description="Triage" creator="1" date_created="2005-02-24 00:00:00.0" retired="false" uuid="d1059fb9-a079-4feb-a749-eedd709ae542" />
-	<encounter_type encounter_type_id="1003" name="Consultation" description="Consultation" creator="1" date_created="2005-02-24 00:00:00.0" retired="false" uuid="465a92f2-baf8-42e9-9612-53064be868e8" />
-	<encounter_type encounter_type_id="1004" name="HIV Enrollment" description="HIV Enrollment" creator="1" date_created="2005-02-24 00:00:00.0" retired="false" uuid="de78a6be-bfc5-4634-adc3-5f1a280455cc" />
-	<encounter_type encounter_type_id="1005" name="HIV Consultation" description="HIV Consultation" creator="1" date_created="2005-02-24 00:00:00.0" retired="false" uuid="a0034eee-1940-4e35-847f-97537a35d05e" />
-	<encounter_type encounter_type_id="1006" name="TB Screening" description="TB Screening" creator="1" date_created="2005-02-24 00:00:00.0" retired="false" uuid="ed6dacc9-0827-4c82-86be-53c0d8c449be" />
+	<visit_attribute_type visit_attribute_type_id="1001" name="Source form" datatype="org.openmrs.module.kenyaemr.datatype.FormDatatype" min_occurs="0" max_occurs="1" creator="1" date_created="2005-01-01 00:00:00.0" retired="0" uuid="8bfab185-6947-4958-b7ab-dfafae1a3e3d" />
 
 	<!-- =========================================== Global properties =============================================== -->
 

@@ -18,13 +18,16 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Encounter;
+import org.openmrs.Patient;
 import org.openmrs.Visit;
+import org.openmrs.VisitType;
 import org.openmrs.module.kenyacore.form.FormManager;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.util.OpenmrsConstants;
+import org.openmrs.util.OpenmrsUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.hamcrest.Matchers.*;
@@ -33,9 +36,6 @@ import static org.hamcrest.Matchers.*;
  * Tests for {@link org.openmrs.module.kenyaemr.form.EmrVisitAssignmentHandler}
  */
 public class EmrVisitAssignmentHandlerTest extends BaseModuleContextSensitiveTest {
-
-	@Autowired
-	private FormManager formManager;
 
 	/**
 	 * Setup each test
@@ -67,5 +67,57 @@ public class EmrVisitAssignmentHandlerTest extends BaseModuleContextSensitiveTes
 
 		// Check that encounter was saved into visit #2
 		Assert.assertThat(enc2.getVisit(), is(visit2));
+	}
+
+	/**
+	 * @see EmrVisitAssignmentHandler#getAutoCreateVisitType(org.openmrs.Encounter)
+	 */
+	@Test
+	public void getAutoCreateVisitType_shouldReturnAutoCreateVisitTypeIfSpecified() {
+		// Check form that doesn't specify one
+		Encounter hivAddendumEnc = new Encounter();
+		hivAddendumEnc.setForm(MetadataUtils.getForm(Metadata.CLINICAL_ENCOUNTER_HIV_ADDENDUM_FORM));
+
+		Assert.assertThat(EmrVisitAssignmentHandler.getAutoCreateVisitType(hivAddendumEnc), is(nullValue()));
+
+		// TODO figure out how to mock FormManager so we can test a form with an auto-create visit type
+
+		// Check form that does specify one
+		//Encounter moh257Enc = new Encounter();
+		//moh257Enc.setForm(MetadataUtils.getForm(Metadata.MOH_257_VISIT_SUMMARY_FORM));
+
+		//Assert.assertThat(EmrVisitAssignmentHandler.getAutoCreateVisitType(moh257Enc), is(MetadataUtils.getVisitType(Metadata.OUTPATIENT_VISIT_TYPE)));
+	}
+
+	/**
+	 * @see EmrVisitAssignmentHandler#canBeSavedInVisit(org.openmrs.Encounter, org.openmrs.Visit)
+	 */
+	@Test
+	public void canBeSavedInVisit() {
+		Encounter enc = new Encounter();
+
+		// Visit starts at 10am on 1-Jun-2012
+		Visit visit = new Visit();
+		visit.setStartDatetime(TestUtils.date(2012, 6, 1, 10, 0, 0));
+
+		// Check encounter at 9am can't be saved into that
+		enc.setEncounterDatetime(TestUtils.date(2012, 6, 1, 9, 0, 0));
+		Assert.assertThat(EmrVisitAssignmentHandler.canBeSavedInVisit(enc, visit), is(false));
+
+		// Check encounter at 10am can
+		enc.setEncounterDatetime(TestUtils.date(2012, 6, 1, 10, 0, 0));
+		Assert.assertThat(EmrVisitAssignmentHandler.canBeSavedInVisit(enc, visit), is(true));
+
+		// Check encounter at 11am can
+		enc.setEncounterDatetime(TestUtils.date(2012, 6, 1, 11, 0, 0));
+		Assert.assertThat(EmrVisitAssignmentHandler.canBeSavedInVisit(enc, visit), is(true));
+
+		// Even if visit now ends at 11am
+		visit.setStopDatetime(TestUtils.date(2012, 6, 1, 11, 0, 0));
+		Assert.assertThat(EmrVisitAssignmentHandler.canBeSavedInVisit(enc, visit), is(true));
+
+		// Check encounter at 12pm can't
+		enc.setEncounterDatetime(TestUtils.date(2012, 6, 1, 12, 0, 0));
+		Assert.assertThat(EmrVisitAssignmentHandler.canBeSavedInVisit(enc, visit), is(false));
 	}
 }
