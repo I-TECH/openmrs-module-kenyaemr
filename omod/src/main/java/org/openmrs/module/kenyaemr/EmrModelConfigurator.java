@@ -78,12 +78,15 @@ public class EmrModelConfigurator implements PageModelConfigurator, FragmentMode
 		if (!StringUtils.isEmpty(visitId)) {
 			currentVisit = visitFromParam(visitId);
 
-			// We can infer patient from current visit
-			if (currentPatient == null) {
-				currentPatient = currentVisit.getPatient();
-			}
-			else if (!currentPatient.equals(currentVisit.getPatient())) {
-				throw new RuntimeException("Mismatch between patient and visit request parameters");
+			if (currentVisit != null) {
+				// We can infer patient from current visit
+				if (currentPatient == null) {
+					currentPatient = currentVisit.getPatient();
+				}
+
+				if (!currentPatient.equals(currentVisit.getPatient())) {
+					throw new RuntimeException("Mismatch between patient and visit request parameters");
+				}
 			}
 		}
 
