@@ -32,7 +32,7 @@ import org.openmrs.module.htmlformentry.FormEntrySession;
 import org.openmrs.module.htmlformentry.FormSubmissionError;
 import org.openmrs.module.htmlformentry.HtmlForm;
 import org.openmrs.module.kenyacore.form.FormUtils;
-import org.openmrs.module.kenyaemr.EmrUiUtils;
+import org.openmrs.module.kenyaemr.util.EmrUiUtils;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.annotation.SpringBean;

@@ -12,7 +12,7 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr;
+package org.openmrs.module.kenyaemr.util;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.openmrs.*;
