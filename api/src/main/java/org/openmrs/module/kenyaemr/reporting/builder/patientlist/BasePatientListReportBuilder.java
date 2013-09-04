@@ -45,7 +45,7 @@ public abstract class BasePatientListReportBuilder extends ReportBuilder {
 	 * @param dsd the data set definition
 	 */
 	protected void addStandardColumns(PatientDataSetDefinition dsd) {
-		dsd.addColumn("HIV Unique ID", new PatientIdentifierDataDefinition("HIV Unique ID", MetadataUtils.getPatientIdentifierType(Metadata.UNIQUE_PATIENT_NUMBER_IDENTIFIER_TYPE)), "");
+		dsd.addColumn("HIV Unique ID", new PatientIdentifierDataDefinition("HIV Unique ID", MetadataUtils.getPatientIdentifierType(Metadata.PatientIdentifierType.UNIQUE_PATIENT_NUMBER)), "");
 		dsd.addColumn("Patient Name", new PreferredNameDataDefinition(), "");
 		dsd.addColumn("Age", new AgeDataDefinition(), "");
 		dsd.addColumn("Sex", new GenderDataDefinition(), "");

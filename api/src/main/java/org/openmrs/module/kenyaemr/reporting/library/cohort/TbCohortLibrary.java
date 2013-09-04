@@ -34,7 +34,7 @@ public class TbCohortLibrary {
 	 * @return the cohort definition
 	 */
 	public CohortDefinition enrolled() {
-		return commonCohorts.enrolled(MetadataUtils.getProgram(Metadata.TB_PROGRAM));
+		return commonCohorts.enrolled(MetadataUtils.getProgram(Metadata.Program.TB));
 	}
 
 	/**
@@ -42,6 +42,6 @@ public class TbCohortLibrary {
 	 * @return the cohort definition
 	 */
 	public CohortDefinition screenedForTb() {
-		return commonCohorts.hasEncounter(MetadataUtils.getEncounterType(Metadata.TB_SCREENING_ENCOUNTER_TYPE));
+		return commonCohorts.hasEncounter(MetadataUtils.getEncounterType(Metadata.EncounterType.TB_SCREENING));
 	}
 }

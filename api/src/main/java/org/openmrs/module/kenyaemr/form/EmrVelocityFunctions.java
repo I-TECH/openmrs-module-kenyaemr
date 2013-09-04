@@ -50,7 +50,7 @@ public class EmrVelocityFunctions {
 		if (session.getPatient() == null) {
 			return false;
 		} else {
-			PatientIdentifierType pit = MetadataUtils.getPatientIdentifierType(Metadata.UNIQUE_PATIENT_NUMBER_IDENTIFIER_TYPE);
+			PatientIdentifierType pit = MetadataUtils.getPatientIdentifierType(Metadata.PatientIdentifierType.UNIQUE_PATIENT_NUMBER);
 			return session.getPatient().getPatientIdentifier(pit) != null;
 		}
 	}

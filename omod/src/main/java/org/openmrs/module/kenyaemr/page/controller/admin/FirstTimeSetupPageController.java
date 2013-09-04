@@ -65,8 +65,8 @@ public class FirstTimeSetupPageController {
 		}
 		
 		defaultLocation = service.getDefaultLocation();
-		IdentifierSource mrnIdentifierSource = identifierManager.getIdentifierSource(MetadataUtils.getPatientIdentifierType(Metadata.OPENMRS_ID_IDENTIFIER_TYPE));
-		IdentifierSource hivIdentifierSource = identifierManager.getIdentifierSource(MetadataUtils.getPatientIdentifierType(Metadata.UNIQUE_PATIENT_NUMBER_IDENTIFIER_TYPE));
+		IdentifierSource mrnIdentifierSource = identifierManager.getIdentifierSource(MetadataUtils.getPatientIdentifierType(Metadata.PatientIdentifierType.OPENMRS_ID));
+		IdentifierSource hivIdentifierSource = identifierManager.getIdentifierSource(MetadataUtils.getPatientIdentifierType(Metadata.PatientIdentifierType.UNIQUE_PATIENT_NUMBER));
 
 		User authenticatedUser = Context.getAuthenticatedUser();
 		

@@ -30,6 +30,6 @@ public class InTbProgramCalculation extends BaseEmrCalculation {
 
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> params, PatientCalculationContext context) {
-		return passing(activeEnrollment(MetadataUtils.getProgram(Metadata.TB_PROGRAM), alivePatients(cohort, context), context));
+		return passing(activeEnrollment(MetadataUtils.getProgram(Metadata.Program.TB), alivePatients(cohort, context), context));
 	}
 }

@@ -49,7 +49,7 @@ public class TbCohortLibraryTest extends BaseModuleContextSensitiveTest {
 	public void setup() throws Exception {
 		executeDataSet("test-data.xml");
 
-		EncounterType tbScreeningEncType = MetadataUtils.getEncounterType(Metadata.TB_SCREENING_ENCOUNTER_TYPE);
+		EncounterType tbScreeningEncType = MetadataUtils.getEncounterType(Metadata.EncounterType.TB_SCREENING);
 
 		// Screen patient #2 on May 31st
 		TestUtils.saveEncounter(Context.getPatientService().getPatient(2), tbScreeningEncType, TestUtils.date(2012, 5, 31));

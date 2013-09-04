@@ -42,8 +42,8 @@ public class NeverScreenedForTbCalculationTest extends BaseModuleContextSensitiv
 	public void evaluate_shouldReturnHivPatientsNotScreenedForTb() throws Exception {
 
 		// Get HIV Program and TB screening encounter type
-		Program hivProgram = MetadataUtils.getProgram(Metadata.HIV_PROGRAM);
-		EncounterType screeningEncType = MetadataUtils.getEncounterType(Metadata.TB_SCREENING_ENCOUNTER_TYPE);
+		Program hivProgram = MetadataUtils.getProgram(Metadata.Program.HIV);
+		EncounterType screeningEncType = MetadataUtils.getEncounterType(Metadata.EncounterType.TB_SCREENING);
 
 		// Enroll patients #6 and #7
 		PatientService ps = Context.getPatientService();

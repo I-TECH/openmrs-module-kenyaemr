@@ -45,8 +45,8 @@ public class NeverScreenedForTbCalculation extends BaseEmrCalculation {
 	 */
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> params, PatientCalculationContext context) {
-		Program hivProgram = MetadataUtils.getProgram(Metadata.HIV_PROGRAM);
-		EncounterType screeningEncType = MetadataUtils.getEncounterType(Metadata.TB_SCREENING_ENCOUNTER_TYPE);
+		Program hivProgram = MetadataUtils.getProgram(Metadata.Program.HIV);
+		EncounterType screeningEncType = MetadataUtils.getEncounterType(Metadata.EncounterType.TB_SCREENING);
 
 		Set<Integer> alive = alivePatients(cohort, context);
 		Set<Integer> inHivProgram = CalculationUtils.patientsThatPass(activeEnrollment(hivProgram, alive, context));
