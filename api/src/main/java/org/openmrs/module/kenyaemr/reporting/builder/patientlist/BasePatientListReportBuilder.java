@@ -37,7 +37,6 @@ public abstract class BasePatientListReportBuilder extends ReportBuilder {
 	 */
 	protected void addColumns(PatientDataSetDefinition dsd) {
 		addStandardColumns(dsd);
-		addViewColumn(dsd);
 	}
 
 	/**
@@ -45,34 +44,11 @@ public abstract class BasePatientListReportBuilder extends ReportBuilder {
 	 * @param dsd the data set definition
 	 */
 	protected void addStandardColumns(PatientDataSetDefinition dsd) {
-		dsd.addColumn("HIV Unique ID", new PatientIdentifierDataDefinition("HIV Unique ID", MetadataUtils.getPatientIdentifierType(Metadata.PatientIdentifierType.UNIQUE_PATIENT_NUMBER)), "");
-		dsd.addColumn("Patient Name", new PreferredNameDataDefinition(), "");
+		dsd.addColumn("id", new PatientIdDataDefinition(), "");
+		dsd.addColumn("Name", new PreferredNameDataDefinition(), "");
 		dsd.addColumn("Age", new AgeDataDefinition(), "");
 		dsd.addColumn("Sex", new GenderDataDefinition(), "");
-	}
-
-	/**
-	 * Adds the view column
-	 * @param dsd the data set definition
-	 */
-	protected void addViewColumn(PatientDataSetDefinition dsd) {
-		dsd.addColumn("View", new PatientIdDataDefinition(), "", new DataConverter() {
-
-			@Override
-			public Class<?> getInputDataType() {
-				return Integer.class;
-			}
-
-			@Override
-			public Class<?> getDataType() {
-				return String.class;
-			}
-
-			@Override
-			public Object convert(Object input) {
-				return "<a href=\"chart/chartViewPatient.page?patientId=" + input + "\">View</a>";
-			}
-		});
+		dsd.addColumn("UPN", new PatientIdentifierDataDefinition("UPN", MetadataUtils.getPatientIdentifierType(Metadata.PatientIdentifierType.UNIQUE_PATIENT_NUMBER)), "");
 	}
 
 	/**
