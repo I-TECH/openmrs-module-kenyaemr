@@ -122,6 +122,26 @@ public class CommonCohortLibrary {
 	}
 
 	/**
+	 * Patients who have an obs between ${onOrAfter} and ${onOrBefore}
+	 * @param question the question concept
+	 * @param answers the answers to include
+	 * @return the cohort definition
+	 */
+	public CohortDefinition hasObs(Concept question, Concept... answers) {
+		CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
+		cd.setName("has obs between dates");
+		cd.setQuestion(question);
+		cd.setOperator(SetComparator.IN);
+		cd.setTimeModifier(PatientSetService.TimeModifier.ANY);
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		if (answers.length > 0) {
+			cd.setValueList(Arrays.asList(answers));
+		}
+		return cd;
+	}
+
+	/**
 	 * Patients who transferred in between ${onOrAfter} and ${onOrBefore}
 	 * @return the cohort definition
 	 */

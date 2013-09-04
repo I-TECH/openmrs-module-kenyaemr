@@ -14,7 +14,9 @@
 
 package org.openmrs.module.kenyaemr.reporting.library.cohort;
 
+import org.openmrs.Concept;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
+import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +44,10 @@ public class TbCohortLibrary {
 	 * @return the cohort definition
 	 */
 	public CohortDefinition screenedForTb() {
-		return commonCohorts.hasEncounter(MetadataUtils.getEncounterType(Metadata.EncounterType.TB_SCREENING));
+		Concept tbDiseaseStatus = Dictionary.getConcept(Dictionary.TUBERCULOSIS_DISEASE_STATUS);
+		Concept diseaseSuspected = Dictionary.getConcept(Dictionary.DISEASE_SUSPECTED);
+		Concept diseaseDiagnosed = Dictionary.getConcept(Dictionary.DISEASE_DIAGNOSED);
+		Concept noSignsOrSymptoms = Dictionary.getConcept(Dictionary.NO_SIGNS_OR_SYMPTOMS_OF_DISEASE);
+		return commonCohorts.hasObs(tbDiseaseStatus, diseaseSuspected, diseaseDiagnosed, noSignsOrSymptoms);
 	}
 }
