@@ -111,19 +111,23 @@
 					<legend>HIV</legend>
 					<table align="center" width="100%" class="tb1">
 						<tr>
-							<td width="250">
-								Mother on ARV Prophylaxis:
+							<td width="500">
+								Mother on ARV Prophylaxis <br/>(Baby - NVP once daily till breastfeeding stops):
 							</td>
 							<td>
-								Missing Concept
+									<obs conceptId="966AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										 answerConceptIds="1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,80586AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										 answerLabels="AZT + SdNVP,SdNVP alone" style="radio"/>
 							</td>
 						</tr>
 						<tr>
 							<td>
-								Mother on HAART (ARV):
+								Mother on HAART (Baby - NVP once daily for 6 weeks whether breastfeeding or not):
 							</td>
 							<td>
-								Missing Concept
+								<obs conceptId="966AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									 answerConceptIds="1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5424AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									 answerLabels="AZT + 3TC + NVP ,Other" style="radio"/>
 							</td>
 						</tr>
 					</table>
