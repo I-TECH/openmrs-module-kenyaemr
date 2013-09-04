@@ -15,9 +15,11 @@
 package org.openmrs.module.kenyaemr.fragment.controller;
 
 import org.openmrs.Visit;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.util.EmrUtils;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.fragment.FragmentModel;
+import org.openmrs.util.PrivilegeConstants;
 
 /**
  * Visit summary fragment
@@ -28,5 +30,6 @@ public class VisitSummaryFragmentController {
 
 		model.addAttribute("visit", visit);
 		model.addAttribute("sourceForm", EmrUtils.getVisitSourceForm(visit));
+		model.addAttribute("allowVoid", Context.hasPrivilege(PrivilegeConstants.DELETE_VISITS));
 	}
 }

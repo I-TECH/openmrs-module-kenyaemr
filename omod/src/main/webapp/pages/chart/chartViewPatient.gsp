@@ -69,44 +69,10 @@
 
 	<% if (visit) { %>
 
-		<% if (visit.voided) { %>
-			<div class="ke-warning">This visit has been voided</div>
-		<% } %>
-
-		<script type="text/javascript">
-			function onVoidVisit(visitId) {
-				kenyaui.openConfirmDialog({
-					heading: 'KenyaEMR',
-					message: '${ ui.message("kenyaemr.confirmVoidVisit") }',
-					okCallback: function() { doVisitVoid(visitId); }
-				});
-			}
-
-			function doVisitVoid(visitId) {
-				ui.getFragmentActionAsJson('kenyaemr', 'emrUtils', 'voidVisit', { visitId: visitId, reason: 'Data entry error' }, function() {
-					ui.reloadPage();
-				});
-			}
-		</script>
-
 		${ ui.includeFragment("kenyaemr", "visitSummary", [ visit: visit ]) }
-		${ ui.includeFragment("kenyaemr", "visitCompletedForms", [ visit: visit ]) }
-		${ ui.includeFragment("kenyaemr", "visitAvailableForms", [ visit: visit ]) }
-
-		<% if (context.hasPrivilege("Delete Visits") && !visit.voided) { %>
-		<div class="ke-panel-frame" style="text-align: center">
-			<% if (!visit.encounters) { %>
-			${ ui.includeFragment("kenyaui", "widget/button", [
-					label: "Void Visit",
-					extra: "If entered by mistake",
-					iconProvider: "kenyaui",
-					icon: "buttons/visit_void.png",
-					onClick: "onVoidVisit(" + visit.id + ")"
-			]) }
-			<% } else { %>
-			<em>To void this visit, please delete all encounters first</em>
-			<% } %>
-		</div>
+		<% if (!visit.voided) { %>
+			${ ui.includeFragment("kenyaemr", "visitCompletedForms", [ visit: visit ]) }
+			${ ui.includeFragment("kenyaemr", "visitAvailableForms", [ visit: visit ]) }
 		<% } %>
 
 	<% } else if (form) { %>

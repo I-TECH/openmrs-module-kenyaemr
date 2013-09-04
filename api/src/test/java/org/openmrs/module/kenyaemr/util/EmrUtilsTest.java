@@ -137,7 +137,7 @@ public class EmrUtilsTest extends BaseModuleContextSensitiveTest {
 		Form moh257 = MetadataUtils.getForm(Metadata.MOH_257_VISIT_SUMMARY_FORM);
 
 		VisitAttribute sourceAttr = new VisitAttribute();
-		sourceAttr.setAttributeType(MetadataUtils.getVisitAttributeType("8bfab185-6947-4958-b7ab-dfafae1a3e3d"));
+		sourceAttr.setAttributeType(MetadataUtils.getVisitAttributeType(Metadata.VisitAttributeType.SOURCE_FORM));
 		sourceAttr.setOwner(visit);
 		sourceAttr.setValue(moh257);
 		visit.addAttribute(sourceAttr);
