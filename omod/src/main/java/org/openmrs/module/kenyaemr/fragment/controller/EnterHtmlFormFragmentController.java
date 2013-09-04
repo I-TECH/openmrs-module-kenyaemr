@@ -32,7 +32,7 @@ import org.openmrs.module.htmlformentry.FormEntrySession;
 import org.openmrs.module.htmlformentry.FormSubmissionError;
 import org.openmrs.module.htmlformentry.HtmlForm;
 import org.openmrs.module.kenyacore.form.FormUtils;
-import org.openmrs.module.kenyaemr.KenyaEmrUiUtils;
+import org.openmrs.module.kenyaemr.EmrUiUtils;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.annotation.SpringBean;
@@ -55,7 +55,7 @@ public class EnterHtmlFormFragmentController {
 						   @FragmentParam(value = "visit", required = false) Visit visit,
 						   @FragmentParam(value = "returnUrl", required = false) String returnUrl,
 						   @SpringBean ResourceFactory resourceFactory,
-						   @SpringBean KenyaEmrUiUtils emrUi,
+						   @SpringBean EmrUiUtils emrUi,
 						   FragmentConfiguration config,
 						   FragmentModel model,
 						   HttpSession httpSession,

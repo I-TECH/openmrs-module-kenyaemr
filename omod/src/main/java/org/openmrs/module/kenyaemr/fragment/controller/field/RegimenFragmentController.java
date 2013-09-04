@@ -15,7 +15,7 @@
 package org.openmrs.module.kenyaemr.fragment.controller.field;
 
 import org.openmrs.module.kenyaemr.regimen.RegimenManager;
-import org.openmrs.module.kenyaemr.KenyaEmrUiUtils;
+import org.openmrs.module.kenyaemr.EmrUiUtils;
 import org.openmrs.module.kenyaemr.regimen.RegimenDefinition;
 import org.openmrs.module.kenyaemr.regimen.RegimenDefinitionGroup;
 import org.openmrs.ui.framework.UiUtils;
@@ -37,7 +37,7 @@ public class RegimenFragmentController {
 						   FragmentModel model,
 						   UiUtils ui,
 						   @SpringBean RegimenManager regimenManager,
-						   @SpringBean KenyaEmrUiUtils kenyaUi) {
+						   @SpringBean EmrUiUtils kenyaUi) {
 
 		List<RegimenDefinitionGroup> regimenGroups = regimenManager.getRegimenGroups(category);
 

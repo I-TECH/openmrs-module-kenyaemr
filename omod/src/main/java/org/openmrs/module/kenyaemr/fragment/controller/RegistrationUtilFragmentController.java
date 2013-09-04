@@ -34,7 +34,7 @@ import org.openmrs.Visit;
 import org.openmrs.VisitType;
 import org.openmrs.api.VisitService;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyaemr.KenyaEmrUiUtils;
+import org.openmrs.module.kenyaemr.EmrUiUtils;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
@@ -190,7 +190,7 @@ public class RegistrationUtilFragmentController {
 	 * @param visit the visit
 	 * @return the simplified visit
 	 */
-	public SimpleObject startVisit(@BindParams("visit") @Validate Visit visit, UiUtils ui, @SpringBean KenyaEmrUiUtils kenyaUi) {
+	public SimpleObject startVisit(@BindParams("visit") @Validate Visit visit, UiUtils ui, @SpringBean EmrUiUtils kenyaUi) {
 		if (visit.getLocation() == null)
 			visit.setLocation(Context.getService(KenyaEmrService.class).getDefaultLocation());
 
@@ -206,7 +206,7 @@ public class RegistrationUtilFragmentController {
 	 * @param visit the visit
 	 * @return the simplified visit
 	 */
-	public SimpleObject editVisit(@RequestParam("visit.visitId") @BindParams("visit") @Validate Visit visit, UiUtils ui, @SpringBean KenyaEmrUiUtils kenyaUi) {
+	public SimpleObject editVisit(@RequestParam("visit.visitId") @BindParams("visit") @Validate Visit visit, UiUtils ui, @SpringBean EmrUiUtils kenyaUi) {
 		ui.validate(visit, new RegistrationVisitValidator(), "visit");
 
 		Context.getVisitService().saveVisit(visit);

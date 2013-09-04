@@ -42,7 +42,7 @@ import java.util.Date;
  * UI utility methods for web pages
  */
 @Component
-public class KenyaEmrUiUtils {
+public class EmrUiUtils {
 
 	@Autowired
 	private FormManager formManager;
@@ -56,26 +56,36 @@ public class KenyaEmrUiUtils {
 	 * @return the string value
 	 */
 	public String formatVisitDates(Visit visit) {
-		if (EmrUtils.isRetrospectiveVisit(visit)) {
-			return kenyaUi.formatDate(visit.getStartDatetime());
+		StringBuilder sb = new StringBuilder();
+
+		if (EmrUtils.dateHasTime(visit.getStartDatetime())) {
+			sb.append(kenyaUi.formatDateTime(visit.getStartDatetime()));
 		}
 		else {
-			StringBuilder sb = new StringBuilder();
-			sb.append(kenyaUi.formatDateTime(visit.getStartDatetime()));
+			sb.append(kenyaUi.formatDate(visit.getStartDatetime()));
+		}
 
-			if (visit.getStopDatetime() != null) {
+		if (visit.getStopDatetime() != null) {
+
+			// Check if stop is last second of a day, i.e. it's time is not significant
+			Calendar stop = Calendar.getInstance();
+			stop.setTime(visit.getStopDatetime());
+			boolean isLastMoment = stop.get(Calendar.HOUR_OF_DAY) == 23 && stop.get(Calendar.MINUTE) == 59 && stop.get(Calendar.SECOND) == 59;
+			boolean isSameDay = EmrUtils.isSameDay(visit.getStartDatetime(), visit.getStopDatetime());
+
+			if (!(isLastMoment && isSameDay)) {
 				sb.append(" \u2192 ");
 
-				if (EmrUtils.isSameDay(visit.getStartDatetime(), visit.getStopDatetime())) {
+				if (isSameDay) {
 					sb.append(kenyaUi.formatTime(visit.getStopDatetime()));
 				}
 				else {
 					sb.append(kenyaUi.formatDateTime(visit.getStopDatetime()));
 				}
 			}
-
-			return sb.toString();
 		}
+
+		return sb.toString();
 	}
 
 	/**

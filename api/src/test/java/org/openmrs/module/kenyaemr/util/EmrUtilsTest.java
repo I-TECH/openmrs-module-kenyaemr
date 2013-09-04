@@ -142,44 +142,6 @@ public class EmrUtilsTest extends BaseModuleContextSensitiveTest {
 	}
 
 	/**
-	 * @see EmrUtils#isRetrospectiveVisit(org.openmrs.Visit)
-	 */
-	@Test
-	public void isRetrospectiveVisit() {
-		Date date1 = TestUtils.date(2011, 1, 1, 10, 0, 0); // Jan 1st, 10:00am
-		Date date2 = TestUtils.date(2011, 1, 1, 11, 0, 0); // Jan 1st, 11:00am
-
-		// Check visit with no stop date
-		Visit visit = new Visit();
-		visit.setStartDatetime(date1);
-		Assert.assertFalse(EmrUtils.isRetrospectiveVisit(visit));
-
-		// Check visit with regular stop and start times
-		visit.setStartDatetime(date1);
-		visit.setStopDatetime(date2);
-		Assert.assertFalse(EmrUtils.isRetrospectiveVisit(visit));
-
-		// Check visit with absolute start but regular end date
-		visit.setStartDatetime(OpenmrsUtil.firstSecondOfDay(date1));
-		visit.setStopDatetime(date2);
-		Assert.assertFalse(EmrUtils.isRetrospectiveVisit(visit));
-
-		// Check visit with absolute start and end dates
-		visit.setStartDatetime(OpenmrsUtil.firstSecondOfDay(date1));
-		visit.setStopDatetime(OpenmrsUtil.getLastMomentOfDay(date1));
-		Assert.assertTrue(EmrUtils.isRetrospectiveVisit(visit));
-
-		// Check case when stop date has been persisted and lost its milliseconds
-		Calendar stopFromSql = Calendar.getInstance();
-		stopFromSql.setTime(OpenmrsUtil.getLastMomentOfDay(date1));
-		stopFromSql.set(Calendar.MILLISECOND, 0);
-
-		visit.setStartDatetime(OpenmrsUtil.firstSecondOfDay(date1));
-		visit.setStopDatetime(stopFromSql.getTime());
-		Assert.assertTrue(EmrUtils.isRetrospectiveVisit(visit));
-	}
-
-	/**
 	 * @see EmrUtils#visitWillOverlap(org.openmrs.Visit)
 	 */
 	@Test
