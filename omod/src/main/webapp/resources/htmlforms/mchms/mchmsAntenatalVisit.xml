@@ -46,16 +46,12 @@
 		});
 
 		function onArvStatusChange() {
-			<!--alert(getValue('arv-status.value'));-->
 			if (getValue('arv-status.value') == ARV_CONCEPT_ID) {
 				jq('#arv-medication').hide();
-				<!--alert("hidden");-->
 			} else if (getValue('arv-status.value') == HAART_CONCEPT_ID) {
 				jq('#arv-medication').show();
-				<!--alert("shown");-->
 			} else {
 				jq('#arv-medication').hide();
-				<!--alert("hidden");-->
 			}
 		}
 

@@ -54,12 +54,12 @@ public class MchmsEnrollmentSummaryFragmentController {
 		}
 		Obs gravidaObs = EmrUtils.firstObsInProgram(enrollment, Dictionary.getConcept(Dictionary.GRAVIDA));
 		if (gravidaObs != null) {
-			dataPoints.put("Gravida", gravidaObs.getValueNumeric());
+			dataPoints.put("Gravida", gravidaObs.getValueNumeric().intValue());
 		}
 		Obs parityTermObs = EmrUtils.firstObsInProgram(enrollment, Dictionary.getConcept(Dictionary.PARITY_TERM));
 		Obs parityAbortionObs = EmrUtils.firstObsInProgram(enrollment, Dictionary.getConcept(Dictionary.PARITY_ABORTION));
 		if (parityTermObs != null && parityAbortionObs != null) {
-			dataPoints.put("Parity", parityTermObs.getValueNumeric() + " + " + parityAbortionObs.getValueNumeric());
+			dataPoints.put("Parity", parityTermObs.getValueNumeric().intValue() + " + " + parityAbortionObs.getValueNumeric().intValue());
 		}
 		model.put("dataPoints", dataPoints);
 		return "view/dataPoints";
