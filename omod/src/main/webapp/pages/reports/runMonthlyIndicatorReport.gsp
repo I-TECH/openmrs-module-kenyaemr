@@ -21,7 +21,7 @@
 <div class="ke-page-content">
 
 <% if (data) { %>
-	${ ui.includeFragment("kenyaemr", "reportOutput", [ definition: definition, data: data ]) }
+	${ ui.includeFragment("kenyaemr", "report/indicatorReport", [ definition: definition, data: data ]) }
 <% } else { %>
 
 	<div class="ke-panel-frame">

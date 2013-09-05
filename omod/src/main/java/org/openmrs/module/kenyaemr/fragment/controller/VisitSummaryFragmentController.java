@@ -14,29 +14,22 @@
 
 package org.openmrs.module.kenyaemr.fragment.controller;
 
-import org.openmrs.Patient;
 import org.openmrs.Visit;
-import org.openmrs.module.kenyacore.metadata.MetadataUtils;
-import org.openmrs.module.kenyaemr.Metadata;
+import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyaemr.util.EmrUtils;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.fragment.FragmentModel;
-
-import java.util.Date;
+import org.openmrs.util.PrivilegeConstants;
 
 /**
- * Visit menu (check-in / check-out etc)
+ * Visit summary fragment
  */
-public class VisitMenuFragmentController {
+public class VisitSummaryFragmentController {
 	
-	public void controller(FragmentModel model, @FragmentParam("patient") Patient patient, @FragmentParam(value = "visit", required = false) Visit visit) {
+	public void controller(@FragmentParam("visit") Visit visit, FragmentModel model) {
 
-		model.addAttribute("patient", patient);
 		model.addAttribute("visit", visit);
-
-		Visit newVisit = new Visit();
-		newVisit.setPatient(patient);
-		newVisit.setStartDatetime(new Date());
-		newVisit.setVisitType(MetadataUtils.getVisitType(Metadata.VisitType.OUTPATIENT));
-		model.addAttribute("newCurrentVisit", newVisit);
+		model.addAttribute("sourceForm", EmrUtils.getVisitSourceForm(visit));
+		model.addAttribute("allowVoid", Context.hasPrivilege(PrivilegeConstants.DELETE_VISITS));
 	}
 }

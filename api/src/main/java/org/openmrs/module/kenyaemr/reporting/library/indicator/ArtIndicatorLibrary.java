@@ -43,7 +43,7 @@ public class ArtIndicatorLibrary {
 	 * @return the indicator
 	 */
 	public CohortIndicator enrolledExcludingTransfers() {
-		return commonIndicators.enrolledExcludingTransfers(MetadataUtils.getProgram(Metadata.HIV_PROGRAM));
+		return commonIndicators.enrolledExcludingTransfers(MetadataUtils.getProgram(Metadata.Program.HIV));
 	}
 
 	/**
@@ -51,7 +51,7 @@ public class ArtIndicatorLibrary {
 	 * @return the indicator
 	 */
 	public CohortIndicator enrolledCumulative() {
-		return commonIndicators.enrolledCumulative(MetadataUtils.getProgram(Metadata.HIV_PROGRAM));
+		return commonIndicators.enrolledCumulative(MetadataUtils.getProgram(Metadata.Program.HIV));
 	}
 
 	/**

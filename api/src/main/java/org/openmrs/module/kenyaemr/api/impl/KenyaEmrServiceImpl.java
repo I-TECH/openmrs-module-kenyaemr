@@ -75,8 +75,8 @@ public class KenyaEmrServiceImpl extends BaseOpenmrsService implements KenyaEmrS
 		}
 
 		boolean defaultLocationConfigured = getDefaultLocation() != null;
-		boolean mrnConfigured = identifierManager.getIdentifierSource(MetadataUtils.getPatientIdentifierType(Metadata.OPENMRS_ID_IDENTIFIER_TYPE)) != null;
-		boolean upnConfigured = identifierManager.getIdentifierSource(MetadataUtils.getPatientIdentifierType(Metadata.UNIQUE_PATIENT_NUMBER_IDENTIFIER_TYPE)) != null;
+		boolean mrnConfigured = identifierManager.getIdentifierSource(MetadataUtils.getPatientIdentifierType(Metadata.PatientIdentifierType.OPENMRS_ID)) != null;
+		boolean upnConfigured = identifierManager.getIdentifierSource(MetadataUtils.getPatientIdentifierType(Metadata.PatientIdentifierType.UNIQUE_PATIENT_NUMBER)) != null;
 
 		setupRequired = !(defaultLocationConfigured && mrnConfigured && upnConfigured);
 		return setupRequired;
@@ -118,7 +118,7 @@ public class KenyaEmrServiceImpl extends BaseOpenmrsService implements KenyaEmrS
 		try {
 			Context.addProxyPrivilege(PrivilegeConstants.VIEW_LOCATION_ATTRIBUTE_TYPES);
 
-			LocationAttributeType mflCodeAttrType = MetadataUtils.getLocationAttributeType(Metadata.MASTER_FACILITY_CODE_LOCATION_ATTRIBUTE_TYPE);
+			LocationAttributeType mflCodeAttrType = MetadataUtils.getLocationAttributeType(Metadata.LocationAttributeType.MASTER_FACILITY_CODE);
 			Location location = getDefaultLocation();
 			if (location != null) {
 				List<LocationAttribute> list = location.getActiveAttributes(mflCodeAttrType);
@@ -136,7 +136,7 @@ public class KenyaEmrServiceImpl extends BaseOpenmrsService implements KenyaEmrS
 	 */
 	@Override
 	public Location getLocationByMflCode(String mflCode) {
-		LocationAttributeType mflCodeAttrType = MetadataUtils.getLocationAttributeType(Metadata.MASTER_FACILITY_CODE_LOCATION_ATTRIBUTE_TYPE);
+		LocationAttributeType mflCodeAttrType = MetadataUtils.getLocationAttributeType(Metadata.LocationAttributeType.MASTER_FACILITY_CODE);
 		Map<LocationAttributeType, Object> attrVals = new HashMap<LocationAttributeType, Object>();
 		attrVals.put(mflCodeAttrType, mflCode);
 
@@ -154,7 +154,7 @@ public class KenyaEmrServiceImpl extends BaseOpenmrsService implements KenyaEmrS
 			comment = "KenyaEMR Service";
 		}
 
-		PatientIdentifierType upnType = MetadataUtils.getPatientIdentifierType(Metadata.UNIQUE_PATIENT_NUMBER_IDENTIFIER_TYPE);
+		PatientIdentifierType upnType = MetadataUtils.getPatientIdentifierType(Metadata.PatientIdentifierType.UNIQUE_PATIENT_NUMBER);
 		IdentifierSource source = identifierManager.getIdentifierSource(upnType);
 
 		String prefix = Context.getService(KenyaEmrService.class).getDefaultLocationMflCode();
@@ -181,7 +181,7 @@ public class KenyaEmrServiceImpl extends BaseOpenmrsService implements KenyaEmrS
 	 */
 	@Override
 	public void setupMrnIdentifierSource(String startFrom) {
-		PatientIdentifierType idType = MetadataUtils.getPatientIdentifierType(Metadata.OPENMRS_ID_IDENTIFIER_TYPE);
+		PatientIdentifierType idType = MetadataUtils.getPatientIdentifierType(Metadata.PatientIdentifierType.OPENMRS_ID);
 		setupIdentifierSource(idType, startFrom, OPENMRS_MEDICAL_RECORD_NUMBER_NAME, null, "M");
 	}
 
@@ -190,7 +190,7 @@ public class KenyaEmrServiceImpl extends BaseOpenmrsService implements KenyaEmrS
 	 */
 	@Override
 	public void setupHivUniqueIdentifierSource(String startFrom) {
-		PatientIdentifierType idType = MetadataUtils.getPatientIdentifierType(Metadata.UNIQUE_PATIENT_NUMBER_IDENTIFIER_TYPE);
+		PatientIdentifierType idType = MetadataUtils.getPatientIdentifierType(Metadata.PatientIdentifierType.UNIQUE_PATIENT_NUMBER);
 		setupIdentifierSource(idType, startFrom, HIV_UNIQUE_PATIENT_NUMBER_NAME, "0123456789", null);
 	}
 

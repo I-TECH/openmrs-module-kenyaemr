@@ -163,7 +163,7 @@ public class KenyaEmrServiceImplTest extends BaseModuleContextSensitiveTest {
 	@Test
 	public void getVisitsByPatientAndDay_shouldGetVisitsOnDayWithPatient() {
 		Patient patient = Context.getPatientService().getPatient(7);
-		VisitType outpatientType = MetadataUtils.getVisitType(Metadata.OUTPATIENT_VISIT_TYPE);
+		VisitType outpatientType = MetadataUtils.getVisitType(Metadata.VisitType.OUTPATIENT);
 
 		// Save visit from 10-11am and another from 12 onwards (no end)
 		Visit visit1 = TestUtils.saveVisit(patient, outpatientType, TestUtils.date(2012, 1, 1, 10, 0, 0), TestUtils.date(2012, 1, 1, 11, 0, 0));
@@ -190,7 +190,7 @@ public class KenyaEmrServiceImplTest extends BaseModuleContextSensitiveTest {
 	 */
 	@Test
 	public void getLocations_shouldGetAllLocationsWithMatchingArguments() {
-		LocationAttributeType mflCodeAttrType = MetadataUtils.getLocationAttributeType(Metadata.MASTER_FACILITY_CODE_LOCATION_ATTRIBUTE_TYPE);
+		LocationAttributeType mflCodeAttrType = MetadataUtils.getLocationAttributeType(Metadata.LocationAttributeType.MASTER_FACILITY_CODE);
 
 		// Search for location #1 by MFL code and don't include retired
 		Map<LocationAttributeType, Object> attrValues = new HashMap<LocationAttributeType, Object>();
@@ -218,7 +218,7 @@ public class KenyaEmrServiceImplTest extends BaseModuleContextSensitiveTest {
 	 */
 	@Test
 	public void getLocations_shouldGetAllLocationsWithAllGivenAttributeValues() {
-		LocationAttributeType mflCodeAttrType = MetadataUtils.getLocationAttributeType(Metadata.MASTER_FACILITY_CODE_LOCATION_ATTRIBUTE_TYPE);
+		LocationAttributeType mflCodeAttrType = MetadataUtils.getLocationAttributeType(Metadata.LocationAttributeType.MASTER_FACILITY_CODE);
 
 		// Save new phone number attribute type
 		LocationAttributeType phoneAttrType = new LocationAttributeType();
@@ -258,7 +258,7 @@ public class KenyaEmrServiceImplTest extends BaseModuleContextSensitiveTest {
 	 */
 	@Test
 	public void getLocations_shouldNotFindAnyLocationsIfNoneHaveGivenAttributeValues() {
-		LocationAttributeType mflCodeAttrType = MetadataUtils.getLocationAttributeType(Metadata.MASTER_FACILITY_CODE_LOCATION_ATTRIBUTE_TYPE);
+		LocationAttributeType mflCodeAttrType = MetadataUtils.getLocationAttributeType(Metadata.LocationAttributeType.MASTER_FACILITY_CODE);
 		Map<LocationAttributeType, Object> attrValues = new HashMap<LocationAttributeType, Object>();
 		attrValues.put(mflCodeAttrType, "xxxxxx");
 		List<Location> locations = service.getLocations(null, null, attrValues, true, null, null);

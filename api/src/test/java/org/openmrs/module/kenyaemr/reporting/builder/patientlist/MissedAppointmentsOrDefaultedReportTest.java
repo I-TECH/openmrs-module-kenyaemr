@@ -47,7 +47,7 @@ public class MissedAppointmentsOrDefaultedReportTest extends BaseModuleContextSe
 
 	@Test
 	public void testReport() throws Exception {
-		Program hivProgram = MetadataUtils.getProgram(Metadata.HIV_PROGRAM);
+		Program hivProgram = MetadataUtils.getProgram(Metadata.Program.HIV);
 
 		// Enroll patients #6 and #7 in the HIV Program
 		PatientService ps = Context.getPatientService();

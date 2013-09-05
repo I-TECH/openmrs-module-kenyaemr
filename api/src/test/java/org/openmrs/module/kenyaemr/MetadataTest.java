@@ -14,16 +14,19 @@
 
 package org.openmrs.module.kenyaemr;
 
+import org.junit.Assert;
 import org.junit.Test;
-import org.openmrs.module.kenyaemr.Metadata;
 
 /**
- * Tests for {@link org.openmrs.module.kenyaemr.Dictionary}
+ * Tests for {@link Metadata}
  */
 public class MetadataTest {
 
 	@Test
 	public void integration() {
 		new Metadata();
+
+		// Check access to nested class constant
+		Assert.assertNotNull(Metadata.VisitAttributeType.SOURCE_FORM);
 	}
 }

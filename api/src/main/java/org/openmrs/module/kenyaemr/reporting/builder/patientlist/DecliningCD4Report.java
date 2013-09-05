@@ -92,7 +92,5 @@ public class DecliningCD4Report extends BasePatientCalculationReportBuilder {
 				return ((Obs) input).getValueNumeric();
 			}
 		});
-
-		addViewColumn(dsd);
 	}
 }

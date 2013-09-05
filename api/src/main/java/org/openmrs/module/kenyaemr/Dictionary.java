@@ -19,6 +19,9 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.util.EmrUtils;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Dictionary for concepts used by KenyaEMR
  */
@@ -33,10 +36,24 @@ public class Dictionary {
 	 * Gets a concept by an identifier (mapping or UUID)
 	 * @param identifier the identifier
 	 * @return the concept
-	 * @throws IllegalArgumentException if no concept could be found
+	 * @throws IllegalArgumentException if the concept could not be found
 	 */
 	public static Concept getConcept(String identifier) {
 		return MetadataUtils.getConcept(identifier);
+	}
+
+	/**
+	 * Convenience method to fetch a list of concepts
+	 * @param identifiers the concept identifiers
+	 * @return the concepts
+	 * @throws IllegalArgumentException if a concept could not be found
+	 */
+	public static List<Concept> getConcepts(String... identifiers) {
+		List<Concept> concepts = new ArrayList<Concept>();
+		for (String identifier : identifiers) {
+			concepts.add(getConcept(identifier));
+		}
+		return concepts;
 	}
 
 	// Concept identifiers (A-Z)
@@ -55,6 +72,7 @@ public class Dictionary {
 	public static final String DAPSONE = "74250AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 	public static final String DATE_OF_HIV_DIAGNOSIS = "160554AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 	public static final String DIED = "160034AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+	public static final String DISEASE_DIAGNOSED = "1661AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 	public static final String DISEASE_SUSPECTED = "142177AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 	public static final String DIVORCED = "1058AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 	public static final String EDUCATION = "1712AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
@@ -73,8 +91,10 @@ public class Dictionary {
 	public static final String NEGATIVE = "664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 	public static final String NEVER_MARRIED = "1057AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 	public static final String NO = "1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+	public static final String NO_SIGNS_OR_SYMPTOMS_OF_DISEASE = "1660AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 	public static final String NONE = "1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 	public static final String NOT_APPLICABLE = "1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+	public static final String NOT_ASSESSED = "160737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 	public static final String OCCUPATION = "1542AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 	public static final String OTHER_NON_CODED = "5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 	public static final String PARITY = "1053AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";

@@ -14,40 +14,40 @@
 
 package org.openmrs.module.kenyaemr.datatype;
 
-import org.apache.commons.lang.StringUtils;
-import org.openmrs.Location;
+import org.apache.commons.lang3.StringUtils;
+import org.openmrs.Form;
 import org.openmrs.api.context.Context;
 import org.openmrs.customdatatype.SerializingCustomDatatype;
 import org.springframework.stereotype.Component;
 
 /**
- * Custom datatype for {@link org.openmrs.Location}.
- * (This should be moved to the OpenMRS core.)  
+ * Custom datatype for {@link org.openmrs.Form}.
+ * (This should be moved to the OpenMRS core.)
  */
 @Component
-public class LocationDatatype extends SerializingCustomDatatype<Location> {
-	
+public class FormDatatype extends SerializingCustomDatatype<Form> {
+
 	/**
-	 * @see org.openmrs.customdatatype.SerializingCustomDatatype#deserialize(java.lang.String)
+	 * @see org.openmrs.customdatatype.SerializingCustomDatatype#deserialize(String)
 	 */
 	@Override
-	public Location deserialize(String serializedValue) {
+	public Form deserialize(String serializedValue) {
 		if (StringUtils.isEmpty(serializedValue)) {
 			return null;
 		}
 
-		return Context.getLocationService().getLocation(Integer.valueOf(serializedValue));
+		return Context.getFormService().getForm(Integer.valueOf(serializedValue));
 	}
-	
+
 	/**
-	 * @see org.openmrs.customdatatype.SerializingCustomDatatype#serialize(java.lang.Object)
+	 * @see org.openmrs.customdatatype.SerializingCustomDatatype#serialize(Object)
 	 */
 	@Override
-	public String serialize(Location typedValue) {
+	public String serialize(Form typedValue) {
 		if (typedValue == null) {
 			return null;
 		}
 
-		return typedValue.getLocationId().toString();
+		return typedValue.getFormId().toString();
 	}
 }

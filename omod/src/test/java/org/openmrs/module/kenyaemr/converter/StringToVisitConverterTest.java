@@ -53,7 +53,7 @@ public class StringToVisitConverterTest extends BaseModuleWebContextSensitiveTes
 
 		// Check actual visit
 		Patient patient = Context.getPatientService().getPatient(7);
-		VisitType outpatientType = MetadataUtils.getVisitType(Metadata.OUTPATIENT_VISIT_TYPE);
+		VisitType outpatientType = MetadataUtils.getVisitType(Metadata.VisitType.OUTPATIENT);
 		Visit visit = TestUtils.saveVisit(patient, outpatientType, TestUtils.date(2012, 1, 1), null);
 
 		Assert.assertEquals(visit, converter.convert(visit.getVisitId().toString()));

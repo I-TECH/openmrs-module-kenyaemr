@@ -60,7 +60,7 @@ public class ArtCohortLibrary {
 	 * @return the cohort definition
 	 */
 	public CohortDefinition referredFrom(Concept... entryPoints) {
-		EncounterType hivEnrollEncType = MetadataUtils.getEncounterType(Metadata.HIV_ENROLLMENT_ENCOUNTER_TYPE);
+		EncounterType hivEnrollEncType = MetadataUtils.getEncounterType(Metadata.EncounterType.HIV_ENROLLMENT);
 		Concept methodOfEnrollment = Dictionary.getConcept(Dictionary.METHOD_OF_ENROLLMENT);
 
 		CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
@@ -81,7 +81,7 @@ public class ArtCohortLibrary {
 	 * @return the cohort definition
 	 */
 	public CohortDefinition referredNotFrom(Concept... entryPoints) {
-		EncounterType hivEnrollEncType = MetadataUtils.getEncounterType(Metadata.HIV_ENROLLMENT_ENCOUNTER_TYPE);
+		EncounterType hivEnrollEncType = MetadataUtils.getEncounterType(Metadata.EncounterType.HIV_ENROLLMENT);
 		Concept methodOfEnrollment = Dictionary.getConcept(Dictionary.METHOD_OF_ENROLLMENT);
 
 		CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
@@ -101,7 +101,7 @@ public class ArtCohortLibrary {
 	 * @return the cohort definition
 	 */
 	public CohortDefinition enrolled() {
-		return commonCohorts.enrolled(MetadataUtils.getProgram(Metadata.HIV_PROGRAM));
+		return commonCohorts.enrolled(MetadataUtils.getProgram(Metadata.Program.HIV));
 	}
 
 	/**
@@ -109,7 +109,7 @@ public class ArtCohortLibrary {
 	 * @return the cohort definition
 	 */
 	public CohortDefinition enrolledExcludingTransfers() {
-		return commonCohorts.enrolledExcludingTransfers(MetadataUtils.getProgram(Metadata.HIV_PROGRAM));
+		return commonCohorts.enrolledExcludingTransfers(MetadataUtils.getProgram(Metadata.Program.HIV));
 	}
 
 	/**
@@ -332,7 +332,7 @@ public class ArtCohortLibrary {
 	 * @return
 	 */
 	public CohortDefinition inHivProgramAndOnMedication(Concept... concepts) {
-		Program hivProgram = MetadataUtils.getProgram(Metadata.HIV_PROGRAM);
+		Program hivProgram = MetadataUtils.getProgram(Metadata.Program.HIV);
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.setName("in HIV program and on medication between dates");
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));

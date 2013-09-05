@@ -45,7 +45,7 @@ public class EmrExternalUrlInterceptor extends HandlerInterceptorAdapter {
 		}
 
 		// Allow any request to the URL override controller (handles index.htm, login.htm and forgotPassword.form)
-		if (handler instanceof EmrURLOverrideController) {
+		if (handler instanceof EmrOpenmrsUrlOverrideController) {
 			return true;
 		}
 

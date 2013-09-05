@@ -16,9 +16,11 @@ package org.openmrs.module.kenyaemr.reporting.library.cohort;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.Concept;
 import org.openmrs.EncounterType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
+import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.test.ReportingTestUtils;
 import org.openmrs.module.kenyacore.test.TestUtils;
@@ -49,19 +51,24 @@ public class TbCohortLibraryTest extends BaseModuleContextSensitiveTest {
 	public void setup() throws Exception {
 		executeDataSet("test-data.xml");
 
-		EncounterType tbScreeningEncType = MetadataUtils.getEncounterType(Metadata.TB_SCREENING_ENCOUNTER_TYPE);
+		Concept tbDiseaseStatus = Dictionary.getConcept(Dictionary.TUBERCULOSIS_DISEASE_STATUS);
+		Concept diseaseSuspected = Dictionary.getConcept(Dictionary.DISEASE_SUSPECTED);
+		Concept notAssessed = Dictionary.getConcept(Dictionary.NOT_ASSESSED);
 
 		// Screen patient #2 on May 31st
-		TestUtils.saveEncounter(Context.getPatientService().getPatient(2), tbScreeningEncType, TestUtils.date(2012, 5, 31));
+		TestUtils.saveObs(TestUtils.getPatient(2), tbDiseaseStatus, diseaseSuspected, TestUtils.date(2012, 5, 31));
 
 		// Screen patient #6 on June 1st
-		TestUtils.saveEncounter(Context.getPatientService().getPatient(6), tbScreeningEncType, TestUtils.date(2012, 6, 1));
+		TestUtils.saveObs(TestUtils.getPatient(6), tbDiseaseStatus, diseaseSuspected, TestUtils.date(2012, 6, 1));
 
 		// Screen patient #7 on June 30th
-		TestUtils.saveEncounter(Context.getPatientService().getPatient(7), tbScreeningEncType, TestUtils.date(2012, 6, 30));
+		TestUtils.saveObs(TestUtils.getPatient(7), tbDiseaseStatus, diseaseSuspected, TestUtils.date(2012, 6, 30));
 
-		// Screen patient #8 on July 1st
-		TestUtils.saveEncounter(Context.getPatientService().getPatient(8), tbScreeningEncType, TestUtils.date(2012, 7, 1));
+		// Record not-screening patient #8 on June 30th
+		TestUtils.saveObs(TestUtils.getPatient(7), tbDiseaseStatus, notAssessed, TestUtils.date(2012, 6, 30));
+
+		// Record screening patient #8 on July 1st
+		TestUtils.saveObs(TestUtils.getPatient(8), tbDiseaseStatus, diseaseSuspected, TestUtils.date(2012, 7, 1));
 
 		List<Integer> cohort = Arrays.asList(2, 6, 7, 8, 999);
 		context = ReportingTestUtils.reportingContext(cohort, TestUtils.date(2012, 6, 1), TestUtils.date(2012, 6, 30));

@@ -61,8 +61,8 @@ public class HivCareVisitsIndicatorEvaluator implements IndicatorEvaluator {
 		HivCareVisitsIndicator visitIndicator = (HivCareVisitsIndicator) indicator;
 
 		List<Form> hivCareForms = Arrays.asList(
-			MetadataUtils.getForm(Metadata.CLINICAL_ENCOUNTER_HIV_ADDENDUM_FORM),
-			MetadataUtils.getForm(Metadata.MOH_257_VISIT_SUMMARY_FORM)
+			MetadataUtils.getForm(Metadata.Form.CLINICAL_ENCOUNTER_HIV_ADDENDUM),
+			MetadataUtils.getForm(Metadata.Form.MOH_257_VISIT_SUMMARY)
 		);
 
 		Date fromDate = visitIndicator.getStartDate();

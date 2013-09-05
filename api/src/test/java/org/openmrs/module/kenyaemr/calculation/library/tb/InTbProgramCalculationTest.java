@@ -49,7 +49,7 @@ public class InTbProgramCalculationTest extends BaseModuleContextSensitiveTest {
 	@Test
 	public void evaluate() throws Exception {
 
-		Program tbProgram = MetadataUtils.getProgram(Metadata.TB_PROGRAM);
+		Program tbProgram = MetadataUtils.getProgram(Metadata.Program.TB);
 
 		// Enroll patient #6
 		PatientService ps = Context.getPatientService();
