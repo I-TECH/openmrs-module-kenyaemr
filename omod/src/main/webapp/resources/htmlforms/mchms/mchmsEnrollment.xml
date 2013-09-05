@@ -89,9 +89,11 @@
 
 		beforeSubmit.push(function() {
 			var gravida = getValue('gravida.value');
-			var parity = getValue('parity.value');
+			var parityTerm = getValue('parity-term.value');
+			var parityAbortion = getValue('parity-abortion.value');
+			var parity = parseInt(parityTerm, 10) + parseInt(parityAbortion, 10);
 			if (parity &gt; gravida) {
-				getField('parity.error').html('Parity should be less or equal to Gravida.').show();
+				getField('parity-abortion.error').html('Parity (x+y) should be less or equal to Gravida.').show();
 		  		return false;
 			}
 			return true;
@@ -150,7 +152,7 @@
 								Parity:
 							</td>
 							<td>
-								<obs conceptId="1053AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true" id="parity"/>
+								<obs conceptId="160080AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true" id="parity-term"/> + <obs conceptId="1823AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true" id="parity-abortion"/>
 							</td>
 						</tr>
 						<tr>
