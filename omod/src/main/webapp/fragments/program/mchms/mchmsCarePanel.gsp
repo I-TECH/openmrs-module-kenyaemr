@@ -4,8 +4,9 @@
 	def dataPoints = []
 
 	dataPoints << [label: "Gestation", value: calculations.gestation]
-	dataPoints << [label: "On PMTCT", value: calculations.onPmtct]
-	dataPoints << [label: "On ARV", value: calculations.onArv]
+	dataPoints << [label: "HIV Status", value: calculations.hivStatus]
+	dataPoints << [label: "On Prophylaxis", value: calculations.onProhylaxis]
+	dataPoints << [label: "On HAART", value: calculations.onHaart]
 
 %>
 

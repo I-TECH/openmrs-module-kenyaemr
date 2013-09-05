@@ -61,9 +61,7 @@
 					<legend>Reason for Discontinuation</legend>
 					<table align="center" width="100%" class="tb1">
 						<tr>
-							<td width="250">
-								Reason:
-							</td>
+							<td width="250">Reason:</td>
 							<td>
 								<obs conceptId="161555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 									 answerConceptIds="160035AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159492AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5240AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160034AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
