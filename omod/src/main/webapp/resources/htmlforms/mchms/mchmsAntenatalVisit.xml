@@ -68,7 +68,7 @@
 					display = bmi.toFixed(2);
 				}
 			}
-			$j('#calculated-bmi').html(display);
+			jq('#calculated-bmi').html(display);
 		}
 
 		jq(function() {
