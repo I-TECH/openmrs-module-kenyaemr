@@ -30,6 +30,63 @@
 		}
 	</style>
 
+<script type="text/javascript">
+
+	var ARV_CONCEPT_ID = 1148;
+	var HAART_CONCEPT_ID = 1149;
+	var NA_CONCEPT_ID = 1175;
+
+	beforeSubmit.push(function() {
+		var fundalHeight = getValue('fundal.value');
+		if (fundalHeight &lt; 0 || fundalHeight &gt; 40) {
+			getField('fundal.error').html('Fundal Height should be between 0 and 40.').show();
+			return false;
+		}
+		return true;
+	});
+
+	function onArvStatusChange() {
+		<!--alert(getValue('arv-status.value'));-->
+		if (getValue('arv-status.value') == ARV_CONCEPT_ID) {
+			jq('#arv-medication').hide();
+			<!--alert("hidden");-->
+		} else if (getValue('arv-status.value') == HAART_CONCEPT_ID) {
+			jq('#arv-medication').show();
+			<!--alert("shown");-->
+		} else {
+			jq('#arv-medication').hide();
+			<!--alert("hidden");-->
+		}
+	}
+
+	function onWeightOrHeightChange() {
+		var display = '';
+		var weightKg = parseFloat(getValue('weight.value'));
+		var heightM = parseFloat(getValue('height.value')) / 100;
+		if (!isNaN(weightKg) &amp;&amp; !isNaN(heightM))  {
+			var bmi = weightKg / (heightM * heightM);
+			if (isNaN(bmi) || bmi &lt; 10 || bmi &gt; 50) {
+				display = 'Abnormal value. Were height and height entered correctly?';
+			}
+			else {
+				display = bmi.toFixed(2);
+			}
+		}
+		$j('#calculated-bmi').html(display);
+	}
+
+	jq(function() {
+		jq('#arv-status input').click(onArvStatusChange);
+		onArvStatusChange();
+		getField('arv-status.value').change(onArvStatusChange);
+
+		getField('weight.value').change(onWeightOrHeightChange);
+		getField('height.value').change(onWeightOrHeightChange);
+		onWeightOrHeightChange();
+	});
+
+</script>
+
 	<div class="ke-form-header">
 		<table style="width: 100%">
 			<tr>
@@ -98,20 +155,18 @@
 									<tr>
 										<td>Weight</td>
 										<td>
-											<obs conceptId="5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+											<obs conceptId="5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="weight"/>
 										</td>
 									</tr>
 									<tr>
 										<td>Height</td>
 										<td>
-											<obs conceptId="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+											<obs conceptId="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="height"/>
 										</td>
 									</tr>
 									<tr>
 										<td>BMI</td>
-										<td>
-											TODO
-										</td>
+										<td><span id="calculated-bmi" class="value"></span></td>
 									</tr>
 									<tr>
 										<td>MUAC</td>
