@@ -31,6 +31,11 @@
 	</style>
 
 	<script type="text/javascript">
+
+		var ARV_CONCEPT_ID = 1148;
+		var HAART_CONCEPT_ID = 1149;
+		var NA_CONCEPT_ID = 1175;
+
 		beforeSubmit.push(function() {
 			var fundalHeight = getValue('fundal.value');
 			if (fundalHeight &lt; 0 || fundalHeight &gt; 40) {
@@ -39,6 +44,27 @@
 			}
 			return true;
 		});
+
+		function onArvStatusChange() {
+			<!--alert(getValue('arv-status.value'));-->
+			if (getValue('arv-status.value') == ARV_CONCEPT_ID) {
+				jq('#arv-medication').hide();
+				<!--alert("hidden");-->
+			} else if (getValue('arv-status.value') == HAART_CONCEPT_ID) {
+				jq('#arv-medication').show();
+				<!--alert("shown");-->
+			} else {
+				jq('#arv-medication').hide();
+				<!--alert("hidden");-->
+			}
+		}
+
+		jq(function() {
+			jq('#arv-status input').click(onArvStatusChange);
+			onArvStatusChange();
+			getField('arv-status.value').change(onArvStatusChange);
+		});
+
 	</script>
 
 	<div class="ke-form-header">
@@ -274,11 +300,74 @@
 			</tr>
 			<tr>
 				<td>
+					<fieldset>
+						<legend>ARV Medication</legend>
+					<table  align="center" width="100%" class="tb1">
+						<tr>
+							<!--<table>-->
+								<!--<tr><td>one</td><td>two</td></tr>-->
+								<!--<tr><td>three</td><td>four</td></tr>-->
+							<!--</table>-->
+							<td>Mother On:</td>
+							<td colspan="5">
+								<obs conceptId="5587AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									 id="arv-status"
+									 style="radio"
+									 answerConceptIds="1148AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1149AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									 answerLabels="ARV Prophylaxis,HAART,NA"/>
+							</td>
+						</tr>
+						<div id="arv-medication">
+							<tr>
+								<td style="background-color: #B3C2F0; color: #000000;">Drug</td>
+								<td style="background-color: #B3C2F0; color: #000000;">Dose</td>
+								<td style="background-color: #B3C2F0; color: #000000;">Dose Units</td>
+								<td style="background-color: #B3C2F0; color: #000000;">Frequency</td>
+								<td style="background-color: #B3C2F0; color: #000000;">Duration</td>
+								<td style="background-color: #B3C2F0; color: #000000;">Duration Units</td>
+							</tr>
+							<repeat>
+								<template>
+									<obsgroup groupingConceptId="1442AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+										<tr>
+											<td>
+												<obs conceptId="966AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+													 answerConceptIds="70056AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,71647AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,74807AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,75523AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,75628AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,77995AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,78643AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,79040AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,80487AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,80586AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,83412AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,84309AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,84795AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,86663AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+											</td>
+											<td><obs conceptId="1443AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+											<td><obs conceptId="1444AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="5" /></td>
+											<td>
+												<obs
+														conceptId="160855AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+														answerConceptIds="160862AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160863AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160864AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160865AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160858AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160866AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160870AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+														answerLabels="Once daily,Once daily at bedtime,Once daily in the evening,Once daily in the morning,Twice daily,Thrice daily,Four times daily"
+														/>
+											</td>
+											<td><obs conceptId="159368AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+											<td>
+												<obs conceptId="1732AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+													 answerConceptIds="1822AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1072AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1073AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1074AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+													 answerLabels="Hours,Days,Weeks,Months" />
+											</td>
+										</tr>
+									</obsgroup>
+								</template>
+								<render n="1" concept="Drug"/>
+								<render n="2" concept="Drug"/>
+								<render n="3" concept="Drug"/>
+							</repeat>
+						</div>
+					</table>
+					</fieldset>
+				</td>
+			</tr>
+			<tr>
+				<td>
 					<legend>Clinical Notes</legend>
 					<table align="center" width="100%" class="tb1">
 						<tr>
 							<td>
-								<obs conceptId="159395AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="10" cols="85"
+								<obs conceptId="159395AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="10" cols="90"
 									 style="textarea"/>
 							</td>
 						</tr>
