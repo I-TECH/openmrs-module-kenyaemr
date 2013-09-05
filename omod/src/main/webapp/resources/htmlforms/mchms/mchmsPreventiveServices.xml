@@ -108,22 +108,11 @@
 			</tr>
 			<tr>
 				<td>
-					<legend>HIV</legend>
+					<legend>ARV Medication</legend>
 					<table align="center" width="100%" class="tb1">
 						<tr>
-							<td width="250">
-								Mother on ARV Prophylaxis:
-							</td>
 							<td>
-								Missing Concept
-							</td>
-						</tr>
-						<tr>
-							<td>
-								Mother on HAART (ARV):
-							</td>
-							<td>
-								Missing Concept
+								Refer to the MCH Antenatal Visit form
 							</td>
 						</tr>
 					</table>
