@@ -16,6 +16,7 @@ package org.openmrs.module.kenyaemr.fragment.controller.program.mchms;
 
 import org.joda.time.DateTime;
 import org.joda.time.Weeks;
+import org.openmrs.Concept;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
 import org.openmrs.Obs;
@@ -44,16 +45,44 @@ public class MchmsCarePanelFragmentController {
 
 		EncounterService encounterService = Context.getEncounterService();
 		EncounterType encounterType = encounterService.getEncounterTypeByUuid(Metadata.EncounterType.MCHMS_ENROLLMENT);
-		Encounter lastMchEncounter = EmrUtils.lastEncounter(patient, encounterType);
-		Obs lmpObs = EmrUtils.firstObsInEncounter(lastMchEncounter, Dictionary.getConcept(Dictionary.LAST_MONTHLY_PERIOD));
+		Encounter lastMchEnrollment = EmrUtils.lastEncounter(patient, encounterType);
+		Obs lmpObs = EmrUtils.firstObsInEncounter(lastMchEnrollment, Dictionary.getConcept(Dictionary.LAST_MONTHLY_PERIOD));
 		if (lmpObs != null) {
 			Weeks weeks = Weeks.weeksBetween(new DateTime(lmpObs.getValueDate()), new DateTime(new Date()));
 			calculations.put("gestation", weeks.getWeeks());
 		}
 
-		calculations.put("onPmtct", "TODO");
-		calculations.put("onArv", "TODO");
+		Obs hivStatusObs = EmrUtils.firstObsInEncounter(lastMchEnrollment, Dictionary.getConcept(Dictionary.HIV_STATUS));
+		if (hivStatusObs != null) {
+			calculations.put("hivStatus", hivStatusObs.getValueCoded());
+		} else {
+			calculations.put("hivStatus", "Not Specified");
+		}
 
+		encounterType = encounterService.getEncounterTypeByUuid(Metadata.EncounterType.MCHMS_CONSULTATION);
+		Encounter lastMchConsultation = EmrUtils.lastEncounter(patient, encounterType);
+		if (lastMchConsultation != null) {
+			Obs arvUseObs = EmrUtils.firstObsInEncounter(lastMchConsultation, Dictionary.getConcept(Dictionary.ANTIRETROVIRAL_USE_IN_PREGNANCY));
+			if (arvUseObs != null) {
+				Concept concept = arvUseObs.getValueCoded();
+				if (concept.getUuid().equals(Dictionary.MOTHER_ON_PROPHYLAXIS)) {
+					calculations.put("onProhylaxis", "Yes");
+					calculations.put("onHaart", "No");
+				} else if (concept.getUuid().equals(Dictionary.MOTHER_ON_HAART)) {
+					calculations.put("onProhylaxis", "No");
+					calculations.put("onHaart", "Yes");
+				} else {
+					calculations.put("onProhylaxis", "No");
+					calculations.put("onHaart", "No");
+				}
+			} else {
+				calculations.put("onProhylaxis", "Not specified");
+				calculations.put("onHaart", "Not specified");
+			}
+		} else {
+			calculations.put("onProhylaxis", "Not specified");
+			calculations.put("onHaart", "Not specified");
+		}
 		model.addAttribute("calculations", calculations);
 	}
 }

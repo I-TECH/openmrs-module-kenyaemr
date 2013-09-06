@@ -30,6 +30,59 @@
 		}
 	</style>
 
+<script type="text/javascript">
+
+	var ARV_CONCEPT_ID = 1148;
+	var HAART_CONCEPT_ID = 1149;
+	var NA_CONCEPT_ID = 1175;
+
+	beforeSubmit.push(function() {
+		var fundalHeight = getValue('fundal.value');
+		if (fundalHeight &lt; 0 || fundalHeight &gt; 40) {
+			getField('fundal.error').html('Fundal Height should be between 0 and 40.').show();
+			return false;
+		}
+		return true;
+	});
+
+	function onArvStatusChange() {
+		if (getValue('arv-status.value') == ARV_CONCEPT_ID) {
+			jq('#arv-medication').hide();
+		} else if (getValue('arv-status.value') == HAART_CONCEPT_ID) {
+			jq('#arv-medication').show();
+		} else {
+			jq('#arv-medication').hide();
+		}
+	}
+
+	function onWeightOrHeightChange() {
+		var display = '';
+		var weightKg = parseFloat(getValue('weight.value'));
+		var heightM = parseFloat(getValue('height.value')) / 100;
+		if (!isNaN(weightKg) &amp;&amp; !isNaN(heightM))  {
+			var bmi = weightKg / (heightM * heightM);
+			if (isNaN(bmi) || bmi &lt; 10 || bmi &gt; 50) {
+				display = 'Abnormal value. Were height and height entered correctly?';
+			}
+			else {
+				display = bmi.toFixed(2);
+			}
+		}
+		jq('#calculated-bmi').html(display);
+	}
+
+	jq(function() {
+		jq('#arv-status input').click(onArvStatusChange);
+		onArvStatusChange();
+		getField('arv-status.value').change(onArvStatusChange);
+
+		getField('weight.value').change(onWeightOrHeightChange);
+		getField('height.value').change(onWeightOrHeightChange);
+		onWeightOrHeightChange();
+	});
+
+</script>
+
 	<div class="ke-form-header">
 		<table style="width: 100%">
 			<tr>
@@ -64,25 +117,19 @@
 							<td>
 								<table>
 									<tr>
-										<td width="250">
-											Temperature
-										</td>
+										<td width="250">Temperature</td>
 										<td>
 											<obs conceptId="5088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 										</td>
 									</tr>
 									<tr>
-										<td>
-											Pulse Rate
-										</td>
+										<td>Pulse Rate</td>
 										<td>
 											<obs conceptId="5087AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 										</td>
 									</tr>
 									<tr>
-										<td>
-											B.P.
-										</td>
+										<td>B.P.</td>
 										<td>
 											<obs conceptId="5085AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 											/
@@ -90,49 +137,35 @@
 										</td>
 									</tr>
 									<tr>
-										<td>
-											Respiratory Rate
-										</td>
+										<td>Respiratory Rate</td>
 										<td>
 											<obs conceptId="5242AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 										</td>
 									</tr>
 									<tr>
-										<td>
-											Oxygen Saturation
-										</td>
+										<td>Oxygen Saturation</td>
 										<td>
 											<obs conceptId="5092AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 										</td>
 									</tr>
 									<tr>
+										<td>Weight</td>
 										<td>
-											Weight
-										</td>
-										<td>
-											<obs conceptId="5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+											<obs conceptId="5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="weight"/>
 										</td>
 									</tr>
 									<tr>
+										<td>Height</td>
 										<td>
-											Height
-										</td>
-										<td>
-											<obs conceptId="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+											<obs conceptId="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="height"/>
 										</td>
 									</tr>
 									<tr>
-										<td>
-											BMI
-										</td>
-										<td>
-											TODO
-										</td>
+										<td>BMI</td>
+										<td><span id="calculated-bmi" class="value"></span></td>
 									</tr>
 									<tr>
-										<td>
-											MUAC
-										</td>
+										<td>MUAC</td>
 										<td>
 											<obs conceptId="1343AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 										</td>
@@ -188,81 +221,43 @@
 								<legend>Other Observations</legend>
 								<table align="center" width="100%" class="tb1">
 									<tr>
-										<td width="250">
-											General Condition:
-										</td>
+										<td width="200">General Condition:</td>
 										<td>
 											Missing Concept
 										</td>
 									</tr>
 									<tr>
+										<td>Breast</td>
 										<td>
-											Breast
+											<obs conceptId="159780AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"></obs>
 										</td>
+									</tr>
+									<tr>
+										<td>C/S Scar</td>
 										<td>
 											Missing Concept
 										</td>
 									</tr>
 									<tr>
-										<td>
-											C/S Scar
-										</td>
+										<td>Involution of Uterus</td>
 										<td>
 											Missing Concept
 										</td>
 									</tr>
 									<tr>
+										<td>Condition of Episiotomy</td>
 										<td>
-											Involution of Uterus
-										</td>
-										<td>
-											Missing Concept
+											<obs conceptId="159840AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"></obs>
 										</td>
 									</tr>
 									<tr>
+										<td>Lochia</td>
 										<td>
-											Condition of Episiotomy
-										</td>
-										<td>
-											Missing Concept
+											<obs conceptId="159844AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"></obs>
 										</td>
 									</tr>
 									<tr>
-										<td>
-											Lochia
-										</td>
-										<td>
-											Missing Concept
-										</td>
-									</tr>
-									<tr>
-										<td>
-											Pelvic Exam
-										</td>
-										<td>
-											Missing Concept
-										</td>
-									</tr>
-									<tr>
-										<td>
-											Haemoglobin
-										</td>
-										<td>
-											Missing Concept
-										</td>
-									</tr>
-									<tr>
-										<td>
-											Mother's HIV Status
-										</td>
-										<td>
-											Missing Concept
-										</td>
-									</tr>
-									<tr>
-										<td>
-											Baby's Condition
-										</td>
+										<td>Pelvic Exam</td>
 										<td>
 											Missing Concept
 										</td>
@@ -274,83 +269,45 @@
 								<legend>Other Observations</legend>
 								<table align="center" width="100%" class="tb1">
 									<tr>
+										<td width="200">Haemoglobin</td>
 										<td>
-											Baby's Feeding Method
+											<obs conceptId="21AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"></obs>
 										</td>
+									</tr>
+									<tr>
+										<td>Mother's HIV Status
+										</td>
+										<td>
+											<obs conceptId="1396AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"></obs>
+										</td>
+									</tr>
+									<tr>
+										<td>Baby's Condition</td>
+										<td>Missing Concept</td>
+									</tr>
+									<tr>
+										<td>Baby's Feeding Method</td>
+										<td>
+											<obs conceptId="1151AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+												 answerConceptIds="5526AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1595AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,6046AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159418AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+										</td>
+									</tr>
+									<tr>
+										<td>Umbilical Cord</td>
 										<td>
 											Missing Concept
 										</td>
 									</tr>
 									<tr>
-										<td>
-											Umbilical Cord
-										</td>
+										<td>Baby Immunization Started</td>
 										<td>
 											Missing Concept
 										</td>
 									</tr>
 									<tr>
+										<td>Counseling on Family Planning</td>
 										<td>
-											Baby Immunization Started
-										</td>
-										<td>
-											Missing Concept
-										</td>
-									</tr>
-									<tr>
-										<td>
-											Mother Given Vit. A
-										</td>
-										<td>
-											Missing Concept
-										</td>
-									</tr>
-									<tr>
-										<td>
-											Mother Give ARV Prophylaxis
-										</td>
-										<td>
-											Missing Concept
-										</td>
-									</tr>
-									<tr>
-										<td>
-											Mother on HAART
-										</td>
-										<td>
-											Missing Concept
-										</td>
-									</tr>
-									<tr>
-										<td>
-											Mother Cotrimoxazole Prophylaxis Initiated
-										</td>
-										<td>
-											Missing Concept
-										</td>
-									</tr>
-									<tr>
-										<td>
-											Infant Given ARV Prophylaxis
-										</td>
-										<td>
-											Missing Concept
-										</td>
-									</tr>
-									<tr>
-										<td>
-											Infant Contimoxazole Prophylaxis Initiated
-										</td>
-										<td>
-											Missing Concept
-										</td>
-									</tr>
-									<tr>
-										<td>
-											Counselling on Family Planning
-										</td>
-										<td>
-											Missing Concept
+											<obs conceptId="1382AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"></obs>
 										</td>
 									</tr>
 								</table>
@@ -361,11 +318,76 @@
 			</tr>
 			<tr>
 				<td>
+					<fieldset>
+						<legend>ARV Medication</legend>
+						<table align="center" width="100%" class="tb1">
+							<tr>
+								<td>Mother On:</td>
+								<td colspan="5">
+									<obs conceptId="1147AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										 id="arv-status"
+										 style="radio"
+										 answerConceptIds="1148AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1149AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										 answerLabels="ARV Prophylaxis,HAART,NA"/>
+								</td>
+							</tr>
+							<div id="arv-medication">
+								<tr>
+									<td style="background-color: #B3C2F0; color: #000000;">Drug</td>
+									<td style="background-color: #B3C2F0; color: #000000;">Dose</td>
+									<td style="background-color: #B3C2F0; color: #000000;">Dose Units</td>
+									<td style="background-color: #B3C2F0; color: #000000;">Frequency</td>
+									<td style="background-color: #B3C2F0; color: #000000;">Duration</td>
+									<td style="background-color: #B3C2F0; color: #000000;">Duration Units</td>
+								</tr>
+								<repeat>
+									<template>
+										<obsgroup groupingConceptId="1442AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+											<tr>
+												<td>
+													<obs conceptId="966AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+														 answerConceptIds="70056AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,71647AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,74807AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,75523AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,75628AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,77995AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,78643AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,79040AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,80487AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,80586AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,83412AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,84309AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,84795AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,86663AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+												</td>
+												<td>
+													<obs conceptId="1443AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+												</td>
+												<td>
+													<obs conceptId="1444AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="5"/>
+												</td>
+												<td>
+													<obs
+															conceptId="160855AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+															answerConceptIds="160862AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160863AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160864AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160865AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160858AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160866AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160870AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+															answerLabels="Once daily,Once daily at bedtime,Once daily in the evening,Once daily in the morning,Twice daily,Thrice daily,Four times daily"
+															/>
+												</td>
+												<td>
+													<obs conceptId="159368AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+												</td>
+												<td>
+													<obs conceptId="1732AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+														 answerConceptIds="1822AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1072AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1073AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1074AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+														 answerLabels="Hours,Days,Weeks,Months"/>
+												</td>
+											</tr>
+										</obsgroup>
+									</template>
+									<render n="1" concept="Drug"/>
+									<render n="2" concept="Drug"/>
+									<render n="3" concept="Drug"/>
+								</repeat>
+							</div>
+						</table>
+					</fieldset>
+				</td>
+			</tr>
+			<tr>
+				<td>
 					<legend>Clinical Notes</legend>
 					<table align="center" width="100%" class="tb1">
 						<tr>
 							<td>
-								<obs conceptId="159395AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="10" cols="98"
+								<obs conceptId="159395AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="10" cols="110"
 									 style="textarea"/>
 							</td>
 						</tr>
