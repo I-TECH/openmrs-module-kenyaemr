@@ -12,10 +12,12 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.reporting.builder.indicator;
+package org.openmrs.module.kenyaemr.reporting.builder.common;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.module.appframework.AppDescriptor;
+import org.openmrs.module.kenyaemr.reporting.BaseIndicatorReport;
 import org.openmrs.module.kenyaemr.reporting.EmrReportingUtils;
 import org.openmrs.module.kenyaemr.reporting.dataset.definition.MergingDataSetDefinition;
 import org.openmrs.module.kenyaemr.reporting.library.indicator.PwpIndicatorLibrary;
@@ -44,8 +46,8 @@ import static org.openmrs.module.kenyaemr.reporting.EmrReportingUtils.map;
 /**
  * MOH 731 report
  */
-@Component
-public class Moh731Report extends BaseIndicatorReportBuilder {
+@Component("kenyaemr.common.report.moh731")
+public class Moh731Report extends BaseIndicatorReport {
 
 	protected static final Log log = LogFactory.getLog(Moh731Report.class);
 
@@ -77,32 +79,14 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 	private Map<String, CohortIndicator> cohortIndicators;
 	private Map<String, Indicator> nonCohortIndicators;
 
-	/**
-	 * @see org.openmrs.module.kenyacore.report.ReportBuilder#getTags()
-	 */
-	@Override
-	public String[] getTags() {
-		return new String[] { "moh", "hiv" };
+	public Moh731Report() {
+		setName("MOH 731");
+		setDescription("Comprehensive HIV/AIDS Facility Reporting Form - NASCOP");
+		setApps(null); // TODO
 	}
 
 	/**
-	 * @see BaseIndicatorReportBuilder#getName()
-	 */
-	@Override
-	public String getName() {
-		return "MOH 731";
-	}
-
-	/**
-	 * @see org.openmrs.module.kenyacore.report.ReportBuilder#getDescription()
-	 */
-	@Override
-	public String getDescription() {
-		return "Comprehensive HIV/AIDS Facility Reporting Form - NASCOP";
-	}
-
-	/**
-	 * @see BaseIndicatorReportBuilder#getExcelTemplateResourcePath()
+	 * @see org.openmrs.module.kenyaemr.reporting.BaseIndicatorReport#getExcelTemplateResourcePath()
 	 */
 	@Override
 	public String getExcelTemplateResourcePath() {
@@ -110,7 +94,7 @@ public class Moh731Report extends BaseIndicatorReportBuilder {
 	}
 
 	/**
-	 * @see BaseIndicatorReportBuilder#buildDataSets()
+	 * @see org.openmrs.module.kenyaemr.reporting.BaseIndicatorReport#buildDataSets()
 	 */
 	@Override
 	public List<DataSetDefinition> buildDataSets() {

@@ -21,6 +21,7 @@ import org.openmrs.module.appframework.AppDescriptor;
 import org.openmrs.module.kenyacore.CoreConstants;
 import org.openmrs.module.kenyacore.form.FormDescriptor;
 import org.openmrs.module.kenyacore.form.FormManager;
+import org.openmrs.module.kenyacore.report.ReportDescriptor;
 import org.openmrs.module.kenyaemr.regimen.DrugReference;
 import org.openmrs.module.kenyaemr.regimen.RegimenChange;
 import org.openmrs.module.kenyaemr.regimen.RegimenChangeHistory;
@@ -244,6 +245,20 @@ public class EmrUiUtils {
 
 		if (formDescriptor == null || !formDescriptor.getApps().contains(appDescriptor)) {
 			throw new APIAuthenticationException("Form " + form.getName() + " cannot be accessed from " + appDescriptor.getLabel());
+		}
+	}
+
+	/**
+	 * Checks that the specified report can be accessed by this request
+	 * @param pageRequest the page request
+	 * @param report the report descriptor
+	 * @throws org.openmrs.api.APIAuthenticationException if access is not allowed
+	 */
+	public void checkReportAccess(PageRequest pageRequest, ReportDescriptor report) {
+		AppDescriptor appDescriptor = kenyaUi.getCurrentApp(pageRequest);
+
+		if (report.getApps() != null && !report.getApps().contains(appDescriptor)) {
+			throw new APIAuthenticationException("Report " + report.getId() + " cannot be accessed from " + appDescriptor.getLabel());
 		}
 	}
 }

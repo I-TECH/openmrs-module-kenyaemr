@@ -18,7 +18,7 @@ import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.PatientProgram;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
+import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.util.EmrUtils;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.fragment.FragmentModel;
@@ -46,7 +46,7 @@ public class MchmsEnrollmentSummaryFragmentController {
 		Obs lmpObs = EmrUtils.firstObsInProgram(enrollment, Dictionary.getConcept(Dictionary.LAST_MONTHLY_PERIOD));
 		if (lmpObs != null) {
 			dataPoints.put("LMP", lmpObs.getValueDate());
-			dataPoints.put("EDD (LMP)", CalculationUtils.dateAddDays(lmpObs.getValueDate(), 280));
+			dataPoints.put("EDD (LMP)", EmrCalculationUtils.dateAddDays(lmpObs.getValueDate(), 280));
 		}
 		Obs eddUsoundObs = EmrUtils.firstObsInProgram(enrollment, Dictionary.getConcept(Dictionary.EXPECTED_DATE_OF_DELIVERY));
 		if (eddUsoundObs != null) {

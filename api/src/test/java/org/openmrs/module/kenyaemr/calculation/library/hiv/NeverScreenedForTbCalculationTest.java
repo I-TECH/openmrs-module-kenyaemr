@@ -12,7 +12,7 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.calculation.library.tb;
+package org.openmrs.module.kenyaemr.calculation.library.hiv;
 
 import org.junit.Assert;
 import org.junit.Before;

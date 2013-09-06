@@ -21,7 +21,7 @@ import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
-import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
+import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 
 import java.util.Collection;
@@ -55,7 +55,7 @@ public class IsPregnantCalculation extends BaseEmrCalculation implements Patient
 
 		for (Integer ptId : cohort) {
 			BooleanResult result = null;
-			Obs pregStatusObs = CalculationUtils.obsResultForPatient(pregStatusObss, ptId);
+			Obs pregStatusObs = EmrCalculationUtils.obsResultForPatient(pregStatusObss, ptId);
 
 			if (pregStatusObs != null) {
 				result = new BooleanResult(pregStatusObs.getValueCoded().equals(yes), this);

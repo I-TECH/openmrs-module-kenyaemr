@@ -12,12 +12,14 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.reporting.builder.indicator;
+package org.openmrs.module.kenyaemr.reporting.builder.common;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Concept;
+import org.openmrs.module.appframework.AppDescriptor;
 import org.openmrs.module.kenyaemr.Dictionary;
+import org.openmrs.module.kenyaemr.reporting.BaseIndicatorReport;
 import org.openmrs.module.kenyaemr.reporting.EmrReportingUtils;
 import org.openmrs.module.kenyaemr.reporting.ColumnParameters;
 import org.openmrs.module.kenyaemr.reporting.library.cohort.ArtCohortLibrary;
@@ -38,8 +40,8 @@ import static org.openmrs.module.kenyaemr.reporting.EmrReportingUtils.map;
 /**
  * MOH 711 report
  */
-@Component
-public class Moh711Report extends BaseIndicatorReportBuilder {
+@Component("kenyaemr.common.report.moh711")
+public class Moh711Report extends BaseIndicatorReport {
 
 	protected static final Log log = LogFactory.getLog(Moh711Report.class);
 
@@ -58,32 +60,14 @@ public class Moh711Report extends BaseIndicatorReportBuilder {
 	@Autowired
 	private ArtIndicatorLibrary artIndicators;
 
-	/**
-	 * @see org.openmrs.module.kenyacore.report.ReportBuilder#getTags()
-	 */
-	@Override
-	public String[] getTags() {
-		return new String[] { "moh", "hiv", "tb" };
+	public Moh711Report() {
+		setName("MOH 711");
+		setDescription("National Integrated Form for Reproductive Health, HIV/AIDS, Malaria, TB and Child Nutrition");
+		setApps(null); // TODO
 	}
 
 	/**
-	 * @see BaseIndicatorReportBuilder#getName()
-	 */
-	@Override
-	public String getName() {
-		return "MOH 711";
-	}
-
-	/**
-	 * @see org.openmrs.module.kenyacore.report.ReportBuilder#getDescription()
-	 */
-	@Override
-	public String getDescription() {
-		return "National Integrated Form for Reproductive Health, HIV/AIDS, Malaria, TB and Child Nutrition";
-	}
-
-	/**
-	 * @see BaseIndicatorReportBuilder#buildDataSets()
+	 * @see org.openmrs.module.kenyaemr.reporting.BaseIndicatorReport#buildDataSets()
 	 */
 	@Override
 	public List<DataSetDefinition> buildDataSets() {

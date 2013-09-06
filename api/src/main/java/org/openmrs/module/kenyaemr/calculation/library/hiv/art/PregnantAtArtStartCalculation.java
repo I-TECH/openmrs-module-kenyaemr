@@ -21,7 +21,7 @@ import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
-import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
+import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -47,11 +47,11 @@ public class PregnantAtArtStartCalculation extends BaseEmrCalculation {
 		CalculationResultMap ret = new CalculationResultMap();
 		for (Integer ptId : cohort) {
 			boolean result = false;
-			Date artStartDate = CalculationUtils.datetimeResultForPatient(artStartDates, ptId);
+			Date artStartDate = EmrCalculationUtils.datetimeResultForPatient(artStartDates, ptId);
 
 			if (artStartDate != null) {
 				CalculationResultMap pregStatusObss = lastObsOnOrBeforeDate(pregnancyStatus, artStartDate, Collections.singleton(ptId), context);
-				Obs pregStatusObs = CalculationUtils.obsResultForPatient(pregStatusObss, ptId);
+				Obs pregStatusObs = EmrCalculationUtils.obsResultForPatient(pregStatusObss, ptId);
 
 				if (pregStatusObs != null) {
 					result = pregStatusObs.getValueCoded().equals(yes);

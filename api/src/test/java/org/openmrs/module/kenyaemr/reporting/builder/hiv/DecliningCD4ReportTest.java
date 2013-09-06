@@ -12,7 +12,7 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.reporting.builder.patientlist;
+package org.openmrs.module.kenyaemr.reporting.builder.hiv;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -21,8 +21,8 @@ import org.openmrs.Program;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
+import org.openmrs.module.kenyacore.report.AbstractReportDescriptor;
 import org.openmrs.module.kenyaemr.Metadata;
-import org.openmrs.module.kenyacore.report.ReportBuilder;
 import org.openmrs.module.kenyaemr.test.ReportingTestUtils;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
@@ -36,9 +36,9 @@ import java.util.Collections;
 import java.util.Date;
 
 /**
- * Tests for {@link org.openmrs.module.kenyaemr.reporting.builder.patientlist.MissedAppointmentsOrDefaultedReport}
+ * Tests for {@link DecliningCD4Report}
  */
-public class MissedAppointmentsOrDefaultedReportTest extends BaseModuleContextSensitiveTest {
+public class DecliningCD4ReportTest extends BaseModuleContextSensitiveTest {
 
 	@Before
 	public void setup() throws Exception {
@@ -49,27 +49,29 @@ public class MissedAppointmentsOrDefaultedReportTest extends BaseModuleContextSe
 	public void testReport() throws Exception {
 		Program hivProgram = MetadataUtils.getProgram(Metadata.Program.HIV);
 
-		// Enroll patients #6 and #7 in the HIV Program
+		// Enroll patients #6, #7 and #8 in the HIV Program
 		PatientService ps = Context.getPatientService();
-		for (int i = 6; i <= 7; ++i) {
+		for (int i = 6; i <= 8; ++i) {
 			TestUtils.enrollInProgram(ps.getPatient(i), hivProgram, new Date());
 		}
 
-		// Give patient #7 a return visit obs of 10 days ago
-		Concept returnVisit = Context.getConceptService().getConcept(5096);
+		// Give patients #7 and #8 a CD4 count 180 days ago
+		Concept cd4 = Context.getConceptService().getConcept(5497);
 		Calendar calendar = Calendar.getInstance();
-		calendar.add(Calendar.DATE, -10);
-		TestUtils.saveObs(Context.getPatientService().getPatient(7), returnVisit, calendar.getTime(), calendar.getTime());
+		calendar.add(Calendar.DATE, -180);
+		TestUtils.saveObs(Context.getPatientService().getPatient(7), cd4, 123d, calendar.getTime());
+		TestUtils.saveObs(Context.getPatientService().getPatient(8), cd4, 123d, calendar.getTime());
 
-		// Give patient #8 a return visit obs of 10 days in the future
-		calendar = Calendar.getInstance();
-		calendar.add(Calendar.DATE, 10);
-		TestUtils.saveObs(Context.getPatientService().getPatient(8), returnVisit, calendar.getTime(), calendar.getTime());
+		// Give patient #7 a lower CD4 count today
+		TestUtils.saveObs(Context.getPatientService().getPatient(7), cd4, 120d, new Date());
+
+		// Give patient #8 a higher CD4 count today
+		TestUtils.saveObs(Context.getPatientService().getPatient(8), cd4, 126d, new Date());
 
 		Context.flushSession();
 
-		ReportBuilder report = new MissedAppointmentsOrDefaultedReport();
-		ReportDefinition rd = report.getReportDefinition();
+		DecliningCD4Report report = new DecliningCD4Report();
+		ReportDefinition rd = report.getDefinition();
 		EvaluationContext ec = new EvaluationContext();
 
 		try {

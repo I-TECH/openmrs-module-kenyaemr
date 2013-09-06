@@ -28,7 +28,7 @@ import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.ListResult;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
-import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
+import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.reporting.common.DateUtil;
 
 /**
@@ -68,7 +68,7 @@ public class VisitsOnDayCalculation extends BaseEmrCalculation {
 			holder.add(new SimpleResult(v, this));
 		}
 		
-		CalculationUtils.ensureEmptyListResults(ret, cohort);
+		EmrCalculationUtils.ensureEmptyListResults(ret, cohort);
 		return ret;
 	}
 	

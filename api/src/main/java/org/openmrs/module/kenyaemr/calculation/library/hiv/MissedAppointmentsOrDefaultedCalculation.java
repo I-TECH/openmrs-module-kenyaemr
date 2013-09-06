@@ -28,7 +28,7 @@ import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.Metadata;
-import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
+import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 
 /**
@@ -58,7 +58,7 @@ public class MissedAppointmentsOrDefaultedCalculation extends BaseEmrCalculation
 		Program hivProgram = MetadataUtils.getProgram(Metadata.Program.HIV);
 
 		Set<Integer> alive = alivePatients(cohort, context);
-		Set<Integer> inHivProgram = CalculationUtils.patientsThatPass(activeEnrollment(hivProgram, alive, context));
+		Set<Integer> inHivProgram = EmrCalculationUtils.patientsThatPass(activeEnrollment(hivProgram, alive, context));
         CalculationResultMap lastReturnDateObss = lastObs(getConcept(Dictionary.RETURN_VISIT_DATE), inHivProgram, context);
         CalculationResultMap lastEncounters = lastEncounter(null, cohort, context);
 
@@ -68,13 +68,13 @@ public class MissedAppointmentsOrDefaultedCalculation extends BaseEmrCalculation
 
             // Is patient alive and in the HIV program
             if (inHivProgram.contains(ptId)) {
-                Date lastScheduledReturnDate = CalculationUtils.datetimeObsResultForPatient(lastReturnDateObss, ptId);
+                Date lastScheduledReturnDate = EmrCalculationUtils.datetimeObsResultForPatient(lastReturnDateObss, ptId);
 
                 // Does patient have a scheduled return visit in the past
                 if (lastScheduledReturnDate != null && daysSince(lastScheduledReturnDate, context) > 0) {
 
                     // Has patient returned since
-                    Encounter lastEncounter = CalculationUtils.encounterResultForPatient(lastEncounters, ptId);
+                    Encounter lastEncounter = EmrCalculationUtils.encounterResultForPatient(lastEncounters, ptId);
                     Date lastActualReturnDate = lastEncounter != null ? lastEncounter.getEncounterDatetime() : null;
                     missedVisit = lastActualReturnDate == null || lastActualReturnDate.before(lastScheduledReturnDate);
                 }

@@ -25,7 +25,7 @@ import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyaemr.Metadata;
-import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
+import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 
 /**
@@ -52,7 +52,7 @@ public class LostToFollowUpCalculation extends BaseEmrCalculation implements Pat
 		Program hivProgram = MetadataUtils.getProgram(Metadata.Program.HIV);
 
 		Set<Integer> alive = alivePatients(cohort, context);
-		Set<Integer> inHivProgram = CalculationUtils.patientsThatPass(activeEnrollment(hivProgram, alive, context));
+		Set<Integer> inHivProgram = EmrCalculationUtils.patientsThatPass(activeEnrollment(hivProgram, alive, context));
 		CalculationResultMap lastEncounters = lastEncounter(null, inHivProgram, context);
 
 		CalculationResultMap ret = new CalculationResultMap();
@@ -63,7 +63,7 @@ public class LostToFollowUpCalculation extends BaseEmrCalculation implements Pat
 			if (inHivProgram.contains(ptId)) {
 
 				// Patient is lost if no encounters in last X days
-				Encounter lastEncounter = CalculationUtils.encounterResultForPatient(lastEncounters, ptId);
+				Encounter lastEncounter = EmrCalculationUtils.encounterResultForPatient(lastEncounters, ptId);
 				Date lastEncounterDate = lastEncounter != null ? lastEncounter.getEncounterDatetime() : null;
 				lost = lastEncounterDate == null || daysSince(lastEncounterDate, context) > EmrConstants.LOST_TO_FOLLOW_UP_THRESHOLD_DAYS;
 			}

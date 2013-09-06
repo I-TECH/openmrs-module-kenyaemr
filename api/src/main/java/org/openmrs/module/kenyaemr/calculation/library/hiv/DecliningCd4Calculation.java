@@ -27,7 +27,7 @@ import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
-import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
+import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 
 /**
@@ -50,7 +50,7 @@ public class DecliningCd4Calculation extends BaseEmrCalculation implements Patie
 		Program hivProgram = MetadataUtils.getProgram(Metadata.Program.HIV);
 
 		Set<Integer> alive = alivePatients(cohort, context);
-		Set<Integer> inHivProgram = CalculationUtils.patientsThatPass(activeEnrollment(hivProgram, alive, context));
+		Set<Integer> inHivProgram = EmrCalculationUtils.patientsThatPass(activeEnrollment(hivProgram, alive, context));
 
 		// Get the two CD4 obss for comparison
 		CalculationResultMap lastCD4Obss = lastObs(getConcept(Dictionary.CD4_COUNT), inHivProgram, context);
@@ -62,8 +62,8 @@ public class DecliningCd4Calculation extends BaseEmrCalculation implements Patie
 
 			// Is patient alive and in HIV program?
 			if (inHivProgram.contains(ptId)) {
-				Double lastCD4Count = CalculationUtils.numericObsResultForPatient(lastCD4Obss, ptId);
-				Double oldCD4Count = CalculationUtils.numericObsResultForPatient(oldCD4Obss, ptId);
+				Double lastCD4Count = EmrCalculationUtils.numericObsResultForPatient(lastCD4Obss, ptId);
+				Double oldCD4Count = EmrCalculationUtils.numericObsResultForPatient(oldCD4Obss, ptId);
 
 				if (lastCD4Count != null && oldCD4Count != null) {
 					declining = lastCD4Count < oldCD4Count;
