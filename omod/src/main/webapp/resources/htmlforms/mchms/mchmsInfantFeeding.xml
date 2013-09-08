@@ -63,7 +63,7 @@
 						<tr>
 							<td width="250">Infant feeding counselling done (all mothers):</td>
 							<td>
-								<obs conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+								Missing Concept
 							</td>
 						</tr>
 						<tr>
@@ -75,7 +75,8 @@
 						<tr>
 							<td>Infant feeding options for HIV infected discussed:</td>
 							<td>
-								Missing Concept
+								<obs conceptId="162091AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 							</td>
 						</tr>
 						<tr>

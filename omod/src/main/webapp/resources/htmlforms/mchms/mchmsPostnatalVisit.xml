@@ -235,13 +235,13 @@
 									<tr>
 										<td>C/S Scar</td>
 										<td>
-											Missing Concept
+											<obs conceptId="162128AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
 										</td>
 									</tr>
 									<tr>
 										<td>Involution of Uterus</td>
 										<td>
-											Missing Concept
+											<obs conceptId="162110AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
 										</td>
 									</tr>
 									<tr>
@@ -295,13 +295,13 @@
 									<tr>
 										<td>Umbilical Cord</td>
 										<td>
-											Missing Concept
+											<obs conceptId="162121AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
 										</td>
 									</tr>
 									<tr>
 										<td>Baby Immunization Started</td>
 										<td>
-											Missing Concept
+											<obs conceptId="162127AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
 										</td>
 									</tr>
 									<tr>

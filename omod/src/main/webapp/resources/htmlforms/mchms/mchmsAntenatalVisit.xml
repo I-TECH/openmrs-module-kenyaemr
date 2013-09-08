@@ -229,7 +229,10 @@
 						</tr>
 						<tr>
 							<td>Pallor:</td>
-							<td>Missing Concept</td>
+							<td>
+								<obs conceptId="5245AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+							</td>
 						</tr>
 						<tr>
 							<td>Maturity:</td>
@@ -252,7 +255,9 @@
 						</tr>
 						<tr>
 							<td>Lie:</td>
-							<td>Missing Concept</td>
+							<td>
+								<obs conceptId="162089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+							</td>
 						</tr>
 						<tr>
 							<td>Foetal Heart Rate:</td>
@@ -263,7 +268,7 @@
 						<tr>
 							<td>Foetal Movement:</td>
 							<td>
-								<obs conceptId="160743AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+								<obs conceptId="162107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
 							</td>
 						</tr>
 					</table>

@@ -157,6 +157,9 @@
 							<td>
 								<obs conceptId="1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="lmp" required="true"/>
 							</td>
+							<td>
+								<obs conceptId="162095AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox"/>Estimated
+							</td>
 						</tr>
 						<tr>
 							<td>EDD (Calculated from L.M.P):</td>
