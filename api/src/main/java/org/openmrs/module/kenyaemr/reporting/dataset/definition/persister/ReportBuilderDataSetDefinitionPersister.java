@@ -15,8 +15,11 @@
 package org.openmrs.module.kenyaemr.reporting.dataset.definition.persister;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.kenyacore.report.ReportBuilder;
+import org.openmrs.module.kenyacore.report.AbstractReportDescriptor;
+import org.openmrs.module.kenyacore.report.ReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportManager;
+import org.openmrs.module.kenyaemr.reporting.EmrReportingUtils;
+import org.openmrs.module.kenyaemr.reporting.ReportBuilder;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.persister.DataSetDefinitionPersister;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
@@ -28,24 +31,24 @@ import java.util.List;
 
 /**
  * A ReportBuilder's DSDs aren't persisted in the database so aren't given primary keys or UUIDs. However we
- * define our own kind of UUID in the format "${reportbuilderclassname}:${dsdName}" which provides enough
+ * define our own kind of UUID in the format "${report-id}:${dsdName}" which provides enough
  * information to fetch a DSD from the ReportManager
  */
 @Handler(supports=DataSetDefinition.class)
 public class ReportBuilderDataSetDefinitionPersister implements DataSetDefinitionPersister {
 
 	@Autowired
-	ReportManager reportManager;
+	private ReportManager reportManager;
 
 	/**
 	 * @see DataSetDefinitionPersister#getDefinitionByUuid(String)
 	 */
 	@Override
 	public DataSetDefinition getDefinitionByUuid(String uuid) {
-		BuilderAndDsdName builderAndDsdName = new BuilderAndDsdName(uuid);
-		ReportBuilder reportBuilder = reportManager.getReportBuilder(builderAndDsdName.getBuilderClassname());
+		DsdIdentifier dsdIdentifier = new DsdIdentifier(uuid);
+		ReportDescriptor descriptor = reportManager.getReportDescriptor(dsdIdentifier.getReportId());
 
-		return toDataSetDefinition(reportBuilder, builderAndDsdName.getDsdName());
+		return toDataSetDefinition(descriptor, dsdIdentifier.getDsdName());
 	}
 
 	/**
@@ -57,13 +60,16 @@ public class ReportBuilderDataSetDefinitionPersister implements DataSetDefinitio
 	public List<DataSetDefinition> getAllDefinitions(boolean includeRetired) {
 		List<DataSetDefinition> ret = new ArrayList<DataSetDefinition>();
 
-		for (ReportBuilder reportBuilder : reportManager.getAllReportBuilders()) {
-			ReportDefinition reportDefinition = reportBuilder.getReportDefinition();
+		for (ReportDescriptor descriptor : reportManager.getAllReportDescriptors()) {
+			ReportBuilder builder = EmrReportingUtils.getReportBuilder(descriptor);
+			ReportDefinition reportDefinition = builder.getDefinition();
+
 			if (reportDefinition == null || reportDefinition.getDataSetDefinitions() == null) {
 				continue;
 			}
+
 			for (String dsdName : reportDefinition.getDataSetDefinitions().keySet()) {
-				ret.add(toDataSetDefinition(reportBuilder, dsdName));
+				ret.add(toDataSetDefinition(descriptor, dsdName));
 			}
 		}
 		return ret;
@@ -104,16 +110,17 @@ public class ReportBuilderDataSetDefinitionPersister implements DataSetDefinitio
 
 	/**
 	 * Creates a data set definition
-	 * @param builder the report builder
+	 * @param descriptor the report descriptor
 	 * @param dsdName the DSD name
 	 * @return the data set definition
 	 */
-	private DataSetDefinition toDataSetDefinition(ReportBuilder builder, String dsdName) {
-		Mapped<? extends DataSetDefinition> mapped = builder.getReportDefinition().getDataSetDefinitions().get(dsdName);
+	private DataSetDefinition toDataSetDefinition(ReportDescriptor descriptor, String dsdName) {
+		ReportBuilder builder = EmrReportingUtils.getReportBuilder(descriptor);
+		Mapped<? extends DataSetDefinition> mapped = builder.getDefinition().getDataSetDefinitions().get(dsdName);
 		DataSetDefinition dataSetDefinition = mapped.getParameterizable();
 
 		// Since the ReportBuilders always creates these on the fly, they have arbitrary UUIDs, so we set a known one.
-		dataSetDefinition.setUuid(new BuilderAndDsdName(builder, dsdName).toUUID());
+		dataSetDefinition.setUuid(new DsdIdentifier(descriptor, dsdName).toUUID());
 
 		return dataSetDefinition;
 	}
@@ -121,23 +128,23 @@ public class ReportBuilderDataSetDefinitionPersister implements DataSetDefinitio
 	/**
 	 * Helper class for parsing and formatting our own special "UUIDs"
 	 */
-	class BuilderAndDsdName {
-		private String builderClassname;
+	class DsdIdentifier {
+		private String reportId;
 		private String dsdName;
 
-		public BuilderAndDsdName(ReportBuilder builder, String dsdName) {
-			this.builderClassname = builder.getClass().getName();
+		public DsdIdentifier(ReportDescriptor descriptor, String dsdName) {
+			this.reportId = descriptor.getId();
 			this.dsdName = dsdName;
 		}
 
-		public BuilderAndDsdName(String s) {
+		public DsdIdentifier(String s) {
 			String[] split = s.split(":");
-			builderClassname = split[0].replaceAll("-", ".");
+			reportId = split[0].replaceAll("-", ".");
 			dsdName = split[1];
 		}
 
-		public String getBuilderClassname() {
-			return builderClassname;
+		public String getReportId() {
+			return reportId;
 		}
 
 		public String getDsdName() {
@@ -145,7 +152,7 @@ public class ReportBuilderDataSetDefinitionPersister implements DataSetDefinitio
 		}
 
 		public String toUUID() {
-			return builderClassname.replaceAll("\\.", "-") + ":" + dsdName;
+			return reportId.replaceAll("\\.", "-") + ":" + dsdName;
 		}
 	}
 }

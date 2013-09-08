@@ -23,7 +23,7 @@ import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
-import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
+import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 
 import java.util.*;
 
@@ -45,7 +45,7 @@ public class OnMedicationCalculation extends BaseEmrCalculation {
 		CalculationResultMap ret = new CalculationResultMap();
 		for (Integer ptId : cohort) {
 			boolean takingDrug = false;
-			Encounter lastConsultation = CalculationUtils.resultForPatient(lastConsultations, ptId);
+			Encounter lastConsultation = EmrCalculationUtils.resultForPatient(lastConsultations, ptId);
 			if (lastConsultation != null && lastConsultation.getVisit() != null && daysSince(lastConsultation.getEncounterDatetime(), context) <= EmrConstants.PATIENT_ACTIVE_VISIT_THRESHOLD_DAYS) {
 				Set<Encounter> encountersInRefVisit = lastConsultation.getVisit().getEncounters();
 

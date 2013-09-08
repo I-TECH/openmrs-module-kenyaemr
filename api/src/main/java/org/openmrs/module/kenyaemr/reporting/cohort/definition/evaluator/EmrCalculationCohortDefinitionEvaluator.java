@@ -23,7 +23,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
-import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
+import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.EmrCalculationCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.EmrDateCalculationCohortDefinition;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
@@ -49,10 +49,10 @@ public class EmrCalculationCohortDefinitionEvaluator implements CohortDefinition
 
 		if (cohortDefinition instanceof EmrDateCalculationCohortDefinition) {
 			EmrDateCalculationCohortDefinition cd = (EmrDateCalculationCohortDefinition) cohortDefinition;
-			passing = CalculationUtils.datesWithinRange(map, cd.getOnOrAfter(), cd.getOnOrBefore());
+			passing = EmrCalculationUtils.datesWithinRange(map, cd.getOnOrAfter(), cd.getOnOrBefore());
 		} else {
 			EmrCalculationCohortDefinition cd = (EmrCalculationCohortDefinition) cohortDefinition;
-			passing = CalculationUtils.patientsThatPass(map, cd.getWithResult());
+			passing = EmrCalculationUtils.patientsThatPass(map, cd.getWithResult());
 		}
 		return new EvaluatedCohort(new Cohort(passing), cohortDefinition, context);
 	}

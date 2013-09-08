@@ -12,12 +12,14 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.reporting.builder.patientlist;
+package org.openmrs.module.kenyaemr.reporting;
 
+import org.openmrs.calculation.patient.PatientCalculation;
+import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
+import org.openmrs.module.kenyacore.report.CalculationReportDescriptor;
 import org.openmrs.module.kenyaemr.Metadata;
-import org.openmrs.module.kenyacore.report.ReportBuilder;
-import org.openmrs.module.reporting.data.converter.DataConverter;
+import org.openmrs.module.kenyaemr.reporting.cohort.definition.EmrCalculationCohortDefinition;
 import org.openmrs.module.reporting.data.patient.definition.PatientIdDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.PatientIdentifierDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.AgeDataDefinition;
@@ -27,9 +29,44 @@ import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 
 /**
- * Base implementation for row-per-patient reports
+ * Base implementation for calculation based patient list reports
  */
-public abstract class BasePatientListReportBuilder extends ReportBuilder {
+public abstract class BasePatientListReport extends CalculationReportDescriptor implements ReportBuilder {
+
+	/**
+	 * @see ReportBuilder#isExcelRenderable()
+	 */
+	@Override
+	public boolean isExcelRenderable() {
+		return false;
+	}
+
+	/**
+	 * @see ReportBuilder#getDefinition()
+	 */
+	@Override
+	public ReportDefinition getDefinition() {
+		ReportDefinition rd = new ReportDefinition();
+		rd.setName(getName());
+		rd.setDescription(getDescription());
+		rd.addDataSetDefinition(buildDataSet(), null);
+		return rd;
+	}
+
+	/**
+	 * Builds the data set
+	 * @return the data set
+	 */
+	protected PatientDataSetDefinition buildDataSet() {
+		PatientCalculation calc = CalculationUtils.instantiateCalculation(getCalculation(), null);
+		EmrCalculationCohortDefinition cd = new EmrCalculationCohortDefinition(calc);
+		cd.setName(getName());
+
+		PatientDataSetDefinition dsd = new PatientDataSetDefinition(getName() + " DSD");
+		dsd.addRowFilter(EmrReportingUtils.map(cd));
+		addColumns(dsd);
+		return dsd;
+	}
 
 	/**
 	 * Override this if you don't want the default (HIV ID, name, sex, age)
@@ -48,25 +85,8 @@ public abstract class BasePatientListReportBuilder extends ReportBuilder {
 		dsd.addColumn("Name", new PreferredNameDataDefinition(), "");
 		dsd.addColumn("Age", new AgeDataDefinition(), "");
 		dsd.addColumn("Sex", new GenderDataDefinition(), "");
+
+		// TODO change displayed identifier using getDisplayIdentifier().getTarget()
 		dsd.addColumn("UPN", new PatientIdentifierDataDefinition("UPN", MetadataUtils.getPatientIdentifierType(Metadata.PatientIdentifierType.UNIQUE_PATIENT_NUMBER)), "");
 	}
-
-	/**
-	 * Builds the report definition
-	 *
-	 */
-	@Override
-	protected ReportDefinition buildReportDefinition() {
-		ReportDefinition rd = new ReportDefinition();
-		rd.setName(getName());
-		rd.setDescription(getDescription());
-		rd.addDataSetDefinition(buildDataSet(), null);
-		return rd;
-	}
-
-	/**
-	 * Builds the data set
-	 * @return the data set
-	 */
-	protected abstract PatientDataSetDefinition buildDataSet();
 }

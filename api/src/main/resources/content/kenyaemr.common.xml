@@ -3,6 +3,61 @@
 	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
+	<!-- ===================== Configurations ===================== -->
+
+	<bean id="kenyaemr.config.metadata" class="org.openmrs.module.kenyacore.metadata.MetadataConfiguration">
+		<property name="moduleId" value="kenyaemr" />
+		<property name="packages">
+			<map>
+				<entry key="29177ba6-a634-42d5-9314-e12689856ff1" value="metadata/Kenya_EMR_Core-33.zip" />
+				<entry key="d4b71375-f64a-442d-a0c2-9f507c432925" value="metadata/Kenya_EMR_Roles_and_Privileges-6.zip" />
+				<entry key="550a5db0-13be-486d-aec7-de05adac71e7" value="metadata/Kenya_EMR_Drugs-1.zip" />
+				<entry key="5856a8fc-7ebc-46e8-929c-5ae2c780ab54" value="metadata/Kenya_EMR_Locations-10.zip" />
+				<entry key="eb6791b2-fab4-4915-ab73-4fee8ec84ca6" value="metadata/Kenya_EMR_Forms-25.zip" />
+			</map>
+		</property>
+	</bean>
+
+	<bean id="kenyaemr.config.form" class="org.openmrs.module.kenyacore.form.FormConfiguration">
+		<property name="commonPatientForms">
+			<set>
+				<ref bean="kenyaemr.common.form.hivFamilyHistory" />
+				<ref bean="kenyaemr.common.form.obstetricHistory" />
+				<ref bean="kenyaemr.common.form.medicalAndSurgicalHistory" />
+			</set>
+		</property>
+		<property name="commonVisitForms">
+			<set>
+				<ref bean="kenyaemr.common.form.triage" />
+				<ref bean="kenyaemr.common.form.clinicalEncounter" />
+				<ref bean="kenyaemr.common.form.labResults" />
+				<ref bean="kenyaemr.common.form.otherMedications" />
+				<ref bean="kenyaemr.common.form.progressNote" />
+			</set>
+		</property>
+	</bean>
+
+	<bean id="kenyaemr.config.report" class="org.openmrs.module.kenyacore.report.ReportConfiguration">
+		<property name="commonReports">
+			<set>
+				<ref bean="kenyaemr.common.report.moh711" />
+				<ref bean="kenyaemr.common.report.moh731" />
+			</set>
+		</property>
+	</bean>
+
+	<bean id="kenyaemr.config.regimen" class="org.openmrs.module.kenyaemr.regimen.RegimenConfiguration">
+		<property name="definitionsPath" value="regimens.xml" />
+	</bean>
+
+	<bean id="kenyaemr.config.lab" class="org.openmrs.module.kenyacore.lab.LabConfiguration">
+		<property name="commonCatalogs">
+			<set>
+				<ref bean="kenyaemr.common.lab.standardcatalog" />
+			</set>
+		</property>
+	</bean>
+
 	<!-- ===================== Identifiers ===================== -->
 
 	<!-- National Identification Number -->
@@ -31,7 +86,7 @@
 	<!-- ===================== Forms ===================== -->
 
 	<!-- Family History -->
-	<bean id="kenyaemr.form.hivFamilyHistory" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+	<bean id="kenyaemr.common.form.hivFamilyHistory" class="org.openmrs.module.kenyacore.form.FormDescriptor">
 		<property name="targetUuid" value="7efa0ee0-6617-4cd7-8310-9f95dfee7a82" />
 		<property name="apps">
 			<set>
@@ -45,7 +100,7 @@
 	</bean>
 
 	<!-- Obstetric History -->
-	<bean id="kenyaemr.form.obstetricHistory" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+	<bean id="kenyaemr.common.form.obstetricHistory" class="org.openmrs.module.kenyacore.form.FormDescriptor">
 		<property name="targetUuid" value="8e4e1abf-7c08-4ba8-b6d8-19a9f1ccb6c9" />
 		<property name="gender" value="FEMALE" />
 		<property name="apps">
@@ -62,7 +117,7 @@
 	</bean>
 
 	<!-- Triage -->
-	<bean id="kenyaemr.form.triage" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+	<bean id="kenyaemr.common.form.triage" class="org.openmrs.module.kenyacore.form.FormDescriptor">
 		<property name="targetUuid" value="37f6bd8d-586a-4169-95fa-5781f987fe62" />
 		<property name="apps">
 			<set>
@@ -78,7 +133,7 @@
 	</bean>
 
 	<!-- Clinical Encounter -->
-	<bean id="kenyaemr.form.clinicalEncounter" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+	<bean id="kenyaemr.common.form.clinicalEncounter" class="org.openmrs.module.kenyacore.form.FormDescriptor">
 		<property name="targetUuid" value="e958f902-64df-4819-afd4-7fb061f59308" />
 		<property name="apps">
 			<set>
@@ -92,7 +147,7 @@
 	</bean>
 
 	<!-- Lab Results -->
-	<bean id="kenyaemr.form.labResults" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+	<bean id="kenyaemr.common.form.labResults" class="org.openmrs.module.kenyacore.form.FormDescriptor">
 		<property name="targetUuid" value="7e603909-9ed5-4d0c-a688-26ecb05d8b6e" />
 		<property name="apps">
 			<set>
@@ -107,7 +162,7 @@
 	</bean>
 
 	<!-- Other Medications -->
-	<bean id="kenyaemr.form.otherMedications" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+	<bean id="kenyaemr.common.form.otherMedications" class="org.openmrs.module.kenyacore.form.FormDescriptor">
 		<property name="targetUuid" value="d4ff8ad1-19f8-484f-9395-04c755de9a47" />
 		<property name="apps">
 			<set>
@@ -121,7 +176,7 @@
 	</bean>
 
 	<!-- Progress Note -->
-	<bean id="kenyaemr.form.progressNote" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+	<bean id="kenyaemr.common.form.progressNote" class="org.openmrs.module.kenyacore.form.FormDescriptor">
 		<property name="targetUuid" value="0038a296-62f8-4099-80e5-c9ea7590c157" />
 		<property name="apps">
 			<set>
@@ -136,7 +191,7 @@
 	</bean>
 
 	<!-- TB Screening -->
-	<bean id="kenyaemr.form.tbScreening" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+	<bean id="kenyaemr.common.form.tbScreening" class="org.openmrs.module.kenyacore.form.FormDescriptor">
 		<property name="targetUuid" value="59ed8e62-7f1f-40ae-a2e3-eabe350277ce" />
 		<property name="apps">
 			<set>
@@ -150,8 +205,8 @@
 		<property name="order" value="201020" />
 	</bean>
 
-	<!-- medical and surgical history -->
-	<bean id="kenyaemr.form.medicalAndSurgicalHistory" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+	<!-- Medical and Surgical History -->
+	<bean id="kenyaemr.common.form.medicalAndSurgicalHistory" class="org.openmrs.module.kenyacore.form.FormDescriptor">
 		<property name="targetUuid" value="4f3c9bd8-c117-4a5e-a7eb-12a627c29de6" />
 		<property name="apps">
 			<set>

@@ -30,7 +30,7 @@ import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
-import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
+import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 
 /**
  * Calculates whether patients have taken CTX or Dapsone
@@ -44,7 +44,7 @@ public class NeverTakenCtxOrDapsoneCalculation extends BaseEmrCalculation {
 		Program hivProgram = MetadataUtils.getProgram(Metadata.Program.HIV);
 
 		Set<Integer> alive = alivePatients(cohort, context);
-		Set<Integer> inHivProgram = CalculationUtils.patientsThatPass(activeEnrollment(hivProgram, alive, context));
+		Set<Integer> inHivProgram = EmrCalculationUtils.patientsThatPass(activeEnrollment(hivProgram, alive, context));
 
 		CalculationResultMap medOrdersObss = allObs(getConcept(Dictionary.MEDICATION_ORDERS), cohort, context);
 
@@ -63,7 +63,7 @@ public class NeverTakenCtxOrDapsoneCalculation extends BaseEmrCalculation {
 				ListResult patientMedOrders = (ListResult) medOrdersObss.get(ptId);
 				if (patientMedOrders != null) {
 					// Look through list of medication order obs for any Dapsone or CTX
-					List<Obs> medOrderObsList = CalculationUtils.extractListResultValues(patientMedOrders);
+					List<Obs> medOrderObsList = EmrCalculationUtils.extractListResultValues(patientMedOrders);
 					for (Obs medOrderObs : medOrderObsList) {
 						if (medOrderObs.getValueCoded().equals(dapsone) || medOrderObs.getValueCoded().equals(ctx)) {
 							notTakingCtxOrDapsone = false;

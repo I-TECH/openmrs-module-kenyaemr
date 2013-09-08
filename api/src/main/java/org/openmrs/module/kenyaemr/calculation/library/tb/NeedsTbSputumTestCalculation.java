@@ -31,7 +31,7 @@ import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
-import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
+import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 
 /**
@@ -61,7 +61,7 @@ public class NeedsTbSputumTestCalculation extends BaseEmrCalculation implements 
 
 		// Get all patients who are alive and in TB program
 		Set<Integer> alive = alivePatients(cohort, context);
-		Set<Integer> inTbProgram = CalculationUtils.patientsThatPass(activeEnrollment(tbProgram, alive, context));
+		Set<Integer> inTbProgram = EmrCalculationUtils.patientsThatPass(activeEnrollment(tbProgram, alive, context));
 
 		// Get concepts
 		Concept tbsuspect = getConcept(Dictionary.DISEASE_SUSPECTED);

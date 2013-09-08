@@ -5,14 +5,21 @@
 
 	<!-- ===================== Program ===================== -->
 
-	<bean id="kenyaemr.program.tb" class="org.openmrs.module.kenyacore.program.ProgramDescriptor">
+	<bean id="kenyaemr.tb.program.tb" class="org.openmrs.module.kenyacore.program.ProgramDescriptor">
 		<property name="targetUuid" value="9f144a34-3a4a-44a9-8486-6b7af6cc64f6" />
 		<property name="eligibilityCalculation" value="org.openmrs.module.kenyaemr.calculation.library.tb.EligibleForTbProgramCalculation" />
-		<property name="defaultEnrollmentForm" ref="kenyaemr.form.tbEnrollment" />
-		<property name="defaultCompletionForm" ref="kenyaemr.form.tbCompletion" />
+		<property name="defaultEnrollmentForm" ref="kenyaemr.tb.form.enrollment" />
+		<property name="defaultCompletionForm" ref="kenyaemr.tb.form.completion" />
 		<property name="visitForms">
 			<set>
-				<ref bean="kenyaemr.form.tbFollowupVisit" />
+				<ref bean="kenyaemr.tb.form.followupVisit" />
+			</set>
+		</property>
+		<property name="reports">
+			<set>
+				<ref bean="kenyaemr.tb.report.inProgram" />
+				<ref bean="kenyaemr.tb.report.needsSputumTest" />
+				<ref bean="kenyaemr.tb.report.missingSputumResults" />
 			</set>
 		</property>
 		<property name="fragments">
@@ -28,7 +35,7 @@
 	<!-- ===================== Identifiers ===================== -->
 
 	<!-- District Registration Number -->
-	<bean id="kenyaemr.identifier.tbDistrictRegistration" class="org.openmrs.module.kenyacore.identifier.IdentifierDescriptor">
+	<bean id="kenyaemr.tb.identifier.districtRegistration" class="org.openmrs.module.kenyacore.identifier.IdentifierDescriptor">
 		<property name="targetUuid" value="d8ee3b8c-a8fc-4d6b-af6a-9423be5f8906" />
 		<property name="order" value="60" />
 	</bean>
@@ -36,7 +43,7 @@
 	<!-- ===================== Forms ===================== -->
 
 	<!-- TB Enrollment -->
-	<bean id="kenyaemr.form.tbEnrollment" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+	<bean id="kenyaemr.tb.form.enrollment" class="org.openmrs.module.kenyacore.form.FormDescriptor">
 		<property name="targetUuid" value="89994550-9939-40f3-afa6-173bce445c79" />
 		<property name="apps">
 			<set>
@@ -51,7 +58,7 @@
 	</bean>
 
 	<!-- TB Followup Visit -->
-	<bean id="kenyaemr.form.tbFollowupVisit" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+	<bean id="kenyaemr.tb.form.followupVisit" class="org.openmrs.module.kenyacore.form.FormDescriptor">
 		<property name="targetUuid" value="2daabb77-7ad6-4952-864b-8d23e109c69d" />
 		<property name="apps">
 			<set>
@@ -65,7 +72,7 @@
 	</bean>
 
 	<!-- TB Completion -->
-	<bean id="kenyaemr.form.tbCompletion" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+	<bean id="kenyaemr.tb.form.completion" class="org.openmrs.module.kenyacore.form.FormDescriptor">
 		<property name="targetUuid" value="4b296dd0-f6be-4007-9eb8-d0fd4e94fb3a" />
 		<property name="apps">
 			<set>
@@ -77,6 +84,29 @@
 		</property>
 		<property name="icon" value="kenyaui:forms/completion.png" />
 		<property name="htmlform" value="kenyaemr:tb/tbDiscontinuation.xml" />
+	</bean>
+
+	<!-- ===================== Reports ===================== -->
+
+	<bean id="kenyaemr.tb.report.inProgram" class="org.openmrs.module.kenyacore.report.CalculationReportDescriptor">
+		<property name="name" value="Patients in TB program" />
+		<property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.tb.InTbProgramCalculation" />
+		<property name="displayIdentifier" ref="kenyaemr.tb.identifier.districtRegistration" />
+		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
+	</bean>
+
+	<bean id="kenyaemr.tb.report.needsSputumTest" class="org.openmrs.module.kenyacore.report.CalculationReportDescriptor">
+		<property name="name" value="Patients due for TB sputum test" />
+		<property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.tb.NeedsTbSputumTestCalculation" />
+		<property name="displayIdentifier" ref="kenyaemr.tb.identifier.districtRegistration" />
+		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
+	</bean>
+
+	<bean id="kenyaemr.tb.report.missingSputumResults" class="org.openmrs.module.kenyacore.report.CalculationReportDescriptor">
+		<property name="name" value="Patients with missing TB sputum results" />
+		<property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.tb.MissingTbSputumResultsCalculation" />
+		<property name="displayIdentifier" ref="kenyaemr.tb.identifier.districtRegistration" />
+		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 	</bean>
 
 </beans>

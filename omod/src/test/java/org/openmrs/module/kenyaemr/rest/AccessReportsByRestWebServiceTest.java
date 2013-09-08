@@ -18,7 +18,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.module.kenyacore.report.ReportManager;
-import org.openmrs.module.kenyaemr.reporting.builder.indicator.Moh731Report;
+import org.openmrs.module.kenyacore.test.TestUtils;
+import org.openmrs.module.kenyaemr.reporting.builder.common.Moh731Report;
 import org.openmrs.module.reportingrest.web.controller.DataSetDefinitionController;
 import org.openmrs.module.reportingrest.web.controller.EvaluatedDataSetController;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -37,13 +38,13 @@ import java.util.Map;
 public class AccessReportsByRestWebServiceTest extends BaseModuleWebContextSensitiveTest {
 
 	@Autowired
-	DataSetDefinitionController dsdController;
+	private DataSetDefinitionController dsdController;
 
 	@Autowired
-	EvaluatedDataSetController evalController;
+	private EvaluatedDataSetController evalController;
 
 	@Autowired
-	ReportManager reportManager;
+	private ReportManager reportManager;
 
 	@Before
 	public void setup() throws Exception {
@@ -68,12 +69,12 @@ public class AccessReportsByRestWebServiceTest extends BaseModuleWebContextSensi
 			Assert.assertNotNull(simpleDSD.get("links"));
 		}
 
-		//printJson(result);
+		//TestUtils.printJson(result);
 	}
 
 	@Test
 	public void shouldEvaluateMoh731ReportViaRest() throws Exception {
-		String uuid = Moh731Report.class.getName() + ":MOH 731 DSD";
+		String uuid = "kenyaemr.common.report.moh731:MOH 731 DSD";
 
 		MockHttpServletRequest request = new MockHttpServletRequest();
 		request.addParameter("startDate", new String[] { "2012-01-01" });
@@ -95,6 +96,6 @@ public class AccessReportsByRestWebServiceTest extends BaseModuleWebContextSensi
 		Assert.assertNotNull(rows);
 		Assert.assertEquals(1, rows.size());
 
-		//printJson(result);
+		//TestUtils.printJson(evaledReport);
 	}
 }

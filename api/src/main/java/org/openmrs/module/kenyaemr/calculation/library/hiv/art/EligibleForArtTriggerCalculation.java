@@ -21,7 +21,7 @@ import org.openmrs.calculation.result.ListResult;
 import org.openmrs.calculation.result.ObsResult;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
-import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
+import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.util.EmrUtils;
 import org.openmrs.module.reporting.common.Age;
 import org.openmrs.util.OpenmrsUtil;
@@ -51,10 +51,10 @@ public class EligibleForArtTriggerCalculation extends BaseEmrCalculation {
 		CalculationResultMap ret = new CalculationResultMap();
 		for (Integer ptId : cohort) {
 			// Extract relevant obs for this patient
-			List<Obs> confirmedPosObss = CalculationUtils.extractListResultValues((ListResult) confirmedPositives.get(ptId));
-			List<Obs> whoStageObss = CalculationUtils.extractListResultValues((ListResult) whoStages.get(ptId));
-			List<Obs> cdCountObss = CalculationUtils.extractListResultValues((ListResult) cdCounts.get(ptId));
-			List<Obs> cdPercentObss = CalculationUtils.extractListResultValues((ListResult) cdPercents.get(ptId));
+			List<Obs> confirmedPosObss = EmrCalculationUtils.extractListResultValues((ListResult) confirmedPositives.get(ptId));
+			List<Obs> whoStageObss = EmrCalculationUtils.extractListResultValues((ListResult) whoStages.get(ptId));
+			List<Obs> cdCountObss = EmrCalculationUtils.extractListResultValues((ListResult) cdCounts.get(ptId));
+			List<Obs> cdPercentObss = EmrCalculationUtils.extractListResultValues((ListResult) cdPercents.get(ptId));
 
 			// Combine into one list
 			List<Obs> allObss = new ArrayList<Obs>();

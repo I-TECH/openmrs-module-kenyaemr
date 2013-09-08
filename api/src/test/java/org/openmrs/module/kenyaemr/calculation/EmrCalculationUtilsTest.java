@@ -27,23 +27,23 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Tests for {@link org.openmrs.module.kenyaemr.calculation.CalculationUtils}
+ * Tests for {@link EmrCalculationUtils}
  */
-public class CalculationUtilsTest {
+public class EmrCalculationUtilsTest {
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.calculation.CalculationUtils#dateAddDays(java.util.Date, int)
+	 * @see EmrCalculationUtils#dateAddDays(java.util.Date, int)
 	 * @verifies shift the date by the number of days
 	 */
 	@Test
 	public void dateAddDays_shouldShiftDateByNumberOfDays() {
-		Assert.assertEquals(TestUtils.date(2012, 1, 2), CalculationUtils.dateAddDays(TestUtils.date(2012, 1, 1), 1));
-		Assert.assertEquals(TestUtils.date(2012, 2, 1), CalculationUtils.dateAddDays(TestUtils.date(2012, 1, 1), 31));
-		Assert.assertEquals(TestUtils.date(2011, 12, 31), CalculationUtils.dateAddDays(TestUtils.date(2012, 1, 1), -1));
+		Assert.assertEquals(TestUtils.date(2012, 1, 2), EmrCalculationUtils.dateAddDays(TestUtils.date(2012, 1, 1), 1));
+		Assert.assertEquals(TestUtils.date(2012, 2, 1), EmrCalculationUtils.dateAddDays(TestUtils.date(2012, 1, 1), 31));
+		Assert.assertEquals(TestUtils.date(2011, 12, 31), EmrCalculationUtils.dateAddDays(TestUtils.date(2012, 1, 1), -1));
 	}
 
 	/**
-	 * @see CalculationUtils#ensureNullResults(org.openmrs.calculation.result.CalculationResultMap, java.util.Collection)
+	 * @see EmrCalculationUtils#ensureNullResults(org.openmrs.calculation.result.CalculationResultMap, java.util.Collection)
 	 */
 	@Test
 	public void ensureNullResults_shouldAddNullsForMissingPatients() {
@@ -53,7 +53,7 @@ public class CalculationUtilsTest {
 		map.put(999, new BooleanResult(true, null));
 
 		List<Integer> cohort = Arrays.asList(6, 7);
-		CalculationUtils.ensureNullResults(map, cohort);
+		EmrCalculationUtils.ensureNullResults(map, cohort);
 
 		// Map should now contain 3 patient ids with null for #6
 		Assert.assertEquals(3, map.size());
@@ -64,7 +64,7 @@ public class CalculationUtilsTest {
 	}
 
 	/**
-	 * @see CalculationUtils#ensureEmptyListResults(org.openmrs.calculation.result.CalculationResultMap, java.util.Collection)
+	 * @see EmrCalculationUtils#ensureEmptyListResults(org.openmrs.calculation.result.CalculationResultMap, java.util.Collection)
 	 */
 	@Test
 	public void ensureEmptyListResults_shouldAddEmptyListsForMissingPatients() {
@@ -74,7 +74,7 @@ public class CalculationUtilsTest {
 		map.put(999, new ListResult());
 
 		List<Integer> cohort = Arrays.asList(6, 7);
-		CalculationUtils.ensureEmptyListResults(map, cohort);
+		EmrCalculationUtils.ensureEmptyListResults(map, cohort);
 
 		// Map should now contain 3 patient ids with empty list for #6
 		Assert.assertEquals(3, map.size());
@@ -84,84 +84,84 @@ public class CalculationUtilsTest {
 	}
 
 	/**
-	 * @see CalculationUtils#extractListResultValues(org.openmrs.calculation.result.ListResult)
+	 * @see EmrCalculationUtils#extractListResultValues(org.openmrs.calculation.result.ListResult)
 	 */
 	@Test
 	public void extractListResultValues_shouldExtractListResultValues() {
 		// Test with empty list
 		ListResult emptyList = new ListResult();
-		List<Object> emptyValues = CalculationUtils.extractListResultValues(emptyList);
+		List<Object> emptyValues = EmrCalculationUtils.extractListResultValues(emptyList);
 		Assert.assertEquals(0, emptyValues.size());
 
 		// Test with non-empty list
 		ListResult result = new ListResult();
 		result.add(new SimpleResult(100, null));
 		result.add(new SimpleResult(200, null));
-		List<Integer> numericValues = CalculationUtils.extractListResultValues(result);
+		List<Integer> numericValues = EmrCalculationUtils.extractListResultValues(result);
 		Assert.assertEquals(2, numericValues.size());
 		Assert.assertEquals(new Integer(100), numericValues.get(0));
 		Assert.assertEquals(new Integer(200), numericValues.get(1));
 	}
 
 	/**
-	 * @see CalculationUtils#earliestDate(java.util.Date, java.util.Date)
+	 * @see EmrCalculationUtils#earliestDate(java.util.Date, java.util.Date)
 	 * @verifies return null if both dates are null
 	 */
 	@Test
 	public void earliestDate_shouldReturnNullIfBothDatesAreNull() {
-		Assert.assertNull(CalculationUtils.earliestDate(null, null));
+		Assert.assertNull(EmrCalculationUtils.earliestDate(null, null));
 	}
 
 	/**
-	 * @see CalculationUtils#earliestDate(java.util.Date, java.util.Date)
+	 * @see EmrCalculationUtils#earliestDate(java.util.Date, java.util.Date)
 	 * @verifies return non-null date if one date is null
 	 */
 	@Test
 	public void earliestDate_shouldReturnNonNullIfOneDateIsNull() {
 		Date date = TestUtils.date(2001, 3, 22);
-		Assert.assertEquals(date, CalculationUtils.earliestDate(null, date));
-		Assert.assertEquals(date, CalculationUtils.earliestDate(date, null));
+		Assert.assertEquals(date, EmrCalculationUtils.earliestDate(null, date));
+		Assert.assertEquals(date, EmrCalculationUtils.earliestDate(date, null));
 	}
 
 	/**
-	 * @see CalculationUtils#earliestDate(java.util.Date, java.util.Date)
+	 * @see EmrCalculationUtils#earliestDate(java.util.Date, java.util.Date)
 	 * @verifies return earliest date of two non-null dates
 	 */
 	@Test
 	public void earliestDate_shouldReturnEarliestDateOfTwoNonNullDates() {
 		Date date1 = TestUtils.date(2001, 3, 22);
 		Date date2 = TestUtils.date(2010, 2, 16);
-		Assert.assertEquals(date1, CalculationUtils.earliestDate(date1, date2));
-		Assert.assertEquals(date1, CalculationUtils.earliestDate(date2, date1));
+		Assert.assertEquals(date1, EmrCalculationUtils.earliestDate(date1, date2));
+		Assert.assertEquals(date1, EmrCalculationUtils.earliestDate(date2, date1));
 	}
 	//tests for latest obs date
 	/**
-	 * @see CalculationUtils#latestDate(java.util.Date, java.util.Date)
+	 * @see EmrCalculationUtils#latestDate(java.util.Date, java.util.Date)
 	 * @verifies return null if both dates are null
 	 */
 	@Test
 	public void latestDate_shouldReturnNullIfBothDatesAreNull() {
-		Assert.assertNull(CalculationUtils.latestDate(null, null));
+		Assert.assertNull(EmrCalculationUtils.latestDate(null, null));
 	}
 	/**
-	 * @see CalculationUtils#latestDate(java.util.Date, java.util.Date)
+	 * @see EmrCalculationUtils#latestDate(java.util.Date, java.util.Date)
 	 * @verifies return non-null date if one date is null
 	 */
 	@Test
 	public void latestDate_shouldReturnNonNullIfOneDateIsNull() {
 		Date date = TestUtils.date(2010, 11, 22);
-		Assert.assertEquals(date, CalculationUtils.latestDate(null, date));
-		Assert.assertEquals(date, CalculationUtils.latestDate(date, null));
+		Assert.assertEquals(date, EmrCalculationUtils.latestDate(null, date));
+		Assert.assertEquals(date, EmrCalculationUtils.latestDate(date, null));
 	}
 	/**
-	 * @see CalculationUtils#latestDate(java.util.Date, java.util.Date)
+	 * @see EmrCalculationUtils#latestDate(java.util.Date, java.util.Date)
 	 * @verifies return latest date of two non-null dates
 	 */
 	@Test
 	public void latestDate_shouldReturnLateststDateOfTwoNonNullDates() {
 		Date date1 = TestUtils.date(2010, 11, 22);
 		Date date2 = TestUtils.date(2011, 2, 20);
-		Assert.assertEquals(date2, CalculationUtils.latestDate(date1, date2));
-		Assert.assertEquals(date2, CalculationUtils.latestDate(date2, date1));
+		Assert.assertEquals(date2, EmrCalculationUtils.latestDate(date1, date2));
+		Assert.assertEquals(date2, EmrCalculationUtils.latestDate(date2, date1));
 	}
 }

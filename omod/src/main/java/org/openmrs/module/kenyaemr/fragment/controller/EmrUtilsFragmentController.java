@@ -23,10 +23,10 @@ import org.openmrs.Visit;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.context.ContextAuthenticationException;
 import org.openmrs.calculation.result.CalculationResult;
+import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.regimen.RegimenManager;
 import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyaemr.util.EmrUiUtils;
-import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtStartDateCalculation;
 import org.openmrs.module.kenyaemr.regimen.RegimenChange;
@@ -137,7 +137,7 @@ public class EmrUtilsFragmentController {
 	 * @return the duration interval
 	 */
 	public SimpleObject durationSinceStartArt(@RequestParam("patientId") Patient patient, @RequestParam("now") Date now, @SpringBean KenyaUiUtils kenyaUi) {
-		CalculationResult result = CalculationUtils.evaluateForPatient(InitialArtStartDateCalculation.class, null, patient);
+		CalculationResult result = EmrCalculationUtils.evaluateForPatient(InitialArtStartDateCalculation.class, null, patient);
 		Date artStartDate = result != null ? (Date) result.getValue() : null;
 
 		return SimpleObject.create("duration", artStartDate != null ? kenyaUi.formatInterval(artStartDate, now) : null);

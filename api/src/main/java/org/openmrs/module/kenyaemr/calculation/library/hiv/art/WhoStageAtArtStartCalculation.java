@@ -21,7 +21,7 @@ import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
-import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
+import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.util.EmrUtils;
 
 import java.util.Collection;
@@ -47,11 +47,11 @@ public class WhoStageAtArtStartCalculation extends BaseEmrCalculation {
 		CalculationResultMap ret = new CalculationResultMap();
 		for (Integer ptId : cohort) {
 			SimpleResult result = null;
-			Date artStartDate = CalculationUtils.datetimeResultForPatient(artStartDates, ptId);
+			Date artStartDate = EmrCalculationUtils.datetimeResultForPatient(artStartDates, ptId);
 
 			if (artStartDate != null) {
 				CalculationResultMap pregStatusObss = lastObsOnOrBeforeDate(pregnancyStatus, artStartDate, Collections.singleton(ptId), context);
-				Obs whoStageObs = CalculationUtils.obsResultForPatient(pregStatusObss, ptId);
+				Obs whoStageObs = EmrCalculationUtils.obsResultForPatient(pregStatusObss, ptId);
 
 				if (whoStageObs != null) {
 					result = new SimpleResult(EmrUtils.whoStage(whoStageObs.getValueCoded()), this);

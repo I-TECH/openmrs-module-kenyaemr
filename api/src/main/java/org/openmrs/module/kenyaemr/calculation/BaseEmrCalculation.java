@@ -158,7 +158,7 @@ public abstract class BaseEmrCalculation extends BaseCalculation implements Pati
 	 */
 	protected static CalculationResultMap lastObsOnOrBeforeDate(Concept concept, Date onOrBefore, Collection<Integer> cohort, PatientCalculationContext calculationContext) {
 		// Only interested in obs before now
-		onOrBefore = CalculationUtils.earliestDate(onOrBefore, calculationContext.getNow());
+		onOrBefore = EmrCalculationUtils.earliestDate(onOrBefore, calculationContext.getNow());
 
 		ObsForPersonDataDefinition def = new ObsForPersonDataDefinition("Last " + concept.getPreferredName(CoreConstants.LOCALE) + " on or before " + onOrBefore,
 				TimeQualifier.LAST, concept, onOrBefore, null);
@@ -174,7 +174,7 @@ public abstract class BaseEmrCalculation extends BaseCalculation implements Pati
 	 * @return the obss in a calculation result map
 	 */
 	protected static CalculationResultMap lastObsAtLeastDaysAgo(Concept concept, int atLeastDaysAgo, Collection<Integer> cohort, PatientCalculationContext calculationContext) {
-		Date onOrBefore = CalculationUtils.dateAddDays(calculationContext.getNow(), -atLeastDaysAgo);
+		Date onOrBefore = EmrCalculationUtils.dateAddDays(calculationContext.getNow(), -atLeastDaysAgo);
 		return lastObsOnOrBeforeDate(concept, onOrBefore, cohort, calculationContext);
 	}
 
@@ -326,7 +326,7 @@ public abstract class BaseEmrCalculation extends BaseCalculation implements Pati
 			if (result != null) {
 				for (SimpleResult r : (List<SimpleResult>) result.getValue()) {
 					Date candidate = ((DrugOrder) r.getValue()).getStartDate();
-					earliest = CalculationUtils.earliestDate(earliest, candidate);
+					earliest = EmrCalculationUtils.earliestDate(earliest, candidate);
 				}
 			}
 			ret.put(ptId, earliest == null ? null : new SimpleResult(earliest, null));

@@ -12,7 +12,7 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.reporting.builder.patientlist;
+package org.openmrs.module.kenyaemr.reporting.builder.hiv;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -21,33 +21,21 @@ import org.openmrs.Concept;
 import org.openmrs.Obs;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.DecliningCd4Calculation;
+import org.openmrs.module.kenyaemr.reporting.BasePatientListReport;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.data.converter.DataConverter;
 import org.openmrs.module.reporting.data.person.definition.ObsForPersonDataDefinition;
 import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
 import org.springframework.stereotype.Component;
 
-@Component
-public class DecliningCD4Report extends BasePatientCalculationReportBuilder {
+@Component("kenyaemr.hiv.report.decliningCd4")
+public class DecliningCD4Report extends BasePatientListReport {
 
 	public DecliningCD4Report() {
-		super(new DecliningCd4Calculation());
-	}
+		setName("Patients with declining CD4");
+		setCalculation(DecliningCd4Calculation.class);
 
-	/**
-	 * @see org.openmrs.module.kenyacore.report.ReportBuilder#getName()
-	 */
-	@Override
-	public String getName() {
-		return "Patients with declining CD4";
-	}
-
-	/**
-	 * @see org.openmrs.module.kenyacore.report.ReportBuilder#getTags()
-	 */
-	@Override
-	public String[] getTags() {
-		return new String[] { "facility", "hiv" };
+		// TODO set apps
 	}
 
 	@Override

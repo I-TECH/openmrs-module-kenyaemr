@@ -27,7 +27,7 @@ import org.openmrs.calculation.result.ListResult;
 import org.openmrs.calculation.result.ResultUtil;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyacore.CoreContext;
-import org.openmrs.module.kenyacore.CoreUtils;
+import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyaemr.regimen.RegimenDefinition;
 import org.openmrs.module.kenyaemr.regimen.RegimenManager;
 import org.openmrs.module.kenyaemr.regimen.RegimenOrder;
@@ -45,7 +45,7 @@ import java.util.Set;
 /**
  * Calculation utility methods, also used by some reporting classes
  */
-public class CalculationUtils {
+public class EmrCalculationUtils {
 
 	/**
 	 * Extracts patients from calculation result map with non-false/empty results
@@ -166,7 +166,7 @@ public class CalculationUtils {
 	 * @return the calculation result
 	 */
 	public static CalculationResult evaluateForPatient(Class <? extends PatientCalculation> calculationClass, String configuration, Patient patient) {
-		PatientCalculation calculation = CoreUtils.instantiateCalculation(calculationClass, configuration);
+		PatientCalculation calculation = CalculationUtils.instantiateCalculation(calculationClass, configuration);
 		return Context.getService(PatientCalculationService.class).evaluate(patient.getId(), calculation);
 	}
 

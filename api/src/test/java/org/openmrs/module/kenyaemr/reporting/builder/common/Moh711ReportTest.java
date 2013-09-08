@@ -12,7 +12,7 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.reporting.builder.indicator;
+package org.openmrs.module.kenyaemr.reporting.builder.common;
 
 import junit.framework.Assert;
 import org.junit.Before;
@@ -35,7 +35,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Arrays;
 
 /**
- * Tests for {@link org.openmrs.module.kenyaemr.reporting.builder.indicator.Moh711Report}
+ * Tests for {@link Moh711Report}
  */
 public class Moh711ReportTest extends BaseModuleContextSensitiveTest {
 
@@ -55,7 +55,7 @@ public class Moh711ReportTest extends BaseModuleContextSensitiveTest {
 		// Enroll #6 in the HIV program on June 15th
 		TestUtils.enrollInProgram(Context.getPatientService().getPatient(6), hivProgram, TestUtils.date(2012, 6, 15), null);
 
-		ReportDefinition rd = report.getReportDefinition();
+		ReportDefinition rd = report.getDefinition();
 
 		// Run report on all patients for June 2012
 		EvaluationContext context = ReportingTestUtils.reportingContext(Arrays.asList(2, 6, 7, 8, 999), TestUtils.date(2012, 6, 1), TestUtils.date(2012, 6, 30));

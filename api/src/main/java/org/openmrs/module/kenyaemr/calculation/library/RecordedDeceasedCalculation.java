@@ -22,7 +22,7 @@ import org.openmrs.calculation.result.ListResult;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
-import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
+import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 
 import java.util.Collection;
 import java.util.List;
@@ -48,7 +48,7 @@ public class RecordedDeceasedCalculation extends BaseEmrCalculation {
 
 			ListResult exitObssForPt = (ListResult) exitObss.get(ptId);
 			if (exitObssForPt != null) {
-				List<Obs> exitObsList = CalculationUtils.extractListResultValues(exitObssForPt);
+				List<Obs> exitObsList = EmrCalculationUtils.extractListResultValues(exitObssForPt);
 				for (Obs exitObs : exitObsList) {
 					if (died.equals(exitObs.getValueCoded())) {
 						recordedAsDead = true;

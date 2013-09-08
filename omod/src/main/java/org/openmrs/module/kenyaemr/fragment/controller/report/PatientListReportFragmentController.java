@@ -16,7 +16,9 @@ package org.openmrs.module.kenyaemr.fragment.controller.report;
 
 import org.apache.commons.collections.map.HashedMap;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyacore.report.ReportBuilder;
+import org.openmrs.module.kenyacore.report.ReportDescriptor;
+import org.openmrs.module.kenyaemr.reporting.BasePatientListReport;
+import org.openmrs.module.kenyaemr.reporting.ReportBuilder;
 import org.openmrs.module.reporting.dataset.DataSetRow;
 import org.openmrs.module.reporting.dataset.SimpleDataSet;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
@@ -37,7 +39,7 @@ public class PatientListReportFragmentController {
 	public void controller(@FragmentParam("builder") ReportBuilder builder,
 						   FragmentModel model) throws EvaluationException {
 
-		ReportDefinition definition = builder.getReportDefinition();
+		ReportDefinition definition = builder.getDefinition();
 
 		// Evaluate the report
 		EvaluationContext ec = new EvaluationContext();

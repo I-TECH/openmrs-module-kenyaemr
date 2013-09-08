@@ -6,57 +6,11 @@
 
 	<!-- ===================== Content ===================== -->
 
-	<import resource="content/kenyaemr.general.xml" />
+	<import resource="content/kenyaemr.common.xml" />
 	<import resource="content/kenyaemr.hiv.xml" />
 	<import resource="content/kenyaemr.mchms.xml" />
 	<import resource="content/kenyaemr.mchcs.xml" />
 	<import resource="content/kenyaemr.tb.xml" />
-
-	<!-- ===================== Configurations ===================== -->
-
-	<bean id="kenyaemr.config.metadata" class="org.openmrs.module.kenyacore.metadata.MetadataConfiguration">
-		<property name="moduleId" value="kenyaemr" />
-		<property name="packages">
-			<map>
-				<entry key="29177ba6-a634-42d5-9314-e12689856ff1" value="metadata/Kenya_EMR_Core-33.zip" />
-				<entry key="d4b71375-f64a-442d-a0c2-9f507c432925" value="metadata/Kenya_EMR_Roles_and_Privileges-6.zip" />
-				<entry key="550a5db0-13be-486d-aec7-de05adac71e7" value="metadata/Kenya_EMR_Drugs-1.zip" />
-				<entry key="5856a8fc-7ebc-46e8-929c-5ae2c780ab54" value="metadata/Kenya_EMR_Locations-10.zip" />
-				<entry key="eb6791b2-fab4-4915-ab73-4fee8ec84ca6" value="metadata/Kenya_EMR_Forms-25.zip" />
-			</map>
-		</property>
-	</bean>
-
-	<bean id="kenyaemr.config.form" class="org.openmrs.module.kenyacore.form.FormConfiguration">
-		<property name="generalPatientForms">
-			<set>
-				<ref bean="kenyaemr.form.hivFamilyHistory" />
-				<ref bean="kenyaemr.form.obstetricHistory" />
-				<ref bean="kenyaemr.form.medicalAndSurgicalHistory" />
-			</set>
-		</property>
-		<property name="generalVisitForms">
-			<set>
-				<ref bean="kenyaemr.form.triage" />
-				<ref bean="kenyaemr.form.clinicalEncounter" />
-				<ref bean="kenyaemr.form.labResults" />
-				<ref bean="kenyaemr.form.otherMedications" />
-				<ref bean="kenyaemr.form.progressNote" />
-			</set>
-		</property>
-	</bean>
-
-	<bean id="kenyaemr.config.regimen" class="org.openmrs.module.kenyaemr.regimen.RegimenConfiguration">
-		<property name="definitionsPath" value="regimens.xml" />
-	</bean>
-
-	<bean id="kenyaemr.config.lab" class="org.openmrs.module.kenyacore.lab.LabConfiguration">
-		<property name="generalCatalogs">
-			<set>
-				<ref bean="kenyaemr.catalog.standard" />
-			</set>
-		</property>
-	</bean>
 
 	<!-- ===================== App descriptors ===================== -->
 
@@ -113,7 +67,7 @@
 	<!-- Acts as a base class and means we can avoid specifying the full class name each time -->
 	<bean name="TestDefinition" class="org.openmrs.module.kenyacore.lab.LabTestDefinition" abstract="true" />
 
-	<bean id="kenyaemr.catalog.standard" class="org.openmrs.module.kenyacore.lab.LabTestCatalog">
+	<bean id="kenyaemr.common.lab.standardcatalog" class="org.openmrs.module.kenyacore.lab.LabTestCatalog">
 		<property name="tests">
 			<map>
 				<entry key="Urine Tests">
