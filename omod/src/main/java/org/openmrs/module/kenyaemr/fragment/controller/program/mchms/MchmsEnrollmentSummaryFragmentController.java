@@ -41,7 +41,7 @@ public class MchmsEnrollmentSummaryFragmentController {
 
 		Obs ancNoObs = EmrUtils.firstObsInProgram(enrollment, Dictionary.getConcept(Dictionary.ANTENATAL_CASE_NUMBER));
 		if (ancNoObs != null) {
-			dataPoints.put("ANC No", ancNoObs.getValueNumeric());
+			dataPoints.put("ANC No", ancNoObs.getValueNumeric().intValue());
 		}
 		Obs lmpObs = EmrUtils.firstObsInProgram(enrollment, Dictionary.getConcept(Dictionary.LAST_MONTHLY_PERIOD));
 		if (lmpObs != null) {
