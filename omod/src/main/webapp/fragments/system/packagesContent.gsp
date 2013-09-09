@@ -4,7 +4,7 @@
 <table class="ke-table-vertical">
 	<thead>
 		<tr>
-			<th>Name</th>
+			<th>${ ui.message("general.name") }</th>
 			<th>Version</th>
 		</tr>
 	</thead>

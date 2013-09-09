@@ -4,7 +4,7 @@
 <table class="ke-table-vertical">
 	<thead>
 		<tr>
-			<th>Name</th>
+			<th>${ ui.message("general.name") }</th>
 			<th style="text-align: left">Format</th>
 		</tr>
 	</thead>
@@ -12,7 +12,7 @@
 	<% identifiers.each { identifier -> %>
 		<tr>
 			<td>${ identifier.name }</td>
-			<td style="text-align: left">${ identifier.format ?: "" }</td>
+			<td>${ identifier.format ?: "" }</td>
 		</tr>
 	<% } %>
 	</tbody>
