@@ -322,18 +322,18 @@
 												<obsgroup groupingConceptId="1442AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
 													<tr>
 														<td>
-															<obs id="drug" class="arv-med" conceptId="966AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+															<obs id="drug-${medId}" class="arv-med" conceptId="966AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 																 answerConceptIds="70056AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,71647AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,74807AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,75523AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,75628AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,77995AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,78643AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,79040AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,80487AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,80586AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,83412AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,84309AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,84795AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,86663AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 														</td>
 														<td>
-															<obs id="dose" class="arv-med" conceptId="1443AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+															<obs id="dose-${medId}" class="arv-med" conceptId="1443AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 														</td>
 														<td>
-															<obs id="dose-units" class="arv-med" conceptId="1444AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+															<obs id="dose-units-${medId}" class="arv-med" conceptId="1444AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 																 size="5"/>
 														</td>
 														<td>
-															<obs id="frequency"
+															<obs id="frequency-${medId}"
 																 class="arv-med"
 																 conceptId="160855AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 																 answerConceptIds="160862AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160863AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160864AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160865AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160858AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160866AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160870AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
@@ -341,10 +341,10 @@
 																	/>
 														</td>
 														<td>
-															<obs id="duration" class="arv-med" conceptId="159368AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+															<obs id="duration-${medId}" class="arv-med" conceptId="159368AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 														</td>
 														<td>
-															<obs id="duration-units"
+															<obs id="duration-units-${medId}"
 																 class="arv-med"
 																 conceptId="1732AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 																 answerConceptIds="1822AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1072AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1073AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1074AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
@@ -353,9 +353,9 @@
 													</tr>
 												</obsgroup>
 											</template>
-											<render n="1" concept="Drug"/>
-											<render n="2" concept="Drug"/>
-											<render n="3" concept="Drug"/>
+											<render medId="1" n="1" concept="Drug"/>
+											<render medId="2" n="2" concept="Drug"/>
+											<render medId="3" n="3" concept="Drug"/>
 										</repeat>
 									</table>
 								</td>
