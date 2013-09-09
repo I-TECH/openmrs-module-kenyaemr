@@ -14,11 +14,13 @@
 
 package org.openmrs.module.kenyaemr.reporting;
 
+import org.openmrs.PatientIdentifierType;
 import org.openmrs.calculation.patient.PatientCalculation;
 import org.openmrs.module.kenyacore.calculation.CalculationUtils;
-import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyacore.report.CalculationReportDescriptor;
-import org.openmrs.module.kenyaemr.Metadata;
+import org.openmrs.module.kenyacore.report.ReportDescriptor;
+import org.openmrs.module.kenyacore.report.builder.Builds;
+import org.openmrs.module.kenyacore.report.builder.ReportBuilder;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.EmrCalculationCohortDefinition;
 import org.openmrs.module.reporting.data.patient.definition.PatientIdDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.PatientIdentifierDataDefinition;
@@ -27,29 +29,19 @@ import org.openmrs.module.reporting.data.person.definition.GenderDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.PreferredNameDataDefinition;
 import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
+import org.springframework.stereotype.Component;
 
 /**
- * Base implementation for calculation based patient list reports
+ * Generic report builder class for calculation based patient list reports
  */
-public abstract class BasePatientListReport extends CalculationReportDescriptor implements ReportBuilder {
+public abstract class BaseCalculationReportBuilder implements ReportBuilder {
 
-	/**
-	 * @see ReportBuilder#isExcelRenderable()
-	 */
 	@Override
-	public boolean isExcelRenderable() {
-		return false;
-	}
-
-	/**
-	 * @see ReportBuilder#getDefinition()
-	 */
-	@Override
-	public ReportDefinition getDefinition() {
+	public ReportDefinition getDefinition(ReportDescriptor report) {
 		ReportDefinition rd = new ReportDefinition();
-		rd.setName(getName());
-		rd.setDescription(getDescription());
-		rd.addDataSetDefinition(buildDataSet(), null);
+		rd.setName(report.getName());
+		rd.setDescription(report.getDescription());
+		rd.addDataSetDefinition(buildDataSet((CalculationReportDescriptor) report), null);
 		return rd;
 	}
 
@@ -57,14 +49,14 @@ public abstract class BasePatientListReport extends CalculationReportDescriptor 
 	 * Builds the data set
 	 * @return the data set
 	 */
-	protected PatientDataSetDefinition buildDataSet() {
-		PatientCalculation calc = CalculationUtils.instantiateCalculation(getCalculation(), null);
+	protected PatientDataSetDefinition buildDataSet(CalculationReportDescriptor report) {
+		PatientCalculation calc = CalculationUtils.instantiateCalculation(report.getCalculation(), null);
 		EmrCalculationCohortDefinition cd = new EmrCalculationCohortDefinition(calc);
-		cd.setName(getName());
+		cd.setName(report.getName());
 
-		PatientDataSetDefinition dsd = new PatientDataSetDefinition(getName() + " DSD");
+		PatientDataSetDefinition dsd = new PatientDataSetDefinition(report.getName() + " DSD");
 		dsd.addRowFilter(EmrReportingUtils.map(cd));
-		addColumns(dsd);
+		addColumns(report, dsd);
 		return dsd;
 	}
 
@@ -72,21 +64,23 @@ public abstract class BasePatientListReport extends CalculationReportDescriptor 
 	 * Override this if you don't want the default (HIV ID, name, sex, age)
 	 * @param dsd this will be modified by having columns added
 	 */
-	protected void addColumns(PatientDataSetDefinition dsd) {
-		addStandardColumns(dsd);
+	protected void addColumns(CalculationReportDescriptor report, PatientDataSetDefinition dsd) {
+		addStandardColumns(report, dsd);
 	}
 
 	/**
 	 * Adds the standard patient list columns
 	 * @param dsd the data set definition
 	 */
-	protected void addStandardColumns(PatientDataSetDefinition dsd) {
+	protected void addStandardColumns(CalculationReportDescriptor report, PatientDataSetDefinition dsd) {
 		dsd.addColumn("id", new PatientIdDataDefinition(), "");
 		dsd.addColumn("Name", new PreferredNameDataDefinition(), "");
 		dsd.addColumn("Age", new AgeDataDefinition(), "");
 		dsd.addColumn("Sex", new GenderDataDefinition(), "");
 
-		// TODO change displayed identifier using getDisplayIdentifier().getTarget()
-		dsd.addColumn("UPN", new PatientIdentifierDataDefinition("UPN", MetadataUtils.getPatientIdentifierType(Metadata.PatientIdentifierType.UNIQUE_PATIENT_NUMBER)), "");
+		if (report.getDisplayIdentifier() != null) {
+			PatientIdentifierType idType = report.getDisplayIdentifier().getTarget();
+			dsd.addColumn(idType.getName(), new PatientIdentifierDataDefinition(idType.getName(), idType), "");
+		}
 	}
 }

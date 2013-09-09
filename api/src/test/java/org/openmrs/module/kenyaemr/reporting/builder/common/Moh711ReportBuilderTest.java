@@ -20,6 +20,8 @@ import org.junit.Test;
 import org.openmrs.Program;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
+import org.openmrs.module.kenyacore.report.IndicatorReportDescriptor;
+import org.openmrs.module.kenyacore.report.ReportManager;
 import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.test.ReportingTestUtils;
 import org.openmrs.module.kenyacore.test.TestUtils;
@@ -35,40 +37,47 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Arrays;
 
 /**
- * Tests for {@link Moh731Report}
+ * Tests for {@link Moh711ReportBuilder}
  */
-public class Moh731ReportTest extends BaseModuleContextSensitiveTest {
+public class Moh711ReportBuilderTest extends BaseModuleContextSensitiveTest {
 
 	@Autowired
-	private Moh731Report report;
+	private ReportManager reportManager;
+
+	@Autowired
+	private Moh711ReportBuilder reportBuilder;
 
 	@Before
 	public void setup() throws Exception {
 		executeDataSet("test-data.xml");
 		executeDataSet("test-drugdata.xml");
+
+		reportManager.refresh();
 	}
 
 	@Test
 	public void test() throws Exception {
 		Program hivProgram = MetadataUtils.getProgram(Metadata.Program.HIV);
 
-		// Enroll patient #6 in the HIV program
-		TestUtils.enrollInProgram(Context.getPatientService().getPatient(6), hivProgram, TestUtils.date(2012, 1, 15), null);
+		// Enroll #6 in the HIV program on June 15th
+		TestUtils.enrollInProgram(Context.getPatientService().getPatient(6), hivProgram, TestUtils.date(2012, 6, 15), null);
 
-		ReportDefinition rd = report.getDefinition();
+		IndicatorReportDescriptor report = (IndicatorReportDescriptor) reportManager.getReportDescriptor("kenyaemr.common.report.moh711");
+		ReportDefinition rd = reportBuilder.getDefinition(report);
 
-		// Run report on all patients for Jan 2012
-		EvaluationContext context = ReportingTestUtils.reportingContext(Arrays.asList(2, 6, 7, 8, 999), TestUtils.date(2012, 1, 1), TestUtils.date(2012, 1, 31));
+		// Run report on all patients for June 2012
+		EvaluationContext context = ReportingTestUtils.reportingContext(Arrays.asList(2, 6, 7, 8, 999), TestUtils.date(2012, 6, 1), TestUtils.date(2012, 6, 30));
 
 		ReportData data = Context.getService(ReportDefinitionService.class).evaluate(rd, context);
 
+		ReportingTestUtils.printReport(data);
+
 		Assert.assertEquals(1, data.getDataSets().size());
-		MapDataSet dataSet = (MapDataSet) data.getDataSets().get("MOH 731 DSD");
+		MapDataSet dataSet = (MapDataSet) data.getDataSets().get("K: ART");
 		Assert.assertNotNull(dataSet);
 
-		Assert.assertEquals(1, ((IndicatorResult) dataSet.getColumnValue(1, "HV03-09")).getValue().intValue());
-		Assert.assertEquals(1, ((IndicatorResult) dataSet.getColumnValue(1, "HV03-13")).getValue().intValue());
-
-		ReportingTestUtils.printReport(data);
+		Assert.assertEquals(1, ((IndicatorResult) dataSet.getColumnValue(1, "K1-7-MP")).getValue().intValue());
+		Assert.assertEquals(1, ((IndicatorResult) dataSet.getColumnValue(1, "K1-7-M")).getValue().intValue());
+		Assert.assertEquals(1, ((IndicatorResult) dataSet.getColumnValue(1, "K1-7-T")).getValue().intValue());
 	}
 }

@@ -19,13 +19,9 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.openmrs.module.appframework.AppDescriptor;
-import org.openmrs.module.kenyacore.report.AbstractReportDescriptor;
+import org.openmrs.module.kenyacore.report.IndicatorReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportManager;
-import org.openmrs.module.kenyaemr.reporting.BaseIndicatorReport;
-import org.openmrs.module.kenyaemr.reporting.EmrReportingUtils;
-import org.openmrs.module.kenyaemr.reporting.ReportBuilder;
 import org.openmrs.module.kenyaemr.util.EmrUiUtils;
 import org.openmrs.module.kenyaui.annotation.SharedPage;
 import org.openmrs.module.reporting.common.DateUtil;
@@ -51,15 +47,12 @@ public class RunReportPageController {
 		ReportDescriptor report = reportManager.getReportDescriptor(reportId);
 		emrUi.checkReportAccess(pageRequest, report);
 
-		ReportBuilder builder = EmrReportingUtils.getReportBuilder(report);
-		boolean isIndicator = builder instanceof BaseIndicatorReport;
-
-
+		boolean isIndicator = report instanceof IndicatorReportDescriptor;
+		boolean isExcelRenderable = isIndicator && ((IndicatorReportDescriptor) report).getTemplate() != null;
 
 		model.addAttribute("report", report);
-		model.addAttribute("builder", builder);
 		model.addAttribute("isIndicator", isIndicator);
-		model.addAttribute("excelRenderable", builder.isExcelRenderable());
+		model.addAttribute("excelRenderable", isExcelRenderable);
 		model.addAttribute("returnUrl", returnUrl);
 
 		if (isIndicator) {

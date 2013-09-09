@@ -1,7 +1,5 @@
 package org.openmrs.module.kenyaemr.reporting;
 
-import org.openmrs.module.kenyacore.report.CalculationReportDescriptor;
-import org.openmrs.module.kenyacore.report.ReportDescriptor;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameterizable;
@@ -16,23 +14,6 @@ import java.util.Map;
  * Utility methods for reporting
  */
 public class EmrReportingUtils {
-
-	/**
-	 * Fetches a report builder for the given report
-	 * @param report the descriptor
-	 * @return the builder
-	 */
-	public static ReportBuilder getReportBuilder(ReportDescriptor report) {
-		// Can report build itself?
-		if (report instanceof ReportBuilder) {
-			return (ReportBuilder) report;
-		}
-		// Is it a calculation-based report which can be built by a generic builder?
-		else if (report instanceof CalculationReportDescriptor) {
-			return new GenericCalculationReportBuilder((CalculationReportDescriptor) report);
-		}
-		throw new IllegalArgumentException("Can't find builder for report " + report.getId());
-	}
 
 	/**
 	 * Maps a parameterizable item with no parameters

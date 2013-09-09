@@ -21,7 +21,8 @@ import org.openmrs.Program;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
-import org.openmrs.module.kenyacore.report.AbstractReportDescriptor;
+import org.openmrs.module.kenyacore.report.CalculationReportDescriptor;
+import org.openmrs.module.kenyacore.report.ReportManager;
 import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.test.ReportingTestUtils;
 import org.openmrs.module.kenyacore.test.TestUtils;
@@ -30,19 +31,28 @@ import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 
 /**
- * Tests for {@link DecliningCD4Report}
+ * Tests for {@link DecliningCd4ReportBuilder}
  */
-public class DecliningCD4ReportTest extends BaseModuleContextSensitiveTest {
+public class DecliningCd4ReportBuilderTest extends BaseModuleContextSensitiveTest {
+
+	@Autowired
+	private ReportManager reportManager;
+
+	@Autowired
+	private DecliningCd4ReportBuilder reportBuilder;
 
 	@Before
 	public void setup() throws Exception {
 		executeDataSet("test-data.xml");
+
+		reportManager.refresh();
 	}
 
 	@Test
@@ -70,8 +80,8 @@ public class DecliningCD4ReportTest extends BaseModuleContextSensitiveTest {
 
 		Context.flushSession();
 
-		DecliningCD4Report report = new DecliningCD4Report();
-		ReportDefinition rd = report.getDefinition();
+		CalculationReportDescriptor report = (CalculationReportDescriptor) reportManager.getReportDescriptor("kenyaemr.hiv.report.decliningCd4");
+		ReportDefinition rd = reportBuilder.getDefinition(report);
 		EvaluationContext ec = new EvaluationContext();
 
 		try {

@@ -16,8 +16,9 @@ package org.openmrs.module.kenyaemr.reporting.builder.common;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.module.appframework.AppDescriptor;
-import org.openmrs.module.kenyaemr.reporting.BaseIndicatorReport;
+import org.openmrs.module.kenyacore.report.IndicatorReportDescriptor;
+import org.openmrs.module.kenyacore.report.builder.Builds;
+import org.openmrs.module.kenyaemr.reporting.BaseIndicatorReportBuilder;
 import org.openmrs.module.kenyaemr.reporting.EmrReportingUtils;
 import org.openmrs.module.kenyaemr.reporting.dataset.definition.MergingDataSetDefinition;
 import org.openmrs.module.kenyaemr.reporting.library.indicator.PwpIndicatorLibrary;
@@ -46,10 +47,11 @@ import static org.openmrs.module.kenyaemr.reporting.EmrReportingUtils.map;
 /**
  * MOH 731 report
  */
-@Component("kenyaemr.common.report.moh731")
-public class Moh731Report extends BaseIndicatorReport {
+@Component
+@Builds("kenyaemr.common.report.moh731")
+public class Moh731ReportBuilder extends BaseIndicatorReportBuilder {
 
-	protected static final Log log = LogFactory.getLog(Moh731Report.class);
+	protected static final Log log = LogFactory.getLog(Moh731ReportBuilder.class);
 
 	@Autowired
 	private CommonCohortLibrary commonCohorts;
@@ -79,22 +81,8 @@ public class Moh731Report extends BaseIndicatorReport {
 	private Map<String, CohortIndicator> cohortIndicators;
 	private Map<String, Indicator> nonCohortIndicators;
 
-	public Moh731Report() {
-		setName("MOH 731");
-		setDescription("Comprehensive HIV/AIDS Facility Reporting Form - NASCOP");
-		setApps(null); // TODO
-	}
-
 	/**
-	 * @see org.openmrs.module.kenyaemr.reporting.BaseIndicatorReport#getExcelTemplateResourcePath()
-	 */
-	@Override
-	public String getExcelTemplateResourcePath() {
-		return "report_templates/Moh731Report.xls";
-	}
-
-	/**
-	 * @see org.openmrs.module.kenyaemr.reporting.BaseIndicatorReport#buildDataSets()
+	 * @see org.openmrs.module.kenyaemr.reporting.BaseIndicatorReportBuilder#buildDataSets()
 	 */
 	@Override
 	public List<DataSetDefinition> buildDataSets() {
@@ -253,19 +241,19 @@ public class Moh731Report extends BaseIndicatorReport {
 	 */
 	private DataSetDefinition createDataSet() {
 		CohortIndicatorDataSetDefinition cohortDsd = new CohortIndicatorDataSetDefinition();
-		cohortDsd.setName(getName() + " Cohort DSD");
+		cohortDsd.setName(report.getName() + " Cohort DSD");
 		cohortDsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		cohortDsd.addParameter(new Parameter("endDate", "End Date", Date.class));
 		cohortDsd.addDimension("age", EmrReportingUtils.map(commonDimensions.age(), "onDate=${endDate}"));
 		cohortDsd.addDimension("gender", EmrReportingUtils.map(commonDimensions.gender()));
 
 		SimpleIndicatorDataSetDefinition nonCohortDsd = new SimpleIndicatorDataSetDefinition();
-		nonCohortDsd.setName(getName() + " Non-cohort DSD");
+		nonCohortDsd.setName(report.getName() + " Non-cohort DSD");
 		nonCohortDsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		nonCohortDsd.addParameter(new Parameter("endDate", "End Date", Date.class));
 
 		MergingDataSetDefinition mergedDsd = new MergingDataSetDefinition();
-		mergedDsd.setName(getName() + " DSD");
+		mergedDsd.setName(report.getName() + " DSD");
 		mergedDsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		mergedDsd.addParameter(new Parameter("endDate", "End Date", Date.class));
 		mergedDsd.addDataSetDefinition(cohortDsd);

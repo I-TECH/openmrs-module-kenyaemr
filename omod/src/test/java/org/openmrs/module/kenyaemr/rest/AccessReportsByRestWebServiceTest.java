@@ -18,8 +18,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.module.kenyacore.report.ReportManager;
-import org.openmrs.module.kenyacore.test.TestUtils;
-import org.openmrs.module.kenyaemr.reporting.builder.common.Moh731Report;
 import org.openmrs.module.reportingrest.web.controller.DataSetDefinitionController;
 import org.openmrs.module.reportingrest.web.controller.EvaluatedDataSetController;
 import org.openmrs.module.webservices.rest.SimpleObject;

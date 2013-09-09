@@ -36,7 +36,7 @@
 				}
 				function downloadAsExcel() {
 					var startDate = jq('#report-startdate').val();
-					location.href = ui.pageLink('kenyaemr', 'downloadReportAsExcel', { reportId: '${ report.id }', startDate: startDate });
+					location.href = ui.pageLink('kenyaemr', 'downloadReportAsExcel', { appId: '${ currentApp.id }', reportId: '${ report.id }', startDate: startDate });
 				}
 			</script>
 			<div class="ke-panel-content" style="text-align: center">
@@ -62,8 +62,8 @@
 
 <div class="ke-page-content">
 <% if (isIndicator) { %>
-	${ ui.includeFragment("kenyaemr", "report/indicatorReport", [ builder: builder ]) }
+	${ ui.includeFragment("kenyaemr", "report/indicatorReport", [ report: report ]) }
 <% } else { %>
-	${ ui.includeFragment("kenyaemr", "report/patientListReport", [ builder: builder ]) }
+	${ ui.includeFragment("kenyaemr", "report/patientListReport", [ report: report ]) }
 <% } %>
 </div>

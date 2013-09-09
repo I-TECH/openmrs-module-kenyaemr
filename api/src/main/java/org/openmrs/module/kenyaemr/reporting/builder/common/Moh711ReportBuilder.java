@@ -17,9 +17,10 @@ package org.openmrs.module.kenyaemr.reporting.builder.common;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Concept;
-import org.openmrs.module.appframework.AppDescriptor;
+import org.openmrs.module.kenyacore.report.IndicatorReportDescriptor;
+import org.openmrs.module.kenyacore.report.builder.Builds;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.reporting.BaseIndicatorReport;
+import org.openmrs.module.kenyaemr.reporting.BaseIndicatorReportBuilder;
 import org.openmrs.module.kenyaemr.reporting.EmrReportingUtils;
 import org.openmrs.module.kenyaemr.reporting.ColumnParameters;
 import org.openmrs.module.kenyaemr.reporting.library.cohort.ArtCohortLibrary;
@@ -40,10 +41,11 @@ import static org.openmrs.module.kenyaemr.reporting.EmrReportingUtils.map;
 /**
  * MOH 711 report
  */
-@Component("kenyaemr.common.report.moh711")
-public class Moh711Report extends BaseIndicatorReport {
+@Component
+@Builds("kenyaemr.common.report.moh711")
+public class Moh711ReportBuilder extends BaseIndicatorReportBuilder {
 
-	protected static final Log log = LogFactory.getLog(Moh711Report.class);
+	protected static final Log log = LogFactory.getLog(Moh711ReportBuilder.class);
 
 	@Autowired
 	private CommonCohortLibrary commonCohorts;
@@ -60,14 +62,8 @@ public class Moh711Report extends BaseIndicatorReport {
 	@Autowired
 	private ArtIndicatorLibrary artIndicators;
 
-	public Moh711Report() {
-		setName("MOH 711");
-		setDescription("National Integrated Form for Reproductive Health, HIV/AIDS, Malaria, TB and Child Nutrition");
-		setApps(null); // TODO
-	}
-
 	/**
-	 * @see org.openmrs.module.kenyaemr.reporting.BaseIndicatorReport#buildDataSets()
+	 * @see org.openmrs.module.kenyaemr.reporting.BaseIndicatorReportBuilder#buildDataSets()
 	 */
 	@Override
 	public List<DataSetDefinition> buildDataSets() {
