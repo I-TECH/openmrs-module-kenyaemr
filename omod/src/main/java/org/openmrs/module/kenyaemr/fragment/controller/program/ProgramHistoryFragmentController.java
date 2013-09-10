@@ -17,14 +17,18 @@ package org.openmrs.module.kenyaemr.fragment.controller.program;
 import java.util.*;
 
 import org.openmrs.*;
+import org.openmrs.module.appframework.AppDescriptor;
 import org.openmrs.module.kenyacore.form.FormDescriptor;
+import org.openmrs.module.kenyacore.form.FormManager;
 import org.openmrs.module.kenyacore.program.ProgramDescriptor;
 import org.openmrs.module.kenyacore.program.ProgramManager;
+import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.FragmentModel;
+import org.openmrs.ui.framework.page.PageRequest;
 
 /**
  * Patient program history fragment
@@ -36,7 +40,12 @@ public class ProgramHistoryFragmentController {
 						   @FragmentParam("program") Program program,
 						   @FragmentParam("showClinicalData") boolean showClinicalData,
 						   UiUtils ui,
-						   @SpringBean ProgramManager programManager) {
+						   PageRequest pageRequest,
+						   @SpringBean ProgramManager programManager,
+						   @SpringBean FormManager formManager,
+						   @SpringBean KenyaUiUtils kenyaUi) {
+
+		AppDescriptor currentApp = kenyaUi.getCurrentApp(pageRequest);
 
 		ProgramDescriptor descriptor = programManager.getProgramDescriptor(program);
 		boolean patientIsEligible = programManager.isPatientEligibleFor(patient, program);
@@ -51,14 +60,10 @@ public class ProgramHistoryFragmentController {
 			}
 		}
 
-		// Per-patient forms need simplified and sorted if there are any
+		// Per-patient forms need simplified if there are any
 		List<SimpleObject> patientForms = new ArrayList<SimpleObject>();
-
 		if (descriptor.getPatientForms() != null) {
-			Set<FormDescriptor> sortedPatientForms = new TreeSet<FormDescriptor>();
-			sortedPatientForms.addAll(descriptor.getPatientForms());
-
-			for (FormDescriptor form : sortedPatientForms) {
+			for (FormDescriptor form : formManager.getProgramFormsForPatient(currentApp, program, patient)) {
 				patientForms.add(ui.simplifyObject(form.getTarget()));
 			}
 		}

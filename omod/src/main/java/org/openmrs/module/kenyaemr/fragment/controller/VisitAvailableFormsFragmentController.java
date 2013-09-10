@@ -48,7 +48,7 @@ public class VisitAvailableFormsFragmentController {
 
 		List<SimpleObject> availableForms = new ArrayList<SimpleObject>();
 
-		for (FormDescriptor descriptor : formManager.getUncompletedFormsForVisit(currentApp, visit)) {
+		for (FormDescriptor descriptor : formManager.getAllUncompletedFormsForVisit(currentApp, visit)) {
 			availableForms.add(ui.simplifyObject(descriptor.getTarget()));
 		}
 
