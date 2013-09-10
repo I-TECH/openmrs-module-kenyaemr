@@ -54,7 +54,7 @@
 			</set>
 		</property>
 		<property name="icon" value="kenyaui:forms/generic.png" />
-		<property name="htmlform" value="kenyaemr:tb/tbEnrollment.xml" />
+		<property name="htmlform" value="kenyaemr:tb/tbEnrollment.html" />
 	</bean>
 
 	<!-- TB Followup Visit -->
@@ -67,7 +67,7 @@
 			</set>
 		</property>
 		<property name="icon" value="kenyaui:forms/generic.png" />
-		<property name="htmlform" value="kenyaemr:tb/tbFollowupVisit.xml" />
+		<property name="htmlform" value="kenyaemr:tb/tbFollowupVisit.html" />
 		<property name="order" value="202010" />
 	</bean>
 
@@ -83,7 +83,7 @@
 			</set>
 		</property>
 		<property name="icon" value="kenyaui:forms/completion.png" />
-		<property name="htmlform" value="kenyaemr:tb/tbDiscontinuation.xml" />
+		<property name="htmlform" value="kenyaemr:tb/tbDiscontinuation.html" />
 	</bean>
 
 	<!-- ===================== Reports ===================== -->

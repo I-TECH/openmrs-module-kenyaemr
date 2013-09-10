@@ -60,7 +60,7 @@
 			</set>
 		</property>
 		<property name="icon" value="kenyaui:forms/generic.png" />
-		<property name="htmlform" value="kenyaemr:hiv/hivEnrollment.xml" />
+		<property name="htmlform" value="kenyaemr:hiv/hivEnrollment.html" />
 	</bean>
 
 	<!-- Clinical Encounter - HIV Addendum -->
@@ -73,7 +73,7 @@
 			</set>
 		</property>
 		<property name="icon" value="kenyaui:forms/generic.png" />
-		<property name="htmlform" value="kenyaemr:hiv/hivClinicalEncounterAddendum.xml" />
+		<property name="htmlform" value="kenyaemr:hiv/hivClinicalEncounterAddendum.html" />
 		<property name="order" value="201010" />
 	</bean>
 
@@ -89,7 +89,7 @@
 			</set>
 		</property>
 		<property name="icon" value="kenyaui:forms/completion.png" />
-		<property name="htmlform" value="kenyaemr:hiv/hivDiscontinuation.xml" />
+		<property name="htmlform" value="kenyaemr:hiv/hivDiscontinuation.html" />
 	</bean>
 
 	<!-- MOH257 Face Page -->
@@ -101,7 +101,7 @@
 			</set>
 		</property>
 		<property name="icon" value="kenyaui:forms/moh257.png" />
-		<property name="htmlform" value="kenyaemr:hiv/moh257FacePage.xml" />
+		<property name="htmlform" value="kenyaemr:hiv/moh257FacePage.html" />
 	</bean>
 
 	<!-- MOH257 Visit Summary -->
@@ -114,7 +114,7 @@
 		</property>
 		<property name="autoCreateVisitTypeUuid" value="3371a4d4-f66f-4454-a86d-92c7b3da990c" />
 		<property name="icon" value="kenyaui:forms/moh257.png" />
-		<property name="htmlform" value="kenyaemr:hiv/moh257VisitSummary.xml" />
+		<property name="htmlform" value="kenyaemr:hiv/moh257VisitSummary.html" />
 		<property name="order" value="201030" />
 	</bean>
 
