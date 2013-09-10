@@ -77,20 +77,6 @@
 		<property name="order" value="201010" />
 	</bean>
 
-	<!-- MOH257 Visit Summary -->
-	<bean id="kenyaemr.hiv.form.moh257VisitSummary" class="org.openmrs.module.kenyacore.form.FormDescriptor">
-		<property name="targetUuid" value="23b4ebbd-29ad-455e-be0e-04aa6bc30798" />
-		<property name="apps">
-			<set>
-				<ref bean="kenyaemr.app.chart" />
-			</set>
-		</property>
-		<property name="autoCreateVisitTypeUuid" value="3371a4d4-f66f-4454-a86d-92c7b3da990c" />
-		<property name="icon" value="kenyaui:forms/moh257.png" />
-		<property name="htmlform" value="kenyaemr:hiv/moh257VisitSummary.xml" />
-		<property name="order" value="201030" />
-	</bean>
-
 	<!-- HIV Completion -->
 	<bean id="kenyaemr.hiv.form.completion" class="org.openmrs.module.kenyacore.form.FormDescriptor">
 		<property name="targetUuid" value="e3237ede-fa70-451f-9e6c-0908bc39f8b9" />
@@ -104,6 +90,32 @@
 		</property>
 		<property name="icon" value="kenyaui:forms/completion.png" />
 		<property name="htmlform" value="kenyaemr:hiv/hivDiscontinuation.xml" />
+	</bean>
+
+	<!-- MOH257 Face Page -->
+	<bean id="kenyaemr.hiv.form.moh257FacePage" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="47814d87-2e53-45b1-8d05-ac2e944db64c" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.chart" />
+			</set>
+		</property>
+		<property name="icon" value="kenyaui:forms/moh257.png" />
+		<property name="htmlform" value="kenyaemr:hiv/moh257FacePage.xml" />
+	</bean>
+
+	<!-- MOH257 Visit Summary -->
+	<bean id="kenyaemr.hiv.form.moh257VisitSummary" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="23b4ebbd-29ad-455e-be0e-04aa6bc30798" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.chart" />
+			</set>
+		</property>
+		<property name="autoCreateVisitTypeUuid" value="3371a4d4-f66f-4454-a86d-92c7b3da990c" />
+		<property name="icon" value="kenyaui:forms/moh257.png" />
+		<property name="htmlform" value="kenyaemr:hiv/moh257VisitSummary.xml" />
+		<property name="order" value="201030" />
 	</bean>
 
 	<!-- ===================== Reports ===================== -->

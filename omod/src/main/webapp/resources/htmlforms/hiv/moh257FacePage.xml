@@ -1,0 +1,470 @@
+<!--
+  ~ The contents of this file are subject to the OpenMRS Public License
+  ~ Version 1.0 (the "License"); you may not use this file except in
+  ~ compliance with the License. You may obtain a copy of the License at
+  ~ http://license.openmrs.org
+  ~
+  ~ Software distributed under the License is distributed on an "AS IS"
+  ~ basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+  ~ License for the specific language governing rights and limitations
+  ~ under the License.
+  ~
+  ~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+-->
+<htmlform>
+
+    <style type="text/css">
+        table.moh257 {
+        border-collapse: collapse;
+        background-color: #F3F9FF;
+        }
+        table.moh257 > tbody > tr > td, table.moh257 > tbody > tr > th {
+        border: 1px solid black;
+        vertical-align: baseline;
+        padding: 4px;
+        text-align: left;
+        }
+    </style>
+    <script type="text/javascript">
+        var YES_CONCEPT_ID = 1065;
+        var NO_CONCEPT_ID = 1066;
+        var ADULT =15;
+        var TRANSFER_IN_CONCEPT_ID = 160563;
+        var NA_CONCEPT_ID = 1175;
+        /* Marital/Civil Status Concept IDs */
+        var POLYGAMOUS =159715;
+        var MONOGAMOUS =5555;
+        var WIDOW =1059;
+        var COHABITING =1060;
+        var SINGLE =1057;
+        var DIVORCED = 1058;
+
+
+        function onEncounterDateChange()
+        {
+        var age =   <lookup class="value" expression="patient.age"/>
+        var birthDate = new Date("<lookup expression="patient.birthdate"/>")//.getTime();
+        var today = new Date()//.getTime();        //get current date
+        var ENC_DATE=new Date(getValue('encounter_date.value'))//.getTime();
+
+        /*this data should not be in Future */
+        if(ENC_DATE &gt; today)
+        {
+        getField('encounter_date.error').html('Should not be greater than the Current date').show();
+        }
+        else if(ENC_DATE &lt; birthDate)
+        {
+        /* Encounter Date should be greater than the Patients's date of Birth    */
+        getField('encounter_date.error').html('Should not be less than the date of Birth').show();
+        }
+        else
+        {
+        getField('encounter_date.error').hide();
+        }
+
+        /* Display the who staging based on the age  */
+        if (age &lt; ADULT)
+        {
+        $j('#initialWhoStageAd').hide()
+        }
+        else
+        {
+        $j('#initialWhoStageCh').hide()
+        }
+        }
+
+        function OnTransferStatusChange()
+        {
+        if (getValue('ep_transfer_in.value')== TRANSFER_IN_CONCEPT_ID)
+        {
+        $j('#transfer_details').show();
+        }
+        else
+        {
+        setValue('ti_date.value', '');
+        setValue('ti_district.value', '');
+        setValue('ti_facility.value', '');
+        setValue('ti_date_started_haart.value', '');
+        $j('#transfer_details').hide();
+        }
+        }
+
+        function OnARTStatusChange()
+        {
+        if (getValue('art-status.value')== 'true')
+        {
+        $j('#art-History').show();
+        }
+        else
+        {
+        $j('#art-History').hide();
+        }
+        }
+
+        $j(function() {
+        //getField('weight.value').change(onWeightOrHeightChange);
+        //getField('height.value').change(onWeightOrHeightChange);
+        getField('encounter_date.value').change(onEncounterDateChange);
+
+        //onWeightOrHeightChange();
+        onEncounterDateChange();
+        /* allow single selection for marital status */
+        getField('ms_mp.value').change(function(){
+        if(getValue('ms_mp.value')== POLYGAMOUS)
+        {
+        setValue('ms_di.value', '');
+        setValue('ms_co.value', '');
+        setValue('ms_mm.value', '');
+        setValue('ms_si.value', '');
+        setValue('ms_wi.value', '');
+        }
+
+        });
+
+        getField('ms_di.value').change(function(){
+        if(getValue('ms_di.value')== DIVORCED)
+        {
+        setValue('ms_mp.value', '');
+        setValue('ms_co.value', '');
+        setValue('ms_mm.value', '');
+        setValue('ms_si.value', '');
+        setValue('ms_wi.value', '');
+        }
+        });
+
+        getField('ms_co.value').change(function(){
+        if(getValue('ms_co.value')== COHABITING)
+        {
+        setValue('ms_di.value', '');
+        setValue('ms_mp.value', '');
+        setValue('ms_mm.value', '');
+        setValue('ms_si.value', '');
+        setValue('ms_wi.value', '');
+        }
+        });
+
+        getField('ms_mm.value').change(function(){
+        if(getValue('ms_mm.value')== MONOGAMOUS)
+        {
+        setValue('ms_di.value', '');
+        setValue('ms_mp.value', '');
+        setValue('ms_co.value', '');
+        setValue('ms_si.value', '');
+        setValue('ms_wi.value', '');
+        }
+        });
+
+        getField('ms_si.value').change(function(){
+        if(getValue('ms_si.value')== SINGLE)
+        {
+        setValue('ms_di.value', '');
+        setValue('ms_mp.value', '');
+        setValue('ms_mm.value', '');
+        setValue('ms_co.value', '');
+        setValue('ms_wi.value', '');
+        }
+        });
+
+        getField('ms_wi.value').change(function(){
+        if(getValue('ms_wi.value')== WIDOW)
+        {
+        setValue('ms_di.value', '');
+        setValue('ms_mp.value', '');
+        setValue('ms_mm.value', '');
+        setValue('ms_si.value', '');
+        setValue('ms_co.value', '');
+        }
+        });
+
+        getField('date_confirmed_pos.value').change(function(){
+        var birthDate = new Date("<lookup expression="patient.birthdate"/>")//.getTime();
+        var pos_date=new Date(getValue('date_confirmed_pos.value'))//.getTime();
+
+        if (pos_date &lt; birthDate )
+        {
+        getField('date_confirmed_pos.error').html('Should not be less than the date of Birth').show();
+        }
+        else
+        {
+        getField('date_confirmed_pos.error').hide();
+        }
+        });
+
+        getField('date_Enrolled.value').change(function(){
+        var birthDate = new Date("<lookup expression="patient.birthdate"/>")//.getTime();
+        var enroll_date=new Date(getValue('date_Enrolled.value'))//.getTime();
+        var pos_date=new Date(getValue('date_confirmed_pos.value'))//.getTime();
+
+        if (enroll_date &lt; birthDate )
+        {
+        getField('date_Enrolled.error').html('Should not be less than the date of Birth').show();
+        }
+        else
+        {
+        getField('date_Enrolled.error').hide();
+        }
+
+        if (enroll_date &lt; pos_date )
+        {
+        getField('date_Enrolled.error').html('Should not be less than the date confirmed HIV Positive').show();
+        }
+        else
+        {
+        getField('date_Enrolled.error').hide();
+        }
+        });
+
+        /* hide or display transfer in fields */
+        $j('#ep_transfer_in input').click(OnTransferStatusChange);
+        OnTransferStatusChange();
+
+        /* hide or display ART History in fields */
+        $j('#art-status input').click(OnARTStatusChange);
+        OnARTStatusChange();
+
+        });
+    </script>
+
+    <table class="moh257" align="center">
+        <tbody>
+            <tr>
+                <td style="background-color: #696969; color: #ffffff;">
+                    <a name="page1"></a>
+                    COMPREHENSIVE CARE CLINIC PATIENT CARD (INITIAL VISIT) - MOH 257
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="ke-form-header">
+                        <table style="width: 100%">
+                            <tr>
+                                <td>Enrollment date: <encounterDate id="encounter_date" default="today"/></td>
+                                <td>Enrolled by: <encounterProvider default="currentUser" /></td>
+                                <!--<td>Enrolled at: <encounterLocation type="autocomplete" /></td>   -->
+                            </tr>
+                        </table>
+                    </div>
+                    Facility Name (Site)<encounterLocation id="site" type="autocomplete"/>
+                    Patient Clinic Number:<lookup class="value" complexExpression="#foreach( $patId in $patientIdentifiers.get('Faces ID') ) $patId #end "/>
+                </td>
+            </tr>
+            <tr>
+                <td style="background-color: #696969; color: #ffffff;">PATIENT PROFILE</td>
+            </tr>
+            <tr>
+                <td>
+                    <table>
+                        <tr>
+                            <td>Unique Patient Number:</td>
+                            <td><lookup class="value" complexExpression="#foreach( $patId in $patientIdentifiers.get('Unique Patient Number') ) $patId #end "/></td>
+                        </tr>
+                        <tr>
+                            <td>Patient's Names: <br/><lookup class="value" expression="patient.personName"/></td>
+                            <td>Date of Birth <lookup class="value" expression="patient.birthdate"/>
+                                Age: <lookup class="value" expression="patient.age"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">Sex <lookup class="value" expression="patient.gender" /></td>
+                            <!--  <td>Postal Address <obs conceptId="6499"/></td> -->
+                        </tr>
+                        <!--
+                        <tr>
+                            <td>Tel Contact <obs conceptId="6497"/> <br/> District: <obs conceptId="6367"/></td>
+                            <td>Location:<obs conceptId="6500"/></td>
+                        </tr>
+                        <tr>
+                            <td>Sub-location: <obs conceptId="6501"/> </td>
+                            <td rowspan="2">Landmark: <obs conceptId="6503"/></td>
+                        </tr>
+                        <tr>
+                            <td>Nearest H/Centre: <obs conceptId="6502"/></td>
+                        </tr>
+                        -->
+                        <tr>
+                            <td colspan="2">
+                                <table>
+                                    <tr>
+                                        <td rowspan="2">Marital Status</td>
+                                        <td><obs id="ms_mp" conceptId="1054AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="159715AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Married Polygamous" style="checkbox"/></td>
+                                        <td><obs id="ms_di" conceptId="1054AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1058AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Divorced" style="checkbox"/></td>
+                                        <td><obs id="ms_co" conceptId="1054AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1060AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Cohabiting" style="checkbox"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><obs id="ms_mm" conceptId="1054AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Married Monogamous" style="checkbox"/></td>
+                                        <td><obs id="ms_wi" conceptId="1054AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1059AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Widowed" style="checkbox"/></td>
+                                        <td><obs id="ms_si" conceptId="1054AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1057AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Single" style="checkbox"/></td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">Treatment Supporter</td>
+                        </tr>
+                        <tr>
+                            <td>Name:<obs conceptId="160638AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/> </td>
+                            <td>Relationship:<obs conceptId="160640AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                  style="dropdown"/> </td>
+                            <!-- -answerConceptIds="970AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                                    971AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                                    5620AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                                    160729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                                    975AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                                    974AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                                    5618AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                                    160730AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                                    5617AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                                    5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" -->
+                        </tr>
+                        <tr>
+                            <td>Postal Address:<obs conceptId="160641AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/> </td>
+                            <td>Tel No:<obs conceptId="160642AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /> </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td style="background-color: #696969; color: #ffffff;">Patient Source</td>
+            </tr>
+            <tr>
+                <td>
+                    <table>
+                        <tr>
+                            <td rowspan="3">Entry Point</td>
+
+                            <td><obs  id="ep_pmtct" conceptId="160540AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160538AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="PMTCT" style="checkbox"/></td>
+                            <td><obs  id="ep_ipdAd" conceptId="160540AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160536AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="IPD-Ad" style="checkbox"/></td>
+                            <td><obs  id="ep_tb" conceptId="160540AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160541AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="TB Clinic" style="checkbox"/></td>
+                            <td><obs conceptId="160540AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160542AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="OPD" style="checkbox"/></td>
+
+                        </tr>
+                        <tr>
+
+                            <td><obs id="ep_vct" conceptId="160540AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160539AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="VCT" style="checkbox"/></td>
+                            <td><obs id="ep_ipdCh" conceptId="160540AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160537AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="IPD-Ch" style="checkbox"/></td>
+                            <td><obs id="ep_mch" conceptId="160540AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160544AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="MCH-Child" style="checkbox"/></td>
+                            <td>VMMC [TBD- Waiting CIEL concept]<!--<obs  conceptId="160540AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1828" answerLabel="VMMC" style="checkbox"/>--></td>
+
+                        </tr>
+                        <tr>
+
+                            <td><obs conceptId="160540AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1560AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Family Member" style="checkbox"/></td>
+                            <td><obs id="ep_other" conceptId="160540AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Other, (Specify e.g. (STI)" style="checkbox"/></td>
+                            <td colspan="2">
+                                <obs id="ep_transfer_in" conceptId="160540AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     answerConceptId="160563AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     answerLabel="Transfer in from Other HIV Clinic"
+                                     style="checkbox"/>
+                            </td>
+
+                        </tr>
+                        <tr>
+                            <td> Transfer In:</td>
+                            <td colspan="3">
+                                <span id="transfer_details">
+                                    <table>
+                                        <tr>
+                                            <td>Date:</td>
+                                            <td><obs id="ti_date" conceptId="160534AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
+                                            <td>From: District</td>
+                                            <td><obs id="ti_district" conceptId="161551AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Facility:</td>
+                                            <td><obs id="ti_facility" conceptId="160535AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
+                                            <td>Date started ART</td>
+                                            <td><obs id="ti_date_started_haart" conceptId="159599AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
+                                        </tr>
+                                    </table>
+                                </span>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td style="background-color: #696969; color: #ffffff;">ART History</td>
+            </tr>
+            <tr>
+                <td>
+                    Previously on ARVs (PMTCT &amp; PEP included)? <obs id="art-status" conceptId="160533AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="yes_no"/>
+                    <br/>
+                    <table id="art-History">
+                        <tr>
+                            <td>If "Yes" then Purpose</td>
+                            <td>List Drug Names &amp; Dates Last Used</td>
+                        </tr>
+                        <repeat>
+                            <template>
+                                <obsgroup groupingConceptId="160741AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                                    <tr>
+
+                                        <td><obs conceptId="1148AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="PMTCT" style="checkbox"/>
+                                            <obs conceptId="1691AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText="PEP" style="checkbox"/>
+                                            <obs conceptId="1181AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"    answerConceptId="1185AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="HAART" style="checkbox"/>
+                                        </td>
+                                        <td><obs conceptId="1088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  answerSeparator="&lt;br /&gt;" style="dropdown" dateLabel=""/></td>
+
+                                    </tr>
+                                </obsgroup>
+                            </template>
+                            <render n="1" concept=" " />
+                            <render n="2" concept=" " />
+                            <render n="3" concept=" " />
+                            <render n="4" concept=" " />
+                            <render n="5" concept=" " />
+                        </repeat>
+
+
+                    </table>
+                    <table>
+                        <tr>
+                            <td><br/>Date Confirmed HIV Positive</td>
+                            <td><br/><obs id="date_confirmed_pos"  conceptId="160554AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/><span id="date_confirmed_error"></span></td>
+                            <td><br/>Where? <obs conceptId="159936AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
+
+                        </tr>
+                        <tr>
+                            <td>Date Enrolled in HIV Care</td>
+                            <td><obs id="date_Enrolled" conceptId="160555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
+                            <td>WHO Stage
+
+                                <span id="initialWhoStageAd"><obs conceptId="160553AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                                  answerConceptIds="1204AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1205AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1206AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1207AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
+
+
+
+                                <span id="initialWhoStageCh"><obs conceptId="160553AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                                  answerConceptIds="1220AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1221AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1222AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1223AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
+
+
+
+
+                            </td>
+
+                        </tr>
+                        <tr>
+                            <td>Any Drug Allegies?</td>
+                            <td colspan="2"><!-- <obs conceptId="1589"/> -->[TBD  CIEL to provide concept]</td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+
+            <tr>
+                <td style="background-color: #696969; color: #ffffff;">HIV Status of Family Members -> Use family information table form</td>
+            </tr>
+
+            <!-- Submit button-->
+            <tr>
+                <td style="text-align:center;">
+                    <div class="ke-form-buttons">
+                        <submit />
+                    </div>
+                </td>
+            </tr>
+
+        </tbody>
+    </table>
+
+</htmlform>
