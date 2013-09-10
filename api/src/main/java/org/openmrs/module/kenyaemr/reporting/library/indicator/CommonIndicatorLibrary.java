@@ -16,7 +16,7 @@ package org.openmrs.module.kenyaemr.reporting.library.indicator;
 
 import org.openmrs.Concept;
 import org.openmrs.Program;
-import org.openmrs.module.kenyaemr.reporting.EmrReportingUtils;
+import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyaemr.reporting.library.cohort.CommonCohortLibrary;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
@@ -27,7 +27,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
-import static org.openmrs.module.kenyaemr.reporting.EmrReportingUtils.map;
+import static org.openmrs.module.kenyacore.report.ReportUtils.map;
 
 /**
  * Library of common indicator definitions. All indicators require parameters ${startDate} and ${endDate}
@@ -45,7 +45,7 @@ public class CommonIndicatorLibrary {
 	 */
 	public CohortIndicator enrolled(Program program) {
 		return createCohortIndicator("Number of new patients enrolled in " + program.getName() + " including transfers",
-				EmrReportingUtils.map(commonCohorts.enrolledExcludingTransfers(program), "onOrAfter=${startDate},onOrBefore=${endDate}"));
+				ReportUtils.map(commonCohorts.enrolledExcludingTransfers(program), "onOrAfter=${startDate},onOrBefore=${endDate}"));
 	}
 
 	/**
@@ -55,7 +55,7 @@ public class CommonIndicatorLibrary {
 	 */
 	public CohortIndicator enrolledExcludingTransfers(Program program) {
 		return createCohortIndicator("Number of new patients enrolled in " + program.getName() + " excluding transfers",
-				EmrReportingUtils.map(commonCohorts.enrolledExcludingTransfers(program), "onOrAfter=${startDate},onOrBefore=${endDate}"));
+				ReportUtils.map(commonCohorts.enrolledExcludingTransfers(program), "onOrAfter=${startDate},onOrBefore=${endDate}"));
 	}
 
 	/**
@@ -65,7 +65,7 @@ public class CommonIndicatorLibrary {
 	 */
 	public CohortIndicator enrolledCumulative(Program program) {
 		return createCohortIndicator("Number of patients ever enrolled in " + program.getName() + " excluding transfers",
-				EmrReportingUtils.map(commonCohorts.enrolled(program), "enrolledOnOrBefore=${endDate}"));
+				ReportUtils.map(commonCohorts.enrolled(program), "enrolledOnOrBefore=${endDate}"));
 	}
 
 	/**
@@ -74,7 +74,7 @@ public class CommonIndicatorLibrary {
 	 * @return the indicator
 	 */
 	public CohortIndicator onMedication(Concept... concepts) {
-		return createCohortIndicator("Number of patients on medication", EmrReportingUtils.map(commonCohorts.onMedication(concepts), "onDate=${endDate}"));
+		return createCohortIndicator("Number of patients on medication", ReportUtils.map(commonCohorts.onMedication(concepts), "onDate=${endDate}"));
 	}
 
 	/**

@@ -48,34 +48,6 @@ import java.util.Set;
 public class EmrCalculationUtils {
 
 	/**
-	 * Extracts patients from calculation result map with non-false/empty results
-	 * @param results calculation result map
-	 * @return the extracted patient ids
-	 */
-	public static Set<Integer> patientsThatPass(CalculationResultMap results) {
-		return patientsThatPass(results, null);
-	}
-
-	/**
-	 * Extracts patients from calculation result map with matching results
-	 * @param results calculation result map
-	 * @param requiredResult the required result value
-	 * @return the extracted patient ids
-	 */
-	public static Set<Integer> patientsThatPass(CalculationResultMap results, Object requiredResult) {
-		Set<Integer> ret = new HashSet<Integer>();
-		for (Map.Entry<Integer, CalculationResult> e : results.entrySet()) {
-			CalculationResult result = e.getValue();
-
-			// If there is no required result, just check trueness of result, otherwise check result matches required result
-			if ((requiredResult == null && ResultUtil.isTrue(result)) || (result != null && result.getValue().equals(requiredResult))) {
-				ret.add(e.getKey());
-			}
-		}
-		return ret;
-	}
-
-	/**
 	 * Extracts patients from calculation result map with false/empty results
 	 * @param results the calculation result map
 	 * @return the extracted patient ids
