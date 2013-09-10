@@ -1,0 +1,231 @@
+<!--
+  ~ The contents of this file are subject to the OpenMRS Public License
+  ~ Version 1.0 (the "License"); you may not use this file except in
+  ~ compliance with the License. You may obtain a copy of the License at
+  ~ http://license.openmrs.org
+  ~
+  ~ Software distributed under the License is distributed on an "AS IS"
+  ~ basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+  ~ License for the specific language governing rights and limitations
+  ~ under the License.
+  ~
+  ~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+  -->
+<htmlform>
+
+<style type="text/css">
+	table.tb {
+		background-color: #B3C2F0;
+		border: 1px solid black;
+	}
+
+	table.tb1 {
+		border: 1px solid black;
+		vertical-align: baseline;
+		text-align: left;
+		background-color: #E1E1FF;
+	}
+
+	table.tb1 tr th, table.tb1 tr td {
+		border: 0;
+		padding: 10px;
+	}
+</style>
+
+<script type="text/javascript">
+
+	function onLmpChange() {
+		var display = 'EDD could not be calculated!';
+		var lmpValue = getValue('lmp.value');
+		if (lmpValue) {
+			var lmp = Date.parse(getValue('lmp.value'));
+			var edd = lmp;
+			display = calculateEdd(new Date(lmp));
+		}
+		$j('#calculated-edd').html(display);
+	}
+
+	function daysInMonth(month, year) {
+		var dim = 31;
+		if (month == 1) {
+			if (year % 4 == 0) {
+				dim = 29;
+			} else {
+				dim = 28;
+			}
+		} else if (month == 3 || month == 5 || month == 8 || month == 10) {
+			dim = 30;
+		}
+		return dim;
+	}
+
+	function calculateEdd(lmp) {
+		var lmpDay = lmp.getDate();
+		var lmpMonth = lmp.getMonth();
+		var lmpYear = lmp.getFullYear();
+
+		var dayOffset = 7;
+		var monthOffset = -2;
+		var yearOffset = 1;
+
+		var eddDay = lmpDay + dayOffset;
+		var dim = daysInMonth(lmpMonth, lmpYear);
+		if (eddDay &gt; dim) {
+			eddDay -= dim;
+			monthOffset++;
+		}
+		var eddMonth = lmpMonth + monthOffset;
+		if (eddMonth &lt;= 0) {
+			eddMonth += 12;
+			yearOffset--;
+		}
+		var eddYear = lmpYear + yearOffset;
+		return (eddDay &lt;= 9 ? '0' + eddDay : eddDay) + '-' + (eddMonth &lt;= 9 ? '0' + eddMonth : eddMonth) + '-' +
+				eddYear;
+	}
+
+	jq(function () {
+		onLmpChange();
+		getField('lmp.value').change(onLmpChange);
+	});
+
+	beforeSubmit.push(function () {
+		var gravida = getValue('gravida.value');
+		var parityTerm = getValue('parity-term.value');
+		var parityAbortion = getValue('parity-abortion.value');
+		var parity = parseInt(parityTerm, 10) + parseInt(parityAbortion, 10);
+		if (parity &gt; gravida) {
+			getField('parity-abortion.error').html('Parity (x+y) should be less or equal to Gravida.').show();
+			return false;
+		}
+		return true;
+	});
+
+</script>
+
+<div class="ke-form-header">
+	<table style="width: 100%">
+		<tr>
+			<td>Enrollment date:
+				<encounterDate id="encounter-date" showTime="true"/>
+			</td>
+			<td>Enrolled by:
+				<encounterProvider default="currentUser"/>
+			</td>
+			<td>Enrolled at:
+				<encounterLocation default="GlobalProperty:kenyaemr.defaultLocation"/>
+			</td>
+		</tr>
+	</table>
+</div>
+
+<div class="ke-form-content">
+	<table align="center" border="0" class="tb" cellspacing="10">
+		<tr>
+			<td colspan="2">
+				<div class="ke-form-instructions">
+					<b>*</b>
+					indicates a required field
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<legend>Maternal Profile</legend>
+				<table align="center" width="100%" class="tb1">
+					<tr>
+						<td width="250">ANC No:</td>
+						<td>
+							<obs conceptId="161655AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true"/>
+						</td>
+					</tr>
+					<tr>
+						<td>Gravida:</td>
+						<td>
+							<obs conceptId="5624AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true" id="gravida"/>
+						</td>
+					</tr>
+					<tr>
+						<td>Parity:</td>
+						<td>
+							<obs conceptId="160080AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true" id="parity-term"/>
+							+
+							<obs conceptId="1823AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true"
+								 id="parity-abortion"/>
+						</td>
+					</tr>
+					<tr>
+						<td>L.M.P:</td>
+						<td>
+							<obs conceptId="1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="lmp" required="true"/>
+						</td>
+						<td>
+							<obs conceptId="162095AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox"/>
+							Estimated
+						</td>
+					</tr>
+					<tr>
+						<td>EDD (Calculated from L.M.P):</td>
+						<td>
+							<span id="calculated-edd" class="value"></span>
+						</td>
+					</tr>
+					<tr>
+						<td>EDD (Ultrasound):</td>
+						<td>
+							<obs conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true"/>
+						</td>
+					</tr>
+				</table>
+			</td>
+			<td>
+				<legend>Antenatal Profile</legend>
+				<table align="center" width="100%" class="tb1">
+					<tr>
+						<td width="250">Blood Group/Rhesus:</td>
+						<td>
+							<obs conceptId="300AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+						</td>
+					</tr>
+					<tr>
+						<td>Serology:</td>
+						<td>
+							<obs conceptId="299AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+						</td>
+					</tr>
+					<tr>
+						<td>TB Screening:</td>
+						<td>
+							<obs conceptId="160108AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+						</td>
+					</tr>
+					<tr>
+						<td>HIV:</td>
+						<td>
+							<obs conceptId="159427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+						</td>
+					</tr>
+					<tr>
+						<td>Urinalysis</td>
+						<td>
+							<obs conceptId="302AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+						</td>
+					</tr>
+					<tr>
+						<td>BS for MPS:</td>
+						<td>
+							<obs conceptId="32AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+	<enrollInProgram programId="b5d9e05f-f5ab-4612-98dd-adb75438ed34"/>
+</div>
+
+<div class="ke-form-footer">
+	<submit/>
+</div>
+
+</htmlform>

@@ -78,7 +78,12 @@
 									 answerConceptIds="159035AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159916AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,126127AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,48AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 									 answerLabels="Live Birth,Still Birth,Abortion,Miscarriage"/>
 							</td>
-							<td>Missing Concept</td>
+							<td>
+								<obs conceptId="1576AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox"/>
+								<obs conceptId="1576AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox"/>
+								<obs conceptId="1576AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox"/>
+								<obs conceptId="1576AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox"/>
+							</td>
 						</tr>
 					</obsgroup>
 				</template>

@@ -1,0 +1,395 @@
+<!--
+  ~ The contents of this file are subject to the OpenMRS Public License
+  ~ Version 1.0 (the "License"); you may not use this file except in
+  ~ compliance with the License. You may obtain a copy of the License at
+  ~ http://license.openmrs.org
+  ~
+  ~ Software distributed under the License is distributed on an "AS IS"
+  ~ basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+  ~ License for the specific language governing rights and limitations
+  ~ under the License.
+  ~
+  ~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+  -->
+<htmlform>
+
+<style type="text/css">
+	table.tb {
+		background-color: #B3C2F0;
+		border: 1px solid black;
+	}
+
+	table.tb1 {
+		border: 1px solid black;
+		vertical-align: baseline;
+		text-align: left;
+		background-color: #E1E1FF;
+	}
+
+	table.tb1 tr th, table.tb1 tr td {
+		border: 0;
+		padding: 10px;
+	}
+
+	.arv-med {
+	}
+</style>
+
+<script type="text/javascript">
+
+	var ARV_CONCEPT_ID = 1148;
+	var HAART_CONCEPT_ID = 1149;
+	var NA_CONCEPT_ID = 1175;
+
+	beforeSubmit.push(function () {
+		var fundalHeight = getValue('fundal.value');
+		if (fundalHeight &lt; 0 || fundalHeight &gt; 40) {
+			getField('fundal.error').html('Fundal Height should be between 0 and 40.').show();
+			return false;
+		}
+		return true;
+	});
+
+	function onArvStatusChange() {
+		if (getValue('arv-status.value') == ARV_CONCEPT_ID) {
+			jq('#arv-medication').show();
+		} else if (getValue('arv-status.value') == HAART_CONCEPT_ID) {
+			jq('#arv-medication').show();
+		} else {
+			jq('#arv-medication').hide();
+		}
+	}
+
+	function clearArvMeds() {
+		jq('.arv-med').each(function () {
+			var elementId = jq(this).attr('id');
+			setValue(elementId + '.value', null);
+		});
+	}
+
+	function onWeightOrHeightChange() {
+		var display = '';
+		var weightKg = parseFloat(getValue('weight.value'));
+		var heightM = parseFloat(getValue('height.value')) / 100;
+		if (!isNaN(weightKg) &amp;&amp; !isNaN(heightM)) {
+			var bmi = weightKg / (heightM * heightM);
+			if (isNaN(bmi) || bmi &lt; 10 || bmi &gt; 50) {
+				display = 'Abnormal value. Were height and height entered correctly?';
+			}
+			else {
+				display = bmi.toFixed(2);
+			}
+		}
+		jq('#calculated-bmi').html(display);
+	}
+
+	beforeSubmit.push(function () {
+		if (!jq('#arv-medication').is(':visible')) {
+			clearArvMeds();
+		}
+		return true;
+	});
+
+	jq(function () {
+		jq('#arv-status input').click(onArvStatusChange);
+		onArvStatusChange();
+		getField('arv-status.value').change(onArvStatusChange);
+
+		getField('weight.value').change(onWeightOrHeightChange);
+		getField('height.value').change(onWeightOrHeightChange);
+		onWeightOrHeightChange();
+	});
+
+</script>
+
+<div class="ke-form-header">
+	<table style="width: 100%">
+		<tr>
+			<td>Date:
+				<encounterDate id="encounter-date" showTime="true"/>
+			</td>
+			<td>Provider:
+				<encounterProvider default="currentUser"/>
+			</td>
+			<td>Location:
+				<encounterLocation default="GlobalProperty:kenyaemr.defaultLocation"/>
+			</td>
+		</tr>
+	</table>
+</div>
+
+<div class="ke-form-content">
+<table align="center" border="0" class="tb" cellspacing="10">
+<tr>
+	<td colspan="2">
+		<div class="ke-form-instructions">
+			<b>*</b>
+			indicates a required field
+		</div>
+	</td>
+</tr>
+<tr>
+	<td>
+		<legend>Vitals</legend>
+		<table align="center" width="100%" class="tb1">
+			<tr>
+				<td>
+					<table>
+						<tr>
+							<td width="250">Temperature</td>
+							<td>
+								<obs conceptId="5088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+							</td>
+						</tr>
+						<tr>
+							<td>Pulse Rate</td>
+							<td>
+								<obs conceptId="5087AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+							</td>
+						</tr>
+						<tr>
+							<td>B.P.</td>
+							<td>
+								<obs conceptId="5085AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+								/
+								<obs conceptId="5086AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+							</td>
+						</tr>
+						<tr>
+							<td>Respiratory Rate</td>
+							<td>
+								<obs conceptId="5242AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+							</td>
+						</tr>
+						<tr>
+							<td>Oxygen Saturation</td>
+							<td>
+								<obs conceptId="5092AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+							</td>
+						</tr>
+						<tr>
+							<td>Weight</td>
+							<td>
+								<obs conceptId="5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="weight"/>
+							</td>
+						</tr>
+						<tr>
+							<td>Height</td>
+							<td>
+								<obs conceptId="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="height"/>
+							</td>
+						</tr>
+						<tr>
+							<td>BMI</td>
+							<td><span id="calculated-bmi" class="value"></span></td>
+						</tr>
+						<tr>
+							<td>MUAC</td>
+							<td>
+								<obs conceptId="1343AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+							</td>
+						</tr>
+					</table>
+				</td>
+				<td>
+					<table border="1">
+						<tr>
+							<td>
+								<u>
+									Other Vitals Recorded Recently
+								</u>
+								<br/>
+								<br/>
+								Temperature:
+								<lookup expression="fn.latestObs(5088).valueNumeric"/>
+								<br/>
+								Pulse:
+								<lookup expression="fn.latestObs(5087).valueNumeric"/>
+								<br/>
+								B.P.:
+								<lookup expression="fn.latestObs(5085).valueNumeric"/>
+								/
+								<lookup expression="fn.latestObs(5086).valueNumeric"/>
+								<br/>
+								Respiratory Rate:
+								<lookup expression="fn.latestObs(5242).valueNumeric"/>
+								<br/>
+								Oxygen Saturation:
+								<lookup expression="fn.latestObs(5092).valueNumeric"/>
+								<br/>
+								Weight:
+								<lookup expression="fn.latestObs(5089).valueNumeric"/>
+								<br/>
+								Height:
+								<lookup expression="fn.latestObs(5090).valueNumeric"/>
+								<br/>
+								MUAC:
+								<lookup expression="fn.latestObs(1343).valueNumeric"/>
+								<br/>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+	</td>
+</tr>
+<tr>
+	<td>
+		<legend>Other Observations</legend>
+		<table align="center" width="100%" class="tb1">
+			<tr>
+				<td width="250">Urine:</td>
+				<td>Follow up with Patrick</td>
+			</tr>
+			<tr>
+				<td>H.b.:</td>
+				<td>
+					<obs conceptId="21AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+				</td>
+			</tr>
+			<tr>
+				<td>Pallor:</td>
+				<td>
+					<obs conceptId="5245AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+						 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+				</td>
+			</tr>
+			<tr>
+				<td>Maturity:</td>
+				<td>
+					<obs conceptId="1438AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+				</td>
+			</tr>
+			<tr>
+				<td>Fundal Height (Weeks):</td>
+				<td>
+					<obs conceptId="1439AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="fundal"/>
+				</td>
+			</tr>
+			<tr>
+				<td>Presentation:</td>
+				<td>
+					<obs conceptId="160090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+						 answerConceptIds="139814AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160091AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+				</td>
+			</tr>
+			<tr>
+				<td>Lie:</td>
+				<td>
+					<obs conceptId="162089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+				</td>
+			</tr>
+			<tr>
+				<td>Foetal Heart Rate:</td>
+				<td>
+					<obs conceptId="1440AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+				</td>
+			</tr>
+			<tr>
+				<td>Foetal Movement:</td>
+				<td>
+					<obs conceptId="162107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+				</td>
+			</tr>
+		</table>
+	</td>
+</tr>
+<tr>
+	<td>
+		<fieldset>
+			<legend>ARV Medication</legend>
+			<table align="center" width="100%" class="tb1">
+				<tr>
+					<td>Mother On:</td>
+					<td colspan="5">
+						<obs conceptId="1147AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 id="arv-status"
+							 style="radio"
+							 answerConceptIds="1148AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1149AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 answerLabels="ARV Prophylaxis,HAART,NA"/>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="6">
+						<table id="arv-medication" align="center" width="100%" class="tb1">
+							<tr>
+								<td style="background-color: #B3C2F0; color: #000000;">Drug</td>
+								<td style="background-color: #B3C2F0; color: #000000;">Dose</td>
+								<td style="background-color: #B3C2F0; color: #000000;">Dose Units</td>
+								<td style="background-color: #B3C2F0; color: #000000;">Frequency</td>
+								<td style="background-color: #B3C2F0; color: #000000;">Duration</td>
+								<td style="background-color: #B3C2F0; color: #000000;">Duration Units</td>
+							</tr>
+							<repeat>
+								<template>
+									<obsgroup groupingConceptId="1442AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+										<tr>
+											<td>
+												<obs id="drug-${medId}" class="arv-med"
+													 conceptId="966AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+													 answerConceptIds="70056AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,71647AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,74807AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,75523AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,75628AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,77995AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,78643AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,79040AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,80487AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,80586AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,83412AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,84309AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,84795AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,86663AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+											</td>
+											<td>
+												<obs id="dose-${medId}" class="arv-med"
+													 conceptId="1443AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+											</td>
+											<td>
+												<obs id="dose-units-${medId}" class="arv-med"
+													 conceptId="1444AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+													 size="5"/>
+											</td>
+											<td>
+												<obs id="frequency-${medId}"
+													 class="arv-med"
+													 conceptId="160855AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+													 answerConceptIds="160862AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160863AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160864AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160865AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160858AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160866AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160870AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+													 answerLabels="Once daily,Once daily at bedtime,Once daily in the evening,Once daily in the morning,Twice daily,Thrice daily,Four times daily"
+														/>
+											</td>
+											<td>
+												<obs id="duration-${medId}" class="arv-med"
+													 conceptId="159368AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+											</td>
+											<td>
+												<obs id="duration-units-${medId}"
+													 class="arv-med"
+													 conceptId="1732AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+													 answerConceptIds="1822AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1072AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1073AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1074AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+													 answerLabels="Hours,Days,Weeks,Months"/>
+											</td>
+										</tr>
+									</obsgroup>
+								</template>
+								<render medId="1"/>
+								<render medId="2"/>
+								<render medId="3"/>
+							</repeat>
+						</table>
+					</td>
+				</tr>
+			</table>
+		</fieldset>
+	</td>
+</tr>
+<tr>
+	<td>
+		<legend>Clinical Notes</legend>
+		<table align="center" width="100%" class="tb1">
+			<tr>
+				<td>
+					<obs conceptId="159395AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="10" cols="90"
+						 style="textarea"/>
+				</td>
+			</tr>
+		</table>
+	</td>
+</tr>
+</table>
+</div>
+
+<div class="ke-form-footer">
+	<submit/>
+</div>
+
+</htmlform>
