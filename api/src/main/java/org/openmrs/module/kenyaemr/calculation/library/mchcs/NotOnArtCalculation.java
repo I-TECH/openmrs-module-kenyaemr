@@ -14,8 +14,16 @@
 
 package org.openmrs.module.kenyaemr.calculation.library.mchcs;
 
+import org.joda.time.DateTime;
+import org.joda.time.Weeks;
 import org.openmrs.Concept;
+import org.openmrs.Encounter;
+import org.openmrs.EncounterType;
+import org.openmrs.Obs;
+import org.openmrs.Patient;
 import org.openmrs.Program;
+import org.openmrs.api.EncounterService;
+import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyacore.calculation.CalculationUtils;
@@ -27,15 +35,17 @@ import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
+import org.openmrs.module.kenyaemr.util.EmrUtils;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 
 /**
  * Calculates whether a mother is HIV+ but is not on ART. Calculation returns true if mother
- * is alive, enrolled in the MCH program, is HIV+ and was not indicated as being on ART in the
- * last encounter.
+ * is alive, enrolled in the MCH program, gestation is greater than 14 weeks, is HIV+ and was
+ * not indicated as being on ART in the last encounter.
  */
 public class NotOnArtCalculation extends BaseEmrCalculation implements PatientFlagCalculation {
 
@@ -74,10 +84,25 @@ public class NotOnArtCalculation extends BaseEmrCalculation implements PatientFl
 						onArt = !lastArtStatus.getUuid().equals(Dictionary.NOT_APPLICABLE);
 					}
 				}
-				notOnArt = hivPositive && !onArt;
+				notOnArt = hivPositive && gestationIsGreaterThan14Weeks(ptId) && !onArt;
 			}
 			ret.put(ptId, new BooleanResult(notOnArt, this, context));
 		}
 		return ret;
+	}
+
+	private boolean gestationIsGreaterThan14Weeks(Integer patientId) {
+		Patient patient = Context.getPatientService().getPatient(patientId);
+		EncounterService encounterService = Context.getEncounterService();
+		EncounterType encounterType = encounterService.getEncounterTypeByUuid(Metadata.EncounterType.MCHMS_ENROLLMENT);
+		Encounter lastMchEnrollment = EmrUtils.lastEncounter(patient, encounterType);
+		Obs lmpObs = EmrUtils.firstObsInEncounter(lastMchEnrollment, Dictionary.getConcept(Dictionary.LAST_MONTHLY_PERIOD));
+		if (lmpObs != null) {
+			Weeks weeks = Weeks.weeksBetween(new DateTime(lmpObs.getValueDate()), new DateTime(new Date()));
+			if (weeks.getWeeks() > 14) {
+				return true;
+			}
+		}
+		return false;
 	}
 }
