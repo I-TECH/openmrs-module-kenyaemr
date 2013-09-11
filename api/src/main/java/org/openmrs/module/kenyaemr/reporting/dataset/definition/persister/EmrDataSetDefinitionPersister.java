@@ -15,11 +15,8 @@
 package org.openmrs.module.kenyaemr.reporting.dataset.definition.persister;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.kenyacore.report.AbstractReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportManager;
-import org.openmrs.module.kenyaemr.reporting.EmrReportingUtils;
-import org.openmrs.module.kenyaemr.reporting.ReportBuilder;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.persister.DataSetDefinitionPersister;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
@@ -30,12 +27,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A ReportBuilder's DSDs aren't persisted in the database so aren't given primary keys or UUIDs. However we
+ * KenyaEMR DSDs aren't persisted in the database so aren't given primary keys or UUIDs. However we
  * define our own kind of UUID in the format "${report-id}:${dsdName}" which provides enough
  * information to fetch a DSD from the ReportManager
  */
 @Handler(supports=DataSetDefinition.class)
-public class ReportBuilderDataSetDefinitionPersister implements DataSetDefinitionPersister {
+public class EmrDataSetDefinitionPersister implements DataSetDefinitionPersister {
 
 	@Autowired
 	private ReportManager reportManager;
@@ -61,8 +58,7 @@ public class ReportBuilderDataSetDefinitionPersister implements DataSetDefinitio
 		List<DataSetDefinition> ret = new ArrayList<DataSetDefinition>();
 
 		for (ReportDescriptor descriptor : reportManager.getAllReportDescriptors()) {
-			ReportBuilder builder = EmrReportingUtils.getReportBuilder(descriptor);
-			ReportDefinition reportDefinition = builder.getDefinition();
+			ReportDefinition reportDefinition = reportManager.getReportDefinition(descriptor);
 
 			if (reportDefinition == null || reportDefinition.getDataSetDefinitions() == null) {
 				continue;
@@ -110,17 +106,17 @@ public class ReportBuilderDataSetDefinitionPersister implements DataSetDefinitio
 
 	/**
 	 * Creates a data set definition
-	 * @param descriptor the report descriptor
+	 * @param report the report descriptor
 	 * @param dsdName the DSD name
 	 * @return the data set definition
 	 */
-	private DataSetDefinition toDataSetDefinition(ReportDescriptor descriptor, String dsdName) {
-		ReportBuilder builder = EmrReportingUtils.getReportBuilder(descriptor);
-		Mapped<? extends DataSetDefinition> mapped = builder.getDefinition().getDataSetDefinitions().get(dsdName);
+	private DataSetDefinition toDataSetDefinition(ReportDescriptor report, String dsdName) {
+		ReportDefinition definition = reportManager.getReportDefinition(report);
+		Mapped<? extends DataSetDefinition> mapped = definition.getDataSetDefinitions().get(dsdName);
 		DataSetDefinition dataSetDefinition = mapped.getParameterizable();
 
 		// Since the ReportBuilders always creates these on the fly, they have arbitrary UUIDs, so we set a known one.
-		dataSetDefinition.setUuid(new DsdIdentifier(descriptor, dsdName).toUUID());
+		dataSetDefinition.setUuid(new DsdIdentifier(report, dsdName).toUUID());
 
 		return dataSetDefinition;
 	}

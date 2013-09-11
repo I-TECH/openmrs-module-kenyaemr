@@ -15,8 +15,8 @@
 package org.openmrs.module.kenyaemr.fragment.controller.report;
 
 import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyacore.report.ReportDescriptor;
-import org.openmrs.module.kenyaemr.reporting.ReportBuilder;
+import org.openmrs.module.kenyacore.report.IndicatorReportDescriptor;
+import org.openmrs.module.kenyacore.report.ReportManager;
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
@@ -24,6 +24,7 @@ import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 import org.openmrs.ui.framework.annotation.FragmentParam;
+import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -35,11 +36,12 @@ import java.util.Date;
  */
 public class IndicatorReportFragmentController {
 	
-	public void controller(@FragmentParam("builder") ReportBuilder builder,
+	public void controller(@FragmentParam("report") IndicatorReportDescriptor report,
 						   @RequestParam(required = false, value = "startDate") Date startDate,
-						   FragmentModel model) throws EvaluationException, IOException {
+						   FragmentModel model,
+						   @SpringBean ReportManager reportManager) throws EvaluationException, IOException {
 
-		ReportDefinition definition = builder.getDefinition();
+		ReportDefinition definition = reportManager.getReportDefinition(report);
 		ReportData data = null;
 		
 		if (startDate != null) {
@@ -50,7 +52,7 @@ public class IndicatorReportFragmentController {
 			data = Context.getService(ReportDefinitionService.class).evaluate(definition, ec);
 		}
 
-		model.addAttribute("builder", builder);
+		model.addAttribute("report", report);
 		model.addAttribute("definition", definition);
 		model.addAttribute("data", data);
 	}

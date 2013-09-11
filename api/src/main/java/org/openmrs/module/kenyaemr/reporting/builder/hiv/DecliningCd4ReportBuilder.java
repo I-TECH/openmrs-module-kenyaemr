@@ -19,33 +19,28 @@ import java.util.Date;
 
 import org.openmrs.Concept;
 import org.openmrs.Obs;
+import org.openmrs.module.kenyacore.report.CalculationReportDescriptor;
+import org.openmrs.module.kenyacore.report.builder.Builds;
+import org.openmrs.module.kenyacore.report.builder.CalculationReportBuilder;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.DecliningCd4Calculation;
-import org.openmrs.module.kenyaemr.reporting.BasePatientListReport;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.data.converter.DataConverter;
 import org.openmrs.module.reporting.data.person.definition.ObsForPersonDataDefinition;
 import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
 import org.springframework.stereotype.Component;
 
-@Component("kenyaemr.hiv.report.decliningCd4")
-public class DecliningCD4Report extends BasePatientListReport {
-
-	public DecliningCD4Report() {
-		setName("Patients with declining CD4");
-		setCalculation(DecliningCd4Calculation.class);
-
-		// TODO set apps
-	}
+@Component
+@Builds("kenyaemr.hiv.report.decliningCd4")
+public class DecliningCd4ReportBuilder extends CalculationReportBuilder {
 
 	@Override
-	protected void addColumns(PatientDataSetDefinition dsd) {
+	protected void addColumns(CalculationReportDescriptor report, PatientDataSetDefinition dsd) {
 		Concept concept = Dictionary.getConcept(Dictionary.CD4_COUNT);
 		Calendar calendar = Calendar.getInstance();
 		calendar.add(Calendar.DATE, -180);
 		Date onOrBefore = calendar.getTime();
 
-		addStandardColumns(dsd);
+		addStandardColumns(report, dsd);
 
 		dsd.addColumn("Previous CD4", new ObsForPersonDataDefinition("Previous CD4", TimeQualifier.LAST, concept, onOrBefore, null), "", new DataConverter() {
 			@Override

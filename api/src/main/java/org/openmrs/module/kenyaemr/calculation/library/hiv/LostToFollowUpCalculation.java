@@ -21,6 +21,7 @@ import org.openmrs.Program;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
+import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.EmrConstants;
@@ -52,7 +53,7 @@ public class LostToFollowUpCalculation extends BaseEmrCalculation implements Pat
 		Program hivProgram = MetadataUtils.getProgram(Metadata.Program.HIV);
 
 		Set<Integer> alive = alivePatients(cohort, context);
-		Set<Integer> inHivProgram = EmrCalculationUtils.patientsThatPass(activeEnrollment(hivProgram, alive, context));
+		Set<Integer> inHivProgram = CalculationUtils.patientsThatPass(activeEnrollment(hivProgram, alive, context));
 		CalculationResultMap lastEncounters = lastEncounter(null, inHivProgram, context);
 
 		CalculationResultMap ret = new CalculationResultMap();

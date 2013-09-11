@@ -19,9 +19,7 @@ import org.junit.Test;
 import org.openmrs.Concept;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtStartDateCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.OnArtCalculation;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.EmrCalculationCohortDefinition;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.EmrDateCalculationCohortDefinition;
+import org.openmrs.module.kenyaemr.reporting.cohort.definition.DateCalculationCohortDefinition;
 import org.openmrs.module.kenyaemr.test.ReportingTestUtils;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
@@ -32,13 +30,13 @@ import org.openmrs.test.BaseModuleContextSensitiveTest;
 import java.util.Arrays;
 
 /**
- * Tests for {@link org.openmrs.module.kenyaemr.reporting.cohort.definition.evaluator.EmrCalculationCohortDefinitionEvaluator}
+ * Tests for {@link DateCalculationCohortDefinitionEvaluator}
  */
-public class EmrCalculationCohortDefinitionEvaluatorTest extends BaseModuleContextSensitiveTest {
+public class DateCalculationCohortDefinitionEvaluatorTest extends BaseModuleContextSensitiveTest {
 
 	private EvaluationContext context;
 
-	private EmrCalculationCohortDefinitionEvaluator evaluator;
+	private DateCalculationCohortDefinitionEvaluator evaluator;
 
 	@Before
 	public void setup() throws Exception {
@@ -55,19 +53,7 @@ public class EmrCalculationCohortDefinitionEvaluatorTest extends BaseModuleConte
 		TestUtils.saveDrugOrder(Context.getPatientService().getPatient(7), nvp, TestUtils.date(2012, 1, 1), null);
 
 		context = ReportingTestUtils.reportingContext(Arrays.asList(2, 6, 7, 8, 999), TestUtils.date(2012, 1, 1), TestUtils.date(2012, 1, 31));
-		evaluator = new EmrCalculationCohortDefinitionEvaluator();
-	}
-
-	/**
-	 * Tests evaluation of the onArt calculation
-	 */
-	@Test
-	public void evaluate_regularCalculation() throws EvaluationException {
-	 	EmrCalculationCohortDefinition cohortDefinition = new EmrCalculationCohortDefinition(new OnArtCalculation());
-
-		EvaluatedCohort evaluated = evaluator.evaluate(cohortDefinition, context);
-
-		ReportingTestUtils.assertCohortEquals(Arrays.asList(6, 7), evaluated);
+		evaluator = new DateCalculationCohortDefinitionEvaluator();
 	}
 
 	/**
@@ -75,7 +61,7 @@ public class EmrCalculationCohortDefinitionEvaluatorTest extends BaseModuleConte
 	 */
 	@Test
 	public void evaluate_dateCalculation() throws EvaluationException {
-		EmrDateCalculationCohortDefinition cohortDefinition = new EmrDateCalculationCohortDefinition(new InitialArtStartDateCalculation());
+		DateCalculationCohortDefinition cohortDefinition = new DateCalculationCohortDefinition(new InitialArtStartDateCalculation());
 		cohortDefinition.setOnOrAfter(TestUtils.date(2012, 1, 1));
 		cohortDefinition.setOnOrBefore(TestUtils.date(2012, 12, 31));
 

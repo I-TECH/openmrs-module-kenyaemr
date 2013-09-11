@@ -21,6 +21,7 @@ import java.util.Set;
 import org.openmrs.Program;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
+import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
@@ -56,10 +57,10 @@ public class EligibleForArtCalculation extends BaseEmrCalculation implements Pat
 
 		// only applies to patients in the HIV program
 		Program hivProgram = MetadataUtils.getProgram(Metadata.Program.HIV);
-		Set<Integer> inHivProgram = EmrCalculationUtils.patientsThatPass(activeEnrollment(hivProgram, cohort, context));
+		Set<Integer> inHivProgram = CalculationUtils.patientsThatPass(activeEnrollment(hivProgram, cohort, context));
 		
 		// need to exclude those on ART already
-		Set<Integer> onArt = EmrCalculationUtils.patientsThatPass(calculate(new OnArtCalculation(), cohort, context));
+		Set<Integer> onArt = CalculationUtils.patientsThatPass(calculate(new OnArtCalculation(), cohort, context));
 		
 		CalculationResultMap ages = ages(cohort, context);
 		

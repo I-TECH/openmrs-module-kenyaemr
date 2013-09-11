@@ -14,6 +14,7 @@
 
 package org.openmrs.module.kenyaemr.reporting.cohort.definition;
 
+import org.openmrs.module.kenyacore.report.builder.CalculationCohortDefinition;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 
@@ -22,7 +23,7 @@ import java.util.Date;
 /**
  * Cohort definition based on a calculation that returns dates
  */
-public class EmrDateCalculationCohortDefinition extends EmrCalculationCohortDefinition {
+public class DateCalculationCohortDefinition extends CalculationCohortDefinition {
 
 	@ConfigurationProperty(required = false, group = "date range")
 	private Date onOrAfter;
@@ -30,14 +31,14 @@ public class EmrDateCalculationCohortDefinition extends EmrCalculationCohortDefi
 	@ConfigurationProperty(required = false, group = "date range")
 	private Date onOrBefore;
 
-	public EmrDateCalculationCohortDefinition() {
+	public DateCalculationCohortDefinition() {
 	}
 
 	/**
 	 * Constructs a new calculation based cohort definition
 	 * @param calculation the calculation
 	 */
-	public EmrDateCalculationCohortDefinition(BaseEmrCalculation calculation) {
+	public DateCalculationCohortDefinition(BaseEmrCalculation calculation) {
 		super(calculation);
 	}
 	

@@ -27,15 +27,15 @@ import java.util.List;
 import static org.hamcrest.CoreMatchers.*;
 
 /**
- * Tests for {@link org.openmrs.module.kenyaemr.reporting.dataset.definition.persister.ReportBuilderDataSetDefinitionPersister}
+ * Tests for {@link EmrDataSetDefinitionPersister}
  */
-public class ReportBuilderDataSetDefinitionPersisterTest extends BaseModuleContextSensitiveTest {
+public class EmrDataSetDefinitionPersisterTest extends BaseModuleContextSensitiveTest {
 
 	@Autowired
 	private ReportManager reportManager;
 
 	@Autowired
-	private ReportBuilderDataSetDefinitionPersister persister;
+	private EmrDataSetDefinitionPersister persister;
 
 	/**
 	 * Setup each test
@@ -49,7 +49,7 @@ public class ReportBuilderDataSetDefinitionPersisterTest extends BaseModuleConte
 	}
 
 	/**
-	 * @see ReportBuilderDataSetDefinitionPersister#getAllDefinitions(boolean)
+	 * @see EmrDataSetDefinitionPersister#getAllDefinitions(boolean)
 	 */
 	@Test
 	public void getAllDefinitions_shouldListAllKenyaEmrDSDs() throws Exception {

@@ -14,8 +14,8 @@
 
 package org.openmrs.module.kenyaemr.converter.simplifier;
 
+import org.openmrs.module.kenyacore.report.IndicatorReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportDescriptor;
-import org.openmrs.module.kenyaemr.reporting.BaseIndicatorReport;
 import org.openmrs.ui.framework.SimpleObject;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
@@ -35,7 +35,7 @@ public class ReportDescriptorToSimpleObjectConverter implements Converter<Report
 				"id", report.getId(),
 				"name", report.getName(),
 				"description", report.getDescription(),
-				"isIndicator", report instanceof BaseIndicatorReport
+				"isIndicator", report instanceof IndicatorReportDescriptor
 		);
 	}
 }

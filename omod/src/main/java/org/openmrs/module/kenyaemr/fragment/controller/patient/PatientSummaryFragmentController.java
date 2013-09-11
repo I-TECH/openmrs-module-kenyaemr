@@ -49,9 +49,9 @@ public class PatientSummaryFragmentController {
 
 		AppDescriptor currentApp = kenyaUi.getCurrentApp(pageRequest);
 
-		// Get all suitable per-patient forms as simple objects
+		// Get all common per-patient forms as simple objects
 		List<SimpleObject> forms = new ArrayList<SimpleObject>();
-		for (FormDescriptor formDescriptor : formManager.getFormsForPatient(currentApp, patient)) {
+		for (FormDescriptor formDescriptor : formManager.getCommonFormsForPatient(currentApp, patient)) {
 			forms.add(ui.simplifyObject(formDescriptor.getTarget()));
 		}
 

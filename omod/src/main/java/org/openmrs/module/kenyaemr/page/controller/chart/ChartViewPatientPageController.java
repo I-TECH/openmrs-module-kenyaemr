@@ -75,7 +75,7 @@ public class ChartViewPatientPageController {
 
 		AppDescriptor thisApp = Context.getService(AppFrameworkService.class).getAppById(EmrConstants.APP_CHART);
 
-		List<FormDescriptor> oneTimeFormDescriptors = formManager.getFormsForPatient(thisApp, patient);
+		List<FormDescriptor> oneTimeFormDescriptors = formManager.getCommonFormsForPatient(thisApp, patient);
 		List<SimpleObject> oneTimeForms = new ArrayList<SimpleObject>();
 		for (FormDescriptor formDescriptor : oneTimeFormDescriptors) {
 			Form form = formDescriptor.getTarget();

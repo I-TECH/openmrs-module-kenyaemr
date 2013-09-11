@@ -16,9 +16,8 @@ package org.openmrs.module.kenyaemr.fragment.controller.report;
 
 import org.apache.commons.collections.map.HashedMap;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyacore.report.ReportDescriptor;
-import org.openmrs.module.kenyaemr.reporting.BasePatientListReport;
-import org.openmrs.module.kenyaemr.reporting.ReportBuilder;
+import org.openmrs.module.kenyacore.report.CalculationReportDescriptor;
+import org.openmrs.module.kenyacore.report.ReportManager;
 import org.openmrs.module.reporting.dataset.DataSetRow;
 import org.openmrs.module.reporting.dataset.SimpleDataSet;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
@@ -27,6 +26,7 @@ import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 import org.openmrs.ui.framework.annotation.FragmentParam;
+import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 
 import java.util.Map;
@@ -36,10 +36,11 @@ import java.util.Map;
  */
 public class PatientListReportFragmentController {
 
-	public void controller(@FragmentParam("builder") ReportBuilder builder,
-						   FragmentModel model) throws EvaluationException {
+	public void controller(@FragmentParam("report") CalculationReportDescriptor report,
+						   FragmentModel model,
+						   @SpringBean ReportManager reportManager) throws EvaluationException {
 
-		ReportDefinition definition = builder.getDefinition();
+		ReportDefinition definition = reportManager.getReportDefinition(report);
 
 		// Evaluate the report
 		EvaluationContext ec = new EvaluationContext();

@@ -22,11 +22,11 @@ import org.openmrs.EncounterType;
 import org.openmrs.Program;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
+import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
-import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 
 /**
  * Calculates HIV patients who have not been screened for TB
@@ -49,8 +49,8 @@ public class NeverScreenedForTbCalculation extends BaseEmrCalculation {
 		EncounterType screeningEncType = MetadataUtils.getEncounterType(Metadata.EncounterType.TB_SCREENING);
 
 		Set<Integer> alive = alivePatients(cohort, context);
-		Set<Integer> inHivProgram = EmrCalculationUtils.patientsThatPass(activeEnrollment(hivProgram, alive, context));
-		Set<Integer> wasScreened = EmrCalculationUtils.patientsThatPass(allEncounters(screeningEncType, cohort, context));
+		Set<Integer> inHivProgram = CalculationUtils.patientsThatPass(activeEnrollment(hivProgram, alive, context));
+		Set<Integer> wasScreened = CalculationUtils.patientsThatPass(allEncounters(screeningEncType, cohort, context));
 
 		CalculationResultMap ret = new CalculationResultMap();
 		for (Integer ptId : cohort) {

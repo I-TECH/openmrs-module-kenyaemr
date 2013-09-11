@@ -23,7 +23,6 @@ import org.openmrs.Program;
 import org.openmrs.module.appframework.AppDescriptor;
 import org.openmrs.module.kenyacore.program.ProgramDescriptor;
 import org.openmrs.module.kenyacore.program.ProgramManager;
-import org.openmrs.module.kenyacore.report.AbstractReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportManager;
 import org.openmrs.module.kenyaemr.EmrConstants;
@@ -49,28 +48,20 @@ public class ReportsHomePageController {
 
 		AppDescriptor currentApp = kenyaUi.getCurrentApp(pageRequest);
 
-		List<SimpleObject> commonReports = new ArrayList<SimpleObject>();
+		List<ReportDescriptor> commonReports = reportManager.getCommonReports(currentApp);
 
-		for (ReportDescriptor report : reportManager.getCommonReports(currentApp)) {
-			commonReports.add(ui.simplifyObject(report));
-		}
-
-		Map<String, List<SimpleObject>> programReports = new LinkedHashMap<String, List<SimpleObject>>();
+		Map<String, SimpleObject[]> programReports = new LinkedHashMap<String, SimpleObject[]>();
 
 		for (ProgramDescriptor programDescriptor : programManager.getAllProgramDescriptors()) {
 			Program program = programDescriptor.getTarget();
-			List<SimpleObject> reports = new ArrayList<SimpleObject>();
+			List<ReportDescriptor> reports = reportManager.getProgramReports(currentApp, program);
 
-			if (programDescriptor.getReports() != null && programDescriptor.getReports().size() > 0) {
-				for (ReportDescriptor report : programDescriptor.getReports()) {
-					reports.add(ui.simplifyObject(report));
-				}
-
-				programReports.put(program.getName(), reports);
+			if (reports.size() > 0) {
+				programReports.put(program.getName(), ui.simplifyCollection(reports));
 			}
 		}
 
-		model.addAttribute("commonReports", commonReports);
+		model.addAttribute("commonReports", ui.simplifyCollection(commonReports));
 		model.addAttribute("programReports", programReports);
 	}
 }
