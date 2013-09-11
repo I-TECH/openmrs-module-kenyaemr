@@ -241,7 +241,10 @@
 						<tr>
 							<td width="200">General Condition:</td>
 							<td>
-								Missing Concept
+								<obs conceptId="160085AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										answerConceptIds="1855AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										answerLabels="Good"/>
+								TODO: Add Fair and Poor
 							</td>
 						</tr>
 						<tr>
@@ -274,18 +277,6 @@
 								<obs conceptId="159844AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"></obs>
 							</td>
 						</tr>
-						<tr>
-							<td>Pelvic Exam</td>
-							<td>
-								Missing Concept
-							</td>
-						</tr>
-					</table>
-				</td>
-				<td></td>
-				<td>
-					<legend>Other Observations</legend>
-					<table align="center" width="100%" class="tb1">
 						<tr>
 							<td width="200">Haemoglobin</td>
 							<td>
@@ -330,6 +321,55 @@
 						</tr>
 					</table>
 				</td>
+				<td>
+				<td>
+					<legend>Pelvic Exam</legend>
+					<table align="center" width="100%" class="tb1">
+						<tr>
+							<td>Uterus Examination</td>
+							<td>
+								<obs conceptId="160967AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="3" cols="26"/>
+							</td>
+						</tr>
+						<tr>
+							<td>Uterus Cervix Examination</td>
+							<td>
+								<obs conceptId="160968AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="3" cols="26"/>
+							</td>
+						</tr>
+						<tr>
+							<td>Vaginal Examination</td>
+							<td>
+								<obs conceptId="160969AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="3" cols="26"/>
+							</td>
+						</tr>
+						<tr>
+							<td>Parametrial Examination</td>
+							<td>
+								<obs conceptId="160970AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="3" cols="26"/>
+							</td>
+						</tr>
+						<tr>
+							<td>External Female Genitalia Examination</td>
+							<td>
+								<obs conceptId="160971AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="3" cols="26"/>
+							</td>
+						</tr>
+						<tr>
+							<td>Ovarian Examination</td>
+							<td>
+								<obs conceptId="160975AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="3" cols="26"/>
+							</td>
+						</tr>
+						<tr>
+							<td>Pelvic Lymph Node Examination</td>
+							<td>
+								<obs conceptId="160972AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="3" cols="26"/>
+							</td>
+						</tr>
+					</table>
+				</td>
+				</td>
 			</tr>
 		</table>
 	</td>
@@ -365,21 +405,21 @@
 									<obsgroup groupingConceptId="1442AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
 										<tr>
 											<td>
-												<obs id="drug-${medId}" class="arv-med"
+												<obs id="drug" class="arv-med"
 													 conceptId="966AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 													 answerConceptIds="70056AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,71647AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,74807AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,75523AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,75628AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,77995AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,78643AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,79040AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,80487AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,80586AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,83412AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,84309AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,84795AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,86663AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 											</td>
 											<td>
-												<obs id="dose-${medId}" class="arv-med"
+												<obs id="dose" class="arv-med"
 													 conceptId="1443AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 											</td>
 											<td>
-												<obs id="dose-units-${medId}" class="arv-med"
+												<obs id="dose-units" class="arv-med"
 													 conceptId="1444AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 													 size="5"/>
 											</td>
 											<td>
-												<obs id="frequency-${medId}"
+												<obs id="frequency"
 													 class="arv-med"
 													 conceptId="160855AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 													 answerConceptIds="160862AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160863AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160864AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160865AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160858AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160866AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160870AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
@@ -387,11 +427,11 @@
 														/>
 											</td>
 											<td>
-												<obs id="duration-${medId}" class="arv-med"
+												<obs id="duration" class="arv-med"
 													 conceptId="159368AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 											</td>
 											<td>
-												<obs id="duration-units-${medId}"
+												<obs id="duration-units"
 													 class="arv-med"
 													 conceptId="1732AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 													 answerConceptIds="1822AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1072AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1073AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1074AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"

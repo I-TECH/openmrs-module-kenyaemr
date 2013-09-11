@@ -13,22 +13,49 @@
 -->
 <htmlform>
 
+	<style type="text/css">
+		table.tb {
+		background-color: #FFFFFF;
+		border: 1px solid black;
+		}
+
+		table.tb1 {
+		border: 1px solid black;
+		vertical-align: baseline;
+		text-align: left;
+		background-color: #FFFFFF;
+		}
+
+		table.tb1 tr th, table.tb1 tr td {
+		border: 0;
+		padding: 10px;
+		}
+
+		table {
+		border-collapse: collapse;
+		}
+	</style>
+
 	<!-- Should always be the current user -->
 	<div style="display:none">
-		<encounterProvider default="currentUser" />
+		<encounterProvider default="currentUser"/>
 	</div>
 
 	<div class="ke-form-header">
 		<table width="100%">
 			<tr>
-				<td>Date: <encounterDate id="encounter-date" showTime="true"/></td>
-				<td>Location: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete"/></td>
+				<td>Date:
+					<encounterDate id="encounter-date" showTime="true"/>
+				</td>
+				<td>Location:
+					<encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete"/>
+				</td>
 			</tr>
 		</table>
 	</div>
 
 	<div class="ke-form-content">
-		<table style="width: 100%; height: 44px;" border="0" align="center">
+		<table align="center" class="tb" cellspacing="10">
 			<tr>
 				<td style="background-color: #696969; color: #ffffff;">Pregnancy Order</td>
 				<td style="background-color: #696969; color: #ffffff;">Year(dd/mm/yyyy)</td>
@@ -40,49 +67,162 @@
 				<td style="background-color: #696969; color: #ffffff;">Birth Weight (Kg)</td>
 				<td style="background-color: #696969; color: #ffffff;">Sex</td>
 				<td style="background-color: #696969; color: #ffffff;">Outcome</td>
-				<td style="background-color: #696969; color: #ffffff;">Puerperium</td>
+				<td style="background-color: #696969; color: #ffffff;">Event's During Puerperium</td>
 			</tr>
 			<repeat>
 				<template>
 					<obsgroup groupingConceptId="160593AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-						<tr>
-							<td>
+						<tr  style="border:1px solid black">
+							<td valign="top">
 								<obs conceptId="5624AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 							</td>
-							<td>
-								<obs conceptId="160602AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=""/>
+							<td valign="top">
+								<obs conceptId="160602AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 							</td>
-							<td>
+							<td valign="top">
 								<obs conceptId="1425AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 							</td>
-							<td>
+							<td valign="top">
 								<obs conceptId="1572AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 							</td>
-							<td>
+							<td valign="top">
 								<obs conceptId="1409AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 							</td>
-							<td>
+							<td valign="top">
 								<obs conceptId="159616AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 							</td>
-							<td>
+							<td valign="top">
 								<obs conceptId="5630AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 							</td>
-							<td>
+							<td valign="top">
 								<obs conceptId="5916AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 							</td>
-							<td>
+							<td valign="top">
 								<obs conceptId="1587AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=""/>
 							</td>
-							<td>
+							<td valign="top">
 								<obs conceptId="159917AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 									 answerConceptIds="159035AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159916AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,126127AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,48AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 									 answerLabels="Live Birth,Still Birth,Abortion,Miscarriage"/>
 							</td>
-							<td>
-								<obs conceptId="1576AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox"/>
-								<obs conceptId="1576AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox"/>
-								<obs conceptId="1576AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox"/>
-								<obs conceptId="1576AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox"/>
+							<td valign="top">
+								<table>
+									<tr>
+										<td valign="top">
+											<obs conceptId="1576AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+												 answerConceptId="1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+												 answerLabel="None"
+												 style="checkbox"/>
+										</td>
+										<td valign="top">
+											<obs conceptId="1576AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+												 answerConceptId="134612AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+												 answerLabel="Maternal death"
+												 style="checkbox"/>
+										</td>
+										<td valign="top">
+											<obs conceptId="1576AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+												 answerConceptId="127592AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+												 answerLabel="Retained placenta"
+												 style="checkbox"/>
+										</td>
+									</tr>
+									<tr>
+										<td valign="top">
+											<obs conceptId="1576AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+												 answerConceptId="146192AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+												 answerLabel="Cardiac arrest"
+												 style="checkbox"/>
+										</td>
+										<td valign="top">
+											<obs conceptId="1576AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+												 answerConceptId="154223AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+												 answerLabel="Neonatal death"
+												 style="checkbox"/>
+										</td>
+										<td valign="top">
+											<obs conceptId="1576AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+												 answerConceptId="206AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+												 answerLabel="Seizure"
+												 style="checkbox"/>
+										</td>
+									</tr>
+									<tr>
+										<td valign="top">
+											<obs conceptId="1576AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+												 answerConceptId="140238AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+												 answerLabel="Fever"
+												 style="checkbox"/>
+										</td>
+										<td valign="top">
+											<obs conceptId="1576AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+												 answerConceptId="113195AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+												 answerLabel="Obstetrical uterus rupture"
+												 style="checkbox"/>
+										</td>
+										<td valign="top">
+											<obs conceptId="1576AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+												 answerConceptId="123396AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+												 answerLabel="Vagina discharge"
+												 style="checkbox"/>
+										</td>
+									</tr>
+									<tr>
+										<td valign="top">
+											<obs conceptId="1576AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+												 answerConceptId="139981AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+												 answerLabel="Foot-drop"
+												 style="checkbox"/>
+										</td>
+										<td valign="top">
+											<obs conceptId="1576AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+												 answerConceptId="230AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+												 answerLabel="Postpartum hemorrhage"
+												 style="checkbox"/>
+										</td>
+										<td valign="top">
+											<obs conceptId="1576AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+												 answerConceptId="49AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+												 answerLabel="Vesical-vaginal fistula"
+												 style="checkbox"/>
+										</td>
+									</tr>
+									<tr>
+										<td valign="top">
+											<obs conceptId="1576AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+												 answerConceptId="117069AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+												 answerLabel="Infection specific to perinatal period"
+												 style="checkbox"/>
+										</td>
+										<td valign="top">
+											<obs conceptId="1576AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+												 answerConceptId="129318AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+												 answerLabel="Postpartum psychosis"
+												 style="checkbox"/>
+										</td>
+										<td valign="top">
+											<obs conceptId="1576AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+												 answerConceptId="5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+												 answerLabel="Other (non-coded)"
+												 style="checkbox"/>
+										</td>
+									</tr>
+									<tr>
+										<td valign="top">
+											<obs conceptId="1576AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+												 answerConceptId="135592AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+												 answerLabel="Loss of consciousness"
+												 style="checkbox"/>
+										</td>
+										<td valign="top">
+											<obs conceptId="1576AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+												 answerConceptId="130AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+												 answerLabel="Puerperal sepsis"
+												 style="checkbox"/>
+										</td>
+										<td></td>
+									</tr>
+								</table>
 							</td>
 						</tr>
 					</obsgroup>
