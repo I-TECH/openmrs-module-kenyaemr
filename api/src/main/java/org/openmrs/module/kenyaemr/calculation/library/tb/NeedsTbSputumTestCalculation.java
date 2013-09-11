@@ -26,6 +26,7 @@ import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.ObsResult;
 import org.openmrs.module.kenyacore.calculation.CalculationUtils;
+import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
@@ -61,7 +62,7 @@ public class NeedsTbSputumTestCalculation extends BaseEmrCalculation implements 
 
 		// Get all patients who are alive and in TB program
 		Set<Integer> alive = alivePatients(cohort, context);
-		Set<Integer> inTbProgram = CalculationUtils.patientsThatPass(activeEnrollment(tbProgram, alive, context));
+		Set<Integer> inTbProgram = CalculationUtils.patientsThatPass(Calculations.activeEnrollment(tbProgram, alive, context));
 
 		// Get concepts
 		Concept tbsuspect = getConcept(Dictionary.DISEASE_SUSPECTED);
@@ -76,19 +77,19 @@ public class NeedsTbSputumTestCalculation extends BaseEmrCalculation implements 
 		Concept retreatmentAfterDefault = getConcept(Dictionary.RETREATMENT_AFTER_DEFAULT_TUBERCULOSIS);
 
 		// check if there is any observation recorded per the tuberculosis disease status
-		CalculationResultMap lastObsTbDiseaseStatus = lastObs(getConcept(Dictionary.TUBERCULOSIS_DISEASE_STATUS), cohort, context);
+		CalculationResultMap lastObsTbDiseaseStatus = Calculations.lastObs(getConcept(Dictionary.TUBERCULOSIS_DISEASE_STATUS), cohort, context);
 
 		// get last observations for disease classification, patient classification
 		// and pulmonary tb positive to determine when sputum will be due for patients in future
-		CalculationResultMap lastDiseaseClassiffication = lastObs(getConcept(Dictionary.SITE_OF_TUBERCULOSIS_DISEASE), inTbProgram, context);
-		CalculationResultMap lastPatientClassification = lastObs(getConcept(Dictionary.TYPE_OF_TB_PATIENT), inTbProgram, context);
-		CalculationResultMap lastTbPulmonayResult = lastObs(getConcept(Dictionary.RESULTS_TUBERCULOSIS_CULTURE), inTbProgram, context);
+		CalculationResultMap lastDiseaseClassiffication = Calculations.lastObs(getConcept(Dictionary.SITE_OF_TUBERCULOSIS_DISEASE), inTbProgram, context);
+		CalculationResultMap lastPatientClassification = Calculations.lastObs(getConcept(Dictionary.TYPE_OF_TB_PATIENT), inTbProgram, context);
+		CalculationResultMap lastTbPulmonayResult = Calculations.lastObs(getConcept(Dictionary.RESULTS_TUBERCULOSIS_CULTURE), inTbProgram, context);
 
 		// get the first observation ever the patient had a sputum results for month 0
-		CalculationResultMap sputumResultsForMonthZero = firstObs(getConcept(Dictionary.SPUTUM_FOR_ACID_FAST_BACILLI), alive, context);
+		CalculationResultMap sputumResultsForMonthZero = Calculations.firstObs(getConcept(Dictionary.SPUTUM_FOR_ACID_FAST_BACILLI), alive, context);
 
 		// get the date when Tb treatment was started, the patient should be in tb program to have this date
-		CalculationResultMap tbStartTreatmentDate = lastObs(getConcept(Dictionary.TUBERCULOSIS_DRUG_TREATMENT_START_DATE), inTbProgram, context);
+		CalculationResultMap tbStartTreatmentDate = Calculations.lastObs(getConcept(Dictionary.TUBERCULOSIS_DRUG_TREATMENT_START_DATE), inTbProgram, context);
 
 		CalculationResultMap ret = new CalculationResultMap();
 		for (Integer ptId : cohort) {
@@ -101,7 +102,7 @@ public class NeedsTbSputumTestCalculation extends BaseEmrCalculation implements 
 				if (r != null && (r.getValue().getValueCoded().equals(tbsuspect))) {
 
 					// get the last observation of sputum since tb was suspected
-					CalculationResultMap firstObsSinceSuspected = firstObsOnOrAfterDate(getConcept(Dictionary.SPUTUM_FOR_ACID_FAST_BACILLI), r.getDateOfResult(), cohort, context);
+					CalculationResultMap firstObsSinceSuspected = Calculations.firstObsOnOrAfter(getConcept(Dictionary.SPUTUM_FOR_ACID_FAST_BACILLI), r.getDateOfResult(), cohort, context);
 
 					// get the first observation of sputum since the patient was
 					// suspected
@@ -164,7 +165,7 @@ public class NeedsTbSputumTestCalculation extends BaseEmrCalculation implements 
 						// dateAfterTwomonths based on sputum ie it should be
 						// null
 						// for alert to remain active otherwise it has to go off
-						CalculationResultMap firstObsAfterTwomonthsOnOrAfterdateAfterTwomonths = firstObsOnOrAfterDate(getConcept(Dictionary.SPUTUM_FOR_ACID_FAST_BACILLI), dateAfterTwomonths, inTbProgram, context);
+						CalculationResultMap firstObsAfterTwomonthsOnOrAfterdateAfterTwomonths = Calculations.firstObsOnOrAfter(getConcept(Dictionary.SPUTUM_FOR_ACID_FAST_BACILLI), dateAfterTwomonths, inTbProgram, context);
 						// get the observation results
 						ObsResult resultAfterTwomonthsOnOrAfterdateAfterTwomonths = (ObsResult) firstObsAfterTwomonthsOnOrAfterdateAfterTwomonths.get(ptId);
 						// check if
@@ -188,7 +189,7 @@ public class NeedsTbSputumTestCalculation extends BaseEmrCalculation implements 
 								EmrConstants.MONTH_FIVE_SPUTUM_TEST);
 						Date dateAfterFiveMonths = c.getTime();
 						// check if any obs is collected on or after this date
-						CalculationResultMap firstObsAfterFivemonthsOnOrAfterdateAfterFivemonths = firstObsOnOrAfterDate(
+						CalculationResultMap firstObsAfterFivemonthsOnOrAfterdateAfterFivemonths = Calculations.firstObsOnOrAfter(
 								getConcept(Dictionary.SPUTUM_FOR_ACID_FAST_BACILLI),
 								dateAfterFiveMonths, inTbProgram, context);
 						// get the observation results
@@ -217,7 +218,7 @@ public class NeedsTbSputumTestCalculation extends BaseEmrCalculation implements 
 						Date dateAfterSixMonths = c.getTime();
 						// check if there is any observation on or after this
 						// date
-						CalculationResultMap firstObsAfterSixmonthsOnOrAfterdateAfterSixmonths = firstObsOnOrAfterDate(
+						CalculationResultMap firstObsAfterSixmonthsOnOrAfterdateAfterSixmonths = Calculations.firstObsOnOrAfter(
 								getConcept(Dictionary.SPUTUM_FOR_ACID_FAST_BACILLI),
 								dateAfterSixMonths, inTbProgram, context);
 						// get the observation results
@@ -253,7 +254,7 @@ public class NeedsTbSputumTestCalculation extends BaseEmrCalculation implements 
 							Date dateAfterThreeMonths = c.getTime();
 							// get the first observation of sputum on or after the
 							// date
-							CalculationResultMap firstObsAfterThreeMonthOnOrAfterdateAfterThreeMonths = firstObsOnOrAfterDate(
+							CalculationResultMap firstObsAfterThreeMonthOnOrAfterdateAfterThreeMonths = Calculations.firstObsOnOrAfter(
 									getConcept(Dictionary.SPUTUM_FOR_ACID_FAST_BACILLI),
 									dateAfterThreeMonths, inTbProgram, context);
 							// get the observation results
@@ -278,7 +279,7 @@ public class NeedsTbSputumTestCalculation extends BaseEmrCalculation implements 
 							Date dateAfterFiveMonths = c.getTime();
 							// get the first observation of sputum on or after the
 							// date
-							CalculationResultMap firstObsAfterFiveMonthOnOrAfterdateAfterFiveMonths = firstObsOnOrAfterDate(
+							CalculationResultMap firstObsAfterFiveMonthOnOrAfterdateAfterFiveMonths = Calculations.firstObsOnOrAfter(
 									getConcept(Dictionary.SPUTUM_FOR_ACID_FAST_BACILLI),
 									dateAfterFiveMonths, inTbProgram, context);
 							// get the observation results
@@ -304,7 +305,7 @@ public class NeedsTbSputumTestCalculation extends BaseEmrCalculation implements 
 							Date dateAfterEightMonths = c.getTime();
 							// get the first observation of sputum on or after the
 							// date
-							CalculationResultMap firstObsAfterEightMonthOnOrAfterdateAfterEightMonths = firstObsOnOrAfterDate(
+							CalculationResultMap firstObsAfterEightMonthOnOrAfterdateAfterEightMonths = Calculations.firstObsOnOrAfter(
 									getConcept(Dictionary.SPUTUM_FOR_ACID_FAST_BACILLI),
 									dateAfterEightMonths, inTbProgram, context);
 							// get the observation results

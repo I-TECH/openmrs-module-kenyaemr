@@ -17,6 +17,7 @@ package org.openmrs.module.kenyaemr.calculation.library;
 import org.openmrs.*;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
+import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.EmrConstants;
@@ -40,7 +41,7 @@ public class OnMedicationCalculation extends BaseEmrCalculation {
 		Concept medOrders = Dictionary.getConcept(Dictionary.MEDICATION_ORDERS);
 		EncounterType consultation = MetadataUtils.getEncounterType(Metadata.EncounterType.CONSULTATION);
 
-		CalculationResultMap lastConsultations = lastEncounter(consultation, cohort, context);
+		CalculationResultMap lastConsultations = Calculations.lastEncounter(consultation, cohort, context);
 
 		CalculationResultMap ret = new CalculationResultMap();
 		for (Integer ptId : cohort) {

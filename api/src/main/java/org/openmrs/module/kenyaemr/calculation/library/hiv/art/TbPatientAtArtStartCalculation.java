@@ -17,6 +17,7 @@ package org.openmrs.module.kenyaemr.calculation.library.hiv.art;
 import org.openmrs.Program;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
+import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
@@ -48,7 +49,7 @@ public class TbPatientAtArtStartCalculation extends BaseEmrCalculation {
 			Date artStartDate = EmrCalculationUtils.datetimeResultForPatient(artStartDates, ptId);
 
 			if (artStartDate != null) {
-				CalculationResultMap enrollment = activeEnrollmentOnDate(tbProgram, artStartDate, Collections.singleton(ptId), context);
+				CalculationResultMap enrollment = Calculations.activeEnrollmentOn(tbProgram, artStartDate, Collections.singleton(ptId), context);
 
 				if (enrollment.get(ptId) != null) {
 					result = true;

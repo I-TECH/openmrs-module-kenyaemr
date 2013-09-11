@@ -16,6 +16,7 @@ package org.openmrs.module.kenyaemr.calculation.library.hiv;
 
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
+import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 
@@ -34,6 +35,6 @@ public class LastCd4CountCalculation extends BaseEmrCalculation {
 	 */
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
-		return lastObs(getConcept(Dictionary.CD4_COUNT), cohort, context);
+		return Calculations.lastObs(getConcept(Dictionary.CD4_COUNT), cohort, context);
 	}
 }

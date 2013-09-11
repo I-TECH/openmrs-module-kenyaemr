@@ -48,21 +48,6 @@ import java.util.Set;
 public class EmrCalculationUtils {
 
 	/**
-	 * Extracts patients from calculation result map with false/empty results
-	 * @param results the calculation result map
-	 * @return the extracted patient ids
-	 */
-	public static Set<Integer> patientsThatDoNotPass(CalculationResultMap results) {
-		Set<Integer> ret = new HashSet<Integer>();
-		for (Map.Entry<Integer, CalculationResult> e : results.entrySet()) {
-			if (ResultUtil.isFalse(e.getValue())) {
-				ret.add(e.getKey());
-			}
-		}
-		return ret;
-	}
-
-	/**
 	 * Extracts patients from a calculation result map with date results in the given range
 	 * @param results the calculation result map
 	 * @param minDateInclusive the minimum date (inclusive)
@@ -86,32 +71,6 @@ public class EmrCalculationUtils {
 			}
 		}
 		return ret;
-	}
-
-	/**
-	 * Ensures all patients exist in a result map. If map is missing entries for any of patientIds, they are added with a null result
-	 * @param map the calculation result map
-	 * @param cohort the patient ids
-	 */
-	public static void ensureNullResults(CalculationResultMap map, Collection<Integer> cohort) {
-		for (Integer ptId : cohort) {
-			if (!map.containsKey(ptId)) {
-				map.put(ptId, null);
-			}
-		}
-	}
-
-	/**
-	 * Ensures all patients exist in a result map. If map is missing entries for any of patientIds, they are added with an empty list result
-	 * @param map the calculation result map
-	 * @param cohort the patient ids
-	 */
-	public static void ensureEmptyListResults(CalculationResultMap map, Collection<Integer> cohort) {
-		for (Integer ptId : cohort) {
-			if (!map.containsKey(ptId)) {
-				map.put(ptId, new ListResult());
-			}
-		}
 	}
 
 	/**
@@ -140,32 +99,6 @@ public class EmrCalculationUtils {
 	public static CalculationResult evaluateForPatient(Class <? extends PatientCalculation> calculationClass, String configuration, Patient patient) {
 		PatientCalculation calculation = CalculationUtils.instantiateCalculation(calculationClass, configuration);
 		return Context.getService(PatientCalculationService.class).evaluate(patient.getId(), calculation);
-	}
-
-	/**
-	 * Calculates the earliest date of two given dates, ignoring null values
-	 * @param d1 the first date
-	 * @param d2 the second date
-	 * @return the earliest date value
-	 * @should return null if both dates are null
-	 * @should return non-null date if one date is null
-	 * @should return earliest date of two non-null dates
-	 */
-	public static Date earliestDate(Date d1, Date d2) {
-		return OpenmrsUtil.compareWithNullAsLatest(d1, d2) >= 0 ? d2 : d1;
-	}
-	
-	/**
-	 * Calculates the latest date of two given dates, ignoring null values
-	 * @param d1 the first date
-	 * @param d2 the second date
-	 * @return the latest date value
-	 * @should return null if both dates are null
-	 * @should return non-null date if one date is null
-	 * @should return latest date of two non-null dates
-	 */
-	public static Date latestDate(Date d1, Date d2) {
-		return OpenmrsUtil.compareWithNullAsEarliest(d1, d2) >= 0 ? d1 : d2;
 	}
 
 	/**
@@ -264,17 +197,4 @@ public class EmrCalculationUtils {
 		return false;
 	}
 
-	/**
-	 * Add days to an existing date
-	 * @param date the date
-	 * @param days the number of days to add (negative to subtract days)
-	 * @return the new date
-	 * @should shift the date by the number of days
-	 */
-	public static Date dateAddDays(Date date, int days) {
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(date);
-		cal.add(Calendar.DATE, days);
-		return cal.getTime();
-	}
 }

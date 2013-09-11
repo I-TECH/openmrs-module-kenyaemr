@@ -26,6 +26,7 @@ import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.ListResult;
 import org.openmrs.module.kenyacore.calculation.CalculationUtils;
+import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.Metadata;
@@ -45,9 +46,9 @@ public class NeverTakenCtxOrDapsoneCalculation extends BaseEmrCalculation {
 		Program hivProgram = MetadataUtils.getProgram(Metadata.Program.HIV);
 
 		Set<Integer> alive = alivePatients(cohort, context);
-		Set<Integer> inHivProgram = CalculationUtils.patientsThatPass(activeEnrollment(hivProgram, alive, context));
+		Set<Integer> inHivProgram = CalculationUtils.patientsThatPass(Calculations.activeEnrollment(hivProgram, alive, context));
 
-		CalculationResultMap medOrdersObss = allObs(getConcept(Dictionary.MEDICATION_ORDERS), cohort, context);
+		CalculationResultMap medOrdersObss = Calculations.allObs(getConcept(Dictionary.MEDICATION_ORDERS), cohort, context);
 
 		// Get concepts for both kinds of medication
 		Concept dapsone = getConcept(Dictionary.DAPSONE);
