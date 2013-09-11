@@ -54,7 +54,7 @@ public class NotOnArtCalculation extends BaseEmrCalculation implements PatientFl
 	 */
 	@Override
 	public String getFlagMessage() {
-		return "Mother not on ART";
+		return "Not on ART";
 	}
 
 	@Override
@@ -79,9 +79,9 @@ public class NotOnArtCalculation extends BaseEmrCalculation implements PatientFl
 				boolean hivPositive = false;
 				boolean onArt = false;
 				if (lastHivStatus != null) {
-					hivPositive = lastHivStatus.getUuid().equals(Dictionary.POSITIVE);
+					hivPositive = lastHivStatus.equals(Dictionary.getConcept(Dictionary.POSITIVE));
 					if (lastArtStatus != null) {
-						onArt = !lastArtStatus.getUuid().equals(Dictionary.NOT_APPLICABLE);
+						onArt = !lastArtStatus.equals(Dictionary.getConcept(Dictionary.NOT_APPLICABLE));
 					}
 				}
 				notOnArt = hivPositive && gestationIsGreaterThan14Weeks(ptId) && !onArt;

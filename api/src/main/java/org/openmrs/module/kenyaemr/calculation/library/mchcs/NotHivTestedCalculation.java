@@ -43,7 +43,7 @@ public class NotHivTestedCalculation extends BaseEmrCalculation implements Patie
 	 */
 	@Override
 	public String getFlagMessage() {
-		return "Mother not HIV Tested";
+		return "Not HIV Tested";
 	}
 
 	@Override
@@ -64,7 +64,7 @@ public class NotHivTestedCalculation extends BaseEmrCalculation implements Patie
 			if (inMchmsProgram.contains(ptId)) {
 				Concept lastHivStatus = EmrCalculationUtils.codedObsResultForPatient(lastHivStatusObss, ptId);
 				if (lastHivStatus != null) {
-					notHivTested = lastHivStatus.getUuid().equals(Dictionary.NOT_HIV_TESTED);
+					notHivTested = lastHivStatus.equals(Dictionary.getConcept(Dictionary.NOT_HIV_TESTED));
 				}
 			}
 			ret.put(ptId, new BooleanResult(notHivTested, this, context));

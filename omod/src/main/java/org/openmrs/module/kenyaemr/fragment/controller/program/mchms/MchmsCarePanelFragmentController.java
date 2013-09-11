@@ -66,8 +66,8 @@ public class MchmsCarePanelFragmentController {
 			Obs arvUseObs = EmrUtils.firstObsInEncounter(lastMchConsultation, Dictionary.getConcept(Dictionary.ANTIRETROVIRAL_USE_IN_PREGNANCY));
 			if (arvUseObs != null) {
 				Concept concept = arvUseObs.getValueCoded();
-				if (concept.getUuid().equals(Dictionary.MOTHER_ON_PROPHYLAXIS)
-						|| concept.getUuid().equals(Dictionary.MOTHER_ON_HAART)) {
+				if (concept.equals(Dictionary.getConcept(Dictionary.MOTHER_ON_PROPHYLAXIS))
+						|| concept.equals(Dictionary.getConcept(Dictionary.MOTHER_ON_HAART))) {
 					String regimen = "Regimen not specified";
 					List<Obs> drudObsList = EmrUtils.allObsInEncounter(lastMchConsultation, Dictionary.getConcept(Dictionary.ANTIRETROVIRAL_USED_IN_PREGNANCY));
 					if (!drudObsList.isEmpty()) {
@@ -84,10 +84,10 @@ public class MchmsCarePanelFragmentController {
 							regimen = rgmn;
 						}
 					}
-					if (concept.getUuid().equals(Dictionary.MOTHER_ON_PROPHYLAXIS)) {
+					if (concept.equals(Dictionary.getConcept(Dictionary.MOTHER_ON_PROPHYLAXIS))) {
 						calculations.put("onProhylaxis", "Yes (" + regimen + ")");
 						calculations.put("onHaart", "No");
-					} else if (concept.getUuid().equals(Dictionary.MOTHER_ON_HAART)) {
+					} else if (concept.equals(Dictionary.getConcept(Dictionary.MOTHER_ON_HAART))) {
 						calculations.put("onProhylaxis", "No");
 						calculations.put("onHaart", "Yes (" + regimen + ")");
 					}
