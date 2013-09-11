@@ -175,7 +175,7 @@ public class EmrUtils {
 	 * Finds the first obs in an encounter with the given concept
 	 * @param encounter the encounter
 	 * @param concept the obs concept
-	 * @return the encounter
+	 * @return the obs
 	 */
 	public static Obs firstObsInEncounter(Encounter encounter, Concept concept) {
 		for (Obs obs : encounter.getAllObs()) {
@@ -184,6 +184,22 @@ public class EmrUtils {
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * Finds all obs in an encounter with the given concept
+	 * @param encounter the encounter
+	 * @param concept the obs concept
+	 * @return the obs list
+	 */
+	public static List<Obs> allObsInEncounter(Encounter encounter, Concept concept) {
+		List<Obs> obsList = new ArrayList<Obs>();
+		for (Obs obs : encounter.getAllObs()) {
+			if (obs.getConcept().equals(concept)) {
+				obsList.add(obs);
+			}
+		}
+		return obsList;
 	}
 
 	/**
