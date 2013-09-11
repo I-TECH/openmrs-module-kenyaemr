@@ -31,6 +31,7 @@ import org.openmrs.ui.framework.fragment.FragmentModel;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -65,12 +66,31 @@ public class MchmsCarePanelFragmentController {
 			Obs arvUseObs = EmrUtils.firstObsInEncounter(lastMchConsultation, Dictionary.getConcept(Dictionary.ANTIRETROVIRAL_USE_IN_PREGNANCY));
 			if (arvUseObs != null) {
 				Concept concept = arvUseObs.getValueCoded();
-				if (concept.getUuid().equals(Dictionary.MOTHER_ON_PROPHYLAXIS)) {
-					calculations.put("onProhylaxis", "Yes");
-					calculations.put("onHaart", "No");
-				} else if (concept.getUuid().equals(Dictionary.MOTHER_ON_HAART)) {
-					calculations.put("onProhylaxis", "No");
-					calculations.put("onHaart", "Yes");
+				if (concept.getUuid().equals(Dictionary.MOTHER_ON_PROPHYLAXIS)
+						|| concept.getUuid().equals(Dictionary.MOTHER_ON_HAART)) {
+					String regimen = "Regimen not specified";
+					List<Obs> drudObsList = EmrUtils.allObsInEncounter(lastMchConsultation, Dictionary.getConcept(Dictionary.ANTIRETROVIRAL_USED_IN_PREGNANCY));
+					if (!drudObsList.isEmpty()) {
+						String rgmn = "";
+						for (Obs obs : drudObsList) {
+							if (obs != null) {
+								rgmn += obs.getValueCoded().getName().getName();
+								if (!obs.equals(drudObsList.get(drudObsList.size() - 1))) {
+									rgmn += " + ";
+								}
+							}
+						}
+						if (!rgmn.isEmpty()) {
+							regimen = rgmn;
+						}
+					}
+					if (concept.getUuid().equals(Dictionary.MOTHER_ON_PROPHYLAXIS)) {
+						calculations.put("onProhylaxis", "Yes (" + regimen + ")");
+						calculations.put("onHaart", "No");
+					} else if (concept.getUuid().equals(Dictionary.MOTHER_ON_HAART)) {
+						calculations.put("onProhylaxis", "No");
+						calculations.put("onHaart", "Yes (" + regimen + ")");
+					}
 				} else {
 					calculations.put("onProhylaxis", "No");
 					calculations.put("onHaart", "No");
