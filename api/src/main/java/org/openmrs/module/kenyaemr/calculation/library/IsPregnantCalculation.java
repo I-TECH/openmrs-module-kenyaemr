@@ -18,6 +18,7 @@ import org.openmrs.Concept;
 import org.openmrs.Obs;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
+import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
@@ -50,7 +51,7 @@ public class IsPregnantCalculation extends BaseEmrCalculation implements Patient
 		Set<Integer> alive = alivePatients(cohort, context);
 
 		Concept yes = getConcept(Dictionary.YES);
-		CalculationResultMap pregStatusObss = lastObs(getConcept(Dictionary.PREGNANCY_STATUS), alive, context);
+		CalculationResultMap pregStatusObss = Calculations.lastObs(getConcept(Dictionary.PREGNANCY_STATUS), alive, context);
 		CalculationResultMap ret = new CalculationResultMap();
 
 		for (Integer ptId : cohort) {

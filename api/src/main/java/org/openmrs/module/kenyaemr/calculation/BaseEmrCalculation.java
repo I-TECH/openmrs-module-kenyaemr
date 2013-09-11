@@ -33,17 +33,14 @@ import org.openmrs.calculation.patient.PatientCalculation;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.*;
-import org.openmrs.module.kenyacore.CoreConstants;
+import org.openmrs.module.kenyacore.CoreUtils;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
 import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.common.VitalStatus;
 import org.openmrs.module.reporting.data.patient.definition.DrugOrdersForPatientDataDefinition;
-import org.openmrs.module.reporting.data.patient.definition.EncountersForPatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.ProgramEnrollmentsForPatientDataDefinition;
-import org.openmrs.module.reporting.data.person.definition.AgeDataDefinition;
-import org.openmrs.module.reporting.data.person.definition.ObsForPersonDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.VitalStatusDataDefinition;
 import org.openmrs.util.OpenmrsUtil;
 
@@ -51,159 +48,6 @@ import org.openmrs.util.OpenmrsUtil;
  * Base class for calculations we'll hand-write for this module.
  */
 public abstract class BaseEmrCalculation extends BaseCalculation implements PatientCalculation {
-
-	/**
-	 * Evaluates ages of each patient
-	 * @param cohort the patient ids
-	 * @param calculationContext the calculation context
-	 * @return the ages in a calculation result map
-	 */
-	protected static CalculationResultMap ages(Collection<Integer> cohort, PatientCalculationContext calculationContext) {
-		AgeDataDefinition def = new AgeDataDefinition();
-		def.setEffectiveDate(calculationContext.getNow());
-		return CalculationUtils.evaluateWithReporting(def, cohort, new HashMap<String, Object>(), null, calculationContext);
-	}
-
-	/**
-	 * Evaluates the last encounter of a given type of each patient
-	 * @param encounterType the encounter type
-	 * @param cohort the patient ids
-	 * @param calculationContext the calculation context
-	 * @return the encounters in a calculation result map
-	 */
-	protected static CalculationResultMap lastEncounter(EncounterType encounterType, Collection<Integer> cohort, PatientCalculationContext calculationContext) {
-		String encName = encounterType != null ? encounterType.getName() : "encounter";
-		EncountersForPatientDataDefinition def = new EncountersForPatientDataDefinition("Last " + encName);
-		if (encounterType != null) {
-			def.addType(encounterType);
-		}
-		def.setWhich(TimeQualifier.LAST);
-		def.setOnOrBefore(calculationContext.getNow());
-		return CalculationUtils.evaluateWithReporting(def, cohort, new HashMap<String, Object>(), null, calculationContext);
-	}
-
-	/**
-	 * Evaluates all encounters of a given type of each patient
-	 * @param encounterType the encounter type
-	 * @param cohort the patient ids
-	 * @param calculationContext the calculation context
-	 * @return the encounters in a calculation result map
-	 */
-	protected static CalculationResultMap allEncounters(EncounterType encounterType, Collection<Integer> cohort, PatientCalculationContext calculationContext) {
-		String encName = encounterType != null ? encounterType.getName() : "encounters";
-		EncountersForPatientDataDefinition def = new EncountersForPatientDataDefinition("All " + encName);
-		if (encounterType != null) {
-			def.addType(encounterType);
-		}
-		def.setWhich(TimeQualifier.ANY);
-		def.setOnOrBefore(calculationContext.getNow());
-		return CalculationUtils.evaluateWithReporting(def, cohort, new HashMap<String, Object>(), null, calculationContext);
-	}
-
-	/**
-	 * Evaluates the last obs of a given type of each patient
-	 * @param concept the obs' concept
-	 * @param cohort the patient ids
-	 * @param calculationContext the calculation context
-	 * @return the obss in a calculation result map
-	 */
-	protected static CalculationResultMap lastObs(Concept concept, Collection<Integer> cohort, PatientCalculationContext calculationContext) {
-		ObsForPersonDataDefinition def = new ObsForPersonDataDefinition("Last " + concept.getPreferredName(CoreConstants.LOCALE), TimeQualifier.LAST, concept, calculationContext.getNow(), null);
-		return CalculationUtils.evaluateWithReporting(def, cohort, new HashMap<String, Object>(), null, calculationContext);
-	}
-
-	/**
-	 * Evaluates the first obs of a given type of each patient
-	 * @param concept the obs' concept
-	 * @param cohort the patient ids
-	 * @param calculationContext the calculation context
-	 * @return the obss in a calculation result map
-	 */
-	protected static CalculationResultMap firstObs(Concept concept, Collection<Integer> cohort, PatientCalculationContext calculationContext) {
-		ObsForPersonDataDefinition def = new ObsForPersonDataDefinition("First " + concept.getPreferredName(CoreConstants.LOCALE), TimeQualifier.FIRST, concept, calculationContext.getNow(), null);
-		return CalculationUtils.evaluateWithReporting(def, cohort, new HashMap<String, Object>(), null, calculationContext);
-	}
-
-	/**
-	 * Evaluates the first obs of a given type of each patient
-	 * @param concept the obs' concept
-	 * @param cohort the patient ids
-	 * @param calculationContext the calculation context
-	 * @return the obss in a calculation result map
-	 */
-	protected static CalculationResultMap firstObsOnOrAfterDate(Concept concept, Date onOrAfter, Collection<Integer> cohort, PatientCalculationContext calculationContext) {
-		ObsForPersonDataDefinition def = new ObsForPersonDataDefinition("First " + concept.getPreferredName(CoreConstants.LOCALE), TimeQualifier.FIRST, concept, calculationContext.getNow(), onOrAfter);
-		return CalculationUtils.evaluateWithReporting(def, cohort, new HashMap<String, Object>(), null, calculationContext);
-	}
-
-	/**
-	 * Evaluates the last obs of a given type of each patient that occurred at least the given number of days ago
-	 * @param concept the obs' concept
-	 * @param onOrBefore the number of days that must be elapsed between now and the observation
-	 * @param cohort the patient ids
-	 * @param calculationContext the calculation context
-	 * @return the obss in a calculation result map
-	 */
-	protected static CalculationResultMap lastObsOnOrBeforeDate(Concept concept, Date onOrBefore, Collection<Integer> cohort, PatientCalculationContext calculationContext) {
-		// Only interested in obs before now
-		onOrBefore = EmrCalculationUtils.earliestDate(onOrBefore, calculationContext.getNow());
-
-		ObsForPersonDataDefinition def = new ObsForPersonDataDefinition("Last " + concept.getPreferredName(CoreConstants.LOCALE) + " on or before " + onOrBefore,
-				TimeQualifier.LAST, concept, onOrBefore, null);
-		return CalculationUtils.evaluateWithReporting(def, cohort, new HashMap<String, Object>(), null, calculationContext);
-	}
-
-	/**
-	 * Evaluates the last obs of a given type of each patient that occurred at least the given number of days ago
-	 * @param concept the obs' concept
-	 * @param atLeastDaysAgo the number of days that must be elapsed between now and the observation
-	 * @param cohort the patient ids
-	 * @param calculationContext the calculation context
-	 * @return the obss in a calculation result map
-	 */
-	protected static CalculationResultMap lastObsAtLeastDaysAgo(Concept concept, int atLeastDaysAgo, Collection<Integer> cohort, PatientCalculationContext calculationContext) {
-		Date onOrBefore = EmrCalculationUtils.dateAddDays(calculationContext.getNow(), -atLeastDaysAgo);
-		return lastObsOnOrBeforeDate(concept, onOrBefore, cohort, calculationContext);
-	}
-
-	/**
-	 * Evaluates all obs of a given type of each patient
-	 * @param concept the obs' concept
-	 * @param cohort the patient ids
-	 * @param calculationContext the calculation context
-	 * @return the obss in a calculation result map
-	 */
-	protected static CalculationResultMap allObs(Concept concept, Collection<Integer> cohort, PatientCalculationContext calculationContext) {
-		ObsForPersonDataDefinition def = new ObsForPersonDataDefinition("All " + concept.getPreferredName(CoreConstants.LOCALE),
-				TimeQualifier.ANY, concept, calculationContext.getNow(), null);
-		return CalculationUtils.evaluateWithReporting(def, cohort, new HashMap<String, Object>(), null, calculationContext);
-	}
-
-	/**
-	 * Evaluates the active program enrollment of the specified program
-	 * @param program the program
-	 * @param cohort the patient ids
-	 * @param calculationContext the calculation context
-	 * @return the enrollments in a calculation result map
-	 */
-	protected static CalculationResultMap activeEnrollment(Program program, Collection<Integer> cohort, PatientCalculationContext calculationContext) {
-		return activeEnrollmentOnDate(program, calculationContext.getNow(), cohort, calculationContext);
-	}
-
-	/**
-	 * Evaluates the last program enrollment on the specified program
-	 * @param program the program
-	 * @param cohort the patient ids
-	 * @param calculationContext the calculation context
-	 * @return the enrollments in a calculation result map
-	 */
-	protected static CalculationResultMap activeEnrollmentOnDate(Program program, Date onDate, Collection<Integer> cohort, PatientCalculationContext calculationContext) {
-		ProgramEnrollmentsForPatientDataDefinition def = new ProgramEnrollmentsForPatientDataDefinition("Active " + program.getName() + " enrollment");
-		def.setWhichEnrollment(TimeQualifier.LAST);
-		def.setProgram(program);
-		def.setActiveOnDate(onDate);
-		return CalculationUtils.evaluateWithReporting(def, cohort, new HashMap<String, Object>(), null, calculationContext);
-	}
 
 	/**
 	 * Evaluates the all program enrollments on the specified program
@@ -314,7 +158,7 @@ public abstract class BaseEmrCalculation extends BaseCalculation implements Pati
 			if (result != null) {
 				for (SimpleResult r : (List<SimpleResult>) result.getValue()) {
 					Date candidate = ((DrugOrder) r.getValue()).getStartDate();
-					earliest = EmrCalculationUtils.earliestDate(earliest, candidate);
+					earliest = CoreUtils.earliest(earliest, candidate);
 				}
 			}
 			ret.put(ptId, earliest == null ? null : new SimpleResult(earliest, null));

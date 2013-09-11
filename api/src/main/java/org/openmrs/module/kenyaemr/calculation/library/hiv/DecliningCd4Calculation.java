@@ -22,6 +22,7 @@ import org.openmrs.Program;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyacore.calculation.CalculationUtils;
+import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
@@ -51,11 +52,11 @@ public class DecliningCd4Calculation extends BaseEmrCalculation implements Patie
 		Program hivProgram = MetadataUtils.getProgram(Metadata.Program.HIV);
 
 		Set<Integer> alive = alivePatients(cohort, context);
-		Set<Integer> inHivProgram = CalculationUtils.patientsThatPass(activeEnrollment(hivProgram, alive, context));
+		Set<Integer> inHivProgram = CalculationUtils.patientsThatPass(Calculations.activeEnrollment(hivProgram, alive, context));
 
 		// Get the two CD4 obss for comparison
-		CalculationResultMap lastCD4Obss = lastObs(getConcept(Dictionary.CD4_COUNT), inHivProgram, context);
-		CalculationResultMap oldCD4Obss = lastObsAtLeastDaysAgo(getConcept(Dictionary.CD4_COUNT), EmrConstants.DECLINING_CD4_COUNT_ACROSS_DAYS, inHivProgram, context);
+		CalculationResultMap lastCD4Obss = Calculations.lastObs(getConcept(Dictionary.CD4_COUNT), inHivProgram, context);
+		CalculationResultMap oldCD4Obss = Calculations.lastObsAtLeastDaysAgo(getConcept(Dictionary.CD4_COUNT), EmrConstants.DECLINING_CD4_COUNT_ACROSS_DAYS, inHivProgram, context);
 
 		CalculationResultMap ret = new CalculationResultMap();
 		for (Integer ptId : cohort) {

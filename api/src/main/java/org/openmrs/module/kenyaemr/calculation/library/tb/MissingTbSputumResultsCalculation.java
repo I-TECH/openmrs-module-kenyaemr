@@ -24,6 +24,7 @@ import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.ObsResult;
 import org.openmrs.module.kenyacore.calculation.CalculationUtils;
+import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
@@ -58,13 +59,13 @@ public class MissingTbSputumResultsCalculation extends BaseEmrCalculation implem
 
 		// Get all patients who are alive and in TB program
 		Set<Integer> alive = alivePatients(cohort, context);
-		Set<Integer> inTbProgram = CalculationUtils.patientsThatPass(activeEnrollment(tbProgram, alive, context));
+		Set<Integer> inTbProgram = CalculationUtils.patientsThatPass(Calculations.activeEnrollment(tbProgram, alive, context));
 		
 		//get last disease classification
-		CalculationResultMap lastDiseaseClassiffication = lastObs(getConcept(Dictionary.SITE_OF_TUBERCULOSIS_DISEASE), inTbProgram, context);
+		CalculationResultMap lastDiseaseClassiffication = Calculations.lastObs(getConcept(Dictionary.SITE_OF_TUBERCULOSIS_DISEASE), inTbProgram, context);
 		
 		//get the results for pulmonary tb that is either positive or negative
-		CalculationResultMap lastTbPulmonayResult = lastObs(getConcept(Dictionary.RESULTS_TUBERCULOSIS_CULTURE), inTbProgram, context);
+		CalculationResultMap lastTbPulmonayResult = Calculations.lastObs(getConcept(Dictionary.RESULTS_TUBERCULOSIS_CULTURE), inTbProgram, context);
 		
 		//get concepts for positive and negative
 		Concept smearPositive = getConcept(Dictionary.POSITIVE);
@@ -72,7 +73,7 @@ public class MissingTbSputumResultsCalculation extends BaseEmrCalculation implem
 		Concept pulmonaryTb = getConcept(Dictionary.PULMONARY_TB);
 		
 		//get the last encounter which might have recorded sputum results
-		CalculationResultMap lastSputumResults = lastObs(getConcept(Dictionary.SPUTUM_FOR_ACID_FAST_BACILLI), inTbProgram, context);
+		CalculationResultMap lastSputumResults = Calculations.lastObs(getConcept(Dictionary.SPUTUM_FOR_ACID_FAST_BACILLI), inTbProgram, context);
 		
 		CalculationResultMap ret = new CalculationResultMap();
 		

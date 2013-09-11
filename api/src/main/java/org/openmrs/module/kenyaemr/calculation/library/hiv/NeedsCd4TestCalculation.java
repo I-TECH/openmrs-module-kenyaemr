@@ -23,14 +23,15 @@ import org.openmrs.Program;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.ObsResult;
+import org.openmrs.module.kenyacore.CoreUtils;
 import org.openmrs.module.kenyacore.calculation.CalculationUtils;
+import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
-import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 
 /**
@@ -58,9 +59,9 @@ public class NeedsCd4TestCalculation extends BaseEmrCalculation implements Patie
 		Program hivProgram = MetadataUtils.getProgram(Metadata.Program.HIV);
 
 		Set<Integer> alive = alivePatients(cohort, context);
-		Set<Integer> inHivProgram = CalculationUtils.patientsThatPass(activeEnrollment(hivProgram, alive, context));
-		CalculationResultMap lastObsCount = lastObs(getConcept(Dictionary.CD4_COUNT), cohort, context);
-		CalculationResultMap lastObsPercent = lastObs(getConcept(Dictionary.CD4_PERCENT), cohort, context);
+		Set<Integer> inHivProgram = CalculationUtils.patientsThatPass(Calculations.activeEnrollment(hivProgram, alive, context));
+		CalculationResultMap lastObsCount = Calculations.lastObs(getConcept(Dictionary.CD4_COUNT), cohort, context);
+		CalculationResultMap lastObsPercent = Calculations.lastObs(getConcept(Dictionary.CD4_PERCENT), cohort, context);
 
 		CalculationResultMap ret = new CalculationResultMap();
 		for (Integer ptId : cohort) {
@@ -76,7 +77,7 @@ public class NeedsCd4TestCalculation extends BaseEmrCalculation implements Patie
 				Date dateCount = r != null ? r.getDateOfResult() : null;
 				Date datePercent = p != null ? p.getDateOfResult() : null;
 
-				Date lastResultDate = EmrCalculationUtils.latestDate(dateCount, datePercent);
+				Date lastResultDate = CoreUtils.latest(dateCount, datePercent);
 
 				if (lastResultDate == null || (daysSince(lastResultDate, context) > EmrConstants.NEEDS_CD4_COUNT_AFTER_DAYS)) {
 					needsCD4 = true;

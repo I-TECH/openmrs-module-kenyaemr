@@ -14,74 +14,12 @@
 
 package org.openmrs.module.kenyaemr.calculation;
 
-import org.junit.Assert;
-import org.junit.Test;
-import org.openmrs.Encounter;
-import org.openmrs.EncounterType;
-import org.openmrs.api.context.Context;
-import org.openmrs.calculation.patient.PatientCalculationService;
-import org.openmrs.calculation.result.CalculationResult;
-import org.openmrs.calculation.result.CalculationResultMap;
-import org.openmrs.module.kenyacore.test.TestUtils;
-import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
+import org.junit.Ignore;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
-
-import java.util.*;
 
 /**
  * Tests for {@link org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation}
  */
+@Ignore
 public class BaseEmrCalculationTest extends BaseModuleContextSensitiveTest {
-
-	@Test
-	public void lastEncounter_shouldReturnLastEncountersForPatients() throws Exception {
-
-		List<Integer> ptIds = Arrays.asList(6, 7);
-
-		// Get last encounter
-		CalculationResultMap resultMap = BaseEmrCalculation.lastEncounter(null, ptIds, Context.getService(PatientCalculationService.class).createCalculationContext());
-		CalculationResult patient6Result = resultMap.get(6);
-		CalculationResult patient7Result = resultMap.get(7);
-
-		Assert.assertNull(patient6Result); // patient has no encounters
-		Assert.assertNotNull(patient7Result);
-		Assert.assertTrue(patient7Result.getValue() instanceof Encounter);
-		Assert.assertEquals(TestUtils.date(2008, 8, 19), ((Encounter) patient7Result.getValue()).getEncounterDatetime());
-
-		// Get last 'Emergency' encounter
-		EncounterType emergencyEncType = Context.getEncounterService().getEncounterType("Emergency");
-		resultMap = BaseEmrCalculation.lastEncounter(emergencyEncType, ptIds, Context.getService(PatientCalculationService.class).createCalculationContext());
-		patient6Result = resultMap.get(6);
-		patient7Result = resultMap.get(7);
-
-		Assert.assertNull(patient6Result); // patient has no encounters
-		Assert.assertNotNull(patient7Result);
-		Assert.assertTrue(patient7Result.getValue() instanceof Encounter);
-		Assert.assertEquals(TestUtils.date(2008, 8, 1), ((Encounter) patient7Result.getValue()).getEncounterDatetime());
-	}
-
-	@Test
-	public void allEncounters_shouldReturnAllEncountersForPatients() throws Exception {
-
-		List<Integer> ptIds = Arrays.asList(6, 7);
-
-		// Get total encounters
-		CalculationResultMap resultMap = BaseEmrCalculation.allEncounters(null, ptIds, Context.getService(PatientCalculationService.class).createCalculationContext());
-		CalculationResult patient6Result = resultMap.get(6);
-		CalculationResult patient7Result = resultMap.get(7);
-
-		Assert.assertNull(patient6Result); // patient has no encounters
-		Assert.assertNotNull(patient7Result);
-		Assert.assertEquals(3, ((Collection) patient7Result.getValue()).size()); // patient has 3 encounters
-
-		// Get 'Scheduled' encounters
-		EncounterType scheduledEncType = Context.getEncounterService().getEncounterType("Scheduled");
-		resultMap = BaseEmrCalculation.allEncounters(scheduledEncType, ptIds, Context.getService(PatientCalculationService.class).createCalculationContext());
-		patient6Result = resultMap.get(6);
-		patient7Result = resultMap.get(7);
-
-		Assert.assertNull(patient6Result); // patient has no encounters
-		Assert.assertNotNull(patient7Result);
-		Assert.assertEquals(2, ((Collection) patient7Result.getValue()).size()); // patient has 2 encounters of type 'Scheduled'
-	}
 }
