@@ -19,6 +19,7 @@ import org.openmrs.Program;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyacore.calculation.CalculationUtils;
+import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
@@ -52,10 +53,10 @@ public class NotOnArtCalculation extends BaseEmrCalculation implements PatientFl
 		Program mchmsProgram = MetadataUtils.getProgram(Metadata.Program.MCHMS);
 
 		Set<Integer> alive = alivePatients(cohort, context);
-		Set<Integer> inMchmsProgram = CalculationUtils.patientsThatPass(activeEnrollment(mchmsProgram, alive, context));
+		Set<Integer> inMchmsProgram = CalculationUtils.patientsThatPass(Calculations.activeEnrollment(mchmsProgram, alive, context));
 
-		CalculationResultMap lastHivStatusObss = lastObs(getConcept(Dictionary.HIV_STATUS), inMchmsProgram, context);
-		CalculationResultMap artStatusObss = lastObs(getConcept(Dictionary.ANTIRETROVIRAL_USE_IN_PREGNANCY), inMchmsProgram, context);
+		CalculationResultMap lastHivStatusObss = Calculations.lastObs(getConcept(Dictionary.HIV_STATUS), inMchmsProgram, context);
+		CalculationResultMap artStatusObss = Calculations.lastObs(getConcept(Dictionary.ANTIRETROVIRAL_USE_IN_PREGNANCY), inMchmsProgram, context);
 
 		CalculationResultMap ret = new CalculationResultMap();
 		for (Integer ptId : cohort) {
