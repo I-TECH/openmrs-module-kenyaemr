@@ -42,8 +42,8 @@
 
         function onEncounterDateChange()
         {
-        var age =   <lookup class="value" expression="patient.age"/>
-        var birthDate = new Date("<lookup expression="patient.birthdate"/>")//.getTime();
+        var age =  getValue('age.value')
+            var birthDate = new Date(getValue('dob.value'))//.getTime();
         var today = new Date()//.getTime();        //get current date
         var ENC_DATE=new Date(getValue('encounter_date.value'))//.getTime();
 
@@ -65,11 +65,11 @@
         /* Display the who staging based on the age  */
         if (age &lt; ADULT)
         {
-        $j('#initialWhoStageAd').hide()
+        jq('#initialWhoStageAd').hide()
         }
         else
         {
-        $j('#initialWhoStageCh').hide()
+        jq('#initialWhoStageCh').hide()
         }
         }
 
@@ -77,7 +77,7 @@
         {
         if (getValue('ep_transfer_in.value')== TRANSFER_IN_CONCEPT_ID)
         {
-        $j('#transfer_details').show();
+        jq('#transfer_details').show();
         }
         else
         {
@@ -85,7 +85,7 @@
         setValue('ti_district.value', '');
         setValue('ti_facility.value', '');
         setValue('ti_date_started_haart.value', '');
-        $j('#transfer_details').hide();
+        jq('#transfer_details').hide();
         }
         }
 
@@ -93,15 +93,15 @@
         {
         if (getValue('art-status.value')== 'true')
         {
-        $j('#art-History').show();
+        jq('#art-History').show();
         }
         else
         {
-        $j('#art-History').hide();
+        jq('#art-History').hide();
         }
         }
 
-        $j(function() {
+        jq(function() {
         //getField('weight.value').change(onWeightOrHeightChange);
         //getField('height.value').change(onWeightOrHeightChange);
         getField('encounter_date.value').change(onEncounterDateChange);
@@ -177,7 +177,7 @@
         });
 
         getField('date_confirmed_pos.value').change(function(){
-        var birthDate = new Date("<lookup expression="patient.birthdate"/>")//.getTime();
+        var birthDate = new Date(getValue('dob.value'))//.getTime();
         var pos_date=new Date(getValue('date_confirmed_pos.value'))//.getTime();
 
         if (pos_date &lt; birthDate )
@@ -215,11 +215,11 @@
         });
 
         /* hide or display transfer in fields */
-        $j('#ep_transfer_in input').click(OnTransferStatusChange);
+        jq('#ep_transfer_in input').click(OnTransferStatusChange);
         OnTransferStatusChange();
 
         /* hide or display ART History in fields */
-        $j('#art-status input').click(OnARTStatusChange);
+        jq('#art-status input').click(OnARTStatusChange);
         OnARTStatusChange();
 
         });
@@ -244,8 +244,8 @@
                             </tr>
                         </table>
                     </div>
-                    Facility Name (Site)<encounterLocation id="site" type="autocomplete"/>
-                    Patient Clinic Number:<lookup class="value" complexExpression="#foreach( $patId in $patientIdentifiers.get('Faces ID') ) $patId #end "/>
+                    Facility Name (Site)<encounterLocation id="site" default="GlobalProperty:kenyaemr.defaultLocation"/>
+                    Patient Clinic Number:<lookup class="value" complexExpression="#foreach( $patId in $patientIdentifiers.get('Patient Clinic Number') ) $patId #end "/>
                 </td>
             </tr>
             <tr>
@@ -260,8 +260,8 @@
                         </tr>
                         <tr>
                             <td>Patient's Names: <br/><lookup class="value" expression="patient.personName"/></td>
-                            <td>Date of Birth <lookup class="value" expression="patient.birthdate"/>
-                                Age: <lookup class="value" expression="patient.age"/>
+                            <td>Date of Birth <lookup class="value" id="dob" expression="patient.birthdate"/>
+                                Age: <lookup class="value" id="age" expression="patient.age"/>
                             </td>
                         </tr>
                         <tr>
