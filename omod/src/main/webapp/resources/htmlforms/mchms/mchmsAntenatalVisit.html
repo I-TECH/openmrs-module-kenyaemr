@@ -41,13 +41,24 @@
 	var HAART_CONCEPT_ID = 1149;
 	var NA_CONCEPT_ID = 1175;
 
+	jq(function () {
+		jq('#arv-status input').click(onArvStatusChange);
+		onArvStatusChange();
+		getField('arv-status.value').change(onArvStatusChange);
+
+		getField('weight.value').change(onWeightOrHeightChange);
+		getField('height.value').change(onWeightOrHeightChange);
+		onWeightOrHeightChange();
+	});
+
 	beforeSubmit.push(function () {
-		var fundalHeight = getValue('fundal.value');
-		if (fundalHeight &lt; 0 || fundalHeight &gt; 40) {
-			getField('fundal.error').html('Fundal Height should be between 0 and 40.').show();
-			return false;
+		if (validateOtherFields()) {
+			if (!jq('#arv-medication').is(':visible')) {
+				clearArvMeds();
+			}
+			return true;
 		}
-		return true;
+		return false;
 	});
 
 	function onArvStatusChange() {
@@ -83,22 +94,31 @@
 		jq('#calculated-bmi').html(display);
 	}
 
-	beforeSubmit.push(function () {
-		if (!jq('#arv-medication').is(':visible')) {
-			clearArvMeds();
+	function validateOtherFields() {
+		var fundalHeight = getValue('fundal.value');
+		var urinePh = getValue('urine-ph.value');
+		var urineSpecificGravity = getValue('urine-specific-gravity.value');
+
+		if (fundalHeight &lt; 0 || fundalHeight &gt; 40) {
+			getField('fundal.error').html('Fundal Height should be between 0 and 40.').show();
+			return false;
+		}
+		if (urinePh != null) {
+			var urinePhValue = parseFloat(urinePh);
+			if (urinePhValue &lt; 5.0 || urinePhValue &gt; 9.0) {
+				getField('urine-ph.error').html('Urine pH must be between 5.0 and 9.0..').show();
+				return false;
+			}
+		}
+		if (urineSpecificGravity != null) {
+			var urineSpecificGravityValue = parseFloat(urineSpecificGravity);
+			if (urineSpecificGravityValue &lt; 1.0000 || urineSpecificGravityValue &gt; 1.1000) {
+				getField('urine-specific-gravity.error').html('Urine specific gravity must be between 1.000 and 1.1000..').show();
+				return false;
+			}
 		}
 		return true;
-	});
-
-	jq(function () {
-		jq('#arv-status input').click(onArvStatusChange);
-		onArvStatusChange();
-		getField('arv-status.value').change(onArvStatusChange);
-
-		getField('weight.value').change(onWeightOrHeightChange);
-		getField('height.value').change(onWeightOrHeightChange);
-		onWeightOrHeightChange();
-	});
+	}
 
 </script>
 
@@ -233,9 +253,7 @@
 			</tr>
 		</table>
 	</td>
-</tr>
-<tr>
-	<td>
+	<td valign="top">
 		<legend>Other Observations</legend>
 		<table align="center" width="100%" class="tb1">
 			<tr>
@@ -296,7 +314,118 @@
 	</td>
 </tr>
 <tr>
-	<td>
+	<td colspan="2">
+		<legend>Urinalysis</legend>
+		<table align="center" width="100%" class="tb1">
+			<tr>
+				<td>
+					<table>
+						<tr>
+							<td>Urine Microscopy</td>
+							<td>
+								<obs conceptId="56AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="3" cols="38"/>
+							</td>
+						</tr>
+						<tr>
+							<td>Urinary Albumin</td>
+							<td>
+								<obs conceptId="849AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+							</td>
+						</tr>
+						<tr>
+							<td>Glucose Measurement (Qualitative)</td>
+							<td>
+								<obs conceptId="159734AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									 answerConceptIds="1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1874AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1365AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									 answerLabels="Normal,Trace,One Plus(+),Two Plus(++),Three Plus(+++),Four Plus(++++)"/>
+							</td>
+						</tr>
+						<tr>
+							<td>Urine pH</td>
+							<td>
+								<obs conceptId="161438AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="urine-ph"/>
+							</td>
+						</tr>
+						<tr>
+							<td>Urine Specific Gravity</td>
+							<td>
+								<obs conceptId="161439AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="urine-specific-gravity"/>
+							</td>
+						</tr>
+						<tr>
+							<td>Urine Nitrite Test</td>
+							<td>
+								<obs conceptId="161440AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									 answerConceptIds="664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									 answerLabels="Negative,Positive,One Plus(+),Two Plus(++)"/>
+							</td>
+						</tr>
+					</table>
+				</td>
+				<td>
+					<table>
+						<tr>
+							<td>Urine Leukocyte Esterase Test</td>
+							<td>
+								<obs conceptId="161441AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									 answerConceptIds="664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1874AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									 answerLabels="Negative,Trace,One Plus(+),Two Plus(++),Three Plus(+++)"/>
+							</td>
+						</tr>
+						<tr>
+							<td>Urinary Ketone</td>
+							<td>
+								<obs conceptId="161442AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									 answerConceptIds="664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1874AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									 answerLabels="Negative,Trace - 5,One Plus(+) - 15,Two Plus(++) - 50,Three Plus(+++) - 150"/>
+								mg/dL
+							</td>
+						</tr>
+						<tr>
+							<td>Urine Bile Salt Test</td>
+							<td>
+								<obs conceptId="161444AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									 answerConceptIds="1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1874AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									 answerLabels="Normal,Trace - 1,One Plus(+) - 4,Two Plus(++) - 8,Three Plus(+++) - 12"/>
+								mg/dL
+							</td>
+						</tr>
+						<tr>
+							<td>Urine Bile Pigment Test</td>
+							<td>
+								<obs conceptId="161443AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									 answerConceptIds="664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									 answerLabels="Negative,One Plus(+),Two Plus(++),Three Plus(+++)"/>
+							</td>
+						</tr>
+						<tr>
+							<td>Urine Color</td>
+							<td>
+								<obs conceptId="162106AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+							</td>
+						</tr>
+						<tr>
+							<td>Urine Turbidity</td>
+							<td>
+								<obs conceptId="162101AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+							</td>
+						</tr>
+						<tr>
+							<td>Urine Dipstick for Blood</td>
+							<td>
+								<obs conceptId="162096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									 answerConceptIds="664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1874AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									 answerLabels="Negative,Trace,One Plus(+),Two Plus(++),Three Plus(+++)"/>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+	</td>
+</tr>
+<tr>
+	<td colspan="2">
 		<fieldset>
 			<legend>ARV Medication</legend>
 			<table align="center" width="100%" class="tb1">
@@ -373,12 +502,12 @@
 	</td>
 </tr>
 <tr>
-	<td>
+	<td colspan="2">
 		<legend>Clinical Notes</legend>
 		<table align="center" width="100%" class="tb1">
 			<tr>
 				<td>
-					<obs conceptId="159395AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="10" cols="90"
+					<obs conceptId="159395AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="10" cols="150"
 						 style="textarea"/>
 				</td>
 			</tr>
