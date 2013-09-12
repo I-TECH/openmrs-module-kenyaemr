@@ -54,7 +54,7 @@
 			</set>
 		</property>
 		<property name="icon" value="kenyaui:forms/generic.png" />
-		<property name="htmlform" value="kenyaemr:mchcs/mchcsEnrollment.xml" />
+		<property name="htmlform" value="kenyaemr:mchcs/mchcsEnrollment.html" />
 	</bean>
 
 	<!-- mchcs  Follow up -->
@@ -69,7 +69,7 @@
 			</set>
 		</property>
 		<property name="icon" value="kenyaui:forms/generic.png" />
-		<property name="htmlform" value="kenyaemr:mchcs/mchcsFollowupVisit.xml" />
+		<property name="htmlform" value="kenyaemr:mchcs/mchcsFollowupVisit.html" />
 	</bean>
 
 	<!--  mchcs  Immunization -->
@@ -84,7 +84,7 @@
 			</set>
 		</property>
 		<property name="icon" value="kenyaui:forms/generic.png" />
-		<property name="htmlform" value="kenyaemr:mchcs/mchcsImmunization.xml" />
+		<property name="htmlform" value="kenyaemr:mchcs/mchcsImmunization.html" />
 	</bean>
 
 	<!-- mchcs  Completion -->
@@ -99,7 +99,7 @@
 			</set>
 		</property>
 		<property name="icon" value="kenyaui:forms/generic.png" />
-		<property name="htmlform" value="kenyaemr:mchcs/mchcsDiscontinuation.xml" />
+		<property name="htmlform" value="kenyaemr:mchcs/mchcsDiscontinuation.html" />
 	</bean>
 
 
@@ -115,7 +115,7 @@
 			</set>
 		</property>
 		<property name="icon" value="kenyaui:forms/generic.png" />
-		<property name="htmlform" value="kenyaemr:mchcs/mchcsHeiOutcomes.xml" />
+		<property name="htmlform" value="kenyaemr:mchcs/mchcsHeiOutcomes.html" />
 	</bean>
 
 </beans>
