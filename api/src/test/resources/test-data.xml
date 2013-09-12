@@ -177,6 +177,7 @@
 
 	<form form_id="1001" name="Clinical Encounter - HIV Addendum" encounter_type="1005" version="0.1" build="0" published="0" description="Clinical Encounter - HIV Addendum" creator="1" date_created="2005-08-07 00:00:00.0" changed_by="1" date_changed="2007-10-24 14:51:53.0" retired="false" retired_reason="" uuid="bd598114-4ef4-47b1-a746-a616180ccfc0"/>
 	<form form_id="1002" name="MOH257 Visit Summary" encounter_type="1005" version="0.1" build="0" published="0" description="MOH257 Visit Summary" creator="1" date_created="2005-08-07 00:00:00.0" changed_by="1" date_changed="2007-10-24 14:51:53.0" retired="false" retired_reason="" uuid="23b4ebbd-29ad-455e-be0e-04aa6bc30798"/>
+	<form form_id="1003" name="Family History" encounter_type="1001" version="0.1" build="0" published="0" description="Family History" creator="1" date_created="2005-08-07 00:00:00.0" changed_by="1" date_changed="2007-10-24 14:51:53.0" retired="false" retired_reason="" uuid="7efa0ee0-6617-4cd7-8310-9f95dfee7a82"/>
 
 	<!-- =========================================== Location attributes =============================================== -->
 
