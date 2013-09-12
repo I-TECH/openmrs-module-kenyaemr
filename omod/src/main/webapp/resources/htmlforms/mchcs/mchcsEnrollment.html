@@ -154,7 +154,7 @@
 			//needSpecialCare();
 			jq('#specialCare input').click(needSpecialCare);
 			//hivExposed();
-			jq('#hiv-exposed-child input').click(hivExposed);
+			//jq('#hiv-exposed-child input').click(hivExposed);
 
 			beforeSubmit.push(function() {
 				if (getValue('hiv-exposed-child.value') == "") {
@@ -209,8 +209,8 @@
 					<td colspan="2">
 						<table>
 							<tr>
-								<!--<td>HEI ID Number</td>
-								<td><span id="hei-id"><patient field="identifier" identifierTypeId="0691f522-dd67-4eeb-92c8-af5083baf338" /></span></td>-->
+								<td>HEI ID Number</td>
+								<td><span id="hei-id"><patient field="identifier" identifierTypeId="0691f522-dd67-4eeb-92c8-af5083baf338" /></span></td>
 								<td>SPD No</td>
 								<td><obs conceptId="162054AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
 								<td>Birth Weight: (kg)</td>
@@ -365,10 +365,6 @@
 				<enrollInProgram programId="c2ecdf11-97cd-432a-a971-cfd9bd296b83"/>
 			</tbody>
 		</table>
-	</div>
-	<div id="load-hei-id" style="display: none">
-		Enter HEI Identifier<input type="text" id="hei-id" size="20" />
-		<div id="hei-id-error" class="error"></div>
 	</div>
 	<div class="ke-form-footer">
 		<submit />
