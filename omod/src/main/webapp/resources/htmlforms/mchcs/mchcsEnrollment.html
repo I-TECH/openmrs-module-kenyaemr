@@ -151,7 +151,7 @@
 			jq('#pmtctDrugsReceived input').click(pmtctDrugsForMother);
 			onARTatEnrollment();
 			jq('#onART input').click(onARTatEnrollment);
-			needSpecialCare();
+			//needSpecialCare();
 			jq('#specialCare input').click(needSpecialCare);
 			//hivExposed();
 			jq('#hiv-exposed-child input').click(hivExposed);
@@ -212,7 +212,7 @@
 								<!--<td>HEI ID Number</td>
 								<td><span id="hei-id"><patient field="identifier" identifierTypeId="0691f522-dd67-4eeb-92c8-af5083baf338" /></span></td>-->
 								<td>SPD No</td>
-								<td><obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+								<td><obs conceptId="162054AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
 								<td>Birth Weight: (kg)</td>
 								<td><obs conceptId="5916AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
 							</tr>
@@ -220,24 +220,24 @@
 								<td>Gestation at birth(weeks)</td>
 								<td><obs conceptId="1409AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /> </td>
 								<td>Date first seen</td>
-								<td><obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/> </td>
+								<td><obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>Need concept </td>
 							</tr>
 							<tr>
 								<td>
 									Birth Notification Number<br />
-									<obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+									<obs conceptId="162051AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
 								</td>
 								<td></td>
 								<td colspan="5">
 									Certificate of Birth Registration Number:(after acquiring a certificate) <br />
-									<obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="70"/></td>
+									<obs conceptId="162052AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="70"/></td>
 							</tr>
 						</table>
 
 					</td>
 				</tr>
 				<tr>
-					<td>Child need special care?<obs conceptId="161601AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" id="specialCare"/> </td>
+					<td>Child need special care?<obs conceptId="161630AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="161628AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" id="specialCare"/> </td>
 					<td colspan="2">
 						<table id="reasonsForSpecialCare">
 							<tbody>
@@ -246,19 +246,19 @@
 								</tr>
 								<tr>
 									<td>
-										Birth weight less than 2.5 kg <br />
-										Birth less than 2 years after last birth <br />
-										Fifth or more child<br />
-										Teenage mother <br />
-										Brother or sisters undernourished <br />
+										<obs conceptId="161601AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="116222AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Birth weight less than 2.5 kg" style="checkbox" /> <br />
+										<obs conceptId="161601AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="162071AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Birth less than 2 years after last birth" style="checkbox" /> <br />
+										<obs conceptId="161601AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="162072AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Fifth or more child" style="checkbox" /><br />
+										<obs conceptId="161601AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="162073AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Teenage mother" style="checkbox" /> <br />
+										<obs conceptId="161601AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="162074AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Brother or sisters undernourished" style="checkbox" />
 									</td>
 									<td>
-										Multiple births(Twins,triplets)<br />
-										Child in family dead <br />
-										Orphan   <br />
-										Child has disability <br />
-										Parent HIV positive   <br />
-										History/signs of child abuse/neglect
+										<obs conceptId="161601AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="162075AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Multiple births(Twins,triplets)" style="checkbox" /> <br />
+										<obs conceptId="161601AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="162076AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Child in family dead" style="checkbox" /> <br />
+										<obs conceptId="161601AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1174AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Orphan" style="checkbox" /> <br />
+										<obs conceptId="161601AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="161599AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Child has disability" style="checkbox" /> <br />
+										<obs conceptId="161601AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1859AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Parent HIV positive" style="checkbox" /> <br />
+										<obs conceptId="161601AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="123174AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="History/signs of child abuse/neglect" style="checkbox" />
 									</td>
 								</tr>
 							</tbody>
@@ -273,7 +273,7 @@
 								<td>
 									<obs style="radio" answerSeparator=" "
 									 conceptId="160540AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-									 answerConceptIds="160537AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160542AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160538AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									 answerConceptIds="160537AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160542AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160456AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162050AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160538AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 									 answerLabels="Paediatric,OPD,Maternity,CCC,MCH/PMTCT,Other"
 									/>
 								</td>
@@ -312,10 +312,14 @@
 				</tr>
 				<tr>
 					<td>ARV Prophylaxis</td>
-					<td colspan="2">
-						<obs conceptId="966AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="80586AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1148AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-							 answerLabels="Sd NVP Only,sd NVP+AZT+3TC,NVP for 6 weeks(Mother on HAART or No BF),NVP during BF,None,Other" style="radio"/>
-					</td>
+					<obsgroup groupingConceptId="1638AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+						<td colspan="2">
+							<obs conceptId="1282AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="80586AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1149AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								 answerLabels="Sd NVP Only,sd NVP+AZT+3TC,NVP for 6 weeks(Mother on HAART),None,Other" style="radio"/> <br />
+							Is the mother Breastfeeding? <obs conceptId="159941AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio"/><br />
+							NVP during BF? <obs conceptId="1282AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" answerConceptId="80586AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel=""/>
+						</td>
+					</obsgroup>
 				</tr>
 				<tr>
 					<td>
