@@ -1,5 +1,5 @@
 <%
-	ui.decorateWith("kenyaemr", "standardPage", [ patient: patient, visit: visit ])
+	ui.decorateWith("kenyaemr", "standardPage", [ patient: currentPatient, visit: currentVisit ])
 %>
 
 <script type="text/javascript">
@@ -18,5 +18,5 @@
 		<input id="discard-button" type="button" value="${ ui.message("htmlformentry.discard") }" onclick="onClickDiscard()" />
 	</div>
 
-	${ ui.includeFragment("kenyaemr", "enterHtmlForm", [ patient: patient, encounter: encounter, visit: visit, returnUrl: returnUrl ]) }
+	${ ui.includeFragment("kenyaemr", "enterHtmlForm", [ patient: currentPatient, encounter: encounter, visit: currentVisit, returnUrl: returnUrl ]) }
 </div>
