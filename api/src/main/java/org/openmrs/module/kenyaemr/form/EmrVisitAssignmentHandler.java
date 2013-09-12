@@ -37,7 +37,8 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- *
+ * Unlike the regular visit handlers, this one will be called even for existing encounters as we sometimes need to move
+ * these into new visits
  */
 public class EmrVisitAssignmentHandler extends ExistingVisitAssignmentHandler {
 

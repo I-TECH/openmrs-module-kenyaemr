@@ -31,11 +31,14 @@ import org.openmrs.module.htmlformentry.FormEntryContext.Mode;
 import org.openmrs.module.htmlformentry.FormEntrySession;
 import org.openmrs.module.htmlformentry.FormSubmissionError;
 import org.openmrs.module.htmlformentry.HtmlForm;
+import org.openmrs.module.kenyacore.form.FormDescriptor;
+import org.openmrs.module.kenyacore.form.FormManager;
 import org.openmrs.module.kenyacore.form.FormUtils;
 import org.openmrs.module.kenyaemr.util.EmrUiUtils;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.annotation.SpringBean;
+import org.openmrs.ui.framework.fragment.FragmentActionRequest;
 import org.openmrs.ui.framework.fragment.FragmentConfiguration;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 import org.openmrs.ui.framework.page.PageRequest;
@@ -104,22 +107,26 @@ public class EnterHtmlFormFragmentController {
 						 @RequestParam(value = "visitId", required = false) Visit visit,
 						 @RequestParam(value = "returnUrl", required = false) String returnUrl,
 						 @SpringBean ResourceFactory resourceFactory,
-						 HttpServletRequest request) throws Exception {
+						 @SpringBean EmrUiUtils emrUi,
+						 @SpringBean FormManager formManager,
+						 FragmentActionRequest actionRequest) throws Exception {
 
 		// TODO Check that form can be accessed in the current app context.
 		// This will require UIFR-122 so that this action request has an associated app
-		//emrUi.checkFormAccess(pageRequest, form);
+		//emrUi.checkFormAccess(actionRequest, form);
 
 		// TODO formModifiedTimestamp and encounterModifiedTimestamp
+
+		FormDescriptor formDescriptor = formManager.getFormDescriptor(form);
 
 		// Get html form from database or UI resource
 		HtmlForm hf = FormUtils.getHtmlForm(form, resourceFactory);
 
 		FormEntrySession fes;
 		if (encounter != null) {
-			fes = new FormEntrySession(patient, encounter, Mode.EDIT, hf, request.getSession());
+			fes = new FormEntrySession(patient, encounter, Mode.EDIT, hf, actionRequest.getHttpRequest().getSession());
 		} else {
-			fes = new FormEntrySession(patient, hf, Mode.ENTER, request.getSession());
+			fes = new FormEntrySession(patient, hf, Mode.ENTER, actionRequest.getHttpRequest().getSession());
 		}
 
 		if (returnUrl != null) {
@@ -127,7 +134,7 @@ public class EnterHtmlFormFragmentController {
 		}
 
 		// Validate submission
-		List<FormSubmissionError> validationErrors = fes.getSubmissionController().validateSubmission(fes.getContext(), request);
+		List<FormSubmissionError> validationErrors = fes.getSubmissionController().validateSubmission(fes.getContext(), actionRequest.getHttpRequest());
 
 		// If there are validation errors, abort submit and display them
 		if (validationErrors.size() > 0) {
@@ -136,16 +143,23 @@ public class EnterHtmlFormFragmentController {
 
 		// No validation errors found so continue process of form submission
 		fes.prepareForSubmit();
-		fes.getSubmissionController().handleFormSubmission(fes, request);
+		fes.getSubmissionController().handleFormSubmission(fes, actionRequest.getHttpRequest());
 
 		// Check this form will actually create an encounter if its supposed to
 		if (fes.getContext().getMode() == Mode.ENTER && fes.hasEncouterTag() && (fes.getSubmissionActions().getEncountersToCreate() == null || fes.getSubmissionActions().getEncountersToCreate().size() == 0)) {
 			throw new IllegalArgumentException("This form is not going to create an encounter");
 		}
 
-		// If encounter is for a specific visit then check encounter date is valid for that visit
-		if (visit != null) {
-			Encounter formEncounter = fes.getContext().getMode() == Mode.ENTER ? fes.getSubmissionActions().getEncountersToCreate().get(0) : encounter;
+		// Get the encounter that will be saved
+		Encounter formEncounter = fes.getContext().getMode() == Mode.ENTER ? fes.getSubmissionActions().getEncountersToCreate().get(0) : encounter;
+
+		if (formDescriptor.getAutoCreateVisitTypeUuid() != null) {
+			// Detach encounter from its visit if it has one. Visit handler may have to move it to a different visit
+			formEncounter.setVisit(null);
+		}
+		else if (visit != null) {
+			// If encounter is for a specific visit then check encounter date is valid for that visit. The visit handler
+			// will ensure that the encounter is actually saved into that visit
 			Date formEncounterDateTime = formEncounter.getEncounterDatetime();
 
 			if (formEncounterDateTime.before(visit.getStartDatetime())) {
@@ -163,13 +177,6 @@ public class EnterHtmlFormFragmentController {
 
 		// Do actual encounter creation/updating
 		fes.applyActions();
-
-		// Add created encounter to the specified visit
-		if (encounter == null && visit != null) {
-			encounter = fes.getEncounter();
-			encounter.setVisit(visit);
-			Context.getEncounterService().saveEncounter(encounter);
-		}
 
 		return returnHelper(null, null);
 	}
