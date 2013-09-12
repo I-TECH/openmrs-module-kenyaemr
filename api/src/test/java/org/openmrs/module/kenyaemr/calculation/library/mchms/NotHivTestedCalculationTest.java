@@ -45,39 +45,39 @@ public class NotHivTestedCalculationTest extends BaseModuleContextSensitiveTest 
 	 * @see org.openmrs.module.kenyaemr.calculation.library.mchms.NotHivTestedCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
 	 */
 	@Test
-	public void evaluate_shouldDetermineWhetherPatientsHaveBeenHivTested() throws Exception {
+	public void evaluate_shouldDetermineWhetherPatientsHaveNotBeenHivTested() throws Exception {
 
 		// Get the MCH-MS Program
 		Program mchmsProgram = MetadataUtils.getProgram(Metadata.Program.MCHMS);
 
-		//Enroll patients #1, #2 and #3 into MCH-MS
+		//Enroll patients #6, #7 and #8 into MCH-MS
 		PatientService patientService = Context.getPatientService();
-		for (int i = 1; i <= 3; i++) {
+		for (int i = 6; i <= 8; i++) {
 			TestUtils.enrollInProgram(patientService.getPatient(i), mchmsProgram, new Date());
 		}
 
 		//Get the HIV Status concept
 		Concept hivStatus = Dictionary.getConcept(Dictionary.HIV_STATUS);
 
-		//Indicate HIV Status for patient 1 as Not Tested for one patient
-		TestUtils.saveObs(patientService.getPatient(1), hivStatus, Dictionary.getConcept(Dictionary.NOT_HIV_TESTED), new Date());
+		//Indicate HIV Status for patient 6 as Not Tested
+		TestUtils.saveObs(patientService.getPatient(6), hivStatus, Dictionary.getConcept(Dictionary.NOT_HIV_TESTED), new Date());
 
-		//Indicate HIV Status for patient 2 as Negative for one patient
-		TestUtils.saveObs(patientService.getPatient(1), hivStatus, Dictionary.getConcept(Dictionary.NEGATIVE), new Date());
+		//Indicate HIV Status for patient 7 as Negative
+		TestUtils.saveObs(patientService.getPatient(7), hivStatus, Dictionary.getConcept(Dictionary.NEGATIVE), new Date());
 
-		//Indicate HIV Status for patient 3 as Positive for one patient
-		TestUtils.saveObs(patientService.getPatient(1), hivStatus, Dictionary.getConcept(Dictionary.POSITIVE), new Date());
+		//Indicate HIV Status for patient 8 as Positive
+		TestUtils.saveObs(patientService.getPatient(8), hivStatus, Dictionary.getConcept(Dictionary.POSITIVE), new Date());
 
 		Context.flushSession();
 
-		List<Integer> ptIds = Arrays.asList(1, 2, 3, 999);
+		List<Integer> ptIds = Arrays.asList(6, 7, 8, 999);
 
 		//Run NotHivTestedCalculation with these test patients
 		CalculationResultMap resultMap = Context.getService(PatientCalculationService.class).evaluate(ptIds, new NotHivTestedCalculation());
 
-		Assert.assertTrue((Boolean) resultMap.get(1).getValue());  //in MCH-MS program but no HIV Status - Need to be tested
-		Assert.assertFalse((Boolean) resultMap.get(2).getValue()); //in MCH-MS program but has -ve HIV Status
-		Assert.assertFalse((Boolean) resultMap.get(3).getValue()); //in MCH-MS program but has +ve HIV Status
+		Assert.assertTrue((Boolean) resultMap.get(6).getValue());  //in MCH-MS program but no HIV Status - Need to be tested
+		Assert.assertFalse((Boolean) resultMap.get(7).getValue()); //in MCH-MS program but has -ve HIV Status
+		Assert.assertFalse((Boolean) resultMap.get(8).getValue()); //in MCH-MS program but has +ve HIV Status
 		Assert.assertFalse((Boolean) resultMap.get(999).getValue()); // Not in MCH-MS Program
 	}
 }
