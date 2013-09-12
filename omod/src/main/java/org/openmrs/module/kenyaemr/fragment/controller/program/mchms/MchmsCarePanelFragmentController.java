@@ -16,6 +16,7 @@ package org.openmrs.module.kenyaemr.fragment.controller.program.mchms;
 
 import org.joda.time.DateTime;
 import org.joda.time.Weeks;
+import org.openmrs.Concept;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
 import org.openmrs.Obs;
@@ -30,6 +31,7 @@ import org.openmrs.ui.framework.fragment.FragmentModel;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -43,17 +45,64 @@ public class MchmsCarePanelFragmentController {
 		Map<String, Object> calculations = new HashMap<String, Object>();
 
 		EncounterService encounterService = Context.getEncounterService();
-		EncounterType encounterType = encounterService.getEncounterTypeByUuid(Metadata.MCH_ENROLLMENT);
-		Encounter lastMchEncounter = EmrUtils.lastEncounter(patient, encounterType);
-		Obs lmpObs = EmrUtils.firstObsInEncounter(lastMchEncounter, Dictionary.getConcept(Dictionary.LAST_MONTHLY_PERIOD));
+		EncounterType encounterType = encounterService.getEncounterTypeByUuid(Metadata.EncounterType.MCHMS_ENROLLMENT);
+		Encounter lastMchEnrollment = EmrUtils.lastEncounter(patient, encounterType);
+		Obs lmpObs = EmrUtils.firstObsInEncounter(lastMchEnrollment, Dictionary.getConcept(Dictionary.LAST_MONTHLY_PERIOD));
 		if (lmpObs != null) {
 			Weeks weeks = Weeks.weeksBetween(new DateTime(lmpObs.getValueDate()), new DateTime(new Date()));
 			calculations.put("gestation", weeks.getWeeks());
 		}
 
-		calculations.put("onPmtct", "TODO");
-		calculations.put("onArv", "TODO");
+		Obs hivStatusObs = EmrUtils.firstObsInEncounter(lastMchEnrollment, Dictionary.getConcept(Dictionary.HIV_STATUS));
+		if (hivStatusObs != null) {
+			calculations.put("hivStatus", hivStatusObs.getValueCoded());
+		} else {
+			calculations.put("hivStatus", "Not Specified");
+		}
 
+		encounterType = encounterService.getEncounterTypeByUuid(Metadata.EncounterType.MCHMS_CONSULTATION);
+		Encounter lastMchConsultation = EmrUtils.lastEncounter(patient, encounterType);
+		if (lastMchConsultation != null) {
+			Obs arvUseObs = EmrUtils.firstObsInEncounter(lastMchConsultation, Dictionary.getConcept(Dictionary.ANTIRETROVIRAL_USE_IN_PREGNANCY));
+			if (arvUseObs != null) {
+				Concept concept = arvUseObs.getValueCoded();
+				if (concept.equals(Dictionary.getConcept(Dictionary.MOTHER_ON_PROPHYLAXIS))
+						|| concept.equals(Dictionary.getConcept(Dictionary.MOTHER_ON_HAART))) {
+					String regimen = "Regimen not specified";
+					List<Obs> drudObsList = EmrUtils.allObsInEncounter(lastMchConsultation, Dictionary.getConcept(Dictionary.ANTIRETROVIRAL_USED_IN_PREGNANCY));
+					if (!drudObsList.isEmpty()) {
+						String rgmn = "";
+						for (Obs obs : drudObsList) {
+							if (obs != null) {
+								rgmn += obs.getValueCoded().getName().getName();
+								if (!obs.equals(drudObsList.get(drudObsList.size() - 1))) {
+									rgmn += " + ";
+								}
+							}
+						}
+						if (!rgmn.isEmpty()) {
+							regimen = rgmn;
+						}
+					}
+					if (concept.equals(Dictionary.getConcept(Dictionary.MOTHER_ON_PROPHYLAXIS))) {
+						calculations.put("onProhylaxis", "Yes (" + regimen + ")");
+						calculations.put("onHaart", "No");
+					} else if (concept.equals(Dictionary.getConcept(Dictionary.MOTHER_ON_HAART))) {
+						calculations.put("onProhylaxis", "No");
+						calculations.put("onHaart", "Yes (" + regimen + ")");
+					}
+				} else {
+					calculations.put("onProhylaxis", "No");
+					calculations.put("onHaart", "No");
+				}
+			} else {
+				calculations.put("onProhylaxis", "Not specified");
+				calculations.put("onHaart", "Not specified");
+			}
+		} else {
+			calculations.put("onProhylaxis", "Not specified");
+			calculations.put("onHaart", "Not specified");
+		}
 		model.addAttribute("calculations", calculations);
 	}
 }

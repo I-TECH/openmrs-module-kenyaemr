@@ -17,8 +17,8 @@ package org.openmrs.module.kenyaemr.fragment.controller.program.tb;
 import org.openmrs.Concept;
 import org.openmrs.Patient;
 import org.openmrs.calculation.result.CalculationResult;
+import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.regimen.RegimenManager;
-import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
 import org.openmrs.module.kenyaemr.calculation.library.tb.TbDiseaseClassificationCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.tb.TbPatientClassificationCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.tb.TbTreatmentNumberCalculation;
@@ -42,13 +42,13 @@ public class TbCarePanelFragmentController {
 
 		Map<String, Object> calculationResults = new HashMap<String, Object>();
 
-		CalculationResult result = CalculationUtils.evaluateForPatient(TbDiseaseClassificationCalculation.class, null, patient);
+		CalculationResult result = EmrCalculationUtils.evaluateForPatient(TbDiseaseClassificationCalculation.class, null, patient);
 		calculationResults.put("tbDiseaseClassification", result != null ? result.getValue() : null);
 
-		result = CalculationUtils.evaluateForPatient(TbPatientClassificationCalculation.class, null, patient);
+		result = EmrCalculationUtils.evaluateForPatient(TbPatientClassificationCalculation.class, null, patient);
 		calculationResults.put("tbPatientClassification", result != null ? result.getValue() : null);
 
-		result = CalculationUtils.evaluateForPatient(TbTreatmentNumberCalculation.class, null, patient);
+		result = EmrCalculationUtils.evaluateForPatient(TbTreatmentNumberCalculation.class, null, patient);
 		calculationResults.put("tbTreatmentNumber", result != null ? result.getValue() : null);
 
 		model.addAttribute("calculations", calculationResults);

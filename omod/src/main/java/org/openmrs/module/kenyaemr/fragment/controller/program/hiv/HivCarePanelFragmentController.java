@@ -17,8 +17,8 @@ package org.openmrs.module.kenyaemr.fragment.controller.program.hiv;
 import org.openmrs.Concept;
 import org.openmrs.Patient;
 import org.openmrs.calculation.result.CalculationResult;
+import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.regimen.RegimenManager;
-import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.LastWhoStageCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtRegimenCalculation;
@@ -30,7 +30,6 @@ import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -47,13 +46,13 @@ public class HivCarePanelFragmentController {
 		Map<String, CalculationResult> calculationResults = new HashMap<String, CalculationResult>();
 
 		if (complete != null && complete.booleanValue()) {
-			calculationResults.put("initialArtRegimen", CalculationUtils.evaluateForPatient(InitialArtRegimenCalculation.class, null, patient));
-			calculationResults.put("initialArtStartDate", CalculationUtils.evaluateForPatient(InitialArtStartDateCalculation.class, null, patient));
+			calculationResults.put("initialArtRegimen", EmrCalculationUtils.evaluateForPatient(InitialArtRegimenCalculation.class, null, patient));
+			calculationResults.put("initialArtStartDate", EmrCalculationUtils.evaluateForPatient(InitialArtStartDateCalculation.class, null, patient));
 		}
 
-		calculationResults.put("lastWHOStage", CalculationUtils.evaluateForPatient(LastWhoStageCalculation.class, null, patient));
-		calculationResults.put("lastCD4Count", CalculationUtils.evaluateForPatient(LastCd4CountCalculation.class, null, patient));
-		calculationResults.put("lastCD4Percent", CalculationUtils.evaluateForPatient(LastCd4PercentageCalculation.class, null, patient));
+		calculationResults.put("lastWHOStage", EmrCalculationUtils.evaluateForPatient(LastWhoStageCalculation.class, null, patient));
+		calculationResults.put("lastCD4Count", EmrCalculationUtils.evaluateForPatient(LastCd4CountCalculation.class, null, patient));
+		calculationResults.put("lastCD4Percent", EmrCalculationUtils.evaluateForPatient(LastCd4PercentageCalculation.class, null, patient));
 
 		model.addAttribute("calculations", calculationResults);
 
@@ -61,6 +60,6 @@ public class HivCarePanelFragmentController {
 		RegimenChangeHistory history = RegimenChangeHistory.forPatient(patient, medSet);
 		model.addAttribute("regimenHistory", history);
 
-		model.addAttribute("graphingConcepts", Arrays.asList(Dictionary.WEIGHT_KG, Dictionary.CD4_COUNT, Dictionary.CD4_PERCENT));
+		model.addAttribute("graphingConcepts", Dictionary.getConcepts(Dictionary.WEIGHT_KG, Dictionary.CD4_COUNT, Dictionary.CD4_PERCENT));
 	}
 }

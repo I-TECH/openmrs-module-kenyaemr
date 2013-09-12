@@ -36,7 +36,7 @@ public class VisitMenuFragmentController {
 		Visit newVisit = new Visit();
 		newVisit.setPatient(patient);
 		newVisit.setStartDatetime(new Date());
-		newVisit.setVisitType(MetadataUtils.getVisitType(Metadata.OUTPATIENT_VISIT_TYPE));
+		newVisit.setVisitType(MetadataUtils.getVisitType(Metadata.VisitType.OUTPATIENT));
 		model.addAttribute("newCurrentVisit", newVisit);
 	}
 }

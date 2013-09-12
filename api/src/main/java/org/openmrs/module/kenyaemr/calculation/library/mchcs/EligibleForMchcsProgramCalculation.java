@@ -16,6 +16,7 @@ package org.openmrs.module.kenyaemr.calculation.library.mchcs;
 
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
+import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
 import org.openmrs.module.reporting.common.Age;
@@ -31,7 +32,7 @@ public class EligibleForMchcsProgramCalculation extends BaseEmrCalculation {
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> params, PatientCalculationContext context) {
 		CalculationResultMap ret = new CalculationResultMap();
 
-		CalculationResultMap ages = ages(cohort, context);
+		CalculationResultMap ages = Calculations.ages(cohort, context);
 
 		for (int ptId : cohort) {
 			Integer ageInMonths = ((Age) ages.get(ptId).getValue()).getFullMonths();

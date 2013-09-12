@@ -22,7 +22,7 @@ import org.openmrs.api.PatientService;
 import org.openmrs.api.VisitService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appframework.AppDescriptor;
-import org.openmrs.module.kenyaemr.converter.StringToVisitConverter;
+import org.openmrs.module.kenyaemr.util.EmrUiUtils;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.ui.framework.fragment.FragmentContext;
 import org.openmrs.ui.framework.fragment.FragmentModelConfigurator;
@@ -50,7 +50,7 @@ public class EmrModelConfigurator implements PageModelConfigurator, FragmentMode
 	private KenyaUiUtils kenyaUi;
 
 	@Autowired
-	private KenyaEmrUiUtils kenyaEmrUiUtils;
+	private EmrUiUtils kenyaEmrUiUtils;
 
 	@Autowired
 	private PatientService patientService;
@@ -78,12 +78,15 @@ public class EmrModelConfigurator implements PageModelConfigurator, FragmentMode
 		if (!StringUtils.isEmpty(visitId)) {
 			currentVisit = visitFromParam(visitId);
 
-			// We can infer patient from current visit
-			if (currentPatient == null) {
-				currentPatient = currentVisit.getPatient();
-			}
-			else if (!currentPatient.equals(currentVisit.getPatient())) {
-				throw new RuntimeException("Mismatch between patient and visit request parameters");
+			if (currentVisit != null) {
+				// We can infer patient from current visit
+				if (currentPatient == null) {
+					currentPatient = currentVisit.getPatient();
+				}
+
+				if (!currentPatient.equals(currentVisit.getPatient())) {
+					throw new RuntimeException("Mismatch between patient and visit request parameters");
+				}
 			}
 		}
 

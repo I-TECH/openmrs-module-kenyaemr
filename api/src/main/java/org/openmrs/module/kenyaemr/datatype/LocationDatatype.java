@@ -11,30 +11,31 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.kenyaemr.datatype;
 
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
-import org.openmrs.customdatatype.CustomDatatype;
 import org.openmrs.customdatatype.SerializingCustomDatatype;
 import org.springframework.stereotype.Component;
-
 
 /**
  * Custom datatype for {@link org.openmrs.Location}.
  * (This should be moved to the OpenMRS core.)  
  */
 @Component
-public class LocationDatatype extends SerializingCustomDatatype<Location> implements CustomDatatype<Location> {
+public class LocationDatatype extends SerializingCustomDatatype<Location> {
 	
 	/**
 	 * @see org.openmrs.customdatatype.SerializingCustomDatatype#deserialize(java.lang.String)
 	 */
 	@Override
 	public Location deserialize(String serializedValue) {
-		if (StringUtils.isEmpty(serializedValue))
+		if (StringUtils.isEmpty(serializedValue)) {
 			return null;
+		}
+
 		return Context.getLocationService().getLocation(Integer.valueOf(serializedValue));
 	}
 	
@@ -43,9 +44,10 @@ public class LocationDatatype extends SerializingCustomDatatype<Location> implem
 	 */
 	@Override
 	public String serialize(Location typedValue) {
-		if (typedValue == null)
+		if (typedValue == null) {
 			return null;
+		}
+
 		return typedValue.getLocationId().toString();
 	}
-	
 }

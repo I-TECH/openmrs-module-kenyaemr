@@ -14,14 +14,15 @@
 
 package org.openmrs.module.kenyaemr.datatype;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.junit.Test;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyaemr.datatype.LocationDatatype;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
+import static org.hamcrest.Matchers.*;
+
 /**
- * Tests for {@link org.openmrs.module.kenyaemr.datatype.LocationDatatype}
+ * Tests for {@link LocationDatatype}
  */
 public class LocationDatatypeTest extends BaseModuleContextSensitiveTest {
 
@@ -32,9 +33,9 @@ public class LocationDatatypeTest extends BaseModuleContextSensitiveTest {
 	 */
 	@Test
 	public void deserialize() {
-		Assert.assertNull(datatype.deserialize(null));
-		Assert.assertNull(datatype.deserialize(""));
-		Assert.assertEquals(Context.getLocationService().getLocation(2), datatype.deserialize("2"));
+		Assert.assertThat(datatype.deserialize(null), is(nullValue()));
+		Assert.assertThat(datatype.deserialize(""), is(nullValue()));
+		Assert.assertThat(datatype.deserialize("2"), is(Context.getLocationService().getLocation(2)));
 	}
 
 	/**
@@ -43,6 +44,7 @@ public class LocationDatatypeTest extends BaseModuleContextSensitiveTest {
 	@Test
 	public void serialize() {
 		Assert.assertNull(datatype.serialize(null));
-		Assert.assertEquals("2", datatype.serialize(Context.getLocationService().getLocation(2)));
+		Assert.assertThat(datatype.serialize(null), is(nullValue()));
+		Assert.assertThat(datatype.serialize(Context.getLocationService().getLocation(2)), is("2"));
 	}
 }

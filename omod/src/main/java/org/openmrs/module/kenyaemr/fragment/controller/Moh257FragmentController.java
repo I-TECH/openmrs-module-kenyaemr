@@ -41,7 +41,8 @@ public class Moh257FragmentController {
 						   UiUtils ui,
 						   @SpringBean RegimenManager regimenManager) {
 
-		String[] page1FormUuids = { Metadata.FAMILY_HISTORY_FORM, Metadata.HIV_PROGRAM_ENROLLMENT_FORM };
+		String[] page1FormUuids = { Metadata.Form.MOH_257_FACE_PAGE };
+		//String[] page1FormUuids = { Metadata.Form.FAMILY_HISTORY, Metadata.Form.HIV_ENROLLMENT };
 
 		List<SimpleObject> page1AvailableForms = new ArrayList<SimpleObject>();
 		List<Encounter> page1Encounters = new ArrayList<Encounter>();
@@ -58,7 +59,7 @@ public class Moh257FragmentController {
 			}
 		}
 
-		Form moh257VisitForm = MetadataUtils.getForm(Metadata.MOH_257_VISIT_SUMMARY_FORM);
+		Form moh257VisitForm = MetadataUtils.getForm(Metadata.Form.MOH_257_VISIT_SUMMARY);
 		List<Encounter> moh257VisitSummaryEncounters = getPatientEncounterByForm(patient, moh257VisitForm);
 
 		model.addAttribute("page1AvailableForms", page1AvailableForms);

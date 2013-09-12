@@ -16,6 +16,7 @@ package org.openmrs.module.kenyaemr.calculation.library.tb;
 
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
+import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 
@@ -29,6 +30,6 @@ public class TbPatientClassificationCalculation extends BaseEmrCalculation {
 
     @Override
     public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> arg1, PatientCalculationContext context) {
-		return lastObs(getConcept(Dictionary.TYPE_OF_TB_PATIENT), cohort, context);
+		return Calculations.lastObs(getConcept(Dictionary.TYPE_OF_TB_PATIENT), cohort, context);
     }
 }

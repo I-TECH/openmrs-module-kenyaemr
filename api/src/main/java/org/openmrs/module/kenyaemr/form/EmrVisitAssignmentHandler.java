@@ -15,8 +15,10 @@
 package org.openmrs.module.kenyaemr.form;
 
 import org.openmrs.Encounter;
+import org.openmrs.Form;
 import org.openmrs.Location;
 import org.openmrs.Visit;
+import org.openmrs.VisitAttribute;
 import org.openmrs.VisitType;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.handler.ExistingVisitAssignmentHandler;
@@ -24,11 +26,13 @@ import org.openmrs.module.kenyacore.CoreContext;
 import org.openmrs.module.kenyacore.form.FormDescriptor;
 import org.openmrs.module.kenyacore.form.FormManager;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
+import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.util.EmrUtils;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.util.OpenmrsUtil;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -50,25 +54,19 @@ public class EmrVisitAssignmentHandler extends ExistingVisitAssignmentHandler {
 	 */
 	@Override
 	public void beforeCreateEncounter(Encounter encounter) {
-		// Do nothing if the encounter already belongs to a visit.
+		// Do nothing if the encounter already belongs to a visit
 		if (encounter.getVisit() != null) {
 			return;
 		}
 
 		// Try using an existing visit
-		if (useExistingVisit(encounter)) {
-			return;
-		}
+		if (!useExistingVisit(encounter)) {
 
-		// Some forms can auto-create visits
-		if (encounter.getForm() != null) {
-			FormManager formManager = CoreContext.getInstance().getManager(FormManager.class);
+			// Some forms can auto-create visits
+			VisitType autoCreateVisitType = getAutoCreateVisitType(encounter);
 
-			FormDescriptor fd = formManager.getFormDescriptor(encounter.getForm());
-
-			if (fd != null && fd.getAutoCreateVisitTypeUuid() != null) {
-				VisitType visitType = MetadataUtils.getVisitType(fd.getAutoCreateVisitTypeUuid());
-				useNewVisit(encounter, visitType);
+			if (autoCreateVisitType != null) {
+				useNewVisit(encounter, autoCreateVisitType, encounter.getForm());
 			}
 		}
 	}
@@ -119,8 +117,9 @@ public class EmrVisitAssignmentHandler extends ExistingVisitAssignmentHandler {
 	 * Uses a new visit for the given encounter
 	 * @param encounter the encounter
 	 * @param type the visit type
+	 * @param sourceForm the source form
 	 */
-	protected void useNewVisit(Encounter encounter, VisitType type) {
+	protected static void useNewVisit(Encounter encounter, VisitType type, Form sourceForm) {
 		Visit visit = new Visit();
 		visit.setStartDatetime(OpenmrsUtil.firstSecondOfDay(encounter.getEncounterDatetime()));
 		visit.setStopDatetime(OpenmrsUtil.getLastMomentOfDay(encounter.getEncounterDatetime()));
@@ -128,6 +127,42 @@ public class EmrVisitAssignmentHandler extends ExistingVisitAssignmentHandler {
 		visit.setPatient(encounter.getPatient());
 		visit.setVisitType(type);
 
+		VisitAttribute sourceAttr = new VisitAttribute();
+		sourceAttr.setAttributeType(MetadataUtils.getVisitAttributeType(Metadata.VisitAttributeType.SOURCE_FORM));
+		sourceAttr.setOwner(visit);
+		sourceAttr.setValue(sourceForm);
+		visit.addAttribute(sourceAttr);
+
 		encounter.setVisit(visit);
+	}
+
+	/**
+	 * Gets an auto-create visit type if there is one for the form used to create the encounter
+	 * @param encounter the encounter
+	 * @return the visit type
+	 */
+	protected static VisitType getAutoCreateVisitType(Encounter encounter) {
+		if (encounter.getForm() != null) {
+			FormManager formManager = CoreContext.getInstance().getManager(FormManager.class);
+
+			FormDescriptor fd = formManager.getFormDescriptor(encounter.getForm());
+
+			if (fd != null && fd.getAutoCreateVisitTypeUuid() != null) {
+				return MetadataUtils.getVisitType(fd.getAutoCreateVisitTypeUuid());
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Checks if the given encounter can be saved in a given visit
+	 * @param encounter the encounter
+	 * @param visit the visit
+	 * @return true if encounter can be saved in the visit
+	 */
+	protected static boolean canBeSavedInVisit(Encounter encounter, Visit visit) {
+		Date encDate = encounter.getEncounterDatetime();
+		return OpenmrsUtil.compare(encDate, visit.getStartDatetime()) >= 0
+				&& (visit.getStopDatetime() == null || OpenmrsUtil.compare(encDate, visit.getStopDatetime()) <= 0);
 	}
 }

@@ -19,8 +19,10 @@ import org.openmrs.*;
 import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.ModuleFactory;
+import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.EmrConstants;
+import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.util.OpenmrsUtil;
 
 import java.text.DateFormat;
@@ -55,7 +57,9 @@ public class EmrUtils {
 	 * @should return true only if date has time
 	 */
 	public static boolean dateHasTime(Date date) {
-		return !date.equals(OpenmrsUtil.firstSecondOfDay(date));
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		return cal.get(Calendar.HOUR) != 0 || cal.get(Calendar.MINUTE) != 0 || cal.get(Calendar.SECOND) != 0 || cal.get(Calendar.MILLISECOND) != 0;
 	}
 
 	/**
@@ -89,35 +93,14 @@ public class EmrUtils {
 	}
 
 	/**
-	 * Checks if a visit has been entered retrospectively. Visits entered retrospectively are entered with just a single
-	 * date value and are always stopped
+	 * Gets the source form for the given visit (may be null)
 	 * @param visit the visit
-	 * @return true if visit was entered retrospectively
+	 * @return source form
 	 */
-	public static boolean isRetrospectiveVisit(Visit visit) {
-		if (visit.getStopDatetime() == null) {
-			return false;
-		}
-
-		// Check that start is first second of day
-		// Note that we don't compare milliseconds as these are lost in persistence
-		Calendar start = Calendar.getInstance();
-		start.setTime(visit.getStartDatetime());
-		if (start.get(Calendar.HOUR_OF_DAY) != 0 || start.get(Calendar.MINUTE) != 0 || start.get(Calendar.SECOND) != 0) {
-			return false;
-		}
-
-		// Check that stop is last second of day
-		Calendar stop = Calendar.getInstance();
-		stop.setTime(visit.getStopDatetime());
-		if (stop.get(Calendar.HOUR_OF_DAY) != 23 || stop.get(Calendar.MINUTE) != 59 || stop.get(Calendar.SECOND) != 59) {
-			return false;
-		}
-
-		// Check start is same day as stop
-		return start.get(Calendar.YEAR) == stop.get(Calendar.YEAR)
-				&& start.get(Calendar.MONTH) == stop.get(Calendar.MONTH)
-				&& start.get(Calendar.DAY_OF_MONTH) == stop.get(Calendar.DAY_OF_MONTH);
+	public static Form getVisitSourceForm(Visit visit) {
+		VisitAttributeType sourceAttrType = MetadataUtils.getVisitAttributeType(Metadata.VisitAttributeType.SOURCE_FORM);
+		List<VisitAttribute> attrs =  visit.getActiveAttributes(sourceAttrType);
+		return attrs.size() > 0 ? (Form) attrs.get(0).getValue() : null;
 	}
 
 	/**
@@ -192,7 +175,7 @@ public class EmrUtils {
 	 * Finds the first obs in an encounter with the given concept
 	 * @param encounter the encounter
 	 * @param concept the obs concept
-	 * @return the encounter
+	 * @return the obs
 	 */
 	public static Obs firstObsInEncounter(Encounter encounter, Concept concept) {
 		for (Obs obs : encounter.getAllObs()) {
@@ -201,6 +184,22 @@ public class EmrUtils {
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * Finds all obs in an encounter with the given concept
+	 * @param encounter the encounter
+	 * @param concept the obs concept
+	 * @return the obs list
+	 */
+	public static List<Obs> allObsInEncounter(Encounter encounter, Concept concept) {
+		List<Obs> obsList = new ArrayList<Obs>();
+		for (Obs obs : encounter.getAllObs()) {
+			if (obs.getConcept().equals(concept)) {
+				obsList.add(obs);
+			}
+		}
+		return obsList;
 	}
 
 	/**

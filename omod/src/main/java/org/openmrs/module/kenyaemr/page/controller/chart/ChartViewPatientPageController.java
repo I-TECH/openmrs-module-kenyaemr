@@ -17,7 +17,6 @@ package org.openmrs.module.kenyaemr.page.controller.chart;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -76,7 +75,7 @@ public class ChartViewPatientPageController {
 
 		AppDescriptor thisApp = Context.getService(AppFrameworkService.class).getAppById(EmrConstants.APP_CHART);
 
-		List<FormDescriptor> oneTimeFormDescriptors = formManager.getFormsForPatient(thisApp, patient);
+		List<FormDescriptor> oneTimeFormDescriptors = formManager.getCommonFormsForPatient(thisApp, patient);
 		List<SimpleObject> oneTimeForms = new ArrayList<SimpleObject>();
 		for (FormDescriptor formDescriptor : oneTimeFormDescriptors) {
 			Form form = formDescriptor.getTarget();

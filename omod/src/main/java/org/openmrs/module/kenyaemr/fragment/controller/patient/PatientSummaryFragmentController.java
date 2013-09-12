@@ -20,7 +20,7 @@ import org.openmrs.calculation.patient.PatientCalculation;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.ResultUtil;
 import org.openmrs.module.appframework.AppDescriptor;
-import org.openmrs.module.kenyacore.CoreUtils;
+import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.form.FormDescriptor;
 import org.openmrs.module.kenyacore.form.FormManager;
 import org.openmrs.module.kenyaemr.calculation.library.RecordedDeceasedCalculation;
@@ -49,9 +49,9 @@ public class PatientSummaryFragmentController {
 
 		AppDescriptor currentApp = kenyaUi.getCurrentApp(pageRequest);
 
-		// Get all suitable per-patient forms as simple objects
+		// Get all common per-patient forms as simple objects
 		List<SimpleObject> forms = new ArrayList<SimpleObject>();
-		for (FormDescriptor formDescriptor : formManager.getFormsForPatient(currentApp, patient)) {
+		for (FormDescriptor formDescriptor : formManager.getCommonFormsForPatient(currentApp, patient)) {
 			forms.add(ui.simplifyObject(formDescriptor.getTarget()));
 		}
 
@@ -66,7 +66,7 @@ public class PatientSummaryFragmentController {
 	 * @return true if patient was recorded as deceased
 	 */
 	protected boolean hasBeenRecordedAsDeceased(Patient patient) {
-		PatientCalculation calc = CoreUtils.instantiateCalculation(RecordedDeceasedCalculation.class, null);
+		PatientCalculation calc = CalculationUtils.instantiateCalculation(RecordedDeceasedCalculation.class, null);
 		return ResultUtil.isTrue(Context.getService(PatientCalculationService.class).evaluate(patient.getId(), calc));
 	}
 }

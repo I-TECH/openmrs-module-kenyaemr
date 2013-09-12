@@ -21,11 +21,13 @@ import org.openmrs.Program;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
+import org.openmrs.module.kenyacore.calculation.CalculationUtils;
+import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyaemr.Metadata;
-import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
+import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 
 /**
@@ -49,11 +51,11 @@ public class LostToFollowUpCalculation extends BaseEmrCalculation implements Pat
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> arg1, PatientCalculationContext context) {
 
-		Program hivProgram = MetadataUtils.getProgram(Metadata.HIV_PROGRAM);
+		Program hivProgram = MetadataUtils.getProgram(Metadata.Program.HIV);
 
 		Set<Integer> alive = alivePatients(cohort, context);
-		Set<Integer> inHivProgram = CalculationUtils.patientsThatPass(activeEnrollment(hivProgram, alive, context));
-		CalculationResultMap lastEncounters = lastEncounter(null, inHivProgram, context);
+		Set<Integer> inHivProgram = CalculationUtils.patientsThatPass(Calculations.activeEnrollment(hivProgram, alive, context));
+		CalculationResultMap lastEncounters = Calculations.lastEncounter(null, inHivProgram, context);
 
 		CalculationResultMap ret = new CalculationResultMap();
 		for (Integer ptId : cohort) {
@@ -63,7 +65,7 @@ public class LostToFollowUpCalculation extends BaseEmrCalculation implements Pat
 			if (inHivProgram.contains(ptId)) {
 
 				// Patient is lost if no encounters in last X days
-				Encounter lastEncounter = CalculationUtils.encounterResultForPatient(lastEncounters, ptId);
+				Encounter lastEncounter = EmrCalculationUtils.encounterResultForPatient(lastEncounters, ptId);
 				Date lastEncounterDate = lastEncounter != null ? lastEncounter.getEncounterDatetime() : null;
 				lost = lastEncounterDate == null || daysSince(lastEncounterDate, context) > EmrConstants.LOST_TO_FOLLOW_UP_THRESHOLD_DAYS;
 			}

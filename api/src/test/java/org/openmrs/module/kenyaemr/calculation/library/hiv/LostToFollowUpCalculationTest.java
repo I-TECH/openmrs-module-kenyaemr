@@ -50,7 +50,7 @@ public class LostToFollowUpCalculationTest extends BaseModuleContextSensitiveTes
 	public void evaluate_shouldDetermineWhetherPatientsAreLostToFollowUp() throws Exception {
 
 		// Get HIV Program
-		Program hivProgram = MetadataUtils.getProgram(Metadata.HIV_PROGRAM);
+		Program hivProgram = MetadataUtils.getProgram(Metadata.Program.HIV);
 
 		// Enroll patients #6, #7, #8 in the HIV Program
 		PatientService ps = Context.getPatientService();

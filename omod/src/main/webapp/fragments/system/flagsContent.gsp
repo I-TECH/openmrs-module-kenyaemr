@@ -12,7 +12,7 @@
 	<% flags.each { flag -> %>
 		<tr>
 			<td>${ flag.className }</td>
-			<td style="text-align: left">${ flag.message }</td>
+			<td>${ flag.message }</td>
 		</tr>
 	<% } %>
 	</tbody>

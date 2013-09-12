@@ -17,7 +17,12 @@ package org.openmrs.module.kenyaemr;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.Concept;
+import org.openmrs.ConceptNumeric;
+import org.openmrs.api.context.Context;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
+
+import static org.hamcrest.Matchers.*;
 
 /**
  * Tests for {@link org.openmrs.module.kenyaemr.Dictionary}
@@ -43,7 +48,10 @@ public class DictionaryTest extends BaseModuleContextSensitiveTest {
 	@Test
 	public void getConcept_shouldFetchByMappingOrUuid() {
 		// Check lookup by UUID
-		Assert.assertEquals(Dictionary.CD4_COUNT, Dictionary.getConcept(Dictionary.CD4_COUNT).getUuid());
+		Concept cd4 = Context.getConceptService().getConceptByUuid(Dictionary.CD4_COUNT);
+		Concept fetched = Dictionary.getConcept(Dictionary.CD4_COUNT);
+		Assert.assertThat(fetched, is(cd4));
+		Assert.assertThat(fetched, is(instanceOf(ConceptNumeric.class)));
 	}
 
 	/**
@@ -52,5 +60,24 @@ public class DictionaryTest extends BaseModuleContextSensitiveTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void getConcept_shouldThrowExceptionForNonExistent() {
 		Dictionary.getConcept("PIH:XXXXXXXXXXXXXXX");
+	}
+
+	/**
+	 * @see Dictionary#getConcepts(String...)
+	 */
+	@Test
+	public void getConcepts_shouldFetchByMappingOrUuid() {
+		// Check lookup by UUID
+		Concept cd4 = Context.getConceptService().getConceptByUuid(Dictionary.CD4_COUNT);
+		Concept cd4pc = Context.getConceptService().getConceptByUuid(Dictionary.CD4_PERCENT);
+		Assert.assertThat(Dictionary.getConcepts(Dictionary.CD4_COUNT, Dictionary.CD4_PERCENT), contains(cd4, cd4pc));
+	}
+
+	/**
+	 * @see Dictionary#getConcepts(String...)
+	 */
+	@Test(expected = IllegalArgumentException.class)
+	public void getConcepts_shouldThrowExceptionForNonExistent() {
+		Dictionary.getConcepts(Dictionary.CD4_COUNT, "PIH:XXXXXXXXXXXXXXX");
 	}
 }

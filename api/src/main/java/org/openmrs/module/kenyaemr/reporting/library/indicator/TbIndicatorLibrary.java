@@ -14,12 +14,13 @@
 
 package org.openmrs.module.kenyaemr.reporting.library.indicator;
 
+import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyaemr.reporting.library.cohort.TbCohortLibrary;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import static org.openmrs.module.kenyaemr.reporting.EmrReportingUtils.map;
+import static org.openmrs.module.kenyacore.report.ReportUtils.map;
 import static org.openmrs.module.kenyaemr.reporting.library.indicator.CommonIndicatorLibrary.createCohortIndicator;
 
 /**
@@ -39,6 +40,6 @@ public class TbIndicatorLibrary {
 	 * @return the indicator
 	 */
 	public CohortIndicator screenedForTb() {
-		return createCohortIndicator("Number of patients screened for TB", map(tbCohorts.screenedForTb(), "onOrAfter=${startDate},onOrBefore=${endDate}"));
+		return createCohortIndicator("Number of patients screened for TB", ReportUtils.map(tbCohorts.screenedForTb(), "onOrAfter=${startDate},onOrBefore=${endDate}"));
 	}
 }

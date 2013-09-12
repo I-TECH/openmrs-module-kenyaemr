@@ -113,7 +113,7 @@ public class ArtCohortLibraryTest extends BaseModuleContextSensitiveTest {
 	 */
 	@Test
 	public void enrolledExcludingTransfers() throws Exception {
-		Program hivProgram = MetadataUtils.getProgram(Metadata.HIV_PROGRAM);
+		Program hivProgram = MetadataUtils.getProgram(Metadata.Program.HIV);
 		Concept transferInDate = Dictionary.getConcept(Dictionary.TRANSFER_IN_DATE);
 
 		// Enroll #6 on June 1st
@@ -138,7 +138,7 @@ public class ArtCohortLibraryTest extends BaseModuleContextSensitiveTest {
 	 */
 	@Test
 	public void referredFrom_shouldReturnPatientsWithSpecifiedEntryPoint() throws Exception {
-		EncounterType hivEnrollEncType = MetadataUtils.getEncounterType(Metadata.HIV_ENROLLMENT_ENCOUNTER_TYPE);
+		EncounterType hivEnrollEncType = MetadataUtils.getEncounterType(Metadata.EncounterType.HIV_ENROLLMENT);
 		Concept method = Dictionary.getConcept(Dictionary.METHOD_OF_ENROLLMENT);
 		Concept pmtct = Dictionary.getConcept(Dictionary.PMTCT_PROGRAM);
 		Concept other = Dictionary.getConcept(Dictionary.OTHER_NON_CODED);

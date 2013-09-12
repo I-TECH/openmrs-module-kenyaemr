@@ -22,7 +22,7 @@ import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
-import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
+import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.regimen.RegimenOrder;
 
 /**
@@ -49,7 +49,7 @@ public class OnSecondLineArtCalculation extends BaseEmrCalculation {
 			if (currentArvResult != null) {
 				RegimenOrder currentRegimen = (RegimenOrder) currentArvResult.getValue();
 
-				boolean isSecondLine = CalculationUtils.regimenInGroup(currentRegimen, "ARV", "adult-second");
+				boolean isSecondLine = EmrCalculationUtils.regimenInGroup(currentRegimen, "ARV", "adult-second");
 				result = new BooleanResult(isSecondLine, this, context);
 			}
 

@@ -5,15 +5,27 @@
 
 	<!-- ===================== Program ===================== -->
 
-	<bean id="kenyaemr.program.hiv" class="org.openmrs.module.kenyacore.program.ProgramDescriptor">
+	<bean id="kenyaemr.hiv.program" class="org.openmrs.module.kenyacore.program.ProgramDescriptor">
 		<property name="targetUuid" value="dfdc6d40-2f2f-463d-ba90-cc97350441a8" />
 		<property name="eligibilityCalculation" value="org.openmrs.module.kenyaemr.calculation.library.hiv.EligibleForHivProgramCalculation" />
-		<property name="defaultEnrollmentForm" ref="kenyaemr.form.hivEnrollment" />
-		<property name="defaultCompletionForm" ref="kenyaemr.form.hivCompletion" />
+		<property name="defaultEnrollmentForm" ref="kenyaemr.hiv.form.enrollment" />
+		<property name="defaultCompletionForm" ref="kenyaemr.hiv.form.completion" />
 		<property name="visitForms">
 			<set>
-				<ref bean="kenyaemr.form.hivClinicalEncounterAddendum" />
-				<ref bean="kenyaemr.form.tbScreening" />
+				<ref bean="kenyaemr.hiv.form.clinicalEncounterAddendum" />
+				<ref bean="kenyaemr.common.form.tbScreening" />
+			</set>
+		</property>
+		<property name="reports">
+			<set>
+				<ref bean="kenyaemr.hiv.report.dueForCd4" />
+				<ref bean="kenyaemr.hiv.report.decliningCd4" />
+				<ref bean="kenyaemr.hiv.report.lostToFollowUp" />
+				<ref bean="kenyaemr.hiv.report.missedAppointment" />
+				<ref bean="kenyaemr.hiv.report.neverScreenedForTb" />
+				<ref bean="kenyaemr.hiv.report.eligibleForArt" />
+				<ref bean="kenyaemr.hiv.report.onSecondLineArt" />
+				<ref bean="kenyaemr.hiv.report.neverTakenCtxOrDapsone" />
 			</set>
 		</property>
 		<property name="fragments">
@@ -29,7 +41,7 @@
 	<!-- ===================== Identifiers ===================== -->
 
 	<!-- Unique Patient Number -->
-	<bean id="kenyaemr.identifier.upn" class="org.openmrs.module.kenyacore.identifier.IdentifierDescriptor">
+	<bean id="kenyaemr.hiv.identifier.upn" class="org.openmrs.module.kenyacore.identifier.IdentifierDescriptor">
 		<property name="targetUuid" value="05ee9cf4-7242-4a17-b4d4-00f707265c8a" />
 		<property name="order" value="50" />
 	</bean>
@@ -37,7 +49,7 @@
 	<!-- ===================== Forms ===================== -->
 
 	<!-- HIV Enrollment -->
-	<bean id="kenyaemr.form.hivEnrollment" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+	<bean id="kenyaemr.hiv.form.enrollment" class="org.openmrs.module.kenyacore.form.FormDescriptor">
 		<property name="targetUuid" value="e4b506c1-7379-42b6-a374-284469cba8da" />
 		<property name="apps">
 			<set>
@@ -48,11 +60,11 @@
 			</set>
 		</property>
 		<property name="icon" value="kenyaui:forms/generic.png" />
-		<property name="htmlform" value="kenyaemr:hiv/hivEnrollment.xml" />
+		<property name="htmlform" value="kenyaemr:hiv/hivEnrollment.html" />
 	</bean>
 
 	<!-- Clinical Encounter - HIV Addendum -->
-	<bean id="kenyaemr.form.hivClinicalEncounterAddendum" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+	<bean id="kenyaemr.hiv.form.clinicalEncounterAddendum" class="org.openmrs.module.kenyacore.form.FormDescriptor">
 		<property name="targetUuid" value="bd598114-4ef4-47b1-a746-a616180ccfc0" />
 		<property name="apps">
 			<set>
@@ -61,26 +73,12 @@
 			</set>
 		</property>
 		<property name="icon" value="kenyaui:forms/generic.png" />
-		<property name="htmlform" value="kenyaemr:hiv/hivClinicalEncounterAddendum.xml" />
+		<property name="htmlform" value="kenyaemr:hiv/hivClinicalEncounterAddendum.html" />
 		<property name="order" value="201010" />
 	</bean>
 
-	<!-- MOH257 Visit Summary -->
-	<bean id="kenyaemr.form.moh257VisitSummary" class="org.openmrs.module.kenyacore.form.FormDescriptor">
-		<property name="targetUuid" value="23b4ebbd-29ad-455e-be0e-04aa6bc30798" />
-		<property name="apps">
-			<set>
-				<ref bean="kenyaemr.app.chart" />
-			</set>
-		</property>
-		<property name="autoCreateVisitTypeUuid" value="3371a4d4-f66f-4454-a86d-92c7b3da990c" />
-		<property name="icon" value="kenyaui:forms/moh257.png" />
-		<property name="htmlform" value="kenyaemr:hiv/moh257VisitSummary.xml" />
-		<property name="order" value="201030" />
-	</bean>
-
 	<!-- HIV Completion -->
-	<bean id="kenyaemr.form.hivCompletion" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+	<bean id="kenyaemr.hiv.form.completion" class="org.openmrs.module.kenyacore.form.FormDescriptor">
 		<property name="targetUuid" value="e3237ede-fa70-451f-9e6c-0908bc39f8b9" />
 		<property name="apps">
 			<set>
@@ -91,7 +89,91 @@
 			</set>
 		</property>
 		<property name="icon" value="kenyaui:forms/completion.png" />
-		<property name="htmlform" value="kenyaemr:hiv/hivDiscontinuation.xml" />
+		<property name="htmlform" value="kenyaemr:hiv/hivDiscontinuation.html" />
+	</bean>
+
+	<!-- MOH257 Face Page -->
+	<bean id="kenyaemr.hiv.form.moh257FacePage" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="47814d87-2e53-45b1-8d05-ac2e944db64c" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.chart" />
+			</set>
+		</property>
+		<property name="icon" value="kenyaui:forms/moh257.png" />
+		<property name="htmlform" value="kenyaemr:hiv/moh257FacePage.html" />
+	</bean>
+
+	<!-- MOH257 Visit Summary -->
+	<bean id="kenyaemr.hiv.form.moh257VisitSummary" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="23b4ebbd-29ad-455e-be0e-04aa6bc30798" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.chart" />
+			</set>
+		</property>
+		<property name="autoCreateVisitTypeUuid" value="3371a4d4-f66f-4454-a86d-92c7b3da990c" />
+		<property name="icon" value="kenyaui:forms/moh257.png" />
+		<property name="htmlform" value="kenyaemr:hiv/moh257VisitSummary.html" />
+		<property name="order" value="201030" />
+	</bean>
+
+	<!-- ===================== Reports ===================== -->
+
+	<bean id="kenyaemr.hiv.report.lostToFollowUp" class="org.openmrs.module.kenyacore.report.CalculationReportDescriptor">
+		<property name="name" value="Patients who are lost to followup" />
+		<property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.hiv.LostToFollowUpCalculation" />
+		<property name="displayIdentifier" ref="kenyaemr.hiv.identifier.upn" />
+		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
+	</bean>
+
+	<bean id="kenyaemr.hiv.report.missedAppointment" class="org.openmrs.module.kenyacore.report.CalculationReportDescriptor">
+		<property name="name" value="Patients who have missed appointments" />
+		<property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.hiv.MissedAppointmentsOrDefaultedCalculation" />
+		<property name="displayIdentifier" ref="kenyaemr.hiv.identifier.upn" />
+		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
+	</bean>
+
+	<bean id="kenyaemr.hiv.report.dueForCd4" class="org.openmrs.module.kenyacore.report.CalculationReportDescriptor">
+		<property name="name" value="Patients due for CD4 test" />
+		<property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.hiv.NeedsCd4TestCalculation" />
+		<property name="displayIdentifier" ref="kenyaemr.hiv.identifier.upn" />
+		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
+	</bean>
+
+	<bean id="kenyaemr.hiv.report.decliningCd4" class="org.openmrs.module.kenyacore.report.CalculationReportDescriptor">
+		<property name="name" value="Patients with declining CD4" />
+		<property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.hiv.DecliningCd4Calculation" />
+		<property name="displayIdentifier" ref="kenyaemr.hiv.identifier.upn" />
+		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
+	</bean>
+
+	<bean id="kenyaemr.hiv.report.eligibleForArt" class="org.openmrs.module.kenyacore.report.CalculationReportDescriptor">
+		<property name="name" value="Patients eligible for ART" />
+		<property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.hiv.art.EligibleForArtCalculation" />
+		<property name="displayIdentifier" ref="kenyaemr.hiv.identifier.upn" />
+		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
+	</bean>
+
+	<bean id="kenyaemr.hiv.report.neverScreenedForTb" class="org.openmrs.module.kenyacore.report.CalculationReportDescriptor">
+		<property name="name" value="Patients who have never been screened for TB" />
+		<property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.hiv.NeverScreenedForTbCalculation" />
+		<property name="displayIdentifier" ref="kenyaemr.hiv.identifier.upn" />
+		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
+	</bean>
+
+	<bean id="kenyaemr.hiv.report.onSecondLineArt" class="org.openmrs.module.kenyacore.report.CalculationReportDescriptor">
+		<property name="name" value="Patients on second line ART" />
+		<property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.hiv.art.OnSecondLineArtCalculation" />
+		<property name="displayIdentifier" ref="kenyaemr.hiv.identifier.upn" />
+		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
+	</bean>
+
+	<bean id="kenyaemr.hiv.report.neverTakenCtxOrDapsone" class="org.openmrs.module.kenyacore.report.CalculationReportDescriptor">
+		<property name="name" value="Patients who have never taken CTX or Dapsone" />
+		<property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.hiv.NeverTakenCtxOrDapsoneCalculation" />
+		<property name="displayIdentifier" ref="kenyaemr.hiv.identifier.upn" />
+		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 	</bean>
 
 </beans>

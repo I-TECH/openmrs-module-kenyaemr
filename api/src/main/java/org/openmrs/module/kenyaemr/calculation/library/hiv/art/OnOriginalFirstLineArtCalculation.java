@@ -19,7 +19,7 @@ import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
-import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
+import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.regimen.RegimenOrder;
 
 import java.util.Collection;
@@ -53,7 +53,7 @@ public class OnOriginalFirstLineArtCalculation extends BaseEmrCalculation {
 				RegimenOrder initialRegimen = (RegimenOrder) initialArvsResult.getValue();
 				RegimenOrder currentRegimen = (RegimenOrder) currentArvsResult.getValue();
 
-				boolean isAltFirstLine = initialRegimen.hasSameDrugs(currentRegimen) && CalculationUtils.regimenInGroup(currentRegimen, "ARV", "adult-first");
+				boolean isAltFirstLine = initialRegimen.hasSameDrugs(currentRegimen) && EmrCalculationUtils.regimenInGroup(currentRegimen, "ARV", "adult-first");
 				result = new BooleanResult(isAltFirstLine, this, context);
 			}
 

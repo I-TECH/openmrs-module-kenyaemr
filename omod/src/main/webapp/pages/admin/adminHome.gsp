@@ -80,7 +80,8 @@
 			[ label: "Programs", tabid: "programs" ],
 			[ label: "Forms", tabid: "forms" ],
 			[ label: "Identifiers", tabid: "identifiers" ],
-			[ label: "Flags", tabid: "flags" ]
+			[ label: "Flags", tabid: "flags" ],
+			[ label: "Reports", tabid: "reports" ]
 	] ]) }
 
 	<div class="ke-tab" data-tabid="metadata">${ ui.includeFragment("kenyaemr", "system/packagesContent") }</div>
@@ -88,6 +89,7 @@
 	<div class="ke-tab" data-tabid="forms">${ ui.includeFragment("kenyaemr", "system/formsContent") }</div>
 	<div class="ke-tab" data-tabid="identifiers">${ ui.includeFragment("kenyaemr", "system/identifiersContent") }</div>
 	<div class="ke-tab" data-tabid="flags">${ ui.includeFragment("kenyaemr", "system/flagsContent") }</div>
+	<div class="ke-tab" data-tabid="reports">${ ui.includeFragment("kenyaemr", "system/reportsContent") }</div>
 
 <% } else if (section == "modules") { %>
 

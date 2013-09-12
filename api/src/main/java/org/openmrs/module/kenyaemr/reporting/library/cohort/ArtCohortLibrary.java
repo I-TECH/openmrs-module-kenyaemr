@@ -19,6 +19,8 @@ import org.openmrs.EncounterType;
 import org.openmrs.Program;
 import org.openmrs.api.PatientSetService;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
+import org.openmrs.module.kenyacore.report.ReportUtils;
+import org.openmrs.module.kenyacore.report.builder.CalculationCohortDefinition;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.EligibleForArtCalculation;
@@ -30,9 +32,7 @@ import org.openmrs.module.kenyaemr.calculation.library.hiv.art.OnSecondLineArtCa
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.PregnantAtArtStartCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.TbPatientAtArtStartCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.WhoStageAtArtStartCalculation;
-import org.openmrs.module.kenyaemr.reporting.EmrReportingUtils;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.EmrCalculationCohortDefinition;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.EmrDateCalculationCohortDefinition;
+import org.openmrs.module.kenyaemr.reporting.cohort.definition.DateCalculationCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.*;
 import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
@@ -42,8 +42,6 @@ import org.springframework.stereotype.Component;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
-
-import static org.openmrs.module.kenyaemr.reporting.EmrReportingUtils.map;
 
 /**
  * Library of ART related cohort definitions
@@ -60,7 +58,7 @@ public class ArtCohortLibrary {
 	 * @return the cohort definition
 	 */
 	public CohortDefinition referredFrom(Concept... entryPoints) {
-		EncounterType hivEnrollEncType = MetadataUtils.getEncounterType(Metadata.HIV_ENROLLMENT_ENCOUNTER_TYPE);
+		EncounterType hivEnrollEncType = MetadataUtils.getEncounterType(Metadata.EncounterType.HIV_ENROLLMENT);
 		Concept methodOfEnrollment = Dictionary.getConcept(Dictionary.METHOD_OF_ENROLLMENT);
 
 		CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
@@ -81,7 +79,7 @@ public class ArtCohortLibrary {
 	 * @return the cohort definition
 	 */
 	public CohortDefinition referredNotFrom(Concept... entryPoints) {
-		EncounterType hivEnrollEncType = MetadataUtils.getEncounterType(Metadata.HIV_ENROLLMENT_ENCOUNTER_TYPE);
+		EncounterType hivEnrollEncType = MetadataUtils.getEncounterType(Metadata.EncounterType.HIV_ENROLLMENT);
 		Concept methodOfEnrollment = Dictionary.getConcept(Dictionary.METHOD_OF_ENROLLMENT);
 
 		CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
@@ -101,7 +99,7 @@ public class ArtCohortLibrary {
 	 * @return the cohort definition
 	 */
 	public CohortDefinition enrolled() {
-		return commonCohorts.enrolled(MetadataUtils.getProgram(Metadata.HIV_PROGRAM));
+		return commonCohorts.enrolled(MetadataUtils.getProgram(Metadata.Program.HIV));
 	}
 
 	/**
@@ -109,7 +107,7 @@ public class ArtCohortLibrary {
 	 * @return the cohort definition
 	 */
 	public CohortDefinition enrolledExcludingTransfers() {
-		return commonCohorts.enrolledExcludingTransfers(MetadataUtils.getProgram(Metadata.HIV_PROGRAM));
+		return commonCohorts.enrolledExcludingTransfers(MetadataUtils.getProgram(Metadata.Program.HIV));
 	}
 
 	/**
@@ -121,8 +119,8 @@ public class ArtCohortLibrary {
 		cd.setName("enrolled excluding transfers in HIV care from entry points between dates");
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-		cd.addSearch("enrolledExcludingTransfers", EmrReportingUtils.map(enrolledExcludingTransfers(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
-		cd.addSearch("referredFrom", EmrReportingUtils.map(referredFrom(entryPoints), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("enrolledExcludingTransfers", ReportUtils.map(enrolledExcludingTransfers(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("referredFrom", ReportUtils.map(referredFrom(entryPoints), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
 		cd.setCompositionString("enrolledExcludingTransfers AND referredFrom");
 		return cd;
 	}
@@ -136,8 +134,8 @@ public class ArtCohortLibrary {
 		cd.setName("enrolled excluding transfers in HIV care not from entry points between dates");
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-		cd.addSearch("enrolledExcludingTransfers", EmrReportingUtils.map(enrolledExcludingTransfers(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
-		cd.addSearch("referredNotFrom", EmrReportingUtils.map(referredNotFrom(entryPoints), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("enrolledExcludingTransfers", ReportUtils.map(enrolledExcludingTransfers(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("referredNotFrom", ReportUtils.map(referredNotFrom(entryPoints), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
 		cd.setCompositionString("enrolledExcludingTransfers AND referredNotFrom");
 		return cd;
 	}
@@ -147,7 +145,7 @@ public class ArtCohortLibrary {
 	 * @return the cohort definition
 	 */
 	public CohortDefinition pregnantAtArtStart() {
-		EmrCalculationCohortDefinition cd = new EmrCalculationCohortDefinition(new PregnantAtArtStartCalculation());
+		CalculationCohortDefinition cd = new CalculationCohortDefinition(new PregnantAtArtStartCalculation());
 		cd.setName("pregnant at start of ART");
 		return cd;
 	}
@@ -157,7 +155,7 @@ public class ArtCohortLibrary {
 	 * @return the cohort definition
 	 */
 	public CohortDefinition tbPatientAtArtStart() {
-		EmrCalculationCohortDefinition cd = new EmrCalculationCohortDefinition(new TbPatientAtArtStartCalculation());
+		CalculationCohortDefinition cd = new CalculationCohortDefinition(new TbPatientAtArtStartCalculation());
 		cd.setName("TB patient at start of ART");
 		return cd;
 	}
@@ -167,7 +165,7 @@ public class ArtCohortLibrary {
 	 * @return the cohort definition
 	 */
 	public CohortDefinition whoStageAtArtStart(int stage) {
-		EmrCalculationCohortDefinition cd = new EmrCalculationCohortDefinition(new WhoStageAtArtStartCalculation());
+		CalculationCohortDefinition cd = new CalculationCohortDefinition(new WhoStageAtArtStartCalculation());
 		cd.setName("who stage " + stage + " at start of ART");
 		cd.setWithResult(stage);
 		return cd;
@@ -178,7 +176,7 @@ public class ArtCohortLibrary {
 	 * @return the cohort definition
 	 */
 	public CohortDefinition startedArt() {
-		EmrDateCalculationCohortDefinition cd = new EmrDateCalculationCohortDefinition(new InitialArtStartDateCalculation());
+		DateCalculationCohortDefinition cd = new DateCalculationCohortDefinition(new InitialArtStartDateCalculation());
 		cd.setName("started ART between dates");
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
@@ -194,8 +192,8 @@ public class ArtCohortLibrary {
 		cd.setName("started ART while pregnant between dates");
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-		cd.addSearch("startedArt", EmrReportingUtils.map(startedArt(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
-		cd.addSearch("pregnantAtArtStart", EmrReportingUtils.map(pregnantAtArtStart()));
+		cd.addSearch("startedArt", ReportUtils.map(startedArt(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("pregnantAtArtStart", ReportUtils.map(pregnantAtArtStart()));
 		cd.setCompositionString("startedArt AND pregnantAtArtStart");
 		return cd;
 	}
@@ -209,8 +207,8 @@ public class ArtCohortLibrary {
 		cd.setName("started ART while being TB patient between dates");
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-		cd.addSearch("startedArt", EmrReportingUtils.map(startedArt(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
-		cd.addSearch("tbPatientAtArtStart", EmrReportingUtils.map(tbPatientAtArtStart()));
+		cd.addSearch("startedArt", ReportUtils.map(startedArt(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("tbPatientAtArtStart", ReportUtils.map(tbPatientAtArtStart()));
 		cd.setCompositionString("startedArt AND tbPatientAtArtStart");
 		return cd;
 	}
@@ -224,8 +222,8 @@ public class ArtCohortLibrary {
 		cd.setName("started ART with WHO stage between dates");
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-		cd.addSearch("startedArt", EmrReportingUtils.map(startedArt(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
-		cd.addSearch("withWhoStage", EmrReportingUtils.map(whoStageAtArtStart(stage)));
+		cd.addSearch("startedArt", ReportUtils.map(startedArt(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("withWhoStage", ReportUtils.map(whoStageAtArtStart(stage)));
 		cd.setCompositionString("startedArt AND withWhoStage");
 		return cd;
 	}
@@ -235,7 +233,7 @@ public class ArtCohortLibrary {
 	 * @return the cohort definition
 	 */
 	public CohortDefinition eligibleForArt() {
-		EmrCalculationCohortDefinition cd = new EmrCalculationCohortDefinition(new EligibleForArtCalculation());
+		CalculationCohortDefinition cd = new CalculationCohortDefinition(new EligibleForArtCalculation());
 		cd.setName("eligible for ART on date");
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
 		return cd;
@@ -246,7 +244,7 @@ public class ArtCohortLibrary {
 	 * @return the cohort definition
 	 */
 	public CohortDefinition onArt() {
-		EmrCalculationCohortDefinition cd = new EmrCalculationCohortDefinition(new OnArtCalculation());
+		CalculationCohortDefinition cd = new CalculationCohortDefinition(new OnArtCalculation());
 		cd.setName("on ART on date");
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
 		return cd;
@@ -260,8 +258,8 @@ public class ArtCohortLibrary {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.setName("on ART and pregnant on date");
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
-		cd.addSearch("onArt", EmrReportingUtils.map(onArt(), "onDate=${onDate}"));
-		cd.addSearch("pregnant", EmrReportingUtils.map(commonCohorts.pregnant(), "onDate=${onDate}"));
+		cd.addSearch("onArt", ReportUtils.map(onArt(), "onDate=${onDate}"));
+		cd.addSearch("pregnant", ReportUtils.map(commonCohorts.pregnant(), "onDate=${onDate}"));
 		cd.setCompositionString("onArt AND pregnant");
 		return cd;
 	}
@@ -274,8 +272,8 @@ public class ArtCohortLibrary {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.setName("on ART and not pregnant on date");
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
-		cd.addSearch("onArt", EmrReportingUtils.map(onArt(), "onDate=${onDate}"));
-		cd.addSearch("pregnant", EmrReportingUtils.map(commonCohorts.pregnant(), "onDate=${onDate}"));
+		cd.addSearch("onArt", ReportUtils.map(onArt(), "onDate=${onDate}"));
+		cd.addSearch("pregnant", ReportUtils.map(commonCohorts.pregnant(), "onDate=${onDate}"));
 		cd.setCompositionString("onArt AND NOT pregnant");
 		return cd;
 	}
@@ -285,7 +283,7 @@ public class ArtCohortLibrary {
 	 * @return the cohort definition
 	 */
 	public CohortDefinition onOriginalFirstLine() {
-		EmrCalculationCohortDefinition cd = new EmrCalculationCohortDefinition(new OnOriginalFirstLineArtCalculation());
+		CalculationCohortDefinition cd = new CalculationCohortDefinition(new OnOriginalFirstLineArtCalculation());
 		cd.setName("on original first line regimen on date");
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
 		return cd;
@@ -296,7 +294,7 @@ public class ArtCohortLibrary {
 	 * @return the cohort definition
 	 */
 	public CohortDefinition onAlternateFirstLine() {
-		EmrCalculationCohortDefinition cd = new EmrCalculationCohortDefinition(new OnAlternateFirstLineArtCalculation());
+		CalculationCohortDefinition cd = new CalculationCohortDefinition(new OnAlternateFirstLineArtCalculation());
 		cd.setName("on alternate first line regimen on date");
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
 		return cd;
@@ -307,7 +305,7 @@ public class ArtCohortLibrary {
 	 * @return the cohort definition
 	 */
 	public CohortDefinition onSecondLine() {
-		EmrCalculationCohortDefinition cd = new EmrCalculationCohortDefinition(new OnSecondLineArtCalculation());
+		CalculationCohortDefinition cd = new CalculationCohortDefinition(new OnSecondLineArtCalculation());
 		cd.setName("on second line regimen on date");
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
 		return cd;
@@ -321,8 +319,8 @@ public class ArtCohortLibrary {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.setName("in 12 net cohort on date");
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
-		cd.addSearch("startedArt12MonthsAgo", EmrReportingUtils.map(startedArt(), "onOrAfter=${onDate-13m},onOrBefore=${onDate-12m}"));
-		cd.addSearch("transferredOut", EmrReportingUtils.map(commonCohorts.transferredOut(), "onOrAfter=${onDate-13m}"));
+		cd.addSearch("startedArt12MonthsAgo", ReportUtils.map(startedArt(), "onOrAfter=${onDate-13m},onOrBefore=${onDate-12m}"));
+		cd.addSearch("transferredOut", ReportUtils.map(commonCohorts.transferredOut(), "onOrAfter=${onDate-13m}"));
 		cd.setCompositionString("startedArt12MonthsAgo AND NOT transferredOut");
 		return cd;
 	}
@@ -332,12 +330,12 @@ public class ArtCohortLibrary {
 	 * @return
 	 */
 	public CohortDefinition inHivProgramAndOnMedication(Concept... concepts) {
-		Program hivProgram = MetadataUtils.getProgram(Metadata.HIV_PROGRAM);
+		Program hivProgram = MetadataUtils.getProgram(Metadata.Program.HIV);
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.setName("in HIV program and on medication between dates");
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
-		cd.addSearch("inProgram", EmrReportingUtils.map(commonCohorts.inProgram(hivProgram), "onDate=${onDate}"));
-		cd.addSearch("onMedication", EmrReportingUtils.map(commonCohorts.onMedication(concepts), "onDate=${onDate}"));
+		cd.addSearch("inProgram", ReportUtils.map(commonCohorts.inProgram(hivProgram), "onDate=${onDate}"));
+		cd.addSearch("onMedication", ReportUtils.map(commonCohorts.onMedication(concepts), "onDate=${onDate}"));
 		cd.setCompositionString("inProgram AND onMedication");
 		return cd;
 	}

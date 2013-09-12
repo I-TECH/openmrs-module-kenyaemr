@@ -17,8 +17,8 @@ package org.openmrs.module.kenyaemr.fragment.controller.program.mchms;
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.PatientProgram;
+import org.openmrs.module.kenyacore.CoreUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
 import org.openmrs.module.kenyaemr.util.EmrUtils;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.fragment.FragmentModel;
@@ -41,20 +41,25 @@ public class MchmsEnrollmentSummaryFragmentController {
 
 		Obs ancNoObs = EmrUtils.firstObsInProgram(enrollment, Dictionary.getConcept(Dictionary.ANTENATAL_CASE_NUMBER));
 		if (ancNoObs != null) {
-			dataPoints.put("ANC No", ancNoObs.getValueNumeric());
+			dataPoints.put("ANC No", ancNoObs.getValueNumeric().intValue());
 		}
 		Obs lmpObs = EmrUtils.firstObsInProgram(enrollment, Dictionary.getConcept(Dictionary.LAST_MONTHLY_PERIOD));
 		if (lmpObs != null) {
 			dataPoints.put("LMP", lmpObs.getValueDate());
-			dataPoints.put("EDD", CalculationUtils.dateAddDays(lmpObs.getValueDate(), 280));
+			dataPoints.put("EDD (LMP)", CoreUtils.dateAddDays(lmpObs.getValueDate(), 280));
+		}
+		Obs eddUsoundObs = EmrUtils.firstObsInProgram(enrollment, Dictionary.getConcept(Dictionary.EXPECTED_DATE_OF_DELIVERY));
+		if (eddUsoundObs != null) {
+			dataPoints.put("EDD (Ultrasound)", eddUsoundObs.getValueDate());
 		}
 		Obs gravidaObs = EmrUtils.firstObsInProgram(enrollment, Dictionary.getConcept(Dictionary.GRAVIDA));
 		if (gravidaObs != null) {
-			dataPoints.put("Gravida", gravidaObs.getValueNumeric());
+			dataPoints.put("Gravida", gravidaObs.getValueNumeric().intValue());
 		}
-		Obs parityObs = EmrUtils.firstObsInProgram(enrollment, Dictionary.getConcept(Dictionary.PARITY));
-		if (parityObs != null) {
-			dataPoints.put("Parity", parityObs.getValueNumeric());
+		Obs parityTermObs = EmrUtils.firstObsInProgram(enrollment, Dictionary.getConcept(Dictionary.PARITY_TERM));
+		Obs parityAbortionObs = EmrUtils.firstObsInProgram(enrollment, Dictionary.getConcept(Dictionary.PARITY_ABORTION));
+		if (parityTermObs != null && parityAbortionObs != null) {
+			dataPoints.put("Parity", parityTermObs.getValueNumeric().intValue() + " + " + parityAbortionObs.getValueNumeric().intValue());
 		}
 		model.put("dataPoints", dataPoints);
 		return "view/dataPoints";

@@ -18,13 +18,13 @@ import org.openmrs.Concept;
 import org.openmrs.EncounterType;
 import org.openmrs.Program;
 import org.openmrs.api.PatientSetService;
+import org.openmrs.module.kenyacore.report.ReportUtils;
+import org.openmrs.module.kenyacore.report.builder.CalculationCohortDefinition;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.library.InProgramCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.OnMedicationCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.OnAlternateFirstLineArtCalculation;
-import org.openmrs.module.kenyaemr.reporting.EmrReportingUtils;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.DateObsValueBetweenCohortDefinition;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.EmrCalculationCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.*;
 import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.module.reporting.common.TimeQualifier;
@@ -35,8 +35,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
-
-import static org.openmrs.module.kenyaemr.reporting.EmrReportingUtils.map;
 
 /**
  * Library of common cohort definitions
@@ -98,8 +96,8 @@ public class CommonCohortLibrary {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.setName("females aged at least 18");
 		cd.addParameter(new Parameter("effectiveDate", "Effective Date", Date.class));
-		cd.addSearch("females", EmrReportingUtils.map(females()));
-		cd.addSearch("agedAtLeast18", EmrReportingUtils.map(agedAtLeast(18), "effectiveDate=${effectiveDate}"));
+		cd.addSearch("females", ReportUtils.map(females()));
+		cd.addSearch("agedAtLeast18", ReportUtils.map(agedAtLeast(18), "effectiveDate=${effectiveDate}"));
 		cd.setCompositionString("females AND agedAtLeast18");
 		return cd;
 	}
@@ -117,6 +115,26 @@ public class CommonCohortLibrary {
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		if (types.length > 0) {
 			cd.setEncounterTypeList(Arrays.asList(types));
+		}
+		return cd;
+	}
+
+	/**
+	 * Patients who have an obs between ${onOrAfter} and ${onOrBefore}
+	 * @param question the question concept
+	 * @param answers the answers to include
+	 * @return the cohort definition
+	 */
+	public CohortDefinition hasObs(Concept question, Concept... answers) {
+		CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
+		cd.setName("has obs between dates");
+		cd.setQuestion(question);
+		cd.setOperator(SetComparator.IN);
+		cd.setTimeModifier(PatientSetService.TimeModifier.ANY);
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		if (answers.length > 0) {
+			cd.setValueList(Arrays.asList(answers));
 		}
 		return cd;
 	}
@@ -181,8 +199,8 @@ public class CommonCohortLibrary {
 		cd.setName("enrolled excluding transfers in program between dates");
 		cd.addParameter(new Parameter("onOrAfter", "From Date", Date.class));
 		cd.addParameter(new Parameter("onOrBefore", "To Date", Date.class));
-		cd.addSearch("enrolled", EmrReportingUtils.map(enrolled(programs), "enrolledOnOrAfter=${onOrAfter},enrolledOnOrBefore=${onOrBefore}"));
-		cd.addSearch("transferIn", EmrReportingUtils.map(transferredIn(), "onOrBefore=${onOrBefore}"));
+		cd.addSearch("enrolled", ReportUtils.map(enrolled(programs), "enrolledOnOrAfter=${onOrAfter},enrolledOnOrBefore=${onOrBefore}"));
+		cd.addSearch("transferIn", ReportUtils.map(transferredIn(), "onOrBefore=${onOrBefore}"));
 		cd.setCompositionString("enrolled AND NOT transferIn");
 		return cd;
 	}
@@ -192,7 +210,7 @@ public class CommonCohortLibrary {
 	 * @return the cohort definition
 	 */
 	public CohortDefinition pregnant() {
-		EmrCalculationCohortDefinition cd = new EmrCalculationCohortDefinition(new OnAlternateFirstLineArtCalculation());
+		CalculationCohortDefinition cd = new CalculationCohortDefinition(new OnAlternateFirstLineArtCalculation());
 		cd.setName("pregnant on date");
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
 		return cd;
@@ -204,7 +222,7 @@ public class CommonCohortLibrary {
 	 * @return
 	 */
 	public CohortDefinition inProgram(Program program) {
-		EmrCalculationCohortDefinition cd = new EmrCalculationCohortDefinition(new InProgramCalculation());
+		CalculationCohortDefinition cd = new CalculationCohortDefinition(new InProgramCalculation());
 		cd.setName("in " + program.getName() + " on date");
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
 		cd.addCalculationParameter("program", program);
@@ -217,7 +235,7 @@ public class CommonCohortLibrary {
 	 * @return the cohort definition
 	 */
 	public CohortDefinition onMedication(Concept... concepts) {
-		EmrCalculationCohortDefinition cd = new EmrCalculationCohortDefinition(new OnMedicationCalculation());
+		CalculationCohortDefinition cd = new CalculationCohortDefinition(new OnMedicationCalculation());
 		cd.setName("taking drug on date");
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
 		cd.addCalculationParameter("drugs", new HashSet<Concept>(Arrays.asList(concepts)));

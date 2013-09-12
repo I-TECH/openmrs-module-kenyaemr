@@ -16,22 +16,16 @@ package org.openmrs.module.kenyaemr.util;
 
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.mockito.Mockito;
 import org.openmrs.*;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.Module;
-import org.openmrs.module.ModuleFactory;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.util.OpenmrsUtil;
-import org.powermock.api.mockito.PowerMockito;
 
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -43,6 +37,9 @@ import static org.hamcrest.Matchers.*;
  */
 public class EmrUtilsTest extends BaseModuleContextSensitiveTest {
 
+	/**
+	 * Setup each test
+	 */
 	@Before
 	public void setup() throws Exception {
 		executeDataSet("test-data.xml");
@@ -120,41 +117,28 @@ public class EmrUtilsTest extends BaseModuleContextSensitiveTest {
 	}
 
 	/**
-	 * @see EmrUtils#isRetrospectiveVisit(org.openmrs.Visit)
+	 * @see EmrUtils#getVisitSourceForm(org.openmrs.Visit)
 	 */
 	@Test
-	public void isRetrospectiveVisit() {
-		Date date1 = TestUtils.date(2011, 1, 1, 10, 0, 0); // Jan 1st, 10:00am
-		Date date2 = TestUtils.date(2011, 1, 1, 11, 0, 0); // Jan 1st, 11:00am
+	public void getVisitSourceForm_shouldReturnTheSourceFormIfThereIsOne() {
+		Patient patient = Context.getPatientService().getPatient(8);
+		VisitType outpatient = MetadataUtils.getVisitType(Metadata.VisitType.OUTPATIENT);
+		Visit visit = TestUtils.saveVisit(patient, outpatient, TestUtils.date(2011, 1, 1), null);
 
-		// Check visit with no stop date
-		Visit visit = new Visit();
-		visit.setStartDatetime(date1);
-		Assert.assertFalse(EmrUtils.isRetrospectiveVisit(visit));
+		// Check no attribute returns null
+		Assert.assertThat(EmrUtils.getVisitSourceForm(visit), is(nullValue()));
 
-		// Check visit with regular stop and start times
-		visit.setStartDatetime(date1);
-		visit.setStopDatetime(date2);
-		Assert.assertFalse(EmrUtils.isRetrospectiveVisit(visit));
+		Form moh257 = MetadataUtils.getForm(Metadata.Form.MOH_257_VISIT_SUMMARY);
 
-		// Check visit with absolute start but regular end date
-		visit.setStartDatetime(OpenmrsUtil.firstSecondOfDay(date1));
-		visit.setStopDatetime(date2);
-		Assert.assertFalse(EmrUtils.isRetrospectiveVisit(visit));
+		VisitAttribute sourceAttr = new VisitAttribute();
+		sourceAttr.setAttributeType(MetadataUtils.getVisitAttributeType(Metadata.VisitAttributeType.SOURCE_FORM));
+		sourceAttr.setOwner(visit);
+		sourceAttr.setValue(moh257);
+		visit.addAttribute(sourceAttr);
 
-		// Check visit with absolute start and end dates
-		visit.setStartDatetime(OpenmrsUtil.firstSecondOfDay(date1));
-		visit.setStopDatetime(OpenmrsUtil.getLastMomentOfDay(date1));
-		Assert.assertTrue(EmrUtils.isRetrospectiveVisit(visit));
+		Context.getVisitService().saveVisit(visit);
 
-		// Check case when stop date has been persisted and lost its milliseconds
-		Calendar stopFromSql = Calendar.getInstance();
-		stopFromSql.setTime(OpenmrsUtil.getLastMomentOfDay(date1));
-		stopFromSql.set(Calendar.MILLISECOND, 0);
-
-		visit.setStartDatetime(OpenmrsUtil.firstSecondOfDay(date1));
-		visit.setStopDatetime(stopFromSql.getTime());
-		Assert.assertTrue(EmrUtils.isRetrospectiveVisit(visit));
+		Assert.assertThat(EmrUtils.getVisitSourceForm(visit), is(moh257));
 	}
 
 	/**
@@ -164,7 +148,7 @@ public class EmrUtilsTest extends BaseModuleContextSensitiveTest {
 	public void visitWillOverlap_shouldReturnTrueIfVisitOverlaps() {
 
 		Patient patient8 = Context.getPatientService().getPatient(8);
-		VisitType outpatient = MetadataUtils.getVisitType(Metadata.OUTPATIENT_VISIT_TYPE);
+		VisitType outpatient = MetadataUtils.getVisitType(Metadata.VisitType.OUTPATIENT);
 
 		Visit visit1 = TestUtils.saveVisit(patient8, outpatient, TestUtils.date(2011, 1, 1), TestUtils.date(2011, 1, 3));
 		Visit visit2 = TestUtils.saveVisit(patient8, outpatient, TestUtils.date(2011, 1, 7), TestUtils.date(2011, 1, 10));
@@ -261,7 +245,7 @@ public class EmrUtilsTest extends BaseModuleContextSensitiveTest {
 	@Test
 	public void firstObsInProgram_shouldFindFirstObsWithConcept() {
 		Patient patient = Context.getPatientService().getPatient(6);
-		Program tbProgram = MetadataUtils.getProgram(Metadata.TB_PROGRAM);
+		Program tbProgram = MetadataUtils.getProgram(Metadata.Program.TB);
 
 		PatientProgram enrollment = TestUtils.enrollInProgram(patient, tbProgram, TestUtils.date(2012, 1, 1), TestUtils.date(2012, 4, 1));
 
@@ -289,8 +273,8 @@ public class EmrUtilsTest extends BaseModuleContextSensitiveTest {
 	@Test
 	public void lastEncounter_shouldFindLastEncounterWithType() {
 		Patient patient = TestUtils.getPatient(6);
-		EncounterType triageEncType = MetadataUtils.getEncounterType(Metadata.TRIAGE_ENCOUNTER_TYPE);
-		EncounterType tbScreenEncType = MetadataUtils.getEncounterType(Metadata.TB_SCREENING_ENCOUNTER_TYPE);
+		EncounterType triageEncType = MetadataUtils.getEncounterType(Metadata.EncounterType.TRIAGE);
+		EncounterType tbScreenEncType = MetadataUtils.getEncounterType(Metadata.EncounterType.TB_SCREENING);
 
 		// Test with no saved encounters
 		Assert.assertNull(EmrUtils.lastEncounter(patient, tbScreenEncType));
@@ -308,8 +292,8 @@ public class EmrUtilsTest extends BaseModuleContextSensitiveTest {
 	@Test
 	public void lastEncounterInProgram_shouldFindLastEncounterWithType() {
 		Patient patient = TestUtils.getPatient(6);
-		Program tbProgram = MetadataUtils.getProgram(Metadata.TB_PROGRAM);
-		EncounterType tbScreenEncType = MetadataUtils.getEncounterType(Metadata.TB_SCREENING_ENCOUNTER_TYPE);
+		Program tbProgram = MetadataUtils.getProgram(Metadata.Program.TB);
+		EncounterType tbScreenEncType = MetadataUtils.getEncounterType(Metadata.EncounterType.TB_SCREENING);
 
 		PatientProgram enrollment = TestUtils.enrollInProgram(patient, tbProgram, TestUtils.date(2012, 1, 1), TestUtils.date(2012, 4, 1));
 

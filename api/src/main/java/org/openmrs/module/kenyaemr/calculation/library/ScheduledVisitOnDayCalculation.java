@@ -22,6 +22,7 @@ import org.openmrs.Concept;
 import org.openmrs.api.PatientSetService.TimeModifier;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
+import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
@@ -56,7 +57,7 @@ public class ScheduledVisitOnDayCalculation extends BaseEmrCalculation {
 		cd.setOperator2(RangeComparator.LESS_EQUAL);
 		cd.setValue2(endOfDay);
 		
-		EvaluatedCohort withScheduledVisit = evaluateWithReporting(cd, cohort, null, context);
+		EvaluatedCohort withScheduledVisit = CalculationUtils.evaluateWithReporting(cd, cohort, null, context);
 		
 		CalculationResultMap ret = new CalculationResultMap();
 		for (Integer ptId : cohort) {

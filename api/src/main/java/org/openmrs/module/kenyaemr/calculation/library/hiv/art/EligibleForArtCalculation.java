@@ -21,9 +21,11 @@ import java.util.Set;
 import org.openmrs.Program;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
+import org.openmrs.module.kenyacore.calculation.CalculationUtils;
+import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
-import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
+import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
@@ -55,13 +57,13 @@ public class EligibleForArtCalculation extends BaseEmrCalculation implements Pat
 	                                     PatientCalculationContext context) {
 
 		// only applies to patients in the HIV program
-		Program hivProgram = MetadataUtils.getProgram(Metadata.HIV_PROGRAM);
-		Set<Integer> inHivProgram = CalculationUtils.patientsThatPass(activeEnrollment(hivProgram, cohort, context));
+		Program hivProgram = MetadataUtils.getProgram(Metadata.Program.HIV);
+		Set<Integer> inHivProgram = CalculationUtils.patientsThatPass(Calculations.activeEnrollment(hivProgram, cohort, context));
 		
 		// need to exclude those on ART already
 		Set<Integer> onArt = CalculationUtils.patientsThatPass(calculate(new OnArtCalculation(), cohort, context));
 		
-		CalculationResultMap ages = ages(cohort, context);
+		CalculationResultMap ages = Calculations.ages(cohort, context);
 		
 		CalculationResultMap lastWhoStage = calculate(new LastWhoStageCalculation(), cohort, context);
 		CalculationResultMap lastCd4 = calculate(new LastCd4CountCalculation(), cohort, context);
@@ -72,9 +74,9 @@ public class EligibleForArtCalculation extends BaseEmrCalculation implements Pat
 			boolean eligible = false;
 			if (inHivProgram.contains(ptId) && !onArt.contains(ptId)) {
 				int ageInMonths = ((Age) ages.get(ptId).getValue()).getFullMonths();
-				Double cd4 = CalculationUtils.numericObsResultForPatient(lastCd4, ptId);
-				Double cd4Percent = CalculationUtils.numericObsResultForPatient(lastCd4Percent, ptId);
-				Integer whoStage = EmrUtils.whoStage(CalculationUtils.codedObsResultForPatient(lastWhoStage, ptId));
+				Double cd4 = EmrCalculationUtils.numericObsResultForPatient(lastCd4, ptId);
+				Double cd4Percent = EmrCalculationUtils.numericObsResultForPatient(lastCd4Percent, ptId);
+				Integer whoStage = EmrUtils.whoStage(EmrCalculationUtils.codedObsResultForPatient(lastWhoStage, ptId));
 				eligible = isEligible(ageInMonths, cd4, cd4Percent, whoStage);
 			}
 			ret.put(ptId, new BooleanResult(eligible, this));

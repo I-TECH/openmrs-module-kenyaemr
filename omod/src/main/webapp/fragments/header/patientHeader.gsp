@@ -39,6 +39,8 @@
 	<div style="width: 50%; float: left; overflow: auto; text-align: left">
 	<% if (patient.dead) { %>
 		<span class="ke-tag" style="background-color: #FF5153; color: #000">Deceased since <strong>${ kenyaUi.formatDate(patient.deathDate) }</strong></span>
+	<% } else if (patient.voided) { %>
+		<span class="ke-tag" style="background-color: #000; color: #FFF">Voided since <strong>${ kenyaUi.formatDate(patient.dateVoided) }</strong></span>
 	<% } else { %>
 		${ ui.includeFragment("kenyaemr", "header/patientFlags", [ patient: patient ]) }
 	<% } %>

@@ -15,15 +15,24 @@
 package org.openmrs.module.kenyaemr.page.controller.reports;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.openmrs.Program;
+import org.openmrs.module.appframework.AppDescriptor;
+import org.openmrs.module.kenyacore.program.ProgramDescriptor;
+import org.openmrs.module.kenyacore.program.ProgramManager;
+import org.openmrs.module.kenyacore.report.ReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportManager;
 import org.openmrs.module.kenyaemr.EmrConstants;
-import org.openmrs.module.kenyacore.report.ReportBuilder;
+import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.module.kenyaui.annotation.AppPage;
 import org.openmrs.ui.framework.SimpleObject;
+import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.page.PageModel;
+import org.openmrs.ui.framework.page.PageRequest;
 
 /**
  * Homepage for the reports app
@@ -31,21 +40,28 @@ import org.openmrs.ui.framework.page.PageModel;
 @AppPage(EmrConstants.APP_REPORTS)
 public class ReportsHomePageController {
 
-	public void controller(PageModel model, @SpringBean ReportManager reportManager) {
-		model.addAttribute("mohReports", getReportDefinitionSummaries(reportManager, "moh"));
-		model.addAttribute("facilityReports", getReportDefinitionSummaries(reportManager, "facility"));
-	}
+	public void controller(PageModel model, UiUtils ui,
+						   @SpringBean ReportManager reportManager,
+						   @SpringBean ProgramManager programManager,
+						   @SpringBean KenyaUiUtils kenyaUi,
+						   PageRequest pageRequest) {
 
-	/**
-	 * Fetches all definition summaries for reports with a given tag
-	 * @param tag the report tag
-	 * @return the definition summaries
-	 */
-    private List<SimpleObject> getReportDefinitionSummaries(ReportManager reportManager, String tag) {
-    	List<SimpleObject> ret = new ArrayList<SimpleObject>();
-		for (ReportBuilder reportBuilder : reportManager.getReportBuildersByTag(tag)) {
-			ret.add(SimpleObject.create("name", reportBuilder.getReportDefinitionSummary().getName(), "builder", reportBuilder.getClass().getName()));
+		AppDescriptor currentApp = kenyaUi.getCurrentApp(pageRequest);
+
+		List<ReportDescriptor> commonReports = reportManager.getCommonReports(currentApp);
+
+		Map<String, SimpleObject[]> programReports = new LinkedHashMap<String, SimpleObject[]>();
+
+		for (ProgramDescriptor programDescriptor : programManager.getAllProgramDescriptors()) {
+			Program program = programDescriptor.getTarget();
+			List<ReportDescriptor> reports = reportManager.getProgramReports(currentApp, program);
+
+			if (reports.size() > 0) {
+				programReports.put(program.getName(), ui.simplifyCollection(reports));
+			}
 		}
-		return ret;
-    }
+
+		model.addAttribute("commonReports", ui.simplifyCollection(commonReports));
+		model.addAttribute("programReports", programReports);
+	}
 }

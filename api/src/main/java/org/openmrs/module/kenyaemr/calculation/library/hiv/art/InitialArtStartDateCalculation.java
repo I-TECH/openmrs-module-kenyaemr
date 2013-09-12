@@ -24,7 +24,7 @@ import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
-import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
+import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 
 /**
  * Calculates the date on which a patient first started ART
@@ -48,7 +48,7 @@ public class InitialArtStartDateCalculation extends BaseEmrCalculation {
 		// Return the earliest of the two
 		CalculationResultMap result = new CalculationResultMap();
 		for (Integer ptId : cohort) {
-			Date orderDate = CalculationUtils.datetimeResultForPatient(earliestOrderDates, ptId);
+			Date orderDate = EmrCalculationUtils.datetimeResultForPatient(earliestOrderDates, ptId);
 
 			result.put(ptId, orderDate == null ? null : new SimpleResult(orderDate, null));
 		}

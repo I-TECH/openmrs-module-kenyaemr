@@ -19,6 +19,9 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.util.EmrUtils;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Dictionary for concepts used by KenyaEMR
  */
@@ -33,10 +36,24 @@ public class Dictionary {
 	 * Gets a concept by an identifier (mapping or UUID)
 	 * @param identifier the identifier
 	 * @return the concept
-	 * @throws IllegalArgumentException if no concept could be found
+	 * @throws IllegalArgumentException if the concept could not be found
 	 */
 	public static Concept getConcept(String identifier) {
 		return MetadataUtils.getConcept(identifier);
+	}
+
+	/**
+	 * Convenience method to fetch a list of concepts
+	 * @param identifiers the concept identifiers
+	 * @return the concepts
+	 * @throws IllegalArgumentException if a concept could not be found
+	 */
+	public static List<Concept> getConcepts(String... identifiers) {
+		List<Concept> concepts = new ArrayList<Concept>();
+		for (String identifier : identifiers) {
+			concepts.add(getConcept(identifier));
+		}
+		return concepts;
 	}
 
 	// Concept identifiers (A-Z)
@@ -44,6 +61,8 @@ public class Dictionary {
 	public static final String ANTENATAL_CASE_NUMBER = "161655AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 	public static final String ANTIRETROVIRAL_DRUGS = "1085AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 	public static final String ANTIRETROVIRAL_TREATMENT_START_DATE = "159599AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+	public static final String ANTIRETROVIRAL_USE_IN_PREGNANCY = "1147AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+	public static final String ANTIRETROVIRAL_USED_IN_PREGNANCY = "966AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 	public static final String CD4_COUNT = "5497AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 	public static final String CD4_PERCENT = "730AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 	public static final String CIVIL_STATUS = "1054AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
@@ -55,12 +74,15 @@ public class Dictionary {
 	public static final String DAPSONE = "74250AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 	public static final String DATE_OF_HIV_DIAGNOSIS = "160554AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 	public static final String DIED = "160034AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+	public static final String DISEASE_DIAGNOSED = "1661AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 	public static final String DISEASE_SUSPECTED = "142177AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 	public static final String DIVORCED = "1058AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 	public static final String EDUCATION = "1712AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+	public static final String EXPECTED_DATE_OF_DELIVERY = "5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 	public static final String FAMILY_PLANNING = "160653AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 	public static final String FLUCONAZOLE = "76488AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 	public static final String GRAVIDA = "5624AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+	public static final String HIV_STATUS = "159427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 	public static final String LAST_MONTHLY_PERIOD = "1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 	public static final String LIVING_WITH_PARTNER = "1060AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 	public static final String MARRIED_MONOGAMOUS = "5555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
@@ -68,15 +90,22 @@ public class Dictionary {
 	public static final String MEDICATION_ORDERS = "1282AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 	public static final String METHOD_OF_ENROLLMENT = "160540AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 	public static final String METHOD_OF_FAMILY_PLANNING = "374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+	public static final String MOTHER_ON_HAART = "1149AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+	public static final String MOTHER_ON_PROPHYLAXIS = "1148AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 	public static final String NATURAL_FAMILY_PLANNING = "5277AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 	public static final String NEGATIVE = "664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 	public static final String NEVER_MARRIED = "1057AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 	public static final String NO = "1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+	public static final String NO_SIGNS_OR_SYMPTOMS_OF_DISEASE = "1660AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 	public static final String NONE = "1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 	public static final String NOT_APPLICABLE = "1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+	public static final String NOT_ASSESSED = "160737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+	public static final String NOT_HIV_TESTED = "1402AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 	public static final String OCCUPATION = "1542AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 	public static final String OTHER_NON_CODED = "5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 	public static final String PARITY = "1053AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+	public static final String PARITY_ABORTION = "1823AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+	public static final String PARITY_TERM = "160080AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 	public static final String PEDIATRIC_INPATIENT_SERVICE = "160537AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 	public static final String PMTCT_PROGRAM = "160538AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 	public static final String POSITIVE = "703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";

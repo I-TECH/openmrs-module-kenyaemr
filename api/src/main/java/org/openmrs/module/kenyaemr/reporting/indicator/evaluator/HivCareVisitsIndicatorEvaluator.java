@@ -21,10 +21,10 @@ import org.openmrs.*;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
+import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
-import org.openmrs.module.kenyaemr.reporting.EmrReportingUtils;
 import org.openmrs.module.kenyaemr.reporting.library.cohort.CommonCohortLibrary;
 import org.openmrs.module.kenyaemr.reporting.indicator.HivCareVisitsIndicator;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
@@ -40,7 +40,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
 
-import static org.openmrs.module.kenyaemr.reporting.EmrReportingUtils.map;
+import static org.openmrs.module.kenyacore.report.ReportUtils.map;
 
 /**
  * Evaluator for HIV care visit indicators
@@ -61,8 +61,8 @@ public class HivCareVisitsIndicatorEvaluator implements IndicatorEvaluator {
 		HivCareVisitsIndicator visitIndicator = (HivCareVisitsIndicator) indicator;
 
 		List<Form> hivCareForms = Arrays.asList(
-			MetadataUtils.getForm(Metadata.CLINICAL_ENCOUNTER_HIV_ADDENDUM_FORM),
-			MetadataUtils.getForm(Metadata.MOH_257_VISIT_SUMMARY_FORM)
+			MetadataUtils.getForm(Metadata.Form.CLINICAL_ENCOUNTER_HIV_ADDENDUM),
+			MetadataUtils.getForm(Metadata.Form.MOH_257_VISIT_SUMMARY)
 		);
 
 		Date fromDate = visitIndicator.getStartDate();
@@ -75,7 +75,7 @@ public class HivCareVisitsIndicatorEvaluator implements IndicatorEvaluator {
 
 		if (HivCareVisitsIndicator.Filter.FEMALES_18_AND_OVER.equals(visitIndicator.getFilter())) {
 			EvaluatedCohort females18AndOver = Context.getService(CohortDefinitionService.class).evaluate(
-					EmrReportingUtils.map(cohortLibrary.femalesAgedAtLeast18(), "effectiveDate", "${endDate}"), context
+					ReportUtils.map(cohortLibrary.femalesAgedAtLeast18(), "effectiveDate", "${endDate}"), context
 			);
 
 			for (Encounter enc : hivCareEncounters) {

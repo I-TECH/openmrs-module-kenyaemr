@@ -20,9 +20,10 @@ import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.ListResult;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
+import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
-import org.openmrs.module.kenyaemr.calculation.CalculationUtils;
+import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 
 import java.util.Collection;
 import java.util.List;
@@ -39,7 +40,7 @@ public class RecordedDeceasedCalculation extends BaseEmrCalculation {
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> params, PatientCalculationContext context) {
 
 		Set<Integer> alive = alivePatients(cohort, context);
-		CalculationResultMap exitObss = allObs(Dictionary.getConcept(Dictionary.REASON_FOR_PROGRAM_DISCONTINUATION), alive, context);
+		CalculationResultMap exitObss = Calculations.allObs(Dictionary.getConcept(Dictionary.REASON_FOR_PROGRAM_DISCONTINUATION), alive, context);
 		Concept died = Dictionary.getConcept(Dictionary.DIED);
 
 		CalculationResultMap ret = new CalculationResultMap();
@@ -48,7 +49,7 @@ public class RecordedDeceasedCalculation extends BaseEmrCalculation {
 
 			ListResult exitObssForPt = (ListResult) exitObss.get(ptId);
 			if (exitObssForPt != null) {
-				List<Obs> exitObsList = CalculationUtils.extractListResultValues(exitObssForPt);
+				List<Obs> exitObsList = EmrCalculationUtils.extractListResultValues(exitObssForPt);
 				for (Obs exitObs : exitObsList) {
 					if (died.equals(exitObs.getValueCoded())) {
 						recordedAsDead = true;

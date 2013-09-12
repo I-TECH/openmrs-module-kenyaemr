@@ -1,5 +1,10 @@
 <%
 	ui.decorateWith("kenyaemr", "standardPage")
+
+	def onReportClick = { report ->
+		def opts = [ appId: currentApp.id, reportId: report.id, returnUrl: ui.thisUrl() ]
+		"""location.href = '${ ui.pageLink('kenyaemr', 'runReport', opts) }';"""
+	}
 %>
 
 <div class="ke-page-content">
@@ -7,43 +12,21 @@
 		<tr>
 			<td style="width: 50%; vertical-align: top">
 				<div class="ke-panel-frame">
-					<div class="ke-panel-heading">Ministry of Health Reports</div>
-					<div class="ke-panel-content" style="height: 100%">
-
-						<% mohReports.each { %>
-						<div class="ke-stack-item ke-navigable">
-							<input type="hidden" name="clickUrl" value="${ ui.pageLink("kenyaemr", "reports/runMonthlyIndicatorReport", [ builder: it.builder ]) }" />
-							<table>
-								<tr>
-									<td><img src="${ ui.resourceLink("kenyaui", "images/reports/moh.png") }" alt="View report" /></td>
-									<td><b>${ it.name }</b></td>
-								</tr>
-							</table>
-						</div>
-						<% } %>
-
+					<div class="ke-panel-heading">General</div>
+					<div class="ke-panel-content">
+						${ ui.includeFragment("kenyaemr", "widget/reportStack", [ reports: commonReports, onReportClick: onReportClick ]) }
 					</div>
 				</div>
 			</td>
 			<td style="width: 50%; vertical-align: top; padding-left: 5px">
+				<% programReports.each { programName, programReports -> %>
 				<div class="ke-panel-frame">
-					<div class="ke-panel-heading">Facility Reports</div>
+					<div class="ke-panel-heading">${ programName }</div>
 					<div class="ke-panel-content">
-
-						<% facilityReports.each { %>
-						<div class="ke-stack-item ke-navigable" style="overflow: auto">
-							<input type="hidden" name="clickUrl" value="${ ui.pageLink("kenyaemr", "reports/runPatientListReport", [ builder: it.builder ]) }" />
-							<table>
-								<tr>
-									<td><img src="${ ui.resourceLink("kenyaui", "images/reports/facility.png") }" alt="View report" /></td>
-									<td><b>${ it.name }</b></td>
-								</tr>
-							</table>
-						</div>
-						<% } %>
-
+						${ ui.includeFragment("kenyaemr", "widget/reportStack", [ reports: programReports, onReportClick: onReportClick ]) }
 					</div>
 				</div>
+				<% } %>
 			</td>
 		</tr>
 	</table>
