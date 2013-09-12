@@ -16,8 +16,8 @@
 			],
 			onChange: """function() { publish('patientSearch/changed'); }"""
 		],
-		[ label: "ID or Name", formFieldName: "q", class: java.lang.String ],
-		[ label: "Age", formFieldName: "age", class: java.lang.Integer ]
+		[ label: "ID or Name", formFieldName: "q", class: java.lang.String ]/*,
+		[ label: "Age", formFieldName: "age", class: java.lang.Integer ]*/
 	],
 	fragmentProvider: "kenyaemr",
 	fragment: "search",

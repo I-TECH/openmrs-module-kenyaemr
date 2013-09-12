@@ -14,7 +14,6 @@
 package org.openmrs.module.kenyaemr.page.controller;
 
 import org.openmrs.Encounter;
-import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyaui.annotation.SharedPage;
 import org.openmrs.ui.framework.page.PageModel;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -30,9 +29,6 @@ public class EditFormPageController {
 	                       PageModel model) {
 
 		model.addAttribute("encounter", encounter);
-		model.addAttribute("patient", encounter.getPatient());
-		model.addAttribute("person", encounter.getPatient());
-		model.addAttribute("visit", encounter.getVisit());
 		model.addAttribute("returnUrl", returnUrl);
 	}
 }

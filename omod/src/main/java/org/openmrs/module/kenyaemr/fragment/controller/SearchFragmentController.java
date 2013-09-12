@@ -61,55 +61,52 @@ public class SearchFragmentController {
 	 * Searches for patients by name, identifier, age, visit status
 	 * @param query the name or identifier
 	 * @param which checked-in|all
-	 * @param age
-	 * @param ageWindow
 	 * @param ui the UI utils
 	 * @return the simple patients
 	 */
 	public List<SimpleObject> patients(@RequestParam(value = "q", required = false) String query,
 									   @RequestParam(value = "which", required = false) String which,
-									   @RequestParam(value = "age", required = false) Integer age,
-									   @RequestParam(value = "ageWindow", defaultValue = "5") int ageWindow,
 									   UiUtils ui) {
 
-		if (StringUtils.isBlank(query)) {
+		// Return empty list if we don't have enough input to search on
+		if (StringUtils.isBlank(query) && "all".equals(which)) {
 			return Collections.emptyList();
 		}
 
 		boolean onlyCheckedIn = "checked-in".equals(which);
 
 		// Run main patient search query based on id/name
-		List<Patient> matchingPatients = Context.getPatientService().getPatients(query);
-
-		// Augment age query
-		if (age != null) {
-			List<Patient> similar = new ArrayList<Patient>();
-			for (Patient p : matchingPatients) {
-				if (Math.abs(p.getAge() - age) <= ageWindow)
-					similar.add(p);
-			}
-			matchingPatients = similar;
-		}
+		List<Patient> matchedByNameOrID = Context.getPatientService().getPatients(query);
 
 		// Gather up active visits for all patients
 		List<Visit> activeVisits = Context.getVisitService().getVisits(null, null, null, null, null, null, null, null, null, false, false);
-		final Map<Integer, Visit> patientActiveVisits = new HashMap<Integer, Visit>();
+		Map<Patient, Visit> patientActiveVisits = new HashMap<Patient, Visit>();
 		for (Visit v : activeVisits) {
-			patientActiveVisits.put(v.getPatient().getPatientId(), v);
+			patientActiveVisits.put(v.getPatient(), v);
 		}
 
-		List<SimpleObject> simplePatients = new ArrayList<SimpleObject>();
+		Set<Patient> checkedIn = patientActiveVisits.keySet();
 
-		// Attach active visits to patient objects
-		for (Patient patient : matchingPatients) {
-			Visit activeVisit = patientActiveVisits.get(patient.getId());
+		Collection<Patient> matched;
 
-			if (onlyCheckedIn && activeVisit == null) {
-				continue;
+		if (StringUtils.isBlank(query)) {
+			matched = checkedIn;
+		}
+		else {
+			matched = new ArrayList<Patient>();
+			for (Patient patient : matchedByNameOrID) {
+				if (!onlyCheckedIn || checkedIn.contains(patient)) {
+					matched.add(patient);
+				}
 			}
+		}
 
+		// Simplify and attach active visits to patient objects
+		List<SimpleObject> simplePatients = new ArrayList<SimpleObject>();
+		for (Patient patient : matched) {
 			SimpleObject simplePatient = ui.simplifyObject(patient);
 
+			Visit activeVisit = patientActiveVisits.get(patient);
 			if (activeVisit != null) {
 				simplePatient.put("extra", "<div class='ke-tag ke-visittag'>" + ui.format(activeVisit.getVisitType()) + "<br/><small>" + ui.format(activeVisit.getStartDatetime()) + "</small></div>");
 			}

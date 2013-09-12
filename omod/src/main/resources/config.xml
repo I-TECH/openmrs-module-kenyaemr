@@ -25,8 +25,10 @@
 
 	<activator>org.openmrs.module.kenyaemr.EmrActivator</activator>
 
-	<mappingFiles>
-	</mappingFiles>
+	<advice>
+		<point>org.openmrs.api.EncounterService</point>
+		<class>${project.parent.groupId}.${project.parent.artifactId}.advice.EncounterServiceAdvice</class>
+	</advice>
 
 	<messages>
 		<lang>en</lang>

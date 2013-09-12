@@ -15,9 +15,11 @@
 package org.openmrs.module.kenyaemr;
 
 import org.apache.commons.lang3.StringUtils;
+import org.openmrs.Encounter;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
 import org.openmrs.api.APIAuthenticationException;
+import org.openmrs.api.EncounterService;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.VisitService;
 import org.openmrs.api.context.Context;
@@ -47,9 +49,6 @@ import java.util.List;
 public class EmrModelConfigurator implements PageModelConfigurator, FragmentModelConfigurator {
 
 	@Autowired
-	private KenyaUiUtils kenyaUi;
-
-	@Autowired
 	private EmrUiUtils kenyaEmrUiUtils;
 
 	@Autowired
@@ -58,13 +57,14 @@ public class EmrModelConfigurator implements PageModelConfigurator, FragmentMode
 	@Autowired
 	private VisitService visitService;
 
+	@Autowired
+	private EncounterService encounterService;
+
 	@Override
 	public void configureModel(PageContext pageContext) {
 		String patientId = pageContext.getRequest().getRequest().getParameter("patientId");
 		String visitId = pageContext.getRequest().getRequest().getParameter("visitId");
-
-		// Look for current app as set by KenyaUI
-		AppDescriptor currentApp = kenyaUi.getCurrentApp(pageContext.getRequest());
+		String encounterId = pageContext.getRequest().getRequest().getParameter("encounterId");
 
 		Patient currentPatient = null;
 		Visit currentVisit = null, activeVisit = null;
@@ -101,6 +101,15 @@ public class EmrModelConfigurator implements PageModelConfigurator, FragmentMode
 			}
 		}
 
+		// If we have an encounter we can use it's visit and patient
+		if (!StringUtils.isEmpty(encounterId)) {
+			Encounter currentEncounter = encounterFromParam(encounterId);
+			if (currentEncounter != null) {
+				currentPatient = currentEncounter.getPatient();
+				currentVisit = currentEncounter.getVisit();
+			}
+		}
+
 		pageContext.getModel().addAttribute(EmrWebConstants.MODEL_ATTR_CURRENT_PATIENT, currentPatient);
 		pageContext.getModel().addAttribute(EmrWebConstants.MODEL_ATTR_CURRENT_VISIT, currentVisit);
 		pageContext.getModel().addAttribute(EmrWebConstants.MODEL_ATTR_ACTIVE_VISIT, activeVisit);
@@ -127,8 +136,7 @@ public class EmrModelConfigurator implements PageModelConfigurator, FragmentMode
 			return patientService.getPatient(Integer.valueOf(id));
 		}
 		catch (APIAuthenticationException ex) {
-			// Swallow API authentication exceptions
-			return null;
+			return null; // Swallow API authentication exceptions
 		}
 	}
 
@@ -145,8 +153,24 @@ public class EmrModelConfigurator implements PageModelConfigurator, FragmentMode
 			return visitService.getVisit(Integer.valueOf(id));
 		}
 		catch (APIAuthenticationException ex) {
-			// Swallow API authentication exceptions
+			return null; // Swallow API authentication exceptions
+		}
+	}
+
+	/**
+	 * Using this instead of the string to encounter converter as we don't want to throw a APIAuthenticationException
+	 * @param id the request parameter value
+	 * @return the visit
+	 */
+	protected Encounter encounterFromParam(String id) {
+		if (StringUtils.isEmpty(id)) {
 			return null;
+		}
+		try {
+			return encounterService.getEncounter(Integer.valueOf(id));
+		}
+		catch (APIAuthenticationException ex) {
+			return null; // Swallow API authentication exceptions
 		}
 	}
 }

@@ -14,9 +14,6 @@
 
 package org.openmrs.module.kenyaemr.page.controller;
 
-import org.openmrs.Patient;
-import org.openmrs.Visit;
-import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyaui.annotation.SharedPage;
 import org.openmrs.ui.framework.page.PageModel;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -27,16 +24,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 @SharedPage
 public class EnterFormPageController {
 
-	public void controller(@RequestParam("patientId") Patient patient,
-	                       @RequestParam(value = "formUuid", required = false) String formUuid,
-						   @RequestParam(value = "visitId", required = false) Visit visit,
+	public void controller(@RequestParam(value = "formUuid", required = false) String formUuid,
 	                       @RequestParam("returnUrl") String returnUrl,
 	                       PageModel model) {
 
 		model.addAttribute("formUuid", formUuid);
-		model.addAttribute("patient", patient);
-		model.addAttribute("person", patient);
-		model.addAttribute("visit", visit);
 		model.addAttribute("returnUrl", returnUrl);
 	}
 }
