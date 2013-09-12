@@ -84,7 +84,7 @@ public class NotOnArtCalculation extends BaseEmrCalculation implements PatientFl
 						onArt = !lastArtStatus.equals(Dictionary.getConcept(Dictionary.NOT_APPLICABLE));
 					}
 				}
-				notOnArt = hivPositive && /*gestationIsGreaterThan14Weeks(ptId) &&*/ !onArt;
+				notOnArt = hivPositive && gestationIsGreaterThan14Weeks(ptId) && !onArt;
 			}
 			ret.put(ptId, new BooleanResult(notOnArt, this, context));
 		}
