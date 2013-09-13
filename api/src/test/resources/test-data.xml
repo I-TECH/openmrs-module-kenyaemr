@@ -73,6 +73,9 @@
 	<concept concept_id="1402" retired="false" datatype_id="2" class_id="11" is_set="false" creator="1" date_created="2004-01-01 00:00:00" version="0.1" changed_by="1" date_changed="2012-08-10 19:14:26"   uuid="1402AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
 	<concept_name concept_name_id="1402" concept_id="1402" name="NEVER TESTED" locale="en" creator="1" date_created="2004-01-01 00:00:00" concept_name_type="FULLY_SPECIFIED" locale_preferred="0" voided="false" uuid="1402-name"/>
 
+	<concept concept_id="80586" retired="false" datatype_id="6" class_id="11" is_set="false" creator="1" date_created="2004-01-01 00:00:00" version="0.1" changed_by="1" date_changed="2012-08-10 19:14:26"   uuid="80586AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+	<concept_name concept_name_id="80586" concept_id="80586" name="NEVIRAPINE" locale="en" creator="1" date_created="2004-01-01 00:00:00" concept_name_type="FULLY_SPECIFIED" locale_preferred="0" voided="false" uuid="80586-name"/>
+
 	<concept concept_id="1066" retired="false" datatype_id="4" class_id="5" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 	<concept_name concept_name_id="1066" concept_id="1066" name="NO" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="1066-name"/>
 
@@ -174,6 +177,9 @@
 
 	<concept concept_id="159937" retired="false" datatype_id="4" class_id="5" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="0.1" changed_by="1" date_changed="2006-06-09 14:57:33.0" uuid="159937AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 	<concept_name concept_name_id="159937" concept_id="159937" name="YES" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="159937-name" />
+
+	<concept concept_id="86663" retired="false" datatype_id="6" class_id="11" is_set="false" creator="1" date_created="2004-01-01 00:00:00" version="0.1" changed_by="1" date_changed="2012-08-10 19:14:26"   uuid="86663AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+	<concept_name concept_name_id="86663" concept_id="86663" name="ZIDOVUDINE" locale="en" creator="1" date_created="2004-01-01 00:00:00" concept_name_type="FULLY_SPECIFIED" locale_preferred="0" voided="false" uuid="86663-name"/>
 
 	<!-- =========================================== Programs =============================================== -->
 

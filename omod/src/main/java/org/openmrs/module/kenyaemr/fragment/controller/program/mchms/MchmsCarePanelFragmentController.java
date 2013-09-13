@@ -69,13 +69,13 @@ public class MchmsCarePanelFragmentController {
 				if (concept.equals(Dictionary.getConcept(Dictionary.MOTHER_ON_PROPHYLAXIS))
 						|| concept.equals(Dictionary.getConcept(Dictionary.MOTHER_ON_HAART))) {
 					String regimen = "Regimen not specified";
-					List<Obs> drudObsList = EmrUtils.allObsInEncounter(lastMchConsultation, Dictionary.getConcept(Dictionary.ANTIRETROVIRAL_USED_IN_PREGNANCY));
-					if (!drudObsList.isEmpty()) {
+					List<Obs> drugObsList = EmrUtils.allObsInEncounter(lastMchConsultation, Dictionary.getConcept(Dictionary.ANTIRETROVIRAL_USED_IN_PREGNANCY));
+					if (!drugObsList.isEmpty()) {
 						String rgmn = "";
-						for (Obs obs : drudObsList) {
+						for (Obs obs : drugObsList) {
 							if (obs != null) {
 								rgmn += obs.getValueCoded().getName().getName();
-								if (!obs.equals(drudObsList.get(drudObsList.size() - 1))) {
+								if (!obs.equals(drugObsList.get(drugObsList.size() - 1))) {
 									rgmn += " + ";
 								}
 							}
