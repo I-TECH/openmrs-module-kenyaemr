@@ -12,16 +12,26 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-/**
- * Configuration
- */
-def constantsClassName = "org.openmrs.module.kenyaemr.Dictionary"
-def includeLocales = [ "en" ] // Set null or empty to include all locales
+/* =============== Begin configuration ================= */
 
+// Source of the concept identifiers. Can be a class name or a collection. The identifiers themselves can be database
+// ids, UUIDs or mappings
+def identifierSource = "org.openmrs.module.kenyaemr.Dictionary"
+
+// Include only names for these locales. Set null or empty to include all locales
+def includeLocales = [ "en" ]
+
+/* ================ End configuration ================== */
+
+import org.openmrs.Concept
+import org.openmrs.ConceptName
 import org.openmrs.ConceptNumeric
+import org.openmrs.ConceptSet
 import org.openmrs.api.context.Context
 import groovy.util.Node
 import groovy.util.XmlNodePrinter
+
+def svc = Context.conceptService;
 
 /**
  * Extracts concept identifiers from a class of constants
@@ -40,18 +50,21 @@ def identifiersFromClass = { clazz ->
 def fetchConcept = { identifier ->
 	def concept
 
-	if (identifier.contains(":")) {
+	if (identifier instanceof Integer) {
+		concept = svc.getConcept(identifier);
+	}
+	else if (identifier.contains(":")) {
 		String[] tokens = identifier.split(":")
-		concept = Context.conceptService.getConceptByMapping(tokens[1].trim(), tokens[0].trim())
+		concept = svc.getConceptByMapping(tokens[1].trim(), tokens[0].trim())
 	}
 	else {
 		// Assume it's a UUID
-		concept = Context.conceptService.getConceptByUuid(identifier)
+		concept = svc.getConceptByUuid(identifier)
 	}
 
 	// getConcept doesn't always return ConceptNumeric for numeric concepts
 	if (concept && concept.datatype.numeric && !(concept instanceof ConceptNumeric)) {
-		concept = Context.conceptService.getConceptNumeric(concept.id)
+		concept = svc.getConceptNumeric(concept.id)
 
 		if (concept == null) {
 			throw new RuntimeException("Unable to load numeric concept for '" + identifier + "'")
@@ -79,6 +92,20 @@ def fetchConcepts = { identifiers ->
 }
 
 /**
+ * Adds dependent concepts to the collection of concepts
+ */
+def addDependentConcepts = { concepts ->
+	def all = [] as Set
+	for (Concept concept : concepts) {
+		all << concept
+		for (def member : concept.setMembers) {
+			all << member;
+		}
+	}
+	return all;
+}
+
+/**
  * Returns a copy of a map with all null value entries removed
  */
 def withoutNulls = { map -> map.findAll { it.value != null }  }
@@ -86,7 +113,7 @@ def withoutNulls = { map -> map.findAll { it.value != null }  }
 /**
  * Creates an XML node for the given concept
  */
-def createConceptNode = { parent, obj ->
+def createConceptNode = { parent, Concept obj ->
 	def attrs = [
 			concept_id: obj.id,
 			retired: obj.retired ? 1 : 0,
@@ -111,7 +138,7 @@ def createConceptNode = { parent, obj ->
 /**
  * Creates an XML node for the given concept name
  */
-def createConceptNameNode = { parent, obj ->
+def createConceptNameNode = { parent, ConceptName obj ->
 	def attrs = [
 			concept_id: obj.concept.id,
 			name: obj.name,
@@ -133,7 +160,7 @@ def createConceptNameNode = { parent, obj ->
 /**
  * Creates an XML node for the given concept numeric
  */
-def createConceptNumericNode = { parent, obj ->
+def createConceptNumericNode = { parent, ConceptNumeric obj ->
 	def attrs = [
 			concept_id: obj.id,
 			hi_absolute: obj.hiAbsolute,
@@ -149,16 +176,36 @@ def createConceptNumericNode = { parent, obj ->
 }
 
 /**
+ * Creates an XML node for the given concept set member
+ */
+def createConceptSetNode = { parent, ConceptSet obj ->
+	def attrs = [
+			concept_set_id: obj.conceptSetId,
+			concept_id: obj.concept.id,
+			concept_set: obj.conceptSet.id,
+			sort_weight: obj.sortWeight,
+			creator: obj.creator.id,
+			date_created: obj.dateCreated,
+			uuid: obj.uuid
+	]
+	return new Node(parent, "concept_set", withoutNulls(attrs))
+}
+
+/**
  * Creates an XML node for dataset of concepts
  */
 def createDataSetNode = { concepts ->
 	def node = new Node(null, "dataset")
 
-	for (def concept : concepts) {
+	for (Concept concept : concepts) {
 		createConceptNode(node, concept)
 
 		if (concept instanceof ConceptNumeric) {
 			createConceptNumericNode(node, concept)
+		}
+
+		for (def member : concept.conceptSets) {
+			createConceptSetNode(node, member)
 		}
 
 		for (def name : concept.names) {
@@ -183,12 +230,12 @@ def writeDataSetToTempFile = { root ->
 	println "Dataset XML written to " + file.absolutePath
 }
 
-def constantsClass = Context.loadClass(constantsClassName)
+def conceptIdentifiers = identifierSource instanceof String ? identifiersFromClass(Context.loadClass(identifierSource)) : identifierSource
 
-def conceptIdentifiers = identifiersFromClass(constantsClass)
+def listedConcepts = fetchConcepts(conceptIdentifiers)
 
-def concepts = fetchConcepts(conceptIdentifiers)
+def allConcepts = addDependentConcepts(listedConcepts)
 
-def root = createDataSetNode(concepts)
+def root = createDataSetNode(allConcepts)
 
 writeDataSetToTempFile(root)
