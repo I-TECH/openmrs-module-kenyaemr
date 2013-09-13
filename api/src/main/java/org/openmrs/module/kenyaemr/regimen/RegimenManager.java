@@ -20,6 +20,7 @@ import org.openmrs.Concept;
 import org.openmrs.DrugOrder;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyacore.ContentManager;
+import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -191,7 +192,7 @@ public class RegimenManager implements ContentManager {
 			String categoryCode = categoryElement.getAttribute("code");
 			String masterSetUuid = categoryElement.getAttribute("masterSetUuid");
 
-			Concept masterSetConcept = Context.getConceptService().getConceptByUuid(masterSetUuid);
+			Concept masterSetConcept = MetadataUtils.getConcept(masterSetUuid);
 			masterSetConcepts.put(categoryCode, masterSetConcept.getConceptId());
 
 			Map<String, DrugReference> categoryDrugs = new HashMap<String, DrugReference>();
