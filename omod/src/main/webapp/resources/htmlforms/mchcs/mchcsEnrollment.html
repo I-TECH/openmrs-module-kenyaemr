@@ -136,6 +136,11 @@
 					jq('#child-status-required').hide();
 				}
 			}
+			function includeMothersNames(){
+				jq.getJSON('/' + OPENMRS_CONTEXT_PATH +  '/kenyaemr/patient/patientUtils/mothersNames.action', function(data) {
+					jq('#mother-name-list').html(data.value);
+				});
+			}
 		jq(function() {
 			//get cohort
 			getCohort()
@@ -153,6 +158,8 @@
 			jq('#specialCare input').click(needSpecialCare);
 			//hivExposed();
 			//jq('#hiv-exposed-child input').click(hivExposed);
+			//including the mother details
+			includeMothersNames();
 
 			beforeSubmit.push(function() {
 				if (getValue('hiv-exposed-child.value') == "") {
@@ -234,6 +241,7 @@
 
 					</td>
 				</tr>
+
 				<tr>
 					<td>Child need special care?<obs conceptId="161630AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="161628AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" id="specialCare"/> </td>
 					<td colspan="2">
@@ -332,7 +340,10 @@
 				</tr>
 				<tr>
 					<td>
-						Name of Mother <obs conceptId="1593AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+						Name of Mother <br />
+						<div id="mother-name-list">
+
+						</div>
 					</td>
 					<td>Mother Alive? <obs conceptId="160429AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  style="yes_no"/></td>
 					<td>Name of Father <obs conceptId="1593AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
@@ -344,17 +355,17 @@
 					<td colspan="2">
 						<div id="mother-art-details">
 							Select the combination
-							<obs conceptId="1086AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="80586AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1148AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-								 answerLabels="Sd NVP Only,AZT+NVP+3TC,Haart,Interrupted,Haart,None" style="radio"/>
+							<obs conceptId="1086AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="80586AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1149AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								 answerLabels="Sd NVP Only,AZT+NVP+3TC,HAART,None" style="radio"/>
 						</div>
 					</td>
 				</tr>
 				<tr>
-					<td> On ART at enrollment of infant
-						<obs conceptId="1147AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" id="onART"/>
+					<td> On ART at Enrollment of Infant
+						<obs conceptId="162055AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" id="onART"/>
 					</td>
 						<td id="mohter-on-art-at-enrollment">Enter regimen <obs conceptId="1088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
-						<td id="mohter-on-art-at-enrollment1">Parent's CCC No. <obs conceptId="160752AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="15"/></td>
+						<td id="mohter-on-art-at-enrollment1">Parent's CCC No. <obs conceptId="162053AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="15"/></td>
 				</tr>
 				<tr>
 					<td>Mode of Delivery <obs conceptId="5630AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1170AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1171AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="SVD,C-Section" style="radio"/></td>

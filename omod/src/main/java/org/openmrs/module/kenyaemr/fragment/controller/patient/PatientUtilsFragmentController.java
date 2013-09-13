@@ -22,6 +22,9 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Patient;
+import org.openmrs.Person;
+import org.openmrs.Relationship;
+import org.openmrs.RelationshipType;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResult;
@@ -73,5 +76,28 @@ public class PatientUtilsFragmentController {
 	 */
 	public SimpleObject age(@RequestParam("patientId") Patient patient, @RequestParam("now") Date now) {
 		return SimpleObject.create("age", patient.getAge(now));
+	}
+
+	/**
+	 * Look for the mothers name for an infant from the relationship defined
+	 * @param patient
+	 * @return list of mothers
+	 */
+	public List<Person> getMother(@RequestParam("patientId") Patient patient){
+		List<Person> people = null;
+		if (patient == null)
+			return new ArrayList<Person>();
+		else
+			for (Relationship relationship : Context.getPersonService().getRelationshipsByPerson(patient)) {
+				if (relationship.getRelationshipType().getbIsToA() == "Parent") {
+					if (relationship.getPersonB().getGender() == "F")
+						people.add(relationship.getPersonB());
+				}
+				if (relationship.getRelationshipType().getaIsToB() == "Parent") {
+					if (relationship.getPersonA().getGender() == "F")
+						people.add(relationship.getPersonA());
+				}
+			}
+		return people;
 	}
 }
