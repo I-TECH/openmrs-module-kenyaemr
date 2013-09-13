@@ -1,4 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
+<!-- This file is deprecated - use dataset/test-concepts.xml and/or dataset/test-metadata.xml instead -->
 <dataset>
 	<!-- =========================================== Concepts A-Z =============================================== -->
 

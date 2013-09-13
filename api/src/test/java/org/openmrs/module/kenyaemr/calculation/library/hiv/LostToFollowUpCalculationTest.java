@@ -33,17 +33,21 @@ import java.util.Calendar;
 import java.util.List;
 
 /**
- * Tests for {@link org.openmrs.module.kenyaemr.calculation.library.hiv.LostToFollowUpCalculation}
+ * Tests for {@link LostToFollowUpCalculation}
  */
 public class LostToFollowUpCalculationTest extends BaseModuleContextSensitiveTest {
 
+	/**
+	 * Setup each test
+	 */
 	@Before
-	public void beforeEachTest() throws Exception {
-		executeDataSet("test-data.xml");
+	public void setup() throws Exception {
+		executeDataSet("dataset/test-concepts.xml");
+		executeDataSet("dataset/test-metadata.xml");
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.calculation.library.hiv.MissedAppointmentsOrDefaultedCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
+	 * @see LostToFollowUpCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
 	 * @verifies determine whether patients are lost to follow up
 	 */
 	@Test

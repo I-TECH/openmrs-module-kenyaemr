@@ -37,16 +37,23 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Tests for {@link NotOnArtCalculation}
+ */
 public class NotOnArtCalculationTest extends BaseModuleContextSensitiveTest {
 
+	/**
+	 * Setup each test
+	 */
 	@Before
-	public void beforeEachTest() throws Exception {
-		executeDataSet("test-data.xml");
+	public void setup() throws Exception {
+		executeDataSet("dataset/test-concepts.xml");
+		executeDataSet("dataset/test-metadata.xml");
 	}
 
 	/**
-	 * @verifies determine whether MCH-MS patients have been tested for HIV
 	 * @see NotOnArtCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
+	 * @verifies determine whether MCH-MS patients have been tested for HIV
 	 */
 	@Test
 	public void evaluate_shouldDetermineWhetherPatientsAreNotOnArt() throws Exception {

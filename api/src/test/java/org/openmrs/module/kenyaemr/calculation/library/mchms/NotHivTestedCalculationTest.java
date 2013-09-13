@@ -33,16 +33,23 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Tests for {@link NotHivTestedCalculation}
+ */
 public class NotHivTestedCalculationTest extends BaseModuleContextSensitiveTest {
 
+	/**
+	 * Setup each test
+	 */
 	@Before
-	public void beforeEachTest() throws Exception {
-		executeDataSet("test-data.xml");
+	public void setup() throws Exception {
+		executeDataSet("dataset/test-concepts.xml");
+		executeDataSet("dataset/test-metadata.xml");
 	}
 
 	/**
+	 * @see NotHivTestedCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
 	 * @verifies determine whether MCH-MS patients have been tested for HIV
-	 * @see org.openmrs.module.kenyaemr.calculation.library.mchms.NotHivTestedCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
 	 */
 	@Test
 	public void evaluate_shouldDetermineWhetherPatientsHaveNotBeenHivTested() throws Exception {

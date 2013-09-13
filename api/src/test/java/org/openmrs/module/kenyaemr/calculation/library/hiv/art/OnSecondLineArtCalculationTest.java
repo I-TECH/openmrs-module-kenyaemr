@@ -11,6 +11,7 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.kenyaemr.calculation.library.hiv.art;
 
 import org.junit.Assert;
@@ -27,26 +28,30 @@ import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Tests for {@link OnSecondLineArtCalculation}
+ */
 public class OnSecondLineArtCalculationTest extends BaseModuleContextSensitiveTest {
 
 	@Autowired
 	private RegimenManager regimenManager;
 
+	/**
+	 * Setup each test
+	 */
 	@Before
-	public void beforeEachTest() throws Exception {
-		executeDataSet("test-data.xml");
-		executeDataSet("test-drugdata.xml");
+	public void setup() throws Exception {
+		executeDataSet("dataset/test-concepts.xml");
+		executeDataSet("dataset/test-drugs.xml");
 
-		InputStream stream = getClass().getClassLoader().getResourceAsStream("regimens.xml");
-		regimenManager.loadDefinitionsFromXML(stream);
+		regimenManager.refresh();
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.calculation.library.hiv.art.OnSecondLineArtCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
+	 * @see OnSecondLineArtCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
 	 */
 	@Test
 	public void evaluate_shouldCalculateCurrentArtRegimen() throws Exception {

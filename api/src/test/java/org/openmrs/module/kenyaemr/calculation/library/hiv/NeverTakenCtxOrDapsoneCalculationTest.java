@@ -33,7 +33,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Tests for {@link org.openmrs.module.kenyaemr.calculation.library.hiv.NeverTakenCtxOrDapsoneCalculation}
+ * Tests for {@link NeverTakenCtxOrDapsoneCalculation}
  */
 public class NeverTakenCtxOrDapsoneCalculationTest extends BaseModuleContextSensitiveTest {
 
@@ -42,12 +42,12 @@ public class NeverTakenCtxOrDapsoneCalculationTest extends BaseModuleContextSens
 	 */
 	@Before
 	public void setup() throws Exception {
-		executeDataSet("test-data.xml");
-		executeDataSet("test-drugdata.xml");
+		executeDataSet("dataset/test-concepts.xml");
+		executeDataSet("dataset/test-metadata.xml");
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.calculation.library.hiv.NeverTakenCtxOrDapsoneCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
+	 * @see NeverTakenCtxOrDapsoneCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
 	 */
 	@Test
 	public void evaluate() throws Exception {
@@ -66,9 +66,9 @@ public class NeverTakenCtxOrDapsoneCalculationTest extends BaseModuleContextSens
 		Concept dapsone = Dictionary.getConcept(Dictionary.DAPSONE);
 		TestUtils.saveObs(ps.getPatient(7), medOrders, dapsone, TestUtils.date(2011, 1, 1));
 
-		// Put patient #8 on Aspirin
-		Concept aspirin = Context.getConceptService().getConcept(71617);
-		TestUtils.saveObs(ps.getPatient(8), medOrders, aspirin, TestUtils.date(2011, 1, 1));
+		// Put patient #8 on Flucanozole
+		Concept flucanozole = Dictionary.getConcept(Dictionary.FLUCONAZOLE);
+		TestUtils.saveObs(ps.getPatient(8), medOrders, flucanozole, TestUtils.date(2011, 1, 1));
 
 		Context.flushSession();
 		
@@ -77,7 +77,7 @@ public class NeverTakenCtxOrDapsoneCalculationTest extends BaseModuleContextSens
 		CalculationResultMap resultMap = new NeverTakenCtxOrDapsoneCalculation().evaluate(cohort, null, Context.getService(PatientCalculationService.class).createCalculationContext());
 		Assert.assertTrue((Boolean) resultMap.get(6).getValue()); // isn't on any drugs
 		Assert.assertFalse((Boolean) resultMap.get(7).getValue()); // is taking Dapsone
-		Assert.assertTrue((Boolean) resultMap.get(8).getValue()); // is taking just Aspirin
+		Assert.assertTrue((Boolean) resultMap.get(8).getValue()); // is taking Flucanozole
 		Assert.assertFalse((Boolean) resultMap.get(999).getValue()); // not in HIV program
 	}
 }

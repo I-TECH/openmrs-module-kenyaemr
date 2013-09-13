@@ -1,4 +1,4 @@
-/*
+/**
  * The contents of this file are subject to the OpenMRS Public License
  * Version 1.0 (the "License"); you may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
@@ -11,6 +11,7 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.kenyaemr.calculation.library.hiv;
 
 import org.junit.Assert;
@@ -31,15 +32,22 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
+/**
+ * Tests for {@link MissedAppointmentsOrDefaultedCalculation}
+ */
 public class MissedAppointmentsOrDefaultedCalculationTest extends BaseModuleContextSensitiveTest {
 
+	/**
+	 * Setup each test
+	 */
 	@Before
-	public void beforeEachTest() throws Exception {
-		executeDataSet("test-data.xml");
+	public void setup() throws Exception {
+		executeDataSet("dataset/test-concepts.xml");
+		executeDataSet("dataset/test-metadata.xml");
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.calculation.library.hiv.MissedAppointmentsOrDefaultedCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
+	 * @see MissedAppointmentsOrDefaultedCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
 	 * @verifies determine whether patients have a Missed appointments or defaulted
 	 */
 	@Test

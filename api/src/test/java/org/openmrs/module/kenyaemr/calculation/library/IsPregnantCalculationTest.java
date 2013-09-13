@@ -31,17 +31,17 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Tests for {@link org.openmrs.module.kenyaemr.calculation.library.IsPregnantCalculation}
+ * Tests for {@link IsPregnantCalculation}
  */
 public class IsPregnantCalculationTest extends BaseModuleContextSensitiveTest {
 
 	@Before
 	public void beforeEachTest() throws Exception {
-		executeDataSet("test-data.xml");
+		executeDataSet("dataset/test-concepts.xml");
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.calculation.library.IsPregnantCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
+	 * @see IsPregnantCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
 	 * @verifies calculate last recorded pregnancy status for all patients
 	 */
 	@Test

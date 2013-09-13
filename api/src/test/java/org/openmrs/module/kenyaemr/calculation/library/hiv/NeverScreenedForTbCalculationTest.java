@@ -31,13 +31,23 @@ import org.openmrs.test.BaseModuleContextSensitiveTest;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Tests for {@link NeverScreenedForTbCalculation}
+ */
 public class NeverScreenedForTbCalculationTest extends BaseModuleContextSensitiveTest {
 
+	/**
+	 * Setup each test
+	 */
 	@Before
 	public void setup() throws Exception {
-		executeDataSet("test-data.xml");
+		executeDataSet("dataset/test-concepts.xml");
+		executeDataSet("dataset/test-metadata.xml");
 	}
 
+	/**
+	 * @see NeverScreenedForTbCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
+	 */
 	@Test
 	public void evaluate_shouldReturnHivPatientsNotScreenedForTb() throws Exception {
 

@@ -11,9 +11,9 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.kenyaemr.calculation.library;
 
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -22,38 +22,53 @@ import java.util.Map;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.VisitType;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
-import org.openmrs.calculation.result.ResultUtil;
-import org.openmrs.module.kenyaemr.calculation.library.VisitsOnDayCalculation;
+import org.openmrs.calculation.result.ListResult;
+import org.openmrs.module.kenyacore.metadata.MetadataUtils;
+import org.openmrs.module.kenyacore.test.TestUtils;
+import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
+import static org.hamcrest.Matchers.*;
 
 /**
- *
+ * Tests for {@link VisitsOnDayCalculation}
  */
 public class VisitsOnDayCalculationTest extends BaseModuleContextSensitiveTest {
-	
+
+	/**
+	 * Setup each test
+	 */
 	@Before
-	public void beforeEachTest() throws Exception {
-		executeDataSet("test-data.xml");
+	public void setup() throws Exception {
+		executeDataSet("dataset/test-metadata.xml");
+
+		VisitType outpatient = MetadataUtils.getVisitType(Metadata.VisitType.OUTPATIENT);
+
+		// Patient #7 has two visits on 1-Jan-2012 (from 9am to 10am and another from 11am to 12pm)
+		TestUtils.saveVisit(TestUtils.getPatient(7), outpatient, TestUtils.date(2012, 1, 1, 9, 0, 0), TestUtils.date(2012, 1, 1, 10, 0, 0));
+		TestUtils.saveVisit(TestUtils.getPatient(7), outpatient, TestUtils.date(2012, 1, 1, 11, 0, 0), TestUtils.date(2012, 1, 1, 12, 0, 0));
+
+		// Patient #8 has visit on 2-Jan-2012
+		TestUtils.saveVisit(TestUtils.getPatient(8), outpatient, TestUtils.date(2012, 1, 2, 9, 0, 0), TestUtils.date(2012, 1, 2, 10, 0, 0));
 	}
-	
+
+	/**
+	 * @see VisitsOnDayCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
+	 */
 	@Test
-	public void shouldCalculateWithScheduledVisit() throws Exception {
-		List<Integer> ptIds = Arrays.asList(6, 7, 8);
+	public void evaluate_shouldCalculateVisitsOnDay() throws Exception {
+		List<Integer> ptIds = Arrays.asList(7, 8);
+
 		Map<String, Object> paramValues = new HashMap<String, Object>();
-		paramValues.put("date", new SimpleDateFormat("yyyy-MM-dd").parse("2012-07-04"));
+		paramValues.put("date", TestUtils.date(2012, 1, 1));
+
 		CalculationResultMap resultMap = new VisitsOnDayCalculation().evaluate(ptIds, paramValues, Context.getService(PatientCalculationService.class).createCalculationContext());
-		
-		for (Integer ptId : resultMap.keySet()) {
-			System.out.println(ptId + " -> " + ResultUtil.getFirst(resultMap.get(ptId)));
-		}
-		
-		Assert.assertFalse(resultMap.get(6).isEmpty()); // from standardTestDataset.xml
-		Assert.assertFalse(resultMap.get(7).isEmpty()); // from testData.xml
-		Assert.assertTrue(resultMap.get(8).isEmpty());
+
+		Assert.assertThat(((ListResult) resultMap.get(7)).getValues().size(), is(2)); // Has two visit
+		Assert.assertThat(resultMap.get(8).isEmpty(), is(true)); // No visits on that day
 	}
-	
 }

@@ -24,7 +24,6 @@ import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.LastWhoStageCalculation;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
@@ -32,17 +31,17 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Tests for {@link org.openmrs.module.kenyaemr.calculation.library.hiv.LastWhoStageCalculation}
+ * Tests for {@link LastWhoStageCalculation}
  */
 public class LastWhoStageCalculationTest extends BaseModuleContextSensitiveTest {
 
 	@Before
-	public void beforeEachTest() throws Exception {
-		executeDataSet("test-data.xml");
+	public void setup() throws Exception {
+		executeDataSet("dataset/test-concepts.xml");
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.calculation.library.hiv.NeedsCd4TestCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
+	 * @see LastWhoStageCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
 	 * @verifies calculate last recorded WHO stage for all patients
 	 */
 	@Test

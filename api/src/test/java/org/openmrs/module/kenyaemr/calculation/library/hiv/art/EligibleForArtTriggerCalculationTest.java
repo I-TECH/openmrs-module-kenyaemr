@@ -23,23 +23,27 @@ import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.EligibleForArtTriggerCalculation;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Tests for {@link EligibleForArtTriggerCalculation}
+ */
 public class EligibleForArtTriggerCalculationTest extends BaseModuleContextSensitiveTest {
 
+	/**
+	 * Setup each test
+	 */
 	@Before
 	public void setup() throws Exception {
-		executeDataSet("test-data.xml");
-		executeDataSet("test-drugdata.xml");
+		executeDataSet("dataset/test-concepts.xml");
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.calculation.library.hiv.art.EligibleForArtTriggerCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
+	 * @see EligibleForArtTriggerCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
 	 * @verifies calculate the obs which triggered a patient to become eligible for ART
 	 * @verifies return null for patients who have never been eligible for ART
 	 */

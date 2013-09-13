@@ -32,15 +32,22 @@ import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
+/**
+ * Tests for {@link NeedsCd4TestCalculation}
+ */
 public class NeedsCd4TestCalculationTest extends BaseModuleContextSensitiveTest {
-	
+
+	/**
+	 * Setup each test
+	 */
 	@Before
 	public void setup() throws Exception {
-		executeDataSet("test-data.xml");
+		executeDataSet("dataset/test-concepts.xml");
+		executeDataSet("dataset/test-metadata.xml");
 	}
 	
 	/**
-	 * @see org.openmrs.module.kenyaemr.calculation.library.hiv.NeedsCd4TestCalculation#evaluate(Collection,Map,PatientCalculationContext)
+	 * @see NeedsCd4TestCalculation#evaluate(Collection,Map,PatientCalculationContext)
 	 * @verifies determine whether patients need a CD4
 	 */
 	@Test

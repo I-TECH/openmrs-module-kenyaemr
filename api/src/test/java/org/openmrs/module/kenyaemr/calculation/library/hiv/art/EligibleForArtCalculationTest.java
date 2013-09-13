@@ -11,6 +11,7 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.kenyaemr.calculation.library.hiv.art;
 
 import java.util.Arrays;
@@ -34,16 +35,22 @@ import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
+/**
+ * Tests for {@link EligibleForArtCalculation}
+ */
 public class EligibleForArtCalculationTest extends BaseModuleContextSensitiveTest {
-	
+
+	/**
+	 * Setup each test
+	 */
 	@Before
 	public void setup() throws Exception {
-		executeDataSet("test-data.xml");
-		executeDataSet("test-drugdata.xml");
+		executeDataSet("dataset/test-concepts.xml");
+		executeDataSet("dataset/test-metadata.xml");
 	}
 	
 	/**
-	 * @see org.openmrs.module.kenyaemr.calculation.library.hiv.art.EligibleForArtCalculation#evaluate(Collection,Map,PatientCalculationContext)
+	 * @see EligibleForArtCalculation#evaluate(Collection,Map,PatientCalculationContext)
 	 * @verifies calculate eligibility
 	 */
 	@Test

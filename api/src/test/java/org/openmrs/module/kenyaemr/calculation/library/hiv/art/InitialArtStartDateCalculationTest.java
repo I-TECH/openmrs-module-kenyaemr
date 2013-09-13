@@ -22,35 +22,40 @@ import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtStartDateCalculation;
 import org.openmrs.module.kenyacore.test.TestUtils;
+import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Tests for {@link InitialArtStartDateCalculation}
+ */
 public class InitialArtStartDateCalculationTest extends BaseModuleContextSensitiveTest {
 
+	/**
+	 * Setup each test
+	 */
 	@Before
 	public void setup() throws Exception {
-		executeDataSet("test-data.xml");
-		executeDataSet("test-drugdata.xml");
+		executeDataSet("dataset/test-concepts.xml");
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtStartDateCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
+	 * @see InitialArtStartDateCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
 	 */
 	@Test
 	public void evaluate_shouldCalculateInitialArtStartDate() throws Exception {
 
 		PatientService ps = Context.getPatientService();
-		Concept aspirin = Context.getConceptService().getConcept(71617);
+		Concept dapsone = Dictionary.getConcept(Dictionary.DAPSONE);
 		Concept azt = Context.getConceptService().getConcept(86663);
 		Concept _3tc = Context.getConceptService().getConcept(78643);
 		Concept efv = Context.getConceptService().getConcept(75523);
 
-		// Put patient #6 on Aspirin
-		TestUtils.saveDrugOrder(ps.getPatient(6), aspirin, TestUtils.date(2011, 1, 1), null);
+		// Put patient #6 on Dapsone
+		TestUtils.saveDrugOrder(ps.getPatient(6), dapsone, TestUtils.date(2011, 1, 1), null);
 
 		// Put patient #7 on AZT, then 3TC, then EFV
 		TestUtils.saveDrugOrder(ps.getPatient(7), azt, TestUtils.date(2010, 1, 1), TestUtils.date(2011, 1, 1));
@@ -59,11 +64,11 @@ public class InitialArtStartDateCalculationTest extends BaseModuleContextSensiti
 
 		Context.flushSession();
 		
-		List<Integer> cohort = Arrays.asList(2, 6, 7);
+		List<Integer> cohort = Arrays.asList(6, 7, 8);
 
 		CalculationResultMap resultMap = new InitialArtStartDateCalculation().evaluate(cohort, null, Context.getService(PatientCalculationService.class).createCalculationContext());
-		Assert.assertNull(resultMap.get(2)); // isn't on any drugs
 		Assert.assertNull(resultMap.get(6)); // isn't on any ART drugs
 		Assert.assertEquals(TestUtils.date(2010, 1, 1), resultMap.get(7).getValue());
+		Assert.assertNull(resultMap.get(8)); // isn't on any drugs
 	}
 }

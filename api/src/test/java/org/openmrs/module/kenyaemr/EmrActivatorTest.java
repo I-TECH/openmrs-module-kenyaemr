@@ -30,7 +30,8 @@ public class EmrActivatorTest extends BaseModuleContextSensitiveTest {
 	 */
 	@Before
 	public void setup() throws Exception {
-		executeDataSet("test-data.xml");
+		executeDataSet("dataset/test-concepts.xml");
+		executeDataSet("dataset/test-metadata.xml");
 	}
 
 	@Test
