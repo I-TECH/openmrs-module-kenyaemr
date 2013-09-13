@@ -24,6 +24,7 @@ def includeLocales = [ "en" ]
 /* ================ End configuration ================== */
 
 import org.openmrs.Concept
+import org.openmrs.ConceptAnswer
 import org.openmrs.ConceptName
 import org.openmrs.ConceptNumeric
 import org.openmrs.ConceptSet
@@ -92,7 +93,7 @@ def fetchConcepts = { identifiers ->
 }
 
 /**
- * Adds dependent concepts to the collection of concepts
+ * Adds dependent concepts to the collection of concepts (set members and answers)
  */
 def addDependentConcepts = { concepts ->
 	def all = [] as Set
@@ -100,6 +101,9 @@ def addDependentConcepts = { concepts ->
 		all << concept
 		for (def member : concept.setMembers) {
 			all << member;
+		}
+		for (def answer : concept.answers) {
+			all << answer.answerConcept;
 		}
 	}
 	return all;
@@ -125,9 +129,9 @@ def createConceptNode = { parent, Concept obj ->
 			creator: obj.creator.id,
 			date_created: obj.dateCreated,
 			version: obj.version,
-			changed_by: obj.changedBy.id,
+			changed_by: obj.changedBy?.id,
 			date_changed: obj.dateChanged,
-			retired_by: obj.retiredBy.id,
+			retired_by: obj.retiredBy?.id,
 			date_retired: obj.dateRetired,
 			retire_reason: obj.retireReason,
 			uuid: obj.uuid
@@ -147,7 +151,7 @@ def createConceptNameNode = { parent, ConceptName obj ->
 			date_created: obj.dateCreated,
 			concept_name_id: obj.id,
 			voided: obj.voided ? 1 : 0,
-			voided_by: obj.voidedBy.id,
+			voided_by: obj.voidedBy?.id,
 			date_voided: obj.dateVoided,
 			void_reason: obj.voidReason,
 			uuid: obj.uuid,
@@ -192,6 +196,23 @@ def createConceptSetNode = { parent, ConceptSet obj ->
 }
 
 /**
+ * Creates an XML node for the given concept answer
+ */
+def createConceptAnswerNode = { parent, ConceptAnswer obj ->
+	def attrs = [
+			concept_answer_id: obj.conceptAnswerId,
+			concept_id: obj.concept.id,
+			answer_concept: obj.answerConcept?.id,
+			answer_drug: obj.answerDrug?.id,
+			creator: obj.creator.id,
+			date_created: obj.dateCreated,
+			uuid: obj.uuid,
+			sort_weight: obj.sortWeight
+	]
+	return new Node(parent, "concept_answer", withoutNulls(attrs))
+}
+
+/**
  * Creates an XML node for dataset of concepts
  */
 def createDataSetNode = { concepts ->
@@ -204,15 +225,16 @@ def createDataSetNode = { concepts ->
 			createConceptNumericNode(node, concept)
 		}
 
-		for (def member : concept.conceptSets) {
-			createConceptSetNode(node, member)
-		}
-
-		for (def name : concept.names) {
+		// Add all names
+		concept.names.each { name ->
 			if (!includeLocales || includeLocales.contains(name.locale.language)) {
 				createConceptNameNode(node, name)
 			}
 		}
+
+		// Add all set members and answers
+		concept.conceptSets.each { member -> createConceptSetNode(node, member) }
+		concept.answers.each { answer -> createConceptAnswerNode(node, answer) }
 	}
 	return node
 }
