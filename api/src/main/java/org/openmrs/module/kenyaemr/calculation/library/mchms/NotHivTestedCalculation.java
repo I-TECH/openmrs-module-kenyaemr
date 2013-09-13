@@ -12,7 +12,7 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.calculation.library.mchcs;
+package org.openmrs.module.kenyaemr.calculation.library.mchms;
 
 import org.openmrs.Concept;
 import org.openmrs.Program;

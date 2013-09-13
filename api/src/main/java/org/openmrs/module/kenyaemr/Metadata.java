@@ -49,6 +49,7 @@ public class Metadata {
 		public static final String HIV_ENROLLMENT = "e4b506c1-7379-42b6-a374-284469cba8da";
 		public static final String LAB_RESULTS = "7e603909-9ed5-4d0c-a688-26ecb05d8b6e";
 		public static final String MCHCS_ENROLLMENT = "8553d869-bdc8-4287-8505-910c7c998aff";
+		public static final String MCHMS_ENROLLMENT = "90a18f0c-17cd-4eec-8204-5af52e8d77cf";
 		public static final String MCHCS_DISCONTINUATION = "1dd02c43-904b-4206-8378-7b1a8414c326";
 		public static final String MCHCS_FOLLOW_UP = "755b59e6-acbb-4853-abaf-be302039f902";
 		public static final String MCHCS_IMMUNIZATION = "b4f3859e-861c-4a63-bdff-eb7392030d47";
