@@ -49,7 +49,8 @@ public class Moh731ReportBuilderTest extends BaseModuleContextSensitiveTest {
 
 	@Before
 	public void setup() throws Exception {
-		executeDataSet("test-data.xml");
+		executeDataSet("test-concepts.xml");
+		executeDataSet("test-metadata.xml");
 		executeDataSet("test-drugdata.xml");
 
 		reportManager.refresh();
