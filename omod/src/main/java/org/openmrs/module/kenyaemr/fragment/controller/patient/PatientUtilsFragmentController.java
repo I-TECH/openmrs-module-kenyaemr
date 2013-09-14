@@ -14,6 +14,7 @@
 
 package org.openmrs.module.kenyaemr.fragment.controller.patient;
 
+import java.lang.System;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -84,18 +85,20 @@ public class PatientUtilsFragmentController {
 	 * @return list of mothers
 	 */
 	public List<Person> getMother(@RequestParam("patientId") Patient patient){
-		List<Person> people = null;
+		List<Person> people = new ArrayList<Person>();
 		if (patient == null)
 			return new ArrayList<Person>();
-		else
+		else {
 			for (Relationship relationship : Context.getPersonService().getRelationshipsByPerson(patient)) {
-				if (relationship.getRelationshipType().getbIsToA() == "Parent") {
-					if (relationship.getPersonB().getGender() == "F")
+				if (relationship.getRelationshipType().getbIsToA().equals("Parent")) {
+					if (relationship.getPersonB().getGender().equals("F"))
 						people.add(relationship.getPersonB());
 				}
-				if (relationship.getRelationshipType().getaIsToB() == "Parent") {
-					if (relationship.getPersonA().getGender() == "F")
-						people.add(relationship.getPersonA());
+				if (relationship.getRelationshipType().getaIsToB().equals("Parent")) {
+						if (relationship.getPersonA().getGender().equals("F")) {
+							people.add(relationship.getPersonA());
+						}
+					}
 				}
 			}
 		return people;
