@@ -32,6 +32,37 @@
 		}
 	</style>
 
+	<script type="text/javascript">
+
+		//before submit clear mother choice if necessary
+		//on load show/hide mother choice
+		//on selection show/hide mother choice
+
+		jq(function () {
+			jq('#hiv-feeding-options input').click(onFeedingOptionsChange);
+			onFeedingOptionsChange();
+		});
+
+		beforeSubmit.push(function () {
+			if (!jq('#mother-decision').is(':visible')) {
+				clearMotherDecision();
+			}
+			return true;
+		});
+
+		function onFeedingOptionsChange() {
+			if (getValue('hiv-feeding-options.value') != null) {
+				jq('#mother-decision-table').show();
+			} else {
+				jq('#mother-decision-table').hide();
+			}
+		}
+
+		function clearMotherDecision() {
+			setValue('mother-decision.value') == null;
+		}
+	</script>
+
 	<div class="ke-form-header">
 		<table style="width: 100%">
 			<tr>
@@ -81,16 +112,24 @@
 						<tr>
 							<td colspan="2">
 								<obs conceptId="1379AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									 id="hiv-feeding-options"
 									 answerConceptId="162091AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 									 answerLabel="Infant feeding options for HIV infected discussed"
 									 style="checkbox"/>
 							</td>
 						</tr>
 						<tr>
-							<td>If yes (above), mother decision:</td>
-							<td>
-								<obs conceptId="1151AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-									 answerConceptIds="5526AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1595AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,6046AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159418AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+							<td colspan="2">
+								<table id="mother-decision-table">
+									<tr>
+										<td>If yes (above), mother decision:</td>
+										<td>
+											<obs conceptId="1151AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+												 id="mother-decision"
+												 answerConceptIds="5526AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1595AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,6046AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159418AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+										</td>
+									</tr>
+								</table>
 							</td>
 						</tr>
 					</table>
