@@ -33,6 +33,7 @@
 
 			var birthdate = new Date("<lookup expression="patient.birthdate" />");
 			var patientId = <lookup expression="patient.patientId"/>;
+			var encDate = getValue('encounter-date.value');
 
 			var YES_CONCEPT_ID = 1065;
 			var NO_CONCEPT_ID = 1066;
@@ -113,10 +114,12 @@
 				}
 			}
 			function includeMothersNames(){
-				jq.getJSON('/' + OPENMRS_CONTEXT_PATH +  '/kenyaemr/patient/patientUtils/getMother.action',{ patientId: patientId },function(data) {
-						jq('#mother-name-list').html(data);
-
-					});
+				jq.getJSON('/' + OPENMRS_CONTEXT_PATH +  '/kenyaemr/patient/patientUtils/getMothers.action',{ patientId: patientId, now:encDate },function(data) {
+					for ( var p in data){
+						var motherName = data[p].name;
+						jq('#mother-name-list').html(motherName);
+					}
+				});
 			}
 		jq(function() {
 			//get cohort
@@ -203,7 +206,7 @@
 								<td>Gestation at birth(weeks)</td>
 								<td><obs conceptId="1409AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /> </td>
 								<td>Date first seen</td>
-								<td><obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>Need concept </td>
+								<td><obs conceptId="162140AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" showTime="false"/></td>
 							</tr>
 							<tr>
 								<td>
@@ -313,13 +316,13 @@
 				</tr>
 				<tr>
 					<td colspan="3" style="background-color: #696969; color: #ffffff;">
-						PARENT'S PROFILE
+						PARENT'S PROFILE(<i>Edit using Relationship app</i>)
 					</td>
 				</tr>
 				<tr>
 					<td>
 						Name of Mother <br />
-						<div id="mother-name-list">
+						<div id="mother-name-list" class="value">
 
 						</div>
 					</td>

@@ -32,6 +32,7 @@ import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.module.kenyacore.calculation.CalculationManager;
 import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
 import org.openmrs.ui.framework.SimpleObject;
+import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -84,10 +85,10 @@ public class PatientUtilsFragmentController {
 	 * @param patient
 	 * @return list of mothers
 	 */
-	public List<Person> getMother(@RequestParam("patientId") Patient patient){
+	public SimpleObject[] getMothers(@RequestParam("patientId") Patient patient,@RequestParam("now") Date date,UiUtils ui) {
 		List<Person> people = new ArrayList<Person>();
 		if (patient == null)
-			return new ArrayList<Person>();
+			return new SimpleObject[] {};
 		else {
 			for (Relationship relationship : Context.getPersonService().getRelationshipsByPerson(patient)) {
 				if (relationship.getRelationshipType().getbIsToA().equals("Parent")) {
@@ -101,6 +102,6 @@ public class PatientUtilsFragmentController {
 					}
 				}
 			}
-		return people;
+		return ui.simplifyCollection(people);
 	}
 }
