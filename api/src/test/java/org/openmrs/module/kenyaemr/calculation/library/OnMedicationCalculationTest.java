@@ -34,55 +34,55 @@ import org.openmrs.test.BaseModuleContextSensitiveTest;
 import java.util.*;
 
 /**
- * Tests for {@link org.openmrs.module.kenyaemr.calculation.library.OnMedicationCalculation}
+ * Tests for {@link OnMedicationCalculation}
  */
 public class OnMedicationCalculationTest extends BaseModuleContextSensitiveTest {
 
 	@Before
 	public void setup() throws Exception {
-		executeDataSet("test-data.xml");
-		executeDataSet("test-drugdata.xml");
+		executeDataSet("dataset/test-concepts.xml");
+		executeDataSet("dataset/test-metadata.xml");
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.calculation.library.OnMedicationCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
+	 * @see OnMedicationCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
 	 */
 	@Test
 	public void evaluate() throws Exception {
 		PatientService ps = Context.getPatientService();
 		VisitType outpatientType = MetadataUtils.getVisitType(Metadata.VisitType.OUTPATIENT);
-		EncounterType consulationType = MetadataUtils.getEncounterType(Metadata.EncounterType.CONSULTATION);
+		EncounterType consultationType = MetadataUtils.getEncounterType(Metadata.EncounterType.CONSULTATION);
 		Concept medOrders = Dictionary.getConcept(Dictionary.MEDICATION_ORDERS);
 		Concept dapsone = Dictionary.getConcept(Dictionary.DAPSONE);
-		Concept aspirin = Context.getConceptService().getConcept(71617);
+		Concept flucanozole = Dictionary.getConcept(Dictionary.FLUCONAZOLE);
 
 		// Give #2 Dapsone on May 1st
 		TestUtils.saveVisit(ps.getPatient(2), outpatientType, TestUtils.date(2012, 5, 1), TestUtils.date(2012, 5, 1, 12, 0, 0),
-				TestUtils.saveEncounter(ps.getPatient(2), consulationType, TestUtils.date(2012, 5, 1),
+				TestUtils.saveEncounter(ps.getPatient(2), consultationType, TestUtils.date(2012, 5, 1),
 						TestUtils.saveObs(ps.getPatient(2), medOrders, dapsone, TestUtils.date(2012, 5, 1))
 				)
 		);
 
 		// Give #6 Dapsone on May 1st but subsequent visit on June 1st with no such order
 		TestUtils.saveVisit(ps.getPatient(6), outpatientType, TestUtils.date(2012, 5, 1), TestUtils.date(2012, 5, 1, 12, 0, 0),
-				TestUtils.saveEncounter(ps.getPatient(6), consulationType, TestUtils.date(2012, 5, 1),
+				TestUtils.saveEncounter(ps.getPatient(6), consultationType, TestUtils.date(2012, 5, 1),
 						TestUtils.saveObs(ps.getPatient(6), medOrders, dapsone, TestUtils.date(2012, 5, 1))
 				)
 		);
 		TestUtils.saveVisit(ps.getPatient(6), outpatientType, TestUtils.date(2012, 6, 1), TestUtils.date(2012, 6, 1, 12, 0, 0),
-				TestUtils.saveEncounter(ps.getPatient(6), consulationType, TestUtils.date(2012, 6, 1))
+				TestUtils.saveEncounter(ps.getPatient(6), consultationType, TestUtils.date(2012, 6, 1))
 		);
 
-		// Give #7 Aspirin on May 1st
+		// Give #7 Flucanozole on May 1st
 		TestUtils.saveVisit(ps.getPatient(7), outpatientType, TestUtils.date(2012, 5, 1), TestUtils.date(2012, 5, 1, 12, 0, 0),
-				TestUtils.saveEncounter(ps.getPatient(7), consulationType, TestUtils.date(2012, 5, 1),
-						TestUtils.saveObs(ps.getPatient(7), medOrders, aspirin, TestUtils.date(2012, 5, 1))
+				TestUtils.saveEncounter(ps.getPatient(7), consultationType, TestUtils.date(2012, 5, 1),
+						TestUtils.saveObs(ps.getPatient(7), medOrders, flucanozole, TestUtils.date(2012, 5, 1))
 				)
 		);
 
 		// Give #8 Dapsone on Jan 1st
 		TestUtils.saveVisit(ps.getPatient(8), outpatientType, TestUtils.date(2012, 1, 1), TestUtils.date(2012, 1, 1, 12, 0, 0),
-				TestUtils.saveEncounter(ps.getPatient(8), consulationType, TestUtils.date(2012, 1, 1),
+				TestUtils.saveEncounter(ps.getPatient(8), consultationType, TestUtils.date(2012, 1, 1),
 						TestUtils.saveObs(ps.getPatient(8), medOrders, dapsone, TestUtils.date(2012, 1, 1))
 				)
 		);

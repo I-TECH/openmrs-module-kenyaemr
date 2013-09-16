@@ -30,16 +30,21 @@ import org.openmrs.test.BaseModuleContextSensitiveTest;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Tests for {@link PregnantAtArtStartCalculation}
+ */
 public class PregnantAtArtStartCalculationTest extends BaseModuleContextSensitiveTest {
 
+	/**
+	 * Setup each test
+	 */
 	@Before
 	public void setup() throws Exception {
-		executeDataSet("test-data.xml");
-		executeDataSet("test-drugdata.xml");
+		executeDataSet("dataset/test-concepts.xml");
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.calculation.library.hiv.art.PregnantAtArtStartCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
+	 * @see PregnantAtArtStartCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
 	 * @verifies calculate recorded pregnancy status at ART start for all patients
 	 */
 	@Test
@@ -51,9 +56,9 @@ public class PregnantAtArtStartCalculationTest extends BaseModuleContextSensitiv
 		Concept no = Dictionary.getConcept(Dictionary.NO);
 		Concept stavudine = Context.getConceptService().getConcept(84309);
 
-		// Give patient #2 a YES status on same day as ART start
-		TestUtils.saveObs(ps.getPatient(2), pregnancyStatus, yes, TestUtils.date(2012, 1, 1));
-		TestUtils.saveDrugOrder(Context.getPatientService().getPatient(2), stavudine, TestUtils.date(2012, 1, 1), null);
+		// Give patient #2 a YES status on same day as ART start. This patient has a drug order in standardTestDataset.xml
+		// which is determining their ART start date
+		TestUtils.saveObs(ps.getPatient(2), pregnancyStatus, yes, TestUtils.date(2007, 12, 25));
 
 		// Give patient #6 a YES status week before ART start
 		TestUtils.saveObs(ps.getPatient(6), pregnancyStatus, yes, TestUtils.date(2012, 1, 1));

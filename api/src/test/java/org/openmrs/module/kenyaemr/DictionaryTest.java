@@ -25,7 +25,7 @@ import org.openmrs.test.BaseModuleContextSensitiveTest;
 import static org.hamcrest.Matchers.*;
 
 /**
- * Tests for {@link org.openmrs.module.kenyaemr.Dictionary}
+ * Tests for {@link Dictionary}
  */
 public class DictionaryTest extends BaseModuleContextSensitiveTest {
 
@@ -34,7 +34,7 @@ public class DictionaryTest extends BaseModuleContextSensitiveTest {
 	 */
 	@Before
 	public void setup() throws Exception {
-		executeDataSet("test-data.xml");
+		executeDataSet("dataset/test-concepts.xml");
 	}
 
 	@Test

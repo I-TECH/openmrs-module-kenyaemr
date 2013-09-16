@@ -28,12 +28,11 @@ import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 
 /**
- * Tests for {@link org.openmrs.module.kenyaemr.calculation.library.hiv.art.OnAlternateFirstLineArtCalculation}
+ * Tests for {@link OnAlternateFirstLineArtCalculation}
  */
 public class OnAlternateFirstLineArtCalculationTest extends BaseModuleContextSensitiveTest {
 
@@ -45,15 +44,14 @@ public class OnAlternateFirstLineArtCalculationTest extends BaseModuleContextSen
 	 */
 	@Before
 	public void setup() throws Exception {
-		executeDataSet("test-data.xml");
-		executeDataSet("test-drugdata.xml");
+		executeDataSet("dataset/test-concepts.xml");
+		executeDataSet("dataset/test-drugs.xml");
 
-		InputStream stream = getClass().getClassLoader().getResourceAsStream("regimens.xml");
-		regimenManager.loadDefinitionsFromXML(stream);
+		regimenManager.refresh();
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.calculation.library.hiv.art.OnAlternateFirstLineArtCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
+	 * @see OnAlternateFirstLineArtCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
 	 */
 	@Test
 	public void evaluate_shouldCalculateCurrentArtRegimen() throws Exception {

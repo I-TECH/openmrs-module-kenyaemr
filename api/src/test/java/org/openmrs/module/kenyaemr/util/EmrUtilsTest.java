@@ -26,6 +26,7 @@ import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.util.OpenmrsUtil;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -238,6 +239,27 @@ public class EmrUtilsTest extends BaseModuleContextSensitiveTest {
 
 		Assert.assertEquals(new Double(123.0), EmrUtils.firstObsInEncounter(e, Dictionary.getConcept(Dictionary.CD4_COUNT)).getValueNumeric());
 	}
+
+	@Test
+	public void allObsInEncounter_shouldFindAllObsWithConcept() {
+		Encounter e = new Encounter();
+
+		// Test empty encounter
+		Assert.assertEquals(new ArrayList<Obs>(), EmrUtils.allObsInEncounter(e, Dictionary.getConcept(Dictionary.ANTIRETROVIRAL_USED_IN_PREGNANCY)));
+
+		// Add 2 obs to encounter
+		Obs obs0 = new Obs();
+		obs0.setConcept(Dictionary.getConcept(Dictionary.ANTIRETROVIRAL_USED_IN_PREGNANCY));
+		obs0.setValueCoded(Dictionary.getConcept(Dictionary.NEVIRAPINE));
+		e.addObs(obs0);
+		Obs obs1 = new Obs();
+		obs1.setConcept(Dictionary.getConcept(Dictionary.ANTIRETROVIRAL_USED_IN_PREGNANCY));
+		obs1.setValueCoded(Dictionary.getConcept(Dictionary.ZIDOVUDINE));
+		e.addObs(obs1);
+
+		Assert.assertEquals(2, EmrUtils.allObsInEncounter(e, Dictionary.getConcept(Dictionary.ANTIRETROVIRAL_USED_IN_PREGNANCY)).size());
+	}
+
 
 	/**
 	 * @see EmrUtils#firstObsInProgram(org.openmrs.PatientProgram, org.openmrs.Concept)

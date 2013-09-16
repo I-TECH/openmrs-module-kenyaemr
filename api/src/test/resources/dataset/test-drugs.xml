@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+	<!-- =========================================== Drugs A-Z =============================================== -->
+
+	<drug drug_id="71617" concept_id="71617" name="Aspirin (100mg)" combination="false" dose_strength="100.0" units="mg" creator="1" date_created="2005-02-24 00:00:00.0" retired="false" uuid="71617-drug"/>
+	<drug drug_id="200007" concept_id="75948" name="Ethambutol (275mg)" combination="true" dose_strength="275.0" units="mg" creator="1" date_created="2005-02-24 00:00:00.0" retired="false" uuid="52690c5a-e9cd-4561-8aad-3b646fb7deaa"/>
+	<drug drug_id="200003" concept_id="78280" name="Isoniazid (75mg)" combination="true" dose_strength="75.0" units="mg" creator="1" date_created="2005-02-24 00:00:00.0" retired="false" uuid="97810e6b-cfcf-44fa-b63c-5d3e12cbe8d7"/>
+	<drug drug_id="200004" concept_id="78280" name="Isoniazid (30mg)" combination="true" dose_strength="30.0" units="mg" creator="1" date_created="2005-02-24 00:00:00.0" retired="false" uuid="9a012906-3778-4e2e-848f-e0272bfe9e27"/>
+	<drug drug_id="200005" concept_id="82900" name="Pyrazinamide (400mg)" combination="true" dose_strength="400.0" units="mg" creator="1" date_created="2005-02-24 00:00:00.0" retired="false" uuid="0dbc4971-67ea-40d7-8089-7c327e5f3c6e"/>
+	<drug drug_id="200006" concept_id="82900" name="Pyrazinamide (150mg)" combination="true" dose_strength="150.0" units="mg" creator="1" date_created="2005-02-24 00:00:00.0" retired="false" uuid="c97032a4-2136-4e92-8ff8-3fc6faab4133"/>
+	<drug drug_id="200001" concept_id="767" name="Rifampicin (100mg)" combination="true" dose_strength="150.0" units="mg" creator="1" date_created="2005-02-24 00:00:00.0" retired="false" uuid="a74fefc6-931d-47b9-b282-5d6c8c8d8060"/>
+	<drug drug_id="200002" concept_id="767" name="Rifampicin (60mg)" combination="true" dose_strength="60.0" units="mg" creator="1" date_created="2005-02-24 00:00:00.0" retired="false" uuid="161f633d-ab5d-4cd1-94c5-7a012dedc388"/>
+	<drug drug_id="200008" concept_id="84360" name="Streptomycin (1g)" combination="false" dose_strength="1.0" units="g" creator="1" date_created="2005-02-24 00:00:00.0" retired="false" uuid="13b56178-a15b-4070-951d-2ce813cccc32"/>
+
+</dataset>

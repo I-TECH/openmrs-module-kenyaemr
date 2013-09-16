@@ -50,7 +50,8 @@ public class DecliningCd4ReportBuilderTest extends BaseModuleContextSensitiveTes
 
 	@Before
 	public void setup() throws Exception {
-		executeDataSet("test-data.xml");
+		executeDataSet("dataset/test-concepts.xml");
+		executeDataSet("dataset/test-metadata.xml");
 
 		reportManager.refresh();
 	}

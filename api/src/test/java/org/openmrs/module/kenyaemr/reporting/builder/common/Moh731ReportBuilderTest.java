@@ -23,6 +23,7 @@ import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyacore.report.IndicatorReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportManager;
 import org.openmrs.module.kenyaemr.Metadata;
+import org.openmrs.module.kenyaemr.regimen.RegimenManager;
 import org.openmrs.module.kenyaemr.test.ReportingTestUtils;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.reporting.dataset.MapDataSet;
@@ -45,14 +46,18 @@ public class Moh731ReportBuilderTest extends BaseModuleContextSensitiveTest {
 	private ReportManager reportManager;
 
 	@Autowired
+	private RegimenManager regimenManager;
+
+	@Autowired
 	private Moh731ReportBuilder reportBuilder;
 
 	@Before
 	public void setup() throws Exception {
-		executeDataSet("test-concepts.xml");
-		executeDataSet("test-metadata.xml");
-		executeDataSet("test-drugdata.xml");
+		executeDataSet("dataset/test-concepts.xml");
+		executeDataSet("dataset/test-metadata.xml");
+		executeDataSet("dataset/test-drugs.xml");
 
+		regimenManager.refresh();
 		reportManager.refresh();
 	}
 

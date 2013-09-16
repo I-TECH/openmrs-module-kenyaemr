@@ -30,6 +30,9 @@ import java.util.List;
  */
 public class EligibleForHivProgramCalculationTest extends BaseModuleContextSensitiveTest {
 
+	/**
+	 * @see EligibleForHivProgramCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
+	 */
 	@Test
 	public void evaluate_shouldReturnTrueForAllAlivePatients() {
 

@@ -32,6 +32,33 @@
 		}
 	</style>
 
+	<script type="text/javascript">
+
+		jq(function () {
+			jq('#hiv-feeding-options input').click(onFeedingOptionsChange);
+			onFeedingOptionsChange();
+		});
+
+		beforeSubmit.push(function () {
+			if (!jq('#mother-decision').is(':visible')) {
+				clearMotherDecision();
+			}
+			return true;
+		});
+
+		function onFeedingOptionsChange() {
+			if (getValue('hiv-feeding-options.value') != null) {
+				jq('#mother-decision-table').show();
+			} else {
+				jq('#mother-decision-table').hide();
+			}
+		}
+
+		function clearMotherDecision() {
+			setValue('mother-decision.value') == null;
+		}
+	</script>
+
 	<div class="ke-form-header">
 		<table style="width: 100%">
 			<tr>
@@ -63,29 +90,42 @@
 					<legend>Infant Feeding</legend>
 					<table align="center" width="100%" class="tb1">
 						<tr>
-							<td width="250">Infant feeding counselling done (all mothers):</td>
-							<td>
-								Missing Concept
+							<td colspan="2">
+								<obs conceptId="1379AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									 answerConceptId="161651AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									 answerLabel="Infant feeding counselling done (all mothers)"
+									 style="checkbox"/>
 							</td>
 						</tr>
 						<tr>
-							<td>Counselling on exclusive breastfeeding done:</td>
-							<td>
-								<obs conceptId="161096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+							<td colspan="2">
+								<obs conceptId="1379AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									 answerConceptId="161096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									 answerLabel="Counselling on exclusive breastfeeding done"
+									 style="checkbox"/>
 							</td>
 						</tr>
 						<tr>
-							<td>Infant feeding options for HIV infected discussed:</td>
-							<td>
-								<obs conceptId="162091AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-									 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+							<td colspan="2">
+								<obs conceptId="1379AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									 id="hiv-feeding-options"
+									 answerConceptId="162091AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									 answerLabel="Infant feeding options for HIV infected discussed"
+									 style="checkbox"/>
 							</td>
 						</tr>
 						<tr>
-							<td>If yes, mother decision:</td>
-							<td>
-								<obs conceptId="1151AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-									 answerConceptIds="5526AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1595AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,6046AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159418AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+							<td colspan="2">
+								<table id="mother-decision-table">
+									<tr>
+										<td>If yes (above), mother decision:</td>
+										<td>
+											<obs conceptId="1151AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+												 id="mother-decision"
+												 answerConceptIds="5526AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1595AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,6046AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159418AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+										</td>
+									</tr>
+								</table>
 							</td>
 						</tr>
 					</table>
