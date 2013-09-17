@@ -175,6 +175,8 @@ public class EditPatientFragmentController {
 
 		private PersonAttribute nextOfKinAddress;
 
+		private PersonAttribute subChiefName;
+
 		/**
 		 * Creates an edit form for a new patient
 		 */
@@ -202,6 +204,9 @@ public class EditPatientFragmentController {
 
 			nextOfKinAddress = new PersonAttribute();
 			nextOfKinAddress.setAttributeType(MetadataUtils.getPersonAttributeType(Metadata.PersonAttributeType.NEXT_OF_KIN_ADDRESS));
+
+			subChiefName = new PersonAttribute();
+			subChiefName.setAttributeType(MetadataUtils.getPersonAttributeType(Metadata.PersonAttributeType.SUB_CHIEF_NAME))
 
 		}
 
@@ -306,6 +311,16 @@ public class EditPatientFragmentController {
 			}
 			else {
 				nextOfKinAddress.setPerson(patient);
+			}
+
+			//sub chief and chief's details
+
+			PersonAttribute attrSubChiefNames = patient.getAttribute(MetadataUtils.getPersonAttributeType(Metadata.PersonAttributeType.SUB_CHIEF_NAME));
+			if (subChiefNames != null) {
+				subChiefName = attrSubChiefNames;
+			}
+			else {
+				subChiefName.setPerson(patient);
 			}
 		}
 
@@ -497,6 +512,14 @@ public class EditPatientFragmentController {
 					voidData(toSave.getAttribute(nextOfkinAddresspat));
 				}
 				toSave.addAttribute(this.nextOfKinAddress);
+			}
+
+			PersonAttributeType subChiefNamespat = MetadataUtils.getPersonAttributeType(Metadata.PersonAttributeType.SUB_CHIEF_NAME);
+			if (anyChanges(toSave.getAttribute(subChiefNamespat), this.subChiefName, "value")) {
+				if (toSave.getAttribute(subChiefNamespat) != null) {
+					voidData(toSave.getAttribute(subChiefNamespat));
+				}
+				toSave.addAttribute(this.subChiefName);
 			}
 
 

@@ -14,6 +14,8 @@
 
 package org.openmrs.module.kenyaemr;
 
+import java.lang.String;
+
 /**
  * Provides access to the core metadata in KenyaEMR
  */
@@ -92,6 +94,7 @@ public class Metadata {
 		public static final String NEXT_OF_KIN_NAME = "830bef6d-b01f-449d-9f8d-ac0fede8dbd3";
 		public static final String NEXT_OF_KIN_RELATIONSHIP = "d0aa9fd1-2ac5-45d8-9c5e-4317c622c8f5";
 		public static final String TELEPHONE_CONTACT = "b2c38640-2603-4629-aebd-3b54f33f1e3a";
+		public static final String SUBCHIEF_NAME = "40fa0c9c-7415-43ff-a4eb-c7c73d7b1a7a";
 	}
 
 	public static final class Program {

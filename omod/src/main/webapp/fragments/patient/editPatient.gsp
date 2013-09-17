@@ -54,7 +54,8 @@
 		[
 			[ object: command, property: "telephoneContact.value", label: ui.format(command.telephoneContact.attributeType) ],
 			[ object: command, property: "personAddress.address1", label: "Postal Address", config: [ size: 60 ] ],
-			[ object: command, property: "personAddress.country", label: "County", config: [ size: 60 ] ]
+			[ object: command, property: "personAddress.country", label: "County", config: [ size: 60 ] ],
+			[ object: command, property: "subChiefName.value", label: ui.format(command.subChiefName.attributeType) ]
 
 		],
 		[
