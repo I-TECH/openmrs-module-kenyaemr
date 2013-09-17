@@ -836,5 +836,19 @@ public class EditPatientFragmentController {
 		public void setNextOfKinAddress(PersonAttribute nextOfKinAddress) {
 			this.nextOfKinAddress = nextOfKinAddress;
 		}
+
+		/**
+		 * @return the subChiefName
+		 */
+		public PersonAttribute getSubChiefName() {
+			return subChiefName;
+		}
+
+		/**
+		 * @param subChiefName the subChiefName to set
+		 */
+		public void setSubChiefName(PersonAttribute subChiefName) {
+			this.subChiefName = subChiefName;
+		}
 	}
 }
