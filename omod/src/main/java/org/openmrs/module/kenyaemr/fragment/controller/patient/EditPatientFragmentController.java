@@ -451,7 +451,7 @@ public class EditPatientFragmentController {
 				toSave.addName(personName);
 			}
 
-			if (anyChanges(toSave.getPersonAddress(), personAddress, "address1", "address2", "address5", "address6", "countyDistrict","address3","cityVillage")) {
+			if (anyChanges(toSave.getPersonAddress(), personAddress, "address1", "address2", "address5", "address6", "countyDistrict","address3","cityVillage","stateProvince","country","address3","postalCode","address4")) {
 				if (toSave.getPersonAddress() != null) {
 					voidData(toSave.getPersonAddress());
 				}
