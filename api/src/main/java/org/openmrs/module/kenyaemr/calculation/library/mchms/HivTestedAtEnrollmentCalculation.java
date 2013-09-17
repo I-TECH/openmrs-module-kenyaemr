@@ -40,9 +40,9 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Calculates whether a mother is HIV+ but is not on ART. Calculation returns true if mother
- * is alive, enrolled in the MCH program, gestation is greater than 14 weeks, is HIV+ and was
- * not indicated as being on ART in the last encounter.
+ * Calculates whether a mother's HIV status was known or established at enrollment.
+ * Calculation returns true if mother is alive, enrolled in the MCH program and has
+ * either a +ve or -ve HIV status specified..
  */
 public class HivTestedAtEnrollmentCalculation extends BaseEmrCalculation {
 
