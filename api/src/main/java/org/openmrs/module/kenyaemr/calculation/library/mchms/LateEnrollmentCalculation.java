@@ -44,15 +44,7 @@ import java.util.Set;
  * Calculation returns true if mother is alive, enrolled in the MCH program and had gestation
  * greater than 28 weeks at enrollment.
  */
-public class LateEnrollmentCalculation extends BaseEmrCalculation implements PatientFlagCalculation {
-
-	/**
-	 * @see org.openmrs.module.kenyacore.calculation.PatientFlagCalculation#getFlagMessage()
-	 */
-	@Override
-	public String getFlagMessage() {
-		return "Not on ART";
-	}
+public class LateEnrollmentCalculation extends BaseEmrCalculation {
 
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {

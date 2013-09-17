@@ -33,11 +33,10 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Calculates whether a mother is on HAART. Calculation returns true if mother
- * is alive, enrolled in the MCH program, is HIV+ and indicated in the last MCH
- * encounter to be on HAART.
+ * Calculates whether a patien't partner HIV status is known. Calculation returns true if patient
+ * is alive, enrolled in the MCH program and her partner's HIV status is indicated as positive or negative.
  */
-public class OnHaartCalculation extends BaseEmrCalculation {
+public class KnownPartnerHivStatusCalculation extends BaseEmrCalculation {
 
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
@@ -47,27 +46,20 @@ public class OnHaartCalculation extends BaseEmrCalculation {
 		Set<Integer> alive = alivePatients(cohort, context);
 		Set<Integer> inMchmsProgram = CalculationUtils.patientsThatPass(Calculations.activeEnrollment(mchmsProgram, alive, context));
 
-		CalculationResultMap lastHivStatusObss = Calculations.lastObs(getConcept(Dictionary.HIV_STATUS), inMchmsProgram, context);
-		CalculationResultMap artStatusObss = Calculations.lastObs(getConcept(Dictionary.ANTIRETROVIRAL_USE_IN_PREGNANCY), inMchmsProgram, context);
+		CalculationResultMap partnerHivStatusObs = Calculations.lastObs(getConcept(Dictionary.PARTNER_HIV_STATUS), inMchmsProgram, context);
 
 		CalculationResultMap ret = new CalculationResultMap();
 		for (Integer ptId : cohort) {
-			boolean onHaart = false;
+			boolean partnerHivStatusKnown = false;
 
 			// Is patient alive and in MCH program?
 			if (inMchmsProgram.contains(ptId)) {
-				Concept lastHivStatus = EmrCalculationUtils.codedObsResultForPatient(lastHivStatusObss, ptId);
-				Concept lastArtStatus = EmrCalculationUtils.codedObsResultForPatient(artStatusObss, ptId);
-				boolean hivPositive = false;
-				if (lastHivStatus != null) {
-					hivPositive = lastHivStatus.equals(Dictionary.getConcept(Dictionary.POSITIVE));
-					if (lastArtStatus != null) {
-						onHaart = lastArtStatus.equals(Dictionary.getConcept(Dictionary.MOTHER_ON_HAART));
-					}
+				Concept partnerHivStatus = EmrCalculationUtils.codedObsResultForPatient(partnerHivStatusObs, ptId);
+				if (partnerHivStatus != null) {
+					partnerHivStatusKnown = !partnerHivStatus.equals(Dictionary.getConcept(Dictionary.UNKNOWN));
 				}
-				onHaart = hivPositive && onHaart;
 			}
-			ret.put(ptId, new BooleanResult(onHaart, this, context));
+			ret.put(ptId, new BooleanResult(partnerHivStatusKnown, this, context));
 		}
 		return ret;
 	}

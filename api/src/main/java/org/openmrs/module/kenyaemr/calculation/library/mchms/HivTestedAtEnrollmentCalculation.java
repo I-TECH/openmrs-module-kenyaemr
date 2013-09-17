@@ -15,7 +15,12 @@
 package org.openmrs.module.kenyaemr.calculation.library.mchms;
 
 import org.openmrs.Concept;
+import org.openmrs.Encounter;
+import org.openmrs.EncounterType;
+import org.openmrs.Patient;
 import org.openmrs.Program;
+import org.openmrs.api.EncounterService;
+import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
@@ -27,17 +32,19 @@ import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
+import org.openmrs.module.kenyaemr.util.EmrUtils;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 
 /**
- * Calculates whether a mother is on HAART. Calculation returns true if mother
- * is alive, enrolled in the MCH program, is HIV+ and indicated in the last MCH
- * encounter to be on HAART.
+ * Calculates whether a mother is HIV+ but is not on ART. Calculation returns true if mother
+ * is alive, enrolled in the MCH program, gestation is greater than 14 weeks, is HIV+ and was
+ * not indicated as being on ART in the last encounter.
  */
-public class OnHaartCalculation extends BaseEmrCalculation {
+public class HivTestedAtEnrollmentCalculation extends BaseEmrCalculation {
 
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
@@ -47,28 +54,35 @@ public class OnHaartCalculation extends BaseEmrCalculation {
 		Set<Integer> alive = alivePatients(cohort, context);
 		Set<Integer> inMchmsProgram = CalculationUtils.patientsThatPass(Calculations.activeEnrollment(mchmsProgram, alive, context));
 
-		CalculationResultMap lastHivStatusObss = Calculations.lastObs(getConcept(Dictionary.HIV_STATUS), inMchmsProgram, context);
-		CalculationResultMap artStatusObss = Calculations.lastObs(getConcept(Dictionary.ANTIRETROVIRAL_USE_IN_PREGNANCY), inMchmsProgram, context);
+		CalculationResultMap hivStatusObs = Calculations.lastObs(getConcept(Dictionary.HIV_STATUS), inMchmsProgram, context);
+		CalculationResultMap hivTestDateObs = Calculations.lastObs(getConcept(Dictionary.DATE_OF_HIV_DIAGNOSIS), inMchmsProgram, context);
 
 		CalculationResultMap ret = new CalculationResultMap();
 		for (Integer ptId : cohort) {
-			boolean onHaart = false;
+			boolean hivTestedAtEnrollment = false;
 
 			// Is patient alive and in MCH program?
 			if (inMchmsProgram.contains(ptId)) {
-				Concept lastHivStatus = EmrCalculationUtils.codedObsResultForPatient(lastHivStatusObss, ptId);
-				Concept lastArtStatus = EmrCalculationUtils.codedObsResultForPatient(artStatusObss, ptId);
-				boolean hivPositive = false;
-				if (lastHivStatus != null) {
-					hivPositive = lastHivStatus.equals(Dictionary.getConcept(Dictionary.POSITIVE));
-					if (lastArtStatus != null) {
-						onHaart = lastArtStatus.equals(Dictionary.getConcept(Dictionary.MOTHER_ON_HAART));
+				Concept hivStatus = EmrCalculationUtils.codedObsResultForPatient(hivStatusObs, ptId);
+				Date hivTestDate = EmrCalculationUtils.datetimeObsResultForPatient(hivTestDateObs, ptId);
+				if (hivStatus != null && !hivStatus.equals(Dictionary.getConcept(Dictionary.NOT_HIV_TESTED))) {
+					if (hivTestDate != null) {
+						Date enrollmentDate = getLatestMchmsEnrollmentDate(ptId);
+						hivTestedAtEnrollment = (hivTestDate.before(enrollmentDate)
+								|| hivTestDate.equals(enrollmentDate));
 					}
 				}
-				onHaart = hivPositive && onHaart;
 			}
-			ret.put(ptId, new BooleanResult(onHaart, this, context));
+			ret.put(ptId, new BooleanResult(hivTestedAtEnrollment, this, context));
 		}
 		return ret;
+	}
+
+	private Date getLatestMchmsEnrollmentDate(Integer patientId) {
+		Patient patient = Context.getPatientService().getPatient(patientId);
+		EncounterService encounterService = Context.getEncounterService();
+		EncounterType encounterType = encounterService.getEncounterTypeByUuid(Metadata.EncounterType.MCHMS_ENROLLMENT);
+		Encounter lastMchEnrollment = EmrUtils.lastEncounter(patient, encounterType);
+		return  lastMchEnrollment.getDateCreated();
 	}
 }
