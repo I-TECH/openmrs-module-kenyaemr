@@ -56,7 +56,7 @@ public class UnknownPartnerHivStatusCalculationTest extends BaseModuleContextSen
 	 *      java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
 	 */
 	@Test
-	public void evaluate_shouldDetermineWhetherPatientsAreOnHaart() throws Exception {
+	public void evaluate_shouldDetermineWhetherPatientsPartnersHiVStatusesAreUnknown() throws Exception {
 
 		// Get the MCH-MS program, enrollment encounter type and enrollment form
 		Program mchmsProgram = MetadataUtils.getProgram(Metadata.Program.MCHMS);
@@ -73,15 +73,15 @@ public class UnknownPartnerHivStatusCalculationTest extends BaseModuleContextSen
 		//Get the Partner HIV Status concept
 		Concept partnerHivStatus = Dictionary.getConcept(Dictionary.PARTNER_HIV_STATUS);
 
-		//Create enrollment encounter for Pat#6 indicating HIV status +ve
+		//Create enrollment encounter for Pat#6 indicating partner HIV status unknown
 		Obs[] encounterObss6 = {TestUtils.saveObs(patientService.getPatient(6), partnerHivStatus, Dictionary.getConcept(Dictionary.UNKNOWN), new Date())};
 		TestUtils.saveEncounter(patientService.getPatient(6), enrollmentEncounterType, enrollmentForm, new Date(), encounterObss6);
 
-		//Create enrollment encounter for Pat#7 indicating HIV status +ve
+		//Create enrollment encounter for Pat#7 indicating partner HIV status -ve
 		Obs[] encounterObss7 = {TestUtils.saveObs(patientService.getPatient(7), partnerHivStatus, Dictionary.getConcept(Dictionary.NEGATIVE), new Date())};
 		TestUtils.saveEncounter(patientService.getPatient(7), enrollmentEncounterType, enrollmentForm, new Date(), encounterObss7);
 
-		//Create enroollment encounter for Pat#8 indicating HIV status +ve
+		//Create enrollment encounter for Pat#8 indicating partner HIV status +ve
 		Obs[] encounterObss8 = {TestUtils.saveObs(patientService.getPatient(8), partnerHivStatus, Dictionary.getConcept(Dictionary.POSITIVE), new Date())};
 		TestUtils.saveEncounter(patientService.getPatient(8), enrollmentEncounterType, enrollmentForm, new Date(), encounterObss8);
 
