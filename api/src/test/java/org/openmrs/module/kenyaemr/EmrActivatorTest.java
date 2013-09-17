@@ -17,7 +17,6 @@ package org.openmrs.module.kenyaemr;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.module.ModuleActivator;
-import org.openmrs.module.kenyacore.CoreActivator;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 /**
