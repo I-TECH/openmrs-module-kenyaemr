@@ -206,7 +206,7 @@ public class EditPatientFragmentController {
 			nextOfKinAddress.setAttributeType(MetadataUtils.getPersonAttributeType(Metadata.PersonAttributeType.NEXT_OF_KIN_ADDRESS));
 
 			subChiefName = new PersonAttribute();
-			subChiefName.setAttributeType(MetadataUtils.getPersonAttributeType(Metadata.PersonAttributeType.SUB_CHIEF_NAME))
+			subChiefName.setAttributeType(MetadataUtils.getPersonAttributeType(Metadata.PersonAttributeType.SUBCHIEF_NAME));
 
 		}
 
@@ -315,8 +315,8 @@ public class EditPatientFragmentController {
 
 			//sub chief and chief's details
 
-			PersonAttribute attrSubChiefNames = patient.getAttribute(MetadataUtils.getPersonAttributeType(Metadata.PersonAttributeType.SUB_CHIEF_NAME));
-			if (subChiefNames != null) {
+			PersonAttribute attrSubChiefNames = patient.getAttribute(MetadataUtils.getPersonAttributeType(Metadata.PersonAttributeType.SUBCHIEF_NAME));
+			if (attrSubChiefNames != null) {
 				subChiefName = attrSubChiefNames;
 			}
 			else {
@@ -514,7 +514,7 @@ public class EditPatientFragmentController {
 				toSave.addAttribute(this.nextOfKinAddress);
 			}
 
-			PersonAttributeType subChiefNamespat = MetadataUtils.getPersonAttributeType(Metadata.PersonAttributeType.SUB_CHIEF_NAME);
+			PersonAttributeType subChiefNamespat = MetadataUtils.getPersonAttributeType(Metadata.PersonAttributeType.SUBCHIEF_NAME);
 			if (anyChanges(toSave.getAttribute(subChiefNamespat), this.subChiefName, "value")) {
 				if (toSave.getAttribute(subChiefNamespat) != null) {
 					voidData(toSave.getAttribute(subChiefNamespat));
