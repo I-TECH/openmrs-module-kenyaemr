@@ -33,10 +33,10 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Calculates whether a patien't partner HIV status is known. Calculation returns true if patient
- * is alive, enrolled in the MCH program and her partner's HIV status is indicated as positive or negative.
+ * Calculates whether a patien't partner HIV status is unknown. Calculation returns true if patient
+ * is alive, enrolled in the MCH program and her partner's HIV status is indicated as unknown.
  */
-public class KnownPartnerHivStatusCalculation extends BaseEmrCalculation {
+public class UnKnownPartnerHivStatusCalculation extends BaseEmrCalculation {
 
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
@@ -50,16 +50,16 @@ public class KnownPartnerHivStatusCalculation extends BaseEmrCalculation {
 
 		CalculationResultMap ret = new CalculationResultMap();
 		for (Integer ptId : cohort) {
-			boolean partnerHivStatusKnown = false;
+			boolean partnerHivStatusUnknown = false;
 
 			// Is patient alive and in MCH program?
 			if (inMchmsProgram.contains(ptId)) {
 				Concept partnerHivStatus = EmrCalculationUtils.codedObsResultForPatient(partnerHivStatusObs, ptId);
 				if (partnerHivStatus != null) {
-					partnerHivStatusKnown = !partnerHivStatus.equals(Dictionary.getConcept(Dictionary.UNKNOWN));
+					partnerHivStatusUnknown = partnerHivStatus.equals(Dictionary.getConcept(Dictionary.UNKNOWN));
 				}
 			}
-			ret.put(ptId, new BooleanResult(partnerHivStatusKnown, this, context));
+			ret.put(ptId, new BooleanResult(partnerHivStatusUnknown, this, context));
 		}
 		return ret;
 	}

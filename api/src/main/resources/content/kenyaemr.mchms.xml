@@ -208,7 +208,7 @@
 
 	<bean id="kenyaemr.mchms.report.knownPartnerHivStatus" class="org.openmrs.module.kenyacore.report.CalculationReportDescriptor">
 		<property name="name" value="Patients whose partners' HIV status is known"/>
-		<property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.mchms.KnownPartnerHivStatusCalculation"/>
+		<property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.mchms.UnKnownPartnerHivStatusCalculation"/>
 		<property name="apps">
 			<set>
 				<ref bean="kenyaemr.app.reports"/>

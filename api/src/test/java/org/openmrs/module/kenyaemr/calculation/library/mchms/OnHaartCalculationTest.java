@@ -101,7 +101,7 @@ public class OnHaartCalculationTest extends BaseModuleContextSensitiveTest {
 
 		Context.flushSession();
 
-		List<Integer> ptIds = Arrays.asList(2, 6, 7, 8, 9);
+		List<Integer> ptIds = Arrays.asList(2, 6, 7, 8);
 
 
 		//Run OnHaartCalculation with these test patients
@@ -111,7 +111,6 @@ public class OnHaartCalculationTest extends BaseModuleContextSensitiveTest {
 		Assert.assertFalse((Boolean) resultMap.get(6).getValue()); //HIV+ and not on HAART
 		Assert.assertTrue((Boolean) resultMap.get(7).getValue()); //HIV+ on HAART
 		Assert.assertFalse((Boolean) resultMap.get(8).getValue()); //HIV+ and not on HAART
-		Assert.assertFalse((Boolean) resultMap.get(9).getValue()); // Not in MCH-MS Program
 	}
 
 	/**
