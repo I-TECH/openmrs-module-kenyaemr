@@ -33,7 +33,6 @@ import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -103,6 +102,7 @@ public class OnHaartCalculationTest extends BaseModuleContextSensitiveTest {
 		Context.flushSession();
 
 		List<Integer> ptIds = Arrays.asList(2, 6, 7, 8, 9);
+
 
 		//Run OnHaartCalculation with these test patients
 		CalculationResultMap resultMap = Context.getService(PatientCalculationService.class).evaluate(ptIds, new OnHaartCalculation());
