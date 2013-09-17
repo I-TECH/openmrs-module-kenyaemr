@@ -83,25 +83,28 @@ public class PatientUtilsFragmentController {
 	/**
 	 * Look for the mothers name for an infant from the relationship defined
 	 * @param patient
+	 * @param now
 	 * @return list of mothers
 	 */
-	public SimpleObject[] getMothers(@RequestParam("patientId") Patient patient,@RequestParam("now") Date date,UiUtils ui) {
+	public SimpleObject[] getMothers(@RequestParam("patientId") Patient patient,UiUtils ui) {
 		List<Person> people = new ArrayList<Person>();
 		if (patient == null)
 			return new SimpleObject[] {};
 		else {
 			for (Relationship relationship : Context.getPersonService().getRelationshipsByPerson(patient)) {
-				if (relationship.getRelationshipType().getbIsToA().equals("Parent")) {
-					if (relationship.getPersonB().getGender().equals("F"))
-						people.add(relationship.getPersonB());
-				}
-				if (relationship.getRelationshipType().getaIsToB().equals("Parent")) {
-						if (relationship.getPersonA().getGender().equals("F")) {
-							people.add(relationship.getPersonA());
-						}
+				if (relationship != null) {
+					if (relationship.getRelationshipType().getbIsToA().equals("Parent")) {
+						if (relationship.getPersonB().getGender().equals("F"))
+							people.add(relationship.getPersonB());
 					}
+					if (relationship.getRelationshipType().getaIsToB().equals("Parent")) {
+							if (relationship.getPersonA().getGender().equals("F")) {
+								people.add(relationship.getPersonA());
+							}
+						}
 				}
 			}
+		}
 		return ui.simplifyCollection(people);
 	}
 }

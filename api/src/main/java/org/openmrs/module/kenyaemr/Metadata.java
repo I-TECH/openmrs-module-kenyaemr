@@ -89,6 +89,7 @@ public class Metadata {
 	}
 
 	public static final class PatientIdentifierType {
+		public static final String HEI_ID_Number = "0691f522-dd67-4eeb-92c8-af5083baf338";
 		public static final String NATIONAL_ID = "49af6cdc-7968-4abb-bf46-de10d7f4859f";
 		public static final String OPENMRS_ID = "dfacd928-0370-4315-99d7-6ec1c9f7ae76";
 		public static final String PATIENT_CLINIC_NUMBER = "b4d66522-11fc-45c7-83e3-39a1af21ae0d";
