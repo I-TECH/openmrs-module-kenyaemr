@@ -98,7 +98,7 @@ public class MetadataIntegrationTest extends BaseModuleContextSensitiveTest {
 	@SkipBaseSetup
 	public void testProgramLoadingFromCorePackage() throws Exception {
 		PackageImporter metadataImporter = MetadataSharing.getInstance().newPackageImporter();
-		metadataImporter.loadSerializedPackageStream(ClassLoader.getSystemResourceAsStream("metadata/KenyaEMR_Core-37.zip"));
+		metadataImporter.loadSerializedPackageStream(ClassLoader.getSystemResourceAsStream("metadata/KenyaEMR_Core-39.zip"));
 		metadataImporter.setImportConfig(ImportConfig.valueOf(ImportMode.MIRROR));
 		metadataImporter.importPackage();
 
@@ -113,7 +113,8 @@ public class MetadataIntegrationTest extends BaseModuleContextSensitiveTest {
 		Context.clearSession();
 
 		metadataImporter = MetadataSharing.getInstance().newPackageImporter();
-		metadataImporter.loadSerializedPackageStream(ClassLoader.getSystemResourceAsStream("metadata/KenyaEMR_Core-37.zip"));
+
+		metadataImporter.loadSerializedPackageStream(ClassLoader.getSystemResourceAsStream("metadata/KenyaEMR_Core-39.zip"));
 		metadataImporter.setImportConfig(ImportConfig.valueOf(ImportMode.MIRROR));
 		metadataImporter.importPackage();
 
