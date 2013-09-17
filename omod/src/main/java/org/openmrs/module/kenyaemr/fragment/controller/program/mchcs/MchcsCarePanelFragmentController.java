@@ -89,7 +89,7 @@ public class MchcsCarePanelFragmentController {
 			 milestones.addAll(EmrUtils.allObsInEncounter(lastMchcsConsultation, Dictionary.getConcept(Dictionary.DEVELOPMENTAL_MILESTONES)));
 			if (milestones.size() > 0) {
 				for(Obs mile : milestones) {
-					developmentalMilestones += mile.getValueCoded().getName() +"	";
+					developmentalMilestones += mile.getValueCoded().getName() +",";
 				}
 				calculations.put("milestones", developmentalMilestones);
 			}
@@ -99,7 +99,7 @@ public class MchcsCarePanelFragmentController {
 			remarks.addAll(EmrUtils.allObsInEncounter(lastMchcsConsultation, Dictionary.getConcept(Dictionary.REVIEW_OF_SYSTEMS_DEVELOPMENTAL)));
 			if (remarks.size() > 0) {
 				for(Obs rem : remarks){
-					developmentalRemarks +=rem.getValueCoded()+"	";
+					developmentalRemarks +=rem.getValueCoded().getName() +",";
 				}
 				calculations.put("remarks", developmentalRemarks);
 			}
