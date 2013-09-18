@@ -55,22 +55,21 @@ public class LateEnrollmentCalculation extends BaseEmrCalculation {
 		Set<Integer> inMchmsProgram = CalculationUtils.patientsThatPass(Calculations.activeEnrollment(mchmsProgram, alive, context));
 
 		CalculationResultMap ret = new CalculationResultMap();
+		CalculationResultMap crm = Calculations.lastEncounter(MetadataUtils.getEncounterType(Metadata.EncounterType.MCHMS_ENROLLMENT), cohort, context);
 		boolean lateEnrollment = false;
 		for (Integer ptId : cohort) {
 			// Is patient alive and in MCH program?
+			lateEnrollment = false;
 			if (inMchmsProgram.contains(ptId)) {
-				lateEnrollment = gestationAtEnrollmentWasGreaterThan28Weeks(ptId);
+				lateEnrollment = gestationAtEnrollmentWasGreaterThan28Weeks(ptId, crm);
 			}
 			ret.put(ptId, new BooleanResult(lateEnrollment, this, context));
 		}
 		return ret;
 	}
 
-	private boolean gestationAtEnrollmentWasGreaterThan28Weeks(Integer patientId) {
-		Patient patient = Context.getPatientService().getPatient(patientId);
-		EncounterService encounterService = Context.getEncounterService();
-		EncounterType encounterType = encounterService.getEncounterTypeByUuid(Metadata.EncounterType.MCHMS_ENROLLMENT);
-		Encounter lastMchEnrollment = EmrUtils.lastEncounter(patient, encounterType);
+	private boolean gestationAtEnrollmentWasGreaterThan28Weeks(Integer patientId, CalculationResultMap crm) {
+		Encounter lastMchEnrollment = (Encounter) crm.get(patientId).getValue();
 		Obs lmpObs = EmrUtils.firstObsInEncounter(lastMchEnrollment, Dictionary.getConcept(Dictionary.LAST_MONTHLY_PERIOD));
 		if (lmpObs != null) {
 			Weeks weeks = Weeks.weeksBetween(new DateTime(lmpObs.getValueDate()), new DateTime(lastMchEnrollment.getDateCreated()));

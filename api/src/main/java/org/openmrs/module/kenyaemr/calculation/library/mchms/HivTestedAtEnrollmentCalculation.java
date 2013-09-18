@@ -58,15 +58,17 @@ public class HivTestedAtEnrollmentCalculation extends BaseEmrCalculation {
 		CalculationResultMap hivTestDateObs = Calculations.lastObs(getConcept(Dictionary.DATE_OF_HIV_DIAGNOSIS), inMchmsProgram, context);
 
 		CalculationResultMap ret = new CalculationResultMap();
-		boolean hivTestedAtEnrollment = false;
+		CalculationResultMap crm = Calculations.lastEncounter(MetadataUtils.getEncounterType(Metadata.EncounterType.MCHMS_ENROLLMENT), cohort, context);
+		boolean hivTestedAtEnrollment;
 		for (Integer ptId : cohort) {
 			// Is patient alive and in MCH program?
+			hivTestedAtEnrollment = false;
 			if (inMchmsProgram.contains(ptId)) {
 				Concept hivStatus = EmrCalculationUtils.codedObsResultForPatient(hivStatusObs, ptId);
 				Date hivTestDate = EmrCalculationUtils.datetimeObsResultForPatient(hivTestDateObs, ptId);
 				if (hivStatus != null && !hivStatus.equals(Dictionary.getConcept(Dictionary.NOT_HIV_TESTED))) {
 					if (hivTestDate != null) {
-						Date enrollmentDate = getLatestMchmsEnrollmentDate(ptId);
+						Date enrollmentDate = ((Encounter) crm.get(ptId).getValue()).getDateCreated();
 						hivTestedAtEnrollment = (hivTestDate.before(enrollmentDate)
 								|| hivTestDate.equals(enrollmentDate));
 					}
@@ -75,13 +77,5 @@ public class HivTestedAtEnrollmentCalculation extends BaseEmrCalculation {
 			ret.put(ptId, new BooleanResult(hivTestedAtEnrollment, this, context));
 		}
 		return ret;
-	}
-
-	private Date getLatestMchmsEnrollmentDate(Integer patientId) {
-		Patient patient = Context.getPatientService().getPatient(patientId);
-		EncounterService encounterService = Context.getEncounterService();
-		EncounterType encounterType = encounterService.getEncounterTypeByUuid(Metadata.EncounterType.MCHMS_ENROLLMENT);
-		Encounter lastMchEnrollment = EmrUtils.lastEncounter(patient, encounterType);
-		return lastMchEnrollment.getDateCreated();
 	}
 }
