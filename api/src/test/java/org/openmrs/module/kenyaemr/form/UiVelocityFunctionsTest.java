@@ -22,53 +22,46 @@ import org.openmrs.module.htmlformentry.FormEntrySession;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.kenyaemr.Metadata;
+import org.openmrs.module.kenyaemr.test.TestUiUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.ui.framework.WebConstants;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpSession;
 
 import javax.servlet.http.HttpSession;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.is;
 
 /**
- * Tests for {@link EmrVelocityFunctions}
+ * Tests for {@link org.openmrs.module.kenyaemr.form.EmrVelocityFunctions}
  */
-public class EmrVelocityFunctionsTest extends BaseModuleContextSensitiveTest {
+public class UiVelocityFunctionsTest extends BaseModuleContextSensitiveTest {
 
-	private EmrVelocityFunctions functionsForSession1, functionsForSession2;
+	private UiVelocityFunctions functions;
+
+	@Autowired
+	private TestUiUtils ui;
 
 	/**
 	 * Setup each test
 	 */
 	@Before
 	public void setup() throws Exception {
-		executeDataSet("dataset/test-concepts.xml");
-		executeDataSet("dataset/test-metadata.xml");
-
 		HttpSession httpSession = new MockHttpSession();
 		String formXml = "<htmlform></htmlform>";
 
-		// Create a session for dummy form with patient #6
-		FormEntrySession formSession1 = new FormEntrySession(TestUtils.getPatient(6), formXml, httpSession);
-		functionsForSession1 = new EmrVelocityFunctions(formSession1);
-
 		// Create a session for dummy form with patient #7
-		FormEntrySession formSession2 = new FormEntrySession(TestUtils.getPatient(7), formXml, httpSession);
-		functionsForSession2 = new EmrVelocityFunctions(formSession2);
+		FormEntrySession formSession = new FormEntrySession(TestUtils.getPatient(7), formXml, httpSession);
+		functions = new UiVelocityFunctions(formSession, ui);
 	}
 
 	/**
-	 * @see EmrVelocityFunctions#hasHivUniquePatientNumber()
+	 * @see org.openmrs.module.kenyaemr.form.UiVelocityFunctions#resourceLink(String, String)
 	 */
 	@Test
-	public void hasHivUniquePatientNumber() {
-		// Give patient #7 a UPN
-		PatientIdentifierType upn = MetadataUtils.getPatientIdentifierType(Metadata.PatientIdentifierType.UNIQUE_PATIENT_NUMBER);
-		TestUtils.savePatientIdentifier(TestUtils.getPatient(7), upn, "1234567890");
+	public void resourceLink() {
+		WebConstants.CONTEXT_PATH = "testing";
 
-		// Patient #7 now has a UPN
-		Assert.assertThat(functionsForSession2.hasHivUniquePatientNumber(), is(true));
-
-		// Patient #6 doesn't have a UPN
-		Assert.assertThat(functionsForSession1.hasHivUniquePatientNumber(), is(false));
+		Assert.assertThat(functions.resourceLink("kenyaemr", "test.png"), is("/testing/ms/uiframework/resource/kenyaemr/test.png"));
 	}
 }

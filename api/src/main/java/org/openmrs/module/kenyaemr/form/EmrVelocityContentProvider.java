@@ -11,25 +11,33 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.kenyaemr.form;
 
 import org.apache.velocity.VelocityContext;
 import org.openmrs.module.htmlformentry.FormEntrySession;
 import org.openmrs.module.htmlformentry.velocity.VelocityContextContentProvider;
 import org.openmrs.module.kenyaemr.EmrConstants;
+import org.openmrs.ui.framework.UiUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
  * Registers module specific Velocity functions
  */
-@Component("kenyaemr.velocityContentProvider")
-public class VelocityContentProvider implements VelocityContextContentProvider {
+@Component
+public class EmrVelocityContentProvider implements VelocityContextContentProvider {
+
+	@Autowired
+	private UiUtils ui;
 	
 	/**
 	 * @see org.openmrs.module.htmlformentry.velocity.VelocityContextContentProvider#populateContext(org.openmrs.module.htmlformentry.FormEntrySession, org.apache.velocity.VelocityContext)
 	 */
 	@Override
 	public void populateContext(FormEntrySession session, VelocityContext velocityContext) {
+
 		velocityContext.put(EmrConstants.MODULE_ID, new EmrVelocityFunctions(session));
+		velocityContext.put("ui", new UiVelocityFunctions(session, ui));
 	}
 }
