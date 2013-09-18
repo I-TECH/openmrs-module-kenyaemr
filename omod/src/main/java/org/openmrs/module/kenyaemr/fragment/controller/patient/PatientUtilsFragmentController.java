@@ -88,9 +88,6 @@ public class PatientUtilsFragmentController {
 	 */
 	public SimpleObject[] getMothers(@RequestParam("patientId") Patient patient,UiUtils ui) {
 		List<Person> people = new ArrayList<Person>();
-		if (patient == null)
-			return new SimpleObject[] {};
-		else {
 			for (Relationship relationship : Context.getPersonService().getRelationshipsByPerson(patient)) {
 				if (relationship != null) {
 					if (relationship.getRelationshipType().getbIsToA().equals("Parent")) {
@@ -104,7 +101,6 @@ public class PatientUtilsFragmentController {
 						}
 				}
 			}
-		}
 		return ui.simplifyCollection(people);
 	}
 }
