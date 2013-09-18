@@ -55,9 +55,8 @@ public class LateEnrollmentCalculation extends BaseEmrCalculation {
 		Set<Integer> inMchmsProgram = CalculationUtils.patientsThatPass(Calculations.activeEnrollment(mchmsProgram, alive, context));
 
 		CalculationResultMap ret = new CalculationResultMap();
+		boolean lateEnrollment = false;
 		for (Integer ptId : cohort) {
-			boolean lateEnrollment = false;
-
 			// Is patient alive and in MCH program?
 			if (inMchmsProgram.contains(ptId)) {
 				lateEnrollment = gestationAtEnrollmentWasGreaterThan28Weeks(ptId);

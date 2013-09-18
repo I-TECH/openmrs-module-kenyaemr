@@ -49,9 +49,8 @@ public class UnKnownPartnerHivStatusCalculation extends BaseEmrCalculation {
 		CalculationResultMap partnerHivStatusObs = Calculations.lastObs(getConcept(Dictionary.PARTNER_HIV_STATUS), inMchmsProgram, context);
 
 		CalculationResultMap ret = new CalculationResultMap();
+		boolean partnerHivStatusUnknown = false;
 		for (Integer ptId : cohort) {
-			boolean partnerHivStatusUnknown = false;
-
 			// Is patient alive and in MCH program?
 			if (inMchmsProgram.contains(ptId)) {
 				Concept partnerHivStatus = EmrCalculationUtils.codedObsResultForPatient(partnerHivStatusObs, ptId);

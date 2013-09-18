@@ -51,9 +51,8 @@ public class OnHaartCalculation extends BaseEmrCalculation {
 		CalculationResultMap artStatusObss = Calculations.lastObs(getConcept(Dictionary.ANTIRETROVIRAL_USE_IN_PREGNANCY), inMchmsProgram, context);
 
 		CalculationResultMap ret = new CalculationResultMap();
+		boolean onHaart = false;
 		for (Integer ptId : cohort) {
-			boolean onHaart = false;
-
 			// Is patient alive and in MCH program?
 			if (inMchmsProgram.contains(ptId)) {
 				Concept lastHivStatus = EmrCalculationUtils.codedObsResultForPatient(lastHivStatusObss, ptId);

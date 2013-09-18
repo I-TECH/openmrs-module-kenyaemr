@@ -69,9 +69,8 @@ public class NotOnArtCalculation extends BaseEmrCalculation implements PatientFl
 		CalculationResultMap artStatusObss = Calculations.lastObs(getConcept(Dictionary.ANTIRETROVIRAL_USE_IN_PREGNANCY), inMchmsProgram, context);
 
 		CalculationResultMap ret = new CalculationResultMap();
+		boolean notOnArt = false;
 		for (Integer ptId : cohort) {
-			boolean notOnArt = false;
-
 			// Is patient alive and in MCH program?
 			if (inMchmsProgram.contains(ptId)) {
 				Concept lastHivStatus = EmrCalculationUtils.codedObsResultForPatient(lastHivStatusObss, ptId);
