@@ -101,18 +101,8 @@
 		}
 
 		function loadingImages(){
-			var img_pupil = document.createElement("IMG");
-			img_pupil.src = '/' + OPENMRS_CONTEXT_PATH +  '/ms/uiframework/resource/kenyaemr/images/htmlforms/mchcs/whitepupil.jpg';
-			img_pupil.setAttribute("height", "50");
-			img_pupil.setAttribute("width", "200");
-			img_pupil.setAttribute("alt","Check for the pupil color");
-			document.getElementById('pupil-image').appendChild(img_pupil);
-
-			var img_squint_eyes = document.createElement("IMG");
-			img_squint_eyes.src = '/' + OPENMRS_CONTEXT_PATH +  '/ms/uiframework/resource/kenyaemr/images/htmlforms/mchcs/squint.jpg';
-			img_squint_eyes.setAttribute("height", "50");
-			img_squint_eyes.setAttribute("width", "200");
-			document.getElementById('squint-eyes-image').appendChild(img_squint_eyes);
+			jq('#pupil-image').html('&lt;img src="<lookup expression="ui.resourceLink('kenyaemr', '/images/htmlforms/mchcs/whitepupil.jpg')" />" width="200" height="50" /&gt;');
+			jq('#squint-eyes-image').html('&lt;img src="<lookup expression="ui.resourceLink('kenyaemr', '/images/htmlforms/mchcs/squint.jpg')" />" width="200" height="50" /&gt;');
 		}
 		jq(function(){
 			var birthDate = "<lookup expression="patient.birthdate" />";
