@@ -26,12 +26,12 @@ import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.Metadata;
+import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.util.EmrUtils;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 
 import java.lang.String;
-import java.util.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -56,13 +56,11 @@ public class MchcsCarePanelFragmentController {
 		String developmentalMilestones = new String();
 		String developmentalRemarks = new String();
 
-
-		EncounterService encounterService = Context.getEncounterService();
-		EncounterType checkout_encounterType = encounterService.getEncounterTypeByUuid(Metadata.EncounterType.CHECK_OUT);
+		EncounterType checkout_encounterType = MetadataUtils.getEncounterType(Metadata.EncounterType.MCHCS_HEI_COMPLETION);
 		Encounter lastMchcsCheckout = EmrUtils.lastEncounter(patient,checkout_encounterType);
-		EncounterType mchcs_enrollment_encounterType = encounterService.getEncounterTypeByUuid(Metadata.EncounterType.MCHCS_ENROLLMENT);
+		EncounterType mchcs_enrollment_encounterType = MetadataUtils.getEncounterType(Metadata.EncounterType.MCHCS_ENROLLMENT);
 		Encounter lastMchcsEnrollment = EmrUtils.lastEncounter(patient,mchcs_enrollment_encounterType);
-		EncounterType mchcs_consultation_encounterType = encounterService.getEncounterTypeByUuid(Metadata.EncounterType.MCHCS_CONSULTATION);
+		EncounterType mchcs_consultation_encounterType = MetadataUtils.getEncounterType(Metadata.EncounterType.MCHCS_CONSULTATION);
 		Encounter lastMchcsConsultation = EmrUtils.lastEncounter(patient,mchcs_consultation_encounterType);
 
 
@@ -74,7 +72,7 @@ public class MchcsCarePanelFragmentController {
 			hivStatus =  EmrUtils.firstObsInEncounter(lastMchcsCheckout, Dictionary.getConcept(Dictionary.HIV_STATUS));
 		}
 
-		if ((hivExposed != null) && (hivExposed.getValueCoded() != Context.getConceptService().getConceptByUuid(Dictionary.EXPOSURE_TO_HIV))){
+		if ((hivExposed != null) && (hivExposed.getValueCoded() != Dictionary.getConcept(Dictionary.EXPOSURE_TO_HIV))){
 			calculations.put("heioutcomes", "Not HIV Exposed");
 		}
 		else if (heiOutcomes != null && hivExposed != null && hivStatus != null){

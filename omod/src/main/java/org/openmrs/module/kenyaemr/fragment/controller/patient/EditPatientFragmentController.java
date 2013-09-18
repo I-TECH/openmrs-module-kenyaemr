@@ -642,6 +642,7 @@ public class EditPatientFragmentController {
 		 * @param nationalIdNumber the nationalIdNumber to set
 		 */
 		public void setNationalIdNumber(PatientIdentifier nationalIdNumber) {
+
 			this.nationalIdNumber = nationalIdNumber;
 		}
 
