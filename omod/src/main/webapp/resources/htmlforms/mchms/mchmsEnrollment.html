@@ -34,9 +34,13 @@
 
 <script type="text/javascript">
 
+	var NOT_HIV_TESTED_ID = 1402;
+
 	jq(function () {
 		onLmpChange();
+		onHivStatusChange();
 		getField('lmp.value').change(onLmpChange);
+		getField('hiv-status.value').change(onHivStatusChange);
 	});
 
 	beforeSubmit.push(function () {
@@ -105,6 +109,16 @@
 			getField('parity-abortion.error').html('Parity (x+y) should be less or equal to Gravida.').show();
 			return false;
 		}
+		var hivStatus = getValue('hiv-status.value');
+		if (hivStatus != NOT_HIV_TESTED_ID) {
+			var hivTestDate = getValue('hiv-test-date.value');
+			if (hivTestDate == "") {
+				getField('hiv-test-date.error').html('Specify the date when the HIV test was done.').show();
+				return false;
+			}
+		} else {
+			setValue('hiv-test-date.value') == null;
+		}
 		return true;
 	}
 
@@ -127,6 +141,15 @@
 			}
 		}
 		return true;
+	}
+
+	function onHivStatusChange() {
+		if (getValue('hiv-status.value') == ""
+				|| getValue('hiv-status.value') == NOT_HIV_TESTED_ID) {
+			jq('#hiv-date-table').hide();
+		} else {
+			jq('#hiv-date-table').show();
+		}
 	}
 
 </script>
@@ -204,12 +227,6 @@
 					<obs conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true"/>
 				</td>
 			</tr>
-			<tr>
-				<td colspan="2"></td>
-			</tr>
-			<tr>
-				<td colspan="2"></td>
-			</tr>
 		</table>
 	</td>
 	<td valign="top">
@@ -243,14 +260,16 @@
 				<td>HIV Status:</td>
 				<td>
 					<obs conceptId="159427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true"
+						 id="hiv-status"
 						 answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1402AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 						 answerLabels="HIV Positive,HIV Negative,Not Tested"/>
 				</td>
 			</tr>
-			<tr>
-				<td>HIV Test Date:</td>
+			<tr id="hiv-date-table">
+				<td width="250">HIV Test Date:</td>
 				<td>
-					<obs conceptId="160554AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+					<obs conceptId="160554AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+						 id="hiv-test-date"/>
 				</td>
 			</tr>
 			<tr>
