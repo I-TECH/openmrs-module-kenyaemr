@@ -56,8 +56,8 @@ public class MchcsCarePanelFragmentController {
 		String developmentalMilestones = new String();
 		String developmentalRemarks = new String();
 
-		EncounterType checkout_encounterType = MetadataUtils.getEncounterType(Metadata.EncounterType.MCHCS_HEI_COMPLETION);
-		Encounter lastMchcsCheckout = EmrUtils.lastEncounter(patient,checkout_encounterType);
+		EncounterType hei_completion_encounterType = MetadataUtils.getEncounterType(Metadata.EncounterType.MCHCS_HEI_COMPLETION);
+		Encounter lastMchcsCheckout = EmrUtils.lastEncounter(patient,hei_completion_encounterType);
 		EncounterType mchcs_enrollment_encounterType = MetadataUtils.getEncounterType(Metadata.EncounterType.MCHCS_ENROLLMENT);
 		Encounter lastMchcsEnrollment = EmrUtils.lastEncounter(patient,mchcs_enrollment_encounterType);
 		EncounterType mchcs_consultation_encounterType = MetadataUtils.getEncounterType(Metadata.EncounterType.MCHCS_CONSULTATION);
