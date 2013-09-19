@@ -51,6 +51,8 @@ public class HivTestedAtEnrollmentCalculation extends BaseEmrCalculation {
 		CalculationResultMap hivStatusObs = Calculations.lastObs(getConcept(Dictionary.HIV_STATUS), inMchmsProgram, context);
 		CalculationResultMap hivTestDateObs = Calculations.lastObs(getConcept(Dictionary.DATE_OF_HIV_DIAGNOSIS), inMchmsProgram, context);
 
+		Concept notHivTestedConcept = Dictionary.getConcept(Dictionary.NOT_HIV_TESTED);
+
 		CalculationResultMap ret = new CalculationResultMap();
 		CalculationResultMap crm = Calculations.lastEncounter(MetadataUtils.getEncounterType(Metadata.EncounterType.MCHMS_ENROLLMENT), cohort, context);
 		boolean hivTestedAtEnrollment;
@@ -60,7 +62,7 @@ public class HivTestedAtEnrollmentCalculation extends BaseEmrCalculation {
 			if (inMchmsProgram.contains(ptId)) {
 				Concept hivStatus = EmrCalculationUtils.codedObsResultForPatient(hivStatusObs, ptId);
 				Date hivTestDate = EmrCalculationUtils.datetimeObsResultForPatient(hivTestDateObs, ptId);
-				if (hivStatus != null && !hivStatus.equals(Dictionary.getConcept(Dictionary.NOT_HIV_TESTED))) {
+				if (hivStatus != null && !hivStatus.equals(notHivTestedConcept)) {
 					if (hivTestDate != null) {
 						Date enrollmentDate = ((Encounter) crm.get(ptId).getValue()).getDateCreated();
 						hivTestedAtEnrollment = (hivTestDate.before(enrollmentDate)
