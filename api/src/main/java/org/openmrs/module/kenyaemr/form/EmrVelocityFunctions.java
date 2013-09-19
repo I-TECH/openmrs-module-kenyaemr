@@ -59,9 +59,19 @@ public class EmrVelocityFunctions {
 	 * Fetches a concept from its identifier
 	 * @param conceptIdentifier the concept identifier
 	 * @return the concept
+	 * @throws IllegalArgumentException if no such concept exists
 	 */
 	public Concept getConcept(String conceptIdentifier) {
 		return Dictionary.getConcept(conceptIdentifier);
+	}
+
+	/**
+	 * Fetches a global property value by property name
+	 * @param name the property name
+	 * @return the global property value
+	 */
+	public String getGlobalProperty(String name) {
+		return Context.getAdministrationService().getGlobalProperty(name);
 	}
 
 	/**

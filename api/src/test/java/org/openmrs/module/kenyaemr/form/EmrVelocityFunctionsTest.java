@@ -17,10 +17,14 @@ package org.openmrs.module.kenyaemr.form;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.Concept;
+import org.openmrs.GlobalProperty;
 import org.openmrs.PatientIdentifierType;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.htmlformentry.FormEntrySession;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyacore.test.TestUtils;
+import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.mock.web.MockHttpSession;
@@ -28,6 +32,7 @@ import org.springframework.mock.web.MockHttpSession;
 import javax.servlet.http.HttpSession;
 
 import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.is;
 
 /**
  * Tests for {@link EmrVelocityFunctions}
@@ -70,5 +75,26 @@ public class EmrVelocityFunctionsTest extends BaseModuleContextSensitiveTest {
 
 		// Patient #6 doesn't have a UPN
 		Assert.assertThat(functionsForSession1.hasHivUniquePatientNumber(), is(false));
+	}
+
+	/**
+	 * @see EmrVelocityFunctions#getConcept(String)
+	 */
+	@Test
+	public void getConcept_shouldReturnConcept() {
+		Concept cd4 = Dictionary.getConcept(Dictionary.CD4_COUNT);
+		Assert.assertThat(functionsForSession1.getConcept(Dictionary.CD4_COUNT), is(cd4));
+	}
+
+	/**
+	 * @see EmrVelocityFunctions#getGlobalProperty(String)
+	 */
+	@Test
+	public void getGlobalProperty_shouldReturnPropertyValue() {
+		GlobalProperty gp = Context.getAdministrationService().getGlobalPropertyObject("visits.assignmentHandler");
+		Assert.assertThat(functionsForSession1.getGlobalProperty("visits.assignmentHandler"), is(gp.getValue()));
+
+		// Check no exception for non-existent
+		Assert.assertThat(functionsForSession1.getGlobalProperty("xxx.xxx"), is(nullValue()));
 	}
 }
