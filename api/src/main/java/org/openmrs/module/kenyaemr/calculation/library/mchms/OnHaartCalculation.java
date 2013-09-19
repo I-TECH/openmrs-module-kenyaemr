@@ -49,6 +49,9 @@ public class OnHaartCalculation extends BaseEmrCalculation {
 		CalculationResultMap lastHivStatusObss = Calculations.lastObs(getConcept(Dictionary.HIV_STATUS), inMchmsProgram, context);
 		CalculationResultMap artStatusObss = Calculations.lastObs(getConcept(Dictionary.ANTIRETROVIRAL_USE_IN_PREGNANCY), inMchmsProgram, context);
 
+		Concept hivPositiveConcept = Dictionary.getConcept(Dictionary.POSITIVE);
+		Concept onHaartConcept = Dictionary.getConcept(Dictionary.MOTHER_ON_HAART);
+
 		CalculationResultMap ret = new CalculationResultMap();
 		boolean onHaart;
 		for (Integer ptId : cohort) {
@@ -59,9 +62,9 @@ public class OnHaartCalculation extends BaseEmrCalculation {
 				Concept lastArtStatus = EmrCalculationUtils.codedObsResultForPatient(artStatusObss, ptId);
 				boolean hivPositive = false;
 				if (lastHivStatus != null) {
-					hivPositive = lastHivStatus.equals(Dictionary.getConcept(Dictionary.POSITIVE));
+					hivPositive = lastHivStatus.equals(hivPositiveConcept);
 					if (lastArtStatus != null) {
-						onHaart = lastArtStatus.equals(Dictionary.getConcept(Dictionary.MOTHER_ON_HAART));
+						onHaart = lastArtStatus.equals(onHaartConcept);
 					}
 				}
 				onHaart = hivPositive && onHaart;
