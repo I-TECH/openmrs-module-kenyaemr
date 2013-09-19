@@ -57,7 +57,7 @@ public class MchcsCarePanelFragmentController {
 		String developmentalRemarks = new String();
 
 		EncounterType hei_completion_encounterType = MetadataUtils.getEncounterType(Metadata.EncounterType.MCHCS_HEI_COMPLETION);
-		Encounter lastMchcsCheckout = EmrUtils.lastEncounter(patient,hei_completion_encounterType);
+		Encounter lastMchcsHeiCompletion = EmrUtils.lastEncounter(patient,hei_completion_encounterType);
 		EncounterType mchcs_enrollment_encounterType = MetadataUtils.getEncounterType(Metadata.EncounterType.MCHCS_ENROLLMENT);
 		Encounter lastMchcsEnrollment = EmrUtils.lastEncounter(patient,mchcs_enrollment_encounterType);
 		EncounterType mchcs_consultation_encounterType = MetadataUtils.getEncounterType(Metadata.EncounterType.MCHCS_CONSULTATION);
@@ -66,10 +66,10 @@ public class MchcsCarePanelFragmentController {
 
 
 
-		if (lastMchcsCheckout != null && lastMchcsEnrollment != null) {
-			heiOutcomes = EmrUtils.firstObsInEncounter(lastMchcsCheckout, Dictionary.getConcept(Dictionary.REASON_FOR_PROGRAM_DISCONTINUATION));
+		if (lastMchcsHeiCompletion != null && lastMchcsEnrollment != null) {
+			heiOutcomes = EmrUtils.firstObsInEncounter(lastMchcsHeiCompletion, Dictionary.getConcept(Dictionary.REASON_FOR_PROGRAM_DISCONTINUATION));
 			hivExposed =  EmrUtils.firstObsInEncounter(lastMchcsEnrollment, Dictionary.getConcept(Dictionary.CHILDS_CURRENT_HIV_STATUS));
-			hivStatus =  EmrUtils.firstObsInEncounter(lastMchcsCheckout, Dictionary.getConcept(Dictionary.HIV_STATUS));
+			hivStatus =  EmrUtils.firstObsInEncounter(lastMchcsHeiCompletion, Dictionary.getConcept(Dictionary.HIV_STATUS));
 		}
 
 		if ((hivExposed != null) && (hivExposed.getValueCoded() != Dictionary.getConcept(Dictionary.EXPOSURE_TO_HIV))){
@@ -86,9 +86,6 @@ public class MchcsCarePanelFragmentController {
 		if (lastMchcsConsultation != null) {
 			 milestones.addAll(EmrUtils.allObsInEncounter(lastMchcsConsultation, Dictionary.getConcept(Dictionary.DEVELOPMENTAL_MILESTONES)));
 			if (milestones.size() > 0) {
-				/*for(Obs mile : milestones) {
-					developmentalMilestones += mile.getValueCoded().getName() +",";
-				}*/
 				calculations.put("milestones", milestones);
 			}
 			else {
@@ -96,9 +93,6 @@ public class MchcsCarePanelFragmentController {
 			}
 			remarks.addAll(EmrUtils.allObsInEncounter(lastMchcsConsultation, Dictionary.getConcept(Dictionary.REVIEW_OF_SYSTEMS_DEVELOPMENTAL)));
 			if (remarks.size() > 0) {
-				/*for(Obs rem : remarks){
-					developmentalRemarks +=rem.getValueCoded().getName() +",";
-				}*/
 				calculations.put("remarks", remarks);
 			}
 			else {
