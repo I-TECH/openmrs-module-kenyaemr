@@ -29,16 +29,8 @@
 	</div>
 	<div style="clear: both"></div>
 </div>
-<div id="help-content" style="display: none">
-	${ ui.includeFragment("kenyaemr", "help") }
-</div>
 <script type="text/javascript">
 	function ke_showHelp() {
-		kenyaui.openPanelDialog({ heading: 'Help', content: helpDialogHtml, width: 90, height: 90 });
+		kenyaui.openDynamicDialog({ heading: 'Help', url: ui.pageLink('kenyaemr', 'partial/help'), width: 90, height: 90 });
 	}
-
-	jq(function(){
-		helpDialogHtml = jq('#help-content').html();
-		jq('#help-content').remove();
-	});
 </script>

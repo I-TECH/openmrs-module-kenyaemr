@@ -12,20 +12,22 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.fragment.controller;
+package org.openmrs.module.kenyaemr.page.controller.partial;
 
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
-import org.openmrs.ui.framework.fragment.FragmentModel;
+import org.openmrs.module.kenyaui.annotation.PublicPage;
+import org.openmrs.ui.framework.page.PageModel;
 import org.openmrs.util.PrivilegeConstants;
 
 /**
- * Controller for help fragment
+ * Controller for help page
  */
-public class HelpFragmentController {
+@PublicPage
+public class HelpPageController {
 
-	public void controller(FragmentModel model) {
+	public void controller(PageModel model) {
 
 		try {
 			Context.addProxyPrivilege(PrivilegeConstants.VIEW_GLOBAL_PROPERTIES);
