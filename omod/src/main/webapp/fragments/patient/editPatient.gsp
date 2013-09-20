@@ -9,8 +9,8 @@
 	def demogFieldRows = [
 		[
 			[ object: command, property: "personName.familyName", label: "Surname *" ],
-			[ object: command, property: "personName.givenName", label: "First Name *" ],
-			[ object: command, property: "personName.middleName", label: "Other Name(s)" ]		
+			[ object: command, property: "personName.givenName", label: "First name *" ],
+			[ object: command, property: "personName.middleName", label: "Other name(s)" ]
 		],
 		[
 			ui.decorate("kenyaui", "labeled", [label: "Sex *"], """
@@ -27,7 +27,7 @@
 			[ object: command, property: "birthdateEstimated", label: "Estimated?" ]
 		],
 		[
-			[ object: command, property: "maritalStatus", label: "Marital Status", config: [ style: "list", options: maritalStatusOptions ] ],
+			[ object: command, property: "maritalStatus", label: "Marital status", config: [ style: "list", options: maritalStatusOptions ] ],
 			[ object: command, property: "occupation", label: "Occupation", config: [ style: "list", answerTo: occupationConcept ] ],
 			[ object: command, property: "education", label: "Education", config: [ style: "list", options: educationOptions ] ]
 		],
@@ -53,10 +53,10 @@
 	def addressFieldRows = [
 		[
 			[ object: command, property: "telephoneContact.value", label: ui.format(command.telephoneContact.attributeType) ],
-			[ object: command, property: "personAddress.address1", label: "Postal Address", config: [ size: 60 ] ]
+			[ object: command, property: "personAddress.address1", label: "Postal address", config: [ size: 60 ] ]
 		],
 		[
-			[ object: command, property: "personAddress.address3", label: "School/Employer Address",config: [ size: 60 ] ],
+			[ object: command, property: "personAddress.address3", label: "School/employer Address",config: [ size: 60 ] ],
 			[ object: command, property: "personAddress.countyDistrict", label: "District" ]
 			
 			
@@ -67,7 +67,7 @@
 			[ object: command, property: "personAddress.address5", label: "Sub-location" ]
 		],
 		[
-			[ object: command, property: "personAddress.cityVillage", label: "Village/Estate" ],
+			[ object: command, property: "personAddress.cityVillage", label: "Village/estate" ],
 			[ object: command, property: "personAddress.address2", label: "Landmark" ]
 		]
 	]
