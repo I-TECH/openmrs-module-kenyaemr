@@ -47,6 +47,7 @@ public class CommonMetadataProvider extends AbstractMetadataProvider {
 		installer.encounterType("Consultation", "Collection of clinical data during the main consultation", Metadata.EncounterType.CONSULTATION);
 		installer.encounterType("Lab Results", "Collection of laboratory results", Metadata.EncounterType.LAB_RESULTS);
 
+		installer.form("Obstetric History", null, Metadata.EncounterType.REGISTRATION, "1", Metadata.Form.OBSTETRIC_HISTORY);
 		installer.form("Triage", null, Metadata.EncounterType.TRIAGE, "1", Metadata.Form.TRIAGE);
 		installer.form("Clinical Encounter", null, Metadata.EncounterType.CONSULTATION, "1", Metadata.Form.CLINICAL_ENCOUNTER);
 		installer.form("Lab Results", "Collection of laboratory results", Metadata.EncounterType.LAB_RESULTS, "1", Metadata.Form.LAB_RESULTS);

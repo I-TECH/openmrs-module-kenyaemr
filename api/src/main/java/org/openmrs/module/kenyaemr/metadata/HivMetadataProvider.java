@@ -20,9 +20,7 @@ import org.openmrs.module.kenyacore.metadata.AbstractMetadataProvider;
 import org.openmrs.module.kenyacore.metadata.Requires;
 import org.openmrs.module.kenyacore.metadata.installer.CoreMetadataInstaller;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyaemr.Metadata;
-import org.openmrs.module.kenyaemr.datatype.LocationDatatype;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
