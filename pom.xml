@@ -45,7 +45,7 @@
 		<htmlwidgetsVersion>1.6.4</htmlwidgetsVersion>
 		<idgenVersion>2.5</idgenVersion>
 		<kenyacoreVersion>0.11</kenyacoreVersion>
-		<kenyadqVersion>0.2.1</kenyadqVersion>
+		<kenyadqVersion>0.2.2</kenyadqVersion>
 		<!--<kenyalabVersion>0.1.2</kenyalabVersion>-->
 		<kenyauiVersion>1.12.4</kenyauiVersion>
 		<logicVersion>0.5.2</logicVersion>
