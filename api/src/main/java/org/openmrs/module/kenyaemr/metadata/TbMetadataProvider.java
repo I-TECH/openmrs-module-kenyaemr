@@ -40,6 +40,8 @@ public class TbMetadataProvider extends AbstractMetadataProvider {
 	public void install() {
 		log.info("Installing TB metadata");
 
+		installer.program("TB Program", "Treatment for TB patients", Dictionary.TUBERCULOSIS_TREATMENT_PROGRAM, Metadata.Program.TB);
+
 		installer.encounterType("TB Screening", "Screening of patient for TB", Metadata.EncounterType.TB_SCREENING);
 		installer.encounterType("TB Enrollment", "Enrollment onto HIV program", Metadata.EncounterType.TB_ENROLLMENT);
 		installer.encounterType("TB Consultation", "Collection of HIV-specific data during the main consultation", Metadata.EncounterType.TB_CONSULTATION);
@@ -49,7 +51,5 @@ public class TbMetadataProvider extends AbstractMetadataProvider {
 		installer.form("TB Enrollment", null, Metadata.EncounterType.TB_ENROLLMENT, "1", Metadata.Form.TB_ENROLLMENT);
 		installer.form("TB Followup Visit", null, Metadata.EncounterType.TB_CONSULTATION, "1", Metadata.Form.TB_VISIT);
 		installer.form("TB Discontinuation", null, Metadata.EncounterType.TB_DISCONTINUATION, "1", Metadata.Form.TB_COMPLETION);
-
-		installer.program("TB Program", "Treatment for TB patients", Dictionary.TUBERCULOSIS_TREATMENT_PROGRAM, Metadata.Program.TB);
 	}
 }

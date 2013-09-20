@@ -40,6 +40,8 @@ public class HivMetadataProvider extends AbstractMetadataProvider {
 	public void install() {
 		log.info("Installing HIV metadata");
 
+		installer.program("HIV Program", "Treatment for HIV-positive patients", Dictionary.HIV_PROGRAM, Metadata.Program.HIV);
+
 		installer.encounterType("HIV Enrollment", "Enrollment onto HIV program", Metadata.EncounterType.HIV_ENROLLMENT);
 		installer.encounterType("HIV Consultation", "Collection of HIV-specific data during the main consultation", Metadata.EncounterType.HIV_CONSULTATION);
 		installer.encounterType("HIV Discontinuation", "Discontinuation from HIV program", Metadata.EncounterType.HIV_DISCONTINUATION);
@@ -50,7 +52,5 @@ public class HivMetadataProvider extends AbstractMetadataProvider {
 		installer.form("MOH 257 Face Page", null, Metadata.EncounterType.HIV_CONSULTATION, "1", Metadata.Form.MOH_257_FACE_PAGE);
 		installer.form("MOH 257 Visit Summary", null, Metadata.EncounterType.HIV_CONSULTATION, "1", Metadata.Form.MOH_257_VISIT_SUMMARY);
 		installer.form("HIV Discontinuation", null, Metadata.EncounterType.HIV_DISCONTINUATION, "1", Metadata.Form.HIV_DISCONTINUATION);
-
-		installer.program("HIV Program", "Treatment for HIV-positive patients", Dictionary.HIV_PROGRAM, Metadata.Program.HIV);
 	}
 }

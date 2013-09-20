@@ -42,5 +42,15 @@ public class MchMetadataProvider extends AbstractMetadataProvider {
 
 		installer.program("MCH - Child Services", "Treatment for children", Dictionary.MATERNAL_AND_CHILD_HEALTH_PROGRAM, Metadata.Program.MCHCS);
 		installer.program("MCH - Mother Services", "Treatment for mothers", Dictionary.MATERNAL_AND_CHILD_HEALTH_PROGRAM, Metadata.Program.MCHMS);
+
+		installer.encounterType("MCH Child Enrollment", "Enrollment of child onto MCH program", Metadata.EncounterType.MCHCS_ENROLLMENT);
+		installer.encounterType("MCH Child Consultation", "Collection of child data during MCH visit", Metadata.EncounterType.MCHCS_CONSULTATION);
+		//installer.encounterType("MCH Child HEI Exit", "Reasons that child is exited from HEI", Metadata.EncounterType.MCHCS_HEI_EXIT);
+		installer.encounterType("MCH Child Immunization", "Record of child immunizations", Metadata.EncounterType.MCHCS_IMMUNIZATION);
+		installer.encounterType("MCH Child Discontinuation", "Discontinuation of child from MCH program", Metadata.EncounterType.MCHCS_DISCONTINUATION);
+
+		installer.encounterType("MCH Mother Enrollment", "Enrollment of mother onto MCH program", Metadata.EncounterType.MCHMS_ENROLLMENT);
+		installer.encounterType("MCH Mother Consultation", "Collection of mother data during MCH visit", Metadata.EncounterType.MCHMS_CONSULTATION);
+		installer.encounterType("MCH Mother Discontinuation", "Discontinuation of mother from MCH program", Metadata.EncounterType.MCHMS_DISCONTINUATION);
 	}
 }
