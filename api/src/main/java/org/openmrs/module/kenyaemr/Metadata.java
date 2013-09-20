@@ -65,6 +65,10 @@ public class Metadata {
 		public static final String TRIAGE = "37f6bd8d-586a-4169-95fa-5781f987fe62";
 	}
 
+	public static final class GlobalProperty {
+		public static final String DEFAULT_LOCATION = "8f80f3f7-bdc0-46f5-8f50-54dea2fcbb01";
+	}
+
 	public static final class Location {
 		public static final String UNKNOWN = "8d6c993e-c2cc-11de-8d13-0010c6dffd0f";
 	}

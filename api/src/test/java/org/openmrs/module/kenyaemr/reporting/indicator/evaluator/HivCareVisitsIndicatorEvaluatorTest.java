@@ -27,6 +27,7 @@ import org.openmrs.module.kenyaemr.Configuration;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
+import org.openmrs.module.kenyaemr.metadata.CommonMetadataProvider;
 import org.openmrs.module.kenyaemr.reporting.indicator.HivCareVisitsIndicator;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
@@ -47,6 +48,9 @@ public class HivCareVisitsIndicatorEvaluatorTest extends BaseModuleContextSensit
 	private EvaluationContext evaluationContext;
 
 	private HivCareVisitsIndicator indicator;
+
+	@Autowired
+	private CommonMetadataProvider commonMetadata;
 
 	@Autowired
 	private KenyaEmrService kenyaEmrService;
@@ -75,7 +79,7 @@ public class HivCareVisitsIndicatorEvaluatorTest extends BaseModuleContextSensit
 			visitService.saveVisit(visit);
 		}
 
-		Configuration.configure();
+		commonMetadata.install();
 
 		Form hivAddendum = MetadataUtils.getForm(Metadata.Form.CLINICAL_ENCOUNTER_HIV_ADDENDUM);
 		Form moh257 = MetadataUtils.getForm(Metadata.Form.MOH_257_VISIT_SUMMARY);
