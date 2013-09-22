@@ -69,7 +69,6 @@ public class EditPatientFragmentController {
 		educationOptions.add(Dictionary.getConcept(Dictionary.PRIMARY_EDUCATION));
 		educationOptions.add(Dictionary.getConcept(Dictionary.SECONDARY_EDUCATION));
 		educationOptions.add(Dictionary.getConcept(Dictionary.COLLEGE_UNIVERSITY_POLYTECHNIC));
-		educationOptions.add(Dictionary.getConcept(Dictionary.UNIVERSITY_COMPLETE));
 		model.addAttribute("educationOptions", educationOptions);
 
 		// Create a list of marital status answer concepts

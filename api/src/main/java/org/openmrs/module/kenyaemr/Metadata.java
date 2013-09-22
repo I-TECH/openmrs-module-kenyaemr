@@ -20,7 +20,6 @@ package org.openmrs.module.kenyaemr;
 public class Metadata {
 
 	public static final class EncounterType {
-		public static final String CHECK_OUT = "abfb143c-5b49-41e5-9ead-f47ee4cc57cf";
 		public static final String CONSULTATION = "465a92f2-baf8-42e9-9612-53064be868e8";
 		public static final String HIV_CONSULTATION = "a0034eee-1940-4e35-847f-97537a35d05e";
 		public static final String HIV_DISCONTINUATION = "2bdada65-4c72-4a48-8730-859890e25cee";
@@ -49,20 +48,25 @@ public class Metadata {
 		public static final String HIV_ENROLLMENT = "e4b506c1-7379-42b6-a374-284469cba8da";
 		public static final String LAB_RESULTS = "7e603909-9ed5-4d0c-a688-26ecb05d8b6e";
 		public static final String MCHCS_ENROLLMENT = "8553d869-bdc8-4287-8505-910c7c998aff";
-		public static final String MCHMS_ENROLLMENT = "90a18f0c-17cd-4eec-8204-5af52e8d77cf";
 		public static final String MCHCS_DISCONTINUATION = "1dd02c43-904b-4206-8378-7b1a8414c326";
 		public static final String MCHCS_FOLLOW_UP = "755b59e6-acbb-4853-abaf-be302039f902";
 		public static final String MCHCS_IMMUNIZATION = "b4f3859e-861c-4a63-bdff-eb7392030d47";
+		public static final String MCHMS_ENROLLMENT = "90a18f0c-17cd-4eec-8204-5af52e8d77cf";
 		public static final String MOH_257_FACE_PAGE = "47814d87-2e53-45b1-8d05-ac2e944db64c";
 		public static final String MOH_257_VISIT_SUMMARY = "23b4ebbd-29ad-455e-be0e-04aa6bc30798";
 		public static final String OBSTETRIC_HISTORY = "8e4e1abf-7c08-4ba8-b6d8-19a9f1ccb6c9";
 		public static final String OTHER_MEDICATIONS = "d4ff8ad1-19f8-484f-9395-04c755de9a47";
 		public static final String PROGRESS_NOTE = "0038a296-62f8-4099-80e5-c9ea7590c157";
+		public static final String SURGICAL_AND_MEDICAL_HISTORY = "4f3c9bd8-c117-4a5e-a7eb-12a627c29de6";
 		public static final String TB_SCREENING = "59ed8e62-7f1f-40ae-a2e3-eabe350277ce";
 		public static final String TB_ENROLLMENT = "89994550-9939-40f3-afa6-173bce445c79";
 		public static final String TB_VISIT = "2daabb77-7ad6-4952-864b-8d23e109c69d";
 		public static final String TB_COMPLETION = "4b296dd0-f6be-4007-9eb8-d0fd4e94fb3a";
 		public static final String TRIAGE = "37f6bd8d-586a-4169-95fa-5781f987fe62";
+	}
+
+	public static final class GlobalProperty {
+		public static final String DEFAULT_LOCATION = "8f80f3f7-bdc0-46f5-8f50-54dea2fcbb01";
 	}
 
 	public static final class Location {

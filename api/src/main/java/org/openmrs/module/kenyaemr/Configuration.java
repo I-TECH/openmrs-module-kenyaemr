@@ -19,7 +19,6 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.GlobalProperty;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.system.ExternalRequirement;
-import org.openmrs.module.kenyaemr.datatype.LocationDatatype;
 import org.openmrs.module.kenyaemr.form.EmrVisitAssignmentHandler;
 import org.openmrs.util.OpenmrsConstants;
 
@@ -44,45 +43,20 @@ public class Configuration {
 	 * Setup required global properties
 	 */
 	public static void configure() {
-		ensureGlobalPropertyExists(
-				EmrConstants.GP_DEFAULT_LOCATION,
-				"The facility for which this installation is configured. Visits and encounters will be created with this location value.",
-				LocationDatatype.class
-		);
-
-		setExistingGlobalProperty(OpenmrsConstants.GP_VISIT_ASSIGNMENT_HANDLER, EmrVisitAssignmentHandler.class.getName());
+		setGlobalProperty(OpenmrsConstants.GP_VISIT_ASSIGNMENT_HANDLER, EmrVisitAssignmentHandler.class.getName());
 	}
 
 	/**
-	 * Creates an empty global property if it doesn't exist
-	 * @param property the property name
-	 * @param description the property description
-	 * @param dataType the property value data type
-	 */
-	public static void ensureGlobalPropertyExists(String property, String description, Class dataType) {
-		GlobalProperty gp = Context.getAdministrationService().getGlobalPropertyObject(property);
-		if (gp == null) {
-			gp = new GlobalProperty();
-			gp.setProperty(property);
-			gp.setDescription(description);
-			gp.setDatatypeClassname(dataType.getName());
-			Context.getAdministrationService().saveGlobalProperty(gp);
-		}
-	}
-
-	/**
-	 * Saves an untyped global property
+	 * Sets an untyped global property
 	 * @param property the property name
 	 * @param value the property value
-	 * @return the global property
 	 */
-	public static void setExistingGlobalProperty(String property, Object value) {
+	public static void setGlobalProperty(String property, String value) {
 		GlobalProperty gp = Context.getAdministrationService().getGlobalPropertyObject(property);
 		if (gp == null) {
 			throw new IllegalArgumentException("Cannot find global property '" + property + "'");
 		}
-
-		gp.setPropertyValue(String.valueOf(value));
+		gp.setPropertyValue(value);
 		Context.getAdministrationService().saveGlobalProperty(gp);
 	}
 }
