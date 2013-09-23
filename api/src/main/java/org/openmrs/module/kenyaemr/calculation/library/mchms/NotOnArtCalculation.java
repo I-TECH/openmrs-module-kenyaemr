@@ -68,10 +68,9 @@ public class NotOnArtCalculation extends BaseEmrCalculation implements PatientFl
 		CalculationResultMap artStatusObss = Calculations.lastObs(getConcept(Dictionary.ANTIRETROVIRAL_USE_IN_PREGNANCY), inMchmsProgram, context);
 
 		CalculationResultMap ret = new CalculationResultMap();
-		boolean notOnArt;
 		for (Integer ptId : cohort) {
 			// Is patient alive and in MCH program?
-			notOnArt = false;
+			boolean notOnArt = false;
 			if (inMchmsProgram.contains(ptId)) {
 				Concept lastHivStatus = EmrCalculationUtils.codedObsResultForPatient(lastHivStatusObss, ptId);
 				Concept lastArtStatus = EmrCalculationUtils.codedObsResultForPatient(artStatusObss, ptId);
@@ -90,7 +89,10 @@ public class NotOnArtCalculation extends BaseEmrCalculation implements PatientFl
 		return ret;
 	}
 
-	private boolean gestationIsGreaterThan14Weeks(Integer patientId) {
+	/**
+	 * @return true if the given patient's gestation is greater than 14 weeks at enrollment and false otherwise
+	 * */
+	protected boolean gestationIsGreaterThan14Weeks(Integer patientId) {
 		Patient patient = Context.getPatientService().getPatient(patientId);
 		EncounterType encounterType = MetadataUtils.getEncounterType(Metadata.EncounterType.MCHMS_ENROLLMENT);
 		Encounter lastMchEnrollment = EmrUtils.lastEncounter(patient, encounterType);

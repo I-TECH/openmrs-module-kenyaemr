@@ -53,10 +53,9 @@ public class OnHaartCalculation extends BaseEmrCalculation {
 		Concept onHaartConcept = Dictionary.getConcept(Dictionary.MOTHER_ON_HAART);
 
 		CalculationResultMap ret = new CalculationResultMap();
-		boolean onHaart;
 		for (Integer ptId : cohort) {
 			// Is patient alive and in MCH program?
-			onHaart = false;
+			boolean onHaart = false;
 			if (inMchmsProgram.contains(ptId)) {
 				Concept lastHivStatus = EmrCalculationUtils.codedObsResultForPatient(lastHivStatusObss, ptId);
 				Concept lastArtStatus = EmrCalculationUtils.codedObsResultForPatient(artStatusObss, ptId);

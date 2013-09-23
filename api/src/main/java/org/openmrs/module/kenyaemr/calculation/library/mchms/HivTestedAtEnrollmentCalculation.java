@@ -55,10 +55,9 @@ public class HivTestedAtEnrollmentCalculation extends BaseEmrCalculation {
 
 		CalculationResultMap ret = new CalculationResultMap();
 		CalculationResultMap crm = Calculations.lastEncounter(MetadataUtils.getEncounterType(Metadata.EncounterType.MCHMS_ENROLLMENT), cohort, context);
-		boolean hivTestedAtEnrollment;
 		for (Integer ptId : cohort) {
 			// Is patient alive and in MCH program?
-			hivTestedAtEnrollment = false;
+			boolean hivTestedAtEnrollment = false;
 			if (inMchmsProgram.contains(ptId)) {
 				Concept hivStatus = EmrCalculationUtils.codedObsResultForPatient(hivStatusObs, ptId);
 				Date hivTestDate = EmrCalculationUtils.datetimeObsResultForPatient(hivTestDateObs, ptId);

@@ -51,10 +51,9 @@ public class LateEnrollmentCalculation extends BaseEmrCalculation {
 
 		CalculationResultMap ret = new CalculationResultMap();
 		CalculationResultMap crm = Calculations.lastEncounter(MetadataUtils.getEncounterType(Metadata.EncounterType.MCHMS_ENROLLMENT), cohort, context);
-		boolean lateEnrollment = false;
 		for (Integer ptId : cohort) {
 			// Is patient alive and in MCH program?
-			lateEnrollment = false;
+			boolean lateEnrollment = false;
 			if (inMchmsProgram.contains(ptId)) {
 				lateEnrollment = gestationAtEnrollmentWasGreaterThan28Weeks(ptId, crm);
 			}
@@ -63,7 +62,11 @@ public class LateEnrollmentCalculation extends BaseEmrCalculation {
 		return ret;
 	}
 
-	private boolean gestationAtEnrollmentWasGreaterThan28Weeks(Integer patientId, CalculationResultMap crm) {
+	/**
+	 * @return true if the given patient's gestation at enrollment was greater than 28 weeks at enrollment and false
+	 * otherwise.
+	 * */
+	protected boolean gestationAtEnrollmentWasGreaterThan28Weeks(Integer patientId, CalculationResultMap crm) {
 		Encounter lastMchEnrollment = (Encounter) crm.get(patientId).getValue();
 		Obs lmpObs = EmrUtils.firstObsInEncounter(lastMchEnrollment, Dictionary.getConcept(Dictionary.LAST_MONTHLY_PERIOD));
 		if (lmpObs != null) {

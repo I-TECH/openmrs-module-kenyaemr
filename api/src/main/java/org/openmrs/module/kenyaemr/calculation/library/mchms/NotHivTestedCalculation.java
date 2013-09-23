@@ -57,10 +57,9 @@ public class NotHivTestedCalculation extends BaseEmrCalculation implements Patie
 		CalculationResultMap lastHivStatusObss = Calculations.lastObs(getConcept(Dictionary.HIV_STATUS), inMchmsProgram, context);
 
 		CalculationResultMap ret = new CalculationResultMap();
-		boolean notHivTested;
 		for (Integer ptId : cohort) {
 			// Is patient alive and in MCH program?
-			notHivTested = false;
+			boolean notHivTested = false;
 			if (inMchmsProgram.contains(ptId)) {
 				Concept lastHivStatus = EmrCalculationUtils.codedObsResultForPatient(lastHivStatusObss, ptId);
 				if (lastHivStatus != null) {

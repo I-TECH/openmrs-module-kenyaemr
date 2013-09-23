@@ -57,12 +57,12 @@ public class MchMetadataProvider extends AbstractMetadataProvider {
 		installer.encounterType("MCH Mother Discontinuation", "Discontinuation of mother from MCH program", Metadata.EncounterType.MCHMS_DISCONTINUATION);
 
 		//MCH-MS forms
-		installer.form("MCH-MS Enrollment", "MCH-MS Enrollment", "3ee036d8-7c13-4393-b5d6-036f2fe45126", "1.0", "90a18f0c-17cd-4eec-8204-5af52e8d77cf");
-		installer.form("MCH Antenatal Visit", "MCH antenatal visit form", "c6d09e05-1f25-4164-8860-9f32c5a02df0", "1.0", "e8f98494-af35-4bb8-9fc7-c409c8fed843");
-		installer.form("MCH Postnatal Visit", "MCH postnatal visit form", "c6d09e05-1f25-4164-8860-9f32c5a02df0", "1.0", "72aa78e0-ee4b-47c3-9073-26f3b9ecc4a7");
-		installer.form("Delivery", "MCH-MS delivery form", "c6d09e05-1f25-4164-8860-9f32c5a02df0", "1.0", "496c7cc3-0eea-4e84-a04c-2292949e2f7f");
-		installer.form("Infant Feeding", "MCH-MS infant feeding form", "c6d09e05-1f25-4164-8860-9f32c5a02df0", "1.0", "f4d763bb-8428-476c-be8a-73c705bbc347");
-		installer.form("Preventive Services", "MCH-MS preventive services form", "c6d09e05-1f25-4164-8860-9f32c5a02df0", "1.0", "d3ea25c7-a3e8-4f57-a6a9-e802c3565a30");
-		installer.form("MCH-MS Discontinuation", "MCH-MS discontinuation form", "7c426cfc-3b47-4481-b55f-89860c21c7de", "1.0", "25935b9f-68ad-4e0c-9663-d2cacda82bbf");
+		installer.form("MCH-MS Enrollment", "MCH-MS Enrollment", Metadata.EncounterType.MCHMS_ENROLLMENT, "1.0", Metadata.Form.MCHMS_ENROLLMENT);
+		installer.form("MCH Antenatal Visit", "MCH antenatal visit form", Metadata.EncounterType.MCHMS_CONSULTATION, "1.0", Metadata.Form.MCHMS_ANTENATAL_VISIT);
+		installer.form("MCH Postnatal Visit", "MCH postnatal visit form", Metadata.EncounterType.MCHMS_CONSULTATION, "1.0", Metadata.Form.MCHMS_POSTNATAL_VISIT);
+		installer.form("Delivery", "MCH-MS delivery form", Metadata.EncounterType.MCHMS_CONSULTATION, "1.0", Metadata.Form.MCHMS_DELIVERY);
+		installer.form("Infant Feeding", "MCH-MS infant feeding form", Metadata.EncounterType.MCHMS_CONSULTATION, "1.0", Metadata.Form.MCHMS_INFANT_FEEDING);
+		installer.form("Preventive Services", "MCH-MS preventive services form", Metadata.EncounterType.MCHMS_CONSULTATION, "1.0", Metadata.Form.MCHMS_PREVENTIVE_SERVICES);
+		installer.form("MCH-MS Discontinuation", "MCH-MS discontinuation form", Metadata.EncounterType.MCHMS_DISCONTINUATION, "1.0", Metadata.Form.MCHMS_DISCONTINUATION);
 	}
 }
