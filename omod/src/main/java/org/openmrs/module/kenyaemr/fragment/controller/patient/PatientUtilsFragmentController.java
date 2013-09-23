@@ -90,12 +90,14 @@ public class PatientUtilsFragmentController {
 		List<Person> people = new ArrayList<Person>();
 			for (Relationship relationship : Context.getPersonService().getRelationshipsByPerson(patient)) {
 				if (relationship.getRelationshipType().getbIsToA().equals("Parent")) {
-					if (relationship.getPersonB().getGender().equals("F"))
+					if (relationship.getPersonB().getGender().equals("F")) {
 						people.add(relationship.getPersonB());
+					}
 				}
 				if (relationship.getRelationshipType().getaIsToB().equals("Parent")) {
-					if (relationship.getPersonA().getGender().equals("F"))
+					if (relationship.getPersonA().getGender().equals("F")) {
 						people.add(relationship.getPersonA());
+					}
 				}
 			}
 		return ui.simplifyCollection(people);
@@ -111,12 +113,14 @@ public class PatientUtilsFragmentController {
 		List<Person> people = new ArrayList<Person>();
 		for (Relationship relationship : Context.getPersonService().getRelationshipsByPerson(patient)) {
 			if (relationship.getRelationshipType().getbIsToA().equals("Parent")) {
-				if (relationship.getPersonB().getGender().equals("M"))
+				if (relationship.getPersonB().getGender().equals("M")) {
 					people.add(relationship.getPersonB());
+				}
 			}
 			if (relationship.getRelationshipType().getaIsToB().equals("Parent")) {
-				if (relationship.getPersonA().getGender().equals("M"))
+				if (relationship.getPersonA().getGender().equals("M")) {
 					people.add(relationship.getPersonA());
+				}
 			}
 		}
 		return ui.simplifyCollection(people);
