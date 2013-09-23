@@ -112,7 +112,7 @@ public class NotOnArtCalculationTest extends BaseModuleContextSensitiveTest {
 
 		Context.flushSession();
 
-		List<Integer> ptIds = Arrays.asList(2, 6, 7, 8, 999);
+		List<Integer> ptIds = Arrays.asList(2, 6, 7, 8);
 
 		//Run NotOnArtCalculation with these test patients
 		CalculationResultMap resultMap = Context.getService(PatientCalculationService.class).evaluate(ptIds, new NotOnArtCalculation());
@@ -121,6 +121,17 @@ public class NotOnArtCalculationTest extends BaseModuleContextSensitiveTest {
 		Assert.assertFalse((Boolean) resultMap.get(6).getValue()); //HIV+ and not on ART but gestation less than 14 weeks - need not be on ART
 		Assert.assertTrue((Boolean) resultMap.get(7).getValue()); //HIV+ and not on ART and gestation is greater than 14 weeks - needs to be on ART
 		Assert.assertFalse((Boolean) resultMap.get(8).getValue()); //HIV+ and on ART and gestation is greater than 14 weeks - need not to be on ART
-		Assert.assertFalse((Boolean) resultMap.get(999).getValue()); // Not in MCH-MS Program - need not be on ART
+	}
+
+	/**
+	 * @see NotOnArtCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
+	 * @verifies determine whether MCH-MS patients have been tested for HIV
+	 */
+	@Test
+	public void evaluate2_shouldDetermineWhetherPatientsAreNotOnArt() throws Exception {
+		List<Integer> ptIds = Arrays.asList(2, 999);
+		CalculationResultMap resultMap = Context.getService(PatientCalculationService.class).evaluate(ptIds, new NotOnArtCalculation());
+		Assert.assertFalse((Boolean) resultMap.get(2).getValue()); // Not in MCH-MS Program - need not be on ART
+		Assert.assertFalse((Boolean) resultMap.get(999).getValue()); // Voided patient
 	}
 }

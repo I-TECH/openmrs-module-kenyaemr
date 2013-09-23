@@ -52,6 +52,12 @@ public class Metadata {
 		public static final String MCHCS_FOLLOW_UP = "755b59e6-acbb-4853-abaf-be302039f902";
 		public static final String MCHCS_IMMUNIZATION = "b4f3859e-861c-4a63-bdff-eb7392030d47";
 		public static final String MCHMS_ENROLLMENT = "90a18f0c-17cd-4eec-8204-5af52e8d77cf";
+		public static final String MCHMS_ANTENATAL_VISIT = "e8f98494-af35-4bb8-9fc7-c409c8fed843";
+		public static final String MCHMS_POSTNATAL_VISIT = "72aa78e0-ee4b-47c3-9073-26f3b9ecc4a7";
+		public static final String MCHMS_DELIVERY = "496c7cc3-0eea-4e84-a04c-2292949e2f7f";
+		public static final String MCHMS_INFANT_FEEDING = "f4d763bb-8428-476c-be8a-73c705bbc347";
+		public static final String MCHMS_PREVENTIVE_SERVICES = "d3ea25c7-a3e8-4f57-a6a9-e802c3565a30";
+		public static final String MCHMS_DISCONTINUATION = "25935b9f-68ad-4e0c-9663-d2cacda82bbf";
 		public static final String MOH_257_FACE_PAGE = "47814d87-2e53-45b1-8d05-ac2e944db64c";
 		public static final String MOH_257_VISIT_SUMMARY = "23b4ebbd-29ad-455e-be0e-04aa6bc30798";
 		public static final String OBSTETRIC_HISTORY = "8e4e1abf-7c08-4ba8-b6d8-19a9f1ccb6c9";
