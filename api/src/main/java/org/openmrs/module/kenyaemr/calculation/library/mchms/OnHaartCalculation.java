@@ -21,7 +21,6 @@ import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
 import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.calculation.Calculations;
-import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.Metadata;
@@ -33,18 +32,11 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Calculates whether a mother has a HIV+ or HIV- HIV status result. Calculation returns true if mother
- * is alive, enrolled in the MCH program and her HIV status is indicated as Not Tested.
+ * Calculates whether a mother is on HAART. Calculation returns true if mother
+ * is alive, enrolled in the MCH program, is HIV+ and indicated in the last MCH
+ * encounter to be on HAART.
  */
-public class NotHivTestedCalculation extends BaseEmrCalculation implements PatientFlagCalculation {
-
-	/**
-	 * @see org.openmrs.module.kenyacore.calculation.PatientFlagCalculation#getFlagMessage()
-	 */
-	@Override
-	public String getFlagMessage() {
-		return "Not HIV Tested";
-	}
+public class OnHaartCalculation extends BaseEmrCalculation {
 
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
@@ -55,18 +47,28 @@ public class NotHivTestedCalculation extends BaseEmrCalculation implements Patie
 		Set<Integer> inMchmsProgram = CalculationUtils.patientsThatPass(Calculations.activeEnrollment(mchmsProgram, alive, context));
 
 		CalculationResultMap lastHivStatusObss = Calculations.lastObs(getConcept(Dictionary.HIV_STATUS), inMchmsProgram, context);
+		CalculationResultMap artStatusObss = Calculations.lastObs(getConcept(Dictionary.ANTIRETROVIRAL_USE_IN_PREGNANCY), inMchmsProgram, context);
+
+		Concept hivPositiveConcept = Dictionary.getConcept(Dictionary.POSITIVE);
+		Concept onHaartConcept = Dictionary.getConcept(Dictionary.MOTHER_ON_HAART);
 
 		CalculationResultMap ret = new CalculationResultMap();
 		for (Integer ptId : cohort) {
 			// Is patient alive and in MCH program?
-			boolean notHivTested = false;
+			boolean onHaart = false;
 			if (inMchmsProgram.contains(ptId)) {
 				Concept lastHivStatus = EmrCalculationUtils.codedObsResultForPatient(lastHivStatusObss, ptId);
+				Concept lastArtStatus = EmrCalculationUtils.codedObsResultForPatient(artStatusObss, ptId);
+				boolean hivPositive = false;
 				if (lastHivStatus != null) {
-					notHivTested = lastHivStatus.equals(Dictionary.getConcept(Dictionary.NOT_HIV_TESTED));
+					hivPositive = lastHivStatus.equals(hivPositiveConcept);
+					if (lastArtStatus != null) {
+						onHaart = lastArtStatus.equals(onHaartConcept);
+					}
 				}
+				onHaart = hivPositive && onHaart;
 			}
-			ret.put(ptId, new BooleanResult(notHivTested, this, context));
+			ret.put(ptId, new BooleanResult(onHaart, this, context));
 		}
 		return ret;
 	}

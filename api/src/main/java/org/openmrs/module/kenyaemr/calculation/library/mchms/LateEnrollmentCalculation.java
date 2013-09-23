@@ -14,37 +14,32 @@
 
 package org.openmrs.module.kenyaemr.calculation.library.mchms;
 
-import org.openmrs.Concept;
+import org.joda.time.DateTime;
+import org.joda.time.Weeks;
+import org.openmrs.Encounter;
+import org.openmrs.Obs;
 import org.openmrs.Program;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
 import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.calculation.Calculations;
-import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
-import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
+import org.openmrs.module.kenyaemr.util.EmrUtils;
 
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
 /**
- * Calculates whether a mother has a HIV+ or HIV- HIV status result. Calculation returns true if mother
- * is alive, enrolled in the MCH program and her HIV status is indicated as Not Tested.
+ * Calculates whether a mother enrolled into the program at gestation greater than 28 weeks.
+ * Calculation returns true if mother is alive, enrolled in the MCH program and had gestation
+ * greater than 28 weeks at enrollment.
  */
-public class NotHivTestedCalculation extends BaseEmrCalculation implements PatientFlagCalculation {
-
-	/**
-	 * @see org.openmrs.module.kenyacore.calculation.PatientFlagCalculation#getFlagMessage()
-	 */
-	@Override
-	public String getFlagMessage() {
-		return "Not HIV Tested";
-	}
+public class LateEnrollmentCalculation extends BaseEmrCalculation {
 
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
@@ -54,20 +49,32 @@ public class NotHivTestedCalculation extends BaseEmrCalculation implements Patie
 		Set<Integer> alive = alivePatients(cohort, context);
 		Set<Integer> inMchmsProgram = CalculationUtils.patientsThatPass(Calculations.activeEnrollment(mchmsProgram, alive, context));
 
-		CalculationResultMap lastHivStatusObss = Calculations.lastObs(getConcept(Dictionary.HIV_STATUS), inMchmsProgram, context);
-
 		CalculationResultMap ret = new CalculationResultMap();
+		CalculationResultMap crm = Calculations.lastEncounter(MetadataUtils.getEncounterType(Metadata.EncounterType.MCHMS_ENROLLMENT), cohort, context);
 		for (Integer ptId : cohort) {
 			// Is patient alive and in MCH program?
-			boolean notHivTested = false;
+			boolean lateEnrollment = false;
 			if (inMchmsProgram.contains(ptId)) {
-				Concept lastHivStatus = EmrCalculationUtils.codedObsResultForPatient(lastHivStatusObss, ptId);
-				if (lastHivStatus != null) {
-					notHivTested = lastHivStatus.equals(Dictionary.getConcept(Dictionary.NOT_HIV_TESTED));
-				}
+				lateEnrollment = gestationAtEnrollmentWasGreaterThan28Weeks(ptId, crm);
 			}
-			ret.put(ptId, new BooleanResult(notHivTested, this, context));
+			ret.put(ptId, new BooleanResult(lateEnrollment, this, context));
 		}
 		return ret;
+	}
+
+	/**
+	 * @return true if the given patient's gestation at enrollment was greater than 28 weeks at enrollment and false
+	 * otherwise.
+	 * */
+	protected boolean gestationAtEnrollmentWasGreaterThan28Weeks(Integer patientId, CalculationResultMap crm) {
+		Encounter lastMchEnrollment = (Encounter) crm.get(patientId).getValue();
+		Obs lmpObs = EmrUtils.firstObsInEncounter(lastMchEnrollment, Dictionary.getConcept(Dictionary.LAST_MONTHLY_PERIOD));
+		if (lmpObs != null) {
+			Weeks weeks = Weeks.weeksBetween(new DateTime(lmpObs.getValueDate()), new DateTime(lastMchEnrollment.getDateCreated()));
+			if (weeks.getWeeks() > 28) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

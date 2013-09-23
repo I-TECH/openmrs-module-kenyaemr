@@ -22,7 +22,6 @@ import org.openmrs.EncounterType;
 import org.openmrs.Obs;
 import org.openmrs.Patient;
 import org.openmrs.Program;
-import org.openmrs.api.EncounterService;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
@@ -70,9 +69,8 @@ public class NotOnArtCalculation extends BaseEmrCalculation implements PatientFl
 
 		CalculationResultMap ret = new CalculationResultMap();
 		for (Integer ptId : cohort) {
-			boolean notOnArt = false;
-
 			// Is patient alive and in MCH program?
+			boolean notOnArt = false;
 			if (inMchmsProgram.contains(ptId)) {
 				Concept lastHivStatus = EmrCalculationUtils.codedObsResultForPatient(lastHivStatusObss, ptId);
 				Concept lastArtStatus = EmrCalculationUtils.codedObsResultForPatient(artStatusObss, ptId);
@@ -91,10 +89,12 @@ public class NotOnArtCalculation extends BaseEmrCalculation implements PatientFl
 		return ret;
 	}
 
-	private boolean gestationIsGreaterThan14Weeks(Integer patientId) {
+	/**
+	 * @return true if the given patient's gestation is greater than 14 weeks at enrollment and false otherwise
+	 * */
+	protected boolean gestationIsGreaterThan14Weeks(Integer patientId) {
 		Patient patient = Context.getPatientService().getPatient(patientId);
-		EncounterService encounterService = Context.getEncounterService();
-		EncounterType encounterType = encounterService.getEncounterTypeByUuid(Metadata.EncounterType.MCHMS_ENROLLMENT);
+		EncounterType encounterType = MetadataUtils.getEncounterType(Metadata.EncounterType.MCHMS_ENROLLMENT);
 		Encounter lastMchEnrollment = EmrUtils.lastEncounter(patient, encounterType);
 		Obs lmpObs = EmrUtils.firstObsInEncounter(lastMchEnrollment, Dictionary.getConcept(Dictionary.LAST_MONTHLY_PERIOD));
 		if (lmpObs != null) {

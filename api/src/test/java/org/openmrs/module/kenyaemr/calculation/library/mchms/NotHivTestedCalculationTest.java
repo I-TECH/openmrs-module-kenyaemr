@@ -77,7 +77,7 @@ public class NotHivTestedCalculationTest extends BaseModuleContextSensitiveTest 
 
 		Context.flushSession();
 
-		List<Integer> ptIds = Arrays.asList(6, 7, 8, 999);
+		List<Integer> ptIds = Arrays.asList(6, 7, 8, 2, 999);
 
 		//Run NotHivTestedCalculation with these test patients
 		CalculationResultMap resultMap = Context.getService(PatientCalculationService.class).evaluate(ptIds, new NotHivTestedCalculation());
@@ -85,6 +85,7 @@ public class NotHivTestedCalculationTest extends BaseModuleContextSensitiveTest 
 		Assert.assertTrue((Boolean) resultMap.get(6).getValue());  //in MCH-MS program but no HIV Status - Need to be tested
 		Assert.assertFalse((Boolean) resultMap.get(7).getValue()); //in MCH-MS program but has -ve HIV Status
 		Assert.assertFalse((Boolean) resultMap.get(8).getValue()); //in MCH-MS program but has +ve HIV Status
-		Assert.assertFalse((Boolean) resultMap.get(999).getValue()); // Not in MCH-MS Program
+		Assert.assertFalse((Boolean) resultMap.get(2).getValue()); // Not in MCH-MS Program
+		Assert.assertFalse((Boolean) resultMap.get(999).getValue()); // Voided patient
 	}
 }
