@@ -23,6 +23,7 @@ import org.openmrs.module.kenyacore.report.IndicatorReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportManager;
 import org.openmrs.module.kenyaemr.util.EmrUiUtils;
+import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.module.kenyaui.annotation.SharedPage;
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.ui.framework.annotation.SpringBean;
@@ -42,7 +43,8 @@ public class RunReportPageController {
 						   PageRequest pageRequest,
 						   PageModel model,
 						   @SpringBean ReportManager reportManager,
-						   @SpringBean EmrUiUtils emrUi) throws Exception {
+						   @SpringBean EmrUiUtils emrUi,
+						   @SpringBean KenyaUiUtils kenyaUi) throws Exception {
 
 		ReportDescriptor report = reportManager.getReportDescriptor(reportId);
 		emrUi.checkReportAccess(pageRequest, report);
@@ -57,16 +59,15 @@ public class RunReportPageController {
 
 		if (isIndicator) {
 			Map<String, String> startDateOptions = new LinkedHashMap<String, String>();
-			SimpleDateFormat ymd = new SimpleDateFormat("yyyy-MM-dd");
 			SimpleDateFormat pretty = new SimpleDateFormat("MMMM yyyy");
 			Date d = DateUtil.getStartOfMonth(new Date());
 			for (int i = 0; i < 6; ++i) {
 				d = DateUtil.getStartOfMonth(d, -1);
-				startDateOptions.put(ymd.format(d), pretty.format(d));
+				startDateOptions.put(kenyaUi.formatDateParam(d), pretty.format(d));
 			}
 
 			model.addAttribute("startDateOptions", startDateOptions);
-			model.addAttribute("startDateSelected", startDate != null ? ymd.format(startDate) : null);
+			model.addAttribute("startDateSelected", startDate != null ? kenyaUi.formatDateParam(startDate) : null);
 			model.addAttribute("startDate", startDate);
 		}
 	}

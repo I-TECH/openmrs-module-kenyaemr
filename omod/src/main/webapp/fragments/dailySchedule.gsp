@@ -15,5 +15,5 @@
 ${ ui.includeFragment("kenyaemr", "patient/patientList", [ id: "dailySchedule", pageProvider: "kenyaemr", page: config.page, heading: heading ]) }
 
 <script type="text/javascript">
-	getJsonAsEvent(ui.fragmentActionLink('kenyaemr', 'dailySchedule', 'scheduledPatients', { date: '${ dateYmd }' }), 'dailySchedule/show');
+	getJsonAsEvent(ui.fragmentActionLink('kenyaemr', 'dailySchedule', 'scheduledPatients', { date: '${ kenyaUi.formatDateParam(date) }' }), 'dailySchedule/show');
 </script>

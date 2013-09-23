@@ -35,7 +35,6 @@ import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.calculation.library.ScheduledVisitOnDayCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.VisitsOnDayCalculation;
-import org.openmrs.module.kenyaemr.util.EmrUiUtils;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
@@ -66,10 +65,7 @@ public class DailyScheduleFragmentController {
 			date = OpenmrsUtil.firstSecondOfDay(date);
 		}
 
-		SimpleDateFormat ymd = new SimpleDateFormat("yyyy-MM-dd");
-
 		model.addAttribute("date", date);
-		model.addAttribute("dateYmd", ymd.format(date));
 		model.addAttribute("isToday", date.equals(today));
 		model.addAttribute("isTomorrow", date.equals(tomorrow));
 		model.addAttribute("isYesterday", date.equals(yesterday));
