@@ -115,7 +115,7 @@ public class PatientUtilsFragmentControllerTest extends BaseModuleWebContextSens
 	 * @see PatientUtilsFragmentController#getFathers(Integer,org.openmrs.ui.framework.UiUtils)
 	 */
 	@Test
-	public void getMothers_shouldReturnAllFathers() {
+	public void getFathers_shouldReturnAllFathers() {
 		RelationshipType type = Context.getPersonService().getRelationshipType(2);
 		Person parent = Context.getPersonService().getPerson(6); // which is a male from standard test dataset
 		Patient child = TestUtils.getPatient(2);// this ids the patient to be passed
