@@ -53,10 +53,11 @@
 			}
 		    function getCohort(){
 				var month = new String(birthdate.getMonth()+1);
-					if(month.length == 1)
-					month = '0'+month;
-				var cohort = month +"-"+ (birthdate.getUTCFullYear()+1);
-				$j('#calculated-cohort').html(cohort);
+					if(month.length == 1) {
+						month = '0'+month;
+						var cohort = month +"-"+ (birthdate.getUTCFullYear()+1);
+						$j('#calculated-cohort').html(cohort);
+					}
 			}
 			function tbContactInHouseHold(){
 				if (getValue('tbcontact.value') == NO_CONCEPT_ID) {
