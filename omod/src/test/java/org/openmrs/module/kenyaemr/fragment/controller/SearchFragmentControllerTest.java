@@ -18,7 +18,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Location;
+import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.kenyaemr.test.TestUiUtils;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
@@ -48,6 +50,9 @@ public class SearchFragmentControllerTest extends BaseModuleWebContextSensitiveT
 		controller = new SearchFragmentController();
 	}
 
+	/**
+	 * @see SearchFragmentController#location(org.openmrs.Location, org.openmrs.ui.framework.UiUtils)
+	 */
 	@Test
 	public void location_shouldSimplifyLocation() {
 		Location location = Context.getLocationService().getLocation(1);
@@ -57,6 +62,9 @@ public class SearchFragmentControllerTest extends BaseModuleWebContextSensitiveT
 		Assert.assertThat(result, hasEntry("code", (Object) "15001"));
 	}
 
+	/**
+	 * @see SearchFragmentController#locations(String, org.openmrs.ui.framework.UiUtils)
+	 */
 	@Test
 	public void locations_shouldMatchByPartialName() {
 		List<SimpleObject> result = controller.locations("Xan", ui);
@@ -66,6 +74,9 @@ public class SearchFragmentControllerTest extends BaseModuleWebContextSensitiveT
 		Assert.assertThat(result.get(0), hasEntry("code", (Object) "15002"));
 	}
 
+	/**
+	 * @see SearchFragmentController#locations(String, org.openmrs.ui.framework.UiUtils)
+	 */
 	@Test
 	public void locations_shouldMatchByCompleteMflCode() {
 		List<SimpleObject> result = controller.locations("15002", ui);
@@ -73,5 +84,16 @@ public class SearchFragmentControllerTest extends BaseModuleWebContextSensitiveT
 		Assert.assertThat(result.get(0), hasEntry("id", (Object) new Integer(2)));
 		Assert.assertThat(result.get(0), hasEntry("name", (Object) "Xanadu"));
 		Assert.assertThat(result.get(0), hasEntry("code", (Object) "15002"));
+	}
+
+	/**
+	 * @see SearchFragmentController#patient(org.openmrs.Patient, org.openmrs.ui.framework.UiUtils)
+	 */
+	@Test
+	public void patient_shouldSimplifyPatient() {
+		Patient patient = TestUtils.getPatient(7);
+		SimpleObject result = controller.patient(patient, ui);
+		Assert.assertThat(result, hasEntry("id", (Object) new Integer(7)));
+		Assert.assertThat(result, hasEntry("name", (Object) "Chebaskwony, Collet Test"));
 	}
 }

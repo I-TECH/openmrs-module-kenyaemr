@@ -1,19 +1,16 @@
 <%
-	ui.decorateWith("kenyaui", "panel", [ heading: config.heading ])
+	ui.decorateWith("kenyaui", "panel", [ heading: config.heading, frameOnly: true ])
 
 	// config supports "page", which will set up a clickFunction, that will have personId=... appended
-	// provides a default numResultsFormatter to widget/stack unless you override it
-	
-	if (!config.numResultsFormatter) {
-		config.numResultsFormatter = """function(listOfItems) { return listOfItems.length + " account(s)"; }""" 
-	}
-	
+
 	def clickFunction = null
 	if (config.page) {
 		clickFunction = """function () {
 				location.href = ui.pageLink('kenyaemr', '${ config.page }', { personId: jq(this).find('input[name=personId]').val() });
 			}"""
 	}
+
+	config.numResultsFormatter = """function(results) { return results.length + (results.length > 1 ? ' accounts' : ' account'); }"""
 %>
 <script type="text/javascript">
 	var accountItemOpts = {
@@ -48,4 +45,4 @@
 	}
 </script>
 
-<%= ui.includeFragment("kenyaui", "widget/stack", config.merge([ itemFormatter: "formatAccountAsStackItem", clickFunction: clickFunction ])) %>
+<%= ui.includeFragment("kenyaui", "widget/searchResults", config.merge([ itemFormatter: "formatAccountAsStackItem", clickFunction: clickFunction ])) %>
