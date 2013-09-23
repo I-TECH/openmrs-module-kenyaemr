@@ -10,11 +10,6 @@
 		<property name="eligibilityCalculation" value="org.openmrs.module.kenyaemr.calculation.library.tb.EligibleForTbProgramCalculation" />
 		<property name="defaultEnrollmentForm" ref="kenyaemr.tb.form.enrollment" />
 		<property name="defaultCompletionForm" ref="kenyaemr.tb.form.completion" />
-		<property name="visitForms">
-			<set>
-				<ref bean="kenyaemr.tb.form.followupVisit" />
-			</set>
-		</property>
 		<property name="reports">
 			<set>
 				<ref bean="kenyaemr.tb.report.inProgram" />
@@ -55,20 +50,6 @@
 		</property>
 		<property name="icon" value="kenyaui:forms/generic.png" />
 		<property name="htmlform" value="kenyaemr:tb/tbEnrollment.html" />
-	</bean>
-
-	<!-- TB Followup Visit -->
-	<bean id="kenyaemr.tb.form.followupVisit" class="org.openmrs.module.kenyacore.form.FormDescriptor">
-		<property name="targetUuid" value="2daabb77-7ad6-4952-864b-8d23e109c69d" />
-		<property name="apps">
-			<set>
-				<ref bean="kenyaemr.app.clinician" />
-				<ref bean="kenyaemr.app.chart" />
-			</set>
-		</property>
-		<property name="icon" value="kenyaui:forms/generic.png" />
-		<property name="htmlform" value="kenyaemr:tb/tbFollowupVisit.html" />
-		<property name="order" value="202010" />
 	</bean>
 
 	<!-- TB Completion -->
