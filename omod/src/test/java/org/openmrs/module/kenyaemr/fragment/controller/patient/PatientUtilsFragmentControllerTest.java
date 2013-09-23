@@ -110,4 +110,29 @@ public class PatientUtilsFragmentControllerTest extends BaseModuleWebContextSens
 		SimpleObject[] mother = controller.getMothers(child,ui);
 		Assert.assertTrue(mother.length >= 1);
 	}
+
+	/**
+	 * @see PatientUtilsFragmentController#getFathers(Integer,org.openmrs.ui.framework.UiUtils)
+	 */
+	@Test
+	public void getMothers_shouldReturnAllFathers() {
+		RelationshipType type = Context.getPersonService().getRelationshipType(2);
+		Person parent = Context.getPersonService().getPerson(6); // which is a male from standard test dataset
+		Patient child = TestUtils.getPatient(2);// this ids the patient to be passed
+		parent.setGender("M"); // set the parents gender to female
+
+		//set the relationship for the parent and child
+		Relationship rel = new Relationship();
+		rel.setRelationshipType(type);
+		rel.setPersonA(parent);
+		rel.setPersonB(child);
+		//save the relationship
+
+		Context.getPersonService().saveRelationship(rel);
+
+		//to make sure the relationship has been created
+		Assert.assertEquals(1, Context.getPersonService().getRelationships(parent, child, type).size());
+		SimpleObject[] mother = controller.getFathers(child,ui);
+		Assert.assertTrue(mother.length >= 1);
+	}
 }
