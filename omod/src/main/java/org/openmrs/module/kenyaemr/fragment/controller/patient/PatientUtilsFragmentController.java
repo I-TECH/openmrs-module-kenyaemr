@@ -100,4 +100,25 @@ public class PatientUtilsFragmentController {
 			}
 		return ui.simplifyCollection(people);
 	}
+
+	/**
+	 * Look for the fathers name for an infant from the relationship defined
+	 * @param patient
+	 * @param now
+	 * @return list of fathers
+	 */
+	public SimpleObject[] getFathers(@RequestParam("patientId") Patient patient,UiUtils ui) {
+		List<Person> people = new ArrayList<Person>();
+		for (Relationship relationship : Context.getPersonService().getRelationshipsByPerson(patient)) {
+			if (relationship.getRelationshipType().getbIsToA().equals("Parent")) {
+				if (relationship.getPersonB().getGender().equals("M"))
+					people.add(relationship.getPersonB());
+			}
+			if (relationship.getRelationshipType().getaIsToB().equals("Parent")) {
+				if (relationship.getPersonA().getGender().equals("M"))
+					people.add(relationship.getPersonA());
+			}
+		}
+		return ui.simplifyCollection(people);
+	}
 }

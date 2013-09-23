@@ -123,6 +123,15 @@
 					jq('#mother-name-list').html(motherName);
 				});
 			}
+			function includeFathersNames() {
+				jq.getJSON('/' + OPENMRS_CONTEXT_PATH +  '/kenyaemr/patient/patientUtils/getFathers.action',{ patientId: patientId },function(data) {
+					var fatherName;
+					for ( var p in data){
+						fatherName = data[p].name;
+					}
+					jq('#father-name-list').html(fatherName);
+				});
+			}
 		jq(function() {
 			//get cohort
 			getCohort();
@@ -329,7 +338,12 @@
 						</div>
 					</td>
 					<td>Mother Alive? <obs conceptId="160429AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  style="yes_no"/></td>
-					<td>Name of Father <obs conceptId="1593AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+					<td>
+						Name of Father <br />
+						<div id="father-name-list" class="value">
+
+						</div>
+					</td>
 				</tr>
 				<tr>
 					<td>
