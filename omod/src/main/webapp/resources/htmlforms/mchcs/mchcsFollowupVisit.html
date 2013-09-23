@@ -73,31 +73,39 @@
 		}
 
 		function getTetracycline() {
-			if (getValue('tetracycline-geven.value') == YES_CONCEPT_ID )
+			if (getValue('tetracycline-geven.value') == YES_CONCEPT_ID ) {
 				jq('#teo-given').html("ONLY at birth");
-			else
+			}
+			else {
 				jq('#teo-given').html(" ");
+			}
 		}
 
 		function pupilExamination() {
-			if (getValue('pupil-examination.value') ==  WHITE_COLOR_CONCEPT_ID )
+			if (getValue('pupil-examination.value') ==  WHITE_COLOR_CONCEPT_ID ) {
 				jq('#pupil-condition').html("Refer");
-			else
+			}
+			else  {
 				jq('#pupil-condition').html(" ");
+			}
 		}
 
 		function sightExamination() {
-			if (getValue('sight-examination.value') ==  NO_CONCEPT_ID )
+			if (getValue('sight-examination.value') ==  NO_CONCEPT_ID ) {
 				jq('#not-following-objects').html("Refer to eye clinic");
-			else
+			}
+			else {
 				jq('#not-following-objects').html(" ");
+			}
 		}
 
 		function squint() {
-			if (getValue('squint.value') ==  YES_CONCEPT_ID )
+			if (getValue('squint.value') ==  YES_CONCEPT_ID ) {
 				jq('#squint-eyes').html("Refer to eye clinic");
-			else
+			}
+			else {
 				jq('#squint-eyes').html(" ");
+			}
 		}
 
 		function loadingImages(){
