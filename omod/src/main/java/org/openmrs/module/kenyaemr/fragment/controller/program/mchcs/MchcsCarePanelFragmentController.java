@@ -63,19 +63,16 @@ public class MchcsCarePanelFragmentController {
 		EncounterType mchcs_consultation_encounterType = MetadataUtils.getEncounterType(Metadata.EncounterType.MCHCS_CONSULTATION);
 		Encounter lastMchcsConsultation = EmrUtils.lastEncounter(patient,mchcs_consultation_encounterType);
 
-
-
-
 		if (lastMchcsHeiCompletion != null && lastMchcsEnrollment != null) {
 			heiOutcomes = EmrUtils.firstObsInEncounter(lastMchcsHeiCompletion, Dictionary.getConcept(Dictionary.REASON_FOR_PROGRAM_DISCONTINUATION));
 			hivExposed =  EmrUtils.firstObsInEncounter(lastMchcsEnrollment, Dictionary.getConcept(Dictionary.CHILDS_CURRENT_HIV_STATUS));
 			hivStatus =  EmrUtils.firstObsInEncounter(lastMchcsHeiCompletion, Dictionary.getConcept(Dictionary.HIV_STATUS));
 		}
 
-		if ((hivExposed != null) && (hivExposed.getValueCoded() != Dictionary.getConcept(Dictionary.EXPOSURE_TO_HIV))){
+		if ((hivExposed != null) && (hivExposed.getValueCoded() != Dictionary.getConcept(Dictionary.EXPOSURE_TO_HIV))) {
 			calculations.put("heioutcomes", "Not HIV Exposed");
 		}
-		else if (heiOutcomes != null && hivExposed != null && hivStatus != null){
+		else if (heiOutcomes != null && hivExposed != null && hivStatus != null) {
 			calculations.put("heioutcomes", heiOutcomes.getValueCoded());
 			calculations.put("hivStatus",hivStatus.getValueCoded());
 		}
