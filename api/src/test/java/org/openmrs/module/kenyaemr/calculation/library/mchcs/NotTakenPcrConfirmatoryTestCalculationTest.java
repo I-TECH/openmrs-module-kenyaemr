@@ -49,4 +49,7 @@ public class NotTakenPcrConfirmatoryTestCalculationTest extends BaseModuleContex
 	 */
 	@Test
 	public void evaluate_shouldCalculateNotTakenPcrConfirmatoryTest() throws Exception {
+	}
+
+
 }
