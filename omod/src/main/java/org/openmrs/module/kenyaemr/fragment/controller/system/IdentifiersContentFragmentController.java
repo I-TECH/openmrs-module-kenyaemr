@@ -34,7 +34,11 @@ public class IdentifiersContentFragmentController {
 		for (IdentifierDescriptor descriptor : identifierManager.getAllIdentifierDescriptors()) {
 			PatientIdentifierType pidType = descriptor.getTarget();
 
-			identifiers.add(SimpleObject.create("name", pidType.getName(), "format", pidType.getFormat()));
+			identifiers.add(SimpleObject.create(
+					"name", pidType.getName(),
+					"format", pidType.getFormat(),
+					"required", pidType.getRequired()
+			));
 		}
 
 		model.addAttribute("identifiers", identifiers);
