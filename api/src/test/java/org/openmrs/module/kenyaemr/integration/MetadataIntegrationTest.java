@@ -12,15 +12,21 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.metadata;
+package org.openmrs.module.kenyaemr.integration;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.openmrs.module.kenyacore.form.FormManager;
 import org.openmrs.module.kenyacore.metadata.MetadataConfiguration;
+import org.openmrs.module.kenyacore.program.ProgramManager;
 import org.openmrs.module.kenyacore.test.TestUtils;
+import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
+import org.openmrs.module.kenyaemr.metadata.HivMetadata;
+import org.openmrs.module.kenyaemr.metadata.MchMetadata;
+import org.openmrs.module.kenyaemr.metadata.TbMetadata;
 import org.openmrs.module.metadatasharing.MetadataSharing;
 import org.openmrs.module.metadatasharing.wrapper.PackageImporter;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
@@ -34,13 +40,30 @@ import java.util.Map;
 /**
  * Tests for importing of KenyaEMR metadata packages
  */
-@Ignore
-public class MetadataPackagesTest extends BaseModuleContextSensitiveTest {
+public class MetadataIntegrationTest extends BaseModuleContextSensitiveTest {
 
-	protected static final Log log = LogFactory.getLog(MetadataPackagesTest.class);
+	protected static final Log log = LogFactory.getLog(MetadataIntegrationTest.class);
 
 	@Autowired
 	private MetadataConfiguration metadataConfiguration;
+
+	@Autowired
+	private CommonMetadata commonMetadata;
+
+	@Autowired
+	private HivMetadata hivMetadata;
+
+	@Autowired
+	private TbMetadata tbMetadata;
+
+	@Autowired
+	private MchMetadata mchMetadata;
+
+	@Autowired
+	private ProgramManager programManager;
+
+	@Autowired
+	private FormManager formManager;
 
 	@Before
 	public void setup() throws Exception {
@@ -58,10 +81,13 @@ public class MetadataPackagesTest extends BaseModuleContextSensitiveTest {
 
 	/**
 	 * Tests loading of all standard KenyaEMR metadata packages (except the locations package because that takes ~20 mins)
+	 *
+	 * Not currently working due to suspected issue in metadatasharing
 	 */
+	@Ignore
 	@Test
 	@SkipBaseSetup
-	public void testAllStandardPackages() throws Exception {
+	public void loadAllMetadataPackages() throws Exception {
 		for (Map.Entry<String, String> entry : metadataConfiguration.getPackages().entrySet()) {
 			String groupUuid = entry.getKey();
 			String filename = entry.getValue();
@@ -80,5 +106,21 @@ public class MetadataPackagesTest extends BaseModuleContextSensitiveTest {
 			metadataImporter.loadSerializedPackageStream(inputStream);
 			metadataImporter.importPackage();
 		}
+	}
+
+	/**
+	 * Tests...
+	 */
+	@Test
+	@SkipBaseSetup
+	public void loadAllMetadataProvidersAndRefreshManagers() {
+		commonMetadata.install();
+		hivMetadata.install();
+		tbMetadata.install();
+		mchMetadata.install();
+
+		// Easiest way to check that we're not missing any programs, forms or encounter types
+		programManager.refresh();
+		formManager.refresh();
 	}
 }
