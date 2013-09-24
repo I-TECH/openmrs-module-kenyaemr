@@ -1,5 +1,5 @@
 <%
-	ui.decorateWith("kenyaui", "panel", [ heading: config.heading ])
+	ui.decorateWith("kenyaui", "panel", [ heading: config.heading, frameOnly: true ])
 
 	// config supports "page", which will set up a clickFunction, that will have patientId=... appended
 
@@ -10,17 +10,7 @@
 			}"""
 	}
 
-	if (!config.numResultsFormatter) {
-		config.numResultsFormatter = """function(listOfItems) { return listOfItems.length + " patient(s)"; }""" 
-	}
-
-	// supports showNumResults (default false)
-	// supports numResultsSuffix (default "")
-
-	// supports noneMessage (default "general.none", only takes effect if showNumResults is false)
-	def noneMessage = config.noneMessage ?: "general.none"
-	if (config.showNumResults)
-		noneMessage = null
+	config.numResultsFormatter = """function(results) { return results.length + (results.length > 1 ? ' patients' : ' patient'); }"""
 %>
 <script type="text/javascript">
 	var patientItemOpts = {
@@ -36,7 +26,7 @@
 		center: function(patient) {
 			var tmp = "";
 			for (var i = 0; i < patient.identifiers.length; ++i) {
-				tmp += '<span class="ke-identifier-type">' + patient.identifiers[i].identifierType + ':</span><br/>';
+				tmp += '<span class="ke-identifier-type">' + patient.identifiers[i].identifierType + '</span><br/>';
 				tmp += '<span class="ke-identifier-value">' + patient.identifiers[i].identifier + '</span>';
 				tmp += '<br/>';
 			}
@@ -52,4 +42,4 @@
 	}
 </script>
 
-<%= ui.includeFragment("kenyaui", "widget/stack", config.merge([ itemFormatter: "formatPatientAsStackItem", clickFunction: clickFunction ])) %>
+<%= ui.includeFragment("kenyaui", "widget/searchResults", config.merge([ itemFormatter: "formatPatientAsStackItem", clickFunction: clickFunction ])) %>

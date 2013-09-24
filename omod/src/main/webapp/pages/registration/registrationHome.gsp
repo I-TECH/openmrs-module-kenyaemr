@@ -42,7 +42,7 @@
 	jq(function() {
 		jq('#calendar').datepicker({
 			dateFormat: 'yy-mm-dd',
-			defaultDate: '${ new java.text.SimpleDateFormat("yyyy-MM-dd").format(scheduleDate) }',
+			defaultDate: '${ kenyaUi.formatDateParam(scheduleDate) }',
 			gotoCurrent: true,
 			onSelect: function(dateText) {
 				location.href = ui.pageLink('kenyaemr', 'registration/registrationHome', { scheduleDate: dateText });

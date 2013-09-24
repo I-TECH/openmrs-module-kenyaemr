@@ -3,7 +3,7 @@
 %>
 
 <div class="ke-page-sidebar">
-	${ ui.includeFragment("kenyaemr", "patientSearchForm", [ defaultWhich: "all" ]) }
+	${ ui.includeFragment("kenyaemr", "patientSearchForm", [ defaultWhich: "checked-in" ]) }
 
 	${ ui.includeFragment("kenyaui", "widget/panelMenu", [
 		heading: "Tasks",
@@ -20,7 +20,7 @@
 </div>
 
 <div class="ke-page-content">
-	${ ui.includeFragment("kenyaemr", "patient/patientList", [ id: "results", showNumResults: true, pageProvider: "kenyaemr", page: "intake/intakeViewPatient", heading: "Matching Patients" ]) }
+	${ ui.includeFragment("kenyaemr", "patient/patientList", [ id: "results", pageProvider: "kenyaemr", page: "intake/intakeViewPatient", heading: "Matching Patients" ]) }
 </div>
 
 <script type="text/javascript">
@@ -29,7 +29,6 @@
 	});
 	jq(function() {
 		jq('input[name=q]').focus();
-		// if the user goes back to this page in their history, redo the ajax query
-		publish('patientSearch/changed');
+		publish('patientSearch/changed'); // Submit search on page load
 	});
 </script>

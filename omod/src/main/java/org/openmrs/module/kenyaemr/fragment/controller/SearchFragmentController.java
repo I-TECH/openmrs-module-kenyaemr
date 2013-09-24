@@ -35,6 +35,7 @@ import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.SpringBean;
+import org.openmrs.util.OpenmrsConstants;
 import org.openmrs.util.PersonByNameComparator;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -87,11 +88,16 @@ public class SearchFragmentController {
 
 		Set<Patient> checkedIn = patientActiveVisits.keySet();
 
-		Collection<Patient> matched;
+		List<Patient> matched;
 
-		if (StringUtils.isBlank(query)) {
-			matched = checkedIn;
+		// If query wasn't long enough to be searched on, just use list of checked-in patients
+		if (query.length() < getMinSearchCharacters()) {
+			matched = new ArrayList<Patient>(checkedIn);
+
+			// List needs sorted by person name
+			Collections.sort(matched, new PersonByNameComparator());
 		}
+		// If it was then combine returned results with checked-in set
 		else {
 			matched = new ArrayList<Patient>();
 			for (Patient patient : matchedByNameOrID) {
@@ -285,5 +291,22 @@ public class SearchFragmentController {
 		}
 
 		return simpleConcepts;
+	}
+
+	/**
+	 * Gets the minimum number of query characters required for a service search method
+	 * @return the value of min search characters
+	 */
+	protected static int getMinSearchCharacters() {
+		int minSearchCharacters = OpenmrsConstants.GLOBAL_PROPERTY_DEFAULT_MIN_SEARCH_CHARACTERS;
+		String minSearchCharactersStr = Context.getAdministrationService().getGlobalProperty(OpenmrsConstants.GLOBAL_PROPERTY_MIN_SEARCH_CHARACTERS);
+
+		try {
+			minSearchCharacters = Integer.valueOf(minSearchCharactersStr);
+		}
+		catch (NumberFormatException e) {
+			//do nothing
+		}
+		return minSearchCharacters;
 	}
 }
