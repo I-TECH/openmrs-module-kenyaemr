@@ -33,23 +33,22 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Tests for {@link InfantNeverTakenCTXCalculation}
+ * Tests for {@link org.openmrs.module.kenyaemr.calculation.library.mchcs.InfantNeverTakenProphylaxisCalculationn}
  */
-
-public class InfantNeverTakenCTXCalculationTest extends BaseModuleContextSensitiveTest {
+public class InfantNeverTakenProphylaxisCalculationTest extends BaseModuleContextSensitiveTest {
 
 	@Before
 	public void beforeEachTest() throws Exception {
 		executeDataSet("dataset/test-concepts.xml");
 		executeDataSet("dataset/test-metadata.xml");
 	}
-
 	/**
-	 * @see org.openmrs.module.kenyaemr.calculation.library.InfantNeverTakenCTXCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
-	 * @verifies calculate if infant has ever taken CTX
+	 * @see org.openmrs.module.kenyaemr.calculation.library.InfantNeverTakenProphylaxisCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
+	 * @verifies calculate if infant has never been on prophylaxis
 	 */
 	@Test
 	public void evaluate() throws Exception {
+
 		//get mchcs program
 		Program mchcsProgram = MetadataUtils.getProgram(Metadata.Program.MCHCS);
 
@@ -59,23 +58,29 @@ public class InfantNeverTakenCTXCalculationTest extends BaseModuleContextSensiti
 		TestUtils.enrollInProgram(ps.getPatient(7), mchcsProgram, new Date());
 		TestUtils.enrollInProgram(ps.getPatient(8), mchcsProgram, new Date());
 
-		///get the HIV status of the infant and the if wheather they have taken ctx
+		///get the HIV status of the infant and the if wheather they have been on any prophylaxis
 		Concept infantHivStatus = Dictionary.getConcept(Dictionary.CHILDS_CURRENT_HIV_STATUS);
-		Concept ctx = Dictionary.getConcept(Dictionary.SULFAMETHOXAZOLE_TRIMETHOPRIM);
+		Concept nvp = Dictionary.getConcept(Dictionary.NEVIRAPINE);
+		Concept nvpazt3tc = Dictionary.getConcept(Dictionary.LAMIVUDINE_NEVIRAPINE_ZIDOVUDINE);
 		Concept medOrders = Dictionary.getConcept(Dictionary.MEDICATION_ORDERS);
 
-		//make patient #6 HEI and  taken any CTX
+		//make patient #6 HEI and  taken any nvp
 		TestUtils.saveObs(ps.getPatient(6),infantHivStatus,Dictionary.getConcept(Dictionary.EXPOSURE_TO_HIV),new Date());
-		TestUtils.saveObs(ps.getPatient(6), medOrders, ctx, TestUtils.date(2013, 1, 1));
+		TestUtils.saveObs(ps.getPatient(6), medOrders, nvp, TestUtils.date(2013, 1, 1));
 
-		//make patient #7 be HEI but NOT taken ctx
+		//make patient #7 HEI and  taken any nvpazt3tc
 		TestUtils.saveObs(ps.getPatient(7),infantHivStatus,Dictionary.getConcept(Dictionary.EXPOSURE_TO_HIV),new Date());
+		TestUtils.saveObs(ps.getPatient(7), medOrders, nvpazt3tc, TestUtils.date(2013, 1, 1));
+
+		//make patient #7 HEI and  taken any nothing
+		TestUtils.saveObs(ps.getPatient(8),infantHivStatus,Dictionary.getConcept(Dictionary.EXPOSURE_TO_HIV),new Date());
 
 		Context.flushSession();
 		List<Integer> cohort = Arrays.asList(6, 7, 8);
-		CalculationResultMap resultMap = new InfantNeverTakenCTXCalculation().evaluate(cohort, null, Context.getService(PatientCalculationService.class).createCalculationContext());
-		Assert.assertFalse((Boolean) resultMap.get(6).getValue()); // is taking  ctx
-		Assert.assertTrue((Boolean) resultMap.get(7).getValue()); // is not on any drugs
-		Assert.assertFalse((Boolean) resultMap.get(8).getValue()); // Not HEI
+		CalculationResultMap resultMap = new InfantNeverTakenProphylaxisCalculation().evaluate(cohort, null, Context.getService(PatientCalculationService.class).createCalculationContext());
+		Assert.assertFalse((Boolean) resultMap.get(6).getValue()); // is taking  nvp
+		Assert.assertFalse((Boolean) resultMap.get(7).getValue()); // is not nvpazt3tc
+		Assert.assertTrue((Boolean) resultMap.get(8).getValue()); // in HEI but not on any prophylaxis
+
 	}
 }
