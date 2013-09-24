@@ -60,6 +60,7 @@ public class NeedsPcrTestCalculationTest extends BaseModuleContextSensitiveTest 
 		PatientService ps = Context.getPatientService();
 		TestUtils.enrollInProgram(ps.getPatient(6), mchcsProgram, new Date());
 		TestUtils.enrollInProgram(ps.getPatient(7), mchcsProgram, new Date());
+		TestUtils.enrollInProgram(ps.getPatient(8), mchcsProgram, new Date());
 
 		//get the HIV status of the infant and the if wheather pcr was done or NOT
 		Concept infantHivStatus = Dictionary.getConcept(Dictionary.CHILDS_CURRENT_HIV_STATUS);
@@ -74,10 +75,11 @@ public class NeedsPcrTestCalculationTest extends BaseModuleContextSensitiveTest 
 		TestUtils.saveObs(ps.getPatient(7),pcrStatus,Dictionary.getConcept(Dictionary.HIV_DNA_POLYMERASE_CHAIN_REACTION),new Date());
 
 		Context.flushSession();
-		List<Integer> ptIds = Arrays.asList(6, 7);
+		List<Integer> ptIds = Arrays.asList(6, 7,8);
 		CalculationResultMap resultMap = Context.getService(PatientCalculationService.class).evaluate(ptIds, new NeedsPcrTestCalculation());
 		Assert.assertTrue((Boolean) resultMap.get(6).getValue()); // HEI and has null pcr
 		Assert.assertFalse((Boolean) resultMap.get(7).getValue()); // in HEI but pcr is done
+		Assert.assertFalse((Boolean) resultMap.get(8).getValue()); // Not HEI
 
 
 	}
