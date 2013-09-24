@@ -53,22 +53,34 @@
 	def addressFieldRows = [
 		[
 			[ object: command, property: "telephoneContact.value", label: ui.format(command.telephoneContact.attributeType) ],
-			[ object: command, property: "personAddress.address1", label: "Postal address", config: [ size: 60 ] ]
+			[ object: command, property: "personAddress.address1", label: "Postal Address", config: [ size: 60 ] ],
+			[ object: command, property: "personAddress.country", label: "County", config: [ size: 60 ] ],
+			[ object: command, property: "subChiefName.value", label: ui.format(command.subChiefName.attributeType) ]
+
 		],
 		[
-			[ object: command, property: "personAddress.address3", label: "School/employer Address",config: [ size: 60 ] ],
-			[ object: command, property: "personAddress.countyDistrict", label: "District" ]
-			
-			
+			[ object: command, property: "personAddress.address3", label: "School/Employer Address",config: [ size: 60 ] ],
+			[ object: command, property: "personAddress.countyDistrict", label: "District" ],
+			[ object: command, property: "personAddress.stateProvince", label: "Province", config: [ size: 60 ] ]
+
+
+		],
+	[		[ object: command, property: "personAddress.address6", label: "Location" ],
+			[ object: command, property: "personAddress.address5", label: "Sub-location" ],
+			[ object: command, property: "personAddress.address4", label: "Division", config: [ size: 60 ] ]
+
+
 		],
 		[
-			
+
 			[ object: command, property: "personAddress.address6", label: "Location" ],
-			[ object: command, property: "personAddress.address5", label: "Sub-location" ]
+			[ object: command, property: "personAddress.address5", label: "Sub-location" ],
+			[ object: command, property: "personAddress.address4", label: "Division", config: [ size: 60 ] ]
 		],
 		[
-			[ object: command, property: "personAddress.cityVillage", label: "Village/estate" ],
-			[ object: command, property: "personAddress.address2", label: "Landmark" ]
+ 			[ object: command, property: "personAddress.cityVillage", label: "Village/Estate" ],
+			[ object: command, property: "personAddress.address2", label: "Landmark" ],
+			[ object: command, property: "personAddress.postalCode", label: "House/Plot Number" ]
 		]
 	]
 %>
