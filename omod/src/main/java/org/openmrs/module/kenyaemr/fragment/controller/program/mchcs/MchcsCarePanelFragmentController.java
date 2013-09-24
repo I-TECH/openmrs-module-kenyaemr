@@ -46,8 +46,6 @@ public class MchcsCarePanelFragmentController {
 		Obs heiOutcomes = null;
 		Obs hivExposed = null;
 		Obs hivStatus = null;
-		String developmentalMilestones = new String();
-		String developmentalRemarks = new String();
 
 		EncounterType hei_completion_encounterType = MetadataUtils.getEncounterType(Metadata.EncounterType.MCHCS_HEI_COMPLETION);
 		Encounter lastMchcsHeiCompletion = EmrUtils.lastEncounter(patient,hei_completion_encounterType);
