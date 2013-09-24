@@ -63,22 +63,15 @@
 			[ object: command, property: "personAddress.countyDistrict", label: "District" ],
 			[ object: command, property: "personAddress.stateProvince", label: "Province", config: [ size: 60 ] ]
 
-
 		],
 	[		[ object: command, property: "personAddress.address6", label: "Location" ],
 			[ object: command, property: "personAddress.address5", label: "Sub-location" ],
 			[ object: command, property: "personAddress.address4", label: "Division", config: [ size: 60 ] ]
 
-
 		],
-		[
 
-			[ object: command, property: "personAddress.address6", label: "Location" ],
-			[ object: command, property: "personAddress.address5", label: "Sub-location" ],
-			[ object: command, property: "personAddress.address4", label: "Division", config: [ size: 60 ] ]
-		],
 		[
- 			[ object: command, property: "personAddress.cityVillage", label: "Village/Estate" ],
+			[ object: command, property: "personAddress.cityVillage", label: "Village/Estate" ],
 			[ object: command, property: "personAddress.address2", label: "Landmark" ],
 			[ object: command, property: "personAddress.postalCode", label: "House/Plot Number" ]
 		]
