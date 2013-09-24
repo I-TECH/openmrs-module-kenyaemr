@@ -65,8 +65,8 @@ public class InfantFeedingOptionsCalculation extends BaseEmrCalculation {
 
 			if (feedingOptions != null) {
 					hasFeedingOption = true;
-					ret.put(ptId, new BooleanResult(hasFeedingOption, this));
 				}
+			ret.put(ptId, new BooleanResult(hasFeedingOption, this));
 		}
 		return ret;
 	}
