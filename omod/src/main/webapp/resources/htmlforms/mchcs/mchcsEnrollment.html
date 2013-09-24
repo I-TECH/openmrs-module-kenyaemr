@@ -32,12 +32,13 @@
 	<script type="text/javascript">
 
 			var birthdate = new Date("<lookup expression="patient.birthdate" />");
+			var patientId = <lookup expression="patient.patientId"/>;
+			var encDate = new Date();
 
 			var YES_CONCEPT_ID = 1065;
 			var NO_CONCEPT_ID = 1066;
 			var EXPOSURE_TO_HIV_ID = 822;
-			//get hei id from the database for validation
-			var heiIdSaved = "<lookup expression="patient.getPatientIdentifier(6)"/>";
+			var SPECIAL_CARE = 161628;
 
 			function onTransferStatusChange() {
 				if (getValue('transfer-status.value') == NO_CONCEPT_ID) {
@@ -52,10 +53,11 @@
 			}
 		    function getCohort(){
 				var month = new String(birthdate.getMonth()+1);
-					if(month.length == 1)
-					month = '0'+month;
-				var cohort = month +"-"+ (birthdate.getUTCFullYear()+1);
-				$j('#calculated-cohort').html(cohort);
+					if(month.length == 1) {
+						month = '0'+month;
+						var cohort = month +"-"+ (birthdate.getUTCFullYear()+1);
+						jq('#calculated-cohort').html(cohort);
+					}
 			}
 			function tbContactInHouseHold(){
 				if (getValue('tbcontact.value') == NO_CONCEPT_ID) {
@@ -97,7 +99,7 @@
 				if (getValue('specialCare.value') == NO_CONCEPT_ID) {
 					jq('#reasonsForSpecialCare :input').prop('disabled', true);
 				}
-				else if (getValue('specialCare.value') == YES_CONCEPT_ID) {
+				else if (getValue('specialCare.value') == SPECIAL_CARE) {
 					jq('#reasonsForSpecialCare :input').prop('disabled', false);
 				}
 				else {
@@ -106,41 +108,33 @@
 			}
 			function hivExposed(){
 				if (getValue('hiv-exposed-child.value') == EXPOSURE_TO_HIV_ID) {
-					jq('#child-status-required').empty();
-					jq('#hei-id-error').hide();
-					jq('#hei-id-error').empty();
-					jq('#load-hei-id').dialog({
-						dialogClass: "no-close",
-						buttons: [
-									{
-										text: "Save", click: function()
-											{
-												var heiId = jq('#hei-id').val();
-												if (heiId == "") {
-													jq('#hei-id-error').html("Please provide a valid identifier, Empty NOT accepted");
-													jq('#hei-id-error').show();
-												}
-												else {
-													alert("TO DO: add functionality");
-												}
-											}
-									},
-									{ text: "Close", click: function() { $( this ).dialog( "close" ); } }
-								 ],
-						height: 200,
-						modal: true,
-						title: "HEI Unique Identifier Required",
-						width: 400
-					});
+					jq('#hei-id :input').prop('disabled', false);
 				}
 				else {
-					jq('#child-status-required').empty();
-					jq('#child-status-required').hide();
+					jq('#hei-id :input').prop('disabled', true);
 				}
+			}
+			function includeMothersNames() {
+				jq.getJSON('/' + OPENMRS_CONTEXT_PATH +  '/kenyaemr/patient/patientUtils/getMothers.action',{ patientId: patientId },function(data) {
+					var motherName;
+					for ( var p in data){
+						motherName = data[p].name;
+					}
+					jq('#mother-name-list').html(motherName);
+				});
+			}
+			function includeFathersNames() {
+				jq.getJSON('/' + OPENMRS_CONTEXT_PATH +  '/kenyaemr/patient/patientUtils/getFathers.action',{ patientId: patientId },function(data) {
+					var fatherName;
+					for ( var p in data){
+						fatherName = data[p].name;
+					}
+					jq('#father-name-list').html(fatherName);
+				});
 			}
 		jq(function() {
 			//get cohort
-			getCohort()
+			getCohort();
 			jq('#child-status-required').hide();
 			//validate transfer in details
 			onTransferStatusChange()
@@ -151,10 +145,12 @@
 			jq('#pmtctDrugsReceived input').click(pmtctDrugsForMother);
 			onARTatEnrollment();
 			jq('#onART input').click(onARTatEnrollment);
-			//needSpecialCare();
+			needSpecialCare();
 			jq('#specialCare input').click(needSpecialCare);
-			//hivExposed();
-			//jq('#hiv-exposed-child input').click(hivExposed);
+			hivExposed();
+			jq('#hiv-exposed-child input').click(hivExposed);
+			//including the mother details
+			includeMothersNames();
 
 			beforeSubmit.push(function() {
 				if (getValue('hiv-exposed-child.value') == "") {
@@ -162,10 +158,11 @@
 					jq('#child-status-required').html('Please specify the condition of the child');
 					return false;
 				}
-				<!--if (heiIdSaved == "" &amp;&amp; (getValue('hiv-exposed-child.value') == EXPOSURE_TO_HIV_ID)) {
-						hivExposed();
-		              	return false;
-				}-->
+				if (getValue('hiv-exposed-child.value') == EXPOSURE_TO_HIV_ID &amp;&amp; getValue('hei-id.value') == "") {
+					jq('#child-status-required').show();
+					jq('#child-status-required').html('HEI Unique Number Required');
+					return false;
+				}
 		        return true;
 			});
 		});
@@ -220,7 +217,7 @@
 								<td>Gestation at birth(weeks)</td>
 								<td><obs conceptId="1409AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /> </td>
 								<td>Date first seen</td>
-								<td><obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>Need concept </td>
+								<td><obs conceptId="162140AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" showTime="false"/></td>
 							</tr>
 							<tr>
 								<td>
@@ -236,6 +233,7 @@
 
 					</td>
 				</tr>
+
 				<tr>
 					<td>Child need special care?<obs conceptId="161630AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="161628AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" id="specialCare"/> </td>
 					<td colspan="2">
@@ -329,15 +327,23 @@
 				</tr>
 				<tr>
 					<td colspan="3" style="background-color: #696969; color: #ffffff;">
-						PARENT'S PROFILE
+						PARENT'S PROFILE(<i>Edit using Relationship Section</i>)
 					</td>
 				</tr>
 				<tr>
 					<td>
-						Name of Mother <obs conceptId="1593AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+						Name of Mother <br />
+						<div id="mother-name-list" class="value">
+
+						</div>
 					</td>
 					<td>Mother Alive? <obs conceptId="160429AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  style="yes_no"/></td>
-					<td>Name of Father <obs conceptId="1593AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+					<td>
+						Name of Father <br />
+						<div id="father-name-list" class="value">
+
+						</div>
+					</td>
 				</tr>
 				<tr>
 					<td>
@@ -346,17 +352,17 @@
 					<td colspan="2">
 						<div id="mother-art-details">
 							Select the combination
-							<obs conceptId="1086AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="80586AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1148AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-								 answerLabels="Sd NVP Only,AZT+NVP+3TC,Haart,Interrupted,Haart,None" style="radio"/>
+							<obs conceptId="1086AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="80586AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1149AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								 answerLabels="Sd NVP Only,AZT+NVP+3TC,HAART,None" style="radio"/>
 						</div>
 					</td>
 				</tr>
 				<tr>
-					<td> On ART at enrollment of infant
-						<obs conceptId="1147AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" id="onART"/>
+					<td> On ART at Enrollment of Infant
+						<obs conceptId="162055AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" id="onART"/>
 					</td>
 						<td id="mohter-on-art-at-enrollment">Enter regimen <obs conceptId="1088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
-						<td id="mohter-on-art-at-enrollment1">Parent's CCC No. <obs conceptId="160752AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="15"/></td>
+						<td id="mohter-on-art-at-enrollment1">Parent's CCC No. <obs conceptId="162053AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="15"/></td>
 				</tr>
 				<tr>
 					<td>Mode of Delivery <obs conceptId="5630AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1170AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1171AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="SVD,C-Section" style="radio"/></td>

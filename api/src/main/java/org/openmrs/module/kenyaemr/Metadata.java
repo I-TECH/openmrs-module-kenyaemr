@@ -28,6 +28,7 @@ public class Metadata {
 		public static final String MCHCS_CONSULTATION = "bcc6da85-72f2-4291-b206-789b8186a021";
 		public static final String MCHCS_DISCONTINUATION = "5feee3f1-aa16-4513-8bd0-5d9b27ef1208";
 		public static final String MCHCS_ENROLLMENT = "415f5136-ca4a-49a8-8db3-f994187c3af6";
+		public static final String MCHCS_HEI_COMPLETION = "01894f88-dc73-42d4-97a3-0929118403fb";
 		public static final String MCHCS_IMMUNIZATION = "82169b8d-c945-4c41-be62-433dfd9d6c86";
 		public static final String MCHMS_ENROLLMENT = "3ee036d8-7c13-4393-b5d6-036f2fe45126";
 		public static final String MCHMS_CONSULTATION = "c6d09e05-1f25-4164-8860-9f32c5a02df0";
@@ -51,6 +52,7 @@ public class Metadata {
 		public static final String MCHCS_DISCONTINUATION = "1dd02c43-904b-4206-8378-7b1a8414c326";
 		public static final String MCHCS_FOLLOW_UP = "755b59e6-acbb-4853-abaf-be302039f902";
 		public static final String MCHCS_IMMUNIZATION = "b4f3859e-861c-4a63-bdff-eb7392030d47";
+		public static final String MCHCS_HEI_COMPLETION = "d823f1ef-0973-44ee-b113-7090dc23257b";
 		public static final String MCHMS_ENROLLMENT = "90a18f0c-17cd-4eec-8204-5af52e8d77cf";
 		public static final String MCHMS_ANTENATAL_VISIT = "e8f98494-af35-4bb8-9fc7-c409c8fed843";
 		public static final String MCHMS_POSTNATAL_VISIT = "72aa78e0-ee4b-47c3-9073-26f3b9ecc4a7";
@@ -89,6 +91,7 @@ public class Metadata {
 	}
 
 	public static final class PatientIdentifierType {
+		public static final String HEI_ID_Number = "0691f522-dd67-4eeb-92c8-af5083baf338";
 		public static final String NATIONAL_ID = "49af6cdc-7968-4abb-bf46-de10d7f4859f";
 		public static final String OPENMRS_ID = "dfacd928-0370-4315-99d7-6ec1c9f7ae76";
 		public static final String PATIENT_CLINIC_NUMBER = "b4d66522-11fc-45c7-83e3-39a1af21ae0d";
@@ -101,6 +104,7 @@ public class Metadata {
 		public static final String NEXT_OF_KIN_NAME = "830bef6d-b01f-449d-9f8d-ac0fede8dbd3";
 		public static final String NEXT_OF_KIN_RELATIONSHIP = "d0aa9fd1-2ac5-45d8-9c5e-4317c622c8f5";
 		public static final String TELEPHONE_CONTACT = "b2c38640-2603-4629-aebd-3b54f33f1e3a";
+		public static final String SUBCHIEF_NAME = "40fa0c9c-7415-43ff-a4eb-c7c73d7b1a7a";
 	}
 
 	public static final class Program {

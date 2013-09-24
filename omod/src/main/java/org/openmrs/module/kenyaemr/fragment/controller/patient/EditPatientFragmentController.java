@@ -174,6 +174,8 @@ public class EditPatientFragmentController {
 
 		private PersonAttribute nextOfKinAddress;
 
+		private PersonAttribute subChiefName;
+
 		/**
 		 * Creates an edit form for a new patient
 		 */
@@ -201,6 +203,9 @@ public class EditPatientFragmentController {
 
 			nextOfKinAddress = new PersonAttribute();
 			nextOfKinAddress.setAttributeType(MetadataUtils.getPersonAttributeType(Metadata.PersonAttributeType.NEXT_OF_KIN_ADDRESS));
+
+			subChiefName = new PersonAttribute();
+			subChiefName.setAttributeType(MetadataUtils.getPersonAttributeType(Metadata.PersonAttributeType.SUBCHIEF_NAME));
 
 		}
 
@@ -305,6 +310,16 @@ public class EditPatientFragmentController {
 			}
 			else {
 				nextOfKinAddress.setPerson(patient);
+			}
+
+			//sub chief and chief's details
+
+			PersonAttribute attrSubChiefNames = patient.getAttribute(MetadataUtils.getPersonAttributeType(Metadata.PersonAttributeType.SUBCHIEF_NAME));
+			if (attrSubChiefNames != null) {
+				subChiefName = attrSubChiefNames;
+			}
+			else {
+				subChiefName.setPerson(patient);
 			}
 		}
 
@@ -450,7 +465,7 @@ public class EditPatientFragmentController {
 				toSave.addName(personName);
 			}
 
-			if (anyChanges(toSave.getPersonAddress(), personAddress, "address1", "address2", "address5", "address6", "countyDistrict","address3","cityVillage")) {
+			if (anyChanges(toSave.getPersonAddress(), personAddress, "address1", "address2", "address5", "address6", "countyDistrict","address3","cityVillage","stateProvince","country","postalCode","address4")) {
 				if (toSave.getPersonAddress() != null) {
 					voidData(toSave.getPersonAddress());
 				}
@@ -496,6 +511,14 @@ public class EditPatientFragmentController {
 					voidData(toSave.getAttribute(nextOfkinAddresspat));
 				}
 				toSave.addAttribute(this.nextOfKinAddress);
+			}
+
+			PersonAttributeType subChiefNamespat = MetadataUtils.getPersonAttributeType(Metadata.PersonAttributeType.SUBCHIEF_NAME);
+			if (anyChanges(toSave.getAttribute(subChiefNamespat), this.subChiefName, "value")) {
+				if (toSave.getAttribute(subChiefNamespat) != null) {
+					voidData(toSave.getAttribute(subChiefNamespat));
+				}
+				toSave.addAttribute(this.subChiefName);
 			}
 
 
@@ -619,6 +642,7 @@ public class EditPatientFragmentController {
 		 * @param nationalIdNumber the nationalIdNumber to set
 		 */
 		public void setNationalIdNumber(PatientIdentifier nationalIdNumber) {
+
 			this.nationalIdNumber = nationalIdNumber;
 		}
 
@@ -812,6 +836,20 @@ public class EditPatientFragmentController {
 		 */
 		public void setNextOfKinAddress(PersonAttribute nextOfKinAddress) {
 			this.nextOfKinAddress = nextOfKinAddress;
+		}
+
+		/**
+		 * @return the subChiefName
+		 */
+		public PersonAttribute getSubChiefName() {
+			return subChiefName;
+		}
+
+		/**
+		 * @param subChiefName the subChiefName to set
+		 */
+		public void setSubChiefName(PersonAttribute subChiefName) {
+			this.subChiefName = subChiefName;
 		}
 	}
 }

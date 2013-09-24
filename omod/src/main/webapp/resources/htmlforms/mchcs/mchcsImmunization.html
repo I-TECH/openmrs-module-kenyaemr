@@ -50,11 +50,11 @@
 				</tr>
 				<repeat>
 					<template>
-						<obsgroup groupingConceptId="1441AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+						<obsgroup groupingConceptId="1421AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
 							<tr>
 								<td>
 									<obs conceptId="984AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-										 answerClasses="Drug,Procedure" style="autocomplete" />
+										 answerConceptIds="886AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,783AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1685AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,82215AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,79409AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5864AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="BCG Vaccine(at birth),Oral Polio Vaccine(OPV),DPT/HEP B/Hib,Pneumococcal Vaccine,Measles Vaccine,Yellow Fever" />
 								</td>
 								<td>
 									<obs conceptId="1418AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
@@ -89,9 +89,11 @@
 		<table class="hei" align="center" width="70%">
 			<tbody>
 				<tr>
-					<td>BCG-Scar checked</td>
-					<td>Date checked</td>
-					<td>Date BCG repeated</td>
+					<td>
+						BCG-Scar checked<obs conceptId="160265AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" />
+					</td>
+					<td>Date checked<obs conceptId="160753AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+					<td>Date BCG repeated<obs conceptId="1410AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
 				</tr>
 			</tbody>
 		</table>
@@ -103,24 +105,44 @@
 				</tr>
 				<tr>
 					<th colspan="2">VITAMIN A CAPSULE: Given orally</th>
-					<th rowspan="2">Tick Age given</th>
+					<th rowspan="2">Tick if Given</th>
 					<th rowspan="2">Date of next visit</th>
 				</tr>
 				<tr>
 					<td colspan="2">At 6 months or at first contact thereafter</td>
 				</tr>
 				<tr>
-					<th>Dose</th>
-					<th>Age</th>
+					<th colspan="2">Dose/Units</th>
 					<th></th>
 					<th></th>
 				</tr>
-				<tr>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td><obs conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" /></td>
-				</tr>
+				<repeat>
+					<template>
+						<obsgroup groupingConceptId="1441AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+							<tr>
+								<td colspan="2">
+									<obs conceptId="1443AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="30"/>
+									<obs conceptId="1444AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="5" />
+								</td>
+								<td>
+									<obs conceptId="161534AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" answerLabel="Yes" answerConceptId="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+									<obs conceptId="161534AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" answerLabel="No" answerConceptId="1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+								</td>
+								<td><obs conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" /></td>
+							</tr>
+						</obsgroup>
+					</template>
+					<render n="1" concept=" "/>
+					<render n="2" concept=" "/>
+					<render n="3" concept=" "/>
+					<render n="4" concept=" "/>
+					<render n="5" concept=" "/>
+					<render n="6" concept=" "/>
+					<render n="7" concept=" "/>
+					<render n="8" concept=" "/>
+					<render n="9" concept=" "/>
+					<render n="10" concept=" "/>
+			</repeat>
 			</tbody>
 		</table>
 	</div>
