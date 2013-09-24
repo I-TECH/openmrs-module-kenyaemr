@@ -78,6 +78,7 @@ public class CommonMetadata extends AbstractMetadataProvider {
 		public static final String NEXT_OF_KIN_CONTACT = "342a1d39-c541-4b29-8818-930916f4c2dc";
 		public static final String NEXT_OF_KIN_NAME = "830bef6d-b01f-449d-9f8d-ac0fede8dbd3";
 		public static final String NEXT_OF_KIN_RELATIONSHIP = "d0aa9fd1-2ac5-45d8-9c5e-4317c622c8f5";
+		public static final String SUBCHIEF_NAME = "40fa0c9c-7415-43ff-a4eb-c7c73d7b1a7a";
 		public static final String TELEPHONE_CONTACT = "b2c38640-2603-4629-aebd-3b54f33f1e3a";
 	}
 
@@ -122,7 +123,7 @@ public class CommonMetadata extends AbstractMetadataProvider {
 		installer.personAttributeType("Telephone contact", "Telephone number the patient can be contacted at",
 				String.class, null, false, 1.0, PersonAttributeType.TELEPHONE_CONTACT);
 		installer.personAttributeType("Subchief name", "Name of subchief or chief of patient's area",
-				String.class, null, false, 2.0, PersonAttributeType.TELEPHONE_CONTACT);
+				String.class, null, false, 2.0, PersonAttributeType.SUBCHIEF_NAME);
 		installer.personAttributeType("Next of kin name", "Name of patient's next of kin",
 				String.class, null, false, 3.0, PersonAttributeType.NEXT_OF_KIN_NAME);
 		installer.personAttributeType("Next of kin relationship", "Next of kin relationship to the patient",

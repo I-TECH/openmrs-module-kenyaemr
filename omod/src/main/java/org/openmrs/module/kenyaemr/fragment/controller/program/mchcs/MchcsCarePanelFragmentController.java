@@ -19,8 +19,8 @@ import org.openmrs.EncounterType;
 import org.openmrs.Obs;
 import org.openmrs.Patient;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
+import org.openmrs.module.kenyaemr.metadata.MchMetadata;
 import org.openmrs.module.kenyaemr.util.EmrUtils;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.fragment.FragmentModel;
@@ -45,11 +45,11 @@ public class MchcsCarePanelFragmentController {
 		Obs hivExposed = null;
 		Obs hivStatus = null;
 
-		EncounterType hei_completion_encounterType = MetadataUtils.getEncounterType(Metadata.EncounterType.MCHCS_HEI_COMPLETION);
+		EncounterType hei_completion_encounterType = MetadataUtils.getEncounterType(MchMetadata.EncounterType.MCHCS_HEI_COMPLETION);
 		Encounter lastMchcsHeiCompletion = EmrUtils.lastEncounter(patient,hei_completion_encounterType);
-		EncounterType mchcs_enrollment_encounterType = MetadataUtils.getEncounterType(Metadata.EncounterType.MCHCS_ENROLLMENT);
+		EncounterType mchcs_enrollment_encounterType = MetadataUtils.getEncounterType(MchMetadata.EncounterType.MCHCS_ENROLLMENT);
 		Encounter lastMchcsEnrollment = EmrUtils.lastEncounter(patient,mchcs_enrollment_encounterType);
-		EncounterType mchcs_consultation_encounterType = MetadataUtils.getEncounterType(Metadata.EncounterType.MCHCS_CONSULTATION);
+		EncounterType mchcs_consultation_encounterType = MetadataUtils.getEncounterType(MchMetadata.EncounterType.MCHCS_CONSULTATION);
 		Encounter lastMchcsConsultation = EmrUtils.lastEncounter(patient,mchcs_consultation_encounterType);
 
 		if (lastMchcsHeiCompletion != null && lastMchcsEnrollment != null) {
