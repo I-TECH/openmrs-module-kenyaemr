@@ -54,6 +54,7 @@ public class Metadata {
 		public static final String MCHCS_DISCONTINUATION = "1dd02c43-904b-4206-8378-7b1a8414c326";
 		public static final String MCHCS_FOLLOW_UP = "755b59e6-acbb-4853-abaf-be302039f902";
 		public static final String MCHCS_IMMUNIZATION = "b4f3859e-861c-4a63-bdff-eb7392030d47";
+		public static final String MCHCS_HEI_COMPLETION = "d823f1ef-0973-44ee-b113-7090dc23257b";
 		public static final String MCHMS_ENROLLMENT = "90a18f0c-17cd-4eec-8204-5af52e8d77cf";
 		public static final String MCHMS_ANTENATAL_VISIT = "e8f98494-af35-4bb8-9fc7-c409c8fed843";
 		public static final String MCHMS_POSTNATAL_VISIT = "72aa78e0-ee4b-47c3-9073-26f3b9ecc4a7";
