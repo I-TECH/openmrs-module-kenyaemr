@@ -14,8 +14,6 @@
 
 package org.openmrs.module.kenyaemr;
 
-import java.lang.String;
-
 /**
  * Provides access to the core metadata in KenyaEMR
  */

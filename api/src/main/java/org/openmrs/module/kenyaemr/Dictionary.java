@@ -15,9 +15,7 @@
 package org.openmrs.module.kenyaemr;
 
 import org.openmrs.Concept;
-import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
-import org.openmrs.module.kenyaemr.util.EmrUtils;
 
 import java.lang.String;
 import java.util.ArrayList;

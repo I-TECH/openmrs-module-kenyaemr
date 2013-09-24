@@ -132,7 +132,7 @@ public class PatientUtilsFragmentControllerTest extends BaseModuleWebContextSens
 
 		//to make sure the relationship has been created
 		Assert.assertEquals(1, Context.getPersonService().getRelationships(parent, child, type).size());
-		SimpleObject[] mother = controller.getFathers(child,ui);
-		Assert.assertTrue(mother.length >= 1);
+		SimpleObject[] fathers = controller.getFathers(child,ui);
+		Assert.assertTrue(fathers.length >= 1);
 	}
 }

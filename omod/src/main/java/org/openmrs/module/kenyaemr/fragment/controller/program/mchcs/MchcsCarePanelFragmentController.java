@@ -14,16 +14,10 @@
 
 package org.openmrs.module.kenyaemr.fragment.controller.program.mchcs;
 
-import org.joda.time.DateTime;
-import org.joda.time.Weeks;
-import org.openmrs.Concept;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
 import org.openmrs.Obs;
 import org.openmrs.Patient;
-import org.openmrs.api.EncounterService;
-import org.openmrs.api.PatientService;
-import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
@@ -33,7 +27,6 @@ import org.openmrs.ui.framework.fragment.FragmentModel;
 
 import java.lang.String;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
