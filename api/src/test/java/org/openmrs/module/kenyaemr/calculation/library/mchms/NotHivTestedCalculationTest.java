@@ -26,7 +26,7 @@ import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.Metadata;
+import org.openmrs.module.kenyaemr.metadata.MchMetadata;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 import java.util.Arrays;
@@ -55,7 +55,7 @@ public class NotHivTestedCalculationTest extends BaseModuleContextSensitiveTest 
 	public void evaluate_shouldDetermineWhetherPatientsHaveNotBeenHivTested() throws Exception {
 
 		// Get the MCH-MS Program
-		Program mchmsProgram = MetadataUtils.getProgram(Metadata.Program.MCHMS);
+		Program mchmsProgram = MetadataUtils.getProgram(MchMetadata.Program.MCHMS);
 
 		//Enroll patients #6, #7 and #8 into MCH-MS
 		PatientService patientService = Context.getPatientService();

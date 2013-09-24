@@ -17,7 +17,7 @@ package org.openmrs.module.kenyaemr.fragment.controller;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
-import org.openmrs.module.kenyaemr.Metadata;
+import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 
@@ -36,7 +36,7 @@ public class VisitMenuFragmentController {
 		Visit newVisit = new Visit();
 		newVisit.setPatient(patient);
 		newVisit.setStartDatetime(new Date());
-		newVisit.setVisitType(MetadataUtils.getVisitType(Metadata.VisitType.OUTPATIENT));
+		newVisit.setVisitType(MetadataUtils.getVisitType(CommonMetadata.VisitType.OUTPATIENT));
 		model.addAttribute("newCurrentVisit", newVisit);
 	}
 }

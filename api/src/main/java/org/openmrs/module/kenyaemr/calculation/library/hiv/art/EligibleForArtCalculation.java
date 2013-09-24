@@ -27,11 +27,11 @@ import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
-import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.LastCd4CountCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.LastCd4PercentageCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.LastWhoStageCalculation;
+import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.util.EmrUtils;
 import org.openmrs.module.reporting.common.Age;
 
@@ -57,7 +57,7 @@ public class EligibleForArtCalculation extends BaseEmrCalculation implements Pat
 	                                     PatientCalculationContext context) {
 
 		// only applies to patients in the HIV program
-		Program hivProgram = MetadataUtils.getProgram(Metadata.Program.HIV);
+		Program hivProgram = MetadataUtils.getProgram(HivMetadata.Program.HIV);
 		Set<Integer> inHivProgram = CalculationUtils.patientsThatPass(Calculations.activeEnrollment(hivProgram, cohort, context));
 		
 		// need to exclude those on ART already

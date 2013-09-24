@@ -22,7 +22,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyacore.report.IndicatorReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportManager;
-import org.openmrs.module.kenyaemr.Metadata;
+import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.regimen.RegimenManager;
 import org.openmrs.module.kenyaemr.test.ReportingTestUtils;
 import org.openmrs.module.kenyacore.test.TestUtils;
@@ -63,7 +63,7 @@ public class Moh711ReportBuilderTest extends BaseModuleContextSensitiveTest {
 
 	@Test
 	public void test() throws Exception {
-		Program hivProgram = MetadataUtils.getProgram(Metadata.Program.HIV);
+		Program hivProgram = MetadataUtils.getProgram(HivMetadata.Program.HIV);
 
 		// Enroll #6 in the HIV program on June 15th
 		TestUtils.enrollInProgram(Context.getPatientService().getPatient(6), hivProgram, TestUtils.date(2012, 6, 15), null);

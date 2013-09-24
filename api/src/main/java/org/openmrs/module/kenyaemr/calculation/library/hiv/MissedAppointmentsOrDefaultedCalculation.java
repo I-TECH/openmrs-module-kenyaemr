@@ -29,9 +29,9 @@ import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
+import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 
 /**
  * Calculates whether patients have missed their last scheduled return visit. Calculation returns true
@@ -57,7 +57,7 @@ public class MissedAppointmentsOrDefaultedCalculation extends BaseEmrCalculation
     @Override
     public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
 
-		Program hivProgram = MetadataUtils.getProgram(Metadata.Program.HIV);
+		Program hivProgram = MetadataUtils.getProgram(HivMetadata.Program.HIV);
 
 		Set<Integer> alive = alivePatients(cohort, context);
 		Set<Integer> inHivProgram = CalculationUtils.patientsThatPass(Calculations.activeEnrollment(hivProgram, alive, context));

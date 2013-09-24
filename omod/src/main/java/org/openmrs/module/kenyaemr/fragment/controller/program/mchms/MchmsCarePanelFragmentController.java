@@ -24,7 +24,7 @@ import org.openmrs.Patient;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.Metadata;
+import org.openmrs.module.kenyaemr.metadata.MchMetadata;
 import org.openmrs.module.kenyaemr.util.EmrUtils;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.fragment.FragmentModel;
@@ -45,7 +45,7 @@ public class MchmsCarePanelFragmentController {
 		Map<String, Object> calculations = new HashMap<String, Object>();
 
 		EncounterService encounterService = Context.getEncounterService();
-		EncounterType encounterType = encounterService.getEncounterTypeByUuid(Metadata.EncounterType.MCHMS_ENROLLMENT);
+		EncounterType encounterType = encounterService.getEncounterTypeByUuid(MchMetadata.EncounterType.MCHMS_ENROLLMENT);
 		Encounter lastMchEnrollment = EmrUtils.lastEncounter(patient, encounterType);
 		Obs lmpObs = EmrUtils.firstObsInEncounter(lastMchEnrollment, Dictionary.getConcept(Dictionary.LAST_MONTHLY_PERIOD));
 		if (lmpObs != null) {
@@ -60,7 +60,7 @@ public class MchmsCarePanelFragmentController {
 			calculations.put("hivStatus", "Not Specified");
 		}
 
-		encounterType = encounterService.getEncounterTypeByUuid(Metadata.EncounterType.MCHMS_CONSULTATION);
+		encounterType = encounterService.getEncounterTypeByUuid(MchMetadata.EncounterType.MCHMS_CONSULTATION);
 		Encounter lastMchConsultation = EmrUtils.lastEncounter(patient, encounterType);
 		if (lastMchConsultation != null) {
 			Obs arvUseObs = EmrUtils.firstObsInEncounter(lastMchConsultation, Dictionary.getConcept(Dictionary.ANTIRETROVIRAL_USE_IN_PREGNANCY));

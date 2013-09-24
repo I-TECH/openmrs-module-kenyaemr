@@ -25,9 +25,10 @@ import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
-import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
+import org.openmrs.module.kenyaemr.metadata.HivMetadata;
+import org.openmrs.module.kenyaemr.metadata.TbMetadata;
 
 /**
  * Calculates HIV patients who have not been screened for TB
@@ -46,8 +47,8 @@ public class NeverScreenedForTbCalculation extends BaseEmrCalculation {
 	 */
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> params, PatientCalculationContext context) {
-		Program hivProgram = MetadataUtils.getProgram(Metadata.Program.HIV);
-		EncounterType screeningEncType = MetadataUtils.getEncounterType(Metadata.EncounterType.TB_SCREENING);
+		Program hivProgram = MetadataUtils.getProgram(HivMetadata.Program.HIV);
+		EncounterType screeningEncType = MetadataUtils.getEncounterType(TbMetadata.EncounterType.TB_SCREENING);
 
 		Set<Integer> alive = alivePatients(cohort, context);
 		Set<Integer> inHivProgram = CalculationUtils.patientsThatPass(Calculations.activeEnrollment(hivProgram, alive, context));

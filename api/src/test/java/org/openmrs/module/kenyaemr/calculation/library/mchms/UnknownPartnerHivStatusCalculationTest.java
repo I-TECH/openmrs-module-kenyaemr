@@ -29,7 +29,7 @@ import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.Metadata;
+import org.openmrs.module.kenyaemr.metadata.MchMetadata;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 import java.util.Arrays;
@@ -59,9 +59,9 @@ public class UnknownPartnerHivStatusCalculationTest extends BaseModuleContextSen
 	public void evaluate_shouldDetermineWhetherPatientsPartnersHiVStatusesAreUnknown() throws Exception {
 
 		// Get the MCH-MS program, enrollment encounter type and enrollment form
-		Program mchmsProgram = MetadataUtils.getProgram(Metadata.Program.MCHMS);
-		EncounterType enrollmentEncounterType = MetadataUtils.getEncounterType(Metadata.EncounterType.MCHMS_ENROLLMENT);
-		Form enrollmentForm = MetadataUtils.getForm(Metadata.Form.MCHMS_ENROLLMENT);
+		Program mchmsProgram = MetadataUtils.getProgram(MchMetadata.Program.MCHMS);
+		EncounterType enrollmentEncounterType = MetadataUtils.getEncounterType(MchMetadata.EncounterType.MCHMS_ENROLLMENT);
+		Form enrollmentForm = MetadataUtils.getForm(MchMetadata.Form.MCHMS_ENROLLMENT);
 
 		//Enroll  #6, #7 and #8 into MCH-MS
 		PatientService patientService = Context.getPatientService();

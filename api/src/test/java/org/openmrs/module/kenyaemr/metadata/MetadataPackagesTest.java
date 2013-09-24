@@ -12,22 +12,15 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr;
+package org.openmrs.module.kenyaemr.metadata;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.log4j.Level;
-import org.apache.log4j.LogManager;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.openmrs.Program;
-import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyacore.metadata.MetadataConfiguration;
 import org.openmrs.module.kenyacore.test.TestUtils;
-import org.openmrs.module.metadatasharing.ImportConfig;
-import org.openmrs.module.metadatasharing.ImportMode;
 import org.openmrs.module.metadatasharing.MetadataSharing;
 import org.openmrs.module.metadatasharing.wrapper.PackageImporter;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
@@ -38,15 +31,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.io.InputStream;
 import java.util.Map;
 
-import static org.hamcrest.Matchers.*;
-
 /**
  * Tests for importing of KenyaEMR metadata packages
  */
 @Ignore
-public class MetadataIntegrationTest extends BaseModuleContextSensitiveTest {
+public class MetadataPackagesTest extends BaseModuleContextSensitiveTest {
 
-	protected static final Log log = LogFactory.getLog(MetadataIntegrationTest.class);
+	protected static final Log log = LogFactory.getLog(MetadataPackagesTest.class);
 
 	@Autowired
 	private MetadataConfiguration metadataConfiguration;
@@ -89,39 +80,5 @@ public class MetadataIntegrationTest extends BaseModuleContextSensitiveTest {
 			metadataImporter.loadSerializedPackageStream(inputStream);
 			metadataImporter.importPackage();
 		}
-	}
-
-	/**
-	 * Demonstrates problem with updating existing program objects
-	 */
-	@Test
-	@SkipBaseSetup
-	public void testProgramLoadingFromCorePackage() throws Exception {
-		PackageImporter metadataImporter = MetadataSharing.getInstance().newPackageImporter();
-		metadataImporter.loadSerializedPackageStream(ClassLoader.getSystemResourceAsStream("metadata/KenyaEMR_Core-37.zip"));
-		metadataImporter.setImportConfig(ImportConfig.valueOf(ImportMode.MIRROR));
-		metadataImporter.importPackage();
-
-		Program mchmsProgram = Context.getProgramWorkflowService().getProgramByUuid(Metadata.Program.MCHMS);
-		Assert.assertThat(mchmsProgram, is(notNullValue()));
-		Assert.assertThat(mchmsProgram.getName(), is("MCH Program - Maternal Services"));
-
-		mchmsProgram.setName("XXX");
-		Context.getProgramWorkflowService().saveProgram(mchmsProgram);
-
-		Context.flushSession();
-		Context.clearSession();
-
-		metadataImporter = MetadataSharing.getInstance().newPackageImporter();
-		metadataImporter.loadSerializedPackageStream(ClassLoader.getSystemResourceAsStream("metadata/KenyaEMR_Core-37.zip"));
-		metadataImporter.setImportConfig(ImportConfig.valueOf(ImportMode.MIRROR));
-		metadataImporter.importPackage();
-
-		Context.flushSession();
-		Context.clearSession();
-
-		mchmsProgram = Context.getProgramWorkflowService().getProgramByUuid(Metadata.Program.MCHMS);
-		Assert.assertThat(mchmsProgram, is(notNullValue()));
-		Assert.assertThat(mchmsProgram.getName(), is("MCH Program - Maternal Services"));
 	}
 }

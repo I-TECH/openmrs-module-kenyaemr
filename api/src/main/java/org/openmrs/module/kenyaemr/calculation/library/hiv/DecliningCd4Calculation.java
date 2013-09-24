@@ -27,10 +27,10 @@ import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.EmrConstants;
-import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
+import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 
 /**
  * Calculates whether a patient has a declining CD4 count. Calculation returns true if patient
@@ -49,7 +49,7 @@ public class DecliningCd4Calculation extends BaseEmrCalculation implements Patie
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
 
-		Program hivProgram = MetadataUtils.getProgram(Metadata.Program.HIV);
+		Program hivProgram = MetadataUtils.getProgram(HivMetadata.Program.HIV);
 
 		Set<Integer> alive = alivePatients(cohort, context);
 		Set<Integer> inHivProgram = CalculationUtils.patientsThatPass(Calculations.activeEnrollment(hivProgram, alive, context));

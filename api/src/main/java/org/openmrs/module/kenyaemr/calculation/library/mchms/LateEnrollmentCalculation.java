@@ -26,8 +26,8 @@ import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
+import org.openmrs.module.kenyaemr.metadata.MchMetadata;
 import org.openmrs.module.kenyaemr.util.EmrUtils;
 
 import java.util.Collection;
@@ -44,13 +44,13 @@ public class LateEnrollmentCalculation extends BaseEmrCalculation {
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
 
-		Program mchmsProgram = MetadataUtils.getProgram(Metadata.Program.MCHMS);
+		Program mchmsProgram = MetadataUtils.getProgram(MchMetadata.Program.MCHMS);
 
 		Set<Integer> alive = alivePatients(cohort, context);
 		Set<Integer> inMchmsProgram = CalculationUtils.patientsThatPass(Calculations.activeEnrollment(mchmsProgram, alive, context));
 
 		CalculationResultMap ret = new CalculationResultMap();
-		CalculationResultMap crm = Calculations.lastEncounter(MetadataUtils.getEncounterType(Metadata.EncounterType.MCHMS_ENROLLMENT), cohort, context);
+		CalculationResultMap crm = Calculations.lastEncounter(MetadataUtils.getEncounterType(MchMetadata.EncounterType.MCHMS_ENROLLMENT), cohort, context);
 		for (Integer ptId : cohort) {
 			// Is patient alive and in MCH program?
 			boolean lateEnrollment = false;

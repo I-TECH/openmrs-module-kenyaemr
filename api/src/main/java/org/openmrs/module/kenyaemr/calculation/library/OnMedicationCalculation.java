@@ -21,10 +21,10 @@ import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.EmrConstants;
-import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
+import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 
 import java.util.*;
 
@@ -39,7 +39,7 @@ public class OnMedicationCalculation extends BaseEmrCalculation {
 
 		Set<Concept> drugs = (Set<Concept>) params.get("drugs");
 		Concept medOrders = Dictionary.getConcept(Dictionary.MEDICATION_ORDERS);
-		EncounterType consultation = MetadataUtils.getEncounterType(Metadata.EncounterType.CONSULTATION);
+		EncounterType consultation = MetadataUtils.getEncounterType(CommonMetadata.EncounterType.CONSULTATION);
 
 		CalculationResultMap lastConsultations = Calculations.lastEncounter(consultation, cohort, context);
 

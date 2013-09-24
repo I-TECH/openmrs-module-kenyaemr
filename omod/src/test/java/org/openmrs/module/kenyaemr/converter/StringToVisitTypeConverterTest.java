@@ -19,7 +19,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.VisitType;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
-import org.openmrs.module.kenyaemr.Metadata;
+import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 
 /**
@@ -48,7 +48,7 @@ public class StringToVisitTypeConverterTest extends BaseModuleWebContextSensitiv
 		Assert.assertNull(converter.convert(""));
 
 		// Check actual visit type
-		VisitType outpatientType = MetadataUtils.getVisitType(Metadata.VisitType.OUTPATIENT);
+		VisitType outpatientType = MetadataUtils.getVisitType(CommonMetadata.VisitType.OUTPATIENT);
 
 		Assert.assertEquals(outpatientType, converter.convert(outpatientType.getVisitTypeId().toString()));
 	}
