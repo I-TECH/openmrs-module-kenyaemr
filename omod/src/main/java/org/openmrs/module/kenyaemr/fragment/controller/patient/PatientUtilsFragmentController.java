@@ -22,12 +22,15 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Patient;
+import org.openmrs.Person;
+import org.openmrs.Relationship;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.module.kenyacore.calculation.CalculationManager;
 import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
 import org.openmrs.ui.framework.SimpleObject;
+import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -73,5 +76,51 @@ public class PatientUtilsFragmentController {
 	 */
 	public SimpleObject age(@RequestParam("patientId") Patient patient, @RequestParam("now") Date now) {
 		return SimpleObject.create("age", patient.getAge(now));
+	}
+
+	/**
+	 * Look for the mothers name for an infant from the relationship defined
+	 * @param patient
+	 * @param now
+	 * @return list of mothers
+	 */
+	public SimpleObject[] getMothers(@RequestParam("patientId") Patient patient,UiUtils ui) {
+		List<Person> people = new ArrayList<Person>();
+			for (Relationship relationship : Context.getPersonService().getRelationshipsByPerson(patient)) {
+				if (relationship.getRelationshipType().getbIsToA().equals("Parent")) {
+					if (relationship.getPersonB().getGender().equals("F")) {
+						people.add(relationship.getPersonB());
+					}
+				}
+				if (relationship.getRelationshipType().getaIsToB().equals("Parent")) {
+					if (relationship.getPersonA().getGender().equals("F")) {
+						people.add(relationship.getPersonA());
+					}
+				}
+			}
+		return ui.simplifyCollection(people);
+	}
+
+	/**
+	 * Look for the fathers name for an infant from the relationship defined
+	 * @param patient
+	 * @param now
+	 * @return list of fathers
+	 */
+	public SimpleObject[] getFathers(@RequestParam("patientId") Patient patient,UiUtils ui) {
+		List<Person> people = new ArrayList<Person>();
+		for (Relationship relationship : Context.getPersonService().getRelationshipsByPerson(patient)) {
+			if (relationship.getRelationshipType().getbIsToA().equals("Parent")) {
+				if (relationship.getPersonB().getGender().equals("M")) {
+					people.add(relationship.getPersonB());
+				}
+			}
+			if (relationship.getRelationshipType().getaIsToB().equals("Parent")) {
+				if (relationship.getPersonA().getGender().equals("M")) {
+					people.add(relationship.getPersonA());
+				}
+			}
+		}
+		return ui.simplifyCollection(people);
 	}
 }

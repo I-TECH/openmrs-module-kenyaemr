@@ -27,6 +27,11 @@
 
 	</style>
 	<script type="text/javascript">
+
+		var YES_CONCEPT_ID = 1065;
+		var NO_CONCEPT_ID = 1066;
+		var WHITE_COLOR_CONCEPT_ID = 1075;
+
 		function displayDate(birthDate)
 		{
 			var d1 = new Date(birthDate);
@@ -66,12 +71,68 @@
 			}
 			return Years +" Y(s)"+"<br />" + Months + " Mnth(s)" +"<br />"+ wks + " wk(s)" +"<br />"+ remDays +" Day(s)";
 		}
+
+		function getTetracycline() {
+			if (getValue('tetracycline-geven.value') == YES_CONCEPT_ID ) {
+				jq('#teo-given').html("ONLY at birth");
+			}
+			else {
+				jq('#teo-given').html(" ");
+			}
+		}
+
+		function pupilExamination() {
+			if (getValue('pupil-examination.value') ==  WHITE_COLOR_CONCEPT_ID ) {
+				jq('#pupil-condition').html("Refer");
+			}
+			else  {
+				jq('#pupil-condition').html(" ");
+			}
+		}
+
+		function sightExamination() {
+			if (getValue('sight-examination.value') ==  NO_CONCEPT_ID ) {
+				jq('#not-following-objects').html("Refer to eye clinic");
+			}
+			else {
+				jq('#not-following-objects').html(" ");
+			}
+		}
+
+		function squint() {
+			if (getValue('squint.value') ==  YES_CONCEPT_ID ) {
+				jq('#squint-eyes').html("Refer to eye clinic");
+			}
+			else {
+				jq('#squint-eyes').html(" ");
+			}
+		}
+
+		function loadingImages(){
+			jq('#pupil-image').html('&lt;img src="<lookup expression="ui.resourceLink('kenyaemr', '/images/htmlforms/mchcs/whitepupil.jpg')" />" width="200" height="50" /&gt;');
+			jq('#squint-eyes-image').html('&lt;img src="<lookup expression="ui.resourceLink('kenyaemr', '/images/htmlforms/mchcs/squint.jpg')" />" width="200" height="50" /&gt;');
+		}
 		jq(function(){
 			var birthDate = "<lookup expression="patient.birthdate" />";
 			jq('#age').html(displayDate(birthDate));
 			jq('#calculated-age-deworming').html(displayDate(birthDate));
+			//toggle options for tetracycline given
+			getTetracycline();
+			jq('#tetracycline-geven input').click(getTetracycline);
+			//pupils examination
+			pupilExamination();
+			jq('#pupil-examination input').click(pupilExamination);
+			//sight examination
+			sightExamination();
+			jq('#sight-examination input').click(sightExamination);
+			//squint condition
+			squint();
+			jq('#squint input').click(squint);
+			//loading images
+			loadingImages();
 		});
 	</script>
+
 	<div class="ke-form-header">
 		<table style="width: 100%">
 			<tr>
@@ -84,7 +145,7 @@
 		<table border="0" class="hei" align="center">
 			<tbody>
 				<tr>
-					<td colspan="3" style="background-color: #696969; color: #ffffff;text-align:center;">
+					<td colspan="3" style="background-color: #696969; color: #ffffff;">
 						GROWTH, NUTRITION AND DEVELOPMENT MONITORING
 					</td>
 				</tr>
@@ -104,13 +165,14 @@
 									<td colspan="3">Medication Given<br /> <i>If HIV Exposed</i></td>
 									<td rowspan="2">TB <br />Assessment <br/> Outcome</td>
 									<td rowspan="2">Date of Next <br/>Appointment</td>
-
 								</tr>
+
 								<tr>
 									<td>NVP <br/> (mls)</td>
 									<td>CTX <br/>(mls/mg)</td>
 									<td>M/vit</td>
 								</tr>
+
 								<tr>
 									<td>(a)</td>
 									<td>(b)</td>
@@ -122,8 +184,8 @@
 									<td>(h)</td>
 									<td>(i)</td>
 									<td>(j)</td>
-
 								</tr>
+
 								<tr>
 									<td><encounterDate id="encounter-date" showTime="false" /></td>
 									<td><div id="age" class="value"></div></td>
@@ -142,7 +204,7 @@
 					</td>
 				</tr>
 				<tr>
-					<td colspan="3" style="background-color: #696969; color: #ffffff;">MileStones</td>
+					<td colspan="3" style="background-color: #696969; color: #ffffff;">MILESTONES</td>
 				</tr>
 				<tr>
 					<td colspan="2">
@@ -154,17 +216,17 @@
 							<tr>
 								<td colspan="2">
 									<div style="float: left; padding-right: 30px">
-										<obs conceptId="1200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" answerConceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Social Smile" /><br />
-										<obs conceptId="1200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" answerConceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Head Holding/Control" /><br />
-										<obs conceptId="1200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" answerConceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Turns towards the origin of sound" /><br />
-										<obs conceptId="1200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" answerConceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Extends hand to grasp a toy" /> <br />
+										<obs conceptId="162069AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" answerConceptId="162056AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Social Smile" /><br />
+										<obs conceptId="162069AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" answerConceptId="162057AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Head Holding/Control" /><br />
+										<obs conceptId="162069AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" answerConceptId="162058AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Turns towards the origin of sound" /><br />
+										<obs conceptId="162069AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" answerConceptId="162059AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Extends hand to grasp a toy" /> <br />
 
 									</div>
 									<div style="float: left">
-										<obs conceptId="1200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" answerConceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Sitting" /> <br />
-										<obs conceptId="1200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" answerConceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Standing" /><br />
-										<obs conceptId="1200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" answerConceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Walking" /> <br />
-										<obs conceptId="1200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" answerConceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Talking" /> <br />
+										<obs conceptId="162069AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" answerConceptId="162061AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Sitting" /> <br />
+										<obs conceptId="162069AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" answerConceptId="162062AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Standing" /><br />
+										<obs conceptId="162069AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" answerConceptId="162063AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Walking" /> <br />
+										<obs conceptId="162069AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" answerConceptId="162060AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Talking" /> <br />
 									</div>
 								</td>
 								<td><obs conceptId="1189AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerConceptIds="1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,6022AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,6025AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Normal(N),Delayed(D),Regressed(R)" answerSeparator="&lt;br/&gt;"/></td>
@@ -173,6 +235,51 @@
 
 					</td>
 
+				</tr>
+				<tr>
+					<td colspan="3" style="background-color: #696969; color: #ffffff;">LABORATORY INFORMATION</td>
+				</tr>
+				<tr>
+					<td colspan="3">
+						<obsgroup groupingConceptId="162085AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+							<table class="hei" width="100%">
+								<tbody>
+								<tr>
+									<th>Type of Test</th>
+									<th>Date of Sample <br />Collection</th>
+									<th>Test Contextual <br />Status</th>
+									<th>Results</th>
+									<th>DBS Sample Code</th>
+									<th>Date Results Collected</th>
+								</tr>
+								<tr>
+									<td>DNA PCR</td>
+									<td><obs conceptId="159951AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowTime="false" /></td>
+									<td><obs conceptId="162084AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+									<td><obs conceptId="844AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+									<td><obs conceptId="162086AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+									<td><obs conceptId="160082AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+								</tr>
+								<tr>
+									<td>First Antibody Test</td>
+									<td><obs conceptId="159951AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowTime="false" /></td>
+									<td><!--<obs conceptId="162084AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />--></td>
+									<td><obs conceptId="1040AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+									<td><obs conceptId="162086AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+									<td><obs conceptId="160082AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+								</tr>
+								<tr>
+									<td>Final Antibody Test</td>
+									<td><obs conceptId="159951AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowTime="false" /></td>
+									<td><!--<obs conceptId="162084AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />--></td>
+									<td><obs conceptId="1326AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+									<td><obs conceptId="162086AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+									<td><obs conceptId="160082AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+								</tr>
+								</tbody>
+							</table>
+						</obsgroup>
+					</td>
 				</tr>
 				<tr>
 					<td colspan="3" style="background-color: #696969; color: #ffffff;text-align:center;">Early Eye Examination and Deworming </td>
@@ -187,28 +294,31 @@
 									</tr>
 									<tr>
 										<td>Tetracycline<br /> Eye Ointment<br />(TEO) Given?</td>
-										<td>Yes/No</td>
-										<td id="teo-given" class="value">Only at Birth</td>
+										<td><obs conceptId="162077AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio"  id="tetracycline-geven"/></td>
+										<td id="teo-given" class="value"></td>
 									</tr>
 									<tr>
-										<td>PUPIL</td>
-										<td>Black<br />White</td>
-										<td id="white-pupil" class="value">If White Refer</td>
+										<td>
+											PUPIL<br />
+											<div id="pupil-image"></div>
+										</td>
+										<td><obs conceptId="162064AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="162065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1075AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Black,White" style="radio" id="pupil-examination" /></td>
+										<td id="pupil-condition" class="value"></td>
 									</tr>
 									<tr>
-										<td>SIGHT</td>
-										<td>Following Objects<br />Not Following Objects</td>
-										<td id="not-following-objects" class="value">Refer to Eye Clinic</td>
+										<td>
+											SIGHT
+										</td>
+										<td><obs conceptId="162067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Following Objects,Not Following Objects" style="radio" id="sight-examination"/></td>
+										<td id="not-following-objects" class="value"></td>
 									</tr>
 									<tr>
-										<td>SQUINT<br />(Crossed Eyes)</td>
-										<td>Squint<br />No Squint</td>
-										<td id="squint-eyes" class="value">Refer to Eye Clinic</td>
-									</tr>
-									<tr>
-										<td>ANY Other Problems</td>
-										<td>Yes<br />No</td>
-										<td id="other-problems" class="value">Refer to Eye Clinic</td>
+										<td class="image">SQUINT<br />(Crossed Eyes)
+											<br />
+											<div id="squint-eyes-image"></div>
+										</td>
+										<td><obs conceptId="162066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Squint,No Squint" style="radio" id="squint"/></td>
+										<td id="squint-eyes" class="value"></td>
 									</tr>
 								</tbody>
 							</table>
@@ -230,13 +340,13 @@
 								<tr>
 									<th>Age</th>
 									<th>Drug</th>
-									<th>Dosage</th>
+									<th>Dosage/Units</th>
 								</tr>
 								<obsgroup groupingConceptId="1442AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
 									<tr>
 										<td id="calculated-age-deworming" class="value"></td>
-										<td><obs conceptId="1282AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerClasses="Drug" style="autocomplete" /></td>
-										<td><obs conceptId="1443AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+										<td><obs conceptId="1282AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="79413AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,70439AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Mebendazole,Albendazole" style="radio" /></td>
+										<td><obs conceptId="1443AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><obs conceptId="1621AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
 										<td><obs conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" /></td>
 									</tr>
 								</obsgroup>

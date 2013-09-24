@@ -47,7 +47,7 @@ public class MchMetadataProvider extends AbstractMetadataProvider {
 
 		installer.encounterType("MCH Child Enrollment", "Enrollment of child onto MCH program", Metadata.EncounterType.MCHCS_ENROLLMENT);
 		installer.encounterType("MCH Child Consultation", "Collection of child data during MCH visit", Metadata.EncounterType.MCHCS_CONSULTATION);
-		//installer.encounterType("MCH Child HEI Exit", "Reasons that child is exited from HEI", Metadata.EncounterType.MCHCS_HEI_EXIT);
+		installer.encounterType("MCH Child HEI Exit", "Reasons that child is exited from HEI", Metadata.EncounterType.MCHCS_HEI_COMPLETION);
 		installer.encounterType("MCH Child Immunization", "Record of child immunizations", Metadata.EncounterType.MCHCS_IMMUNIZATION);
 		installer.encounterType("MCH Child Discontinuation", "Discontinuation of child from MCH program", Metadata.EncounterType.MCHCS_DISCONTINUATION);
 
@@ -64,5 +64,12 @@ public class MchMetadataProvider extends AbstractMetadataProvider {
 		installer.form("Infant Feeding", "MCH-MS infant feeding form", Metadata.EncounterType.MCHMS_CONSULTATION, "1.0", Metadata.Form.MCHMS_INFANT_FEEDING);
 		installer.form("Preventive Services", "MCH-MS preventive services form", Metadata.EncounterType.MCHMS_CONSULTATION, "1.0", Metadata.Form.MCHMS_PREVENTIVE_SERVICES);
 		installer.form("MCH-MS Discontinuation", "MCH-MS discontinuation form", Metadata.EncounterType.MCHMS_DISCONTINUATION, "1.0", Metadata.Form.MCHMS_DISCONTINUATION);
+
+		//MCH-CS Forms
+		installer.form("Child Service Enrollment", "MCH-CS Enrollment form", Metadata.EncounterType.MCHCS_ENROLLMENT, "1.0", Metadata.Form.MCHCS_ENROLLMENT);
+		installer.form("Child Services Discontinuation", "MCH-CS discontinuation form", Metadata.EncounterType.MCHCS_DISCONTINUATION, "1.0", Metadata.Form.MCHCS_DISCONTINUATION);
+		installer.form("MCH Child Follow Up", "MCH-CS follow up form", Metadata.EncounterType.MCHCS_CONSULTATION, "1.0", Metadata.Form.MCHCS_FOLLOW_UP);
+		installer.form("Immunization", "MCH-CS immunization form", Metadata.EncounterType.MCHCS_IMMUNIZATION, "1.0", Metadata.Form.MCHCS_IMMUNIZATION);
+		installer.form("Child HEI outcomes", "MCH-CS HEI exit form", Metadata.EncounterType.MCHCS_HEI_COMPLETION, "1.0", Metadata.Form.MCHCS_HEI_COMPLETION);
 	}
 }
