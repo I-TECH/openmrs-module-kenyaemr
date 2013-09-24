@@ -14,8 +14,7 @@
 
 package org.openmrs.module.kenyaemr.metadata;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.openmrs.PatientIdentifierType.LocationBehavior;
 import org.openmrs.module.kenyacore.metadata.AbstractMetadataProvider;
 import org.openmrs.module.kenyacore.metadata.Requires;
 import org.openmrs.module.kenyacore.metadata.installer.CoreMetadataInstaller;
@@ -30,8 +29,6 @@ import org.springframework.stereotype.Component;
 @Requires("kenyaemr.common.metadata")
 public class TbMetadata extends AbstractMetadataProvider {
 
-	protected static final Log log = LogFactory.getLog(TbMetadata.class);
-
 	public static final class EncounterType {
 		public static final String TB_DISCONTINUATION = "d3e3d723-7458-4b4e-8998-408e8a551a84";
 		public static final String TB_ENROLLMENT = "9d8498a4-372d-4dc4-a809-513a2434621e";
@@ -44,6 +41,10 @@ public class TbMetadata extends AbstractMetadataProvider {
 		public static final String TB_SCREENING = "59ed8e62-7f1f-40ae-a2e3-eabe350277ce";
 	}
 
+	public static final class PatientIdentifierType {
+		public static final String DISTRICT_REG_NUMBER = "d8ee3b8c-a8fc-4d6b-af6a-9423be5f8906";
+	}
+
 	public static final class Program {
 		public static final String TB = "9f144a34-3a4a-44a9-8486-6b7af6cc64f6";
 	}
@@ -51,12 +52,11 @@ public class TbMetadata extends AbstractMetadataProvider {
 	@Autowired
 	private CoreMetadataInstaller installer;
 
+	/**
+	 * @see org.openmrs.module.kenyacore.metadata.AbstractMetadataProvider#install()
+	 */
 	@Override
 	public void install() {
-		log.info("Installing TB metadata");
-
-		installer.program("TB Program", "Treatment for TB patients", Dictionary.TUBERCULOSIS_TREATMENT_PROGRAM, Program.TB);
-
 		installer.encounterType("TB Screening", "Screening of patient for TB", EncounterType.TB_SCREENING);
 		installer.encounterType("TB Enrollment", "Enrollment onto HIV program", EncounterType.TB_ENROLLMENT);
 		installer.encounterType("TB Discontinuation", "Discontinuation from HIV program", EncounterType.TB_DISCONTINUATION);
@@ -64,5 +64,11 @@ public class TbMetadata extends AbstractMetadataProvider {
 		installer.form("TB Screening", null, EncounterType.TB_SCREENING, "1", Form.TB_SCREENING);
 		installer.form("TB Enrollment", null, EncounterType.TB_ENROLLMENT, "1", Form.TB_ENROLLMENT);
 		installer.form("TB Discontinuation", null, EncounterType.TB_DISCONTINUATION, "1", Form.TB_COMPLETION);
+
+		installer.patientIdentifierType("District Registration Number", "Assigned to every TB patient",
+				null, null, null,
+				LocationBehavior.NOT_USED, false, PatientIdentifierType.DISTRICT_REG_NUMBER);
+
+		installer.program("TB Program", "Treatment for TB patients", Dictionary.TUBERCULOSIS_TREATMENT_PROGRAM, Program.TB);
 	}
 }

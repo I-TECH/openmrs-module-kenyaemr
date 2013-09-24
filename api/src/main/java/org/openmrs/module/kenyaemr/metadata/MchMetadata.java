@@ -14,8 +14,7 @@
 
 package org.openmrs.module.kenyaemr.metadata;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.openmrs.PatientIdentifierType.LocationBehavior;
 import org.openmrs.module.kenyacore.metadata.AbstractMetadataProvider;
 import org.openmrs.module.kenyacore.metadata.Requires;
 import org.openmrs.module.kenyacore.metadata.installer.CoreMetadataInstaller;
@@ -29,8 +28,6 @@ import org.springframework.stereotype.Component;
 @Component("kenyaemr.mch.metadata")
 @Requires("kenyaemr.common.metadata")
 public class MchMetadata extends AbstractMetadataProvider {
-
-	protected static final Log log = LogFactory.getLog(MchMetadata.class);
 
 	public static final class EncounterType {
 		public static final String MCHCS_CONSULTATION = "bcc6da85-72f2-4291-b206-789b8186a021";
@@ -58,6 +55,10 @@ public class MchMetadata extends AbstractMetadataProvider {
 		public static final String MCHMS_DISCONTINUATION = "25935b9f-68ad-4e0c-9663-d2cacda82bbf";
 	}
 
+	public static final class PatientIdentifierType {
+		public static final String HEI_ID_NUMBER = "0691f522-dd67-4eeb-92c8-af5083baf338";
+	}
+
 	public static final class Program {
 		public static final String MCHCS = "c2ecdf11-97cd-432a-a971-cfd9bd296b83";
 		public static final String MCHMS = "b5d9e05f-f5ab-4612-98dd-adb75438ed34";
@@ -66,11 +67,12 @@ public class MchMetadata extends AbstractMetadataProvider {
 	@Autowired
 	private CoreMetadataInstaller installer;
 
+	/**
+	 * @see org.openmrs.module.kenyacore.metadata.AbstractMetadataProvider#install()
+	 */
 	@Override
 	public void install() {
-		log.info("Installing MCH metadata");
-
-		// MCH child services
+		///////////////////////////// MCH child services ////////////////////////////////
 
 		installer.encounterType("MCH Child Enrollment", "Enrollment of child onto MCH program", EncounterType.MCHCS_ENROLLMENT);
 		installer.encounterType("MCH Child Consultation", "Collection of child data during MCH visit", EncounterType.MCHCS_CONSULTATION);
@@ -84,9 +86,13 @@ public class MchMetadata extends AbstractMetadataProvider {
 		installer.form("Immunization", "MCH-CS immunization form", EncounterType.MCHCS_IMMUNIZATION, "1.0", Form.MCHCS_IMMUNIZATION);
 		installer.form("Child HEI outcomes", "MCH-CS HEI exit form", EncounterType.MCHCS_HEI_COMPLETION, "1.0", Form.MCHCS_HEI_COMPLETION);
 
+		installer.patientIdentifierType("HEI ID Number", "Assigned to a child patient when enrolling into HEI",
+				null, null, null,
+				LocationBehavior.NOT_USED, false, PatientIdentifierType.HEI_ID_NUMBER);
+
 		installer.program("MCH - Child Services", "Treatment for children", Dictionary.MATERNAL_AND_CHILD_HEALTH_PROGRAM, Program.MCHCS);
 
-		// MCH mother services
+		///////////////////////////// MCH mother services ////////////////////////////////
 
 		installer.encounterType("MCH Mother Enrollment", "Enrollment of mother onto MCH program", EncounterType.MCHMS_ENROLLMENT);
 		installer.encounterType("MCH Mother Consultation", "Collection of mother data during MCH visit", EncounterType.MCHMS_CONSULTATION);

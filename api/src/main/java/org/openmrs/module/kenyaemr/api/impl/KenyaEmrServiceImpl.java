@@ -34,6 +34,7 @@ import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.module.kenyaemr.api.db.KenyaEmrDAO;
 import org.openmrs.module.kenyacore.identifier.IdentifierManager;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
+import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.util.OpenmrsUtil;
 import org.openmrs.util.PrivilegeConstants;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,7 +77,7 @@ public class KenyaEmrServiceImpl extends BaseOpenmrsService implements KenyaEmrS
 
 		boolean defaultLocationConfigured = getDefaultLocation() != null;
 		boolean mrnConfigured = identifierManager.getIdentifierSource(MetadataUtils.getPatientIdentifierType(CommonMetadata.PatientIdentifierType.OPENMRS_ID)) != null;
-		boolean upnConfigured = identifierManager.getIdentifierSource(MetadataUtils.getPatientIdentifierType(CommonMetadata.PatientIdentifierType.UNIQUE_PATIENT_NUMBER)) != null;
+		boolean upnConfigured = identifierManager.getIdentifierSource(MetadataUtils.getPatientIdentifierType(HivMetadata.PatientIdentifierType.UNIQUE_PATIENT_NUMBER)) != null;
 
 		setupRequired = !(defaultLocationConfigured && mrnConfigured && upnConfigured);
 		return setupRequired;
@@ -154,7 +155,7 @@ public class KenyaEmrServiceImpl extends BaseOpenmrsService implements KenyaEmrS
 			comment = "KenyaEMR Service";
 		}
 
-		PatientIdentifierType upnType = MetadataUtils.getPatientIdentifierType(CommonMetadata.PatientIdentifierType.UNIQUE_PATIENT_NUMBER);
+		PatientIdentifierType upnType = MetadataUtils.getPatientIdentifierType(HivMetadata.PatientIdentifierType.UNIQUE_PATIENT_NUMBER);
 		IdentifierSource source = identifierManager.getIdentifierSource(upnType);
 
 		String prefix = Context.getService(KenyaEmrService.class).getDefaultLocationMflCode();
@@ -190,7 +191,7 @@ public class KenyaEmrServiceImpl extends BaseOpenmrsService implements KenyaEmrS
 	 */
 	@Override
 	public void setupHivUniqueIdentifierSource(String startFrom) {
-		PatientIdentifierType idType = MetadataUtils.getPatientIdentifierType(CommonMetadata.PatientIdentifierType.UNIQUE_PATIENT_NUMBER);
+		PatientIdentifierType idType = MetadataUtils.getPatientIdentifierType(HivMetadata.PatientIdentifierType.UNIQUE_PATIENT_NUMBER);
 		setupIdentifierSource(idType, startFrom, HIV_UNIQUE_PATIENT_NUMBER_NAME, "0123456789", null);
 	}
 

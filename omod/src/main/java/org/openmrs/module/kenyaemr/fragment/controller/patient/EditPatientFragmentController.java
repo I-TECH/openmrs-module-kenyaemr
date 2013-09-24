@@ -188,7 +188,7 @@ public class EditPatientFragmentController {
 
 			nationalIdNumber = new PatientIdentifier(null, MetadataUtils.getPatientIdentifierType(CommonMetadata.PatientIdentifierType.NATIONAL_ID), location);
 			patientClinicNumber = new PatientIdentifier(null, MetadataUtils.getPatientIdentifierType(CommonMetadata.PatientIdentifierType.PATIENT_CLINIC_NUMBER), location);
-			hivIdNumber = new PatientIdentifier(null, MetadataUtils.getPatientIdentifierType(CommonMetadata.PatientIdentifierType.UNIQUE_PATIENT_NUMBER), location);
+			hivIdNumber = new PatientIdentifier(null, MetadataUtils.getPatientIdentifierType(HivMetadata.PatientIdentifierType.UNIQUE_PATIENT_NUMBER), location);
 
 			telephoneContact = new PersonAttribute();
 			telephoneContact.setAttributeType(MetadataUtils.getPersonAttributeType(CommonMetadata.PersonAttributeType.TELEPHONE_CONTACT));
@@ -244,7 +244,7 @@ public class EditPatientFragmentController {
 				patientClinicNumber.setPatient(patient);
 			}
 
-			id = patient.getPatientIdentifier(MetadataUtils.getPatientIdentifierType(CommonMetadata.PatientIdentifierType.UNIQUE_PATIENT_NUMBER));
+			id = patient.getPatientIdentifier(MetadataUtils.getPatientIdentifierType(HivMetadata.PatientIdentifierType.UNIQUE_PATIENT_NUMBER));
 			if (id != null) {
 				hivIdNumber = id;
 			} else {
@@ -422,7 +422,7 @@ public class EditPatientFragmentController {
 			toSave.setDeathDate(deathDate);
 			toSave.setCauseOfDeath(causeOfDeath);
 
-			PatientIdentifier oldHivId = toSave.getPatientIdentifier(MetadataUtils.getPatientIdentifierType(CommonMetadata.PatientIdentifierType.UNIQUE_PATIENT_NUMBER));
+			PatientIdentifier oldHivId = toSave.getPatientIdentifier(MetadataUtils.getPatientIdentifierType(HivMetadata.PatientIdentifierType.UNIQUE_PATIENT_NUMBER));
 			if (anyChanges(oldHivId, hivIdNumber, "identifier")) {
 				if (oldHivId != null) {
 					voidData(oldHivId);

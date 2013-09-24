@@ -20,6 +20,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.module.kenyacore.form.FormManager;
+import org.openmrs.module.kenyacore.identifier.IdentifierManager;
 import org.openmrs.module.kenyacore.metadata.MetadataConfiguration;
 import org.openmrs.module.kenyacore.program.ProgramManager;
 import org.openmrs.module.kenyacore.test.TestUtils;
@@ -58,6 +59,9 @@ public class MetadataIntegrationTest extends BaseModuleContextSensitiveTest {
 
 	@Autowired
 	private MchMetadata mchMetadata;
+
+	@Autowired
+	private IdentifierManager identifierManager;
 
 	@Autowired
 	private ProgramManager programManager;
@@ -119,7 +123,8 @@ public class MetadataIntegrationTest extends BaseModuleContextSensitiveTest {
 		tbMetadata.install();
 		mchMetadata.install();
 
-		// Easiest way to check that we're not missing any programs, forms or encounter types
+		// Easiest way to check that we're not missing any identifiers, programs, forms or encounter types
+		identifierManager.refresh();
 		programManager.refresh();
 		formManager.refresh();
 	}

@@ -24,7 +24,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.htmlformentry.FormEntrySession;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
+import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.reporting.common.DateUtil;
 
 /**
@@ -50,7 +50,7 @@ public class EmrVelocityFunctions {
 		if (session.getPatient() == null) {
 			return false;
 		} else {
-			PatientIdentifierType pit = MetadataUtils.getPatientIdentifierType(CommonMetadata.PatientIdentifierType.UNIQUE_PATIENT_NUMBER);
+			PatientIdentifierType pit = MetadataUtils.getPatientIdentifierType(HivMetadata.PatientIdentifierType.UNIQUE_PATIENT_NUMBER);
 			return session.getPatient().getPatientIdentifier(pit) != null;
 		}
 	}

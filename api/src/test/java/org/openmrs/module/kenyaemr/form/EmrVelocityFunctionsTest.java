@@ -25,7 +25,7 @@ import org.openmrs.module.htmlformentry.FormEntrySession;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
+import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.mock.web.MockHttpSession;
 
@@ -67,7 +67,7 @@ public class EmrVelocityFunctionsTest extends BaseModuleContextSensitiveTest {
 	@Test
 	public void hasHivUniquePatientNumber() {
 		// Give patient #7 a UPN
-		PatientIdentifierType upn = MetadataUtils.getPatientIdentifierType(CommonMetadata.PatientIdentifierType.UNIQUE_PATIENT_NUMBER);
+		PatientIdentifierType upn = MetadataUtils.getPatientIdentifierType(HivMetadata.PatientIdentifierType.UNIQUE_PATIENT_NUMBER);
 		TestUtils.savePatientIdentifier(TestUtils.getPatient(7), upn, "1234567890");
 
 		// Patient #7 now has a UPN

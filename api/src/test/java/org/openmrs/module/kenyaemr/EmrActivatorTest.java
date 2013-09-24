@@ -40,7 +40,7 @@ public class EmrActivatorTest extends BaseModuleContextSensitiveTest {
 		activator.started();
 		activator.willRefreshContext();
 
-		// Can't currently refresh all EMR content as the testing data is not sufficient
+		// Can't currently refresh all EMR content as takes too long (e.g. ~9000 locations)
 		//activator.contextRefreshed();
 
 		activator.willStop();
