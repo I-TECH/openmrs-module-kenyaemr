@@ -26,7 +26,7 @@ import org.openmrs.module.kenyacore.CoreContext;
 import org.openmrs.module.kenyacore.form.FormDescriptor;
 import org.openmrs.module.kenyacore.form.FormManager;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
-import org.openmrs.module.kenyaemr.Metadata;
+import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.util.EmrUtils;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.util.OpenmrsUtil;
@@ -129,7 +129,7 @@ public class EmrVisitAssignmentHandler extends ExistingVisitAssignmentHandler {
 		visit.setVisitType(type);
 
 		VisitAttribute sourceAttr = new VisitAttribute();
-		sourceAttr.setAttributeType(MetadataUtils.getVisitAttributeType(Metadata.VisitAttributeType.SOURCE_FORM));
+		sourceAttr.setAttributeType(MetadataUtils.getVisitAttributeType(CommonMetadata.VisitAttributeType.SOURCE_FORM));
 		sourceAttr.setOwner(visit);
 		sourceAttr.setValue(sourceForm);
 		visit.addAttribute(sourceAttr);

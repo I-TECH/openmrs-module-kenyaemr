@@ -30,10 +30,10 @@ import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
+import org.openmrs.module.kenyaemr.metadata.MchMetadata;
 import org.openmrs.module.kenyaemr.util.EmrUtils;
 
 import java.util.Collection;
@@ -59,7 +59,7 @@ public class NotOnArtCalculation extends BaseEmrCalculation implements PatientFl
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
 
-		Program mchmsProgram = MetadataUtils.getProgram(Metadata.Program.MCHMS);
+		Program mchmsProgram = MetadataUtils.getProgram(MchMetadata.Program.MCHMS);
 
 		Set<Integer> alive = alivePatients(cohort, context);
 		Set<Integer> inMchmsProgram = CalculationUtils.patientsThatPass(Calculations.activeEnrollment(mchmsProgram, alive, context));
@@ -94,7 +94,7 @@ public class NotOnArtCalculation extends BaseEmrCalculation implements PatientFl
 	 * */
 	protected boolean gestationIsGreaterThan14Weeks(Integer patientId) {
 		Patient patient = Context.getPatientService().getPatient(patientId);
-		EncounterType encounterType = MetadataUtils.getEncounterType(Metadata.EncounterType.MCHMS_ENROLLMENT);
+		EncounterType encounterType = MetadataUtils.getEncounterType(MchMetadata.EncounterType.MCHMS_ENROLLMENT);
 		Encounter lastMchEnrollment = EmrUtils.lastEncounter(patient, encounterType);
 		Obs lmpObs = EmrUtils.firstObsInEncounter(lastMchEnrollment, Dictionary.getConcept(Dictionary.LAST_MONTHLY_PERIOD));
 		if (lmpObs != null) {

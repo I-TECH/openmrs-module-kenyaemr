@@ -21,9 +21,9 @@ import org.openmrs.Patient;
 import org.openmrs.Visit;
 import org.openmrs.VisitType;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyacore.test.TestUtils;
+import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 
 /**
@@ -53,7 +53,7 @@ public class StringToVisitConverterTest extends BaseModuleWebContextSensitiveTes
 
 		// Check actual visit
 		Patient patient = Context.getPatientService().getPatient(7);
-		VisitType outpatientType = MetadataUtils.getVisitType(Metadata.VisitType.OUTPATIENT);
+		VisitType outpatientType = MetadataUtils.getVisitType(CommonMetadata.VisitType.OUTPATIENT);
 		Visit visit = TestUtils.saveVisit(patient, outpatientType, TestUtils.date(2012, 1, 1), null);
 
 		Assert.assertEquals(visit, converter.convert(visit.getVisitId().toString()));

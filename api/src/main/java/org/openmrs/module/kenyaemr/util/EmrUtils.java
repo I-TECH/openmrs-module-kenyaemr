@@ -16,17 +16,14 @@ package org.openmrs.module.kenyaemr.util;
 
 import org.apache.commons.lang3.StringUtils;
 import org.openmrs.*;
-import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.ModuleFactory;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.EmrConstants;
-import org.openmrs.module.kenyaemr.Metadata;
+import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.util.OpenmrsUtil;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -98,7 +95,7 @@ public class EmrUtils {
 	 * @return source form
 	 */
 	public static Form getVisitSourceForm(Visit visit) {
-		VisitAttributeType sourceAttrType = MetadataUtils.getVisitAttributeType(Metadata.VisitAttributeType.SOURCE_FORM);
+		VisitAttributeType sourceAttrType = MetadataUtils.getVisitAttributeType(CommonMetadata.VisitAttributeType.SOURCE_FORM);
 		List<VisitAttribute> attrs =  visit.getActiveAttributes(sourceAttrType);
 		return attrs.size() > 0 ? (Form) attrs.get(0).getValue() : null;
 	}

@@ -23,7 +23,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyacore.report.CalculationReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportManager;
-import org.openmrs.module.kenyaemr.Metadata;
+import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.test.ReportingTestUtils;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
@@ -58,7 +58,7 @@ public class DecliningCd4ReportBuilderTest extends BaseModuleContextSensitiveTes
 
 	@Test
 	public void testReport() throws Exception {
-		Program hivProgram = MetadataUtils.getProgram(Metadata.Program.HIV);
+		Program hivProgram = MetadataUtils.getProgram(HivMetadata.Program.HIV);
 
 		// Enroll patients #6, #7 and #8 in the HIV Program
 		PatientService ps = Context.getPatientService();

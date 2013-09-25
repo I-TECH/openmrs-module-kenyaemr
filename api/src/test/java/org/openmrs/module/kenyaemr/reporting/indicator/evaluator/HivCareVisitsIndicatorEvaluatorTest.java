@@ -14,20 +14,23 @@
 
 package org.openmrs.module.kenyaemr.reporting.indicator.evaluator;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.*;
+import org.openmrs.Cohort;
+import org.openmrs.Concept;
+import org.openmrs.Encounter;
+import org.openmrs.Form;
+import org.openmrs.Visit;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.LocationService;
 import org.openmrs.api.VisitService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
-import org.openmrs.module.kenyaemr.Configuration;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
-import org.openmrs.module.kenyaemr.metadata.CommonMetadataProvider;
+import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
+import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.reporting.indicator.HivCareVisitsIndicator;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
@@ -50,7 +53,7 @@ public class HivCareVisitsIndicatorEvaluatorTest extends BaseModuleContextSensit
 	private HivCareVisitsIndicator indicator;
 
 	@Autowired
-	private CommonMetadataProvider commonMetadata;
+	private CommonMetadata commonMetadata;
 
 	@Autowired
 	private KenyaEmrService kenyaEmrService;
@@ -81,8 +84,8 @@ public class HivCareVisitsIndicatorEvaluatorTest extends BaseModuleContextSensit
 
 		commonMetadata.install();
 
-		Form hivAddendum = MetadataUtils.getForm(Metadata.Form.CLINICAL_ENCOUNTER_HIV_ADDENDUM);
-		Form moh257 = MetadataUtils.getForm(Metadata.Form.MOH_257_VISIT_SUMMARY);
+		Form hivAddendum = MetadataUtils.getForm(HivMetadata.Form.CLINICAL_ENCOUNTER_HIV_ADDENDUM);
+		Form moh257 = MetadataUtils.getForm(HivMetadata.Form.MOH_257_VISIT_SUMMARY);
 		Concept returnVisitDate = Dictionary.getConcept(Dictionary.RETURN_VISIT_DATE);
 
 		// Schedule a return visit for patient #6 on 10-Jan-2012

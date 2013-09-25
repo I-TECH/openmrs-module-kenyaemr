@@ -28,8 +28,8 @@ import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyacore.test.TestUtils;
+import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 /**
@@ -54,7 +54,7 @@ public class NeedsCd4TestCalculationTest extends BaseModuleContextSensitiveTest 
 	public void evaluate_shouldDetermineWhetherPatientsNeedsCD4() throws Exception {
 
 		// Get HIV Program
-		Program hivProgram = MetadataUtils.getProgram(Metadata.Program.HIV);
+		Program hivProgram = MetadataUtils.getProgram(HivMetadata.Program.HIV);
 
 		// Enroll patients #6, #7 and #8  in the HIV Program
 		PatientService ps = Context.getPatientService();

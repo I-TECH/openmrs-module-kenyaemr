@@ -24,10 +24,10 @@ import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
+import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.test.EmrTestUtils;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
@@ -50,8 +50,8 @@ public class OnMedicationCalculationTest extends BaseModuleContextSensitiveTest 
 	@Test
 	public void evaluate() throws Exception {
 		PatientService ps = Context.getPatientService();
-		VisitType outpatientType = MetadataUtils.getVisitType(Metadata.VisitType.OUTPATIENT);
-		EncounterType consultationType = MetadataUtils.getEncounterType(Metadata.EncounterType.CONSULTATION);
+		VisitType outpatientType = MetadataUtils.getVisitType(CommonMetadata.VisitType.OUTPATIENT);
+		EncounterType consultationType = MetadataUtils.getEncounterType(CommonMetadata.EncounterType.CONSULTATION);
 		Concept medOrders = Dictionary.getConcept(Dictionary.MEDICATION_ORDERS);
 		Concept dapsone = Dictionary.getConcept(Dictionary.DAPSONE);
 		Concept flucanozole = Dictionary.getConcept(Dictionary.FLUCONAZOLE);

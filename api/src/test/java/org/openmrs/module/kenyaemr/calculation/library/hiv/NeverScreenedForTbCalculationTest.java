@@ -24,8 +24,9 @@ import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
-import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyacore.test.TestUtils;
+import org.openmrs.module.kenyaemr.metadata.HivMetadata;
+import org.openmrs.module.kenyaemr.metadata.TbMetadata;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 import java.util.Arrays;
@@ -52,8 +53,8 @@ public class NeverScreenedForTbCalculationTest extends BaseModuleContextSensitiv
 	public void evaluate_shouldReturnHivPatientsNotScreenedForTb() throws Exception {
 
 		// Get HIV Program and TB screening encounter type
-		Program hivProgram = MetadataUtils.getProgram(Metadata.Program.HIV);
-		EncounterType screeningEncType = MetadataUtils.getEncounterType(Metadata.EncounterType.TB_SCREENING);
+		Program hivProgram = MetadataUtils.getProgram(HivMetadata.Program.HIV);
+		EncounterType screeningEncType = MetadataUtils.getEncounterType(TbMetadata.EncounterType.TB_SCREENING);
 
 		// Enroll patients #6 and #7
 		PatientService ps = Context.getPatientService();

@@ -26,6 +26,7 @@ import org.openmrs.ui.framework.fragment.FragmentModel;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -37,13 +38,18 @@ public class ProgramsContentFragmentController {
 		List<SimpleObject> programs = new ArrayList<SimpleObject>();
 		for (ProgramDescriptor descriptor : programManager.getAllProgramDescriptors()) {
 			Program program = descriptor.getTarget();
+			Collection<String> visitForms;
 
-			Collection<String> visitForms = CollectionUtils.collect(descriptor.getVisitForms(), new Transformer() {
-				@Override
-				public Object transform(Object o) {
-					return ((FormDescriptor) o).getTarget().getName();
-				}
-			});
+			if (descriptor.getVisitForms() != null) {
+				visitForms = CollectionUtils.collect(descriptor.getVisitForms(), new Transformer() {
+					@Override
+					public Object transform(Object o) {
+						return ((FormDescriptor) o).getTarget().getName();
+					}
+				});
+			} else {
+				visitForms = Collections.emptyList();
+			}
 
 			programs.add(SimpleObject.create(
 					"name", program.getName(),

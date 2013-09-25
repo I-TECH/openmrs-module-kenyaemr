@@ -5,7 +5,8 @@
 	<thead>
 		<tr>
 			<th>${ ui.message("general.name") }</th>
-			<th style="text-align: left">Format</th>
+			<th>${ ui.message("general.format") }</th>
+			<th>Required</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -13,6 +14,7 @@
 		<tr>
 			<td>${ identifier.name }</td>
 			<td>${ identifier.format ?: "" }</td>
+			<td>${ identifier.required ? ui.message("general.yes") : ui.message("general.no") }</td>
 		</tr>
 	<% } %>
 	</tbody>

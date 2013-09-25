@@ -15,17 +15,10 @@
 package org.openmrs.module.kenyaemr.converter.simplifier;
 
 import org.openmrs.Concept;
-import org.openmrs.Location;
-import org.openmrs.LocationAttribute;
-import org.openmrs.LocationAttributeType;
 import org.openmrs.module.kenyacore.CoreConstants;
-import org.openmrs.module.kenyaemr.Metadata;
-import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.ui.framework.SimpleObject;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 /**
  * Converts a concept to a simple object

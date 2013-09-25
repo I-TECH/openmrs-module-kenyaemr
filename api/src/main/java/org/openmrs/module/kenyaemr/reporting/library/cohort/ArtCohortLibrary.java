@@ -22,7 +22,6 @@ import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyacore.report.builder.CalculationCohortDefinition;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.EligibleForArtCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtStartDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.OnAlternateFirstLineArtCalculation;
@@ -32,6 +31,7 @@ import org.openmrs.module.kenyaemr.calculation.library.hiv.art.OnSecondLineArtCa
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.PregnantAtArtStartCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.TbPatientAtArtStartCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.WhoStageAtArtStartCalculation;
+import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.DateCalculationCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.*;
 import org.openmrs.module.reporting.common.SetComparator;
@@ -58,7 +58,7 @@ public class ArtCohortLibrary {
 	 * @return the cohort definition
 	 */
 	public CohortDefinition referredFrom(Concept... entryPoints) {
-		EncounterType hivEnrollEncType = MetadataUtils.getEncounterType(Metadata.EncounterType.HIV_ENROLLMENT);
+		EncounterType hivEnrollEncType = MetadataUtils.getEncounterType(HivMetadata.EncounterType.HIV_ENROLLMENT);
 		Concept methodOfEnrollment = Dictionary.getConcept(Dictionary.METHOD_OF_ENROLLMENT);
 
 		CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
@@ -79,7 +79,7 @@ public class ArtCohortLibrary {
 	 * @return the cohort definition
 	 */
 	public CohortDefinition referredNotFrom(Concept... entryPoints) {
-		EncounterType hivEnrollEncType = MetadataUtils.getEncounterType(Metadata.EncounterType.HIV_ENROLLMENT);
+		EncounterType hivEnrollEncType = MetadataUtils.getEncounterType(HivMetadata.EncounterType.HIV_ENROLLMENT);
 		Concept methodOfEnrollment = Dictionary.getConcept(Dictionary.METHOD_OF_ENROLLMENT);
 
 		CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
@@ -99,7 +99,7 @@ public class ArtCohortLibrary {
 	 * @return the cohort definition
 	 */
 	public CohortDefinition enrolled() {
-		return commonCohorts.enrolled(MetadataUtils.getProgram(Metadata.Program.HIV));
+		return commonCohorts.enrolled(MetadataUtils.getProgram(HivMetadata.Program.HIV));
 	}
 
 	/**
@@ -107,7 +107,7 @@ public class ArtCohortLibrary {
 	 * @return the cohort definition
 	 */
 	public CohortDefinition enrolledExcludingTransfers() {
-		return commonCohorts.enrolledExcludingTransfers(MetadataUtils.getProgram(Metadata.Program.HIV));
+		return commonCohorts.enrolledExcludingTransfers(MetadataUtils.getProgram(HivMetadata.Program.HIV));
 	}
 
 	/**
@@ -330,7 +330,7 @@ public class ArtCohortLibrary {
 	 * @return
 	 */
 	public CohortDefinition inHivProgramAndOnMedication(Concept... concepts) {
-		Program hivProgram = MetadataUtils.getProgram(Metadata.Program.HIV);
+		Program hivProgram = MetadataUtils.getProgram(HivMetadata.Program.HIV);
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.setName("in HIV program and on medication between dates");
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));

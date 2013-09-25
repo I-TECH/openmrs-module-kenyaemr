@@ -12,17 +12,20 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr;
+package org.openmrs.module.kenyaemr.metadata;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.module.ModuleActivator;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * Tests for {@link EmrActivator}
+ * Tests for {@link CommonMetadata}
  */
-public class EmrActivatorTest extends BaseModuleContextSensitiveTest {
+public class CommonMetadataTest extends BaseModuleContextSensitiveTest {
+
+	@Autowired
+	private CommonMetadata commonMetadata;
 
 	/**
 	 * Setup each test
@@ -30,20 +33,13 @@ public class EmrActivatorTest extends BaseModuleContextSensitiveTest {
 	@Before
 	public void setup() throws Exception {
 		executeDataSet("dataset/test-concepts.xml");
-		executeDataSet("dataset/test-metadata.xml");
 	}
 
+	/**
+	 * @see CommonMetadata#install()
+	 */
 	@Test
-	public void integration() {
-		ModuleActivator activator = new EmrActivator();
-		activator.willStart();
-		activator.started();
-		activator.willRefreshContext();
-
-		// Can't currently refresh all EMR content as takes too long (e.g. ~9000 locations)
-		//activator.contextRefreshed();
-
-		activator.willStop();
-		activator.stopped();
+	public void install_shouldInstallAllMetadata() {
+		commonMetadata.install();
 	}
 }

@@ -23,8 +23,8 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
+import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.reporting.library.cohort.CommonCohortLibrary;
 import org.openmrs.module.kenyaemr.reporting.indicator.HivCareVisitsIndicator;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
@@ -61,8 +61,8 @@ public class HivCareVisitsIndicatorEvaluator implements IndicatorEvaluator {
 		HivCareVisitsIndicator visitIndicator = (HivCareVisitsIndicator) indicator;
 
 		List<Form> hivCareForms = Arrays.asList(
-			MetadataUtils.getForm(Metadata.Form.CLINICAL_ENCOUNTER_HIV_ADDENDUM),
-			MetadataUtils.getForm(Metadata.Form.MOH_257_VISIT_SUMMARY)
+			MetadataUtils.getForm(HivMetadata.Form.CLINICAL_ENCOUNTER_HIV_ADDENDUM),
+			MetadataUtils.getForm(HivMetadata.Form.MOH_257_VISIT_SUMMARY)
 		);
 
 		Date fromDate = visitIndicator.getStartDate();

@@ -18,7 +18,7 @@ import org.openmrs.Concept;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.Metadata;
+import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.reporting.library.cohort.ArtCohortLibrary;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +43,7 @@ public class ArtIndicatorLibrary {
 	 * @return the indicator
 	 */
 	public CohortIndicator enrolledExcludingTransfers() {
-		return commonIndicators.enrolledExcludingTransfers(MetadataUtils.getProgram(Metadata.Program.HIV));
+		return commonIndicators.enrolledExcludingTransfers(MetadataUtils.getProgram(HivMetadata.Program.HIV));
 	}
 
 	/**
@@ -51,7 +51,7 @@ public class ArtIndicatorLibrary {
 	 * @return the indicator
 	 */
 	public CohortIndicator enrolledCumulative() {
-		return commonIndicators.enrolledCumulative(MetadataUtils.getProgram(Metadata.Program.HIV));
+		return commonIndicators.enrolledCumulative(MetadataUtils.getProgram(HivMetadata.Program.HIV));
 	}
 
 	/**

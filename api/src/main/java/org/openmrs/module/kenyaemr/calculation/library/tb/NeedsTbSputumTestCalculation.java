@@ -31,9 +31,9 @@ import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.EmrConstants;
-import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
+import org.openmrs.module.kenyaemr.metadata.TbMetadata;
 
 /**
  * Calculate whether patients are due for a sputum test. Calculation returns
@@ -58,7 +58,7 @@ public class NeedsTbSputumTestCalculation extends BaseEmrCalculation implements 
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
 		// Get TB program
-		Program tbProgram = MetadataUtils.getProgram(Metadata.Program.TB);
+		Program tbProgram = MetadataUtils.getProgram(TbMetadata.Program.TB);
 
 		// Get all patients who are alive and in TB program
 		Set<Integer> alive = alivePatients(cohort, context);

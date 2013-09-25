@@ -22,8 +22,9 @@ import org.openmrs.module.idgen.IdentifierSource;
 import org.openmrs.module.kenyacore.identifier.IdentifierManager;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.EmrConstants;
-import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
+import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
+import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.module.kenyaui.annotation.AppPage;
 import org.openmrs.ui.framework.UiUtils;
@@ -65,8 +66,8 @@ public class FirstTimeSetupPageController {
 		}
 		
 		defaultLocation = service.getDefaultLocation();
-		IdentifierSource mrnIdentifierSource = identifierManager.getIdentifierSource(MetadataUtils.getPatientIdentifierType(Metadata.PatientIdentifierType.OPENMRS_ID));
-		IdentifierSource hivIdentifierSource = identifierManager.getIdentifierSource(MetadataUtils.getPatientIdentifierType(Metadata.PatientIdentifierType.UNIQUE_PATIENT_NUMBER));
+		IdentifierSource mrnIdentifierSource = identifierManager.getIdentifierSource(MetadataUtils.getPatientIdentifierType(CommonMetadata.PatientIdentifierType.OPENMRS_ID));
+		IdentifierSource hivIdentifierSource = identifierManager.getIdentifierSource(MetadataUtils.getPatientIdentifierType(HivMetadata.PatientIdentifierType.UNIQUE_PATIENT_NUMBER));
 
 		User authenticatedUser = Context.getAuthenticatedUser();
 		

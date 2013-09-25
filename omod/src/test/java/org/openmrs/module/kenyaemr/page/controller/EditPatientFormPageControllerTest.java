@@ -21,7 +21,7 @@ import org.openmrs.Encounter;
 import org.openmrs.Form;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyacore.test.TestUtils;
-import org.openmrs.module.kenyaemr.Metadata;
+import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 
 import static org.hamcrest.Matchers.is;
@@ -48,16 +48,16 @@ public class EditPatientFormPageControllerTest extends BaseModuleWebContextSensi
 	 */
 	@Test
 	public void controller() {
-		Form familyHistory = MetadataUtils.getForm(Metadata.Form.FAMILY_HISTORY);
+		Form familyHistory = MetadataUtils.getForm(HivMetadata.Form.FAMILY_HISTORY);
 
 		// Check with no previous submission of the family form
-		String result = controller.controller("test.app", TestUtils.getPatient(7), Metadata.Form.FAMILY_HISTORY, "test.html");
+		String result = controller.controller("test.app", TestUtils.getPatient(7), HivMetadata.Form.FAMILY_HISTORY, "test.html");
 		Assert.assertThat(result, is("redirect:kenyaemr/enterForm.page?formUuid=7efa0ee0-6617-4cd7-8310-9f95dfee7a82&appId=test.app&patientId=7&returnUrl=test.html"));
 
 		// Record submission of family history
 		Encounter encounter = TestUtils.saveEncounter(TestUtils.getPatient(7), familyHistory, TestUtils.date(2012, 4, 30));
 
-		result = controller.controller("test.app", TestUtils.getPatient(7), Metadata.Form.FAMILY_HISTORY, "test.html");
+		result = controller.controller("test.app", TestUtils.getPatient(7), HivMetadata.Form.FAMILY_HISTORY, "test.html");
 		String expected = "redirect:kenyaemr/editForm.page?encounterId=" + encounter.getId() + "&appId=test.app&patientId=7&returnUrl=test.html";
 		Assert.assertThat(result, is(expected));
 	}
