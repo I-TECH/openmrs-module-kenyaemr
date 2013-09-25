@@ -22,6 +22,16 @@
 				<ref bean="kenyaemr.form.mchcsFollowupVisit" />
 			</set>
 		</property>
+		<property name="reports">
+			<set>
+				<ref bean="kenyaemr.mchcs.report.notPcrTested" />
+				<ref bean="kenyaemr.mchcs.report.notAntibodyTested" />
+				<ref bean="kenyaemr.mchcs.report.feedingOption" />
+				<ref bean="kenyaemr.mchcs.report.notPcrConfirmatoryTested" />
+				<ref bean="kenyaemr.mchcs.report.infantNotOnCTX" />
+				<ref bean="kenyaemr.mchcs.report.infantWithoutPcp" />
+			</set>
+		</property>
 		<property name="fragments">
 			<map>
 				<entry key="enrollment-summary" value="kenyaemr:program/mchcs/mchcsEnrollmentSummary" />
@@ -116,6 +126,44 @@
 		</property>
 		<property name="icon" value="kenyaui:forms/generic.png" />
 		<property name="htmlform" value="kenyaemr:mchcs/mchcsHeiOutcomes.html" />
+	</bean>
+
+	<!-- ===================== Reports ===================== -->
+
+	<bean id="kenyaemr.mchcs.report.notPcrTested" class="org.openmrs.module.kenyacore.report.CalculationReportDescriptor">
+		<property name="name" value="Patients without PCR Test" />
+		<property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.mchcs.NeedsPcrTestCalculation" />
+		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
+	</bean>
+
+	<bean id="kenyaemr.mchcs.report.notAntibodyTested" class="org.openmrs.module.kenyacore.report.CalculationReportDescriptor">
+		<property name="name" value="Patients without Antibody Test" />
+		<property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.mchcs.NeedsAntibodyTestCalculation" />
+		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
+	</bean>
+
+	<bean id="kenyaemr.mchcs.report.feedingOption" class="org.openmrs.module.kenyacore.report.CalculationReportDescriptor">
+		<property name="name" value="Infants Feeding Options" />
+		<property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.mchcs.InfantFeedingOptionsCalculation" />
+		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
+	</bean>
+
+	<bean id="kenyaemr.mchcs.report.notPcrConfirmatoryTested" class="org.openmrs.module.kenyacore.report.CalculationReportDescriptor">
+		<property name="name" value="Infants Without PCR Confirmatory Test" />
+		<property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.mchcs.NotTakenPcrConfirmatoryTestCalculation" />
+		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
+	</bean>
+
+	<bean id="kenyaemr.mchcs.report.infantNotOnCTX" class="org.openmrs.module.kenyacore.report.CalculationReportDescriptor">
+		<property name="name" value="Infants Never Taken CTX" />
+		<property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.mchcs.InfantNeverTakenCTXCalculation" />
+		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
+	</bean>
+
+	<bean id="kenyaemr.mchcs.report.infantWithoutPcp" class="org.openmrs.module.kenyacore.report.CalculationReportDescriptor">
+		<property name="name" value="Infants Never on Prophylaxis" />
+		<property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.mchcs.InfantNeverTakenProphylaxisCalculation" />
+		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 	</bean>
 
 </beans>
