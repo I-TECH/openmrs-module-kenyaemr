@@ -62,6 +62,7 @@ public class InfantFeedingOptionsCalculationTest extends BaseModuleContextSensit
 		//give patient #6 and #7 recent feeding options and patient #8 not having any
 		TestUtils.saveObs(ps.getPatient(6), feedingOptions, Dictionary.getConcept(Dictionary.BREASTFED_EXCLUSIVELY), new Date());
 		TestUtils.saveObs(ps.getPatient(7), feedingOptions, Dictionary.getConcept(Dictionary.REPLACEMENT_FEEDING), new Date());
+
 		Context.flushSession();
 
 		List<Integer> ptIds = Arrays.asList(6,7,8);

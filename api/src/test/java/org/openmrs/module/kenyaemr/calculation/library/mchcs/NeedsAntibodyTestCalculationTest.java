@@ -27,7 +27,6 @@ import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.Metadata;
-import org.openmrs.module.reporting.common.Age;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 import java.util.Arrays;

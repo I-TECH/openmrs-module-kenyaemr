@@ -16,8 +16,7 @@ package org.openmrs.module.kenyaemr.calculation.library.mchcs;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.Concept;
-import org.openmrs.Program;
+import org.openmrs.*;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationService;
@@ -48,6 +47,51 @@ public class NotTakenPcrConfirmatoryTestCalculationTest extends BaseModuleContex
 	 */
 	@Test
 	public void evaluate_shouldCalculateNotTakenPcrConfirmatoryTest() throws Exception {
+		//get mchcs program
+		Program mchcsProgram = MetadataUtils.getProgram(Metadata.Program.MCHCS);
+		// Enroll patients #6 and  #7  in the mchcs Program
+		PatientService ps = Context.getPatientService();
+		TestUtils.enrollInProgram(ps.getPatient(6), mchcsProgram, new Date());
+		TestUtils.enrollInProgram(ps.getPatient(7), mchcsProgram, new Date());
+		TestUtils.enrollInProgram(ps.getPatient(8), mchcsProgram, new Date());
+
+		//getting an encounter required before confirmation is done
+		EncounterType heiOutcomesEncounterType = MetadataUtils.getEncounterType(Metadata.EncounterType.MCHCS_HEI_COMPLETION);
+		Form heiCompletionForm = MetadataUtils.getForm(Metadata.Form.MCHCS_HEI_COMPLETION);
+
+		//get the HIV status of the infant and the if wheather antibody test was done or NOT
+		Concept infantHivStatus = Dictionary.getConcept(Dictionary.CHILDS_CURRENT_HIV_STATUS);
+		Concept pcrTest = Dictionary.getConcept(Dictionary.HIV_DNA_POLYMERASE_CHAIN_REACTION);
+		Concept status = Dictionary.getConcept(Dictionary.CONFIRMATION_STATUS);
+		//get the hiv status after the exit
+		Concept hivStatus = Dictionary.getConcept(Dictionary.HIV_STATUS);
+
+		//make #6 HEI and has completed the Outcomes encounter
+		TestUtils.saveObs(ps.getPatient(6),infantHivStatus,Dictionary.getConcept(Dictionary.EXPOSURE_TO_HIV),new Date());
+		//#6 has pcr test done with initial status
+		//TestUtils.saveObs(ps.getPatient(6),pcrTest,Dictionary.getConcept(Dictionary.TEST_STATUS_INITIAL),new Date());
+		//collect some observations from the hei outcomes form  for patient #6
+		Obs[] encounterObss6 = {TestUtils.saveObs(ps.getPatient(6), hivStatus, Dictionary.getConcept(Dictionary.POSITIVE), new Date())};
+		// save the entire encounter for patient #6
+		TestUtils.saveEncounter(ps.getPatient(6), heiOutcomesEncounterType,heiCompletionForm, new Date(), encounterObss6);
+
+		//#7  HEI and has completed the Outcomes encounter and has a pcr confirmatory test done
+		TestUtils.saveObs(ps.getPatient(7),infantHivStatus,Dictionary.getConcept(Dictionary.EXPOSURE_TO_HIV),new Date());
+		TestUtils.saveObs(ps.getPatient(7),pcrTest,Dictionary.getConcept(Dictionary.CONFIRMATION_STATUS),new Date());
+		Obs[] encounterObss7 = {TestUtils.saveObs(ps.getPatient(7), hivStatus, Dictionary.getConcept(Dictionary.POSITIVE), new Date())};
+		TestUtils.saveEncounter(ps.getPatient(7), heiOutcomesEncounterType,heiCompletionForm, new Date(), encounterObss7);
+
+		//#8  HEI and has NOT completed the Outcomes encounter and has a pcr initial done test done
+		TestUtils.saveObs(ps.getPatient(8),infantHivStatus,Dictionary.getConcept(Dictionary.EXPOSURE_TO_HIV),new Date());
+		TestUtils.saveObs(ps.getPatient(8),pcrTest,Dictionary.getConcept(Dictionary.TEST_STATUS_INITIAL),new Date());
+
+		Context.flushSession();
+
+		List<Integer> ptIds = Arrays.asList(6, 7, 8);
+		CalculationResultMap resultMap = Context.getService(PatientCalculationService.class).evaluate(ptIds, new NotTakenPcrConfirmatoryTestCalculation());
+		Assert.assertTrue((Boolean) resultMap.get(6).getValue()); // HEI has no pcr and hei outcome encounter completed
+		Assert.assertFalse((Boolean) resultMap.get(7).getValue()); //has the pcr confirmatory test done
+		Assert.assertFalse((Boolean) resultMap.get(8).getValue()); // has no hei outcomes encounter
 
 	}
 

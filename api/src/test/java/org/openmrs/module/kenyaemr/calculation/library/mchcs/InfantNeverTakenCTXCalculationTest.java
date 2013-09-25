@@ -72,6 +72,7 @@ public class InfantNeverTakenCTXCalculationTest extends BaseModuleContextSensiti
 		TestUtils.saveObs(ps.getPatient(7),infantHivStatus,Dictionary.getConcept(Dictionary.EXPOSURE_TO_HIV),new Date());
 
 		Context.flushSession();
+
 		List<Integer> cohort = Arrays.asList(6, 7, 8);
 		CalculationResultMap resultMap = new InfantNeverTakenCTXCalculation().evaluate(cohort, null, Context.getService(PatientCalculationService.class).createCalculationContext());
 		Assert.assertFalse((Boolean) resultMap.get(6).getValue()); // is taking  ctx

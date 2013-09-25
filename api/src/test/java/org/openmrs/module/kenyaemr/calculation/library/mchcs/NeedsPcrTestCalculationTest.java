@@ -27,7 +27,6 @@ import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.Metadata;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.NeedsCd4TestCalculation;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 import java.util.Arrays;
@@ -75,6 +74,7 @@ public class NeedsPcrTestCalculationTest extends BaseModuleContextSensitiveTest 
 		TestUtils.saveObs(ps.getPatient(7),pcrStatus,Dictionary.getConcept(Dictionary.HIV_DNA_POLYMERASE_CHAIN_REACTION),new Date());
 
 		Context.flushSession();
+
 		List<Integer> ptIds = Arrays.asList(6, 7,8);
 		CalculationResultMap resultMap = Context.getService(PatientCalculationService.class).evaluate(ptIds, new NeedsPcrTestCalculation());
 		Assert.assertTrue((Boolean) resultMap.get(6).getValue()); // HEI and has null pcr
