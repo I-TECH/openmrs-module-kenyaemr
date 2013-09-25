@@ -15,21 +15,22 @@
 package org.openmrs.module.kenyaemr.metadata;
 
 import org.openmrs.PatientIdentifierType.LocationBehavior;
+import org.openmrs.PersonAttributeType;
 import org.openmrs.customdatatype.datatype.RegexValidatedTextDatatype;
 import org.openmrs.module.idgen.validator.LuhnMod25IdentifierValidator;
-import org.openmrs.module.kenyacore.metadata.AbstractMetadataProvider;
-import org.openmrs.module.kenyacore.metadata.installer.CoreMetadataInstaller;
+import org.openmrs.module.kenyacore.metadata.bundle.AbstractMetadataBundle;
 import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyaemr.datatype.FormDatatype;
 import org.openmrs.module.kenyaemr.datatype.LocationDatatype;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import static org.openmrs.module.kenyacore.metadata.bundle.Constructors.*;
+
 /**
- * Common metadata provider
+ * Common metadata bundle
  */
-@Component("kenyaemr.common.metadata")
-public class CommonMetadata extends AbstractMetadataProvider {
+@Component
+public class CommonMetadata extends AbstractMetadataBundle {
 
 	public static final class EncounterType {
 		public static final String CONSULTATION = "465a92f2-baf8-42e9-9612-53064be868e8";
@@ -71,7 +72,7 @@ public class CommonMetadata extends AbstractMetadataProvider {
 		public static final String PATIENT_CLINIC_NUMBER = "b4d66522-11fc-45c7-83e3-39a1af21ae0d";
 	}
 
-	public static final class PersonAttributeType {
+	public static final class _PersonAttributeType {
 		public static final String NEXT_OF_KIN_ADDRESS = "7cf22bec-d90a-46ad-9f48-035952261294";
 		public static final String NEXT_OF_KIN_CONTACT = "342a1d39-c541-4b29-8818-930916f4c2dc";
 		public static final String NEXT_OF_KIN_NAME = "830bef6d-b01f-449d-9f8d-ac0fede8dbd3";
@@ -92,62 +93,61 @@ public class CommonMetadata extends AbstractMetadataProvider {
 		public static final String OUTPATIENT = "3371a4d4-f66f-4454-a86d-92c7b3da990c";
 	}
 
-	@Autowired
-	private CoreMetadataInstaller installer;
-
 	/**
-	 * @see org.openmrs.module.kenyacore.metadata.AbstractMetadataProvider#install()
+	 * @see org.openmrs.module.kenyacore.metadata.bundle.AbstractMetadataBundle#install()
 	 */
 	@Override
 	public void install() {
-		installer.encounterType("Consultation", "Collection of clinical data during the main consultation", EncounterType.CONSULTATION);
-		installer.encounterType("Lab Results", "Collection of laboratory results", EncounterType.LAB_RESULTS);
-		installer.encounterType("Registration", "Initial data collection for a patient, not specific to any program", EncounterType.REGISTRATION);
-		installer.encounterType("Triage", "Collection of limited data prior to a more thorough examination", EncounterType.TRIAGE);
+		install(encounterType("Consultation", "Collection of clinical data during the main consultation", EncounterType.CONSULTATION));
+		install(encounterType("Lab Results", "Collection of laboratory results", EncounterType.LAB_RESULTS));
+		install(encounterType("Registration", "Initial data collection for a patient, not specific to any program", EncounterType.REGISTRATION));
+		install(encounterType("Triage", "Collection of limited data prior to a more thorough examination", EncounterType.TRIAGE));
 
-		installer.form("Clinical Encounter", null, EncounterType.CONSULTATION, "1", Form.CLINICAL_ENCOUNTER);
-		installer.form("Lab Results", null, EncounterType.LAB_RESULTS, "1", Form.LAB_RESULTS);
-		installer.form("Obstetric History", null, EncounterType.REGISTRATION, "1", Form.OBSTETRIC_HISTORY);
-		installer.form("Other Medications", "Recording of non-regimen medications", EncounterType.CONSULTATION, "1", Form.OTHER_MEDICATIONS);
-		installer.form("Progress Note", "For additional information - mostly complaints and examination findings.", EncounterType.CONSULTATION, "1", Form.PROGRESS_NOTE);
-		installer.form("Surgical and Medical History", null, EncounterType.REGISTRATION, "1", Form.SURGICAL_AND_MEDICAL_HISTORY);
-		installer.form("Triage", null, EncounterType.TRIAGE, "1", Form.TRIAGE);
+		install(form("Clinical Encounter", null, EncounterType.CONSULTATION, "1", Form.CLINICAL_ENCOUNTER));
+		install(form("Lab Results", null, EncounterType.LAB_RESULTS, "1", Form.LAB_RESULTS));
+		install(form("Obstetric History", null, EncounterType.REGISTRATION, "1", Form.OBSTETRIC_HISTORY));
+		install(form("Other Medications", "Recording of non-regimen medications", EncounterType.CONSULTATION, "1", Form.OTHER_MEDICATIONS));
+		install(form("Progress Note", "For additional information - mostly complaints and examination findings.", EncounterType.CONSULTATION, "1", Form.PROGRESS_NOTE));
+		install(form("Surgical and Medical History", null, EncounterType.REGISTRATION, "1", Form.SURGICAL_AND_MEDICAL_HISTORY));
+		install(form("Triage", null, EncounterType.TRIAGE, "1", Form.TRIAGE));
 
-		installer.globalProperty(EmrConstants.GP_DEFAULT_LOCATION, "The facility for which this installation is configured",
-				LocationDatatype.class, null, null, GlobalProperty.DEFAULT_LOCATION);
+		install(globalProperty(EmrConstants.GP_DEFAULT_LOCATION, "The facility for which this installation is configured",
+				LocationDatatype.class, null, null, GlobalProperty.DEFAULT_LOCATION));
 
-		installer.locationAttributeType("Master Facility Code", "Unique facility code allocated by the Ministry of Health",
-				RegexValidatedTextDatatype.class, "\\d{5}", 0, 1, LocationAttributeType.MASTER_FACILITY_CODE);
+		install(locationAttributeType("Master Facility Code", "Unique facility code allocated by the Ministry of Health",
+				RegexValidatedTextDatatype.class, "\\d{5}", 0, 1, LocationAttributeType.MASTER_FACILITY_CODE));
 
-		installer.patientIdentifierType("Old Identification Number", "Identifier given out prior to OpenMRS",
+		install(patientIdentifierType("Old Identification Number", "Identifier given out prior to OpenMRS",
 				null, null, null,
-				null, false, PatientIdentifierType.OLD_ID);
-		installer.patientIdentifierType("OpenMRS ID", "Medical Record Number generated by OpenMRS for every patient",
+				null, false, PatientIdentifierType.OLD_ID));
+		install(patientIdentifierType("OpenMRS ID", "Medical Record Number generated by OpenMRS for every patient",
 				null, null, LuhnMod25IdentifierValidator.class,
-				LocationBehavior.REQUIRED, true, PatientIdentifierType.OPENMRS_ID);
-		installer.patientIdentifierType("Patient Clinic Number", "Assigned to the patient at a clinic service (not globally unique)",
+				LocationBehavior.REQUIRED, true, PatientIdentifierType.OPENMRS_ID));
+		install(patientIdentifierType("Patient Clinic Number", "Assigned to the patient at a clinic service (not globally unique)",
 				".{1,15}", "At most 15 characters long", null,
-				LocationBehavior.REQUIRED, false, PatientIdentifierType.PATIENT_CLINIC_NUMBER);
-		installer.patientIdentifierType("National ID", "Kenyan national identity card number",
+				LocationBehavior.REQUIRED, false, PatientIdentifierType.PATIENT_CLINIC_NUMBER));
+		install(patientIdentifierType("National ID", "Kenyan national identity card number",
 				"\\d{5,10}", "Between 5 and 10 consecutive digits", null,
-				LocationBehavior.NOT_USED, false, PatientIdentifierType.NATIONAL_ID);
+				LocationBehavior.NOT_USED, false, PatientIdentifierType.NATIONAL_ID));
 
-		installer.personAttributeType("Telephone contact", "Telephone number the patient can be contacted at",
-				String.class, null, false, 1.0, PersonAttributeType.TELEPHONE_CONTACT);
-		installer.personAttributeType("Subchief name", "Name of subchief or chief of patient's area",
-				String.class, null, false, 2.0, PersonAttributeType.SUBCHIEF_NAME);
-		installer.personAttributeType("Next of kin name", "Name of patient's next of kin",
-				String.class, null, false, 3.0, PersonAttributeType.NEXT_OF_KIN_NAME);
-		installer.personAttributeType("Next of kin relationship", "Next of kin relationship to the patient",
-				String.class, null, false, 3.1, PersonAttributeType.NEXT_OF_KIN_RELATIONSHIP);
-		installer.personAttributeType("Next of kin contact", "Telephone contact of patient's next of kin",
-				String.class, null, false, 3.2, PersonAttributeType.NEXT_OF_KIN_CONTACT);
-		installer.personAttributeType("Next of kin address", "Address of patient's next of kin",
-				String.class, null, false, 3.3, PersonAttributeType.NEXT_OF_KIN_ADDRESS);
+		install(personAttributeType("Telephone contact", "Telephone number the patient can be contacted at",
+				String.class, null, false, 1.0, _PersonAttributeType.TELEPHONE_CONTACT));
+		install(personAttributeType("Subchief name", "Name of subchief or chief of patient's area",
+				String.class, null, false, 2.0, _PersonAttributeType.SUBCHIEF_NAME));
+		install(personAttributeType("Next of kin name", "Name of patient's next of kin",
+				String.class, null, false, 3.0, _PersonAttributeType.NEXT_OF_KIN_NAME));
+		install(personAttributeType("Next of kin relationship", "Next of kin relationship to the patient",
+				String.class, null, false, 3.1, _PersonAttributeType.NEXT_OF_KIN_RELATIONSHIP));
+		install(personAttributeType("Next of kin contact", "Telephone contact of patient's next of kin",
+				String.class, null, false, 3.2, _PersonAttributeType.NEXT_OF_KIN_CONTACT));
+		install(personAttributeType("Next of kin address", "Address of patient's next of kin",
+				String.class, null, false, 3.3, _PersonAttributeType.NEXT_OF_KIN_ADDRESS));
 
-		installer.visitAttributeType("Source form", "The form whose submission created the visit",
-				FormDatatype.class, null, 0, 1, VisitAttributeType.SOURCE_FORM);
+		install(visitAttributeType("Source form", "The form whose submission created the visit",
+				FormDatatype.class, null, 0, 1, VisitAttributeType.SOURCE_FORM));
 
-		installer.visitType("Outpatient", "Visit where the patient is not admitted to the hospital", VisitType.OUTPATIENT);
+		install(visitType("Outpatient", "Visit where the patient is not admitted to the hospital", VisitType.OUTPATIENT));
+
+		uninstall(existing(PersonAttributeType.class, "73d34479-2f9e-4de3-a5e6-1f79a17459bb"), "Became patient identifier"); // National ID attribute type
 	}
 }

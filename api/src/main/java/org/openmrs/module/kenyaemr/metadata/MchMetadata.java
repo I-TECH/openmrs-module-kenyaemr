@@ -15,19 +15,19 @@
 package org.openmrs.module.kenyaemr.metadata;
 
 import org.openmrs.PatientIdentifierType.LocationBehavior;
-import org.openmrs.module.kenyacore.metadata.AbstractMetadataProvider;
-import org.openmrs.module.kenyacore.metadata.Requires;
-import org.openmrs.module.kenyacore.metadata.installer.CoreMetadataInstaller;
+import org.openmrs.module.kenyacore.metadata.bundle.AbstractMetadataBundle;
+import org.openmrs.module.kenyacore.metadata.bundle.Requires;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import static org.openmrs.module.kenyacore.metadata.bundle.Constructors.*;
+
 /**
- * MCH metadata provider
+ * MCH metadata bundle
  */
-@Component("kenyaemr.mch.metadata")
-@Requires("kenyaemr.common.metadata")
-public class MchMetadata extends AbstractMetadataProvider {
+@Component
+@Requires({ CommonMetadata.class })
+public class MchMetadata extends AbstractMetadataBundle {
 
 	public static final class EncounterType {
 		public static final String MCHCS_CONSULTATION = "bcc6da85-72f2-4291-b206-789b8186a021";
@@ -64,48 +64,45 @@ public class MchMetadata extends AbstractMetadataProvider {
 		public static final String MCHMS = "b5d9e05f-f5ab-4612-98dd-adb75438ed34";
 	}
 
-	@Autowired
-	private CoreMetadataInstaller installer;
-
 	/**
-	 * @see org.openmrs.module.kenyacore.metadata.AbstractMetadataProvider#install()
+	 * @see org.openmrs.module.kenyacore.metadata.bundle.AbstractMetadataBundle#install()
 	 */
 	@Override
 	public void install() {
 		///////////////////////////// MCH child services ////////////////////////////////
 
-		installer.encounterType("MCH Child Enrollment", "Enrollment of child onto MCH program", EncounterType.MCHCS_ENROLLMENT);
-		installer.encounterType("MCH Child Consultation", "Collection of child data during MCH visit", EncounterType.MCHCS_CONSULTATION);
-		installer.encounterType("MCH Child HEI Exit", "Reasons that child is exited from HEI", EncounterType.MCHCS_HEI_COMPLETION);
-		installer.encounterType("MCH Child Immunization", "Record of child immunizations", EncounterType.MCHCS_IMMUNIZATION);
-		installer.encounterType("MCH Child Discontinuation", "Discontinuation of child from MCH program", EncounterType.MCHCS_DISCONTINUATION);
+		install(encounterType("MCH Child Enrollment", "Enrollment of child onto MCH program", EncounterType.MCHCS_ENROLLMENT));
+		install(encounterType("MCH Child Consultation", "Collection of child data during MCH visit", EncounterType.MCHCS_CONSULTATION));
+		install(encounterType("MCH Child HEI Exit", "Reasons that child is exited from HEI", EncounterType.MCHCS_HEI_COMPLETION));
+		install(encounterType("MCH Child Immunization", "Record of child immunizations", EncounterType.MCHCS_IMMUNIZATION));
+		install(encounterType("MCH Child Discontinuation", "Discontinuation of child from MCH program", EncounterType.MCHCS_DISCONTINUATION));
 
-		installer.form("Child Service Enrollment", "MCH-CS Enrollment form", EncounterType.MCHCS_ENROLLMENT, "1.0", Form.MCHCS_ENROLLMENT);
-		installer.form("Child Services Discontinuation", "MCH-CS discontinuation form", EncounterType.MCHCS_DISCONTINUATION, "1.0", Form.MCHCS_DISCONTINUATION);
-		installer.form("MCH Child Follow Up", "MCH-CS follow up form", EncounterType.MCHCS_CONSULTATION, "1.0", Form.MCHCS_FOLLOW_UP);
-		installer.form("Immunization", "MCH-CS immunization form", EncounterType.MCHCS_IMMUNIZATION, "1.0", Form.MCHCS_IMMUNIZATION);
-		installer.form("Child HEI outcomes", "MCH-CS HEI exit form", EncounterType.MCHCS_HEI_COMPLETION, "1.0", Form.MCHCS_HEI_COMPLETION);
+		install(form("Child Service Enrollment", "MCH-CS Enrollment form", EncounterType.MCHCS_ENROLLMENT, "1.0", Form.MCHCS_ENROLLMENT));
+		install(form("Child Services Discontinuation", "MCH-CS discontinuation form", EncounterType.MCHCS_DISCONTINUATION, "1.0", Form.MCHCS_DISCONTINUATION));
+		install(form("MCH Child Follow Up", "MCH-CS follow up form", EncounterType.MCHCS_CONSULTATION, "1.0", Form.MCHCS_FOLLOW_UP));
+		install(form("Immunization", "MCH-CS immunization form", EncounterType.MCHCS_IMMUNIZATION, "1.0", Form.MCHCS_IMMUNIZATION));
+		install(form("Child HEI outcomes", "MCH-CS HEI exit form", EncounterType.MCHCS_HEI_COMPLETION, "1.0", Form.MCHCS_HEI_COMPLETION));
 
-		installer.patientIdentifierType("HEI ID Number", "Assigned to a child patient when enrolling into HEI",
+		install(patientIdentifierType("HEI ID Number", "Assigned to a child patient when enrolling into HEI",
 				null, null, null,
-				LocationBehavior.NOT_USED, false, PatientIdentifierType.HEI_ID_NUMBER);
+				LocationBehavior.NOT_USED, false, PatientIdentifierType.HEI_ID_NUMBER));
 
-		installer.program("MCH - Child Services", "Treatment for children", Dictionary.MATERNAL_AND_CHILD_HEALTH_PROGRAM, Program.MCHCS);
+		install(program("MCH - Child Services", "Treatment for children", Dictionary.MATERNAL_AND_CHILD_HEALTH_PROGRAM, Program.MCHCS));
 
 		///////////////////////////// MCH mother services ////////////////////////////////
 
-		installer.encounterType("MCH Mother Enrollment", "Enrollment of mother onto MCH program", EncounterType.MCHMS_ENROLLMENT);
-		installer.encounterType("MCH Mother Consultation", "Collection of mother data during MCH visit", EncounterType.MCHMS_CONSULTATION);
-		installer.encounterType("MCH Mother Discontinuation", "Discontinuation of mother from MCH program", EncounterType.MCHMS_DISCONTINUATION);
+		install(encounterType("MCH Mother Enrollment", "Enrollment of mother onto MCH program", EncounterType.MCHMS_ENROLLMENT));
+		install(encounterType("MCH Mother Consultation", "Collection of mother data during MCH visit", EncounterType.MCHMS_CONSULTATION));
+		install(encounterType("MCH Mother Discontinuation", "Discontinuation of mother from MCH program", EncounterType.MCHMS_DISCONTINUATION));
 
-		installer.form("MCH-MS Enrollment", "MCH-MS Enrollment", EncounterType.MCHMS_ENROLLMENT, "1.0", Form.MCHMS_ENROLLMENT);
-		installer.form("MCH Antenatal Visit", "MCH antenatal visit form", EncounterType.MCHMS_CONSULTATION, "1.0", Form.MCHMS_ANTENATAL_VISIT);
-		installer.form("MCH Postnatal Visit", "MCH postnatal visit form", EncounterType.MCHMS_CONSULTATION, "1.0", Form.MCHMS_POSTNATAL_VISIT);
-		installer.form("Delivery", "MCH-MS delivery form", EncounterType.MCHMS_CONSULTATION, "1.0", Form.MCHMS_DELIVERY);
-		installer.form("Infant Feeding", "MCH-MS infant feeding form", EncounterType.MCHMS_CONSULTATION, "1.0", Form.MCHMS_INFANT_FEEDING);
-		installer.form("Preventive Services", "MCH-MS preventive services form", EncounterType.MCHMS_CONSULTATION, "1.0", Form.MCHMS_PREVENTIVE_SERVICES);
-		installer.form("MCH-MS Discontinuation", "MCH-MS discontinuation form", EncounterType.MCHMS_DISCONTINUATION, "1.0", Form.MCHMS_DISCONTINUATION);
+		install(form("MCH-MS Enrollment", "MCH-MS Enrollment", EncounterType.MCHMS_ENROLLMENT, "1.0", Form.MCHMS_ENROLLMENT));
+		install(form("MCH Antenatal Visit", "MCH antenatal visit form", EncounterType.MCHMS_CONSULTATION, "1.0", Form.MCHMS_ANTENATAL_VISIT));
+		install(form("MCH Postnatal Visit", "MCH postnatal visit form", EncounterType.MCHMS_CONSULTATION, "1.0", Form.MCHMS_POSTNATAL_VISIT));
+		install(form("Delivery", "MCH-MS delivery form", EncounterType.MCHMS_CONSULTATION, "1.0", Form.MCHMS_DELIVERY));
+		install(form("Infant Feeding", "MCH-MS infant feeding form", EncounterType.MCHMS_CONSULTATION, "1.0", Form.MCHMS_INFANT_FEEDING));
+		install(form("Preventive Services", "MCH-MS preventive services form", EncounterType.MCHMS_CONSULTATION, "1.0", Form.MCHMS_PREVENTIVE_SERVICES));
+		install(form("MCH-MS Discontinuation", "MCH-MS discontinuation form", EncounterType.MCHMS_DISCONTINUATION, "1.0", Form.MCHMS_DISCONTINUATION));
 
-		installer.program("MCH - Mother Services", "Treatment for mothers", Dictionary.MATERNAL_AND_CHILD_HEALTH_PROGRAM, Program.MCHMS);
+		install(program("MCH - Mother Services", "Treatment for mothers", Dictionary.MATERNAL_AND_CHILD_HEALTH_PROGRAM, Program.MCHMS));
 	}
 }

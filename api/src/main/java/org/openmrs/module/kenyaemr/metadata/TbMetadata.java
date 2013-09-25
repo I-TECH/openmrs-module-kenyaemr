@@ -15,19 +15,19 @@
 package org.openmrs.module.kenyaemr.metadata;
 
 import org.openmrs.PatientIdentifierType.LocationBehavior;
-import org.openmrs.module.kenyacore.metadata.AbstractMetadataProvider;
-import org.openmrs.module.kenyacore.metadata.Requires;
-import org.openmrs.module.kenyacore.metadata.installer.CoreMetadataInstaller;
+import org.openmrs.module.kenyacore.metadata.bundle.AbstractMetadataBundle;
+import org.openmrs.module.kenyacore.metadata.bundle.Requires;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import static org.openmrs.module.kenyacore.metadata.bundle.Constructors.*;
+
 /**
- * TB metadata provider
+ * TB metadata bundle
  */
-@Component("kenyaemr.tb.metadata")
-@Requires("kenyaemr.common.metadata")
-public class TbMetadata extends AbstractMetadataProvider {
+@Component
+@Requires({ CommonMetadata.class })
+public class TbMetadata extends AbstractMetadataBundle {
 
 	public static final class EncounterType {
 		public static final String TB_DISCONTINUATION = "d3e3d723-7458-4b4e-8998-408e8a551a84";
@@ -49,26 +49,23 @@ public class TbMetadata extends AbstractMetadataProvider {
 		public static final String TB = "9f144a34-3a4a-44a9-8486-6b7af6cc64f6";
 	}
 
-	@Autowired
-	private CoreMetadataInstaller installer;
-
 	/**
-	 * @see org.openmrs.module.kenyacore.metadata.AbstractMetadataProvider#install()
+	 * @see org.openmrs.module.kenyacore.metadata.bundle.AbstractMetadataBundle#install()
 	 */
 	@Override
 	public void install() {
-		installer.encounterType("TB Screening", "Screening of patient for TB", EncounterType.TB_SCREENING);
-		installer.encounterType("TB Enrollment", "Enrollment onto HIV program", EncounterType.TB_ENROLLMENT);
-		installer.encounterType("TB Discontinuation", "Discontinuation from HIV program", EncounterType.TB_DISCONTINUATION);
+		install(encounterType("TB Screening", "Screening of patient for TB", EncounterType.TB_SCREENING));
+		install(encounterType("TB Enrollment", "Enrollment onto HIV program", EncounterType.TB_ENROLLMENT));
+		install(encounterType("TB Discontinuation", "Discontinuation from HIV program", EncounterType.TB_DISCONTINUATION));
 
-		installer.form("TB Screening", null, EncounterType.TB_SCREENING, "1", Form.TB_SCREENING);
-		installer.form("TB Enrollment", null, EncounterType.TB_ENROLLMENT, "1", Form.TB_ENROLLMENT);
-		installer.form("TB Discontinuation", null, EncounterType.TB_DISCONTINUATION, "1", Form.TB_COMPLETION);
+		install(form("TB Screening", null, EncounterType.TB_SCREENING, "1", Form.TB_SCREENING));
+		install(form("TB Enrollment", null, EncounterType.TB_ENROLLMENT, "1", Form.TB_ENROLLMENT));
+		install(form("TB Discontinuation", null, EncounterType.TB_DISCONTINUATION, "1", Form.TB_COMPLETION));
 
-		installer.patientIdentifierType("District Registration Number", "Assigned to every TB patient",
+		install(patientIdentifierType("District Registration Number", "Assigned to every TB patient",
 				null, null, null,
-				LocationBehavior.NOT_USED, false, PatientIdentifierType.DISTRICT_REG_NUMBER);
+				LocationBehavior.NOT_USED, false, PatientIdentifierType.DISTRICT_REG_NUMBER));
 
-		installer.program("TB Program", "Treatment for TB patients", Dictionary.TUBERCULOSIS_TREATMENT_PROGRAM, Program.TB);
+		install(program("TB Program", "Treatment for TB patients", Dictionary.TUBERCULOSIS_TREATMENT_PROGRAM, Program.TB));
 	}
 }

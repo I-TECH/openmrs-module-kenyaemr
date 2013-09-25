@@ -15,19 +15,19 @@
 package org.openmrs.module.kenyaemr.metadata;
 
 import org.openmrs.PatientIdentifierType.LocationBehavior;
-import org.openmrs.module.kenyacore.metadata.AbstractMetadataProvider;
-import org.openmrs.module.kenyacore.metadata.Requires;
-import org.openmrs.module.kenyacore.metadata.installer.CoreMetadataInstaller;
+import org.openmrs.module.kenyacore.metadata.bundle.AbstractMetadataBundle;
+import org.openmrs.module.kenyacore.metadata.bundle.Requires;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import static org.openmrs.module.kenyacore.metadata.bundle.Constructors.*;
+
 /**
- * HIV metadata provider
+ * HIV metadata bundle
  */
-@Component("kenyaemr.hiv.metadata")
-@Requires("kenyaemr.common.metadata")
-public class HivMetadata extends AbstractMetadataProvider {
+@Component
+@Requires({ CommonMetadata.class })
+public class HivMetadata extends AbstractMetadataBundle {
 
 	public static final class EncounterType {
 		public static final String HIV_CONSULTATION = "a0034eee-1940-4e35-847f-97537a35d05e";
@@ -52,28 +52,25 @@ public class HivMetadata extends AbstractMetadataProvider {
 		public static final String HIV = "dfdc6d40-2f2f-463d-ba90-cc97350441a8";
 	}
 
-	@Autowired
-	private CoreMetadataInstaller installer;
-
 	/**
-	 * @see org.openmrs.module.kenyacore.metadata.AbstractMetadataProvider#install()
+	 * @see org.openmrs.module.kenyacore.metadata.bundle.AbstractMetadataBundle#install()
 	 */
 	@Override
 	public void install() {
-		installer.encounterType("HIV Enrollment", "Enrollment onto HIV program", EncounterType.HIV_ENROLLMENT);
-		installer.encounterType("HIV Consultation", "Collection of HIV-specific data during the main consultation", EncounterType.HIV_CONSULTATION);
-		installer.encounterType("HIV Discontinuation", "Discontinuation from HIV program", EncounterType.HIV_DISCONTINUATION);
+		install(encounterType("HIV Enrollment", "Enrollment onto HIV program", EncounterType.HIV_ENROLLMENT));
+		install(encounterType("HIV Consultation", "Collection of HIV-specific data during the main consultation", EncounterType.HIV_CONSULTATION));
+		install(encounterType("HIV Discontinuation", "Discontinuation from HIV program", EncounterType.HIV_DISCONTINUATION));
 
-		installer.form("HIV Enrollment", null, EncounterType.HIV_ENROLLMENT, "1", Form.HIV_ENROLLMENT);
-		installer.form("Clinical Encounter - HIV addendum", null, EncounterType.HIV_CONSULTATION, "1", Form.CLINICAL_ENCOUNTER_HIV_ADDENDUM);
-		installer.form("Family History", null, CommonMetadata.EncounterType.REGISTRATION, "1", Form.FAMILY_HISTORY);
-		installer.form("MOH 257 Face Page", null, EncounterType.HIV_CONSULTATION, "1", Form.MOH_257_FACE_PAGE);
-		installer.form("MOH 257 Visit Summary", null, EncounterType.HIV_CONSULTATION, "1", Form.MOH_257_VISIT_SUMMARY);
-		installer.form("HIV Discontinuation", null, EncounterType.HIV_DISCONTINUATION, "1", Form.HIV_DISCONTINUATION);
+		install(form("HIV Enrollment", null, EncounterType.HIV_ENROLLMENT, "1", Form.HIV_ENROLLMENT));
+		install(form("Clinical Encounter - HIV addendum", null, EncounterType.HIV_CONSULTATION, "1", Form.CLINICAL_ENCOUNTER_HIV_ADDENDUM));
+		install(form("Family History", null, CommonMetadata.EncounterType.REGISTRATION, "1", Form.FAMILY_HISTORY));
+		install(form("MOH 257 Face Page", null, EncounterType.HIV_CONSULTATION, "1", Form.MOH_257_FACE_PAGE));
+		install(form("MOH 257 Visit Summary", null, EncounterType.HIV_CONSULTATION, "1", Form.MOH_257_VISIT_SUMMARY));
+		install(form("HIV Discontinuation", null, EncounterType.HIV_DISCONTINUATION, "1", Form.HIV_DISCONTINUATION));
 
-		installer.patientIdentifierType("Unique Patient Number", "Assigned to every HIV patient", "\\d+", "Facility code followed by sequential number",
-				null, LocationBehavior.NOT_USED, false, PatientIdentifierType.UNIQUE_PATIENT_NUMBER);
+		install(patientIdentifierType("Unique Patient Number", "Assigned to every HIV patient", "\\d+", "Facility code followed by sequential number",
+				null, LocationBehavior.NOT_USED, false, PatientIdentifierType.UNIQUE_PATIENT_NUMBER));
 
-		installer.program("HIV Program", "Treatment for HIV-positive patients", Dictionary.HIV_PROGRAM, Program.HIV);
+		install(program("HIV Program", "Treatment for HIV-positive patients", Dictionary.HIV_PROGRAM, Program.HIV));
 	}
 }

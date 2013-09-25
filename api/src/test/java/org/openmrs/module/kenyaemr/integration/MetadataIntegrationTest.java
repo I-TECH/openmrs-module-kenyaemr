@@ -127,5 +127,11 @@ public class MetadataIntegrationTest extends BaseModuleContextSensitiveTest {
 		identifierManager.refresh();
 		programManager.refresh();
 		formManager.refresh();
+
+		// And then load them again to simulate startup on an up-to-date database
+		commonMetadata.install();
+		hivMetadata.install();
+		tbMetadata.install();
+		mchMetadata.install();
 	}
 }

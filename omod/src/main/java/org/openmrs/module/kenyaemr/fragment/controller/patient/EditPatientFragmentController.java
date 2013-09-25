@@ -88,11 +88,11 @@ public class EditPatientFragmentController {
 		model.addAttribute("causeOfDeathOptions", causeOfDeathOptions);
 
 		// Fetch person attributes
-		model.addAttribute("telephoneContactAttrType", MetadataUtils.getPersonAttributeType(CommonMetadata.PersonAttributeType.TELEPHONE_CONTACT));
-		model.addAttribute("nameOfNextOfKinAttrType", MetadataUtils.getPersonAttributeType(CommonMetadata.PersonAttributeType.NEXT_OF_KIN_NAME));
-		model.addAttribute("nextOfKinRelationshipAttrType", MetadataUtils.getPersonAttributeType(CommonMetadata.PersonAttributeType.NEXT_OF_KIN_RELATIONSHIP));
-		model.addAttribute("nextOfKinContactAttrType", MetadataUtils.getPersonAttributeType(CommonMetadata.PersonAttributeType.NEXT_OF_KIN_CONTACT));
-		model.addAttribute("nextOfKinAddressAttrType", MetadataUtils.getPersonAttributeType(CommonMetadata.PersonAttributeType.NEXT_OF_KIN_ADDRESS));
+		model.addAttribute("telephoneContactAttrType", MetadataUtils.getPersonAttributeType(CommonMetadata._PersonAttributeType.TELEPHONE_CONTACT));
+		model.addAttribute("nameOfNextOfKinAttrType", MetadataUtils.getPersonAttributeType(CommonMetadata._PersonAttributeType.NEXT_OF_KIN_NAME));
+		model.addAttribute("nextOfKinRelationshipAttrType", MetadataUtils.getPersonAttributeType(CommonMetadata._PersonAttributeType.NEXT_OF_KIN_RELATIONSHIP));
+		model.addAttribute("nextOfKinContactAttrType", MetadataUtils.getPersonAttributeType(CommonMetadata._PersonAttributeType.NEXT_OF_KIN_CONTACT));
+		model.addAttribute("nextOfKinAddressAttrType", MetadataUtils.getPersonAttributeType(CommonMetadata._PersonAttributeType.NEXT_OF_KIN_ADDRESS));
 	}
 
 	/**
@@ -191,22 +191,22 @@ public class EditPatientFragmentController {
 			hivIdNumber = new PatientIdentifier(null, MetadataUtils.getPatientIdentifierType(HivMetadata.PatientIdentifierType.UNIQUE_PATIENT_NUMBER), location);
 
 			telephoneContact = new PersonAttribute();
-			telephoneContact.setAttributeType(MetadataUtils.getPersonAttributeType(CommonMetadata.PersonAttributeType.TELEPHONE_CONTACT));
+			telephoneContact.setAttributeType(MetadataUtils.getPersonAttributeType(CommonMetadata._PersonAttributeType.TELEPHONE_CONTACT));
 
 			nameOfNextOfKin = new PersonAttribute();
-			nameOfNextOfKin.setAttributeType(MetadataUtils.getPersonAttributeType(CommonMetadata.PersonAttributeType.NEXT_OF_KIN_NAME));
+			nameOfNextOfKin.setAttributeType(MetadataUtils.getPersonAttributeType(CommonMetadata._PersonAttributeType.NEXT_OF_KIN_NAME));
 
 			nextOfKinRelationship = new PersonAttribute();
-			nextOfKinRelationship.setAttributeType(MetadataUtils.getPersonAttributeType(CommonMetadata.PersonAttributeType.NEXT_OF_KIN_RELATIONSHIP));
+			nextOfKinRelationship.setAttributeType(MetadataUtils.getPersonAttributeType(CommonMetadata._PersonAttributeType.NEXT_OF_KIN_RELATIONSHIP));
 
 			nextOfKinContact = new PersonAttribute();
-			nextOfKinContact.setAttributeType(MetadataUtils.getPersonAttributeType(CommonMetadata.PersonAttributeType.NEXT_OF_KIN_CONTACT));
+			nextOfKinContact.setAttributeType(MetadataUtils.getPersonAttributeType(CommonMetadata._PersonAttributeType.NEXT_OF_KIN_CONTACT));
 
 			nextOfKinAddress = new PersonAttribute();
-			nextOfKinAddress.setAttributeType(MetadataUtils.getPersonAttributeType(CommonMetadata.PersonAttributeType.NEXT_OF_KIN_ADDRESS));
+			nextOfKinAddress.setAttributeType(MetadataUtils.getPersonAttributeType(CommonMetadata._PersonAttributeType.NEXT_OF_KIN_ADDRESS));
 
 			subChiefName = new PersonAttribute();
-			subChiefName.setAttributeType(MetadataUtils.getPersonAttributeType(CommonMetadata.PersonAttributeType.SUBCHIEF_NAME));
+			subChiefName.setAttributeType(MetadataUtils.getPersonAttributeType(CommonMetadata._PersonAttributeType.SUBCHIEF_NAME));
 
 		}
 
@@ -258,7 +258,7 @@ public class EditPatientFragmentController {
 				nationalIdNumber.setPatient(patient);
 			}
 
-			PersonAttribute attr = patient.getAttribute(MetadataUtils.getPersonAttributeType(CommonMetadata.PersonAttributeType.TELEPHONE_CONTACT));
+			PersonAttribute attr = patient.getAttribute(MetadataUtils.getPersonAttributeType(CommonMetadata._PersonAttributeType.TELEPHONE_CONTACT));
 			if (attr != null) {
 				telephoneContact = attr;
 			} else {
@@ -281,7 +281,7 @@ public class EditPatientFragmentController {
 			}
 
 			// Next of kin details
-			PersonAttribute attrNameOfNextOfKin = patient.getAttribute(MetadataUtils.getPersonAttributeType(CommonMetadata.PersonAttributeType.NEXT_OF_KIN_NAME));
+			PersonAttribute attrNameOfNextOfKin = patient.getAttribute(MetadataUtils.getPersonAttributeType(CommonMetadata._PersonAttributeType.NEXT_OF_KIN_NAME));
 			if (attrNameOfNextOfKin != null) {
 				nameOfNextOfKin = attrNameOfNextOfKin;
 			}
@@ -289,7 +289,7 @@ public class EditPatientFragmentController {
 				nameOfNextOfKin.setPerson(patient);
 			}
 
-			PersonAttribute attrNextOfKinRelationship = patient.getAttribute(MetadataUtils.getPersonAttributeType(CommonMetadata.PersonAttributeType.NEXT_OF_KIN_RELATIONSHIP));
+			PersonAttribute attrNextOfKinRelationship = patient.getAttribute(MetadataUtils.getPersonAttributeType(CommonMetadata._PersonAttributeType.NEXT_OF_KIN_RELATIONSHIP));
 			if (attrNextOfKinRelationship != null) {
 				nextOfKinRelationship = attrNextOfKinRelationship;
 			}
@@ -297,7 +297,7 @@ public class EditPatientFragmentController {
 				nextOfKinRelationship.setPerson(patient);
 			}
 
-			PersonAttribute attrNextOfKinContact = patient.getAttribute(MetadataUtils.getPersonAttributeType(CommonMetadata.PersonAttributeType.NEXT_OF_KIN_CONTACT));
+			PersonAttribute attrNextOfKinContact = patient.getAttribute(MetadataUtils.getPersonAttributeType(CommonMetadata._PersonAttributeType.NEXT_OF_KIN_CONTACT));
 			if (attrNextOfKinContact != null) {
 				nextOfKinContact = attrNextOfKinContact;
 			}
@@ -305,7 +305,7 @@ public class EditPatientFragmentController {
 				nextOfKinContact.setPerson(patient);
 			}
 
-			PersonAttribute attrNextOfKinAddress = patient.getAttribute(MetadataUtils.getPersonAttributeType(CommonMetadata.PersonAttributeType.NEXT_OF_KIN_ADDRESS));
+			PersonAttribute attrNextOfKinAddress = patient.getAttribute(MetadataUtils.getPersonAttributeType(CommonMetadata._PersonAttributeType.NEXT_OF_KIN_ADDRESS));
 			if (attrNextOfKinAddress != null) {
 				nextOfKinAddress = attrNextOfKinAddress;
 			}
@@ -315,7 +315,7 @@ public class EditPatientFragmentController {
 
 			//sub chief and chief's details
 
-			PersonAttribute attrSubChiefNames = patient.getAttribute(MetadataUtils.getPersonAttributeType(CommonMetadata.PersonAttributeType.SUBCHIEF_NAME));
+			PersonAttribute attrSubChiefNames = patient.getAttribute(MetadataUtils.getPersonAttributeType(CommonMetadata._PersonAttributeType.SUBCHIEF_NAME));
 			if (attrSubChiefNames != null) {
 				subChiefName = attrSubChiefNames;
 			}
@@ -473,7 +473,7 @@ public class EditPatientFragmentController {
 				toSave.addAddress(personAddress);
 			}
 
-			PersonAttributeType telContact = MetadataUtils.getPersonAttributeType(CommonMetadata.PersonAttributeType.TELEPHONE_CONTACT);
+			PersonAttributeType telContact = MetadataUtils.getPersonAttributeType(CommonMetadata._PersonAttributeType.TELEPHONE_CONTACT);
 			if (anyChanges(toSave.getAttribute(telContact), telephoneContact, "value")) {
 				if (toSave.getAttribute(telContact) != null) {
 					voidData(toSave.getAttribute(telContact));
@@ -482,7 +482,7 @@ public class EditPatientFragmentController {
 			}
 
 			//next of kin included here
-			PersonAttributeType nameOfNextOfkinpat = MetadataUtils.getPersonAttributeType(CommonMetadata.PersonAttributeType.NEXT_OF_KIN_NAME);
+			PersonAttributeType nameOfNextOfkinpat = MetadataUtils.getPersonAttributeType(CommonMetadata._PersonAttributeType.NEXT_OF_KIN_NAME);
 			if (anyChanges(toSave.getAttribute(nameOfNextOfkinpat), this.nameOfNextOfKin, "value")) {
 				if (toSave.getAttribute(nameOfNextOfkinpat) != null) {
 					voidData(toSave.getAttribute(nameOfNextOfkinpat));
@@ -490,7 +490,7 @@ public class EditPatientFragmentController {
 				toSave.addAttribute(this.nameOfNextOfKin);
 			}
 
-			PersonAttributeType nextOfkinRelationshippat = MetadataUtils.getPersonAttributeType(CommonMetadata.PersonAttributeType.NEXT_OF_KIN_RELATIONSHIP);
+			PersonAttributeType nextOfkinRelationshippat = MetadataUtils.getPersonAttributeType(CommonMetadata._PersonAttributeType.NEXT_OF_KIN_RELATIONSHIP);
 			if (anyChanges(toSave.getAttribute(nextOfkinRelationshippat), this.nextOfKinRelationship, "value")) {
 				if (toSave.getAttribute(nextOfkinRelationshippat) != null) {
 					voidData(toSave.getAttribute(nextOfkinRelationshippat));
@@ -498,7 +498,7 @@ public class EditPatientFragmentController {
 				toSave.addAttribute(this.nextOfKinRelationship);
 			}
 
-			PersonAttributeType nextOfkinContactpat = MetadataUtils.getPersonAttributeType(CommonMetadata.PersonAttributeType.NEXT_OF_KIN_CONTACT);
+			PersonAttributeType nextOfkinContactpat = MetadataUtils.getPersonAttributeType(CommonMetadata._PersonAttributeType.NEXT_OF_KIN_CONTACT);
 			if (anyChanges(toSave.getAttribute(nextOfkinContactpat), this.nextOfKinContact, "value")) {
 				if (toSave.getAttribute(nextOfkinContactpat) != null) {
 					voidData(toSave.getAttribute(nextOfkinContactpat));
@@ -506,7 +506,7 @@ public class EditPatientFragmentController {
 				toSave.addAttribute(this.nextOfKinContact);
 			}
 
-			PersonAttributeType nextOfkinAddresspat = MetadataUtils.getPersonAttributeType(CommonMetadata.PersonAttributeType.NEXT_OF_KIN_ADDRESS);
+			PersonAttributeType nextOfkinAddresspat = MetadataUtils.getPersonAttributeType(CommonMetadata._PersonAttributeType.NEXT_OF_KIN_ADDRESS);
 			if (anyChanges(toSave.getAttribute(nextOfkinAddresspat), this.nextOfKinAddress, "value")) {
 				if (toSave.getAttribute(nextOfkinAddresspat) != null) {
 					voidData(toSave.getAttribute(nextOfkinAddresspat));
@@ -514,7 +514,7 @@ public class EditPatientFragmentController {
 				toSave.addAttribute(this.nextOfKinAddress);
 			}
 
-			PersonAttributeType subChiefNamespat = MetadataUtils.getPersonAttributeType(CommonMetadata.PersonAttributeType.SUBCHIEF_NAME);
+			PersonAttributeType subChiefNamespat = MetadataUtils.getPersonAttributeType(CommonMetadata._PersonAttributeType.SUBCHIEF_NAME);
 			if (anyChanges(toSave.getAttribute(subChiefNamespat), this.subChiefName, "value")) {
 				if (toSave.getAttribute(subChiefNamespat) != null) {
 					voidData(toSave.getAttribute(subChiefNamespat));
