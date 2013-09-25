@@ -186,9 +186,9 @@ public class EditPatientFragmentController {
 			personName = new PersonName();
 			personAddress = new PersonAddress();
 
-			nationalIdNumber = new PatientIdentifier(null, MetadataUtils.getPatientIdentifierType(CommonMetadata.PatientIdentifierType.NATIONAL_ID), location);
-			patientClinicNumber = new PatientIdentifier(null, MetadataUtils.getPatientIdentifierType(CommonMetadata.PatientIdentifierType.PATIENT_CLINIC_NUMBER), location);
-			hivIdNumber = new PatientIdentifier(null, MetadataUtils.getPatientIdentifierType(HivMetadata.PatientIdentifierType.UNIQUE_PATIENT_NUMBER), location);
+			nationalIdNumber = new PatientIdentifier(null, MetadataUtils.getPatientIdentifierType(CommonMetadata._PatientIdentifierType.NATIONAL_ID), location);
+			patientClinicNumber = new PatientIdentifier(null, MetadataUtils.getPatientIdentifierType(CommonMetadata._PatientIdentifierType.PATIENT_CLINIC_NUMBER), location);
+			hivIdNumber = new PatientIdentifier(null, MetadataUtils.getPatientIdentifierType(HivMetadata._PatientIdentifierType.UNIQUE_PATIENT_NUMBER), location);
 
 			telephoneContact = new PersonAttribute();
 			telephoneContact.setAttributeType(MetadataUtils.getPersonAttributeType(CommonMetadata._PersonAttributeType.TELEPHONE_CONTACT));
@@ -237,21 +237,21 @@ public class EditPatientFragmentController {
 			deathDate = patient.getDeathDate();
 			causeOfDeath = patient.getCauseOfDeath();
 
-			PatientIdentifier id = patient.getPatientIdentifier(MetadataUtils.getPatientIdentifierType(CommonMetadata.PatientIdentifierType.PATIENT_CLINIC_NUMBER));
+			PatientIdentifier id = patient.getPatientIdentifier(MetadataUtils.getPatientIdentifierType(CommonMetadata._PatientIdentifierType.PATIENT_CLINIC_NUMBER));
 			if (id != null) {
 				patientClinicNumber = id;
 			} else {
 				patientClinicNumber.setPatient(patient);
 			}
 
-			id = patient.getPatientIdentifier(MetadataUtils.getPatientIdentifierType(HivMetadata.PatientIdentifierType.UNIQUE_PATIENT_NUMBER));
+			id = patient.getPatientIdentifier(MetadataUtils.getPatientIdentifierType(HivMetadata._PatientIdentifierType.UNIQUE_PATIENT_NUMBER));
 			if (id != null) {
 				hivIdNumber = id;
 			} else {
 				hivIdNumber.setPatient(patient);
 			}
 
-			id = patient.getPatientIdentifier(MetadataUtils.getPatientIdentifierType(CommonMetadata.PatientIdentifierType.NATIONAL_ID));
+			id = patient.getPatientIdentifier(MetadataUtils.getPatientIdentifierType(CommonMetadata._PatientIdentifierType.NATIONAL_ID));
 			if (id != null) {
 				nationalIdNumber = id;
 			} else {
@@ -422,7 +422,7 @@ public class EditPatientFragmentController {
 			toSave.setDeathDate(deathDate);
 			toSave.setCauseOfDeath(causeOfDeath);
 
-			PatientIdentifier oldHivId = toSave.getPatientIdentifier(MetadataUtils.getPatientIdentifierType(HivMetadata.PatientIdentifierType.UNIQUE_PATIENT_NUMBER));
+			PatientIdentifier oldHivId = toSave.getPatientIdentifier(MetadataUtils.getPatientIdentifierType(HivMetadata._PatientIdentifierType.UNIQUE_PATIENT_NUMBER));
 			if (anyChanges(oldHivId, hivIdNumber, "identifier")) {
 				if (oldHivId != null) {
 					voidData(oldHivId);
@@ -430,7 +430,7 @@ public class EditPatientFragmentController {
 				toSave.addIdentifier(hivIdNumber);
 			}
 
-			PatientIdentifier oldNationalId = toSave.getPatientIdentifier(MetadataUtils.getPatientIdentifierType(CommonMetadata.PatientIdentifierType.NATIONAL_ID));
+			PatientIdentifier oldNationalId = toSave.getPatientIdentifier(MetadataUtils.getPatientIdentifierType(CommonMetadata._PatientIdentifierType.NATIONAL_ID));
 			if (anyChanges(oldNationalId, nationalIdNumber, "identifier")) {
 				if (oldNationalId != null) {
 					voidData(oldNationalId);
@@ -438,7 +438,7 @@ public class EditPatientFragmentController {
 				toSave.addIdentifier(nationalIdNumber);
 			}
 
-			PatientIdentifier oldPatientClinicNumber = toSave.getPatientIdentifier(MetadataUtils.getPatientIdentifierType(CommonMetadata.PatientIdentifierType.PATIENT_CLINIC_NUMBER));
+			PatientIdentifier oldPatientClinicNumber = toSave.getPatientIdentifier(MetadataUtils.getPatientIdentifierType(CommonMetadata._PatientIdentifierType.PATIENT_CLINIC_NUMBER));
 			if (anyChanges(oldPatientClinicNumber, patientClinicNumber, "identifier")) {
 				if (oldPatientClinicNumber != null) {
 					voidData(oldPatientClinicNumber);
@@ -447,7 +447,7 @@ public class EditPatientFragmentController {
 			}
 
 			{ // make sure everyone gets an OpenMRS ID
-				PatientIdentifierType openmrsIdType = MetadataUtils.getPatientIdentifierType(CommonMetadata.PatientIdentifierType.OPENMRS_ID);
+				PatientIdentifierType openmrsIdType = MetadataUtils.getPatientIdentifierType(CommonMetadata._PatientIdentifierType.OPENMRS_ID);
 				if (toSave.getPatientIdentifier(openmrsIdType) == null) {
 					String generated = Context.getService(IdentifierSourceService.class).generateIdentifier(openmrsIdType, "Registration Create/Edit Patient");
 					PatientIdentifier generatedOpenmrsId = new PatientIdentifier(generated, openmrsIdType, location);
@@ -567,7 +567,7 @@ public class EditPatientFragmentController {
 				return false;
 			}
 			ProgramWorkflowService pws = Context.getProgramWorkflowService();
-			Program hivProgram = MetadataUtils.getProgram(HivMetadata.Program.HIV);
+			Program hivProgram = MetadataUtils.getProgram(HivMetadata._Program.HIV);
 			for (PatientProgram pp : pws.getPatientPrograms(original, hivProgram, null, null, null, null, false)) {
 				if (pp.getActive()) {
 					return true;

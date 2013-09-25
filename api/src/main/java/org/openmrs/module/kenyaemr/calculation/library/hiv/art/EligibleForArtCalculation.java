@@ -57,7 +57,7 @@ public class EligibleForArtCalculation extends BaseEmrCalculation implements Pat
 	                                     PatientCalculationContext context) {
 
 		// only applies to patients in the HIV program
-		Program hivProgram = MetadataUtils.getProgram(HivMetadata.Program.HIV);
+		Program hivProgram = MetadataUtils.getProgram(HivMetadata._Program.HIV);
 		Set<Integer> inHivProgram = CalculationUtils.patientsThatPass(Calculations.activeEnrollment(hivProgram, cohort, context));
 		
 		// need to exclude those on ART already

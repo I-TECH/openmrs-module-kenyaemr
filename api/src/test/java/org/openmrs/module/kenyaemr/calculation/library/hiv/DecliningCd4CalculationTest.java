@@ -56,7 +56,7 @@ public class DecliningCd4CalculationTest extends BaseModuleContextSensitiveTest 
 	public void evaluate_shouldDetermineWhetherPatientsHasDeclinedCD4() throws Exception {
 
 		// Get HIV Program
-		Program hivProgram = MetadataUtils.getProgram(HivMetadata.Program.HIV);
+		Program hivProgram = MetadataUtils.getProgram(HivMetadata._Program.HIV);
 
 		// Enroll patients #6, #7 and #8 in the HIV Program
 		PatientService ps = Context.getPatientService();

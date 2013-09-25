@@ -58,7 +58,7 @@ public class DecliningCd4ReportBuilderTest extends BaseModuleContextSensitiveTes
 
 	@Test
 	public void testReport() throws Exception {
-		Program hivProgram = MetadataUtils.getProgram(HivMetadata.Program.HIV);
+		Program hivProgram = MetadataUtils.getProgram(HivMetadata._Program.HIV);
 
 		// Enroll patients #6, #7 and #8 in the HIV Program
 		PatientService ps = Context.getPatientService();

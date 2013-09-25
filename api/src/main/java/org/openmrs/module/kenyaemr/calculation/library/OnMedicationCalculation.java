@@ -39,7 +39,7 @@ public class OnMedicationCalculation extends BaseEmrCalculation {
 
 		Set<Concept> drugs = (Set<Concept>) params.get("drugs");
 		Concept medOrders = Dictionary.getConcept(Dictionary.MEDICATION_ORDERS);
-		EncounterType consultation = MetadataUtils.getEncounterType(CommonMetadata.EncounterType.CONSULTATION);
+		EncounterType consultation = MetadataUtils.getEncounterType(CommonMetadata._EncounterType.CONSULTATION);
 
 		CalculationResultMap lastConsultations = Calculations.lastEncounter(consultation, cohort, context);
 

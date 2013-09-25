@@ -43,7 +43,7 @@ public class NeverTakenCtxOrDapsoneCalculation extends BaseEmrCalculation {
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
 
-		Program hivProgram = MetadataUtils.getProgram(HivMetadata.Program.HIV);
+		Program hivProgram = MetadataUtils.getProgram(HivMetadata._Program.HIV);
 
 		Set<Integer> alive = alivePatients(cohort, context);
 		Set<Integer> inHivProgram = CalculationUtils.patientsThatPass(Calculations.activeEnrollment(hivProgram, alive, context));

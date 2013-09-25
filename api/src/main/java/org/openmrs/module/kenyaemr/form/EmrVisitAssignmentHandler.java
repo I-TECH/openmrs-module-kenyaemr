@@ -129,7 +129,7 @@ public class EmrVisitAssignmentHandler extends ExistingVisitAssignmentHandler {
 		visit.setVisitType(type);
 
 		VisitAttribute sourceAttr = new VisitAttribute();
-		sourceAttr.setAttributeType(MetadataUtils.getVisitAttributeType(CommonMetadata.VisitAttributeType.SOURCE_FORM));
+		sourceAttr.setAttributeType(MetadataUtils.getVisitAttributeType(CommonMetadata._VisitAttributeType.SOURCE_FORM));
 		sourceAttr.setOwner(visit);
 		sourceAttr.setValue(sourceForm);
 		visit.addAttribute(sourceAttr);

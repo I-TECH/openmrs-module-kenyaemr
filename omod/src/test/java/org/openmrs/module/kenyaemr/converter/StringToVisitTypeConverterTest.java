@@ -48,7 +48,7 @@ public class StringToVisitTypeConverterTest extends BaseModuleWebContextSensitiv
 		Assert.assertNull(converter.convert(""));
 
 		// Check actual visit type
-		VisitType outpatientType = MetadataUtils.getVisitType(CommonMetadata.VisitType.OUTPATIENT);
+		VisitType outpatientType = MetadataUtils.getVisitType(CommonMetadata._VisitType.OUTPATIENT);
 
 		Assert.assertEquals(outpatientType, converter.convert(outpatientType.getVisitTypeId().toString()));
 	}

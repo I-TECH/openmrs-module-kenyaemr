@@ -123,16 +123,16 @@ public class EmrUtilsTest extends BaseModuleContextSensitiveTest {
 	@Test
 	public void getVisitSourceForm_shouldReturnTheSourceFormIfThereIsOne() {
 		Patient patient = Context.getPatientService().getPatient(8);
-		VisitType outpatient = MetadataUtils.getVisitType(CommonMetadata.VisitType.OUTPATIENT);
+		VisitType outpatient = MetadataUtils.getVisitType(CommonMetadata._VisitType.OUTPATIENT);
 		Visit visit = TestUtils.saveVisit(patient, outpatient, TestUtils.date(2011, 1, 1), null);
 
 		// Check no attribute returns null
 		Assert.assertThat(EmrUtils.getVisitSourceForm(visit), is(nullValue()));
 
-		Form moh257 = MetadataUtils.getForm(HivMetadata.Form.MOH_257_VISIT_SUMMARY);
+		Form moh257 = MetadataUtils.getForm(HivMetadata._Form.MOH_257_VISIT_SUMMARY);
 
 		VisitAttribute sourceAttr = new VisitAttribute();
-		sourceAttr.setAttributeType(MetadataUtils.getVisitAttributeType(CommonMetadata.VisitAttributeType.SOURCE_FORM));
+		sourceAttr.setAttributeType(MetadataUtils.getVisitAttributeType(CommonMetadata._VisitAttributeType.SOURCE_FORM));
 		sourceAttr.setOwner(visit);
 		sourceAttr.setValue(moh257);
 		visit.addAttribute(sourceAttr);
@@ -149,7 +149,7 @@ public class EmrUtilsTest extends BaseModuleContextSensitiveTest {
 	public void visitWillOverlap_shouldReturnTrueIfVisitOverlaps() {
 
 		Patient patient8 = Context.getPatientService().getPatient(8);
-		VisitType outpatient = MetadataUtils.getVisitType(CommonMetadata.VisitType.OUTPATIENT);
+		VisitType outpatient = MetadataUtils.getVisitType(CommonMetadata._VisitType.OUTPATIENT);
 
 		Visit visit1 = TestUtils.saveVisit(patient8, outpatient, TestUtils.date(2011, 1, 1), TestUtils.date(2011, 1, 3));
 		Visit visit2 = TestUtils.saveVisit(patient8, outpatient, TestUtils.date(2011, 1, 7), TestUtils.date(2011, 1, 10));
@@ -267,7 +267,7 @@ public class EmrUtilsTest extends BaseModuleContextSensitiveTest {
 	@Test
 	public void firstObsInProgram_shouldFindFirstObsWithConcept() {
 		Patient patient = Context.getPatientService().getPatient(6);
-		Program tbProgram = MetadataUtils.getProgram(TbMetadata.Program.TB);
+		Program tbProgram = MetadataUtils.getProgram(TbMetadata._Program.TB);
 
 		PatientProgram enrollment = TestUtils.enrollInProgram(patient, tbProgram, TestUtils.date(2012, 1, 1), TestUtils.date(2012, 4, 1));
 
@@ -295,8 +295,8 @@ public class EmrUtilsTest extends BaseModuleContextSensitiveTest {
 	@Test
 	public void lastEncounter_shouldFindLastEncounterWithType() {
 		Patient patient = TestUtils.getPatient(6);
-		EncounterType triageEncType = MetadataUtils.getEncounterType(CommonMetadata.EncounterType.TRIAGE);
-		EncounterType tbScreenEncType = MetadataUtils.getEncounterType(TbMetadata.EncounterType.TB_SCREENING);
+		EncounterType triageEncType = MetadataUtils.getEncounterType(CommonMetadata._EncounterType.TRIAGE);
+		EncounterType tbScreenEncType = MetadataUtils.getEncounterType(TbMetadata._EncounterType.TB_SCREENING);
 
 		// Test with no saved encounters
 		Assert.assertNull(EmrUtils.lastEncounter(patient, tbScreenEncType));
@@ -314,8 +314,8 @@ public class EmrUtilsTest extends BaseModuleContextSensitiveTest {
 	@Test
 	public void lastEncounterInProgram_shouldFindLastEncounterWithType() {
 		Patient patient = TestUtils.getPatient(6);
-		Program tbProgram = MetadataUtils.getProgram(TbMetadata.Program.TB);
-		EncounterType tbScreenEncType = MetadataUtils.getEncounterType(TbMetadata.EncounterType.TB_SCREENING);
+		Program tbProgram = MetadataUtils.getProgram(TbMetadata._Program.TB);
+		EncounterType tbScreenEncType = MetadataUtils.getEncounterType(TbMetadata._EncounterType.TB_SCREENING);
 
 		PatientProgram enrollment = TestUtils.enrollInProgram(patient, tbProgram, TestUtils.date(2012, 1, 1), TestUtils.date(2012, 4, 1));
 

@@ -50,8 +50,8 @@ public class OnMedicationCalculationTest extends BaseModuleContextSensitiveTest 
 	@Test
 	public void evaluate() throws Exception {
 		PatientService ps = Context.getPatientService();
-		VisitType outpatientType = MetadataUtils.getVisitType(CommonMetadata.VisitType.OUTPATIENT);
-		EncounterType consultationType = MetadataUtils.getEncounterType(CommonMetadata.EncounterType.CONSULTATION);
+		VisitType outpatientType = MetadataUtils.getVisitType(CommonMetadata._VisitType.OUTPATIENT);
+		EncounterType consultationType = MetadataUtils.getEncounterType(CommonMetadata._EncounterType.CONSULTATION);
 		Concept medOrders = Dictionary.getConcept(Dictionary.MEDICATION_ORDERS);
 		Concept dapsone = Dictionary.getConcept(Dictionary.DAPSONE);
 		Concept flucanozole = Dictionary.getConcept(Dictionary.FLUCONAZOLE);

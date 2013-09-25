@@ -30,7 +30,6 @@ import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.module.kenyaemr.datatype.LocationDatatype;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
-import org.openmrs.module.kenyaemr.metadata.CommonMetadataTest;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -170,7 +169,7 @@ public class KenyaEmrServiceImplTest extends BaseModuleContextSensitiveTest {
 	@Test
 	public void getVisitsByPatientAndDay_shouldGetVisitsOnDayWithPatient() {
 		Patient patient = Context.getPatientService().getPatient(7);
-		VisitType outpatientType = MetadataUtils.getVisitType(CommonMetadata.VisitType.OUTPATIENT);
+		VisitType outpatientType = MetadataUtils.getVisitType(CommonMetadata._VisitType.OUTPATIENT);
 
 		// Save visit from 10-11am and another from 12 onwards (no end)
 		Visit visit1 = TestUtils.saveVisit(patient, outpatientType, TestUtils.date(2012, 1, 1, 10, 0, 0), TestUtils.date(2012, 1, 1, 11, 0, 0));
@@ -197,7 +196,7 @@ public class KenyaEmrServiceImplTest extends BaseModuleContextSensitiveTest {
 	 */
 	@Test
 	public void getLocations_shouldGetAllLocationsWithMatchingArguments() {
-		LocationAttributeType mflCodeAttrType = MetadataUtils.getLocationAttributeType(CommonMetadata.LocationAttributeType.MASTER_FACILITY_CODE);
+		LocationAttributeType mflCodeAttrType = MetadataUtils.getLocationAttributeType(CommonMetadata._LocationAttributeType.MASTER_FACILITY_CODE);
 
 		// Search for location #1 by MFL code and don't include retired
 		Map<LocationAttributeType, Object> attrValues = new HashMap<LocationAttributeType, Object>();
@@ -225,7 +224,7 @@ public class KenyaEmrServiceImplTest extends BaseModuleContextSensitiveTest {
 	 */
 	@Test
 	public void getLocations_shouldGetAllLocationsWithAllGivenAttributeValues() {
-		LocationAttributeType mflCodeAttrType = MetadataUtils.getLocationAttributeType(CommonMetadata.LocationAttributeType.MASTER_FACILITY_CODE);
+		LocationAttributeType mflCodeAttrType = MetadataUtils.getLocationAttributeType(CommonMetadata._LocationAttributeType.MASTER_FACILITY_CODE);
 
 		// Save new phone number attribute type
 		LocationAttributeType phoneAttrType = new LocationAttributeType();
@@ -265,7 +264,7 @@ public class KenyaEmrServiceImplTest extends BaseModuleContextSensitiveTest {
 	 */
 	@Test
 	public void getLocations_shouldNotFindAnyLocationsIfNoneHaveGivenAttributeValues() {
-		LocationAttributeType mflCodeAttrType = MetadataUtils.getLocationAttributeType(CommonMetadata.LocationAttributeType.MASTER_FACILITY_CODE);
+		LocationAttributeType mflCodeAttrType = MetadataUtils.getLocationAttributeType(CommonMetadata._LocationAttributeType.MASTER_FACILITY_CODE);
 		Map<LocationAttributeType, Object> attrValues = new HashMap<LocationAttributeType, Object>();
 		attrValues.put(mflCodeAttrType, "xxxxxx");
 		List<Location> locations = service.getLocations(null, null, attrValues, true, null, null);

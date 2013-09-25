@@ -51,7 +51,7 @@ public class LostToFollowUpCalculation extends BaseEmrCalculation implements Pat
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> arg1, PatientCalculationContext context) {
 
-		Program hivProgram = MetadataUtils.getProgram(HivMetadata.Program.HIV);
+		Program hivProgram = MetadataUtils.getProgram(HivMetadata._Program.HIV);
 
 		Set<Integer> alive = alivePatients(cohort, context);
 		Set<Integer> inHivProgram = CalculationUtils.patientsThatPass(Calculations.activeEnrollment(hivProgram, alive, context));

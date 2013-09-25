@@ -84,8 +84,8 @@ public class HivCareVisitsIndicatorEvaluatorTest extends BaseModuleContextSensit
 
 		commonMetadata.install();
 
-		Form hivAddendum = MetadataUtils.getForm(HivMetadata.Form.CLINICAL_ENCOUNTER_HIV_ADDENDUM);
-		Form moh257 = MetadataUtils.getForm(HivMetadata.Form.MOH_257_VISIT_SUMMARY);
+		Form hivAddendum = MetadataUtils.getForm(HivMetadata._Form.CLINICAL_ENCOUNTER_HIV_ADDENDUM);
+		Form moh257 = MetadataUtils.getForm(HivMetadata._Form.MOH_257_VISIT_SUMMARY);
 		Concept returnVisitDate = Dictionary.getConcept(Dictionary.RETURN_VISIT_DATE);
 
 		// Schedule a return visit for patient #6 on 10-Jan-2012

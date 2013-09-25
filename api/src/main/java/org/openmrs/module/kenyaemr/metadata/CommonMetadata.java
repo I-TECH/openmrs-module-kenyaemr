@@ -32,14 +32,14 @@ import static org.openmrs.module.kenyacore.metadata.bundle.Constructors.*;
 @Component
 public class CommonMetadata extends AbstractMetadataBundle {
 
-	public static final class EncounterType {
+	public static final class _EncounterType {
 		public static final String CONSULTATION = "465a92f2-baf8-42e9-9612-53064be868e8";
 		public static final String LAB_RESULTS = "17a381d1-7e29-406a-b782-aa903b963c28";
 		public static final String REGISTRATION = "de1f9d67-b73e-4e1b-90d0-036166fc6995";
 		public static final String TRIAGE = "d1059fb9-a079-4feb-a749-eedd709ae542";
 	}
 
-	public static final class Form {
+	public static final class _Form {
 		public static final String CLINICAL_ENCOUNTER = "e958f902-64df-4819-afd4-7fb061f59308";
 		public static final String LAB_RESULTS = "7e603909-9ed5-4d0c-a688-26ecb05d8b6e";
 		public static final String OBSTETRIC_HISTORY = "8e4e1abf-7c08-4ba8-b6d8-19a9f1ccb6c9";
@@ -49,23 +49,23 @@ public class CommonMetadata extends AbstractMetadataBundle {
 		public static final String TRIAGE = "37f6bd8d-586a-4169-95fa-5781f987fe62";
 	}
 
-	public static final class GlobalProperty {
+	public static final class _GlobalProperty {
 		public static final String DEFAULT_LOCATION = "8f80f3f7-bdc0-46f5-8f50-54dea2fcbb01";
 	}
 
-	public static final class Location {
+	public static final class _Location {
 		public static final String UNKNOWN = "8d6c993e-c2cc-11de-8d13-0010c6dffd0f";
 	}
 
-	public static final class LocationAttributeType {
+	public static final class _LocationAttributeType {
 		public static final String MASTER_FACILITY_CODE = "8a845a89-6aa5-4111-81d3-0af31c45c002";
 	}
 
-	public static final class OrderType {
+	public static final class _OrderType {
 		public static final String DRUG = "131168f4-15f5-102d-96e4-000c29c2a5d7";
 	}
 
-	public static final class PatientIdentifierType {
+	public static final class _PatientIdentifierType {
 		public static final String NATIONAL_ID = "49af6cdc-7968-4abb-bf46-de10d7f4859f";
 		public static final String OLD_ID = "8d79403a-c2cc-11de-8d13-0010c6dffd0f";
 		public static final String OPENMRS_ID = "dfacd928-0370-4315-99d7-6ec1c9f7ae76";
@@ -81,15 +81,15 @@ public class CommonMetadata extends AbstractMetadataBundle {
 		public static final String TELEPHONE_CONTACT = "b2c38640-2603-4629-aebd-3b54f33f1e3a";
 	}
 
-	public static final class Provider {
+	public static final class _Provider {
 		public static final String UNKNOWN = "ae01b8ff-a4cc-4012-bcf7-72359e852e14";
 	}
 
-	public static final class VisitAttributeType {
+	public static final class _VisitAttributeType {
 		public static final String SOURCE_FORM = "8bfab185-6947-4958-b7ab-dfafae1a3e3d";
 	}
 
-	public static final class VisitType {
+	public static final class _VisitType {
 		public static final String OUTPATIENT = "3371a4d4-f66f-4454-a86d-92c7b3da990c";
 	}
 
@@ -98,37 +98,37 @@ public class CommonMetadata extends AbstractMetadataBundle {
 	 */
 	@Override
 	public void install() {
-		install(encounterType("Consultation", "Collection of clinical data during the main consultation", EncounterType.CONSULTATION));
-		install(encounterType("Lab Results", "Collection of laboratory results", EncounterType.LAB_RESULTS));
-		install(encounterType("Registration", "Initial data collection for a patient, not specific to any program", EncounterType.REGISTRATION));
-		install(encounterType("Triage", "Collection of limited data prior to a more thorough examination", EncounterType.TRIAGE));
+		install(encounterType("Consultation", "Collection of clinical data during the main consultation", _EncounterType.CONSULTATION));
+		install(encounterType("Lab Results", "Collection of laboratory results", _EncounterType.LAB_RESULTS));
+		install(encounterType("Registration", "Initial data collection for a patient, not specific to any program", _EncounterType.REGISTRATION));
+		install(encounterType("Triage", "Collection of limited data prior to a more thorough examination", _EncounterType.TRIAGE));
 
-		install(form("Clinical Encounter", null, EncounterType.CONSULTATION, "1", Form.CLINICAL_ENCOUNTER));
-		install(form("Lab Results", null, EncounterType.LAB_RESULTS, "1", Form.LAB_RESULTS));
-		install(form("Obstetric History", null, EncounterType.REGISTRATION, "1", Form.OBSTETRIC_HISTORY));
-		install(form("Other Medications", "Recording of non-regimen medications", EncounterType.CONSULTATION, "1", Form.OTHER_MEDICATIONS));
-		install(form("Progress Note", "For additional information - mostly complaints and examination findings.", EncounterType.CONSULTATION, "1", Form.PROGRESS_NOTE));
-		install(form("Surgical and Medical History", null, EncounterType.REGISTRATION, "1", Form.SURGICAL_AND_MEDICAL_HISTORY));
-		install(form("Triage", null, EncounterType.TRIAGE, "1", Form.TRIAGE));
+		install(form("Clinical Encounter", null, _EncounterType.CONSULTATION, "1", _Form.CLINICAL_ENCOUNTER));
+		install(form("Lab Results", null, _EncounterType.LAB_RESULTS, "1", _Form.LAB_RESULTS));
+		install(form("Obstetric History", null, _EncounterType.REGISTRATION, "1", _Form.OBSTETRIC_HISTORY));
+		install(form("Other Medications", "Recording of non-regimen medications", _EncounterType.CONSULTATION, "1", _Form.OTHER_MEDICATIONS));
+		install(form("Progress Note", "For additional information - mostly complaints and examination findings.", _EncounterType.CONSULTATION, "1", _Form.PROGRESS_NOTE));
+		install(form("Surgical and Medical History", null, _EncounterType.REGISTRATION, "1", _Form.SURGICAL_AND_MEDICAL_HISTORY));
+		install(form("Triage", null, _EncounterType.TRIAGE, "1", _Form.TRIAGE));
 
 		install(globalProperty(EmrConstants.GP_DEFAULT_LOCATION, "The facility for which this installation is configured",
-				LocationDatatype.class, null, null, GlobalProperty.DEFAULT_LOCATION));
+				LocationDatatype.class, null, null, _GlobalProperty.DEFAULT_LOCATION));
 
 		install(locationAttributeType("Master Facility Code", "Unique facility code allocated by the Ministry of Health",
-				RegexValidatedTextDatatype.class, "\\d{5}", 0, 1, LocationAttributeType.MASTER_FACILITY_CODE));
+				RegexValidatedTextDatatype.class, "\\d{5}", 0, 1, _LocationAttributeType.MASTER_FACILITY_CODE));
 
 		install(patientIdentifierType("Old Identification Number", "Identifier given out prior to OpenMRS",
 				null, null, null,
-				null, false, PatientIdentifierType.OLD_ID));
+				null, false, _PatientIdentifierType.OLD_ID));
 		install(patientIdentifierType("OpenMRS ID", "Medical Record Number generated by OpenMRS for every patient",
 				null, null, LuhnMod25IdentifierValidator.class,
-				LocationBehavior.REQUIRED, true, PatientIdentifierType.OPENMRS_ID));
+				LocationBehavior.REQUIRED, true, _PatientIdentifierType.OPENMRS_ID));
 		install(patientIdentifierType("Patient Clinic Number", "Assigned to the patient at a clinic service (not globally unique)",
 				".{1,15}", "At most 15 characters long", null,
-				LocationBehavior.REQUIRED, false, PatientIdentifierType.PATIENT_CLINIC_NUMBER));
+				LocationBehavior.REQUIRED, false, _PatientIdentifierType.PATIENT_CLINIC_NUMBER));
 		install(patientIdentifierType("National ID", "Kenyan national identity card number",
 				"\\d{5,10}", "Between 5 and 10 consecutive digits", null,
-				LocationBehavior.NOT_USED, false, PatientIdentifierType.NATIONAL_ID));
+				LocationBehavior.NOT_USED, false, _PatientIdentifierType.NATIONAL_ID));
 
 		install(personAttributeType("Telephone contact", "Telephone number the patient can be contacted at",
 				String.class, null, false, 1.0, _PersonAttributeType.TELEPHONE_CONTACT));
@@ -144,9 +144,9 @@ public class CommonMetadata extends AbstractMetadataBundle {
 				String.class, null, false, 3.3, _PersonAttributeType.NEXT_OF_KIN_ADDRESS));
 
 		install(visitAttributeType("Source form", "The form whose submission created the visit",
-				FormDatatype.class, null, 0, 1, VisitAttributeType.SOURCE_FORM));
+				FormDatatype.class, null, 0, 1, _VisitAttributeType.SOURCE_FORM));
 
-		install(visitType("Outpatient", "Visit where the patient is not admitted to the hospital", VisitType.OUTPATIENT));
+		install(visitType("Outpatient", "Visit where the patient is not admitted to the hospital", _VisitType.OUTPATIENT));
 
 		uninstall(existing(PersonAttributeType.class, "73d34479-2f9e-4de3-a5e6-1f79a17459bb"), "Became patient identifier"); // National ID attribute type
 	}

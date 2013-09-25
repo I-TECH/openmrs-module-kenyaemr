@@ -40,7 +40,7 @@ public class TbPatientAtArtStartCalculation extends BaseEmrCalculation {
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
 
-		Program tbProgram = MetadataUtils.getProgram(TbMetadata.Program.TB);
+		Program tbProgram = MetadataUtils.getProgram(TbMetadata._Program.TB);
 		CalculationResultMap artStartDates = calculate(new InitialArtStartDateCalculation(), cohort, context);
 
 		CalculationResultMap ret = new CalculationResultMap();

@@ -95,7 +95,7 @@ public class EmrUtils {
 	 * @return source form
 	 */
 	public static Form getVisitSourceForm(Visit visit) {
-		VisitAttributeType sourceAttrType = MetadataUtils.getVisitAttributeType(CommonMetadata.VisitAttributeType.SOURCE_FORM);
+		VisitAttributeType sourceAttrType = MetadataUtils.getVisitAttributeType(CommonMetadata._VisitAttributeType.SOURCE_FORM);
 		List<VisitAttribute> attrs =  visit.getActiveAttributes(sourceAttrType);
 		return attrs.size() > 0 ? (Form) attrs.get(0).getValue() : null;
 	}

@@ -36,7 +36,7 @@ public class TbCohortLibrary {
 	 * @return the cohort definition
 	 */
 	public CohortDefinition enrolled() {
-		return commonCohorts.enrolled(MetadataUtils.getProgram(TbMetadata.Program.TB));
+		return commonCohorts.enrolled(MetadataUtils.getProgram(TbMetadata._Program.TB));
 	}
 
 	/**

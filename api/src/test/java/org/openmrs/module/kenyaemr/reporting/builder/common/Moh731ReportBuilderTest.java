@@ -63,7 +63,7 @@ public class Moh731ReportBuilderTest extends BaseModuleContextSensitiveTest {
 
 	@Test
 	public void test() throws Exception {
-		Program hivProgram = MetadataUtils.getProgram(HivMetadata.Program.HIV);
+		Program hivProgram = MetadataUtils.getProgram(HivMetadata._Program.HIV);
 
 		// Enroll patient #6 in the HIV program
 		TestUtils.enrollInProgram(Context.getPatientService().getPatient(6), hivProgram, TestUtils.date(2012, 1, 15), null);

@@ -53,7 +53,7 @@ public class NeverTakenCtxOrDapsoneCalculationTest extends BaseModuleContextSens
 	public void evaluate() throws Exception {
 
 		// Get HIV Program
-		Program hivProgram = MetadataUtils.getProgram(HivMetadata.Program.HIV);
+		Program hivProgram = MetadataUtils.getProgram(HivMetadata._Program.HIV);
 
 		// Enroll patients #6, #7, #8 in the HIV Program
 		PatientService ps = Context.getPatientService();

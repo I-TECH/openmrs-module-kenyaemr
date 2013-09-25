@@ -124,8 +124,8 @@ public class CommonCohortLibraryTest extends BaseModuleContextSensitiveTest {
 	 */
 	@Test
 	public void hasEncounter() throws Exception {
-		EncounterType registrationType = MetadataUtils.getEncounterType(CommonMetadata.EncounterType.REGISTRATION);
-		EncounterType triageType = MetadataUtils.getEncounterType(CommonMetadata.EncounterType.TRIAGE);
+		EncounterType registrationType = MetadataUtils.getEncounterType(CommonMetadata._EncounterType.REGISTRATION);
+		EncounterType triageType = MetadataUtils.getEncounterType(CommonMetadata._EncounterType.TRIAGE);
 
 		// Give #6 registration encounter on June 1st
 		TestUtils.saveEncounter(Context.getPatientService().getPatient(6), registrationType, TestUtils.date(2012, 6, 1));
@@ -148,7 +148,7 @@ public class CommonCohortLibraryTest extends BaseModuleContextSensitiveTest {
 	 */
 	@Test
 	public void enrolled() throws Exception {
-		Program hivProgram = MetadataUtils.getProgram(HivMetadata.Program.HIV);
+		Program hivProgram = MetadataUtils.getProgram(HivMetadata._Program.HIV);
 
 		// Enroll patient 2 on May 31st
 		TestUtils.enrollInProgram(Context.getPatientService().getPatient(2), hivProgram, TestUtils.date(2012, 5, 31));
@@ -210,7 +210,7 @@ public class CommonCohortLibraryTest extends BaseModuleContextSensitiveTest {
 	 */
 	@Test
 	public void enrolledExcludingTransfers() throws Exception {
-		Program hivProgram = MetadataUtils.getProgram(HivMetadata.Program.HIV);
+		Program hivProgram = MetadataUtils.getProgram(HivMetadata._Program.HIV);
 		Concept transferInDate = Dictionary.getConcept(Dictionary.TRANSFER_IN_DATE);
 
 		// Enroll #6 on June 1st
