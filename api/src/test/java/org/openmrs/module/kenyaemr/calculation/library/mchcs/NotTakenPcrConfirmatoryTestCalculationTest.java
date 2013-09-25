@@ -37,7 +37,6 @@ import java.util.List;
  */
 public class NotTakenPcrConfirmatoryTestCalculationTest extends BaseModuleContextSensitiveTest{
 
-}
 	@Before
 	public void beforeEachTest() throws Exception {
 		executeDataSet("dataset/test-concepts.xml");
@@ -49,6 +48,7 @@ public class NotTakenPcrConfirmatoryTestCalculationTest extends BaseModuleContex
 	 */
 	@Test
 	public void evaluate_shouldCalculateNotTakenPcrConfirmatoryTest() throws Exception {
+
 	}
 
 

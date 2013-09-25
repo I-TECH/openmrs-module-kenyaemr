@@ -55,9 +55,7 @@ public class NeedsAntibodyTestCalculationTest extends BaseModuleContextSensitive
 		Program mchcsProgram = MetadataUtils.getProgram(Metadata.Program.MCHCS);
 		//get the patient age from the birthdate
 		Patient patient = TestUtils.getPatient(6);
-		patient.setBirthdate(TestUtils.date(2012, 10, 1));// more than 9 months old
-		//getting the age of the infant
-		Integer age = patient.getAge();
+		patient.setBirthdate(TestUtils.date(2011, 10, 1));// more than 9 months old
 
 
 		// Enroll patients #6 and  #7  in the mchcs Program
@@ -69,7 +67,7 @@ public class NeedsAntibodyTestCalculationTest extends BaseModuleContextSensitive
 		//get the HIV status of the infant and the if wheather antibody test was done or NOT
 		Concept infantHivStatus = Dictionary.getConcept(Dictionary.CHILDS_CURRENT_HIV_STATUS);
 		Concept antibodytest1 = Dictionary.getConcept(Dictionary.HIV_RAPID_TEST_1_QUALITATIVE);
-		Concept antibodytest2 = Dictionary.getConcept(Dictionary.HIV_RAPID_TEST_1_QUALITATIVE);
+		Concept antibodytest2 = Dictionary.getConcept(Dictionary.HIV_RAPID_TEST_2_QUALITATIVE);
 
 		//make #6 HEI and has no antibody test
 		TestUtils.saveObs(ps.getPatient(6),infantHivStatus,Dictionary.getConcept(Dictionary.EXPOSURE_TO_HIV),new Date());
@@ -77,8 +75,8 @@ public class NeedsAntibodyTestCalculationTest extends BaseModuleContextSensitive
 		TestUtils.saveObs(ps.getPatient(7),infantHivStatus,Dictionary.getConcept(Dictionary.EXPOSURE_TO_HIV),new Date());
 		TestUtils.saveObs(ps.getPatient(7),antibodytest1,Dictionary.getConcept(Dictionary.NEGATIVE),new Date());
 		//make #8 HEI and has antibody test2
-		TestUtils.saveObs(ps.getPatient(7),infantHivStatus,Dictionary.getConcept(Dictionary.EXPOSURE_TO_HIV),new Date());
-		TestUtils.saveObs(ps.getPatient(7),antibodytest2,Dictionary.getConcept(Dictionary.POSITIVE),new Date());
+		TestUtils.saveObs(ps.getPatient(8),infantHivStatus,Dictionary.getConcept(Dictionary.EXPOSURE_TO_HIV),new Date());
+		TestUtils.saveObs(ps.getPatient(8),antibodytest2,Dictionary.getConcept(Dictionary.POSITIVE),new Date());
 
 		Context.flushSession();
 
