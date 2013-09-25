@@ -26,7 +26,7 @@ import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.Metadata;
+import org.openmrs.module.kenyaemr.metadata.MchMetadata;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 import java.util.Arrays;
@@ -54,7 +54,7 @@ public class NeedsPcrTestCalculationTest extends BaseModuleContextSensitiveTest 
 	public void evaluate_shouldCalculatePcrTest() throws Exception {
 
 		//get mchcs program
-		Program mchcsProgram = MetadataUtils.getProgram(Metadata.Program.MCHCS);
+		Program mchcsProgram = MetadataUtils.getProgram(MchMetadata.Program.MCHCS);
 		// Enroll patients #6 and  #7  in the mchcs Program
 		PatientService ps = Context.getPatientService();
 		TestUtils.enrollInProgram(ps.getPatient(6), mchcsProgram, new Date());

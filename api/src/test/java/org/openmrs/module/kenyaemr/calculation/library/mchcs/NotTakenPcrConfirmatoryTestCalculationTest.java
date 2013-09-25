@@ -24,7 +24,7 @@ import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.Metadata;
+import org.openmrs.module.kenyaemr.metadata.MchMetadata;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 import java.util.Arrays;
@@ -48,7 +48,7 @@ public class NotTakenPcrConfirmatoryTestCalculationTest extends BaseModuleContex
 	@Test
 	public void evaluate_shouldCalculateNotTakenPcrConfirmatoryTest() throws Exception {
 		//get mchcs program
-		Program mchcsProgram = MetadataUtils.getProgram(Metadata.Program.MCHCS);
+		Program mchcsProgram = MetadataUtils.getProgram(MchMetadata.Program.MCHCS);
 		// Enroll patients #6 and  #7  in the mchcs Program
 		PatientService ps = Context.getPatientService();
 		TestUtils.enrollInProgram(ps.getPatient(6), mchcsProgram, new Date());
@@ -56,8 +56,8 @@ public class NotTakenPcrConfirmatoryTestCalculationTest extends BaseModuleContex
 		TestUtils.enrollInProgram(ps.getPatient(8), mchcsProgram, new Date());
 
 		//getting an encounter required before confirmation is done
-		EncounterType heiOutcomesEncounterType = MetadataUtils.getEncounterType(Metadata.EncounterType.MCHCS_HEI_COMPLETION);
-		Form heiCompletionForm = MetadataUtils.getForm(Metadata.Form.MCHCS_HEI_COMPLETION);
+		EncounterType heiOutcomesEncounterType = MetadataUtils.getEncounterType(MchMetadata.EncounterType.MCHCS_HEI_COMPLETION);
+		Form heiCompletionForm = MetadataUtils.getForm(MchMetadata.Form.MCHCS_HEI_COMPLETION);
 
 		//get the HIV status of the infant and the if wheather antibody test was done or NOT
 		Concept infantHivStatus = Dictionary.getConcept(Dictionary.CHILDS_CURRENT_HIV_STATUS);

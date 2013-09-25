@@ -23,9 +23,9 @@ import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
+import org.openmrs.module.kenyaemr.metadata.MchMetadata;
 
 import java.util.Collection;
 import java.util.Map;
@@ -41,7 +41,7 @@ public class InfantFeedingOptionsCalculation extends BaseEmrCalculation {
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
 
-		Program mchcsProgram = MetadataUtils.getProgram(Metadata.Program.MCHCS);
+		Program mchcsProgram = MetadataUtils.getProgram(MchMetadata.Program.MCHCS);
 
 		Set<Integer> alive = alivePatients(cohort, context);
 

@@ -25,7 +25,7 @@ import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.Metadata;
+import org.openmrs.module.kenyaemr.metadata.MchMetadata;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 import java.util.Arrays;
@@ -51,7 +51,7 @@ public class InfantNeverTakenCTXCalculationTest extends BaseModuleContextSensiti
 	@Test
 	public void evaluate() throws Exception {
 		//get mchcs program
-		Program mchcsProgram = MetadataUtils.getProgram(Metadata.Program.MCHCS);
+		Program mchcsProgram = MetadataUtils.getProgram(MchMetadata.Program.MCHCS);
 
 		// Enroll patients #6, #7 and 8  in the mchcs Program
 		PatientService ps = Context.getPatientService();

@@ -26,7 +26,7 @@ import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.Metadata;
+import org.openmrs.module.kenyaemr.metadata.MchMetadata;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 import java.util.Arrays;
@@ -51,7 +51,7 @@ public class NeedsAntibodyTestCalculationTest extends BaseModuleContextSensitive
 	@Test
 	public void evaluate_shouldCalculateNeedsAntibodyTest() throws Exception {
 		//get mchcs program
-		Program mchcsProgram = MetadataUtils.getProgram(Metadata.Program.MCHCS);
+		Program mchcsProgram = MetadataUtils.getProgram(MchMetadata.Program.MCHCS);
 		//get the patient age from the birthdate
 		Patient patient = TestUtils.getPatient(6);
 		patient.setBirthdate(TestUtils.date(2011, 10, 1));// more than 9 months old
