@@ -12,7 +12,7 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.reporting.builder.hiv;
+package org.openmrs.module.kenyaemr.reporting.builder.mchcs;
 
 import java.lang.String;
 import java.util.Calendar;
