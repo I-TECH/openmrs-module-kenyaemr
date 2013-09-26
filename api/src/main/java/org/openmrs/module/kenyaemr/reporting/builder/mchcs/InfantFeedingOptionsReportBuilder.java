@@ -12,7 +12,7 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.reporting.builder.hiv;
+package org.openmrs.module.kenyaemr.reporting.builder.mchcs;
 
 import java.lang.String;
 import java.util.Calendar;
@@ -37,7 +37,7 @@ public class InfantFeedingOptionsReportBuilder extends CalculationReportBuilder 
 	@Override
 	protected void addColumns(CalculationReportDescriptor report, PatientDataSetDefinition dsd) {
 
-		Concept concept = Dictionary.getConcept(Dictionary.FEEDING_OPTIONS);
+		Concept concept = Dictionary.getConcept(Dictionary.INFANT_FEEDING_METHOD);
 		Calendar calendar = Calendar.getInstance();
 		Date onOrBefore = calendar.getTime();
 
