@@ -44,7 +44,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Date;
 
 /**
- * Tests for {@link org.openmrs.module.kenyaemr.reporting.indicator.evaluator.HivCareVisitsIndicatorEvaluator}
+ * Tests for {@link HivCareVisitsIndicatorEvaluator}
  */
 public class HivCareVisitsIndicatorEvaluatorTest extends BaseModuleContextSensitiveTest {
 
@@ -54,6 +54,9 @@ public class HivCareVisitsIndicatorEvaluatorTest extends BaseModuleContextSensit
 
 	@Autowired
 	private CommonMetadata commonMetadata;
+
+	@Autowired
+	private HivMetadata hivMetadata;
 
 	@Autowired
 	private KenyaEmrService kenyaEmrService;
@@ -72,8 +75,10 @@ public class HivCareVisitsIndicatorEvaluatorTest extends BaseModuleContextSensit
 
 	@Before
 	public void setup() throws Exception {
-		executeDataSet("test-data.xml");
-		executeDataSet("test-drugdata.xml");
+		executeDataSet("dataset/test-concepts.xml");
+
+		commonMetadata.install();
+		hivMetadata.install();
 
 		// Void all existing visits in test data
 		for (Visit visit : visitService.getAllVisits()) {
@@ -81,8 +86,6 @@ public class HivCareVisitsIndicatorEvaluatorTest extends BaseModuleContextSensit
 			visit.setVoidReason("Because");
 			visitService.saveVisit(visit);
 		}
-
-		commonMetadata.install();
 
 		Form hivAddendum = MetadataUtils.getForm(HivMetadata._Form.CLINICAL_ENCOUNTER_HIV_ADDENDUM);
 		Form moh257 = MetadataUtils.getForm(HivMetadata._Form.MOH_257_VISIT_SUMMARY);

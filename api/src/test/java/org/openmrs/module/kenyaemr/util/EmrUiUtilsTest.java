@@ -27,7 +27,6 @@ import org.openmrs.module.kenyaemr.regimen.RegimenChangeHistory;
 import org.openmrs.module.kenyaemr.regimen.RegimenManager;
 import org.openmrs.module.kenyaemr.regimen.RegimenOrder;
 import org.openmrs.module.kenyacore.test.TestUtils;
-import org.openmrs.module.kenyaemr.util.EmrUiUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
@@ -45,8 +44,10 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 
+import static org.hamcrest.Matchers.*;
+
 /**
- * Tests for {@link org.openmrs.module.kenyaemr.util.EmrUiUtils}
+ * Tests for {@link EmrUiUtils}
  */
 public class EmrUiUtilsTest extends BaseModuleContextSensitiveTest {
 
@@ -62,26 +63,26 @@ public class EmrUiUtilsTest extends BaseModuleContextSensitiveTest {
 
 	@Before
 	public void setup() throws Exception {
-		executeDataSet("test-data.xml");
-		executeDataSet("test-drugdata.xml");
+		executeDataSet("dataset/test-concepts.xml");
+		executeDataSet("dataset/test-drugs.xml");
 
 		InputStream stream = getClass().getClassLoader().getResourceAsStream("test-regimens.xml");
 		regimenManager.loadDefinitionsFromXML(stream);
 
 		this.ui = new FragmentActionUiUtils(null, null, null);
 
-		DrugOrder aspirin = new DrugOrder();
-		aspirin.setConcept(Context.getConceptService().getConcept(71617));
-		aspirin.setDose(100.0d);
-		aspirin.setUnits("mg");
-		aspirin.setFrequency("OD");
+		DrugOrder dapsone = new DrugOrder();
+		dapsone.setConcept(Dictionary.getConcept(Dictionary.DAPSONE));
+		dapsone.setDose(100.0d);
+		dapsone.setUnits("mg");
+		dapsone.setFrequency("OD");
 		DrugOrder stavudine = new DrugOrder();
 		stavudine.setConcept(Context.getConceptService().getConcept(84309));
 		stavudine.setDose(30.0d);
 		stavudine.setUnits("ml");
 		stavudine.setFrequency("BD");
 
-		regimen = new RegimenOrder(new LinkedHashSet<DrugOrder>(Arrays.asList(aspirin, stavudine)));
+		regimen = new RegimenOrder(new LinkedHashSet<DrugOrder>(Arrays.asList(dapsone, stavudine)));
 	}
 
 	/**
@@ -93,51 +94,51 @@ public class EmrUiUtilsTest extends BaseModuleContextSensitiveTest {
 		Visit visit = new Visit();
 		visit.setStartDatetime(OpenmrsUtil.firstSecondOfDay(TestUtils.date(2011, 1, 1)));
 		visit.setStopDatetime(OpenmrsUtil.getLastMomentOfDay(TestUtils.date(2011, 1, 1)));
-		Assert.assertEquals("01-Jan-2011", kenyaUi.formatVisitDates(visit));
+		Assert.assertThat(kenyaUi.formatVisitDates(visit), is("01-Jan-2011"));
 
 		// Check a regular visit on single day
 		visit.setStartDatetime(TestUtils.date(2011, 1, 1, 10, 0, 0));
 		visit.setStopDatetime(TestUtils.date(2011, 1, 1, 11, 0, 0));
-		Assert.assertEquals("01-Jan-2011 10:00 \u2192 11:00", kenyaUi.formatVisitDates(visit));
+		Assert.assertThat(kenyaUi.formatVisitDates(visit), is("01-Jan-2011 10:00 \u2192 11:00"));
 
 		// Check a regular visit spanning multiple days
 		visit.setStartDatetime(TestUtils.date(2011, 1, 1, 10, 0, 0));
 		visit.setStopDatetime(TestUtils.date(2011, 1, 2, 11, 0, 0));
-		Assert.assertEquals("01-Jan-2011 10:00 \u2192 02-Jan-2011 11:00", kenyaUi.formatVisitDates(visit));
+		Assert.assertThat(kenyaUi.formatVisitDates(visit), is("01-Jan-2011 10:00 \u2192 02-Jan-2011 11:00"));
 
 		// Check a visit with no end
 		visit.setStartDatetime(TestUtils.date(2011, 1, 1, 10, 0, 0));
 		visit.setStopDatetime(null);
-		Assert.assertEquals("01-Jan-2011 10:00", kenyaUi.formatVisitDates(visit));
+		Assert.assertThat(kenyaUi.formatVisitDates(visit), is("01-Jan-2011 10:00"));
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.util.EmrUiUtils#formatDrug(org.openmrs.module.kenyaemr.regimen.DrugReference, org.openmrs.ui.framework.UiUtils)
+	 * @see EmrUiUtils#formatDrug(org.openmrs.module.kenyaemr.regimen.DrugReference, org.openmrs.ui.framework.UiUtils)
 	 * @verifies format drug reference as concept or drug
 	 */
 	@Test
 	public void formatDrug_shouldFormatDrugReferenceAsConceptOrDrug() throws Exception {
 		// Test concept only reference
 		DrugReference drugRef1 = DrugReference.fromConceptUuid("84309AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");	// STAVUDINE
-		Assert.assertNotNull(kenyaUi.formatDrug(drugRef1, ui));
+		Assert.assertThat(kenyaUi.formatDrug(drugRef1, ui), is(notNullValue()));
 
 		// Test concept only reference
 		DrugReference drugRef2 = DrugReference.fromDrugUuid("a74fefc6-931d-47b9-b282-5d6c8c8d8060"); // Rifampicin (100mg)
-		Assert.assertNotNull(kenyaUi.formatDrug(drugRef2, ui));
+		Assert.assertThat(kenyaUi.formatDrug(drugRef2, ui), is(notNullValue()));
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.util.EmrUiUtils#formatRegimenShort(org.openmrs.module.kenyaemr.regimen.RegimenOrder, org.openmrs.ui.framework.UiUtils)
+	 * @see EmrUiUtils#formatRegimenShort(org.openmrs.module.kenyaemr.regimen.RegimenOrder, org.openmrs.ui.framework.UiUtils)
 	 * @verifies format regimen
 	 */
 	@Test
 	public void formatRegimenShort_shouldFormatRegimen() throws Exception {
 		// Check empty regimen
 		RegimenOrder empty = new RegimenOrder(new HashSet<DrugOrder>());
-		Assert.assertEquals("Empty", kenyaUi.formatRegimenShort(empty, ui));
+		Assert.assertThat(kenyaUi.formatRegimenShort(empty, ui), is("Empty"));
 
 		// Check regular regimen
-		Assert.assertEquals("ASPIRIN, STAVUDINE", kenyaUi.formatRegimenShort(regimen, ui));
+		Assert.assertThat(kenyaUi.formatRegimenShort(regimen, ui), is("DAPSONE, STAVUDINE"));
 	}
 
 	/**
@@ -147,30 +148,30 @@ public class EmrUiUtilsTest extends BaseModuleContextSensitiveTest {
 	public void formatRegimenLong() {
 		// Check empty regimen
 		RegimenOrder empty = new RegimenOrder(new HashSet<DrugOrder>());
-		Assert.assertEquals("Empty", kenyaUi.formatRegimenLong(empty, ui));
+		Assert.assertThat(kenyaUi.formatRegimenLong(empty, ui), is("Empty"));
 
 		// Check regular regimen
-		Assert.assertEquals("ASPIRIN 100mg OD + STAVUDINE 30ml BD", kenyaUi.formatRegimenLong(regimen, ui));
+		Assert.assertThat(kenyaUi.formatRegimenLong(regimen, ui), is("DAPSONE 100mg OD + D4T 30ml BD"));
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.util.EmrUiUtils#simpleRegimen(org.openmrs.module.kenyaemr.regimen.RegimenOrder, org.openmrs.ui.framework.UiUtils)
+	 * @see EmrUiUtils#simpleRegimen(org.openmrs.module.kenyaemr.regimen.RegimenOrder, org.openmrs.ui.framework.UiUtils)
 	 */
 	@Test
 	public void simpleRegimen_shouldConvertToSimpleObject() {
 		// Check null regimen
 		SimpleObject obj1 = kenyaUi.simpleRegimen(null, ui);
-		Assert.assertEquals("None", obj1.get("shortDisplay"));
-		Assert.assertEquals("None", obj1.get("longDisplay"));
+		Assert.assertThat(obj1.get("shortDisplay"), is((Object) "None"));
+		Assert.assertThat(obj1.get("longDisplay"), is((Object) "None"));
 
 		// Check normal regimen
 		SimpleObject obj3 = kenyaUi.simpleRegimen(regimen, ui);
-		Assert.assertNotNull(obj3.get("shortDisplay"));
-		Assert.assertNotNull(obj3.get("longDisplay"));
+		Assert.assertThat(obj3.get("shortDisplay"), is(notNullValue()));
+		Assert.assertThat(obj3.get("longDisplay"), is(notNullValue()));
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.util.EmrUiUtils#simpleRegimenHistory(org.openmrs.module.kenyaemr.regimen.RegimenChangeHistory, org.openmrs.ui.framework.UiUtils)
+	 * @see EmrUiUtils#simpleRegimenHistory(org.openmrs.module.kenyaemr.regimen.RegimenChangeHistory, org.openmrs.ui.framework.UiUtils)
 	 */
 	@Test
 	public void simpleRegimenHistory_shouldConvertToSimpleObjects() throws IOException, SAXException, ParserConfigurationException {
@@ -180,17 +181,17 @@ public class EmrUiUtilsTest extends BaseModuleContextSensitiveTest {
 		RegimenChangeHistory emptyHistory = RegimenChangeHistory.forPatient(Context.getPatientService().getPatient(6), medset);
 		List<SimpleObject> objs = kenyaUi.simpleRegimenHistory(emptyHistory, ui);
 
-		Assert.assertEquals(0, objs.size());
+		Assert.assertThat(objs, hasSize(0));
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.util.EmrUiUtils#simpleRegimenDefinitions(java.util.Collection, org.openmrs.ui.framework.UiUtils)
+	 * @see EmrUiUtils#simpleRegimenDefinitions(java.util.Collection, org.openmrs.ui.framework.UiUtils)
 	 */
 	@Test
 	public void simpleRegimenDefinitions_shouldConvertToSimpleObjects() throws IOException, SAXException, ParserConfigurationException {
 		List<SimpleObject> objs = kenyaUi.simpleRegimenDefinitions(regimenManager.getRegimenGroups("category1").get(0).getRegimens(), ui);
 
-		Assert.assertEquals("regimen1", objs.get(0).get("name"));
-		Assert.assertEquals("group1", ((Map<String, Object>)objs.get(0).get("group")).get("code"));
+		Assert.assertThat(objs.get(0), hasEntry("name", (Object) "regimen1"));
+		Assert.assertThat(((Map<String, Object>)objs.get(0).get("group")), hasEntry("code", (Object) "group1"));
 	}
 }

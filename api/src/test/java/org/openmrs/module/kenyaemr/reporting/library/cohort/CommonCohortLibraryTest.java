@@ -33,12 +33,19 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
 
 /**
- * Tests for {@link org.openmrs.module.kenyaemr.reporting.library.cohort.CommonCohortLibrary}
+ * Tests for {@link CommonCohortLibrary}
  */
 public class CommonCohortLibraryTest extends BaseModuleContextSensitiveTest {
+
+	@Autowired
+	private CommonMetadata commonMetadata;
+
+	@Autowired
+	private HivMetadata hivMetadata;
 
 	@Autowired
 	private CommonCohortLibrary commonCohortLibrary;
@@ -50,7 +57,10 @@ public class CommonCohortLibraryTest extends BaseModuleContextSensitiveTest {
 	 */
 	@Before
 	public void setup() throws Exception {
-		executeDataSet("test-data.xml");
+		executeDataSet("dataset/test-concepts.xml");
+
+		commonMetadata.install();
+		hivMetadata.install();
 
 		List<Integer> cohort = Arrays.asList(2, 6, 7, 8, 999);
 		context = ReportingTestUtils.reportingContext(cohort, TestUtils.date(2012, 6, 1), TestUtils.date(2012, 6, 30));
