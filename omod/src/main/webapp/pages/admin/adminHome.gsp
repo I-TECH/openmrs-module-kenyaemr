@@ -76,7 +76,6 @@
 <% if (section == "content") { %>
 
 	${ ui.includeFragment("kenyaui", "widget/tabMenu", [ items: [
-			[ label: "Metadata", tabid: "metadata" ],
 			[ label: "Programs", tabid: "programs" ],
 			[ label: "Forms", tabid: "forms" ],
 			[ label: "Identifiers", tabid: "identifiers" ],
@@ -84,7 +83,6 @@
 			[ label: "Reports", tabid: "reports" ]
 	] ]) }
 
-	<div class="ke-tab" data-tabid="metadata">${ ui.includeFragment("kenyaemr", "system/packagesContent") }</div>
 	<div class="ke-tab" data-tabid="programs">${ ui.includeFragment("kenyaemr", "system/programsContent") }</div>
 	<div class="ke-tab" data-tabid="forms">${ ui.includeFragment("kenyaemr", "system/formsContent") }</div>
 	<div class="ke-tab" data-tabid="identifiers">${ ui.includeFragment("kenyaemr", "system/identifiersContent") }</div>
