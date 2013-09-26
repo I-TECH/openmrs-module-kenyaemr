@@ -84,7 +84,7 @@ public class NotTakenPcrConfirmatoryTestCalculation extends BaseEmrCalculation i
 			Obs hivStatusObs = EmrCalculationUtils.obsResultForPatient(lastChildHivStatus, ptId);
 			Obs pcrObs = EmrCalculationUtils.obsResultForPatient(lastPcrTest, ptId);
 			Obs pcrTestConfirmObs =  EmrCalculationUtils.obsResultForPatient(lastPcrStatus, ptId);
-			if ( hivStatusObs != null && hivStatusObs.getValueCoded().equals(hivExposed)) {
+			if ( inMchcsProgram.contains(ptId) && hivStatusObs != null && hivStatusObs.getValueCoded().equals(hivExposed)) {
 				if (lastMchcsHeiCompletion != null) {
 					if (pcrObs == null){
 						notTakenConfirmatoryPcrTest = true;
