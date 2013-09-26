@@ -58,7 +58,7 @@ public class InfantFeedingOptionsCalculationTest extends BaseModuleContextSensit
 
 		//infants not necessarily  in HEI
 		//get the feeding options concept
-		Concept feedingOptions = Dictionary.getConcept(Dictionary.FEEDING_OPTIONS);
+		Concept feedingOptions = Dictionary.getConcept(Dictionary.INFANT_FEEDING_METHOD);
 		//give patient #6 and #7 recent feeding options and patient #8 not having any
 		TestUtils.saveObs(ps.getPatient(6), feedingOptions, Dictionary.getConcept(Dictionary.BREASTFED_EXCLUSIVELY), new Date());
 		TestUtils.saveObs(ps.getPatient(7), feedingOptions, Dictionary.getConcept(Dictionary.REPLACEMENT_FEEDING), new Date());
