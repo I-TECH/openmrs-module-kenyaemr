@@ -19,6 +19,7 @@ import org.junit.Test;
 import org.openmrs.*;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.test.EmrTestUtils;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
@@ -36,9 +37,15 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Tests for {@link org.openmrs.module.kenyaemr.reporting.library.cohort.ArtCohortLibrary}
+ * Tests for {@link ArtCohortLibrary}
  */
 public class ArtCohortLibraryTest extends BaseModuleContextSensitiveTest {
+
+	@Autowired
+	private CommonMetadata commonMetadata;
+
+	@Autowired
+	private HivMetadata hivMetadata;
 
 	@Autowired
 	private ArtCohortLibrary artCohortLibrary;
@@ -50,8 +57,11 @@ public class ArtCohortLibraryTest extends BaseModuleContextSensitiveTest {
 	 */
 	@Before
 	public void setup() throws Exception {
-		executeDataSet("test-data.xml");
-		executeDataSet("test-drugdata.xml");
+		executeDataSet("dataset/test-concepts.xml");
+		executeDataSet("dataset/test-drugs.xml");
+
+		commonMetadata.install();
+		hivMetadata.install();
 
 		PatientService ps = Context.getPatientService();
 		Concept azt = Context.getConceptService().getConcept(86663);
@@ -92,7 +102,7 @@ public class ArtCohortLibraryTest extends BaseModuleContextSensitiveTest {
 		CohortDefinition cd = artCohortLibrary.startedArt();
 		context.addParameterValue("onOrBefore", TestUtils.date(2012, 6, 30));
 		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
-		ReportingTestUtils.assertCohortEquals(Arrays.asList(6, 7), evaluated);
+		ReportingTestUtils.assertCohortEquals(Arrays.asList(2, 6, 7), evaluated); // Patient #2 has old orders in standardTestDataset.xml
 	}
 
 	/**

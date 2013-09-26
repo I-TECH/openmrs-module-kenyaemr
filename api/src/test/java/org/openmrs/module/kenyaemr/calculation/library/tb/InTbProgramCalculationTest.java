@@ -26,25 +26,31 @@ import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.kenyaemr.metadata.TbMetadata;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
 import java.util.List;
 
 /**
- * Tests for {@link org.openmrs.module.kenyaemr.calculation.library.tb.InTbProgramCalculation}
+ * Tests for {@link InTbProgramCalculation}
  */
 public class InTbProgramCalculationTest extends BaseModuleContextSensitiveTest {
+
+	@Autowired
+	private TbMetadata tbMetadata;
 
 	/**
 	 * Setup each test
 	 */
 	@Before
 	public void setup() throws Exception {
-		executeDataSet("test-data.xml");
+		executeDataSet("dataset/test-concepts.xml");
+
+		tbMetadata.install();
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.calculation.library.tb.InTbProgramCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
+	 * @see InTbProgramCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
 	 */
 	@Test
 	public void evaluate() throws Exception {

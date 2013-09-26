@@ -19,6 +19,9 @@ import org.junit.Test;
 import org.openmrs.Concept;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.Dictionary;
+import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
+import org.openmrs.module.kenyaemr.metadata.HivMetadata;
+import org.openmrs.module.kenyaemr.metadata.TbMetadata;
 import org.openmrs.module.kenyaemr.test.ReportingTestUtils;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
@@ -32,9 +35,15 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Tests for {@link org.openmrs.module.kenyaemr.reporting.library.cohort.TbCohortLibrary}
+ * Tests for {@link TbCohortLibrary}
  */
 public class TbCohortLibraryTest extends BaseModuleContextSensitiveTest {
+
+	@Autowired
+	private CommonMetadata commonMetadata;
+
+	@Autowired
+	private TbMetadata tbMetadata;
 
 	@Autowired
 	private TbCohortLibrary tbCohortLibrary;
@@ -46,7 +55,10 @@ public class TbCohortLibraryTest extends BaseModuleContextSensitiveTest {
 	 */
 	@Before
 	public void setup() throws Exception {
-		executeDataSet("test-data.xml");
+		executeDataSet("dataset/test-concepts.xml");
+
+		commonMetadata.install();
+		tbMetadata.install();
 
 		Concept tbDiseaseStatus = Dictionary.getConcept(Dictionary.TUBERCULOSIS_DISEASE_STATUS);
 		Concept diseaseSuspected = Dictionary.getConcept(Dictionary.DISEASE_SUSPECTED);

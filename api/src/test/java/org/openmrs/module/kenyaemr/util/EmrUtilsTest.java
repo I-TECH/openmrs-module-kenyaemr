@@ -17,15 +17,25 @@ package org.openmrs.module.kenyaemr.util;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.*;
+import org.openmrs.Concept;
+import org.openmrs.Encounter;
+import org.openmrs.EncounterType;
+import org.openmrs.Form;
+import org.openmrs.Obs;
+import org.openmrs.Patient;
+import org.openmrs.PatientProgram;
+import org.openmrs.Program;
+import org.openmrs.Visit;
+import org.openmrs.VisitAttribute;
+import org.openmrs.VisitType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
-import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.metadata.TbMetadata;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -34,16 +44,25 @@ import java.util.List;
 import static org.hamcrest.Matchers.*;
 
 /**
- * Tests for {@link org.openmrs.module.kenyaemr.util.EmrUtils}
+ * Tests for {@link EmrUtils}
  */
 public class EmrUtilsTest extends BaseModuleContextSensitiveTest {
+
+	@Autowired
+	private CommonMetadata commonMetadata;
+
+	@Autowired
+	private TbMetadata tbMetadata;
 
 	/**
 	 * Setup each test
 	 */
 	@Before
 	public void setup() throws Exception {
-		executeDataSet("test-data.xml");
+		executeDataSet("dataset/test-concepts.xml");
+
+		commonMetadata.install();
+		tbMetadata.install();
 	}
 
 	@Test
@@ -129,17 +148,17 @@ public class EmrUtilsTest extends BaseModuleContextSensitiveTest {
 		// Check no attribute returns null
 		Assert.assertThat(EmrUtils.getVisitSourceForm(visit), is(nullValue()));
 
-		Form moh257 = MetadataUtils.getForm(HivMetadata._Form.MOH_257_VISIT_SUMMARY);
+		Form ceForm = MetadataUtils.getForm(CommonMetadata._Form.CLINICAL_ENCOUNTER);
 
 		VisitAttribute sourceAttr = new VisitAttribute();
 		sourceAttr.setAttributeType(MetadataUtils.getVisitAttributeType(CommonMetadata._VisitAttributeType.SOURCE_FORM));
 		sourceAttr.setOwner(visit);
-		sourceAttr.setValue(moh257);
+		sourceAttr.setValue(ceForm);
 		visit.addAttribute(sourceAttr);
 
 		Context.getVisitService().saveVisit(visit);
 
-		Assert.assertThat(EmrUtils.getVisitSourceForm(visit), is(moh257));
+		Assert.assertThat(EmrUtils.getVisitSourceForm(visit), is(ceForm));
 	}
 
 	/**
