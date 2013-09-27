@@ -42,8 +42,8 @@ public class RegimenManagerTest extends BaseModuleContextSensitiveTest {
 	 */
 	@Before
 	public void setup() throws Exception {
-		executeDataSet("test-data.xml");
-		executeDataSet("test-drugdata.xml");
+		executeDataSet("dataset/test-concepts.xml");
+		executeDataSet("dataset/test-drugs.xml");
 
 		regimenManager.refresh();
 	}

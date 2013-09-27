@@ -21,16 +21,19 @@ import org.openmrs.module.kenyaemr.regimen.Regimen;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 
 /**
- *
+ * Tests for {@link StringToRegimenConverter}
  */
 public class StringToRegimenConverterTest extends BaseModuleWebContextSensitiveTest {
 
 	private StringToRegimenConverter converter = new StringToRegimenConverter();
 
+	/**
+	 * Setup each test
+	 */
 	@Before
 	public void setup() throws Exception {
-		executeDataSet("test-data.xml");
-		executeDataSet("test-drugdata.xml");
+		executeDataSet("dataset/test-concepts.xml");
+		executeDataSet("dataset/test-drugs.xml");
 	}
 
 	/**
@@ -48,14 +51,14 @@ public class StringToRegimenConverterTest extends BaseModuleWebContextSensitiveT
 		Assert.assertEquals("OD", regimen1.getComponents().get(0).getFrequency());
 
 		// Test multiple component regimen
-		Regimen regimen2 = converter.convert("C$84309AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA|300|mg|OD|D$71617-drug|150|ml|BD");
+		Regimen regimen2 = converter.convert("C$84309AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA|300|mg|OD|D$97810e6b-cfcf-44fa-b63c-5d3e12cbe8d7|150|ml|BD");
 
 		Assert.assertEquals(2, regimen2.getComponents().size());
 		Assert.assertEquals(new Integer(84309), regimen2.getComponents().get(0).getDrugRef().getConcept().getConceptId());
 		Assert.assertEquals(new Double(300.0), regimen2.getComponents().get(0).getDose());
 		Assert.assertEquals("mg", regimen2.getComponents().get(0).getUnits());
 		Assert.assertEquals("OD", regimen2.getComponents().get(0).getFrequency());
-		Assert.assertEquals(new Integer(71617), regimen2.getComponents().get(1).getDrugRef().getDrug().getDrugId());
+		Assert.assertEquals(new Integer(200003), regimen2.getComponents().get(1).getDrugRef().getDrug().getDrugId());
 		Assert.assertEquals(new Double(150.0), regimen2.getComponents().get(1).getDose());
 		Assert.assertEquals("ml", regimen2.getComponents().get(1).getUnits());
 		Assert.assertEquals("BD", regimen2.getComponents().get(1).getFrequency());

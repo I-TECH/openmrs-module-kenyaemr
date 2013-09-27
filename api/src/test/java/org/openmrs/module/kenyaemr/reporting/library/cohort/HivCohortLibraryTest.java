@@ -37,9 +37,9 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Tests for {@link ArtCohortLibrary}
+ * Tests for {@link HivCohortLibrary}
  */
-public class ArtCohortLibraryTest extends BaseModuleContextSensitiveTest {
+public class HivCohortLibraryTest extends BaseModuleContextSensitiveTest {
 
 	@Autowired
 	private CommonMetadata commonMetadata;
@@ -48,7 +48,7 @@ public class ArtCohortLibraryTest extends BaseModuleContextSensitiveTest {
 	private HivMetadata hivMetadata;
 
 	@Autowired
-	private ArtCohortLibrary artCohortLibrary;
+	private HivCohortLibrary hivCohortLibrary;
 
 	private EvaluationContext context;
 
@@ -82,36 +82,36 @@ public class ArtCohortLibraryTest extends BaseModuleContextSensitiveTest {
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.reporting.library.cohort.ArtCohortLibrary#startedArt()
+	 * @see org.openmrs.module.kenyaemr.reporting.library.cohort.HivCohortLibrary#startedArt()
 	 */
 	@Test
 	public void startedArt_shouldReturnPatientsWhoStartedAfterDate() throws Exception {
 		// Check with just start date
-		CohortDefinition cd = artCohortLibrary.startedArt();
+		CohortDefinition cd = hivCohortLibrary.startedArt();
 		context.addParameterValue("onOrAfter", TestUtils.date(2012, 6, 1));
 		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
 		ReportingTestUtils.assertCohortEquals(Arrays.asList(6), evaluated);
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.reporting.library.cohort.ArtCohortLibrary#startedArt()
+	 * @see org.openmrs.module.kenyaemr.reporting.library.cohort.HivCohortLibrary#startedArt()
 	 */
 	@Test
 	public void startedArt_shouldReturnPatientsWhoStartedBeforeDate() throws Exception {
 		// Check with just end date
-		CohortDefinition cd = artCohortLibrary.startedArt();
+		CohortDefinition cd = hivCohortLibrary.startedArt();
 		context.addParameterValue("onOrBefore", TestUtils.date(2012, 6, 30));
 		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
 		ReportingTestUtils.assertCohortEquals(Arrays.asList(2, 6, 7), evaluated); // Patient #2 has old orders in standardTestDataset.xml
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.reporting.library.cohort.ArtCohortLibrary#startedArt()
+	 * @see org.openmrs.module.kenyaemr.reporting.library.cohort.HivCohortLibrary#startedArt()
 	 */
 	@Test
 	public void startedArt_shouldReturnPatientsWhoStartedBetweenDates() throws Exception {
 		// Check with both start and end date
-		CohortDefinition cd = artCohortLibrary.startedArt();
+		CohortDefinition cd = hivCohortLibrary.startedArt();
 		context.addParameterValue("onOrAfter", TestUtils.date(2012, 6, 1));
 		context.addParameterValue("onOrBefore", TestUtils.date(2012, 6, 30));
 		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
@@ -119,7 +119,7 @@ public class ArtCohortLibraryTest extends BaseModuleContextSensitiveTest {
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.reporting.library.cohort.ArtCohortLibrary#enrolledExcludingTransfers()
+	 * @see org.openmrs.module.kenyaemr.reporting.library.cohort.HivCohortLibrary#enrolledExcludingTransfers()
 	 */
 	@Test
 	public void enrolledExcludingTransfers() throws Exception {
@@ -136,7 +136,7 @@ public class ArtCohortLibraryTest extends BaseModuleContextSensitiveTest {
 		// Enroll #8 on July 1st
 		TestUtils.enrollInProgram(Context.getPatientService().getPatient(8), hivProgram, TestUtils.date(2012, 7, 1));
 
-		CohortDefinition cd = artCohortLibrary.enrolledExcludingTransfers();
+		CohortDefinition cd = hivCohortLibrary.enrolledExcludingTransfers();
 		context.addParameterValue("onOrAfter", TestUtils.date(2012, 6, 1));
 		context.addParameterValue("onOrBefore", TestUtils.date(2012, 6, 30));
 		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
@@ -144,7 +144,7 @@ public class ArtCohortLibraryTest extends BaseModuleContextSensitiveTest {
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.reporting.library.cohort.ArtCohortLibrary#referredFrom(org.openmrs.Concept...)
+	 * @see org.openmrs.module.kenyaemr.reporting.library.cohort.HivCohortLibrary#referredFrom(org.openmrs.Concept...)
 	 */
 	@Test
 	public void referredFrom_shouldReturnPatientsWithSpecifiedEntryPoint() throws Exception {
@@ -173,7 +173,7 @@ public class ArtCohortLibraryTest extends BaseModuleContextSensitiveTest {
 
 		Context.flushSession();
 
-		CohortDefinition cd = artCohortLibrary.referredFrom(pmtct);
+		CohortDefinition cd = hivCohortLibrary.referredFrom(pmtct);
 		context.addParameterValue("onOrAfter", TestUtils.date(2012, 6, 1));
 		context.addParameterValue("onOrBefore", TestUtils.date(2012, 6, 30));
 		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);

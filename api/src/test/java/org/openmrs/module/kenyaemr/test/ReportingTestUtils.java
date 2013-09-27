@@ -61,25 +61,22 @@ public class ReportingTestUtils {
 
 	/**
 	 * Checks a patient alert list report
-	 * @param expectedPatientIdentifiers the set of HIV identifiers of expected patients
-	 * @param identifierColumn the name of column containing patient identifiers
+	 * @param expectedIds the set of expected patient ids
 	 * @param data the report data
 	 */
-	public static void checkPatientAlertListReport(Set<String> expectedPatientIdentifiers, String identifierColumn, ReportData data) {
+	public static void checkPatientListReport(Set<Integer> expectedIds, ReportData data) {
 		// Check report has one data set
 		Assert.assertEquals(1, data.getDataSets().values().size());
 		DataSet set = data.getDataSets().values().iterator().next();
 
 		// Make mutable copy
-		expectedPatientIdentifiers = new HashSet<String>(expectedPatientIdentifiers);
+		expectedIds = new HashSet<Integer>(expectedIds);
 
 		// Check the patient name of each row is in the expected set
 		for (DataSetRow row : set) {
-			List<PatientIdentifier> patientIdentifiers = (List<PatientIdentifier>)row.getColumnValue(identifierColumn);
-			PatientIdentifier patientIdentifier = patientIdentifiers.get(0);
-			String patientIdentifierVal = patientIdentifier != null ? patientIdentifier.getIdentifier() : null;
-			Assert.assertTrue("Patient identifier '" + patientIdentifierVal + "' not expected", expectedPatientIdentifiers.contains(patientIdentifierVal));
-			expectedPatientIdentifiers.remove(patientIdentifierVal);
+			Integer patientId = (Integer) row.getColumnValue("id");
+			Assert.assertTrue("Patient identifier '" + patientId + "' not expected", expectedIds.contains(patientId));
+			expectedIds.remove(patientId);
 		}
 	}
 

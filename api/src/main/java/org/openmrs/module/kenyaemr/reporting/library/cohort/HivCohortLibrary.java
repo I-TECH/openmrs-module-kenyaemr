@@ -47,7 +47,7 @@ import java.util.Date;
  * Library of ART related cohort definitions
  */
 @Component
-public class ArtCohortLibrary {
+public class HivCohortLibrary {
 
 	@Autowired
 	private CommonCohortLibrary commonCohorts;

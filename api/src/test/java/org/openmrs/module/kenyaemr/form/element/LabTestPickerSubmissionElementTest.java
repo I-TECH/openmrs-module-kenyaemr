@@ -27,6 +27,9 @@ import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 import java.util.*;
 
+/**
+ * Tests for {@link LabTestPickerSubmissionElement}
+ */
 public class LabTestPickerSubmissionElementTest extends BaseModuleContextSensitiveTest {
 
 	private LabTestPickerSubmissionElement element;
@@ -37,9 +40,12 @@ public class LabTestPickerSubmissionElementTest extends BaseModuleContextSensiti
 
 	private Concept cd4, freeText, fpMethod, fpNatural, otherNonCoded;
 
+	/**
+	 * Setup each test
+	 */
 	@Before
 	public void setup() throws Exception {
-		executeDataSet("test-data.xml");
+		executeDataSet("dataset/test-concepts.xml");
 
 		// Setup mock request
 		request = new MockHttpServletRequest();

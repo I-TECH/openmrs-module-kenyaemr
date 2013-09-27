@@ -33,8 +33,8 @@ public class RegimenOrderTest extends BaseModuleContextSensitiveTest {
 
 	@Before
 	public void setup() throws Exception {
-		executeDataSet("test-data.xml");
-		executeDataSet("test-drugdata.xml");
+		executeDataSet("dataset/test-concepts.xml");
+		executeDataSet("dataset/test-drugs.xml");
 
 		DrugOrder lamivudine = new DrugOrder();
 		lamivudine.setConcept(Context.getConceptService().getConcept(78643));

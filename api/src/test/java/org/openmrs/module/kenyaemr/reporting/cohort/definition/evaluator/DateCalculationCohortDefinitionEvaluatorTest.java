@@ -40,8 +40,8 @@ public class DateCalculationCohortDefinitionEvaluatorTest extends BaseModuleCont
 
 	@Before
 	public void setup() throws Exception {
-		executeDataSet("test-data.xml");
-		executeDataSet("test-drugdata.xml");
+		executeDataSet("dataset/test-concepts.xml");
+		executeDataSet("dataset/test-drugs.xml");
 
 		Concept efv = Context.getConceptService().getConcept(75523);
 		Concept nvp = Context.getConceptService().getConcept(80586);

@@ -32,6 +32,9 @@ import org.openmrs.module.kenyaemr.test.EmrTestUtils;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
+/**
+ * Tests for {@link RegimenChangeHistory}
+ */
 public class RegimenChangeHistoryTest extends BaseModuleContextSensitiveTest {
 
 	final Date t0 = TestUtils.date(2006, 1, 1);
@@ -45,32 +48,32 @@ public class RegimenChangeHistoryTest extends BaseModuleContextSensitiveTest {
 
 	@Before
 	public void setup() throws Exception {
-		executeDataSet("test-data.xml");
-		executeDataSet("test-drugdata.xml");
+		executeDataSet("dataset/test-concepts.xml");
+		executeDataSet("dataset/test-drugs.xml");
 
 		/* Test case like this:
 		 * 3TC: <---->
 		 * AZT: |  <----->
 		 * D4T: |  |  <-----...
-		 * Asp: |  |  <-----... (this drug is not relevant)
+		 * Dap: |  |  <-----... (this drug is not relevant)
 		 *      |  |  |  |
 		 *      t0 t1 t2 t3
 		 */
 
-		drug1 = Context.getConceptService().getConcept(78643); // 3TC
-		drug2 = Context.getConceptService().getConcept(86663); // AZT
-		drug3 = Context.getConceptService().getConcept(84309); // D4T
-		drug4 = Context.getConceptService().getConcept(71617); // Aspirin
+		drug1 = Dictionary.getConcept("78643AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"); // 3TC
+		drug2 = Dictionary.getConcept("86663AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"); // AZT
+		drug3 = Dictionary.getConcept("84309AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"); // D4T
+		drug4 = Dictionary.getConcept(Dictionary.DAPSONE); // Dapsone
 
-		order1 = TestUtils.saveDrugOrder(Context.getPatientService().getPatient(6), drug1, t0, t2);
+		order1 = TestUtils.saveDrugOrder(TestUtils.getPatient(6), drug1, t0, t2);
 		order1.setDiscontinuedReasonNonCoded("Because I felt like it");
 
-		order2 = TestUtils.saveDrugOrder(Context.getPatientService().getPatient(6), drug2, t1, t3);
-		order2.setDiscontinuedReason(Context.getConceptService().getConcept(16)); // DIED
+		order2 = TestUtils.saveDrugOrder(TestUtils.getPatient(6), drug2, t1, t3);
+		order2.setDiscontinuedReason(Dictionary.getConcept(Dictionary.DIED));
 
-		order3 = TestUtils.saveDrugOrder(Context.getPatientService().getPatient(6), drug3, t2, null);
+		order3 = TestUtils.saveDrugOrder(TestUtils.getPatient(6), drug3, t2, null);
 
-		order4 = TestUtils.saveDrugOrder(Context.getPatientService().getPatient(6), drug4, t2, null);
+		order4 = TestUtils.saveDrugOrder(TestUtils.getPatient(6), drug4, t2, null);
 	}
 
 	/**

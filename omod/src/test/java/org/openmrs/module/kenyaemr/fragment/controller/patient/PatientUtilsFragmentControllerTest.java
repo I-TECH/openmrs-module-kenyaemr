@@ -18,12 +18,11 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Patient;
-import org.openmrs.Person;
 import org.openmrs.Relationship;
-import org.openmrs.RelationshipType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyacore.calculation.CalculationManager;
 import org.openmrs.module.kenyacore.test.TestUtils;
+import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.test.TestUiUtils;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
@@ -31,25 +30,30 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
+import static org.hamcrest.Matchers.*;
+
 /**
- * Tests for {@link org.openmrs.module.kenyaemr.fragment.controller.patient.PatientUtilsFragmentController}
+ * Tests for {@link PatientUtilsFragmentController}
  */
 public class PatientUtilsFragmentControllerTest extends BaseModuleWebContextSensitiveTest {
 
-	private PatientUtilsFragmentController controller;
+	@Autowired
+	private CommonMetadata commonMetadata;
 
 	@Autowired
 	private CalculationManager calculationManager;
+
 	@Autowired
 	private TestUiUtils ui;
+
+	private PatientUtilsFragmentController controller;
 
 	/**
 	 * Setup each test
 	 */
 	@Before
 	public void setup() throws Exception {
-		executeDataSet("test-data.xml");
-		executeDataSet("test-drugdata.xml");
+		commonMetadata.install();
 
 		controller = new PatientUtilsFragmentController();
 
@@ -87,52 +91,38 @@ public class PatientUtilsFragmentControllerTest extends BaseModuleWebContextSens
 	}
 
 	/**
-	 * @see PatientUtilsFragmentController#getMothers(Integer,org.openmrs.ui.framework.UiUtils)
+	 * @see PatientUtilsFragmentController#getMothers(org.openmrs.Patient, org.openmrs.ui.framework.UiUtils)
 	 */
 	@Test
-	public void getMothers_shouldReturnAllMothers() {
-		RelationshipType type = Context.getPersonService().getRelationshipType(2);
-		Person parent = Context.getPersonService().getPerson(7); // which is a female from standard test dataset
-		Patient child = TestUtils.getPatient(2);// this ids the patient to be passed
-		parent.setGender("F"); // set the parents gender to female
+	public void getMothers_shouldReturnAllMothersOfPatient() {
+		Patient parent = TestUtils.getPatient(7); // female in standardTestDataset.xml
+		Patient child = TestUtils.getPatient(2);
 
-		//set the relationship for the parent and child
-		Relationship rel = new Relationship();
-		rel.setRelationshipType(type);
-		rel.setPersonA(parent);
-		rel.setPersonB(child);
-		//save the relationship
+		// Save parent-child relationship between patient #2 and #7
+		TestUtils.saveRelationship(parent, Context.getPersonService().getRelationshipType(2), child);
 
-		Context.getPersonService().saveRelationship(rel);
+		SimpleObject[] mothers = controller.getMothers(child, ui);
 
-		//to make sure the relationship has been created
-		Assert.assertEquals(1, Context.getPersonService().getRelationships(parent, child, type).size());
-		SimpleObject[] mother = controller.getMothers(child,ui);
-		Assert.assertTrue(mother.length >= 1);
+		// Check patient #7 is returned as sole mother
+		Assert.assertThat(mothers, arrayWithSize(1));
+		Assert.assertThat(mothers[0], hasEntry("id", (Object) (7)));
 	}
 
 	/**
-	 * @see PatientUtilsFragmentController#getFathers(Integer,org.openmrs.ui.framework.UiUtils)
+	 * @see PatientUtilsFragmentController#getFathers(org.openmrs.Patient, org.openmrs.ui.framework.UiUtils)
 	 */
 	@Test
-	public void getFathers_shouldReturnAllFathers() {
-		RelationshipType type = Context.getPersonService().getRelationshipType(2);
-		Person parent = Context.getPersonService().getPerson(6); // which is a male from standard test dataset
-		Patient child = TestUtils.getPatient(2);// this ids the patient to be passed
-		parent.setGender("M"); // set the parents gender to female
+	public void getFathers_shouldReturnAllFathersOfPatient() {
+		Patient parent = TestUtils.getPatient(6); // male in standardTestDataset.xml
+		Patient child = TestUtils.getPatient(2);
 
-		//set the relationship for the parent and child
-		Relationship rel = new Relationship();
-		rel.setRelationshipType(type);
-		rel.setPersonA(parent);
-		rel.setPersonB(child);
-		//save the relationship
+		// Save parent-child relationship between patient #2 and #7
+		TestUtils.saveRelationship(parent, Context.getPersonService().getRelationshipType(2), child);
 
-		Context.getPersonService().saveRelationship(rel);
+		SimpleObject[] fathers = controller.getFathers(child, ui);
 
-		//to make sure the relationship has been created
-		Assert.assertEquals(1, Context.getPersonService().getRelationships(parent, child, type).size());
-		SimpleObject[] fathers = controller.getFathers(child,ui);
-		Assert.assertTrue(fathers.length >= 1);
+		// Check patient #6 is returned as sole father
+		Assert.assertThat(fathers, arrayWithSize(1));
+		Assert.assertThat(fathers[0], hasEntry("id", (Object) (6)));
 	}
 }

@@ -18,9 +18,13 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Location;
+import org.openmrs.LocationAttribute;
+import org.openmrs.LocationAttributeType;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyacore.test.TestUtils;
+import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.test.TestUiUtils;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
@@ -35,6 +39,9 @@ import static org.hamcrest.Matchers.*;
  */
 public class SearchFragmentControllerTest extends BaseModuleWebContextSensitiveTest {
 
+	@Autowired
+	private CommonMetadata commonMetadata;
+
 	private SearchFragmentController controller;
 
 	@Autowired
@@ -45,7 +52,7 @@ public class SearchFragmentControllerTest extends BaseModuleWebContextSensitiveT
 	 */
 	@Before
 	public void setup() throws Exception {
-		executeDataSet("test-data.xml");
+		commonMetadata.install();
 
 		controller = new SearchFragmentController();
 	}
@@ -59,7 +66,6 @@ public class SearchFragmentControllerTest extends BaseModuleWebContextSensitiveT
 		SimpleObject result = controller.location(location, ui);
 		Assert.assertThat(result, hasEntry("id", (Object) new Integer(1)));
 		Assert.assertThat(result, hasEntry("name", (Object) "Unknown Location"));
-		Assert.assertThat(result, hasEntry("code", (Object) "15001"));
 	}
 
 	/**
@@ -71,7 +77,6 @@ public class SearchFragmentControllerTest extends BaseModuleWebContextSensitiveT
 		Assert.assertThat(result, hasSize(1));
 		Assert.assertThat(result.get(0), hasEntry("id", (Object) new Integer(2)));
 		Assert.assertThat(result.get(0), hasEntry("name", (Object) "Xanadu"));
-		Assert.assertThat(result.get(0), hasEntry("code", (Object) "15002"));
 	}
 
 	/**
@@ -79,6 +84,16 @@ public class SearchFragmentControllerTest extends BaseModuleWebContextSensitiveT
 	 */
 	@Test
 	public void locations_shouldMatchByCompleteMflCode() {
+		LocationAttributeType mflCode = MetadataUtils.getLocationAttributeType(CommonMetadata._LocationAttributeType.MASTER_FACILITY_CODE);
+		Location xanadu = Context.getLocationService().getLocation(2);
+
+		LocationAttribute attr = new LocationAttribute();
+		attr.setOwner(xanadu);
+		attr.setAttributeType(mflCode);
+		attr.setValue("15002");
+		xanadu.addAttribute(attr);
+		Context.getLocationService().saveLocation(xanadu);
+
 		List<SimpleObject> result = controller.locations("15002", ui);
 		Assert.assertThat(result, hasSize(1));
 		Assert.assertThat(result.get(0), hasEntry("id", (Object) new Integer(2)));

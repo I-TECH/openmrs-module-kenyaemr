@@ -19,7 +19,7 @@ import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
-import org.openmrs.module.kenyaemr.reporting.library.cohort.ArtCohortLibrary;
+import org.openmrs.module.kenyaemr.reporting.library.cohort.HivCohortLibrary;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -36,7 +36,7 @@ public class ArtIndicatorLibrary {
 	private CommonIndicatorLibrary commonIndicators;
 
 	@Autowired
-	private ArtCohortLibrary artCohorts;
+	private HivCohortLibrary artCohorts;
 
 	/**
 	 * Number of new patients enrolled in HIV care (excluding transfers)

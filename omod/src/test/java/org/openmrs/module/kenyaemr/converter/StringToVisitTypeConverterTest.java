@@ -14,18 +14,24 @@
 
 package org.openmrs.module.kenyaemr.converter;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.VisitType;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import static org.hamcrest.Matchers.*;
 
 /**
- * Tests for {@link org.openmrs.module.kenyaemr.converter.StringToVisitTypeConverter}
+ * Tests for {@link StringToVisitTypeConverter}
  */
 public class StringToVisitTypeConverterTest extends BaseModuleWebContextSensitiveTest {
+
+	@Autowired
+	private CommonMetadata commonMetadata;
 
 	private StringToVisitTypeConverter converter;
 
@@ -34,22 +40,22 @@ public class StringToVisitTypeConverterTest extends BaseModuleWebContextSensitiv
 	 */
 	@Before
 	public void setup() throws Exception {
-		executeDataSet("test-data.xml");
+		commonMetadata.install();
 
 		converter = new StringToVisitTypeConverter();
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.converter.StringToVisitConverter#convert(String)
+	 * @see StringToVisitConverter#convert(String)
 	 */
 	@Test
 	public void convert_shouldConvertString() {
-		Assert.assertNull(converter.convert(null));
-		Assert.assertNull(converter.convert(""));
+		Assert.assertThat(converter.convert(null), is(nullValue()));
+		Assert.assertThat(converter.convert(""), is(nullValue()));
 
 		// Check actual visit type
-		VisitType outpatientType = MetadataUtils.getVisitType(CommonMetadata._VisitType.OUTPATIENT);
+		VisitType outpatient = MetadataUtils.getVisitType(CommonMetadata._VisitType.OUTPATIENT);
 
-		Assert.assertEquals(outpatientType, converter.convert(outpatientType.getVisitTypeId().toString()));
+		Assert.assertThat(converter.convert(outpatient.getVisitTypeId().toString()), is(outpatient));
 	}
 }

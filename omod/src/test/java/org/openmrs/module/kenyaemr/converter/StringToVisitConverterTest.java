@@ -14,7 +14,7 @@
 
 package org.openmrs.module.kenyaemr.converter;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Patient;
@@ -25,11 +25,17 @@ import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import static org.hamcrest.Matchers.*;
 
 /**
- * Tests for {@link org.openmrs.module.kenyaemr.converter.StringToVisitConverter}
+ * Tests for {@link StringToVisitConverter}
  */
 public class StringToVisitConverterTest extends BaseModuleWebContextSensitiveTest {
+
+	@Autowired
+	private CommonMetadata commonMetadata;
 
 	private StringToVisitConverter converter;
 
@@ -38,7 +44,7 @@ public class StringToVisitConverterTest extends BaseModuleWebContextSensitiveTes
 	 */
 	@Before
 	public void setup() throws Exception {
-		executeDataSet("test-data.xml");
+		commonMetadata.install();
 
 		converter = new StringToVisitConverter();
 	}
@@ -48,14 +54,14 @@ public class StringToVisitConverterTest extends BaseModuleWebContextSensitiveTes
 	 */
 	@Test
 	public void convert_shouldConvertString() {
-		Assert.assertNull(converter.convert(null));
-		Assert.assertNull(converter.convert(""));
+		Assert.assertThat(converter.convert(null), is(nullValue()));
+		Assert.assertThat(converter.convert(""), is(nullValue()));
 
 		// Check actual visit
 		Patient patient = Context.getPatientService().getPatient(7);
-		VisitType outpatientType = MetadataUtils.getVisitType(CommonMetadata._VisitType.OUTPATIENT);
-		Visit visit = TestUtils.saveVisit(patient, outpatientType, TestUtils.date(2012, 1, 1), null);
+		VisitType outpatient = MetadataUtils.getVisitType(CommonMetadata._VisitType.OUTPATIENT);
+		Visit visit = TestUtils.saveVisit(patient, outpatient, TestUtils.date(2012, 1, 1), null);
 
-		Assert.assertEquals(visit, converter.convert(visit.getVisitId().toString()));
+		Assert.assertThat(converter.convert(visit.getVisitId().toString()), is(visit));
 	}
 }

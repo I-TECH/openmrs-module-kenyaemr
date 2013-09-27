@@ -25,8 +25,10 @@ import org.openmrs.module.htmlformentry.FormEntrySession;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
+import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpSession;
 
 import javax.servlet.http.HttpSession;
@@ -39,6 +41,12 @@ import static org.hamcrest.Matchers.is;
  */
 public class EmrVelocityFunctionsTest extends BaseModuleContextSensitiveTest {
 
+	@Autowired
+	private CommonMetadata commonMetadata;
+
+	@Autowired
+	private HivMetadata hivMetadata;
+
 	private EmrVelocityFunctions functionsForSession1, functionsForSession2;
 
 	/**
@@ -47,7 +55,9 @@ public class EmrVelocityFunctionsTest extends BaseModuleContextSensitiveTest {
 	@Before
 	public void setup() throws Exception {
 		executeDataSet("dataset/test-concepts.xml");
-		executeDataSet("dataset/test-metadata.xml");
+
+		commonMetadata.install();
+		hivMetadata.install();
 
 		HttpSession httpSession = new MockHttpSession();
 		String formXml = "<htmlform></htmlform>";
@@ -91,8 +101,8 @@ public class EmrVelocityFunctionsTest extends BaseModuleContextSensitiveTest {
 	 */
 	@Test
 	public void getGlobalProperty_shouldReturnPropertyValue() {
-		GlobalProperty gp = Context.getAdministrationService().getGlobalPropertyObject("visits.assignmentHandler");
-		Assert.assertThat(functionsForSession1.getGlobalProperty("visits.assignmentHandler"), is(gp.getValue()));
+		GlobalProperty gp = Context.getAdministrationService().getGlobalPropertyByUuid(CommonMetadata._GlobalProperty.DEFAULT_LOCATION);
+		Assert.assertThat(functionsForSession1.getGlobalProperty("kenyaemr.defaultLocation"), is(gp.getValue()));
 
 		// Check no exception for non-existent
 		Assert.assertThat(functionsForSession1.getGlobalProperty("xxx.xxx"), is(nullValue()));
