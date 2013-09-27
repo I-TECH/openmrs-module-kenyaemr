@@ -14,6 +14,7 @@
 
 package org.openmrs.module.kenyaemr.form;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.openmrs.Encounter;
 import org.openmrs.Form;
 import org.openmrs.Location;
@@ -21,7 +22,7 @@ import org.openmrs.Visit;
 import org.openmrs.VisitAttribute;
 import org.openmrs.VisitType;
 import org.openmrs.api.context.Context;
-import org.openmrs.api.handler.ExistingVisitAssignmentHandler;
+import org.openmrs.api.handler.BaseEncounterVisitHandler;
 import org.openmrs.module.kenyacore.CoreContext;
 import org.openmrs.module.kenyacore.form.FormDescriptor;
 import org.openmrs.module.kenyacore.form.FormManager;
@@ -32,7 +33,6 @@ import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.util.OpenmrsUtil;
 
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -40,7 +40,7 @@ import java.util.Locale;
  * Unlike the regular visit handlers, this one will be called even for existing encounters as we sometimes need to move
  * these into new visits
  */
-public class EmrVisitAssignmentHandler extends ExistingVisitAssignmentHandler {
+public class EmrVisitAssignmentHandler extends BaseEncounterVisitHandler implements ExistingEncounterVisitHandler {
 
 	/**
 	 * @see org.openmrs.api.handler.ExistingVisitAssignmentHandler#getDisplayName(java.util.Locale)
@@ -55,19 +55,53 @@ public class EmrVisitAssignmentHandler extends ExistingVisitAssignmentHandler {
 	 */
 	@Override
 	public void beforeCreateEncounter(Encounter encounter) {
-		// Do nothing if the encounter already belongs to a visit
-		if (encounter.getVisit() != null) {
+		// Some forms can auto-create visits
+		VisitType autoCreateVisitType = getAutoCreateVisitType(encounter);
+
+		assignToVisit(encounter, autoCreateVisitType);
+	}
+
+	/**
+	 * Called via our own AOP to ensure the visit handler is used for both new and existing encounters
+	 *
+	 * @see ExistingEncounterVisitHandler#beforeEditEncounter(org.openmrs.Encounter)
+	 */
+	@Override
+	public void beforeEditEncounter(Encounter encounter) {
+		// This determines whether the encounter can move between visits
+		VisitType autoCreateVisitType = getAutoCreateVisitType(encounter);
+
+		Visit oldVisit = encounter.getVisit();
+
+		assignToVisit(encounter, autoCreateVisitType);
+
+		// Is encounter is now assigned to a different visit?
+		if (oldVisit != null && !oldVisit.equals(encounter.getVisit())) {
+			boolean existingIsNowEmpty = CollectionUtils.isEmpty(oldVisit.getEncounters());
+			boolean existingWasRetro = EmrUtils.getVisitSourceForm(oldVisit) != null;
+
+			// If the existing visit was created via a form and is now empty, void it
+			if (existingIsNowEmpty && existingWasRetro) {
+				Context.getVisitService().voidVisit(oldVisit, "Left empty by encounter move");
+			}
+		}
+	}
+
+	/**
+	 * Does the actual assignment of the encounter to a visit
+	 * @param encounter the encounter
+	 * @param newVisitType the type of the new visit if one is created
+	 */
+	protected void assignToVisit(Encounter encounter, VisitType newVisitType) {
+		// Do nothing if the encounter already belongs to a visit and can't be moved
+		if (encounter.getVisit() != null && newVisitType == null) {
 			return;
 		}
 
 		// Try using an existing visit
 		if (!useExistingVisit(encounter)) {
-
-			// Some forms can auto-create visits
-			VisitType autoCreateVisitType = getAutoCreateVisitType(encounter);
-
-			if (autoCreateVisitType != null) {
-				useNewVisit(encounter, autoCreateVisitType, encounter.getForm());
+			if (newVisitType != null) {
+				useNewVisit(encounter, newVisitType, encounter.getForm());
 			}
 		}
 	}
@@ -89,8 +123,8 @@ public class EmrVisitAssignmentHandler extends ExistingVisitAssignmentHandler {
 					continue;
 				}
 
-				if (visit.getLocation() == null || Location.isInHierarchy(encounter.getLocation(), visit.getLocation())) {
-					encounter.setVisit(visit);
+				if (checkLocations(visit, encounter)) {
+					setVisitOfEncounter(visit, encounter);
 					return true;
 				}
 			}
@@ -100,14 +134,17 @@ public class EmrVisitAssignmentHandler extends ExistingVisitAssignmentHandler {
 			List<Visit> existingVisitsOnDay = Context.getService(KenyaEmrService.class).getVisitsByPatientAndDay(encounter.getPatient(), encounter.getEncounterDatetime());
 			if (existingVisitsOnDay.size() > 0) {
 				Visit visit = existingVisitsOnDay.get(0);
-				encounter.setVisit(visit);
 
-				// Adjust encounter start if its before visit start
-				if (encounter.getEncounterDatetime().before(visit.getStartDatetime())) {
-					encounter.setEncounterDatetime(visit.getStartDatetime());
+				if (checkLocations(visit, encounter)) {
+					setVisitOfEncounter(visit, encounter);
+
+					// Adjust encounter start if its before visit start
+					if (encounter.getEncounterDatetime().before(visit.getStartDatetime())) {
+						encounter.setEncounterDatetime(visit.getStartDatetime());
+					}
+
+					return true;
 				}
-
-				return true;
 			}
 		}
 
@@ -134,7 +171,9 @@ public class EmrVisitAssignmentHandler extends ExistingVisitAssignmentHandler {
 		sourceAttr.setValue(sourceForm);
 		visit.addAttribute(sourceAttr);
 
-		encounter.setVisit(visit);
+		Context.getVisitService().saveVisit(visit);
+
+		setVisitOfEncounter(visit, encounter);
 	}
 
 	/**
@@ -156,14 +195,32 @@ public class EmrVisitAssignmentHandler extends ExistingVisitAssignmentHandler {
 	}
 
 	/**
-	 * Checks if the given encounter can be saved in a given visit
-	 * @param encounter the encounter
+	 * Convenience method to check whether the location of a visit and an encounter are compatible
 	 * @param visit the visit
-	 * @return true if encounter can be saved in the visit
+	 * @param encounter the encounter
+	 * @return true if locations won't conflict
 	 */
-	protected static boolean canBeSavedInVisit(Encounter encounter, Visit visit) {
-		Date encDate = encounter.getEncounterDatetime();
-		return OpenmrsUtil.compare(encDate, visit.getStartDatetime()) >= 0
-				&& (visit.getStopDatetime() == null || OpenmrsUtil.compare(encDate, visit.getStopDatetime()) <= 0);
+	protected static boolean checkLocations(Visit visit, Encounter encounter) {
+		return visit.getLocation() == null || Location.isInHierarchy(encounter.getLocation(), visit.getLocation());
+	}
+
+	/**
+	 * Sets the visit of an encounter, updating the both the old visit and the new visit. This is used rather than just
+	 * encounter.setVisit(...) so that we don't have to reload the visit objects to update their set of encounters
+	 * @param visit the visit
+	 * @param encounter the encounter
+	 */
+	protected static void setVisitOfEncounter(Visit visit, Encounter encounter) {
+		// Remove from old visit
+		if (encounter.getVisit() != null) {
+			encounter.getVisit().getEncounters().remove(encounter);
+		}
+
+		// Set to new visit
+		encounter.setVisit(visit);
+
+		if (visit != null) {
+			visit.addEncounter(encounter);
+		}
 	}
 }

@@ -15,8 +15,12 @@
 package org.openmrs.module.kenyaemr.advice;
 
 import org.openmrs.Encounter;
+import org.openmrs.Form;
+import org.openmrs.Visit;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.handler.EncounterVisitHandler;
+import org.openmrs.module.kenyaemr.form.ExistingEncounterVisitHandler;
+import org.openmrs.module.kenyaemr.util.EmrUtils;
 import org.springframework.aop.MethodBeforeAdvice;
 
 import java.lang.reflect.Method;
@@ -44,16 +48,14 @@ public class EncounterServiceAdvice implements MethodBeforeAdvice {
 	protected void beforeSaveEncounter(Encounter encounter) {
 
 		// If new encounter, EncounterServiceImpl will invoke the visit handler. If not we invoke it ourselves here so
-		// it is always called
+		// it is always called regardless
 		if (encounter.getEncounterId() != null) {
 
-			//Am using Context.getEncounterService().getActiveEncounterVisitHandler() instead of just
-			//getActiveEncounterVisitHandler() for modules which may want to AOP around this call.
-			EncounterVisitHandler encounterVisitHandler = Context.getEncounterService().getActiveEncounterVisitHandler();
-			if (encounterVisitHandler != null) {
-				encounterVisitHandler.beforeCreateEncounter(encounter);
+			EncounterVisitHandler visitHandler = Context.getEncounterService().getActiveEncounterVisitHandler();
+			if (visitHandler != null && visitHandler instanceof ExistingEncounterVisitHandler) {
+				((ExistingEncounterVisitHandler) visitHandler).beforeEditEncounter(encounter);
 
-				//If we have been assigned a new visit, persist it.
+				// Does the new visit new persisted?
 				if (encounter.getVisit() != null && encounter.getVisit().getVisitId() == null) {
 					Context.getVisitService().saveVisit(encounter.getVisit());
 				}
