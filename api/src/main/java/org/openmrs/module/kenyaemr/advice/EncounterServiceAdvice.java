@@ -15,12 +15,9 @@
 package org.openmrs.module.kenyaemr.advice;
 
 import org.openmrs.Encounter;
-import org.openmrs.Form;
-import org.openmrs.Visit;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.handler.EncounterVisitHandler;
-import org.openmrs.module.kenyaemr.form.ExistingEncounterVisitHandler;
-import org.openmrs.module.kenyaemr.util.EmrUtils;
+import org.openmrs.module.kenyaemr.visit.ExistingEncounterVisitHandler;
 import org.springframework.aop.MethodBeforeAdvice;
 
 import java.lang.reflect.Method;

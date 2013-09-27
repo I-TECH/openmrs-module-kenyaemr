@@ -19,7 +19,7 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.GlobalProperty;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.system.ExternalRequirement;
-import org.openmrs.module.kenyaemr.form.EmrVisitAssignmentHandler;
+import org.openmrs.module.kenyaemr.visit.EmrVisitAssignmentHandler;
 import org.openmrs.util.OpenmrsConstants;
 
 import java.util.List;

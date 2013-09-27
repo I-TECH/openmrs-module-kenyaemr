@@ -28,7 +28,7 @@ import org.openmrs.module.kenyacore.form.FormManager;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.kenyaemr.advice.EncounterServiceAdvice;
-import org.openmrs.module.kenyaemr.form.EmrVisitAssignmentHandler;
+import org.openmrs.module.kenyaemr.visit.EmrVisitAssignmentHandler;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.metadata.MchMetadata;

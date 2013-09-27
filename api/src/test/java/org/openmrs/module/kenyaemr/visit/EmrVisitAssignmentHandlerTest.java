@@ -12,7 +12,7 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.form;
+package org.openmrs.module.kenyaemr.visit;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -62,7 +62,6 @@ public class EmrVisitAssignmentHandlerTest extends BaseModuleContextSensitiveTes
 	@Before
 	public void setup() throws Exception {
 		executeDataSet("dataset/test-concepts.xml");
-
 
 		commonMetadata.install();
 		hivMetadata.install();

@@ -12,7 +12,7 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.form;
+package org.openmrs.module.kenyaemr.form.velocity;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -30,7 +30,7 @@ import javax.servlet.http.HttpSession;
 import static org.hamcrest.Matchers.is;
 
 /**
- * Tests for {@link org.openmrs.module.kenyaemr.form.EmrVelocityFunctions}
+ * Tests for {@link UiVelocityFunctions}
  */
 public class UiVelocityFunctionsTest extends BaseModuleContextSensitiveTest {
 
@@ -53,7 +53,7 @@ public class UiVelocityFunctionsTest extends BaseModuleContextSensitiveTest {
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.form.UiVelocityFunctions#resourceLink(String, String)
+	 * @see org.openmrs.module.kenyaemr.form.velocity.UiVelocityFunctions#resourceLink(String, String)
 	 */
 	@Test
 	public void resourceLink() {
