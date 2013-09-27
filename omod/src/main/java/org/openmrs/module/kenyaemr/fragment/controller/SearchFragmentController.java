@@ -239,15 +239,18 @@ public class SearchFragmentController {
 
 		List<SimpleObject> ret = new ArrayList<SimpleObject>();
 		for (Person p : persons) {
-			SimpleObject account = SimpleObject.fromObject(p, ui, "personId", "personName");
+			SimpleObject account = ui.simplifyObject(p);
+
 			User user = userAccounts.get(p);
 			if (user != null) {
 				account.put("user", SimpleObject.fromObject(user, ui, "username"));
 			}
+
 			Provider provider = providerAccounts.get(p);
 			if (provider != null) {
 				account.put("provider", SimpleObject.fromObject(provider, ui, "identifier"));
 			}
+
 			ret.add(account);
 		}
 
