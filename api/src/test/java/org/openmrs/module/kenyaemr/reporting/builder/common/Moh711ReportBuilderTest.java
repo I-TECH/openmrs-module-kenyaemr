@@ -22,7 +22,9 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyacore.report.IndicatorReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportManager;
+import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
+import org.openmrs.module.kenyaemr.metadata.TbMetadata;
 import org.openmrs.module.kenyaemr.regimen.RegimenManager;
 import org.openmrs.module.kenyaemr.test.ReportingTestUtils;
 import org.openmrs.module.kenyacore.test.TestUtils;
@@ -43,6 +45,15 @@ import java.util.Arrays;
 public class Moh711ReportBuilderTest extends BaseModuleContextSensitiveTest {
 
 	@Autowired
+	private CommonMetadata commonMetadata;
+
+	@Autowired
+	private HivMetadata hivMetadata;
+
+	@Autowired
+	private TbMetadata tbMetadata;
+
+	@Autowired
 	private ReportManager reportManager;
 
 	@Autowired
@@ -54,8 +65,11 @@ public class Moh711ReportBuilderTest extends BaseModuleContextSensitiveTest {
 	@Before
 	public void setup() throws Exception {
 		executeDataSet("dataset/test-concepts.xml");
-		executeDataSet("dataset/test-metadata.xml");
 		executeDataSet("dataset/test-drugs.xml");
+
+		commonMetadata.install();
+		hivMetadata.install();
+		tbMetadata.install();
 
 		regimenManager.refresh();
 		reportManager.refresh();

@@ -19,15 +19,16 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Concept;
 import org.openmrs.Program;
-import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
+import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.MchMetadata;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -38,13 +39,21 @@ import java.util.List;
  */
 public class NotHivTestedCalculationTest extends BaseModuleContextSensitiveTest {
 
+	@Autowired
+	private CommonMetadata commonMetadata;
+
+	@Autowired
+	private MchMetadata mchMetadata;
+
 	/**
 	 * Setup each test
 	 */
 	@Before
 	public void setup() throws Exception {
 		executeDataSet("dataset/test-concepts.xml");
-		executeDataSet("dataset/test-metadata.xml");
+
+		commonMetadata.install();
+		mchMetadata.install();
 	}
 
 	/**
@@ -58,22 +67,21 @@ public class NotHivTestedCalculationTest extends BaseModuleContextSensitiveTest 
 		Program mchmsProgram = MetadataUtils.getProgram(MchMetadata.Program.MCHMS);
 
 		//Enroll patients #6, #7 and #8 into MCH-MS
-		PatientService patientService = Context.getPatientService();
 		for (int i = 6; i <= 8; i++) {
-			TestUtils.enrollInProgram(patientService.getPatient(i), mchmsProgram, new Date());
+			TestUtils.enrollInProgram(TestUtils.getPatient(i), mchmsProgram, new Date());
 		}
 
 		//Get the HIV Status concept
 		Concept hivStatus = Dictionary.getConcept(Dictionary.HIV_STATUS);
 
 		//Indicate HIV Status for patient 6 as Not Tested
-		TestUtils.saveObs(patientService.getPatient(6), hivStatus, Dictionary.getConcept(Dictionary.NOT_HIV_TESTED), new Date());
+		TestUtils.saveObs(TestUtils.getPatient(6), hivStatus, Dictionary.getConcept(Dictionary.NOT_HIV_TESTED), new Date());
 
 		//Indicate HIV Status for patient 7 as Negative
-		TestUtils.saveObs(patientService.getPatient(7), hivStatus, Dictionary.getConcept(Dictionary.NEGATIVE), new Date());
+		TestUtils.saveObs(TestUtils.getPatient(7), hivStatus, Dictionary.getConcept(Dictionary.NEGATIVE), new Date());
 
 		//Indicate HIV Status for patient 8 as Positive
-		TestUtils.saveObs(patientService.getPatient(8), hivStatus, Dictionary.getConcept(Dictionary.POSITIVE), new Date());
+		TestUtils.saveObs(TestUtils.getPatient(8), hivStatus, Dictionary.getConcept(Dictionary.POSITIVE), new Date());
 
 		Context.flushSession();
 

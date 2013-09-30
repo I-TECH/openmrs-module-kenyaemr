@@ -11,6 +11,7 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.kenyaemr.calculation.library.mchcs;
 
 import org.junit.Assert;
@@ -19,15 +20,16 @@ import org.junit.Test;
 import org.openmrs.Concept;
 import org.openmrs.Patient;
 import org.openmrs.Program;
-import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
+import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.MchMetadata;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -36,16 +38,27 @@ import java.util.List;
 /**
  * Tests for {@link NeedsAntibodyTestCalculation}
  */
-
 public class NeedsAntibodyTestCalculationTest extends BaseModuleContextSensitiveTest {
 
-	@Before
-	public void beforeEachTest() throws Exception {
-		executeDataSet("dataset/test-concepts.xml");
-		executeDataSet("dataset/test-metadata.xml");
-	}
+	@Autowired
+	private CommonMetadata commonMetadata;
+
+	@Autowired
+	private MchMetadata mchMetadata;
+
 	/**
-	 * @see org.openmrs.module.kenyaemr.calculation.library.NeedsAntibodyTestCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
+	 * Setup each test
+	 */
+	@Before
+	public void setup() throws Exception {
+		executeDataSet("dataset/test-concepts.xml");
+
+		commonMetadata.install();
+		mchMetadata.install();
+	}
+
+	/**
+	 * @see NeedsAntibodyTestCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
 	 * @verifies calculate last recorded antibody test at 9 months
 	 */
 	@Test
@@ -56,12 +69,10 @@ public class NeedsAntibodyTestCalculationTest extends BaseModuleContextSensitive
 		Patient patient = TestUtils.getPatient(6);
 		patient.setBirthdate(TestUtils.date(2011, 10, 1));// more than 9 months old
 
-
-		// Enroll patients #6 and  #7  in the mchcs Program
-		PatientService ps = Context.getPatientService();
-		TestUtils.enrollInProgram(ps.getPatient(6), mchcsProgram, new Date());
-		TestUtils.enrollInProgram(ps.getPatient(7), mchcsProgram, new Date());
-		TestUtils.enrollInProgram(ps.getPatient(8), mchcsProgram, new Date());
+		// Enroll patients #6 and  #7 in the mchcs Program
+		TestUtils.enrollInProgram(TestUtils.getPatient(6), mchcsProgram, new Date());
+		TestUtils.enrollInProgram(TestUtils.getPatient(7), mchcsProgram, new Date());
+		TestUtils.enrollInProgram(TestUtils.getPatient(8), mchcsProgram, new Date());
 
 		//get the HIV status of the infant and the if wheather antibody test was done or NOT
 		Concept infantHivStatus = Dictionary.getConcept(Dictionary.CHILDS_CURRENT_HIV_STATUS);
@@ -69,13 +80,13 @@ public class NeedsAntibodyTestCalculationTest extends BaseModuleContextSensitive
 		Concept antibodytest2 = Dictionary.getConcept(Dictionary.HIV_RAPID_TEST_2_QUALITATIVE);
 
 		//make #6 HEI and has no antibody test
-		TestUtils.saveObs(ps.getPatient(6),infantHivStatus,Dictionary.getConcept(Dictionary.EXPOSURE_TO_HIV),new Date());
+		TestUtils.saveObs(TestUtils.getPatient(6),infantHivStatus,Dictionary.getConcept(Dictionary.EXPOSURE_TO_HIV),new Date());
 		//make #7 HEI and has antibody test2
-		TestUtils.saveObs(ps.getPatient(7),infantHivStatus,Dictionary.getConcept(Dictionary.EXPOSURE_TO_HIV),new Date());
-		TestUtils.saveObs(ps.getPatient(7),antibodytest1,Dictionary.getConcept(Dictionary.NEGATIVE),new Date());
+		TestUtils.saveObs(TestUtils.getPatient(7),infantHivStatus,Dictionary.getConcept(Dictionary.EXPOSURE_TO_HIV),new Date());
+		TestUtils.saveObs(TestUtils.getPatient(7),antibodytest1,Dictionary.getConcept(Dictionary.NEGATIVE),new Date());
 		//make #8 HEI and has antibody test2
-		TestUtils.saveObs(ps.getPatient(8),infantHivStatus,Dictionary.getConcept(Dictionary.EXPOSURE_TO_HIV),new Date());
-		TestUtils.saveObs(ps.getPatient(8),antibodytest2,Dictionary.getConcept(Dictionary.POSITIVE),new Date());
+		TestUtils.saveObs(TestUtils.getPatient(8),infantHivStatus,Dictionary.getConcept(Dictionary.EXPOSURE_TO_HIV),new Date());
+		TestUtils.saveObs(TestUtils.getPatient(8),antibodytest2,Dictionary.getConcept(Dictionary.POSITIVE),new Date());
 
 		Context.flushSession();
 
@@ -84,6 +95,5 @@ public class NeedsAntibodyTestCalculationTest extends BaseModuleContextSensitive
 		Assert.assertTrue((Boolean) resultMap.get(6).getValue()); // HEI and has null antibody and is >=9 months
 		Assert.assertFalse((Boolean) resultMap.get(7).getValue()); //has antibody 1
 		Assert.assertFalse((Boolean) resultMap.get(8).getValue()); // has antibody 2
-
 	}
 }

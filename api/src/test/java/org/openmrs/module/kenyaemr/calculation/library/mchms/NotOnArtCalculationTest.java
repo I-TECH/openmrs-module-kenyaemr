@@ -22,15 +22,16 @@ import org.openmrs.EncounterType;
 import org.openmrs.Form;
 import org.openmrs.Obs;
 import org.openmrs.Program;
-import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
+import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.MchMetadata;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
 import java.util.Calendar;
@@ -42,13 +43,21 @@ import java.util.List;
  */
 public class NotOnArtCalculationTest extends BaseModuleContextSensitiveTest {
 
+	@Autowired
+	private CommonMetadata commonMetadata;
+
+	@Autowired
+	private MchMetadata mchMetadata;
+
 	/**
 	 * Setup each test
 	 */
 	@Before
 	public void setup() throws Exception {
 		executeDataSet("dataset/test-concepts.xml");
-		executeDataSet("dataset/test-metadata.xml");
+
+		commonMetadata.install();
+		mchMetadata.install();
 	}
 
 	/**
@@ -64,11 +73,9 @@ public class NotOnArtCalculationTest extends BaseModuleContextSensitiveTest {
 		Form enrollmentForm = MetadataUtils.getForm(MchMetadata.Form.MCHMS_ENROLLMENT);
 
 		//Enroll  #2, #6, #7 and #8 into MCH-MS
-		PatientService patientService = Context.getPatientService();
-
-		TestUtils.enrollInProgram(patientService.getPatient(2), mchmsProgram, new Date());
+		TestUtils.enrollInProgram(TestUtils.getPatient(2), mchmsProgram, new Date());
 		for (int i = 6; i <= 8; i++) {
-			TestUtils.enrollInProgram(patientService.getPatient(i), mchmsProgram, new Date());
+			TestUtils.enrollInProgram(TestUtils.getPatient(i), mchmsProgram, new Date());
 		}
 
 		//Get the HIV Status concept, the LMP concept and the ART use in Pregnanacy concepts
@@ -83,32 +90,32 @@ public class NotOnArtCalculationTest extends BaseModuleContextSensitiveTest {
 		twentyWeeksAgo.add(Calendar.DATE, -140);
 
 		//Create enrollment encounter for Pat#2 indicating HIV status - and LMP 20 weeks ago
-		Obs[] encounterObss2 = {TestUtils.saveObs(patientService.getPatient(2), hivStatus, Dictionary.getConcept(Dictionary.NEGATIVE), new Date()),
-				TestUtils.saveObs(patientService.getPatient(2), lmp, twentyWeeksAgo.getTime(), new Date())};
-		TestUtils.saveEncounter(patientService.getPatient(2), enrollmentEncounterType,enrollmentForm, new Date(), encounterObss2);
+		Obs[] encounterObss2 = {TestUtils.saveObs(TestUtils.getPatient(2), hivStatus, Dictionary.getConcept(Dictionary.NEGATIVE), new Date()),
+				TestUtils.saveObs(TestUtils.getPatient(2), lmp, twentyWeeksAgo.getTime(), new Date())};
+		TestUtils.saveEncounter(TestUtils.getPatient(2), enrollmentEncounterType,enrollmentForm, new Date(), encounterObss2);
 		//Create ART use in Pregnancy obs for Pat#2 indicating NOT_APPLICABLE
-		TestUtils.saveObs(patientService.getPatient(2), artUse, Dictionary.getConcept(Dictionary.NOT_APPLICABLE), new Date());
+		TestUtils.saveObs(TestUtils.getPatient(2), artUse, Dictionary.getConcept(Dictionary.NOT_APPLICABLE), new Date());
 
 		//Create enrollment encounter for Pat#6 indicating HIV status + and LMP 10 weeks ago
-		Obs[] encounterObss6 = {TestUtils.saveObs(patientService.getPatient(6), hivStatus, Dictionary.getConcept(Dictionary.POSITIVE), new Date()),
-				TestUtils.saveObs(patientService.getPatient(6), lmp, tenWeeksAgo.getTime(), new Date())};
-		TestUtils.saveEncounter(patientService.getPatient(6), enrollmentEncounterType,enrollmentForm, new Date(), encounterObss6);
+		Obs[] encounterObss6 = {TestUtils.saveObs(TestUtils.getPatient(6), hivStatus, Dictionary.getConcept(Dictionary.POSITIVE), new Date()),
+				TestUtils.saveObs(TestUtils.getPatient(6), lmp, tenWeeksAgo.getTime(), new Date())};
+		TestUtils.saveEncounter(TestUtils.getPatient(6), enrollmentEncounterType,enrollmentForm, new Date(), encounterObss6);
 		//Create ART use in Pregnancy obs for Pat#6 indicating NOT_APPLICABLE
-		TestUtils.saveObs(patientService.getPatient(6), artUse, Dictionary.getConcept(Dictionary.NOT_APPLICABLE), new Date());
+		TestUtils.saveObs(TestUtils.getPatient(6), artUse, Dictionary.getConcept(Dictionary.NOT_APPLICABLE), new Date());
 
 		//Create enrollment encounter for Pat#7 indicating HIV status + and LMP 20 weeks ago
-		Obs[] encounterObss7 = {TestUtils.saveObs(patientService.getPatient(7), hivStatus, Dictionary.getConcept(Dictionary.POSITIVE), new Date()),
-				TestUtils.saveObs(patientService.getPatient(7), lmp, twentyWeeksAgo.getTime(), new Date())};
-		TestUtils.saveEncounter(patientService.getPatient(7), enrollmentEncounterType,enrollmentForm, new Date(), encounterObss7);
+		Obs[] encounterObss7 = {TestUtils.saveObs(TestUtils.getPatient(7), hivStatus, Dictionary.getConcept(Dictionary.POSITIVE), new Date()),
+				TestUtils.saveObs(TestUtils.getPatient(7), lmp, twentyWeeksAgo.getTime(), new Date())};
+		TestUtils.saveEncounter(TestUtils.getPatient(7), enrollmentEncounterType,enrollmentForm, new Date(), encounterObss7);
 		//Create ART use in Pregnancy obs for Pat#8 indicating NOT_APPLICABLE
-		TestUtils.saveObs(patientService.getPatient(7), artUse, Dictionary.getConcept(Dictionary.NOT_APPLICABLE), new Date());
+		TestUtils.saveObs(TestUtils.getPatient(7), artUse, Dictionary.getConcept(Dictionary.NOT_APPLICABLE), new Date());
 
 		//Create enroollment encounter for Pat#8 indicating HIV status + and LMP 20 weeks ago
-		Obs[] encounterObss8 = {TestUtils.saveObs(patientService.getPatient(8), hivStatus, Dictionary.getConcept(Dictionary.POSITIVE), new Date()),
-				TestUtils.saveObs(patientService.getPatient(8), lmp, twentyWeeksAgo.getTime(), new Date())};
-		TestUtils.saveEncounter(patientService.getPatient(8), enrollmentEncounterType,enrollmentForm, new Date(), encounterObss8);
+		Obs[] encounterObss8 = {TestUtils.saveObs(TestUtils.getPatient(8), hivStatus, Dictionary.getConcept(Dictionary.POSITIVE), new Date()),
+				TestUtils.saveObs(TestUtils.getPatient(8), lmp, twentyWeeksAgo.getTime(), new Date())};
+		TestUtils.saveEncounter(TestUtils.getPatient(8), enrollmentEncounterType,enrollmentForm, new Date(), encounterObss8);
 		//Create ART use in Pregnancy obs for Pat#8  indicating MOTHER_ON_PROPHYLAXIS
-		TestUtils.saveObs(patientService.getPatient(8), artUse, Dictionary.getConcept(Dictionary.MOTHER_ON_PROPHYLAXIS), new Date());
+		TestUtils.saveObs(TestUtils.getPatient(8), artUse, Dictionary.getConcept(Dictionary.MOTHER_ON_PROPHYLAXIS), new Date());
 
 		Context.flushSession();
 

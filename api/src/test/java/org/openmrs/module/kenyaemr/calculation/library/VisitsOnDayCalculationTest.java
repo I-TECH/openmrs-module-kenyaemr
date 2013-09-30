@@ -31,6 +31,7 @@ import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.hamcrest.Matchers.*;
 
@@ -39,12 +40,15 @@ import static org.hamcrest.Matchers.*;
  */
 public class VisitsOnDayCalculationTest extends BaseModuleContextSensitiveTest {
 
+	@Autowired
+	private CommonMetadata commonMetadata;
+
 	/**
 	 * Setup each test
 	 */
 	@Before
 	public void setup() throws Exception {
-		executeDataSet("dataset/test-metadata.xml");
+		commonMetadata.install();
 
 		VisitType outpatient = MetadataUtils.getVisitType(CommonMetadata._VisitType.OUTPATIENT);
 

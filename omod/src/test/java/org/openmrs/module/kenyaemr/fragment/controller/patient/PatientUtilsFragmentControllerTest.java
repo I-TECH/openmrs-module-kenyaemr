@@ -18,11 +18,13 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Patient;
-import org.openmrs.Relationship;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyacore.calculation.CalculationManager;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
+import org.openmrs.module.kenyaemr.metadata.HivMetadata;
+import org.openmrs.module.kenyaemr.metadata.MchMetadata;
+import org.openmrs.module.kenyaemr.metadata.TbMetadata;
 import org.openmrs.module.kenyaemr.test.TestUiUtils;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
@@ -41,6 +43,15 @@ public class PatientUtilsFragmentControllerTest extends BaseModuleWebContextSens
 	private CommonMetadata commonMetadata;
 
 	@Autowired
+	private HivMetadata hivMetadata;
+
+	@Autowired
+	private TbMetadata tbMetadata;
+
+	@Autowired
+	private MchMetadata mchMetadata;
+
+	@Autowired
 	private CalculationManager calculationManager;
 
 	@Autowired
@@ -53,7 +64,12 @@ public class PatientUtilsFragmentControllerTest extends BaseModuleWebContextSens
 	 */
 	@Before
 	public void setup() throws Exception {
+		executeDataSet("dataset/test-concepts.xml");
+
 		commonMetadata.install();
+		hivMetadata.install();
+		tbMetadata.install();
+		mchMetadata.install();
 
 		controller = new PatientUtilsFragmentController();
 
@@ -79,15 +95,15 @@ public class PatientUtilsFragmentControllerTest extends BaseModuleWebContextSens
 	 */
 	@Test
 	public void flags_shouldReturnAllFlags() {
-		List<SimpleObject> result = controller.flags(7, calculationManager);
+		List<SimpleObject> flags = controller.flags(7, calculationManager);
 
-		Assert.assertTrue(result.size() >= 1);
-		Assert.assertTrue(result.get(0).containsKey("message"));
+		Assert.assertThat(flags, hasSize(greaterThan(0)));
 
-		// TODO once we get all calculations working with the test data, check each one is not an error
-	 	//for (SimpleObject obj : alerts) {
-			//System.out.println(obj.toJson());
-		//}
+		// Check that every flag object has a message and that it doesn't start with "ERROR..."
+	 	for (SimpleObject flag : flags) {
+			Assert.assertThat(flag, hasKey("message"));
+			Assert.assertThat((String) flag.get("message"), not(startsWith("ERROR")));
+		}
 	}
 
 	/**

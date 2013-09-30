@@ -22,15 +22,16 @@ import org.openmrs.EncounterType;
 import org.openmrs.Form;
 import org.openmrs.Obs;
 import org.openmrs.Program;
-import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
+import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.MchMetadata;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
 import java.util.Calendar;
@@ -38,9 +39,15 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Tests for {@link org.openmrs.module.kenyaemr.calculation.library.mchms.HivTestedAtEnrollmentCalculation}
+ * Tests for {@link HivTestedAtEnrollmentCalculation}
  */
 public class HivTestedAtEnrollmentCalculationTest extends BaseModuleContextSensitiveTest {
+
+	@Autowired
+	private CommonMetadata commonMetadata;
+
+	@Autowired
+	private MchMetadata mchMetadata;
 
 	/**
 	 * Setup each test
@@ -48,7 +55,9 @@ public class HivTestedAtEnrollmentCalculationTest extends BaseModuleContextSensi
 	@Before
 	public void setup() throws Exception {
 		executeDataSet("dataset/test-concepts.xml");
-		executeDataSet("dataset/test-metadata.xml");
+
+		commonMetadata.install();
+		mchMetadata.install();
 	}
 
 	/**
@@ -64,11 +73,9 @@ public class HivTestedAtEnrollmentCalculationTest extends BaseModuleContextSensi
 		Form enrollmentForm = MetadataUtils.getForm(MchMetadata.Form.MCHMS_ENROLLMENT);
 
 		//Enroll  #2, #6, #7 and #8 into MCH-MS
-		PatientService patientService = Context.getPatientService();
-
-		TestUtils.enrollInProgram(patientService.getPatient(2), mchmsProgram, new Date());
+		TestUtils.enrollInProgram(TestUtils.getPatient(2), mchmsProgram, new Date());
 		for (int i = 6; i <= 8; i++) {
-			TestUtils.enrollInProgram(patientService.getPatient(i), mchmsProgram, new Date());
+			TestUtils.enrollInProgram(TestUtils.getPatient(i), mchmsProgram, new Date());
 		}
 
 		//Get the HIV Status and the HIV Test Date concepts
@@ -83,24 +90,24 @@ public class HivTestedAtEnrollmentCalculationTest extends BaseModuleContextSensi
 		oneWeekAfterEnrollment.add(Calendar.DATE, 7);
 
 		//Create enrollment encounter for Pat#2 indicating HIV status 'Not Tested' known before enrollment
-		Obs[] encounterObss2 = {TestUtils.saveObs(patientService.getPatient(2), hivStatus, Dictionary.getConcept(Dictionary.NOT_HIV_TESTED), new Date()),
-				TestUtils.saveObs(patientService.getPatient(2), hivTestDate, oneWeekBeforeEnrollment.getTime(), new Date())};
-		TestUtils.saveEncounter(patientService.getPatient(2), enrollmentEncounterType,enrollmentForm, new Date(), encounterObss2);
+		Obs[] encounterObss2 = {TestUtils.saveObs(TestUtils.getPatient(2), hivStatus, Dictionary.getConcept(Dictionary.NOT_HIV_TESTED), new Date()),
+				TestUtils.saveObs(TestUtils.getPatient(2), hivTestDate, oneWeekBeforeEnrollment.getTime(), new Date())};
+		TestUtils.saveEncounter(TestUtils.getPatient(2), enrollmentEncounterType,enrollmentForm, new Date(), encounterObss2);
 
 		//Create enrollment encounter for Pat#6 indicating HIV status +ve known before enrollment
-		Obs[] encounterObss6 = {TestUtils.saveObs(patientService.getPatient(6), hivStatus, Dictionary.getConcept(Dictionary.POSITIVE), new Date()),
-				TestUtils.saveObs(patientService.getPatient(6), hivTestDate, oneWeekBeforeEnrollment.getTime(), new Date())};
-		TestUtils.saveEncounter(patientService.getPatient(6), enrollmentEncounterType,enrollmentForm, new Date(), encounterObss6);
+		Obs[] encounterObss6 = {TestUtils.saveObs(TestUtils.getPatient(6), hivStatus, Dictionary.getConcept(Dictionary.POSITIVE), new Date()),
+				TestUtils.saveObs(TestUtils.getPatient(6), hivTestDate, oneWeekBeforeEnrollment.getTime(), new Date())};
+		TestUtils.saveEncounter(TestUtils.getPatient(6), enrollmentEncounterType,enrollmentForm, new Date(), encounterObss6);
 
 		//Create enrollment encounter for Pat#7 indicating HIV status +ve known at enrollment
-		Obs[] encounterObss7 = {TestUtils.saveObs(patientService.getPatient(7), hivStatus, Dictionary.getConcept(Dictionary.POSITIVE), new Date()),
-				TestUtils.saveObs(patientService.getPatient(7), hivTestDate, enrollmentDate.getTime(), new Date())};
-		TestUtils.saveEncounter(patientService.getPatient(7), enrollmentEncounterType,enrollmentForm, new Date(), encounterObss7);
+		Obs[] encounterObss7 = {TestUtils.saveObs(TestUtils.getPatient(7), hivStatus, Dictionary.getConcept(Dictionary.POSITIVE), new Date()),
+				TestUtils.saveObs(TestUtils.getPatient(7), hivTestDate, enrollmentDate.getTime(), new Date())};
+		TestUtils.saveEncounter(TestUtils.getPatient(7), enrollmentEncounterType,enrollmentForm, new Date(), encounterObss7);
 
 		//Create enrollment encounter for Pat#8 indicating HIV status +ve known after enrollment
-		Obs[] encounterObss8 = {TestUtils.saveObs(patientService.getPatient(8), hivStatus, Dictionary.getConcept(Dictionary.POSITIVE), new Date()),
-				TestUtils.saveObs(patientService.getPatient(8), hivTestDate, oneWeekAfterEnrollment.getTime(), new Date())};
-		TestUtils.saveEncounter(patientService.getPatient(8), enrollmentEncounterType,enrollmentForm, new Date(), encounterObss8);
+		Obs[] encounterObss8 = {TestUtils.saveObs(TestUtils.getPatient(8), hivStatus, Dictionary.getConcept(Dictionary.POSITIVE), new Date()),
+				TestUtils.saveObs(TestUtils.getPatient(8), hivTestDate, oneWeekAfterEnrollment.getTime(), new Date())};
+		TestUtils.saveEncounter(TestUtils.getPatient(8), enrollmentEncounterType,enrollmentForm, new Date(), encounterObss8);
 
 		Context.flushSession();
 
@@ -116,7 +123,7 @@ public class HivTestedAtEnrollmentCalculationTest extends BaseModuleContextSensi
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.calculation.library.mchms.HivTestedAtEnrollmentCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
+	 * @see HivTestedAtEnrollmentCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
 	 * @verifies determine whether MCH-MS patients have been tested for HIV
 	 */
 	@Test

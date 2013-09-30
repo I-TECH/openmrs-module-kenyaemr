@@ -25,8 +25,10 @@ import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyacore.test.TestUtils;
+import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
 import java.util.Calendar;
@@ -37,13 +39,21 @@ import java.util.List;
  */
 public class LostToFollowUpCalculationTest extends BaseModuleContextSensitiveTest {
 
+	@Autowired
+	private CommonMetadata commonMetadata;
+
+	@Autowired
+	private HivMetadata hivMetadata;
+
 	/**
 	 * Setup each test
 	 */
 	@Before
 	public void setup() throws Exception {
 		executeDataSet("dataset/test-concepts.xml");
-		executeDataSet("dataset/test-metadata.xml");
+
+		commonMetadata.install();
+		hivMetadata.install();
 	}
 
 	/**

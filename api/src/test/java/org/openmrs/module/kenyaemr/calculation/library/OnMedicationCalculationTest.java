@@ -30,6 +30,7 @@ import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
 
@@ -38,10 +39,14 @@ import java.util.*;
  */
 public class OnMedicationCalculationTest extends BaseModuleContextSensitiveTest {
 
+	@Autowired
+	private CommonMetadata commonMetadata;
+
 	@Before
 	public void setup() throws Exception {
 		executeDataSet("dataset/test-concepts.xml");
-		executeDataSet("dataset/test-metadata.xml");
+
+		commonMetadata.install();
 	}
 
 	/**

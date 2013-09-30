@@ -22,15 +22,16 @@ import org.openmrs.EncounterType;
 import org.openmrs.Form;
 import org.openmrs.Obs;
 import org.openmrs.Program;
-import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
+import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.MchMetadata;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -41,13 +42,21 @@ import java.util.List;
  */
 public class UnknownPartnerHivStatusCalculationTest extends BaseModuleContextSensitiveTest {
 
+	@Autowired
+	private CommonMetadata commonMetadata;
+
+	@Autowired
+	private MchMetadata mchMetadata;
+
 	/**
 	 * Setup each test
 	 */
 	@Before
 	public void setup() throws Exception {
 		executeDataSet("dataset/test-concepts.xml");
-		executeDataSet("dataset/test-metadata.xml");
+
+		commonMetadata.install();
+		mchMetadata.install();
 	}
 
 	/**
@@ -64,26 +73,24 @@ public class UnknownPartnerHivStatusCalculationTest extends BaseModuleContextSen
 		Form enrollmentForm = MetadataUtils.getForm(MchMetadata.Form.MCHMS_ENROLLMENT);
 
 		//Enroll  #6, #7 and #8 into MCH-MS
-		PatientService patientService = Context.getPatientService();
-
 		for (int i = 6; i <= 8; i++) {
-			TestUtils.enrollInProgram(patientService.getPatient(i), mchmsProgram, new Date());
+			TestUtils.enrollInProgram(TestUtils.getPatient(i), mchmsProgram, new Date());
 		}
 
 		//Get the Partner HIV Status concept
 		Concept partnerHivStatus = Dictionary.getConcept(Dictionary.PARTNER_HIV_STATUS);
 
 		//Create enrollment encounter for Pat#6 indicating partner HIV status unknown
-		Obs[] encounterObss6 = {TestUtils.saveObs(patientService.getPatient(6), partnerHivStatus, Dictionary.getConcept(Dictionary.UNKNOWN), new Date())};
-		TestUtils.saveEncounter(patientService.getPatient(6), enrollmentEncounterType, enrollmentForm, new Date(), encounterObss6);
+		Obs[] encounterObss6 = {TestUtils.saveObs(TestUtils.getPatient(6), partnerHivStatus, Dictionary.getConcept(Dictionary.UNKNOWN), new Date())};
+		TestUtils.saveEncounter(TestUtils.getPatient(6), enrollmentEncounterType, enrollmentForm, new Date(), encounterObss6);
 
 		//Create enrollment encounter for Pat#7 indicating partner HIV status -ve
-		Obs[] encounterObss7 = {TestUtils.saveObs(patientService.getPatient(7), partnerHivStatus, Dictionary.getConcept(Dictionary.NEGATIVE), new Date())};
-		TestUtils.saveEncounter(patientService.getPatient(7), enrollmentEncounterType, enrollmentForm, new Date(), encounterObss7);
+		Obs[] encounterObss7 = {TestUtils.saveObs(TestUtils.getPatient(7), partnerHivStatus, Dictionary.getConcept(Dictionary.NEGATIVE), new Date())};
+		TestUtils.saveEncounter(TestUtils.getPatient(7), enrollmentEncounterType, enrollmentForm, new Date(), encounterObss7);
 
 		//Create enrollment encounter for Pat#8 indicating partner HIV status +ve
-		Obs[] encounterObss8 = {TestUtils.saveObs(patientService.getPatient(8), partnerHivStatus, Dictionary.getConcept(Dictionary.POSITIVE), new Date())};
-		TestUtils.saveEncounter(patientService.getPatient(8), enrollmentEncounterType, enrollmentForm, new Date(), encounterObss8);
+		Obs[] encounterObss8 = {TestUtils.saveObs(TestUtils.getPatient(8), partnerHivStatus, Dictionary.getConcept(Dictionary.POSITIVE), new Date())};
+		TestUtils.saveEncounter(TestUtils.getPatient(8), enrollmentEncounterType, enrollmentForm, new Date(), encounterObss8);
 
 		Context.flushSession();
 
