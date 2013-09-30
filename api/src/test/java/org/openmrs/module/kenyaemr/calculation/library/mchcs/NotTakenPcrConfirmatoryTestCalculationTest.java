@@ -107,7 +107,7 @@ public class NotTakenPcrConfirmatoryTestCalculationTest extends BaseModuleContex
 		List<Integer> ptIds = Arrays.asList(6, 7, 8);
 		CalculationResultMap resultMap = Context.getService(PatientCalculationService.class).evaluate(ptIds, new NotTakenPcrConfirmatoryTestCalculation());
 		Assert.assertTrue((Boolean) resultMap.get(6).getValue()); // HEI has no pcr and hei outcome encounter completed
-		Assert.assertFalse((Boolean) resultMap.get(7).getValue()); //has the pcr confirmatory test done
+		Assert.assertTrue((Boolean) resultMap.get(7).getValue()); //has the pcr confirmatory test done
 		Assert.assertFalse((Boolean) resultMap.get(8).getValue()); // has no hei outcomes encounter
 	}
 }

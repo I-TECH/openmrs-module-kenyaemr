@@ -57,7 +57,7 @@ public class InfantFeedingOptionsCalculation extends BaseEmrCalculation {
 
 			Obs feedingOptions = EmrCalculationUtils.obsResultForPatient(lastChildFeedingOption, ptId);
 
-			if (feedingOptions != null) {
+			if (inMchcsProgram.contains(ptId) && feedingOptions != null) {
 					hasFeedingOption = true;
 				}
 			ret.put(ptId, new BooleanResult(hasFeedingOption, this));
