@@ -14,7 +14,7 @@
 
 package org.openmrs.module.kenyaemr.converter;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.api.context.Context;
@@ -22,7 +22,7 @@ import org.openmrs.module.kenyaemr.regimen.DrugReference;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 
 /**
- *
+ * Tests for {@link StringToDrugReferenceConverter}
  */
 public class StringToDrugReferenceConverterTest extends BaseModuleWebContextSensitiveTest {
 
@@ -30,12 +30,12 @@ public class StringToDrugReferenceConverterTest extends BaseModuleWebContextSens
 
 	@Before
 	public void setup() throws Exception {
-		executeDataSet("test-data.xml");
-		executeDataSet("test-drugdata.xml");
+		executeDataSet("dataset/test-concepts.xml");
+		executeDataSet("dataset/test-drugs.xml");
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.converter.StringToRegimenConverter#convert(String)
+	 * @see StringToDrugReferenceConverter#convert(String)
 	 */
 	@Test
 	public void convert_shouldConvertString() {
@@ -45,9 +45,9 @@ public class StringToDrugReferenceConverterTest extends BaseModuleWebContextSens
 		Assert.assertEquals(Context.getConceptService().getConceptByUuid("84309AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), drugRef1.getConcept());
 
 		// Test drug object reference
-		DrugReference drugRef2 = converter.convert("D$71617-drug");
+		DrugReference drugRef2 = converter.convert("D$97810e6b-cfcf-44fa-b63c-5d3e12cbe8d7");
 		Assert.assertFalse(drugRef2.isConceptOnly());
-		Assert.assertEquals(Context.getConceptService().getDrugByUuid("71617-drug"), drugRef2.getDrug());
+		Assert.assertEquals(Context.getConceptService().getDrugByUuid("97810e6b-cfcf-44fa-b63c-5d3e12cbe8d7"), drugRef2.getDrug());
 
 		// Test invalid reference
 		DrugReference drugRef3 = converter.convert("xxxx");

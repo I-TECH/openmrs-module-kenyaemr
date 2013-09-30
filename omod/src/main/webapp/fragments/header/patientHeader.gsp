@@ -17,7 +17,7 @@
 			<img width="32" height="32" src="${ ui.resourceLink("kenyaui", "images/buttons/patient_" + patient.gender.toLowerCase() + ".png") }"/>
 		</div>
 		<span class="ke-patient-name">${ kenyaUi.formatPersonName(patient) }</span><br/>
-		<span class="ke-patient-gender">${ patient.gender == 'M' ? "Male" : patient.gender == 'F' ? 'Female' : patient.gender }</span>,
+		<span class="ke-patient-gender">${ kenyaUi.formatPersonGender(patient) }</span>,
 		<span class="ke-patient-age">${ kenyaUi.formatPersonAge(patient) } <small>(${ kenyaUi.formatPersonBirthdate(patient) })</small></span>
 	</div>
 	

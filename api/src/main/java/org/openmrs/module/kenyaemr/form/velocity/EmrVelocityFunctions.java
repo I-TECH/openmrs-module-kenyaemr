@@ -12,7 +12,7 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.form;
+package org.openmrs.module.kenyaemr.form.velocity;
 
 import java.util.ArrayList;
 import java.util.Collections;

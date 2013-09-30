@@ -14,7 +14,7 @@
 
 package org.openmrs.module.kenyaemr.reporting.dataset.definition.evaluator;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Cohort;
@@ -38,6 +38,9 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Tests for {@link MergingDataSetEvaluator}
+ */
 public class MergingDataSetEvaluatorTest extends BaseModuleContextSensitiveTest {
 
 	private CohortIndicatorDataSetDefinition cohortDsd1, cohortDsd2;

@@ -154,8 +154,7 @@ public class EnterHtmlFormFragmentController {
 		Encounter formEncounter = fes.getContext().getMode() == Mode.ENTER ? fes.getSubmissionActions().getEncountersToCreate().get(0) : encounter;
 
 		if (formDescriptor.getAutoCreateVisitTypeUuid() != null) {
-			// Detach encounter from its visit if it has one. Visit handler may have to move it to a different visit
-			formEncounter.setVisit(null);
+			// Don't do validation against the visit because the encounter can be moved
 		}
 		else if (visit != null) {
 			// If encounter is for a specific visit then check encounter date is valid for that visit. The visit handler

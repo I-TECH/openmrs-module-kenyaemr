@@ -16,7 +16,7 @@
 	var accountItemOpts = {
 		icon: '<img width="32" height="32" src="${ ui.resourceLink("kenyaui", "images/buttons/account.png") }"/>',
 		title: function(account) {
-			return account.personName + '<input type="hidden" name="personId" value="' + account.personId + '"/>';
+			return account.name + '<input type="hidden" name="personId" value="' + account.id + '"/>';
 		},
 		leftDetails: function(account) {
 			var tmp = [];

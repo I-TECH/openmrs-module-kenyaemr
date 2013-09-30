@@ -23,9 +23,13 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyacore.report.CalculationReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportManager;
+import org.openmrs.module.kenyaemr.Dictionary;
+import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
+import org.openmrs.module.kenyaemr.test.EmrTestUtils;
 import org.openmrs.module.kenyaemr.test.ReportingTestUtils;
 import org.openmrs.module.kenyacore.test.TestUtils;
+import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
@@ -43,6 +47,12 @@ import java.util.Date;
 public class DecliningCd4ReportBuilderTest extends BaseModuleContextSensitiveTest {
 
 	@Autowired
+	private CommonMetadata commonMetadata;
+
+	@Autowired
+	private HivMetadata hivMetadata;
+
+	@Autowired
 	private ReportManager reportManager;
 
 	@Autowired
@@ -51,7 +61,9 @@ public class DecliningCd4ReportBuilderTest extends BaseModuleContextSensitiveTes
 	@Before
 	public void setup() throws Exception {
 		executeDataSet("dataset/test-concepts.xml");
-		executeDataSet("dataset/test-metadata.xml");
+
+		commonMetadata.install();
+		hivMetadata.install();
 
 		reportManager.refresh();
 	}
@@ -60,38 +72,28 @@ public class DecliningCd4ReportBuilderTest extends BaseModuleContextSensitiveTes
 	public void testReport() throws Exception {
 		Program hivProgram = MetadataUtils.getProgram(HivMetadata._Program.HIV);
 
-		// Enroll patients #6, #7 and #8 in the HIV Program
-		PatientService ps = Context.getPatientService();
-		for (int i = 6; i <= 8; ++i) {
-			TestUtils.enrollInProgram(ps.getPatient(i), hivProgram, new Date());
-		}
+		// Enrol patient #7 in the HIV program
+		TestUtils.enrollInProgram(TestUtils.getPatient(7), hivProgram, new Date());
 
-		// Give patients #7 and #8 a CD4 count 180 days ago
-		Concept cd4 = Context.getConceptService().getConcept(5497);
+		// Give patient #7 a CD4 count 180 days ago
+		Concept cd4 = Dictionary.getConcept(Dictionary.CD4_COUNT);
 		Calendar calendar = Calendar.getInstance();
 		calendar.add(Calendar.DATE, -180);
-		TestUtils.saveObs(Context.getPatientService().getPatient(7), cd4, 123d, calendar.getTime());
-		TestUtils.saveObs(Context.getPatientService().getPatient(8), cd4, 123d, calendar.getTime());
+		TestUtils.saveObs(TestUtils.getPatient(7), cd4, 123d, calendar.getTime());
 
-		// Give patient #7 a lower CD4 count today
+		// Give patient #7 a lower CD4 now
 		TestUtils.saveObs(Context.getPatientService().getPatient(7), cd4, 120d, new Date());
-
-		// Give patient #8 a higher CD4 count today
-		TestUtils.saveObs(Context.getPatientService().getPatient(8), cd4, 126d, new Date());
 
 		Context.flushSession();
 
+		// Evaluate report on
 		CalculationReportDescriptor report = (CalculationReportDescriptor) reportManager.getReportDescriptor("kenyaemr.hiv.report.decliningCd4");
 		ReportDefinition rd = reportBuilder.getDefinition(report);
 		EvaluationContext ec = new EvaluationContext();
 
-		try {
-			ReportData data = Context.getService(ReportDefinitionService.class).evaluate(rd, ec);
+		ReportData data = Context.getService(ReportDefinitionService.class).evaluate(rd, ec);
 
-			ReportingTestUtils.checkPatientAlertListReport(Collections.singleton("1321200001"), "HIV Unique ID", data);
-			ReportingTestUtils.printReport(data);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		ReportingTestUtils.checkPatientListReport(Collections.singleton(7), data);
+		//ReportingTestUtils.printReport(data);
 	}
 }

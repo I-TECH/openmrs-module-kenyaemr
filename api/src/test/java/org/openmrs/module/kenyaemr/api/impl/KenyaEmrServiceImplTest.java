@@ -30,6 +30,7 @@ import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.module.kenyaemr.datatype.LocationDatatype;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
+import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -40,9 +41,15 @@ import java.util.Map;
 import static org.hamcrest.Matchers.*;
 
 /**
- * Tests for {@link org.openmrs.module.kenyaemr.api.impl.KenyaEmrServiceImpl}
+ * Tests for {@link KenyaEmrServiceImpl}
  */
 public class KenyaEmrServiceImplTest extends BaseModuleContextSensitiveTest {
+
+	@Autowired
+	private CommonMetadata commonMetadata;
+
+	@Autowired
+	private HivMetadata hivMetadata;
 
 	@Autowired
 	private KenyaEmrService service;
@@ -53,9 +60,15 @@ public class KenyaEmrServiceImplTest extends BaseModuleContextSensitiveTest {
 	@Before
 	public void setup() throws Exception {
 		executeDataSet("dataset/test-concepts.xml");
-		executeDataSet("dataset/test-metadata.xml");
 
-		TestUtils.saveGlobalProperty(EmrConstants.GP_DEFAULT_LOCATION, null, LocationDatatype.class);
+		commonMetadata.install();
+		hivMetadata.install();
+
+		LocationAttributeType mflCode = MetadataUtils.getLocationAttributeType(CommonMetadata._LocationAttributeType.MASTER_FACILITY_CODE);
+
+		TestUtils.saveLocationAttribute(Context.getLocationService().getLocation(1), mflCode, "15001");
+		TestUtils.saveLocationAttribute(Context.getLocationService().getLocation(2), mflCode, "15002");
+		TestUtils.saveLocationAttribute(Context.getLocationService().getLocation(3), mflCode, "15003");
 	}
 
 	/**

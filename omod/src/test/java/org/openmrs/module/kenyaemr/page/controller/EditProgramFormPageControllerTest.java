@@ -23,8 +23,10 @@ import org.openmrs.PatientProgram;
 import org.openmrs.Program;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyacore.test.TestUtils;
+import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.hamcrest.Matchers.*;
 
@@ -33,6 +35,12 @@ import static org.hamcrest.Matchers.*;
  */
 public class EditProgramFormPageControllerTest extends BaseModuleWebContextSensitiveTest {
 
+	@Autowired
+	private CommonMetadata commonMetadata;
+
+	@Autowired
+	private HivMetadata hivMetadata;
+
 	private EditProgramFormPageController controller;
 
 	/**
@@ -40,7 +48,10 @@ public class EditProgramFormPageControllerTest extends BaseModuleWebContextSensi
 	 */
 	@Before
 	public void setup() throws Exception {
-		executeDataSet("test-data.xml");
+		executeDataSet("dataset/test-concepts.xml");
+
+		commonMetadata.install();
+		hivMetadata.install();
 
 		controller = new EditProgramFormPageController();
 	}

@@ -4,13 +4,13 @@
 
 <div class="ke-page-content">
 
-	${ ui.includeFragment("kenyaui", "widget/tabMenu", [ items: [
+	${ /*ui.includeFragment("kenyaui", "widget/tabMenu", [ items: [
 			[ label: "Overview", tabid: "overview" ],
 			[ label: "Lab Tests", tabid: "labtests" ],
 			[ label: "Prescriptions", tabid: "prescriptions" ]
-	] ]) }
+	] ])*/ "" }
 
-	<div class="ke-tab" data-tabid="overview">
+	<!--<div class="ke-tab" data-tabid="overview">-->
 		<table cellpadding="0" cellspacing="0" border="0" width="100%">
 			<tr>
 				<td width="40%" valign="top">
@@ -30,14 +30,7 @@
 				</td>
 			</tr>
 		</table>
-	</div>
-
-	<div class="ke-tab" data-tabid="labtests">
-		${ /*ui.includeFragment("kenyalab", "patientLabTests", [ patient: currentPatient ])*/ "TODO" }
-	</div>
-	<div class="ke-tab" data-tabid="prescriptions">
-		${ /*ui.includeFragment("kenyaemr", "prescription/patientPrescriptions", [ patient: currentPatient ])*/ "TODO" }
-	</div>
+	<!--</div>-->
 
 </div>
 

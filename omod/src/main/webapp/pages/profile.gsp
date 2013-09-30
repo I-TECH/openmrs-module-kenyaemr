@@ -27,8 +27,8 @@
 	<div class="ke-panel-frame">
 		<div class="ke-panel-heading">Personal Details</div>
 		<div class="ke-panel-content">
-			${ ui.includeFragment("kenyaui", "widget/dataPoint", [ label: "Real name", value: person.personName ]) }
-			${ ui.includeFragment("kenyaui", "widget/dataPoint", [ label: "Gender", value: (person.gender.toLowerCase() == 'f' ? "Female" : "Male") ]) }
+			${ ui.includeFragment("kenyaui", "widget/dataPoint", [ label: "Real name", value: kenyaUi.formatPersonName(person) ]) }
+			${ ui.includeFragment("kenyaui", "widget/dataPoint", [ label: "Gender", value: kenyaUi.formatPersonGender(person) ]) }
 		</div>
 	</div>
 
