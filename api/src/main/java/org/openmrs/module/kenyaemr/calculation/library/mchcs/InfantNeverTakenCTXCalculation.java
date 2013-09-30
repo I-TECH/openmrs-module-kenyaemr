@@ -64,7 +64,7 @@ public class InfantNeverTakenCTXCalculation extends BaseEmrCalculation {
 			boolean notTakingCtx = false;
 			// Is patient alive and in the mchcs program and HEI?
 			Obs hivStatusObs = EmrCalculationUtils.obsResultForPatient(lastChildHivStatus, ptId);
-			if (lastChildHivStatus != null && hivStatusObs !=null && (hivStatusObs.getValueCoded().equals(hivExposed))) {
+			if (inMchcsProgram.contains(ptId) && lastChildHivStatus != null && hivStatusObs !=null && (hivStatusObs.getValueCoded().equals(hivExposed))) {
 				notTakingCtx = true ;
 				ListResult patientMedOrders = (ListResult) medOrdersObss.get(ptId);
 				if (patientMedOrders != null) {

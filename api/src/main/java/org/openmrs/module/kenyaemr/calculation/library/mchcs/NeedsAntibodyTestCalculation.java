@@ -64,7 +64,7 @@ public class NeedsAntibodyTestCalculation extends BaseEmrCalculation implements 
 
 		for (Integer ptId : cohort) {
 			boolean needsAntibody = false;
-			  if (lastChildHivStatus != null) {
+			  if (inMchcsProgram.contains(ptId) && lastChildHivStatus != null) {
 				 // Integer ageInMonths = ((Age) ages.get(ptId).getValue()).getFullMonths();
 				  Obs rapidTest1 = EmrCalculationUtils.obsResultForPatient(lastHivRapidTest1, ptId);
 				  Obs rapidTest2 = EmrCalculationUtils.obsResultForPatient(lastHivRapidTest2, ptId);
