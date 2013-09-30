@@ -97,10 +97,10 @@ public class PatientUtilsFragmentControllerTest extends BaseModuleWebContextSens
 	public void flags_shouldReturnAllFlags() {
 		List<SimpleObject> flags = controller.flags(7, calculationManager);
 
-		Assert.assertThat(flags, hasSize(greaterThan(0)));
-
 		// Check that every flag object has a message and that it doesn't start with "ERROR..."
 	 	for (SimpleObject flag : flags) {
+			TestUtils.printJson(flag);
+
 			Assert.assertThat(flag, hasKey("message"));
 			Assert.assertThat((String) flag.get("message"), not(startsWith("ERROR")));
 		}
