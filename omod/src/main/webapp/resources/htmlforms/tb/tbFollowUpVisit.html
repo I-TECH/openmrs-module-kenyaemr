@@ -12,6 +12,12 @@
   ~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
   -->
 <htmlform>
+	<style type="text/css">
+		table.tb {
+		background-color: #FFFFCC;
+		border: 1px solid black;
+		}
+	</style>
 	<script type="text/javascript">
 		$j(document).ready(function(){
 			var sensitivityLbl = document.getElementById("sensitivity");
@@ -104,14 +110,14 @@
 	<div class="ke-form-header">
 		<table style="width: 100%">
 			<tr>
-				<td>Enrollment date: <encounterDate id="encounter-date" showTime="true" /></td>
-				<td>Enrolled by: <encounterProvider default="currentUser" /></td>
-				<td>Enrolled at: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" /></td>
+				<td>Encounter Date: <encounterDate id="encounter-date" showTime="false" /></td>
+				<td>Provider: <encounterProvider default="currentUser" /></td>
+				<td>Location: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" /></td>
 			</tr>
 		</table>
 	</div>
 	<br />
-	<table align="center" cellpadding="0">
+	<table align="center" cellpadding="0" class="tb">
 		<tr>
 			<td>
 				<fieldset>
@@ -126,7 +132,7 @@
 								</tr>
 								<tr>
 									<td>Result:</td>
-									<td><obs conceptId="307AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="sputumResults" answerConceptIds="159985AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Scanty,+,++,+++,Negative" dateLabel="&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;"/></td>
+									<td><obs conceptId="307AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="sputumResults" answerConceptIds="159985AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Scanty,+,++,+++,Negative" /></td>
 								</tr>
 								<tr>
 									<td>Serial No:</td>
@@ -136,6 +142,10 @@
 									<td>Quantity:</td>
 									<td><obs conceptId="160023AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="quantity" /></td>
 									<td id="hpfValues" class="div"></td>
+								</tr>
+								<tr>
+									<td>Date Done</td>
+									<td><obs conceptId="159964AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="date-results-date"  allowTime="false" /></td>
 								</tr>
 							</obsgroup>
 						</table>
@@ -148,7 +158,7 @@
 						<obsgroup groupingConceptId="159981AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
 							<tr>
 								<td>Bacterial Colonies growth</td>
-								<td><obs conceptId="159982AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Growth,No growth" id="growth_no_growth" dateLabel="&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;"/></td>
+								<td><obs conceptId="159982AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Growth,No growth" id="growth_no_growth" /></td>
 							</tr>
 							<tr>
 								<td>Number of Colonies</td>
@@ -171,6 +181,10 @@
 									<obs conceptId="159958AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="75948AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="E" style="checkbox" />
 								</td>
 							</tr>
+							<tr>
+								<td>Date Done</td>
+								<td><obs conceptId="159964AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="date-results-date"  allowTime="false" /></td>
+							</tr>
 						</obsgroup>
 					</table>
 				</fieldset>
@@ -179,10 +193,12 @@
 		<tr>
 			<td colspan="2">
 				<fieldset>
-				  <table>
+				  <table cellpadding="5">
 					  <tr>
 						  <td>Hiv Status</td>
 						  <td><obs conceptId="1169AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+						  <td>Return Visit date</td>
+						  <td><obs conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
 					  </tr>
 				</table>
 				</fieldset>
