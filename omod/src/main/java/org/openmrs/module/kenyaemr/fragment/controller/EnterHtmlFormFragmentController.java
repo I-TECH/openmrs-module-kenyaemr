@@ -92,6 +92,11 @@ public class EnterHtmlFormFragmentController {
 			fes.setReturnUrl(returnUrl);
 		}
 
+		// Ensure we've generated the form's HTML (and thus set up the submission actions, etc) before we do anything
+		fes.getHtmlToDisplay();
+
+		//Context.setVolatileUserData(FORM_IN_PROGRESS_KEY, session);
+
 		model.addAttribute("command", fes);
 		model.addAttribute("visit", visit);
 	}
@@ -132,6 +137,9 @@ public class EnterHtmlFormFragmentController {
 		if (returnUrl != null) {
 			fes.setReturnUrl(returnUrl);
 		}
+
+		// Ensure we've generated the form's HTML (and thus set up the submission actions, etc) before we do anything
+		fes.getHtmlToDisplay();
 
 		// Validate submission
 		List<FormSubmissionError> validationErrors = fes.getSubmissionController().validateSubmission(fes.getContext(), actionRequest.getHttpRequest());
