@@ -12,6 +12,95 @@
   ~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
   -->
 <htmlform>
+	<script type="text/javascript">
+		$j(document).ready(function(){
+			var sensitivityLbl = document.getElementById("sensitivity");
+			var growthPresent = getValue('growth_no_growth.value');
+			if (growthPresent == 703) {
+				$('#sensitivity :input').prop('disabled', false);
+			}
+			else{
+				$('#sensitivity :input').prop('disabled', true);
+				$('#numberOfColonies :input').prop('disabled', true);
+			}
+
+			getField('growth_no_growth.value').click(function() {
+				if (getValue('growth_no_growth.value') == 703) {
+					$('#sensitivity :input').prop('disabled', false);
+					$('#numberOfColonies :input').prop('disabled', false);
+				}
+				else{
+					$('#sensitivity :input').prop('disabled', true);
+					$('#numberOfColonies :input').prop('disabled', true);
+				}
+			});
+			var testType = getValue('testType.value');
+			var sputumResult = getValue('sputumResults.value');
+			var quantityvalue = getValue('quantity.value') ;
+
+			if(testType == 160022 &amp;&amp; (sputumResult == 159985 || sputumResult == 1362 )) {
+				$('#hpfValues').html('AFBs/100hpf');
+			}
+			else if (testType == 160022 &amp;&amp; (sputumResult == 1363 || sputumResult == 1364 )) {
+				$('#hpfValues').html('AFBs/hpf');
+			}
+			else if (testType == 161880 &amp;&amp; (sputumResult == 159985 || sputumResult == 1362 )) {
+				$('#hpfValues').html('AFBs/40hpf');
+			}
+			else if (testType == 161880 &amp;&amp; (sputumResult == 1363 || sputumResult == 1364 )) {
+				$('#hpfValues').html('AFBs/hpf');
+			}
+			else {
+				$('#hpfValues').html(' ');
+			}
+			//get the change event for type of test ordered
+			getField('testType.value').change(function() {
+				var testType1 = getValue('testType.value');
+				var sputumResult1 = getValue('sputumResults.value');
+				var quantityvalue1 = getValue('quantity.value') ;
+
+				if(testType1 == 160022 &amp;&amp; (sputumResult1 == 159985 || sputumResult1 == 1362 )) {
+					$('#hpfValues').html('AFBs/100hpf');
+				}
+				else if (testType1 == 160022 &amp;&amp; (sputumResult1 == 1363 || sputumResult1 == 1364 )) {
+					$('#hpfValues').html('AFBs/hpf');
+				}
+				else if (testType1 == 161880 &amp;&amp; (sputumResult1 == 159985 || sputumResult1 == 1362 )) {
+					$('#hpfValues').html('AFBs/40hpf');
+				}
+				else if (testType1 == 161880 &amp;&amp; (sputumResult1 == 1363 || sputumResult1 == 1364 )) {
+					$('#hpfValues').html('AFBs/hpf');
+				}
+				else {
+					$('#hpfValues').html(' ');
+				}
+
+			});
+			//get change event for results
+			getField('sputumResults.value').change(function() {
+				var testType2 = getValue('testType.value');
+				var sputumResult2 = getValue('sputumResults.value');
+				var quantityvalue2 = getValue('quantity.value') ;
+
+				if(testType2 == 160022 &amp;&amp; (sputumResult2 == 159985 || sputumResult2 == 1362 )) {
+					$('#hpfValues').html('AFBs/100hpf');
+				}
+				else if (testType2 == 160022 &amp;&amp; (sputumResult2 == 1363 || sputumResult2 == 1364 )) {
+					$('#hpfValues').html('AFBs/hpf');
+				}
+				else if (testType2 == 161880 &amp;&amp; (sputumResult2 == 159985 || sputumResult2 == 1362 )) {
+					$('#hpfValues').html('AFBs/40hpf');
+				}
+				else if (testType2 == 161880 &amp;&amp; (sputumResult2 == 1363 || sputumResult2 == 1364 )) {
+					$('#hpfValues').html('AFBs/hpf');
+				}
+				else {
+					$('#hpfValues').html(' ');
+				}
+
+			});
+		});
+	</script>
 	<div class="ke-form-header">
 		<table style="width: 100%">
 			<tr>
@@ -21,6 +110,76 @@
 			</tr>
 		</table>
 	</div>
+	<br />
+	<table align="center" cellpadding="10">
+		<tr>
+			<td>
+				<fieldset>
+					<legend>Sputum Results</legend>
+						<table>
+							<obsgroup groupingConceptId="159960AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+								<tr>
+									<td>Type:</td>
+									<td>
+										<obs conceptId="159961AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="testType" answerConceptIds="160022AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161880AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="ZN Smear Microscopy,Fluorescence Microscopy" />
+									</td>
+									<td>Result:</td>
+									<td><obs conceptId="307AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="sputumResults" answerConceptIds="159985AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Scanty,+,++,+++,Negative" dateLabel="&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;"/></td>
+								</tr>
+								<tr>
+									<td>Serial No:</td>
+									<td><obs conceptId="159968AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  /></td>
+									<td>Quantity:</td>
+									<td><obs conceptId="160023AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="quantity" /></td>
+									<td id="hpfValues" class="div"></td>
+								</tr>
+							</obsgroup>
+						</table>
+				</fieldset>
+			</td>
+			<td>
+				<fieldset>
+					<legend>Culture/Sensitivity Results</legend>
+					<table>
+						<obsgroup groupingConceptId="159981AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+							<tr>
+								<td>Bacterial Colonies growth</td>
+								<td><obs conceptId="159982AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Growth,No growth" id="growth_no_growth" dateLabel="&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;"/></td>
+							</tr>
+							<tr>
+								<td>Number of Colonies</td>
+								<td><obs conceptId="159952AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="numberOfColonies" /></td>
+							</tr>
+							<tr>
+								<td align="center" id="sensitivity">
+									Resistant (R)
+									<obs conceptId="159956AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="84360AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="S" style="checkbox" />
+									<obs conceptId="159956AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="767AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="R" style="checkbox" />
+									<obs conceptId="159956AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="78280AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="INH" style="checkbox" />
+									<obs conceptId="159956AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="75948AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="E" style="checkbox" />
+									<br />
+									Sensitive (S)
+									<obs conceptId="159958AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="84360AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="S" style="checkbox" />
+									<obs conceptId="159958AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="767AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="R" style="checkbox" />
+									<obs conceptId="159958AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="78280AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="INH" style="checkbox" />
+									<obs conceptId="159958AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="75948AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="E" style="checkbox" />
+								</td>
+							</tr>
+						</obsgroup>
+					</table>
+				</fieldset>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2">
+				<fieldset>
+					<legend>Return Visit Details</legend>
+
+				</fieldset>
+			</td>
+		</tr>
+	</table>
+	<br />
 	<div class="ke-form-footer">
 		<submit />
 	</div>
