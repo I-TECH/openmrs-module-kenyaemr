@@ -111,7 +111,7 @@
 		</table>
 	</div>
 	<br />
-	<table align="center" cellpadding="10">
+	<table align="center" cellpadding="0">
 		<tr>
 			<td>
 				<fieldset>
@@ -123,12 +123,16 @@
 									<td>
 										<obs conceptId="159961AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="testType" answerConceptIds="160022AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161880AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="ZN Smear Microscopy,Fluorescence Microscopy" />
 									</td>
+								</tr>
+								<tr>
 									<td>Result:</td>
 									<td><obs conceptId="307AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="sputumResults" answerConceptIds="159985AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Scanty,+,++,+++,Negative" dateLabel="&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;"/></td>
 								</tr>
 								<tr>
 									<td>Serial No:</td>
 									<td><obs conceptId="159968AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  /></td>
+								</tr>
+								<tr>
 									<td>Quantity:</td>
 									<td><obs conceptId="160023AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="quantity" /></td>
 									<td id="hpfValues" class="div"></td>
@@ -157,6 +161,8 @@
 									<obs conceptId="159956AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="767AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="R" style="checkbox" />
 									<obs conceptId="159956AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="78280AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="INH" style="checkbox" />
 									<obs conceptId="159956AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="75948AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="E" style="checkbox" />
+
+									<br />
 									<br />
 									Sensitive (S)
 									<obs conceptId="159958AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="84360AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="S" style="checkbox" />
@@ -173,8 +179,12 @@
 		<tr>
 			<td colspan="2">
 				<fieldset>
-					<legend>Return Visit Details</legend>
-
+				  <table>
+					  <tr>
+						  <td>Hiv Status</td>
+						  <td><obs conceptId="1169AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+					  </tr>
+				</table>
 				</fieldset>
 			</td>
 		</tr>
