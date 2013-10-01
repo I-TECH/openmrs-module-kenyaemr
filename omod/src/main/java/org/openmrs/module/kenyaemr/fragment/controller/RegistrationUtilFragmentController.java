@@ -34,8 +34,10 @@ import org.openmrs.Visit;
 import org.openmrs.VisitType;
 import org.openmrs.api.VisitService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyaemr.util.EmrUiUtils;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
+import org.openmrs.module.kenyaui.annotation.AppAction;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.BindParams;
@@ -63,6 +65,7 @@ public class RegistrationUtilFragmentController {
 	 * @param ui the UI utils
 	 * @return the visit types as simple objects
 	 */
+	@AppAction(EmrConstants.APP_REGISTRATION)
 	public List<SimpleObject> activeVisitTypes(UiUtils ui) {
 		Map<VisitType, Integer> activeVisitTypes = new HashMap<VisitType, Integer>();
 		
@@ -87,6 +90,7 @@ public class RegistrationUtilFragmentController {
 	 * @param visitTypesToClose the visit types to close
 	 * @return success or failure message
 	 */
+	@AppAction(EmrConstants.APP_REGISTRATION)
 	public Object closeActiveVisits(@RequestParam(value = "visitType", required = false) List<VisitType> visitTypesToClose) {
 		if (CollectionUtils.isEmpty(visitTypesToClose)) {
 			return new FailureResult("You didn't choose any types");
@@ -127,6 +131,7 @@ public class RegistrationUtilFragmentController {
 	 * @param pat the patient command object
 	 * @return the patient as a simple object
 	 */
+	@AppAction(EmrConstants.APP_REGISTRATION)
 	public SimpleObject createPatient(UiUtils ui,
 	                                  @MethodParam("createPatientCommand") @BindParams("patient") @Validate(PatientValidator.class) Patient pat) {
 		ui.validate(pat, new CreatePatientValidator(), "patient");
@@ -190,6 +195,7 @@ public class RegistrationUtilFragmentController {
 	 * @param visit the visit
 	 * @return the simplified visit
 	 */
+	@AppAction(EmrConstants.APP_REGISTRATION)
 	public SimpleObject startVisit(@BindParams("visit") @Validate Visit visit, UiUtils ui, @SpringBean EmrUiUtils kenyaUi) {
 		if (visit.getLocation() == null)
 			visit.setLocation(Context.getService(KenyaEmrService.class).getDefaultLocation());
@@ -206,6 +212,7 @@ public class RegistrationUtilFragmentController {
 	 * @param visit the visit
 	 * @return the simplified visit
 	 */
+	@AppAction(EmrConstants.APP_REGISTRATION)
 	public SimpleObject editVisit(@RequestParam("visit.visitId") @BindParams("visit") @Validate Visit visit, UiUtils ui, @SpringBean EmrUiUtils kenyaUi) {
 		ui.validate(visit, new RegistrationVisitValidator(), "visit");
 
