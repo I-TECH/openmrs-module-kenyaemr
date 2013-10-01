@@ -66,15 +66,15 @@ public class NotTakenPcrConfirmatoryTestCalculationTest extends BaseModuleContex
 	@Test
 	public void evaluate_shouldCalculateNotTakenPcrConfirmatoryTest() throws Exception {
 		//get mchcs program
-		Program mchcsProgram = MetadataUtils.getProgram(MchMetadata.Program.MCHCS);
+		Program mchcsProgram = MetadataUtils.getProgram(MchMetadata._Program.MCHCS);
 		// Enroll patients #6 and  #7  in the mchcs Program
 		TestUtils.enrollInProgram(TestUtils.getPatient(6), mchcsProgram, new Date());
 		TestUtils.enrollInProgram(TestUtils.getPatient(7), mchcsProgram, new Date());
 		TestUtils.enrollInProgram(TestUtils.getPatient(8), mchcsProgram, new Date());
 
 		//getting an encounter required before confirmation is done
-		EncounterType heiOutcomesEncounterType = MetadataUtils.getEncounterType(MchMetadata.EncounterType.MCHCS_HEI_COMPLETION);
-		Form heiCompletionForm = MetadataUtils.getForm(MchMetadata.Form.MCHCS_HEI_COMPLETION);
+		EncounterType heiOutcomesEncounterType = MetadataUtils.getEncounterType(MchMetadata._EncounterType.MCHCS_HEI_COMPLETION);
+		Form heiCompletionForm = MetadataUtils.getForm(MchMetadata._Form.MCHCS_HEI_COMPLETION);
 
 		//get the HIV status of the infant and the if wheather antibody test was done or NOT
 		Concept infantHivStatus = Dictionary.getConcept(Dictionary.CHILDS_CURRENT_HIV_STATUS);

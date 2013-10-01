@@ -64,7 +64,7 @@ public class NotHivTestedCalculationTest extends BaseModuleContextSensitiveTest 
 	public void evaluate_shouldDetermineWhetherPatientsHaveNotBeenHivTested() throws Exception {
 
 		// Get the MCH-MS Program
-		Program mchmsProgram = MetadataUtils.getProgram(MchMetadata.Program.MCHMS);
+		Program mchmsProgram = MetadataUtils.getProgram(MchMetadata._Program.MCHMS);
 
 		//Enroll patients #6, #7 and #8 into MCH-MS
 		for (int i = 6; i <= 8; i++) {

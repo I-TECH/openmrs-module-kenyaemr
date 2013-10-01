@@ -68,9 +68,9 @@ public class UnknownPartnerHivStatusCalculationTest extends BaseModuleContextSen
 	public void evaluate_shouldDetermineWhetherPatientsPartnersHiVStatusesAreUnknown() throws Exception {
 
 		// Get the MCH-MS program, enrollment encounter type and enrollment form
-		Program mchmsProgram = MetadataUtils.getProgram(MchMetadata.Program.MCHMS);
-		EncounterType enrollmentEncounterType = MetadataUtils.getEncounterType(MchMetadata.EncounterType.MCHMS_ENROLLMENT);
-		Form enrollmentForm = MetadataUtils.getForm(MchMetadata.Form.MCHMS_ENROLLMENT);
+		Program mchmsProgram = MetadataUtils.getProgram(MchMetadata._Program.MCHMS);
+		EncounterType enrollmentEncounterType = MetadataUtils.getEncounterType(MchMetadata._EncounterType.MCHMS_ENROLLMENT);
+		Form enrollmentForm = MetadataUtils.getForm(MchMetadata._Form.MCHMS_ENROLLMENT);
 
 		//Enroll  #6, #7 and #8 into MCH-MS
 		for (int i = 6; i <= 8; i++) {
