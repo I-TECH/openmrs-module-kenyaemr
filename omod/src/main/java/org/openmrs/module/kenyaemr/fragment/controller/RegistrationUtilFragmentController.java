@@ -219,47 +219,6 @@ public class RegistrationUtilFragmentController {
 		Context.getVisitService().saveVisit(visit);
 		return ui.simplifyObject(visit);
 	}
-    
-    /**
-     * Enrolls a patient in a program 
-     */
-    public SimpleObject enrollInProgram(UiUtils ui,
-                                  @RequestParam("patient") Patient patient,
-                                  @RequestParam("program") Program program,
-                                  @RequestParam("dateEnrolled") Date enrollmentDate) {
-    	PatientProgram pp = new PatientProgram();
-    	pp.setPatient(patient);
-    	pp.setProgram(program);
-    	pp.setDateEnrolled(enrollmentDate);
-
-    	// TODO error messages won't be pretty
-    	ui.validate(pp, new PatientProgramValidator(), null);
-    	
-    	pp = Context.getProgramWorkflowService().savePatientProgram(pp);
-    	return SimpleObject.fromObject(pp, ui, "patientProgramId");
-    }
-
-	/**
-	 * Completes a patient in a program
-	 * @param ui
-	 * @param pp
-	 * @param dateCompleted
-	 * @param outcome
-	 * @return
-	 */
-    public SimpleObject completeProgram(UiUtils ui,
-                                  @RequestParam("enrollment") PatientProgram pp,
-                                  @RequestParam("dateCompleted") Date dateCompleted,
-                                  @RequestParam("outcome") Concept outcome) {
-    	pp.setDateCompleted(dateCompleted);
-    	pp.setOutcome(outcome);
-    	
-    	// TODO error messages won't be pretty
-    	ui.validate(pp, new PatientProgramValidator(), null);
-    	
-    	pp = Context.getProgramWorkflowService().savePatientProgram(pp);
-    	return SimpleObject.fromObject(pp, ui, "patientProgramId");
-    }
 
 	/**
 	 * Extra validation for visits
