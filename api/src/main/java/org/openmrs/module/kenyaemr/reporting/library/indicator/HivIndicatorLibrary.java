@@ -27,10 +27,10 @@ import org.springframework.stereotype.Component;
 import static org.openmrs.module.kenyacore.report.ReportUtils.map;
 
 /**
- * Library of ART related indicator definitions. All indicators require parameters ${startDate} and ${endDate}
+ * Library of HIV related indicator definitions. All indicators require parameters ${startDate} and ${endDate}
  */
 @Component
-public class ArtIndicatorLibrary {
+public class HivIndicatorLibrary {
 
 	@Autowired
 	private CommonIndicatorLibrary commonIndicators;

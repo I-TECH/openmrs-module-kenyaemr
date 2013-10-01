@@ -27,7 +27,7 @@ import org.openmrs.module.kenyaemr.reporting.indicator.HivCareVisitsIndicator;
 import org.openmrs.module.kenyaemr.reporting.library.cohort.HivCohortLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.cohort.CommonCohortLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.dimension.CommonDimensionLibrary;
-import org.openmrs.module.kenyaemr.reporting.library.indicator.ArtIndicatorLibrary;
+import org.openmrs.module.kenyaemr.reporting.library.indicator.HivIndicatorLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.indicator.CommonIndicatorLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.indicator.TbIndicatorLibrary;
 import org.openmrs.module.reporting.cohort.definition.*;
@@ -66,7 +66,7 @@ public class Moh731ReportBuilder extends BaseIndicatorReportBuilder {
 	private HivCohortLibrary artCohorts;
 
 	@Autowired
-	private ArtIndicatorLibrary artIndicators;
+	private HivIndicatorLibrary artIndicators;
 
 	@Autowired
 	private TbIndicatorLibrary tbIndicators;
