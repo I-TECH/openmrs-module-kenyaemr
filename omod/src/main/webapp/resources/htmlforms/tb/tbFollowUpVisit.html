@@ -19,45 +19,53 @@
 		}
 	</style>
 	<script type="text/javascript">
-		$j(document).ready(function(){
+		jq(function(){
 			var sensitivityLbl = document.getElementById("sensitivity");
+			var POSITIVE = 703;
+			var ACID_FAST_FLUOROCHROME_STAIN_METHOD = 160022;
+			var SCANTY = 159985;
+			var ONE_PLUS = 1362;
+			var TWO_PLUS = 1363;
+			var THREE_PLUS = 1364;
+			var FLUORESCENT_STAIN_METHOD_FOR_SMEAR_INTERPRETATION = 161880;
+
 			var growthPresent = getValue('growth_no_growth.value');
-			if (growthPresent == 703) {
-				$('#sensitivity :input').prop('disabled', false);
+			if (growthPresent == POSITIVE) {
+				jq('#sensitivity :input').prop('disabled', false);
 			}
 			else{
-				$('#sensitivity :input').prop('disabled', true);
-				$('#numberOfColonies :input').prop('disabled', true);
+				jq('#sensitivity :input').prop('disabled', true);
+				jq('#numberOfColonies :input').prop('disabled', true);
 			}
 
 			getField('growth_no_growth.value').click(function() {
-				if (getValue('growth_no_growth.value') == 703) {
-					$('#sensitivity :input').prop('disabled', false);
-					$('#numberOfColonies :input').prop('disabled', false);
+				if (getValue('growth_no_growth.value') == POSITIVE) {
+					jq('#sensitivity :input').prop('disabled', false);
+					jq('#numberOfColonies :input').prop('disabled', false);
 				}
 				else{
-					$('#sensitivity :input').prop('disabled', true);
-					$('#numberOfColonies :input').prop('disabled', true);
+					jq('#sensitivity :input').prop('disabled', true);
+					jq('#numberOfColonies :input').prop('disabled', true);
 				}
 			});
 			var testType = getValue('testType.value');
 			var sputumResult = getValue('sputumResults.value');
 			var quantityvalue = getValue('quantity.value') ;
 
-			if(testType == 160022 &amp;&amp; (sputumResult == 159985 || sputumResult == 1362 )) {
-				$('#hpfValues').html('AFBs/100hpf');
+			if(testType == ACID_FAST_FLUOROCHROME_STAIN_METHOD &amp;&amp; (sputumResult == SCANTY || sputumResult == ONE_PLUS )) {
+				jq('#hpfValues').html('AFBs/100hpf');
 			}
-			else if (testType == 160022 &amp;&amp; (sputumResult == 1363 || sputumResult == 1364 )) {
-				$('#hpfValues').html('AFBs/hpf');
+			else if (testType == ACID_FAST_FLUOROCHROME_STAIN_METHOD &amp;&amp; (sputumResult == TWO_PLUS || sputumResult == THREE_PLUS )) {
+				jq('#hpfValues').html('AFBs/hpf');
 			}
-			else if (testType == 161880 &amp;&amp; (sputumResult == 159985 || sputumResult == 1362 )) {
-				$('#hpfValues').html('AFBs/40hpf');
+			else if (testType == FLUORESCENT_STAIN_METHOD_FOR_SMEAR_INTERPRETATION &amp;&amp; (sputumResult == SCANTY || sputumResult == ONE_PLUS )) {
+				jq('#hpfValues').html('AFBs/40hpf');
 			}
-			else if (testType == 161880 &amp;&amp; (sputumResult == 1363 || sputumResult == 1364 )) {
-				$('#hpfValues').html('AFBs/hpf');
+			else if (testType == FLUORESCENT_STAIN_METHOD_FOR_SMEAR_INTERPRETATION &amp;&amp; (sputumResult == TWO_PLUS || sputumResult == THREE_PLUS )) {
+				jq('#hpfValues').html('AFBs/hpf');
 			}
 			else {
-				$('#hpfValues').html(' ');
+				jq('#hpfValues').html(' ');
 			}
 			//get the change event for type of test ordered
 			getField('testType.value').change(function() {
@@ -65,20 +73,20 @@
 				var sputumResult1 = getValue('sputumResults.value');
 				var quantityvalue1 = getValue('quantity.value') ;
 
-				if(testType1 == 160022 &amp;&amp; (sputumResult1 == 159985 || sputumResult1 == 1362 )) {
-					$('#hpfValues').html('AFBs/100hpf');
+				if(testType1 == ACID_FAST_FLUOROCHROME_STAIN_METHOD &amp;&amp; (sputumResult1 == SCANTY || sputumResult1 == ONE_PLUS )) {
+					jq('#hpfValues').html('AFBs/100hpf');
 				}
-				else if (testType1 == 160022 &amp;&amp; (sputumResult1 == 1363 || sputumResult1 == 1364 )) {
-					$('#hpfValues').html('AFBs/hpf');
+				else if (testType1 == ACID_FAST_FLUOROCHROME_STAIN_METHOD &amp;&amp; (sputumResult1 == TWO_PLUS || sputumResult1 == THREE_PLUS )) {
+					jq('#hpfValues').html('AFBs/hpf');
 				}
-				else if (testType1 == 161880 &amp;&amp; (sputumResult1 == 159985 || sputumResult1 == 1362 )) {
-					$('#hpfValues').html('AFBs/40hpf');
+				else if (testType1 == FLUORESCENT_STAIN_METHOD_FOR_SMEAR_INTERPRETATION &amp;&amp; (sputumResult1 == SCANTY || sputumResult1 == ONE_PLUS )) {
+					jq('#hpfValues').html('AFBs/40hpf');
 				}
-				else if (testType1 == 161880 &amp;&amp; (sputumResult1 == 1363 || sputumResult1 == 1364 )) {
-					$('#hpfValues').html('AFBs/hpf');
+				else if (testType1 == FLUORESCENT_STAIN_METHOD_FOR_SMEAR_INTERPRETATION &amp;&amp; (sputumResult1 == TWO_PLUS || sputumResult1 == THREE_PLUS )) {
+					jq('#hpfValues').html('AFBs/hpf');
 				}
 				else {
-					$('#hpfValues').html(' ');
+					jq('#hpfValues').html(' ');
 				}
 
 			});
@@ -88,20 +96,20 @@
 				var sputumResult2 = getValue('sputumResults.value');
 				var quantityvalue2 = getValue('quantity.value') ;
 
-				if(testType2 == 160022 &amp;&amp; (sputumResult2 == 159985 || sputumResult2 == 1362 )) {
-					$('#hpfValues').html('AFBs/100hpf');
+				if(testType2 == ACID_FAST_FLUOROCHROME_STAIN_METHOD &amp;&amp; (sputumResult2 == SCANTY || sputumResult2 == ONE_PLUS )) {
+					jq('#hpfValues').html('AFBs/100hpf');
 				}
-				else if (testType2 == 160022 &amp;&amp; (sputumResult2 == 1363 || sputumResult2 == 1364 )) {
-					$('#hpfValues').html('AFBs/hpf');
+				else if (testType2 == ACID_FAST_FLUOROCHROME_STAIN_METHOD &amp;&amp; (sputumResult2 == TWO_PLUS || sputumResult2 == THREE_PLUS )) {
+					jq('#hpfValues').html('AFBs/hpf');
 				}
-				else if (testType2 == 161880 &amp;&amp; (sputumResult2 == 159985 || sputumResult2 == 1362 )) {
-					$('#hpfValues').html('AFBs/40hpf');
+				else if (testType2 == FLUORESCENT_STAIN_METHOD_FOR_SMEAR_INTERPRETATION &amp;&amp; (sputumResult2 == SCANTY || sputumResult2 == ONE_PLUS )) {
+					jq('#hpfValues').html('AFBs/40hpf');
 				}
-				else if (testType2 == 161880 &amp;&amp; (sputumResult2 == 1363 || sputumResult2 == 1364 )) {
-					$('#hpfValues').html('AFBs/hpf');
+				else if (testType2 == FLUORESCENT_STAIN_METHOD_FOR_SMEAR_INTERPRETATION &amp;&amp; (sputumResult2 == TWO_PLUS || sputumResult2 == THREE_PLUS )) {
+					jq('#hpfValues').html('AFBs/hpf');
 				}
 				else {
-					$('#hpfValues').html(' ');
+					jq('#hpfValues').html(' ');
 				}
 
 			});
@@ -127,12 +135,12 @@
 								<tr>
 									<td>Type:</td>
 									<td>
-										<obs conceptId="159961AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="testType" answerConceptIds="160022AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161880AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="ZN Smear Microscopy,Fluorescence Microscopy" />
+										<obs conceptId="159961AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="testType" answerConceptIds="ACID_FAST_FLUOROCHROME_STAIN_METHODAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,FLUORESCENT_STAIN_METHOD_FOR_SMEAR_INTERPRETATIONAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="ZN Smear Microscopy,Fluorescence Microscopy" />
 									</td>
 								</tr>
 								<tr>
 									<td>Result:</td>
-									<td><obs conceptId="307AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="sputumResults" answerConceptIds="159985AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Scanty,+,++,+++,Negative" /></td>
+									<td><obs conceptId="307AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="sputumResults" answerConceptIds="SCANTYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,ONE_PLUSAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,TWO_PLUSAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,THREE_PLUSAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Scanty,+,++,+++,Negative" /></td>
 								</tr>
 								<tr>
 									<td>Serial No:</td>
