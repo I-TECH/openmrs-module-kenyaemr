@@ -19,7 +19,7 @@
 		}
 	</style>
 	<script type="text/javascript">
-		jq(function(){
+
 			var sensitivityLbl = document.getElementById("sensitivity");
 			var POSITIVE = 703;
 			var ACID_FAST_FLUOROCHROME_STAIN_METHOD = 160022;
@@ -29,16 +29,8 @@
 			var THREE_PLUS = 1364;
 			var FLUORESCENT_STAIN_METHOD_FOR_SMEAR_INTERPRETATION = 161880;
 
-			var growthPresent = getValue('growth_no_growth.value');
-			if (growthPresent == POSITIVE) {
-				jq('#sensitivity :input').prop('disabled', false);
-			}
-			else{
-				jq('#sensitivity :input').prop('disabled', true);
-				jq('#numberOfColonies :input').prop('disabled', true);
-			}
+			function cultureTest() {
 
-			getField('growth_no_growth.value').click(function() {
 				if (getValue('growth_no_growth.value') == POSITIVE) {
 					jq('#sensitivity :input').prop('disabled', false);
 					jq('#numberOfColonies :input').prop('disabled', false);
@@ -47,72 +39,33 @@
 					jq('#sensitivity :input').prop('disabled', true);
 					jq('#numberOfColonies :input').prop('disabled', true);
 				}
-			});
-			var testType = getValue('testType.value');
-			var sputumResult = getValue('sputumResults.value');
-			var quantityvalue = getValue('quantity.value') ;
+			}
 
-			if(testType == ACID_FAST_FLUOROCHROME_STAIN_METHOD &amp;&amp; (sputumResult == SCANTY || sputumResult == ONE_PLUS )) {
-				jq('#hpfValues').html('AFBs/100hpf');
-			}
-			else if (testType == ACID_FAST_FLUOROCHROME_STAIN_METHOD &amp;&amp; (sputumResult == TWO_PLUS || sputumResult == THREE_PLUS )) {
-				jq('#hpfValues').html('AFBs/hpf');
-			}
-			else if (testType == FLUORESCENT_STAIN_METHOD_FOR_SMEAR_INTERPRETATION &amp;&amp; (sputumResult == SCANTY || sputumResult == ONE_PLUS )) {
-				jq('#hpfValues').html('AFBs/40hpf');
-			}
-			else if (testType == FLUORESCENT_STAIN_METHOD_FOR_SMEAR_INTERPRETATION &amp;&amp; (sputumResult == TWO_PLUS || sputumResult == THREE_PLUS )) {
-				jq('#hpfValues').html('AFBs/hpf');
-			}
-			else {
-				jq('#hpfValues').html(' ');
-			}
-			//get the change event for type of test ordered
-			getField('testType.value').change(function() {
-				var testType1 = getValue('testType.value');
-				var sputumResult1 = getValue('sputumResults.value');
-				var quantityvalue1 = getValue('quantity.value') ;
+			function sputumTypeTest() {
 
-				if(testType1 == ACID_FAST_FLUOROCHROME_STAIN_METHOD &amp;&amp; (sputumResult1 == SCANTY || sputumResult1 == ONE_PLUS )) {
+				if ((getValue('testType.value') == ACID_FAST_FLUOROCHROME_STAIN_METHOD) &amp;&amp; ((getValue('sputumResults.value') == SCANTY) || (getValue('sputumResults.value') == ONE_PLUS ))) {
 					jq('#hpfValues').html('AFBs/100hpf');
 				}
-				else if (testType1 == ACID_FAST_FLUOROCHROME_STAIN_METHOD &amp;&amp; (sputumResult1 == TWO_PLUS || sputumResult1 == THREE_PLUS )) {
-					jq('#hpfValues').html('AFBs/hpf');
-				}
-				else if (testType1 == FLUORESCENT_STAIN_METHOD_FOR_SMEAR_INTERPRETATION &amp;&amp; (sputumResult1 == SCANTY || sputumResult1 == ONE_PLUS )) {
+				else if (getValue('testType.value') == ACID_FAST_FLUOROCHROME_STAIN_METHOD &amp;&amp; (getValue('sputumResults.value') == TWO_PLUS || getValue('sputumResults.value') == THREE_PLUS )) {
+						jq('#hpfValues').html('AFBs/hpf');
+					}
+				else if (getValue('testType.value') == FLUORESCENT_STAIN_METHOD_FOR_SMEAR_INTERPRETATION &amp;&amp; (getValue('sputumResults.value') == SCANTY || getValue('sputumResults.value') == ONE_PLUS )) {
 					jq('#hpfValues').html('AFBs/40hpf');
 				}
-				else if (testType1 == FLUORESCENT_STAIN_METHOD_FOR_SMEAR_INTERPRETATION &amp;&amp; (sputumResult1 == TWO_PLUS || sputumResult1 == THREE_PLUS )) {
+				else if (getValue('testType.value') == FLUORESCENT_STAIN_METHOD_FOR_SMEAR_INTERPRETATION &amp;&amp; (getValue('sputumResults.value') == TWO_PLUS || getValue('sputumResults.value') == THREE_PLUS )) {
 					jq('#hpfValues').html('AFBs/hpf');
 				}
 				else {
 					jq('#hpfValues').html(' ');
 				}
+			}
 
-			});
-			//get change event for results
-			getField('sputumResults.value').change(function() {
-				var testType2 = getValue('testType.value');
-				var sputumResult2 = getValue('sputumResults.value');
-				var quantityvalue2 = getValue('quantity.value') ;
-
-				if(testType2 == ACID_FAST_FLUOROCHROME_STAIN_METHOD &amp;&amp; (sputumResult2 == SCANTY || sputumResult2 == ONE_PLUS )) {
-					jq('#hpfValues').html('AFBs/100hpf');
-				}
-				else if (testType2 == ACID_FAST_FLUOROCHROME_STAIN_METHOD &amp;&amp; (sputumResult2 == TWO_PLUS || sputumResult2 == THREE_PLUS )) {
-					jq('#hpfValues').html('AFBs/hpf');
-				}
-				else if (testType2 == FLUORESCENT_STAIN_METHOD_FOR_SMEAR_INTERPRETATION &amp;&amp; (sputumResult2 == SCANTY || sputumResult2 == ONE_PLUS )) {
-					jq('#hpfValues').html('AFBs/40hpf');
-				}
-				else if (testType2 == FLUORESCENT_STAIN_METHOD_FOR_SMEAR_INTERPRETATION &amp;&amp; (sputumResult2 == TWO_PLUS || sputumResult2 == THREE_PLUS )) {
-					jq('#hpfValues').html('AFBs/hpf');
-				}
-				else {
-					jq('#hpfValues').html(' ');
-				}
-
-			});
+		jq(function(){
+			cultureTest();
+			jq('#growth_no_growth').click(cultureTest);
+			sputumTypeTest();
+			jq('#testType').click(sputumTypeTest);
+			jq('#sputumResults').click(sputumTypeTest);
 		});
 	</script>
 	<div class="ke-form-header">
@@ -134,13 +87,14 @@
 							<obsgroup groupingConceptId="159960AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
 								<tr>
 									<td>Type:</td>
+									<td>
+										<obs conceptId="159961AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="testType" answerConceptIds="160022AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161880AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="ZN Smear Microscopy,Fluorescence Microscopy" />
+									</td>
 								</tr>
 								<tr>
 									<td>Result:</td>
 
 									<td><obs conceptId="307AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="sputumResults" answerConceptIds="159985AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Scanty,+,++,+++,Negative" /></td>
-
-									<td><obs conceptId="307AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="sputumResults" answerConceptIds="SCANTYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,ONE_PLUSAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,TWO_PLUSAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,THREE_PLUSAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Scanty,+,++,+++,Negative" /></td>
 								</tr>
 								<tr>
 									<td>Serial No:</td>
@@ -149,7 +103,7 @@
 								<tr>
 									<td>Quantity:</td>
 									<td><obs conceptId="160023AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="quantity" /></td>
-									<td id="hpfValues" class="div"></td>
+									<td id="hpfValues" class="value"></td>
 								</tr>
 								<tr>
 									<td>Date Done</td>
