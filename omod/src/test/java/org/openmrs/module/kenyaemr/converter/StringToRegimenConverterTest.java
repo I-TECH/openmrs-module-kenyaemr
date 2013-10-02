@@ -58,7 +58,7 @@ public class StringToRegimenConverterTest extends BaseModuleWebContextSensitiveT
 		Assert.assertEquals(new Double(300.0), regimen2.getComponents().get(0).getDose());
 		Assert.assertEquals("mg", regimen2.getComponents().get(0).getUnits());
 		Assert.assertEquals("OD", regimen2.getComponents().get(0).getFrequency());
-		Assert.assertEquals(new Integer(200003), regimen2.getComponents().get(1).getDrugRef().getDrug().getDrugId());
+		Assert.assertEquals(new Integer(200004), regimen2.getComponents().get(1).getDrugRef().getDrug().getDrugId());
 		Assert.assertEquals(new Double(150.0), regimen2.getComponents().get(1).getDose());
 		Assert.assertEquals("ml", regimen2.getComponents().get(1).getUnits());
 		Assert.assertEquals("BD", regimen2.getComponents().get(1).getFrequency());
