@@ -28,6 +28,7 @@ import org.openmrs.module.kenyaemr.reporting.library.cohort.CommonCohortLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.dimension.CommonDimensionLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.indicator.HivIndicatorLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.indicator.CommonIndicatorLibrary;
+import org.openmrs.module.kenyaemr.reporting.library.indicator.TbIndicatorLibrary;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
@@ -62,13 +63,16 @@ public class Moh711ReportBuilder extends BaseIndicatorReportBuilder {
 	@Autowired
 	private HivIndicatorLibrary artIndicators;
 
+	@Autowired
+	private TbIndicatorLibrary tbIndicators;
+
 	/**
 	 * @see org.openmrs.module.kenyaemr.reporting.BaseIndicatorReportBuilder#buildDataSets()
 	 */
 	@Override
 	public List<DataSetDefinition> buildDataSets() {
 		return Arrays.asList(
-				/*createTbDataSet(),*/
+				createTbDataSet(),
 				createArtDataSet()
 		);
 	}
@@ -77,7 +81,7 @@ public class Moh711ReportBuilder extends BaseIndicatorReportBuilder {
 	 * Creates the ART data set
 	 * @return the data set
 	 */
-	/*private DataSetDefinition createTbDataSet() {
+	private DataSetDefinition createTbDataSet() {
 		CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
 		dsd.setName("G: TB");
 		dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -90,10 +94,14 @@ public class Moh711ReportBuilder extends BaseIndicatorReportBuilder {
 		columns.add(new ColumnParameters("MP", "0-14 years, male", "gender=M|age=<15"));
 		columns.add(new ColumnParameters("FA", ">14 years, female", "gender=F|age=15+"));
 		columns.add(new ColumnParameters("MA", ">14 years, male", "gender=M|age=15+"));
-		columns.add(new ColumnParameters("T", "grand total", ""));
+		columns.add(new ColumnParameters("T", "total", ""));
+
+		String indParams = "startDate=${startDate},endDate=${endDate}";
+
+		EmrReportingUtils.addRow(dsd, "G11", "No. of TB deaths (who started tx this month last year)", ReportUtils.map(tbIndicators.diedAndStarted12MonthsAgo(), indParams), columns);
 
 		return dsd;
-	}*/
+	}
 
 	/**
 	 * Creates the ART data set

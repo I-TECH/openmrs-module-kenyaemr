@@ -16,11 +16,16 @@ package org.openmrs.module.kenyaemr.reporting.library.cohort;
 
 import org.openmrs.Concept;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
+import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.metadata.TbMetadata;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
+import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.Date;
 
 /**
  * Library of TB related cohort definitions
@@ -32,7 +37,7 @@ public class TbCohortLibrary {
 	private CommonCohortLibrary commonCohorts;
 
 	/**
-	 * Patients who were enrolled in TB program (including transfers) between ${onOrAfter} and ${onOrBefore}
+	 * Patients who were enrolled in TB program (including transfers) between ${enrolledOnOrAfter} and ${enrolledOnOrBefore}
 	 * @return the cohort definition
 	 */
 	public CohortDefinition enrolled() {
@@ -59,5 +64,31 @@ public class TbCohortLibrary {
 		Concept tbTreatmentOutcome = Dictionary.getConcept(Dictionary.TUBERCULOSIS_TREATMENT_OUTCOME);
 		Concept died = Dictionary.getConcept(Dictionary.DIED);
 		return commonCohorts.hasObs(tbTreatmentOutcome, died);
+	}
+
+	/**
+	 * TB patients who started treatment in the month a year before ${onDate}
+	 * @return the cohort definition
+	 */
+	public CohortDefinition started12MonthsAgo() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
+		cd.addSearch("enrolled12MonthsAgo", ReportUtils.map(enrolled(), "enrolledOnOrAfter=${onDate-13m},enrolledOnOrBefore=${onDate-12m}"));
+		cd.setCompositionString("enrolled12MonthsAgo");
+		return cd;
+	}
+
+	/**
+	 * TB patients started treatment in the month a year before and died between ${onOrAfter} and ${onOrBefore}
+	 * @return the cohort definition
+	 */
+	public CohortDefinition diedAndStarted12MonthsAgo() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("died", ReportUtils.map(died(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("started12MonthsAgo", ReportUtils.map(started12MonthsAgo(), "onDate=${onOrBefore}"));
+		cd.setCompositionString("died AND started12MonthsAgo");
+		return cd;
 	}
 }
