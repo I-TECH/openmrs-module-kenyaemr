@@ -40,6 +40,18 @@ public class TbIndicatorLibrary {
 	 * @return the indicator
 	 */
 	public CohortIndicator screenedForTb() {
-		return createCohortIndicator("Number of patients screened for TB", ReportUtils.map(tbCohorts.screenedForTb(), "onOrAfter=${startDate},onOrBefore=${endDate}"));
+		return createCohortIndicator("Number of patients screened for TB",
+				ReportUtils.map(tbCohorts.screenedForTb(), "onOrAfter=${startDate},onOrBefore=${endDate}")
+		);
+	}
+
+	/**
+	 * Number of patients who died and started TB treatment 12 months ago
+	 * @return the indicator
+	 */
+	public CohortIndicator diedAndStarted12MonthsAgo() {
+		return createCohortIndicator(null,
+				ReportUtils.map(tbCohorts.diedAndStarted12MonthsAgo(), "onOrAfter=${startDate},onOrBefore=${endDate}")
+		);
 	}
 }

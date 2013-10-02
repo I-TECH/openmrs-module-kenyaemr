@@ -14,12 +14,10 @@
 
 package org.openmrs.module.kenyaemr.reporting.builder.common;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.Program;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyacore.report.IndicatorReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportManager;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
@@ -28,9 +26,7 @@ import org.openmrs.module.kenyaemr.metadata.TbMetadata;
 import org.openmrs.module.kenyaemr.regimen.RegimenManager;
 import org.openmrs.module.kenyaemr.test.ReportingTestUtils;
 import org.openmrs.module.kenyacore.test.TestUtils;
-import org.openmrs.module.reporting.dataset.MapDataSet;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.module.reporting.indicator.IndicatorResult;
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
@@ -38,6 +34,8 @@ import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
+
+import static org.hamcrest.Matchers.*;
 
 /**
  * Tests for {@link Moh711ReportBuilder}
@@ -77,11 +75,6 @@ public class Moh711ReportBuilderTest extends BaseModuleContextSensitiveTest {
 
 	@Test
 	public void test() throws Exception {
-		Program hivProgram = MetadataUtils.getProgram(HivMetadata._Program.HIV);
-
-		// Enroll #6 in the HIV program on June 15th
-		TestUtils.enrollInProgram(Context.getPatientService().getPatient(6), hivProgram, TestUtils.date(2012, 6, 15), null);
-
 		IndicatorReportDescriptor report = (IndicatorReportDescriptor) reportManager.getReportDescriptor("kenyaemr.common.report.moh711");
 		ReportDefinition rd = reportBuilder.getDefinition(report);
 
@@ -90,14 +83,10 @@ public class Moh711ReportBuilderTest extends BaseModuleContextSensitiveTest {
 
 		ReportData data = Context.getService(ReportDefinitionService.class).evaluate(rd, context);
 
-		ReportingTestUtils.printReport(data);
+		//ReportingTestUtils.printReport(data);
 
-		Assert.assertEquals(1, data.getDataSets().size());
-		MapDataSet dataSet = (MapDataSet) data.getDataSets().get("K: ART");
-		Assert.assertNotNull(dataSet);
-
-		Assert.assertEquals(1, ((IndicatorResult) dataSet.getColumnValue(1, "K1-7-MP")).getValue().intValue());
-		Assert.assertEquals(1, ((IndicatorResult) dataSet.getColumnValue(1, "K1-7-M")).getValue().intValue());
-		Assert.assertEquals(1, ((IndicatorResult) dataSet.getColumnValue(1, "K1-7-T")).getValue().intValue());
+		Assert.assertThat(data.getDataSets().size(), is(2));
+		Assert.assertThat(data.getDataSets(), hasKey("G: TB"));
+		Assert.assertThat(data.getDataSets(), hasKey("K: ART"));
 	}
 }

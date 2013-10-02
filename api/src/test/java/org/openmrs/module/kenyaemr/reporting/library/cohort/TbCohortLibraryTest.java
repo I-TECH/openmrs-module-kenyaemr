@@ -17,7 +17,9 @@ package org.openmrs.module.kenyaemr.reporting.library.cohort;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Concept;
+import org.openmrs.Program;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
@@ -139,6 +141,59 @@ public class TbCohortLibraryTest extends BaseModuleContextSensitiveTest {
 
 		// Check with both start and end date
 		CohortDefinition cd = tbCohortLibrary.died();
+		context.addParameterValue("onOrAfter", TestUtils.date(2012, 6, 1));
+		context.addParameterValue("onOrBefore", TestUtils.date(2012, 6, 30));
+		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
+		ReportingTestUtils.assertCohortEquals(Arrays.asList(7), evaluated);
+	}
+
+	/**
+	 * @see TbCohortLibrary#started12MonthsAgo()
+	 */
+	@Test
+	public void started12MonthsAgo_shouldReturnPatientsWhoStartedTreatment12MonthsAgo() throws Exception {
+		Program tbProgram = MetadataUtils.getProgram(TbMetadata._Program.TB);
+
+		// Enroll patient #6 on May 15th 2011
+		TestUtils.enrollInProgram(TestUtils.getPatient(6), tbProgram, TestUtils.date(2011, 5, 15));
+
+		// Enroll patient #7 on June 15th 2011
+		TestUtils.enrollInProgram(TestUtils.getPatient(7), tbProgram, TestUtils.date(2011, 6, 15));
+
+		// Enroll patient #8 on July 15th 2011
+		TestUtils.enrollInProgram(TestUtils.getPatient(8), tbProgram, TestUtils.date(2011, 7, 15));
+
+		// Check with both start and end date
+		CohortDefinition cd = tbCohortLibrary.started12MonthsAgo();
+		context.addParameterValue("onDate", TestUtils.date(2012, 6, 30));
+		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
+		ReportingTestUtils.assertCohortEquals(Arrays.asList(7), evaluated);
+	}
+
+	/**
+	 * @see org.openmrs.module.kenyaemr.reporting.library.cohort.TbCohortLibrary#diedAndStarted12MonthsAgo()
+	 */
+	@Test
+	public void diedStarted12MonthsAgo_shouldReturnPatientsWhoDiedAndStartedTreatment12MonthsAgo() throws Exception {
+		Program tbProgram = MetadataUtils.getProgram(TbMetadata._Program.TB);
+		Concept tbTreatmentOutcome = Dictionary.getConcept(Dictionary.TUBERCULOSIS_TREATMENT_OUTCOME);
+		Concept died = Dictionary.getConcept(Dictionary.DIED);
+
+		// Enroll patient #2 on May 15th 2011
+		TestUtils.enrollInProgram(TestUtils.getPatient(2), tbProgram, TestUtils.date(2011, 5, 15));
+
+		// Enroll patients #6 and #7 on June 15th 2011
+		TestUtils.enrollInProgram(TestUtils.getPatient(6), tbProgram, TestUtils.date(2011, 6, 15));
+		TestUtils.enrollInProgram(TestUtils.getPatient(7), tbProgram, TestUtils.date(2011, 6, 15));
+
+		// Exit patient #7 as died on June 15th 2012
+		TestUtils.saveObs(TestUtils.getPatient(7), tbTreatmentOutcome, died, TestUtils.date(2012, 6, 15));
+
+		// Exit patient #8 as died on June 15th 2012
+		TestUtils.saveObs(TestUtils.getPatient(8), tbTreatmentOutcome, died, TestUtils.date(2012, 6, 15));
+
+		// Check with both start and end date
+		CohortDefinition cd = tbCohortLibrary.diedAndStarted12MonthsAgo();
 		context.addParameterValue("onOrAfter", TestUtils.date(2012, 6, 1));
 		context.addParameterValue("onOrBefore", TestUtils.date(2012, 6, 30));
 		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
