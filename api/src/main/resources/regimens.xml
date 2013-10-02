@@ -141,10 +141,12 @@
 		<drugs>
 			<drug code="R150" drugUuid="a74fefc6-931d-47b9-b282-5d6c8c8d8060" /><!-- Rifampicin 150mg -->
 			<drug code="R60" drugUuid="161f633d-ab5d-4cd1-94c5-7a012dedc388" /><!-- Rifampicin 60mg -->
+			<drug code="H150" drugUuid="89b72116-108d-4b65-b7fe-5a841192e095" /><!-- Isoniazid 150mg -->
 			<drug code="H75" drugUuid="97810e6b-cfcf-44fa-b63c-5d3e12cbe8d7" /><!-- Isoniazid 75mg -->
 			<drug code="H30" drugUuid="9a012906-3778-4e2e-848f-e0272bfe9e27" /><!-- Isoniazid 30mg -->
 			<drug code="Z400" drugUuid="0dbc4971-67ea-40d7-8089-7c327e5f3c6e" /><!-- Pyrazinamide 400mg -->
 			<drug code="Z150" drugUuid="c97032a4-2136-4e92-8ff8-3fc6faab4133" /><!-- Pyrazinamide 150mg -->
+			<drug code="E400" drugUuid="37e185a3-ba6b-447a-83e0-7ff3edbe76f7" /><!-- Ethambutol 400mg -->
 			<drug code="E275" drugUuid="52690c5a-e9cd-4561-8aad-3b646fb7deaa" /><!-- Ethambutol 275mg -->
 			<drug code="S1" drugUuid="13b56178-a15b-4070-951d-2ce813cccc32" /><!-- Streptomycin 1g -->
 		</drugs>
@@ -266,35 +268,26 @@
 			<regimen name="RH (150mg/75mg ⨉ 2 tabs)">
 				<component drugCode="R150" dose="2" units="tab" frequency="OD" />
 				<component drugCode="H75" dose="2" units="tab" frequency="OD" />
-				<component drugCode="Z400" dose="2" units="tab" frequency="OD" />
 			</regimen>
 			<regimen name="RH (150mg/75mg ⨉ 3 tabs)">
 				<component drugCode="R150" dose="3" units="tab" frequency="OD" />
 				<component drugCode="H75" dose="3" units="tab" frequency="OD" />
-				<component drugCode="Z400" dose="3" units="tab" frequency="OD" />
 			</regimen>
 			<regimen name="RH (150mg/75mg ⨉ 4 tabs)">
 				<component drugCode="R150" dose="4" units="tab" frequency="OD" />
 				<component drugCode="H75" dose="4" units="tab" frequency="OD" />
-				<component drugCode="Z400" dose="4" units="tab" frequency="OD" />
 			</regimen>
-			<regimen name="EH (400mg/150mg ⨉ 2 tabs)">
-				<component drugCode="R150" dose="2" units="tab" frequency="OD" />
-				<component drugCode="H75" dose="2" units="tab" frequency="OD" />
-				<component drugCode="Z400" dose="2" units="tab" frequency="OD" />
-				<component drugCode="E275" dose="2" units="tab" frequency="OD" />
+			<regimen name="EH (275mg/75mg ⨉ 2 tabs)">
+				<component drugCode="E400" dose="2" units="tab" frequency="OD" />
+				<component drugCode="H150" dose="2" units="tab" frequency="OD" />
 			</regimen>
-			<regimen name="EH (400mg/150mg ⨉ 3 tabs)">
-				<component drugCode="R150" dose="3" units="tab" frequency="OD" />
-				<component drugCode="H75" dose="3" units="tab" frequency="OD" />
-				<component drugCode="Z400" dose="3" units="tab" frequency="OD" />
-				<component drugCode="E275" dose="3" units="tab" frequency="OD" />
+			<regimen name="EH (275mg/75mg ⨉ 3 tabs)">
+				<component drugCode="E400" dose="3" units="tab" frequency="OD" />
+				<component drugCode="H150" dose="3" units="tab" frequency="OD" />
 			</regimen>
-			<regimen name="EH (400mg/150mg ⨉ 4 tabs)">
-				<component drugCode="R150" dose="4" units="tab" frequency="OD" />
-				<component drugCode="H75" dose="4" units="tab" frequency="OD" />
-				<component drugCode="Z400" dose="4" units="tab" frequency="OD" />
-				<component drugCode="E275" dose="4" units="tab" frequency="OD" />
+			<regimen name="EH (275mg/75mg ⨉ 4 tabs)">
+				<component drugCode="E400" dose="4" units="tab" frequency="OD" />
+				<component drugCode="H150" dose="4" units="tab" frequency="OD" />
 			</regimen>
 		</group>
 
