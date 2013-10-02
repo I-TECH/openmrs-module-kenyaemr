@@ -50,7 +50,7 @@ public class RegimenFragmentController {
 			regimenDefinitions.addAll(group.getRegimens());
 		}
 
-		model.addAttribute("maxComponents", 4);
+		model.addAttribute("maxComponents", 5);
 		model.addAttribute("drugs", regimenManager.getDrugs(category));
 		model.addAttribute("regimenGroups", regimenGroups);
 		model.addAttribute("regimenDefinitions", kenyaUi.simpleRegimenDefinitions(regimenDefinitions, ui));
