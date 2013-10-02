@@ -64,7 +64,7 @@ public class NeedsAntibodyTestCalculationTest extends BaseModuleContextSensitive
 	@Test
 	public void evaluate_shouldCalculateNeedsAntibodyTest() throws Exception {
 		//get mchcs program
-		Program mchcsProgram = MetadataUtils.getProgram(MchMetadata.Program.MCHCS);
+		Program mchcsProgram = MetadataUtils.getProgram(MchMetadata._Program.MCHCS);
 		//get the patient age from the birthdate
 		Patient patient = TestUtils.getPatient(6);
 		patient.setBirthdate(TestUtils.date(2011, 10, 1));// more than 9 months old

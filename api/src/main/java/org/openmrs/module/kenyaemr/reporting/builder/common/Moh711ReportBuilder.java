@@ -26,7 +26,7 @@ import org.openmrs.module.kenyaemr.reporting.ColumnParameters;
 import org.openmrs.module.kenyaemr.reporting.library.cohort.HivCohortLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.cohort.CommonCohortLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.dimension.CommonDimensionLibrary;
-import org.openmrs.module.kenyaemr.reporting.library.indicator.ArtIndicatorLibrary;
+import org.openmrs.module.kenyaemr.reporting.library.indicator.HivIndicatorLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.indicator.CommonIndicatorLibrary;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
@@ -60,7 +60,7 @@ public class Moh711ReportBuilder extends BaseIndicatorReportBuilder {
 	private HivCohortLibrary artCohorts;
 
 	@Autowired
-	private ArtIndicatorLibrary artIndicators;
+	private HivIndicatorLibrary artIndicators;
 
 	/**
 	 * @see org.openmrs.module.kenyaemr.reporting.BaseIndicatorReportBuilder#buildDataSets()

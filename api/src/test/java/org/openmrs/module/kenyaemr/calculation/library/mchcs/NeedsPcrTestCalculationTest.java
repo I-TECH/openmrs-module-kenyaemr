@@ -63,7 +63,7 @@ public class NeedsPcrTestCalculationTest extends BaseModuleContextSensitiveTest 
 	@Test
 	public void evaluate_shouldCalculatePcrTest() throws Exception {
 		//get mchcs program
-		Program mchcsProgram = MetadataUtils.getProgram(MchMetadata.Program.MCHCS);
+		Program mchcsProgram = MetadataUtils.getProgram(MchMetadata._Program.MCHCS);
 
 		// Enroll patients #6 and  #7  in the mchcs Program
 		TestUtils.enrollInProgram(TestUtils.getPatient(6), mchcsProgram, new Date());

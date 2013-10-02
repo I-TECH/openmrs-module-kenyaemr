@@ -44,13 +44,13 @@ public class LateEnrollmentCalculation extends BaseEmrCalculation {
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
 
-		Program mchmsProgram = MetadataUtils.getProgram(MchMetadata.Program.MCHMS);
+		Program mchmsProgram = MetadataUtils.getProgram(MchMetadata._Program.MCHMS);
 
 		Set<Integer> alive = alivePatients(cohort, context);
 		Set<Integer> inMchmsProgram = CalculationUtils.patientsThatPass(Calculations.activeEnrollment(mchmsProgram, alive, context));
 
 		CalculationResultMap ret = new CalculationResultMap();
-		CalculationResultMap crm = Calculations.lastEncounter(MetadataUtils.getEncounterType(MchMetadata.EncounterType.MCHMS_ENROLLMENT), cohort, context);
+		CalculationResultMap crm = Calculations.lastEncounter(MetadataUtils.getEncounterType(MchMetadata._EncounterType.MCHMS_ENROLLMENT), cohort, context);
 		for (Integer ptId : cohort) {
 			// Is patient alive and in MCH program?
 			boolean lateEnrollment = false;
