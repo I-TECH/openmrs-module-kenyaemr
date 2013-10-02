@@ -51,6 +51,7 @@
 					jq('#transfer-details :input').prop('disabled', true);
 				}
 			}
+
 		    function getCohort(){
 				var month = new String(birthdate.getMonth()+1);
 					if(month.length == 1) {
@@ -59,6 +60,7 @@
 						jq('#calculated-cohort').html(cohort);
 					}
 			}
+
 			function tbContactInHouseHold(){
 				if (getValue('tbcontact.value') == NO_CONCEPT_ID) {
 				jq('#yesTbContact').hide();
@@ -70,6 +72,7 @@
 					jq('#yesTbContact').hide();
 				}
 			}
+
 			function pmtctDrugsForMother(){
 				if (getValue('pmtctDrugsReceived.value') == NO_CONCEPT_ID) {
 					jq('#mother-art-details :input').prop('disabled', true);
@@ -81,6 +84,7 @@
 					jq('#mother-art-details :input').prop('disabled', true);
 				}
 			}
+
 			function onARTatEnrollment(){
 				if (getValue('onART.value') == NO_CONCEPT_ID) {
 					jq('#mohter-on-art-at-enrollment :input').prop('disabled', true);
@@ -95,6 +99,7 @@
 					jq('#mohter-on-art-at-enrollment1 :input').prop('disabled', true);
 				}
 			}
+
 			function needSpecialCare(){
 				if (getValue('specialCare.value') == NO_CONCEPT_ID) {
 					jq('#reasonsForSpecialCare :input').prop('disabled', true);
@@ -106,14 +111,7 @@
 					jq('#reasonsForSpecialCare :input').prop('disabled', true);
 				}
 			}
-			function hivExposed(){
-				if (getValue('hiv-exposed-child.value') == EXPOSURE_TO_HIV_ID) {
-					jq('#hei-id :input').prop('disabled', false);
-				}
-				else {
-					jq('#hei-id :input').prop('disabled', true);
-				}
-			}
+
 			function includeMothersNames() {
 				jq.getJSON('/' + OPENMRS_CONTEXT_PATH +  '/kenyaemr/patient/patientUtils/getMothers.action',{ patientId: patientId },function(data) {
 					var motherName;
@@ -147,8 +145,6 @@
 			jq('#onART input').click(onARTatEnrollment);
 			needSpecialCare();
 			jq('#specialCare input').click(needSpecialCare);
-			hivExposed();
-			jq('#hiv-exposed-child input').click(hivExposed);
 			//including the mother details
 			includeMothersNames();
 
@@ -207,7 +203,7 @@
 						<table>
 							<tr>
 								<td>HEI ID Number</td>
-								<td><span id="hei-id"><patient field="identifier" identifierTypeId="0691f522-dd67-4eeb-92c8-af5083baf338" /></span></td>
+								<td><span id="hei-id"><patient field="identifier" identifierTypeId="0691f522-dd67-4eeb-92c8-af5083baf338" required="false" /></span></td>
 								<td>SPD No</td>
 								<td><obs conceptId="162054AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
 								<td>Birth Weight: (kg)</td>
