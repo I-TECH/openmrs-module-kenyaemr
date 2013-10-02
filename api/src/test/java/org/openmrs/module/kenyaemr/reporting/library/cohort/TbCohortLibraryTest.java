@@ -199,4 +199,60 @@ public class TbCohortLibraryTest extends BaseModuleContextSensitiveTest {
 		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
 		ReportingTestUtils.assertCohortEquals(Arrays.asList(7), evaluated);
 	}
+
+	/**
+	 * @see TbCohortLibrary#completedtreatment()
+	 */
+	@Test
+	public void completedtreatment_shouldReturnPatientsWhoCompletedTreatmentBetweenDates() throws Exception {
+
+		Concept tbTreatmentOutcome = Dictionary.getConcept(Dictionary.TUBERCULOSIS_TREATMENT_OUTCOME);
+		Concept completed = Dictionary.getConcept(Dictionary.TREATMENT_COMPLETE);
+
+		// Exit patient #6 as died on May 15th (before reporting period)
+		TestUtils.saveObs(TestUtils.getPatient(6), tbTreatmentOutcome, completed, TestUtils.date(2012, 5, 15));
+
+		// Exit patient #7 as died on June 15th
+		TestUtils.saveObs(TestUtils.getPatient(7), tbTreatmentOutcome, completed, TestUtils.date(2012, 6, 15));
+
+		// Exit patient #8 as died on July 15th (after reporting period)
+		TestUtils.saveObs(TestUtils.getPatient(8), tbTreatmentOutcome, completed, TestUtils.date(2012, 7, 15));
+
+		// Check with both start and end date
+		CohortDefinition cd = tbCohortLibrary.completedtreatment();
+		context.addParameterValue("onOrAfter", TestUtils.date(2012, 6, 1));
+		context.addParameterValue("onOrBefore", TestUtils.date(2012, 6, 30));
+		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
+		ReportingTestUtils.assertCohortEquals(Arrays.asList(7), evaluated);
+	}
+	/**
+	 * @see TbCohortLibrary#completedtreatmentAndInTB()
+	 */
+	@Test
+	public void completedtreatmentAndInTB_shouldReturnPatientsWhoCompletedTreatmentAndInTbProgram() throws Exception {
+
+		Program tbProgram = MetadataUtils.getProgram(TbMetadata._Program.TB);
+		Concept tbTreatmentOutcome = Dictionary.getConcept(Dictionary.TUBERCULOSIS_TREATMENT_OUTCOME);
+		Concept completed = Dictionary.getConcept(Dictionary.TREATMENT_COMPLETE);
+
+		// Enroll patient #2 on May 15th 2011
+		TestUtils.enrollInProgram(TestUtils.getPatient(2), tbProgram, TestUtils.date(2011, 5, 15));
+
+		// Enroll patients #6 and #7 on June 15th 2011
+		TestUtils.enrollInProgram(TestUtils.getPatient(6), tbProgram, TestUtils.date(2011, 6, 15));
+		TestUtils.enrollInProgram(TestUtils.getPatient(7), tbProgram, TestUtils.date(2011, 6, 15));
+
+		// Exit patient #7 as died on June 15th 2012
+		TestUtils.saveObs(TestUtils.getPatient(7), tbTreatmentOutcome, completed, TestUtils.date(2012, 6, 15));
+
+		// Exit patient #8 as died on June 15th 2012
+		TestUtils.saveObs(TestUtils.getPatient(8), tbTreatmentOutcome, completed, TestUtils.date(2012, 6, 15));
+
+		// Check with both start and end date
+		CohortDefinition cd = tbCohortLibrary.completedtreatmentAndInTB();
+		context.addParameterValue("onOrAfter", TestUtils.date(2012, 6, 1));
+		context.addParameterValue("onOrBefore", TestUtils.date(2012, 6, 30));
+		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
+		ReportingTestUtils.assertCohortEquals(Arrays.asList(7), evaluated);
+	}
 }

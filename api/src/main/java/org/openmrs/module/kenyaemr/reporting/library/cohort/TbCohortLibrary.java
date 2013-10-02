@@ -91,4 +91,28 @@ public class TbCohortLibrary {
 		cd.setCompositionString("died AND started12MonthsAgo");
 		return cd;
 	}
+
+	/**
+	 * TB patients who completed treatment between ${onOrAfter} and ${onOrBefore}
+	 * @return the cohort definition
+	 */
+	public CohortDefinition completedtreatment() {
+		Concept tbTreatmentOutcome = Dictionary.getConcept(Dictionary.TUBERCULOSIS_TREATMENT_OUTCOME);
+		Concept complete = Dictionary.getConcept(Dictionary.TREATMENT_COMPLETE);
+		return commonCohorts.hasObs(tbTreatmentOutcome, complete);
+	}
+
+	/**
+	 * TB patients who completed treatment and in Tb program between ${onOrAfter} and ${onOrBefore}
+	 * @return the cohort definition
+	 */
+	public CohortDefinition completedtreatmentAndInTB() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("enrolledInTb", ReportUtils.map(enrolled(), "enrolledOnOrAfter=${onOrAfter},enrolledOnOrBefore=${onOrBefore}"));
+		cd.addSearch("completed", ReportUtils.map(completedtreatment(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("enrolledInTb AND completed");
+		return cd;
+	}
 }
