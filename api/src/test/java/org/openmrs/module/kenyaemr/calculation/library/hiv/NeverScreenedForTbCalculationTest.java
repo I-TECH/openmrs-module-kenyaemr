@@ -17,6 +17,7 @@ package org.openmrs.module.kenyaemr.calculation.library.hiv;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.Concept;
 import org.openmrs.EncounterType;
 import org.openmrs.Program;
 import org.openmrs.api.PatientService;
@@ -25,6 +26,7 @@ import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyacore.test.TestUtils;
+import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.metadata.TbMetadata;
@@ -65,25 +67,31 @@ public class NeverScreenedForTbCalculationTest extends BaseModuleContextSensitiv
 	 */
 	@Test
 	public void evaluate_shouldReturnHivPatientsNotScreenedForTb() throws Exception {
-
-		// Get HIV Program and TB screening encounter type
 		Program hivProgram = MetadataUtils.getProgram(HivMetadata._Program.HIV);
-		EncounterType screeningEncType = MetadataUtils.getEncounterType(TbMetadata._EncounterType.TB_SCREENING);
 
-		// Enroll patients #6 and #7
-		PatientService ps = Context.getPatientService();
-		TestUtils.enrollInProgram(ps.getPatient(6), hivProgram, TestUtils.date(2011, 1, 1));
-		TestUtils.enrollInProgram(ps.getPatient(7), hivProgram, TestUtils.date(2011, 1, 1));
+		// Enroll patients #2, #6, #7 in the HIV program
+		TestUtils.enrollInProgram(TestUtils.getPatient(2), hivProgram, TestUtils.date(2011, 1, 1));
+		TestUtils.enrollInProgram(TestUtils.getPatient(6), hivProgram, TestUtils.date(2011, 1, 1));
+		TestUtils.enrollInProgram(TestUtils.getPatient(7), hivProgram, TestUtils.date(2011, 1, 1));
 
-		// Screen patient #6 for TB a year later
-		TestUtils.saveEncounter(ps.getPatient(6), screeningEncType, TestUtils.date(2012, 1, 1));
+		Concept tbDiseaseStatus = Dictionary.getConcept(Dictionary.TUBERCULOSIS_DISEASE_STATUS);
+		Concept diseaseSuspected = Dictionary.getConcept(Dictionary.DISEASE_SUSPECTED);
+		Concept notAssessed = Dictionary.getConcept(Dictionary.NOT_ASSESSED);
+
+		// Don't screen patient #2
+		TestUtils.saveObs(TestUtils.getPatient(2), tbDiseaseStatus, notAssessed, TestUtils.date(2012, 6, 1));
+
+		// Screen patients #7 and #8
+		TestUtils.saveObs(TestUtils.getPatient(7), tbDiseaseStatus, diseaseSuspected, TestUtils.date(2012, 6, 1));
+		TestUtils.saveObs(TestUtils.getPatient(8), tbDiseaseStatus, diseaseSuspected, TestUtils.date(2012, 6, 1));
 
 		Context.flushSession();
 		
-		List<Integer> cohort = Arrays.asList(6, 7, 8);
+		List<Integer> cohort = Arrays.asList(2, 6, 7, 8);
 		CalculationResultMap resultMap = Context.getService(PatientCalculationService.class).evaluate(cohort, new NeverScreenedForTbCalculation());
-		Assert.assertFalse((Boolean) resultMap.get(6).getValue());
-		Assert.assertTrue((Boolean) resultMap.get(7).getValue());
-		Assert.assertNull(resultMap.get(8)); // not in HIV program
+		Assert.assertTrue((Boolean) resultMap.get(2).getValue()); // obs is not assessed
+		Assert.assertTrue((Boolean) resultMap.get(6).getValue()); // no disease status obs
+		Assert.assertFalse((Boolean) resultMap.get(7).getValue()); // is screened
+		Assert.assertFalse((Boolean) resultMap.get(8).getValue()); // not in HIV program
 	}
 }
