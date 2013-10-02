@@ -50,4 +50,14 @@ public class TbCohortLibrary {
 		Concept noSignsOrSymptoms = Dictionary.getConcept(Dictionary.NO_SIGNS_OR_SYMPTOMS_OF_DISEASE);
 		return commonCohorts.hasObs(tbDiseaseStatus, diseaseSuspected, diseaseDiagnosed, noSignsOrSymptoms);
 	}
+
+	/**
+	 * TB patients who died TB between ${onOrAfter} and ${onOrBefore}
+	 * @return the cohort definition
+	 */
+	public CohortDefinition died() {
+		Concept tbTreatmentOutcome = Dictionary.getConcept(Dictionary.TUBERCULOSIS_TREATMENT_OUTCOME);
+		Concept died = Dictionary.getConcept(Dictionary.DIED);
+		return commonCohorts.hasObs(tbTreatmentOutcome, died);
+	}
 }

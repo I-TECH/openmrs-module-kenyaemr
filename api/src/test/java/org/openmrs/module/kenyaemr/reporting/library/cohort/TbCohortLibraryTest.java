@@ -119,4 +119,29 @@ public class TbCohortLibraryTest extends BaseModuleContextSensitiveTest {
 		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
 		ReportingTestUtils.assertCohortEquals(Arrays.asList(6, 7), evaluated);
 	}
+
+	/**
+	 * @see org.openmrs.module.kenyaemr.reporting.library.cohort.TbCohortLibrary#died()
+	 */
+	@Test
+	public void died_shouldReturnPatientsWhoDiedBetweenDates() throws Exception {
+		Concept tbTreatmentOutcome = Dictionary.getConcept(Dictionary.TUBERCULOSIS_TREATMENT_OUTCOME);
+		Concept died = Dictionary.getConcept(Dictionary.DIED);
+
+		// Exit patient #6 as died on May 15th (before reporting period)
+		TestUtils.saveObs(TestUtils.getPatient(6), tbTreatmentOutcome, died, TestUtils.date(2012, 5, 15));
+
+		// Exit patient #7 as died on June 15th
+		TestUtils.saveObs(TestUtils.getPatient(7), tbTreatmentOutcome, died, TestUtils.date(2012, 6, 15));
+
+		// Exit patient #8 as died on July 15th (after reporting period)
+		TestUtils.saveObs(TestUtils.getPatient(8), tbTreatmentOutcome, died, TestUtils.date(2012, 7, 15));
+
+		// Check with both start and end date
+		CohortDefinition cd = tbCohortLibrary.died();
+		context.addParameterValue("onOrAfter", TestUtils.date(2012, 6, 1));
+		context.addParameterValue("onOrBefore", TestUtils.date(2012, 6, 30));
+		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
+		ReportingTestUtils.assertCohortEquals(Arrays.asList(7), evaluated);
+	}
 }
