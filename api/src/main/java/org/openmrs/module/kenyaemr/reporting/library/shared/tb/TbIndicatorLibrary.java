@@ -12,16 +12,15 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.reporting.library.indicator;
+package org.openmrs.module.kenyaemr.reporting.library.shared.tb;
 
-import org.openmrs.module.kenyacore.report.ReportUtils;
-import org.openmrs.module.kenyaemr.reporting.library.cohort.TbCohortLibrary;
+import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonIndicatorLibrary;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import static org.openmrs.module.kenyacore.report.ReportUtils.map;
-import static org.openmrs.module.kenyaemr.reporting.library.indicator.CommonIndicatorLibrary.createCohortIndicator;
+import static org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonIndicatorLibrary.createCohortIndicator;
 
 /**
  * Library of TB related indicator definitions. All indicators require parameters ${startDate} and ${endDate}
@@ -41,7 +40,7 @@ public class TbIndicatorLibrary {
 	 */
 	public CohortIndicator screenedForTb() {
 		return createCohortIndicator("Number of patients screened for TB",
-				ReportUtils.map(tbCohorts.screenedForTb(), "onOrAfter=${startDate},onOrBefore=${endDate}")
+				map(tbCohorts.screenedForTb(), "onOrAfter=${startDate},onOrBefore=${endDate}")
 		);
 	}
 
@@ -51,7 +50,7 @@ public class TbIndicatorLibrary {
 	 */
 	public CohortIndicator diedAndStarted12MonthsAgo() {
 		return createCohortIndicator(null,
-				ReportUtils.map(tbCohorts.diedAndStarted12MonthsAgo(), "onOrAfter=${startDate},onOrBefore=${endDate}")
+				map(tbCohorts.diedAndStarted12MonthsAgo(), "onOrAfter=${startDate},onOrBefore=${endDate}")
 		);
 	}
 }

@@ -12,12 +12,11 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.reporting.library.indicator;
+package org.openmrs.module.kenyaemr.reporting.library.shared.common;
 
 import org.openmrs.Concept;
 import org.openmrs.Program;
 import org.openmrs.module.kenyacore.report.ReportUtils;
-import org.openmrs.module.kenyaemr.reporting.library.cohort.CommonCohortLibrary;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;

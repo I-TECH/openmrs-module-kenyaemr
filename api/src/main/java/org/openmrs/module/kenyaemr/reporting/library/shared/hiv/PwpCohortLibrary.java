@@ -12,7 +12,7 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.reporting.library.cohort;
+package org.openmrs.module.kenyaemr.reporting.library.shared.hiv;
 
 import org.openmrs.Concept;
 import org.openmrs.api.PatientSetService;

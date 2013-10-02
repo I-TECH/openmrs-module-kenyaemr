@@ -12,8 +12,9 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.reporting.library.cohort;
+package org.openmrs.module.kenyaemr.reporting.library.moh711;
 
+import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonCohortLibrary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

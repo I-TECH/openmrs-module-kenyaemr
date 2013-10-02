@@ -12,7 +12,7 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.reporting.library.cohort;
+package org.openmrs.module.kenyaemr.reporting.library.shared.tb;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -22,7 +22,6 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
-import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.metadata.TbMetadata;
 import org.openmrs.module.kenyaemr.test.ReportingTestUtils;
 import org.openmrs.module.kenyacore.test.TestUtils;
@@ -37,7 +36,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Tests for {@link TbCohortLibrary}
+ * Tests for {@link org.openmrs.module.kenyaemr.reporting.library.shared.tb.TbCohortLibrary}
  */
 public class TbCohortLibraryTest extends BaseModuleContextSensitiveTest {
 
@@ -123,7 +122,7 @@ public class TbCohortLibraryTest extends BaseModuleContextSensitiveTest {
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.reporting.library.cohort.TbCohortLibrary#died()
+	 * @see org.openmrs.module.kenyaemr.reporting.library.shared.tb.TbCohortLibrary#died()
 	 */
 	@Test
 	public void died_shouldReturnPatientsWhoDiedBetweenDates() throws Exception {
@@ -171,7 +170,7 @@ public class TbCohortLibraryTest extends BaseModuleContextSensitiveTest {
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.reporting.library.cohort.TbCohortLibrary#diedAndStarted12MonthsAgo()
+	 * @see org.openmrs.module.kenyaemr.reporting.library.shared.tb.TbCohortLibrary#diedAndStarted12MonthsAgo()
 	 */
 	@Test
 	public void diedStarted12MonthsAgo_shouldReturnPatientsWhoDiedAndStartedTreatment12MonthsAgo() throws Exception {
