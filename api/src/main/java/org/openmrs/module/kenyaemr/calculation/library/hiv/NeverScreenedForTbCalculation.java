@@ -15,18 +15,24 @@
 package org.openmrs.module.kenyaemr.calculation.library.hiv;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.openmrs.Concept;
 import org.openmrs.EncounterType;
+import org.openmrs.Obs;
 import org.openmrs.Program;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
+import org.openmrs.calculation.result.ListResult;
 import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
+import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
+import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.metadata.TbMetadata;
 
@@ -48,21 +54,35 @@ public class NeverScreenedForTbCalculation extends BaseEmrCalculation {
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> params, PatientCalculationContext context) {
 		Program hivProgram = MetadataUtils.getProgram(HivMetadata._Program.HIV);
-		EncounterType screeningEncType = MetadataUtils.getEncounterType(TbMetadata._EncounterType.TB_SCREENING);
+
+		Concept tbDiseaseStatus = Dictionary.getConcept(Dictionary.TUBERCULOSIS_DISEASE_STATUS);
+		Concept diseaseSuspected = Dictionary.getConcept(Dictionary.DISEASE_SUSPECTED);
+		Concept diseaseDiagnosed = Dictionary.getConcept(Dictionary.DISEASE_DIAGNOSED);
+		Concept noSignsOrSymptoms = Dictionary.getConcept(Dictionary.NO_SIGNS_OR_SYMPTOMS_OF_DISEASE);
 
 		Set<Integer> alive = alivePatients(cohort, context);
 		Set<Integer> inHivProgram = CalculationUtils.patientsThatPass(Calculations.activeEnrollment(hivProgram, alive, context));
-		Set<Integer> wasScreened = CalculationUtils.patientsThatPass(Calculations.allEncounters(screeningEncType, cohort, context));
+
+		CalculationResultMap screeningObs = Calculations.allObs(tbDiseaseStatus, cohort, context);
 
 		CalculationResultMap ret = new CalculationResultMap();
 		for (Integer ptId : cohort) {
-			BooleanResult result = null;
+			boolean hivAndNeverScreened = false;
 
 			if (inHivProgram.contains(ptId)) {
-				result = new BooleanResult(!wasScreened.contains(ptId), this);
+				hivAndNeverScreened = true;
+
+				List<Obs> diseasesStatuses = EmrCalculationUtils.extractListResultValues((ListResult) screeningObs.get(ptId));
+
+				for (Obs diseaseStatus : diseasesStatuses) {
+					if (diseaseSuspected.equals(diseaseStatus.getValueCoded()) || diseaseDiagnosed.equals(diseaseStatus.getValueCoded()) || noSignsOrSymptoms.equals(diseaseStatus.getValueCoded())) {
+						hivAndNeverScreened = false;
+						break;
+					}
+				}
 			}
 
-			ret.put(ptId, result);
+			ret.put(ptId, new BooleanResult(hivAndNeverScreened, this, context));
 		}
 		return ret;
 	}
