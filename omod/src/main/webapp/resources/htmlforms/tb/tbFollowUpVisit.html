@@ -1,0 +1,174 @@
+<!--
+  ~ The contents of this file are subject to the OpenMRS Public License
+  ~ Version 1.0 (the "License"); you may not use this file except in
+  ~ compliance with the License. You may obtain a copy of the License at
+  ~ http://license.openmrs.org
+  ~
+  ~ Software distributed under the License is distributed on an "AS IS"
+  ~ basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+  ~ License for the specific language governing rights and limitations
+  ~ under the License.
+  ~
+  ~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+  -->
+<htmlform>
+	<style type="text/css">
+		table.tb {
+		background-color: #FFFFCC;
+		border: 1px solid black;
+		}
+	</style>
+	<script type="text/javascript">
+
+			var sensitivityLbl = document.getElementById("sensitivity");
+			var POSITIVE = 703;
+			var ACID_FAST_FLUOROCHROME_STAIN_METHOD = 160022;
+			var SCANTY = 159985;
+			var ONE_PLUS = 1362;
+			var TWO_PLUS = 1363;
+			var THREE_PLUS = 1364;
+			var FLUORESCENT_STAIN_METHOD_FOR_SMEAR_INTERPRETATION = 161880;
+
+			function cultureTest() {
+
+				if (getValue('growth_no_growth.value') == POSITIVE) {
+					jq('#sensitivity :input').prop('disabled', false);
+					jq('#numberOfColonies :input').prop('disabled', false);
+				}
+				else{
+					jq('#sensitivity :input').prop('disabled', true);
+					jq('#numberOfColonies :input').prop('disabled', true);
+				}
+			}
+
+			function sputumTypeTest() {
+
+				if ((getValue('testType.value') == ACID_FAST_FLUOROCHROME_STAIN_METHOD) &amp;&amp; ((getValue('sputumResults.value') == SCANTY) || (getValue('sputumResults.value') == ONE_PLUS ))) {
+					jq('#hpfValues').html('AFBs/100hpf');
+				}
+				else if (getValue('testType.value') == ACID_FAST_FLUOROCHROME_STAIN_METHOD &amp;&amp; (getValue('sputumResults.value') == TWO_PLUS || getValue('sputumResults.value') == THREE_PLUS )) {
+						jq('#hpfValues').html('AFBs/hpf');
+					}
+				else if (getValue('testType.value') == FLUORESCENT_STAIN_METHOD_FOR_SMEAR_INTERPRETATION &amp;&amp; (getValue('sputumResults.value') == SCANTY || getValue('sputumResults.value') == ONE_PLUS )) {
+					jq('#hpfValues').html('AFBs/40hpf');
+				}
+				else if (getValue('testType.value') == FLUORESCENT_STAIN_METHOD_FOR_SMEAR_INTERPRETATION &amp;&amp; (getValue('sputumResults.value') == TWO_PLUS || getValue('sputumResults.value') == THREE_PLUS )) {
+					jq('#hpfValues').html('AFBs/hpf');
+				}
+				else {
+					jq('#hpfValues').html(' ');
+				}
+			}
+
+		jq(function(){
+			cultureTest();
+			jq('#growth_no_growth').click(cultureTest);
+			sputumTypeTest();
+			jq('#testType').click(sputumTypeTest);
+			jq('#sputumResults').click(sputumTypeTest);
+		});
+	</script>
+	<div class="ke-form-header">
+		<table style="width: 100%">
+			<tr>
+				<td>Encounter Date: <encounterDate id="encounter-date" showTime="false" /></td>
+				<td>Provider: <encounterProvider default="currentUser" /></td>
+				<td>Location: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" /></td>
+			</tr>
+		</table>
+	</div>
+	<br />
+	<table align="center" cellpadding="0" class="tb">
+		<tr>
+			<td>
+				<fieldset>
+					<legend>Sputum Results</legend>
+						<table>
+							<obsgroup groupingConceptId="159960AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+								<tr>
+									<td>Type:</td>
+									<td>
+										<obs conceptId="159961AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="testType" answerConceptIds="160022AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161880AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="ZN Smear Microscopy,Fluorescence Microscopy" />
+									</td>
+								</tr>
+								<tr>
+									<td>Result:</td>
+
+									<td><obs conceptId="307AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="sputumResults" answerConceptIds="159985AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Scanty,+,++,+++,Negative" /></td>
+								</tr>
+								<tr>
+									<td>Serial No:</td>
+									<td><obs conceptId="159968AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  /></td>
+								</tr>
+								<tr>
+									<td>Quantity:</td>
+									<td><obs conceptId="160023AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="quantity" /></td>
+									<td id="hpfValues" class="value"></td>
+								</tr>
+								<tr>
+									<td>Date Done</td>
+									<td><obs conceptId="159964AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="date-results-date"  allowTime="false" /></td>
+								</tr>
+							</obsgroup>
+						</table>
+				</fieldset>
+			</td>
+			<td>
+				<fieldset>
+					<legend>Culture/Sensitivity Results</legend>
+					<table>
+						<obsgroup groupingConceptId="159981AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+							<tr>
+								<td>Bacterial Colonies growth</td>
+								<td><obs conceptId="159982AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Growth,No growth" id="growth_no_growth" /></td>
+							</tr>
+							<tr>
+								<td>Number of Colonies</td>
+								<td><obs conceptId="159952AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="numberOfColonies" /></td>
+							</tr>
+							<tr>
+								<td align="center" id="sensitivity">
+									Resistant (R)
+									<obs conceptId="159956AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="84360AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="S" style="checkbox" />
+									<obs conceptId="159956AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="767AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="R" style="checkbox" />
+									<obs conceptId="159956AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="78280AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="INH" style="checkbox" />
+									<obs conceptId="159956AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="75948AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="E" style="checkbox" />
+
+									<br />
+									<br />
+									Sensitive (S)
+									<obs conceptId="159958AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="84360AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="S" style="checkbox" />
+									<obs conceptId="159958AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="767AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="R" style="checkbox" />
+									<obs conceptId="159958AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="78280AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="INH" style="checkbox" />
+									<obs conceptId="159958AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="75948AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="E" style="checkbox" />
+								</td>
+							</tr>
+							<tr>
+								<td>Date Done</td>
+								<td><obs conceptId="159964AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="date-results-date"  allowTime="false" /></td>
+							</tr>
+						</obsgroup>
+					</table>
+				</fieldset>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2">
+				<fieldset>
+				  <table cellpadding="5">
+					  <tr>
+						  <td>Hiv Status</td>
+						  <td><obs conceptId="1169AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+						  <td>Return Visit date</td>
+						  <td><obs conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+					  </tr>
+				</table>
+				</fieldset>
+			</td>
+		</tr>
+	</table>
+	<br />
+	<div class="ke-form-footer">
+		<submit />
+	</div>
+</htmlform>
