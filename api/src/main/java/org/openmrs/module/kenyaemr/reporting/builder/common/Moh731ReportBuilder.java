@@ -21,6 +21,7 @@ import org.openmrs.module.kenyacore.report.builder.Builds;
 import org.openmrs.module.kenyaemr.reporting.BaseIndicatorReportBuilder;
 import org.openmrs.module.kenyaemr.reporting.EmrReportingUtils;
 import org.openmrs.module.kenyaemr.reporting.dataset.definition.MergingDataSetDefinition;
+import org.openmrs.module.kenyaemr.reporting.library.cohort.Moh731CohortLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.indicator.PwpIndicatorLibrary;
 import org.openmrs.module.kenyaemr.reporting.ColumnParameters;
 import org.openmrs.module.kenyaemr.reporting.indicator.HivCareVisitsIndicator;
@@ -30,7 +31,6 @@ import org.openmrs.module.kenyaemr.reporting.library.dimension.CommonDimensionLi
 import org.openmrs.module.kenyaemr.reporting.library.indicator.HivIndicatorLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.indicator.CommonIndicatorLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.indicator.TbIndicatorLibrary;
-import org.openmrs.module.reporting.cohort.definition.*;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.SimpleIndicatorDataSetDefinition;
@@ -74,10 +74,12 @@ public class Moh731ReportBuilder extends BaseIndicatorReportBuilder {
 	@Autowired
 	private PwpIndicatorLibrary pwpIndicators;
 
+	@Autowired
+	private Moh731CohortLibrary moh731Cohorts;
+
 	/**
 	 * Report specific cohorts and indicators
 	 */
-	private Map<String, CohortDefinition> cohortDefinitions;
 	private Map<String, CohortIndicator> cohortIndicators;
 	private Map<String, Indicator> nonCohortIndicators;
 
@@ -86,10 +88,6 @@ public class Moh731ReportBuilder extends BaseIndicatorReportBuilder {
 	 */
 	@Override
 	public List<DataSetDefinition> buildDataSets() {
-		log.debug("Setting up cohort definitions");
-
-		setupCohortDefinitions();
-
 		log.debug("Setting up cohort indicators");
 
 		setupCohortIndicators();
@@ -103,64 +101,6 @@ public class Moh731ReportBuilder extends BaseIndicatorReportBuilder {
 		return Arrays.asList(createDataSet());
 	}
 
-	private void setupCohortDefinitions() {
-		cohortDefinitions = new HashMap<String, CohortDefinition>();
-		{ // Revisits on ART
-			CompositionCohortDefinition cd = new CompositionCohortDefinition();
-			cd.addParameter(new Parameter("fromDate", "From Date", Date.class));
-			cd.addParameter(new Parameter("toDate", "To Date", Date.class));
-			cd.addSearch("startedBefore", ReportUtils.map(artCohorts.startedArt(), "onOrBefore=${startDate-1d}"));
-			cd.addSearch("recentEncounter", ReportUtils.map(commonCohorts.hasEncounter(), "onOrAfter=${endDate-90d},onOrBefore=${endDate}"));
-			cd.setCompositionString("recentEncounter AND startedBefore");
-			cohortDefinitions.put("revisitsArt", cd);
-		}
-		{ // Currently on ART.. we could calculate this several ways...
-			CompositionCohortDefinition cd = new CompositionCohortDefinition();
-			cd.addParameter(new Parameter("fromDate", "From Date", Date.class));
-			cd.addParameter(new Parameter("toDate", "To Date", Date.class));
-			cd.addSearch("startedArt", ReportUtils.map(artCohorts.startedArt(), "onOrAfter=${fromDate},onOrBefore=${toDate}"));
-			cd.addSearch("revisitsArt", ReportUtils.map(cohortDefinitions.get("revisitsArt"), "fromDate=${fromDate},toDate=${toDate}"));
-			cd.setCompositionString("startedArt OR revisitsArt");
-			cohortDefinitions.put("currentlyOnArt", cd);
-		}
-		{ // Taking original 1st line ART at 12 months
-			CompositionCohortDefinition cd = new CompositionCohortDefinition();
-			cd.addParameter(new Parameter("fromDate", "From Date", Date.class));
-			cd.addParameter(new Parameter("toDate", "To Date", Date.class));
-			cd.addSearch("art12MonthNetCohort", ReportUtils.map(artCohorts.netCohort12Months(), "onDate=${toDate}"));
-			cd.addSearch("currentlyOnOriginalFirstLine", ReportUtils.map(artCohorts.onOriginalFirstLine(), "onDate=${toDate}"));
-			cd.setCompositionString("art12MonthNetCohort AND currentlyOnOriginalFirstLine");
-			cohortDefinitions.put("onOriginalFirstLineAt12Months", cd);
-		}
-		{ // Taking alternate 1st line ART at 12 months
-			CompositionCohortDefinition cd = new CompositionCohortDefinition();
-			cd.addParameter(new Parameter("fromDate", "From Date", Date.class));
-			cd.addParameter(new Parameter("toDate", "To Date", Date.class));
-			cd.addSearch("art12MonthNetCohort", ReportUtils.map(artCohorts.netCohort12Months(), "onDate=${toDate}"));
-			cd.addSearch("currentlyOnAlternateFirstLine", ReportUtils.map(artCohorts.onAlternateFirstLine(), "onDate=${toDate}"));
-			cd.setCompositionString("art12MonthNetCohort AND currentlyOnAlternateFirstLine");
-			cohortDefinitions.put("onAlternateFirstLineAt12Months", cd);
-		}
-		{ // Taking 2nd line ART at 12 months
-			CompositionCohortDefinition cd = new CompositionCohortDefinition();
-			cd.addParameter(new Parameter("fromDate", "From Date", Date.class));
-			cd.addParameter(new Parameter("toDate", "To Date", Date.class));
-			cd.addSearch("art12MonthNetCohort", ReportUtils.map(artCohorts.netCohort12Months(), "onDate=${toDate}"));
-			cd.addSearch("currentlyOnSecondLine", ReportUtils.map(artCohorts.onSecondLine(), "onDate=${toDate}"));
-			cd.setCompositionString("art12MonthNetCohort AND currentlyOnSecondLine");
-			cohortDefinitions.put("onSecondLineAt12Months", cd);
-		}
-		{ // Taking any ART at 12 months
-			CompositionCohortDefinition cd = new CompositionCohortDefinition();
-			cd.addParameter(new Parameter("fromDate", "From Date", Date.class));
-			cd.addParameter(new Parameter("toDate", "To Date", Date.class));
-			cd.addSearch("art12MonthNetCohort", ReportUtils.map(artCohorts.netCohort12Months(), "onDate=${toDate}"));
-			cd.addSearch("currentlyOnArt", ReportUtils.map(artCohorts.onArt(), "onDate=${toDate}"));
-			cd.setCompositionString("art12MonthNetCohort AND currentlyOnArt");
-			cohortDefinitions.put("onTherapyAt12Months", cd);
-		}
-	}
-
 	private void setupCohortIndicators() {
 		cohortIndicators = new HashMap<String, CohortIndicator>();
 		{
@@ -169,11 +109,11 @@ public class Moh731ReportBuilder extends BaseIndicatorReportBuilder {
 		}
 		{
 			CohortIndicator ind = createCohortIndicator("revisitsArt", "Revisits ART");
-			ind.setCohortDefinition(ReportUtils.map(cohortDefinitions.get("revisitsArt"), "fromDate=${startDate},toDate=${endDate}"));
+			ind.setCohortDefinition(ReportUtils.map(moh731Cohorts.revisitsArt(), "fromDate=${startDate},toDate=${endDate}"));
 		}
 		{
 			CohortIndicator ind = createCohortIndicator("currentlyOnArt", "Currently on ART");
-			ind.setCohortDefinition(ReportUtils.map(cohortDefinitions.get("currentlyOnArt"), "fromDate=${startDate},toDate=${endDate}"));
+			ind.setCohortDefinition(ReportUtils.map(moh731Cohorts.currentlyOnArt(), "fromDate=${startDate},toDate=${endDate}"));
 		}
 		{
 			CohortIndicator ind = createCohortIndicator("cumulativeOnArt", "Cumulative ever on ART");
@@ -185,19 +125,19 @@ public class Moh731ReportBuilder extends BaseIndicatorReportBuilder {
 		}
 		{
 			CohortIndicator ind = createCohortIndicator("onOriginalFirstLineAt12Months", "On original 1st line at 12 months");
-			ind.setCohortDefinition(ReportUtils.map(cohortDefinitions.get("onOriginalFirstLineAt12Months"), "fromDate=${startDate},toDate=${endDate}"));
+			ind.setCohortDefinition(ReportUtils.map(moh731Cohorts.onOriginalFirstLineAt12Months(), "fromDate=${startDate},toDate=${endDate}"));
 		}
 		{
 			CohortIndicator ind = createCohortIndicator("onAlternateFirstLineAt12Months", "On alternate 1st line at 12 months");
-			ind.setCohortDefinition(ReportUtils.map(cohortDefinitions.get("onAlternateFirstLineAt12Months"), "fromDate=${startDate},toDate=${endDate}"));
+			ind.setCohortDefinition(ReportUtils.map(moh731Cohorts.onAlternateFirstLineAt12Months(), "fromDate=${startDate},toDate=${endDate}"));
 		}
 		{
 			CohortIndicator ind = createCohortIndicator("onSecondLineAt12Months", "On 2nd line at 12 months");
-			ind.setCohortDefinition(ReportUtils.map(cohortDefinitions.get("onSecondLineAt12Months"), "fromDate=${startDate},toDate=${endDate}"));
+			ind.setCohortDefinition(ReportUtils.map(moh731Cohorts.onSecondLineAt12Months(), "fromDate=${startDate},toDate=${endDate}"));
 		}
 		{
 			CohortIndicator ind = createCohortIndicator("onTherapyAt12Months", "On therapy at 12 months");
-			ind.setCohortDefinition(ReportUtils.map(cohortDefinitions.get("onTherapyAt12Months"), "fromDate=${startDate},toDate=${endDate}"));
+			ind.setCohortDefinition(ReportUtils.map(moh731Cohorts.onTherapyAt12Months(), "fromDate=${startDate},toDate=${endDate}"));
 		}
 	}
 
