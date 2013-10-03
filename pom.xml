@@ -51,7 +51,7 @@
 		<logicVersion>0.5.2</logicVersion>
 		<metadatamappingVersion>1.0.1</metadatamappingVersion>
 		<metadatasharingVersion>1.1.8</metadatasharingVersion>
-		<reportingVersion>0.7.7</reportingVersion>
+		<reportingVersion>0.8</reportingVersion>
 		<reportingrestVersion>1.2</reportingrestVersion>
 		<serializationxstreamVersion>0.2.7</serializationxstreamVersion>
 		<uiframeworkVersion>3.0</uiframeworkVersion>
