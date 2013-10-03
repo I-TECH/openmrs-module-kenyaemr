@@ -28,8 +28,11 @@ import java.util.Map;
  */
 public class TbDiseaseClassificationCalculation extends BaseEmrCalculation {
 
-    @Override
-    public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> arg1, PatientCalculationContext context) {
+	/**
+	 * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
+	 */
+	@Override
+	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> arg1, PatientCalculationContext context) {
 		return Calculations.lastObs(getConcept(Dictionary.SITE_OF_TUBERCULOSIS_DISEASE), cohort, context);
-    }
+	}
 }

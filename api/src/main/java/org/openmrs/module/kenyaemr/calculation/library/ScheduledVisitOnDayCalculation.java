@@ -32,7 +32,7 @@ import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.RangeComparator;
 
 /**
- *
+ * Returns whether patients have a scheduled visit on the specified date
  */
 public class ScheduledVisitOnDayCalculation extends BaseEmrCalculation {
 

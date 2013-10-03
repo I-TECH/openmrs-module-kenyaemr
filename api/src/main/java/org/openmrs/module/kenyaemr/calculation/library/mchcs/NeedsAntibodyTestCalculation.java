@@ -34,7 +34,6 @@ import java.util.Set;
 
 /**
  * Determines whether a child at 9 months and above has had antibody test
- *
  */
 public class NeedsAntibodyTestCalculation extends BaseEmrCalculation implements PatientFlagCalculation {
 
@@ -46,17 +45,19 @@ public class NeedsAntibodyTestCalculation extends BaseEmrCalculation implements 
 		return "Due For Antibody Test";
 	}
 
+	/**
+	 * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
+	 */
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
 
 		Program mchcsProgram = MetadataUtils.getProgram(MchMetadata._Program.MCHCS);
 
 		Set<Integer> alive = alivePatients(cohort, context);
-
 		Set<Integer> inMchcsProgram = CalculationUtils.patientsThatPass(Calculations.activeEnrollment(mchcsProgram, alive, context));
 		CalculationResultMap ages = Calculations.ages(cohort, context);
 
-		//get wheather the child is HIV Exposed
+		// Get whether the child is HIV Exposed
 		CalculationResultMap lastChildHivStatus = Calculations.lastObs(getConcept(Dictionary.CHILDS_CURRENT_HIV_STATUS), inMchcsProgram, context);
 		CalculationResultMap lastHivRapidTest1 = Calculations.lastObs(getConcept(Dictionary.HIV_RAPID_TEST_1_QUALITATIVE), inMchcsProgram, context);
 		CalculationResultMap lastHivRapidTest2 = Calculations.lastObs(getConcept(Dictionary.HIV_RAPID_TEST_2_QUALITATIVE), inMchcsProgram, context);
@@ -64,17 +65,18 @@ public class NeedsAntibodyTestCalculation extends BaseEmrCalculation implements 
 
 		for (Integer ptId : cohort) {
 			boolean needsAntibody = false;
-			  if (inMchcsProgram.contains(ptId) && lastChildHivStatus != null) {
-				 // Integer ageInMonths = ((Age) ages.get(ptId).getValue()).getFullMonths();
-				  Obs rapidTest1 = EmrCalculationUtils.obsResultForPatient(lastHivRapidTest1, ptId);
-				  Obs rapidTest2 = EmrCalculationUtils.obsResultForPatient(lastHivRapidTest2, ptId);
 
-				  	if (rapidTest1 == null && rapidTest2 == null) {
-					  //only for patients who are nine months and above
-						needsAntibody = true; /*(ageInMonths != null && ageInMonths >= 9);*/
-					}
-				  ret.put(ptId, new BooleanResult(needsAntibody, this, context));
-			  }
+			if (inMchcsProgram.contains(ptId) && lastChildHivStatus != null) {
+				// Integer ageInMonths = ((Age) ages.get(ptId).getValue()).getFullMonths();
+				Obs rapidTest1 = EmrCalculationUtils.obsResultForPatient(lastHivRapidTest1, ptId);
+				Obs rapidTest2 = EmrCalculationUtils.obsResultForPatient(lastHivRapidTest2, ptId);
+
+				if (rapidTest1 == null && rapidTest2 == null) {
+					// only for patients who are nine months and above
+					needsAntibody = true; /*(ageInMonths != null && ageInMonths >= 9);*/
+				}
+				ret.put(ptId, new BooleanResult(needsAntibody, this, context));
+			}
 		}
 		return ret;
 	}

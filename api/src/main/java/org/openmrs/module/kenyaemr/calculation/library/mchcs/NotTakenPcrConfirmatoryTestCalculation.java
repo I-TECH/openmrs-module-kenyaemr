@@ -14,7 +14,12 @@
 
 package org.openmrs.module.kenyaemr.calculation.library.mchcs;
 
-import org.openmrs.*;
+import org.openmrs.Concept;
+import org.openmrs.Encounter;
+import org.openmrs.EncounterType;
+import org.openmrs.Obs;
+import org.openmrs.Patient;
+import org.openmrs.Program;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
@@ -35,9 +40,7 @@ import java.util.Set;
 
 /**
  * Determines whether a child has been exited from care and No pcr confirmatory test is done
- *
  */
-
 public class NotTakenPcrConfirmatoryTestCalculation extends BaseEmrCalculation implements PatientFlagCalculation {
 
 	/**
@@ -48,6 +51,9 @@ public class NotTakenPcrConfirmatoryTestCalculation extends BaseEmrCalculation i
 		return "Due For PCR Confirmatory Test";
 	}
 
+	/**
+	 * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
+	 */
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
 
@@ -57,7 +63,7 @@ public class NotTakenPcrConfirmatoryTestCalculation extends BaseEmrCalculation i
 
 		Set<Integer> inMchcsProgram = CalculationUtils.patientsThatPass(Calculations.activeEnrollment(mchcsProgram, alive, context));
 
-		//get wheather the child is HIV Exposed
+		// Get whether the child is HIV Exposed
 		CalculationResultMap lastChildHivStatus = Calculations.lastObs(getConcept(Dictionary.CHILDS_CURRENT_HIV_STATUS), inMchcsProgram, context);
 
 		//check if pcr test was done
@@ -72,18 +78,18 @@ public class NotTakenPcrConfirmatoryTestCalculation extends BaseEmrCalculation i
 		//get an encounter type for HEI completion
 		EncounterType hei_completion_encounterType = MetadataUtils.getEncounterType(MchMetadata._EncounterType.MCHCS_HEI_COMPLETION);
 
-
-
 		CalculationResultMap ret = new CalculationResultMap();
 
 		for (Integer ptId : cohort) {
-
 			boolean notTakenConfirmatoryPcrTest = false;
+
 			Patient patient = Context.getPatientService().getPatient(ptId);
 			Encounter lastMchcsHeiCompletion = EmrUtils.lastEncounter(patient,hei_completion_encounterType);
+
 			Obs hivStatusObs = EmrCalculationUtils.obsResultForPatient(lastChildHivStatus, ptId);
 			Obs pcrObs = EmrCalculationUtils.obsResultForPatient(lastPcrTest, ptId);
 			Obs pcrTestConfirmObs =  EmrCalculationUtils.obsResultForPatient(lastPcrStatus, ptId);
+
 			if ( inMchcsProgram.contains(ptId) && hivStatusObs != null && hivStatusObs.getValueCoded().equals(hivExposed)) {
 				if (lastMchcsHeiCompletion != null) {
 					if (pcrObs == null || pcrTestConfirmObs == null || pcrTestConfirmObs.getValueCoded() != pcrCornfirmatory){
@@ -91,9 +97,9 @@ public class NotTakenPcrConfirmatoryTestCalculation extends BaseEmrCalculation i
 					}
 				}
 			}
+
 			ret.put(ptId, new BooleanResult(notTakenConfirmatoryPcrTest, this, context));
 		}
 		return ret;
 	}
-
 }

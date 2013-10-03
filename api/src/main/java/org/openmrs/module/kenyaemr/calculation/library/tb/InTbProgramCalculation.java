@@ -29,6 +29,9 @@ import org.openmrs.module.kenyaemr.metadata.TbMetadata;
  */
 public class InTbProgramCalculation extends BaseEmrCalculation {
 
+	/**
+	 * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
+	 */
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> params, PatientCalculationContext context) {
 		return passing(Calculations.activeEnrollment(MetadataUtils.getProgram(TbMetadata._Program.TB), alivePatients(cohort, context), context));

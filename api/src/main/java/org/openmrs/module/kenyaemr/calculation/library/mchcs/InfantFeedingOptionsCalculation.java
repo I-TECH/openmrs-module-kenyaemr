@@ -33,21 +33,21 @@ import java.util.Set;
 
 /**
  * Calculation to list feeding options for infants
- *
  */
-
 public class InfantFeedingOptionsCalculation extends BaseEmrCalculation {
 
+	/**
+	 * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
+	 */
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
 
 		Program mchcsProgram = MetadataUtils.getProgram(MchMetadata._Program.MCHCS);
 
 		Set<Integer> alive = alivePatients(cohort, context);
-
 		Set<Integer> inMchcsProgram = CalculationUtils.patientsThatPass(Calculations.activeEnrollment(mchcsProgram, alive, context));
 
-		//get wheather  the child has a feeding option
+		// Get whether  the child has a feeding option
 		CalculationResultMap lastChildFeedingOption = Calculations.lastObs(getConcept(Dictionary.INFANT_FEEDING_METHOD), inMchcsProgram, context);
 
 		CalculationResultMap ret = new CalculationResultMap();
@@ -58,8 +58,8 @@ public class InfantFeedingOptionsCalculation extends BaseEmrCalculation {
 			Obs feedingOptions = EmrCalculationUtils.obsResultForPatient(lastChildFeedingOption, ptId);
 
 			if (inMchcsProgram.contains(ptId) && feedingOptions != null) {
-					hasFeedingOption = true;
-				}
+				hasFeedingOption = true;
+			}
 			ret.put(ptId, new BooleanResult(hasFeedingOption, this));
 		}
 		return ret;

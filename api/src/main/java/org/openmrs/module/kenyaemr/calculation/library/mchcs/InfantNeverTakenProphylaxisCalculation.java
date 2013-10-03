@@ -36,11 +36,12 @@ import java.util.Set;
 
 /**
  * Determines whether HEI exposed infants are enrolled on any prophylaxis
- *
  */
 public class InfantNeverTakenProphylaxisCalculation extends BaseEmrCalculation {
 
-
+	/**
+	 * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
+	 */
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
 
