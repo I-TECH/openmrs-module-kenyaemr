@@ -41,7 +41,7 @@ public class WhoStageAtArtStartCalculation extends BaseEmrCalculation {
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
 
-		Concept pregnancyStatus = getConcept(Dictionary.CURRENT_WHO_STAGE);
+		Concept currentWhoStage = getConcept(Dictionary.CURRENT_WHO_STAGE);
 		CalculationResultMap artStartDates = calculate(new InitialArtStartDateCalculation(), cohort, context);
 
 		// Return the earliest of the two
@@ -51,8 +51,8 @@ public class WhoStageAtArtStartCalculation extends BaseEmrCalculation {
 			Date artStartDate = EmrCalculationUtils.datetimeResultForPatient(artStartDates, ptId);
 
 			if (artStartDate != null) {
-				CalculationResultMap pregStatusObss = Calculations.lastObsOnOrBefore(pregnancyStatus, artStartDate, Collections.singleton(ptId), context);
-				Obs whoStageObs = EmrCalculationUtils.obsResultForPatient(pregStatusObss, ptId);
+				CalculationResultMap currentWhoStageObss = Calculations.lastObsOnOrBefore(currentWhoStage, artStartDate, Collections.singleton(ptId), context);
+				Obs whoStageObs = EmrCalculationUtils.obsResultForPatient(currentWhoStageObss, ptId);
 
 				if (whoStageObs != null) {
 					result = new SimpleResult(EmrUtils.whoStage(whoStageObs.getValueCoded()), this);
