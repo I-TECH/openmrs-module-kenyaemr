@@ -34,7 +34,9 @@ import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
 /**
  * MOH 731 report
@@ -67,28 +69,43 @@ public class Moh731ReportBuilder extends BaseIndicatorReportBuilder {
 	public List<DataSetDefinition> buildDataSets() {
 		log.debug("Setting up report definition");
 
-		return Arrays.asList(createDataSet());
+		return Arrays.asList(pmtctDataSet(), careAndTreatmentDataSet());
 	}
 
 	/**
-	 * Creates the report data set
-	 * @return the data set
+	 * Creates the dataset for section #2: Prevention of Mother-to-Child Transmission
+	 * @return the dataset
 	 */
-	private DataSetDefinition createDataSet() {
+	protected DataSetDefinition pmtctDataSet() {
+		CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
+		dsd.setName("2: Prevention of Mother-to-Child Transmission");
+		dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+		dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
+
+		// TODO
+
+		return dsd;
+	}
+
+	/**
+	 * Creates the dataset for section #3: Care and Treatment
+	 * @return the dataset
+	 */
+	protected DataSetDefinition careAndTreatmentDataSet() {
 		CohortIndicatorDataSetDefinition cohortDsd = new CohortIndicatorDataSetDefinition();
-		cohortDsd.setName(report.getName() + " Cohort DSD");
+		cohortDsd.setName("3 (Cohort DSD)");
 		cohortDsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		cohortDsd.addParameter(new Parameter("endDate", "End Date", Date.class));
 		cohortDsd.addDimension("age", ReportUtils.map(commonDimensions.age(), "onDate=${endDate}"));
 		cohortDsd.addDimension("gender", ReportUtils.map(commonDimensions.gender()));
 
 		SimpleIndicatorDataSetDefinition nonCohortDsd = new SimpleIndicatorDataSetDefinition();
-		nonCohortDsd.setName(report.getName() + " Non-cohort DSD");
+		nonCohortDsd.setName("3 (Non-cohort DSD)");
 		nonCohortDsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		nonCohortDsd.addParameter(new Parameter("endDate", "End Date", Date.class));
 
 		MergingDataSetDefinition mergedDsd = new MergingDataSetDefinition();
-		mergedDsd.setName(report.getName() + " DSD");
+		mergedDsd.setName("3: Care and Treatment");
 		mergedDsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		mergedDsd.addParameter(new Parameter("endDate", "End Date", Date.class));
 		mergedDsd.addDataSetDefinition(cohortDsd);
