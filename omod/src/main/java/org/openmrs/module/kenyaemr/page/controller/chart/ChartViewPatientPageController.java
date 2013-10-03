@@ -14,29 +14,16 @@
 
 package org.openmrs.module.kenyaemr.page.controller.chart;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.commons.lang3.StringUtils;
-import org.openmrs.Encounter;
-import org.openmrs.Form;
-import org.openmrs.Patient;
-import org.openmrs.PatientProgram;
-import org.openmrs.Program;
-import org.openmrs.Visit;
+import org.openmrs.*;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appframework.AppDescriptor;
 import org.openmrs.module.appframework.api.AppFrameworkService;
+import org.openmrs.module.kenyacore.form.FormDescriptor;
 import org.openmrs.module.kenyacore.form.FormManager;
 import org.openmrs.module.kenyacore.program.ProgramDescriptor;
 import org.openmrs.module.kenyacore.program.ProgramManager;
 import org.openmrs.module.kenyaemr.EmrConstants;
-import org.openmrs.module.kenyacore.form.FormDescriptor;
 import org.openmrs.module.kenyaemr.EmrWebConstants;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.module.kenyaui.annotation.AppPage;
@@ -46,6 +33,8 @@ import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.page.PageModel;
 import org.openmrs.ui.framework.session.Session;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.*;
 
 /**
  * Viewing a patient's record, in the chart app

@@ -16,11 +16,7 @@ package org.openmrs.module.kenyaemr.fragment.controller.program.mchms;
 
 import org.joda.time.DateTime;
 import org.joda.time.Weeks;
-import org.openmrs.Concept;
-import org.openmrs.Encounter;
-import org.openmrs.EncounterType;
-import org.openmrs.Obs;
-import org.openmrs.Patient;
+import org.openmrs.*;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.Dictionary;

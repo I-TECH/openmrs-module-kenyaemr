@@ -13,10 +13,6 @@
  */
 package org.openmrs.module.kenyaemr.api;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
 import org.openmrs.Location;
 import org.openmrs.LocationAttributeType;
 import org.openmrs.Patient;
@@ -25,6 +21,10 @@ import org.openmrs.annotation.Authorized;
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.util.PrivilegeConstants;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Business logic methods for KenyaEMR

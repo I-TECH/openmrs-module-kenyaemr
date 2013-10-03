@@ -14,8 +14,6 @@
 
 package org.openmrs.module.kenyaemr.api.impl;
 
-import java.util.*;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.*;
@@ -28,16 +26,18 @@ import org.openmrs.module.idgen.IdentifierSource;
 import org.openmrs.module.idgen.SequentialIdentifierGenerator;
 import org.openmrs.module.idgen.service.IdentifierSourceService;
 import org.openmrs.module.idgen.validator.LuhnModNIdentifierValidator;
+import org.openmrs.module.kenyacore.identifier.IdentifierManager;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.module.kenyaemr.api.db.KenyaEmrDAO;
-import org.openmrs.module.kenyacore.identifier.IdentifierManager;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.util.OpenmrsUtil;
 import org.openmrs.util.PrivilegeConstants;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.*;
 
 /**
  * Implementations of business logic methods for KenyaEMR

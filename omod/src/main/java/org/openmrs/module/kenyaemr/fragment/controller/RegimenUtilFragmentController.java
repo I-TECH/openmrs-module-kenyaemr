@@ -14,10 +14,6 @@
 
 package org.openmrs.module.kenyaemr.fragment.controller;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Concept;
@@ -25,15 +21,9 @@ import org.openmrs.DrugOrder;
 import org.openmrs.Patient;
 import org.openmrs.api.OrderService;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyaemr.regimen.Regimen;
-import org.openmrs.module.kenyaemr.regimen.RegimenChange;
-import org.openmrs.module.kenyaemr.regimen.RegimenChangeHistory;
-import org.openmrs.module.kenyaemr.regimen.RegimenComponent;
-import org.openmrs.module.kenyaemr.regimen.RegimenManager;
-import org.openmrs.module.kenyaemr.regimen.RegimenOrder;
-import org.openmrs.module.kenyaemr.regimen.RegimenValidator;
-import org.openmrs.module.kenyaui.validator.ValidatingCommandObject;
+import org.openmrs.module.kenyaemr.regimen.*;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
+import org.openmrs.module.kenyaui.validator.ValidatingCommandObject;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.BindParams;
 import org.openmrs.ui.framework.annotation.MethodParam;
@@ -45,6 +35,9 @@ import org.springframework.validation.ValidationUtils;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Various actions for regimen related functions

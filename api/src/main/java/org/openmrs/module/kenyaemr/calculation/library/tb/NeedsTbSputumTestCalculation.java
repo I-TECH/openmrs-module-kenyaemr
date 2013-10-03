@@ -14,26 +14,22 @@
 
 package org.openmrs.module.kenyaemr.calculation.library.tb;
 
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Map;
-import java.util.Set;
-
 import org.openmrs.Concept;
 import org.openmrs.Program;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.ObsResult;
+import org.openmrs.module.kenyacore.calculation.BooleanResult;
 import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.EmrConstants;
-import org.openmrs.module.kenyacore.calculation.BooleanResult;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyaemr.metadata.TbMetadata;
+
+import java.util.*;
 
 /**
  * Calculate whether patients are due for a sputum test. Calculation returns

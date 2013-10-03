@@ -14,24 +14,19 @@
 
 package org.openmrs.module.kenyaemr.reporting.builder.common;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.Program;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyacore.report.IndicatorReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportManager;
+import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.metadata.MchMetadata;
 import org.openmrs.module.kenyaemr.metadata.TbMetadata;
 import org.openmrs.module.kenyaemr.regimen.RegimenManager;
 import org.openmrs.module.kenyaemr.test.ReportingTestUtils;
-import org.openmrs.module.kenyacore.test.TestUtils;
-import org.openmrs.module.reporting.dataset.MapDataSet;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.module.reporting.indicator.IndicatorResult;
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;

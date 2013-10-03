@@ -13,14 +13,8 @@
  */
 package org.openmrs.module.kenyaemr.fragment.controller.account;
 
-import java.util.Set;
-
 import org.apache.commons.lang.StringUtils;
-import org.openmrs.Person;
-import org.openmrs.PersonName;
-import org.openmrs.Provider;
-import org.openmrs.Role;
-import org.openmrs.User;
+import org.openmrs.*;
 import org.openmrs.api.PasswordException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaui.validator.ValidatingCommandObject;
@@ -34,6 +28,8 @@ import org.openmrs.util.OpenmrsUtil;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.Set;
 
 /**
  *

@@ -14,7 +14,9 @@
 
 package org.openmrs.module.kenyaemr.fragment.controller.program;
 
-import org.openmrs.*;
+import org.openmrs.Encounter;
+import org.openmrs.Form;
+import org.openmrs.PatientProgram;
 import org.openmrs.module.kenyacore.program.ProgramDescriptor;
 import org.openmrs.module.kenyacore.program.ProgramManager;
 import org.openmrs.module.kenyaemr.EmrWebConstants;

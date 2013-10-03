@@ -14,22 +14,13 @@
 
 package org.openmrs.module.kenyaemr.regimen;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.SortedMap;
-import java.util.TreeMap;
-
 import org.openmrs.Concept;
 import org.openmrs.DrugOrder;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
 import org.openmrs.util.OpenmrsUtil;
+
+import java.util.*;
 
 /**
  * Regimen change history of a patient. Use for ARVs

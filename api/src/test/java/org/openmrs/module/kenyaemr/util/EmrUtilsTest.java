@@ -17,21 +17,11 @@ package org.openmrs.module.kenyaemr.util;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.Concept;
-import org.openmrs.Encounter;
-import org.openmrs.EncounterType;
-import org.openmrs.Form;
-import org.openmrs.Obs;
-import org.openmrs.Patient;
-import org.openmrs.PatientProgram;
-import org.openmrs.Program;
-import org.openmrs.Visit;
-import org.openmrs.VisitAttribute;
-import org.openmrs.VisitType;
+import org.openmrs.*;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
-import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyacore.test.TestUtils;
+import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.TbMetadata;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
@@ -41,7 +31,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 
 /**
  * Tests for {@link EmrUtils}

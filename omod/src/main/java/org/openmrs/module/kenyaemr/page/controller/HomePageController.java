@@ -14,10 +14,6 @@
 
 package org.openmrs.module.kenyaemr.page.controller;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appframework.AppDescriptor;
 import org.openmrs.module.appframework.api.AppFrameworkService;
@@ -30,6 +26,9 @@ import org.openmrs.ui.framework.page.PageModel;
 import org.openmrs.util.OpenmrsUtil;
 
 import javax.servlet.http.HttpSession;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 /**
  * Home page controller

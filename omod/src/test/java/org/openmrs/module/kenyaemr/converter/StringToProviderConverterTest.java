@@ -19,7 +19,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Provider;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyaemr.converter.StringToProviderConverter;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 
 /**

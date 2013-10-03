@@ -49,4 +49,14 @@ public class TbIndicatorLibrary {
 				map(tbCohorts.diedAndStarted12MonthsAgo(), "onOrAfter=${startDate},onOrBefore=${endDate}")
 		);
 	}
+
+	/**
+	 * Number of patients who completed Tb Treatment and are in Tb program
+	 * @return the indicator
+	 */
+	public CohortIndicator completedTbTreatment() {
+		return cohortIndicator(null,
+				map(tbCohorts.completedTreatment(), "onOrAfter=${startDate},onOrBefore=${endDate}")
+		);
+	}
 }

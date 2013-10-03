@@ -17,11 +17,7 @@ package org.openmrs.module.kenyaemr.visit;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.Encounter;
-import org.openmrs.Form;
-import org.openmrs.Patient;
-import org.openmrs.Visit;
-import org.openmrs.VisitType;
+import org.openmrs.*;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyacore.form.FormManager;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
@@ -33,7 +29,8 @@ import org.openmrs.module.kenyaemr.metadata.TbMetadata;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 
 /**
  * Tests for {@link EmrVisitAssignmentHandler}. Most of the functionality provided by this class is actually tested in

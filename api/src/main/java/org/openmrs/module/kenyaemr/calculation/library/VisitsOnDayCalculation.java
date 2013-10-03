@@ -14,12 +14,6 @@
 
 package org.openmrs.module.kenyaemr.calculation.library;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
 import org.openmrs.Patient;
 import org.openmrs.Visit;
 import org.openmrs.api.context.Context;
@@ -30,6 +24,8 @@ import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.reporting.common.DateUtil;
+
+import java.util.*;
 
 /**
  *

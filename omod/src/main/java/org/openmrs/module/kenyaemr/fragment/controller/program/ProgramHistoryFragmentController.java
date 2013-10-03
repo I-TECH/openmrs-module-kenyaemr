@@ -14,9 +14,9 @@
 
 package org.openmrs.module.kenyaemr.fragment.controller.program;
 
-import java.util.*;
-
-import org.openmrs.*;
+import org.openmrs.Patient;
+import org.openmrs.PatientProgram;
+import org.openmrs.Program;
 import org.openmrs.module.appframework.AppDescriptor;
 import org.openmrs.module.kenyacore.form.FormDescriptor;
 import org.openmrs.module.kenyacore.form.FormManager;
@@ -29,6 +29,9 @@ import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 import org.openmrs.ui.framework.page.PageRequest;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Patient program history fragment

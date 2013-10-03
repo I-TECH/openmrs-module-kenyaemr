@@ -14,11 +14,6 @@
 
 package org.openmrs.module.kenyaemr.calculation.library;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,7 +28,12 @@ import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import static org.hamcrest.Matchers.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static org.hamcrest.Matchers.is;
 
 /**
  * Tests for {@link VisitsOnDayCalculation}

@@ -14,12 +14,6 @@
 
 package org.openmrs.module.kenyaemr.regimen;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,10 +21,12 @@ import org.openmrs.Concept;
 import org.openmrs.DrugOrder;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.test.EmrTestUtils;
-import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
+
+import java.util.*;
 
 /**
  * Tests for {@link RegimenChangeHistory}

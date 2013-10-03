@@ -14,11 +14,6 @@
 
 package org.openmrs.module.kenyaemr.calculation.library.hiv;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.Map;
-import java.util.Set;
-
 import org.openmrs.Encounter;
 import org.openmrs.Program;
 import org.openmrs.calculation.patient.PatientCalculationContext;
@@ -29,9 +24,14 @@ import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
+import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
+
+import java.util.Collection;
+import java.util.Date;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Calculates whether patients have missed their last scheduled return visit. Calculation returns true

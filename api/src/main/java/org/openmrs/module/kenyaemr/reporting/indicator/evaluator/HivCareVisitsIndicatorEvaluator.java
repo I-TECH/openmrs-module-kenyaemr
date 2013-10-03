@@ -25,8 +25,8 @@ import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
-import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonCohortLibrary;
 import org.openmrs.module.kenyaemr.reporting.indicator.HivCareVisitsIndicator;
+import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonCohortLibrary;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.common.DateUtil;
@@ -34,13 +34,13 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.indicator.Indicator;
 import org.openmrs.module.reporting.indicator.SimpleIndicatorResult;
-
 import org.openmrs.module.reporting.indicator.evaluator.IndicatorEvaluator;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.*;
-
-import static org.openmrs.module.kenyacore.report.ReportUtils.map;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Evaluator for HIV care visit indicators

@@ -20,7 +20,6 @@ import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;

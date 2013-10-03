@@ -14,9 +14,6 @@
 
 package org.openmrs.module.kenyaemr.page.controller.admin;
 
-import java.util.Collection;
-import java.util.List;
-
 import org.openmrs.Person;
 import org.openmrs.Provider;
 import org.openmrs.User;
@@ -25,6 +22,9 @@ import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyaui.annotation.AppPage;
 import org.openmrs.ui.framework.page.PageModel;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Editing user and provider accounts page

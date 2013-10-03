@@ -28,7 +28,7 @@ import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.is;
 
 /**
  * Tests for {@link EditProgramFormPageController}
