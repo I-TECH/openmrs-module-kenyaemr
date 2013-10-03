@@ -28,6 +28,8 @@ import org.openmrs.test.BaseModuleContextSensitiveTest;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.hamcrest.Matchers.*;
+
 /**
  * Tests for {@link OnArtCalculation}
  */
@@ -49,19 +51,19 @@ public class OnArtCalculationTest extends BaseModuleContextSensitiveTest {
 
 		// Put patient #7 on Dapsone
 		Concept dapsone = Dictionary.getConcept(Dictionary.DAPSONE);
-		TestUtils.saveDrugOrder(Context.getPatientService().getPatient(7), dapsone, TestUtils.date(2011, 1, 1), null);
+		TestUtils.saveDrugOrder(TestUtils.getPatient(7), dapsone, TestUtils.date(2011, 1, 1), null);
 
 		// Put patient #8 on Stavudine
 		Concept stavudine = Context.getConceptService().getConcept(84309);
-		TestUtils.saveDrugOrder(Context.getPatientService().getPatient(8), stavudine, TestUtils.date(2011, 1, 1), null);
+		TestUtils.saveDrugOrder(TestUtils.getPatient(8), stavudine, TestUtils.date(2011, 1, 1), null);
 
 		Context.flushSession();
 		
 		List<Integer> cohort = Arrays.asList(6, 7, 8);
 
 		CalculationResultMap resultMap = new OnArtCalculation().evaluate(cohort, null, Context.getService(PatientCalculationService.class).createCalculationContext());
-		Assert.assertFalse((Boolean) resultMap.get(6).getValue()); // isn't on any drugs
-		Assert.assertFalse((Boolean) resultMap.get(7).getValue()); // isn't on any ARTs
-		Assert.assertTrue((Boolean) resultMap.get(8).getValue()); // is taking Stavudine
+		Assert.assertThat((Boolean) resultMap.get(6).getValue(), is(false)); // isn't on any drugs
+		Assert.assertThat((Boolean) resultMap.get(7).getValue(), is(false)); // isn't on any ARTs
+		Assert.assertThat((Boolean) resultMap.get(8).getValue(), is(true)); // is taking D4T
 	}
 }

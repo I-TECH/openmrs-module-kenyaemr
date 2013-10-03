@@ -44,14 +44,14 @@
 		<htmlformentry19extVersion>0.9</htmlformentry19extVersion>
 		<htmlwidgetsVersion>1.6.5</htmlwidgetsVersion>
 		<idgenVersion>2.6</idgenVersion>
-		<kenyacoreVersion>0.13.3</kenyacoreVersion>
+		<kenyacoreVersion>0.13.4</kenyacoreVersion>
 		<kenyadqVersion>0.2.2</kenyadqVersion>
 		<!--<kenyalabVersion>0.1.2</kenyalabVersion>-->
 		<kenyauiVersion>1.12.9</kenyauiVersion>
 		<logicVersion>0.5.2</logicVersion>
 		<metadatamappingVersion>1.0.1</metadatamappingVersion>
 		<metadatasharingVersion>1.1.8</metadatasharingVersion>
-		<reportingVersion>0.7.6</reportingVersion>
+		<reportingVersion>0.8</reportingVersion>
 		<reportingrestVersion>1.2</reportingrestVersion>
 		<serializationxstreamVersion>0.2.7</serializationxstreamVersion>
 		<uiframeworkVersion>3.0</uiframeworkVersion>
@@ -329,6 +329,11 @@
 			<name>Modules</name>
 			<url>http://mavenrepo.openmrs.org/nexus/content/repositories/modules/</url>
 		</repository>
+		<snapshotRepository>
+			<id>openmrs-repo-snapshots</id>
+			<name>OpenMRS Snapshots</name>
+			<url>http://mavenrepo.openmrs.org/nexus/content/repositories/snapshots</url>
+		</snapshotRepository>
 	</distributionManagement>
 
 </project>

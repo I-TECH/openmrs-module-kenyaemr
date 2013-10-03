@@ -36,7 +36,7 @@ import org.openmrs.module.kenyaemr.util.EmrUtils;
 import org.openmrs.module.reporting.common.Age;
 
 /**
- *
+ * Calculates whether patients are eligible for ART
  */
 public class EligibleForArtCalculation extends BaseEmrCalculation implements PatientFlagCalculation {
 
@@ -84,10 +84,19 @@ public class EligibleForArtCalculation extends BaseEmrCalculation implements Pat
 		return ret;
 	}
 
-    private boolean isEligible(int ageInMonths, Double cd4, Double cd4Percent, Integer whoStage) {
+	/**
+	 * Checks eligibility based on age, CD4 and WHO stage
+	 * @param ageInMonths the patient age in months
+	 * @param cd4 the last CD4 count
+	 * @param cd4Percent the last CD4 percentage
+	 * @param whoStage the last WHO stage
+	 * @return true if patient is eligible
+	 */
+	protected boolean isEligible(int ageInMonths, Double cd4, Double cd4Percent, Integer whoStage) {
 		if (ageInMonths < 24) {
 			return true;
-		} else if (ageInMonths < 60) { // 24-59 months
+		}
+		else if (ageInMonths < 60) { // 24-59 months
 			if (whoStage != null && (whoStage == 3 || whoStage == 4)) {
 				return true;
 			}
@@ -97,7 +106,8 @@ public class EligibleForArtCalculation extends BaseEmrCalculation implements Pat
 			if (cd4 != null && cd4 < 1000) {
 				return true;
 			}
-		} else if (ageInMonths < 155) { // 5-12 years
+		}
+		else if (ageInMonths < 155) { // 5-12 years
 			if (whoStage != null && (whoStage == 3 || whoStage == 4)) {
 				return true;
 			}
@@ -107,7 +117,8 @@ public class EligibleForArtCalculation extends BaseEmrCalculation implements Pat
 			if (cd4 != null && cd4 < 500) {
 				return true;
 			}
-		} else { // 13+ years
+		}
+		else { // 13+ years
 			if (whoStage != null && (whoStage == 3 || whoStage == 4)) {
 				return true;
 			}

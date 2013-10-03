@@ -9,9 +9,7 @@
 		<div class="ke-stack-item">
 			${ ui.includeFragment("kenyaemr", "program/programCompletion", [ patientProgram: enrollment, showClinicalData: config.showClinicalData ]) }
 		</div>
-		<% } %>
-
-		<% if (patientForms) { %>
+		<% } else if (patientForms) { %>
 		<div class="ke-stack-item">
 			<% patientForms.each { form -> %>
 				${ ui.includeFragment("kenyaui", "widget/button", [

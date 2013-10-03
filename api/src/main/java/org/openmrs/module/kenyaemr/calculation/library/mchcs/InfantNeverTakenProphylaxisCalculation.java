@@ -36,11 +36,12 @@ import java.util.Set;
 
 /**
  * Determines whether HEI exposed infants are enrolled on any prophylaxis
- *
  */
 public class InfantNeverTakenProphylaxisCalculation extends BaseEmrCalculation {
 
-
+	/**
+	 * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
+	 */
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
 
@@ -63,6 +64,7 @@ public class InfantNeverTakenProphylaxisCalculation extends BaseEmrCalculation {
 
 		for (Integer ptId : cohort) {
 			boolean notOnPcp = false;
+
 			//checking wheather the infant is in mchcs program, alive and HEI
 			Obs hivStatusObs = EmrCalculationUtils.obsResultForPatient(lastChildHivStatus, ptId);
 			if (inMchcsProgram.contains(ptId) && lastChildHivStatus != null && hivStatusObs !=null && (hivStatusObs.getValueCoded().equals(hivExposed))) {
@@ -79,7 +81,7 @@ public class InfantNeverTakenProphylaxisCalculation extends BaseEmrCalculation {
 					}
 				}
 			}
-		ret.put(ptId, new BooleanResult(notOnPcp, this, context));
+			ret.put(ptId, new BooleanResult(notOnPcp, this, context));
 		}
 
 	return ret;

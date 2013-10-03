@@ -35,9 +35,7 @@ import java.util.Set;
 
 /**
  * Determines whether a child at 6 week and above has had PCR test
- *
-*/
-
+ */
 public class NeedsPcrTestCalculation extends BaseEmrCalculation implements PatientFlagCalculation {
 
 	/**
@@ -48,16 +46,18 @@ public class NeedsPcrTestCalculation extends BaseEmrCalculation implements Patie
 		return "Due For PCR Test";
 	}
 
+	/**
+	 * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
+	 */
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
 
 		Program mchcsProgram = MetadataUtils.getProgram(MchMetadata._Program.MCHCS);
 
 		Set<Integer> alive = alivePatients(cohort, context);
-
 		Set<Integer> inMchcsProgram = CalculationUtils.patientsThatPass(Calculations.activeEnrollment(mchcsProgram, alive, context));
 
-		//get wheather the child is HIV Exposed
+		// Get whether the child is HIV Exposed
 		CalculationResultMap lastChildHivStatus = Calculations.lastObs(getConcept(Dictionary.CHILDS_CURRENT_HIV_STATUS), inMchcsProgram, context);
 		CalculationResultMap lastPcrTest = Calculations.lastObs(getConcept(Dictionary.HIV_DNA_POLYMERASE_CHAIN_REACTION), inMchcsProgram, context);
 
@@ -69,19 +69,18 @@ public class NeedsPcrTestCalculation extends BaseEmrCalculation implements Patie
 
 			boolean needsPcr = false;
 
-			//check if a patient is alive and is in mchcs program
+			// Check if a patient is alive and is in MCHCS program
 			if (inMchcsProgram.contains(ptId)) {
 
 				Obs hivStatusObs = EmrCalculationUtils.obsResultForPatient(lastChildHivStatus, ptId);
 				Obs pcrTestObs =  EmrCalculationUtils.obsResultForPatient(lastPcrTest, ptId);
 
 				if (hivStatusObs != null && pcrTestObs == null && (hivStatusObs.getValueCoded().equals(hivExposed))) {
-
 					needsPcr = true;
 				}
-
-				ret.put(ptId, new BooleanResult(needsPcr, this, context));
 			}
+
+			ret.put(ptId, new BooleanResult(needsPcr, this, context));
 		}
 		return ret;
 	}

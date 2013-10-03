@@ -14,11 +14,9 @@
 
 package org.openmrs.module.kenyaemr.calculation.library.mchms;
 
-import org.openmrs.Person;
-import org.openmrs.api.PersonService;
-import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
+import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
 
@@ -30,17 +28,19 @@ import java.util.Map;
  */
 public class EligibleForMchmsProgramCalculation extends BaseEmrCalculation {
 
+	/**
+	 * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
+	 */
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> params, PatientCalculationContext context) {
 		CalculationResultMap ret = new CalculationResultMap();
 
+		CalculationResultMap genders = Calculations.genders(cohort, context);
+
 		for (int ptId : cohort) {
-			// TODO rework so that we don't have to load each patient from database individually
-			PersonService personService = Context.getPersonService();
-			Person person = personService.getPerson(ptId);
-			if (person.getGender().equals("F")) {
-				ret.put(ptId, new BooleanResult(true, this));
-			}
+			boolean eligible = "F".equals(genders.get(ptId).getValue());
+
+			ret.put(ptId, new BooleanResult(eligible, this));
 		}
 		return ret;
 	}
