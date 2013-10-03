@@ -249,8 +249,8 @@ public class TbCohortLibraryTest extends BaseModuleContextSensitiveTest {
 		TestUtils.enrollInProgram(TestUtils.getPatient(6),  hivProgram, TestUtils.date(2011, 5, 10));
 
 		// Enroll patient #7 in both programs
-		TestUtils.enrollInProgram(TestUtils.getPatient(7), tbProgram, TestUtils.date(2012, 6, 15));
-		TestUtils.enrollInProgram(TestUtils.getPatient(7), hivProgram, TestUtils.date(2012, 6, 20));
+		TestUtils.enrollInProgram(TestUtils.getPatient(7), tbProgram, TestUtils.date(2012, 6, 10));
+		TestUtils.enrollInProgram(TestUtils.getPatient(7), hivProgram, TestUtils.date(2012, 6, 10));
 
 		// Put patient #7 on ctx
 		VisitType outpatientType = MetadataUtils.getVisitType(CommonMetadata._VisitType.OUTPATIENT);
@@ -258,14 +258,14 @@ public class TbCohortLibraryTest extends BaseModuleContextSensitiveTest {
 		Concept medOrders = Dictionary.getConcept(Dictionary.MEDICATION_ORDERS);
 		Concept ctx = Dictionary.getConcept(Dictionary.SULFAMETHOXAZOLE_TRIMETHOPRIM);
 
-		TestUtils.saveVisit(TestUtils.getPatient(7), outpatientType, TestUtils.date(2012, 6,2), TestUtils.date(2012, 6,2),
-				TestUtils.saveEncounter(TestUtils.getPatient(7), consultationType, TestUtils.date(2012, 6,2),
-						TestUtils.saveObs(TestUtils.getPatient(7), medOrders, ctx, TestUtils.date(2012, 6,2))
+		TestUtils.saveVisit(TestUtils.getPatient(7), outpatientType, TestUtils.date(2012, 6, 10), TestUtils.date(2012, 6, 10),
+				TestUtils.saveEncounter(TestUtils.getPatient(7), consultationType, TestUtils.date(2012, 6, 10),
+						TestUtils.saveObs(TestUtils.getPatient(7), medOrders, ctx, TestUtils.date(2012, 6, 10))
 				)
 		);
 
 		CohortDefinition cd = tbCohortLibrary.inTbAndHivProgramsAndOnCPT();
-		context.addParameterValue("onDate", TestUtils.date(2012, 6, 2));
+		context.addParameterValue("onDate", TestUtils.date(2012, 6, 10));
 		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
 		ReportingTestUtils.assertCohortEquals(Arrays.asList(7), evaluated);
 	}
