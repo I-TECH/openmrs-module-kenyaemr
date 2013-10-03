@@ -14,22 +14,18 @@
 
 package org.openmrs.module.kenyaemr.reporting.library.shared.tb;
 
-import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonIndicatorLibrary;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import static org.openmrs.module.kenyacore.report.ReportUtils.map;
-import static org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonIndicatorLibrary.createCohortIndicator;
+import static org.openmrs.module.kenyaemr.reporting.EmrReportingUtils.cohortIndicator;
 
 /**
  * Library of TB related indicator definitions. All indicators require parameters ${startDate} and ${endDate}
  */
 @Component
 public class TbIndicatorLibrary {
-
-	@Autowired
-	private CommonIndicatorLibrary commonIndicators;
 
 	@Autowired
 	private TbCohortLibrary tbCohorts;
@@ -39,7 +35,7 @@ public class TbIndicatorLibrary {
 	 * @return the indicator
 	 */
 	public CohortIndicator screenedForTb() {
-		return createCohortIndicator("Number of patients screened for TB",
+		return cohortIndicator("Number of patients screened for TB",
 				map(tbCohorts.screenedForTb(), "onOrAfter=${startDate},onOrBefore=${endDate}")
 		);
 	}
@@ -49,7 +45,7 @@ public class TbIndicatorLibrary {
 	 * @return the indicator
 	 */
 	public CohortIndicator diedAndStarted12MonthsAgo() {
-		return createCohortIndicator(null,
+		return cohortIndicator(null,
 				map(tbCohorts.diedAndStarted12MonthsAgo(), "onOrAfter=${startDate},onOrBefore=${endDate}")
 		);
 	}

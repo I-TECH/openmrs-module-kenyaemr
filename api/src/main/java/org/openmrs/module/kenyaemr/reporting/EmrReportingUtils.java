@@ -1,15 +1,31 @@
 package org.openmrs.module.kenyaemr.reporting;
 
+import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
+import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 
+import java.util.Date;
 import java.util.List;
 
 /**
  * Utility methods for reporting
  */
 public class EmrReportingUtils {
+
+	/**
+	 * Creates a new cohort indicator
+	 * @param description the indicator description
+	 * @return the cohort indicator
+	 */
+	public static CohortIndicator cohortIndicator(String description, Mapped<CohortDefinition> mappedCohort) {
+		CohortIndicator ind = new CohortIndicator(description);
+		ind.addParameter(new Parameter("startDate", "Start Date", Date.class));
+		ind.addParameter(new Parameter("endDate", "End Date", Date.class));
+		ind.setCohortDefinition(mappedCohort);
+		return ind;
+	}
 
 	/**
 	 * Adds a row to a dataset based on an indicator and a list of column parameters (generates column name from the column parameters)
