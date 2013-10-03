@@ -84,7 +84,7 @@ public class NotTakenPcrConfirmatoryTestCalculation extends BaseEmrCalculation i
 			boolean notTakenConfirmatoryPcrTest = false;
 
 			Patient patient = Context.getPatientService().getPatient(ptId);
-			Encounter lastMchcsHeiCompletion = EmrUtils.lastEncounter(patient,hei_completion_encounterType);
+			Encounter lastMchcsHeiCompletion = EmrUtils.lastEncounter(patient, hei_completion_encounterType);
 
 			Obs hivStatusObs = EmrCalculationUtils.obsResultForPatient(lastChildHivStatus, ptId);
 			Obs pcrObs = EmrCalculationUtils.obsResultForPatient(lastPcrTest, ptId);

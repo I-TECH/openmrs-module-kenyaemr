@@ -84,12 +84,12 @@ public class OnOriginalFirstLineArtCalculationTest extends BaseModuleContextSens
 
 		Context.flushSession();
 		
-		List<Integer> cohort = Arrays.asList(6, 7, 8, 999);
+		List<Integer> cohort = Arrays.asList(2, 6, 7, 8);
 
 		CalculationResultMap resultMap = new OnOriginalFirstLineArtCalculation().evaluate(cohort, null, Context.getService(PatientCalculationService.class).createCalculationContext());
+		Assert.assertFalse((Boolean) resultMap.get(2).getValue()); // isn't on any drugs
 		Assert.assertTrue((Boolean) resultMap.get(6).getValue());
 		Assert.assertFalse((Boolean) resultMap.get(7).getValue());
 		Assert.assertFalse((Boolean) resultMap.get(8).getValue());
-		Assert.assertNull(resultMap.get(999)); // isn't on any drugs
 	}
 }

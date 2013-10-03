@@ -43,17 +43,16 @@ public class OnSecondLineArtCalculation extends BaseEmrCalculation {
 
 		CalculationResultMap ret = new CalculationResultMap();
 		for (Integer ptId : cohort) {
-			BooleanResult result = null;
+			boolean onSecondLine = false;
 			SimpleResult currentArvResult = (SimpleResult) currentArvs.get(ptId);
 
 			if (currentArvResult != null) {
 				RegimenOrder currentRegimen = (RegimenOrder) currentArvResult.getValue();
 
-				boolean isSecondLine = EmrCalculationUtils.regimenInGroup(currentRegimen, "ARV", "adult-second");
-				result = new BooleanResult(isSecondLine, this, context);
+				onSecondLine = EmrCalculationUtils.regimenInGroup(currentRegimen, "ARV", "adult-second");
 			}
 
-			ret.put(ptId, result);
+			ret.put(ptId, new BooleanResult(onSecondLine, this, context));
 		}
 		return ret;
     }

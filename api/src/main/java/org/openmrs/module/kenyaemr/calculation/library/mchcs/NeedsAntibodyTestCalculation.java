@@ -75,8 +75,9 @@ public class NeedsAntibodyTestCalculation extends BaseEmrCalculation implements 
 					// only for patients who are nine months and above
 					needsAntibody = true; /*(ageInMonths != null && ageInMonths >= 9);*/
 				}
-				ret.put(ptId, new BooleanResult(needsAntibody, this, context));
 			}
+			ret.put(ptId, new BooleanResult(needsAntibody, this, context));
+
 		}
 		return ret;
 	}

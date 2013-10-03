@@ -64,6 +64,7 @@ public class InfantNeverTakenProphylaxisCalculation extends BaseEmrCalculation {
 
 		for (Integer ptId : cohort) {
 			boolean notOnPcp = false;
+
 			//checking wheather the infant is in mchcs program, alive and HEI
 			Obs hivStatusObs = EmrCalculationUtils.obsResultForPatient(lastChildHivStatus, ptId);
 			if (inMchcsProgram.contains(ptId) && lastChildHivStatus != null && hivStatusObs !=null && (hivStatusObs.getValueCoded().equals(hivExposed))) {
@@ -80,7 +81,7 @@ public class InfantNeverTakenProphylaxisCalculation extends BaseEmrCalculation {
 					}
 				}
 			}
-		ret.put(ptId, new BooleanResult(notOnPcp, this, context));
+			ret.put(ptId, new BooleanResult(notOnPcp, this, context));
 		}
 
 	return ret;
