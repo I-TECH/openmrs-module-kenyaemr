@@ -14,9 +14,12 @@
 
 package org.openmrs.module.kenyaemr.calculation.library.mchms;
 
+import org.joda.time.DateTime;
 import org.openmrs.Concept;
+import org.openmrs.Encounter;
 import org.openmrs.Program;
 import org.openmrs.calculation.patient.PatientCalculationContext;
+import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
 import org.openmrs.module.kenyacore.calculation.CalculationUtils;
@@ -24,9 +27,12 @@ import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
+import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.metadata.MchMetadata;
 
+import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 
@@ -48,42 +54,76 @@ public class TestedForHivInMchmsCalculation extends BaseEmrCalculation {
 		Program mchmsProgram = MetadataUtils.getProgram(MchMetadata._Program.MCHMS);
 
 		Set<Integer> alivePatients = alivePatients(cohort, context);
-		Set<Integer> mchmsPatients = CalculationUtils.patientsThatPass(Calculations.activeEnrollment(mchmsProgram, alivePatients, context));
+		Set<Integer> aliveMchmsPatients = CalculationUtils.patientsThatPass(Calculations.activeEnrollment(mchmsProgram, alivePatients, context));
 
-		CalculationResultMap lastHivStatusObss = Calculations.lastObs(getConcept(Dictionary.HIV_STATUS), mchmsPatients, context);
-		CalculationResultMap artStatusObss = Calculations.lastObs(getConcept(Dictionary.ANTIRETROVIRAL_USE_IN_PREGNANCY), mchmsPatients, context);
+		CalculationResultMap lastHivStatusObss = Calculations.lastObs(getConcept(Dictionary.HIV_STATUS), aliveMchmsPatients, context);
+		CalculationResultMap lastHivTestDateObss = Calculations.lastObs(getConcept(Dictionary.DATE_OF_HIV_DIAGNOSIS), aliveMchmsPatients, context);
+		CalculationResultMap lastDeliveryDateObss = Calculations.lastObs(getConcept(Dictionary.DATE_OF_CONFINEMENT), aliveMchmsPatients, context);
 
-		Concept hivPositiveConcept = Dictionary.getConcept(Dictionary.POSITIVE);
-		Concept onHaartConcept = Dictionary.getConcept(Dictionary.MOTHER_ON_HAART);
+		CalculationResultMap lastEnrollmentEncounters = Calculations.lastEncounter(MetadataUtils.getEncounterType(MchMetadata._EncounterType.MCHMS_ENROLLMENT), cohort, context);
 
 		CalculationResultMap resultMap = new CalculationResultMap();
 
 		for (Integer ptId : cohort) {
-			boolean patientIsAlive = alivePatients.contains(ptId);
-			boolean patientIsInMchmsProgram = mchmsPatients.contains(ptId);
-			boolean patientHivStatusWasEstablishedInMchms = true;
-			if (patientIsAlive && patientIsInMchmsProgram && patientHivStatusWasEstablishedInMchms) {
-				resultMap.put(ptId, new BooleanResult(true, this, context));
-//				if (stage.equals(MchMetadata.Stage.ANY)) {
-//					resultMap.put(ptId, qualifiesByHivStatus(result, ptId, context));
-//				} else if (stage.equals("antenatal")) {
-//
-//				} else if (stage.equals("delivery")) {
-//
-//				} else if (stage.equals("postnatal")) {
-//
-//				}
+			Concept patientsLastHivStatus = EmrCalculationUtils.codedObsResultForPatient(lastHivStatusObss, ptId);
+			Date patientsLastHivTestDate = EmrCalculationUtils.datetimeObsResultForPatient(lastHivTestDateObss, ptId);
+			CalculationResult lastEnrollmentCalculatioResult = lastEnrollmentEncounters.get(ptId);
+			boolean qualified = false;
+			if (aliveMchmsPatients.contains(ptId)
+					&& (patientsLastHivStatus != null && !patientsLastHivStatus.equals(Dictionary.getConcept(Dictionary.NOT_HIV_TESTED)))
+					&& (lastEnrollmentCalculatioResult != null && ((Encounter) lastEnrollmentEncounters.get(ptId).getValue()).getEncounterDatetime().before(patientsLastHivTestDate))) {
+				Date enrollmentDate = ((Encounter) lastEnrollmentEncounters.get(ptId).getValue()).getEncounterDatetime();
+				Date deliveryDate =  EmrCalculationUtils.datetimeObsResultForPatient(lastDeliveryDateObss, ptId);
+	            if (deliveryDate != null && deliveryDate.before(enrollmentDate)) {
+					deliveryDate = null;
+				}
+				qualified = qualifiedByStage(stage, enrollmentDate, patientsLastHivTestDate, deliveryDate)
+						&& qualifiedByHivStatus(result, patientsLastHivStatus);
+				resultMap.put(ptId, new BooleanResult(qualified, this, context));
+			} else {
+				resultMap.put(ptId, new BooleanResult(qualified, this, context));
 			}
 		}
 
 		return resultMap;
 	}
 
-	protected BooleanResult qualifiesByHivStatus(Concept requestedHivStatus, Integer patientId, PatientCalculationContext context) {
-		if (requestedHivStatus == null) {
-			return new BooleanResult(true, this, context);
+	protected boolean qualifiedByHivStatus(Concept requested, Concept found) {
+		if (requested == null) {
+			return true;
 		} else {
-			return new BooleanResult(true, this, context);
+			return requested.equals(found);
+		}
+	}
+
+	protected boolean qualifiedByStage(MchMetadata.Stage stage, Date enrollmentDate, Date testDate, Date deliveryDate) {
+		if (stage.equals(MchMetadata.Stage.ANY)) {
+			return true;
+		} else {
+			if (deliveryDate == null) {
+				if (stage.equals(MchMetadata.Stage.ANTENATAL)) {
+					return true;
+				} else {
+					return false;
+				}
+			} else {
+				Date lowerLimit = null;
+				Date upperLimit = null;
+				DateTime beginningOfEnrollmentDate = new DateTime(enrollmentDate).toDateMidnight().toDateTime();
+				DateTime beginningOfDeliveryDate = new DateTime(deliveryDate).toDateMidnight().toDateTime();
+				DateTime endOfDeliveryDate = beginningOfDeliveryDate.plusDays(1);
+				if (stage.equals(MchMetadata.Stage.ANTENATAL)) {
+					lowerLimit = beginningOfEnrollmentDate.toDate();
+					upperLimit = beginningOfDeliveryDate.plusDays(-2).toDate();
+				} else if (stage.equals(MchMetadata.Stage.DELIVERY)) {
+					lowerLimit = beginningOfDeliveryDate.plusDays(-2).toDate();
+					upperLimit = endOfDeliveryDate.toDate();
+				} else if (stage.equals(MchMetadata.Stage.POSTNATAL)) {
+					lowerLimit = endOfDeliveryDate.toDate();
+					upperLimit = endOfDeliveryDate.plusDays(3).toDate();
+				}
+				return testDate.after(lowerLimit) && testDate.before(upperLimit);
+			}
 		}
 	}
 }
