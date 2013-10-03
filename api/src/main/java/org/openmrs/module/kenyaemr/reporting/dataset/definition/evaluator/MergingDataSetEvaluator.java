@@ -43,7 +43,6 @@ public class MergingDataSetEvaluator implements DataSetEvaluator {
 	 */
 	@Override
 	public MapDataSet evaluate(DataSetDefinition dataSetDefinition, EvaluationContext context) throws EvaluationException {
-		MapDataSet ret = new MapDataSet(dataSetDefinition, context);
 		MergingDataSetDefinition dsd = (MergingDataSetDefinition) dataSetDefinition;
 
 		List<MapDataSet> dataSets = new ArrayList<MapDataSet>();

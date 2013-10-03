@@ -45,8 +45,8 @@ public class Moh731CohortLibrary {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.addParameter(new Parameter("fromDate", "From Date", Date.class));
 		cd.addParameter(new Parameter("toDate", "To Date", Date.class));
-		cd.addSearch("startedBefore", ReportUtils.map(hivCohorts.startedArt(), "onOrBefore=${startDate-1d}"));
-		cd.addSearch("recentEncounter", ReportUtils.map(commonCohorts.hasEncounter(), "onOrAfter=${endDate-90d},onOrBefore=${endDate}"));
+		cd.addSearch("startedBefore", ReportUtils.map(hivCohorts.startedArt(), "onOrBefore=${fromDate}"));
+		cd.addSearch("recentEncounter", ReportUtils.map(commonCohorts.hasEncounter(), "onOrAfter=${toDate-90d},onOrBefore=${toDate}"));
 		cd.setCompositionString("recentEncounter AND startedBefore");
 		return cd;
 	}
