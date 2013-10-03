@@ -19,13 +19,14 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyacore.report.builder.Builds;
 import org.openmrs.module.kenyaemr.reporting.BaseIndicatorReportBuilder;
+import org.openmrs.module.kenyaemr.reporting.ColumnParameters;
 import org.openmrs.module.kenyaemr.reporting.EmrReportingUtils;
 import org.openmrs.module.kenyaemr.reporting.dataset.definition.MergingDataSetDefinition;
 import org.openmrs.module.kenyaemr.reporting.library.moh731.Moh731IndicatorLibrary;
-import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.PwpIndicatorLibrary;
-import org.openmrs.module.kenyaemr.reporting.ColumnParameters;
 import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonDimensionLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.HivIndicatorLibrary;
+import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.PwpIndicatorLibrary;
+import org.openmrs.module.kenyaemr.reporting.library.shared.mchms.MchmsIndicatorLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.shared.tb.TbIndicatorLibrary;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
@@ -62,6 +63,9 @@ public class Moh731ReportBuilder extends BaseIndicatorReportBuilder {
 	@Autowired
 	private Moh731IndicatorLibrary moh731Indicators;
 
+	@Autowired
+	private MchmsIndicatorLibrary mchmsIndicators;
+
 	/**
 	 * @see org.openmrs.module.kenyaemr.reporting.BaseIndicatorReportBuilder#buildDataSets()
 	 */
@@ -74,6 +78,7 @@ public class Moh731ReportBuilder extends BaseIndicatorReportBuilder {
 
 	/**
 	 * Creates the dataset for section #2: Prevention of Mother-to-Child Transmission
+	 *
 	 * @return the dataset
 	 */
 	protected DataSetDefinition pmtctDataSet() {
@@ -82,13 +87,24 @@ public class Moh731ReportBuilder extends BaseIndicatorReportBuilder {
 		dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
 
-		// TODO
+		String indParams = "startDate=${startDate},endDate=${endDate}";
+
+		dsd.addColumn("HV02-01", "Testing for HIV (Antenatal)", ReportUtils.map(mchmsIndicators.testedForHivInMchmsAntenatal(), indParams), "");
+		dsd.addColumn("HV02-02", "Testing for HIV (Labor and Delivery)", ReportUtils.map(mchmsIndicators.testedForHivInMchmsDelivery(), indParams), "");
+		dsd.addColumn("HV02-03", "Testing for HIV (Postnatal (within 72hrs))", ReportUtils.map(mchmsIndicators.testedForHivInMchmsPostnatal(), indParams), "");
+		dsd.addColumn("HV02-04", "Testing for HIV (Total (Sum HV02-01 to HV02-03))", ReportUtils.map(mchmsIndicators.testedForHivInMchms(), indParams), "");
+
+		dsd.addColumn("HV02-06", "HIV positive results (Antenatal)", ReportUtils.map(mchmsIndicators.testedHivPositiveInMchmsAntenatal(), indParams), "");
+		dsd.addColumn("HV02-07", "HIV positive results (Labor and Delivery)", ReportUtils.map(mchmsIndicators.testedHivPositiveInMchmsDelivery(), indParams), "");
+		dsd.addColumn("HV02-08", "HIV positive results (Postnatal (within 72hrs))", ReportUtils.map(mchmsIndicators.testedHivPositiveInMchmsPostnatal(), indParams), "");
+		dsd.addColumn("HV02-09", "HIV positive results (Total (Sum HV02-05 to HV02-08))", ReportUtils.map(mchmsIndicators.testedHivPositiveInMchms(), indParams), "");
 
 		return dsd;
 	}
 
 	/**
 	 * Creates the dataset for section #3: Care and Treatment
+	 *
 	 * @return the dataset
 	 */
 	protected DataSetDefinition careAndTreatmentDataSet() {
@@ -121,7 +137,7 @@ public class Moh731ReportBuilder extends BaseIndicatorReportBuilder {
 
 		List<ColumnParameters> allColumns = Arrays.asList(colInfants, colMPeds, colFPeds, colMAdults, colFAdults, colTotal);
 		List<ColumnParameters> nonInfantColumns = Arrays.asList(colMPeds, colFPeds, colMAdults, colFAdults, colTotal);
-		
+
 		String indParams = "startDate=${startDate},endDate=${endDate}";
 
 		// TODO HV03-01 and HV03-2 (HIV Exposed Infants)

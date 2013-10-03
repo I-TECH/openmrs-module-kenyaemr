@@ -56,7 +56,7 @@ public class OnHaartCalculation extends BaseEmrCalculation {
 		for (Integer ptId : cohort) {
 			// Is patient alive and in MCH program?
 			boolean onHaart = false;
-			if (inMchmsProgram.contains(ptId)) {
+			if (inMchmsProgram.contains(ptId) && alive.contains(ptId)) {
 				Concept lastHivStatus = EmrCalculationUtils.codedObsResultForPatient(lastHivStatusObss, ptId);
 				Concept lastArtStatus = EmrCalculationUtils.codedObsResultForPatient(artStatusObss, ptId);
 				boolean hivPositive = false;

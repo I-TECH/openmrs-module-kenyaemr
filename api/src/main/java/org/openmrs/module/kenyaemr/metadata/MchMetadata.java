@@ -26,7 +26,7 @@ import static org.openmrs.module.kenyacore.metadata.bundle.Constructors.*;
  * MCH metadata bundle
  */
 @Component
-@Requires({ CommonMetadata.class })
+@Requires({CommonMetadata.class})
 public class MchMetadata extends AbstractMetadataBundle {
 
 	public static final class _EncounterType {
@@ -62,6 +62,13 @@ public class MchMetadata extends AbstractMetadataBundle {
 	public static final class _Program {
 		public static final String MCHCS = "c2ecdf11-97cd-432a-a971-cfd9bd296b83";
 		public static final String MCHMS = "b5d9e05f-f5ab-4612-98dd-adb75438ed34";
+	}
+
+	public static enum Stage {
+		ANY,
+		ANTENATAL,
+		DELIVERY,
+		POSTNATAL
 	}
 
 	/**
