@@ -23,8 +23,6 @@ import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.reporting.BaseIndicatorReportBuilder;
 import org.openmrs.module.kenyaemr.reporting.EmrReportingUtils;
 import org.openmrs.module.kenyaemr.reporting.ColumnParameters;
-import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.HivCohortLibrary;
-import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonCohortLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonDimensionLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.HivIndicatorLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonIndicatorLibrary;
@@ -35,7 +33,10 @@ import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
 import static org.openmrs.module.kenyacore.report.ReportUtils.map;
 
@@ -49,16 +50,10 @@ public class Moh711ReportBuilder extends BaseIndicatorReportBuilder {
 	protected static final Log log = LogFactory.getLog(Moh711ReportBuilder.class);
 
 	@Autowired
-	private CommonCohortLibrary commonCohorts;
-
-	@Autowired
-	private CommonIndicatorLibrary commonIndicators;
-
-	@Autowired
 	private CommonDimensionLibrary commonDimensions;
 
 	@Autowired
-	private HivCohortLibrary artCohorts;
+	private CommonIndicatorLibrary commonIndicators;
 
 	@Autowired
 	private HivIndicatorLibrary artIndicators;
