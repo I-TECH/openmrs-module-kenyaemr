@@ -12,7 +12,7 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.reporting.library.cohort;
+package org.openmrs.module.kenyaemr.reporting.library.shared.hiv;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -37,7 +37,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Tests for {@link HivCohortLibrary}
+ * Tests for {@link org.openmrs.module.kenyaemr.reporting.library.shared.hiv.HivCohortLibrary}
  */
 public class HivCohortLibraryTest extends BaseModuleContextSensitiveTest {
 
@@ -82,7 +82,7 @@ public class HivCohortLibraryTest extends BaseModuleContextSensitiveTest {
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.reporting.library.cohort.HivCohortLibrary#startedArt()
+	 * @see org.openmrs.module.kenyaemr.reporting.library.shared.hiv.HivCohortLibrary#startedArt()
 	 */
 	@Test
 	public void startedArt_shouldReturnPatientsWhoStartedAfterDate() throws Exception {
@@ -94,7 +94,7 @@ public class HivCohortLibraryTest extends BaseModuleContextSensitiveTest {
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.reporting.library.cohort.HivCohortLibrary#startedArt()
+	 * @see org.openmrs.module.kenyaemr.reporting.library.shared.hiv.HivCohortLibrary#startedArt()
 	 */
 	@Test
 	public void startedArt_shouldReturnPatientsWhoStartedBeforeDate() throws Exception {
@@ -106,7 +106,7 @@ public class HivCohortLibraryTest extends BaseModuleContextSensitiveTest {
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.reporting.library.cohort.HivCohortLibrary#startedArt()
+	 * @see org.openmrs.module.kenyaemr.reporting.library.shared.hiv.HivCohortLibrary#startedArt()
 	 */
 	@Test
 	public void startedArt_shouldReturnPatientsWhoStartedBetweenDates() throws Exception {
@@ -119,7 +119,7 @@ public class HivCohortLibraryTest extends BaseModuleContextSensitiveTest {
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.reporting.library.cohort.HivCohortLibrary#enrolledExcludingTransfers()
+	 * @see org.openmrs.module.kenyaemr.reporting.library.shared.hiv.HivCohortLibrary#enrolledExcludingTransfers()
 	 */
 	@Test
 	public void enrolledExcludingTransfers() throws Exception {
@@ -144,7 +144,7 @@ public class HivCohortLibraryTest extends BaseModuleContextSensitiveTest {
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.reporting.library.cohort.HivCohortLibrary#referredFrom(org.openmrs.Concept...)
+	 * @see org.openmrs.module.kenyaemr.reporting.library.shared.hiv.HivCohortLibrary#referredFrom(org.openmrs.Concept...)
 	 */
 	@Test
 	public void referredFrom_shouldReturnPatientsWithSpecifiedEntryPoint() throws Exception {

@@ -14,12 +14,11 @@
 
 package org.openmrs.module.kenyaemr.converter;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Role;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyaemr.converter.StringToRoleConverter;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 
 /**

@@ -12,7 +12,7 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.reporting.library.cohort;
+package org.openmrs.module.kenyaemr.reporting.library.shared.common;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -37,7 +37,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Tests for {@link CommonCohortLibrary}
+ * Tests for {@link org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonCohortLibrary}
  */
 public class CommonCohortLibraryTest extends BaseModuleContextSensitiveTest {
 

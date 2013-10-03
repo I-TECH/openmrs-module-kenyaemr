@@ -25,7 +25,7 @@ import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
-import org.openmrs.module.kenyaemr.reporting.library.cohort.CommonCohortLibrary;
+import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonCohortLibrary;
 import org.openmrs.module.kenyaemr.reporting.indicator.HivCareVisitsIndicator;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;

@@ -12,15 +12,14 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.reporting.library.indicator;
+package org.openmrs.module.kenyaemr.reporting.library.shared.hiv;
 
-import org.openmrs.module.kenyacore.report.ReportUtils;
-import org.openmrs.module.kenyaemr.reporting.library.cohort.PwpCohortLibrary;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import static org.openmrs.module.kenyacore.report.ReportUtils.map;
+import static org.openmrs.module.kenyaemr.reporting.EmrReportingUtils.cohortIndicator;
 
 /**
  * Library of PwP related indicator definitions. All indicators require parameters ${startDate} and ${endDate}
@@ -36,7 +35,7 @@ public class PwpIndicatorLibrary {
 	 * @return the indicator
 	 */
 	public CohortIndicator condomsProvided() {
-		return CommonIndicatorLibrary.createCohortIndicator("Number of patients provided with condoms", ReportUtils.map(pwpCohorts.condomsProvided(), "onOrAfter=${startDate},onOrBefore=${endDate}"));
+		return cohortIndicator("Number of patients provided with condoms", map(pwpCohorts.condomsProvided(), "onOrAfter=${startDate},onOrBefore=${endDate}"));
 	}
 
 	/**
@@ -44,6 +43,6 @@ public class PwpIndicatorLibrary {
 	 * @return the indicator
 	 */
 	public CohortIndicator modernContraceptivesProvided() {
-		return CommonIndicatorLibrary.createCohortIndicator("Number of patients provided with modern contraceptives", ReportUtils.map(pwpCohorts.modernContraceptivesProvided(), "onOrAfter=${startDate},onOrBefore=${endDate}"));
+		return cohortIndicator("Number of patients provided with modern contraceptives", map(pwpCohorts.modernContraceptivesProvided(), "onOrAfter=${startDate},onOrBefore=${endDate}"));
 	}
 }
