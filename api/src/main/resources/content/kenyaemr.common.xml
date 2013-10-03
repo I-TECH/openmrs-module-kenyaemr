@@ -22,7 +22,7 @@
 			<set>
 				<ref bean="kenyaemr.common.form.hivFamilyHistory" />
 				<ref bean="kenyaemr.common.form.obstetricHistory" />
-				<ref bean="kenyaemr.common.form.medicalAndSurgicalHistory" />
+				<!--<ref bean="kenyaemr.common.form.medicalAndSurgicalHistory" />-->
 			</set>
 		</property>
 		<property name="commonVisitForms">
@@ -205,7 +205,7 @@
 	</bean>
 
 	<!-- Medical and Surgical History -->
-	<bean id="kenyaemr.common.form.medicalAndSurgicalHistory" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+	<!--<bean id="kenyaemr.common.form.medicalAndSurgicalHistory" class="org.openmrs.module.kenyacore.form.FormDescriptor">
 		<property name="targetUuid" value="4f3c9bd8-c117-4a5e-a7eb-12a627c29de6" />
 		<property name="apps">
 			<set>
@@ -218,7 +218,7 @@
 		<property name="icon" value="kenyaui:forms/generic.png" />
 		<property name="htmlform" value="kenyaemr:medicalAndSurgicalHistory.html" />
 		<property name="order" value="100030" />
-	</bean>
+	</bean>-->
 
 	<!-- ===================== Reports ===================== -->
 
