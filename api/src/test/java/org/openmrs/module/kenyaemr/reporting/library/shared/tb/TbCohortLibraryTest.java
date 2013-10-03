@@ -17,12 +17,15 @@ package org.openmrs.module.kenyaemr.reporting.library.shared.tb;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Concept;
+import org.openmrs.EncounterType;
 import org.openmrs.Program;
+import org.openmrs.VisitType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
+import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.metadata.TbMetadata;
 import org.openmrs.module.kenyaemr.test.ReportingTestUtils;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
@@ -51,6 +54,9 @@ public class TbCohortLibraryTest extends BaseModuleContextSensitiveTest {
 
 	private EvaluationContext context;
 
+	@Autowired
+	private HivMetadata hivMetadata;
+
 	/**
 	 * Setup each test
 	 */
@@ -60,6 +66,7 @@ public class TbCohortLibraryTest extends BaseModuleContextSensitiveTest {
 
 		commonMetadata.install();
 		tbMetadata.install();
+		hivMetadata.install();
 
 		Concept tbDiseaseStatus = Dictionary.getConcept(Dictionary.TUBERCULOSIS_DISEASE_STATUS);
 		Concept diseaseSuspected = Dictionary.getConcept(Dictionary.DISEASE_SUSPECTED);
@@ -221,6 +228,44 @@ public class TbCohortLibraryTest extends BaseModuleContextSensitiveTest {
 		CohortDefinition cd = tbCohortLibrary.completedTreatment();
 		context.addParameterValue("onOrAfter", TestUtils.date(2012, 6, 1));
 		context.addParameterValue("onOrBefore", TestUtils.date(2012, 6, 30));
+		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
+		ReportingTestUtils.assertCohortEquals(Arrays.asList(7), evaluated);
+	}
+
+
+	/**
+	 * @see org.openmrs.module.kenyaemr.reporting.library.shared.tb.TbCohortLibrary#inTbAndHivProgramsAndOnCPT()
+	 */
+	@Test
+	public void inTbAndHivProgramsAndOnCPT_shouldReturnPatientsInTbAndHivProgramsAndOnCPT() throws Exception {
+
+		Program tbProgram = MetadataUtils.getProgram(TbMetadata._Program.TB);
+		Program hivProgram = MetadataUtils.getProgram(HivMetadata._Program.HIV);
+
+		 //Enroll patient #2 into Tb program given they are already in hiv program in std dataset
+		TestUtils.enrollInProgram(TestUtils.getPatient(2), tbProgram, TestUtils.date(2012, 6, 10));
+
+		// Enroll patient #6 on May 15th 2011 in tb program
+		TestUtils.enrollInProgram(TestUtils.getPatient(6),  hivProgram, TestUtils.date(2011, 5, 10));
+
+		// Enroll patient #7 in both programs
+		TestUtils.enrollInProgram(TestUtils.getPatient(7), tbProgram, TestUtils.date(2012, 6, 15));
+		TestUtils.enrollInProgram(TestUtils.getPatient(7), hivProgram, TestUtils.date(2012, 6, 20));
+
+		// Put patient #7 on ctx
+		VisitType outpatientType = MetadataUtils.getVisitType(CommonMetadata._VisitType.OUTPATIENT);
+		EncounterType consultationType = MetadataUtils.getEncounterType(CommonMetadata._EncounterType.CONSULTATION);
+		Concept medOrders = Dictionary.getConcept(Dictionary.MEDICATION_ORDERS);
+		Concept ctx = Dictionary.getConcept(Dictionary.SULFAMETHOXAZOLE_TRIMETHOPRIM);
+
+		TestUtils.saveVisit(TestUtils.getPatient(7), outpatientType, TestUtils.date(2012, 6,2), TestUtils.date(2012, 6,2),
+				TestUtils.saveEncounter(TestUtils.getPatient(7), consultationType, TestUtils.date(2012, 6,2),
+						TestUtils.saveObs(TestUtils.getPatient(7), medOrders, ctx, TestUtils.date(2012, 6,2))
+				)
+		);
+
+		CohortDefinition cd = tbCohortLibrary.inTbAndHivProgramsAndOnCPT();
+		context.addParameterValue("onDate", TestUtils.date(2012, 6, 2));
 		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
 		ReportingTestUtils.assertCohortEquals(Arrays.asList(7), evaluated);
 	}

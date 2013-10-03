@@ -59,4 +59,25 @@ public class TbIndicatorLibrary {
 				map(tbCohorts.completedTreatment(), "onOrAfter=${startDate},onOrBefore=${endDate}")
 		);
 	}
+
+
+	/**
+	 * Number of patients who defaulted and missed appointments
+	 * @return the indicator
+	 */
+	public CohortIndicator defaultedAndMissedAppointment() {
+		return cohortIndicator(null,
+				map(tbCohorts.missedAppointmentOrDefaulted(), "onDate=${endDate}")
+		);
+	}
+
+	/**
+	 * Number of patients in Tb and HIV programs who are in CPT
+	 * @return the indicator
+	 */
+	public CohortIndicator inTbAndHivAndOnCPT() {
+		return cohortIndicator(null,
+				map(tbCohorts.inTbAndHivProgramsAndOnCPT(), "onDate=${endDate}")
+		);
+	}
 }
