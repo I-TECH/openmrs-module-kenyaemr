@@ -28,7 +28,7 @@ import org.openmrs.module.reporting.common.DateUtil;
 import java.util.*;
 
 /**
- *
+ * Returns a list of visits each patient had on a particular date
  */
 public class VisitsOnDayCalculation extends BaseEmrCalculation {
 

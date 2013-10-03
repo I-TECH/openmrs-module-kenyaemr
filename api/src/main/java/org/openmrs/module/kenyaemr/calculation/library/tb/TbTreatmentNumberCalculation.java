@@ -28,8 +28,11 @@ import java.util.Map;
  */
 public class TbTreatmentNumberCalculation extends BaseEmrCalculation {
 
-    @Override
-    public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> arg1, PatientCalculationContext context) {
+	/**
+	 * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
+	 */
+	@Override
+	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> arg1, PatientCalculationContext context) {
 		return Calculations.lastObs(getConcept(Dictionary.TUBERCULOSIS_TREATMENT_NUMBER), cohort, context);
-    }
+	}
 }

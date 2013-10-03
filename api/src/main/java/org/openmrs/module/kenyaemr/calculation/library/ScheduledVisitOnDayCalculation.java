@@ -32,7 +32,7 @@ import java.util.Date;
 import java.util.Map;
 
 /**
- *
+ * Returns whether patients have a scheduled visit on the specified date
  */
 public class ScheduledVisitOnDayCalculation extends BaseEmrCalculation {
 

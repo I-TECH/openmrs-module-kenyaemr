@@ -74,7 +74,7 @@ public class OnSecondLineArtCalculationTest extends BaseModuleContextSensitiveTe
 		List<Integer> cohort = Arrays.asList(6, 7, 8);
 
 		CalculationResultMap resultMap = new OnSecondLineArtCalculation().evaluate(cohort, null, Context.getService(PatientCalculationService.class).createCalculationContext());
-		Assert.assertNull(resultMap.get(6)); // isn't on any drugs
+		Assert.assertFalse((Boolean) resultMap.get(6).getValue()); // isn't on any drugs
 		Assert.assertFalse((Boolean) resultMap.get(7).getValue()); // is on first line regimen
 		Assert.assertTrue((Boolean) resultMap.get(8).getValue()); // is on second line regimen
 	}

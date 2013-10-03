@@ -35,8 +35,11 @@ import java.util.Set;
  * Calculates whether a patien't partner HIV status is unknown. Calculation returns true if patient
  * is alive, enrolled in the MCH program and her partner's HIV status is indicated as unknown.
  */
-public class UnKnownPartnerHivStatusCalculation extends BaseEmrCalculation {
+public class PartnerHivStatusUnknownCalculation extends BaseEmrCalculation {
 
+	/**
+	 * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
+	 */
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
 
@@ -52,12 +55,14 @@ public class UnKnownPartnerHivStatusCalculation extends BaseEmrCalculation {
 		for (Integer ptId : cohort) {
 			// Is patient alive and in MCH program?
 			boolean partnerHivStatusUnknown = false;
+
 			if (inMchmsProgram.contains(ptId)) {
 				Concept partnerHivStatus = EmrCalculationUtils.codedObsResultForPatient(partnerHivStatusObs, ptId);
 				if (partnerHivStatus != null) {
 					partnerHivStatusUnknown = partnerHivStatus.equals(unknownConcept);
 				}
 			}
+
 			ret.put(ptId, new BooleanResult(partnerHivStatusUnknown, this, context));
 		}
 		return ret;

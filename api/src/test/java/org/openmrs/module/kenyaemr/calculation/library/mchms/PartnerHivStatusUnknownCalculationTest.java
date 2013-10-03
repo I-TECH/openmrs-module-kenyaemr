@@ -34,9 +34,9 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Tests for {@link UnKnownPartnerHivStatusCalculation}
+ * Tests for {@link PartnerHivStatusUnknownCalculation}
  */
-public class UnknownPartnerHivStatusCalculationTest extends BaseModuleContextSensitiveTest {
+public class PartnerHivStatusUnknownCalculationTest extends BaseModuleContextSensitiveTest {
 
 	@Autowired
 	private CommonMetadata commonMetadata;
@@ -57,7 +57,7 @@ public class UnknownPartnerHivStatusCalculationTest extends BaseModuleContextSen
 
 	/**
 	 * @verifies determine whether MCH-MS patients' partners HIV status is unknown
-	 * @see UnKnownPartnerHivStatusCalculation#evaluate(java.util.Collection,
+	 * @see PartnerHivStatusUnknownCalculation#evaluate(java.util.Collection,
 	 *      java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
 	 */
 	@Test
@@ -94,7 +94,7 @@ public class UnknownPartnerHivStatusCalculationTest extends BaseModuleContextSen
 
 
 		//Run UnKnownPartnerHivStatusCalculation with these test patients
-		CalculationResultMap resultMap = Context.getService(PatientCalculationService.class).evaluate(ptIds, new UnKnownPartnerHivStatusCalculation());
+		CalculationResultMap resultMap = Context.getService(PatientCalculationService.class).evaluate(ptIds, new PartnerHivStatusUnknownCalculation());
 
 		Assert.assertTrue((Boolean) resultMap.get(6).getValue()); //Unknown Partner HIV Status
 		Assert.assertFalse((Boolean) resultMap.get(7).getValue()); //Known Partner HIV Status

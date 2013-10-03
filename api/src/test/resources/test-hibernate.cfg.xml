@@ -11,5 +11,6 @@
 		<mapping resource="ImportedItem.hbm.xml" />
 		<mapping resource="IdentifierSource.hbm.xml" />
 		<mapping resource="HtmlFormEntryHtmlForm.hbm.xml" />
+		<mapping resource="ReportDesign.hbm.xml" />
 	</session-factory>
 </hibernate-configuration>

@@ -40,6 +40,9 @@ import java.util.Set;
  */
 public class HivTestedAtEnrollmentCalculation extends BaseEmrCalculation {
 
+	/**
+	 * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
+	 */
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
 

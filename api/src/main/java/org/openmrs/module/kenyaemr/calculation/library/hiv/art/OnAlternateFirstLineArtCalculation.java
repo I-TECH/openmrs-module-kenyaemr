@@ -32,9 +32,6 @@ public class OnAlternateFirstLineArtCalculation extends BaseEmrCalculation {
 
 	/**
 	 * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
-	 * @should return null for patients who have never started ARVs
-	 * @should return null for patients who aren't currently on ARVs
-	 * @should return whether patients have changed regimens
 	 */
 	@Override
     public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> params, PatientCalculationContext context) {
@@ -45,7 +42,8 @@ public class OnAlternateFirstLineArtCalculation extends BaseEmrCalculation {
 
 		CalculationResultMap ret = new CalculationResultMap();
 		for (Integer ptId : cohort) {
-			BooleanResult result = null;
+			boolean onAltFirstLine = false;
+
 			SimpleResult initialArvsResult = (SimpleResult) initialArvs.get(ptId);
 			SimpleResult currentArvsResult = (SimpleResult) currentArvs.get(ptId);
 
@@ -53,11 +51,10 @@ public class OnAlternateFirstLineArtCalculation extends BaseEmrCalculation {
 				RegimenOrder initialRegimen = (RegimenOrder) initialArvsResult.getValue();
 				RegimenOrder currentRegimen = (RegimenOrder) currentArvsResult.getValue();
 
-				boolean isAltFirstLine = !initialRegimen.hasSameDrugs(currentRegimen) && EmrCalculationUtils.regimenInGroup(currentRegimen, "ARV", "adult-first");
-				result = new BooleanResult(isAltFirstLine, this, context);
+				onAltFirstLine = !initialRegimen.hasSameDrugs(currentRegimen) && EmrCalculationUtils.regimenInGroup(currentRegimen, "ARV", "adult-first");
 			}
 
-			ret.put(ptId, result);
+			ret.put(ptId, new BooleanResult(onAltFirstLine, this, context));
 		}
 		return ret;
     }

@@ -19,8 +19,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Cohort;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyacore.test.TestUtils;
+import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyaemr.reporting.dataset.definition.MergingDataSetDefinition;
+import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
@@ -80,7 +81,7 @@ public class MergingDataSetEvaluatorTest extends BaseModuleContextSensitiveTest 
 		cohortDsd1 = new CohortIndicatorDataSetDefinition();
 		cohortDsd1.setName("Cohort DSD1");
 		cohortDsd1.addColumn("test-1", "Count of males", new Mapped<CohortIndicator>(malesIndicator, null), "");
-		cohortDsd1.addColumn("test-3", "Count of peds", new Mapped<CohortIndicator>(pedsIndicator, null), "");
+		cohortDsd1.addColumn("test-3", "Count of peds", ReportUtils.map(pedsIndicator, "date=${date}"), "");
 
 		cohortDsd2 = new CohortIndicatorDataSetDefinition();
 		cohortDsd2.setName("Cohort DSD2");

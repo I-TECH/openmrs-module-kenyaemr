@@ -28,6 +28,9 @@ import java.util.Set;
  */
 public class EligibleForTbProgramCalculation extends BaseEmrCalculation {
 
+	/**
+	 * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
+	 */
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> params, PatientCalculationContext context) {
 		CalculationResultMap ret = new CalculationResultMap();

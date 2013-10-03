@@ -36,21 +36,21 @@ import java.util.Set;
 
 /**
  * Determines whether HEI exposed infants are enrolled on CTX
- *
  */
-
 public class InfantNeverTakenCTXCalculation extends BaseEmrCalculation {
 
+	/**
+	 * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
+	 */
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
 
 		Program mchcsProgram = MetadataUtils.getProgram(MchMetadata._Program.MCHCS);
 
 		Set<Integer> alive = alivePatients(cohort, context);
-
 		Set<Integer> inMchcsProgram = CalculationUtils.patientsThatPass(Calculations.activeEnrollment(mchcsProgram, alive, context));
 
-		//get wheather the child is HIV Exposed
+		// Get whether the child is HIV Exposed
 		CalculationResultMap lastChildHivStatus = Calculations.lastObs(getConcept(Dictionary.CHILDS_CURRENT_HIV_STATUS), inMchcsProgram, context);
 		CalculationResultMap medOrdersObss = Calculations.allObs(getConcept(Dictionary.MEDICATION_ORDERS), cohort, context);
 
@@ -62,7 +62,8 @@ public class InfantNeverTakenCTXCalculation extends BaseEmrCalculation {
 
 		for (Integer ptId : cohort) {
 			boolean notTakingCtx = false;
-			// Is patient alive and in the mchcs program and HEI?
+
+			// Is patient alive and in the MCHCS program and HEI?
 			Obs hivStatusObs = EmrCalculationUtils.obsResultForPatient(lastChildHivStatus, ptId);
 			if (inMchcsProgram.contains(ptId) && lastChildHivStatus != null && hivStatusObs !=null && (hivStatusObs.getValueCoded().equals(hivExposed))) {
 				notTakingCtx = true ;
@@ -78,8 +79,9 @@ public class InfantNeverTakenCTXCalculation extends BaseEmrCalculation {
 					}
 				}
 			}
-		ret.put(ptId, new BooleanResult(notTakingCtx, this, context));
-	}
-	return ret;
+			ret.put(ptId, new BooleanResult(notTakingCtx, this, context));
+		}
+
+		return ret;
 	}
 }
