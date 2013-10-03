@@ -71,7 +71,7 @@ public class TestedForHivInMchmsCalculation extends BaseEmrCalculation {
 			boolean qualified = false;
 			if (aliveMchmsPatients.contains(ptId)
 					&& (patientsLastHivStatus != null && !patientsLastHivStatus.equals(Dictionary.getConcept(Dictionary.NOT_HIV_TESTED)))
-					&& (lastEnrollmentCalculatioResult != null && ((Encounter) lastEnrollmentEncounters.get(ptId).getValue()).getEncounterDatetime().before(patientsLastHivTestDate))) {
+					&& (lastEnrollmentCalculatioResult != null)) {
 				Date enrollmentDate = ((Encounter) lastEnrollmentEncounters.get(ptId).getValue()).getEncounterDatetime();
 				Date deliveryDate =  EmrCalculationUtils.datetimeObsResultForPatient(lastDeliveryDateObss, ptId);
 	            if (deliveryDate != null && deliveryDate.before(enrollmentDate)) {
@@ -97,32 +97,39 @@ public class TestedForHivInMchmsCalculation extends BaseEmrCalculation {
 	}
 
 	protected boolean qualifiedByStage(MchMetadata.Stage stage, Date enrollmentDate, Date testDate, Date deliveryDate) {
+		// && ((Encounter) lastEnrollmentEncounters.get(ptId).getValue()).getEncounterDatetime().before(patientsLastHivTestDate)
 		if (stage.equals(MchMetadata.Stage.ANY)) {
 			return true;
+		} else if (stage.equals(MchMetadata.Stage.BEFORE_ENROLLMENT)) {
+			return  enrollmentDate.after(testDate);
 		} else {
-			if (deliveryDate == null) {
-				if (stage.equals(MchMetadata.Stage.ANTENATAL)) {
-					return true;
-				} else {
-					return false;
-				}
+			if (stage.equals(MchMetadata.Stage.AFTER_ENROLLMENT)) {
+				return enrollmentDate.before(testDate);
 			} else {
-				Date lowerLimit = null;
-				Date upperLimit = null;
-				DateTime beginningOfEnrollmentDate = new DateTime(enrollmentDate).toDateMidnight().toDateTime();
-				DateTime beginningOfDeliveryDate = new DateTime(deliveryDate).toDateMidnight().toDateTime();
-				DateTime endOfDeliveryDate = beginningOfDeliveryDate.plusDays(1);
-				if (stage.equals(MchMetadata.Stage.ANTENATAL)) {
-					lowerLimit = beginningOfEnrollmentDate.toDate();
-					upperLimit = beginningOfDeliveryDate.plusDays(-2).toDate();
-				} else if (stage.equals(MchMetadata.Stage.DELIVERY)) {
-					lowerLimit = beginningOfDeliveryDate.plusDays(-2).toDate();
-					upperLimit = endOfDeliveryDate.toDate();
-				} else if (stage.equals(MchMetadata.Stage.POSTNATAL)) {
-					lowerLimit = endOfDeliveryDate.toDate();
-					upperLimit = endOfDeliveryDate.plusDays(3).toDate();
+				if (deliveryDate == null) {
+					if (stage.equals(MchMetadata.Stage.ANTENATAL)) {
+						return true;
+					} else {
+						return false;
+					}
+				} else {
+					Date lowerLimit = null;
+					Date upperLimit = null;
+					DateTime beginningOfEnrollmentDate = new DateTime(enrollmentDate).toDateMidnight().toDateTime();
+					DateTime beginningOfDeliveryDate = new DateTime(deliveryDate).toDateMidnight().toDateTime();
+					DateTime endOfDeliveryDate = beginningOfDeliveryDate.plusDays(1);
+					if (stage.equals(MchMetadata.Stage.ANTENATAL)) {
+						lowerLimit = beginningOfEnrollmentDate.toDate();
+						upperLimit = beginningOfDeliveryDate.plusDays(-2).toDate();
+					} else if (stage.equals(MchMetadata.Stage.DELIVERY)) {
+						lowerLimit = beginningOfDeliveryDate.plusDays(-2).toDate();
+						upperLimit = endOfDeliveryDate.toDate();
+					} else if (stage.equals(MchMetadata.Stage.POSTNATAL)) {
+						lowerLimit = endOfDeliveryDate.toDate();
+						upperLimit = endOfDeliveryDate.plusDays(3).toDate();
+					}
+					return testDate.after(lowerLimit) && testDate.before(upperLimit);
 				}
-				return testDate.after(lowerLimit) && testDate.before(upperLimit);
 			}
 		}
 	}

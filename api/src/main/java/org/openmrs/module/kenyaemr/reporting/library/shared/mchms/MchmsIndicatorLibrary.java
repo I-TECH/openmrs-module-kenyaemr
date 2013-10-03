@@ -37,13 +37,27 @@ public class MchmsIndicatorLibrary {
 	private MchmsCohortLibrary mchmsCohortLibrary;
 
 	/**
-	 * Number of patients who tested for HIV in MCHMS during any period
+	 * Number of patients who tested for HIV in MCHMS during any period before or after enrollment
+	 *
+	 * @return the indicator
+	 */
+	public CohortIndicator testedForHivBeforeOrDuringMchms() {
+		Map<String, Object> calculationParameters = new HashMap<String, Object>();
+		calculationParameters.put("stage", MchMetadata.Stage.ANY);
+		calculationParameters.put("result", null);
+		return cohortIndicator(null,
+				map(mchmsCohortLibrary.testedForHivInMchms(calculationParameters), "onOrAfter=${startDate},onOrBefore=${endDate}")
+		);
+	}
+
+	/**
+	 * Number of patients who tested for HIV in MCHMS during any period after enrollment
 	 *
 	 * @return the indicator
 	 */
 	public CohortIndicator testedForHivInMchms() {
 		Map<String, Object> calculationParameters = new HashMap<String, Object>();
-		calculationParameters.put("stage", MchMetadata.Stage.ANY);
+		calculationParameters.put("stage", MchMetadata.Stage.AFTER_ENROLLMENT);
 		calculationParameters.put("result", null);
 		return cohortIndicator(null,
 				map(mchmsCohortLibrary.testedForHivInMchms(calculationParameters), "onOrAfter=${startDate},onOrBefore=${endDate}")
@@ -87,6 +101,20 @@ public class MchmsIndicatorLibrary {
 		Map<String, Object> calculationParameters = new HashMap<String, Object>();
 		calculationParameters.put("stage", MchMetadata.Stage.POSTNATAL);
 		calculationParameters.put("result", null);
+		return cohortIndicator(null,
+				map(mchmsCohortLibrary.testedForHivInMchms(calculationParameters), "onOrAfter=${startDate},onOrBefore=${endDate}")
+		);
+	}
+
+	/**
+	 * Number of patients who tested HIV +ve before MCHMS
+	 *
+	 * @return the indicator
+	 */
+	public CohortIndicator testedHivPositiveBeforeMchms() {
+		Map<String, Object> calculationParameters = new HashMap<String, Object>();
+		calculationParameters.put("stage", MchMetadata.Stage.BEFORE_ENROLLMENT);
+		calculationParameters.put("result", Dictionary.getConcept(Dictionary.POSITIVE));
 		return cohortIndicator(null,
 				map(mchmsCohortLibrary.testedForHivInMchms(calculationParameters), "onOrAfter=${startDate},onOrBefore=${endDate}")
 		);

@@ -66,6 +66,8 @@ public class MchMetadata extends AbstractMetadataBundle {
 
 	public static enum Stage {
 		ANY,
+		BEFORE_ENROLLMENT,
+		AFTER_ENROLLMENT,
 		ANTENATAL,
 		DELIVERY,
 		POSTNATAL
