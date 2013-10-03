@@ -14,18 +14,11 @@
 
 package org.openmrs.module.kenyaemr.calculation;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.joda.time.DateTime;
 import org.joda.time.Days;
-import org.openmrs.*;
+import org.openmrs.Concept;
+import org.openmrs.DrugOrder;
+import org.openmrs.Program;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.BaseCalculation;
 import org.openmrs.calculation.CalculationContext;
@@ -43,6 +36,8 @@ import org.openmrs.module.reporting.data.patient.definition.DrugOrdersForPatient
 import org.openmrs.module.reporting.data.patient.definition.ProgramEnrollmentsForPatientDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.VitalStatusDataDefinition;
 import org.openmrs.util.OpenmrsUtil;
+
+import java.util.*;
 
 /**
  * Base class for calculations we'll hand-write for this module.

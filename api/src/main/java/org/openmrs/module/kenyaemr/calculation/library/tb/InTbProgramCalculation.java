@@ -14,15 +14,15 @@
 
 package org.openmrs.module.kenyaemr.calculation.library.tb;
 
-import java.util.Collection;
-import java.util.Map;
-
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyaemr.metadata.TbMetadata;
+
+import java.util.Collection;
+import java.util.Map;
 
 /**
  * Calculates whether patients are (alive and) in the TB program

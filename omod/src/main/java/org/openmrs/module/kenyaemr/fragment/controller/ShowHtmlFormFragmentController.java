@@ -14,13 +14,6 @@
 
 package org.openmrs.module.kenyaemr.fragment.controller;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
-
 import org.openmrs.Encounter;
 import org.openmrs.Form;
 import org.openmrs.Obs;
@@ -37,6 +30,7 @@ import org.openmrs.ui.framework.resource.ResourceFactory;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpSession;
+import java.util.*;
 
 /**
  *

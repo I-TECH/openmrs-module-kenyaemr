@@ -14,8 +14,6 @@
 
 package org.openmrs.module.kenyaemr.calculation.library.hiv;
 
-import java.util.*;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,12 +25,14 @@ import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
-import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyacore.test.TestUtils;
+import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.*;
 
 /**
  * Tests for {@link NeedsCd4TestCalculation}

@@ -14,22 +14,22 @@
 
 package org.openmrs.module.kenyaemr.calculation.library;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.Map;
-
 import org.openmrs.Concept;
 import org.openmrs.api.PatientSetService.TimeModifier;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
+import org.openmrs.module.kenyacore.calculation.BooleanResult;
 import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
-import org.openmrs.module.kenyacore.calculation.BooleanResult;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.DateObsCohortDefinition;
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.RangeComparator;
+
+import java.util.Collection;
+import java.util.Date;
+import java.util.Map;
 
 /**
  * Returns whether patients have a scheduled visit on the specified date

@@ -15,21 +15,16 @@
 package org.openmrs.module.kenyaemr.visit;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.openmrs.Encounter;
-import org.openmrs.Form;
-import org.openmrs.Location;
-import org.openmrs.Visit;
-import org.openmrs.VisitAttribute;
-import org.openmrs.VisitType;
+import org.openmrs.*;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.handler.BaseEncounterVisitHandler;
 import org.openmrs.module.kenyacore.CoreContext;
 import org.openmrs.module.kenyacore.form.FormDescriptor;
 import org.openmrs.module.kenyacore.form.FormManager;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
+import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.util.EmrUtils;
-import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.util.OpenmrsUtil;
 
 import java.util.Collections;

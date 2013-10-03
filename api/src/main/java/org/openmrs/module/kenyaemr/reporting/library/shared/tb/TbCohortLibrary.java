@@ -15,11 +15,17 @@
 package org.openmrs.module.kenyaemr.reporting.library.shared.tb;
 
 import org.openmrs.Concept;
+import org.openmrs.Program;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyacore.report.ReportUtils;
+import org.openmrs.module.kenyacore.report.builder.CalculationCohortDefinition;
 import org.openmrs.module.kenyaemr.Dictionary;
+import org.openmrs.module.kenyaemr.calculation.library.InProgramCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.MissedAppointmentsOrDefaultedCalculation;
+import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.metadata.TbMetadata;
 import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonCohortLibrary;
+import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.HivCohortLibrary;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
@@ -36,6 +42,9 @@ public class TbCohortLibrary {
 
 	@Autowired
 	private CommonCohortLibrary commonCohorts;
+
+	@Autowired
+	private HivCohortLibrary hivCohortLibrary;
 
 	/**
 	 * Patients who were enrolled in TB program (including transfers) between ${enrolledOnOrAfter} and ${enrolledOnOrBefore}
@@ -90,6 +99,44 @@ public class TbCohortLibrary {
 		cd.addSearch("died", ReportUtils.map(died(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
 		cd.addSearch("started12MonthsAgo", ReportUtils.map(started12MonthsAgo(), "onDate=${onOrBefore}"));
 		cd.setCompositionString("died AND started12MonthsAgo");
+		return cd;
+	}
+
+	/**
+	 * TB patients who completed treatment between ${onOrAfter} and ${onOrBefore}
+	 * @return the cohort definition
+	 */
+	public CohortDefinition completedTreatment() {
+		Concept tbTreatmentOutcome = Dictionary.getConcept(Dictionary.TUBERCULOSIS_TREATMENT_OUTCOME);
+		Concept complete = Dictionary.getConcept(Dictionary.TREATMENT_COMPLETE);
+		return commonCohorts.hasObs(tbTreatmentOutcome, complete);
+	}
+
+	/**
+	 * TB patients who missed appointments between ${onDate}
+	 * @return the cohort definition
+	 */
+	public CohortDefinition missedAppointmentOrDefaulted() {
+		CalculationCohortDefinition cd = new CalculationCohortDefinition(new MissedAppointmentsOrDefaultedCalculation());
+		cd.setName("Patients who missed and defaulted appointments");
+		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
+		return cd;
+	}
+
+	/**
+	 * patients in TB and HIV and on CPT between ${onOrAfter} and ${onOrBefore}
+	 * @return the cohort definition
+	 */
+	public CohortDefinition inTbAndHivProgramsAndOnCPT() {
+		Program hivProgram = MetadataUtils.getProgram(HivMetadata._Program.HIV);
+		Program tbProgram = MetadataUtils.getProgram(TbMetadata._Program.TB);
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		Concept[] drugs = { Dictionary.getConcept(Dictionary.SULFAMETHOXAZOLE_TRIMETHOPRIM) };
+		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
+		cd.addSearch("inHivProgram", ReportUtils.map(commonCohorts.inProgram(hivProgram), "onDate=${onDate}"));
+		cd.addSearch("inTbProgram", ReportUtils.map(commonCohorts.inProgram(tbProgram), "onDate=${onDate}"));
+		cd.addSearch("onCPTMedication", ReportUtils.map(commonCohorts.onMedication(drugs), "onDate=${onDate}"));
+		cd.setCompositionString("inHivProgram AND inTbProgram AND onCPTMedication");
 		return cd;
 	}
 }

@@ -15,15 +15,13 @@
 package org.openmrs.module.kenyaemr.reporting;
 
 import org.openmrs.module.kenyacore.report.IndicatorReportDescriptor;
-import org.openmrs.module.kenyacore.report.builder.ReportBuilder;
 import org.openmrs.module.kenyacore.report.ReportDescriptor;
-import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.kenyacore.report.builder.ReportBuilder;
+import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
-import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 

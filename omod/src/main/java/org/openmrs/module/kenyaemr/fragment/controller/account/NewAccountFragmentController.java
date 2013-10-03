@@ -13,18 +13,12 @@
  */
 package org.openmrs.module.kenyaemr.fragment.controller.account;
 
-import java.util.Set;
-
 import org.apache.commons.lang.StringUtils;
-import org.openmrs.Person;
-import org.openmrs.PersonName;
-import org.openmrs.Provider;
-import org.openmrs.Role;
-import org.openmrs.User;
+import org.openmrs.*;
 import org.openmrs.api.PasswordException;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyaui.validator.ValidatingCommandObject;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
+import org.openmrs.module.kenyaui.validator.ValidatingCommandObject;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.BindParams;
@@ -36,6 +30,7 @@ import org.openmrs.validator.ValidateUtil;
 import org.springframework.validation.Errors;
 
 import javax.servlet.http.HttpSession;
+import java.util.Set;
 
 /**
  * Create new account fragment controller

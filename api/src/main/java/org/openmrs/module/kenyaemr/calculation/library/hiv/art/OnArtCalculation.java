@@ -14,15 +14,15 @@
 
 package org.openmrs.module.kenyaemr.calculation.library.hiv.art;
 
-import java.util.Collection;
-import java.util.Map;
-
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.calculation.result.CalculationResultMap;
-import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
+import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
+
+import java.util.Collection;
+import java.util.Map;
 
 /**
  * Calculates whether patients are on ART

@@ -14,8 +14,6 @@
 
 package org.openmrs.module.kenyaemr.reporting.cohort.definition.evaluator;
 
-import java.util.Set;
-
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
 import org.openmrs.calculation.result.CalculationResultMap;
@@ -26,6 +24,8 @@ import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
+
+import java.util.Set;
 
 /**
  * Evaluator for calculation based cohorts

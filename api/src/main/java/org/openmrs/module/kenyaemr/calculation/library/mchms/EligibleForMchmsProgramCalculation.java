@@ -16,9 +16,9 @@ package org.openmrs.module.kenyaemr.calculation.library.mchms;
 
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
+import org.openmrs.module.kenyacore.calculation.BooleanResult;
 import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
-import org.openmrs.module.kenyacore.calculation.BooleanResult;
 
 import java.util.Collection;
 import java.util.Map;

@@ -16,6 +16,7 @@ package org.openmrs.module.kenyaemr;
 
 import org.openmrs.Concept;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -74,6 +75,7 @@ public class Dictionary {
 	public static final String DAPSONE = "74250AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 	public static final String DATE_OF_HIV_DIAGNOSIS = "160554AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 	public static final String DEVELOPMENTAL_MILESTONES = "162069AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+	public static final String DEFAULTED = "160031AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 	public static final String DIED = "160034AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 	public static final String DISEASE_DIAGNOSED = "1661AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 	public static final String DISEASE_SUSPECTED = "142177AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
@@ -92,6 +94,7 @@ public class Dictionary {
 	public static final String HIV_STATUS = "159427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 	public static final String INFANT_FEEDING_METHOD = "1151AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 	public static final String TEST_STATUS_INITIAL = "162080AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+	public static final String TREATMENT_COMPLETE = "160035AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 	public static final String LAST_MONTHLY_PERIOD = "1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 	public static final String LIVING_WITH_PARTNER = "1060AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 	public static final String MARRIED_MONOGAMOUS = "5555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
