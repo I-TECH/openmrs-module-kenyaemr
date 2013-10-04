@@ -30,7 +30,6 @@ import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.metadata.MchMetadata;
 
-import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
@@ -97,14 +96,35 @@ public class TestedForHivInMchmsCalculation extends BaseEmrCalculation {
 	}
 
 	protected boolean qualifiedByStage(MchMetadata.Stage stage, Date enrollmentDate, Date testDate, Date deliveryDate) {
-		// && ((Encounter) lastEnrollmentEncounters.get(ptId).getValue()).getEncounterDatetime().before(patientsLastHivTestDate)
+
+		Date lowerLimit = null;
+		Date upperLimit = null;
+		DateTime beginningOfEnrollmentDate = new DateTime(enrollmentDate).toDateMidnight().toDateTime();
+		DateTime beginningOfDeliveryDate  = null;
+		DateTime endOfDeliveryDate =  null;
+
+		if (deliveryDate != null) {
+			beginningOfDeliveryDate = new DateTime(deliveryDate).toDateMidnight().toDateTime();
+			endOfDeliveryDate = beginningOfDeliveryDate.plusDays(1);
+		}
+
 		if (stage.equals(MchMetadata.Stage.ANY)) {
-			return true;
+			if (endOfDeliveryDate != null) {
+				upperLimit = endOfDeliveryDate.plusDays(3).toDate();
+				return upperLimit.after(testDate);
+			} else {
+				return true;
+			}
 		} else if (stage.equals(MchMetadata.Stage.BEFORE_ENROLLMENT)) {
 			return  enrollmentDate.after(testDate);
 		} else {
 			if (stage.equals(MchMetadata.Stage.AFTER_ENROLLMENT)) {
-				return enrollmentDate.before(testDate);
+				if (endOfDeliveryDate != null) {
+					upperLimit = endOfDeliveryDate.plusDays(3).toDate();
+					return enrollmentDate.before(testDate) && upperLimit.after(testDate);
+				} else {
+					return enrollmentDate.before(testDate);
+				}
 			} else {
 				if (deliveryDate == null) {
 					if (stage.equals(MchMetadata.Stage.ANTENATAL)) {
@@ -113,11 +133,6 @@ public class TestedForHivInMchmsCalculation extends BaseEmrCalculation {
 						return false;
 					}
 				} else {
-					Date lowerLimit = null;
-					Date upperLimit = null;
-					DateTime beginningOfEnrollmentDate = new DateTime(enrollmentDate).toDateMidnight().toDateTime();
-					DateTime beginningOfDeliveryDate = new DateTime(deliveryDate).toDateMidnight().toDateTime();
-					DateTime endOfDeliveryDate = beginningOfDeliveryDate.plusDays(1);
 					if (stage.equals(MchMetadata.Stage.ANTENATAL)) {
 						lowerLimit = beginningOfEnrollmentDate.toDate();
 						upperLimit = beginningOfDeliveryDate.plusDays(-2).toDate();
