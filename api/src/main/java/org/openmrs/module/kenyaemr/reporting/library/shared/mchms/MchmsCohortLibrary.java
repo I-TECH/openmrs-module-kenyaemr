@@ -14,10 +14,16 @@
 
 package org.openmrs.module.kenyaemr.reporting.library.shared.mchms;
 
+import org.openmrs.Concept;
+import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyacore.report.builder.CalculationCohortDefinition;
+import org.openmrs.module.kenyaemr.calculation.library.mchms.MchmsHivTestDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.mchms.TestedForHivInMchmsCalculation;
+import org.openmrs.module.kenyaemr.metadata.MchMetadata;
+import org.openmrs.module.kenyaemr.reporting.cohort.definition.DateCalculationCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonCohortLibrary;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -35,17 +41,41 @@ public class MchmsCohortLibrary {
 	private CommonCohortLibrary commonCohortLibrary;
 
 	/**
+	 * Patients who were tested for HIV between ${onOrAfter} and ${onOrBefore}
+	 *
+	 * @return the cohort definition
+	 */
+	public CohortDefinition testedForHivWithinPeriod() {
+		DateCalculationCohortDefinition cd = new DateCalculationCohortDefinition(new MchmsHivTestDateCalculation());
+		cd.setName("started ART between dates");
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		return cd;
+	}
+
+	/**
 	 * Patients who were enrolled in MCH-MS program (including transfers) between ${enrolledOnOrAfter} and ${enrolledOnOrBefore}
 	 * and were tested for HIV in the MCH program
 	 *
 	 * @return the cohort definition
 	 */
-	public CohortDefinition testedForHivInMchms(Map<String, Object> calculationParameters) {
+	public CohortDefinition testedAtStageWithResult_(MchMetadata.Stage stage, Concept result) {
 		CalculationCohortDefinition cd = new CalculationCohortDefinition(new TestedForHivInMchmsCalculation());
 		cd.setName("Mothers tested for HIV in the MCH program");
+		cd.addCalculationParameter("stage", stage);
+		cd.addCalculationParameter("result", result);
 		cd.addParameter(new Parameter("onOrAfter", "Start Date", Date.class));
 		cd.addParameter(new Parameter("onOrBefore", "End Date", Date.class));
-		cd.setCalculationParameters(calculationParameters);
+		return cd;
+	}
+
+	public CohortDefinition testedAtStageWithResult(MchMetadata.Stage stage, Concept result) {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "Start Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "End Date", Date.class));
+		cd.addSearch("testedForHivWithinPeriod", ReportUtils.map(testedForHivWithinPeriod(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("testedAtStageWithResult", ReportUtils.map(testedAtStageWithResult_(stage, result), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("testedForHivWithinPeriod AND testedAtStageWithResult");
 		return cd;
 	}
 }
