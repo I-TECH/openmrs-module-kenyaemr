@@ -40,42 +40,26 @@ public class MchmsCohortLibrary {
 	@Autowired
 	private CommonCohortLibrary commonCohortLibrary;
 
-	/**
-	 * Patients who were tested for HIV between ${onOrAfter} and ${onOrBefore}
-	 *
-	 * @return the cohort definition
-	 */
-	public CohortDefinition testedForHivWithinPeriod() {
-		DateCalculationCohortDefinition cd = new DateCalculationCohortDefinition(new MchmsHivTestDateCalculation());
-		cd.setName("started ART between dates");
-		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
-		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-		return cd;
-	}
+	public CohortDefinition testedForHivInMchms(MchMetadata.Stage stage, Concept result) {
 
-	/**
-	 * Patients who were enrolled in MCH-MS program (including transfers) between ${enrolledOnOrAfter} and ${enrolledOnOrBefore}
-	 * and were tested for HIV in the MCH program
-	 *
-	 * @return the cohort definition
-	 */
-	public CohortDefinition testedAtStageWithResult_(MchMetadata.Stage stage, Concept result) {
-		CalculationCohortDefinition cd = new CalculationCohortDefinition(new TestedForHivInMchmsCalculation());
-		cd.setName("Mothers tested for HIV in the MCH program");
-		cd.addCalculationParameter("stage", stage);
-		cd.addCalculationParameter("result", result);
-		cd.addParameter(new Parameter("onOrAfter", "Start Date", Date.class));
-		cd.addParameter(new Parameter("onOrBefore", "End Date", Date.class));
-		return cd;
-	}
+		DateCalculationCohortDefinition dateCd = new DateCalculationCohortDefinition(new MchmsHivTestDateCalculation());
+		dateCd.setName("started ART between dates");
+		dateCd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		dateCd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 
-	public CohortDefinition testedAtStageWithResult(MchMetadata.Stage stage, Concept result) {
-		CompositionCohortDefinition cd = new CompositionCohortDefinition();
-		cd.addParameter(new Parameter("onOrAfter", "Start Date", Date.class));
-		cd.addParameter(new Parameter("onOrBefore", "End Date", Date.class));
-		cd.addSearch("testedForHivWithinPeriod", ReportUtils.map(testedForHivWithinPeriod(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
-		cd.addSearch("testedAtStageWithResult", ReportUtils.map(testedAtStageWithResult_(stage, result), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
-		cd.setCompositionString("testedForHivWithinPeriod AND testedAtStageWithResult");
-		return cd;
+		CalculationCohortDefinition calculationCd = new CalculationCohortDefinition(new TestedForHivInMchmsCalculation());
+		calculationCd.setName("Mothers tested for HIV in the MCH program");
+		calculationCd.addCalculationParameter("stage", stage);
+		calculationCd.addCalculationParameter("result", result);
+		calculationCd.addParameter(new Parameter("onOrAfter", "Start Date", Date.class));
+		calculationCd.addParameter(new Parameter("onOrBefore", "End Date", Date.class));
+
+		CompositionCohortDefinition cohortCd = new CompositionCohortDefinition();
+		cohortCd.addParameter(new Parameter("onOrAfter", "Start Date", Date.class));
+		cohortCd.addParameter(new Parameter("onOrBefore", "End Date", Date.class));
+		cohortCd.addSearch("testedForHivWithinPeriod", ReportUtils.map((CohortDefinition) dateCd, "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cohortCd.addSearch("testedForHivInMchms", ReportUtils.map((CohortDefinition) calculationCd, "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cohortCd.setCompositionString("testedForHivWithinPeriod AND testedForHivInMchms");
+		return cohortCd;
 	}
 }

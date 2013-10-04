@@ -40,7 +40,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Tests for {@link TestedForHivInMchmsCalculation}
+ * Tests for {@link MchmsHivTestDateCalculation}
  */
 public class MchmsHivTestDateCalculationTest extends BaseModuleContextSensitiveTest {
 
@@ -61,12 +61,12 @@ public class MchmsHivTestDateCalculationTest extends BaseModuleContextSensitiveT
 	}
 
 	/**
-	 * @verifies determine whether MCH-MS patients have been tested for HIV
-	 * @see TestedForHivInMchmsCalculation#evaluate (
+	 * @verifies determine when MCH-MS patients were tested for HIV
+	 * @see MchmsHivTestDateCalculation#evaluate (
 	 *      java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
 	 */
 	@Test
-	public void evaluate_shouldDetermineWhetherPatientsWasTestedForHivInMchms0() throws Exception {
+	public void evaluate_shouldDetermineWhenPatientWasTestedForHiv() throws Exception {
 		// Get the MCH-MS program, enrollment and consultation encounter types and enrollment and delivery forms
 		Program mchmsProgram = MetadataUtils.getProgram(MchMetadata._Program.MCHMS);
 		EncounterType enrollmentEncounterType = MetadataUtils.getEncounterType(MchMetadata._EncounterType.MCHMS_ENROLLMENT);
