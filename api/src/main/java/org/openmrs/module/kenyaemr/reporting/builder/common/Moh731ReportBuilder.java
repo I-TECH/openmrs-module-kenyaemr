@@ -78,7 +78,8 @@ public class Moh731ReportBuilder extends BaseIndicatorReportBuilder {
 	 */
 	protected DataSetDefinition pmtctDataSet() {
 		CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
-		dsd.setName("2: Prevention of Mother-to-Child Transmission");
+		dsd.setName("2");
+		dsd.setDescription("2: Prevention of Mother-to-Child Transmission");
 		dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
 
@@ -105,7 +106,8 @@ public class Moh731ReportBuilder extends BaseIndicatorReportBuilder {
 		nonCohortDsd.addParameter(new Parameter("endDate", "End Date", Date.class));
 
 		MergingDataSetDefinition mergedDsd = new MergingDataSetDefinition();
-		mergedDsd.setName("3: Care and Treatment");
+		mergedDsd.setName("3");
+		mergedDsd.setDescription("3: Care and Treatment");
 		mergedDsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		mergedDsd.addParameter(new Parameter("endDate", "End Date", Date.class));
 		mergedDsd.addDataSetDefinition(cohortDsd);
