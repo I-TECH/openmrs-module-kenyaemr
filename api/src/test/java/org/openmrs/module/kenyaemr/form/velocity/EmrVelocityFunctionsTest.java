@@ -25,6 +25,7 @@ import org.openmrs.module.htmlformentry.FormEntrySession;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
+import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
@@ -101,7 +102,7 @@ public class EmrVelocityFunctionsTest extends BaseModuleContextSensitiveTest {
 	 */
 	@Test
 	public void getGlobalProperty_shouldReturnPropertyValue() {
-		GlobalProperty gp = Context.getAdministrationService().getGlobalPropertyByUuid(CommonMetadata._GlobalProperty.DEFAULT_LOCATION);
+		GlobalProperty gp = Context.getAdministrationService().getGlobalPropertyObject(EmrConstants.GP_DEFAULT_LOCATION);
 		Assert.assertThat(functionsForSession1.getGlobalProperty("kenyaemr.defaultLocation"), is(gp.getValue()));
 
 		// Check no exception for non-existent

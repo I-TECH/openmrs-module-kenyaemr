@@ -27,6 +27,7 @@ import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.metadata.MchMetadata;
+import org.openmrs.module.kenyaemr.metadata.SecurityMetadata;
 import org.openmrs.module.kenyaemr.metadata.TbMetadata;
 import org.openmrs.module.metadatasharing.MetadataSharing;
 import org.openmrs.module.metadatasharing.wrapper.PackageImporter;
@@ -47,6 +48,9 @@ public class MetadataIntegrationTest extends BaseModuleContextSensitiveTest {
 
 	@Autowired
 	private MetadataConfiguration metadataConfiguration;
+
+	@Autowired
+	private SecurityMetadata securityMetadata;
 
 	@Autowired
 	private CommonMetadata commonMetadata;
@@ -118,6 +122,7 @@ public class MetadataIntegrationTest extends BaseModuleContextSensitiveTest {
 	@Test
 	@SkipBaseSetup
 	public void loadAllMetadataProvidersAndRefreshManagers() {
+		securityMetadata.install();
 		commonMetadata.install();
 		hivMetadata.install();
 		tbMetadata.install();
@@ -129,6 +134,7 @@ public class MetadataIntegrationTest extends BaseModuleContextSensitiveTest {
 		formManager.refresh();
 
 		// And then load them again to simulate startup on an up-to-date database
+		securityMetadata.install();
 		commonMetadata.install();
 		hivMetadata.install();
 		tbMetadata.install();

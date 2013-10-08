@@ -24,7 +24,7 @@ import org.openmrs.module.kenyaemr.datatype.FormDatatype;
 import org.openmrs.module.kenyaemr.datatype.LocationDatatype;
 import org.springframework.stereotype.Component;
 
-import static org.openmrs.module.kenyacore.metadata.bundle.Constructors.*;
+import static org.openmrs.module.kenyacore.metadata.bundle.CoreConstructors.*;
 
 /**
  * Common metadata bundle
@@ -47,10 +47,6 @@ public class CommonMetadata extends AbstractMetadataBundle {
 		public static final String PROGRESS_NOTE = "0038a296-62f8-4099-80e5-c9ea7590c157";
 		public static final String SURGICAL_AND_MEDICAL_HISTORY = "4f3c9bd8-c117-4a5e-a7eb-12a627c29de6";
 		public static final String TRIAGE = "37f6bd8d-586a-4169-95fa-5781f987fe62";
-	}
-
-	public static final class _GlobalProperty {
-		public static final String DEFAULT_LOCATION = "8f80f3f7-bdc0-46f5-8f50-54dea2fcbb01";
 	}
 
 	public static final class _Location {
@@ -112,7 +108,7 @@ public class CommonMetadata extends AbstractMetadataBundle {
 		install(form("Triage", null, _EncounterType.TRIAGE, "1", _Form.TRIAGE));
 
 		install(globalProperty(EmrConstants.GP_DEFAULT_LOCATION, "The facility for which this installation is configured",
-				LocationDatatype.class, null, null, _GlobalProperty.DEFAULT_LOCATION));
+				LocationDatatype.class, null, null));
 
 		install(locationAttributeType("Master Facility Code", "Unique facility code allocated by the Ministry of Health",
 				RegexValidatedTextDatatype.class, "\\d{5}", 0, 1, _LocationAttributeType.MASTER_FACILITY_CODE));
