@@ -28,7 +28,8 @@ import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 import org.openmrs.ui.framework.page.PageRequest;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Fragment to display available forms for a given visit

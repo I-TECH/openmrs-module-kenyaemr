@@ -15,7 +15,16 @@
 package org.openmrs.module.kenyaemr.util;
 
 import org.apache.commons.lang3.StringUtils;
-import org.openmrs.*;
+import org.openmrs.Concept;
+import org.openmrs.Encounter;
+import org.openmrs.EncounterType;
+import org.openmrs.Form;
+import org.openmrs.Obs;
+import org.openmrs.Patient;
+import org.openmrs.PatientProgram;
+import org.openmrs.Visit;
+import org.openmrs.VisitAttribute;
+import org.openmrs.VisitAttributeType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.ModuleFactory;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
@@ -24,7 +33,11 @@ import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.util.OpenmrsUtil;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Miscellaneous utility methods
