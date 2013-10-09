@@ -179,4 +179,56 @@ public class HivCohortLibraryTest extends BaseModuleContextSensitiveTest {
 		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
 		ReportingTestUtils.assertCohortEquals(Arrays.asList(6), evaluated);
 	}
+
+	/**
+	 * @see HivCohortLibrary#testedForHiv()
+	 */
+	@Test
+	public void  testedForHiv_shouldReturnPatientsWhoTestedForHiv() throws Exception {
+		Concept hivStatus = Dictionary.getConcept(Dictionary.HIV_STATUS);
+		Concept hivInfected = Dictionary.getConcept(Dictionary.HIV_INFECTED);
+		Concept positive = Dictionary.getConcept(Dictionary.POSITIVE);
+		Concept negative = Dictionary.getConcept(Dictionary.NEGATIVE);
+
+		//#6 to have obs hivStatus negative
+		TestUtils.saveObs(TestUtils.getPatient(6), hivStatus, negative, TestUtils.date(2012, 6, 10));
+		//#7 to have obs hivInfected positive
+		TestUtils.saveObs(TestUtils.getPatient(7), hivInfected, positive, TestUtils.date(2012, 6, 10));
+
+		//patient #6 and #8 should pass the criteria
+		CohortDefinition cd = hivCohortLibrary.testedForHiv();
+		context.addParameterValue("onOrAfter", TestUtils.date(2012, 6, 1));
+		context.addParameterValue("onOrBefore", TestUtils.date(2012, 6, 30));
+		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
+		ReportingTestUtils.assertCohortEquals(Arrays.asList(6,7), evaluated);
+	}
+
+	/**
+	 * @see HivCohortLibrary#testedHivPositive()
+	 */
+	@Test
+	public void testedHivPositive_shouldReturnPatientsWhoTestedHivPositive() throws Exception {
+		Concept hivStatus = Dictionary.getConcept(Dictionary.HIV_STATUS);
+		Concept hivInfected = Dictionary.getConcept(Dictionary.HIV_INFECTED);
+		Concept positive = Dictionary.getConcept(Dictionary.POSITIVE);
+		Concept negative = Dictionary.getConcept(Dictionary.NEGATIVE);
+		Concept unknown = Dictionary.getConcept(Dictionary.UNKNOWN);
+
+		//#2 to have obs hivStatus positive
+		TestUtils.saveObs(TestUtils.getPatient(2), hivStatus, positive, TestUtils.date(2012, 6, 10));
+		//#6 to have obs hivStatus negative
+		TestUtils.saveObs(TestUtils.getPatient(6), hivStatus, negative, TestUtils.date(2012, 6, 10));
+		//#7 to have obs hivInfected positive
+		TestUtils.saveObs(TestUtils.getPatient(7), hivInfected, positive, TestUtils.date(2012, 6, 26));
+		//#8 to have obs hivInfected unknown
+		TestUtils.saveObs(TestUtils.getPatient(8), hivInfected, unknown, TestUtils.date(2012, 5, 10));
+
+		//patient #6 and #8 should pass the criteria
+		CohortDefinition cd = hivCohortLibrary.testedHivPositive();
+		context.addParameterValue("onOrAfter", TestUtils.date(2012, 6, 1));
+		context.addParameterValue("onOrBefore", TestUtils.date(2012, 6, 30));
+		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
+		ReportingTestUtils.assertCohortEquals(Arrays.asList(2,7), evaluated);
+
+	}
 }
