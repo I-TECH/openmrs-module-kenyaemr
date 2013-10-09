@@ -20,7 +20,7 @@ import org.openmrs.module.kenyacore.metadata.bundle.Requires;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.springframework.stereotype.Component;
 
-import static org.openmrs.module.kenyacore.metadata.bundle.Constructors.*;
+import static org.openmrs.module.kenyacore.metadata.bundle.CoreConstructors.*;
 
 /**
  * HIV metadata bundle

@@ -29,7 +29,7 @@
 			def dsd = definition.dataSetDefinitions[it.key].parameterizable
 		%>
 
-			<% if (!singleDataset) { %><fieldset><legend>${ dsd.name }</legend><% } %>
+			<% if (!singleDataset) { %><fieldset><legend>${ dsd.description }</legend><% } %>
 
 			<table class="ke-table-vertical">
 				<thead>
