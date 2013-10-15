@@ -25,7 +25,13 @@ import org.openmrs.module.htmlformentry.FormSubmissionError;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 
 /**
  * Tests for {@link LabTestPickerSubmissionElement}

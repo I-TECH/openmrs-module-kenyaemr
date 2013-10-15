@@ -14,7 +14,6 @@
 
 package org.openmrs.module.kenyaemr.calculation.library.hiv;
 
-import java.util.*;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -33,6 +32,11 @@ import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Tests for {@link NeedsCd4TestCalculation}
@@ -95,7 +99,7 @@ public class NeedsCd4TestCalculationTest extends BaseModuleContextSensitiveTest 
 		
 		Context.flushSession();
 		
-		List<Integer> ptIds = Arrays.asList(2,6,7,8,999);
+		List<Integer> ptIds = Arrays.asList(2, 6, 7, 8, 999);
 		CalculationResultMap resultMap = Context.getService(PatientCalculationService.class).evaluate(ptIds, new NeedsCd4TestCalculation());
 		Assert.assertFalse((Boolean) resultMap.get(2).getValue()); // has recent CD4%
 		Assert.assertTrue((Boolean) resultMap.get(6).getValue()); // has old CD4%
