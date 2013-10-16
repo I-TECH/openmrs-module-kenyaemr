@@ -16,7 +16,7 @@
 package org.openmrs.module.kenyaemr.reporting.library.shared.mchms;
 
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.metadata.Stage;
+import org.openmrs.module.kenyaemr.Stage;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

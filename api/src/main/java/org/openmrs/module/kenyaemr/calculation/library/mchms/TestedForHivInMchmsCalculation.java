@@ -29,7 +29,7 @@ import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.metadata.MchMetadata;
-import org.openmrs.module.kenyaemr.metadata.Stage;
+import org.openmrs.module.kenyaemr.Stage;
 import org.openmrs.util.OpenmrsUtil;
 
 import java.util.Collection;
@@ -91,7 +91,7 @@ public class TestedForHivInMchmsCalculation extends BaseEmrCalculation {
 	}
 
 	/**
-	 * Determines if the a patient is in a given {@link org.openmrs.module.kenyaemr.metadata.Stage} in the MCH-MS
+	 * Determines if the a patient is in a given {@link org.openmrs.module.kenyaemr.Stage} in the MCH-MS
 	 * program given their date of enrollment, date of HIV test and date of delivery.
 	 *
 	 * @return true if the patient is in the specified stage and false otherwise.

@@ -12,7 +12,7 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.metadata;
+package org.openmrs.module.kenyaemr;
 
 /**
  * The stage of a pregnant woman in the MCH-MS program ranging from before they enroll into the program to 3 days after
