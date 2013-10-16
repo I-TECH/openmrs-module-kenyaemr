@@ -64,15 +64,6 @@ public class MchMetadata extends AbstractMetadataBundle {
 		public static final String MCHMS = "b5d9e05f-f5ab-4612-98dd-adb75438ed34";
 	}
 
-	public static enum Stage {
-		ANY,
-		BEFORE_ENROLLMENT,
-		AFTER_ENROLLMENT,
-		ANTENATAL,
-		DELIVERY,
-		POSTNATAL
-	}
-
 	/**
 	 * @see org.openmrs.module.kenyacore.metadata.bundle.AbstractMetadataBundle#install()
 	 */

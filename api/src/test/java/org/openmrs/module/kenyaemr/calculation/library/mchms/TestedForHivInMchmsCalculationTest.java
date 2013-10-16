@@ -32,6 +32,7 @@ import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.MchMetadata;
+import org.openmrs.module.kenyaemr.metadata.Stage;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -144,7 +145,7 @@ public class TestedForHivInMchmsCalculationTest extends BaseModuleContextSensiti
 		//Test with paramaters stage=MchMetadata.Stage.AFTER_ENROLLMENT and result = null. Indicator (HV2-01).
 		{
 			Map<String, Object> parameters = new HashMap<String, Object>();
-			parameters.put("stage", MchMetadata.Stage.ANTENATAL);
+			parameters.put("stage", Stage.ANTENATAL);
 			parameters.put("result", null);
 			CalculationResultMap resultMap = new TestedForHivInMchmsCalculation().evaluate(ptIds, parameters,
 					Context.getService(PatientCalculationService.class).createCalculationContext());
@@ -158,7 +159,7 @@ public class TestedForHivInMchmsCalculationTest extends BaseModuleContextSensiti
 		//Test with paramaters stage=MchMetadata.Stage.DELIVERY and result = null. Indicator (HV2-02).
 		{
 			Map<String, Object> parameters = new HashMap<String, Object>();
-			parameters.put("stage", MchMetadata.Stage.DELIVERY);
+			parameters.put("stage", Stage.DELIVERY);
 			parameters.put("result", null);
 			CalculationResultMap resultMap = new TestedForHivInMchmsCalculation().evaluate(ptIds, parameters,
 					Context.getService(PatientCalculationService.class).createCalculationContext());
@@ -172,7 +173,7 @@ public class TestedForHivInMchmsCalculationTest extends BaseModuleContextSensiti
 		//Test with paramaters stage=MchMetadata.Stage.POSTNATAL and result = null. Indicator (HV2-03).
 		{
 			Map<String, Object> parameters = new HashMap<String, Object>();
-			parameters.put("stage", MchMetadata.Stage.POSTNATAL);
+			parameters.put("stage", Stage.POSTNATAL);
 			parameters.put("result", null);
 			CalculationResultMap resultMap = new TestedForHivInMchmsCalculation().evaluate(ptIds, parameters,
 					Context.getService(PatientCalculationService.class).createCalculationContext());
@@ -186,7 +187,7 @@ public class TestedForHivInMchmsCalculationTest extends BaseModuleContextSensiti
 		//Test with paramaters stage=MchMetadata.Stage.AFTER_ENROLLMENT and result = null. Indicator (HV2-04).
 		{
 			Map<String, Object> parameters = new HashMap<String, Object>();
-			parameters.put("stage", MchMetadata.Stage.AFTER_ENROLLMENT);
+			parameters.put("stage", Stage.AFTER_ENROLLMENT);
 			parameters.put("result", null);
 			CalculationResultMap resultMap = new TestedForHivInMchmsCalculation().evaluate(ptIds, parameters,
 					Context.getService(PatientCalculationService.class).createCalculationContext());
@@ -200,7 +201,7 @@ public class TestedForHivInMchmsCalculationTest extends BaseModuleContextSensiti
 		//Test with paramaters stage=MchMetadata.Stage.BEFORE_ENROLLMENT and result = positive. Indicator (HV2-05).
 		{
 			Map<String, Object> parameters = new HashMap<String, Object>();
-			parameters.put("stage", MchMetadata.Stage.BEFORE_ENROLLMENT);
+			parameters.put("stage", Stage.BEFORE_ENROLLMENT);
 			parameters.put("result", Dictionary.getConcept(Dictionary.POSITIVE));
 			CalculationResultMap resultMap = new TestedForHivInMchmsCalculation().evaluate(ptIds, parameters,
 					Context.getService(PatientCalculationService.class).createCalculationContext());
@@ -214,7 +215,7 @@ public class TestedForHivInMchmsCalculationTest extends BaseModuleContextSensiti
 		//Test with paramaters stage=MchMetadata.Stage.ANTENATAL and result = positive. Indicator (HV2-06).
 		{
 			Map<String, Object> parameters = new HashMap<String, Object>();
-			parameters.put("stage", MchMetadata.Stage.ANTENATAL);
+			parameters.put("stage", Stage.ANTENATAL);
 			parameters.put("result", Dictionary.getConcept(Dictionary.POSITIVE));
 			CalculationResultMap resultMap = new TestedForHivInMchmsCalculation().evaluate(ptIds, parameters,
 					Context.getService(PatientCalculationService.class).createCalculationContext());
@@ -228,7 +229,7 @@ public class TestedForHivInMchmsCalculationTest extends BaseModuleContextSensiti
 		//Test with paramaters stage=MchMetadata.Stage.DELIVERY and result = positive. Indicator (HV2-04).
 		{
 			Map<String, Object> parameters = new HashMap<String, Object>();
-			parameters.put("stage", MchMetadata.Stage.DELIVERY);
+			parameters.put("stage", Stage.DELIVERY);
 			parameters.put("result", Dictionary.getConcept(Dictionary.POSITIVE));
 			CalculationResultMap resultMap = new TestedForHivInMchmsCalculation().evaluate(ptIds, parameters,
 					Context.getService(PatientCalculationService.class).createCalculationContext());
@@ -242,7 +243,7 @@ public class TestedForHivInMchmsCalculationTest extends BaseModuleContextSensiti
 		//Test with paramaters stage=MchMetadata.Stage.POSTNATAL and result = positive. Indicator (HV2-04).
 		{
 			Map<String, Object> parameters = new HashMap<String, Object>();
-			parameters.put("stage", MchMetadata.Stage.POSTNATAL);
+			parameters.put("stage", Stage.POSTNATAL);
 			parameters.put("result", Dictionary.getConcept(Dictionary.POSITIVE));
 			CalculationResultMap resultMap = new TestedForHivInMchmsCalculation().evaluate(ptIds, parameters,
 					Context.getService(PatientCalculationService.class).createCalculationContext());
@@ -310,7 +311,7 @@ public class TestedForHivInMchmsCalculationTest extends BaseModuleContextSensiti
 		//Test with paramaters stage=MchMetadata.Stage.AFTER_ENROLLMENT and result = null. Indicator (HV2-01).
 		{
 			Map<String, Object> parameters = new HashMap<String, Object>();
-			parameters.put("stage", MchMetadata.Stage.ANTENATAL);
+			parameters.put("stage", Stage.ANTENATAL);
 			parameters.put("result", null);
 			CalculationResultMap resultMap = new TestedForHivInMchmsCalculation().evaluate(ptIds, parameters,
 					Context.getService(PatientCalculationService.class).createCalculationContext());
@@ -324,7 +325,7 @@ public class TestedForHivInMchmsCalculationTest extends BaseModuleContextSensiti
 		//Test with paramaters stage=MchMetadata.Stage.DELIVERY and result = null. Indicator (HV2-02).
 		{
 			Map<String, Object> parameters = new HashMap<String, Object>();
-			parameters.put("stage", MchMetadata.Stage.DELIVERY);
+			parameters.put("stage", Stage.DELIVERY);
 			parameters.put("result", null);
 			CalculationResultMap resultMap = new TestedForHivInMchmsCalculation().evaluate(ptIds, parameters,
 					Context.getService(PatientCalculationService.class).createCalculationContext());
@@ -338,7 +339,7 @@ public class TestedForHivInMchmsCalculationTest extends BaseModuleContextSensiti
 		//Test with paramaters stage=MchMetadata.Stage.POSTNATAL and result = null. Indicator (HV2-03).
 		{
 			Map<String, Object> parameters = new HashMap<String, Object>();
-			parameters.put("stage", MchMetadata.Stage.POSTNATAL);
+			parameters.put("stage", Stage.POSTNATAL);
 			parameters.put("result", null);
 			CalculationResultMap resultMap = new TestedForHivInMchmsCalculation().evaluate(ptIds, parameters,
 					Context.getService(PatientCalculationService.class).createCalculationContext());
@@ -352,7 +353,7 @@ public class TestedForHivInMchmsCalculationTest extends BaseModuleContextSensiti
 		//Test with paramaters stage=MchMetadata.Stage.AFTER_ENROLLMENT and result = null. Indicator (HV2-04).
 		{
 			Map<String, Object> parameters = new HashMap<String, Object>();
-			parameters.put("stage", MchMetadata.Stage.AFTER_ENROLLMENT);
+			parameters.put("stage", Stage.AFTER_ENROLLMENT);
 			parameters.put("result", null);
 			CalculationResultMap resultMap = new TestedForHivInMchmsCalculation().evaluate(ptIds, parameters,
 					Context.getService(PatientCalculationService.class).createCalculationContext());
@@ -366,7 +367,7 @@ public class TestedForHivInMchmsCalculationTest extends BaseModuleContextSensiti
 		//Test with paramaters stage=MchMetadata.Stage.BEFORE_ENROLLMENT and result = positive. Indicator (HV2-05).
 		{
 			Map<String, Object> parameters = new HashMap<String, Object>();
-			parameters.put("stage", MchMetadata.Stage.BEFORE_ENROLLMENT);
+			parameters.put("stage", Stage.BEFORE_ENROLLMENT);
 			parameters.put("result", Dictionary.getConcept(Dictionary.POSITIVE));
 			CalculationResultMap resultMap = new TestedForHivInMchmsCalculation().evaluate(ptIds, parameters,
 					Context.getService(PatientCalculationService.class).createCalculationContext());
@@ -380,7 +381,7 @@ public class TestedForHivInMchmsCalculationTest extends BaseModuleContextSensiti
 		//Test with paramaters stage=MchMetadata.Stage.ANTENATAL and result = positive. Indicator (HV2-06).
 		{
 			Map<String, Object> parameters = new HashMap<String, Object>();
-			parameters.put("stage", MchMetadata.Stage.ANTENATAL);
+			parameters.put("stage", Stage.ANTENATAL);
 			parameters.put("result", Dictionary.getConcept(Dictionary.POSITIVE));
 			CalculationResultMap resultMap = new TestedForHivInMchmsCalculation().evaluate(ptIds, parameters,
 					Context.getService(PatientCalculationService.class).createCalculationContext());
@@ -394,7 +395,7 @@ public class TestedForHivInMchmsCalculationTest extends BaseModuleContextSensiti
 		//Test with paramaters stage=MchMetadata.Stage.DELIVERY and result = positive. Indicator (HV2-04).
 		{
 			Map<String, Object> parameters = new HashMap<String, Object>();
-			parameters.put("stage", MchMetadata.Stage.DELIVERY);
+			parameters.put("stage", Stage.DELIVERY);
 			parameters.put("result", Dictionary.getConcept(Dictionary.POSITIVE));
 			CalculationResultMap resultMap = new TestedForHivInMchmsCalculation().evaluate(ptIds, parameters,
 					Context.getService(PatientCalculationService.class).createCalculationContext());
@@ -408,7 +409,7 @@ public class TestedForHivInMchmsCalculationTest extends BaseModuleContextSensiti
 		//Test with paramaters stage=MchMetadata.Stage.POSTNATAL and result = positive. Indicator (HV2-04).
 		{
 			Map<String, Object> parameters = new HashMap<String, Object>();
-			parameters.put("stage", MchMetadata.Stage.POSTNATAL);
+			parameters.put("stage", Stage.POSTNATAL);
 			parameters.put("result", Dictionary.getConcept(Dictionary.POSITIVE));
 			CalculationResultMap resultMap = new TestedForHivInMchmsCalculation().evaluate(ptIds, parameters,
 					Context.getService(PatientCalculationService.class).createCalculationContext());
