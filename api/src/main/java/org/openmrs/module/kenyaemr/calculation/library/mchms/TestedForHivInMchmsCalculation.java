@@ -14,7 +14,6 @@
 
 package org.openmrs.module.kenyaemr.calculation.library.mchms;
 
-import org.joda.time.DateTime;
 import org.openmrs.Concept;
 import org.openmrs.PatientProgram;
 import org.openmrs.Program;
@@ -140,7 +139,7 @@ public class TestedForHivInMchmsCalculation extends BaseEmrCalculation {
 						upperLimit = CoreUtils.dateAddDays(beginningOfDeliveryDate, -2);
 					} else if (stage.equals(Stage.DELIVERY)) {
 						lowerLimit = CoreUtils.dateAddDays(beginningOfDeliveryDate, -2);
-						upperLimit = new DateTime(endOfDeliveryDate).toDate();
+						upperLimit = endOfDeliveryDate;
 					} else if (stage.equals(Stage.POSTNATAL)) {
 						lowerLimit = endOfDeliveryDate;
 						upperLimit = CoreUtils.dateAddDays(endOfDeliveryDate, 3);

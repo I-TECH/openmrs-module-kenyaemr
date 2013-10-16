@@ -15,7 +15,8 @@
 package org.openmrs.module.kenyaemr.metadata;
 
 /**
- * The stage of a patient in the MCH-MS program. Note that some stages overlap over other stages.
+ * The stage of a pregnant woman in the MCH-MS program ranging from before they enroll into the program to 3 days after
+ * delivery. Note that some stages overlap over other stages.
  */
 public enum Stage {
 	ANY,//Any stage ranging from before enrollment up to the postnatal stage
