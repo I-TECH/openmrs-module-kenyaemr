@@ -29,7 +29,7 @@ import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.metadata.MchMetadata;
-import org.openmrs.module.kenyaemr.Stage;
+import org.openmrs.module.kenyaemr.PregnancyStage;
 import org.openmrs.util.OpenmrsUtil;
 
 import java.util.Collection;
@@ -49,7 +49,7 @@ public class TestedForHivInMchmsCalculation extends BaseEmrCalculation {
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
 
-		Stage stage = (Stage) parameterValues.get("stage");
+		PregnancyStage stage = (PregnancyStage) parameterValues.get("stage");
 		Concept result = (Concept) parameterValues.get("result");
 
 		Program mchmsProgram = MetadataUtils.getProgram(MchMetadata._Program.MCHMS);
@@ -91,12 +91,12 @@ public class TestedForHivInMchmsCalculation extends BaseEmrCalculation {
 	}
 
 	/**
-	 * Determines if the a patient is in a given {@link org.openmrs.module.kenyaemr.Stage} in the MCH-MS
+	 * Determines if the a patient is in a given {@link org.openmrs.module.kenyaemr.PregnancyStage} in the MCH-MS
 	 * program given their date of enrollment, date of HIV test and date of delivery.
 	 *
 	 * @return true if the patient is in the specified stage and false otherwise.
 	 */
-	protected boolean qualifiedByStage(Stage stage, Date enrollmentDate, Date testDate, Date deliveryDate) {
+	protected boolean qualifiedByStage(PregnancyStage stage, Date enrollmentDate, Date testDate, Date deliveryDate) {
 
 		Date lowerLimit = null;
 		Date upperLimit = null;
@@ -109,17 +109,17 @@ public class TestedForHivInMchmsCalculation extends BaseEmrCalculation {
 			endOfDeliveryDate = CoreUtils.dateAddDays(beginningOfDeliveryDate, 1);
 		}
 
-		if (stage.equals(Stage.ANY)) {
+		if (stage.equals(PregnancyStage.ANY)) {
 			if (endOfDeliveryDate != null) {
 				upperLimit = CoreUtils.dateAddDays(endOfDeliveryDate, 3);
 				return upperLimit.after(testDate);
 			} else {
 				return true;
 			}
-		} else if (stage.equals(Stage.BEFORE_ENROLLMENT)) {
+		} else if (stage.equals(PregnancyStage.BEFORE_ENROLLMENT)) {
 			return enrollmentDate.after(testDate);
 		} else {
-			if (stage.equals(Stage.AFTER_ENROLLMENT)) {
+			if (stage.equals(PregnancyStage.AFTER_ENROLLMENT)) {
 				if (endOfDeliveryDate != null) {
 					upperLimit = CoreUtils.dateAddDays(endOfDeliveryDate, 3);
 					return enrollmentDate.before(testDate) && upperLimit.after(testDate);
@@ -128,19 +128,19 @@ public class TestedForHivInMchmsCalculation extends BaseEmrCalculation {
 				}
 			} else {
 				if (deliveryDate == null) {
-					if (stage.equals(Stage.ANTENATAL)) {
+					if (stage.equals(PregnancyStage.ANTENATAL)) {
 						return true;
 					} else {
 						return false;
 					}
 				} else {
-					if (stage.equals(Stage.ANTENATAL)) {
+					if (stage.equals(PregnancyStage.ANTENATAL)) {
 						lowerLimit = beginningOfEnrollmentDate;
 						upperLimit = CoreUtils.dateAddDays(beginningOfDeliveryDate, -2);
-					} else if (stage.equals(Stage.DELIVERY)) {
+					} else if (stage.equals(PregnancyStage.DELIVERY)) {
 						lowerLimit = CoreUtils.dateAddDays(beginningOfDeliveryDate, -2);
 						upperLimit = endOfDeliveryDate;
-					} else if (stage.equals(Stage.POSTNATAL)) {
+					} else if (stage.equals(PregnancyStage.POSTNATAL)) {
 						lowerLimit = endOfDeliveryDate;
 						upperLimit = CoreUtils.dateAddDays(endOfDeliveryDate, 3);
 					}

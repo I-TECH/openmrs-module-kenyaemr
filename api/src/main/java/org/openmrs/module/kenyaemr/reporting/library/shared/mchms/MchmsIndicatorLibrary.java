@@ -16,7 +16,7 @@
 package org.openmrs.module.kenyaemr.reporting.library.shared.mchms;
 
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.Stage;
+import org.openmrs.module.kenyaemr.PregnancyStage;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -40,7 +40,7 @@ public class MchmsIndicatorLibrary {
 	 */
 	public CohortIndicator testedForHivBeforeOrDuringMchms() {
 		return cohortIndicator(null,
-				map(mchmsCohortLibrary.testedForHivInMchms(Stage.ANY, null), "onOrAfter=${startDate},onOrBefore=${endDate}")
+				map(mchmsCohortLibrary.testedForHivInMchms(PregnancyStage.ANY, null), "onOrAfter=${startDate},onOrBefore=${endDate}")
 		);
 	}
 
@@ -51,7 +51,7 @@ public class MchmsIndicatorLibrary {
 	 */
 	public CohortIndicator testedForHivInMchms() {
 		return cohortIndicator(null,
-				map(mchmsCohortLibrary.testedForHivInMchms(Stage.AFTER_ENROLLMENT, null), "onOrAfter=${startDate},onOrBefore=${endDate}")
+				map(mchmsCohortLibrary.testedForHivInMchms(PregnancyStage.AFTER_ENROLLMENT, null), "onOrAfter=${startDate},onOrBefore=${endDate}")
 		);
 	}
 
@@ -62,7 +62,7 @@ public class MchmsIndicatorLibrary {
 	 */
 	public CohortIndicator testedForHivInMchmsAntenatal() {
 		return cohortIndicator(null,
-				map(mchmsCohortLibrary.testedForHivInMchms(Stage.ANTENATAL, null), "onOrAfter=${startDate},onOrBefore=${endDate}")
+				map(mchmsCohortLibrary.testedForHivInMchms(PregnancyStage.ANTENATAL, null), "onOrAfter=${startDate},onOrBefore=${endDate}")
 		);
 	}
 
@@ -73,7 +73,7 @@ public class MchmsIndicatorLibrary {
 	 */
 	public CohortIndicator testedForHivInMchmsDelivery() {
 		return cohortIndicator(null,
-				map(mchmsCohortLibrary.testedForHivInMchms(Stage.DELIVERY, null), "onOrAfter=${startDate},onOrBefore=${endDate}")
+				map(mchmsCohortLibrary.testedForHivInMchms(PregnancyStage.DELIVERY, null), "onOrAfter=${startDate},onOrBefore=${endDate}")
 		);
 	}
 
@@ -84,7 +84,7 @@ public class MchmsIndicatorLibrary {
 	 */
 	public CohortIndicator testedForHivInMchmsPostnatal() {
 		return cohortIndicator(null,
-				map(mchmsCohortLibrary.testedForHivInMchms(Stage.POSTNATAL, null), "onOrAfter=${startDate},onOrBefore=${endDate}")
+				map(mchmsCohortLibrary.testedForHivInMchms(PregnancyStage.POSTNATAL, null), "onOrAfter=${startDate},onOrBefore=${endDate}")
 		);
 	}
 
@@ -96,7 +96,7 @@ public class MchmsIndicatorLibrary {
 	public CohortIndicator testedHivPositiveBeforeMchms() {
 
 		return cohortIndicator(null,
-				map(mchmsCohortLibrary.testedForHivInMchms(Stage.BEFORE_ENROLLMENT, Dictionary.getConcept(Dictionary.POSITIVE)), "onOrAfter=${startDate},onOrBefore=${endDate}")
+				map(mchmsCohortLibrary.testedForHivInMchms(PregnancyStage.BEFORE_ENROLLMENT, Dictionary.getConcept(Dictionary.POSITIVE)), "onOrAfter=${startDate},onOrBefore=${endDate}")
 		);
 	}
 
@@ -107,7 +107,7 @@ public class MchmsIndicatorLibrary {
 	 */
 	public CohortIndicator testedHivPositiveInMchms() {
 		return cohortIndicator(null,
-				map(mchmsCohortLibrary.testedForHivInMchms(Stage.ANY, Dictionary.getConcept(Dictionary.POSITIVE)), "onOrAfter=${startDate},onOrBefore=${endDate}")
+				map(mchmsCohortLibrary.testedForHivInMchms(PregnancyStage.ANY, Dictionary.getConcept(Dictionary.POSITIVE)), "onOrAfter=${startDate},onOrBefore=${endDate}")
 		);
 	}
 
@@ -118,7 +118,7 @@ public class MchmsIndicatorLibrary {
 	 */
 	public CohortIndicator testedHivPositiveInMchmsAntenatal() {
 		return cohortIndicator(null,
-				map(mchmsCohortLibrary.testedForHivInMchms(Stage.ANTENATAL, Dictionary.getConcept(Dictionary.POSITIVE)), "onOrAfter=${startDate},onOrBefore=${endDate}")
+				map(mchmsCohortLibrary.testedForHivInMchms(PregnancyStage.ANTENATAL, Dictionary.getConcept(Dictionary.POSITIVE)), "onOrAfter=${startDate},onOrBefore=${endDate}")
 		);
 	}
 
@@ -129,7 +129,7 @@ public class MchmsIndicatorLibrary {
 	 */
 	public CohortIndicator testedHivPositiveInMchmsDelivery() {
 		return cohortIndicator(null,
-				map(mchmsCohortLibrary.testedForHivInMchms(Stage.DELIVERY, Dictionary.getConcept(Dictionary.POSITIVE)), "onOrAfter=${startDate},onOrBefore=${endDate}")
+				map(mchmsCohortLibrary.testedForHivInMchms(PregnancyStage.DELIVERY, Dictionary.getConcept(Dictionary.POSITIVE)), "onOrAfter=${startDate},onOrBefore=${endDate}")
 		);
 	}
 
@@ -140,7 +140,7 @@ public class MchmsIndicatorLibrary {
 	 */
 	public CohortIndicator testedHivPositiveInMchmsPostnatal() {
 		return cohortIndicator(null,
-				map(mchmsCohortLibrary.testedForHivInMchms(Stage.POSTNATAL, Dictionary.getConcept(Dictionary.POSITIVE)), "onOrAfter=${startDate},onOrBefore=${endDate}")
+				map(mchmsCohortLibrary.testedForHivInMchms(PregnancyStage.POSTNATAL, Dictionary.getConcept(Dictionary.POSITIVE)), "onOrAfter=${startDate},onOrBefore=${endDate}")
 		);
 	}
 }

@@ -19,7 +19,7 @@ import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyacore.report.builder.CalculationCohortDefinition;
 import org.openmrs.module.kenyaemr.calculation.library.mchms.MchmsHivTestDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.mchms.TestedForHivInMchmsCalculation;
-import org.openmrs.module.kenyaemr.Stage;
+import org.openmrs.module.kenyaemr.PregnancyStage;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.DateCalculationCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonCohortLibrary;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -39,7 +39,7 @@ public class MchmsCohortLibrary {
 	@Autowired
 	private CommonCohortLibrary commonCohortLibrary;
 
-	public CohortDefinition testedForHivInMchms(Stage stage, Concept result) {
+	public CohortDefinition testedForHivInMchms(PregnancyStage stage, Concept result) {
 
 		DateCalculationCohortDefinition dateCd = new DateCalculationCohortDefinition(new MchmsHivTestDateCalculation());
 		dateCd.setName("started ART between dates");

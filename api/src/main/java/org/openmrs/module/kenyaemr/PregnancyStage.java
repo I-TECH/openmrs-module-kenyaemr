@@ -18,7 +18,7 @@ package org.openmrs.module.kenyaemr;
  * The stage of a pregnant woman in the MCH-MS program ranging from before they enroll into the program to 3 days after
  * delivery. Note that some stages overlap over other stages.
  */
-public enum Stage {
+public enum PregnancyStage {
 	ANY,//Any stage ranging from before enrollment up to the postnatal stage
 	BEFORE_ENROLLMENT,//The stage before actual enrollment into the MCH-MS program
 	AFTER_ENROLLMENT,//Any stage ranging from when the patient is enrolled up to the postnatal stage
