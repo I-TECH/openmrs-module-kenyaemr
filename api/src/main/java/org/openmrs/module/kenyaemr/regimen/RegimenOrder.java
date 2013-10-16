@@ -14,11 +14,14 @@
 
 package org.openmrs.module.kenyaemr.regimen;
 
-import java.util.*;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.openmrs.DrugOrder;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Represents a regimen of drug orders

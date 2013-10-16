@@ -17,7 +17,6 @@ package org.openmrs.module.kenyaemr.test;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.openmrs.Cohort;
-import org.openmrs.PatientIdentifier;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.DataSetRow;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
@@ -25,7 +24,10 @@ import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.renderer.TsvReportRenderer;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Reporting specific utility methods for unit tests

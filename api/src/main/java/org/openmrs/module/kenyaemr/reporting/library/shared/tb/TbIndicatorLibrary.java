@@ -49,4 +49,102 @@ public class TbIndicatorLibrary {
 				map(tbCohorts.diedAndStarted12MonthsAgo(), "onOrAfter=${startDate},onOrBefore=${endDate}")
 		);
 	}
+
+	/**
+	 * Number of patients who completed Tb Treatment and are in Tb program
+	 * @return the indicator
+	 */
+	public CohortIndicator completedTbTreatment() {
+		return cohortIndicator(null,
+				map(tbCohorts.completedTreatment(), "onOrAfter=${startDate},onOrBefore=${endDate}")
+		);
+	}
+
+
+	/**
+	 * Number of patients who defaulted and missed appointments
+	 * @return the indicator
+	 */
+	public CohortIndicator defaultedAndMissedAppointment() {
+		return cohortIndicator(null,
+				map(tbCohorts.missedAppointmentOrDefaulted(), "onDate=${endDate}")
+		);
+	}
+
+	/**
+	 * Number of patients in Tb and HIV programs who are in CPT
+	 * @return the indicator
+	 */
+	public CohortIndicator inTbAndHivAndOnCPT() {
+		return cohortIndicator(null,
+				map(tbCohorts.inTbAndHivProgramsAndOnCPT(), "onDate=${endDate}")
+		);
+	}
+
+	/**
+	 * Number of patients in Tb and are HIV tested
+	 * @return the indicator
+	 */
+	public CohortIndicator inTbAndTestedForHiv() {
+		return cohortIndicator(null,
+				map(tbCohorts.testedForHivAndInTbProgram(), "onOrAfter=${startDate},onOrBefore=${endDate}")
+		);
+	}
+
+	/**
+	 * Number of patients in Tb and are HIV tested and their result is positive
+	 * @return the indicator
+	 */
+	public CohortIndicator inTbAndTestedForHivPositive() {
+		return cohortIndicator(null,
+				map(tbCohorts.testedHivPositiveAndInTbProgram(), "onOrAfter=${startDate},onOrBefore=${endDate}")
+		);
+	}
+
+	/**
+	 * Number of patients with Tb retreatments
+	 * @return the indicator
+	 */
+	public CohortIndicator tbRetreatmentsPatients() {
+		return cohortIndicator(null,
+				map(tbCohorts.tbRetreatments(), "onOrAfter=${startDate},onOrBefore=${endDate}")
+		);
+	}
+
+	/**
+	 * Number of patients with Extra pulmonary Tb
+	 * @return the indicator
+	 */
+	public CohortIndicator extraPulmonaryTbPatients() {
+		return cohortIndicator(null,
+				map(tbCohorts.extraPulmonaryTbPatients(), "onOrAfter=${startDate},onOrBefore=${endDate}")
+		);
+	}
+
+	/**
+	 * pulmonary tb patients with smear negative results
+	 */
+	public CohortIndicator pulmonaryTbSmearNegative() {
+		return cohortIndicator(null,
+				map(tbCohorts.pulmonaryTbSmearNegative(), "onOrAfter=${startDate},onOrBefore=${endDate}")
+		);
+	}
+
+	/**
+	 * pulmonary tb patients with smear positve results
+	 */
+	public CohortIndicator pulmonaryTbSmearPositive() {
+		return cohortIndicator(null,
+				map(tbCohorts.pulmonaryTbSmearPositive(), "onOrAfter=${startDate},onOrBefore=${endDate}")
+		);
+	}
+
+	/**
+	 * Patients with new Tb detected cases
+	 */
+	public CohortIndicator tbNewDetectedCases() {
+		return cohortIndicator(null,
+				map(tbCohorts.tbNewDetectedCases(), "onOrAfter=${startDate},onOrBefore=${endDate}")
+		);
+	}
 }

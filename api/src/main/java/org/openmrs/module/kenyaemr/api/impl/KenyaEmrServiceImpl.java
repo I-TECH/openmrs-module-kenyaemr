@@ -14,11 +14,16 @@
 
 package org.openmrs.module.kenyaemr.api.impl;
 
-import java.util.*;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.*;
+import org.openmrs.GlobalProperty;
+import org.openmrs.Location;
+import org.openmrs.LocationAttribute;
+import org.openmrs.LocationAttributeType;
+import org.openmrs.Patient;
+import org.openmrs.PatientIdentifierType;
+import org.openmrs.Visit;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.impl.BaseOpenmrsService;
@@ -38,6 +43,12 @@ import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.util.OpenmrsUtil;
 import org.openmrs.util.PrivilegeConstants;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Implementations of business logic methods for KenyaEMR
