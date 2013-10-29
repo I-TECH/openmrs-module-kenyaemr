@@ -15,7 +15,11 @@
 package org.openmrs.module.kenyaemr.util;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.openmrs.*;
+import org.openmrs.Concept;
+import org.openmrs.ConceptName;
+import org.openmrs.DrugOrder;
+import org.openmrs.Form;
+import org.openmrs.Visit;
 import org.openmrs.api.APIAuthenticationException;
 import org.openmrs.module.appframework.AppDescriptor;
 import org.openmrs.module.kenyacore.CoreConstants;
@@ -27,7 +31,6 @@ import org.openmrs.module.kenyaemr.regimen.RegimenChange;
 import org.openmrs.module.kenyaemr.regimen.RegimenChangeHistory;
 import org.openmrs.module.kenyaemr.regimen.RegimenDefinition;
 import org.openmrs.module.kenyaemr.regimen.RegimenOrder;
-import org.openmrs.module.kenyaemr.util.EmrUtils;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
@@ -36,8 +39,11 @@ import org.openmrs.util.OpenmrsUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 /**
  * UI utility methods for web pages

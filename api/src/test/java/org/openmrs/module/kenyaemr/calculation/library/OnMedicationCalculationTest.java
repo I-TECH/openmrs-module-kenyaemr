@@ -32,7 +32,12 @@ import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 
 /**
  * Tests for {@link OnMedicationCalculation}

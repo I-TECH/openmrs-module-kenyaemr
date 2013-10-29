@@ -14,7 +14,6 @@
 
 package org.openmrs.module.kenyaemr.calculation.library.hiv;
 
-import java.util.*;
 
 import org.openmrs.Encounter;
 import org.openmrs.Program;
@@ -29,6 +28,11 @@ import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
+
+import java.util.Collection;
+import java.util.Date;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Calculates whether a patient has been lost to follow up. Calculation returns true if patient

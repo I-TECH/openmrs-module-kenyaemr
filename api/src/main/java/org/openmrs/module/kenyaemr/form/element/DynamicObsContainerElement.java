@@ -18,7 +18,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.openmrs.module.htmlformentry.FormEntryContext;
 import org.openmrs.module.htmlformentry.element.HtmlGeneratorElement;
 
-import java.util.*;
+import java.util.Map;
+
 
 /**
  *

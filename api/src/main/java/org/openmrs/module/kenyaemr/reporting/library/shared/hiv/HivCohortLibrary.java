@@ -340,4 +340,43 @@ public class HivCohortLibrary {
 		cd.setCompositionString("inProgram AND onMedication");
 		return cd;
 	}
+
+	/**
+	 * Patients tested for HIV ${onOrAfter} and ${onOrBefore}
+	 * @return the cohort definition
+	 */
+	public  CohortDefinition testedForHiv() {
+		Concept hivStatus = Dictionary.getConcept(Dictionary.HIV_STATUS);
+		Concept indeterminate = Dictionary.getConcept(Dictionary.INDETERMINATE);
+		Concept hivInfected = Dictionary.getConcept(Dictionary.HIV_INFECTED);
+		Concept unknown = Dictionary.getConcept(Dictionary.UNKNOWN);
+		Concept positive = Dictionary.getConcept(Dictionary.POSITIVE);
+		Concept negative = Dictionary.getConcept(Dictionary.NEGATIVE);
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("Tested for Hiv");
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("resultOfHivTest", ReportUtils.map(commonCohorts.hasObs(hivStatus, unknown, positive, negative), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("testedForHivHivInfected", ReportUtils.map(commonCohorts.hasObs(hivInfected, indeterminate,positive,negative), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("resultOfHivTest OR testedForHivHivInfected");
+		return cd;
+	}
+
+	/**
+	 * Patients tested for HIV and turn to be positive ${onOrAfter} and ${onOrBefore}
+	 * @return the cohort definition
+	 */
+	public  CohortDefinition testedHivPositive() {
+		Concept hivStatus = Dictionary.getConcept(Dictionary.HIV_STATUS);
+		Concept hivInfected = Dictionary.getConcept(Dictionary.HIV_INFECTED);
+		Concept positive = Dictionary.getConcept(Dictionary.POSITIVE);
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("Tested for Hiv and Turned to be positive");
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("resultOfHivTestPositive", ReportUtils.map(commonCohorts.hasObs(hivStatus, positive), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("testedForHivHivInfectedPositive", ReportUtils.map(commonCohorts.hasObs(hivInfected ,positive), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("resultOfHivTestPositive OR testedForHivHivInfectedPositive");
+		return cd;
+	}
 }

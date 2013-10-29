@@ -29,7 +29,11 @@ import org.openmrs.module.kenyaemr.form.widget.ObjectSearchWidget;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+
 
 /**
  * Overrides regular <encounterLocation> tag

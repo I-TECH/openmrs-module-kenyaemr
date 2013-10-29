@@ -27,7 +27,12 @@ import org.openmrs.module.kenyaemr.util.EmrUtils;
 import org.openmrs.module.reporting.common.Age;
 import org.openmrs.util.OpenmrsUtil;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
 
 /**
  * Calculates the obs which triggered each patient to become eligible for ART
