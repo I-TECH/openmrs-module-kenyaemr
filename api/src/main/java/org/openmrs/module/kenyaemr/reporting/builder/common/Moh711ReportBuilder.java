@@ -93,6 +93,16 @@ public class Moh711ReportBuilder extends BaseIndicatorReportBuilder {
 
 		String indParams = "startDate=${startDate},endDate=${endDate}";
 
+		EmrReportingUtils.addRow(dsd, "G1", "No. of detected cases (who have new Tb detected cases)", ReportUtils.map(tbIndicators.tbNewDetectedCases(), indParams), columns);
+		EmrReportingUtils.addRow(dsd, "G2", "No. of Pulmonary smear positive (who have pulmonary TB and smear positive)", ReportUtils.map(tbIndicators.pulmonaryTbSmearPositive(), indParams), columns);
+		EmrReportingUtils.addRow(dsd, "G3", "No. of Pulmonary smear negative (who have pulmonary TB and smear negative)", ReportUtils.map(tbIndicators.pulmonaryTbSmearNegative(), indParams), columns);
+		EmrReportingUtils.addRow(dsd, "G4", "No. of Extra pulmonary TB (who have extra pulmonary TB)", ReportUtils.map(tbIndicators.extraPulmonaryTbPatients(), indParams), columns);
+		EmrReportingUtils.addRow(dsd, "G5", "No. of TB Re-treatments (who are in Tb re-treatments)", ReportUtils.map(tbIndicators.tbRetreatmentsPatients(), indParams), columns);
+		EmrReportingUtils.addRow(dsd, "G6", "No. of TB and Tested for HIV (who are in Tb program and tested for HIV)", ReportUtils.map(tbIndicators.inTbAndTestedForHiv(), indParams), columns);
+		EmrReportingUtils.addRow(dsd, "G7", "No. of TB and Tested for HIV (whose HIV result is positive)", ReportUtils.map(tbIndicators.inTbAndTestedForHivPositive(), indParams), columns);
+		EmrReportingUtils.addRow(dsd, "G8", "No. of TB and HIV (who are both in TB and HIV and are on CPT)", ReportUtils.map(tbIndicators.inTbAndHivAndOnCPT(), indParams), columns);
+		EmrReportingUtils.addRow(dsd, "G9", "No. of TB defaulters (who defaulted or missed appointments)", ReportUtils.map(tbIndicators.defaultedAndMissedAppointment(), indParams), columns);
+		EmrReportingUtils.addRow(dsd, "G10", "No. of TB completes (who Completed Tb Treatment)", ReportUtils.map(tbIndicators.completedTbTreatment(), indParams), columns);
 		EmrReportingUtils.addRow(dsd, "G11", "No. of TB deaths (who started tx this month last year)", ReportUtils.map(tbIndicators.diedAndStarted12MonthsAgo(), indParams), columns);
 
 		return dsd;

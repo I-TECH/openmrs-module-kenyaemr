@@ -14,6 +14,7 @@
 
 package org.openmrs.module.kenyaemr.calculation.library.mchcs;
 
+import org.openmrs.Concept;
 import org.openmrs.Obs;
 import org.openmrs.Program;
 import org.openmrs.calculation.patient.PatientCalculationContext;
@@ -61,6 +62,8 @@ public class NeedsAntibodyTestCalculation extends BaseEmrCalculation implements 
 		CalculationResultMap lastChildHivStatus = Calculations.lastObs(getConcept(Dictionary.CHILDS_CURRENT_HIV_STATUS), inMchcsProgram, context);
 		CalculationResultMap lastHivRapidTest1 = Calculations.lastObs(getConcept(Dictionary.HIV_RAPID_TEST_1_QUALITATIVE), inMchcsProgram, context);
 		CalculationResultMap lastHivRapidTest2 = Calculations.lastObs(getConcept(Dictionary.HIV_RAPID_TEST_2_QUALITATIVE), inMchcsProgram, context);
+
+		Concept hivExposed = getConcept(Dictionary.EXPOSURE_TO_HIV);
 		CalculationResultMap ret = new CalculationResultMap();
 
 		for (Integer ptId : cohort) {
@@ -68,10 +71,11 @@ public class NeedsAntibodyTestCalculation extends BaseEmrCalculation implements 
 
 			if (inMchcsProgram.contains(ptId) && lastChildHivStatus != null) {
 				// Integer ageInMonths = ((Age) ages.get(ptId).getValue()).getFullMonths();
+				Obs hivStatusObs = EmrCalculationUtils.obsResultForPatient(lastChildHivStatus, ptId);
 				Obs rapidTest1 = EmrCalculationUtils.obsResultForPatient(lastHivRapidTest1, ptId);
 				Obs rapidTest2 = EmrCalculationUtils.obsResultForPatient(lastHivRapidTest2, ptId);
 
-				if (rapidTest1 == null && rapidTest2 == null) {
+				if (rapidTest1 == null && rapidTest2 == null && (hivStatusObs.getValueCoded().equals(hivExposed))) {
 					// only for patients who are nine months and above
 					needsAntibody = true; /*(ageInMonths != null && ageInMonths >= 9);*/
 				}

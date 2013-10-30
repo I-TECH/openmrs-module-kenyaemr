@@ -28,18 +28,23 @@ import org.openmrs.User;
 import org.openmrs.Visit;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.LocationService;
-import org.openmrs.api.PersonService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyacore.CoreConstants;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
-import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.util.OpenmrsConstants;
 import org.openmrs.util.PersonByNameComparator;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Fragment actions specifically for searching for OpenMRS objects

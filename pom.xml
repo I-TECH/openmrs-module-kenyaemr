@@ -30,7 +30,6 @@
 	<modules>
 		<module>api</module>
 		<module>omod</module>
-		<module>distro</module>
 	</modules>
 
 	<properties>
@@ -39,14 +38,11 @@
 		<!-- Module dependencies -->
 		<appframeworkVersion>1.5</appframeworkVersion>
 		<calculationVersion>1.0</calculationVersion>
-		<groovyVersion>2.2.4</groovyVersion>
-		<htmlformentryVersion>2.2</htmlformentryVersion>
+		<htmlformentryVersion>2.2.1</htmlformentryVersion>
 		<htmlformentry19extVersion>0.9</htmlformentry19extVersion>
 		<htmlwidgetsVersion>1.6.5</htmlwidgetsVersion>
 		<idgenVersion>2.6</idgenVersion>
-		<kenyacoreVersion>0.14</kenyacoreVersion>
-		<kenyadqVersion>0.2.2</kenyadqVersion>
-		<!--<kenyalabVersion>0.1.2</kenyalabVersion>-->
+		<kenyacoreVersion>0.15-SNAPSHOT</kenyacoreVersion>
 		<kenyauiVersion>1.12.9</kenyauiVersion>
 		<logicVersion>0.5.2</logicVersion>
 		<metadatamappingVersion>1.0.1</metadatamappingVersion>
@@ -121,13 +117,6 @@
 			<version>${kenyacoreVersion}</version>
 			<scope>test</scope>
 		</dependency>
-
-		<!--<dependency>
-			<groupId>org.openmrs.module</groupId>
-			<artifactId>kenyalab-api</artifactId>
-			<version>${kenyalabVersion}</version>
-			<scope>provided</scope>
-		</dependency>-->
 
 		<dependency>
 			<groupId>org.openmrs.module</groupId>
