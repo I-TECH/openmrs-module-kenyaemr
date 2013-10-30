@@ -154,7 +154,7 @@
 					jq('#child-status-required').html('Please specify the condition of the child');
 					return false;
 				}
-				if (getValue('hiv-exposed-child.value') == EXPOSURE_TO_HIV_ID &amp;&amp; getValue('hei-id.value') == "") {
+				if (getValue('hiv-exposed-child.value') == EXPOSURE_TO_HIV_ID &amp;&amp; jq('#hei-id :input').val() == "") {
 					jq('#child-status-required').show();
 					jq('#child-status-required').html('HEI Unique Number Required');
 					return false;

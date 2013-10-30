@@ -38,7 +38,7 @@
 		<!-- Module dependencies -->
 		<appframeworkVersion>1.5</appframeworkVersion>
 		<calculationVersion>1.0</calculationVersion>
-		<htmlformentryVersion>2.2</htmlformentryVersion>
+		<htmlformentryVersion>2.2.1</htmlformentryVersion>
 		<htmlformentry19extVersion>0.9</htmlformentry19extVersion>
 		<htmlwidgetsVersion>1.6.5</htmlwidgetsVersion>
 		<idgenVersion>2.6</idgenVersion>
