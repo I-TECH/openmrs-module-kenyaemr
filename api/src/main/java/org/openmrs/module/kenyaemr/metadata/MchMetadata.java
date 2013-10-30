@@ -26,7 +26,7 @@ import static org.openmrs.module.kenyacore.metadata.bundle.CoreConstructors.*;
  * MCH metadata bundle
  */
 @Component
-@Requires({ CommonMetadata.class })
+@Requires({CommonMetadata.class})
 public class MchMetadata extends AbstractMetadataBundle {
 
 	public static final class _EncounterType {
