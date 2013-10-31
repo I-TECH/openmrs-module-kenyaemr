@@ -90,6 +90,9 @@ public class Moh731ReportBuilder extends BaseIndicatorReportBuilder {
 
 		String indParams = "startDate=${startDate},endDate=${endDate}";
 
+		/* Temporarily disabled these until we fix problem with serialisation of MOH731 report definition caused by one
+		   of the calculations using a parameter that can't be de-serialized
+
 		dsd.addColumn("HV02-01", "Testing for HIV (Antenatal)", ReportUtils.map(mchmsIndicators.testedForHivInMchmsAntenatal(), indParams), "");
 		dsd.addColumn("HV02-02", "Testing for HIV (Labor and Delivery)", ReportUtils.map(mchmsIndicators.testedForHivInMchmsDelivery(), indParams), "");
 		dsd.addColumn("HV02-03", "Testing for HIV (Postnatal (within 72hrs))", ReportUtils.map(mchmsIndicators.testedForHivInMchmsPostnatal(), indParams), "");
@@ -101,7 +104,7 @@ public class Moh731ReportBuilder extends BaseIndicatorReportBuilder {
 		dsd.addColumn("HV02-08", "HIV positive results (Postnatal (within 72hrs))", ReportUtils.map(mchmsIndicators.testedHivPositiveInMchmsPostnatal(), indParams), "");
 		dsd.addColumn("HV02-09", "HIV positive results (Total (Sum HV02-05 to HV02-08))", ReportUtils.map(mchmsIndicators.testedHivPositiveInMchms(), indParams), "");
 
-		dsd.addColumn("HV02-10", "Total with known status (HV02-04 plus HV02-05)", ReportUtils.map(mchmsIndicators.testedForHivBeforeOrDuringMchms(), indParams), "");
+		dsd.addColumn("HV02-10", "Total with known status (HV02-04 plus HV02-05)", ReportUtils.map(mchmsIndicators.testedForHivBeforeOrDuringMchms(), indParams), "");*/
 
 		return dsd;
 	}
