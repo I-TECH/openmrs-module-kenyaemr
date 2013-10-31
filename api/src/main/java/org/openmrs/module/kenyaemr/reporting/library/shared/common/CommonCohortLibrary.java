@@ -225,7 +225,7 @@ public class CommonCohortLibrary {
 		CalculationCohortDefinition cd = new CalculationCohortDefinition(new InProgramCalculation());
 		cd.setName("in " + program.getName() + " on date");
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
-		cd.addCalculationParameter("program", program);
+		cd.addCalculationParameter("program_id", program.getId());
 		return cd;
 	}
 
