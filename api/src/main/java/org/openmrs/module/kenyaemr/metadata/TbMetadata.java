@@ -57,9 +57,9 @@ public class TbMetadata extends AbstractMetadataBundle {
 	@Override
 	public void install() {
 		install(encounterType("TB Screening", "Screening of patient for TB", _EncounterType.TB_SCREENING));
-		install(encounterType("TB Enrollment", "Enrollment onto HIV program", _EncounterType.TB_ENROLLMENT));
-		install(encounterType("TB Discontinuation", "Discontinuation from HIV program", _EncounterType.TB_DISCONTINUATION));
-		install(encounterType("TB FollowUp", "Consultation in Tb Program", _EncounterType.TB_CONSULTATION));
+		install(encounterType("TB Enrollment", "Enrollment onto TB program", _EncounterType.TB_ENROLLMENT));
+		install(encounterType("TB Discontinuation", "Discontinuation from TB program", _EncounterType.TB_DISCONTINUATION));
+		install(encounterType("TB FollowUp", "Consultation in TB Program", _EncounterType.TB_CONSULTATION));
 
 		install(form("TB Screening", null, _EncounterType.TB_SCREENING, "1", _Form.TB_SCREENING));
 		install(form("TB Enrollment", null, _EncounterType.TB_ENROLLMENT, "1", _Form.TB_ENROLLMENT));
