@@ -18,24 +18,24 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Concept;
 import org.openmrs.Program;
-import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyacore.identifier.IdentifierManager;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyacore.report.CalculationReportDescriptor;
+import org.openmrs.module.kenyacore.report.ReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportManager;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
-import org.openmrs.module.kenyaemr.test.EmrTestUtils;
 import org.openmrs.module.kenyaemr.test.ReportingTestUtils;
 import org.openmrs.module.kenyacore.test.TestUtils;
-import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.Calendar;
 import java.util.Collections;
@@ -47,13 +47,14 @@ import java.util.Date;
 public class DecliningCd4ReportBuilderTest extends BaseModuleContextSensitiveTest {
 
 	@Autowired
+	@Qualifier("kenyaemr.hiv.report.decliningCd4")
+	private ReportDescriptor report;
+
+	@Autowired
 	private CommonMetadata commonMetadata;
 
 	@Autowired
 	private HivMetadata hivMetadata;
-
-	@Autowired
-	private ReportManager reportManager;
 
 	@Autowired
 	private DecliningCd4ReportBuilder reportBuilder;
@@ -64,8 +65,6 @@ public class DecliningCd4ReportBuilderTest extends BaseModuleContextSensitiveTes
 
 		commonMetadata.install();
 		hivMetadata.install();
-
-		reportManager.refresh();
 	}
 
 	@Test
@@ -86,9 +85,8 @@ public class DecliningCd4ReportBuilderTest extends BaseModuleContextSensitiveTes
 
 		Context.flushSession();
 
-		// Evaluate report on
-		CalculationReportDescriptor report = (CalculationReportDescriptor) reportManager.getReportDescriptor("kenyaemr.hiv.report.decliningCd4");
-		ReportDefinition rd = reportBuilder.getDefinition(report);
+		// Evaluate report
+		ReportDefinition rd = new DecliningCd4ReportBuilder().build(report);
 		EvaluationContext ec = new EvaluationContext();
 
 		ReportData data = Context.getService(ReportDefinitionService.class).evaluate(rd, ec);

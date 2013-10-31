@@ -18,6 +18,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyacore.report.IndicatorReportDescriptor;
+import org.openmrs.module.kenyacore.report.ReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportManager;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
@@ -32,6 +33,7 @@ import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.Arrays;
 
@@ -53,10 +55,11 @@ public class Moh731ReportBuilderTest extends BaseModuleContextSensitiveTest {
 	private MchMetadata mchMetadata;
 
 	@Autowired
-	private ReportManager reportManager;
+	private RegimenManager regimenManager;
 
 	@Autowired
-	private RegimenManager regimenManager;
+	@Qualifier("kenyaemr.common.report.moh731")
+	private ReportDescriptor report;
 
 	@Autowired
 	private Moh731ReportBuilder reportBuilder;
@@ -72,13 +75,11 @@ public class Moh731ReportBuilderTest extends BaseModuleContextSensitiveTest {
 		mchMetadata.install();
 
 		regimenManager.refresh();
-		reportManager.refresh();
 	}
 
 	@Test
 	public void test() throws Exception {
-		IndicatorReportDescriptor report = (IndicatorReportDescriptor) reportManager.getReportDescriptor("kenyaemr.common.report.moh731");
-		ReportDefinition rd = reportBuilder.getDefinition(report);
+		ReportDefinition rd = reportBuilder.build(report);
 
 		// Run report on all patients for Jan 2012
 		EvaluationContext context = ReportingTestUtils.reportingContext(Arrays.asList(2, 6, 7, 8, 999), TestUtils.date(2012, 1, 1), TestUtils.date(2012, 1, 31));

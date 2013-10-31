@@ -39,7 +39,7 @@ public abstract class BaseIndicatorReportBuilder implements ReportBuilder {
 	 * @return the report definition
 	 */
 	@Override
-	public ReportDefinition getDefinition(ReportDescriptor report) {
+	public ReportDefinition build(ReportDescriptor report) {
 		this.report = (IndicatorReportDescriptor) report;
 
 		ReportDefinition rd = new ReportDefinition();
