@@ -32,11 +32,7 @@ import java.util.List;
  */
 public abstract class BaseIndicatorReportBuilder implements ReportBuilder {
 
-	protected Boolean configured = Boolean.FALSE;
-
 	protected IndicatorReportDescriptor report;
-
-	protected ReportDefinition reportDefinition;
 
 	/**
 	 * Gets the report definition.
@@ -46,19 +42,6 @@ public abstract class BaseIndicatorReportBuilder implements ReportBuilder {
 	public ReportDefinition getDefinition(ReportDescriptor report) {
 		this.report = (IndicatorReportDescriptor) report;
 
-		synchronized (configured) {
-			if (!configured) {
-				reportDefinition = buildReportDefinition();
-				configured = true;
-			}
-		}
-		return reportDefinition;
-	}
-
-	/**
-	 * Builds the report definition
-	 */
-	protected ReportDefinition buildReportDefinition() {
 		ReportDefinition rd = new ReportDefinition();
 		rd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		rd.addParameter(new Parameter("endDate", "End Date", Date.class));
