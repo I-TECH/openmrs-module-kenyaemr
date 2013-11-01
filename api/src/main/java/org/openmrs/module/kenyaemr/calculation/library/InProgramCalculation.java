@@ -32,8 +32,7 @@ public class InProgramCalculation extends BaseEmrCalculation {
 
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> params, PatientCalculationContext context) {
-		Integer programId = (Integer) params.get("program_id");
-		Program program = Context.getProgramWorkflowService().getProgram(programId);
+		Program program = (params != null && params.containsKey("program")) ? (Program) params.get("program") : null;
 
 		return passing(Calculations.activeEnrollment(program, alivePatients(cohort, context), context));
 	}
