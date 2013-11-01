@@ -43,7 +43,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Tests for {@link org.openmrs.module.kenyaemr.calculation.library.mchms.TestedForHivInMchmsCalculation}
+ * Tests for {@link TestedForHivInMchmsCalculation}
  */
 public class TestedForHivInMchmsCalculationTest extends BaseModuleContextSensitiveTest {
 
@@ -59,6 +59,7 @@ public class TestedForHivInMchmsCalculationTest extends BaseModuleContextSensiti
 	@Before
 	public void setup() throws Exception {
 		executeDataSet("dataset/test-concepts.xml");
+
 		commonMetadata.install();
 		mchMetadata.install();
 	}
@@ -146,7 +147,6 @@ public class TestedForHivInMchmsCalculationTest extends BaseModuleContextSensiti
 		{
 			Map<String, Object> parameters = new HashMap<String, Object>();
 			parameters.put("stage", PregnancyStage.ANTENATAL);
-			parameters.put("result", null);
 			CalculationResultMap resultMap = new TestedForHivInMchmsCalculation().evaluate(ptIds, parameters,
 					Context.getService(PatientCalculationService.class).createCalculationContext());
 
@@ -160,7 +160,6 @@ public class TestedForHivInMchmsCalculationTest extends BaseModuleContextSensiti
 		{
 			Map<String, Object> parameters = new HashMap<String, Object>();
 			parameters.put("stage", PregnancyStage.DELIVERY);
-			parameters.put("result", null);
 			CalculationResultMap resultMap = new TestedForHivInMchmsCalculation().evaluate(ptIds, parameters,
 					Context.getService(PatientCalculationService.class).createCalculationContext());
 
@@ -174,7 +173,6 @@ public class TestedForHivInMchmsCalculationTest extends BaseModuleContextSensiti
 		{
 			Map<String, Object> parameters = new HashMap<String, Object>();
 			parameters.put("stage", PregnancyStage.POSTNATAL);
-			parameters.put("result", null);
 			CalculationResultMap resultMap = new TestedForHivInMchmsCalculation().evaluate(ptIds, parameters,
 					Context.getService(PatientCalculationService.class).createCalculationContext());
 
@@ -188,7 +186,6 @@ public class TestedForHivInMchmsCalculationTest extends BaseModuleContextSensiti
 		{
 			Map<String, Object> parameters = new HashMap<String, Object>();
 			parameters.put("stage", PregnancyStage.AFTER_ENROLLMENT);
-			parameters.put("result", null);
 			CalculationResultMap resultMap = new TestedForHivInMchmsCalculation().evaluate(ptIds, parameters,
 					Context.getService(PatientCalculationService.class).createCalculationContext());
 
@@ -312,7 +309,6 @@ public class TestedForHivInMchmsCalculationTest extends BaseModuleContextSensiti
 		{
 			Map<String, Object> parameters = new HashMap<String, Object>();
 			parameters.put("stage", PregnancyStage.ANTENATAL);
-			parameters.put("result", null);
 			CalculationResultMap resultMap = new TestedForHivInMchmsCalculation().evaluate(ptIds, parameters,
 					Context.getService(PatientCalculationService.class).createCalculationContext());
 
@@ -326,7 +322,6 @@ public class TestedForHivInMchmsCalculationTest extends BaseModuleContextSensiti
 		{
 			Map<String, Object> parameters = new HashMap<String, Object>();
 			parameters.put("stage", PregnancyStage.DELIVERY);
-			parameters.put("result", null);
 			CalculationResultMap resultMap = new TestedForHivInMchmsCalculation().evaluate(ptIds, parameters,
 					Context.getService(PatientCalculationService.class).createCalculationContext());
 
@@ -340,7 +335,6 @@ public class TestedForHivInMchmsCalculationTest extends BaseModuleContextSensiti
 		{
 			Map<String, Object> parameters = new HashMap<String, Object>();
 			parameters.put("stage", PregnancyStage.POSTNATAL);
-			parameters.put("result", null);
 			CalculationResultMap resultMap = new TestedForHivInMchmsCalculation().evaluate(ptIds, parameters,
 					Context.getService(PatientCalculationService.class).createCalculationContext());
 
@@ -354,7 +348,6 @@ public class TestedForHivInMchmsCalculationTest extends BaseModuleContextSensiti
 		{
 			Map<String, Object> parameters = new HashMap<String, Object>();
 			parameters.put("stage", PregnancyStage.AFTER_ENROLLMENT);
-			parameters.put("result", null);
 			CalculationResultMap resultMap = new TestedForHivInMchmsCalculation().evaluate(ptIds, parameters,
 					Context.getService(PatientCalculationService.class).createCalculationContext());
 

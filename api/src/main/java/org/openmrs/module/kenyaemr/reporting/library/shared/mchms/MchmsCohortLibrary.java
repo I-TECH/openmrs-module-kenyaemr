@@ -21,11 +21,9 @@ import org.openmrs.module.kenyaemr.calculation.library.mchms.MchmsHivTestDateCal
 import org.openmrs.module.kenyaemr.calculation.library.mchms.TestedForHivInMchmsCalculation;
 import org.openmrs.module.kenyaemr.PregnancyStage;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.DateCalculationCohortDefinition;
-import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonCohortLibrary;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -36,9 +34,6 @@ import java.util.Date;
 @Component
 public class MchmsCohortLibrary {
 
-	@Autowired
-	private CommonCohortLibrary commonCohortLibrary;
-
 	public CohortDefinition testedForHivInMchms(PregnancyStage stage, Concept result) {
 
 		DateCalculationCohortDefinition dateCd = new DateCalculationCohortDefinition(new MchmsHivTestDateCalculation());
@@ -48,10 +43,15 @@ public class MchmsCohortLibrary {
 
 		CalculationCohortDefinition calculationCd = new CalculationCohortDefinition(new TestedForHivInMchmsCalculation());
 		calculationCd.setName("Mothers tested for HIV in the MCH program");
-		calculationCd.addCalculationParameter("stage", stage);
-		calculationCd.addCalculationParameter("result", result);
 		calculationCd.addParameter(new Parameter("onOrAfter", "Start Date", Date.class));
 		calculationCd.addParameter(new Parameter("onOrBefore", "End Date", Date.class));
+
+		if (stage != null) {
+			calculationCd.addCalculationParameter("stage", stage);
+		}
+		if (result != null) {
+			calculationCd.addCalculationParameter("result", result);
+		}
 
 		CompositionCohortDefinition cohortCd = new CompositionCohortDefinition();
 		cohortCd.addParameter(new Parameter("onOrAfter", "Start Date", Date.class));

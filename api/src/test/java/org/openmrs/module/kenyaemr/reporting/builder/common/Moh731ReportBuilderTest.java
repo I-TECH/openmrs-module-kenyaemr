@@ -87,5 +87,9 @@ public class Moh731ReportBuilderTest extends BaseModuleContextSensitiveTest {
 		ReportData data = Context.getService(ReportDefinitionService.class).evaluate(rd, context);
 
 		//ReportingTestUtils.printReport(data);
+
+		// Check that report definition can be serialized/de-serialized
+		Context.getService(ReportDefinitionService.class).saveDefinition(rd);
+		Context.getService(ReportDefinitionService.class).getDefinition(rd.getId());
 	}
 }

@@ -17,6 +17,7 @@ package org.openmrs.module.kenyaemr.calculation.library.mchms;
 import org.openmrs.Concept;
 import org.openmrs.PatientProgram;
 import org.openmrs.Program;
+import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.calculation.result.CalculationResultMap;
@@ -47,10 +48,10 @@ import java.util.Set;
 public class TestedForHivInMchmsCalculation extends BaseEmrCalculation {
 
 	@Override
-	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
+	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> params, PatientCalculationContext context) {
 
-		PregnancyStage stage = (PregnancyStage) parameterValues.get("stage");
-		Concept result = (Concept) parameterValues.get("result");
+		PregnancyStage stage = (params != null && params.containsKey("stage")) ? (PregnancyStage) params.get("stage") : null;
+		Concept result = (params != null && params.containsKey("result")) ? (Concept) params.get("result") : null;
 
 		Program mchmsProgram = MetadataUtils.getProgram(MchMetadata._Program.MCHMS);
 
@@ -109,7 +110,7 @@ public class TestedForHivInMchmsCalculation extends BaseEmrCalculation {
 			endOfDeliveryDate = CoreUtils.dateAddDays(beginningOfDeliveryDate, 1);
 		}
 
-		if (stage.equals(PregnancyStage.ANY)) {
+		if (stage == null) {
 			if (endOfDeliveryDate != null) {
 				upperLimit = CoreUtils.dateAddDays(endOfDeliveryDate, 3);
 				return upperLimit.after(testDate);

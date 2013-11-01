@@ -89,5 +89,9 @@ public class Moh711ReportBuilderTest extends BaseModuleContextSensitiveTest {
 		Assert.assertThat(data.getDataSets().size(), is(2));
 		Assert.assertThat(data.getDataSets(), hasKey("G: TB"));
 		Assert.assertThat(data.getDataSets(), hasKey("K: ART"));
+
+		// Check that report definition can be serialized/de-serialized
+		Context.getService(ReportDefinitionService.class).saveDefinition(rd);
+		Context.getService(ReportDefinitionService.class).getDefinition(rd.getId());
 	}
 }

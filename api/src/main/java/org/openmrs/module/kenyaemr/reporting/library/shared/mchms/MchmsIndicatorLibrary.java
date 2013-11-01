@@ -40,7 +40,7 @@ public class MchmsIndicatorLibrary {
 	 */
 	public CohortIndicator testedForHivBeforeOrDuringMchms() {
 		return cohortIndicator(null,
-				map(mchmsCohortLibrary.testedForHivInMchms(PregnancyStage.ANY, null), "onOrAfter=${startDate},onOrBefore=${endDate}")
+				map(mchmsCohortLibrary.testedForHivInMchms(null, null), "onOrAfter=${startDate},onOrBefore=${endDate}")
 		);
 	}
 
@@ -107,7 +107,7 @@ public class MchmsIndicatorLibrary {
 	 */
 	public CohortIndicator testedHivPositiveInMchms() {
 		return cohortIndicator(null,
-				map(mchmsCohortLibrary.testedForHivInMchms(PregnancyStage.ANY, Dictionary.getConcept(Dictionary.POSITIVE)), "onOrAfter=${startDate},onOrBefore=${endDate}")
+				map(mchmsCohortLibrary.testedForHivInMchms(null, Dictionary.getConcept(Dictionary.POSITIVE)), "onOrAfter=${startDate},onOrBefore=${endDate}")
 		);
 	}
 

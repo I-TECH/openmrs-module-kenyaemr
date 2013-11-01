@@ -36,14 +36,15 @@ import java.util.Set;
  */
 public class MchmsHivTestDateCalculation extends BaseEmrCalculation {
 
+	/**
+	 * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
+	 * @should return null for patients who have not tested for HIV
+	 * @should return test date for patients who have tested for HIV
+	 */
 	@Override
-	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues,
+	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> params,
 										 PatientCalculationContext context) {
-		/**
-		 * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
-		 * @should return null for patients who have not tested for HIV
-		 * @should return test date for patients who have tested for HIV
-		 */
+
 		Program mchmsProgram = MetadataUtils.getProgram(MchMetadata._Program.MCHMS);
 
 		Set<Integer> alivePatients = alivePatients(cohort, context);
