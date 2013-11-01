@@ -53,9 +53,6 @@ public class Moh711ReportBuilder extends BaseIndicatorReportBuilder {
 	private CommonDimensionLibrary commonDimensions;
 
 	@Autowired
-	private CommonIndicatorLibrary commonIndicators;
-
-	@Autowired
 	private HivIndicatorLibrary artIndicators;
 
 	@Autowired
@@ -78,7 +75,8 @@ public class Moh711ReportBuilder extends BaseIndicatorReportBuilder {
 	 */
 	private DataSetDefinition createTbDataSet() {
 		CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
-		dsd.setName("G: TB");
+		dsd.setName("G");
+		dsd.setDescription("TB");
 		dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
 		dsd.addDimension("age", map(commonDimensions.age(), "onDate=${endDate}"));
@@ -114,7 +112,8 @@ public class Moh711ReportBuilder extends BaseIndicatorReportBuilder {
 	 */
 	private DataSetDefinition createArtDataSet() {
 		CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
-		dsd.setName("K: ART");
+		dsd.setName("K");
+		dsd.setDescription("ART");
 		dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
 		dsd.addDimension("age", ReportUtils.map(commonDimensions.age(), "onDate=${endDate}"));
