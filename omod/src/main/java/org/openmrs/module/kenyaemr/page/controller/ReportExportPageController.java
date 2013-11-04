@@ -62,18 +62,20 @@ public class ReportExportPageController {
 					@SpringBean ReportService reportService) throws Exception {
 
 		ReportDefinition definition = reportRequest.getReportDefinition().getParameterizable();
-		IndicatorReportDescriptor report = (IndicatorReportDescriptor) reportManager.getReportByDefinition(definition);
+		ReportDescriptor report = reportManager.getReportByDefinition(definition);
 		emrUi.checkReportAccess(pageRequest, report);
 
 		ReportData reportData = reportService.loadReportData(reportRequest);
 
 		if (type.equals("excel")) {
-			if (report.getTemplate() == null || !report.getTemplate().getPath().endsWith(".xls")) {
+			UiResource template = ((IndicatorReportDescriptor) report).getTemplate();
+
+			if (template == null || !template.getPath().endsWith(".xls")) {
 				throw new IllegalArgumentException("Report doesn't specify a Excel template");
 			}
 
 			// Load report template
-			byte[] templateData = loadTemplateResource(resourceFactory, report.getTemplate());
+			byte[] templateData = loadTemplateResource(resourceFactory, template);
 
 			return renderAsExcel(definition, reportData, templateData);
 		}
