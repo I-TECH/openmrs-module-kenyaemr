@@ -5,12 +5,6 @@
 			[ iconProvider: "kenyaui", icon: "buttons/report_generate.png", label: "Request Report", href: "javascript:requestReport()" ],
 			[ iconProvider: "kenyaui", icon: "buttons/back.png", label: "Back", href: returnUrl ]
 	]
-
-	def requestIsComplete = { request -> request.status.ordinal() >= 4 }
-
-	def evaluationTime = { request ->
-		(request.evaluateCompleteDatetime ?: new Date()) - (request.evaluateStartDatetime ?: new Date())
-	}
 %>
 <script type="text/javascript">
 	var requestDialogContent = null;
@@ -77,11 +71,19 @@
 				<tbody>
 					<% requests.each { request -> %>
 					<tr>
-						<td>${ kenyaUi.formatDateTime(request.requestDate) }</td>
-						<td>${ kenyaUi.formatUser(request.requestedBy) }</td>
-						<td>${ ui.format(request.status) }</td>
-						<td>${ kenyaUi.formatDuration(evaluationTime(request)) }</td>
-						<td><% if (requestIsComplete(request)) { %><a href="${ ui.pageLink("kenyaemr", "reportView", [ appId: currentApp.id, request: request.id, returnUrl: ui.thisUrl() ]) }">View</a><% } %></td>
+						<td>${ request.requestDate }</td>
+						<td>${ request.requestedBy.name }</td>
+						<td>${ request.status }</td>
+						<td>${ request.timeTaken }</td>
+						<td>
+						<% if (request.complete) { %>
+							<a href="${ ui.pageLink("kenyaemr", "reportView", [ appId: currentApp.id, request: request.id, returnUrl: ui.thisUrl() ]) }">View</a>
+
+							<% if (excelRenderable) { %>
+							<a href="${ ui.pageLink("kenyaemr", "reportExcel", [ appId: currentApp.id, request: request.id, returnUrl: ui.thisUrl() ]) }">Excel</a>
+							<% } %>
+						<% } %>
+						</td>
 					</tr>
 				</tbody>
 				<% } %>

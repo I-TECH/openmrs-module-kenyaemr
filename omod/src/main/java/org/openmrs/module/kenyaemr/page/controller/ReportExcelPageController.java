@@ -18,6 +18,7 @@ import org.apache.commons.io.FileUtils;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyacore.UiResource;
 import org.openmrs.module.kenyacore.report.IndicatorReportDescriptor;
+import org.openmrs.module.kenyacore.report.ReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportManager;
 import org.openmrs.module.kenyaemr.util.EmrUiUtils;
 import org.openmrs.module.kenyaui.annotation.SharedPage;
@@ -27,11 +28,14 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.ReportDesignResource;
+import org.openmrs.module.reporting.report.ReportRequest;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 import org.openmrs.module.reporting.report.renderer.ExcelTemplateRenderer;
+import org.openmrs.module.reporting.report.service.ReportService;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.page.FileDownload;
+import org.openmrs.ui.framework.page.PageModel;
 import org.openmrs.ui.framework.page.PageRequest;
 import org.openmrs.ui.framework.resource.ResourceFactory;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -46,18 +50,20 @@ import java.util.Date;
  * Download report as Excel page
  */
 @SharedPage
-public class DownloadReportAsExcelPageController {
-	
-	public FileDownload controller(@RequestParam("reportId") String reportId,
-								   @RequestParam(required = false, value = "startDate") Date startDate,
-								   PageRequest pageRequest,
-								   @SpringBean ReportManager reportManager,
-								   @SpringBean EmrUiUtils emrUi,
-								   @SpringBean ResourceFactory resourceFactory) throws Exception {
+public class ReportExcelPageController {
 
-		// For now we only support Excel rendering of indicator reports which have associated template resources
-		IndicatorReportDescriptor report = (IndicatorReportDescriptor) reportManager.getReportDescriptor(reportId);
+	public FileDownload get(@RequestParam("request") ReportRequest reportRequest,
+					PageRequest pageRequest,
+					@SpringBean ReportManager reportManager,
+					@SpringBean EmrUiUtils emrUi,
+					@SpringBean ResourceFactory resourceFactory,
+					@SpringBean ReportService reportService) throws Exception {
+
+		ReportDefinition definition = reportRequest.getReportDefinition().getParameterizable();
+		IndicatorReportDescriptor report = (IndicatorReportDescriptor) reportManager.getReportByDefinition(definition);
 		emrUi.checkReportAccess(pageRequest, report);
+
+		ReportData reportData = reportService.loadReportData(reportRequest);
 
 		if (report.getTemplate() == null || !report.getTemplate().getPath().endsWith(".xls")) {
 			throw new IllegalArgumentException("Report doesn't specify a Excel template");
@@ -65,14 +71,6 @@ public class DownloadReportAsExcelPageController {
 
 		// Load report template
 		byte[] templateData = loadTemplateResource(resourceFactory, report.getTemplate());
-
-		ReportDefinition definition = reportManager.getReportDefinition(report);
-
-		// Evaluate the report
-		EvaluationContext ec = new EvaluationContext();
-		ec.addParameterValue("startDate", startDate);
-		ec.addParameterValue("endDate", DateUtil.getEndOfMonth(startDate));
-		ReportData reportData = Context.getService(ReportDefinitionService.class).evaluate(definition, ec);
 
 		return renderAsExcel(definition, reportData, templateData);
 	}

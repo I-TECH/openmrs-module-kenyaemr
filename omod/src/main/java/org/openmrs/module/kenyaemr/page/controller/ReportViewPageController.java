@@ -41,7 +41,6 @@ public class ReportViewPageController {
 					PageModel model,
 					@SpringBean ReportManager reportManager,
 					@SpringBean EmrUiUtils emrUi,
-					@SpringBean KenyaUiUtils kenyaUi,
 					@SpringBean ReportService reportService) throws Exception {
 
 		ReportDefinition definition = reportRequest.getReportDefinition().getParameterizable();

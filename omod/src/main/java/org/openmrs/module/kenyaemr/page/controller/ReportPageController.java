@@ -30,6 +30,8 @@ import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.report.ReportRequest;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.service.ReportService;
+import org.openmrs.ui.framework.SimpleObject;
+import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.page.PageModel;
 import org.openmrs.ui.framework.page.PageRequest;
@@ -46,6 +48,7 @@ public class ReportPageController {
 				   @RequestParam("returnUrl") String returnUrl,
 				   PageRequest pageRequest,
 				   PageModel model,
+				   UiUtils ui,
 				   @SpringBean ReportManager reportManager,
 				   @SpringBean EmrUiUtils emrUi,
 				   @SpringBean KenyaUiUtils kenyaUi,
@@ -56,10 +59,12 @@ public class ReportPageController {
 
 		ReportDefinition definition = reportManager.getReportDefinition(report);
 		boolean isIndicator = report instanceof IndicatorReportDescriptor;
+		boolean excelRenderable = isIndicator && ((IndicatorReportDescriptor) report).getTemplate() != null;
 
 		model.addAttribute("report", report);
 		model.addAttribute("definition", definition);
 		model.addAttribute("isIndicator", isIndicator);
+		model.addAttribute("excelRenderable", excelRenderable);
 		model.addAttribute("returnUrl", returnUrl);
 
 		if (isIndicator) {
@@ -76,7 +81,18 @@ public class ReportPageController {
 			model.addAttribute("startDate", startDate);
 		}
 
+		model.addAttribute("requests", getRequests(definition, ui, reportService));
+	}
+
+	/**
+	 * Gets the existing requests for the given report
+	 * @param definition the report definition
+	 * @param ui the UI utils
+	 * @param reportService the report service
+	 * @return the simplified requests
+	 */
+	public SimpleObject[] getRequests(ReportDefinition definition, UiUtils ui, ReportService reportService) {
 		List<ReportRequest> requests = reportService.getReportRequests(definition, null, null, null);
-		model.addAttribute("requests", requests);
+		return ui.simplifyCollection(requests);
 	}
 }
