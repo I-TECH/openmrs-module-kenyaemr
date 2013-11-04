@@ -75,18 +75,30 @@
 						<td>${ request.requestedBy.name }</td>
 						<td>${ request.status }</td>
 						<td>${ request.timeTaken }</td>
-						<td>
+						<td style="text-align: right">
 						<% if (request.complete) { %>
-							<a href="${ ui.pageLink("kenyaemr", "reportView", [ appId: currentApp.id, request: request.id, returnUrl: ui.thisUrl() ]) }">View</a>
-
+							${ ui.includeFragment("kenyaui", "widget/buttonlet", [
+									label: "View",
+									type: "view",
+									href: ui.pageLink("kenyaemr", "reportView", [ appId: currentApp.id, request: request.id, returnUrl: ui.thisUrl() ])
+							]) }
+							${ ui.includeFragment("kenyaui", "widget/buttonlet", [
+									label: "CSV",
+									type: "csv",
+									href: ui.pageLink("kenyaemr", "reportExport", [ appId: currentApp.id, request: request.id, type: "csv", returnUrl: ui.thisUrl() ])
+							]) }
 							<% if (excelRenderable) { %>
-							<a href="${ ui.pageLink("kenyaemr", "reportExcel", [ appId: currentApp.id, request: request.id, returnUrl: ui.thisUrl() ]) }">Excel</a>
+								${ ui.includeFragment("kenyaui", "widget/buttonlet", [
+										label: "Excel",
+										type: "excel",
+										href: ui.pageLink("kenyaemr", "reportExport", [ appId: currentApp.id, request: request.id, type: "excel", returnUrl: ui.thisUrl() ])
+								]) }
 							<% } %>
 						<% } %>
 						</td>
 					</tr>
-				</tbody>
 				<% } %>
+				</tbody>
 			</table>
 			<% } else { %>
 				<i>None</i>

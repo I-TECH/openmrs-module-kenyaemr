@@ -31,6 +31,7 @@ import org.openmrs.module.reporting.report.ReportDesignResource;
 import org.openmrs.module.reporting.report.ReportRequest;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
+import org.openmrs.module.reporting.report.renderer.CsvReportRenderer;
 import org.openmrs.module.reporting.report.renderer.ExcelTemplateRenderer;
 import org.openmrs.module.reporting.report.service.ReportService;
 import org.openmrs.ui.framework.annotation.SpringBean;
@@ -47,12 +48,13 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * Download report as Excel page
+ * Download report as Excel or CSV page
  */
 @SharedPage
-public class ReportExcelPageController {
+public class ReportExportPageController {
 
 	public FileDownload get(@RequestParam("request") ReportRequest reportRequest,
+							@RequestParam("type") String type,
 					PageRequest pageRequest,
 					@SpringBean ReportManager reportManager,
 					@SpringBean EmrUiUtils emrUi,
@@ -65,14 +67,22 @@ public class ReportExcelPageController {
 
 		ReportData reportData = reportService.loadReportData(reportRequest);
 
-		if (report.getTemplate() == null || !report.getTemplate().getPath().endsWith(".xls")) {
-			throw new IllegalArgumentException("Report doesn't specify a Excel template");
+		if (type.equals("excel")) {
+			if (report.getTemplate() == null || !report.getTemplate().getPath().endsWith(".xls")) {
+				throw new IllegalArgumentException("Report doesn't specify a Excel template");
+			}
+
+			// Load report template
+			byte[] templateData = loadTemplateResource(resourceFactory, report.getTemplate());
+
+			return renderAsExcel(definition, reportData, templateData);
 		}
-
-		// Load report template
-		byte[] templateData = loadTemplateResource(resourceFactory, report.getTemplate());
-
-		return renderAsExcel(definition, reportData, templateData);
+		else if (type.equals("csv")) {
+			return renderAsCsv(definition, reportData);
+		}
+		else {
+			throw new RuntimeException("Unrecognised export type: " + type);
+		}
 	}
 
 	/**
@@ -111,10 +121,26 @@ public class ReportExcelPageController {
 		renderer.render(data, "xxx:xls", out);
 
 		return new FileDownload(
-				getExcelDownloadFilename(definition, data.getContext()),
+				getDownloadFilename(definition, data.getContext(), "xls"),
 				ContentType.EXCEL.getContentType(),
 				out.toByteArray()
 		);
+	}
+
+	/**
+	 * Renders an indicator report as CSV
+	 * @param definition the report definition
+	 * @param data the evaluated report data
+	 * @return the file as a download
+	 * @throws IOException
+	 */
+	protected FileDownload renderAsCsv(ReportDefinition definition, ReportData data) throws IOException {
+		CsvReportRenderer renderer = new CsvReportRenderer();
+
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		renderer.render(data, "xxx:csv", out);
+
+		return new FileDownload(getDownloadFilename(definition, data.getContext(), "csv"), ContentType.CSV.getContentType(), out.toByteArray());
 	}
 
 	/**
@@ -130,12 +156,12 @@ public class ReportExcelPageController {
 	}
 
 	/**
-	 * Gets the filename to use for Excel downloads
+	 * Gets the filename to use for downloads
 	 * @param ec the evaluation context
 	 * @return the filename
 	 */
-	public String getExcelDownloadFilename(ReportDefinition definition, EvaluationContext ec) {
+	public String getDownloadFilename(ReportDefinition definition, EvaluationContext ec, String extension) {
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM");
-		return definition.getName() + " " + df.format(ec.getParameterValue("startDate")) + ".xls";
+		return definition.getName() + " " + df.format(ec.getParameterValue("startDate")) + "." + extension;
 	}
 }
