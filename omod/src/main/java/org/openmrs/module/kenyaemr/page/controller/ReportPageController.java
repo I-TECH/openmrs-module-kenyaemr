@@ -17,6 +17,7 @@ package org.openmrs.module.kenyaemr.page.controller;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.openmrs.module.kenyacore.report.IndicatorReportDescriptor;
@@ -26,35 +27,39 @@ import org.openmrs.module.kenyaemr.util.EmrUiUtils;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.module.kenyaui.annotation.SharedPage;
 import org.openmrs.module.reporting.common.DateUtil;
+import org.openmrs.module.reporting.report.ReportRequest;
+import org.openmrs.module.reporting.report.definition.ReportDefinition;
+import org.openmrs.module.reporting.report.service.ReportService;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.page.PageModel;
 import org.openmrs.ui.framework.page.PageRequest;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
- * Run report page
+ * Report overview page
  */
 @SharedPage
-public class RunReportPageController {
+public class ReportPageController {
 	
-	public void controller(@RequestParam("reportId") String reportId,
-						   @RequestParam(required = false, value = "startDate") Date startDate,
-						   @RequestParam("returnUrl") String returnUrl,
-						   PageRequest pageRequest,
-						   PageModel model,
-						   @SpringBean ReportManager reportManager,
-						   @SpringBean EmrUiUtils emrUi,
-						   @SpringBean KenyaUiUtils kenyaUi) throws Exception {
+	public void get(@RequestParam("reportId") String reportId,
+				   @RequestParam(required = false, value = "startDate") Date startDate,
+				   @RequestParam("returnUrl") String returnUrl,
+				   PageRequest pageRequest,
+				   PageModel model,
+				   @SpringBean ReportManager reportManager,
+				   @SpringBean EmrUiUtils emrUi,
+				   @SpringBean KenyaUiUtils kenyaUi,
+				   @SpringBean ReportService reportService) throws Exception {
 
 		ReportDescriptor report = reportManager.getReportDescriptor(reportId);
 		emrUi.checkReportAccess(pageRequest, report);
 
+		ReportDefinition definition = reportManager.getReportDefinition(report);
 		boolean isIndicator = report instanceof IndicatorReportDescriptor;
-		boolean isExcelRenderable = isIndicator && ((IndicatorReportDescriptor) report).getTemplate() != null;
 
 		model.addAttribute("report", report);
+		model.addAttribute("definition", definition);
 		model.addAttribute("isIndicator", isIndicator);
-		model.addAttribute("excelRenderable", isExcelRenderable);
 		model.addAttribute("returnUrl", returnUrl);
 
 		if (isIndicator) {
@@ -70,5 +75,8 @@ public class RunReportPageController {
 			model.addAttribute("startDateSelected", startDate != null ? kenyaUi.formatDateParam(startDate) : null);
 			model.addAttribute("startDate", startDate);
 		}
+
+		List<ReportRequest> requests = reportService.getReportRequests(definition, null, null, null);
+		model.addAttribute("requests", requests);
 	}
 }

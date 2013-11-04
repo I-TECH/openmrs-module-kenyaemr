@@ -7,14 +7,6 @@
 	def formatData = { result -> (result != null) ? result : "-" }
 %>
 
-<% if (definition.description) { %>
-<fieldset>
-	<legend>Description</legend>
-
-	${ definition.description }
-</fieldset>
-<% } %>
-
 <fieldset>
 	<legend>Summary</legend>
 	<table>

@@ -34,22 +34,14 @@ import java.util.Map;
 /**
  * Patient list report fragment
  */
-public class PatientListReportFragmentController {
+public class PatientListReportDataFragmentController {
 
-	public void controller(@FragmentParam("report") CalculationReportDescriptor report,
-						   FragmentModel model,
-						   @SpringBean ReportManager reportManager) throws EvaluationException {
-
-		ReportDefinition definition = reportManager.getReportDefinition(report);
-
-		// Evaluate the report
-		EvaluationContext ec = new EvaluationContext();
-		ReportData data = Context.getService(ReportDefinitionService.class).evaluate(definition, ec);
+	public void controller(@FragmentParam("reportData") ReportData reportData, FragmentModel model) {
 
 		// We assume that this kind of report produces a single SimpleDataSet
-		SimpleDataSet dataSet = (SimpleDataSet) data.getDataSets().entrySet().iterator().next().getValue();
+		SimpleDataSet dataSet = (SimpleDataSet) reportData.getDataSets().entrySet().iterator().next().getValue();
 
-		model.addAttribute("definition", definition);
+		model.addAttribute("definition", reportData.getDefinition());
 		model.addAttribute("dataSet", dataSet);
 		model.addAttribute("summary", createSummary(dataSet));
 	}

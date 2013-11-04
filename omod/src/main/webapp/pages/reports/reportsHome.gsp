@@ -3,7 +3,7 @@
 
 	def onReportClick = { report ->
 		def opts = [ appId: currentApp.id, reportId: report.id, returnUrl: ui.thisUrl() ]
-		"""location.href = '${ ui.pageLink('kenyaemr', 'runReport', opts) }';"""
+		"""location.href = '${ ui.pageLink('kenyaemr', 'report', opts) }';"""
 	}
 %>
 
