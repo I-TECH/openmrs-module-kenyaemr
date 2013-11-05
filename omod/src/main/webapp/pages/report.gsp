@@ -1,6 +1,8 @@
 <%
 	ui.decorateWith("kenyaemr", "standardPage", [ layout: "sidebar" ])
 
+	ui.includeJavascript("kenyaui", "angular.js")
+
 	def menuItems =  [
 			[ iconProvider: "kenyaui", icon: "buttons/report_generate.png", label: "Request Report", href: "javascript:requestReport()" ],
 			[ iconProvider: "kenyaui", icon: "buttons/back.png", label: "Back", href: returnUrl ]
@@ -12,13 +14,17 @@
 	jq(function(){
 		requestDialogContent = jq('#request-dialog-content').html();
 		jq('#request-dialog-content').remove();
+
+		//ui.getFragmentActionAsJson('kenyaemr', 'report/reportUtils', 'getRequests', { reportUuid: '${ definition.uuid }' }, function(data) {
+		//	console.log(data);
+		//});
 	});
 
 	function requestReport() {
 		kenyaui.openPanelDialog({ heading: 'Request report', content: requestDialogContent });
 
 		jq('#request-report-ok').click(function() {
-			var params = { appId: '${ currentApp.id }', reportId: '${ report.id }' };
+			var params = { appId: '${ currentApp.id }', reportUuid: '${ report.targetUuid }' };
 
 			<% if (isIndicator) { %>
 			params.startDate = jq('#request-startdate').val();

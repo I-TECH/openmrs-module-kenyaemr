@@ -29,6 +29,7 @@ import org.openmrs.module.kenyaui.annotation.SharedPage;
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.report.ReportRequest;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
+import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 import org.openmrs.module.reporting.report.service.ReportService;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
@@ -43,21 +44,22 @@ import org.springframework.web.bind.annotation.RequestParam;
 @SharedPage
 public class ReportPageController {
 	
-	public void get(@RequestParam("reportId") String reportId,
-				   @RequestParam(required = false, value = "startDate") Date startDate,
-				   @RequestParam("returnUrl") String returnUrl,
-				   PageRequest pageRequest,
-				   PageModel model,
-				   UiUtils ui,
-				   @SpringBean ReportManager reportManager,
-				   @SpringBean EmrUiUtils emrUi,
-				   @SpringBean KenyaUiUtils kenyaUi,
-				   @SpringBean ReportService reportService) throws Exception {
+	public void get(@RequestParam("reportUuid") String reportUuid,
+					@RequestParam(required = false, value = "startDate") Date startDate,
+					@RequestParam("returnUrl") String returnUrl,
+					PageRequest pageRequest,
+					PageModel model,
+					UiUtils ui,
+					@SpringBean ReportManager reportManager,
+					@SpringBean EmrUiUtils emrUi,
+					@SpringBean KenyaUiUtils kenyaUi,
+					@SpringBean ReportService reportService,
+					@SpringBean ReportDefinitionService definitionService) throws Exception {
 
-		ReportDescriptor report = reportManager.getReportDescriptor(reportId);
+		ReportDefinition definition = definitionService.getDefinitionByUuid(reportUuid);
+		ReportDescriptor report = reportManager.getReportDescriptor(definition);
 		emrUi.checkReportAccess(pageRequest, report);
 
-		ReportDefinition definition = reportManager.getReportDefinition(report);
 		boolean isIndicator = report instanceof IndicatorReportDescriptor;
 		boolean excelRenderable = isIndicator && ((IndicatorReportDescriptor) report).getTemplate() != null;
 

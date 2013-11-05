@@ -44,7 +44,7 @@ public class ReportViewPageController {
 					@SpringBean ReportService reportService) throws Exception {
 
 		ReportDefinition definition = reportRequest.getReportDefinition().getParameterizable();
-		ReportDescriptor report = reportManager.getReportByDefinition(definition);
+		ReportDescriptor report = reportManager.getReportDescriptor(definition);
 		emrUi.checkReportAccess(pageRequest, report);
 
 		ReportData reportData = reportService.loadReportData(reportRequest);

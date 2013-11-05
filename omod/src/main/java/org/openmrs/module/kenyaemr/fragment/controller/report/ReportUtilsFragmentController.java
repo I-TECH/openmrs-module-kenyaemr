@@ -19,11 +19,12 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.module.kenyacore.report.ReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportManager;
 import org.openmrs.module.kenyacore.report.ReportUtils;
-import org.openmrs.module.kenyaui.annotation.SharedAction;
+import org.openmrs.module.kenyaemr.util.EmrUiUtils;
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.report.ReportRequest;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
+import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 import org.openmrs.module.reporting.report.renderer.RenderingMode;
 import org.openmrs.module.reporting.report.renderer.ReportRenderer;
 import org.openmrs.module.reporting.report.service.ReportService;
@@ -31,9 +32,11 @@ import org.openmrs.module.reporting.web.renderers.DefaultWebRenderer;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.SpringBean;
+import org.openmrs.ui.framework.page.PageRequest;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * AJAX utility methods for reports
@@ -44,22 +47,24 @@ public class ReportUtilsFragmentController {
 
 	/**
 	 * Requests a report evaluation
-	 * @param reportId the report descriptor id
+	 * @param reportUuid the report definition UUID
 	 * @param startDate the start date (optional)
 	 * @param reportManager the report manager
 	 * @return the report request id
 	 */
-	public SimpleObject requestReport(@RequestParam("reportId") String reportId,
+	public SimpleObject requestReport(@RequestParam("reportUuid") String reportUuid,
 									  @RequestParam(required = false, value = "startDate") Date startDate,
 									  UiUtils ui,
+									  @SpringBean EmrUiUtils emrUi,
+									  @SpringBean ReportManager reportManager,
 									  @SpringBean ReportService reportService,
-									  @SpringBean ReportManager reportManager) {
+									  @SpringBean ReportDefinitionService definitionService) {
 
-		ReportDescriptor report = reportManager.getReportDescriptor(reportId);
+		ReportDefinition definition = definitionService.getDefinitionByUuid(reportUuid);
+		ReportDescriptor report = reportManager.getReportDescriptor(definition);
 
-		// TODO check access permissions
+		// TODO emrUi.checkReportAccess(pageRequest, report);
 
-		ReportDefinition definition = reportManager.getReportDefinition(report);
 		Mapped<ReportDefinition> mappedDefinition;
 
 		if (startDate != null) {
@@ -78,8 +83,28 @@ public class ReportUtilsFragmentController {
 		request = reportService.queueReport(request);
 		reportService.processNextQueuedReports();
 
-		log.debug("Requested report: " + reportId);
+		log.debug("Requested report: " + report.getTargetUuid());
 
 		return SimpleObject.fromObject(request, ui, "id");
+	}
+
+	/**
+	 * Gets the existing requests for the given report
+	 * @param reportUuid the report definition UUID
+	 * @param ui the UI utils
+	 * @param reportService the report service
+	 * @return the simplified requests
+	 */
+	public SimpleObject[] getRequests(@RequestParam("reportUuid") String reportUuid,
+									  UiUtils ui,
+									  @SpringBean ReportService reportService) {
+
+		// Hack to avoid loading (and thus de-serialising) the entire report
+		ReportDefinition definition = new ReportDefinition();
+		definition.setUuid(reportUuid);
+
+		List<ReportRequest> requests = reportService.getReportRequests(definition, null, null, null);
+
+		return ui.simplifyCollection(requests);
 	}
 }

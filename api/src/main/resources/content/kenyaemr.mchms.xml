@@ -152,67 +152,46 @@
 
 	<!-- ===================== Reports ===================== -->
 
-	<bean id="kenyaemr.mchms.report.lateEnrollment"
-		  class="org.openmrs.module.kenyacore.report.CalculationReportDescriptor">
+	<bean id="kenyaemr.mchms.report.lateEnrollment" class="org.openmrs.module.kenyacore.report.CalculationReportDescriptor">
+		<property name="targetUuid" value="3701a013-3bb9-4fa3-94a5-33b559c0d5fe" />
 		<property name="name" value="Patients enrolled at more than 28 weeks gestation"/>
-		<property name="calculation"
-				  value="org.openmrs.module.kenyaemr.calculation.library.mchms.LateEnrollmentCalculation"/>
-		<property name="apps">
-			<set>
-				<ref bean="kenyaemr.app.reports"/>
-			</set>
-		</property>
+		<property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.mchms.LateEnrollmentCalculation"/>
+		<property name="apps"><set><ref bean="kenyaemr.app.reports"/></set></property>
 	</bean>
 
 	<bean id="kenyaemr.mchms.report.hivTestedAtEnrollment" class="org.openmrs.module.kenyacore.report.CalculationReportDescriptor">
+		<property name="targetUuid" value="7f40bf51-ffeb-4672-aed0-86a37720b5b4" />
 		<property name="name" value="Patients with known HIV status at enrollment"/>
 		<property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.mchms.HivTestedAtEnrollmentCalculation"/>
-		<property name="apps">
-			<set>
-				<ref bean="kenyaemr.app.reports"/>
-			</set>
+		<property name="apps"><set><ref bean="kenyaemr.app.reports"/></set>
 		</property>
 	</bean>
 
-	<bean id="kenyaemr.mchms.report.notHivTested"
-		  class="org.openmrs.module.kenyacore.report.CalculationReportDescriptor">
+	<bean id="kenyaemr.mchms.report.notHivTested" class="org.openmrs.module.kenyacore.report.CalculationReportDescriptor">
+		<property name="targetUuid" value="984f3fbe-ac55-44d4-ad38-8660bde133c9" />
 		<property name="name" value="Patients who have not been tested for HIV"/>
-		<property name="calculation"
-				  value="org.openmrs.module.kenyaemr.calculation.library.mchms.NotHivTestedCalculation"/>
-		<property name="apps">
-			<set>
-				<ref bean="kenyaemr.app.reports"/>
-			</set>
-		</property>
+		<property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.mchms.NotHivTestedCalculation"/>
+		<property name="apps"><set><ref bean="kenyaemr.app.reports"/></set></property>
 	</bean>
 
 	<bean id="kenyaemr.mchms.report.onHaart" class="org.openmrs.module.kenyacore.report.CalculationReportDescriptor">
+		<property name="targetUuid" value="5df1a1be-45c6-45fe-9eec-129fd6891d3b" />
 		<property name="name" value="Patients on HAART"/>
 		<property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.mchms.OnHaartCalculation"/>
-		<property name="apps">
-			<set>
-				<ref bean="kenyaemr.app.reports"/>
-			</set>
-		</property>
+		<property name="apps"><set><ref bean="kenyaemr.app.reports"/></set></property>
 	</bean>
 
 	<bean id="kenyaemr.mchms.report.notOnArt" class="org.openmrs.module.kenyacore.report.CalculationReportDescriptor">
+		<property name="targetUuid" value="94ac2868-abf0-48b0-b3a5-08e4d4a22882" />
 		<property name="name" value="Patients who are HIV+ and not on ART (Gestation > 14 weeks)"/>
 		<property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.mchms.NotOnArtCalculation"/>
-		<property name="apps">
-			<set>
-				<ref bean="kenyaemr.app.reports"/>
-			</set>
-		</property>
+		<property name="apps"><set><ref bean="kenyaemr.app.reports"/></set></property>
 	</bean>
 
 	<bean id="kenyaemr.mchms.report.knownPartnerHivStatus" class="org.openmrs.module.kenyacore.report.CalculationReportDescriptor">
+		<property name="targetUuid" value="621feb5d-65f2-4d88-8b31-44ea1ea3796a" />
 		<property name="name" value="Patients whose partners' HIV status is unknown"/>
 		<property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.mchms.PartnerHivStatusUnknownCalculation"/>
-		<property name="apps">
-			<set>
-				<ref bean="kenyaemr.app.reports"/>
-			</set>
-		</property>
+		<property name="apps"><set><ref bean="kenyaemr.app.reports"/></set></property>
 	</bean>
 </beans>

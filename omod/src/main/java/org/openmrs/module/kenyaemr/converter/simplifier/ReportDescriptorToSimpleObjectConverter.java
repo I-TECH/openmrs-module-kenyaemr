@@ -35,7 +35,8 @@ public class ReportDescriptorToSimpleObjectConverter implements Converter<Report
 				"id", report.getId(),
 				"name", report.getName(),
 				"description", report.getDescription(),
-				"isIndicator", report instanceof IndicatorReportDescriptor
+				"isIndicator", report instanceof IndicatorReportDescriptor,
+				"definitionUuid", report.getTargetUuid()
 		);
 	}
 }

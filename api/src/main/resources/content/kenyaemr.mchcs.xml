@@ -131,36 +131,42 @@
 	<!-- ===================== Reports ===================== -->
 
 	<bean id="kenyaemr.mchcs.report.notPcrTested" class="org.openmrs.module.kenyacore.report.CalculationReportDescriptor">
+		<property name="targetUuid" value="aa3c1882-a11a-415a-b30b-8d9f76f63bf7" />
 		<property name="name" value="Patients without PCR Test" />
 		<property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.mchcs.NeedsPcrTestCalculation" />
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 	</bean>
 
 	<bean id="kenyaemr.mchcs.report.notAntibodyTested" class="org.openmrs.module.kenyacore.report.CalculationReportDescriptor">
+		<property name="targetUuid" value="cb5f0a5c-74dd-4372-86b2-4312829a876e" />
 		<property name="name" value="Patients without Antibody Test" />
 		<property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.mchcs.NeedsAntibodyTestCalculation" />
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 	</bean>
 
 	<bean id="kenyaemr.mchcs.report.feedingOption" class="org.openmrs.module.kenyacore.report.CalculationReportDescriptor">
+		<property name="targetUuid" value="1406dd54-c5f9-456a-83ac-045ac8af7422" />
 		<property name="name" value="Infants Feeding Options" />
 		<property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.mchcs.InfantFeedingOptionsCalculation" />
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 	</bean>
 
 	<bean id="kenyaemr.mchcs.report.notPcrConfirmatoryTested" class="org.openmrs.module.kenyacore.report.CalculationReportDescriptor">
+		<property name="targetUuid" value="561334be-e553-4c6b-815c-2194be860a8c" />
 		<property name="name" value="Infants Without PCR Confirmatory Test" />
 		<property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.mchcs.NotTakenPcrConfirmatoryTestCalculation" />
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 	</bean>
 
 	<bean id="kenyaemr.mchcs.report.infantNotOnCTX" class="org.openmrs.module.kenyacore.report.CalculationReportDescriptor">
+		<property name="targetUuid" value="0552c06d-2893-47a0-beab-5acd220d4af5" />
 		<property name="name" value="Infants Never Taken CTX" />
 		<property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.mchcs.InfantNeverTakenCTXCalculation" />
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 	</bean>
 
 	<bean id="kenyaemr.mchcs.report.infantWithoutPcp" class="org.openmrs.module.kenyacore.report.CalculationReportDescriptor">
+		<property name="targetUuid" value="8ac01196-4f3e-464e-8d28-38d898d0bfef" />
 		<property name="name" value="Infants Never on Prophylaxis" />
 		<property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.mchcs.InfantNeverTakenProphylaxisCalculation" />
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>

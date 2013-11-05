@@ -70,16 +70,16 @@ public class ReportExportPageController {
 					@SpringBean ReportService reportService) throws Exception {
 
 		ReportDefinition definition = reportRequest.getReportDefinition().getParameterizable();
-		ReportDescriptor report = reportManager.getReportByDefinition(definition);
+		ReportDescriptor report = reportManager.getReportDescriptor(definition);
 		emrUi.checkReportAccess(pageRequest, report);
 
 		ReportData reportData = reportService.loadReportData(reportRequest);
 
 		if (EXPORT_TYPE_EXCEL.equals(type)) {
-			return renderAsExcel(report, definition, reportData, resourceFactory);
+			return renderAsExcel(report, reportData, resourceFactory);
 		}
 		else if (EXPORT_TYPE_CSV.equals(type)) {
-			return renderAsCsv(report, definition, reportData);
+			return renderAsCsv(report, reportData);
 		}
 		else {
 			throw new RuntimeException("Unrecognised export type: " + type);
@@ -88,12 +88,12 @@ public class ReportExportPageController {
 
 	/**
 	 * Renders an indicator report as Excel
-	 * @param definition the report definition
+	 * @param report the report
 	 * @param data the evaluated report data
 	 * @return the Excel file as a download
 	 * @throws IOException
 	 */
-	protected FileDownload renderAsExcel(ReportDescriptor report, ReportDefinition definition,
+	protected FileDownload renderAsExcel(ReportDescriptor report,
 										 ReportData data,
 										 ResourceFactory resourceFactory) throws IOException {
 
@@ -101,6 +101,7 @@ public class ReportExportPageController {
 			throw new RuntimeException("Only indicator reports can be rendered as Excel");
 		}
 
+		ReportDefinition definition = report.getTarget();
 		UiResource template = ((IndicatorReportDescriptor) report).getTemplate();
 
 		if (template == null || !template.getPath().endsWith(".xls")) {
@@ -119,7 +120,7 @@ public class ReportExportPageController {
 			resource.setContents(templateData);
 
 			final ReportDesign design = new ReportDesign();
-			design.setName(definition.getName() + " design");
+			design.setName(report.getName());
 			design.setReportDefinition(definition);
 			design.setRendererType(ExcelTemplateRenderer.class);
 			design.addResource(resource);
@@ -143,18 +144,18 @@ public class ReportExportPageController {
 
 	/**
 	 * Renders an indicator report as CSV
-	 * @param definition the report definition
+	 * @param report the report
 	 * @param data the evaluated report data
 	 * @return the file as a download
 	 * @throws IOException
 	 */
-	protected FileDownload renderAsCsv(ReportDescriptor report, ReportDefinition definition, ReportData data) throws IOException {
+	protected FileDownload renderAsCsv(ReportDescriptor report, ReportData data) throws IOException {
 		ReportRenderer renderer = (report instanceof IndicatorReportDescriptor) ? new MergedCsvReportRenderer() : new CsvReportRenderer();
 
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		renderer.render(data, null, out);
 
-		return new FileDownload(getDownloadFilename(definition, data.getContext(), "csv"), ContentType.CSV.getContentType(), out.toByteArray());
+		return new FileDownload(getDownloadFilename(report.getTarget(), data.getContext(), "csv"), ContentType.CSV.getContentType(), out.toByteArray());
 	}
 
 	/**

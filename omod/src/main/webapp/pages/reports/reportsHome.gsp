@@ -2,7 +2,7 @@
 	ui.decorateWith("kenyaemr", "standardPage")
 
 	def onReportClick = { report ->
-		def opts = [ appId: currentApp.id, reportId: report.id, returnUrl: ui.thisUrl() ]
+		def opts = [ appId: currentApp.id, reportUuid: report.definitionUuid, returnUrl: ui.thisUrl() ]
 		"""location.href = '${ ui.pageLink('kenyaemr', 'report', opts) }';"""
 	}
 %>

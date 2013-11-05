@@ -222,12 +222,14 @@
 	<!-- ===================== Reports ===================== -->
 
 	<bean id="kenyaemr.common.report.moh711" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
+		<property name="targetUuid" value="c546b523-83f8-43ba-a979-e0631f0a5364" />
 		<property name="name" value="MOH 711" />
 		<property name="description" value="National Integrated Form for Reproductive Health, HIV/AIDS, Malaria, TB and Child Nutrition" />
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 	</bean>
 
 	<bean id="kenyaemr.common.report.moh731" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
+		<property name="targetUuid" value="dcd7d647-ea54-45a9-9d56-f56fc37c2b87" />
 		<property name="name" value="MOH 731" />
 		<property name="description" value="Comprehensive HIV/AIDS Facility Reporting Form - NASCOP" />
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
