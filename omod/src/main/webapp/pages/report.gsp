@@ -27,7 +27,7 @@
 			var params = { appId: '${ currentApp.id }', reportUuid: '${ report.targetUuid }' };
 
 			<% if (isIndicator) { %>
-			params.startDate = jq('#request-startdate').val();
+			params.date = jq('#request-date').val();
 			<% } %>
 
 			ui.getFragmentActionAsJson('kenyaemr', 'report/reportUtils', 'requestReport', params, function() {
@@ -80,9 +80,9 @@
 						<td>${ request.requestDate }</td>
 						<td>${ request.requestedBy.name }</td>
 						<td>${ request.status }</td>
-						<td>${ request.timeTaken }</td>
+						<td>${ request.timeTaken ?: "--:--:--" }</td>
 						<td style="text-align: right">
-						<% if (request.complete) { %>
+						<% if (request.finished) { %>
 							${ ui.includeFragment("kenyaui", "widget/buttonlet", [
 									label: "View",
 									type: "view",
@@ -118,8 +118,8 @@
 		<div>Report: <strong>${ ui.format(definition.name) }</strong></div>
 		<% if (isIndicator) { %>
 		<div>Period: ${ ui.includeFragment("kenyaui", "widget/selectList", [
-				id: "request-startdate",
-				formFieldName: "startDate",
+				id: "request-date",
+				formFieldName: "date",
 				selected: startDateSelected,
 				options: startDateOptions,
 				optionsValueField: "key",

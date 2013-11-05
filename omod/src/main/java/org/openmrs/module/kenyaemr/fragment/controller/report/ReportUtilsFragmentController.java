@@ -16,6 +16,7 @@ package org.openmrs.module.kenyaemr.fragment.controller.report;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.module.kenyacore.report.IndicatorReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportManager;
 import org.openmrs.module.kenyacore.report.ReportUtils;
@@ -48,12 +49,12 @@ public class ReportUtilsFragmentController {
 	/**
 	 * Requests a report evaluation
 	 * @param reportUuid the report definition UUID
-	 * @param startDate the start date (optional)
+	 * @param date the date (optional)
 	 * @param reportManager the report manager
 	 * @return the report request id
 	 */
 	public SimpleObject requestReport(@RequestParam("reportUuid") String reportUuid,
-									  @RequestParam(required = false, value = "startDate") Date startDate,
+									  @RequestParam(required = false, value = "date") Date date,
 									  UiUtils ui,
 									  @SpringBean EmrUiUtils emrUi,
 									  @SpringBean ReportManager reportManager,
@@ -67,8 +68,10 @@ public class ReportUtilsFragmentController {
 
 		Mapped<ReportDefinition> mappedDefinition;
 
-		if (startDate != null) {
-			mappedDefinition = ReportUtils.map(definition, "startDate", startDate, "endDate", DateUtil.getEndOfMonth(startDate));
+		if (report instanceof IndicatorReportDescriptor) { // Indicator reports are always period reports
+			Date startDate = date;
+			Date endDate = DateUtil.getEndOfMonth(startDate);
+			mappedDefinition = ReportUtils.map(definition, "startDate", startDate, "endDate", endDate);
 		} else {
 			mappedDefinition = ReportUtils.map(definition);
 		}

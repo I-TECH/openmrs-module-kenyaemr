@@ -46,7 +46,7 @@ public class ReportRequestToSimpleObjectConverter implements Converter<ReportReq
 		ret.put("requestDate", kenyaUi.formatDateTime(request.getRequestDate()));
 		ret.put("requestedBy", ui.simplifyObject(request.getRequestedBy()));
 		ret.put("status", request.getStatus());
-		ret.put("complete", request.getStatus().equals(ReportRequest.Status.COMPLETED));
+		ret.put("finished", request.getStatus().equals(ReportRequest.Status.COMPLETED) || request.getStatus().equals(ReportRequest.Status.FAILED));
 		ret.put("timeTaken", kenyaUi.formatDuration(getTimeTaken(request)));
 		return ret;
 	}
@@ -57,7 +57,7 @@ public class ReportRequestToSimpleObjectConverter implements Converter<ReportReq
 	 * @return the time taken in milliseconds
 	 */
 	protected long getTimeTaken(ReportRequest request) {
-		if (request.getEvaluateStartDatetime() == null) {
+		if (request.getEvaluateStartDatetime() == null || request.getStatus().equals(ReportRequest.Status.FAILED)) {
 			return 0l;
 		}
 
