@@ -20,6 +20,7 @@ import org.openmrs.module.kenyacore.UiResource;
 import org.openmrs.module.kenyacore.report.IndicatorReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportManager;
+import org.openmrs.module.kenyaemr.reporting.renderer.MergedCsvReportRenderer;
 import org.openmrs.module.kenyaemr.util.EmrUiUtils;
 import org.openmrs.module.kenyaui.annotation.SharedPage;
 import org.openmrs.module.reporting.common.ContentType;
@@ -33,6 +34,7 @@ import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 import org.openmrs.module.reporting.report.renderer.CsvReportRenderer;
 import org.openmrs.module.reporting.report.renderer.ExcelTemplateRenderer;
+import org.openmrs.module.reporting.report.renderer.ReportRenderer;
 import org.openmrs.module.reporting.report.service.ReportService;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.page.FileDownload;
@@ -53,6 +55,12 @@ import java.util.Date;
 @SharedPage
 public class ReportExportPageController {
 
+	private static final String EXPORT_TYPE_EXCEL = "excel";
+	private static final String EXPORT_TYPE_CSV = "csv";
+
+	/**
+	 * Exports report data as the given type
+	 */
 	public FileDownload get(@RequestParam("request") ReportRequest reportRequest,
 							@RequestParam("type") String type,
 					PageRequest pageRequest,
@@ -67,20 +75,11 @@ public class ReportExportPageController {
 
 		ReportData reportData = reportService.loadReportData(reportRequest);
 
-		if (type.equals("excel")) {
-			UiResource template = ((IndicatorReportDescriptor) report).getTemplate();
-
-			if (template == null || !template.getPath().endsWith(".xls")) {
-				throw new IllegalArgumentException("Report doesn't specify a Excel template");
-			}
-
-			// Load report template
-			byte[] templateData = loadTemplateResource(resourceFactory, template);
-
-			return renderAsExcel(definition, reportData, templateData);
+		if (EXPORT_TYPE_EXCEL.equals(type)) {
+			return renderAsExcel(report, definition, reportData, resourceFactory);
 		}
-		else if (type.equals("csv")) {
-			return renderAsCsv(definition, reportData);
+		else if (EXPORT_TYPE_CSV.equals(type)) {
+			return renderAsCsv(report, definition, reportData);
 		}
 		else {
 			throw new RuntimeException("Unrecognised export type: " + type);
@@ -94,9 +93,22 @@ public class ReportExportPageController {
 	 * @return the Excel file as a download
 	 * @throws IOException
 	 */
-	protected FileDownload renderAsExcel(ReportDefinition definition,
+	protected FileDownload renderAsExcel(ReportDescriptor report, ReportDefinition definition,
 										 ReportData data,
-										 byte[] templateData) throws IOException {
+										 ResourceFactory resourceFactory) throws IOException {
+
+		if (!(report instanceof IndicatorReportDescriptor)) {
+			throw new RuntimeException("Only indicator reports can be rendered as Excel");
+		}
+
+		UiResource template = ((IndicatorReportDescriptor) report).getTemplate();
+
+		if (template == null || !template.getPath().endsWith(".xls")) {
+			throw new RuntimeException("Report doesn't specify a Excel template");
+		}
+
+		// Load report template
+		byte[] templateData = loadTemplateResource(resourceFactory, template);
 
 		ExcelTemplateRenderer renderer;
 		{
@@ -120,7 +132,7 @@ public class ReportExportPageController {
 		}
 
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		renderer.render(data, "xxx:xls", out);
+		renderer.render(data, null, out);
 
 		return new FileDownload(
 				getDownloadFilename(definition, data.getContext(), "xls"),
@@ -136,11 +148,11 @@ public class ReportExportPageController {
 	 * @return the file as a download
 	 * @throws IOException
 	 */
-	protected FileDownload renderAsCsv(ReportDefinition definition, ReportData data) throws IOException {
-		CsvReportRenderer renderer = new CsvReportRenderer();
+	protected FileDownload renderAsCsv(ReportDescriptor report, ReportDefinition definition, ReportData data) throws IOException {
+		ReportRenderer renderer = (report instanceof IndicatorReportDescriptor) ? new MergedCsvReportRenderer() : new CsvReportRenderer();
 
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		renderer.render(data, "xxx:csv", out);
+		renderer.render(data, null, out);
 
 		return new FileDownload(getDownloadFilename(definition, data.getContext(), "csv"), ContentType.CSV.getContentType(), out.toByteArray());
 	}
