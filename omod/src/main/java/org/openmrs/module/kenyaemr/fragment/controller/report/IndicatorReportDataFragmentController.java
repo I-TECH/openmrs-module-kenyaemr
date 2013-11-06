@@ -15,6 +15,7 @@
 package org.openmrs.module.kenyaemr.fragment.controller.report;
 
 import org.openmrs.module.reporting.report.ReportData;
+import org.openmrs.module.reporting.report.ReportRequest;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 
@@ -23,7 +24,11 @@ import org.openmrs.ui.framework.fragment.FragmentModel;
  */
 public class IndicatorReportDataFragmentController {
 	
-	public void controller(@FragmentParam("reportData") ReportData reportData, FragmentModel model) {
+	public void controller(@FragmentParam("reportRequest") ReportRequest reportRequest,
+						   @FragmentParam("reportData") ReportData reportData,
+						   FragmentModel model) {
+
+		model.addAttribute("reportRequest", reportRequest);
 		model.addAttribute("reportData", reportData);
 		model.addAttribute("definition", reportData.getDefinition());
 	}

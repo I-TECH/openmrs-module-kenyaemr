@@ -12,7 +12,7 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.page.controller.partial;
+package org.openmrs.module.kenyaemr.page.controller.dialog;
 
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.EmrConstants;
@@ -22,7 +22,7 @@ import org.openmrs.ui.framework.page.PageModel;
 import org.openmrs.util.PrivilegeConstants;
 
 /**
- * Controller for help page
+ * Controller for help dialog
  */
 @PublicPage
 public class HelpPageController {

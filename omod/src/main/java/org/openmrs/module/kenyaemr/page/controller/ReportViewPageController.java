@@ -49,6 +49,7 @@ public class ReportViewPageController {
 
 		ReportData reportData = reportService.loadReportData(reportRequest);
 
+		model.addAttribute("reportRequest", reportRequest);
 		model.addAttribute("definition", definition);
 		model.addAttribute("isIndicator", report instanceof IndicatorReportDescriptor);
 		model.addAttribute("reportData", reportData);
