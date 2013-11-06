@@ -71,14 +71,14 @@ public class NeedsAntibodyTestCalculation extends BaseEmrCalculation implements 
 			boolean needsAntibody = false;
 
 			if (inMchcsProgram.contains(ptId) && lastChildHivStatus != null) {
-				 Integer ageInMonths = ((Age) ages.get(ptId).getValue()).getFullMonths();
+				 //Integer ageInMonths = ((Age) ages.get(ptId).getValue()).getFullMonths();
 				Obs hivStatusObs = EmrCalculationUtils.obsResultForPatient(lastChildHivStatus, ptId);
 				Obs rapidTest1 = EmrCalculationUtils.obsResultForPatient(lastHivRapidTest1, ptId);
 				Obs rapidTest2 = EmrCalculationUtils.obsResultForPatient(lastHivRapidTest2, ptId);
 
 				if (rapidTest1 == null && rapidTest2 == null && (hivStatusObs.getValueCoded().equals(hivExposed))) {
 					// only for patients who are nine months and above
-					needsAntibody = (ageInMonths != null && ageInMonths >= 9);
+					needsAntibody = true; /*(ageInMonths != null && ageInMonths >= 9);*/
 				}
 			}
 			ret.put(ptId, new BooleanResult(needsAntibody, this, context));
