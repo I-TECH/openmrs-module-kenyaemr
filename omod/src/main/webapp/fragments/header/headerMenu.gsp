@@ -31,6 +31,6 @@
 </div>
 <script type="text/javascript">
 	function ke_showHelp() {
-		kenyaui.openDynamicDialog({ heading: 'Help', url: ui.pageLink('kenyaemr', 'partial/help'), width: 90, height: 90 });
+		kenyaui.openDynamicDialog({ heading: 'Help', url: ui.pageLink('kenyaemr', 'dialog/help'), width: 90, height: 90 });
 	}
 </script>

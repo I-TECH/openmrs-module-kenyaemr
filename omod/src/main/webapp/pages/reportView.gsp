@@ -17,7 +17,7 @@
 
 <div class="ke-page-content">
 	<% if (isIndicator) { %>
-	${ ui.includeFragment("kenyaemr", "report/indicatorReportData", [ reportData: reportData ]) }
+	${ ui.includeFragment("kenyaemr", "report/indicatorReportData", [ reportRequest: reportRequest, reportData: reportData ]) }
 	<% } else { %>
 	${ ui.includeFragment("kenyaemr", "report/patientListReportData", [ reportData: reportData ]) }
 	<% } %>
