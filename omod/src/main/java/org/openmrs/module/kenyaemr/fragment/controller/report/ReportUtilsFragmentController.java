@@ -14,6 +14,8 @@
 
 package org.openmrs.module.kenyaemr.fragment.controller.report;
 
+import net.sf.cglib.core.CollectionUtils;
+import net.sf.cglib.core.Predicate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.module.kenyacore.report.IndicatorReportDescriptor;
@@ -36,6 +38,8 @@ import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.page.PageRequest;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -92,13 +96,13 @@ public class ReportUtilsFragmentController {
 	}
 
 	/**
-	 * Gets the existing requests for the given report
+	 * Gets the completed requests for the given report
 	 * @param reportUuid the report definition UUID
 	 * @param ui the UI utils
 	 * @param reportService the report service
 	 * @return the simplified requests
 	 */
-	public SimpleObject[] getRequests(@RequestParam("reportUuid") String reportUuid,
+	public SimpleObject[] getCompletedRequests(@RequestParam("reportUuid") String reportUuid,
 									  UiUtils ui,
 									  @SpringBean ReportService reportService) {
 
@@ -106,8 +110,35 @@ public class ReportUtilsFragmentController {
 		ReportDefinition definition = new ReportDefinition();
 		definition.setUuid(reportUuid);
 
-		List<ReportRequest> requests = reportService.getReportRequests(definition, null, null, null);
+		List<ReportRequest> requests = reportService.getReportRequests(definition, null, null, ReportRequest.Status.COMPLETED);
 
 		return ui.simplifyCollection(requests);
+	}
+
+	/**
+	 * Gets the incomplete requests for the given report
+	 * @param reportUuid the report definition UUID
+	 * @param ui the UI utils
+	 * @param reportService the report service
+	 * @return the simplified requests
+	 */
+	public SimpleObject[] getIncompleteRequests(@RequestParam("reportUuid") String reportUuid,
+											   UiUtils ui,
+											   @SpringBean ReportService reportService) {
+
+		// Hack to avoid loading (and thus de-serialising) the entire report
+		ReportDefinition definition = new ReportDefinition();
+		definition.setUuid(reportUuid);
+
+		List<ReportRequest> requests = reportService.getReportRequests(definition, null, null, null);
+
+		Collection<ReportRequest> filtered = CollectionUtils.filter(requests, new Predicate() {
+			@Override
+			public boolean evaluate(Object o) {
+				return !((ReportRequest) o).getStatus().equals(ReportRequest.Status.COMPLETED);
+			}
+		});
+
+		return ui.simplifyCollection(filtered);
 	}
 }
