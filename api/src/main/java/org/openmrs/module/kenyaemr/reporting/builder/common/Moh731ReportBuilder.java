@@ -26,6 +26,7 @@ import org.openmrs.module.kenyaemr.reporting.library.moh731.Moh731IndicatorLibra
 import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonDimensionLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.HivIndicatorLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.PwpIndicatorLibrary;
+import org.openmrs.module.kenyaemr.reporting.library.shared.mchcs.MchcsIndicatorLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.shared.mchms.MchmsIndicatorLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.shared.tb.TbIndicatorLibrary;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
@@ -66,6 +67,9 @@ public class Moh731ReportBuilder extends BaseIndicatorReportBuilder {
 	@Autowired
 	private MchmsIndicatorLibrary mchmsIndicators;
 
+	@Autowired
+	private MchcsIndicatorLibrary mchcsIndicatorLibrary;
+
 	/**
 	 * @see org.openmrs.module.kenyaemr.reporting.BaseIndicatorReportBuilder#buildDataSets()
 	 */
@@ -104,6 +108,14 @@ public class Moh731ReportBuilder extends BaseIndicatorReportBuilder {
 		dsd.addColumn("HV02-10", "Total with known status (HV02-04 plus HV02-05)", ReportUtils.map(mchmsIndicators.testedForHivBeforeOrDuringMchms(), indParams), "");
 
 		dsd.addColumn("HV02-11", "Male partners tested - (ANC/L&D)", ReportUtils.map(mchmsIndicators.partnerTestedDuringAncOrDelivery(), indParams), "");
+
+		dsd.addColumn("HV02-24", "PCR within 2 months", ReportUtils.map(mchcsIndicatorLibrary.pcrWithInitialIn2Months(), indParams), "");
+		dsd.addColumn("HV02-25", "PCR from 3 to 8 months", ReportUtils.map(mchcsIndicatorLibrary.pcrWithInitialIn2Months(), indParams), "");
+		dsd.addColumn("HV02-26", "Serology antibody test(from 9 to 12 months)", ReportUtils.map(mchcsIndicatorLibrary.pcrWithInitialIn2Months(), indParams), "");
+		dsd.addColumn("HV02-27", "PCR from 9 to 12 months", ReportUtils.map(mchcsIndicatorLibrary.pcrWithInitialIn2Months(), indParams), "");
+
+		dsd.addColumn("HV02-28", "Total HEI Tested by 12 months (HV02-24 plus HV02-26)", ReportUtils.map(mchcsIndicatorLibrary.pcrWithInitialIn2Months(), indParams), "");
+
 		return dsd;
 	}
 

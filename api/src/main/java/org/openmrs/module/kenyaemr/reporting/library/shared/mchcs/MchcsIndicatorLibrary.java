@@ -14,11 +14,28 @@
 
 package org.openmrs.module.kenyaemr.reporting.library.shared.mchcs;
 
+import org.openmrs.module.reporting.indicator.CohortIndicator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import static org.openmrs.module.kenyacore.report.ReportUtils.map;
+import static org.openmrs.module.kenyaemr.reporting.EmrReportingUtils.cohortIndicator;
 
 /**
  * Library of MCH-CS related indicator definitions. All indicators require parameters ${startDate} and ${endDate}
  */
 @Component
 public class MchcsIndicatorLibrary {
+
+	@Autowired
+	private MchcsCohortLibrary mchcsCohortLibrary;
+
+	/**
+	 * Number of infant patients who took pcr test within 2 months
+	 * @return the indicator
+	 */
+	public CohortIndicator pcrWithInitialIn2Months() {
+		return cohortIndicator("Infants given pcr within 2 months",
+				map(mchcsCohortLibrary.pcrInitialWithin2Months(), "onOrAfter=${startDate},onOrBefore=${endDate}")
+		);
+	}
 }
