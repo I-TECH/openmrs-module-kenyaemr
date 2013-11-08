@@ -69,5 +69,5 @@
 
 </div>
 <div class="ke-panel-footer">
-	${ ui.includeFragment("kenyaui", "widget/button", [ label: "Close", onClick: "kenyaui.closeDialog();" ]) }
+	<button type="button "onclick="kenyaui.closeDialog()">Close</button>
 </div>

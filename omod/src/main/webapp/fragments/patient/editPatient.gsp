@@ -145,8 +145,8 @@
 
 	</div>
 	<div class="ke-panel-footer">
-		<input class="ke-button" type="submit" value="${ command.original ? "Save Changes" : "Create Patient" }"/>
-		<input class="ke-button cancel-button" type="button" value="Cancel"/>
+		<button type="submit">${ command.original ? "Save Changes" : "Create Patient" }</button>
+		<button type="button" class="cancel-button">Cancel</button>
 	</div>
 	
 </form>

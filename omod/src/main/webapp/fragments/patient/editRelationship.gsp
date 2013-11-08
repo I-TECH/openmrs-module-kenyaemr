@@ -31,8 +31,8 @@
 
 	</div>
 	<div class="ke-panel-footer">
-		<input class="ke-button" type="submit" value="Save"/>
-		<input class="ke-button cancel-button" type="button" value="Cancel"/>
+		<button type="submit">Save</button>
+		<button type="button" class="cancel-button">Cancel</button>
 	</div>
 	
 </form>
