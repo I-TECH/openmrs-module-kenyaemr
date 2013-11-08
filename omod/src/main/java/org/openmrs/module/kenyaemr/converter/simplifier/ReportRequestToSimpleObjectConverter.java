@@ -16,6 +16,7 @@ package org.openmrs.module.kenyaemr.converter.simplifier;
 
 import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.module.reporting.report.ReportRequest;
+import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,13 +37,19 @@ public class ReportRequestToSimpleObjectConverter implements Converter<ReportReq
 	@Autowired
 	private KenyaUiUtils kenyaUi;
 
+	@Autowired
+	private ReportDefinitionToSimpleObjectConverter definitionSimplifier;
+
 	/**
 	 * @see org.springframework.core.convert.converter.Converter#convert(Object)
 	 */
 	@Override
 	public SimpleObject convert(ReportRequest request) {
+		ReportDefinition definition = request.getReportDefinition().getParameterizable();
+
 		SimpleObject ret = new SimpleObject();
 		ret.put("id", request.getId());
+		ret.put("report", definitionSimplifier.convert(definition));
 		ret.put("requestDate", kenyaUi.formatDateTime(request.getRequestDate()));
 		ret.put("requestedBy", ui.simplifyObject(request.getRequestedBy()));
 		ret.put("status", request.getStatus());

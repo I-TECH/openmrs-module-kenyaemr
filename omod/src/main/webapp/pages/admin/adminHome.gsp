@@ -66,6 +66,7 @@
 			heading: "Tasks",
 			items: [
 					[ iconProvider: "kenyaui", icon: "buttons/users_manage.png", label: "Manage Accounts", href: ui.pageLink("kenyaemr", "admin/manageAccounts") ],
+					[ iconProvider: "kenyaui", icon: "buttons/report_queue.png", label: "Manage Report Queue", href: ui.pageLink("kenyaemr", "admin/manageReportQueue") ],
 					[ iconProvider: "kenyaui", icon: "buttons/admin_setup.png", label: "Redo First-time Setup", href: ui.pageLink("kenyaemr", "admin/firstTimeSetup") ]
 			]
 	]) }
