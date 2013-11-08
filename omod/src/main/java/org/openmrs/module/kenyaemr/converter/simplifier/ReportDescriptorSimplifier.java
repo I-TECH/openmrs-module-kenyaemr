@@ -17,20 +17,19 @@ package org.openmrs.module.kenyaemr.converter.simplifier;
 import org.openmrs.module.kenyacore.report.IndicatorReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportDescriptor;
 import org.openmrs.ui.framework.SimpleObject;
-import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
 /**
  * Converts a report descriptor to a simple object
  */
 @Component
-public class ReportDescriptorToSimpleObjectConverter implements Converter<ReportDescriptor, SimpleObject> {
+public class ReportDescriptorSimplifier extends AbstractSimplifier<ReportDescriptor> {
 
 	/**
-	 * @see org.springframework.core.convert.converter.Converter#convert(Object)
+	 * @see AbstractSimplifier#simplify(Object)
 	 */
 	@Override
-	public SimpleObject convert(ReportDescriptor report) {
+	protected SimpleObject simplify(ReportDescriptor report) {
 		return SimpleObject.create(
 				"id", report.getId(),
 				"name", report.getName(),

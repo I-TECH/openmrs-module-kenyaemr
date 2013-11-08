@@ -14,30 +14,35 @@
 
 package org.openmrs.module.kenyaemr.converter.simplifier;
 
-import org.openmrs.User;
-import org.openmrs.module.kenyaui.KenyaUiUtils;
+import org.openmrs.Form;
+import org.openmrs.module.kenyacore.form.FormDescriptor;
+import org.openmrs.module.kenyacore.form.FormManager;
 import org.openmrs.ui.framework.SimpleObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
 /**
- * Converts a user to a simple object
+ * Converts a form to a simple object
  */
 @Component
-public class UserToSimpleObjectConverter implements Converter<User, SimpleObject> {
+public class FormSimplifier extends AbstractSimplifier<Form> {
 
 	@Autowired
-	private KenyaUiUtils kenyaUi;
+	private FormManager formManager;
 
 	/**
-	 * @see org.springframework.core.convert.converter.Converter#convert(Object)
+	 * @see AbstractSimplifier#simplify(Object)
 	 */
 	@Override
-	public SimpleObject convert(User user) {
-		SimpleObject ret = new SimpleObject();
-		ret.put("id", user.getId());
-		ret.put("name", kenyaUi.formatPersonName(user.getPerson()));
-		return ret;
+	protected SimpleObject simplify(Form form) {
+		SimpleObject so = SimpleObject.create("formUuid", form.getUuid(), "name", form.getName());
+
+		FormDescriptor descriptor = formManager.getFormDescriptor(form);
+		if (descriptor != null) {
+			so.put("iconProvider", descriptor.getIcon().getProvider());
+			so.put("icon", descriptor.getIcon().getPath());
+		}
+
+		return so;
 	}
 }

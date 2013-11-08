@@ -14,32 +14,42 @@
 
 package org.openmrs.module.kenyaemr.converter.simplifier;
 
-import org.openmrs.Visit;
+import org.openmrs.Person;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.ui.framework.SimpleObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
 /**
- * Converts visit to simple object
+ * Converts a person to a simple object
  */
 @Component
-public class VisitToSimpleObjectConverter implements Converter<Visit, SimpleObject> {
+public class PersonSimplifier extends AbstractSimplifier<Person> {
 
 	@Autowired
 	private KenyaUiUtils kenyaUi;
 
 	/**
-	 * @see org.springframework.core.convert.converter.Converter#convert(Object)
+	 * @see AbstractSimplifier#simplify(Object)
 	 */
 	@Override
-	public SimpleObject convert(Visit visit) {
+	protected SimpleObject simplify(Person person) {
 		SimpleObject ret = new SimpleObject();
-		ret.put("id", visit.getId());
-		ret.put("visitType", visit.getVisitType().getName());
-		ret.put("startDatetime", kenyaUi.formatDateTime(visit.getStartDatetime()));
-		ret.put("stopDatetime", kenyaUi.formatDateTime(visit.getStopDatetime()));
+
+		ret.put("id", person.getId());
+		ret.put("name", kenyaUi.formatPersonName(person));
+		ret.put("gender", person.getGender());
+		ret.put("isPatient", person.isPatient());
+
+		// Add formatted age and birth date values
+		if (person.getBirthdate() != null) {
+			ret.put("birthdate", kenyaUi.formatPersonBirthdate(person));
+			ret.put("age", kenyaUi.formatPersonAge(person));
+		} else {
+			ret.put("birthdate", null);
+			ret.put("age", null);
+		}
+
 		return ret;
 	}
 }

@@ -20,7 +20,6 @@ import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -29,7 +28,7 @@ import java.util.Date;
  * Converts a report request to a simple object
  */
 @Component
-public class ReportRequestToSimpleObjectConverter implements Converter<ReportRequest, SimpleObject> {
+public class ReportRequestSimplifier extends AbstractSimplifier<ReportRequest> {
 
 	@Autowired
 	private UiUtils ui;
@@ -38,13 +37,13 @@ public class ReportRequestToSimpleObjectConverter implements Converter<ReportReq
 	private KenyaUiUtils kenyaUi;
 
 	@Autowired
-	private ReportDefinitionToSimpleObjectConverter definitionSimplifier;
+	private ReportDefinitionSimplifier definitionSimplifier;
 
 	/**
-	 * @see org.springframework.core.convert.converter.Converter#convert(Object)
+	 * @see AbstractSimplifier#simplify(Object)
 	 */
 	@Override
-	public SimpleObject convert(ReportRequest request) {
+	protected SimpleObject simplify(ReportRequest request) {
 		ReportDefinition definition = request.getReportDefinition().getParameterizable();
 
 		SimpleObject ret = new SimpleObject();

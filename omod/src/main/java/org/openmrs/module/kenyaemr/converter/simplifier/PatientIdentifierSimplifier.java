@@ -16,22 +16,19 @@ package org.openmrs.module.kenyaemr.converter.simplifier;
 
 import org.openmrs.PatientIdentifier;
 import org.openmrs.ui.framework.SimpleObject;
-import org.openmrs.ui.framework.UiUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
 /**
  * Converts a patient identifier to a simple object
  */
 @Component
-public class PatientIdentifierToSimpleObjectConverter implements Converter<PatientIdentifier, SimpleObject> {
-	
-	@Autowired
-	private UiUtils ui;
-	
+public class PatientIdentifierSimplifier extends AbstractSimplifier<PatientIdentifier> {
+
+	/**
+	 * @see AbstractSimplifier#simplify(Object)
+	 */
 	@Override
-	public SimpleObject convert(PatientIdentifier pid) {
+	protected SimpleObject simplify(PatientIdentifier pid) {
 		SimpleObject ret = new SimpleObject();
 		ret.put("id", pid.getId());
 		ret.put("identifierType", pid.getIdentifierType().getName());

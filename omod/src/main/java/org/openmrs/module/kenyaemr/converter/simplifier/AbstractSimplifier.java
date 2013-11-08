@@ -14,36 +14,26 @@
 
 package org.openmrs.module.kenyaemr.converter.simplifier;
 
-import org.openmrs.Form;
-import org.openmrs.module.kenyacore.form.FormDescriptor;
-import org.openmrs.module.kenyacore.form.FormManager;
 import org.openmrs.ui.framework.SimpleObject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
-import org.springframework.stereotype.Component;
 
 /**
- * Converts a form to a simple object
+ * Abstract converter to a simple object
  */
-@Component
-public class FormToSimpleObjectConverter implements Converter<Form, SimpleObject> {
-
-	@Autowired
-	private FormManager formManager;
+public abstract class AbstractSimplifier<T> implements Converter<T, SimpleObject> {
 
 	/**
 	 * @see org.springframework.core.convert.converter.Converter#convert(Object)
 	 */
 	@Override
-	public SimpleObject convert(Form form) {
-		SimpleObject so = SimpleObject.create("formUuid", form.getUuid(), "name", form.getName());
-
-		FormDescriptor descriptor = formManager.getFormDescriptor(form);
-		if (descriptor != null) {
-			so.put("iconProvider", descriptor.getIcon().getProvider());
-			so.put("icon", descriptor.getIcon().getPath());
-		}
-
-		return so;
+	public SimpleObject convert(T obj) {
+		return simplify(obj);
 	}
+
+	/**
+	 * Simplify the given object
+	 * @param obj the object
+	 * @return the simple object
+	 */
+	protected abstract SimpleObject simplify(T obj);
 }
