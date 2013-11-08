@@ -138,7 +138,7 @@ ui.includeJavascript("kenyaemr", "dwr-util.js")
 			jq.post(form.attr('action'), form.serialize(), function(result) {
 				if (result.success) {
 					<% if (command.returnUrl) { %>
-						location.href = '${ command.returnUrl }';
+					ui.navigate('${ command.returnUrl }');
 					<% } else { %>
 						if (typeof(parent) !== 'undefined') {
 							parent.location.reload();

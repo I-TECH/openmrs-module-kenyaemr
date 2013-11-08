@@ -154,16 +154,16 @@
 <script type="text/javascript">
 jq(function() {
 	jq('#edit-patient-form .cancel-button').click(function() {
-		location.href = '${ returnUrl }';
+		ui.navigate('${ returnUrl }');
 	});
 
 	kenyaui.setupAjaxPost('edit-patient-form', {
 		onSuccess: function(data) {
 			if (data.patientId) {
 				<% if (returnUrl.indexOf('patientId') > 0) { %>
-					location.href = '${ returnUrl }';
+				ui.navigate('${ returnUrl }');
 				<% } else { %>
-					location.href = ui.pageLink('kenyaemr', 'registration/registrationViewPatient', { patientId: data.patientId });
+				ui.navigate('kenyaemr', 'registration/registrationViewPatient', { patientId: data.patientId });
 				<% } %>
 			} else {
 				ui.notifyError('Saving patient was successful, but unexpected response');

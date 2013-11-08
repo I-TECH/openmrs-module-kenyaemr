@@ -19,7 +19,7 @@
 	Enter your username: <input type="text" name="uname" value="${ username }" /><br />
 	<br />
 	<input type="submit" value="Show secret question" />
-	<input type="button" value="Cancel" onclick="location.href='login.htm'" />
+	<input type="button" value="Cancel" onclick="ui.navigate('login.htm')" />
 
 	<% } else { %>
 

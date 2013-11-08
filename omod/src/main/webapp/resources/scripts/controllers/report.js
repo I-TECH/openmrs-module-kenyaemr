@@ -59,7 +59,7 @@ kenyaemrApp.controller('ReportController', ['$scope', '$http', '$timeout', funct
 	 * @param requestId the report request id
 	 */
 	$scope.viewReportData = function(requestId) {
-		location.href = ui.pageLink('kenyaemr', 'reportView', { appId: $scope.appId, request: requestId, returnUrl: location.href });
+		ui.navigate('kenyaemr', 'reportView', { appId: $scope.appId, request: requestId, returnUrl: location.href });
 	};
 
 	/**
@@ -68,7 +68,7 @@ kenyaemrApp.controller('ReportController', ['$scope', '$http', '$timeout', funct
 	 * @param type the export type
 	 */
 	$scope.exportReportData = function(requestId, type) {
-		location.href = ui.pageLink('kenyaemr', 'reportExport', { appId: $scope.appId, request: requestId, type: type });
+		ui.navigate('kenyaemr', 'reportExport', { appId: $scope.appId, request: requestId, type: type });
 	};
 
 }]);

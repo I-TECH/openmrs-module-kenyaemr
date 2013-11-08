@@ -82,7 +82,7 @@ def returnUrl = config.returnUrl ?: ui.thisUrl()
 		var doIt = confirm('Are you sure you want to delete this form?');
 		if (doIt) {
 			ui.getFragmentActionAsJson('kenyaemr', 'showHtmlForm', 'deleteEncounter', { encounterId: encounterId }, function(data) {
-				location.href = returnUrl;
+				ui.navigate(returnUrl);
 			}); 
 		}
 	}
@@ -94,7 +94,7 @@ def returnUrl = config.returnUrl ?: ui.thisUrl()
 			if (payload.editButtonLabel || payload.deleteButtonLabel) {
 				toShow += '<div class="html-form-buttons">';
 				if (payload.editButtonLabel) {
-					var onClick = "location.href = '" + ui.pageLink('kenyaemr', 'editForm', { encounterId: payload.encounterId, appId: '${ currentApp.id }', returnUrl: '${ returnUrl }' }) + "';";
+					var onClick = "ui.navigate('" + ui.pageLink('kenyaemr', 'editForm', { encounterId: payload.encounterId, appId: '${ currentApp.id }', returnUrl: '${ returnUrl }' }) + "');";
 					toShow += ' <input type="button" value="' + ui.escapeHtmlAttribute(payload.editButtonLabel) + '" onClick="' + onClick + '"/>';
 				}
 				if (payload.deleteButtonLabel) {

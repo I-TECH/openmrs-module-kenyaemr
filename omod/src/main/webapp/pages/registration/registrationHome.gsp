@@ -45,7 +45,7 @@
 			defaultDate: '${ kenyaUi.formatDateParam(scheduleDate) }',
 			gotoCurrent: true,
 			onSelect: function(dateText) {
-				location.href = ui.pageLink('kenyaemr', 'registration/registrationHome', { scheduleDate: dateText });
+				ui.navigate('kenyaemr', 'registration/registrationHome', { scheduleDate: dateText });
 			}
 		});
 

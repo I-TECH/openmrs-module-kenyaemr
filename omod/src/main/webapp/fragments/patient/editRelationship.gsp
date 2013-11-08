@@ -40,12 +40,12 @@
 <script type="text/javascript">
 jq(function() {
 	jq('#edit-relationship-form .cancel-button').click(function() {
-		location.href = '${ returnUrl }';
+		ui.navigate('${ returnUrl }');
 	});
 
 	kenyaui.setupAjaxPost('edit-relationship-form', {
 		onSuccess: function(data) {
-			location.href = '${ returnUrl }';
+			ui.navigate('${ returnUrl }');
 		}
 	});
 });

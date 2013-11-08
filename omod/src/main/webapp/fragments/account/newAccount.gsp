@@ -90,7 +90,7 @@ jq(function() {
 	kenyaui.setupAjaxPost('create-account-form', {
 		onSuccess: function(data) {
 			if (data.personId) {
-				location.href = ui.pageLink('kenyaemr', 'admin/manageAccounts');
+				ui.navigate('kenyaemr', 'admin/manageAccounts');
 			} else {
 				ui.notifyError('Creating user was successful, but unexpected response');
 			}
