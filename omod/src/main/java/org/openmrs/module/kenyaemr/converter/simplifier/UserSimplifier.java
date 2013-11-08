@@ -15,8 +15,8 @@
 package org.openmrs.module.kenyaemr.converter.simplifier;
 
 import org.openmrs.User;
-import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.ui.framework.SimpleObject;
+import org.openmrs.ui.framework.UiUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -27,7 +27,7 @@ import org.springframework.stereotype.Component;
 public class UserSimplifier extends AbstractSimplifier<User> {
 
 	@Autowired
-	private KenyaUiUtils kenyaUi;
+	private UiUtils ui;
 
 	/**
 	 * @see AbstractSimplifier#simplify(Object)
@@ -36,7 +36,8 @@ public class UserSimplifier extends AbstractSimplifier<User> {
 	protected SimpleObject simplify(User user) {
 		SimpleObject ret = new SimpleObject();
 		ret.put("id", user.getId());
-		ret.put("name", kenyaUi.formatPersonName(user.getPerson()));
+		ret.put("username", user.getUsername());
+		ret.put("person", ui.simplifyObject(user.getPerson()));
 		return ret;
 	}
 }

@@ -21,7 +21,7 @@
 	<tr ng-repeat="request in queue">
 		<td>{{ request.report.name }}</td>
 		<td>{{ request.requestDate }}</td>
-		<td>{{ request.requestedBy.name }}</td>
+		<td>{{ request.requestedBy.person.name }}</td>
 		<td>{{ request.status }}</td>
 		<td>{{ request.timeTaken }}</td>
 	</tr>
