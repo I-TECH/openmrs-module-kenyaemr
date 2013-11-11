@@ -78,4 +78,48 @@ public class MchcsIndicatorLibrary {
 				map(mchcsCohortLibrary.totalHeitestedBy12Months(), "onOrAfter=${startDate},onOrBefore=${endDate}")
 		);
 	}
+
+	/**
+	 * Number of confirmed pcr positive infants aged 2 months and below
+	 * @return the indicator
+	 */
+	//HV02-29
+	public CohortIndicator pcrConfirmedPositive2Months() {
+		return cohortIndicator("Number of pcr confirmed positive infants aged 2 months",
+				map(mchcsCohortLibrary.pcrConfirmedPositive2Months(), "onOrAfter=${startDate},onOrBefore=${endDate}")
+		);
+	}
+
+	/**
+	 * Number of confirmed pcr positive infants aged between 3 and 8 months
+	 * @return the indicator
+	 */
+	//HV02-30
+	public CohortIndicator pcrConfirmedPositiveBetween3To8Months() {
+		return cohortIndicator("Number of pcr confirmed positive infants aged between 3 and 8 months",
+				map(mchcsCohortLibrary.pcrConfirmedPositiveBetween3To8Months(), "onOrAfter=${startDate},onOrBefore=${endDate}")
+		);
+	}
+
+	/**
+	 * Number of confirmed pcr positive infants aged between 9 and 12 months
+	 * @return the indicator
+	 */
+	//HV02-31
+	public CohortIndicator pcrConfirmedPositiveBetween9To12Months() {
+		return cohortIndicator("Number of pcr confirmed positive infants aged between 9 and 12 months",
+				map(mchcsCohortLibrary.pcrConfirmedPositiveBetween9To12Months(), "onOrAfter=${startDate},onOrBefore=${endDate}")
+		);
+	}
+
+	/**
+	 * Total number of infants confirmed positive
+	 * @return the indicator
+	 */
+	//HV02-31
+	public CohortIndicator pcrTotalConfirmedPositive() {
+		return cohortIndicator("Total Confirmed Positive Infants",
+				map(mchcsCohortLibrary.pcrTotalConfirmedPositive(), "onOrAfter=${startDate},onOrBefore=${endDate}")
+		);
+	}
 }

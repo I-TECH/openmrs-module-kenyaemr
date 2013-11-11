@@ -31,7 +31,7 @@ import org.springframework.stereotype.Component;
 import java.util.Date;
 
 /**
- * Library of MCH-MS related cohort definitions
+ * Library of MCH-CS related cohort definitions
 */
 @Component
 public class MchcsCohortLibrary {
@@ -143,8 +143,62 @@ public class MchcsCohortLibrary {
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.addSearch("pcrInitialWithin2Months", ReportUtils.map(pcrInitialWithin2Months(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
 		cd.addSearch("pcrInitialBetween3To8Months", ReportUtils.map(pcrInitialBetween3To8Months(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
-		cd.addSearch("serologyAntBodyTestBetween9And12Months", ReportUtils.map(serologyAntBodyTestBetween9And12Months(), "effectiveDate=${onOrBefore}"));
+		cd.addSearch("serologyAntBodyTestBetween9And12Months", ReportUtils.map(serologyAntBodyTestBetween9And12Months(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
 		cd.setCompositionString("pcrInitialWithin2Months OR pcrInitialBetween3To8Months OR serologyAntBodyTestBetween9And12Months");
+		return cd;
+	}
+
+	public CohortDefinition detectedConfirmedStatus() {
+		Concept testContextStatus = Dictionary.getConcept(Dictionary.TEXT_CONTEXT_STATUS) ;
+		Concept detectedConfirmedStatus = Dictionary.getConcept(Dictionary.DETECTED);
+		return commonCohorts.hasObs(testContextStatus,detectedConfirmedStatus);
+	}
+
+	//HV02-29
+	public CohortDefinition pcrConfirmedPositive2Months() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("pcrWithinMonths",ReportUtils.map(pcrWithinMonths(),"onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("detectedConfirmedStatus",ReportUtils.map(detectedConfirmedStatus(),"onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("paeds2Months", ReportUtils.map(age2Months(), "effectiveDate=${onOrBefore}"));
+		cd.setCompositionString("pcrWithinMonths AND detectedConfirmedStatus AND paeds2Months");
+		return cd;
+	}
+
+	//HV02-30
+	public CohortDefinition pcrConfirmedPositiveBetween3To8Months() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("pcrWithinMonths",ReportUtils.map(pcrWithinMonths(),"onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("detectedConfirmedStatus",ReportUtils.map(detectedConfirmedStatus(),"onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("paeds3and8Months", ReportUtils.map(ageBetween3And8Months(), "effectiveDate=${onOrBefore}"));
+		cd.setCompositionString("pcrWithinMonths AND detectedConfirmedStatus AND paeds3and8Months");
+		return cd;
+	}
+
+	//HV02-31
+	public CohortDefinition pcrConfirmedPositiveBetween9To12Months() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("pcrWithinMonths",ReportUtils.map(pcrWithinMonths(),"onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("detectedConfirmedStatus",ReportUtils.map(detectedConfirmedStatus(),"onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("paeds9and12Months", ReportUtils.map(ageBetween9And12Months(), "effectiveDate=${onOrBefore}"));
+		cd.setCompositionString("pcrWithinMonths AND detectedConfirmedStatus AND paeds9and12Months");
+		return cd;
+	}
+
+	//HV02-32
+	public CohortDefinition pcrTotalConfirmedPositive() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("pcrConfirmedPositive2Months",ReportUtils.map(pcrConfirmedPositive2Months(),"onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("pcrConfirmedPositiveBetween3To8Months",ReportUtils.map(pcrConfirmedPositiveBetween3To8Months(),"onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("pcrConfirmedPositiveBetween9To12Months", ReportUtils.map(pcrConfirmedPositiveBetween9To12Months(), "effectiveDate=${onOrBefore}"));
+		cd.setCompositionString("pcrConfirmedPositive2Months OR pcrConfirmedPositiveBetween3To8Months OR pcrConfirmedPositiveBetween9To12Months");
 		return cd;
 	}
 }
