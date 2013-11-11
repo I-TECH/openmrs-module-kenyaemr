@@ -63,35 +63,10 @@
 			</div>
 		</div>
 
-		<div class="ke-panel-frame">
-			<div class="ke-panel-heading">Queue</div>
-			<div class="ke-panel-content">
-				<table class="ke-table-vertical">
-					<thead>
-					<tr>
-						<th>Requested</th>
-						<th>By</th>
-						<th>Status</th>
-						<th>Time taken</th>
-					</tr>
-					</thead>
-					<tbody>
-					<tr ng-repeat="request in queue">
-						<td>{{ request.requestDate }}</td>
-						<td>{{ request.requestedBy.person.name }}</td>
-						<td>{{ request.status }}</td>
-						<td>{{ request.timeTaken }}</td>
-					</tr>
-					<tr ng-if="queue.length == 0">
-						<td colspan="4" style="text-align: center"><i>None</i></td>
-					</tr>
-					</tbody>
-				</table>
-			</div>
-		</div>
+		${ ui.includeFragment("kenyaemr", "report/reportQueue", [ allowCancel: false ]) }
 
 		<div class="ke-panel-frame">
-			<div class="ke-panel-heading">Completed</div>
+			<div class="ke-panel-heading">Finished</div>
 			<div class="ke-panel-content">
 				<table class="ke-table-vertical">
 					<thead>
@@ -100,32 +75,39 @@
 						<th>By</th>
 						<th>Status</th>
 						<th>Time taken</th>
-						<th></th>
+						<th>&nbsp;</th>
 					</tr>
 					</thead>
 					<tbody>
-					<tr ng-repeat="request in completed">
+					<tr ng-repeat="request in finished">
 						<td>{{ request.requestDate }}</td>
 						<td>{{ request.requestedBy.person.name }}</td>
 						<td>{{ request.status }}</td>
 						<td>{{ request.timeTaken }}</td>
 						<td style="text-align: right">
-							<a href="#" ng-click="viewReportData(request.id)">
-								<img src="${ ui.resourceLink("kenyaui", "images/glyphs/view.png") }" class="ke-glyph" /> View
-							</a>
-							&nbsp;&nbsp;
-							<a href="#" ng-click="exportReportData(request.id, 'csv')">
-								<img src="${ ui.resourceLink("kenyaui", "images/glyphs/csv.png") }" class="ke-glyph" /> CSV
-							</a>
-							&nbsp;&nbsp;
-							<% if (excelRenderable) { %>
-							<a href="#" ng-click="exportReportData(request.id , 'excel')">
-								<img src="${ ui.resourceLink("kenyaui", "images/glyphs/excel.png") }" class="ke-glyph" /> Excel
-							</a>
-							<% } %>
+							<div ng-if="request.status == 'COMPLETED'">
+								<a href="#" ng-click="viewReportData(request.id)">
+									<img src="${ ui.resourceLink("kenyaui", "images/glyphs/view.png") }" class="ke-glyph" /> View
+								</a>
+								&nbsp;&nbsp;
+								<a href="#" ng-click="exportReportData(request.id, 'csv')">
+									<img src="${ ui.resourceLink("kenyaui", "images/glyphs/csv.png") }" class="ke-glyph" /> CSV
+								</a>
+								&nbsp;&nbsp;
+								<% if (excelRenderable) { %>
+								<a href="#" ng-click="exportReportData(request.id , 'excel')">
+									<img src="${ ui.resourceLink("kenyaui", "images/glyphs/excel.png") }" class="ke-glyph" /> Excel
+								</a>
+								<% } %>
+							</div>
+							<div ng-if="request.status == 'FAILED'">
+								<a href="#" ng-click="viewReportError(request.id)">
+									<img src="${ ui.resourceLink("kenyaui", "images/glyphs/monitor.png") }" class="ke-glyph" /> Error
+								</a>
+							</div>
 						</td>
 					</tr>
-					<tr ng-if="completed.length == 0">
+					<tr ng-if="finished.length == 0">
 						<td colspan="5" style="text-align: center"><i>None</i></td>
 					</tr>
 					</tbody>
