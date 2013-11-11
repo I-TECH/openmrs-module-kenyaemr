@@ -1,32 +1,36 @@
-<%
-	ui.decorateWith("kenyaui", "panel", [ heading: "Report Queue" ])
-
-	ui.includeJavascript("kenyaui", "angular.js")
-	ui.includeJavascript("kenyaemr", "controllers/report.js")
-%>
-<script type="text/javascript">
-
-</script>
-<table class="ke-table-vertical">
-	<thead>
-	<tr>
-		<th>Report</th>
-		<th>Requested</th>
-		<th>By</th>
-		<th>Status</th>
-		<th>Time taken</th>
-	</tr>
-	</thead>
-	<tbody>
-	<tr ng-repeat="request in queue">
-		<td>{{ request.report.name }}</td>
-		<td>{{ request.requestDate }}</td>
-		<td>{{ request.requestedBy.person.name }}</td>
-		<td>{{ request.status }}</td>
-		<td>{{ request.timeTaken }}</td>
-	</tr>
-	<tr ng-if="queue.length == 0">
-		<td colspan="5" style="text-align: center"><i>None</i></td>
-	</tr>
-	</tbody>
-</table>
+<div class="ke-panel-frame">
+	<div class="ke-panel-heading">{{ reportUuid ? "Queue" : "Reports Queue" }}</div>
+	<div class="ke-panel-content">
+		<table class="ke-table-vertical">
+			<thead>
+			<tr>
+				<th ng-if="!reportUuid">Report</th>
+				<th>Requested</th>
+				<th>By</th>
+				<th>Status</th>
+				<th>Time taken</th>
+				<th>&nbsp;</th>
+			</tr>
+			</thead>
+			<tbody>
+			<tr ng-repeat="request in queue">
+				<td ng-if="!reportUuid">{{ request.report.name }}</td>
+				<td>{{ request.requestDate }}</td>
+				<td>{{ request.requestedBy.person.name }}</td>
+				<td>{{ request.status }}</td>
+				<td>{{ request.timeTaken }}</td>
+				<td style="text-align: right">
+					<% if (config.allowCancel) { %>
+					<a href="#" ng-click="cancelRequest(request.id)" ng-if="!request.finished">
+						<img src="${ ui.resourceLink("kenyaui", "images/glyphs/cancel.png") }" class="ke-glyph" /> Cancel
+					</a>
+					<% } %>
+				</td>
+			</tr>
+			<tr ng-if="queue.length == 0">
+				<td colspan="5" style="text-align: center"><i>None</i></td>
+			</tr>
+			</tbody>
+		</table>
+	</div>
+</div>

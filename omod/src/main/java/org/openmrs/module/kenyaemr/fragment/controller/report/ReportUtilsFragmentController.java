@@ -16,6 +16,7 @@ package org.openmrs.module.kenyaemr.fragment.controller.report;
 
 import net.sf.cglib.core.CollectionUtils;
 import net.sf.cglib.core.Predicate;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.module.kenyacore.report.IndicatorReportDescriptor;
@@ -31,10 +32,14 @@ import org.openmrs.module.reporting.report.definition.service.ReportDefinitionSe
 import org.openmrs.module.reporting.report.renderer.RenderingMode;
 import org.openmrs.module.reporting.report.renderer.ReportRenderer;
 import org.openmrs.module.reporting.report.service.ReportService;
+import org.openmrs.module.reporting.report.task.RunQueuedReportsTask;
 import org.openmrs.module.reporting.web.renderers.DefaultWebRenderer;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.SpringBean;
+import org.openmrs.ui.framework.fragment.action.FailureResult;
+import org.openmrs.ui.framework.fragment.action.FragmentActionResult;
+import org.openmrs.ui.framework.fragment.action.SuccessResult;
 import org.openmrs.ui.framework.page.PageRequest;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -58,7 +63,7 @@ public class ReportUtilsFragmentController {
 	 * @return the report request id
 	 */
 	public SimpleObject requestReport(@RequestParam("reportUuid") String reportUuid,
-									  @RequestParam(required = false, value = "date") Date date,
+									  @RequestParam(value = "date", required = false) Date date,
 									  UiUtils ui,
 									  @SpringBean EmrUiUtils emrUi,
 									  @SpringBean ReportManager reportManager,
@@ -96,21 +101,35 @@ public class ReportUtilsFragmentController {
 	}
 
 	/**
+	 * Cancels the given report request
+	 * @param request the report request
+	 * @param ui the UI utils
+	 * @return the result
+	 */
+	public FragmentActionResult cancelRequest(@RequestParam("requestId") ReportRequest request,
+									  UiUtils ui,
+									  @SpringBean ReportService reportService) {
+
+		if (ReportRequest.Status.REQUESTED.equals(request.getStatus())) {
+			reportService.purgeReportRequest(request);
+			return new SuccessResult(ui.message("Report request cancelled"));
+		}
+
+		return new FailureResult(ui.message("Report request could not be cancelled"));
+	}
+
+	/**
 	 * Gets the completed requests for the given report
 	 * @param reportUuid the report definition UUID
 	 * @param ui the UI utils
 	 * @param reportService the report service
 	 * @return the simplified requests
 	 */
-	public SimpleObject[] getCompletedRequests(@RequestParam("reportUuid") String reportUuid,
+	public SimpleObject[] getCompletedRequests(@RequestParam(value = "reportUuid", required = false) String reportUuid,
 									  UiUtils ui,
 									  @SpringBean ReportService reportService) {
 
-		// Hack to avoid loading (and thus de-serialising) the entire report
-		ReportDefinition definition = new ReportDefinition();
-		definition.setUuid(reportUuid);
-
-		List<ReportRequest> requests = reportService.getReportRequests(definition, null, null, ReportRequest.Status.COMPLETED);
+		List<ReportRequest> requests = fetchRequests(reportUuid, ReportRequest.Status.COMPLETED, reportService);
 
 		return ui.simplifyCollection(requests);
 	}
@@ -122,15 +141,11 @@ public class ReportUtilsFragmentController {
 	 * @param reportService the report service
 	 * @return the simplified requests
 	 */
-	public SimpleObject[] getIncompleteRequests(@RequestParam("reportUuid") String reportUuid,
+	public SimpleObject[] getIncompleteRequests(@RequestParam(value = "reportUuid", required = false) String reportUuid,
 											   UiUtils ui,
 											   @SpringBean ReportService reportService) {
 
-		// Hack to avoid loading (and thus de-serialising) the entire report
-		ReportDefinition definition = new ReportDefinition();
-		definition.setUuid(reportUuid);
-
-		List<ReportRequest> requests = reportService.getReportRequests(definition, null, null, null);
+		List<ReportRequest> requests = fetchRequests(reportUuid, null, reportService);
 
 		Collection<ReportRequest> filtered = CollectionUtils.filter(requests, new Predicate() {
 			@Override
@@ -140,5 +155,26 @@ public class ReportUtilsFragmentController {
 		});
 
 		return ui.simplifyCollection(filtered);
+	}
+
+	/**
+	 * Helper method to fetch report requests
+	 * @param reportUuid the report definition UUID (optional)
+	 * @param withStatus the report request status (optional)
+	 * @param reportService the report service
+	 * @return the report requests
+	 */
+	protected List<ReportRequest> fetchRequests(String reportUuid, ReportRequest.Status withStatus, ReportService reportService) {
+		ReportDefinition definition = null;
+
+		// Hack to avoid loading (and thus de-serialising) the entire report
+		if (StringUtils.isNotEmpty(reportUuid)) {
+			definition = new ReportDefinition();
+			definition.setUuid(reportUuid);
+		}
+
+		return (withStatus != null)
+				? reportService.getReportRequests(definition, null, null, withStatus)
+				: reportService.getReportRequests(definition, null, null);
 	}
 }

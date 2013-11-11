@@ -51,7 +51,27 @@ kenyaemrApp.controller('ReportController', ['$scope', '$http', '$timeout', funct
 	 * @param date the evaluation date
 	 */
 	$scope.requestReport = function(date) {
-		$http.get(ui.fragmentActionLink('kenyaemr', 'report/reportUtils', 'requestReport', { reportUuid: $scope.reportUuid, date: date }));
+		$http.post(ui.fragmentActionLink('kenyaemr', 'report/reportUtils', 'requestReport', { reportUuid: $scope.reportUuid, date: date }))
+			.success(defaultSuccessHandler)
+			.error(defaultErrorHandler);
+
+		$scope.refresh();
+	};
+
+	/**
+	 * Cancels a report request
+	 * @param reportUuid the report definition UUID
+	 */
+	$scope.cancelRequest = function(requestId) {
+		kenyaui.openConfirmDialog({
+			heading: "Report",
+			message: "Cancel this report request?",
+			okCallback: function() {
+				$http.post(ui.fragmentActionLink('kenyaemr', 'report/reportUtils', 'cancelRequest', { requestId: requestId }))
+					.success(defaultSuccessHandler)
+					.error(defaultErrorHandler);
+			}
+		});
 	};
 
 	/**
@@ -69,6 +89,15 @@ kenyaemrApp.controller('ReportController', ['$scope', '$http', '$timeout', funct
 	 */
 	$scope.exportReportData = function(requestId, type) {
 		ui.navigate('kenyaemr', 'reportExport', { appId: $scope.appId, request: requestId, type: type });
+	};
+
+	var defaultSuccessHandler = function(data) {
+		kenyaui.notifySuccess(data.message);
+		$scope.refresh();
+	};
+
+	var defaultErrorHandler = function(data) {
+		kenyaui.notifyError(data.message);
 	};
 
 }]);
