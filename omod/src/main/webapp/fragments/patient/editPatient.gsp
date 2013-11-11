@@ -166,7 +166,7 @@ jq(function() {
 				ui.navigate('kenyaemr', 'registration/registrationViewPatient', { patientId: data.patientId });
 				<% } %>
 			} else {
-				ui.notifyError('Saving patient was successful, but unexpected response');
+				kenyaui.notifyError('Saving patient was successful, but unexpected response');
 			}
 		}
 	});
