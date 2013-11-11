@@ -32,7 +32,6 @@ import org.openmrs.module.reporting.report.definition.service.ReportDefinitionSe
 import org.openmrs.module.reporting.report.renderer.RenderingMode;
 import org.openmrs.module.reporting.report.renderer.ReportRenderer;
 import org.openmrs.module.reporting.report.service.ReportService;
-import org.openmrs.module.reporting.report.task.RunQueuedReportsTask;
 import org.openmrs.module.reporting.web.renderers.DefaultWebRenderer;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
@@ -40,11 +39,12 @@ import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.action.FailureResult;
 import org.openmrs.ui.framework.fragment.action.FragmentActionResult;
 import org.openmrs.ui.framework.fragment.action.SuccessResult;
-import org.openmrs.ui.framework.page.PageRequest;
+import org.openmrs.util.OpenmrsUtil;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -119,38 +119,40 @@ public class ReportUtilsFragmentController {
 	}
 
 	/**
-	 * Gets the completed requests for the given report
+	 * Gets the finished (failed or completed) requests for the given report
 	 * @param reportUuid the report definition UUID
 	 * @param ui the UI utils
 	 * @param reportService the report service
 	 * @return the simplified requests
 	 */
-	public SimpleObject[] getCompletedRequests(@RequestParam(value = "reportUuid", required = false) String reportUuid,
+	public SimpleObject[] getFinishedRequests(@RequestParam(value = "reportUuid", required = false) String reportUuid,
 									  UiUtils ui,
 									  @SpringBean ReportService reportService) {
 
-		List<ReportRequest> requests = fetchRequests(reportUuid, ReportRequest.Status.COMPLETED, reportService);
+		List<ReportRequest> requests = fetchRequests(reportUuid, true, reportService);
 
 		return ui.simplifyCollection(requests);
 	}
 
 	/**
-	 * Gets the incomplete requests for the given report
+	 * Gets the queued requests for the given report
 	 * @param reportUuid the report definition UUID
 	 * @param ui the UI utils
 	 * @param reportService the report service
 	 * @return the simplified requests
 	 */
-	public SimpleObject[] getIncompleteRequests(@RequestParam(value = "reportUuid", required = false) String reportUuid,
+	public SimpleObject[] getQueuedRequests(@RequestParam(value = "reportUuid", required = false) String reportUuid,
 											   UiUtils ui,
 											   @SpringBean ReportService reportService) {
 
-		List<ReportRequest> requests = fetchRequests(reportUuid, null, reportService);
+		List<ReportRequest> requests = fetchRequests(reportUuid, false, reportService);
 
+		// Filter out finished requests
 		Collection<ReportRequest> filtered = CollectionUtils.filter(requests, new Predicate() {
 			@Override
-			public boolean evaluate(Object o) {
-				return !((ReportRequest) o).getStatus().equals(ReportRequest.Status.COMPLETED);
+			public boolean evaluate(Object obj) {
+				ReportRequest request = (ReportRequest) obj;
+				return !(ReportRequest.Status.COMPLETED.equals(request.getStatus()) || ReportRequest.Status.FAILED.equals(request.getStatus()));
 			}
 		});
 
@@ -160,11 +162,11 @@ public class ReportUtilsFragmentController {
 	/**
 	 * Helper method to fetch report requests
 	 * @param reportUuid the report definition UUID (optional)
-	 * @param withStatus the report request status (optional)
+	 * @param finishedOnly only finished requests (completed or failed)
 	 * @param reportService the report service
 	 * @return the report requests
 	 */
-	protected List<ReportRequest> fetchRequests(String reportUuid, ReportRequest.Status withStatus, ReportService reportService) {
+	protected List<ReportRequest> fetchRequests(String reportUuid, boolean finishedOnly, ReportService reportService) {
 		ReportDefinition definition = null;
 
 		// Hack to avoid loading (and thus de-serialising) the entire report
@@ -173,8 +175,18 @@ public class ReportUtilsFragmentController {
 			definition.setUuid(reportUuid);
 		}
 
-		return (withStatus != null)
-				? reportService.getReportRequests(definition, null, null, withStatus)
+		List<ReportRequest> requests = (finishedOnly)
+				? reportService.getReportRequests(definition, null, null, ReportRequest.Status.COMPLETED, ReportRequest.Status.FAILED)
 				: reportService.getReportRequests(definition, null, null);
+
+		// Sort by requested date desc (more sane than the default sorting)
+		Collections.sort(requests, new Comparator<ReportRequest>() {
+			@Override
+			public int compare(ReportRequest request1, ReportRequest request2) {
+				return OpenmrsUtil.compareWithNullAsEarliest(request2.getRequestDate(), request1.getRequestDate());
+			}
+		});
+
+		return requests;
 	}
 }

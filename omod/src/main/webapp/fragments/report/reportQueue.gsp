@@ -13,7 +13,7 @@
 			</tr>
 			</thead>
 			<tbody>
-			<tr ng-repeat="request in queue">
+			<tr ng-repeat="request in queued">
 				<td ng-if="!reportUuid">{{ request.report.name }}</td>
 				<td>{{ request.requestDate }}</td>
 				<td>{{ request.requestedBy.person.name }}</td>
@@ -21,14 +21,14 @@
 				<td>{{ request.timeTaken }}</td>
 				<td style="text-align: right">
 					<% if (config.allowCancel) { %>
-					<a href="#" ng-click="cancelRequest(request.id)" ng-if="!request.finished">
+					<a href="#" ng-click="cancelRequest(request.id)" ng-if="request.status == 'REQUESTED'">
 						<img src="${ ui.resourceLink("kenyaui", "images/glyphs/cancel.png") }" class="ke-glyph" /> Cancel
 					</a>
 					<% } %>
 				</td>
 			</tr>
-			<tr ng-if="queue.length == 0">
-				<td colspan="5" style="text-align: center"><i>None</i></td>
+			<tr ng-if="queued.length == 0">
+				<td colspan="{{ reportUuid ? 5 : 6 }}" style="text-align: center"><i>None</i></td>
 			</tr>
 			</tbody>
 		</table>
