@@ -166,4 +166,40 @@ public class MchcsIndicatorLibrary {
 				map(mchcsCohortLibrary.totalExposedAgedSixMoths(), "onOrAfter=${startDate},onOrBefore=${endDate}")
 		);
 	}
+
+	/**
+	 * Mother on ARV treatment and breast feeding
+	 * @return indicator
+	 */
+	//HIV02-37
+	public CohortIndicator motherOnTreatmentAndBreastFeeding() {
+		return cohortIndicator("Mother on treatment and breast feeding", map(mchcsCohortLibrary.motherOnTreatmentAndBreastFeeding(), "onOrAfter=${startDate},onOrBefore=${endDate}"));
+	}
+
+	/**
+	 * Mother on ARV treatment and NOT breast feeding
+	 * @return indicator
+	 */
+	//HIV02-38
+	public CohortIndicator motherOnTreatmentAndNotBreastFeeding() {
+		return cohortIndicator("Mother on treatment and NOT breast feeding", map(mchcsCohortLibrary.motherOnTreatmentAndNotBreastFeeding(), "onOrAfter=${startDate},onOrBefore=${endDate}"));
+	}
+
+	/**
+	 * Mother on ARV treatment and if breastfeeding NOT known
+	 * @return indicator
+	 */
+	//HIV02-39
+	public CohortIndicator motherOnTreatmentAndNotBreastFeedingUnknown() {
+		return cohortIndicator("Mother on treatment and breast feeding unknown", map(mchcsCohortLibrary.motherOnTreatmentAndNotBreastFeedingUnknown(), "onOrAfter=${startDate},onOrBefore=${endDate}"));
+	}
+
+	/**
+	 * Mother on ARV treatment and if breastfeeding NOT known
+	 * @return indicator
+	 */
+	//HIV02-40
+	public CohortIndicator totalBreastFeedingMotherOnTreatment() {
+		return cohortIndicator("Mother on treatment and breast feeding totals", map(mchcsCohortLibrary.totalBreastFeedingMotherOnTreatment(), "onOrAfter=${startDate},onOrBefore=${endDate}"));
+	}
 }

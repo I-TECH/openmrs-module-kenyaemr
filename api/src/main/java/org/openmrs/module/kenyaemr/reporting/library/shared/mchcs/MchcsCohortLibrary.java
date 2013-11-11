@@ -195,7 +195,7 @@ public class MchcsCohortLibrary {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-		cd.addSearch("pcrConfirmedPositive2Months",ReportUtils.map(pcrConfirmedPositive2Months(),"onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("pcrConfirmedPositive2Months", ReportUtils.map(pcrConfirmedPositive2Months(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
 		cd.addSearch("pcrConfirmedPositiveBetween3To8Months",ReportUtils.map(pcrConfirmedPositiveBetween3To8Months(),"onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
 		cd.addSearch("pcrConfirmedPositiveBetween9To12Months", ReportUtils.map(pcrConfirmedPositiveBetween9To12Months(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
 		cd.setCompositionString("pcrConfirmedPositive2Months OR pcrConfirmedPositiveBetween3To8Months OR pcrConfirmedPositiveBetween9To12Months");
@@ -276,5 +276,37 @@ public class MchcsCohortLibrary {
 		return cd;
 	}
 
+	//HIV02-37
+	public CohortDefinition motherOnTreatmentAndBreastFeeding() {
+		Concept motherOnTreatmentAndBreatFeeding = Dictionary.getConcept(Dictionary.MOTHER_ON_ANTIRETROVIRAL_DRUGS_AND_BREASTFEEDING);
+		Concept breastfeeding = Dictionary.getConcept(Dictionary.YES);
+		return commonCohorts.hasObs(motherOnTreatmentAndBreatFeeding,breastfeeding);
+	}
+
+	//HIV02-38
+	public CohortDefinition motherOnTreatmentAndNotBreastFeeding() {
+		Concept motherOnTreatmentAndBreatFeeding = Dictionary.getConcept(Dictionary.MOTHER_ON_ANTIRETROVIRAL_DRUGS_AND_BREASTFEEDING);
+		Concept notBreastfeeding = Dictionary.getConcept(Dictionary.NO);
+		return commonCohorts.hasObs(motherOnTreatmentAndBreatFeeding,notBreastfeeding);
+	}
+
+	//HIV02-39
+	public CohortDefinition motherOnTreatmentAndNotBreastFeedingUnknown() {
+		Concept motherOnTreatmentAndBreatFeeding = Dictionary.getConcept(Dictionary.MOTHER_ON_ANTIRETROVIRAL_DRUGS_AND_BREASTFEEDING);
+		Concept unknown = Dictionary.getConcept(Dictionary.UNKNOWN);
+		return commonCohorts.hasObs(motherOnTreatmentAndBreatFeeding,unknown);
+	}
+
+	//HIV02-40
+	public CohortDefinition totalBreastFeedingMotherOnTreatment() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("motherOnTreatmentAndBreastFeeding",ReportUtils.map(motherOnTreatmentAndBreastFeeding(),"onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("motherOnTreatmentAndNotBreastFeeding",ReportUtils.map(motherOnTreatmentAndNotBreastFeeding(),"onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("motherOnTreatmentAndNotBreastFeedingUnknown",ReportUtils.map(motherOnTreatmentAndNotBreastFeedingUnknown(),"onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("motherOnTreatmentAndNotBreastFeedingUnknown OR motherOnTreatmentAndNotBreastFeeding OR motherOnTreatmentAndNotBreastFeedingUnknown");
+		return cd;
+	}
 }
 
