@@ -7,7 +7,7 @@
 <script type="text/javascript">
 	jq(function() {
 		jq('#cancel-form').click(function() {
-			location.href = '${ returnUrl }';
+			ui.navigate('${ returnUrl }');
 		}).insertAfter(jq('input.submitButton'));
 	});
 </script>

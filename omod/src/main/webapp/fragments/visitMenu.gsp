@@ -19,7 +19,7 @@
 				fragment: "registrationUtil",
 				fragmentProvider: "kenyaemr",
 				action: "editVisit",
-				successCallbacks: [ "location.href = '" + ui.pageLink("kenyaemr", "registration/registrationViewPatient", [ patientId: patient.id ]) + "'" ],
+				successCallbacks: [ "ui.navigate('" + ui.pageLink("kenyaemr", "registration/registrationViewPatient", [ patientId: patient.id ]) + "')" ],
 				submitLabel: ui.message("general.submit"),
 				cancelLabel: ui.message("general.cancel"),
 				submitLoadingMessage: "Checking Out"
@@ -39,7 +39,7 @@
 		}
 	} else {
 		if (config.allowCheckIn) {
-			def jsSuccess = "location.href = ui.pageLink('kenyaemr', 'registration/registrationViewPatient', " + "{" + "patientId: ${ patient.id } });"
+			def jsSuccess = "ui.navigate('kenyaemr', 'registration/registrationViewPatient', " + "{" + "patientId: ${ patient.id } });"
 	%>
 	<%= ui.includeFragment("kenyaui", "widget/popupForm", [
 			id: "check-in-form",

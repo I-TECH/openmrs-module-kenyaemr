@@ -22,12 +22,11 @@
 
 	<% relationships.each { rel -> %>
 	<div class="ke-stack-item">
-		${ ui.includeFragment("kenyaui", "widget/buttonlet", [ type: "void",
-				onClick: "onVoidRelationship(" + rel.relationshipId + ")"
-		]) }
-		${ ui.includeFragment("kenyaui", "widget/buttonlet", [ type: "edit",
-				href: ui.pageLink("kenyaemr", "registration/editRelationship", [ patientId: patient.id, relationshipId: rel.relationshipId, appId: currentApp.id, returnUrl: ui.thisUrl() ])
-		]) }
+		<button type="button" class="ke-compact" onclick="onVoidRelationship(${ rel.relationshipId })"><img src="${ ui.resourceLink("kenyaui", "images/glyphs/void.png") }" /></button>
+
+		<button type="button" class="ke-compact" onclick="ui.navigate('${ ui.pageLink("kenyaemr", "registration/editRelationship", [ patientId: patient.id, relationshipId: rel.relationshipId, appId: currentApp.id, returnUrl: ui.thisUrl() ]) }')">
+			<img src="${ ui.resourceLink("kenyaui", "images/glyphs/edit.png") }" />
+		</button>
 
 		${ ui.includeFragment("kenyaui", "widget/dataPoint", [ label: ui.format(rel.type), value: rel.personLink ]) }
 		<% if (rel.startDate) { %>
@@ -44,7 +43,7 @@
 <% } %>
 
 <div class="ke-panel-footer">
-	${ ui.includeFragment("kenyaui", "widget/buttonlet", [ type: "add", label: "Add",
-			href: ui.pageLink("kenyaemr", "registration/editRelationship", [ patientId: patient.id, appId: currentApp.id, returnUrl: ui.thisUrl() ])
-	]) }
+	<button type="button" onclick="ui.navigate('${ ui.pageLink("kenyaemr", "registration/editRelationship", [ patientId: patient.id, appId: currentApp.id, returnUrl: ui.thisUrl() ])}')">
+		<img src="${ ui.resourceLink("kenyaui", "images/glyphs/add.png") }" />Add
+	</button>
 </div>

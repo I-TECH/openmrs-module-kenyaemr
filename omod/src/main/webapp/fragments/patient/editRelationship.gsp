@@ -31,8 +31,8 @@
 
 	</div>
 	<div class="ke-panel-footer">
-		<input class="ke-button" type="submit" value="Save"/>
-		<input class="ke-button cancel-button" type="button" value="Cancel"/>
+		<button type="submit">Save</button>
+		<button type="button" class="cancel-button">Cancel</button>
 	</div>
 	
 </form>
@@ -40,12 +40,12 @@
 <script type="text/javascript">
 jq(function() {
 	jq('#edit-relationship-form .cancel-button').click(function() {
-		location.href = '${ returnUrl }';
+		ui.navigate('${ returnUrl }');
 	});
 
 	kenyaui.setupAjaxPost('edit-relationship-form', {
 		onSuccess: function(data) {
-			location.href = '${ returnUrl }';
+			ui.navigate('${ returnUrl }');
 		}
 	});
 });

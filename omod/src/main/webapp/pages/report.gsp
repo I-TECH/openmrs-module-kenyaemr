@@ -78,7 +78,7 @@
 					<tbody>
 					<tr ng-repeat="request in queue">
 						<td>{{ request.requestDate }}</td>
-						<td>{{ request.requestedBy.name }}</td>
+						<td>{{ request.requestedBy.person.name }}</td>
 						<td>{{ request.status }}</td>
 						<td>{{ request.timeTaken }}</td>
 					</tr>
@@ -106,7 +106,7 @@
 					<tbody>
 					<tr ng-repeat="request in completed">
 						<td>{{ request.requestDate }}</td>
-						<td>{{ request.requestedBy.name }}</td>
+						<td>{{ request.requestedBy.person.name }}</td>
 						<td>{{ request.status }}</td>
 						<td>{{ request.timeTaken }}</td>
 						<td style="text-align: right">

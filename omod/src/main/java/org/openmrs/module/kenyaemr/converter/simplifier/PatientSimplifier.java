@@ -20,7 +20,6 @@ import org.openmrs.module.kenyacore.identifier.IdentifierManager;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -30,22 +29,22 @@ import java.util.List;
  * Converts a patient to a simple object
  */
 @Component
-public class PatientToSimpleObjectConverter implements Converter<Patient, SimpleObject> {
+public class PatientSimplifier extends AbstractSimplifier<Patient> {
 
 	@Autowired
 	private UiUtils ui;
 
 	@Autowired
-	private PersonToSimpleObjectConverter personSimplifier;
+	private PersonSimplifier personSimplifier;
 
 	@Autowired
 	private IdentifierManager identifierManager;
 
 	/**
-	 * @see org.springframework.core.convert.converter.Converter#convert(Object)
+	 * @see AbstractSimplifier#simplify(Object)
 	 */
 	@Override
-	public SimpleObject convert(Patient patient) {
+	protected SimpleObject simplify(Patient patient) {
 		// Convert as person first
 		SimpleObject ret = personSimplifier.convert(patient);
 

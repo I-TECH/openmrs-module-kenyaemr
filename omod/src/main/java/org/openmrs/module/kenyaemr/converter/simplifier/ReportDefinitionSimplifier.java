@@ -14,26 +14,26 @@
 
 package org.openmrs.module.kenyaemr.converter.simplifier;
 
-import org.openmrs.Concept;
-import org.openmrs.module.kenyacore.CoreConstants;
+import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.ui.framework.SimpleObject;
-import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
 /**
- * Converts a concept to a simple object
+ * Converts a report definition to a simple object
  */
 @Component
-public class ConceptToSimpleObjectConverter implements Converter<Concept, SimpleObject> {
+public class ReportDefinitionSimplifier extends AbstractSimplifier<ReportDefinition> {
 
 	/**
-	 * @see org.springframework.core.convert.converter.Converter#convert(Object)
+	 * @see AbstractSimplifier#simplify(Object)
 	 */
 	@Override
-	public SimpleObject convert(Concept concept) {
+	protected SimpleObject simplify(ReportDefinition definition) {
 		SimpleObject ret = new SimpleObject();
-		ret.put("id", concept.getId());
-		ret.put("name", concept.getPreferredName(CoreConstants.LOCALE).getName());
+		ret.put("id", definition.getId());
+		ret.put("name", definition.getName());
+		ret.put("description", definition.getDescription());
+		ret.put("uuid", definition.getUuid());
 		return ret;
 	}
 }

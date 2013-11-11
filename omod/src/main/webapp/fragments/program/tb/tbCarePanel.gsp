@@ -13,7 +13,9 @@
 </div>
 <div class="ke-stack-item">
 	<% if (activeVisit) { %>
-		${ ui.includeFragment("kenyaui", "widget/editButton", [ href: ui.pageLink("kenyaemr", "regimenEditor", [ patientId: currentPatient.id, category: "TB", appId: currentApp.id, returnUrl: ui.thisUrl() ]) ]) }
+	<button type="button" class="ke-compact" onclick="ui.navigate('${ ui.pageLink("kenyaemr", "regimenEditor", [ patientId: currentPatient.id, category: "TB", appId: currentApp.id, returnUrl: ui.thisUrl() ]) }')">
+		<img src="${ ui.resourceLink("kenyaui", "images/glyphs/edit.png") }" />
+	</button>
 	<% } %>
 
 	<%

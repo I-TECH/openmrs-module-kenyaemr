@@ -14,32 +14,25 @@
 
 package org.openmrs.module.kenyaemr.converter.simplifier;
 
-import org.openmrs.Visit;
-import org.openmrs.module.kenyaui.KenyaUiUtils;
+import org.openmrs.Concept;
+import org.openmrs.module.kenyacore.CoreConstants;
 import org.openmrs.ui.framework.SimpleObject;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
 /**
- * Converts visit to simple object
+ * Converts a concept to a simple object
  */
 @Component
-public class VisitToSimpleObjectConverter implements Converter<Visit, SimpleObject> {
-
-	@Autowired
-	private KenyaUiUtils kenyaUi;
+public class ConceptSimplifier extends AbstractSimplifier<Concept> {
 
 	/**
-	 * @see org.springframework.core.convert.converter.Converter#convert(Object)
+	 * @see AbstractSimplifier#simplify(Object)
 	 */
 	@Override
-	public SimpleObject convert(Visit visit) {
+	protected SimpleObject simplify(Concept concept) {
 		SimpleObject ret = new SimpleObject();
-		ret.put("id", visit.getId());
-		ret.put("visitType", visit.getVisitType().getName());
-		ret.put("startDatetime", kenyaUi.formatDateTime(visit.getStartDatetime()));
-		ret.put("stopDatetime", kenyaUi.formatDateTime(visit.getStopDatetime()));
+		ret.put("id", concept.getId());
+		ret.put("name", concept.getPreferredName(CoreConstants.LOCALE).getName());
 		return ret;
 	}
 }

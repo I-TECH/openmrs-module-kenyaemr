@@ -2,7 +2,7 @@
 	def onFormClick = { form ->
 		def visitId = visit ? visit.id : null
 		def opts = [ appId: currentApp.id, patientId: currentPatient.id, formUuid: form.formUuid, returnUrl: ui.thisUrl() ]
-		"""location.href = '${ ui.pageLink('kenyaemr', 'enterForm', opts) }';"""
+		"""ui.navigate('${ ui.pageLink('kenyaemr', 'enterForm', opts) }');"""
 	}
 %>
 <div class="ke-panel-frame">

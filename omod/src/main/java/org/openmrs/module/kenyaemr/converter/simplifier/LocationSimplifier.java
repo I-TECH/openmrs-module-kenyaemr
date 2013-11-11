@@ -20,7 +20,6 @@ import org.openmrs.LocationAttributeType;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.ui.framework.SimpleObject;
-import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -29,13 +28,13 @@ import java.util.List;
  * Converts a location to a simple object
  */
 @Component
-public class LocationToSimpleObjectConverter implements Converter<Location, SimpleObject> {
+public class LocationSimplifier extends AbstractSimplifier<Location> {
 
 	/**
-	 * @see org.springframework.core.convert.converter.Converter#convert(Object)
+	 * @see AbstractSimplifier#simplify(Object)
 	 */
 	@Override
-	public SimpleObject convert(Location location) {
+	protected SimpleObject simplify(Location location) {
 		LocationAttributeType mflCodeAttrType = MetadataUtils.getLocationAttributeType(CommonMetadata._LocationAttributeType.MASTER_FACILITY_CODE);
 		List<LocationAttribute> attrs = location.getActiveAttributes(mflCodeAttrType);
 		String facilityCode = attrs.size() > 0 ? (String)attrs.get(0).getValue() : null;

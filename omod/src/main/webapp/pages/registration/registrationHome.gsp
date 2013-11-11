@@ -26,10 +26,13 @@
 		<div class="ke-panel-content">
 			Close all open visits of the following types:
 			<form id="close-visits-form" method="post" action="${ ui.actionLink("kenyaemr", "registrationUtil", "closeActiveVisits") }">
-				<div class="form-data"></div>
-				<input type="submit" value="Close Visits" />
 				<div class="ke-form-globalerrors" style="display: none"></div>
+				<div class="form-data"></div>
 			</form>
+		</div>
+
+		<div class="ke-panel-controls">
+			<button type="submit" form="close-visits-form">Close Visits</button>
 		</div>
 	</div>
 </div>
@@ -45,7 +48,7 @@
 			defaultDate: '${ kenyaUi.formatDateParam(scheduleDate) }',
 			gotoCurrent: true,
 			onSelect: function(dateText) {
-				location.href = ui.pageLink('kenyaemr', 'registration/registrationHome', { scheduleDate: dateText });
+				ui.navigate('kenyaemr', 'registration/registrationHome', { scheduleDate: dateText });
 			}
 		});
 

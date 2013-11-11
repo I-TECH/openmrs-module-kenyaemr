@@ -145,8 +145,8 @@
 
 	</div>
 	<div class="ke-panel-footer">
-		<input class="ke-button" type="submit" value="${ command.original ? "Save Changes" : "Create Patient" }"/>
-		<input class="ke-button cancel-button" type="button" value="Cancel"/>
+		<button type="submit">${ command.original ? "Save Changes" : "Create Patient" }</button>
+		<button type="button" class="cancel-button">Cancel</button>
 	</div>
 	
 </form>
@@ -154,16 +154,16 @@
 <script type="text/javascript">
 jq(function() {
 	jq('#edit-patient-form .cancel-button').click(function() {
-		location.href = '${ returnUrl }';
+		ui.navigate('${ returnUrl }');
 	});
 
 	kenyaui.setupAjaxPost('edit-patient-form', {
 		onSuccess: function(data) {
 			if (data.patientId) {
 				<% if (returnUrl.indexOf('patientId') > 0) { %>
-					location.href = '${ returnUrl }';
+				ui.navigate('${ returnUrl }');
 				<% } else { %>
-					location.href = ui.pageLink('kenyaemr', 'registration/registrationViewPatient', { patientId: data.patientId });
+				ui.navigate('kenyaemr', 'registration/registrationViewPatient', { patientId: data.patientId });
 				<% } %>
 			} else {
 				ui.notifyError('Saving patient was successful, but unexpected response');

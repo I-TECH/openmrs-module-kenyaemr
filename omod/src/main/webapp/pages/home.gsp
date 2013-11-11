@@ -3,7 +3,7 @@
 %>
 <div class="ke-page-content">
 	<% apps.eachWithIndex { app, i ->
-		def onClick = "location.href='/" + contextPath + "/" + app.homepageUrl + (currentPatient ? ("?patientId=" + currentPatient.id) : "") + "'"
+		def onClick = "ui.navigate('/" + contextPath + "/" + app.homepageUrl + (currentPatient ? ("?patientId=" + currentPatient.id) : "") + "')"
 		def iconUrlTokens = app.iconUrl.split(":")
 		def iconProvider, icon
 		if (iconUrlTokens.length == 2) {

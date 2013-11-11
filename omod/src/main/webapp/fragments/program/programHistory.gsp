@@ -38,23 +38,16 @@
 <% if (currentEnrollment || patientIsEligible) { %>
 <div class="ke-panel-footer">
 	<% if (currentEnrollment) { %>
-	${ ui.includeFragment("kenyaui", "widget/button", [
-			label: "Discontinue",
-			extra: "Exit from program",
-			icon: "buttons/program_complete.png",
-			iconProvider: "kenyaui",
-			href: ui.pageLink("kenyaemr", "enterForm", [ patientId: patient.id, formUuid: defaultCompletionForm.targetUuid, appId: currentApp.id, returnUrl: ui.thisUrl() ])
-	]) }
+
+	<button type="button" onclick="ui.navigate('${ ui.pageLink("kenyaemr", "enterForm", [ patientId: patient.id, formUuid: defaultCompletionForm.targetUuid, appId: currentApp.id, returnUrl: ui.thisUrl() ]) }')">
+		<img src="${ ui.resourceLink("kenyaui", "images/glyphs/discontinue.png") }" />Discontinue
+	</button>
 
 	<% } else if (patientIsEligible) { %>
 
-	${ ui.includeFragment("kenyaui", "widget/button", [
-			label: "Enroll",
-			extra: "Register on program",
-			icon: "buttons/program_enroll.png",
-			iconProvider: "kenyaui",
-			href: ui.pageLink("kenyaemr", "enterForm", [ patientId: patient.id, formUuid: defaultEnrollmentForm.targetUuid, appId: currentApp.id, returnUrl: ui.thisUrl() ])
-	]) }
+	<button type="button" onclick="ui.navigate('${ ui.pageLink("kenyaemr", "enterForm", [ patientId: patient.id, formUuid: defaultEnrollmentForm.targetUuid, appId: currentApp.id, returnUrl: ui.thisUrl() ]) }')">
+		<img src="${ ui.resourceLink("kenyaui", "images/glyphs/enroll.png") }" />Enroll
+	</button>
 
 	<% } %>
 </div>

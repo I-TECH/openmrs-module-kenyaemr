@@ -26,7 +26,7 @@
 						</tr>
 						<tr>
 							<td></td>
-							<td style="text-align: left"><input type="submit" value="Login"/></td>
+							<td style="text-align: left"><button type="submit">Login</button></td>
 						</tr>
 						<tr>
 							<td></td>

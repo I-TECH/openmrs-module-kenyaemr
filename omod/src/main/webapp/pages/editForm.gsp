@@ -9,7 +9,7 @@
 	});
 
 	function onClickDiscard() {
-		location.href = '${ returnUrl }';
+		ui.navigate('${ returnUrl }');
 	}
 </script>
 
