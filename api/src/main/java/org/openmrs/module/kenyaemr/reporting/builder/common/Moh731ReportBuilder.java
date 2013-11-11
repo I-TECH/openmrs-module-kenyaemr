@@ -112,7 +112,13 @@ public class Moh731ReportBuilder extends BaseIndicatorReportBuilder {
 		dsd.addColumn("HV02-26", "Serology antibody test(from 9 to 12 months)", ReportUtils.map(mchcsIndicatorLibrary.serologyAntBodyTestBetween9And12Months(), indParams), "");
 		dsd.addColumn("HV02-27", "PCR from 9 to 12 months", ReportUtils.map(mchcsIndicatorLibrary.pcrTestBetween9And12Months(), indParams), "");
 
-		dsd.addColumn("HV02-28", "Total HEI Tested by 12 months (HV02-24 plus HV02-26)", ReportUtils.map(mchcsIndicatorLibrary.totalHeiTestedBy12Months(), indParams), "");
+		dsd.addColumn("HV02-28", "Total HEI Tested by 12 months (Sum HV02-24 to HV02-26)", ReportUtils.map(mchcsIndicatorLibrary.totalHeiTestedBy12Months(), indParams), "");
+
+		dsd.addColumn("HV02-29", "Confirmed PCR Positive(Within 2 months)", ReportUtils.map(mchcsIndicatorLibrary.pcrConfirmedPositive2Months(), indParams), "");
+		dsd.addColumn("HV02-30", "Confirmed PCR Positive(3-8 months)", ReportUtils.map(mchcsIndicatorLibrary.pcrConfirmedPositiveBetween3To8Months(), indParams), "");
+		dsd.addColumn("HV02-31", "Confirmed PCR Positive(9-12 months)", ReportUtils.map(mchcsIndicatorLibrary.pcrConfirmedPositiveBetween9To12Months(), indParams), "");
+
+		dsd.addColumn("HV02-32", "Total Confirmed Positive(Sum HV2-29 to HV02-31)", ReportUtils.map(mchcsIndicatorLibrary.pcrTotalConfirmedPositive(), indParams), "");
 
 		return dsd;
 	}
