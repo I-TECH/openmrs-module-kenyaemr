@@ -59,6 +59,10 @@
 						var cohort = month +"-"+ (birthdate.getUTCFullYear()+1);
 						jq('#calculated-cohort').html(cohort);
 					}
+					else {
+						var cohort = month +"-"+ (birthdate.getUTCFullYear()+1);
+						jq('#calculated-cohort').html(cohort);
+					}
 			}
 
 			function tbContactInHouseHold(){
@@ -310,7 +314,7 @@
 						<td colspan="2">
 							<obs conceptId="1282AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="80586AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1149AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 								 answerLabels="Sd NVP Only,sd NVP+AZT+3TC,NVP for 6 weeks(Mother on HAART),None,Other" style="radio"/> <br />
-							Is the mother Breastfeeding? <obs conceptId="159941AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio"/><br />
+							Is the mother Breastfeeding? <obs conceptId="159941AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159941AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No,Unknown" style="radio"/><br />
 							NVP during BF? <obs conceptId="1282AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" answerConceptId="80586AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel=""/>
 						</td>
 					</obsgroup>
