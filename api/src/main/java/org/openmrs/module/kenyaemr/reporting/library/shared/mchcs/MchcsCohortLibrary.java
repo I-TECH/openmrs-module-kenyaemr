@@ -197,9 +197,84 @@ public class MchcsCohortLibrary {
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.addSearch("pcrConfirmedPositive2Months",ReportUtils.map(pcrConfirmedPositive2Months(),"onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
 		cd.addSearch("pcrConfirmedPositiveBetween3To8Months",ReportUtils.map(pcrConfirmedPositiveBetween3To8Months(),"onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
-		cd.addSearch("pcrConfirmedPositiveBetween9To12Months", ReportUtils.map(pcrConfirmedPositiveBetween9To12Months(), "effectiveDate=${onOrBefore}"));
+		cd.addSearch("pcrConfirmedPositiveBetween9To12Months", ReportUtils.map(pcrConfirmedPositiveBetween9To12Months(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
 		cd.setCompositionString("pcrConfirmedPositive2Months OR pcrConfirmedPositiveBetween3To8Months OR pcrConfirmedPositiveBetween9To12Months");
 		return cd;
 	}
+
+	public CohortDefinition ageAt6Months() {
+		AgeCohortDefinition age = new AgeCohortDefinition();
+		age.setName("Children with 6 months of age");
+		age.setMinAge(6);
+		age.setMaxAge(6);
+		age.setMinAgeUnit(DurationUnit.MONTHS);
+		age.setMaxAgeUnit(DurationUnit.MONTHS);
+		age.addParameter(new Parameter("effectiveDate", "effective date", Date.class));
+		return age;
+	}
+
+	public CohortDefinition exclusiveBreastFeeding() {
+		Concept infantFeedingMethod = Dictionary.getConcept(Dictionary.INFANT_FEEDING_METHOD);
+		Concept exclusiveBreastFeeding = Dictionary.getConcept(Dictionary.BREASTFED_EXCLUSIVELY);
+		return commonCohorts.hasObs(infantFeedingMethod,exclusiveBreastFeeding);
+	}
+
+	public CohortDefinition exclusiveReplacementFeeding() {
+		Concept infantFeedingMethod = Dictionary.getConcept(Dictionary.INFANT_FEEDING_METHOD);
+		Concept exclusiveReplacement = Dictionary.getConcept(Dictionary.REPLACEMENT_FEEDING);
+		return commonCohorts.hasObs(infantFeedingMethod,exclusiveReplacement);
+	}
+
+	public CohortDefinition mixedFeeding() {
+		Concept infantFeedingMethod = Dictionary.getConcept(Dictionary.INFANT_FEEDING_METHOD);
+		Concept mixedFeeding = Dictionary.getConcept(Dictionary.REPLACEMENT_FEEDING);
+		return commonCohorts.hasObs(infantFeedingMethod,mixedFeeding);
+	}
+
+	//HV02-33
+	public CohortDefinition exclusiveBreastFeedingAtSixMonths() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("exclusiveBreastFeeding",ReportUtils.map(exclusiveBreastFeeding(),"onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("ageAt6Months", ReportUtils.map(ageAt6Months(), "effectiveDate=${onOrBefore}"));
+		cd.setCompositionString("exclusiveBreastFeeding AND ageAt6Months");
+		return cd;
+	}
+
+	//HIV02-34
+	public CohortDefinition exclusiveReplacementFeedingAtSixMonths() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("exclusiveReplacementFeeding",ReportUtils.map(exclusiveReplacementFeeding(),"onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("ageAt6Months", ReportUtils.map(ageAt6Months(), "effectiveDate=${onOrBefore}"));
+		cd.setCompositionString("exclusiveReplacementFeeding AND ageAt6Months");
+		return cd;
+	}
+
+	//HIV02-35
+	public CohortDefinition mixedFeedingAtSixMonths() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("mixedFeeding",ReportUtils.map(mixedFeeding(),"onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("ageAt6Months", ReportUtils.map(ageAt6Months(), "effectiveDate=${onOrBefore}"));
+		cd.setCompositionString("mixedFeeding AND ageAt6Months");
+		return cd;
+	}
+
+	//HIV02-36
+	public CohortDefinition totalExposedAgedSixMoths() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("exclusiveBreastFeedingAtSixMonths",ReportUtils.map(exclusiveBreastFeedingAtSixMonths(),"onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("exclusiveReplacementFeedingAtSixMonths",ReportUtils.map(exclusiveReplacementFeedingAtSixMonths(),"onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("mixedFeedingAtSixMonths",ReportUtils.map(mixedFeedingAtSixMonths(),"onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("exclusiveBreastFeedingAtSixMonths OR exclusiveReplacementFeedingAtSixMonths OR mixedFeedingAtSixMonths");
+		return cd;
+	}
+
 }
 

@@ -116,10 +116,54 @@ public class MchcsIndicatorLibrary {
 	 * Total number of infants confirmed positive
 	 * @return the indicator
 	 */
-	//HV02-31
+	//HV02-32
 	public CohortIndicator pcrTotalConfirmedPositive() {
 		return cohortIndicator("Total Confirmed Positive Infants",
 				map(mchcsCohortLibrary.pcrTotalConfirmedPositive(), "onOrAfter=${startDate},onOrBefore=${endDate}")
+		);
+	}
+
+	/**
+	 * exclusive breast feeding at 6 months
+	 * @return indicator
+	 */
+	//HIV02-33
+	public CohortIndicator exclusiveBreastFeedingAtSixMonths() {
+		return cohortIndicator("Exclusive Breast Feeding at 6 months",
+				map(mchcsCohortLibrary.exclusiveBreastFeedingAtSixMonths(), "onOrAfter=${startDate},onOrBefore=${endDate}")
+		);
+	}
+
+	/**
+	 * exclusive replacement feeding at 6 months
+	 * @return indicator
+	 */
+	//HIV02-34
+	public CohortIndicator exclusiveReplacementFeedingAtSixMonths() {
+		return cohortIndicator("Exclusive Replacement Breast Feeding at 6 Months",
+				map(mchcsCohortLibrary.exclusiveReplacementFeedingAtSixMonths(), "onOrAfter=${startDate},onOrBefore=${endDate}")
+		);
+	}
+
+	/**
+	 * mixed feeding at 6 months
+	 * @return indicator
+	 */
+	//HIV02-35
+	public CohortIndicator mixedFeedingAtSixMonths() {
+		return cohortIndicator("Mixed Feeding at 6 Months",
+				map(mchcsCohortLibrary.mixedFeedingAtSixMonths(), "onOrAfter=${startDate},onOrBefore=${endDate}")
+		);
+	}
+
+	/**
+	 * Total Exposed at 6 months
+	 * @return indicator
+	 */
+	//HIV02-36
+	public CohortIndicator totalExposedAgedSixMoths() {
+		return cohortIndicator("Total Exposed at 6 Months",
+				map(mchcsCohortLibrary.totalExposedAgedSixMoths(), "onOrAfter=${startDate},onOrBefore=${endDate}")
 		);
 	}
 }
