@@ -107,12 +107,12 @@ public class Moh731ReportBuilder extends BaseIndicatorReportBuilder {
 
 		dsd.addColumn("HV02-10", "Total with known status (HV02-04 plus HV02-05)", ReportUtils.map(mchmsIndicators.testedForHivBeforeOrDuringMchms(), indParams), "");
 
-		dsd.addColumn("HV02-24", "PCR within 2 months", ReportUtils.map(mchcsIndicatorLibrary.pcrWithInitialIn2Months(), indParams), "");
-		dsd.addColumn("HV02-25", "PCR from 3 to 8 months", ReportUtils.map(mchcsIndicatorLibrary.pcrWithInitialIn2Months(), indParams), "");
-		dsd.addColumn("HV02-26", "Serology antibody test(from 9 to 12 months)", ReportUtils.map(mchcsIndicatorLibrary.pcrWithInitialIn2Months(), indParams), "");
-		dsd.addColumn("HV02-27", "PCR from 9 to 12 months", ReportUtils.map(mchcsIndicatorLibrary.pcrWithInitialIn2Months(), indParams), "");
+		dsd.addColumn("HV02-24", "PCR within 2 months of age", ReportUtils.map(mchcsIndicatorLibrary.pcrWithInitialIn2Months(), indParams), "");
+		dsd.addColumn("HV02-25", "PCR between age of 3 to 8 months", ReportUtils.map(mchcsIndicatorLibrary.pcrWithInitialBetween3And8MonthsOfAge(), indParams), "");
+		dsd.addColumn("HV02-26", "Serology antibody test(from 9 to 12 months)", ReportUtils.map(mchcsIndicatorLibrary.serologyAntBodyTestBetween9And12Months(), indParams), "");
+		dsd.addColumn("HV02-27", "PCR from 9 to 12 months", ReportUtils.map(mchcsIndicatorLibrary.pcrTestBetween9And12Months(), indParams), "");
 
-		dsd.addColumn("HV02-28", "Total HEI Tested by 12 months (HV02-24 plus HV02-26)", ReportUtils.map(mchcsIndicatorLibrary.pcrWithInitialIn2Months(), indParams), "");
+		dsd.addColumn("HV02-28", "Total HEI Tested by 12 months (HV02-24 plus HV02-26)", ReportUtils.map(mchcsIndicatorLibrary.totalHeiTestedBy12Months(), indParams), "");
 
 		return dsd;
 	}

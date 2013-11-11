@@ -30,12 +30,52 @@ public class MchcsIndicatorLibrary {
 	private MchcsCohortLibrary mchcsCohortLibrary;
 
 	/**
-	 * Number of infant patients who took pcr test within 2 months
+	 * Number of infant patients who took pcr test aged 2 months and below
 	 * @return the indicator
 	 */
 	public CohortIndicator pcrWithInitialIn2Months() {
 		return cohortIndicator("Infants given pcr within 2 months",
 				map(mchcsCohortLibrary.pcrInitialWithin2Months(), "onOrAfter=${startDate},onOrBefore=${endDate}")
+		);
+	}
+
+	/**
+	 * Number of infant patients who took pcr test aged between 3 and 8 months
+	 * @return the indicator
+	 */
+	public CohortIndicator pcrWithInitialBetween3And8MonthsOfAge() {
+		return cohortIndicator("Infants given pcr between 3 and 8 months of age",
+				map(mchcsCohortLibrary.pcrInitialBetween3To8Months(), "onOrAfter=${startDate},onOrBefore=${endDate}")
+		);
+	}
+
+	/**
+	 * Number of infant patients who took antibody test aged between 9 and 12 months
+	 * @return the indicator
+	 */
+	public CohortIndicator serologyAntBodyTestBetween9And12Months() {
+		return cohortIndicator("Infants given antibody aged between 9 and 12 months",
+				map(mchcsCohortLibrary.serologyAntBodyTestBetween9And12Months(), "onOrAfter=${startDate},onOrBefore=${endDate}")
+		);
+	}
+
+	/**
+	 * Number of infant patients who took PCR test aged between 9 and 12 months
+	 * @return the indicator
+	 */
+	public CohortIndicator pcrTestBetween9And12Months() {
+		return cohortIndicator("Infants given pcr aged between 9 and 12 months",
+				map(mchcsCohortLibrary.pcrBetween9And12MonthsAge(), "onOrAfter=${startDate},onOrBefore=${endDate}")
+		);
+	}
+
+	/**
+	 * Total number HEI tested by 12 months
+	 * @return the indicator
+	 */
+	public CohortIndicator totalHeiTestedBy12Months() {
+		return cohortIndicator("Total HEI tested by 12 months",
+				map(mchcsCohortLibrary.totalHeitestedBy12Months(), "onOrAfter=${startDate},onOrBefore=${endDate}")
 		);
 	}
 }
