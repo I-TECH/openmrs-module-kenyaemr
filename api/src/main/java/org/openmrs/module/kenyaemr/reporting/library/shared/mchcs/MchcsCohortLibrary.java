@@ -20,8 +20,10 @@ import org.openmrs.Concept;
 import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonCohortLibrary;
+import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
+import org.openmrs.module.reporting.common.DurationUnit;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -53,13 +55,23 @@ public class MchcsCohortLibrary {
 		return commonCohorts.hasObs(contexualStatus,initial);
 	}
 
+	public CohortDefinition age2Months() {
+		AgeCohortDefinition age = new AgeCohortDefinition();
+		age.setName("Children with 2 months of age");
+		age.setMaxAge(2);
+		age.setMaxAgeUnit(DurationUnit.MONTHS);
+		age.addParameter(new Parameter("effectiveDate", "effective date", Date.class));
+		return age;
+	}
+
 	public CohortDefinition  pcrInitialWithin2Months() {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.addSearch("pcrWithin2Months", ReportUtils.map(pcrWithin2Months(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
 		cd.addSearch("pcrInitialTest", ReportUtils.map(pcrInitialTest(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
-		cd.setCompositionString("pcrWithin2Months AND pcrInitialTest");
+		cd.addSearch("paeds2Months", ReportUtils.map(age2Months(), "effectiveDate=${onOrBefore}"));
+		cd.setCompositionString("pcrWithin2Months AND pcrInitialTest AND paeds2Months");
 		return cd;
 	}
 }
