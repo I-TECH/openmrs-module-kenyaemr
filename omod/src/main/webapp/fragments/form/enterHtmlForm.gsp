@@ -209,7 +209,7 @@ ui.includeJavascript("kenyaemr", "dwr-util.js")
 		<button id="discard-button" type="button">${ ui.message("htmlformentry.discard") }</button>
 	</div>
 
-	<form id="htmlform" method="post" action="${ ui.actionLink("kenyaemr", "enterHtmlForm", "submit") }" onSubmit="submitHtmlForm(); return false;">
+	<form id="htmlform" method="post" action="${ ui.actionLink("kenyaemr", "form/enterHtmlForm", "submit") }" onSubmit="submitHtmlForm(); return false;">
 		<input type="hidden" name="appId" value="${ currentApp.id }"/>
 		<input type="hidden" name="personId" value="${ command.patient.personId }"/>
 		<input type="hidden" name="formId" value="${ command.form.formId }"/>
