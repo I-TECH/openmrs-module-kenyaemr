@@ -25,7 +25,7 @@ import org.openmrs.util.PrivilegeConstants;
  * Controller for help dialog
  */
 @PublicPage
-public class HelpPageController {
+public class HelpDialogPageController {
 
 	public void controller(PageModel model) {
 

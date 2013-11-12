@@ -14,25 +14,22 @@
 
 package org.openmrs.module.kenyaemr.page.controller.dialog;
 
+import org.openmrs.Encounter;
 import org.openmrs.module.kenyaui.annotation.SharedPage;
-import org.openmrs.module.reporting.report.ReportRequest;
-import org.openmrs.module.reporting.report.service.ReportService;
-import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.page.PageModel;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
- * Controller for cohort dialog
+ * Controller for html form display dialog
  */
 @SharedPage
-public class ReportErrorPageController {
+public class FormDialogPageController {
 
-	public void controller(@RequestParam("request") ReportRequest reportRequest,
-						   PageModel model,
-						   @SpringBean ReportService reportService) {
+	public void controller(@RequestParam("encounterId") Encounter encounter,
+						   @RequestParam("currentUrl") String currentUrl,
+						   PageModel model) {
 
-		String message = reportService.loadReportError(reportRequest);
-
-		model.addAttribute("message", message);
+		model.addAttribute("encounter", encounter);
+		model.addAttribute("currentUrl", currentUrl);
 	}
 }

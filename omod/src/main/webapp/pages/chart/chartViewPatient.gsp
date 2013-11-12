@@ -82,15 +82,9 @@
 			<div class="ke-panel-content">
 
 				<% if (encounter) { %>
-					${ ui.includeFragment("kenyaemr", "showHtmlForm", [ id: "showHtmlForm" ]) }
-
-					<script type="text/javascript">
-						jq(function() {
-							publish('showHtmlForm/showEncounter', { encounterId: ${ encounter.id } });
-						});
-					</script>
+					${ ui.includeFragment("kenyaemr", "form/viewHtmlForm", [ encounter: encounter ]) }
 				<% } else { %>
-					<i>Not Filled Out</i>
+					<em>Not filled out</em>
 				<% } %>
 
 			</div>
@@ -111,6 +105,3 @@
 	<% } %>
 
 </div>
-
-${ ui.includeFragment("kenyaemr", "showHtmlForm", [ id: "showHtmlForm", style: "display: none" ]) }
-${ ui.includeFragment("kenyaemr", "dialogSupport") }

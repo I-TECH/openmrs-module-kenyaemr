@@ -47,9 +47,7 @@ jq(function() {
 	 */
 	jq('.encounter-item').click(function(event) {
 		var encId = $(this).find('input[name=encounterId]').val();
-		var title = $(this).find('input[name=title]').val();
-		publish('showHtmlForm/showEncounter', { encounterId: encId, editButtonLabel: 'Edit', deleteButtonLabel: 'Delete' });
-		showDivAsDialog('#showHtmlForm', title);
+		kenyaemr.openEncounterDialog(encId);
 		return false;
 	});
 });
@@ -71,7 +69,20 @@ var kenyaemr = (function(jq) {
 	
 	return {
 
-		/*
+		/**
+		 * Opens a dialog displaying the given encounter
+		 * @param encounterId the encounter id
+		 */
+		openEncounterDialog: function(encounterId) {
+			//publish('showHtmlForm/showEncounter', { encounterId: encounterId, editButtonLabel: 'Edit', deleteButtonLabel: 'Delete' });
+			//showDivAsDialog('#showHtmlForm', 'View Form');
+
+			var contentUrl = ui.pageLink('kenyaemr', 'dialog/formDialog', { appId: 'kenyaemr.medicalEncounter', encounterId: encounterId, currentUrl: location.href });
+
+			kenyaui.openDynamicDialog({ heading: 'View Form', url: contentUrl, width: 90, height: 90 });
+		},
+
+		/**
 		 * values may specify (as function(data) or static text): icon, title, leftDetails, center, right
 		 */
 		twoColumnStackItemFormatter: function(data, values) {
@@ -91,7 +102,7 @@ var kenyaemr = (function(jq) {
 			return ret;
 		},
 		
-		/*
+		/**
 		 * values may specify (as function(data) or static text): icon, title, leftDetails, center, right
 		 */
 		threeColumnStackItemFormatter: function(data, values) {
@@ -113,7 +124,7 @@ var kenyaemr = (function(jq) {
 			return ret;
 		},
 		
-		/*
+		/**
 		 * returns "# result(s)"
 		 */
 		defaultNumResultsFormatter: function(listOfItems) {

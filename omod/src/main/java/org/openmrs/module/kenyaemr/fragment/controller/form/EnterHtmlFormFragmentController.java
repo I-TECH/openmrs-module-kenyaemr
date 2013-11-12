@@ -12,14 +12,13 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.fragment.controller;
+package org.openmrs.module.kenyaemr.fragment.controller.form;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
@@ -31,10 +30,12 @@ import org.openmrs.module.htmlformentry.FormEntryContext.Mode;
 import org.openmrs.module.htmlformentry.FormEntrySession;
 import org.openmrs.module.htmlformentry.FormSubmissionError;
 import org.openmrs.module.htmlformentry.HtmlForm;
+import org.openmrs.module.kenyacore.CoreUtils;
 import org.openmrs.module.kenyacore.form.FormDescriptor;
 import org.openmrs.module.kenyacore.form.FormManager;
 import org.openmrs.module.kenyacore.form.FormUtils;
-import org.openmrs.module.kenyaemr.util.EmrUiUtils;
+import org.openmrs.module.kenyaui.KenyaUiUtils;
+import org.openmrs.module.kenyaui.annotation.SharedAction;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.annotation.SpringBean;
@@ -57,20 +58,21 @@ public class EnterHtmlFormFragmentController {
 						   @FragmentParam(value = "encounter", required = false) Encounter encounter,
 						   @FragmentParam(value = "visit", required = false) Visit visit,
 						   @FragmentParam(value = "returnUrl", required = false) String returnUrl,
-						   @SpringBean ResourceFactory resourceFactory,
-						   @SpringBean EmrUiUtils emrUi,
 						   FragmentConfiguration config,
 						   FragmentModel model,
 						   HttpSession httpSession,
-						   PageRequest pageRequest) throws Exception {
+						   PageRequest pageRequest,
+						   @SpringBean ResourceFactory resourceFactory,
+						   @SpringBean KenyaUiUtils kenyaUi,
+						   @SpringBean FormManager formManager) throws Exception {
 
 		config.require("patient", "formUuid | encounter");
 
 		// Get form from either the encounter or the form UUID
 		Form form = (encounter != null) ? encounter.getForm() : Context.getFormService().getFormByUuid(formUuid);
+		FormDescriptor formDescriptor = formManager.getFormDescriptor(form);
 
-		// Check that form can be accessed in the current app context
-		emrUi.checkFormAccess(pageRequest, form);
+		CoreUtils.checkAccess(formDescriptor, kenyaUi.getCurrentApp(pageRequest));
 
 		// Get html form from database or UI resource
 		HtmlForm hf = FormUtils.getHtmlForm(form, resourceFactory);
@@ -106,23 +108,22 @@ public class EnterHtmlFormFragmentController {
 	 * @return form errors in a simple object
 	 * @throws Exception
 	 */
+	@SharedAction
 	public Object submit(@RequestParam("personId") Patient patient,
 						 @RequestParam("formId") Form form,
 						 @RequestParam(value = "encounterId", required = false) Encounter encounter,
 						 @RequestParam(value = "visitId", required = false) Visit visit,
 						 @RequestParam(value = "returnUrl", required = false) String returnUrl,
 						 @SpringBean ResourceFactory resourceFactory,
-						 @SpringBean EmrUiUtils emrUi,
+						 @SpringBean KenyaUiUtils kenyaUi,
 						 @SpringBean FormManager formManager,
 						 FragmentActionRequest actionRequest) throws Exception {
-
-		// TODO Check that form can be accessed in the current app context.
-		// This will require UIFR-122 so that this action request has an associated app
-		//emrUi.checkFormAccess(actionRequest, form);
 
 		// TODO formModifiedTimestamp and encounterModifiedTimestamp
 
 		FormDescriptor formDescriptor = formManager.getFormDescriptor(form);
+
+		CoreUtils.checkAccess(formDescriptor, kenyaUi.getCurrentApp(actionRequest));
 
 		// Get html form from database or UI resource
 		HtmlForm hf = FormUtils.getHtmlForm(form, resourceFactory);

@@ -51,7 +51,7 @@ kenyaemrApp.controller('ReportController', ['$scope', '$http', '$timeout', funct
 	 * @param date the evaluation date
 	 */
 	$scope.requestReport = function(date) {
-		$http.post(ui.fragmentActionLink('kenyaemr', 'report/reportUtils', 'requestReport', { reportUuid: $scope.reportUuid, date: date }))
+		$http.post(ui.fragmentActionLink('kenyaemr', 'report/reportUtils', 'requestReport', { appId: $scope.appId, reportUuid: $scope.reportUuid, date: date }))
 			.success(defaultSuccessHandler)
 			.error(defaultErrorHandler);
 
@@ -96,7 +96,7 @@ kenyaemrApp.controller('ReportController', ['$scope', '$http', '$timeout', funct
 	 * @param requestId the request id
 	 */
 	$scope.viewReportError = function(requestId) {
-		var contentUrl = ui.pageLink('kenyaemr', 'dialog/reportError', { appId: $scope.appId, request: requestId });
+		var contentUrl = ui.pageLink('kenyaemr', 'dialog/reportErrorDialog', { appId: $scope.appId, request: requestId });
 		kenyaui.openDynamicDialog({ heading: 'View Error', url: contentUrl, width: 90, height: 90 });
 	};
 
