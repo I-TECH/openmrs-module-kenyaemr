@@ -1,15 +1,9 @@
 <%
 	ui.decorateWith("kenyaui", "panel", [ heading: "Completed Visit Forms" ])
 
-	config.require("visit")
+	def onEncounterClick = { encounter ->
+		"""kenyaemr.openEncounterDialog('${ currentApp.id }', ${ encounter.id });"""
+	}
 %>
 
-<%
-if (encounters && encounters.size > 0) {
-	encounters.each {
-		println ui.includeFragment("kenyaemr", "encounterStackItem", [ encounter: it ])
-	}
-} else {
-	println "<i>None</i>"
-}
- %>
+${ ui.includeFragment("kenyaemr", "widget/encounterStack", [ encounters: encounters, onEncounterClick: onEncounterClick ]) }

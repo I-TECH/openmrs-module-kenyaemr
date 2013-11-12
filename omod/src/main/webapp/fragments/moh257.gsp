@@ -1,8 +1,11 @@
 <%
 	def onFormClick = { form ->
-		def visitId = visit ? visit.id : null
 		def opts = [ appId: currentApp.id, patientId: currentPatient.id, formUuid: form.formUuid, returnUrl: ui.thisUrl() ]
 		"""ui.navigate('${ ui.pageLink('kenyaemr', 'enterForm', opts) }');"""
+	}
+
+	def onEncounterClick = { encounter ->
+		"""kenyaemr.openEncounterDialog('${ currentApp.id }', ${ encounter.id });"""
 	}
 %>
 <div class="ke-panel-frame">
@@ -17,15 +20,7 @@
 		<br />
 		<fieldset>
 			<legend>Previously Completed Forms</legend>
-			<%
-				if (page1Encounters && page1Encounters.size > 0) {
-					page1Encounters.each {
-						println ui.includeFragment("kenyaemr", "encounterStackItem", [ encounter: it ])
-					}
-				} else {
-					println "<i>None</i>"
-				}
-			%>
+			${ ui.includeFragment("kenyaemr", "widget/encounterStack", [ encounters: page1Encounters, onEncounterClick: onEncounterClick ]) }
 		</fieldset>
 	</div>
 </div>
@@ -33,15 +28,7 @@
 <div class="ke-panel-frame">
 	<div class="ke-panel-heading">Page 2 (Initial and Followup Visits)</div>
 	<div class="ke-panel-content" style="background-color: #F3F9FF">
-		<%
-			if (page2Encounters && page2Encounters.size > 0) {
-				page2Encounters.each {
-					println ui.includeFragment("kenyaemr", "encounterStackItem", [ encounter: it, showEncounterDate: true ])
-				}
-			} else {
-				println "<i>None</i>"
-			}
-		%>
+		${ ui.includeFragment("kenyaemr", "widget/encounterStack", [ encounters: page2Encounters, onEncounterClick: onEncounterClick ]) }
 		<br />
 		<div align="center">
 			${ ui.includeFragment("kenyaui", "widget/button", [

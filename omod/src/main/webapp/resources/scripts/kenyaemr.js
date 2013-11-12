@@ -39,20 +39,6 @@ kenyaui.configureSearch('patient', {
 });
 
 /**
- * Page initialization tasks
- */
-jq(function() {
-	/**
-	 * Clicking on an encounter-item should display the encounter as a form in a dialog
-	 */
-	jq('.encounter-item').click(function(event) {
-		var encId = $(this).find('input[name=encounterId]').val();
-		kenyaemr.openEncounterDialog(encId);
-		return false;
-	});
-});
-
-/**
  * Utility methods
  */
 var kenyaemr = (function(jq) {
@@ -71,14 +57,11 @@ var kenyaemr = (function(jq) {
 
 		/**
 		 * Opens a dialog displaying the given encounter
+		 * @param appId the app id
 		 * @param encounterId the encounter id
 		 */
-		openEncounterDialog: function(encounterId) {
-			//publish('showHtmlForm/showEncounter', { encounterId: encounterId, editButtonLabel: 'Edit', deleteButtonLabel: 'Delete' });
-			//showDivAsDialog('#showHtmlForm', 'View Form');
-
-			var contentUrl = ui.pageLink('kenyaemr', 'dialog/formDialog', { appId: 'kenyaemr.medicalEncounter', encounterId: encounterId, currentUrl: location.href });
-
+		openEncounterDialog: function(appId, encounterId) {
+			var contentUrl = ui.pageLink('kenyaemr', 'dialog/formDialog', { appId: appId, encounterId: encounterId, currentUrl: location.href });
 			kenyaui.openDynamicDialog({ heading: 'View Form', url: contentUrl, width: 90, height: 90 });
 		},
 

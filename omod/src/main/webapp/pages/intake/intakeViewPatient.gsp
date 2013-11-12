@@ -21,6 +21,3 @@
 		</tr>
 	</table>
 </div>
-
-${ ui.includeFragment("kenyaemr", "form/showHtmlForm", [ id: "showHtmlForm", style: "display: none" ]) }
-${ ui.includeFragment("kenyaemr", "dialogSupport") }

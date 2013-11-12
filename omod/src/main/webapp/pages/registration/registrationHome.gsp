@@ -3,10 +3,14 @@
 %>
 
 <style type="text/css">
+#calendar {
+	text-align: center;
+}
 #calendar .ui-widget-content {
 	border: 0;
 	background: inherit;
 	padding: 0;
+	margin: 0 auto;
 }
 </style>
 
