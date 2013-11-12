@@ -23,6 +23,7 @@ import org.openmrs.Visit;
 import org.openmrs.api.APIAuthenticationException;
 import org.openmrs.module.appframework.AppDescriptor;
 import org.openmrs.module.kenyacore.CoreConstants;
+import org.openmrs.module.kenyacore.CoreUtils;
 import org.openmrs.module.kenyacore.form.FormDescriptor;
 import org.openmrs.module.kenyacore.form.FormManager;
 import org.openmrs.module.kenyacore.report.ReportDescriptor;
@@ -240,21 +241,6 @@ public class EmrUiUtils {
 	}
 
 	/**
-	 * Checks that the specified form can be accessed by this request
-	 * @param pageRequest the page request
-	 * @param form the form
-	 * @throws org.openmrs.api.APIAuthenticationException if access is not allowed
-	 */
-	public void checkFormAccess(PageRequest pageRequest, Form form) {
-		AppDescriptor appDescriptor = kenyaUi.getCurrentApp(pageRequest);
-		FormDescriptor formDescriptor = formManager.getFormDescriptor(form);
-
-		if (formDescriptor == null || !formDescriptor.getApps().contains(appDescriptor)) {
-			throw new APIAuthenticationException("Form " + form.getName() + " cannot be accessed from " + appDescriptor.getLabel());
-		}
-	}
-
-	/**
 	 * Checks that the specified report can be accessed by this request
 	 * @param pageRequest the page request
 	 * @param report the report descriptor
@@ -263,8 +249,6 @@ public class EmrUiUtils {
 	public void checkReportAccess(PageRequest pageRequest, ReportDescriptor report) {
 		AppDescriptor appDescriptor = kenyaUi.getCurrentApp(pageRequest);
 
-		if (report.getApps() != null && !report.getApps().contains(appDescriptor)) {
-			throw new APIAuthenticationException("Report " + report.getId() + " cannot be accessed from " + appDescriptor.getLabel());
-		}
+		CoreUtils.checkAccess(report, appDescriptor);
 	}
 }

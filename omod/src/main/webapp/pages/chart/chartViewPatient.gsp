@@ -82,7 +82,7 @@
 			<div class="ke-panel-content">
 
 				<% if (encounter) { %>
-					${ ui.includeFragment("kenyaemr", "showHtmlForm", [ id: "showHtmlForm" ]) }
+					${ ui.includeFragment("kenyaemr", "form/showHtmlForm", [ id: "showHtmlForm" ]) }
 
 					<script type="text/javascript">
 						jq(function() {
@@ -112,5 +112,5 @@
 
 </div>
 
-${ ui.includeFragment("kenyaemr", "showHtmlForm", [ id: "showHtmlForm", style: "display: none" ]) }
+${ ui.includeFragment("kenyaemr", "form/showHtmlForm", [ id: "showHtmlForm", style: "display: none" ]) }
 ${ ui.includeFragment("kenyaemr", "dialogSupport") }

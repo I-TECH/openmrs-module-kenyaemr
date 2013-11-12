@@ -81,7 +81,7 @@ def returnUrl = config.returnUrl ?: ui.thisUrl()
 	function confirmDeleteEncounter(encounterId, returnUrl) {
 		var doIt = confirm('Are you sure you want to delete this form?');
 		if (doIt) {
-			ui.getFragmentActionAsJson('kenyaemr', 'showHtmlForm', 'deleteEncounter', { encounterId: encounterId }, function(data) {
+			ui.getFragmentActionAsJson('kenyaemr', 'form/formUtils', 'deleteEncounter', { appId: '${ currentApp.id }', encounterId: encounterId }, function(data) {
 				ui.navigate(returnUrl);
 			}); 
 		}
@@ -89,7 +89,7 @@ def returnUrl = config.returnUrl ?: ui.thisUrl()
 
 	subscribe('${ config.id }/showEncounter', function(message, payload) {
 		jq('#${ config.id }').html('');
-		ui.getFragmentActionAsJson('kenyaemr', 'showHtmlForm', 'viewFormHtml', { encounterId: payload.encounterId }, function(data) {
+		ui.getFragmentActionAsJson('kenyaemr', 'form/formUtils', 'getFormContent', { appId: '${ currentApp.id }', encounterId: payload.encounterId }, function(data) {
 			var toShow = ''
 			if (payload.editButtonLabel || payload.deleteButtonLabel) {
 				toShow += '<div class="html-form-buttons">';
