@@ -19,11 +19,15 @@ import net.sf.cglib.core.Predicate;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.module.kenyacore.CoreUtils;
 import org.openmrs.module.kenyacore.report.IndicatorReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportManager;
 import org.openmrs.module.kenyacore.report.ReportUtils;
-import org.openmrs.module.kenyaemr.util.EmrUiUtils;
+import org.openmrs.module.kenyaemr.EmrConstants;
+import org.openmrs.module.kenyaui.KenyaUiUtils;
+import org.openmrs.module.kenyaui.annotation.AppAction;
+import org.openmrs.module.kenyaui.annotation.SharedAction;
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.report.ReportRequest;
@@ -36,6 +40,7 @@ import org.openmrs.module.reporting.web.renderers.DefaultWebRenderer;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.SpringBean;
+import org.openmrs.ui.framework.fragment.FragmentActionRequest;
 import org.openmrs.ui.framework.fragment.action.FailureResult;
 import org.openmrs.ui.framework.fragment.action.FragmentActionResult;
 import org.openmrs.ui.framework.fragment.action.SuccessResult;
@@ -62,10 +67,12 @@ public class ReportUtilsFragmentController {
 	 * @param reportManager the report manager
 	 * @return the report request id
 	 */
+	@SharedAction
 	public SimpleObject requestReport(@RequestParam("reportUuid") String reportUuid,
 									  @RequestParam(value = "date", required = false) Date date,
 									  UiUtils ui,
-									  @SpringBean EmrUiUtils emrUi,
+									  @SpringBean KenyaUiUtils kenyaUi,
+									  @SpringBean FragmentActionRequest actionRequest,
 									  @SpringBean ReportManager reportManager,
 									  @SpringBean ReportService reportService,
 									  @SpringBean ReportDefinitionService definitionService) {
@@ -73,7 +80,7 @@ public class ReportUtilsFragmentController {
 		ReportDefinition definition = definitionService.getDefinitionByUuid(reportUuid);
 		ReportDescriptor report = reportManager.getReportDescriptor(definition);
 
-		// TODO emrUi.checkReportAccess(pageRequest, report);
+		CoreUtils.checkAccess(report, kenyaUi.getCurrentApp(actionRequest));
 
 		Mapped<ReportDefinition> mappedDefinition;
 
@@ -106,6 +113,7 @@ public class ReportUtilsFragmentController {
 	 * @param ui the UI utils
 	 * @return the result
 	 */
+	@AppAction(EmrConstants.APP_ADMIN)
 	public FragmentActionResult cancelRequest(@RequestParam("requestId") ReportRequest request,
 									  UiUtils ui,
 									  @SpringBean ReportService reportService) {
