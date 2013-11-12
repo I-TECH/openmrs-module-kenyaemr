@@ -53,9 +53,6 @@ import java.util.List;
 public class EmrUiUtils {
 
 	@Autowired
-	private FormManager formManager;
-
-	@Autowired
 	private KenyaUiUtils kenyaUi;
 
 	/**
@@ -238,17 +235,5 @@ public class EmrUiUtils {
 		return SimpleObject.fromCollection(definitions, ui,
 				"name", "group.code", "components.drugRef", "components.dose", "components.units", "components.frequency"
 		);
-	}
-
-	/**
-	 * Checks that the specified report can be accessed by this request
-	 * @param pageRequest the page request
-	 * @param report the report descriptor
-	 * @throws org.openmrs.api.APIAuthenticationException if access is not allowed
-	 */
-	public void checkReportAccess(PageRequest pageRequest, ReportDescriptor report) {
-		AppDescriptor appDescriptor = kenyaUi.getCurrentApp(pageRequest);
-
-		CoreUtils.checkAccess(report, appDescriptor);
 	}
 }

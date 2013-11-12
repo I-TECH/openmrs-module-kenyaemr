@@ -20,10 +20,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.openmrs.module.kenyacore.CoreUtils;
 import org.openmrs.module.kenyacore.report.IndicatorReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportManager;
-import org.openmrs.module.kenyaemr.util.EmrUiUtils;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.module.kenyaui.annotation.SharedPage;
 import org.openmrs.module.reporting.common.DateUtil;
@@ -51,14 +51,14 @@ public class ReportPageController {
 					PageModel model,
 					UiUtils ui,
 					@SpringBean ReportManager reportManager,
-					@SpringBean EmrUiUtils emrUi,
 					@SpringBean KenyaUiUtils kenyaUi,
 					@SpringBean ReportService reportService,
 					@SpringBean ReportDefinitionService definitionService) throws Exception {
 
 		ReportDefinition definition = definitionService.getDefinitionByUuid(reportUuid);
 		ReportDescriptor report = reportManager.getReportDescriptor(definition);
-		emrUi.checkReportAccess(pageRequest, report);
+
+		CoreUtils.checkAccess(report, kenyaUi.getCurrentApp(pageRequest));
 
 		boolean isIndicator = report instanceof IndicatorReportDescriptor;
 		boolean excelRenderable = isIndicator && ((IndicatorReportDescriptor) report).getTemplate() != null;
