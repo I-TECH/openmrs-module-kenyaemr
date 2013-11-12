@@ -12,14 +12,13 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.fragment.controller;
+package org.openmrs.module.kenyaemr.fragment.controller.form;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
@@ -35,7 +34,6 @@ import org.openmrs.module.kenyacore.CoreUtils;
 import org.openmrs.module.kenyacore.form.FormDescriptor;
 import org.openmrs.module.kenyacore.form.FormManager;
 import org.openmrs.module.kenyacore.form.FormUtils;
-import org.openmrs.module.kenyaemr.util.EmrUiUtils;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.module.kenyaui.annotation.SharedAction;
 import org.openmrs.ui.framework.SimpleObject;

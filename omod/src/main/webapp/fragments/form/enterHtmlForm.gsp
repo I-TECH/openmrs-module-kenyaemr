@@ -194,10 +194,20 @@ ui.includeJavascript("kenyaemr", "dwr-util.js")
 		if (getValue('encounter-date.value') == '') {
 			setDatetimeValue('encounter-date.value', new Date(${ visit ? ("'" + visit.startDatetime + "'") : '' }));
 		}
+
+		jq('#discard-button')
+				.click(function() {
+					ui.navigate('${ returnUrl }');
+				})
+				.insertAfter(jq('input.submitButton'));
 	});
 </script>
 
 <div id="${ config.id }" <% if (config.style) { %>style="${ config.style }"<% } %>>
+
+	<div style="display: none">
+		<button id="discard-button" type="button">${ ui.message("htmlformentry.discard") }</button>
+	</div>
 
 	<form id="htmlform" method="post" action="${ ui.actionLink("kenyaemr", "enterHtmlForm", "submit") }" onSubmit="submitHtmlForm(); return false;">
 		<input type="hidden" name="appId" value="${ currentApp.id }"/>
