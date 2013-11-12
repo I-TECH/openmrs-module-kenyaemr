@@ -41,7 +41,7 @@ import java.util.List;
  * Controller for cohort dialog
  */
 @SharedPage
-public class CohortPageController {
+public class CohortDialogPageController {
 
 	public void controller(@RequestParam("request") ReportRequest reportRequest,
 						   @RequestParam("dataset") String dataSetName,

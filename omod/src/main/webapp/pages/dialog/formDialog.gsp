@@ -15,7 +15,7 @@
 	${ ui.includeFragment("kenyaemr", "form/viewHtmlForm", [ encounter: encounter ]) }
 </div>
 <div class="ke-panel-footer">
-	<button type="button" onclick="onEncounterEdit(${ encounter.id })">Edit</button>
-	<button type="button" onclick="onEncounterDelete(${ encounter.id })">Delete</button>
-	<button type="button" onclick="kenyaui.closeDialog()">Close</button>
+	<button type="button" onclick="onEncounterEdit(${ encounter.id })"><img src="${ ui.resourceLink("kenyaui", "images/glyphs/edit.png") }" /> Edit</button>
+	<button type="button" onclick="onEncounterDelete(${ encounter.id })"><img src="${ ui.resourceLink("kenyaui", "images/glyphs/trash.png") }" /> Delete</button>
+	<button type="button" onclick="kenyaui.closeDialog()"><img src="${ ui.resourceLink("kenyaui", "images/glyphs/close.png") }" /> Close</button>
 </div>

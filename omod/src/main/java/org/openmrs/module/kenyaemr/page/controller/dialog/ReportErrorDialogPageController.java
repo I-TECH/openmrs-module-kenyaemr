@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  * Controller for cohort dialog
  */
 @SharedPage
-public class ReportErrorPageController {
+public class ReportErrorDialogPageController {
 
 	public void controller(@RequestParam("request") ReportRequest reportRequest,
 						   PageModel model,

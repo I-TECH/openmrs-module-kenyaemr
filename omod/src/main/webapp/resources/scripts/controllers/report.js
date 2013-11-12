@@ -96,7 +96,7 @@ kenyaemrApp.controller('ReportController', ['$scope', '$http', '$timeout', funct
 	 * @param requestId the request id
 	 */
 	$scope.viewReportError = function(requestId) {
-		var contentUrl = ui.pageLink('kenyaemr', 'dialog/reportError', { appId: $scope.appId, request: requestId });
+		var contentUrl = ui.pageLink('kenyaemr', 'dialog/reportErrorDialog', { appId: $scope.appId, request: requestId });
 		kenyaui.openDynamicDialog({ heading: 'View Error', url: contentUrl, width: 90, height: 90 });
 	};
 
