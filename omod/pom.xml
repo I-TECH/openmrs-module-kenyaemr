@@ -25,18 +25,6 @@
 			<scope>test</scope>
 			<classifier>tests</classifier>
 		</dependency>
-        <dependency>
-            <groupId>org.openmrs.module</groupId>
-            <artifactId>reportingrest-omod</artifactId>
-            <version>${reportingrestVersion}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.openmrs.module</groupId>
-            <artifactId>webservices.rest-omod</artifactId>
-            <version>${webservicesRestVersion}</version>
-            <scope>test</scope>
-        </dependency>
 	</dependencies>
 
 	<build>
