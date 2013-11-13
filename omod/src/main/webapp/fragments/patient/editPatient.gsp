@@ -145,8 +145,10 @@
 
 	</div>
 	<div class="ke-panel-footer">
-		<button type="submit">${ command.original ? "Save Changes" : "Create Patient" }</button>
-		<button type="button" class="cancel-button">Cancel</button>
+		<button type="submit">
+			<img src="${ ui.resourceLink("kenyaui", "images/glyphs/ok.png") }" /> ${ command.original ? "Save Changes" : "Create Patient" }
+		</button>
+		<button type="button" class="cancel-button"><img src="${ ui.resourceLink("kenyaui", "images/glyphs/cancel.png") }" /> Cancel</button>
 	</div>
 	
 </form>

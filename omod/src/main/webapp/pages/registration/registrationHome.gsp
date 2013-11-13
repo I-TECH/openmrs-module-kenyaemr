@@ -36,7 +36,7 @@
 		</div>
 
 		<div class="ke-panel-controls">
-			<button type="submit" form="close-visits-form">Close Visits</button>
+			<button type="submit" form="close-visits-form"><img src="${ ui.resourceLink("kenyaui", "images/glyphs/checkout.png") }" /> Close Visits</button>
 		</div>
 	</div>
 </div>

@@ -17,15 +17,17 @@ package org.openmrs.module.kenyaemr.page.controller;
 import org.openmrs.User;
 import org.openmrs.api.APIAuthenticationException;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyaemr.EmrWebConstants;
 import org.openmrs.ui.framework.page.PageModel;
-import org.openmrs.ui.framework.session.Session;
+
+import javax.servlet.http.HttpSession;
 
 /**
  * My profile page controller
  */
 public class ProfilePageController {
 
-	public void controller(PageModel model, Session session) {
+	public void controller(PageModel model, HttpSession httpSession) {
 
 		User user = Context.getUserContext().getAuthenticatedUser();
 		if (user != null) {
@@ -35,5 +37,10 @@ public class ProfilePageController {
 		else {
 			throw new APIAuthenticationException("You must be logged in");
 		}
+
+		// If temp password is being passed, in tell view to display change password dialog
+		model.addAttribute("tempPassword", httpSession.getAttribute(EmrWebConstants.SESSION_ATTR_RESET_PASSWORD));
+
+		httpSession.removeAttribute(EmrWebConstants.SESSION_ATTR_RESET_PASSWORD);
 	}
 }
