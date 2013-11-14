@@ -44,13 +44,8 @@ public class EmrExternalUrlInterceptor extends HandlerInterceptorAdapter {
 			log.debug("Intercepting request: " + request.getRequestURI() + " -> " + handler);
 		}
 
-		// Allow any request to the URL override controller (handles index.htm, login.htm and forgotPassword.form)
-		if (handler instanceof EmrOpenmrsUrlOverrideController) {
-			return true;
-		}
-
-		// Allow any request to /module/kenyaemr/generateField.htm
-		if (handler instanceof FieldGeneratorController) {
+		// Allow any request to the controllers in this package (e.g. FieldGeneratorController)
+		if (handler.getClass().getPackage().equals(this.getClass().getPackage())) {
 			return true;
 		}
 
