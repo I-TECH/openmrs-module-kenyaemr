@@ -39,6 +39,11 @@ kenyaui.configureSearch('patient', {
 });
 
 /**
+ * Configure AngularJS
+ */
+var kenyaemrApp = angular.module('kenyaemr', []);
+
+/**
  * Utility methods
  */
 var kenyaemr = (function(jq) {

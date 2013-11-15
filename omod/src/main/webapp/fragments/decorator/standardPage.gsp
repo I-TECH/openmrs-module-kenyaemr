@@ -1,12 +1,6 @@
 <%
-	ui.includeCss("kenyaui", "jquery-ui.css")
-	ui.includeCss("kenyaemr", "kenyaemr.css");
-	
-	ui.includeJavascript("kenyaui", "jquery.js")
-	ui.includeJavascript("kenyaui", "jquery-ui.js")
-	
-	ui.includeJavascript("kenyaui", "kenyaui.js")
-	ui.includeJavascript("kenyaemr", "kenyaemr.js")
+	ui.includeCss("kenyaemr", "kenyaemr.css", 50)
+	ui.includeJavascript("kenyaemr", "kenyaemr.js", 50)
 
 	if (config.patient) {
 		config.context = "patientId=${ config.patient.id }"

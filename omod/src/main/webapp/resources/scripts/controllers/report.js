@@ -12,8 +12,6 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-var kenyaemrApp = angular.module('kenyaemr', []);
-
 kenyaemrApp.controller('ReportController', ['$scope', '$http', '$timeout', function($scope, $http, $timeout) {
 
 	$scope.queued = [];
