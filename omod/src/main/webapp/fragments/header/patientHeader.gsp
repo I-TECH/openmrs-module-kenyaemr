@@ -2,7 +2,7 @@
 	def closeChartUrl = config.closeChartUrl ?: appHomepageUrl
 %>
 <script type="text/javascript">
-	function closeChart() {
+	function ke_closeChart() {
 		kenyaui.openConfirmDialog({ heading: 'Patient chart', message: 'Close this patient chart?', okCallback: function() {
 			ui.navigate('${ ui.escapeJs(closeChartUrl) }');
 		}});
@@ -26,7 +26,7 @@
 	</div>
 
 	<div style="float: right">
-		<button class="ke-compact" title="Close this patient chart" onclick="closeChart()"><img src="${ ui.resourceLink("kenyaui", "images/glyphs/close.png") }"/> Close</button>
+		<button class="ke-compact" title="Close this patient chart" onclick="ke_closeChart()"><img src="${ ui.resourceLink("kenyaui", "images/glyphs/close.png") }"/> Close</button>
 	</div>
 
 	<div style="clear: both; height: 5px;"></div>
