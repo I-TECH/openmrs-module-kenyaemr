@@ -28,6 +28,14 @@ import java.util.Map;
  */
 public class SystemInformation {
 
+	public final static String OPENMRS_VERSION = "openmrs.version";
+	public final static String KENYAEMR_VERSION = "kenyaemr.version";
+	public final static String SERVER_TIMEZONE = "server.timezone";
+	public final static String JVM_FREEMEMORY = "jvm.freememory";
+	public final static String JVM_TOTALMEMORY = "jvm.totalmemory";
+	public final static String JVM_MAXMEMORY = "jvm.maxmemory";
+	public final static String JVM_PROCESSORS = "jvm.processors";
+
 	/**
 	 * Gets the module version
 	 * @return the version
@@ -50,16 +58,16 @@ public class SystemInformation {
 	 */
 	public static Map<String, Object> getData() {
 		Map<String, Object> info = new LinkedHashMap<String, Object>();
-		info.put("openmrs.version", OpenmrsConstants.OPENMRS_VERSION);
-		info.put("kenyaemr.version", getModuleVersion());
+		info.put(OPENMRS_VERSION, OpenmrsConstants.OPENMRS_VERSION);
+		info.put(KENYAEMR_VERSION, getModuleVersion());
 
-		info.put("server.timezone", Calendar.getInstance().getTimeZone().getID());
+		info.put(SERVER_TIMEZONE, Calendar.getInstance().getTimeZone().getID());
 
 		Runtime jvm = Runtime.getRuntime();
-		info.put("jvm.freememory", jvm.freeMemory());
-		info.put("jvm.totalmemory", jvm.totalMemory());
-		info.put("jvm.maxmemory", jvm.maxMemory());
-		info.put("jvm.processors", jvm.availableProcessors());
+		info.put(JVM_FREEMEMORY, jvm.freeMemory());
+		info.put(JVM_TOTALMEMORY, jvm.totalMemory());
+		info.put(JVM_MAXMEMORY, jvm.maxMemory());
+		info.put(JVM_PROCESSORS, jvm.availableProcessors());
 		return info;
 	}
 }
