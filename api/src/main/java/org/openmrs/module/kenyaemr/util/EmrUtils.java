@@ -26,10 +26,8 @@ import org.openmrs.Visit;
 import org.openmrs.VisitAttribute;
 import org.openmrs.VisitAttributeType;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.ModuleFactory;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.util.OpenmrsUtil;
 
@@ -43,22 +41,6 @@ import java.util.List;
  * Miscellaneous utility methods
  */
 public class EmrUtils {
-
-	/**
-	 * Gets the module version
-	 * @return the version
-	 */
-	public static String getModuleVersion() {
-		return ModuleFactory.getModuleById(EmrConstants.MODULE_ID).getVersion();
-	}
-
-	/**
-	 * Gets the module build properties
-	 * @return the build properties map or null if not available
-	 */
-	public static BuildProperties getModuleBuildProperties() {
-		return Context.getRegisteredComponents(BuildProperties.class).get(0);
-	}
 
 	/**
 	 * Checks whether a date has any time value

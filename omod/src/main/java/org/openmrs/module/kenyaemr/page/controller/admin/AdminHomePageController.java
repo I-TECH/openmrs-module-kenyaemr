@@ -18,8 +18,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
+import org.openmrs.module.kenyaemr.util.SystemInformation;
+import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.module.kenyaui.annotation.AppPage;
 import org.openmrs.ui.framework.SimpleObject;
+import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.page.PageModel;
 import org.openmrs.util.OpenmrsConstants;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -37,6 +40,7 @@ import java.util.Map;
 public class AdminHomePageController {
 
 	public void controller(@RequestParam(value = "section", required = false) String section,
+						   @SpringBean KenyaUiUtils kenyaUi,
 						   PageModel model) {
 
 		if (StringUtils.isEmpty(section)) {
@@ -47,13 +51,19 @@ public class AdminHomePageController {
 
 		if (section.equals("overview")) {
 
-			KenyaEmrService svc = Context.getService(KenyaEmrService.class);
-			String facility = svc.getDefaultLocation() + " (" + svc.getDefaultLocationMflCode() + ")";
+			Map<String, Object> sysInfo = SystemInformation.getData();
+
+			StringBuilder memInfo = new StringBuilder();
+			memInfo.append(kenyaUi.formatBytes((Long) sysInfo.get("jvm.freememory")));
+			memInfo.append(" / ");
+			memInfo.append(kenyaUi.formatBytes((Long) sysInfo.get("jvm.totalmemory")));
+			memInfo.append(" / ");
+			memInfo.append(kenyaUi.formatBytes((Long) sysInfo.get("jvm.maxmemory")));
 
 			List<SimpleObject> general = new ArrayList<SimpleObject>();
-			general.add(SimpleObject.create("label", "OpenMRS version", "value", OpenmrsConstants.OPENMRS_VERSION));
-			general.add(SimpleObject.create("label", "Facility", "value", facility));
-			general.add(SimpleObject.create("label", "Server timezone", "value", Calendar.getInstance().getTimeZone().getDisplayName()));
+			general.add(SimpleObject.create("label", "OpenMRS version", "value", sysInfo.get("openmrs.version")));
+			general.add(SimpleObject.create("label", "Server timezone", "value", sysInfo.get("server.timezone")));
+			general.add(SimpleObject.create("label", "Memory (free / total / max)", "value", memInfo.toString()));
 
 			List<SimpleObject> content = new ArrayList<SimpleObject>();
 			content.add(SimpleObject.create("label", "Total patients", "value", Context.getPatientSetService().getPatientsByCharacteristics(null, null, null).size()));
