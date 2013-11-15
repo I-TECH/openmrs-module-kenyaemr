@@ -1,7 +1,7 @@
 <%
 	ui.decorateWith("kenyaui", "panel", [ heading: "Login Settings" ])
 
-	def checkCurrentPassword = !forcePasswordChange;
+	def checkCurrentPassword = !config.tempPassword;
 
 	def changePasswordProps = checkCurrentPassword ? [ "oldPassword", "newPassword", "confirmNewPassword" ] : [ "newPassword", "confirmNewPassword" ];
 	def changePasswordHiddenProps = checkCurrentPassword ? [] : [ "oldPassword" ]
@@ -10,12 +10,9 @@
 ${ ui.includeFragment("kenyaui", "widget/dataPoint", [ label: "Username", value: user.username ]) }
 ${ ui.includeFragment("kenyaui", "widget/dataPoint", [ label: "Secret question", value: user.secretQuestion ]) }
 
-${ ui.includeFragment("kenyaui", "widget/popupForm", [
+${ ui.includeFragment("kenyaui", "widget/dialogForm", [
 		id: "change_password",
-		linkConfig: [
-				label: "",
-				classes: [ "ke-hidden" ]
-		],
+		dialogConfig: [ heading: "Change Password" ],
 		fragmentProvider: "kenyaemr",
 		fragment: "profileLoginDetails",
 		action: "changePassword",
@@ -28,18 +25,14 @@ ${ ui.includeFragment("kenyaui", "widget/popupForm", [
 				confirmNewPassword: [ type: "password" ]
 		],
 		hiddenProperties: changePasswordHiddenProps,
-		popupTitle: "Change Password",
 		submitLabel: "Update",
-		cancelLabel: !forcePasswordChange ? "Cancel" : null,
+		cancelLabel: !config.tempPassword ? "Cancel" : null,
 		successCallbacks: [ "ui.reloadPage();" ]
 ]) }
 
-${ ui.includeFragment("kenyaui", "widget/popupForm", [
+${ ui.includeFragment("kenyaui", "widget/dialogForm", [
 		id: "change_secret_question",
-		linkConfig: [
-				label: "",
-				classes: [ "ke-hidden" ]
-		],
+		dialogConfig: [ heading: "Change Secret Question" ],
 		fragmentProvider: "kenyaemr",
 		fragment: "profileLoginDetails",
 		action: "changeSecretQuestion",
@@ -49,16 +42,7 @@ ${ ui.includeFragment("kenyaui", "widget/popupForm", [
 		propConfig: [
 				currentPassword: [ type: "password" ]
 		],
-		popupTitle: "Change Secret Question",
 		submitLabel: "Update",
 		cancelLabel: "Cancel",
 		successCallbacks: [ "ui.reloadPage();" ]
 ]) }
-
-<% if (forcePasswordChange) { %>
-<script type="text/javascript">
-	jq(function() {
-		showDivAsDialog('#change_password_form', 'Reset password', null);
-	});
-</script>
-<% } %>

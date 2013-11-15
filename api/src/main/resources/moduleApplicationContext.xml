@@ -143,13 +143,13 @@
 
 	<!-- Build properties -->
 
-	<bean id="kenyaEmrDateFactory" class="java.text.SimpleDateFormat">
-		<constructor-arg value="yyyy-MM-dd" />
+	<bean id="iso8601DateFactory" class="java.text.SimpleDateFormat">
+		<constructor-arg value="yyyy-MM-dd'T'HH:mm:ssZ" />
 	</bean>
 
 	<bean id="kenyaEmrBuildProperties" class="org.openmrs.module.kenyaemr.util.BuildProperties">
 		<property name="buildDate">
-			<bean factory-bean="kenyaEmrDateFactory" factory-method="parse">
+			<bean factory-bean="iso8601DateFactory" factory-method="parse">
 				<constructor-arg value="${moduleBuildDate}" />
 			</bean>
 		</property>

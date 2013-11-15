@@ -5,24 +5,19 @@
 	ui.includeJavascript("kenyaemr", "controllers/report.js")
 
 	def menuItems =  [
-			[ iconProvider: "kenyaui", icon: "buttons/report_generate.png", label: "Request Report", href: "javascript:requestReport()" ],
+			[ iconProvider: "kenyaui", icon: "buttons/report_generate.png", label: "Request Report", onClick: "requestReport()" ],
 			[ iconProvider: "kenyaui", icon: "buttons/back.png", label: "Back", href: returnUrl ]
 	]
 %>
 <div ng-app="kenyaemr" ng-controller="ReportController" ng-init="init('${ currentApp.id }', '${ definition.uuid }')">
 
 	<script type="text/javascript">
-		var requestDialogContent = null;
-
-		jq(function(){
-			requestDialogContent = jq('#request-dialog-content').html();
-			jq('#request-dialog-content').remove();
-		});
-
 		function requestReport() {
-			kenyaui.openPanelDialog({ heading: 'Request report', content: requestDialogContent });
+			kenyaui.openPanelDialog({ templateId: 'request-dialog-template' });
+		}
 
-			jq('#request-report-ok').unbind('click').click(function() {
+		jq(function() {
+			jq('#request-report-ok').click(function() {
 				var params = { appId: '${ currentApp.id }', reportUuid: '${ report.targetUuid }' };
 
 				<% if (isIndicator) { %>
@@ -36,10 +31,7 @@
 
 				kenyaui.closeDialog();
 			});
-			jq('#request-report-cancel').unbind('click').click(function() {
-				kenyaui.closeDialog();
-			});
-		}
+		});
 	</script>
 
 	<div class="ke-page-sidebar">
@@ -53,6 +45,7 @@
 	</div>
 
 	<div class="ke-page-content">
+
 		<div class="ke-panel-frame">
 			<div class="ke-panel-heading">Summary</div>
 			<div class="ke-panel-content">
@@ -117,7 +110,7 @@
 
 	</div>
 
-	<div id="request-dialog-content" style="display: none">
+	<div id="request-dialog-template" title="Request report" style="display: none">
 		<div class="ke-panel-content">
 			<div>Report: <strong>${ ui.format(definition.name) }</strong></div>
 			<% if (isIndicator) { %>
@@ -133,8 +126,8 @@
 			<% } %>
 		</div>
 		<div class="ke-panel-footer">
-			<div class="ke-button" id="request-report-ok"><div class="ke-button-text"><div class="ke-label">OK</div></div></div>
-			<div class="ke-button" id="request-report-cancel"><div class="ke-button-text"><div class="ke-label">Cancel</div></div></div>
+			<button type="button" id="request-report-ok"><img src="${ ui.resourceLink("kenyaui", "images/glyphs/start.png") }" /> Request</button>
+			<button type="button" onclick="kenyaui.closeDialog();"><img src="${ ui.resourceLink("kenyaui", "images/glyphs/cancel.png") }" /> Cancel</button>
 		</div>
 	</div>
 

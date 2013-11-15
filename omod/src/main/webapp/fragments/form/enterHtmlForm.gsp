@@ -39,11 +39,10 @@ ui.includeJavascript("kenyaemr", "dwr-util.js")
 		}
 	}
 
-	/*
-		It seems the logic of  showAuthenticateDialog and 
-		findAndHighlightErrors should be in the same callback function.
-		i.e. only authenticated user can see the error msg of
-	*/
+	/**
+	 * It seems the logic of showAuthenticateDialog and findAndHighlightErrors should be in the same callback function.
+	 * i.e. only authenticated user can see the error msg of
+	 */
 	function checkIfLoggedInAndErrorsCallback(authenticated) {
 		var state_beforeValidation = true;
 		
@@ -98,7 +97,7 @@ ui.includeJavascript("kenyaemr", "dwr-util.js")
 	}
 
 	function showAuthenticateDialog() {
-		kenyaui.openPanelDialog({ heading: 'Login Required', content: authenticationDialogHtml, width: 50, height: 15 });
+		kenyaui.openPanelDialog({ templateId: 'authentication-dialog', width: 50, height: 15 });
 		tryingToSubmit = false;
 	}
 
@@ -163,14 +162,6 @@ ui.includeJavascript("kenyaemr", "dwr-util.js")
 		tryingToSubmit = false;
 	}
 
-	function handleDeleteButton() {
-		jq('#confirmDeleteFormPopup').show();
-	}
-
-	function cancelDeleteForm() {
-		jq('#confirmDeleteFormPopup').hide();
-	}
-
 	/**
 	 * Because setValue doesn't work for datetime fields
 	 */
@@ -184,21 +175,14 @@ ui.includeJavascript("kenyaemr", "dwr-util.js")
 		jq('#' + fieldId + ' select[name\$=seconds]').val(value.getSeconds());
 	}
 
-	/**
-	 * Update blank encounter dates to default to visit start date or current date
-	 */
 	jq(function() {
-		authenticationDialogHtml = jq('#authentication-dialog').html();
-		jq('#authentication-dialog').empty();
-
+		// Update blank encounter dates to default to visit start date or current date
 		if (getValue('encounter-date.value') == '') {
 			setDatetimeValue('encounter-date.value', new Date(${ visit ? ("'" + visit.startDatetime + "'") : '' }));
 		}
 
-		jq('#discard-button')
-				.click(function() {
-					ui.navigate('${ returnUrl }');
-				})
+		// Inject discard button
+		jq('#discard-button').click(function() { ui.navigate('${ returnUrl }'); })
 				.insertAfter(jq('input.submitButton'));
 	});
 </script>
@@ -206,7 +190,9 @@ ui.includeJavascript("kenyaemr", "dwr-util.js")
 <div id="${ config.id }" <% if (config.style) { %>style="${ config.style }"<% } %>>
 
 	<div style="display: none">
-		<button id="discard-button" type="button">${ ui.message("htmlformentry.discard") }</button>
+		<button id="discard-button" type="button">
+			<img src="${ ui.resourceLink("kenyaui", "images/glyphs/cancel.png") }" /> Discard Changes
+		</button>
 	</div>
 
 	<form id="htmlform" method="post" action="${ ui.actionLink("kenyaemr", "form/enterHtmlForm", "submit") }" onSubmit="submitHtmlForm(); return false;">
@@ -239,7 +225,7 @@ ui.includeJavascript("kenyaemr", "dwr-util.js")
 	</form>
 </div>
 
-<div id="authentication-dialog" style="display: none">
+<div id="authentication-dialog" title="Login Required" style="display: none">
 	<div class="ke-panel-content">
 		<div style="padding-bottom: 12px; text-align: center">${ ui.message("kenyaemr.authenticateForFormSubmission") }</div>
 		<div id="authentication-dialog-error" class="error" style="display: none"></div>
@@ -255,7 +241,9 @@ ui.includeJavascript("kenyaemr", "dwr-util.js")
 		</table>
 	</div>
 	<div class="ke-panel-controls">
-		<input type="button" value="Submit" onClick="onSubmitAuthenticationDialog()"/>
+		<button type="button" onclick="onSubmitAuthenticationDialog()">
+			<img src="${ ui.resourceLink("kenyaui", "images/glyphs/login.png") }" /> Login
+		</button>
 	</div>
 </div>
 

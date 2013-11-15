@@ -1,7 +1,7 @@
 <%
 	def moduleVersionFull = moduleVersion
 	if (moduleBuildDate) {
-		moduleVersionFull += " (" + kenyaUi.formatDate(moduleBuildDate) + ")"
+		moduleVersionFull += " (" + kenyaUi.formatDateTime(moduleBuildDate) + ")"
 	}
 %>
 

@@ -36,8 +36,8 @@ import java.util.List;
  */
 public class VisitCompletedFormsFragmentController {
 	
-	public void controller(FragmentModel model,
-						   @FragmentParam("visit") Visit visit,
+	public void controller(@FragmentParam("visit") Visit visit,
+						   FragmentModel model,
 						   PageRequest request,
 						   @SpringBean FormManager formManager,
 						   @SpringBean KenyaUiUtils kenyaUi) {

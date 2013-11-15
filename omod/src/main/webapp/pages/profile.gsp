@@ -1,23 +1,27 @@
 <%
 	ui.decorateWith("kenyaemr", "standardPage", [ layout: "sidebar" ])
 %>
+<script type="text/javascript">
+	function showChangePasswordDialog() {
+		kenyaui.openPanelDialog({ templateId: 'change_password_form' });
+	}
+	function showSecretQuestionDialog() {
+		kenyaui.openPanelDialog({ templateId: 'change_secret_question_form' });
+	}
+
+	<% if (tempPassword) { %>
+	jq(function() {
+		showChangePasswordDialog();
+	});
+	<% } %>
+</script>
 
 <div class="ke-page-sidebar">
 	${ ui.includeFragment("kenyaui", "widget/panelMenu", [
 			heading: "My Profile",
 			items: [
-					[
-							iconProvider: "kenyaui",
-							icon: "buttons/profile_password.png",
-							label: "Change Password",
-							href: "javascript:showDivAsDialog('#change_password_form', 'Change Password', null)"
-					],
-					[
-							iconProvider: "kenyaui",
-							icon: "buttons/profile_secret_question.png",
-							label: "Change Secret Question",
-							href: "javascript:showDivAsDialog('#change_secret_question_form', 'Change Secret Question', null)"
-					]
+					[ label: "Change Password", iconProvider: "kenyaui", icon: "buttons/profile_password.png", onClick: "showChangePasswordDialog()" ],
+					[ label: "Change Secret Question", iconProvider: "kenyaui", icon: "buttons/profile_secret_question.png", onClick: "showSecretQuestionDialog()" ]
 			]
 	]) }
 </div>
@@ -32,5 +36,5 @@
 		</div>
 	</div>
 
-	${ ui.includeFragment("kenyaemr", "profileLoginDetails") }
+	${ ui.includeFragment("kenyaemr", "profileLoginDetails", [ tempPassword: tempPassword ]) }
 </div>

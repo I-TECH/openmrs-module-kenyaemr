@@ -46,14 +46,13 @@
 
 	<div class="ke-panel-frame">
 		<div class="ke-panel-heading">${ ui.message("kenyaemr.admin.firstTimeSetup") }</div>
-		<div class="ke-panel-content">
-			${ ui.includeFragment("kenyaui", "widget/form", [
-					pageProvider: "kenyaemr",
-					page: "admin/firstTimeSetup",
-					submitLabel: "Save Settings",
-					fields: fields
-			]) }
-		</div>
+
+		${ ui.includeFragment("kenyaui", "widget/panelForm", [
+				pageProvider: "kenyaemr",
+				page: "admin/firstTimeSetup",
+				submitLabel: "Save Settings",
+				fields: fields
+		]) }
 	</div>
 
 	<% } else { %>
