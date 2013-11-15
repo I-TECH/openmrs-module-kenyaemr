@@ -1,39 +1,8 @@
 <%
 	ui.decorateWith("kenyaemr", "standardPage", [ layout: "sidebar" ])
 
-	/**
-	 * Formats a list of informational SimpleObjects as a decorated table
-	 */
-	def formatInfoList = { list ->
-		def ret = "<table class=\"ke-table-vertical\"><tbody>"
-		list.each { obj ->
-			ret += "<tr>"
-			obj.each { entry ->
-				def property = entry.key
-				if (property == "version") {
-					// Version numbers look best left-aligned
-					ret += "<td style=\"text-align: left\">${ obj[property] != null ? obj[property] : "-" }</td>"
-				} else if (property == "status") {
-					ret += "<td style=\"text-align: right\">"
-					if (obj[property] instanceof Boolean) {
-						// Use icon instead of text
-						def icon = obj[property] ? "success.png" : "alert.png"
-						ret += "<img src=\"" + ui.resourceLink("kenyaui", "images/" + icon) + "\" alt=\"\" />"
-					} else {
-						ret += "<img src=\"" + ui.resourceLink("kenyaui", "images/alert.png") + "\" alt=\"" + obj[property] + "\" />"
-					}
-					ret += "</td>"
-				} else {
-					ret += "<td>${ obj[property] }</td>"
-				}
-			}
-			ret += "</tr>"
-		}
-		ret += "</tbody></table>"
-		return ret
-	}
+	ui.includeJavascript("kenyaui", "angular.js")
 %>
-
 <div class="ke-page-sidebar">
 	${ ui.includeFragment("kenyaui", "widget/panelMenu", [
 			heading: "Information",
@@ -72,7 +41,7 @@
 	]) }
 </div>
 
-<div class="ke-page-content">
+<div class="ke-page-content" ng-app="kenyaemr">
 
 <% if (section == "content") { %>
 
@@ -91,24 +60,10 @@
 	<div class="ke-tab" data-tabid="reports">${ ui.includeFragment("kenyaemr", "system/reportsContent") }</div>
 
 <% } else if (section == "modules") { %>
-
 	${ ui.includeFragment("kenyaemr", "system/loadedModules") }
-
 <% } else { %>
-
-	<% infoCategories.each { %>
-	<div class="ke-panel-frame">
-		<div class="ke-panel-heading">${ it.key }</div>
-		<div class="ke-panel-content">
-			<% if (it.value instanceof java.util.List) { %>
-				${ formatInfoList(it.value) }
-			<% } else { %>
-				${ ui.format(it.value) }
-			<% } %>
-		</div>
-	</div>
-	<% } %>
-
+	${ ui.includeFragment("kenyaemr", "system/systemInformation") }
+	${ ui.includeFragment("kenyaemr", "system/databaseSummary") }
 <% } %>
 
 </div>
