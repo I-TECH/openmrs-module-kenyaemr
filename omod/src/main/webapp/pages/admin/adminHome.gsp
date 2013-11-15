@@ -1,7 +1,5 @@
 <%
 	ui.decorateWith("kenyaemr", "standardPage", [ layout: "sidebar" ])
-
-	ui.includeJavascript("kenyaui", "angular.js")
 %>
 <div class="ke-page-sidebar">
 	${ ui.includeFragment("kenyaui", "widget/panelMenu", [
@@ -41,7 +39,7 @@
 	]) }
 </div>
 
-<div class="ke-page-content" ng-app="kenyaemr">
+<div class="ke-page-content">
 
 <% if (section == "content") { %>
 
