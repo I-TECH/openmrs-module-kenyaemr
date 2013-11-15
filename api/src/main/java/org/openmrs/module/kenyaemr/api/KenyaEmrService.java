@@ -11,19 +11,16 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.kenyaemr.api;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import org.openmrs.Location;
-import org.openmrs.LocationAttributeType;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
-import org.openmrs.annotation.Authorized;
 import org.openmrs.api.OpenmrsService;
-import org.openmrs.util.PrivilegeConstants;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -99,21 +96,4 @@ public interface KenyaEmrService extends OpenmrsService {
 	 * @param startFrom the base identifier to start from
 	 */
 	void setupHivUniqueIdentifierSource(String startFrom);
-
-	/**
-	 * Gets the locations matching the specified arguments
-	 *
-	 * NEEDS MOVED INTO LocationService
-	 *
-	 * @param nameFragment is the string used to search for locations
-	 * @param parent only return children of this parent
-	 * @param attributeValues the attribute values
-	 * @param includeRetired specifies if retired locations should also be returned
-	 * @param start the beginning index
-	 * @param length the number of matching locations to return
-	 * @return the list of locations
-	 */
-	@Transactional(readOnly = true)
-	@Authorized( { PrivilegeConstants.VIEW_LOCATIONS })
-	List<Location> getLocations(String nameFragment, Location parent, Map<LocationAttributeType, Object> attributeValues, boolean includeRetired, Integer start, Integer length);
 }

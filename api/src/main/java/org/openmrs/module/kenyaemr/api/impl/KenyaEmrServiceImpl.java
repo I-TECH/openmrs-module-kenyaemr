@@ -14,7 +14,6 @@
 
 package org.openmrs.module.kenyaemr.api.impl;
 
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.GlobalProperty;
@@ -25,9 +24,9 @@ import org.openmrs.Patient;
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.Visit;
 import org.openmrs.api.APIException;
+import org.openmrs.api.LocationService;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.impl.BaseOpenmrsService;
-import org.openmrs.customdatatype.CustomDatatypeUtil;
 import org.openmrs.module.idgen.AutoGenerationOption;
 import org.openmrs.module.idgen.IdentifierSource;
 import org.openmrs.module.idgen.SequentialIdentifierGenerator;
@@ -62,6 +61,9 @@ public class KenyaEmrServiceImpl extends BaseOpenmrsService implements KenyaEmrS
 
 	@Autowired
 	private IdentifierManager identifierManager;
+
+	@Autowired
+	private LocationService locationService;
 
 	private boolean setupRequired = true;
 
@@ -152,7 +154,7 @@ public class KenyaEmrServiceImpl extends BaseOpenmrsService implements KenyaEmrS
 		Map<LocationAttributeType, Object> attrVals = new HashMap<LocationAttributeType, Object>();
 		attrVals.put(mflCodeAttrType, mflCode);
 
-		List<Location> locations = getLocations(null, null, attrVals, false, null, null);
+		List<Location> locations = locationService.getLocations(null, null, attrVals, false, null, null);
 
 		return locations.size() > 0 ? locations.get(0) : null;
 	}
@@ -254,17 +256,5 @@ public class KenyaEmrServiceImpl extends BaseOpenmrsService implements KenyaEmrS
 
 		AutoGenerationOption auto = new AutoGenerationOption(idType, idGen, true, true);
 		idService.saveAutoGenerationOption(auto);
-	}
-
-	/**
-	 * @see org.openmrs.module.kenyaemr.api.KenyaEmrService#getLocations(String, org.openmrs.Location, java.util.Map, boolean, Integer, Integer)
-	 *
-	 * NEEDS MOVED INTO LocationServiceImpl
-	 */
-	@Override
-	public List<Location> getLocations(String nameFragment, Location parent, Map<LocationAttributeType, Object> attributeValues, boolean includeRetired, Integer start, Integer length) {
-		Map<LocationAttributeType, String> serializedAttributeValues = CustomDatatypeUtil.getValueReferences(attributeValues);
-
-		return dao.getLocations(nameFragment, parent, serializedAttributeValues, includeRetired, start, length);
 	}
 }
