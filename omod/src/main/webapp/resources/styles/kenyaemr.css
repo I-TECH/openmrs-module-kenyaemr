@@ -33,6 +33,14 @@
 	color: white;
 }
 
+.ke-patientheader button {
+	background-color: #c9c3b4;
+}
+
+.ke-patientheader button:hover {
+	background-color: #d9d3c4;
+}
+
 /***** System header *****/
 
 .ke-system-header {

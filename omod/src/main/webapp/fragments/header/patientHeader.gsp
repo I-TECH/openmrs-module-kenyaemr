@@ -2,13 +2,11 @@
 	def closeChartUrl = config.closeChartUrl ?: appHomepageUrl
 %>
 <script type="text/javascript">
-	jq(function() {
-		jq('#patient-record-close-link').hover(function() {
-			jq('#patient-record-close-text').addClass('ke-glowing');
-		}, function() {
-			jq('#patient-record-close-text').removeClass('ke-glowing');
-		});
-	});
+	function closeChart() {
+		kenyaui.openConfirmDialog({ heading: 'Patient chart', message: 'Close this patient chart?', okCallback: function() {
+			ui.navigate('${ ui.escapeJs(closeChartUrl) }');
+		}});
+	}
 </script>
 
 <div class="ke-patientheader">
@@ -26,13 +24,10 @@
 			<div style="text-align: center"><span class="ke-identifier-type">${ it.identifierType.name }</span> <span class="ke-identifier-value">${ it.identifier }</span></div>
 		<% } %>
 	</div>
-	
-	<% if (closeChartUrl) { %>
-		<div style="float: right">
-			<span id="patient-record-close-text" class="ke-tip">Close chart </span>
-			<a href="${ closeChartUrl }" id="patient-record-close-link"><img title="Close this patient chart" style="vertical-align: middle" src="${ ui.resourceLink("kenyaui", "images/buttons/close.png") }"/></a>
-		</div>
-	<% } %>
+
+	<div style="float: right">
+		<button class="ke-compact" title="Close this patient chart" onclick="closeChart()"><img src="${ ui.resourceLink("kenyaui", "images/glyphs/close.png") }"/> Close</button>
+	</div>
 
 	<div style="clear: both; height: 5px;"></div>
 
