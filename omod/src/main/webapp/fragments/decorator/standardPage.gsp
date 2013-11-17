@@ -22,6 +22,7 @@
 	config.pageTitle = "KenyaEMR"
 	config.faviconIco = ui.resourceLink("kenyaemr", "images/logos/favicon.ico")
 	config.faviconPng = ui.resourceLink("kenyaemr", "images/logos/favicon.png")
+	config.angularApp = "kenyaemr"
 	
 	ui.decorateWith("kenyaui", "standardPage", config)
 %>
