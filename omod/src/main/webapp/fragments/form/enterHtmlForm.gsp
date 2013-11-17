@@ -1,23 +1,19 @@
 <%
-// supports style (css style)
-
-ui.includeJavascript("kenyaui", "jquery.js")
-ui.includeJavascript("kenyaui", "jquery-ui.js")
-ui.includeJavascript("kenyaemr", "dwr-util.js")
+	ui.includeJavascript("kenyaemr", "dwr-util.js")
 %>
 
 <script type="text/javascript" src="/${ contextPath }/moduleResources/htmlformentry/htmlFormEntry.js"></script>
 <link href="/${ contextPath }/moduleResources/htmlformentry/htmlFormEntry.css" type="text/css" rel="stylesheet" />
 
 <script type="text/javascript">
-	\$j = jQuery; // Forms should use jq like everything else, but for backwards compatibility we allow this for now
+	\$j = jQuery; // For backwards compatibility - some forms maybe using this to reference jQuery
 
 	function showDiv(id) {
-		jq('#' + id).show();
+		jQuery('#' + id).show();
 	}
 	
 	function hideDiv(id) {
-		jq('#' + id).hide();
+		jQuery('#' + id).hide();
 	}
 
 	var propertyAccessorInfo = new Array();
@@ -33,7 +29,7 @@ ui.includeJavascript("kenyaemr", "dwr-util.js")
 		if (!tryingToSubmit) {
 			tryingToSubmit = true;
 			ui.disableConfirmBeforeNavigating();
-			jq.getJSON(ui.fragmentActionLink('kenyaemr', 'emrUtils', 'isAuthenticated'), function(result) {
+			jQuery.getJSON(ui.fragmentActionLink('kenyaemr', 'emrUtils', 'isAuthenticated'), function(result) {
 				checkIfLoggedInAndErrorsCallback(result.authenticated);
 			});
 		}
@@ -81,16 +77,16 @@ ui.includeJavascript("kenyaemr", "dwr-util.js")
 	function findAndHighlightErrors(){
 		/* see if there are error fields */
 		var containError = false
-		var ary = jq(".autoCompleteHidden");
-		jq.each(ary, function(index, value){
+		var ary = jQuery(".autoCompleteHidden");
+		jQuery.each(ary, function(index, value){
 			if(value.value == "ERROR"){
 				if(!containError){
 					alert("${ ui.message("htmlformentry.error.autoCompleteAnswerNotValid") }");
 					var id = value.id;
 					id = id.substring(0,id.length-4);
-					jq("#"+id).focus();
+					jQuery("#" + id).focus();
 				}
-				containError=true;
+				containError = true;
 			}
 		});
 		return containError;
@@ -102,13 +98,13 @@ ui.includeJavascript("kenyaemr", "dwr-util.js")
 	}
 
 	function onSubmitAuthenticationDialog() {
-		var username = jq('#authentication-dialog-username').val();
-		var password = jq('#authentication-dialog-password').val();
+		var username = jQuery('#authentication-dialog-username').val();
+		var password = jQuery('#authentication-dialog-password').val();
 
 		kenyaui.closeDialog();
 
 		// Try authenticating and then submitting again...
-		jq.getJSON(ui.fragmentActionLink('kenyaemr', 'emrUtils', 'authenticate', { username: username, password: password }), submitHtmlForm);
+		jQuery.getJSON(ui.fragmentActionLink('kenyaemr', 'emrUtils', 'authenticate', { username: username, password: password }), submitHtmlForm);
 	}
 
 	function doSubmitHtmlForm() {
@@ -133,8 +129,8 @@ ui.includeJavascript("kenyaemr", "dwr-util.js")
 			kenyaui.openLoadingDialog({ message: 'Submitting form...' });
 			kenyaui.clearFormErrors('htmlform');
 
-			var form = jq('#htmlform');
-			jq.post(form.attr('action'), form.serialize(), function(result) {
+			var form = jQuery('#htmlform');
+			jQuery.post(form.attr('action'), form.serialize(), function(result) {
 				if (result.success) {
 					<% if (command.returnUrl) { %>
 					ui.navigate('${ command.returnUrl }');
@@ -168,22 +164,22 @@ ui.includeJavascript("kenyaemr", "dwr-util.js")
 	function setDatetimeValue(elementAndProperty, value) {
 		var fieldId = elementAndProperty.split(".")[0];
 
-		jq('#' + fieldId + ' input[type=text]').datepicker('setDate', value);
+		jQuery('#' + fieldId + ' input[type=text]').datepicker('setDate', value);
 
-		jq('#' + fieldId + ' select[name\$=hours]').val(value.getHours());
-		jq('#' + fieldId + ' select[name\$=minutes]').val(value.getMinutes());
-		jq('#' + fieldId + ' select[name\$=seconds]').val(value.getSeconds());
+		jQuery('#' + fieldId + ' select[name\$=hours]').val(value.getHours());
+		jQuery('#' + fieldId + ' select[name\$=minutes]').val(value.getMinutes());
+		jQuery('#' + fieldId + ' select[name\$=seconds]').val(value.getSeconds());
 	}
 
-	jq(function() {
+	jQuery(function() {
 		// Update blank encounter dates to default to visit start date or current date
 		if (getValue('encounter-date.value') == '') {
 			setDatetimeValue('encounter-date.value', new Date(${ visit ? ("'" + visit.startDatetime + "'") : '' }));
 		}
 
 		// Inject discard button
-		jq('#discard-button').click(function() { ui.navigate('${ returnUrl }'); })
-				.insertAfter(jq('input.submitButton'));
+		jQuery('#discard-button').click(function() { ui.navigate('${ returnUrl }'); })
+				.insertAfter(jQuery('input.submitButton'));
 	});
 </script>
 
@@ -254,7 +250,7 @@ ui.includeJavascript("kenyaemr", "dwr-util.js")
 <% } %>
 
 <script type="text/javascript">
-	jq(function() {
+	jQuery(function() {
 		ui.confirmBeforeNavigating('#htmlform');
 	});
 </script>

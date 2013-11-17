@@ -46,7 +46,7 @@ var kenyaemrApp = angular.module('kenyaemr', []);
 /**
  * Utility methods
  */
-var kenyaemr = (function(jq) {
+var kenyaemr = (function(jQuery) {
 
 	var formatHelper = function(data, formatter) {
 		if (data === null || typeof formatter === 'undefined') {
@@ -126,18 +126,18 @@ var kenyaemr = (function(jq) {
 		updateRegimenFromDisplay: function(fieldId) {
 			var regimenStr = '';
 
-			$('#' + fieldId +  '-container .regimen-component').each(function() {
-				var drug = jq(this).find('.regimen-component-drug').val();
-				var dose = jq(this).find('.regimen-component-dose').val();
-				var units = jq(this).find('.regimen-component-units').val();
-				var frequency = jq(this).find('.regimen-component-frequency').val();
+			jQuery('#' + fieldId +  '-container .regimen-component').each(function() {
+				var drug = jQuery(this).find('.regimen-component-drug').val();
+				var dose = jQuery(this).find('.regimen-component-dose').val();
+				var units = jQuery(this).find('.regimen-component-units').val();
+				var frequency = jQuery(this).find('.regimen-component-frequency').val();
 
 				if (drug || dose) {
 					regimenStr += (drug + '|' + dose + '|' + units + '|' + frequency + '|');
 				}
 			});
 
-			$('#' + fieldId).val(regimenStr);
+			jQuery('#' + fieldId).val(regimenStr);
 		},
 
 		/**
@@ -150,12 +150,12 @@ var kenyaemr = (function(jq) {
 		 */
 		dynamicObsField: function(parentId, fieldName, conceptId, initialValue, readOnly) {
 			var placeHolderId = kenyaui.generateId();
-			jq('#' + parentId).append('<div id="' + placeHolderId + '" class="ke-loading ke-form-dynamic-field">&nbsp;</div>');
-			jq.get('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/generateField.htm', { name: fieldName, conceptId: conceptId, initialValue: initialValue, readOnly : readOnly })
-			.done(function (html) {
-				jq('#' + placeHolderId).removeClass('ke-loading');
-				jq('#' + placeHolderId).html(html);
-			});
+			jQuery('#' + parentId).append('<div id="' + placeHolderId + '" class="ke-loading ke-form-dynamic-field">&nbsp;</div>');
+			jQuery.get('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/generateField.htm', { name: fieldName, conceptId: conceptId, initialValue: initialValue, readOnly : readOnly })
+				.done(function (html) {
+					jQuery('#' + placeHolderId).removeClass('ke-loading');
+					jQuery('#' + placeHolderId).html(html);
+				});
 		}
 	};
 
