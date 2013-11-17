@@ -172,10 +172,12 @@
 	}
 
 	jQuery(function() {
+		<% if (config.defaultEncounterDate) { %>
 		// Update blank encounter dates to default to visit start date or current date
 		if (getValue('encounter-date.value') == '') {
-			setDatetimeValue('encounter-date.value', new Date(${ visit ? ("'" + visit.startDatetime + "'") : '' }));
+			setDatetimeValue('encounter-date.value', new Date(${ config.defaultEncounterDate.time }));
 		}
+		<% } %>
 
 		// Inject discard button
 		jQuery('#discard-button').click(function() { ui.navigate('${ returnUrl }'); })
