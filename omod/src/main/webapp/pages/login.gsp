@@ -6,8 +6,23 @@
 		background-color: #e0d8cd;
 	}
 </style>
+<script type="text/javascript">
+	jQuery(function() {
+		var browser = kenyaui.getBrowser();
+		var name = browser ? browser[0] : '?';
+
+		if (jQuery.inArray(name, [ 'Chrome', 'Firefox' ]) < 0) {
+			jQuery('#browser-warning').show();
+		}
+	});
+</script>
+
+<div id="browser-warning" class="ke-warning" style="display: none; text-align: center">
+	Access from an unsupported browser detected. Please use <strong>Chrome</strong> or <strong>Firefox</strong> instead.
+</div>
 
 <div style="text-align: center; padding-top: 100px">
+
 	<form method="post" action="${ loginServletUrl }" autocomplete="off">
 		<table style="margin-left: auto; margin-right: auto; border: 0" cellpadding="3" cellspacing="0">
 			<tr>
@@ -40,7 +55,7 @@
 </div>
 
 <script type="text/javascript">
-	jq(function() {
-		jq('#uname').focus();
+	jQuery(function() {
+		jQuery('#uname').focus();
 	});
 </script>
