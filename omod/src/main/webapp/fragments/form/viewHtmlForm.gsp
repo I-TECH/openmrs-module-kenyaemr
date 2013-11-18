@@ -49,7 +49,7 @@
 		<legend>Change history</legend>
 
 		<% changeHistory.each { change -> %>
-		${ kenyaUi.formatDateTime(change.timestamp) } by ${ kenyaUi.formatUser(change.user) } : ${ change.description }<br />
+		${ kenyaui.formatDateTime(change.timestamp) } by ${ kenyaui.formatUser(change.user) } : ${ change.description }<br />
 		<% } %>
 	</fieldset>
 </div>

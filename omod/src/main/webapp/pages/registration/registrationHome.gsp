@@ -49,7 +49,7 @@
 	jq(function() {
 		jq('#calendar').datepicker({
 			dateFormat: 'yy-mm-dd',
-			defaultDate: '${ kenyaUi.formatDateParam(scheduleDate) }',
+			defaultDate: '${ kenyaui.formatDateParam(scheduleDate) }',
 			gotoCurrent: true,
 			onSelect: function(dateText) {
 				ui.navigate('kenyaemr', 'registration/registrationHome', { scheduleDate: dateText });

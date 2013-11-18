@@ -14,9 +14,9 @@
 		<div style="float: left; padding-right: 5px">
 			<img width="32" height="32" src="${ ui.resourceLink("kenyaui", "images/buttons/patient_" + patient.gender.toLowerCase() + ".png") }"/>
 		</div>
-		<span class="ke-patient-name">${ kenyaUi.formatPersonName(patient) }</span><br/>
-		<span class="ke-patient-gender">${ kenyaUi.formatPersonGender(patient) }</span>,
-		<span class="ke-patient-age">${ kenyaUi.formatPersonAge(patient) } <small>(${ kenyaUi.formatPersonBirthdate(patient) })</small></span>
+		<span class="ke-patient-name">${ kenyaui.formatPersonName(patient) }</span><br/>
+		<span class="ke-patient-gender">${ kenyaui.formatPersonGender(patient) }</span>,
+		<span class="ke-patient-age">${ kenyaui.formatPersonAge(patient) } <small>(${ kenyaui.formatPersonBirthdate(patient) })</small></span>
 	</div>
 	
 	<div style="float: left; width: 30%">
@@ -33,9 +33,9 @@
 
 	<div style="width: 50%; float: left; overflow: auto; text-align: left">
 	<% if (patient.dead) { %>
-		<span class="ke-tag" style="background-color: #FF5153; color: #000">Deceased since <strong>${ kenyaUi.formatDate(patient.deathDate) }</strong></span>
+		<span class="ke-tag" style="background-color: #FF5153; color: #000">Deceased since <strong>${ kenyaui.formatDate(patient.deathDate) }</strong></span>
 	<% } else if (patient.voided) { %>
-		<span class="ke-tag" style="background-color: #000; color: #FFF">Voided since <strong>${ kenyaUi.formatDate(patient.dateVoided) }</strong></span>
+		<span class="ke-tag" style="background-color: #000; color: #FFF">Voided since <strong>${ kenyaui.formatDate(patient.dateVoided) }</strong></span>
 	<% } else { %>
 		${ ui.includeFragment("kenyaemr", "header/patientFlags", [ patient: patient ]) }
 	<% } %>
@@ -44,7 +44,7 @@
 	<div style="width: 50%; float: right; overflow: auto; text-align: right">
 		<span class="ke-tip">Current visit</span>
 		<% if (visit) {
-			def visitStartStr = visitStartedToday ? kenyaUi.formatTime(visit.startDatetime) : kenyaUi.formatDate(visit.startDatetime);
+			def visitStartStr = visitStartedToday ? kenyaui.formatTime(visit.startDatetime) : kenyaui.formatDate(visit.startDatetime);
 
 			%><span class="ke-visittag">${ ui.format(visit.visitType) } since <b>${ visitStartStr }</b></span><%
 		} else {

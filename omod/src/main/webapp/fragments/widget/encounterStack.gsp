@@ -5,7 +5,7 @@
 		config.encounters.each { encounter ->
 			def title = ui.format(encounter.form ?: encounter.encounterType)
 
-			title += " (" + kenyaUi.formatDateAuto(encounter.encounterDatetime) + ")"
+			title += " (" + kenyaui.formatDateAuto(encounter.encounterDatetime) + ")"
 
 			def providers = encounter.providersByRoles.values().collectAll { ui.format(it) }.flatten().join(", ")
 
@@ -18,7 +18,7 @@
 	${ ui.includeFragment("kenyaui", "widget/icon", [ iconProvider: form.iconProvider, icon: form.icon, useViewOverlay: true, tooltip: "View Encounter" ]) }
 	<b>${ title }</b> by ${ providers }<br/>
 	<span style="color: gray">
-		Entered by ${ ui.format(encounter.creator) } on ${ kenyaUi.formatDateTime(encounter.dateCreated) }<% if (encounter.dateChanged) { %>, last edit by ${ ui.format(encounter.changedBy) } on ${ kenyaUi.formatDateTime(encounter.dateChanged) }<% } %>
+		Entered by ${ ui.format(encounter.creator) } on ${ kenyaui.formatDateTime(encounter.dateCreated) }<% if (encounter.dateChanged) { %>, last edit by ${ ui.format(encounter.changedBy) } on ${ kenyaui.formatDateTime(encounter.dateChanged) }<% } %>
 	</span>
 </div>
 <%
