@@ -132,7 +132,7 @@ public class Moh731ReportBuilder extends BaseIndicatorReportBuilder {
 		dsd.addColumn("HIV02-38", "Mother on ARV treatment and Not breastfeeding", ReportUtils.map(mchcsIndicatorLibrary.motherOnTreatmentAndNotBreastFeeding(), indParams), "");
 		dsd.addColumn("HIV02-39", "Mother on ARV treatment if breastfeeding unknown", ReportUtils.map(mchcsIndicatorLibrary.motherOnTreatmentAndNotBreastFeedingUnknown(), indParams), "");
 
-		dsd.addColumn("HIV02-40", "Mother on ARV treatment (Total Sum())", ReportUtils.map(mchcsIndicatorLibrary.totalBreastFeedingMotherOnTreatment(), indParams), "");
+		dsd.addColumn("HIV02-40", "Mother on ARV treatment (Total Sum(HIV02-37 to HIV02-39))", ReportUtils.map(mchcsIndicatorLibrary.totalBreastFeedingMotherOnTreatment(), indParams), "");
 
 		return dsd;
 	}
