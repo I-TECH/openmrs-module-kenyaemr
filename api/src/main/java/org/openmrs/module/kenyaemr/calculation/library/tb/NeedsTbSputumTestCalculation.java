@@ -30,8 +30,8 @@ import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
+import org.openmrs.module.kenyaemr.TbConstants;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyaemr.metadata.TbMetadata;
 
@@ -153,13 +153,13 @@ public class NeedsTbSputumTestCalculation extends BaseEmrCalculation implements 
 					if ((patientClassification != null)
 							&& (patientClassification.getValue().getValueCoded()
 							.equals(smearPositiveNew))
-							&& (numberOfDaysSinceTreatmentStarted >= EmrConstants.MONTH_TWO_SPUTUM_TEST)) {
+							&& (numberOfDaysSinceTreatmentStarted >= TbConstants.MONTH_TWO_SPUTUM_TEST)) {
 						// check for the first obs since
 						// numberOfDaysSinceTreatmentStarted elaspses, first
 						// encounter on or after 2 month
 						// get the date two months after start of treatment
 						c.add(Calendar.DATE,
-								EmrConstants.MONTH_TWO_SPUTUM_TEST);
+								TbConstants.MONTH_TWO_SPUTUM_TEST);
 						Date dateAfterTwomonths = c.getTime();
 						// now find the first obs recorded on or after
 						// dateAfterTwomonths based on sputum ie it should be
@@ -183,10 +183,10 @@ public class NeedsTbSputumTestCalculation extends BaseEmrCalculation implements 
 					if ((patientClassification != null)
 							&& (patientClassification.getValue().getValueCoded()
 							.equals(smearPositiveNew))
-							&& (numberOfDaysSinceTreatmentStarted >= EmrConstants.MONTH_FIVE_SPUTUM_TEST)) {
+							&& (numberOfDaysSinceTreatmentStarted >= TbConstants.MONTH_FIVE_SPUTUM_TEST)) {
 						// get the date at month 5 since treatment started
 						c.add(Calendar.DATE,
-								EmrConstants.MONTH_FIVE_SPUTUM_TEST);
+								TbConstants.MONTH_FIVE_SPUTUM_TEST);
 						Date dateAfterFiveMonths = c.getTime();
 						// check if any obs is collected on or after this date
 						CalculationResultMap firstObsAfterFivemonthsOnOrAfterdateAfterFivemonths = Calculations.firstObsOnOrAfter(
@@ -211,10 +211,10 @@ public class NeedsTbSputumTestCalculation extends BaseEmrCalculation implements 
 					if ((patientClassification != null)
 							&& (patientClassification.getValue().getValueCoded()
 							.equals(smearPositiveNew))
-							&& (numberOfDaysSinceTreatmentStarted >= EmrConstants.MONTH_SIX_SPUTUM_TEST)) {
+							&& (numberOfDaysSinceTreatmentStarted >= TbConstants.MONTH_SIX_SPUTUM_TEST)) {
 						// get the date at month 6 since treatment started
 						c.add(Calendar.DATE,
-								EmrConstants.MONTH_SIX_SPUTUM_TEST);
+								TbConstants.MONTH_SIX_SPUTUM_TEST);
 						Date dateAfterSixMonths = c.getTime();
 						// check if there is any observation on or after this
 						// date
@@ -247,10 +247,10 @@ public class NeedsTbSputumTestCalculation extends BaseEmrCalculation implements 
 									.equals(retreatmentAfterDefault)))) {
 						// check for the days elapsed since treatment was commenced
 						// will target 3rd month
-						if (numberOfDaysSinceTreatmentStarted >= EmrConstants.MONTH_THREE_SPUTUM_TEST) {
+						if (numberOfDaysSinceTreatmentStarted >= TbConstants.MONTH_THREE_SPUTUM_TEST) {
 							// get the date at Month 3 since the treatment started
 							c.add(Calendar.DATE,
-									EmrConstants.MONTH_THREE_SPUTUM_TEST);
+									TbConstants.MONTH_THREE_SPUTUM_TEST);
 							Date dateAfterThreeMonths = c.getTime();
 							// get the first observation of sputum on or after the
 							// date
@@ -271,11 +271,11 @@ public class NeedsTbSputumTestCalculation extends BaseEmrCalculation implements 
 
 						}
 						// check for the days in the 5th month
-						if (numberOfDaysSinceTreatmentStarted >= EmrConstants.MONTH_FIVE_SPUTUM_TEST) {
+						if (numberOfDaysSinceTreatmentStarted >= TbConstants.MONTH_FIVE_SPUTUM_TEST) {
 							// get the date after 5 month since the retreatment
 							// started
 							c.add(Calendar.DATE,
-									EmrConstants.MONTH_FIVE_SPUTUM_TEST);
+									TbConstants.MONTH_FIVE_SPUTUM_TEST);
 							Date dateAfterFiveMonths = c.getTime();
 							// get the first observation of sputum on or after the
 							// date
@@ -297,11 +297,11 @@ public class NeedsTbSputumTestCalculation extends BaseEmrCalculation implements 
 						}
 						// check for the days in the 8th month and it will be
 						// considered complete treatment
-						if (numberOfDaysSinceTreatmentStarted >= EmrConstants.MONTH_EIGHT_SPUTUM_TEST) {
+						if (numberOfDaysSinceTreatmentStarted >= TbConstants.MONTH_EIGHT_SPUTUM_TEST) {
 							// get the date after 8 month since the retreatment
 							// started
 							c.add(Calendar.DATE,
-									EmrConstants.MONTH_EIGHT_SPUTUM_TEST);
+									TbConstants.MONTH_EIGHT_SPUTUM_TEST);
 							Date dateAfterEightMonths = c.getTime();
 							// get the first observation of sputum on or after the
 							// date

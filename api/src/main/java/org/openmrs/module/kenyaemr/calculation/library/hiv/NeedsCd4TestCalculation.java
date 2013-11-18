@@ -29,8 +29,8 @@ import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
+import org.openmrs.module.kenyaemr.HivConstants;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 
@@ -79,7 +79,7 @@ public class NeedsCd4TestCalculation extends BaseEmrCalculation implements Patie
 
 				Date lastResultDate = CoreUtils.latest(dateCount, datePercent);
 
-				if (lastResultDate == null || (daysSince(lastResultDate, context) > EmrConstants.NEEDS_CD4_COUNT_AFTER_DAYS)) {
+				if (lastResultDate == null || (daysSince(lastResultDate, context) > HivConstants.NEEDS_CD4_COUNT_AFTER_DAYS)) {
 					needsCD4 = true;
 				}
 			}

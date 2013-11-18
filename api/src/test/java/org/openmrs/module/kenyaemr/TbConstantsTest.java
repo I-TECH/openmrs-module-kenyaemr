@@ -17,12 +17,12 @@ package org.openmrs.module.kenyaemr;
 import org.junit.Test;
 
 /**
- * Tests for {@link EmrConstants}
+ * Tests for {@link TbConstants}
  */
-public class EmrConstantsTest {
+public class TbConstantsTest {
 
 	@Test
 	public void integration() {
-		new EmrConstants();
+		new TbConstants();
 	}
 }

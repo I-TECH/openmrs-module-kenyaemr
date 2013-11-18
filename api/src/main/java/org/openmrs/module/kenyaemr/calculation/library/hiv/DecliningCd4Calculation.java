@@ -26,8 +26,8 @@ import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
+import org.openmrs.module.kenyaemr.HivConstants;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
@@ -56,7 +56,7 @@ public class DecliningCd4Calculation extends BaseEmrCalculation implements Patie
 
 		// Get the two CD4 obss for comparison
 		CalculationResultMap lastCD4Obss = Calculations.lastObs(getConcept(Dictionary.CD4_COUNT), inHivProgram, context);
-		CalculationResultMap oldCD4Obss = Calculations.lastObsAtLeastDaysAgo(getConcept(Dictionary.CD4_COUNT), EmrConstants.DECLINING_CD4_COUNT_ACROSS_DAYS, inHivProgram, context);
+		CalculationResultMap oldCD4Obss = Calculations.lastObsAtLeastDaysAgo(getConcept(Dictionary.CD4_COUNT), HivConstants.DECLINING_CD4_COUNT_ACROSS_DAYS, inHivProgram, context);
 
 		CalculationResultMap ret = new CalculationResultMap();
 		for (Integer ptId : cohort) {

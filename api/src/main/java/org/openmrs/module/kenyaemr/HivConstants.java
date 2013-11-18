@@ -14,15 +14,23 @@
 
 package org.openmrs.module.kenyaemr;
 
-import org.junit.Test;
-
 /**
- * Tests for {@link EmrConstants}
+ * Constants related to HIV care
  */
-public class EmrConstantsTest {
+public class HivConstants {
 
-	@Test
-	public void integration() {
-		new EmrConstants();
-	}
+	/**
+	 * Number of days without an encounter before a patient is consider lost to follow up
+	 */
+	public static final int LOST_TO_FOLLOW_UP_THRESHOLD_DAYS = 90;
+
+	/**
+	 * Number of days between old CD4 count and need for new CD4 count
+	 */
+	public static final int NEEDS_CD4_COUNT_AFTER_DAYS = 180;
+
+	/**
+	 * Number of days between old CD4 count and current CD4 count to determine declining status
+	 */
+	public static final int DECLINING_CD4_COUNT_ACROSS_DAYS = 180;
 }
