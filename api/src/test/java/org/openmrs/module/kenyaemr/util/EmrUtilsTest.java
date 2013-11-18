@@ -83,27 +83,6 @@ public class EmrUtilsTest extends BaseModuleContextSensitiveTest {
 	}
 
 	/**
-	 * @see EmrUtils#isSameDay(java.util.Date, java.util.Date)
-	 * @verifies return false if either date is null
-	 */
-	@Test
-	public void isSameDay_shouldReturnFalseIfEitherDateIsNull() {
-		Assert.assertFalse(EmrUtils.isSameDay(null, TestUtils.date(2012, 1, 2)));
-		Assert.assertFalse(EmrUtils.isSameDay(TestUtils.date(2012, 1, 2), null));
-	}
-
-	/**
-	 * @see EmrUtils#isSameDay(java.util.Date, java.util.Date)
-	 * @verifies return true only for two dates that are on the same day
-	 */
-	@Test
-	public void isSameDay_shouldReturnTrueOnlyForDatesOnSameDay() {
-		Assert.assertTrue(EmrUtils.isSameDay(TestUtils.date(2012, 1, 1), TestUtils.date(2012, 1, 1)));
-		Assert.assertTrue(EmrUtils.isSameDay(TestUtils.date(2012, 1, 1, 10, 30, 0), TestUtils.date(2012, 1, 1, 11, 45, 0)));
-		Assert.assertFalse(EmrUtils.isSameDay(TestUtils.date(2012, 1, 1), TestUtils.date(2012, 1, 2)));
-	}
-
-	/**
 	 * @see EmrUtils#isToday(java.util.Date)
 	 * @verifies return true only for dates that are today
 	 */

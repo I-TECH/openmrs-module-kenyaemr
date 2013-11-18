@@ -15,6 +15,7 @@
 package org.openmrs.module.kenyaemr.util;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.openmrs.Concept;
 import org.openmrs.ConceptName;
 import org.openmrs.DrugOrder;
@@ -76,7 +77,7 @@ public class EmrUiUtils {
 			Calendar stop = Calendar.getInstance();
 			stop.setTime(visit.getStopDatetime());
 			boolean isLastMoment = stop.get(Calendar.HOUR_OF_DAY) == 23 && stop.get(Calendar.MINUTE) == 59 && stop.get(Calendar.SECOND) == 59;
-			boolean isSameDay = EmrUtils.isSameDay(visit.getStartDatetime(), visit.getStopDatetime());
+			boolean isSameDay = (visit.getStopDatetime() != null) && DateUtils.isSameDay(visit.getStartDatetime(), visit.getStopDatetime());
 
 			if (!(isLastMoment && isSameDay)) {
 				sb.append(" \u2192 ");
