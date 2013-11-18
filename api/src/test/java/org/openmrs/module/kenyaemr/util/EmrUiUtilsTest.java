@@ -19,19 +19,16 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Concept;
 import org.openmrs.DrugOrder;
-import org.openmrs.Visit;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.regimen.DrugReference;
 import org.openmrs.module.kenyaemr.regimen.RegimenChangeHistory;
 import org.openmrs.module.kenyaemr.regimen.RegimenManager;
 import org.openmrs.module.kenyaemr.regimen.RegimenOrder;
-import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.fragment.FragmentActionUiUtils;
-import org.openmrs.util.OpenmrsUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.xml.sax.SAXException;
 
@@ -83,33 +80,6 @@ public class EmrUiUtilsTest extends BaseModuleContextSensitiveTest {
 		stavudine.setFrequency("BD");
 
 		regimen = new RegimenOrder(new LinkedHashSet<DrugOrder>(Arrays.asList(dapsone, stavudine)));
-	}
-
-	/**
-	 * @see EmrUiUtils#formatVisitDates(org.openmrs.Visit)
-	 */
-	@Test
-	public void formatVisitDates() {
-		// Check a retrospective visit
-		Visit visit = new Visit();
-		visit.setStartDatetime(OpenmrsUtil.firstSecondOfDay(TestUtils.date(2011, 1, 1)));
-		visit.setStopDatetime(OpenmrsUtil.getLastMomentOfDay(TestUtils.date(2011, 1, 1)));
-		Assert.assertThat(kenyaUi.formatVisitDates(visit), is("01-Jan-2011"));
-
-		// Check a regular visit on single day
-		visit.setStartDatetime(TestUtils.date(2011, 1, 1, 10, 0, 0));
-		visit.setStopDatetime(TestUtils.date(2011, 1, 1, 11, 0, 0));
-		Assert.assertThat(kenyaUi.formatVisitDates(visit), is("01-Jan-2011 10:00 \u2192 11:00"));
-
-		// Check a regular visit spanning multiple days
-		visit.setStartDatetime(TestUtils.date(2011, 1, 1, 10, 0, 0));
-		visit.setStopDatetime(TestUtils.date(2011, 1, 2, 11, 0, 0));
-		Assert.assertThat(kenyaUi.formatVisitDates(visit), is("01-Jan-2011 10:00 \u2192 02-Jan-2011 11:00"));
-
-		// Check a visit with no end
-		visit.setStartDatetime(TestUtils.date(2011, 1, 1, 10, 0, 0));
-		visit.setStopDatetime(null);
-		Assert.assertThat(kenyaUi.formatVisitDates(visit), is("01-Jan-2011 10:00"));
 	}
 
 	/**

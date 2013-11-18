@@ -24,7 +24,7 @@
 
 	${ ui.includeFragment("kenyaui", "widget/dataPoint", [ label: "Type", value: visit.visitType ]) }
 	${ ui.includeFragment("kenyaui", "widget/dataPoint", [ label: "Location", value: visit.location ]) }
-	${ ui.includeFragment("kenyaui", "widget/dataPoint", [ label: "When", value: kenyaEmrUi.formatVisitDates(visit) ]) }
+	${ ui.includeFragment("kenyaui", "widget/dataPoint", [ label: "When", value: kenyaui.formatVisitDates(visit) ]) }
 	${ ui.includeFragment("kenyaui", "widget/dataPoint", [ label: "Entry", value: sourceForm ?: "Registration" ]) }
 </div>
 
