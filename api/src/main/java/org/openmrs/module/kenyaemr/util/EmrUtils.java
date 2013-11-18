@@ -141,23 +141,38 @@ public class EmrUtils {
 	}
 
 	/**
-	 * Parses a CSV list of concept ids, UUIDs or mappings
-	 * @param value the string
+	 * Parses a CSV list of strings, returning all trimmed non-empty values
+	 * @param csv the CSV string
 	 * @return the concepts
 	 */
-	public static List<Concept> parseConceptList(String value) {
-		List<Concept> concepts = new ArrayList<Concept>();
+	public static List<String> parseCsv(String csv) {
+		List<String> values = new ArrayList<String>();
 
-		for (String token : value.split(",")) {
+		for (String token : csv.split(",")) {
 			token = token.trim();
 
 			if (!StringUtils.isEmpty(token)) {
-				if (StringUtils.isNumeric(token)) {
-					concepts.add(Context.getConceptService().getConcept(Integer.valueOf(token)));
-				}
-				else {
-					concepts.add(Dictionary.getConcept(token));
-				}
+				values.add(token);
+			}
+		}
+		return values;
+	}
+
+	/**
+	 * Parses a CSV list of concept ids, UUIDs or mappings
+	 * @param csv the CSV string
+	 * @return the concepts
+	 */
+	public static List<Concept> parseConcepts(String csv) {
+		List<String> identifiers = parseCsv(csv);
+		List<Concept> concepts = new ArrayList<Concept>();
+
+		for (String identifier : identifiers) {
+			if (StringUtils.isNumeric(identifier)) {
+				concepts.add(Context.getConceptService().getConcept(Integer.valueOf(identifier)));
+			}
+			else {
+				concepts.add(Dictionary.getConcept(identifier));
 			}
 		}
 		return concepts;

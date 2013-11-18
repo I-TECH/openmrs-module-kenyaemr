@@ -38,6 +38,7 @@ public class EmrConstants {
 	 * Global property names
 	 */
 	public static final String GP_DEFAULT_LOCATION = MODULE_ID + ".defaultLocation";
+	public static final String GP_CONTROLLER_WHITELIST = MODULE_ID + ".controllerWhitelist";
 	public static final String GP_SUPPORT_PHONE_NUMBER = MODULE_ID + ".supportPhoneNumber";
 	public static final String GP_SUPPORT_EMAIL_ADDRESS = MODULE_ID + ".supportEmailAddress";
 
