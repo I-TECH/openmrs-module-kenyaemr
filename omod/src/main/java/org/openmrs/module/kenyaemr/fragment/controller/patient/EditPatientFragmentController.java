@@ -57,7 +57,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class EditPatientFragmentController {
 
 	// We don't record cause of death, but data model requires a concept
-	private static final String CAUSE_OF_DEATH_PLACEHOLDER = Dictionary.INDETERMINATE;
+	private static final String CAUSE_OF_DEATH_PLACEHOLDER = Dictionary.UNKNOWN;
 
 	/**
 	 * Main controller method

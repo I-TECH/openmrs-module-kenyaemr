@@ -29,6 +29,7 @@ import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.module.kenyacore.calculation.CalculationManager;
 import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
+import org.openmrs.module.kenyaui.annotation.SharedAction;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.SpringBean;
@@ -48,7 +49,8 @@ public class PatientUtilsFragmentController {
 	 * @param calculationManager the calculation manager
 	 * @return the flags as simple objects
 	 */
-	public List<SimpleObject> flags(@RequestParam("patientId") Integer patientId, @SpringBean CalculationManager calculationManager) {
+	@SharedAction
+	public List<SimpleObject> getFlags(@RequestParam("patientId") Integer patientId, @SpringBean CalculationManager calculationManager) {
 
 		List<SimpleObject> flags = new ArrayList<SimpleObject>();
 

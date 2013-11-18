@@ -1,7 +1,6 @@
 <%
 	ui.decorateWith("kenyaemr", "standardPage", [ layout: "sidebar" ])
 
-	ui.includeJavascript("kenyaui", "angular.js")
 	ui.includeJavascript("kenyaemr", "controllers/report.js")
 
 	def menuItems =  [
@@ -9,7 +8,7 @@
 			[ iconProvider: "kenyaui", icon: "buttons/back.png", label: "Back", href: returnUrl ]
 	]
 %>
-<div ng-app="kenyaemr" ng-controller="ReportController" ng-init="init('${ currentApp.id }', '${ definition.uuid }')">
+<div ng-controller="ReportController" ng-init="init('${ currentApp.id }', '${ definition.uuid }')">
 
 	<script type="text/javascript">
 		function requestReport() {

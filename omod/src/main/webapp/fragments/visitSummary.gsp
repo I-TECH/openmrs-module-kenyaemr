@@ -1,18 +1,18 @@
 <%
 	ui.decorateWith("kenyaui", "panel", [ heading: "Visit Summary", frameOnly: true ])
+
+	def nonVoidedEncounters = visit.encounters.findAll { !it.voided }
 %>
 <script type="text/javascript">
-	function onVoidVisit(visitId) {
+	function ke_deleteVisit(visitId) {
 		kenyaui.openConfirmDialog({
-			heading: 'KenyaEMR',
+			heading: 'Visit',
 			message: '${ ui.message("kenyaemr.confirmVoidVisit") }',
-			okCallback: function() { doVisitVoid(visitId); }
-		});
-	}
-
-	function doVisitVoid(visitId) {
-		ui.getFragmentActionAsJson('kenyaemr', 'emrUtils', 'voidVisit', { visitId: visitId, reason: 'Data entry error' }, function() {
-			ui.reloadPage();
+			okCallback: function() {
+				ui.getFragmentActionAsJson('kenyaemr', 'emrUtils', 'voidVisit', { visitId: visitId, reason: 'Data entry error' }, function() {
+					ui.reloadPage();
+				});
+			}
 		});
 	}
 </script>
@@ -30,16 +30,12 @@
 
 <% if (allowVoid && !visit.voided) { %>
 <div class="ke-panel-controls" style="text-align: center">
-	<% if (!visit.encounters) { %>
-	${ ui.includeFragment("kenyaui", "widget/button", [
-			label: "Void Visit",
-			extra: "If entered by mistake",
-			iconProvider: "kenyaui",
-			icon: "buttons/visit_void.png",
-			onClick: "onVoidVisit(" + visit.id + ")"
-	]) }
+	<% if (!nonVoidedEncounters) { %>
+	<button type="button" onclick="ke_deleteVisit(${ visit.id })">
+		<img src="${ ui.resourceLink("kenyaui", "images/glyphs/void.png") }" /> Delete visit
+	</button>
 	<% } else { %>
-	<em>To void this visit, please delete all encounters first</em>
+	<em>To delete this visit, please delete all encounters first.</em>
 	<% } %>
 </div>
 <% } %>

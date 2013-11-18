@@ -91,11 +91,11 @@ public class PatientUtilsFragmentControllerTest extends BaseModuleWebContextSens
 	}
 
 	/**
-	 * @see PatientUtilsFragmentController#flags(Integer, org.openmrs.module.kenyacore.calculation.CalculationManager)
+	 * @see PatientUtilsFragmentController#getFlags(Integer, org.openmrs.module.kenyacore.calculation.CalculationManager)
 	 */
 	@Test
-	public void flags_shouldReturnAllFlags() {
-		List<SimpleObject> flags = controller.flags(7, calculationManager);
+	public void getFlags_shouldReturnAllFlags() {
+		List<SimpleObject> flags = controller.getFlags(7, calculationManager);
 
 		// Check that every flag object has a message and that it doesn't start with "ERROR..."
 	 	for (SimpleObject flag : flags) {

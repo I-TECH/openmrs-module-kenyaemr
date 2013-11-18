@@ -11,31 +11,11 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.kenyaemr.api.db;
-
-import org.openmrs.Location;
-import org.openmrs.LocationAttributeType;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * Database access functions
  */
 public interface KenyaEmrDAO {
-
-	/**
-	 * Gets the locations matching the specified arguments
-	 *
-	 * NEEDS MOVED INTO LocationDAO
-	 *
-	 * @param nameFragment is the string used to search for locations
-	 * @param parent only return children of this parent
-	 * @param serializedAttributeValues the serialized attribute values
-	 * @param includeRetired specifies if retired locations should also be returned
-	 * @param start the beginning index
-	 * @param length the number of matching locations to return
-	 * @return the list of locations
-	 */
- 	List<Location> getLocations(String nameFragment, Location parent, Map<LocationAttributeType, String> serializedAttributeValues, boolean includeRetired, Integer start, Integer length);
 }
