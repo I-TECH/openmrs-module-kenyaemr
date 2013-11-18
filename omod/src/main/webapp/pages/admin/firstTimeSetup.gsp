@@ -47,12 +47,21 @@
 	<div class="ke-panel-frame">
 		<div class="ke-panel-heading">${ ui.message("kenyaemr.admin.firstTimeSetup") }</div>
 
-		${ ui.includeFragment("kenyaui", "widget/panelForm", [
-				pageProvider: "kenyaemr",
-				page: "admin/firstTimeSetup",
-				submitLabel: "Save Settings",
-				fields: fields
-		]) }
+		<div class="ke-panel-content">
+			<form id="settings-form" action="${ ui.pageLink("kenyaemr", "admin/firstTimeSetup") }">
+				<% if (defaultLocation) { %>
+					<div class="ke-warning" style="margin-bottom: 5px">Ensure that all visits are closed before changing the default location</div>
+				<% } %>
+
+				<% fields.each { %>
+				${ ui.includeFragment("kenyaui", "widget/labeledField", it) }
+				<% } %>
+			</form>
+		</div>
+
+		<div class="ke-panel-controls">
+			<button type="submit" form="settings-form"><img src="${ ui.resourceLink("kenyaui", "images/glyphs/ok.png") }" /> Save Settings</button>
+		</div>
 	</div>
 
 	<% } else { %>
