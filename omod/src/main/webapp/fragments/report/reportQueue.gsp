@@ -1,5 +1,5 @@
 <div class="ke-panel-frame">
-	<div class="ke-panel-heading">{{ reportUuid ? "Queue" : "Reports Queue" }}</div>
+	<div class="ke-panel-heading">Queue</div>
 	<div class="ke-panel-content">
 		<table class="ke-table-vertical">
 			<thead>

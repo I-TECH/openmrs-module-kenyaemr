@@ -5,6 +5,7 @@
 %>
 <div class="ke-page-sidebar">
 	${ ui.includeFragment("kenyaui", "widget/panelMenu", [
+			heading: "Reports",
 			items: [
 					[ iconProvider: "kenyaui", icon: "buttons/back.png", label: "Back", href: ui.pageLink("kenyaemr", "admin/adminHome") ]
 			]

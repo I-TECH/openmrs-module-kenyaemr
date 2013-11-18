@@ -40,7 +40,7 @@
 </script>
 
 <div class="ke-page-sidebar">
-	${ ui.includeFragment("kenyaui", "widget/panelMenu", [ heading: person ? "Account" : "Menu", items: menuItems ]) }
+	${ ui.includeFragment("kenyaui", "widget/panelMenu", [ heading: "Account", items: menuItems ]) }
 </div>
 
 <div class="ke-page-content">
