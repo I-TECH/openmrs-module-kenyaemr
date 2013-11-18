@@ -16,8 +16,8 @@ package org.openmrs.module.kenyaemr.fragment.controller.header;
 
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.util.BuildProperties;
-import org.openmrs.module.kenyaemr.util.EmrUtils;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
+import org.openmrs.module.kenyaemr.util.SystemInformation;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 
 import java.text.ParseException;
@@ -30,12 +30,12 @@ public class PageHeaderFragmentController {
 
 	public void controller(FragmentModel model) throws ParseException {
 		// Get module version
-		String moduleVersion = EmrUtils.getModuleVersion();
+		String moduleVersion = SystemInformation.getModuleVersion();
 
 		// Fetch build date for snapshot versions
 		Date moduleBuildDate = null;
 		if (moduleVersion.endsWith("SNAPSHOT")) {
-			BuildProperties buildProperties = EmrUtils.getModuleBuildProperties();
+			BuildProperties buildProperties = SystemInformation.getModuleBuildProperties();
 
 			if (buildProperties != null) {
 				moduleBuildDate = buildProperties.getBuildDate();

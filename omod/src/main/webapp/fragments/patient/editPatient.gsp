@@ -7,74 +7,67 @@
 	def maleChecked = command.gender == 'M' ? 'checked="true"' : ''
 
 	def demogFieldRows = [
-		[
-			[ object: command, property: "personName.familyName", label: "Surname *" ],
-			[ object: command, property: "personName.givenName", label: "First name *" ],
-			[ object: command, property: "personName.middleName", label: "Other name(s)" ]
-		],
-		[
-			ui.decorate("kenyaui", "labeled", [label: "Sex *"], """
-				<input type="radio" name="gender" value="F" id="gender-F" ${ femaleChecked }/>
-				<label for="gender-F">Female</label>
-				&nbsp;
-				<input type="radio" name="gender" value="M" id="gender-M" ${ maleChecked }/>
-				<label for="gender-M">Male</label>
-				<span id="gender-F-error" class="error" style="display: none"></span>
-				<span id="gender-M-error" class="error" style="display: none"></span>
-			"""),
-			"&nbsp;&nbsp;&nbsp;&nbsp;",
-			[ object: command, property: "birthdate", label: "Birthdate *" ],
-			[ object: command, property: "birthdateEstimated", label: "Estimated?" ]
-		],
-		[
-			[ object: command, property: "maritalStatus", label: "Marital status", config: [ style: "list", options: maritalStatusOptions ] ],
-			[ object: command, property: "occupation", label: "Occupation", config: [ style: "list", answerTo: occupationConcept ] ],
-			[ object: command, property: "education", label: "Education", config: [ style: "list", options: educationOptions ] ]
-		],
-		[
-			[ object: command, property: "dead", label: "Deceased" ],
-			[ object: command, property: "deathDate", label: "Date of death" ],
-			[ object: command, property: "causeOfDeath", label: "Cause of death", config: [ style: "list", options: causeOfDeathOptions ] ]
-		]
+			[
+					[ object: command, property: "personName.familyName", label: "Surname *" ],
+					[ object: command, property: "personName.givenName", label: "First name *" ],
+					[ object: command, property: "personName.middleName", label: "Other name(s)" ]
+			],
+			[
+					ui.decorate("kenyaui", "labeled", [label: "Sex *"], """
+						<input type="radio" name="gender" value="F" id="gender-F" ${ femaleChecked }/>
+						<label for="gender-F">Female</label>
+						&nbsp;
+						<input type="radio" name="gender" value="M" id="gender-M" ${ maleChecked }/>
+						<label for="gender-M">Male</label>
+						<span id="gender-F-error" class="error" style="display: none"></span>
+						<span id="gender-M-error" class="error" style="display: none"></span>
+					"""),
+					"&nbsp;&nbsp;&nbsp;&nbsp;",
+					[ object: command, property: "birthdate", label: "Birthdate *" ],
+					[ object: command, property: "birthdateEstimated", label: "Estimated?" ]
+			],
+			[
+					[ object: command, property: "maritalStatus", label: "Marital status", config: [ style: "list", options: maritalStatusOptions ] ],
+					[ object: command, property: "occupation", label: "Occupation", config: [ style: "list", answerTo: occupationConcept ] ],
+					[ object: command, property: "education", label: "Education", config: [ style: "list", options: educationOptions ] ]
+			],
+			[
+					[ object: command, property: "dead", label: "Deceased" ],
+					[ object: command, property: "deathDate", label: "Date of death" ]
+			]
 	]
 	def nextOfKinFieldRows = [
-		[
- 	 		[ object: command, property: "nameOfNextOfKin.value", label: ui.format(command.nameOfNextOfKin.attributeType) ],
- 	 		[ object: command, property: "nextOfKinRelationship.value", label: ui.format(command.nextOfKinRelationship.attributeType) ]
- 	    ],
-	   	[
- 			[ object: command, property: "nextOfKinContact.value", label: ui.format(command.nextOfKinContact.attributeType) ],
- 	  		[ object: command, property: "nextOfKinAddress.value", label: ui.format(command.nextOfKinAddress.attributeType) ]
- 	 	]
-		
- 	 	
- 	  ]
-	
+			[
+					[ object: command, property: "nameOfNextOfKin.value", label: ui.format(command.nameOfNextOfKin.attributeType) ],
+					[ object: command, property: "nextOfKinRelationship.value", label: ui.format(command.nextOfKinRelationship.attributeType) ]
+			],
+			[
+					[ object: command, property: "nextOfKinContact.value", label: ui.format(command.nextOfKinContact.attributeType) ],
+					[ object: command, property: "nextOfKinAddress.value", label: ui.format(command.nextOfKinAddress.attributeType) ]
+			]
+	]
+
 	def addressFieldRows = [
-		[
-			[ object: command, property: "telephoneContact.value", label: ui.format(command.telephoneContact.attributeType) ],
-			[ object: command, property: "personAddress.address1", label: "Postal Address", config: [ size: 60 ] ],
-			[ object: command, property: "personAddress.country", label: "County", config: [ size: 60 ] ],
-			[ object: command, property: "subChiefName.value", label: ui.format(command.subChiefName.attributeType) ]
-
-		],
-		[
-			[ object: command, property: "personAddress.address3", label: "School/Employer Address",config: [ size: 60 ] ],
-			[ object: command, property: "personAddress.countyDistrict", label: "District" ],
-			[ object: command, property: "personAddress.stateProvince", label: "Province", config: [ size: 60 ] ]
-
-		],
-	[		[ object: command, property: "personAddress.address6", label: "Location" ],
-			[ object: command, property: "personAddress.address5", label: "Sub-location" ],
-			[ object: command, property: "personAddress.address4", label: "Division", config: [ size: 60 ] ]
-
-		],
-
-		[
-			[ object: command, property: "personAddress.cityVillage", label: "Village/Estate" ],
-			[ object: command, property: "personAddress.address2", label: "Landmark" ],
-			[ object: command, property: "personAddress.postalCode", label: "House/Plot Number" ]
-		]
+			[
+					[ object: command, property: "telephoneContact.value", label: ui.format(command.telephoneContact.attributeType) ],
+					[ object: command, property: "personAddress.address1", label: "Postal Address", config: [ size: 60 ] ],
+					[ object: command, property: "personAddress.country", label: "County", config: [ size: 60 ] ],
+					[ object: command, property: "subChiefName.value", label: ui.format(command.subChiefName.attributeType) ]
+			],
+			[
+					[ object: command, property: "personAddress.address3", label: "School/Employer Address",config: [ size: 60 ] ],
+					[ object: command, property: "personAddress.countyDistrict", label: "District" ],
+					[ object: command, property: "personAddress.stateProvince", label: "Province", config: [ size: 60 ] ]
+			],
+			[		[ object: command, property: "personAddress.address6", label: "Location" ],
+					[ object: command, property: "personAddress.address5", label: "Sub-location" ],
+					[ object: command, property: "personAddress.address4", label: "Division", config: [ size: 60 ] ]
+			],
+			[
+					[ object: command, property: "personAddress.cityVillage", label: "Village/Estate" ],
+					[ object: command, property: "personAddress.address2", label: "Landmark" ],
+					[ object: command, property: "personAddress.postalCode", label: "House/Plot Number" ]
+			]
 	]
 %>
 
@@ -88,7 +81,7 @@
 		<div class="ke-form-globalerrors" style="display: none"></div>
 
 		<div class="ke-form-instructions">
-			<b>*</b> indicates a required field
+			<strong>*</strong> indicates a required field
 		</div>
 
 		<fieldset>
@@ -145,8 +138,10 @@
 
 	</div>
 	<div class="ke-panel-footer">
-		<button type="submit">${ command.original ? "Save Changes" : "Create Patient" }</button>
-		<button type="button" class="cancel-button">Cancel</button>
+		<button type="submit">
+			<img src="${ ui.resourceLink("kenyaui", "images/glyphs/ok.png") }" /> ${ command.original ? "Save Changes" : "Create Patient" }
+		</button>
+		<button type="button" class="cancel-button"><img src="${ ui.resourceLink("kenyaui", "images/glyphs/cancel.png") }" /> Cancel</button>
 	</div>
 	
 </form>
@@ -166,7 +161,7 @@ jq(function() {
 				ui.navigate('kenyaemr', 'registration/registrationViewPatient', { patientId: data.patientId });
 				<% } %>
 			} else {
-				ui.notifyError('Saving patient was successful, but unexpected response');
+				kenyaui.notifyError('Saving patient was successful, but unexpected response');
 			}
 		}
 	});

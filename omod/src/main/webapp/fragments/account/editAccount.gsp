@@ -28,16 +28,17 @@
 <div class="ke-panel-frame">
 	<div class="ke-panel-heading">Person Details</div>
 	<div class="ke-panel-content">
-		${ ui.includeFragment("kenyaui", "widget/dataPoint", [ label: "Real name", value: kenyaUi.formatPersonName(person) ]) }
-		${ ui.includeFragment("kenyaui", "widget/dataPoint", [ label: "Gender", value: kenyaUi.formatPersonGender(person) ]) }
+		${ ui.includeFragment("kenyaui", "widget/dataPoint", [ label: "Real name", value: kenyaui.formatPersonName(person) ]) }
+		${ ui.includeFragment("kenyaui", "widget/dataPoint", [ label: "Gender", value: kenyaui.formatPersonGender(person) ]) }
 	</div>
 	<div class="ke-panel-footer">
-		<%= ui.includeFragment("kenyaui", "widget/popupForm", [
+		<%= ui.includeFragment("kenyaui", "widget/dialogForm", [
 				buttonConfig: [
 						label: "Edit",
 						iconProvider: "kenyaui",
 						icon: "glyphs/edit.png"
 				],
+				dialogConfig: [ heading: "Edit person details for ${ kenyaui.formatPersonName(person) }" ],
 				fragment: "account/editAccount",
 				fragmentProvider: "kenyaemr",
 				action: "editPersonDetails",
@@ -53,7 +54,6 @@
 								]
 						]
 				],
-				popupTitle: "Edit person details for '${ ui.format(person) }'",
 				submitLabel: "Save Changes",
 				cancelLabel: "Cancel",
 				successCallbacks: [ "ui.reloadPage();" ]
@@ -87,12 +87,13 @@
 	<div class="ke-panel-footer">
 	<% if (user && !user.retired) { %>
 
-		<%= ui.includeFragment("kenyaui", "widget/popupForm", [
+		<%= ui.includeFragment("kenyaui", "widget/dialogForm", [
 				buttonConfig: [
 						label: "Edit",
 						iconProvider: "kenyaui",
 						icon: "glyphs/edit.png"
 				],
+				dialogConfig: [ heading: "Edit login details for ${ kenyaui.formatPersonName(person) }", width: 90, height: 90 ],
 				fragment: "account/editAccount",
 				fragmentProvider: "kenyaemr",
 				action: "editLoginDetails",
@@ -111,7 +112,6 @@
 				extraFields: [
 						[ hiddenInputName: "personId", value: person.id ]
 				],
-				popupTitle: "Edit login details for '${ ui.format(person) }'",
 				submitLabel: "Save Changes",
 				cancelLabel: "Cancel",
 				successCallbacks: [ "ui.reloadPage();" ]
@@ -126,12 +126,13 @@
 
 	<% } else if (!user) { %>
 
-		<%= ui.includeFragment("kenyaui", "widget/popupForm", [
+		<%= ui.includeFragment("kenyaui", "widget/dialogForm", [
 				buttonConfig: [
 						label: "Create Login",
 						iconProvider: "kenyaui",
 						icon: "buttons/user_enable.png"
 				],
+				dialogConfig: [ heading: "New Login Account for ${ kenyaui.formatPersonName(person) }", width: 90, height: 90 ],
 				fragment: "account/editAccount",
 				fragmentProvider: "kenyaemr",
 				action: "editLoginDetails",
@@ -149,7 +150,6 @@
 				extraFields: [
 						[ hiddenInputName: "personId", value: person.id ]
 				],
-				popupTitle: "New Login Account for '${ ui.format(person) }'",
 				submitLabel: "Save Changes",
 				cancelLabel: "Cancel",
 				successCallbacks: [ "ui.reloadPage();" ]
@@ -180,12 +180,13 @@
 	<div class="ke-panel-footer">
 	<% if (provider && !provider.retired) { %>
 
-		<%= ui.includeFragment("kenyaui", "widget/popupForm", [
+		<%= ui.includeFragment("kenyaui", "widget/dialogForm", [
 				buttonConfig: [
 						label: "Edit",
 						iconProvider: "kenyaui",
 						icon: "glyphs/edit.png"
 				],
+				dialogConfig: [ heading: "Edit Provider account for ${ kenyaui.formatPersonName(person) }", width: 50, height: 30 ],
 				fragmentProvider: "kenyaemr",
 				fragment: "account/editAccount",
 				action: "editProviderDetails",
@@ -196,7 +197,6 @@
 						[ hiddenInputName: "personId", value: person.id ],
 						[ hiddenInputName: "editProviderDetails.providerId", value: provider.id ]
 				],
-				popupTitle: "Edit Provider account for '${ ui.format(person) }'",
 				submitLabel: "Save Changes",
 				cancelLabel: "Cancel",
 				successCallbacks: [ "ui.reloadPage();" ]
@@ -204,12 +204,13 @@
 
 	<% } else { %>
 
-		<%= ui.includeFragment("kenyaui", "widget/popupForm", [
+		<%= ui.includeFragment("kenyaui", "widget/dialogForm", [
 				buttonConfig: [
 						label: "Make this person a Provider",
 						iconProvider: "kenyaui",
 						icon: "buttons/provider.png"
 				],
+				dialogConfig: [ heading: "New Provider account for ${ kenyaui.formatPersonName(person) }", width: 50, height: 30 ],
 				fragmentProvider: "kenyaemr",
 				fragment: "account/editAccount",
 				action: "editProviderDetails",
@@ -219,7 +220,6 @@
 				extraFields: [
 						[ hiddenInputName: "personId", value: person.id ]
 				],
-				popupTitle: "New Provider account for '${ ui.format(person) }'",
 				submitLabel: "Save Changes",
 				cancelLabel: "Cancel",
 				successCallbacks: [ "ui.reloadPage();" ]

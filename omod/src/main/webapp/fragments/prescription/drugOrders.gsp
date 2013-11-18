@@ -22,8 +22,8 @@
 			<td>${ ui.format(order.dose + (order.units ?: "")) }</td>
 			<td>${ ui.format(order.frequency) }</td>
 			<td>${ ui.format(order.orderer) }</td>
-			<td>${ kenyaUi.formatDate(order.startDate) }</td>
-			<td>${ stopDate ? kenyaUi.formatDate(stopDate) : "" }</td>
+			<td>${ kenyaui.formatDate(order.startDate) }</td>
+			<td>${ stopDate ? kenyaui.formatDate(stopDate) : "" }</td>
 			<td>${ ui.format(order.instructions) }</td>
 		</tr>
 	<% } %>

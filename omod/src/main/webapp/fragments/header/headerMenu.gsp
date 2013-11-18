@@ -12,7 +12,7 @@
 
 		userMenuItems << """<span>Logged in as <i>${ context.authenticatedUser.personName }</i></span>"""
 		userMenuItems << """<a href="${ ui.pageLink("kenyaemr", "profile") }">My Profile</a>"""
-		userMenuItems << """<a href="/${ contextPath }/logout">Log Out</a>"""
+		userMenuItems << """<a href="javascript:ke_logout()">Log Out</a>"""
 	} else {
 		userMenuItems << "<span><em>Not Logged In</em></span>"
 	}
@@ -30,7 +30,12 @@
 	<div style="clear: both"></div>
 </div>
 <script type="text/javascript">
+	function ke_logout() {
+		kenyaui.openConfirmDialog({ heading: 'KenyaEMR', message: 'Logout and end session?', okCallback: function() {
+			ui.navigate('/${ contextPath }/logout');
+		}});
+	}
 	function ke_showHelp() {
-		kenyaui.openDynamicDialog({ heading: 'Help', url: ui.pageLink('kenyaemr', 'dialog/help'), width: 90, height: 90 });
+		kenyaui.openDynamicDialog({ heading: 'Help', url: ui.pageLink('kenyaemr', 'dialog/helpDialog'), width: 90, height: 90 });
 	}
 </script>

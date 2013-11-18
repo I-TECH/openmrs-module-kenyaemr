@@ -16,12 +16,14 @@ package org.openmrs.module.kenyaemr.page.controller;
 
 import org.apache.commons.io.FileUtils;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyacore.CoreUtils;
 import org.openmrs.module.kenyacore.UiResource;
 import org.openmrs.module.kenyacore.report.IndicatorReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportManager;
 import org.openmrs.module.kenyaemr.reporting.renderer.MergedCsvReportRenderer;
 import org.openmrs.module.kenyaemr.util.EmrUiUtils;
+import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.module.kenyaui.annotation.SharedPage;
 import org.openmrs.module.reporting.common.ContentType;
 import org.openmrs.module.reporting.common.DateUtil;
@@ -65,13 +67,14 @@ public class ReportExportPageController {
 							@RequestParam("type") String type,
 					PageRequest pageRequest,
 					@SpringBean ReportManager reportManager,
-					@SpringBean EmrUiUtils emrUi,
+					@SpringBean KenyaUiUtils kenyaUi,
 					@SpringBean ResourceFactory resourceFactory,
 					@SpringBean ReportService reportService) throws Exception {
 
 		ReportDefinition definition = reportRequest.getReportDefinition().getParameterizable();
 		ReportDescriptor report = reportManager.getReportDescriptor(definition);
-		emrUi.checkReportAccess(pageRequest, report);
+
+		CoreUtils.checkAccess(report, kenyaUi.getCurrentApp(pageRequest));
 
 		ReportData reportData = reportService.loadReportData(reportRequest);
 

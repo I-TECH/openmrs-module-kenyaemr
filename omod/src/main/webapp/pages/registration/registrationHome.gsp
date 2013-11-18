@@ -3,10 +3,14 @@
 %>
 
 <style type="text/css">
+#calendar {
+	text-align: center;
+}
 #calendar .ui-widget-content {
 	border: 0;
 	background: inherit;
 	padding: 0;
+	margin: 0 auto;
 }
 </style>
 
@@ -32,7 +36,7 @@
 		</div>
 
 		<div class="ke-panel-controls">
-			<button type="submit" form="close-visits-form">Close Visits</button>
+			<button type="submit" form="close-visits-form"><img src="${ ui.resourceLink("kenyaui", "images/glyphs/checkout.png") }" /> Close Visits</button>
 		</div>
 	</div>
 </div>
@@ -45,7 +49,7 @@
 	jq(function() {
 		jq('#calendar').datepicker({
 			dateFormat: 'yy-mm-dd',
-			defaultDate: '${ kenyaUi.formatDateParam(scheduleDate) }',
+			defaultDate: '${ kenyaui.formatDateParam(scheduleDate) }',
 			gotoCurrent: true,
 			onSelect: function(dateText) {
 				ui.navigate('kenyaemr', 'registration/registrationHome', { scheduleDate: dateText });
@@ -55,7 +59,7 @@
 		kenyaui.setupAjaxPost('close-visits-form', {
 			onSuccess: function (result) {
 				loadActiveVisitTypes();
-				ui.notifySuccess(result.message);
+				kenyaui.notifySuccess(result.message);
 			}
 		});
 

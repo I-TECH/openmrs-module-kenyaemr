@@ -1,14 +1,8 @@
-<div id="patient-flags-placeholder" style="display: none"></div>
-
-<script type="text/javascript">
-jq(function() {
-	ui.getFragmentActionAsJson('kenyaemr', 'patient/patientUtils', 'flags', { patientId: ${ config.patient.id } }, function(result) {
-		if (result) {
-			var html = jq.map(result, function(alert) {
-				return '<span class="ke-flagtag">' + alert.message + '</span>';
-			}).join(' ');
-			jq('#patient-flags-placeholder').append(html).show();
-		}
-	});
-});
-</script>
+<%
+	ui.includeJavascript("kenyaemr", "controllers/flags.js")
+%>
+<% if (currentApp) { %>
+<div ng-controller="PatientFlags" ng-init="init('${ currentApp.id }', ${ config.patient.id })">
+	<span ng-repeat="flag in flags" class="ke-flagtag">{{ flag.message }}</span>
+</div>
+<% } %>

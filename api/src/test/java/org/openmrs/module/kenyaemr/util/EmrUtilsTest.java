@@ -71,29 +71,6 @@ public class EmrUtilsTest extends BaseModuleContextSensitiveTest {
 	}
 
 	/**
-	 * @see EmrUtils#getModuleVersion()
-	 *
-	 * TODO figure out how we can mock ModuleFactory from a BaseModuleContextSensitiveTest
-	 */
-	@Test(expected = NullPointerException.class)
-	public void getModuleVersion() {
-		EmrUtils.getModuleVersion();
-	}
-
-	/**
-	 * @see EmrUtils#getModuleBuildProperties()
-	 * @verifies return build properties
-	 */
-	@Test
-	public void getModuleBuildProperties_shouldGetBuildProperties() {
-		BuildProperties properties = EmrUtils.getModuleBuildProperties();
-
-		Assert.assertNotNull(properties);
-		Assert.assertNotNull(properties.getBuildDate());
-		Assert.assertNotNull(properties.getDeveloper());
-	}
-
-	/**
 	 * @see EmrUtils#dateHasTime(java.util.Date)
 	 * @verifies return true only if date has time
 	 */

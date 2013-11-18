@@ -92,7 +92,7 @@ jq(function() {
 			if (data.personId) {
 				ui.navigate('kenyaemr', 'admin/manageAccounts');
 			} else {
-				ui.notifyError('Creating user was successful, but unexpected response');
+				kenyaui.notifyError('Creating user was successful, but unexpected response');
 			}
 		}
 	});

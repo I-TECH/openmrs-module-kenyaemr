@@ -17,9 +17,10 @@ package org.openmrs.module.kenyaemr.page.controller.dialog;
 import org.openmrs.Cohort;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyacore.CoreUtils;
 import org.openmrs.module.kenyacore.report.ReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportManager;
-import org.openmrs.module.kenyaemr.util.EmrUiUtils;
+import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.module.kenyaui.annotation.SharedPage;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.MapDataSet;
@@ -40,7 +41,7 @@ import java.util.List;
  * Controller for cohort dialog
  */
 @SharedPage
-public class CohortPageController {
+public class CohortDialogPageController {
 
 	public void controller(@RequestParam("request") ReportRequest reportRequest,
 						   @RequestParam("dataset") String dataSetName,
@@ -49,12 +50,13 @@ public class CohortPageController {
 						   PageModel model,
 						   UiUtils ui,
 						   @SpringBean ReportManager reportManager,
-						   @SpringBean EmrUiUtils emrUi,
+						   @SpringBean KenyaUiUtils kenyaUi,
 						   @SpringBean ReportService reportService) {
 
 		ReportDefinition definition = reportRequest.getReportDefinition().getParameterizable();
 		ReportDescriptor report = reportManager.getReportDescriptor(definition);
-		emrUi.checkReportAccess(pageRequest, report);
+
+		CoreUtils.checkAccess(report, kenyaUi.getCurrentApp(pageRequest));
 
 		ReportData reportData = reportService.loadReportData(reportRequest);
 

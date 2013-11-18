@@ -56,7 +56,16 @@ import org.springframework.web.bind.annotation.RequestParam;
  */
 public class EditPatientFragmentController {
 
-	public void controller(FragmentModel model, @FragmentParam(required=false, value="patient") Patient patient) {
+	// We don't record cause of death, but data model requires a concept
+	private static final String CAUSE_OF_DEATH_PLACEHOLDER = Dictionary.UNKNOWN;
+
+	/**
+	 * Main controller method
+	 * @param patient the patient (may be null)
+	 * @param model the model
+	 */
+	public void controller(@FragmentParam(required=false, value="patient") Patient patient,
+						   FragmentModel model) {
 
 		model.addAttribute("command", newEditPatientForm(patient));
 
@@ -165,8 +174,6 @@ public class EditPatientFragmentController {
 
 		private Date deathDate;
 
-		private Concept causeOfDeath;
-
 		private PersonAttribute nameOfNextOfKin;
 
 		private PersonAttribute nextOfKinRelationship;
@@ -207,7 +214,6 @@ public class EditPatientFragmentController {
 
 			subChiefName = new PersonAttribute();
 			subChiefName.setAttributeType(MetadataUtils.getPersonAttributeType(CommonMetadata._PersonAttributeType.SUBCHIEF_NAME));
-
 		}
 
 		/**
@@ -235,7 +241,6 @@ public class EditPatientFragmentController {
 			birthdateEstimated = patient.getBirthdateEstimated();
 			dead = patient.isDead();
 			deathDate = patient.getDeathDate();
-			causeOfDeath = patient.getCauseOfDeath();
 
 			PatientIdentifier id = patient.getPatientIdentifier(MetadataUtils.getPatientIdentifierType(CommonMetadata._PatientIdentifierType.PATIENT_CLINIC_NUMBER));
 			if (id != null) {
@@ -363,7 +368,8 @@ public class EditPatientFragmentController {
 			// Require death details if patient is deceased
 			if (dead) {
 				require(errors, "deathDate");
-				require(errors, "causeOfDeath");
+			} else if (deathDate != null) {
+				errors.rejectValue("deathDate", "Must be empty if patient not deceased");
 			}
 
 			if (StringUtils.isBlank(hivIdNumber.getIdentifier())) {
@@ -420,7 +426,7 @@ public class EditPatientFragmentController {
 			toSave.setBirthdateEstimated(birthdateEstimated);
 			toSave.setDead(dead);
 			toSave.setDeathDate(deathDate);
-			toSave.setCauseOfDeath(causeOfDeath);
+			toSave.setCauseOfDeath(dead ? Dictionary.getConcept(CAUSE_OF_DEATH_PLACEHOLDER) : null);
 
 			PatientIdentifier oldHivId = toSave.getPatientIdentifier(MetadataUtils.getPatientIdentifierType(HivMetadata._PatientIdentifierType.UNIQUE_PATIENT_NUMBER));
 			if (anyChanges(oldHivId, hivIdNumber, "identifier")) {
@@ -773,14 +779,6 @@ public class EditPatientFragmentController {
 
 		public void setDeathDate(Date deathDate) {
 			this.deathDate = deathDate;
-		}
-
-		public Concept getCauseOfDeath() {
-			return causeOfDeath;
-		}
-
-		public void setCauseOfDeath(Concept causeOfDeath) {
-			this.causeOfDeath = causeOfDeath;
 		}
 
 		/**

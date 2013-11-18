@@ -21,6 +21,7 @@ import org.openmrs.module.kenyaemr.EmrWebConstants;
 import org.openmrs.module.kenyaui.validator.ValidatingCommandObject;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.BindParams;
+import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.annotation.MethodParam;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 import org.openmrs.ui.framework.fragment.action.FailureResult;
@@ -36,17 +37,13 @@ import javax.servlet.http.HttpSession;
  */
 public class ProfileLoginDetailsFragmentController {
 
-	public void controller(FragmentModel model, HttpSession httpSession) {
+	public void controller(@FragmentParam(value = "tempPassword", required = false) String tempPassword,
+						   FragmentModel model) {
 
 		model.addAttribute("user", Context.getAuthenticatedUser());
 
-		// If temp password is being passed, in tell view to display change password dialog
-		model.addAttribute("forcePasswordChange", (httpSession.getAttribute(EmrWebConstants.SESSION_ATTR_RESET_PASSWORD) != null));
-
-		model.addAttribute("changePasswordForm", newChangePasswordForm(httpSession));
+		model.addAttribute("changePasswordForm", newChangePasswordForm(tempPassword));
 		model.addAttribute("changeSecretQuestionForm", newChangeSecretQuestionForm());
-
-		httpSession.removeAttribute(EmrWebConstants.SESSION_ATTR_RESET_PASSWORD);
 	}
 
 	/**
@@ -93,11 +90,8 @@ public class ProfileLoginDetailsFragmentController {
 	 * Creates an instance of the change password form
 	 * @return the form
 	 */
-	public ChangePasswordForm newChangePasswordForm(HttpSession httpSession) {
-
-		String resetPassword = (String)httpSession.getAttribute(EmrWebConstants.SESSION_ATTR_RESET_PASSWORD);
-
-		return new ChangePasswordForm(Context.getAuthenticatedUser(), resetPassword);
+	public ChangePasswordForm newChangePasswordForm(String tempPassword) {
+		return new ChangePasswordForm(Context.getAuthenticatedUser(), tempPassword);
 	}
 
 	/**

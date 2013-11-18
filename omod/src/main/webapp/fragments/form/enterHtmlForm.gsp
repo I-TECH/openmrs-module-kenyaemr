@@ -1,23 +1,19 @@
 <%
-// supports style (css style)
-
-ui.includeJavascript("kenyaui", "jquery.js")
-ui.includeJavascript("kenyaui", "jquery-ui.js")
-ui.includeJavascript("kenyaemr", "dwr-util.js")
+	ui.includeJavascript("kenyaemr", "dwr-util.js")
 %>
 
 <script type="text/javascript" src="/${ contextPath }/moduleResources/htmlformentry/htmlFormEntry.js"></script>
 <link href="/${ contextPath }/moduleResources/htmlformentry/htmlFormEntry.css" type="text/css" rel="stylesheet" />
 
 <script type="text/javascript">
-	\$j = jQuery; // Forms should use jq like everything else, but for backwards compatibility we allow this for now
+	\$j = jQuery; // For backwards compatibility - some forms maybe using this to reference jQuery
 
 	function showDiv(id) {
-		jq('#' + id).show();
+		jQuery('#' + id).show();
 	}
 	
 	function hideDiv(id) {
-		jq('#' + id).hide();
+		jQuery('#' + id).hide();
 	}
 
 	var propertyAccessorInfo = new Array();
@@ -33,17 +29,16 @@ ui.includeJavascript("kenyaemr", "dwr-util.js")
 		if (!tryingToSubmit) {
 			tryingToSubmit = true;
 			ui.disableConfirmBeforeNavigating();
-			jq.getJSON(ui.fragmentActionLink('kenyaemr', 'emrUtils', 'isAuthenticated'), function(result) {
+			jQuery.getJSON(ui.fragmentActionLink('kenyaemr', 'emrUtils', 'isAuthenticated'), function(result) {
 				checkIfLoggedInAndErrorsCallback(result.authenticated);
 			});
 		}
 	}
 
-	/*
-		It seems the logic of  showAuthenticateDialog and 
-		findAndHighlightErrors should be in the same callback function.
-		i.e. only authenticated user can see the error msg of
-	*/
+	/**
+	 * It seems the logic of showAuthenticateDialog and findAndHighlightErrors should be in the same callback function.
+	 * i.e. only authenticated user can see the error msg of
+	 */
 	function checkIfLoggedInAndErrorsCallback(authenticated) {
 		var state_beforeValidation = true;
 		
@@ -82,34 +77,34 @@ ui.includeJavascript("kenyaemr", "dwr-util.js")
 	function findAndHighlightErrors(){
 		/* see if there are error fields */
 		var containError = false
-		var ary = jq(".autoCompleteHidden");
-		jq.each(ary, function(index, value){
+		var ary = jQuery(".autoCompleteHidden");
+		jQuery.each(ary, function(index, value){
 			if(value.value == "ERROR"){
 				if(!containError){
 					alert("${ ui.message("htmlformentry.error.autoCompleteAnswerNotValid") }");
 					var id = value.id;
 					id = id.substring(0,id.length-4);
-					jq("#"+id).focus();
+					jQuery("#" + id).focus();
 				}
-				containError=true;
+				containError = true;
 			}
 		});
 		return containError;
 	}
 
 	function showAuthenticateDialog() {
-		kenyaui.openPanelDialog({ heading: 'Login Required', content: authenticationDialogHtml, width: 50, height: 15 });
+		kenyaui.openPanelDialog({ templateId: 'authentication-dialog', width: 50, height: 15 });
 		tryingToSubmit = false;
 	}
 
 	function onSubmitAuthenticationDialog() {
-		var username = jq('#authentication-dialog-username').val();
-		var password = jq('#authentication-dialog-password').val();
+		var username = jQuery('#authentication-dialog-username').val();
+		var password = jQuery('#authentication-dialog-password').val();
 
 		kenyaui.closeDialog();
 
 		// Try authenticating and then submitting again...
-		jq.getJSON(ui.fragmentActionLink('kenyaemr', 'emrUtils', 'authenticate', { username: username, password: password }), submitHtmlForm);
+		jQuery.getJSON(ui.fragmentActionLink('kenyaemr', 'emrUtils', 'authenticate', { username: username, password: password }), submitHtmlForm);
 	}
 
 	function doSubmitHtmlForm() {
@@ -134,8 +129,8 @@ ui.includeJavascript("kenyaemr", "dwr-util.js")
 			kenyaui.openLoadingDialog({ message: 'Submitting form...' });
 			kenyaui.clearFormErrors('htmlform');
 
-			var form = jq('#htmlform');
-			jq.post(form.attr('action'), form.serialize(), function(result) {
+			var form = jQuery('#htmlform');
+			jQuery.post(form.attr('action'), form.serialize(), function(result) {
 				if (result.success) {
 					<% if (command.returnUrl) { %>
 					ui.navigate('${ command.returnUrl }');
@@ -163,43 +158,43 @@ ui.includeJavascript("kenyaemr", "dwr-util.js")
 		tryingToSubmit = false;
 	}
 
-	function handleDeleteButton() {
-		jq('#confirmDeleteFormPopup').show();
-	}
-
-	function cancelDeleteForm() {
-		jq('#confirmDeleteFormPopup').hide();
-	}
-
 	/**
 	 * Because setValue doesn't work for datetime fields
 	 */
 	function setDatetimeValue(elementAndProperty, value) {
 		var fieldId = elementAndProperty.split(".")[0];
 
-		jq('#' + fieldId + ' input[type=text]').datepicker('setDate', value);
+		jQuery('#' + fieldId + ' input[type=text]').datepicker('setDate', value);
 
-		jq('#' + fieldId + ' select[name\$=hours]').val(value.getHours());
-		jq('#' + fieldId + ' select[name\$=minutes]').val(value.getMinutes());
-		jq('#' + fieldId + ' select[name\$=seconds]').val(value.getSeconds());
+		jQuery('#' + fieldId + ' select[name\$=hours]').val(value.getHours());
+		jQuery('#' + fieldId + ' select[name\$=minutes]').val(value.getMinutes());
+		jQuery('#' + fieldId + ' select[name\$=seconds]').val(value.getSeconds());
 	}
 
-	/**
-	 * Update blank encounter dates to default to visit start date or current date
-	 */
-	jq(function() {
-		authenticationDialogHtml = jq('#authentication-dialog').html();
-		jq('#authentication-dialog').empty();
-
+	jQuery(function() {
+		<% if (config.defaultEncounterDate) { %>
+		// Update blank encounter dates to default to visit start date or current date
 		if (getValue('encounter-date.value') == '') {
-			setDatetimeValue('encounter-date.value', new Date(${ visit ? ("'" + visit.startDatetime + "'") : '' }));
+			setDatetimeValue('encounter-date.value', new Date(${ config.defaultEncounterDate.time }));
 		}
+		<% } %>
+
+		// Inject discard button
+		jQuery('#discard-button').click(function() { ui.navigate('${ returnUrl }'); })
+				.insertAfter(jQuery('input.submitButton'));
 	});
 </script>
 
 <div id="${ config.id }" <% if (config.style) { %>style="${ config.style }"<% } %>>
 
-	<form id="htmlform" method="post" action="${ ui.actionLink("kenyaemr", "enterHtmlForm", "submit") }" onSubmit="submitHtmlForm(); return false;">
+	<div style="display: none">
+		<button id="discard-button" type="button">
+			<img src="${ ui.resourceLink("kenyaui", "images/glyphs/cancel.png") }" /> Discard Changes
+		</button>
+	</div>
+
+	<form id="htmlform" method="post" action="${ ui.actionLink("kenyaemr", "form/enterHtmlForm", "submit") }" onSubmit="submitHtmlForm(); return false;">
+		<input type="hidden" name="appId" value="${ currentApp.id }"/>
 		<input type="hidden" name="personId" value="${ command.patient.personId }"/>
 		<input type="hidden" name="formId" value="${ command.form.formId }"/>
 		<input type="hidden" name="formModifiedTimestamp" value="${ command.formModifiedTimestamp }"/>
@@ -228,7 +223,7 @@ ui.includeJavascript("kenyaemr", "dwr-util.js")
 	</form>
 </div>
 
-<div id="authentication-dialog" style="display: none">
+<div id="authentication-dialog" title="Login Required" style="display: none">
 	<div class="ke-panel-content">
 		<div style="padding-bottom: 12px; text-align: center">${ ui.message("kenyaemr.authenticateForFormSubmission") }</div>
 		<div id="authentication-dialog-error" class="error" style="display: none"></div>
@@ -244,7 +239,9 @@ ui.includeJavascript("kenyaemr", "dwr-util.js")
 		</table>
 	</div>
 	<div class="ke-panel-controls">
-		<input type="button" value="Submit" onClick="onSubmitAuthenticationDialog()"/>
+		<button type="button" onclick="onSubmitAuthenticationDialog()">
+			<img src="${ ui.resourceLink("kenyaui", "images/glyphs/login.png") }" /> Login
+		</button>
 	</div>
 </div>
 
@@ -255,7 +252,7 @@ ui.includeJavascript("kenyaemr", "dwr-util.js")
 <% } %>
 
 <script type="text/javascript">
-	jq(function() {
+	jQuery(function() {
 		ui.confirmBeforeNavigating('#htmlform');
 	});
 </script>
