@@ -62,7 +62,7 @@ public class LabTestPickerSubmissionElement implements HtmlGeneratorElement, For
 
 		// The set of test concepts to exclude
 		if (parameters.containsKey("excludeTests")) {
-			excludeTests = new HashSet(EmrUtils.parseConceptList(parameters.get("excludeTests")));
+			excludeTests = new HashSet(EmrUtils.parseConcepts(parameters.get("excludeTests")));
 		}
 		else {
 			excludeTests = new HashSet<Concept>();

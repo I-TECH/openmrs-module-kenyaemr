@@ -15,6 +15,7 @@
 package org.openmrs.module.kenyaemr.util;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.openmrs.Concept;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
@@ -55,33 +56,12 @@ public class EmrUtils {
 	}
 
 	/**
-	 * Checks if two dates are the same day
-	 * @param date1 the first date
-	 * @param date2 the second date
-	 * @return true if dates are same day
-	 */
-	public static boolean isSameDay(Date date1, Date date2) {
-		if (date1 == null || date2 == null) {
-			return false;
-		}
-
-		Calendar cal1 = Calendar.getInstance();
-		cal1.setTime(date1);
-		Calendar cal2 = Calendar.getInstance();
-		cal2.setTime(date2);
-
-		return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR)
-				&& cal1.get(Calendar.MONTH) == cal2.get(Calendar.MONTH)
-				&& cal1.get(Calendar.DAY_OF_MONTH) == cal2.get(Calendar.DAY_OF_MONTH);
-	}
-
-	/**
 	 * Checks if a given date is today
 	 * @param date the date
 	 * @return true if date is today
 	 */
 	public static boolean isToday(Date date) {
-		return isSameDay(date, new Date());
+		return DateUtils.isSameDay(date, new Date());
 	}
 
 	/**
@@ -141,23 +121,38 @@ public class EmrUtils {
 	}
 
 	/**
-	 * Parses a CSV list of concept ids, UUIDs or mappings
-	 * @param value the string
+	 * Parses a CSV list of strings, returning all trimmed non-empty values
+	 * @param csv the CSV string
 	 * @return the concepts
 	 */
-	public static List<Concept> parseConceptList(String value) {
-		List<Concept> concepts = new ArrayList<Concept>();
+	public static List<String> parseCsv(String csv) {
+		List<String> values = new ArrayList<String>();
 
-		for (String token : value.split(",")) {
+		for (String token : csv.split(",")) {
 			token = token.trim();
 
 			if (!StringUtils.isEmpty(token)) {
-				if (StringUtils.isNumeric(token)) {
-					concepts.add(Context.getConceptService().getConcept(Integer.valueOf(token)));
-				}
-				else {
-					concepts.add(Dictionary.getConcept(token));
-				}
+				values.add(token);
+			}
+		}
+		return values;
+	}
+
+	/**
+	 * Parses a CSV list of concept ids, UUIDs or mappings
+	 * @param csv the CSV string
+	 * @return the concepts
+	 */
+	public static List<Concept> parseConcepts(String csv) {
+		List<String> identifiers = parseCsv(csv);
+		List<Concept> concepts = new ArrayList<Concept>();
+
+		for (String identifier : identifiers) {
+			if (StringUtils.isNumeric(identifier)) {
+				concepts.add(Context.getConceptService().getConcept(Integer.valueOf(identifier)));
+			}
+			else {
+				concepts.add(Dictionary.getConcept(identifier));
 			}
 		}
 		return concepts;

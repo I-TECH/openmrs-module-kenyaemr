@@ -24,7 +24,7 @@ import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.EmrConstants;
+import org.openmrs.module.kenyaemr.TbConstants;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
@@ -54,7 +54,7 @@ public class OnMedicationCalculation extends BaseEmrCalculation {
 		for (Integer ptId : cohort) {
 			boolean takingDrug = false;
 			Encounter lastConsultation = EmrCalculationUtils.resultForPatient(lastConsultations, ptId);
-			if (lastConsultation != null && lastConsultation.getVisit() != null && daysSince(lastConsultation.getEncounterDatetime(), context) <= EmrConstants.PATIENT_ACTIVE_VISIT_THRESHOLD_DAYS) {
+			if (lastConsultation != null && lastConsultation.getVisit() != null && daysSince(lastConsultation.getEncounterDatetime(), context) <= TbConstants.PATIENT_ACTIVE_VISIT_THRESHOLD_DAYS) {
 				Set<Encounter> encountersInRefVisit = lastConsultation.getVisit().getEncounters();
 
 				for (Encounter enc: encountersInRefVisit) {

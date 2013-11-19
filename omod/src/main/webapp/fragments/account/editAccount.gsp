@@ -1,30 +1,3 @@
-<script type="text/javascript">
-	function onEnableUser(userId) {
-		kenyaui.openConfirmDialog({
-			heading: 'KenyaEMR',
-			message: '${ ui.message("kenyaemr.confirmReenableUser") }',
-			okCallback: function() { doUnretireUser(userId); }
-		});
-	}
-	function onDisableUser(userId) {
-		kenyaui.openConfirmDialog({
-			heading: 'KenyaEMR',
-			message: '${ ui.message("kenyaemr.confirmDisableUser") }',
-			okCallback: function() { doRetireUser(userId); }
-		});
-	}
-	function doUnretireUser(userId) {
-		ui.getFragmentActionAsJson('kenyaemr', 'account/editAccount', 'unretireUser', { userId: userId, reason: 'Admin UI' }, function() {
-			ui.reloadPage();
-		});
-	}
-	function doRetireUser(userId) {
-		ui.getFragmentActionAsJson('kenyaemr', 'account/editAccount', 'retireUser', { userId: userId, reason: 'Admin UI' }, function() {
-			ui.reloadPage();
-		});
-	}
-</script>
-
 <div class="ke-panel-frame">
 	<div class="ke-panel-heading">Person Details</div>
 	<div class="ke-panel-content">
@@ -32,13 +5,14 @@
 		${ ui.includeFragment("kenyaui", "widget/dataPoint", [ label: "Gender", value: kenyaui.formatPersonGender(person) ]) }
 	</div>
 	<div class="ke-panel-footer">
-		<%= ui.includeFragment("kenyaui", "widget/dialogForm", [
+		${ ui.includeFragment("kenyaui", "widget/dialogForm", [
+				id: "person-details-form",
 				buttonConfig: [
 						label: "Edit",
 						iconProvider: "kenyaui",
 						icon: "glyphs/edit.png"
 				],
-				dialogConfig: [ heading: "Edit person details for ${ kenyaui.formatPersonName(person) }" ],
+				dialogConfig: [ heading: "Edit person details for " + kenyaui.formatPersonName(person) ],
 				fragment: "account/editAccount",
 				fragmentProvider: "kenyaemr",
 				action: "editPersonDetails",
@@ -57,7 +31,7 @@
 				submitLabel: "Save Changes",
 				cancelLabel: "Cancel",
 				successCallbacks: [ "ui.reloadPage();" ]
-		]) %>
+		]) }
 	</div>
 </div>
 
@@ -117,13 +91,6 @@
 				successCallbacks: [ "ui.reloadPage();" ]
 		]) %>
 
-		<%= ui.includeFragment("kenyaui", "widget/button", [
-				label: "Disable",
-				iconProvider: "kenyaui",
-				icon: "glyphs/disable.png",
-				onClick: "onDisableUser(" + user.id + ")"
-		]) %>
-
 	<% } else if (!user) { %>
 
 		<%= ui.includeFragment("kenyaui", "widget/dialogForm", [
@@ -154,15 +121,6 @@
 				cancelLabel: "Cancel",
 				successCallbacks: [ "ui.reloadPage();" ]
 		]) %>
-
-	<% } else if (user.retired) { %>
-
-		${ ui.includeFragment("kenyaui", "widget/button", [
-				label: "Re-enable",
-				iconProvider: "kenyaui",
-				icon: "glyphs/enable.png",
-				onClick: "onEnableUser(" + user.id + ")"
-		]) }
 
 	<% } %>
 	</div>

@@ -83,27 +83,6 @@ public class EmrUtilsTest extends BaseModuleContextSensitiveTest {
 	}
 
 	/**
-	 * @see EmrUtils#isSameDay(java.util.Date, java.util.Date)
-	 * @verifies return false if either date is null
-	 */
-	@Test
-	public void isSameDay_shouldReturnFalseIfEitherDateIsNull() {
-		Assert.assertFalse(EmrUtils.isSameDay(null, TestUtils.date(2012, 1, 2)));
-		Assert.assertFalse(EmrUtils.isSameDay(TestUtils.date(2012, 1, 2), null));
-	}
-
-	/**
-	 * @see EmrUtils#isSameDay(java.util.Date, java.util.Date)
-	 * @verifies return true only for two dates that are on the same day
-	 */
-	@Test
-	public void isSameDay_shouldReturnTrueOnlyForDatesOnSameDay() {
-		Assert.assertTrue(EmrUtils.isSameDay(TestUtils.date(2012, 1, 1), TestUtils.date(2012, 1, 1)));
-		Assert.assertTrue(EmrUtils.isSameDay(TestUtils.date(2012, 1, 1, 10, 30, 0), TestUtils.date(2012, 1, 1, 11, 45, 0)));
-		Assert.assertFalse(EmrUtils.isSameDay(TestUtils.date(2012, 1, 1), TestUtils.date(2012, 1, 2)));
-	}
-
-	/**
 	 * @see EmrUtils#isToday(java.util.Date)
 	 * @verifies return true only for dates that are today
 	 */
@@ -193,23 +172,33 @@ public class EmrUtilsTest extends BaseModuleContextSensitiveTest {
 	}
 
 	/**
-	 * @see EmrUtils#parseConceptList(String)
+	 * @see EmrUtils#parseCsv(String)
 	 */
 	@Test
-	public void parseConceptList_shouldParseListCorrectly() {
+	public void parseCsv_shouldParseCsv() {
+		Assert.assertThat(EmrUtils.parseCsv("test"), contains("test"));
+		Assert.assertThat(EmrUtils.parseCsv("1, 2,test"), contains("1", "2", "test"));
+		Assert.assertThat(EmrUtils.parseCsv("1, 2,, , 3"), contains("1", "2", "3"));
+	}
+
+	/**
+	 * @see EmrUtils#parseConcepts(String)
+	 */
+	@Test
+	public void parseConcepts_shouldParseListCorrectly() {
 		// Empty list
-		List<Concept> concepts = EmrUtils.parseConceptList("");
+		List<Concept> concepts = EmrUtils.parseConcepts("");
 		Assert.assertEquals(0, concepts.size());
 
 		// No spaces
-		concepts = EmrUtils.parseConceptList("5497,730AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5356");
+		concepts = EmrUtils.parseConcepts("5497,730AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5356");
 		Assert.assertEquals(3, concepts.size());
 		Assert.assertEquals(Dictionary.getConcept("5497AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), concepts.get(0));
 		Assert.assertEquals(Dictionary.getConcept("730AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), concepts.get(1));
 		Assert.assertEquals(Dictionary.getConcept("5356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), concepts.get(2));
 
 		// Some spaces
-		concepts = EmrUtils.parseConceptList(" 5497,  730AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\t , 5356   \t");
+		concepts = EmrUtils.parseConcepts(" 5497,  730AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\t , 5356   \t");
 		Assert.assertEquals(3, concepts.size());
 		Assert.assertEquals(Dictionary.getConcept("5497AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), concepts.get(0));
 		Assert.assertEquals(Dictionary.getConcept("730AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), concepts.get(1));

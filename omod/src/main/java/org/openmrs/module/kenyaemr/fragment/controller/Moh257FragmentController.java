@@ -41,8 +41,7 @@ public class Moh257FragmentController {
 						   UiUtils ui,
 						   @SpringBean RegimenManager regimenManager) {
 
-		String[] page1FormUuids = { HivMetadata._Form.MOH_257_FACE_PAGE };
-		//String[] page1FormUuids = { Metadata.Form.FAMILY_HISTORY, Metadata.Form.HIV_ENROLLMENT };
+		String[] page1FormUuids = { HivMetadata._Form.MOH_257_FACE_PAGE, HivMetadata._Form.FAMILY_HISTORY };
 
 		List<SimpleObject> page1AvailableForms = new ArrayList<SimpleObject>();
 		List<Encounter> page1Encounters = new ArrayList<Encounter>();

@@ -8,11 +8,11 @@
 		def iconProvider, icon
 		if (iconUrlTokens.length == 2) {
 			iconProvider = iconUrlTokens[0]
-			icon = iconUrlTokens[1]
+			icon = "images/" + iconUrlTokens[1]
 		}
 	%>
 	<div style="float: left; margin: 5px;" >
-		${ ui.includeFragment("kenyaui", "widget/appButton", [ label: app.label, iconProvider: iconProvider, icon: icon, onClick: onClick ]) }
+		<button type="button" class="ke-app" onclick="${ onClick }"><img src="${ ui.resourceLink(iconProvider, icon) }" />${ app.label }</button>
 	</div>
 	<% } %>
 </div>

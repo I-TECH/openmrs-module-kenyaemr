@@ -17,13 +17,17 @@ package org.openmrs.module.kenyaemr;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.User;
+import org.openmrs.api.AdministrationService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyaemr.util.EmrUtils;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Interceptor to catch requests to controllers outside of KenyaEMR and any add-on modules
@@ -32,6 +36,13 @@ public class EmrExternalUrlInterceptor extends HandlerInterceptorAdapter {
 
 	@Autowired
 	private KenyaUiUtils kenyaUi;
+
+	@Autowired
+	private AdministrationService adminService;
+
+	private static final String[] BASE_CONTROLLER_WHITELIST = { "org.openmrs.module.kenyaemr", "org.openmrs.module.uiframework" };
+
+	private static Set<String> controllerWhitelist = null;
 
 	protected static final Log log = LogFactory.getLog(EmrExternalUrlInterceptor.class);
 
@@ -44,19 +55,18 @@ public class EmrExternalUrlInterceptor extends HandlerInterceptorAdapter {
 			log.debug("Intercepting request: " + request.getRequestURI() + " -> " + handler);
 		}
 
-		// Allow any request to the controllers in this package (e.g. FieldGeneratorController)
-		if (handler.getClass().getPackage().equals(this.getClass().getPackage())) {
-			return true;
+		String controllerPackage = handler.getClass().getPackage().getName();
+
+		// Check Spring controller package name against whitelist
+		for (String whitelisted : getControllerWhitelist()) {
+			if (controllerPackage.startsWith(whitelisted)) {
+				return true;
+			}
 		}
 
 		// TODO implement a whitelist which allows only certain uiframework managed controllers.
 		// Not so important for now whilst all uiframework managed content is valid. Could use method below to parse URL
 		// to get moduleid and whitelist those
-
-		// Allow any request to the UI Framework
-		if (handler.getClass().getPackage().getName().equals("org.openmrs.module.uiframework")) {
-			return true;
-		}
 
 		// Only allow other requests if user is a super-user
 		User authenticatedUser = Context.getAuthenticatedUser();
@@ -71,6 +81,28 @@ public class EmrExternalUrlInterceptor extends HandlerInterceptorAdapter {
 		}
 
 		return allowRequest;
+	}
+
+	/**
+	 * Gets the controller whitelist, loading and parsing it from the global property if necessary
+	 * @return the whitelist
+	 */
+	protected Set<String> getControllerWhitelist() {
+		if (controllerWhitelist == null) {
+			controllerWhitelist = new HashSet<String>();
+
+			// Add required values
+			for (String required : BASE_CONTROLLER_WHITELIST) {
+				controllerWhitelist.add(required);
+			}
+
+			// Load and parse custom values from global property
+			String csv = adminService.getGlobalProperty(EmrConstants.GP_CONTROLLER_WHITELIST);
+			if (csv != null) {
+				controllerWhitelist.addAll(EmrUtils.parseCsv(csv));
+			}
+		}
+		return controllerWhitelist;
 	}
 
 	/**
