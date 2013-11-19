@@ -77,7 +77,7 @@ public class MchcsCohortLibrary {
 
 	public CohortDefinition ageBetween3And8Months() {
 		AgeCohortDefinition age = new AgeCohortDefinition();
-		age.setName("Children Between 2 and 8 Months");
+		age.setName("Children Between 3 and 8 Months");
 		age.setMinAge(3);
 		age.setMaxAge(8);
 		age.setMinAgeUnit(DurationUnit.MONTHS);
