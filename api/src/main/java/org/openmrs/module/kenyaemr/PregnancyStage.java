@@ -23,6 +23,6 @@ public enum PregnancyStage {
 	BEFORE_ENROLLMENT, // The stage before actual enrollment into the MCH-MS program
 	AFTER_ENROLLMENT, // Any stage ranging from when the patient is enrolled up to the postnatal stage
 	ANTENATAL, // The stage from when the patient is enrolled to 3 days before the date of delivery (date of delivery included)
-	DELIVERY, // The day of delivery
+	DELIVERY, // The day of delivery and the 2 days preceding it
 	POSTNATAL; // The stage from the end of the date of delivery to the end of 3 days thereafter
 }

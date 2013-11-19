@@ -17,7 +17,6 @@ package org.openmrs.module.kenyaemr.calculation.library.mchms;
 import org.openmrs.Concept;
 import org.openmrs.PatientProgram;
 import org.openmrs.Program;
-import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.calculation.result.CalculationResultMap;
@@ -27,10 +26,10 @@ import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
+import org.openmrs.module.kenyaemr.PregnancyStage;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.metadata.MchMetadata;
-import org.openmrs.module.kenyaemr.PregnancyStage;
 import org.openmrs.util.OpenmrsUtil;
 
 import java.util.Collection;
@@ -39,11 +38,12 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Calculates the period when a patient was tested for HIV. The period may either be Antenatal, Labor and Delivery or
- * Postnatal. The parameter values received determine which specific period and HIV result to base the calculation on.
- * Both the period and HIV result can be set to "any". The calculation returns true if the patient has a known HIV
- * result, was tested in the period specified by the period parameter and the test known result is as specified in the
- * testResultParameter
+ * Calculates the {@link org.openmrs.module.kenyaemr.PregnancyStage} in which a patient or her partner was tested for HIV.
+ *
+ * @params A map of parameters values specifying the {@link org.openmrs.module.kenyaemr.PregnancyStage}, the HIV result
+ * and whether the calculation is intended for the patient herself or for her partner
+ *
+ * @return
  */
 public class TestedForHivInMchmsCalculation extends BaseEmrCalculation {
 
@@ -52,6 +52,7 @@ public class TestedForHivInMchmsCalculation extends BaseEmrCalculation {
 
 		PregnancyStage stage = (params != null && params.containsKey("stage")) ? (PregnancyStage) params.get("stage") : null;
 		Concept result = (params != null && params.containsKey("result")) ? (Concept) params.get("result") : null;
+		Boolean partner = (params != null && params.containsKey("partner")) ? (Boolean) params.get("partner") : false;
 
 		Program mchmsProgram = MetadataUtils.getProgram(MchMetadata._Program.MCHMS);
 
@@ -60,8 +61,11 @@ public class TestedForHivInMchmsCalculation extends BaseEmrCalculation {
 
 		Set<Integer> aliveMchmsPatients = CalculationUtils.patientsThatPass(activePatientPrograms);
 
-		CalculationResultMap lastHivStatusObss = Calculations.lastObs(getConcept(Dictionary.HIV_STATUS), aliveMchmsPatients, context);
-		CalculationResultMap lastHivTestDateObss = Calculations.lastObs(getConcept(Dictionary.DATE_OF_HIV_DIAGNOSIS), aliveMchmsPatients, context);
+		Concept hivStatusConcept = partner ? getConcept(Dictionary.PARTNER_HIV_STATUS) : getConcept(Dictionary.HIV_STATUS);
+		Concept hivTestDateConcept = partner ? getConcept(Dictionary.DATE_OF_PARTNER_HIV_DIAGNOSIS) : getConcept(Dictionary.DATE_OF_HIV_DIAGNOSIS);
+
+		CalculationResultMap lastHivStatusObss = Calculations.lastObs(hivStatusConcept, aliveMchmsPatients, context);
+		CalculationResultMap lastHivTestDateObss = Calculations.lastObs(hivTestDateConcept, aliveMchmsPatients, context);
 		CalculationResultMap lastDeliveryDateObss = Calculations.lastObs(getConcept(Dictionary.DATE_OF_CONFINEMENT), aliveMchmsPatients, context);
 
 		CalculationResultMap resultMap = new CalculationResultMap();
@@ -74,7 +78,9 @@ public class TestedForHivInMchmsCalculation extends BaseEmrCalculation {
 
 			boolean qualified = false;
 			if (aliveMchmsPatients.contains(ptId)
-					&& (patientsLastHivStatus != null && !patientsLastHivStatus.equals(Dictionary.getConcept(Dictionary.NOT_HIV_TESTED)))
+					&& (patientsLastHivStatus != null &&
+					(patientsLastHivStatus.equals(Dictionary.getConcept(Dictionary.POSITIVE))
+							|| patientsLastHivStatus.equals(Dictionary.getConcept(Dictionary.NEGATIVE))))
 					&& (activePatientProgram != null)) {
 				Date enrollmentDate = ((PatientProgram) activePatientProgram.getValue()).getDateEnrolled();
 				Date deliveryDate = EmrCalculationUtils.datetimeObsResultForPatient(lastDeliveryDateObss, ptId);
