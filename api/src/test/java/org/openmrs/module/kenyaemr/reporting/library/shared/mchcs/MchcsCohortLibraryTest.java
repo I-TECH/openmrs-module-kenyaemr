@@ -1,4 +1,3 @@
-
 /**
  * The contents of this file are subject to the OpenMRS Public License
  * Version 1.0 (the "License"); you may not use this file except in
@@ -17,6 +16,7 @@ package org.openmrs.module.kenyaemr.reporting.library.shared.mchcs;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Concept;
+import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
@@ -47,6 +47,7 @@ public class MchcsCohortLibraryTest extends BaseModuleContextSensitiveTest {
 	@Before
 	public void setup() throws Exception {
 		executeDataSet("dataset/test-concepts.xml");
+		context = ReportingTestUtils.reportingContext(Arrays.asList(2, 6, 7, 8, 999), TestUtils.date(2012, 6, 1), TestUtils.date(2012, 6, 30));
 	}
 
 	/**
@@ -89,6 +90,78 @@ public class MchcsCohortLibraryTest extends BaseModuleContextSensitiveTest {
 		TestUtils.saveObs(TestUtils.getPatient(7), contexualStatus, complete, TestUtils.date(2013, 6, 15));
 		//only #6 to qualify
 		CohortDefinition cd =mchcsCohortLibrary.pcrInitialTest();
+		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
+		ReportingTestUtils.assertCohortEquals(Arrays.asList(6), evaluated);
+	}
+
+	/**
+	 * @see MchcsCohortLibrary#age2Months()
+	 */
+	@Test
+	public void  age2Months_shouldReturnInfantsAged2Months() throws Exception {
+		Patient p = TestUtils.getPatient(6);
+		p.setBirthdate(TestUtils.date(2012, 7, 1));
+		TestUtils.savePatient(p);
+		CohortDefinition cd = mchcsCohortLibrary.age2Months();
+		context.addParameterValue("effectiveDate", TestUtils.date(2012, 9, 1));
+		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
+		ReportingTestUtils.assertCohortEquals(Arrays.asList(6), evaluated);
+
+	}
+
+	/**
+	 * @see MchcsCohortLibrary#ageBetween3And8Months()
+	 */
+	@Test
+	public void ageBetween3And8Months_shouldReturnInfantsAgeBetween3And8Months() throws Exception {
+		Patient p = TestUtils.getPatient(6);
+		p.setBirthdate(TestUtils.date(2013, 1, 1));
+		TestUtils.savePatient(p);
+
+		Patient p1 = TestUtils.getPatient(7);
+		p1.setBirthdate(TestUtils.date(2012, 1, 1));
+		TestUtils.savePatient(p1);
+
+		CohortDefinition cd = mchcsCohortLibrary.ageBetween3And8Months();
+		context.addParameterValue("effectiveDate", TestUtils.date(2013, 8, 1));
+		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
+		ReportingTestUtils.assertCohortEquals(Arrays.asList(6), evaluated);
+	}
+
+	/**
+	 * @see MchcsCohortLibrary#serologyAntBodyTest()
+	 */
+	 @Test
+	public void serologyAntBodyTest_shouldReturnInfantsWithSerologyAntBodyTest() throws Exception {
+		 Concept hivRapidTest = Dictionary.getConcept(Dictionary.HIV_RAPID_TEST_1_QUALITATIVE);
+		 Concept negative = Dictionary.getConcept(Dictionary.NEGATIVE);
+		 Concept poorSampleQuality = Dictionary.getConcept(Dictionary.POOR_SAMPLE_QUALITY);
+		 Concept unknown = Dictionary.getConcept(Dictionary.UNKNOWN);
+
+		 TestUtils.saveObs(TestUtils.getPatient(6), hivRapidTest, negative, TestUtils.date(2012, 6, 10));
+		 TestUtils.saveObs(TestUtils.getPatient(7), hivRapidTest, unknown, TestUtils.date(2012, 6, 15));
+		 TestUtils.saveObs(TestUtils.getPatient(8), hivRapidTest, poorSampleQuality, TestUtils.date(2012, 6, 20));
+
+		 CohortDefinition cd = mchcsCohortLibrary.serologyAntBodyTest();
+		 EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
+		 ReportingTestUtils.assertCohortEquals(Arrays.asList(6,8), evaluated);
+	 }
+
+	/**
+	 * @see MchcsCohortLibrary#ageBetween9And12Months
+	 */
+	@Test
+	public void ageBetween9And12Months_shouldReturnInfantsWithAgeBetween9And12Months() throws Exception {
+		Patient p = TestUtils.getPatient(6);
+		p.setBirthdate(TestUtils.date(2013, 1, 1));
+		TestUtils.savePatient(p);
+
+		Patient p1 = TestUtils.getPatient(7);
+		p1.setBirthdate(TestUtils.date(2012, 1, 1));
+		TestUtils.savePatient(p1);
+
+		CohortDefinition cd = mchcsCohortLibrary.ageBetween9And12Months();
+		context.addParameterValue("effectiveDate", TestUtils.date(2013, 11, 19));
 		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
 		ReportingTestUtils.assertCohortEquals(Arrays.asList(6), evaluated);
 	}
