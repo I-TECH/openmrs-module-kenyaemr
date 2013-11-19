@@ -4,7 +4,7 @@
 <script type="text/javascript">
 	function onVoidRelationship(relId) {
 		kenyaui.openConfirmDialog({
-			heading: 'KenyaEMR',
+			heading: 'Void Relationship',
 			message: '${ ui.message("kenyaemr.confirmVoidRelationship") }',
 			okCallback: function() { doRelationshipVoid(relId); }
 		});

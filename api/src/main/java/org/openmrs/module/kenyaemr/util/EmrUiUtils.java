@@ -18,15 +18,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.openmrs.Concept;
 import org.openmrs.ConceptName;
 import org.openmrs.DrugOrder;
-import org.openmrs.Form;
-import org.openmrs.Visit;
-import org.openmrs.api.APIAuthenticationException;
-import org.openmrs.module.appframework.AppDescriptor;
 import org.openmrs.module.kenyacore.CoreConstants;
-import org.openmrs.module.kenyacore.CoreUtils;
-import org.openmrs.module.kenyacore.form.FormDescriptor;
-import org.openmrs.module.kenyacore.form.FormManager;
-import org.openmrs.module.kenyacore.report.ReportDescriptor;
 import org.openmrs.module.kenyaemr.regimen.DrugReference;
 import org.openmrs.module.kenyaemr.regimen.RegimenChange;
 import org.openmrs.module.kenyaemr.regimen.RegimenChangeHistory;
@@ -35,13 +27,11 @@ import org.openmrs.module.kenyaemr.regimen.RegimenOrder;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
-import org.openmrs.ui.framework.page.PageRequest;
 import org.openmrs.util.OpenmrsUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -54,44 +44,6 @@ public class EmrUiUtils {
 
 	@Autowired
 	private KenyaUiUtils kenyaUi;
-
-	/**
-	 * Formats the dates of the given visit
-	 * @param visit the visit
-	 * @return the string value
-	 */
-	public String formatVisitDates(Visit visit) {
-		StringBuilder sb = new StringBuilder();
-
-		if (EmrUtils.dateHasTime(visit.getStartDatetime())) {
-			sb.append(kenyaUi.formatDateTime(visit.getStartDatetime()));
-		}
-		else {
-			sb.append(kenyaUi.formatDate(visit.getStartDatetime()));
-		}
-
-		if (visit.getStopDatetime() != null) {
-
-			// Check if stop is last second of a day, i.e. it's time is not significant
-			Calendar stop = Calendar.getInstance();
-			stop.setTime(visit.getStopDatetime());
-			boolean isLastMoment = stop.get(Calendar.HOUR_OF_DAY) == 23 && stop.get(Calendar.MINUTE) == 59 && stop.get(Calendar.SECOND) == 59;
-			boolean isSameDay = EmrUtils.isSameDay(visit.getStartDatetime(), visit.getStopDatetime());
-
-			if (!(isLastMoment && isSameDay)) {
-				sb.append(" \u2192 ");
-
-				if (isSameDay) {
-					sb.append(kenyaUi.formatTime(visit.getStopDatetime()));
-				}
-				else {
-					sb.append(kenyaUi.formatDateTime(visit.getStopDatetime()));
-				}
-			}
-		}
-
-		return sb.toString();
-	}
 
 	/**
 	 * Formats a drug reference

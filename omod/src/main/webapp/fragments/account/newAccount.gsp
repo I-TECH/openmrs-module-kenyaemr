@@ -79,22 +79,20 @@
 	</fieldset>
 
 	<div class="ke-form-footer">
-		<input type="submit" value="Create Account"/>
+		<button type="submit"><img src="${ ui.resourceLink("kenyaui", "images/glyphs/ok.png") }" /> Create Account</button>
 	</div>
 </form>
 
 <script type="text/javascript">
-jq(function() {
-	jq('#create-user-form input[type=submit]').button();
-	
-	kenyaui.setupAjaxPost('create-account-form', {
-		onSuccess: function(data) {
-			if (data.personId) {
-				ui.navigate('kenyaemr', 'admin/manageAccounts');
-			} else {
-				kenyaui.notifyError('Creating user was successful, but unexpected response');
+	jq(function() {
+		kenyaui.setupAjaxPost('create-account-form', {
+			onSuccess: function(data) {
+				if (data.personId) {
+					ui.navigate('kenyaemr', 'admin/manageAccounts');
+				} else {
+					kenyaui.notifyError('Creating user was successful, but unexpected response');
+				}
 			}
-		}
+		});
 	});
-});
 </script>
