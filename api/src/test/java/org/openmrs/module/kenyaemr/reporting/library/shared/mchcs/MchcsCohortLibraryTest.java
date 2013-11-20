@@ -16,7 +16,6 @@ package org.openmrs.module.kenyaemr.reporting.library.shared.mchcs;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Concept;
-import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
@@ -24,6 +23,7 @@ import org.openmrs.module.kenyaemr.test.ReportingTestUtils;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
+import org.openmrs.module.reporting.common.Age;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -105,6 +105,41 @@ public class MchcsCohortLibraryTest extends BaseModuleContextSensitiveTest {
 	}
 
 	/**
+	 * @see MchcsCohortLibrary#pcrInitialWithin2Months()
+	 */
+	@Test
+	public void pcrInitialWithin2Months_shouldReturnPatientsWithPcrInitialWithin2Months() throws Exception {
+		Concept pcrTest = Dictionary.getConcept(Dictionary.HIV_DNA_POLYMERASE_CHAIN_REACTION);
+		Concept detected = Dictionary.getConcept(Dictionary.DETECTED);
+		Concept hivTest = Dictionary.getConcept(Dictionary.HIV_STATUS);
+		Concept positive = Dictionary.getConcept(Dictionary.POSITIVE);
+		Concept poorSampleQuality = Dictionary.getConcept(Dictionary.POOR_SAMPLE_QUALITY);
+		Concept contexualStatus = Dictionary.getConcept(Dictionary.TEXT_CONTEXT_STATUS);
+		Concept initial = Dictionary.getConcept(Dictionary.TEST_STATUS_INITIAL);
+		Concept complete = Dictionary.getConcept(Dictionary.CONFIRMATION_STATUS);
+
+		//make patient #6 to have a pcr test with the results as detected
+		TestUtils.saveObs(TestUtils.getPatient(6), pcrTest, detected, TestUtils.date(2007, 7, 1));
+		//make patient #7 to have a pcr test with result poor sample
+		TestUtils.saveObs(TestUtils.getPatient(7), pcrTest, poorSampleQuality, TestUtils.date(2013, 6, 15));
+		//get the hiv status of #8 and positive
+		TestUtils.saveObs(TestUtils.getPatient(8), hivTest, positive, TestUtils.date(2013, 6, 20));
+		//only #6 and #7 should pass
+
+		//make patient #6 to have a pcr test with the results as detected
+		TestUtils.saveObs(TestUtils.getPatient(6), contexualStatus, initial, TestUtils.date(2007, 7, 1));
+		//make patient #7 to have a pcr test with result poor sample
+		TestUtils.saveObs(TestUtils.getPatient(7), contexualStatus, complete, TestUtils.date(2013, 6, 15));
+		//only #6 to qualify
+
+		CohortDefinition cd = mchcsCohortLibrary.pcrInitialWithin2Months();
+		context.addParameterValue("onOrAfter", TestUtils.date(2007, 6, 1));
+		context.addParameterValue("onOrBefore", TestUtils.date(2007, 7, 1));
+		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
+		ReportingTestUtils.assertCohortEquals(Arrays.asList(6), evaluated);
+	}
+
+	/**
 	 * @see MchcsCohortLibrary#ageBetween3And8Months()
 	 */
 	@Test
@@ -112,6 +147,41 @@ public class MchcsCohortLibraryTest extends BaseModuleContextSensitiveTest {
 
 		CohortDefinition cd = mchcsCohortLibrary.ageBetween3And8Months();
 		context.addParameterValue("effectiveDate", TestUtils.date(2007, 10, 1));
+		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
+		ReportingTestUtils.assertCohortEquals(Arrays.asList(6), evaluated);
+	}
+
+	/**
+	 * @see MchcsCohortLibrary#pcrInitialBetween3To8Months()
+	 */
+	@Test
+	public void pcrInitialBetween3To8Months_shouldReturnPatientsWithPcrInitialBetween3To8Months() throws Exception{
+		Concept pcrTest = Dictionary.getConcept(Dictionary.HIV_DNA_POLYMERASE_CHAIN_REACTION);
+		Concept detected = Dictionary.getConcept(Dictionary.DETECTED);
+		Concept hivTest = Dictionary.getConcept(Dictionary.HIV_STATUS);
+		Concept positive = Dictionary.getConcept(Dictionary.POSITIVE);
+		Concept poorSampleQuality = Dictionary.getConcept(Dictionary.POOR_SAMPLE_QUALITY);
+		Concept contexualStatus = Dictionary.getConcept(Dictionary.TEXT_CONTEXT_STATUS);
+		Concept initial = Dictionary.getConcept(Dictionary.TEST_STATUS_INITIAL);
+		Concept complete = Dictionary.getConcept(Dictionary.CONFIRMATION_STATUS);
+
+		//make patient #6 to have a pcr test with the results as detected
+		TestUtils.saveObs(TestUtils.getPatient(6), pcrTest, detected, TestUtils.date(2007, 10, 1));
+		//make patient #7 to have a pcr test with result poor sample
+		TestUtils.saveObs(TestUtils.getPatient(7), pcrTest, poorSampleQuality, TestUtils.date(2013, 6, 15));
+		//get the hiv status of #8 and positive
+		TestUtils.saveObs(TestUtils.getPatient(8), hivTest, positive, TestUtils.date(2013, 6, 20));
+		//only #6 and #7 should pass
+
+		//make patient #6 to have a pcr test with the results as detected
+		TestUtils.saveObs(TestUtils.getPatient(6), contexualStatus, initial, TestUtils.date(2007, 10, 1));
+		//make patient #7 to have a pcr test with result poor sample
+		TestUtils.saveObs(TestUtils.getPatient(7), contexualStatus, complete, TestUtils.date(2013, 6, 15));
+		//only #6 to qualify
+
+		CohortDefinition cd = mchcsCohortLibrary.pcrInitialBetween3To8Months();
+		context.addParameterValue("onOrAfter", TestUtils.date(2007, 9, 1));
+		context.addParameterValue("onOrBefore", TestUtils.date(2007, 10, 1));
 		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
 		ReportingTestUtils.assertCohortEquals(Arrays.asList(6), evaluated);
 	}
@@ -147,12 +217,70 @@ public class MchcsCohortLibraryTest extends BaseModuleContextSensitiveTest {
 	}
 
 	/**
+	 * @see MchcsCohortLibrary#serologyAntBodyTestBetween9And12Months()
+	 */
+	 @Test
+	 public void serologyAntBodyTestBetween9And12Months_shouldReturnPatientsWithSerologyAntBodyTestBetween9And12Months() throws Exception{
+
+		 Concept hivRapidTest = Dictionary.getConcept(Dictionary.HIV_RAPID_TEST_1_QUALITATIVE);
+		 Concept negative = Dictionary.getConcept(Dictionary.NEGATIVE);
+		 Concept poorSampleQuality = Dictionary.getConcept(Dictionary.POOR_SAMPLE_QUALITY);
+		 Concept unknown = Dictionary.getConcept(Dictionary.UNKNOWN);
+
+		 TestUtils.saveObs(TestUtils.getPatient(6), hivRapidTest, negative, TestUtils.date(2008, 5, 19));
+		 TestUtils.saveObs(TestUtils.getPatient(7), hivRapidTest, unknown, TestUtils.date(2012, 6, 15));
+		 TestUtils.saveObs(TestUtils.getPatient(8), hivRapidTest, poorSampleQuality, TestUtils.date(2008, 5, 19));
+
+		 CohortDefinition cd = mchcsCohortLibrary.serologyAntBodyTestBetween9And12Months();
+		 context.addParameterValue("onOrAfter", TestUtils.date(2008, 4, 19));
+		 context.addParameterValue("onOrBefore", TestUtils.date(2008, 5, 19));
+		 EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
+		 ReportingTestUtils.assertCohortEquals(Arrays.asList(6), evaluated);
+	 }
+
+	/**
+	 * @see MchcsCohortLibrary#pcrBetween9And12MonthsAge()
+	 */
+	@Test
+	public void pcrBetween9And12MonthsAge_shouldReturnPatientsWithPcrBetween9And12MonthsAge() throws Exception {
+		Concept pcrTest = Dictionary.getConcept(Dictionary.HIV_DNA_POLYMERASE_CHAIN_REACTION);
+		Concept detected = Dictionary.getConcept(Dictionary.DETECTED);
+		Concept hivTest = Dictionary.getConcept(Dictionary.HIV_STATUS);
+		Concept positive = Dictionary.getConcept(Dictionary.POSITIVE);
+		Concept poorSampleQuality = Dictionary.getConcept(Dictionary.POOR_SAMPLE_QUALITY);
+		Concept contexualStatus = Dictionary.getConcept(Dictionary.TEXT_CONTEXT_STATUS);
+		Concept initial = Dictionary.getConcept(Dictionary.TEST_STATUS_INITIAL);
+		Concept complete = Dictionary.getConcept(Dictionary.CONFIRMATION_STATUS);
+
+		//make patient #6 to have a pcr test with the results as detected
+		TestUtils.saveObs(TestUtils.getPatient(6), pcrTest, detected, TestUtils.date(2008, 5, 19));
+		//make patient #7 to have a pcr test with result poor sample
+		TestUtils.saveObs(TestUtils.getPatient(7), pcrTest, poorSampleQuality, TestUtils.date(2013, 6, 15));
+		//get the hiv status of #8 and positive
+		TestUtils.saveObs(TestUtils.getPatient(8), hivTest, positive, TestUtils.date(2013, 6, 20));
+		//only #6 and #7 should pass
+
+		//make patient #6 to have a pcr test with the results as detected
+		TestUtils.saveObs(TestUtils.getPatient(6), contexualStatus, initial, TestUtils.date(2008, 5, 19));
+		//make patient #7 to have a pcr test with result poor sample
+		TestUtils.saveObs(TestUtils.getPatient(7), contexualStatus, complete, TestUtils.date(2013, 6, 15));
+		//only #6 to qualify
+
+		CohortDefinition cd = mchcsCohortLibrary.pcrBetween9And12MonthsAge();
+		context.addParameterValue("onOrAfter", TestUtils.date(2008, 4, 19));
+		context.addParameterValue("onOrBefore", TestUtils.date(2008, 5, 19));
+		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
+		ReportingTestUtils.assertCohortEquals(Arrays.asList(6), evaluated);
+	}
+
+
+	/**
 	 * @see MchcsCohortLibrary#detectedConfirmedStatus()
 	 */
 	@Test
 	public void detectedConfirmedStatus_shouldReturnInfantsWithDetectedConfirmedStatus() throws Exception {
 		Concept testContextStatus = Dictionary.getConcept(Dictionary.TEXT_CONTEXT_STATUS) ;
-		Concept detectedConfirmedStatus = Dictionary.getConcept(Dictionary.DETECTED);
+		Concept detectedConfirmedStatus = Dictionary.getConcept(Dictionary.CONFIRMATION_STATUS);
 		Concept poorSample = Dictionary.getConcept(Dictionary.POOR_SAMPLE_QUALITY);
 
 		// give patient #7 a confirmed status

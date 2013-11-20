@@ -150,7 +150,7 @@ public class MchcsCohortLibrary {
 
 	public CohortDefinition detectedConfirmedStatus() {
 		Concept testContextStatus = Dictionary.getConcept(Dictionary.TEXT_CONTEXT_STATUS) ;
-		Concept detectedConfirmedStatus = Dictionary.getConcept(Dictionary.DETECTED);
+		Concept detectedConfirmedStatus = Dictionary.getConcept(Dictionary.CONFIRMATION_STATUS);
 		return commonCohorts.hasObs(testContextStatus,detectedConfirmedStatus);
 	}
 
