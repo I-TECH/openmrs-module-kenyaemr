@@ -113,8 +113,8 @@ kenyaemrApp.controller('SimilarPatients', ['$scope', '$http', function($scope, $
 	 * Refreshes the patient search
 	 */
 	$scope.refresh = function() {
-		var query = $scope.givenName + ', ' + $scope.familyName;
-		$http.get(ui.fragmentActionLink('kenyaemr', 'search', 'patients', { appId: $scope.appId, q: query })).
+		var query = $scope.givenName + ' ' + $scope.familyName;
+		$http.get(ui.fragmentActionLink('kenyaemr', 'search', 'patients', { appId: $scope.appId, q: query, which: 'all' })).
 			success(function(data) {
 				$scope.results = data;
 			});

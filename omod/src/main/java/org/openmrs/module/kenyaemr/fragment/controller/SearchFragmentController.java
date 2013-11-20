@@ -74,7 +74,7 @@ public class SearchFragmentController {
 	 * @return the simple patients
 	 */
 	public List<SimpleObject> patients(@RequestParam(value = "q", required = false) String query,
-									   @RequestParam(value = "which", required = false) String which,
+									   @RequestParam(value = "which", required = false, defaultValue = "all") String which,
 									   UiUtils ui) {
 
 		// Return empty list if we don't have enough input to search on
@@ -99,7 +99,7 @@ public class SearchFragmentController {
 		List<Patient> matched;
 
 		// If query wasn't long enough to be searched on, just use list of checked-in patients
-		if (query.length() < getMinSearchCharacters()) {
+		if (StringUtils.isBlank(query)) {
 			matched = new ArrayList<Patient>(checkedIn);
 
 			// List needs sorted by person name
@@ -149,7 +149,7 @@ public class SearchFragmentController {
 	 * @return the simple patients
 	 */
 	public SimpleObject[] persons(@RequestParam(value = "q", required = false) String query,
-								  @RequestParam(value = "which", required = false) String which,
+								  @RequestParam(value = "which", required = false, defaultValue = "all") String which,
 								  UiUtils ui) {
 
 		Collection<Person> results = Context.getPersonService().getPeople(query, null);
