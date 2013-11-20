@@ -38,7 +38,7 @@ public class PersonSimplifier extends AbstractSimplifier<Person> {
 
 		ret.put("id", person.getId());
 		ret.put("name", kenyaUi.formatPersonName(person));
-		ret.put("gender", person.getGender());
+		ret.put("gender", person.getGender().toLowerCase());
 		ret.put("isPatient", person.isPatient());
 
 		// Add formatted age and birth date values

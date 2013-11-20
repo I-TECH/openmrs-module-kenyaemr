@@ -1,5 +1,9 @@
 <%
 	ui.decorateWith("kenyaemr", "standardPage", [ layout: "sidebar" ])
+
+	def menuItems = [
+			[ label: "Find or create patient", iconProvider: "kenyaui", icon: "buttons/patient_search.png", href: ui.pageLink("kenyaemr", "registration/registrationSearch") ]
+	]
 %>
 
 <style type="text/css">
@@ -15,12 +19,7 @@
 </style>
 
 <div class="ke-page-sidebar">
-	${ ui.includeFragment("kenyaui", "widget/panelMenu", [
-		heading: "Tasks",
-		items: [
-			[ iconProvider: "kenyaui", icon: "buttons/patient_search.png", label: "Search for a Patient", href: ui.pageLink("kenyaemr", "registration/registrationSearch") ]
-		]
-	]) }
+	${ ui.includeFragment("kenyaui", "widget/panelMenu", [ heading: "Tasks", items: menuItems ]) }
 
 	${ ui.decorate("kenyaui", "panel", [ heading: "Select Day to View" ], """<div id="calendar"></div>""") }
 
@@ -58,15 +57,18 @@
 
 		kenyaui.setupAjaxPost('close-visits-form', {
 			onSuccess: function (result) {
-				loadActiveVisitTypes();
+				ke_loadActiveVisitTypes();
 				kenyaui.notifySuccess(result.message);
 			}
 		});
 
-		loadActiveVisitTypes();
+		ke_loadActiveVisitTypes();
 	});
 
-	function loadActiveVisitTypes() {
+	/**
+	 * Fetches active visit types
+	 */
+	function ke_loadActiveVisitTypes() {
 		jq.getJSON(ui.fragmentActionLink('kenyaemr', 'registrationUtil', 'activeVisitTypes'), function(result) {
 			if (result.length == 0) {
 				jq('#end-of-day').hide();
