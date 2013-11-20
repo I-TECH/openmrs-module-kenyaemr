@@ -206,9 +206,7 @@ public class MchcsCohortLibrary {
 		AgeCohortDefinition age = new AgeCohortDefinition();
 		age.setName("Children with 6 months of age");
 		age.setMinAge(6);
-		age.setMaxAge(6);
 		age.setMinAgeUnit(DurationUnit.MONTHS);
-		age.setMaxAgeUnit(DurationUnit.MONTHS);
 		age.addParameter(new Parameter("effectiveDate", "effective date", Date.class));
 		return age;
 	}
@@ -227,7 +225,7 @@ public class MchcsCohortLibrary {
 
 	public CohortDefinition mixedFeeding() {
 		Concept infantFeedingMethod = Dictionary.getConcept(Dictionary.INFANT_FEEDING_METHOD);
-		Concept mixedFeeding = Dictionary.getConcept(Dictionary.REPLACEMENT_FEEDING);
+		Concept mixedFeeding = Dictionary.getConcept(Dictionary.MIXED_FEEDING);
 		return commonCohorts.hasObs(infantFeedingMethod,mixedFeeding);
 	}
 
