@@ -153,7 +153,13 @@ public class MchmsIndicatorLibrary {
 	 */
 	public CohortIndicator partnerTestedDuringAncOrDelivery() {
 		return cohortIndicator(null,
-				map(mchmsCohortLibrary.partnerTestedDuringAncOrDelivery(), "onOrAfter=${startDate},onOrBefore=${endDate}")
+				map(mchmsCohortLibrary.testedDuringAncOrDelivery(Boolean.TRUE), "onOrAfter=${startDate},onOrBefore=${endDate}")
+		);
+	}
+
+	public CohortIndicator discordantCouples() {
+		return cohortIndicator(null,
+				map(mchmsCohortLibrary.discordantCouples(), "onOrAfter=${startDate},onOrBefore=${endDate}")
 		);
 	}
 }

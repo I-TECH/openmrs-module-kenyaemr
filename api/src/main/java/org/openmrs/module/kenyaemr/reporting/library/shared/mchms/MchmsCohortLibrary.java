@@ -19,6 +19,7 @@ import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyacore.report.builder.CalculationCohortDefinition;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.PregnancyStage;
+import org.openmrs.module.kenyaemr.calculation.library.mchms.DiscordantCoupleCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.mchms.MchmsHivTestDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.mchms.TestedForHivInMchmsCalculation;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.DateCalculationCohortDefinition;
@@ -91,16 +92,17 @@ public class MchmsCohortLibrary {
 	}
 
 	/**
-	 * Patients whose partners were tested for HIV during either their ANTENATAL or DELIVERY
+	 * Patients or patients' partners who were tested for HIV during either their ANTENATAL or DELIVERY
 	 * {@link org.openmrs.module.kenyaemr.PregnancyStage}
 	 *
+	 * @param partner whether the calculation considers the patient herself or her male partner
 	 * @return the cohort definition
 	 */
-	public CohortDefinition partnerTestedDuringAncOrDelivery() {
-		CohortDefinition antenatalPositive = testedForHivInMchms(PregnancyStage.ANTENATAL, Dictionary.getConcept(Dictionary.POSITIVE), true);
-		CohortDefinition antenatalNegative = testedForHivInMchms(PregnancyStage.ANTENATAL, Dictionary.getConcept(Dictionary.NEGATIVE), true);
-		CohortDefinition deliveryPositive = testedForHivInMchms(PregnancyStage.DELIVERY, Dictionary.getConcept(Dictionary.POSITIVE), true);
-		CohortDefinition deliveryNegative = testedForHivInMchms(PregnancyStage.DELIVERY, Dictionary.getConcept(Dictionary.NEGATIVE), true);
+	public CohortDefinition testedDuringAncOrDelivery(Boolean partner) {
+		CohortDefinition antenatalPositive = testedForHivInMchms(PregnancyStage.ANTENATAL, Dictionary.getConcept(Dictionary.POSITIVE), partner);
+		CohortDefinition antenatalNegative = testedForHivInMchms(PregnancyStage.ANTENATAL, Dictionary.getConcept(Dictionary.NEGATIVE), partner);
+		CohortDefinition deliveryPositive = testedForHivInMchms(PregnancyStage.DELIVERY, Dictionary.getConcept(Dictionary.POSITIVE), partner);
+		CohortDefinition deliveryNegative = testedForHivInMchms(PregnancyStage.DELIVERY, Dictionary.getConcept(Dictionary.NEGATIVE), partner);
 
 		CompositionCohortDefinition cohortCd = new CompositionCohortDefinition();
 		cohortCd.addParameter(new Parameter("onOrAfter", "Start Date", Date.class));
@@ -112,5 +114,31 @@ public class MchmsCohortLibrary {
 		cohortCd.setCompositionString("antenatalPositive OR antenatalNegative OR deliveryPositive OR deliveryNegative");
 
 		return cohortCd;
+	}
+
+	public CohortDefinition discordantCouples() {
+		CohortDefinition patientsTestedInAncOrDelivery = testedDuringAncOrDelivery(false);
+		CohortDefinition partnersTestedInAncOrDelivery = testedDuringAncOrDelivery(true);
+
+		CompositionCohortDefinition cohortCd = new CompositionCohortDefinition();
+		cohortCd.addParameter(new Parameter("onOrAfter", "Start Date", Date.class));
+		cohortCd.addParameter(new Parameter("onOrBefore", "End Date", Date.class));
+		cohortCd.addSearch("patientsTestedInAncOrDelivery", ReportUtils.map(patientsTestedInAncOrDelivery, "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cohortCd.addSearch("partnersTestedInAncOrDelivery", ReportUtils.map(partnersTestedInAncOrDelivery, "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cohortCd.setCompositionString("patientsTestedInAncOrDelivery OR partnersTestedInAncOrDelivery");
+
+		CalculationCohortDefinition calculationCd = new CalculationCohortDefinition(new DiscordantCoupleCalculation());
+		calculationCd.setName("Mothers whose HIV status is discordant with their husbands");
+		calculationCd.addParameter(new Parameter("onOrAfter", "Start Date", Date.class));
+		calculationCd.addParameter(new Parameter("onOrBefore", "End Date", Date.class));
+
+		CompositionCohortDefinition cohortCd2 = new CompositionCohortDefinition();
+		cohortCd2.addParameter(new Parameter("onOrAfter", "Start Date", Date.class));
+		cohortCd2.addParameter(new Parameter("onOrBefore", "End Date", Date.class));
+		cohortCd2.addSearch("cohortCd", ReportUtils.map((CohortDefinition) cohortCd, "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cohortCd2.addSearch("calculationCd", ReportUtils.map((CohortDefinition) calculationCd, "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cohortCd2.setCompositionString("cohortCd AND calculationCd");
+
+		return cohortCd2;
 	}
 }

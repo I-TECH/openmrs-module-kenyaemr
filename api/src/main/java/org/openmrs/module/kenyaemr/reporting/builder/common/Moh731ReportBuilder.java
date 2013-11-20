@@ -104,6 +104,8 @@ public class Moh731ReportBuilder extends BaseIndicatorReportBuilder {
 		dsd.addColumn("HV02-10", "Total with known status (HV02-04 plus HV02-05)", ReportUtils.map(mchmsIndicators.testedForHivBeforeOrDuringMchms(), indParams), "");
 
 		dsd.addColumn("HV02-11", "Male partners tested - (ANC/L&D)", ReportUtils.map(mchmsIndicators.partnerTestedDuringAncOrDelivery(), indParams), "");
+		dsd.addColumn("HV02-12", "Discordant Couples", ReportUtils.map(mchmsIndicators.discordantCouples(), indParams), "");
+
 		return dsd;
 	}
 
