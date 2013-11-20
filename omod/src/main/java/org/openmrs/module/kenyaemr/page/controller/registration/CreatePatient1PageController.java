@@ -18,10 +18,10 @@ import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyaui.annotation.AppPage;
 
 /**
- * Create patient page
+ * Create patient step 1 (select person) page
  */
 @AppPage(EmrConstants.APP_REGISTRATION)
-public class CreatePatientPageController {
+public class CreatePatient1PageController {
 	
 	public void controller() {
 	}

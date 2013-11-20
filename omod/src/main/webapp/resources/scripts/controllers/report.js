@@ -30,8 +30,9 @@ kenyaemrApp.controller('ReportController', ['$scope', '$http', '$timeout', funct
 
 	/**
 	 * Refreshes the lists of queued and finished requests
+	 * @param oneoff true if method should not request to be called again
 	 */
-	$scope.refresh = function() {
+	$scope.refresh = function(oneoff) {
 		$http.get(ui.fragmentActionLink('kenyaemr', 'report/reportUtils', 'getQueuedRequests', { reportUuid: $scope.reportUuid })).
 			success(function(data) {
 				$scope.queued = data;
@@ -40,7 +41,9 @@ kenyaemrApp.controller('ReportController', ['$scope', '$http', '$timeout', funct
 		$http.get(ui.fragmentActionLink('kenyaemr', 'report/reportUtils', 'getFinishedRequests', { reportUuid: $scope.reportUuid })).
 			success(function(data) {
 				$scope.finished = data;
-				$timeout($scope.refresh, 5000);
+				if (!oneoff) {
+					$timeout($scope.refresh, 5000);
+				}
 			});
 	};
 
@@ -53,7 +56,6 @@ kenyaemrApp.controller('ReportController', ['$scope', '$http', '$timeout', funct
 			.success(defaultSuccessHandler)
 			.error(defaultErrorHandler);
 
-		$scope.refresh();
 	};
 
 	/**
@@ -100,7 +102,7 @@ kenyaemrApp.controller('ReportController', ['$scope', '$http', '$timeout', funct
 
 	var defaultSuccessHandler = function(data) {
 		kenyaui.notifySuccess(data.message);
-		$scope.refresh();
+		$scope.refresh(true);
 	};
 
 	var defaultErrorHandler = function(data) {

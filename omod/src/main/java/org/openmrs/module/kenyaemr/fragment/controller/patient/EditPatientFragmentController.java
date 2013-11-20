@@ -27,6 +27,7 @@ import org.openmrs.Patient;
 import org.openmrs.PatientIdentifier;
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.PatientProgram;
+import org.openmrs.Person;
 import org.openmrs.PersonAddress;
 import org.openmrs.PersonAttribute;
 import org.openmrs.PersonAttributeType;
@@ -62,12 +63,20 @@ public class EditPatientFragmentController {
 	/**
 	 * Main controller method
 	 * @param patient the patient (may be null)
+	 * @param person the person (may be null)
 	 * @param model the model
 	 */
-	public void controller(@FragmentParam(required=false, value="patient") Patient patient,
+	public void controller(@FragmentParam(value = "patient", required = false) Patient patient,
+						   @FragmentParam(value = "person", required = false) Person person,
 						   FragmentModel model) {
 
-		model.addAttribute("command", newEditPatientForm(patient));
+		if (patient != null && person != null) {
+			throw new RuntimeException("A patient or person can be provided, but not both");
+		}
+
+		Person existing = patient != null ? patient : person;
+
+		model.addAttribute("command", newEditPatientForm(existing));
 
 		model.addAttribute("civilStatusConcept", Dictionary.getConcept(Dictionary.CIVIL_STATUS));
 		model.addAttribute("occupationConcept", Dictionary.getConcept(Dictionary.OCCUPATION));
@@ -115,19 +124,21 @@ public class EditPatientFragmentController {
 
 		Patient saved = form.save();
 
-		return SimpleObject.fromObject(saved, ui, "patientId");
+		return SimpleObject.fromObject(saved, ui, "id");
 	}
 
 	/**
 	 * Creates an edit patient form
-	 * @param patient the patient
+	 * @param person the person
 	 * @return the form
 	 */
-	public EditPatientForm newEditPatientForm(@RequestParam(required=false, value="patientId") Patient patient) {
-		if (patient != null) {
-			return new EditPatientForm(patient);
+	public EditPatientForm newEditPatientForm(@RequestParam(value = "personId", required = false) Person person) {
+		if (person != null && person.isPatient()) {
+			return new EditPatientForm((Patient) person); // For editing existing patient
+		} else if (person != null) {
+			return new EditPatientForm(person); // For creating patient from existing person
 		} else {
-			return new EditPatientForm();
+			return new EditPatientForm(); // For creating patient and person from scratch
 		}
 	}
 
@@ -136,52 +147,29 @@ public class EditPatientFragmentController {
 	 */
 	public class EditPatientForm extends ValidatingCommandObject {
 
-		private Patient original;
-
+		private Person original;
 		private Location location;
-
 		private PersonName personName;
-
 		private PatientIdentifier nationalIdNumber;
-
 		private PatientIdentifier patientClinicNumber;
-
 		private PatientIdentifier hivIdNumber;
-
 		private Date birthdate;
-
 		private Boolean birthdateEstimated;
-
 		private String gender;
-
 		private PersonAddress personAddress;
-
 		private PersonAttribute telephoneContact;
-
 		private Concept maritalStatus;
-
 		private Concept occupation;
-
 		private Concept education;
-
 		private Obs savedMaritalStatus;
-
 		private Obs savedOccupation;
-
 		private Obs savedEducation;
-
 		private Boolean dead = false;
-
 		private Date deathDate;
-
 		private PersonAttribute nameOfNextOfKin;
-
 		private PersonAttribute nextOfKinRelationship;
-
 		private PersonAttribute nextOfKinContact;
-
 		private PersonAttribute nextOfKinAddress;
-
 		private PersonAttribute subChiefName;
 
 		/**
@@ -219,28 +207,42 @@ public class EditPatientFragmentController {
 		/**
 		 * Creates an edit form for an existing patient
 		 */
-		public EditPatientForm(Patient patient) {
+		public EditPatientForm(Person person) {
 			this();
 
-			original = patient;
+			original = person;
 
-			if (patient.getPersonName() != null) {
-				personName = patient.getPersonName();
+			if (person.getPersonName() != null) {
+				personName = person.getPersonName();
 			} else {
-				personName.setPerson(patient);
+				personName.setPerson(person);
 			}
 
-			if (patient.getPersonAddress() != null) {
-				personAddress = patient.getPersonAddress();
+			if (person.getPersonAddress() != null) {
+				personAddress = person.getPersonAddress();
 			} else {
-				personAddress.setPerson(patient);
+				personAddress.setPerson(person);
 			}
 
-			gender = patient.getGender();
-			birthdate = patient.getBirthdate();
-			birthdateEstimated = patient.getBirthdateEstimated();
-			dead = patient.isDead();
-			deathDate = patient.getDeathDate();
+			gender = person.getGender();
+			birthdate = person.getBirthdate();
+			birthdateEstimated = person.getBirthdateEstimated();
+			dead = person.isDead();
+			deathDate = person.getDeathDate();
+
+			PersonAttribute attr = person.getAttribute(MetadataUtils.getPersonAttributeType(CommonMetadata._PersonAttributeType.TELEPHONE_CONTACT));
+			if (attr != null) {
+				telephoneContact = attr;
+			} else {
+				telephoneContact.setPerson(person);
+			}
+		}
+
+		/**
+		 * Creates an edit form for an existing patient
+		 */
+		public EditPatientForm(Patient patient) {
+			this((Person) patient);
 
 			PatientIdentifier id = patient.getPatientIdentifier(MetadataUtils.getPatientIdentifierType(CommonMetadata._PatientIdentifierType.PATIENT_CLINIC_NUMBER));
 			if (id != null) {
@@ -261,13 +263,6 @@ public class EditPatientFragmentController {
 				nationalIdNumber = id;
 			} else {
 				nationalIdNumber.setPatient(patient);
-			}
-
-			PersonAttribute attr = patient.getAttribute(MetadataUtils.getPersonAttributeType(CommonMetadata._PersonAttributeType.TELEPHONE_CONTACT));
-			if (attr != null) {
-				telephoneContact = attr;
-			} else {
-				telephoneContact.setPerson(patient);
 			}
 
 			savedMaritalStatus = getLatestObs(patient, Dictionary.CIVIL_STATUS);
@@ -419,7 +414,16 @@ public class EditPatientFragmentController {
 		 * @return
 		 */
 		public Patient save() {
-			Patient toSave = original != null ? original : new Patient();
+			Patient toSave;
+			if (original != null && original.isPatient()) { // Editing an existing patient
+				toSave = (Patient) original;
+			}
+			else if (original != null) {
+				toSave = new Patient(original); // Creating a patient from an existing person
+			}
+			else {
+				toSave = new Patient(); // Creating a new patient and person
+			}
 
 			toSave.setGender(gender);
 			toSave.setBirthdate(birthdate);
@@ -569,12 +573,12 @@ public class EditPatientFragmentController {
 		}
 
 		public boolean isInHivProgram() {
-			if (original == null) {
+			if (original == null || !original.isPatient()) {
 				return false;
 			}
 			ProgramWorkflowService pws = Context.getProgramWorkflowService();
 			Program hivProgram = MetadataUtils.getProgram(HivMetadata._Program.HIV);
-			for (PatientProgram pp : pws.getPatientPrograms(original, hivProgram, null, null, null, null, false)) {
+			for (PatientProgram pp : pws.getPatientPrograms((Patient) original, hivProgram, null, null, null, null, false)) {
 				if (pp.getActive()) {
 					return true;
 				}
@@ -585,7 +589,7 @@ public class EditPatientFragmentController {
 		/**
 		 * @return the original
 		 */
-		public Patient getOriginal() {
+		public Person getOriginal() {
 			return original;
 		}
 

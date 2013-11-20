@@ -15,9 +15,8 @@ kenyaui.configureSearch('person', {
 	searchProvider: 'kenyaemr',
 	searchFragment: 'search',
 	format: function(person) {
-		var icon = (person.isPatient ? 'patient' : 'person') + '_' + (person.gender == 'M' ? 'm' : 'f');
-		var src = ui.resourceLink('kenyaui', 'images/glyphs/' + icon + '.png');
-		var html = '<img src="' + src + '" class="ke-glyph" /> ' + person.name;
+		var icon = ui.resourceLink('kenyaui', 'images/glyphs/' + ((person.isPatient ? 'patient' : 'person') + '_' + person.gender) + '.png');
+		var html = '<img src="' + icon + '" class="ke-glyph" /> ' + person.name;
 		if (person.age) {
 			html += ' <span style="color: #999">' + person.age + '</span>';
 		}
@@ -28,9 +27,8 @@ kenyaui.configureSearch('patient', {
 	searchProvider: 'kenyaemr',
 	searchFragment: 'search',
 	format: function(patient) {
-		var icon = 'patient_' + (patient.gender == 'M' ? 'm' : 'f');
-		var src = ui.resourceLink('kenyaui', 'images/glyphs/' + icon + '.png');
-		var html = '<img src="' + src + '" class="ke-glyph" /> ' + patient.name;
+		var icon = ui.resourceLink('kenyaui', 'images/glyphs/patient_' + patient.gender + '.png');
+		var html = '<img src="' + icon + '" class="ke-glyph" /> ' + patient.name;
 		if (patient.age) {
 			html += ' <span style="color: #999">' + patient.age + '</span>';
 		}

@@ -1,7 +1,5 @@
 <%
-	ui.decorateWith("kenyaui", "panel", [ heading: (command.original ? "Edit" : "Create") + " Patient", frameOnly: true ])
-
-	def returnUrl = config.returnUrl ?: (command.original ? ui.pageLink("kenyaemr", "registration/registrationViewPatient", [patientId: command.original.patientId]) : ui.pageLink("kenyaemr", "registration/registrationHome"))
+	ui.decorateWith("kenyaui", "panel", [ heading: (config.heading ?: "Edit Patient"), frameOnly: true ])
 
 	def femaleChecked = command.gender == 'F' ? 'checked="true"' : ''
 	def maleChecked = command.gender == 'M' ? 'checked="true"' : ''
@@ -49,7 +47,9 @@
 
 	def addressFieldRows = [
 			[
-					[ object: command, property: "telephoneContact.value", label: ui.format(command.telephoneContact.attributeType) ],
+					[ object: command, property: "telephoneContact.value", label: ui.format(command.telephoneContact.attributeType) ]
+			],
+			[
 					[ object: command, property: "personAddress.address1", label: "Postal Address", config: [ size: 60 ] ],
 					[ object: command, property: "personAddress.country", label: "County", config: [ size: 60 ] ],
 					[ object: command, property: "subChiefName.value", label: ui.format(command.subChiefName.attributeType) ]
@@ -73,7 +73,7 @@
 
 <form id="edit-patient-form" method="post" action="${ ui.actionLink("kenyaemr", "patient/editPatient", "savePatient") }">
 	<% if (command.original) { %>
-		<input type="hidden" name="patientId" value="${ command.original.patientId }"/>
+		<input type="hidden" name="personId" value="${ command.original.id }"/>
 	<% } %>
 
 	<div class="ke-panel-content">
@@ -141,7 +141,9 @@
 		<button type="submit">
 			<img src="${ ui.resourceLink("kenyaui", "images/glyphs/ok.png") }" /> ${ command.original ? "Save Changes" : "Create Patient" }
 		</button>
+		<% if (config.returnUrl) { %>
 		<button type="button" class="cancel-button"><img src="${ ui.resourceLink("kenyaui", "images/glyphs/cancel.png") }" /> Cancel</button>
+		<% } %>
 	</div>
 	
 </form>
@@ -149,16 +151,16 @@
 <script type="text/javascript">
 jq(function() {
 	jq('#edit-patient-form .cancel-button').click(function() {
-		ui.navigate('${ returnUrl }');
+		ui.navigate('${ config.returnUrl }');
 	});
 
 	kenyaui.setupAjaxPost('edit-patient-form', {
 		onSuccess: function(data) {
-			if (data.patientId) {
-				<% if (returnUrl.indexOf('patientId') > 0) { %>
-				ui.navigate('${ returnUrl }');
+			if (data.id) {
+				<% if (config.returnUrl) { %>
+				ui.navigate('${ config.returnUrl }');
 				<% } else { %>
-				ui.navigate('kenyaemr', 'registration/registrationViewPatient', { patientId: data.patientId });
+				ui.navigate('kenyaemr', 'registration/registrationViewPatient', { patientId: data.id });
 				<% } %>
 			} else {
 				kenyaui.notifyError('Saving patient was successful, but unexpected response');

@@ -14,6 +14,8 @@
 
 package org.openmrs.module.kenyaemr.fragment.controller;
 
+import net.sf.cglib.core.CollectionUtils;
+import net.sf.cglib.core.Predicate;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -38,6 +40,7 @@ import org.openmrs.util.PersonByNameComparator;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -66,7 +69,7 @@ public class SearchFragmentController {
 	/**
 	 * Searches for patients by name, identifier, age, visit status
 	 * @param query the name or identifier
-	 * @param which checked-in|all
+	 * @param which all|checked-in
 	 * @param ui the UI utils
 	 * @return the simple patients
 	 */
@@ -141,20 +144,27 @@ public class SearchFragmentController {
 	/**
 	 * Searches for persons by name
 	 * @param query the name
+	 * @param which all|non-patients
 	 * @param ui the UI utils
 	 * @return the simple patients
 	 */
-	public List<SimpleObject> persons(@RequestParam(value = "q", required = false) String query,
-									  UiUtils ui) {
+	public SimpleObject[] persons(@RequestParam(value = "q", required = false) String query,
+								  @RequestParam(value = "which", required = false) String which,
+								  UiUtils ui) {
 
-		List<Person> results = Context.getPersonService().getPeople(query, null);
+		Collection<Person> results = Context.getPersonService().getPeople(query, null);
+
+		if ("non-patients".equals(which)) {
+			results = CollectionUtils.filter(results, new Predicate() {
+				@Override
+				public boolean evaluate(Object obj) {
+					return !((Person) obj).isPatient();
+				}
+			});
+		}
 
 		// Convert to simple objects
-		List<SimpleObject> ret = new ArrayList<SimpleObject>();
-		for (Person p : results) {
-			ret.add(ui.simplifyObject(p));
-		}
-		return ret;
+		return ui.simplifyCollection(results);
 
 	}
 

@@ -8,27 +8,18 @@
 			[ iconProvider: "kenyaui", icon: "buttons/back.png", label: "Back", href: returnUrl ]
 	]
 %>
-<div ng-controller="ReportController" ng-init="init('${ currentApp.id }', '${ definition.uuid }')">
-
 	<script type="text/javascript">
 		function requestReport() {
 			kenyaui.openPanelDialog({ templateId: 'request-dialog-template' });
 		}
 
-		jq(function() {
-			jq('#request-report-ok').click(function() {
-				var params = { appId: '${ currentApp.id }', reportUuid: '${ report.targetUuid }' };
-
-				<% if (isIndicator) { %>
-				params.date = jq('#request-date').val();
-				<% } %>
-
-				/**
-				 * TODO figure out how we can call the requestReport method on the Angular controller instead
-				 */
-				ui.getFragmentActionAsJson('kenyaemr', 'report/reportUtils', 'requestReport', params);
-
+		jQuery(function() {
+			jQuery('#request-report-ok').click(function() {
 				kenyaui.closeDialog();
+				kenyaui.updateController('ng-reportctrl', function(scope) {
+					var date = jQuery('#request-date').val();
+					scope.requestReport(date);
+				});
 			});
 		});
 	</script>
@@ -43,7 +34,7 @@
 		</div>
 	</div>
 
-	<div class="ke-page-content">
+	<div class="ke-page-content" id="ng-reportctrl" ng-controller="ReportController" ng-init="init('${ currentApp.id }', '${ definition.uuid }')">
 
 		<div class="ke-panel-frame">
 			<div class="ke-panel-heading">Summary</div>
@@ -129,5 +120,3 @@
 			<button type="button" onclick="kenyaui.closeDialog();"><img src="${ ui.resourceLink("kenyaui", "images/glyphs/cancel.png") }" /> Cancel</button>
 		</div>
 	</div>
-
-</div>
