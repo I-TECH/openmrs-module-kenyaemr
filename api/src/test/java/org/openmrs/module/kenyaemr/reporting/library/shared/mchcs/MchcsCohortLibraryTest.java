@@ -72,8 +72,6 @@ public class MchcsCohortLibraryTest extends BaseModuleContextSensitiveTest {
 		CohortDefinition cd =mchcsCohortLibrary.pcrWithinMonths();
 		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
 		ReportingTestUtils.assertCohortEquals(Arrays.asList(6, 7), evaluated);
-
-
 	}
 
 	/**
@@ -148,7 +146,7 @@ public class MchcsCohortLibraryTest extends BaseModuleContextSensitiveTest {
 	 }
 
 	/**
-	 * @see MchcsCohortLibrary#ageBetween9And12Months
+	 * @see MchcsCohortLibrary#ageBetween9And12Months()
 	 */
 	@Test
 	public void ageBetween9And12Months_shouldReturnInfantsWithAgeBetween9And12Months() throws Exception {
@@ -165,4 +163,167 @@ public class MchcsCohortLibraryTest extends BaseModuleContextSensitiveTest {
 		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
 		ReportingTestUtils.assertCohortEquals(Arrays.asList(6), evaluated);
 	}
+
+	/**
+	 * @see MchcsCohortLibrary#detectedConfirmedStatus()
+	 */
+	@Test
+	public void detectedConfirmedStatus_shouldReturnInfantsWithDetectedConfirmedStatus() throws Exception {
+		Concept testContextStatus = Dictionary.getConcept(Dictionary.TEXT_CONTEXT_STATUS) ;
+		Concept detectedConfirmedStatus = Dictionary.getConcept(Dictionary.DETECTED);
+		Concept poorSample = Dictionary.getConcept(Dictionary.POOR_SAMPLE_QUALITY);
+
+		// give patient #7 a confirmed status
+		TestUtils.saveObs(TestUtils.getPatient(7), testContextStatus, detectedConfirmedStatus,TestUtils.date(2012,6,10));
+		// give patient #6 a poor sample status
+		TestUtils.saveObs(TestUtils.getPatient(6), testContextStatus, poorSample,TestUtils.date(2012,6,15));
+		CohortDefinition cd = mchcsCohortLibrary.detectedConfirmedStatus();
+		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
+		ReportingTestUtils.assertCohortEquals(Arrays.asList(7), evaluated);
+
+	}
+
+	/**
+	 * @see MchcsCohortLibrary#ageAt6Months()
+	 */
+	@Test
+	public void ageAt6Months_shouldReturnInfantsWithAgeAt6Months() throws Exception {
+		Patient p = TestUtils.getPatient(6);
+		p.setBirthdate(TestUtils.date(2012, 7, 1));
+		TestUtils.savePatient(p);
+
+		Patient p1 = TestUtils.getPatient(2);
+		p1.setBirthdate(TestUtils.date(2012, 10, 1));
+		TestUtils.savePatient(p1);
+
+		Patient p11 = TestUtils.getPatient(7);
+		p11.setBirthdate(TestUtils.date(2012, 5, 1));
+		TestUtils.savePatient(p11);
+
+		CohortDefinition cd = mchcsCohortLibrary.ageAt6Months();
+		context.addParameterValue("effectiveDate", TestUtils.date(2012, 12, 1));
+		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
+		ReportingTestUtils.assertCohortEquals(Arrays.asList(7), evaluated);
+	}
+
+	/**
+	 * @see MchcsCohortLibrary#exclusiveBreastFeeding()
+	 */
+	@Test
+	public void exclusiveBreastFeeding_shouldReturnInfantsWithExclusiveBreastFeeding() throws Exception {
+		Concept infantFeedingMethod = Dictionary.getConcept(Dictionary.INFANT_FEEDING_METHOD);
+		Concept exclusiveBreastFeeding = Dictionary.getConcept(Dictionary.BREASTFED_EXCLUSIVELY);
+		Concept replacementFeeding = Dictionary.getConcept(Dictionary.REPLACEMENT_FEEDING);
+
+		// give patient #7 an exclusive feeding method
+		TestUtils.saveObs(TestUtils.getPatient(7), infantFeedingMethod, exclusiveBreastFeeding,TestUtils.date(2012,6,10));
+		// give patient #6 a replacement feeding method
+		TestUtils.saveObs(TestUtils.getPatient(6), infantFeedingMethod, replacementFeeding,TestUtils.date(2012,6,15));
+		CohortDefinition cd = mchcsCohortLibrary.exclusiveBreastFeeding();
+		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
+		ReportingTestUtils.assertCohortEquals(Arrays.asList(7), evaluated);
+	}
+
+	/**
+	 * @see MchcsCohortLibrary#exclusiveReplacementFeeding()
+	 */
+	@Test
+	public void exclusiveReplacementFeeding_shouldReturnInfantWithExclusiveReplacementFeeding() throws Exception {
+		Concept infantFeedingMethod = Dictionary.getConcept(Dictionary.INFANT_FEEDING_METHOD);
+		Concept exclusiveBreastFeeding = Dictionary.getConcept(Dictionary.BREASTFED_EXCLUSIVELY);
+		Concept replacementFeeding = Dictionary.getConcept(Dictionary.REPLACEMENT_FEEDING);
+
+		// give patient #7 an exclusive feeding method
+		TestUtils.saveObs(TestUtils.getPatient(7), infantFeedingMethod, exclusiveBreastFeeding,TestUtils.date(2012,6,10));
+		// give patient #6 a replacement feeding method
+		TestUtils.saveObs(TestUtils.getPatient(6), infantFeedingMethod, replacementFeeding,TestUtils.date(2012,6,15));
+		CohortDefinition cd = mchcsCohortLibrary.exclusiveReplacementFeeding();
+		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
+		ReportingTestUtils.assertCohortEquals(Arrays.asList(6), evaluated);
+	}
+
+	/**
+	 * @see MchcsCohortLibrary#mixedFeeding()
+	 */
+	@Test
+	public void mixedFeeding_shouldReturnInfantsWithMixedFeeding() throws Exception {
+		Concept infantFeedingMethod = Dictionary.getConcept(Dictionary.INFANT_FEEDING_METHOD);
+		Concept exclusiveBreastFeeding = Dictionary.getConcept(Dictionary.BREASTFED_EXCLUSIVELY);
+		Concept replacementFeeding = Dictionary.getConcept(Dictionary.REPLACEMENT_FEEDING);
+		Concept mixedFeeding = Dictionary.getConcept(Dictionary.MIXED_FEEDING);
+
+		// give patient #7 an exclusive feeding method
+		TestUtils.saveObs(TestUtils.getPatient(7), infantFeedingMethod, exclusiveBreastFeeding,TestUtils.date(2012,6,10));
+		// give patient #6 a replacement feeding method
+		TestUtils.saveObs(TestUtils.getPatient(6), infantFeedingMethod, replacementFeeding,TestUtils.date(2012,6,15));
+		// give patient #8 a mixed feeding option
+		TestUtils.saveObs(TestUtils.getPatient(8), infantFeedingMethod, mixedFeeding,TestUtils.date(2012,6,20));
+		CohortDefinition cd = mchcsCohortLibrary.mixedFeeding();
+		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
+		ReportingTestUtils.assertCohortEquals(Arrays.asList(8), evaluated);
+	}
+
+	/**
+	 * @see MchcsCohortLibrary#motherOnTreatmentAndBreastFeeding()
+	 */
+	@Test
+	public void motherOnTreatmentAndBreastFeeding_shouldReturnMotherOnTreatmentAndBreastFeeding() throws Exception {
+		Concept motherOnTreatmentAndBreatFeeding = Dictionary.getConcept(Dictionary.MOTHER_ON_ANTIRETROVIRAL_DRUGS_AND_BREASTFEEDING);
+		Concept breastfeeding = Dictionary.getConcept(Dictionary.YES);
+		Concept notBreastfeeding = Dictionary.getConcept(Dictionary.NO);
+		Concept unknown = Dictionary.getConcept(Dictionary.UNKNOWN);
+
+		// give patient #7 an exclusive feeding method
+		TestUtils.saveObs(TestUtils.getPatient(7), motherOnTreatmentAndBreatFeeding, breastfeeding,TestUtils.date(2012,6,10));
+		// give patient #6 a replacement feeding method
+		TestUtils.saveObs(TestUtils.getPatient(6), motherOnTreatmentAndBreatFeeding, notBreastfeeding,TestUtils.date(2012,6,15));
+		// give patient #8 a mixed feeding option
+		TestUtils.saveObs(TestUtils.getPatient(8), motherOnTreatmentAndBreatFeeding, unknown,TestUtils.date(2012,6,20));
+		CohortDefinition cd = mchcsCohortLibrary.motherOnTreatmentAndBreastFeeding();
+		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
+		ReportingTestUtils.assertCohortEquals(Arrays.asList(7), evaluated);
+	}
+
+	/**
+	 * @see MchcsCohortLibrary#motherOnTreatmentAndNotBreastFeeding()
+	 */
+	@Test
+	public void motherOnTreatmentAndNotBreastFeeding_shouldReturnMotherOnTreatmentAndNotBreastFeeding() throws Exception {
+		Concept motherOnTreatmentAndBreatFeeding = Dictionary.getConcept(Dictionary.MOTHER_ON_ANTIRETROVIRAL_DRUGS_AND_BREASTFEEDING);
+		Concept breastfeeding = Dictionary.getConcept(Dictionary.YES);
+		Concept notBreastfeeding = Dictionary.getConcept(Dictionary.NO);
+		Concept unknown = Dictionary.getConcept(Dictionary.UNKNOWN);
+
+		// give patient #7 an exclusive feeding method
+		TestUtils.saveObs(TestUtils.getPatient(7), motherOnTreatmentAndBreatFeeding, breastfeeding,TestUtils.date(2012,6,10));
+		// give patient #6 a replacement feeding method
+		TestUtils.saveObs(TestUtils.getPatient(6), motherOnTreatmentAndBreatFeeding, notBreastfeeding,TestUtils.date(2012,6,15));
+		// give patient #8 a mixed feeding option
+		TestUtils.saveObs(TestUtils.getPatient(8), motherOnTreatmentAndBreatFeeding, unknown,TestUtils.date(2012,6,20));
+		CohortDefinition cd = mchcsCohortLibrary.motherOnTreatmentAndNotBreastFeeding();
+		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
+		ReportingTestUtils.assertCohortEquals(Arrays.asList(6), evaluated);
+	}
+
+	/**
+	 * @see MchcsCohortLibrary#motherOnTreatmentAndNotBreastFeedingUnknown()
+	 */
+	@Test
+	public void motherOnTreatmentAndNotBreastFeedingUnknown_shouldReturnMotherOnTreatmentAndNotBreastFeedingUnknown() throws Exception{
+		Concept motherOnTreatmentAndBreatFeeding = Dictionary.getConcept(Dictionary.MOTHER_ON_ANTIRETROVIRAL_DRUGS_AND_BREASTFEEDING);
+		Concept breastfeeding = Dictionary.getConcept(Dictionary.YES);
+		Concept notBreastfeeding = Dictionary.getConcept(Dictionary.NO);
+		Concept unknown = Dictionary.getConcept(Dictionary.UNKNOWN);
+
+		// give patient #7 an exclusive feeding method
+		TestUtils.saveObs(TestUtils.getPatient(7), motherOnTreatmentAndBreatFeeding, breastfeeding,TestUtils.date(2012,6,10));
+		// give patient #6 a replacement feeding method
+		TestUtils.saveObs(TestUtils.getPatient(6), motherOnTreatmentAndBreatFeeding, notBreastfeeding,TestUtils.date(2012,6,15));
+		// give patient #8 a mixed feeding option
+		TestUtils.saveObs(TestUtils.getPatient(8), motherOnTreatmentAndBreatFeeding, unknown,TestUtils.date(2012,6,20));
+		CohortDefinition cd = mchcsCohortLibrary.motherOnTreatmentAndNotBreastFeedingUnknown();
+		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
+		ReportingTestUtils.assertCohortEquals(Arrays.asList(8), evaluated);
+	}
+
 }
