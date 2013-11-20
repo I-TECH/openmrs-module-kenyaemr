@@ -97,11 +97,8 @@ public class MchcsCohortLibraryTest extends BaseModuleContextSensitiveTest {
 	 */
 	@Test
 	public void  age2Months_shouldReturnInfantsAged2Months() throws Exception {
-		Patient p = TestUtils.getPatient(6);
-		p.setBirthdate(TestUtils.date(2012, 7, 1));
-		TestUtils.savePatient(p);
 		CohortDefinition cd = mchcsCohortLibrary.age2Months();
-		context.addParameterValue("effectiveDate", TestUtils.date(2012, 9, 1));
+		context.addParameterValue("effectiveDate", TestUtils.date(2007, 7, 1));
 		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
 		ReportingTestUtils.assertCohortEquals(Arrays.asList(6), evaluated);
 
@@ -112,16 +109,9 @@ public class MchcsCohortLibraryTest extends BaseModuleContextSensitiveTest {
 	 */
 	@Test
 	public void ageBetween3And8Months_shouldReturnInfantsAgeBetween3And8Months() throws Exception {
-		Patient p = TestUtils.getPatient(6);
-		p.setBirthdate(TestUtils.date(2013, 1, 1));
-		TestUtils.savePatient(p);
-
-		Patient p1 = TestUtils.getPatient(7);
-		p1.setBirthdate(TestUtils.date(2012, 1, 1));
-		TestUtils.savePatient(p1);
 
 		CohortDefinition cd = mchcsCohortLibrary.ageBetween3And8Months();
-		context.addParameterValue("effectiveDate", TestUtils.date(2013, 8, 1));
+		context.addParameterValue("effectiveDate", TestUtils.date(2007, 10, 1));
 		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
 		ReportingTestUtils.assertCohortEquals(Arrays.asList(6), evaluated);
 	}
@@ -150,16 +140,8 @@ public class MchcsCohortLibraryTest extends BaseModuleContextSensitiveTest {
 	 */
 	@Test
 	public void ageBetween9And12Months_shouldReturnInfantsWithAgeBetween9And12Months() throws Exception {
-		Patient p = TestUtils.getPatient(6);
-		p.setBirthdate(TestUtils.date(2013, 1, 1));
-		TestUtils.savePatient(p);
-
-		Patient p1 = TestUtils.getPatient(7);
-		p1.setBirthdate(TestUtils.date(2012, 1, 1));
-		TestUtils.savePatient(p1);
-
 		CohortDefinition cd = mchcsCohortLibrary.ageBetween9And12Months();
-		context.addParameterValue("effectiveDate", TestUtils.date(2013, 11, 19));
+		context.addParameterValue("effectiveDate", TestUtils.date(2008, 5, 19));
 		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
 		ReportingTestUtils.assertCohortEquals(Arrays.asList(6), evaluated);
 	}
@@ -188,22 +170,10 @@ public class MchcsCohortLibraryTest extends BaseModuleContextSensitiveTest {
 	 */
 	@Test
 	public void ageAt6Months_shouldReturnInfantsWithAgeAt6Months() throws Exception {
-		Patient p = TestUtils.getPatient(6);
-		p.setBirthdate(TestUtils.date(2012, 7, 1));
-		TestUtils.savePatient(p);
-
-		Patient p1 = TestUtils.getPatient(2);
-		p1.setBirthdate(TestUtils.date(2012, 10, 1));
-		TestUtils.savePatient(p1);
-
-		Patient p11 = TestUtils.getPatient(7);
-		p11.setBirthdate(TestUtils.date(2012, 5, 1));
-		TestUtils.savePatient(p11);
-
 		CohortDefinition cd = mchcsCohortLibrary.ageAt6Months();
-		context.addParameterValue("effectiveDate", TestUtils.date(2012, 12, 1));
+		context.addParameterValue("effectiveDate", TestUtils.date(1977, 3, 10));
 		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
-		ReportingTestUtils.assertCohortEquals(Arrays.asList(7), evaluated);
+		ReportingTestUtils.assertCohortEquals(Arrays.asList(2,7), evaluated);
 	}
 
 	/**
