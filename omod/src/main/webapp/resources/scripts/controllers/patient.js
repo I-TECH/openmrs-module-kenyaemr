@@ -17,6 +17,9 @@
  */
 kenyaemrApp.service('PatientService', function ($rootScope) {
 
+	/**
+	 * Broadcasts new patient search parameters
+	 */
 	this.updateSearch = function(query, which) {
 		$rootScope.$broadcast('patient-search', { query: query, which: which });
 	};
@@ -28,10 +31,10 @@ kenyaemrApp.service('PatientService', function ($rootScope) {
 kenyaemrApp.controller('PatientSearchForm', ['$scope', 'PatientService', function($scope, patientService) {
 
 	$scope.query = '';
-	$scope.which = '';
 
 	$scope.init = function(which) {
 		$scope.which = which;
+		$scope.$evalAsync($scope.updateSearch); // initiate an initial search
 	};
 
 	$scope.updateSearch = function() {
@@ -45,7 +48,6 @@ kenyaemrApp.controller('PatientSearchForm', ['$scope', 'PatientService', functio
 kenyaemrApp.controller('PatientSearchResults', ['$scope', '$http', function($scope, $http) {
 
 	$scope.query = '';
-	$scope.which = '';
 	$scope.results = [];
 
 	/**
