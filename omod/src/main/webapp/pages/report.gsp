@@ -4,8 +4,8 @@
 	ui.includeJavascript("kenyaemr", "controllers/report.js")
 
 	def menuItems =  [
-			[ iconProvider: "kenyaui", icon: "buttons/report_generate.png", label: "Request Report", onClick: "requestReport()" ],
-			[ iconProvider: "kenyaui", icon: "buttons/back.png", label: "Back", href: returnUrl ]
+			[ iconProvider: "kenyaui", icon: "buttons/report_generate.png", label: "Request report", onClick: "requestReport()" ],
+			[ iconProvider: "kenyaui", icon: "buttons/back.png", label: "Back to home", href: returnUrl ]
 	]
 %>
 	<script type="text/javascript">
