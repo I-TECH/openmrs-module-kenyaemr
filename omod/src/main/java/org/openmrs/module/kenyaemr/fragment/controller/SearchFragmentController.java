@@ -14,8 +14,8 @@
 
 package org.openmrs.module.kenyaemr.fragment.controller;
 
-import net.sf.cglib.core.CollectionUtils;
-import net.sf.cglib.core.Predicate;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Predicate;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -122,7 +122,7 @@ public class SearchFragmentController {
 
 			Visit activeVisit = patientActiveVisits.get(patient);
 			if (activeVisit != null) {
-				simplePatient.put("extra", "<div class='ke-tag ke-visittag'>" + ui.format(activeVisit.getVisitType()) + "<br/><small>" + ui.format(activeVisit.getStartDatetime()) + "</small></div>");
+				simplePatient.put("visits", ui.simplifyCollection(Collections.singleton(activeVisit)));
 			}
 
 			simplePatients.add(simplePatient);
@@ -155,7 +155,7 @@ public class SearchFragmentController {
 		Collection<Person> results = Context.getPersonService().getPeople(query, null);
 
 		if ("non-patients".equals(which)) {
-			results = CollectionUtils.filter(results, new Predicate() {
+			CollectionUtils.filter(results, new Predicate() {
 				@Override
 				public boolean evaluate(Object obj) {
 					return !((Person) obj).isPatient();

@@ -87,35 +87,6 @@ var kenyaemr = (function(jQuery) {
 			ret += '</div>';
 			return ret;
 		},
-		
-		/**
-		 * values may specify (as function(data) or static text): icon, title, leftDetails, center, right
-		 */
-		threeColumnStackItemFormatter: function(data, values) {
-			var clickUrl = formatHelper(data, values.clickUrl);
-
-			var ret = '<div class="ke-stack-item ke-navigable">';
-			if (clickUrl) {
-				ret += '<input type="hidden" name="clickUrl" value="' + clickUrl + '" />'
-			}
-			ret += '<table width="100%"><tr valign="top"><td width="40%">';
-			ret += '  <span class="ke-icon">' + formatHelper(data, values.icon) + '</span>';
-			ret += '  <b>' + formatHelper(data, values.title) + '</b><br />' + formatHelper(data, values.leftDetails);
-			ret += '</td><td align="center width="30%">';
-			ret += formatHelper(data, values.center);
-			ret += '</td><td align="right" width="30%">';
-			ret += formatHelper(data, values.right);
-			ret += '</td></tr></table>';
-			ret += '</div>';
-			return ret;
-		},
-		
-		/**
-		 * returns "# result(s)"
-		 */
-		defaultNumResultsFormatter: function(listOfItems) {
-			return typeof listOfItems.length === 'number' ? (listOfItems.length + ' result(s)') : '';
-		},
 
 		/**
 		 * Updates the value of a regimen field from its displayed controls

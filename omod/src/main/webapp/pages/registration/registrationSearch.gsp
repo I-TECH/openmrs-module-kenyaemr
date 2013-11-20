@@ -8,21 +8,17 @@
 %>
 
 <div class="ke-page-sidebar">
-	${ ui.includeFragment("kenyaemr", "patientSearchForm", [ defaultWhich: "all" ]) }
+	${ ui.includeFragment("kenyaemr", "patient/patientSearchForm", [ defaultWhich: "all" ]) }
 
 	${ ui.includeFragment("kenyaui", "widget/panelMenu", [ heading: "Tasks", items: menuItems ]) }
 </div>
 
 <div class="ke-page-content">
-	${ ui.includeFragment("kenyaemr", "patient/patientList", [ id: "results", pageProvider: "kenyaemr", page: "registration/registrationViewPatient", heading: "Matching Patients"]) }
+	${ ui.includeFragment("kenyaemr", "patient/patientSearchResults", [ pageProvider: "kenyaemr", page: "registration/registrationViewPatient" ]) }
 </div>
 
 <script type="text/javascript">
-	subscribe("patientSearch/results", function(event, data) {
-		publish("results/show", data);
-	});
-	jq(function() {
-		jq('input[name=q]').focus();
-		publish('patientSearch/changed'); // Submit search on page load
+	jQuery(function() {
+		jQuery('input[name="query"]').focus();
 	});
 </script>

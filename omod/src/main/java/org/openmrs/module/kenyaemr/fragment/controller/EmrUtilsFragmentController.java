@@ -25,7 +25,6 @@ import org.openmrs.api.context.ContextAuthenticationException;
 import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.regimen.RegimenManager;
-import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyaemr.util.EmrUiUtils;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtStartDateCalculation;
@@ -37,12 +36,9 @@ import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.action.SuccessResult;
-import org.openmrs.ui.framework.session.Session;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 /**
  * Fragment actions generally useful for KenyaEMR
@@ -141,23 +137,5 @@ public class EmrUtilsFragmentController {
 		Date artStartDate = result != null ? (Date) result.getValue() : null;
 
 		return SimpleObject.create("duration", artStartDate != null ? kenyaUi.formatInterval(artStartDate, now) : null);
-	}
-
-	/**
-	 * Gets the recently viewed patient list
-	 * @return the simple patients
-	 */
-	public SimpleObject[] recentlyViewed(UiUtils ui, Session session) {
-		String attrName = EmrConstants.APP_CHART + ".recentlyViewedPatients";
-
-		List<Integer> recent = session.getAttribute(attrName, List.class);
-		List<Patient> pats = new ArrayList<Patient>();
-		if (recent != null) {
-			for (Integer ptId : recent) {
-				pats.add(Context.getPatientService().getPatient(ptId));
-			}
-		}
-
-		return ui.simplifyCollection(pats);
 	}
 }
