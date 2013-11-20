@@ -95,7 +95,7 @@
 
 		<%= ui.includeFragment("kenyaui", "widget/dialogForm", [
 				buttonConfig: [
-						label: "Create Login",
+						label: "Create login",
 						iconProvider: "kenyaui",
 						icon: "buttons/user_enable.png"
 				],
@@ -164,7 +164,7 @@
 
 		<%= ui.includeFragment("kenyaui", "widget/dialogForm", [
 				buttonConfig: [
-						label: "Make this person a Provider",
+						label: "Make this person a provider",
 						iconProvider: "kenyaui",
 						icon: "buttons/provider_${ person.gender == "F" ? 'f' : 'm' }.png"
 				],
