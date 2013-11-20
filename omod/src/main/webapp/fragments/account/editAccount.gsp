@@ -166,7 +166,7 @@
 				buttonConfig: [
 						label: "Make this person a Provider",
 						iconProvider: "kenyaui",
-						icon: "buttons/provider.png"
+						icon: "buttons/provider_${ person.gender == "F" ? 'f' : 'm' }.png"
 				],
 				dialogConfig: [ heading: "New Provider account for ${ kenyaui.formatPersonName(person) }", width: 50, height: 30 ],
 				fragmentProvider: "kenyaemr",
