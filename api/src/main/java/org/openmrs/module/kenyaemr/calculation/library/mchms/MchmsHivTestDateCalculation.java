@@ -14,6 +14,7 @@
 
 package org.openmrs.module.kenyaemr.calculation.library.mchms;
 
+import org.openmrs.Concept;
 import org.openmrs.Program;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
@@ -32,14 +33,14 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Calculates the date on which an MCH patient was tested for HIV
+ * Calculates the date on which an MCH patient or her partner was tested for HIV
  */
 public class MchmsHivTestDateCalculation extends BaseEmrCalculation {
 
 	/**
-	 * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
 	 * @should return null for patients who have not tested for HIV
 	 * @should return test date for patients who have tested for HIV
+	 * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
 	 */
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> params,
@@ -50,7 +51,11 @@ public class MchmsHivTestDateCalculation extends BaseEmrCalculation {
 		Set<Integer> alivePatients = alivePatients(cohort, context);
 		Set<Integer> aliveMchmsPatients = CalculationUtils.patientsThatPass(Calculations.activeEnrollment(mchmsProgram, alivePatients, context));
 
-		CalculationResultMap lastHivTestDateObss = Calculations.lastObs(getConcept(Dictionary.DATE_OF_HIV_DIAGNOSIS), aliveMchmsPatients, context);
+		Boolean partner = (params != null && params.containsKey("partner")) ? (Boolean) params.get("partner") : false;
+		Concept dateOfHivDiagnosisConcept = partner ? getConcept(Dictionary.DATE_OF_PARTNER_HIV_DIAGNOSIS)
+				: getConcept(Dictionary.DATE_OF_HIV_DIAGNOSIS);
+
+		CalculationResultMap lastHivTestDateObss = Calculations.lastObs(dateOfHivDiagnosisConcept, aliveMchmsPatients, context);
 
 		CalculationResultMap resultMap = new CalculationResultMap();
 

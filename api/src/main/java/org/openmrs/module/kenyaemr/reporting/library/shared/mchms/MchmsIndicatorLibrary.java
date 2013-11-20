@@ -34,7 +34,7 @@ public class MchmsIndicatorLibrary {
 	private MchmsCohortLibrary mchmsCohortLibrary;
 
 	/**
-	 * Number of patients who tested for HIV in MCHMS during any period before or after enrollment
+	 * Number of patients who tested for HIV in MCHMS during any {@link org.openmrs.module.kenyaemr.PregnancyStage} before or after enrollment
 	 *
 	 * @return the indicator
 	 */
@@ -45,7 +45,7 @@ public class MchmsIndicatorLibrary {
 	}
 
 	/**
-	 * Number of patients who tested for HIV in MCHMS during any period after enrollment
+	 * Number of patients who tested for HIV in MCHMS during any {@link org.openmrs.module.kenyaemr.PregnancyStage} after enrollment
 	 *
 	 * @return the indicator
 	 */
@@ -56,7 +56,7 @@ public class MchmsIndicatorLibrary {
 	}
 
 	/**
-	 * Number of patients who tested for HIV in MCHMS during the ANTENATAL period
+	 * Number of patients who tested for HIV in MCHMS during the ANTENATAL {@link org.openmrs.module.kenyaemr.PregnancyStage}
 	 *
 	 * @return the indicator
 	 */
@@ -67,7 +67,7 @@ public class MchmsIndicatorLibrary {
 	}
 
 	/**
-	 * Number of patients who tested for HIV in MCHMS during the DELIVERY period
+	 * Number of patients who tested for HIV in MCHMS during the DELIVERY {@link org.openmrs.module.kenyaemr.PregnancyStage}
 	 *
 	 * @return the indicator
 	 */
@@ -78,7 +78,7 @@ public class MchmsIndicatorLibrary {
 	}
 
 	/**
-	 * Number of patients who tested for HIV in MCHMS during the POSTNATAL period
+	 * Number of patients who tested for HIV in MCHMS during the POSTNATAL {@link org.openmrs.module.kenyaemr.PregnancyStage}
 	 *
 	 * @return the indicator
 	 */
@@ -101,7 +101,7 @@ public class MchmsIndicatorLibrary {
 	}
 
 	/**
-	 * Number of patients who tested HIV +ve in MCHMS during any period
+	 * Number of patients who tested HIV +ve in MCHMS during any {@link org.openmrs.module.kenyaemr.PregnancyStage}
 	 *
 	 * @return the indicator
 	 */
@@ -112,7 +112,7 @@ public class MchmsIndicatorLibrary {
 	}
 
 	/**
-	 * Number of patients who tested HIV +ve in MCHMS during the ANTENATAL period
+	 * Number of patients who tested HIV +ve in MCHMS during the ANTENATAL {@link org.openmrs.module.kenyaemr.PregnancyStage}
 	 *
 	 * @return the indicator
 	 */
@@ -123,7 +123,7 @@ public class MchmsIndicatorLibrary {
 	}
 
 	/**
-	 * Number of patients who tested HIV +ve in MCHMS during the DELIVERY period
+	 * Number of patients who tested HIV +ve in MCHMS during the DELIVERY {@link org.openmrs.module.kenyaemr.PregnancyStage}
 	 *
 	 * @return the indicator
 	 */
@@ -134,13 +134,26 @@ public class MchmsIndicatorLibrary {
 	}
 
 	/**
-	 * Number of patients who tested HIV +ve in MCHMS during the POSTNATAL period
+	 * Number of patients who tested HIV +ve in MCHMS during the POSTNATAL
+	 * {@link org.openmrs.module.kenyaemr.PregnancyStage}
 	 *
 	 * @return the indicator
 	 */
 	public CohortIndicator testedHivPositiveInMchmsPostnatal() {
 		return cohortIndicator(null,
 				map(mchmsCohortLibrary.testedForHivInMchms(PregnancyStage.POSTNATAL, Dictionary.getConcept(Dictionary.POSITIVE)), "onOrAfter=${startDate},onOrBefore=${endDate}")
+		);
+	}
+
+	/**
+	 * Number of patients whose partners tested HIV +ve or -ve in MCHMS during either their ANTENATAL or DELIVERY
+	 * {@link org.openmrs.module.kenyaemr.PregnancyStage}
+	 *
+	 * @return the indicator
+	 */
+	public CohortIndicator partnerTestedDuringAncOrDelivery() {
+		return cohortIndicator(null,
+				map(mchmsCohortLibrary.partnerTestedDuringAncOrDelivery(), "onOrAfter=${startDate},onOrBefore=${endDate}")
 		);
 	}
 }
