@@ -65,14 +65,11 @@ public class NeedsAntibodyTestCalculationTest extends BaseModuleContextSensitive
 	public void evaluate_shouldCalculateNeedsAntibodyTest() throws Exception {
 		//get mchcs program
 		Program mchcsProgram = MetadataUtils.getProgram(MchMetadata._Program.MCHCS);
-		//get the patient age from the birthdate
-		Patient patient = TestUtils.getPatient(6);
-		patient.setBirthdate(TestUtils.date(2011, 10, 1));// more than 9 months old
 
 		// Enroll patients #6 and  #7 in the mchcs Program
-		TestUtils.enrollInProgram(TestUtils.getPatient(6), mchcsProgram, new Date());
-		TestUtils.enrollInProgram(TestUtils.getPatient(7), mchcsProgram, new Date());
-		TestUtils.enrollInProgram(TestUtils.getPatient(8), mchcsProgram, new Date());
+		TestUtils.enrollInProgram(TestUtils.getPatient(6), mchcsProgram, TestUtils.date(2011, 1, 1));
+		TestUtils.enrollInProgram(TestUtils.getPatient(7), mchcsProgram, TestUtils.date(2011, 1, 1));
+		TestUtils.enrollInProgram(TestUtils.getPatient(8), mchcsProgram, TestUtils.date(2011, 1, 1));
 
 		//get the HIV status of the infant and the if wheather antibody test was done or NOT
 		Concept infantHivStatus = Dictionary.getConcept(Dictionary.CHILDS_CURRENT_HIV_STATUS);
