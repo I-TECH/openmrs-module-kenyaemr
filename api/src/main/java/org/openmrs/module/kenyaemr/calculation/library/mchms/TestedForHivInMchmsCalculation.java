@@ -89,7 +89,6 @@ public class TestedForHivInMchmsCalculation extends BaseEmrCalculation {
 				}
 				qualified = qualifiedByStage(stage, enrollmentDate, patientsLastHivTestDate, deliveryDate)
 						&& (result == null ? true : result.equals(patientsLastHivStatus));
-				resultMap.put(ptId, new BooleanResult(qualified, this, context));
 			}
 			resultMap.put(ptId, new BooleanResult(qualified, this, context));
 		}

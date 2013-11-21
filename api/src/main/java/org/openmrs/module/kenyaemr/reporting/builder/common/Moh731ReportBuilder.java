@@ -18,6 +18,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyacore.report.builder.Builds;
+import org.openmrs.module.kenyaemr.ArtAssessmentMethod;
 import org.openmrs.module.kenyaemr.reporting.BaseIndicatorReportBuilder;
 import org.openmrs.module.kenyaemr.reporting.ColumnParameters;
 import org.openmrs.module.kenyaemr.reporting.EmrReportingUtils;
@@ -108,6 +109,13 @@ public class Moh731ReportBuilder extends BaseIndicatorReportBuilder {
 		dsd.addColumn("HV02-10", "Total with known status (Total (HV02-04 to HV02-05))", ReportUtils.map(mchmsIndicators.testedForHivBeforeOrDuringMchms(), indParams), "");
 
 		dsd.addColumn("HV02-11", "Male partners tested - (ANC/L&D)", ReportUtils.map(mchmsIndicators.partnerTestedDuringAncOrDelivery(), indParams), "");
+
+		dsd.addColumn("HV02-12", "Discordant Couples", ReportUtils.map(mchmsIndicators.discordantCouples(), indParams), "");
+
+		dsd.addColumn("HV02-18", "Assessed for eligibility at 1st ANC - WHO Staging done", ReportUtils.map(mchmsIndicators.assessedForArtEligibility(ArtAssessmentMethod.WHO_STAGING), indParams), "");
+		dsd.addColumn("HV02-19", "Assessed for eligibility at 1st ANC - CD4", ReportUtils.map(mchmsIndicators.assessedForArtEligibility(ArtAssessmentMethod.CD4_COUNT), indParams), "");
+		dsd.addColumn("HV02-20", "Assesed for Eligibility in ANC (Sum HV02-18 to HV02-19)", ReportUtils.map(mchmsIndicators.assessedForArtEligibility(null), indParams), "");
+
 
 		dsd.addColumn("HV02-24", "PCR within 2 months", ReportUtils.map(mchcsIndicatorLibrary.pcrWithInitialIn2Months(), indParams), "");
 		dsd.addColumn("HV02-25", "PCR from 3 to 8 months", ReportUtils.map(mchcsIndicatorLibrary.pcrWithInitialIn2Months(), indParams), "");

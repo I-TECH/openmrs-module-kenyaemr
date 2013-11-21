@@ -15,6 +15,7 @@
 
 package org.openmrs.module.kenyaemr.reporting.library.shared.mchms;
 
+import org.openmrs.module.kenyaemr.ArtAssessmentMethod;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.PregnancyStage;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
@@ -153,7 +154,25 @@ public class MchmsIndicatorLibrary {
 	 */
 	public CohortIndicator partnerTestedDuringAncOrDelivery() {
 		return cohortIndicator(null,
-				map(mchmsCohortLibrary.partnerTestedDuringAncOrDelivery(), "onOrAfter=${startDate},onOrBefore=${endDate}")
+				map(mchmsCohortLibrary.testedDuringAncOrDelivery(Boolean.TRUE), "onOrAfter=${startDate},onOrBefore=${endDate}")
+		);
+	}
+
+	/**
+	 * Number of MCHMS patients whose HIV status is discordant with that of their male partners
+	 *
+	 * @return the cohort definition
+	 */
+
+	public CohortIndicator discordantCouples() {
+		return cohortIndicator(null,
+				map(mchmsCohortLibrary.discordantCouples(), "onOrAfter=${startDate},onOrBefore=${endDate}")
+		);
+	}
+
+	public CohortIndicator assessedForArtEligibility(ArtAssessmentMethod artAssessmentMethod) {
+		return cohortIndicator(null,
+				map(mchmsCohortLibrary.assessedForArtEligibility(artAssessmentMethod), "onOrAfter=${startDate},onOrBefore=${endDate}")
 		);
 	}
 }
