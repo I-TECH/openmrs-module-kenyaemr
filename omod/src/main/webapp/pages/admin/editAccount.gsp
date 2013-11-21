@@ -5,13 +5,13 @@
 
 	if (user) {
 		if (user.retired) {
-			menuItems << [ iconProvider: "kenyaui", icon: "buttons/enable.png", label: "Enable Login", onClick: "ke_onEnableUser(" + user.id + ")" ]
+			menuItems << [ iconProvider: "kenyaui", icon: "buttons/enable.png", label: "Enable login", onClick: "ke_onEnableUser(" + user.id + ")" ]
 		} else {
-			menuItems << [ iconProvider: "kenyaui", icon: "buttons/disable.png", label: "Disable Login", onClick: "ke_onDisableUser(" + user.id + ")" ]
+			menuItems << [ iconProvider: "kenyaui", icon: "buttons/disable.png", label: "Disable login", onClick: "ke_onDisableUser(" + user.id + ")" ]
 		}
 	}
 
-	menuItems << [ iconProvider: "kenyaui", icon: "buttons/back.png", label: "Back to Accounts", href: ui.pageLink("kenyaemr", "admin/manageAccounts") ]
+	menuItems << [ iconProvider: "kenyaui", icon: "buttons/back.png", label: "Back to accounts", href: ui.pageLink("kenyaemr", "admin/manageAccounts") ]
 %>
 
 <script type="text/javascript">

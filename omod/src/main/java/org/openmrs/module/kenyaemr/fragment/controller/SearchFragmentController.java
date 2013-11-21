@@ -14,8 +14,8 @@
 
 package org.openmrs.module.kenyaemr.fragment.controller;
 
-import net.sf.cglib.core.CollectionUtils;
-import net.sf.cglib.core.Predicate;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Predicate;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -74,7 +74,7 @@ public class SearchFragmentController {
 	 * @return the simple patients
 	 */
 	public List<SimpleObject> patients(@RequestParam(value = "q", required = false) String query,
-									   @RequestParam(value = "which", required = false) String which,
+									   @RequestParam(value = "which", required = false, defaultValue = "all") String which,
 									   UiUtils ui) {
 
 		// Return empty list if we don't have enough input to search on
@@ -99,7 +99,7 @@ public class SearchFragmentController {
 		List<Patient> matched;
 
 		// If query wasn't long enough to be searched on, just use list of checked-in patients
-		if (query.length() < getMinSearchCharacters()) {
+		if (StringUtils.isBlank(query)) {
 			matched = new ArrayList<Patient>(checkedIn);
 
 			// List needs sorted by person name
@@ -122,50 +122,13 @@ public class SearchFragmentController {
 
 			Visit activeVisit = patientActiveVisits.get(patient);
 			if (activeVisit != null) {
-				simplePatient.put("extra", "<div class='ke-tag ke-visittag'>" + ui.format(activeVisit.getVisitType()) + "<br/><small>" + ui.format(activeVisit.getStartDatetime()) + "</small></div>");
+				simplePatient.put("visits", ui.simplifyCollection(Collections.singleton(activeVisit)));
 			}
 
 			simplePatients.add(simplePatient);
 		}
 
 		return simplePatients;
-	}
-
-	/**
-	 * Gets a person by their id
-	 * @param person the person
-	 * @param ui the UI utils
-	 * @return the simplified person
-	 */
-	public SimpleObject person(@RequestParam("id") Person person, UiUtils ui) {
-		return ui.simplifyObject(person);
-	}
-
-	/**
-	 * Searches for persons by name
-	 * @param query the name
-	 * @param which all|non-patients
-	 * @param ui the UI utils
-	 * @return the simple patients
-	 */
-	public SimpleObject[] persons(@RequestParam(value = "q", required = false) String query,
-								  @RequestParam(value = "which", required = false) String which,
-								  UiUtils ui) {
-
-		Collection<Person> results = Context.getPersonService().getPeople(query, null);
-
-		if ("non-patients".equals(which)) {
-			results = CollectionUtils.filter(results, new Predicate() {
-				@Override
-				public boolean evaluate(Object obj) {
-					return !((Person) obj).isPatient();
-				}
-			});
-		}
-
-		// Convert to simple objects
-		return ui.simplifyCollection(results);
-
 	}
 
 	/**
@@ -217,20 +180,43 @@ public class SearchFragmentController {
 	}
 
 	/**
+	 * Gets a person by their id
+	 * @param person the person
+	 * @param ui the UI utils
+	 * @return the simplified person
+	 */
+	public SimpleObject person(@RequestParam("id") Person person, UiUtils ui) {
+		return ui.simplifyObject(person);
+	}
+
+	/**
+	 * Searches for persons by name
+	 * @param query the name query
+	 * @param ui
+	 * @return the simplified persons
+	 */
+	public SimpleObject[] persons(@RequestParam(value = "q", required = false) String query, UiUtils ui) {
+		Collection<Person> results = Context.getPersonService().getPeople(query, null);
+
+		// Convert to simple objects
+		return ui.simplifyCollection(results);
+	}
+
+	/**
 	 * Searches for accounts by name
 	 * @param query the name query
-	 * @param which users|providers|both
+	 * @param which all|providers|users|non-patients
 	 * @param ui
 	 * @return
 	 */
 	public List<SimpleObject> accounts(@RequestParam(value = "q", required = false) String query,
-									   @RequestParam(value = "which", required = false) String which,
+									   @RequestParam(value = "which", required = false, defaultValue = "all") String which,
 									   UiUtils ui) {
 
 		Map<Person, User> userAccounts = new HashMap<Person, User>();
 		Map<Person, Provider> providerAccounts = new HashMap<Person, Provider>();
 
-		if ("both".equals(which) || "users".equals(which)) {
+		if (!"providers".equals(which)) {
 			List<User> users = Context.getUserService().getUsers(query, null, true);
 			for (User u : users) {
 				if (!"daemon".equals(u.getUsername())) {
@@ -239,7 +225,7 @@ public class SearchFragmentController {
 			}
 		}
 
-		if ("both".equals(which) || "providers".equals(which)) {
+		if (!"users".equals(which)) {
 			List<Provider> providers = Context.getProviderService().getProviders(query, null, null, null);
 			for (Provider p : providers) {
 				if (p.getPerson() != null) {
@@ -254,6 +240,10 @@ public class SearchFragmentController {
 
 		List<SimpleObject> ret = new ArrayList<SimpleObject>();
 		for (Person p : persons) {
+			if ("non-patients".equals(which) && p.isPatient()) {
+				continue;
+			}
+
 			SimpleObject account = ui.simplifyObject(p);
 
 			User user = userAccounts.get(p);

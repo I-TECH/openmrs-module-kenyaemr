@@ -29,8 +29,7 @@
 		<div class="ke-panel-heading">Similar Patients</div>
 		<div class="ke-panel-content">
 			<div class="ke-stack-item ke-navigable" ng-repeat="patient in results" ng-click="onResultClick(patient)">
-				<img ng-src="${ ui.resourceLink("kenyaui", "images/glyphs/patient_") }{{ patient.gender }}.png" class="ke-glyph" />
-				{{ patient.name }} <span style="color: #999">{{ patient.age }}</span>
+				${ ui.includeFragment("kenyaemr", "patient/result.mini") }
 			</div>
 			<div ng-if="results.length == 0" style="text-align: center; font-style: italic">None</div>
 		</div>

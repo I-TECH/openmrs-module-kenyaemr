@@ -27,6 +27,7 @@ import org.openmrs.module.kenyaemr.reporting.library.moh731.Moh731IndicatorLibra
 import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonDimensionLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.HivIndicatorLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.PwpIndicatorLibrary;
+import org.openmrs.module.kenyaemr.reporting.library.shared.mchcs.MchcsIndicatorLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.shared.mchms.MchmsIndicatorLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.shared.tb.TbIndicatorLibrary;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
@@ -67,6 +68,9 @@ public class Moh731ReportBuilder extends BaseIndicatorReportBuilder {
 	@Autowired
 	private MchmsIndicatorLibrary mchmsIndicators;
 
+	@Autowired
+	private MchcsIndicatorLibrary mchcsIndicatorLibrary;
+
 	/**
 	 * @see org.openmrs.module.kenyaemr.reporting.BaseIndicatorReportBuilder#buildDataSets()
 	 */
@@ -102,14 +106,41 @@ public class Moh731ReportBuilder extends BaseIndicatorReportBuilder {
 		dsd.addColumn("HV02-08", "HIV positive results (Postnatal (within 72hrs))", ReportUtils.map(mchmsIndicators.testedHivPositiveInMchmsPostnatal(), indParams), "");
 		dsd.addColumn("HV02-09", "HIV positive results (Total (Sum HV02-05 to HV02-08))", ReportUtils.map(mchmsIndicators.testedHivPositiveInMchms(), indParams), "");
 
-		dsd.addColumn("HV02-10", "Total with known status (HV02-04 plus HV02-05)", ReportUtils.map(mchmsIndicators.testedForHivBeforeOrDuringMchms(), indParams), "");
+		dsd.addColumn("HV02-10", "Total with known status (Total (HV02-04 to HV02-05))", ReportUtils.map(mchmsIndicators.testedForHivBeforeOrDuringMchms(), indParams), "");
 
 		dsd.addColumn("HV02-11", "Male partners tested - (ANC/L&D)", ReportUtils.map(mchmsIndicators.partnerTestedDuringAncOrDelivery(), indParams), "");
+
 		dsd.addColumn("HV02-12", "Discordant Couples", ReportUtils.map(mchmsIndicators.discordantCouples(), indParams), "");
 
 		dsd.addColumn("HV02-18", "Assessed for eligibility at 1st ANC - WHO Staging done", ReportUtils.map(mchmsIndicators.assessedForArtEligibility(ArtAssessmentMethod.WHO_STAGING), indParams), "");
-		dsd.addColumn("HV02-19", "Assessed for eligibilityat 1st ANC - CD4", ReportUtils.map(mchmsIndicators.assessedForArtEligibility(ArtAssessmentMethod.CD4_COUNT), indParams), "");
+		dsd.addColumn("HV02-19", "Assessed for eligibility at 1st ANC - CD4", ReportUtils.map(mchmsIndicators.assessedForArtEligibility(ArtAssessmentMethod.CD4_COUNT), indParams), "");
 		dsd.addColumn("HV02-20", "Assesed for Eligibility in ANC (Sum HV02-18 to HV02-19)", ReportUtils.map(mchmsIndicators.assessedForArtEligibility(null), indParams), "");
+
+
+		dsd.addColumn("HV02-24", "PCR within 2 months", ReportUtils.map(mchcsIndicatorLibrary.pcrWithInitialIn2Months(), indParams), "");
+		dsd.addColumn("HV02-25", "PCR from 3 to 8 months", ReportUtils.map(mchcsIndicatorLibrary.pcrWithInitialIn2Months(), indParams), "");
+		dsd.addColumn("HV02-26", "Serology antibody test(from 9 to 12 months)", ReportUtils.map(mchcsIndicatorLibrary.pcrWithInitialIn2Months(), indParams), "");
+		dsd.addColumn("HV02-27", "PCR from 9 to 12 months", ReportUtils.map(mchcsIndicatorLibrary.pcrWithInitialIn2Months(), indParams), "");
+
+		dsd.addColumn("HV02-28", "Total HEI Tested by 12 months (Total (Sum HV02-24 to HV02-26))", ReportUtils.map(mchcsIndicatorLibrary.totalHeiTestedBy12Months(), indParams), "");
+
+		dsd.addColumn("HV02-29", "Confirmed PCR Positive(Within 2 months)", ReportUtils.map(mchcsIndicatorLibrary.pcrConfirmedPositive2Months(), indParams), "");
+		dsd.addColumn("HV02-30", "Confirmed PCR Positive(3-8 months)", ReportUtils.map(mchcsIndicatorLibrary.pcrConfirmedPositiveBetween3To8Months(), indParams), "");
+		dsd.addColumn("HV02-31", "Confirmed PCR Positive(9-12 months)", ReportUtils.map(mchcsIndicatorLibrary.pcrConfirmedPositiveBetween9To12Months(), indParams), "");
+
+		dsd.addColumn("HV02-32", "Total Confirmed Positive(Total (Sum HV2-29 to HV02-31))", ReportUtils.map(mchcsIndicatorLibrary.pcrTotalConfirmedPositive(), indParams), "");
+
+		dsd.addColumn("HIV02-33", "Exclusive Breastfeeding(at 6 months)", ReportUtils.map(mchcsIndicatorLibrary.exclusiveBreastFeedingAtSixMonths(), indParams), "");
+		dsd.addColumn("HIV02-34", "Exclusive Replacement Feeding(at 6 months)", ReportUtils.map(mchcsIndicatorLibrary.exclusiveReplacementFeedingAtSixMonths(), indParams), "");
+		dsd.addColumn("HIV02-35", "Mixed Feeding(at 6 months)", ReportUtils.map(mchcsIndicatorLibrary.mixedFeedingAtSixMonths(), indParams), "");
+
+		dsd.addColumn("HIV02-36", "Total Exposed aged six Months( Total sum(HIV02-33 to HIV02-35))", ReportUtils.map(mchcsIndicatorLibrary.totalExposedAgedSixMoths(), indParams), "");
+
+		dsd.addColumn("HIV02-37", "Mother on ARV treatment and breastfeeding", ReportUtils.map(mchcsIndicatorLibrary.motherOnTreatmentAndBreastFeeding(), indParams), "");
+		dsd.addColumn("HIV02-38", "Mother on ARV treatment and Not breastfeeding", ReportUtils.map(mchcsIndicatorLibrary.motherOnTreatmentAndNotBreastFeeding(), indParams), "");
+		dsd.addColumn("HIV02-39", "Mother on ARV treatment if breastfeeding unknown", ReportUtils.map(mchcsIndicatorLibrary.motherOnTreatmentAndNotBreastFeedingUnknown(), indParams), "");
+
+		dsd.addColumn("HIV02-40", "Mother on ARV treatment (Total Sum(HIV02-37 to HIV02-39))", ReportUtils.map(mchcsIndicatorLibrary.totalBreastFeedingMotherOnTreatment(), indParams), "");
 
 		return dsd;
 	}

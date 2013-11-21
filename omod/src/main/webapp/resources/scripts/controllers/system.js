@@ -18,10 +18,8 @@ kenyaemrApp.controller('SystemInformation', ['$scope', '$http', '$timeout', func
 
 	/**
 	 * Initializes the controller
-	 * @param appId the current app id
 	 */
-	$scope.init = function(appId) {
-		$scope.appId = appId;
+	$scope.init = function() {
 		$scope.refresh();
 	};
 
@@ -29,7 +27,7 @@ kenyaemrApp.controller('SystemInformation', ['$scope', '$http', '$timeout', func
 	 * Refreshes the system information
 	 */
 	$scope.refresh = function() {
-		$http.get(ui.fragmentActionLink('kenyaemr', 'system/systemUtils', 'getSystemInformation', { appId: $scope.appId })).
+		$http.get(ui.fragmentActionLink('kenyaemr', 'system/systemUtils', 'getSystemInformation')).
 			success(function(data) {
 				$scope.infos = data;
 				$timeout($scope.refresh, 5000);
@@ -43,12 +41,9 @@ kenyaemrApp.controller('DatabaseSummary', ['$scope', '$http', function($scope, $
 
 	/**
 	 * Initializes the controller
-	 * @param appId the current app id
 	 */
-	$scope.init = function(appId) {
-		$scope.appId = appId;
-
-		$http.get(ui.fragmentActionLink('kenyaemr', 'system/systemUtils', 'getDatabaseSummary', { appId: $scope.appId })).
+	$scope.init = function() {
+		$http.get(ui.fragmentActionLink('kenyaemr', 'system/systemUtils', 'getDatabaseSummary')).
 			success(function(data) {
 				$scope.infos = data;
 			});

@@ -41,7 +41,7 @@
 </div>
 
 <div class="ke-page-content">
-	${ ui.includeFragment("kenyaemr", "dailySchedule", [ id: "schedule", page: "registration/registrationViewPatient", date: scheduleDate ]) }
+	${ ui.includeFragment("kenyaemr", "patient/dailySchedule", [ pageProvider: "kenyaemr", page: "registration/registrationViewPatient", date: scheduleDate ]) }
 </div>
 
 <script type="text/javascript">
