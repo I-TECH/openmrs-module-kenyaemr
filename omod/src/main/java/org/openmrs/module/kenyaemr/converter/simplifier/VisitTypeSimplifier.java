@@ -1,0 +1,38 @@
+/**
+ * The contents of this file are subject to the OpenMRS Public License
+ * Version 1.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ * http://license.openmrs.org
+ *
+ * Software distributed under the License is distributed on an "AS IS"
+ * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+ * License for the specific language governing rights and limitations
+ * under the License.
+ *
+ * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ */
+
+package org.openmrs.module.kenyaemr.converter.simplifier;
+
+import org.openmrs.VisitType;
+import org.openmrs.ui.framework.SimpleObject;
+import org.springframework.stereotype.Component;
+
+/**
+ * Converts visit to simple object
+ */
+@Component
+public class VisitTypeSimplifier extends AbstractSimplifier<VisitType> {
+
+	/**
+	 * @see org.openmrs.module.kenyaemr.converter.simplifier.AbstractSimplifier#simplify(Object)
+	 */
+	@Override
+	protected SimpleObject simplify(VisitType visitType) {
+		SimpleObject ret = new SimpleObject();
+		ret.put("id", visitType.getId());
+		ret.put("name", visitType.getName());
+		ret.put("description", visitType.getDescription());
+		return ret;
+	}
+}
