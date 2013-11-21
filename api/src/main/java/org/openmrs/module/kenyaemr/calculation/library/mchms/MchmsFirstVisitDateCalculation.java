@@ -55,10 +55,14 @@ public class MchmsFirstVisitDateCalculation extends BaseEmrCalculation {
 
 		CalculationResultMap resultMap = new CalculationResultMap();
 
-		for (Integer ptId : aliveMchmsPatients) {
-			Encounter encounter = EmrCalculationUtils.encounterResultForPatient(crm, ptId);
-			if (encounter != null) {
-				resultMap.put(ptId, new SimpleResult(encounter.getEncounterDatetime(), null));
+		for (Integer ptId : cohort) {
+			if (aliveMchmsPatients.contains(ptId)) {
+				Encounter encounter = EmrCalculationUtils.encounterResultForPatient(crm, ptId);
+				if (encounter != null) {
+					resultMap.put(ptId, new SimpleResult(encounter.getEncounterDatetime(), null));
+				} else {
+					resultMap.put(ptId, null);
+				}
 			} else {
 				resultMap.put(ptId, null);
 			}
