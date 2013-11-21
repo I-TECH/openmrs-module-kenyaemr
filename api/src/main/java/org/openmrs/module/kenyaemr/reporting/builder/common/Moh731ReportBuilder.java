@@ -118,9 +118,9 @@ public class Moh731ReportBuilder extends BaseIndicatorReportBuilder {
 
 
 		dsd.addColumn("HV02-24", "PCR within 2 months", ReportUtils.map(mchcsIndicatorLibrary.pcrWithInitialIn2Months(), indParams), "");
-		dsd.addColumn("HV02-25", "PCR from 3 to 8 months", ReportUtils.map(mchcsIndicatorLibrary.pcrWithInitialIn2Months(), indParams), "");
-		dsd.addColumn("HV02-26", "Serology antibody test(from 9 to 12 months)", ReportUtils.map(mchcsIndicatorLibrary.pcrWithInitialIn2Months(), indParams), "");
-		dsd.addColumn("HV02-27", "PCR from 9 to 12 months", ReportUtils.map(mchcsIndicatorLibrary.pcrWithInitialIn2Months(), indParams), "");
+		dsd.addColumn("HV02-25", "PCR from 3 to 8 months", ReportUtils.map(mchcsIndicatorLibrary.pcrWithInitialBetween3And8MonthsOfAge(), indParams), "");
+		dsd.addColumn("HV02-26", "Serology antibody test(from 9 to 12 months)", ReportUtils.map(mchcsIndicatorLibrary.serologyAntBodyTestBetween9And12Months(), indParams), "");
+		dsd.addColumn("HV02-27", "PCR from 9 to 12 months", ReportUtils.map(mchcsIndicatorLibrary.pcrTestBetween9And12Months(), indParams), "");
 
 		dsd.addColumn("HV02-28", "Total HEI Tested by 12 months (Total (Sum HV02-24 to HV02-26))", ReportUtils.map(mchcsIndicatorLibrary.totalHeiTestedBy12Months(), indParams), "");
 
@@ -130,17 +130,19 @@ public class Moh731ReportBuilder extends BaseIndicatorReportBuilder {
 
 		dsd.addColumn("HV02-32", "Total Confirmed Positive(Total (Sum HV2-29 to HV02-31))", ReportUtils.map(mchcsIndicatorLibrary.pcrTotalConfirmedPositive(), indParams), "");
 
-		dsd.addColumn("HIV02-33", "Exclusive Breastfeeding(at 6 months)", ReportUtils.map(mchcsIndicatorLibrary.exclusiveBreastFeedingAtSixMonths(), indParams), "");
-		dsd.addColumn("HIV02-34", "Exclusive Replacement Feeding(at 6 months)", ReportUtils.map(mchcsIndicatorLibrary.exclusiveReplacementFeedingAtSixMonths(), indParams), "");
-		dsd.addColumn("HIV02-35", "Mixed Feeding(at 6 months)", ReportUtils.map(mchcsIndicatorLibrary.mixedFeedingAtSixMonths(), indParams), "");
+		dsd.addColumn("HV02-33", "Exclusive Breastfeeding(at 6 months)", ReportUtils.map(mchcsIndicatorLibrary.exclusiveBreastFeedingAtSixMonths(), indParams), "");
+		dsd.addColumn("HV02-34", "Exclusive Replacement Feeding(at 6 months)", ReportUtils.map(mchcsIndicatorLibrary.exclusiveReplacementFeedingAtSixMonths(), indParams), "");
+		dsd.addColumn("HV02-35", "Mixed Feeding(at 6 months)", ReportUtils.map(mchcsIndicatorLibrary.mixedFeedingAtSixMonths(), indParams), "");
 
-		dsd.addColumn("HIV02-36", "Total Exposed aged six Months( Total sum(HIV02-33 to HIV02-35))", ReportUtils.map(mchcsIndicatorLibrary.totalExposedAgedSixMoths(), indParams), "");
+		dsd.addColumn("HV02-36", "Total Exposed aged six Months( Total sum(HIV02-33 to HIV02-35))", ReportUtils.map(mchcsIndicatorLibrary.totalExposedAgedSixMoths(), indParams), "");
 
-		dsd.addColumn("HIV02-37", "Mother on ARV treatment and breastfeeding", ReportUtils.map(mchcsIndicatorLibrary.motherOnTreatmentAndBreastFeeding(), indParams), "");
-		dsd.addColumn("HIV02-38", "Mother on ARV treatment and Not breastfeeding", ReportUtils.map(mchcsIndicatorLibrary.motherOnTreatmentAndNotBreastFeeding(), indParams), "");
-		dsd.addColumn("HIV02-39", "Mother on ARV treatment if breastfeeding unknown", ReportUtils.map(mchcsIndicatorLibrary.motherOnTreatmentAndNotBreastFeedingUnknown(), indParams), "");
+		dsd.addColumn("HV02-37", "Mother on ARV treatment and breastfeeding", ReportUtils.map(mchcsIndicatorLibrary.motherOnTreatmentAndBreastFeeding(), indParams), "");
+		dsd.addColumn("HV02-38", "Mother on ARV treatment and Not breastfeeding", ReportUtils.map(mchcsIndicatorLibrary.motherOnTreatmentAndNotBreastFeeding(), indParams), "");
+		dsd.addColumn("HV02-39", "Mother on ARV treatment if breastfeeding unknown", ReportUtils.map(mchcsIndicatorLibrary.motherOnTreatmentAndNotBreastFeedingUnknown(), indParams), "");
 
-		dsd.addColumn("HIV02-40", "Mother on ARV treatment (Total Sum(HIV02-37 to HIV02-39))", ReportUtils.map(mchcsIndicatorLibrary.totalBreastFeedingMotherOnTreatment(), indParams), "");
+		dsd.addColumn("HV02-40", "Mother on ARV treatment (Total Sum(HIV02-37 to HIV02-39))", ReportUtils.map(mchcsIndicatorLibrary.totalBreastFeedingMotherOnTreatment(), indParams), "");
+
+		// TO DO 2.9 Infant ARV Prophylaxis(at first contact only)
 
 		return dsd;
 	}
@@ -185,6 +187,8 @@ public class Moh731ReportBuilder extends BaseIndicatorReportBuilder {
 		String indParams = "startDate=${startDate},endDate=${endDate}";
 
 		// TODO HV03-01 and HV03-2 (HIV Exposed Infants)
+		cohortDsd.addColumn("HV03-01", "HIV Exposed Infants (within 2 months)", ReportUtils.map(mchcsIndicatorLibrary.hivExposedInfantsWithin2Months(), indParams), "");
+		cohortDsd.addColumn("HV03-02", "HIV Exposed Infants (Eligible for CTX at 2 months)", ReportUtils.map(mchcsIndicatorLibrary.hivExposedInfantsWithin2MonthsAndEligibleForCTX(), indParams), "");
 
 		// 3.1 (On CTX Prophylaxis)
 		EmrReportingUtils.addRow(cohortDsd, "HV03", "On CTX Prophylaxis", ReportUtils.map(artIndicators.onCotrimoxazoleProphylaxis(), indParams), nonInfantColumns, Arrays.asList("03", "04", "05", "06", "07"));

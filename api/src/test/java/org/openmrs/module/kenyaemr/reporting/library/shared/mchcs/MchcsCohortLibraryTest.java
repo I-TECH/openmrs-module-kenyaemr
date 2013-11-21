@@ -424,4 +424,45 @@ public class MchcsCohortLibraryTest extends BaseModuleContextSensitiveTest {
 		ReportingTestUtils.assertCohortEquals(Arrays.asList(8), evaluated);
 	}
 
+	/**
+	 * @see MchcsCohortLibrary#hivExposedInfants()
+	 */
+	@Test
+	public void hivExposedInfants_shouldReturnHivExposedInfants() throws Exception {
+		Concept childHivStatus = Dictionary.getConcept(Dictionary.CHILDS_CURRENT_HIV_STATUS);
+		Concept hivExposed = Dictionary.getConcept(Dictionary.EXPOSURE_TO_HIV);
+		Concept negative = Dictionary.getConcept(Dictionary.NEGATIVE);
+
+		//make #6 hiv exposed status
+		TestUtils.saveObs(TestUtils.getPatient(6), childHivStatus, hivExposed,TestUtils.date(2007, 7, 1));
+		//make #7 hiv exposed but negative status
+		TestUtils.saveObs(TestUtils.getPatient(7), childHivStatus, negative,TestUtils.date(2007, 7, 1));
+
+		CohortDefinition cd = mchcsCohortLibrary.hivExposedInfants();
+		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
+		ReportingTestUtils.assertCohortEquals(Arrays.asList(6), evaluated);
+
+	}
+
+	/**
+	 * @see MchcsCohortLibrary#hivExposedInfantsWithin2Months()
+	 */
+	@Test
+	public void hivExposedInfantsWithin2Months_shouldReturnHivExposedInfantsWithin2Months() throws Exception{
+		Concept childHivStatus = Dictionary.getConcept(Dictionary.CHILDS_CURRENT_HIV_STATUS);
+		Concept hivExposed = Dictionary.getConcept(Dictionary.EXPOSURE_TO_HIV);
+		Concept negative = Dictionary.getConcept(Dictionary.NEGATIVE);
+
+		//make #6 hiv exposed status
+		TestUtils.saveObs(TestUtils.getPatient(6), childHivStatus, hivExposed,TestUtils.date(2007, 7, 1));
+		//make #7 hiv exposed but negative status
+		TestUtils.saveObs(TestUtils.getPatient(7), childHivStatus, negative,TestUtils.date(2007, 7, 1));
+
+		CohortDefinition cd = mchcsCohortLibrary.hivExposedInfantsWithin2Months();
+		context.addParameterValue("onOrAfter", TestUtils.date(2007, 6, 1));
+		context.addParameterValue("onOrBefore", TestUtils.date(2007, 7, 1));
+		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
+		ReportingTestUtils.assertCohortEquals(Arrays.asList(6), evaluated);
+	}
+
 }
