@@ -38,6 +38,7 @@ import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyaemr.util.EmrUiUtils;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.module.kenyaui.annotation.AppAction;
+import org.openmrs.module.kenyaui.annotation.SharedAction;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.BindParams;
@@ -66,7 +67,7 @@ public class RegistrationUtilFragmentController {
 	 * @return the visit types as simple objects
 	 */
 	@AppAction(EmrConstants.APP_REGISTRATION)
-	public List<SimpleObject> activeVisitTypes(UiUtils ui) {
+	public List<SimpleObject> getActiveVisitTypes(UiUtils ui) {
 		Map<VisitType, Integer> activeVisitTypes = new HashMap<VisitType, Integer>();
 		
 		List<Visit> activeVisits = Context.getVisitService().getVisits(null, null, null, null, null, null, null, null, null, false, false);
@@ -78,7 +79,7 @@ public class RegistrationUtilFragmentController {
 		
 		List<SimpleObject> ret = new ArrayList<SimpleObject>();
 		for (Map.Entry<VisitType, Integer> e : activeVisitTypes.entrySet()) {
-			SimpleObject so = SimpleObject.fromObject(e.getKey(), ui, "visitTypeId", "name");
+			SimpleObject so = ui.simplifyObject(e.getKey());
 			so.put("count", e.getValue());
 			ret.add(so);
 		}
@@ -91,11 +92,7 @@ public class RegistrationUtilFragmentController {
 	 * @return success or failure message
 	 */
 	@AppAction(EmrConstants.APP_REGISTRATION)
-	public Object closeActiveVisits(@RequestParam(value = "visitType", required = false) List<VisitType> visitTypesToClose) {
-		if (CollectionUtils.isEmpty(visitTypesToClose)) {
-			return new FailureResult("You didn't choose any types");
-		}
-
+	public SimpleObject closeActiveVisits(@RequestParam(value = "typeIds", required = false) List<VisitType> visitTypesToClose) {
 		Date toStop = new Date();
 		VisitService vs = Context.getVisitService();
 		List<Visit> activeVisits = vs.getVisits(null, null, null, null, null, null, null, null, null, false, false);
@@ -122,72 +119,8 @@ public class RegistrationUtilFragmentController {
 				msg += "s";
 			}
 		}
-		return new SuccessResult(msg);
+		return SimpleObject.create("message", msg);
 	}
-
-	/**
-	 * Creates a new patient
-	 * @param ui the UI utils
-	 * @param pat the patient command object
-	 * @return the patient as a simple object
-	 */
-	@AppAction(EmrConstants.APP_REGISTRATION)
-	public SimpleObject createPatient(UiUtils ui,
-	                                  @MethodParam("createPatientCommand") @BindParams("patient") @Validate(PatientValidator.class) Patient pat) {
-		ui.validate(pat, new CreatePatientValidator(), "patient");
-		Context.getPatientService().savePatient(pat);
-		return SimpleObject.create("patientId", pat.getPatientId());
-	}
-	
-	public Patient createPatientCommand(@RequestParam(required=false, value="birthdate") Date birthdate,
-	                                    @RequestParam(required=false, value="age") Integer age,
-	                                    HttpServletRequest req,
-	                                    Session session) {
-		Patient pat = new Patient();
-		pat.addName(new PersonName()); // will be bound by create patient fragment action
-		
-		if (birthdate != null) {
-			pat.setBirthdate(birthdate);
-		} else if (age != null) {
-			pat.setBirthdateFromAge(age, new Date());
-		}
-			
-		for (PatientIdentifierType pit : Context.getPatientService().getAllPatientIdentifierTypes()) {
-			String identifier = req.getParameter("identifier." + pit.getId());
-			if (StringUtils.isNotBlank(identifier)) {
-				pat.addIdentifier(new PatientIdentifier(identifier, pit, Context.getService(KenyaEmrService.class).getDefaultLocation()));
-			}
-		}
-		if (pat.getIdentifiers().size() > 0)
-			pat.getIdentifiers().iterator().next().setPreferred(true);
-		
-		return pat;
-	}
-	
-
-	/**
-	 * For some reason PatientValidator is letting me create a patient without a birthdate/age, so
-	 * I'm going to write a stricter validator here
-	 */
-	public class CreatePatientValidator implements Validator {
-
-	   /**
-	     * @see org.springframework.validation.Validator#supports(java.lang.Class)
-	     */
-	    @Override
-	    public boolean supports(Class<?> clazz) {
-	        return clazz.equals(Patient.class);
-	    }
-	    
-	    /**
-	    * @see org.springframework.validation.Validator#validate(java.lang.Object, org.springframework.validation.Errors)
-	    */
-	    @Override
-	    public void validate(Object target, Errors errors) {
-	    	ValidateUtil.validate(target, errors);
-	    	ValidationUtils.rejectIfEmpty(errors, "birthdate", "error.null");
-	    }
-   }
 
 	/**
 	 * Starts a new visit
@@ -196,11 +129,11 @@ public class RegistrationUtilFragmentController {
 	 * @return the simplified visit
 	 */
 	@AppAction(EmrConstants.APP_REGISTRATION)
-	public SimpleObject startVisit(@BindParams("visit") @Validate Visit visit, UiUtils ui, @SpringBean EmrUiUtils kenyaUi) {
+	public SimpleObject startVisit(@BindParams("visit") @Validate Visit visit, UiUtils ui) {
 		if (visit.getLocation() == null)
 			visit.setLocation(Context.getService(KenyaEmrService.class).getDefaultLocation());
 
-		ui.validate(visit, new RegistrationVisitValidator(), "visit");
+		ui.validate(visit, new StartVisitValidator(), "visit");
 
 		Context.getVisitService().saveVisit(visit);
 		return ui.simplifyObject(visit);
@@ -212,18 +145,20 @@ public class RegistrationUtilFragmentController {
 	 * @param visit the visit
 	 * @return the simplified visit
 	 */
-	@AppAction(EmrConstants.APP_REGISTRATION)
-	public SimpleObject editVisit(@RequestParam("visit.visitId") @BindParams("visit") @Validate Visit visit, UiUtils ui, @SpringBean EmrUiUtils kenyaUi) {
-		ui.validate(visit, new RegistrationVisitValidator(), "visit");
+	@SharedAction({EmrConstants.APP_REGISTRATION, EmrConstants.APP_CLINICIAN})
+	public SimpleObject stopVisit(@RequestParam("visitId") Visit visit, @RequestParam("stopDatetime") Date stopDatetime, UiUtils ui) {
+		visit.setStopDatetime(stopDatetime);
+
+		ui.validate(visit, new StopVisitValidator(), null);
 
 		Context.getVisitService().saveVisit(visit);
 		return ui.simplifyObject(visit);
 	}
 
 	/**
-	 * Extra validation for visits
+	 * Validation for starting visits
 	 */
-	public class RegistrationVisitValidator implements Validator {
+	public class StartVisitValidator implements Validator {
 		@Override
 		public boolean supports(Class<?> aClass) {
 			return aClass.equals(Visit.class);
@@ -233,14 +168,31 @@ public class RegistrationUtilFragmentController {
 		public void validate(Object obj, Errors errors) {
 			Visit visit = (Visit)obj;
 
-			if (visit.getPatient() != null) {
-				if (Context.getVisitService().getActiveVisitsByPatient(visit.getPatient()).size() > 0) {
-					errors.reject("Patient already has an active visit");
-				}
+			if (Context.getVisitService().getActiveVisitsByPatient(visit.getPatient()).size() > 0) {
+				errors.reject("Patient already has an active visit");
 			}
 
 			if (visit.getStartDatetime().after(new Date())) {
 				errors.rejectValue("startDatetime", "Start date cannot be in the future");
+			}
+		}
+	}
+
+	/**
+	 * Validation for stopping visits
+	 */
+	public class StopVisitValidator implements Validator {
+		@Override
+		public boolean supports(Class<?> aClass) {
+			return aClass.equals(Visit.class);
+		}
+
+		@Override
+		public void validate(Object obj, Errors errors) {
+			Visit visit = (Visit)obj;
+
+			if (visit.getStopDatetime() == null) {
+				errors.rejectValue("stopDatetime", "Stop date cannot be empty");
 			}
 			if (visit.getStopDatetime() != null && visit.getStopDatetime().after(new Date())) {
 				errors.rejectValue("stopDatetime", "Stop date cannot be in the future");

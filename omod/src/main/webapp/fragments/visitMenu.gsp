@@ -2,51 +2,38 @@
 	<% if (visit) {
 		if (config.allowCheckOut) {
 	%>
-		${ ui.includeFragment("kenyaui", "widget/dialogForm", [
-				buttonConfig: [
-						label: "End Visit",
-						extra: "Patient going home",
-						classes: [ "padded" ],
-						iconProvider: "kenyaui",
-						icon: "buttons/visit_end.png"
-				],
+		<%= ui.includeFragment("kenyaui", "widget/dialogForm", [
+				buttonConfig: [ label: "Check out of visit", iconProvider: "kenyaui", icon: "buttons/visit_end.png" ],
 				dialogConfig: [ heading: "Check Out", width: 50, height: 30 ],
 				fields: [
-						[ hiddenInputName: "visit.visitId", value: visit.visitId ],
-						[ label: "End Date and Time", formFieldName: "visit.stopDatetime", class: java.util.Date, initialValue: new Date(), showTime: true ]
+						[ hiddenInputName: "visitId", value: visit.visitId ],
+						[ hiddenInputName: "appId", value: currentApp.id ],
+						[ label: "End Date and Time", formFieldName: "stopDatetime", class: java.util.Date, initialValue: new Date(), showTime: true ]
 				],
-				fragment: "registrationUtil",
 				fragmentProvider: "kenyaemr",
-				action: "editVisit",
-				onSuccessCallback: "ui.navigate('" + ui.pageLink("kenyaemr", "registration/registrationViewPatient", [ patientId: patient.id ]) + "')",
+				fragment: "registrationUtil",
+				action: "stopVisit",
+				onSuccessCallback: "ui.navigate('kenyaemr', 'registration/registrationViewPatient', { patientId: " + patient.id + " });",
 				submitLabel: ui.message("general.submit"),
 				cancelLabel: ui.message("general.cancel")
-		]) }
+		]) %>
 	<%
 		} else {
 	%>
 		${ ui.includeFragment("kenyaui", "widget/button", [
 				iconProvider: "kenyaui",
-				icon: "buttons/registration.png",
-				label: "Go to Registration",
-				extra: "to Check Out",
+				icon: "buttons/visit_end.png",
+				label: "Check-out at registration",
 				href: ui.pageLink("kenyaemr", "registration/registrationViewPatient", [ patientId: patient.id ])
 		]) }
 	<%
 		}
 	} else {
 		if (config.allowCheckIn) {
-			def jsSuccess = "ui.navigate('kenyaemr', 'registration/registrationViewPatient', " + "{" + "patientId: ${ patient.id } });"
 	%>
 	<%= ui.includeFragment("kenyaui", "widget/dialogForm", [
-			buttonConfig: [
-					iconProvider: "kenyaui",
-					icon: "buttons/registration.png",
-					label: "Check In For Visit",
-					classes: [ "padded" ],
-					extra: "Patient is Here"
-			],
-			dialogConfig: [ heading: "Check In For Visit", width: 50, height: 30 ],
+			buttonConfig: [ label: "Check in for visit", iconProvider: "kenyaui", icon: "buttons/registration.png" ],
+			dialogConfig: [ heading: "Check In", width: 50, height: 30 ],
 			prefix: "visit",
 			commandObject: newCurrentVisit,
 			hiddenProperties: [ "patient" ],
@@ -58,10 +45,10 @@
 					"visitType": [ label: "Visit Type" ],
 					"startDatetime": [ showTime: true ]
 			],
-			fragment: "registrationUtil",
 			fragmentProvider: "kenyaemr",
+			fragment: "registrationUtil",
 			action: "startVisit",
-			onSuccessCallback: jsSuccess,
+			onSuccessCallback: "ui.navigate('kenyaemr', 'registration/registrationViewPatient', { patientId: " + patient.id + " });",
 			submitLabel: ui.message("general.submit"),
 			cancelLabel: ui.message("general.cancel")
 	]) %>
@@ -69,8 +56,7 @@
 		${ ui.includeFragment("kenyaui", "widget/button", [
 				iconProvider: "kenyaui",
 				icon: "buttons/registration.png",
-				label: "Go to Registration",
-				extra: "to Check In",
+				label: "Check-in at registration",
 				href: ui.pageLink("kenyaemr", "registration/registrationViewPatient", [ patientId: patient.id ])
 		]) }
 	<%
