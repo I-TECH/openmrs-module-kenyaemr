@@ -202,4 +202,22 @@ public class MchcsIndicatorLibrary {
 	public CohortIndicator totalBreastFeedingMotherOnTreatment() {
 		return cohortIndicator("Mother on treatment and breast feeding totals", map(mchcsCohortLibrary.totalBreastFeedingMotherOnTreatment(), "onOrAfter=${startDate},onOrBefore=${endDate}"));
 	}
+
+	/**
+	 * HIV exposed infants within 2 months
+	 * @return indicator
+	 */
+	//HV03-01
+	public  CohortIndicator hivExposedInfantsWithin2Months() {
+		return cohortIndicator("Hiv Exposed Infants within 2 months", map(mchcsCohortLibrary.hivExposedInfantsWithin2Months(), "onOrAfter=${startDate},onOrBefore=${endDate}"));
+	}
+
+	/**
+	 * HIV exposed infants within 2 months and are eligible for ctx
+	 * @return indicator
+	 */
+	//HV03-02
+	public  CohortIndicator hivExposedInfantsWithin2MonthsAndEligibleForCTX() {
+		return cohortIndicator("Hiv Exposed Infants within 2 months", map(mchcsCohortLibrary.hivExposedInfantsWithin2MonthsAndEligibleForCTX(), "onOrAfter=${startDate},onOrBefore=${endDate}"));
+	}
 }

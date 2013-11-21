@@ -18,7 +18,9 @@ package org.openmrs.module.kenyaemr.reporting.library.shared.mchcs;
 
 import org.openmrs.Concept;
 import org.openmrs.module.kenyacore.report.ReportUtils;
+import org.openmrs.module.kenyacore.report.builder.CalculationCohortDefinition;
 import org.openmrs.module.kenyaemr.Dictionary;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.NeverTakenCtxOrDapsoneCalculation;
 import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonCohortLibrary;
 import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -304,6 +306,43 @@ public class MchcsCohortLibrary {
 		cd.addSearch("motherOnTreatmentAndNotBreastFeeding",ReportUtils.map(motherOnTreatmentAndNotBreastFeeding(),"onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
 		cd.addSearch("motherOnTreatmentAndNotBreastFeedingUnknown",ReportUtils.map(motherOnTreatmentAndNotBreastFeedingUnknown(),"onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
 		cd.setCompositionString("motherOnTreatmentAndNotBreastFeedingUnknown OR motherOnTreatmentAndNotBreastFeeding OR motherOnTreatmentAndNotBreastFeedingUnknown");
+		return cd;
+	}
+
+	//Finding HIV exposed infants
+	public CohortDefinition hivExposedInfants() {
+		Concept childHivStatus = Dictionary.getConcept(Dictionary.CHILDS_CURRENT_HIV_STATUS);
+		Concept hivExposed = Dictionary.getConcept(Dictionary.EXPOSURE_TO_HIV);
+		return commonCohorts.hasObs(childHivStatus,hivExposed);
+	}
+
+	//hiv exposed infant within 2 months
+	public CohortDefinition  hivExposedInfantsWithin2Months() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("hivExposedInfants",ReportUtils.map(hivExposedInfants(),"onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("ageWithin2Months", ReportUtils.map(age2Months(), "effectiveDate=${onOrBefore}"));
+		cd.setCompositionString("hivExposedInfants AND ageWithin2Months");
+		return cd;
+	}
+
+	//hiv exposed infants eligible for CTX
+	public CohortDefinition hivExposedInfantsEligibleForCTX() {
+		CalculationCohortDefinition cd = new CalculationCohortDefinition(new NeverTakenCtxOrDapsoneCalculation());
+		cd.setName("Infants who have been given CTX");
+		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
+		return cd;
+	}
+
+	//hiv exposed infants withing 2 months and eligible for ctx
+	public CohortDefinition hivExposedInfantsWithin2MonthsAndEligibleForCTX() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("hivExposedInfantsWithin2Months",ReportUtils.map(hivExposedInfantsWithin2Months(),"onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("hivExposedInfantsEligibleForCTX",ReportUtils.map(hivExposedInfantsEligibleForCTX(),"onDate=${onOrBefore}"));
+		cd.setCompositionString("hivExposedInfantsWithin2Months AND hivExposedInfantsEligibleForCTX");
 		return cd;
 	}
 }
