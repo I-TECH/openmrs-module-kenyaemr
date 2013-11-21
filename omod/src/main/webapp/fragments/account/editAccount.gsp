@@ -30,7 +30,7 @@
 				],
 				submitLabel: "Save Changes",
 				cancelLabel: "Cancel",
-				successCallbacks: [ "ui.reloadPage();" ]
+				onSuccessCallback: "ui.reloadPage();"
 		]) }
 	</div>
 </div>
@@ -88,7 +88,7 @@
 				],
 				submitLabel: "Save Changes",
 				cancelLabel: "Cancel",
-				successCallbacks: [ "ui.reloadPage();" ]
+				onSuccessCallback: "ui.reloadPage();"
 		]) %>
 
 	<% } else if (!user) { %>
@@ -119,7 +119,7 @@
 				],
 				submitLabel: "Save Changes",
 				cancelLabel: "Cancel",
-				successCallbacks: [ "ui.reloadPage();" ]
+				onSuccessCallback: "ui.reloadPage();"
 		]) %>
 
 	<% } %>
@@ -157,7 +157,7 @@
 				],
 				submitLabel: "Save Changes",
 				cancelLabel: "Cancel",
-				successCallbacks: [ "ui.reloadPage();" ]
+				onSuccessCallback: "ui.reloadPage();"
 		]) %>
 
 	<% } else { %>
@@ -180,7 +180,7 @@
 				],
 				submitLabel: "Save Changes",
 				cancelLabel: "Cancel",
-				successCallbacks: [ "ui.reloadPage();" ]
+				onSuccessCallback: "ui.reloadPage();"
 		]) %>
 
 	<% } %>

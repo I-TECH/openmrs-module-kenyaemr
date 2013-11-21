@@ -27,7 +27,7 @@ ${ ui.includeFragment("kenyaui", "widget/dialogForm", [
 		hiddenProperties: changePasswordHiddenProps,
 		submitLabel: "Update",
 		cancelLabel: !config.tempPassword ? "Cancel" : null,
-		successCallbacks: [ "ui.reloadPage();" ]
+		onSuccessCallback:  "ui.reloadPage();"
 ]) }
 
 ${ ui.includeFragment("kenyaui", "widget/dialogForm", [
@@ -44,5 +44,5 @@ ${ ui.includeFragment("kenyaui", "widget/dialogForm", [
 		],
 		submitLabel: "Update",
 		cancelLabel: "Cancel",
-		successCallbacks: [ "ui.reloadPage();" ]
+		onSuccessCallback: "ui.reloadPage();"
 ]) }

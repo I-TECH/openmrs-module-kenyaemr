@@ -38,6 +38,7 @@ import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.action.SuccessResult;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -137,5 +138,20 @@ public class EmrUtilsFragmentController {
 		Date artStartDate = result != null ? (Date) result.getValue() : null;
 
 		return SimpleObject.create("duration", artStartDate != null ? kenyaUi.formatInterval(artStartDate, now) : null);
+	}
+
+	/**
+	 * Calculates an estimated birthdate from an age value
+	 * @param now the current time reference
+	 * @param age the age
+	 * @return the ISO8601 formatted birthdate
+	 */
+	public SimpleObject birthdateFromAge(@RequestParam(value = "age") Integer age,
+										 @RequestParam(value = "now", required = false) Date now,
+										 @SpringBean KenyaUiUtils kenyaui) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(now != null ? now : new Date());
+		cal.add(Calendar.YEAR, -age);
+		return SimpleObject.create("birthdate", kenyaui.formatDateParam(cal.getTime()));
 	}
 }
