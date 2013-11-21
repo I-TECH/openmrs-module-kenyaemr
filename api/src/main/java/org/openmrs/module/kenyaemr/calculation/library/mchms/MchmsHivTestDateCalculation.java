@@ -59,7 +59,7 @@ public class MchmsHivTestDateCalculation extends BaseEmrCalculation {
 
 		CalculationResultMap resultMap = new CalculationResultMap();
 
-		for (Integer ptId : cohort) {
+		for (Integer ptId : aliveMchmsPatients) {
 			Date patientsLastHivTestDate = EmrCalculationUtils.datetimeObsResultForPatient(lastHivTestDateObss, ptId);
 			if (aliveMchmsPatients.contains(ptId) && patientsLastHivTestDate != null) {
 				resultMap.put(ptId, new SimpleResult(patientsLastHivTestDate, null));
