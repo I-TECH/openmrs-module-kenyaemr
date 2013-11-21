@@ -17,9 +17,12 @@ package org.openmrs.module.kenyaemr.reporting.library.shared.mchms;
 import org.openmrs.Concept;
 import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyacore.report.builder.CalculationCohortDefinition;
+import org.openmrs.module.kenyaemr.ArtAssessmentMethod;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.PregnancyStage;
+import org.openmrs.module.kenyaemr.calculation.library.mchms.AssessedOnFirstVisitCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.mchms.DiscordantCoupleCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.mchms.MchmsFirstVisitDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.mchms.MchmsHivTestDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.mchms.TestedForHivInMchmsCalculation;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.DateCalculationCohortDefinition;
@@ -116,6 +119,11 @@ public class MchmsCohortLibrary {
 		return cohortCd;
 	}
 
+	/**
+	 * MCHMS patients whose HIV status is discordant with that of their male partners
+	 *
+	 * @return the cohort definition
+	 */
 	public CohortDefinition discordantCouples() {
 		CohortDefinition patientsTestedInAncOrDelivery = testedDuringAncOrDelivery(false);
 		CohortDefinition partnersTestedInAncOrDelivery = testedDuringAncOrDelivery(true);
@@ -140,5 +148,29 @@ public class MchmsCohortLibrary {
 		cohortCd2.setCompositionString("cohortCd AND calculationCd");
 
 		return cohortCd2;
+	}
+
+	public CohortDefinition assessedForArtEligibility(ArtAssessmentMethod artAssessmentMethod) {
+		DateCalculationCohortDefinition dateCd = new DateCalculationCohortDefinition(new MchmsFirstVisitDateCalculation());
+		dateCd.setName("Mothers whose first MCHMS consultation visit was between dates");
+		dateCd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		dateCd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+
+		CalculationCohortDefinition calculationCd = new CalculationCohortDefinition(new AssessedOnFirstVisitCalculation());
+		calculationCd.setName("Mothers who were assessed for ART eligibility during their first MCHMS visit");
+		calculationCd.addParameter(new Parameter("onOrAfter", "Start Date", Date.class));
+		calculationCd.addParameter(new Parameter("onOrBefore", "End Date", Date.class));
+
+		if (artAssessmentMethod != null) {
+			calculationCd.addCalculationParameter("artAssessmentMethod", artAssessmentMethod);
+		}
+
+		CompositionCohortDefinition cohortCd = new CompositionCohortDefinition();
+		cohortCd.addParameter(new Parameter("onOrAfter", "Start Date", Date.class));
+		cohortCd.addParameter(new Parameter("onOrBefore", "End Date", Date.class));
+		cohortCd.addSearch("firstMchmsVisitWithinPeriod", ReportUtils.map((CohortDefinition) dateCd, "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cohortCd.addSearch("artAssessmentOnFirstVisit", ReportUtils.map((CohortDefinition) calculationCd, "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cohortCd.setCompositionString("firstMchmsVisitWithinPeriod AND artAssessmentOnFirstVisit");
+		return cohortCd;
 	}
 }
