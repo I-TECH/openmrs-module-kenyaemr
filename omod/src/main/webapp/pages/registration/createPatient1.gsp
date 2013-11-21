@@ -1,7 +1,7 @@
 <%
 	ui.decorateWith("kenyaemr", "standardPage", [ layout: "sidebar" ])
 
-	ui.includeJavascript("kenyaemr", "controllers/person.js")
+	ui.includeJavascript("kenyaemr", "controllers/account.js")
 
 	def menuItems = [
 			[ label: "Back to home", iconProvider: "kenyaui", icon: "buttons/back.png", label: "Back to home", href: ui.pageLink("kenyaemr", "registration/registrationHome") ]
@@ -27,14 +27,13 @@
 		}
 	</script>
 
-	<div class="ke-panel-frame" ng-controller="PersonSearch" ng-init="init('${ currentApp.id }', 'non-patients', 'kenyaemr', 'registration/createPatient2')">
+	<div class="ke-panel-frame">
 		<div class="ke-panel-heading">Step 1: Select Person</div>
-		<div class="ke-panel-controls" style="overflow: auto">
+		<div class="ke-panel-controls" style="overflow: auto" ng-controller="AccountSearchForm" ng-init="init('non-patients')">
 			<table style="width: 100%">
 				<tr>
 					<td style="width: 50%; text-align: left; vertical-align: middle">
-						<img src="${ ui.resourceLink("kenyaui", "images/buttons/patient_from_person.png") }" style="vertical-align: middle" /> Filter
-						<input type="text" ng-model="query" ng-change="refresh()" />
+						Filter <input type="text" ng-model="query" ng-change="updateSearch()" />
 					</td>
 					<td style="width: 50%; text-align: right; vertical-align: middle">
 						<button type="button" onclick="ke_useNewPerson()">
@@ -44,9 +43,9 @@
 				</tr>
 			</table>
 		</div>
-		<div class="ke-panel-content">
-			<div class="ke-stack-item ke-navigable" ng-repeat="person in results" ng-click="onResultClick(person)">
-				${ ui.includeFragment("kenyaemr", "person/result.full") }
+		<div class="ke-panel-content" ng-controller="AccountSearchResults" ng-init="init('${ currentApp.id }', 'kenyaemr', 'registration/createPatient2')">
+			<div class="ke-stack-item ke-navigable" ng-repeat="account in results" ng-click="onResultClick(account)">
+				${ ui.includeFragment("kenyaemr", "account/result.full") }
 			</div>
 		</div>
 	</div>

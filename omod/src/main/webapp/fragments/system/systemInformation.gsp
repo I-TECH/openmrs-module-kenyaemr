@@ -3,7 +3,7 @@
 
 	ui.includeJavascript("kenyaemr", "controllers/system.js")
 %>
-<div ng-controller="SystemInformation" ng-init="init('${ currentApp.id }')">
+<div ng-controller="SystemInformation" ng-init="init()">
 	<table class="ke-table-vertical">
 		<tbody>
 			<tr ng-repeat="info in infos">

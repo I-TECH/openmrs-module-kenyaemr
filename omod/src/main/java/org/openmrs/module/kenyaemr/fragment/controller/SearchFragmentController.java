@@ -132,43 +132,6 @@ public class SearchFragmentController {
 	}
 
 	/**
-	 * Gets a person by their id
-	 * @param person the person
-	 * @param ui the UI utils
-	 * @return the simplified person
-	 */
-	public SimpleObject person(@RequestParam("id") Person person, UiUtils ui) {
-		return ui.simplifyObject(person);
-	}
-
-	/**
-	 * Searches for persons by name
-	 * @param query the name
-	 * @param which all|non-patients
-	 * @param ui the UI utils
-	 * @return the simple patients
-	 */
-	public SimpleObject[] persons(@RequestParam(value = "q", required = false) String query,
-								  @RequestParam(value = "which", required = false, defaultValue = "all") String which,
-								  UiUtils ui) {
-
-		Collection<Person> results = Context.getPersonService().getPeople(query, null);
-
-		if ("non-patients".equals(which)) {
-			CollectionUtils.filter(results, new Predicate() {
-				@Override
-				public boolean evaluate(Object obj) {
-					return !((Person) obj).isPatient();
-				}
-			});
-		}
-
-		// Convert to simple objects
-		return ui.simplifyCollection(results);
-
-	}
-
-	/**
 	 * Gets a location by it's id
 	 * @param location the location
 	 * @param ui the UI utils
@@ -217,20 +180,43 @@ public class SearchFragmentController {
 	}
 
 	/**
+	 * Gets a person by their id
+	 * @param person the person
+	 * @param ui the UI utils
+	 * @return the simplified person
+	 */
+	public SimpleObject person(@RequestParam("id") Person person, UiUtils ui) {
+		return ui.simplifyObject(person);
+	}
+
+	/**
+	 * Searches for persons by name
+	 * @param query the name query
+	 * @param ui
+	 * @return the simplified persons
+	 */
+	public SimpleObject[] persons(@RequestParam(value = "q", required = false) String query, UiUtils ui) {
+		Collection<Person> results = Context.getPersonService().getPeople(query, null);
+
+		// Convert to simple objects
+		return ui.simplifyCollection(results);
+	}
+
+	/**
 	 * Searches for accounts by name
 	 * @param query the name query
-	 * @param which users|providers|both
+	 * @param which all|providers|users|non-patients
 	 * @param ui
 	 * @return
 	 */
 	public List<SimpleObject> accounts(@RequestParam(value = "q", required = false) String query,
-									   @RequestParam(value = "which", required = false) String which,
+									   @RequestParam(value = "which", required = false, defaultValue = "all") String which,
 									   UiUtils ui) {
 
 		Map<Person, User> userAccounts = new HashMap<Person, User>();
 		Map<Person, Provider> providerAccounts = new HashMap<Person, Provider>();
 
-		if ("both".equals(which) || "users".equals(which)) {
+		if (!"providers".equals(which)) {
 			List<User> users = Context.getUserService().getUsers(query, null, true);
 			for (User u : users) {
 				if (!"daemon".equals(u.getUsername())) {
@@ -239,7 +225,7 @@ public class SearchFragmentController {
 			}
 		}
 
-		if ("both".equals(which) || "providers".equals(which)) {
+		if (!"users".equals(which)) {
 			List<Provider> providers = Context.getProviderService().getProviders(query, null, null, null);
 			for (Provider p : providers) {
 				if (p.getPerson() != null) {
@@ -254,6 +240,10 @@ public class SearchFragmentController {
 
 		List<SimpleObject> ret = new ArrayList<SimpleObject>();
 		for (Person p : persons) {
+			if ("non-patients".equals(which) && p.isPatient()) {
+				continue;
+			}
+
 			SimpleObject account = ui.simplifyObject(p);
 
 			User user = userAccounts.get(p);

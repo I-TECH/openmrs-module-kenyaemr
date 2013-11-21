@@ -7,7 +7,7 @@
 	${ ui.includeFragment("kenyaui", "widget/panelMenu", [
 			heading: "Reports",
 			items: [
-					[ iconProvider: "kenyaui", icon: "buttons/back.png", label: "Back", href: ui.pageLink("kenyaemr", "admin/adminHome") ]
+					[ iconProvider: "kenyaui", icon: "buttons/back.png", label: "Back to home", href: ui.pageLink("kenyaemr", "admin/adminHome") ]
 			]
 	]) }
 </div>

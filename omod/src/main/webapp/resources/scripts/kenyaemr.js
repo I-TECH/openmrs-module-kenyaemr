@@ -1,16 +1,19 @@
 /**
  * Configure search types
  */
+
 kenyaui.configureSearch('concept', {
 	searchProvider: 'kenyaemr',
 	searchFragment: 'search',
 	format: function(concept) { return concept.name; }
 });
+
 kenyaui.configureSearch('location', {
 	searchProvider: 'kenyaemr',
 	searchFragment: 'search',
 	format: function(location) { return location.name + ' <span style="color: #999">' + location.code + '</span>'; }
 });
+
 kenyaui.configureSearch('person', {
 	searchProvider: 'kenyaemr',
 	searchFragment: 'search',
@@ -23,6 +26,7 @@ kenyaui.configureSearch('person', {
 		return html;
 	}
 });
+
 kenyaui.configureSearch('patient', {
 	searchProvider: 'kenyaemr',
 	searchFragment: 'search',
@@ -45,16 +49,6 @@ var kenyaemrApp = angular.module('kenyaemr', []);
  * Utility methods
  */
 var kenyaemr = (function(jQuery) {
-
-	var formatHelper = function(data, formatter) {
-		if (data === null || typeof formatter === 'undefined') {
-			return "";
-		} else if (typeof formatter === 'function') {
-			return formatter(data);
-		} else {
-			return formatter;
-		}
-	};
 	
 	return {
 
@@ -66,26 +60,6 @@ var kenyaemr = (function(jQuery) {
 		openEncounterDialog: function(appId, encounterId) {
 			var contentUrl = ui.pageLink('kenyaemr', 'dialog/formDialog', { appId: appId, encounterId: encounterId, currentUrl: location.href });
 			kenyaui.openDynamicDialog({ heading: 'View Form', url: contentUrl, width: 90, height: 90 });
-		},
-
-		/**
-		 * values may specify (as function(data) or static text): icon, title, leftDetails, center, right
-		 */
-		twoColumnStackItemFormatter: function(data, values) {
-			var clickUrl = formatHelper(data, values.clickUrl);
-
-			var ret = '<div class="ke-stack-item ke-navigable">';
-			if (clickUrl) {
-				ret += '<input type="hidden" name="clickUrl" value="' + clickUrl + '" />'
-			}
-			ret += '<table width="100%"><tr valign="top"><td width="50%">';
-			ret += '  <span class="ke-icon">' + formatHelper(data, values.icon) + '</span>';
-			ret += '  <b>' + formatHelper(data, values.title) + '</b><br />' + formatHelper(data, values.leftDetails);
-			ret += '</td><td align="right" width="50%">';
-			ret += formatHelper(data, values.right);
-			ret += '</td></tr></table>';
-			ret += '</div>';
-			return ret;
 		},
 
 		/**
