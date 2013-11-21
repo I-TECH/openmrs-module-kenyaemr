@@ -18,7 +18,7 @@
 				fragment: "registrationUtil",
 				fragmentProvider: "kenyaemr",
 				action: "editVisit",
-				successCallbacks: [ "ui.navigate('" + ui.pageLink("kenyaemr", "registration/registrationViewPatient", [ patientId: patient.id ]) + "')" ],
+				onSuccessCallback: "ui.navigate('" + ui.pageLink("kenyaemr", "registration/registrationViewPatient", [ patientId: patient.id ]) + "')",
 				submitLabel: ui.message("general.submit"),
 				cancelLabel: ui.message("general.cancel")
 		]) }
@@ -61,7 +61,7 @@
 			fragment: "registrationUtil",
 			fragmentProvider: "kenyaemr",
 			action: "startVisit",
-			successCallbacks: [ jsSuccess ],
+			onSuccessCallback: jsSuccess,
 			submitLabel: ui.message("general.submit"),
 			cancelLabel: ui.message("general.cancel")
 	]) %>

@@ -1,29 +1,15 @@
 <%
 	ui.decorateWith("kenyaui", "panel", [ heading: (config.heading ?: "Edit Patient"), frameOnly: true ])
 
-	def femaleChecked = command.gender == 'F' ? 'checked="true"' : ''
-	def maleChecked = command.gender == 'M' ? 'checked="true"' : ''
-
-	def demogFieldRows = [
+	def nameFields = [
 			[
 					[ object: command, property: "personName.familyName", label: "Surname *" ],
 					[ object: command, property: "personName.givenName", label: "First name *" ],
 					[ object: command, property: "personName.middleName", label: "Other name(s)" ]
 			],
-			[
-					ui.decorate("kenyaui", "labeled", [label: "Sex *"], """
-						<input type="radio" name="gender" value="F" id="gender-F" ${ femaleChecked }/>
-						<label for="gender-F">Female</label>
-						&nbsp;
-						<input type="radio" name="gender" value="M" id="gender-M" ${ maleChecked }/>
-						<label for="gender-M">Male</label>
-						<span id="gender-F-error" class="error" style="display: none"></span>
-						<span id="gender-M-error" class="error" style="display: none"></span>
-					"""),
-					"&nbsp;&nbsp;&nbsp;&nbsp;",
-					[ object: command, property: "birthdate", label: "Birthdate *" ],
-					[ object: command, property: "birthdateEstimated", label: "Estimated?" ]
-			],
+	]
+
+	def otherDemogFieldRows = [
 			[
 					[ object: command, property: "maritalStatus", label: "Marital status", config: [ style: "list", options: maritalStatusOptions ] ],
 					[ object: command, property: "occupation", label: "Occupation", config: [ style: "list", answerTo: occupationConcept ] ],
@@ -34,6 +20,7 @@
 					[ object: command, property: "deathDate", label: "Date of death" ]
 			]
 	]
+
 	def nextOfKinFieldRows = [
 			[
 					[ object: command, property: "nameOfNextOfKin.value", label: ui.format(command.nameOfNextOfKin.attributeType) ],
@@ -112,7 +99,40 @@
 		<fieldset>
 			<legend>Demographics</legend>
 
-			<% demogFieldRows.each { %>
+			<% nameFields.each { %>
+			${ ui.includeFragment("kenyaui", "widget/rowOfFields", [ fields: it ]) }
+			<% } %>
+
+			<table>
+				<tr>
+					<td valign="top">
+						<label class="ke-field-label">Sex *</label>
+						<span class="ke-field-content">
+							<input type="radio" name="gender" value="F" id="gender-F" ${ command.gender == 'F' ? 'checked="checked"' : '' }/> Female
+							<input type="radio" name="gender" value="M" id="gender-M" ${ command.gender == 'M' ? 'checked="checked"' : '' }/> Male
+							<span id="gender-F-error" class="error" style="display: none"></span>
+							<span id="gender-M-error" class="error" style="display: none"></span>
+						</span>
+					</td>
+					<td valign="top"></td>
+					<td valign="top">
+						<label class="ke-field-label">Birthdate *</label>
+						<span class="ke-field-content">
+							${ ui.includeFragment("kenyaui", "widget/field", [ id: "patient-birthdate", object: command, property: "birthdate" ]) }
+
+							<span id="patient-birthdate-estimated">
+								<input type="radio" name="birthdateEstimated" value="true" ${ command.birthdateEstimated ? 'checked="checked"' : '' }/> Estimated
+								<input type="radio" name="birthdateEstimated" value="false" ${ !command.birthdateEstimated ? 'checked="checked"' : '' }/> Exact
+							</span>
+							&nbsp;&nbsp;&nbsp;
+
+							<span id="from-age-button-placeholder"></span>
+						</span>
+					</td>
+				</tr>
+			</table>
+
+			<% otherDemogFieldRows.each { %>
 				${ ui.includeFragment("kenyaui", "widget/rowOfFields", [ fields: it ]) }
 			<% } %>
 
@@ -148,24 +168,50 @@
 	
 </form>
 
+<!-- You can't nest forms in HTML, so keep the dialog box form down here -->
+${ ui.includeFragment("kenyaui", "widget/dialogForm", [
+		buttonConfig: [ id: "from-age-button", label: "from age", iconProvider: "kenyaui", icon: "glyphs/calculate.png" ],
+		dialogConfig: [ heading: "Calculate Birthdate", width: 40, height: 40 ],
+		fields: [
+				[ label: "Age in years", formFieldName: "age", class: java.lang.Integer ],
+				[ label: "On date", formFieldName: "now", class: java.util.Date, initialValue: new Date() ]
+		],
+		fragmentProvider: "kenyaemr",
+		fragment: "emrUtils",
+		action: "birthdateFromAge",
+		onSuccessCallback: "updateBirthdate(data);",
+		onOpenCallback: """jQuery('input[name="age"]').focus()""",
+		submitLabel: ui.message("general.submit"),
+		cancelLabel: ui.message("general.cancel")
+]) }
+
 <script type="text/javascript">
-jq(function() {
-	jq('#edit-patient-form .cancel-button').click(function() {
-		ui.navigate('${ config.returnUrl }');
+	jQuery(function() {
+		jQuery('#from-age-button').appendTo(jQuery('#from-age-button-placeholder'));
+
+		jQuery('#edit-patient-form .cancel-button').click(function() {
+			ui.navigate('${ config.returnUrl }');
+		});
+
+		kenyaui.setupAjaxPost('edit-patient-form', {
+			onSuccess: function(data) {
+				if (data.id) {
+					<% if (config.returnUrl) { %>
+					ui.navigate('${ config.returnUrl }');
+					<% } else { %>
+					ui.navigate('kenyaemr', 'registration/registrationViewPatient', { patientId: data.id });
+					<% } %>
+				} else {
+					kenyaui.notifyError('Saving patient was successful, but unexpected response');
+				}
+			}
+		});
 	});
 
-	kenyaui.setupAjaxPost('edit-patient-form', {
-		onSuccess: function(data) {
-			if (data.id) {
-				<% if (config.returnUrl) { %>
-				ui.navigate('${ config.returnUrl }');
-				<% } else { %>
-				ui.navigate('kenyaemr', 'registration/registrationViewPatient', { patientId: data.id });
-				<% } %>
-			} else {
-				kenyaui.notifyError('Saving patient was successful, but unexpected response');
-			}
-		}
-	});
-});
+	function updateBirthdate(data) {
+		var birthdate = new Date(data.birthdate);
+
+		kenyaui.setDateField('patient-birthdate', birthdate);
+		kenyaui.setRadioField('patient-birthdate-estimated', 'true');
+	}
 </script>
