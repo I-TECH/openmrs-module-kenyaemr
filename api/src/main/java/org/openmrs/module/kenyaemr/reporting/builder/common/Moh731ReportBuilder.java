@@ -186,7 +186,7 @@ public class Moh731ReportBuilder extends BaseIndicatorReportBuilder {
 
 		String indParams = "startDate=${startDate},endDate=${endDate}";
 
-		// TODO HV03-01 and HV03-2 (HIV Exposed Infants)
+
 		cohortDsd.addColumn("HV03-01", "HIV Exposed Infants (within 2 months)", ReportUtils.map(mchcsIndicatorLibrary.hivExposedInfantsWithin2Months(), indParams), "");
 		cohortDsd.addColumn("HV03-02", "HIV Exposed Infants (Eligible for CTX at 2 months)", ReportUtils.map(mchcsIndicatorLibrary.hivExposedInfantsWithin2MonthsAndEligibleForCTX(), indParams), "");
 
