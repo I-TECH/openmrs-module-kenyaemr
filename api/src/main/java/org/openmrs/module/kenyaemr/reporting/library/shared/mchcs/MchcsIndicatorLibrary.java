@@ -83,7 +83,6 @@ public class MchcsIndicatorLibrary {
 	 * Number of confirmed pcr positive infants aged 2 months and below
 	 * @return the indicator
 	 */
-	//HV02-29
 	public CohortIndicator pcrConfirmedPositive2Months() {
 		return cohortIndicator("Number of pcr confirmed positive infants aged 2 months",
 				map(mchcsCohortLibrary.pcrConfirmedPositive2Months(), "onOrAfter=${startDate},onOrBefore=${endDate}")
@@ -94,7 +93,6 @@ public class MchcsIndicatorLibrary {
 	 * Number of confirmed pcr positive infants aged between 3 and 8 months
 	 * @return the indicator
 	 */
-	//HV02-30
 	public CohortIndicator pcrConfirmedPositiveBetween3To8Months() {
 		return cohortIndicator("Number of pcr confirmed positive infants aged between 3 and 8 months",
 				map(mchcsCohortLibrary.pcrConfirmedPositiveBetween3To8Months(), "onOrAfter=${startDate},onOrBefore=${endDate}")
@@ -105,7 +103,6 @@ public class MchcsIndicatorLibrary {
 	 * Number of confirmed pcr positive infants aged between 9 and 12 months
 	 * @return the indicator
 	 */
-	//HV02-31
 	public CohortIndicator pcrConfirmedPositiveBetween9To12Months() {
 		return cohortIndicator("Number of pcr confirmed positive infants aged between 9 and 12 months",
 				map(mchcsCohortLibrary.pcrConfirmedPositiveBetween9To12Months(), "onOrAfter=${startDate},onOrBefore=${endDate}")
@@ -116,7 +113,6 @@ public class MchcsIndicatorLibrary {
 	 * Total number of infants confirmed positive
 	 * @return the indicator
 	 */
-	//HV02-32
 	public CohortIndicator pcrTotalConfirmedPositive() {
 		return cohortIndicator("Total Confirmed Positive Infants",
 				map(mchcsCohortLibrary.pcrTotalConfirmedPositive(), "onOrAfter=${startDate},onOrBefore=${endDate}")
@@ -127,7 +123,6 @@ public class MchcsIndicatorLibrary {
 	 * exclusive breast feeding at 6 months
 	 * @return indicator
 	 */
-	//HIV02-33
 	public CohortIndicator exclusiveBreastFeedingAtSixMonths() {
 		return cohortIndicator("Exclusive Breast Feeding at 6 months",
 				map(mchcsCohortLibrary.exclusiveBreastFeedingAtSixMonths(), "onOrAfter=${startDate},onOrBefore=${endDate}")
@@ -138,7 +133,6 @@ public class MchcsIndicatorLibrary {
 	 * exclusive replacement feeding at 6 months
 	 * @return indicator
 	 */
-	//HIV02-34
 	public CohortIndicator exclusiveReplacementFeedingAtSixMonths() {
 		return cohortIndicator("Exclusive Replacement Breast Feeding at 6 Months",
 				map(mchcsCohortLibrary.exclusiveReplacementFeedingAtSixMonths(), "onOrAfter=${startDate},onOrBefore=${endDate}")
@@ -149,7 +143,6 @@ public class MchcsIndicatorLibrary {
 	 * mixed feeding at 6 months
 	 * @return indicator
 	 */
-	//HIV02-35
 	public CohortIndicator mixedFeedingAtSixMonths() {
 		return cohortIndicator("Mixed Feeding at 6 Months",
 				map(mchcsCohortLibrary.mixedFeedingAtSixMonths(), "onOrAfter=${startDate},onOrBefore=${endDate}")
@@ -160,7 +153,6 @@ public class MchcsIndicatorLibrary {
 	 * Total Exposed at 6 months
 	 * @return indicator
 	 */
-	//HIV02-36
 	public CohortIndicator totalExposedAgedSixMoths() {
 		return cohortIndicator("Total Exposed at 6 Months",
 				map(mchcsCohortLibrary.totalExposedAgedSixMoths(), "onOrAfter=${startDate},onOrBefore=${endDate}")
@@ -171,7 +163,6 @@ public class MchcsIndicatorLibrary {
 	 * Mother on ARV treatment and breast feeding
 	 * @return indicator
 	 */
-	//HIV02-37
 	public CohortIndicator motherOnTreatmentAndBreastFeeding() {
 		return cohortIndicator("Mother on treatment and breast feeding", map(mchcsCohortLibrary.motherOnTreatmentAndBreastFeeding(), "onOrAfter=${startDate},onOrBefore=${endDate}"));
 	}
@@ -180,7 +171,6 @@ public class MchcsIndicatorLibrary {
 	 * Mother on ARV treatment and NOT breast feeding
 	 * @return indicator
 	 */
-	//HIV02-38
 	public CohortIndicator motherOnTreatmentAndNotBreastFeeding() {
 		return cohortIndicator("Mother on treatment and NOT breast feeding", map(mchcsCohortLibrary.motherOnTreatmentAndNotBreastFeeding(), "onOrAfter=${startDate},onOrBefore=${endDate}"));
 	}
@@ -189,7 +179,6 @@ public class MchcsIndicatorLibrary {
 	 * Mother on ARV treatment and if breastfeeding NOT known
 	 * @return indicator
 	 */
-	//HIV02-39
 	public CohortIndicator motherOnTreatmentAndNotBreastFeedingUnknown() {
 		return cohortIndicator("Mother on treatment and breast feeding unknown", map(mchcsCohortLibrary.motherOnTreatmentAndNotBreastFeedingUnknown(), "onOrAfter=${startDate},onOrBefore=${endDate}"));
 	}
@@ -198,8 +187,23 @@ public class MchcsIndicatorLibrary {
 	 * Mother on ARV treatment and if breastfeeding NOT known
 	 * @return indicator
 	 */
-	//HIV02-40
 	public CohortIndicator totalBreastFeedingMotherOnTreatment() {
 		return cohortIndicator("Mother on treatment and breast feeding totals", map(mchcsCohortLibrary.totalBreastFeedingMotherOnTreatment(), "onOrAfter=${startDate},onOrBefore=${endDate}"));
+	}
+
+	/**
+	 * HIV exposed infants within 2 months
+	 * @return indicator
+	 */
+	public  CohortIndicator hivExposedInfantsWithin2Months() {
+		return cohortIndicator("Hiv Exposed Infants within 2 months", map(mchcsCohortLibrary.hivExposedInfantsWithin2Months(), "onOrAfter=${startDate},onOrBefore=${endDate}"));
+	}
+
+	/**
+	 * HIV exposed infants within 2 months and are eligible for ctx
+	 * @return indicator
+	 */
+	public  CohortIndicator hivExposedInfantsWithin2MonthsAndEligibleForCTX() {
+		return cohortIndicator("Hiv Exposed Infants within 2 months", map(mchcsCohortLibrary.hivExposedInfantsWithin2MonthsAndEligibleForCTX(), "onOrAfter=${startDate},onOrBefore=${endDate}"));
 	}
 }
