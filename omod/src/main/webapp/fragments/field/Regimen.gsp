@@ -1,6 +1,4 @@
 <%
-	ui.includeJavascript("kenyaui", "coreFragments.js")
-
 	def units = [ "mg", "g", "ml", "tab" ]
 
 	def frequencies = [
