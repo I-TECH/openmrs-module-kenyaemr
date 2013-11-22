@@ -47,9 +47,6 @@ public class MetadataIntegrationTest extends BaseModuleContextSensitiveTest {
 	protected static final Log log = LogFactory.getLog(MetadataIntegrationTest.class);
 
 	@Autowired
-	private MetadataConfiguration metadataConfiguration;
-
-	@Autowired
 	private SecurityMetadata securityMetadata;
 
 	@Autowired
@@ -84,35 +81,6 @@ public class MetadataIntegrationTest extends BaseModuleContextSensitiveTest {
 		if (OpenmrsConstants.OPENMRS_VERSION.startsWith("Sun")) {
 			TestUtils.modifyConstant(OpenmrsConstants.class, "OPENMRS_VERSION", "1.9.3  Build f535e9");
 			TestUtils.modifyConstant(OpenmrsConstants.class, "OPENMRS_VERSION_SHORT", "1.9.3.f535e9");
-		}
-	}
-
-	/**
-	 * Tests loading of all standard KenyaEMR metadata packages (except the locations package because that takes ~20 mins)
-	 *
-	 * Not currently working due to suspected issue in metadatasharing
-	 */
-	@Ignore
-	@Test
-	@SkipBaseSetup
-	public void loadAllMetadataPackages() throws Exception {
-		for (Map.Entry<String, String> entry : metadataConfiguration.getPackages().entrySet()) {
-			String groupUuid = entry.getKey();
-			String filename = entry.getValue();
-
-			if (filename.contains("Locations")) {
-				log.warn("Skipping package " + filename);
-				continue;
-			}
-			else {
-				log.info("Importing package " + filename + "(" + groupUuid + ")");
-			}
-
-			PackageImporter metadataImporter = MetadataSharing.getInstance().newPackageImporter();
-			InputStream inputStream = ClassLoader.getSystemResourceAsStream(filename);
-
-			metadataImporter.loadSerializedPackageStream(inputStream);
-			metadataImporter.importPackage();
 		}
 	}
 

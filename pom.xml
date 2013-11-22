@@ -42,9 +42,10 @@
 		<htmlformentry19extVersion>0.9</htmlformentry19extVersion>
 		<htmlwidgetsVersion>1.6.5</htmlwidgetsVersion>
 		<idgenVersion>2.6</idgenVersion>
-		<kenyacoreVersion>0.15.1</kenyacoreVersion>
+		<kenyacoreVersion>0.16-SNAPSHOT</kenyacoreVersion>
 		<kenyauiVersion>1.13-SNAPSHOT</kenyauiVersion>
 		<logicVersion>0.5.2</logicVersion>
+		<metadatadeployVersion>0.1</metadatadeployVersion>
 		<metadatamappingVersion>1.0.1</metadatamappingVersion>
 		<metadatasharingVersion>1.1.8</metadatasharingVersion>
 		<reportingVersion>0.8</reportingVersion>
@@ -126,6 +127,13 @@
 			<groupId>org.openmrs.module</groupId>
 			<artifactId>uiframework-api</artifactId>
 			<version>${uiframeworkVersion}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.openmrs.module</groupId>
+			<artifactId>metadatadeploy-api</artifactId>
+			<version>${metadatadeployVersion}</version>
 			<scope>provided</scope>
 		</dependency>
 

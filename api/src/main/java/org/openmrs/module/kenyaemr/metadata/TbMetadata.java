@@ -15,12 +15,12 @@
 package org.openmrs.module.kenyaemr.metadata;
 
 import org.openmrs.PatientIdentifierType.LocationBehavior;
-import org.openmrs.module.kenyacore.metadata.bundle.AbstractMetadataBundle;
-import org.openmrs.module.kenyacore.metadata.bundle.Requires;
 import org.openmrs.module.kenyaemr.Dictionary;
+import org.openmrs.module.metadatadeploy.bundle.AbstractMetadataBundle;
+import org.openmrs.module.metadatadeploy.bundle.Requires;
 import org.springframework.stereotype.Component;
 
-import static org.openmrs.module.kenyacore.metadata.bundle.CoreConstructors.*;
+import static org.openmrs.module.metadatadeploy.bundle.CoreConstructors.*;
 
 /**
  * TB metadata bundle
@@ -52,7 +52,7 @@ public class TbMetadata extends AbstractMetadataBundle {
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyacore.metadata.bundle.AbstractMetadataBundle#install()
+	 * @see org.openmrs.module.metadatadeploy.bundle.AbstractMetadataBundle#install()
 	 */
 	@Override
 	public void install() {

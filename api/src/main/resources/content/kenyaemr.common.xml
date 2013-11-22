@@ -5,17 +5,6 @@
 
 	<!-- ===================== Configurations ===================== -->
 
-	<bean id="kenyaemr.config.metadata" class="org.openmrs.module.kenyacore.metadata.MetadataConfiguration">
-		<property name="moduleId" value="kenyaemr" />
-		<property name="packages">
-			<map>
-				<entry key="5856a8fc-7ebc-46e8-929c-5ae2c780ab54" value="metadata/KenyaEMR_Locations-11.zip" />
-				<entry key="550a5db0-13be-486d-aec7-de05adac71e7" value="metadata/KenyaEMR_Drugs-2.zip" />
-				<entry key="29177ba6-a634-42d5-9314-e12689856ff1" value="metadata/KenyaEMR_Misc-41.zip" />
-			</map>
-		</property>
-	</bean>
-
 	<bean id="kenyaemr.config.form" class="org.openmrs.module.kenyacore.form.FormConfiguration">
 		<property name="commonPatientForms">
 			<set>

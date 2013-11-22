@@ -18,13 +18,13 @@ import org.openmrs.PatientIdentifierType.LocationBehavior;
 import org.openmrs.PersonAttributeType;
 import org.openmrs.customdatatype.datatype.RegexValidatedTextDatatype;
 import org.openmrs.module.idgen.validator.LuhnMod25IdentifierValidator;
-import org.openmrs.module.kenyacore.metadata.bundle.AbstractMetadataBundle;
 import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyaemr.datatype.FormDatatype;
 import org.openmrs.module.kenyaemr.datatype.LocationDatatype;
+import org.openmrs.module.metadatadeploy.bundle.AbstractMetadataBundle;
 import org.springframework.stereotype.Component;
 
-import static org.openmrs.module.kenyacore.metadata.bundle.CoreConstructors.*;
+import static org.openmrs.module.metadatadeploy.bundle.CoreConstructors.*;
 
 /**
  * Common metadata bundle
@@ -90,7 +90,7 @@ public class CommonMetadata extends AbstractMetadataBundle {
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyacore.metadata.bundle.AbstractMetadataBundle#install()
+	 * @see org.openmrs.module.metadatadeploy.bundle.AbstractMetadataBundle#install()
 	 */
 	@Override
 	public void install() {

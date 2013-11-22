@@ -16,8 +16,8 @@ package org.openmrs.module.kenyaemr.metadata;
 
 import org.openmrs.Privilege;
 import org.openmrs.api.UserService;
-import org.openmrs.module.kenyacore.metadata.bundle.AbstractMetadataBundle;
 import org.openmrs.module.kenyaemr.EmrConstants;
+import org.openmrs.module.metadatadeploy.bundle.AbstractMetadataBundle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -25,7 +25,7 @@ import org.springframework.stereotype.Component;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.openmrs.module.kenyacore.metadata.bundle.CoreConstructors.*;
+import static org.openmrs.module.metadatadeploy.bundle.CoreConstructors.*;
 
 /**
  * Security metadata bundle
@@ -49,7 +49,7 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyacore.metadata.bundle.AbstractMetadataBundle#install()
+	 * @see org.openmrs.module.metadatadeploy.bundle.AbstractMetadataBundle#install()
 	 */
 	@Override
 	public void install() {
