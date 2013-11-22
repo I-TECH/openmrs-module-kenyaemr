@@ -2,8 +2,6 @@
 	config.require("category")
 	config.require("reasonType")
 
-	ui.includeJavascript("kenyaui", "coreFragments.js")
-
 	def concept = { uuid -> org.openmrs.api.context.Context.conceptService.getConceptByUuid(uuid).conceptId }
 %>
 <select id="${ config.id }" name="${ config.formFieldName }" >
