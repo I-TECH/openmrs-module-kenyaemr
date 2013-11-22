@@ -41,6 +41,10 @@ public class MchcsCohortLibrary {
 	@Autowired
 	private CommonCohortLibrary commonCohorts;
 
+	/**
+	 * Infants who have taken pcr test between ${onOrAfter} and ${onOrBefore}
+	 * @return the cohort definition
+	 */
 	public CohortDefinition pcrWithinMonths() {
 
 		Concept pcrTest = Dictionary.getConcept(Dictionary.HIV_DNA_POLYMERASE_CHAIN_REACTION);
@@ -51,12 +55,20 @@ public class MchcsCohortLibrary {
 		return commonCohorts.hasObs(pcrTest,detected,equivocal,inhibitory,poorSampleQuality);
 	}
 
+	/**
+	 * Infants who have taken initial pcr test between ${onOrAfter} and ${onOrBefore}
+	 * @return the cohort definition
+	 */
 	public CohortDefinition pcrInitialTest() {
 		Concept contexualStatus = Dictionary.getConcept(Dictionary.TEXT_CONTEXT_STATUS);
 		Concept initial = Dictionary.getConcept(Dictionary.TEST_STATUS_INITIAL);
 		return commonCohorts.hasObs(contexualStatus,initial);
 	}
 
+	/**
+	 * Infants aged 2 months and below ${effectiveDate}
+	 * @return the cohort definition
+	 */
 	public CohortDefinition age2Months() {
 		AgeCohortDefinition age = new AgeCohortDefinition();
 		age.setName("Children with 2 months of age");
@@ -65,7 +77,11 @@ public class MchcsCohortLibrary {
 		age.addParameter(new Parameter("effectiveDate", "effective date", Date.class));
 		return age;
 	}
-	//HV02-24
+
+	/**
+	 * Infants who have taken initial pcr test and aged 2 months and below between ${onOrAfter} and ${onOrBefore}
+	 * @return the cohort definition
+	 */
 	public CohortDefinition  pcrInitialWithin2Months() {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
@@ -77,6 +93,10 @@ public class MchcsCohortLibrary {
 		return cd;
 	}
 
+	/**
+	 * Infants aged  between 3 and 8  months ${effectiveDate}
+	 * @return the cohort definition
+	 */
 	public CohortDefinition ageBetween3And8Months() {
 		AgeCohortDefinition age = new AgeCohortDefinition();
 		age.setName("Children Between 3 and 8 Months");
@@ -87,7 +107,11 @@ public class MchcsCohortLibrary {
 		age.addParameter(new Parameter("effectiveDate", "effective date", Date.class));
 		return age;
 	}
-	//HV02-25
+
+	/**
+	 * Infants who have taken initial pcr test and aged between 3 and 8 months  between ${onOrAfter} and ${onOrBefore}
+	 * @return the cohort definition
+	 */
 	public CohortDefinition pcrInitialBetween3To8Months() {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
@@ -99,6 +123,10 @@ public class MchcsCohortLibrary {
 		return cd;
 	}
 
+	/**
+	 * Infants who have taken serology antibody test  between ${onOrAfter} and ${onOrBefore}
+	 * @return  the cohort definition
+	 */
 	public CohortDefinition serologyAntBodyTest() {
 		Concept hivRapidTest = Dictionary.getConcept(Dictionary.HIV_RAPID_TEST_1_QUALITATIVE);
 		Concept negative = Dictionary.getConcept(Dictionary.NEGATIVE);
@@ -107,6 +135,10 @@ public class MchcsCohortLibrary {
 		return commonCohorts.hasObs(hivRapidTest,negative,poorSampleQuality,positive);
 	}
 
+	/**
+	 * Infants aged  between 9 and 12  months ${effectiveDate}
+	 * @return the cohort definition
+	 */
 	public CohortDefinition ageBetween9And12Months() {
 		AgeCohortDefinition age = new AgeCohortDefinition();
 		age.setName("Children Between 9 and 12 Months");
@@ -117,7 +149,11 @@ public class MchcsCohortLibrary {
 		age.addParameter(new Parameter("effectiveDate", "effective date", Date.class));
 		return age;
 	}
-	//HV02-26
+
+	/**
+	 * Infants who have taken initial serology antibody  test and aged between 9 and 12 months  between ${onOrAfter} and ${onOrBefore}
+	 * @return the cohort definition
+	 */
 	public CohortDefinition serologyAntBodyTestBetween9And12Months() {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
@@ -128,6 +164,10 @@ public class MchcsCohortLibrary {
 		return cd;
 	}
 
+	/**
+	 * Infants who have taken initial pcr test and aged between 9 and 12 months  between ${onOrAfter} and ${onOrBefore}
+	 * @return the cohort definition
+	 */
 	public CohortDefinition pcrBetween9And12MonthsAge() {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
@@ -139,6 +179,10 @@ public class MchcsCohortLibrary {
 		return cd;
 	}
 
+	/**
+	 * Total HEI tested by the 12 month between ${onOrAfter} and ${onOrBefore}
+	 * @return the cohort definition
+	 */
 	public CohortDefinition totalHeitestedBy12Months() {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
@@ -150,13 +194,20 @@ public class MchcsCohortLibrary {
 		return cd;
 	}
 
+	/**
+	 * The confirmed test context status between ${onOrAfter} and ${onOrBefore}
+	 * @return the cohort definition
+	 */
 	public CohortDefinition detectedConfirmedStatus() {
 		Concept testContextStatus = Dictionary.getConcept(Dictionary.TEXT_CONTEXT_STATUS) ;
 		Concept detectedConfirmedStatus = Dictionary.getConcept(Dictionary.CONFIRMATION_STATUS);
 		return commonCohorts.hasObs(testContextStatus,detectedConfirmedStatus);
 	}
 
-	//HV02-29
+	/**
+	 * Infant patients who have taken pcr test and their status is positive between ${onOrAfter} and ${onOrBefore}
+	 * @return the cohort definition
+	 */
 	public CohortDefinition pcrConfirmedPositive2Months() {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
@@ -168,7 +219,10 @@ public class MchcsCohortLibrary {
 		return cd;
 	}
 
-	//HV02-30
+	/**
+	 * Infant patients who have taken pcr test and their status is positive and are aged between 3 and 8 months between ${onOrAfter} and ${onOrBefore}
+	 * @return the cohort definition
+	 */
 	public CohortDefinition pcrConfirmedPositiveBetween3To8Months() {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
@@ -180,7 +234,10 @@ public class MchcsCohortLibrary {
 		return cd;
 	}
 
-	//HV02-31
+	/**
+	 * Infant patients who have taken pcr test and their status is positive and are aged between 9 and 12 months between ${onOrAfter} and ${onOrBefore}
+	 * @return the cohort definition
+	 */
 	public CohortDefinition pcrConfirmedPositiveBetween9To12Months() {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
@@ -192,7 +249,10 @@ public class MchcsCohortLibrary {
 		return cd;
 	}
 
-	//HV02-32
+	/**
+	 * Total HEI patients who have taken pcr test and their status is positive  between ${onOrAfter} and ${onOrBefore}
+	 * @return the cohort definition
+	 */
 	public CohortDefinition pcrTotalConfirmedPositive() {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
@@ -204,6 +264,10 @@ public class MchcsCohortLibrary {
 		return cd;
 	}
 
+	/**
+	 * Infants aged 6 months and above ${effectiveDate}
+	 * @return the cohort definition
+	 */
 	public CohortDefinition ageAt6Months() {
 		AgeCohortDefinition age = new AgeCohortDefinition();
 		age.setName("Children with 6 months of age");
@@ -213,25 +277,40 @@ public class MchcsCohortLibrary {
 		return age;
 	}
 
+	/**
+	 * Infants who are exclusively breastfed between ${onOrAfter} and ${onOrBefore}
+	 * @return the cohort definition
+	 */
 	public CohortDefinition exclusiveBreastFeeding() {
 		Concept infantFeedingMethod = Dictionary.getConcept(Dictionary.INFANT_FEEDING_METHOD);
 		Concept exclusiveBreastFeeding = Dictionary.getConcept(Dictionary.BREASTFED_EXCLUSIVELY);
 		return commonCohorts.hasObs(infantFeedingMethod,exclusiveBreastFeeding);
 	}
 
+	/**
+	 * Infants who are on exclusive replacement feeding between ${onOrAfter} and ${onOrBefore}
+	 * @return the cohort definition
+	 */
 	public CohortDefinition exclusiveReplacementFeeding() {
 		Concept infantFeedingMethod = Dictionary.getConcept(Dictionary.INFANT_FEEDING_METHOD);
 		Concept exclusiveReplacement = Dictionary.getConcept(Dictionary.REPLACEMENT_FEEDING);
 		return commonCohorts.hasObs(infantFeedingMethod,exclusiveReplacement);
 	}
 
+	/**
+	 * Infants who are on mixed feeding between ${onOrAfter} and ${onOrBefore}
+	 * @return the cohort definition
+	 */
 	public CohortDefinition mixedFeeding() {
 		Concept infantFeedingMethod = Dictionary.getConcept(Dictionary.INFANT_FEEDING_METHOD);
 		Concept mixedFeeding = Dictionary.getConcept(Dictionary.MIXED_FEEDING);
 		return commonCohorts.hasObs(infantFeedingMethod,mixedFeeding);
 	}
 
-	//HV02-33
+	/**
+	 * Infants who are on exclusively breast feeding age 6 months between ${onOrAfter} and ${onOrBefore}
+	 * @return the cohort definition
+	 */
 	public CohortDefinition exclusiveBreastFeedingAtSixMonths() {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
@@ -242,7 +321,10 @@ public class MchcsCohortLibrary {
 		return cd;
 	}
 
-	//HIV02-34
+	/**
+	 * Infants who are on exclusive replacement breast feeding age 6 months between ${onOrAfter} and ${onOrBefore}
+	 * @return the cohort definition
+	 */
 	public CohortDefinition exclusiveReplacementFeedingAtSixMonths() {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
@@ -253,7 +335,10 @@ public class MchcsCohortLibrary {
 		return cd;
 	}
 
-	//HIV02-35
+	/**
+	 * Infants who are on mixed feeding age 6 months between ${onOrAfter} and ${onOrBefore}
+	 * @return the cohort definition
+	 */
 	public CohortDefinition mixedFeedingAtSixMonths() {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
@@ -264,7 +349,10 @@ public class MchcsCohortLibrary {
 		return cd;
 	}
 
-	//HIV02-36
+	/**
+	 * Total HEI patients feeding aged 6 between ${onOrAfter} and ${onOrBefore}
+	 * @return the cohort definition
+	 */
 	public CohortDefinition totalExposedAgedSixMoths() {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
@@ -276,28 +364,40 @@ public class MchcsCohortLibrary {
 		return cd;
 	}
 
-	//HIV02-37
+	/**
+	 * Mothers who are on treatment and breast feeding between ${onOrAfter} and ${onOrBefore}
+	 * @return  the cohort definition
+	 */
 	public CohortDefinition motherOnTreatmentAndBreastFeeding() {
 		Concept motherOnTreatmentAndBreatFeeding = Dictionary.getConcept(Dictionary.MOTHER_ON_ANTIRETROVIRAL_DRUGS_AND_BREASTFEEDING);
 		Concept breastfeeding = Dictionary.getConcept(Dictionary.YES);
 		return commonCohorts.hasObs(motherOnTreatmentAndBreatFeeding,breastfeeding);
 	}
 
-	//HIV02-38
+	/**
+	 * Mothers who are on treatment and NOT breast feeding between ${onOrAfter} and ${onOrBefore}
+	 * @return  the cohort definition
+	 */
 	public CohortDefinition motherOnTreatmentAndNotBreastFeeding() {
 		Concept motherOnTreatmentAndBreatFeeding = Dictionary.getConcept(Dictionary.MOTHER_ON_ANTIRETROVIRAL_DRUGS_AND_BREASTFEEDING);
 		Concept notBreastfeeding = Dictionary.getConcept(Dictionary.NO);
 		return commonCohorts.hasObs(motherOnTreatmentAndBreatFeeding,notBreastfeeding);
 	}
 
-	//HIV02-39
+	/**
+	 * Mothers who are on treatment and never know if they are breastfeeding between ${onOrAfter} and ${onOrBefore}
+	 * @return the cohort definition
+	 */
 	public CohortDefinition motherOnTreatmentAndNotBreastFeedingUnknown() {
 		Concept motherOnTreatmentAndBreatFeeding = Dictionary.getConcept(Dictionary.MOTHER_ON_ANTIRETROVIRAL_DRUGS_AND_BREASTFEEDING);
 		Concept unknown = Dictionary.getConcept(Dictionary.UNKNOWN);
 		return commonCohorts.hasObs(motherOnTreatmentAndBreatFeeding,unknown);
 	}
 
-	//HIV02-40
+	/**
+	 * Total mothers who are on treatment and breast feeding between ${onOrAfter} and ${onOrBefore}
+	 * @return the cohort definition
+	 */
 	public CohortDefinition totalBreastFeedingMotherOnTreatment() {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
@@ -309,14 +409,20 @@ public class MchcsCohortLibrary {
 		return cd;
 	}
 
-	//Finding HIV exposed infants
+	/**
+	 * Total number of HEI between ${onOrAfter} and ${onOrBefore}
+	 * @return the cohort definition
+	 */
 	public CohortDefinition hivExposedInfants() {
 		Concept childHivStatus = Dictionary.getConcept(Dictionary.CHILDS_CURRENT_HIV_STATUS);
 		Concept hivExposed = Dictionary.getConcept(Dictionary.EXPOSURE_TO_HIV);
 		return commonCohorts.hasObs(childHivStatus,hivExposed);
 	}
 
-	//hiv exposed infant within 2 months
+	/**
+	 * Total number of HEI  within 2 months between ${onOrAfter} and ${onOrBefore}
+	 * @return the cohort definition
+	 */
 	public CohortDefinition  hivExposedInfantsWithin2Months() {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
@@ -327,7 +433,10 @@ public class MchcsCohortLibrary {
 		return cd;
 	}
 
-	//hiv exposed infants eligible for CTX
+	/**
+	 * Total number of HEI eligible for CTX between ${onOrAfter} and ${onOrBefore}
+	 * @return the cohort definition
+	 */
 	public CohortDefinition hivExposedInfantsEligibleForCTX() {
 		CalculationCohortDefinition cd = new CalculationCohortDefinition(new NeverTakenCtxOrDapsoneCalculation());
 		cd.setName("Infants who have been given CTX");
@@ -335,7 +444,10 @@ public class MchcsCohortLibrary {
 		return cd;
 	}
 
-	//hiv exposed infants withing 2 months and eligible for ctx
+	/**
+	 * Total number of HEI eligible for CTX within 2 months between ${onOrAfter} and ${onOrBefore}
+	 * @return the cohort definition
+	 */
 	public CohortDefinition hivExposedInfantsWithin2MonthsAndEligibleForCTX() {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
