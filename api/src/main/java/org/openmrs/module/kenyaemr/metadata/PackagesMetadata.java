@@ -26,7 +26,6 @@ import static org.openmrs.module.metadatadeploy.bundle.CoreConstructors.*;
 public class PackagesMetadata extends AbstractMetadataBundle {
 
 	public static final class _Package {
-		public static final String LOCATIONS = "5856a8fc-7ebc-46e8-929c-5ae2c780ab54";
 		public static final String DRUGS = "550a5db0-13be-486d-aec7-de05adac71e7";
 		public static final String MISC = "29177ba6-a634-42d5-9314-e12689856ff1";
 	}
@@ -36,7 +35,6 @@ public class PackagesMetadata extends AbstractMetadataBundle {
 	 */
 	@Override
 	public void install() {
-		install(packageFile("metadata/KenyaEMR_Locations-11.zip", null, _Package.LOCATIONS));
 		install(packageFile("metadata/KenyaEMR_Drugs-2.zip", null, _Package.DRUGS));
 		install(packageFile("metadata/KenyaEMR_Misc-41.zip", null, _Package.MISC));
 	}

@@ -49,10 +49,6 @@ public class CommonMetadata extends AbstractMetadataBundle {
 		public static final String TRIAGE = "37f6bd8d-586a-4169-95fa-5781f987fe62";
 	}
 
-	public static final class _Location {
-		public static final String UNKNOWN = "8d6c993e-c2cc-11de-8d13-0010c6dffd0f";
-	}
-
 	public static final class _LocationAttributeType {
 		public static final String MASTER_FACILITY_CODE = "8a845a89-6aa5-4111-81d3-0af31c45c002";
 	}
