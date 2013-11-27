@@ -15,7 +15,6 @@
 package org.openmrs.module.kenyaemr.metadata;
 
 import au.com.bytecode.opencsv.CSVReader;
-import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -23,7 +22,7 @@ import org.openmrs.Location;
 import org.openmrs.LocationAttribute;
 import org.openmrs.LocationAttributeType;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.metadatadeploy.MetadataUtils;
+import org.openmrs.module.kenyaemr.util.EmrUtils;
 import org.openmrs.module.metadatadeploy.bundle.AbstractMetadataBundle;
 import org.openmrs.module.metadatadeploy.bundle.Requires;
 import org.springframework.stereotype.Component;
@@ -31,8 +30,6 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -53,7 +50,7 @@ public class LocationsMetadata extends AbstractMetadataBundle {
 		public static final String UNKNOWN = "8d6c993e-c2cc-11de-8d13-0010c6dffd0f";
 	}
 
-	private static final String CSV_RESOURCE = "facilities.csv";
+	private static final String CSV_RESOURCE = "mfl_2013-11-27.csv";
 
 	protected LocationAttributeType codeAttrType;
 
@@ -66,18 +63,6 @@ public class LocationsMetadata extends AbstractMetadataBundle {
 	protected int updatedCount = 0;
 
 	protected int retiredCount = 0;
-
-	private static MessageDigest md5Digest;
-
-	static {
-		try {
-			// This is only for diffing values so MD5 is fine
-			md5Digest = MessageDigest.getInstance("MD5");
-		}
-		catch (NoSuchAlgorithmException ex) {
-			log.error(ex);
-		}
-	}
 
 	/**
 	 * @see org.openmrs.module.metadatadeploy.bundle.AbstractMetadataBundle#install()
@@ -111,6 +96,46 @@ public class LocationsMetadata extends AbstractMetadataBundle {
 			e.printStackTrace();
 		}
 
+		postImport();
+	}
+
+	/**
+	 * Pre-import logic - prepares caches etc
+	 */
+	protected void preImport() {
+		mflCodeCache = new HashMap<String, Integer>();
+		notSyncedLocations = new HashSet<Integer>();
+		codeAttrType = existing(LocationAttributeType.class, CommonMetadata._LocationAttributeType.MASTER_FACILITY_CODE);
+
+		// Examine existing locations
+		for (Location loc : Context.getLocationService().getAllLocations(true)) {
+			List<LocationAttribute> mfcAttrs = loc.getActiveAttributes(codeAttrType);
+
+			if (mfcAttrs.size() == 0) {
+				log.warn("Ignoring location '" + loc.getName() + "' with no MFL code");
+			}
+			else if (mfcAttrs.size() > 1) {
+				log.warn("Ignoring location '" + loc.getName() + "' with multiple MFL codes");
+			}
+			else {
+				String mflCode = (String) mfcAttrs.get(0).getValue();
+
+				// Check there isn't another location with this code
+				if (lookupMflCodeCache(mflCode) != null) {
+					log.warn("Ignoring location '" + loc.getName() + "' with duplicate MFL code " + mflCode);
+				}
+				else {
+					updateMflCodeCache(mflCode, loc);
+					notSyncedLocations.add(loc.getLocationId());
+				}
+			}
+		}
+	}
+
+	/**
+	 * Post-import logic
+	 */
+	protected void postImport() {
 		// Retire locations that weren't in the MFL
 		for (Integer notSyncedLocId : notSyncedLocations) {
 			Location notSyncedLoc = Context.getLocationService().getLocation(notSyncedLocId);
@@ -170,8 +195,8 @@ public class LocationsMetadata extends AbstractMetadataBundle {
 			}
 			else {
 				// Compute hashes of existing location fields and incoming fields
-				String incomingHash = hash(locationName, locationDescription, locationStateProvince, locationCountry);
-				String existingHash = hash(location.getName(), location.getDescription(), location.getStateProvince(), location.getCountry());
+				String incomingHash = EmrUtils.hash(locationName, locationDescription, locationStateProvince, locationCountry);
+				String existingHash = EmrUtils.hash(location.getName(), location.getDescription(), location.getStateProvince(), location.getCountry());
 
 				// Only update if hashes are different
 				if (!incomingHash.equals(existingHash)) {
@@ -205,36 +230,6 @@ public class LocationsMetadata extends AbstractMetadataBundle {
 		Context.clearSession();
 	}
 
-	protected void preImport() {
-		mflCodeCache = new HashMap<String, Integer>();
-		notSyncedLocations = new HashSet<Integer>();
-		codeAttrType = MetadataUtils.getLocationAttributeType(CommonMetadata._LocationAttributeType.MASTER_FACILITY_CODE);
-
-		// Examine existing locations
-		for (Location loc : Context.getLocationService().getAllLocations(true)) {
-			List<LocationAttribute> mfcAttrs = loc.getActiveAttributes(codeAttrType);
-
-			if (mfcAttrs.size() == 0) {
-				log.warn("Ignoring location '" + loc.getName() + "' with no MFL code");
-			}
-			else if (mfcAttrs.size() > 1) {
-				log.warn("Ignoring location '" + loc.getName() + "' with multiple MFL codes");
-			}
-			else {
-				String mflCode = (String) mfcAttrs.get(0).getValue();
-
-				// Check there isn't another location with this code
-				if (lookupMflCodeCache(mflCode) != null) {
-					log.warn("Ignoring location '" + loc.getName() + "' with duplicate MFL code " + mflCode);
-				}
-				else {
-					updateMflCodeCache(mflCode, loc);
-					notSyncedLocations.add(loc.getLocationId());
-				}
-			}
-		}
-	}
-
 	/**
 	 * Updates the cache of MFL codes
 	 * @param code the code
@@ -260,20 +255,5 @@ public class LocationsMetadata extends AbstractMetadataBundle {
 	 */
 	protected void markLocationSynced(Location location) {
 		notSyncedLocations.remove(location.getLocationId());
-	}
-
-	/**
-	 * Computes a hash of a set of values
-	 * @param values the input values
-	 * @return the hash value
-	 */
-	public static String hash(String... values) {
-		StringBuilder sb = new StringBuilder();
-		for (String value : values) {
-			sb.append(value != null ? value : "xxxxxxxx");
-		}
-
-		md5Digest.update(sb.toString().getBytes());
-		return Hex.encodeHexString(md5Digest.digest());
 	}
 }

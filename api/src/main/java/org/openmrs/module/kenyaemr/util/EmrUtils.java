@@ -14,6 +14,7 @@
 
 package org.openmrs.module.kenyaemr.util;
 
+import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.openmrs.Concept;
@@ -32,6 +33,8 @@ import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.util.OpenmrsUtil;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -42,6 +45,18 @@ import java.util.List;
  * Miscellaneous utility methods
  */
 public class EmrUtils {
+
+	private static MessageDigest md5Digest;
+
+	static {
+		try {
+			// This is only for diffing values so MD5 is fine
+			md5Digest = MessageDigest.getInstance("MD5");
+		}
+		catch (NoSuchAlgorithmException ex) {
+			ex.printStackTrace();
+		}
+	}
 
 	/**
 	 * Checks whether a date has any time value
@@ -226,5 +241,20 @@ public class EmrUtils {
 	public static Encounter lastEncounterInProgram(PatientProgram enrollment, EncounterType type) {
 		List<Encounter> encounters = Context.getEncounterService().getEncounters(enrollment.getPatient(), null, enrollment.getDateEnrolled(), enrollment.getDateCompleted(), null, Collections.singleton(type), null, null, null, false);
 		return encounters.size() > 0 ? encounters.get(encounters.size() - 1) : null;
+	}
+
+	/**
+	 * Computes a hash of a set of values
+	 * @param values the input values
+	 * @return the hash value
+	 */
+	public static String hash(String... values) {
+		StringBuilder sb = new StringBuilder();
+		for (String value : values) {
+			sb.append(value != null ? value : "xxxxxxxx");
+		}
+
+		md5Digest.update(sb.toString().getBytes());
+		return Hex.encodeHexString(md5Digest.digest());
 	}
 }
