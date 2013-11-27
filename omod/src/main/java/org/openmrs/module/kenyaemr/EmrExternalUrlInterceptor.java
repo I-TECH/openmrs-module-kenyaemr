@@ -35,14 +35,14 @@ import java.util.Set;
 public class EmrExternalUrlInterceptor extends HandlerInterceptorAdapter {
 
 	@Autowired
-	private KenyaUiUtils kenyaUi;
+	protected KenyaUiUtils kenyaUi;
 
 	@Autowired
-	private AdministrationService adminService;
+	protected AdministrationService adminService;
 
-	private static final String[] BASE_CONTROLLER_WHITELIST = { "org.openmrs.module.kenyaemr", "org.openmrs.module.uiframework" };
+	protected static final String[] BASE_CONTROLLER_WHITELIST = { "org.openmrs.module.kenyaemr", "org.openmrs.module.uiframework" };
 
-	private static Set<String> controllerWhitelist = null;
+	protected static Set<String> controllerWhitelist = null;
 
 	protected static final Log log = LogFactory.getLog(EmrExternalUrlInterceptor.class);
 
