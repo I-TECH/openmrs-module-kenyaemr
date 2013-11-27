@@ -225,9 +225,6 @@ public class LocationsMetadata extends AbstractMetadataBundle {
 		}
 
 		markLocationSynced(location);
-
-		Context.flushSession();
-		Context.clearSession();
 	}
 
 	/**

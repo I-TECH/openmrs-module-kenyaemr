@@ -18,6 +18,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.Location;
 import org.openmrs.api.LocationService;
@@ -31,7 +32,10 @@ import static org.hamcrest.Matchers.*;
 
 /**
  * Tests for {@link LocationsMetadata}
+ *
+ * Ignored because it takes ~1 min
  */
+@Ignore
 public class LocationsMetadataTest extends BaseModuleContextSensitiveTest {
 
 	@Autowired
@@ -63,10 +67,10 @@ public class LocationsMetadataTest extends BaseModuleContextSensitiveTest {
 		List<Location> locations = locationService.getAllLocations(true);
 		Assert.assertThat(locations, hasSize(3));
 
-		//long start = System.currentTimeMillis();
+		long start = System.currentTimeMillis();
 		locationsMetadata.install();
-		//long time = System.currentTimeMillis() - start;
-		//System.out.println("** Loaded locations in " + time + " ms **");
+		long time = System.currentTimeMillis() - start;
+		System.out.println("** Loaded locations in " + time + " ms **");
 
 		locations = locationService.getAllLocations(true);
 		Assert.assertThat(locations, hasSize(9447));
@@ -79,10 +83,10 @@ public class LocationsMetadataTest extends BaseModuleContextSensitiveTest {
 		Assert.assertThat(abelMigwiLab.getStateProvince(), is("Central"));
 
 		// Check installing a second time doesn't replicate locations
-		//start = System.currentTimeMillis();
+		start = System.currentTimeMillis();
 		locationsMetadata.install();
-		//time = System.currentTimeMillis() - start;
-		//System.out.println("** Loaded locations in " + time + " ms **");
+		time = System.currentTimeMillis() - start;
+		System.out.println("** Loaded locations in " + time + " ms **");
 
 		locations = locationService.getAllLocations(true);
 		Assert.assertThat(locations, hasSize(9447));
