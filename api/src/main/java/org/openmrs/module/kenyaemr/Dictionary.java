@@ -27,7 +27,7 @@ public class Dictionary {
 	/**
 	 * Required concepts version
 	 */
-	public static final String REQUIRED_DATABASE_VERSION = "20130702";
+	public static final String REQUIRED_DATABASE_VERSION = "20131031";
 
 	/**
 	 * Gets a concept by an identifier (mapping or UUID)
