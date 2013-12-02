@@ -17,15 +17,8 @@ package org.openmrs.module.kenyaemr.converter;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.Patient;
-import org.openmrs.Visit;
-import org.openmrs.VisitType;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyacore.metadata.MetadataUtils;
-import org.openmrs.module.kenyacore.test.TestUtils;
-import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.hamcrest.Matchers.*;
 
@@ -34,9 +27,6 @@ import static org.hamcrest.Matchers.*;
  */
 public class StringToVisitConverterTest extends BaseModuleWebContextSensitiveTest {
 
-	@Autowired
-	private CommonMetadata commonMetadata;
-
 	private StringToVisitConverter converter;
 
 	/**
@@ -44,24 +34,16 @@ public class StringToVisitConverterTest extends BaseModuleWebContextSensitiveTes
 	 */
 	@Before
 	public void setup() throws Exception {
-		commonMetadata.install();
-
 		converter = new StringToVisitConverter();
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.converter.StringToVisitConverter#convert(String)
+	 * @see StringToVisitConverter#convert(String)
 	 */
 	@Test
 	public void convert_shouldConvertString() {
-		Assert.assertThat(converter.convert(null), is(nullValue()));
-		Assert.assertThat(converter.convert(""), is(nullValue()));
-
-		// Check actual visit
-		Patient patient = Context.getPatientService().getPatient(7);
-		VisitType outpatient = MetadataUtils.getVisitType(CommonMetadata._VisitType.OUTPATIENT);
-		Visit visit = TestUtils.saveVisit(patient, outpatient, TestUtils.date(2012, 1, 1), null);
-
-		Assert.assertThat(converter.convert(visit.getVisitId().toString()), is(visit));
+		Assert.assertThat(converter.convert(null), nullValue());
+		Assert.assertThat(converter.convert(""), nullValue());
+		Assert.assertThat(converter.convert("1"), is(Context.getVisitService().getVisit(1)));
 	}
 }

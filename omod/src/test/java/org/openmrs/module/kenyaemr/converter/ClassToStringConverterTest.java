@@ -17,33 +17,27 @@ package org.openmrs.module.kenyaemr.converter;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.api.context.Context;
-import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 
 import static org.hamcrest.Matchers.*;
 
 /**
- * Tests for {@link StringToRoleConverter}
+ * Tests for {@link ClassToStringConverter}
  */
-public class StringToRoleConverterTest extends BaseModuleWebContextSensitiveTest {
+public class ClassToStringConverterTest {
 
-	private StringToRoleConverter converter;
+	private ClassToStringConverter converter;
 
-	/**
-	 * Setup each test
-	 */
 	@Before
 	public void setup() throws Exception {
-		converter = new StringToRoleConverter();
+		converter = new ClassToStringConverter();
 	}
 
 	/**
-	 * @see StringToVisitConverter#convert(String)
+	 * @see ClassToStringConverter#convert(Class)
 	 */
 	@Test
-	public void convert_shouldConvertString() {
-		Assert.assertNull(converter.convert(null));
-		Assert.assertNull(converter.convert(""));
-		Assert.assertThat(converter.convert("Provider"), is(Context.getUserService().getRole("Provider")));
+	public void convert_shouldConvertClass() {
+		Assert.assertThat(converter.convert(null), is(""));
+		Assert.assertThat(converter.convert(this.getClass()), is("org.openmrs.module.kenyaemr.converter.ClassToStringConverterTest"));
 	}
 }

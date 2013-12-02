@@ -26,10 +26,12 @@ import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
  */
 public class StringToDrugReferenceConverterTest extends BaseModuleWebContextSensitiveTest {
 
-	private StringToDrugReferenceConverter converter = new StringToDrugReferenceConverter();
+	private StringToDrugReferenceConverter converter;
 
 	@Before
 	public void setup() throws Exception {
+		converter = new StringToDrugReferenceConverter();
+
 		executeDataSet("dataset/test-concepts.xml");
 		executeDataSet("dataset/test-drugs.xml");
 	}
@@ -49,8 +51,8 @@ public class StringToDrugReferenceConverterTest extends BaseModuleWebContextSens
 		Assert.assertFalse(drugRef2.isConceptOnly());
 		Assert.assertEquals(Context.getConceptService().getDrugByUuid("97810e6b-cfcf-44fa-b63c-5d3e12cbe8d7"), drugRef2.getDrug());
 
-		// Test invalid reference
-		DrugReference drugRef3 = converter.convert("xxxx");
-		Assert.assertNull(drugRef3);
+		// Test invalid references
+		Assert.assertNull(converter.convert("xxxx")); // No $ divider
+		Assert.assertNull(converter.convert("B$123")); // Divider isn't C or D
 	}
 }

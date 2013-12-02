@@ -20,30 +20,27 @@ import org.junit.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.is;
 
 /**
- * Tests for {@link StringToRoleConverter}
+ * Tests for {@link StringToConceptConverter}
  */
-public class StringToRoleConverterTest extends BaseModuleWebContextSensitiveTest {
+public class StringToConceptConverterTest extends BaseModuleWebContextSensitiveTest {
 
-	private StringToRoleConverter converter;
+	private StringToConceptConverter converter;
 
-	/**
-	 * Setup each test
-	 */
 	@Before
 	public void setup() throws Exception {
-		converter = new StringToRoleConverter();
+		converter = new StringToConceptConverter();
 	}
 
 	/**
-	 * @see StringToVisitConverter#convert(String)
+	 * @see org.openmrs.module.kenyaemr.converter.StringToVisitConverter#convert(String)
 	 */
 	@Test
 	public void convert_shouldConvertString() {
 		Assert.assertNull(converter.convert(null));
 		Assert.assertNull(converter.convert(""));
-		Assert.assertThat(converter.convert("Provider"), is(Context.getUserService().getRole("Provider")));
+		Assert.assertThat(converter.convert("5497"), is(Context.getConceptService().getConcept(5497)));
 	}
 }

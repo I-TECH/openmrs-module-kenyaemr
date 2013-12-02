@@ -42,7 +42,7 @@ public class EmrExternalUrlInterceptor extends HandlerInterceptorAdapter {
 
 	protected static final String[] BASE_CONTROLLER_WHITELIST = { "org.openmrs.module.kenyaemr", "org.openmrs.module.uiframework" };
 
-	protected static Set<String> controllerWhitelist = null;
+	protected Set<String> controllerWhitelist = null;
 
 	protected static final Log log = LogFactory.getLog(EmrExternalUrlInterceptor.class);
 
@@ -51,10 +51,6 @@ public class EmrExternalUrlInterceptor extends HandlerInterceptorAdapter {
 	 */
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-		if (log.isDebugEnabled()) {
-			log.debug("Intercepting request: " + request.getRequestURI() + " -> " + handler);
-		}
-
 		String controllerPackage = handler.getClass().getPackage().getName();
 
 		// Check Spring controller package name against whitelist
@@ -65,8 +61,6 @@ public class EmrExternalUrlInterceptor extends HandlerInterceptorAdapter {
 		}
 
 		// TODO implement a whitelist which allows only certain uiframework managed controllers.
-		// Not so important for now whilst all uiframework managed content is valid. Could use method below to parse URL
-		// to get moduleid and whitelist those
 
 		// Only allow other requests if user is a super-user
 		User authenticatedUser = Context.getAuthenticatedUser();
@@ -103,25 +97,5 @@ public class EmrExternalUrlInterceptor extends HandlerInterceptorAdapter {
 			}
 		}
 		return controllerWhitelist;
-	}
-
-	/**
-	 * Gets a cleaned up version of the incoming request URL with the context path removed as well as any beginning slash
-	 * @param request the request
-	 * @return the URL
-	 */
-	private String getRequestUrlWithoutContext(HttpServletRequest request) {
-		String path = request.getRequestURI();
-		String contextPath = request.getContextPath();
-
-		if (path.startsWith(contextPath)) {
-			path = path.substring(contextPath.length());
-		}
-
-		if (path.startsWith("/")) {
-			path = path.substring(1);
-		}
-
-		return path;
 	}
 }

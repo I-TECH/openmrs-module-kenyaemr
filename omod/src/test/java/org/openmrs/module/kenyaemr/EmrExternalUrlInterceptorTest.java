@@ -19,6 +19,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.api.AdministrationService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.kenyaemr.page.controller.LoginPageController;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.web.controller.patient.PatientDashboardController;
@@ -27,9 +28,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import static org.hamcrest.Matchers.*;
 
 /**
@@ -37,7 +35,11 @@ import static org.hamcrest.Matchers.*;
  */
 public class EmrExternalUrlInterceptorTest extends BaseModuleWebContextSensitiveTest {
 
-	private EmrExternalUrlInterceptor interceptor = new EmrExternalUrlInterceptor();
+	private EmrExternalUrlInterceptor interceptor;
+
+	private MockHttpServletRequest request;
+
+	private MockHttpServletResponse response;
 
 	@Autowired
 	private AdministrationService adminService;
@@ -47,8 +49,13 @@ public class EmrExternalUrlInterceptorTest extends BaseModuleWebContextSensitive
 
 	@Before
 	public void setup() {
+		interceptor = new EmrExternalUrlInterceptor();
 		interceptor.adminService = adminService;
 		interceptor.kenyaUi = kenyaui;
+
+		request = new MockHttpServletRequest();
+		response = new MockHttpServletResponse();
+
 	}
 
 	/**
@@ -56,9 +63,6 @@ public class EmrExternalUrlInterceptorTest extends BaseModuleWebContextSensitive
 	 */
 	@Test
 	public void preHandle_shouldAllowWhitelistedControllersForSuperUser() throws Exception {
-		HttpServletRequest request = new MockHttpServletRequest();
-		HttpServletResponse response = new MockHttpServletResponse();
-
 		Assert.assertThat(interceptor.preHandle(request, response, new LoginPageController()), is(true));
 	}
 
@@ -67,9 +71,6 @@ public class EmrExternalUrlInterceptorTest extends BaseModuleWebContextSensitive
 	 */
 	@Test
 	public void preHandle_shouldAllowWhitelistedControllersForNonSuperUser() throws Exception {
-		HttpServletRequest request = new MockHttpServletRequest();
-		HttpServletResponse response = new MockHttpServletResponse();
-
 		Context.becomeUser("butch");
 
 		Assert.assertThat(interceptor.preHandle(request, response, new LoginPageController()), is(true));
@@ -80,9 +81,6 @@ public class EmrExternalUrlInterceptorTest extends BaseModuleWebContextSensitive
 	 */
 	@Test
 	public void preHandle_shouldAllowNonWhitelistedControllersForSuperUser() throws Exception {
-		HttpServletRequest request = new MockHttpServletRequest();
-		HttpServletResponse response = new MockHttpServletResponse();
-
 		Assert.assertThat(interceptor.preHandle(request, response, new PatientDashboardController()), is(true));
 	}
 
@@ -91,12 +89,21 @@ public class EmrExternalUrlInterceptorTest extends BaseModuleWebContextSensitive
 	 */
 	@Test
 	public void preHandle_shouldRedirectNonWhitelistedControllersForNonSuperUser() throws Exception {
-		MockHttpServletRequest request = new MockHttpServletRequest();
-		MockHttpServletResponse response = new MockHttpServletResponse();
-
 		Context.becomeUser("butch");
 
 		Assert.assertThat(interceptor.preHandle(request, response, new PatientDashboardController()), is(false));
 		Assert.assertThat(response.getRedirectedUrl(), is("/login.htm"));
+	}
+
+	/**
+	 * @see EmrExternalUrlInterceptor#preHandle(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, Object)
+	 */
+	@Test
+	public void preHandle_shouldAllowCustomWhitelistedControllersForNonSuperUser() throws Exception {
+		TestUtils.saveGlobalProperty(EmrConstants.GP_CONTROLLER_WHITELIST, "org.openmrs.web.controller.patient,org.openmrs.web.controller.visit");
+
+		Context.becomeUser("butch");
+
+		Assert.assertThat(interceptor.preHandle(request, response, new PatientDashboardController()), is(true));
 	}
 }

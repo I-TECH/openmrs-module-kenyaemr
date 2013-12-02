@@ -23,18 +23,15 @@ import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import static org.hamcrest.Matchers.*;
 
 /**
- * Tests for {@link StringToRoleConverter}
+ * Tests for {@link StringToRelationshipConverter}
  */
-public class StringToRoleConverterTest extends BaseModuleWebContextSensitiveTest {
+public class StringToRelationshipConverterTest extends BaseModuleWebContextSensitiveTest {
 
-	private StringToRoleConverter converter;
+	private StringToRelationshipConverter converter;
 
-	/**
-	 * Setup each test
-	 */
 	@Before
 	public void setup() throws Exception {
-		converter = new StringToRoleConverter();
+		converter = new StringToRelationshipConverter();
 	}
 
 	/**
@@ -44,6 +41,6 @@ public class StringToRoleConverterTest extends BaseModuleWebContextSensitiveTest
 	public void convert_shouldConvertString() {
 		Assert.assertNull(converter.convert(null));
 		Assert.assertNull(converter.convert(""));
-		Assert.assertThat(converter.convert("Provider"), is(Context.getUserService().getRole("Provider")));
+		Assert.assertThat(converter.convert("1"), is(Context.getPersonService().getRelationship(1)));
 	}
 }

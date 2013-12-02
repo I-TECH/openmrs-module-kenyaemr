@@ -17,10 +17,10 @@ package org.openmrs.module.kenyaemr.converter;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.Provider;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyaemr.converter.StringToProviderConverter;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
+
+import static org.hamcrest.Matchers.*;
 
 /**
  * Tests for {@link org.openmrs.module.kenyaemr.converter.StringToProviderConverter}
@@ -41,10 +41,6 @@ public class StringToProviderConverterTest extends BaseModuleWebContextSensitive
 	public void convert_shouldConvertString() {
 		Assert.assertNull(converter.convert(null));
 		Assert.assertNull(converter.convert(""));
-
-		// Check actual provider
-		Provider provider = Context.getProviderService().getProvider(1);
-
-		Assert.assertEquals(provider, converter.convert(provider.getProviderId().toString()));
+		Assert.assertThat(converter.convert("1"), is(Context.getProviderService().getProvider(1)));
 	}
 }

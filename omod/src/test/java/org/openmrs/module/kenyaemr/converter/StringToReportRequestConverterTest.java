@@ -18,32 +18,30 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.report.service.ReportService;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.is;
 
 /**
- * Tests for {@link StringToRoleConverter}
+ * Tests for {@link StringToReportRequestConverter}
  */
-public class StringToRoleConverterTest extends BaseModuleWebContextSensitiveTest {
+public class StringToReportRequestConverterTest extends BaseModuleWebContextSensitiveTest {
 
-	private StringToRoleConverter converter;
+	private StringToReportRequestConverter converter;
 
-	/**
-	 * Setup each test
-	 */
 	@Before
 	public void setup() throws Exception {
-		converter = new StringToRoleConverter();
+		converter = new StringToReportRequestConverter();
 	}
 
 	/**
-	 * @see StringToVisitConverter#convert(String)
+	 * @see org.openmrs.module.kenyaemr.converter.StringToVisitConverter#convert(String)
 	 */
 	@Test
 	public void convert_shouldConvertString() {
 		Assert.assertNull(converter.convert(null));
 		Assert.assertNull(converter.convert(""));
-		Assert.assertThat(converter.convert("Provider"), is(Context.getUserService().getRole("Provider")));
+		Assert.assertThat(converter.convert("1"), is(Context.getService(ReportService.class).getReportRequest(1)));
 	}
 }

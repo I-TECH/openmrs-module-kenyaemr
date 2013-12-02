@@ -29,6 +29,8 @@ import java.util.UUID;
 
 /**
  * Controller for dynamically generated form fields
+ *
+ * This should probably be converted to a GSP backed partial page now that UIFR supports undecorated pages
  */
 @Controller
 public class FieldGeneratorController {

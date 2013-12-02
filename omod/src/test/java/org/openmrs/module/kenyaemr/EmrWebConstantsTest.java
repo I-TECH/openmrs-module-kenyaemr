@@ -15,8 +15,10 @@
 package org.openmrs.module.kenyaemr;
 
 import org.junit.Test;
-import org.openmrs.module.kenyaemr.EmrWebConstants;
 
+/**
+ * Tests for {@link EmrWebConstants}
+ */
 public class EmrWebConstantsTest {
 
 	@Test

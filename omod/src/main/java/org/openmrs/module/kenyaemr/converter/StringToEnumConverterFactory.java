@@ -14,6 +14,7 @@
 
 package org.openmrs.module.kenyaemr.converter;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.convert.converter.ConverterFactory;
 import org.springframework.stereotype.Component;
@@ -52,6 +53,10 @@ public class StringToEnumConverterFactory implements ConverterFactory<String, En
 		 * @see Converter#convert(Object)
 		 */
 		public T convert(String source) {
+			if (StringUtils.isEmpty(source)) {
+				return null;
+			}
+
 			return (T) Enum.valueOf(this.enumType, source.trim());
 		}
 	}

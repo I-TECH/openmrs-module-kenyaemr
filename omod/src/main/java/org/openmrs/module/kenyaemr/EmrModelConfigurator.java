@@ -92,13 +92,7 @@ public class EmrModelConfigurator implements PageModelConfigurator, FragmentMode
 
 		// If we have a patient, we can look for an active visit
 		if (currentPatient != null) {
-			try {
-				List<Visit> activeVisits = Context.getVisitService().getActiveVisitsByPatient(currentPatient);
-				activeVisit = activeVisits.size() > 0 ? activeVisits.get(0) : null;
-			}
-			catch (APIAuthenticationException ex) {
-				// Swallow API authentication exceptions
-			}
+			activeVisit = getActiveVisit(currentPatient);
 		}
 
 		// If we have an encounter we can use it's visit and patient
@@ -168,6 +162,21 @@ public class EmrModelConfigurator implements PageModelConfigurator, FragmentMode
 		}
 		try {
 			return encounterService.getEncounter(Integer.valueOf(id));
+		}
+		catch (APIAuthenticationException ex) {
+			return null; // Swallow API authentication exceptions
+		}
+	}
+
+	/**
+	 * Gets the active visit for the given patient
+	 * @param patient the patient
+	 * @return the active visit
+	 */
+	protected Visit getActiveVisit(Patient patient) {
+		try {
+			List<Visit> activeVisits = Context.getVisitService().getActiveVisitsByPatient(patient);
+			return activeVisits.size() > 0 ? activeVisits.get(0) : null;
 		}
 		catch (APIAuthenticationException ex) {
 			return null; // Swallow API authentication exceptions

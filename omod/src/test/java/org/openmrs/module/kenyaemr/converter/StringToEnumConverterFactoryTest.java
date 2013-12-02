@@ -17,33 +17,40 @@ package org.openmrs.module.kenyaemr.converter;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.api.context.Context;
-import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
+import org.springframework.core.convert.converter.Converter;
 
 import static org.hamcrest.Matchers.*;
 
 /**
- * Tests for {@link StringToRoleConverter}
+ * Tests for {@link StringToEnumConverterFactory}
  */
-public class StringToRoleConverterTest extends BaseModuleWebContextSensitiveTest {
+public class StringToEnumConverterFactoryTest {
 
-	private StringToRoleConverter converter;
+	private StringToEnumConverterFactory factory;
 
-	/**
-	 * Setup each test
-	 */
 	@Before
 	public void setup() throws Exception {
-		converter = new StringToRoleConverter();
+		factory = new StringToEnumConverterFactory();
 	}
 
 	/**
-	 * @see StringToVisitConverter#convert(String)
+	 * @see StringToEnumConverterFactory#getConverter(Class)
 	 */
 	@Test
-	public void convert_shouldConvertString() {
-		Assert.assertNull(converter.convert(null));
-		Assert.assertNull(converter.convert(""));
-		Assert.assertThat(converter.convert("Provider"), is(Context.getUserService().getRole("Provider")));
+	public void getConverter() {
+		Converter<String, ? extends Enum> converter = factory.getConverter(TestEnum.class);
+
+		Assert.assertThat(converter.convert(null), nullValue());
+		Assert.assertThat(converter.convert(""), nullValue());
+		Assert.assertThat(converter.convert("ONE"), is((Object) TestEnum.ONE));
+	}
+
+	/**
+	 * Enum class for testing
+	 */
+	public static enum TestEnum {
+		ONE,
+		TWO,
+		THREE
 	}
 }
