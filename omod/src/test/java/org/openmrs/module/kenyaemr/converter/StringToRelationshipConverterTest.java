@@ -15,7 +15,6 @@
 package org.openmrs.module.kenyaemr.converter;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
@@ -27,12 +26,7 @@ import static org.hamcrest.Matchers.*;
  */
 public class StringToRelationshipConverterTest extends BaseModuleWebContextSensitiveTest {
 
-	private StringToRelationshipConverter converter;
-
-	@Before
-	public void setup() throws Exception {
-		converter = new StringToRelationshipConverter();
-	}
+	private StringToRelationshipConverter converter = new StringToRelationshipConverter();
 
 	/**
 	 * @see StringToVisitConverter#convert(String)

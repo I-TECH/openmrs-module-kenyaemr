@@ -15,7 +15,6 @@
 package org.openmrs.module.kenyaemr.converter;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.springframework.core.convert.converter.Converter;
 
@@ -26,12 +25,7 @@ import static org.hamcrest.Matchers.*;
  */
 public class StringToEnumConverterFactoryTest {
 
-	private StringToEnumConverterFactory factory;
-
-	@Before
-	public void setup() throws Exception {
-		factory = new StringToEnumConverterFactory();
-	}
+	private StringToEnumConverterFactory factory = new StringToEnumConverterFactory();
 
 	/**
 	 * @see StringToEnumConverterFactory#getConverter(Class)

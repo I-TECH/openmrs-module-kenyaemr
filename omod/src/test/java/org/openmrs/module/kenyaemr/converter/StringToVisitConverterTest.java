@@ -15,7 +15,6 @@
 package org.openmrs.module.kenyaemr.converter;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
@@ -27,15 +26,7 @@ import static org.hamcrest.Matchers.*;
  */
 public class StringToVisitConverterTest extends BaseModuleWebContextSensitiveTest {
 
-	private StringToVisitConverter converter;
-
-	/**
-	 * Setup each test
-	 */
-	@Before
-	public void setup() throws Exception {
-		converter = new StringToVisitConverter();
-	}
+	private StringToVisitConverter converter = new StringToVisitConverter();
 
 	/**
 	 * @see StringToVisitConverter#convert(String)

@@ -26,12 +26,10 @@ import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
  */
 public class StringToDrugReferenceConverterTest extends BaseModuleWebContextSensitiveTest {
 
-	private StringToDrugReferenceConverter converter;
+	private StringToDrugReferenceConverter converter = new StringToDrugReferenceConverter();
 
 	@Before
 	public void setup() throws Exception {
-		converter = new StringToDrugReferenceConverter();
-
 		executeDataSet("dataset/test-concepts.xml");
 		executeDataSet("dataset/test-drugs.xml");
 	}

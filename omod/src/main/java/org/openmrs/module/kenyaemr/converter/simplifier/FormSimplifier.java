@@ -35,14 +35,18 @@ public class FormSimplifier extends AbstractSimplifier<Form> {
 	 */
 	@Override
 	protected SimpleObject simplify(Form form) {
-		SimpleObject so = SimpleObject.create("formUuid", form.getUuid(), "name", form.getName());
+		SimpleObject ret = new SimpleObject();
+		ret.put("id", form.getId());
+		ret.put("name", form.getName());
+		ret.put("uuid", form.getUuid());
+		ret.put("formUuid", form.getUuid()); // For backwards compatibility
 
 		FormDescriptor descriptor = formManager.getFormDescriptor(form);
 		if (descriptor != null) {
-			so.put("iconProvider", descriptor.getIcon().getProvider());
-			so.put("icon", descriptor.getIcon().getPath());
+			ret.put("iconProvider", descriptor.getIcon().getProvider());
+			ret.put("icon", descriptor.getIcon().getPath());
 		}
 
-		return so;
+		return ret;
 	}
 }

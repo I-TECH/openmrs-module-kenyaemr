@@ -12,26 +12,33 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.converter;
+package org.openmrs.module.kenyaemr.converter.simplifier;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.openmrs.ui.framework.SimpleObject;
 
 import static org.hamcrest.Matchers.*;
 
 /**
- * Tests for {@link ClassToStringConverter}
+ * Tests for {@link AbstractSimplifier}
  */
-public class ClassToStringConverterTest {
-
-	private ClassToStringConverter converter = new ClassToStringConverter();
+public class AbstractSimplifierTest {
 
 	/**
-	 * @see ClassToStringConverter#convert(Class)
+	 * @see AbstractSimplifier#convert(Object)
 	 */
 	@Test
-	public void convert_shouldConvertClass() {
-		Assert.assertThat(converter.convert(null), is(""));
-		Assert.assertThat(converter.convert(this.getClass()), is("org.openmrs.module.kenyaemr.converter.ClassToStringConverterTest"));
+	public void convert_shouldCallSimplify() {
+		TestSimplifier simplifier = new TestSimplifier();
+		Assert.assertThat(simplifier.convert(123), hasEntry("val", (Object) 123));
+	}
+
+	public static final class TestSimplifier extends AbstractSimplifier<Integer> {
+
+		@Override
+		protected SimpleObject simplify(Integer obj) {
+			return SimpleObject.create("val", obj);
+		}
 	}
 }
