@@ -1,39 +1,12 @@
 <%
 	// Help dialog content - loaded into a modal dialog
 
-	def helpBaseUrl = "../../help/"
-
-	def resourceFiles = [
-			"How to Create a Patient Record": "K_JobAid_1_CreatePt_13.2.pdf",
-			"How to Search for a Patient Record": "K_JobAid_2_SearchPt_13.2.pdf",
-			"How to Record a Patient's Family History": "K_JobAid_3_FamilyHistory_13.2.pdf",
-			"How to Record a Patient's Obstetric History": "K_JobAid_4_ObsHistory_13.2.pdf",
-			"How to Enroll a Patient in the HIV Program": "K_JobAid_5_HIVEnroll_13.2.pdf",
-			"How to Enter Data from a Clinical Encounter": "K_JobAid_6_Encounter_13.2.pdf",
-			"How to Complete a Clinical Encounter - HIV Addendum Form": "K_JobAid_7_HIVEncounter_13.2.pdf",
-			"How to Enroll a Patient in the TB Program": "K_JobAid_8_TBEnroll_13.2.pdf",
-			"How to Enter Patient Data From a Filled MOH 257": "K_JobAid_10_RE_13.2.pdf",
-			"How to Record Starting a Patient on an ARV Regimen": "K_JobAid_11_StartARV_13.2.pdf",
-			"How to Record Changes to a Patient's Current ARV Regimen": "K_JobAid_12_ChangeARV_13.2.pdf",
-			"How to Record Stops in ART": "K_JobAid_13_StopARV_13.2.pdf",
-			"Where to Go From the Main Menu": "K_JobAid_14_MainMenu_13.2.pdf"
+	// Split resources into two columns for layout
+	def colMax = (int) Math.ceil(resources.size() / 2);
+	def resourceCols = [
+			resources[0..colMax - 1],
+			resources[colMax..resources.size() - 1]
 	]
-
-	def splitMap = { map ->
-		def flip = true, left = [:], right = [:]
-		map.each { key, value ->
-			if (flip) {
-				left.put(key, value)
-			}
-			else {
-				right.put(key, value)
-			}
-			flip = !flip
-		}
-		[ left, right ]
-	}
-
-	def resourceMaps = splitMap(resourceFiles)
 %>
 <div class="ke-panel-content">
 	If you are experiencing a problem you should contact your clinic's IT admin for support.
@@ -42,11 +15,11 @@
 
 	<table>
 		<tr>
-			<% resourceMaps.each { map -> %>
+			<% resourceCols.each { resources -> %>
 			<td valign="top">
 				<ul>
-					<% map.each { title, file -> %>
-					<li><a href="${ helpBaseUrl + file }">${ title }</a></li>
+					<% resources.each { resource -> %>
+					<li><a href="${ resource.url }" target="_blank">${ resource.name }</a></li>
 					<% } %>
 				</ul>
 			</td>
