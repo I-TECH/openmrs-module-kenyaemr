@@ -23,6 +23,7 @@ import org.openmrs.Visit;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.context.ContextAuthenticationException;
 import org.openmrs.calculation.result.CalculationResult;
+import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.regimen.RegimenManager;
 import org.openmrs.module.kenyaemr.util.EmrUiUtils;
@@ -31,6 +32,7 @@ import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtStartDa
 import org.openmrs.module.kenyaemr.regimen.RegimenChange;
 import org.openmrs.module.kenyaemr.regimen.RegimenChangeHistory;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
+import org.openmrs.module.kenyaui.annotation.AppAction;
 import org.openmrs.module.kenyaui.annotation.PublicAction;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
@@ -105,6 +107,7 @@ public class EmrUtilsFragmentController {
 	 * @param reason the reason for voiding
 	 * @return the simplified visit
 	 */
+	@AppAction(EmrConstants.APP_CHART)
 	public SuccessResult voidVisit(@RequestParam("visitId") Visit visit, @RequestParam("reason") String reason) {
 		Context.getVisitService().voidVisit(visit, reason);
 		return new SuccessResult("Visit voided");

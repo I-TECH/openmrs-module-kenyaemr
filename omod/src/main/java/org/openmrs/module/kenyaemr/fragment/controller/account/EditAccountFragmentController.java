@@ -23,6 +23,8 @@ import org.openmrs.Role;
 import org.openmrs.User;
 import org.openmrs.api.PasswordException;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyaemr.EmrConstants;
+import org.openmrs.module.kenyaui.annotation.AppAction;
 import org.openmrs.module.kenyaui.validator.ValidatingCommandObject;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.BindParams;
@@ -36,7 +38,7 @@ import org.springframework.validation.ValidationUtils;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
- *
+ * Edit account form fragment
  */
 public class EditAccountFragmentController {
 	
@@ -53,14 +55,16 @@ public class EditAccountFragmentController {
 		model.addAttribute("editLoginDetails", newEditLoginDetailsForm(user));
 		model.addAttribute("editProviderDetails", newEditProviderDetailsForm(provider));
 	}
-	
+
+	@AppAction(EmrConstants.APP_ADMIN)
 	public Object editPersonDetails(@MethodParam("newEditPersonDetailsForm") @BindParams("editPersonDetails") EditPersonDetailsForm form,
 	                                UiUtils ui) {
 		ui.validate(form, form, "editPersonDetails");
 		Context.getPersonService().savePerson(form.getPersonToSave());
 		return new SuccessResult("Saved person details");
 	}
-	
+
+	@AppAction(EmrConstants.APP_ADMIN)
 	public Object editLoginDetails(@RequestParam("personId") Person person,
 	                               @MethodParam("newEditLoginDetailsForm") @BindParams("editLoginDetails") EditLoginDetailsForm form,
 	                               UiUtils ui) {
@@ -89,7 +93,8 @@ public class EditAccountFragmentController {
 
 		return new SuccessResult("Saved login details");
 	}
-	
+
+	@AppAction(EmrConstants.APP_ADMIN)
 	public Object editProviderDetails(@RequestParam("personId") Person person,
 	                                  @MethodParam("newEditProviderDetailsForm") @BindParams("editProviderDetails") EditProviderDetailsForm form,
 	                                  UiUtils ui) {
@@ -97,7 +102,7 @@ public class EditAccountFragmentController {
 		Context.getProviderService().saveProvider(form.getProviderToSave(person));
 		return new SuccessResult("Saved provider details");
 	}
-	
+
 	public EditProviderDetailsForm newEditProviderDetailsForm(@RequestParam(required = false, value = "editProviderDetails.providerId") Provider provider) {
 		return new EditProviderDetailsForm(provider);
 	}

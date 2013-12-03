@@ -23,6 +23,8 @@ import org.openmrs.Role;
 import org.openmrs.User;
 import org.openmrs.api.PasswordException;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyaemr.EmrConstants;
+import org.openmrs.module.kenyaui.annotation.AppAction;
 import org.openmrs.module.kenyaui.validator.ValidatingCommandObject;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.ui.framework.SimpleObject;
@@ -45,11 +47,15 @@ public class NewAccountFragmentController {
 	public void controller(FragmentModel model) {
 		model.addAttribute("account", newAccountCommandObject());
 	}
-	
+
+	@AppAction(EmrConstants.APP_ADMIN)
 	public SimpleObject createAccount(@MethodParam("newAccountCommandObject") @BindParams NewAccountCommandObject command,
-	                                  UiUtils ui, @SpringBean KenyaUiUtils kenyaUi, HttpSession session) {
+	                                  UiUtils ui,
+									  HttpSession session,
+									  @SpringBean KenyaUiUtils kenyaUi) {
 		ui.validate(command, command, null);
-		// hopefully we caught any errors in the above validation, because any errors here will have ugly error messages
+
+		// Hopefully we caught any errors in the above validation, because any errors here will have ugly error messages
 		Person person = command.getPerson();
 		User user = command.getUser(person);
 		Provider provider = command.getProvider(person);
