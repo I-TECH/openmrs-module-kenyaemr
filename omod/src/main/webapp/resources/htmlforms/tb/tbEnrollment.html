@@ -45,57 +45,62 @@
 			//getting the values of the disease classification option buttons
 			var optValues = getValue('dclassification.value');
 				if (optValues == 42){
-					$('#expul :input').prop('disabled', true);
-    				$('#iddivPulmonary :input').prop('disabled', false);
+					jq('#expul :input').prop('disabled', true);
+    				jq('#iddivPulmonary :input').prop('disabled', false);
 				}
 				else if (optValues == 5042 ){
-					$('#iddivPulmonary :input').prop('disabled', true);
-    				$('#expul :input').prop('disabled', false);
+					jq('#iddivPulmonary :input').prop('disabled', true);
+    				jq('#expul :input').prop('disabled', false);
 				}
 				else {
-					$('#iddivPulmonary :input').prop('disabled', true);
-    				$('#expul :input').prop('disabled', true);
+					jq('#iddivPulmonary :input').prop('disabled', true);
+    				jq('#expul :input').prop('disabled', true);
 				}
 				
     			$('#dclassification input:radio').click(function() {
-    				if ($(this).val() == 42) {
-    					$('#expul :input').prop('disabled', true);
-    					$('#iddivPulmonary :input').prop('disabled', false);
+    				if (jq(this).val() == 42) {
+    					jq('#expul :input').prop('disabled', true);
+    					jq('#iddivPulmonary :input').prop('disabled', false);
     				}
-    				if ($(this).val() == 5042) {
-    					$('#iddivPulmonary :input').prop('disabled', true);
-    					$('#expul :input').prop('disabled', false);
+    				if (jq(this).val() == 5042) {
+    					jq('#iddivPulmonary :input').prop('disabled', true);
+    					jq('#expul :input').prop('disabled', false);
     				}
     			});
    			//activating the transfer in details only when the patient classification is transfer in
    			//patientClassification
    			var optpatientclassification = getValue('patientClassification.value');
+
    				if (optpatientclassification == 159872 ) {
-   					$('#transferInDetails :input').prop('disabled', false);
+   					jq('#transferInDetails :input').prop('disabled', false);
    				}
+
    				else {
-   					$('#transferInDetails :input').prop('disabled', true)
+   					jq('#transferInDetails :input').prop('disabled', true)
    				}
    				
-   				$('#patientClassification input:radio').click(function() {
-   					if ($(this).val() == 159872){
-   						$('#transferInDetails :input').prop('disabled', false);
+   				jq('#patientClassification input:radio').click(function() {
+
+   					if (jq(this).val() == 159872){
+   						jq('#transferInDetails :input').prop('disabled', false);
    					}
+
    					else {
-   						$('#transferInDetails :input').prop('disabled', true);
+   						jq('#transferInDetails :input').prop('disabled', true);
    					}
    				});
  			//hide the div tags that hold errors on the start of the form
- 			$('#startOfTreatmentDateError').hide();
- 			$('#referalDateError').hide();
- 			$('#transferInDatesError').hide();
+ 			jq('#startOfTreatmentDateError').hide();
+ 			jq('#referalDateError').hide();
+ 			jq('#transferInDatesError').hide();
  			
  			//control the transfer in option 
- 			$('#referredByOptions1 input:radio').click(function() {
- 				$( '#referredByOptions2 input:radio' ).prop( "checked", false );
+ 			jq('#referredByOptions1 input:radio').click(function() {
+ 				jq( '#referredByOptions2 input:radio' ).prop( "checked", false );
  			});
- 			$('#referredByOptions2 input:radio').click(function() {
- 				$( '#referredByOptions1 input:radio' ).prop( "checked", false );
+
+ 			jq('#referredByOptions2 input:radio').click(function() {
+ 				jq('#referredByOptions1 input:radio' ).prop( "checked", false );
  			});
     			
 
@@ -118,39 +123,51 @@
                 treatmentSupporterNumber = getValue('treatmentSupportedNumber.value');
 
                 if (treatmentSupporterNumber != '' &amp;&amp; !regex.test(treatmentSupporterNumber)){
-                    $('#treatmentsupportError').html('Please provide valid phone Number');
+                    jq('#treatmentsupportError').html('Please provide valid phone Number');
                     return false;
                 }
+
        			if (encounterdate &lt; pbirthdate) {
                		getField('encounter-date.error').html('Encounter datetime should be after the birth date').show();
                    	return false
          		}
          		
           		if (datestartoftreatment &lt; pbirthdate) {
-          			$('#startOfTreatmentDateError').show();
-               		$('#startOfTreatmentDateError').html('Date start of treatment should be after the birth date');
+          			jq('#startOfTreatmentDateError').show();
+               		jq('#startOfTreatmentDateError').html('Date start of treatment should be after the birth date');
                    	return false
          		}
          	         
         		if (dreferredby &lt; pbirthdate) {
-        			$('#referalDateError').show();
-               		$('#referalDateError').html('Date referred by should be after the birth date');
+        			jq('#referalDateError').show();
+               		jq('#referalDateError').html('Date referred by should be after the birth date');
                    	return false
          		}
          		
          		if (transferindate &lt; pbirthdate) {
-         			$('#transferInDatesError').show();
-               		$('#transferInDatesError').html('Transfer in date should be after the birth date');
+         			jq('#transferInDatesError').show();
+               		jq('#transferInDatesError').html('Transfer in date should be after the birth date');
                    	return false
          		}
           		if (dfirstenrolled &lt; pbirthdate){
-          			$('#transferInDatesError').show();
-               		$('#transferInDatesError').html('Date first enrolled should be after the birth date');
+          			jq('#transferInDatesError').show();
+               		jq('#transferInDatesError').html('Date first enrolled should be after the birth date');
                    	return false
          		}
 
     			return true;
 			});
+			//try add load treatment supporter's information if available from other places for this patient
+			var treatmentSuppoterNames = "<lookup expression="fn.latestObs(160638).valueText" />";
+			var treatmentSuppoterRelation = "<lookup expression="fn.latestObs(160640).valueCoded" />";;
+			var treatmentSuppoterAddress = "<lookup expression="fn.latestObs(160641).valueText" />";;
+			var treatmentSuppoterPhoneNumber = "<lookup expression="fn.latestObs(160642).valueText" />";
+			//populate the fields
+			setValue('tSupporterNames.value', treatmentSuppoterNames);
+			setValue('tSupporterRelation.value', treatmentSuppoterRelation);
+			setValue('tSupporterAddress.value', treatmentSuppoterAddress);
+			setValue('treatmentSupportedNumber.value', treatmentSuppoterPhoneNumber);
+
 		});
 	</script>
 
@@ -195,7 +212,7 @@
 							</tr>
 							<tr>
 								<td>District Reg Number*</td>
-								<td><patient field="identifier" identifierTypeId="d8ee3b8c-a8fc-4d6b-af6a-9423be5f8906" /></td>
+								<td><patient field="identifier" identifierTypeId="d8ee3b8c-a8fc-4d6b-af6a-9423be5f8906" required="false"/></td>
 							</tr>
 							<tr>
 								<td colspan="2"><div id="startOfTreatmentDateError" class="error"></div></td>
@@ -264,15 +281,15 @@
 							<table width="100%" class="tb1" id="treatmentSupporter">
 								<tr>
 									<td>Treatment supporters Name</td>
-									<td><obs conceptId="160638AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="40" /></td>
+									<td><obs conceptId="160638AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="40" id="tSupporterNames" /></td>
 								</tr>
 								<tr>
 									<td>Relation to patient</td>
-									<td><obs conceptId="160640AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+									<td><obs conceptId="160640AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="tSupporterRelation" /></td>
 								</tr>
 								<tr>
 									<td>Address</td>
-									<td><obs conceptId="160641AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="40" /></td>
+									<td><obs conceptId="160641AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="40" id="tSupporterAddress" /></td>
 								</tr>
 								<tr>
 									<td>Cell Phone</td>
