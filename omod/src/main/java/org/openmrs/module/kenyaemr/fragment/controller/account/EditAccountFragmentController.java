@@ -53,16 +53,6 @@ public class EditAccountFragmentController {
 		model.addAttribute("editLoginDetails", newEditLoginDetailsForm(user));
 		model.addAttribute("editProviderDetails", newEditProviderDetailsForm(provider));
 	}
-
-	public Object retireUser(@RequestParam("userId") User user) {
-		Context.getUserService().retireUser(user, null);
-		return new SuccessResult("Disabled: " + user.getUsername());
-	}
-
-	public Object unretireUser(@RequestParam("userId") User user) {
-		Context.getUserService().unretireUser(user);
-		return new SuccessResult("Enabled: " + user.getUsername());
-	}
 	
 	public Object editPersonDetails(@MethodParam("newEditPersonDetailsForm") @BindParams("editPersonDetails") EditPersonDetailsForm form,
 	                                UiUtils ui) {

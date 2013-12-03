@@ -20,7 +20,7 @@
 			heading: 'User',
 			message: '${ ui.message("kenyaemr.confirmReenableUser") }',
 			okCallback: function() {
-				ui.getFragmentActionAsJson('kenyaemr', 'account/editAccount', 'unretireUser', { userId: userId, reason: 'Admin UI' }, function() {
+				ui.getFragmentActionAsJson('kenyaemr', 'account/accountUtils', 'unretireUser', { userId: userId, reason: 'Admin UI' }, function() {
 					ui.reloadPage();
 				});
 			}
@@ -31,7 +31,7 @@
 			heading: 'User',
 			message: '${ ui.message("kenyaemr.confirmDisableUser") }',
 			okCallback: function() {
-				ui.getFragmentActionAsJson('kenyaemr', 'account/editAccount', 'retireUser', { userId: userId, reason: 'Admin UI' }, function() {
+				ui.getFragmentActionAsJson('kenyaemr', 'account/accountUtils', 'retireUser', { userId: userId, reason: 'Admin UI' }, function() {
 					ui.reloadPage();
 				});
 			}
