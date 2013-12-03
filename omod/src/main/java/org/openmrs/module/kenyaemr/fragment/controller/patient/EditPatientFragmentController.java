@@ -363,6 +363,15 @@ public class EditPatientFragmentController {
 			// Require death details if patient is deceased
 			if (dead) {
 				require(errors, "deathDate");
+
+				if (deathDate != null) {
+					if (birthdate != null && deathDate.before(birthdate)) {
+						errors.rejectValue("deathDate", "Cannot be before birth date");
+					}
+					if (deathDate.after(new Date())) {
+						errors.rejectValue("deathDate", "Cannot be in the future");
+					}
+				}
 			} else if (deathDate != null) {
 				errors.rejectValue("deathDate", "Must be empty if patient not deceased");
 			}
