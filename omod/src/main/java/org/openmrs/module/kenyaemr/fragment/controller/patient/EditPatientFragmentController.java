@@ -98,6 +98,7 @@ public class EditPatientFragmentController {
 		maritalStatusOptions.add(Dictionary.getConcept(Dictionary.WIDOWED));
 		maritalStatusOptions.add(Dictionary.getConcept(Dictionary.LIVING_WITH_PARTNER));
 		maritalStatusOptions.add(Dictionary.getConcept(Dictionary.NEVER_MARRIED));
+		maritalStatusOptions.add(Dictionary.getConcept(Dictionary.PARTNER_OR_SPOUSE));
 		model.addAttribute("maritalStatusOptions", maritalStatusOptions);
 
 		// Create a list of cause of death answer concepts
