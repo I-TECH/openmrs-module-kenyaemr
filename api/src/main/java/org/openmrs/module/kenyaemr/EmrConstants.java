@@ -41,10 +41,12 @@ public class EmrConstants {
 	public static final String GP_CONTROLLER_WHITELIST = MODULE_ID + ".controllerWhitelist";
 	public static final String GP_SUPPORT_PHONE_NUMBER = MODULE_ID + ".supportPhoneNumber";
 	public static final String GP_SUPPORT_EMAIL_ADDRESS = MODULE_ID + ".supportEmailAddress";
+	public static final String GP_EXTERNAL_HELP_URL = MODULE_ID + ".externalHelpUrl";
 
 	/**
-	 * Default support contact details
+	 * Default global property values
 	 */
 	public static final String DEFAULT_SUPPORT_PHONE_NUMBER = "0800720701";
 	public static final String DEFAULT_SUPPORT_EMAIL_ADDRESS = "help@kenyaemr.org";
+	public static final String DEFAULT_EXTERNAL_HELP_URL = "/help";
 }

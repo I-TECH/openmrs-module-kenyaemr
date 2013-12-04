@@ -36,6 +36,7 @@
 		}});
 	}
 	function ke_showHelp() {
-		kenyaui.openDynamicDialog({ heading: 'Help', url: ui.pageLink('kenyaemr', 'dialog/helpDialog'), width: 90, height: 90 });
+		var currentAppId = ${ currentApp ? ("'" + currentApp.id + "'" ) : "null" };
+		kenyaui.openDynamicDialog({ heading: 'Help', url: ui.pageLink('kenyaemr', 'dialog/helpDialog', { appId: currentAppId }), width: 90, height: 90 });
 	}
 </script>

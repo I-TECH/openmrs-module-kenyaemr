@@ -20,9 +20,7 @@ import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.module.kenyaui.annotation.PublicPage;
 import org.openmrs.ui.framework.page.PageModel;
 import org.openmrs.util.PrivilegeConstants;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * Controller for help dialog
@@ -30,81 +28,24 @@ import java.util.List;
 @PublicPage
 public class HelpDialogPageController {
 
-	// These will eventually be fetched dynamically from outside of KenyaEMR
-	private static final String[][] helpResources = new String[][] {
-			{ "How to Create a Patient Record", "K_JobAid_1_CreatePt_13.2.pdf" },
-			{ "How to Search for a Patient Record", "K_JobAid_2_SearchPt_13.2.pdf" },
-			{ "How to Record a Patient's Family History", "K_JobAid_3_FamilyHistory_13.2.pdf" },
-			{ "How to Record a Patient's Obstetric History", "K_JobAid_4_ObsHistory_13.2.pdf" },
-			{ "How to Enroll a Patient in the HIV Program", "K_JobAid_5_HIVEnroll_13.2.pdf" },
-			{ "How to Enter Data from a Clinical Encounter", "K_JobAid_6_Encounter_13.2.pdf" },
-			{ "How to Complete a Clinical Encounter - HIV Addendum Form", "K_JobAid_7_HIVEncounter_13.2.pdf" },
-			{ "How to Enroll a Patient in the TB Program", "K_JobAid_8_TBEnroll_13.2.pdf" },
-			{ "How to Enter Patient Data From a Filled MOH 257", "K_JobAid_10_RE_13.2.pdf" },
-			{ "How to Record Starting a Patient on an ARV Regimen", "K_JobAid_11_StartARV_13.2.pdf" },
-			{ "How to Record Changes to a Patient's Current ARV Regimen", "K_JobAid_12_ChangeARV_13.2.pdf" },
-			{ "How to Record Stops in ART", "K_JobAid_13_StopARV_13.2.pdf" },
-			{ "Where to Go From the Main Menu", "K_JobAid_14_MainMenu_13.2.pdf" }
-	};
-
-	public void controller(PageModel model) {
-
-		List<HelpResource> resources = new ArrayList<HelpResource>();
-		for (String[] res : helpResources) {
-			resources.add(new HelpResource(res[0], "/help/" + res[1]));
-		}
-
-		model.put("resources", resources);
-
+	public void controller(@RequestParam(value = "appId", required = false) String appId,
+						   PageModel model) {
 		try {
 			Context.addProxyPrivilege(PrivilegeConstants.VIEW_GLOBAL_PROPERTIES);
 
 			String facilityCode = Context.getService(KenyaEmrService.class).getDefaultLocationMflCode();
 			String supportNumber = Context.getAdministrationService().getGlobalProperty(EmrConstants.GP_SUPPORT_PHONE_NUMBER, EmrConstants.DEFAULT_SUPPORT_PHONE_NUMBER);
 			String supportEmail = Context.getAdministrationService().getGlobalProperty(EmrConstants.GP_SUPPORT_EMAIL_ADDRESS, EmrConstants.DEFAULT_SUPPORT_EMAIL_ADDRESS);
+			String externalHelpUrl = Context.getAdministrationService().getGlobalProperty(EmrConstants.GP_EXTERNAL_HELP_URL, EmrConstants.DEFAULT_EXTERNAL_HELP_URL);
 
+			model.put("appId", appId);
 			model.put("facilityCode", facilityCode);
 			model.put("supportNumber", supportNumber);
 			model.put("supportEmail", supportEmail);
+			model.put("externalHelpUrl", externalHelpUrl);
 		}
 		finally {
 			Context.removeProxyPrivilege(PrivilegeConstants.VIEW_GLOBAL_PROPERTIES);
-		}
-	}
-
-	/**
-	 * Represents a help resource
-	 */
-	public static class HelpResource {
-
-		private String name;
-
-		private String url;
-
-		/**
-		 * Creates a new help resource
-		 * @param name the name
-		 * @param url the URL
-		 */
-		public HelpResource(String name, String url) {
-			this.name = name;
-			this.url = url;
-		}
-
-		/**
-		 * Gets the name
-		 * @return the name
-		 */
-		public String getName() {
-			return name;
-		}
-
-		/**
-		 * Gets the URL
-		 * @return the URL
-		 */
-		public String getUrl() {
-			return url;
 		}
 	}
 }
