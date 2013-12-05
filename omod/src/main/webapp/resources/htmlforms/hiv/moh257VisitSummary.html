@@ -196,6 +196,18 @@
 				jq('input[name=pregoption][value=' + initialPregOption + ']').prop('checked', true);
 				setPregDateField(initialPregOption);
 			}
+
+			beforeSubmit.push(function() {
+				var encounterDate = new Date(getValue('encounter-date.value')).getTime();
+				var eddDate = new Date(getValue('pregdate-yes.value')).getTime();
+
+				if (eddDate &amp;&amp; encounterDate &gt; eddDate) {
+					getField('pregdate-yes.error').html('EDD date should not be earlier than encounter date').show();
+					return false;
+				}
+				return true;
+			});
+
 			</includeIf>
 		});
 	</script>
