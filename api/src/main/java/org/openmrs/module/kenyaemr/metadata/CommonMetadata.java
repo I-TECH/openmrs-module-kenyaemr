@@ -85,6 +85,10 @@ public class CommonMetadata extends AbstractMetadataBundle {
 		public static final String OUTPATIENT = "3371a4d4-f66f-4454-a86d-92c7b3da990c";
 	}
 
+	public static final class _RelationshipType {
+		public static final String SPOUSE = "d6895098-5d8d-11e3-94ee-b35a4132a5e3";
+	}
+
 	/**
 	 * @see org.openmrs.module.metadatadeploy.bundle.AbstractMetadataBundle#install()
 	 */
@@ -141,5 +145,7 @@ public class CommonMetadata extends AbstractMetadataBundle {
 		install(visitType("Outpatient", "Visit where the patient is not admitted to the hospital", _VisitType.OUTPATIENT));
 
 		uninstall(existing(PersonAttributeType.class, "73d34479-2f9e-4de3-a5e6-1f79a17459bb"), "Became patient identifier"); // National ID attribute type
+
+		install(relationshipType("Spouse", "Spouse", "A spouse is a partner in a marriage, civil union, domestic partnership or common-law marriage a male spouse is a husband and a female spouse is a wife", _RelationshipType.SPOUSE));
 	}
 }
