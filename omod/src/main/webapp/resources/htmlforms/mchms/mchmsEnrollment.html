@@ -125,21 +125,31 @@
 	function validateOtherFields() {
 		var urinePh = getValue('urine-ph.value');
 		var urineSpecificGravity = getValue('urine-specific-gravity.value');
+		var ultrasoundEdd = getValue('ultrasound-edd.value');
 
 		if (urinePh != null) {
 			var urinePhValue = parseFloat(urinePh);
 			if (urinePhValue &lt; 5.0 || urinePhValue &gt; 9.0) {
-				getField('urine-ph.error').html('Urine pH must be between 5.0 and 9.0..').show();
+				getField('urine-ph.error').html('Urine pH must be between 5.0 and 9.0.').show();
 				return false;
 			}
 		}
 		if (urineSpecificGravity != null) {
 			var urineSpecificGravityValue = parseFloat(urineSpecificGravity);
 			if (urineSpecificGravityValue &lt; 1.0000 || urineSpecificGravityValue &gt; 1.1000) {
-				getField('urine-specific-gravity.error').html('Urine specific gravity must be between 1.000 and 1.1000..').show();
+				getField('urine-specific-gravity.error').html('Urine specific gravity must be between 1.000 and 1.1000.').show();
 				return false;
 			}
 		}
+		if (ultrasoundEdd != null) {
+			var lmpDate = Date.parse(getValue('lmp.value'));
+			var uEddDate = Date.parse(getValue('ultrasound-edd.value'));
+			if (uEddDate &lt;= lmpDate) {
+				getField('ultrasound-edd.error').html('EDD (Ultrasound) cannot be on before LMP date.').show();
+				return false;
+			}
+		}
+
 		return true;
 	}
 
@@ -224,7 +234,8 @@
 			<tr>
 				<td>EDD (Ultrasound):</td>
 				<td>
-					<obs conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true"/>
+					<obs conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true"
+						 id="ultrasound-edd"/>
 				</td>
 			</tr>
 		</table>
