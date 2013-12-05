@@ -167,6 +167,17 @@
 			onWeightOrHeightChange();
 			onEncounterDateChange();
 
+			beforeSubmit.push(function() {
+				var encounterDate = new Date(getValue('encounter-date.value')).getTime();
+				var nextAptDate = new Date(getValue('next-apt-date.value')).getTime();
+
+				if (nextAptDate &amp;&amp; encounterDate &gt; nextAptDate) {
+					getField('next-apt-date.error').html('Should not be earlier than encounter date').show();
+					return false;
+				}
+				return true;
+			});
+
 			<includeIf velocityTest="$patient.gender == 'F' ">
 
 			// Because of bug HTML-469, we need a hack to set the right property accessor for datetime obs
@@ -202,7 +213,7 @@
 				var eddDate = new Date(getValue('pregdate-yes.value')).getTime();
 
 				if (eddDate &amp;&amp; encounterDate &gt; eddDate) {
-					getField('pregdate-yes.error').html('EDD date should not be earlier than encounter date').show();
+					getField('pregdate-yes.error').html('Should not be earlier than encounter date').show();
 					return false;
 				}
 				return true;
@@ -651,7 +662,7 @@
 				<tr>
 					<th colspan="3">Date of Next Appointment</th>
 					<td>(ag)</td>
-					<td colspan="2"><obs conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" /></td>
+					<td colspan="2"><obs id="next-apt-date" conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" /></td>
 				</tr>
 				<tr>
 					<th colspan="3">Clinician Initials</th>
