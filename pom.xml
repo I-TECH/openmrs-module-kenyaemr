@@ -44,7 +44,7 @@
 		<idgenVersion>2.6</idgenVersion>
 		<kenyacoreVersion>0.16</kenyacoreVersion>
 		<kenyauiVersion>1.13.2</kenyauiVersion>
-		<metadatadeployVersion>0.1</metadatadeployVersion>
+		<metadatadeployVersion>0.2-SNAPSHOT</metadatadeployVersion>
 		<metadatamappingVersion>1.0.1</metadatamappingVersion>
 		<metadatasharingVersion>1.1.8</metadatasharingVersion>
 		<reportingVersion>0.8</reportingVersion>

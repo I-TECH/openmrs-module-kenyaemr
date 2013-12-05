@@ -77,6 +77,10 @@ public class CommonMetadata extends AbstractMetadataBundle {
 		public static final String UNKNOWN = "ae01b8ff-a4cc-4012-bcf7-72359e852e14";
 	}
 
+	public static final class _RelationshipType {
+		public static final String SPOUSE = "d6895098-5d8d-11e3-94ee-b35a4132a5e3";
+	}
+
 	public static final class _VisitAttributeType {
 		public static final String SOURCE_FORM = "8bfab185-6947-4958-b7ab-dfafae1a3e3d";
 	}
@@ -84,6 +88,7 @@ public class CommonMetadata extends AbstractMetadataBundle {
 	public static final class _VisitType {
 		public static final String OUTPATIENT = "3371a4d4-f66f-4454-a86d-92c7b3da990c";
 	}
+
 
 	/**
 	 * @see org.openmrs.module.metadatadeploy.bundle.AbstractMetadataBundle#install()
@@ -135,11 +140,14 @@ public class CommonMetadata extends AbstractMetadataBundle {
 		install(personAttributeType("Next of kin address", "Address of patient's next of kin",
 				String.class, null, false, 3.3, _PersonAttributeType.NEXT_OF_KIN_ADDRESS));
 
+		install(relationshipType("Spouse", "Spouse", "A spouse is a partner in a marriage, civil union, domestic partnership or common-law marriage a male spouse is a husband and a female spouse is a wife", _RelationshipType.SPOUSE));
+
 		install(visitAttributeType("Source form", "The form whose submission created the visit",
 				FormDatatype.class, null, 0, 1, _VisitAttributeType.SOURCE_FORM));
 
 		install(visitType("Outpatient", "Visit where the patient is not admitted to the hospital", _VisitType.OUTPATIENT));
 
 		uninstall(existing(PersonAttributeType.class, "73d34479-2f9e-4de3-a5e6-1f79a17459bb"), "Became patient identifier"); // National ID attribute type
+
 	}
 }
