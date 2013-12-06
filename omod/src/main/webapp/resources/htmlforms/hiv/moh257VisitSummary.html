@@ -637,7 +637,9 @@
 					<td>(ad)</td>
 					<td colspan="2">
 						<obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="6096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Discordant couple (DC)" style="checkbox" /><br />
-						<obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160578AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Male who has sex with men (MSM)" style="checkbox" /><br />
+						<includeIf velocityTest="$patient.gender == 'M' ">
+							<obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160578AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Male who has sex with men (MSM)" style="checkbox" /><br />
+						</includeIf>
 						<obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="105AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Injectable drug User (IDU)" style="checkbox" /><br />
 						<obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160579AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Sex worker (SW)" style="checkbox" /><br />
 						<obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160580AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Client of sex worker (cSW)" style="checkbox" /><br />
