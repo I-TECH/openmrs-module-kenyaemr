@@ -108,24 +108,15 @@
 
 			if (pgender == 'F' ){
 				beforeSubmit.push(function() {
-					var lmpdate = new Date(getValue('idLmp.value')).getTime();
+					var lmpdate = new Date(getValue('lmp-date.value')).getTime();
 					if (lmpdate &lt; pbirthdate) {
-						getField('idLmp.error').html('LMP date, should not be earlier than Birth date').show();
+						getField('lmp-date.error').html('Should not be earlier than birth date').show();
 						return false;
 					}
 					return true;
 				});
 			}
 		});
-
-		/**
-		 * Convenience method for printing lookup values which are non-precise
-		 */
-		function printNonPreciseVal(str) {
-			if (str) {
-				document.write(parseInt(str));
-			}
-		}
 	</script>
 
 	<!-- Should always be the current user -->
@@ -143,81 +134,83 @@
 	</div>
 
 	<div class="ke-form-content">
+		<!-- These initial sections are duplicated from triage.xml, so try to keep them in sync -->
+
+		<fieldset>
+			<legend>Reason</legend>
+
+			<table>
+				<tr>
+					<td>Reason for visit</td>
+					<td><obs conceptId="160430AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="2" cols="80"/></td>
+				</tr>
+			</table>
+		</fieldset>
+
 		<fieldset>
 			<legend>Vital Signs</legend>
-			<div style="clear: both">
-				Chief complaint / Reason for visit: <br />
-				<obs conceptId="160531AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="4" cols="80" />
-			</div>
 
-			<table class="right-aligned-first" style="float: left">
+			<table>
 				<tr>
-					<td colspan="2" style="text-align: left;"><i>Repeat vital signs if desired</i></td>
+					<td>Temp</td>
+					<td><obs conceptId="5088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /> &#176;C</td>
 				</tr>
 				<tr>
-					<td style="text-align: left;">Weight:</td>
-					<td style="text-align: left;"><obs id="weight" conceptId="5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-													   labelText=" " />kg</td>
+					<td>Pulse Rate</td>
+					<td><obs conceptId="5087AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
 				</tr>
 				<tr>
-					<td style="text-align: left;">Height:</td>
-					<td style="text-align: left;"><obs id="height" conceptId="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-													   labelText=" " />cm</td>
+					<td>BP</td>
+					<td><obs  conceptId="5085AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/> / <obs conceptId="5086AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
 				</tr>
 				<tr>
-					<td style="text-align: left;">BMI:</td>
-					<td style="text-align: left;"><span id="calculated-bmi" class="value"></span></td>
+					<td>Respiratory Rate</td>
+					<td><obs conceptId="5242AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
 				</tr>
 				<tr>
-					<td style="text-align: left;">Temp:</td>
-					<td style="text-align: left;"><obs conceptId="5088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-													   labelText=" " /> &#176;C</td>
+					<td>Oxygen Saturation</td>
+					<td><obs conceptId="5092AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+				</tr>
+			</table>
+		</fieldset>
+
+		<fieldset>
+			<legend>Other Recordings</legend>
+
+			<table>
+				<tr>
+					<th> </th>
+					<th>Current</th>
+					<th>Recent</th>
 				</tr>
 				<tr>
-					<td style="text-align: left;">Pulse Rate:</td>
-					<td style="text-align: left;"><obs conceptId="5087AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-													   labelText=" " /></td>
+					<td>Weight</td>
+					<td><obs id="weight" conceptId="5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />kg</td>
+					<td><recentObs conceptId="5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
 				</tr>
 				<tr>
-					<td style="text-align: left;">BP:</td>
-					<td style="text-align: left;"><obs conceptId="5085AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /> / <obs
-							conceptId="5086AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+					<td>Height</td>
+					<td><obs id="height" conceptId="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />cm</td>
+					<td><recentObs conceptId="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
 				</tr>
 				<tr>
-					<td style="text-align: left;">Respiratory Rate:</td>
-					<td style="text-align: left;"><obs conceptId="5242AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-													   labelText=" " /></td>
+					<td>BMI</td>
+					<td><span id="calculated-bmi" class="value"></span></td>
+					<td>-</td>
 				</tr>
 				<tr>
-					<td style="text-align: left;">Oxygen Saturation:</td>
-					<td style="text-align: left;"><obs conceptId="5092AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText="" /></td>
-				</tr>
-				<tr>
-					<td style="text-align: left;">MUAC:</td>
-					<td style="text-align: left;"><obs conceptId="1343AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-													   labelText=" " /></td>
+					<td>MUAC</td>
+					<td><obs conceptId="1343AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+					<td><recentObs conceptId="1343AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
 				</tr>
 				<includeIf velocityTest="$patient.gender == 'F' ">
 					<tr>
-						<td style="text-align: left;">LMP:</td>
-						<td style="text-align: left;"><obs conceptId="1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="idLmp"
-														   labelText=" " /></td>
+						<td>LMP</td>
+						<td><obs id="lmp-date" conceptId="1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+						<td><recentObs conceptId="1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
 					</tr>
 				</includeIf>
 			</table>
-
-			<div style="float: left; margin-left: 3em; padding: 0.5em; border: 1px gray solid; background-color: lightyellow;">
-				<u>Other Vitals Recorded Recently</u> <br/><br/>
-				Reason for Visit:  <lookup expression="fn.latestObs(160430).valueText"/> <br/>
-				Weight: <lookup expression="fn.latestObs(5089).valueNumeric"/> <br/>
-				Height: <lookup expression="fn.latestObs(5090).valueNumeric"/> <br/>
-				Temp: <lookup expression="fn.latestObs(5088).valueNumeric"/> <br/>
-				Pulse: <script>printNonPreciseVal("<lookup expression="fn.latestObs(5087).valueNumeric"/>");</script><br/>
-				BP: <script>printNonPreciseVal("<lookup expression="fn.latestObs(5085).valueNumeric"/>");</script>/<script>printNonPreciseVal("<lookup expression="fn.latestObs(5086).valueNumeric"/>");</script><br />
-				RR: <script>printNonPreciseVal("<lookup expression="fn.latestObs(5242).valueNumeric"/>");</script><br/>
-				O2Sat: <script>printNonPreciseVal("<lookup expression="fn.latestObs(5092).valueNumeric"/>");</script><br/>
-				MUAC: <lookup expression="fn.latestObs(1343).valueNumeric"/> <br/>
-			</div>
 		</fieldset>
 
 		<includeIf velocityTest="$patient.gender == 'F' ">

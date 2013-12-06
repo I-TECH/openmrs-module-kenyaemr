@@ -27,13 +27,27 @@
 					display = bmi.toFixed(2);
 				}
 			}
-			$j('#calculated-bmi').html(display);
+			jQuery('#calculated-bmi').html(display);
 		}
 
-		$j(function() {
+		jQuery(function() {
 			getField('weight.value').change(onWeightOrHeightChange);
 			getField('height.value').change(onWeightOrHeightChange);
 			onWeightOrHeightChange();
+
+			var pbirthdate = new Date("<lookup expression="patient.birthdate" />").getTime();
+			var pgender    = "<lookup expression="patient.gender" />";
+
+			if (pgender == 'F' ){
+				beforeSubmit.push(function() {
+					var lmpdate = new Date(getValue('lmp-date.value')).getTime();
+					if (lmpdate &lt; pbirthdate) {
+						getField('lmp-date.error').html('Should not be earlier than birth date').show();
+						return false;
+					}
+					return true;
+				});
+			}
 		});
 	</script>
 
@@ -97,17 +111,17 @@
 				<tr>
 					<th> </th>
 					<th>Current</th>
-					<th>Previous</th>
+					<th>Recent</th>
 				</tr>
 				<tr>
 					<td>Weight</td>
 					<td><obs id="weight" conceptId="5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />kg</td>
-					<td><lookup expression="fn.latestObs(5089).valueNumeric"/></td>
+					<td><recentObs conceptId="5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
 				</tr>
 				<tr>
 					<td>Height</td>
 					<td><obs id="height" conceptId="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />cm</td>
-					<td><lookup expression="fn.latestObs(5090).valueNumeric"/></td>
+					<td><recentObs conceptId="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
 				</tr>
 				<tr>
 					<td>BMI</td>
@@ -117,13 +131,13 @@
 				<tr>
 					<td>MUAC</td>
 					<td><obs conceptId="1343AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
-					<td><lookup expression="fn.latestObs(1343).valueNumeric"/></td>
+					<td><recentObs conceptId="1343AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
 				</tr>
 				<includeIf velocityTest="$patient.gender == 'F' ">
 					<tr>
 						<td>LMP</td>
-						<td><obs conceptId="1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
-						<td><lookup expression="fn.latestObs(1427).valueNumeric"/></td>
+						<td><obs id="lmp-date" conceptId="1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+						<td><recentObs conceptId="1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
 					</tr>
 				</includeIf>
 			</table>

@@ -24,6 +24,7 @@ import org.openmrs.Form;
 import org.openmrs.Obs;
 import org.openmrs.Patient;
 import org.openmrs.PatientProgram;
+import org.openmrs.Person;
 import org.openmrs.Visit;
 import org.openmrs.VisitAttribute;
 import org.openmrs.VisitAttributeType;
@@ -219,6 +220,17 @@ public class EmrUtils {
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * Finds the last obs with the given person and concept
+	 * @param person the person
+	 * @param concept the concept
+	 * @return the obs
+	 */
+	public static Obs lastObs(Person person, Concept concept) {
+		List<Obs> obss = Context.getObsService().getObservationsByPersonAndConcept(person, concept);
+		return obss.size() > 0 ? obss.get(0) : null;
 	}
 
 	/**

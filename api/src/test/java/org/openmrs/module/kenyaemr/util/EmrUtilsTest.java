@@ -251,7 +251,7 @@ public class EmrUtilsTest extends BaseModuleContextSensitiveTest {
 	 */
 	@Test
 	public void firstObsInProgram_shouldFindFirstObsWithConcept() {
-		Patient patient = Context.getPatientService().getPatient(6);
+		Patient patient = TestUtils.getPatient(6);
 		Program tbProgram = MetadataUtils.getProgram(TbMetadata._Program.TB);
 
 		PatientProgram enrollment = TestUtils.enrollInProgram(patient, tbProgram, TestUtils.date(2012, 1, 1), TestUtils.date(2012, 4, 1));
@@ -272,6 +272,22 @@ public class EmrUtilsTest extends BaseModuleContextSensitiveTest {
 		// Test again with no enrollment end date
 		enrollment = TestUtils.enrollInProgram(patient, tbProgram, TestUtils.date(2012, 1, 1));
 		Assert.assertEquals(obs2, EmrUtils.firstObsInProgram(enrollment, Dictionary.getConcept(Dictionary.CD4_COUNT)));
+	}
+
+	/**
+	 * @see EmrUtils#lastObs(org.openmrs.Person, org.openmrs.Concept)
+	 */
+	@Test
+	public void lastObs_shouldFindLastObsWithConcept() {
+		Concept cd4 = Dictionary.getConcept(Dictionary.CD4_COUNT);
+		Patient patient = TestUtils.getPatient(7);
+
+		TestUtils.saveObs(patient, cd4, 123.0, TestUtils.date(2012, 1, 1));
+		TestUtils.saveObs(patient, cd4, 234.0, TestUtils.date(2012, 1, 2));
+		Obs obs = TestUtils.saveObs(patient, cd4, 345.0, TestUtils.date(2012, 1, 3));
+		TestUtils.saveObs(patient, Dictionary.getConcept(Dictionary.CD4_PERCENT), 50.0, TestUtils.date(2012, 1, 31)); // Wrong concept
+
+		Assert.assertThat(EmrUtils.lastObs(patient, cd4), is(obs));
 	}
 
 	/**
