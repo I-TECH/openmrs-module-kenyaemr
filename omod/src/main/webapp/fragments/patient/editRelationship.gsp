@@ -31,8 +31,8 @@
 
 	</div>
 	<div class="ke-panel-footer">
-		<button type="submit">Save</button>
-		<button type="button" class="cancel-button">Cancel</button>
+		<button type="submit"><img src="${ ui.resourceLink("kenyaui", "images/glyphs/ok.png") }" /> Save</button>
+		<button type="button" class="cancel-button"><img src="${ ui.resourceLink("kenyaui", "images/glyphs/cancel.png") }" /> Cancel</button>
 	</div>
 	
 </form>
