@@ -14,9 +14,12 @@
 
 package org.openmrs.module.kenyaemr.reporting.library.moh731;
 
+import org.openmrs.EncounterType;
 import org.openmrs.module.kenyacore.report.ReportUtils;
+import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonCohortLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.HivCohortLibrary;
+import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
@@ -38,6 +41,21 @@ public class Moh731CohortLibrary {
 	private HivCohortLibrary hivCohorts;
 
 	/**
+	 * Patients currently in care (includes transfers)
+	 * @return the cohort definition
+	 */
+	public CohortDefinition currentlyInCare() {
+		EncounterType hivEnroll = MetadataUtils.getEncounterType(HivMetadata._EncounterType.HIV_ENROLLMENT);
+		EncounterType hivConsult = MetadataUtils.getEncounterType(HivMetadata._EncounterType.HIV_CONSULTATION);
+
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
+		cd.addSearch("recentEncounter", ReportUtils.map(commonCohorts.hasEncounter(hivEnroll, hivConsult), "onOrAfter=${onDate-90d},onOrBefore=${onDate}"));
+		cd.setCompositionString("recentEncounter");
+		return cd;
+	}
+
+	/**
 	 * Patients who ART revisits
 	 * @return the cohort definition
 	 */
@@ -45,9 +63,9 @@ public class Moh731CohortLibrary {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.addParameter(new Parameter("fromDate", "From Date", Date.class));
 		cd.addParameter(new Parameter("toDate", "To Date", Date.class));
+		cd.addSearch("inCare", ReportUtils.map(currentlyInCare(), "onDate=${toDate}"));
 		cd.addSearch("startedBefore", ReportUtils.map(hivCohorts.startedArt(), "onOrBefore=${fromDate-1d}"));
-		cd.addSearch("recentEncounter", ReportUtils.map(commonCohorts.hasEncounter(), "onOrAfter=${toDate-90d},onOrBefore=${toDate}"));
-		cd.setCompositionString("recentEncounter AND startedBefore");
+		cd.setCompositionString("inCare AND startedBefore");
 		return cd;
 	}
 

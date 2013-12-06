@@ -16,7 +16,6 @@ package org.openmrs.module.kenyaemr.reporting.library.moh731;
 
 import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyaemr.reporting.indicator.HivCareVisitsIndicator;
-import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonCohortLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.HivCohortLibrary;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
@@ -35,9 +34,6 @@ import static org.openmrs.module.kenyaemr.reporting.EmrReportingUtils.cohortIndi
 public class Moh731IndicatorLibrary {
 
 	@Autowired
-	private CommonCohortLibrary commonCohorts;
-
-	@Autowired
 	private HivCohortLibrary artCohorts;
 
 	@Autowired
@@ -48,7 +44,7 @@ public class Moh731IndicatorLibrary {
 	 * @return the indicator
 	 */
 	public CohortIndicator currentlyInCare() {
-		return cohortIndicator("Currently in care (includes transfers)", ReportUtils.map(commonCohorts.hasEncounter(), "onOrAfter=${endDate-90d},onOrBefore=${endDate}"));
+		return cohortIndicator("Currently in care (includes transfers)", ReportUtils.map(moh731Cohorts.currentlyInCare(), "onDate=${endDate}"));
 	}
 
 	/**
