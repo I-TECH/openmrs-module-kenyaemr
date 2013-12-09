@@ -32,6 +32,26 @@
 		}
 	</style>
 
+	<script type="text/javascript">
+		beforeSubmit.push(function () {
+
+			//Validate that next vaccine data is not earlier than current vaccine date
+			for (var i = 1; i &lt; 12; i++) {
+				var date = getValue('vaccine-date-' + i + '.value');
+				if (date != null) {
+					var nextDate = getValue('next-vaccine-date-' + i + '.value')
+					if (nextDate != null) {
+						if (Date.parse(getValue('next-vaccine-date-' + i + '.value')) &lt;= Date.parse(getValue('vaccine-date-' + i + '.value'))) {
+							getField('next-vaccine-date-' + i + '.error').html('Next vaccine date cannot be on or earlier than vaccine date.').show();
+							return false;
+						}
+					}
+				}
+			}
+			return true;
+		});
+	</script>
+
 	<div class="ke-form-header">
 		<table style="width: 100%">
 			<tr>
@@ -77,32 +97,33 @@
 										<tr>
 											<td>
 												<obs conceptId="984AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-													 answerConceptIds="84879AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159610AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,104677AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,79413AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160428AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+													 answerConceptIds="84879AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159610AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,104677AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,79413AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160428AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+														id="vaccine-{n}"/>
 											</td>
 											<td>
-												<obs conceptId="1418AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+												<obs conceptId="1418AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="sequence-{n}"/>
 											</td>
 											<td>
-												<obs conceptId="1410AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+												<obs conceptId="1410AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="vaccine-date-{n}"/>
 											</td>
 											<td>
 												<obs conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-													 allowFutureDates="true"/>
+													 allowFutureDates="true" id="next-vaccine-date-{n}"/>
 											</td>
 										</tr>
 									</obsgroup>
 								</template>
-								<render n="1" concept=" "/>
-								<render n="2" concept=" "/>
-								<render n="3" concept=" "/>
-								<render n="4" concept=" "/>
-								<render n="5" concept=" "/>
-								<render n="6" concept=" "/>
-								<render n="7" concept=" "/>
-								<render n="8" concept=" "/>
-								<render n="9" concept=" "/>
-								<render n="10" concept=" "/>
-								<render n="11" concept=" "/>
+								<render n="1"/>
+								<render n="2"/>
+								<render n="3"/>
+								<render n="4"/>
+								<render n="5"/>
+								<render n="6"/>
+								<render n="7"/>
+								<render n="8"/>
+								<render n="9"/>
+								<render n="10"/>
+								<render n="11"/>
 							</repeat>
 						</table>
 					</fieldset>
