@@ -35,6 +35,8 @@
 		var NO_CONCEPT_ID = 1066;
 		var ABORTION_CONCEPT_ID = 159896;
 		var MISCARRIAGE_CONCEPT_ID = 126127;
+		var LIVEBIRTH_CONCEPT_ID = 151849;
+		var STILLBIRTH_CONCEPT_ID = 125872;
 		var WHO_STAGE_1_PEDS_CONCEPT_ID = 1220;
 		var WHO_STAGE_2_PEDS_CONCEPT_ID = 1221;
 		var WHO_STAGE_3_PEDS_CONCEPT_ID = 1222;
@@ -127,6 +129,14 @@
 				setValue('pregstatus.value', NO_CONCEPT_ID);
 				setValue('pregoutcome.value', MISCARRIAGE_CONCEPT_ID);
 				break;
+			case 'lb':
+				setValue('pregstatus.value', NO_CONCEPT_ID);
+				setValue('pregoutcome.value', LIVEBIRTH_CONCEPT_ID);
+				break;
+			case 'sb':
+				setValue('pregstatus.value', NO_CONCEPT_ID);
+				setValue('pregoutcome.value', STILLBIRTH_CONCEPT_ID);
+				break;
 			}
 
 			setPregDateField(option);
@@ -136,9 +146,23 @@
 		 * Displays the appropriate date field for the given pregnancy option
 		 */
 		function setPregDateField(option) {
-			var options = [ 'yes', 'no', 'ab', 'mc' ];
-			var labels = { 'yes' : 'EDD', 'no' : '', 'ab' : 'Date of abortion', 'mc' : 'Date of miscarriage' };
-			var fields = { 'yes' : 'pregdate-yes', 'no' : null, 'ab' : 'pregdate-abmc', 'mc' : 'pregdate-abmc' };
+			var options = [ 'yes', 'no', 'ab', 'mc', 'lb', 'sb' ];
+			var labels = {
+				yes: 'EDD',
+				no: '',
+				ab: 'Date of abortion',
+				mc: 'Date of miscarriage',
+				lb: 'Date of delivery',
+				sb: 'Date of delivery'
+			};
+			var fields = {
+				yes: 'pregdate-yes',
+				no: null,
+				ab: 'pregdate-no',
+				mc: 'pregdate-no',
+				lb: 'pregdate-no',
+				sb: 'pregdate-no'
+			};
 
 			// Update field label
 			jq('#pregdate-label').text(labels[option]);
@@ -201,6 +225,10 @@
 				initialPregOption = 'ab';
 			} else if (initialPregStatus == NO_CONCEPT_ID &amp;&amp; initialPregOutcome == MISCARRIAGE_CONCEPT_ID) {
 				initialPregOption = 'mc';
+			} else if (initialPregStatus == NO_CONCEPT_ID &amp;&amp; initialPregOutcome == LIVEBIRTH_CONCEPT_ID) {
+				initialPregOption = 'lb';
+			} else if (initialPregStatus == NO_CONCEPT_ID &amp;&amp; initialPregOutcome == STILLBIRTH_CONCEPT_ID) {
+				initialPregOption = 'sb';
 			}
 
 			if (initialPregOption) {
@@ -211,9 +239,14 @@
 			beforeSubmit.push(function() {
 				var encounterDate = new Date(getValue('encounter-date.value')).getTime();
 				var eddDate = new Date(getValue('pregdate-yes.value')).getTime();
+				var dodDate = new Date(getValue('pregdate-no.value')).getTime();
 
-				if (eddDate &amp;&amp; encounterDate &gt; eddDate) {
-					getField('pregdate-yes.error').html('Should not be earlier than encounter date').show();
+				if (eddDate &amp;&amp; eddDate &lt; encounterDate) {
+					getField('pregdate-yes.error').html('Cannot be before encounter date').show();
+					return false;
+				}
+				if (dodDate &amp;&amp; dodDate &gt; encounterDate) {
+					getField('pregdate-no.error').html('Cannot be after encounter date').show();
 					return false;
 				}
 				return true;
@@ -295,7 +328,9 @@
 								<input id="pregoption-yes" type="radio" name="pregoption" value="yes" /> Pregnant<br />
 								<input id="pregoption-no" type="radio" name="pregoption" value="no" /> Not pregnant<br />
 								<input id="pregoption-ab" type="radio" name="pregoption" value="ab" /> Abortion (AB)<br />
-								<input id="pregoption-mc" type="radio" name="pregoption" value="mc" /> Miscarriage (MC)
+								<input id="pregoption-mc" type="radio" name="pregoption" value="mc" /> Miscarriage (MC)<br />
+								<input id="pregoption-lb" type="radio" name="pregoption" value="lb" /> Live birth<br />
+								<input id="pregoption-sb" type="radio" name="pregoption" value="sb" /> Still birth<br />
 								<div style="display: none">
 									<obs id="pregstatus" conceptId="5272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
 									<obs id="pregoutcome" conceptId="161033AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
@@ -316,14 +351,14 @@
 						<includeIf velocityTest="$patient.gender == 'F' ">
 							<ifMode mode="VIEW" include="true">
 								EDD: <obs conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><br />
-								Date of abortion/miscarriage: <obs conceptId="5599AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><br />
+								Date of pregnancy end: <obs conceptId="5599AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><br />
 							</ifMode>
 							<ifMode mode="VIEW" include="false">
 								<div id="pregdate-yes-container" style="display: none">
 									<obs id="pregdate-yes" conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" />
 								</div>
-								<div id="pregdate-abmc-container" style="display: none">
-									<obs id="pregdate-abmc" conceptId="5599AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="false" allowTime="false" />
+								<div id="pregdate-no-container" style="display: none">
+									<obs id="pregdate-no" conceptId="5599AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="false" allowTime="false" />
 								</div>
 							</ifMode>
 						</includeIf>
@@ -357,6 +392,7 @@
 						<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5277AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Fertility awareness/periodic abstinence (FA)" /><br />
 						<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1472AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Tubal ligation/female sterilization (TL)" /><br />
 						<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1489AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Vasectomy - partner (V)" /><br />
+						<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="162195AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Spermicide" /><br />
 						<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Not applicable" /><br />
 					</td>
 					<td>
@@ -622,7 +658,7 @@
 				<tr>
 					<th colspan="3">Referral / Hospitalized</th>
 					<td>(ac)</td>
-					<td colspan="2">
+					<td>
 						1. <obs conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><br />
 						2. <obs conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><br />
 						3. <obs conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><br />
@@ -630,6 +666,9 @@
 						<obsgroup groupingConceptId="161360AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
 							<obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
 						</obsgroup>
+					</td>
+					<td>
+						Days hospitalized <obs conceptId="1647AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 					</td>
 				</tr>
 				<tr>
@@ -643,6 +682,7 @@
 						<obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="105AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Injectable drug User (IDU)" style="checkbox" /><br />
 						<obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160579AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Sex worker (SW)" style="checkbox" /><br />
 						<obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160580AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Client of sex worker (cSW)" style="checkbox" /><br />
+						<obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="162198AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Truck driver" style="checkbox" /><br />
 						<obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Not applicable" style="checkbox" />
 					</td>
 				</tr>
