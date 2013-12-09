@@ -55,7 +55,10 @@ public class WhoStageAtArtStartCalculation extends BaseEmrCalculation {
 				Obs whoStageObs = EmrCalculationUtils.obsResultForPatient(currentWhoStageObss, ptId);
 
 				if (whoStageObs != null) {
-					result = new SimpleResult(EmrUtils.whoStage(whoStageObs.getValueCoded()), this);
+					Integer whoStage = EmrUtils.whoStage(whoStageObs.getValueCoded());
+					if (whoStage != null) {
+						result = new SimpleResult(whoStage, this);
+					}
 				}
 			}
 
