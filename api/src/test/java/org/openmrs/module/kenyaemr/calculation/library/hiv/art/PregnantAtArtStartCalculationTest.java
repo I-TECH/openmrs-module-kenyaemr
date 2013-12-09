@@ -18,13 +18,11 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Concept;
-import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
-import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.PregnantAtArtStartCalculation;
 import org.openmrs.module.kenyacore.test.TestUtils;
+import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 import java.util.Arrays;
@@ -50,29 +48,28 @@ public class PregnantAtArtStartCalculationTest extends BaseModuleContextSensitiv
 	@Test
 	public void evaluate_shouldCalculatePregnancyStatusAtArtStart() throws Exception {
 
-		PatientService ps = Context.getPatientService();
 		Concept pregnancyStatus = Dictionary.getConcept(Dictionary.PREGNANCY_STATUS);
 		Concept yes = Dictionary.getConcept(Dictionary.YES);
 		Concept no = Dictionary.getConcept(Dictionary.NO);
-		Concept stavudine = Context.getConceptService().getConcept(84309);
+		Concept stavudine = Dictionary.getConcept(Dictionary.STAVUDINE);
 
 		// Give patient #2 a YES status on same day as ART start. This patient has a drug order in standardTestDataset.xml
 		// which is determining their ART start date
-		TestUtils.saveObs(ps.getPatient(2), pregnancyStatus, yes, TestUtils.date(2007, 12, 25));
+		TestUtils.saveObs(TestUtils.getPatient(2), pregnancyStatus, yes, TestUtils.date(2007, 12, 25));
 
 		// Give patient #6 a YES status week before ART start
-		TestUtils.saveObs(ps.getPatient(6), pregnancyStatus, yes, TestUtils.date(2012, 1, 1));
-		TestUtils.saveDrugOrder(Context.getPatientService().getPatient(6), stavudine, TestUtils.date(2012, 1, 8), null);
+		TestUtils.saveObs(TestUtils.getPatient(6), pregnancyStatus, yes, TestUtils.date(2012, 1, 1));
+		TestUtils.saveDrugOrder(TestUtils.getPatient(6), stavudine, TestUtils.date(2012, 1, 8), null);
 
 		// Give patient #7 a YES but a newer NO status before ART start
-		TestUtils.saveObs(ps.getPatient(7), pregnancyStatus, yes, TestUtils.date(2012, 1, 1));
-		TestUtils.saveObs(ps.getPatient(7), pregnancyStatus, no, TestUtils.date(2012, 1, 3));
-		TestUtils.saveDrugOrder(Context.getPatientService().getPatient(7), stavudine, TestUtils.date(2012, 1, 8), null);
+		TestUtils.saveObs(TestUtils.getPatient(7), pregnancyStatus, yes, TestUtils.date(2012, 1, 1));
+		TestUtils.saveObs(TestUtils.getPatient(7), pregnancyStatus, no, TestUtils.date(2012, 1, 3));
+		TestUtils.saveDrugOrder(TestUtils.getPatient(7), stavudine, TestUtils.date(2012, 1, 8), null);
 
 		// Give patient #8 a YES status week before ART start and a newer NO status after ART start
-		TestUtils.saveObs(ps.getPatient(8), pregnancyStatus, yes, TestUtils.date(2012, 1, 1));
-		TestUtils.saveObs(ps.getPatient(8), pregnancyStatus, no, TestUtils.date(2012, 1, 15));
-		TestUtils.saveDrugOrder(Context.getPatientService().getPatient(8), stavudine, TestUtils.date(2012, 1, 8), null);
+		TestUtils.saveObs(TestUtils.getPatient(8), pregnancyStatus, yes, TestUtils.date(2012, 1, 1));
+		TestUtils.saveObs(TestUtils.getPatient(8), pregnancyStatus, no, TestUtils.date(2012, 1, 15));
+		TestUtils.saveDrugOrder(TestUtils.getPatient(8), stavudine, TestUtils.date(2012, 1, 8), null);
 		
 		Context.flushSession();
 		
