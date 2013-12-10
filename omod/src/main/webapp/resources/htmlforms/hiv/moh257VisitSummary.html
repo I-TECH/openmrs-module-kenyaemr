@@ -393,7 +393,7 @@
 						<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1472AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Tubal ligation/female sterilization (TL)" /><br />
 						<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1489AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Vasectomy - partner (V)" /><br />
 						<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="162195AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Spermicide" /><br />
-						<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Not applicable" /><br />
+						<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Not applicable (N/A)" /><br />
 					</td>
 					<td>
 						<obs
@@ -521,7 +521,31 @@
 				<tr>
 					<th colspan="2">Dispensed</th>
 					<td>(r)</td>
-					<td colspan="2" rowspan="3">
+					<td colspan="2">
+						<obs
+								conceptId="162229AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								answerLabels="Yes,No,Not applicable (N/A)"
+								style="radio"
+						/>
+					</td>
+				</tr>
+				<tr>
+					<th colspan="3">INH Dispensed</th>
+					<td>(s)</td>
+					<td colspan="2">
+						<obs
+								conceptId="162230AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								answerLabels="Yes,No,Not applicable (N/A)"
+								style="radio"
+						/>
+					</td>
+				</tr>
+				<tr>
+					<th colspan="3">Other Medications Dispensed</th>
+					<td>(t)</td>
+					<td colspan="2">
 						<table cellspacing="0">
 							<tr>
 								<th style="color: #888">Drug</th>
@@ -540,10 +564,10 @@
 											<td><obs conceptId="1444AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="5" /></td>
 											<td>
 												<obs
-													conceptId="160855AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-													answerConceptIds="160862AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160863AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160864AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160865AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160858AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160866AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160870AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-													answerLabels="Once daily,Once daily at bedtime,Once daily in the evening,Once daily in the morning,Twice daily,Thrice daily,Four times daily"
-												/>
+														conceptId="160855AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+														answerConceptIds="160862AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160863AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160864AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160865AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160858AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160866AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160870AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+														answerLabels="Once daily,Once daily at bedtime,Once daily in the evening,Once daily in the morning,Twice daily,Thrice daily,Four times daily"
+														/>
 											</td>
 											<td><obs conceptId="159368AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
 											<td>
@@ -562,14 +586,6 @@
 							</repeat>
 						</table>
 					</td>
-				</tr>
-				<tr>
-					<th colspan="3">INH Dispensed</th>
-					<td>(s)</td>
-				</tr>
-				<tr>
-					<th colspan="3">Other Medications Dispensed</th>
-					<td>(t)</td>
 				</tr>
 				<tr>
 					<th rowspan="3">ARV Drugs</th>

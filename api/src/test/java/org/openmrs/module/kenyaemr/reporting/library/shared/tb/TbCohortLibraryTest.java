@@ -234,10 +234,10 @@ public class TbCohortLibraryTest extends BaseModuleContextSensitiveTest {
 
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.reporting.library.shared.tb.TbCohortLibrary#inTbAndHivProgramsAndOnCPT()
+	 * @see TbCohortLibrary#inTbAndHivProgramsAndOnCtxProphylaxis()
 	 */
 	@Test
-	public void inTbAndHivProgramsAndOnCPT_shouldReturnPatientsInTbAndHivProgramsAndOnCPT() throws Exception {
+	public void inTbAndHivProgramsAndOnCtxProphylaxis_shouldReturnPatientsInTbAndHivProgramsAndOnCtx() throws Exception {
 
 		Program tbProgram = MetadataUtils.getProgram(TbMetadata._Program.TB);
 		Program hivProgram = MetadataUtils.getProgram(HivMetadata._Program.HIV);
@@ -265,8 +265,9 @@ public class TbCohortLibraryTest extends BaseModuleContextSensitiveTest {
 			)
 		);
 
-		CohortDefinition cd = tbCohortLibrary.inTbAndHivProgramsAndOnCPT();
-		context.addParameterValue("onDate", TestUtils.date(2012, 6, 10));
+		CohortDefinition cd = tbCohortLibrary.inTbAndHivProgramsAndOnCtxProphylaxis();
+		context.addParameterValue("onOrAfter", TestUtils.date(2012, 6, 1));
+		context.addParameterValue("onOrBefore", TestUtils.date(2012, 6, 30));
 		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
 		ReportingTestUtils.assertCohortEquals(Arrays.asList(7), evaluated);
 	}

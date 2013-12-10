@@ -149,8 +149,7 @@ public class HivIndicatorLibrary {
 	 * @return the indicator
 	 */
 	public CohortIndicator onCotrimoxazoleProphylaxis() {
-		Concept[] drugs = { Dictionary.getConcept(Dictionary.SULFAMETHOXAZOLE_TRIMETHOPRIM) };
-		return cohortIndicator("Number of patients on Cotrimoxazole", map(artCohorts.inHivProgramAndOnMedication(drugs), "onDate=${endDate}"));
+		return cohortIndicator("Number of patients on CTX prophylaxis", map(artCohorts.inHivProgramAndOnCtxProphylaxis(), "onOrAfter=${startDate},onOrBefore=${endDate}"));
 	}
 
 	/**
@@ -158,8 +157,7 @@ public class HivIndicatorLibrary {
 	 * @return the indicator
 	 */
 	public CohortIndicator onFluconazoleProphylaxis() {
-		Concept[] drugs = { Dictionary.getConcept(Dictionary.FLUCONAZOLE) };
-		return cohortIndicator("Number of patients on Fluconazole", map(artCohorts.inHivProgramAndOnMedication(drugs), "onDate=${endDate}"));
+		return cohortIndicator("Number of patients on Fluconazole prophylaxis", map(artCohorts.inHivProgramAndOnFluconazoleProphylaxis(), "onOrAfter=${startDate},onOrBefore=${endDate}"));
 	}
 
 	/**
@@ -167,7 +165,6 @@ public class HivIndicatorLibrary {
 	 * @return the indicator
 	 */
 	public CohortIndicator onProphylaxis() {
-		Concept[] drugs = { Dictionary.getConcept(Dictionary.FLUCONAZOLE), Dictionary.getConcept(Dictionary.SULFAMETHOXAZOLE_TRIMETHOPRIM) };
-		return cohortIndicator("Number of patients on prophylaxis", map(artCohorts.inHivProgramAndOnMedication(drugs), "onDate=${endDate}"));
+		return cohortIndicator("Number of patients on prophylaxis", map(artCohorts.inHivProgramAndOnAnyProphylaxis(), "onOrAfter=${startDate},onOrBefore=${endDate}"));
 	}
 }

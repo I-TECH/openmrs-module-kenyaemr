@@ -22,7 +22,6 @@ import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyacore.report.builder.CalculationCohortDefinition;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.library.InProgramCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.OnMedicationCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.OnAlternateFirstLineArtCalculation;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.DateObsValueBetweenCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.*;
@@ -34,7 +33,6 @@ import org.springframework.stereotype.Component;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashSet;
 
 /**
  * Library of common cohort definitions
@@ -190,15 +188,15 @@ public class CommonCohortLibrary {
 	}
 
 	/**
-	 * Patients who were enrolled on the given programs (excluding transfers) between ${fromDate} and ${toDate}
+	 * Patients who were enrolled on the given programs (excluding transfers) between ${onOrAfter} and ${onOrBefore}
 	 * @param programs the programs
 	 * @return the cohort definition
 	 */
 	public CohortDefinition enrolledExcludingTransfers(Program... programs) {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.setName("enrolled excluding transfers in program between dates");
-		cd.addParameter(new Parameter("onOrAfter", "From Date", Date.class));
-		cd.addParameter(new Parameter("onOrBefore", "To Date", Date.class));
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.addSearch("enrolled", ReportUtils.map(enrolled(programs), "enrolledOnOrAfter=${onOrAfter},enrolledOnOrBefore=${onOrBefore}"));
 		cd.addSearch("transferIn", ReportUtils.map(transferredIn(), "onOrBefore=${onOrBefore}"));
 		cd.setCompositionString("enrolled AND NOT transferIn");
@@ -230,15 +228,19 @@ public class CommonCohortLibrary {
 	}
 
 	/**
-	 * Patients who are on the specified medication on ${onDate}
+	 * Patients who were dispensed the given medications between ${onOrAfter} and ${onOrBefore}
 	 * @param concepts the drug concepts
 	 * @return the cohort definition
 	 */
-	public CohortDefinition onMedication(Concept... concepts) {
-		CalculationCohortDefinition cd = new CalculationCohortDefinition(new OnMedicationCalculation());
-		cd.setName("taking drug on date");
-		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
-		cd.addCalculationParameter("drugs", new HashSet<Concept>(Arrays.asList(concepts)));
+	public CohortDefinition medicationDispensed(Concept... concepts) {
+		CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
+		cd.setName("dispensed medication between");
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.setTimeModifier(PatientSetService.TimeModifier.ANY);
+		cd.setQuestion(Dictionary.getConcept(Dictionary.MEDICATION_ORDERS));
+		cd.setValueList(Arrays.asList(concepts));
+		cd.setOperator(SetComparator.IN);
 		return cd;
 	}
 }

@@ -72,12 +72,12 @@ public class TbIndicatorLibrary {
 	}
 
 	/**
-	 * Number of patients in Tb and HIV programs who are in CPT
+	 * Number of patients in Tb and HIV programs who are taking CTX prophylaxis
 	 * @return the indicator
 	 */
-	public CohortIndicator inTbAndHivAndOnCPT() {
+	public CohortIndicator inTbAndHivProgramsAndOnCtxProphylaxis() {
 		return cohortIndicator(null,
-				map(tbCohorts.inTbAndHivProgramsAndOnCPT(), "onDate=${endDate}")
+				map(tbCohorts.inTbAndHivProgramsAndOnCtxProphylaxis(), "onOrAfter=${startDate},onOrBefore=${endDate}")
 		);
 	}
 

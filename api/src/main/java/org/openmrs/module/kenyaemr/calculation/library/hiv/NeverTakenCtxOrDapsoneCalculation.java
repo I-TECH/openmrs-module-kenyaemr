@@ -27,12 +27,12 @@ import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.ListResult;
 import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.calculation.Calculations;
-import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
+import org.openmrs.module.metadatadeploy.MetadataUtils;
 
 /**
  * Calculates whether patients have taken CTX or Dapsone
@@ -48,34 +48,52 @@ public class NeverTakenCtxOrDapsoneCalculation extends BaseEmrCalculation {
 		Set<Integer> alive = alivePatients(cohort, context);
 		Set<Integer> inHivProgram = CalculationUtils.patientsThatPass(Calculations.activeEnrollment(hivProgram, alive, context));
 
-		CalculationResultMap medOrdersObss = Calculations.allObs(getConcept(Dictionary.MEDICATION_ORDERS), cohort, context);
+		CalculationResultMap medOrdersObss = Calculations.allObs(Dictionary.getConcept(Dictionary.MEDICATION_ORDERS), cohort, context);
 
-		// Get concepts for both kinds of medication
-		Concept dapsone = getConcept(Dictionary.DAPSONE);
-		Concept ctx = getConcept(Dictionary.SULFAMETHOXAZOLE_TRIMETHOPRIM);
+		CalculationResultMap ctxProphylaxisObss = Calculations.allObs(Dictionary.getConcept(Dictionary.COTRIMOXAZOLE_DISPENSED), cohort, context);
+
+		// Get concepts...
+		Concept yes = Dictionary.getConcept(Dictionary.YES);
+		Concept dapsone = Dictionary.getConcept(Dictionary.DAPSONE);
+		Concept ctx = Dictionary.getConcept(Dictionary.SULFAMETHOXAZOLE_TRIMETHOPRIM);
 
 		CalculationResultMap ret = new CalculationResultMap();
 		for (Integer ptId : cohort) {
-			boolean notTakingCtxOrDapsone = false;
+			boolean neverTakenCtxOrDapsone = false;
 
 			// Is patient alive and in the HIV program
 			if (inHivProgram.contains(ptId)) {
-				notTakingCtxOrDapsone = true;
+				neverTakenCtxOrDapsone = true;
 
-				ListResult patientMedOrders = (ListResult) medOrdersObss.get(ptId);
-				if (patientMedOrders != null) {
-					// Look through list of medication order obs for any Dapsone or CTX
-					List<Obs> medOrderObsList = EmrCalculationUtils.extractListResultValues(patientMedOrders);
-					for (Obs medOrderObs : medOrderObsList) {
-						if (medOrderObs.getValueCoded().equals(dapsone) || medOrderObs.getValueCoded().equals(ctx)) {
-							notTakingCtxOrDapsone = false;
+				// First look to see if they have an obs for taking as prophylaxis
+				ListResult ctxProphylaxis = (ListResult) ctxProphylaxisObss.get(ptId);
+				if (ctxProphylaxis != null) {
+					List<Obs> ctxProphylaxisObsList = EmrCalculationUtils.extractListResultValues(ctxProphylaxis);
+					for (Obs ctxProphylaxisObs : ctxProphylaxisObsList) {
+						if (ctxProphylaxisObs.getValueCoded().equals(yes)) {
+							neverTakenCtxOrDapsone = false;
 							break;
+						}
+					}
+				}
+
+				// Failing that, look for a med order
+				if (neverTakenCtxOrDapsone) {
+					ListResult patientMedOrders = (ListResult) medOrdersObss.get(ptId);
+					if (patientMedOrders != null) {
+						// Look through list of medication order obs for any Dapsone or CTX
+						List<Obs> medOrderObsList = EmrCalculationUtils.extractListResultValues(patientMedOrders);
+						for (Obs medOrderObs : medOrderObsList) {
+							if (medOrderObs.getValueCoded().equals(dapsone) || medOrderObs.getValueCoded().equals(ctx)) {
+								neverTakenCtxOrDapsone = false;
+								break;
+							}
 						}
 					}
 				}
 			}
 
-			ret.put(ptId, new BooleanResult(notTakingCtxOrDapsone, this));
+			ret.put(ptId, new BooleanResult(neverTakenCtxOrDapsone, this));
 		}
 		return ret;
 	}

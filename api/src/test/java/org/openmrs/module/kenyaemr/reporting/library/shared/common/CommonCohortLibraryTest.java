@@ -20,12 +20,12 @@ import org.openmrs.Concept;
 import org.openmrs.EncounterType;
 import org.openmrs.Program;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.test.ReportingTestUtils;
 import org.openmrs.module.kenyacore.test.TestUtils;
+import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
@@ -238,5 +238,30 @@ public class CommonCohortLibraryTest extends BaseModuleContextSensitiveTest {
 		context.addParameterValue("onOrBefore", TestUtils.date(2012, 6, 30));
 		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
 		ReportingTestUtils.assertCohortEquals(Arrays.asList(6), evaluated);
+	}
+
+	/**
+	 * @see CommonCohortLibrary#medicationDispensed(org.openmrs.Concept...)
+	 */
+	@Test
+	public void medicationDispensed() throws Exception {
+		Concept medsOrdered = Dictionary.getConcept(Dictionary.MEDICATION_ORDERS);
+		Concept dapsone = Dictionary.getConcept(Dictionary.DAPSONE);
+		Concept ctx = Dictionary.getConcept(Dictionary.SULFAMETHOXAZOLE_TRIMETHOPRIM);
+
+		// Give patient #6 dispensing record for CTX during reporting period
+		TestUtils.saveObs(TestUtils.getPatient(6), medsOrdered, ctx, TestUtils.date(2012, 6, 15));
+
+		// Give patient #7 dispensing record for Dapsone during reporting period
+		TestUtils.saveObs(TestUtils.getPatient(7), medsOrdered, dapsone, TestUtils.date(2012, 6, 15));
+
+		// Give patient #8 dispensing record for Dapsone after reporting period
+		TestUtils.saveObs(TestUtils.getPatient(8), medsOrdered, dapsone, TestUtils.date(2012, 7, 1));
+
+		CohortDefinition cd = commonCohortLibrary.medicationDispensed(dapsone);
+		context.addParameterValue("onOrAfter", TestUtils.date(2012, 6, 1));
+		context.addParameterValue("onOrBefore", TestUtils.date(2012, 6, 30));
+		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
+		ReportingTestUtils.assertCohortEquals(Arrays.asList(7), evaluated);
 	}
 }

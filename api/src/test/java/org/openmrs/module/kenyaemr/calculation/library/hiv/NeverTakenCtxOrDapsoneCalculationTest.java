@@ -19,15 +19,14 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Concept;
 import org.openmrs.Program;
-import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
-import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
+import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -61,33 +60,30 @@ public class NeverTakenCtxOrDapsoneCalculationTest extends BaseModuleContextSens
 	 */
 	@Test
 	public void evaluate() throws Exception {
-
-		// Get HIV Program
+		// Enroll patients #2, #6, #7 in the HIV Program
 		Program hivProgram = MetadataUtils.getProgram(HivMetadata._Program.HIV);
+		TestUtils.enrollInProgram(TestUtils.getPatient(2), hivProgram, TestUtils.date(2011, 1, 1));
+		TestUtils.enrollInProgram(TestUtils.getPatient(6), hivProgram, TestUtils.date(2011, 1, 1));
+		TestUtils.enrollInProgram(TestUtils.getPatient(7), hivProgram, TestUtils.date(2011, 1, 1));
 
-		// Enroll patients #6, #7, #8 in the HIV Program
-		PatientService ps = Context.getPatientService();
-		for (int i = 6; i <= 8; ++i) {
-			TestUtils.enrollInProgram(ps.getPatient(i), hivProgram, TestUtils.date(2011, 1, 1));
-		}
+		// Give patient #2 CTX dispensed obs
+		Concept ctxDispensed = Dictionary.getConcept(Dictionary.COTRIMOXAZOLE_DISPENSED);
+		Concept yes = Dictionary.getConcept(Dictionary.YES);
+		TestUtils.saveObs(TestUtils.getPatient(2), ctxDispensed, yes, TestUtils.date(2011, 1, 1));
 
-		// Put patient #7 on Dapsone
+		// Give patient #6 Dapsone med order obs
 		Concept medOrders = Dictionary.getConcept(Dictionary.MEDICATION_ORDERS);
 		Concept dapsone = Dictionary.getConcept(Dictionary.DAPSONE);
-		TestUtils.saveObs(ps.getPatient(7), medOrders, dapsone, TestUtils.date(2011, 1, 1));
-
-		// Put patient #8 on Flucanozole
-		Concept flucanozole = Dictionary.getConcept(Dictionary.FLUCONAZOLE);
-		TestUtils.saveObs(ps.getPatient(8), medOrders, flucanozole, TestUtils.date(2011, 1, 1));
+		TestUtils.saveObs(TestUtils.getPatient(6), medOrders, dapsone, TestUtils.date(2011, 1, 1));
 
 		Context.flushSession();
 		
-		List<Integer> cohort = Arrays.asList(6, 7, 8, 999);
+		List<Integer> cohort = Arrays.asList(2, 6, 7, 8);
 
 		CalculationResultMap resultMap = new NeverTakenCtxOrDapsoneCalculation().evaluate(cohort, null, Context.getService(PatientCalculationService.class).createCalculationContext());
-		Assert.assertTrue((Boolean) resultMap.get(6).getValue()); // isn't on any drugs
-		Assert.assertFalse((Boolean) resultMap.get(7).getValue()); // is taking Dapsone
-		Assert.assertTrue((Boolean) resultMap.get(8).getValue()); // is taking Flucanozole
-		Assert.assertFalse((Boolean) resultMap.get(999).getValue()); // not in HIV program
+		Assert.assertFalse((Boolean) resultMap.get(2).getValue()); // has prophalaxis obs = yes
+		Assert.assertFalse((Boolean) resultMap.get(6).getValue()); // has med order for Dapsone
+		Assert.assertTrue((Boolean) resultMap.get(7).getValue());
+		Assert.assertFalse((Boolean) resultMap.get(8).getValue()); // is not in HIV program
 	}
 }

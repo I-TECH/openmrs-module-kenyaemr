@@ -125,16 +125,17 @@ public class TbCohortLibrary {
 	 * patients in TB and HIV and on CPT between ${onOrAfter} and ${onOrBefore}
 	 * @return the cohort definition
 	 */
-	public CohortDefinition inTbAndHivProgramsAndOnCPT() {
+	public CohortDefinition inTbAndHivProgramsAndOnCtxProphylaxis() {
 		Program hivProgram = MetadataUtils.getProgram(HivMetadata._Program.HIV);
 		Program tbProgram = MetadataUtils.getProgram(TbMetadata._Program.TB);
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		Concept[] drugs = { Dictionary.getConcept(Dictionary.SULFAMETHOXAZOLE_TRIMETHOPRIM) };
-		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
-		cd.addSearch("inHivProgram", ReportUtils.map(commonCohorts.inProgram(hivProgram), "onDate=${onDate}"));
-		cd.addSearch("inTbProgram", ReportUtils.map(commonCohorts.inProgram(tbProgram), "onDate=${onDate}"));
-		cd.addSearch("onCPTMedication", ReportUtils.map(commonCohorts.onMedication(drugs), "onDate=${onDate}"));
-		cd.setCompositionString("inHivProgram AND inTbProgram AND onCPTMedication");
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("inHivProgram", ReportUtils.map(commonCohorts.inProgram(hivProgram), "onDate=${onOrBefore}"));
+		cd.addSearch("inTbProgram", ReportUtils.map(commonCohorts.inProgram(tbProgram), "onDate=${onOrBefore}"));
+		cd.addSearch("onCtx", ReportUtils.map(commonCohorts.medicationDispensed(drugs), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("inHivProgram AND inTbProgram AND onCtx");
 		return cd;
 	}
 

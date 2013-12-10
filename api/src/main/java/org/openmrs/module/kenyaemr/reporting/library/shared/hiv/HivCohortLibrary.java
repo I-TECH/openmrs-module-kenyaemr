@@ -18,7 +18,6 @@ import org.openmrs.Concept;
 import org.openmrs.EncounterType;
 import org.openmrs.Program;
 import org.openmrs.api.PatientSetService;
-import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyacore.report.builder.CalculationCohortDefinition;
 import org.openmrs.module.kenyaemr.Dictionary;
@@ -34,6 +33,7 @@ import org.openmrs.module.kenyaemr.calculation.library.hiv.art.WhoStageAtArtStar
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.DateCalculationCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonCohortLibrary;
+import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.cohort.definition.*;
 import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
@@ -327,22 +327,71 @@ public class HivCohortLibrary {
 	}
 
 	/**
-	 * Patients who are in HIV care and are on the specified medication on ${onDate}
+	 * Patients who took CTX prophylaxis between ${onOrAfter} and ${onOrBefore}
+	 * @return the cohort definition
+	 */
+	public CohortDefinition onCtxProphylaxis() {
+		CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
+		cd.setName("taking CTX prophylaxis before date");
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.setTimeModifier(PatientSetService.TimeModifier.LAST);
+		cd.setQuestion(Dictionary.getConcept(Dictionary.COTRIMOXAZOLE_DISPENSED));
+		cd.setValueList(Arrays.asList(Dictionary.getConcept(Dictionary.YES)));
+		cd.setOperator(SetComparator.IN);
+		return cd;
+	}
+
+	/**
+	 * Patients who are in HIV care and are taking CTX prophylaxis between ${onOrAfter} and ${onOrBefore}
 	 * @return
 	 */
-	public CohortDefinition inHivProgramAndOnMedication(Concept... concepts) {
+	public CohortDefinition inHivProgramAndOnCtxProphylaxis() {
+		Program hivProgram = MetadataUtils.getProgram(HivMetadata._Program.HIV);
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("in HIV program and taking CTX prophylaxis between dates");
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("inProgram", ReportUtils.map(commonCohorts.inProgram(hivProgram), "onDate=${onOrBefore}"));
+		cd.addSearch("onCtxProphylaxis", ReportUtils.map(onCtxProphylaxis(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("inProgram AND onCtxProphylaxis");
+		return cd;
+	}
+
+	/**
+	 * Patients who are in HIV care and are taking Fluconazole prophylaxis between ${onOrAfter} and ${onOrBefore}
+	 * @return
+	 */
+	public CohortDefinition inHivProgramAndOnFluconazoleProphylaxis() {
+		Concept flucanozole = Dictionary.getConcept(Dictionary.FLUCONAZOLE);
 		Program hivProgram = MetadataUtils.getProgram(HivMetadata._Program.HIV);
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.setName("in HIV program and on medication between dates");
-		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
-		cd.addSearch("inProgram", ReportUtils.map(commonCohorts.inProgram(hivProgram), "onDate=${onDate}"));
-		cd.addSearch("onMedication", ReportUtils.map(commonCohorts.onMedication(concepts), "onDate=${onDate}"));
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("inProgram", ReportUtils.map(commonCohorts.inProgram(hivProgram), "onDate=${onOrBefore}"));
+		cd.addSearch("onMedication", ReportUtils.map(commonCohorts.medicationDispensed(flucanozole), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
 		cd.setCompositionString("inProgram AND onMedication");
 		return cd;
 	}
 
 	/**
-	 * Patients tested for HIV ${onOrAfter} and ${onOrBefore}
+	 * Patients who are in HIV care and are on Flucanzole or CTX prophylaxis
+	 * @return
+	 */
+	public CohortDefinition inHivProgramAndOnAnyProphylaxis() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("in HIV program and on any prophylaxis");
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("onCtx", ReportUtils.map(inHivProgramAndOnCtxProphylaxis(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("onFlucanozole", ReportUtils.map(inHivProgramAndOnFluconazoleProphylaxis(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("onCtx OR onFlucanozole");
+		return cd;
+	}
+
+	/**
+	 * Patients tested for HIV between ${onOrAfter} and ${onOrBefore}
 	 * @return the cohort definition
 	 */
 	public  CohortDefinition testedForHiv() {
