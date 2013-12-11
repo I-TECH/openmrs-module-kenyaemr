@@ -35,15 +35,12 @@ public class EligibleForHivProgramCalculationTest extends BaseModuleContextSensi
 	 */
 	@Test
 	public void evaluate_shouldReturnTrueForAllAlivePatients() {
-
 		// Mark patient #8 as deceased on 1st Jan 2012
 		TestUtils.getPatient(8).setDead(true);
 		TestUtils.getPatient(8).setDeathDate(TestUtils.date(2012, 1, 1));
 
-		List<Integer> ptIds = Arrays.asList(2, 6, 7, 8);
-		CalculationResultMap resultMap = Context.getService(PatientCalculationService.class).evaluate(ptIds, new EligibleForHivProgramCalculation());
-		Assert.assertTrue((Boolean) resultMap.get(2).getValue());
-		Assert.assertTrue((Boolean) resultMap.get(6).getValue());
+		List<Integer> ptIds = Arrays.asList(7, 8);
+		CalculationResultMap resultMap = new EligibleForHivProgramCalculation().evaluate(ptIds, null, Context.getService(PatientCalculationService.class).createCalculationContext());
 		Assert.assertTrue((Boolean) resultMap.get(7).getValue());
 		Assert.assertFalse((Boolean) resultMap.get(8).getValue()); // Deceased
 	}

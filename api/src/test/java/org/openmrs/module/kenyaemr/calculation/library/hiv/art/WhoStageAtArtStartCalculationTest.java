@@ -46,7 +46,6 @@ public class WhoStageAtArtStartCalculationTest extends BaseModuleContextSensitiv
 	 */
 	@Test
 	public void evaluate_shouldCalculateWhoStageAtArtStart() throws Exception {
-
 		Concept whoStage = Dictionary.getConcept(Dictionary.CURRENT_WHO_STAGE);
 		Concept whoStage1Adults = Dictionary.getConcept(Dictionary.WHO_STAGE_1_ADULT);
 		Concept whoStage2Adults = Dictionary.getConcept(Dictionary.WHO_STAGE_2_ADULT);

@@ -48,22 +48,35 @@ public class ScheduledVisitOnDayCalculationTest extends BaseModuleContextSensiti
 		TestUtils.saveObs(TestUtils.getPatient(7), returnVisitDate, TestUtils.date(2012, 1, 1), TestUtils.date(2011, 12, 30));
 
 		// Patient #8 has scheduled visit on 2-Jan-2012
-		TestUtils.saveObs(TestUtils.getPatient(7), returnVisitDate, TestUtils.date(2012, 1, 2), TestUtils.date(2011, 12, 30));
+		TestUtils.saveObs(TestUtils.getPatient(8), returnVisitDate, TestUtils.date(2012, 1, 2), TestUtils.date(2011, 12, 30));
 	}
 
 	/**
 	 * @see ScheduledVisitOnDayCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
 	 */
 	@Test
-	public void evaluate_shouldCalculateScheduledVisit() throws Exception {
+	public void evaluate_shouldCalculateForSpecifiedDate() throws Exception {
 		List<Integer> ptIds = Arrays.asList(6, 7, 8);
-
 		Map<String, Object> paramValues = new HashMap<String, Object>();
 		paramValues.put("date", TestUtils.date(2012, 1, 1));
 
 		CalculationResultMap resultMap = new ScheduledVisitOnDayCalculation().evaluate(ptIds, paramValues, Context.getService(PatientCalculationService.class).createCalculationContext());
-
+		Assert.assertFalse((Boolean) resultMap.get(6).getValue());
 		Assert.assertTrue((Boolean) resultMap.get(7).getValue());
 		Assert.assertFalse((Boolean) resultMap.get(8).getValue());
 	}
+	/**
+	 * @see ScheduledVisitOnDayCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
+	 */
+	@Test
+	public void evaluate_shouldCalculateForTodayWithoutDateParam() throws Exception {
+		List<Integer> ptIds = Arrays.asList(6, 7, 8);
+		Map<String, Object> paramValues = new HashMap<String, Object>();
+
+		CalculationResultMap resultMap = new ScheduledVisitOnDayCalculation().evaluate(ptIds, paramValues, Context.getService(PatientCalculationService.class).createCalculationContext());
+		Assert.assertFalse((Boolean) resultMap.get(6).getValue());
+		Assert.assertFalse((Boolean) resultMap.get(7).getValue());
+		Assert.assertFalse((Boolean) resultMap.get(8).getValue());
+	}
+
 }

@@ -25,15 +25,15 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Concept;
 import org.openmrs.Program;
-import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
-import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyacore.test.TestUtils;
+import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
+import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -65,30 +65,25 @@ public class EligibleForArtCalculationTest extends BaseModuleContextSensitiveTes
 	 */
 	@Test
 	public void evaluate_shouldCalculateEligibility() throws Exception {
-
-		// Get HIV Program
 		Program hivProgram = MetadataUtils.getProgram(HivMetadata._Program.HIV);
 
 		// Enroll patients #6, #7 and #8 in the HIV Program
-		PatientService ps = Context.getPatientService();
-		for (int i = 6; i <= 8; ++i) {
-			TestUtils.enrollInProgram(ps.getPatient(i), hivProgram, TestUtils.date(2011, 1, 1));
-		}
+		TestUtils.enrollInProgram(TestUtils.getPatient(6), hivProgram, TestUtils.date(2011, 1, 1));
+		TestUtils.enrollInProgram(TestUtils.getPatient(7), hivProgram, TestUtils.date(2011, 1, 1));
+		TestUtils.enrollInProgram(TestUtils.getPatient(8), hivProgram, TestUtils.date(2011, 1, 1));
 
 		// Give patient #6 a high CD4 count today
-		Concept cd4 = Context.getConceptService().getConcept(5497);
-		TestUtils.saveObs(Context.getPatientService().getPatient(6), cd4, 1001, new Date());
+		Concept cd4 = Dictionary.getConcept(Dictionary.CD4_COUNT);
+		TestUtils.saveObs(TestUtils.getPatient(6), cd4, 1001, new Date());
 
 		// Give patients #7 and #8 a low CD4 count today
-		TestUtils.saveObs(Context.getPatientService().getPatient(7), cd4, 101, new Date());
-		TestUtils.saveObs(Context.getPatientService().getPatient(8), cd4, 101, new Date());
+		TestUtils.saveObs(TestUtils.getPatient(7), cd4, 101, new Date());
+		TestUtils.saveObs(TestUtils.getPatient(8), cd4, 101, new Date());
 
 		// Put patient #8 already on ARTs
-		Concept stavudine = Context.getConceptService().getConcept(84309);
-		TestUtils.saveDrugOrder(Context.getPatientService().getPatient(8), stavudine, TestUtils.date(2011, 1, 1), null);
+		Concept stavudine = Dictionary.getConcept(Dictionary.STAVUDINE);
+		TestUtils.saveDrugOrder(TestUtils.getPatient(8), stavudine, TestUtils.date(2011, 1, 1), null);
 
-		Context.flushSession();
-		
 		List<Integer> cohort = Arrays.asList(6, 7, 8, 999);
 
 		CalculationResultMap resultMap = new EligibleForArtCalculation().evaluate(cohort, null, Context.getService(PatientCalculationService.class).createCalculationContext());

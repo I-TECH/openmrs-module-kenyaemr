@@ -18,7 +18,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Concept;
-import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
@@ -55,8 +54,6 @@ public class OnOriginalFirstLineArtCalculationTest extends BaseModuleContextSens
 	 */
 	@Test
 	public void evaluate_shouldCalculateCurrentArtRegimen() throws Exception {
-
-		PatientService ps = Context.getPatientService();
 		Concept azt = Context.getConceptService().getConcept(86663);
 		Concept _3tc = Context.getConceptService().getConcept(78643);
 		Concept efv = Context.getConceptService().getConcept(75523);
@@ -65,24 +62,22 @@ public class OnOriginalFirstLineArtCalculationTest extends BaseModuleContextSens
 		Concept rtv = Context.getConceptService().getConcept(83412);
 
 		// Give patient #6 initial regimen of AZT + 3TC + EFV
-		EmrTestUtils.saveRegimenOrder(ps.getPatient(6), Arrays.asList(azt, _3tc, efv), TestUtils.date(2011, 1, 1), TestUtils.date(2012, 1, 1));
+		EmrTestUtils.saveRegimenOrder(TestUtils.getPatient(6), Arrays.asList(azt, _3tc, efv), TestUtils.date(2011, 1, 1), TestUtils.date(2012, 1, 1));
 
 		// Give patient #6 current regimen of same regimen
-		EmrTestUtils.saveRegimenOrder(ps.getPatient(6), Arrays.asList(azt, _3tc, efv), TestUtils.date(2012, 1, 1), null);
+		EmrTestUtils.saveRegimenOrder(TestUtils.getPatient(6), Arrays.asList(azt, _3tc, efv), TestUtils.date(2012, 1, 1), null);
 
 		// Give patient #7 initial regimen of AZT + 3TC + EFV
-		EmrTestUtils.saveRegimenOrder(ps.getPatient(7), Arrays.asList(azt, _3tc, efv), TestUtils.date(2011, 1, 1), TestUtils.date(2012, 1, 1));
+		EmrTestUtils.saveRegimenOrder(TestUtils.getPatient(7), Arrays.asList(azt, _3tc, efv), TestUtils.date(2011, 1, 1), TestUtils.date(2012, 1, 1));
 
 		// Give patient #7 current regimen of AZT + 3TC + NVP (alternate first line)
-		EmrTestUtils.saveRegimenOrder(ps.getPatient(7), Arrays.asList(azt, _3tc, nvp), TestUtils.date(2012, 1, 1), null);
+		EmrTestUtils.saveRegimenOrder(TestUtils.getPatient(7), Arrays.asList(azt, _3tc, nvp), TestUtils.date(2012, 1, 1), null);
 
 		// Give patient #8 initial regimen of AZT + 3TC + EFV
-		EmrTestUtils.saveRegimenOrder(ps.getPatient(8), Arrays.asList(azt, _3tc, efv), TestUtils.date(2011, 1, 1), TestUtils.date(2012, 1, 1));
+		EmrTestUtils.saveRegimenOrder(TestUtils.getPatient(8), Arrays.asList(azt, _3tc, efv), TestUtils.date(2011, 1, 1), TestUtils.date(2012, 1, 1));
 
 		// Give patient #8 current regimen of AZT + 3TC + LPV/r (second line)
-		EmrTestUtils.saveRegimenOrder(ps.getPatient(8), Arrays.asList(azt, _3tc, lpv, rtv), TestUtils.date(2012, 1, 1), null);
-
-		Context.flushSession();
+		EmrTestUtils.saveRegimenOrder(TestUtils.getPatient(8), Arrays.asList(azt, _3tc, lpv, rtv), TestUtils.date(2012, 1, 1), null);
 		
 		List<Integer> cohort = Arrays.asList(2, 6, 7, 8);
 

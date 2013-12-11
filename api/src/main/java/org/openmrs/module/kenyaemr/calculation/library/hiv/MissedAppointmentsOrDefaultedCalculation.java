@@ -27,11 +27,11 @@ import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
-import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
+import org.openmrs.module.metadatadeploy.MetadataUtils;
 
 /**
  * Calculates whether patients have missed their last scheduled return visit. Calculation returns true
@@ -45,44 +45,44 @@ public class MissedAppointmentsOrDefaultedCalculation extends BaseEmrCalculation
 		return "Missed Appointment";
 	}
 
-    /**
-     * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
-     * @should calculate false for deceased patients
-     * @should calculate false for patients not in HIV program
-     * @should calculate false for patients with no return visit date obs
-     * @should calculate false for patients with return visit date obs whose value is in the future
-     * @should calculate false for patients with encounter after return visit date obs value
-     * @should calculate true for patients in HIV program with no encounter after return visit date obs value
-     */
-    @Override
-    public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
+	/**
+	 * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
+	 * @should calculate false for deceased patients
+	 * @should calculate false for patients not in HIV program
+	 * @should calculate false for patients with no return visit date obs
+	 * @should calculate false for patients with return visit date obs whose value is in the future
+	 * @should calculate false for patients with encounter after return visit date obs value
+	 * @should calculate true for patients in HIV program with no encounter after return visit date obs value
+	 */
+	@Override
+	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
 
 		Program hivProgram = MetadataUtils.getProgram(HivMetadata._Program.HIV);
 
 		Set<Integer> alive = alivePatients(cohort, context);
 		Set<Integer> inHivProgram = CalculationUtils.patientsThatPass(Calculations.activeEnrollment(hivProgram, alive, context));
-        CalculationResultMap lastReturnDateObss = Calculations.lastObs(getConcept(Dictionary.RETURN_VISIT_DATE), inHivProgram, context);
-        CalculationResultMap lastEncounters = Calculations.lastEncounter(null, cohort, context);
+		CalculationResultMap lastReturnDateObss = Calculations.lastObs(getConcept(Dictionary.RETURN_VISIT_DATE), inHivProgram, context);
+		CalculationResultMap lastEncounters = Calculations.lastEncounter(null, cohort, context);
 
-        CalculationResultMap ret = new CalculationResultMap();
-        for (Integer ptId : cohort) {
-            boolean missedVisit = false;
+		CalculationResultMap ret = new CalculationResultMap();
+		for (Integer ptId : cohort) {
+			boolean missedVisit = false;
 
-            // Is patient alive and in the HIV program
-            if (inHivProgram.contains(ptId)) {
-                Date lastScheduledReturnDate = EmrCalculationUtils.datetimeObsResultForPatient(lastReturnDateObss, ptId);
+			// Is patient alive and in the HIV program
+			if (inHivProgram.contains(ptId)) {
+				Date lastScheduledReturnDate = EmrCalculationUtils.datetimeObsResultForPatient(lastReturnDateObss, ptId);
 
-                // Does patient have a scheduled return visit in the past
-                if (lastScheduledReturnDate != null && daysSince(lastScheduledReturnDate, context) > 0) {
+				// Does patient have a scheduled return visit in the past
+				if (lastScheduledReturnDate != null && daysSince(lastScheduledReturnDate, context) > 0) {
 
-                    // Has patient returned since
-                    Encounter lastEncounter = EmrCalculationUtils.encounterResultForPatient(lastEncounters, ptId);
-                    Date lastActualReturnDate = lastEncounter != null ? lastEncounter.getEncounterDatetime() : null;
-                    missedVisit = lastActualReturnDate == null || lastActualReturnDate.before(lastScheduledReturnDate);
-                }
-            }
-            ret.put(ptId, new SimpleResult(missedVisit, this, context));
-        }
-        return ret;
-    }
+					// Has patient returned since
+					Encounter lastEncounter = EmrCalculationUtils.encounterResultForPatient(lastEncounters, ptId);
+					Date lastActualReturnDate = lastEncounter != null ? lastEncounter.getEncounterDatetime() : null;
+					missedVisit = lastActualReturnDate == null || lastActualReturnDate.before(lastScheduledReturnDate);
+				}
+			}
+			ret.put(ptId, new SimpleResult(missedVisit, this, context));
+		}
+		return ret;
+	}
 }

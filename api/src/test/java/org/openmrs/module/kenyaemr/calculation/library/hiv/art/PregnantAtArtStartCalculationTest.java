@@ -47,7 +47,6 @@ public class PregnantAtArtStartCalculationTest extends BaseModuleContextSensitiv
 	 */
 	@Test
 	public void evaluate_shouldCalculatePregnancyStatusAtArtStart() throws Exception {
-
 		Concept pregnancyStatus = Dictionary.getConcept(Dictionary.PREGNANCY_STATUS);
 		Concept yes = Dictionary.getConcept(Dictionary.YES);
 		Concept no = Dictionary.getConcept(Dictionary.NO);
@@ -71,10 +70,8 @@ public class PregnantAtArtStartCalculationTest extends BaseModuleContextSensitiv
 		TestUtils.saveObs(TestUtils.getPatient(8), pregnancyStatus, no, TestUtils.date(2012, 1, 15));
 		TestUtils.saveDrugOrder(TestUtils.getPatient(8), stavudine, TestUtils.date(2012, 1, 8), null);
 		
-		Context.flushSession();
-		
 		List<Integer> ptIds = Arrays.asList(2, 6, 7, 8, 999);
-		CalculationResultMap resultMap = Context.getService(PatientCalculationService.class).evaluate(ptIds, new PregnantAtArtStartCalculation());
+		CalculationResultMap resultMap = new PregnantAtArtStartCalculation().evaluate(ptIds, null, Context.getService(PatientCalculationService.class).createCalculationContext());
 		Assert.assertTrue((Boolean) resultMap.get(2).getValue());
 		Assert.assertTrue((Boolean) resultMap.get(6).getValue());
 		Assert.assertFalse((Boolean) resultMap.get(7).getValue());

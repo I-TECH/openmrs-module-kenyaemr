@@ -23,16 +23,18 @@ import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
-import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
+import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
+
+import static org.hamcrest.Matchers.notNullValue;
 
 /**
  * Tests for {@link LostToFollowUpCalculation}
@@ -57,38 +59,40 @@ public class LostToFollowUpCalculationTest extends BaseModuleContextSensitiveTes
 	}
 
 	/**
+	 * @see LostToFollowUpCalculation#getFlagMessage()
+	 */
+	@Test
+	public void getFlagMessage() {
+		Assert.assertThat(new LostToFollowUpCalculation().getFlagMessage(), notNullValue());
+	}
+
+	/**
 	 * @see LostToFollowUpCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
 	 * @verifies determine whether patients are lost to follow up
 	 */
 	@Test
 	public void evaluate_shouldDetermineWhetherPatientsAreLostToFollowUp() throws Exception {
-
-		// Get HIV Program
 		Program hivProgram = MetadataUtils.getProgram(HivMetadata._Program.HIV);
 
 		// Enroll patients #6, #7, #8 in the HIV Program
-		PatientService ps = Context.getPatientService();
-		for (int i = 6; i <= 8; ++i) {
-			TestUtils.enrollInProgram(ps.getPatient(i), hivProgram, TestUtils.date(2011, 1, 1));
-		}
+		TestUtils.enrollInProgram(TestUtils.getPatient(6), hivProgram, TestUtils.date(2011, 1, 1));
+		TestUtils.enrollInProgram(TestUtils.getPatient(7), hivProgram, TestUtils.date(2011, 1, 1));
+		TestUtils.enrollInProgram(TestUtils.getPatient(8), hivProgram, TestUtils.date(2011, 1, 1));
 
 		// Give patient #7 a scheduled encounter 200 days ago
 		Calendar calendar = Calendar.getInstance();
 		calendar.add(Calendar.DATE, -200);
 		EncounterType scheduledEncType = Context.getEncounterService().getEncounterType("Scheduled");
-		TestUtils.saveEncounter(ps.getPatient(7), scheduledEncType, calendar.getTime());
+		TestUtils.saveEncounter(TestUtils.getPatient(7), scheduledEncType, calendar.getTime());
 
 		// Give patient #8 a scheduled encounter 10 days ago
 		calendar = Calendar.getInstance();
 		calendar.add(Calendar.DATE, -10);
-		TestUtils.saveEncounter(ps.getPatient(8), scheduledEncType, calendar.getTime());
-
-		Context.flushSession();
-		Context.clearSession();
+		TestUtils.saveEncounter(TestUtils.getPatient(8), scheduledEncType, calendar.getTime());
 
 		List<Integer> ptIds = Arrays.asList(6, 7, 8, 999);
 
-		CalculationResultMap resultMap = Context.getService(PatientCalculationService.class).evaluate(ptIds, new LostToFollowUpCalculation());
+		CalculationResultMap resultMap = new LostToFollowUpCalculation().evaluate(ptIds, null, Context.getService(PatientCalculationService.class).createCalculationContext());
 		Assert.assertTrue((Boolean) resultMap.get(6).getValue()); // patient in HIV program and no encounters
 		Assert.assertTrue((Boolean) resultMap.get(7).getValue()); // patient in HIV program and no encounter in last X days
 		Assert.assertFalse((Boolean) resultMap.get(8).getValue()); // patient in HIV program and has encounter in last X days

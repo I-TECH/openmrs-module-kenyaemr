@@ -48,16 +48,13 @@ public class OnArtCalculationTest extends BaseModuleContextSensitiveTest {
 	 */
 	@Test
 	public void evaluate_shouldCalculateCurrentArtRegimen() throws Exception {
-
 		// Put patient #7 on Dapsone
 		Concept dapsone = Dictionary.getConcept(Dictionary.DAPSONE);
 		TestUtils.saveDrugOrder(TestUtils.getPatient(7), dapsone, TestUtils.date(2011, 1, 1), null);
 
 		// Put patient #8 on Stavudine
-		Concept stavudine = Context.getConceptService().getConcept(84309);
+		Concept stavudine = Dictionary.getConcept(Dictionary.STAVUDINE);
 		TestUtils.saveDrugOrder(TestUtils.getPatient(8), stavudine, TestUtils.date(2011, 1, 1), null);
-
-		Context.flushSession();
 		
 		List<Integer> cohort = Arrays.asList(6, 7, 8);
 

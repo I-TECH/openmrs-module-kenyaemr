@@ -15,21 +15,22 @@
 package org.openmrs.module.kenyaemr.calculation.library;
 
 import org.openmrs.Program;
-import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyacore.calculation.Calculations;
-import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 
 import java.util.Collection;
 import java.util.Map;
 
 /**
- * Calculates whether patients are in the specified program
+ * Calculates whether patients are in enrolled the specified program (and alive)
  */
 public class InProgramCalculation extends BaseEmrCalculation {
 
+	/**
+	 * @see org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
+	 */
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> params, PatientCalculationContext context) {
 		Program program = (params != null && params.containsKey("program")) ? (Program) params.get("program") : null;

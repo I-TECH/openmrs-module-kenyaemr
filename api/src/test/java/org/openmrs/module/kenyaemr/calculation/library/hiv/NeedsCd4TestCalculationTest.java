@@ -14,22 +14,19 @@
 
 package org.openmrs.module.kenyaemr.calculation.library.hiv;
 
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Concept;
 import org.openmrs.Program;
-import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
-import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
-import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
+import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -37,6 +34,8 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+
+import static org.hamcrest.Matchers.notNullValue;
 
 /**
  * Tests for {@link NeedsCd4TestCalculation}
@@ -59,48 +58,49 @@ public class NeedsCd4TestCalculationTest extends BaseModuleContextSensitiveTest 
 		commonMetadata.install();
 		hivMetadata.install();
 	}
+
+	/**
+	 * @see NeedsCd4TestCalculation#getFlagMessage()
+	 */
+	@Test
+	public void getFlagMessage() {
+		Assert.assertThat(new NeedsCd4TestCalculation().getFlagMessage(), notNullValue());
+	}
 	
 	/**
-	 * @see NeedsCd4TestCalculation#evaluate(Collection,Map,PatientCalculationContext)
+	 * @see NeedsCd4TestCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
 	 * @verifies determine whether patients need a CD4
 	 */
 	@Test
 	public void evaluate_shouldDetermineWhetherPatientsNeedsCD4() throws Exception {
-
-		// Get HIV Program
 		Program hivProgram = MetadataUtils.getProgram(HivMetadata._Program.HIV);
 
 		// Enroll patients #6, #7 and #8  in the HIV Program
-		PatientService ps = Context.getPatientService();
-		
-		TestUtils.enrollInProgram(ps.getPatient(2), hivProgram, new Date());
-		TestUtils.enrollInProgram(ps.getPatient(6), hivProgram, new Date());
-		TestUtils.enrollInProgram(ps.getPatient(7), hivProgram, new Date());
-		TestUtils.enrollInProgram(ps.getPatient(8), hivProgram, new Date());
-		
+		TestUtils.enrollInProgram(TestUtils.getPatient(2), hivProgram, new Date());
+		TestUtils.enrollInProgram(TestUtils.getPatient(6), hivProgram, new Date());
+		TestUtils.enrollInProgram(TestUtils.getPatient(7), hivProgram, new Date());
+		TestUtils.enrollInProgram(TestUtils.getPatient(8), hivProgram, new Date());
 		
 		// Give patient #7 a recent CD4 result obs
 		Concept cd4 = Dictionary.getConcept(Dictionary.CD4_COUNT);
-		TestUtils.saveObs(ps.getPatient(7), cd4, 123d, new Date());
+		TestUtils.saveObs(TestUtils.getPatient(7), cd4, 123d, new Date());
 
 		// Give patient #8 a CD4 result obs from a year ago
 		Calendar calendar = Calendar.getInstance();
 		calendar.add(Calendar.DATE, -360);
-		TestUtils.saveObs(ps.getPatient(8), cd4, 123d, calendar.getTime());
+		TestUtils.saveObs(TestUtils.getPatient(8), cd4, 123d, calendar.getTime());
 		
 		//give patient #2 a recent CD4% result obs
 		Concept cd4Percent = Dictionary.getConcept(Dictionary.CD4_PERCENT);
-		TestUtils.saveObs(ps.getPatient(2), cd4Percent, 123d, new Date());
+		TestUtils.saveObs(TestUtils.getPatient(2), cd4Percent, 123d, new Date());
 		
 		// Give patient #6 a CD4% result obs from a year ago
 		Calendar calendarP = Calendar.getInstance();
 		calendarP.add(Calendar.DATE, -200);
-		TestUtils.saveObs(ps.getPatient(6), cd4Percent, 123d, calendarP.getTime());
-		
-		Context.flushSession();
+		TestUtils.saveObs(TestUtils.getPatient(6), cd4Percent, 123d, calendarP.getTime());
 		
 		List<Integer> ptIds = Arrays.asList(2, 6, 7, 8, 999);
-		CalculationResultMap resultMap = Context.getService(PatientCalculationService.class).evaluate(ptIds, new NeedsCd4TestCalculation());
+		CalculationResultMap resultMap = new NeedsCd4TestCalculation().evaluate(ptIds, null, Context.getService(PatientCalculationService.class).createCalculationContext());
 		Assert.assertFalse((Boolean) resultMap.get(2).getValue()); // has recent CD4%
 		Assert.assertTrue((Boolean) resultMap.get(6).getValue()); // has old CD4%
 		Assert.assertFalse((Boolean) resultMap.get(7).getValue()); // has recent CD4

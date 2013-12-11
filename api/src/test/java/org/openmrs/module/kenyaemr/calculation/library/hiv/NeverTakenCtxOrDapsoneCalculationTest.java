@@ -60,8 +60,9 @@ public class NeverTakenCtxOrDapsoneCalculationTest extends BaseModuleContextSens
 	 */
 	@Test
 	public void evaluate() throws Exception {
-		// Enroll patients #2, #6, #7 in the HIV Program
 		Program hivProgram = MetadataUtils.getProgram(HivMetadata._Program.HIV);
+
+		// Enroll patients #2, #6, #7 in the HIV Program
 		TestUtils.enrollInProgram(TestUtils.getPatient(2), hivProgram, TestUtils.date(2011, 1, 1));
 		TestUtils.enrollInProgram(TestUtils.getPatient(6), hivProgram, TestUtils.date(2011, 1, 1));
 		TestUtils.enrollInProgram(TestUtils.getPatient(7), hivProgram, TestUtils.date(2011, 1, 1));
@@ -75,12 +76,10 @@ public class NeverTakenCtxOrDapsoneCalculationTest extends BaseModuleContextSens
 		Concept medOrders = Dictionary.getConcept(Dictionary.MEDICATION_ORDERS);
 		Concept dapsone = Dictionary.getConcept(Dictionary.DAPSONE);
 		TestUtils.saveObs(TestUtils.getPatient(6), medOrders, dapsone, TestUtils.date(2011, 1, 1));
-
-		Context.flushSession();
 		
-		List<Integer> cohort = Arrays.asList(2, 6, 7, 8);
+		List<Integer> ptIds = Arrays.asList(2, 6, 7, 8);
 
-		CalculationResultMap resultMap = new NeverTakenCtxOrDapsoneCalculation().evaluate(cohort, null, Context.getService(PatientCalculationService.class).createCalculationContext());
+		CalculationResultMap resultMap = new NeverTakenCtxOrDapsoneCalculation().evaluate(ptIds, null, Context.getService(PatientCalculationService.class).createCalculationContext());
 		Assert.assertFalse((Boolean) resultMap.get(2).getValue()); // has prophalaxis obs = yes
 		Assert.assertFalse((Boolean) resultMap.get(6).getValue()); // has med order for Dapsone
 		Assert.assertTrue((Boolean) resultMap.get(7).getValue());

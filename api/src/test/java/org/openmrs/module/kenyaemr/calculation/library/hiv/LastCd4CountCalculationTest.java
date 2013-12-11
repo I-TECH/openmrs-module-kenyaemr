@@ -19,7 +19,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Concept;
 import org.openmrs.Obs;
-import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
@@ -49,19 +48,15 @@ public class LastCd4CountCalculationTest extends BaseModuleContextSensitiveTest 
 	 */
 	@Test
 	public void evaluate_shouldCalculateLastCD4() throws Exception {
-
-		PatientService ps = Context.getPatientService();
 		Concept cd4 = Dictionary.getConcept(Dictionary.CD4_COUNT);
 
-		// Give patient #6 some CD4 obs
-		TestUtils.saveObs(ps.getPatient(6), cd4, 123d, TestUtils.date(2012, 12, 1));
-		TestUtils.saveObs(ps.getPatient(6), cd4, 150d, TestUtils.date(2010, 11, 1));
+		// Give patient #7 some CD4 obs
+		TestUtils.saveObs(TestUtils.getPatient(7), cd4, 123d, TestUtils.date(2012, 12, 1));
+		TestUtils.saveObs(TestUtils.getPatient(7), cd4, 150d, TestUtils.date(2010, 11, 1));
 		
-		Context.flushSession();
-		
-		List<Integer> ptIds = Arrays.asList(6, 999);
-		CalculationResultMap resultMap = Context.getService(PatientCalculationService.class).evaluate(ptIds, new LastCd4CountCalculation());
-		Assert.assertEquals(new Double(123d), ((Obs) resultMap.get(6).getValue()).getValueNumeric());
-		Assert.assertNull(resultMap.get(999)); // has no recorded CD4
+		List<Integer> ptIds = Arrays.asList(6, 7);
+		CalculationResultMap resultMap = new LastCd4CountCalculation().evaluate(ptIds, null, Context.getService(PatientCalculationService.class).createCalculationContext());
+		Assert.assertNull(resultMap.get(6)); // has no recorded CD4
+		Assert.assertEquals(new Double(123d), ((Obs) resultMap.get(7).getValue()).getValueNumeric());
 	}
 }

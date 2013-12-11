@@ -27,9 +27,9 @@ import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.ListResult;
-import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
+import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -64,15 +64,28 @@ public class VisitsOnDayCalculationTest extends BaseModuleContextSensitiveTest {
 	 * @see VisitsOnDayCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
 	 */
 	@Test
-	public void evaluate_shouldCalculateVisitsOnDay() throws Exception {
+	public void evaluate_shouldFetchAllPatientVisitsOnDate() throws Exception {
 		List<Integer> ptIds = Arrays.asList(7, 8);
-
 		Map<String, Object> paramValues = new HashMap<String, Object>();
 		paramValues.put("date", TestUtils.date(2012, 1, 1));
 
 		CalculationResultMap resultMap = new VisitsOnDayCalculation().evaluate(ptIds, paramValues, Context.getService(PatientCalculationService.class).createCalculationContext());
 
 		Assert.assertThat(((ListResult) resultMap.get(7)).getValues().size(), is(2)); // Has two visit
+		Assert.assertThat(resultMap.get(8).isEmpty(), is(true)); // No visits on that day
+	}
+
+	/**
+	 * @see VisitsOnDayCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
+	 */
+	@Test
+	public void evaluate_shouldDefaultToToday() throws Exception {
+		List<Integer> ptIds = Arrays.asList(7, 8);
+		Map<String, Object> paramValues = new HashMap<String, Object>();
+
+		CalculationResultMap resultMap = new VisitsOnDayCalculation().evaluate(ptIds, paramValues, Context.getService(PatientCalculationService.class).createCalculationContext());
+
+		Assert.assertThat(resultMap.get(7).isEmpty(), is(true)); // No visits on that day
 		Assert.assertThat(resultMap.get(8).isEmpty(), is(true)); // No visits on that day
 	}
 }

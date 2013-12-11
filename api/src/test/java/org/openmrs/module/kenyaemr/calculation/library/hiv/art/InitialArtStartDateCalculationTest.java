@@ -18,7 +18,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Concept;
-import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
@@ -47,22 +46,18 @@ public class InitialArtStartDateCalculationTest extends BaseModuleContextSensiti
 	 */
 	@Test
 	public void evaluate_shouldCalculateInitialArtStartDate() throws Exception {
-
-		PatientService ps = Context.getPatientService();
 		Concept dapsone = Dictionary.getConcept(Dictionary.DAPSONE);
 		Concept azt = Context.getConceptService().getConcept(86663);
 		Concept _3tc = Context.getConceptService().getConcept(78643);
 		Concept efv = Context.getConceptService().getConcept(75523);
 
 		// Put patient #6 on Dapsone
-		TestUtils.saveDrugOrder(ps.getPatient(6), dapsone, TestUtils.date(2011, 1, 1), null);
+		TestUtils.saveDrugOrder(TestUtils.getPatient(6), dapsone, TestUtils.date(2011, 1, 1), null);
 
 		// Put patient #7 on AZT, then 3TC, then EFV
-		TestUtils.saveDrugOrder(ps.getPatient(7), azt, TestUtils.date(2010, 1, 1), TestUtils.date(2011, 1, 1));
-		TestUtils.saveDrugOrder(ps.getPatient(7), _3tc, TestUtils.date(2011, 1, 1), TestUtils.date(2012, 1, 1));
-		TestUtils.saveDrugOrder(ps.getPatient(7), efv, TestUtils.date(2011, 1, 1), TestUtils.date(2012, 1, 1));
-
-		Context.flushSession();
+		TestUtils.saveDrugOrder(TestUtils.getPatient(7), azt, TestUtils.date(2010, 1, 1), TestUtils.date(2011, 1, 1));
+		TestUtils.saveDrugOrder(TestUtils.getPatient(7), _3tc, TestUtils.date(2011, 1, 1), TestUtils.date(2012, 1, 1));
+		TestUtils.saveDrugOrder(TestUtils.getPatient(7), efv, TestUtils.date(2011, 1, 1), TestUtils.date(2012, 1, 1));
 		
 		List<Integer> cohort = Arrays.asList(6, 7, 8);
 

@@ -18,7 +18,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Concept;
-import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
@@ -55,8 +54,6 @@ public class OnSecondLineArtCalculationTest extends BaseModuleContextSensitiveTe
 	 */
 	@Test
 	public void evaluate_shouldCalculateCurrentArtRegimen() throws Exception {
-
-		PatientService ps = Context.getPatientService();
 		Concept azt = Context.getConceptService().getConcept(86663);
 		Concept _3tc = Context.getConceptService().getConcept(78643);
 		Concept efv = Context.getConceptService().getConcept(75523);
@@ -64,12 +61,10 @@ public class OnSecondLineArtCalculationTest extends BaseModuleContextSensitiveTe
 		Concept rtv = Context.getConceptService().getConcept(83412);
 
 		// Put patient #7 on AZT + 3TC + EFV
-		EmrTestUtils.saveRegimenOrder(ps.getPatient(7), Arrays.asList(azt, _3tc, efv), TestUtils.date(2011, 1, 1), null);
+		EmrTestUtils.saveRegimenOrder(TestUtils.getPatient(7), Arrays.asList(azt, _3tc, efv), TestUtils.date(2011, 1, 1), null);
 
 		// Put patient #8 on AZT + 3TC + LPV/r
-		EmrTestUtils.saveRegimenOrder(ps.getPatient(8), Arrays.asList(azt, _3tc, lpv, rtv), TestUtils.date(2011, 1, 1), null);
-
-		Context.flushSession();
+		EmrTestUtils.saveRegimenOrder(TestUtils.getPatient(8), Arrays.asList(azt, _3tc, lpv, rtv), TestUtils.date(2011, 1, 1), null);
 		
 		List<Integer> cohort = Arrays.asList(6, 7, 8);
 

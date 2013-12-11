@@ -47,16 +47,13 @@ public class CurrentArtRegimenCalculationTest extends BaseModuleContextSensitive
 	 */
 	@Test
 	public void evaluate_shouldCalculateCurrentArtRegimen() throws Exception {
-
 		// Put patient #7 on Dapsone
 		Concept dapsone = Dictionary.getConcept(Dictionary.DAPSONE);
-		TestUtils.saveDrugOrder(Context.getPatientService().getPatient(7), dapsone, TestUtils.date(2011, 1, 1), null);
+		TestUtils.saveDrugOrder(TestUtils.getPatient(7), dapsone, TestUtils.date(2011, 1, 1), null);
 
 		// Put patient #8 on Stavudine
-		Concept stavudine = Context.getConceptService().getConcept(84309);
-		TestUtils.saveDrugOrder(Context.getPatientService().getPatient(8), stavudine, TestUtils.date(2011, 1, 1), null);
-
-		Context.flushSession();
+		Concept stavudine = Dictionary.getConcept(Dictionary.STAVUDINE);
+		TestUtils.saveDrugOrder(TestUtils.getPatient(8), stavudine, TestUtils.date(2011, 1, 1), null);
 		
 		List<Integer> cohort = Arrays.asList(6, 7, 8);
 

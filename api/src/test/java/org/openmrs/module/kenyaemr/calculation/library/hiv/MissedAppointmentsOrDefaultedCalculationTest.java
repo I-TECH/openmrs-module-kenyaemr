@@ -23,16 +23,18 @@ import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
-import org.openmrs.module.kenyacore.metadata.MetadataUtils;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
+import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
+
+import static org.hamcrest.Matchers.notNullValue;
 
 /**
  * Tests for {@link MissedAppointmentsOrDefaultedCalculation}
@@ -57,33 +59,36 @@ public class MissedAppointmentsOrDefaultedCalculationTest extends BaseModuleCont
 	}
 
 	/**
+	 * @see MissedAppointmentsOrDefaultedCalculation#getFlagMessage()
+	 */
+	@Test
+	public void getFlagMessage() {
+		Assert.assertThat(new MissedAppointmentsOrDefaultedCalculation().getFlagMessage(), notNullValue());
+	}
+
+	/**
 	 * @see MissedAppointmentsOrDefaultedCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
 	 * @verifies determine whether patients have a Missed appointments or defaulted
 	 */
 	@Test
 	public void evaluate_shouldDetermineWhetherPatientsWhoMissedAppointmentsOrDefaulted() throws Exception {
-
-		// Get HIV Program
 		Program hivProgram = MetadataUtils.getProgram(HivMetadata._Program.HIV);
 
 		// Enroll patients #6, #7, #8 in the HIV Program
-		PatientService ps = Context.getPatientService();
-		for (int i = 6; i <= 8; ++i) {
-			TestUtils.enrollInProgram(ps.getPatient(i), hivProgram, TestUtils.date(2011, 1, 1));
-		}
+		TestUtils.enrollInProgram(TestUtils.getPatient(6), hivProgram, TestUtils.date(2011, 1, 1));
+		TestUtils.enrollInProgram(TestUtils.getPatient(7), hivProgram, TestUtils.date(2011, 1, 1));
+		TestUtils.enrollInProgram(TestUtils.getPatient(8), hivProgram, TestUtils.date(2011, 1, 1));
 
 		// Give patient #7 a return visit obs of 10 days ago
 		Concept returnVisit = Context.getConceptService().getConcept(5096);
 		Calendar calendar = Calendar.getInstance();
 		calendar.add(Calendar.DATE, -10);
-		TestUtils.saveObs(Context.getPatientService().getPatient(7), returnVisit, calendar.getTime(), calendar.getTime());
+		TestUtils.saveObs(TestUtils.getPatient(7), returnVisit, calendar.getTime(), calendar.getTime());
 
 		// Give patient #8 a return visit obs of 10 days in the future
 		calendar = Calendar.getInstance();
 		calendar.add(Calendar.DATE, 10);
-		TestUtils.saveObs(Context.getPatientService().getPatient(8), returnVisit, calendar.getTime(), calendar.getTime());
-
-		Context.flushSession();
+		TestUtils.saveObs(TestUtils.getPatient(8), returnVisit, calendar.getTime(), calendar.getTime());
 
 		List<Integer> ptIds = Arrays.asList(6, 7, 8, 9);
 

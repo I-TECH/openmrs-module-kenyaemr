@@ -19,7 +19,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Concept;
 import org.openmrs.Obs;
-import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
@@ -46,23 +45,19 @@ public class LastWhoStageCalculationTest extends BaseModuleContextSensitiveTest 
 	 */
 	@Test
 	public void evaluate_shouldCalculateLatestWHOStage() throws Exception {
-
-		PatientService ps = Context.getPatientService();
 		Concept whoStage = Dictionary.getConcept(Dictionary.CURRENT_WHO_STAGE);
 
-		// Give patient #6 a recent WHO ADULT 1 STAGE recording
+		// Give patient #7 a recent WHO ADULT 1 STAGE recording
 		Concept whoAdult1 = Dictionary.getConcept(Dictionary.WHO_STAGE_1_ADULT);
-		TestUtils.saveObs(ps.getPatient(6), whoStage, whoAdult1, TestUtils.date(2012, 12, 1));
+		TestUtils.saveObs(TestUtils.getPatient(7), whoStage, whoAdult1, TestUtils.date(2012, 12, 1));
 
-		// Give patient #6 an older WHO ADULT 2 STAGE recording
+		// Give patient #7 an older WHO ADULT 2 STAGE recording
 		Concept whoAdult2 = Dictionary.getConcept(Dictionary.WHO_STAGE_2_ADULT);
-		TestUtils.saveObs(ps.getPatient(6), whoStage, whoAdult2, TestUtils.date(2010, 11, 1));
-		
-		Context.flushSession();
+		TestUtils.saveObs(TestUtils.getPatient(7), whoStage, whoAdult2, TestUtils.date(2010, 11, 1));
 		
 		List<Integer> ptIds = Arrays.asList(6, 7);
-		CalculationResultMap resultMap = Context.getService(PatientCalculationService.class).evaluate(ptIds, new LastWhoStageCalculation());
-		Assert.assertEquals(whoAdult1, ((Obs) resultMap.get(6).getValue()).getValueCoded());
-		Assert.assertNull(resultMap.get(7)); // has no recorded stage
+		CalculationResultMap resultMap = new LastWhoStageCalculation().evaluate(ptIds, null, Context.getService(PatientCalculationService.class).createCalculationContext());
+		Assert.assertNull(resultMap.get(6)); // has no recorded stage
+		Assert.assertEquals(whoAdult1, ((Obs) resultMap.get(7).getValue()).getValueCoded());
 	}
 }
