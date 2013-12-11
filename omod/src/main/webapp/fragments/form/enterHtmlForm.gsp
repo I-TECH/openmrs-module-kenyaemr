@@ -146,6 +146,7 @@
 					for (key in result.errors) {
 						showError(key, result.errors[key]);
 					}
+					kenyaui.notifyError('Please fix all errors and resubmit');
 					ui.enableConfirmBeforeNavigating();
 				}
 			}, 'json')
