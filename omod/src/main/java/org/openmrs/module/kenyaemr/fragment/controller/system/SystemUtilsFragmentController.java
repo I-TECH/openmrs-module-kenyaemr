@@ -36,17 +36,22 @@ public class SystemUtilsFragmentController {
 
 		Map<String, Object> sysInfo = SystemInformation.getData();
 
+		long maxMemory = (Long) sysInfo.get(SystemInformation.JVM_MAXMEMORY);
+		long totalMemory = (Long) sysInfo.get(SystemInformation.JVM_TOTALMEMORY);
+		long freeMemory = (Long) sysInfo.get(SystemInformation.JVM_FREEMEMORY);
+		long usedMemory = totalMemory - freeMemory;
+
 		StringBuilder memInfo = new StringBuilder();
-		memInfo.append(kenyaUi.formatBytes((Long) sysInfo.get(SystemInformation.JVM_FREEMEMORY)));
+		memInfo.append(kenyaUi.formatBytes(usedMemory));
 		memInfo.append(" / ");
-		memInfo.append(kenyaUi.formatBytes((Long) sysInfo.get(SystemInformation.JVM_TOTALMEMORY)));
+		memInfo.append(kenyaUi.formatBytes(totalMemory));
 		memInfo.append(" / ");
-		memInfo.append(kenyaUi.formatBytes((Long) sysInfo.get(SystemInformation.JVM_MAXMEMORY)));
+		memInfo.append(kenyaUi.formatBytes(maxMemory));
 
 		List<SimpleObject> points = new ArrayList<SimpleObject>();
 		points.add(SimpleObject.create("label", "OpenMRS version", "value", sysInfo.get(SystemInformation.OPENMRS_VERSION)));
 		points.add(SimpleObject.create("label", "Server timezone", "value", sysInfo.get(SystemInformation.SERVER_TIMEZONE)));
-		points.add(SimpleObject.create("label", "Memory (free / total / max)", "value", memInfo.toString()));
+		points.add(SimpleObject.create("label", "Memory (used / total / max)", "value", memInfo.toString()));
 
 		return points;
 	}
