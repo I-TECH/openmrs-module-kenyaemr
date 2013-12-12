@@ -46,6 +46,8 @@ public class ReportRequestSimplifier extends AbstractSimplifier<ReportRequest> {
 	protected SimpleObject simplify(ReportRequest request) {
 		ReportDefinition definition = request.getReportDefinition().getParameterizable();
 
+		Long timeTaken = getTimeTaken(request);
+
 		SimpleObject ret = new SimpleObject();
 		ret.put("id", request.getId());
 		ret.put("report", definitionSimplifier.convert(definition));
@@ -53,7 +55,7 @@ public class ReportRequestSimplifier extends AbstractSimplifier<ReportRequest> {
 		ret.put("requestedBy", ui.simplifyObject(request.getRequestedBy()));
 		ret.put("status", request.getStatus());
 		ret.put("finished", request.getStatus().equals(ReportRequest.Status.COMPLETED) || request.getStatus().equals(ReportRequest.Status.FAILED));
-		ret.put("timeTaken", kenyaUi.formatDuration(getTimeTaken(request)));
+		ret.put("timeTaken", timeTaken != null ? kenyaUi.formatDuration(timeTaken) : null);
 		return ret;
 	}
 
@@ -62,9 +64,9 @@ public class ReportRequestSimplifier extends AbstractSimplifier<ReportRequest> {
 	 * @param request the request
 	 * @return the time taken in milliseconds
 	 */
-	protected long getTimeTaken(ReportRequest request) {
+	protected Long getTimeTaken(ReportRequest request) {
 		if (request.getEvaluateStartDatetime() == null || request.getStatus().equals(ReportRequest.Status.FAILED)) {
-			return 0l;
+			return null;
 		}
 
 		Date start = request.getEvaluateStartDatetime();

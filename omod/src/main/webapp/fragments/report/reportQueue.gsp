@@ -18,7 +18,7 @@
 				<td>{{ request.requestDate }}</td>
 				<td>{{ request.requestedBy.person.name }}</td>
 				<td>{{ request.status }}</td>
-				<td>{{ request.timeTaken }}</td>
+				<td>{{ request.timeTaken || '--:--:--' }}</td>
 				<td style="text-align: right">
 					<% if (config.allowCancel) { %>
 					<a href="#" ng-click="cancelRequest(request.id)" ng-if="request.status == 'REQUESTED'">

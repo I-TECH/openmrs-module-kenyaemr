@@ -66,7 +66,7 @@
 						<td>{{ request.requestDate }}</td>
 						<td>{{ request.requestedBy.person.name }}</td>
 						<td>{{ request.status }}</td>
-						<td>{{ request.timeTaken }}</td>
+						<td>{{ request.timeTaken || '--:--:--' }}</td>
 						<td style="text-align: right">
 							<div ng-if="request.status == 'COMPLETED'">
 								<a href="#" ng-click="viewReportData(request.id)">

@@ -114,7 +114,7 @@ public class ReportUtilsFragmentController {
 	 * @return the result
 	 */
 	@AppAction(EmrConstants.APP_ADMIN)
-	public FragmentActionResult cancelRequest(@RequestParam("requestId") ReportRequest request,
+	public Object cancelRequest(@RequestParam("requestId") ReportRequest request,
 									  UiUtils ui,
 									  @SpringBean ReportService reportService) {
 
