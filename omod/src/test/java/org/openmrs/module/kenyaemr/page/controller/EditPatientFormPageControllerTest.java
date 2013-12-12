@@ -19,7 +19,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Encounter;
 import org.openmrs.Form;
-import org.openmrs.module.kenyacore.metadata.MetadataUtils;
+import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;

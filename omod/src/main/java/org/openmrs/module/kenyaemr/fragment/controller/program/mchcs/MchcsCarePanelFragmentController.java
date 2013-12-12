@@ -19,7 +19,7 @@ import org.openmrs.EncounterType;
 import org.openmrs.Obs;
 import org.openmrs.Patient;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyacore.metadata.MetadataUtils;
+import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.kenyaemr.metadata.MchMetadata;
 import org.openmrs.module.kenyaemr.util.EmrUtils;
 import org.openmrs.ui.framework.annotation.FragmentParam;

@@ -22,7 +22,7 @@ import org.openmrs.LocationAttribute;
 import org.openmrs.LocationAttributeType;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyacore.metadata.MetadataUtils;
+import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.test.TestUiUtils;

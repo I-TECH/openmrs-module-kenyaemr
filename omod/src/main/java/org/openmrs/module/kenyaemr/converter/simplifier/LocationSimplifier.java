@@ -17,7 +17,7 @@ package org.openmrs.module.kenyaemr.converter.simplifier;
 import org.openmrs.Location;
 import org.openmrs.LocationAttribute;
 import org.openmrs.LocationAttributeType;
-import org.openmrs.module.kenyacore.metadata.MetadataUtils;
+import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.ui.framework.SimpleObject;
 import org.springframework.stereotype.Component;

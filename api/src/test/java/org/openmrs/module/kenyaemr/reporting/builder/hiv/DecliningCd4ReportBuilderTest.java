@@ -20,7 +20,7 @@ import org.openmrs.Concept;
 import org.openmrs.Program;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyacore.identifier.IdentifierManager;
-import org.openmrs.module.kenyacore.metadata.MetadataUtils;
+import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.kenyacore.report.CalculationReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportManager;

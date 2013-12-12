@@ -20,7 +20,7 @@ import org.openmrs.Concept;
 import org.openmrs.DrugOrder;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyacore.ContentManager;
-import org.openmrs.module.kenyacore.metadata.MetadataUtils;
+import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

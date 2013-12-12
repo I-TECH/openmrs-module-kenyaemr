@@ -16,7 +16,7 @@ package org.openmrs.module.kenyaemr.reporting.library.shared.tb;
 
 import org.openmrs.Concept;
 import org.openmrs.Program;
-import org.openmrs.module.kenyacore.metadata.MetadataUtils;
+import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyacore.report.builder.CalculationCohortDefinition;
 import org.openmrs.module.kenyaemr.Dictionary;

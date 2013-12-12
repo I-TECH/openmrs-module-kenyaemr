@@ -16,7 +16,7 @@ package org.openmrs.module.kenyaemr.fragment.controller;
 
 import org.openmrs.Patient;
 import org.openmrs.Visit;
-import org.openmrs.module.kenyacore.metadata.MetadataUtils;
+import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.fragment.FragmentModel;

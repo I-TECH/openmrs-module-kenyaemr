@@ -16,7 +16,7 @@ package org.openmrs.module.kenyaemr.fragment.controller;
 
 import org.openmrs.*;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyacore.metadata.MetadataUtils;
+import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.regimen.RegimenManager;
 import org.openmrs.module.kenyaemr.regimen.RegimenChangeHistory;

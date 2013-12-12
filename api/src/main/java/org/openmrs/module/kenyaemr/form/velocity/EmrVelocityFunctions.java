@@ -22,7 +22,7 @@ import java.util.List;
 import org.openmrs.*;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.htmlformentry.FormEntrySession;
-import org.openmrs.module.kenyacore.metadata.MetadataUtils;
+import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.reporting.common.DateUtil;

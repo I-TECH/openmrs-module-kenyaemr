@@ -36,7 +36,7 @@ import org.openmrs.calculation.result.*;
 import org.openmrs.module.kenyacore.CoreUtils;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
 import org.openmrs.module.kenyacore.calculation.CalculationUtils;
-import org.openmrs.module.kenyacore.metadata.MetadataUtils;
+import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.common.VitalStatus;
 import org.openmrs.module.reporting.data.patient.definition.DrugOrdersForPatientDataDefinition;

@@ -21,7 +21,7 @@ import org.openmrs.Encounter;
 import org.openmrs.Form;
 import org.openmrs.PatientProgram;
 import org.openmrs.Program;
-import org.openmrs.module.kenyacore.metadata.MetadataUtils;
+import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
