@@ -16,11 +16,11 @@ public class EmrReportingUtils {
 
 	/**
 	 * Creates a new cohort indicator
-	 * @param description the indicator description
+	 * @param name the indicator name
 	 * @return the cohort indicator
 	 */
-	public static CohortIndicator cohortIndicator(String description, Mapped<CohortDefinition> mappedCohort) {
-		CohortIndicator ind = new CohortIndicator(description);
+	public static CohortIndicator cohortIndicator(String name, Mapped<CohortDefinition> mappedCohort) {
+		CohortIndicator ind = new CohortIndicator(name);
 		ind.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		ind.addParameter(new Parameter("endDate", "End Date", Date.class));
 		ind.setCohortDefinition(mappedCohort);

@@ -14,8 +14,8 @@
 
 package org.openmrs.module.kenyaemr.reporting.cohort.definition;
 
+import org.openmrs.calculation.patient.PatientCalculation;
 import org.openmrs.module.kenyacore.report.builder.CalculationCohortDefinition;
-import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 
 import java.util.Date;
@@ -38,7 +38,7 @@ public class DateCalculationCohortDefinition extends CalculationCohortDefinition
 	 * Constructs a new calculation based cohort definition
 	 * @param calculation the calculation
 	 */
-	public DateCalculationCohortDefinition(BaseEmrCalculation calculation) {
+	public DateCalculationCohortDefinition(PatientCalculation calculation) {
 		super(calculation);
 	}
 	
