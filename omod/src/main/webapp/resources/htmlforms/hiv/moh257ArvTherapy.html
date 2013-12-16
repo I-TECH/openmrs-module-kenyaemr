@@ -33,7 +33,7 @@
 	var WHOSTAGE = 5356;
 
 	var birthDate = new Date(getValue('dob.value'))//.getTime();
-	var ENC_DATE = new Date(getValue('encounter_date.value'))//.getTime();
+	var ENC_DATE = new Date(getValue('encounter-date.value'))//.getTime();
 
 	function onDateStartedChange() {
 		var date_started= new Date(getValue('date_started_haart.value'));
@@ -60,16 +60,16 @@
 
 		/*this data should not be in Future */
 		if (ENC_DATE &gt; today) {
-			getField('encounter_date.error').html('Should not be greater than the Current date').show();
+			getField('encounter-date.error').html('Should not be greater than the Current date').show();
 		}
 		else if(ENC_DATE &lt; birthDate)
 		{
 			/* Encounter Date should be greater than the Patients's date of Birth    */
-			getField('encounter_date.error').html('Should not be less than the date of Birth').show();
+			getField('encounter-date.error').html('Should not be less than the date of Birth').show();
 		}
 		else
 		{
-			getField('encounter_date.error').hide();
+			getField('encounter-date.error').hide();
 		}
 
 		/* Display the who staging based on the age  */
@@ -158,14 +158,15 @@
 			}
 		}
 		else {
-			setValue('el_stage.value','') ;
+			setValue('el_stage_ch.value','') ;
+            setValue('el_stage_ad.value','') ;
 			jq('#initialWhoStageCh').hide();
 			jq('#initialWhoStageAd').hide();
 		}
 	}
 
 	jq(function(){
-		getField('encounter_date.value').change(onEncounterDateChange);
+		getField('encounter-date.value').change(onEncounterDateChange);
 		onEncounterDateChange();
 		getField('artWeight.value').change(calculateStartARTBMI);
 		onEncounterDateChange();
@@ -188,7 +189,7 @@
 
 			var selDate =new Date(getValue('date_started_haart.value')) ;
 			var birthDate = new Date(getValue('dob.value'))//.getTime();
-			var ENC_DATE=new Date(getValue('encounter_date.value'))//.getTime();
+			var ENC_DATE=new Date(getValue('encounter-date.value'))//.getTime();
 
 			var start_month;
 			var start_year;
@@ -222,7 +223,7 @@
 
 			var selDate = new Date(getValue('date_Eligible.value')) ;
 			var birthDate = new Date(getValue('dob.value'))//.getTime();
-			var ENC_DATE = new Date(getValue('encounter_date.value'))//.getTime();
+			var ENC_DATE = new Date(getValue('encounter-date.value'))//.getTime();
 
 			if (selDate === undefined) {
 				getField('date_Eligible.error').hide();
@@ -245,7 +246,7 @@
 
 			var selDate = new Date(getValue('to_date.value')) ;
 			var birthDate = new Date(getValue('dob.value'))//.getTime();
-			var ENC_DATE = new Date(getValue('encounter_date.value'))//.getTime();
+			var ENC_DATE = new Date(getValue('encounter-date.value'))//.getTime();
 
 			if (selDate === undefined) {
 				getField('to_date.error').hide();
@@ -268,7 +269,7 @@
 
 			var selDate = new Date(getValue('date_died.value')) ;
 			var birthDate = new Date(getValue('dob.value'))//.getTime();
-			var ENC_DATE = new Date(getValue('encounter_date.value'))//.getTime();
+			var ENC_DATE = new Date(getValue('encounter-date.value'))//.getTime();
 
 			if (selDate === undefined) {
 				getField('date_died.error').hide();
@@ -292,7 +293,7 @@
 
 			var selDate = new Date(getValue('interruption_date.value')) ;
 			var birthDate = new Date(getValue('dob.value'))//.getTime();
-			var ENC_DATE = new Date(getValue('encounter_date.value'))//.getTime();
+			var ENC_DATE = new Date(getValue('encounter-date.value'))//.getTime();
 
 			if (selDate === undefined) {
 				getField('interruption_date.error').hide();
@@ -315,7 +316,7 @@
 
 			var selDate = new Date(getValue('date_restarted.value')) ;
 			var birthDate = new Date(getValue('dob.value'))//.getTime();
-			var ENC_DATE = new Date(getValue('encounter_date.value'))//.getTime();
+			var ENC_DATE = new Date(getValue('encounter-date.value'))//.getTime();
 
 			if (selDate === undefined) {
 				getField('date_restarted.error').hide();
@@ -334,12 +335,13 @@
 		});
 	}) ;
 	</script>
-
+    <div style="display:none">
+        <encounterProvider default="1cc7dc79-ad09-4897-8a1d-0b3d3226e9ee" />
+    </div>
 	<div class="ke-form-header">
 		<table style="width: 100%">
 			<tr>
-				<td>Date: <encounterDate id="encounter_date" default="today"/></td>
-				<td>Form Filled by: <encounterProvider  default="currentUser"/><!-- default="currentUser" --></td>
+				<td>Date: <encounterDate id="encounter-date" showTime="false"/></td>
 				<td>Facility: <encounterLocation  default="GlobalProperty:kenyaemr.defaultLocation"/></td>
 			</tr>
 		</table>
@@ -350,7 +352,7 @@
 				<tr>
 					<td>
 						Patient's Names: <br/><lookup class="value" expression="patient.personName"/>
-						Patient Clinic Number:<lookup class="value" complexExpression="#foreach( $patId in $patientIdentifiers.get('Faces ID') ) $patId #end "/>
+						Patient Clinic Number:<lookup class="value" complexExpression="#foreach( $patId in $patientIdentifiers.get('Unique Patient Number') ) $patId #end "/>
 						Date of Birth: <lookup class="value" id="dob" expression="patient.birthdate"/>
 						Age: <lookup class="value" id="age" expression="patient.age"/>
 					</td>
@@ -387,10 +389,10 @@
 				<tr>
 					<td>
 						<!-- <obs conceptId="6796" answerConceptId="6795" answerLabel="WHO Stage" style="checkbox"/> -->
-						<span id="initialWhoStageAd">WHO Stage<obs id="el_stage" conceptId="160553AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+						<span id="initialWhoStageAd">WHO Stage<obs id="el_stage_ad" conceptId="160553AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 																						   answerConceptIds="1204AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1205AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1206AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1207AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
 
-						<span id="initialWhoStageCh">WHO Stage<obs id="el_stage" conceptId="160553AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+						<span id="initialWhoStageCh">WHO Stage<obs id="el_stage_ch" conceptId="160553AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 																						   answerConceptIds="1220AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1221AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1222AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1223AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
 					</td>
 					<td>
