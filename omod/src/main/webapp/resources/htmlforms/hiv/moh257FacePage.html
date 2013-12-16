@@ -38,7 +38,8 @@
         var COHABITING =1060;
         var SINGLE =1057;
         var DIVORCED = 1058;
-
+        /* allergy to other medicine concept */
+        var ALLERGY_TO_OTHER=5622;
 
         function onEncounterDateChange()
         {
@@ -176,6 +177,20 @@
         }
         });
 
+        getField('allergy.value').change(function(){
+            if(getValue('allergy.value')== ALLERGY_TO_OTHER)
+            {
+                jq('#allergy_detail').show();
+
+            }
+            else
+            {
+                setValue('allergy_detail.value', '');
+                jq('#allergy_detail').hide();
+
+            }
+        });
+
         getField('date_confirmed_pos.value').change(function(){
         var birthDate = new Date(getValue('dob.value'))//.getTime();
         var pos_date=new Date(getValue('date_confirmed_pos.value'))//.getTime();
@@ -224,12 +239,13 @@
 
         });
     </script>
-
+    <div style="display:none">
+        <encounterProvider default="1cc7dc79-ad09-4897-8a1d-0b3d3226e9ee" />
+    </div>
 	<div class="ke-form-header">
 		<table style="width: 100%">
 			<tr>
-				<td>Date: <encounterDate id="encounter_date" default="today"/></td>
-				<td>Enrolled by: <encounterProvider default="currentUser" /></td>
+				<td>Date: <encounterDate id="encounter_date" showTime="false"/></td>
 				<td>Enrolled at: <encounterLocation id="site" default="GlobalProperty:kenyaemr.defaultLocation"/></td>
 			</tr>
 		</table>
@@ -258,19 +274,7 @@
 								<td colspan="2">Sex <lookup class="value" expression="patient.gender" /></td>
 								<!--  <td>Postal Address <obs conceptId="6499"/></td> -->
 							</tr>
-							<!--
-							<tr>
-								<td>Tel Contact <obs conceptId="6497"/> <br/> District: <obs conceptId="6367"/></td>
-								<td>Location:<obs conceptId="6500"/></td>
-							</tr>
-							<tr>
-								<td>Sub-location: <obs conceptId="6501"/> </td>
-								<td rowspan="2">Landmark: <obs conceptId="6503"/></td>
-							</tr>
-							<tr>
-								<td>Nearest H/Centre: <obs conceptId="6502"/></td>
-							</tr>
-							-->
+
 							<tr>
 								<td colspan="2">
 									<table>
@@ -295,16 +299,7 @@
 								<td>Name:<obs conceptId="160638AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/> </td>
 								<td>Relationship:<obs conceptId="160640AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 													  style="dropdown"/> </td>
-								<!-- -answerConceptIds="970AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
-																		971AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
-																		5620AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
-																		160729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
-																		975AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
-																		974AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
-																		5618AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
-																		160730AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
-																		5617AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
-																		5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" -->
+
 							</tr>
 							<tr>
 								<td>Postal Address:<obs conceptId="160641AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/> </td>
@@ -411,7 +406,7 @@
 							<tr>
 								<td><br/>Date Confirmed HIV Positive</td>
 								<td><br/><obs id="date_confirmed_pos"  conceptId="160554AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/><span id="date_confirmed_error"></span></td>
-								<td><br/>Where? <obs conceptId="159936AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
+								<td><br/>Where? <obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
 
 							</tr>
 							<tr>
@@ -433,7 +428,15 @@
 							</tr>
 							<tr>
 								<td>Any Drug Allegies?</td>
-								<td colspan="2"><!-- <obs conceptId="1589"/> -->[TBD  CIEL to provide concept]</td>
+								<td colspan="2">
+                                    <obsgroup groupingConceptId="160647AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                                    <obs id="allergy" conceptId="160643AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                         answerConceptIds="162170AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,81724AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                         answerLabels="Allergey to Sulfa,Allergy to penicillin,Allergy to other medicine "
+                                            /> <br/>
+
+                                    <obs id="allergy_detail" conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+                                </obsgroup></td>
 							</tr>
 						</table>
 					</td>
@@ -444,7 +447,7 @@
 			</tbody>
 		</table>
 	</div>
-
+    <enrollInProgram programId="dfdc6d40-2f2f-463d-ba90-cc97350441a8"/>
 	<div class="ke-form-footer">
 		<submit />
 	</div>
