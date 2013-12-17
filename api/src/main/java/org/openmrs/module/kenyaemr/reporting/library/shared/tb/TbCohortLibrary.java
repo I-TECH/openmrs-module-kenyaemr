@@ -80,6 +80,7 @@ public class TbCohortLibrary {
 	 */
 	public CohortDefinition started12MonthsAgo() {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("started TB treatment 12 months ago");
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
 		cd.addSearch("enrolled12MonthsAgo", ReportUtils.map(enrolled(), "enrolledOnOrAfter=${onDate-13m},enrolledOnOrBefore=${onDate-12m}"));
 		cd.setCompositionString("enrolled12MonthsAgo");
@@ -92,6 +93,7 @@ public class TbCohortLibrary {
 	 */
 	public CohortDefinition diedAndStarted12MonthsAgo() {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("started TB treatment 12 months ago and died");
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.addSearch("died", ReportUtils.map(died(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
@@ -116,7 +118,7 @@ public class TbCohortLibrary {
 	 */
 	public CohortDefinition missedAppointmentOrDefaulted() {
 		CalculationCohortDefinition cd = new CalculationCohortDefinition(new MissedAppointmentsOrDefaultedCalculation());
-		cd.setName("Patients who missed and defaulted appointments");
+		cd.setName("missed or defaulted appointments");
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
 		return cd;
 	}

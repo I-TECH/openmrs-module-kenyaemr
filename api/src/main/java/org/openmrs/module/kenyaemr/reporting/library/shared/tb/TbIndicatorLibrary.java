@@ -35,7 +35,7 @@ public class TbIndicatorLibrary {
 	 * @return the indicator
 	 */
 	public CohortIndicator screenedForTb() {
-		return cohortIndicator("Number of patients screened for TB",
+		return cohortIndicator("patients screened for TB",
 				map(tbCohorts.screenedForTb(), "onOrAfter=${startDate},onOrBefore=${endDate}")
 		);
 	}
@@ -45,7 +45,7 @@ public class TbIndicatorLibrary {
 	 * @return the indicator
 	 */
 	public CohortIndicator diedAndStarted12MonthsAgo() {
-		return cohortIndicator(null,
+		return cohortIndicator("patients who started TB treatment 12 months ago and died",
 				map(tbCohorts.diedAndStarted12MonthsAgo(), "onOrAfter=${startDate},onOrBefore=${endDate}")
 		);
 	}
@@ -55,7 +55,7 @@ public class TbIndicatorLibrary {
 	 * @return the indicator
 	 */
 	public CohortIndicator completedTbTreatment() {
-		return cohortIndicator(null,
+		return cohortIndicator("completed TB treatment",
 				map(tbCohorts.completedTreatment(), "onOrAfter=${startDate},onOrBefore=${endDate}")
 		);
 	}
@@ -66,7 +66,7 @@ public class TbIndicatorLibrary {
 	 * @return the indicator
 	 */
 	public CohortIndicator defaultedAndMissedAppointment() {
-		return cohortIndicator(null,
+		return cohortIndicator("defaulted or missed appointments",
 				map(tbCohorts.missedAppointmentOrDefaulted(), "onDate=${endDate}")
 		);
 	}
@@ -76,7 +76,7 @@ public class TbIndicatorLibrary {
 	 * @return the indicator
 	 */
 	public CohortIndicator inTbAndHivProgramsAndOnCtxProphylaxis() {
-		return cohortIndicator(null,
+		return cohortIndicator("in TB and HIV programs and on CTX prophylaxis",
 				map(tbCohorts.inTbAndHivProgramsAndOnCtxProphylaxis(), "onOrAfter=${startDate},onOrBefore=${endDate}")
 		);
 	}
@@ -86,7 +86,7 @@ public class TbIndicatorLibrary {
 	 * @return the indicator
 	 */
 	public CohortIndicator inTbAndTestedForHiv() {
-		return cohortIndicator(null,
+		return cohortIndicator("in TB program and tested for HIV",
 				map(tbCohorts.testedForHivAndInTbProgram(), "onOrAfter=${startDate},onOrBefore=${endDate}")
 		);
 	}
@@ -96,7 +96,7 @@ public class TbIndicatorLibrary {
 	 * @return the indicator
 	 */
 	public CohortIndicator inTbAndTestedForHivPositive() {
-		return cohortIndicator(null,
+		return cohortIndicator("in TB program and tested positive for HIV",
 				map(tbCohorts.testedHivPositiveAndInTbProgram(), "onOrAfter=${startDate},onOrBefore=${endDate}")
 		);
 	}
@@ -106,7 +106,7 @@ public class TbIndicatorLibrary {
 	 * @return the indicator
 	 */
 	public CohortIndicator tbRetreatmentsPatients() {
-		return cohortIndicator(null,
+		return cohortIndicator("TB re-treatment patients",
 				map(tbCohorts.tbRetreatments(), "onOrAfter=${startDate},onOrBefore=${endDate}")
 		);
 	}
@@ -116,34 +116,37 @@ public class TbIndicatorLibrary {
 	 * @return the indicator
 	 */
 	public CohortIndicator extraPulmonaryTbPatients() {
-		return cohortIndicator(null,
+		return cohortIndicator("patients with extra pulmonary TB",
 				map(tbCohorts.extraPulmonaryTbPatients(), "onOrAfter=${startDate},onOrBefore=${endDate}")
 		);
 	}
 
 	/**
-	 * pulmonary tb patients with smear negative results
+	 * Number of pulmonary TB patients with smear negative results
+	 * @return the indicator
 	 */
 	public CohortIndicator pulmonaryTbSmearNegative() {
-		return cohortIndicator(null,
+		return cohortIndicator("patients with pulmonary TB smear negative results",
 				map(tbCohorts.pulmonaryTbSmearNegative(), "onOrAfter=${startDate},onOrBefore=${endDate}")
 		);
 	}
 
 	/**
-	 * pulmonary tb patients with smear positve results
+	 * Number of pulmonary TB patients with smear positive results
+	 * @return the indicator
 	 */
 	public CohortIndicator pulmonaryTbSmearPositive() {
-		return cohortIndicator(null,
+		return cohortIndicator("patients with pulmonary TB smear positive results",
 				map(tbCohorts.pulmonaryTbSmearPositive(), "onOrAfter=${startDate},onOrBefore=${endDate}")
 		);
 	}
 
 	/**
 	 * Patients with new Tb detected cases
+	 * @return the indicator
 	 */
 	public CohortIndicator tbNewDetectedCases() {
-		return cohortIndicator(null,
+		return cohortIndicator("new TB cases detected",
 				map(tbCohorts.tbNewDetectedCases(), "onOrAfter=${startDate},onOrBefore=${endDate}")
 		);
 	}

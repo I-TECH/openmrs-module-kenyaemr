@@ -157,7 +157,7 @@ public class Moh731ReportBuilder extends BaseIndicatorReportBuilder {
 		cohortDsd.setName("3 (Cohort DSD)");
 		cohortDsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		cohortDsd.addParameter(new Parameter("endDate", "End Date", Date.class));
-		cohortDsd.addDimension("age", ReportUtils.map(commonDimensions.age(), "onDate=${endDate}"));
+		cohortDsd.addDimension("age", ReportUtils.map(commonDimensions.standardAgeGroups(), "onDate=${endDate}"));
 		cohortDsd.addDimension("gender", ReportUtils.map(commonDimensions.gender()));
 
 		SimpleIndicatorDataSetDefinition nonCohortDsd = new SimpleIndicatorDataSetDefinition();

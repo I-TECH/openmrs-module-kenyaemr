@@ -16,7 +16,6 @@ package org.openmrs.module.kenyaemr.reporting.library.shared.hiv;
 
 import org.openmrs.Concept;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
-import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonIndicatorLibrary;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
@@ -59,7 +58,7 @@ public class HivIndicatorLibrary {
 	 * @return the indicator
 	 */
 	public CohortIndicator enrolledExcludingTransfersAndReferredFrom(Concept... entryPoints) {
-		return cohortIndicator("Number of newly enrolled patients referred from",
+		return cohortIndicator("newly enrolled patients referred from",
 				map(artCohorts.enrolledExcludingTransfersAndReferredFrom(entryPoints), "onOrAfter=${startDate},onOrBefore=${endDate}"));
 	}
 
@@ -68,7 +67,7 @@ public class HivIndicatorLibrary {
 	 * @return the indicator
 	 */
 	public CohortIndicator enrolledExcludingTransfersAndNotReferredFrom(Concept... entryPoints) {
-		return cohortIndicator("Number of newly enrolled patients referred from",
+		return cohortIndicator("newly enrolled patients referred from",
 				map(artCohorts.enrolledExcludingTransfersAndNotReferredFrom(entryPoints), "onOrAfter=${startDate},onOrBefore=${endDate}"));
 	}
 
@@ -77,7 +76,7 @@ public class HivIndicatorLibrary {
 	 * @return the indicator
 	 */
 	public CohortIndicator startedArt() {
-		return cohortIndicator("Number of patients who started ART", map(artCohorts.startedArt(), "onOrAfter=${startDate},onOrBefore=${endDate}"));
+		return cohortIndicator("patients who started ART", map(artCohorts.startedArt(), "onOrAfter=${startDate},onOrBefore=${endDate}"));
 	}
 
 	/**
@@ -85,7 +84,7 @@ public class HivIndicatorLibrary {
 	 * @return the indicator
 	 */
 	public CohortIndicator startedArtWhilePregnant() {
-		return cohortIndicator("Number of patients who started ART while pregnant", map(artCohorts.startedArtWhilePregnant(), "onOrAfter=${startDate},onOrBefore=${endDate}"));
+		return cohortIndicator("patients who started ART while pregnant", map(artCohorts.startedArtWhilePregnant(), "onOrAfter=${startDate},onOrBefore=${endDate}"));
 	}
 
 	/**
@@ -93,7 +92,7 @@ public class HivIndicatorLibrary {
 	 * @return the indicator
 	 */
 	public CohortIndicator startedArtWhileTbPatient() {
-		return cohortIndicator("Number of patients who started ART while being a TB patient", map(artCohorts.startedArtWhileTbPatient(), "onOrAfter=${startDate},onOrBefore=${endDate}"));
+		return cohortIndicator("patients who started ART while being a TB patient", map(artCohorts.startedArtWhileTbPatient(), "onOrAfter=${startDate},onOrBefore=${endDate}"));
 	}
 
 	/**
@@ -101,7 +100,7 @@ public class HivIndicatorLibrary {
 	 * @return the indicator
 	 */
 	public CohortIndicator startedArtWithWhoStage(int stage) {
-		return cohortIndicator("Number of patients who started ART with WHO stage " + stage, map(artCohorts.startedArtWithWhoStage(stage), "onOrAfter=${startDate},onOrBefore=${endDate}"));
+		return cohortIndicator("patients who started ART with WHO stage " + stage, map(artCohorts.startedArtWithWhoStage(stage), "onOrAfter=${startDate},onOrBefore=${endDate}"));
 	}
 
 	/**
@@ -109,7 +108,7 @@ public class HivIndicatorLibrary {
 	 * @return the indicator
 	 */
 	public CohortIndicator startedArtCumulative() {
-		return cohortIndicator("Number of patients who have ever started ART", map(artCohorts.startedArt(), "onOrBefore=${endDate}"));
+		return cohortIndicator("patients who have ever started ART", map(artCohorts.startedArt(), "onOrBefore=${endDate}"));
 	}
 
 	/**
@@ -117,7 +116,7 @@ public class HivIndicatorLibrary {
 	 * @return the indicator
 	 */
 	public CohortIndicator eligibleForArt() {
-		return cohortIndicator("Number of patients eligible for ART", map(artCohorts.eligibleForArt(), "onDate=${endDate}"));
+		return cohortIndicator("patients eligible for ART", map(artCohorts.eligibleForArt(), "onDate=${endDate}"));
 	}
 
 	/**
@@ -125,7 +124,7 @@ public class HivIndicatorLibrary {
 	 * @return the indicator
 	 */
 	public CohortIndicator onArt() {
-		return cohortIndicator("Number of patients on ART", map(artCohorts.onArt(), "onDate=${endDate}"));
+		return cohortIndicator("patients on ART", map(artCohorts.onArt(), "onDate=${endDate}"));
 	}
 
 	/**
@@ -133,7 +132,7 @@ public class HivIndicatorLibrary {
 	 * @return the indicator
 	 */
 	public CohortIndicator onArtAndPregnant() {
-		return cohortIndicator("Number of patients on ART and pregnant", map(artCohorts.onArtAndPregnant(), "onDate=${endDate}"));
+		return cohortIndicator("patients on ART and pregnant", map(artCohorts.onArtAndPregnant(), "onDate=${endDate}"));
 	}
 
 	/**
@@ -141,7 +140,7 @@ public class HivIndicatorLibrary {
 	 * @return the indicator
 	 */
 	public CohortIndicator onArtAndNotPregnant() {
-		return cohortIndicator("Number of patients on ART and not pregnant", map(artCohorts.onArtAndNotPregnant(), "onDate=${endDate}"));
+		return cohortIndicator("patients on ART and not pregnant", map(artCohorts.onArtAndNotPregnant(), "onDate=${endDate}"));
 	}
 
 	/**
@@ -149,7 +148,7 @@ public class HivIndicatorLibrary {
 	 * @return the indicator
 	 */
 	public CohortIndicator onCotrimoxazoleProphylaxis() {
-		return cohortIndicator("Number of patients on CTX prophylaxis", map(artCohorts.inHivProgramAndOnCtxProphylaxis(), "onOrAfter=${startDate},onOrBefore=${endDate}"));
+		return cohortIndicator("patients on CTX prophylaxis", map(artCohorts.inHivProgramAndOnCtxProphylaxis(), "onOrAfter=${startDate},onOrBefore=${endDate}"));
 	}
 
 	/**
@@ -157,7 +156,7 @@ public class HivIndicatorLibrary {
 	 * @return the indicator
 	 */
 	public CohortIndicator onFluconazoleProphylaxis() {
-		return cohortIndicator("Number of patients on Fluconazole prophylaxis", map(artCohorts.inHivProgramAndOnFluconazoleProphylaxis(), "onOrAfter=${startDate},onOrBefore=${endDate}"));
+		return cohortIndicator("patients on Fluconazole prophylaxis", map(artCohorts.inHivProgramAndOnFluconazoleProphylaxis(), "onOrAfter=${startDate},onOrBefore=${endDate}"));
 	}
 
 	/**
@@ -165,6 +164,6 @@ public class HivIndicatorLibrary {
 	 * @return the indicator
 	 */
 	public CohortIndicator onProphylaxis() {
-		return cohortIndicator("Number of patients on prophylaxis", map(artCohorts.inHivProgramAndOnAnyProphylaxis(), "onOrAfter=${startDate},onOrBefore=${endDate}"));
+		return cohortIndicator("patients on any prophylaxis", map(artCohorts.inHivProgramAndOnAnyProphylaxis(), "onOrAfter=${startDate},onOrBefore=${endDate}"));
 	}
 }

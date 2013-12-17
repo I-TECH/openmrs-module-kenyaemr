@@ -35,7 +35,7 @@ public class PwpIndicatorLibrary {
 	 * @return the indicator
 	 */
 	public CohortIndicator condomsProvided() {
-		return cohortIndicator("Number of patients provided with condoms", map(pwpCohorts.condomsProvided(), "onOrAfter=${startDate},onOrBefore=${endDate}"));
+		return cohortIndicator("patients provided with condoms", map(pwpCohorts.condomsProvided(), "onOrAfter=${startDate},onOrBefore=${endDate}"));
 	}
 
 	/**
@@ -43,6 +43,6 @@ public class PwpIndicatorLibrary {
 	 * @return the indicator
 	 */
 	public CohortIndicator modernContraceptivesProvided() {
-		return cohortIndicator("Number of patients provided with modern contraceptives", map(pwpCohorts.modernContraceptivesProvided(), "onOrAfter=${startDate},onOrBefore=${endDate}"));
+		return cohortIndicator("patients provided with modern contraceptives", map(pwpCohorts.modernContraceptivesProvided(), "onOrAfter=${startDate},onOrBefore=${endDate}"));
 	}
 }

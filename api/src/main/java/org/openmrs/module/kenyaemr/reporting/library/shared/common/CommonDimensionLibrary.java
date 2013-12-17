@@ -38,7 +38,7 @@ public class CommonDimensionLibrary {
 	 */
 	public CohortDefinitionDimension gender() {
 		CohortDefinitionDimension dim = new CohortDefinitionDimension();
-		dim.setName("Gender");
+		dim.setName("gender");
 		dim.addCohortDefinition("M", map(commonCohortLibrary.males()));
 		dim.addCohortDefinition("F", map(commonCohortLibrary.females()));
 		return dim;
@@ -48,9 +48,9 @@ public class CommonDimensionLibrary {
 	 * Dimension of age using the 3 standard age groups
 	 * @return the dimension
 	 */
-	public CohortDefinitionDimension age() {
+	public CohortDefinitionDimension standardAgeGroups() {
 		CohortDefinitionDimension dim = new CohortDefinitionDimension();
-		dim.setName("Age (<1, <15, 15+)");
+		dim.setName("age groups (<1, <15, 15+)");
 		dim.addParameter(new Parameter("onDate", "Date", Date.class));
 		dim.addCohortDefinition("<1", map(commonCohortLibrary.agedAtMost(0), "effectiveDate=${onDate}"));
 		dim.addCohortDefinition("<15", map(commonCohortLibrary.agedAtMost(14), "effectiveDate=${onDate}"));

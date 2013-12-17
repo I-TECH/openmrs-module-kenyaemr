@@ -78,7 +78,7 @@ public class Moh711ReportBuilder extends BaseIndicatorReportBuilder {
 		dsd.setDescription("TB");
 		dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
-		dsd.addDimension("age", map(commonDimensions.age(), "onDate=${endDate}"));
+		dsd.addDimension("age", map(commonDimensions.standardAgeGroups(), "onDate=${endDate}"));
 		dsd.addDimension("gender", map(commonDimensions.gender()));
 
 		List<ColumnParameters> columns = new ArrayList<ColumnParameters>();
@@ -115,7 +115,7 @@ public class Moh711ReportBuilder extends BaseIndicatorReportBuilder {
 		dsd.setDescription("ART");
 		dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
-		dsd.addDimension("age", ReportUtils.map(commonDimensions.age(), "onDate=${endDate}"));
+		dsd.addDimension("age", ReportUtils.map(commonDimensions.standardAgeGroups(), "onDate=${endDate}"));
 		dsd.addDimension("gender", ReportUtils.map(commonDimensions.gender()));
 
 		ColumnParameters colFPeds = new ColumnParameters("FP", "0-14 years, female", "gender=F|age=<15");
