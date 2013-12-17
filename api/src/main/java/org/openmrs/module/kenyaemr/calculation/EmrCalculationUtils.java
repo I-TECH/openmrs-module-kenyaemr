@@ -197,4 +197,24 @@ public class EmrCalculationUtils {
 		return false;
 	}
 
+	/**
+	 * Find the last obs before the given date. Assumes obs are ordered with ascending dates.
+	 * @param obss the list of obs
+	 * @param onOrBefore the day
+	 * @return the last obs or null if no obs are before the given date
+	 */
+	public static Obs findLastOnOrBefore(List<Obs> obss, Date onOrBefore) {
+		Date before = OpenmrsUtil.getLastMomentOfDay(onOrBefore);
+
+		Obs result = null;
+		for (Obs obs : obss) {
+			if (obs.getObsDatetime().before(before)) {
+				result = obs;
+			}
+			else {
+				break;
+			}
+		}
+		return result;
+	}
 }
