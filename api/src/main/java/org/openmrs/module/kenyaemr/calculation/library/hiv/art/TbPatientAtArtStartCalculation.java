@@ -14,9 +14,11 @@
 
 package org.openmrs.module.kenyaemr.calculation.library.hiv.art;
 
+import org.openmrs.PatientProgram;
 import org.openmrs.Program;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
+import org.openmrs.calculation.result.ListResult;
 import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
@@ -27,6 +29,7 @@ import org.openmrs.module.kenyaemr.metadata.TbMetadata;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -42,17 +45,21 @@ public class TbPatientAtArtStartCalculation extends BaseEmrCalculation {
 
 		Program tbProgram = MetadataUtils.getProgram(TbMetadata._Program.TB);
 		CalculationResultMap artStartDates = calculate(new InitialArtStartDateCalculation(), cohort, context);
+		CalculationResultMap tbEnrollments = Calculations.allEnrollments(tbProgram, cohort, context);
 
 		CalculationResultMap ret = new CalculationResultMap();
 		for (Integer ptId : cohort) {
 			boolean result = false;
 			Date artStartDate = EmrCalculationUtils.datetimeResultForPatient(artStartDates, ptId);
+			ListResult enrollmentsResult = (ListResult) tbEnrollments.get(ptId);
 
-			if (artStartDate != null) {
-				CalculationResultMap enrollment = Calculations.activeEnrollmentOn(tbProgram, artStartDate, Collections.singleton(ptId), context);
-
-				if (enrollment.get(ptId) != null) {
-					result = true;
+			if (artStartDate != null && enrollmentsResult != null && !enrollmentsResult.isEmpty()) {
+				List<PatientProgram> enrollments = EmrCalculationUtils.extractListResultValues(enrollmentsResult);
+				for (PatientProgram enrollment : enrollments) {
+					if (enrollment.getActive(artStartDate)) {
+						result = true;
+						break;
+					}
 				}
 			}
 

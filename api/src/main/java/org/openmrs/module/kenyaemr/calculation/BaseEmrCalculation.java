@@ -17,8 +17,6 @@ package org.openmrs.module.kenyaemr.calculation;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -36,33 +34,14 @@ import org.openmrs.calculation.result.*;
 import org.openmrs.module.kenyacore.CoreUtils;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
 import org.openmrs.module.kenyacore.calculation.CalculationUtils;
+import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
-import org.openmrs.module.reporting.common.TimeQualifier;
-import org.openmrs.module.reporting.common.VitalStatus;
 import org.openmrs.module.reporting.data.patient.definition.DrugOrdersForPatientDataDefinition;
-import org.openmrs.module.reporting.data.patient.definition.ProgramEnrollmentsForPatientDataDefinition;
-import org.openmrs.module.reporting.data.person.definition.VitalStatusDataDefinition;
-import org.openmrs.util.OpenmrsUtil;
 
 /**
  * Base class for calculations we'll hand-write for this module.
  */
 public abstract class BaseEmrCalculation extends BaseCalculation implements PatientCalculation {
-
-	/**
-	 * Evaluates the all program enrollments on the specified program
-	 * @param program the program
-	 * @param cohort the patient ids
-	 * @param calculationContext the calculation context
-	 * @return the list results enrollments in a calculation result map
-	 */
-	protected static CalculationResultMap allProgramEnrollments(Program program, Collection<Integer> cohort, PatientCalculationContext calculationContext) {
-		ProgramEnrollmentsForPatientDataDefinition def = new ProgramEnrollmentsForPatientDataDefinition("All " + program.getName() + " enrollments");
-		def.setWhichEnrollment(TimeQualifier.ANY);
-		def.setProgram(program);
-		def.setEnrolledOnOrBefore(calculationContext.getNow());
-		return CalculationUtils.evaluateWithReporting(def, cohort, new HashMap<String, Object>(), null, calculationContext);
-	}
 
 	/**
 	 * Evaluates the active drug orders for each patient
@@ -184,17 +163,7 @@ public abstract class BaseEmrCalculation extends BaseCalculation implements Pati
 	 * @return the extracted patient ids
 	 */
 	protected static Set<Integer> alivePatients(Collection<Integer> cohort, PatientCalculationContext calculationContext) {
-		CalculationResultMap map = CalculationUtils.evaluateWithReporting(new VitalStatusDataDefinition(), cohort, new HashMap<String, Object>(), null, calculationContext);
-		Set<Integer> ret = new HashSet<Integer>();
-		for (Map.Entry<Integer, CalculationResult> e : map.entrySet()) {
-			if (e.getValue() != null) {
-				VitalStatus vs = ((VitalStatus) e.getValue().getValue());
-				if (!vs.getDead() || OpenmrsUtil.compareWithNullAsEarliest(vs.getDeathDate(), calculationContext.getNow()) > 0) {
-					ret.add(e.getKey());
-				}
-			}
-		}
-		return ret;
+		return CalculationUtils.patientsThatPass(Calculations.alive(cohort, calculationContext));
 	}
 
 	/**
