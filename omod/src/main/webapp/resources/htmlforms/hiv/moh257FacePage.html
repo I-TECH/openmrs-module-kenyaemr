@@ -224,13 +224,15 @@ jq(function() {
     getField('allergy.value').change(function(){
         if(getValue('allergy.value')== ALLERGY_TO_OTHER)
         {
-            jq('#allergy_detail').show();
+           // jq('#allergy_detail').show();
+            jq('#allergy_detail').find('input[type=text]').removeAttr('disabled');
 
         }
         else
         {
             setValue('allergy_detail.value', '');
-            jq('#allergy_detail').hide();
+            //jq('#allergy_detail').hide();
+            jq('#allergy_detail').find('input[type=text]').attr('disabled','true');
 
         }
     });
@@ -375,7 +377,7 @@ jq(function() {
                 <td><obs id="ep_vct" conceptId="160540AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160539AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="VCT" style="checkbox"/></td>
                 <td><obs id="ep_ipdCh" conceptId="160540AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160537AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="IPD-Ch" style="checkbox"/></td>
                 <td><obs id="ep_mch" conceptId="160540AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160544AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="MCH-Child" style="checkbox"/></td>
-                <td>VMMC [TBD- Waiting CIEL concept]<!--<obs  conceptId="160540AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1828" answerLabel="VMMC" style="checkbox"/>--></td>
+                <td><obs id="ep_vmmc" conceptId="162223AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1828" answerLabel="VMMC" style="checkbox"/></td>
 
             </tr>
             <tr>
