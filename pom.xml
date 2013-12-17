@@ -3,7 +3,7 @@
 
 	<groupId>org.openmrs.module</groupId>
 	<artifactId>kenyaemr</artifactId>
-	<version>13.3-RC3-SNAPSHOT</version>
+	<version>13.3-RC4-SNAPSHOT</version>
 
 	<packaging>pom</packaging>
 	<name>KenyaEMR</name>
