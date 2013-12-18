@@ -19,6 +19,7 @@ import org.openmrs.Program;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.ListResult;
+import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
@@ -27,7 +28,6 @@ import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.metadata.TbMetadata;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -54,7 +54,7 @@ public class TbPatientAtArtStartCalculation extends BaseEmrCalculation {
 			ListResult enrollmentsResult = (ListResult) tbEnrollments.get(ptId);
 
 			if (artStartDate != null && enrollmentsResult != null && !enrollmentsResult.isEmpty()) {
-				List<PatientProgram> enrollments = EmrCalculationUtils.extractListResultValues(enrollmentsResult);
+				List<PatientProgram> enrollments = CalculationUtils.extractResultValues(enrollmentsResult);
 				for (PatientProgram enrollment : enrollments) {
 					if (enrollment.getActive(artStartDate)) {
 						result = true;

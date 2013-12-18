@@ -20,6 +20,7 @@ import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.ListResult;
 import org.openmrs.calculation.result.SimpleResult;
+import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
@@ -53,7 +54,7 @@ public class WhoStageAtArtStartCalculation extends BaseEmrCalculation {
 			ListResult whoStageObssResult = (ListResult) whoStageObss.get(ptId);
 
 			if (artStartDate != null && whoStageObssResult != null && !whoStageObssResult.isEmpty()) {
-				List<Obs> whoStages = EmrCalculationUtils.extractListResultValues(whoStageObssResult);
+				List<Obs> whoStages = CalculationUtils.extractResultValues(whoStageObssResult);
 				Obs lastBeforeArtStart = EmrCalculationUtils.findLastOnOrBefore(whoStages, artStartDate);
 
 				if (lastBeforeArtStart != null) {

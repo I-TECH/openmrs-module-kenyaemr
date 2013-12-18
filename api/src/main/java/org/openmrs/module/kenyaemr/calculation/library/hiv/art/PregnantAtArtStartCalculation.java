@@ -19,6 +19,7 @@ import org.openmrs.Obs;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.ListResult;
+import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyacore.calculation.Filters;
 import org.openmrs.module.kenyaemr.Dictionary;
@@ -59,7 +60,7 @@ public class PregnantAtArtStartCalculation extends BaseEmrCalculation {
 				ListResult pregObssResult = (ListResult) pregnancyObss.get(ptId);
 
 				if (artStartDate != null && pregObssResult != null && !pregObssResult.isEmpty()) {
-					List<Obs> pregnancyStatuses = EmrCalculationUtils.extractListResultValues(pregObssResult);
+					List<Obs> pregnancyStatuses = CalculationUtils.extractResultValues(pregObssResult);
 					Obs lastBeforeArtStart = EmrCalculationUtils.findLastOnOrBefore(pregnancyStatuses, artStartDate);
 
 					if (lastBeforeArtStart != null && lastBeforeArtStart.getValueCoded().equals(yes)) {

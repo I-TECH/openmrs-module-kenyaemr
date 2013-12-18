@@ -74,22 +74,6 @@ public class EmrCalculationUtils {
 	}
 
 	/**
-	 * Extracts actual values from a list result. Always returns a list even if result is null.
-	 * @param result the list result
-	 * @param <T> the type of each value
-	 * @return the list of values
-	 */
-	public static <T> List<T> extractListResultValues(ListResult result) {
-		List<T> values = new ArrayList<T>();
-		if (result != null) {
-			for (SimpleResult resultItem : (List<SimpleResult>) result.getValue()) {
-				values.add((T)resultItem.getValue());
-			}
-		}
-		return values;
-	}
-
-	/**
 	 * Evaluates the specified calculation for a single patient
 	 * @param calculationClass the calculation class
 	 * @param configuration the calculation configuration

@@ -31,7 +31,6 @@ import org.openmrs.module.kenyacore.calculation.Filters;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
-import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 
@@ -69,7 +68,7 @@ public class NeverTakenCtxOrDapsoneCalculation extends BaseEmrCalculation {
 				// First look to see if they have an obs for taking as prophylaxis
 				ListResult ctxProphylaxis = (ListResult) ctxProphylaxisObss.get(ptId);
 				if (ctxProphylaxis != null) {
-					List<Obs> ctxProphylaxisObsList = EmrCalculationUtils.extractListResultValues(ctxProphylaxis);
+					List<Obs> ctxProphylaxisObsList = CalculationUtils.extractResultValues(ctxProphylaxis);
 					for (Obs ctxProphylaxisObs : ctxProphylaxisObsList) {
 						if (ctxProphylaxisObs.getValueCoded().equals(yes)) {
 							neverTakenCtxOrDapsone = false;
@@ -83,7 +82,7 @@ public class NeverTakenCtxOrDapsoneCalculation extends BaseEmrCalculation {
 					ListResult patientMedOrders = (ListResult) medOrdersObss.get(ptId);
 					if (patientMedOrders != null) {
 						// Look through list of medication order obs for any Dapsone or CTX
-						List<Obs> medOrderObsList = EmrCalculationUtils.extractListResultValues(patientMedOrders);
+						List<Obs> medOrderObsList = CalculationUtils.extractResultValues(patientMedOrders);
 						for (Obs medOrderObs : medOrderObsList) {
 							if (medOrderObs.getValueCoded().equals(dapsone) || medOrderObs.getValueCoded().equals(ctx)) {
 								neverTakenCtxOrDapsone = false;

@@ -70,24 +70,4 @@ public class EmrCalculationUtilsTest {
 		Assert.assertTrue(map.get(7) instanceof ListResult);
 		Assert.assertTrue(map.get(999) instanceof ListResult);
 	}
-
-	/**
-	 * @see EmrCalculationUtils#extractListResultValues(org.openmrs.calculation.result.ListResult)
-	 */
-	@Test
-	public void extractListResultValues_shouldExtractListResultValues() {
-		// Test with empty list
-		ListResult emptyList = new ListResult();
-		List<Object> emptyValues = EmrCalculationUtils.extractListResultValues(emptyList);
-		Assert.assertEquals(0, emptyValues.size());
-
-		// Test with non-empty list
-		ListResult result = new ListResult();
-		result.add(new SimpleResult(100, null));
-		result.add(new SimpleResult(200, null));
-		List<Integer> numericValues = EmrCalculationUtils.extractListResultValues(result);
-		Assert.assertEquals(2, numericValues.size());
-		Assert.assertEquals(new Integer(100), numericValues.get(0));
-		Assert.assertEquals(new Integer(200), numericValues.get(1));
-	}
 }

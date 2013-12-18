@@ -38,7 +38,6 @@ import org.openmrs.module.kenyacore.calculation.CalculationManager;
 import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
 import org.openmrs.module.kenyaemr.EmrConstants;
-import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.calculation.library.ScheduledVisitOnDayCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.VisitsOnDayCalculation;
 import org.openmrs.module.kenyaui.annotation.AppAction;
@@ -113,7 +112,7 @@ public class PatientUtilsFragmentController {
 			SimpleObject so = ui.simplifyObject(p);
 
 			ListResult visitsResult = (ListResult) actual.get(p.getPatientId());
-			List<Visit> visits = EmrCalculationUtils.extractListResultValues(visitsResult);
+			List<Visit> visits = CalculationUtils.extractResultValues(visitsResult);
 			so.put("visits", ui.simplifyCollection(visits));
 
 			simplified.add(so);

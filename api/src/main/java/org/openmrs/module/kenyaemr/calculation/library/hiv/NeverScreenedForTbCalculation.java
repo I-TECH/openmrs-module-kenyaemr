@@ -32,7 +32,6 @@ import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
-import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 
 /**
@@ -71,7 +70,7 @@ public class NeverScreenedForTbCalculation extends BaseEmrCalculation {
 			if (inHivProgram.contains(ptId)) {
 				hivAndNeverScreened = true;
 
-				List<Obs> diseasesStatuses = EmrCalculationUtils.extractListResultValues((ListResult) screeningObs.get(ptId));
+				List<Obs> diseasesStatuses = CalculationUtils.extractResultValues((ListResult) screeningObs.get(ptId));
 
 				for (Obs diseaseStatus : diseasesStatuses) {
 					if (diseaseSuspected.equals(diseaseStatus.getValueCoded()) || diseaseDiagnosed.equals(diseaseStatus.getValueCoded()) || noSignsOrSymptoms.equals(diseaseStatus.getValueCoded())) {

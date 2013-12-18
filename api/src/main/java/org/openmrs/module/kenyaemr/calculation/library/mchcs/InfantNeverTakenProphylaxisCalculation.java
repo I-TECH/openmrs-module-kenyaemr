@@ -73,7 +73,7 @@ public class InfantNeverTakenProphylaxisCalculation extends BaseEmrCalculation {
 				ListResult patientMedOrders = (ListResult) medOrdersObss.get(ptId);
 				if (patientMedOrders != null) {
 					// Look through list of medication order obs for any  CTX
-					List<Obs> medOrderObsList = EmrCalculationUtils.extractListResultValues(patientMedOrders);
+					List<Obs> medOrderObsList = CalculationUtils.extractResultValues(patientMedOrders);
 					for (Obs medOrderObs : medOrderObsList) {
 						if (medOrderObs.getValueCoded().equals(nvp) || medOrderObs.getValueCoded().equals(nvpazt3tc)) {
 							notOnPcp = false;
