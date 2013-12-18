@@ -62,18 +62,18 @@ public class MissingTbSputumResultsCalculation extends BaseEmrCalculation implem
 		Set<Integer> inTbProgram = CalculationUtils.patientsThatPass(Calculations.activeEnrollment(tbProgram, alive, context));
 		
 		//get last disease classification
-		CalculationResultMap lastDiseaseClassiffication = Calculations.lastObs(getConcept(Dictionary.SITE_OF_TUBERCULOSIS_DISEASE), inTbProgram, context);
+		CalculationResultMap lastDiseaseClassiffication = Calculations.lastObs(Dictionary.getConcept(Dictionary.SITE_OF_TUBERCULOSIS_DISEASE), inTbProgram, context);
 		
 		//get the results for pulmonary tb that is either positive or negative
-		CalculationResultMap lastTbPulmonayResult = Calculations.lastObs(getConcept(Dictionary.RESULTS_TUBERCULOSIS_CULTURE), inTbProgram, context);
+		CalculationResultMap lastTbPulmonayResult = Calculations.lastObs(Dictionary.getConcept(Dictionary.RESULTS_TUBERCULOSIS_CULTURE), inTbProgram, context);
 		
 		//get concepts for positive and negative
-		Concept smearPositive = getConcept(Dictionary.POSITIVE);
-		Concept smearNegative = getConcept(Dictionary.NEGATIVE);
-		Concept pulmonaryTb = getConcept(Dictionary.PULMONARY_TB);
+		Concept smearPositive = Dictionary.getConcept(Dictionary.POSITIVE);
+		Concept smearNegative = Dictionary.getConcept(Dictionary.NEGATIVE);
+		Concept pulmonaryTb = Dictionary.getConcept(Dictionary.PULMONARY_TB);
 		
 		//get the last encounter which might have recorded sputum results
-		CalculationResultMap lastSputumResults = Calculations.lastObs(getConcept(Dictionary.SPUTUM_FOR_ACID_FAST_BACILLI), inTbProgram, context);
+		CalculationResultMap lastSputumResults = Calculations.lastObs(Dictionary.getConcept(Dictionary.SPUTUM_FOR_ACID_FAST_BACILLI), inTbProgram, context);
 		
 		CalculationResultMap ret = new CalculationResultMap();
 		

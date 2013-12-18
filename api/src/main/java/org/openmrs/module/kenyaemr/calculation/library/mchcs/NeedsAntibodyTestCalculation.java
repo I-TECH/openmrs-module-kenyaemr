@@ -57,14 +57,14 @@ public class NeedsAntibodyTestCalculation extends BaseEmrCalculation implements 
 
 		Set<Integer> alive = alivePatients(cohort, context);
 		Set<Integer> inMchcsProgram = CalculationUtils.patientsThatPass(Calculations.activeEnrollment(mchcsProgram, alive, context));
-		CalculationResultMap ages = Calculations.ages(cohort, context);
+		//CalculationResultMap ages = Calculations.ages(cohort, context);
 
 		// Get whether the child is HIV Exposed
-		CalculationResultMap lastChildHivStatus = Calculations.lastObs(getConcept(Dictionary.CHILDS_CURRENT_HIV_STATUS), inMchcsProgram, context);
-		CalculationResultMap lastHivRapidTest1 = Calculations.lastObs(getConcept(Dictionary.HIV_RAPID_TEST_1_QUALITATIVE), inMchcsProgram, context);
-		CalculationResultMap lastHivRapidTest2 = Calculations.lastObs(getConcept(Dictionary.HIV_RAPID_TEST_2_QUALITATIVE), inMchcsProgram, context);
+		CalculationResultMap lastChildHivStatus = Calculations.lastObs(Dictionary.getConcept(Dictionary.CHILDS_CURRENT_HIV_STATUS), inMchcsProgram, context);
+		CalculationResultMap lastHivRapidTest1 = Calculations.lastObs(Dictionary.getConcept(Dictionary.HIV_RAPID_TEST_1_QUALITATIVE), inMchcsProgram, context);
+		CalculationResultMap lastHivRapidTest2 = Calculations.lastObs(Dictionary.getConcept(Dictionary.HIV_RAPID_TEST_2_QUALITATIVE), inMchcsProgram, context);
 
-		Concept hivExposed = getConcept(Dictionary.EXPOSURE_TO_HIV);
+		Concept hivExposed = Dictionary.getConcept(Dictionary.EXPOSURE_TO_HIV);
 		CalculationResultMap ret = new CalculationResultMap();
 
 		for (Integer ptId : cohort) {

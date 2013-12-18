@@ -33,6 +33,6 @@ public class TbPatientClassificationCalculation extends BaseEmrCalculation {
 	 */
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> arg1, PatientCalculationContext context) {
-		return Calculations.lastObs(getConcept(Dictionary.TYPE_OF_TB_PATIENT), cohort, context);
+		return Calculations.lastObs(Dictionary.getConcept(Dictionary.TYPE_OF_TB_PATIENT), cohort, context);
 	}
 }

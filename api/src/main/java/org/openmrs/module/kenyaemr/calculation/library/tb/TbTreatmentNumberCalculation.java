@@ -33,6 +33,6 @@ public class TbTreatmentNumberCalculation extends BaseEmrCalculation {
 	 */
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> arg1, PatientCalculationContext context) {
-		return Calculations.lastObs(getConcept(Dictionary.TUBERCULOSIS_TREATMENT_NUMBER), cohort, context);
+		return Calculations.lastObs(Dictionary.getConcept(Dictionary.TUBERCULOSIS_TREATMENT_NUMBER), cohort, context);
 	}
 }

@@ -47,8 +47,8 @@ public class DiscordantCoupleCalculation extends BaseEmrCalculation {
 
 		Set<Integer> aliveMchmsPatients = CalculationUtils.patientsThatPass(activePatientPrograms);
 
-		Concept patientHivStatusConcept = getConcept(Dictionary.HIV_STATUS);
-		Concept partnerHivStatusConcept = getConcept(Dictionary.PARTNER_HIV_STATUS);
+		Concept patientHivStatusConcept = Dictionary.getConcept(Dictionary.HIV_STATUS);
+		Concept partnerHivStatusConcept = Dictionary.getConcept(Dictionary.PARTNER_HIV_STATUS);
 
 		CalculationResultMap lastPatientHivStatusObss = Calculations.lastObs(patientHivStatusConcept, aliveMchmsPatients, context);
 		CalculationResultMap lastPartnerHivTestDateObss = Calculations.lastObs(partnerHivStatusConcept, aliveMchmsPatients, context);

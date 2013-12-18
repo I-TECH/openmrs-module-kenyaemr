@@ -48,7 +48,7 @@ public class InfantFeedingOptionsCalculation extends BaseEmrCalculation {
 		Set<Integer> inMchcsProgram = CalculationUtils.patientsThatPass(Calculations.activeEnrollment(mchcsProgram, alive, context));
 
 		// Get whether  the child has a feeding option
-		CalculationResultMap lastChildFeedingOption = Calculations.lastObs(getConcept(Dictionary.INFANT_FEEDING_METHOD), inMchcsProgram, context);
+		CalculationResultMap lastChildFeedingOption = Calculations.lastObs(Dictionary.getConcept(Dictionary.INFANT_FEEDING_METHOD), inMchcsProgram, context);
 
 		CalculationResultMap ret = new CalculationResultMap();
 

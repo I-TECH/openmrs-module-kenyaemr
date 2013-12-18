@@ -167,15 +167,6 @@ public abstract class BaseEmrCalculation extends BaseCalculation implements Pati
 	}
 
 	/**
-	 * Convenience method to fetch a a concept by identifer
-	 * @param identifier the concept identifier
-	 * @return the concept
-	 */
-	protected static Concept getConcept(String identifier) {
-		return MetadataUtils.getConcept(identifier);
-	}
-
-	/**
 	 * Calculates the days since the given date
 	 * @param date the date
 	 * @param calculationContext the calculation context

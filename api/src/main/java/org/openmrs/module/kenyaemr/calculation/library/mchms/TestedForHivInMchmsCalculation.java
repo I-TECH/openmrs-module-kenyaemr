@@ -61,12 +61,12 @@ public class TestedForHivInMchmsCalculation extends BaseEmrCalculation {
 
 		Set<Integer> aliveMchmsPatients = CalculationUtils.patientsThatPass(activePatientPrograms);
 
-		Concept hivStatusConcept = partner ? getConcept(Dictionary.PARTNER_HIV_STATUS) : getConcept(Dictionary.HIV_STATUS);
-		Concept hivTestDateConcept = partner ? getConcept(Dictionary.DATE_OF_PARTNER_HIV_DIAGNOSIS) : getConcept(Dictionary.DATE_OF_HIV_DIAGNOSIS);
+		Concept hivStatusConcept = partner ? Dictionary.getConcept(Dictionary.PARTNER_HIV_STATUS) : Dictionary.getConcept(Dictionary.HIV_STATUS);
+		Concept hivTestDateConcept = partner ? Dictionary.getConcept(Dictionary.DATE_OF_PARTNER_HIV_DIAGNOSIS) : Dictionary.getConcept(Dictionary.DATE_OF_HIV_DIAGNOSIS);
 
 		CalculationResultMap lastHivStatusObss = Calculations.lastObs(hivStatusConcept, aliveMchmsPatients, context);
 		CalculationResultMap lastHivTestDateObss = Calculations.lastObs(hivTestDateConcept, aliveMchmsPatients, context);
-		CalculationResultMap lastDeliveryDateObss = Calculations.lastObs(getConcept(Dictionary.DATE_OF_CONFINEMENT), aliveMchmsPatients, context);
+		CalculationResultMap lastDeliveryDateObss = Calculations.lastObs(Dictionary.getConcept(Dictionary.DATE_OF_CONFINEMENT), aliveMchmsPatients, context);
 
 		CalculationResultMap resultMap = new CalculationResultMap();
 

@@ -61,7 +61,7 @@ public class MissedAppointmentsOrDefaultedCalculation extends BaseEmrCalculation
 
 		Set<Integer> alive = alivePatients(cohort, context);
 		Set<Integer> inHivProgram = CalculationUtils.patientsThatPass(Calculations.activeEnrollment(hivProgram, alive, context));
-		CalculationResultMap lastReturnDateObss = Calculations.lastObs(getConcept(Dictionary.RETURN_VISIT_DATE), inHivProgram, context);
+		CalculationResultMap lastReturnDateObss = Calculations.lastObs(Dictionary.getConcept(Dictionary.RETURN_VISIT_DATE), inHivProgram, context);
 		CalculationResultMap lastEncounters = Calculations.lastEncounter(null, cohort, context);
 
 		CalculationResultMap ret = new CalculationResultMap();

@@ -34,6 +34,6 @@ public class LastWhoStageCalculation extends BaseEmrCalculation {
      */
     @Override
     public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
-		return Calculations.lastObs(getConcept(Dictionary.CURRENT_WHO_STAGE), cohort, context);
+		return Calculations.lastObs(Dictionary.getConcept(Dictionary.CURRENT_WHO_STAGE), cohort, context);
     }
 }

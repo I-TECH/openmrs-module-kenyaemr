@@ -50,8 +50,8 @@ public class IsPregnantCalculation extends BaseEmrCalculation implements Patient
 
 		Set<Integer> alive = alivePatients(cohort, context);
 
-		Concept yes = getConcept(Dictionary.YES);
-		CalculationResultMap pregStatusObss = Calculations.lastObs(getConcept(Dictionary.PREGNANCY_STATUS), alive, context);
+		Concept yes = Dictionary.getConcept(Dictionary.YES);
+		CalculationResultMap pregStatusObss = Calculations.lastObs(Dictionary.getConcept(Dictionary.PREGNANCY_STATUS), alive, context);
 		CalculationResultMap ret = new CalculationResultMap();
 
 		for (Integer ptId : cohort) {

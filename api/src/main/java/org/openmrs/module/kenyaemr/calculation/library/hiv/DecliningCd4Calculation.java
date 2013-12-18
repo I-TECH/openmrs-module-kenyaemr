@@ -55,8 +55,8 @@ public class DecliningCd4Calculation extends BaseEmrCalculation implements Patie
 		Set<Integer> inHivProgram = CalculationUtils.patientsThatPass(Calculations.activeEnrollment(hivProgram, alive, context));
 
 		// Get the two CD4 obss for comparison
-		CalculationResultMap lastCD4Obss = Calculations.lastObs(getConcept(Dictionary.CD4_COUNT), inHivProgram, context);
-		CalculationResultMap oldCD4Obss = Calculations.lastObsAtLeastDaysAgo(getConcept(Dictionary.CD4_COUNT), HivConstants.DECLINING_CD4_COUNT_ACROSS_DAYS, inHivProgram, context);
+		CalculationResultMap lastCD4Obss = Calculations.lastObs(Dictionary.getConcept(Dictionary.CD4_COUNT), inHivProgram, context);
+		CalculationResultMap oldCD4Obss = Calculations.lastObsAtLeastDaysAgo(Dictionary.getConcept(Dictionary.CD4_COUNT), HivConstants.DECLINING_CD4_COUNT_ACROSS_DAYS, inHivProgram, context);
 
 		CalculationResultMap ret = new CalculationResultMap();
 		for (Integer ptId : cohort) {

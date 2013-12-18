@@ -42,7 +42,7 @@ public class WhoStageAtArtStartCalculation extends BaseEmrCalculation {
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
 
-		Concept currentWhoStage = getConcept(Dictionary.CURRENT_WHO_STAGE);
+		Concept currentWhoStage = Dictionary.getConcept(Dictionary.CURRENT_WHO_STAGE);
 		CalculationResultMap artStartDates = calculate(new InitialArtStartDateCalculation(), cohort, context);
 		CalculationResultMap whoStageObss = Calculations.allObs(currentWhoStage, cohort, context);
 

@@ -60,8 +60,8 @@ public class NeedsCd4TestCalculation extends BaseEmrCalculation implements Patie
 
 		Set<Integer> alive = alivePatients(cohort, context);
 		Set<Integer> inHivProgram = CalculationUtils.patientsThatPass(Calculations.activeEnrollment(hivProgram, alive, context));
-		CalculationResultMap lastObsCount = Calculations.lastObs(getConcept(Dictionary.CD4_COUNT), cohort, context);
-		CalculationResultMap lastObsPercent = Calculations.lastObs(getConcept(Dictionary.CD4_PERCENT), cohort, context);
+		CalculationResultMap lastObsCount = Calculations.lastObs(Dictionary.getConcept(Dictionary.CD4_COUNT), cohort, context);
+		CalculationResultMap lastObsPercent = Calculations.lastObs(Dictionary.getConcept(Dictionary.CD4_PERCENT), cohort, context);
 
 		CalculationResultMap ret = new CalculationResultMap();
 		for (Integer ptId : cohort) {

@@ -52,13 +52,13 @@ public class InfantNeverTakenProphylaxisCalculation extends BaseEmrCalculation {
 		Set<Integer> inMchcsProgram = CalculationUtils.patientsThatPass(Calculations.activeEnrollment(mchcsProgram, alive, context));
 
 		//get wheather the child is HIV Exposed
-		CalculationResultMap lastChildHivStatus = Calculations.lastObs(getConcept(Dictionary.CHILDS_CURRENT_HIV_STATUS), inMchcsProgram, context);
-		CalculationResultMap medOrdersObss = Calculations.allObs(getConcept(Dictionary.MEDICATION_ORDERS), cohort, context);
+		CalculationResultMap lastChildHivStatus = Calculations.lastObs(Dictionary.getConcept(Dictionary.CHILDS_CURRENT_HIV_STATUS), inMchcsProgram, context);
+		CalculationResultMap medOrdersObss = Calculations.allObs(Dictionary.getConcept(Dictionary.MEDICATION_ORDERS), cohort, context);
 
 		// Get concepts for  medication prophylaxis
-		Concept nvp = getConcept(Dictionary.NEVIRAPINE);
-		Concept nvpazt3tc = getConcept(Dictionary.LAMIVUDINE_NEVIRAPINE_ZIDOVUDINE);
-		Concept hivExposed = getConcept(Dictionary.EXPOSURE_TO_HIV);
+		Concept nvp = Dictionary.getConcept(Dictionary.NEVIRAPINE);
+		Concept nvpazt3tc = Dictionary.getConcept(Dictionary.LAMIVUDINE_NEVIRAPINE_ZIDOVUDINE);
+		Concept hivExposed = Dictionary.getConcept(Dictionary.EXPOSURE_TO_HIV);
 
 		CalculationResultMap ret = new CalculationResultMap();
 

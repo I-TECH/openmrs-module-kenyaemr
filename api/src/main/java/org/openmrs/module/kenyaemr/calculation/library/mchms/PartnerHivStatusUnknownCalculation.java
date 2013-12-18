@@ -48,7 +48,7 @@ public class PartnerHivStatusUnknownCalculation extends BaseEmrCalculation {
 		Set<Integer> alive = alivePatients(cohort, context);
 		Set<Integer> inMchmsProgram = CalculationUtils.patientsThatPass(Calculations.activeEnrollment(mchmsProgram, alive, context));
 
-		CalculationResultMap partnerHivStatusObs = Calculations.lastObs(getConcept(Dictionary.PARTNER_HIV_STATUS), inMchmsProgram, context);
+		CalculationResultMap partnerHivStatusObs = Calculations.lastObs(Dictionary.getConcept(Dictionary.PARTNER_HIV_STATUS), inMchmsProgram, context);
 		Concept unknownConcept = Dictionary.getConcept(Dictionary.UNKNOWN);
 
 		CalculationResultMap ret = new CalculationResultMap();

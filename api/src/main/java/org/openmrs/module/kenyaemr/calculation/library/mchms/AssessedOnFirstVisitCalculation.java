@@ -54,8 +54,8 @@ public class AssessedOnFirstVisitCalculation extends BaseEmrCalculation {
 
 		Program mchmsProgram = MetadataUtils.getProgram(MchMetadata._Program.MCHMS);
 		EncounterType mchConsultation = MetadataUtils.getEncounterType(MchMetadata._EncounterType.MCHMS_CONSULTATION);
-		Concept whoStageConcept = getConcept(Dictionary.CURRENT_WHO_STAGE);
-		Concept cd4CountConcept = getConcept(Dictionary.CD4_COUNT);
+		Concept whoStageConcept = Dictionary.getConcept(Dictionary.CURRENT_WHO_STAGE);
+		Concept cd4CountConcept = Dictionary.getConcept(Dictionary.CD4_COUNT);
 
 		Set<Integer> alivePatients = alivePatients(cohort, context);
 		CalculationResultMap activePatientPrograms = Calculations.activeEnrollment(mchmsProgram, alivePatients, context);

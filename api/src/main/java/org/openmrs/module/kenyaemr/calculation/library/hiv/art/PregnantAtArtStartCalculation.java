@@ -41,8 +41,8 @@ public class PregnantAtArtStartCalculation extends BaseEmrCalculation {
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
 
-		Concept yes = getConcept(Dictionary.YES);
-		Concept pregnancyStatus = getConcept(Dictionary.PREGNANCY_STATUS);
+		Concept yes = Dictionary.getConcept(Dictionary.YES);
+		Concept pregnancyStatus = Dictionary.getConcept(Dictionary.PREGNANCY_STATUS);
 		CalculationResultMap artStartDates = calculate(new InitialArtStartDateCalculation(), cohort, context);
 		CalculationResultMap pregnancyObss = Calculations.allObs(pregnancyStatus, cohort, context);
 

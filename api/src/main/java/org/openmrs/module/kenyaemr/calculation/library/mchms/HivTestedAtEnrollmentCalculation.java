@@ -51,8 +51,8 @@ public class HivTestedAtEnrollmentCalculation extends BaseEmrCalculation {
 		Set<Integer> alive = alivePatients(cohort, context);
 		Set<Integer> inMchmsProgram = CalculationUtils.patientsThatPass(Calculations.activeEnrollment(mchmsProgram, alive, context));
 
-		CalculationResultMap hivStatusObs = Calculations.lastObs(getConcept(Dictionary.HIV_STATUS), inMchmsProgram, context);
-		CalculationResultMap hivTestDateObs = Calculations.lastObs(getConcept(Dictionary.DATE_OF_HIV_DIAGNOSIS), inMchmsProgram, context);
+		CalculationResultMap hivStatusObs = Calculations.lastObs(Dictionary.getConcept(Dictionary.HIV_STATUS), inMchmsProgram, context);
+		CalculationResultMap hivTestDateObs = Calculations.lastObs(Dictionary.getConcept(Dictionary.DATE_OF_HIV_DIAGNOSIS), inMchmsProgram, context);
 
 		Concept notHivTestedConcept = Dictionary.getConcept(Dictionary.NOT_HIV_TESTED);
 

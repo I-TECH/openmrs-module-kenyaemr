@@ -40,7 +40,7 @@ public class CurrentArtRegimenCalculation extends BaseEmrCalculation {
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues,
 	                                     PatientCalculationContext context) {
-		Concept arvs = getConcept(Dictionary.ANTIRETROVIRAL_DRUGS);
+		Concept arvs = Dictionary.getConcept(Dictionary.ANTIRETROVIRAL_DRUGS);
 		CalculationResultMap currentARVDrugOrders = activeDrugOrders(arvs, cohort, context);
 
 		CalculationResultMap ret = new CalculationResultMap();

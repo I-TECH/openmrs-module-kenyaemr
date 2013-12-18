@@ -35,6 +35,6 @@ public class LastCd4CountCalculation extends BaseEmrCalculation {
 	 */
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
-		return Calculations.lastObs(getConcept(Dictionary.CD4_COUNT), cohort, context);
+		return Calculations.lastObs(Dictionary.getConcept(Dictionary.CD4_COUNT), cohort, context);
 	}
 }

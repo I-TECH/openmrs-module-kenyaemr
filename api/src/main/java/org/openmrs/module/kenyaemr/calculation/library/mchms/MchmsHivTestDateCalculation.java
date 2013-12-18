@@ -52,8 +52,8 @@ public class MchmsHivTestDateCalculation extends BaseEmrCalculation {
 		Set<Integer> aliveMchmsPatients = CalculationUtils.patientsThatPass(Calculations.activeEnrollment(mchmsProgram, alivePatients, context));
 
 		Boolean partner = (params != null && params.containsKey("partner")) ? (Boolean) params.get("partner") : false;
-		Concept dateOfHivDiagnosisConcept = partner ? getConcept(Dictionary.DATE_OF_PARTNER_HIV_DIAGNOSIS)
-				: getConcept(Dictionary.DATE_OF_HIV_DIAGNOSIS);
+		Concept dateOfHivDiagnosisConcept = partner ? Dictionary.getConcept(Dictionary.DATE_OF_PARTNER_HIV_DIAGNOSIS)
+				: Dictionary.getConcept(Dictionary.DATE_OF_HIV_DIAGNOSIS);
 
 		CalculationResultMap lastHivTestDateObss = Calculations.lastObs(dateOfHivDiagnosisConcept, aliveMchmsPatients, context);
 
