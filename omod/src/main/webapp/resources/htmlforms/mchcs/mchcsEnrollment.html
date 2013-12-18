@@ -151,6 +151,8 @@
 			jq('#specialCare input').click(needSpecialCare);
 			//including the mother details
 			includeMothersNames();
+			//include the father details if any
+			includeFathersNames();
 
 			beforeSubmit.push(function() {
 				if (getValue('hiv-exposed-child.value') == "") {
