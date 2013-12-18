@@ -22,6 +22,7 @@ import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.calculation.Calculations;
+import org.openmrs.module.kenyacore.calculation.Filters;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
@@ -48,15 +49,16 @@ public class MchmsFirstVisitDateCalculation extends BaseEmrCalculation {
 		Program mchmsProgram = MetadataUtils.getProgram(MchMetadata._Program.MCHMS);
 		EncounterType mchConsultation = MetadataUtils.getEncounterType(MchMetadata._EncounterType.MCHMS_CONSULTATION);
 
-		Set<Integer> alivePatients = alivePatients(cohort, context);
-		Set<Integer> aliveMchmsPatients = CalculationUtils.patientsThatPass(Calculations.activeEnrollment(mchmsProgram, alivePatients, context));
+		// Get all patients who are alive and in MCH-MS program
+		Set<Integer> alive = Filters.alive(cohort, context);
+		Set<Integer> inMchmsProgram = Filters.inProgram(mchmsProgram, alive, context);
 
-		CalculationResultMap crm = Calculations.firstEncounter(mchConsultation, aliveMchmsPatients, context);
+		CalculationResultMap crm = Calculations.firstEncounter(mchConsultation, inMchmsProgram, context);
 
 		CalculationResultMap resultMap = new CalculationResultMap();
 
 		for (Integer ptId : cohort) {
-			if (aliveMchmsPatients.contains(ptId)) {
+			if (inMchmsProgram.contains(ptId)) {
 				Encounter encounter = EmrCalculationUtils.encounterResultForPatient(crm, ptId);
 				if (encounter != null) {
 					resultMap.put(ptId, new SimpleResult(encounter.getEncounterDatetime(), null));

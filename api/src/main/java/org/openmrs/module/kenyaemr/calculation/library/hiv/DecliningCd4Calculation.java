@@ -23,6 +23,7 @@ import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.calculation.Calculations;
+import org.openmrs.module.kenyacore.calculation.Filters;
 import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
@@ -51,8 +52,8 @@ public class DecliningCd4Calculation extends BaseEmrCalculation implements Patie
 
 		Program hivProgram = MetadataUtils.getProgram(HivMetadata._Program.HIV);
 
-		Set<Integer> alive = alivePatients(cohort, context);
-		Set<Integer> inHivProgram = CalculationUtils.patientsThatPass(Calculations.activeEnrollment(hivProgram, alive, context));
+		Set<Integer> alive = Filters.alive(cohort, context);
+		Set<Integer> inHivProgram = Filters.inProgram(hivProgram, alive, context);
 
 		// Get the two CD4 obss for comparison
 		CalculationResultMap lastCD4Obss = Calculations.lastObs(Dictionary.getConcept(Dictionary.CD4_COUNT), inHivProgram, context);

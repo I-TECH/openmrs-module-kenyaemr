@@ -25,6 +25,7 @@ import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.ObsResult;
 import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.calculation.Calculations;
+import org.openmrs.module.kenyacore.calculation.Filters;
 import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
@@ -58,8 +59,8 @@ public class MissingTbSputumResultsCalculation extends BaseEmrCalculation implem
 		Program tbProgram = MetadataUtils.getProgram(TbMetadata._Program.TB);
 
 		// Get all patients who are alive and in TB program
-		Set<Integer> alive = alivePatients(cohort, context);
-		Set<Integer> inTbProgram = CalculationUtils.patientsThatPass(Calculations.activeEnrollment(tbProgram, alive, context));
+		Set<Integer> alive = Filters.alive(cohort, context);
+		Set<Integer> inTbProgram = Filters.inProgram(tbProgram, alive, context);
 		
 		//get last disease classification
 		CalculationResultMap lastDiseaseClassiffication = Calculations.lastObs(Dictionary.getConcept(Dictionary.SITE_OF_TUBERCULOSIS_DISEASE), inTbProgram, context);

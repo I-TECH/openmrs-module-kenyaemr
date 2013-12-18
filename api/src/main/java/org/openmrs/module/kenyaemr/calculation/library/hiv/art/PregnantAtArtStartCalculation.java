@@ -20,6 +20,7 @@ import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.ListResult;
 import org.openmrs.module.kenyacore.calculation.Calculations;
+import org.openmrs.module.kenyacore.calculation.Filters;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
@@ -29,6 +30,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Calculates whether a patient was pregnant on the date they started ARTs
@@ -41,23 +43,28 @@ public class PregnantAtArtStartCalculation extends BaseEmrCalculation {
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
 
+		Set<Integer> female = Filters.female(cohort, context);
+
 		Concept yes = Dictionary.getConcept(Dictionary.YES);
 		Concept pregnancyStatus = Dictionary.getConcept(Dictionary.PREGNANCY_STATUS);
-		CalculationResultMap artStartDates = calculate(new InitialArtStartDateCalculation(), cohort, context);
-		CalculationResultMap pregnancyObss = Calculations.allObs(pregnancyStatus, cohort, context);
+		CalculationResultMap artStartDates = calculate(new InitialArtStartDateCalculation(), female, context);
+		CalculationResultMap pregnancyObss = Calculations.allObs(pregnancyStatus, female, context);
 
 		CalculationResultMap ret = new CalculationResultMap();
 		for (Integer ptId : cohort) {
 			boolean result = false;
-			Date artStartDate = EmrCalculationUtils.datetimeResultForPatient(artStartDates, ptId);
-			ListResult pregObssResult = (ListResult) pregnancyObss.get(ptId);
 
-			if (artStartDate != null && pregObssResult != null && !pregObssResult.isEmpty()) {
-				List<Obs> pregnancyStatuses = EmrCalculationUtils.extractListResultValues(pregObssResult);
-				Obs lastBeforeArtStart = EmrCalculationUtils.findLastOnOrBefore(pregnancyStatuses, artStartDate);
+			if (female.contains(ptId)) {
+				Date artStartDate = EmrCalculationUtils.datetimeResultForPatient(artStartDates, ptId);
+				ListResult pregObssResult = (ListResult) pregnancyObss.get(ptId);
 
-				if (lastBeforeArtStart != null && lastBeforeArtStart.getValueCoded().equals(yes)) {
-					result = true;
+				if (artStartDate != null && pregObssResult != null && !pregObssResult.isEmpty()) {
+					List<Obs> pregnancyStatuses = EmrCalculationUtils.extractListResultValues(pregObssResult);
+					Obs lastBeforeArtStart = EmrCalculationUtils.findLastOnOrBefore(pregnancyStatuses, artStartDate);
+
+					if (lastBeforeArtStart != null && lastBeforeArtStart.getValueCoded().equals(yes)) {
+						result = true;
+					}
 				}
 			}
 

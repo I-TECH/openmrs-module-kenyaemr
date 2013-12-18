@@ -19,6 +19,7 @@ import org.openmrs.Obs;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyacore.calculation.Calculations;
+import org.openmrs.module.kenyacore.calculation.Filters;
 import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
@@ -48,21 +49,22 @@ public class IsPregnantCalculation extends BaseEmrCalculation implements Patient
     @Override
     public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
 
-		Set<Integer> alive = alivePatients(cohort, context);
+		Set<Integer> aliveAndFemale = Filters.female(Filters.alive(cohort, context), context);
 
 		Concept yes = Dictionary.getConcept(Dictionary.YES);
-		CalculationResultMap pregStatusObss = Calculations.lastObs(Dictionary.getConcept(Dictionary.PREGNANCY_STATUS), alive, context);
+		CalculationResultMap pregStatusObss = Calculations.lastObs(Dictionary.getConcept(Dictionary.PREGNANCY_STATUS), aliveAndFemale, context);
 		CalculationResultMap ret = new CalculationResultMap();
 
 		for (Integer ptId : cohort) {
-			BooleanResult result = null;
+			boolean result = false;
+
 			Obs pregStatusObs = EmrCalculationUtils.obsResultForPatient(pregStatusObss, ptId);
 
 			if (pregStatusObs != null) {
-				result = new BooleanResult(pregStatusObs.getValueCoded().equals(yes), this);
+				result = pregStatusObs.getValueCoded().equals(yes);
 			}
 
-			ret.put(ptId, result);
+			ret.put(ptId, new BooleanResult(result, this));
 		}
 
 		return ret;

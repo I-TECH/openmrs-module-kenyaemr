@@ -26,6 +26,7 @@ import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.calculation.Calculations;
+import org.openmrs.module.kenyacore.calculation.Filters;
 import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
@@ -59,8 +60,9 @@ public class MissedAppointmentsOrDefaultedCalculation extends BaseEmrCalculation
 
 		Program hivProgram = MetadataUtils.getProgram(HivMetadata._Program.HIV);
 
-		Set<Integer> alive = alivePatients(cohort, context);
-		Set<Integer> inHivProgram = CalculationUtils.patientsThatPass(Calculations.activeEnrollment(hivProgram, alive, context));
+		Set<Integer> alive = Filters.alive(cohort, context);
+		Set<Integer> inHivProgram = Filters.inProgram(hivProgram, alive, context);
+
 		CalculationResultMap lastReturnDateObss = Calculations.lastObs(Dictionary.getConcept(Dictionary.RETURN_VISIT_DATE), inHivProgram, context);
 		CalculationResultMap lastEncounters = Calculations.lastEncounter(null, cohort, context);
 

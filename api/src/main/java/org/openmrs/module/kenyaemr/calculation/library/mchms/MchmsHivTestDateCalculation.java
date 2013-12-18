@@ -21,6 +21,7 @@ import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.calculation.Calculations;
+import org.openmrs.module.kenyacore.calculation.Filters;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
@@ -48,20 +49,21 @@ public class MchmsHivTestDateCalculation extends BaseEmrCalculation {
 
 		Program mchmsProgram = MetadataUtils.getProgram(MchMetadata._Program.MCHMS);
 
-		Set<Integer> alivePatients = alivePatients(cohort, context);
-		Set<Integer> aliveMchmsPatients = CalculationUtils.patientsThatPass(Calculations.activeEnrollment(mchmsProgram, alivePatients, context));
+		// Get all patients who are alive and in MCH-MS program
+		Set<Integer> alive = Filters.alive(cohort, context);
+		Set<Integer> inMchmsProgram = Filters.inProgram(mchmsProgram, alive, context);
 
 		Boolean partner = (params != null && params.containsKey("partner")) ? (Boolean) params.get("partner") : false;
 		Concept dateOfHivDiagnosisConcept = partner ? Dictionary.getConcept(Dictionary.DATE_OF_PARTNER_HIV_DIAGNOSIS)
 				: Dictionary.getConcept(Dictionary.DATE_OF_HIV_DIAGNOSIS);
 
-		CalculationResultMap lastHivTestDateObss = Calculations.lastObs(dateOfHivDiagnosisConcept, aliveMchmsPatients, context);
+		CalculationResultMap lastHivTestDateObss = Calculations.lastObs(dateOfHivDiagnosisConcept, inMchmsProgram, context);
 
 		CalculationResultMap resultMap = new CalculationResultMap();
 
-		for (Integer ptId : aliveMchmsPatients) {
+		for (Integer ptId : cohort) {
 			Date patientsLastHivTestDate = EmrCalculationUtils.datetimeObsResultForPatient(lastHivTestDateObss, ptId);
-			if (aliveMchmsPatients.contains(ptId) && patientsLastHivTestDate != null) {
+			if (inMchmsProgram.contains(ptId) && patientsLastHivTestDate != null) {
 				resultMap.put(ptId, new SimpleResult(patientsLastHivTestDate, null));
 			} else {
 				resultMap.put(ptId, null);

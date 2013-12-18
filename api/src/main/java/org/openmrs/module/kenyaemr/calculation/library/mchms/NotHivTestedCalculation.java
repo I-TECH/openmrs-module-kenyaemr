@@ -21,6 +21,7 @@ import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
 import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.calculation.Calculations;
+import org.openmrs.module.kenyacore.calculation.Filters;
 import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
@@ -54,8 +55,9 @@ public class NotHivTestedCalculation extends BaseEmrCalculation implements Patie
 
 		Program mchmsProgram = MetadataUtils.getProgram(MchMetadata._Program.MCHMS);
 
-		Set<Integer> alive = alivePatients(cohort, context);
-		Set<Integer> inMchmsProgram = CalculationUtils.patientsThatPass(Calculations.activeEnrollment(mchmsProgram, alive, context));
+		// Get all patients who are alive and in MCH-MS program
+		Set<Integer> alive = Filters.alive(cohort, context);
+		Set<Integer> inMchmsProgram = Filters.inProgram(mchmsProgram, alive, context);
 
 		CalculationResultMap lastHivStatusObss = Calculations.lastObs(Dictionary.getConcept(Dictionary.HIV_STATUS), inMchmsProgram, context);
 

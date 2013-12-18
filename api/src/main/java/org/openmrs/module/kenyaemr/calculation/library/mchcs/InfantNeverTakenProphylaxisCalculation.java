@@ -23,6 +23,7 @@ import org.openmrs.calculation.result.ListResult;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
 import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.calculation.Calculations;
+import org.openmrs.module.kenyacore.calculation.Filters;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
@@ -47,9 +48,9 @@ public class InfantNeverTakenProphylaxisCalculation extends BaseEmrCalculation {
 
 		Program mchcsProgram = MetadataUtils.getProgram(MchMetadata._Program.MCHCS);
 
-		Set<Integer> alive = alivePatients(cohort, context);
-
-		Set<Integer> inMchcsProgram = CalculationUtils.patientsThatPass(Calculations.activeEnrollment(mchcsProgram, alive, context));
+		// Get all patients who are alive and in MCH-CS program
+		Set<Integer> alive = Filters.alive(cohort, context);
+		Set<Integer> inMchcsProgram = Filters.inProgram(mchcsProgram, alive, context);
 
 		//get wheather the child is HIV Exposed
 		CalculationResultMap lastChildHivStatus = Calculations.lastObs(Dictionary.getConcept(Dictionary.CHILDS_CURRENT_HIV_STATUS), inMchcsProgram, context);

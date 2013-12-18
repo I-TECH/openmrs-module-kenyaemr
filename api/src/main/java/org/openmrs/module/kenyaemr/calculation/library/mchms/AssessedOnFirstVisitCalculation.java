@@ -24,6 +24,7 @@ import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
 import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.calculation.Calculations;
+import org.openmrs.module.kenyacore.calculation.Filters;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.kenyaemr.ArtAssessmentMethod;
 import org.openmrs.module.kenyaemr.Dictionary;
@@ -57,12 +58,11 @@ public class AssessedOnFirstVisitCalculation extends BaseEmrCalculation {
 		Concept whoStageConcept = Dictionary.getConcept(Dictionary.CURRENT_WHO_STAGE);
 		Concept cd4CountConcept = Dictionary.getConcept(Dictionary.CD4_COUNT);
 
-		Set<Integer> alivePatients = alivePatients(cohort, context);
-		CalculationResultMap activePatientPrograms = Calculations.activeEnrollment(mchmsProgram, alivePatients, context);
+		// Get all patients who are alive and in MCH-MS program
+		Set<Integer> alive = Filters.alive(cohort, context);
+		Set<Integer> inMchmsProgram = Filters.inProgram(mchmsProgram, alive, context);
 
-		Set<Integer> aliveMchmsPatients = CalculationUtils.patientsThatPass(activePatientPrograms);
-
-		CalculationResultMap crm = Calculations.firstEncounter(mchConsultation, aliveMchmsPatients, context);
+		CalculationResultMap crm = Calculations.firstEncounter(mchConsultation, inMchmsProgram, context);
 
 		CalculationResultMap resultMap = new CalculationResultMap();
 

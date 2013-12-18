@@ -21,6 +21,7 @@ import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
 import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.calculation.Calculations;
+import org.openmrs.module.kenyacore.calculation.Filters;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
@@ -42,16 +43,15 @@ public class DiscordantCoupleCalculation extends BaseEmrCalculation {
 
 		Program mchmsProgram = MetadataUtils.getProgram(MchMetadata._Program.MCHMS);
 
-		Set<Integer> alivePatients = alivePatients(cohort, context);
-		CalculationResultMap activePatientPrograms = Calculations.activeEnrollment(mchmsProgram, alivePatients, context);
-
-		Set<Integer> aliveMchmsPatients = CalculationUtils.patientsThatPass(activePatientPrograms);
+		// Get all patients who are alive and in MCH-MS program
+		Set<Integer> alive = Filters.alive(cohort, context);
+		Set<Integer> inMchmsProgram = Filters.inProgram(mchmsProgram, alive, context);
 
 		Concept patientHivStatusConcept = Dictionary.getConcept(Dictionary.HIV_STATUS);
 		Concept partnerHivStatusConcept = Dictionary.getConcept(Dictionary.PARTNER_HIV_STATUS);
 
-		CalculationResultMap lastPatientHivStatusObss = Calculations.lastObs(patientHivStatusConcept, aliveMchmsPatients, context);
-		CalculationResultMap lastPartnerHivTestDateObss = Calculations.lastObs(partnerHivStatusConcept, aliveMchmsPatients, context);
+		CalculationResultMap lastPatientHivStatusObss = Calculations.lastObs(patientHivStatusConcept, inMchmsProgram, context);
+		CalculationResultMap lastPartnerHivTestDateObss = Calculations.lastObs(partnerHivStatusConcept, inMchmsProgram, context);
 
 		CalculationResultMap resultMap = new CalculationResultMap();
 

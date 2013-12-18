@@ -16,6 +16,7 @@ package org.openmrs.module.kenyaemr.calculation.library.tb;
 
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
+import org.openmrs.module.kenyacore.calculation.Filters;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
 
@@ -34,7 +35,7 @@ public class EligibleForTbProgramCalculation extends BaseEmrCalculation {
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> params, PatientCalculationContext context) {
 		CalculationResultMap ret = new CalculationResultMap();
-		Set<Integer> alive = alivePatients(cohort, context);
+		Set<Integer> alive = Filters.alive(cohort, context);
 
 		for (int ptId : cohort) {
 			boolean eligible = alive.contains(ptId);

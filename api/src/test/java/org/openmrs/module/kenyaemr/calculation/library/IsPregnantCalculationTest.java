@@ -61,7 +61,7 @@ public class IsPregnantCalculationTest extends BaseModuleContextSensitiveTest {
 		Concept yes = Dictionary.getConcept(Dictionary.YES);
 		Concept no = Dictionary.getConcept(Dictionary.NO);
 
-		// Give patient #6 a recent YES recording
+		// Give patient #6 a recent YES recording which should be ignored as they are male
 		TestUtils.saveObs(TestUtils.getPatient(6), pregnancyStatus, yes, TestUtils.date(2012, 12, 1));
 
 		// Give patient #7 an older YES recording
@@ -69,11 +69,14 @@ public class IsPregnantCalculationTest extends BaseModuleContextSensitiveTest {
 
 		// Give patient #7 a recent NO recording
 		TestUtils.saveObs(TestUtils.getPatient(7), pregnancyStatus, no, TestUtils.date(2012, 12, 1));
+
+		// Give patient #8 a recent YES recording
+		TestUtils.saveObs(TestUtils.getPatient(8), pregnancyStatus, yes, TestUtils.date(2012, 12, 1));
 		
 		List<Integer> ptIds = Arrays.asList(6, 7, 8);
 		CalculationResultMap resultMap = new IsPregnantCalculation().evaluate(ptIds, null, Context.getService(PatientCalculationService.class).createCalculationContext());
-		Assert.assertTrue((Boolean) resultMap.get(6).getValue());
+		Assert.assertFalse((Boolean) resultMap.get(6).getValue()); // is male
 		Assert.assertFalse((Boolean) resultMap.get(7).getValue());
-		Assert.assertNull(resultMap.get(8)); // has no recorded status
+		Assert.assertTrue((Boolean) resultMap.get(8).getValue());
 	}
 }

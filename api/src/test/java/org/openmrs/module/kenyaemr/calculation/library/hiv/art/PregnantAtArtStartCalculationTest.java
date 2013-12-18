@@ -52,6 +52,10 @@ public class PregnantAtArtStartCalculationTest extends BaseModuleContextSensitiv
 		Concept no = Dictionary.getConcept(Dictionary.NO);
 		Concept stavudine = Dictionary.getConcept(Dictionary.STAVUDINE);
 
+		// For the purposes of this test, everyone is a woman
+		TestUtils.getPatient(2).setGender("F");
+		TestUtils.getPatient(6).setGender("F");
+
 		// Give patient #2 a YES status on same day as ART start. This patient has a drug order in standardTestDataset.xml
 		// which is determining their ART start date
 		TestUtils.saveObs(TestUtils.getPatient(2), pregnancyStatus, yes, TestUtils.date(2007, 12, 25));

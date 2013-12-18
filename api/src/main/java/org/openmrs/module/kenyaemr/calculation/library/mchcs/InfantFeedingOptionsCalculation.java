@@ -21,6 +21,7 @@ import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
 import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.calculation.Calculations;
+import org.openmrs.module.kenyacore.calculation.Filters;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
@@ -44,8 +45,9 @@ public class InfantFeedingOptionsCalculation extends BaseEmrCalculation {
 
 		Program mchcsProgram = MetadataUtils.getProgram(MchMetadata._Program.MCHCS);
 
-		Set<Integer> alive = alivePatients(cohort, context);
-		Set<Integer> inMchcsProgram = CalculationUtils.patientsThatPass(Calculations.activeEnrollment(mchcsProgram, alive, context));
+		// Get all patients who are alive and in MCH-CS program
+		Set<Integer> alive = Filters.alive(cohort, context);
+		Set<Integer> inMchcsProgram = Filters.inProgram(mchcsProgram, alive, context);
 
 		// Get whether  the child has a feeding option
 		CalculationResultMap lastChildFeedingOption = Calculations.lastObs(Dictionary.getConcept(Dictionary.INFANT_FEEDING_METHOD), inMchcsProgram, context);

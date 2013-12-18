@@ -157,16 +157,6 @@ public abstract class BaseEmrCalculation extends BaseCalculation implements Pati
 	}
 
 	/**
-	 * Extracts only alive patients from a cohort
-	 * @param cohort the patient ids
-	 * @param calculationContext the calculation context
-	 * @return the extracted patient ids
-	 */
-	protected static Set<Integer> alivePatients(Collection<Integer> cohort, PatientCalculationContext calculationContext) {
-		return CalculationUtils.patientsThatPass(Calculations.alive(cohort, calculationContext));
-	}
-
-	/**
 	 * Calculates the days since the given date
 	 * @param date the date
 	 * @param calculationContext the calculation context

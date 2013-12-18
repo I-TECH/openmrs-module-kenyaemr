@@ -22,13 +22,13 @@ import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
 import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.calculation.Calculations;
+import org.openmrs.module.kenyacore.calculation.Filters;
 import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.metadata.MchMetadata;
-import org.openmrs.module.reporting.common.Age;
 
 import java.util.Collection;
 import java.util.Map;
@@ -55,8 +55,10 @@ public class NeedsAntibodyTestCalculation extends BaseEmrCalculation implements 
 
 		Program mchcsProgram = MetadataUtils.getProgram(MchMetadata._Program.MCHCS);
 
-		Set<Integer> alive = alivePatients(cohort, context);
-		Set<Integer> inMchcsProgram = CalculationUtils.patientsThatPass(Calculations.activeEnrollment(mchcsProgram, alive, context));
+		// Get all patients who are alive and in MCH-CS program
+		Set<Integer> alive = Filters.alive(cohort, context);
+		Set<Integer> inMchcsProgram = Filters.inProgram(mchcsProgram, alive, context);
+
 		//CalculationResultMap ages = Calculations.ages(cohort, context);
 
 		// Get whether the child is HIV Exposed
