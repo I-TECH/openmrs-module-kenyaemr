@@ -37,7 +37,7 @@ public class CommonIndicatorLibrary {
 	 * @return the indicator
 	 */
 	public CohortIndicator enrolled(Program program) {
-		return cohortIndicator("Number of new patients enrolled in " + program.getName() + " including transfers",
+		return cohortIndicator("new patients enrolled in " + program.getName() + " including transfers",
 				ReportUtils.map(commonCohorts.enrolledExcludingTransfers(program), "onOrAfter=${startDate},onOrBefore=${endDate}"));
 	}
 
@@ -47,7 +47,7 @@ public class CommonIndicatorLibrary {
 	 * @return the indicator
 	 */
 	public CohortIndicator enrolledExcludingTransfers(Program program) {
-		return cohortIndicator("Number of new patients enrolled in " + program.getName() + " excluding transfers",
+		return cohortIndicator("new patients enrolled in " + program.getName() + " excluding transfers",
 				ReportUtils.map(commonCohorts.enrolledExcludingTransfers(program), "onOrAfter=${startDate},onOrBefore=${endDate}"));
 	}
 
@@ -57,7 +57,7 @@ public class CommonIndicatorLibrary {
 	 * @return the indicator
 	 */
 	public CohortIndicator enrolledCumulative(Program program) {
-		return cohortIndicator("Number of patients ever enrolled in " + program.getName() + " excluding transfers",
+		return cohortIndicator("total patients ever enrolled in " + program.getName() + " excluding transfers",
 				ReportUtils.map(commonCohorts.enrolled(program), "enrolledOnOrBefore=${endDate}"));
 	}
 }

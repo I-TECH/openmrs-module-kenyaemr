@@ -68,7 +68,7 @@ public class CommonCohortLibrary {
 	 */
 	public CohortDefinition agedAtMost(int maxAge) {
 		AgeCohortDefinition cd = new AgeCohortDefinition();
-		cd.setName("aged at most");
+		cd.setName("aged at most " + maxAge);
 		cd.addParameter(new Parameter("effectiveDate", "Effective Date", Date.class));
 		cd.setMaxAge(maxAge);
 		return cd;
@@ -80,7 +80,7 @@ public class CommonCohortLibrary {
 	 */
 	public CohortDefinition agedAtLeast(int minAge) {
 		AgeCohortDefinition cd = new AgeCohortDefinition();
-		cd.setName("aged at least");
+		cd.setName("aged at least " + minAge);
 		cd.addParameter(new Parameter("effectiveDate", "Effective Date", Date.class));
 		cd.setMinAge(minAge);
 		return cd;

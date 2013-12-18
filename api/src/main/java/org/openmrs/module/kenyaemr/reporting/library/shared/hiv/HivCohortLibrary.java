@@ -63,7 +63,7 @@ public class HivCohortLibrary {
 		Concept methodOfEnrollment = Dictionary.getConcept(Dictionary.METHOD_OF_ENROLLMENT);
 
 		CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
-		cd.setName("entered care between dates");
+		cd.setName("referred from");
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.setTimeModifier(PatientSetService.TimeModifier.ANY);
@@ -84,7 +84,7 @@ public class HivCohortLibrary {
 		Concept methodOfEnrollment = Dictionary.getConcept(Dictionary.METHOD_OF_ENROLLMENT);
 
 		CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
-		cd.setName("entered care between dates");
+		cd.setName("referred not from");
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.setTimeModifier(PatientSetService.TimeModifier.ANY);
@@ -117,7 +117,7 @@ public class HivCohortLibrary {
 	 */
 	public CohortDefinition enrolledExcludingTransfersAndReferredFrom(Concept... entryPoints) {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
-		cd.setName("enrolled excluding transfers in HIV care from entry points between dates");
+		cd.setName("enrolled excluding transfers in HIV care from entry points");
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.addSearch("enrolledExcludingTransfers", ReportUtils.map(enrolledExcludingTransfers(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
@@ -132,7 +132,7 @@ public class HivCohortLibrary {
 	 */
 	public CohortDefinition enrolledExcludingTransfersAndNotReferredFrom(Concept... entryPoints) {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
-		cd.setName("enrolled excluding transfers in HIV care not from entry points between dates");
+		cd.setName("enrolled excluding transfers in HIV care not from entry points");
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.addSearch("enrolledExcludingTransfers", ReportUtils.map(enrolledExcludingTransfers(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
@@ -178,7 +178,7 @@ public class HivCohortLibrary {
 	 */
 	public CohortDefinition startedArt() {
 		DateCalculationCohortDefinition cd = new DateCalculationCohortDefinition(new InitialArtStartDateCalculation());
-		cd.setName("started ART between dates");
+		cd.setName("started ART");
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		return cd;
@@ -190,7 +190,7 @@ public class HivCohortLibrary {
 	 */
 	public CohortDefinition startedArtWhilePregnant() {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
-		cd.setName("started ART while pregnant between dates");
+		cd.setName("started ART while pregnant");
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.addSearch("startedArt", ReportUtils.map(startedArt(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
@@ -205,7 +205,7 @@ public class HivCohortLibrary {
 	 */
 	public CohortDefinition startedArtWhileTbPatient() {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
-		cd.setName("started ART while being TB patient between dates");
+		cd.setName("started ART while being TB patient");
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.addSearch("startedArt", ReportUtils.map(startedArt(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
@@ -220,7 +220,7 @@ public class HivCohortLibrary {
 	 */
 	public CohortDefinition startedArtWithWhoStage(int stage) {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
-		cd.setName("started ART with WHO stage between dates");
+		cd.setName("started ART with WHO stage " + stage);
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.addSearch("startedArt", ReportUtils.map(startedArt(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
@@ -257,7 +257,7 @@ public class HivCohortLibrary {
 	 */
 	public CohortDefinition onArtAndPregnant() {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
-		cd.setName("on ART and pregnant on date");
+		cd.setName("on ART and pregnant");
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
 		cd.addSearch("onArt", ReportUtils.map(onArt(), "onDate=${onDate}"));
 		cd.addSearch("pregnant", ReportUtils.map(commonCohorts.pregnant(), "onDate=${onDate}"));
@@ -271,7 +271,7 @@ public class HivCohortLibrary {
 	 */
 	public CohortDefinition onArtAndNotPregnant() {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
-		cd.setName("on ART and not pregnant on date");
+		cd.setName("on ART and not pregnant");
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
 		cd.addSearch("onArt", ReportUtils.map(onArt(), "onDate=${onDate}"));
 		cd.addSearch("pregnant", ReportUtils.map(commonCohorts.pregnant(), "onDate=${onDate}"));
@@ -285,7 +285,7 @@ public class HivCohortLibrary {
 	 */
 	public CohortDefinition onOriginalFirstLine() {
 		CalculationCohortDefinition cd = new CalculationCohortDefinition(new OnOriginalFirstLineArtCalculation());
-		cd.setName("on original first line regimen on date");
+		cd.setName("on original first line regimen");
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
 		return cd;
 	}
@@ -296,7 +296,7 @@ public class HivCohortLibrary {
 	 */
 	public CohortDefinition onAlternateFirstLine() {
 		CalculationCohortDefinition cd = new CalculationCohortDefinition(new OnAlternateFirstLineArtCalculation());
-		cd.setName("on alternate first line regimen on date");
+		cd.setName("on alternate first line regimen");
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
 		return cd;
 	}
@@ -307,7 +307,7 @@ public class HivCohortLibrary {
 	 */
 	public CohortDefinition onSecondLine() {
 		CalculationCohortDefinition cd = new CalculationCohortDefinition(new OnSecondLineArtCalculation());
-		cd.setName("on second line regimen on date");
+		cd.setName("on second line regimen");
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
 		return cd;
 	}
@@ -332,7 +332,7 @@ public class HivCohortLibrary {
 	 */
 	public CohortDefinition onCtxProphylaxis() {
 		CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
-		cd.setName("taking CTX prophylaxis before date");
+		cd.setName("on CTX prophylaxis");
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.setTimeModifier(PatientSetService.TimeModifier.LAST);
@@ -349,7 +349,7 @@ public class HivCohortLibrary {
 	public CohortDefinition inHivProgramAndOnCtxProphylaxis() {
 		Program hivProgram = MetadataUtils.getProgram(HivMetadata._Program.HIV);
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
-		cd.setName("in HIV program and taking CTX prophylaxis between dates");
+		cd.setName("in HIV program and on CTX prophylaxis");
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.addSearch("inProgram", ReportUtils.map(commonCohorts.inProgram(hivProgram), "onDate=${onOrBefore}"));
@@ -366,7 +366,7 @@ public class HivCohortLibrary {
 		Concept flucanozole = Dictionary.getConcept(Dictionary.FLUCONAZOLE);
 		Program hivProgram = MetadataUtils.getProgram(HivMetadata._Program.HIV);
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
-		cd.setName("in HIV program and on medication between dates");
+		cd.setName("in HIV program and on Fluconazole prophylaxis");
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.addSearch("inProgram", ReportUtils.map(commonCohorts.inProgram(hivProgram), "onDate=${onOrBefore}"));
@@ -402,7 +402,7 @@ public class HivCohortLibrary {
 		Concept positive = Dictionary.getConcept(Dictionary.POSITIVE);
 		Concept negative = Dictionary.getConcept(Dictionary.NEGATIVE);
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
-		cd.setName("Tested for Hiv");
+		cd.setName("tested for HIV");
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.addSearch("resultOfHivTest", ReportUtils.map(commonCohorts.hasObs(hivStatus, unknown, positive, negative), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
@@ -420,7 +420,7 @@ public class HivCohortLibrary {
 		Concept hivInfected = Dictionary.getConcept(Dictionary.HIV_INFECTED);
 		Concept positive = Dictionary.getConcept(Dictionary.POSITIVE);
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
-		cd.setName("Tested for Hiv and Turned to be positive");
+		cd.setName("tested for positive for HIV");
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.addSearch("resultOfHivTestPositive", ReportUtils.map(commonCohorts.hasObs(hivStatus, positive), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));

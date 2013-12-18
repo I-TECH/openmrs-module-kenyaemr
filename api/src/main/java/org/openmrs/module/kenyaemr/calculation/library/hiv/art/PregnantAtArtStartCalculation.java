@@ -14,7 +14,6 @@
 
 package org.openmrs.module.kenyaemr.calculation.library.hiv.art;
 
-import org.apache.commons.lang3.time.DateUtils;
 import org.openmrs.Concept;
 import org.openmrs.Obs;
 import org.openmrs.calculation.patient.PatientCalculationContext;
@@ -25,10 +24,8 @@ import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
-import org.openmrs.util.OpenmrsUtil;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -49,7 +46,6 @@ public class PregnantAtArtStartCalculation extends BaseEmrCalculation {
 		CalculationResultMap artStartDates = calculate(new InitialArtStartDateCalculation(), cohort, context);
 		CalculationResultMap pregnancyObss = Calculations.allObs(pregnancyStatus, cohort, context);
 
-		// Return the earliest of the two
 		CalculationResultMap ret = new CalculationResultMap();
 		for (Integer ptId : cohort) {
 			boolean result = false;
@@ -57,9 +53,8 @@ public class PregnantAtArtStartCalculation extends BaseEmrCalculation {
 			ListResult pregObssResult = (ListResult) pregnancyObss.get(ptId);
 
 			if (artStartDate != null && pregObssResult != null && !pregObssResult.isEmpty()) {
-
 				List<Obs> pregnancyStatuses = EmrCalculationUtils.extractListResultValues(pregObssResult);
-				Obs lastBeforeArtStart = findLastOnOrBefore(pregnancyStatuses, artStartDate);
+				Obs lastBeforeArtStart = EmrCalculationUtils.findLastOnOrBefore(pregnancyStatuses, artStartDate);
 
 				if (lastBeforeArtStart != null && lastBeforeArtStart.getValueCoded().equals(yes)) {
 					result = true;
@@ -69,26 +64,5 @@ public class PregnantAtArtStartCalculation extends BaseEmrCalculation {
 			ret.put(ptId, new BooleanResult(result, this));
 		}
 		return ret;
-	}
-
-	/**
-	 * Find the last obs before the given date. Assumes obs are ordered with ascending dates.
-	 * @param obss the list of obs
-	 * @param onOrBefore the day
-	 * @return the last obs or null if no obs are before the given date
-	 */
-	private Obs findLastOnOrBefore(List<Obs> obss, Date onOrBefore) {
-		Date before = OpenmrsUtil.getLastMomentOfDay(onOrBefore);
-
-		Obs result = null;
-		for (Obs obs : obss) {
-			if (obs.getObsDatetime().before(before)) {
-				result = obs;
-			}
-			else {
-				break;
-			}
-		}
-		return result;
 	}
 }

@@ -42,7 +42,7 @@ public class PwpCohortLibrary {
 		Concept yes = Dictionary.getConcept(Dictionary.YES);
 
 		CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
-		cd.setName("condoms provided between dates");
+		cd.setName("condoms provided");
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.setTimeModifier(PatientSetService.TimeModifier.ANY);
@@ -65,7 +65,7 @@ public class PwpCohortLibrary {
 		Concept otherNonCoded = Dictionary.getConcept(Dictionary.OTHER_NON_CODED);
 
 		CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
-		cd.setName("modern contraceptives provided between dates");
+		cd.setName("modern contraceptives provided");
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.setTimeModifier(PatientSetService.TimeModifier.ANY);

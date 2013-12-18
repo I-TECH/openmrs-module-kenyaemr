@@ -18,6 +18,7 @@ import org.openmrs.Concept;
 import org.openmrs.Obs;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
+import org.openmrs.calculation.result.ListResult;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyaemr.Dictionary;
@@ -26,8 +27,8 @@ import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.util.EmrUtils;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -43,19 +44,20 @@ public class WhoStageAtArtStartCalculation extends BaseEmrCalculation {
 
 		Concept currentWhoStage = getConcept(Dictionary.CURRENT_WHO_STAGE);
 		CalculationResultMap artStartDates = calculate(new InitialArtStartDateCalculation(), cohort, context);
+		CalculationResultMap whoStageObss = Calculations.allObs(currentWhoStage, cohort, context);
 
-		// Return the earliest of the two
 		CalculationResultMap ret = new CalculationResultMap();
 		for (Integer ptId : cohort) {
 			SimpleResult result = null;
 			Date artStartDate = EmrCalculationUtils.datetimeResultForPatient(artStartDates, ptId);
+			ListResult whoStageObssResult = (ListResult) whoStageObss.get(ptId);
 
-			if (artStartDate != null) {
-				CalculationResultMap currentWhoStageObss = Calculations.lastObsOnOrBefore(currentWhoStage, artStartDate, Collections.singleton(ptId), context);
-				Obs whoStageObs = EmrCalculationUtils.obsResultForPatient(currentWhoStageObss, ptId);
+			if (artStartDate != null && whoStageObssResult != null && !whoStageObssResult.isEmpty()) {
+				List<Obs> whoStages = EmrCalculationUtils.extractListResultValues(whoStageObssResult);
+				Obs lastBeforeArtStart = EmrCalculationUtils.findLastOnOrBefore(whoStages, artStartDate);
 
-				if (whoStageObs != null) {
-					Integer whoStage = EmrUtils.whoStage(whoStageObs.getValueCoded());
+				if (lastBeforeArtStart != null) {
+					Integer whoStage = EmrUtils.whoStage(lastBeforeArtStart.getValueCoded());
 					if (whoStage != null) {
 						result = new SimpleResult(whoStage, this);
 					}
