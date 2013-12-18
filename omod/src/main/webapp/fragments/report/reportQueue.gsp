@@ -21,7 +21,7 @@
 				<td>{{ request.timeTaken || '--:--:--' }}</td>
 				<td style="text-align: right">
 					<% if (config.allowCancel) { %>
-					<a href="#" ng-click="cancelRequest(request.id)" ng-if="request.status == 'REQUESTED'">
+					<a href="#" ng-click="cancelRequest(request.id)" ng-if="request.status == 'REQUESTED' || request.status == 'PROCESSING'">
 						<img src="${ ui.resourceLink("kenyaui", "images/glyphs/cancel.png") }" class="ke-glyph" /> Cancel
 					</a>
 					<% } %>
