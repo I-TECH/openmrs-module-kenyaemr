@@ -27,6 +27,7 @@
 	<bean id="kenyaemr.config.report" class="org.openmrs.module.kenyacore.report.ReportConfiguration">
 		<property name="commonReports">
 			<set>
+				<ref bean="kenyaemr.common.report.missedAppointment" />
 				<ref bean="kenyaemr.common.report.moh711" />
 				<ref bean="kenyaemr.common.report.moh731" />
 			</set>
@@ -209,6 +210,13 @@
 	</bean>-->
 
 	<!-- ===================== Reports ===================== -->
+
+	<bean id="kenyaemr.common.report.missedAppointment" class="org.openmrs.module.kenyacore.report.CalculationReportDescriptor">
+		<property name="targetUuid" value="d1e3d16f-74d8-47c7-9475-849e9d82408b" />
+		<property name="name" value="Patients who missed their last appointment" />
+		<property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.MissedLastAppointmentCalculation" />
+		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
+	</bean>
 
 	<bean id="kenyaemr.common.report.moh711" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
 		<property name="targetUuid" value="c546b523-83f8-43ba-a979-e0631f0a5364" />

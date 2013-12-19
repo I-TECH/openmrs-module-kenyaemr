@@ -48,7 +48,11 @@ public class ReportsHomePageController {
 
 		AppDescriptor currentApp = kenyaUi.getCurrentApp(pageRequest);
 
-		List<ReportDescriptor> commonReports = reportManager.getCommonReports(currentApp);
+		List<SimpleObject> commonReports = new ArrayList<SimpleObject>();
+
+		for (ReportDescriptor report : reportManager.getCommonReports(currentApp)) {
+			commonReports.add(ui.simplifyObject(report));
+		}
 
 		Map<String, SimpleObject[]> programReports = new LinkedHashMap<String, SimpleObject[]>();
 
@@ -61,7 +65,7 @@ public class ReportsHomePageController {
 			}
 		}
 
-		model.addAttribute("commonReports", ui.simplifyCollection(commonReports));
+		model.addAttribute("commonReports", commonReports);
 		model.addAttribute("programReports", programReports);
 	}
 }

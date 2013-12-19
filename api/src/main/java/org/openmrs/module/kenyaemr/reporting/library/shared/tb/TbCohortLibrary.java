@@ -16,11 +16,11 @@ package org.openmrs.module.kenyaemr.reporting.library.shared.tb;
 
 import org.openmrs.Concept;
 import org.openmrs.Program;
+import org.openmrs.module.kenyaemr.calculation.library.MissedLastAppointmentCalculation;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyacore.report.builder.CalculationCohortDefinition;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.MissedAppointmentsOrDefaultedCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.metadata.TbMetadata;
 import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonCohortLibrary;
@@ -113,12 +113,12 @@ public class TbCohortLibrary {
 	}
 
 	/**
-	 * TB patients who missed appointments between ${onDate}
+	 * TB patients defaulted (i.e. who missed last appointment) between ${onDate}
 	 * @return the cohort definition
 	 */
-	public CohortDefinition missedAppointmentOrDefaulted() {
-		CalculationCohortDefinition cd = new CalculationCohortDefinition(new MissedAppointmentsOrDefaultedCalculation());
-		cd.setName("missed or defaulted appointments");
+	public CohortDefinition defaulted() {
+		CalculationCohortDefinition cd = new CalculationCohortDefinition(new MissedLastAppointmentCalculation());
+		cd.setName("defaulted");
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
 		return cd;
 	}

@@ -55,20 +55,18 @@ public class TbIndicatorLibrary {
 	 * @return the indicator
 	 */
 	public CohortIndicator completedTbTreatment() {
-		return cohortIndicator("completed TB treatment",
+		return cohortIndicator("patients who completed TB treatment",
 				map(tbCohorts.completedTreatment(), "onOrAfter=${startDate},onOrBefore=${endDate}")
 		);
 	}
 
 
 	/**
-	 * Number of patients who defaulted and missed appointments
+	 * Number of patients who defaulted
 	 * @return the indicator
 	 */
-	public CohortIndicator defaultedAndMissedAppointment() {
-		return cohortIndicator("defaulted or missed appointments",
-				map(tbCohorts.missedAppointmentOrDefaulted(), "onDate=${endDate}")
-		);
+	public CohortIndicator defaulted() {
+		return cohortIndicator("patients who defaulted", map(tbCohorts.defaulted(), "onDate=${endDate}"));
 	}
 
 	/**

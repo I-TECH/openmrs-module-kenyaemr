@@ -12,21 +12,17 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.calculation.library.hiv;
+package org.openmrs.module.kenyaemr.calculation.library;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Concept;
-import org.openmrs.Program;
-import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
-import org.openmrs.module.kenyaemr.metadata.HivMetadata;
-import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -37,15 +33,9 @@ import java.util.List;
 import static org.hamcrest.Matchers.notNullValue;
 
 /**
- * Tests for {@link MissedAppointmentsOrDefaultedCalculation}
+ * Tests for {@link MissedLastAppointmentCalculation}
  */
-public class MissedAppointmentsOrDefaultedCalculationTest extends BaseModuleContextSensitiveTest {
-
-	@Autowired
-	private CommonMetadata commonMetadata;
-
-	@Autowired
-	private HivMetadata hivMetadata;
+public class MissedLastAppointmentCalculationTest extends BaseModuleContextSensitiveTest {
 
 	/**
 	 * Setup each test
@@ -53,32 +43,21 @@ public class MissedAppointmentsOrDefaultedCalculationTest extends BaseModuleCont
 	@Before
 	public void setup() throws Exception {
 		executeDataSet("dataset/test-concepts.xml");
-
-		commonMetadata.install();
-		hivMetadata.install();
 	}
 
 	/**
-	 * @see MissedAppointmentsOrDefaultedCalculation#getFlagMessage()
+	 * @see MissedLastAppointmentCalculation#getFlagMessage()
 	 */
 	@Test
 	public void getFlagMessage() {
-		Assert.assertThat(new MissedAppointmentsOrDefaultedCalculation().getFlagMessage(), notNullValue());
+		Assert.assertThat(new MissedLastAppointmentCalculation().getFlagMessage(), notNullValue());
 	}
 
 	/**
-	 * @see MissedAppointmentsOrDefaultedCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
-	 * @verifies determine whether patients have a Missed appointments or defaulted
+	 * @see MissedLastAppointmentCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
 	 */
 	@Test
 	public void evaluate_shouldDetermineWhetherPatientsWhoMissedAppointmentsOrDefaulted() throws Exception {
-		Program hivProgram = MetadataUtils.getProgram(HivMetadata._Program.HIV);
-
-		// Enroll patients #6, #7, #8 in the HIV Program
-		TestUtils.enrollInProgram(TestUtils.getPatient(6), hivProgram, TestUtils.date(2011, 1, 1));
-		TestUtils.enrollInProgram(TestUtils.getPatient(7), hivProgram, TestUtils.date(2011, 1, 1));
-		TestUtils.enrollInProgram(TestUtils.getPatient(8), hivProgram, TestUtils.date(2011, 1, 1));
-
 		// Give patient #7 a return visit obs of 10 days ago
 		Concept returnVisit = Context.getConceptService().getConcept(5096);
 		Calendar calendar = Calendar.getInstance();
@@ -90,12 +69,11 @@ public class MissedAppointmentsOrDefaultedCalculationTest extends BaseModuleCont
 		calendar.add(Calendar.DATE, 10);
 		TestUtils.saveObs(TestUtils.getPatient(8), returnVisit, calendar.getTime(), calendar.getTime());
 
-		List<Integer> ptIds = Arrays.asList(6, 7, 8, 9);
+		List<Integer> cohort = Arrays.asList(6, 7, 8, 9);
 
-		CalculationResultMap resultMap = new MissedAppointmentsOrDefaultedCalculation().evaluate(ptIds, null, Context.getService(PatientCalculationService.class).createCalculationContext());
-		Assert.assertFalse((Boolean) resultMap.get(6).getValue()); // patient in HIV program but no return visit obs
+		CalculationResultMap resultMap = new MissedLastAppointmentCalculation().evaluate(cohort, null, Context.getService(PatientCalculationService.class).createCalculationContext());
+		Assert.assertFalse((Boolean) resultMap.get(6).getValue()); // patient has no return visit obs
 		Assert.assertTrue((Boolean) resultMap.get(7).getValue()); // patient has missed visit
 		Assert.assertFalse((Boolean) resultMap.get(8).getValue()); // patient has future return visit date
-		Assert.assertFalse((Boolean) resultMap.get(9).getValue()); // patient not in HIV Program
 	}
 }

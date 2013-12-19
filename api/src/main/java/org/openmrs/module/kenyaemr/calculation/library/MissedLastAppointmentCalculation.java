@@ -12,7 +12,7 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.calculation.library.hiv;
+package org.openmrs.module.kenyaemr.calculation.library;
 
 import java.util.Collection;
 import java.util.Date;
@@ -20,26 +20,21 @@ import java.util.Map;
 import java.util.Set;
 
 import org.openmrs.Encounter;
-import org.openmrs.Program;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
-import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyacore.calculation.Filters;
 import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
-import org.openmrs.module.kenyaemr.metadata.HivMetadata;
-import org.openmrs.module.metadatadeploy.MetadataUtils;
 
 /**
- * Calculates whether patients have missed their last scheduled return visit. Calculation returns true
- * if the patient is alive, enrolled in the HIV program, has a scheduled return visit in the past,
- * and hasn't had an encounter since that date
+ * Calculates whether patients have missed their last scheduled return visit. Calculation returns true if the patient is
+ * alive, has a scheduled return visit in the past, and hasn't had an encounter since that date
  */
-public class MissedAppointmentsOrDefaultedCalculation extends BaseEmrCalculation implements PatientFlagCalculation {
+public class MissedLastAppointmentCalculation extends BaseEmrCalculation implements PatientFlagCalculation {
 
 	@Override
 	public String getFlagMessage() {
@@ -49,29 +44,25 @@ public class MissedAppointmentsOrDefaultedCalculation extends BaseEmrCalculation
 	/**
 	 * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
 	 * @should calculate false for deceased patients
-	 * @should calculate false for patients not in HIV program
 	 * @should calculate false for patients with no return visit date obs
 	 * @should calculate false for patients with return visit date obs whose value is in the future
 	 * @should calculate false for patients with encounter after return visit date obs value
-	 * @should calculate true for patients in HIV program with no encounter after return visit date obs value
+	 * @should calculate true for patients with no encounter after return visit date obs value
 	 */
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
 
-		Program hivProgram = MetadataUtils.getProgram(HivMetadata._Program.HIV);
-
 		Set<Integer> alive = Filters.alive(cohort, context);
-		Set<Integer> inHivProgram = Filters.inProgram(hivProgram, alive, context);
 
-		CalculationResultMap lastReturnDateObss = Calculations.lastObs(Dictionary.getConcept(Dictionary.RETURN_VISIT_DATE), inHivProgram, context);
+		CalculationResultMap lastReturnDateObss = Calculations.lastObs(Dictionary.getConcept(Dictionary.RETURN_VISIT_DATE), alive, context);
 		CalculationResultMap lastEncounters = Calculations.lastEncounter(null, cohort, context);
 
 		CalculationResultMap ret = new CalculationResultMap();
 		for (Integer ptId : cohort) {
 			boolean missedVisit = false;
 
-			// Is patient alive and in the HIV program
-			if (inHivProgram.contains(ptId)) {
+			// Is patient alive
+			if (alive.contains(ptId)) {
 				Date lastScheduledReturnDate = EmrCalculationUtils.datetimeObsResultForPatient(lastReturnDateObss, ptId);
 
 				// Does patient have a scheduled return visit in the past
