@@ -60,12 +60,83 @@
 				}
 			}
 
+			function onFocusOut() {
+				jq("#serial-number").focusout(function() {
+					if((getValue('serial-number.value') &lt; 0)|| (getValue('serial-number.value') == '')) {
+						jq('#serial-error').html('Only positive numbers');
+						jq('#serial-error').show();
+					}
+					else {
+						jq('#serial-error').html(' ');
+						jq('#serial-error').hide();
+					}
+				});
+
+				jq("#quantity").focusout(function() {
+					if((getValue('quantity.value') &lt; 0) || (getValue('quantity.value') == '') ) {
+						jq('#quantity-error').html('Only positive numbers');
+						jq('#quantity-error').show();
+					}
+					else {
+						jq('#quantity-error').html(' ');
+						jq('#quantity-error').hide();
+					}
+				});
+
+				jq("#numberOfColonies").focusout(function() {
+					if((getValue('numberOfColonies.value') &lt; 0) || (getValue('numberOfColonies.value') == '')) {
+						jq('#colonies-error').html('Only positive numbers');
+						jq('#colonies-error').show();
+					}
+					else {
+						jq('#colonies-error').html(' ');
+						jq('#colonies-error').hide();
+					}
+				});
+			}
+
+			function cultureValidation() {
+			   jq('#r-s').click( function() {
+					jq('#s-s :input').prop('checked', false);
+			   });
+
+				jq('#s-s').click( function() {
+					jq('#r-s :input').prop('checked', false);
+				});
+
+				jq('#r-r').click( function() {
+					jq('#s-r :input').prop('checked', false);
+				});
+
+				jq('#s-r').click( function() {
+					jq('#r-r :input').prop('checked', false);
+				});
+
+				jq('#r-inh').click( function() {
+					jq('#s-inh :input').prop('checked', false);
+				});
+
+				jq('#s-inh').click( function() {
+					jq('#r-inh :input').prop('checked', false);
+				});
+
+				jq('#r-e').click( function() {
+					jq('#s-e :input').prop('checked', false);
+				});
+
+				jq('#s-e').click( function() {
+					jq('#r-e :input').prop('checked', false);
+				});
+			}
+
 		jq(function(){
 			cultureTest();
 			jq('#growth_no_growth').click(cultureTest);
 			sputumTypeTest();
 			jq('#testType').click(sputumTypeTest);
 			jq('#sputumResults').click(sputumTypeTest);
+			onFocusOut();
+			cultureValidation();
 		});
 	</script>
 	<div class="ke-form-header">
@@ -83,7 +154,8 @@
 			<td>
 				<fieldset>
 					<legend>Sputum Results</legend>
-						<table>
+						<table
+								>
 							<obsgroup groupingConceptId="159960AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
 								<tr>
 									<td>Type:</td>
@@ -98,11 +170,17 @@
 								</tr>
 								<tr>
 									<td>Serial No:</td>
-									<td><obs conceptId="159968AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  /></td>
+									<td>
+										<obs conceptId="159968AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="serial-number"  />
+										<div id="serial-error" class="error" style="display: none;"></div>
+									</td>
 								</tr>
 								<tr>
 									<td>Quantity:</td>
-									<td><obs conceptId="160023AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="quantity" /></td>
+									<td>
+										<obs conceptId="160023AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="quantity" />
+										<div id="quantity-error" class="error" style="display: none;"></div>
+									</td>
 									<td id="hpfValues" class="value"></td>
 								</tr>
 								<tr>
@@ -124,23 +202,26 @@
 							</tr>
 							<tr>
 								<td>Number of Colonies</td>
-								<td><obs conceptId="159952AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="numberOfColonies" /></td>
+								<td>
+									<obs conceptId="159952AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="numberOfColonies" />
+									<div id="colonies-error" class="error" style="display: none;"></div>
+								</td>
 							</tr>
 							<tr>
 								<td align="center" id="sensitivity">
 									Resistant (R)
-									<obs conceptId="159956AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="84360AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="S" style="checkbox" />
-									<obs conceptId="159956AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="767AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="R" style="checkbox" />
-									<obs conceptId="159956AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="78280AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="INH" style="checkbox" />
-									<obs conceptId="159956AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="75948AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="E" style="checkbox" />
+									<obs conceptId="159956AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="84360AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="S" style="checkbox" id="r-s" />
+									<obs conceptId="159956AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="767AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="R" style="checkbox" id="r-r" />
+									<obs conceptId="159956AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="78280AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="INH" style="checkbox" id="r-inh" />
+									<obs conceptId="159956AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="75948AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="E" style="checkbox"  id="r-e" />
 
 									<br />
 									<br />
 									Sensitive (S)
-									<obs conceptId="159958AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="84360AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="S" style="checkbox" />
-									<obs conceptId="159958AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="767AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="R" style="checkbox" />
-									<obs conceptId="159958AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="78280AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="INH" style="checkbox" />
-									<obs conceptId="159958AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="75948AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="E" style="checkbox" />
+									<obs conceptId="159958AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="84360AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="S" style="checkbox" id="s-s" />
+									<obs conceptId="159958AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="767AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="R" style="checkbox" id="s-r" />
+									<obs conceptId="159958AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="78280AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="INH" style="checkbox" id="s-inh" />
+									<obs conceptId="159958AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="75948AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="E" style="checkbox" id="s-e" />
 								</td>
 							</tr>
 							<tr>
