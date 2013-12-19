@@ -60,41 +60,6 @@
 				}
 			}
 
-			function onFocusOut() {
-				jq("#serial-number").focusout(function() {
-					if((getValue('serial-number.value') &lt; 0)|| (getValue('serial-number.value') == '')) {
-						jq('#serial-error').html('Only positive numbers');
-						jq('#serial-error').show();
-					}
-					else {
-						jq('#serial-error').html(' ');
-						jq('#serial-error').hide();
-					}
-				});
-
-				jq("#quantity").focusout(function() {
-					if((getValue('quantity.value') &lt; 0) || (getValue('quantity.value') == '') ) {
-						jq('#quantity-error').html('Only positive numbers');
-						jq('#quantity-error').show();
-					}
-					else {
-						jq('#quantity-error').html(' ');
-						jq('#quantity-error').hide();
-					}
-				});
-
-				jq("#numberOfColonies").focusout(function() {
-					if((getValue('numberOfColonies.value') &lt; 0) || (getValue('numberOfColonies.value') == '')) {
-						jq('#colonies-error').html('Only positive numbers');
-						jq('#colonies-error').show();
-					}
-					else {
-						jq('#colonies-error').html(' ');
-						jq('#colonies-error').hide();
-					}
-				});
-			}
-
 			function cultureValidation() {
 			   jq('#r-s').click( function() {
 					jq('#s-s :input').prop('checked', false);
@@ -135,7 +100,6 @@
 			sputumTypeTest();
 			jq('#testType').click(sputumTypeTest);
 			jq('#sputumResults').click(sputumTypeTest);
-			onFocusOut();
 			cultureValidation();
 		});
 	</script>
@@ -172,14 +136,12 @@
 									<td>Serial No:</td>
 									<td>
 										<obs conceptId="159968AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="serial-number"  />
-										<div id="serial-error" class="error" style="display: none;"></div>
 									</td>
 								</tr>
 								<tr>
 									<td>Quantity:</td>
 									<td>
 										<obs conceptId="160023AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="quantity" />
-										<div id="quantity-error" class="error" style="display: none;"></div>
 									</td>
 									<td id="hpfValues" class="value"></td>
 								</tr>
@@ -204,7 +166,6 @@
 								<td>Number of Colonies</td>
 								<td>
 									<obs conceptId="159952AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="numberOfColonies" />
-									<div id="colonies-error" class="error" style="display: none;"></div>
 								</td>
 							</tr>
 							<tr>
