@@ -78,7 +78,8 @@ public class CommonMetadata extends AbstractMetadataBundle {
 	}
 
 	public static final class _RelationshipType {
-		public static final String SPOUSE = "d6895098-5d8d-11e3-94ee-b35a4132a5e3";
+		public static final String PARTNER = "d6895098-5d8d-11e3-94ee-b35a4132a5e3";
+		public static final String GUARDIAN_DEPENDANT = "5f115f62-68b7-11e3-94ee-6bef9086de92";
 	}
 
 	public static final class _VisitAttributeType {
@@ -140,7 +141,8 @@ public class CommonMetadata extends AbstractMetadataBundle {
 		install(personAttributeType("Next of kin address", "Address of patient's next of kin",
 				String.class, null, false, 3.3, _PersonAttributeType.NEXT_OF_KIN_ADDRESS));
 
-		install(relationshipType("Spouse", "Spouse", "A spouse is a partner in a marriage, civil union, domestic partnership or common-law marriage a male spouse is a husband and a female spouse is a wife", _RelationshipType.SPOUSE));
+		install(relationshipType("Guardian", "Dependant", "One that guards, watches over, or protects", _RelationshipType.GUARDIAN_DEPENDANT));
+		install(relationshipType("Partner", "Partner", "A spouse is a partner in a marriage, civil union, domestic partnership or common-law marriage a male spouse is a husband and a female spouse is a wife", _RelationshipType.PARTNER));
 
 		install(visitAttributeType("Source form", "The form whose submission created the visit",
 				FormDatatype.class, null, 0, 1, _VisitAttributeType.SOURCE_FORM));
