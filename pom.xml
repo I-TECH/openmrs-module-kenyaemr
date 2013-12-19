@@ -30,6 +30,7 @@
 	<modules>
 		<module>api</module>
 		<module>omod</module>
+		<module>installation</module>
 	</modules>
 
 	<properties>
