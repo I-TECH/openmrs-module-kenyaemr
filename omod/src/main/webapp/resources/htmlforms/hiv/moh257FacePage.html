@@ -157,6 +157,24 @@ function OnARTStatusChange()
     }
 }
 
+function onAllergy()
+{
+    if(getValue('allergy.value')== ALLERGY_TO_OTHER)
+    {
+        // jq('#allergy_detail').show();
+        jq('#allergy_detail').find('input[type=text]').removeAttr('disabled');
+
+    }
+    else
+    {
+        setValue('allergy_detail.value', '');
+        //jq('#allergy_detail').hide();
+        jq('#allergy_detail').find('input[type=text]').attr('disabled','true');
+
+    }
+}
+
+
 jq(function() {
     //getField('weight.value').change(onWeightOrHeightChange);
     //getField('height.value').change(onWeightOrHeightChange);
@@ -232,21 +250,9 @@ jq(function() {
         }
     });
 
-    getField('allergy.value').change(function(){
-        if(getValue('allergy.value')== ALLERGY_TO_OTHER)
-        {
-           // jq('#allergy_detail').show();
-            jq('#allergy_detail').find('input[type=text]').removeAttr('disabled');
 
-        }
-        else
-        {
-            setValue('allergy_detail.value', '');
-            //jq('#allergy_detail').hide();
-            jq('#allergy_detail').find('input[type=text]').attr('disabled','true');
-
-        }
-    });
+    jq('#eallergy input').click( onAllergy);
+    onAllergy();
 
     getField('date_confirmed_pos.value').change(function(){
         var birthDate = new Date(getValue('dob.value'))//.getTime();
