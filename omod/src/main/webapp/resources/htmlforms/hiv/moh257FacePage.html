@@ -29,7 +29,18 @@
 var YES_CONCEPT_ID = 1065;
 var NO_CONCEPT_ID = 1066;
 var ADULT =15;
+/*Entry Point Concept Ids */
 var TRANSFER_IN_CONCEPT_ID = 160563;
+var PMTCT_CONCEPT_ID = 160538;
+var VCT_CONCEPT_ID = 160539;
+var MCH_CONCEPT_ID = 160544;
+var VMMC_CONCEPT_ID = 162223;
+var OTHER_ENTRY_CONCEPT_ID = 5622;
+var TB_ENTRY_CONCEPT_ID = 160541;
+var INPATIENT_AD_CONCEPT_ID = 160536;
+var INPATIENT_CH_CONCEPT_ID = 160537;
+var OPD_ENTRY_CONCEPT_ID = 160542;
+var FAMILY_CONCEPT_ID = 1560;
 var NA_CONCEPT_ID = 1175;
 /* Marital/Civil Status Concept IDs */
 var POLYGAMOUS =159715;
@@ -146,6 +157,24 @@ function OnARTStatusChange()
     }
 }
 
+function onAllergy()
+{
+    if(getValue('allergy.value')== ALLERGY_TO_OTHER)
+    {
+        // jq('#allergy_detail').show();
+        jq('#allergy_detail').find('input[type=text]').removeAttr('disabled');
+
+    }
+    else
+    {
+        setValue('allergy_detail.value', '');
+        //jq('#allergy_detail').hide();
+        jq('#allergy_detail').find('input[type=text]').attr('disabled','true');
+
+    }
+}
+
+
 jq(function() {
     //getField('weight.value').change(onWeightOrHeightChange);
     //getField('height.value').change(onWeightOrHeightChange);
@@ -221,10 +250,14 @@ jq(function() {
         }
     });
 
+    getField('allergy.value').change(onAllergy) ;
+    //jq('#allergy input').click(onAllergy);
+    onAllergy();
+    /*
     getField('allergy.value').change(function(){
         if(getValue('allergy.value')== ALLERGY_TO_OTHER)
         {
-           // jq('#allergy_detail').show();
+            // jq('#allergy_detail').show();
             jq('#allergy_detail').find('input[type=text]').removeAttr('disabled');
 
         }
@@ -236,7 +269,7 @@ jq(function() {
 
         }
     });
-
+     */
     getField('date_confirmed_pos.value').change(function(){
         var birthDate = new Date(getValue('dob.value'))//.getTime();
         var pos_date=new Date(getValue('date_confirmed_pos.value'))//.getTime();
@@ -275,7 +308,7 @@ jq(function() {
         }
     });
 
-    /* hide or display transfer in fields */
+      /* hide or display transfer in fields */
     jq('#ep_transfer_in input').click(OnTransferStatusChange);
     OnTransferStatusChange();
 
@@ -285,6 +318,182 @@ jq(function() {
 
     jq('#ms_mp input').click(setMaritalStatus);
     setMaritalStatus();
+    
+       jq('#ep_pmtct input').click(function(){
+        if (getValue('ep_pmtct.value')==PMTCT_CONCEPT_ID)
+        {
+            setValue('ep_vct.value','') ;
+            setValue('ep_ipdAd.value','') ;
+            setValue('ep_ipdCh.value','') ;
+            setValue('ep_transfer_in.value','') ;
+            setValue('ep_tb.value','') ;
+            setValue('ep_mch.value','') ;
+            setValue('ep_other.value','') ;
+            setValue('ep_opd.value','') ;
+            setValue('ep_fm.value','') ;
+            setValue('ep_vmmc.value','') ;
+        }
+    });
+
+  jq('#ep_vct input').click(function(){
+        if (getValue('ep_vct.value')==VCT_CONCEPT_ID)
+        {
+            setValue('ep_pmtct.value','') ;
+            setValue('ep_ipdAd.value','') ;
+            setValue('ep_ipdCh.value','') ;
+            setValue('ep_transfer_in.value','') ;
+            setValue('ep_tb.value','') ;
+            setValue('ep_mch.value','') ;
+            setValue('ep_other.value','') ;
+            setValue('ep_opd.value','') ;
+            setValue('ep_fm.value','') ;
+            setValue('ep_vmmc.value','') ;
+        }
+    });
+
+  jq('#ep_ipdAd input').click(function(){
+        if (getValue('ep_ipdAd.value')==INPATIENT_AD_CONCEPT_ID)
+        {
+            setValue('ep_vct.value','') ;
+            setValue('ep_pmtct.value','') ;
+            setValue('ep_ipdCh.value','') ;
+            setValue('ep_transfer_in.value','') ;
+            setValue('ep_tb.value','') ;
+            setValue('ep_mch.value','') ;
+            setValue('ep_other.value','') ;
+            setValue('ep_opd.value','') ;
+            setValue('ep_fm.value','') ;
+            setValue('ep_vmmc.value','') ;
+        }
+    });
+
+  jq('#ep_ipdCh input').click(function(){
+        if (getValue('ep_ipdCh.value')==INPATIENT_CH_CONCEPT_ID)
+        {
+            setValue('ep_vct.value','') ;
+            setValue('ep_ipdAd.value','') ;
+            setValue('ep_pmtct.value','') ;
+            setValue('ep_transfer_in.value','') ;
+            setValue('ep_tb.value','') ;
+            setValue('ep_mch.value','') ;
+            setValue('ep_other.value','') ;
+            setValue('ep_opd.value','') ;
+            setValue('ep_fm.value','') ;
+            setValue('ep_vmmc.value','') ;
+        }
+    });
+
+  jq('#ep_transfer_in input').click(function(){
+        if (getValue('ep_transfer_in.value')==TRANSFER_IN_CONCEPT_ID)
+        {
+            setValue('ep_vct.value','') ;
+            setValue('ep_ipdAd.value','') ;
+            setValue('ep_ipdCh.value','') ;
+            setValue('ep_pmtct.value','') ;
+            setValue('ep_tb.value','') ;
+            setValue('ep_mch.value','') ;
+            setValue('ep_other.value','') ;
+            setValue('ep_opd.value','') ;
+            setValue('ep_fm.value','') ;
+            setValue('ep_vmmc.value','') ;
+        }
+    });
+
+  jq('#ep_tb input').click(function(){
+        if (getValue('ep_tb.value')==TB_ENTRY_CONCEPT_ID)
+        {
+            setValue('ep_vct.value','') ;
+            setValue('ep_ipdAd.value','') ;
+            setValue('ep_ipdCh.value','') ;
+            setValue('ep_transfer_in.value','') ;
+            setValue('ep_pmtct.value','') ;
+            setValue('ep_mch.value','') ;
+            setValue('ep_other.value','') ;
+            setValue('ep_opd.value','') ;
+            setValue('ep_fm.value','') ;
+            setValue('ep_vmmc.value','') ;
+        }
+    });
+
+  jq('#ep_mch input').click(function(){
+        if (getValue('ep_mch.value')==MCH_CONCEPT_ID)
+        {
+            setValue('ep_vct.value','') ;
+            setValue('ep_ipdAd.value','') ;
+            setValue('ep_ipdCh.value','') ;
+            setValue('ep_transfer_in.value','') ;
+            setValue('ep_tb.value','') ;
+            setValue('ep_pmtct.value','') ;
+            setValue('ep_other.value','') ;
+            setValue('ep_opd.value','') ;
+            setValue('ep_fm.value','') ;
+            setValue('ep_vmmc.value','') ;
+        }
+    });
+
+  jq('#ep_other input').click(function(){
+        if (getValue('ep_other.value')==OTHER_ENTRY_CONCEPT_ID)
+        {
+            setValue('ep_vct.value','') ;
+            setValue('ep_ipdAd.value','') ;
+            setValue('ep_ipdCh.value','') ;
+            setValue('ep_transfer_in.value','') ;
+            setValue('ep_tb.value','') ;
+            setValue('ep_mch.value','') ;
+            setValue('ep_pmtct.value','') ;
+            setValue('ep_opd.value','') ;
+            setValue('ep_fm.value','') ;
+            setValue('ep_vmmc.value','') ;
+        }
+    });
+
+  jq('#ep_opd input').click(function(){
+        if (getValue('ep_opd.value')==OPD_ENTRY_CONCEPT_ID)
+        {
+            setValue('ep_vct.value','') ;
+            setValue('ep_ipdAd.value','') ;
+            setValue('ep_ipdCh.value','') ;
+            setValue('ep_transfer_in.value','') ;
+            setValue('ep_tb.value','') ;
+            setValue('ep_mch.value','') ;
+            setValue('ep_other.value','') ;
+            setValue('ep_pmtct.value','') ;
+            setValue('ep_fm.value','') ;
+            setValue('ep_vmmc.value','') ;
+        }
+    });
+
+  jq('#ep_fm input').click(function(){
+        if (getValue('ep_fm.value')==FAMILY_CONCEPT_ID)
+        {
+            setValue('ep_vct.value','') ;
+            setValue('ep_ipdAd.value','') ;
+            setValue('ep_ipdCh.value','') ;
+            setValue('ep_transfer_in.value','') ;
+            setValue('ep_tb.value','') ;
+            setValue('ep_mch.value','') ;
+            setValue('ep_other.value','') ;
+            setValue('ep_opd.value','') ;
+            setValue('ep_pmtct.value','') ;
+            setValue('ep_vmmc.value','') ;
+        }
+    });
+
+  jq('#ep_vmmc input').click(function(){
+        if (getValue('ep_vmmc.value')==VMMC_CONCEPT_ID)
+        {
+            setValue('ep_vct.value','') ;
+            setValue('ep_ipdAd.value','') ;
+            setValue('ep_ipdCh.value','') ;
+            setValue('ep_transfer_in.value','') ;
+            setValue('ep_tb.value','') ;
+            setValue('ep_mch.value','') ;
+            setValue('ep_other.value','') ;
+            setValue('ep_opd.value','') ;
+            setValue('ep_pmtct.value','') ;
+            setValue('ep_fm.value','') ;
+        }
+    });
 
 });
 </script>
@@ -321,7 +530,7 @@ jq(function() {
             </tr>
             <tr>
                 <td colspan="2">Sex <lookup class="value" expression="patient.gender" /></td>
-                <!--  <td>Postal Address <obs conceptId="6499"/></td> -->
+
             </tr>
 
             <tr>
@@ -369,7 +578,7 @@ jq(function() {
                 <td><obs  id="ep_pmtct" conceptId="160540AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160538AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="PMTCT" style="checkbox"/></td>
                 <td><obs  id="ep_ipdAd" conceptId="160540AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160536AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="IPD-Ad" style="checkbox"/></td>
                 <td><obs  id="ep_tb" conceptId="160540AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160541AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="TB Clinic" style="checkbox"/></td>
-                <td><obs conceptId="160540AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160542AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="OPD" style="checkbox"/></td>
+                <td><obs  id="ep_opd" conceptId="160540AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160542AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="OPD" style="checkbox"/></td>
 
             </tr>
             <tr>
@@ -382,7 +591,7 @@ jq(function() {
             </tr>
             <tr>
 
-                <td><obs conceptId="160540AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1560AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Family Member" style="checkbox"/></td>
+                <td><obs id="ep_fm" conceptId="160540AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1560AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Family Member" style="checkbox"/></td>
                 <td><obs id="ep_other" conceptId="160540AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Other, (Specify e.g. (STI)" style="checkbox"/></td>
                 <td colspan="2">
                     <obs id="ep_transfer_in" conceptId="160540AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
@@ -486,7 +695,12 @@ jq(function() {
             <tr>
                 <td><br/>Date Confirmed HIV Positive</td>
                 <td><br/><obs id="date_confirmed_pos"  conceptId="160554AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/><span id="date_confirmed_error"></span></td>
-                <td><br/>Where? <obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
+                <td><br/>Where?
+                    <obsgroup groupingConceptId="161559AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                        <obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+                    </obsgroup>
+                </td>
+
 
             </tr>
             <tr>
