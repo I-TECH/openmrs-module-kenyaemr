@@ -251,7 +251,7 @@ jq(function() {
     });
 
 
-    jq('#allergy input').click( onAllergy);
+    jq('#allergy input').click(onAllergy);
     onAllergy();
 
     getField('date_confirmed_pos.value').change(function(){
@@ -292,11 +292,7 @@ jq(function() {
         }
     });
 
-  jq('#ep_pmtct input').find('input[class=hasDatepicker]').click(function(){
-
-    });
-
-    /* hide or display transfer in fields */
+      /* hide or display transfer in fields */
     jq('#ep_transfer_in input').click(OnTransferStatusChange);
     OnTransferStatusChange();
 
