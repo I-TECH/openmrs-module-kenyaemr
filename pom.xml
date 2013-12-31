@@ -30,7 +30,8 @@
 	<modules>
 		<module>api</module>
 		<module>omod</module>
-		<module>installation</module>
+		<module>distro</module>
+		<module>install</module>
 	</modules>
 
 	<properties>
@@ -39,12 +40,16 @@
 		<!-- Module dependencies -->
 		<appframeworkVersion>1.5</appframeworkVersion>
 		<calculationVersion>1.0</calculationVersion>
+		<groovyVersion>2.2.4</groovyVersion>
 		<htmlformentryVersion>2.2.1</htmlformentryVersion>
-		<htmlformentry19extVersion>0.9</htmlformentry19extVersion>
+		<htmlformentry19extVersion>1.4</htmlformentry19extVersion>
 		<htmlwidgetsVersion>1.6.5</htmlwidgetsVersion>
 		<idgenVersion>2.6</idgenVersion>
 		<kenyacoreVersion>1.0</kenyacoreVersion>
+		<kenyaemrVersion>${project.version}</kenyaemrVersion>
+		<kenyadqVersion>0.2.7</kenyadqVersion>
 		<kenyauiVersion>1.13.4-SNAPSHOT</kenyauiVersion>
+		<logicVersion>0.5.2</logicVersion>
 		<metadatadeployVersion>0.2</metadatadeployVersion>
 		<metadatamappingVersion>1.0.1</metadatamappingVersion>
 		<metadatasharingVersion>1.1.8</metadatasharingVersion>

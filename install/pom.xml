@@ -7,7 +7,7 @@
 		<version>13.3-RC4-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>kenyaemr-installation</artifactId>
+	<artifactId>kenyaemr-install</artifactId>
 	<packaging>pom</packaging>
 	<name>KenyaEMR Installation (optional)</name>
 	<description>Installation tools for KenyaEMR</description>

@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.openmrs.module</groupId>
+		<artifactId>kenyaemr</artifactId>
+		<version>13.3-RC4-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>kenyaemr-distro</artifactId>
+	<packaging>pom</packaging>
+	<name>KenyaEMR Distribution (optional)</name>
+	<description>Distribution project for KenyaEMR</description>
+
+	<dependencies>
+
+		<!-- Begin OpenMRS modules -->
+
+		<dependency>
+			<groupId>org.openmrs.module</groupId>
+			<artifactId>appframework-omod</artifactId>
+			<version>${appframeworkVersion}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.openmrs.module</groupId>
+			<artifactId>calculation-omod</artifactId>
+			<version>${calculationVersion}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.openmrs.module</groupId>
+			<artifactId>groovy-omod</artifactId>
+			<version>${groovyVersion}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.openmrs.module</groupId>
+			<artifactId>htmlformentry-omod</artifactId>
+			<version>${htmlformentryVersion}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.openmrs.module</groupId>
+			<artifactId>htmlformentry19ext-omod</artifactId>
+			<version>${htmlformentry19extVersion}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.openmrs.module</groupId>
+			<artifactId>htmlwidgets-omod</artifactId>
+			<version>${htmlwidgetsVersion}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.openmrs.module</groupId>
+			<artifactId>idgen-omod</artifactId>
+			<version>${idgenVersion}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.openmrs.module</groupId>
+			<artifactId>kenyacore-omod</artifactId>
+			<version>${kenyacoreVersion}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.openmrs.module</groupId>
+			<artifactId>kenyadq-omod</artifactId>
+			<version>${kenyadqVersion}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.openmrs.module</groupId>
+			<artifactId>kenyaemr-omod</artifactId>
+			<version>${kenyaemrVersion}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.openmrs.module</groupId>
+			<artifactId>kenyaui-omod</artifactId>
+			<version>${kenyauiVersion}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.openmrs.module</groupId>
+			<artifactId>logic-omod</artifactId>
+			<version>${logicVersion}</version>
+			<type>omod</type> <!-- note the non-standard type  -->
+		</dependency>
+
+		<dependency>
+			<groupId>org.openmrs.module</groupId>
+			<artifactId>metadatadeploy-omod</artifactId>
+			<version>${metadatadeployVersion}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.openmrs.module</groupId>
+			<artifactId>metadatamapping-omod</artifactId>
+			<version>${metadatamappingVersion}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.openmrs.module</groupId>
+			<artifactId>metadatasharing-omod</artifactId>
+			<version>${metadatasharingVersion}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.openmrs.module</groupId>
+			<artifactId>reporting-omod</artifactId>
+			<version>${reportingVersion}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.openmrs.module</groupId>
+			<artifactId>serialization.xstream-omod</artifactId>
+			<version>${serializationxstreamVersion}</version>
+			<type>omod</type>
+		</dependency>
+
+		<dependency>
+			<groupId>org.openmrs.module</groupId>
+			<artifactId>uiframework-omod</artifactId>
+			<version>${uiframeworkVersion}</version>
+		</dependency>
+
+	</dependencies>
+
+	<profiles>
+		<profile>
+			<id>builddistro</id>
+			<activation>
+				<property>
+					<name>buildDistro</name>
+					<value>true</value>
+				</property>
+			</activation>
+
+			<build>
+				<pluginManagement>
+					<plugins>
+						<plugin>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-compiler-plugin</artifactId>
+							<configuration>
+								<target>1.6</target>
+								<source>1.6</source>
+							</configuration>
+						</plugin>
+						<plugin>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-dependency-plugin</artifactId>
+							<version>2.4</version>
+						</plugin>
+					</plugins>
+				</pluginManagement>
+
+				<plugins>
+					<!--
+					Copy all of the modules we depend on (this also gets extra jars we don't need).
+					We'll end up with things like "reporting-omod-0.7.2.1.jar".
+					-->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-dependency-plugin</artifactId>
+						<version>2.4</version>
+						<executions>
+							<execution>
+								<id>copy-dependencies</id>
+								<phase>package</phase>
+								<goals>
+									<goal>copy-dependencies</goal>
+								</goals>
+								<configuration>
+									<outputDirectory>${project.build.directory}/dependencies</outputDirectory>
+									<!-- the event module has the non-standard groupId org.openmrs -->
+									<includeGroupIds>org.openmrs.module,org.openmrs</includeGroupIds>
+									<excludeTransitive>true</excludeTransitive>
+								</configuration>
+							</execution>
+
+						</executions>
+					</plugin>
+
+					<!--
+					Rename things like "reporting-omod-0.7.2.1.jar" to "reporting-0.7.2.1.omod".
+					This also drops everything that doesn't match "*-omod-*.jar"
+					-->
+					<plugin>
+						<artifactId>maven-antrun-plugin</artifactId>
+						<version>1.7</version>
+						<executions>
+							<execution>
+								<id>rename-jars-to-omod</id>
+								<phase>package</phase>
+								<configuration>
+									<target>
+										<move todir="${project.build.directory}/distro">
+											<fileset dir="${project.build.directory}/dependencies" />
+											<mapper type="regexp" from="^(.+)-omod-(.+)\.jar" to="\1-\2.omod" />
+										</move>
+									</target>
+								</configuration>
+								<goals>
+									<goal>run</goal>
+								</goals>
+							</execution>
+
+							<!-- For some reason the serialization.xstream-omod artifact is .omod, not .jar -->
+							<execution>
+								<id>rename-omods-to-omod</id>
+								<phase>package</phase>
+								<configuration>
+									<target>
+										<move todir="${project.build.directory}/distro">
+											<fileset dir="${project.build.directory}/dependencies" />
+											<mapper type="regexp" from="^(.+)-omod-(.+)\.omod" to="\1-\2.omod" />
+										</move>
+									</target>
+								</configuration>
+								<goals>
+									<goal>run</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+
+					<!--
+					Assemble all of these omods into a single distribution zip file
+					-->
+					<plugin>
+						<artifactId>maven-assembly-plugin</artifactId>
+						<version>2.4</version>
+						<configuration>
+							<descriptors>
+								<descriptor>${basedir}/src/main/assembly/assembly.xml</descriptor>
+							</descriptors>
+						</configuration>
+						<executions>
+							<execution>
+								<id>make-assembly</id>
+								<phase>package</phase>
+								<configuration>
+									<finalName>${parent.artifactId}-${parent.version}</finalName>
+								</configuration>
+								<goals>
+									<goal>single</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
+</project>
