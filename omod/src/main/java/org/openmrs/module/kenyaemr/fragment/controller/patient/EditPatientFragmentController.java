@@ -157,7 +157,6 @@ public class EditPatientFragmentController {
 		private Boolean birthdateEstimated;
 		private String gender;
 		private PersonAddress personAddress;
-		private PersonAttribute telephoneContact;
 		private Concept maritalStatus;
 		private Concept occupation;
 		private Concept education;
@@ -166,6 +165,7 @@ public class EditPatientFragmentController {
 		private Obs savedEducation;
 		private Boolean dead = false;
 		private Date deathDate;
+		private PersonAttribute telephoneContact;
 		private PersonAttribute nameOfNextOfKin;
 		private PersonAttribute nextOfKinRelationship;
 		private PersonAttribute nextOfKinContact;
@@ -280,47 +280,29 @@ public class EditPatientFragmentController {
 				education = savedEducation.getValueCoded();
 			}
 
-			// Next of kin details
 			PersonAttribute attrNameOfNextOfKin = patient.getAttribute(MetadataUtils.getPersonAttributeType(CommonMetadata._PersonAttributeType.NEXT_OF_KIN_NAME));
 			if (attrNameOfNextOfKin != null) {
 				nameOfNextOfKin = attrNameOfNextOfKin;
-			}
-			else {
-				nameOfNextOfKin.setPerson(patient);
 			}
 
 			PersonAttribute attrNextOfKinRelationship = patient.getAttribute(MetadataUtils.getPersonAttributeType(CommonMetadata._PersonAttributeType.NEXT_OF_KIN_RELATIONSHIP));
 			if (attrNextOfKinRelationship != null) {
 				nextOfKinRelationship = attrNextOfKinRelationship;
 			}
-			else {
-				nextOfKinRelationship.setPerson(patient);
-			}
 
 			PersonAttribute attrNextOfKinContact = patient.getAttribute(MetadataUtils.getPersonAttributeType(CommonMetadata._PersonAttributeType.NEXT_OF_KIN_CONTACT));
 			if (attrNextOfKinContact != null) {
 				nextOfKinContact = attrNextOfKinContact;
-			}
-			else {
-				nextOfKinContact.setPerson(patient);
 			}
 
 			PersonAttribute attrNextOfKinAddress = patient.getAttribute(MetadataUtils.getPersonAttributeType(CommonMetadata._PersonAttributeType.NEXT_OF_KIN_ADDRESS));
 			if (attrNextOfKinAddress != null) {
 				nextOfKinAddress = attrNextOfKinAddress;
 			}
-			else {
-				nextOfKinAddress.setPerson(patient);
-			}
-
-			//sub chief and chief's details
 
 			PersonAttribute attrSubChiefNames = patient.getAttribute(MetadataUtils.getPersonAttributeType(CommonMetadata._PersonAttributeType.SUBCHIEF_NAME));
 			if (attrSubChiefNames != null) {
 				subChiefName = attrSubChiefNames;
-			}
-			else {
-				subChiefName.setPerson(patient);
 			}
 		}
 
@@ -385,17 +367,12 @@ public class EditPatientFragmentController {
 			if (StringUtils.isBlank(patientClinicNumber.getIdentifier())) {
 				patientClinicNumber = null;
 			}
+
 			if (!(StringUtils.isBlank(telephoneContact.getValue()))) {
 				validateTelephoneNumber(errors, "telephoneContact", telephoneContact.getValue());
 			}
-			else {
-				telephoneContact = null;
-			}
 			if (!(StringUtils.isBlank(nextOfKinContact.getValue()))) {
 				validateTelephoneNumber(errors, "nextOfKinContact", nextOfKinContact.getValue());
-			}
-			else {
-				nextOfKinContact = null;
 			}
 
 			validateField(errors, "personAddress");
@@ -492,60 +469,18 @@ public class EditPatientFragmentController {
 				toSave.addAddress(personAddress);
 			}
 
-			PersonAttributeType telContact = MetadataUtils.getPersonAttributeType(CommonMetadata._PersonAttributeType.TELEPHONE_CONTACT);
-			if (anyChanges(toSave.getAttribute(telContact), telephoneContact, "value")) {
-				if (toSave.getAttribute(telContact) != null) {
-					voidData(toSave.getAttribute(telContact));
-				}
-				toSave.addAttribute(telephoneContact);
-			}
-
-			//next of kin included here
-			PersonAttributeType nameOfNextOfkinpat = MetadataUtils.getPersonAttributeType(CommonMetadata._PersonAttributeType.NEXT_OF_KIN_NAME);
-			if (anyChanges(toSave.getAttribute(nameOfNextOfkinpat), this.nameOfNextOfKin, "value")) {
-				if (toSave.getAttribute(nameOfNextOfkinpat) != null) {
-					voidData(toSave.getAttribute(nameOfNextOfkinpat));
-				}
-				toSave.addAttribute(this.nameOfNextOfKin);
-			}
-
-			PersonAttributeType nextOfkinRelationshippat = MetadataUtils.getPersonAttributeType(CommonMetadata._PersonAttributeType.NEXT_OF_KIN_RELATIONSHIP);
-			if (anyChanges(toSave.getAttribute(nextOfkinRelationshippat), this.nextOfKinRelationship, "value")) {
-				if (toSave.getAttribute(nextOfkinRelationshippat) != null) {
-					voidData(toSave.getAttribute(nextOfkinRelationshippat));
-				}
-				toSave.addAttribute(this.nextOfKinRelationship);
-			}
-
-			PersonAttributeType nextOfkinContactpat = MetadataUtils.getPersonAttributeType(CommonMetadata._PersonAttributeType.NEXT_OF_KIN_CONTACT);
-			if (anyChanges(toSave.getAttribute(nextOfkinContactpat), this.nextOfKinContact, "value")) {
-				if (toSave.getAttribute(nextOfkinContactpat) != null) {
-					voidData(toSave.getAttribute(nextOfkinContactpat));
-				}
-				toSave.addAttribute(this.nextOfKinContact);
-			}
-
-			PersonAttributeType nextOfkinAddresspat = MetadataUtils.getPersonAttributeType(CommonMetadata._PersonAttributeType.NEXT_OF_KIN_ADDRESS);
-			if (anyChanges(toSave.getAttribute(nextOfkinAddresspat), this.nextOfKinAddress, "value")) {
-				if (toSave.getAttribute(nextOfkinAddresspat) != null) {
-					voidData(toSave.getAttribute(nextOfkinAddresspat));
-				}
-				toSave.addAttribute(this.nextOfKinAddress);
-			}
-
-			PersonAttributeType subChiefNamespat = MetadataUtils.getPersonAttributeType(CommonMetadata._PersonAttributeType.SUBCHIEF_NAME);
-			if (anyChanges(toSave.getAttribute(subChiefNamespat), this.subChiefName, "value")) {
-				if (toSave.getAttribute(subChiefNamespat) != null) {
-					voidData(toSave.getAttribute(subChiefNamespat));
-				}
-				toSave.addAttribute(this.subChiefName);
-			}
-
+			handlePersonAttribute(toSave, telephoneContact);
+			handlePersonAttribute(toSave, nameOfNextOfKin);
+			handlePersonAttribute(toSave, nextOfKinRelationship);
+			handlePersonAttribute(toSave, nextOfKinContact);
+			handlePersonAttribute(toSave, nextOfKinAddress);
+			handlePersonAttribute(toSave, subChiefName);
 
 			Patient ret = Context.getPatientService().savePatient(toSave);
 
 			List<Obs> obsToSave = new ArrayList<Obs>();
 			List<Obs> obsToVoid = new ArrayList<Obs>();
+
 			handleOncePerPatientObs(ret, obsToSave, obsToVoid, Dictionary.getConcept(Dictionary.CIVIL_STATUS), savedMaritalStatus, maritalStatus);
 			handleOncePerPatientObs(ret, obsToSave, obsToVoid, Dictionary.getConcept(Dictionary.OCCUPATION), savedOccupation, occupation);
 			handleOncePerPatientObs(ret, obsToSave, obsToVoid, Dictionary.getConcept(Dictionary.EDUCATION), savedEducation, education);
@@ -561,7 +496,34 @@ public class EditPatientFragmentController {
 			return ret;
 		}
 
-		private void handleOncePerPatientObs(Patient patient, List<Obs> obsToSave, List<Obs> obsToVoid, Concept question,
+		/**
+		 * Handles saving a field which is stored as a person attribute
+		 * @param patient the patient being saved
+		 * @param incoming the attribute being edited
+		 */
+		protected void handlePersonAttribute(Patient patient, PersonAttribute incoming) {
+			PersonAttributeType type = incoming.getAttributeType();
+			PersonAttribute existing = patient.getAttribute(type);
+
+			if (StringUtils.isBlank(incoming.getValue()) && existing != null) {
+				voidData(existing);
+			}
+			else if (!StringUtils.isBlank(incoming.getValue()) && existing == null) {
+				incoming.setPerson(patient);
+				patient.addAttribute(incoming);
+			}
+		}
+
+		/**
+		 * Handles saving a field which is stored as an obs
+		 * @param patient the patient being saved
+		 * @param obsToSave
+		 * @param obsToVoid
+		 * @param question
+		 * @param savedObs
+		 * @param newValue
+		 */
+		protected void handleOncePerPatientObs(Patient patient, List<Obs> obsToSave, List<Obs> obsToVoid, Concept question,
 											 Obs savedObs, Concept newValue) {
 			if (!OpenmrsUtil.nullSafeEquals(savedObs != null ? savedObs.getValueCoded() : null, newValue)) {
 				// there was a change
