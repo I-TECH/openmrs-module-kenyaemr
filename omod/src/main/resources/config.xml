@@ -27,22 +27,6 @@
 		<point>org.openmrs.api.EncounterService</point>
 		<class>${project.parent.groupId}.${project.parent.artifactId}.advice.EncounterServiceAdvice</class>
 	</advice>
-	<advice>
-		<point>org.openmrs.module.reporting.report.definition.service.ReportDefinitionService</point>
-		<class>${project.parent.groupId}.${project.parent.artifactId}.advice.ReportProfiler</class>
-	</advice>
-	<advice>
-		<point>org.openmrs.module.reporting.dataset.definition.service.DataSetDefinitionService</point>
-		<class>${project.parent.groupId}.${project.parent.artifactId}.advice.ReportProfiler</class>
-	</advice>
-	<advice>
-		<point>org.openmrs.module.reporting.indicator.service.IndicatorService</point>
-		<class>${project.parent.groupId}.${project.parent.artifactId}.advice.ReportProfiler</class>
-	</advice>
-	<advice>
-		<point>org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService</point>
-		<class>${project.parent.groupId}.${project.parent.artifactId}.advice.ReportProfiler</class>
-	</advice>
 
 	<messages>
 		<lang>en</lang>
