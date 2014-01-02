@@ -74,7 +74,7 @@
 		<dependency>
 			<groupId>org.openmrs.module</groupId>
 			<artifactId>kenyaemr-omod</artifactId>
-			<version>${kenyaemrVersion}</version>
+			<version>${project.parent.version}</version>
 		</dependency>
 
 		<dependency>
@@ -244,7 +244,7 @@
 								<id>make-assembly</id>
 								<phase>package</phase>
 								<configuration>
-									<finalName>${parent.artifactId}-${parent.version}</finalName>
+									<finalName>${project.parent.artifactId}-${project.parent.version}</finalName>
 								</configuration>
 								<goals>
 									<goal>single</goal>
