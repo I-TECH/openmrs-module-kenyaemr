@@ -141,6 +141,12 @@
 		</property>
 	</bean>
 
+	<!-- External requirements -->
+
+	<bean id="cielRequirement" class="org.openmrs.module.kenyaemr.system.CielRequirement">
+		<property name="requiredVersion" value="${cielVersion}" />
+	</bean>
+
 	<!-- Build properties -->
 
 	<bean id="iso8601DateFactory" class="java.text.SimpleDateFormat">

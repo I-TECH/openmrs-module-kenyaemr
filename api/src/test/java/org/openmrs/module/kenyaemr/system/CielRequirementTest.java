@@ -17,7 +17,6 @@ package org.openmrs.module.kenyaemr.system;
 import org.junit.Assert;
 import org.junit.Test;
 import org.openmrs.module.kenyacore.test.TestUtils;
-import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -64,7 +63,7 @@ public class CielRequirementTest extends BaseModuleContextSensitiveTest {
 	public void isSatisfied() {
 		Assert.assertFalse(cielRequirement.isSatisfied());
 
-		TestUtils.saveGlobalProperty("ciel.conceptsVersion", Dictionary.REQUIRED_DATABASE_VERSION);
+		TestUtils.saveGlobalProperty("ciel.conceptsVersion", cielRequirement.getRequiredVersion());
 
 		Assert.assertTrue(cielRequirement.isSatisfied());
 	}

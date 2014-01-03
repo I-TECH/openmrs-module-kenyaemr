@@ -15,23 +15,23 @@
 package org.openmrs.module.kenyaemr.system;
 
 import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyaemr.Dictionary;
-import org.springframework.stereotype.Component;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * Requirement for CIEL dictionary
+ * Requirement for CIEL dictionary. This is instantiated as a bean in the application context so that the version value
+ * can be taken from the project POM.
  */
-@Component
 public class CielRequirement implements ExternalRequirement {
 
 	/**
 	 * Name of global property that stores database concepts version
 	 */
-	private static final String GP_CONCEPTS_VERSION = "ciel.conceptsVersion";
+	protected static final String GP_CONCEPTS_VERSION = "ciel.conceptsVersion";
+
+	public String requiredVersion;
 
 	/**
 	 * @see ExternalRequirement#getName()
@@ -46,7 +46,15 @@ public class CielRequirement implements ExternalRequirement {
 	 */
 	@Override
 	public String getRequiredVersion() {
-		return Dictionary.REQUIRED_DATABASE_VERSION;
+		return requiredVersion;
+	}
+
+	/**
+	 * Sets the required version
+	 * @param requiredVersion the required version
+	 */
+	public void setRequiredVersion(String requiredVersion) {
+		this.requiredVersion = requiredVersion;
 	}
 
 	/**
@@ -62,7 +70,7 @@ public class CielRequirement implements ExternalRequirement {
 	 */
 	@Override
 	public boolean isSatisfied() {
-		return checkCielVersions(Dictionary.REQUIRED_DATABASE_VERSION, getFoundVersion());
+		return checkCielVersions(requiredVersion, getFoundVersion());
 	}
 
 	/**

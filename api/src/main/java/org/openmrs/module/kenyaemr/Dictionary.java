@@ -26,11 +26,6 @@ import java.util.List;
 public class Dictionary {
 
 	/**
-	 * Required concepts version
-	 */
-	public static final String REQUIRED_DATABASE_VERSION = "20131215";
-
-	/**
 	 * Gets a concept by an identifier (mapping or UUID)
 	 * @param identifier the identifier
 	 * @return the concept
