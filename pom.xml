@@ -44,13 +44,13 @@
 		<htmlformentry19extVersion>1.4</htmlformentry19extVersion>
 		<htmlwidgetsVersion>1.6.5</htmlwidgetsVersion>
 		<idgenVersion>2.6</idgenVersion>
-		<kenyacoreVersion>1.1-SNAPSHOT</kenyacoreVersion>
-		<kenyauiVersion>1.13.4-SNAPSHOT</kenyauiVersion>
+		<kenyacoreVersion>1.0.1</kenyacoreVersion>
+		<kenyauiVersion>1.13.4</kenyauiVersion>
 		<logicVersion>0.5.2</logicVersion>
 		<metadatadeployVersion>0.2</metadatadeployVersion>
 		<metadatamappingVersion>1.0.1</metadatamappingVersion>
 		<metadatasharingVersion>1.1.8</metadatasharingVersion>
-		<reportingVersion>0.8.1-SNAPSHOT</reportingVersion>
+		<reportingVersion>0.8.1</reportingVersion>
 		<serializationxstreamVersion>0.2.7</serializationxstreamVersion>
 		<uiframeworkVersion>3.1</uiframeworkVersion>
 
