@@ -72,24 +72,24 @@ public class TestedForHivInMchmsCalculation extends BaseEmrCalculation {
 		CalculationResultMap resultMap = new CalculationResultMap();
 
 		for (Integer ptId : cohort) {
-			Concept patientsLastHivStatus = EmrCalculationUtils.codedObsResultForPatient(lastHivStatusObss, ptId);
-			Date patientsLastHivTestDate = EmrCalculationUtils.datetimeObsResultForPatient(lastHivTestDateObss, ptId);
+			Concept lastHivStatus = EmrCalculationUtils.codedObsResultForPatient(lastHivStatusObss, ptId);
+			Date lastHivTestDate = EmrCalculationUtils.datetimeObsResultForPatient(lastHivTestDateObss, ptId);
 
 			CalculationResult activePatientProgram = activePatientPrograms.get(ptId);
 
 			boolean qualified = false;
 			if (aliveMchmsPatients.contains(ptId)
-					&& (patientsLastHivStatus != null &&
-					(patientsLastHivStatus.equals(Dictionary.getConcept(Dictionary.POSITIVE))
-							|| patientsLastHivStatus.equals(Dictionary.getConcept(Dictionary.NEGATIVE))))
+					&& (lastHivStatus != null &&
+					(lastHivStatus.equals(Dictionary.getConcept(Dictionary.POSITIVE))
+							|| lastHivStatus.equals(Dictionary.getConcept(Dictionary.NEGATIVE))))
 					&& (activePatientProgram != null)) {
 				Date enrollmentDate = ((PatientProgram) activePatientProgram.getValue()).getDateEnrolled();
 				Date deliveryDate = EmrCalculationUtils.datetimeObsResultForPatient(lastDeliveryDateObss, ptId);
 				if (deliveryDate != null && deliveryDate.before(enrollmentDate)) {
 					deliveryDate = null;
 				}
-				qualified = qualifiedByStage(stage, enrollmentDate, patientsLastHivTestDate, deliveryDate)
-						&& (result == null ? true : result.equals(patientsLastHivStatus));
+				qualified = qualifiedByStage(stage, enrollmentDate, lastHivTestDate, deliveryDate)
+						&& (result == null ? true : result.equals(lastHivStatus));
 			}
 			resultMap.put(ptId, new BooleanResult(qualified, this, context));
 		}
