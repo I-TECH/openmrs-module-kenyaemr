@@ -16,10 +16,13 @@ package org.openmrs.module.kenyaemr.metadata;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.Location;
 import org.openmrs.LocationAttributeType;
-import org.openmrs.module.kenyaemr.util.FacilityListSynchronization;
+import org.openmrs.module.kenyaemr.metadata.sync.LocationMflCsvSource;
+import org.openmrs.module.kenyaemr.metadata.sync.LocationMflSynchronization;
 import org.openmrs.module.metadatadeploy.bundle.AbstractMetadataBundle;
 import org.openmrs.module.metadatadeploy.bundle.Requires;
+import org.openmrs.module.metadatadeploy.source.ObjectSource;
 import org.springframework.stereotype.Component;
 
 /**
@@ -40,9 +43,9 @@ public class LocationsMetadata extends AbstractMetadataBundle {
 	 */
 	@Override
 	public void install() {
-		new FacilityListSynchronization(
-				"metadata/mfl_2013-11-27.csv",
-				existing(LocationAttributeType.class, CommonMetadata._LocationAttributeType.MASTER_FACILITY_CODE)
-		);
+		LocationAttributeType codeAttrType = existing(LocationAttributeType.class, CommonMetadata._LocationAttributeType.MASTER_FACILITY_CODE);
+
+		ObjectSource<Location> source = new LocationMflCsvSource("metadata/mfl_2013-11-27.csv", codeAttrType);
+		new LocationMflSynchronization(source, codeAttrType).run();
 	}
 }

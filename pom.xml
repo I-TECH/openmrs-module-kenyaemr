@@ -48,7 +48,7 @@
 		<kenyacoreVersion>1.0.1</kenyacoreVersion>
 		<kenyauiVersion>1.13.4</kenyauiVersion>
 		<logicVersion>0.5.2</logicVersion>
-		<metadatadeployVersion>0.2</metadatadeployVersion>
+		<metadatadeployVersion>0.3-SNAPSHOT</metadatadeployVersion>
 		<metadatamappingVersion>1.0.1</metadatamappingVersion>
 		<metadatasharingVersion>1.1.8</metadatasharingVersion>
 		<reportingVersion>0.8.1</reportingVersion>
