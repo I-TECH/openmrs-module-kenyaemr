@@ -35,12 +35,15 @@
 <script type="text/javascript">
 
 	var NOT_HIV_TESTED_ID = 1402;
+	var UNKNOWN = 1067;
 
 	jq(function () {
 		onLmpChange();
-		onHivStatusChange();
+		onPatientHivStatusChange();
+		onPartnerHivStatusChange()
 		getField('lmp.value').change(onLmpChange);
-		getField('hiv-status.value').change(onHivStatusChange);
+		getField('patient-hiv-status.value').change(onPatientHivStatusChange);
+		getField('partner-hiv-status.value').change(onPartnerHivStatusChange);
 	});
 
 	beforeSubmit.push(function () {
@@ -109,15 +112,23 @@
 			getField('parity-abortion.error').html('Parity (x+y) should be less or equal to Gravida.').show();
 			return false;
 		}
-		var hivStatus = getValue('hiv-status.value');
+		var hivStatus = getValue('patient-hiv-status.value');
 		if (hivStatus != NOT_HIV_TESTED_ID) {
-			var hivTestDate = getValue('hiv-test-date.value');
+			var hivTestDate = getValue('patient-hiv-test-date.value');
 			if (hivTestDate == "") {
-				getField('hiv-test-date.error').html('Specify the date when the HIV test was done.').show();
+				getField('patient-hiv-test-date.error').html('Specify the date when the patient was tested for HIV.').show();
 				return false;
 			}
 		} else {
-			setValue('hiv-test-date.value') == null;
+			setValue('patient-hiv-test-date.value') == null;
+		}
+		var partnerHivStatus = getValue('partner-hiv-status.value');
+		if (partnerHivStatus != UNKNOWN) {
+			var partnerHivTestDate = getValue('partner-hiv-test-date.value');
+			if (partnerHivTestDate == "") {
+				getField('partner-hiv-test-date.error').html('Specify the date when the partner was tested for HIV.').show();
+				return false;
+			}
 		}
 		return true;
 	}
@@ -153,12 +164,21 @@
 		return true;
 	}
 
-	function onHivStatusChange() {
-		if (getValue('hiv-status.value') == ""
-				|| getValue('hiv-status.value') == NOT_HIV_TESTED_ID) {
-			jq('#hiv-date-table').hide();
+	function onPatientHivStatusChange() {
+		if (getValue('patient-hiv-status.value') == ""
+				|| getValue('patient-hiv-status.value') == NOT_HIV_TESTED_ID) {
+			jq('#hiv-date').hide();
 		} else {
-			jq('#hiv-date-table').show();
+			jq('#hiv-date').show();
+		}
+	}
+
+	function onPartnerHivStatusChange() {
+		if (getValue('partner-hiv-status.value') == ""
+				|| getValue('partner-hiv-status.value') == UNKNOWN) {
+			jq('#partner-hiv-date').hide();
+		} else {
+			jq('#partner-hiv-date').show();
 		}
 	}
 
@@ -271,30 +291,31 @@
 				<td>HIV Status:</td>
 				<td>
 					<obs conceptId="159427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true"
-						 id="hiv-status"
+						 id="patient-hiv-status"
 						 answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1402AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 						 answerLabels="HIV Positive,HIV Negative,Not Tested"/>
 				</td>
 			</tr>
-			<tr id="hiv-date-table">
+			<tr id="hiv-date">
 				<td width="250">HIV Test Date:</td>
 				<td>
 					<obs conceptId="160554AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-						 id="hiv-test-date"/>
+						 id="patient-hiv-test-date"/>
 				</td>
 			</tr>
 			<tr>
 				<td>Partner HIV Status:</td>
 				<td>
 					<obs conceptId="1436AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true"
+						 id="partner-hiv-status"
 						 answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 						 answerLabels="HIV Positive,HIV Negative,Unknown"/>
 				</td>
 			</tr>
-			<tr>
+			<tr id="partner-hiv-date">
 				<td width="250">Partner HIV Test Date:</td>
 				<td>
-					<obs conceptId="160082AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+					<obs conceptId="160082AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="partner-hiv-test-date"/>
 				</td>
 			</tr>
 		</table>
