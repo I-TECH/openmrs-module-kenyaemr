@@ -71,7 +71,7 @@ public class LocationsMetadataTest extends BaseModuleContextSensitiveTest {
 		System.out.println("** Loaded locations in " + time + " ms **");
 
 		locations = locationService.getAllLocations(true);
-		Assert.assertThat(locations, hasSize(9447));
+		Assert.assertThat(locations, hasSize(9459));
 
 		// Check random location
 		Location abelMigwiLab = kenyaEmrService.getLocationByMflCode("10001");

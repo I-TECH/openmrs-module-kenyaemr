@@ -45,7 +45,12 @@ public class LocationsMetadata extends AbstractMetadataBundle {
 	public void install() {
 		LocationAttributeType codeAttrType = existing(LocationAttributeType.class, CommonMetadata._LocationAttributeType.MASTER_FACILITY_CODE);
 
-		ObjectSource<Location> source = new LocationMflCsvSource("metadata/mfl_2013-11-27.csv", codeAttrType);
-		new LocationMflSynchronization(source, codeAttrType).run();
+		try {
+			ObjectSource<Location> source = new LocationMflCsvSource("metadata/mfl_2014-07-01.csv", codeAttrType);
+			new LocationMflSynchronization(source, codeAttrType).run();
+		}
+		catch (Exception ex) {
+			ex.printStackTrace();
+		}
 	}
 }

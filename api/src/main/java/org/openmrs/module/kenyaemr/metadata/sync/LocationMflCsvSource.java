@@ -20,6 +20,8 @@ import org.openmrs.LocationAttribute;
 import org.openmrs.LocationAttributeType;
 import org.openmrs.module.metadatadeploy.source.AbstractCsvResourceSource;
 
+import java.io.IOException;
+
 /**
  * Location source from Master Facility CSV resource
  */
@@ -32,8 +34,8 @@ public class LocationMflCsvSource extends AbstractCsvResourceSource<Location> {
 	 * @param csvFile the csv resource path
 	 * @param codeAttrType the attribute type for the MFL code
 	 */
-	public LocationMflCsvSource(String csvFile, LocationAttributeType codeAttrType) {
-		super(csvFile);
+	public LocationMflCsvSource(String csvFile, LocationAttributeType codeAttrType) throws IOException {
+		super(csvFile, true);
 
 		this.codeAttrType = codeAttrType;
 	}
