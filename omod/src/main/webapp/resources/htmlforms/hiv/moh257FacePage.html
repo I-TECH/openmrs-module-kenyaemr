@@ -110,6 +110,7 @@ function onEncounterDateChange()
     }
 
     /* Display the who staging based on the age  */
+    /*
     if (age &lt; ADULT)
     {
         jq('#initialWhoStageAd').hide();
@@ -119,6 +120,17 @@ function onEncounterDateChange()
     {
         jq('#initialWhoStageCh').hide();
         jq('#initialWhoStageAd').show();
+    }
+    */
+    if (age &lt; ADULT)
+    {
+        jq('#initialWhoStageAd').hide()
+        //jq('#startWhoStageAd').hide()
+    }
+    else
+    {
+        jq('#initialWhoStageCh').hide()
+        //jq('#startWhoStageCh').hide()
     }
 }
 
