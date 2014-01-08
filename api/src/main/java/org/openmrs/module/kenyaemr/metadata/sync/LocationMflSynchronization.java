@@ -61,6 +61,7 @@ public class LocationMflSynchronization extends AbstractSynchronization<Location
 	 */
 	@Override
 	public Object getObjectSyncKey(Location obj) {
+		// We don't use Facility.getMflCode() here because it's a lot slower as it has to keep reloading the attribute type
 		List<LocationAttribute> attrs = obj.getActiveAttributes(codeAttrType);
 		return attrs.size() > 0 ? attrs.get(0).getValue() : null;
 	}

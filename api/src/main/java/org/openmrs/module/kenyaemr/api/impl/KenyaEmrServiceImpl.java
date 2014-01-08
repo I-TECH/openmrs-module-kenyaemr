@@ -18,7 +18,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.GlobalProperty;
 import org.openmrs.Location;
-import org.openmrs.LocationAttribute;
 import org.openmrs.LocationAttributeType;
 import org.openmrs.Patient;
 import org.openmrs.PatientIdentifierType;
@@ -32,6 +31,7 @@ import org.openmrs.module.idgen.IdentifierSource;
 import org.openmrs.module.idgen.SequentialIdentifierGenerator;
 import org.openmrs.module.idgen.service.IdentifierSourceService;
 import org.openmrs.module.idgen.validator.LuhnModNIdentifierValidator;
+import org.openmrs.module.kenyaemr.wrapper.Facility;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
@@ -132,13 +132,8 @@ public class KenyaEmrServiceImpl extends BaseOpenmrsService implements KenyaEmrS
 		try {
 			Context.addProxyPrivilege(PrivilegeConstants.VIEW_LOCATION_ATTRIBUTE_TYPES);
 
-			LocationAttributeType mflCodeAttrType = MetadataUtils.getLocationAttributeType(CommonMetadata._LocationAttributeType.MASTER_FACILITY_CODE);
 			Location location = getDefaultLocation();
-			if (location != null) {
-				List<LocationAttribute> list = location.getActiveAttributes(mflCodeAttrType);
-				return (list.size() > 0) ? ((String) list.get(0).getValue()) : null;
-			}
-			return null;
+			return (location != null) ? new Facility(location).getMflCode() : null;
 		}
 		finally {
 			Context.removeProxyPrivilege(PrivilegeConstants.VIEW_LOCATION_ATTRIBUTE_TYPES);
