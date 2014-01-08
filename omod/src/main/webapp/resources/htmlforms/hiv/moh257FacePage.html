@@ -89,7 +89,7 @@ function setMaritalStatus()
 
 function onEncounterDateChange()
 {
-    var age =  getValue('age.value')
+    var age =  parseInt(getValue('age.value'));
     var birthDate = new Date(getValue('dob.value'))//.getTime();
     var today = new Date()//.getTime();        //get current date
     var ENC_DATE=new Date(getValue('encounter_date.value'))//.getTime();
@@ -110,18 +110,7 @@ function onEncounterDateChange()
     }
 
     /* Display the who staging based on the age  */
-    /*
-    if (age &lt; ADULT)
-    {
-        jq('#initialWhoStageAd').hide();
-        jq('#initialWhoStageCh').show();
-    }
-    else
-    {
-        jq('#initialWhoStageCh').hide();
-        jq('#initialWhoStageAd').show();
-    }
-    */
+
     if (age &lt; ADULT)
     {
         jq('#initialWhoStageAd').hide()
