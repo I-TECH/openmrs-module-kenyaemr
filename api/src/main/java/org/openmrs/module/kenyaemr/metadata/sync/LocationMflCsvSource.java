@@ -48,13 +48,23 @@ public class LocationMflCsvSource extends AbstractCsvResourceSource<Location> {
 		String code = line[0];
 		String name = line[1];
 		String province = line[2];
+		String county = line[3];
+		String district = line[4];
+		String division = line[5];
 		String type = line[6];
+		String postcode = line[22];
 
 		Location location = new Location();
 		location.setName(name);
-		location.setStateProvince(province);
 		location.setDescription(type);
+
+		// Facility address
+		location.setAddress5(division);
+		location.setAddress6(district);
+		location.setCountyDistrict(county);
+		location.setStateProvince(province);
 		location.setCountry("Kenya");
+		location.setPostalCode(postcode);
 
 		if (StringUtils.isNotEmpty(code)) {
 			LocationAttribute codeAttr = new LocationAttribute();

@@ -70,6 +70,16 @@ public class LocationMflSynchronization extends AbstractSynchronization<Location
 	 */
 	@Override
 	public String getObjectHash(Location obj) {
-		return EmrUtils.hash(obj.getName(), obj.getDescription(), obj.getStateProvince(), obj.getCountry());
+		return EmrUtils.hash(
+				obj.getName(),
+				obj.getDescription(),
+
+				obj.getAddress5(),
+				obj.getAddress6(),
+				obj.getCountyDistrict(),
+				obj.getStateProvince(),
+				obj.getCountry(),
+				obj.getPostalCode()
+		);
 	}
 }

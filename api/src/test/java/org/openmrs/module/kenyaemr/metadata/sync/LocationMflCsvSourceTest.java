@@ -36,8 +36,14 @@ public class LocationMflCsvSourceTest {
 
 		Assert.assertThat(location1.getName(), is("Abdisamad Dispensary"));
 		Assert.assertThat(location1.getDescription(), is("Dispensary"));
+
+		Assert.assertThat(location1.getAddress5(), is("Sankuri"));
+		Assert.assertThat(location1.getAddress6(), is("Garissa"));
+		Assert.assertThat(location1.getCountyDistrict(), is("Garissa"));
 		Assert.assertThat(location1.getStateProvince(), is("North Eastern"));
 		Assert.assertThat(location1.getCountry(), is("Kenya"));
+		Assert.assertThat(location1.getPostalCode(), is("70100"));
+
 		Assert.assertThat(location1.getActiveAttributes(codeAttrType), hasSize(1));
 		Assert.assertThat(location1.getActiveAttributes(codeAttrType).get(0).getValue(), is((Object) "17009"));
 

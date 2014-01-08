@@ -20,7 +20,7 @@ import org.junit.Test;
 import org.openmrs.Location;
 import org.openmrs.LocationAttribute;
 import org.openmrs.LocationAttributeType;
-import org.openmrs.api.context.Context;
+import org.openmrs.api.LocationService;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.metadatadeploy.source.ObjectSource;
@@ -38,6 +38,9 @@ public class LocationMflSynchronizationTest extends BaseModuleContextSensitiveTe
 
 	@Autowired
 	private CommonMetadata commonMetadata;
+
+	@Autowired
+	private LocationService locationService;
 
 	@Before
 	public void setup() {
@@ -60,16 +63,16 @@ public class LocationMflSynchronizationTest extends BaseModuleContextSensitiveTe
 		//printAllLocations();
 
 		// Modify a location's name
-		Location modified = Context.getLocationService().getLocation("Abdisamad Dispensary");
+		Location modified = locationService.getLocation("Abdisamad Dispensary");
 		modified.setName("Modified");
-		Context.getLocationService().saveLocation(modified);
+		locationService.saveLocation(modified);
 
 		// Second sync should update that location
 		ObjectSource<Location> source2 = new LocationMflCsvSource("test-locations.csv", codeAttrType);
 		AbstractSynchronization synchronization2 = new LocationMflSynchronization(source2, codeAttrType);
 		synchronization2.run();
 
-		Assert.assertThat(Context.getLocationService().getLocation("Abdisamad Dispensary"), notNullValue());
+		Assert.assertThat(locationService.getLocation("Abdisamad Dispensary"), notNullValue());
 		Assert.assertThat(synchronization2.getCreatedObjects(), hasSize(0));
 		Assert.assertThat(synchronization2.getUpdatedObjects(), hasSize(1));
 		Assert.assertThat(synchronization2.getRetiredObjects(), hasSize(0));
@@ -77,9 +80,9 @@ public class LocationMflSynchronizationTest extends BaseModuleContextSensitiveTe
 		//printAllLocations();
 
 		// Modify a location's MFL code (effectively invalidating it)
-		Location invalid = Context.getLocationService().getLocation("Abdisamad Dispensary");
+		Location invalid = locationService.getLocation("Abdisamad Dispensary");
 		invalid.getActiveAttributes(codeAttrType).get(0).setValue("66666");
-		Context.getLocationService().saveLocation(invalid);
+		locationService.saveLocation(invalid);
 
 		// Third sync should retire Abdisamad Dispensar (66666) and re-create Abdisamad Dispensary (17009)
 		ObjectSource<Location> source3 = new LocationMflCsvSource("test-locations.csv", codeAttrType);
@@ -107,7 +110,7 @@ public class LocationMflSynchronizationTest extends BaseModuleContextSensitiveTe
 	private void printAllLocations() {
 		LocationAttributeType codeAttrType = MetadataUtils.getLocationAttributeType(CommonMetadata._LocationAttributeType.MASTER_FACILITY_CODE);
 
-		for (Location loc : Context.getLocationService().getAllLocations()) {
+		for (Location loc : locationService.getAllLocations()) {
 			List<LocationAttribute>  attrs = loc.getActiveAttributes(codeAttrType);
 			String code = attrs.size() > 0 ? (String) attrs.get(0).getValue() : "?";
 			System.out.println(loc.getId() + " | " + code + " | " + loc.getName() + " | " + loc.getUuid() + " | " + (loc.isRetired() ? "retired" : ""));
