@@ -68,6 +68,8 @@
 	function onEncounterDateChange() {
 		var age=parseInt(getValue('age.value'));
 		var today = new Date()//.getTime();        //get current date
+        var patientId = <lookup expression="patient.patientId"/>;
+        var encDate = getValue('encounter-date.value');
 
 
 		/*this data should not be in Future */
@@ -110,6 +112,17 @@
     function onPatientAgeUpdate(age) {
         var isPediatric = (age &lt; 15);
         jq('#el_stage_ad select option').each(function() {
+            var concept = parseInt(jq(this).prop('value'));
+
+            if (WHO_STAGES_PEDS.indexOf(concept) >= 0) {
+                jq(this).prop('disabled', !isPediatric);
+            }
+            else if (WHO_STAGES_ADULT.indexOf(concept) >= 0) {
+                jq(this).prop('disabled', isPediatric);
+            }
+        });
+
+        jq('#start_who_ad select option').each(function() {
             var concept = parseInt(jq(this).prop('value'));
 
             if (WHO_STAGES_PEDS.indexOf(concept) >= 0) {
@@ -203,12 +216,7 @@
 	function onWHOEligibility() {
 		var age = parseInt(getValue('age.value'));
 		if (getValue('who.value') == WHOSTAGE) {
-			if (age &lt; ADULT) {
-				//jq('#initialWhoStageCh').show();
-			}
-			else {
-				jq('#initialWhoStageAd').show();
-			}
+            jq('#initialWhoStageAd').show();
 		}
 		else {
 			//setValue('el_stage_ch.value','') ;
@@ -504,10 +512,8 @@
 							Height(cms): <obs id="artHeight" conceptId="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 							<span id="artBMI">BMI (for Adults)<obs id="bmi" conceptId="1342AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/> </span>
 
-													<span id="startWhoStageAd">WHO Stage<obs conceptId="5356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-																							 answerConceptIds="1204AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1205AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1206AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1207AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
-													<span id="startWhoStageCh">WHO Stage<obs conceptId="5356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-																							 answerConceptIds="1220AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1221AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1222AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1223AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
+								<span id="startWhoStageAd">WHO Stage<obs id="start_who_ad" conceptId="5356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></span>
+
 						</obsgroup>
 					</td>
 				</tr>

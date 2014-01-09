@@ -52,6 +52,18 @@ var DIVORCED = 1058;
 /* allergy to other medicine concept */
 var ALLERGY_TO_OTHER=5622;
 
+var WHO_STAGE_1_PEDS_CONCEPT_ID = 1220;
+var WHO_STAGE_2_PEDS_CONCEPT_ID = 1221;
+var WHO_STAGE_3_PEDS_CONCEPT_ID = 1222;
+var WHO_STAGE_4_PEDS_CONCEPT_ID = 1223;
+var WHO_STAGE_1_ADULT_CONCEPT_ID = 1204;
+var WHO_STAGE_2_ADULT_CONCEPT_ID = 1205;
+var WHO_STAGE_3_ADULT_CONCEPT_ID = 1206;
+var WHO_STAGE_4_ADULT_CONCEPT_ID = 1207;
+var WHO_STAGES_PEDS = [ WHO_STAGE_1_PEDS_CONCEPT_ID, WHO_STAGE_2_PEDS_CONCEPT_ID, WHO_STAGE_3_PEDS_CONCEPT_ID, WHO_STAGE_4_PEDS_CONCEPT_ID ];
+var WHO_STAGES_ADULT = [ WHO_STAGE_1_ADULT_CONCEPT_ID, WHO_STAGE_2_ADULT_CONCEPT_ID, WHO_STAGE_3_ADULT_CONCEPT_ID, WHO_STAGE_4_ADULT_CONCEPT_ID ];
+
+
 function setMaritalStatus()
 {
     var mStatus=parseInt("<lookup complexExpression="#set($t = $fn.latestObs(1054)) $t.valueCoded"/>" )
@@ -92,27 +104,32 @@ function onEncounterDateChange()
     var age = parseInt("<lookup expression="patient.age"/>");  //parseInt(getValue('age.value'));
     var birthDate = new Date(getValue('dob.value'))//.getTime();
     var today = new Date()//.getTime();        //get current date
-    var ENC_DATE=new Date(getValue('encounter_date.value'))//.getTime();
+    //var ENC_DATE=new Date(getValue('encounter-date.value'))//.getTime();
+    var patientId = <lookup expression="patient.patientId"/>;
+    var encDate = getValue('encounter-date.value');
 
     /*this data should not be in Future */
-    if(ENC_DATE &gt; today)
+    if(encDate &gt; today)
     {
-        getField('encounter_date.error').html('Should not be greater than the Current date').show();
+        getField('encounter-date.error').html('Should not be greater than the Current date').show();
     }
-    else if(ENC_DATE &lt; birthDate)
+    else if(encDate &lt; birthDate)
     {
         /* Encounter Date should be greater than the Patients's date of Birth    */
-        getField('encounter_date.error').html('Should not be less than the date of Birth').show();
+        getField('encounter-date.error').html('Should not be less than the date of Birth').show();
     }
     else
     {
-        getField('encounter_date.error').hide();
+        getField('encounter-date.error').hide();
     }
+
 
     jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/patient/patientUtils/age.action', { patientId: patientId, now: encDate })
             .done(function(data) {
                 onPatientAgeUpdate(data.age);
             });
+
+    /*
     if (age &gt;=ADULT)
     {
         jq('#initialWhoStageCh').hide();
@@ -123,6 +140,7 @@ function onEncounterDateChange()
         jq('#initialWhoStageAd').hide();
 
     }
+    */
 }
 
 /**
@@ -141,7 +159,7 @@ function onPatientAgeUpdate(age) {
         }
     });
 
-    jq('#calculated-age').html(age + '/' + (isPediatric ? 'PEDS' : 'ADULT'));
+    //jq('#calculated-age').html(age + '/' + (isPediatric ? 'PEDS' : 'ADULT'));
 }
 
 function OnTransferStatusChange()
@@ -204,7 +222,7 @@ function onAllergy()
 jq(function() {
     //getField('weight.value').change(onWeightOrHeightChange);
     //getField('height.value').change(onWeightOrHeightChange);
-    getField('encounter_date.value').change(onEncounterDateChange);
+    getField('encounter-date.value').change(onEncounterDateChange);
 
     //onWeightOrHeightChange();
     onEncounterDateChange();
@@ -529,7 +547,7 @@ jq(function() {
 <div class="ke-form-header">
     <table style="width: 100%">
         <tr>
-            <td>Date: <encounterDate id="encounter_date" showTime="false"/></td>
+            <td>Date: <encounterDate id="encounter-date" showTime="false"/></td>
             <td>Enrolled at: <encounterLocation id="site" default="GlobalProperty:kenyaemr.defaultLocation"/></td>
         </tr>
     </table>
@@ -737,13 +755,6 @@ jq(function() {
                 <td>WHO Stage
 
 									<span id="initialWhoStageAd"><obs id="whostage" conceptId="160553AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
-
-
-
-									<span id="initialWhoStageCh"><obs conceptId="160553AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                                      answerConceptIds="1220AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1221AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1222AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1223AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
-
-
                 </td>
 
             </tr>
