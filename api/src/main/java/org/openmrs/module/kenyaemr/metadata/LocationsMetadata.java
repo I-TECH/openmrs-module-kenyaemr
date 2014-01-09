@@ -47,7 +47,7 @@ public class LocationsMetadata extends AbstractMetadataBundle {
 
 		try {
 			ObjectSource<Location> source = new LocationMflCsvSource("metadata/mfl_2014-07-01.csv", codeAttrType);
-			new LocationMflSynchronization(source, codeAttrType).run();
+			new LocationMflSynchronization(source).run();
 		}
 		catch (Exception ex) {
 			ex.printStackTrace();

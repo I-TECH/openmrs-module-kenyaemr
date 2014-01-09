@@ -15,15 +15,14 @@
 package org.openmrs.module.kenyaemr.wrapper;
 
 import org.openmrs.Location;
-import org.openmrs.LocationAttributeType;
+import org.openmrs.LocationAttribute;
 import org.openmrs.module.kenyacore.wrapper.AbstractCustomizableWrapper;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
-import org.openmrs.module.metadatadeploy.MetadataUtils;
 
 /**
  * A facility wrapper for a location
  */
-public class Facility extends AbstractCustomizableWrapper<Location> {
+public class Facility extends AbstractCustomizableWrapper<Location, LocationAttribute> {
 
 	/**
 	 * Creates a new facility wrapper for a location
@@ -70,7 +69,6 @@ public class Facility extends AbstractCustomizableWrapper<Location> {
 	 * @return the code
 	 */
 	public String getMflCode() {
-		LocationAttributeType attrType = MetadataUtils.getLocationAttributeType(CommonMetadata._LocationAttributeType.MASTER_FACILITY_CODE);
-		return (String) getAttributeValue(attrType);
+		return (String) getFirstAttributeValue(CommonMetadata._LocationAttributeType.MASTER_FACILITY_CODE);
 	}
 }

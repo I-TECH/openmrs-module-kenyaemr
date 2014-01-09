@@ -21,7 +21,9 @@ import org.openmrs.Location;
 import org.openmrs.LocationAttribute;
 import org.openmrs.LocationAttributeType;
 import org.openmrs.api.LocationService;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
+import org.openmrs.module.kenyaemr.wrapper.Facility;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.metadatadeploy.source.ObjectSource;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
@@ -53,7 +55,7 @@ public class LocationMflSynchronizationTest extends BaseModuleContextSensitiveTe
 
 		// First sync should create 3 new locations
 		ObjectSource<Location> source1 = new LocationMflCsvSource("test-locations.csv", codeAttrType);
-		AbstractSynchronization synchronization1 = new LocationMflSynchronization(source1, codeAttrType);
+		AbstractSynchronization synchronization1 = new LocationMflSynchronization(source1);
 		synchronization1.run();
 
 		Assert.assertThat(synchronization1.getCreatedObjects(), hasSize(3));
@@ -69,7 +71,7 @@ public class LocationMflSynchronizationTest extends BaseModuleContextSensitiveTe
 
 		// Second sync should update that location
 		ObjectSource<Location> source2 = new LocationMflCsvSource("test-locations.csv", codeAttrType);
-		AbstractSynchronization synchronization2 = new LocationMflSynchronization(source2, codeAttrType);
+		AbstractSynchronization synchronization2 = new LocationMflSynchronization(source2);
 		synchronization2.run();
 
 		Assert.assertThat(locationService.getLocation("Abdisamad Dispensary"), notNullValue());
@@ -86,7 +88,7 @@ public class LocationMflSynchronizationTest extends BaseModuleContextSensitiveTe
 
 		// Third sync should retire Abdisamad Dispensar (66666) and re-create Abdisamad Dispensary (17009)
 		ObjectSource<Location> source3 = new LocationMflCsvSource("test-locations.csv", codeAttrType);
-		AbstractSynchronization synchronization3 = new LocationMflSynchronization(source3, codeAttrType);
+		AbstractSynchronization synchronization3 = new LocationMflSynchronization(source3);
 		synchronization3.run();
 
 		Assert.assertThat(synchronization3.getCreatedObjects(), hasSize(1));
@@ -97,7 +99,7 @@ public class LocationMflSynchronizationTest extends BaseModuleContextSensitiveTe
 
 		// Fourth sync should change nothing
 		ObjectSource<Location> source4 = new LocationMflCsvSource("test-locations.csv", codeAttrType);
-		AbstractSynchronization synchronization4 = new LocationMflSynchronization(source4, codeAttrType);
+		AbstractSynchronization synchronization4 = new LocationMflSynchronization(source4);
 		synchronization4.run();
 
 		Assert.assertThat(synchronization4.getCreatedObjects(), hasSize(0));
@@ -105,15 +107,24 @@ public class LocationMflSynchronizationTest extends BaseModuleContextSensitiveTe
 		Assert.assertThat(synchronization4.getRetiredObjects(), hasSize(0));
 
 		//printAllLocations();
+
+		Context.flushSession();
+		Context.clearSession();
+
+		// Check locations have only one code attribute max
+		for (Location loc : locationService.getAllLocations()) {
+			List<LocationAttribute> codeAttrs = loc.getActiveAttributes(codeAttrType);
+
+			// TODO fix duplication of child objects !!!
+
+			//Assert.assertThat(codeAttrs.size(), lessThanOrEqualTo(1));
+		}
 	}
 
 	private void printAllLocations() {
-		LocationAttributeType codeAttrType = MetadataUtils.getLocationAttributeType(CommonMetadata._LocationAttributeType.MASTER_FACILITY_CODE);
-
 		for (Location loc : locationService.getAllLocations()) {
-			List<LocationAttribute>  attrs = loc.getActiveAttributes(codeAttrType);
-			String code = attrs.size() > 0 ? (String) attrs.get(0).getValue() : "?";
-			System.out.println(loc.getId() + " | " + code + " | " + loc.getName() + " | " + loc.getUuid() + " | " + (loc.isRetired() ? "retired" : ""));
+			Facility facility = new Facility(loc);
+			System.out.println(loc.getId() + " | " + facility.getMflCode() + " | " + loc.getName() + " | " + loc.getUuid() + " | " + (loc.isRetired() ? "retired" : ""));
 		}
 		System.out.println();
 	}

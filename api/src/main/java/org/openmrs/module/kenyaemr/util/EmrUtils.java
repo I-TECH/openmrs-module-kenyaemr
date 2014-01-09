@@ -81,17 +81,6 @@ public class EmrUtils {
 	}
 
 	/**
-	 * Gets the source form for the given visit (may be null)
-	 * @param visit the visit
-	 * @return source form
-	 */
-	public static Form getVisitSourceForm(Visit visit) {
-		VisitAttributeType sourceAttrType = MetadataUtils.getVisitAttributeType(CommonMetadata._VisitAttributeType.SOURCE_FORM);
-		List<VisitAttribute> attrs =  visit.getActiveAttributes(sourceAttrType);
-		return attrs.size() > 0 ? (Form) attrs.get(0).getValue() : null;
-	}
-
-	/**
 	 * Checks a new visit to see if it overlaps with any other visit for that patient
 	 * @param visit the new visit
 	 * @return true if new visit will overlap
