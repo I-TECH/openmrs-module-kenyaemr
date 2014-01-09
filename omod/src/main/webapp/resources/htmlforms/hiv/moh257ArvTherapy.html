@@ -31,8 +31,20 @@
 	var CD4COUNT = 5497;
 	var CD4PERCENT = 730;
 	var WHOSTAGE = 5356;
+    var STOP_CONCEPT=1260;
+    var WHO_STAGE_1_PEDS_CONCEPT_ID = 1220;
+    var WHO_STAGE_2_PEDS_CONCEPT_ID = 1221;
+    var WHO_STAGE_3_PEDS_CONCEPT_ID = 1222;
+    var WHO_STAGE_4_PEDS_CONCEPT_ID = 1223;
+    var WHO_STAGE_1_ADULT_CONCEPT_ID = 1204;
+    var WHO_STAGE_2_ADULT_CONCEPT_ID = 1205;
+    var WHO_STAGE_3_ADULT_CONCEPT_ID = 1206;
+    var WHO_STAGE_4_ADULT_CONCEPT_ID = 1207;
+    var WHO_STAGES_PEDS = [ WHO_STAGE_1_PEDS_CONCEPT_ID, WHO_STAGE_2_PEDS_CONCEPT_ID, WHO_STAGE_3_PEDS_CONCEPT_ID, WHO_STAGE_4_PEDS_CONCEPT_ID ];
+    var WHO_STAGES_ADULT = [ WHO_STAGE_1_ADULT_CONCEPT_ID, WHO_STAGE_2_ADULT_CONCEPT_ID, WHO_STAGE_3_ADULT_CONCEPT_ID, WHO_STAGE_4_ADULT_CONCEPT_ID ];
 
-	var birthDate = new Date(getValue('dob.value'))//.getTime();
+
+    var birthDate = new Date(getValue('dob.value'))//.getTime();
 	var ENC_DATE = new Date(getValue('encounter-date.value'))//.getTime();
 
 	function onDateStartedChange() {
@@ -56,6 +68,8 @@
 	function onEncounterDateChange() {
 		var age=parseInt(getValue('age.value'));
 		var today = new Date()//.getTime();        //get current date
+        var patientId = <lookup expression="patient.patientId"/>;
+        var encDate = getValue('encounter-date.value');
 
 
 		/*this data should not be in Future */
@@ -72,7 +86,13 @@
 			getField('encounter-date.error').hide();
 		}
 
+        jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/patient/patientUtils/age.action', { patientId: patientId, now: encDate })
+                .done(function(data) {
+                    onPatientAgeUpdate(data.age);
+                });
+
 		/* Display the who staging based on the age  */
+        /*
 		if (age &lt; ADULT)
 		{
 			jq('#initialWhoStageAd').hide()
@@ -83,7 +103,38 @@
 			jq('#initialWhoStageCh').hide()
 			jq('#startWhoStageCh').hide()
 		}
+		*/
 	}
+
+    /**
+     * Updates the form due to a patient age change
+     */
+    function onPatientAgeUpdate(age) {
+        var isPediatric = (age &lt; 15);
+        jq('#el_stage_ad select option').each(function() {
+            var concept = parseInt(jq(this).prop('value'));
+
+            if (WHO_STAGES_PEDS.indexOf(concept) >= 0) {
+                jq(this).prop('disabled', !isPediatric);
+            }
+            else if (WHO_STAGES_ADULT.indexOf(concept) >= 0) {
+                jq(this).prop('disabled', isPediatric);
+            }
+        });
+
+        jq('#start_who_ad select option').each(function() {
+            var concept = parseInt(jq(this).prop('value'));
+
+            if (WHO_STAGES_PEDS.indexOf(concept) >= 0) {
+                jq(this).prop('disabled', !isPediatric);
+            }
+            else if (WHO_STAGES_ADULT.indexOf(concept) >= 0) {
+                jq(this).prop('disabled', isPediatric);
+            }
+        });
+
+        //jq('#calculated-age').html(age + '/' + (isPediatric ? 'PEDS' : 'ADULT'));
+    }
 
 	/*Calculate BMI at start of HAART*/
 	function calculateStartARTBMI() {
@@ -113,6 +164,21 @@
 			jq('#bmi').hide();
 		}
 	}
+
+
+    function OnStop()
+    {
+        if (getValue('interrupt.value')== STOP_CONCEPT)
+        {
+            //jq('#art-History').show();
+            jq('#stop :input').attr('disabled',false);
+        }
+        else
+        {
+            //jq('#art-History').hide();
+            jq('#stop :input').attr('disabled',true);
+        }
+    }
 
 	/*
 	 Hide or display cd4 entry field
@@ -150,22 +216,19 @@
 	function onWHOEligibility() {
 		var age = parseInt(getValue('age.value'));
 		if (getValue('who.value') == WHOSTAGE) {
-			if (age &lt; ADULT) {
-				jq('#initialWhoStageCh').show();
-			}
-			else {
-				jq('#initialWhoStageAd').show();
-			}
+            jq('#initialWhoStageAd').show();
 		}
 		else {
-			setValue('el_stage_ch.value','') ;
+			//setValue('el_stage_ch.value','') ;
             setValue('el_stage_ad.value','') ;
-			jq('#initialWhoStageCh').hide();
+			//jq('#initialWhoStageCh').hide();
 			jq('#initialWhoStageAd').hide();
 		}
 	}
 
 	jq(function(){
+        jq('#interrupt input').click(OnStop);
+        OnStop();
 		getField('encounter-date.value').change(onEncounterDateChange);
 		onEncounterDateChange();
 		getField('artWeight.value').change(calculateStartARTBMI);
@@ -378,8 +441,7 @@
 							 answerConceptId="5497AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Cd4 Count" />
 						<obs id="cd4_percent" conceptId="162225AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 							 answerConceptId="730AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Cd4%" />
-						<obs conceptId="162225AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-							 answerConceptId="160538AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="PMTCT" />
+
 						<obs conceptId="162225AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 							 answerConceptId="162226AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="OPT-B" />
 						<obs conceptId="162225AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
@@ -389,11 +451,8 @@
 				<tr>
 					<td>
 
-						<span id="initialWhoStageAd">WHO Stage<obs id="el_stage_ad" conceptId="160553AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-																						   answerConceptIds="1204AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1205AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1206AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1207AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
+						<span id="initialWhoStageAd">WHO Stage<obs id="el_stage_ad" conceptId="160553AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"   /></span>
 
-						<span id="initialWhoStageCh">WHO Stage<obs id="el_stage_ch" conceptId="160553AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-																						   answerConceptIds="1220AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1221AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1222AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1223AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
 					</td>
 					<td>
 
@@ -453,10 +512,8 @@
 							Height(cms): <obs id="artHeight" conceptId="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 							<span id="artBMI">BMI (for Adults)<obs id="bmi" conceptId="1342AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/> </span>
 
-													<span id="startWhoStageAd">WHO Stage<obs conceptId="5356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-																							 answerConceptIds="1204AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1205AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1206AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1207AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
-													<span id="startWhoStageCh">WHO Stage<obs conceptId="5356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-																							 answerConceptIds="1220AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1221AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1222AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1223AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
+								<span id="startWhoStageAd">WHO Stage<obs id="start_who_ad" conceptId="5356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></span>
+
 						</obsgroup>
 					</td>
 				</tr>
@@ -605,12 +662,16 @@
 							<tr>
 								<td>Dates</td>
 								<td>Reason for Interruption</td>
+                                <td>Reason for Stop</td>
 								<td>Date Restarted</td>
 							</tr>
 							<tr>
 								<obsgroup groupingConceptId="160740AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
 									<td style="vertical-align:top;"><obs id="interruption_date" conceptId="160739AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+                                    <td style="vertical-align: top;"><obs id="interrupt" conceptId="1667AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1260AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5240AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                             answerLabels="STOP,LFU" style="radio" answerSeparator="&lt;br/&gt;" /></td>
 									<td>
+                                        <span id="stop">
 										<obs conceptId="1252AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="102AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="1-Toxicity/Side effects" style="checkbox"/>  <br/>
 										<obs conceptId="1252AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1434AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="2-Pregnancy" style="checkbox"/>  <br/>
 										<obs conceptId="1252AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="843AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="3-Treatment failure" style="checkbox"/>  <br/>
@@ -621,6 +682,7 @@
 										<obs conceptId="1252AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160016AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="8-Planned treatment interruptions" style="checkbox"/>  <br/>
 										<obs conceptId="1252AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="9-Other patient decision" style="checkbox"/>
 										<obs conceptId="1252AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="10-Other" style="checkbox"/>
+                                        </span>
 									</td>
 									<td style="vertical-align:top;"><obs id="date_restarted" conceptId="160738AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
 								</obsgroup>
