@@ -164,12 +164,12 @@ function OnARTStatusChange()
     if (getValue('art-status.value')== 'true')
     {
         //jq('#art-History').show();
-        $j('#art-History :input').attr('disabled',false);
+        jq('#art-History :input').attr('disabled',false);
     }
     else
     {
         //jq('#art-History').hide();
-        $j('#art-History :input').attr('disabled',true);
+        jq('#art-History :input').attr('disabled',true);
     }
 }
 
