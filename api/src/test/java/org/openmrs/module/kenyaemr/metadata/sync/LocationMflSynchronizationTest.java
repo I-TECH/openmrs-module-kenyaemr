@@ -114,10 +114,7 @@ public class LocationMflSynchronizationTest extends BaseModuleContextSensitiveTe
 		// Check locations have only one code attribute max
 		for (Location loc : locationService.getAllLocations()) {
 			List<LocationAttribute> codeAttrs = loc.getActiveAttributes(codeAttrType);
-
-			// TODO fix duplication of child objects !!!
-
-			//Assert.assertThat(codeAttrs.size(), lessThanOrEqualTo(1));
+			Assert.assertThat(codeAttrs.size(), lessThanOrEqualTo(1));
 		}
 	}
 

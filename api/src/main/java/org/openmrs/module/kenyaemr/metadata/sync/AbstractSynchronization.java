@@ -129,13 +129,10 @@ public abstract class AbstractSynchronization<T extends OpenmrsMetadata> {
 
 			// Only update if hashes are different
 			if (!incomingHash.equals(existingHash)) {
-
-				// Steal existing id and evict to replace it completely
-				incoming.setId(existing.getId());
-				Context.evictFromSession(existing);
+				mergeWithExisting(existing, incoming);
 				deployService.saveObject(incoming);
 
-				log.info("Overwriting existing object '" + incoming.getName() + "' with sync key " + syncKey);
+				log.info("Updating existing object '" + incoming.getName() + "' with sync key " + syncKey);
 				updated.add(incoming);
 			}
 
@@ -209,4 +206,14 @@ public abstract class AbstractSynchronization<T extends OpenmrsMetadata> {
 	 * @return the hash
 	 */
 	protected abstract String getObjectHash(T obj);
+
+	/**
+	 * Overwrites an existing object with an incoming object
+	 * @param existing the existing object
+	 * @param incoming the incoming object
+	 */
+	protected void mergeWithExisting(T existing, T incoming) {
+		incoming.setId(existing.getId());
+		Context.evictFromSession(existing);
+	}
 }
