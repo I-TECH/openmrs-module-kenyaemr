@@ -214,7 +214,7 @@
 		<div class="ke-panel-frame">
 			<div class="ke-panel-heading">${ command.form.name }</div>
 
-			<span class="error" style="display: none" id="general-form-error"></span>
+			<div class="ke-form-generalerror" style="display: none" id="general-form-error"></div>
 
 			<div style="background-color: white"><!-- Because not all forms use .ke-form-content like they should -->
 				${ command.htmlToDisplay }
