@@ -89,7 +89,7 @@ function setMaritalStatus()
 
 function onEncounterDateChange()
 {
-    var age =  parseInt(getValue('age.value'));
+    var age = parseInt("<lookup expression="patient.age"/>");  //parseInt(getValue('age.value'));
     var birthDate = new Date(getValue('dob.value'))//.getTime();
     var today = new Date()//.getTime();        //get current date
     var ENC_DATE=new Date(getValue('encounter_date.value'))//.getTime();
