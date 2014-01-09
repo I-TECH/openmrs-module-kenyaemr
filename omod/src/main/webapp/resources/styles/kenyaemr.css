@@ -73,3 +73,8 @@
 	font-weight: bold;
 	font-size: 16px;
 }
+
+.ke-form-generalerror {
+	background-color: #ffd1d7;
+	padding: 3px;
+}
