@@ -163,11 +163,13 @@ function OnARTStatusChange()
 {
     if (getValue('art-status.value')== 'true')
     {
-        jq('#art-History').show();
+        //jq('#art-History').show();
+        $j('#art-History :input').attr('disabled',false);
     }
     else
     {
-        jq('#art-History').hide();
+        //jq('#art-History').hide();
+        $j('#art-History :input').attr('disabled',true);
     }
 }
 
@@ -646,7 +648,8 @@ jq(function() {
     <td>
         Previously on ARVs (PMTCT &amp; PEP included)? <obs id="art-status" conceptId="160533AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="yes_no"/>
         <br/>
-        <table id="art-History">
+        <span id="art-History">
+        <table>
             <tr>
                 <td>If "Yes" then Purpose</td>
                 <td>List Drug Names &amp; Dates Last Used</td>
@@ -705,6 +708,7 @@ jq(function() {
 
 
         </table>
+        </span>
         <table>
             <tr>
                 <td><br/>Date Confirmed HIV Positive</td>
