@@ -90,6 +90,7 @@
                 });
 
 		/* Display the who staging based on the age  */
+        /*
 		if (age &lt; ADULT)
 		{
 			jq('#initialWhoStageAd').hide()
@@ -100,6 +101,7 @@
 			jq('#initialWhoStageCh').hide()
 			jq('#startWhoStageCh').hide()
 		}
+		*/
 	}
 
     /**
@@ -118,7 +120,7 @@
             }
         });
 
-        jq('#calculated-age').html(age + '/' + (isPediatric ? 'PEDS' : 'ADULT'));
+        //jq('#calculated-age').html(age + '/' + (isPediatric ? 'PEDS' : 'ADULT'));
     }
 
 	/*Calculate BMI at start of HAART*/
@@ -202,16 +204,16 @@
 		var age = parseInt(getValue('age.value'));
 		if (getValue('who.value') == WHOSTAGE) {
 			if (age &lt; ADULT) {
-				jq('#initialWhoStageCh').show();
+				//jq('#initialWhoStageCh').show();
 			}
 			else {
 				jq('#initialWhoStageAd').show();
 			}
 		}
 		else {
-			setValue('el_stage_ch.value','') ;
+			//setValue('el_stage_ch.value','') ;
             setValue('el_stage_ad.value','') ;
-			jq('#initialWhoStageCh').hide();
+			//jq('#initialWhoStageCh').hide();
 			jq('#initialWhoStageAd').hide();
 		}
 	}
@@ -443,8 +445,6 @@
 
 						<span id="initialWhoStageAd">WHO Stage<obs id="el_stage_ad" conceptId="160553AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"   /></span>
 
-						<span id="initialWhoStageCh">WHO Stage<obs id="el_stage_ch" conceptId="160553AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-																						   answerConceptIds="1220AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1221AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1222AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1223AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
 					</td>
 					<td>
 

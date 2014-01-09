@@ -109,19 +109,10 @@ function onEncounterDateChange()
         getField('encounter_date.error').hide();
     }
 
-    /* Display the who staging based on the age  */
-    /*
-    if (age &lt;ADULT)
-    {
-        jq('#initialWhoStageAd').hide();
-
-    }
-    else
-    {
-        jq('#initialWhoStageCh').hide();
-
-    }
-    */
+    jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/patient/patientUtils/age.action', { patientId: patientId, now: encDate })
+            .done(function(data) {
+                onPatientAgeUpdate(data.age);
+            });
     if (age &gt;=ADULT)
     {
         jq('#initialWhoStageCh').hide();
@@ -132,6 +123,25 @@ function onEncounterDateChange()
         jq('#initialWhoStageAd').hide();
 
     }
+}
+
+/**
+ * Updates the form due to a patient age change
+ */
+function onPatientAgeUpdate(age) {
+    var isPediatric = (age &lt; 15);
+    jq('#whostage select option').each(function() {
+        var concept = parseInt(jq(this).prop('value'));
+
+        if (WHO_STAGES_PEDS.indexOf(concept) >= 0) {
+            jq(this).prop('disabled', !isPediatric);
+        }
+        else if (WHO_STAGES_ADULT.indexOf(concept) >= 0) {
+            jq(this).prop('disabled', isPediatric);
+        }
+    });
+
+    jq('#calculated-age').html(age + '/' + (isPediatric ? 'PEDS' : 'ADULT'));
 }
 
 function OnTransferStatusChange()
@@ -726,8 +736,7 @@ jq(function() {
                 <td><obs id="date_Enrolled" conceptId="160555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
                 <td>WHO Stage
 
-									<span id="initialWhoStageAd"><obs conceptId="160553AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                                      answerConceptIds="1204AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1205AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1206AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1207AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
+									<span id="initialWhoStageAd"><obs id="whostage" conceptId="160553AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
 
 
 
