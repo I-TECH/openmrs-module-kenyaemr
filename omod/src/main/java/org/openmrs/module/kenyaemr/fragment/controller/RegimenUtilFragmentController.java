@@ -153,12 +153,7 @@ public class RegimenUtilFragmentController {
 				}
 
 				// Don't allow future dates
-				if (OpenmrsUtil.compare(changeDate, OpenmrsUtil.firstSecondOfDay(new Date())) > 0) {
-					errors.rejectValue("changeDate", "Change date can't be in the future");
-				}
-
-				// Don't allow future dates
-				if (OpenmrsUtil.compare(changeDate, OpenmrsUtil.firstSecondOfDay(new Date())) > 0) {
+				if (OpenmrsUtil.compare(changeDate, new Date()) > 0) {
 					errors.rejectValue("changeDate", "Change date can't be in the future");
 				}
 			}
