@@ -35,8 +35,18 @@
 	<script type="text/javascript">
 		beforeSubmit.push(function () {
 
-			//Validate that next vaccine data is not earlier than current vaccine date
 			for (var i = 1; i &lt; 12; i++) {
+
+				//Validate that the sequence no. is between 1 and 5
+				var seqNo = getValue('sequence-no-' + i + '.value');
+				if (seqNo != "") {
+					if (seqNo &lt; 1 || seqNo &gt; 5) {
+						getField('sequence-no-' + i + '.error').html('Sequence No. must be between 1 and 5.').show();
+						return false;
+					}
+				}
+
+				//Validate that next vaccine data is not earlier than current vaccine date
 				var date = getValue('vaccine-date-' + i + '.value');
 				if (date != null) {
 					var nextDate = getValue('next-vaccine-date-' + i + '.value')
@@ -101,7 +111,7 @@
 														id="vaccine-{n}"/>
 											</td>
 											<td>
-												<obs conceptId="1418AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="sequence-{n}"/>
+												<obs conceptId="1418AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="sequence-no-{n}"/>
 											</td>
 											<td>
 												<obs conceptId="1410AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="vaccine-date-{n}"/>
