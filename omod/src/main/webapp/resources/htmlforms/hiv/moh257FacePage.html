@@ -63,6 +63,8 @@ var WHO_STAGE_4_ADULT_CONCEPT_ID = 1207;
 var WHO_STAGES_PEDS = [ WHO_STAGE_1_PEDS_CONCEPT_ID, WHO_STAGE_2_PEDS_CONCEPT_ID, WHO_STAGE_3_PEDS_CONCEPT_ID, WHO_STAGE_4_PEDS_CONCEPT_ID ];
 var WHO_STAGES_ADULT = [ WHO_STAGE_1_ADULT_CONCEPT_ID, WHO_STAGE_2_ADULT_CONCEPT_ID, WHO_STAGE_3_ADULT_CONCEPT_ID, WHO_STAGE_4_ADULT_CONCEPT_ID ];
 
+var ctxPath = typeof openmrsContextPath === 'string' ? openmrsContextPath : OPENMRS_CONTEXT_PATH;
+
 
 function setMaritalStatus()
 {
@@ -217,11 +219,24 @@ function onAllergy()
 
     }
 }
-
+function onUpnGenerateClick() {
+    kenyaui.openConfirmDialog({
+        heading: 'Generate UPN',
+        message: 'This should only be used for new patients. If the patient already has a UPN, please enter that instead.',
+        okLabel: 'Continue',
+        okCallback: function() {
+            jq.getJSON('/' + ctxPath + '/kenyaemr/emrUtils/nextHivUniquePatientNumber.action', function(data) {
+                jq('#hiv-id input[type=text]').val(data.value);
+                jq('#generate-hiv-id').hide();
+            });
+        }
+    });
+}
 
 jq(function() {
     //getField('weight.value').change(onWeightOrHeightChange);
     //getField('height.value').change(onWeightOrHeightChange);
+    jq('#generate-hiv-id').click(onUpnGenerateClick);
     getField('encounter-date.value').change(onEncounterDateChange);
 
     //onWeightOrHeightChange();
@@ -562,10 +577,21 @@ jq(function() {
 <tr>
     <td>
         <table>
+            <excludeIf velocityTest="$kenyaemr.hasHivUniquePatientNumber()">
+                <tr>
+                    <td>Unique Patient Number (UPN)</td>
+                    <td>
+                        <span id="hiv-id"><patient field="identifier" identifierTypeId="05ee9cf4-7242-4a17-b4d4-00f707265c8a" /></span>
+                        <input type="button" id="generate-hiv-id" value="Generate"/>
+                    </td>
+                </tr>
+            </excludeIf>
+            <!--
             <tr>
                 <td>Unique Patient Number:</td>
                 <td><lookup class="value" complexExpression="#foreach( $patId in $patientIdentifiers.get('Unique Patient Number') ) $patId #end "/></td>
             </tr>
+            -->
             <tr>
                 <td>Patient's Names: <br/><lookup class="value" expression="patient.personName"/></td>
                 <td>Date of Birth <lookup class="value" id="dob" expression="patient.birthdate"/>
