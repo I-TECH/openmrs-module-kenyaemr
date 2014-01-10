@@ -51,9 +51,9 @@ public class RegimenEditorPageController {
 
 		RegimenChange lastChange = history.getLastChange();
 		Date lastChangeDate =  (lastChange != null) ? lastChange.getDate() : null;
-		Date today = OpenmrsUtil.firstSecondOfDay(new Date());
-		boolean futureChanges = OpenmrsUtil.compareWithNullAsEarliest(lastChangeDate, today) >= 0;
+		Date now = new Date();
+		boolean futureChanges = OpenmrsUtil.compareWithNullAsEarliest(lastChangeDate, now) >= 0;
 
-		model.addAttribute("initialDate", futureChanges ? lastChange.getDate() : today);
+		model.addAttribute("initialDate", futureChanges ? lastChangeDate : now);
 	}
 }
