@@ -79,7 +79,7 @@
 				<entry key="Blood Tests">
 					<list>
 						<bean parent="TestDefinition" p:concept="21AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><!-- HAEMOGLOBIN -->
-						<bean parent="TestDefinition" p:concept="21AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><!-- LYMPHOCYTE COUNT -->
+						<bean parent="TestDefinition" p:concept="1319AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><!-- LYMPHOCYTE COUNT -->
 						<!-- Missing: Serum Cryptococcal Antigen -->
 						<bean parent="TestDefinition" p:concept="856AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><!-- HIV VIRAL LOAD -->
 						<bean parent="TestDefinition" p:concept="855AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><!-- ERYTHROCYTE SEDIMENTATION RATE -->
