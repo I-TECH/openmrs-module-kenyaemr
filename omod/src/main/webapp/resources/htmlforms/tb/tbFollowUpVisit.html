@@ -106,7 +106,7 @@
 	<div class="ke-form-header">
 		<table style="width: 100%">
 			<tr>
-				<td>Encounter Date: <encounterDate id="encounter-date" showTime="false" /></td>
+				<td>Encounter Date: <encounterDate id="encounter-date" showTime="true" /></td>
 				<td>Provider: <encounterProvider default="currentUser" /></td>
 				<td>Location: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" /></td>
 			</tr>
@@ -202,7 +202,7 @@
 						  <td>Hiv Status</td>
 						  <td><obs conceptId="1169AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
 						  <td>Return Visit date</td>
-						  <td><obs conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+						  <td><obs conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" /></td>
 					  </tr>
 				</table>
 				</fieldset>
