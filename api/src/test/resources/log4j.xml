@@ -6,8 +6,12 @@
 			<param name="ConversionPattern" value="[%p] %m%n"/>
 		</layout>
 	</appender>
+	<!-- Hibernate HQL logging
+	<logger name="org.hibernate"><level value="info" /></logger>
+	<logger name="org.hibernate.type"><level value="trace" /></logger>
+	-->
 	<root>
-		<priority value="warn"></priority>
+		<priority value="warn" />
 		<appender-ref ref="stdout"/>
 	</root>
 </log4j:configuration>
