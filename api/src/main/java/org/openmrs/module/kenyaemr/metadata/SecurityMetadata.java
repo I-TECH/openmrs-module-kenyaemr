@@ -16,6 +16,7 @@ package org.openmrs.module.kenyaemr.metadata;
 
 import org.openmrs.Privilege;
 import org.openmrs.api.UserService;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.metadatadeploy.bundle.AbstractMetadataBundle;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,6 +72,8 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 
 		install(role(_Role.API_PRIVILEGES, "All API privileges", null, getApiPrivileges(true)));
 		install(role(_Role.API_PRIVILEGES_VIEW_AND_EDIT, "All viewing and editing API privileges", null, getApiPrivileges(false)));
+
+		Context.flushSession(); // TODO figure out why this session flush is needed
 
 		install(role(_Role.REGISTRATION, "Can access the registration app",
 				idSet(_Role.API_PRIVILEGES_VIEW_AND_EDIT),
