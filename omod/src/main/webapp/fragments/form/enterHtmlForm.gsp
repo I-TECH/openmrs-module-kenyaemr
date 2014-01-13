@@ -92,11 +92,17 @@
 		return containError;
 	}
 
+	/**
+	 * Shows the authentication dialog box
+	 */
 	function showAuthenticateDialog() {
 		kenyaui.openPanelDialog({ templateId: 'authentication-dialog', width: 50, height: 15 });
 		tryingToSubmit = false;
 	}
 
+	/**
+	 * Called when authentication dialog box is submitted
+	 */
 	function onSubmitAuthenticationDialog() {
 		var username = jQuery('#authentication-dialog-username').val();
 		var password = jQuery('#authentication-dialog-password').val();
@@ -108,26 +114,23 @@
 	}
 
 	function doSubmitHtmlForm() {
-		
-		// first call any beforeSubmit functions that may have been defined by the form
-		var state_beforeSubmit=true;
-		if (beforeSubmit.length > 0){
-			for (var i=0, l = beforeSubmit.length; i < l; i++){
-				if (state_beforeSubmit){
-					var fncn=beforeSubmit[i];						
-					state_beforeSubmit=fncn();					
-				}
-				else{
-					// forces the end of the loop
-					i=l;
-				}
+		kenyaui.clearFormErrors('htmlform');
+
+		// First call any beforeSubmit functions that may have been defined by the form
+		var hasBeforeSubmitErrors = false;
+
+		for (var i = 0; i < beforeSubmit.length; i++){
+			if (beforeSubmit[i]() === false) {
+				hasBeforeSubmitErrors = true;
 			}
 		}
-		
-		// only do the submit if all the beforeSubmit functions returned "true"
-		if (state_beforeSubmit){
+
+		// If any beforeSubmit returned false, notify user of errors and abandon submission
+		if (hasBeforeSubmitErrors) {
+			kenyaui.notifyError('Please fix all errors and resubmit');
+		}
+		else {
 			kenyaui.openLoadingDialog({ message: 'Submitting form...' });
-			kenyaui.clearFormErrors('htmlform');
 
 			var form = jQuery('#htmlform');
 			jQuery.post(form.attr('action'), form.serialize(), function(result) {
@@ -156,6 +159,7 @@
 				window.alert('Unexpected error, please contact your System Administrator: ' + textStatus);
 			});
 		}
+
 		tryingToSubmit = false;
 	}
 
