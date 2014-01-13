@@ -28,6 +28,8 @@
 	</style>
 
 	<script type="text/javascript">
+		isPediatric = null; // Set later by AJAX lookup
+
 		/**
 		 * TODO use a lookup tag to get these concept ids. Will require HTML-463
 		 */
@@ -37,6 +39,8 @@
 		var MISCARRIAGE_CONCEPT_ID = 126127;
 		var LIVEBIRTH_CONCEPT_ID = 151849;
 		var STILLBIRTH_CONCEPT_ID = 125872;
+		var USING_FP_CONCEPT_ID = 965;
+		var WANTS_FP_CONCEPT_ID = 1360;
 		var WHO_STAGE_1_PEDS_CONCEPT_ID = 1220;
 		var WHO_STAGE_2_PEDS_CONCEPT_ID = 1221;
 		var WHO_STAGE_3_PEDS_CONCEPT_ID = 1222;
@@ -93,7 +97,8 @@
 		 * Updates the form due to a patient age change
 		 */
 		function onPatientAgeUpdate(age) {
-			var isPediatric = (age &lt; 15);
+			isPediatric = (age &lt; 15);
+
 			jq('#whostage select option').each(function() {
 				var concept = parseInt(jq(this).prop('value'));
 
@@ -199,6 +204,25 @@
 					getField('next-apt-date.error').html('Should not be earlier than encounter date').show();
 					return false;
 				}
+
+				if (isPediatric === true) {
+					var fpStatus = getValue('fp-status.value');
+					if (fpStatus == USING_FP_CONCEPT_ID || fpStatus == WANTS_FP_CONCEPT_ID) {
+						getField('fp-status.error').html('Pediatric patient too young for FP').show();
+						return false;
+					}
+
+					if (getValue('pwp-disclosure.value') == YES_CONCEPT_ID) {
+						getField('pwp-disclosure.error').html('Pediatric patient too young').show();
+						return false;
+					}
+
+					if (getValue('pwp-partnertested.value') == YES_CONCEPT_ID) {
+						getField('pwp-partnertested.error').html('Pediatric patient too young').show();
+						return false;
+					}
+				}
+
 				return true;
 			});
 
@@ -370,6 +394,7 @@
 					<td>(j)</td>
 					<td colspan="2">
 						<obs
+							id="fp-status"
 							conceptId="160653AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 							answerConceptIds="965AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1360AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 							answerLabels="Currently using (FP),Not using (NOFP),Wants (WFP)"
@@ -707,8 +732,8 @@
 					<th>Disclosure</th>
 					<th>Partner Tested</th>
 					<td>(ae)</td>
-					<td><obs conceptId="159423AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" /></td>
-					<td><obs conceptId="161557AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" /></td>
+					<td><obs id="pwp-disclosure" conceptId="159423AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" /></td>
+					<td><obs id="pwp-partnertested" conceptId="161557AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" /></td>
 				</tr>
 				<tr>
 					<th>Condoms</th>
