@@ -36,6 +36,7 @@
 
 	var NOT_HIV_TESTED_ID = 1402;
 	var UNKNOWN = 1067;
+	var PATIENT_IS_ENROLLED_HIV = <lookup expression="kenyaemr.hasHivUniquePatientNumber()" />;
 
 	jq(function () {
 		onLmpChange();
@@ -112,6 +113,7 @@
 			getField('parity-abortion.error').html('Parity (x+y) should be less or equal to Gravida.').show();
 			return false;
 		}
+
 		var hivStatus = getValue('patient-hiv-status.value');
 		if (hivStatus != NOT_HIV_TESTED_ID) {
 			var hivTestDate = getValue('patient-hiv-test-date.value');
@@ -119,9 +121,8 @@
 				getField('patient-hiv-test-date.error').html('Specify the date when the patient was tested for HIV.').show();
 				return false;
 			}
-		} else {
-			setValue('patient-hiv-test-date.value') == null;
 		}
+
 		var partnerHivStatus = getValue('partner-hiv-status.value');
 		if (partnerHivStatus != UNKNOWN) {
 			var partnerHivTestDate = getValue('partner-hiv-test-date.value');
@@ -164,21 +165,34 @@
 		return true;
 	}
 
+	/**
+	 * Called when 'HIV Status' field is changed
+	 */
 	function onPatientHivStatusChange() {
-		if (getValue('patient-hiv-status.value') == ""
-				|| getValue('patient-hiv-status.value') == NOT_HIV_TESTED_ID) {
-			jq('#hiv-date').hide();
+		var patientHivStatus = getValue('patient-hiv-status.value');
+
+		if (patientHivStatus == '' || patientHivStatus == NOT_HIV_TESTED_ID) {
+			jq('#patient-hiv-test-date input').prop('disabled', true);
+			setValue('patient-hiv-test-date.value', null);
 		} else {
-			jq('#hiv-date').show();
+			jq('#patient-hiv-test-date input').prop('disabled', false);
 		}
+
+		var isMismatch = (patientHivStatus == NOT_HIV_TESTED_ID &amp;&amp; PATIENT_IS_ENROLLED_HIV);
+		jq('#patient-hiv-status-mismatch').toggle(isMismatch);
 	}
 
+	/**
+	 * Called when 'Partner HIV Status' field is changed
+	 */
 	function onPartnerHivStatusChange() {
-		if (getValue('partner-hiv-status.value') == ""
-				|| getValue('partner-hiv-status.value') == UNKNOWN) {
-			jq('#partner-hiv-date').hide();
+		var partnerHivStatus = getValue('partner-hiv-status.value');
+
+		if (partnerHivStatus == '' || partnerHivStatus == UNKNOWN) {
+			jq('#partner-hiv-test-date input').prop('disabled', true);
+			setValue('partner-hiv-test-date.value', null);
 		} else {
-			jq('#partner-hiv-date').show();
+			jq('#partner-hiv-test-date input').prop('disabled', false);
 		}
 	}
 
@@ -294,13 +308,13 @@
 						 id="patient-hiv-status"
 						 answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1402AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 						 answerLabels="HIV Positive,HIV Negative,Not Tested"/>
+					<div id="patient-hiv-status-mismatch" class="ke-warning">Patient is enrolled in HIV program</div>
 				</td>
 			</tr>
-			<tr id="hiv-date">
+			<tr>
 				<td width="250">HIV Test Date:</td>
 				<td>
-					<obs conceptId="160554AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-						 id="patient-hiv-test-date"/>
+					<obs id="patient-hiv-test-date" conceptId="160554AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
 				</td>
 			</tr>
 			<tr>
