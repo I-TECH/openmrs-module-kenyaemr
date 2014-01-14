@@ -5,7 +5,7 @@
 	def concept = { uuid -> org.openmrs.api.context.Context.conceptService.getConceptByUuid(uuid).conceptId }
 %>
 <select id="${ config.id }" name="${ config.formFieldName }" >
-	<option label="Select..." value=""></option>
+	<option value="">Select...</option>
 <% if (config.category == "ARV" && config.reasonType == "change") { %>
 	<optgroup label="Reason for SUBSTITUTION of Drug">
 		<option value="${ concept("102AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA") }">Toxicity / side effects (1)</option>
@@ -44,7 +44,10 @@
 	<option value="${ concept("160016AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA") }">Planned treatment interruption</option>
 	<option value="${ concept("1258AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA") }">Drug formulation changed</option>
 <% } %>
+	<option value="${ concept("5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA") }">Other</option>
 </select>
+
+<span id="${ config.id }-error" class="error" style="display: none"></span>
 
 <% if (config.parentFormId) { %>
 <script type="text/javascript">

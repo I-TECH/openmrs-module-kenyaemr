@@ -25,6 +25,7 @@ import org.openmrs.DrugOrder;
 import org.openmrs.Patient;
 import org.openmrs.api.OrderService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.regimen.Regimen;
 import org.openmrs.module.kenyaemr.regimen.RegimenChange;
 import org.openmrs.module.kenyaemr.regimen.RegimenChangeHistory;
@@ -132,7 +133,15 @@ public class RegimenUtilFragmentController {
 
 			// Reason is only required for stopping or changing
 			if (changeType == RegimenChangeType.STOP || changeType == RegimenChangeType.CHANGE) {
-				requireAny(errors, "changeReasonNonCoded", "changeReason");
+				require(errors, "changeReason");
+
+				if (changeReason != null) {
+					Concept otherNonCoded = Dictionary.getConcept(Dictionary.OTHER_NON_CODED);
+
+					if (changeReason.equals(otherNonCoded)) {
+						require(errors, "changeReasonNonCoded");
+					}
+				}
 			}
 
 			if (category != null && changeDate != null) {
