@@ -17,8 +17,8 @@ package org.openmrs.module.kenyaemr.converter.simplifier;
 import org.openmrs.Location;
 import org.openmrs.LocationAttribute;
 import org.openmrs.LocationAttributeType;
+import org.openmrs.module.kenyaemr.metadata.FacilityMetadata;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
-import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.ui.framework.SimpleObject;
 import org.springframework.stereotype.Component;
 
@@ -35,7 +35,7 @@ public class LocationSimplifier extends AbstractSimplifier<Location> {
 	 */
 	@Override
 	protected SimpleObject simplify(Location location) {
-		LocationAttributeType mflCodeAttrType = MetadataUtils.getLocationAttributeType(CommonMetadata._LocationAttributeType.MASTER_FACILITY_CODE);
+		LocationAttributeType mflCodeAttrType = MetadataUtils.getLocationAttributeType(FacilityMetadata._LocationAttributeType.MASTER_FACILITY_CODE);
 		List<LocationAttribute> attrs = location.getActiveAttributes(mflCodeAttrType);
 		String facilityCode = attrs.size() > 0 ? (String)attrs.get(0).getValue() : null;
 

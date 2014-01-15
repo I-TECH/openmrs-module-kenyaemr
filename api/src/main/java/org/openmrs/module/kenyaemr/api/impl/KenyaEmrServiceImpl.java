@@ -31,6 +31,7 @@ import org.openmrs.module.idgen.IdentifierSource;
 import org.openmrs.module.idgen.SequentialIdentifierGenerator;
 import org.openmrs.module.idgen.service.IdentifierSourceService;
 import org.openmrs.module.idgen.validator.LuhnModNIdentifierValidator;
+import org.openmrs.module.kenyaemr.metadata.FacilityMetadata;
 import org.openmrs.module.kenyaemr.wrapper.Facility;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.kenyaemr.EmrConstants;
@@ -145,7 +146,7 @@ public class KenyaEmrServiceImpl extends BaseOpenmrsService implements KenyaEmrS
 	 */
 	@Override
 	public Location getLocationByMflCode(String mflCode) {
-		LocationAttributeType mflCodeAttrType = MetadataUtils.getLocationAttributeType(CommonMetadata._LocationAttributeType.MASTER_FACILITY_CODE);
+		LocationAttributeType mflCodeAttrType = MetadataUtils.getLocationAttributeType(FacilityMetadata._LocationAttributeType.MASTER_FACILITY_CODE);
 		Map<LocationAttributeType, Object> attrVals = new HashMap<LocationAttributeType, Object>();
 		attrVals.put(mflCodeAttrType, mflCode);
 

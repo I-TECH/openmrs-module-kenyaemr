@@ -17,7 +17,7 @@ package org.openmrs.module.kenyaemr.wrapper;
 import org.openmrs.Location;
 import org.openmrs.LocationAttribute;
 import org.openmrs.module.kenyacore.wrapper.AbstractCustomizableWrapper;
-import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
+import org.openmrs.module.kenyaemr.metadata.FacilityMetadata;
 
 /**
  * A facility wrapper for a location
@@ -69,6 +69,6 @@ public class Facility extends AbstractCustomizableWrapper<Location, LocationAttr
 	 * @return the code
 	 */
 	public String getMflCode() {
-		return (String) getFirstAttributeValue(CommonMetadata._LocationAttributeType.MASTER_FACILITY_CODE);
+		return (String) getFirstAttributeValue(FacilityMetadata._LocationAttributeType.MASTER_FACILITY_CODE);
 	}
 }

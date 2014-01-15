@@ -14,43 +14,57 @@
 
 package org.openmrs.module.kenyaemr.metadata;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.openmrs.Location;
 import org.openmrs.LocationAttributeType;
+import org.openmrs.customdatatype.datatype.RegexValidatedTextDatatype;
 import org.openmrs.module.kenyaemr.metadata.sync.LocationMflCsvSource;
 import org.openmrs.module.kenyaemr.metadata.sync.LocationMflSynchronization;
 import org.openmrs.module.metadatadeploy.bundle.AbstractMetadataBundle;
 import org.openmrs.module.metadatadeploy.bundle.Requires;
 import org.openmrs.module.metadatadeploy.source.ObjectSource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import static org.openmrs.module.metadatadeploy.bundle.CoreConstructors.locationAttributeType;
 
 /**
  * Locations metadata bundle
  */
 @Component
 @Requires({ CommonMetadata.class })
-public class LocationsMetadata extends AbstractMetadataBundle {
+public class FacilityMetadata extends AbstractMetadataBundle {
 
-	protected static final Log log = LogFactory.getLog(LocationsMetadata.class);
+	@Autowired
+	private LocationMflSynchronization mflSynchronization;
 
 	public static final class _Location {
 		public static final String UNKNOWN = "8d6c993e-c2cc-11de-8d13-0010c6dffd0f";
+	}
+
+	public static final class _LocationAttributeType {
+		public static final String MASTER_FACILITY_CODE = "8a845a89-6aa5-4111-81d3-0af31c45c002";
 	}
 
 	/**
 	 * @see org.openmrs.module.metadatadeploy.bundle.AbstractMetadataBundle#install()
 	 */
 	@Override
-	public void install() {
-		LocationAttributeType codeAttrType = existing(LocationAttributeType.class, CommonMetadata._LocationAttributeType.MASTER_FACILITY_CODE);
+	public void install() throws Exception {
+		install(true);
+	}
 
-		try {
+	/**
+	 * Provides an install method we can use from unit tests when we don't want to sync the entire facility list
+	 * @param full whether or not to run the facility sync
+	 * @throws Exception
+	 */
+	public void install(boolean full) throws Exception {
+		LocationAttributeType codeAttrType = install(locationAttributeType("Master Facility Code", "Unique facility code allocated by the Ministry of Health",
+				RegexValidatedTextDatatype.class, "\\d{5}", 0, 1, _LocationAttributeType.MASTER_FACILITY_CODE));
+
+		if (full) {
 			ObjectSource<Location> source = new LocationMflCsvSource("metadata/mfl_2014-07-01.csv", codeAttrType);
-			new LocationMflSynchronization(source).run();
-		}
-		catch (Exception ex) {
-			ex.printStackTrace();
+			sync(source, mflSynchronization);
 		}
 	}
 }

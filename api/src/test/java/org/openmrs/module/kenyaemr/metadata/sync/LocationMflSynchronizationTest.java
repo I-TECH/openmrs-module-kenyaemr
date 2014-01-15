@@ -23,10 +23,11 @@ import org.openmrs.LocationAttributeType;
 import org.openmrs.api.LocationService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
+import org.openmrs.module.kenyaemr.metadata.FacilityMetadata;
 import org.openmrs.module.kenyaemr.wrapper.Facility;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.metadatadeploy.source.ObjectSource;
-import org.openmrs.module.metadatadeploy.sync.AbstractMetadataSynchronization;
+import org.openmrs.module.metadatadeploy.sync.MetadataSynchronizationRunner;
 import org.openmrs.module.metadatadeploy.sync.SyncResult;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,20 +45,27 @@ public class LocationMflSynchronizationTest extends BaseModuleContextSensitiveTe
 	private CommonMetadata commonMetadata;
 
 	@Autowired
+	private FacilityMetadata facilityMetadata;
+
+	@Autowired
 	private LocationService locationService;
 
+	@Autowired
+	private LocationMflSynchronization mflSynchronization;
+
 	@Before
-	public void setup() {
+	public void setup() throws Exception {
 		commonMetadata.install();
+		facilityMetadata.install(false); // Don't do full facility sync
 	}
 
 	@Test
 	public void integration() throws Exception {
-		LocationAttributeType codeAttrType = MetadataUtils.getLocationAttributeType(CommonMetadata._LocationAttributeType.MASTER_FACILITY_CODE);
+		LocationAttributeType codeAttrType = MetadataUtils.getLocationAttributeType(FacilityMetadata._LocationAttributeType.MASTER_FACILITY_CODE);
 
 		// First sync should create 3 new locations
 		ObjectSource<Location> source1 = new LocationMflCsvSource("test-locations.csv", codeAttrType);
-		SyncResult<Location> result1 = new LocationMflSynchronization(source1).run();
+		SyncResult<Location> result1 = new MetadataSynchronizationRunner<Location>(source1, mflSynchronization).run();
 
 		Assert.assertThat(result1.getCreated(), hasSize(3));
 		Assert.assertThat(result1.getUpdated(), hasSize(0));
@@ -72,7 +80,7 @@ public class LocationMflSynchronizationTest extends BaseModuleContextSensitiveTe
 
 		// Second sync should update that location
 		ObjectSource<Location> source2 = new LocationMflCsvSource("test-locations.csv", codeAttrType);
-		SyncResult<Location> result2 = new LocationMflSynchronization(source2).run();
+		SyncResult<Location> result2 = new MetadataSynchronizationRunner<Location>(source2, mflSynchronization).run();
 
 		Assert.assertThat(locationService.getLocation("Abdisamad Dispensary"), notNullValue());
 		Assert.assertThat(result2.getCreated(), hasSize(0));
@@ -88,7 +96,7 @@ public class LocationMflSynchronizationTest extends BaseModuleContextSensitiveTe
 
 		// Third sync should retire Abdisamad Dispensar (66666) and re-create Abdisamad Dispensary (17009)
 		ObjectSource<Location> source3 = new LocationMflCsvSource("test-locations.csv", codeAttrType);
-		SyncResult<Location> result3 = new LocationMflSynchronization(source3).run();
+		SyncResult<Location> result3 = new MetadataSynchronizationRunner<Location>(source3, mflSynchronization).run();
 
 		Assert.assertThat(result3.getCreated(), hasSize(1));
 		Assert.assertThat(result3.getUpdated(), hasSize(0));
@@ -98,7 +106,7 @@ public class LocationMflSynchronizationTest extends BaseModuleContextSensitiveTe
 
 		// Fourth sync should change nothing
 		ObjectSource<Location> source4 = new LocationMflCsvSource("test-locations.csv", codeAttrType);
-		SyncResult<Location> result4 = new LocationMflSynchronization(source4).run();
+		SyncResult<Location> result4 = new MetadataSynchronizationRunner<Location>(source4, mflSynchronization).run();
 
 		Assert.assertThat(result4.getCreated(), hasSize(0));
 		Assert.assertThat(result4.getUpdated(), hasSize(0));
