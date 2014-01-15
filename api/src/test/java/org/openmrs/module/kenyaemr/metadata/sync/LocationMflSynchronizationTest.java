@@ -26,6 +26,8 @@ import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.wrapper.Facility;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.metadatadeploy.source.ObjectSource;
+import org.openmrs.module.metadatadeploy.sync.AbstractMetadataSynchronization;
+import org.openmrs.module.metadatadeploy.sync.SyncResult;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -55,12 +57,11 @@ public class LocationMflSynchronizationTest extends BaseModuleContextSensitiveTe
 
 		// First sync should create 3 new locations
 		ObjectSource<Location> source1 = new LocationMflCsvSource("test-locations.csv", codeAttrType);
-		AbstractSynchronization synchronization1 = new LocationMflSynchronization(source1);
-		synchronization1.run();
+		SyncResult<Location> result1 = new LocationMflSynchronization(source1).run();
 
-		Assert.assertThat(synchronization1.getCreatedObjects(), hasSize(3));
-		Assert.assertThat(synchronization1.getUpdatedObjects(), hasSize(0));
-		Assert.assertThat(synchronization1.getRetiredObjects(), hasSize(0));
+		Assert.assertThat(result1.getCreated(), hasSize(3));
+		Assert.assertThat(result1.getUpdated(), hasSize(0));
+		Assert.assertThat(result1.getRetired(), hasSize(0));
 
 		//printAllLocations();
 
@@ -71,13 +72,12 @@ public class LocationMflSynchronizationTest extends BaseModuleContextSensitiveTe
 
 		// Second sync should update that location
 		ObjectSource<Location> source2 = new LocationMflCsvSource("test-locations.csv", codeAttrType);
-		AbstractSynchronization synchronization2 = new LocationMflSynchronization(source2);
-		synchronization2.run();
+		SyncResult<Location> result2 = new LocationMflSynchronization(source2).run();
 
 		Assert.assertThat(locationService.getLocation("Abdisamad Dispensary"), notNullValue());
-		Assert.assertThat(synchronization2.getCreatedObjects(), hasSize(0));
-		Assert.assertThat(synchronization2.getUpdatedObjects(), hasSize(1));
-		Assert.assertThat(synchronization2.getRetiredObjects(), hasSize(0));
+		Assert.assertThat(result2.getCreated(), hasSize(0));
+		Assert.assertThat(result2.getUpdated(), hasSize(1));
+		Assert.assertThat(result2.getRetired(), hasSize(0));
 
 		//printAllLocations();
 
@@ -88,28 +88,25 @@ public class LocationMflSynchronizationTest extends BaseModuleContextSensitiveTe
 
 		// Third sync should retire Abdisamad Dispensar (66666) and re-create Abdisamad Dispensary (17009)
 		ObjectSource<Location> source3 = new LocationMflCsvSource("test-locations.csv", codeAttrType);
-		AbstractSynchronization synchronization3 = new LocationMflSynchronization(source3);
-		synchronization3.run();
+		SyncResult<Location> result3 = new LocationMflSynchronization(source3).run();
 
-		Assert.assertThat(synchronization3.getCreatedObjects(), hasSize(1));
-		Assert.assertThat(synchronization3.getUpdatedObjects(), hasSize(0));
-		Assert.assertThat(synchronization3.getRetiredObjects(), hasSize(1));
+		Assert.assertThat(result3.getCreated(), hasSize(1));
+		Assert.assertThat(result3.getUpdated(), hasSize(0));
+		Assert.assertThat(result3.getRetired(), hasSize(1));
 
 		//printAllLocations();
 
 		// Fourth sync should change nothing
 		ObjectSource<Location> source4 = new LocationMflCsvSource("test-locations.csv", codeAttrType);
-		AbstractSynchronization synchronization4 = new LocationMflSynchronization(source4);
-		synchronization4.run();
+		SyncResult<Location> result4 = new LocationMflSynchronization(source4).run();
 
-		Assert.assertThat(synchronization4.getCreatedObjects(), hasSize(0));
-		Assert.assertThat(synchronization4.getUpdatedObjects(), hasSize(0));
-		Assert.assertThat(synchronization4.getRetiredObjects(), hasSize(0));
+		Assert.assertThat(result4.getCreated(), hasSize(0));
+		Assert.assertThat(result4.getUpdated(), hasSize(0));
+		Assert.assertThat(result4.getRetired(), hasSize(0));
 
 		//printAllLocations();
 
 		Context.flushSession();
-		Context.clearSession();
 
 		// Check locations have only one code attribute max
 		for (Location loc : locationService.getAllLocations()) {

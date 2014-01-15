@@ -20,13 +20,14 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.util.EmrUtils;
 import org.openmrs.module.kenyaemr.wrapper.Facility;
 import org.openmrs.module.metadatadeploy.source.ObjectSource;
+import org.openmrs.module.metadatadeploy.sync.AbstractMetadataSynchronization;
 
 import java.util.List;
 
 /**
  * Synchronization operation to sync locations with a CSV copy of the Kenya Master Facility List
  */
-public class LocationMflSynchronization extends AbstractSynchronization<Location> {
+public class LocationMflSynchronization extends AbstractMetadataSynchronization<Location> {
 
 	/**
 	 * Creates a new MFL CSV synchronization operation
@@ -37,7 +38,7 @@ public class LocationMflSynchronization extends AbstractSynchronization<Location
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.metadata.sync.AbstractSynchronization#fetchAllExisting()
+	 * @see org.openmrs.module.metadatadeploy.sync.AbstractMetadataSynchronization#fetchAllExisting()
 	 */
 	@Override
 	public List<Location> fetchAllExisting() {
@@ -45,7 +46,7 @@ public class LocationMflSynchronization extends AbstractSynchronization<Location
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.metadata.sync.AbstractSynchronization#fetchExistingById(int)
+	 * @see org.openmrs.module.metadatadeploy.sync.AbstractMetadataSynchronization#fetchExistingById(int)
 	 */
 	@Override
 	public Location fetchExistingById(int id) {
@@ -53,7 +54,7 @@ public class LocationMflSynchronization extends AbstractSynchronization<Location
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.metadata.sync.AbstractSynchronization#getObjectSyncKey(org.openmrs.OpenmrsMetadata)
+	 * @see org.openmrs.module.metadatadeploy.sync.AbstractMetadataSynchronization#getObjectSyncKey(org.openmrs.OpenmrsMetadata)
 	 */
 	@Override
 	public Object getObjectSyncKey(Location obj) {
@@ -61,7 +62,7 @@ public class LocationMflSynchronization extends AbstractSynchronization<Location
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.metadata.sync.AbstractSynchronization#getObjectHash(org.openmrs.OpenmrsMetadata)
+	 * @see org.openmrs.module.metadatadeploy.sync.AbstractMetadataSynchronization#getObjectHash(org.openmrs.OpenmrsMetadata)
 	 */
 	@Override
 	public String getObjectHash(Location obj) {
