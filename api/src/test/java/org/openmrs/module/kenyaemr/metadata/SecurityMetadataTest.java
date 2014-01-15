@@ -52,6 +52,8 @@ public class SecurityMetadataTest extends BaseModuleContextSensitiveTest {
 		securityMetadata.install();
 
 		Assert.assertThat(Context.getUserService().getRole("Registration"), notNullValue());
+
+		Context.flushSession();
 	}
 
 	/**
