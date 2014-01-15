@@ -103,7 +103,7 @@ function setMaritalStatus()
 
 function onEncounterDateChange()
 {
-    var age = parseInt("<lookup expression="patient.age"/>");  //parseInt(getValue('age.value'));
+
     var birthDate = new Date(getValue('dob.value'))//.getTime();
     var today = new Date()//.getTime();        //get current date
     //var ENC_DATE=new Date(getValue('encounter-date.value'))//.getTime();
@@ -131,18 +131,7 @@ function onEncounterDateChange()
                 onPatientAgeUpdate(data.age);
             });
 
-    /*
-    if (age &gt;=ADULT)
-    {
-        jq('#initialWhoStageCh').hide();
 
-    }
-    else if (age &lt;ADULT)
-    {
-        jq('#initialWhoStageAd').hide();
-
-    }
-    */
 }
 
 /**
@@ -599,9 +588,33 @@ jq(function() {
                 </td>
             </tr>
             <tr>
-                <td colspan="2">Sex <lookup class="value" expression="patient.gender" /></td>
+                <td>Sex <lookup class="value" expression="patient.gender" /></td>
+                <td>Postal Address <lookup class="value" expression="patient.personAddress.address1" /> </td>
 
             </tr>
+            <tr>
+                <td colspan="2">
+                    <table width="100%">
+                        <tr>
+                            <td colspan="2">Tel Contact:</td>
+                        </tr>
+                        <tr>
+                            <td>District:  <lookup class="value" expression="patient.personAddress.countyDistrict" /> </td>
+                            <td>Location: <lookup class="value" expression="patient.personAddress.address6" /></td>
+                        </tr>
+                        <tr>
+                            <td>Sub-location:  <lookup class="value" expression="patient.personAddress.address5" /> </td>
+                            <td>Landmark: <lookup class="value" expression="patient.personAddress.address2" /></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">Nearest H/Center</td>
+                        </tr>
+                    </table>
+
+                </td>
+
+            </tr>
+
 
             <tr>
                 <td colspan="2">
@@ -789,8 +802,8 @@ jq(function() {
                 <td colspan="2">
                     <obsgroup groupingConceptId="160647AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
                         <obs id="allergy" conceptId="160643AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             answerConceptIds="162170AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,81724AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             answerLabels="Allergey to Sulfa,Allergy to penicillin,Allergy to other medicine "
+                             answerConceptIds="1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162170AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,81724AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabels="No,Allergey to Sulfa,Allergy to penicillin,Allergy to other medicine "
                                 /> <br/>
 
                         <obs id="allergy_detail" conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
