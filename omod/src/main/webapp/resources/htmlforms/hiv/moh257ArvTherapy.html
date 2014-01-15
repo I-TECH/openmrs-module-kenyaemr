@@ -43,9 +43,41 @@
     var WHO_STAGES_PEDS = [ WHO_STAGE_1_PEDS_CONCEPT_ID, WHO_STAGE_2_PEDS_CONCEPT_ID, WHO_STAGE_3_PEDS_CONCEPT_ID, WHO_STAGE_4_PEDS_CONCEPT_ID ];
     var WHO_STAGES_ADULT = [ WHO_STAGE_1_ADULT_CONCEPT_ID, WHO_STAGE_2_ADULT_CONCEPT_ID, WHO_STAGE_3_ADULT_CONCEPT_ID, WHO_STAGE_4_ADULT_CONCEPT_ID ];
 
-
+    var AGE=parseInt(getValue('age.value'));
     var birthDate = new Date(getValue('dob.value'))//.getTime();
 	var ENC_DATE = new Date(getValue('encounter-date.value'))//.getTime();
+
+    /*Calculate BMI at start of HAART*/
+    function calculateStartARTBMI() {
+        var display = '';
+        //var age = parseInt(getValue('age.value'));
+        var age = parseInt("<lookup expression="patient.age"/>");
+        var heightM = parseFloat(getValue('artHeight.value'))  / 100;
+        var weightKg = parseFloat(getValue('artWeight.value'));
+        if (!isNaN(AGE)&amp;&amp; AGE &gt;= ADULT)
+        {
+            if (!isNaN(weightKg) &amp;&amp;(!isNaN(heightM)))
+            {
+                var bmi = weightKg / (heightM * heightM);
+                display = bmi;
+                if (isNaN(bmi) || bmi &lt; 10 || bmi &gt; 50) {
+                    //getField('bmi.error').html('Abnormal value. Where height and height entered correctly?');
+                    //setValue('bmi.value','')
+                    display = 'Abnormal value. Were height and height entered correctly?';
+                }
+                else {
+                    //setValue('bmi.value',bmi.toFixed(2));// ='BMI:' + bmi.toFixed(2) + '(Adults)';
+                    display ='BMI:' + bmi.toFixed(2) + '(Adults)';
+                }
+            }
+
+            jq('#calculated-bmi').html(display);
+        }
+        else
+        {
+            jq('#calculated-bmi').html(display);
+        }
+    }
 
 	function onDateStartedChange() {
 		var date_started= new Date(getValue('date_started_haart.value'));
@@ -136,34 +168,7 @@
         //jq('#calculated-age').html(age + '/' + (isPediatric ? 'PEDS' : 'ADULT'));
     }
 
-	/*Calculate BMI at start of HAART*/
-	function calculateStartARTBMI() {
-		var display = '';
-		var age = parseInt(getValue('age.value'));
-		var heightM = parseFloat(getValue('artHeight.value'))  / 100;
-		var weightKg = parseFloat(getValue('artWeight.value'));
-		if (!isNaN(age)&amp;&amp; age &gt;= ADULT)
-		{
-			if (!isNaN(weightKg) &amp;&amp;(!isNaN(heightM)))
-			{
-				var bmi = weightKg / (heightM * heightM);
-				display = bmi;
-				if (isNaN(bmi) || bmi &lt; 10 || bmi &gt; 50) {
-					getField('bmi.error').html('Abnormal value. Where height and height entered correctly?');
-					setValue('bmi.value','')
-				}
-				else {
-					setValue('bmi.value',bmi.toFixed(2));// ='BMI:' + bmi.toFixed(2) + '(Adults)';
-				}
-			}
 
-			jq('#bmi').show();
-		}
-		else
-		{
-			jq('#bmi').hide();
-		}
-	}
 
 
     function OnStop()
@@ -510,7 +515,7 @@
 						<obsgroup groupingConceptId="160648AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
 							Weight(kgs): <obs id="artWeight" conceptId="5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 							Height(cms): <obs id="artHeight" conceptId="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-							<span id="artBMI">BMI (for Adults)<obs id="bmi" conceptId="1342AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/> </span>
+							<span id="calculated-bmi" class="value"></span>
 
 								<span id="startWhoStageAd">WHO Stage<obs id="start_who_ad" conceptId="5356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></span>
 
