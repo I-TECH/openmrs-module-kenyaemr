@@ -132,11 +132,13 @@
 			loadingImages();
 		});
 	</script>
+	<div style="display:none">
+		<encounterProvider default="currentUser" />
+	</div>
 
 	<div class="ke-form-header">
 		<table style="width: 100%">
 			<tr>
-				<td>Provider: <encounterProvider default="currentUser" /></td>
 				<td>Location: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" /></td>
 			</tr>
 		</table>
@@ -187,7 +189,7 @@
 								</tr>
 
 								<tr>
-									<td><encounterDate id="encounter-date" showTime="false" /></td>
+									<td><encounterDate id="encounter-date" showTime="true" /></td>
 									<td><div id="age" class="value"></div></td>
 									<td><obs conceptId="5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="2" /></td>
 									<td><obs conceptId="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="3" /></td>

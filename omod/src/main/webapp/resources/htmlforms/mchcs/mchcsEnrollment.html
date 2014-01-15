@@ -56,11 +56,11 @@
 				var month = new String(birthdate.getMonth()+1);
 					if(month.length == 1) {
 						month = '0'+month;
-						var cohort = month +"-"+ (birthdate.getUTCFullYear()+1);
+						var cohort = month +"-"+ (birthdate.getUTCFullYear());
 						jq('#calculated-cohort').html(cohort);
 					}
 					else {
-						var cohort = month +"-"+ (birthdate.getUTCFullYear()+1);
+						var cohort = month +"-"+ (birthdate.getUTCFullYear());
 						jq('#calculated-cohort').html(cohort);
 					}
 			}
@@ -169,11 +169,13 @@
 			});
 		});
 	</script>
+	<div style="display:none">
+		<encounterProvider default="currentUser" />
+	</div>
 	<div class="ke-form-header">
 		<table style="width: 100%">
 			<tr>
 				<td>Enrollment date: <encounterDate id="encounter-date" showTime="true" /></td>
-				<td>Enrolled by: <encounterProvider default="currentUser" /></td>
 				<td>Enrolled at: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" /></td>
 			</tr>
 		</table>
