@@ -101,6 +101,18 @@
 			jq('#testType').click(sputumTypeTest);
 			jq('#sputumResults').click(sputumTypeTest);
 			cultureValidation();
+
+			beforeSubmit.push (function() {
+				var sputumResultsDate = new Date(getValue('date-sputum-results-date.value')).getTime();
+				var cultureResultsDate = new Date(getValue('date-culture-results-date.value')).getTime();
+				var returnVisitDate = new Date(getValue('return-visit-date.value')).getTime();
+				if ((returnVisitDate &lt; sputumResultsDate) || (returnVisitDate &lt; cultureResultsDate)) {
+					jq('#dates-errors').show();
+					jq('#dates-errors').html('Return visit date cannot be before sputum results date nor culture/sensitivity results date');
+					return false;
+				}
+				return true;
+			});
 		});
 	</script>
 	<div class="ke-form-header">
@@ -114,6 +126,11 @@
 	</div>
 	<br />
 	<table align="center" cellpadding="0" class="tb">
+		<tr>
+			<td colspan="2">
+				<div id="dates-errors" class="error" style="display: none"></div>
+			</td>
+		</tr>
 		<tr>
 			<td>
 				<fieldset>
@@ -147,7 +164,7 @@
 								</tr>
 								<tr>
 									<td>Date Done</td>
-									<td><obs conceptId="159964AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="date-results-date"  allowTime="false" /></td>
+									<td><obs conceptId="159964AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="date-sputum-results-date"  allowTime="false" /></td>
 								</tr>
 							</obsgroup>
 						</table>
@@ -187,7 +204,7 @@
 							</tr>
 							<tr>
 								<td>Date Done</td>
-								<td><obs conceptId="159964AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="date-results-date"  allowTime="false" /></td>
+								<td><obs conceptId="159964AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="date-culture-results-date"  allowTime="false" /></td>
 							</tr>
 						</obsgroup>
 					</table>
@@ -202,7 +219,7 @@
 						  <td>Hiv Status</td>
 						  <td><obs conceptId="1169AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
 						  <td>Return Visit date</td>
-						  <td><obs conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" /></td>
+						  <td><obs conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="return-visit-date" allowFutureDates="true" /></td>
 					  </tr>
 				</table>
 				</fieldset>
