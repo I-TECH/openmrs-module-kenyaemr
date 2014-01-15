@@ -35,6 +35,7 @@
 <script type="text/javascript">
 
 	var NOT_HIV_TESTED_ID = 1402;
+	var NEGATIVE = 664;
 	var UNKNOWN = 1067;
 	var PATIENT_IS_ENROLLED_HIV = <lookup expression="kenyaemr.hasHivUniquePatientNumber()" />;
 
@@ -178,7 +179,7 @@
 			jq('#patient-hiv-test-date input').prop('disabled', false);
 		}
 
-		var isMismatch = (patientHivStatus == NOT_HIV_TESTED_ID &amp;&amp; PATIENT_IS_ENROLLED_HIV);
+		var isMismatch = ((patientHivStatus == NOT_HIV_TESTED_ID || patientHivStatus == NEGATIVE) &amp;&amp; PATIENT_IS_ENROLLED_HIV);
 		jq('#patient-hiv-status-mismatch').toggle(isMismatch);
 	}
 
