@@ -92,5 +92,14 @@ public class FacilityMetadataTest extends BaseModuleContextSensitiveTest {
 		Assert.assertThat(abelMigwiLab.getDescription(), is("Laboratory (Stand-alone)"));
 		Assert.assertThat(abelMigwiLab.getCountry(), is("Kenya"));
 		Assert.assertThat(abelMigwiLab.getStateProvince(), is("Central"));
+
+		Context.flushSession();
+		Context.clearSession();
+
+		// Install again...
+		start = System.currentTimeMillis();
+		facilityMetadata.install();
+		time = System.currentTimeMillis() - start;
+		System.out.println("** Loaded locations in " + time + " ms **");
 	}
 }
