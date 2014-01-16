@@ -134,6 +134,21 @@
 					jq('#father-name-list').html(fatherName);
 				});
 			}
+
+			function heiInfants() {
+
+				if (getValue('hiv-exposed-child.value') == '') {
+					jq('#arv-prophylaxis :input').prop('disabled', true);
+				}
+
+				if (getValue('hiv-exposed-child.value') == EXPOSURE_TO_HIV_ID) {
+					jq('#arv-prophylaxis :input').prop('disabled', false);
+				}
+
+				if (getValue('hiv-exposed-child.value') == NO_CONCEPT_ID) {
+					jq('#arv-prophylaxis :input').prop('disabled', true);
+				}
+			}
 		jq(function() {
 			//get cohort
 			getCohort();
@@ -153,6 +168,8 @@
 			includeMothersNames();
 			//include the father details if any
 			includeFathersNames();
+			//disable arv prophylaxis when a child is NOT exposed and enable whenever they are exposed
+			 jq('#hiv-exposed-child input').click(heiInfants);
 
 			beforeSubmit.push(function() {
 				if (getValue('hiv-exposed-child.value') == "") {
@@ -312,16 +329,16 @@
 						</table>
 					</td>
 				</tr>
-				<tr>
+				<tr id="arv-prophylaxis">
 					<td>ARV Prophylaxis</td>
-					<obsgroup groupingConceptId="1638AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-						<td colspan="2">
-							<obs conceptId="1282AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="80586AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1149AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-								 answerLabels="Sd NVP Only,sd NVP+AZT+3TC,NVP for 6 weeks(Mother on HAART),None,Other" style="radio"/> <br />
-							Is the mother Breastfeeding? <obs conceptId="159941AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159941AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No,Unknown" style="radio"/><br />
-							NVP during BF? <obs conceptId="1282AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" answerConceptId="80586AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel=""/>
-						</td>
-					</obsgroup>
+						<obsgroup groupingConceptId="1638AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+							<td colspan="2">
+								<obs conceptId="1282AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="80586AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1149AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									 answerLabels="Sd NVP Only,sd NVP+AZT+3TC,NVP for 6 weeks(Mother on HAART),None,Other" style="radio"/> <br />
+								Is the mother Breastfeeding? <obs conceptId="159941AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159941AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No,Unknown" style="radio"/><br />
+								NVP during BF? <obs conceptId="1282AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" answerConceptId="80586AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel=""/>
+							</td>
+						</obsgroup>
 				</tr>
 				<tr>
 					<td>
