@@ -63,16 +63,19 @@ public class LocationMflSynchronization implements ObjectSynchronization<Locatio
 	 */
 	@Override
 	public String getObjectHash(Location obj) {
+		Facility facility = new Facility(obj);
+
 		return EmrUtils.hash(
 				obj.getName(),
 				obj.getDescription(),
 
-				obj.getAddress5(),
-				obj.getAddress6(),
-				obj.getCountyDistrict(),
-				obj.getStateProvince(),
-				obj.getCountry(),
-				obj.getPostalCode()
+				facility.getProvince(),
+				facility.getCounty(),
+				facility.getDistrict(),
+				facility.getDivision(),
+				facility.getTelephoneLandline(),
+				facility.getTelephoneMobile(),
+				facility.getPostCode()
 		);
 	}
 }

@@ -33,6 +33,22 @@ public class Facility extends AbstractCustomizableWrapper<Location, LocationAttr
 	}
 
 	/**
+	 * Gets the master facility code
+	 * @return the code
+	 */
+	public String getMflCode() {
+		return (String) getFirstAttributeValue(FacilityMetadata._LocationAttributeType.MASTER_FACILITY_CODE);
+	}
+
+	/**
+	 * Gets the country
+	 * @return the country
+	 */
+	public String getCountry() {
+		return target.getCountry();
+	}
+
+	/**
 	 * Gets the province
 	 * @return the province
 	 */
@@ -65,10 +81,26 @@ public class Facility extends AbstractCustomizableWrapper<Location, LocationAttr
 	}
 
 	/**
-	 * Gets the master facility code
+	 * Gets the post code
+	 * @return the post code
+	 */
+	public String getPostCode() {
+		return target.getPostalCode();
+	}
+
+	/**
+	 * Gets the landline telephone number
 	 * @return the code
 	 */
-	public String getMflCode() {
-		return (String) getFirstAttributeValue(FacilityMetadata._LocationAttributeType.MASTER_FACILITY_CODE);
+	public String getTelephoneLandline() {
+		return (String) getFirstAttributeValue(FacilityMetadata._LocationAttributeType.TELEPHONE_LANDLINE);
+	}
+
+	/**
+	 * Gets the mobile telephone number
+	 * @return the code
+	 */
+	public String getTelephoneMobile() {
+		return (String) getFirstAttributeValue(FacilityMetadata._LocationAttributeType.TELEPHONE_MOBILE);
 	}
 }

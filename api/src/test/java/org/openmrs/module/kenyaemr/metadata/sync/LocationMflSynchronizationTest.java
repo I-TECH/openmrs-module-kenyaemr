@@ -64,7 +64,7 @@ public class LocationMflSynchronizationTest extends BaseModuleContextSensitiveTe
 		LocationAttributeType codeAttrType = MetadataUtils.getLocationAttributeType(FacilityMetadata._LocationAttributeType.MASTER_FACILITY_CODE);
 
 		// First sync should create 3 new locations
-		ObjectSource<Location> source1 = new LocationMflCsvSource("test-locations.csv", codeAttrType);
+		ObjectSource<Location> source1 = new LocationMflCsvSource("test-locations.csv");
 		SyncResult<Location> result1 = new MetadataSynchronizationRunner<Location>(source1, mflSynchronization).run();
 
 		Assert.assertThat(result1.getCreated(), hasSize(3));
@@ -79,7 +79,7 @@ public class LocationMflSynchronizationTest extends BaseModuleContextSensitiveTe
 		locationService.saveLocation(modified);
 
 		// Second sync should update that location
-		ObjectSource<Location> source2 = new LocationMflCsvSource("test-locations.csv", codeAttrType);
+		ObjectSource<Location> source2 = new LocationMflCsvSource("test-locations.csv");
 		SyncResult<Location> result2 = new MetadataSynchronizationRunner<Location>(source2, mflSynchronization).run();
 
 		Assert.assertThat(locationService.getLocation("Abdisamad Dispensary"), notNullValue());
@@ -95,7 +95,7 @@ public class LocationMflSynchronizationTest extends BaseModuleContextSensitiveTe
 		locationService.saveLocation(invalid);
 
 		// Third sync should retire Abdisamad Dispensar (66666) and re-create Abdisamad Dispensary (17009)
-		ObjectSource<Location> source3 = new LocationMflCsvSource("test-locations.csv", codeAttrType);
+		ObjectSource<Location> source3 = new LocationMflCsvSource("test-locations.csv");
 		SyncResult<Location> result3 = new MetadataSynchronizationRunner<Location>(source3, mflSynchronization).run();
 
 		Assert.assertThat(result3.getCreated(), hasSize(1));
@@ -105,7 +105,7 @@ public class LocationMflSynchronizationTest extends BaseModuleContextSensitiveTe
 		//printAllLocations();
 
 		// Fourth sync should change nothing
-		ObjectSource<Location> source4 = new LocationMflCsvSource("test-locations.csv", codeAttrType);
+		ObjectSource<Location> source4 = new LocationMflCsvSource("test-locations.csv");
 		SyncResult<Location> result4 = new MetadataSynchronizationRunner<Location>(source4, mflSynchronization).run();
 
 		Assert.assertThat(result4.getCreated(), hasSize(0));

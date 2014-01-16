@@ -18,6 +18,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.openmrs.Location;
 import org.openmrs.LocationAttribute;
 import org.openmrs.LocationAttributeType;
+import org.openmrs.module.kenyaemr.metadata.FacilityMetadata;
+import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.metadatadeploy.source.AbstractCsvResourceSource;
 
 import java.io.IOException;
@@ -27,17 +29,18 @@ import java.io.IOException;
  */
 public class LocationMflCsvSource extends AbstractCsvResourceSource<Location> {
 
-	private LocationAttributeType codeAttrType;
+	private LocationAttributeType codeAttrType, landlineAttrType, mobileAttrType;
 
 	/**
 	 * Constructs a new location source
 	 * @param csvFile the csv resource path
-	 * @param codeAttrType the attribute type for the MFL code
 	 */
-	public LocationMflCsvSource(String csvFile, LocationAttributeType codeAttrType) throws IOException {
+	public LocationMflCsvSource(String csvFile) throws IOException {
 		super(csvFile, true);
 
-		this.codeAttrType = codeAttrType;
+		this.codeAttrType = MetadataUtils.getLocationAttributeType(FacilityMetadata._LocationAttributeType.MASTER_FACILITY_CODE);
+		this.landlineAttrType = MetadataUtils.getLocationAttributeType(FacilityMetadata._LocationAttributeType.TELEPHONE_LANDLINE);
+		this.mobileAttrType = MetadataUtils.getLocationAttributeType(FacilityMetadata._LocationAttributeType.TELEPHONE_MOBILE);
 	}
 
 	/**
@@ -52,6 +55,8 @@ public class LocationMflCsvSource extends AbstractCsvResourceSource<Location> {
 		String district = line[4];
 		String division = line[5];
 		String type = line[6];
+		String landline = line[15];
+		String mobile = line[17];
 		String postcode = line[22];
 
 		Location location = new Location();
@@ -67,11 +72,27 @@ public class LocationMflCsvSource extends AbstractCsvResourceSource<Location> {
 		location.setPostalCode(postcode);
 
 		if (StringUtils.isNotEmpty(code)) {
-			LocationAttribute codeAttr = new LocationAttribute();
-			codeAttr.setAttributeType(codeAttrType);
-			codeAttr.setValue(code.trim());
-			codeAttr.setOwner(location);
-			location.addAttribute(codeAttr);
+			LocationAttribute attr = new LocationAttribute();
+			attr.setAttributeType(codeAttrType);
+			attr.setValue(code.trim());
+			attr.setOwner(location);
+			location.addAttribute(attr);
+		}
+
+		if (StringUtils.isNotEmpty(landline)) {
+			LocationAttribute attr = new LocationAttribute();
+			attr.setAttributeType(landlineAttrType);
+			attr.setValue(landline.trim());
+			attr.setOwner(location);
+			location.addAttribute(attr);
+		}
+
+		if (StringUtils.isNotEmpty(mobile)) {
+			LocationAttribute attr = new LocationAttribute();
+			attr.setAttributeType(mobileAttrType);
+			attr.setValue(mobile.trim());
+			attr.setOwner(location);
+			location.addAttribute(attr);
 		}
 
 		return location;

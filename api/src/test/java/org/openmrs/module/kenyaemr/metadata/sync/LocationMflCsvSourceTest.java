@@ -15,37 +15,52 @@
 package org.openmrs.module.kenyaemr.metadata.sync;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Location;
 import org.openmrs.LocationAttributeType;
+import org.openmrs.module.kenyaemr.metadata.FacilityMetadata;
+import org.openmrs.module.kenyaemr.wrapper.Facility;
+import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.hamcrest.Matchers.*;
 
 /**
  * Tests for {@link LocationMflCsvSource}
  */
-public class LocationMflCsvSourceTest {
+public class LocationMflCsvSourceTest extends BaseModuleContextSensitiveTest {
+
+	@Autowired
+	private FacilityMetadata facilityMetadata;
+
+	/**
+	 * Setup each test
+	 */
+	@Before
+	public void setup() throws Exception {
+		facilityMetadata.install(false);
+	}
 
 	@Test
 	public void integration() throws Exception {
-		LocationAttributeType codeAttrType = new LocationAttributeType();
-
-		LocationMflCsvSource source = new LocationMflCsvSource("test-locations.csv", codeAttrType);
+		LocationMflCsvSource source = new LocationMflCsvSource("test-locations.csv");
 
 		Location location1 = source.fetchNext();
+		Facility facility1 = new Facility(location1);
 
 		Assert.assertThat(location1.getName(), is("Abdisamad Dispensary"));
 		Assert.assertThat(location1.getDescription(), is("Dispensary"));
 
-		Assert.assertThat(location1.getAddress5(), is("Sankuri"));
-		Assert.assertThat(location1.getAddress6(), is("Garissa"));
-		Assert.assertThat(location1.getCountyDistrict(), is("Garissa"));
-		Assert.assertThat(location1.getStateProvince(), is("North Eastern"));
-		Assert.assertThat(location1.getCountry(), is("Kenya"));
-		Assert.assertThat(location1.getPostalCode(), is("70100"));
-
-		Assert.assertThat(location1.getActiveAttributes(codeAttrType), hasSize(1));
-		Assert.assertThat(location1.getActiveAttributes(codeAttrType).get(0).getValue(), is((Object) "17009"));
+		Assert.assertThat(facility1.getMflCode(), is("17009"));
+		Assert.assertThat(facility1.getCountry(), is("Kenya"));
+		Assert.assertThat(facility1.getProvince(), is("North Eastern"));
+		Assert.assertThat(facility1.getCounty(), is("Garissa"));
+		Assert.assertThat(facility1.getDistrict(), is("Garissa"));
+		Assert.assertThat(facility1.getDivision(), is("Sankuri"));
+		Assert.assertThat(facility1.getTelephoneLandline(), is("0462103570"));
+		Assert.assertThat(facility1.getTelephoneMobile(), nullValue());
+		Assert.assertThat(facility1.getPostCode(), is("70100"));
 
 		Location location2 = source.fetchNext();
 
