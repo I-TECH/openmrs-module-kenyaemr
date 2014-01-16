@@ -135,7 +135,7 @@ public class Moh711ReportBuilder extends BaseIndicatorReportBuilder {
 
 		List<ColumnParameters> allColumns = Arrays.asList(colFPeds, colMPeds, colFAdults, colMAdults, colFTotal, colMTotal, colTotal);
 		List<ColumnParameters> femaleColumns = Arrays.asList(colFPeds, colFAdults, colFTotal, colTotal);
-		List<ColumnParameters> pedsColumns = Arrays.asList(colFPeds, colFAdults, colFTotal, colTotal);
+		List<ColumnParameters> pedsColumns = Arrays.asList(colFPeds, colMPeds, colFTotal, colMTotal, colTotal);
 
 		String indParams = "startDate=${startDate},endDate=${endDate}";
 
