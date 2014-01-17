@@ -35,6 +35,12 @@ public class LocationSimplifier extends AbstractMetadataSimplifier<Location> {
 
 		Facility facility = new Facility(location);
 		ret.put("code", facility.getMflCode());
+		ret.put("country", facility.getCountry());
+		ret.put("province", facility.getProvince());
+		ret.put("county", facility.getCounty());
+		ret.put("district", facility.getDistrict());
+		ret.put("division", facility.getDivision());
+		ret.put("postcode", facility.getPostCode());
 		ret.put("landline", facility.getTelephoneLandline());
 		ret.put("mobile", facility.getTelephoneMobile());
 		return ret;

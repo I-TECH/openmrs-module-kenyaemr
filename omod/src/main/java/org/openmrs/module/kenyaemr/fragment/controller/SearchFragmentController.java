@@ -14,8 +14,6 @@
 
 package org.openmrs.module.kenyaemr.fragment.controller;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.Predicate;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -147,7 +145,7 @@ public class SearchFragmentController {
 	 * @param ui the UI utils
 	 * @return the simplified locations
 	 */
-	public List<SimpleObject> locations(@RequestParam("q") String query, UiUtils ui) {
+	public SimpleObject[] locations(@RequestParam("q") String query, UiUtils ui) {
 		LocationService svc = Context.getLocationService();
 
 		// Results will be sorted by name
@@ -172,11 +170,7 @@ public class SearchFragmentController {
 		}
 
 		// Convert to simple objects
-		List<SimpleObject> ret = new ArrayList<SimpleObject>();
-		for (Location l : results) {
-			ret.add(ui.simplifyObject(l));
-		}
-		return ret;
+		return ui.simplifyCollection(results);
 	}
 
 	/**
