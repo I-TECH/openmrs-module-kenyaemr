@@ -19,6 +19,7 @@ import org.openmrs.EncounterType;
 import org.openmrs.Obs;
 import org.openmrs.Patient;
 import org.openmrs.module.kenyaemr.Dictionary;
+import org.openmrs.module.kenyaemr.wrapper.EncounterWrapper;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.kenyaemr.metadata.MchMetadata;
 import org.openmrs.module.kenyaemr.util.EmrUtils;
@@ -46,16 +47,19 @@ public class MchcsCarePanelFragmentController {
 		Obs hivStatus = null;
 
 		EncounterType hei_completion_encounterType = MetadataUtils.getEncounterType(MchMetadata._EncounterType.MCHCS_HEI_COMPLETION);
-		Encounter lastMchcsHeiCompletion = EmrUtils.lastEncounter(patient,hei_completion_encounterType);
+		Encounter lastMchcsHeiCompletion = EmrUtils.lastEncounter(patient, hei_completion_encounterType);
 		EncounterType mchcs_enrollment_encounterType = MetadataUtils.getEncounterType(MchMetadata._EncounterType.MCHCS_ENROLLMENT);
-		Encounter lastMchcsEnrollment = EmrUtils.lastEncounter(patient,mchcs_enrollment_encounterType);
+		Encounter lastMchcsEnrollment = EmrUtils.lastEncounter(patient, mchcs_enrollment_encounterType);
 		EncounterType mchcs_consultation_encounterType = MetadataUtils.getEncounterType(MchMetadata._EncounterType.MCHCS_CONSULTATION);
-		Encounter lastMchcsConsultation = EmrUtils.lastEncounter(patient,mchcs_consultation_encounterType);
+		Encounter lastMchcsConsultation = EmrUtils.lastEncounter(patient, mchcs_consultation_encounterType);
 
 		if (lastMchcsHeiCompletion != null && lastMchcsEnrollment != null) {
-			heiOutcomes = EmrUtils.firstObsInEncounter(lastMchcsHeiCompletion, Dictionary.getConcept(Dictionary.REASON_FOR_PROGRAM_DISCONTINUATION));
-			hivExposed =  EmrUtils.firstObsInEncounter(lastMchcsEnrollment, Dictionary.getConcept(Dictionary.CHILDS_CURRENT_HIV_STATUS));
-			hivStatus =  EmrUtils.firstObsInEncounter(lastMchcsHeiCompletion, Dictionary.getConcept(Dictionary.HIV_STATUS));
+			EncounterWrapper heiCompletionWrapper = new EncounterWrapper(lastMchcsHeiCompletion);
+			EncounterWrapper mchcsEnrollmentWrapper = new EncounterWrapper(lastMchcsEnrollment);
+
+			heiOutcomes = heiCompletionWrapper.firstObs(Dictionary.getConcept(Dictionary.REASON_FOR_PROGRAM_DISCONTINUATION));
+			hivExposed =  mchcsEnrollmentWrapper.firstObs(Dictionary.getConcept(Dictionary.CHILDS_CURRENT_HIV_STATUS));
+			hivStatus =  heiCompletionWrapper.firstObs(Dictionary.getConcept(Dictionary.HIV_STATUS));
 		}
 
 		if ((hivExposed != null) && (hivExposed.getValueCoded() != Dictionary.getConcept(Dictionary.EXPOSURE_TO_HIV))) {
@@ -69,15 +73,21 @@ public class MchcsCarePanelFragmentController {
 			calculations.put("heioutcomes", "Still in HEI Care");
 			calculations.put("hivStatus", "Not Specified");
 		}
+
 		if (lastMchcsConsultation != null) {
-			 milestones.addAll(EmrUtils.allObsInEncounter(lastMchcsConsultation, Dictionary.getConcept(Dictionary.DEVELOPMENTAL_MILESTONES)));
+			EncounterWrapper mchcsConsultationWrapper = new EncounterWrapper(lastMchcsConsultation);
+
+			milestones.addAll(mchcsConsultationWrapper.allObs(Dictionary.getConcept(Dictionary.DEVELOPMENTAL_MILESTONES)));
+
 			if (milestones.size() > 0) {
 				calculations.put("milestones", milestones);
 			}
 			else {
 				calculations.put("milestones", "Not Specified");
 			}
-			remarks.addAll(EmrUtils.allObsInEncounter(lastMchcsConsultation, Dictionary.getConcept(Dictionary.REVIEW_OF_SYSTEMS_DEVELOPMENTAL)));
+
+			remarks.addAll(mchcsConsultationWrapper.allObs(Dictionary.getConcept(Dictionary.REVIEW_OF_SYSTEMS_DEVELOPMENTAL)));
+
 			if (remarks.size() > 0) {
 				calculations.put("remarks", remarks);
 			}

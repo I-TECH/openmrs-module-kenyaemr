@@ -20,19 +20,11 @@ import org.apache.commons.lang3.time.DateUtils;
 import org.openmrs.Concept;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
-import org.openmrs.Form;
 import org.openmrs.Obs;
 import org.openmrs.Patient;
-import org.openmrs.PatientProgram;
 import org.openmrs.Person;
-import org.openmrs.Visit;
-import org.openmrs.VisitAttribute;
-import org.openmrs.VisitAttributeType;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
-import org.openmrs.util.OpenmrsUtil;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -78,28 +70,6 @@ public class EmrUtils {
 	 */
 	public static boolean isToday(Date date) {
 		return DateUtils.isSameDay(date, new Date());
-	}
-
-	/**
-	 * Checks a new visit to see if it overlaps with any other visit for that patient
-	 * @param visit the new visit
-	 * @return true if new visit will overlap
-	 */
-	public static boolean visitWillOverlap(Visit visit) {
-		Patient patient = visit.getPatient();
-
-		for (Visit existingVisit : Context.getVisitService().getVisitsByPatient(patient)) {
-			// If visit exists in database, don't compare to itself
-			if (existingVisit.getVisitId().equals(visit.getVisitId())) {
-				continue;
-			}
-
-			if (OpenmrsUtil.compareWithNullAsLatest(visit.getStartDatetime(), existingVisit.getStopDatetime()) <= 0 &&
-					OpenmrsUtil.compareWithNullAsLatest(visit.getStopDatetime(), existingVisit.getStartDatetime()) >= 0) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 	/**
@@ -164,54 +134,6 @@ public class EmrUtils {
 	}
 
 	/**
-	 * Finds the first obs in an encounter with the given concept
-	 * @param encounter the encounter
-	 * @param concept the obs concept
-	 * @return the obs
-	 */
-	public static Obs firstObsInEncounter(Encounter encounter, Concept concept) {
-		for (Obs obs : encounter.getAllObs()) {
-			if (obs.getConcept().equals(concept)) {
-				return obs;
-			}
-		}
-		return null;
-	}
-
-	/**
-	 * Finds all obs in an encounter with the given concept
-	 * @param encounter the encounter
-	 * @param concept the obs concept
-	 * @return the obs list
-	 */
-	public static List<Obs> allObsInEncounter(Encounter encounter, Concept concept) {
-		List<Obs> obsList = new ArrayList<Obs>();
-		for (Obs obs : encounter.getAllObs()) {
-			if (obs.getConcept().equals(concept)) {
-				obsList.add(obs);
-			}
-		}
-		return obsList;
-	}
-
-	/**
-	 * Finds the first obs during a program enrollment with the given concept
-	 * @param enrollment the program enrollment
-	 * @param concept the obs concept
-	 * @return the obs
-	 */
-	public static Obs firstObsInProgram(PatientProgram enrollment, Concept concept) {
-		List<Obs> obss = Context.getObsService().getObservationsByPersonAndConcept(enrollment.getPatient(), concept);
-		Collections.reverse(obss); // Obs come desc by date
-		for (Obs obs : obss) {
-			if (obs.getObsDatetime().compareTo(enrollment.getDateEnrolled()) >= 0 && (enrollment.getDateCompleted() == null || obs.getObsDatetime().compareTo(enrollment.getDateCompleted()) < 0)) {
-				return obs;
-			}
-		}
-		return null;
-	}
-
-	/**
 	 * Finds the last obs with the given person and concept
 	 * @param person the person
 	 * @param concept the concept
@@ -230,17 +152,6 @@ public class EmrUtils {
 	 */
 	public static Encounter lastEncounter(Patient patient, EncounterType type) {
 		List<Encounter> encounters = Context.getEncounterService().getEncounters(patient, null, null, null, null, Collections.singleton(type), null, null, null, false);
-		return encounters.size() > 0 ? encounters.get(encounters.size() - 1) : null;
-	}
-
-	/**
-	 * Finds the last encounter during a program enrollment with the given encounter type
-	 * @param enrollment the program enrollment
-	 * @param type the encounter type
-	 * @return the encounter
-	 */
-	public static Encounter lastEncounterInProgram(PatientProgram enrollment, EncounterType type) {
-		List<Encounter> encounters = Context.getEncounterService().getEncounters(enrollment.getPatient(), null, enrollment.getDateEnrolled(), enrollment.getDateCompleted(), null, Collections.singleton(type), null, null, null, false);
 		return encounters.size() > 0 ? encounters.get(encounters.size() - 1) : null;
 	}
 

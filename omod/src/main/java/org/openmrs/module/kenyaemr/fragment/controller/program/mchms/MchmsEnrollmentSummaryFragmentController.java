@@ -20,6 +20,7 @@ import org.openmrs.PatientProgram;
 import org.openmrs.module.kenyacore.CoreUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.util.EmrUtils;
+import org.openmrs.module.kenyaemr.wrapper.Enrollment;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 
@@ -31,36 +32,44 @@ import java.util.Map;
  */
 public class MchmsEnrollmentSummaryFragmentController {
 
-	public String controller(@FragmentParam("patientProgram") PatientProgram enrollment,
+	public String controller(@FragmentParam("patientProgram") PatientProgram patientProgram,
 							 @FragmentParam(value = "encounter", required = false) Encounter encounter,
 							 @FragmentParam("showClinicalData") boolean showClinicalData,
 							 FragmentModel model) {
 
 		Map<String, Object> dataPoints = new LinkedHashMap<String, Object>();
-		dataPoints.put("Enrolled", enrollment.getDateEnrolled());
+		dataPoints.put("Enrolled", patientProgram.getDateEnrolled());
 
-		Obs ancNoObs = EmrUtils.firstObsInProgram(enrollment, Dictionary.getConcept(Dictionary.ANTENATAL_CASE_NUMBER));
+		Enrollment enrollment = new Enrollment(patientProgram);
+
+		Obs ancNoObs = enrollment.firstObs(Dictionary.getConcept(Dictionary.ANTENATAL_CASE_NUMBER));
 		if (ancNoObs != null) {
 			dataPoints.put("ANC No", ancNoObs.getValueNumeric().intValue());
 		}
-		Obs lmpObs = EmrUtils.firstObsInProgram(enrollment, Dictionary.getConcept(Dictionary.LAST_MONTHLY_PERIOD));
+
+		Obs lmpObs = enrollment.firstObs(Dictionary.getConcept(Dictionary.LAST_MONTHLY_PERIOD));
 		if (lmpObs != null) {
 			dataPoints.put("LMP", lmpObs.getValueDate());
 			dataPoints.put("EDD (LMP)", CoreUtils.dateAddDays(lmpObs.getValueDate(), 280));
 		}
-		Obs eddUsoundObs = EmrUtils.firstObsInProgram(enrollment, Dictionary.getConcept(Dictionary.EXPECTED_DATE_OF_DELIVERY));
+
+		Obs eddUsoundObs = enrollment.firstObs(Dictionary.getConcept(Dictionary.EXPECTED_DATE_OF_DELIVERY));
 		if (eddUsoundObs != null) {
 			dataPoints.put("EDD (Ultrasound)", eddUsoundObs.getValueDate());
 		}
-		Obs gravidaObs = EmrUtils.firstObsInProgram(enrollment, Dictionary.getConcept(Dictionary.GRAVIDA));
+
+		Obs gravidaObs = enrollment.firstObs(Dictionary.getConcept(Dictionary.GRAVIDA));
 		if (gravidaObs != null) {
 			dataPoints.put("Gravida", gravidaObs.getValueNumeric().intValue());
 		}
-		Obs parityTermObs = EmrUtils.firstObsInProgram(enrollment, Dictionary.getConcept(Dictionary.PARITY_TERM));
-		Obs parityAbortionObs = EmrUtils.firstObsInProgram(enrollment, Dictionary.getConcept(Dictionary.PARITY_ABORTION));
+
+		Obs parityTermObs = enrollment.firstObs(Dictionary.getConcept(Dictionary.PARITY_TERM));
+		Obs parityAbortionObs = enrollment.firstObs(Dictionary.getConcept(Dictionary.PARITY_ABORTION));
+
 		if (parityTermObs != null && parityAbortionObs != null) {
 			dataPoints.put("Parity", parityTermObs.getValueNumeric().intValue() + " + " + parityAbortionObs.getValueNumeric().intValue());
 		}
+
 		model.put("dataPoints", dataPoints);
 		return "view/dataPoints";
 	}

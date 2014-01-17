@@ -25,6 +25,7 @@ import org.openmrs.module.kenyacore.calculation.BooleanResult;
 import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyacore.calculation.Filters;
+import org.openmrs.module.kenyaemr.wrapper.EncounterWrapper;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.kenyaemr.ArtAssessmentMethod;
 import org.openmrs.module.kenyaemr.Dictionary;
@@ -69,16 +70,21 @@ public class AssessedOnFirstVisitCalculation extends BaseEmrCalculation {
 		for (Integer ptId : cohort) {
 			boolean qualified = false;
 			Encounter encounter = EmrCalculationUtils.encounterResultForPatient(crm, ptId);
+
 			if (encounter != null) {
+				EncounterWrapper wrapper = new EncounterWrapper(encounter);
+
 				if (artAssessmentMethod == ArtAssessmentMethod.WHO_STAGING) {
-					Obs whoStageObs = EmrUtils.firstObsInEncounter(encounter, whoStageConcept);
+					Obs whoStageObs = wrapper.firstObs(whoStageConcept);
 					qualified = whoStageObs != null && whoStageObs.getValueCoded() != null;
-				} else if (artAssessmentMethod == ArtAssessmentMethod.CD4_COUNT) {
-					Obs cd4CountObs = EmrUtils.firstObsInEncounter(encounter, cd4CountConcept);
+				}
+				else if (artAssessmentMethod == ArtAssessmentMethod.CD4_COUNT) {
+					Obs cd4CountObs = wrapper.firstObs(cd4CountConcept);
 					qualified = cd4CountObs != null && cd4CountObs.getValueNumeric() != null;
-				} else {
-					Obs whoStageObs = EmrUtils.firstObsInEncounter(encounter, whoStageConcept);
-					Obs cd4CountObs = EmrUtils.firstObsInEncounter(encounter, cd4CountConcept);
+				}
+				else {
+					Obs whoStageObs = wrapper.firstObs(whoStageConcept);
+					Obs cd4CountObs = wrapper.firstObs(cd4CountConcept);
 					qualified = (whoStageObs != null && whoStageObs.getValueCoded() != null)
 							|| (cd4CountObs != null && cd4CountObs.getValueNumeric() != null);
 				}

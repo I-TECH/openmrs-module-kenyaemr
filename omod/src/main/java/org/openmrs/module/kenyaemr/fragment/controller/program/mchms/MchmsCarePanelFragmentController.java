@@ -26,6 +26,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.metadata.MchMetadata;
 import org.openmrs.module.kenyaemr.util.EmrUtils;
+import org.openmrs.module.kenyaemr.wrapper.EncounterWrapper;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 
@@ -46,14 +47,15 @@ public class MchmsCarePanelFragmentController {
 
 		EncounterService encounterService = Context.getEncounterService();
 		EncounterType encounterType = encounterService.getEncounterTypeByUuid(MchMetadata._EncounterType.MCHMS_ENROLLMENT);
-		Encounter lastMchEnrollment = EmrUtils.lastEncounter(patient, encounterType);
-		Obs lmpObs = EmrUtils.firstObsInEncounter(lastMchEnrollment, Dictionary.getConcept(Dictionary.LAST_MONTHLY_PERIOD));
+		EncounterWrapper lastMchEnrollment = new EncounterWrapper(EmrUtils.lastEncounter(patient, encounterType));
+
+		Obs lmpObs = lastMchEnrollment.firstObs(Dictionary.getConcept(Dictionary.LAST_MONTHLY_PERIOD));
 		if (lmpObs != null) {
 			Weeks weeks = Weeks.weeksBetween(new DateTime(lmpObs.getValueDate()), new DateTime(new Date()));
 			calculations.put("gestation", weeks.getWeeks());
 		}
 
-		Obs hivStatusObs = EmrUtils.firstObsInEncounter(lastMchEnrollment, Dictionary.getConcept(Dictionary.HIV_STATUS));
+		Obs hivStatusObs = lastMchEnrollment.firstObs(Dictionary.getConcept(Dictionary.HIV_STATUS));
 		if (hivStatusObs != null) {
 			calculations.put("hivStatus", hivStatusObs.getValueCoded());
 		} else {
@@ -61,15 +63,16 @@ public class MchmsCarePanelFragmentController {
 		}
 
 		encounterType = encounterService.getEncounterTypeByUuid(MchMetadata._EncounterType.MCHMS_CONSULTATION);
-		Encounter lastMchConsultation = EmrUtils.lastEncounter(patient, encounterType);
+		EncounterWrapper lastMchConsultation = new EncounterWrapper(EmrUtils.lastEncounter(patient, encounterType));
+
 		if (lastMchConsultation != null) {
-			Obs arvUseObs = EmrUtils.firstObsInEncounter(lastMchConsultation, Dictionary.getConcept(Dictionary.ANTIRETROVIRAL_USE_IN_PREGNANCY));
+			Obs arvUseObs = lastMchConsultation.firstObs(Dictionary.getConcept(Dictionary.ANTIRETROVIRAL_USE_IN_PREGNANCY));
 			if (arvUseObs != null) {
 				Concept concept = arvUseObs.getValueCoded();
 				if (concept.equals(Dictionary.getConcept(Dictionary.MOTHER_ON_PROPHYLAXIS))
 						|| concept.equals(Dictionary.getConcept(Dictionary.MOTHER_ON_HAART))) {
 					String regimen = "Regimen not specified";
-					List<Obs> drugObsList = EmrUtils.allObsInEncounter(lastMchConsultation, Dictionary.getConcept(Dictionary.ANTIRETROVIRAL_USED_IN_PREGNANCY));
+					List<Obs> drugObsList = lastMchConsultation.allObs(Dictionary.getConcept(Dictionary.ANTIRETROVIRAL_USED_IN_PREGNANCY));
 					if (!drugObsList.isEmpty()) {
 						String rgmn = "";
 						for (Obs obs : drugObsList) {

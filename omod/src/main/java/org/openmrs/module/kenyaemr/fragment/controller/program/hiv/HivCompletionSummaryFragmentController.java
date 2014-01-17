@@ -19,6 +19,7 @@ import org.openmrs.Obs;
 import org.openmrs.PatientProgram;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.util.EmrUtils;
+import org.openmrs.module.kenyaemr.wrapper.EncounterWrapper;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 
@@ -44,7 +45,9 @@ public class HivCompletionSummaryFragmentController {
 		}
 
 		if (encounter != null) {
-			Obs reasonObs = EmrUtils.firstObsInEncounter(encounter, Dictionary.getConcept(Dictionary.REASON_FOR_PROGRAM_DISCONTINUATION));
+			EncounterWrapper wrapper = new EncounterWrapper(encounter);
+
+			Obs reasonObs = wrapper.firstObs(Dictionary.getConcept(Dictionary.REASON_FOR_PROGRAM_DISCONTINUATION));
 			if (reasonObs != null) {
 				dataPoints.put("Reason", reasonObs.getValueCoded());
 			}

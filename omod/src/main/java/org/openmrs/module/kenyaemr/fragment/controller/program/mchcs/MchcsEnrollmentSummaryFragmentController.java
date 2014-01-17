@@ -19,6 +19,7 @@ import org.openmrs.Obs;
 import org.openmrs.PatientProgram;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.util.EmrUtils;
+import org.openmrs.module.kenyaemr.wrapper.EncounterWrapper;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 
@@ -28,7 +29,6 @@ import java.util.Map;
 /**
  * HEI program enrollment summary fragment
  */
-
 public class MchcsEnrollmentSummaryFragmentController {
 
 	public String controller(@FragmentParam("patientProgram") PatientProgram enrollment,
@@ -40,7 +40,9 @@ public class MchcsEnrollmentSummaryFragmentController {
 		dataPoints.put("Enrolled", enrollment.getDateEnrolled());
 
 		if (encounter != null) {
-			Obs o = EmrUtils.firstObsInEncounter(encounter, Dictionary.getConcept(Dictionary.METHOD_OF_ENROLLMENT));
+			EncounterWrapper wrapper = new EncounterWrapper(encounter);
+			Obs o = wrapper.firstObs(Dictionary.getConcept(Dictionary.METHOD_OF_ENROLLMENT));
+
 			if (o != null) {
 				dataPoints.put("Entry point", o.getValueCoded());
 			}

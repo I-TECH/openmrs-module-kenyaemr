@@ -25,6 +25,7 @@ import org.openmrs.VisitType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
+import org.openmrs.module.kenyaemr.util.EmrUtils;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +44,53 @@ public class VisitWrapperTest extends BaseModuleContextSensitiveTest {
 	@Before
 	public void setup() {
 		commonMetadata.install();
+	}
+
+	/**
+	 * @see VisitWrapper#overlaps()
+	 */
+	@Test
+	public void overlaps_shouldReturnTrueIfVisitOverlaps() {
+
+		Patient patient8 = Context.getPatientService().getPatient(8);
+		VisitType outpatient = MetadataUtils.getVisitType(CommonMetadata._VisitType.OUTPATIENT);
+
+		Visit visit1 = TestUtils.saveVisit(patient8, outpatient, TestUtils.date(2011, 1, 1), TestUtils.date(2011, 1, 3));
+		Visit visit2 = TestUtils.saveVisit(patient8, outpatient, TestUtils.date(2011, 1, 7), TestUtils.date(2011, 1, 10));
+		Visit visit3 = TestUtils.saveVisit(patient8, outpatient, TestUtils.date(2011, 1, 13), null);
+		Context.flushSession();
+
+		// Test visit in between #1 and #2
+		Visit visit = new Visit();
+		visit.setPatient(patient8);
+		visit.setVisitType(outpatient);
+		visit.setStartDatetime(TestUtils.date(2011, 1, 4));
+		visit.setStopDatetime(TestUtils.date(2011, 1, 5));
+
+		VisitWrapper wrapper = new VisitWrapper(visit);
+
+		Assert.assertFalse(wrapper.overlaps());
+
+		// Test overlap with #1
+		visit.setStartDatetime(TestUtils.date(2011, 1, 2));
+		visit.setStopDatetime(TestUtils.date(2011, 1, 4));
+
+		Assert.assertTrue(wrapper.overlaps());
+
+		// Test touching #1 (visit dates are inclusive so counts as overlap)
+		visit.setStartDatetime(TestUtils.date(2011, 1, 3));
+		visit.setStopDatetime(TestUtils.date(2011, 1, 4));
+
+		Assert.assertTrue(wrapper.overlaps());
+
+		// Test overlap with unstopped #3
+		visit.setStartDatetime(TestUtils.date(2011, 2, 2));
+		visit.setStopDatetime(TestUtils.date(2011, 2, 4));
+
+		Assert.assertTrue(wrapper.overlaps());
+
+		// Check overlapping itself doesn't return true
+		Assert.assertFalse(new VisitWrapper(visit2).overlaps());
 	}
 
 	/**

@@ -19,6 +19,7 @@ import org.openmrs.Obs;
 import org.openmrs.PatientProgram;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.util.EmrUtils;
+import org.openmrs.module.kenyaemr.wrapper.EncounterWrapper;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 
@@ -44,7 +45,9 @@ public class TbCompletionSummaryFragmentController {
 		}
 
 		if (encounter != null) {
-			Obs outcomeObs = EmrUtils.firstObsInEncounter(encounter, Dictionary.getConcept(Dictionary.TUBERCULOSIS_TREATMENT_OUTCOME));
+			EncounterWrapper wrapper = new EncounterWrapper(encounter);
+
+			Obs outcomeObs = wrapper.firstObs(Dictionary.getConcept(Dictionary.TUBERCULOSIS_TREATMENT_OUTCOME));
 			if (outcomeObs != null) {
 				dataPoints.put("Outcome", outcomeObs.getValueCoded());
 			}
