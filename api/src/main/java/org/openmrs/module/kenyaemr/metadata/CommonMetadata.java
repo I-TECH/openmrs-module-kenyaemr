@@ -16,7 +16,6 @@ package org.openmrs.module.kenyaemr.metadata;
 
 import org.openmrs.PatientIdentifierType.LocationBehavior;
 import org.openmrs.PersonAttributeType;
-import org.openmrs.customdatatype.datatype.RegexValidatedTextDatatype;
 import org.openmrs.module.idgen.validator.LuhnMod25IdentifierValidator;
 import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyaemr.datatype.FormDatatype;
@@ -47,10 +46,6 @@ public class CommonMetadata extends AbstractMetadataBundle {
 		public static final String PROGRESS_NOTE = "0038a296-62f8-4099-80e5-c9ea7590c157";
 		public static final String SURGICAL_AND_MEDICAL_HISTORY = "4f3c9bd8-c117-4a5e-a7eb-12a627c29de6";
 		public static final String TRIAGE = "37f6bd8d-586a-4169-95fa-5781f987fe62";
-	}
-
-	public static final class _LocationAttributeType {
-		public static final String MASTER_FACILITY_CODE = "8a845a89-6aa5-4111-81d3-0af31c45c002";
 	}
 
 	public static final class _OrderType {
@@ -111,9 +106,6 @@ public class CommonMetadata extends AbstractMetadataBundle {
 
 		install(globalProperty(EmrConstants.GP_DEFAULT_LOCATION, "The facility for which this installation is configured",
 				LocationDatatype.class, null, null));
-
-		install(locationAttributeType("Master Facility Code", "Unique facility code allocated by the Ministry of Health",
-				RegexValidatedTextDatatype.class, "\\d{5}", 0, 1, _LocationAttributeType.MASTER_FACILITY_CODE));
 
 		install(patientIdentifierType("Old Identification Number", "Identifier given out prior to OpenMRS",
 				null, null, null,

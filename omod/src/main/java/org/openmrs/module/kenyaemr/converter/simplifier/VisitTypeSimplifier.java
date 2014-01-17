@@ -15,6 +15,7 @@
 package org.openmrs.module.kenyaemr.converter.simplifier;
 
 import org.openmrs.VisitType;
+import org.openmrs.module.kenyaui.simplifier.AbstractSimplifier;
 import org.openmrs.ui.framework.SimpleObject;
 import org.springframework.stereotype.Component;
 
@@ -25,7 +26,7 @@ import org.springframework.stereotype.Component;
 public class VisitTypeSimplifier extends AbstractSimplifier<VisitType> {
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.converter.simplifier.AbstractSimplifier#simplify(Object)
+	 * @see org.openmrs.module.kenyaui.simplifier.AbstractSimplifier#simplify(Object)
 	 */
 	@Override
 	protected SimpleObject simplify(VisitType visitType) {

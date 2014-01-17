@@ -22,6 +22,7 @@ import org.openmrs.LocationAttribute;
 import org.openmrs.LocationAttributeType;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyaemr.metadata.FacilityMetadata;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
@@ -42,6 +43,9 @@ public class SearchFragmentControllerTest extends BaseModuleWebContextSensitiveT
 	@Autowired
 	private CommonMetadata commonMetadata;
 
+	@Autowired
+	private FacilityMetadata facilityMetadata;
+
 	private SearchFragmentController controller;
 
 	@Autowired
@@ -53,6 +57,7 @@ public class SearchFragmentControllerTest extends BaseModuleWebContextSensitiveT
 	@Before
 	public void setup() throws Exception {
 		commonMetadata.install();
+		facilityMetadata.install(false); // Don't do full facility sync
 
 		controller = new SearchFragmentController();
 	}
@@ -84,7 +89,7 @@ public class SearchFragmentControllerTest extends BaseModuleWebContextSensitiveT
 	 */
 	@Test
 	public void locations_shouldMatchByCompleteMflCode() {
-		LocationAttributeType mflCode = MetadataUtils.getLocationAttributeType(CommonMetadata._LocationAttributeType.MASTER_FACILITY_CODE);
+		LocationAttributeType mflCode = MetadataUtils.getLocationAttributeType(FacilityMetadata._LocationAttributeType.MASTER_FACILITY_CODE);
 		Location xanadu = Context.getLocationService().getLocation(2);
 
 		LocationAttribute attr = new LocationAttribute();

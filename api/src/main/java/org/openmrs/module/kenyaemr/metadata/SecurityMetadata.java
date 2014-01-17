@@ -16,6 +16,7 @@ package org.openmrs.module.kenyaemr.metadata;
 
 import org.openmrs.Privilege;
 import org.openmrs.api.UserService;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.metadatadeploy.bundle.AbstractMetadataBundle;
 import org.springframework.beans.factory.annotation.Autowired;

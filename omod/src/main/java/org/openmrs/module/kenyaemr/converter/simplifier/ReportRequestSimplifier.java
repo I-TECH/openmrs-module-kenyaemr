@@ -15,6 +15,7 @@
 package org.openmrs.module.kenyaemr.converter.simplifier;
 
 import org.openmrs.module.kenyaui.KenyaUiUtils;
+import org.openmrs.module.kenyaui.simplifier.AbstractSimplifier;
 import org.openmrs.module.reporting.report.ReportRequest;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.ui.framework.SimpleObject;

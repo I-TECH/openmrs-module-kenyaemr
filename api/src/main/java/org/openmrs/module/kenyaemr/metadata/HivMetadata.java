@@ -15,6 +15,8 @@
 package org.openmrs.module.kenyaemr.metadata;
 
 import org.openmrs.PatientIdentifierType.LocationBehavior;
+import org.openmrs.Program;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.metadatadeploy.bundle.AbstractMetadataBundle;
 import org.openmrs.module.metadatadeploy.bundle.Requires;
@@ -72,6 +74,14 @@ public class HivMetadata extends AbstractMetadataBundle {
 
 		install(patientIdentifierType("Unique Patient Number", "Assigned to every HIV patient", "\\d+", "Facility code followed by sequential number",
 				null, LocationBehavior.NOT_USED, false, _PatientIdentifierType.UNIQUE_PATIENT_NUMBER));
+
+		// standardTestDataset.xml has a program with the name 'HIV Program' that we can't easily overwrite because there
+		// is patient data associated (PatientState, ConceptConversionState etc). So we rename it if it exists...
+		Program hivProgramInTestData = Context.getProgramWorkflowService().getProgramByUuid("da4a0391-ba62-4fad-ad66-1e3722d16380");
+		if (hivProgramInTestData != null) {
+			hivProgramInTestData.setName("HIV Program (Test data)");
+			Context.getProgramWorkflowService().saveProgram(hivProgramInTestData);
+		}
 
 		install(program("HIV Program", "Treatment for HIV-positive patients", Dictionary.HIV_PROGRAM, _Program.HIV));
 	}

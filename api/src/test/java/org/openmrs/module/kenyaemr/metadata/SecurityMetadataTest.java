@@ -17,8 +17,6 @@ package org.openmrs.module.kenyaemr.metadata;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.Privilege;
-import org.openmrs.Role;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
@@ -53,7 +51,9 @@ public class SecurityMetadataTest extends BaseModuleContextSensitiveTest {
 	public void install_shouldInstallAllMetadata() {
 		securityMetadata.install();
 
-		Assert.assertNotNull(Context.getUserService().getRole("Registration"));
+		Assert.assertThat(Context.getUserService().getRole("Registration"), notNullValue());
+
+		Context.flushSession();
 	}
 
 	/**
@@ -63,14 +63,14 @@ public class SecurityMetadataTest extends BaseModuleContextSensitiveTest {
 	public void getApiPrivileges_shouldGetAllApiPrivileges() {
 		Set<String> all = securityMetadata.getApiPrivileges(true);
 
-		Assert.assertTrue(all.contains("View Patients"));
-		Assert.assertTrue(all.contains("Edit Orders"));
-		Assert.assertTrue(all.contains("Delete Users"));
+		Assert.assertThat(all.contains("View Patients"), is(true));
+		Assert.assertThat(all.contains("Edit Orders"), is(true));
+		Assert.assertThat(all.contains("Delete Users"), is(true));
 
 		Set<String> nonDeletes = securityMetadata.getApiPrivileges(false);
 
-		Assert.assertTrue(nonDeletes.contains("View Patients"));
-		Assert.assertTrue(nonDeletes.contains("Edit Orders"));
-		Assert.assertFalse(nonDeletes.contains("Delete Users"));
+		Assert.assertThat(nonDeletes.contains("View Patients"), is(true));
+		Assert.assertThat(nonDeletes.contains("Edit Orders"), is(true));
+		Assert.assertThat(nonDeletes.contains("Delete Users"), is(false));
 	}
 }

@@ -20,13 +20,11 @@ import org.junit.Test;
 import org.openmrs.Concept;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
-import org.openmrs.Form;
 import org.openmrs.Obs;
 import org.openmrs.Patient;
 import org.openmrs.PatientProgram;
 import org.openmrs.Program;
 import org.openmrs.Visit;
-import org.openmrs.VisitAttribute;
 import org.openmrs.VisitType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
@@ -90,31 +88,6 @@ public class EmrUtilsTest extends BaseModuleContextSensitiveTest {
 	public void isToday_shouldReturnTrueOnlyForDatesThatAreToday() {
 		Assert.assertTrue(EmrUtils.isToday(new Date()));
 		Assert.assertFalse(EmrUtils.isToday(TestUtils.date(2012, 1, 1)));
-	}
-
-	/**
-	 * @see EmrUtils#getVisitSourceForm(org.openmrs.Visit)
-	 */
-	@Test
-	public void getVisitSourceForm_shouldReturnTheSourceFormIfThereIsOne() {
-		Patient patient = Context.getPatientService().getPatient(8);
-		VisitType outpatient = MetadataUtils.getVisitType(CommonMetadata._VisitType.OUTPATIENT);
-		Visit visit = TestUtils.saveVisit(patient, outpatient, TestUtils.date(2011, 1, 1), null);
-
-		// Check no attribute returns null
-		Assert.assertThat(EmrUtils.getVisitSourceForm(visit), is(nullValue()));
-
-		Form ceForm = MetadataUtils.getForm(CommonMetadata._Form.CLINICAL_ENCOUNTER);
-
-		VisitAttribute sourceAttr = new VisitAttribute();
-		sourceAttr.setAttributeType(MetadataUtils.getVisitAttributeType(CommonMetadata._VisitAttributeType.SOURCE_FORM));
-		sourceAttr.setOwner(visit);
-		sourceAttr.setValue(ceForm);
-		visit.addAttribute(sourceAttr);
-
-		Context.getVisitService().saveVisit(visit);
-
-		Assert.assertThat(EmrUtils.getVisitSourceForm(visit), is(ceForm));
 	}
 
 	/**

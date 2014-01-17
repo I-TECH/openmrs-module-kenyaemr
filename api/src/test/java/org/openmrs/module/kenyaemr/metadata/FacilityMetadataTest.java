@@ -20,6 +20,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.Location;
 import org.openmrs.api.LocationService;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,18 +30,15 @@ import java.util.List;
 import static org.hamcrest.Matchers.*;
 
 /**
- * Tests for {@link LocationsMetadata}
- *
- * Ignored because it takes ~1 min
+ * Tests for {@link FacilityMetadata}
  */
-@Ignore
-public class LocationsMetadataTest extends BaseModuleContextSensitiveTest {
+public class FacilityMetadataTest extends BaseModuleContextSensitiveTest {
 
 	@Autowired
 	private CommonMetadata commonMetadata;
 
 	@Autowired
-	private LocationsMetadata locationsMetadata;
+	private FacilityMetadata facilityMetadata;
 
 	@Autowired
 	private LocationService locationService;
@@ -57,21 +55,36 @@ public class LocationsMetadataTest extends BaseModuleContextSensitiveTest {
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.metadata.CommonMetadata#install()
+	 * @see org.openmrs.module.kenyaemr.metadata.FacilityMetadata#install()
 	 */
 	@Test
-	public void install_shouldInstallAllMetadata() {
+	public void install_limited_shouldInstallAttributeTypes() throws Exception {
+		facilityMetadata.install(false);
+
+		Assert.assertThat(locationService.getLocationAttributeTypeByUuid(FacilityMetadata._LocationAttributeType.MASTER_FACILITY_CODE), notNullValue());
+
+		Context.flushSession();
+	}
+
+	/**
+	 * @see org.openmrs.module.kenyaemr.metadata.FacilityMetadata#install()
+	 *
+	 * Ignored because it takes ~1 min
+	 */
+	@Ignore
+	@Test
+	public void install_shouldInstallAllMetadata() throws Exception {
 		// Pre-check against standard test data
 		List<Location> locations = locationService.getAllLocations(true);
 		Assert.assertThat(locations, hasSize(3));
 
 		long start = System.currentTimeMillis();
-		locationsMetadata.install();
+		facilityMetadata.install();
 		long time = System.currentTimeMillis() - start;
 		System.out.println("** Loaded locations in " + time + " ms **");
 
 		locations = locationService.getAllLocations(true);
-		Assert.assertThat(locations, hasSize(9447));
+		Assert.assertThat(locations, hasSize(9459));
 
 		// Check random location
 		Location abelMigwiLab = kenyaEmrService.getLocationByMflCode("10001");
@@ -79,5 +92,14 @@ public class LocationsMetadataTest extends BaseModuleContextSensitiveTest {
 		Assert.assertThat(abelMigwiLab.getDescription(), is("Laboratory (Stand-alone)"));
 		Assert.assertThat(abelMigwiLab.getCountry(), is("Kenya"));
 		Assert.assertThat(abelMigwiLab.getStateProvince(), is("Central"));
+
+		Context.flushSession();
+		Context.clearSession();
+
+		// Install again...
+		start = System.currentTimeMillis();
+		facilityMetadata.install();
+		time = System.currentTimeMillis() - start;
+		System.out.println("** Loaded locations in " + time + " ms **");
 	}
 }

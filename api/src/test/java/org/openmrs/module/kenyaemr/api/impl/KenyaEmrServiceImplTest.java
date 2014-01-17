@@ -18,25 +18,21 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Location;
-import org.openmrs.LocationAttribute;
 import org.openmrs.LocationAttributeType;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
 import org.openmrs.VisitType;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyaemr.metadata.FacilityMetadata;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
-import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
-import org.openmrs.module.kenyaemr.datatype.LocationDatatype;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static org.hamcrest.Matchers.*;
 
@@ -47,6 +43,9 @@ public class KenyaEmrServiceImplTest extends BaseModuleContextSensitiveTest {
 
 	@Autowired
 	private CommonMetadata commonMetadata;
+
+	@Autowired
+	private FacilityMetadata facilityMetadata;
 
 	@Autowired
 	private HivMetadata hivMetadata;
@@ -62,9 +61,10 @@ public class KenyaEmrServiceImplTest extends BaseModuleContextSensitiveTest {
 		executeDataSet("dataset/test-concepts.xml");
 
 		commonMetadata.install();
+		facilityMetadata.install(false); // Don't do full facility sync
 		hivMetadata.install();
 
-		LocationAttributeType mflCode = MetadataUtils.getLocationAttributeType(CommonMetadata._LocationAttributeType.MASTER_FACILITY_CODE);
+		LocationAttributeType mflCode = MetadataUtils.getLocationAttributeType(FacilityMetadata._LocationAttributeType.MASTER_FACILITY_CODE);
 
 		TestUtils.saveLocationAttribute(Context.getLocationService().getLocation(1), mflCode, "15001");
 		TestUtils.saveLocationAttribute(Context.getLocationService().getLocation(2), mflCode, "15002");

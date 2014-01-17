@@ -26,6 +26,7 @@ import org.openmrs.api.handler.BaseEncounterVisitHandler;
 import org.openmrs.module.kenyacore.CoreContext;
 import org.openmrs.module.kenyacore.form.FormDescriptor;
 import org.openmrs.module.kenyacore.form.FormManager;
+import org.openmrs.module.kenyaemr.wrapper.VisitWrapper;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.util.EmrUtils;
@@ -78,7 +79,7 @@ public class EmrVisitAssignmentHandler extends BaseEncounterVisitHandler impleme
 		// Is encounter is now assigned to a different visit?
 		if (oldVisit != null && !oldVisit.equals(encounter.getVisit())) {
 			boolean existingIsNowEmpty = CollectionUtils.isEmpty(oldVisit.getEncounters());
-			boolean existingWasRetro = EmrUtils.getVisitSourceForm(oldVisit) != null;
+			boolean existingWasRetro = new VisitWrapper(oldVisit).getSourceForm() != null;
 
 			// If the existing visit was created via a form and is now empty, void it
 			if (existingIsNowEmpty && existingWasRetro) {

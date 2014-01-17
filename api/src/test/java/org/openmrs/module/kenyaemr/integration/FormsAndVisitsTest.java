@@ -25,6 +25,7 @@ import org.openmrs.VisitType;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyacore.form.FormManager;
+import org.openmrs.module.kenyaemr.wrapper.VisitWrapper;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.kenyaemr.advice.EncounterServiceAdvice;
@@ -33,7 +34,6 @@ import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.metadata.MchMetadata;
 import org.openmrs.module.kenyaemr.metadata.TbMetadata;
-import org.openmrs.module.kenyaemr.util.EmrUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.util.OpenmrsConstants;
 import org.openmrs.util.OpenmrsUtil;
@@ -141,7 +141,7 @@ public class FormsAndVisitsTest extends BaseModuleContextSensitiveTest {
 		Assert.assertThat(moh257_1.getVisit().getStopDatetime(), is(OpenmrsUtil.getLastMomentOfDay(TestUtils.date(2012, 1, 1))));
 
 		// Check that it's the source form of the visit
-		Assert.assertThat(EmrUtils.getVisitSourceForm(moh257_1.getVisit()), is(moh257));
+		Assert.assertThat(new VisitWrapper(moh257_1.getVisit()).getSourceForm(), is(moh257));
 	}
 
 	/**
@@ -164,7 +164,7 @@ public class FormsAndVisitsTest extends BaseModuleContextSensitiveTest {
 		Assert.assertThat(moh257_1.getEncounterDatetime(), is(visit1.getStartDatetime()));
 
 		// Check that it's not the source form of the visit
-		Assert.assertThat(EmrUtils.getVisitSourceForm(visit1), is(nullValue()));
+		Assert.assertThat(new VisitWrapper(visit1).getSourceForm(), is(nullValue()));
 	}
 
 	/**

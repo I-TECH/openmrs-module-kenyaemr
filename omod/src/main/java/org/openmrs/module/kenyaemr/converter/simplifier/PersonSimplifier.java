@@ -16,6 +16,7 @@ package org.openmrs.module.kenyaemr.converter.simplifier;
 
 import org.openmrs.Person;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
+import org.openmrs.module.kenyaui.simplifier.AbstractSimplifier;
 import org.openmrs.ui.framework.SimpleObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
