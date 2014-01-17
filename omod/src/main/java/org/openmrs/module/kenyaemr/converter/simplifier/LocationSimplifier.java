@@ -15,34 +15,28 @@
 package org.openmrs.module.kenyaemr.converter.simplifier;
 
 import org.openmrs.Location;
-import org.openmrs.LocationAttribute;
-import org.openmrs.LocationAttributeType;
-import org.openmrs.module.kenyaemr.metadata.FacilityMetadata;
-import org.openmrs.module.metadatadeploy.MetadataUtils;
+import org.openmrs.module.kenyaemr.wrapper.Facility;
+import org.openmrs.module.kenyaui.simplifier.AbstractMetadataSimplifier;
 import org.openmrs.ui.framework.SimpleObject;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 /**
  * Converts a location to a simple object
  */
 @Component
-public class LocationSimplifier extends AbstractSimplifier<Location> {
+public class LocationSimplifier extends AbstractMetadataSimplifier<Location> {
 
 	/**
-	 * @see AbstractSimplifier#simplify(Object)
+	 * @see org.openmrs.module.kenyaui.simplifier.AbstractMetadataSimplifier#simplify(Object)
 	 */
 	@Override
 	protected SimpleObject simplify(Location location) {
-		LocationAttributeType mflCodeAttrType = MetadataUtils.getLocationAttributeType(FacilityMetadata._LocationAttributeType.MASTER_FACILITY_CODE);
-		List<LocationAttribute> attrs = location.getActiveAttributes(mflCodeAttrType);
-		String facilityCode = attrs.size() > 0 ? (String)attrs.get(0).getValue() : null;
+		SimpleObject ret = super.simplify(location);
 
-		SimpleObject ret = new SimpleObject();
-		ret.put("id", location.getId());
-		ret.put("name", location.getName());
-		ret.put("code", facilityCode != null ? facilityCode : "?");
+		Facility facility = new Facility(location);
+		ret.put("code", facility.getMflCode());
+		ret.put("landline", facility.getTelephoneLandline());
+		ret.put("mobile", facility.getTelephoneMobile());
 		return ret;
 	}
 }

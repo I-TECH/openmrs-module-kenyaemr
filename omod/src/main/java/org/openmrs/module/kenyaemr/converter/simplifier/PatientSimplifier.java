@@ -17,6 +17,7 @@ package org.openmrs.module.kenyaemr.converter.simplifier;
 import org.openmrs.Patient;
 import org.openmrs.PatientIdentifier;
 import org.openmrs.module.kenyacore.identifier.IdentifierManager;
+import org.openmrs.module.kenyaui.simplifier.AbstractSimplifier;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
 import org.springframework.beans.factory.annotation.Autowired;
