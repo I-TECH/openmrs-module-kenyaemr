@@ -15,6 +15,14 @@
 			</form>
 		</div>
 	</div>
+
+	<div class="ke-panel-frame">
+		<div class="ke-panel-heading">Help</div>
+		<div class="ke-panel-content">
+			Facility data is taken from the <a href="http://www.ehealth.or.ke/facilities">Master Facility List</a>. If
+			you have internet you can check there for the most up to date information.
+		</div>
+	</div>
 </div>
 
 <div class="ke-page-content">

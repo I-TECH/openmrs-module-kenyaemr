@@ -58,7 +58,7 @@
 		<property name="id" value="kenyaemr.facilities"/>
 		<property name="label" value="Facilities"/>
 		<property name="homepageUrl" value="kenyaemr/facilities/facilitiesHome.page"/>
-		<property name="iconUrl" value="kenyaui:apps/default.png"/>
+		<property name="iconUrl" value="kenyaui:apps/facilities.png"/>
 		<property name="order" value="600"/>
 	</bean>
 
