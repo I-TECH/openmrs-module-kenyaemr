@@ -60,6 +60,7 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 				EmrConstants.APP_CLINICIAN,
 				EmrConstants.APP_CHART,
 				EmrConstants.APP_REPORTS,
+				EmrConstants.APP_FACILITIES,
 				EmrConstants.APP_ADMIN,
 				"kenyadq.dataQuality"
 		};
@@ -70,27 +71,73 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 			install(privilege(app(appId), "Access to the " + appId + " app"));
 		}
 
-		install(role(_Role.API_PRIVILEGES, "All API privileges", null, getApiPrivileges(true)));
-		install(role(_Role.API_PRIVILEGES_VIEW_AND_EDIT, "All viewing and editing API privileges", null, getApiPrivileges(false)));
+		install(role(_Role.API_PRIVILEGES, "All API privileges",
+				null, getApiPrivileges(true))
+		);
+
+		install(role(_Role.API_PRIVILEGES_VIEW_AND_EDIT, "All viewing and editing API privileges",
+				null, getApiPrivileges(false))
+		);
 
 		install(role(_Role.REGISTRATION, "Can access the registration app",
 				idSet(_Role.API_PRIVILEGES_VIEW_AND_EDIT),
-				idSet(app(EmrConstants.APP_REGISTRATION))));
+				idSet(
+						app(EmrConstants.APP_REGISTRATION),
+						app(EmrConstants.APP_FACILITIES)
+				)
+		));
+
 		install(role(_Role.INTAKE, "Can access the registration and intake apps",
 				idSet(_Role.API_PRIVILEGES_VIEW_AND_EDIT),
-				idSet(app(EmrConstants.APP_REGISTRATION), app(EmrConstants.APP_INTAKE))));
+				idSet(
+						app(EmrConstants.APP_REGISTRATION),
+						app(EmrConstants.APP_INTAKE),
+						app(EmrConstants.APP_FACILITIES)
+				)
+		));
+
 		install(role(_Role.MANAGER, "Can access all apps except admin, and manage encounters",
 				idSet(_Role.API_PRIVILEGES),
-				idSet(app(EmrConstants.APP_REGISTRATION), app(EmrConstants.APP_INTAKE), app(EmrConstants.APP_CLINICIAN), app(EmrConstants.APP_CHART), app(EmrConstants.APP_REPORTS), app("kenyadq.dataQuality"))));
+				idSet(
+						app(EmrConstants.APP_REGISTRATION),
+						app(EmrConstants.APP_INTAKE),
+						app(EmrConstants.APP_CLINICIAN),
+						app(EmrConstants.APP_CHART),
+						app(EmrConstants.APP_REPORTS),
+						app(EmrConstants.APP_FACILITIES),
+						app("kenyadq.dataQuality")
+				)
+		));
+
 		install(role(_Role.PROVIDER, "Can access all apps except admin, and provide encounters",
 				idSet(_Role.API_PRIVILEGES_VIEW_AND_EDIT),
-				idSet(app(EmrConstants.APP_REGISTRATION), app(EmrConstants.APP_INTAKE), app(EmrConstants.APP_CLINICIAN), app(EmrConstants.APP_CHART), app(EmrConstants.APP_REPORTS))));
+				idSet(
+						app(EmrConstants.APP_REGISTRATION),
+						app(EmrConstants.APP_INTAKE),
+						app(EmrConstants.APP_CLINICIAN),
+						app(EmrConstants.APP_CHART),
+						app(EmrConstants.APP_REPORTS),
+						app(EmrConstants.APP_FACILITIES)
+				)
+		));
+
 		install(role(_Role.DATA_CLERK, "Can access the chart and reporting apps",
 				idSet(_Role.API_PRIVILEGES_VIEW_AND_EDIT),
-				idSet(app(EmrConstants.APP_CHART), app(EmrConstants.APP_REPORTS), app("kenyadq.dataQuality"))));
+				idSet(
+						app(EmrConstants.APP_CHART),
+						app(EmrConstants.APP_REPORTS),
+						app(EmrConstants.APP_FACILITIES),
+						app("kenyadq.dataQuality")
+				)
+		));
+
 		install(role(_Role.SYSTEM_ADMIN, "Can access the admin app",
 				idSet(_Role.API_PRIVILEGES_VIEW_AND_EDIT),
-				idSet(app(EmrConstants.APP_ADMIN))));
+				idSet(
+						app(EmrConstants.APP_ADMIN),
+						app(EmrConstants.APP_FACILITIES)
+				)
+		));
 	}
 
 	/**
