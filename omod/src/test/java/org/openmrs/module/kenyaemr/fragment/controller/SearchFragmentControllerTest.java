@@ -31,8 +31,6 @@ import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.List;
-
 import static org.hamcrest.Matchers.*;
 
 /**
@@ -78,10 +76,10 @@ public class SearchFragmentControllerTest extends BaseModuleWebContextSensitiveT
 	 */
 	@Test
 	public void locations_shouldMatchByPartialName() {
-		List<SimpleObject> result = controller.locations("Xan", ui);
-		Assert.assertThat(result, hasSize(1));
-		Assert.assertThat(result.get(0), hasEntry("id", (Object) new Integer(2)));
-		Assert.assertThat(result.get(0), hasEntry("name", (Object) "Xanadu"));
+		SimpleObject[] result = controller.locations("Xan", ui);
+		Assert.assertThat(result.length, is(1));
+		Assert.assertThat(result[0], hasEntry("id", (Object) new Integer(2)));
+		Assert.assertThat(result[0], hasEntry("name", (Object) "Xanadu"));
 	}
 
 	/**
@@ -99,11 +97,11 @@ public class SearchFragmentControllerTest extends BaseModuleWebContextSensitiveT
 		xanadu.addAttribute(attr);
 		Context.getLocationService().saveLocation(xanadu);
 
-		List<SimpleObject> result = controller.locations("15002", ui);
-		Assert.assertThat(result, hasSize(1));
-		Assert.assertThat(result.get(0), hasEntry("id", (Object) new Integer(2)));
-		Assert.assertThat(result.get(0), hasEntry("name", (Object) "Xanadu"));
-		Assert.assertThat(result.get(0), hasEntry("code", (Object) "15002"));
+		SimpleObject[] result = controller.locations("15002", ui);
+		Assert.assertThat(result.length, is(1));
+		Assert.assertThat(result[0], hasEntry("id", (Object) new Integer(2)));
+		Assert.assertThat(result[0], hasEntry("name", (Object) "Xanadu"));
+		Assert.assertThat(result[0], hasEntry("code", (Object) "15002"));
 	}
 
 	/**
