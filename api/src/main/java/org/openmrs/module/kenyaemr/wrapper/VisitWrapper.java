@@ -62,6 +62,6 @@ public class VisitWrapper extends AbstractCustomizableWrapper<Visit, VisitAttrib
 	 * @return the form
 	 */
 	public Form getSourceForm() {
-		return (Form) getFirstAttributeValue(CommonMetadata._VisitAttributeType.SOURCE_FORM);
+		return (Form) getAsAttribute(CommonMetadata._VisitAttributeType.SOURCE_FORM);
 	}
 }

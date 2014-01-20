@@ -37,7 +37,7 @@ public class Facility extends AbstractCustomizableWrapper<Location, LocationAttr
 	 * @return the code
 	 */
 	public String getMflCode() {
-		return (String) getFirstAttributeValue(FacilityMetadata._LocationAttributeType.MASTER_FACILITY_CODE);
+		return (String) getAsAttribute(FacilityMetadata._LocationAttributeType.MASTER_FACILITY_CODE);
 	}
 
 	/**
@@ -93,7 +93,7 @@ public class Facility extends AbstractCustomizableWrapper<Location, LocationAttr
 	 * @return the code
 	 */
 	public String getTelephoneLandline() {
-		return (String) getFirstAttributeValue(FacilityMetadata._LocationAttributeType.TELEPHONE_LANDLINE);
+		return (String) getAsAttribute(FacilityMetadata._LocationAttributeType.TELEPHONE_LANDLINE);
 	}
 
 	/**
@@ -101,6 +101,6 @@ public class Facility extends AbstractCustomizableWrapper<Location, LocationAttr
 	 * @return the code
 	 */
 	public String getTelephoneMobile() {
-		return (String) getFirstAttributeValue(FacilityMetadata._LocationAttributeType.TELEPHONE_MOBILE);
+		return (String) getAsAttribute(FacilityMetadata._LocationAttributeType.TELEPHONE_MOBILE);
 	}
 }
