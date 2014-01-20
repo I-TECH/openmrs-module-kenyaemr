@@ -39,14 +39,14 @@
 		<cielVersion>20140101</cielVersion>
 
 		<!-- Dependency modules -->
-		<appframeworkVersion>1.5</appframeworkVersion>
+		<appframeworkVersion>2.1-SNAPSHOT</appframeworkVersion>
 		<calculationVersion>1.0</calculationVersion>
 		<htmlformentryVersion>2.2.1</htmlformentryVersion>
 		<htmlformentry19extVersion>1.4</htmlformentry19extVersion>
 		<htmlwidgetsVersion>1.6.5</htmlwidgetsVersion>
 		<idgenVersion>2.6</idgenVersion>
-		<kenyacoreVersion>1.1-SNAPSHOT</kenyacoreVersion>
-		<kenyauiVersion>1.14-SNAPSHOT</kenyauiVersion>
+		<kenyacoreVersion>2.0-SNAPSHOT</kenyacoreVersion>
+		<kenyauiVersion>2.0-SNAPSHOT</kenyauiVersion>
 		<logicVersion>0.5.2</logicVersion>
 		<metadatadeployVersion>1.0-SNAPSHOT</metadatadeployVersion>
 		<metadatamappingVersion>1.0.1</metadatamappingVersion>
@@ -57,7 +57,7 @@
 
 		<!-- Additional distro modules -->
 		<groovyVersion>2.2.4</groovyVersion>
-		<kenyadqVersion>0.2.7</kenyadqVersion>
+		<kenyadqVersion>1.0-SNAPSHOT</kenyadqVersion>
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ssZ</maven.build.timestamp.format>

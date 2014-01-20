@@ -15,8 +15,8 @@
 package org.openmrs.module.kenyaemr.fragment.controller.system;
 
 import org.openmrs.api.context.Context;
-import org.openmrs.module.appframework.AppDescriptor;
-import org.openmrs.module.appframework.api.AppFrameworkService;
+import org.openmrs.module.appframework.domain.AppDescriptor;
+import org.openmrs.module.appframework.service.AppFrameworkService;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 
@@ -32,7 +32,7 @@ public class AppsContentFragmentController {
 		List<SimpleObject> apps = new ArrayList<SimpleObject>();
 		for (AppDescriptor app : Context.getService(AppFrameworkService.class).getAllApps()) {
 
-			apps.add(SimpleObject.create("id", app.getId(), "label", app.getLabel(), "homepageUrl", app.getHomepageUrl()));
+			apps.add(SimpleObject.create("id", app.getId(), "label", app.getLabel(), "url", app.getUrl()));
 		}
 
 		model.addAttribute("apps", apps);

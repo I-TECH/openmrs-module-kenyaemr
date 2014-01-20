@@ -14,7 +14,7 @@
 		<tr>
 			<td>${ app.id }</td>
 			<td>${ app.label }</td>
-			<td>${ app.homepageUrl }</td>
+			<td>${ app.url }</td>
 		</tr>
 	<% } %>
 	</tbody>

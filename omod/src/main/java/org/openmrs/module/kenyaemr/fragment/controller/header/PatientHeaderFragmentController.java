@@ -16,7 +16,7 @@ package org.openmrs.module.kenyaemr.fragment.controller.header;
 
 import org.openmrs.Patient;
 import org.openmrs.Visit;
-import org.openmrs.module.appframework.AppDescriptor;
+import org.openmrs.module.appframework.domain.AppDescriptor;
 import org.openmrs.module.kenyacore.identifier.IdentifierManager;
 import org.openmrs.module.kenyaemr.util.EmrUtils;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
@@ -45,7 +45,7 @@ public class PatientHeaderFragmentController {
 		AppDescriptor currentApp = kenyaUi.getCurrentApp(pageRequest);
 
 		if (currentApp != null) {
-			model.addAttribute("appHomepageUrl", "/" + WebConstants.CONTEXT_PATH + "/" + currentApp.getHomepageUrl());
+			model.addAttribute("appHomepageUrl", "/" + WebConstants.CONTEXT_PATH + "/" + currentApp.getUrl());
 		} else {
 			model.addAttribute("appHomepageUrl", null);
 		}

@@ -30,8 +30,7 @@ import org.openmrs.PatientProgram;
 import org.openmrs.Program;
 import org.openmrs.Visit;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.appframework.AppDescriptor;
-import org.openmrs.module.appframework.api.AppFrameworkService;
+import org.openmrs.module.appframework.domain.AppDescriptor;
 import org.openmrs.module.kenyacore.form.FormManager;
 import org.openmrs.module.kenyacore.program.ProgramDescriptor;
 import org.openmrs.module.kenyacore.program.ProgramManager;
@@ -44,6 +43,7 @@ import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.page.PageModel;
+import org.openmrs.ui.framework.page.PageRequest;
 import org.openmrs.ui.framework.session.Session;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -60,6 +60,7 @@ public class ChartViewPatientPageController {
 	                       PageModel model,
 	                       UiUtils ui,
 	                       Session session,
+						   PageRequest pageRequest,
 						   @SpringBean KenyaUiUtils kenyaUi,
 						   @SpringBean FormManager formManager,
 						   @SpringBean ProgramManager programManager) {
@@ -69,11 +70,9 @@ public class ChartViewPatientPageController {
 		}
 
 		Patient patient = (Patient) model.getAttribute(EmrWebConstants.MODEL_ATTR_CURRENT_PATIENT);
-		
 		recentlyViewed(patient, session);
 
-
-		AppDescriptor thisApp = Context.getService(AppFrameworkService.class).getAppById(EmrConstants.APP_CHART);
+		AppDescriptor thisApp = kenyaUi.getCurrentApp(pageRequest);
 
 		List<FormDescriptor> oneTimeFormDescriptors = formManager.getCommonFormsForPatient(thisApp, patient);
 		List<SimpleObject> oneTimeForms = new ArrayList<SimpleObject>();

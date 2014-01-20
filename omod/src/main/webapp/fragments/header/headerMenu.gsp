@@ -7,7 +7,7 @@
 		appMenuItems << """<a href="/${ contextPath }/index.htm?${ config.context ? config.context : "" }"><img src="${ ui.resourceLink("kenyaui", "images/toolbar/home.png") }" width="12" height="12" />&nbsp;&nbsp;Home</a>"""
 
 		if (currentApp) {
-			appMenuItems << """<a href="/${ contextPath }/${ currentApp.homepageUrl }">${ currentApp.label }</a>"""
+			appMenuItems << """<a href="/${ contextPath }/${ currentApp.url }">${ currentApp.label }</a>"""
 		}
 
 		userMenuItems << """<span>Logged in as <i>${ context.authenticatedUser.personName }</i></span>"""

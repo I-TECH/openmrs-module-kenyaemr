@@ -19,8 +19,8 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.openmrs.api.context.Context;
-import org.openmrs.module.appframework.AppDescriptor;
-import org.openmrs.module.appframework.api.AppFrameworkService;
+import org.openmrs.module.appframework.domain.AppDescriptor;
+import org.openmrs.module.appframework.service.AppFrameworkService;
 import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
@@ -45,7 +45,7 @@ public class HomePageController {
 		}
 
 		// Get apps for the current user
-		List<AppDescriptor> apps = Context.getService(AppFrameworkService.class).getAppsForUser(Context.getAuthenticatedUser());
+		List<AppDescriptor> apps = Context.getService(AppFrameworkService.class).getAppsForCurrentUser();
 
 		// Sort by order property
 		Collections.sort(apps, new Comparator<AppDescriptor>() {
