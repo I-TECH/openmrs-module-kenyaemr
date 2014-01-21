@@ -36,6 +36,8 @@ import org.openmrs.Program;
 import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.idgen.service.IdentifierSourceService;
+import org.openmrs.module.kenyaemr.wrapper.PatientWrapper;
+import org.openmrs.module.kenyaemr.wrapper.PersonWrapper;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
@@ -104,13 +106,6 @@ public class EditPatientFragmentController {
 		List<Concept> causeOfDeathOptions = new ArrayList<Concept>();
 		causeOfDeathOptions.add(Dictionary.getConcept(Dictionary.UNKNOWN));
 		model.addAttribute("causeOfDeathOptions", causeOfDeathOptions);
-
-		// Fetch person attributes
-		model.addAttribute("telephoneContactAttrType", MetadataUtils.getPersonAttributeType(CommonMetadata._PersonAttributeType.TELEPHONE_CONTACT));
-		model.addAttribute("nameOfNextOfKinAttrType", MetadataUtils.getPersonAttributeType(CommonMetadata._PersonAttributeType.NEXT_OF_KIN_NAME));
-		model.addAttribute("nextOfKinRelationshipAttrType", MetadataUtils.getPersonAttributeType(CommonMetadata._PersonAttributeType.NEXT_OF_KIN_RELATIONSHIP));
-		model.addAttribute("nextOfKinContactAttrType", MetadataUtils.getPersonAttributeType(CommonMetadata._PersonAttributeType.NEXT_OF_KIN_CONTACT));
-		model.addAttribute("nextOfKinAddressAttrType", MetadataUtils.getPersonAttributeType(CommonMetadata._PersonAttributeType.NEXT_OF_KIN_ADDRESS));
 	}
 
 	/**
@@ -165,12 +160,13 @@ public class EditPatientFragmentController {
 		private Obs savedEducation;
 		private Boolean dead = false;
 		private Date deathDate;
-		private PersonAttribute telephoneContact;
-		private PersonAttribute nameOfNextOfKin;
-		private PersonAttribute nextOfKinRelationship;
-		private PersonAttribute nextOfKinContact;
-		private PersonAttribute nextOfKinAddress;
-		private PersonAttribute subChiefName;
+
+		private String telephoneContact;
+		private String nameOfNextOfKin;
+		private String nextOfKinRelationship;
+		private String nextOfKinContact;
+		private String nextOfKinAddress;
+		private String subChiefName;
 
 		/**
 		 * Creates an edit form for a new patient
@@ -184,24 +180,6 @@ public class EditPatientFragmentController {
 			nationalIdNumber = new PatientIdentifier(null, MetadataUtils.getPatientIdentifierType(CommonMetadata._PatientIdentifierType.NATIONAL_ID), location);
 			patientClinicNumber = new PatientIdentifier(null, MetadataUtils.getPatientIdentifierType(CommonMetadata._PatientIdentifierType.PATIENT_CLINIC_NUMBER), location);
 			hivIdNumber = new PatientIdentifier(null, MetadataUtils.getPatientIdentifierType(HivMetadata._PatientIdentifierType.UNIQUE_PATIENT_NUMBER), location);
-
-			telephoneContact = new PersonAttribute();
-			telephoneContact.setAttributeType(MetadataUtils.getPersonAttributeType(CommonMetadata._PersonAttributeType.TELEPHONE_CONTACT));
-
-			nameOfNextOfKin = new PersonAttribute();
-			nameOfNextOfKin.setAttributeType(MetadataUtils.getPersonAttributeType(CommonMetadata._PersonAttributeType.NEXT_OF_KIN_NAME));
-
-			nextOfKinRelationship = new PersonAttribute();
-			nextOfKinRelationship.setAttributeType(MetadataUtils.getPersonAttributeType(CommonMetadata._PersonAttributeType.NEXT_OF_KIN_RELATIONSHIP));
-
-			nextOfKinContact = new PersonAttribute();
-			nextOfKinContact.setAttributeType(MetadataUtils.getPersonAttributeType(CommonMetadata._PersonAttributeType.NEXT_OF_KIN_CONTACT));
-
-			nextOfKinAddress = new PersonAttribute();
-			nextOfKinAddress.setAttributeType(MetadataUtils.getPersonAttributeType(CommonMetadata._PersonAttributeType.NEXT_OF_KIN_ADDRESS));
-
-			subChiefName = new PersonAttribute();
-			subChiefName.setAttributeType(MetadataUtils.getPersonAttributeType(CommonMetadata._PersonAttributeType.SUBCHIEF_NAME));
 		}
 
 		/**
@@ -230,12 +208,8 @@ public class EditPatientFragmentController {
 			dead = person.isDead();
 			deathDate = person.getDeathDate();
 
-			PersonAttribute attr = person.getAttribute(MetadataUtils.getPersonAttributeType(CommonMetadata._PersonAttributeType.TELEPHONE_CONTACT));
-			if (attr != null) {
-				telephoneContact = attr;
-			} else {
-				telephoneContact.setPerson(person);
-			}
+			PersonWrapper wrapper = new PersonWrapper(person);
+			telephoneContact = wrapper.getTelephoneContact();
 		}
 
 		/**
@@ -280,30 +254,12 @@ public class EditPatientFragmentController {
 				education = savedEducation.getValueCoded();
 			}
 
-			PersonAttribute attrNameOfNextOfKin = patient.getAttribute(MetadataUtils.getPersonAttributeType(CommonMetadata._PersonAttributeType.NEXT_OF_KIN_NAME));
-			if (attrNameOfNextOfKin != null) {
-				nameOfNextOfKin = attrNameOfNextOfKin;
-			}
-
-			PersonAttribute attrNextOfKinRelationship = patient.getAttribute(MetadataUtils.getPersonAttributeType(CommonMetadata._PersonAttributeType.NEXT_OF_KIN_RELATIONSHIP));
-			if (attrNextOfKinRelationship != null) {
-				nextOfKinRelationship = attrNextOfKinRelationship;
-			}
-
-			PersonAttribute attrNextOfKinContact = patient.getAttribute(MetadataUtils.getPersonAttributeType(CommonMetadata._PersonAttributeType.NEXT_OF_KIN_CONTACT));
-			if (attrNextOfKinContact != null) {
-				nextOfKinContact = attrNextOfKinContact;
-			}
-
-			PersonAttribute attrNextOfKinAddress = patient.getAttribute(MetadataUtils.getPersonAttributeType(CommonMetadata._PersonAttributeType.NEXT_OF_KIN_ADDRESS));
-			if (attrNextOfKinAddress != null) {
-				nextOfKinAddress = attrNextOfKinAddress;
-			}
-
-			PersonAttribute attrSubChiefNames = patient.getAttribute(MetadataUtils.getPersonAttributeType(CommonMetadata._PersonAttributeType.SUBCHIEF_NAME));
-			if (attrSubChiefNames != null) {
-				subChiefName = attrSubChiefNames;
-			}
+			PatientWrapper wrapper = new PatientWrapper(patient);
+			nameOfNextOfKin = wrapper.getNextOfKinName();
+			nextOfKinRelationship = wrapper.getNextOfKinRelationship();
+			nextOfKinContact = wrapper.getNextOfKinContact();
+			nextOfKinAddress = wrapper.getNextOfKinAddress();
+			subChiefName = wrapper.getSubChiefName();
 		}
 
 		private Obs getLatestObs(Patient patient, String conceptIdentifier) {
@@ -368,11 +324,11 @@ public class EditPatientFragmentController {
 				patientClinicNumber = null;
 			}
 
-			if (!(StringUtils.isBlank(telephoneContact.getValue()))) {
-				validateTelephoneNumber(errors, "telephoneContact", telephoneContact.getValue());
+			if (StringUtils.isNotBlank(telephoneContact)) {
+				validateTelephoneNumber(errors, "telephoneContact", telephoneContact);
 			}
-			if (!(StringUtils.isBlank(nextOfKinContact.getValue()))) {
-				validateTelephoneNumber(errors, "nextOfKinContact", nextOfKinContact.getValue());
+			if (StringUtils.isNotBlank(nextOfKinContact)) {
+				validateTelephoneNumber(errors, "nextOfKinContact", nextOfKinContact);
 			}
 
 			validateField(errors, "personAddress");
@@ -469,12 +425,13 @@ public class EditPatientFragmentController {
 				toSave.addAddress(personAddress);
 			}
 
-			handlePersonAttribute(toSave, telephoneContact);
-			handlePersonAttribute(toSave, nameOfNextOfKin);
-			handlePersonAttribute(toSave, nextOfKinRelationship);
-			handlePersonAttribute(toSave, nextOfKinContact);
-			handlePersonAttribute(toSave, nextOfKinAddress);
-			handlePersonAttribute(toSave, subChiefName);
+			PatientWrapper wrapper = new PatientWrapper(toSave);
+			wrapper.setTelephoneContact(telephoneContact);
+			wrapper.setNextOfKinName(nameOfNextOfKin);
+			wrapper.setNextOfKinRelationship(nextOfKinRelationship);
+			wrapper.setNextOfKinContact(nextOfKinContact);
+			wrapper.setNextOfKinAddress(nextOfKinAddress);
+			wrapper.setSubChiefName(subChiefName);
 
 			Patient ret = Context.getPatientService().savePatient(toSave);
 
@@ -494,24 +451,6 @@ public class EditPatientFragmentController {
 			}
 
 			return ret;
-		}
-
-		/**
-		 * Handles saving a field which is stored as a person attribute
-		 * @param patient the patient being saved
-		 * @param incoming the attribute being edited
-		 */
-		protected void handlePersonAttribute(Patient patient, PersonAttribute incoming) {
-			PersonAttributeType type = incoming.getAttributeType();
-			PersonAttribute existing = patient.getAttribute(type);
-
-			if (StringUtils.isBlank(incoming.getValue()) && existing != null) {
-				voidData(existing);
-			}
-			else if (!StringUtils.isBlank(incoming.getValue()) && existing == null) {
-				incoming.setPerson(patient);
-				patient.addAttribute(incoming);
-			}
 		}
 
 		/**
@@ -729,14 +668,14 @@ public class EditPatientFragmentController {
 		/**
 		 * @return the telephoneContact
 		 */
-		public PersonAttribute getTelephoneContact() {
+		public String getTelephoneContact() {
 			return telephoneContact;
 		}
 
 		/**
 		 * @param telephoneContact the telephoneContact to set
 		 */
-		public void setTelephoneContact(PersonAttribute telephoneContact) {
+		public void setTelephoneContact(String telephoneContact) {
 			this.telephoneContact = telephoneContact;
 		}
 
@@ -759,70 +698,70 @@ public class EditPatientFragmentController {
 		/**
 		 * @return the nameOfNextOfKin
 		 */
-		public PersonAttribute getNameOfNextOfKin() {
+		public String getNameOfNextOfKin() {
 			return nameOfNextOfKin;
 		}
 
 		/**
 		 * @param nameOfNextOfKin the nameOfNextOfKin to set
 		 */
-		public void setNameOfNextOfKin(PersonAttribute nameOfNextOfKin) {
+		public void setNameOfNextOfKin(String nameOfNextOfKin) {
 			this.nameOfNextOfKin = nameOfNextOfKin;
 		}
 
 		/**
 		 * @return the nextOfKinRelationship
 		 */
-		public PersonAttribute getNextOfKinRelationship() {
+		public String getNextOfKinRelationship() {
 			return nextOfKinRelationship;
 		}
 
 		/**
 		 * @param nextOfKinRelationship the nextOfKinRelationship to set
 		 */
-		public void setNextOfKinRelationship(PersonAttribute nextOfKinRelationship) {
+		public void setNextOfKinRelationship(String nextOfKinRelationship) {
 			this.nextOfKinRelationship = nextOfKinRelationship;
 		}
 
 		/**
 		 * @return the nextOfKinContact
 		 */
-		public PersonAttribute getNextOfKinContact() {
+		public String getNextOfKinContact() {
 			return nextOfKinContact;
 		}
 
 		/**
 		 * @param nextOfKinContact the nextOfKinContact to set
 		 */
-		public void setNextOfKinContact(PersonAttribute nextOfKinContact) {
+		public void setNextOfKinContact(String nextOfKinContact) {
 			this.nextOfKinContact = nextOfKinContact;
 		}
 
 		/**
 		 * @return the nextOfKinAddress
 		 */
-		public PersonAttribute getNextOfKinAddress() {
+		public String getNextOfKinAddress() {
 			return nextOfKinAddress;
 		}
 
 		/**
 		 * @param nextOfKinAddress the nextOfKinAddress to set
 		 */
-		public void setNextOfKinAddress(PersonAttribute nextOfKinAddress) {
+		public void setNextOfKinAddress(String nextOfKinAddress) {
 			this.nextOfKinAddress = nextOfKinAddress;
 		}
 
 		/**
 		 * @return the subChiefName
 		 */
-		public PersonAttribute getSubChiefName() {
+		public String getSubChiefName() {
 			return subChiefName;
 		}
 
 		/**
 		 * @param subChiefName the subChiefName to set
 		 */
-		public void setSubChiefName(PersonAttribute subChiefName) {
+		public void setSubChiefName(String subChiefName) {
 			this.subChiefName = subChiefName;
 		}
 	}

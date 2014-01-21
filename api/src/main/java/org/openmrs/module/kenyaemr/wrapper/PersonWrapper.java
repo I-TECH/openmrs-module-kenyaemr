@@ -40,42 +40,10 @@ public class PersonWrapper extends AbstractPersonWrapper {
 	}
 
 	/**
-	 * Gets the telephone contact
-	 * @return the telephone number
+	 * Sets the telephone contact
+	 * @param value the telephone number
 	 */
 	public void setTelephoneContact(String value) {
 		setAsAttribute(CommonMetadata._PersonAttributeType.TELEPHONE_CONTACT, value);
-	}
-
-	/**
-	 * Gets the address of next of kin
-	 * @return the address
-	 */
-	public String getNextOfKinAddress() {
-		return getAsAttribute(CommonMetadata._PersonAttributeType.NEXT_OF_KIN_ADDRESS);
-	}
-
-	/**
-	 * Gets the telephone contact of next of kin
-	 * @return the telephone number
-	 */
-	public String getNextOfKinContact() {
-		return getAsAttribute(CommonMetadata._PersonAttributeType.NEXT_OF_KIN_CONTACT);
-	}
-
-	/**
-	 * Gets the name of next of kin
-	 * @return the name
-	 */
-	public String getNextOfKinName() {
-		return getAsAttribute(CommonMetadata._PersonAttributeType.NEXT_OF_KIN_NAME);
-	}
-
-	/**
-	 * Gets the relationship of next of kin
-	 * @return the relationship
-	 */
-	public String getNextOfKinRelationship() {
-		return getAsAttribute(CommonMetadata._PersonAttributeType.NEXT_OF_KIN_RELATIONSHIP);
 	}
 }

@@ -23,23 +23,23 @@
 
 	def nextOfKinFieldRows = [
 			[
-					[ object: command, property: "nameOfNextOfKin.value", label: ui.format(command.nameOfNextOfKin.attributeType) ],
-					[ object: command, property: "nextOfKinRelationship.value", label: ui.format(command.nextOfKinRelationship.attributeType) ]
+					[ object: command, property: "nameOfNextOfKin", label: "Next of kin name" ],
+					[ object: command, property: "nextOfKinRelationship", label: "Next of kin relationship" ]
 			],
 			[
-					[ object: command, property: "nextOfKinContact.value", label: ui.format(command.nextOfKinContact.attributeType) ],
-					[ object: command, property: "nextOfKinAddress.value", label: ui.format(command.nextOfKinAddress.attributeType) ]
+					[ object: command, property: "nextOfKinContact", label: "Next of kin contact" ],
+					[ object: command, property: "nextOfKinAddress", label: "Next of kin address" ]
 			]
 	]
 
 	def addressFieldRows = [
 			[
-					[ object: command, property: "telephoneContact.value", label: ui.format(command.telephoneContact.attributeType) ]
+					[ object: command, property: "telephoneContact", label: "Telephone contact" ]
 			],
 			[
 					[ object: command, property: "personAddress.address1", label: "Postal Address", config: [ size: 60 ] ],
 					[ object: command, property: "personAddress.country", label: "County", config: [ size: 60 ] ],
-					[ object: command, property: "subChiefName.value", label: ui.format(command.subChiefName.attributeType) ]
+					[ object: command, property: "subChiefName", label: "Subchief name" ]
 			],
 			[
 					[ object: command, property: "personAddress.address3", label: "School/Employer Address",config: [ size: 60 ] ],
