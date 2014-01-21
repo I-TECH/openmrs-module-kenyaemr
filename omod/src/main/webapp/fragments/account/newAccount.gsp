@@ -15,6 +15,9 @@
 				<span id="gender-F-error" class="error" style="display: none"></span>
 				<span id="gender-M-error" class="error" style="display: none"></span>
 			""")
+		],
+		[
+			[ formFieldName: "telephone", label: "Telephone contact", class: java.lang.String ]
 		]
 	]
 	

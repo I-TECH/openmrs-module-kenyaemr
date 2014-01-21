@@ -24,6 +24,7 @@ import org.openmrs.User;
 import org.openmrs.api.PasswordException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.EmrConstants;
+import org.openmrs.module.kenyaemr.wrapper.PersonWrapper;
 import org.openmrs.module.kenyaui.annotation.AppAction;
 import org.openmrs.module.kenyaui.validator.ValidatingCommandObject;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
@@ -93,6 +94,8 @@ public class NewAccountFragmentController {
 		private PersonName personName;
 		
 		private String gender;
+
+		private String telephone;
 		
 		private String username;
 		
@@ -118,6 +121,7 @@ public class NewAccountFragmentController {
 			require(errors, "personName.givenName");
 			require(errors, "personName.familyName");
 			require(errors, "gender");
+			require(errors, "telephone");
 			
 			boolean hasUser = false;
 			if (StringUtils.isNotEmpty(username)) {
@@ -164,6 +168,9 @@ public class NewAccountFragmentController {
 			Person ret = new Person();
 			ret.addName(personName);
 			ret.setGender(gender);
+
+			new PersonWrapper(ret).setTelephoneContact(telephone);
+
 			return ret;
 		}
 		
@@ -215,7 +222,21 @@ public class NewAccountFragmentController {
 		public void setGender(String gender) {
 			this.gender = gender;
 		}
-		
+
+		/**
+		 * @return the telephone
+		 */
+		public String getTelephone() {
+			return telephone;
+		}
+
+		/**
+		 * @param telephone the telephone
+		 */
+		public void setTelephone(String telephone) {
+			this.telephone = telephone;
+		}
+
 		/**
 		 * @return the username
 		 */
