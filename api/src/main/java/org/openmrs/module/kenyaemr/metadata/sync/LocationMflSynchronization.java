@@ -17,9 +17,9 @@ package org.openmrs.module.kenyaemr.metadata.sync;
 import org.openmrs.Location;
 
 import org.openmrs.api.LocationService;
-import org.openmrs.module.kenyaemr.util.EmrUtils;
 import org.openmrs.module.kenyaemr.wrapper.Facility;
 import org.openmrs.module.metadatadeploy.sync.ObjectSynchronization;
+import org.openmrs.util.OpenmrsUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -59,23 +59,23 @@ public class LocationMflSynchronization implements ObjectSynchronization<Locatio
 	}
 
 	/**
-	 * @see org.openmrs.module.metadatadeploy.sync.ObjectSynchronization#getObjectHash(org.openmrs.OpenmrsObject)
+	 * @see org.openmrs.module.metadatadeploy.sync.ObjectSynchronization#updateRequired(org.openmrs.OpenmrsObject, org.openmrs.OpenmrsObject)
 	 */
 	@Override
-	public String getObjectHash(Location obj) {
-		Facility facility = new Facility(obj);
+	public boolean updateRequired(Location incoming, Location existing) {
+		Facility facility1 = new Facility(incoming);
+		Facility facility2 = new Facility(existing);
 
-		return EmrUtils.hash(
-				obj.getName(),
-				obj.getDescription(),
+		boolean objectsMatch = OpenmrsUtil.nullSafeEquals(incoming.getName(), existing.getName())
+				&& OpenmrsUtil.nullSafeEquals(incoming.getDescription(), existing.getDescription())
+				&& OpenmrsUtil.nullSafeEquals(facility1.getProvince(), facility2.getProvince())
+				&& OpenmrsUtil.nullSafeEquals(facility1.getCounty(), facility2.getCounty())
+				&& OpenmrsUtil.nullSafeEquals(facility1.getDistrict(), facility2.getDistrict())
+				&& OpenmrsUtil.nullSafeEquals(facility1.getDivision(), facility2.getDivision())
+				&& OpenmrsUtil.nullSafeEquals(facility1.getTelephoneLandline(), facility2.getTelephoneLandline())
+				&& OpenmrsUtil.nullSafeEquals(facility1.getTelephoneMobile(), facility2.getTelephoneMobile())
+				&& OpenmrsUtil.nullSafeEquals(facility1.getPostCode(), facility2.getPostCode());
 
-				facility.getProvince(),
-				facility.getCounty(),
-				facility.getDistrict(),
-				facility.getDivision(),
-				facility.getTelephoneLandline(),
-				facility.getTelephoneMobile(),
-				facility.getPostCode()
-		);
+		return !objectsMatch;
 	}
 }
