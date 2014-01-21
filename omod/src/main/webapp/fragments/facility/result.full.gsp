@@ -14,9 +14,12 @@
 			<div ng-if="facility.mobile">
 				<span class="ke-identifier-type">Mobile</span> <span class="ke-identifier-value">{{ facility.mobile }}</span>
 			</div>
+			<div ng-if="facility.fax">
+				<span class="ke-identifier-type">Fax</span> <span class="ke-identifier-value">{{ facility.fax }}</span>
+			</div>
 		</td>
 		<td style="text-align: right; vertical-align: top; width: 33%">
-			{{ facility.division }}, {{ facility.district }},<br/>
+			{{ facility.division }}, {{ facility.district }}<br/>
 			{{ facility.county }}, {{ facility.province }}
 		</td>
 	</tr>

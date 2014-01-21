@@ -90,7 +90,7 @@ public class Facility extends AbstractCustomizableWrapper<Location, LocationAttr
 
 	/**
 	 * Gets the landline telephone number
-	 * @return the code
+	 * @return the number
 	 */
 	public String getTelephoneLandline() {
 		return (String) getAsAttribute(FacilityMetadata._LocationAttributeType.TELEPHONE_LANDLINE);
@@ -98,9 +98,17 @@ public class Facility extends AbstractCustomizableWrapper<Location, LocationAttr
 
 	/**
 	 * Gets the mobile telephone number
-	 * @return the code
+	 * @return the number
 	 */
 	public String getTelephoneMobile() {
 		return (String) getAsAttribute(FacilityMetadata._LocationAttributeType.TELEPHONE_MOBILE);
+	}
+
+	/**
+	 * Gets the fax telephone number
+	 * @return the number
+	 */
+	public String getTelephoneFax() {
+		return (String) getAsAttribute(FacilityMetadata._LocationAttributeType.TELEPHONE_FAX);
 	}
 }

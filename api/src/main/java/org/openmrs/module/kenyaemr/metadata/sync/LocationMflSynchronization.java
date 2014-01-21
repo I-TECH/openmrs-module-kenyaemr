@@ -73,6 +73,7 @@ public class LocationMflSynchronization implements ObjectSynchronization<Locatio
 				&& OpenmrsUtil.nullSafeEquals(facility1.getDistrict(), facility2.getDistrict())
 				&& OpenmrsUtil.nullSafeEquals(facility1.getDivision(), facility2.getDivision())
 				&& OpenmrsUtil.nullSafeEquals(facility1.getTelephoneLandline(), facility2.getTelephoneLandline())
+				&& OpenmrsUtil.nullSafeEquals(facility1.getTelephoneFax(), facility2.getTelephoneFax())
 				&& OpenmrsUtil.nullSafeEquals(facility1.getTelephoneMobile(), facility2.getTelephoneMobile())
 				&& OpenmrsUtil.nullSafeEquals(facility1.getPostCode(), facility2.getPostCode());
 

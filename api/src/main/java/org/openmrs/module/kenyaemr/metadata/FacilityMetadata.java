@@ -46,6 +46,7 @@ public class FacilityMetadata extends AbstractMetadataBundle {
 		public static final String MASTER_FACILITY_CODE = "8a845a89-6aa5-4111-81d3-0af31c45c002";
 		public static final String TELEPHONE_LANDLINE = "4ecb5b3f-1518-4056-a266-c4da1def45f5";
 		public static final String TELEPHONE_MOBILE = "8760f471-b2bb-4ded-8970-badf95d3bb44";
+		public static final String TELEPHONE_FAX = "29e1e758-d03e-4e84-a55e-288fa63d533a";
 	}
 
 	/**
@@ -78,6 +79,12 @@ public class FacilityMetadata extends AbstractMetadataBundle {
 				"Official Mobile", "Mobile telephone contact number",
 				FreeTextDatatype.class, "", 0, 1,
 				_LocationAttributeType.TELEPHONE_MOBILE
+		));
+
+		install(locationAttributeType(
+				"Official Fax", "Fax telephone number",
+				FreeTextDatatype.class, "", 0, 1,
+				_LocationAttributeType.TELEPHONE_FAX
 		));
 
 		if (full) {

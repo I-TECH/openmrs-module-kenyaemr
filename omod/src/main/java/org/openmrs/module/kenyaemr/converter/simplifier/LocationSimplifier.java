@@ -43,6 +43,7 @@ public class LocationSimplifier extends AbstractMetadataSimplifier<Location> {
 		ret.put("postcode", facility.getPostCode());
 		ret.put("landline", facility.getTelephoneLandline());
 		ret.put("mobile", facility.getTelephoneMobile());
+		ret.put("fax", facility.getTelephoneFax());
 		return ret;
 	}
 }

@@ -29,7 +29,7 @@ import java.io.IOException;
  */
 public class LocationMflCsvSource extends AbstractCsvResourceSource<Location> {
 
-	private LocationAttributeType codeAttrType, landlineAttrType, mobileAttrType;
+	private LocationAttributeType codeAttrType, landlineAttrType, mobileAttrType, faxAttrType;
 
 	/**
 	 * Constructs a new location source
@@ -40,6 +40,7 @@ public class LocationMflCsvSource extends AbstractCsvResourceSource<Location> {
 
 		this.codeAttrType = MetadataUtils.getLocationAttributeType(FacilityMetadata._LocationAttributeType.MASTER_FACILITY_CODE);
 		this.landlineAttrType = MetadataUtils.getLocationAttributeType(FacilityMetadata._LocationAttributeType.TELEPHONE_LANDLINE);
+		this.faxAttrType = MetadataUtils.getLocationAttributeType(FacilityMetadata._LocationAttributeType.TELEPHONE_FAX);
 		this.mobileAttrType = MetadataUtils.getLocationAttributeType(FacilityMetadata._LocationAttributeType.TELEPHONE_MOBILE);
 	}
 
@@ -56,6 +57,7 @@ public class LocationMflCsvSource extends AbstractCsvResourceSource<Location> {
 		String division = line[5];
 		String type = line[6];
 		String landline = line[15];
+		String fax = line[16];
 		String mobile = line[17];
 		String postcode = line[22];
 
@@ -71,30 +73,27 @@ public class LocationMflCsvSource extends AbstractCsvResourceSource<Location> {
 		location.setCountry("Kenya");
 		location.setPostalCode(postcode);
 
-		if (StringUtils.isNotEmpty(code)) {
-			LocationAttribute attr = new LocationAttribute();
-			attr.setAttributeType(codeAttrType);
-			attr.setValue(code.trim());
-			attr.setOwner(location);
-			location.addAttribute(attr);
-		}
-
-		if (StringUtils.isNotEmpty(landline)) {
-			LocationAttribute attr = new LocationAttribute();
-			attr.setAttributeType(landlineAttrType);
-			attr.setValue(landline.trim());
-			attr.setOwner(location);
-			location.addAttribute(attr);
-		}
-
-		if (StringUtils.isNotEmpty(mobile)) {
-			LocationAttribute attr = new LocationAttribute();
-			attr.setAttributeType(mobileAttrType);
-			attr.setValue(mobile.trim());
-			attr.setOwner(location);
-			location.addAttribute(attr);
-		}
+		setAsAttribute(location, codeAttrType, code);
+		setAsAttribute(location, landlineAttrType, landline);
+		setAsAttribute(location, faxAttrType, fax);
+		setAsAttribute(location, mobileAttrType, mobile);
 
 		return location;
+	}
+
+	/**
+	 * Adds a value as an attribute if it's not blank
+	 * @param location the location
+	 * @param type the attribute type
+	 * @param value the value
+	 */
+	protected void setAsAttribute(Location location, LocationAttributeType type, String value) {
+		if (StringUtils.isNotBlank(value)) {
+			LocationAttribute attr = new LocationAttribute();
+			attr.setAttributeType(type);
+			attr.setValue(value.trim());
+			attr.setOwner(location);
+			location.addAttribute(attr);
+		}
 	}
 }
