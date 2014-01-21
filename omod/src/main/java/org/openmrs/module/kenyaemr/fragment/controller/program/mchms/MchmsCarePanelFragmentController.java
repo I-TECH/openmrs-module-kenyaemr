@@ -27,6 +27,7 @@ import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.metadata.MchMetadata;
 import org.openmrs.module.kenyaemr.util.EmrUtils;
 import org.openmrs.module.kenyaemr.wrapper.EncounterWrapper;
+import org.openmrs.module.kenyaemr.wrapper.PatientWrapper;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 
@@ -45,9 +46,11 @@ public class MchmsCarePanelFragmentController {
 						   FragmentModel model) {
 		Map<String, Object> calculations = new HashMap<String, Object>();
 
+		PatientWrapper patientWrapper = new PatientWrapper(patient);
+
 		EncounterService encounterService = Context.getEncounterService();
 		EncounterType encounterType = encounterService.getEncounterTypeByUuid(MchMetadata._EncounterType.MCHMS_ENROLLMENT);
-		EncounterWrapper lastMchEnrollment = new EncounterWrapper(EmrUtils.lastEncounter(patient, encounterType));
+		EncounterWrapper lastMchEnrollment = new EncounterWrapper(patientWrapper.lastEncounter(encounterType));
 
 		Obs lmpObs = lastMchEnrollment.firstObs(Dictionary.getConcept(Dictionary.LAST_MONTHLY_PERIOD));
 		if (lmpObs != null) {
@@ -63,7 +66,7 @@ public class MchmsCarePanelFragmentController {
 		}
 
 		encounterType = encounterService.getEncounterTypeByUuid(MchMetadata._EncounterType.MCHMS_CONSULTATION);
-		EncounterWrapper lastMchConsultation = new EncounterWrapper(EmrUtils.lastEncounter(patient, encounterType));
+		EncounterWrapper lastMchConsultation = new EncounterWrapper(patientWrapper.lastEncounter(encounterType));
 
 		if (lastMchConsultation != null) {
 			Obs arvUseObs = lastMchConsultation.firstObs(Dictionary.getConcept(Dictionary.ANTIRETROVIRAL_USE_IN_PREGNANCY));

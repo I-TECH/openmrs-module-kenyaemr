@@ -30,6 +30,7 @@ import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyacore.calculation.Filters;
 import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
 import org.openmrs.module.kenyaemr.wrapper.EncounterWrapper;
+import org.openmrs.module.kenyaemr.wrapper.PatientWrapper;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
@@ -96,12 +97,14 @@ public class NotOnArtCalculation extends BaseEmrCalculation implements PatientFl
 	}
 
 	/**
+	 * TODO rework this so that we don't fetch each patient's last encounter one by one
+	 *
 	 * @return true if the given patient's gestation is greater than 14 weeks at enrollment and false otherwise
-	 * */
+	 */
 	protected boolean gestationIsGreaterThan14Weeks(Integer patientId) {
-		Patient patient = Context.getPatientService().getPatient(patientId);
+		PatientWrapper patient = new PatientWrapper(Context.getPatientService().getPatient(patientId));
 		EncounterType encounterType = MetadataUtils.getEncounterType(MchMetadata._EncounterType.MCHMS_ENROLLMENT);
-		Encounter lastMchEnrollment = EmrUtils.lastEncounter(patient, encounterType);
+		Encounter lastMchEnrollment = patient.lastEncounter(encounterType);
 		EncounterWrapper wrapper = new EncounterWrapper(lastMchEnrollment);
 
 		Obs lmpObs = wrapper.firstObs(Dictionary.getConcept(Dictionary.LAST_MONTHLY_PERIOD));

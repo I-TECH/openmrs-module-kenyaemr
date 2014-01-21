@@ -20,6 +20,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.htmlformentry.FormEntryContext;
 import org.openmrs.module.htmlformentry.element.HtmlGeneratorElement;
 import org.openmrs.module.kenyaemr.util.EmrUtils;
+import org.openmrs.module.kenyaemr.wrapper.PatientWrapper;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 
@@ -64,7 +65,9 @@ public class RecentObsElement implements HtmlGeneratorElement {
 
 		KenyaUiUtils kenyaui = Context.getRegisteredComponents(KenyaUiUtils.class).get(0);
 
-		Obs obs = EmrUtils.lastObs(context.getExistingPatient(), MetadataUtils.getConcept(conceptId));
+		PatientWrapper patient = new PatientWrapper(context.getExistingPatient());
+
+		Obs obs = patient.lastObs(MetadataUtils.getConcept(conceptId));
 
 		StringBuilder sb = new StringBuilder("<span>");
 

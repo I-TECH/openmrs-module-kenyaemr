@@ -134,28 +134,6 @@ public class EmrUtils {
 	}
 
 	/**
-	 * Finds the last obs with the given person and concept
-	 * @param person the person
-	 * @param concept the concept
-	 * @return the obs
-	 */
-	public static Obs lastObs(Person person, Concept concept) {
-		List<Obs> obss = Context.getObsService().getObservationsByPersonAndConcept(person, concept);
-		return obss.size() > 0 ? obss.get(0) : null;
-	}
-
-	/**
-	 * Finds the last encounter with the given patient and encounter type
-	 * @param patient the patient
-	 * @param type the encounter type
-	 * @return the encounter
-	 */
-	public static Encounter lastEncounter(Patient patient, EncounterType type) {
-		List<Encounter> encounters = Context.getEncounterService().getEncounters(patient, null, null, null, null, Collections.singleton(type), null, null, null, false);
-		return encounters.size() > 0 ? encounters.get(encounters.size() - 1) : null;
-	}
-
-	/**
 	 * Computes a hash of a set of values
 	 * @param values the input values
 	 * @return the hash value

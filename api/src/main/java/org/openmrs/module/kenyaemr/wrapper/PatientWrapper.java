@@ -15,12 +15,16 @@
 package org.openmrs.module.kenyaemr.wrapper;
 
 import org.openmrs.Patient;
+import org.openmrs.module.kenyacore.wrapper.AbstractPatientWrapper;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 
 /**
- * Wrapper class for patients
+ * Wrapper class for patients. Unfortunately this can't extend both AbstractPatientWrapper and PersonWrapper so we add a
+ * PersonWrapper as a property.
  */
-public class PatientWrapper extends PersonWrapper {
+public class PatientWrapper extends AbstractPatientWrapper {
+
+	private PersonWrapper person;
 
 	/**
 	 * Creates a new wrapper
@@ -28,6 +32,16 @@ public class PatientWrapper extends PersonWrapper {
 	 */
 	public PatientWrapper(Patient target) {
 		super(target);
+
+		this.person = new PersonWrapper(target);
+	}
+
+	/**
+	 * Gets the person wrapper
+	 * @return the wrapper
+	 */
+	public PersonWrapper getPerson() {
+		return person;
 	}
 
 	/**

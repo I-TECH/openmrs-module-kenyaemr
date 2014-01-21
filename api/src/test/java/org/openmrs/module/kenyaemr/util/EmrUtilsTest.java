@@ -18,11 +18,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Concept;
-import org.openmrs.Encounter;
-import org.openmrs.EncounterType;
-import org.openmrs.Obs;
-import org.openmrs.Patient;
-import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
@@ -125,40 +120,5 @@ public class EmrUtilsTest extends BaseModuleContextSensitiveTest {
 		Assert.assertEquals(Dictionary.getConcept("5497AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), concepts.get(0));
 		Assert.assertEquals(Dictionary.getConcept("730AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), concepts.get(1));
 		Assert.assertEquals(Dictionary.getConcept("5356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), concepts.get(2));
-	}
-
-	/**
-	 * @see EmrUtils#lastObs(org.openmrs.Person, org.openmrs.Concept)
-	 */
-	@Test
-	public void lastObs_shouldFindLastObsWithConcept() {
-		Concept cd4 = Dictionary.getConcept(Dictionary.CD4_COUNT);
-		Patient patient = TestUtils.getPatient(7);
-
-		TestUtils.saveObs(patient, cd4, 123.0, TestUtils.date(2012, 1, 1));
-		TestUtils.saveObs(patient, cd4, 234.0, TestUtils.date(2012, 1, 2));
-		Obs obs = TestUtils.saveObs(patient, cd4, 345.0, TestUtils.date(2012, 1, 3));
-		TestUtils.saveObs(patient, Dictionary.getConcept(Dictionary.CD4_PERCENT), 50.0, TestUtils.date(2012, 1, 31)); // Wrong concept
-
-		Assert.assertThat(EmrUtils.lastObs(patient, cd4), is(obs));
-	}
-
-	/**
-	 * @see EmrUtils#lastEncounter(org.openmrs.Patient, org.openmrs.EncounterType)
-	 */
-	@Test
-	public void lastEncounter_shouldFindLastEncounterWithType() {
-		Patient patient = TestUtils.getPatient(6);
-		EncounterType triageEncType = MetadataUtils.getEncounterType(CommonMetadata._EncounterType.TRIAGE);
-		EncounterType tbScreenEncType = MetadataUtils.getEncounterType(TbMetadata._EncounterType.TB_SCREENING);
-
-		// Test with no saved encounters
-		Assert.assertNull(EmrUtils.lastEncounter(patient, tbScreenEncType));
-
-		Encounter enc1 = TestUtils.saveEncounter(patient, triageEncType, TestUtils.date(2012, 3, 1));
-		Encounter enc2 = TestUtils.saveEncounter(patient, tbScreenEncType, TestUtils.date(2012, 2, 1));
-		Encounter enc3 = TestUtils.saveEncounter(patient, tbScreenEncType, TestUtils.date(2012, 1, 1));
-
-		Assert.assertEquals(enc2, EmrUtils.lastEncounter(patient, tbScreenEncType));
 	}
 }

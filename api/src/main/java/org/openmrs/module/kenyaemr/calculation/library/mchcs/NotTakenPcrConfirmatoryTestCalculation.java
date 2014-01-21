@@ -28,6 +28,7 @@ import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyacore.calculation.Filters;
 import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
+import org.openmrs.module.kenyaemr.wrapper.PatientWrapper;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
@@ -84,8 +85,11 @@ public class NotTakenPcrConfirmatoryTestCalculation extends BaseEmrCalculation i
 		for (Integer ptId : cohort) {
 			boolean notTakenConfirmatoryPcrTest = false;
 
-			Patient patient = Context.getPatientService().getPatient(ptId);
-			Encounter lastMchcsHeiCompletion = EmrUtils.lastEncounter(patient, hei_completion_encounterType);
+			/**
+			 * TODO rework this so it doesn't load patient's last encounter inside the calculation loop
+			 */
+			PatientWrapper patient = new PatientWrapper(Context.getPatientService().getPatient(ptId));
+			Encounter lastMchcsHeiCompletion = patient.lastEncounter(hei_completion_encounterType);
 
 			Obs hivStatusObs = EmrCalculationUtils.obsResultForPatient(lastChildHivStatus, ptId);
 			Obs pcrObs = EmrCalculationUtils.obsResultForPatient(lastPcrTest, ptId);

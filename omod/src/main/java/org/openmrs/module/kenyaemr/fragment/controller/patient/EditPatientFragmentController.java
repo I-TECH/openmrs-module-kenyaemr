@@ -426,7 +426,7 @@ public class EditPatientFragmentController {
 			}
 
 			PatientWrapper wrapper = new PatientWrapper(toSave);
-			wrapper.setTelephoneContact(telephoneContact);
+			wrapper.getPerson().setTelephoneContact(telephoneContact);
 			wrapper.setNextOfKinName(nameOfNextOfKin);
 			wrapper.setNextOfKinRelationship(nextOfKinRelationship);
 			wrapper.setNextOfKinContact(nextOfKinContact);
