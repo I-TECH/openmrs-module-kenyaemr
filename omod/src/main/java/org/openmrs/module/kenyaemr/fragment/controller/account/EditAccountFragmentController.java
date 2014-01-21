@@ -24,6 +24,7 @@ import org.openmrs.User;
 import org.openmrs.api.PasswordException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.EmrConstants;
+import org.openmrs.module.kenyaemr.wrapper.PersonWrapper;
 import org.openmrs.module.kenyaui.annotation.AppAction;
 import org.openmrs.module.kenyaui.validator.ValidatingCommandObject;
 import org.openmrs.ui.framework.UiUtils;
@@ -46,8 +47,8 @@ public class EditAccountFragmentController {
 		Person person = (Person) sharedPageModel.getAttribute("person");
 		User user = (User) sharedPageModel.getAttribute("user");
 		Provider provider = (Provider) sharedPageModel.getAttribute("provider");
-		
-		model.addAttribute("person", person);
+
+		model.addAttribute("person", new PersonWrapper(person));
 		model.addAttribute("user", user);
 		model.addAttribute("provider", provider);
 		
@@ -60,7 +61,7 @@ public class EditAccountFragmentController {
 	public Object editPersonDetails(@MethodParam("newEditPersonDetailsForm") @BindParams("editPersonDetails") EditPersonDetailsForm form,
 	                                UiUtils ui) {
 		ui.validate(form, form, "editPersonDetails");
-		Context.getPersonService().savePerson(form.getPersonToSave());
+		form.save();
 		return new SuccessResult("Saved person details");
 	}
 
@@ -170,18 +171,13 @@ public class EditAccountFragmentController {
 	public class EditPersonDetailsForm extends ValidatingCommandObject {
 		
 		private Person original;
+
+		private String telephone;
 		
 		public EditPersonDetailsForm(Person person) {
 			this.original = person;
-		}
-		
-		/**
-		 * Assumes already validated
-		 * 
-		 * @return
-		 */
-		public Person getPersonToSave() {
-			return original;
+
+			this.telephone = new PersonWrapper(person).getTelephoneContact();
 		}
 		
 		/**
@@ -193,6 +189,15 @@ public class EditAccountFragmentController {
 			ValidationUtils.rejectIfEmptyOrWhitespace(errors, "personName.givenName", "kenyaemr.error.required");
 			ValidationUtils.rejectIfEmptyOrWhitespace(errors, "personName.familyName", "kenyaemr.error.required");
 			ValidationUtils.rejectIfEmptyOrWhitespace(errors, "gender", "kenyaemr.error.required");
+		}
+
+		/**
+		 * Saves the form
+		 */
+		public void save() {
+			new PersonWrapper(original).setTelephoneContact(telephone);
+
+			Context.getPersonService().savePerson(original);
 		}
 		
 		public Integer getPersonId() {
@@ -219,12 +224,13 @@ public class EditAccountFragmentController {
 		public void setGender(String gender) {
 			original.setGender(gender);
 		}
-		
-		/**
-		 * @return the original
-		 */
-		public Person getOriginal() {
-			return original;
+
+		public String getTelephone() {
+			return telephone;
+		}
+
+		public void setTelephone(String telephone) {
+			this.telephone = telephone;
 		}
 	}
 	

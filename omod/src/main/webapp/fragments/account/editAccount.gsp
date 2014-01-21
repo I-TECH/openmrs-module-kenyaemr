@@ -1,8 +1,9 @@
 <div class="ke-panel-frame">
 	<div class="ke-panel-heading">Person Details</div>
 	<div class="ke-panel-content">
-		${ ui.includeFragment("kenyaui", "widget/dataPoint", [ label: "Real name", value: kenyaui.formatPersonName(person) ]) }
-		${ ui.includeFragment("kenyaui", "widget/dataPoint", [ label: "Gender", value: kenyaui.formatPersonGender(person) ]) }
+		${ ui.includeFragment("kenyaui", "widget/dataPoint", [ label: "Real name", value: kenyaui.formatPersonName(person.target) ]) }
+		${ ui.includeFragment("kenyaui", "widget/dataPoint", [ label: "Gender", value: kenyaui.formatPersonGender(person.target) ]) }
+		${ ui.includeFragment("kenyaui", "widget/dataPoint", [ label: "Telephone", value: ui.format(person.telephoneContact) ]) }
 	</div>
 	<div class="ke-panel-footer">
 		${ ui.includeFragment("kenyaui", "widget/dialogForm", [
@@ -12,14 +13,14 @@
 						iconProvider: "kenyaui",
 						icon: "glyphs/edit.png"
 				],
-				dialogConfig: [ heading: "Edit person details for " + kenyaui.formatPersonName(person) ],
+				dialogConfig: [ heading: "Edit person details for " + kenyaui.formatPersonName(person.target) ],
 				fragment: "account/editAccount",
 				fragmentProvider: "kenyaemr",
 				action: "editPersonDetails",
 				prefix: "editPersonDetails",
 				commandObject: editPersonDetails,
 				hiddenProperties: [ "personId" ],
-				properties: [ "personName.givenName", "personName.familyName", "gender" ],
+				properties: [ "personName.givenName", "personName.familyName", "gender", "telephone" ],
 				propConfig: [
 						"gender": [
 								options: [
@@ -67,7 +68,7 @@
 						iconProvider: "kenyaui",
 						icon: "glyphs/edit.png"
 				],
-				dialogConfig: [ heading: "Edit login details for ${ kenyaui.formatPersonName(person) }", width: 90, height: 90 ],
+				dialogConfig: [ heading: "Edit login details for ${ kenyaui.formatPersonName(person.target) }", width: 90, height: 90 ],
 				fragment: "account/editAccount",
 				fragmentProvider: "kenyaemr",
 				action: "editLoginDetails",
@@ -99,7 +100,7 @@
 						iconProvider: "kenyaui",
 						icon: "buttons/user_enable.png"
 				],
-				dialogConfig: [ heading: "New Login Account for ${ kenyaui.formatPersonName(person) }", width: 90, height: 90 ],
+				dialogConfig: [ heading: "New Login Account for ${ kenyaui.formatPersonName(person.target) }", width: 90, height: 90 ],
 				fragment: "account/editAccount",
 				fragmentProvider: "kenyaemr",
 				action: "editLoginDetails",
@@ -144,7 +145,7 @@
 						iconProvider: "kenyaui",
 						icon: "glyphs/edit.png"
 				],
-				dialogConfig: [ heading: "Edit Provider account for ${ kenyaui.formatPersonName(person) }", width: 50, height: 30 ],
+				dialogConfig: [ heading: "Edit Provider account for ${ kenyaui.formatPersonName(person.target) }", width: 50, height: 30 ],
 				fragmentProvider: "kenyaemr",
 				fragment: "account/editAccount",
 				action: "editProviderDetails",
@@ -166,9 +167,9 @@
 				buttonConfig: [
 						label: "Make this person a provider",
 						iconProvider: "kenyaui",
-						icon: "buttons/provider_${ person.gender == "F" ? 'f' : 'm' }.png"
+						icon: "buttons/provider_${ person.target.gender == "F" ? 'f' : 'm' }.png"
 				],
-				dialogConfig: [ heading: "New Provider account for ${ kenyaui.formatPersonName(person) }", width: 50, height: 30 ],
+				dialogConfig: [ heading: "New Provider account for ${ kenyaui.formatPersonName(person.target) }", width: 50, height: 30 ],
 				fragmentProvider: "kenyaemr",
 				fragment: "account/editAccount",
 				action: "editProviderDetails",
