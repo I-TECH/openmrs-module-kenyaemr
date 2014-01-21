@@ -39,7 +39,7 @@
 		<cielVersion>20140101</cielVersion>
 
 		<!-- Dependency modules -->
-		<appframeworkVersion>2.1-SNAPSHOT</appframeworkVersion>
+		<appframeworkVersion>2.1</appframeworkVersion>
 		<calculationVersion>1.0</calculationVersion>
 		<htmlformentryVersion>2.2.1</htmlformentryVersion>
 		<htmlformentry19extVersion>1.4</htmlformentry19extVersion>
