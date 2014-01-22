@@ -29,14 +29,11 @@ public class ProfilePageController {
 
 	public void controller(PageModel model, HttpSession httpSession) {
 
-		User user = Context.getUserContext().getAuthenticatedUser();
-		if (user != null) {
-			model.addAttribute("user", user);
-			model.addAttribute("person", user.getPerson());
-		}
-		else {
-			throw new APIAuthenticationException("You must be logged in");
-		}
+		// Seems we need to reload the user object to avoid lazy initialization exceptions
+		User user = Context.getUserService().getUser(Context.getUserContext().getAuthenticatedUser().getId());
+
+		model.addAttribute("user", user);
+		model.addAttribute("person", user.getPerson());
 
 		// If temp password is being passed, in tell view to display change password dialog
 		model.addAttribute("tempPassword", httpSession.getAttribute(EmrWebConstants.SESSION_ATTR_RESET_PASSWORD));

@@ -1,9 +1,9 @@
 <div class="ke-panel-frame">
-	<div class="ke-panel-heading">Person Details</div>
+	<div class="ke-panel-heading">Personal Details</div>
 	<div class="ke-panel-content">
 		${ ui.includeFragment("kenyaui", "widget/dataPoint", [ label: "Real name", value: kenyaui.formatPersonName(person) ]) }
 		${ ui.includeFragment("kenyaui", "widget/dataPoint", [ label: "Gender", value: kenyaui.formatPersonGender(person) ]) }
-		${ ui.includeFragment("kenyaui", "widget/dataPoint", [ label: "Telephone", value: ui.format(wrapped.telephoneContact) ]) }
+		${ ui.includeFragment("kenyaui", "widget/dataPoint", [ label: "Telephone", value: ui.format(form.telephoneContact) ]) }
 	</div>
 	<div class="ke-panel-footer">
 		${ ui.includeFragment("kenyaui", "widget/dialogForm", [
@@ -13,14 +13,14 @@
 						iconProvider: "kenyaui",
 						icon: "glyphs/edit.png"
 				],
-				dialogConfig: [ heading: "Edit person details for " + kenyaui.formatPersonName(person) ],
+				dialogConfig: [ heading: "Edit personal details" ],
 				fragment: "account/personDetails",
 				fragmentProvider: "kenyaemr",
 				action: "submit",
 				prefix: "person",
 				commandObject: form,
 				hiddenProperties: [ "personId" ],
-				properties: [ "personName.givenName", "personName.familyName", "gender", "telephone" ],
+				properties: [ "personName.givenName", "personName.familyName", "gender", "telephoneContact" ],
 				propConfig: [
 						"gender": [
 								options: [

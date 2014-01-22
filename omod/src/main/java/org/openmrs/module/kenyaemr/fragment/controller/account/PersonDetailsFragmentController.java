@@ -16,15 +16,21 @@ package org.openmrs.module.kenyaemr.fragment.controller.account;
 
 import org.openmrs.Person;
 import org.openmrs.PersonName;
+import org.openmrs.User;
+import org.openmrs.api.APIAuthenticationException;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.appframework.domain.AppDescriptor;
 import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyaemr.wrapper.PersonWrapper;
+import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.module.kenyaui.annotation.AppAction;
 import org.openmrs.module.kenyaui.validator.ValidatingCommandObject;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.BindParams;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.annotation.MethodParam;
+import org.openmrs.ui.framework.annotation.SpringBean;
+import org.openmrs.ui.framework.fragment.FragmentActionRequest;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 import org.openmrs.ui.framework.fragment.action.SuccessResult;
 import org.springframework.validation.Errors;
@@ -39,18 +45,29 @@ public class PersonDetailsFragmentController {
 	public void controller(@FragmentParam("person") Person person,
 						   FragmentModel model) {
 
-		model.put("person", person);
-		model.put("wrapped", new PersonWrapper(person));
-
+		model.addAttribute("person", person);
 		model.addAttribute("form", newEditPersonDetailsForm(person));
 	}
 
-	@AppAction(EmrConstants.APP_ADMIN)
+	/**
+	 * Handles form submissions. Throws authentication exception if current app is not the admin app or user isn't the
+	 * person being edited
+	 */
 	public Object submit(@MethodParam("newEditPersonDetailsForm") @BindParams("person") EditPersonDetailsForm form,
-									UiUtils ui) {
+						 @RequestParam("person.personId") Person person,
+						 UiUtils ui) {
+
+		User currentUser = Context.getAuthenticatedUser();
+		boolean isAdmin = currentUser.hasPrivilege("App: " + EmrConstants.APP_ADMIN);
+		boolean isThisUser = currentUser.getPerson().equals(person);
+
+		if (!(isAdmin || isThisUser)) {
+			throw new APIAuthenticationException("Only admin app allows editing of another person's details");
+		}
+
 		ui.validate(form, form, "person");
 		form.save();
-		return new SuccessResult("Saved person details");
+		return new SuccessResult("Saved personal details");
 	}
 
 	public EditPersonDetailsForm newEditPersonDetailsForm(@RequestParam("person.personId") Person person) {
@@ -61,12 +78,14 @@ public class PersonDetailsFragmentController {
 
 		private Person original;
 
-		private String telephone;
+		private String telephoneContact;
 
 		public EditPersonDetailsForm(Person person) {
 			this.original = person;
 
-			this.telephone = new PersonWrapper(person).getTelephoneContact();
+			PersonWrapper wrapper = new PersonWrapper(person);
+
+			this.telephoneContact = wrapper.getTelephoneContact();
 		}
 
 		/**
@@ -84,7 +103,7 @@ public class PersonDetailsFragmentController {
 		 * Saves the form
 		 */
 		public void save() {
-			new PersonWrapper(original).setTelephoneContact(telephone);
+			new PersonWrapper(original).setTelephoneContact(telephoneContact);
 
 			Context.getPersonService().savePerson(original);
 		}
@@ -115,19 +134,19 @@ public class PersonDetailsFragmentController {
 		}
 
 		/**
-		 * Gets the telephone number
+		 * Gets the telephone contact
 		 * @return the number
 		 */
-		public String getTelephone() {
-			return telephone;
+		public String getTelephoneContact() {
+			return telephoneContact;
 		}
 
 		/**
-		 * Sets the telephone number
-		 * @param telephone the number
+		 * Sets the telephone contact
+		 * @param telephoneContact the number
 		 */
-		public void setTelephone(String telephone) {
-			this.telephone = telephone;
+		public void setTelephoneContact(String telephoneContact) {
+			this.telephoneContact = telephoneContact;
 		}
 	}
 }

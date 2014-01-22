@@ -27,14 +27,7 @@
 </div>
 
 <div class="ke-page-content">
-
-	<div class="ke-panel-frame">
-		<div class="ke-panel-heading">Personal Details</div>
-		<div class="ke-panel-content">
-			${ ui.includeFragment("kenyaui", "widget/dataPoint", [ label: "Real name", value: kenyaui.formatPersonName(person) ]) }
-			${ ui.includeFragment("kenyaui", "widget/dataPoint", [ label: "Gender", value: kenyaui.formatPersonGender(person) ]) }
-		</div>
-	</div>
+	${ ui.includeFragment("kenyaemr", "account/personDetails", [ person: person ]) }
 
 	${ ui.includeFragment("kenyaemr", "profileLoginDetails", [ tempPassword: tempPassword ]) }
 </div>
