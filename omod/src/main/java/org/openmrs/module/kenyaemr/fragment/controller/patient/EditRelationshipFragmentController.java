@@ -20,7 +20,7 @@ import org.openmrs.Relationship;
 import org.openmrs.RelationshipType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.EmrWebConstants;
-import org.openmrs.module.kenyaui.validator.ValidatingCommandObject;
+import org.openmrs.module.kenyaui.form.ValidatingCommandObject;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.BindParams;

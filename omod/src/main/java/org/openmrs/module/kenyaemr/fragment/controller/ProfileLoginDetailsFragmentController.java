@@ -17,8 +17,7 @@ import org.openmrs.User;
 import org.openmrs.api.PasswordException;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.db.DAOException;
-import org.openmrs.module.kenyaemr.EmrWebConstants;
-import org.openmrs.module.kenyaui.validator.ValidatingCommandObject;
+import org.openmrs.module.kenyaui.form.ValidatingCommandObject;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.BindParams;
 import org.openmrs.ui.framework.annotation.FragmentParam;
@@ -29,8 +28,6 @@ import org.openmrs.ui.framework.fragment.action.SuccessResult;
 import org.openmrs.util.OpenmrsUtil;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
-
-import javax.servlet.http.HttpSession;
 
 /**
  * My profile page controller

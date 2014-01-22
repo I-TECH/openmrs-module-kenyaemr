@@ -29,20 +29,20 @@ import org.openmrs.PatientIdentifierType;
 import org.openmrs.PatientProgram;
 import org.openmrs.Person;
 import org.openmrs.PersonAddress;
-import org.openmrs.PersonAttribute;
-import org.openmrs.PersonAttributeType;
 import org.openmrs.PersonName;
 import org.openmrs.Program;
 import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.idgen.service.IdentifierSourceService;
+import org.openmrs.module.kenyaemr.validator.TelephoneNumberValidator;
 import org.openmrs.module.kenyaemr.wrapper.PatientWrapper;
 import org.openmrs.module.kenyaemr.wrapper.PersonWrapper;
+import org.openmrs.module.kenyaui.form.AbstractWebForm;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
-import org.openmrs.module.kenyaui.validator.ValidatingCommandObject;
+import org.openmrs.module.kenyaui.form.ValidatingCommandObject;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
@@ -50,6 +50,7 @@ import org.openmrs.ui.framework.annotation.BindParams;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.annotation.MethodParam;
 import org.openmrs.ui.framework.fragment.FragmentModel;
+import org.openmrs.ui.framework.fragment.action.SuccessResult;
 import org.openmrs.util.OpenmrsUtil;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -114,12 +115,12 @@ public class EditPatientFragmentController {
 	 * @param ui the UI utils
 	 * @return a simple object { patientId }
 	 */
-	public SimpleObject savePatient(@MethodParam("newEditPatientForm") @BindParams EditPatientForm form, UiUtils ui) {
+	public Object savePatient(@MethodParam("newEditPatientForm") @BindParams EditPatientForm form, UiUtils ui) {
 		ui.validate(form, form, null);
 
-		Patient saved = form.save();
+		form.save();
 
-		return SimpleObject.fromObject(saved, ui, "id");
+		return new SuccessResult("Patient saved");
 	}
 
 	/**
@@ -140,7 +141,7 @@ public class EditPatientFragmentController {
 	/**
 	 * The form command object for editing patients
 	 */
-	public class EditPatientForm extends ValidatingCommandObject {
+	public class EditPatientForm extends AbstractWebForm {
 
 		private Person original;
 		private Location location;
@@ -273,21 +274,6 @@ public class EditPatientFragmentController {
 		}
 
 		/**
-		 * Validates a telephone number
-		 * @param errors the errors
-		 * @param telephoneNumber the number to validate
-		 */
-		private void validateTelephoneNumber(Errors errors, String path, String telephoneNumber) {
-			String trimmed = telephoneNumber.trim();
-			if (trimmed.length() != 10) {
-				errors.rejectValue(path, "Phone numbers must be 10 digits long");
-			}
-			if (!trimmed.matches("\\d{10}")) {
-				errors.rejectValue(path, "Phone numbers must only contain numbers");
-			}
-		}
-
-		/**
 		 * @see org.springframework.validation.Validator#validate(java.lang.Object,
 		 *      org.springframework.validation.Errors)
 		 */
@@ -325,10 +311,10 @@ public class EditPatientFragmentController {
 			}
 
 			if (StringUtils.isNotBlank(telephoneContact)) {
-				validateTelephoneNumber(errors, "telephoneContact", telephoneContact);
+				validateField(errors, "telephoneContact", new TelephoneNumberValidator());
 			}
 			if (StringUtils.isNotBlank(nextOfKinContact)) {
-				validateTelephoneNumber(errors, "nextOfKinContact", nextOfKinContact);
+				validateField(errors, "nextOfKinContact", new TelephoneNumberValidator());
 			}
 
 			validateField(errors, "personAddress");
@@ -352,11 +338,12 @@ public class EditPatientFragmentController {
 		}
 
 		/**
-		 * Saves the patient
-		 * @return
+		 * @see org.openmrs.module.kenyaui.form.AbstractWebForm#save()
 		 */
-		public Patient save() {
+		@Override
+		public void save() {
 			Patient toSave;
+
 			if (original != null && original.isPatient()) { // Editing an existing patient
 				toSave = (Patient) original;
 			}
@@ -449,8 +436,6 @@ public class EditPatientFragmentController {
 			for (Obs o : obsToSave) {
 				Context.getObsService().saveObs(o, "KenyaEMR edit patient");
 			}
-
-			return ret;
 		}
 
 		/**
