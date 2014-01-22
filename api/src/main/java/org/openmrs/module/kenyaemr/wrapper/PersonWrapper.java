@@ -46,4 +46,20 @@ public class PersonWrapper extends AbstractPersonWrapper {
 	public void setTelephoneContact(String value) {
 		setAsAttribute(CommonMetadata._PersonAttributeType.TELEPHONE_CONTACT, value);
 	}
+
+	/**
+	 * Gets the email address
+	 * @return the email address
+	 */
+	public String getEmailAddress() {
+		return getAsAttribute(CommonMetadata._PersonAttributeType.EMAIL_ADDRESS);
+	}
+
+	/**
+	 * Sets the email address
+	 * @param value the email address
+	 */
+	public void setEmailAddress(String value) {
+		setAsAttribute(CommonMetadata._PersonAttributeType.EMAIL_ADDRESS, value);
+	}
 }

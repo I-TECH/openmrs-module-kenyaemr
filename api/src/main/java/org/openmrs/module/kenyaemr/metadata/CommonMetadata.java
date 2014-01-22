@@ -66,6 +66,7 @@ public class CommonMetadata extends AbstractMetadataBundle {
 		public static final String NEXT_OF_KIN_RELATIONSHIP = "d0aa9fd1-2ac5-45d8-9c5e-4317c622c8f5";
 		public static final String SUBCHIEF_NAME = "40fa0c9c-7415-43ff-a4eb-c7c73d7b1a7a";
 		public static final String TELEPHONE_CONTACT = "b2c38640-2603-4629-aebd-3b54f33f1e3a";
+		public static final String EMAIL_ADDRESS = "b8d0b331-1d2d-4a9a-b741-1816f498bdb6";
 	}
 
 	public static final class _Provider {
@@ -120,18 +121,22 @@ public class CommonMetadata extends AbstractMetadataBundle {
 				"\\d{5,10}", "Between 5 and 10 consecutive digits", null,
 				LocationBehavior.NOT_USED, false, _PatientIdentifierType.NATIONAL_ID));
 
-		install(personAttributeType("Telephone contact", "Telephone number the patient can be contacted at",
+		install(personAttributeType("Telephone contact", "Telephone contact number",
 				String.class, null, false, 1.0, _PersonAttributeType.TELEPHONE_CONTACT));
+		install(personAttributeType("Email address", "Email address of person",
+				String.class, null, false, 2.0, _PersonAttributeType.EMAIL_ADDRESS));
+
+		// Patient only person attributes..
 		install(personAttributeType("Subchief name", "Name of subchief or chief of patient's area",
-				String.class, null, false, 2.0, _PersonAttributeType.SUBCHIEF_NAME));
+				String.class, null, false, 3.0, _PersonAttributeType.SUBCHIEF_NAME));
 		install(personAttributeType("Next of kin name", "Name of patient's next of kin",
-				String.class, null, false, 3.0, _PersonAttributeType.NEXT_OF_KIN_NAME));
+				String.class, null, false, 4.0, _PersonAttributeType.NEXT_OF_KIN_NAME));
 		install(personAttributeType("Next of kin relationship", "Next of kin relationship to the patient",
-				String.class, null, false, 3.1, _PersonAttributeType.NEXT_OF_KIN_RELATIONSHIP));
+				String.class, null, false, 4.1, _PersonAttributeType.NEXT_OF_KIN_RELATIONSHIP));
 		install(personAttributeType("Next of kin contact", "Telephone contact of patient's next of kin",
-				String.class, null, false, 3.2, _PersonAttributeType.NEXT_OF_KIN_CONTACT));
+				String.class, null, false, 4.2, _PersonAttributeType.NEXT_OF_KIN_CONTACT));
 		install(personAttributeType("Next of kin address", "Address of patient's next of kin",
-				String.class, null, false, 3.3, _PersonAttributeType.NEXT_OF_KIN_ADDRESS));
+				String.class, null, false, 4.3, _PersonAttributeType.NEXT_OF_KIN_ADDRESS));
 
 		install(relationshipType("Guardian", "Dependant", "One that guards, watches over, or protects", _RelationshipType.GUARDIAN_DEPENDANT));
 		install(relationshipType("Partner", "Partner", "A spouse is a partner in a marriage, civil union, domestic partnership or common-law marriage a male spouse is a husband and a female spouse is a wife", _RelationshipType.PARTNER));

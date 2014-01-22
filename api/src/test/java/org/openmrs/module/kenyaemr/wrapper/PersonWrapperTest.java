@@ -63,4 +63,21 @@ public class PersonWrapperTest extends BaseModuleContextSensitiveTest {
 
 		Assert.assertThat(wrapper.getTelephoneContact(), is("0123456789"));
 	}
+
+	/**
+	 * @see PersonWrapper#setEmailAddress(String)
+	 */
+	@Test
+	public void setEmailAddress() {
+		Person person = personService.getPerson(7);
+		PersonWrapper wrapper = new PersonWrapper(person);
+		wrapper.setEmailAddress("test@example.com");
+
+		personService.savePerson(person);
+
+		List<PersonAttribute> attrs = person.getAttributes("Email address");
+		Assert.assertThat(attrs, hasSize(1));
+
+		Assert.assertThat(wrapper.getEmailAddress(), is("test@example.com"));
+	}
 }

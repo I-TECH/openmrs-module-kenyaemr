@@ -80,12 +80,15 @@ public class PersonDetailsFragmentController {
 
 		private String telephoneContact;
 
+		private String emailAddress;
+
 		public EditPersonDetailsForm(Person person) {
 			this.original = person;
 
 			PersonWrapper wrapper = new PersonWrapper(person);
 
 			this.telephoneContact = wrapper.getTelephoneContact();
+			this.emailAddress = wrapper.getEmailAddress();
 		}
 
 		/**
@@ -103,7 +106,9 @@ public class PersonDetailsFragmentController {
 		 * Saves the form
 		 */
 		public void save() {
-			new PersonWrapper(original).setTelephoneContact(telephoneContact);
+			PersonWrapper wrapper = new PersonWrapper(original);
+			wrapper.setTelephoneContact(telephoneContact);
+			wrapper.setEmailAddress(emailAddress);
 
 			Context.getPersonService().savePerson(original);
 		}
@@ -147,6 +152,22 @@ public class PersonDetailsFragmentController {
 		 */
 		public void setTelephoneContact(String telephoneContact) {
 			this.telephoneContact = telephoneContact;
+		}
+
+		/**
+		 * Gets the email address
+		 * @return the address
+		 */
+		public String getEmailAddress() {
+			return emailAddress;
+		}
+
+		/**
+		 * Sets the email address
+		 * @param emailAddress the address
+		 */
+		public void setEmailAddress(String emailAddress) {
+			this.emailAddress = emailAddress;
 		}
 	}
 }
