@@ -35,13 +35,16 @@ import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.util.OpenmrsConstants;
 import org.openmrs.util.PersonByNameComparator;
+import org.openmrs.web.user.CurrentUsers;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -205,6 +208,7 @@ public class SearchFragmentController {
 	 */
 	public List<SimpleObject> accounts(@RequestParam(value = "q", required = false) String query,
 									   @RequestParam(value = "which", required = false, defaultValue = "all") String which,
+									   HttpSession session,
 									   UiUtils ui) {
 
 		Map<Person, User> userAccounts = new HashMap<Person, User>();
@@ -232,17 +236,32 @@ public class SearchFragmentController {
 		persons.addAll(userAccounts.keySet());
 		persons.addAll(providerAccounts.keySet());
 
+		Set<String> onlineUsers = new HashSet<String>(CurrentUsers.getCurrentUsernames(session));
+
 		List<SimpleObject> ret = new ArrayList<SimpleObject>();
 		for (Person p : persons) {
 			if ("non-patients".equals(which) && p.isPatient()) {
 				continue;
 			}
 
+			// Simplify person first
 			SimpleObject account = ui.simplifyObject(p);
 
 			User user = userAccounts.get(p);
 			if (user != null) {
-				account.put("user", SimpleObject.fromObject(user, ui, "username"));
+				boolean online;
+				String username = user.getUsername();
+
+				// Admin account doesn't have a username
+				if (StringUtils.isBlank(username)) {
+					online = onlineUsers.contains("systemid:" + user.getSystemId());
+					username =  user.getSystemId();
+				}
+				else {
+					online = onlineUsers.contains(username);
+				}
+
+				account.put("user", SimpleObject.create("id", user.getId(), "username", username, "online", online));
 			}
 
 			Provider provider = providerAccounts.get(p);

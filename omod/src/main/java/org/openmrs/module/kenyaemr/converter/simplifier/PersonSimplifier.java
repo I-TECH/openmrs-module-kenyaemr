@@ -15,6 +15,7 @@
 package org.openmrs.module.kenyaemr.converter.simplifier;
 
 import org.openmrs.Person;
+import org.openmrs.module.kenyaemr.wrapper.PersonWrapper;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.module.kenyaui.simplifier.AbstractSimplifier;
 import org.openmrs.ui.framework.SimpleObject;
@@ -50,6 +51,9 @@ public class PersonSimplifier extends AbstractSimplifier<Person> {
 			ret.put("birthdate", null);
 			ret.put("age", null);
 		}
+
+		PersonWrapper wrapper = new PersonWrapper(person);
+		ret.put("telephoneContact", wrapper.getTelephoneContact());
 
 		return ret;
 	}

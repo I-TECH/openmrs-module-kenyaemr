@@ -14,7 +14,7 @@
 </div>
 
 <div class="ke-page-content">
-	${ ui.includeFragment("kenyaemr", "account/accountSearchResults", [ pageProvider: "kenyaemr", page: "admin/editAccount" ]) }
+	${ ui.includeFragment("kenyaemr", "account/accountSearchResults", [ showUsernames: true, pageProvider: "kenyaemr", page: "admin/editAccount" ]) }
 </div>
 
 <script type="text/javascript">

@@ -64,6 +64,16 @@
 		<constructor-arg name="order" value="500" />
 	</bean>
 
+	<bean id="kenyaemr.app.directory" class="org.openmrs.module.appframework.domain.AppDescriptor">
+		<constructor-arg name="id" value="kenyaemr.directory" />
+		<constructor-arg name="description" value="" />
+		<constructor-arg name="label" value="Directory" />
+		<constructor-arg name="url" value="kenyaemr/directory/directoryHome.page" />
+		<constructor-arg name="icon" value="kenyaui:apps/directory.png" />
+		<constructor-arg name="tinyIcon" value="" />
+		<constructor-arg name="order" value="600" />
+	</bean>
+
 	<bean id="kenyaemr.app.facilities" class="org.openmrs.module.appframework.domain.AppDescriptor">
 		<constructor-arg name="id" value="kenyaemr.facilities" />
 		<constructor-arg name="description" value="" />
@@ -71,7 +81,7 @@
 		<constructor-arg name="url" value="kenyaemr/facilities/facilitiesHome.page" />
 		<constructor-arg name="icon" value="kenyaui:apps/facilities.png" />
 		<constructor-arg name="tinyIcon" value="" />
-		<constructor-arg name="order" value="600" />
+		<constructor-arg name="order" value="700" />
 	</bean>
 
 	<bean id="kenyaemr.app.admin" class="org.openmrs.module.appframework.domain.AppDescriptor">
@@ -81,7 +91,7 @@
 		<constructor-arg name="url" value="kenyaemr/admin/adminHome.page" />
 		<constructor-arg name="icon" value="kenyaui:apps/admin.png" />
 		<constructor-arg name="tinyIcon" value="" />
-		<constructor-arg name="order" value="700" />
+		<constructor-arg name="order" value="800" />
 	</bean>
 
 	<!-- ===================== Lab test catalogs ===================== -->
