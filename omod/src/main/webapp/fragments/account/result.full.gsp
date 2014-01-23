@@ -14,6 +14,9 @@
 			<div ng-if="account.telephoneContact">
 				<span class="ke-identifier-type">Telephone</span> <span class="ke-identifier-value">{{ account.telephoneContact }}</span>
 			</div>
+			<div ng-if="account.emailAddress">
+				<span class="ke-identifier-type">Email</span> <span class="ke-identifier-value">{{ account.emailAddress }}</span>
+			</div>
 		</td>
 		<td style="text-align: right; vertical-align: top; width: 33%">
 			<div ng-if="account.user">

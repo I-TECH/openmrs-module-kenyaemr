@@ -54,6 +54,7 @@ public class PersonSimplifier extends AbstractSimplifier<Person> {
 
 		PersonWrapper wrapper = new PersonWrapper(person);
 		ret.put("telephoneContact", wrapper.getTelephoneContact());
+		ret.put("emailAddress", wrapper.getEmailAddress());
 
 		return ret;
 	}

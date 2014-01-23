@@ -14,12 +14,15 @@
 
 package org.openmrs.module.kenyaemr.fragment.controller.account;
 
+import org.apache.commons.lang.StringUtils;
 import org.openmrs.Person;
 import org.openmrs.PersonName;
 import org.openmrs.User;
 import org.openmrs.api.APIAuthenticationException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.EmrConstants;
+import org.openmrs.module.kenyaemr.validator.EmailAddressValidator;
+import org.openmrs.module.kenyaemr.validator.TelephoneNumberValidator;
 import org.openmrs.module.kenyaemr.wrapper.PersonWrapper;
 import org.openmrs.module.kenyaui.form.ValidatingCommandObject;
 import org.openmrs.ui.framework.UiUtils;
@@ -29,7 +32,6 @@ import org.openmrs.ui.framework.annotation.MethodParam;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 import org.openmrs.ui.framework.fragment.action.SuccessResult;
 import org.springframework.validation.Errors;
-import org.springframework.validation.ValidationUtils;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
@@ -92,9 +94,17 @@ public class PersonDetailsFragmentController {
 		 */
 		@Override
 		public void validate(Object target, Errors errors) {
-			ValidationUtils.rejectIfEmptyOrWhitespace(errors, "personName.givenName", "kenyaemr.error.required");
-			ValidationUtils.rejectIfEmptyOrWhitespace(errors, "personName.familyName", "kenyaemr.error.required");
-			ValidationUtils.rejectIfEmptyOrWhitespace(errors, "gender", "kenyaemr.error.required");
+			require(errors, "personName.givenName");
+			require(errors, "personName.familyName");
+			require(errors, "gender");
+
+			if (StringUtils.isNotBlank(telephoneContact)) {
+				validateField(errors, "telephoneContact", new TelephoneNumberValidator());
+			}
+
+			if (StringUtils.isNotBlank(emailAddress)) {
+				validateField(errors, "emailAddress", new EmailAddressValidator());
+			}
 		}
 
 		/**
