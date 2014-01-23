@@ -17,12 +17,10 @@ package org.openmrs.module.kenyaemr.integration;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyacore.form.FormManager;
 import org.openmrs.module.kenyacore.identifier.IdentifierManager;
-import org.openmrs.module.kenyacore.metadata.MetadataConfiguration;
 import org.openmrs.module.kenyacore.program.ProgramManager;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
@@ -31,15 +29,10 @@ import org.openmrs.module.kenyaemr.metadata.MchMetadata;
 import org.openmrs.module.kenyaemr.metadata.SecurityMetadata;
 import org.openmrs.module.kenyaemr.metadata.TbMetadata;
 import org.openmrs.module.metadatadeploy.bundle.MetadataBundle;
-import org.openmrs.module.metadatasharing.MetadataSharing;
-import org.openmrs.module.metadatasharing.wrapper.PackageImporter;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.SkipBaseSetup;
 import org.openmrs.util.OpenmrsConstants;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.io.InputStream;
-import java.util.Map;
 
 /**
  * Tests for importing of KenyaEMR metadata packages
