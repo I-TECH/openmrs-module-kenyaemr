@@ -24,9 +24,11 @@ import org.openmrs.User;
 import org.openmrs.api.PasswordException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.EmrConstants;
+import org.openmrs.module.kenyaemr.validator.EmailAddressValidator;
+import org.openmrs.module.kenyaemr.validator.TelephoneNumberValidator;
 import org.openmrs.module.kenyaemr.wrapper.PersonWrapper;
 import org.openmrs.module.kenyaui.annotation.AppAction;
-import org.openmrs.module.kenyaui.form.ValidatingCommandObject;
+import org.openmrs.module.kenyaui.form.AbstractWebForm;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
@@ -46,56 +48,40 @@ import javax.servlet.http.HttpSession;
 public class NewAccountFragmentController {
 	
 	public void controller(FragmentModel model) {
-		model.addAttribute("account", newAccountCommandObject());
+		model.addAttribute("account", newAccountForm());
 	}
 
+	/**
+	 * Handles form submission
+	 */
 	@AppAction(EmrConstants.APP_ADMIN)
-	public SimpleObject createAccount(@MethodParam("newAccountCommandObject") @BindParams NewAccountCommandObject command,
-	                                  UiUtils ui,
-									  HttpSession session,
-									  @SpringBean KenyaUiUtils kenyaUi) {
-		ui.validate(command, command, null);
+	public SimpleObject submit(@MethodParam("newAccountForm") @BindParams NewAccountForm form,
+							   UiUtils ui,
+							   HttpSession session,
+							   @SpringBean KenyaUiUtils kenyaUi) {
 
-		// Hopefully we caught any errors in the above validation, because any errors here will have ugly error messages
-		Person person = command.getPerson();
-		User user = command.getUser(person);
-		Provider provider = command.getProvider(person);
-		
-		ValidateUtil.validate(person);
+		ui.validate(form, form, null);
 
-		if (user != null) {
-			ValidateUtil.validate(user);
-		}
-
-		if (provider != null) {
-			ValidateUtil.validate(provider);
-		}
-		
-		person = Context.getPersonService().savePerson(person);
-
-		if (user != null) {
-			user = Context.getUserService().saveUser(user, command.getPassword());
-		}
-		if (provider != null) {
-			provider = Context.getProviderService().saveProvider(provider);
-		}
+		Person person = form.save();
 
 		kenyaUi.notifySuccess(session, "Account created");
 		
-		return SimpleObject.create("personId", person.getPersonId());
+		return SimpleObject.create("personId", person.getId());
 	}
 	
-	public NewAccountCommandObject newAccountCommandObject() {
-		return new NewAccountCommandObject();
+	public NewAccountForm newAccountForm() {
+		return new NewAccountForm();
 	}
 	
-	public class NewAccountCommandObject extends ValidatingCommandObject {
+	public class NewAccountForm extends AbstractWebForm {
 		
 		private PersonName personName;
 		
 		private String gender;
 
-		private String telephone;
+		private String telephoneContact;
+
+		private String emailAddress;
 		
 		private String username;
 		
@@ -107,13 +93,12 @@ public class NewAccountFragmentController {
 		
 		private String providerIdentifier;
 		
-		public NewAccountCommandObject() {
+		public NewAccountForm() {
 			personName = new PersonName();
 		}
 		
 		/**
-		 * @see org.springframework.validation.Validator#validate(java.lang.Object,
-		 *      org.springframework.validation.Errors)
+		 * @see org.openmrs.module.kenyaui.form.AbstractWebForm#validate(Object, org.springframework.validation.Errors)
 		 */
 		@Override
 		public void validate(Object target, Errors errors) {
@@ -121,7 +106,14 @@ public class NewAccountFragmentController {
 			require(errors, "personName.givenName");
 			require(errors, "personName.familyName");
 			require(errors, "gender");
-			require(errors, "telephone");
+			require(errors, "telephoneContact");
+
+			if (StringUtils.isNotBlank(telephoneContact)) {
+				validateField(errors, "telephoneContact", new TelephoneNumberValidator());
+			}
+			if (StringUtils.isNotBlank(emailAddress)) {
+				validateField(errors, "emailAddress", new EmailAddressValidator());
+			}
 			
 			boolean hasUser = false;
 			if (StringUtils.isNotEmpty(username)) {
@@ -163,13 +155,51 @@ public class NewAccountFragmentController {
 				errors.reject("Account must be a User, a Provider, or both");
 			}
 		}
-		
-		Person getPerson() {
+
+		/**
+		 * @see org.openmrs.module.kenyaui.form.AbstractWebForm#save()
+		 */
+		@Override
+		public Person save() {
+			// Hopefully we caught any errors in the above validation, because any errors here will have ugly error messages
+			Person person = createPerson();
+			User user = getUser(person);
+			Provider provider = getProvider(person);
+
+			ValidateUtil.validate(person);
+
+			if (user != null) {
+				ValidateUtil.validate(user);
+			}
+
+			if (provider != null) {
+				ValidateUtil.validate(provider);
+			}
+
+			Context.getPersonService().savePerson(person);
+
+			if (user != null) {
+				Context.getUserService().saveUser(user, getPassword());
+			}
+			if (provider != null) {
+				Context.getProviderService().saveProvider(provider);
+			}
+
+			return person;
+		}
+
+		/**
+		 * Creates a new person to be saved
+		 * @return the person
+		 */
+		public Person createPerson() {
 			Person ret = new Person();
 			ret.addName(personName);
 			ret.setGender(gender);
 
-			new PersonWrapper(ret).setTelephoneContact(telephone);
+			PersonWrapper wrapper = new PersonWrapper(ret);
+			wrapper.setTelephoneContact(telephoneContact);
+			wrapper.setEmailAddress(emailAddress);
 
 			return ret;
 		}
@@ -226,15 +256,23 @@ public class NewAccountFragmentController {
 		/**
 		 * @return the telephone
 		 */
-		public String getTelephone() {
-			return telephone;
+		public String getTelephoneContact() {
+			return telephoneContact;
 		}
 
 		/**
-		 * @param telephone the telephone
+		 * @param telephoneContact the telephone
 		 */
-		public void setTelephone(String telephone) {
-			this.telephone = telephone;
+		public void setTelephoneContact(String telephoneContact) {
+			this.telephoneContact = telephoneContact;
+		}
+
+		public String getEmailAddress() {
+			return emailAddress;
+		}
+
+		public void setEmailAddress(String emailAddress) {
+			this.emailAddress = emailAddress;
 		}
 
 		/**

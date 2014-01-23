@@ -116,9 +116,9 @@ public class EditPatientFragmentController {
 	public SimpleObject savePatient(@MethodParam("newEditPatientForm") @BindParams EditPatientForm form, UiUtils ui) {
 		ui.validate(form, form, null);
 
-		form.save();
+		Patient patient = form.save();
 
-		return SimpleObject.create("id", form.getOriginal().getId());
+		return SimpleObject.create("id", patient.getId());
 	}
 
 	/**
@@ -339,7 +339,7 @@ public class EditPatientFragmentController {
 		 * @see org.openmrs.module.kenyaui.form.AbstractWebForm#save()
 		 */
 		@Override
-		public void save() {
+		public Patient save() {
 			Patient toSave;
 
 			if (original != null && original.isPatient()) { // Editing an existing patient
@@ -434,6 +434,8 @@ public class EditPatientFragmentController {
 			for (Obs o : obsToSave) {
 				Context.getObsService().saveObs(o, "KenyaEMR edit patient");
 			}
+
+			return ret;
 		}
 
 		/**
