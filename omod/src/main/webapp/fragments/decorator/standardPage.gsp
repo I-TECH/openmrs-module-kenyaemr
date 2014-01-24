@@ -40,3 +40,29 @@
 </style>
 
 <%= config.content %>
+
+<!-- Required for the kenyaemr.ensureUserAuthenticated(...) method -->
+<div id="authdialog" title="Login Required" style="display: none">
+	<div class="ke-panel-content">
+		<table border="0" align="center">
+			<tr>
+				<td colspan="2" style="text-align: center; padding-bottom: 12px">
+					Your session has expired so please authenticate
+
+					<div class="error" style="display: none;">Invalid username or password. Please try again.</div>
+				</td>
+			</tr>
+			<tr>
+				<td align="right"><b>Username:</b></td>
+				<td><input type="text" id="authdialog-username"/></td>
+			</tr>
+			<tr>
+				<td align="right"><b>Password:</b></td>
+				<td><input type="password" id="authdialog-password"/></td>
+			</tr>
+		</table>
+	</div>
+	<div class="ke-panel-controls">
+		<button type="button"><img src="${ ui.resourceLink("kenyaui", "images/glyphs/login.png") }" /> Login</button>
+	</div>
+</div>

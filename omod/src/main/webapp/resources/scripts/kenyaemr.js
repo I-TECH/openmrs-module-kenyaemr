@@ -67,10 +67,10 @@ var kenyaemrApp = angular.module('kenyaemr', []);
 		var regimenStr = '';
 
 		$('#' + fieldId +  '-container .regimen-component').each(function() {
-			var drug = jQuery(this).find('.regimen-component-drug').val();
-			var dose = jQuery(this).find('.regimen-component-dose').val();
-			var units = jQuery(this).find('.regimen-component-units').val();
-			var frequency = jQuery(this).find('.regimen-component-frequency').val();
+			var drug = $(this).find('.regimen-component-drug').val();
+			var dose = $(this).find('.regimen-component-dose').val();
+			var units = $(this).find('.regimen-component-units').val();
+			var frequency = $(this).find('.regimen-component-frequency').val();
 
 			if (drug || dose) {
 				regimenStr += (drug + '|' + dose + '|' + units + '|' + frequency + '|');
@@ -96,6 +96,46 @@ var kenyaemrApp = angular.module('kenyaemr', []);
 				$('#' + placeHolderId).removeClass('ke-loading');
 				$('#' + placeHolderId).html(html);
 			});
+	};
+
+	/**
+	 * Ensures user authentication before invoking the passed callback
+	 * @param callback the callback to invoke
+	 */
+	kenyaemr.ensureUserAuthenticated = function(callback) {
+		$.getJSON(ui.fragmentActionLink('kenyaemr', 'emrUtils', 'isAuthenticated'), function(result) {
+			if (result.authenticated) {
+				callback();
+			}
+			else {
+				kenyaui.openPanelDialog({ templateId: 'authdialog', width: 50, height: 80 });
+				var authdialog = $('#authdialog');
+				var loginButton = authdialog.find('button');
+				var errorField = authdialog.find('.error');
+
+				loginButton.unbind('click');
+				loginButton.click(function() {
+					loginButton.prop('disabled', true);
+					errorField.hide();
+
+					var username = $('#authdialog-username').val();
+					var password = $('#authdialog-password').val();
+
+					// Try authenticating and then submitting again...
+					$.getJSON(ui.fragmentActionLink('kenyaemr', 'emrUtils', 'authenticate', { username: username, password: password }), function(result) {
+						if (result.authenticated) {
+							kenyaui.closeDialog();
+							callback();
+						}
+						else {
+							errorField.show();
+						}
+
+						loginButton.prop('disabled', false);
+					});
+				});
+			}
+		});
 	};
 
 }( window.kenyaemr = window.kenyaemr || {}, jQuery ));
