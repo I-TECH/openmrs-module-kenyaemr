@@ -14,151 +14,107 @@
  * Html Form Entry support for KenyaEMR
  */
 
-var tryingToSubmit = false;
-
 (function(kenyahfe, $) {
+	var submitting = false;
 
-	kenyahfe.submitHtmlForm = function(returnUrl) {
-		if (!tryingToSubmit) {
-			tryingToSubmit = true;
-			ui.disableConfirmBeforeNavigating();
-			$.getJSON(ui.fragmentActionLink('kenyaemr', 'emrUtils', 'isAuthenticated'), function(result) {
-				checkIfLoggedInAndErrorsCallback(result.authenticated, returnUrl);
-			});
-		}
-	};
-
-}( window.kenyahfe = window.kenyahfe || {}, jQuery ));
-
-
-/**
- * It seems the logic of showAuthenticateDialog and findAndHighlightErrors should be in the same callback function.
- * i.e. only authenticated user can see the error msg of
- */
-function checkIfLoggedInAndErrorsCallback(authenticated, returnUrl) {
-	var state_beforeValidation = true;
-
-	if (!authenticated) {
-		showAuthenticateDialog();
-	}
-	else {
-		// first call any beforeValidation functions that may have been defined by the html form
-		if (beforeValidation.length > 0){
-			for (var i = 0, l = beforeValidation.length; i < l; i++){
-				if (state_beforeValidation){
-					var fncn = beforeValidation[i];
-					state_beforeValidation = eval(fncn);
-				}
-				else {
-					i = l; // forces the end of the loop
-				}
-			}
+	/**
+	 * Tries to submit the current HTML form
+	 * @param returnUrl the URL to redirect to if successful
+	 */
+	kenyahfe.submitForm = function(returnUrl) {
+		// Ensure users can't submit again whilst submission is ongoing
+		if (submitting) {
+			return;
 		}
 
-		// only do the validation if all the beforeValidation functions returned "true"
-		if (state_beforeValidation) {
-			var anyErrors = findAndHighlightErrors();
+		submitting = true;
 
-			if (anyErrors) {
-				tryingToSubmit = false;
-				return;
+		// Show login dialog if user not authenticated
+		kenyaemr.ensureUserAuthenticated(function() {
+
+			if (validateForm()) {
+				doFormSubmission(returnUrl);
 			}
 			else {
-				doSubmitHtmlForm(returnUrl);
+				// Keep user on page to fix client-side errors
+				kenyaui.notifyError('Please fix all errors and resubmit');
+				submitting = false;
+				return;
 			}
-		}
-	}
-}
+		});
+	};
 
-function findAndHighlightErrors() {
-	/* see if there are error fields */
-	var containError = false
-	var ary = jQuery(".autoCompleteHidden");
-	jQuery.each(ary, function(index, value) {
-		if (value.value == "ERROR"){
-			if (!containError) {
-				alert("Invalid answer");
-				var id = value.id;
-				id = id.substring(0,id.length-4);
-				jQuery("#" + id).focus();
-			}
-			containError = true;
-		}
-	});
-	return containError;
-}
-
-/**
- * Shows the authentication dialog box
- */
-function showAuthenticateDialog() {
-	kenyaui.openPanelDialog({ templateId: 'authentication-dialog', width: 50, height: 15 });
-	tryingToSubmit = false;
-}
-
-/**
- * Called when authentication dialog box is submitted
- */
-function onSubmitAuthenticationDialog() {
-	var username = jQuery('#authentication-dialog-username').val();
-	var password = jQuery('#authentication-dialog-password').val();
-
-	kenyaui.closeDialog();
-
-	// Try authenticating and then submitting again...
-	jQuery.getJSON(ui.fragmentActionLink('kenyaemr', 'emrUtils', 'authenticate', { username: username, password: password }), submitHtmlForm);
-}
-
-function doSubmitHtmlForm(returnUrl) {
-	kenyaui.clearFormErrors('htmlform');
-
-	// First call any beforeSubmit functions that may have been defined by the form
-	var hasBeforeSubmitErrors = false;
-
-	for (var i = 0; i < beforeSubmit.length; i++){
-		if (beforeSubmit[i]() === false) {
-			hasBeforeSubmitErrors = true;
-		}
-	}
-
-	// If any beforeSubmit returned false, notify user of errors and abandon submission
-	if (hasBeforeSubmitErrors) {
-		kenyaui.notifyError('Please fix all errors and resubmit');
-	}
-	else {
+	/**
+	 * Performs submission of the current HTML form
+	 */
+	function doFormSubmission(returnUrl) {
 		kenyaui.openLoadingDialog({ message: 'Submitting form...' });
 
-		var form = jQuery('#htmlform');
+		var form = $('#htmlform');
+
 		jQuery.post(form.attr('action'), form.serialize(), function(result) {
 			if (result.success) {
+				ui.disableConfirmBeforeNavigating();
+
 				if (returnUrl) {
 					ui.navigate(returnUrl);
 				}
 				else {
-					if (typeof(parent) !== 'undefined') {
-						parent.location.reload();
-					} else {
-						location.reload();
-					}
+					ui.reloadPage();
 				}
-			} else {
-					kenyaui.closeDialog();
-					for (key in result.errors) {
-						showError(key, result.errors[key]);
-					}
-					kenyaui.notifyError('Please fix all errors and resubmit');
-					ui.enableConfirmBeforeNavigating();
+			}
+			else {
+				// Show errors on form
+				for (key in result.errors) {
+					showError(key, result.errors[key]);
+				}
+
+				// Keep user on form page to fix errors
+				kenyaui.notifyError('Please fix all errors and resubmit');
+				kenyaui.closeDialog();
+				submitting = false;
 			}
 		}, 'json')
 		.error(function(jqXHR, textStatus, errorThrown) {
-				kenyaui.closeDialog();
-				ui.enableConfirmBeforeNavigating();
-				window.alert('Unexpected error, please contact your System Administrator: ' + textStatus);
+			window.alert('Unexpected error, please contact your System Administrator: ' + textStatus);
+			console.log(errorThrown);
 		});
 	}
 
-	tryingToSubmit = false;
-}
+	/**
+	 * Validates the current HTML form to determine if it's ready to be submitted
+	 * @returns boolean whether or not form is valid
+	 */
+	function validateForm() {
+		var fieldsWithIllegalValues = $('.illegalValue');
+		if (fieldsWithIllegalValues.length > 0) {
+			return false;
+		}
+
+		kenyaui.clearFormErrors('htmlform');
+
+		var ary = $(".autoCompleteHidden");
+		$.each(ary, function(index, value) {
+			if (value.value == "ERROR"){
+				var id = value.id;
+				id = id.substring(0, id.length - 4);
+				$("#" + id).focus();
+				return false;
+			}
+		});
+
+		var hasBeforeSubmitErrors = false;
+
+		for (var i = 0; i < beforeSubmit.length; i++){
+			if (beforeSubmit[i]() === false) {
+				hasBeforeSubmitErrors = true;
+			}
+		}
+
+		return !hasBeforeSubmitErrors;
+	}
+
+}( window.kenyahfe = window.kenyahfe || {}, jQuery ));
 
 /**
  * Because setValue doesn't work for datetime fields

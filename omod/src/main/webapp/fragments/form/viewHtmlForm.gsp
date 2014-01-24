@@ -7,7 +7,6 @@
 	// These might be used by in-form scripts
 	var ke_formMode = 'VIEW';
 	var propertyAccessorInfo = new Array();
-	var beforeValidation = new Array();
 	var beforeSubmit = new Array();
 
 	/**
