@@ -48,58 +48,54 @@ var kenyaemrApp = angular.module('kenyaemr', []);
 /**
  * Utility methods
  */
-var kenyaemr = (function(jQuery) {
-	
-	return {
-
-		/**
-		 * Opens a dialog displaying the given encounter
-		 * @param appId the app id
-		 * @param encounterId the encounter id
-		 */
-		openEncounterDialog: function(appId, encounterId) {
-			var contentUrl = ui.pageLink('kenyaemr', 'dialog/formDialog', { appId: appId, encounterId: encounterId, currentUrl: location.href });
-			kenyaui.openDynamicDialog({ heading: 'View Form', url: contentUrl, width: 90, height: 90 });
-		},
-
-		/**
-		 * Updates the value of a regimen field from its displayed controls
-		 * @param fieldId the regimen field id
-		 */
-		updateRegimenFromDisplay: function(fieldId) {
-			var regimenStr = '';
-
-			jQuery('#' + fieldId +  '-container .regimen-component').each(function() {
-				var drug = jQuery(this).find('.regimen-component-drug').val();
-				var dose = jQuery(this).find('.regimen-component-dose').val();
-				var units = jQuery(this).find('.regimen-component-units').val();
-				var frequency = jQuery(this).find('.regimen-component-frequency').val();
-
-				if (drug || dose) {
-					regimenStr += (drug + '|' + dose + '|' + units + '|' + frequency + '|');
-				}
-			});
-
-			jQuery('#' + fieldId).val(regimenStr);
-		},
-
-		/**
-		 * Creates a dynamic obs field
-		 * @param parentId the container element id
-		 * @param fieldName the field name
-		 * @param conceptId the concept id
-		 * @param initialValue the initial field value (may be null)
-		 * @param readOnly true if control should be read only
-		 */
-		dynamicObsField: function(parentId, fieldName, conceptId, initialValue, readOnly) {
-			var placeHolderId = kenyaui.generateId();
-			jQuery('#' + parentId).append('<div id="' + placeHolderId + '" class="ke-loading ke-form-dynamic-field">&nbsp;</div>');
-			jQuery.get('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/generateField.htm', { name: fieldName, conceptId: conceptId, initialValue: initialValue, readOnly : readOnly })
-				.done(function (html) {
-					jQuery('#' + placeHolderId).removeClass('ke-loading');
-					jQuery('#' + placeHolderId).html(html);
-				});
-		}
+(function(kenyaemr, $) {
+	/**
+	 * Opens a dialog displaying the given encounter
+	 * @param appId the app id
+	 * @param encounterId the encounter id
+	 */
+	kenyaemr.openEncounterDialog = function(appId, encounterId) {
+		var contentUrl = ui.pageLink('kenyaemr', 'dialog/formDialog', { appId: appId, encounterId: encounterId, currentUrl: location.href });
+		kenyaui.openDynamicDialog({ heading: 'View Form', url: contentUrl, width: 90, height: 90 });
 	};
 
-})(jQuery);
+	/**
+	 * Updates the value of a regimen field from its displayed controls
+	 * @param fieldId the regimen field id
+	 */
+	kenyaemr.updateRegimenFromDisplay = function(fieldId) {
+		var regimenStr = '';
+
+		$('#' + fieldId +  '-container .regimen-component').each(function() {
+			var drug = jQuery(this).find('.regimen-component-drug').val();
+			var dose = jQuery(this).find('.regimen-component-dose').val();
+			var units = jQuery(this).find('.regimen-component-units').val();
+			var frequency = jQuery(this).find('.regimen-component-frequency').val();
+
+			if (drug || dose) {
+				regimenStr += (drug + '|' + dose + '|' + units + '|' + frequency + '|');
+			}
+		});
+
+		$('#' + fieldId).val(regimenStr);
+	};
+
+	/**
+	 * Creates a dynamic obs field
+	 * @param parentId the container element id
+	 * @param fieldName the field name
+	 * @param conceptId the concept id
+	 * @param initialValue the initial field value (may be null)
+	 * @param readOnly true if control should be read only
+	 */
+	kenyaemr.dynamicObsField = function(parentId, fieldName, conceptId, initialValue, readOnly) {
+		var placeHolderId = kenyaui.generateId();
+		$('#' + parentId).append('<div id="' + placeHolderId + '" class="ke-loading ke-form-dynamic-field">&nbsp;</div>');
+		$.get('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/generateField.htm', { name: fieldName, conceptId: conceptId, initialValue: initialValue, readOnly : readOnly })
+			.done(function (html) {
+				$('#' + placeHolderId).removeClass('ke-loading');
+				$('#' + placeHolderId).html(html);
+			});
+	};
+
+}( window.kenyaemr = window.kenyaemr || {}, jQuery ));
