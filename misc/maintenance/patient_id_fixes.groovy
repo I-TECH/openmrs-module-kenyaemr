@@ -50,7 +50,7 @@ for (def patient : Context.patientService.allPatients) {
 
 			if (existing.identifier == id.identifier) {
 				println "Patient #" + patient.id + " has duplicate identifiers of type " + id.identifierType + " so voiding this one"
-				Context.patientService.voidPatientIdentifier(id)
+				Context.patientService.voidPatientIdentifier(id, "Duplicate found by script")
 				fixed_duplicates++
 			}
 			else {
