@@ -36,13 +36,17 @@ if (!defaultLocation) {
 // Map of national id values to patients
 def idPatientMap = [:]
 
-// Check for non-unique attribute values
+// Check for non-unique and invalid attribute values
 for (def patient : Context.patientService.allPatients) {
 	def attribute = patient.getAttribute(nationalIdAttrType)
 	if (attribute) {
 		def otherPatient = idPatientMap.get(attribute.value)
 		if (otherPatient) {
 			return "Found non-unique attribute value: " + attribute.value + " (patient #" + patient.id + " and patient #" + otherPatient.id + ")"
+		}
+
+		if (!attribute.value.matches("\\d{5,10}")) {
+			return "Found invalid attribute value: " + attribute.value + " (patient #" + patient.id + ")"
 		}
 
 		idPatientMap.put(attribute.value, patient)
