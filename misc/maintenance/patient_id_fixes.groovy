@@ -37,7 +37,7 @@ if (!idgenSvc) {
 	return "Can't access IDGen service"
 }
 
-def duplicates = 0, fixed_duplicates = 0, missing = 0, fixed_missing = 0;
+def duplicates = 0, missing = 0
 
 // Check for duplicate and missing identifier values
 for (def patient : Context.patientService.allPatients) {
@@ -46,16 +46,11 @@ for (def patient : Context.patientService.allPatients) {
 	patient.activeIdentifiers.each { id ->
 		if (idsByType.containsKey(id.identifierType)) {
 			def existing = idsByType[id.identifierType]
-			duplicates++
+			println "Patient #" + patient.id + " has multiple identifiers of type " + id.identifierType + " (keeping: " + existing.identifier + ", voiding: " + id.identifier + ")"
 
-			if (existing.identifier == id.identifier) {
-				println "Patient #" + patient.id + " has duplicate identifiers of type " + id.identifierType + " so voiding this one"
-				Context.patientService.voidPatientIdentifier(id, "Duplicate found by script")
-				fixed_duplicates++
-			}
-			else {
-				println "Patient #" + patient.id + " has multiple identifiers of type " + id.identifierType + " (value1=" + id.identifier + ", value2=" + existing.identifier + ")"
-			}
+			// Void this one, assuming the first one is always the correct one
+			Context.patientService.voidPatientIdentifier(id, "Duplicate found by script")
+			duplicates++
 		} else {
 			idsByType.put(id.identifierType, id)
 		}
@@ -63,16 +58,15 @@ for (def patient : Context.patientService.allPatients) {
 
 	if (!idsByType.containsKey(openmrsIdType)) {
 		println "Patient #" + patient.id + " is missing the required OpenMRS ID"
-		missing++
 
 		def generated = idgenSvc.generateIdentifier(openmrsIdType, "ID fix script");
 		def generatedOpenmrsId = new PatientIdentifier(generated, openmrsIdType, defaultLocation);
 		patient.addIdentifier(generatedOpenmrsId);
 		Context.patientService.savePatient(patient)
-		fixed_missing++
+		missing++
 	}
 }
 
 println "=================== Summary ======================"
-println "Duplicate ID problems: " + duplicates + " (" + fixed_duplicates + " fixed)"
-println "Missing ID problems: " + missing + " (" + fixed_missing + " fixed)"
+println "Fixed duplicate ID problems: " + duplicates
+println "Fixed missing ID problems: " + missing
