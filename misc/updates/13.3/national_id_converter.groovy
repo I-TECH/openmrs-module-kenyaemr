@@ -45,39 +45,43 @@ for (def patient : Context.patientService.allPatients) {
 			return "Found non-unique attribute value: " + attribute.value + " (patient #" + patient.id + " and patient #" + otherPatient.id + ")"
 		}
 
-		if (!attribute.value.matches("\\d{5,10}")) {
-			return "Found invalid attribute value: " + attribute.value + " (patient #" + patient.id + ")"
-		}
-
 		idPatientMap.put(attribute.value, patient)
 	}
 }
 
 println "Found no non-unique attribute values"
 
-int numConverted = 0, numPreviouslyConverted = 0
+int numConverted = 0, numInvalid = 0, numPreviouslyConverted = 0
 
 // Go through each patient...
 for (def patient : idPatientMap.values()) {
 	def attribute = patient.getAttribute(nationalIdAttrType)
 	def identifier = patient.getPatientIdentifier(nationalIdIdentifierType)
 
-	// Only convert if identifier doesn't already exist
-	if (!identifier) {
-		identifier = new PatientIdentifier()
-		identifier.setPatient(patient)
-		identifier.setIdentifierType(nationalIdIdentifierType)
-		identifier.setIdentifier(attribute.value)
-		identifier.setLocation(defaultLocation)
-		patient.addIdentifier(identifier)
+	def isValidValue = attribute.value.matches("\\d{5,10}")
 
-		Context.patientService.savePatientIdentifier(identifier)
+	// Only convert if identifier doesn't already exist and value is valid
+	if (isValidValue) {
+		if (!identifier) {
+			identifier = new PatientIdentifier()
+			identifier.setPatient(patient)
+			identifier.setIdentifierType(nationalIdIdentifierType)
+			identifier.setIdentifier(attribute.value)
+			identifier.setLocation(defaultLocation)
+			patient.addIdentifier(identifier)
 
-		println "Converted national ID value '" + attribute.value + "' for patient " + patient.id
-		numConverted++
+			Context.patientService.savePatientIdentifier(identifier)
+
+			println "Converted national ID value '" + attribute.value + "' for patient " + patient.id
+			numConverted++
+		}
+		else {
+			numPreviouslyConverted++
+		}
 	}
 	else {
-		numPreviouslyConverted++
+		println "Not converting invalid attribute value: " + attribute.value + " (patient #" + patient.id + ")"
+		numInvalid++;
 	}
 
 	// Mark attribute as voided
@@ -93,3 +97,4 @@ println "=================== Summary ======================"
 println "Patients with national ID attributes: " + idPatientMap.size()
 println "Already converted to identifiers: " + numPreviouslyConverted
 println "Converted this time: " + numConverted
+println "Invalid values not converted: " + numInvalid
