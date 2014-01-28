@@ -478,6 +478,11 @@ public class EditPatientFragmentController {
 
 			Patient ret = Context.getPatientService().savePatient(toSave);
 
+			// Explicitly save all identifiers
+			for (PatientIdentifier identifier : ret.getIdentifiers()) {
+				Context.getPatientService().savePatientIdentifier(identifier);
+			}
+
 			List<Obs> obsToSave = new ArrayList<Obs>();
 			List<Obs> obsToVoid = new ArrayList<Obs>();
 
