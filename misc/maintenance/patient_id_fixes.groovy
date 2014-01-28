@@ -62,7 +62,7 @@ for (def patient : Context.patientService.allPatients) {
 		def generated = idgenSvc.generateIdentifier(openmrsIdType, "ID fix script");
 		def generatedOpenmrsId = new PatientIdentifier(generated, openmrsIdType, defaultLocation);
 		patient.addIdentifier(generatedOpenmrsId);
-		Context.patientService.savePatient(patient)
+		Context.patientService.savePatientIdentifier(generatedOpenmrsId)
 		missing++
 	}
 }
