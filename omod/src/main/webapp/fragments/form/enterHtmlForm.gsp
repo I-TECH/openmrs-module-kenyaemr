@@ -96,7 +96,7 @@
 	 * Shows the authentication dialog box
 	 */
 	function showAuthenticateDialog() {
-		kenyaui.openPanelDialog({ templateId: 'authentication-dialog', width: 50, height: 15 });
+		kenyaui.openPanelDialog({ templateId: 'authentication-dialog', width: 50, height: 50 });
 		tryingToSubmit = false;
 	}
 
