@@ -57,7 +57,7 @@
 
 		<!-- Additional distro modules -->
 		<groovyVersion>2.2.4</groovyVersion>
-		<kenyadqVersion>0.2.7</kenyadqVersion>
+		<kenyadqVersion>0.2.8-SNAPSHOT</kenyadqVersion>
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ssZ</maven.build.timestamp.format>
