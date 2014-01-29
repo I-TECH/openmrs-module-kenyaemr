@@ -17,27 +17,18 @@ package org.openmrs.module.kenyaemr.calculation.library.mchms;
 import org.joda.time.DateTime;
 import org.joda.time.Weeks;
 import org.openmrs.Concept;
-import org.openmrs.Encounter;
-import org.openmrs.EncounterType;
-import org.openmrs.Obs;
-import org.openmrs.Patient;
 import org.openmrs.Program;
-import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
-import org.openmrs.module.kenyacore.calculation.CalculationUtils;
+import org.openmrs.module.kenyacore.calculation.BooleanResult;
 import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyacore.calculation.Filters;
 import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
-import org.openmrs.module.kenyaemr.wrapper.EncounterWrapper;
-import org.openmrs.module.kenyaemr.wrapper.PatientWrapper;
-import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyacore.calculation.BooleanResult;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.metadata.MchMetadata;
-import org.openmrs.module.kenyaemr.util.EmrUtils;
+import org.openmrs.module.metadatadeploy.MetadataUtils;
 
 import java.util.Collection;
 import java.util.Date;
@@ -73,6 +64,7 @@ public class NotOnArtCalculation extends BaseEmrCalculation implements PatientFl
 
 		CalculationResultMap lastHivStatusObss = Calculations.lastObs(Dictionary.getConcept(Dictionary.HIV_STATUS), inMchmsProgram, context);
 		CalculationResultMap artStatusObss = Calculations.lastObs(Dictionary.getConcept(Dictionary.ANTIRETROVIRAL_USE_IN_PREGNANCY), inMchmsProgram, context);
+		CalculationResultMap lmpObss = Calculations.firstObs(Dictionary.getConcept(Dictionary.LAST_MONTHLY_PERIOD), inMchmsProgram, context);
 
 		CalculationResultMap ret = new CalculationResultMap();
 		for (Integer ptId : cohort) {
@@ -81,6 +73,8 @@ public class NotOnArtCalculation extends BaseEmrCalculation implements PatientFl
 			if (inMchmsProgram.contains(ptId)) {
 				Concept lastHivStatus = EmrCalculationUtils.codedObsResultForPatient(lastHivStatusObss, ptId);
 				Concept lastArtStatus = EmrCalculationUtils.codedObsResultForPatient(artStatusObss, ptId);
+				Date lastLmpDate = EmrCalculationUtils.datetimeObsResultForPatient(lmpObss, ptId);
+
 				boolean hivPositive = false;
 				boolean onArt = false;
 				if (lastHivStatus != null) {
@@ -89,7 +83,7 @@ public class NotOnArtCalculation extends BaseEmrCalculation implements PatientFl
 						onArt = !lastArtStatus.equals(Dictionary.getConcept(Dictionary.NOT_APPLICABLE));
 					}
 				}
-				notOnArt = hivPositive && gestationIsGreaterThan14Weeks(ptId) && !onArt;
+				notOnArt = hivPositive && gestationIsGreaterThan14Weeks(lastLmpDate) && !onArt;
 			}
 			ret.put(ptId, new BooleanResult(notOnArt, this, context));
 		}
@@ -97,19 +91,11 @@ public class NotOnArtCalculation extends BaseEmrCalculation implements PatientFl
 	}
 
 	/**
-	 * TODO rework this so that we don't fetch each patient's last encounter one by one
-	 *
-	 * @return true if the given patient's gestation is greater than 14 weeks at enrollment and false otherwise
+	 * @return true if the given patient's gestation is greater than 14 weeks and false otherwise
 	 */
-	protected boolean gestationIsGreaterThan14Weeks(Integer patientId) {
-		PatientWrapper patient = new PatientWrapper(Context.getPatientService().getPatient(patientId));
-		EncounterType encounterType = MetadataUtils.getEncounterType(MchMetadata._EncounterType.MCHMS_ENROLLMENT);
-		Encounter lastMchEnrollment = patient.lastEncounter(encounterType);
-		EncounterWrapper wrapper = new EncounterWrapper(lastMchEnrollment);
-
-		Obs lmpObs = wrapper.firstObs(Dictionary.getConcept(Dictionary.LAST_MONTHLY_PERIOD));
-		if (lmpObs != null) {
-			Weeks weeks = Weeks.weeksBetween(new DateTime(lmpObs.getValueDate()), new DateTime(new Date()));
+	protected boolean gestationIsGreaterThan14Weeks(Date lmpDate) {
+		if (lmpDate != null) {
+			Weeks weeks = Weeks.weeksBetween(new DateTime(lmpDate), new DateTime(new Date()));
 			if (weeks.getWeeks() > 14) {
 				return true;
 			}
