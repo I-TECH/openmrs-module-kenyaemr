@@ -21,7 +21,7 @@ import org.openmrs.PatientIdentifierType;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.idgen.service.IdentifierSourceService;
-import org.openmrs.module.kenyacore.update.MaintenanceUpdate;
+import org.openmrs.module.kenyacore.chore.AbstractChore;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
@@ -34,8 +34,8 @@ import java.io.PrintWriter;
  * Prior to 13.3.1, the EditPatientFragmentController appears to have sometimes saved a patient without properly saving
  * their required OpenMRS ID
  */
-@Component
-public class FixMissingOpenMrsIds implements MaintenanceUpdate {
+@Component("kenyaemr.chore.fixMissingOpenmrsIdentifiers")
+public class FixMissingOpenmrsIdentifiers extends AbstractChore {
 
 	@Autowired
 	private KenyaEmrService kenyaEmrService;
@@ -46,8 +46,11 @@ public class FixMissingOpenMrsIds implements MaintenanceUpdate {
 	@Autowired
 	private IdentifierSourceService idgenService;
 
+	/**
+	 * @see org.openmrs.module.kenyacore.chore.AbstractChore#perform(java.io.PrintWriter)
+	 */
 	@Override
-	public void run(PrintWriter output) throws Exception {
+	public void perform(PrintWriter output) throws Exception {
 		PatientIdentifierType openmrsIdType = MetadataUtils.getPatientIdentifierType(CommonMetadata._PatientIdentifierType.OPENMRS_ID);
 		Location defaultLocation = kenyaEmrService.getDefaultLocation();
 
@@ -55,7 +58,7 @@ public class FixMissingOpenMrsIds implements MaintenanceUpdate {
 
 		for (Patient patient : Context.getPatientService().getAllPatients()) {
 			if (patient.getPatientIdentifier(openmrsIdType) == null) {
-				String generated = idgenService.generateIdentifier(openmrsIdType, FixMissingOpenMrsIds.class.getSimpleName());
+				String generated = idgenService.generateIdentifier(openmrsIdType, FixMissingOpenmrsIdentifiers.class.getSimpleName());
 				PatientIdentifier generatedOpenmrsId = new PatientIdentifier(generated, openmrsIdType, defaultLocation);
 				patient.addIdentifier(generatedOpenmrsId);
 				patientService.savePatientIdentifier(generatedOpenmrsId);
@@ -63,6 +66,6 @@ public class FixMissingOpenMrsIds implements MaintenanceUpdate {
 			}
 		}
 
-		output.print("Fixed " + fixed + " missing OpenMRS IDs");
+		output.println("Fixed " + fixed + " missing OpenMRS IDs");
 	}
 }
