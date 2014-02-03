@@ -18,13 +18,10 @@ import org.openmrs.Concept;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
 import org.openmrs.Obs;
-import org.openmrs.Patient;
 import org.openmrs.Program;
-import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
-import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyacore.calculation.Filters;
 import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
@@ -33,7 +30,6 @@ import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.metadata.MchMetadata;
-import org.openmrs.module.kenyaemr.util.EmrUtils;
 
 import java.util.Collection;
 import java.util.Map;
@@ -76,22 +72,23 @@ public class NotTakenPcrConfirmatoryTestCalculation extends BaseEmrCalculation i
 		Concept hivExposed = Dictionary.getConcept(Dictionary.EXPOSURE_TO_HIV);
 		Concept pcrCornfirmatory = Dictionary.getConcept(Dictionary.CONFIRMATION_STATUS);
 
-		//get an encounter type for HEI completion
+		// get an encounter type for HEI completion
 		EncounterType hei_completion_encounterType = MetadataUtils.getEncounterType(MchMetadata._EncounterType.MCHCS_HEI_COMPLETION);
+		// load all patient last encounters of HEI completion encounter type
+		CalculationResultMap lastEncounters = Calculations.lastEncounter(hei_completion_encounterType, inMchcsProgram, context);
 
 		CalculationResultMap ret = new CalculationResultMap();
 
 		for (Integer ptId : cohort) {
 			boolean notTakenConfirmatoryPcrTest = false;
 
-			Patient patient = Context.getPatientService().getPatient(ptId);
-			Encounter lastMchcsHeiCompletion = EmrUtils.lastEncounter(patient, hei_completion_encounterType);
+			Encounter lastMchcsHeiCompletion = EmrCalculationUtils.encounterResultForPatient(lastEncounters, ptId);
 
 			Obs hivStatusObs = EmrCalculationUtils.obsResultForPatient(lastChildHivStatus, ptId);
 			Obs pcrObs = EmrCalculationUtils.obsResultForPatient(lastPcrTest, ptId);
 			Obs pcrTestConfirmObs =  EmrCalculationUtils.obsResultForPatient(lastPcrStatus, ptId);
 
-			if ( inMchcsProgram.contains(ptId) && hivStatusObs != null && hivStatusObs.getValueCoded().equals(hivExposed)) {
+			if (inMchcsProgram.contains(ptId) && hivStatusObs != null && hivStatusObs.getValueCoded().equals(hivExposed)) {
 				if (lastMchcsHeiCompletion != null) {
 					if (pcrObs == null || pcrTestConfirmObs == null || pcrTestConfirmObs.getValueCoded() != pcrCornfirmatory){
 						notTakenConfirmatoryPcrTest = true;
