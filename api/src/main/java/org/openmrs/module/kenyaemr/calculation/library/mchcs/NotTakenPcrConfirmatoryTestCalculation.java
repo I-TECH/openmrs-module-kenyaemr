@@ -79,17 +79,15 @@ public class NotTakenPcrConfirmatoryTestCalculation extends BaseEmrCalculation i
 
 		//get an encounter type for HEI completion
 		EncounterType hei_completion_encounterType = MetadataUtils.getEncounterType(MchMetadata._EncounterType.MCHCS_HEI_COMPLETION);
+		//load all patient last encounters of HEI completion encounter type
+		CalculationResultMap lastEncounters = Calculations.lastEncounter(hei_completion_encounterType,inMchcsProgram,context);
 
 		CalculationResultMap ret = new CalculationResultMap();
 
 		for (Integer ptId : cohort) {
 			boolean notTakenConfirmatoryPcrTest = false;
 
-			/**
-			 * TODO rework this so it doesn't load patient's last encounter inside the calculation loop
-			 */
-			PatientWrapper patient = new PatientWrapper(Context.getPatientService().getPatient(ptId));
-			Encounter lastMchcsHeiCompletion = patient.lastEncounter(hei_completion_encounterType);
+			Encounter lastMchcsHeiCompletion = EmrCalculationUtils.encounterResultForPatient(lastEncounters, ptId);
 
 			Obs hivStatusObs = EmrCalculationUtils.obsResultForPatient(lastChildHivStatus, ptId);
 			Obs pcrObs = EmrCalculationUtils.obsResultForPatient(lastPcrTest, ptId);
