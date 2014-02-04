@@ -14,84 +14,68 @@
 
 	<!-- ===================== App descriptors ===================== -->
 
-	<bean id="kenyaemr.app.registration" class="org.openmrs.module.appframework.domain.AppDescriptor">
-		<constructor-arg name="id" value="kenyaemr.registration" />
-		<constructor-arg name="description" value="" />
-		<constructor-arg name="label" value="Registration" />
-		<constructor-arg name="url" value="kenyaemr/registration/registrationHome.page" />
-		<constructor-arg name="icon" value="kenyaui:apps/registration.png" />
-		<constructor-arg name="tinyIcon" value="" />
-		<constructor-arg name="order" value="100" />
+	<bean id="kenyaemr.app.registration" factory-bean="kenyacore.appFactoryBean" factory-method="createInstance">
+		<constructor-arg value="kenyaemr.registration" />
+		<constructor-arg value="Registration" />
+		<constructor-arg value="kenyaemr/registration/registrationHome.page" />
+		<constructor-arg value="kenyaui:apps/registration.png" />
+		<constructor-arg value="100" />
 	</bean>
 
-	<bean id="kenyaemr.app.intake" class="org.openmrs.module.appframework.domain.AppDescriptor">
-		<constructor-arg name="id" value="kenyaemr.intake" />
-		<constructor-arg name="description" value="" />
-		<constructor-arg name="label" value="Triage" />
-		<constructor-arg name="url" value="kenyaemr/intake/intakeHome.page" />
-		<constructor-arg name="icon" value="kenyaui:apps/intake.png" />
-		<constructor-arg name="tinyIcon" value="" />
-		<constructor-arg name="order" value="200" />
+	<bean id="kenyaemr.app.intake" factory-bean="kenyacore.appFactoryBean" factory-method="createInstance">
+		<constructor-arg value="kenyaemr.intake" />
+		<constructor-arg value="Triage" />
+		<constructor-arg value="kenyaemr/intake/intakeHome.page" />
+		<constructor-arg value="kenyaui:apps/intake.png" />
+		<constructor-arg value="200" />
 	</bean>
 
-	<bean id="kenyaemr.app.clinician" class="org.openmrs.module.appframework.domain.AppDescriptor">
-		<constructor-arg name="id" value="kenyaemr.medicalEncounter" />
-		<constructor-arg name="description" value="" />
-		<constructor-arg name="label" value="Clinician" />
-		<constructor-arg name="url" value="kenyaemr/clinician/clinicianHome.page" />
-		<constructor-arg name="icon" value="kenyaui:apps/clinician.png" />
-		<constructor-arg name="tinyIcon" value="" />
-		<constructor-arg name="order" value="300" />
+	<bean id="kenyaemr.app.clinician" factory-bean="kenyacore.appFactoryBean" factory-method="createInstance">
+		<constructor-arg value="kenyaemr.medicalEncounter" />
+		<constructor-arg value="Clinician" />
+		<constructor-arg value="kenyaemr/clinician/clinicianHome.page" />
+		<constructor-arg value="kenyaui:apps/clinician.png" />
+		<constructor-arg value="300" />
 	</bean>
 
-	<bean id="kenyaemr.app.chart" class="org.openmrs.module.appframework.domain.AppDescriptor">
-		<constructor-arg name="id" value="kenyaemr.medicalChart" />
-		<constructor-arg name="description" value="" />
-		<constructor-arg name="label" value="Chart" />
-		<constructor-arg name="url" value="kenyaemr/chart/chartHome.page" />
-		<constructor-arg name="icon" value="kenyaui:apps/chart.png" />
-		<constructor-arg name="tinyIcon" value="" />
-		<constructor-arg name="order" value="400" />
+	<bean id="kenyaemr.app.chart" factory-bean="kenyacore.appFactoryBean" factory-method="createInstance">
+		<constructor-arg value="kenyaemr.medicalChart" />
+		<constructor-arg value="Chart" />
+		<constructor-arg value="kenyaemr/chart/chartHome.page" />
+		<constructor-arg value="kenyaui:apps/chart.png" />
+		<constructor-arg value="400" />
 	</bean>
 
-	<bean id="kenyaemr.app.reports" class="org.openmrs.module.appframework.domain.AppDescriptor">
-		<constructor-arg name="id" value="kenyaemr.reports" />
-		<constructor-arg name="description" value="" />
-		<constructor-arg name="label" value="Reports" />
-		<constructor-arg name="url" value="kenyaemr/reports/reportsHome.page" />
-		<constructor-arg name="icon" value="kenyaui:apps/reports.png" />
-		<constructor-arg name="tinyIcon" value="" />
-		<constructor-arg name="order" value="500" />
+	<bean id="kenyaemr.app.reports" factory-bean="kenyacore.appFactoryBean" factory-method="createInstance">
+		<constructor-arg value="kenyaemr.reports" />
+		<constructor-arg value="Reports" />
+		<constructor-arg value="kenyaemr/reports/reportsHome.page" />
+		<constructor-arg value="kenyaui:apps/reports.png" />
+		<constructor-arg value="500" />
 	</bean>
 
-	<bean id="kenyaemr.app.directory" class="org.openmrs.module.appframework.domain.AppDescriptor">
-		<constructor-arg name="id" value="kenyaemr.directory" />
-		<constructor-arg name="description" value="" />
-		<constructor-arg name="label" value="Directory" />
-		<constructor-arg name="url" value="kenyaemr/directory/directoryHome.page" />
-		<constructor-arg name="icon" value="kenyaui:apps/directory.png" />
-		<constructor-arg name="tinyIcon" value="" />
-		<constructor-arg name="order" value="600" />
+	<bean id="kenyaemr.app.directory" factory-bean="kenyacore.appFactoryBean" factory-method="createInstance">
+		<constructor-arg value="kenyaemr.directory" />
+		<constructor-arg value="Directory" />
+		<constructor-arg value="kenyaemr/directory/directoryHome.page" />
+		<constructor-arg value="kenyaui:apps/directory.png" />
+		<constructor-arg value="600" />
 	</bean>
 
-	<bean id="kenyaemr.app.facilities" class="org.openmrs.module.appframework.domain.AppDescriptor">
-		<constructor-arg name="id" value="kenyaemr.facilities" />
-		<constructor-arg name="description" value="" />
-		<constructor-arg name="label" value="Facilities" />
-		<constructor-arg name="url" value="kenyaemr/facilities/facilitiesHome.page" />
-		<constructor-arg name="icon" value="kenyaui:apps/facilities.png" />
-		<constructor-arg name="tinyIcon" value="" />
-		<constructor-arg name="order" value="700" />
+	<bean id="kenyaemr.app.facilities" factory-bean="kenyacore.appFactoryBean" factory-method="createInstance">
+		<constructor-arg value="kenyaemr.facilities" />
+		<constructor-arg value="Facilities" />
+		<constructor-arg value="kenyaemr/facilities/facilitiesHome.page" />
+		<constructor-arg value="kenyaui:apps/facilities.png" />
+		<constructor-arg value="700" />
 	</bean>
 
-	<bean id="kenyaemr.app.admin" class="org.openmrs.module.appframework.domain.AppDescriptor">
-		<constructor-arg name="id" value="kenyaemr.admin" />
-		<constructor-arg name="description" value="" />
-		<constructor-arg name="label" value="Admin" />
-		<constructor-arg name="url" value="kenyaemr/admin/adminHome.page" />
-		<constructor-arg name="icon" value="kenyaui:apps/admin.png" />
-		<constructor-arg name="tinyIcon" value="" />
-		<constructor-arg name="order" value="800" />
+	<bean id="kenyaemr.app.admin" factory-bean="kenyacore.appFactoryBean" factory-method="createInstance">
+		<constructor-arg value="kenyaemr.admin" />
+		<constructor-arg value="Admin" />
+		<constructor-arg value="kenyaemr/admin/adminHome.page" />
+		<constructor-arg value="kenyaui:apps/admin.png" />
+		<constructor-arg value="800" />
 	</bean>
 
 	<!-- ===================== Lab test catalogs ===================== -->
