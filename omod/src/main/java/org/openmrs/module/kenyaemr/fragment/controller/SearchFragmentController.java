@@ -70,7 +70,7 @@ public class SearchFragmentController {
 	/**
 	 * Searches for patients by name, identifier, age, visit status
 	 * @param query the name or identifier
-	 * @param which all|checked-in
+	 * @param which all|checked-in|non-accounts
 	 * @param ui the UI utils
 	 * @return the simple patients
 	 */
@@ -83,35 +83,40 @@ public class SearchFragmentController {
 			return Collections.emptyList();
 		}
 
-		boolean onlyCheckedIn = "checked-in".equals(which);
-
 		// Run main patient search query based on id/name
 		List<Patient> matchedByNameOrID = Context.getPatientService().getPatients(query);
 
-		// Gather up active visits for all patients
-		List<Visit> activeVisits = Context.getVisitService().getVisits(null, null, null, null, null, null, null, null, null, false, false);
-		Map<Patient, Visit> patientActiveVisits = new HashMap<Patient, Visit>();
-		for (Visit v : activeVisits) {
-			patientActiveVisits.put(v.getPatient(), v);
+		// Gather up active visits for all patients. These are attached to the returned patient representations.
+		Map<Patient, Visit> patientActiveVisits = getActiveVisitsByPatients();
+
+		List<Patient> matched = new ArrayList<Patient>();
+
+		// If query wasn't long enough to be searched on, and they've requested checked-in patients, return the list
+		// of checked in patients
+		if (StringUtils.isBlank(query) && "checked-in".equals(which)) {
+			matched.addAll(patientActiveVisits.keySet());
+			Collections.sort(matched, new PersonByNameComparator()); // Sort by person name
 		}
-
-		Set<Patient> checkedIn = patientActiveVisits.keySet();
-
-		List<Patient> matched;
-
-		// If query wasn't long enough to be searched on, just use list of checked-in patients
-		if (StringUtils.isBlank(query)) {
-			matched = new ArrayList<Patient>(checkedIn);
-
-			// List needs sorted by person name
-			Collections.sort(matched, new PersonByNameComparator());
-		}
-		// If it was then combine returned results with checked-in set
 		else {
-			matched = new ArrayList<Patient>();
-			for (Patient patient : matchedByNameOrID) {
-				if (!onlyCheckedIn || checkedIn.contains(patient)) {
-					matched.add(patient);
+			if ("all".equals(which)) {
+				matched = matchedByNameOrID;
+			}
+			else if ("checked-in".equals(which)) {
+				for (Patient patient : matchedByNameOrID) {
+					if (patientActiveVisits.containsKey(patient)) {
+						matched.add(patient);
+					}
+				}
+			}
+			else if ("non-accounts".equals(which)) {
+				Set<Person> accounts = new HashSet<Person>();
+				accounts.addAll(getUsersByPersons(query).keySet());
+				accounts.addAll(getProvidersByPersons(query).keySet());
+
+				for (Patient patient : matchedByNameOrID) {
+					if (!accounts.contains(patient)) {
+						matched.add(patient);
+					}
 				}
 			}
 		}
@@ -215,21 +220,11 @@ public class SearchFragmentController {
 		Map<Person, Provider> providerAccounts = new HashMap<Person, Provider>();
 
 		if (!"providers".equals(which)) {
-			List<User> users = Context.getUserService().getUsers(query, null, true);
-			for (User u : users) {
-				if (!"daemon".equals(u.getUsername())) {
-					userAccounts.put(u.getPerson(), u);
-				}
-			}
+			userAccounts = getUsersByPersons(query);
 		}
 
 		if (!"users".equals(which)) {
-			List<Provider> providers = Context.getProviderService().getProviders(query, null, null, null);
-			for (Provider p : providers) {
-				if (p.getPerson() != null) {
-					providerAccounts.put(p.getPerson(), p);
-				}
-			}
+			providerAccounts = getProvidersByPersons(query);
 		}
 
 		Set<Person> persons = new TreeSet<Person>(new PersonByNameComparator());
@@ -312,6 +307,50 @@ public class SearchFragmentController {
 		}
 
 		return simpleConcepts;
+	}
+
+	/**
+	 * Helper method to get all active visits organised by patient
+	 * @return the map of patients to active visits
+	 */
+	protected Map<Patient, Visit> getActiveVisitsByPatients() {
+		List<Visit> activeVisits = Context.getVisitService().getVisits(null, null, null, null, null, null, null, null, null, false, false);
+		Map<Patient, Visit> patientToVisits = new HashMap<Patient, Visit>();
+		for (Visit visit : activeVisits) {
+			patientToVisits.put(visit.getPatient(), visit);
+		}
+		return patientToVisits;
+	}
+
+	/**
+	 * Helper method to get users organised by person
+	 * @param query the name query
+	 * @return the map of persons to users
+	 */
+	protected Map<Person, User> getUsersByPersons(String query) {
+		Map<Person, User> personToUsers = new HashMap<Person, User>();
+		for (User user : Context.getUserService().getUsers(query, null, true)) {
+			if (!"daemon".equals(user.getUsername())) {
+				personToUsers.put(user.getPerson(), user);
+			}
+		}
+		return personToUsers;
+	}
+
+	/**
+	 * Helper method to get all providers organised by person
+	 * @param query the name query
+	 * @return the map of persons to providers
+	 */
+	protected Map<Person, Provider> getProvidersByPersons(String query) {
+		Map<Person, Provider> personToProviders = new HashMap<Person, Provider>();
+		List<Provider> providers = Context.getProviderService().getProviders(query, null, null, null);
+		for (Provider p : providers) {
+			if (p.getPerson() != null) {
+				personToProviders.put(p.getPerson(), p);
+			}
+		}
+		return personToProviders;
 	}
 
 	/**

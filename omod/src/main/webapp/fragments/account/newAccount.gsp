@@ -1,24 +1,17 @@
 <%
-	ui.decorateWith("kenyaui", "panel", [ heading: "Create New Account" ])
+	ui.decorateWith("kenyaui", "panel", [ heading: "Step 2: Register Account" ])
 
-	def personFields = [
+	def nameFields = [
 			[
-					[ formFieldName: "personName.givenName", label: "Given Name", class: java.lang.String ],
-					[ formFieldName: "personName.familyName", label: "Family Name", class: java.lang.String ]
-			],
+					[ object: command, property: "personName.familyName", label: "Surname *" ],
+					[ object: command, property: "personName.givenName", label: "First name *" ],
+			]
+	]
+
+	def contactFields = [
 			[
-					ui.decorate("kenyaui", "labeled", [label: "Sex"], """
-							<input type="radio" name="gender" value="F" id="gender-F"/>
-							<label for="gender-F">Female</label>
-							<input type="radio" name="gender" value="M" id="gender-M"/>
-							<label for="gender-M">Male</label>
-							<span id="gender-F-error" class="error" style="display: none"></span>
-							<span id="gender-M-error" class="error" style="display: none"></span>
-					""")
-			],
-			[
-					[ formFieldName: "telephoneContact", label: "Telephone contact", class: java.lang.String ],
-					[ formFieldName: "emailAddress", label: "Email address", class: java.lang.String ]
+					[ object: command, property: "telephoneContact", label: "Telephone contact" ],
+					[ object: command, property: "emailAddress", label: "Email address" ]
 			]
 	]
 	
@@ -61,11 +54,35 @@
 <form id="create-account-form" method="post" action="${ ui.actionLink("kenyaemr", "account/newAccount", "submit") }">
 	<div class="ke-form-globalerrors" style="display: none"></div>
 
+	<% if (command.original) { %>
+	<input type="hidden" name="personId" value="${ command.original.id }"/>
+	<% } %>
+
 	<fieldset>
 		<legend>Person Info</legend>
-		<% personFields.each { %>
-			${ ui.includeFragment("kenyaui", "widget/rowOfFields", [ fields: it ]) }
+
+		<% nameFields.each { %>
+		${ ui.includeFragment("kenyaui", "widget/rowOfFields", [ fields: it ]) }
 		<% } %>
+
+		<table>
+			<tr>
+				<td valign="top">
+					<label class="ke-field-label">Sex *</label>
+					<span class="ke-field-content">
+						<input type="radio" name="gender" value="F" id="gender-F" ${ command.gender == 'F' ? 'checked="checked"' : '' }/> Female
+						<input type="radio" name="gender" value="M" id="gender-M" ${ command.gender == 'M' ? 'checked="checked"' : '' }/> Male
+						<span id="gender-F-error" class="error" style="display: none"></span>
+						<span id="gender-M-error" class="error" style="display: none"></span>
+					</span>
+				</td>
+			</tr>
+		</table>
+
+		<% contactFields.each { %>
+		${ ui.includeFragment("kenyaui", "widget/rowOfFields", [ fields: it ]) }
+		<% } %>
+
 	</fieldset>
 
 	<fieldset>

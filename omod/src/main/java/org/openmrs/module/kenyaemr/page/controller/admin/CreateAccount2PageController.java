@@ -12,9 +12,9 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.page.controller.registration;
+package org.openmrs.module.kenyaemr.page.controller.admin;
 
-import org.openmrs.Person;
+import org.openmrs.Patient;
 import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyaui.annotation.AppPage;
 import org.openmrs.ui.framework.page.PageModel;
@@ -23,12 +23,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 /**
  * Create patient step 2 (registration details) page
  */
-@AppPage(EmrConstants.APP_REGISTRATION)
-public class CreatePatient2PageController {
-	
-	public void controller(@RequestParam(value = "personId", required = false) Person person,
+@AppPage(EmrConstants.APP_ADMIN)
+public class CreateAccount2PageController {
+
+	public void controller(@RequestParam(value = "patientId", required = false) Patient patient,
 						   PageModel model) {
 
-		model.addAttribute("person", person);
+		model.addAttribute("patient", patient);
 	}
 }

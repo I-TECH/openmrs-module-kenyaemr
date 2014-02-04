@@ -33,12 +33,14 @@ import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.BindParams;
+import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.annotation.MethodParam;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 import org.openmrs.util.OpenmrsUtil;
 import org.openmrs.validator.ValidateUtil;
 import org.springframework.validation.Errors;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpSession;
 
@@ -47,15 +49,17 @@ import javax.servlet.http.HttpSession;
  */
 public class NewAccountFragmentController {
 	
-	public void controller(FragmentModel model) {
-		model.addAttribute("account", newAccountForm());
+	public void controller(@FragmentParam(value = "person", required = false) Person person,
+						   FragmentModel model) {
+
+		model.addAttribute("command", newCreateAccountForm(person));
 	}
 
 	/**
 	 * Handles form submission
 	 */
 	@AppAction(EmrConstants.APP_ADMIN)
-	public SimpleObject submit(@MethodParam("newAccountForm") @BindParams NewAccountForm form,
+	public SimpleObject submit(@MethodParam("newCreateAccountForm") @BindParams CreateAccountForm form,
 							   UiUtils ui,
 							   HttpSession session,
 							   @SpringBean KenyaUiUtils kenyaUi) {
@@ -69,11 +73,18 @@ public class NewAccountFragmentController {
 		return SimpleObject.create("personId", person.getId());
 	}
 	
-	public NewAccountForm newAccountForm() {
-		return new NewAccountForm();
+	public CreateAccountForm newCreateAccountForm(@RequestParam(value = "personId", required = false) Person person) {
+		if (person != null) {
+			return new CreateAccountForm(person);
+		}
+		else {
+			return new CreateAccountForm();
+		}
 	}
 	
-	public class NewAccountForm extends AbstractWebForm {
+	public class CreateAccountForm extends AbstractWebForm {
+
+		private Person original;
 		
 		private PersonName personName;
 		
@@ -93,8 +104,19 @@ public class NewAccountFragmentController {
 		
 		private String providerIdentifier;
 		
-		public NewAccountForm() {
+		public CreateAccountForm() {
 			personName = new PersonName();
+		}
+
+		public CreateAccountForm(Person original) {
+			this.original = original;
+
+			this.personName = original.getPersonName();
+			this.gender = original.getGender();
+
+			PersonWrapper wrapper = new PersonWrapper(original);
+			this.telephoneContact = wrapper.getTelephoneContact();
+			this.emailAddress = wrapper.getEmailAddress();
 		}
 		
 		/**
@@ -193,7 +215,7 @@ public class NewAccountFragmentController {
 		 * @return the person
 		 */
 		public Person createPerson() {
-			Person ret = new Person();
+			Person ret = original != null ? original : new Person();
 			ret.addName(personName);
 			ret.setGender(gender);
 
@@ -223,7 +245,11 @@ public class NewAccountFragmentController {
 			ret.setPerson(person);
 			ret.setIdentifier(providerIdentifier);
 			return ret;
-		}	
+		}
+
+		public Person getOriginal() {
+			return original;
+		}
 		
 		/**
 		 * @return the personName

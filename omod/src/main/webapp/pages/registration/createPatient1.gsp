@@ -14,7 +14,8 @@
 	<div class="ke-panel-frame">
 		<div class="ke-panel-heading">Help</div>
 		<div class="ke-panel-content">
-			Patients, providers and users all exist as persons in the EMR. If the registrant has worked at this facility then you should search and see if they already exist as a person.
+			If the registrant has worked at this facility then you should search to see if they already exist as a
+			person in the EMR and create the patient record from that.
 		</div>
 	</div>
 </div>
@@ -28,7 +29,7 @@
 	</script>
 
 	<div class="ke-panel-frame">
-		<div class="ke-panel-heading">Step 1: Select Person</div>
+		<div class="ke-panel-heading">Step 1: Select Existing Account</div>
 		<div class="ke-panel-controls" style="overflow: auto" ng-controller="AccountSearchForm" ng-init="init('non-patients')">
 			<table style="width: 100%">
 				<tr>

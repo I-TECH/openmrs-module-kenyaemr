@@ -4,7 +4,7 @@
 	ui.includeJavascript("kenyaemr", "controllers/patient.js")
 
 	def menuItems = [
-			[ label: "Back to home", iconProvider: "kenyaui", icon: "buttons/back.png", label: "Back to previous step", href: ui.pageLink("kenyaemr", "registration/createPatient1") ]
+			[ label: "Back to previous step", iconProvider: "kenyaui", icon: "buttons/back.png", href: ui.pageLink("kenyaemr", "registration/createPatient1") ]
 	]
 %>
 <div class="ke-page-sidebar">

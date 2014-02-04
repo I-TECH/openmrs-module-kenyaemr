@@ -2,7 +2,7 @@
 	ui.decorateWith("kenyaemr", "standardPage", [ layout: "sidebar" ])
 
 	def menuItems = [
-			[ label: "Create a new account", iconProvider: "kenyaui", icon: "buttons/account_add.png", href: ui.pageLink("kenyaemr", "admin/editAccount") ],
+			[ label: "Create a new account", iconProvider: "kenyaui", icon: "buttons/account_add.png", href: ui.pageLink("kenyaemr", "admin/createAccount1") ],
 			[ label: "Back to home", iconProvider: "kenyaui", icon: "buttons/back.png", href: ui.pageLink("kenyaemr", "admin/adminHome") ]
 	]
 %>
