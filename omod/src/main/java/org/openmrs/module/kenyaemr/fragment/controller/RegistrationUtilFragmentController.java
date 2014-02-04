@@ -128,7 +128,7 @@ public class RegistrationUtilFragmentController {
 	 * @param visit the visit
 	 * @return the simplified visit
 	 */
-	@AppAction(EmrConstants.APP_REGISTRATION)
+	@SharedAction({EmrConstants.APP_REGISTRATION, EmrConstants.APP_INTAKE, EmrConstants.APP_CLINICIAN})
 	public SimpleObject startVisit(@BindParams("visit") @Validate Visit visit, UiUtils ui) {
 		if (visit.getLocation() == null)
 			visit.setLocation(Context.getService(KenyaEmrService.class).getDefaultLocation());
@@ -145,7 +145,7 @@ public class RegistrationUtilFragmentController {
 	 * @param visit the visit
 	 * @return the simplified visit
 	 */
-	@SharedAction({EmrConstants.APP_REGISTRATION, EmrConstants.APP_CLINICIAN})
+	@SharedAction({EmrConstants.APP_REGISTRATION, EmrConstants.APP_INTAKE, EmrConstants.APP_CLINICIAN})
 	public SimpleObject stopVisit(@RequestParam("visitId") Visit visit, @RequestParam("stopDatetime") Date stopDatetime, UiUtils ui) {
 		visit.setStopDatetime(stopDatetime);
 

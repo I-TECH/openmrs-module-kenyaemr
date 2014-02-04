@@ -11,7 +11,7 @@
 			fragmentProvider: "kenyaemr",
 			fragment: "registrationUtil",
 			action: "stopVisit",
-			onSuccessCallback: "ui.navigate('kenyaemr', 'registration/registrationViewPatient', { patientId: " + patient.id + " });",
+			onSuccessCallback: "ui.reloadPage()",
 			submitLabel: ui.message("general.submit"),
 			cancelLabel: ui.message("general.cancel")
 	]) %>
@@ -23,6 +23,9 @@
 			commandObject: newCurrentVisit,
 			hiddenProperties: [ "patient" ],
 			properties: [ "visitType", "startDatetime" ],
+			extraFields: [
+					[ hiddenInputName: "appId", value: currentApp.id ]
+			],
 			propConfig: [
 					"visitType": [ type: "radio" ],
 			],
@@ -33,7 +36,7 @@
 			fragmentProvider: "kenyaemr",
 			fragment: "registrationUtil",
 			action: "startVisit",
-			onSuccessCallback: "ui.navigate('kenyaemr', 'registration/registrationViewPatient', { patientId: " + patient.id + " });",
+			onSuccessCallback: "ui.reloadPage()",
 			submitLabel: ui.message("general.submit"),
 			cancelLabel: ui.message("general.cancel")
 	]) %>
