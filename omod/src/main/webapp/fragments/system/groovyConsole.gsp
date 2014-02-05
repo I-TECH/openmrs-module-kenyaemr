@@ -9,6 +9,9 @@
 	.CodeMirror {
 		border: 1px #ccc solid;
 	}
+	.CodeMirror * {
+		font-family: monospace;
+	}
 	.groovy-eval {
 		background-color: #EEE;
 		font-family: monospace;
