@@ -24,11 +24,15 @@
 <script type="text/javascript">
 	jQuery(function() {
 		jQuery('#groovy-run').click(function() {
-			var script = editor.getValue();
-			jQuery.post(ui.fragmentActionLink('kenyaemr', 'developer/developerUtils', 'executeGroovy', { returnFormat: 'json' }), { script: script }, function(data) {
+			var button = jQuery(this);
+			button.prop('disabled', true);
+
+			jQuery.post(ui.fragmentActionLink('kenyaemr', 'developer/developerUtils', 'executeGroovy', { returnFormat: 'json' }), { script: editor.getValue() }, function(data) {
 				jQuery('#groovy-result').html(data.result);
 				jQuery('#groovy-output').html(data.output);
 				jQuery('#groovy-stacktrace').html(data.stacktrace);
+
+				button.prop('disabled', false);
 			}, 'json');
 		});
 	});
