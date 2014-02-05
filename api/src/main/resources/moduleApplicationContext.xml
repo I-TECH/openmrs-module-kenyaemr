@@ -78,6 +78,14 @@
 		<constructor-arg value="800" />
 	</bean>
 
+	<bean id="kenyaemr.app.developer" factory-bean="kenyacore.appFactoryBean" factory-method="createInstance">
+		<constructor-arg value="kenyaemr.developer" />
+		<constructor-arg value="Developer" />
+		<constructor-arg value="kenyaemr/developer/developerHome.page" />
+		<constructor-arg value="kenyaui:apps/developer.png" />
+		<constructor-arg value="1000000" />
+	</bean>
+
 	<!-- ===================== Lab test catalogs ===================== -->
 
 	<!-- Acts as a base class and means we can avoid specifying the full class name each time -->
