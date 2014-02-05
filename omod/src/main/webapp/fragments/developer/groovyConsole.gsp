@@ -25,11 +25,11 @@
 	jQuery(function() {
 		jQuery('#groovy-run').click(function() {
 			var script = editor.getValue();
-			ui.getFragmentActionAsJson('kenyaemr', 'developer/developerUtils', 'executeGroovy', { script: script }, function(data) {
+			jQuery.post(ui.fragmentActionLink('kenyaemr', 'developer/developerUtils', 'executeGroovy', { returnFormat: 'json' }), { script: script }, function(data) {
 				jQuery('#groovy-result').html(data.result);
 				jQuery('#groovy-output').html(data.output);
 				jQuery('#groovy-stacktrace').html(data.stacktrace);
-			});
+			}, 'json');
 		});
 	});
 
