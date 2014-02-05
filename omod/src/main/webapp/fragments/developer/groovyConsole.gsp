@@ -25,7 +25,7 @@
 	jQuery(function() {
 		jQuery('#groovy-run').click(function() {
 			var script = editor.getValue();
-			ui.getFragmentActionAsJson('kenyaemr', 'system/groovyConsole', 'execute', { script: script }, function(data) {
+			ui.getFragmentActionAsJson('kenyaemr', 'developer/developerUtils', 'executeGroovy', { script: script }, function(data) {
 				jQuery('#groovy-result').html(data.result);
 				jQuery('#groovy-output').html(data.output);
 				jQuery('#groovy-stacktrace').html(data.stacktrace);
@@ -51,11 +51,11 @@ ${ ui.includeFragment("kenyaui", "widget/tabMenu", [ items: [
 ] ]) }
 
 <div class="ke-tab" data-tabid="result">
-	<pre class="groovy-eval" id="groovy-result"></pre>
+	<pre class="groovy-eval" id="groovy-result"> </pre>
 </div>
 <div class="ke-tab" data-tabid="output">
-	<pre class="groovy-eval" id="groovy-output"></pre>
+	<pre class="groovy-eval" id="groovy-output"> </pre>
 </div>
 <div class="ke-tab" data-tabid="stacktrace">
-	<pre class="groovy-eval" id="groovy-stacktrace"></pre>
+	<pre class="groovy-eval" id="groovy-stacktrace"> </pre>
 </div>

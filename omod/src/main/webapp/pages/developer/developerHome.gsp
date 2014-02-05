@@ -3,6 +3,7 @@
 
 	def menuItems = [
 			[ label: "Overview", iconProvider: "kenyaui", icon: "buttons/developer_overview.png", active: (section == "overview"), href: ui.pageLink("kenyaemr", "developer/developerHome") ],
+			[ label: "Profiling", iconProvider: "kenyaui", icon: "buttons/profiling.png", active: (section == "profiling"), href: ui.pageLink("kenyaemr", "developer/developerHome", [ section: "profiling" ]) ],
 			[ label: "Groovy console", iconProvider: "kenyaui", icon: "buttons/groovy.png", active: (section == "groovy"), href: ui.pageLink("kenyaemr", "developer/developerHome", [ section: "groovy" ]) ]
 	]
 %>
@@ -11,8 +12,10 @@
 </div>
 
 <div class="ke-page-content">
-<% if (section == "groovy") { %>
-	${ ui.includeFragment("kenyaemr", "system/groovyConsole") }
+<% if (section == "profiling") { %>
+${ ui.includeFragment("kenyaemr", "developer/profiling") }
+<% } else if (section == "groovy") { %>
+${ ui.includeFragment("kenyaemr", "developer/groovyConsole") }
 <% } else { %>
 	<div class="ke-panel-frame">
 		<div class="ke-panel-heading">Overview</div>
