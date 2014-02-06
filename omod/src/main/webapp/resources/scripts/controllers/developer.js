@@ -74,10 +74,22 @@ kenyaemrApp.controller('GroovyConsoleController', ['$scope', '$http', '$window',
 	$scope.stacktrace = ' ';
 
 	/**
+	 * Initializes the controller
+	 * @param tabsId id of the tabs widget for evaluation output
+	 */
+	$scope.init = function(tabsId) {
+		$scope.tabsId = tabsId;
+	}
+
+	/**
 	 * Runs the current script fetched from 'window.codeMirrorEditor'
 	 */
 	$scope.run = function() {
 		$scope.running = true;
+		$scope.result = ' ';
+		$scope.output = ' ';
+		$scope.stacktrace = ' ';
+
 		var script = $window.codeMirrorEditor.getValue();
 		var actionUrl = ui.fragmentActionLink('kenyaemr', 'developer/developerUtils', 'executeGroovy', { returnFormat: 'json' });
 		var postData = jQuery.param({ script: script });
@@ -87,6 +99,17 @@ kenyaemrApp.controller('GroovyConsoleController', ['$scope', '$http', '$window',
 				$scope.result = data.result;
 				$scope.output = data.output;
 				$scope.stacktrace = data.stacktrace;
+
+				var activeTab = 'result';
+
+				if (data.stacktrace) {
+					activeTab = 'stacktrace';
+				} else if (data.output) {
+					activeTab = 'output';
+				}
+
+				kenyatab.activateTab($scope.tabsId, activeTab);
+
 				$scope.running = false;
 			});
 	};

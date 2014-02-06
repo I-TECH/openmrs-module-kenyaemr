@@ -43,21 +43,22 @@
 
 <% if (section == "content") { %>
 
-	${ ui.includeFragment("kenyaui", "widget/tabMenu", [ items: [
-			[ label: "Apps", tabid: "apps" ],
-			[ label: "Programs", tabid: "programs" ],
-			[ label: "Forms", tabid: "forms" ],
-			[ label: "Identifiers", tabid: "identifiers" ],
-			[ label: "Flags", tabid: "flags" ],
-			[ label: "Reports", tabid: "reports" ]
-	] ]) }
-
-	<div class="ke-tab" data-tabid="apps">${ ui.includeFragment("kenyaemr", "system/appsContent") }</div>
-	<div class="ke-tab" data-tabid="programs">${ ui.includeFragment("kenyaemr", "system/programsContent") }</div>
-	<div class="ke-tab" data-tabid="forms">${ ui.includeFragment("kenyaemr", "system/formsContent") }</div>
-	<div class="ke-tab" data-tabid="identifiers">${ ui.includeFragment("kenyaemr", "system/identifiersContent") }</div>
-	<div class="ke-tab" data-tabid="flags">${ ui.includeFragment("kenyaemr", "system/flagsContent") }</div>
-	<div class="ke-tab" data-tabid="reports">${ ui.includeFragment("kenyaemr", "system/reportsContent") }</div>
+	<div id="content-tabs" class="ke-tabs">
+		<div class="ke-tabmenu">
+			<div class="ke-tabmenu-item" data-tabid="apps">Apps</div>
+			<div class="ke-tabmenu-item" data-tabid="programs">Programs</div>
+			<div class="ke-tabmenu-item" data-tabid="forms">Forms</div>
+			<div class="ke-tabmenu-item" data-tabid="identifiers">Identifiers</div>
+			<div class="ke-tabmenu-item" data-tabid="flags">Flags</div>
+			<div class="ke-tabmenu-item" data-tabid="reports">Reports</div>
+		</div>
+		<div class="ke-tab" data-tabid="apps">${ ui.includeFragment("kenyaemr", "system/appsContent") }</div>
+		<div class="ke-tab" data-tabid="programs">${ ui.includeFragment("kenyaemr", "system/programsContent") }</div>
+		<div class="ke-tab" data-tabid="forms">${ ui.includeFragment("kenyaemr", "system/formsContent") }</div>
+		<div class="ke-tab" data-tabid="identifiers">${ ui.includeFragment("kenyaemr", "system/identifiersContent") }</div>
+		<div class="ke-tab" data-tabid="flags">${ ui.includeFragment("kenyaemr", "system/flagsContent") }</div>
+		<div class="ke-tab" data-tabid="reports">${ ui.includeFragment("kenyaemr", "system/reportsContent") }</div>
+	</div>
 
 <% } else if (section == "modules") { %>
 	${ ui.includeFragment("kenyaemr", "system/loadedModules") }

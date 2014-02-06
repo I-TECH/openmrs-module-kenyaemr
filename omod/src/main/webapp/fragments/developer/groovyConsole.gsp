@@ -32,25 +32,28 @@
 	});
 </script>
 
-<div ng-controller="GroovyConsoleController">
+<div ng-controller="GroovyConsoleController" ng-init="init('groovy-eval-tabs')">
 	<div class="ke-panel-content">
 		<textarea id="groovy-script" rows="10" cols="100"></textarea>
 
-		${ ui.includeFragment("kenyaui", "widget/tabMenu", [ items: [
-					[ label: "Result", tabid: "result" ],
-					[ label: "Output", tabid: "output" ],
-					[ label: "Stacktrace", tabid: "stacktrace" ]
-		] ]) }
+		<div id="groovy-eval-tabs" class="ke-tabs">
+			<div class="ke-tabmenu">
+				<div class="ke-tabmenu-item" data-tabid="result">Result</div>
+				<div class="ke-tabmenu-item" data-tabid="output">Output</div>
+				<div class="ke-tabmenu-item" data-tabid="stacktrace">Stacktrace</div>
+			</div>
 
-		<div class="ke-tab" data-tabid="result">
-			<pre class="groovy-eval">{{ result }}</pre>
+			<div class="ke-tab" data-tabid="result">
+				<pre class="groovy-eval">{{ result }}</pre>
+			</div>
+			<div class="ke-tab" data-tabid="output">
+				<pre class="groovy-eval">{{ output }}</pre>
+			</div>
+			<div class="ke-tab" data-tabid="stacktrace">
+				<pre class="groovy-eval">{{ stacktrace }}</pre>
+			</div>
 		</div>
-		<div class="ke-tab" data-tabid="output">
-			<pre class="groovy-eval">{{ output }}</pre>
-		</div>
-		<div class="ke-tab" data-tabid="stacktrace">
-			<pre class="groovy-eval">{{ stacktrace }}</pre>
-		</div>
+
 	</div>
 
 	<div class="ke-panel-controls">
