@@ -1,5 +1,5 @@
 <%
-	ui.decorateWith("kenyaui", "panel", [ heading: "Patient Validation", frameOnly: true ]);
+	ui.decorateWith("kenyaui", "panel", [ heading: "Patient Validation", frameOnly: true ])
 
 	ui.includeJavascript("kenyaemr", "controllers/developer.js")
 %>

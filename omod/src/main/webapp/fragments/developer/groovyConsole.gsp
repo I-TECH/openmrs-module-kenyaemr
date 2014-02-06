@@ -1,13 +1,16 @@
 <%
-	ui.decorateWith("kenyaui", "panel", [ heading: "Groovy Console" ]);
+	ui.decorateWith("kenyaui", "panel", [ heading: "Groovy Console", frameOnly: true ]);
 
 	ui.includeJavascript("kenyaemr", "codemirror.js");
 	ui.includeJavascript("kenyaemr", "codemirror-groovy.js");
 	ui.includeCss("kenyaemr", "codemirror.css");
+
+	ui.includeJavascript("kenyaemr", "controllers/developer.js");
 %>
 <style type="text/css">
 	.CodeMirror {
 		border: 1px #ccc solid;
+		margin-bottom: 5px;
 	}
 	.CodeMirror * {
 		font-family: monospace;
@@ -19,47 +22,38 @@
 	}
 </style>
 
-<textarea id="groovy-script" rows="10" cols="100"></textarea>
-
 <script type="text/javascript">
 	jQuery(function() {
-		jQuery('#groovy-run').click(function() {
-			var button = jQuery(this);
-			button.prop('disabled', true);
-
-			jQuery.post(ui.fragmentActionLink('kenyaemr', 'developer/developerUtils', 'executeGroovy', { returnFormat: 'json' }), { script: editor.getValue() }, function(data) {
-				jQuery('#groovy-result').html(data.result);
-				jQuery('#groovy-output').html(data.output);
-				jQuery('#groovy-stacktrace').html(data.stacktrace);
-
-				button.prop('disabled', false);
-			}, 'json');
+		window.codeMirrorEditor = CodeMirror.fromTextArea(jQuery('#groovy-script').get(0), {
+			lineNumbers: true,
+			indentWithTabs: true,
+			mode: 'text/x-groovy'
 		});
-	});
-
-	var editor = CodeMirror.fromTextArea(jQuery('#groovy-script').get(0), {
-		lineNumbers: true,
-		indentWithTabs: true,
-		mode: 'text/x-groovy'
 	});
 </script>
 
-<div style="padding: 5px 0 10px 0">
-	<button id="groovy-run"><img src="${ ui.resourceLink("images/glyphs/start.png") }" /> Run</button>
-</div>
+<div ng-controller="GroovyConsoleController">
+	<div class="ke-panel-content">
+		<textarea id="groovy-script" rows="10" cols="100"></textarea>
 
-${ ui.includeFragment("kenyaui", "widget/tabMenu", [ items: [
-			[ label: "Result", tabid: "result" ],
-			[ label: "Output", tabid: "output" ],
-			[ label: "Stacktrace", tabid: "stacktrace" ]
-] ]) }
+		${ ui.includeFragment("kenyaui", "widget/tabMenu", [ items: [
+					[ label: "Result", tabid: "result" ],
+					[ label: "Output", tabid: "output" ],
+					[ label: "Stacktrace", tabid: "stacktrace" ]
+		] ]) }
 
-<div class="ke-tab" data-tabid="result">
-	<pre class="groovy-eval" id="groovy-result"> </pre>
-</div>
-<div class="ke-tab" data-tabid="output">
-	<pre class="groovy-eval" id="groovy-output"> </pre>
-</div>
-<div class="ke-tab" data-tabid="stacktrace">
-	<pre class="groovy-eval" id="groovy-stacktrace"> </pre>
+		<div class="ke-tab" data-tabid="result">
+			<pre class="groovy-eval">{{ result }}</pre>
+		</div>
+		<div class="ke-tab" data-tabid="output">
+			<pre class="groovy-eval">{{ output }}</pre>
+		</div>
+		<div class="ke-tab" data-tabid="stacktrace">
+			<pre class="groovy-eval">{{ stacktrace }}</pre>
+		</div>
+	</div>
+
+	<div class="ke-panel-controls">
+		<button ng-click="run()" ng-disabled="running"><img src="${ ui.resourceLink("images/glyphs/start.png") }" /> Run</button>
+	</div>
 </div>

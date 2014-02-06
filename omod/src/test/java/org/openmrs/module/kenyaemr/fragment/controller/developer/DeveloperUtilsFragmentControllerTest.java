@@ -55,18 +55,26 @@ public class DeveloperUtilsFragmentControllerTest extends BaseModuleWebContextSe
 	}
 
 	/**
-	 * @see DeveloperUtilsFragmentController#enableReportProfiling()
+	 * @see DeveloperUtilsFragmentController#getReportProfilingEnabled()
 	 */
 	@Test
-	public void enableReportProfiling() {
+	public void getReportProfilingEnabled() {
+		Assert.assertThat(controller.getReportProfilingEnabled(), hasEntry("enabled", (Object) Boolean.FALSE));
+	}
+
+	/**
+	 * @see DeveloperUtilsFragmentController#setReportProfilingEnabled(boolean)
+	 */
+	@Test
+	public void setReportProfilingEnabled() {
 		Level oldProfilerLevel = LogManager.getLogger(EvaluationProfiler.class).getLevel();
 		Level oldServiceLevel = LogManager.getLogger("org.openmrs.api").getLevel();
 
-		controller.enableReportProfiling();
+		controller.setReportProfilingEnabled(true);
 		Assert.assertThat(LogManager.getLogger(EvaluationProfiler.class).getLevel(), is(Level.TRACE));
 		Assert.assertThat(LogManager.getLogger("org.openmrs.api").getLevel(), is(Level.WARN));
 
-		controller.disableReportProfiling();
+		controller.setReportProfilingEnabled(false);
 		Assert.assertThat(LogManager.getLogger(EvaluationProfiler.class).getLevel(), nullValue());
 		Assert.assertThat(LogManager.getLogger("org.openmrs.api").getLevel(), is(Level.INFO));
 

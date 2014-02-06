@@ -51,21 +51,26 @@ public class DeveloperUtilsFragmentController {
 	}
 
 	/**
-	 * Enables profiling of reports
+	 * Gets whether report profiling is enabled
 	 */
 	@AppAction(EmrConstants.APP_DEVELOPER)
-	public void enableReportProfiling() {
-		LogManager.getLogger(EvaluationProfiler.class).setLevel(Level.TRACE);
-		LogManager.getLogger("org.openmrs.api").setLevel(Level.WARN); // Switch off general service call logging
+	public SimpleObject getReportProfilingEnabled() {
+		return SimpleObject.create("enabled", Level.TRACE.equals(LogManager.getLogger(EvaluationProfiler.class).getLevel()));
 	}
 
 	/**
-	 * Disables profiling of reports
+	 * Enables profiling of reports
 	 */
 	@AppAction(EmrConstants.APP_DEVELOPER)
-	public void disableReportProfiling() {
-		LogManager.getLogger(EvaluationProfiler.class).setLevel(null);
-		LogManager.getLogger("org.openmrs.api").setLevel(Level.INFO); // Switch on general service call logging
+	public void setReportProfilingEnabled(@RequestParam("enabled") boolean enabled) {
+		if (enabled) {
+			LogManager.getLogger(EvaluationProfiler.class).setLevel(Level.TRACE);
+			LogManager.getLogger("org.openmrs.api").setLevel(Level.WARN); // Switch off general service call logging
+		}
+		else {
+			LogManager.getLogger(EvaluationProfiler.class).setLevel(null);
+			LogManager.getLogger("org.openmrs.api").setLevel(Level.INFO); // Switch on general service call logging
+		}
 	}
 
 	/**

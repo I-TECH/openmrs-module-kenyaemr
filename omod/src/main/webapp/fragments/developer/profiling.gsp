@@ -1,32 +1,18 @@
 <%
-	ui.decorateWith("kenyaui", "panel", [ heading: "Report profiling", frameOnly: true ]);
+	ui.decorateWith("kenyaui", "panel", [ heading: "Report profiling", frameOnly: true ])
 
-	def currentLogLevel = org.apache.log4j.LogManager.getLogger("org.openmrs.module.reporting.evaluation.EvaluationProfiler").getLevel()
-	def reportProfilingEnabled = org.apache.log4j.Level.TRACE.equals(currentLogLevel)
+	ui.includeJavascript("kenyaemr", "controllers/developer.js")
 %>
-<script type="text/javascript">
-	jQuery(function() {
-		jQuery('#report-profiling-enable').click(function() {
-			ui.getFragmentActionAsJson('kenyaemr', 'developer/developerUtils', 'enableReportProfiling', {}, function() {
-				ui.reloadPage();
-			});
-		});
-		jQuery('#report-profiling-disable').click(function() {
-			ui.getFragmentActionAsJson('kenyaemr', 'developer/developerUtils', 'disableReportProfiling', {}, function() {
-				ui.reloadPage();
-			});
-		});
-	});
-</script>
 
-<div class="ke-panel-content">
-	${ ui.includeFragment("kenyaui", "widget/dataPoint", [ label: "Report evaluation profiling", value: reportProfilingEnabled ? "ON" : "OFF" ]) }
-</div>
+<div ng-controller="ReportProfilingController" ng-init="init()">
+	<div class="ke-panel-content">
+		<div class="ke-datapoint">
+			<span class="ke-label">Report evaluation profiling</span>: <span class="ke-value">{{ enabled ? "ON" : "OFF" }}</span>
+		</div>
+	</div>
 
-<div class="ke-panel-controls">
-	<% if (!reportProfilingEnabled) { %>
-	<button id="report-profiling-enable"><img src="${ ui.resourceLink("images/glyphs/enable.png") }" /> Enable</button>
-	<% } else { %>
-	<button id="report-profiling-disable"><img src="${ ui.resourceLink("images/glyphs/disable.png") }" /> Disable</button>
-	<% } %>
+	<div class="ke-panel-controls">
+		<button ng-if="!enabled" ng-click="setEnabled(true)"><img src="${ ui.resourceLink("images/glyphs/enable.png") }" /> Enable</button>
+		<button ng-if="enabled" ng-click="setEnabled(false)"><img src="${ ui.resourceLink("images/glyphs/disable.png") }" /> Disable</button>
+	</div>
 </div>
