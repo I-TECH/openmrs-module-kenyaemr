@@ -1,5 +1,5 @@
 <%
-	ui.decorateWith("kenyaui", "panel", [ heading: "Profiling", frameOnly: true ]);
+	ui.decorateWith("kenyaui", "panel", [ heading: "Report profiling", frameOnly: true ]);
 
 	def currentLogLevel = org.apache.log4j.LogManager.getLogger("org.openmrs.module.reporting.evaluation.EvaluationProfiler").getLevel()
 	def reportProfilingEnabled = org.apache.log4j.Level.TRACE.equals(currentLogLevel)
