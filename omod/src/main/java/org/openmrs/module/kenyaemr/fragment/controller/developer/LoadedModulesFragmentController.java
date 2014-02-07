@@ -12,7 +12,7 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.fragment.controller.system;
+package org.openmrs.module.kenyaemr.fragment.controller.developer;
 
 import org.openmrs.module.Module;
 import org.openmrs.module.ModuleFactory;

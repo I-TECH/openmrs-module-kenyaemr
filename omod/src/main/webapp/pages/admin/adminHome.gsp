@@ -14,13 +14,6 @@
 					],
 					[
 							iconProvider: "kenyaui",
-							icon: "buttons/admin_modules.png",
-							label: "Modules",
-							active: (section == "modules"),
-							href: ui.pageLink("kenyaemr", "admin/adminHome", [ section: "modules" ])
-					],
-					[
-							iconProvider: "kenyaui",
 							icon: "buttons/admin_content.png",
 							label: "Content",
 							active: (section == "content"),
@@ -60,8 +53,6 @@
 		<div class="ke-tab" data-tabid="reports">${ ui.includeFragment("kenyaemr", "system/reportsContent") }</div>
 	</div>
 
-<% } else if (section == "modules") { %>
-	${ ui.includeFragment("kenyaemr", "system/loadedModules") }
 <% } else { %>
 	${ ui.includeFragment("kenyaemr", "system/systemInformation") }
 	${ ui.includeFragment("kenyaemr", "system/databaseSummary") }
