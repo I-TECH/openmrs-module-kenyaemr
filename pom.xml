@@ -46,7 +46,7 @@
 		<htmlwidgetsVersion>1.6.5</htmlwidgetsVersion>
 		<idgenVersion>2.6</idgenVersion>
 		<kenyacoreVersion>1.0.1</kenyacoreVersion>
-		<kenyauiVersion>1.13.4</kenyauiVersion>
+		<kenyauiVersion>1.13.5</kenyauiVersion>
 		<logicVersion>0.5.2</logicVersion>
 		<metadatadeployVersion>1.0</metadatadeployVersion>
 		<metadatamappingVersion>1.0.1</metadatamappingVersion>
@@ -57,7 +57,7 @@
 
 		<!-- Additional distro modules -->
 		<groovyVersion>2.2.4</groovyVersion>
-		<kenyadqVersion>0.2.8</kenyadqVersion>
+		<kenyadqVersion>0.2.9</kenyadqVersion>
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ssZ</maven.build.timestamp.format>
