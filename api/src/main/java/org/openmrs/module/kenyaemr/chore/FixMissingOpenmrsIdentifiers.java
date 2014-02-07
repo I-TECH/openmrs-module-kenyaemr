@@ -19,9 +19,9 @@ import org.openmrs.Patient;
 import org.openmrs.PatientIdentifier;
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.api.PatientService;
-import org.openmrs.api.context.Context;
 import org.openmrs.module.idgen.service.IdentifierSourceService;
 import org.openmrs.module.kenyacore.chore.AbstractChore;
+import org.openmrs.module.kenyacore.chore.Requires;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
@@ -32,9 +32,10 @@ import java.io.PrintWriter;
 
 /**
  * Prior to 13.3.1, the EditPatientFragmentController appears to have sometimes saved a patient without properly saving
- * their required OpenMRS ID
+ * their required OpenMRS ID / MRN.
  */
 @Component("kenyaemr.chore.fixMissingOpenmrsIdentifiers")
+@Requires({ VoidDuplicateIdentifiers.class })
 public class FixMissingOpenmrsIdentifiers extends AbstractChore {
 
 	@Autowired
@@ -56,16 +57,28 @@ public class FixMissingOpenmrsIdentifiers extends AbstractChore {
 
 		int fixed = 0;
 
-		for (Patient patient : Context.getPatientService().getAllPatients()) {
+		for (Patient patient : patientService.getAllPatients()) {
+
+			// Generate new OpenMRS ID if needed
 			if (patient.getPatientIdentifier(openmrsIdType) == null) {
 				String generated = idgenService.generateIdentifier(openmrsIdType, FixMissingOpenmrsIdentifiers.class.getSimpleName());
-				PatientIdentifier generatedOpenmrsId = new PatientIdentifier(generated, openmrsIdType, defaultLocation);
-				patient.addIdentifier(generatedOpenmrsId);
-				patientService.savePatientIdentifier(generatedOpenmrsId);
+				PatientIdentifier openmrsID = new PatientIdentifier(generated, openmrsIdType, defaultLocation);
+				patient.addIdentifier(openmrsID);
+
+				if (!patientHasPreferredId(patient)) {
+					openmrsID.setPreferred(true);
+				}
+
+				patientService.savePatientIdentifier(openmrsID);
 				fixed++;
 			}
 		}
 
 		output.println("Fixed " + fixed + " missing OpenMRS IDs");
+	}
+
+	protected boolean patientHasPreferredId(Patient patient) {
+		PatientIdentifier defId = patient.getPatientIdentifier();
+		return defId != null && defId.isPreferred();
 	}
 }
