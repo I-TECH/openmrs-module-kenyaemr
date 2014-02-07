@@ -32,7 +32,7 @@
 	});
 </script>
 
-<div ng-controller="GroovyConsoleController" ng-init="init('groovy-eval-tabs')">
+<div ng-controller="GroovyConsole" ng-init="init('groovy-eval-tabs')">
 	<div class="ke-panel-content">
 		<textarea id="groovy-script" rows="10" cols="100"></textarea>
 

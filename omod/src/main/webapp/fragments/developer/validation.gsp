@@ -3,7 +3,7 @@
 
 	ui.includeJavascript("kenyaemr", "controllers/developer.js")
 %>
-<div ng-controller="PatientValidationController">
+<div ng-controller="PatientValidation">
 	<div class="ke-panel-content">
 		<table class="ke-table-vertical">
 			<thead>

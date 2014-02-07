@@ -15,7 +15,7 @@
 /**
  * Controller for report profiling
  */
-kenyaemrApp.controller('ReportProfilingController', ['$scope', '$http', function($scope, $http) {
+kenyaemrApp.controller('ReportProfiling', ['$scope', '$http', function($scope, $http) {
 
 	/**
 	 * Initializes the controller
@@ -43,7 +43,7 @@ kenyaemrApp.controller('ReportProfilingController', ['$scope', '$http', function
 /**
  * Controller for patient validation
  */
-kenyaemrApp.controller('PatientValidationController', ['$scope', '$http', function($scope, $http) {
+kenyaemrApp.controller('PatientValidation', ['$scope', '$http', function($scope, $http) {
 
 	$scope.results = [];
 	$scope.loading = false;
@@ -66,7 +66,7 @@ kenyaemrApp.controller('PatientValidationController', ['$scope', '$http', functi
 /**
  * Controller for groovy console
  */
-kenyaemrApp.controller('GroovyConsoleController', ['$scope', '$http', '$window', function($scope, $http, $window) {
+kenyaemrApp.controller('GroovyConsole', ['$scope', '$http', '$window', function($scope, $http, $window) {
 
 	$scope.running = false;
 	$scope.result = ' ';

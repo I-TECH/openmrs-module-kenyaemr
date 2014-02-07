@@ -4,7 +4,7 @@
 	ui.includeJavascript("kenyaemr", "controllers/developer.js")
 %>
 
-<div ng-controller="ReportProfilingController" ng-init="init()">
+<div ng-controller="ReportProfiling" ng-init="init()">
 	<div class="ke-panel-content">
 		<div class="ke-datapoint">
 			<span class="ke-label">Report evaluation profiling</span>: <span class="ke-value">{{ enabled ? "ON" : "OFF" }}</span>
