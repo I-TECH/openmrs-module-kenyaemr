@@ -12,7 +12,7 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.update;
+package org.openmrs.module.kenyaemr.chore;
 
 import org.openmrs.Location;
 import org.openmrs.Patient;
