@@ -23,9 +23,10 @@ ${ ui.includeFragment("kenyaemr", "developer/groovyConsole") }
 	<div class="ke-panel-frame">
 		<div class="ke-panel-heading">Overview</div>
 		<div class="ke-panel-content">
-			You are currently logged in the super user. Misuse of this account to perform unauthorised activities is a
-			disciplinary offence. This account has sole access to the legacy OpenMRS user interface which you can access
-			from here.
+			<div class="ke-warning">
+			You are currently logged in as a developer. Misuse of this account to perform unauthorised activities is a
+			disciplinary offence.
+			</div>
 
 			<div style="text-align: center; padding-top: 20px">
 				<button onclick="ui.navigate('/' + OPENMRS_CONTEXT_PATH + '/admin')">

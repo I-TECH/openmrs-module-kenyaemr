@@ -10,7 +10,7 @@
 
 	def contactFields = [
 			[
-					[ object: command, property: "telephoneContact", label: "Telephone contact" ],
+					[ object: command, property: "telephoneContact", label: "Telephone contact *" ],
 					[ object: command, property: "emailAddress", label: "Email address" ]
 			]
 	]
