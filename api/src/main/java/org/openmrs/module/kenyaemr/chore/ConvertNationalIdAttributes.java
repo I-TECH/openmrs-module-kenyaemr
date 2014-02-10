@@ -21,6 +21,7 @@ import org.openmrs.PatientIdentifierType;
 import org.openmrs.PersonAttribute;
 import org.openmrs.PersonAttributeType;
 import org.openmrs.api.PatientService;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyacore.chore.AbstractChore;
 import org.openmrs.module.kenyacore.chore.Requires;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
@@ -52,7 +53,11 @@ public class ConvertNationalIdAttributes extends AbstractChore {
 	 */
 	@Override
 	public void perform(PrintWriter output) throws Exception {
-		PersonAttributeType nidPerAttrType = MetadataUtils.getPersonAttributeType("73d34479-2f9e-4de3-a5e6-1f79a17459bb");
+		PersonAttributeType nidPerAttrType = Context.getPersonService().getPersonAttributeTypeByUuid("73d34479-2f9e-4de3-a5e6-1f79a17459bb");
+		if (nidPerAttrType == null) {
+			return; // Don't need to do anything as this must be a 13.3+ clean install
+		}
+
 		PatientIdentifierType nidPatIdType = MetadataUtils.getPatientIdentifierType(CommonMetadata._PatientIdentifierType.NATIONAL_ID);
 		Location defaultLocation = kenyaEmrService.getDefaultLocation();
 
