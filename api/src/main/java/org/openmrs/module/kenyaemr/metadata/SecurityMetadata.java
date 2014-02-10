@@ -60,6 +60,7 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 				EmrConstants.APP_CLINICIAN,
 				EmrConstants.APP_CHART,
 				EmrConstants.APP_REPORTS,
+				EmrConstants.APP_DIRECTORY,
 				EmrConstants.APP_FACILITIES,
 				EmrConstants.APP_ADMIN,
 				"kenyadq.dataQuality"
@@ -83,6 +84,7 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 				idSet(_Role.API_PRIVILEGES_VIEW_AND_EDIT),
 				idSet(
 						app(EmrConstants.APP_REGISTRATION),
+						app(EmrConstants.APP_DIRECTORY),
 						app(EmrConstants.APP_FACILITIES)
 				)
 		));
@@ -92,6 +94,7 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 				idSet(
 						app(EmrConstants.APP_REGISTRATION),
 						app(EmrConstants.APP_INTAKE),
+						app(EmrConstants.APP_DIRECTORY),
 						app(EmrConstants.APP_FACILITIES)
 				)
 		));
@@ -104,6 +107,7 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 						app(EmrConstants.APP_CLINICIAN),
 						app(EmrConstants.APP_CHART),
 						app(EmrConstants.APP_REPORTS),
+						app(EmrConstants.APP_DIRECTORY),
 						app(EmrConstants.APP_FACILITIES),
 						app("kenyadq.dataQuality")
 				)
@@ -117,6 +121,7 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 						app(EmrConstants.APP_CLINICIAN),
 						app(EmrConstants.APP_CHART),
 						app(EmrConstants.APP_REPORTS),
+						app(EmrConstants.APP_DIRECTORY),
 						app(EmrConstants.APP_FACILITIES)
 				)
 		));
@@ -126,6 +131,7 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 				idSet(
 						app(EmrConstants.APP_CHART),
 						app(EmrConstants.APP_REPORTS),
+						app(EmrConstants.APP_DIRECTORY),
 						app(EmrConstants.APP_FACILITIES),
 						app("kenyadq.dataQuality")
 				)
@@ -135,6 +141,7 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 				idSet(_Role.API_PRIVILEGES_VIEW_AND_EDIT),
 				idSet(
 						app(EmrConstants.APP_ADMIN),
+						app(EmrConstants.APP_DIRECTORY),
 						app(EmrConstants.APP_FACILITIES)
 				)
 		));
