@@ -32,7 +32,7 @@ import java.io.PrintWriter;
 
 /**
  * Prior to 13.3.1, the EditPatientFragmentController appears to have sometimes saved a patient without properly saving
- * their required OpenMRS ID / MRN.
+ * their required OpenMRS ID / MRN. This chore also fixes patient records with no preferred ID.
  */
 @Component("kenyaemr.chore.fixMissingOpenmrsIdentifiers")
 @Requires({ VoidDuplicateIdentifiers.class })
@@ -55,28 +55,44 @@ public class FixMissingOpenmrsIdentifiers extends AbstractChore {
 		PatientIdentifierType openmrsIdType = MetadataUtils.getPatientIdentifierType(CommonMetadata._PatientIdentifierType.OPENMRS_ID);
 		Location defaultLocation = kenyaEmrService.getDefaultLocation();
 
-		int fixed = 0;
+		int fixedMissing = 0, fixedNoPreferred = 0;
 
 		for (Patient patient : patientService.getAllPatients()) {
+			PatientIdentifier openmrsID = patient.getPatientIdentifier(openmrsIdType);
+			boolean needsSaved = false;
 
 			// Generate new OpenMRS ID if needed
-			if (patient.getPatientIdentifier(openmrsIdType) == null) {
+			if (openmrsID == null) {
 				String generated = idgenService.generateIdentifier(openmrsIdType, FixMissingOpenmrsIdentifiers.class.getSimpleName());
-				PatientIdentifier openmrsID = new PatientIdentifier(generated, openmrsIdType, defaultLocation);
+				openmrsID = new PatientIdentifier(generated, openmrsIdType, defaultLocation);
 				patient.addIdentifier(openmrsID);
 
-				if (!patientHasPreferredId(patient)) {
-					openmrsID.setPreferred(true);
-				}
+				fixedMissing++;
+				needsSaved = true;
+			}
 
+			// Every patient needs one preferred ID although we don't use this in KenyaEMR
+			if (!patientHasPreferredId(patient)) {
+				openmrsID.setPreferred(true);
+
+				fixedNoPreferred++;
+				needsSaved = true;
+			}
+
+			if (needsSaved) {
 				patientService.savePatientIdentifier(openmrsID);
-				fixed++;
 			}
 		}
 
-		output.println("Fixed " + fixed + " missing OpenMRS IDs");
+		output.println("Fixed " + fixedMissing + " missing OpenMRS IDs");
+		output.println("Fixed " + fixedNoPreferred + " patients with no preferred ID");
 	}
 
+	/**
+	 * Helper method to determine if a patient has a preferred ID
+	 * @param patient the patient
+	 * @return true if they have a preferred ID
+	 */
 	protected boolean patientHasPreferredId(Patient patient) {
 		PatientIdentifier defId = patient.getPatientIdentifier();
 		return defId != null && defId.isPreferred();
