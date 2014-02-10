@@ -17,8 +17,10 @@ package org.openmrs.module.kenyaemr.metadata;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.Role;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyacore.test.TestUtils;
+import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -51,9 +53,17 @@ public class SecurityMetadataTest extends BaseModuleContextSensitiveTest {
 	public void install_shouldInstallAllMetadata() {
 		securityMetadata.install();
 
-		Assert.assertThat(Context.getUserService().getRole("Registration"), notNullValue());
-
 		Context.flushSession();
+		Context.clearSession();
+
+		Role apiPrivilegesViewAndEdit = MetadataUtils.getRole("API Privileges (View and Edit)");
+		Role registration = MetadataUtils.getRole("Registration");
+
+		Assert.assertThat(registration.getInheritedRoles(), contains(apiPrivilegesViewAndEdit));
+		Assert.assertThat(registration.hasPrivilege("App: kenyaemr.registration"), is(true));
+		Assert.assertThat(registration.hasPrivilege("App: kenyaemr.directory"), is(true));
+		Assert.assertThat(registration.hasPrivilege("App: kenyaemr.facilities"), is(true));
+		Assert.assertThat(registration.hasPrivilege("App: kenyaemr.admin"), is(false));
 	}
 
 	/**
