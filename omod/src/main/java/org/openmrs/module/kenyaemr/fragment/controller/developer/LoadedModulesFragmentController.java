@@ -14,16 +14,20 @@
 
 package org.openmrs.module.kenyaemr.fragment.controller.developer;
 
+import org.apache.commons.lang.StringUtils;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.Module;
 import org.openmrs.module.ModuleFactory;
 import org.openmrs.ui.framework.SimpleObject;
+import org.openmrs.ui.framework.StandardModuleUiConfiguration;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Fragment for displaying all loaded modules
@@ -39,11 +43,41 @@ public class LoadedModulesFragmentController {
 			}
 		});
 
+		Set<String> uiFrameworkModules = getUiConfiguredModuleIds();
+
 		List<SimpleObject> modules = new ArrayList<SimpleObject>();
 		for (Module mod : sortedModules) {
-			modules.add(SimpleObject.create("name", mod.getName(), "version", mod.getVersion(), "started", mod.isStarted()));
+			modules.add(SimpleObject.create(
+					"id", mod.getModuleId(),
+					"name", mod.getName(),
+					"version", mod.getVersion(),
+					"started", mod.isStarted(),
+					"uiFrConfigured", uiFrameworkModules.contains(mod.getModuleId()),
+					"uiFrDevEnabled", isUiDevModeEnabled(mod.getModuleId())
+			));
 		}
 
 		model.addAttribute("modules", modules);
+	}
+
+	/**
+	 * Gets ids of all modules with a UI framework configuration
+	 * @return the module ids
+	 */
+	protected Set<String> getUiConfiguredModuleIds() {
+		Set<String> moduleIds = new HashSet<String>();
+
+		for (StandardModuleUiConfiguration uiConfig : Context.getRegisteredComponents(StandardModuleUiConfiguration.class)) {
+			moduleIds.add(uiConfig.getModuleId());
+		}
+		return moduleIds;
+	}
+
+	/**
+	 * Gets whether module with given id is UI framework dev mode enabled
+	 * @return true if dev mode is enabled
+	 */
+	protected boolean isUiDevModeEnabled(String moduleId) {
+		return StringUtils.isNotEmpty(System.getProperty("uiFramework.development." + moduleId));
 	}
 }
