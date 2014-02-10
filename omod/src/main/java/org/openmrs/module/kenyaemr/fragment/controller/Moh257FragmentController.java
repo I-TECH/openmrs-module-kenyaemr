@@ -16,6 +16,9 @@ package org.openmrs.module.kenyaemr.fragment.controller;
 
 import org.openmrs.*;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyacore.program.ProgramManager;
+import org.openmrs.module.kenyaemr.util.EmrUtils;
+import org.openmrs.module.kenyaemr.wrapper.PatientWrapper;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.regimen.RegimenManager;
@@ -41,7 +44,6 @@ public class Moh257FragmentController {
 						   UiUtils ui,
 						   @SpringBean RegimenManager regimenManager) {
 
-		//String[] page1FormUuids = { HivMetadata._Form.HIV_ENROLLMENT, HivMetadata._Form.FAMILY_HISTORY };
 		String[] page1FormUuids = {
 				HivMetadata._Form.MOH_257_FACE_PAGE,
 				HivMetadata._Form.MOH_257_ARV_THERAPY,
@@ -51,9 +53,11 @@ public class Moh257FragmentController {
 		List<SimpleObject> page1AvailableForms = new ArrayList<SimpleObject>();
 		List<Encounter> page1Encounters = new ArrayList<Encounter>();
 
+		PatientWrapper patientWrapper = new PatientWrapper(patient);
+
 		for (String page1FormUuid : page1FormUuids) {
 			Form page1Form = MetadataUtils.getForm(page1FormUuid);
-			List<Encounter> formEncounters = getPatientEncounterByForm(patient, page1Form);
+			List<Encounter> formEncounters = patientWrapper.allEncounters(page1Form);
 
 			if (formEncounters.size() == 0) {
 				page1AvailableForms.add(ui.simplifyObject(page1Form));
@@ -64,7 +68,7 @@ public class Moh257FragmentController {
 		}
 
 		Form moh257VisitForm = MetadataUtils.getForm(HivMetadata._Form.MOH_257_VISIT_SUMMARY);
-		List<Encounter> moh257VisitSummaryEncounters = getPatientEncounterByForm(patient, moh257VisitForm);
+		List<Encounter> moh257VisitSummaryEncounters = patientWrapper.allEncounters(moh257VisitForm);
 
 		model.addAttribute("page1AvailableForms", page1AvailableForms);
 		model.addAttribute("page1Encounters", page1Encounters);
@@ -74,15 +78,5 @@ public class Moh257FragmentController {
 		Concept masterSet = regimenManager.getMasterSetConcept("ARV");
 		RegimenChangeHistory arvHistory = RegimenChangeHistory.forPatient(patient, masterSet);
 		model.addAttribute("arvHistory", arvHistory);
-	}
-
-	/**
-	 * Convenience method to get encounters from the given form
-	 * @param patient the patient
-	 * @param form the form
-	 * @return the encounters
-	 */
-	private static List<Encounter> getPatientEncounterByForm(Patient patient, Form form) {
-		return Context.getEncounterService().getEncounters(patient, null, null, null, Collections.singleton(form), null, null, null, null, false);
 	}
 }
