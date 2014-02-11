@@ -14,9 +14,11 @@
 
 package org.openmrs.module.kenyaemr.wrapper;
 
+import org.openmrs.Location;
 import org.openmrs.Patient;
 import org.openmrs.module.kenyacore.wrapper.AbstractPatientWrapper;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
+import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 
 /**
  * Wrapper class for patients. Unfortunately this can't extend both AbstractPatientWrapper and PersonWrapper so we add a
@@ -42,6 +44,65 @@ public class PatientWrapper extends AbstractPatientWrapper {
 	 */
 	public PersonWrapper getPerson() {
 		return person;
+	}
+
+	/**
+	 * Gets the medical record number
+	 * @return the identifier value
+	 */
+	public String getMedicalRecordNumber() {
+		return getAsIdentifier(CommonMetadata._PatientIdentifierType.OPENMRS_ID);
+	}
+
+	/**
+	 * Gets the patient clinic number
+	 * @return the identifier value
+	 */
+	public String getPatientClinicNumber() {
+		return getAsIdentifier(CommonMetadata._PatientIdentifierType.PATIENT_CLINIC_NUMBER);
+	}
+
+	/**
+	 * Sets the patient clinic number
+	 * @param value the identifier value
+	 * @param location the identifier location
+	 */
+	public void setPatientClinicNumber(String value, Location location) {
+		setAsIdentifier(CommonMetadata._PatientIdentifierType.PATIENT_CLINIC_NUMBER, value, location);
+	}
+
+	/**
+	 * Gets the unique patient number
+	 * @return the identifier value
+	 */
+	public String getUniquePatientNumber() {
+		return getAsIdentifier(HivMetadata._PatientIdentifierType.UNIQUE_PATIENT_NUMBER);
+	}
+
+	/**
+	 * Sets the unique patient number
+	 * @param value the identifier value
+	 * @param location the identifier location
+	 */
+	public void setUniquePatientNumber(String value, Location location) {
+		setAsIdentifier(HivMetadata._PatientIdentifierType.UNIQUE_PATIENT_NUMBER, value, location);
+	}
+
+	/**
+	 * Gets the national id number
+	 * @return the identifier value
+	 */
+	public String getNationalIdNumber() {
+		return getAsIdentifier(CommonMetadata._PatientIdentifierType.NATIONAL_ID);
+	}
+
+	/**
+	 * Sets the national id number
+	 * @param value the identifier value
+	 * @param location the identifier location
+	 */
+	public void setNationalIdNumber(String value, Location location) {
+		setAsIdentifier(CommonMetadata._PatientIdentifierType.NATIONAL_ID, value, location);
 	}
 
 	/**

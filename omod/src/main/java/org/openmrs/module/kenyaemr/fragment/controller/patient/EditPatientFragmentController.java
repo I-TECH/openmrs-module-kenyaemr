@@ -144,9 +144,6 @@ public class EditPatientFragmentController {
 		private Person original;
 		private Location location;
 		private PersonName personName;
-		private PatientIdentifier nationalIdNumber;
-		private PatientIdentifier patientClinicNumber;
-		private PatientIdentifier hivIdNumber;
 		private Date birthdate;
 		private Boolean birthdateEstimated;
 		private String gender;
@@ -159,6 +156,10 @@ public class EditPatientFragmentController {
 		private Obs savedEducation;
 		private Boolean dead = false;
 		private Date deathDate;
+
+		private String nationalIdNumber;
+		private String patientClinicNumber;
+		private String uniquePatientNumber;
 
 		private String telephoneContact;
 		private String nameOfNextOfKin;
@@ -175,10 +176,6 @@ public class EditPatientFragmentController {
 
 			personName = new PersonName();
 			personAddress = new PersonAddress();
-
-			nationalIdNumber = new PatientIdentifier(null, MetadataUtils.getPatientIdentifierType(CommonMetadata._PatientIdentifierType.NATIONAL_ID), location);
-			patientClinicNumber = new PatientIdentifier(null, MetadataUtils.getPatientIdentifierType(CommonMetadata._PatientIdentifierType.PATIENT_CLINIC_NUMBER), location);
-			hivIdNumber = new PatientIdentifier(null, MetadataUtils.getPatientIdentifierType(HivMetadata._PatientIdentifierType.UNIQUE_PATIENT_NUMBER), location);
 		}
 
 		/**
@@ -217,26 +214,17 @@ public class EditPatientFragmentController {
 		public EditPatientForm(Patient patient) {
 			this((Person) patient);
 
-			PatientIdentifier id = patient.getPatientIdentifier(MetadataUtils.getPatientIdentifierType(CommonMetadata._PatientIdentifierType.PATIENT_CLINIC_NUMBER));
-			if (id != null) {
-				patientClinicNumber = id;
-			} else {
-				patientClinicNumber.setPatient(patient);
-			}
+			PatientWrapper wrapper = new PatientWrapper(patient);
 
-			id = patient.getPatientIdentifier(MetadataUtils.getPatientIdentifierType(HivMetadata._PatientIdentifierType.UNIQUE_PATIENT_NUMBER));
-			if (id != null) {
-				hivIdNumber = id;
-			} else {
-				hivIdNumber.setPatient(patient);
-			}
+			patientClinicNumber = wrapper.getPatientClinicNumber();
+			uniquePatientNumber = wrapper.getUniquePatientNumber();
+			nationalIdNumber = wrapper.getNationalIdNumber();
 
-			id = patient.getPatientIdentifier(MetadataUtils.getPatientIdentifierType(CommonMetadata._PatientIdentifierType.NATIONAL_ID));
-			if (id != null) {
-				nationalIdNumber = id;
-			} else {
-				nationalIdNumber.setPatient(patient);
-			}
+			nameOfNextOfKin = wrapper.getNextOfKinName();
+			nextOfKinRelationship = wrapper.getNextOfKinRelationship();
+			nextOfKinContact = wrapper.getNextOfKinContact();
+			nextOfKinAddress = wrapper.getNextOfKinAddress();
+			subChiefName = wrapper.getSubChiefName();
 
 			savedMaritalStatus = getLatestObs(patient, Dictionary.CIVIL_STATUS);
 			if (savedMaritalStatus != null) {
@@ -252,13 +240,6 @@ public class EditPatientFragmentController {
 			if (savedEducation != null) {
 				education = savedEducation.getValueCoded();
 			}
-
-			PatientWrapper wrapper = new PatientWrapper(patient);
-			nameOfNextOfKin = wrapper.getNextOfKinName();
-			nextOfKinRelationship = wrapper.getNextOfKinRelationship();
-			nextOfKinContact = wrapper.getNextOfKinContact();
-			nextOfKinAddress = wrapper.getNextOfKinAddress();
-			subChiefName = wrapper.getSubChiefName();
 		}
 
 		private Obs getLatestObs(Patient patient, String conceptIdentifier) {
@@ -298,16 +279,6 @@ public class EditPatientFragmentController {
 				errors.rejectValue("deathDate", "Must be empty if patient not deceased");
 			}
 
-			if (StringUtils.isBlank(hivIdNumber.getIdentifier())) {
-				hivIdNumber = null;
-			}
-			if (StringUtils.isBlank(nationalIdNumber.getIdentifier())) {
-				nationalIdNumber = null;
-			}
-			if (StringUtils.isBlank(patientClinicNumber.getIdentifier())) {
-				patientClinicNumber = null;
-			}
-
 			if (StringUtils.isNotBlank(telephoneContact)) {
 				validateField(errors, "telephoneContact", new TelephoneNumberValidator());
 			}
@@ -316,9 +287,10 @@ public class EditPatientFragmentController {
 			}
 
 			validateField(errors, "personAddress");
-			validateField(errors, "hivIdNumber");
-			validateField(errors, "nationalIdNumber");
-			validateField(errors, "patientClinicNumber");
+
+			validateIdentifierField(errors, "nationalIdNumber", CommonMetadata._PatientIdentifierType.NATIONAL_ID);
+			validateIdentifierField(errors, "patientClinicNumber", CommonMetadata._PatientIdentifierType.PATIENT_CLINIC_NUMBER);
+			validateIdentifierField(errors, "uniquePatientNumber", HivMetadata._PatientIdentifierType.UNIQUE_PATIENT_NUMBER);
 
 			// check birth date against future dates and really old dates
 			if (birthdate != null) {
@@ -331,6 +303,33 @@ public class EditPatientFragmentController {
 					if (birthdate.before(c.getTime())) {
 						errors.rejectValue("birthdate", "error.date.nonsensical");
 					}
+				}
+			}
+		}
+
+		/**
+		 * Validates an identifier field
+		 * @param errors
+		 * @param field
+		 * @param idTypeUuid
+		 */
+		protected void validateIdentifierField(Errors errors, String field, String idTypeUuid) {
+			String value = (String) errors.getFieldValue(field);
+
+			if (StringUtils.isNotBlank(value)) {
+				PatientIdentifierType idType = MetadataUtils.getPatientIdentifierType(idTypeUuid);
+				if (!value.matches(idType.getFormat())) {
+					errors.rejectValue(field, idType.getFormatDescription());
+				}
+
+				PatientIdentifier stub = new PatientIdentifier(value, idType, null);
+
+				if (original != null && original.isPatient()) { // Editing an existing patient
+					stub.setPatient((Patient) original);
+				}
+
+				if (Context.getPatientService().isIdentifierInUseByAnotherPatient(stub)) {
+					errors.rejectValue(field, "In use by another patient");
 				}
 			}
 		}
@@ -359,43 +358,6 @@ public class EditPatientFragmentController {
 			toSave.setDeathDate(deathDate);
 			toSave.setCauseOfDeath(dead ? Dictionary.getConcept(CAUSE_OF_DEATH_PLACEHOLDER) : null);
 
-			PatientIdentifier oldHivId = toSave.getPatientIdentifier(MetadataUtils.getPatientIdentifierType(HivMetadata._PatientIdentifierType.UNIQUE_PATIENT_NUMBER));
-			if (anyChanges(oldHivId, hivIdNumber, "identifier")) {
-				if (oldHivId != null) {
-					voidData(oldHivId);
-				}
-				toSave.addIdentifier(hivIdNumber);
-			}
-
-			PatientIdentifier oldNationalId = toSave.getPatientIdentifier(MetadataUtils.getPatientIdentifierType(CommonMetadata._PatientIdentifierType.NATIONAL_ID));
-			if (anyChanges(oldNationalId, nationalIdNumber, "identifier")) {
-				if (oldNationalId != null) {
-					voidData(oldNationalId);
-				}
-				toSave.addIdentifier(nationalIdNumber);
-			}
-
-			PatientIdentifier oldPatientClinicNumber = toSave.getPatientIdentifier(MetadataUtils.getPatientIdentifierType(CommonMetadata._PatientIdentifierType.PATIENT_CLINIC_NUMBER));
-			if (anyChanges(oldPatientClinicNumber, patientClinicNumber, "identifier")) {
-				if (oldPatientClinicNumber != null) {
-					voidData(oldPatientClinicNumber);
-				}
-				toSave.addIdentifier(patientClinicNumber);
-			}
-
-			{ // make sure everyone gets an OpenMRS ID
-				PatientIdentifierType openmrsIdType = MetadataUtils.getPatientIdentifierType(CommonMetadata._PatientIdentifierType.OPENMRS_ID);
-				if (toSave.getPatientIdentifier(openmrsIdType) == null) {
-					String generated = Context.getService(IdentifierSourceService.class).generateIdentifier(openmrsIdType, "Registration Create/Edit Patient");
-					PatientIdentifier generatedOpenmrsId = new PatientIdentifier(generated, openmrsIdType, location);
-					toSave.addIdentifier(generatedOpenmrsId);
-				}
-			}
-
-			if (!toSave.getPatientIdentifier().isPreferred()) {
-				toSave.getPatientIdentifier().setPreferred(true);
-			}
-
 			if (anyChanges(toSave.getPersonName(), personName, "givenName", "familyName")) {
 				if (toSave.getPersonName() != null) {
 					voidData(toSave.getPersonName());
@@ -411,20 +373,39 @@ public class EditPatientFragmentController {
 			}
 
 			PatientWrapper wrapper = new PatientWrapper(toSave);
+
 			wrapper.getPerson().setTelephoneContact(telephoneContact);
+			wrapper.setNationalIdNumber(nationalIdNumber, location);
+			wrapper.setPatientClinicNumber(patientClinicNumber, location);
+			wrapper.setUniquePatientNumber(uniquePatientNumber, location);
 			wrapper.setNextOfKinName(nameOfNextOfKin);
 			wrapper.setNextOfKinRelationship(nextOfKinRelationship);
 			wrapper.setNextOfKinContact(nextOfKinContact);
 			wrapper.setNextOfKinAddress(nextOfKinAddress);
 			wrapper.setSubChiefName(subChiefName);
 
+			// Make sure everyone gets an OpenMRS ID
+			PatientIdentifierType openmrsIdType = MetadataUtils.getPatientIdentifierType(CommonMetadata._PatientIdentifierType.OPENMRS_ID);
+			PatientIdentifier openmrsId = toSave.getPatientIdentifier(openmrsIdType);
+
+			if (openmrsId == null) {
+				String generated = Context.getService(IdentifierSourceService.class).generateIdentifier(openmrsIdType, "Registration");
+				openmrsId = new PatientIdentifier(generated, openmrsIdType, location);
+				toSave.addIdentifier(openmrsId);
+
+				if (!toSave.getPatientIdentifier().isPreferred()) {
+					openmrsId.setPreferred(true);
+				}
+			}
+
 			Patient ret = Context.getPatientService().savePatient(toSave);
 
-			// Explicitly save all identifiers
-			for (PatientIdentifier identifier : ret.getIdentifiers()) {
+			// Explicitly save all identifier objects including voided
+			for (PatientIdentifier identifier : toSave.getIdentifiers()) {
 				Context.getPatientService().savePatientIdentifier(identifier);
 			}
 
+			// Save remaining fields as obs
 			List<Obs> obsToSave = new ArrayList<Obs>();
 			List<Obs> obsToVoid = new ArrayList<Obs>();
 
@@ -517,42 +498,42 @@ public class EditPatientFragmentController {
 		/**
 		 * @return the patientClinicNumber
 		 */
-		public PatientIdentifier getPatientClinicNumber() {
+		public String getPatientClinicNumber() {
 			return patientClinicNumber;
 		}
 
 		/**
 		 * @param patientClinicNumber the patientClinicNumber to set
 		 */
-		public void setPatientClinicNumber(PatientIdentifier patientClinicNumber) {
+		public void setPatientClinicNumber(String patientClinicNumber) {
 			this.patientClinicNumber = patientClinicNumber;
 		}
 
 		/**
 		 * @return the hivIdNumber
 		 */
-		public PatientIdentifier getHivIdNumber() {
-			return hivIdNumber;
+		public String getUniquePatientNumber() {
+			return uniquePatientNumber;
 		}
 
 		/**
-		 * @param hivIdNumber the hivIdNumber to set
+		 * @param uniquePatientNumber the uniquePatientNumber to set
 		 */
-		public void setHivIdNumber(PatientIdentifier hivIdNumber) {
-			this.hivIdNumber = hivIdNumber;
+		public void setUniquePatientNumber(String uniquePatientNumber) {
+			this.uniquePatientNumber = uniquePatientNumber;
 		}
 
 		/**
 		 * @return the nationalIdNumber
 		 */
-		public PatientIdentifier getNationalIdNumber() {
+		public String getNationalIdNumber() {
 			return nationalIdNumber;
 		}
 
 		/**
 		 * @param nationalIdNumber the nationalIdNumber to set
 		 */
-		public void setNationalIdNumber(PatientIdentifier nationalIdNumber) {
+		public void setNationalIdNumber(String nationalIdNumber) {
 
 			this.nationalIdNumber = nationalIdNumber;
 		}

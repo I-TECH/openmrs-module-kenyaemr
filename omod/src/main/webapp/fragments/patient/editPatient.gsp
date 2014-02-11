@@ -77,20 +77,20 @@
 			<table>
 				<% if (command.inHivProgram) { %>
 					<tr>
-						<td class="ke-field-label">${ ui.format(command.hivIdNumber.identifierType) }</td>
-						<td>${ ui.includeFragment("kenyaui", "widget/field", [ object: command, property: "hivIdNumber.identifier" ]) }</td>
-						<td class="ke-field-instructions">(HIV program<% if (!command.hivIdNumber.identifier) { %>, if assigned<% } %>)</td>
+						<td class="ke-field-label">Unique Patient Number</td>
+						<td>${ ui.includeFragment("kenyaui", "widget/field", [ object: command, property: "uniquePatientNumber" ]) }</td>
+						<td class="ke-field-instructions">(HIV program<% if (!command.uniquePatientNumber) { %>, if assigned<% } %>)</td>
 					</tr>
 				<% } %>
 				<tr>
-					<td class="ke-field-label">${ ui.format(command.patientClinicNumber.identifierType) }</td>
-					<td>${ ui.includeFragment("kenyaui", "widget/field", [ object: command, property: "patientClinicNumber.identifier" ]) }</td>
-					<td class="ke-field-instructions"><% if (!command.patientClinicNumber.identifier) { %>(if available)<% } %></td>
+					<td class="ke-field-label">Patient Clinic Number</td>
+					<td>${ ui.includeFragment("kenyaui", "widget/field", [ object: command, property: "patientClinicNumber" ]) }</td>
+					<td class="ke-field-instructions"><% if (!command.patientClinicNumber) { %>(if available)<% } %></td>
 				</tr>
 				<tr>
-					<td class="ke-field-label">${ ui.format(command.nationalIdNumber.identifierType) } </td>
-					<td>${ ui.includeFragment("kenyaui", "widget/field", [ object: command, property: "nationalIdNumber.identifier" ]) }</td>
-					<td class="ke-field-instructions"><% if (!command.nationalIdNumber.identifier) { %>(if available)<% } %></td>
+					<td class="ke-field-label">National ID Number</td>
+					<td>${ ui.includeFragment("kenyaui", "widget/field", [ object: command, property: "nationalIdNumber" ]) }</td>
+					<td class="ke-field-instructions"><% if (!command.nationalIdNumber) { %>(if available)<% } %></td>
 				</tr>
 			</table>
 
