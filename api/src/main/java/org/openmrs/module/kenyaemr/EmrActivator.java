@@ -56,9 +56,13 @@ public class EmrActivator implements ModuleActivator {
 
 		Configuration.configure();
 
+		long start = System.currentTimeMillis();
+
 		CoreContext.getInstance().refresh();
 
-		log.info("Refreshed all content managers");
+		long time = System.currentTimeMillis() - start;
+
+		log.info("Refreshed all content managers in " + time + "ms");
 	}
 
 	/**
