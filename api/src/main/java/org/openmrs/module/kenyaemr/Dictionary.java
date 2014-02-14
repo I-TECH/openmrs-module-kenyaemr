@@ -29,7 +29,7 @@ public class Dictionary {
 	 * Gets a concept by an identifier (mapping or UUID)
 	 * @param identifier the identifier
 	 * @return the concept
-	 * @throws IllegalArgumentException if the concept could not be found
+	 * @throws org.openmrs.module.metadatadeploy.MissingMetadataException if the concept could not be found
 	 */
 	public static Concept getConcept(String identifier) {
 		return MetadataUtils.getConcept(identifier);
@@ -39,7 +39,7 @@ public class Dictionary {
 	 * Convenience method to fetch a list of concepts
 	 * @param identifiers the concept identifiers
 	 * @return the concepts
-	 * @throws IllegalArgumentException if a concept could not be found
+	 * @throws org.openmrs.module.metadatadeploy.MissingMetadataException if a concept could not be found
 	 */
 	public static List<Concept> getConcepts(String... identifiers) {
 		List<Concept> concepts = new ArrayList<Concept>();

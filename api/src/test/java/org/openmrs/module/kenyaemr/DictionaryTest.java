@@ -20,6 +20,7 @@ import org.junit.Test;
 import org.openmrs.Concept;
 import org.openmrs.ConceptNumeric;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.metadatadeploy.MissingMetadataException;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 import static org.hamcrest.Matchers.*;
@@ -57,7 +58,7 @@ public class DictionaryTest extends BaseModuleContextSensitiveTest {
 	/**
 	 * @see Dictionary#getConcept(String)
 	 */
-	@Test(expected = IllegalArgumentException.class)
+	@Test(expected = MissingMetadataException.class)
 	public void getConcept_shouldThrowExceptionForNonExistent() {
 		Dictionary.getConcept("PIH:XXXXXXXXXXXXXXX");
 	}
@@ -76,7 +77,7 @@ public class DictionaryTest extends BaseModuleContextSensitiveTest {
 	/**
 	 * @see Dictionary#getConcepts(String...)
 	 */
-	@Test(expected = IllegalArgumentException.class)
+	@Test(expected = MissingMetadataException.class)
 	public void getConcepts_shouldThrowExceptionForNonExistent() {
 		Dictionary.getConcepts(Dictionary.CD4_COUNT, "PIH:XXXXXXXXXXXXXXX");
 	}

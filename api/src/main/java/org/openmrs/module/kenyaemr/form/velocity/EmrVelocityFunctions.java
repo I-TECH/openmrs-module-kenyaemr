@@ -59,7 +59,7 @@ public class EmrVelocityFunctions {
 	 * Fetches a concept from its identifier
 	 * @param conceptIdentifier the concept identifier
 	 * @return the concept
-	 * @throws IllegalArgumentException if no such concept exists
+	 * @throws org.openmrs.module.metadatadeploy.MissingMetadataException if no such concept exists
 	 */
 	public Concept getConcept(String conceptIdentifier) {
 		return Dictionary.getConcept(conceptIdentifier);
