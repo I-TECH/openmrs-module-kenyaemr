@@ -49,7 +49,7 @@
 		<kenyacoreVersion>2.0-SNAPSHOT</kenyacoreVersion>
 		<kenyauiVersion>2.0-SNAPSHOT</kenyauiVersion>
 		<logicVersion>0.5.2</logicVersion>
-		<metadatadeployVersion>1.1-SNAPSHOT</metadatadeployVersion>
+		<metadatadeployVersion>1.1</metadatadeployVersion>
 		<metadatamappingVersion>1.0.1</metadatamappingVersion>
 		<metadatasharingVersion>1.1.8</metadatasharingVersion>
 		<reportingVersion>0.8.1</reportingVersion>
