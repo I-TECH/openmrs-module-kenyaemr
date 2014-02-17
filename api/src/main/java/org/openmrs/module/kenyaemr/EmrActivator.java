@@ -20,6 +20,8 @@ import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
 import org.openmrs.module.ModuleActivator;
 import org.openmrs.module.kenyacore.CoreContext;
+import org.openmrs.module.kenyacore.api.CoreService;
+import org.openmrs.module.kenyacore.chore.ChoreManager;
 import org.openmrs.module.kenyaemr.system.ExternalRequirement;
 
 /**
@@ -30,8 +32,10 @@ public class EmrActivator implements ModuleActivator {
 	protected static final Log log = LogFactory.getLog(EmrActivator.class);
 
 	static {
-		// Possibly bad practice but we really want to see the log messages
+		// Possibly bad practice but we really want to see the startup log messages
 		LogManager.getLogger(EmrActivator.class).setLevel(Level.INFO);
+		LogManager.getLogger(ChoreManager.class).setLevel(Level.INFO);
+		LogManager.getLogger(CoreService.class).setLevel(Level.INFO);
 	}
 
 	/**

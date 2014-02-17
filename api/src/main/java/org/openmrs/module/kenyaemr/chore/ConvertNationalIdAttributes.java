@@ -52,7 +52,7 @@ public class ConvertNationalIdAttributes extends AbstractChore {
 	 * @see org.openmrs.module.kenyacore.chore.AbstractChore#perform(java.io.PrintWriter)
 	 */
 	@Override
-	public void perform(PrintWriter output) throws Exception {
+	public void perform(PrintWriter output) {
 		PersonAttributeType nidPerAttrType = Context.getPersonService().getPersonAttributeTypeByUuid("73d34479-2f9e-4de3-a5e6-1f79a17459bb");
 		if (nidPerAttrType == null) {
 			return; // Don't need to do anything as this must be a 13.3+ clean install

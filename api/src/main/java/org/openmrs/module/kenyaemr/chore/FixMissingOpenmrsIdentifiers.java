@@ -19,6 +19,7 @@ import org.openmrs.Patient;
 import org.openmrs.PatientIdentifier;
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.api.PatientService;
+import org.openmrs.module.idgen.IdentifierSource;
 import org.openmrs.module.idgen.service.IdentifierSourceService;
 import org.openmrs.module.kenyacore.chore.AbstractChore;
 import org.openmrs.module.kenyacore.chore.Requires;
@@ -29,6 +30,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Prior to 13.3.1, the EditPatientFragmentController appears to have sometimes saved a patient without properly saving
@@ -51,19 +55,35 @@ public class FixMissingOpenmrsIdentifiers extends AbstractChore {
 	 * @see org.openmrs.module.kenyacore.chore.AbstractChore#perform(java.io.PrintWriter)
 	 */
 	@Override
-	public void perform(PrintWriter output) throws Exception {
+	public void perform(PrintWriter output) {
 		PatientIdentifierType openmrsIdType = MetadataUtils.getPatientIdentifierType(CommonMetadata._PatientIdentifierType.OPENMRS_ID);
+		IdentifierSource openmrsIdSource = idgenService.getAutoGenerationOption(openmrsIdType).getSource();
 		Location defaultLocation = kenyaEmrService.getDefaultLocation();
+
+		List<Patient> allPatients = patientService.getAllPatients();
+		Map<Patient, PatientIdentifier> patientsWithOpenmrsID = new HashMap<Patient, PatientIdentifier>();
+
+		for (Patient patient : allPatients) {
+			PatientIdentifier openmrsID = patient.getPatientIdentifier(openmrsIdType);
+			if (openmrsID != null) {
+				patientsWithOpenmrsID.put(patient, patient.getPatientIdentifier(openmrsIdType));
+			}
+		}
+
+		int missingOpenmrsIDs = allPatients.size() - patientsWithOpenmrsID.size();
+
+		// Batch generation of identifiers is a lot faster than one-by-one generation
+		List<String> generatedIds = idgenService.generateIdentifiers(openmrsIdSource, missingOpenmrsIDs, FixMissingOpenmrsIdentifiers.class.getSimpleName());
 
 		int fixedMissing = 0, fixedNoPreferred = 0;
 
-		for (Patient patient : patientService.getAllPatients()) {
-			PatientIdentifier openmrsID = patient.getPatientIdentifier(openmrsIdType);
+		for (Patient patient : allPatients) {
+			PatientIdentifier openmrsID = patientsWithOpenmrsID.get(patient);
 			boolean needsSaved = false;
 
 			// Generate new OpenMRS ID if needed
 			if (openmrsID == null) {
-				String generated = idgenService.generateIdentifier(openmrsIdType, FixMissingOpenmrsIdentifiers.class.getSimpleName());
+				String generated = generatedIds.get(fixedMissing);
 				openmrsID = new PatientIdentifier(generated, openmrsIdType, defaultLocation);
 				patient.addIdentifier(openmrsID);
 

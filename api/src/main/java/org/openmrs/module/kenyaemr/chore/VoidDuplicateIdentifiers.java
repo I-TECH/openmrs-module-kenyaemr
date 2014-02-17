@@ -45,7 +45,7 @@ public class VoidDuplicateIdentifiers extends AbstractChore {
 	 * @see org.openmrs.module.kenyacore.chore.AbstractChore#perform(java.io.PrintWriter)
 	 */
 	@Override
-	public void perform(PrintWriter output) throws Exception {
+	public void perform(PrintWriter output) {
 		PatientIdentifierType mrnType = MetadataUtils.getPatientIdentifierType(CommonMetadata._PatientIdentifierType.OPENMRS_ID);
 		PatientIdentifierType pcnType = MetadataUtils.getPatientIdentifierType(CommonMetadata._PatientIdentifierType.PATIENT_CLINIC_NUMBER);
 		PatientIdentifierType nidType = MetadataUtils.getPatientIdentifierType(CommonMetadata._PatientIdentifierType.NATIONAL_ID);
