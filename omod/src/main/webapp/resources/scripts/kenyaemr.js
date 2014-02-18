@@ -138,4 +138,45 @@ var kenyaemrApp = angular.module('kenyaemr', []);
 		});
 	};
 
+	/**
+	 * Fetches help resources from an external help site
+	 * @param helpSiteUrl the external help site URL
+	 * @param appId the current app id (may be null)
+	 * @param callback function to call with fetched resources
+	 */
+	kenyaemr.fetchHelpResources = function(helpSiteUrl, appId, callback) {
+		$.getJSON(helpSiteUrl + '/content.json')
+			.success(function(data) {
+				// Filter resources by current app
+				var appResources = _.filter(data.resources, function(resource) {
+					return (_.isEmpty(resource.apps) && !appId) || _.contains(resource.apps, appId);
+				});
+
+				// Simplify each resource into { name, url, icon }
+				var simplifiedResources = _.map(appResources, function(resource) {
+					var name = resource.name;
+					var url = helpSiteUrl + '/' + resource.file;
+					var type = endsWith(resource.file, '.pdf') ? 'pdf' : 'video';
+					var icon = ui.resourceLink('kenyaui', 'images/glyphs/' + type + '.png');
+					return { name: name, url: url, icon: icon };
+				});
+
+				callback(simplifiedResources);
+			})
+			.error(function() {
+				kenyaui.notifyError('Unable to connect to external help');
+			});
+	};
+
+	/**
+	 * Utility method to check if a string ends with another
+	 * @param string
+	 * @param pattern
+	 * @returns {boolean}
+	 */
+	function endsWith(string, pattern) {
+		var d = string.length - pattern.length;
+		return d >= 0 && string.indexOf(pattern, d) === d;
+	}
+
 }( window.kenyaemr = window.kenyaemr || {}, jQuery ));

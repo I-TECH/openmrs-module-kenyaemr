@@ -2,43 +2,36 @@
 	// Help dialog content - loaded into a modal dialog
 %>
 <div class="ke-panel-content">
-	If you are experiencing a problem you should contact your clinic's IT admin for support.
-
 	<% if (externalHelpUrl) { %>
-		<script type="text/javascript">
-			function endsWith(string, pattern) {
-				var d = string.length - pattern.length;
-				return d >= 0 && string.indexOf(pattern, d) === d;
-			}
+	<script type="text/javascript">
+		jQuery(function() {
+			var externalHelpUrl = '${ externalHelpUrl }';
+			var currentAppId = ${ appId ? ("'" + appId + "'" ) : "null" };
 
-			jQuery(function() {
-				jQuery.getJSON('${ externalHelpUrl }/content.json')
-						.success(function(data) {
-							var currentAppId = ${ appId ? ("'" + appId + "'" ) : "null" };
+			kenyaemr.fetchHelpResources(externalHelpUrl, currentAppId, function(resources) {
+				if (resources.length > 0) {
+					jQuery('#external-help').show();
+				}
 
-							// Display help resource links for current app
-							_.each(data.resources, function(resource) {
-								if ((_.isEmpty(resource.apps) && !currentAppId) || _.contains(resource.apps, currentAppId)) {
-									var name = resource.name;
-									var url = '${ externalHelpUrl }/' + resource.file;
-									var type = endsWith(resource.file, '.pdf') ? 'pdf' : 'video';
-									var icon = '${ ui.resourceLink("kenyaui", "images/glyphs/") }' + type + ".png";
-									jQuery('#resource-links').append('<div><img src="' + icon + '" class="ke-glyph" />&nbsp;&nbsp;<a href="' + url + '" target="_blank">' + name + '</a></div>');
-								}
-							});
-						})
-						.error(function() {
-							kenyaui.notifyError('Unable to connect to external help');
-						});
+				_.each(resources, function(res) {
+					jQuery('#external-help-links').append('<div><img src="' + res.icon + '" class="ke-glyph" />&nbsp;&nbsp;<a href="' + res.url + '" target="_blank">' + res.name + '</a></div>');
+				});
 			});
-		</script>
+		});
+	</script>
 
-		You may also find the following resources helpful <em>(all links open in new windows)</em>:
+	<div id="external-help" style="display: none">
+		You may find the following resources helpful <em>(all links open in new windows)</em>:
 		<br />
-		<div id="resource-links" style="padding: 10px 0 10px 10px"></div>
+		<!-- Resource links dynamically added to this -->
+		<div id="external-help-links" style="padding: 10px 0 10px 10px"></div>
+	</div>
 
-		Click <a href="${ externalHelpUrl }" target="_blank">here</a> to view all help resources. If those do not resolve your problem, then you can submit a support ticket. To do so:<br />
+	Click <a href="${ externalHelpUrl }" target="_blank">here</a> to view all help resources.
 	<% } %>
+
+	If you are experiencing a problem you should contact your clinic's IT admin for support.
+	You may also submit a support ticket. To do so:
 
 	<br />
 
