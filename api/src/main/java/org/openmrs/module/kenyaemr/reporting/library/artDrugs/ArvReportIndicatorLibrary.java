@@ -155,7 +155,7 @@ public class ArvReportIndicatorLibrary {
 	 * Number of patients having ART regimen
 	 * @return indicator for ABC+3TC+LVP/r
 	 */
-	public static CohortIndicator onRegimenAbc3TclvpR() {
+	public static CohortIndicator onRegimenAbc3TcLvpR() {
 		Concept lvp = Dictionary.getConcept(Dictionary.LOPINAVIR);
 		Concept tc3 = Dictionary.getConcept(Dictionary.LAMIVUDINE);
 		Concept abc = Dictionary.getConcept(Dictionary.ABACAVIR);
@@ -167,7 +167,7 @@ public class ArvReportIndicatorLibrary {
 	 * Number of patients having ART regimen
 	 * @return indicator for AZT+3TC+LVP/r
 	 */
-	public static CohortIndicator onRegimenAzt3TclvpR() {
+	public static CohortIndicator onRegimenAzt3TcLvpR() {
 		Concept lvp = Dictionary.getConcept(Dictionary.LOPINAVIR);
 		Concept tc3 = Dictionary.getConcept(Dictionary.LAMIVUDINE);
 		Concept azt = Dictionary.getConcept(Dictionary.ZIDOVUDINE);
@@ -179,7 +179,7 @@ public class ArvReportIndicatorLibrary {
 	 * Number of patients having ART regimen
 	 * @return indicator for TDF+3TC+LVP/r
 	 */
-	public static CohortIndicator onRegimenTdf3TclvpR() {
+	public static CohortIndicator onRegimenTdf3TcLvpR() {
 		Concept lvp = Dictionary.getConcept(Dictionary.LOPINAVIR);
 		Concept tc3 = Dictionary.getConcept(Dictionary.LAMIVUDINE);
 		Concept tdf = Dictionary.getConcept(Dictionary.TENOFOVIR);
@@ -191,7 +191,7 @@ public class ArvReportIndicatorLibrary {
 	 * Number of patients having ART regimen
 	 * @return indicator for TDF+ABC+LVP/r
 	 */
-	public static CohortIndicator onRegimenTdfAbclvpR() {
+	public static CohortIndicator onRegimenTdfAbcLvpR() {
 		Concept lvp = Dictionary.getConcept(Dictionary.LOPINAVIR);
 		Concept abc = Dictionary.getConcept(Dictionary.ABACAVIR);
 		Concept tdf = Dictionary.getConcept(Dictionary.TENOFOVIR);
@@ -203,7 +203,7 @@ public class ArvReportIndicatorLibrary {
 	 * Number of patients having ART regimen
 	 * @return indicator for ABC+DDI+LVP/r
 	 */
-	public static CohortIndicator onRegimenTdfAbcDdilvpR() {
+	public static CohortIndicator onRegimenTdfAbcDdiLvpR() {
 		Concept lvp = Dictionary.getConcept(Dictionary.LOPINAVIR);
 		Concept abc = Dictionary.getConcept(Dictionary.ABACAVIR);
 		Concept ddi = Dictionary.getConcept(Dictionary.DIDANOSINE);
@@ -215,7 +215,7 @@ public class ArvReportIndicatorLibrary {
 	 * Number of patients having ART regimen
 	 * @return indicator for D4T+3TC+LVP/r
 	 */
-	public static CohortIndicator onRegimenD4t3tclvpR() {
+	public static CohortIndicator onRegimenD4t3tcLvpR() {
 		Concept lvp = Dictionary.getConcept(Dictionary.LOPINAVIR);
 		Concept d4t = Dictionary.getConcept(Dictionary.STAVUDINE);
 		Concept t3c = Dictionary.getConcept(Dictionary.LAMIVUDINE);
@@ -227,7 +227,7 @@ public class ArvReportIndicatorLibrary {
 	 * Number of patients having ART regimen
 	 * @return indicator for AZT+TDF+3TC+LVP/r
 	 */
-	public static CohortIndicator onRegimenAztTdf3tclvpR() {
+	public static CohortIndicator onRegimenAztTdf3tcLvpR() {
 		Concept lvp = Dictionary.getConcept(Dictionary.LOPINAVIR);
 		Concept azt = Dictionary.getConcept(Dictionary.ZIDOVUDINE);
 		Concept t3c = Dictionary.getConcept(Dictionary.LAMIVUDINE);
@@ -240,7 +240,7 @@ public class ArvReportIndicatorLibrary {
 	 * Number of patients having ART regimen
 	 * @return indicator for ABC+TDF+3TC+LVP/r
 	 */
-	public static CohortIndicator onRegimenAbcTdf3tclvpR() {
+	public static CohortIndicator onRegimenAbcTdf3tcLvpR() {
 		Concept lvp = Dictionary.getConcept(Dictionary.LOPINAVIR);
 		Concept abc = Dictionary.getConcept(Dictionary.ABACAVIR);
 		Concept t3c = Dictionary.getConcept(Dictionary.LAMIVUDINE);
