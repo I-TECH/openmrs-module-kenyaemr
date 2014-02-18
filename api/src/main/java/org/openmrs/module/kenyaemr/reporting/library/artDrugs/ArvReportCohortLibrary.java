@@ -33,7 +33,7 @@ public class ArvReportCohortLibrary {
 	 * Current ART regimen of each patient
 	 * @return the cohort definition
 	 */
-	public static CohortDefinition onRegimen(List<Concept> drugConcepts) {
+	public CohortDefinition onRegimen(List<Concept> drugConcepts) {
 		DrugOrdersCohortDefinition cd = new DrugOrdersCohortDefinition(drugConcepts);
 		cd.setName("ART regimen");
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
