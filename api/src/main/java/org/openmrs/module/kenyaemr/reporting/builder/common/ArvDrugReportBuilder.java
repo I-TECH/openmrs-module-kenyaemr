@@ -22,7 +22,6 @@ import org.openmrs.module.kenyaemr.reporting.BaseIndicatorReportBuilder;
 import org.openmrs.module.kenyaemr.reporting.ColumnParameters;
 import org.openmrs.module.kenyaemr.reporting.EmrReportingUtils;
 import org.openmrs.module.kenyaemr.reporting.library.artDrugs.ArvReportIndicatorLibrary;
-import org.openmrs.module.kenyaemr.reporting.library.artDrugs.arvReportIndicatorLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonDimensionLibrary;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
