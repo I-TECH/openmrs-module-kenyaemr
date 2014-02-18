@@ -27,7 +27,7 @@
 	<bean id="kenyaemr.config.report" class="org.openmrs.module.kenyacore.report.ReportConfiguration">
 		<property name="commonReports">
 			<set>
-				<ref bean="kenyaemr.common.report.artDrug" />
+				<ref bean="kenyaemr.common.report.arvDrug" />
 				<ref bean="kenyaemr.common.report.missedAppointment" />
 				<ref bean="kenyaemr.common.report.moh711" />
 				<ref bean="kenyaemr.common.report.moh731" />
@@ -234,7 +234,7 @@
 		<property name="template" value="kenyaemr:moh731.xls" />
 	</bean>
 
-	<bean id="kenyaemr.common.report.artDrug" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
+	<bean id="kenyaemr.common.report.arvDrug" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
 		<property name="targetUuid" value="5609a402-94b2-11e3-9ca9-93351facf9dd" />
 		<property name="name" value="ART Drugs" />
 		<property name="description" value="Monthly ART Drug Report" />
