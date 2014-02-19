@@ -41,14 +41,16 @@ public class ArvReportCohortLibraryTest extends BaseModuleContextSensitiveTest {
 
 	private EvaluationContext context;
 
+	@Autowired
+	ArvReportCohortLibrary arvReportCohortLibrary;
+
 	/**
 	 * Setup each test
 	 */
 	@Before
 	public void setup() throws Exception {
-		executeDataSet("dataset/test-concepts.xml");
-		executeDataSet("dataset/test-drugs.xml");
 
+		executeDataSet("dataset/test-concepts.xml");
 
 		List<Integer> cohort = Arrays.asList(2, 6, 7, 8, 999);
 		context = ReportingTestUtils.reportingContext(cohort, TestUtils.date(2012, 6, 1), TestUtils.date(2012, 6, 30));
@@ -71,11 +73,12 @@ public class ArvReportCohortLibraryTest extends BaseModuleContextSensitiveTest {
 		t3cOrder.setConcept(_3tc);
 		DrugOrder efvOrder = new DrugOrder();
 		efvOrder.setConcept(efv);
+
 		// Put patient #6 on AZT + 3TC + EFV from June 1st to June 30th
 		EmrTestUtils.saveRegimenOrder(ps.getPatient(6), Arrays.asList(azt, _3tc, efv), TestUtils.date(2012, 6, 1), TestUtils.date(2012, 6, 30));
 		// Put patient #7 on AZT + 3TC + EFV from June 1st to June 30th
 		EmrTestUtils.saveRegimenOrder(ps.getPatient(7), Arrays.asList(azt, _3tc, efv), TestUtils.date(2012, 6, 1), TestUtils.date(2012, 6, 30));
-		CohortDefinition cd = ArvReportCohortLibrary.onRegimen(Arrays.asList(azt,_3tc,efv));
+		CohortDefinition cd = arvReportCohortLibrary.onRegimen(Arrays.asList(azt,_3tc,efv));
 		context.addParameterValue("onDate", TestUtils.date(2012, 6, 30));
 		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
 		ReportingTestUtils.assertCohortEquals(Arrays.asList(6,7), evaluated);

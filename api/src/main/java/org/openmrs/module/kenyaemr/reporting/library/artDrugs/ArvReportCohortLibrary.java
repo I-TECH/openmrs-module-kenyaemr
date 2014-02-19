@@ -15,9 +15,11 @@
 package org.openmrs.module.kenyaemr.reporting.library.artDrugs;
 
 import org.openmrs.Concept;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.DrugOrdersCohortDefinition;
+import org.openmrs.module.kenyaemr.regimen.RegimenManager;
+import org.openmrs.module.kenyaemr.reporting.cohort.definition.RegimenOrderCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -29,15 +31,20 @@ import java.util.List;
 @Component
 public class ArvReportCohortLibrary {
 
+	@Autowired
+	RegimenManager regimenManager;
+
 	/**
 	 * Current ART regimen of each patient
 	 * @return the cohort definition
 	 */
 	public CohortDefinition onRegimen(List<Concept> drugConcepts) {
-		DrugOrdersCohortDefinition cd = new DrugOrdersCohortDefinition(drugConcepts);
+		RegimenOrderCohortDefinition cd = new RegimenOrderCohortDefinition();
 		cd.setName("ART regimen");
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.setMasterConceptSet(regimenManager.getMasterSetConcept("ARV"));
+		cd.setConceptList(drugConcepts);
 		return cd;
 	}
 }
