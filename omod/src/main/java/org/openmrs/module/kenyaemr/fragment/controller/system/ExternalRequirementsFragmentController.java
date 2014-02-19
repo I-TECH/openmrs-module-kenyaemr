@@ -14,7 +14,8 @@
 
 package org.openmrs.module.kenyaemr.fragment.controller.system;
 
-import org.openmrs.module.kenyaemr.Configuration;
+import org.openmrs.module.kenyacore.CoreContext;
+import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 
 /**
@@ -22,7 +23,7 @@ import org.openmrs.ui.framework.fragment.FragmentModel;
  */
 public class ExternalRequirementsFragmentController {
 	
-	public void controller(FragmentModel model) {
-		model.put("requirements", Configuration.getExternalRequirements());
+	public void controller(FragmentModel model, @SpringBean CoreContext coreContext) {
+		model.put("requirements", coreContext.getRequirements());
 	}
 }

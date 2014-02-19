@@ -20,9 +20,6 @@ import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
 import org.openmrs.module.ModuleActivator;
 import org.openmrs.module.kenyacore.CoreContext;
-import org.openmrs.module.kenyacore.api.CoreService;
-import org.openmrs.module.kenyacore.chore.ChoreManager;
-import org.openmrs.module.kenyaemr.system.ExternalRequirement;
 
 /**
  * This class contains the logic that is run every time this module is either started or stopped.
@@ -32,10 +29,9 @@ public class EmrActivator implements ModuleActivator {
 	protected static final Log log = LogFactory.getLog(EmrActivator.class);
 
 	static {
-		// Possibly bad practice but we really want to see the startup log messages
+		// Possibly bad practice but we really want to see these startup log messages
+		LogManager.getLogger("org.openmrs.module.kenyacore").setLevel(Level.INFO);
 		LogManager.getLogger(EmrActivator.class).setLevel(Level.INFO);
-		LogManager.getLogger(ChoreManager.class).setLevel(Level.INFO);
-		LogManager.getLogger(CoreService.class).setLevel(Level.INFO);
 	}
 
 	/**
@@ -56,37 +52,25 @@ public class EmrActivator implements ModuleActivator {
 	 * @see ModuleActivator#contextRefreshed()
 	 */
 	public void contextRefreshed() {
-		log.info("Context refreshed. Refreshing all content managers...");
-
 		Configuration.configure();
 
-		long start = System.currentTimeMillis();
+		try {
+			CoreContext.getInstance().refresh();
+		}
+		catch (Exception ex) {
+			// If an error occurs during core refresh, we need KenyaEMR to still start so that the error can be
+			// communicated to an admin user. So we catch exceptions, log them and alert super users.
+			log.error(ex);
 
-		CoreContext.getInstance().refresh();
-
-		long time = System.currentTimeMillis() - start;
-
-		log.info("Refreshed all content managers in " + time + "ms");
+			// TODO re-enable once someone fixes TRUNK-4267
+			//Context.getAlertService().notifySuperUsers("Unable to start KenyaEMR", ex);
+		}
 	}
 
 	/**
 	 * @see ModuleActivator#started()
 	 */
 	public void started() {
-		log.info("Checking KenyaEMR requirements...");
-
-		for (ExternalRequirement requirement : Configuration.getExternalRequirements()) {
-			boolean satisfied = requirement.isSatisfied();
-			String status = satisfied ? "PASS" : "FAIL";
-			String message = " * " + requirement.getName() + " " + requirement.getRequiredVersion() + ", found " + requirement.getFoundVersion() + " (" + status + ")";
-
-			if (satisfied) {
-				log.info(message);
-			} else {
-				log.warn(message);
-			}
-		}
-
 		log.info("KenyaEMR started");
 	}
 
