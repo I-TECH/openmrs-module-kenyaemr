@@ -239,7 +239,7 @@
 		<property name="name" value="ART Drugs" />
 		<property name="description" value="Monthly ART Drug Report" />
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
-		<property name="template" value="kenyaemr:arvDrug.xls" />
+		<property name="template" value="kenyaemr:arvDrugs.xls" />
 	</bean>
 
 </beans>

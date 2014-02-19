@@ -26,7 +26,7 @@ import java.util.List;
  * Cohort definition based on patient drug orders
  */
 
-public class DrugOrdersCohortDefinition extends BaseCohortDefinition {
+public class RegimenOrderCohortDefinition extends BaseCohortDefinition {
 
 	@ConfigurationProperty(required = false, group = "date range")
 	private Date onOrAfter;
@@ -37,12 +37,8 @@ public class DrugOrdersCohortDefinition extends BaseCohortDefinition {
 	@ConfigurationProperty(group = "conceptsToInclude")
 	private List<Concept> conceptList;
 
-	public DrugOrdersCohortDefinition() {
-
-	}
-	public DrugOrdersCohortDefinition(List<Concept> conceptList) {
-		 this.conceptList = conceptList;
-	}
+	@ConfigurationProperty(group = "masterConceptSet")
+	private Concept  masterConceptSet;
 
 	public Date getOnOrBefore() {
 		return onOrBefore;
@@ -66,6 +62,14 @@ public class DrugOrdersCohortDefinition extends BaseCohortDefinition {
 
 	public void setConceptList(List<Concept> conceptList) {
 		this.conceptList = conceptList;
+	}
+
+	public Concept getMasterConceptSet() {
+		return masterConceptSet;
+	}
+
+	public void setMasterConceptSet(Concept masterConceptSet) {
+		this.masterConceptSet = masterConceptSet;
 	}
 
 }

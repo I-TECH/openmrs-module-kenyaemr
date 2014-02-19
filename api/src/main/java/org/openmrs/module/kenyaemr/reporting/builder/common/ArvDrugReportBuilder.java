@@ -68,116 +68,75 @@ public class ArvDrugReportBuilder extends BaseIndicatorReportBuilder{
 		dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
 		dsd.addDimension("age", ReportUtils.map(commonDimensions.standardAgeGroups(), "onDate=${endDate}"));
 
-		ColumnParameters children =new ColumnParameters("CP", "<15", "age=<15");
-		ColumnParameters adults =new ColumnParameters("AP", "15+", "age=15+");
+		ColumnParameters children =new ColumnParameters("CP", "Children", "age=<15");
+		ColumnParameters adults =new ColumnParameters("AP", "Adults", "age=15+");
 		ColumnParameters colTotal = new ColumnParameters("TP", "grand total", "");
 
 		String indParams = "startDate=${startDate},endDate=${endDate}";
 
+		List<ColumnParameters> allColumns = Arrays.asList(children, adults, colTotal);
 		//AZT+3TC+NVP
-		EmrReportingUtils.addRow(dsd, "AZT+3TC+NVP-01", "Adults Patients having (AZT+3TC+NVP) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenAzt3tcNvp(), indParams), Arrays.asList(adults));
-		EmrReportingUtils.addRow(dsd, "AZT+3TC+NVP-02", "Children Patients having (AZT+3TC+NVP) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenAzt3tcNvp(), indParams), Arrays.asList(children));
-		EmrReportingUtils.addRow(dsd, "AZT+3TC+NVP-03", "Total Patients having (AZT+3TC+NVP) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenAzt3tcNvp(), indParams), Arrays.asList(colTotal));
+		EmrReportingUtils.addRow(dsd, "AZT+3TC+NVP", "Patients having (AZT+3TC+NVP) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenAzt3tcNvp(), indParams), allColumns, Arrays.asList("01", "02", "03"));
 
 		//AZT+3TC+EFV
-		EmrReportingUtils.addRow(dsd, "AZT+3TC+EFV-01", "Adults Patients having (AZT+3TC+EFV) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenAzt3tcEfv(), indParams), Arrays.asList(adults));
-		EmrReportingUtils.addRow(dsd, "AZT+3TC+EFV-02", "Children Patients having (AZT+3TC+EFV) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenAzt3tcEfv(), indParams), Arrays.asList(children));
-		EmrReportingUtils.addRow(dsd, "AZT+3TC+EFV-03", "Total Patients having (AZT+3TC+EFV) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenAzt3tcEfv(), indParams), Arrays.asList(colTotal));
+		EmrReportingUtils.addRow(dsd, "AZT+3TC+EFV", "Patients having (AZT+3TC+EFV) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenAzt3tcEfv(), indParams), allColumns, Arrays.asList("01", "02", "03"));
 
 		//AZT+3TC+ABC
-		EmrReportingUtils.addRow(dsd, "AZT+3TC+ABC-01", "Adults Patients having (AZT+3TC+ABC) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenAzt3tcAbc(), indParams), Arrays.asList(adults));
-		EmrReportingUtils.addRow(dsd, "AZT+3TC+ABC-02", "Children Patients having (AZT+3TC+ABC) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenAzt3tcAbc(), indParams), Arrays.asList(children));
-		EmrReportingUtils.addRow(dsd, "AZT+3TC+ABC-03", "Total Patients having (AZT+3TC+ABC) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenAzt3tcAbc(), indParams), Arrays.asList(colTotal));
+		EmrReportingUtils.addRow(dsd, "AZT+3TC+ABC", "Patients having (AZT+3TC+ABC) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenAzt3tcAbc(), indParams), allColumns, Arrays.asList("01", "02", "03"));
 
 		//TDF+3TC+NVP
-		EmrReportingUtils.addRow(dsd, "TDF+3TC+NVP-01", "Adults Patients having (TDF+3TC+NVP) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenTdf3tcNvp(), indParams), Arrays.asList(adults));
-		EmrReportingUtils.addRow(dsd, "TDF+3TC+NVP-02", "Children Patients having (TDF+3TC+NVP) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenTdf3tcNvp(), indParams), Arrays.asList(children));
-		EmrReportingUtils.addRow(dsd, "TDF+3TC+NVP-03", "Total Patients having (TDF+3TC+NVP) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenTdf3tcNvp(), indParams), Arrays.asList(colTotal));
+		EmrReportingUtils.addRow(dsd, "TDF+3TC+NVP", "Patients having (TDF+3TC+NVP) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenTdf3tcNvp(), indParams), allColumns, Arrays.asList("01", "02", "03"));
 
 		//TDF+3TC+EFV
-		EmrReportingUtils.addRow(dsd, "TDF+3TC+EFV-01", "Adults Patients having (TDF+3TC+EFV) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenTdf3tcEfv(), indParams), Arrays.asList(adults));
-		EmrReportingUtils.addRow(dsd, "TDF+3TC+EFV-02", "Children Patients having (TDF+3TC+EFV) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenTdf3tcEfv(), indParams), Arrays.asList(children));
-		EmrReportingUtils.addRow(dsd, "TDF+3TC+EFV-03", "Total Patients having (TDF+3TC+EFV) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenTdf3tcEfv(), indParams), Arrays.asList(colTotal));
+		EmrReportingUtils.addRow(dsd, "TDF+3TC+EFV", "Patients having (TDF+3TC+EFV) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenTdf3tcEfv(), indParams), allColumns, Arrays.asList("01", "02", "03"));
 
 		//TDF+3TC+AZT
-		EmrReportingUtils.addRow(dsd, "TDF+3TC+AZT-01", "Adults Patients having (TDF+3TC+AZT) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenTdf3tcAzt(), indParams), Arrays.asList(adults));
-		EmrReportingUtils.addRow(dsd, "TDF+3TC+AZT-02", "Children Patients having (TDF+3TC+AZT) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenTdf3tcAzt(), indParams), Arrays.asList(children));
-		EmrReportingUtils.addRow(dsd, "TDF+3TC+AZT-03", "Total Patients having (TDF+3TC+AZT) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenTdf3tcAzt(), indParams), Arrays.asList(colTotal));
+		EmrReportingUtils.addRow(dsd, "TDF+3TC+AZT", "Patients having (TDF+3TC+AZT) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenTdf3tcAzt(), indParams), allColumns, Arrays.asList("01", "02", "03"));
 
 		//ABC+3TC+NVP
-		EmrReportingUtils.addRow(dsd, "ABC+3TC+NVP-01", "Adults Patients having (ABC+3TC+NVP) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenAbc3tcNvp(), indParams), Arrays.asList(adults));
-		EmrReportingUtils.addRow(dsd, "ABC+3TC+NVP-02", "Children Patients having (ABC+3TC+NVP) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenAbc3tcNvp(), indParams), Arrays.asList(children));
-		EmrReportingUtils.addRow(dsd, "ABC+3TC+NVP-03", "Total Patients having (ABC+3TC+NVP) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenAbc3tcNvp(), indParams), Arrays.asList(colTotal));
+		EmrReportingUtils.addRow(dsd, "ABC+3TC+NVP", "Patients having (ABC+3TC+NVP) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenAbc3tcNvp(), indParams), allColumns, Arrays.asList("01", "02", "03"));
 
 		//ABC+3TC+EFV
-		EmrReportingUtils.addRow(dsd, "ABC+3TC+EFV-01", "Adults Patients having (ABC+3TC+EFV) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenAbc3tcEfv(), indParams), Arrays.asList(adults));
-		EmrReportingUtils.addRow(dsd, "ABC+3TC+EFV-02", "Children Patients having (ABC+3TC+EFV) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenAbc3tcEfv(), indParams), Arrays.asList(children));
-		EmrReportingUtils.addRow(dsd, "ABC+3TC+EFV-03", "Total Patients having (ABC+3TC+EFV) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenAbc3tcEfv(), indParams), Arrays.asList(colTotal));
+		EmrReportingUtils.addRow(dsd, "ABC+3TC+EFV", "Patients having (ABC+3TC+EFV) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenAbc3tcEfv(), indParams), allColumns, Arrays.asList("01", "02", "03"));
 
 		//D4T+3TC+NVP
-		EmrReportingUtils.addRow(dsd, "D4T+3TC+NVP-01", "Adults Patients having (D4T+3TC+NVP) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenD4t3tcNvp(), indParams), Arrays.asList(adults));
-		EmrReportingUtils.addRow(dsd, "D4T+3TC+NVP-02", "Children Patients having (D4T+3TC+NVP) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenD4t3tcNvp(), indParams), Arrays.asList(children));
-		EmrReportingUtils.addRow(dsd, "D4T+3TC+NVP-03", "Total Patients having (D4T+3TC+NVP) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenD4t3tcNvp(), indParams), Arrays.asList(colTotal));
+		EmrReportingUtils.addRow(dsd, "D4T+3TC+NVP", "Patients having (D4T+3TC+NVP) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenD4t3tcNvp(), indParams), allColumns, Arrays.asList("01", "02", "03"));
 
 		//D4T+3TC+EFV
-		EmrReportingUtils.addRow(dsd, "D4T+3TC+EFV-01", "Adults Patients having (D4T+3TC+EFV) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenD4t3tcEfv(), indParams), Arrays.asList(adults));
-		EmrReportingUtils.addRow(dsd, "D4T+3TC+EFV-02", "Children Patients having (D4T+3TC+EFV) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenD4t3tcEfv(), indParams), Arrays.asList(children));
-		EmrReportingUtils.addRow(dsd, "D4T+3TC+EFV-03", "Total Patients having (D4T+3TC+EFV) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenD4t3tcEfv(), indParams), Arrays.asList(colTotal));
+		EmrReportingUtils.addRow(dsd, "D4T+3TC+EFV", "Patients having (D4T+3TC+EFV) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenD4t3tcEfv(), indParams), allColumns, Arrays.asList("01", "02", "03"));
 
 		//D4T+3TC+ABC
-		EmrReportingUtils.addRow(dsd, "D4T+3TC+ABC-01", "Adults Patients having (D4T+3TC+ABC) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenD4t3tcAbc(), indParams), Arrays.asList(adults));
-		EmrReportingUtils.addRow(dsd, "D4T+3TC+ABC-02", "Children Patients having (D4T+3TC+ABC) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenD4t3tcAbc(), indParams), Arrays.asList(children));
-		EmrReportingUtils.addRow(dsd, "D4T+3TC+ABC-03", "Total Patients having (D4T+3TC+ABC) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenD4t3tcAbc(), indParams), Arrays.asList(colTotal));
+		EmrReportingUtils.addRow(dsd, "D4T+3TC+ABC", "Patients having (D4T+3TC+ABC) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenD4t3tcAbc(), indParams), allColumns, Arrays.asList("01", "02", "03"));
 
 		//ABC+3TC+LVP/r
-		EmrReportingUtils.addRow(dsd, "ABC+3TC+LVP+RIT-01", "Adults Patients having (ABC+3TC+LVP+RIT) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenAbc3TcLvpR(), indParams), Arrays.asList(adults));
-		EmrReportingUtils.addRow(dsd, "ABC+3TC+LVP+RIT-02", "Children Patients having (ABC+3TC+LVP+RIT) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenAbc3TcLvpR(), indParams), Arrays.asList(children));
-		EmrReportingUtils.addRow(dsd, "ABC+3TC+LVP+RIT-03", "Total Patients having (ABC+3TC+LVP+RIT) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenAbc3TcLvpR(), indParams), Arrays.asList(colTotal));
+		EmrReportingUtils.addRow(dsd, "ABC+3TC+LVP+RIT", "Patients having (ABC+3TC+LVP+RIT) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenAbc3TcLvpR(), indParams), allColumns, Arrays.asList("01", "02", "03"));
 
 		//AZT+3TC+LVP/r
-		EmrReportingUtils.addRow(dsd, "AZT+3TC+LVP+RIT-01", "Adults Patients having (AZT+3TC+LVP+RIT) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenAzt3TcLvpR(), indParams), Arrays.asList(adults));
-		EmrReportingUtils.addRow(dsd, "AZT+3TC+LVP+RIT-02", "Children Patients having (AZT+3TC+LVP+RIT) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenAzt3TcLvpR(), indParams), Arrays.asList(children));
-		EmrReportingUtils.addRow(dsd, "AZT+3TC+LVP+RIT-03", "Total Patients having (AZT+3TC+LVP+RIT) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenAzt3TcLvpR(), indParams), Arrays.asList(colTotal));
+		EmrReportingUtils.addRow(dsd, "AZT+3TC+LVP+RIT", "Patients having (AZT+3TC+LVP+RIT) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenAzt3TcLvpR(), indParams), allColumns, Arrays.asList("01", "02", "03"));
 
 		//TDF+3TC+LVP/r
-		EmrReportingUtils.addRow(dsd, "TDF+3TC+LVP+RIT-01", "Adults Patients having (TDF+3TC+LVP+RIT) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenTdf3TcLvpR(), indParams), Arrays.asList(adults));
-		EmrReportingUtils.addRow(dsd, "TDF+3TC+LVP+RIT-02", "Children Patients having (TDF+3TC+LVP+RIT) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenTdf3TcLvpR(), indParams), Arrays.asList(children));
-		EmrReportingUtils.addRow(dsd, "TDF+3TC+LVP+RIT-03", "Total Patients having (TDF+3TC+LVP+RIT) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenTdf3TcLvpR(), indParams), Arrays.asList(colTotal));
+		EmrReportingUtils.addRow(dsd, "TDF+3TC+LVP+RIT", "Patients having (TDF+3TC+LVP+RIT) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenTdf3TcLvpR(), indParams), allColumns, Arrays.asList("01", "02", "03"));
 
 		//TDF+ABC+LVP/r
-		EmrReportingUtils.addRow(dsd, "TDF+ABC+LVP+RIT-01", "Adults Patients having (TDF+ABC+LVP+RIT) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenTdfAbcLvpR(), indParams), Arrays.asList(adults));
-		EmrReportingUtils.addRow(dsd, "TDF+ABC+LVP+RIT-02", "Children Patients having (TDF+ABC+LVP+RIT) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenTdfAbcLvpR(), indParams), Arrays.asList(children));
-		EmrReportingUtils.addRow(dsd, "TDF+ABC+LVP+RIT-03", "Total Patients having (TDF+ABC+LVP+RIT) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenTdfAbcLvpR(), indParams), Arrays.asList(colTotal));
+		EmrReportingUtils.addRow(dsd, "TDF+ABC+LVP+RIT", "Patients having (TDF+ABC+LVP+RIT) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenTdfAbcLvpR(), indParams), allColumns, Arrays.asList("01", "02", "03"));
 
 		//ABC+DDI+LVP/r
-		EmrReportingUtils.addRow(dsd, "ABC+DDI+LVP+RIT-01", "Adults Patients having (ABC+DDI+LVP+RIT) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenTdfAbcDdiLvpR(), indParams), Arrays.asList(adults));
-		EmrReportingUtils.addRow(dsd, "ABC+DDI+LVP+RIT-02", "Children Patients having (ABC+DDI+LVP+RIT) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenTdfAbcDdiLvpR(), indParams), Arrays.asList(children));
-		EmrReportingUtils.addRow(dsd, "ABC+DDI+LVP+RIT-03", "Total Patients having (ABC+DDI+LVP+RIT) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenTdfAbcDdiLvpR(), indParams), Arrays.asList(colTotal));
+		EmrReportingUtils.addRow(dsd, "ABC+DDI+LVP+RIT", "Patients having (ABC+DDI+LVP+RIT) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenTdfAbcDdiLvpR(), indParams), allColumns, Arrays.asList("01", "02", "03"));
 
 		//D4T+3TC+LVP/r
-		EmrReportingUtils.addRow(dsd, "D4T+3TC+LVP+RIT-01", "Adults Patients having (D4T+3TC+LVP+RIT) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenD4t3tcLvpR(), indParams), Arrays.asList(adults));
-		EmrReportingUtils.addRow(dsd, "D4T+3TC+LVP+RIT-02", "Children Patients having (D4T+3TC+LVP+RIT) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenD4t3tcLvpR(), indParams), Arrays.asList(children));
-		EmrReportingUtils.addRow(dsd, "D4T+3TC+LVP+RIT-03", "Total Patients having (D4T+3TC+LVP+RIT) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenD4t3tcLvpR(), indParams), Arrays.asList(colTotal));
+		EmrReportingUtils.addRow(dsd, "D4T+3TC+LVP+RIT", "Patients having (D4T+3TC+LVP+RIT) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenD4t3tcLvpR(), indParams), allColumns, Arrays.asList("01", "02", "03"));
 
 		//AZT+TDF+3TC+LVP/r
-		EmrReportingUtils.addRow(dsd, "AZT+TDF+3TC+LVP+RIT-01", "Adults Patients having (AZT+TDF+3TC+LVP+RIT) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenAztTdf3tcLvpR(), indParams), Arrays.asList(adults));
-		EmrReportingUtils.addRow(dsd, "AZT+TDF+3TC+LVP+RIT-02", "Children Patients having (AZT+TDF+3TC+LVP+RIT) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenAztTdf3tcLvpR(), indParams), Arrays.asList(children));
-		EmrReportingUtils.addRow(dsd, "AZT+TDF+3TC+LVP+RIT-03", "Total Patients having (AZT+TDF+3TC+LVP+RIT) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenAztTdf3tcLvpR(), indParams), Arrays.asList(colTotal));
+		EmrReportingUtils.addRow(dsd, "AZT+TDF+3TC+LVP+RIT", "Patients having (AZT+TDF+3TC+LVP+RIT) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenAztTdf3tcLvpR(), indParams), allColumns, Arrays.asList("01", "02", "03"));
 
 		//ABC+TDF+3TC+LVP/r
-		EmrReportingUtils.addRow(dsd, "ABC+TDF+3TC+LVP+RIT-01", "Adults Patients having (ABC+TDF+3TC+LVP+RIT) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenAbcTdf3tcLvpR(), indParams), Arrays.asList(adults));
-		EmrReportingUtils.addRow(dsd, "ABC+TDF+3TC+LVP+RIT-02", "Children Patients having (ABC+TDF+3TC+LVP+RIT) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenAbcTdf3tcLvpR(), indParams), Arrays.asList(children));
-		EmrReportingUtils.addRow(dsd, "ABC+TDF+3TC+LVP+RIT-03", "Total Patients having (ABC+TDF+3TC+LVP+RIT) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenAbcTdf3tcLvpR(), indParams), Arrays.asList(colTotal));
+		EmrReportingUtils.addRow(dsd, "ABC+TDF+3TC+LVP+RIT", "Patients having (ABC+TDF+3TC+LVP+RIT) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenAbcTdf3tcLvpR(), indParams), allColumns, Arrays.asList("01", "02", "03"));
 
 		//ETR+RAL+DRV+RIT
-		EmrReportingUtils.addRow(dsd, "ETR+RAL+DRV+RIT-01", "Adults Patients having (ETR+RAL+DRV+RIT) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenEtrRalDrvRit(), indParams), Arrays.asList(adults));
-		EmrReportingUtils.addRow(dsd, "ETR+RAL+DRV+RIT-02", "Children Patients having (ETR+RAL+DRV+RIT) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenEtrRalDrvRit(), indParams), Arrays.asList(children));
-		EmrReportingUtils.addRow(dsd, "ETR+RAL+DRV+RIT-03", "Total Patients having (ETR+RAL+DRV+RIT) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenEtrRalDrvRit(), indParams), Arrays.asList(colTotal));
+		EmrReportingUtils.addRow(dsd, "ETR+RAL+DRV+RIT", "Patients having (ETR+RAL+DRV+RIT) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenEtrRalDrvRit(), indParams), allColumns, Arrays.asList("01", "02", "03"));
 
 		//ETR+TDF+3TC+LVP/r
-		EmrReportingUtils.addRow(dsd, "ETR+TDF+3TC+LVP+RIT-01", "Adults Patients having (ETR+TDF+3TC+LVP+RIT) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenEtrTdf3tcLvpR(), indParams), Arrays.asList(adults));
-		EmrReportingUtils.addRow(dsd, "ETR+TDF+3TC+LVP+RIT-02", "Children Patients having (ETR+TDF+3TC+LVP+RIT) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenEtrTdf3tcLvpR(), indParams), Arrays.asList(children));
-		EmrReportingUtils.addRow(dsd, "ETR+TDF+3TC+LVP+RIT-03", "Total Patients having (ETR+TDF+3TC+LVP+RIT) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenEtrTdf3tcLvpR(), indParams), Arrays.asList(colTotal));
+		EmrReportingUtils.addRow(dsd, "ETR+TDF+3TC+LVP+RIT", "Patients having (ETR+TDF+3TC+LVP+RIT) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenEtrTdf3tcLvpR(), indParams), allColumns, Arrays.asList("01", "02", "03"));
 
 		return dsd;
 	}

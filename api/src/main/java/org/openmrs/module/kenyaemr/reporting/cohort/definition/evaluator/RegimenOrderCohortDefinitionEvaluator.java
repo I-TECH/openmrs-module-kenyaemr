@@ -15,9 +15,11 @@
 package org.openmrs.module.kenyaemr.reporting.cohort.definition.evaluator;
 
 import org.openmrs.Cohort;
+import org.openmrs.Concept;
+import org.openmrs.DrugOrder;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.DrugOrdersCohortDefinition;
+import org.openmrs.module.kenyaemr.reporting.cohort.definition.RegimenOrderCohortDefinition;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.evaluator.CohortDefinitionEvaluator;
@@ -27,28 +29,42 @@ import org.openmrs.module.reporting.data.patient.service.PatientDataService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 /**
  * Evaluator for drug orders based cohorts
  */
-@Handler(supports = DrugOrdersCohortDefinition.class)
-public class DrugOrdersCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
+@Handler(supports = RegimenOrderCohortDefinition.class)
+public class RegimenOrderCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
 	@Override
 	public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) throws EvaluationException {
 
-		DrugOrdersCohortDefinition drugOrdersCohortDefinition = (DrugOrdersCohortDefinition) cohortDefinition;
+		RegimenOrderCohortDefinition drugOrdersCohortDefinition = (RegimenOrderCohortDefinition) cohortDefinition;
 
 		DrugOrdersForPatientDataDefinition drugOrdersForPatientDataDefinition = new DrugOrdersForPatientDataDefinition();
-		drugOrdersForPatientDataDefinition.setDrugConceptsToInclude(drugOrdersCohortDefinition.getConceptList());
+		drugOrdersForPatientDataDefinition.setDrugConceptSetsToInclude(Arrays.asList(drugOrdersCohortDefinition.getMasterConceptSet()));
+
 		Set<Integer> patientIds = new HashSet<Integer>();
 		PatientData patientData = Context.getService(PatientDataService.class).evaluate(drugOrdersForPatientDataDefinition, context);
 		for (Map.Entry<Integer, Object> d :patientData.getData().entrySet()) {
-			patientIds.add(d.getKey());
-		}
 
+			List<DrugOrder> drugOrderList = new ArrayList<DrugOrder>((Collection<? extends DrugOrder>) d.getValue());
+
+			List<Concept> conceptList = new ArrayList<Concept>();
+
+			for(DrugOrder drugOrder: drugOrderList) {
+				conceptList.add(drugOrder.getConcept());
+				if((drugOrdersCohortDefinition.getConceptList().size() == conceptList.size()) && (conceptList.containsAll(drugOrdersCohortDefinition.getConceptList()))) {
+					patientIds.add(d.getKey());
+				}
+			}
+		}
 		return new EvaluatedCohort(new Cohort(patientIds), drugOrdersCohortDefinition, context);
 	}
 
