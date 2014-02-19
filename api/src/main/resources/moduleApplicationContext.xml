@@ -178,6 +178,7 @@
 	</bean>
 
 	<bean id="kenyaEmrBuildProperties" class="org.openmrs.module.kenyaemr.util.BuildProperties">
+		<property name="version" value="${project.version}" />
 		<property name="buildDate">
 			<bean factory-bean="iso8601DateFactory" factory-method="parse">
 				<constructor-arg value="${moduleBuildDate}" />

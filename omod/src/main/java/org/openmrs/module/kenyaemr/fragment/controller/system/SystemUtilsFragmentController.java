@@ -16,7 +16,7 @@ package org.openmrs.module.kenyaemr.fragment.controller.system;
 
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.EmrConstants;
-import org.openmrs.module.kenyaemr.util.SystemInformation;
+import org.openmrs.module.kenyaemr.util.ServerInformation;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.module.kenyaui.annotation.AppAction;
 import org.openmrs.ui.framework.SimpleObject;
@@ -31,14 +31,24 @@ import java.util.Map;
  */
 public class SystemUtilsFragmentController {
 
+	/**
+	 * Fetches server information
+	 * @param kenyaUi the KenyaUI utils
+	 * @return the information as a simple object
+	 */
 	@AppAction(EmrConstants.APP_ADMIN)
-	public List<SimpleObject> getSystemInformation(@SpringBean KenyaUiUtils kenyaUi) {
+	public List<SimpleObject> getServerInformation(@SpringBean KenyaUiUtils kenyaUi) {
 
-		Map<String, Object> sysInfo = SystemInformation.getData();
+		Map<String, Object> serverInfo = ServerInformation.getAllInformation();
+		Map<String, Object> systemInfo = (Map<String, Object>) serverInfo.get("system");
+		Map<String, Object> openmrsInfo = (Map<String, Object>) serverInfo.get("openmrs");
+		Map<String, Object> runtimeInfo = (Map<String, Object>) serverInfo.get("runtime");
+		Map<String, Object> userInfo = (Map<String, Object>) systemInfo.get("user");
+		Map<String, Object> javaInfo = (Map<String, Object>) systemInfo.get("java");
 
-		long maxMemory = (Long) sysInfo.get(SystemInformation.JVM_MAXMEMORY);
-		long totalMemory = (Long) sysInfo.get(SystemInformation.JVM_TOTALMEMORY);
-		long freeMemory = (Long) sysInfo.get(SystemInformation.JVM_FREEMEMORY);
+		long maxMemory = (Long) runtimeInfo.get("maxmemory");
+		long totalMemory = (Long) runtimeInfo.get("totalmemory");
+		long freeMemory = (Long) runtimeInfo.get("freememory");
 		long usedMemory = totalMemory - freeMemory;
 
 		StringBuilder memInfo = new StringBuilder();
@@ -49,8 +59,9 @@ public class SystemUtilsFragmentController {
 		memInfo.append(kenyaUi.formatBytes(maxMemory));
 
 		List<SimpleObject> points = new ArrayList<SimpleObject>();
-		points.add(SimpleObject.create("label", "OpenMRS version", "value", sysInfo.get(SystemInformation.OPENMRS_VERSION)));
-		points.add(SimpleObject.create("label", "Server timezone", "value", sysInfo.get(SystemInformation.SERVER_TIMEZONE)));
+		points.add(SimpleObject.create("label", "OpenMRS version", "value", openmrsInfo.get("version")));
+		points.add(SimpleObject.create("label", "System timezone", "value", userInfo.get("timezone")));
+		points.add(SimpleObject.create("label", "Java version", "value", javaInfo.get("version") + " (" + javaInfo.get("vendor") + ")"));
 		points.add(SimpleObject.create("label", "Memory (used / total / max)", "value", memInfo.toString()));
 
 		return points;

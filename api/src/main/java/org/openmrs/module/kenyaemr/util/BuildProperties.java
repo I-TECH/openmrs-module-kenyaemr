@@ -21,9 +21,27 @@ import java.util.Date;
  */
 public class BuildProperties {
 
+	private String version;
+
 	private Date buildDate;
 
 	private String developer;
+
+	/**
+	 * Gets the build version
+	 * @return the build version
+	 */
+	public String getVersion() {
+		return version;
+	}
+
+	/**
+	 * Sets the build version
+	 * @param version the build version
+	 */
+	public void setVersion(String version) {
+		this.version = version;
+	}
 
 	/**
 	 * Gets the build date

@@ -1,10 +1,3 @@
-<%
-	def moduleVersionFull = moduleVersion
-	if (moduleBuildDate) {
-		moduleVersionFull += " (" + kenyaui.formatDateTime(moduleBuildDate) + ")"
-	}
-%>
-
 <div class="ke-page-header">
 	<div style="float: left; padding-right: 3px">
 		<a href="/${ contextPath }/index.htm?<% if (config.context) { %>${ config.context }<% } %>">
@@ -13,7 +6,7 @@
 	</div>
 	<div style="float: left">
 		<span style="font-size: 24px;">${ ui.message("kenyaemr.title") }</span>
-		<span style="font-size: 10px; color: #7f7b72;">${ moduleVersionFull }, powered by OpenMRS</span>
+		<span style="font-size: 10px; color: #7f7b72;">${ moduleVersion }, powered by OpenMRS</span>
 		<br/>
 		<% if (systemLocation) { %>
 			<span style="font-weight: bold; margin-left: 12px; border-top: 1px gray solid;">${ ui.format(systemLocation) }</span>
