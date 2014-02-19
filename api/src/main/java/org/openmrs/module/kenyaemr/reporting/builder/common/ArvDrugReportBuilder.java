@@ -138,8 +138,6 @@ public class ArvDrugReportBuilder extends BaseIndicatorReportBuilder{
 		//ETR+TDF+3TC+LVP/r
 		EmrReportingUtils.addRow(dsd, "ETR+TDF+3TC+LVP+RIT", "Patients having (ETR+TDF+3TC+LVP+RIT) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimenEtrTdf3tcLvpR(), indParams), allColumns, Arrays.asList("01", "02", "03"));
 
-
-
 		return dsd;
 	}
 
