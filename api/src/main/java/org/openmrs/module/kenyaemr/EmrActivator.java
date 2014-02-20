@@ -31,7 +31,7 @@ public class EmrActivator implements ModuleActivator {
 	static {
 		// Possibly bad practice but we really want to see these startup log messages
 		LogManager.getLogger("org.openmrs.module.kenyacore").setLevel(Level.INFO);
-		LogManager.getLogger(EmrActivator.class).setLevel(Level.INFO);
+		LogManager.getLogger("org.openmrs.module.kenyaemr").setLevel(Level.INFO);
 	}
 
 	/**

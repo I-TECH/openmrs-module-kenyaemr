@@ -15,7 +15,7 @@
 package org.openmrs.module.kenyaemr.system;
 
 import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyacore.CoreRequirement;
+import org.openmrs.module.kenyacore.requirement.Requirement;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -25,7 +25,7 @@ import java.util.Date;
  * Requirement for CIEL dictionary. This is instantiated as a bean in the application context so that the version value
  * can be taken from the project POM.
  */
-public class CielRequirement implements CoreRequirement {
+public class CielRequirement implements Requirement {
 
 	/**
 	 * Name of global property that stores database concepts version
@@ -35,7 +35,7 @@ public class CielRequirement implements CoreRequirement {
 	public String requiredVersion;
 
 	/**
-	 * @see org.openmrs.module.kenyacore.CoreRequirement#getName()
+	 * @see org.openmrs.module.kenyacore.requirement.Requirement#getName()
 	 */
 	@Override
 	public String getName() {
@@ -43,7 +43,7 @@ public class CielRequirement implements CoreRequirement {
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyacore.CoreRequirement#getRequiredVersion()
+	 * @see org.openmrs.module.kenyacore.requirement.Requirement#getRequiredVersion()
 	 */
 	@Override
 	public String getRequiredVersion() {
@@ -59,7 +59,7 @@ public class CielRequirement implements CoreRequirement {
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyacore.CoreRequirement#getFoundVersion()
+	 * @see org.openmrs.module.kenyacore.requirement.Requirement#getFoundVersion()
 	 */
 	@Override
 	public String getFoundVersion() {
@@ -67,7 +67,7 @@ public class CielRequirement implements CoreRequirement {
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyacore.CoreRequirement#isSatisfied()
+	 * @see org.openmrs.module.kenyacore.requirement.Requirement#isSatisfied()
 	 */
 	@Override
 	public boolean isSatisfied() {
