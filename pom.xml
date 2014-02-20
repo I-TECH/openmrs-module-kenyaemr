@@ -9,12 +9,6 @@
 	<name>KenyaEMR</name>
 	<description>OpenMRS-based EMR for Kenya</description>
 
-	<developers>
-		<developer>
-			<name>I-TECH</name>
-		</developer>
-	</developers>
-
 	<organization>
 		<name>I-TECH</name>
 		<url>http://www.go2itech.org</url>
