@@ -16,6 +16,10 @@
 			<drug code="LPV" conceptUuid="79040AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><!-- Lopinavir -->
 			<drug code="RTV" conceptUuid="83412AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><!-- Ritonavir -->
 			<drug code="ATV" conceptUuid="71647AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><!-- Atazanavir -->
+			<drug code="ETR" conceptUuid="159810AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><!-- ETRAVIRINE -->
+			<drug code="RAL" conceptUuid="154378AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><!-- Raltegravir -->
+			<drug code="DRV" conceptUuid="74258AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><!-- DARUNAVIR -->
+
 		</drugs>
 
 		<!-- Adult first line -->
@@ -65,6 +69,11 @@
 				<component drugCode="3TC" dose="150" units="mg" frequency="BD" />
 				<component drugCode="EFV" dose="600" units="mg" frequency="NOCTE" />
 			</regimen>
+			<regimen name="TDF + 3TC + AZT">
+				<component drugCode="TDF" />
+				<component drugCode="3TC" />
+				<component drugCode="AZT" />
+			</regimen>
 		</group>
 
 		<!-- Adult second line -->
@@ -98,6 +107,32 @@
 				<component drugCode="3TC" dose="150" units="mg" frequency="OD" />
 				<component drugCode="ATV" dose="300" units="mg" frequency="OD" />
 				<component drugCode="RTV" dose="100" units="mg" frequency="OD" />
+			</regimen>
+			<regimen name="D4T + 3TC + LPV/r">
+				<component drugCode="D4T" />
+				<component drugCode="3TC" />
+				<component drugCode="LPV" />
+				<component drugCode="RTV" />
+			</regimen>
+			<regimen name="AZT + TDF + 3TC + LPV/r">
+				<component drugCode="AZT" />
+				<component drugCode="TDF" />
+				<component drugCode="3TC" />
+				<component drugCode="LPV" />
+				<component drugCode="RTV" />
+			</regimen>
+			<regimen name="ETR + RAL + DRV + RTV">
+				<component drugCode="ETR" />
+				<component drugCode="RAL" />
+				<component drugCode="DRV" />
+				<component drugCode="RTV" />
+			</regimen>
+			<regimen name="ETR + TDF + 3TC + LPV/r">
+				<component drugCode="ETR" />
+				<component drugCode="TDF" />
+				<component drugCode="3TC" />
+				<component drugCode="LPV" />
+				<component drugCode="RTV" />
 			</regimen>
 		</group>
 
@@ -134,6 +169,35 @@
 				<component drugCode="AZT" units="tab" />
 				<component drugCode="3TC" units="tab" />
 				<component drugCode="EFV" units="tab" />
+			</regimen>
+			<regimen name="AZT + 3TC + ABC">
+				<component drugCode="AZT" units="tab" />
+				<component drugCode="3TC" units="tab" />
+				<component drugCode="ABC" units="tab" />
+			</regimen>
+			<regimen name="D4T + 3TC + ABC">
+				<component drugCode="D4T" units="tab" />
+				<component drugCode="3TC" units="tab" />
+				<component drugCode="ABC" units="tab" />
+			</regimen>
+			<regimen name="TDF + ABC + LPV/r" >
+				<component drugCode="TDF" units="tab" />
+				<component drugCode="ABC" units="tab" />
+				<component drugCode="LPV" units="tab" />
+				<component drugCode="RTV" units="tab" />
+			</regimen>
+			<regimen name="ABC + DDI + LPV/r" >
+				<component drugCode="ABC" units="tab" />
+				<component drugCode="DDI" units="tab" />
+				<component drugCode="LPV" units="tab" />
+				<component drugCode="RTV" units="tab" />
+			</regimen>
+			<regimen name="ABC + TDF + 3TC + LPV/r" >
+				<component drugCode="ABC" units="tab" />
+				<component drugCode="TDF" units="tab" />
+				<component drugCode="3TC" units="tab" />
+				<component drugCode="LPV" units="tab" />
+				<component drugCode="RTV" units="tab" />
 			</regimen>
 		</group>
 	</category>
