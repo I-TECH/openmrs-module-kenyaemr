@@ -91,68 +91,69 @@ public class ArvDrugReportBuilder extends BaseIndicatorReportBuilder{
 		Concept drv = Dictionary.getConcept(Dictionary.DARUNAVIR);
 
 		List<ColumnParameters> allColumns = Arrays.asList(children, adults, colTotal);
+		List<String> indSuffixes = Arrays.asList("CH", "AD", "TT");
 		//AZT+3TC+NVP
-		EmrReportingUtils.addRow(dsd, "AZT+3TC+NVP", "Patients having (AZT+3TC+NVP) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimen(Arrays.asList(azt, tc3, nvp)), indParams), allColumns, Arrays.asList("01", "02", "03"));
+		EmrReportingUtils.addRow(dsd, "AZT+3TC+NVP", "Patients having (AZT+3TC+NVP) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimen(Arrays.asList(azt, tc3, nvp)), indParams), allColumns, indSuffixes);
 
 		//AZT+3TC+EFV
-		EmrReportingUtils.addRow(dsd, "AZT+3TC+EFV", "Patients having (AZT+3TC+EFV) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimen(Arrays.asList(azt, tc3, efv)), indParams), allColumns, Arrays.asList("01", "02", "03"));
+		EmrReportingUtils.addRow(dsd, "AZT+3TC+EFV", "Patients having (AZT+3TC+EFV) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimen(Arrays.asList(azt, tc3, efv)), indParams), allColumns, indSuffixes);
 
 		//AZT+3TC+ABC
-		EmrReportingUtils.addRow(dsd, "AZT+3TC+ABC", "Patients having (AZT+3TC+ABC) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimen(Arrays.asList(azt, tc3, abc)), indParams), allColumns, Arrays.asList("01", "02", "03"));
+		EmrReportingUtils.addRow(dsd, "AZT+3TC+ABC", "Patients having (AZT+3TC+ABC) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimen(Arrays.asList(azt, tc3, abc)), indParams), allColumns, indSuffixes);
 
 		//TDF+3TC+NVP
-		EmrReportingUtils.addRow(dsd, "TDF+3TC+NVP", "Patients having (TDF+3TC+NVP) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimen(Arrays.asList(tdf, tc3, nvp)), indParams), allColumns, Arrays.asList("01", "02", "03"));
+		EmrReportingUtils.addRow(dsd, "TDF+3TC+NVP", "Patients having (TDF+3TC+NVP) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimen(Arrays.asList(tdf, tc3, nvp)), indParams), allColumns, indSuffixes);
 
 		//TDF+3TC+EFV
-		EmrReportingUtils.addRow(dsd, "TDF+3TC+EFV", "Patients having (TDF+3TC+EFV) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimen(Arrays.asList(tdf, tc3, efv)), indParams), allColumns, Arrays.asList("01", "02", "03"));
+		EmrReportingUtils.addRow(dsd, "TDF+3TC+EFV", "Patients having (TDF+3TC+EFV) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimen(Arrays.asList(tdf, tc3, efv)), indParams), allColumns, indSuffixes);
 
 		//TDF+3TC+AZT
-		EmrReportingUtils.addRow(dsd, "TDF+3TC+AZT", "Patients having (TDF+3TC+AZT) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimen(Arrays.asList(tdf, tc3, azt)), indParams), allColumns, Arrays.asList("01", "02", "03"));
+		EmrReportingUtils.addRow(dsd, "TDF+3TC+AZT", "Patients having (TDF+3TC+AZT) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimen(Arrays.asList(tdf, tc3, azt)), indParams), allColumns, indSuffixes);
 
 		//ABC+3TC+NVP
-		EmrReportingUtils.addRow(dsd, "ABC+3TC+NVP", "Patients having (ABC+3TC+NVP) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimen(Arrays.asList(abc, tc3, nvp)), indParams), allColumns, Arrays.asList("01", "02", "03"));
+		EmrReportingUtils.addRow(dsd, "ABC+3TC+NVP", "Patients having (ABC+3TC+NVP) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimen(Arrays.asList(abc, tc3, nvp)), indParams), allColumns, indSuffixes);
 
 		//ABC+3TC+EFV
-		EmrReportingUtils.addRow(dsd, "ABC+3TC+EFV", "Patients having (ABC+3TC+EFV) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimen(Arrays.asList(abc, tc3, efv)), indParams), allColumns, Arrays.asList("01", "02", "03"));
+		EmrReportingUtils.addRow(dsd, "ABC+3TC+EFV", "Patients having (ABC+3TC+EFV) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimen(Arrays.asList(abc, tc3, efv)), indParams), allColumns, indSuffixes);
 
 		//D4T+3TC+NVP
-		EmrReportingUtils.addRow(dsd, "D4T+3TC+NVP", "Patients having (D4T+3TC+NVP) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimen(Arrays.asList(d4t, tc3, nvp)), indParams), allColumns, Arrays.asList("01", "02", "03"));
+		EmrReportingUtils.addRow(dsd, "D4T+3TC+NVP", "Patients having (D4T+3TC+NVP) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimen(Arrays.asList(d4t, tc3, nvp)), indParams), allColumns, indSuffixes);
 
 		//D4T+3TC+EFV
-		EmrReportingUtils.addRow(dsd, "D4T+3TC+EFV", "Patients having (D4T+3TC+EFV) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimen(Arrays.asList(d4t, tc3, efv)), indParams), allColumns, Arrays.asList("01", "02", "03"));
+		EmrReportingUtils.addRow(dsd, "D4T+3TC+EFV", "Patients having (D4T+3TC+EFV) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimen(Arrays.asList(d4t, tc3, efv)), indParams), allColumns, indSuffixes);
 
 		//D4T+3TC+ABC
-		EmrReportingUtils.addRow(dsd, "D4T+3TC+ABC", "Patients having (D4T+3TC+ABC) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimen(Arrays.asList(d4t, tc3, abc)), indParams), allColumns, Arrays.asList("01", "02", "03"));
+		EmrReportingUtils.addRow(dsd, "D4T+3TC+ABC", "Patients having (D4T+3TC+ABC) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimen(Arrays.asList(d4t, tc3, abc)), indParams), allColumns, indSuffixes);
 
 		//ABC+3TC+LVP/r
-		EmrReportingUtils.addRow(dsd, "ABC+3TC+LVP+RIT", "Patients having (ABC+3TC+LVP+RIT) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimen(Arrays.asList(abc, tc3, lvp, rit)), indParams), allColumns, Arrays.asList("01", "02", "03"));
+		EmrReportingUtils.addRow(dsd, "ABC+3TC+LVP+RIT", "Patients having (ABC+3TC+LVP+RIT) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimen(Arrays.asList(abc, tc3, lvp, rit)), indParams), allColumns, indSuffixes);
 
 		//AZT+3TC+LVP/r
-		EmrReportingUtils.addRow(dsd, "AZT+3TC+LVP+RIT", "Patients having (AZT+3TC+LVP+RIT) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimen(Arrays.asList(azt, tc3, lvp, rit)), indParams), allColumns, Arrays.asList("01", "02", "03"));
+		EmrReportingUtils.addRow(dsd, "AZT+3TC+LVP+RIT", "Patients having (AZT+3TC+LVP+RIT) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimen(Arrays.asList(azt, tc3, lvp, rit)), indParams), allColumns, indSuffixes);
 
 		//TDF+3TC+LVP/r
-		EmrReportingUtils.addRow(dsd, "TDF+3TC+LVP+RIT", "Patients having (TDF+3TC+LVP+RIT) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimen(Arrays.asList(tdf, tc3, lvp, rit)), indParams), allColumns, Arrays.asList("01", "02", "03"));
+		EmrReportingUtils.addRow(dsd, "TDF+3TC+LVP+RIT", "Patients having (TDF+3TC+LVP+RIT) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimen(Arrays.asList(tdf, tc3, lvp, rit)), indParams), allColumns, indSuffixes);
 
 		//TDF+ABC+LVP/r
-		EmrReportingUtils.addRow(dsd, "TDF+ABC+LVP+RIT", "Patients having (TDF+ABC+LVP+RIT) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimen(Arrays.asList(tdf, abc, lvp, rit)), indParams), allColumns, Arrays.asList("01", "02", "03"));
+		EmrReportingUtils.addRow(dsd, "TDF+ABC+LVP+RIT", "Patients having (TDF+ABC+LVP+RIT) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimen(Arrays.asList(tdf, abc, lvp, rit)), indParams), allColumns, indSuffixes);
 
 		//ABC+DDI+LVP/r
-		EmrReportingUtils.addRow(dsd, "ABC+DDI+LVP+RIT", "Patients having (ABC+DDI+LVP+RIT) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimen(Arrays.asList(abc, ddi, lvp, rit)), indParams), allColumns, Arrays.asList("01", "02", "03"));
+		EmrReportingUtils.addRow(dsd, "ABC+DDI+LVP+RIT", "Patients having (ABC+DDI+LVP+RIT) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimen(Arrays.asList(abc, ddi, lvp, rit)), indParams), allColumns, indSuffixes);
 
 		//D4T+3TC+LVP/r
-		EmrReportingUtils.addRow(dsd, "D4T+3TC+LVP+RIT", "Patients having (D4T+3TC+LVP+RIT) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimen(Arrays.asList(d4t, tc3, lvp, rit)), indParams), allColumns, Arrays.asList("01", "02", "03"));
+		EmrReportingUtils.addRow(dsd, "D4T+3TC+LVP+RIT", "Patients having (D4T+3TC+LVP+RIT) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimen(Arrays.asList(d4t, tc3, lvp, rit)), indParams), allColumns, indSuffixes);
 
 		//AZT+TDF+3TC+LVP/r
-		EmrReportingUtils.addRow(dsd, "AZT+TDF+3TC+LVP+RIT", "Patients having (AZT+TDF+3TC+LVP+RIT) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimen(Arrays.asList(azt, tdf, tc3, lvp, rit)), indParams), allColumns, Arrays.asList("01", "02", "03"));
+		EmrReportingUtils.addRow(dsd, "AZT+TDF+3TC+LVP+RIT", "Patients having (AZT+TDF+3TC+LVP+RIT) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimen(Arrays.asList(azt, tdf, tc3, lvp, rit)), indParams), allColumns, indSuffixes);
 
 		//ABC+TDF+3TC+LVP/r
-		EmrReportingUtils.addRow(dsd, "ABC+TDF+3TC+LVP+RIT", "Patients having (ABC+TDF+3TC+LVP+RIT) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimen(Arrays.asList(abc, tdf, tc3, lvp, rit)), indParams), allColumns, Arrays.asList("01", "02", "03"));
+		EmrReportingUtils.addRow(dsd, "ABC+TDF+3TC+LVP+RIT", "Patients having (ABC+TDF+3TC+LVP+RIT) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimen(Arrays.asList(abc, tdf, tc3, lvp, rit)), indParams), allColumns, indSuffixes);
 
 		//ETR+RAL+DRV+RIT
-		EmrReportingUtils.addRow(dsd, "ETR+RAL+DRV+RIT", "Patients having (ETR+RAL+DRV+RIT) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimen(Arrays.asList(etr, ral, drv, rit)), indParams), allColumns, Arrays.asList("01", "02", "03"));
+		EmrReportingUtils.addRow(dsd, "ETR+RAL+DRV+RIT", "Patients having (ETR+RAL+DRV+RIT) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimen(Arrays.asList(etr, ral, drv, rit)), indParams), allColumns, indSuffixes);
 
 		//ETR+TDF+3TC+LVP/r
-		EmrReportingUtils.addRow(dsd, "ETR+TDF+3TC+LVP+RIT", "Patients having (ETR+TDF+3TC+LVP+RIT) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimen(Arrays.asList(etr, tdf, tc3, lvp, rit)), indParams), allColumns, Arrays.asList("01", "02", "03"));
+		EmrReportingUtils.addRow(dsd, "ETR+TDF+3TC+LVP+RIT", "Patients having (ETR+TDF+3TC+LVP+RIT) regimen", ReportUtils.map(arvReportIndicatorLibrary.onRegimen(Arrays.asList(etr, tdf, tc3, lvp, rit)), indParams), allColumns, indSuffixes);
 
 		return dsd;
 	}
