@@ -56,6 +56,7 @@
 <% } else { %>
 	${ ui.includeFragment("kenyaemr", "system/serverInformation") }
 	${ ui.includeFragment("kenyaemr", "system/databaseSummary") }
+	${ ui.includeFragment("kenyaemr", "system/externalRequirements") }
 <% } %>
 
 </div>
