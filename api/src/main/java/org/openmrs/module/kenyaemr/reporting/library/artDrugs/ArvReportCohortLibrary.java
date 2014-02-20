@@ -23,7 +23,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Library of ART Drugs related cohort definitions
@@ -40,11 +42,12 @@ public class ArvReportCohortLibrary {
 	 */
 	public CohortDefinition onRegimen(List<Concept> drugConcepts) {
 		RegimenOrderCohortDefinition cd = new RegimenOrderCohortDefinition();
+		Set<Concept> drugConceptSet = new HashSet<Concept>(drugConcepts);
 		cd.setName("ART regimen");
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.setMasterConceptSet(regimenManager.getMasterSetConcept("ARV"));
-		cd.setConceptList(drugConcepts);
+		cd.setConceptSet(drugConceptSet);
 		return cd;
 	}
 }

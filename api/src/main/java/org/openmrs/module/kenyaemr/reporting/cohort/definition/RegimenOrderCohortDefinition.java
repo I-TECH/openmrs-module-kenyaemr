@@ -21,6 +21,7 @@ import org.openmrs.module.reporting.definition.configuration.ConfigurationProper
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Cohort definition based on patient drug orders
@@ -35,7 +36,7 @@ public class RegimenOrderCohortDefinition extends BaseCohortDefinition {
 	private Date onOrBefore;
 
 	@ConfigurationProperty(group = "conceptsToInclude")
-	private List<Concept> conceptList;
+	private Set<Concept> conceptSet;
 
 	@ConfigurationProperty(group = "masterConceptSet")
 	private Concept  masterConceptSet;
@@ -48,8 +49,8 @@ public class RegimenOrderCohortDefinition extends BaseCohortDefinition {
 		return onOrAfter;
 	}
 
-	public List<Concept> getConceptList() {
-		return conceptList;
+	public Set<Concept> getConceptSet() {
+		return conceptSet;
 	}
 
 	public void setOnOrAfter(Date onOrAfter) {
@@ -60,8 +61,8 @@ public class RegimenOrderCohortDefinition extends BaseCohortDefinition {
 		this.onOrBefore = onOrBefore;
 	}
 
-	public void setConceptList(List<Concept> conceptList) {
-		this.conceptList = conceptList;
+	public void setConceptSet(Set<Concept> conceptSet) {
+		this.conceptSet = conceptSet;
 	}
 
 	public Concept getMasterConceptSet() {

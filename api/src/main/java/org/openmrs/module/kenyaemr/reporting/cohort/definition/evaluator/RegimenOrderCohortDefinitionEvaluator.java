@@ -54,13 +54,13 @@ public class RegimenOrderCohortDefinitionEvaluator implements CohortDefinitionEv
 		PatientData patientData = Context.getService(PatientDataService.class).evaluate(drugOrdersForPatientDataDefinition, context);
 		for (Map.Entry<Integer, Object> d :patientData.getData().entrySet()) {
 
-			List<DrugOrder> drugOrderList = new ArrayList<DrugOrder>((Collection<? extends DrugOrder>) d.getValue());
+			Set<DrugOrder> drugOrderSet = new HashSet<DrugOrder>((Collection<? extends DrugOrder>) d.getValue());
 
-			List<Concept> conceptList = new ArrayList<Concept>();
+			Set<Concept> conceptSet = new HashSet<Concept>();
 
-			for(DrugOrder drugOrder: drugOrderList) {
-				conceptList.add(drugOrder.getConcept());
-				if((drugOrdersCohortDefinition.getConceptList().size() == conceptList.size()) && (conceptList.containsAll(drugOrdersCohortDefinition.getConceptList()))) {
+			for(DrugOrder drugOrder: drugOrderSet) {
+				conceptSet.add(drugOrder.getConcept());
+				if((drugOrdersCohortDefinition.getConceptSet().size() == conceptSet.size()) && (conceptSet.containsAll(drugOrdersCohortDefinition.getConceptSet()))) {
 					patientIds.add(d.getKey());
 				}
 			}
