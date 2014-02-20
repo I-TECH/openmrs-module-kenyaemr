@@ -17,7 +17,7 @@
 			<drug code="RTV" conceptUuid="83412AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><!-- Ritonavir -->
 			<drug code="ATV" conceptUuid="71647AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><!-- Atazanavir -->
 			<drug code="ETR" conceptUuid="159810AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><!-- ETRAVIRINE -->
-			<drug code="RAL" conceptUuid="154378AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><!-- Raltegravir -->
+			<drug code="RAL" conceptUuid="154378AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><!-- RALTEGRAVIR -->
 			<drug code="DRV" conceptUuid="74258AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><!-- DARUNAVIR -->
 
 		</drugs>

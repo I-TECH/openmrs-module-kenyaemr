@@ -87,7 +87,7 @@ public class ArvDrugReportBuilder extends BaseIndicatorReportBuilder{
 		Concept rit = Dictionary.getConcept(Dictionary.RITONAVIR);
 		Concept ddi = Dictionary.getConcept(Dictionary.DIDANOSINE);
 		Concept etr = Dictionary.getConcept(Dictionary.ETRAVIRINE);
-		Concept ral = Dictionary.getConcept(Dictionary.Raltegravir);
+		Concept ral = Dictionary.getConcept(Dictionary.RALTEGRAVIR);
 		Concept drv = Dictionary.getConcept(Dictionary.DARUNAVIR);
 
 		List<ColumnParameters> allColumns = Arrays.asList(children, adults, colTotal);
