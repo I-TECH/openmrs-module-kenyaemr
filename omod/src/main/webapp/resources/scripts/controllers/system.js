@@ -12,7 +12,7 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-kenyaemrApp.controller('SystemInformation', ['$scope', '$http', '$timeout', function($scope, $http, $timeout) {
+kenyaemrApp.controller('ServerInformation', ['$scope', '$http', '$timeout', function($scope, $http, $timeout) {
 
 	$scope.infos = [];
 
@@ -24,10 +24,10 @@ kenyaemrApp.controller('SystemInformation', ['$scope', '$http', '$timeout', func
 	};
 
 	/**
-	 * Refreshes the system information
+	 * Refreshes the server information
 	 */
 	$scope.refresh = function() {
-		$http.get(ui.fragmentActionLink('kenyaemr', 'system/systemUtils', 'getSystemInformation')).
+		$http.get(ui.fragmentActionLink('kenyaemr', 'system/systemUtils', 'getServerInformation')).
 			success(function(data) {
 				$scope.infos = data;
 				$timeout($scope.refresh, 5000);

@@ -1,9 +1,9 @@
 <%
-	ui.decorateWith("kenyaui", "panel", [ heading: "System Information" ])
+	ui.decorateWith("kenyaui", "panel", [ heading: "Server Information" ])
 
 	ui.includeJavascript("kenyaemr", "controllers/system.js")
 %>
-<div ng-controller="SystemInformation" ng-init="init()">
+<div ng-controller="ServerInformation" ng-init="init()">
 	<table class="ke-table-vertical">
 		<tbody>
 			<tr ng-repeat="info in infos">

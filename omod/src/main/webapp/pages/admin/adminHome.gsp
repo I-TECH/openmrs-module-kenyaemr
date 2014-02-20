@@ -54,7 +54,7 @@
 	</div>
 
 <% } else { %>
-	${ ui.includeFragment("kenyaemr", "system/systemInformation") }
+	${ ui.includeFragment("kenyaemr", "system/serverInformation") }
 	${ ui.includeFragment("kenyaemr", "system/databaseSummary") }
 <% } %>
 

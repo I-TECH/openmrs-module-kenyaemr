@@ -16,7 +16,7 @@ package org.openmrs.module.kenyaemr;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.module.kenyaemr.util.SystemInformation;
+import org.openmrs.module.kenyaemr.util.ServerInformation;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.util.OpenmrsUtil;
 import org.springframework.stereotype.Controller;
@@ -59,7 +59,7 @@ public class SystemMonitorController {
 	 */
 	protected SimpleObject getMonitoredData() {
 		SimpleObject stats = new SimpleObject();
-		stats.put("system", SystemInformation.getData());
+		stats.put("server", ServerInformation.getAllInformation());
 		return stats;
 	}
 

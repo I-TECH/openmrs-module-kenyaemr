@@ -15,35 +15,34 @@
 package org.openmrs.module.kenyaemr.fragment.controller.header;
 
 import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyaemr.util.BuildProperties;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
-import org.openmrs.module.kenyaemr.util.SystemInformation;
+import org.openmrs.module.kenyaemr.util.ServerInformation;
+import org.openmrs.module.kenyaui.KenyaUiUtils;
+import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 
-import java.text.ParseException;
 import java.util.Date;
+import java.util.Map;
 
 /**
  * Controller for page header
  */
 public class PageHeaderFragmentController {
 
-	public void controller(FragmentModel model) throws ParseException {
-		// Get module version
-		String moduleVersion = SystemInformation.getModuleVersion();
+	public void controller(FragmentModel model,
+						   @SpringBean KenyaUiUtils kenyaui) {
 
-		// Fetch build date for snapshot versions
-		Date moduleBuildDate = null;
-		if (moduleVersion.endsWith("SNAPSHOT")) {
-			BuildProperties buildProperties = SystemInformation.getModuleBuildProperties();
+		Map<String, Object> kenyaemrInfo = ServerInformation.getKenyaemrInformation();
 
-			if (buildProperties != null) {
-				moduleBuildDate = buildProperties.getBuildDate();
-			}
+		String moduleVersion = (String) kenyaemrInfo.get("version");
+		boolean isSnapshot = moduleVersion.endsWith("SNAPSHOT");
+
+		if (isSnapshot) {
+			Date moduleBuildDate = (Date) kenyaemrInfo.get("buildDate");
+			moduleVersion += " (" + kenyaui.formatDateTime(moduleBuildDate) + ")";
 		}
 
 		model.addAttribute("moduleVersion", moduleVersion);
-		model.addAttribute("moduleBuildDate", moduleBuildDate);
 
 		model.addAttribute("systemLocation", Context.getService(KenyaEmrService.class).getDefaultLocation());
 		model.addAttribute("systemLocationCode", Context.getService(KenyaEmrService.class).getDefaultLocationMflCode());
