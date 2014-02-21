@@ -38,6 +38,6 @@ public class ArvReportIndicatorLibrary {
 	 * @return indicator
 	 */
 	public CohortIndicator onRegimen(List<Concept> regimen) {
-		return cohortIndicator("", map(arvReportCohortLibrary.onRegimen(regimen), "onOrBefore=${endDate}"));
+		return cohortIndicator("", map(arvReportCohortLibrary.onRegimen(regimen), "onDate=${endDate}"));
 	}
 }

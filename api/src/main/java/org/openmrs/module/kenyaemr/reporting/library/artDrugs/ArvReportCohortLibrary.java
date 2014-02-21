@@ -45,7 +45,7 @@ public class ArvReportCohortLibrary {
 		Set<Concept> drugConceptSet = new HashSet<Concept>(drugConcepts);
 		cd.setName("ART regimen");
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
-		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
 		cd.setMasterConceptSet(regimenManager.getMasterSetConcept("ARV"));
 		cd.setConceptSet(drugConceptSet);
 		return cd;

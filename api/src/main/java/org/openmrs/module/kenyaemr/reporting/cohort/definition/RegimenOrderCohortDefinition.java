@@ -33,7 +33,7 @@ public class RegimenOrderCohortDefinition extends BaseCohortDefinition {
 	private Date onOrAfter;
 
 	@ConfigurationProperty(required = false, group = "date range")
-	private Date onOrBefore;
+	private Date onDate;
 
 	@ConfigurationProperty(group = "conceptsToInclude")
 	private Set<Concept> conceptSet;
@@ -41,8 +41,8 @@ public class RegimenOrderCohortDefinition extends BaseCohortDefinition {
 	@ConfigurationProperty(group = "masterConceptSet")
 	private Concept  masterConceptSet;
 
-	public Date getOnOrBefore() {
-		return onOrBefore;
+	public Date getOnDate() {
+		return onDate;
 	}
 
 	public Date getOnOrAfter() {
@@ -57,8 +57,8 @@ public class RegimenOrderCohortDefinition extends BaseCohortDefinition {
 		this.onOrAfter = onOrAfter;
 	}
 
-	public void setOnOrBefore(Date onOrBefore) {
-		this.onOrBefore = onOrBefore;
+	public void setOnDate(Date onDate) {
+		this.onDate = onDate;
 	}
 
 	public void setConceptSet(Set<Concept> conceptSet) {

@@ -49,7 +49,7 @@ public class RegimenOrderCohortDefinitionEvaluator implements CohortDefinitionEv
 
 		DrugOrdersForPatientDataDefinition drugOrdersForPatientDataDefinition = new DrugOrdersForPatientDataDefinition();
 		drugOrdersForPatientDataDefinition.setDrugConceptSetsToInclude(Arrays.asList(drugOrdersCohortDefinition.getMasterConceptSet()));
-		drugOrdersForPatientDataDefinition.setActiveOnDate(drugOrdersCohortDefinition.getOnOrBefore());
+		drugOrdersForPatientDataDefinition.setActiveOnDate(drugOrdersCohortDefinition.getOnDate());
 
 		Set<Integer> patientIds = new HashSet<Integer>();
 		PatientData patientData = Context.getService(PatientDataService.class).evaluate(drugOrdersForPatientDataDefinition, context);
