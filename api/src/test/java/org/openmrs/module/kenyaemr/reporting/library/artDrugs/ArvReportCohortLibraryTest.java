@@ -17,10 +17,9 @@ package org.openmrs.module.kenyaemr.reporting.library.artDrugs;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Concept;
-import org.openmrs.DrugOrder;
-import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyacore.test.TestUtils;
+import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.test.EmrTestUtils;
 import org.openmrs.module.kenyaemr.test.ReportingTestUtils;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
@@ -44,6 +43,8 @@ public class ArvReportCohortLibraryTest extends BaseModuleContextSensitiveTest {
 	@Autowired
 	ArvReportCohortLibrary arvReportCohortLibrary;
 
+	Concept azt, _3tc, efv;
+
 	/**
 	 * Setup each test
 	 */
@@ -51,6 +52,15 @@ public class ArvReportCohortLibraryTest extends BaseModuleContextSensitiveTest {
 	public void setup() throws Exception {
 
 		executeDataSet("dataset/test-concepts.xml");
+
+		azt = Dictionary.getConcept(Dictionary.ZIDOVUDINE);
+		_3tc = Dictionary.getConcept(Dictionary.LAMIVUDINE);
+		 efv = Dictionary.getConcept(Dictionary.EFAVIRENZ);
+
+		// Put patient #6 on AZT + 3TC + EFV from June 1st to June 30th
+		EmrTestUtils.saveRegimenOrder(TestUtils.getPatient(6), Arrays.asList(azt, _3tc, efv), TestUtils.date(2012, 6, 1), TestUtils.date(2012, 6, 30));
+		// Put patient #7 on AZT + 3TC + EFV from June 1st to July 30th
+		EmrTestUtils.saveRegimenOrder(TestUtils.getPatient(7), Arrays.asList(azt, _3tc, efv), TestUtils.date(2012, 7, 1), TestUtils.date(2012, 7, 31));
 
 		List<Integer> cohort = Arrays.asList(2, 6, 7, 8, 999);
 		context = ReportingTestUtils.reportingContext(cohort, TestUtils.date(2012, 6, 1), TestUtils.date(2012, 6, 30));
@@ -61,26 +71,10 @@ public class ArvReportCohortLibraryTest extends BaseModuleContextSensitiveTest {
 	 */
 	@Test
 	public void onRegimen_shouldReturnPatientsOnGivenRegimen() throws Exception{
-		PatientService ps = Context.getPatientService();
-
-		Concept azt = Context.getConceptService().getConcept(86663);
-		Concept _3tc = Context.getConceptService().getConcept(78643);
-		Concept efv = Context.getConceptService().getConcept(75523);
-
-		DrugOrder aztOrder = new DrugOrder();
-		aztOrder.setConcept(azt);
-		DrugOrder t3cOrder = new DrugOrder();
-		t3cOrder.setConcept(_3tc);
-		DrugOrder efvOrder = new DrugOrder();
-		efvOrder.setConcept(efv);
-
-		// Put patient #6 on AZT + 3TC + EFV from June 1st to June 30th
-		EmrTestUtils.saveRegimenOrder(ps.getPatient(6), Arrays.asList(azt, _3tc, efv), TestUtils.date(2012, 6, 1), TestUtils.date(2012, 6, 30));
-		// Put patient #7 on AZT + 3TC + EFV from June 1st to June 30th
-		EmrTestUtils.saveRegimenOrder(ps.getPatient(7), Arrays.asList(azt, _3tc, efv), TestUtils.date(2012, 6, 1), TestUtils.date(2012, 6, 30));
+		//check only with the end date
 		CohortDefinition cd = arvReportCohortLibrary.onRegimen(Arrays.asList(azt,_3tc,efv));
 		context.addParameterValue("onDate", TestUtils.date(2012, 6, 30));
 		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
-		ReportingTestUtils.assertCohortEquals(Arrays.asList(6,7), evaluated);
+		ReportingTestUtils.assertCohortEquals(Arrays.asList(6), evaluated);
 	}
 }
