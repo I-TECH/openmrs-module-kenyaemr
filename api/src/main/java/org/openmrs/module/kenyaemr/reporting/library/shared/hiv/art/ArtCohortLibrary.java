@@ -12,7 +12,7 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.reporting.library.artDrugs;
+package org.openmrs.module.kenyaemr.reporting.library.shared.hiv.art;
 
 import org.openmrs.Concept;
 import org.openmrs.module.kenyaemr.regimen.RegimenManager;
@@ -31,10 +31,10 @@ import java.util.Set;
  * Library of ART Drugs related cohort definitions
  */
 @Component
-public class ArvReportCohortLibrary {
+public class ArtCohortLibrary {
 
 	@Autowired
-	RegimenManager regimenManager;
+	private RegimenManager regimenManager;
 
 	/**
 	 * Current ART regimen of each patient

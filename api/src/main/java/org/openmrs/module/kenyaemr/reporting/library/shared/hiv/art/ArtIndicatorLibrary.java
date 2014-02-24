@@ -12,7 +12,7 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.reporting.library.artDrugs;
+package org.openmrs.module.kenyaemr.reporting.library.shared.hiv.art;
 
 import org.openmrs.Concept;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
@@ -28,16 +28,16 @@ import static org.openmrs.module.kenyaemr.reporting.EmrReportingUtils.cohortIndi
  * Library of ART Drugs related indicator definitions. All indicators require parameters ${startDate} and ${endDate}
  */
 @Component
-public class ArvReportIndicatorLibrary {
+public class ArtIndicatorLibrary {
 
 	@Autowired
-	ArvReportCohortLibrary arvReportCohortLibrary;
+	private ArtCohortLibrary artCohorts;
 
 	/**
-	 * Number of patients having ART regimen
+	 * Number of patients having the given ART regimen
 	 * @return indicator
 	 */
 	public CohortIndicator onRegimen(List<Concept> regimen) {
-		return cohortIndicator("", map(arvReportCohortLibrary.onRegimen(regimen), "onDate=${endDate}"));
+		return cohortIndicator("", map(artCohorts.onRegimen(regimen), "onDate=${endDate}"));
 	}
 }

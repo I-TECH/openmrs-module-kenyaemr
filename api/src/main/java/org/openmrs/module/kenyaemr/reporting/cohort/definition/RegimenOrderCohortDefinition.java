@@ -14,19 +14,16 @@
 
 package org.openmrs.module.kenyaemr.reporting.cohort.definition;
 
-
 import org.openmrs.Concept;
 import org.openmrs.module.reporting.cohort.definition.BaseCohortDefinition;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Set;
 
 /**
- * Cohort definition based on patient drug orders
+ * Cohort definition based on patient regimen orders
  */
-
 public class RegimenOrderCohortDefinition extends BaseCohortDefinition {
 
 	@ConfigurationProperty(required = false, group = "date range")
@@ -39,7 +36,7 @@ public class RegimenOrderCohortDefinition extends BaseCohortDefinition {
 	private Set<Concept> conceptSet;
 
 	@ConfigurationProperty(group = "masterConceptSet")
-	private Concept  masterConceptSet;
+	private Concept masterConceptSet;
 
 	public Date getOnDate() {
 		return onDate;
@@ -72,5 +69,4 @@ public class RegimenOrderCohortDefinition extends BaseCohortDefinition {
 	public void setMasterConceptSet(Concept masterConceptSet) {
 		this.masterConceptSet = masterConceptSet;
 	}
-
 }

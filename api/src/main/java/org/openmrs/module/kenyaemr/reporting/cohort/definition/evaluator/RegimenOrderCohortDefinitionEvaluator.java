@@ -29,44 +29,46 @@ import org.openmrs.module.reporting.data.patient.service.PatientDataService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 /**
- * Evaluator for drug orders based cohorts
+ * Evaluator for regimen orders based cohorts
  */
 @Handler(supports = RegimenOrderCohortDefinition.class)
 public class RegimenOrderCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
+
+	/**
+	 * @see org.openmrs.module.reporting.cohort.definition.evaluator.CohortDefinitionEvaluator#evaluate(org.openmrs.module.reporting.cohort.definition.CohortDefinition, org.openmrs.module.reporting.evaluation.EvaluationContext)
+	 */
 	@Override
 	public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) throws EvaluationException {
 
-		RegimenOrderCohortDefinition drugOrdersCohortDefinition = (RegimenOrderCohortDefinition) cohortDefinition;
+		RegimenOrderCohortDefinition cd = (RegimenOrderCohortDefinition) cohortDefinition;
 
 		DrugOrdersForPatientDataDefinition drugOrdersForPatientDataDefinition = new DrugOrdersForPatientDataDefinition();
-		drugOrdersForPatientDataDefinition.setDrugConceptSetsToInclude(Arrays.asList(drugOrdersCohortDefinition.getMasterConceptSet()));
-		drugOrdersForPatientDataDefinition.setActiveOnDate(drugOrdersCohortDefinition.getOnDate());
+		drugOrdersForPatientDataDefinition.setDrugConceptSetsToInclude(Arrays.asList(cd.getMasterConceptSet()));
+		drugOrdersForPatientDataDefinition.setActiveOnDate(cd.getOnDate());
 
 		Set<Integer> patientIds = new HashSet<Integer>();
 		PatientData patientData = Context.getService(PatientDataService.class).evaluate(drugOrdersForPatientDataDefinition, context);
+
 		for (Map.Entry<Integer, Object> d :patientData.getData().entrySet()) {
 
 			Set<DrugOrder> drugOrderSet = new HashSet<DrugOrder>((Collection<? extends DrugOrder>) d.getValue());
 
 			Set<Concept> conceptSet = new HashSet<Concept>();
 
-			for(DrugOrder drugOrder: drugOrderSet) {
+			for (DrugOrder drugOrder: drugOrderSet) {
 				conceptSet.add(drugOrder.getConcept());
-				if((drugOrdersCohortDefinition.getConceptSet().size() == conceptSet.size()) && (conceptSet.containsAll(drugOrdersCohortDefinition.getConceptSet()))) {
+				if ((cd.getConceptSet().size() == conceptSet.size()) && (conceptSet.containsAll(cd.getConceptSet()))) {
 					patientIds.add(d.getKey());
 				}
 			}
 		}
-		return new EvaluatedCohort(new Cohort(patientIds), drugOrdersCohortDefinition, context);
+		return new EvaluatedCohort(new Cohort(patientIds), cd, context);
 	}
-
 }

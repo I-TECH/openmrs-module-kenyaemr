@@ -36,16 +36,16 @@ import static org.hamcrest.Matchers.hasKey;
 import static org.hamcrest.Matchers.is;
 
 /**
- * Test for {@link ArvDrugReportBuilder}
+ * Test for {@link ArtDrugReportBuilder}
  */
 
-public class ArvDrugReportBuilderTest extends BaseModuleContextSensitiveTest {
+public class ArtDrugReportBuilderTest extends BaseModuleContextSensitiveTest {
 
 	@Autowired
 	private RegimenManager regimenManager;
 
 	@Autowired
-	ArvDrugReportBuilder builder;
+	ArtDrugReportBuilder builder;
 
 	@Autowired
 	@Qualifier("kenyaemr.common.report.arvDrug")
