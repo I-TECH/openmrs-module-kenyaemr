@@ -118,7 +118,10 @@ public class ReportUtilsFragmentController {
 									  UiUtils ui,
 									  @SpringBean ReportService reportService) {
 
-		if (ReportRequest.Status.REQUESTED.equals(request.getStatus())) {
+		boolean cancelable = ReportRequest.Status.REQUESTED.equals(request.getStatus())
+				|| ReportRequest.Status.PROCESSING.equals(request.getStatus());
+
+		if (cancelable) {
 			reportService.purgeReportRequest(request);
 			return new SuccessResult(ui.message("Report request cancelled"));
 		}
