@@ -48,12 +48,11 @@ public class ArtDrugReportBuilderTest extends BaseModuleContextSensitiveTest {
 	ArtDrugReportBuilder builder;
 
 	@Autowired
-	@Qualifier("kenyaemr.common.report.arvDrug")
+	@Qualifier("kenyaemr.common.report.artDrug")
 	private ReportDescriptor report;
 
 	@Before
 	public void setup() throws Exception {
-
 		executeDataSet("dataset/test-concepts.xml");
 		executeDataSet("dataset/test-drugs.xml");
 

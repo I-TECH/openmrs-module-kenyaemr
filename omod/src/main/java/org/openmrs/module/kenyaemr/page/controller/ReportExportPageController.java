@@ -21,26 +21,24 @@ import org.openmrs.module.kenyacore.UiResource;
 import org.openmrs.module.kenyacore.report.IndicatorReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportManager;
+import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.module.kenyaemr.reporting.renderer.MergedCsvReportRenderer;
-import org.openmrs.module.kenyaemr.util.EmrUiUtils;
+import org.openmrs.module.kenyaemr.wrapper.Facility;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.module.kenyaui.annotation.SharedPage;
 import org.openmrs.module.reporting.common.ContentType;
-import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.ReportDesignResource;
 import org.openmrs.module.reporting.report.ReportRequest;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
-import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 import org.openmrs.module.reporting.report.renderer.CsvReportRenderer;
 import org.openmrs.module.reporting.report.renderer.ExcelTemplateRenderer;
 import org.openmrs.module.reporting.report.renderer.ReportRenderer;
 import org.openmrs.module.reporting.report.service.ReportService;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.page.FileDownload;
-import org.openmrs.ui.framework.page.PageModel;
 import org.openmrs.ui.framework.page.PageRequest;
 import org.openmrs.ui.framework.resource.ResourceFactory;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -49,10 +47,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 /**
- * Download report as Excel or CSV page
+ * Download report data as Excel or CSV
  */
 @SharedPage
 public class ReportExportPageController {
@@ -135,6 +135,8 @@ public class ReportExportPageController {
 			};
 		}
 
+		addExtraContextValues(data.getContext());
+
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		renderer.render(data, null, out);
 
@@ -143,6 +145,24 @@ public class ReportExportPageController {
 				ContentType.EXCEL.getContentType(),
 				out.toByteArray()
 		);
+	}
+
+	/**
+	 * Adds some extra context values which can be used in Excel templates
+	 * @param context the evaluation context
+	 */
+	protected void addExtraContextValues(EvaluationContext context) {
+		Facility facility = new Facility(Context.getService(KenyaEmrService.class).getDefaultLocation());
+
+		context.addContextValue("facility.name", facility.getTarget().getName());
+		context.addContextValue("facility.code", facility.getMflCode());
+
+		Calendar period = new GregorianCalendar();
+		period.setTime(context.containsParameter("startDate") ? (Date) context.getParameterValue("startDate") : context.getEvaluationDate());
+
+		context.addContextValue("period.year", period.get(Calendar.YEAR));
+		context.addContextValue("period.month", period.get(Calendar.MONTH));
+		context.addContextValue("period.month.name", new SimpleDateFormat("MMMMM").format(period.getTime()));
 	}
 
 	/**

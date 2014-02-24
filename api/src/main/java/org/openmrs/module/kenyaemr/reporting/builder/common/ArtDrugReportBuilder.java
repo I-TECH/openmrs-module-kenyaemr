@@ -36,10 +36,10 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Art Drug report
+ * ART Drug monthly report
  */
 @Component
-@Builds("kenyaemr.common.report.arvDrug")
+@Builds("kenyaemr.common.report.artDrug")
 public class ArtDrugReportBuilder extends BaseIndicatorReportBuilder{
 
 	protected static final Log log = LogFactory.getLog(ArtDrugReportBuilder.class);
@@ -54,15 +54,14 @@ public class ArtDrugReportBuilder extends BaseIndicatorReportBuilder{
 	protected List<DataSetDefinition> buildDataSets()  {
 		log.debug("Setting up ARV Report definition");
 
-		return Arrays.asList(arvDataSet());
+		return Arrays.asList(regimensDataset());
 	}
 
 	/**
 	 * Creates the dataset for arv drug report
-	 *
 	 * @return the dataset
 	 */
-	protected DataSetDefinition arvDataSet() {
+	protected DataSetDefinition regimensDataset() {
 		CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
 		dsd.setName("ART Drugs");
 		dsd.setDescription("Groups Patients depending on ART Regimen and Age");
