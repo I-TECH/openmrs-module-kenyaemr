@@ -15,9 +15,13 @@
 package org.openmrs.module.kenyaemr.reporting.library.shared.hiv.art;
 
 import org.openmrs.Concept;
+import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyaemr.regimen.RegimenManager;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.RegimenOrderCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.EncounterCohortDefinition;
+import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -48,6 +52,24 @@ public class ArtCohortLibrary {
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
 		cd.setMasterConceptSet(regimenManager.getMasterSetConcept("ARV"));
 		cd.setConceptSet(drugConceptSet);
+		return cd;
+	}
+
+	public CohortDefinition hasEncounter() {
+		EncounterCohortDefinition cd = new EncounterCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.setTimeQualifier(TimeQualifier.ANY);
+		return cd;
+	}
+
+	public CohortDefinition hasEncounterInLast3MonthsAndOnregimen(List<Concept> drugConcepts) {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("Has an encounter in last 3 months and on regimen");
+		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addSearch("onRegimen", ReportUtils.map(onRegimen(drugConcepts), "onDate=${onDate}"));
+		cd.addSearch("hasEncounterInLast3Months", ReportUtils.map(hasEncounter(), "onOrAfter=${onDate-90d}"));
+		cd.setCompositionString("onRegimen AND hasEncounterInLast3Months");
 		return cd;
 	}
 }
