@@ -18,10 +18,9 @@ import org.openmrs.Concept;
 import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyaemr.regimen.RegimenManager;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.RegimenOrderCohortDefinition;
+import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonCohortLibrary;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.EncounterCohortDefinition;
-import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -40,35 +39,29 @@ public class ArtCohortLibrary {
 	@Autowired
 	private RegimenManager regimenManager;
 
+	@Autowired
+	private CommonCohortLibrary commonCohorts;
+
 	/**
-	 * Current ART regimen of each patient
+	 * Patients on the given regimen. In the future this should look at dispensing records during the reporting period
+	 * which implicitly check whether a patient is active. As a workaround until we get to dispensing records, we
+	 * explicitly check whether a patient is active here by looking for recent encounters.
+	 *
 	 * @return the cohort definition
 	 */
 	public CohortDefinition onRegimen(List<Concept> drugConcepts) {
-		RegimenOrderCohortDefinition cd = new RegimenOrderCohortDefinition();
+		RegimenOrderCohortDefinition regCd = new RegimenOrderCohortDefinition();
 		Set<Concept> drugConceptSet = new HashSet<Concept>(drugConcepts);
-		cd.setName("ART regimen");
-		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
-		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
-		cd.setMasterConceptSet(regimenManager.getMasterSetConcept("ARV"));
-		cd.setConceptSet(drugConceptSet);
-		return cd;
-	}
+		regCd.setName("ART regimen");
+		regCd.addParameter(new Parameter("onDate", "On Date", Date.class));
+		regCd.setMasterConceptSet(regimenManager.getMasterSetConcept("ARV"));
+		regCd.setConceptSet(drugConceptSet);
 
-	public CohortDefinition hasEncounter() {
-		EncounterCohortDefinition cd = new EncounterCohortDefinition();
-		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
-		cd.setTimeQualifier(TimeQualifier.ANY);
-		return cd;
-	}
-
-	public CohortDefinition hasEncounterInLast3MonthsAndOnregimen(List<Concept> drugConcepts) {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.setName("Has an encounter in last 3 months and on regimen");
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
-		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
-		cd.addSearch("onRegimen", ReportUtils.map(onRegimen(drugConcepts), "onDate=${onDate}"));
-		cd.addSearch("hasEncounterInLast3Months", ReportUtils.map(hasEncounter(), "onOrAfter=${onDate-90d}"));
+		cd.addSearch("onRegimen", ReportUtils.map(regCd, "onDate=${onDate}"));
+		cd.addSearch("hasEncounterInLast3Months", ReportUtils.map(commonCohorts.hasEncounter(), "onOrAfter=${onDate-90d}"));
 		cd.setCompositionString("onRegimen AND hasEncounterInLast3Months");
 		return cd;
 	}

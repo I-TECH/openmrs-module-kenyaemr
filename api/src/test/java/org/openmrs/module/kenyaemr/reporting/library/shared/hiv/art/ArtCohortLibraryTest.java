@@ -28,7 +28,6 @@ import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -76,23 +75,11 @@ public class ArtCohortLibraryTest extends BaseModuleContextSensitiveTest {
 	}
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.reporting.library.shared.hiv.art.ArtCohortLibrary#onRegimen(List)
+	 * @see ArtCohortLibrary#onRegimen(java.util.List)
 	 */
 	@Test
-	public void onRegimen_shouldReturnPatientsOnGivenRegimen() throws Exception{
+	public void onRegimen_shouldReturnPatientsOnGivenRegimen() throws Exception {
 		CohortDefinition cd = artCohortLibrary.onRegimen(Arrays.asList(azt, _3tc, efv));
-
-		context.addParameterValue("onDate", TestUtils.date(2012, 6, 15));
-		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
-		ReportingTestUtils.assertCohortEquals(Arrays.asList(6), evaluated);
-	}
-
-	/**
-	 * @see ArtCohortLibrary#hasEncounter()
-	 */
-	@Test
-	public void hasEncounter_shouldReturnPatientsWithEncounters() throws Exception {
-		CohortDefinition cd = artCohortLibrary.hasEncounterInLast3MonthsAndOnregimen(Arrays.asList(azt, _3tc, efv));
 		// Give patient #7 a scheduled encounter 100 days ago
 		Calendar calendar = Calendar.getInstance();
 		calendar.add(Calendar.DATE, -100);
@@ -107,6 +94,5 @@ public class ArtCohortLibraryTest extends BaseModuleContextSensitiveTest {
 		context.addParameterValue("onDate", TestUtils.date(2012, 6, 15));
 		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
 		ReportingTestUtils.assertCohortEquals(Arrays.asList(6), evaluated);
-
 	}
 }
