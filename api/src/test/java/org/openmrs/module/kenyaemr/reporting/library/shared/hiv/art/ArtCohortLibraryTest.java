@@ -17,6 +17,7 @@ package org.openmrs.module.kenyaemr.reporting.library.shared.hiv.art;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Concept;
+import org.openmrs.EncounterType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
@@ -27,10 +28,12 @@ import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -82,5 +85,28 @@ public class ArtCohortLibraryTest extends BaseModuleContextSensitiveTest {
 		context.addParameterValue("onDate", TestUtils.date(2012, 6, 15));
 		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
 		ReportingTestUtils.assertCohortEquals(Arrays.asList(6), evaluated);
+	}
+
+	/**
+	 * @see ArtCohortLibrary#hasEncounter()
+	 */
+	@Test
+	public void hasEncounter_shouldReturnPatientsWithEncounters() throws Exception {
+		CohortDefinition cd = artCohortLibrary.hasEncounterInLast3MonthsAndOnregimen(Arrays.asList(azt, _3tc, efv));
+		// Give patient #7 a scheduled encounter 100 days ago
+		Calendar calendar = Calendar.getInstance();
+		calendar.add(Calendar.DATE, -100);
+		EncounterType scheduledEncType = Context.getEncounterService().getEncounterType("Scheduled");
+		TestUtils.saveEncounter(TestUtils.getPatient(7), scheduledEncType, calendar.getTime());
+
+		// Give patient #6 a scheduled encounter 50 days ago
+		calendar = Calendar.getInstance();
+		calendar.add(Calendar.DATE, -50);
+		TestUtils.saveEncounter(TestUtils.getPatient(6), scheduledEncType, calendar.getTime());
+
+		context.addParameterValue("onDate", TestUtils.date(2012, 6, 15));
+		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
+		ReportingTestUtils.assertCohortEquals(Arrays.asList(6), evaluated);
+
 	}
 }
