@@ -60,7 +60,7 @@ public class EmrActivator implements ModuleActivator {
 		catch (Exception ex) {
 			// If an error occurs during core refresh, we need KenyaEMR to still start so that the error can be
 			// communicated to an admin user. So we catch exceptions, log them and alert super users.
-			log.error(ex);
+			log.error("Unable to refresh core context", ex);
 
 			// TODO re-enable once someone fixes TRUNK-4267
 			//Context.getAlertService().notifySuperUsers("Unable to start KenyaEMR", ex);
