@@ -17,13 +17,28 @@ public class EmrReportingUtils {
 	/**
 	 * Creates a new cohort indicator
 	 * @param name the indicator name
+	 * @param cohort the mapped cohort
 	 * @return the cohort indicator
 	 */
-	public static CohortIndicator cohortIndicator(String name, Mapped<CohortDefinition> mappedCohort) {
+	public static CohortIndicator cohortIndicator(String name, Mapped<CohortDefinition> cohort) {
 		CohortIndicator ind = new CohortIndicator(name);
 		ind.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		ind.addParameter(new Parameter("endDate", "End Date", Date.class));
-		ind.setCohortDefinition(mappedCohort);
+		ind.setCohortDefinition(cohort);
+		return ind;
+	}
+
+	/**
+	 * Creates a new cohort indicator with numerator and a denominator cohort
+	 * @param name the indicator name
+	 * @param numeratorCohort the mapped numerator cohort
+	 * @param denominatorCohort the mapped denominator cohort
+	 * @return the cohort indicator
+	 */
+	public static CohortIndicator cohortIndicator(String name, Mapped<CohortDefinition> numeratorCohort, Mapped<CohortDefinition> denominatorCohort) {
+		CohortIndicator ind = cohortIndicator(name, numeratorCohort);
+		ind.setDenominator(denominatorCohort);
+		ind.setType(CohortIndicator.IndicatorType.FRACTION);
 		return ind;
 	}
 
