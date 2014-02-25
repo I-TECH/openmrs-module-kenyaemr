@@ -56,9 +56,14 @@ public class FixMissingOpenmrsIdentifiers extends AbstractChore {
 	 */
 	@Override
 	public void perform(PrintWriter output) {
+		Location defaultLocation = kenyaEmrService.getDefaultLocation();
+
+		if (defaultLocation == null) {
+			return; // Database is obviously clean as this hasn't yet been configured
+		}
+
 		PatientIdentifierType openmrsIdType = MetadataUtils.getPatientIdentifierType(CommonMetadata._PatientIdentifierType.OPENMRS_ID);
 		IdentifierSource openmrsIdSource = idgenService.getAutoGenerationOption(openmrsIdType).getSource();
-		Location defaultLocation = kenyaEmrService.getDefaultLocation();
 
 		List<Patient> allPatients = patientService.getAllPatients();
 		Map<Patient, PatientIdentifier> patientsWithOpenmrsID = new HashMap<Patient, PatientIdentifier>();
