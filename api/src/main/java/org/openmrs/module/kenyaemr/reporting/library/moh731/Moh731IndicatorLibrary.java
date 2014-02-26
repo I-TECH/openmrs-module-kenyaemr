@@ -16,7 +16,7 @@ package org.openmrs.module.kenyaemr.reporting.library.moh731;
 
 import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyaemr.reporting.indicator.HivCareVisitsIndicator;
-import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.HivCohortLibrary;
+import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.art.ArtCohortLibrary;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.openmrs.module.reporting.indicator.Indicator;
@@ -34,7 +34,7 @@ import static org.openmrs.module.kenyaemr.reporting.EmrReportingUtils.cohortIndi
 public class Moh731IndicatorLibrary {
 
 	@Autowired
-	private HivCohortLibrary artCohorts;
+	private ArtCohortLibrary artCohorts;
 
 	@Autowired
 	private Moh731CohortLibrary moh731Cohorts;

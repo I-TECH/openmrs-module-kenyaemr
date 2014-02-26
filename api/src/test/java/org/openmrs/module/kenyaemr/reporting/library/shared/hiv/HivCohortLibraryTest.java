@@ -16,12 +16,14 @@ package org.openmrs.module.kenyaemr.reporting.library.shared.hiv;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.*;
-import org.openmrs.api.PatientService;
+import org.openmrs.Concept;
+import org.openmrs.Encounter;
+import org.openmrs.EncounterType;
+import org.openmrs.Obs;
+import org.openmrs.Program;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
-import org.openmrs.module.kenyaemr.test.EmrTestUtils;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.test.ReportingTestUtils;
@@ -37,7 +39,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Tests for {@link org.openmrs.module.kenyaemr.reporting.library.shared.hiv.HivCohortLibrary}
+ * Tests for {@link HivCohortLibrary}
  */
 public class HivCohortLibraryTest extends BaseModuleContextSensitiveTest {
 
@@ -63,59 +65,8 @@ public class HivCohortLibraryTest extends BaseModuleContextSensitiveTest {
 		commonMetadata.install();
 		hivMetadata.install();
 
-		PatientService ps = Context.getPatientService();
-		Concept azt = Context.getConceptService().getConcept(86663);
-		Concept _3tc = Context.getConceptService().getConcept(78643);
-		Concept efv = Context.getConceptService().getConcept(75523);
-
-		// Put patient #6 on AZT + 3TC + EFV from June 1st to June 30th
-		EmrTestUtils.saveRegimenOrder(ps.getPatient(6), Arrays.asList(azt, _3tc, efv), TestUtils.date(2012, 6, 1), TestUtils.date(2012, 6, 30));
-
-		// Put patient #7 on AZT + 3TC + EFV from May 31st 2012 (also has a drug order starting 2008 in standardTestData.xml)
-		EmrTestUtils.saveRegimenOrder(ps.getPatient(7), Arrays.asList(azt, _3tc, efv), TestUtils.date(2012, 5, 31), null);
-
-		// Put patient #8 on AZT + 3TC + EFV from July 1st (out of calculation range)
-		EmrTestUtils.saveRegimenOrder(ps.getPatient(8), Arrays.asList(azt, _3tc, efv), TestUtils.date(2012, 7, 1), null);
-
 		List<Integer> cohort = Arrays.asList(2, 6, 7, 8, 999);
 		context = ReportingTestUtils.reportingContext(cohort, TestUtils.date(2012, 6, 1), TestUtils.date(2012, 6, 30));
-	}
-
-	/**
-	 * @see org.openmrs.module.kenyaemr.reporting.library.shared.hiv.HivCohortLibrary#startedArt()
-	 */
-	@Test
-	public void startedArt_shouldReturnPatientsWhoStartedAfterDate() throws Exception {
-		// Check with just start date
-		CohortDefinition cd = hivCohortLibrary.startedArt();
-		context.addParameterValue("onOrAfter", TestUtils.date(2012, 6, 1));
-		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
-		ReportingTestUtils.assertCohortEquals(Arrays.asList(6), evaluated);
-	}
-
-	/**
-	 * @see org.openmrs.module.kenyaemr.reporting.library.shared.hiv.HivCohortLibrary#startedArt()
-	 */
-	@Test
-	public void startedArt_shouldReturnPatientsWhoStartedBeforeDate() throws Exception {
-		// Check with just end date
-		CohortDefinition cd = hivCohortLibrary.startedArt();
-		context.addParameterValue("onOrBefore", TestUtils.date(2012, 6, 30));
-		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
-		ReportingTestUtils.assertCohortEquals(Arrays.asList(2, 6, 7), evaluated); // Patient #2 has old orders in standardTestDataset.xml
-	}
-
-	/**
-	 * @see org.openmrs.module.kenyaemr.reporting.library.shared.hiv.HivCohortLibrary#startedArt()
-	 */
-	@Test
-	public void startedArt_shouldReturnPatientsWhoStartedBetweenDates() throws Exception {
-		// Check with both start and end date
-		CohortDefinition cd = hivCohortLibrary.startedArt();
-		context.addParameterValue("onOrAfter", TestUtils.date(2012, 6, 1));
-		context.addParameterValue("onOrBefore", TestUtils.date(2012, 6, 30));
-		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
-		ReportingTestUtils.assertCohortEquals(Arrays.asList(6), evaluated);
 	}
 
 	/**
@@ -184,7 +135,7 @@ public class HivCohortLibraryTest extends BaseModuleContextSensitiveTest {
 	 * @see HivCohortLibrary#testedForHiv()
 	 */
 	@Test
-	public void  testedForHiv_shouldReturnPatientsWhoTestedForHiv() throws Exception {
+	public void testedForHiv_shouldReturnPatientsWhoTestedForHiv() throws Exception {
 		Concept hivStatus = Dictionary.getConcept(Dictionary.HIV_STATUS);
 		Concept hivInfected = Dictionary.getConcept(Dictionary.HIV_INFECTED);
 		Concept positive = Dictionary.getConcept(Dictionary.POSITIVE);
@@ -229,6 +180,5 @@ public class HivCohortLibraryTest extends BaseModuleContextSensitiveTest {
 		context.addParameterValue("onOrBefore", TestUtils.date(2012, 6, 30));
 		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
 		ReportingTestUtils.assertCohortEquals(Arrays.asList(2,7), evaluated);
-
 	}
 }

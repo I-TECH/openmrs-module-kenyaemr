@@ -14,6 +14,7 @@
 
 package org.openmrs.module.kenyaemr.reporting.library.shared.hiv;
 
+import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.art.ArtCohortLibrary;
 import org.openmrs.module.reporting.indicator.Indicator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -28,6 +29,12 @@ import static org.openmrs.module.kenyaemr.reporting.EmrReportingUtils.cohortIndi
 public class QiIndicatorLibrary {
 
 	@Autowired
+	private HivCohortLibrary hivCohorts;
+
+	@Autowired
+	private ArtCohortLibrary artCohorts;
+
+	@Autowired
 	private QiCohortLibrary qiCohorts;
 
 	/**
@@ -36,8 +43,8 @@ public class QiIndicatorLibrary {
 	 */
 	public Indicator hivMonitoringCd4() {
 		return cohortIndicator("HIV monitoring - CD4",
-				map(qiCohorts.patientsWithCd4(), "onOrAfter=${endDate-6m},onOrBefore=${endDate}"),
-				map(qiCohorts.patientsWithHivVisit(), "onOrAfter=${endDate-6m},onOrBefore=${endDate}")
+				map(hivCohorts.hasCd4Result(), "onOrAfter=${endDate-6m},onOrBefore=${endDate}"),
+				map(hivCohorts.hasHivVisit(), "onOrAfter=${endDate-6m},onOrBefore=${endDate}")
 		);
 	}
 }

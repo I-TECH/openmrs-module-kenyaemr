@@ -25,6 +25,7 @@ import org.openmrs.module.kenyaemr.reporting.EmrReportingUtils;
 import org.openmrs.module.kenyaemr.reporting.ColumnParameters;
 import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonDimensionLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.HivIndicatorLibrary;
+import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.art.ArtIndicatorLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.shared.tb.TbIndicatorLibrary;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
@@ -52,7 +53,10 @@ public class Moh711ReportBuilder extends BaseIndicatorReportBuilder {
 	private CommonDimensionLibrary commonDimensions;
 
 	@Autowired
-	private HivIndicatorLibrary artIndicators;
+	private HivIndicatorLibrary hivIndicators;
+
+	@Autowired
+	private ArtIndicatorLibrary artIndicators;
 
 	@Autowired
 	private TbIndicatorLibrary tbIndicators;
@@ -139,14 +143,14 @@ public class Moh711ReportBuilder extends BaseIndicatorReportBuilder {
 
 		String indParams = "startDate=${startDate},endDate=${endDate}";
 
-		EmrReportingUtils.addRow(dsd, "K1-1", "New enrollments - PMTCT", ReportUtils.map(artIndicators.enrolledExcludingTransfersAndReferredFrom(pmtct), indParams), femaleColumns);
-		EmrReportingUtils.addRow(dsd, "K1-2", "New enrollments - VCT", ReportUtils.map(artIndicators.enrolledExcludingTransfersAndReferredFrom(vct), indParams), allColumns);
-		EmrReportingUtils.addRow(dsd, "K1-3", "New enrollments - TB", ReportUtils.map(artIndicators.enrolledExcludingTransfersAndReferredFrom(tb), indParams), allColumns);
-		EmrReportingUtils.addRow(dsd, "K1-4", "New enrollments - In Patient", ReportUtils.map(artIndicators.enrolledExcludingTransfersAndReferredFrom(inpatient), indParams), allColumns);
-		EmrReportingUtils.addRow(dsd, "K1-5", "New enrollments - CWC", ReportUtils.map(artIndicators.enrolledExcludingTransfersAndReferredFrom(cwc), indParams), pedsColumns);
-		EmrReportingUtils.addRow(dsd, "K1-6", "New enrollments - All others", ReportUtils.map(artIndicators.enrolledExcludingTransfersAndNotReferredFrom(all), indParams), allColumns);
-		EmrReportingUtils.addRow(dsd, "K1-7", "New enrollments - Sub-total", ReportUtils.map(artIndicators.enrolledExcludingTransfers(), indParams), allColumns);
-		EmrReportingUtils.addRow(dsd, "K2", "Cumulative enrolled", ReportUtils.map(artIndicators.enrolledCumulative(), indParams), allColumns);
+		EmrReportingUtils.addRow(dsd, "K1-1", "New enrollments - PMTCT", ReportUtils.map(hivIndicators.enrolledExcludingTransfersAndReferredFrom(pmtct), indParams), femaleColumns);
+		EmrReportingUtils.addRow(dsd, "K1-2", "New enrollments - VCT", ReportUtils.map(hivIndicators.enrolledExcludingTransfersAndReferredFrom(vct), indParams), allColumns);
+		EmrReportingUtils.addRow(dsd, "K1-3", "New enrollments - TB", ReportUtils.map(hivIndicators.enrolledExcludingTransfersAndReferredFrom(tb), indParams), allColumns);
+		EmrReportingUtils.addRow(dsd, "K1-4", "New enrollments - In Patient", ReportUtils.map(hivIndicators.enrolledExcludingTransfersAndReferredFrom(inpatient), indParams), allColumns);
+		EmrReportingUtils.addRow(dsd, "K1-5", "New enrollments - CWC", ReportUtils.map(hivIndicators.enrolledExcludingTransfersAndReferredFrom(cwc), indParams), pedsColumns);
+		EmrReportingUtils.addRow(dsd, "K1-6", "New enrollments - All others", ReportUtils.map(hivIndicators.enrolledExcludingTransfersAndNotReferredFrom(all), indParams), allColumns);
+		EmrReportingUtils.addRow(dsd, "K1-7", "New enrollments - Sub-total", ReportUtils.map(hivIndicators.enrolledExcludingTransfers(), indParams), allColumns);
+		EmrReportingUtils.addRow(dsd, "K2", "Cumulative enrolled", ReportUtils.map(hivIndicators.enrolledCumulative(), indParams), allColumns);
 		EmrReportingUtils.addRow(dsd, "K3-1", "Starting ARVs - WHO stage 1", ReportUtils.map(artIndicators.startedArtWithWhoStage(1), indParams), allColumns);
 		EmrReportingUtils.addRow(dsd, "K3-2", "Starting ARVs - WHO stage 2", ReportUtils.map(artIndicators.startedArtWithWhoStage(2), indParams), allColumns);
 		EmrReportingUtils.addRow(dsd, "K3-3", "Starting ARVs - WHO stage 3", ReportUtils.map(artIndicators.startedArtWithWhoStage(3), indParams), allColumns);
@@ -161,9 +165,9 @@ public class Moh711ReportBuilder extends BaseIndicatorReportBuilder {
 		//EmrReportingUtils.addRow(dsd, "K7-2", "Post-exposure prophylaxis..", map(???, indParams), allColumns);
 		//EmrReportingUtils.addRow(dsd, "K7-3", "Post-exposure prophylaxis..", map(???, indParams), allColumns);
 		//EmrReportingUtils.addRow(dsd, "K7-4", "Post-exposure prophylaxis..", map(???, indParams), allColumns);
-		EmrReportingUtils.addRow(dsd, "K8-1", "On prophylaxis - Cotrimoxazole", ReportUtils.map(artIndicators.onCotrimoxazoleProphylaxis(), indParams), allColumns);
-		EmrReportingUtils.addRow(dsd, "K8-2", "On prophylaxis - Fluconazole", ReportUtils.map(artIndicators.onFluconazoleProphylaxis(), indParams), allColumns);
-		EmrReportingUtils.addRow(dsd, "K8-3", "On prophylaxis - Sub-total", ReportUtils.map(artIndicators.onProphylaxis(), indParams), allColumns);
+		EmrReportingUtils.addRow(dsd, "K8-1", "On prophylaxis - Cotrimoxazole", ReportUtils.map(hivIndicators.onCotrimoxazoleProphylaxis(), indParams), allColumns);
+		EmrReportingUtils.addRow(dsd, "K8-2", "On prophylaxis - Fluconazole", ReportUtils.map(hivIndicators.onFluconazoleProphylaxis(), indParams), allColumns);
+		EmrReportingUtils.addRow(dsd, "K8-3", "On prophylaxis - Sub-total", ReportUtils.map(hivIndicators.onProphylaxis(), indParams), allColumns);
 
 		return dsd;
 	}

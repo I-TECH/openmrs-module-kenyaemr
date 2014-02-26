@@ -27,6 +27,7 @@ import org.openmrs.module.kenyaemr.reporting.library.moh731.Moh731IndicatorLibra
 import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonDimensionLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.HivIndicatorLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.PwpIndicatorLibrary;
+import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.art.ArtIndicatorLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.shared.mchcs.MchcsIndicatorLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.shared.mchms.MchmsIndicatorLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.shared.tb.TbIndicatorLibrary;
@@ -54,7 +55,10 @@ public class Moh731ReportBuilder extends BaseIndicatorReportBuilder {
 	private CommonDimensionLibrary commonDimensions;
 
 	@Autowired
-	private HivIndicatorLibrary artIndicators;
+	private HivIndicatorLibrary hivIndicators;
+
+	@Autowired
+	private ArtIndicatorLibrary artIndicators;
 
 	@Autowired
 	private TbIndicatorLibrary tbIndicators;
@@ -190,10 +194,10 @@ public class Moh731ReportBuilder extends BaseIndicatorReportBuilder {
 		cohortDsd.addColumn("HV03-02", "HIV Exposed Infants (Eligible for CTX at 2 months)", ReportUtils.map(mchcsIndicatorLibrary.hivExposedInfantsWithin2MonthsAndEligibleForCTX(), indParams), "");
 
 		// 3.1 (On CTX Prophylaxis)
-		EmrReportingUtils.addRow(cohortDsd, "HV03", "On CTX Prophylaxis", ReportUtils.map(artIndicators.onCotrimoxazoleProphylaxis(), indParams), nonInfantColumns, Arrays.asList("03", "04", "05", "06", "07"));
+		EmrReportingUtils.addRow(cohortDsd, "HV03", "On CTX Prophylaxis", ReportUtils.map(hivIndicators.onCotrimoxazoleProphylaxis(), indParams), nonInfantColumns, Arrays.asList("03", "04", "05", "06", "07"));
 
 		// 3.2 (Enrolled in Care)
-		EmrReportingUtils.addRow(cohortDsd, "HV03", "Enrolled in care", ReportUtils.map(artIndicators.enrolledExcludingTransfers(), indParams), allColumns, Arrays.asList("08", "09", "10", "11", "12", "13"));
+		EmrReportingUtils.addRow(cohortDsd, "HV03", "Enrolled in care", ReportUtils.map(hivIndicators.enrolledExcludingTransfers(), indParams), allColumns, Arrays.asList("08", "09", "10", "11", "12", "13"));
 
 		// 3.3 (Currently in Care)
 		EmrReportingUtils.addRow(cohortDsd, "HV03", "Currently in care", ReportUtils.map(moh731Indicators.currentlyInCare(), indParams), allColumns, Arrays.asList("14", "15", "16", "17", "18", "19"));

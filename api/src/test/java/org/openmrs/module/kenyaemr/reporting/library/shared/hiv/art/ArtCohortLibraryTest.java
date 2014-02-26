@@ -32,8 +32,6 @@ import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -68,8 +66,11 @@ public class ArtCohortLibraryTest extends BaseModuleContextSensitiveTest {
 		// Put patient #6 on AZT + 3TC + EFV from June 1st to June 30th
 		EmrTestUtils.saveRegimenOrder(TestUtils.getPatient(6), Arrays.asList(azt, _3tc, efv), TestUtils.date(2012, 6, 1), TestUtils.date(2012, 6, 30));
 
-		// Put patient #7 on AZT + 3TC + EFV from July 1st to July 31st
-		EmrTestUtils.saveRegimenOrder(TestUtils.getPatient(7), Arrays.asList(azt, _3tc, efv), TestUtils.date(2012, 7, 1), TestUtils.date(2012, 7, 31));
+		// Put patient #7 on AZT + 3TC + EFV from May 31st 2012 (also has a drug order starting 2008 in standardTestData.xml)
+		EmrTestUtils.saveRegimenOrder(TestUtils.getPatient(7), Arrays.asList(azt, _3tc, efv), TestUtils.date(2012, 5, 31), null);
+
+		// Put patient #8 on AZT + 3TC + EFV from July 1st (out of calculation range)
+		EmrTestUtils.saveRegimenOrder(TestUtils.getPatient(8), Arrays.asList(azt, _3tc, efv), TestUtils.date(2012, 7, 1), null);
 
 		List<Integer> cohort = Arrays.asList(2, 6, 7, 8, 999);
 		context = ReportingTestUtils.reportingContext(cohort, TestUtils.date(2012, 6, 1), TestUtils.date(2012, 6, 30));
@@ -80,22 +81,53 @@ public class ArtCohortLibraryTest extends BaseModuleContextSensitiveTest {
 	 */
 	@Test
 	public void onRegimen_shouldReturnPatientsOnGivenRegimen() throws Exception {
+		EncounterType scheduled = Context.getEncounterService().getEncounterType("Scheduled");
+
+		// Give patient #6 a scheduled encounter before 3 months of report
+		TestUtils.saveEncounter(TestUtils.getPatient(6), scheduled, TestUtils.date(2012, 1, 1));
+
+		// Give patient #7 a scheduled encounter within 3 months of report
+		TestUtils.saveEncounter(TestUtils.getPatient(7), scheduled, TestUtils.date(2012, 6, 1));
+
 		CohortDefinition cd = artCohortLibrary.onRegimen(Arrays.asList(azt, _3tc, efv));
-		Date endDate = TestUtils.date(2012,9,1);
+		context.addParameterValue("onDate", TestUtils.date(2012, 6, 30));
+		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
+		ReportingTestUtils.assertCohortEquals(Arrays.asList(7), evaluated);
+	}
 
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTime(endDate);
+	/**
+	 * @see ArtCohortLibrary#startedArt()
+	 */
+	@Test
+	public void startedArt_shouldReturnPatientsWhoStartedAfterDate() throws Exception {
+		// Check with just start date
+		CohortDefinition cd = artCohortLibrary.startedArt();
+		context.addParameterValue("onOrAfter", TestUtils.date(2012, 6, 1));
+		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
+		ReportingTestUtils.assertCohortEquals(Arrays.asList(6), evaluated);
+	}
 
-		// Give patient #7 a scheduled encounter 100 days ago
-		calendar.add(Calendar.DATE, -100);
-		EncounterType scheduledEncType = Context.getEncounterService().getEncounterType("Scheduled");
-		TestUtils.saveEncounter(TestUtils.getPatient(7), scheduledEncType, calendar.getTime());
+	/**
+	 * @see ArtCohortLibrary#startedArt()
+	 */
+	@Test
+	public void startedArt_shouldReturnPatientsWhoStartedBeforeDate() throws Exception {
+		// Check with just end date
+		CohortDefinition cd = artCohortLibrary.startedArt();
+		context.addParameterValue("onOrBefore", TestUtils.date(2012, 6, 30));
+		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
+		ReportingTestUtils.assertCohortEquals(Arrays.asList(2, 6, 7), evaluated); // Patient #2 has old orders in standardTestDataset.xml
+	}
 
-		// Give patient #6 a scheduled encounter 50 days ago
-		calendar.add(Calendar.DATE, -50);
-		TestUtils.saveEncounter(TestUtils.getPatient(6), scheduledEncType, calendar.getTime());
-
-		context.addParameterValue("onDate", TestUtils.date(2012, 6, 15));
+	/**
+	 * @see ArtCohortLibrary#startedArt()
+	 */
+	@Test
+	public void startedArt_shouldReturnPatientsWhoStartedBetweenDates() throws Exception {
+		// Check with both start and end date
+		CohortDefinition cd = artCohortLibrary.startedArt();
+		context.addParameterValue("onOrAfter", TestUtils.date(2012, 6, 1));
+		context.addParameterValue("onOrBefore", TestUtils.date(2012, 6, 30));
 		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
 		ReportingTestUtils.assertCohortEquals(Arrays.asList(6), evaluated);
 	}

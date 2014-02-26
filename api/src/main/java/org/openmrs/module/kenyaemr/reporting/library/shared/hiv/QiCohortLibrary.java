@@ -38,31 +38,5 @@ public class QiCohortLibrary {
 	@Autowired
 	private CommonCohortLibrary commonCohorts;
 
-	/**
-	 * Patients with a CD4 result between {onOrAfter} and {onOrBefore}
-	 * @return the cohort definition
-	 */
-	public CohortDefinition patientsWithCd4() {
-		Concept cd4Count = Dictionary.getConcept(Dictionary.CD4_COUNT);
-		Concept cd4Percent = Dictionary.getConcept(Dictionary.CD4_PERCENT);
-
-		CompositionCohortDefinition cd = new CompositionCohortDefinition();
-		cd.setName("patients with CD4 results");
-		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
-		cd.addSearch("hasCdCount", ReportUtils.map(commonCohorts.hasObs(cd4Count), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
-		cd.addSearch("hasCd4Percent", ReportUtils.map(commonCohorts.hasObs(cd4Percent), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
-		cd.setCompositionString("hasCdCount OR hasCd4Percent");
-		return cd;
-	}
-
-	/**
-	 * Patients with a HIV care visit between {onOrAfter} and {onOrBefore}
-	 * @return the cohort definition
-	 */
-	public CohortDefinition patientsWithHivVisit() {
-		EncounterType hivEnrollment = MetadataUtils.getEncounterType(HivMetadata._EncounterType.HIV_ENROLLMENT);
-		EncounterType hivConsultation = MetadataUtils.getEncounterType(HivMetadata._EncounterType.HIV_CONSULTATION);
-		return commonCohorts.hasEncounter(hivEnrollment, hivConsultation);
-	}
+	// TODO
 }

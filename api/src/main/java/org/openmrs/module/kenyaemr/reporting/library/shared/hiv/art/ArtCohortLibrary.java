@@ -16,7 +16,18 @@ package org.openmrs.module.kenyaemr.reporting.library.shared.hiv.art;
 
 import org.openmrs.Concept;
 import org.openmrs.module.kenyacore.report.ReportUtils;
+import org.openmrs.module.kenyacore.report.builder.CalculationCohortDefinition;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.EligibleForArtCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtStartDateCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.OnAlternateFirstLineArtCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.OnArtCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.OnOriginalFirstLineArtCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.OnSecondLineArtCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.PregnantAtArtStartCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.TbPatientAtArtStartCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.WhoStageAtArtStartCalculation;
 import org.openmrs.module.kenyaemr.regimen.RegimenManager;
+import org.openmrs.module.kenyaemr.reporting.cohort.definition.DateCalculationCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.RegimenOrderCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonCohortLibrary;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -31,7 +42,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Library of ART Drugs related cohort definitions
+ * Library of ART related cohort definitions
  */
 @Component
 public class ArtCohortLibrary {
@@ -41,6 +52,103 @@ public class ArtCohortLibrary {
 
 	@Autowired
 	private CommonCohortLibrary commonCohorts;
+
+	/**
+	 * Patients who are eligible for ART on ${onDate}
+	 * @return the cohort definition
+	 */
+	public CohortDefinition eligibleForArt() {
+		CalculationCohortDefinition cd = new CalculationCohortDefinition(new EligibleForArtCalculation());
+		cd.setName("eligible for ART on date");
+		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
+		return cd;
+	}
+
+	/**
+	 * Patients who are on ART on ${onDate}
+	 * @return the cohort definition
+	 */
+	public CohortDefinition onArt() {
+		CalculationCohortDefinition cd = new CalculationCohortDefinition(new OnArtCalculation());
+		cd.setName("on ART on date");
+		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
+		return cd;
+	}
+
+	/**
+	 * Patients who are on ART and pregnant on ${onDate}
+	 * @return the cohort definition
+	 */
+	public CohortDefinition onArtAndPregnant() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("on ART and pregnant");
+		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
+		cd.addSearch("onArt", ReportUtils.map(onArt(), "onDate=${onDate}"));
+		cd.addSearch("pregnant", ReportUtils.map(commonCohorts.pregnant(), "onDate=${onDate}"));
+		cd.setCompositionString("onArt AND pregnant");
+		return cd;
+	}
+
+	/**
+	 * Patients who are on ART and not pregnant on ${onDate}
+	 * @return the cohort definition
+	 */
+	public CohortDefinition onArtAndNotPregnant() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("on ART and not pregnant");
+		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
+		cd.addSearch("onArt", ReportUtils.map(onArt(), "onDate=${onDate}"));
+		cd.addSearch("pregnant", ReportUtils.map(commonCohorts.pregnant(), "onDate=${onDate}"));
+		cd.setCompositionString("onArt AND NOT pregnant");
+		return cd;
+	}
+
+	/**
+	 * Patients who are taking their original first line regimen on ${onDate}
+	 * @return the cohort definition
+	 */
+	public CohortDefinition onOriginalFirstLine() {
+		CalculationCohortDefinition cd = new CalculationCohortDefinition(new OnOriginalFirstLineArtCalculation());
+		cd.setName("on original first line regimen");
+		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
+		return cd;
+	}
+
+	/**
+	 * Patients who are taking an alternate first line regimen on ${onDate}
+	 * @return the cohort definition
+	 */
+	public CohortDefinition onAlternateFirstLine() {
+		CalculationCohortDefinition cd = new CalculationCohortDefinition(new OnAlternateFirstLineArtCalculation());
+		cd.setName("on alternate first line regimen");
+		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
+		return cd;
+	}
+
+	/**
+	 * Patients who are taking a second line regimen on ${onDate}
+	 * @return the cohort definition
+	 */
+	public CohortDefinition onSecondLine() {
+		CalculationCohortDefinition cd = new CalculationCohortDefinition(new OnSecondLineArtCalculation());
+		cd.setName("on second line regimen");
+		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
+		return cd;
+	}
+
+	/**
+	 * Patients who are in the "12 month net cohort" on ${onDate}
+	 * @return the cohort definition
+	 */
+	public CohortDefinition netCohort12Months() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("in 12 net cohort on date");
+		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
+		cd.addSearch("startedArt12MonthsAgo", ReportUtils.map(startedArt(), "onOrAfter=${onDate-13m},onOrBefore=${onDate-12m}"));
+		cd.addSearch("transferredOut", ReportUtils.map(commonCohorts.transferredOut(), "onOrAfter=${onDate-13m}"));
+		cd.setCompositionString("startedArt12MonthsAgo AND NOT transferredOut");
+		return cd;
+	}
 
 	/**
 	 * Patients on the given regimen. In the future this should look at dispensing records during the reporting period
@@ -63,6 +171,94 @@ public class ArtCohortLibrary {
 		cd.addSearch("onRegimen", ReportUtils.map(regCd, "onDate=${onDate}"));
 		cd.addSearch("hasEncounterInLast3Months", ReportUtils.map(commonCohorts.hasEncounter(), "onOrAfter=${onDate-90d}"));
 		cd.setCompositionString("onRegimen AND hasEncounterInLast3Months");
+		return cd;
+	}
+
+	/**
+	 * Patients who were pregnant when they started ART
+	 * @return the cohort definition
+	 */
+	public CohortDefinition pregnantAtArtStart() {
+		CalculationCohortDefinition cd = new CalculationCohortDefinition(new PregnantAtArtStartCalculation());
+		cd.setName("pregnant at start of ART");
+		return cd;
+	}
+
+	/**
+	 * Patients who were TB patients when they started ART
+	 * @return the cohort definition
+	 */
+	public CohortDefinition tbPatientAtArtStart() {
+		CalculationCohortDefinition cd = new CalculationCohortDefinition(new TbPatientAtArtStartCalculation());
+		cd.setName("TB patient at start of ART");
+		return cd;
+	}
+
+	/**
+	 * Patients with given WHO stage when started ART
+	 * @return the cohort definition
+	 */
+	public CohortDefinition whoStageAtArtStart(int stage) {
+		CalculationCohortDefinition cd = new CalculationCohortDefinition(new WhoStageAtArtStartCalculation());
+		cd.setName("who stage " + stage + " at start of ART");
+		cd.setWithResult(stage);
+		return cd;
+	}
+
+	/**
+	 * Patients who started ART between ${onOrAfter} and ${onOrBefore}
+	 * @return the cohort definition
+	 */
+	public CohortDefinition startedArt() {
+		DateCalculationCohortDefinition cd = new DateCalculationCohortDefinition(new InitialArtStartDateCalculation());
+		cd.setName("started ART");
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		return cd;
+	}
+
+	/**
+	 * Patients who started ART while pregnant between ${onOrAfter} and ${onOrBefore}
+	 * @return the cohort definition
+	 */
+	public CohortDefinition startedArtWhilePregnant() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("started ART while pregnant");
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("startedArt", ReportUtils.map(startedArt(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("pregnantAtArtStart", ReportUtils.map(pregnantAtArtStart()));
+		cd.setCompositionString("startedArt AND pregnantAtArtStart");
+		return cd;
+	}
+
+	/**
+	 * Patients who started ART while being a TB patient between ${onOrAfter} and ${onOrBefore}
+	 * @return the cohort definition
+	 */
+	public CohortDefinition startedArtWhileTbPatient() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("started ART while being TB patient");
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("startedArt", ReportUtils.map(startedArt(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("tbPatientAtArtStart", ReportUtils.map(tbPatientAtArtStart()));
+		cd.setCompositionString("startedArt AND tbPatientAtArtStart");
+		return cd;
+	}
+
+	/**
+	 * Patients who started ART with the given WHO stage between ${onOrAfter} and ${onOrBefore}
+	 * @return the cohort definition
+	 */
+	public CohortDefinition startedArtWithWhoStage(int stage) {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("started ART with WHO stage " + stage);
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("startedArt", ReportUtils.map(startedArt(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("withWhoStage", ReportUtils.map(whoStageAtArtStart(stage)));
+		cd.setCompositionString("startedArt AND withWhoStage");
 		return cd;
 	}
 }
