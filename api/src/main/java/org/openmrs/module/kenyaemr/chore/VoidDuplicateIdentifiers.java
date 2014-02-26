@@ -17,10 +17,8 @@ package org.openmrs.module.kenyaemr.chore;
 import org.openmrs.PatientIdentifier;
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.api.PatientService;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyacore.chore.AbstractChore;
-import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
-import org.openmrs.module.kenyaemr.metadata.HivMetadata;
-import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -46,15 +44,9 @@ public class VoidDuplicateIdentifiers extends AbstractChore {
 	 */
 	@Override
 	public void perform(PrintWriter output) {
-		PatientIdentifierType mrnType = MetadataUtils.getPatientIdentifierType(CommonMetadata._PatientIdentifierType.OPENMRS_ID);
-		PatientIdentifierType pcnType = MetadataUtils.getPatientIdentifierType(CommonMetadata._PatientIdentifierType.PATIENT_CLINIC_NUMBER);
-		PatientIdentifierType nidType = MetadataUtils.getPatientIdentifierType(CommonMetadata._PatientIdentifierType.NATIONAL_ID);
-		PatientIdentifierType upnType = MetadataUtils.getPatientIdentifierType(HivMetadata._PatientIdentifierType.UNIQUE_PATIENT_NUMBER);
-
-		voidDuplicatesOfType(mrnType, output);
-		voidDuplicatesOfType(pcnType, output);
-		voidDuplicatesOfType(nidType, output);
-		voidDuplicatesOfType(upnType, output);
+		for (PatientIdentifierType type : Context.getPatientService().getAllPatientIdentifierTypes()) {
+			voidDuplicatesOfType(type, output);
+		}
 	}
 
 	/**
