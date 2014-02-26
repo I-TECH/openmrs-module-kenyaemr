@@ -15,7 +15,7 @@
 package org.openmrs.module.kenyaemr.reporting.library.shared.hiv;
 
 import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.art.ArtCohortLibrary;
-import org.openmrs.module.reporting.indicator.Indicator;
+import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -41,7 +41,7 @@ public class QiIndicatorLibrary {
 	 * Percentage of patients with an HIV care visit who have CD4 test results in the last 6 months
 	 * @return the indicator
 	 */
-	public Indicator hivMonitoringCd4() {
+	public CohortIndicator hivMonitoringCd4() {
 		return cohortIndicator("HIV monitoring - CD4",
 				map(hivCohorts.hasCd4Result(), "onOrAfter=${endDate-6m},onOrBefore=${endDate}"),
 				map(hivCohorts.hasHivVisit(), "onOrAfter=${endDate-6m},onOrBefore=${endDate}")

@@ -40,7 +40,7 @@ import java.util.List;
  */
 @Component
 @Builds("kenyaemr.common.report.artDrug")
-public class ArtDrugReportBuilder extends BaseIndicatorReportBuilder{
+public class ArtDrugReportBuilder extends BaseIndicatorReportBuilder {
 
 	protected static final Log log = LogFactory.getLog(ArtDrugReportBuilder.class);
 
@@ -50,10 +50,11 @@ public class ArtDrugReportBuilder extends BaseIndicatorReportBuilder{
 	@Autowired
 	private ArtIndicatorLibrary artIndicators;
 
+	/**
+	 * @see org.openmrs.module.kenyaemr.reporting.BaseIndicatorReportBuilder#buildDataSets()
+	 */
 	@Override
-	protected List<DataSetDefinition> buildDataSets()  {
-		log.debug("Setting up ARV Report definition");
-
+	protected List<DataSetDefinition> buildDataSets() {
 		return Arrays.asList(regimensDataset());
 	}
 

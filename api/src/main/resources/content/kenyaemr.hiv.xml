@@ -18,6 +18,7 @@
 		</property>
 		<property name="reports">
 			<set>
+				<ref bean="kenyaemr.hiv.report.qi" />
 				<ref bean="kenyaemr.hiv.report.dueForCd4" />
 				<ref bean="kenyaemr.hiv.report.decliningCd4" />
 				<ref bean="kenyaemr.hiv.report.lostToFollowUp" />
@@ -133,6 +134,13 @@
 	</bean>
 
 	<!-- ===================== Reports ===================== -->
+
+	<bean id="kenyaemr.hiv.report.qi" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
+		<property name="targetUuid" value="496a24ee-77e1-4f5e-82ba-bc78f6943537" />
+		<property name="name" value="Quality Improvement" />
+		<property name="description" value="Standards for HIV Care" />
+		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
+	</bean>
 
 	<bean id="kenyaemr.hiv.report.lostToFollowUp" class="org.openmrs.module.kenyacore.report.CalculationReportDescriptor">
 		<property name="targetUuid" value="70bca1e5-7c68-4500-bfb8-0795549f35a4" />

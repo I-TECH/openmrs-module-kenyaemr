@@ -36,7 +36,7 @@
 	%>
 
 	<fieldset>
-		<legend>${ dsd.name }: ${ dsd.description }</legend>
+		<legend>${ dsd.name }${ dsd.description ? (': ' + dsd.description) : '' }</legend>
 		<table class="ke-table-vertical">
 			<tbody>
 			<% ds.metaData.columns.each { col ->

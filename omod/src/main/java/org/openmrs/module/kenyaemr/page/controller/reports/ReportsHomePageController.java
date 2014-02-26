@@ -54,14 +54,21 @@ public class ReportsHomePageController {
 			commonReports.add(ui.simplifyObject(report));
 		}
 
-		Map<String, SimpleObject[]> programReports = new LinkedHashMap<String, SimpleObject[]>();
+		Map<String, List<SimpleObject>> programReports = new LinkedHashMap<String, List<SimpleObject>>();
 
 		for (ProgramDescriptor programDescriptor : programManager.getAllProgramDescriptors()) {
 			Program program = programDescriptor.getTarget();
 			List<ReportDescriptor> reports = reportManager.getProgramReports(currentApp, program);
 
 			if (reports.size() > 0) {
-				programReports.put(program.getName(), ui.simplifyCollection(reports));
+				List<SimpleObject> forProgram = new ArrayList<SimpleObject>();
+
+				// We're not calling ui.simplifyCollection because it doesn't play well with subclasses
+				for (ReportDescriptor report : reports) {
+					forProgram.add(ui.simplifyObject(report));
+				}
+
+				programReports.put(program.getName(), forProgram);
 			}
 		}
 
