@@ -33,6 +33,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -80,14 +81,17 @@ public class ArtCohortLibraryTest extends BaseModuleContextSensitiveTest {
 	@Test
 	public void onRegimen_shouldReturnPatientsOnGivenRegimen() throws Exception {
 		CohortDefinition cd = artCohortLibrary.onRegimen(Arrays.asList(azt, _3tc, efv));
-		// Give patient #7 a scheduled encounter 100 days ago
+		Date endDate = TestUtils.date(2012,9,1);
+
 		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(endDate);
+
+		// Give patient #7 a scheduled encounter 100 days ago
 		calendar.add(Calendar.DATE, -100);
 		EncounterType scheduledEncType = Context.getEncounterService().getEncounterType("Scheduled");
 		TestUtils.saveEncounter(TestUtils.getPatient(7), scheduledEncType, calendar.getTime());
 
 		// Give patient #6 a scheduled encounter 50 days ago
-		calendar = Calendar.getInstance();
 		calendar.add(Calendar.DATE, -50);
 		TestUtils.saveEncounter(TestUtils.getPatient(6), scheduledEncType, calendar.getTime());
 
