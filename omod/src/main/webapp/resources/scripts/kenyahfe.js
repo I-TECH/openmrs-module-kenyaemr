@@ -53,7 +53,7 @@
 		var form = $('#htmlform');
 
 		// Disable the submit button
-		form.find('[type="submit"]').prop('disabled', true);
+		form.find('.submitButton').prop('disabled', true);
 
 		jQuery.post(form.attr('action'), form.serialize(), function(result) {
 			if (result.success) {
@@ -78,7 +78,7 @@
 				submitting = false;
 
 				// Re-enable the submit button
-				form.find('[type="submit"]').prop('disabled', false);
+				form.find('.submitButton').prop('disabled', false);
 			}
 		}, 'json')
 		.error(function(jqXHR, textStatus, errorThrown) {
