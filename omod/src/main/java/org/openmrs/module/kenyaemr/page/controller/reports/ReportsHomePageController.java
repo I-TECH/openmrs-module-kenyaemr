@@ -48,13 +48,14 @@ public class ReportsHomePageController {
 
 		AppDescriptor currentApp = kenyaUi.getCurrentApp(pageRequest);
 
-		List<SimpleObject> commonReports = new ArrayList<SimpleObject>();
+		Map<String, List<SimpleObject>> reportsByProgram = new LinkedHashMap<String, List<SimpleObject>>();
 
+		List<SimpleObject> common = new ArrayList<SimpleObject>();
 		for (ReportDescriptor report : reportManager.getCommonReports(currentApp)) {
-			commonReports.add(ui.simplifyObject(report));
+			common.add(ui.simplifyObject(report));
 		}
 
-		Map<String, List<SimpleObject>> programReports = new LinkedHashMap<String, List<SimpleObject>>();
+		reportsByProgram.put("Common", common);
 
 		for (ProgramDescriptor programDescriptor : programManager.getAllProgramDescriptors()) {
 			Program program = programDescriptor.getTarget();
@@ -68,11 +69,10 @@ public class ReportsHomePageController {
 					forProgram.add(ui.simplifyObject(report));
 				}
 
-				programReports.put(program.getName(), forProgram);
+				reportsByProgram.put(program.getName(), forProgram);
 			}
 		}
 
-		model.addAttribute("commonReports", commonReports);
-		model.addAttribute("programReports", programReports);
+		model.addAttribute("reportsByProgram", reportsByProgram);
 	}
 }

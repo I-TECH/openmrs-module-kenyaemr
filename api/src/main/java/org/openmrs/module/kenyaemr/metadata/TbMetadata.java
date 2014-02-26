@@ -70,6 +70,6 @@ public class TbMetadata extends AbstractMetadataBundle {
 				null, null, null,
 				LocationBehavior.NOT_USED, false, _PatientIdentifierType.DISTRICT_REG_NUMBER));
 
-		install(program("TB Program", "Treatment for TB patients", Dictionary.TUBERCULOSIS_TREATMENT_PROGRAM, _Program.TB));
+		install(program("TB", "Treatment for TB patients", Dictionary.TUBERCULOSIS_TREATMENT_PROGRAM, _Program.TB));
 	}
 }
