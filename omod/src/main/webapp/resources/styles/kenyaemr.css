@@ -65,9 +65,3 @@
 	display: block;
 	margin: 5px 0 5px 0;
 }
-
-/***** Needs moved to next kenyaui release ... *****/
-
-.ke-tabmenu-item {
-	min-width: 75px;
-}

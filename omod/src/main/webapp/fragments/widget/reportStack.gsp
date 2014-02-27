@@ -10,7 +10,7 @@ if (config.reports && config.reports.size() > 0) {
 <div class="ke-stack-item ke-navigable" onclick="${ onClick }">
 	${ ui.includeFragment("kenyaui", "widget/icon", [ iconProvider: "kenyaui", icon: iconPath, tooltip: "View report" ]) }
 	<b>${ report.name }</b>
-
+	<div class="ke-extra">${ report.description ?: "" }</div>
 </div>
 <%
 		}

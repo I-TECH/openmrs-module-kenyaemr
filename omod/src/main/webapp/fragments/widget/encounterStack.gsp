@@ -17,9 +17,9 @@
 	<input type="hidden" name="encounterId" value="${ encounter.encounterId }"/>
 	${ ui.includeFragment("kenyaui", "widget/icon", [ iconProvider: form.iconProvider, icon: form.icon, useViewOverlay: true, tooltip: "View Encounter" ]) }
 	<b>${ title }</b> by ${ providers }<br/>
-	<span style="color: gray">
+	<div class="ke-extra">
 		Entered by ${ ui.format(encounter.creator) } on ${ kenyaui.formatDateTime(encounter.dateCreated) }<% if (encounter.dateChanged) { %>, last edit by ${ ui.format(encounter.changedBy) } on ${ kenyaui.formatDateTime(encounter.dateChanged) }<% } %>
-	</span>
+	</div>
 </div>
 <%
 		}
