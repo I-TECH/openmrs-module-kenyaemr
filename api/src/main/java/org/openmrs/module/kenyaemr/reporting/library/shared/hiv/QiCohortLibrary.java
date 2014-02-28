@@ -19,6 +19,7 @@ import org.openmrs.EncounterType;
 import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
+import org.openmrs.module.kenyaemr.reporting.cohort.definition.ObsInLastVisitCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonCohortLibrary;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -38,5 +39,11 @@ public class QiCohortLibrary {
 	@Autowired
 	private CommonCohortLibrary commonCohorts;
 
-	// TODO
+	/*public CohortDefinition hadNutritionalAssessmentAtLastVisit() {
+		Concept bmi = Dictionary.getConcept(Dictionary)
+
+		ObsInLastVisitCohortDefinition cd = new ObsInLastVisitCohortDefinition();
+		cd.setName("patients with nutritional assessment obs in last visit");
+		cd.setQuestion();
+	} */
 }
