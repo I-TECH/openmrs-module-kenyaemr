@@ -17,7 +17,6 @@ package org.openmrs.module.kenyaemr;
 import org.openmrs.Concept;
 import org.openmrs.ConceptNumeric;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.metadatadeploy.MissingMetadataException;
 
 import java.util.ArrayList;
