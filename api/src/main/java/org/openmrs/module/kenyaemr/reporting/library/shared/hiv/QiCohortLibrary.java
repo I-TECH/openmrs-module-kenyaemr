@@ -15,13 +15,10 @@
 package org.openmrs.module.kenyaemr.reporting.library.shared.hiv;
 
 import org.openmrs.Concept;
-import org.openmrs.EncounterType;
 import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.ObsInLastVisitCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonCohortLibrary;
-import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
@@ -39,11 +36,33 @@ public class QiCohortLibrary {
 	@Autowired
 	private CommonCohortLibrary commonCohorts;
 
-	/*public CohortDefinition hadNutritionalAssessmentAtLastVisit() {
-		Concept bmi = Dictionary.getConcept(Dictionary)
+	public CohortDefinition hadNutritionalAssessmentAtLastVisit() {
+		Concept weight = Dictionary.getConcept(Dictionary.WEIGHT_KG);
+		Concept height = Dictionary.getConcept(Dictionary.HEIGHT_CM);
+		Concept muac = Dictionary.getConcept(Dictionary.MUAC);
 
-		ObsInLastVisitCohortDefinition cd = new ObsInLastVisitCohortDefinition();
-		cd.setName("patients with nutritional assessment obs in last visit");
-		cd.setQuestion();
-	} */
+		ObsInLastVisitCohortDefinition hadWeight = new ObsInLastVisitCohortDefinition();
+		hadWeight.setName("patients with weight obs in last visit");
+		hadWeight.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		hadWeight.setQuestion(weight);
+
+		ObsInLastVisitCohortDefinition hadHeight = new ObsInLastVisitCohortDefinition();
+		hadHeight.setName("patients with height obs in last visit");
+		hadHeight.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		hadHeight.setQuestion(height);
+
+		ObsInLastVisitCohortDefinition hadMuac = new ObsInLastVisitCohortDefinition();
+		hadMuac.setName("patients with MUAC obs in last visit");
+		hadMuac.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		hadMuac.setQuestion(muac);
+
+		CompositionCohortDefinition cd =new CompositionCohortDefinition();
+		hadMuac.setName("patients with nutritional assessment in last visit");
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("hadWeight", ReportUtils.map(hadWeight, "onOrBefore=${onOrBefore}"));
+		cd.addSearch("hadHeight", ReportUtils.map(hadHeight, "onOrBefore=${onOrBefore}"));
+		cd.addSearch("hadMuac", ReportUtils.map(hadMuac, "onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("(hadWeight AND hadHeight) OR hadMuac");
+		return cd;
+	}
 }

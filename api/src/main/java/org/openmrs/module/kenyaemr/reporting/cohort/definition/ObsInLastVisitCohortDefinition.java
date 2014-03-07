@@ -28,11 +28,38 @@ public class ObsInLastVisitCohortDefinition extends BaseCohortDefinition {
 	@ConfigurationProperty(required = true)
 	private Concept question;
 
+	@ConfigurationProperty(required = false)
+	private Date onOrBefore;
+
+	/**
+	 * Gets the question concept
+	 * @return the question concept
+	 */
 	public Concept getQuestion() {
 		return question;
 	}
 
+	/**
+	 * Sets the question concept
+	 * @param question the question concept
+	 */
 	public void setQuestion(Concept question) {
 		this.question = question;
+	}
+
+	/**
+	 * Gets the on-or-before date
+	 * @return the date
+	 */
+	public Date getOnOrBefore() {
+		return onOrBefore;
+	}
+
+	/**
+	 * Sets the on-or-before date
+	 * @param onOrBefore the  date
+	 */
+	public void setOnOrBefore(Date onOrBefore) {
+		this.onOrBefore = onOrBefore;
 	}
 }
