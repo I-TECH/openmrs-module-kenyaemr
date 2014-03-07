@@ -52,13 +52,14 @@ public class QiReportBuilder extends BaseIndicatorReportBuilder {
 	 */
 	protected DataSetDefinition qiDataset() {
 		CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
-		dsd.setName("QI");
+		dsd.setName("Standards");
 		dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
 
 		String indParams = "startDate=${startDate},endDate=${endDate}";
 
-		dsd.addColumn("02", "HIV infected patients in care should have a CD4 assessment every 6 months.", ReportUtils.map(qiIndicators.hivMonitoringCd4(), indParams), "");
+		dsd.addColumn("02", "Patients in care should have a CD4 assessment every 6 months", ReportUtils.map(qiIndicators.hivMonitoringCd4(), indParams), "");
+		dsd.addColumn("07", "Patients should receive nutritional status assessment (BMI/MUAC) at every clinic visit", ReportUtils.map(qiIndicators.nutritionalAssessment(), indParams), "");
 		return dsd;
 	}
 }

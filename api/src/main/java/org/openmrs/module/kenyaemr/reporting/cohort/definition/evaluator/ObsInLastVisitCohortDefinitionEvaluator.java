@@ -68,7 +68,7 @@ public class ObsInLastVisitCohortDefinitionEvaluator implements CohortDefinition
 		Set<Integer> patientIds = new HashSet<Integer>();
 
 		// Look for obss inside visits...
-		for (Integer ptId : context.getBaseCohort().getMemberIds()) {
+		for (Integer ptId : visitsData.getData().keySet()) {
 			Visit lastVisit = (Visit) visitsData.getData().get(ptId);
 			List<Obs> allObss = (List<Obs>) obssData.getData().get(ptId);
 
