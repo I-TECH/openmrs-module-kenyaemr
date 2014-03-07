@@ -52,17 +52,22 @@ public class ObsInLastVisitCohortDefinitionEvaluator implements CohortDefinition
 
 		ObsInLastVisitCohortDefinition cd = (ObsInLastVisitCohortDefinition) cohortDefinition;
 
+		// Get all last visits before the onOrBefore date
 		VisitsForPatientDataDefinition visitsDef = new VisitsForPatientDataDefinition();
 		visitsDef.setWhich(TimeQualifier.LAST);
+		visitsDef.setStartedOnOrBefore(cd.getOnOrBefore());
 		PatientData visitsData = Context.getService(PatientDataService.class).evaluate(visitsDef, context);
 
+		// Get all obss with specified concept before the onOrBefore date
 		ObsForPersonDataDefinition obssDef = new ObsForPersonDataDefinition();
 		obssDef.setQuestion(cd.getQuestion());
 		obssDef.setWhich(TimeQualifier.ANY);
+		obssDef.setOnOrBefore(cd.getOnOrBefore());
 		PersonData obssData = Context.getService(PersonDataService.class).evaluate(obssDef, context);
 
 		Set<Integer> patientIds = new HashSet<Integer>();
 
+		// Look for obss inside visits...
 		for (Integer ptId : context.getBaseCohort().getMemberIds()) {
 			Visit lastVisit = (Visit) visitsData.getData().get(ptId);
 			List<Obs> allObss = (List<Obs>) obssData.getData().get(ptId);
