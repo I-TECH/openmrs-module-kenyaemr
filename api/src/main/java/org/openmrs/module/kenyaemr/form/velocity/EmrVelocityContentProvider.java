@@ -15,8 +15,10 @@
 package org.openmrs.module.kenyaemr.form.velocity;
 
 import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.FieldMethodizer;
 import org.openmrs.module.htmlformentry.FormEntrySession;
 import org.openmrs.module.htmlformentry.velocity.VelocityContextContentProvider;
+import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.ui.framework.UiUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,5 +41,6 @@ public class EmrVelocityContentProvider implements VelocityContextContentProvide
 
 		velocityContext.put(EmrConstants.MODULE_ID, new EmrVelocityFunctions(session));
 		velocityContext.put("ui", new UiVelocityFunctions(session, ui));
+		velocityContext.put("Dictionary", new FieldMethodizer(Dictionary.class.getName()));
 	}
 }
