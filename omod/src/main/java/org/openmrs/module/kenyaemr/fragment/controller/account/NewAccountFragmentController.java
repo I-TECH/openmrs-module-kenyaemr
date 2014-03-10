@@ -18,6 +18,7 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.Person;
 import org.openmrs.PersonName;
+import org.openmrs.Privilege;
 import org.openmrs.Provider;
 import org.openmrs.Role;
 import org.openmrs.User;
@@ -66,11 +67,25 @@ public class NewAccountFragmentController {
 
 		ui.validate(form, form, null);
 
-		Person person = form.save();
+		try {
+			// This method will be typically called by a IT admin account that doesn't have all privileges. However, the
+			// OpenMRS security model requires that you have a privilege to be able to grant it to others.
+			for (Privilege priv : Context.getUserService().getAllPrivileges()) {
+				Context.addProxyPrivilege(priv.getPrivilege());
+			}
 
-		kenyaUi.notifySuccess(session, "Account created");
-		
-		return SimpleObject.create("personId", person.getId());
+			Person person = form.save();
+
+			kenyaUi.notifySuccess(session, "Account created");
+
+			return SimpleObject.create("personId", person.getId());
+		}
+		finally {
+			// Ensure that all proxy privileges are removed
+			for (Privilege priv : Context.getUserService().getAllPrivileges()) {
+				Context.removeProxyPrivilege(priv.getPrivilege());
+			}
+		}
 	}
 	
 	public CreateAccountForm newCreateAccountForm(@RequestParam(value = "personId", required = false) Person person) {
