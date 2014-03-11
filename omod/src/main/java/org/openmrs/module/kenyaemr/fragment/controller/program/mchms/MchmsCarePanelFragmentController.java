@@ -18,16 +18,13 @@ import org.joda.time.DateTime;
 import org.joda.time.Weeks;
 import org.openmrs.Concept;
 import org.openmrs.Encounter;
-import org.openmrs.EncounterType;
 import org.openmrs.Obs;
 import org.openmrs.Patient;
-import org.openmrs.api.EncounterService;
-import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.metadata.MchMetadata;
-import org.openmrs.module.kenyaemr.util.EmrUtils;
 import org.openmrs.module.kenyaemr.wrapper.EncounterWrapper;
 import org.openmrs.module.kenyaemr.wrapper.PatientWrapper;
+import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 
@@ -48,34 +45,34 @@ public class MchmsCarePanelFragmentController {
 
 		PatientWrapper patientWrapper = new PatientWrapper(patient);
 
-		EncounterService encounterService = Context.getEncounterService();
-		EncounterType encounterType = encounterService.getEncounterTypeByUuid(MchMetadata._EncounterType.MCHMS_ENROLLMENT);
-		EncounterWrapper lastMchEnrollment = new EncounterWrapper(patientWrapper.lastEncounter(encounterType));
+		Encounter lastMchEnrollment = patientWrapper.lastEncounter(MetadataUtils.getEncounterType(MchMetadata._EncounterType.MCHMS_ENROLLMENT));
+		EncounterWrapper lastMchEnrollmentWrapped = new EncounterWrapper(lastMchEnrollment);
 
-		Obs lmpObs = lastMchEnrollment.firstObs(Dictionary.getConcept(Dictionary.LAST_MONTHLY_PERIOD));
+		Obs lmpObs = lastMchEnrollmentWrapped.firstObs(Dictionary.getConcept(Dictionary.LAST_MONTHLY_PERIOD));
 		if (lmpObs != null) {
 			Weeks weeks = Weeks.weeksBetween(new DateTime(lmpObs.getValueDate()), new DateTime(new Date()));
 			calculations.put("gestation", weeks.getWeeks());
 		}
 
-		Obs hivStatusObs = lastMchEnrollment.firstObs(Dictionary.getConcept(Dictionary.HIV_STATUS));
+		Obs hivStatusObs = lastMchEnrollmentWrapped.firstObs(Dictionary.getConcept(Dictionary.HIV_STATUS));
 		if (hivStatusObs != null) {
 			calculations.put("hivStatus", hivStatusObs.getValueCoded());
 		} else {
 			calculations.put("hivStatus", "Not Specified");
 		}
 
-		encounterType = encounterService.getEncounterTypeByUuid(MchMetadata._EncounterType.MCHMS_CONSULTATION);
-		EncounterWrapper lastMchConsultation = new EncounterWrapper(patientWrapper.lastEncounter(encounterType));
+		Encounter lastMchConsultation = patientWrapper.lastEncounter(MetadataUtils.getEncounterType(MchMetadata._EncounterType.MCHMS_CONSULTATION));
 
 		if (lastMchConsultation != null) {
-			Obs arvUseObs = lastMchConsultation.firstObs(Dictionary.getConcept(Dictionary.ANTIRETROVIRAL_USE_IN_PREGNANCY));
+			EncounterWrapper lastMchConsultationWrapped = new EncounterWrapper(lastMchConsultation);
+
+			Obs arvUseObs = lastMchConsultationWrapped.firstObs(Dictionary.getConcept(Dictionary.ANTIRETROVIRAL_USE_IN_PREGNANCY));
 			if (arvUseObs != null) {
 				Concept concept = arvUseObs.getValueCoded();
 				if (concept.equals(Dictionary.getConcept(Dictionary.MOTHER_ON_PROPHYLAXIS))
 						|| concept.equals(Dictionary.getConcept(Dictionary.MOTHER_ON_HAART))) {
 					String regimen = "Regimen not specified";
-					List<Obs> drugObsList = lastMchConsultation.allObs(Dictionary.getConcept(Dictionary.ANTIRETROVIRAL_USED_IN_PREGNANCY));
+					List<Obs> drugObsList = lastMchConsultationWrapped.allObs(Dictionary.getConcept(Dictionary.ANTIRETROVIRAL_USED_IN_PREGNANCY));
 					if (!drugObsList.isEmpty()) {
 						String rgmn = "";
 						for (Obs obs : drugObsList) {
