@@ -17,6 +17,7 @@ package org.openmrs.module.kenyaemr.metadata;
 import org.openmrs.Privilege;
 import org.openmrs.api.UserService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyadq.DqConstants;
 import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.metadatadeploy.bundle.AbstractMetadataBundle;
 import org.openmrs.util.PrivilegeConstants;
@@ -64,7 +65,8 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 				EmrConstants.APP_DIRECTORY,
 				EmrConstants.APP_FACILITIES,
 				EmrConstants.APP_ADMIN,
-				"kenyadq.dataQuality"
+				DqConstants.APP_DATAQUALITY,
+				"kenyadq.dataManager"
 		};
 
 		// Ensure a privilege exists for each app. App framework does create these but not always before this
@@ -113,7 +115,8 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 						app(EmrConstants.APP_REPORTS),
 						app(EmrConstants.APP_DIRECTORY),
 						app(EmrConstants.APP_FACILITIES),
-						app("kenyadq.dataQuality")
+						app(DqConstants.APP_DATAQUALITY),
+						app("kenyadq.dataManager")
 				)
 		));
 
@@ -137,7 +140,7 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 						app(EmrConstants.APP_REPORTS),
 						app(EmrConstants.APP_DIRECTORY),
 						app(EmrConstants.APP_FACILITIES),
-						app("kenyadq.dataQuality")
+						app(DqConstants.APP_DATAQUALITY)
 				)
 		));
 

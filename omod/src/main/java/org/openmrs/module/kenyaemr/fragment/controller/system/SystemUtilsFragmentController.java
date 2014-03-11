@@ -15,10 +15,12 @@
 package org.openmrs.module.kenyaemr.fragment.controller.system;
 
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyadq.DqConstants;
 import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyaemr.util.ServerInformation;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.module.kenyaui.annotation.AppAction;
+import org.openmrs.module.kenyaui.annotation.SharedAction;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.annotation.SpringBean;
 
@@ -67,7 +69,11 @@ public class SystemUtilsFragmentController {
 		return points;
 	}
 
-	@AppAction(EmrConstants.APP_ADMIN)
+	/**
+	 * Fetches a database summary
+	 * @return the summary
+	 */
+	@SharedAction({EmrConstants.APP_ADMIN, "kenyadq.dataManager"})
 	public List<SimpleObject> getDatabaseSummary() {
 		List<SimpleObject> points = new ArrayList<SimpleObject>();
 		points.add(SimpleObject.create("label", "Total patients", "value", Context.getPatientSetService().getCountOfPatients()));

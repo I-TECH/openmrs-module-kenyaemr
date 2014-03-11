@@ -41,6 +41,7 @@
 		<htmlwidgetsVersion>1.6.5</htmlwidgetsVersion>
 		<idgenVersion>2.6</idgenVersion>
 		<kenyacoreVersion>2.0</kenyacoreVersion>
+		<kenyadqVersion>1.1-SNAPSHOT</kenyadqVersion>
 		<kenyauiVersion>2.0.1</kenyauiVersion>
 		<logicVersion>0.5.2</logicVersion>
 		<metadatadeployVersion>1.1</metadatadeployVersion>
@@ -49,9 +50,6 @@
 		<reportingVersion>0.8.1</reportingVersion>
 		<serializationxstreamVersion>0.2.7</serializationxstreamVersion>
 		<uiframeworkVersion>3.1</uiframeworkVersion>
-
-		<!-- Additional distro modules -->
-		<kenyadqVersion>1.0</kenyadqVersion>
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ssZ</maven.build.timestamp.format>
@@ -122,6 +120,13 @@
 			<artifactId>kenyacore-test</artifactId>
 			<version>${kenyacoreVersion}</version>
 			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.openmrs.module</groupId>
+			<artifactId>kenyadq-api</artifactId>
+			<version>${kenyadqVersion}</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<dependency>

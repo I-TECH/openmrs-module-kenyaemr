@@ -41,9 +41,12 @@ kenyaemrApp.controller('DatabaseSummary', ['$scope', '$http', function($scope, $
 
 	/**
 	 * Initializes the controller
+	 * appId the current app id
 	 */
-	$scope.init = function() {
-		$http.get(ui.fragmentActionLink('kenyaemr', 'system/systemUtils', 'getDatabaseSummary')).
+	$scope.init = function(appId) {
+		$scope.appId = appId;
+
+		$http.get(ui.fragmentActionLink('kenyaemr', 'system/systemUtils', 'getDatabaseSummary', { appId: $scope.appId })).
 			success(function(data) {
 				$scope.infos = data;
 			});
