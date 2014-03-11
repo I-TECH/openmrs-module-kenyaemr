@@ -19,6 +19,7 @@ import org.openmrs.api.UserService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.metadatadeploy.bundle.AbstractMetadataBundle;
+import org.openmrs.util.PrivilegeConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -71,6 +72,9 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 		for (String appId : appIds) {
 			install(privilege(app(appId), "Access to the " + appId + " app"));
 		}
+
+		// Ensure that extra purge API privileges exist as core doesn't create these by default
+		install(privilege(PrivilegeConstants.PURGE_PATIENT_IDENTIFIERS, "Able to purge patient identifiers"));
 
 		install(role(_Role.API_PRIVILEGES, "All API privileges",
 				null, getApiPrivileges(true))
@@ -149,17 +153,20 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 
 	/**
 	 * Fetches sets of API privileges
-	 * @param incDelete include delete privileges
+	 * @param incDestructive include destructive (delete, purge) privileges
 	 * @return the privileges
 	 */
-	protected Set<String> getApiPrivileges(boolean incDelete) {
+	protected Set<String> getApiPrivileges(boolean incDestructive) {
 		Set<String> privileges = new HashSet<String>();
 
 		for (Privilege privilege : userService.getAllPrivileges()) {
 			if (privilege.getPrivilege().startsWith("App: ")) {
 				continue;
 			}
-			if (!incDelete && privilege.getPrivilege().startsWith("Delete ")) {
+
+			boolean isDestructive = privilege.getPrivilege().startsWith("Delete ") || privilege.getPrivilege().startsWith("Purge ");
+
+			if (!incDestructive && isDestructive) {
 				continue;
 			}
 			privileges.add(privilege.getPrivilege());
