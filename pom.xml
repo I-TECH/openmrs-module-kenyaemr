@@ -41,7 +41,7 @@
 		<htmlwidgetsVersion>1.6.5</htmlwidgetsVersion>
 		<idgenVersion>2.6</idgenVersion>
 		<kenyacoreVersion>2.0</kenyacoreVersion>
-		<kenyadqVersion>1.1-SNAPSHOT</kenyadqVersion>
+		<kenyadqVersion>1.1</kenyadqVersion>
 		<kenyauiVersion>2.0.1</kenyauiVersion>
 		<logicVersion>0.5.2</logicVersion>
 		<metadatadeployVersion>1.1</metadatadeployVersion>
