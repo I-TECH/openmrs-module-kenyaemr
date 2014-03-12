@@ -56,8 +56,6 @@ public class UserDetailsFragmentController {
 				SecurityMetadata._Role.API_PRIVILEGES_VIEW_AND_EDIT
 		));
 
-		System.out.println("UserDetailsFragmentController: " + user);
-
 		// If user is not the admin account, don't let them become a super-user
 		if (user == null || !"admin".equals(user.getSystemId())) {
 			disallowedRoles.add(SecurityMetadata._Role.SYSTEM_DEVELOPER);
