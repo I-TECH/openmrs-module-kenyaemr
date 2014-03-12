@@ -84,4 +84,13 @@
 		</sql>
 	</changeSet>
 
+	<changeSet id="${project.parent.artifactId}-20140312-1133" author="rowanseymour">
+		<comment>
+			Demotes superfluous super-users now that we've fixed permissions for patient merging etc
+		</comment>
+		<sql>
+			DELETE FROM user_role WHERE role = 'System Developer' AND user_id != 1;
+		</sql>
+	</changeSet>
+
 </databaseChangeLog>
