@@ -39,7 +39,13 @@
 							label: "Roles",
 							class: java.util.List,
 							fieldFragment: "field/RoleCollection",
-							hideRoles: [ "Anonymous", "Authenticated", "API Privileges", "API Privileges (View and Edit)" ]
+							hideRoles: [
+									"Anonymous",
+									"Authenticated",
+									"API Privileges",
+									"API Privileges (View and Edit)",
+									"System Developer"
+							]
 					]
 			]
 	]
