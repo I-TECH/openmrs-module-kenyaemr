@@ -66,7 +66,7 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 				EmrConstants.APP_FACILITIES,
 				EmrConstants.APP_ADMIN,
 				DqConstants.APP_DATAQUALITY,
-				"kenyadq.dataManager"
+				DqConstants.APP_DATAMANAGER
 		};
 
 		// Ensure a privilege exists for each app. App framework does create these but not always before this
@@ -116,7 +116,7 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 						app(EmrConstants.APP_DIRECTORY),
 						app(EmrConstants.APP_FACILITIES),
 						app(DqConstants.APP_DATAQUALITY),
-						app("kenyadq.dataManager")
+						app(DqConstants.APP_DATAMANAGER)
 				)
 		));
 

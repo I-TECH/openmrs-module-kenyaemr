@@ -73,7 +73,7 @@ public class SystemUtilsFragmentController {
 	 * Fetches a database summary
 	 * @return the summary
 	 */
-	@SharedAction({EmrConstants.APP_ADMIN, "kenyadq.dataManager"})
+	@SharedAction({EmrConstants.APP_ADMIN, DqConstants.APP_DATAMANAGER})
 	public List<SimpleObject> getDatabaseSummary() {
 		List<SimpleObject> points = new ArrayList<SimpleObject>();
 		points.add(SimpleObject.create("label", "Total patients", "value", Context.getPatientSetService().getCountOfPatients()));
