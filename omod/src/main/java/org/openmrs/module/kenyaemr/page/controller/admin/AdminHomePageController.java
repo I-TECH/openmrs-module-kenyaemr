@@ -14,11 +14,8 @@
 
 package org.openmrs.module.kenyaemr.page.controller.admin;
 
-import org.apache.commons.lang3.StringUtils;
 import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyaui.annotation.AppPage;
-import org.openmrs.ui.framework.page.PageModel;
-import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * Homepage for the admin app
@@ -26,13 +23,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 @AppPage(EmrConstants.APP_ADMIN)
 public class AdminHomePageController {
 
-	public void controller(@RequestParam(value = "section", required = false) String section,
-						   PageModel model) {
-
-		if (StringUtils.isEmpty(section)) {
-			section = "overview";
-		}
-
-		model.addAttribute("section", section);
+	public void controller() {
 	}
 }
