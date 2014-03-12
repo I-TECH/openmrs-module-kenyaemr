@@ -21,6 +21,7 @@ import org.openmrs.User;
 import org.openmrs.api.PasswordException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.EmrConstants;
+import org.openmrs.module.kenyaemr.metadata.SecurityMetadata;
 import org.openmrs.module.kenyaui.annotation.AppAction;
 import org.openmrs.module.kenyaui.form.ValidatingCommandObject;
 import org.openmrs.ui.framework.UiUtils;
@@ -33,6 +34,9 @@ import org.openmrs.util.OpenmrsUtil;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -44,9 +48,24 @@ public class UserDetailsFragmentController {
 						   @FragmentParam(value = "user", required = false) User user,
 						   FragmentModel model) {
 
-		model.put("person", person);
-		model.put("user", user);
+		// Roles which can't be assigned directly to users
+		List<String> disallowedRoles = new ArrayList<String>(Arrays.asList(
+				"Anonymous",
+				"Authenticated",
+				SecurityMetadata._Role.API_PRIVILEGES,
+				SecurityMetadata._Role.API_PRIVILEGES_VIEW_AND_EDIT
+		));
 
+		System.out.println("UserDetailsFragmentController: " + user);
+
+		// If user is not the admin account, don't let them become a super-user
+		if (user == null || !"admin".equals(user.getSystemId())) {
+			disallowedRoles.add(SecurityMetadata._Role.SYSTEM_DEVELOPER);
+		}
+
+		model.addAttribute("person", person);
+		model.addAttribute("user", user);
+		model.addAttribute("disallowedRoles", disallowedRoles);
 		model.addAttribute("form", newEditUserDetailsForm(user));
 	}
 
@@ -181,6 +200,20 @@ public class UserDetailsFragmentController {
 			}
 
 			require(errors, "roles");
+
+			if (original != null && "admin".equals(original.getSystemId())) {
+				boolean hasSysDevRole = false;
+				for (Role role : roles) {
+					if (role.getRole().equals(SecurityMetadata._Role.SYSTEM_DEVELOPER)) {
+						hasSysDevRole = true;
+						break;
+					}
+				}
+
+				if (!hasSysDevRole) {
+					errors.rejectValue("roles", "Admin account must have " + SecurityMetadata._Role.SYSTEM_DEVELOPER + " role");
+				}
+			}
 		}
 
 		/**

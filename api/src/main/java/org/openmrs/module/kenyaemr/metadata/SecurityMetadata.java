@@ -49,6 +49,7 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 		public static final String PROVIDER = "Provider";
 		public static final String REGISTRATION = "Registration";
 		public static final String SYSTEM_ADMIN = "System Administrator";
+		public static final String SYSTEM_DEVELOPER = "System Developer";
 	}
 
 	/**

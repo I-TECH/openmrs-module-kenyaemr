@@ -44,16 +44,7 @@
 						secretAnswer: [ type: "password" ]
 				],
 				fieldConfig: [
-						roles: [
-								fieldFragment: "field/RoleCollection",
-								hideRoles: [
-										"Anonymous",
-										"Authenticated",
-										"API Privileges",
-										"API Privileges (View and Edit)",
-										"System Developer"
-								]
-						]
+						roles: [ fieldFragment: "field/RoleCollection", hideRoles: disallowedRoles ]
 				],
 				extraFields: [
 						[ hiddenInputName: "personId", value: person.id ]
@@ -84,7 +75,7 @@
 						secretAnswer: [ type: "password" ]
 				],
 				fieldConfig: [
-						roles: [ fieldFragment: "field/RoleCollection", hideRoles: [ "Anonymous", "Authenticated", "API Privileges", "API Privileges (View and Edit)" ] ]
+						roles: [ fieldFragment: "field/RoleCollection", hideRoles: disallowedRoles ]
 				],
 				extraFields: [
 						[ hiddenInputName: "personId", value: person.id ]

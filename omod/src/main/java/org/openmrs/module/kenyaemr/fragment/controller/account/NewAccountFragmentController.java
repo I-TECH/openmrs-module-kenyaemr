@@ -13,6 +13,8 @@
  */
 package org.openmrs.module.kenyaemr.fragment.controller.account;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -25,6 +27,7 @@ import org.openmrs.User;
 import org.openmrs.api.PasswordException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.EmrConstants;
+import org.openmrs.module.kenyaemr.metadata.SecurityMetadata;
 import org.openmrs.module.kenyaemr.validator.EmailAddressValidator;
 import org.openmrs.module.kenyaemr.validator.TelephoneNumberValidator;
 import org.openmrs.module.kenyaemr.wrapper.PersonWrapper;
@@ -53,6 +56,16 @@ public class NewAccountFragmentController {
 	public void controller(@FragmentParam(value = "person", required = false) Person person,
 						   FragmentModel model) {
 
+		// Roles which can't be assigned directly to new users
+		List<String> disallowedRoles = Arrays.asList(
+				"Anonymous",
+				"Authenticated",
+				SecurityMetadata._Role.API_PRIVILEGES,
+				SecurityMetadata._Role.API_PRIVILEGES_VIEW_AND_EDIT,
+				SecurityMetadata._Role.SYSTEM_DEVELOPER
+		);
+
+		model.addAttribute("disallowedRoles", disallowedRoles);
 		model.addAttribute("command", newCreateAccountForm(person));
 	}
 
@@ -161,7 +174,8 @@ public class NewAccountFragmentController {
 				
 				if (StringUtils.isEmpty(password)) {
 					require(errors, "password");
-				} else {
+				}
+				else {
 					try {
 						OpenmrsUtil.validatePassword(username, password, null);
 					}
