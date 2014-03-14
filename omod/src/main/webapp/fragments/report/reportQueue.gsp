@@ -15,7 +15,7 @@
 			<tbody>
 			<tr ng-repeat="request in queued">
 				<td ng-if="!reportUuid">{{ request.report.name }}</td>
-				<td>{{ request.requestDate }}</td>
+				<td>{{ request.requestDate | keDateTime }}</td>
 				<td>{{ request.requestedBy.person.name }}</td>
 				<td>{{ request.status }}</td>
 				<td>{{ request.timeTaken || '--:--:--' }}</td>

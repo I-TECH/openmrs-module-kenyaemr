@@ -44,9 +44,9 @@ public class PersonSimplifier extends AbstractSimplifier<Person> {
 		ret.put("gender", person.getGender().toLowerCase());
 		ret.put("isPatient", person.isPatient());
 		ret.put("dead", person.isDead());
-		ret.put("deathDate", person.getDeathDate());
+		ret.put("deathDate", kenyaui.formatDateParam(person.getDeathDate()));
 		ret.put("voided", person.isVoided());
-		ret.put("dateVoided", person.getDateVoided());
+		ret.put("dateVoided", kenyaui.formatDateParam(person.getDateVoided()));
 
 		// Add formatted age and birth date values
 		if (person.getBirthdate() != null) {

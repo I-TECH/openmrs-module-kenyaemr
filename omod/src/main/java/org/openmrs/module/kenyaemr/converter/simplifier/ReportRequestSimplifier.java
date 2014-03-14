@@ -35,7 +35,7 @@ public class ReportRequestSimplifier extends AbstractSimplifier<ReportRequest> {
 	private UiUtils ui;
 
 	@Autowired
-	private KenyaUiUtils kenyaUi;
+	private KenyaUiUtils kenyaui;
 
 	@Autowired
 	private ReportDefinitionSimplifier definitionSimplifier;
@@ -52,11 +52,11 @@ public class ReportRequestSimplifier extends AbstractSimplifier<ReportRequest> {
 		SimpleObject ret = new SimpleObject();
 		ret.put("id", request.getId());
 		ret.put("report", definitionSimplifier.convert(definition));
-		ret.put("requestDate", kenyaUi.formatDateTime(request.getRequestDate()));
+		ret.put("requestDate", kenyaui.formatDateParam(request.getRequestDate()));
 		ret.put("requestedBy", ui.simplifyObject(request.getRequestedBy()));
 		ret.put("status", request.getStatus());
 		ret.put("finished", request.getStatus().equals(ReportRequest.Status.COMPLETED) || request.getStatus().equals(ReportRequest.Status.FAILED));
-		ret.put("timeTaken", timeTaken != null ? kenyaUi.formatDuration(timeTaken) : null);
+		ret.put("timeTaken", timeTaken != null ? kenyaui.formatDuration(timeTaken) : null);
 		return ret;
 	}
 

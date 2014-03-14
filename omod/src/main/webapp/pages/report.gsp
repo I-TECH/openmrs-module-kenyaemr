@@ -63,7 +63,7 @@
 					</thead>
 					<tbody>
 					<tr ng-repeat="request in finished">
-						<td>{{ request.requestDate }}</td>
+						<td>{{ request.requestDate | keDateTime }}</td>
 						<td>{{ request.requestedBy.person.name }}</td>
 						<td>{{ request.status }}</td>
 						<td>{{ request.timeTaken || '--:--:--' }}</td>

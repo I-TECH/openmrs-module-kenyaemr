@@ -28,7 +28,7 @@ import org.springframework.stereotype.Component;
 public class VisitSimplifier extends AbstractSimplifier<Visit> {
 
 	@Autowired
-	private KenyaUiUtils kenyaUi;
+	private KenyaUiUtils kenyaui;
 
 	/**
 	 * @see AbstractSimplifier#simplify(Object)
@@ -38,8 +38,8 @@ public class VisitSimplifier extends AbstractSimplifier<Visit> {
 		SimpleObject ret = new SimpleObject();
 		ret.put("id", visit.getId());
 		ret.put("visitType", visit.getVisitType().getName());
-		ret.put("startDatetime", kenyaUi.formatDateParam(visit.getStartDatetime()));
-		ret.put("stopDatetime", kenyaUi.formatDateParam(visit.getStopDatetime()));
+		ret.put("startDatetime", kenyaui.formatDateParam(visit.getStartDatetime()));
+		ret.put("stopDatetime", kenyaui.formatDateParam(visit.getStopDatetime()));
 		return ret;
 	}
 }
