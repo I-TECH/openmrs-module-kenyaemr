@@ -35,16 +35,20 @@ public class ProgramHistoriesFragmentController {
 						   @FragmentParam("showClinicalData") boolean showClinicalData,
 						   @SpringBean ProgramManager programManager) {
 
-		Collection<ProgramDescriptor> activePrograms = programManager.getPatientActivePrograms(patient);
-		Collection<ProgramDescriptor> eligiblePrograms = programManager.getPatientEligiblePrograms(patient);
+		List<ProgramDescriptor> programs = new ArrayList<ProgramDescriptor>();
 
-		// Display active programs on top
-		List<ProgramDescriptor> programs = new ArrayList<ProgramDescriptor>(activePrograms);
+		if (!patient.isVoided()) {
+			Collection<ProgramDescriptor> activePrograms = programManager.getPatientActivePrograms(patient);
+			Collection<ProgramDescriptor> eligiblePrograms = programManager.getPatientEligiblePrograms(patient);
 
-		// Don't add duplicates for programs for which patient is both active and eligible
-		for (ProgramDescriptor descriptor : eligiblePrograms) {
-			if (!programs.contains(descriptor)) {
-				programs.add(descriptor);
+			// Display active programs on top
+			programs.addAll(activePrograms);
+
+			// Don't add duplicates for programs for which patient is both active and eligible
+			for (ProgramDescriptor descriptor : eligiblePrograms) {
+				if (!programs.contains(descriptor)) {
+					programs.add(descriptor);
+				}
 			}
 		}
 

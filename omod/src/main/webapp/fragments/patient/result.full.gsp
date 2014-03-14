@@ -1,7 +1,7 @@
 <table style="width: 100%">
 	<tr>
 		<td style="width: 32px; vertical-align: top; padding-right: 5px">
-			<img ng-src="${ ui.resourceLink("kenyaui", "images/buttons/patient_") }{{ patient.gender }}.png" />
+			<img width="32" height="32" ng-src="${ ui.resourceLink("kenyaui", "images/buttons/patient_") }{{ patient.gender }}.png" />
 		</td>
 		<td style="text-align: left; vertical-align: top; width: 33%">
 			<strong>{{ patient.name }}</strong><br/>
@@ -14,9 +14,9 @@
 			</div>
 		</td>
 		<td style="text-align: right; vertical-align: top; width: 33%">
-			<div class="ke-visittag" ng-repeat="visit in patient.visits">
-				<strong>{{ visit.visitType }}</strong><br />
-				<small>{{ visit.startDatetime }}</small>
+			<div class="ke-visittag" ng-if="patient.activeVisit">
+				<strong>{{ patient.activeVisit.visitType }}</strong><br />
+				<small>since <strong>{{ patient.activeVisit.startDatetime | keDateAuto }}</strong></small>
 			</div>
 		</td>
 	</tr>

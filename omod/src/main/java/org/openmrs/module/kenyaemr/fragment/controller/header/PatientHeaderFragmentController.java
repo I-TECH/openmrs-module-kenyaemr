@@ -15,10 +15,7 @@
 package org.openmrs.module.kenyaemr.fragment.controller.header;
 
 import org.openmrs.Patient;
-import org.openmrs.Visit;
 import org.openmrs.module.appframework.domain.AppDescriptor;
-import org.openmrs.module.kenyacore.identifier.IdentifierManager;
-import org.openmrs.module.kenyaemr.util.EmrUtils;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.ui.framework.WebConstants;
 import org.openmrs.ui.framework.annotation.FragmentParam;
@@ -32,15 +29,11 @@ import org.openmrs.ui.framework.page.PageRequest;
 public class PatientHeaderFragmentController {
 
 	public void controller(@FragmentParam("patient") Patient patient,
-						   @FragmentParam(value = "visit", required = false) Visit visit,
 						   FragmentModel model,
 						   PageRequest pageRequest,
-						   @SpringBean KenyaUiUtils kenyaUi,
-						   @SpringBean IdentifierManager identifierManager) {
+						   @SpringBean KenyaUiUtils kenyaUi) {
 
 		model.addAttribute("patient", patient);
-		model.addAttribute("visit", visit);
-		model.addAttribute("visitStartedToday", visit != null && EmrUtils.isToday(visit.getStartDatetime()));
 		
 		AppDescriptor currentApp = kenyaUi.getCurrentApp(pageRequest);
 
@@ -49,7 +42,5 @@ public class PatientHeaderFragmentController {
 		} else {
 			model.addAttribute("appHomepageUrl", null);
 		}
-
-		model.addAttribute("idsToShow", identifierManager.getPatientDisplayIdentifiers(patient));
 	}
 }

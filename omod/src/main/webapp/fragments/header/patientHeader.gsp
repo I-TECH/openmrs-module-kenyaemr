@@ -1,4 +1,6 @@
 <%
+	ui.includeJavascript("kenyaemr", "controllers/header.js")
+
 	def closeChartUrl = config.closeChartUrl ?: appHomepageUrl
 %>
 <script type="text/javascript">
@@ -9,20 +11,21 @@
 	}
 </script>
 
-<div class="ke-patientheader">
+<div class="ke-patientheader" ng-controller="PatientHeader" ng-init="init(${ currentApp ? ("'" + currentApp.id + "'") : "null" }, ${ patient.id })">
 	<div style="float: left; width: 35%;">
 		<div style="float: left; padding-right: 5px">
-			<img width="32" height="32" src="${ ui.resourceLink("kenyaui", "images/buttons/patient_" + patient.gender.toLowerCase() + ".png") }"/>
+			<img width="32" height="32" ng-src="{{ iconUrl }}" />
 		</div>
-		<span class="ke-patient-name">${ kenyaui.formatPersonName(patient) }</span><br/>
-		<span class="ke-patient-gender">${ kenyaui.formatPersonGender(patient) }</span>,
-		<span class="ke-patient-age">${ kenyaui.formatPersonAge(patient) } <small>(${ kenyaui.formatPersonBirthdate(patient) })</small></span>
+		<span class="ke-patient-name">{{ patient.name }}</span><br/>
+		<span class="ke-patient-gender">{{ patient.gender | keGender }}</span>,
+		<span class="ke-patient-age">{{ patient.age }} <small>(${ kenyaui.formatPersonBirthdate(patient) })</small></span>
 	</div>
 	
-	<div style="float: left; width: 30%">
-		<% idsToShow.each { %>
-			<div style="text-align: center"><span class="ke-identifier-type">${ it.identifierType.name }</span> <span class="ke-identifier-value">${ it.identifier }</span></div>
-		<% } %>
+	<div style="float: left; width: 30%; text-align: center">
+		<div ng-repeat="identifier in patient.identifiers">
+			<span class="ke-identifier-type">{{ identifier.identifierType }}</span>
+			<span class="ke-identifier-value">{{ identifier.identifier }}</span>
+		</div>
 	</div>
 
 	<div style="float: right">
@@ -32,24 +35,14 @@
 	<div style="clear: both; height: 5px;"></div>
 
 	<div style="width: 50%; float: left; overflow: auto; text-align: left">
-	<% if (patient.dead) { %>
-		<span class="ke-tag" style="background-color: #FF5153; color: #000">Deceased since <strong>${ kenyaui.formatDate(patient.deathDate) }</strong></span>
-	<% } else if (patient.voided) { %>
-		<span class="ke-tag" style="background-color: #000; color: #FFF">Voided since <strong>${ kenyaui.formatDate(patient.dateVoided) }</strong></span>
-	<% } else { %>
-		${ ui.includeFragment("kenyaemr", "header/patientFlags", [ patient: patient ]) }
-	<% } %>
+		<span ng-if="patient.dead" class="ke-deadtag">Deceased since <strong>{{ patient.deathDate | keDateAuto }}</strong></span>
+		<span ng-if="patient.voided" class="ke-voidedtag">Voided since <strong>{{ patient.dateVoided | keDateAuto }}</strong></span>
+		<span ng-repeat="flag in flags" class="ke-flagtag" style="margin-right: 5px">{{ flag.message }}</span>
 	</div>
 
 	<div style="width: 50%; float: right; overflow: auto; text-align: right">
 		<span class="ke-tip">Current visit</span>
-		<% if (visit) {
-			def visitStartStr = visitStartedToday ? kenyaui.formatTime(visit.startDatetime) : kenyaui.formatDate(visit.startDatetime);
-
-			%><span class="ke-visittag">${ ui.format(visit.visitType) } since <b>${ visitStartStr }</b></span><%
-		} else {
-			%><span style="font-style: italic">${ ui.message("general.none") }</span><%
-		}
-		%>
+		<span ng-if="patient.activeVisit" class="ke-visittag">{{ patient.activeVisit.visitType }} since <strong>{{ patient.activeVisit.startDatetime | keDateAuto }}</strong></span>
+		<span ng-if="!patient.activeVisit" style="font-style: italic">${ ui.message("general.none") }</span>
 	</div>
 </div>

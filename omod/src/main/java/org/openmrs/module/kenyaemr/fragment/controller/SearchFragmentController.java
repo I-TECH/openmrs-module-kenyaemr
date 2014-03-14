@@ -33,6 +33,7 @@ import org.openmrs.module.kenyacore.CoreConstants;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
+import org.openmrs.ui.framework.fragment.action.FailureResult;
 import org.openmrs.util.OpenmrsConstants;
 import org.openmrs.util.PersonByNameComparator;
 import org.openmrs.web.user.CurrentUsers;
@@ -61,10 +62,15 @@ public class SearchFragmentController {
 	 * Gets a patient by their id
 	 * @param patient the patient
 	 * @param ui the UI utils
-	 * @return the simplified location
+	 * @return the simplified patient
 	 */
 	public SimpleObject patient(@RequestParam("id") Patient patient, UiUtils ui) {
-		return ui.simplifyObject(patient);
+		SimpleObject ret = ui.simplifyObject(patient);
+
+		// Simplify and attach active visit to patient object
+		List<Visit> activeVisits = Context.getVisitService().getActiveVisitsByPatient(patient);
+		ret.put("activeVisit", activeVisits.size() > 0 ? ui.simplifyObject(activeVisits.get(0)) : null);
+		return ret;
 	}
 
 	/**
@@ -127,9 +133,7 @@ public class SearchFragmentController {
 			SimpleObject simplePatient = ui.simplifyObject(patient);
 
 			Visit activeVisit = patientActiveVisits.get(patient);
-			if (activeVisit != null) {
-				simplePatient.put("visits", ui.simplifyCollection(Collections.singleton(activeVisit)));
-			}
+			simplePatient.put("activeVisit", activeVisit != null ? ui.simplifyObject(activeVisit) : null);
 
 			simplePatients.add(simplePatient);
 		}

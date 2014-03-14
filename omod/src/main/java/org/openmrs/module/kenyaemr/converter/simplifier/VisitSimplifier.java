@@ -38,8 +38,8 @@ public class VisitSimplifier extends AbstractSimplifier<Visit> {
 		SimpleObject ret = new SimpleObject();
 		ret.put("id", visit.getId());
 		ret.put("visitType", visit.getVisitType().getName());
-		ret.put("startDatetime", kenyaUi.formatDateTime(visit.getStartDatetime()));
-		ret.put("stopDatetime", kenyaUi.formatDateTime(visit.getStopDatetime()));
+		ret.put("startDatetime", kenyaUi.formatDateParam(visit.getStartDatetime()));
+		ret.put("stopDatetime", kenyaUi.formatDateParam(visit.getStopDatetime()));
 		return ret;
 	}
 }

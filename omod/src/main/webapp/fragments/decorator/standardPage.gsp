@@ -13,7 +13,7 @@
 	config.beforeContent += ui.includeFragment("kenyaemr", "header/headerMenu", config)
 
 	if (config.patient) {
-		config.beforeContent += ui.includeFragment("kenyaemr", "header/patientHeader", [ patient: config.patient, visit: activeVisit, closeChartUrl: config.closeChartUrl ])
+		config.beforeContent += ui.includeFragment("kenyaemr", "header/patientHeader", [ patient: config.patient, closeChartUrl: config.closeChartUrl ])
 	}
 	if (config.visit) {
 		config.beforeContent += ui.includeFragment("kenyaemr", "header/visitHeader", [ visit: config.visit ])

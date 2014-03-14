@@ -15,7 +15,7 @@
 			submitLabel: ui.message("general.submit"),
 			cancelLabel: ui.message("general.cancel")
 	]) %>
-	<% } else { %>
+	<% } else if (!patient.dead && !patient.voided) { %>
 	<%= ui.includeFragment("kenyaui", "widget/dialogForm", [
 			buttonConfig: [ label: "Check in for visit", iconProvider: "kenyaui", icon: "buttons/registration.png" ],
 			dialogConfig: [ heading: "Check In", width: 50, height: 30 ],

@@ -15,6 +15,7 @@
 package org.openmrs.module.kenyaemr.converter.simplifier;
 
 import org.openmrs.Person;
+import org.openmrs.PersonName;
 import org.openmrs.module.kenyaemr.wrapper.PersonWrapper;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.module.kenyaui.simplifier.AbstractSimplifier;
@@ -29,7 +30,7 @@ import org.springframework.stereotype.Component;
 public class PersonSimplifier extends AbstractSimplifier<Person> {
 
 	@Autowired
-	private KenyaUiUtils kenyaUi;
+	private KenyaUiUtils kenyaui;
 
 	/**
 	 * @see AbstractSimplifier#simplify(Object)
@@ -39,14 +40,18 @@ public class PersonSimplifier extends AbstractSimplifier<Person> {
 		SimpleObject ret = new SimpleObject();
 
 		ret.put("id", person.getId());
-		ret.put("name", kenyaUi.formatPersonName(person));
+		ret.put("name", kenyaui.formatPersonName(getName(person)));
 		ret.put("gender", person.getGender().toLowerCase());
 		ret.put("isPatient", person.isPatient());
+		ret.put("dead", person.isDead());
+		ret.put("deathDate", person.getDeathDate());
+		ret.put("voided", person.isVoided());
+		ret.put("dateVoided", person.getDateVoided());
 
 		// Add formatted age and birth date values
 		if (person.getBirthdate() != null) {
-			ret.put("birthdate", kenyaUi.formatPersonBirthdate(person));
-			ret.put("age", kenyaUi.formatPersonAge(person));
+			ret.put("birthdate", kenyaui.formatPersonBirthdate(person));
+			ret.put("age", kenyaui.formatPersonAge(person));
 		} else {
 			ret.put("birthdate", null);
 			ret.put("age", null);
@@ -57,5 +62,20 @@ public class PersonSimplifier extends AbstractSimplifier<Person> {
 		ret.put("emailAddress", wrapper.getEmailAddress());
 
 		return ret;
+	}
+
+	/**
+	 * Gets a name for a person even if they are voided
+	 * @param person the person
+	 * @return the name
+	 */
+	protected PersonName getName(Person person) {
+		if (!person.isVoided()) {
+			return person.getPersonName();
+		}
+		else {
+			// Get any name of a voided patient
+			return (person.getNames().size() > 0) ? person.getNames().iterator().next() : null;
+		}
 	}
 }
