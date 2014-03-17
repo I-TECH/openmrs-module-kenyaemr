@@ -40,6 +40,12 @@ kenyaui.configureSearch('patient', {
 	}
 });
 
+kenyaui.configureSearch('provider', {
+	searchProvider: 'kenyaemr',
+	searchFragment: 'search',
+	format: function(provider) { return provider.person.name; }
+});
+
 /**
  * Configure AngularJS
  */

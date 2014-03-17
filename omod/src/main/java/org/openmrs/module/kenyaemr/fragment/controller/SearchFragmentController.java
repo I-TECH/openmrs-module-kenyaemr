@@ -198,11 +198,34 @@ public class SearchFragmentController {
 	/**
 	 * Searches for persons by name
 	 * @param query the name query
-	 * @param ui
+	 * @param ui the UI utils
 	 * @return the simplified persons
 	 */
 	public SimpleObject[] persons(@RequestParam(value = "q", required = false) String query, UiUtils ui) {
 		Collection<Person> results = Context.getPersonService().getPeople(query, null);
+
+		// Convert to simple objects
+		return ui.simplifyCollection(results);
+	}
+
+	/**
+	 * Gets a provider by their id
+	 * @param provider the provider
+	 * @param ui the UI utils
+	 * @return the simplified provider
+	 */
+	public SimpleObject provider(@RequestParam("id") Provider provider, UiUtils ui) {
+		return ui.simplifyObject(provider);
+	}
+
+	/**
+	 * Searches for providers by name
+	 * @param query the name query
+	 * @param ui the UI utils
+	 * @return the simplified providers
+	 */
+	public SimpleObject[] providers(@RequestParam(value = "q", required = false) String query, UiUtils ui) {
+		Collection<Provider> results = Context.getProviderService().getProviders(query, null, null, null);
 
 		// Convert to simple objects
 		return ui.simplifyCollection(results);
