@@ -24,6 +24,7 @@
 			<div class="ke-tabmenu-item" data-tabid="identifiers">Identifiers</div>
 			<div class="ke-tabmenu-item" data-tabid="flags">Flags</div>
 			<div class="ke-tabmenu-item" data-tabid="reports">Reports</div>
+			<div class="ke-tabmenu-item" data-tabid="roles">Roles</div>
 		</div>
 		<div class="ke-tab" data-tabid="apps">${ ui.includeFragment("kenyaemr", "system/appsContent") }</div>
 		<div class="ke-tab" data-tabid="programs">${ ui.includeFragment("kenyaemr", "system/programsContent") }</div>
@@ -31,6 +32,7 @@
 		<div class="ke-tab" data-tabid="identifiers">${ ui.includeFragment("kenyaemr", "system/identifiersContent") }</div>
 		<div class="ke-tab" data-tabid="flags">${ ui.includeFragment("kenyaemr", "system/flagsContent") }</div>
 		<div class="ke-tab" data-tabid="reports">${ ui.includeFragment("kenyaemr", "system/reportsContent") }</div>
+		<div class="ke-tab" data-tabid="roles">${ ui.includeFragment("kenyaemr", "system/rolesContent") }</div>
 	</div>
 	<% } else if (section == "modules") { %>
 	${ ui.includeFragment("kenyaemr", "developer/loadedModules") }
