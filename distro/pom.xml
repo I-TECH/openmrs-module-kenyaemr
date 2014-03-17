@@ -43,12 +43,6 @@
 
 		<dependency>
 			<groupId>org.openmrs.module</groupId>
-			<artifactId>htmlformentry19ext-omod</artifactId>
-			<version>${htmlformentry19extVersion}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.openmrs.module</groupId>
 			<artifactId>htmlwidgets-omod</artifactId>
 			<version>${htmlwidgetsVersion}</version>
 		</dependency>
