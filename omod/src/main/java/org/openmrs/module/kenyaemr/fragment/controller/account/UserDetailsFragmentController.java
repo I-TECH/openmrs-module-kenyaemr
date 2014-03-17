@@ -53,7 +53,8 @@ public class UserDetailsFragmentController {
 				"Anonymous",
 				"Authenticated",
 				SecurityMetadata._Role.API_PRIVILEGES,
-				SecurityMetadata._Role.API_PRIVILEGES_VIEW_AND_EDIT
+				SecurityMetadata._Role.API_PRIVILEGES_VIEW_AND_EDIT,
+				"Provider"
 		));
 
 		// If user is not the admin account, don't let them become a super-user

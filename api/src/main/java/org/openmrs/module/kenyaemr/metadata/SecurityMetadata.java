@@ -16,7 +16,6 @@ package org.openmrs.module.kenyaemr.metadata;
 
 import org.openmrs.Privilege;
 import org.openmrs.api.UserService;
-import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyadq.DqConstants;
 import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.metadatadeploy.bundle.AbstractMetadataBundle;
@@ -43,10 +42,10 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 	public static final class _Role {
 		public static final String API_PRIVILEGES_VIEW_AND_EDIT = "API Privileges (View and Edit)";
 		public static final String API_PRIVILEGES = "API Privileges";
+		public static final String CLINICIAN = "Clinician";
 		public static final String DATA_CLERK = "Data Clerk";
 		public static final String INTAKE = "Intake";
 		public static final String MANAGER = "Manager";
-		public static final String PROVIDER = "Provider";
 		public static final String REGISTRATION = "Registration";
 		public static final String SYSTEM_ADMIN = "System Administrator";
 		public static final String SYSTEM_DEVELOPER = "System Developer";
@@ -121,7 +120,7 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 				)
 		));
 
-		install(role(_Role.PROVIDER, "Can access all apps except admin, and provide encounters",
+		install(role(_Role.CLINICIAN, "Can access all apps except admin, and provide encounters",
 				idSet(_Role.API_PRIVILEGES_VIEW_AND_EDIT),
 				idSet(
 						app(EmrConstants.APP_REGISTRATION),

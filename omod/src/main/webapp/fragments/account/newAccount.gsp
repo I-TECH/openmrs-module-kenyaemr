@@ -44,6 +44,7 @@
 									"Authenticated",
 									"API Privileges",
 									"API Privileges (View and Edit)",
+									"Provider",
 									"System Developer"
 							]
 					]

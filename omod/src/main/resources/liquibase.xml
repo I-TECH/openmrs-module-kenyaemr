@@ -93,4 +93,26 @@
 		</sql>
 	</changeSet>
 
+	<changeSet id="${project.parent.artifactId}-20140317-1123" author="rowanseymour">
+		<preConditions onFail="MARK_RAN" onError="WARN">
+			<sqlCheck expectedResult="0">SELECT COUNT(*) FROM role WHERE role = 'Clinician';</sqlCheck>
+		</preConditions>
+		<comment>
+			Replaces uses of 'Provider' or 'Provider App' role with 'Clinician'. 'Provider' role is kept as it is still
+			marked as "core" metadata. 'Provider App' is deleted if it exists.
+		</comment>
+		<sql>
+			INSERT INTO role VALUES('Clinician', 'Can access all apps except admin, and provide encounters', '57d56d58-54f7-4539-b558-b0cfab5f03ea');
+
+			INSERT INTO user_role SELECT u.user_id, 'Clinician' FROM (
+				SELECT DISTINCT ur.user_id FROM user_role ur WHERE ur.role = 'Provider' OR ur.role = 'Provider App'
+			) u;
+
+			DELETE FROM user_role WHERE role = 'Provider' OR role = 'Provider App';
+			DELETE FROM role_role WHERE child_role = 'Provider' OR child_role = 'Provider App';
+			DELETE FROM role_privilege WHERE role = 'Provider' OR role = 'Provider App';
+			DELETE FROM role WHERE role = 'Provider App';
+		</sql>
+	</changeSet>
+
 </databaseChangeLog>
