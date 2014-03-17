@@ -95,7 +95,7 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 				)
 		));
 
-		install(role(_Role.INTAKE, "Can access the registration and intake apps",
+		install(role(_Role.INTAKE, "Can access the registration and triage apps",
 				idSet(_Role.API_PRIVILEGES_VIEW_AND_EDIT),
 				idSet(
 						app(EmrConstants.APP_REGISTRATION),
@@ -105,7 +105,7 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 				)
 		));
 
-		install(role(_Role.MANAGER, "Can access all apps except admin, and manage encounters",
+		install(role(_Role.MANAGER, "Can access all apps except admin",
 				idSet(_Role.API_PRIVILEGES),
 				idSet(
 						app(EmrConstants.APP_REGISTRATION),
@@ -120,7 +120,7 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 				)
 		));
 
-		install(role(_Role.CLINICIAN, "Can access all apps except admin, and provide encounters",
+		install(role(_Role.CLINICIAN, "Can access the registration, triage, clinician, chart and reports apps",
 				idSet(_Role.API_PRIVILEGES_VIEW_AND_EDIT),
 				idSet(
 						app(EmrConstants.APP_REGISTRATION),
@@ -133,7 +133,7 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 				)
 		));
 
-		install(role(_Role.DATA_CLERK, "Can access the chart and reporting apps",
+		install(role(_Role.DATA_CLERK, "Can access the chart, reporting and data quality apps",
 				idSet(_Role.API_PRIVILEGES_VIEW_AND_EDIT),
 				idSet(
 						app(EmrConstants.APP_CHART),
