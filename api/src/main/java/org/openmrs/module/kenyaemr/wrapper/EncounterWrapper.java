@@ -16,11 +16,15 @@ package org.openmrs.module.kenyaemr.wrapper;
 
 import org.openmrs.Concept;
 import org.openmrs.Encounter;
+import org.openmrs.EncounterRole;
 import org.openmrs.Obs;
+import org.openmrs.Provider;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyacore.wrapper.AbstractObjectWrapper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Wrapper class for encounters
@@ -62,5 +66,34 @@ public class EncounterWrapper extends AbstractObjectWrapper<Encounter> {
 			}
 		}
 		return obsList;
+	}
+
+	/**
+	 * Gets the provider of the encounter. OpenMRS supports a much more complex model of the encounter - provider
+	 * relationship than we are interested in.
+	 * @return the provider or null
+	 */
+	public Provider getProvider() {
+		EncounterRole unknownRole = Context.getEncounterService().getEncounterRoleByUuid(EncounterRole.UNKNOWN_ENCOUNTER_ROLE_UUID);
+		Set<Provider> providers = target.getProvidersByRole(unknownRole);
+		return providers.size() > 0 ? providers.iterator().next() : null;
+	}
+
+	/**
+	 * Sets the provider of the encounter. OpenMRS supports a much more complex model of the encounter - provider
+	 * relationship than we are interested in.
+	 * @param provider the provider or null
+	 */
+	public void setProvider(Provider provider) {
+		EncounterRole unknownRole = Context.getEncounterService().getEncounterRoleByUuid(EncounterRole.UNKNOWN_ENCOUNTER_ROLE_UUID);
+		if (provider != null) {
+			target.setProvider(unknownRole, provider);
+		}
+		else {
+			// Void all provider connections
+			for (Provider p : target.getProvidersByRole(unknownRole)) {
+				target.removeProvider(unknownRole, p);
+			}
+		}
 	}
 }

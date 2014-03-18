@@ -18,13 +18,18 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Encounter;
+import org.openmrs.EncounterRole;
 import org.openmrs.Obs;
+import org.openmrs.Provider;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
+
+import static org.hamcrest.Matchers.*;
 
 /**
  * Tests for {@link EncounterWrapper}
@@ -90,5 +95,45 @@ public class EncounterWrapperTest extends BaseModuleContextSensitiveTest {
 		e.addObs(obs1);
 
 		Assert.assertEquals(2, wrapper.allObs(Dictionary.getConcept(Dictionary.ANTIRETROVIRAL_USED_IN_PREGNANCY)).size());
+	}
+
+	/**
+	 * @see EncounterWrapper#getProvider()
+	 */
+	@Test
+	public void getProvider_shouldGetFirstProviderWithUnknownRole() {
+		Provider provider1 = Context.getProviderService().getProvider(1);
+		Encounter enc3 = Context.getEncounterService().getEncounter(3);
+		EncounterWrapper wrapped = new EncounterWrapper(enc3);
+
+		Assert.assertThat(wrapped.getProvider(), is(provider1));
+
+		// Check empty encounter with no provider
+		Assert.assertThat(new EncounterWrapper(new Encounter()).getProvider(), nullValue());
+	}
+
+	/**
+	 * @see EncounterWrapper#setProvider(org.openmrs.Provider)
+	 */
+	@Test
+	public void setProvider_shouldSetUniqueProviderWithUnknownRole() {
+		EncounterRole unknownRole = Context.getEncounterService().getEncounterRoleByUuid(EncounterRole.UNKNOWN_ENCOUNTER_ROLE_UUID);
+		Provider provider1 = Context.getProviderService().getProvider(1);
+		Encounter enc = new Encounter();
+		EncounterWrapper wrapped = new EncounterWrapper(enc);
+
+		wrapped.setProvider(provider1);
+
+		Assert.assertThat(enc.getProvidersByRole(unknownRole), contains(provider1));
+
+		// Check setting again
+		wrapped.setProvider(provider1);
+
+		Assert.assertThat(enc.getProvidersByRole(unknownRole), contains(provider1));
+
+		// Check setting to null
+		wrapped.setProvider(null);
+
+		Assert.assertThat(enc.getProvidersByRole(unknownRole), empty());
 	}
 }

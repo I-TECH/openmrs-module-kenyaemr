@@ -16,8 +16,6 @@ package org.openmrs.module.kenyaemr.form.element;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.Encounter;
-import org.openmrs.EncounterRole;
 import org.openmrs.Person;
 import org.openmrs.Provider;
 import org.openmrs.api.context.Context;
@@ -29,6 +27,7 @@ import org.openmrs.module.htmlformentry.action.FormSubmissionControllerAction;
 import org.openmrs.module.htmlformentry.element.HtmlGeneratorElement;
 import org.openmrs.module.htmlformentry.widget.ErrorWidget;
 import org.openmrs.module.kenyaemr.form.widget.ObjectSearchWidget;
+import org.openmrs.module.kenyaemr.wrapper.EncounterWrapper;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -36,7 +35,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Overrides regular <encounterProvider> tag
@@ -64,7 +62,8 @@ public class EncounterProviderSubmissionElement implements HtmlGeneratorElement,
 		// Parse default value
 		Provider defaultProvider = null;
 		if (context.getExistingEncounter() != null) {
-			defaultProvider = getEncounterProvider(context.getExistingEncounter());
+			EncounterWrapper wrapped = new EncounterWrapper(context.getExistingEncounter());
+			defaultProvider = wrapped.getProvider();
 		} else {
 			String defaultProviderId = parameters.get("default");
 			if (StringUtils.hasText(defaultProviderId)) {
@@ -141,28 +140,9 @@ public class EncounterProviderSubmissionElement implements HtmlGeneratorElement,
 	public void handleSubmission(FormEntrySession session, HttpServletRequest request) {
 		Object value = widget.getValue(session.getContext(), request);
 		Provider provider = getProvider(value.toString().trim());
-		setEncounterProvider(session.getSubmissionActions().getCurrentEncounter(), provider);
-	}
 
-	/**
-	 * OpenMRS supports a much more complex model of the encounter - provider relationship than we are interested in
-	 * @param encounter the encounter
-	 * @return the provider
-	 */
-	public Provider getEncounterProvider(Encounter encounter) {
-		EncounterRole unknownRole = Context.getEncounterService().getEncounterRoleByUuid(EncounterRole.UNKNOWN_ENCOUNTER_ROLE_UUID);
-		Set<Provider> providers = encounter.getProvidersByRole(unknownRole);
-		return providers.size() > 0 ? providers.iterator().next() : null;
-	}
-
-	/**
-	 * Sets the provider of an encounter
-	 * @param encounter the encounter
-	 * @param provider the provider
-	 */
-	public void setEncounterProvider(Encounter encounter, Provider provider) {
-		EncounterRole unknownRole = Context.getEncounterService().getEncounterRoleByUuid(EncounterRole.UNKNOWN_ENCOUNTER_ROLE_UUID);
-		encounter.setProvider(unknownRole, provider);
+		EncounterWrapper wrapped = new EncounterWrapper(session.getSubmissionActions().getCurrentEncounter());
+		wrapped.setProvider(provider);
 	}
 
 	/**
