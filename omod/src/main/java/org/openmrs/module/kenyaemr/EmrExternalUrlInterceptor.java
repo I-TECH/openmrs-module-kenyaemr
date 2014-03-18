@@ -19,6 +19,7 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.User;
 import org.openmrs.api.AdministrationService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyaemr.metadata.SecurityMetadata;
 import org.openmrs.module.kenyaemr.util.EmrUtils;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,15 +67,15 @@ public class EmrExternalUrlInterceptor extends HandlerInterceptorAdapter {
 
 		// TODO implement a whitelist which allows only certain uiframework managed controllers.
 
-		// Only allow other requests if user is a super-user
+		// Only allow other requests if user has "View Legacy Interface" privilege
 		User authenticatedUser = Context.getAuthenticatedUser();
-		boolean allowRequest = authenticatedUser != null ? authenticatedUser.isSuperUser() : false;
+		boolean allowRequest = authenticatedUser != null && authenticatedUser.hasPrivilege(SecurityMetadata._Privilege.VIEW_LEGACY_INTERFACE);
 
 		if (!allowRequest) {
-			log.warn("Prevented request to " + request.getRequestURI() + " by non-super user");
+			log.warn("Prevented request to " + request.getRequestURI() + " by user without '" + SecurityMetadata._Privilege.VIEW_LEGACY_INTERFACE + "' privilege");
 
 			// Redirect to login page
-			kenyaUi.notifyError(request.getSession(), "Invalid external page access by non-super user");
+			kenyaUi.notifyError(request.getSession(), "Invalid external page access");
 			response.sendRedirect(request.getContextPath() + "/login.htm");
 		}
 
