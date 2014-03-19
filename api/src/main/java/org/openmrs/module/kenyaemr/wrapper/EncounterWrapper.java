@@ -19,8 +19,8 @@ import org.openmrs.Encounter;
 import org.openmrs.EncounterRole;
 import org.openmrs.Obs;
 import org.openmrs.Provider;
-import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyacore.wrapper.AbstractObjectWrapper;
+import org.openmrs.module.metadatadeploy.MetadataUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,7 +74,7 @@ public class EncounterWrapper extends AbstractObjectWrapper<Encounter> {
 	 * @return the provider or null
 	 */
 	public Provider getProvider() {
-		EncounterRole unknownRole = Context.getEncounterService().getEncounterRoleByUuid(EncounterRole.UNKNOWN_ENCOUNTER_ROLE_UUID);
+		EncounterRole unknownRole = MetadataUtils.existing(EncounterRole.class, EncounterRole.UNKNOWN_ENCOUNTER_ROLE_UUID);
 		Set<Provider> providers = target.getProvidersByRole(unknownRole);
 		return providers.size() > 0 ? providers.iterator().next() : null;
 	}
@@ -85,7 +85,7 @@ public class EncounterWrapper extends AbstractObjectWrapper<Encounter> {
 	 * @param provider the provider or null
 	 */
 	public void setProvider(Provider provider) {
-		EncounterRole unknownRole = Context.getEncounterService().getEncounterRoleByUuid(EncounterRole.UNKNOWN_ENCOUNTER_ROLE_UUID);
+		EncounterRole unknownRole = MetadataUtils.existing(EncounterRole.class, EncounterRole.UNKNOWN_ENCOUNTER_ROLE_UUID);
 		if (provider != null) {
 			target.setProvider(unknownRole, provider);
 		}

@@ -24,6 +24,7 @@ import org.openmrs.Provider;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
+import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -117,7 +118,7 @@ public class EncounterWrapperTest extends BaseModuleContextSensitiveTest {
 	 */
 	@Test
 	public void setProvider_shouldSetUniqueProviderWithUnknownRole() {
-		EncounterRole unknownRole = Context.getEncounterService().getEncounterRoleByUuid(EncounterRole.UNKNOWN_ENCOUNTER_ROLE_UUID);
+		EncounterRole unknownRole = MetadataUtils.existing(EncounterRole.class, EncounterRole.UNKNOWN_ENCOUNTER_ROLE_UUID);
 		Provider provider1 = Context.getProviderService().getProvider(1);
 		Encounter enc = new Encounter();
 		EncounterWrapper wrapped = new EncounterWrapper(enc);
