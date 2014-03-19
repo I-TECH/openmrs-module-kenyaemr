@@ -14,6 +14,7 @@
 
 package org.openmrs.module.kenyaemr.fragment.controller.form;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -34,6 +35,8 @@ import org.openmrs.module.kenyacore.CoreUtils;
 import org.openmrs.module.kenyacore.form.FormDescriptor;
 import org.openmrs.module.kenyacore.form.FormManager;
 import org.openmrs.module.kenyacore.form.FormUtils;
+import org.openmrs.module.kenyaemr.util.EmrUtils;
+import org.openmrs.module.kenyaemr.wrapper.EncounterWrapper;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.module.kenyaui.annotation.SharedAction;
 import org.openmrs.ui.framework.SimpleObject;
@@ -109,7 +112,7 @@ public class EnterHtmlFormFragmentController {
 	 * @throws Exception
 	 */
 	@SharedAction
-	public Object submit(@RequestParam("personId") Patient patient,
+	public SimpleObject submit(@RequestParam("personId") Patient patient,
 						 @RequestParam("formId") Form form,
 						 @RequestParam(value = "encounterId", required = false) Encounter encounter,
 						 @RequestParam(value = "visitId", required = false) Visit visit,
@@ -147,7 +150,7 @@ public class EnterHtmlFormFragmentController {
 
 		// If there are validation errors, abort submit and display them
 		if (validationErrors.size() > 0) {
-			return returnHelper(validationErrors, fes.getContext());
+			return simplifyErrors(validationErrors, fes.getContext());
 		}
 
 		// No validation errors found so continue process of form submission
@@ -161,6 +164,41 @@ public class EnterHtmlFormFragmentController {
 
 		// Get the encounter that will be saved
 		Encounter formEncounter = fes.getContext().getMode() == Mode.ENTER ? fes.getSubmissionActions().getEncountersToCreate().get(0) : encounter;
+		EncounterWrapper wrapped = new EncounterWrapper(formEncounter);
+
+		// We allow forms to not include <encounterProvider> tags, in which case provider defaults to current user
+		if (wrapped.getProvider() == null) {
+			wrapped.setProvider(EmrUtils.getProvider(Context.getAuthenticatedUser()));
+		}
+
+		// Perform our own custom validation checks
+		validationErrors = extraValidation(formEncounter, formDescriptor, visit);
+
+		// Once again, if there are validation errors, abort submit and display them
+		if (validationErrors.size() > 0) {
+			return simplifyErrors(validationErrors, fes.getContext());
+		}
+
+		// Do actual encounter creation/updating
+		fes.applyActions();
+
+		return SimpleObject.create("success", true);
+	}
+
+	/**
+	 * Custom server-side validation
+	 * @param formEncounter the encounter being edited/created
+	 * @param formDescriptor the form descriptor
+	 * @param visit the associated visit
+	 * @return any validation errors
+	 */
+	protected List<FormSubmissionError> extraValidation(Encounter formEncounter, FormDescriptor formDescriptor, Visit visit) {
+		List<FormSubmissionError> validationErrors = new ArrayList<FormSubmissionError>();
+		EncounterWrapper wrapped = new EncounterWrapper(formEncounter);
+
+		if (wrapped.getProvider() == null) {
+			validationErrors.add(new FormSubmissionError("general-form-error", "Current user is not a provider and no other provider was specified"));
+		}
 
 		if (formDescriptor.getAutoCreateVisitTypeUuid() != null) {
 			// Don't do validation against the visit because the encounter can be moved
@@ -178,35 +216,27 @@ public class EnterHtmlFormFragmentController {
 			}
 		}
 
-		// Once again, if there are validation errors, abort submit and display them
-		if (validationErrors.size() > 0) {
-			return returnHelper(validationErrors, fes.getContext());
-		}
-
-		// Do actual encounter creation/updating
-		fes.applyActions();
-
-		return returnHelper(null, null);
+		return validationErrors;
 	}
 
 	/**
-	 *
-	 * @param validationErrors
-	 * @param context
-	 * @return
+	 * Creates a simplified error response from validation errors
+	 * @param validationErrors the validation errors
+	 * @param context the form entry context
+	 * @return the simplified errors
 	 */
-	private SimpleObject returnHelper(List<FormSubmissionError> validationErrors, FormEntryContext context) {
-		if (validationErrors == null || validationErrors.size() == 0) {
-			return SimpleObject.create("success", true);
-		} else {
-			Map<String, String> errors = new HashMap<String, String>();
-			for (FormSubmissionError err : validationErrors) {
-				if (err.getSourceWidget() != null)
-					errors.put(context.getErrorFieldId(err.getSourceWidget()), err.getError());
-				else
-					errors.put(err.getId(), err.getError());
+	protected SimpleObject simplifyErrors(List<FormSubmissionError> validationErrors, FormEntryContext context) {
+		Map<String, String> errors = new HashMap<String, String>();
+
+		for (FormSubmissionError err : validationErrors) {
+			if (err.getSourceWidget() != null) {
+				errors.put(context.getErrorFieldId(err.getSourceWidget()), err.getError());
 			}
-			return SimpleObject.create("success", false, "errors", errors);
+			else {
+				errors.put(err.getId(), err.getError());
+			}
 		}
+
+		return SimpleObject.create("success", false, "errors", errors);
 	}
 }

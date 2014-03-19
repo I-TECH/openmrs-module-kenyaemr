@@ -18,6 +18,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Concept;
+import org.openmrs.User;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
@@ -120,5 +122,22 @@ public class EmrUtilsTest extends BaseModuleContextSensitiveTest {
 		Assert.assertEquals(Dictionary.getConcept("5497AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), concepts.get(0));
 		Assert.assertEquals(Dictionary.getConcept("730AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), concepts.get(1));
 		Assert.assertEquals(Dictionary.getConcept("5356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), concepts.get(2));
+	}
+
+	/**
+	 * @see EmrUtils#getProvider(org.openmrs.User)
+	 */
+	@Test
+	public void getProvider_shouldReturnFirstAssociatedProviderOfUserOrNull() {
+		// Test data has super-user configured as a provider
+		Assert.assertThat(EmrUtils.getProvider(Context.getAuthenticatedUser()), is(Context.getProviderService().getProvider(1)));
+
+		// Check against new user with no associated provider
+		User user = new User();
+		user.setPerson(Context.getPersonService().getPerson(2));
+		user.setUsername("user2");
+		Context.getUserService().saveUser(user, "Qwerty123");
+
+		Assert.assertThat(EmrUtils.getProvider(user), nullValue());
 	}
 }

@@ -40,7 +40,6 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 	private UserService userService;
 
 	public static final class _Privilege {
-		public static final String ADD_ENCOUNTER_FOR_OTHER_PROVIDER = "Emr: Add Encounter For Other Provider";
 		public static final String VIEW_LEGACY_INTERFACE = "Emr: View Legacy Interface";
 	}
 
@@ -81,7 +80,6 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 		}
 
 		// Add custom privileges
-		install(privilege(_Privilege.ADD_ENCOUNTER_FOR_OTHER_PROVIDER, "Can add an encounter for other provider"));
 		install(privilege(_Privilege.VIEW_LEGACY_INTERFACE, "Can view legacy web interface"));
 
 		// Ensure that some extra API privileges exist as core doesn't create these by default
@@ -125,8 +123,7 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 						app(EmrConstants.APP_DIRECTORY),
 						app(EmrConstants.APP_FACILITIES),
 						app(DqConstants.APP_DATAQUALITY),
-						app(DqConstants.APP_DATAMANAGER),
-						_Privilege.ADD_ENCOUNTER_FOR_OTHER_PROVIDER
+						app(DqConstants.APP_DATAMANAGER)
 				)
 		));
 
@@ -150,8 +147,7 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 						app(EmrConstants.APP_REPORTS),
 						app(EmrConstants.APP_DIRECTORY),
 						app(EmrConstants.APP_FACILITIES),
-						app(DqConstants.APP_DATAQUALITY),
-						_Privilege.ADD_ENCOUNTER_FOR_OTHER_PROVIDER
+						app(DqConstants.APP_DATAQUALITY)
 				)
 		));
 

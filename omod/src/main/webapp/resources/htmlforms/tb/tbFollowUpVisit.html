@@ -115,6 +115,7 @@
 			});
 		});
 	</script>
+
 	<div class="ke-form-header">
 		<table style="width: 100%">
 			<tr>
@@ -124,109 +125,111 @@
 			</tr>
 		</table>
 	</div>
-	<br />
-	<table align="center" cellpadding="0" class="tb">
-		<tr>
-			<td colspan="2">
-				<div id="dates-errors" class="error" style="display: none"></div>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<fieldset>
-					<legend>Sputum Results</legend>
-						<table
-								>
-							<obsgroup groupingConceptId="159960AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-								<tr>
-									<td>Type:</td>
-									<td>
-										<obs conceptId="159961AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="testType" answerConceptIds="160022AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161880AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="ZN Smear Microscopy,Fluorescence Microscopy" />
-									</td>
-								</tr>
-								<tr>
-									<td>Result:</td>
 
-									<td><obs conceptId="307AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="sputumResults" answerConceptIds="159985AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Scanty,+,++,+++,Negative" /></td>
+	<div class="ke-form-content">
+		<table align="center" cellpadding="0" class="tb">
+			<tr>
+				<td colspan="2">
+					<div id="dates-errors" class="error" style="display: none"></div>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<fieldset>
+						<legend>Sputum Results</legend>
+							<table
+									>
+								<obsgroup groupingConceptId="159960AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+									<tr>
+										<td>Type:</td>
+										<td>
+											<obs conceptId="159961AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="testType" answerConceptIds="160022AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161880AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="ZN Smear Microscopy,Fluorescence Microscopy" />
+										</td>
+									</tr>
+									<tr>
+										<td>Result:</td>
+
+										<td><obs conceptId="307AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="sputumResults" answerConceptIds="159985AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Scanty,+,++,+++,Negative" /></td>
+									</tr>
+									<tr>
+										<td>Serial No:</td>
+										<td>
+											<obs conceptId="159968AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="serial-number"  />
+										</td>
+									</tr>
+									<tr>
+										<td>Quantity:</td>
+										<td>
+											<obs conceptId="160023AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="quantity" />
+										</td>
+										<td id="hpfValues" class="value"></td>
+									</tr>
+									<tr>
+										<td>Date Done</td>
+										<td><obs conceptId="159964AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="date-sputum-results-date"  allowTime="false" /></td>
+									</tr>
+								</obsgroup>
+							</table>
+					</fieldset>
+				</td>
+				<td>
+					<fieldset>
+						<legend>Culture/Sensitivity Results</legend>
+						<table>
+							<obsgroup groupingConceptId="159981AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+								<tr>
+									<td>Bacterial Colonies growth</td>
+									<td><obs conceptId="159982AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Growth,No growth" id="growth_no_growth" /></td>
 								</tr>
 								<tr>
-									<td>Serial No:</td>
+									<td>Number of Colonies</td>
 									<td>
-										<obs conceptId="159968AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="serial-number"  />
+										<obs conceptId="159952AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="numberOfColonies" />
 									</td>
 								</tr>
 								<tr>
-									<td>Quantity:</td>
-									<td>
-										<obs conceptId="160023AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="quantity" />
+									<td align="center" id="sensitivity">
+										Resistant (R)
+										<obs conceptId="159956AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="84360AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="S" style="checkbox" id="r-s" />
+										<obs conceptId="159956AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="767AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="R" style="checkbox" id="r-r" />
+										<obs conceptId="159956AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="78280AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="INH" style="checkbox" id="r-inh" />
+										<obs conceptId="159956AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="75948AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="E" style="checkbox"  id="r-e" />
+
+										<br />
+										<br />
+										Sensitive (S)
+										<obs conceptId="159958AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="84360AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="S" style="checkbox" id="s-s" />
+										<obs conceptId="159958AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="767AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="R" style="checkbox" id="s-r" />
+										<obs conceptId="159958AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="78280AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="INH" style="checkbox" id="s-inh" />
+										<obs conceptId="159958AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="75948AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="E" style="checkbox" id="s-e" />
 									</td>
-									<td id="hpfValues" class="value"></td>
 								</tr>
 								<tr>
 									<td>Date Done</td>
-									<td><obs conceptId="159964AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="date-sputum-results-date"  allowTime="false" /></td>
+									<td><obs conceptId="159964AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="date-culture-results-date"  allowTime="false" /></td>
 								</tr>
 							</obsgroup>
 						</table>
-				</fieldset>
-			</td>
-			<td>
-				<fieldset>
-					<legend>Culture/Sensitivity Results</legend>
-					<table>
-						<obsgroup groupingConceptId="159981AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-							<tr>
-								<td>Bacterial Colonies growth</td>
-								<td><obs conceptId="159982AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Growth,No growth" id="growth_no_growth" /></td>
-							</tr>
-							<tr>
-								<td>Number of Colonies</td>
-								<td>
-									<obs conceptId="159952AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="numberOfColonies" />
-								</td>
-							</tr>
-							<tr>
-								<td align="center" id="sensitivity">
-									Resistant (R)
-									<obs conceptId="159956AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="84360AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="S" style="checkbox" id="r-s" />
-									<obs conceptId="159956AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="767AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="R" style="checkbox" id="r-r" />
-									<obs conceptId="159956AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="78280AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="INH" style="checkbox" id="r-inh" />
-									<obs conceptId="159956AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="75948AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="E" style="checkbox"  id="r-e" />
-
-									<br />
-									<br />
-									Sensitive (S)
-									<obs conceptId="159958AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="84360AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="S" style="checkbox" id="s-s" />
-									<obs conceptId="159958AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="767AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="R" style="checkbox" id="s-r" />
-									<obs conceptId="159958AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="78280AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="INH" style="checkbox" id="s-inh" />
-									<obs conceptId="159958AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="75948AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="E" style="checkbox" id="s-e" />
-								</td>
-							</tr>
-							<tr>
-								<td>Date Done</td>
-								<td><obs conceptId="159964AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="date-culture-results-date"  allowTime="false" /></td>
-							</tr>
-						</obsgroup>
+					</fieldset>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					<fieldset>
+					  <table cellpadding="5">
+						  <tr>
+							  <td>Hiv Status</td>
+							  <td><obs conceptId="1169AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+							  <td>Return Visit date</td>
+							  <td><obs conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="return-visit-date" allowFutureDates="true" /></td>
+						  </tr>
 					</table>
-				</fieldset>
-			</td>
-		</tr>
-		<tr>
-			<td colspan="2">
-				<fieldset>
-				  <table cellpadding="5">
-					  <tr>
-						  <td>Hiv Status</td>
-						  <td><obs conceptId="1169AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
-						  <td>Return Visit date</td>
-						  <td><obs conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="return-visit-date" allowFutureDates="true" /></td>
-					  </tr>
-				</table>
-				</fieldset>
-			</td>
-		</tr>
-	</table>
-	<br />
+					</fieldset>
+				</td>
+			</tr>
+		</table>
+	</div>
+
 	<div class="ke-form-footer">
 		<submit />
 	</div>

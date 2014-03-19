@@ -23,6 +23,8 @@ import org.openmrs.EncounterType;
 import org.openmrs.Obs;
 import org.openmrs.Patient;
 import org.openmrs.Person;
+import org.openmrs.Provider;
+import org.openmrs.User;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.Dictionary;
 
@@ -30,6 +32,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -131,6 +134,17 @@ public class EmrUtils {
 			}
 		}
 		return concepts;
+	}
+
+	/**
+	 * Unlike in OpenMRS core, a user can only be one provider in KenyaEMR
+	 * @param user the user
+	 * @return the provider or null
+	 */
+	public static Provider getProvider(User user) {
+		Person person = user.getPerson();
+		Collection<Provider> providers = Context.getProviderService().getProvidersByPerson(person);
+		return providers.size() > 0 ? providers.iterator().next() : null;
 	}
 
 	/**
