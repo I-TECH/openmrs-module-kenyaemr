@@ -13,14 +13,11 @@
 -->
 <htmlform>
 
-	<div class="ke-form-header">
-		<table width="100%">
-			<tr>
-				<td>Date: <encounterDate id="encounter-date" showTime="true" /></td>
-				<td>Provider: <encounterProvider default="currentUser" /></td>
-				<td>Location: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete"/></td>
-			</tr>
-		</table>
+	<!-- Encounter date, provider and location are not relevant for CE forms -->
+	<div style="display:none">
+		<encounterDate id="encounter-date" />
+		<encounterProvider default="ae01b8ff-a4cc-4012-bcf7-72359e852e14" />
+		<encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" />
 	</div>
 
 	<div class="ke-form-content">
