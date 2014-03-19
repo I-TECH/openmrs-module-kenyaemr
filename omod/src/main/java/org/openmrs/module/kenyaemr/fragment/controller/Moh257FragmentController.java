@@ -69,6 +69,7 @@ public class Moh257FragmentController {
 
 		Form moh257VisitForm = MetadataUtils.getForm(HivMetadata._Form.MOH_257_VISIT_SUMMARY);
 		List<Encounter> moh257VisitSummaryEncounters = patientWrapper.allEncounters(moh257VisitForm);
+		Collections.reverse(moh257VisitSummaryEncounters);
 
 		model.addAttribute("page1AvailableForms", page1AvailableForms);
 		model.addAttribute("page1Encounters", page1Encounters);
