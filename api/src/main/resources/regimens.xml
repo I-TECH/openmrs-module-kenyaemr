@@ -2,7 +2,7 @@
 	Defines the standard Kenya regimens
 -->
 <regimens xmlns="http://www.kenyaemr.org/regimens" version="3">
-	<category code="ARV" masterSetUuid="1085AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+	<category code="ARV" masterSetUuid="${metadata.concept.ANTIRETROVIRAL_DRUGS}">
 		<drugs>
 			<drug code="D4T" conceptUuid="84309AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><!-- Stavudine -->
 			<drug code="AZT" conceptUuid="86663AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><!-- Zidovudine -->

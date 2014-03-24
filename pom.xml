@@ -276,7 +276,7 @@
 				<plugin>
 					<groupId>org.openmrs.maven.plugins</groupId>
 					<artifactId>distrotools-maven-plugin</artifactId>
-					<version>0.2</version>
+					<version>0.3-SNAPSHOT</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>

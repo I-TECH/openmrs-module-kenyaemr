@@ -23,7 +23,7 @@ import java.util.List;
 /**
  * Dictionary for concepts used by KenyaEMR
  */
-public class Dictionary extends M.Concept {
+public class Dictionary extends Metadata.Concept {
 
 	/**
 	 * Gets a concept by an identifier (mapping or UUID)

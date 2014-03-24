@@ -58,7 +58,7 @@
 						</goals>
 						<configuration>
 							<sources>
-								<source>${project.build.directory}/generated-sources/metadata</source>
+								<source>${project.build.directory}/generated-sources/distro</source>
 							</sources>
 						</configuration>
 					</execution>
@@ -91,6 +91,10 @@
 				<filtering>false</filtering>
 			</testResource>
 		</testResources>
+
+		<filters>
+			<filter>${project.build.directory}/metadata.properties</filter>
+		</filters>
 	</build>
 
 </project>
