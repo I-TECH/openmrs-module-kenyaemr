@@ -76,7 +76,7 @@
 
 	<!-- Family History -->
 	<bean id="kenyaemr.common.form.hivFamilyHistory" class="org.openmrs.module.kenyacore.form.FormDescriptor">
-		<property name="targetUuid" value="7efa0ee0-6617-4cd7-8310-9f95dfee7a82" />
+		<property name="targetUuid" value="${metadata.form.HIV_FAMILY_HISTORY}" />
 		<property name="apps">
 			<set>
 				<ref bean="kenyaemr.app.clinician" />
@@ -90,7 +90,7 @@
 
 	<!-- Obstetric History -->
 	<bean id="kenyaemr.common.form.obstetricHistory" class="org.openmrs.module.kenyacore.form.FormDescriptor">
-		<property name="targetUuid" value="8e4e1abf-7c08-4ba8-b6d8-19a9f1ccb6c9" />
+		<property name="targetUuid" value="${metadata.form.OBSTETRIC_HISTORY}" />
 		<property name="gender" value="FEMALE" />
 		<property name="apps">
 			<set>
@@ -123,7 +123,7 @@
 
 	<!-- Clinical Encounter -->
 	<bean id="kenyaemr.common.form.clinicalEncounter" class="org.openmrs.module.kenyacore.form.FormDescriptor">
-		<property name="targetUuid" value="e958f902-64df-4819-afd4-7fb061f59308" />
+		<property name="targetUuid" value="${metadata.form.CLINICAL_ENCOUNTER}" />
 		<property name="apps">
 			<set>
 				<ref bean="kenyaemr.app.clinician" />
@@ -166,7 +166,7 @@
 
 	<!-- Progress Note -->
 	<bean id="kenyaemr.common.form.progressNote" class="org.openmrs.module.kenyacore.form.FormDescriptor">
-		<property name="targetUuid" value="0038a296-62f8-4099-80e5-c9ea7590c157" />
+		<property name="targetUuid" value="${metadata.form.PROGRESS_NOTE}" />
 		<property name="apps">
 			<set>
 				<ref bean="kenyaemr.app.intake" />
@@ -181,7 +181,7 @@
 
 	<!-- TB Screening -->
 	<bean id="kenyaemr.common.form.tbScreening" class="org.openmrs.module.kenyacore.form.FormDescriptor">
-		<property name="targetUuid" value="59ed8e62-7f1f-40ae-a2e3-eabe350277ce" />
+		<property name="targetUuid" value="${metadata.form.TB_SCREENING}" />
 		<property name="apps">
 			<set>
 				<ref bean="kenyaemr.app.intake" />
@@ -196,7 +196,7 @@
 
 	<!-- Medical and Surgical History -->
 	<!--<bean id="kenyaemr.common.form.medicalAndSurgicalHistory" class="org.openmrs.module.kenyacore.form.FormDescriptor">
-		<property name="targetUuid" value="4f3c9bd8-c117-4a5e-a7eb-12a627c29de6" />
+		<property name="targetUuid" value="${metadata.form.SURGICAL_AND_MEDICAL_HISTORY}" />
 		<property name="apps">
 			<set>
 				<ref bean="kenyaemr.app.registration" />

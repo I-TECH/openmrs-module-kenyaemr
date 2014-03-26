@@ -38,7 +38,7 @@ public class HivMetadata extends AbstractMetadataBundle {
 
 	public static final class _Form {
 		public static final String CLINICAL_ENCOUNTER_HIV_ADDENDUM = "bd598114-4ef4-47b1-a746-a616180ccfc0";
-		public static final String FAMILY_HISTORY = "7efa0ee0-6617-4cd7-8310-9f95dfee7a82";
+		public static final String FAMILY_HISTORY = Metadata.Form.HIV_FAMILY_HISTORY;
 		public static final String HIV_DISCONTINUATION = "e3237ede-fa70-451f-9e6c-0908bc39f8b9";
 		public static final String HIV_ENROLLMENT = "e4b506c1-7379-42b6-a374-284469cba8da";
 		public static final String MOH_257_FACE_PAGE = "47814d87-2e53-45b1-8d05-ac2e944db64c";

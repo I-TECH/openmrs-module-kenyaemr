@@ -40,7 +40,7 @@ public class TbMetadata extends AbstractMetadataBundle {
 	public static final class _Form {
 		public static final String TB_COMPLETION = "4b296dd0-f6be-4007-9eb8-d0fd4e94fb3a";
 		public static final String TB_ENROLLMENT = "89994550-9939-40f3-afa6-173bce445c79";
-		public static final String TB_SCREENING = "59ed8e62-7f1f-40ae-a2e3-eabe350277ce";
+		public static final String TB_SCREENING = Metadata.Form.TB_SCREENING;
 		public static final String TB_FOLLOW_UP = "2daabb77-7ad6-4952-864b-8d23e109c69d";
 	}
 

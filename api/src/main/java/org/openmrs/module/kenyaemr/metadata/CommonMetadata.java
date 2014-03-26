@@ -40,12 +40,12 @@ public class CommonMetadata extends AbstractMetadataBundle {
 	}
 
 	public static final class _Form {
-		public static final String CLINICAL_ENCOUNTER = "e958f902-64df-4819-afd4-7fb061f59308";
-		public static final String LAB_RESULTS = "7e603909-9ed5-4d0c-a688-26ecb05d8b6e";
-		public static final String OBSTETRIC_HISTORY = "8e4e1abf-7c08-4ba8-b6d8-19a9f1ccb6c9";
-		public static final String OTHER_MEDICATIONS = "d4ff8ad1-19f8-484f-9395-04c755de9a47";
-		public static final String PROGRESS_NOTE = "0038a296-62f8-4099-80e5-c9ea7590c157";
-		public static final String SURGICAL_AND_MEDICAL_HISTORY = "4f3c9bd8-c117-4a5e-a7eb-12a627c29de6";
+		public static final String CLINICAL_ENCOUNTER = Metadata.Form.CLINICAL_ENCOUNTER;
+		public static final String LAB_RESULTS = Metadata.Form.LAB_RESULTS;
+		public static final String OBSTETRIC_HISTORY = Metadata.Form.OBSTETRIC_HISTORY;
+		public static final String OTHER_MEDICATIONS = Metadata.Form.OTHER_MEDICATIONS;
+		public static final String PROGRESS_NOTE = Metadata.Form.PROGRESS_NOTE;
+		public static final String SURGICAL_AND_MEDICAL_HISTORY = Metadata.Form.SURGICAL_AND_MEDICAL_HISTORY;
 		public static final String TRIAGE = Metadata.Form.TRIAGE;
 	}
 
