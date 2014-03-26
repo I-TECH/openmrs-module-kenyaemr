@@ -6,7 +6,7 @@
 	<!-- ===================== Program ===================== -->
 
 	<bean id="kenyaemr.hiv.program" class="org.openmrs.module.kenyacore.program.ProgramDescriptor">
-		<property name="targetUuid" value="dfdc6d40-2f2f-463d-ba90-cc97350441a8" />
+		<property name="targetUuid" value="${metadata.program.HIV}" />
 		<property name="eligibilityCalculation" value="org.openmrs.module.kenyaemr.calculation.library.hiv.EligibleForHivProgramCalculation" />
 		<property name="defaultEnrollmentForm" ref="kenyaemr.hiv.form.enrollment" />
 		<property name="defaultCompletionForm" ref="kenyaemr.hiv.form.completion" />

@@ -16,6 +16,7 @@ package org.openmrs.module.kenyaemr.metadata;
 
 import org.openmrs.PatientIdentifierType.LocationBehavior;
 import org.openmrs.module.kenyaemr.Dictionary;
+import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.metadatadeploy.bundle.AbstractMetadataBundle;
 import org.openmrs.module.metadatadeploy.bundle.Requires;
 import org.springframework.stereotype.Component;
@@ -50,7 +51,7 @@ public class HivMetadata extends AbstractMetadataBundle {
 	}
 
 	public static final class _Program {
-		public static final String HIV = "dfdc6d40-2f2f-463d-ba90-cc97350441a8";
+		public static final String HIV = Metadata.Program.HIV;
 	}
 
 	/**

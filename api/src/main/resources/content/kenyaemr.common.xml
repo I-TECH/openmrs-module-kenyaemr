@@ -51,7 +51,7 @@
 
 	<!-- National Identification Number -->
 	<bean id="kenyaemr.common.identifier.national" class="org.openmrs.module.kenyacore.identifier.IdentifierDescriptor">
-		<property name="targetUuid" value="49af6cdc-7968-4abb-bf46-de10d7f4859f" />
+		<property name="targetUuid" value="${metadata.identifiertype.NATIONAL_ID}" />
 		<property name="order" value="100" />
 	</bean>
 
@@ -107,7 +107,7 @@
 
 	<!-- Triage -->
 	<bean id="kenyaemr.common.form.triage" class="org.openmrs.module.kenyacore.form.FormDescriptor">
-		<property name="targetUuid" value="37f6bd8d-586a-4169-95fa-5781f987fe62" />
+		<property name="targetUuid" value="${metadata.form.TRIAGE}" />
 		<property name="apps">
 			<set>
 				<ref bean="kenyaemr.app.registration" />

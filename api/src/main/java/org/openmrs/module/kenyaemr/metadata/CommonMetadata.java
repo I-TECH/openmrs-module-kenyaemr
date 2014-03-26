@@ -18,6 +18,7 @@ import org.openmrs.PatientIdentifierType.LocationBehavior;
 import org.openmrs.PersonAttributeType;
 import org.openmrs.module.idgen.validator.LuhnMod25IdentifierValidator;
 import org.openmrs.module.kenyaemr.EmrConstants;
+import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.datatype.FormDatatype;
 import org.openmrs.module.kenyaemr.datatype.LocationDatatype;
 import org.openmrs.module.metadatadeploy.bundle.AbstractMetadataBundle;
@@ -45,7 +46,7 @@ public class CommonMetadata extends AbstractMetadataBundle {
 		public static final String OTHER_MEDICATIONS = "d4ff8ad1-19f8-484f-9395-04c755de9a47";
 		public static final String PROGRESS_NOTE = "0038a296-62f8-4099-80e5-c9ea7590c157";
 		public static final String SURGICAL_AND_MEDICAL_HISTORY = "4f3c9bd8-c117-4a5e-a7eb-12a627c29de6";
-		public static final String TRIAGE = "37f6bd8d-586a-4169-95fa-5781f987fe62";
+		public static final String TRIAGE = Metadata.Form.TRIAGE;
 	}
 
 	public static final class _OrderType {
