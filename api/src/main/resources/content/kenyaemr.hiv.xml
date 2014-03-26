@@ -42,7 +42,7 @@
 
 	<!-- Unique Patient Number -->
 	<bean id="kenyaemr.hiv.identifier.upn" class="org.openmrs.module.kenyacore.identifier.IdentifierDescriptor">
-		<property name="targetUuid" value="05ee9cf4-7242-4a17-b4d4-00f707265c8a" />
+		<property name="targetUuid" value="${metadata.identifiertype.UNIQUE_PATIENT_NUMBER}" />
 		<property name="order" value="50" />
 	</bean>
 

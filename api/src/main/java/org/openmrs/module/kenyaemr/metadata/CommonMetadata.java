@@ -54,10 +54,10 @@ public class CommonMetadata extends AbstractMetadataBundle {
 	}
 
 	public static final class _PatientIdentifierType {
-		public static final String NATIONAL_ID = "49af6cdc-7968-4abb-bf46-de10d7f4859f";
-		public static final String OLD_ID = "8d79403a-c2cc-11de-8d13-0010c6dffd0f";
-		public static final String OPENMRS_ID = "dfacd928-0370-4315-99d7-6ec1c9f7ae76";
-		public static final String PATIENT_CLINIC_NUMBER = "b4d66522-11fc-45c7-83e3-39a1af21ae0d";
+		public static final String NATIONAL_ID = Metadata.IdentifierType.NATIONAL_ID;
+		public static final String OLD_ID = Metadata.IdentifierType.OLD;
+		public static final String OPENMRS_ID = Metadata.IdentifierType.MEDICAL_RECORD_NUMBER;
+		public static final String PATIENT_CLINIC_NUMBER = Metadata.IdentifierType.PATIENT_CLINIC_NUMBER;
 	}
 
 	public static final class _PersonAttributeType {

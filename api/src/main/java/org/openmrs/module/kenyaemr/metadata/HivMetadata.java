@@ -47,7 +47,7 @@ public class HivMetadata extends AbstractMetadataBundle {
 	}
 
 	public static final class _PatientIdentifierType {
-		public static final String UNIQUE_PATIENT_NUMBER = "05ee9cf4-7242-4a17-b4d4-00f707265c8a";
+		public static final String UNIQUE_PATIENT_NUMBER = Metadata.IdentifierType.UNIQUE_PATIENT_NUMBER;
 	}
 
 	public static final class _Program {

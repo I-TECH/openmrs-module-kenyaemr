@@ -16,6 +16,7 @@ package org.openmrs.module.kenyaemr.metadata;
 
 import org.openmrs.PatientIdentifierType.LocationBehavior;
 import org.openmrs.module.kenyaemr.Dictionary;
+import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.metadatadeploy.bundle.AbstractMetadataBundle;
 import org.openmrs.module.metadatadeploy.bundle.Requires;
 import org.springframework.stereotype.Component;
@@ -44,11 +45,11 @@ public class TbMetadata extends AbstractMetadataBundle {
 	}
 
 	public static final class _PatientIdentifierType {
-		public static final String DISTRICT_REG_NUMBER = "d8ee3b8c-a8fc-4d6b-af6a-9423be5f8906";
+		public static final String DISTRICT_REG_NUMBER = Metadata.IdentifierType.DISTRICT_REGISTRATION_NUMBER;
 	}
 
 	public static final class _Program {
-		public static final String TB = "9f144a34-3a4a-44a9-8486-6b7af6cc64f6";
+		public static final String TB = Metadata.Program.TB;
 	}
 
 	/**

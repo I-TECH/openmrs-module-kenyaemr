@@ -16,6 +16,7 @@ package org.openmrs.module.kenyaemr.metadata;
 
 import org.openmrs.PatientIdentifierType.LocationBehavior;
 import org.openmrs.module.kenyaemr.Dictionary;
+import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.metadatadeploy.bundle.AbstractMetadataBundle;
 import org.openmrs.module.metadatadeploy.bundle.Requires;
 import org.springframework.stereotype.Component;
@@ -56,12 +57,12 @@ public class MchMetadata extends AbstractMetadataBundle {
 	}
 
 	public static final class _PatientIdentifierType {
-		public static final String HEI_ID_NUMBER = "0691f522-dd67-4eeb-92c8-af5083baf338";
+		public static final String HEI_ID_NUMBER = Metadata.IdentifierType.HEI_UNIQUE_NUMBER;
 	}
 
 	public static final class _Program {
-		public static final String MCHCS = "c2ecdf11-97cd-432a-a971-cfd9bd296b83";
-		public static final String MCHMS = "b5d9e05f-f5ab-4612-98dd-adb75438ed34";
+		public static final String MCHCS = Metadata.Program.MCH_CS;
+		public static final String MCHMS = Metadata.Program.MCH_MS;
 	}
 
 	/**

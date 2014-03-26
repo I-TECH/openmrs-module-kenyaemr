@@ -6,7 +6,7 @@
 	<!-- ===================== Program ===================== -->
 
 	<bean id="kenyaemr.tb.program" class="org.openmrs.module.kenyacore.program.ProgramDescriptor">
-		<property name="targetUuid" value="9f144a34-3a4a-44a9-8486-6b7af6cc64f6" />
+		<property name="targetUuid" value="${metadata.program.TB}" />
 		<property name="eligibilityCalculation" value="org.openmrs.module.kenyaemr.calculation.library.tb.EligibleForTbProgramCalculation" />
 		<property name="defaultEnrollmentForm" ref="kenyaemr.tb.form.enrollment" />
 		<property name="defaultCompletionForm" ref="kenyaemr.tb.form.completion" />
@@ -36,7 +36,7 @@
 
 	<!-- District Registration Number -->
 	<bean id="kenyaemr.tb.identifier.districtRegistration" class="org.openmrs.module.kenyacore.identifier.IdentifierDescriptor">
-		<property name="targetUuid" value="d8ee3b8c-a8fc-4d6b-af6a-9423be5f8906" />
+		<property name="targetUuid" value="${metadata.identifiertype.DISTRICT_REGISTRATION_NUMBER}" />
 		<property name="order" value="60" />
 	</bean>
 

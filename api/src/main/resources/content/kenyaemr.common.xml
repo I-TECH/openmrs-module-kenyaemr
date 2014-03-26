@@ -57,19 +57,19 @@
 
 	<!-- Patient Clinic Number -->
 	<bean id="kenyaemr.common.identifier.pcn" class="org.openmrs.module.kenyacore.identifier.IdentifierDescriptor">
-		<property name="targetUuid" value="b4d66522-11fc-45c7-83e3-39a1af21ae0d" />
+		<property name="targetUuid" value="${metadata.identifiertype.PATIENT_CLINIC_NUMBER}" />
 		<property name="order" value="200" />
 	</bean>
 
 	<!-- Old Identification Number -->
 	<bean id="kenyaemr.common.identifier.old" class="org.openmrs.module.kenyacore.identifier.IdentifierDescriptor">
-		<property name="targetUuid" value="8d79403a-c2cc-11de-8d13-0010c6dffd0f" />
+		<property name="targetUuid" value="${metadata.identifiertype.OLD}" />
 		<property name="order" value="300" />
 	</bean>
 
 	<!-- OpenMRS ID -->
 	<bean id="kenyaemr.common.identifier.mrn" class="org.openmrs.module.kenyacore.identifier.IdentifierDescriptor">
-		<property name="targetUuid" value="dfacd928-0370-4315-99d7-6ec1c9f7ae76" />
+		<property name="targetUuid" value="${metadata.identifiertype.MEDICAL_RECORD_NUMBER}" />
 	</bean>
 
 	<!-- ===================== Forms ===================== -->

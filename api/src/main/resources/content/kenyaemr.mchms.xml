@@ -6,7 +6,7 @@
 	<!-- ===================== Program ===================== -->
 
 	<bean id="kenyaemr.program.mchms" class="org.openmrs.module.kenyacore.program.ProgramDescriptor">
-		<property name="targetUuid" value="b5d9e05f-f5ab-4612-98dd-adb75438ed34"/>
+		<property name="targetUuid" value="${metadata.program.MCH_MS}"/>
 		<property name="eligibilityCalculation"
 				  value="org.openmrs.module.kenyaemr.calculation.library.mchms.EligibleForMchmsProgramCalculation"/>
 		<property name="defaultEnrollmentForm" ref="kenyaemr.mchms.form.enrollment"/>

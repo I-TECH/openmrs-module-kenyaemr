@@ -1,4 +1,10 @@
-<!-- Identifier types used by KenyaEMR, listed A-Z -->
+<!-- Patient identifier types used by KenyaEMR, listed A-Z -->
 <refs>
+	<ref key="DISTRICT_REGISTRATION_NUMBER" uuid="d8ee3b8c-a8fc-4d6b-af6a-9423be5f8906" />
+	<ref key="HEI_UNIQUE_NUMBER" uuid="0691f522-dd67-4eeb-92c8-af5083baf338" />
+	<ref key="MEDICAL_RECORD_NUMBER" uuid="dfacd928-0370-4315-99d7-6ec1c9f7ae76" />
 	<ref key="NATIONAL_ID" uuid="49af6cdc-7968-4abb-bf46-de10d7f4859f" />
+	<ref key="OLD" uuid="8d79403a-c2cc-11de-8d13-0010c6dffd0f" />
+	<ref key="PATIENT_CLINIC_NUMBER" uuid="b4d66522-11fc-45c7-83e3-39a1af21ae0d" />
+	<ref key="UNIQUE_PATIENT_NUMBER" uuid="05ee9cf4-7242-4a17-b4d4-00f707265c8a" />
 </refs>

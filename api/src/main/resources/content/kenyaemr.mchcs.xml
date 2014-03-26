@@ -6,7 +6,7 @@
 	<!-- ===================== Program ===================== -->
 
 	<bean id="kenyaemr.program.hei" class="org.openmrs.module.kenyacore.program.ProgramDescriptor">
-		<property name="targetUuid" value="c2ecdf11-97cd-432a-a971-cfd9bd296b83" />
+		<property name="targetUuid" value="${metadata.program.MCH_CS}" />
 		<property name="eligibilityCalculation" value="org.openmrs.module.kenyaemr.calculation.library.mchcs.EligibleForMchcsProgramCalculation" />
 		<property name="defaultEnrollmentForm" ref="kenyaemr.form.mchcsEnrollment" />
 		<property name="defaultCompletionForm" ref="kenyaemr.form.mchcsCompletion" />
@@ -46,7 +46,7 @@
 
 	<!-- HEI unique Number -->
 	<bean id="kenyaemr.identifier.hei" class="org.openmrs.module.kenyacore.identifier.IdentifierDescriptor">
-		<property name="targetUuid" value="0691f522-dd67-4eeb-92c8-af5083baf338" />
+		<property name="targetUuid" value="${metadata.identifiertype.HEI_UNIQUE_NUMBER}" />
 		<property name="order" value="80" />
 	</bean>
 
