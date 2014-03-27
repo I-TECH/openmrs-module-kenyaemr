@@ -158,7 +158,7 @@ public class CommonCohortLibraryTest extends BaseModuleContextSensitiveTest {
 	 */
 	@Test
 	public void enrolled() throws Exception {
-		Program hivProgram = MetadataUtils.getProgram(HivMetadata._Program.HIV);
+		Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
 
 		// Enroll patient 2 on May 31st
 		TestUtils.enrollInProgram(Context.getPatientService().getPatient(2), hivProgram, TestUtils.date(2012, 5, 31));
@@ -220,18 +220,18 @@ public class CommonCohortLibraryTest extends BaseModuleContextSensitiveTest {
 	 */
 	@Test
 	public void enrolledExcludingTransfers() throws Exception {
-		Program hivProgram = MetadataUtils.getProgram(HivMetadata._Program.HIV);
+		Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
 		Concept transferInDate = Dictionary.getConcept(Dictionary.TRANSFER_IN_DATE);
 
 		// Enroll #6 on June 1st
-		TestUtils.enrollInProgram(Context.getPatientService().getPatient(6), hivProgram, TestUtils.date(2012, 6, 1));
+		TestUtils.enrollInProgram(TestUtils.getPatient(6), hivProgram, TestUtils.date(2012, 6, 1));
 
 		// Enroll #7 on June 1st as a transfer in
-		TestUtils.enrollInProgram(Context.getPatientService().getPatient(7), hivProgram, TestUtils.date(2012, 6, 1));
-		TestUtils.saveObs(Context.getPatientService().getPatient(7), transferInDate, TestUtils.date(2012, 6, 1),  TestUtils.date(2012, 6, 1));
+		TestUtils.enrollInProgram(TestUtils.getPatient(7), hivProgram, TestUtils.date(2012, 6, 1));
+		TestUtils.saveObs(TestUtils.getPatient(7), transferInDate, TestUtils.date(2012, 6, 1),  TestUtils.date(2012, 6, 1));
 
 		// Enroll #8 on July 1st
-		TestUtils.enrollInProgram(Context.getPatientService().getPatient(8), hivProgram, TestUtils.date(2012, 7, 1));
+		TestUtils.enrollInProgram(TestUtils.getPatient(8), hivProgram, TestUtils.date(2012, 7, 1));
 
 		CohortDefinition cd = commonCohortLibrary.enrolledExcludingTransfers(hivProgram);
 		context.addParameterValue("onOrAfter", TestUtils.date(2012, 6, 1));

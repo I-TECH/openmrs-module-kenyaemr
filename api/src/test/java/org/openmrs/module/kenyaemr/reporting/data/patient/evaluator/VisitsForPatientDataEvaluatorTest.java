@@ -57,7 +57,7 @@ public class VisitsForPatientDataEvaluatorTest extends BaseModuleContextSensitiv
 	public void setup() {
 		commonMetadata.install();
 
-		VisitType outpatient = MetadataUtils.getVisitType(CommonMetadata._VisitType.OUTPATIENT);
+		VisitType outpatient = MetadataUtils.existing(VisitType.class, CommonMetadata._VisitType.OUTPATIENT);
 
 		visitP7a = TestUtils.saveVisit(TestUtils.getPatient(7), outpatient, TestUtils.date(2012, 1, 1), TestUtils.date(2012, 1, 2));
 		visitP7b = TestUtils.saveVisit(TestUtils.getPatient(7), outpatient, TestUtils.date(2012, 2, 1), TestUtils.date(2012, 2, 2));

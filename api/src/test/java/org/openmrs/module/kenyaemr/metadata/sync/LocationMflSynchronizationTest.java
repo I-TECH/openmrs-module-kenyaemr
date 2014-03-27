@@ -61,7 +61,7 @@ public class LocationMflSynchronizationTest extends BaseModuleContextSensitiveTe
 
 	@Test
 	public void integration() throws Exception {
-		LocationAttributeType codeAttrType = MetadataUtils.getLocationAttributeType(FacilityMetadata._LocationAttributeType.MASTER_FACILITY_CODE);
+		LocationAttributeType codeAttrType = MetadataUtils.existing(LocationAttributeType.class, FacilityMetadata._LocationAttributeType.MASTER_FACILITY_CODE);
 
 		// First sync should create 3 new locations
 		ObjectSource<Location> source1 = new LocationMflCsvSource("test-locations.csv");

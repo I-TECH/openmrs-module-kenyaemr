@@ -73,7 +73,7 @@ public class NeedsCd4TestCalculationTest extends BaseModuleContextSensitiveTest 
 	 */
 	@Test
 	public void evaluate_shouldDetermineWhetherPatientsNeedsCD4() throws Exception {
-		Program hivProgram = MetadataUtils.getProgram(HivMetadata._Program.HIV);
+		Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
 
 		// Enroll patients #6, #7 and #8  in the HIV Program
 		TestUtils.enrollInProgram(TestUtils.getPatient(2), hivProgram, new Date());

@@ -64,7 +64,7 @@ public class KenyaEmrServiceImplTest extends BaseModuleContextSensitiveTest {
 		facilityMetadata.install(false); // Don't do full facility sync
 		hivMetadata.install();
 
-		LocationAttributeType mflCode = MetadataUtils.getLocationAttributeType(FacilityMetadata._LocationAttributeType.MASTER_FACILITY_CODE);
+		LocationAttributeType mflCode = MetadataUtils.existing(LocationAttributeType.class, FacilityMetadata._LocationAttributeType.MASTER_FACILITY_CODE);
 
 		TestUtils.saveLocationAttribute(Context.getLocationService().getLocation(1), mflCode, "15001");
 		TestUtils.saveLocationAttribute(Context.getLocationService().getLocation(2), mflCode, "15002");
@@ -182,7 +182,7 @@ public class KenyaEmrServiceImplTest extends BaseModuleContextSensitiveTest {
 	@Test
 	public void getVisitsByPatientAndDay_shouldGetVisitsOnDayWithPatient() {
 		Patient patient = Context.getPatientService().getPatient(7);
-		VisitType outpatientType = MetadataUtils.getVisitType(CommonMetadata._VisitType.OUTPATIENT);
+		VisitType outpatientType = MetadataUtils.existing(VisitType.class, CommonMetadata._VisitType.OUTPATIENT);
 
 		// Save visit from 10-11am and another from 12 onwards (no end)
 		Visit visit1 = TestUtils.saveVisit(patient, outpatientType, TestUtils.date(2012, 1, 1, 10, 0, 0), TestUtils.date(2012, 1, 1, 11, 0, 0));

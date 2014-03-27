@@ -65,7 +65,7 @@ public class NeverScreenedForTbCalculationTest extends BaseModuleContextSensitiv
 	 */
 	@Test
 	public void evaluate_shouldReturnHivPatientsNotScreenedForTb() throws Exception {
-		Program hivProgram = MetadataUtils.getProgram(HivMetadata._Program.HIV);
+		Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
 
 		// Enroll patients #2, #6, #7 in the HIV program
 		TestUtils.enrollInProgram(TestUtils.getPatient(2), hivProgram, TestUtils.date(2011, 1, 1));

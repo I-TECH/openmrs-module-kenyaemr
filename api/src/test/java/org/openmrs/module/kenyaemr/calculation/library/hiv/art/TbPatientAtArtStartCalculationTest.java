@@ -60,7 +60,7 @@ public class TbPatientAtArtStartCalculationTest extends BaseModuleContextSensiti
 	 */
 	@Test
 	public void evaluate_shouldCalculateTbEnrollmentStatusAtArtStart() throws Exception {
-		Program tbProgram = MetadataUtils.getProgram(TbMetadata._Program.TB);
+		Program tbProgram = MetadataUtils.existing(Program.class, TbMetadata._Program.TB);
 		Concept stavudine = Dictionary.getConcept(Dictionary.STAVUDINE);
 
 		// Enroll patient #2 on same day as ART start. This patient has a drug order in standardTestDataset.xml

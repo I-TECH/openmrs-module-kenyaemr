@@ -61,7 +61,7 @@ public class FixMissingOpenmrsIdentifiersTest extends BaseModuleContextSensitive
 	 */
 	@Test
 	public void perform() throws Exception {
-		PatientIdentifierType openmrsIdType = MetadataUtils.getPatientIdentifierType(CommonMetadata._PatientIdentifierType.OPENMRS_ID);
+		PatientIdentifierType openmrsIdType = MetadataUtils.existing(PatientIdentifierType.class, CommonMetadata._PatientIdentifierType.OPENMRS_ID);
 
 		chore.perform(new PrintWriter(System.out));
 

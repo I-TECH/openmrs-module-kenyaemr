@@ -19,11 +19,8 @@ import org.junit.Test;
 import org.openmrs.Concept;
 import org.openmrs.Program;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyacore.identifier.IdentifierManager;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
-import org.openmrs.module.kenyacore.report.CalculationReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportDescriptor;
-import org.openmrs.module.kenyacore.report.ReportManager;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
@@ -69,7 +66,7 @@ public class DecliningCd4ReportBuilderTest extends BaseModuleContextSensitiveTes
 
 	@Test
 	public void testReport() throws Exception {
-		Program hivProgram = MetadataUtils.getProgram(HivMetadata._Program.HIV);
+		Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
 
 		// Enrol patient #7 in the HIV program
 		TestUtils.enrollInProgram(TestUtils.getPatient(7), hivProgram, new Date());
@@ -81,12 +78,12 @@ public class DecliningCd4ReportBuilderTest extends BaseModuleContextSensitiveTes
 		TestUtils.saveObs(TestUtils.getPatient(7), cd4, 123d, calendar.getTime());
 
 		// Give patient #7 a lower CD4 now
-		TestUtils.saveObs(Context.getPatientService().getPatient(7), cd4, 120d, new Date());
+		TestUtils.saveObs(TestUtils.getPatient(7), cd4, 120d, new Date());
 
 		Context.flushSession();
 
 		// Evaluate report
-		ReportDefinition rd = new DecliningCd4ReportBuilder().build(report);
+		ReportDefinition rd = reportBuilder.build(report);
 		EvaluationContext ec = new EvaluationContext();
 
 		ReportData data = Context.getService(ReportDefinitionService.class).evaluate(rd, ec);

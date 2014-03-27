@@ -88,7 +88,7 @@ public class FormsAndVisitsTest extends BaseModuleContextSensitiveTest {
 	@Test
 	public void pocFormEncounterShouldNotCreateVisitIfNoneExistsOnDay() {
 		Patient patient = TestUtils.getPatient(7);
-		Form triage = MetadataUtils.getForm(CommonMetadata._Form.TRIAGE);
+		Form triage = MetadataUtils.existing(Form.class, CommonMetadata._Form.TRIAGE);
 
 		// Save triage on Jan 1st
 		Encounter triage_1 = TestUtils.saveEncounter(patient, triage, TestUtils.date(2012, 1, 1));
@@ -103,8 +103,8 @@ public class FormsAndVisitsTest extends BaseModuleContextSensitiveTest {
 	@Test
 	public void pocFormEncounterShouldSaveIntoExistingVisitIfOneExists() {
 		Patient patient = TestUtils.getPatient(7);
-		Form triage = MetadataUtils.getForm(CommonMetadata._Form.TRIAGE);
-		VisitType outpatient = MetadataUtils.getVisitType(CommonMetadata._VisitType.OUTPATIENT);
+		Form triage = MetadataUtils.existing(Form.class, CommonMetadata._Form.TRIAGE);
+		VisitType outpatient = MetadataUtils.existing(VisitType.class, CommonMetadata._VisitType.OUTPATIENT);
 
 		// Save regular visit from 9am - 11am on Jan 1st
 		Visit visit1 = TestUtils.saveVisit(patient, outpatient, TestUtils.date(2012, 1, 1, 9, 0, 0), TestUtils.date(2012, 1, 1, 11, 0, 0));
@@ -128,8 +128,8 @@ public class FormsAndVisitsTest extends BaseModuleContextSensitiveTest {
 	@Test
 	public void retroFormEncounterShouldCreateAllDayVisitIfNoneExistsOnDay() {
 		Patient patient = TestUtils.getPatient(7);
-		Form moh257 = MetadataUtils.getForm(HivMetadata._Form.MOH_257_VISIT_SUMMARY);
-		VisitType outpatient = MetadataUtils.getVisitType(CommonMetadata._VisitType.OUTPATIENT);
+		Form moh257 = MetadataUtils.existing(Form.class, HivMetadata._Form.MOH_257_VISIT_SUMMARY);
+		VisitType outpatient = MetadataUtils.existing(VisitType.class, CommonMetadata._VisitType.OUTPATIENT);
 
 		// Save MOH257 on Jan 1st
 		Encounter moh257_1 = TestUtils.saveEncounter(patient, moh257, TestUtils.date(2012, 1, 1));
@@ -150,8 +150,8 @@ public class FormsAndVisitsTest extends BaseModuleContextSensitiveTest {
 	@Test
 	public void retroFormEncounterShouldSaveIntoExistingVisitIfOneExists() {
 		Patient patient = TestUtils.getPatient(7);
-		Form moh257 = MetadataUtils.getForm(HivMetadata._Form.MOH_257_VISIT_SUMMARY);
-		VisitType outpatient = MetadataUtils.getVisitType(CommonMetadata._VisitType.OUTPATIENT);
+		Form moh257 = MetadataUtils.existing(Form.class, HivMetadata._Form.MOH_257_VISIT_SUMMARY);
+		VisitType outpatient = MetadataUtils.existing(VisitType.class, CommonMetadata._VisitType.OUTPATIENT);
 
 		// Save regular visit from 9am - 11am on Jan 1st
 		Visit visit1 = TestUtils.saveVisit(patient, outpatient, TestUtils.date(2012, 1, 1, 9, 0, 0), TestUtils.date(2012, 1, 1, 11, 0, 0));
@@ -173,8 +173,8 @@ public class FormsAndVisitsTest extends BaseModuleContextSensitiveTest {
 	@Test
 	public void retroFormEncounterShouldNotSaveIntoVisitAtDifferentLocation() {
 		Patient patient = TestUtils.getPatient(7);
-		Form moh257 = MetadataUtils.getForm(HivMetadata._Form.MOH_257_VISIT_SUMMARY);
-		VisitType outpatient = MetadataUtils.getVisitType(CommonMetadata._VisitType.OUTPATIENT);
+		Form moh257 = MetadataUtils.existing(Form.class, HivMetadata._Form.MOH_257_VISIT_SUMMARY);
+		VisitType outpatient = MetadataUtils.existing(VisitType.class, CommonMetadata._VisitType.OUTPATIENT);
 
 		// Save regular visit from 9am - 11am on Jan 1st at location #2
 		Visit visit1 = TestUtils.saveVisit(patient, outpatient, TestUtils.date(2012, 1, 1, 9, 0, 0), TestUtils.date(2012, 1, 1, 11, 0, 0));
@@ -195,8 +195,8 @@ public class FormsAndVisitsTest extends BaseModuleContextSensitiveTest {
 	@Test
 	public void retroFormEncounterCanMoveIntoDifferentVisit() {
 		Patient patient = TestUtils.getPatient(7);
-		Form moh257 = MetadataUtils.getForm(HivMetadata._Form.MOH_257_VISIT_SUMMARY);
-		VisitType outpatient = MetadataUtils.getVisitType(CommonMetadata._VisitType.OUTPATIENT);
+		Form moh257 = MetadataUtils.existing(Form.class, HivMetadata._Form.MOH_257_VISIT_SUMMARY);
+		VisitType outpatient = MetadataUtils.existing(VisitType.class, CommonMetadata._VisitType.OUTPATIENT);
 
 		// Save MOH257 on Jan 1st
 		Encounter moh257_1 = TestUtils.saveEncounter(patient, moh257, TestUtils.date(2012, 1, 1));

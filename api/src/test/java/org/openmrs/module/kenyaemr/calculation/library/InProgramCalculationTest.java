@@ -65,8 +65,8 @@ public class InProgramCalculationTest extends BaseModuleContextSensitiveTest {
 	 */
 	@Test
 	public void evaluate() throws Exception {
-		Program hivProgram = MetadataUtils.getProgram(HivMetadata._Program.HIV);
-		Program tbProgram = MetadataUtils.getProgram(TbMetadata._Program.TB);
+		Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
+		Program tbProgram = MetadataUtils.existing(Program.class, TbMetadata._Program.TB);
 
 		// Enroll patient #6 in TB program
 		TestUtils.enrollInProgram(TestUtils.getPatient(6), tbProgram, TestUtils.date(2012, 1, 1));

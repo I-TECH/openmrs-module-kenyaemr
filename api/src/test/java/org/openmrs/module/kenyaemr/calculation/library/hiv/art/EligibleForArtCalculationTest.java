@@ -65,7 +65,7 @@ public class EligibleForArtCalculationTest extends BaseModuleContextSensitiveTes
 	 */
 	@Test
 	public void evaluate_shouldCalculateEligibility() throws Exception {
-		Program hivProgram = MetadataUtils.getProgram(HivMetadata._Program.HIV);
+		Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
 
 		// Enroll patients #6, #7 and #8 in the HIV Program
 		TestUtils.enrollInProgram(TestUtils.getPatient(6), hivProgram, TestUtils.date(2011, 1, 1));

@@ -56,8 +56,8 @@ public class SecurityMetadataTest extends BaseModuleContextSensitiveTest {
 		Context.flushSession();
 		Context.clearSession();
 
-		Role apiPrivilegesViewAndEdit = MetadataUtils.getRole("API Privileges (View and Edit)");
-		Role registration = MetadataUtils.getRole("Registration");
+		Role apiPrivilegesViewAndEdit = MetadataUtils.existing(Role.class, "API Privileges (View and Edit)");
+		Role registration = MetadataUtils.existing(Role.class, "Registration");
 
 		Assert.assertThat(registration.getInheritedRoles(), contains(apiPrivilegesViewAndEdit));
 		Assert.assertThat(registration.hasPrivilege("App: kenyaemr.registration"), is(true));

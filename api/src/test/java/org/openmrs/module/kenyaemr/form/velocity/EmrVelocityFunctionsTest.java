@@ -78,7 +78,7 @@ public class EmrVelocityFunctionsTest extends BaseModuleContextSensitiveTest {
 	@Test
 	public void hasHivUniquePatientNumber() {
 		// Give patient #7 a UPN
-		PatientIdentifierType upn = MetadataUtils.getPatientIdentifierType(HivMetadata._PatientIdentifierType.UNIQUE_PATIENT_NUMBER);
+		PatientIdentifierType upn = MetadataUtils.existing(PatientIdentifierType.class, HivMetadata._PatientIdentifierType.UNIQUE_PATIENT_NUMBER);
 		TestUtils.savePatientIdentifier(TestUtils.getPatient(7), upn, "1234567890");
 
 		// Patient #7 now has a UPN

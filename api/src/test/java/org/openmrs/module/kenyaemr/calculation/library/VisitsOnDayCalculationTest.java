@@ -50,7 +50,7 @@ public class VisitsOnDayCalculationTest extends BaseModuleContextSensitiveTest {
 	public void setup() throws Exception {
 		commonMetadata.install();
 
-		VisitType outpatient = MetadataUtils.getVisitType(CommonMetadata._VisitType.OUTPATIENT);
+		VisitType outpatient = MetadataUtils.existing(VisitType.class, CommonMetadata._VisitType.OUTPATIENT);
 
 		// Patient #7 has two visits on 1-Jan-2012 (from 9am to 10am and another from 11am to 12pm)
 		TestUtils.saveVisit(TestUtils.getPatient(7), outpatient, TestUtils.date(2012, 1, 1, 9, 0, 0), TestUtils.date(2012, 1, 1, 10, 0, 0));
