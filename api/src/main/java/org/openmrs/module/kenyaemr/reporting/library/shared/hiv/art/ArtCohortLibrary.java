@@ -218,6 +218,21 @@ public class ArtCohortLibrary {
 	}
 
 	/**
+	 * Patients who started ART between ${onOrAfter} and ${onOrBefore} excluding transfer ins
+	 * @return the cohort definition
+	 */
+	public CohortDefinition startedArtExcludingTransferins() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("Started ART excluding transfer ins");
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("startedArt", ReportUtils.map(startedArt(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("transferIns", ReportUtils.map(commonCohorts.transferredIn(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("startedArt AND NOT transferIns");
+		return cd;
+	}
+
+	/**
 	 * Patients who started ART while pregnant between ${onOrAfter} and ${onOrBefore}
 	 * @return the cohort definition
 	 */

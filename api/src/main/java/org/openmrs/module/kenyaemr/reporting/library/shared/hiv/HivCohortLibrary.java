@@ -19,7 +19,9 @@ import org.openmrs.EncounterType;
 import org.openmrs.Program;
 import org.openmrs.api.PatientSetService;
 import org.openmrs.module.kenyacore.report.ReportUtils;
+import org.openmrs.module.kenyacore.report.builder.CalculationCohortDefinition;
 import org.openmrs.module.kenyaemr.Dictionary;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.NeverTakenCtxOrDapsoneCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonCohortLibrary;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
@@ -163,14 +165,28 @@ public class HivCohortLibrary {
 	 * @return the cohort definition
 	 */
 	public CohortDefinition onCtxProphylaxis() {
-		CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
-		cd.setName("on CTX prophylaxis");
+		CodedObsCohortDefinition onCtx = new CodedObsCohortDefinition();
+		onCtx.setName("on CTX prophylaxis");
+		onCtx.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		onCtx.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		onCtx.setTimeModifier(PatientSetService.TimeModifier.LAST);
+		onCtx.setQuestion(Dictionary.getConcept(Dictionary.COTRIMOXAZOLE_DISPENSED));
+		onCtx.setValueList(Arrays.asList(Dictionary.getConcept(Dictionary.YES)));
+		onCtx.setOperator(SetComparator.IN);
+
+		CalculationCohortDefinition onMedCtx = new CalculationCohortDefinition(new NeverTakenCtxOrDapsoneCalculation());
+		onMedCtx.setName("on ctx from medication orders");
+		onMedCtx.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		onMedCtx.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("Having CTX either from either points");
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-		cd.setTimeModifier(PatientSetService.TimeModifier.LAST);
-		cd.setQuestion(Dictionary.getConcept(Dictionary.COTRIMOXAZOLE_DISPENSED));
-		cd.setValueList(Arrays.asList(Dictionary.getConcept(Dictionary.YES)));
-		cd.setOperator(SetComparator.IN);
+		cd.addSearch("onCtx", ReportUtils.map(onCtx, "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("onMedCtx", ReportUtils.map(onMedCtx,"onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("onCtx OR onMedCtx");
+
 		return cd;
 	}
 
