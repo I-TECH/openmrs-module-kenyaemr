@@ -68,7 +68,7 @@ public class Moh731IndicatorLibrary {
 	 * @return the indicator
 	 */
 	public CohortIndicator cumulativeOnArt() {
-		return cohortIndicator("Cumulative ever on ART", ReportUtils.map(artCohorts.startedArt(), "onOrBefore=${endDate}"));
+		return cohortIndicator("Cumulative ever on ART", ReportUtils.map(artCohorts.startedArtExcludingTransferins(), "onOrAfter=${startDate},onOrBefore=${endDate}"));
 	}
 
 	/**
