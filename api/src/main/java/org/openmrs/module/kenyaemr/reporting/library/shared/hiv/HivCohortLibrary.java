@@ -174,17 +174,15 @@ public class HivCohortLibrary {
 		onCtx.setValueList(Arrays.asList(Dictionary.getConcept(Dictionary.YES)));
 		onCtx.setOperator(SetComparator.IN);
 
-		CalculationCohortDefinition onMedCtx = new CalculationCohortDefinition(new NeverTakenCtxOrDapsoneCalculation());
-		onMedCtx.setName("on ctx from medication orders");
-		onMedCtx.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
-		onMedCtx.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		//we need to include those patients who have either ctx in the med orders
+		//that was not captured coded obs
 
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
-		cd.setName("Having CTX either from either points");
+		cd.setName("Having CTX either dispensed");
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.addSearch("onCtx", ReportUtils.map(onCtx, "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
-		cd.addSearch("onMedCtx", ReportUtils.map(onMedCtx,"onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("onMedCtx", ReportUtils.map(commonCohorts.medicationDispensed(Dictionary.getConcept(Dictionary.SULFAMETHOXAZOLE_TRIMETHOPRIM)),"onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
 		cd.setCompositionString("onCtx OR onMedCtx");
 
 		return cd;
