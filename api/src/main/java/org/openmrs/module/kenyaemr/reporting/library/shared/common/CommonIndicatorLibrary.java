@@ -58,6 +58,6 @@ public class CommonIndicatorLibrary {
 	 */
 	public CohortIndicator enrolledCumulative(Program program) {
 		return cohortIndicator("total patients ever enrolled in " + program.getName() + " excluding transfers",
-				ReportUtils.map(commonCohorts.enrolledExcludingTransfers(program), "onOrAfter=${startDate},onOrBefore=${endDate}"));
+				ReportUtils.map(commonCohorts.enrolledExcludingTransfersOnDate(program), "onOrBefore=${endDate}"));
 	}
 }

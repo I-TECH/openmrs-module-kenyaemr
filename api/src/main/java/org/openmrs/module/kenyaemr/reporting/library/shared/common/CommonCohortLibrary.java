@@ -204,6 +204,22 @@ public class CommonCohortLibrary {
 	}
 
 	/**
+	 * Patients who were enrolled on the given programs (excluding transfers) on ${onOrBefore}
+	 * @param programs the programs
+	 * @return the cohort definition
+	 */
+	public CohortDefinition enrolledExcludingTransfersOnDate(Program... programs) {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("enrolled excluding transfers in program on date in this facility");
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("enrolled", ReportUtils.map(enrolled(programs), "enrolledOnOrBefore=${onOrBefore}"));
+		cd.addSearch("transferIn", ReportUtils.map(transferredIn(), "onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("enrolled AND NOT transferIn");
+		return cd;
+
+	}
+
+	/**
 	 * Patients who are pregnant on ${onDate}
 	 * @return the cohort definition
 	 */
