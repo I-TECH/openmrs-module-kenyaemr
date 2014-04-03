@@ -172,7 +172,7 @@ public class ArtCohortLibrary {
 		cd.setName("Has an encounter in last 3 months and on regimen");
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
 		cd.addSearch("onRegimen", ReportUtils.map(regCd, "onDate=${onDate}"));
-		cd.addSearch("hasEncounterInLast3Months", ReportUtils.map(commonCohorts.hasEncounter(), "onOrAfter=${onDate-90d}"));
+		cd.addSearch("hasEncounterInLast3Months", ReportUtils.map(commonCohorts.hasEncounter(), "onOrBefore=${onDate},onOrAfter=${onDate-90d}"));
 		cd.setCompositionString("onRegimen AND hasEncounterInLast3Months");
 		return cd;
 	}
