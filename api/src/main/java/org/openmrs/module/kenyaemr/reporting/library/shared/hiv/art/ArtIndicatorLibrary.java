@@ -70,7 +70,7 @@ public class ArtIndicatorLibrary {
 	 * @return indicator
 	 */
 	public CohortIndicator onRegimen(List<Concept> regimen) {
-		return cohortIndicator("", map(artCohorts.onRegimen(regimen), "onDate=${endDate}"));
+		return cohortIndicator("", map(artCohorts.inHivProgramAndOnRegimen(regimen), "onDate=${endDate}"));
 	}
 
 	/**

@@ -20,6 +20,7 @@ import org.junit.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyacore.report.ReportDescriptor;
 import org.openmrs.module.kenyacore.test.TestUtils;
+import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.regimen.RegimenManager;
 import org.openmrs.module.kenyaemr.test.ReportingTestUtils;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
@@ -48,6 +49,9 @@ public class ArtDrugReportBuilderTest extends BaseModuleContextSensitiveTest {
 	ArtDrugReportBuilder builder;
 
 	@Autowired
+	HivMetadata hivMetadata;
+
+	@Autowired
 	@Qualifier("kenyaemr.common.report.artDrug")
 	private ReportDescriptor report;
 
@@ -56,7 +60,9 @@ public class ArtDrugReportBuilderTest extends BaseModuleContextSensitiveTest {
 		executeDataSet("dataset/test-concepts.xml");
 		executeDataSet("dataset/test-drugs.xml");
 
+		hivMetadata.install();
 		regimenManager.refresh();
+
 	}
 
 	@Test
