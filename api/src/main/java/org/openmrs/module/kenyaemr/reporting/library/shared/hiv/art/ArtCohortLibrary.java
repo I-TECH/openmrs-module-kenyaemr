@@ -15,6 +15,7 @@
 package org.openmrs.module.kenyaemr.reporting.library.shared.hiv.art;
 
 import org.openmrs.Concept;
+import org.openmrs.Program;
 import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyacore.report.builder.CalculationCohortDefinition;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.EligibleForArtCalculation;
@@ -26,10 +27,12 @@ import org.openmrs.module.kenyaemr.calculation.library.hiv.art.OnSecondLineArtCa
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.PregnantAtArtStartCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.TbPatientAtArtStartCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.WhoStageAtArtStartCalculation;
+import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.regimen.RegimenManager;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.DateCalculationCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.RegimenOrderCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonCohortLibrary;
+import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
@@ -169,9 +172,24 @@ public class ArtCohortLibrary {
 		cd.setName("Has an encounter in last 3 months and on regimen");
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
 		cd.addSearch("onRegimen", ReportUtils.map(regCd, "onDate=${onDate}"));
-		cd.addSearch("hasEncounterInLast3Months", ReportUtils.map(commonCohorts.hasEncounter(), "onOrAfter=${onDate-90d}"));
+		cd.addSearch("hasEncounterInLast3Months", ReportUtils.map(commonCohorts.hasEncounter(), "onOrBefore=${onDate},onOrAfter=${onDate-90d}"));
 		cd.setCompositionString("onRegimen AND hasEncounterInLast3Months");
 		return cd;
+	}
+
+	/**
+	 * Patients who are in HIV Program and on a given regimen
+	 * @return the cohort definition
+	 */
+	public CohortDefinition inHivProgramAndOnRegimen(List<Concept> drugConcepts) {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("In Hiv program and on regimen");
+		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
+		cd.addSearch("inHivProgram", ReportUtils.map(commonCohorts.inProgram(MetadataUtils.existing(Program.class, HivMetadata._Program.HIV)), "onDate=${onDate}"));
+		cd.addSearch("onRegimen", ReportUtils.map(onRegimen(drugConcepts), "onDate=${onDate}"));
+		cd.setCompositionString("inHivProgram AND onRegimen");
+		return cd;
+
 	}
 
 	/**
