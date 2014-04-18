@@ -12,36 +12,29 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.util;
+package org.openmrs.module.kenyaemr;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
-
-import java.util.Map;
 
 import static org.hamcrest.Matchers.*;
 
 /**
- * Tests for {@link ServerInformation}
+ * Tests for {@link Metadata}
  */
-public class ServerInformationTest extends BaseModuleContextSensitiveTest {
+public class MetadataTest {
 
 	@Test
 	public void integration() {
-		new ServerInformation();
-	}
+		new Metadata();
+		new Metadata.Concept();
+		new Metadata.Form();
+		new Metadata.IdentifierType();
+		new Metadata.Program();
 
-	/**
-	 * @see ServerInformation#getAllInformation()
-	 */
-	@Test
-	public void getAllInformation_shouldFetchAllServerInformation() {
-		Map<String, Object> info = ServerInformation.getAllInformation();
-
-		Assert.assertThat(info, hasKey("system"));
-		Assert.assertThat(info, hasKey("runtime"));
-		Assert.assertThat(info, hasKey("openmrs"));
-		Assert.assertThat(info, hasKey("kenyaemr"));
+		Assert.assertThat(Metadata.Concept.ABACAVIR, is("70056AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"));
+		Assert.assertThat(Metadata.Form.CLINICAL_ENCOUNTER, is("e958f902-64df-4819-afd4-7fb061f59308"));
+		Assert.assertThat(Metadata.IdentifierType.OLD, is("8d79403a-c2cc-11de-8d13-0010c6dffd0f"));
+		Assert.assertThat(Metadata.Program.HIV, is("dfdc6d40-2f2f-463d-ba90-cc97350441a8"));
 	}
 }
