@@ -20,6 +20,7 @@ import org.junit.Test;
 import org.openmrs.Concept;
 import org.openmrs.DrugOrder;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.regimen.DrugReference;
 import org.openmrs.module.kenyaemr.regimen.RegimenChangeHistory;
@@ -36,6 +37,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -144,7 +146,7 @@ public class EmrUiUtilsTest extends BaseModuleContextSensitiveTest {
 	 * @see EmrUiUtils#simpleRegimenHistory(org.openmrs.module.kenyaemr.regimen.RegimenChangeHistory, org.openmrs.ui.framework.UiUtils)
 	 */
 	@Test
-	public void simpleRegimenHistory_shouldConvertToSimpleObjects() throws IOException, SAXException, ParserConfigurationException {
+	public void simpleRegimenHistory_shouldConvertEmptyHistory() throws IOException, SAXException, ParserConfigurationException {
 		Concept medset = org.openmrs.module.kenyaemr.Dictionary.getConcept(Dictionary.ANTIRETROVIRAL_DRUGS);
 
 		// Check empty history
@@ -152,6 +154,38 @@ public class EmrUiUtilsTest extends BaseModuleContextSensitiveTest {
 		List<SimpleObject> objs = kenyaUi.simpleRegimenHistory(emptyHistory, ui);
 
 		Assert.assertThat(objs, hasSize(0));
+	}
+
+	/**
+	 * @see EmrUiUtils#simpleRegimenHistory(org.openmrs.module.kenyaemr.regimen.RegimenChangeHistory, org.openmrs.ui.framework.UiUtils)
+	 */
+	@Test
+	public void simpleRegimenHistory_shouldConvertNonEmptyHistory() throws IOException, SAXException, ParserConfigurationException {
+		Concept medset = org.openmrs.module.kenyaemr.Dictionary.getConcept(Dictionary.ANTIRETROVIRAL_DRUGS);
+
+		final Date t0 = TestUtils.date(2006, 1, 1);
+		final Date t1 = TestUtils.date(2006, 2, 1);
+		final Date t2 = TestUtils.date(2006, 3, 1);
+		final Date t3 = TestUtils.date(2006, 4, 1);
+
+		Concept drug1 = Dictionary.getConcept("78643AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"); // 3TC
+		Concept drug2 = Dictionary.getConcept("86663AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"); // AZT
+		Concept drug3 = Dictionary.getConcept("84309AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"); // D4T
+
+		DrugOrder order1 = TestUtils.saveDrugOrder(TestUtils.getPatient(6), drug1, t0, t2);
+		order1.setDiscontinuedReasonNonCoded("Testing");
+
+		DrugOrder order2 = TestUtils.saveDrugOrder(TestUtils.getPatient(6), drug2, t1, t3);
+		order2.setDiscontinuedReason(Dictionary.getConcept(Dictionary.DIED));
+
+		TestUtils.saveDrugOrder(TestUtils.getPatient(6), drug3, t2, null);
+
+		RegimenChangeHistory emptyHistory = RegimenChangeHistory.forPatient(Context.getPatientService().getPatient(6), medset);
+		List<SimpleObject> objs = kenyaUi.simpleRegimenHistory(emptyHistory, ui);
+
+		Assert.assertThat(objs, hasSize(4));
+		Assert.assertThat(objs.get(0), hasEntry("startDate", (Object) "01-Jan-2006"));
+		Assert.assertThat((List) objs.get(1).get("changeReasons"), contains("Testing"));
 	}
 
 	/**

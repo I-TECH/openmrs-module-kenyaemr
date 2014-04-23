@@ -21,7 +21,6 @@ import org.openmrs.PatientIdentifierType;
 import org.openmrs.PersonAttribute;
 import org.openmrs.PersonAttributeType;
 import org.openmrs.api.PatientService;
-import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyacore.chore.AbstractChore;
 import org.openmrs.module.kenyacore.chore.Requires;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
@@ -32,6 +31,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.PrintWriter;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -39,7 +39,7 @@ import java.util.Set;
  * to identifiers if the identifier value isn't taken by another patient.
  */
 @Component("kenyaemr.chore.convertNationalIdAttributes")
-@Requires({ FixMissingOpenmrsIdentifiers.class })
+@Requires({FixMissingOpenmrsIdentifiers.class})
 public class ConvertNationalIdAttributes extends AbstractChore {
 
 	@Autowired
@@ -61,11 +61,13 @@ public class ConvertNationalIdAttributes extends AbstractChore {
 		PatientIdentifierType nidPatIdType = MetadataUtils.getPatientIdentifierType(CommonMetadata._PatientIdentifierType.NATIONAL_ID);
 		Location defaultLocation = kenyaEmrService.getDefaultLocation();
 
-		Set<String> takenNidValues = new HashSet<String>();
+		List<Patient> allPatients = patientService.getAllPatients();
+
+		Set<String> takenNidValues = initializeTakenNidValues(allPatients, nidPatIdType);
 
 		int converted = 0;
 
-		for (Patient patient : patientService.getAllPatients()) {
+		for (Patient patient : allPatients) {
 			PatientIdentifier nidPatId = patient.getPatientIdentifier(nidPatIdType);
 			PersonAttribute nidPerAttr = patient.getAttribute(nidPerAttrType);
 
@@ -78,11 +80,8 @@ public class ConvertNationalIdAttributes extends AbstractChore {
 				patient.addIdentifier(nidPatId);
 
 				patientService.savePatientIdentifier(nidPatId);
-				converted++;
-			}
-
-			if (nidPatId != null) {
 				takenNidValues.add(nidPatId.getIdentifier());
+				converted++;
 			}
 
 			// Void any attribute
@@ -97,10 +96,31 @@ public class ConvertNationalIdAttributes extends AbstractChore {
 
 	/**
 	 * Helper method to check that the value from an attribute can be converted to an identifier
+	 *
 	 * @param value the value
 	 * @return true if it can be converted
 	 */
 	protected boolean valueCanBeConverted(PatientIdentifierType idType, String value) {
 		return value.matches(idType.getFormat());
+	}
+
+	/**
+	 * Fetch all National ID identifiers that are already in use so that no attempt is made to allocate them to another
+	 * patient.
+	 *
+	 * @param allPatients  all patients in the database
+	 * @param nidPatIdType the {@link org.openmrs.PatientIdentifierType} for National ID patient identifiers
+	 *
+	 * @return all National ID identifies that are already in use
+	 */
+	protected Set<String> initializeTakenNidValues(List<Patient> allPatients, PatientIdentifierType nidPatIdType) {
+		Set<String> takenNidValues = new HashSet<String>();
+		for (Patient patient : allPatients) {
+			PatientIdentifier nidPatId = patient.getPatientIdentifier(nidPatIdType);
+			if (nidPatId != null) {
+				takenNidValues.add(nidPatId.getIdentifier());
+			}
+		}
+		return takenNidValues;
 	}
 }

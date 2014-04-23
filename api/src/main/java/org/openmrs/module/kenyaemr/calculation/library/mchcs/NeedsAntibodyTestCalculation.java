@@ -20,15 +20,14 @@ import org.openmrs.Program;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
-import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyacore.calculation.Filters;
 import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
-import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.metadata.MchMetadata;
+import org.openmrs.module.metadatadeploy.MetadataUtils;
 
 import java.util.Collection;
 import java.util.Map;
@@ -53,7 +52,7 @@ public class NeedsAntibodyTestCalculation extends BaseEmrCalculation implements 
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
 
-		Program mchcsProgram = MetadataUtils.getProgram(MchMetadata._Program.MCHCS);
+		Program mchcsProgram = MetadataUtils.existing(Program.class, MchMetadata._Program.MCHCS);
 
 		// Get all patients who are alive and in MCH-CS program
 		Set<Integer> alive = Filters.alive(cohort, context);
@@ -72,13 +71,16 @@ public class NeedsAntibodyTestCalculation extends BaseEmrCalculation implements 
 		for (Integer ptId : cohort) {
 			boolean needsAntibody = false;
 
-			if (inMchcsProgram.contains(ptId) && lastChildHivStatus != null) {
-				 //Integer ageInMonths = ((Age) ages.get(ptId).getValue()).getFullMonths();
+			if (inMchcsProgram.contains(ptId)) {
+				//Integer ageInMonths = ((Age) ages.get(ptId).getValue()).getFullMonths();
 				Obs hivStatusObs = EmrCalculationUtils.obsResultForPatient(lastChildHivStatus, ptId);
 				Obs rapidTest1 = EmrCalculationUtils.obsResultForPatient(lastHivRapidTest1, ptId);
 				Obs rapidTest2 = EmrCalculationUtils.obsResultForPatient(lastHivRapidTest2, ptId);
 
-				if (rapidTest1 == null && rapidTest2 == null && (hivStatusObs.getValueCoded().equals(hivExposed))) {
+				if (hivStatusObs != null
+						&& (hivStatusObs.getValueCoded().equals(hivExposed))
+						&& rapidTest1 == null
+						&& rapidTest2 == null) {
 					// only for patients who are nine months and above
 					needsAntibody = true; /*(ageInMonths != null && ageInMonths >= 9);*/
 				}
