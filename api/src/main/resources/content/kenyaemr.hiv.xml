@@ -18,7 +18,7 @@
 		</property>
 		<property name="reports">
 			<set>
-				<!--<ref bean="kenyaemr.hiv.report.qi" /> hidden for 14.1 as it isn't finished -->
+				<!--<ref bean="kenyaemr.hiv.report.qi" /> hidden until 14.2 as it isn't finished -->
 				<ref bean="kenyaemr.hiv.report.dueForCd4" />
 				<ref bean="kenyaemr.hiv.report.decliningCd4" />
 				<ref bean="kenyaemr.hiv.report.lostToFollowUp" />
