@@ -185,7 +185,7 @@ public class EmrUiUtilsTest extends BaseModuleContextSensitiveTest {
 
 		Assert.assertThat(objs, hasSize(4));
 		Assert.assertThat(objs.get(0), hasEntry("startDate", (Object) "01-Jan-2006"));
-		Assert.assertThat((List) objs.get(1).get("changeReasons"), contains("Testing"));
+		Assert.assertThat((List<String>) objs.get(1).get("changeReasons"), contains("Testing"));
 	}
 
 	/**

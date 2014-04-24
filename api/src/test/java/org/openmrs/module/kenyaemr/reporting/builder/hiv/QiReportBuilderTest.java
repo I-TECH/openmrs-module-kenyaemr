@@ -34,8 +34,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.Arrays;
 
-import static org.hamcrest.Matchers.hasKey;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 
 /**
  * Tests for {@link QiReportBuilder}
@@ -79,7 +78,6 @@ public class QiReportBuilderTest extends BaseModuleContextSensitiveTest {
 		//ReportingTestUtils.printReport(data);
 
 		Assert.assertThat(data.getDataSets().size(), is(1));
-		Assert.assertThat(data.getDataSets(), hasKey("QI"));
 
 		// Check that report definition can be serialized/de-serialized
 		Context.getService(ReportDefinitionService.class).saveDefinition(rd);

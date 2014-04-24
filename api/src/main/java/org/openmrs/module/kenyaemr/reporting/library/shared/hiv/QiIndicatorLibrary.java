@@ -47,4 +47,15 @@ public class QiIndicatorLibrary {
 				map(hivCohorts.hasHivVisit(), "onOrAfter=${endDate-6m},onOrBefore=${endDate}")
 		);
 	}
+
+	/**
+	 * Percentage of patients who had a nutritional assessment in their last visit
+	 * @return the indicator
+	 */
+	public CohortIndicator nutritionalAssessment() {
+		return cohortIndicator("Nutritional assessment",
+				map(qiCohorts.hadNutritionalAssessmentAtLastVisit(), "onOrBefore=${endDate}"),
+				map(hivCohorts.hasHivVisit(), "onOrAfter=${endDate-6m},onOrBefore=${endDate}")
+		);
+	}
 }
