@@ -42,7 +42,7 @@ import static org.hamcrest.Matchers.is;
 /**
  * Tests for {@link QiCohortLibrary}
  */
-public class QiICohortLibraryTest extends BaseModuleContextSensitiveTest {
+public class QiCohortLibraryTest extends BaseModuleContextSensitiveTest {
 
 	@Autowired
 	private CommonMetadata commonMetadata;
