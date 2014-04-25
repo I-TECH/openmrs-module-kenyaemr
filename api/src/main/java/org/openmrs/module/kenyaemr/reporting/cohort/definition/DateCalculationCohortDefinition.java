@@ -15,7 +15,7 @@
 package org.openmrs.module.kenyaemr.reporting.cohort.definition;
 
 import org.openmrs.calculation.patient.PatientCalculation;
-import org.openmrs.module.kenyacore.report.builder.CalculationCohortDefinition;
+import org.openmrs.module.kenyacore.report.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 
 import java.util.Date;

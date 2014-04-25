@@ -19,7 +19,7 @@ import java.util.Set;
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
 import org.openmrs.calculation.result.CalculationResultMap;
-import org.openmrs.module.kenyacore.report.builder.CalculationCohortDefinitionEvaluator;
+import org.openmrs.module.kenyacore.report.cohort.definition.evaluator.CalculationCohortDefinitionEvaluator;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.DateCalculationCohortDefinition;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;

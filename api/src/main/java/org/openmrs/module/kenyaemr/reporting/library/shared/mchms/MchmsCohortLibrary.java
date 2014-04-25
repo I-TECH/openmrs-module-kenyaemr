@@ -16,7 +16,7 @@ package org.openmrs.module.kenyaemr.reporting.library.shared.mchms;
 
 import org.openmrs.Concept;
 import org.openmrs.module.kenyacore.report.ReportUtils;
-import org.openmrs.module.kenyacore.report.builder.CalculationCohortDefinition;
+import org.openmrs.module.kenyacore.report.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.kenyaemr.ArtAssessmentMethod;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.PregnancyStage;
