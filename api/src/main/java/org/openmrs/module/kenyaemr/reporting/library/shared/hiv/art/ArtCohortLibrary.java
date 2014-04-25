@@ -140,16 +140,16 @@ public class ArtCohortLibrary {
 	}
 
 	/**
-	 * Patients who are in the "12 month net cohort" on ${onDate}
+	 * Patients who are in the "month net cohort" on ${onDate}
 	 * @return the cohort definition
 	 */
-	public CohortDefinition netCohort12Months() {
+	public CohortDefinition netCohortMonths(int months) {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
-		cd.setName("in 12 net cohort on date");
+		cd.setName("in" +months+ "net cohort on date");
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
-		cd.addSearch("startedArt12MonthsAgo", ReportUtils.map(startedArt(), "onOrAfter=${onDate-13m},onOrBefore=${onDate-12m}"));
-		cd.addSearch("transferredOut", ReportUtils.map(commonCohorts.transferredOut(), "onOrAfter=${onDate-13m}"));
-		cd.setCompositionString("startedArt12MonthsAgo AND NOT transferredOut");
+		cd.addSearch("startedArtMonthsAgo", ReportUtils.map(startedArt(), "onOrAfter=${onDate-"+(months +1)+"m},onOrBefore=${onDate-"+months+"m}"));
+		cd.addSearch("transferredOut", ReportUtils.map(commonCohorts.transferredOut(), "onOrAfter=${onDate-"+(months +1)+"m}"));
+		cd.setCompositionString("startedArtMonthsAgo AND NOT transferredOut");
 		return cd;
 	}
 

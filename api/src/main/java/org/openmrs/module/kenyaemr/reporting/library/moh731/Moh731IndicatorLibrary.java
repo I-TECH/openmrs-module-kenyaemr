@@ -76,7 +76,7 @@ public class Moh731IndicatorLibrary {
 	 * @return the indicator
 	 */
 	public CohortIndicator art12MonthNetCohort() {
-		return cohortIndicator("ART 12 Month Net Cohort", ReportUtils.map(artCohorts.netCohort12Months(), "onDate=${endDate}"));
+		return cohortIndicator("ART 12 Month Net Cohort", ReportUtils.map(artCohorts.netCohortMonths(12), "onDate=${endDate}"));
 	}
 
 	/**
