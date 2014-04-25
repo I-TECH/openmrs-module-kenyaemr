@@ -16,6 +16,7 @@ package org.openmrs.module.kenyaemr.reporting.builder.common;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.module.kenyacore.report.ReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyacore.report.builder.Builds;
 import org.openmrs.module.kenyaemr.ArtAssessmentMethod;
@@ -34,7 +35,9 @@ import org.openmrs.module.kenyaemr.reporting.library.shared.tb.TbIndicatorLibrar
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.SimpleIndicatorDataSetDefinition;
+import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
+import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -76,13 +79,14 @@ public class Moh731ReportBuilder extends BaseIndicatorReportBuilder {
 	private MchcsIndicatorLibrary mchcsIndicatorLibrary;
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.reporting.BaseIndicatorReportBuilder#buildDataSets()
+	 * @see org.openmrs.module.kenyacore.report.builder.AbstractReportBuilder#buildDataSets(org.openmrs.module.kenyacore.report.ReportDescriptor, org.openmrs.module.reporting.report.definition.ReportDefinition)
 	 */
 	@Override
-	public List<DataSetDefinition> buildDataSets() {
-		log.debug("Setting up report definition");
-
-		return Arrays.asList(pmtctDataSet(), careAndTreatmentDataSet());
+	protected List<Mapped<DataSetDefinition>> buildDataSets(ReportDescriptor descriptor, ReportDefinition report) {
+		return Arrays.asList(
+				ReportUtils.map(pmtctDataSet(), "startDate=${startDate},endDate=${endDate}"),
+				ReportUtils.map(careAndTreatmentDataSet(), "startDate=${startDate},endDate=${endDate}")
+		);
 	}
 
 	/**

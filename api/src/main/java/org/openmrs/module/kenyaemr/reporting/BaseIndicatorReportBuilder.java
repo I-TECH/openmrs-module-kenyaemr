@@ -14,49 +14,27 @@
 
 package org.openmrs.module.kenyaemr.reporting;
 
-import org.openmrs.module.kenyacore.report.IndicatorReportDescriptor;
-import org.openmrs.module.kenyacore.report.builder.ReportBuilder;
+import org.openmrs.module.kenyacore.report.builder.AbstractReportBuilder;
 import org.openmrs.module.kenyacore.report.ReportDescriptor;
-import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
-import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
-import org.openmrs.module.reporting.report.definition.ReportDefinition;
-import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 
-import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
 /**
- * Base implementation for indicator report builders
+ * Base implementation for monthly indicator report builders
  */
-public abstract class BaseIndicatorReportBuilder implements ReportBuilder {
-
-	protected IndicatorReportDescriptor report;
+public abstract class BaseIndicatorReportBuilder extends AbstractReportBuilder {
 
 	/**
-	 * Gets the report definition.
-	 * @return the report definition
+	 * @see org.openmrs.module.kenyacore.report.builder.AbstractReportBuilder#getParameters(org.openmrs.module.kenyacore.report.ReportDescriptor)
 	 */
 	@Override
-	public ReportDefinition build(ReportDescriptor report) {
-		this.report = (IndicatorReportDescriptor) report;
-
-		ReportDefinition rd = new ReportDefinition();
-		rd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-		rd.addParameter(new Parameter("endDate", "End Date", Date.class));
-		rd.setName(report.getName());
-		rd.setDescription(report.getDescription());
-
-		for (DataSetDefinition dsd : buildDataSets()) {
-			rd.addDataSetDefinition(dsd, ParameterizableUtil.createParameterMappings("startDate=${startDate},endDate=${endDate}"));
-		}
-		return rd;
+	protected List<Parameter> getParameters(ReportDescriptor descriptor) {
+		return Arrays.asList(
+				new Parameter("startDate", "Start Date", Date.class),
+				new Parameter("endDate", "End Date", Date.class)
+		);
 	}
-
-	/**
-	 * Builds the data sets
-	 * @return the data sets
-	 */
-	protected abstract List<DataSetDefinition> buildDataSets();
 }

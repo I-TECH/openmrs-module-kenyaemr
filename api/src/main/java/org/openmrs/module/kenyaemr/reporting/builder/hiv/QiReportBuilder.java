@@ -14,13 +14,16 @@
 
 package org.openmrs.module.kenyaemr.reporting.builder.hiv;
 
+import org.openmrs.module.kenyacore.report.ReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyacore.report.builder.Builds;
 import org.openmrs.module.kenyaemr.reporting.BaseIndicatorReportBuilder;
 import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.QiIndicatorLibrary;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
+import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
+import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -35,16 +38,18 @@ import java.util.List;
 @Builds("kenyaemr.hiv.report.qi")
 public class QiReportBuilder extends BaseIndicatorReportBuilder {
 
-	/**
-	 * @see org.openmrs.module.kenyaemr.reporting.BaseIndicatorReportBuilder#buildDataSets()
-	 */
-	@Override
-	protected List<DataSetDefinition> buildDataSets() {
-		return Arrays.asList(qiDataset());
-	}
-
 	@Autowired
 	private QiIndicatorLibrary qiIndicators;
+
+	/**
+	 * @see org.openmrs.module.kenyacore.report.builder.AbstractReportBuilder#buildDataSets(org.openmrs.module.kenyacore.report.ReportDescriptor, org.openmrs.module.reporting.report.definition.ReportDefinition)
+	 */
+	@Override
+	protected List<Mapped<DataSetDefinition>> buildDataSets(ReportDescriptor descriptor, ReportDefinition report) {
+		return Arrays.asList(
+				ReportUtils.map(qiDataset(), "startDate=${startDate},endDate=${endDate}")
+		);
+	}
 
 	/**
 	 * Creates the dataset
