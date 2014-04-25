@@ -131,4 +131,28 @@ public class ArtCohortLibraryTest extends BaseModuleContextSensitiveTest {
 		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
 		ReportingTestUtils.assertCohortEquals(Arrays.asList(6), evaluated);
 	}
+
+	/**
+	 * @see ArtCohortLibrary#netCohortMonths(int)
+	 */
+	@Test
+	public void netCohortMonths_shouldReturnPatientsInNetCohortMonths() throws Exception {
+		int months = 12;
+
+		Concept dapsone = Dictionary.getConcept(Dictionary.DAPSONE);
+		Concept azt = Dictionary.getConcept(Dictionary.ZIDOVUDINE);
+		Concept _3tc = Dictionary.getConcept(Dictionary.LAMIVUDINE);
+		Concept efv = Dictionary.getConcept(Dictionary.EFAVIRENZ);
+
+		// Put patient #7 on Dapsone
+		TestUtils.saveDrugOrder(TestUtils.getPatient(7), dapsone, TestUtils.date(2013, 1, 1), null);
+
+		// Put patient #6 on AZT + 3TC + EFV from 1st jan to 31st jan
+		EmrTestUtils.saveRegimenOrder(TestUtils.getPatient(6), Arrays.asList(azt, _3tc, efv), TestUtils.date(2012, 1, 1), TestUtils.date(2013, 1, 1));
+
+		CohortDefinition cd = artCohortLibrary.netCohortMonths(months);
+		context.addParameterValue("onDate", TestUtils.date(2013, 1, 1));
+		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
+		ReportingTestUtils.assertCohortEquals(Arrays.asList(6), evaluated);
+	}
 }
