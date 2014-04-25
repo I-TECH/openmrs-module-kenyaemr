@@ -177,17 +177,6 @@ public class ArtCohortLibrary {
 		return cd;
 	}
 
-	public CohortDefinition inHivProgramAndOnRegimen(List<Concept> drugConcepts) {
-		CompositionCohortDefinition cd = new CompositionCohortDefinition();
-		cd.setName("In Hiv program and on regimen");
-		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
-		cd.addSearch("inHivProgram", ReportUtils.map(commonCohorts.inProgram(MetadataUtils.existing(Program.class, HivMetadata._Program.HIV)), "onDate=${onDate}"));
-		cd.addSearch("onRegimen", ReportUtils.map(onRegimen(drugConcepts), "onDate=${onDate}"));
-		cd.setCompositionString("inHivProgram AND onRegimen");
-		return cd;
-
-	}
-
 	/**
 	 * Patients who are in HIV Program and on a given regimen
 	 * @return the cohort definition

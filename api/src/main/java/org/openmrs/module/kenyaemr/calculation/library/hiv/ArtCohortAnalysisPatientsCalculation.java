@@ -28,21 +28,20 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
-public class HivPositivePatientsCalculation extends BaseEmrCalculation {
+public class ArtCohortAnalysisPatientsCalculation extends BaseEmrCalculation {
 
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> params, PatientCalculationContext context) {
 
-		Program hivProgram = MetadataUtils.getProgram(HivMetadata._Program.HIV);
+		Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
 
 		CalculationResultMap ret = new CalculationResultMap();
-		Set<Integer> alive = Filters.alive(cohort, context);
 
-		Set<Integer> inHivProgram = Filters.inProgram(hivProgram, alive, context);
+		Set<Integer> hivPositive = Filters.inProgram(hivProgram, cohort, context);
 
 		for (int ptId : cohort) {
-			boolean positive = inHivProgram.contains(ptId);
-			ret.put(ptId, new BooleanResult(positive, this));
+			boolean elligible = hivPositive.contains(ptId);
+			ret.put(ptId, new BooleanResult(elligible, this));
 		}
 
 		return ret;

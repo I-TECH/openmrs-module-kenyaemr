@@ -14,11 +14,6 @@
 
 package org.openmrs.module.kenyaemr.fragment.controller.patient;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.Concept;
 import org.openmrs.Location;
@@ -34,15 +29,15 @@ import org.openmrs.Program;
 import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.idgen.service.IdentifierSourceService;
+import org.openmrs.module.kenyaemr.Dictionary;
+import org.openmrs.module.kenyaemr.api.KenyaEmrService;
+import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
+import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.validator.TelephoneNumberValidator;
 import org.openmrs.module.kenyaemr.wrapper.PatientWrapper;
 import org.openmrs.module.kenyaemr.wrapper.PersonWrapper;
 import org.openmrs.module.kenyaui.form.AbstractWebForm;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
-import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
-import org.openmrs.module.kenyaemr.metadata.HivMetadata;
-import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.BindParams;
@@ -52,6 +47,11 @@ import org.openmrs.ui.framework.fragment.FragmentModel;
 import org.openmrs.util.OpenmrsUtil;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Controller for creating and editing patients in the registration app
@@ -117,6 +117,11 @@ public class EditPatientFragmentController {
 		ui.validate(form, form, null);
 
 		Patient patient = form.save();
+
+		// if this patient is the current user i need to refresh the current user
+		if (patient.getPersonId().equals(Context.getAuthenticatedUser().getPerson().getPersonId())) {
+			Context.refreshAuthenticatedUser();
+		}
 
 		return SimpleObject.create("id", patient.getId());
 	}

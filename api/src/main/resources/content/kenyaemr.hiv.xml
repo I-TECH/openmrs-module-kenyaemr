@@ -18,7 +18,7 @@
 		</property>
 		<property name="reports">
 			<set>
-				<!--<ref bean="kenyaemr.hiv.report.qi" /> hidden until 14.2 as it isn't finished -->
+				<ref bean="kenyaemr.hiv.report.qi" /> <!-- hidden until 14.2 as it isn't finished -->
 				<ref bean="kenyaemr.hiv.report.dueForCd4" />
 				<ref bean="kenyaemr.hiv.report.decliningCd4" />
 				<ref bean="kenyaemr.hiv.report.lostToFollowUp" />
@@ -26,7 +26,7 @@
 				<ref bean="kenyaemr.hiv.report.eligibleForArt" />
 				<ref bean="kenyaemr.hiv.report.onSecondLineArt" />
 				<ref bean="kenyaemr.hiv.report.neverTakenCtxOrDapsone" />
-				<ref bean="kenyaemr.hiv.report.cohortReport" />
+				<ref bean="kenyaemr.hiv.report.artCohortAnalysis" />
 			</set>
 		</property>
 		<property name="fragments">
@@ -199,10 +199,11 @@
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 	</bean>
 
-	<bean id="kenyaemr.hiv.report.cohortReport" class="org.openmrs.module.kenyacore.report.CalculationReportDescriptor">
+	<bean id="kenyaemr.hiv.report.artCohortAnalysis" class="org.openmrs.module.kenyacore.report.CalculationReportDescriptor">
 		<property name="targetUuid" value="f33a42d2-b400-11e3-9ecc-ef35e5682104" />
-		<property name="name" value="Cohort Based Report" />
-		<property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.hiv.HivPositivePatientsCalculation" />
+		<property name="name" value="ART Cohort Analysis" />
+		<property name="description" value="Definition of patient Attributes for ART Cohort Analysis" />
+		<property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.hiv.ArtCohortAnalysisPatientsCalculation" />
 		<property name="displayIdentifier" ref="kenyaemr.hiv.identifier.upn" />
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 	</bean>
