@@ -145,10 +145,10 @@ public class ArtCohortLibrary {
 	 */
 	public CohortDefinition netCohortMonths(int months) {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
-		cd.setName("in" +months+ "net cohort on date");
+		cd.setName("in " + months + " month net cohort on date");
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
-		cd.addSearch("startedArtMonthsAgo", ReportUtils.map(startedArt(), "onOrAfter=${onDate-"+(months +1)+"m},onOrBefore=${onDate-"+months+"m}"));
-		cd.addSearch("transferredOut", ReportUtils.map(commonCohorts.transferredOut(), "onOrAfter=${onDate-"+(months +1)+"m}"));
+		cd.addSearch("startedArtMonthsAgo", ReportUtils.map(startedArt(), "onOrAfter=${onDate-"+ (months + 1) + "m},onOrBefore=${onDate-" + months + "m}"));
+		cd.addSearch("transferredOut", ReportUtils.map(commonCohorts.transferredOut(), "onOrAfter=${onDate-" + (months + 1) + "m}"));
 		cd.setCompositionString("startedArtMonthsAgo AND NOT transferredOut");
 		return cd;
 	}
