@@ -17,8 +17,15 @@
 			jQuery('#request-report-ok').click(function() {
 				kenyaui.closeDialog();
 				kenyaui.updateController('ng-reportctrl', function(scope) {
-					var date = jQuery('#request-date').val();
-					scope.requestReport(date);
+					var form = jQuery('#report-params');
+					var params = {};
+
+					form.find(':input').each(function() {
+						var field = jQuery(this);
+						params[field.attr('name')] = field.val();
+					});
+
+					scope.requestReport(params);
 				});
 			});
 		});
@@ -103,17 +110,11 @@
 	<div id="request-dialog-template" title="Request report" style="display: none">
 		<div class="ke-panel-content">
 			<div>Report: <strong>${ ui.format(definition.name) }</strong></div>
-			<% if (isIndicator) { %>
-			<div>Period: ${ ui.includeFragment("kenyaui", "widget/selectList", [
-					id: "request-date",
-					formFieldName: "date",
-					selected: startDateSelected,
-					options: startDateOptions,
-					optionsValueField: "key",
-					optionsDisplayField: "value"
-			]) }
-			</div>
-			<% } %>
+			<form id="report-params">
+				<% definition.parameters.each { param -> %>
+				<div>${ ui.includeFragment("kenyaemr", "widget/reportParameter", [ parameter: param ]) }</div>
+				<% } %>
+			</form>
 		</div>
 		<div class="ke-panel-footer">
 			<button type="button" id="request-report-ok"><img src="${ ui.resourceLink("kenyaui", "images/glyphs/start.png") }" /> Request</button>

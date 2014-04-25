@@ -49,10 +49,10 @@ kenyaemrApp.controller('ReportController', ['$scope', '$http', '$timeout', funct
 
 	/**
 	 * Requests an evaluation of the report
-	 * @param date the evaluation date
+	 * @param params the evaluation parameters
 	 */
-	$scope.requestReport = function(date) {
-		$http.post(ui.fragmentActionLink('kenyaemr', 'report/reportUtils', 'requestReport', { appId: $scope.appId, reportUuid: $scope.reportUuid, date: date }))
+	$scope.requestReport = function(params) {
+		$http.post(ui.fragmentActionLink('kenyaemr', 'report/reportUtils', 'requestReport', { appId: $scope.appId, reportUuid: $scope.reportUuid, params: params }))
 			.success(defaultSuccessHandler)
 			.error(defaultErrorHandler);
 

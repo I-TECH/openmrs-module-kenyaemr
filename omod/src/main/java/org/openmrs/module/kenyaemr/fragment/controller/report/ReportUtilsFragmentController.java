@@ -14,8 +14,8 @@
 
 package org.openmrs.module.kenyaemr.fragment.controller.report;
 
-import net.sf.cglib.core.CollectionUtils;
-import net.sf.cglib.core.Predicate;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Predicate;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -23,13 +23,12 @@ import org.openmrs.module.kenyacore.CoreUtils;
 import org.openmrs.module.kenyacore.report.IndicatorReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportManager;
-import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.module.kenyaui.annotation.AppAction;
 import org.openmrs.module.kenyaui.annotation.SharedAction;
-import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
+import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
 import org.openmrs.module.reporting.report.ReportRequest;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
@@ -42,16 +41,19 @@ import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.FragmentActionRequest;
 import org.openmrs.ui.framework.fragment.action.FailureResult;
-import org.openmrs.ui.framework.fragment.action.FragmentActionResult;
 import org.openmrs.ui.framework.fragment.action.SuccessResult;
 import org.openmrs.util.OpenmrsUtil;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * AJAX utility methods for reports
@@ -60,37 +62,46 @@ public class ReportUtilsFragmentController {
 
 	protected static final Log log = LogFactory.getLog(ReportUtilsFragmentController.class);
 
+	private static final DateFormat iso8601Formatter = new SimpleDateFormat("yyyy-MM-dd");
+
 	/**
 	 * Requests a report evaluation
 	 * @param reportUuid the report definition UUID
-	 * @param date the date (optional)
+	 * @param params the parameters (encoded)
 	 * @param reportManager the report manager
 	 * @return the report request id
 	 */
 	@SharedAction
 	public SimpleObject requestReport(@RequestParam("reportUuid") String reportUuid,
-									  @RequestParam(value = "date", required = false) Date date,
+									  @RequestParam("params") String params,
 									  UiUtils ui,
 									  @SpringBean KenyaUiUtils kenyaUi,
 									  @SpringBean FragmentActionRequest actionRequest,
 									  @SpringBean ReportManager reportManager,
 									  @SpringBean ReportService reportService,
-									  @SpringBean ReportDefinitionService definitionService) {
+									  @SpringBean ReportDefinitionService definitionService) throws ParseException {
 
 		ReportDefinition definition = definitionService.getDefinitionByUuid(reportUuid);
 		ReportDescriptor report = reportManager.getReportDescriptor(definition);
 
 		CoreUtils.checkAccess(report, kenyaUi.getCurrentApp(actionRequest));
 
-		Mapped<ReportDefinition> mappedDefinition;
+		Map<String, Object> mappings = ParameterizableUtil.createParameterMappings(params.replace("&", ","));
 
 		if (report instanceof IndicatorReportDescriptor) { // Indicator reports are always period reports
-			Date startDate = date;
-			Date endDate = DateUtil.getEndOfMonth(startDate);
-			mappedDefinition = ReportUtils.map(definition, "startDate", startDate, "endDate", endDate);
-		} else {
-			mappedDefinition = ReportUtils.map(definition);
+			Date startDate = iso8601Formatter.parse((String) mappings.get("startDate"));
+			Date endDate = iso8601Formatter.parse((String) mappings.get("endDate"));
+
+			if (startDate == null || endDate == null) {
+				throw new RuntimeException("Indicator reports always require start and end date");
+			}
+
+			// Put mappings back in as date objects
+			mappings.put("startDate", startDate);
+			mappings.put("endDate", endDate);
 		}
+
+		Mapped<ReportDefinition> mappedDefinition = new Mapped<ReportDefinition>(definition, mappings);
 
 		ReportRenderer renderer = new DefaultWebRenderer();
 		RenderingMode mode = renderer.getRenderingModes(definition).iterator().next();
@@ -159,7 +170,7 @@ public class ReportUtilsFragmentController {
 		List<ReportRequest> requests = fetchRequests(reportUuid, false, reportService);
 
 		// Filter out finished requests
-		Collection<ReportRequest> filtered = CollectionUtils.filter(requests, new Predicate() {
+		CollectionUtils.filter(requests, new Predicate() {
 			@Override
 			public boolean evaluate(Object obj) {
 				ReportRequest request = (ReportRequest) obj;
@@ -167,7 +178,7 @@ public class ReportUtilsFragmentController {
 			}
 		});
 
-		return ui.simplifyCollection(filtered);
+		return ui.simplifyCollection(requests);
 	}
 
 	/**
