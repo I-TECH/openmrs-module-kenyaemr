@@ -47,7 +47,7 @@ public class ArtCohortAnalysisReportBuilder extends AbstractCohortReportBuilder 
 	protected Mapped<CohortDefinition> buildCohort(CohortReportDescriptor descriptor, PatientDataSetDefinition dsd) {
 		CohortDefinition cd = artCohortLibrary.netCohortMonths(12);
 		Map<String, Object> mappings = new HashMap<String, Object>();
-		mappings.put("ondDate", new Date());
+		mappings.put("onDate", new Date());
 		return new Mapped<CohortDefinition>(cd, mappings);
 	}
 }
