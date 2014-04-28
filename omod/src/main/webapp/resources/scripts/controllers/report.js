@@ -49,10 +49,13 @@ kenyaemrApp.controller('ReportController', ['$scope', '$http', '$timeout', funct
 
 	/**
 	 * Requests an evaluation of the report
-	 * @param params the evaluation parameters
+	 * @param reportParams the report evaluation parameters
 	 */
-	$scope.requestReport = function(params) {
-		$http.post(ui.fragmentActionLink('kenyaemr', 'report/reportUtils', 'requestReport', { appId: $scope.appId, reportUuid: $scope.reportUuid, params: params }))
+	$scope.requestReport = function(reportParams) {
+		var params = { appId: $scope.appId, reportUuid: $scope.reportUuid };
+		angular.extend(params, reportParams); // Add report parameters
+
+		$http.post(ui.fragmentActionLink('kenyaemr', 'report/reportUtils', 'requestReport', params))
 			.success(defaultSuccessHandler)
 			.error(defaultErrorHandler);
 

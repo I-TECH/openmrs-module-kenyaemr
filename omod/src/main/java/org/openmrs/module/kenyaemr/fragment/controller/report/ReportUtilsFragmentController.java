@@ -28,6 +28,7 @@ import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.module.kenyaui.annotation.AppAction;
 import org.openmrs.module.kenyaui.annotation.SharedAction;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
+import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
 import org.openmrs.module.reporting.report.ReportRequest;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
@@ -48,10 +49,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -67,41 +70,44 @@ public class ReportUtilsFragmentController {
 	/**
 	 * Requests a report evaluation
 	 * @param reportUuid the report definition UUID
-	 * @param params the parameters (encoded)
 	 * @param reportManager the report manager
 	 * @return the report request id
 	 */
 	@SharedAction
-	public SimpleObject requestReport(@RequestParam("reportUuid") String reportUuid,
-									  @RequestParam("params") String params,
-									  UiUtils ui,
-									  @SpringBean KenyaUiUtils kenyaUi,
-									  @SpringBean FragmentActionRequest actionRequest,
-									  @SpringBean ReportManager reportManager,
-									  @SpringBean ReportService reportService,
-									  @SpringBean ReportDefinitionService definitionService) throws ParseException {
+	public Object requestReport(@RequestParam("reportUuid") String reportUuid,
+							    UiUtils ui,
+							    @SpringBean KenyaUiUtils kenyaui,
+							    @SpringBean FragmentActionRequest actionRequest,
+							    @SpringBean ReportManager reportManager,
+							    @SpringBean ReportService reportService,
+							    @SpringBean ReportDefinitionService definitionService) throws ParseException {
 
 		ReportDefinition definition = definitionService.getDefinitionByUuid(reportUuid);
 		ReportDescriptor report = reportManager.getReportDescriptor(definition);
 
-		CoreUtils.checkAccess(report, kenyaUi.getCurrentApp(actionRequest));
+		CoreUtils.checkAccess(report, kenyaui.getCurrentApp(actionRequest));
 
-		Map<String, Object> mappings = ParameterizableUtil.createParameterMappings(params.replace("&", ","));
+		Collection<Parameter> missingParameters = new ArrayList<Parameter>();
+		Map<String, Object> parameterValues = new HashMap<String, Object>();
 
-		if (report instanceof IndicatorReportDescriptor) { // Indicator reports are always period reports
-			Date startDate = iso8601Formatter.parse((String) mappings.get("startDate"));
-			Date endDate = iso8601Formatter.parse((String) mappings.get("endDate"));
+		// Match incoming parameters in the request to report parameters
+		for (Parameter parameter : definition.getParameters()) {
+			String submitted = actionRequest.getParameter("param[" + parameter.getName() + "]");
 
-			if (startDate == null || endDate == null) {
-				throw new RuntimeException("Indicator reports always require start and end date");
+			Object converted = StringUtils.isNotEmpty(submitted) ? ui.convert(submitted, parameter.getType()) : parameter.getDefaultValue();
+
+			if (converted == null) {
+				missingParameters.add(parameter);
 			}
 
-			// Put mappings back in as date objects
-			mappings.put("startDate", startDate);
-			mappings.put("endDate", endDate);
+			parameterValues.put(parameter.getName(), converted);
 		}
 
-		Mapped<ReportDefinition> mappedDefinition = new Mapped<ReportDefinition>(definition, mappings);
+		if (missingParameters.size() > 0) {
+			return new FailureResult("Missing report parameters");
+		}
+
+		Mapped<ReportDefinition> mappedDefinition = new Mapped<ReportDefinition>(definition, parameterValues);
 
 		ReportRenderer renderer = new DefaultWebRenderer();
 		RenderingMode mode = renderer.getRenderingModes(definition).iterator().next();
