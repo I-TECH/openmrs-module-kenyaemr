@@ -63,7 +63,7 @@ public class IsTransferInsCalculation extends BaseEmrCalculation {
 				Date date = EmrCalculationUtils.datetimeObsResultForPatient(transferInDateResults, ptId);
 				Concept status = EmrCalculationUtils.codedObsResultForPatient(transferInStatusResults, ptId);
 
-				if (((status != null) && (status.getConceptId().equals(Dictionary.YES))) || (date != null)) {
+				if (((status != null) && (status.equals(Dictionary.getConcept(Dictionary.YES)))) || (date != null)) {
 					isTransferIn = true;
 				}
 			}

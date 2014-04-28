@@ -70,8 +70,8 @@ public class IsTransferInsCalculationTest extends BaseModuleContextSensitiveTest
 		Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
 		Program tbProgram = MetadataUtils.existing(Program.class, TbMetadata._Program.TB);
 
-		// Enroll patients #6, #7 and #8 in the HIV Program
-		TestUtils.enrollInProgram(TestUtils.getPatient(6), hivProgram, TestUtils.date(2014,3,1));
+		// Enroll patients #2, and  #7 in the HIV Program
+		TestUtils.enrollInProgram(TestUtils.getPatient(2), hivProgram, TestUtils.date(2014,3,1));
 		TestUtils.enrollInProgram(TestUtils.getPatient(7), hivProgram, TestUtils.date(2014,3,10));
 		TestUtils.enrollInProgram(TestUtils.getPatient(8), tbProgram, TestUtils.date(2014,3,15));
 
@@ -79,16 +79,17 @@ public class IsTransferInsCalculationTest extends BaseModuleContextSensitiveTest
 		Concept transferInStatus = Dictionary.getConcept(Dictionary.TRANSFER_IN);
 		Concept yes = Dictionary.getConcept(Dictionary.YES);
 
-		//make #6 a transfer in with the looking at the status
-		TestUtils.saveObs(TestUtils.getPatient(6), transferInStatus, yes, TestUtils.date(2014, 3, 1));
-		//give #8 a transfer in date
+		//make #2 a transfer in with the looking at the status
+		TestUtils.saveObs(TestUtils.getPatient(2), transferInStatus, yes, TestUtils.date(2014, 3, 1));
+		//give #7 a transfer in date
 		TestUtils.saveObs(TestUtils.getPatient(7), transferInDate, TestUtils.date(2014,3,10), TestUtils.date(2014, 3, 10));
 
 		List<Integer> ptIds = Arrays.asList(2, 6, 7, 8, 999);
 		CalculationResultMap resultMap = new IsTransferInsCalculation().evaluate(ptIds, null, Context.getService(PatientCalculationService.class).createCalculationContext());
-		Assert.assertTrue((Boolean) resultMap.get(6).getValue()); //is in hiv program and is a transfer in (yes)
+		Assert.assertTrue((Boolean) resultMap.get(2).getValue()); //is in hiv program and is a transfer in (yes)
 		Assert.assertTrue((Boolean) resultMap.get(7).getValue()); //is in hiv program and have a transfer in date
-		Assert.assertFalse((Boolean) resultMap.get(8).getValue()); //not in hiv program
+		Assert.assertFalse((Boolean) resultMap.get(8).getValue()); // is in tb program
+		Assert.assertFalse((Boolean) resultMap.get(999).getValue()); //not in hiv program
 	}
 
 }
