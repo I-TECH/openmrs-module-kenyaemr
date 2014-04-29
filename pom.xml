@@ -34,7 +34,7 @@
 
 		<!-- Dependency modules -->
 		<appframeworkVersion>2.1</appframeworkVersion>
-		<calculationVersion>1.0</calculationVersion>
+		<calculationVersion>1.1</calculationVersion>
 		<groovyVersion>2.2.4</groovyVersion>
 		<htmlformentryVersion>2.2.1</htmlformentryVersion>
 		<htmlwidgetsVersion>1.6.5</htmlwidgetsVersion>
@@ -46,9 +46,9 @@
 		<metadatadeployVersion>1.2</metadatadeployVersion>
 		<metadatamappingVersion>1.0.1</metadatamappingVersion>
 		<metadatasharingVersion>1.1.8</metadatasharingVersion>
-		<reportingVersion>0.8.1</reportingVersion>
+		<reportingVersion>0.8.2</reportingVersion>
 		<serializationxstreamVersion>0.2.7</serializationxstreamVersion>
-		<uiframeworkVersion>3.1</uiframeworkVersion>
+		<uiframeworkVersion>3.2</uiframeworkVersion>
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ssZ</maven.build.timestamp.format>
