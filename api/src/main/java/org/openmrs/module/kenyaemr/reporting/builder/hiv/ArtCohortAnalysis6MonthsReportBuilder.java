@@ -22,10 +22,11 @@ import org.openmrs.module.kenyacore.report.ReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyacore.report.builder.AbstractCohortReportBuilder;
 import org.openmrs.module.kenyacore.report.builder.Builds;
-import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtStartDateCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.IsTransferInsCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.IsTransferInCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.TransferInDateCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
+import org.openmrs.module.kenyaemr.reporting.CalculationResultConverter;
 import org.openmrs.module.kenyaemr.reporting.data.patient.definition.CalculationDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.art.ArtCohortLibrary;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
@@ -82,40 +83,9 @@ public class ArtCohortAnalysis6MonthsReportBuilder extends AbstractCohortReportB
 		dsd.addColumn(upn.getName(), identifierDef, "");
 		dsd.addColumn("Birth date", new BirthdateDataDefinition(), "");
 		dsd.addColumn("Sex", new GenderDataDefinition(), "");
-		dsd.addColumn("ARV Start Date", new CalculationDataDefinition("ARV Start Date", new InitialArtStartDateCalculation()), "", new DataConverter() {
-
-			@Override
-			public Class<?> getInputDataType() {
-				return CalculationResult.class;
-			}
-
-			@Override
-			public Class<?> getDataType() {
-				return String.class;
-			}
-
-			@Override
-			public Object convert(Object input) {
-				return kenyaUiUtils.formatDate((Date) ((CalculationResult) input).getValue());
-			}
-		});
-		dsd.addColumn("Transfer In", new CalculationDataDefinition("Transfer In", new IsTransferInsCalculation()), "", new DataConverter() {
-
-			@Override
-			public Class<?> getInputDataType() {
-				return CalculationResult.class;
-			}
-
-			@Override
-			public Class<?> getDataType() {
-				return String.class;
-			}
-
-			@Override
-			public Object convert(Object input) {
-				return ((CalculationResult) input).getValue();
-			}
-		});
+		dsd.addColumn("ARV Start Date", new CalculationDataDefinition("ARV Start Date", new InitialArtStartDateCalculation()), "", new CalculationResultConverter() );
+		dsd.addColumn("Transfer In", new CalculationDataDefinition("Transfer In", new IsTransferInCalculation()), "", new CalculationResultConverter());
+		dsd.addColumn("Date Transferred in", new CalculationDataDefinition("Date Transferred in", new TransferInDateCalculation()), "", new CalculationResultConverter());
 	}
 
 	@Override

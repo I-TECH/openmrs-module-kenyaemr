@@ -15,28 +15,22 @@
 package org.openmrs.module.kenyaemr.calculation.library.hiv.art;
 
 import org.openmrs.Concept;
-import org.openmrs.Program;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyacore.calculation.Calculations;
-import org.openmrs.module.kenyacore.calculation.Filters;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
-import org.openmrs.module.kenyaemr.metadata.HivMetadata;
-import org.openmrs.module.metadatadeploy.MetadataUtils;
 
 import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
-import java.util.Set;
 
 /**
- * Calculates whether a patient is a transfer in
+ * Calculates whether a patient is a transfer in date
  */
-public class IsTransferInsCalculation extends BaseEmrCalculation {
-
+public class TransferInDateCalculation extends BaseEmrCalculation {
 	/**
 	 * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(java.util.Collection,
 	 *      java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
@@ -45,29 +39,17 @@ public class IsTransferInsCalculation extends BaseEmrCalculation {
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues,
 										 PatientCalculationContext context) {
 
-		Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
-		Set<Integer> inHivProgram = Filters.inProgram(hivProgram, cohort, context);
-
 		Concept transferInDate = Dictionary.getConcept(Dictionary.TRANSFER_IN_DATE);
-		Concept transferInStatus = Dictionary.getConcept(Dictionary.TRANSFER_IN);
 
-		//pick the transfer in date if available
-		CalculationResultMap transferInDateResults = Calculations.lastObs(transferInDate,inHivProgram,context);
-		CalculationResultMap transferInStatusResults = Calculations.lastObs(transferInStatus,inHivProgram,context);
+		CalculationResultMap transferInDateResults = Calculations.lastObs(transferInDate, cohort, context);
 
 		CalculationResultMap result = new CalculationResultMap();
 		for (Integer ptId : cohort) {
-			boolean isTransferIn = false;
-			//check if the patient is in hiv program
-			if (inHivProgram.contains(ptId)) {
-				Date date = EmrCalculationUtils.datetimeObsResultForPatient(transferInDateResults, ptId);
-				Concept status = EmrCalculationUtils.codedObsResultForPatient(transferInStatusResults, ptId);
 
-				if (((status != null) && (status.equals(Dictionary.getConcept(Dictionary.YES)))) || (date != null)) {
-					isTransferIn = true;
-				}
-			}
-			result.put(ptId, new SimpleResult(isTransferIn, this, context));
+			Date tDate = EmrCalculationUtils.datetimeObsResultForPatient(transferInDateResults, ptId);
+
+			result.put(ptId, tDate == null ? null : new SimpleResult(tDate, null));
+
 		}
 		return result;
 	}
