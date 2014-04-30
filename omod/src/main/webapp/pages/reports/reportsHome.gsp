@@ -13,7 +13,7 @@
 	}
 
 	def indicatorReports = { it.findAll({ it.isIndicator }) }
-	def patientListReports = { it.findAll({ !it.isIndicator }) }
+	def cohortReports = { it.findAll({ !it.isIndicator }) }
 %>
 
 <div class="ke-page-content">
@@ -38,9 +38,9 @@
 					</td>
 					<td style="width: 50%; vertical-align: top; padding-left: 5px">
 						<div class="ke-panel-frame">
-							<div class="ke-panel-heading">Patient List</div>
+							<div class="ke-panel-heading">Cohort</div>
 							<div class="ke-panel-content">
-								${ ui.includeFragment("kenyaemr", "widget/reportStack", [ reports: patientListReports(reports), onReportClick: onReportClick ]) }
+								${ ui.includeFragment("kenyaemr", "widget/reportStack", [ reports: cohortReports(reports), onReportClick: onReportClick ]) }
 							</div>
 						</div>
 					</td>
