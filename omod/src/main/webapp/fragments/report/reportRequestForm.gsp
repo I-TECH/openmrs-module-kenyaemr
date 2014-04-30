@@ -16,10 +16,17 @@
 <script type="text/javascript">
 	jQuery(function() {
 		jQuery('#${ config.id }_btn').click(function() {
+			var form = jQuery('#${ config.id }');
+			var errors = form.find('.error').filter(':visible');
+
+			if (errors.length > 0) {
+				return;
+			}
+
 			kenyaui.closeDialog();
 
 			var params = {};
-			jQuery('#${ config.id }').find('[name^="param"]').each(function() {
+			form.find('[name^="param"]').each(function() {
 				var field = jQuery(this);
 				params[field.attr('name')] = field.val();
 			});

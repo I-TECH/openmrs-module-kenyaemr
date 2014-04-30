@@ -84,7 +84,7 @@ public class ReportUtilsFragmentController {
 
 		CoreUtils.checkAccess(report, kenyaui.getCurrentApp(actionRequest));
 
-		Collection<Parameter> missingParameters = new ArrayList<Parameter>();
+		Collection<String> missingParameters = new ArrayList<String>();
 		Map<String, Object> parameterValues = new HashMap<String, Object>();
 
 		// Match incoming parameters in the request to report parameters
@@ -94,7 +94,7 @@ public class ReportUtilsFragmentController {
 			Object converted = StringUtils.isNotEmpty(submitted) ? ui.convert(submitted, parameter.getType()) : parameter.getDefaultValue();
 
 			if (converted == null) {
-				missingParameters.add(parameter);
+				missingParameters.add(parameter.getName());
 			}
 
 			parameterValues.put(parameter.getName(), converted);
@@ -103,6 +103,7 @@ public class ReportUtilsFragmentController {
 		if (missingParameters.size() > 0) {
 			return new FailureResult("Missing report parameters");
 		}
+
 
 		Mapped<ReportDefinition> mappedDefinition = new Mapped<ReportDefinition>(definition, parameterValues);
 
@@ -116,7 +117,7 @@ public class ReportUtilsFragmentController {
 		request = reportService.queueReport(request);
 		reportService.processNextQueuedReports();
 
-		log.debug("Requested report: " + report.getTargetUuid());
+		log.info("Requested report '" + definition.getName() + "' with params " + parameterValues);
 
 		return SimpleObject.fromObject(request, ui, "id");
 	}

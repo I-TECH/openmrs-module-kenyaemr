@@ -1,1 +1,6 @@
-<input type="text" name="param[${ config.parameter.name }]" />
+${ ui.includeFragment("kenyaui", "widget/field", [
+		formFieldName: "param[" + config.parameter.name + "]",
+		class: config.parameter.type,
+		required: true,
+		initialValue: config.parameter.defaultValue
+]) }
