@@ -20,17 +20,27 @@ import org.openmrs.module.kenyacore.report.ReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyacore.report.builder.AbstractCohortReportBuilder;
 import org.openmrs.module.kenyacore.report.builder.Builds;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtStartDateCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.IsTransferInCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.TransferInDateCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
+import org.openmrs.module.kenyaemr.reporting.data.converter.BirthdateConverter;
+import org.openmrs.module.kenyaemr.reporting.data.converter.CalculationResultConverter;
+import org.openmrs.module.kenyaemr.reporting.data.patient.definition.CalculationDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.art.ArtCohortLibrary;
+import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.data.DataDefinition;
 import org.openmrs.module.reporting.data.converter.DataConverter;
 import org.openmrs.module.reporting.data.converter.ObjectFormatter;
 import org.openmrs.module.reporting.data.patient.definition.ConvertedPatientDataDefinition;
+import org.openmrs.module.reporting.data.patient.definition.PatientIdDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.PatientIdentifierDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.BirthdateDataDefinition;
+import org.openmrs.module.reporting.data.person.definition.ConvertedPersonDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.GenderDataDefinition;
+import org.openmrs.module.reporting.data.person.definition.PreferredNameDataDefinition;
 import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
@@ -48,6 +58,9 @@ public class ArtCohortAnalysis24MonthsReportBuilder extends AbstractCohortReport
 	@Autowired
 	ArtCohortLibrary artCohortLibrary;
 
+	@Autowired
+	KenyaUiUtils kenyaUiUtils;
+
 	@Override
 	protected List<Parameter> getParameters(ReportDescriptor descriptor) {
 		return Arrays.asList(
@@ -63,9 +76,17 @@ public class ArtCohortAnalysis24MonthsReportBuilder extends AbstractCohortReport
 		DataConverter identifierFormatter = new ObjectFormatter("{identifier}");
 		DataDefinition identifierDef = new ConvertedPatientDataDefinition("identifier", new PatientIdentifierDataDefinition(upn.getName(), upn), identifierFormatter);
 
+		DataConverter nameFormatter = new ObjectFormatter("{familyName}, {givenName}");
+		DataDefinition nameDef = new ConvertedPersonDataDefinition("name", new PreferredNameDataDefinition(), nameFormatter);
+
+		dsd.addColumn("id", new PatientIdDataDefinition(), "");
+		dsd.addColumn("Name", nameDef, "");
 		dsd.addColumn(upn.getName(), identifierDef, "");
-		dsd.addColumn("Birth date", new BirthdateDataDefinition(), "");
+		dsd.addColumn("Birth date", new BirthdateDataDefinition(), "", new BirthdateConverter());
 		dsd.addColumn("Sex", new GenderDataDefinition(), "");
+		dsd.addColumn("ARV Start Date", new CalculationDataDefinition("ARV Start Date", new InitialArtStartDateCalculation()), "", new CalculationResultConverter() );
+		dsd.addColumn("Transfer In", new CalculationDataDefinition("Transfer In", new IsTransferInCalculation()), "", new CalculationResultConverter());
+		dsd.addColumn("Date Transferred in", new CalculationDataDefinition("Date Transferred in", new TransferInDateCalculation()), "", new CalculationResultConverter());
 	}
 
 	@Override
