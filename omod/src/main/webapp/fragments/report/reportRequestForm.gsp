@@ -31,16 +31,18 @@
 
 <div class="ke-panel-content">
 	<form id="${ config.id }">
-		<div class="ke-field-content">Report: <strong>${ ui.format(config.definition.name) }</strong></div>
+		<div class="ke-field-label">Report</div>
+		<div class="ke-field-content">${ config.definition.name }</div>
 		<% if (usePeriodField) { %>
+		<div class="ke-field-label">Month</div>
 		<div class="ke-field-content">
-			Month:
+
 			${ ui.includeFragment("kenyaemr", "field/reportPeriod", [ pastMonths: 7 ]) }
 		</div>
 		<% } %>
 		<% params.each { name, param -> %>
+		<div class="ke-field-label">${ param.label }</div>
 		<div class="ke-field-content">
-			${ param.label }:
 			${ ui.includeFragment("kenyaemr", "field/reportParameter", [ parameter: param ]) }
 		</div>
 		<% } %>

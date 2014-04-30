@@ -96,6 +96,6 @@
 
 </div>
 
-<div id="request-dialog-template" title="Request report" style="display: none">
+<div id="request-dialog-template" title="Request Report" style="display: none">
 	${ ui.includeFragment("kenyaemr", "report/reportRequestForm", [ definition: definition, onRequestCallback: "onReportRequest" ]) }
 </div>
