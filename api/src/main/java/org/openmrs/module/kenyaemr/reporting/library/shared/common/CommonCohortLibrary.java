@@ -23,7 +23,7 @@ import org.openmrs.module.kenyacore.report.cohort.definition.CalculationCohortDe
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.library.InProgramCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.OnAlternateFirstLineArtCalculation;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.DateObsValueBetweenCohortDefinition;
+import org.openmrs.module.kenyacore.report.cohort.definition.DateObsValueBetweenCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.*;
 import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.module.reporting.common.TimeQualifier;

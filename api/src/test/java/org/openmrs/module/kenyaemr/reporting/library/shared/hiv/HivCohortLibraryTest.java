@@ -26,7 +26,7 @@ import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.test.ReportingTestUtils;
+import org.openmrs.module.kenyacore.test.ReportingTestUtils;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;

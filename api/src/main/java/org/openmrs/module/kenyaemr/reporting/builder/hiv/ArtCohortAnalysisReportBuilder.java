@@ -26,9 +26,8 @@ import org.openmrs.module.kenyaemr.calculation.library.hiv.art.TransferInDateCal
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.reporting.data.converter.BirthdateConverter;
 import org.openmrs.module.kenyaemr.reporting.data.converter.CalculationResultConverter;
-import org.openmrs.module.kenyaemr.reporting.data.patient.definition.CalculationDataDefinition;
+import org.openmrs.module.kenyacore.report.data.patient.definition.CalculationDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.art.ArtCohortLibrary;
-import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.data.DataDefinition;

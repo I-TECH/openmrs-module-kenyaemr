@@ -48,32 +48,6 @@ import java.util.Set;
 public class EmrCalculationUtils {
 
 	/**
-	 * Extracts patients from a calculation result map with date results in the given range
-	 * @param results the calculation result map
-	 * @param minDateInclusive the minimum date (inclusive)
-	 * @param maxDateInclusive the maximum date (inclusive)
-	 * @return the extracted patient ids
-	 */
-	public static Set<Integer> datesWithinRange(CalculationResultMap results, Date minDateInclusive, Date maxDateInclusive) {
-		Set<Integer> ret = new HashSet<Integer>();
-		for (Map.Entry<Integer, CalculationResult> e : results.entrySet()) {
-			Date result = null;
-			try {
-				result = e.getValue().asType(Date.class);
-			} catch (Exception ex) {
-				// pass
-			}
-			if (result != null) {
-				if (OpenmrsUtil.compareWithNullAsEarliest(result, minDateInclusive) >= 0 &&
-						OpenmrsUtil.compareWithNullAsLatest(result, maxDateInclusive) <= 0) {
-					ret.add(e.getKey());
-				}
-			}
-		}
-		return ret;
-	}
-
-	/**
 	 * Evaluates the specified calculation for a single patient
 	 * @param calculationClass the calculation class
 	 * @param configuration the calculation configuration

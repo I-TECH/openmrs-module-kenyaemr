@@ -25,7 +25,7 @@ import org.openmrs.module.kenyaemr.calculation.library.mchms.DiscordantCoupleCal
 import org.openmrs.module.kenyaemr.calculation.library.mchms.MchmsFirstVisitDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.mchms.MchmsHivTestDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.mchms.TestedForHivInMchmsCalculation;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.DateCalculationCohortDefinition;
+import org.openmrs.module.kenyacore.report.cohort.definition.DateCalculationCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonCohortLibrary;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;

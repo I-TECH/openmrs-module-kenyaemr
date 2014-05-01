@@ -29,7 +29,7 @@ import org.openmrs.module.kenyaemr.calculation.library.hiv.art.TbPatientAtArtSta
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.WhoStageAtArtStartCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.regimen.RegimenManager;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.DateCalculationCohortDefinition;
+import org.openmrs.module.kenyacore.report.cohort.definition.DateCalculationCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.RegimenOrderCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonCohortLibrary;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
