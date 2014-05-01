@@ -30,7 +30,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 @Component
-@Builds("kenyaemr.hiv.report.decliningCd4")
+@Builds({"kenyaemr.hiv.report.decliningCd4"})
 public class DecliningCd4ReportBuilder extends CalculationReportBuilder {
 
 	@Override

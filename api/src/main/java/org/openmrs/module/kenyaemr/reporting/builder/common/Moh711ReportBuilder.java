@@ -19,9 +19,9 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.Concept;
 import org.openmrs.module.kenyacore.report.ReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportUtils;
+import org.openmrs.module.kenyacore.report.builder.AbstractReportBuilder;
 import org.openmrs.module.kenyacore.report.builder.Builds;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.reporting.BaseIndicatorReportBuilder;
 import org.openmrs.module.kenyaemr.reporting.EmrReportingUtils;
 import org.openmrs.module.kenyaemr.reporting.ColumnParameters;
 import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonDimensionLibrary;
@@ -47,8 +47,8 @@ import static org.openmrs.module.kenyacore.report.ReportUtils.map;
  * MOH 711 report
  */
 @Component
-@Builds("kenyaemr.common.report.moh711")
-public class Moh711ReportBuilder extends BaseIndicatorReportBuilder {
+@Builds({"kenyaemr.common.report.moh711"})
+public class Moh711ReportBuilder extends AbstractReportBuilder {
 
 	protected static final Log log = LogFactory.getLog(Moh711ReportBuilder.class);
 
@@ -63,6 +63,17 @@ public class Moh711ReportBuilder extends BaseIndicatorReportBuilder {
 
 	@Autowired
 	private TbIndicatorLibrary tbIndicators;
+
+	/**
+	 * @see org.openmrs.module.kenyacore.report.builder.AbstractReportBuilder#getParameters(org.openmrs.module.kenyacore.report.ReportDescriptor)
+	 */
+	@Override
+	protected List<Parameter> getParameters(ReportDescriptor descriptor) {
+		return Arrays.asList(
+				new Parameter("startDate", "Start Date", Date.class),
+				new Parameter("endDate", "End Date", Date.class)
+		);
+	}
 
 	/**
 	 * @see org.openmrs.module.kenyacore.report.builder.AbstractReportBuilder#buildDataSets(org.openmrs.module.kenyacore.report.ReportDescriptor, org.openmrs.module.reporting.report.definition.ReportDefinition)

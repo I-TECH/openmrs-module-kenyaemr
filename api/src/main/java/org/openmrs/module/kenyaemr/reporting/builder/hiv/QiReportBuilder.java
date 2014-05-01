@@ -16,8 +16,8 @@ package org.openmrs.module.kenyaemr.reporting.builder.hiv;
 
 import org.openmrs.module.kenyacore.report.ReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportUtils;
+import org.openmrs.module.kenyacore.report.builder.AbstractReportBuilder;
 import org.openmrs.module.kenyacore.report.builder.Builds;
-import org.openmrs.module.kenyaemr.reporting.BaseIndicatorReportBuilder;
 import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.QiIndicatorLibrary;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
@@ -35,11 +35,22 @@ import java.util.List;
  * Quality Improvement report
  */
 @Component
-@Builds("kenyaemr.hiv.report.qi")
-public class QiReportBuilder extends BaseIndicatorReportBuilder {
+@Builds({"kenyaemr.hiv.report.qi"})
+public class QiReportBuilder extends AbstractReportBuilder {
 
 	@Autowired
 	private QiIndicatorLibrary qiIndicators;
+
+	/**
+	 * @see org.openmrs.module.kenyacore.report.builder.AbstractReportBuilder#getParameters(org.openmrs.module.kenyacore.report.ReportDescriptor)
+	 */
+	@Override
+	protected List<Parameter> getParameters(ReportDescriptor descriptor) {
+		return Arrays.asList(
+				new Parameter("startDate", "Start Date", Date.class),
+				new Parameter("endDate", "End Date", Date.class)
+		);
+	}
 
 	/**
 	 * @see org.openmrs.module.kenyacore.report.builder.AbstractReportBuilder#buildDataSets(org.openmrs.module.kenyacore.report.ReportDescriptor, org.openmrs.module.reporting.report.definition.ReportDefinition)

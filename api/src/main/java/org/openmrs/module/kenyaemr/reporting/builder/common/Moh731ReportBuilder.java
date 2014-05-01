@@ -18,9 +18,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.module.kenyacore.report.ReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportUtils;
+import org.openmrs.module.kenyacore.report.builder.AbstractReportBuilder;
 import org.openmrs.module.kenyacore.report.builder.Builds;
 import org.openmrs.module.kenyaemr.ArtAssessmentMethod;
-import org.openmrs.module.kenyaemr.reporting.BaseIndicatorReportBuilder;
 import org.openmrs.module.kenyaemr.reporting.ColumnParameters;
 import org.openmrs.module.kenyaemr.reporting.EmrReportingUtils;
 import org.openmrs.module.kenyaemr.reporting.dataset.definition.MergingDataSetDefinition;
@@ -49,8 +49,8 @@ import java.util.List;
  * MOH 731 report
  */
 @Component
-@Builds("kenyaemr.common.report.moh731")
-public class Moh731ReportBuilder extends BaseIndicatorReportBuilder {
+@Builds({"kenyaemr.common.report.moh731"})
+public class Moh731ReportBuilder extends AbstractReportBuilder {
 
 	protected static final Log log = LogFactory.getLog(Moh731ReportBuilder.class);
 
@@ -77,6 +77,17 @@ public class Moh731ReportBuilder extends BaseIndicatorReportBuilder {
 
 	@Autowired
 	private MchcsIndicatorLibrary mchcsIndicatorLibrary;
+
+	/**
+	 * @see org.openmrs.module.kenyacore.report.builder.AbstractReportBuilder#getParameters(org.openmrs.module.kenyacore.report.ReportDescriptor)
+	 */
+	@Override
+	protected List<Parameter> getParameters(ReportDescriptor descriptor) {
+		return Arrays.asList(
+				new Parameter("startDate", "Start Date", Date.class),
+				new Parameter("endDate", "End Date", Date.class)
+		);
+	}
 
 	/**
 	 * @see org.openmrs.module.kenyacore.report.builder.AbstractReportBuilder#buildDataSets(org.openmrs.module.kenyacore.report.ReportDescriptor, org.openmrs.module.reporting.report.definition.ReportDefinition)
