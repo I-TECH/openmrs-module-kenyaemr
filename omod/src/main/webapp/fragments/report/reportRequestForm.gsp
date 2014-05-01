@@ -50,7 +50,12 @@
 		<% params.each { name, param -> %>
 		<div class="ke-field-label">${ param.label }</div>
 		<div class="ke-field-content">
-			${ ui.includeFragment("kenyaemr", "field/reportParameter", [ parameter: param ]) }
+			${ ui.includeFragment("kenyaui", "widget/field", [
+					formFieldName: "param[" + param.name + "]",
+					class: param.type,
+					required: true,
+					initialValue: param.defaultValue
+			]) }
 		</div>
 		<% } %>
 	</form>
