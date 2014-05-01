@@ -14,10 +14,6 @@
 
 package org.openmrs.module.kenyaemr.reporting.builder.mchcs;
 
-import java.lang.String;
-import java.util.Calendar;
-import java.util.Date;
-
 import org.openmrs.Concept;
 import org.openmrs.Obs;
 import org.openmrs.module.kenyacore.report.CohortReportDescriptor;
@@ -30,8 +26,11 @@ import org.openmrs.module.reporting.data.person.definition.ObsForPersonDataDefin
 import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
 import org.springframework.stereotype.Component;
 
+import java.util.Calendar;
+import java.util.Date;
+
 @Component
-@Builds("kenyaemr.mchcs.report.feedingOption")
+@Builds({"kenyaemr.mchcs.report.feedingOption"})
 public class InfantFeedingOptionsReportBuilder extends CalculationReportBuilder {
 
 	@Override

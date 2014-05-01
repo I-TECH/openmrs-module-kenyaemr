@@ -52,15 +52,16 @@ import java.util.Date;
 import java.util.List;
 
 @Component
-@Builds("kenyaemr.hiv.report.artCohortAnalysis24Months")
-public class ArtCohortAnalysis24MonthsReportBuilder extends AbstractCohortReportBuilder {
+@Builds({"kenyaemr.hiv.report.artCohortAnalysis.6", "kenyaemr.hiv.report.artCohortAnalysis.12", "kenyaemr.hiv.report.artCohortAnalysis.24", "kenyaemr.hiv.report.artCohortAnalysis.36"})
+public class ArtCohortAnalysisReportBuilder extends AbstractCohortReportBuilder {
 
 	@Autowired
-	ArtCohortLibrary artCohortLibrary;
+	private ArtCohortLibrary artCohortLibrary;
 
-	@Autowired
-	KenyaUiUtils kenyaUiUtils;
-
+	/**
+	 *
+	 * @see org.openmrs.module.kenyacore.report.builder.AbstractCohortReportBuilder#getParameters(ReportDescriptor)
+	 */
 	@Override
 	protected List<Parameter> getParameters(ReportDescriptor descriptor) {
 		return Arrays.asList(
@@ -69,6 +70,10 @@ public class ArtCohortAnalysis24MonthsReportBuilder extends AbstractCohortReport
 		);
 	}
 
+	/**
+	 *
+	 * @see org.openmrs.module.kenyacore.report.builder.AbstractCohortReportBuilder#addColumns(CohortReportDescriptor, PatientDataSetDefinition)
+	 */
 	@Override
 	protected void addColumns(CohortReportDescriptor report, PatientDataSetDefinition dsd) {
 
@@ -91,7 +96,8 @@ public class ArtCohortAnalysis24MonthsReportBuilder extends AbstractCohortReport
 
 	@Override
 	protected Mapped<CohortDefinition> buildCohort(CohortReportDescriptor descriptor, PatientDataSetDefinition dsd) {
-		CohortDefinition cd = artCohortLibrary.netCohortMonths(24);
+		int months = Integer.parseInt(descriptor.getId().split("\\.")[4]);
+		CohortDefinition cd = artCohortLibrary.netCohortMonths(months);
 		return ReportUtils.map(cd, "onDate=${endDate}");
 	}
 }
