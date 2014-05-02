@@ -75,7 +75,7 @@ public class QiIndicatorLibraryTest extends BaseModuleContextSensitiveTest {
 	@Test
 	public void hivMonitoringCd4() throws Exception {
 		Concept cd4Percent = Dictionary.getConcept(Dictionary.CD4_PERCENT);
-		EncounterType hivConsultation = MetadataUtils.getEncounterType(HivMetadata._EncounterType.HIV_CONSULTATION);
+		EncounterType hivConsultation = MetadataUtils.existing(EncounterType.class, HivMetadata._EncounterType.HIV_CONSULTATION);
 
 		// Give patient #6 an HIV visit on June 1st
 		TestUtils.saveEncounter(TestUtils.getPatient(6), hivConsultation, TestUtils.date(2012, 6, 1));

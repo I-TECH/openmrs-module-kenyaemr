@@ -17,6 +17,7 @@ package org.openmrs.module.kenyaemr.calculation.library.tb;
 import java.util.Collection;
 import java.util.Map;
 
+import org.openmrs.Program;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyacore.calculation.Calculations;
@@ -35,6 +36,6 @@ public class InTbProgramCalculation extends BaseEmrCalculation {
 	 */
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> params, PatientCalculationContext context) {
-		return passing(Calculations.activeEnrollment(MetadataUtils.getProgram(TbMetadata._Program.TB), Filters.alive(cohort, context), context));
+		return passing(Calculations.activeEnrollment(MetadataUtils.existing(Program.class, TbMetadata._Program.TB), Filters.alive(cohort, context), context));
 	}
 }

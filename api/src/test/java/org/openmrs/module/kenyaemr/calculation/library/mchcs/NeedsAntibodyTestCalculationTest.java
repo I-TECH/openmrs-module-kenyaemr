@@ -64,7 +64,7 @@ public class NeedsAntibodyTestCalculationTest extends BaseModuleContextSensitive
 	@Test
 	public void evaluate_shouldCalculateNeedsAntibodyTest() throws Exception {
 		//get mchcs program
-		Program mchcsProgram = MetadataUtils.getProgram(MchMetadata._Program.MCHCS);
+		Program mchcsProgram = MetadataUtils.existing(Program.class, MchMetadata._Program.MCHCS);
 
 		// Enroll patients #6 and  #7 in the mchcs Program
 		TestUtils.enrollInProgram(TestUtils.getPatient(6), mchcsProgram, TestUtils.date(2011, 1, 1));

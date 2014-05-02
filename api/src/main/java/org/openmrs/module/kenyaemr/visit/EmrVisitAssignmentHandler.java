@@ -20,6 +20,7 @@ import org.openmrs.Form;
 import org.openmrs.Location;
 import org.openmrs.Visit;
 import org.openmrs.VisitAttribute;
+import org.openmrs.VisitAttributeType;
 import org.openmrs.VisitType;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.handler.BaseEncounterVisitHandler;
@@ -167,7 +168,7 @@ public class EmrVisitAssignmentHandler extends BaseEncounterVisitHandler impleme
 		visit.setVisitType(type);
 
 		VisitAttribute sourceAttr = new VisitAttribute();
-		sourceAttr.setAttributeType(MetadataUtils.getVisitAttributeType(CommonMetadata._VisitAttributeType.SOURCE_FORM));
+		sourceAttr.setAttributeType(MetadataUtils.existing(VisitAttributeType.class, CommonMetadata._VisitAttributeType.SOURCE_FORM));
 		sourceAttr.setOwner(visit);
 		sourceAttr.setValue(sourceForm);
 		visit.addAttribute(sourceAttr);
@@ -189,7 +190,7 @@ public class EmrVisitAssignmentHandler extends BaseEncounterVisitHandler impleme
 			FormDescriptor fd = formManager.getFormDescriptor(encounter.getForm());
 
 			if (fd != null && fd.getAutoCreateVisitTypeUuid() != null) {
-				return MetadataUtils.getVisitType(fd.getAutoCreateVisitTypeUuid());
+				return MetadataUtils.existing(VisitType.class, fd.getAutoCreateVisitTypeUuid());
 			}
 		}
 		return null;

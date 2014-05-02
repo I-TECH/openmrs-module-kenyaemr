@@ -76,8 +76,8 @@ public class QiCohortLibraryTest extends BaseModuleContextSensitiveTest {
 		Concept weight = Dictionary.getConcept(Dictionary.WEIGHT_KG);
 		Concept height = Dictionary.getConcept(Dictionary.HEIGHT_CM);
 		Concept muac = Dictionary.getConcept(Dictionary.MUAC);
-		EncounterType hivConsultation = MetadataUtils.getEncounterType(HivMetadata._EncounterType.HIV_CONSULTATION);
-		VisitType outpatient = MetadataUtils.getVisitType(CommonMetadata._VisitType.OUTPATIENT);
+		EncounterType hivConsultation = MetadataUtils.existing(EncounterType.class, HivMetadata._EncounterType.HIV_CONSULTATION);
+		VisitType outpatient = MetadataUtils.existing(VisitType.class, CommonMetadata._VisitType.OUTPATIENT);
 
 		// Give patient #6 an HIV visit on June 1st with a BMI recording (i.e. weight and height)
 		TestUtils.saveVisit(TestUtils.getPatient(6), outpatient, TestUtils.date(2012, 6, 1, 8, 0, 0), TestUtils.date(2012, 6, 1, 10, 0, 0),

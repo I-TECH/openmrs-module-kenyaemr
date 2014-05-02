@@ -59,7 +59,7 @@ public class NotTakenPcrConfirmatoryTestCalculation extends BaseEmrCalculation i
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
 
-		Program mchcsProgram = MetadataUtils.getProgram(MchMetadata._Program.MCHCS);
+		Program mchcsProgram = MetadataUtils.existing(Program.class, MchMetadata._Program.MCHCS);
 
 		// Get all patients who are alive and in MCH-CS program
 		Set<Integer> alive = Filters.alive(cohort, context);
@@ -78,7 +78,7 @@ public class NotTakenPcrConfirmatoryTestCalculation extends BaseEmrCalculation i
 		Concept pcrCornfirmatory = Dictionary.getConcept(Dictionary.CONFIRMATION_STATUS);
 
 		//get an encounter type for HEI completion
-		EncounterType hei_completion_encounterType = MetadataUtils.getEncounterType(MchMetadata._EncounterType.MCHCS_HEI_COMPLETION);
+		EncounterType hei_completion_encounterType = MetadataUtils.existing(EncounterType.class, MchMetadata._EncounterType.MCHCS_HEI_COMPLETION);
 		//load all patient last encounters of HEI completion encounter type
 		CalculationResultMap lastEncounters = Calculations.lastEncounter(hei_completion_encounterType,inMchcsProgram,context);
 

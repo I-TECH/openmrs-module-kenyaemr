@@ -58,7 +58,7 @@ public class ConvertNationalIdAttributes extends AbstractChore {
 			return; // Don't need to do anything as this must be a 13.3+ clean install
 		}
 
-		PatientIdentifierType nidPatIdType = MetadataUtils.getPatientIdentifierType(CommonMetadata._PatientIdentifierType.NATIONAL_ID);
+		PatientIdentifierType nidPatIdType = MetadataUtils.existing(PatientIdentifierType.class, CommonMetadata._PatientIdentifierType.NATIONAL_ID);
 		Location defaultLocation = kenyaEmrService.getDefaultLocation();
 
 		List<Patient> allPatients = patientService.getAllPatients();

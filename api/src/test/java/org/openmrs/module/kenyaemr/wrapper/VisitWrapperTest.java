@@ -21,6 +21,7 @@ import org.openmrs.Form;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
 import org.openmrs.VisitAttribute;
+import org.openmrs.VisitAttributeType;
 import org.openmrs.VisitType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyacore.test.TestUtils;
@@ -53,7 +54,7 @@ public class VisitWrapperTest extends BaseModuleContextSensitiveTest {
 	public void overlaps_shouldReturnTrueIfVisitOverlaps() {
 
 		Patient patient8 = Context.getPatientService().getPatient(8);
-		VisitType outpatient = MetadataUtils.getVisitType(CommonMetadata._VisitType.OUTPATIENT);
+		VisitType outpatient = MetadataUtils.existing(VisitType.class, CommonMetadata._VisitType.OUTPATIENT);
 
 		Visit visit1 = TestUtils.saveVisit(patient8, outpatient, TestUtils.date(2011, 1, 1), TestUtils.date(2011, 1, 3));
 		Visit visit2 = TestUtils.saveVisit(patient8, outpatient, TestUtils.date(2011, 1, 7), TestUtils.date(2011, 1, 10));
@@ -99,16 +100,16 @@ public class VisitWrapperTest extends BaseModuleContextSensitiveTest {
 	@Test
 	public void getSourceForm_shouldReturnTheSourceFormIfThereIsOne() {
 		Patient patient = Context.getPatientService().getPatient(8);
-		VisitType outpatient = MetadataUtils.getVisitType(CommonMetadata._VisitType.OUTPATIENT);
+		VisitType outpatient = MetadataUtils.existing(VisitType.class, CommonMetadata._VisitType.OUTPATIENT);
 		Visit visit = TestUtils.saveVisit(patient, outpatient, TestUtils.date(2011, 1, 1), null);
 
 		// Check no attribute returns null
 		Assert.assertThat(new VisitWrapper(visit).getSourceForm(), is(nullValue()));
 
-		Form ceForm = MetadataUtils.getForm(CommonMetadata._Form.CLINICAL_ENCOUNTER);
+		Form ceForm = MetadataUtils.existing(Form.class, CommonMetadata._Form.CLINICAL_ENCOUNTER);
 
 		VisitAttribute sourceAttr = new VisitAttribute();
-		sourceAttr.setAttributeType(MetadataUtils.getVisitAttributeType(CommonMetadata._VisitAttributeType.SOURCE_FORM));
+		sourceAttr.setAttributeType(MetadataUtils.existing(VisitAttributeType.class, CommonMetadata._VisitAttributeType.SOURCE_FORM));
 		sourceAttr.setOwner(visit);
 		sourceAttr.setValue(ceForm);
 		visit.addAttribute(sourceAttr);

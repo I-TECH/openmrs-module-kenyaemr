@@ -18,6 +18,7 @@ import org.joda.time.DateTime;
 import org.joda.time.Weeks;
 import org.openmrs.Concept;
 import org.openmrs.Encounter;
+import org.openmrs.EncounterType;
 import org.openmrs.Obs;
 import org.openmrs.Patient;
 import org.openmrs.module.kenyaemr.Dictionary;
@@ -45,7 +46,7 @@ public class MchmsCarePanelFragmentController {
 
 		PatientWrapper patientWrapper = new PatientWrapper(patient);
 
-		Encounter lastMchEnrollment = patientWrapper.lastEncounter(MetadataUtils.getEncounterType(MchMetadata._EncounterType.MCHMS_ENROLLMENT));
+		Encounter lastMchEnrollment = patientWrapper.lastEncounter(MetadataUtils.existing(EncounterType.class, MchMetadata._EncounterType.MCHMS_ENROLLMENT));
 		EncounterWrapper lastMchEnrollmentWrapped = new EncounterWrapper(lastMchEnrollment);
 
 		Obs lmpObs = lastMchEnrollmentWrapped.firstObs(Dictionary.getConcept(Dictionary.LAST_MONTHLY_PERIOD));
@@ -61,7 +62,7 @@ public class MchmsCarePanelFragmentController {
 			calculations.put("hivStatus", "Not Specified");
 		}
 
-		Encounter lastMchConsultation = patientWrapper.lastEncounter(MetadataUtils.getEncounterType(MchMetadata._EncounterType.MCHMS_CONSULTATION));
+		Encounter lastMchConsultation = patientWrapper.lastEncounter(MetadataUtils.existing(EncounterType.class, MchMetadata._EncounterType.MCHMS_CONSULTATION));
 
 		if (lastMchConsultation != null) {
 			EncounterWrapper lastMchConsultationWrapped = new EncounterWrapper(lastMchConsultation);

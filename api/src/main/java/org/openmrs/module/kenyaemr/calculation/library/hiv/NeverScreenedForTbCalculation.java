@@ -51,7 +51,7 @@ public class NeverScreenedForTbCalculation extends BaseEmrCalculation {
 	 */
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> params, PatientCalculationContext context) {
-		Program hivProgram = MetadataUtils.getProgram(HivMetadata._Program.HIV);
+		Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
 
 		Concept tbDiseaseStatus = Dictionary.getConcept(Dictionary.TUBERCULOSIS_DISEASE_STATUS);
 		Concept diseaseSuspected = Dictionary.getConcept(Dictionary.DISEASE_SUSPECTED);

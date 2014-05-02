@@ -49,7 +49,7 @@ public class TbCohortLibrary {
 	 * @return the cohort definition
 	 */
 	public CohortDefinition enrolled() {
-		return commonCohorts.enrolled(MetadataUtils.getProgram(TbMetadata._Program.TB));
+		return commonCohorts.enrolled(MetadataUtils.existing(Program.class, TbMetadata._Program.TB));
 	}
 
 	/**
@@ -128,8 +128,8 @@ public class TbCohortLibrary {
 	 * @return the cohort definition
 	 */
 	public CohortDefinition inTbAndHivProgramsAndOnCtxProphylaxis() {
-		Program hivProgram = MetadataUtils.getProgram(HivMetadata._Program.HIV);
-		Program tbProgram = MetadataUtils.getProgram(TbMetadata._Program.TB);
+		Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
+		Program tbProgram = MetadataUtils.existing(Program.class, TbMetadata._Program.TB);
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		Concept[] drugs = { Dictionary.getConcept(Dictionary.SULFAMETHOXAZOLE_TRIMETHOPRIM) };
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
@@ -146,7 +146,7 @@ public class TbCohortLibrary {
 	 * @return the cohort definition
 	 */
 	public CohortDefinition testedForHivAndInTbProgram() {
-		Program tbProgram = MetadataUtils.getProgram(TbMetadata._Program.TB);
+		Program tbProgram = MetadataUtils.existing(Program.class, TbMetadata._Program.TB);
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
@@ -161,7 +161,7 @@ public class TbCohortLibrary {
 	 * @return the cohort definition
 	 */
 	public CohortDefinition testedHivPositiveAndInTbProgram() {
-		Program tbProgram = MetadataUtils.getProgram(TbMetadata._Program.TB);
+		Program tbProgram = MetadataUtils.existing(Program.class, TbMetadata._Program.TB);
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));

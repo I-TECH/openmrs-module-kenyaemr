@@ -69,9 +69,9 @@ public class DiscordantCoupleCalculationTest extends BaseModuleContextSensitiveT
 	@Test
 	public void evaluate_shouldDetermineWhetherCoupleIsDiscordant0() throws Exception {
 		// Get the MCH-MS program, enrollment and consultation encounter types and enrollment and delivery forms
-		Program mchmsProgram = MetadataUtils.getProgram(MchMetadata._Program.MCHMS);
-		EncounterType enrollmentEncounterType = MetadataUtils.getEncounterType(MchMetadata._EncounterType.MCHMS_ENROLLMENT);
-		Form enrollmentForm = MetadataUtils.getForm(MchMetadata._Form.MCHMS_ENROLLMENT);
+		Program mchmsProgram = MetadataUtils.existing(Program.class, MchMetadata._Program.MCHMS);
+		EncounterType enrollmentEncounterType = MetadataUtils.existing(EncounterType.class, MchMetadata._EncounterType.MCHMS_ENROLLMENT);
+		Form enrollmentForm = MetadataUtils.existing(Form.class, MchMetadata._Form.MCHMS_ENROLLMENT);
 
 		//Prepare dates to use for testing
 		Date enrollmentDate = TestUtils.date(2012, 1, 1);
@@ -149,9 +149,9 @@ public class DiscordantCoupleCalculationTest extends BaseModuleContextSensitiveT
 	@Test
 	public void evaluate_shouldDetermineWhetherCoupleIsDiscordant1() throws Exception {
 		// Get the MCH-MS program, enrollment and consultation encounter types and enrollment and delivery forms
-		Program mchmsProgram = MetadataUtils.getProgram(MchMetadata._Program.MCHMS);
-		EncounterType enrollmentEncounterType = MetadataUtils.getEncounterType(MchMetadata._EncounterType.MCHMS_ENROLLMENT);
-		Form enrollmentForm = MetadataUtils.getForm(MchMetadata._Form.MCHMS_ENROLLMENT);
+		Program mchmsProgram = MetadataUtils.existing(Program.class, MchMetadata._Program.MCHMS);
+		EncounterType enrollmentEncounterType = MetadataUtils.existing(EncounterType.class, MchMetadata._EncounterType.MCHMS_ENROLLMENT);
+		Form enrollmentForm = MetadataUtils.existing(Form.class, MchMetadata._Form.MCHMS_ENROLLMENT);
 
 		//Prepare dates to use for testing
 		Date enrollmentDate = TestUtils.date(2012, 1, 1);

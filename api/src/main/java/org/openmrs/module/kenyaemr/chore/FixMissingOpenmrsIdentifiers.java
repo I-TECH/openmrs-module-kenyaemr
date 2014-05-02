@@ -62,7 +62,7 @@ public class FixMissingOpenmrsIdentifiers extends AbstractChore {
 			return; // Database is obviously clean as this hasn't yet been configured
 		}
 
-		PatientIdentifierType openmrsIdType = MetadataUtils.getPatientIdentifierType(CommonMetadata._PatientIdentifierType.OPENMRS_ID);
+		PatientIdentifierType openmrsIdType = MetadataUtils.existing(PatientIdentifierType.class, CommonMetadata._PatientIdentifierType.OPENMRS_ID);
 		IdentifierSource openmrsIdSource = idgenService.getAutoGenerationOption(openmrsIdType).getSource();
 
 		List<Patient> allPatients = patientService.getAllPatients();

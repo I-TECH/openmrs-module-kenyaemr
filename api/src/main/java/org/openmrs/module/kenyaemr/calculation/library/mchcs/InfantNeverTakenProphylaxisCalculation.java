@@ -46,7 +46,7 @@ public class InfantNeverTakenProphylaxisCalculation extends BaseEmrCalculation {
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
 
-		Program mchcsProgram = MetadataUtils.getProgram(MchMetadata._Program.MCHCS);
+		Program mchcsProgram = MetadataUtils.existing(Program.class, MchMetadata._Program.MCHCS);
 
 		// Get all patients who are alive and in MCH-CS program
 		Set<Integer> alive = Filters.alive(cohort, context);

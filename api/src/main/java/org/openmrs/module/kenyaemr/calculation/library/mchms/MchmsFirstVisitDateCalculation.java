@@ -46,8 +46,8 @@ public class MchmsFirstVisitDateCalculation extends BaseEmrCalculation {
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> params,
 										 PatientCalculationContext context) {
 
-		Program mchmsProgram = MetadataUtils.getProgram(MchMetadata._Program.MCHMS);
-		EncounterType mchConsultation = MetadataUtils.getEncounterType(MchMetadata._EncounterType.MCHMS_CONSULTATION);
+		Program mchmsProgram = MetadataUtils.existing(Program.class, MchMetadata._Program.MCHMS);
+		EncounterType mchConsultation = MetadataUtils.existing(EncounterType.class, MchMetadata._EncounterType.MCHMS_CONSULTATION);
 
 		// Get all patients who are alive and in MCH-MS program
 		Set<Integer> alive = Filters.alive(cohort, context);

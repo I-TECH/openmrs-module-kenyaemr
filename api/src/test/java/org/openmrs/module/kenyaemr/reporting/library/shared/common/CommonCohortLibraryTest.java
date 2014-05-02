@@ -134,8 +134,8 @@ public class CommonCohortLibraryTest extends BaseModuleContextSensitiveTest {
 	 */
 	@Test
 	public void hasEncounter() throws Exception {
-		EncounterType registrationType = MetadataUtils.getEncounterType(CommonMetadata._EncounterType.REGISTRATION);
-		EncounterType triageType = MetadataUtils.getEncounterType(CommonMetadata._EncounterType.TRIAGE);
+		EncounterType registrationType = MetadataUtils.existing(EncounterType.class, CommonMetadata._EncounterType.REGISTRATION);
+		EncounterType triageType = MetadataUtils.existing(EncounterType.class, CommonMetadata._EncounterType.TRIAGE);
 
 		// Give #6 registration encounter on June 1st
 		TestUtils.saveEncounter(Context.getPatientService().getPatient(6), registrationType, TestUtils.date(2012, 6, 1));

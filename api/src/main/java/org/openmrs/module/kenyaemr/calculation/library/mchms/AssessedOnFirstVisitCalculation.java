@@ -54,8 +54,8 @@ public class AssessedOnFirstVisitCalculation extends BaseEmrCalculation {
 		ArtAssessmentMethod artAssessmentMethod = (params != null && params.containsKey("artAssessmentMethod")) ?
 				(ArtAssessmentMethod) params.get("artAssessmentMethod") : null;
 
-		Program mchmsProgram = MetadataUtils.getProgram(MchMetadata._Program.MCHMS);
-		EncounterType mchConsultation = MetadataUtils.getEncounterType(MchMetadata._EncounterType.MCHMS_CONSULTATION);
+		Program mchmsProgram = MetadataUtils.existing(Program.class, MchMetadata._Program.MCHMS);
+		EncounterType mchConsultation = MetadataUtils.existing(EncounterType.class, MchMetadata._EncounterType.MCHMS_CONSULTATION);
 		Concept whoStageConcept = Dictionary.getConcept(Dictionary.CURRENT_WHO_STAGE);
 		Concept cd4CountConcept = Dictionary.getConcept(Dictionary.CD4_COUNT);
 

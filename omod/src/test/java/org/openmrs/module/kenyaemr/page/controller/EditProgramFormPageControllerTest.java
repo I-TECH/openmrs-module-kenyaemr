@@ -61,8 +61,8 @@ public class EditProgramFormPageControllerTest extends BaseModuleWebContextSensi
 	 */
 	@Test
 	public void controller() {
-		Program hivProgram = MetadataUtils.getProgram(HivMetadata._Program.HIV);
-		Form familyHistory = MetadataUtils.getForm(HivMetadata._Form.FAMILY_HISTORY);
+		Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
+		Form familyHistory = MetadataUtils.existing(Form.class, HivMetadata._Form.FAMILY_HISTORY);
 
 		// Enroll patient #7 in th HIV program from 1-May-2012 to 1-Jun-2012
 		PatientProgram enrollment = TestUtils.enrollInProgram(TestUtils.getPatient(7), hivProgram, TestUtils.date(2012, 5, 1), TestUtils.date(2012, 6, 1));

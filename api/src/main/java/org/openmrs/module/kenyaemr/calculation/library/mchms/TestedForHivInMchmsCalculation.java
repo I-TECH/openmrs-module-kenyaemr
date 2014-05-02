@@ -55,7 +55,7 @@ public class TestedForHivInMchmsCalculation extends BaseEmrCalculation {
 		Concept result = (params != null && params.containsKey("result")) ? (Concept) params.get("result") : null;
 		Boolean partner = (params != null && params.containsKey("partner")) ? (Boolean) params.get("partner") : false;
 
-		Program mchmsProgram = MetadataUtils.getProgram(MchMetadata._Program.MCHMS);
+		Program mchmsProgram = MetadataUtils.existing(Program.class, MchMetadata._Program.MCHMS);
 
 		Set<Integer> alivePatients = Filters.alive(cohort, context);
 		CalculationResultMap activePatientPrograms = Calculations.activeEnrollment(mchmsProgram, alivePatients, context);

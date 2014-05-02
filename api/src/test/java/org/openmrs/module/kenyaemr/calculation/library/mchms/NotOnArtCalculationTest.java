@@ -68,9 +68,9 @@ public class NotOnArtCalculationTest extends BaseModuleContextSensitiveTest {
 	public void evaluate_shouldDetermineWhetherPatientsAreNotOnArt() throws Exception {
 
 		// Get the MCH-MS program, enrollment encounter type and enrollment form
-		Program mchmsProgram = MetadataUtils.getProgram(MchMetadata._Program.MCHMS);
-		EncounterType enrollmentEncounterType = MetadataUtils.getEncounterType(MchMetadata._EncounterType.MCHMS_ENROLLMENT);
-		Form enrollmentForm = MetadataUtils.getForm(MchMetadata._Form.MCHMS_ENROLLMENT);
+		Program mchmsProgram = MetadataUtils.existing(Program.class, MchMetadata._Program.MCHMS);
+		EncounterType enrollmentEncounterType = MetadataUtils.existing(EncounterType.class, MchMetadata._EncounterType.MCHMS_ENROLLMENT);
+		Form enrollmentForm = MetadataUtils.existing(Form.class, MchMetadata._Form.MCHMS_ENROLLMENT);
 
 		//Enroll  #2, #6, #7 and #8 into MCH-MS
 		TestUtils.enrollInProgram(TestUtils.getPatient(2), mchmsProgram, new Date());

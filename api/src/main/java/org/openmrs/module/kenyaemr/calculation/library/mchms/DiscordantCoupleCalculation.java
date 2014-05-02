@@ -41,7 +41,7 @@ public class DiscordantCoupleCalculation extends BaseEmrCalculation {
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> params, PatientCalculationContext context) {
 
-		Program mchmsProgram = MetadataUtils.getProgram(MchMetadata._Program.MCHMS);
+		Program mchmsProgram = MetadataUtils.existing(Program.class, MchMetadata._Program.MCHMS);
 
 		// Get all patients who are alive and in MCH-MS program
 		Set<Integer> alive = Filters.alive(cohort, context);

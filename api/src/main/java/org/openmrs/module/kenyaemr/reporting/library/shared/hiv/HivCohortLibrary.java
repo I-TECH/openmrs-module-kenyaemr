@@ -48,7 +48,7 @@ public class HivCohortLibrary {
 	 * @return the cohort definition
 	 */
 	public CohortDefinition referredFrom(Concept... entryPoints) {
-		EncounterType hivEnrollEncType = MetadataUtils.getEncounterType(HivMetadata._EncounterType.HIV_ENROLLMENT);
+		EncounterType hivEnrollEncType = MetadataUtils.existing(EncounterType.class, HivMetadata._EncounterType.HIV_ENROLLMENT);
 		Concept methodOfEnrollment = Dictionary.getConcept(Dictionary.METHOD_OF_ENROLLMENT);
 
 		CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
@@ -69,7 +69,7 @@ public class HivCohortLibrary {
 	 * @return the cohort definition
 	 */
 	public CohortDefinition referredNotFrom(Concept... entryPoints) {
-		EncounterType hivEnrollEncType = MetadataUtils.getEncounterType(HivMetadata._EncounterType.HIV_ENROLLMENT);
+		EncounterType hivEnrollEncType = MetadataUtils.existing(EncounterType.class, HivMetadata._EncounterType.HIV_ENROLLMENT);
 		Concept methodOfEnrollment = Dictionary.getConcept(Dictionary.METHOD_OF_ENROLLMENT);
 
 		CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
@@ -89,7 +89,7 @@ public class HivCohortLibrary {
 	 * @return the cohort definition
 	 */
 	public CohortDefinition enrolled() {
-		return commonCohorts.enrolled(MetadataUtils.getProgram(HivMetadata._Program.HIV));
+		return commonCohorts.enrolled(MetadataUtils.existing(Program.class, HivMetadata._Program.HIV));
 	}
 
 	/**
@@ -97,7 +97,7 @@ public class HivCohortLibrary {
 	 * @return the cohort definition
 	 */
 	public CohortDefinition enrolledExcludingTransfers() {
-		return commonCohorts.enrolledExcludingTransfers(MetadataUtils.getProgram(HivMetadata._Program.HIV));
+		return commonCohorts.enrolledExcludingTransfers(MetadataUtils.existing(Program.class, HivMetadata._Program.HIV));
 	}
 
 	/**
@@ -153,8 +153,8 @@ public class HivCohortLibrary {
 	 * @return the cohort definition
 	 */
 	public CohortDefinition hasHivVisit() {
-		EncounterType hivEnrollment = MetadataUtils.getEncounterType(HivMetadata._EncounterType.HIV_ENROLLMENT);
-		EncounterType hivConsultation = MetadataUtils.getEncounterType(HivMetadata._EncounterType.HIV_CONSULTATION);
+		EncounterType hivEnrollment = MetadataUtils.existing(EncounterType.class, HivMetadata._EncounterType.HIV_ENROLLMENT);
+		EncounterType hivConsultation = MetadataUtils.existing(EncounterType.class, HivMetadata._EncounterType.HIV_CONSULTATION);
 		return commonCohorts.hasEncounter(hivEnrollment, hivConsultation);
 	}
 
@@ -191,7 +191,7 @@ public class HivCohortLibrary {
 	 * @return
 	 */
 	public CohortDefinition inHivProgramAndOnCtxProphylaxis() {
-		Program hivProgram = MetadataUtils.getProgram(HivMetadata._Program.HIV);
+		Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.setName("in HIV program and on CTX prophylaxis");
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
@@ -208,7 +208,7 @@ public class HivCohortLibrary {
 	 */
 	public CohortDefinition inHivProgramAndOnFluconazoleProphylaxis() {
 		Concept flucanozole = Dictionary.getConcept(Dictionary.FLUCONAZOLE);
-		Program hivProgram = MetadataUtils.getProgram(HivMetadata._Program.HIV);
+		Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.setName("in HIV program and on Fluconazole prophylaxis");
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));

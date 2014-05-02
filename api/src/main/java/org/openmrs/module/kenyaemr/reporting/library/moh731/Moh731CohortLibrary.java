@@ -45,8 +45,8 @@ public class Moh731CohortLibrary {
 	 * @return the cohort definition
 	 */
 	public CohortDefinition currentlyInCare() {
-		EncounterType hivEnroll = MetadataUtils.getEncounterType(HivMetadata._EncounterType.HIV_ENROLLMENT);
-		EncounterType hivConsult = MetadataUtils.getEncounterType(HivMetadata._EncounterType.HIV_CONSULTATION);
+		EncounterType hivEnroll = MetadataUtils.existing(EncounterType.class, HivMetadata._EncounterType.HIV_ENROLLMENT);
+		EncounterType hivConsult = MetadataUtils.existing(EncounterType.class, HivMetadata._EncounterType.HIV_CONSULTATION);
 
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));

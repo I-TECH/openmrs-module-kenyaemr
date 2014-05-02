@@ -49,11 +49,11 @@ public class MchcsCarePanelFragmentController {
 
 		PatientWrapper patientWrapper = new PatientWrapper(patient);
 
-		EncounterType hei_completion_encounterType = MetadataUtils.getEncounterType(MchMetadata._EncounterType.MCHCS_HEI_COMPLETION);
+		EncounterType hei_completion_encounterType = MetadataUtils.existing(EncounterType.class, MchMetadata._EncounterType.MCHCS_HEI_COMPLETION);
 		Encounter lastMchcsHeiCompletion = patientWrapper.lastEncounter(hei_completion_encounterType);
-		EncounterType mchcs_enrollment_encounterType = MetadataUtils.getEncounterType(MchMetadata._EncounterType.MCHCS_ENROLLMENT);
+		EncounterType mchcs_enrollment_encounterType = MetadataUtils.existing(EncounterType.class, MchMetadata._EncounterType.MCHCS_ENROLLMENT);
 		Encounter lastMchcsEnrollment = patientWrapper.lastEncounter(mchcs_enrollment_encounterType);
-		EncounterType mchcs_consultation_encounterType = MetadataUtils.getEncounterType(MchMetadata._EncounterType.MCHCS_CONSULTATION);
+		EncounterType mchcs_consultation_encounterType = MetadataUtils.existing(EncounterType.class, MchMetadata._EncounterType.MCHCS_CONSULTATION);
 		Encounter lastMchcsConsultation = patientWrapper.lastEncounter(mchcs_consultation_encounterType);
 
 		if (lastMchcsHeiCompletion != null && lastMchcsEnrollment != null) {

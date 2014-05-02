@@ -199,7 +199,7 @@ public class RegimenManager implements ContentManager {
 			String categoryCode = categoryElement.getAttribute("code");
 			String masterSetUuid = categoryElement.getAttribute("masterSetUuid");
 
-			Concept masterSetConcept = MetadataUtils.getConcept(masterSetUuid);
+			Concept masterSetConcept = MetadataUtils.existing(Concept.class, masterSetUuid);
 			masterSetConcepts.put(categoryCode, masterSetConcept.getConceptId());
 
 			Map<String, DrugReference> categoryDrugs = new HashMap<String, DrugReference>();

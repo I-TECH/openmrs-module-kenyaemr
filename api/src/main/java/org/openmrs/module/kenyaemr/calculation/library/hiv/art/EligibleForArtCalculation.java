@@ -57,7 +57,7 @@ public class EligibleForArtCalculation extends BaseEmrCalculation implements Pat
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues,
 	                                     PatientCalculationContext context) {
 
-		Program hivProgram = MetadataUtils.getProgram(HivMetadata._Program.HIV);
+		Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
 
 		Set<Integer> alive = Filters.alive(cohort, context);
 		Set<Integer> inHivProgram = Filters.inProgram(hivProgram, alive, context);

@@ -16,6 +16,7 @@ package org.openmrs.module.kenyaemr.calculation.library.mchms;
 
 import org.openmrs.Concept;
 import org.openmrs.Encounter;
+import org.openmrs.EncounterType;
 import org.openmrs.Program;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
@@ -47,7 +48,7 @@ public class HivTestedAtEnrollmentCalculation extends BaseEmrCalculation {
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
 
-		Program mchmsProgram = MetadataUtils.getProgram(MchMetadata._Program.MCHMS);
+		Program mchmsProgram = MetadataUtils.existing(Program.class, MchMetadata._Program.MCHMS);
 
 		// Get all patients who are alive and in MCH-MS program
 		Set<Integer> alive = Filters.alive(cohort, context);
@@ -59,7 +60,7 @@ public class HivTestedAtEnrollmentCalculation extends BaseEmrCalculation {
 		Concept notHivTestedConcept = Dictionary.getConcept(Dictionary.NOT_HIV_TESTED);
 
 		CalculationResultMap ret = new CalculationResultMap();
-		CalculationResultMap crm = Calculations.lastEncounter(MetadataUtils.getEncounterType(MchMetadata._EncounterType.MCHMS_ENROLLMENT), cohort, context);
+		CalculationResultMap crm = Calculations.lastEncounter(MetadataUtils.existing(EncounterType.class, MchMetadata._EncounterType.MCHMS_ENROLLMENT), cohort, context);
 		for (Integer ptId : cohort) {
 			// Is patient alive and in MCH program?
 			boolean hivTestedAtEnrollment = false;

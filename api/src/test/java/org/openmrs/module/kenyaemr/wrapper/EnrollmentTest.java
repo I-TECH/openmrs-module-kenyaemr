@@ -58,7 +58,7 @@ public class EnrollmentTest extends BaseModuleContextSensitiveTest {
 	@Test
 	public void firstObs_shouldFindFirstObsWithConcept() {
 		Patient patient = TestUtils.getPatient(6);
-		Program tbProgram = MetadataUtils.getProgram(TbMetadata._Program.TB);
+		Program tbProgram = MetadataUtils.existing(Program.class, TbMetadata._Program.TB);
 
 		Enrollment enrollment = new Enrollment(TestUtils.enrollInProgram(patient, tbProgram, TestUtils.date(2012, 1, 1), TestUtils.date(2012, 4, 1)));
 
@@ -86,8 +86,8 @@ public class EnrollmentTest extends BaseModuleContextSensitiveTest {
 	@Test
 	public void lastEncounter_shouldFindLastEncounterWithType() {
 		Patient patient = TestUtils.getPatient(6);
-		Program tbProgram = MetadataUtils.getProgram(TbMetadata._Program.TB);
-		EncounterType tbScreenEncType = MetadataUtils.getEncounterType(TbMetadata._EncounterType.TB_SCREENING);
+		Program tbProgram = MetadataUtils.existing(Program.class, TbMetadata._Program.TB);
+		EncounterType tbScreenEncType = MetadataUtils.existing(EncounterType.class, TbMetadata._EncounterType.TB_SCREENING);
 
 		Enrollment enrollment = new Enrollment(TestUtils.enrollInProgram(patient, tbProgram, TestUtils.date(2012, 1, 1), TestUtils.date(2012, 4, 1)));
 

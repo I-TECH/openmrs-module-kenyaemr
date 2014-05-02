@@ -53,7 +53,7 @@ public class EditPatientFormPageControllerTest extends BaseModuleWebContextSensi
 	 */
 	@Test
 	public void controller() {
-		Form obsHistory = MetadataUtils.getForm(CommonMetadata._Form.OBSTETRIC_HISTORY);
+		Form obsHistory = MetadataUtils.existing(Form.class, CommonMetadata._Form.OBSTETRIC_HISTORY);
 
 		// Check with no previous submission of the obstetric history form
 		String result = controller.controller("test.app", TestUtils.getPatient(7), CommonMetadata._Form.OBSTETRIC_HISTORY, "test.html");

@@ -56,7 +56,7 @@ public class Moh257FragmentController {
 		PatientWrapper patientWrapper = new PatientWrapper(patient);
 
 		for (String page1FormUuid : page1FormUuids) {
-			Form page1Form = MetadataUtils.getForm(page1FormUuid);
+			Form page1Form = MetadataUtils.existing(Form.class, page1FormUuid);
 			List<Encounter> formEncounters = patientWrapper.allEncounters(page1Form);
 
 			if (formEncounters.size() == 0) {
@@ -67,7 +67,7 @@ public class Moh257FragmentController {
 			}
 		}
 
-		Form moh257VisitForm = MetadataUtils.getForm(HivMetadata._Form.MOH_257_VISIT_SUMMARY);
+		Form moh257VisitForm = MetadataUtils.existing(Form.class, HivMetadata._Form.MOH_257_VISIT_SUMMARY);
 		List<Encounter> moh257VisitSummaryEncounters = patientWrapper.allEncounters(moh257VisitForm);
 		Collections.reverse(moh257VisitSummaryEncounters);
 

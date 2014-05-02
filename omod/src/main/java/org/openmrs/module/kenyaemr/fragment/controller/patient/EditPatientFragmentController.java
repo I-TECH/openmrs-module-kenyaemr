@@ -322,7 +322,7 @@ public class EditPatientFragmentController {
 			String value = (String) errors.getFieldValue(field);
 
 			if (StringUtils.isNotBlank(value)) {
-				PatientIdentifierType idType = MetadataUtils.getPatientIdentifierType(idTypeUuid);
+				PatientIdentifierType idType = MetadataUtils.existing(PatientIdentifierType.class, idTypeUuid);
 				if (!value.matches(idType.getFormat())) {
 					errors.rejectValue(field, idType.getFormatDescription());
 				}
@@ -390,7 +390,7 @@ public class EditPatientFragmentController {
 			wrapper.setSubChiefName(subChiefName);
 
 			// Make sure everyone gets an OpenMRS ID
-			PatientIdentifierType openmrsIdType = MetadataUtils.getPatientIdentifierType(CommonMetadata._PatientIdentifierType.OPENMRS_ID);
+			PatientIdentifierType openmrsIdType = MetadataUtils.existing(PatientIdentifierType.class, CommonMetadata._PatientIdentifierType.OPENMRS_ID);
 			PatientIdentifier openmrsId = toSave.getPatientIdentifier(openmrsIdType);
 
 			if (openmrsId == null) {
@@ -463,7 +463,7 @@ public class EditPatientFragmentController {
 				return false;
 			}
 			ProgramWorkflowService pws = Context.getProgramWorkflowService();
-			Program hivProgram = MetadataUtils.getProgram(HivMetadata._Program.HIV);
+			Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
 			for (PatientProgram pp : pws.getPatientPrograms((Patient) original, hivProgram, null, null, null, null, false)) {
 				if (pp.getActive()) {
 					return true;
