@@ -16,8 +16,8 @@ package org.openmrs.module.kenyaemr.calculation.library.tb;
 
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
+import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
 import org.openmrs.module.kenyacore.calculation.Filters;
-import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
 
 import java.util.Collection;
@@ -27,7 +27,7 @@ import java.util.Set;
 /**
  * Calculates whether patients are eligible for the TB program
  */
-public class EligibleForTbProgramCalculation extends BaseEmrCalculation {
+public class EligibleForTbProgramCalculation extends AbstractPatientCalculation {
 
 	/**
 	 * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)

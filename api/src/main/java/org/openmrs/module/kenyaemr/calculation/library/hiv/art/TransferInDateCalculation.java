@@ -18,9 +18,9 @@ import org.openmrs.Concept;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
+import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
 import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 
 import java.util.Collection;
@@ -30,7 +30,7 @@ import java.util.Map;
 /**
  * Calculates whether a patient is a transfer in date
  */
-public class TransferInDateCalculation extends BaseEmrCalculation {
+public class TransferInDateCalculation extends AbstractPatientCalculation {
 	/**
 	 * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(java.util.Collection,
 	 *      java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)

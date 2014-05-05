@@ -20,7 +20,7 @@ import java.util.Map;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
-import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
+import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.regimen.RegimenOrder;
@@ -28,7 +28,7 @@ import org.openmrs.module.kenyaemr.regimen.RegimenOrder;
 /**
  * Calculates whether patients are on second-line ART regimens
  */
-public class OnSecondLineArtCalculation extends BaseEmrCalculation {
+public class OnSecondLineArtCalculation extends AbstractPatientCalculation {
 
 	/**
 	 * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)

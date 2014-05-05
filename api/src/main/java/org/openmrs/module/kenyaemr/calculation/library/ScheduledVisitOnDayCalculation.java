@@ -22,9 +22,9 @@ import org.openmrs.Concept;
 import org.openmrs.api.PatientSetService.TimeModifier;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
+import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
 import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.DateObsCohortDefinition;
@@ -34,7 +34,7 @@ import org.openmrs.module.reporting.common.RangeComparator;
 /**
  * Returns whether patients have a scheduled visit on the specified date
  */
-public class ScheduledVisitOnDayCalculation extends BaseEmrCalculation {
+public class ScheduledVisitOnDayCalculation extends AbstractPatientCalculation {
 
 	/**
 	 * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)

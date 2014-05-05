@@ -16,9 +16,9 @@ package org.openmrs.module.kenyaemr.calculation.library.mchcs;
 
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
+import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
 import org.openmrs.module.kenyacore.calculation.Calculations;
-import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.reporting.common.Age;
 
 import java.util.Collection;
@@ -27,7 +27,7 @@ import java.util.Map;
 /**
  * Calculates whether patients are eligible for the MCH child services program
  */
-public class EligibleForMchcsProgramCalculation extends BaseEmrCalculation {
+public class EligibleForMchcsProgramCalculation extends AbstractPatientCalculation {
 
 	/**
 	 * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)

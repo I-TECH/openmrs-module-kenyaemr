@@ -19,12 +19,11 @@ import org.openmrs.Program;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
-import org.openmrs.module.kenyacore.calculation.CalculationUtils;
+import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
 import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyacore.calculation.Filters;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.metadata.MchMetadata;
 
@@ -36,7 +35,7 @@ import java.util.Set;
 /**
  * Calculates the date on which an MCH patient or her partner was tested for HIV
  */
-public class MchmsHivTestDateCalculation extends BaseEmrCalculation {
+public class MchmsHivTestDateCalculation extends AbstractPatientCalculation {
 
 	/**
 	 * @should return null for patients who have not tested for HIV

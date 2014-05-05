@@ -25,6 +25,7 @@ import org.openmrs.Program;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.ObsResult;
+import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
 import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyacore.calculation.Filters;
 import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
@@ -33,7 +34,6 @@ import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
 import org.openmrs.module.kenyaemr.TbConstants;
-import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyaemr.metadata.TbMetadata;
 
 /**
@@ -42,7 +42,7 @@ import org.openmrs.module.kenyaemr.metadata.TbMetadata;
  * duration probably 2 weeks during the 2 weeks then there should have been no
  * sputum results recorded
  */
-public class NeedsTbSputumTestCalculation extends BaseEmrCalculation implements PatientFlagCalculation {
+public class NeedsTbSputumTestCalculation extends AbstractPatientCalculation implements PatientFlagCalculation {
 
 	/**
 	 * @see org.openmrs.module.kenyacore.calculation.PatientFlagCalculation#getFlagMessage()

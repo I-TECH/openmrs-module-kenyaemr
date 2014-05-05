@@ -17,10 +17,10 @@ package org.openmrs.module.kenyaemr.calculation.library.hiv.art;
 import org.openmrs.Concept;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
+import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
 import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 
 import java.util.Collection;
@@ -29,7 +29,7 @@ import java.util.Map;
 /**
  * Calculates whether a patient is a transfer in based on the status
  */
-public class IsTransferInCalculation extends BaseEmrCalculation {
+public class IsTransferInCalculation extends AbstractPatientCalculation {
 
 	/**
 	 * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(java.util.Collection,

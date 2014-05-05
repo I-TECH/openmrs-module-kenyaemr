@@ -33,8 +33,12 @@ import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.reporting.data.patient.definition.DrugOrdersForPatientDataDefinition;
 
 /**
- * Base class for calculations we'll hand-write for this module.
+ * Previously the base class for calculations, replaced by AbstractPatientCalculation in KenyaCore.
+ *
+ * This class is deprecated because it now only contains drug order related functionality which should be moved into a
+ * different class, and also may not work with OpenMRS 1.10
  */
+@Deprecated
 public abstract class BaseEmrCalculation extends AbstractPatientCalculation {
 
 	/**
