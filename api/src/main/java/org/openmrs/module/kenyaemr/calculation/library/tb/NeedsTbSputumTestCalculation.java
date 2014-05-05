@@ -25,10 +25,10 @@ import org.openmrs.Program;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.ObsResult;
-import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyacore.calculation.Filters;
 import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
+import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
@@ -144,7 +144,7 @@ public class NeedsTbSputumTestCalculation extends BaseEmrCalculation implements 
 								.equals(smearPositive))) {
 					c.setTime(treatmentStartDateObs.getValue().getValueDate());
 
-					Integer numberOfDaysSinceTreatmentStarted = daysSince(
+					Integer numberOfDaysSinceTreatmentStarted = EmrCalculationUtils.daysSince(
 							treatmentStartDateObs.getValue().getValueDate(),
 							context);
 					// patients with patient classification as new have a repeat

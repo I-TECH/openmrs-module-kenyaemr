@@ -66,7 +66,7 @@ public class MissedLastAppointmentCalculation extends BaseEmrCalculation impleme
 				Date lastScheduledReturnDate = EmrCalculationUtils.datetimeObsResultForPatient(lastReturnDateObss, ptId);
 
 				// Does patient have a scheduled return visit in the past
-				if (lastScheduledReturnDate != null && daysSince(lastScheduledReturnDate, context) > 0) {
+				if (lastScheduledReturnDate != null && EmrCalculationUtils.daysSince(lastScheduledReturnDate, context) > 0) {
 
 					// Has patient returned since
 					Encounter lastEncounter = EmrCalculationUtils.encounterResultForPatient(lastEncounters, ptId);

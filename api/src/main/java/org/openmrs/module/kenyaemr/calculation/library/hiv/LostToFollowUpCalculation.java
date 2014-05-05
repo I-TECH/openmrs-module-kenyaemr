@@ -20,7 +20,6 @@ import org.openmrs.Program;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
-import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyacore.calculation.Filters;
 import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
@@ -73,7 +72,7 @@ public class LostToFollowUpCalculation extends BaseEmrCalculation implements Pat
 				// Patient is lost if no encounters in last X days
 				Encounter lastEncounter = EmrCalculationUtils.encounterResultForPatient(lastEncounters, ptId);
 				Date lastEncounterDate = lastEncounter != null ? lastEncounter.getEncounterDatetime() : null;
-				lost = lastEncounterDate == null || daysSince(lastEncounterDate, context) > HivConstants.LOST_TO_FOLLOW_UP_THRESHOLD_DAYS;
+				lost = lastEncounterDate == null || EmrCalculationUtils.daysSince(lastEncounterDate, context) > HivConstants.LOST_TO_FOLLOW_UP_THRESHOLD_DAYS;
 			}
 			ret.put(ptId, new SimpleResult(lost, this, context));
 

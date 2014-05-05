@@ -14,11 +14,14 @@
 
 package org.openmrs.module.kenyaemr.calculation;
 
+import org.joda.time.DateTime;
+import org.joda.time.Days;
 import org.openmrs.Concept;
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
+import org.openmrs.calculation.CalculationContext;
 import org.openmrs.calculation.patient.PatientCalculation;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResult;
@@ -174,5 +177,17 @@ public class EmrCalculationUtils {
 			}
 		}
 		return result;
+	}
+
+	/**
+	 * Calculates the days since the given date
+	 * @param date the date
+	 * @param calculationContext the calculation context
+	 * @return the number of days
+	 */
+	public static int daysSince(Date date, CalculationContext calculationContext) {
+		DateTime d1 = new DateTime(date.getTime());
+		DateTime d2 = new DateTime(calculationContext.getNow().getTime());
+		return Days.daysBetween(d1, d2).getDays();
 	}
 }
