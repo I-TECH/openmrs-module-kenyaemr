@@ -21,18 +21,16 @@ import org.openmrs.Obs;
 import org.openmrs.Program;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
+import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
-import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyacore.calculation.Filters;
 import org.openmrs.module.kenyaemr.wrapper.EncounterWrapper;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.kenyaemr.ArtAssessmentMethod;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.metadata.MchMetadata;
-import org.openmrs.module.kenyaemr.util.EmrUtils;
 
 import java.util.Collection;
 import java.util.Map;
@@ -46,7 +44,7 @@ import java.util.Set;
  * @params A map of parameters values specifying the {@link org.openmrs.module.kenyaemr.ArtAssessmentMethod}
  * @return
  */
-public class AssessedOnFirstVisitCalculation extends BaseEmrCalculation {
+public class AssessedOnFirstVisitCalculation extends AbstractPatientCalculation {
 
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> params, PatientCalculationContext context) {
@@ -54,8 +52,8 @@ public class AssessedOnFirstVisitCalculation extends BaseEmrCalculation {
 		ArtAssessmentMethod artAssessmentMethod = (params != null && params.containsKey("artAssessmentMethod")) ?
 				(ArtAssessmentMethod) params.get("artAssessmentMethod") : null;
 
-		Program mchmsProgram = MetadataUtils.getProgram(MchMetadata._Program.MCHMS);
-		EncounterType mchConsultation = MetadataUtils.getEncounterType(MchMetadata._EncounterType.MCHMS_CONSULTATION);
+		Program mchmsProgram = MetadataUtils.existing(Program.class, MchMetadata._Program.MCHMS);
+		EncounterType mchConsultation = MetadataUtils.existing(EncounterType.class, MchMetadata._EncounterType.MCHMS_CONSULTATION);
 		Concept whoStageConcept = Dictionary.getConcept(Dictionary.CURRENT_WHO_STAGE);
 		Concept cd4CountConcept = Dictionary.getConcept(Dictionary.CD4_COUNT);
 

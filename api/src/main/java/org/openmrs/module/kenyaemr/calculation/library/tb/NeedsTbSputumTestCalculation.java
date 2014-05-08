@@ -25,15 +25,15 @@ import org.openmrs.Program;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.ObsResult;
-import org.openmrs.module.kenyacore.calculation.CalculationUtils;
+import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
 import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyacore.calculation.Filters;
 import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
+import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
 import org.openmrs.module.kenyaemr.TbConstants;
-import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyaemr.metadata.TbMetadata;
 
 /**
@@ -42,7 +42,7 @@ import org.openmrs.module.kenyaemr.metadata.TbMetadata;
  * duration probably 2 weeks during the 2 weeks then there should have been no
  * sputum results recorded
  */
-public class NeedsTbSputumTestCalculation extends BaseEmrCalculation implements PatientFlagCalculation {
+public class NeedsTbSputumTestCalculation extends AbstractPatientCalculation implements PatientFlagCalculation {
 
 	/**
 	 * @see org.openmrs.module.kenyacore.calculation.PatientFlagCalculation#getFlagMessage()
@@ -59,7 +59,7 @@ public class NeedsTbSputumTestCalculation extends BaseEmrCalculation implements 
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
 		// Get TB program
-		Program tbProgram = MetadataUtils.getProgram(TbMetadata._Program.TB);
+		Program tbProgram = MetadataUtils.existing(Program.class, TbMetadata._Program.TB);
 
 		// Get all patients who are alive and in TB program
 		Set<Integer> alive = Filters.alive(cohort, context);
@@ -144,7 +144,7 @@ public class NeedsTbSputumTestCalculation extends BaseEmrCalculation implements 
 								.equals(smearPositive))) {
 					c.setTime(treatmentStartDateObs.getValue().getValueDate());
 
-					Integer numberOfDaysSinceTreatmentStarted = daysSince(
+					Integer numberOfDaysSinceTreatmentStarted = EmrCalculationUtils.daysSince(
 							treatmentStartDateObs.getValue().getValueDate(),
 							context);
 					// patients with patient classification as new have a repeat

@@ -24,7 +24,7 @@ import org.openmrs.module.kenyacore.report.ReportDescriptor;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
-import org.openmrs.module.kenyaemr.test.ReportingTestUtils;
+import org.openmrs.module.kenyacore.test.ReportingTestUtils;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.report.ReportData;
@@ -88,7 +88,7 @@ public class DecliningCd4ReportBuilderTest extends BaseModuleContextSensitiveTes
 
 		ReportData data = Context.getService(ReportDefinitionService.class).evaluate(rd, ec);
 
-		ReportingTestUtils.checkPatientListReport(Collections.singleton(7), data);
+		ReportingTestUtils.checkStandardCohortReport(Collections.singleton(7), data);
 		//ReportingTestUtils.printReport(data);
 	}
 }

@@ -62,7 +62,7 @@ var kenyaemrApp = angular.module('kenyaemr', [ 'kenyaui' ]);
 	 */
 	kenyaemr.openEncounterDialog = function(appId, encounterId) {
 		var contentUrl = ui.pageLink('kenyaemr', 'dialog/formDialog', { appId: appId, encounterId: encounterId, currentUrl: location.href });
-		kenyaui.openDynamicDialog({ heading: 'View Form', url: contentUrl, width: 90, height: 90 });
+		kenyaui.openDynamicDialog({ heading: 'View Form', url: contentUrl, width: 90, height: 90, scrolling: true });
 	};
 
 	/**

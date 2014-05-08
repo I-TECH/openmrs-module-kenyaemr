@@ -9,7 +9,7 @@
 	function showCohortDialog(dataset, column) {
 		var contentUrl = ui.pageLink('kenyaemr', 'dialog/cohortDialog', { appId: '${ currentApp.id }', request: '${ reportRequest.id }', dataset: dataset, column: column });
 
-		kenyaui.openDynamicDialog({ heading: 'View Cohort', url: contentUrl, width: 90, height: 90 });
+		kenyaui.openDynamicDialog({ heading: 'View Cohort', url: contentUrl, width: 90, height: 90, scrolling: true });
 	}
 </script>
 

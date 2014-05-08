@@ -17,9 +17,9 @@ package org.openmrs.module.kenyaemr.calculation.library;
 import org.openmrs.Program;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
+import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
 import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyacore.calculation.Filters;
-import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 
 import java.util.Collection;
 import java.util.Map;
@@ -27,7 +27,7 @@ import java.util.Map;
 /**
  * Calculates whether patients are in enrolled the specified program (and alive)
  */
-public class InProgramCalculation extends BaseEmrCalculation {
+public class InProgramCalculation extends AbstractPatientCalculation {
 
 	/**
 	 * @see org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)

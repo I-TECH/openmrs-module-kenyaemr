@@ -81,7 +81,7 @@ public class DrugReference {
 	 * @return the concept
 	 */
 	public Concept getConcept() {
-		return MetadataUtils.getConcept(conceptIdentifier);
+		return MetadataUtils.existing(Concept.class, conceptIdentifier);
 	}
 
 	/**

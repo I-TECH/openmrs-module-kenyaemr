@@ -63,7 +63,7 @@ public class InfantNeverTakenCTXCalculationTest extends BaseModuleContextSensiti
 	@Test
 	public void evaluate() throws Exception {
 		//get mchcs program
-		Program mchcsProgram = MetadataUtils.getProgram(MchMetadata._Program.MCHCS);
+		Program mchcsProgram = MetadataUtils.existing(Program.class, MchMetadata._Program.MCHCS);
 
 		// Enroll patients #6, #7 and 8  in the mchcs Program
 		TestUtils.enrollInProgram(TestUtils.getPatient(6), mchcsProgram, new Date());

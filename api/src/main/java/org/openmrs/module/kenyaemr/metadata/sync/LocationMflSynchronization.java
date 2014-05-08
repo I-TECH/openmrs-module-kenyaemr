@@ -43,14 +43,6 @@ public class LocationMflSynchronization implements ObjectSynchronization<Locatio
 	}
 
 	/**
-	 * @see org.openmrs.module.metadatadeploy.sync.ObjectSynchronization#fetchExistingById(int)
-	 */
-	@Override
-	public Location fetchExistingById(int id) {
-		return locationService.getLocation(id);
-	}
-
-	/**
 	 * @see org.openmrs.module.metadatadeploy.sync.ObjectSynchronization#getObjectSyncKey(org.openmrs.OpenmrsObject)
 	 */
 	@Override

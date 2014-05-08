@@ -14,11 +14,14 @@
 
 package org.openmrs.module.kenyaemr.calculation;
 
+import org.joda.time.DateTime;
+import org.joda.time.Days;
 import org.openmrs.Concept;
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
+import org.openmrs.calculation.CalculationContext;
 import org.openmrs.calculation.patient.PatientCalculation;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResult;
@@ -46,32 +49,6 @@ import java.util.Set;
  * Calculation utility methods, also used by some reporting classes
  */
 public class EmrCalculationUtils {
-
-	/**
-	 * Extracts patients from a calculation result map with date results in the given range
-	 * @param results the calculation result map
-	 * @param minDateInclusive the minimum date (inclusive)
-	 * @param maxDateInclusive the maximum date (inclusive)
-	 * @return the extracted patient ids
-	 */
-	public static Set<Integer> datesWithinRange(CalculationResultMap results, Date minDateInclusive, Date maxDateInclusive) {
-		Set<Integer> ret = new HashSet<Integer>();
-		for (Map.Entry<Integer, CalculationResult> e : results.entrySet()) {
-			Date result = null;
-			try {
-				result = e.getValue().asType(Date.class);
-			} catch (Exception ex) {
-				// pass
-			}
-			if (result != null) {
-				if (OpenmrsUtil.compareWithNullAsEarliest(result, minDateInclusive) >= 0 &&
-						OpenmrsUtil.compareWithNullAsLatest(result, maxDateInclusive) <= 0) {
-					ret.add(e.getKey());
-				}
-			}
-		}
-		return ret;
-	}
 
 	/**
 	 * Evaluates the specified calculation for a single patient
@@ -200,5 +177,17 @@ public class EmrCalculationUtils {
 			}
 		}
 		return result;
+	}
+
+	/**
+	 * Calculates the days since the given date
+	 * @param date the date
+	 * @param calculationContext the calculation context
+	 * @return the number of days
+	 */
+	public static int daysSince(Date date, CalculationContext calculationContext) {
+		DateTime d1 = new DateTime(date.getTime());
+		DateTime d2 = new DateTime(calculationContext.getNow().getTime());
+		return Days.daysBetween(d1, d2).getDays();
 	}
 }

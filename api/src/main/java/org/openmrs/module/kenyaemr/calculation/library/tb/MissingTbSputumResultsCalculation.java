@@ -23,20 +23,19 @@ import org.openmrs.Program;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.ObsResult;
-import org.openmrs.module.kenyacore.calculation.CalculationUtils;
+import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
 import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyacore.calculation.Filters;
 import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
-import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyaemr.metadata.TbMetadata;
 
 /**
  * Calculates which patients are missing TB sputum results
  */
-public class MissingTbSputumResultsCalculation extends BaseEmrCalculation implements PatientFlagCalculation {
+public class MissingTbSputumResultsCalculation extends AbstractPatientCalculation implements PatientFlagCalculation {
 
 	/**
 	 * @see org.openmrs.module.kenyacore.calculation.PatientFlagCalculation#getFlagMessage()
@@ -56,7 +55,7 @@ public class MissingTbSputumResultsCalculation extends BaseEmrCalculation implem
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
 		// Get TB program
-		Program tbProgram = MetadataUtils.getProgram(TbMetadata._Program.TB);
+		Program tbProgram = MetadataUtils.existing(Program.class, TbMetadata._Program.TB);
 
 		// Get all patients who are alive and in TB program
 		Set<Integer> alive = Filters.alive(cohort, context);

@@ -47,7 +47,7 @@ public class FormSimplifierTest extends BaseModuleWebContextSensitiveTest {
 	 */
 	@Test
 	public void simplify_shouldSimplify() {
-		Form form = MetadataUtils.getForm(CommonMetadata._Form.TRIAGE);
+		Form form = MetadataUtils.existing(Form.class, CommonMetadata._Form.TRIAGE);
 
 		SimpleObject result = simplifier.simplify(form);
 		Assert.assertThat(result, hasEntry("id", (Object) form.getId()));

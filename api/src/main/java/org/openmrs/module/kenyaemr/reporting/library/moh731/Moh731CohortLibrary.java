@@ -45,8 +45,8 @@ public class Moh731CohortLibrary {
 	 * @return the cohort definition
 	 */
 	public CohortDefinition currentlyInCare() {
-		EncounterType hivEnroll = MetadataUtils.getEncounterType(HivMetadata._EncounterType.HIV_ENROLLMENT);
-		EncounterType hivConsult = MetadataUtils.getEncounterType(HivMetadata._EncounterType.HIV_CONSULTATION);
+		EncounterType hivEnroll = MetadataUtils.existing(EncounterType.class, HivMetadata._EncounterType.HIV_ENROLLMENT);
+		EncounterType hivConsult = MetadataUtils.existing(EncounterType.class, HivMetadata._EncounterType.HIV_CONSULTATION);
 
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
@@ -91,7 +91,7 @@ public class Moh731CohortLibrary {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.addParameter(new Parameter("fromDate", "From Date", Date.class));
 		cd.addParameter(new Parameter("toDate", "To Date", Date.class));
-		cd.addSearch("art12MonthNetCohort", ReportUtils.map(artCohorts.netCohort12Months(), "onDate=${toDate}"));
+		cd.addSearch("art12MonthNetCohort", ReportUtils.map(artCohorts.netCohortMonths(12), "onDate=${toDate}"));
 		cd.addSearch("currentlyOnOriginalFirstLine", ReportUtils.map(artCohorts.onOriginalFirstLine(), "onDate=${toDate}"));
 		cd.setCompositionString("art12MonthNetCohort AND currentlyOnOriginalFirstLine");
 		return cd;
@@ -105,7 +105,7 @@ public class Moh731CohortLibrary {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.addParameter(new Parameter("fromDate", "From Date", Date.class));
 		cd.addParameter(new Parameter("toDate", "To Date", Date.class));
-		cd.addSearch("art12MonthNetCohort", ReportUtils.map(artCohorts.netCohort12Months(), "onDate=${toDate}"));
+		cd.addSearch("art12MonthNetCohort", ReportUtils.map(artCohorts.netCohortMonths(12), "onDate=${toDate}"));
 		cd.addSearch("currentlyOnAlternateFirstLine", ReportUtils.map(artCohorts.onAlternateFirstLine(), "onDate=${toDate}"));
 		cd.setCompositionString("art12MonthNetCohort AND currentlyOnAlternateFirstLine");
 		return cd;
@@ -119,7 +119,7 @@ public class Moh731CohortLibrary {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.addParameter(new Parameter("fromDate", "From Date", Date.class));
 		cd.addParameter(new Parameter("toDate", "To Date", Date.class));
-		cd.addSearch("art12MonthNetCohort", ReportUtils.map(artCohorts.netCohort12Months(), "onDate=${toDate}"));
+		cd.addSearch("art12MonthNetCohort", ReportUtils.map(artCohorts.netCohortMonths(12), "onDate=${toDate}"));
 		cd.addSearch("currentlyOnSecondLine", ReportUtils.map(artCohorts.onSecondLine(), "onDate=${toDate}"));
 		cd.setCompositionString("art12MonthNetCohort AND currentlyOnSecondLine");
 		return cd;
@@ -133,7 +133,7 @@ public class Moh731CohortLibrary {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.addParameter(new Parameter("fromDate", "From Date", Date.class));
 		cd.addParameter(new Parameter("toDate", "To Date", Date.class));
-		cd.addSearch("art12MonthNetCohort", ReportUtils.map(artCohorts.netCohort12Months(), "onDate=${toDate}"));
+		cd.addSearch("art12MonthNetCohort", ReportUtils.map(artCohorts.netCohortMonths(12), "onDate=${toDate}"));
 		cd.addSearch("currentlyOnArt", ReportUtils.map(artCohorts.onArt(), "onDate=${toDate}"));
 		cd.setCompositionString("art12MonthNetCohort AND currentlyOnArt");
 		return cd;

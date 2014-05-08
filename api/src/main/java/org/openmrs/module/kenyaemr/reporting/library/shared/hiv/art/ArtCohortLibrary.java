@@ -17,7 +17,7 @@ package org.openmrs.module.kenyaemr.reporting.library.shared.hiv.art;
 import org.openmrs.Concept;
 import org.openmrs.Program;
 import org.openmrs.module.kenyacore.report.ReportUtils;
-import org.openmrs.module.kenyacore.report.builder.CalculationCohortDefinition;
+import org.openmrs.module.kenyacore.report.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.EligibleForArtCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtStartDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.OnAlternateFirstLineArtCalculation;
@@ -29,7 +29,7 @@ import org.openmrs.module.kenyaemr.calculation.library.hiv.art.TbPatientAtArtSta
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.WhoStageAtArtStartCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.regimen.RegimenManager;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.DateCalculationCohortDefinition;
+import org.openmrs.module.kenyacore.report.cohort.definition.DateCalculationCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.RegimenOrderCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonCohortLibrary;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
@@ -140,16 +140,16 @@ public class ArtCohortLibrary {
 	}
 
 	/**
-	 * Patients who are in the "12 month net cohort" on ${onDate}
+	 * Patients who are in the "month net cohort" on ${onDate}
 	 * @return the cohort definition
 	 */
-	public CohortDefinition netCohort12Months() {
+	public CohortDefinition netCohortMonths(int months) {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
-		cd.setName("in 12 net cohort on date");
+		cd.setName("in " + months + " month net cohort on date");
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
-		cd.addSearch("startedArt12MonthsAgo", ReportUtils.map(startedArt(), "onOrAfter=${onDate-13m},onOrBefore=${onDate-12m}"));
-		cd.addSearch("transferredOut", ReportUtils.map(commonCohorts.transferredOut(), "onOrAfter=${onDate-13m}"));
-		cd.setCompositionString("startedArt12MonthsAgo AND NOT transferredOut");
+		cd.addSearch("startedArtMonthsAgo", ReportUtils.map(startedArt(), "onOrAfter=${onDate-"+ (months + 1) + "m},onOrBefore=${onDate-" + months + "m}"));
+		cd.addSearch("transferredOut", ReportUtils.map(commonCohorts.transferredOut(), "onOrAfter=${onDate-" + (months + 1) + "m}"));
+		cd.setCompositionString("startedArtMonthsAgo AND NOT transferredOut");
 		return cd;
 	}
 

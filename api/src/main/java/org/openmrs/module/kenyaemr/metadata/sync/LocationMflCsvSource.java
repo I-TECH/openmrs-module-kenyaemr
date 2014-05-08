@@ -38,10 +38,10 @@ public class LocationMflCsvSource extends AbstractCsvResourceSource<Location> {
 	public LocationMflCsvSource(String csvFile) throws IOException {
 		super(csvFile, true);
 
-		this.codeAttrType = MetadataUtils.getLocationAttributeType(FacilityMetadata._LocationAttributeType.MASTER_FACILITY_CODE);
-		this.landlineAttrType = MetadataUtils.getLocationAttributeType(FacilityMetadata._LocationAttributeType.TELEPHONE_LANDLINE);
-		this.faxAttrType = MetadataUtils.getLocationAttributeType(FacilityMetadata._LocationAttributeType.TELEPHONE_FAX);
-		this.mobileAttrType = MetadataUtils.getLocationAttributeType(FacilityMetadata._LocationAttributeType.TELEPHONE_MOBILE);
+		this.codeAttrType = MetadataUtils.existing(LocationAttributeType.class, FacilityMetadata._LocationAttributeType.MASTER_FACILITY_CODE);
+		this.landlineAttrType = MetadataUtils.existing(LocationAttributeType.class, FacilityMetadata._LocationAttributeType.TELEPHONE_LANDLINE);
+		this.faxAttrType = MetadataUtils.existing(LocationAttributeType.class, FacilityMetadata._LocationAttributeType.TELEPHONE_FAX);
+		this.mobileAttrType = MetadataUtils.existing(LocationAttributeType.class, FacilityMetadata._LocationAttributeType.TELEPHONE_MOBILE);
 	}
 
 	/**

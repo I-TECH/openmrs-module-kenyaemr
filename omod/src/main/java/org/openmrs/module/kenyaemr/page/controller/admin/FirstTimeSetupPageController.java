@@ -16,6 +16,7 @@ package org.openmrs.module.kenyaemr.page.controller.admin;
 
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.Location;
+import org.openmrs.PatientIdentifierType;
 import org.openmrs.User;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.idgen.IdentifierSource;
@@ -66,8 +67,8 @@ public class FirstTimeSetupPageController {
 		}
 		
 		defaultLocation = service.getDefaultLocation();
-		IdentifierSource mrnIdentifierSource = identifierManager.getIdentifierSource(MetadataUtils.getPatientIdentifierType(CommonMetadata._PatientIdentifierType.OPENMRS_ID));
-		IdentifierSource hivIdentifierSource = identifierManager.getIdentifierSource(MetadataUtils.getPatientIdentifierType(HivMetadata._PatientIdentifierType.UNIQUE_PATIENT_NUMBER));
+		IdentifierSource mrnIdentifierSource = identifierManager.getIdentifierSource(MetadataUtils.existing(PatientIdentifierType.class, CommonMetadata._PatientIdentifierType.OPENMRS_ID));
+		IdentifierSource hivIdentifierSource = identifierManager.getIdentifierSource(MetadataUtils.existing(PatientIdentifierType.class, HivMetadata._PatientIdentifierType.UNIQUE_PATIENT_NUMBER));
 
 		User authenticatedUser = Context.getAuthenticatedUser();
 		

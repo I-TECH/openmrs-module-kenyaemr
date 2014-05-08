@@ -26,7 +26,7 @@ import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.test.ReportingTestUtils;
+import org.openmrs.module.kenyacore.test.ReportingTestUtils;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -74,7 +74,7 @@ public class HivCohortLibraryTest extends BaseModuleContextSensitiveTest {
 	 */
 	@Test
 	public void enrolledExcludingTransfers() throws Exception {
-		Program hivProgram = MetadataUtils.getProgram(HivMetadata._Program.HIV);
+		Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
 		Concept transferInDate = Dictionary.getConcept(Dictionary.TRANSFER_IN_DATE);
 
 		// Enroll #6 on June 1st
@@ -99,7 +99,7 @@ public class HivCohortLibraryTest extends BaseModuleContextSensitiveTest {
 	 */
 	@Test
 	public void referredFrom_shouldReturnPatientsWithSpecifiedEntryPoint() throws Exception {
-		EncounterType hivEnrollEncType = MetadataUtils.getEncounterType(HivMetadata._EncounterType.HIV_ENROLLMENT);
+		EncounterType hivEnrollEncType = MetadataUtils.existing(EncounterType.class, HivMetadata._EncounterType.HIV_ENROLLMENT);
 		Concept method = Dictionary.getConcept(Dictionary.METHOD_OF_ENROLLMENT);
 		Concept pmtct = Dictionary.getConcept(Dictionary.PMTCT_PROGRAM);
 		Concept other = Dictionary.getConcept(Dictionary.OTHER_NON_CODED);

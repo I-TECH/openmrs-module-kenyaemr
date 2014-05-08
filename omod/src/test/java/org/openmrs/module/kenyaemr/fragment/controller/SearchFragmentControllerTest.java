@@ -87,7 +87,7 @@ public class SearchFragmentControllerTest extends BaseModuleWebContextSensitiveT
 	 */
 	@Test
 	public void locations_shouldMatchByCompleteMflCode() {
-		LocationAttributeType mflCode = MetadataUtils.getLocationAttributeType(FacilityMetadata._LocationAttributeType.MASTER_FACILITY_CODE);
+		LocationAttributeType mflCode = MetadataUtils.existing(LocationAttributeType.class, FacilityMetadata._LocationAttributeType.MASTER_FACILITY_CODE);
 		Location xanadu = Context.getLocationService().getLocation(2);
 
 		LocationAttribute attr = new LocationAttribute();

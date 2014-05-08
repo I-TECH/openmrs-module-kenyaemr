@@ -76,17 +76,17 @@ public class EmrVisitAssignmentHandlerTest extends BaseModuleContextSensitiveTes
 	 */
 	@Test
 	public void getAutoCreateVisitType_shouldReturnAutoCreateVisitTypeIfSpecified() {
-		VisitType outpatient = MetadataUtils.getVisitType(CommonMetadata._VisitType.OUTPATIENT);
+		VisitType outpatient = MetadataUtils.existing(VisitType.class, CommonMetadata._VisitType.OUTPATIENT);
 
 		// Check form that doesn't specify one
 		Encounter hivAddendum = new Encounter();
-		hivAddendum.setForm(MetadataUtils.getForm(HivMetadata._Form.CLINICAL_ENCOUNTER_HIV_ADDENDUM));
+		hivAddendum.setForm(MetadataUtils.existing(Form.class, HivMetadata._Form.CLINICAL_ENCOUNTER_HIV_ADDENDUM));
 
 		Assert.assertThat(EmrVisitAssignmentHandler.getAutoCreateVisitType(hivAddendum), is(nullValue()));
 
 		// Check form that does specify one
 		Encounter moh257 = new Encounter();
-		moh257.setForm(MetadataUtils.getForm(HivMetadata._Form.MOH_257_VISIT_SUMMARY));
+		moh257.setForm(MetadataUtils.existing(Form.class, HivMetadata._Form.MOH_257_VISIT_SUMMARY));
 
 		Assert.assertThat(EmrVisitAssignmentHandler.getAutoCreateVisitType(moh257), is(outpatient));
 	}
@@ -97,8 +97,8 @@ public class EmrVisitAssignmentHandlerTest extends BaseModuleContextSensitiveTes
 	@Test
 	public void checkLocations() {
 		Patient patient = TestUtils.getPatient(7);
-		Form moh257 = MetadataUtils.getForm(HivMetadata._Form.MOH_257_VISIT_SUMMARY);
-		VisitType outpatient = MetadataUtils.getVisitType(CommonMetadata._VisitType.OUTPATIENT);
+		Form moh257 = MetadataUtils.existing(Form.class, HivMetadata._Form.MOH_257_VISIT_SUMMARY);
+		VisitType outpatient = MetadataUtils.existing(VisitType.class, CommonMetadata._VisitType.OUTPATIENT);
 
 		// Save regular visit on Jan 1st at no specific location
 		Visit visit0 = TestUtils.saveVisit(patient, outpatient, TestUtils.date(2012, 1, 1), null);

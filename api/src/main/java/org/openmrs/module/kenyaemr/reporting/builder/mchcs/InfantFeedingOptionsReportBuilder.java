@@ -14,13 +14,9 @@
 
 package org.openmrs.module.kenyaemr.reporting.builder.mchcs;
 
-import java.lang.String;
-import java.util.Calendar;
-import java.util.Date;
-
 import org.openmrs.Concept;
 import org.openmrs.Obs;
-import org.openmrs.module.kenyacore.report.CalculationReportDescriptor;
+import org.openmrs.module.kenyacore.report.CohortReportDescriptor;
 import org.openmrs.module.kenyacore.report.builder.Builds;
 import org.openmrs.module.kenyacore.report.builder.CalculationReportBuilder;
 import org.openmrs.module.kenyaemr.Dictionary;
@@ -30,12 +26,15 @@ import org.openmrs.module.reporting.data.person.definition.ObsForPersonDataDefin
 import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
 import org.springframework.stereotype.Component;
 
+import java.util.Calendar;
+import java.util.Date;
+
 @Component
-@Builds("kenyaemr.mchcs.report.feedingOption")
+@Builds({"kenyaemr.mchcs.report.feedingOption"})
 public class InfantFeedingOptionsReportBuilder extends CalculationReportBuilder {
 
 	@Override
-	protected void addColumns(CalculationReportDescriptor report, PatientDataSetDefinition dsd) {
+	protected void addColumns(CohortReportDescriptor report, PatientDataSetDefinition dsd) {
 
 		Concept concept = Dictionary.getConcept(Dictionary.INFANT_FEEDING_METHOD);
 		Calendar calendar = Calendar.getInstance();

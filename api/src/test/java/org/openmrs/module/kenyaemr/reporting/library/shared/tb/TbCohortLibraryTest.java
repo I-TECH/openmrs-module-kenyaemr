@@ -26,7 +26,7 @@ import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.metadata.TbMetadata;
-import org.openmrs.module.kenyaemr.test.ReportingTestUtils;
+import org.openmrs.module.kenyacore.test.ReportingTestUtils;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -158,7 +158,7 @@ public class TbCohortLibraryTest extends BaseModuleContextSensitiveTest {
 	 */
 	@Test
 	public void started12MonthsAgo_shouldReturnPatientsWhoStartedTreatment12MonthsAgo() throws Exception {
-		Program tbProgram = MetadataUtils.getProgram(TbMetadata._Program.TB);
+		Program tbProgram = MetadataUtils.existing(Program.class, TbMetadata._Program.TB);
 
 		// Enroll patient #6 on May 15th 2011
 		TestUtils.enrollInProgram(TestUtils.getPatient(6), tbProgram, TestUtils.date(2011, 5, 15));
@@ -181,7 +181,7 @@ public class TbCohortLibraryTest extends BaseModuleContextSensitiveTest {
 	 */
 	@Test
 	public void diedStarted12MonthsAgo_shouldReturnPatientsWhoDiedAndStartedTreatment12MonthsAgo() throws Exception {
-		Program tbProgram = MetadataUtils.getProgram(TbMetadata._Program.TB);
+		Program tbProgram = MetadataUtils.existing(Program.class, TbMetadata._Program.TB);
 		Concept tbTreatmentOutcome = Dictionary.getConcept(Dictionary.TUBERCULOSIS_TREATMENT_OUTCOME);
 		Concept died = Dictionary.getConcept(Dictionary.DIED);
 
@@ -239,8 +239,8 @@ public class TbCohortLibraryTest extends BaseModuleContextSensitiveTest {
 	@Test
 	public void inTbAndHivProgramsAndOnCtxProphylaxis_shouldReturnPatientsInTbAndHivProgramsAndOnCtx() throws Exception {
 
-		Program tbProgram = MetadataUtils.getProgram(TbMetadata._Program.TB);
-		Program hivProgram = MetadataUtils.getProgram(HivMetadata._Program.HIV);
+		Program tbProgram = MetadataUtils.existing(Program.class, TbMetadata._Program.TB);
+		Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
 
 		//Enroll patient #2 into Tb program given they are already in hiv program in std dataset
 
@@ -254,8 +254,8 @@ public class TbCohortLibraryTest extends BaseModuleContextSensitiveTest {
 		TestUtils.enrollInProgram(TestUtils.getPatient(7), hivProgram, TestUtils.date(2012, 6, 10));
 
 		// Put patient #7 on ctx
-		VisitType outpatientType = MetadataUtils.getVisitType(CommonMetadata._VisitType.OUTPATIENT);
-		EncounterType consultationType = MetadataUtils.getEncounterType(CommonMetadata._EncounterType.CONSULTATION);
+		VisitType outpatientType = MetadataUtils.existing(VisitType.class, CommonMetadata._VisitType.OUTPATIENT);
+		EncounterType consultationType = MetadataUtils.existing(EncounterType.class, CommonMetadata._EncounterType.CONSULTATION);
 		Concept medOrders = Dictionary.getConcept(Dictionary.MEDICATION_ORDERS);
 		Concept ctx = Dictionary.getConcept(Dictionary.SULFAMETHOXAZOLE_TRIMETHOPRIM);
 
@@ -277,8 +277,8 @@ public class TbCohortLibraryTest extends BaseModuleContextSensitiveTest {
 	 */
 	@Test
 	public void testedForHivAndInTbProgram_shouldReturnPatientsWhoTestedForHivAndInTbProgram() throws Exception {
-		Program tbProgram = MetadataUtils.getProgram(TbMetadata._Program.TB);
-		Program hivProgram = MetadataUtils.getProgram(HivMetadata._Program.HIV);
+		Program tbProgram = MetadataUtils.existing(Program.class, TbMetadata._Program.TB);
+		Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
 		Concept hivStatus = Dictionary.getConcept(Dictionary.HIV_STATUS);
 		Concept hivInfected = Dictionary.getConcept(Dictionary.HIV_INFECTED);
 		Concept positive = Dictionary.getConcept(Dictionary.POSITIVE);
@@ -317,8 +317,8 @@ public class TbCohortLibraryTest extends BaseModuleContextSensitiveTest {
 	 */
 	@Test
 	public void testedHivPositiveAndInTbProgram_shouldReturnPatientsWhoTestedHivPositiveAndInTbProgram() throws Exception {
-		Program tbProgram = MetadataUtils.getProgram(TbMetadata._Program.TB);
-		Program hivProgram = MetadataUtils.getProgram(HivMetadata._Program.HIV);
+		Program tbProgram = MetadataUtils.existing(Program.class, TbMetadata._Program.TB);
+		Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
 		Concept hivStatus = Dictionary.getConcept(Dictionary.HIV_STATUS);
 		Concept hivInfected = Dictionary.getConcept(Dictionary.HIV_INFECTED);
 		Concept positive = Dictionary.getConcept(Dictionary.POSITIVE);

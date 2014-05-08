@@ -19,29 +19,27 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import org.joda.time.DateTime;
-import org.joda.time.Days;
-import org.openmrs.*;
-import org.openmrs.api.context.Context;
-import org.openmrs.calculation.BaseCalculation;
-import org.openmrs.calculation.CalculationContext;
-import org.openmrs.calculation.patient.PatientCalculation;
+import org.openmrs.Concept;
+import org.openmrs.DrugOrder;
 import org.openmrs.calculation.patient.PatientCalculationContext;
-import org.openmrs.calculation.patient.PatientCalculationService;
-import org.openmrs.calculation.result.*;
+import org.openmrs.calculation.result.CalculationResult;
+import org.openmrs.calculation.result.CalculationResultMap;
+import org.openmrs.calculation.result.ListResult;
+import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyacore.CoreUtils;
-import org.openmrs.module.kenyacore.calculation.BooleanResult;
+import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
 import org.openmrs.module.kenyacore.calculation.CalculationUtils;
-import org.openmrs.module.kenyacore.calculation.Calculations;
-import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.data.patient.definition.DrugOrdersForPatientDataDefinition;
 
 /**
- * Base class for calculations we'll hand-write for this module.
+ * Previously the base class for calculations, replaced by AbstractPatientCalculation in KenyaCore.
+ *
+ * This class is deprecated because it now only contains drug order related functionality which should be moved into a
+ * different class, and also may not work with OpenMRS 1.10
  */
-public abstract class BaseEmrCalculation extends BaseCalculation implements PatientCalculation {
+@Deprecated
+public abstract class BaseEmrCalculation extends AbstractPatientCalculation {
 
 	/**
 	 * Evaluates the active drug orders for each patient
@@ -109,19 +107,6 @@ public abstract class BaseEmrCalculation extends BaseCalculation implements Pati
 	}
 
 	/**
-	 * Filters a calculation result map to reduce results to booleans
-	 * @param results the result map
-	 * @return the reduced result map
-	 */
-	protected static CalculationResultMap passing(CalculationResultMap results) {
-		CalculationResultMap ret = new CalculationResultMap();
-		for (Map.Entry<Integer, CalculationResult> e : results.entrySet()) {
-			ret.put(e.getKey(), new BooleanResult(ResultUtil.isTrue(e.getValue()), null));
-		}
-		return ret;
-	}
-
-	/**
 	 * Evaluates the earliest start date of a set of drug orders
 	 * @param orders the drug orders
 	 * @param context the calculation context
@@ -143,28 +128,5 @@ public abstract class BaseEmrCalculation extends BaseCalculation implements Pati
 			ret.put(ptId, earliest == null ? null : new SimpleResult(earliest, null));
 		}
 		return ret;
-	}
-
-	/**
-	 * Evaluates a given calculation on each patient
-	 * @param calculation the calculation
-	 * @param cohort the patient ids
-	 * @param calculationContext the calculation context
-	 * @return the calculation result map
-	 */
-	protected static CalculationResultMap calculate(PatientCalculation calculation, Collection<Integer> cohort, PatientCalculationContext calculationContext) {
-		return Context.getService(PatientCalculationService.class).evaluate(cohort, calculation, calculationContext);
-	}
-
-	/**
-	 * Calculates the days since the given date
-	 * @param date the date
-	 * @param calculationContext the calculation context
-	 * @return the number of days
-	 */
-	protected static int daysSince(Date date, CalculationContext calculationContext) {
-		DateTime d1 = new DateTime(date.getTime());
-		DateTime d2 = new DateTime(calculationContext.getNow().getTime());
-		return Days.daysBetween(d1, d2).getDays();
 	}
 }

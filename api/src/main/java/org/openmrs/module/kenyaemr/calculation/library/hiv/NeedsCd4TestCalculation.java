@@ -24,22 +24,22 @@ import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.ObsResult;
 import org.openmrs.module.kenyacore.CoreUtils;
-import org.openmrs.module.kenyacore.calculation.CalculationUtils;
+import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
 import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyacore.calculation.Filters;
 import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
+import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
 import org.openmrs.module.kenyaemr.HivConstants;
-import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 
 /**
  * Calculate whether patients are due for a CD4 count. Calculation returns true if if the patient
  * is alive, enrolled in the HIV program, and has not had a CD4 count in the last 180 days
  */
-public class NeedsCd4TestCalculation extends BaseEmrCalculation implements PatientFlagCalculation {
+public class NeedsCd4TestCalculation extends AbstractPatientCalculation implements PatientFlagCalculation {
 
 	/**
 	 * @see org.openmrs.module.kenyacore.calculation.PatientFlagCalculation#getFlagMessage()
@@ -57,7 +57,7 @@ public class NeedsCd4TestCalculation extends BaseEmrCalculation implements Patie
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
 
-		Program hivProgram = MetadataUtils.getProgram(HivMetadata._Program.HIV);
+		Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
 
 		Set<Integer> alive = Filters.alive(cohort, context);
 		Set<Integer> inHivProgram = Filters.inProgram(hivProgram, alive, context);
@@ -81,7 +81,7 @@ public class NeedsCd4TestCalculation extends BaseEmrCalculation implements Patie
 
 				Date lastResultDate = CoreUtils.latest(dateCount, datePercent);
 
-				if (lastResultDate == null || (daysSince(lastResultDate, context) > HivConstants.NEEDS_CD4_COUNT_AFTER_DAYS)) {
+				if (lastResultDate == null || (EmrCalculationUtils.daysSince(lastResultDate, context) > HivConstants.NEEDS_CD4_COUNT_AFTER_DAYS)) {
 					needsCD4 = true;
 				}
 			}

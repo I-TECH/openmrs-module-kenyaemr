@@ -17,10 +17,11 @@ package org.openmrs.module.kenyaemr.reporting.builder.common;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Concept;
+import org.openmrs.module.kenyacore.report.ReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportUtils;
+import org.openmrs.module.kenyacore.report.builder.AbstractReportBuilder;
 import org.openmrs.module.kenyacore.report.builder.Builds;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.reporting.BaseIndicatorReportBuilder;
 import org.openmrs.module.kenyaemr.reporting.EmrReportingUtils;
 import org.openmrs.module.kenyaemr.reporting.ColumnParameters;
 import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonDimensionLibrary;
@@ -29,7 +30,9 @@ import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.art.ArtIndicator
 import org.openmrs.module.kenyaemr.reporting.library.shared.tb.TbIndicatorLibrary;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
+import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
+import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -44,8 +47,8 @@ import static org.openmrs.module.kenyacore.report.ReportUtils.map;
  * MOH 711 report
  */
 @Component
-@Builds("kenyaemr.common.report.moh711")
-public class Moh711ReportBuilder extends BaseIndicatorReportBuilder {
+@Builds({"kenyaemr.common.report.moh711"})
+public class Moh711ReportBuilder extends AbstractReportBuilder {
 
 	protected static final Log log = LogFactory.getLog(Moh711ReportBuilder.class);
 
@@ -62,13 +65,24 @@ public class Moh711ReportBuilder extends BaseIndicatorReportBuilder {
 	private TbIndicatorLibrary tbIndicators;
 
 	/**
-	 * @see org.openmrs.module.kenyaemr.reporting.BaseIndicatorReportBuilder#buildDataSets()
+	 * @see org.openmrs.module.kenyacore.report.builder.AbstractReportBuilder#getParameters(org.openmrs.module.kenyacore.report.ReportDescriptor)
 	 */
 	@Override
-	public List<DataSetDefinition> buildDataSets() {
+	protected List<Parameter> getParameters(ReportDescriptor descriptor) {
 		return Arrays.asList(
-				createTbDataSet(),
-				createArtDataSet()
+				new Parameter("startDate", "Start Date", Date.class),
+				new Parameter("endDate", "End Date", Date.class)
+		);
+	}
+
+	/**
+	 * @see org.openmrs.module.kenyacore.report.builder.AbstractReportBuilder#buildDataSets(org.openmrs.module.kenyacore.report.ReportDescriptor, org.openmrs.module.reporting.report.definition.ReportDefinition)
+	 */
+	@Override
+	protected List<Mapped<DataSetDefinition>> buildDataSets(ReportDescriptor descriptor, ReportDefinition report) {
+		return Arrays.asList(
+				ReportUtils.map(createTbDataSet(), "startDate=${startDate},endDate=${endDate}"),
+				ReportUtils.map(createArtDataSet(), "startDate=${startDate},endDate=${endDate}")
 		);
 	}
 

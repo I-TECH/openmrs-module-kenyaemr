@@ -16,9 +16,9 @@ package org.openmrs.module.kenyaemr.calculation.library.hiv;
 
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
+import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
 import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 
 import java.util.Collection;
 import java.util.Map;
@@ -26,7 +26,7 @@ import java.util.Map;
 /**
  * Calculates the last recorded WHO stage of patients
  */
-public class LastWhoStageCalculation extends BaseEmrCalculation {
+public class LastWhoStageCalculation extends AbstractPatientCalculation {
 
     /**
      * @should calculate null for patients who have recorded WHO stage

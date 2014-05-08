@@ -18,23 +18,19 @@ import org.openmrs.Concept;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
 import org.openmrs.Obs;
-import org.openmrs.Patient;
 import org.openmrs.Program;
-import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
+import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
-import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyacore.calculation.Filters;
 import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
-import org.openmrs.module.kenyaemr.wrapper.PatientWrapper;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.metadata.MchMetadata;
-import org.openmrs.module.kenyaemr.util.EmrUtils;
 
 import java.util.Collection;
 import java.util.Map;
@@ -43,7 +39,7 @@ import java.util.Set;
 /**
  * Determines whether a child has been exited from care and No pcr confirmatory test is done
  */
-public class NotTakenPcrConfirmatoryTestCalculation extends BaseEmrCalculation implements PatientFlagCalculation {
+public class NotTakenPcrConfirmatoryTestCalculation extends AbstractPatientCalculation implements PatientFlagCalculation {
 
 	/**
 	 * @see org.openmrs.module.kenyacore.calculation.PatientFlagCalculation#getFlagMessage()
@@ -59,7 +55,7 @@ public class NotTakenPcrConfirmatoryTestCalculation extends BaseEmrCalculation i
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
 
-		Program mchcsProgram = MetadataUtils.getProgram(MchMetadata._Program.MCHCS);
+		Program mchcsProgram = MetadataUtils.existing(Program.class, MchMetadata._Program.MCHCS);
 
 		// Get all patients who are alive and in MCH-CS program
 		Set<Integer> alive = Filters.alive(cohort, context);
@@ -78,7 +74,7 @@ public class NotTakenPcrConfirmatoryTestCalculation extends BaseEmrCalculation i
 		Concept pcrCornfirmatory = Dictionary.getConcept(Dictionary.CONFIRMATION_STATUS);
 
 		//get an encounter type for HEI completion
-		EncounterType hei_completion_encounterType = MetadataUtils.getEncounterType(MchMetadata._EncounterType.MCHCS_HEI_COMPLETION);
+		EncounterType hei_completion_encounterType = MetadataUtils.existing(EncounterType.class, MchMetadata._EncounterType.MCHCS_HEI_COMPLETION);
 		//load all patient last encounters of HEI completion encounter type
 		CalculationResultMap lastEncounters = Calculations.lastEncounter(hei_completion_encounterType,inMchcsProgram,context);
 

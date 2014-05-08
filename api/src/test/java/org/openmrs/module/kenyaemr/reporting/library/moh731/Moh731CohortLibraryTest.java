@@ -22,7 +22,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
-import org.openmrs.module.kenyaemr.test.ReportingTestUtils;
+import org.openmrs.module.kenyacore.test.ReportingTestUtils;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -72,8 +72,8 @@ public class Moh731CohortLibraryTest extends BaseModuleContextSensitiveTest {
 	 */
 	@Test
 	public void currentlyInCare() throws Exception {
-		EncounterType triage = MetadataUtils.getEncounterType(CommonMetadata._EncounterType.TRIAGE);
-		EncounterType hivConsult = MetadataUtils.getEncounterType(HivMetadata._EncounterType.HIV_CONSULTATION);
+		EncounterType triage = MetadataUtils.existing(EncounterType.class, CommonMetadata._EncounterType.TRIAGE);
+		EncounterType hivConsult = MetadataUtils.existing(EncounterType.class, HivMetadata._EncounterType.HIV_CONSULTATION);
 
 		// Give patient #2 irrelevant encounter during 90 day window
 		TestUtils.saveEncounter(TestUtils.getPatient(2), triage, TestUtils.date(2012, 6, 15));
@@ -99,7 +99,7 @@ public class Moh731CohortLibraryTest extends BaseModuleContextSensitiveTest {
 	 */
 	@Test
 	public void revisitsArt() throws Exception {
-		EncounterType hivConsult = MetadataUtils.getEncounterType(HivMetadata._EncounterType.HIV_CONSULTATION);
+		EncounterType hivConsult = MetadataUtils.existing(EncounterType.class, HivMetadata._EncounterType.HIV_CONSULTATION);
 		Concept stavudine = Context.getConceptService().getConcept(84309);
 
 		// Start patient #6 this month and give them a visit in the reporting period + 2 months

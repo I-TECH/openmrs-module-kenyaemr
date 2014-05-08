@@ -15,6 +15,7 @@
 package org.openmrs.module.kenyaemr.reporting.library.shared.hiv;
 
 import org.openmrs.Concept;
+import org.openmrs.Program;
 import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.art.ArtCohortLibrary;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
@@ -43,7 +44,7 @@ public class HivIndicatorLibrary {
 	 * @return the indicator
 	 */
 	public CohortIndicator enrolledExcludingTransfers() {
-		return commonIndicators.enrolledExcludingTransfers(MetadataUtils.getProgram(HivMetadata._Program.HIV));
+		return commonIndicators.enrolledExcludingTransfers(MetadataUtils.existing(Program.class, HivMetadata._Program.HIV));
 	}
 
 	/**
@@ -51,7 +52,7 @@ public class HivIndicatorLibrary {
 	 * @return the indicator
 	 */
 	public CohortIndicator enrolledCumulative() {
-		return commonIndicators.enrolledCumulative(MetadataUtils.getProgram(HivMetadata._Program.HIV));
+		return commonIndicators.enrolledCumulative(MetadataUtils.existing(Program.class, HivMetadata._Program.HIV));
 	}
 
 	/**

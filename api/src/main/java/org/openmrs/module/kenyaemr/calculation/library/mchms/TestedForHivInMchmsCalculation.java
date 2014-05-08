@@ -21,6 +21,7 @@ import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyacore.CoreUtils;
+import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
 import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.calculation.Calculations;
@@ -28,7 +29,6 @@ import org.openmrs.module.kenyacore.calculation.Filters;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.PregnancyStage;
-import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.metadata.MchMetadata;
 import org.openmrs.util.OpenmrsUtil;
@@ -46,7 +46,7 @@ import java.util.Set;
  *
  * @return
  */
-public class TestedForHivInMchmsCalculation extends BaseEmrCalculation {
+public class TestedForHivInMchmsCalculation extends AbstractPatientCalculation {
 
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> params, PatientCalculationContext context) {
@@ -55,7 +55,7 @@ public class TestedForHivInMchmsCalculation extends BaseEmrCalculation {
 		Concept result = (params != null && params.containsKey("result")) ? (Concept) params.get("result") : null;
 		Boolean partner = (params != null && params.containsKey("partner")) ? (Boolean) params.get("partner") : false;
 
-		Program mchmsProgram = MetadataUtils.getProgram(MchMetadata._Program.MCHMS);
+		Program mchmsProgram = MetadataUtils.existing(Program.class, MchMetadata._Program.MCHMS);
 
 		Set<Integer> alivePatients = Filters.alive(cohort, context);
 		CalculationResultMap activePatientPrograms = Calculations.activeEnrollment(mchmsProgram, alivePatients, context);

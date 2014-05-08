@@ -69,11 +69,11 @@ public class AssessedOnFirstVisitCalculationTest extends BaseModuleContextSensit
 	@Test
 	public void evaluate_shouldDetermineWhetherPatientsWereAssessedOnFirstVisit() throws Exception {
 		// Get the MCH-MS program, enrollment and consultation encounter types and enrollment and delivery forms
-		Program mchmsProgram = MetadataUtils.getProgram(MchMetadata._Program.MCHMS);
-		EncounterType enrollmentEncounterType = MetadataUtils.getEncounterType(MchMetadata._EncounterType.MCHMS_ENROLLMENT);
-		EncounterType consultationEncounterType = MetadataUtils.getEncounterType(MchMetadata._EncounterType.MCHMS_CONSULTATION);
-		Form enrollmentForm = MetadataUtils.getForm(MchMetadata._Form.MCHMS_ENROLLMENT);
-		Form antenatalVisitForm = MetadataUtils.getForm(MchMetadata._Form.MCHMS_ANTENATAL_VISIT);
+		Program mchmsProgram = MetadataUtils.existing(Program.class, MchMetadata._Program.MCHMS);
+		EncounterType enrollmentEncounterType = MetadataUtils.existing(EncounterType.class, MchMetadata._EncounterType.MCHMS_ENROLLMENT);
+		EncounterType consultationEncounterType = MetadataUtils.existing(EncounterType.class, MchMetadata._EncounterType.MCHMS_CONSULTATION);
+		Form enrollmentForm = MetadataUtils.existing(Form.class, MchMetadata._Form.MCHMS_ENROLLMENT);
+		Form antenatalVisitForm = MetadataUtils.existing(Form.class, MchMetadata._Form.MCHMS_ANTENATAL_VISIT);
 
 		//Prepare dates to use for testing
 		Date enrollmentDate = TestUtils.date(2012, 1, 1);

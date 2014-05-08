@@ -72,11 +72,11 @@ public class TestedForHivInMchmsCalculationTest extends BaseModuleContextSensiti
 	@Test
 	public void evaluate_shouldDetermineWhetherPatientsWasTestedForHivInMchms0() throws Exception {
 		// Get the MCH-MS program, enrollment and consultation encounter types and enrollment and delivery forms
-		Program mchmsProgram = MetadataUtils.getProgram(MchMetadata._Program.MCHMS);
-		EncounterType enrollmentEncounterType = MetadataUtils.getEncounterType(MchMetadata._EncounterType.MCHMS_ENROLLMENT);
-		EncounterType consultationEncounterType = MetadataUtils.getEncounterType(MchMetadata._EncounterType.MCHMS_CONSULTATION);
-		Form enrollmentForm = MetadataUtils.getForm(MchMetadata._Form.MCHMS_ENROLLMENT);
-		Form deliveryForm = MetadataUtils.getForm(MchMetadata._Form.MCHMS_DELIVERY);
+		Program mchmsProgram = MetadataUtils.existing(Program.class, MchMetadata._Program.MCHMS);
+		EncounterType enrollmentEncounterType = MetadataUtils.existing(EncounterType.class, MchMetadata._EncounterType.MCHMS_ENROLLMENT);
+		EncounterType consultationEncounterType = MetadataUtils.existing(EncounterType.class, MchMetadata._EncounterType.MCHMS_CONSULTATION);
+		Form enrollmentForm = MetadataUtils.existing(Form.class, MchMetadata._Form.MCHMS_ENROLLMENT);
+		Form deliveryForm = MetadataUtils.existing(Form.class, MchMetadata._Form.MCHMS_DELIVERY);
 
 		//Prepare dates to use for testing
 		Date enrollmentDate = TestUtils.date(2012, 1, 1);
@@ -260,11 +260,11 @@ public class TestedForHivInMchmsCalculationTest extends BaseModuleContextSensiti
 	@Test
 	public void evaluate_shouldDetermineWhetherPatientsWasTestedForHivInMchms1() throws Exception {
 		// Get the MCH-MS program, enrollment and consultation encounter types and enrollment and delivery forms
-		Program mchmsProgram = MetadataUtils.getProgram(MchMetadata._Program.MCHMS);
-		EncounterType enrollmentEncounterType = MetadataUtils.getEncounterType(MchMetadata._EncounterType.MCHMS_ENROLLMENT);
-		EncounterType consultationEncounterType = MetadataUtils.getEncounterType(MchMetadata._EncounterType.MCHMS_CONSULTATION);
-		Form enrollmentForm = MetadataUtils.getForm(MchMetadata._Form.MCHMS_ENROLLMENT);
-		Form deliveryForm = MetadataUtils.getForm(MchMetadata._Form.MCHMS_DELIVERY);
+		Program mchmsProgram = MetadataUtils.existing(Program.class, MchMetadata._Program.MCHMS);
+		EncounterType enrollmentEncounterType = MetadataUtils.existing(EncounterType.class, MchMetadata._EncounterType.MCHMS_ENROLLMENT);
+		EncounterType consultationEncounterType = MetadataUtils.existing(EncounterType.class, MchMetadata._EncounterType.MCHMS_CONSULTATION);
+		Form enrollmentForm = MetadataUtils.existing(Form.class, MchMetadata._Form.MCHMS_ENROLLMENT);
+		Form deliveryForm = MetadataUtils.existing(Form.class, MchMetadata._Form.MCHMS_DELIVERY);
 
 		//Prepare dates to use for testing
 		Date enrollmentDate = TestUtils.date(2012, 1, 1);

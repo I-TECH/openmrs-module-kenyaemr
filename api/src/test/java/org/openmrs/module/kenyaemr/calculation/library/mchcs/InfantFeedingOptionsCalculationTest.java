@@ -63,7 +63,7 @@ public class InfantFeedingOptionsCalculationTest extends BaseModuleContextSensit
 	@Test
 	public void evaluate_shouldCalculateInfantFeedingOptions() throws Exception {
 		// Get MCHCS program
-		Program mchcsProgram = MetadataUtils.getProgram(MchMetadata._Program.MCHCS);
+		Program mchcsProgram = MetadataUtils.existing(Program.class, MchMetadata._Program.MCHCS);
 
 		// Enroll patients #6 and #7 in the MCHCS Program
 		TestUtils.enrollInProgram(TestUtils.getPatient(6), mchcsProgram, new Date());

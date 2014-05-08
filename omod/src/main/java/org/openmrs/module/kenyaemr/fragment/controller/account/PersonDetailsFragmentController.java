@@ -64,6 +64,11 @@ public class PersonDetailsFragmentController {
 
 		ui.validate(form, form, "person");
 		form.save();
+
+		if (isThisUser) {
+			Context.refreshAuthenticatedUser();
+		}
+
 		return new SuccessResult("Saved personal details");
 	}
 

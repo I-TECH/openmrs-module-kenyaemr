@@ -17,7 +17,7 @@ package org.openmrs.module.kenyaemr.reporting.library.shared.hiv;
 import org.openmrs.Concept;
 import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.ObsInLastVisitCohortDefinition;
+import org.openmrs.module.kenyacore.report.cohort.definition.ObsInLastVisitCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonCohortLibrary;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;

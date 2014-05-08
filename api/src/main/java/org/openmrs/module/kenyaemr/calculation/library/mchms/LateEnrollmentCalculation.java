@@ -17,20 +17,19 @@ package org.openmrs.module.kenyaemr.calculation.library.mchms;
 import org.joda.time.DateTime;
 import org.joda.time.Weeks;
 import org.openmrs.Encounter;
+import org.openmrs.EncounterType;
 import org.openmrs.Obs;
 import org.openmrs.Program;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
+import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
-import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyacore.calculation.Filters;
 import org.openmrs.module.kenyaemr.wrapper.EncounterWrapper;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyaemr.metadata.MchMetadata;
-import org.openmrs.module.kenyaemr.util.EmrUtils;
 
 import java.util.Collection;
 import java.util.Map;
@@ -41,7 +40,7 @@ import java.util.Set;
  * Calculation returns true if mother is alive, enrolled in the MCH program and had gestation
  * greater than 28 weeks at enrollment.
  */
-public class LateEnrollmentCalculation extends BaseEmrCalculation {
+public class LateEnrollmentCalculation extends AbstractPatientCalculation {
 
 	/**
 	 * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
@@ -49,14 +48,14 @@ public class LateEnrollmentCalculation extends BaseEmrCalculation {
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
 
-		Program mchmsProgram = MetadataUtils.getProgram(MchMetadata._Program.MCHMS);
+		Program mchmsProgram = MetadataUtils.existing(Program.class, MchMetadata._Program.MCHMS);
 
 		// Get all patients who are alive and in MCH-MS program
 		Set<Integer> alive = Filters.alive(cohort, context);
 		Set<Integer> inMchmsProgram = Filters.inProgram(mchmsProgram, alive, context);
 
 		CalculationResultMap ret = new CalculationResultMap();
-		CalculationResultMap crm = Calculations.lastEncounter(MetadataUtils.getEncounterType(MchMetadata._EncounterType.MCHMS_ENROLLMENT), cohort, context);
+		CalculationResultMap crm = Calculations.lastEncounter(MetadataUtils.existing(EncounterType.class, MchMetadata._EncounterType.MCHMS_ENROLLMENT), cohort, context);
 		for (Integer ptId : cohort) {
 			// Is patient alive and in MCH program?
 			boolean lateEnrollment = false;

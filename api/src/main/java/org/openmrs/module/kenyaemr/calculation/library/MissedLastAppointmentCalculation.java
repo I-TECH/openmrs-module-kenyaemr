@@ -23,18 +23,18 @@ import org.openmrs.Encounter;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
+import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
 import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyacore.calculation.Filters;
 import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
-import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 
 /**
  * Calculates whether patients have missed their last scheduled return visit. Calculation returns true if the patient is
  * alive, has a scheduled return visit in the past, and hasn't had an encounter since that date
  */
-public class MissedLastAppointmentCalculation extends BaseEmrCalculation implements PatientFlagCalculation {
+public class MissedLastAppointmentCalculation extends AbstractPatientCalculation implements PatientFlagCalculation {
 
 	@Override
 	public String getFlagMessage() {
@@ -66,7 +66,7 @@ public class MissedLastAppointmentCalculation extends BaseEmrCalculation impleme
 				Date lastScheduledReturnDate = EmrCalculationUtils.datetimeObsResultForPatient(lastReturnDateObss, ptId);
 
 				// Does patient have a scheduled return visit in the past
-				if (lastScheduledReturnDate != null && daysSince(lastScheduledReturnDate, context) > 0) {
+				if (lastScheduledReturnDate != null && EmrCalculationUtils.daysSince(lastScheduledReturnDate, context) > 0) {
 
 					// Has patient returned since
 					Encounter lastEncounter = EmrCalculationUtils.encounterResultForPatient(lastEncounters, ptId);

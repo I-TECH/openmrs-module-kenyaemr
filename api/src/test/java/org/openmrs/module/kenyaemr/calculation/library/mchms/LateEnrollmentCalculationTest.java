@@ -68,9 +68,9 @@ public class LateEnrollmentCalculationTest extends BaseModuleContextSensitiveTes
 	public void evaluate_shouldDetermineWhetherPatientsEnrolledLate() throws Exception {
 
 		// Get the MCH-MS program, enrollment encounter type and enrollment form
-		Program mchmsProgram = MetadataUtils.getProgram(MchMetadata._Program.MCHMS);
-		EncounterType enrollmentEncounterType = MetadataUtils.getEncounterType(MchMetadata._EncounterType.MCHMS_ENROLLMENT);
-		Form enrollmentForm = MetadataUtils.getForm(MchMetadata._Form.MCHMS_ENROLLMENT);
+		Program mchmsProgram = MetadataUtils.existing(Program.class, MchMetadata._Program.MCHMS);
+		EncounterType enrollmentEncounterType = MetadataUtils.existing(EncounterType.class, MchMetadata._EncounterType.MCHMS_ENROLLMENT);
+		Form enrollmentForm = MetadataUtils.existing(Form.class, MchMetadata._Form.MCHMS_ENROLLMENT);
 
 		// Enroll #6 and #7 into MCH-MS
 		TestUtils.enrollInProgram(TestUtils.getPatient(6), mchmsProgram, new Date());
