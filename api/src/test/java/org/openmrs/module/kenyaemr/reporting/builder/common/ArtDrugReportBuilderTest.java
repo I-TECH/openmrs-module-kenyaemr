@@ -59,9 +59,6 @@ public class ArtDrugReportBuilderTest extends BaseModuleContextSensitiveTest {
 	@Qualifier("kenyaemr.common.report.artDrug")
 	private ReportDescriptor report;
 
-	@Autowired
-	HivMetadata hivMetadata;
-
 	@Before
 	public void setup() throws Exception {
 		executeDataSet("dataset/test-concepts.xml");
