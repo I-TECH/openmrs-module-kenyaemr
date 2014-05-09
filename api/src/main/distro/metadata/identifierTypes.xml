@@ -1,5 +1,5 @@
 <!-- Patient identifier types used by KenyaEMR, listed A-Z -->
-<refs>
+<refs type="IdentifierType">
 	<ref key="DISTRICT_REGISTRATION_NUMBER" uuid="d8ee3b8c-a8fc-4d6b-af6a-9423be5f8906" />
 	<ref key="HEI_UNIQUE_NUMBER" uuid="0691f522-dd67-4eeb-92c8-af5083baf338" />
 	<ref key="MEDICAL_RECORD_NUMBER" uuid="dfacd928-0370-4315-99d7-6ec1c9f7ae76" />
