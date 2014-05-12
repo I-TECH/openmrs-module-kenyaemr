@@ -15,7 +15,6 @@
 package org.openmrs.module.kenyaemr.metadata;
 
 import org.openmrs.Location;
-import org.openmrs.LocationAttributeType;
 import org.openmrs.customdatatype.datatype.FreeTextDatatype;
 import org.openmrs.customdatatype.datatype.RegexValidatedTextDatatype;
 import org.openmrs.module.kenyaemr.metadata.sync.LocationMflCsvSource;
@@ -88,7 +87,7 @@ public class FacilityMetadata extends AbstractMetadataBundle {
 		));
 
 		if (full) {
-			ObjectSource<Location> source = new LocationMflCsvSource("metadata/mfl_2014-02-12.csv");
+			ObjectSource<Location> source = new LocationMflCsvSource("metadata/mfl_2014-05-12.csv");
 			sync(source, mflSynchronization);
 		}
 	}
