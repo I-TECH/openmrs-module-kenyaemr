@@ -1,5 +1,5 @@
 <!-- Forms used by KenyaEMR, listed A-Z -->
-<refs>
+<refs type="Form">
 	<ref key="CLINICAL_ENCOUNTER" uuid="e958f902-64df-4819-afd4-7fb061f59308" />
 	<ref key="HIV_FAMILY_HISTORY" uuid="7efa0ee0-6617-4cd7-8310-9f95dfee7a82" />
 	<ref key="LAB_RESULTS" uuid="7e603909-9ed5-4d0c-a688-26ecb05d8b6e" />
