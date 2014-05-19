@@ -20,13 +20,14 @@ import org.openmrs.module.kenyacore.report.ReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyacore.report.builder.AbstractCohortReportBuilder;
 import org.openmrs.module.kenyacore.report.builder.Builds;
+import org.openmrs.module.kenyacore.report.data.patient.definition.CalculationDataDefinition;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtStartDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.IsTransferInCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.IsTransferOutCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.TransferInDateCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.reporting.data.converter.BirthdateConverter;
 import org.openmrs.module.kenyaemr.reporting.data.converter.CalculationResultConverter;
-import org.openmrs.module.kenyacore.report.data.patient.definition.CalculationDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.art.ArtCohortLibrary;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -90,7 +91,8 @@ public class ArtCohortAnalysisReportBuilder extends AbstractCohortReportBuilder 
 		dsd.addColumn("Sex", new GenderDataDefinition(), "");
 		dsd.addColumn("ARV Start Date", new CalculationDataDefinition("ARV Start Date", new InitialArtStartDateCalculation()), "", new CalculationResultConverter() );
 		dsd.addColumn("Transfer In", new CalculationDataDefinition("Transfer In", new IsTransferInCalculation()), "", new CalculationResultConverter());
-		dsd.addColumn("Date Transferred in", new CalculationDataDefinition("Date Transferred in", new TransferInDateCalculation()), "", new CalculationResultConverter());
+		dsd.addColumn("Date Transferred In", new CalculationDataDefinition("Date Transferred In", new TransferInDateCalculation()), "", new CalculationResultConverter());
+		dsd.addColumn("Transfer Out", new CalculationDataDefinition("Transfer Out", new IsTransferOutCalculation()), "", new CalculationResultConverter());
 	}
 
 	@Override
