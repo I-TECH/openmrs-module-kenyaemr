@@ -14,6 +14,7 @@
 
 package org.openmrs.module.kenyaemr.reporting.data.converter;
 
+import org.openmrs.Concept;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
@@ -37,6 +38,10 @@ public class CalculationResultConverter implements DataConverter{
 		}
 		else if (value instanceof Date) {
 			return kenyaui.formatDate((Date) value);
+		}
+		else if (value instanceof Concept) {
+
+			return ((Concept) value).getName();
 		}
 
 		return null;
