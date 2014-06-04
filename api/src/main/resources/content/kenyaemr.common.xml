@@ -31,6 +31,7 @@
 				<ref bean="kenyaemr.common.report.missedAppointment" />
 				<ref bean="kenyaemr.common.report.moh711" />
 				<ref bean="kenyaemr.common.report.moh731" />
+				<ref bean="kenyaemr.common.report.dhis2" />
 			</set>
 		</property>
 	</bean>
@@ -240,6 +241,13 @@
 		<property name="description" value="Monthly ART Drug Report" />
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 		<property name="template" value="kenyaemr:artDrugs.xls" />
+	</bean>
+
+	<bean id="kenyaemr.common.report.dhis2" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
+		<property name="targetUuid" value="e8f317ea-ebb9-11e3-abe5-7f8b2039b9d7" />
+		<property name="name" value="DHIS 2 File Generator" />
+		<property name="description" value="DHIS Compatible Report" />
+		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 	</bean>
 
 </beans>
