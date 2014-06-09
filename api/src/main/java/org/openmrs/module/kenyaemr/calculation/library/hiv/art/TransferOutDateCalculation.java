@@ -10,6 +10,7 @@ import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
 import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyaemr.Dictionary;
+import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 
@@ -32,11 +33,11 @@ public class TransferOutDateCalculation extends AbstractPatientCalculation {
         CalculationResultMap result = new CalculationResultMap();
         for (Integer ptId : cohort) {
 
-            Encounter hivDicontinuation = (Encounter) lastEncounters.get(ptId).getValue();
-            Obs transferReason = (Obs) transferReasons.get(ptId).getValue();
+            Encounter hivDicontinuation = EmrCalculationUtils.encounterResultForPatient(lastEncounters,ptId);//lastEncounters.get(ptId).getValue();
+            Obs transferReason = EmrCalculationUtils.obsResultForPatient(transferReasons,ptId);
 
             if (hivDicontinuation != null && transferReason != null) {
-                {
+
                     if (hivDicontinuation.equals(transferReason.getEncounter())) {
                         Concept transfer = transferReason.getValueCoded();
                         if (transfer != null) {
@@ -45,7 +46,7 @@ public class TransferOutDateCalculation extends AbstractPatientCalculation {
                             }
                         }
                     }
-                }
+
             }
         }
         return result;
