@@ -20,6 +20,10 @@ import java.util.Map;
 /**
  * Created by derric on 6/5/14.
  */
+
+/**
+ * Calculates transfer out date for a patient
+ */
 public class TransferOutDateCalculation extends AbstractPatientCalculation {
     @Override
     public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> stringObjectMap, PatientCalculationContext context) {
