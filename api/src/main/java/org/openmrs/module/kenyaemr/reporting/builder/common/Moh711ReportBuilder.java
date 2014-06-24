@@ -71,7 +71,7 @@ public class Moh711ReportBuilder extends BaseIndicatorReportBuilder {
 	@Override
 	public List<DataSetDefinition> buildDataSets() {
 		return Arrays.asList(
-				/*createTbDataSet(),*/
+				createTbDataSet(),
 				createArtDataSet()
 		);
 	}
