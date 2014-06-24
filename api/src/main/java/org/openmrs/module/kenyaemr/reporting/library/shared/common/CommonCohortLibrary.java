@@ -23,7 +23,9 @@ import org.openmrs.module.kenyacore.report.builder.CalculationCohortDefinition;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.library.InProgramCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.OnAlternateFirstLineArtCalculation;
+import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.DateObsValueBetweenCohortDefinition;
+import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.cohort.definition.*;
 import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.module.reporting.common.TimeQualifier;
@@ -199,7 +201,8 @@ public class CommonCohortLibrary {
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.addSearch("enrolled", ReportUtils.map(enrolled(programs), "enrolledOnOrAfter=${onOrAfter},enrolledOnOrBefore=${onOrBefore}"));
 		cd.addSearch("transferIn", ReportUtils.map(transferredIn(), "onOrBefore=${onOrBefore}"));
-		cd.setCompositionString("enrolled AND NOT transferIn");
+		cd.addSearch("completeProgram", ReportUtils.map(compltedProgram(), "completedOnOrBefore=${onOrBefore}"));
+		cd.setCompositionString("enrolled AND NOT (transferIn OR completeProgram)");
 		return cd;
 	}
 
@@ -257,6 +260,18 @@ public class CommonCohortLibrary {
 		cd.setQuestion(Dictionary.getConcept(Dictionary.MEDICATION_ORDERS));
 		cd.setValueList(Arrays.asList(concepts));
 		cd.setOperator(SetComparator.IN);
+		return cd;
+	}
+
+	/**
+	 * Patients who completed program ${onOrAfter} and ${onOrBefore}
+	 * @return the cohort definition
+	 */
+	public CohortDefinition compltedProgram() {
+		ProgramEnrollmentCohortDefinition cd = new ProgramEnrollmentCohortDefinition();
+		cd.setName("Those patients who completed program on date");
+		cd.addParameter(new Parameter("completedOnOrBefore", "Complete Date", Date.class));
+		cd.setPrograms(Arrays.asList(MetadataUtils.existing(Program.class, HivMetadata._Program.HIV)));
 		return cd;
 	}
 }

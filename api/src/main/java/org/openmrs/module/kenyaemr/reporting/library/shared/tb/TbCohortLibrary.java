@@ -16,15 +16,15 @@ package org.openmrs.module.kenyaemr.reporting.library.shared.tb;
 
 import org.openmrs.Concept;
 import org.openmrs.Program;
-import org.openmrs.module.kenyaemr.calculation.library.MissedLastAppointmentCalculation;
-import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyacore.report.builder.CalculationCohortDefinition;
 import org.openmrs.module.kenyaemr.Dictionary;
+import org.openmrs.module.kenyaemr.calculation.library.tb.MissedLastTbAppointmentCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.metadata.TbMetadata;
 import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonCohortLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.HivCohortLibrary;
+import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
@@ -113,11 +113,11 @@ public class TbCohortLibrary {
 	}
 
 	/**
-	 * TB patients defaulted (i.e. who missed last appointment) between ${onDate}
+	 * TB patients defaulted (i.e. who missed last appointment) on ${onDate}
 	 * @return the cohort definition
 	 */
 	public CohortDefinition defaulted() {
-		CalculationCohortDefinition cd = new CalculationCohortDefinition(new MissedLastAppointmentCalculation());
+		CalculationCohortDefinition cd = new CalculationCohortDefinition(new MissedLastTbAppointmentCalculation());
 		cd.setName("defaulted");
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
 		return cd;
@@ -134,8 +134,8 @@ public class TbCohortLibrary {
 		Concept[] drugs = { Dictionary.getConcept(Dictionary.SULFAMETHOXAZOLE_TRIMETHOPRIM) };
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-		cd.addSearch("inHivProgram", ReportUtils.map(commonCohorts.inProgram(hivProgram), "onDate=${onOrBefore}"));
-		cd.addSearch("inTbProgram", ReportUtils.map(commonCohorts.inProgram(tbProgram), "onDate=${onOrBefore}"));
+		cd.addSearch("inHivProgram", ReportUtils.map(commonCohorts.enrolled(hivProgram), "enrolledOnOrBefore=${onOrBefore}"));
+		cd.addSearch("inTbProgram", ReportUtils.map(commonCohorts.enrolled(tbProgram), "enrolledOnOrBefore=${onOrBefore}"));
 		cd.addSearch("onCtx", ReportUtils.map(commonCohorts.medicationDispensed(drugs), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
 		cd.setCompositionString("inHivProgram AND inTbProgram AND onCtx");
 		return cd;
@@ -150,7 +150,7 @@ public class TbCohortLibrary {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-		cd.addSearch("inTbProgram", ReportUtils.map(commonCohorts.inProgram(tbProgram), "onDate=${onOrBefore}"));
+		cd.addSearch("inTbProgram", ReportUtils.map(commonCohorts.enrolled(tbProgram), "enrolledOnOrBefore=${onOrBefore}"));
 		cd.addSearch("hivTested", ReportUtils.map(hivCohortLibrary.testedForHiv(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
 		cd.setCompositionString("inTbProgram AND hivTested");
 		return cd;
@@ -165,7 +165,7 @@ public class TbCohortLibrary {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-		cd.addSearch("inTbProgram", ReportUtils.map(commonCohorts.inProgram(tbProgram), "onDate=${onOrBefore}"));
+		cd.addSearch("inTbProgram", ReportUtils.map(commonCohorts.enrolled(tbProgram), "enrolledOnOrBefore=${onOrBefore}"));
 		cd.addSearch("hivTestedPositive", ReportUtils.map(hivCohortLibrary.testedHivPositive(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
 		cd.setCompositionString("inTbProgram AND hivTestedPositive");
 		return cd;

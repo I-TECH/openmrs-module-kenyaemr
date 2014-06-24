@@ -17,13 +17,15 @@ package org.openmrs.module.kenyaemr.calculation.library.hiv;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.Concept;
 import org.openmrs.EncounterType;
+import org.openmrs.Obs;
 import org.openmrs.Program;
-import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyacore.test.TestUtils;
+import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
@@ -73,17 +75,22 @@ public class LostToFollowUpCalculationTest extends BaseModuleContextSensitiveTes
 	@Test
 	public void evaluate_shouldDetermineWhetherPatientsAreLostToFollowUp() throws Exception {
 		Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
+		Concept returnVisitDate = Dictionary.getConcept(Dictionary.RETURN_VISIT_DATE);
 
 		// Enroll patients #6, #7, #8 in the HIV Program
 		TestUtils.enrollInProgram(TestUtils.getPatient(6), hivProgram, TestUtils.date(2011, 1, 1));
 		TestUtils.enrollInProgram(TestUtils.getPatient(7), hivProgram, TestUtils.date(2011, 1, 1));
 		TestUtils.enrollInProgram(TestUtils.getPatient(8), hivProgram, TestUtils.date(2011, 1, 1));
 
+		//give patient 6 and 7 return date
+		Obs[] returnDate6 = {TestUtils.saveObs(TestUtils.getPatient(6), returnVisitDate, TestUtils.date(2011, 4, 1), TestUtils.date(2011, 1, 1))};
+		Obs[] returnDate7 = {TestUtils.saveObs(TestUtils.getPatient(6), returnVisitDate, TestUtils.date(2011, 4, 1), TestUtils.date(2011, 1, 1))};
+
 		// Give patient #7 a scheduled encounter 200 days ago
 		Calendar calendar = Calendar.getInstance();
 		calendar.add(Calendar.DATE, -200);
 		EncounterType scheduledEncType = Context.getEncounterService().getEncounterType("Scheduled");
-		TestUtils.saveEncounter(TestUtils.getPatient(7), scheduledEncType, calendar.getTime());
+		TestUtils.saveEncounter(TestUtils.getPatient(7), scheduledEncType, calendar.getTime(), returnDate7);
 
 		// Give patient #8 a scheduled encounter 10 days ago
 		calendar = Calendar.getInstance();

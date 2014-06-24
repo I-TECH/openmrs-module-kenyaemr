@@ -16,12 +16,13 @@ package org.openmrs.module.kenyaemr.reporting.library.shared.hiv.art;
 
 import org.openmrs.Concept;
 import org.openmrs.Program;
+import org.openmrs.api.PatientSetService;
 import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyacore.report.builder.CalculationCohortDefinition;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.EligibleForArtCalculation;
+import org.openmrs.module.kenyaemr.Dictionary;
+import org.openmrs.module.kenyaemr.calculation.library.MissedLastAppointmentCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtStartDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.OnAlternateFirstLineArtCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.OnArtCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.OnOriginalFirstLineArtCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.OnSecondLineArtCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.PregnantAtArtStartCalculation;
@@ -32,9 +33,15 @@ import org.openmrs.module.kenyaemr.regimen.RegimenManager;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.DateCalculationCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.RegimenOrderCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonCohortLibrary;
+import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.HivCohortLibrary;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
+import org.openmrs.module.reporting.cohort.definition.CodedObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.NumericObsCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
+import org.openmrs.module.reporting.common.RangeComparator;
+import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -56,15 +63,112 @@ public class ArtCohortLibrary {
 	@Autowired
 	private CommonCohortLibrary commonCohorts;
 
+	@Autowired
+	private HivCohortLibrary hivCohortLibrary;
+
 	/**
 	 * Patients who are eligible for ART on ${onDate}
 	 * @return the cohort definition
 	 */
 	public CohortDefinition eligibleForArt() {
-		CalculationCohortDefinition cd = new CalculationCohortDefinition(new EligibleForArtCalculation());
-		cd.setName("eligible for ART on date");
-		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
-		return cd;
+
+		NumericObsCohortDefinition cd4Less500 = new NumericObsCohortDefinition();
+		cd4Less500.setName("CDLessThan500");
+		cd4Less500.setQuestion(Dictionary.getConcept(Dictionary.CD4_COUNT));
+		cd4Less500.setOperator1(RangeComparator.LESS_THAN);
+		cd4Less500.setValue1(500.0);
+		cd4Less500.setTimeModifier(PatientSetService.TimeModifier.LAST);
+
+		NumericObsCohortDefinition cd4Less350 = new NumericObsCohortDefinition();
+		cd4Less350.setName("CDLessThan350");
+		cd4Less350.setQuestion(Dictionary.getConcept(Dictionary.CD4_COUNT));
+		cd4Less350.setOperator1(RangeComparator.LESS_THAN);
+		cd4Less350.setValue1(350.0);
+		cd4Less350.setTimeModifier(PatientSetService.TimeModifier.LAST);
+
+		NumericObsCohortDefinition cdLess1000 = new NumericObsCohortDefinition();
+		cdLess1000.setName("CDLessThan1000");
+		cdLess1000.setQuestion(Dictionary.getConcept(Dictionary.CD4_COUNT));
+		cdLess1000.setOperator1(RangeComparator.LESS_THAN);
+		cdLess1000.setValue1(1000.0);
+		cdLess1000.setTimeModifier(PatientSetService.TimeModifier.LAST);
+
+		NumericObsCohortDefinition cd4PercentLess25 = new NumericObsCohortDefinition();
+		cd4PercentLess25.setName("CDPercentLessThan25");
+		cd4PercentLess25.setQuestion(Dictionary.getConcept(Dictionary.CD4_PERCENT));
+		cd4PercentLess25.setOperator1(RangeComparator.LESS_THAN);
+		cd4PercentLess25.setValue1(25.0);
+		cd4PercentLess25.setTimeModifier(PatientSetService.TimeModifier.LAST);
+
+		NumericObsCohortDefinition cd4PercentLess20 = new NumericObsCohortDefinition();
+		cd4PercentLess20.setName("CDPercentLessThan20");
+		cd4PercentLess20.setQuestion(Dictionary.getConcept(Dictionary.CD4_PERCENT));
+		cd4PercentLess20.setOperator1(RangeComparator.LESS_THAN);
+		cd4PercentLess20.setValue1(20.0);
+		cd4PercentLess20.setTimeModifier(PatientSetService.TimeModifier.LAST);
+
+		CodedObsCohortDefinition whoStage = new CodedObsCohortDefinition();
+		whoStage.setQuestion(Dictionary.getConcept(Dictionary.CURRENT_WHO_STAGE));
+		whoStage.setOperator(SetComparator.IN);
+		whoStage.setTimeModifier(PatientSetService.TimeModifier.LAST);
+
+		Concept CURRENT_WHO_STAGE = Dictionary.getConcept(Dictionary.CURRENT_WHO_STAGE);
+		Concept WHO_STAGE_3_ADULT = Dictionary.getConcept(Dictionary.WHO_STAGE_3_ADULT);
+		Concept WHO_STAGE_4_ADULT = Dictionary.getConcept(Dictionary.WHO_STAGE_4_ADULT);
+		Concept WHO_STAGE_3_PEDS = Dictionary.getConcept(Dictionary.WHO_STAGE_3_PEDS);
+		Concept WHO_STAGE_4_PEDS = Dictionary.getConcept(Dictionary.WHO_STAGE_4_PEDS);
+
+		CompositionCohortDefinition pediUnder24InProgram = new CompositionCohortDefinition();
+		pediUnder24InProgram.setName("pediUnder24InProgram");
+		pediUnder24InProgram.addParameter(new Parameter("onDate", "On Date", Date.class));
+		pediUnder24InProgram.addSearch("over24Months", ReportUtils.map(commonCohorts.agedAtLeast(2), "effectiveDate=${onDate}"));
+		pediUnder24InProgram.addSearch("inHIVProgram", ReportUtils.map(commonCohorts.enrolled(MetadataUtils.existing(Program.class, HivMetadata._Program.HIV)), "enrolledOnOrBefore=${onDate}"));
+		pediUnder24InProgram.setCompositionString("inHIVProgram and NOT over24Months");
+
+		CompositionCohortDefinition pedi2To5years = new CompositionCohortDefinition();
+		pedi2To5years.setName("pedi2To5years");
+		pedi2To5years.addParameter(new Parameter("onDate", "On Date", Date.class));
+		pedi2To5years.addSearch("over24Months", ReportUtils.map(commonCohorts.agedAtLeast(2), "effectiveDate=${onDate}"));
+		pedi2To5years.addSearch("over5Years", ReportUtils.map(commonCohorts.agedAtLeast(5), "effectiveDate=${onDate}"));
+		pedi2To5years.addSearch("inHIVProgram", ReportUtils.map(commonCohorts.enrolled(MetadataUtils.existing(Program.class, HivMetadata._Program.HIV)), "enrolledOnOrBefore=${onDate}"));
+		pedi2To5years.addSearch("whoStage", ReportUtils.map(commonCohorts.hasObs(CURRENT_WHO_STAGE,  WHO_STAGE_3_PEDS, WHO_STAGE_4_PEDS )));
+		pedi2To5years.addSearch("cd4PercentLess25", ReportUtils.map(cd4PercentLess25));
+		pedi2To5years.addSearch("cdLess1000", ReportUtils.map(cdLess1000));
+		pedi2To5years.setCompositionString("((inHIVProgram AND(over24Months AND NOT over5Years)) AND (whoStage OR cd4PercentLess25 OR cdLess1000))");
+
+		CompositionCohortDefinition pedi5To12years = new CompositionCohortDefinition();
+		pedi5To12years.setName("pedi5To12years");
+		pedi5To12years.addParameter(new Parameter("onDate", "On Date", Date.class));
+		pedi5To12years.addSearch("under13Years", ReportUtils.map(commonCohorts.agedAtMost(12), "effectiveDate=${onDate}"));
+		pedi5To12years.addSearch("under5Years", ReportUtils.map(commonCohorts.agedAtLeast(5), "effectiveDate=${onDate}"));
+		pedi5To12years.addSearch("inHIVProgram", ReportUtils.map(commonCohorts.enrolled(MetadataUtils.existing(Program.class, HivMetadata._Program.HIV)), "enrolledOnOrBefore=${onDate}"));
+		pedi5To12years.addSearch("whoStage", ReportUtils.map((commonCohorts.hasObs(CURRENT_WHO_STAGE, WHO_STAGE_3_PEDS, WHO_STAGE_4_PEDS )), "onOrBefore=${onDate}"));
+		pedi5To12years.addSearch("cd4PercentLess20", ReportUtils.map(cd4PercentLess20));
+		pedi5To12years.addSearch("cdLess500", ReportUtils.map(cd4Less500));
+		pedi5To12years.setCompositionString("inHIVProgram AND (under13Years AND NOT under5Years) AND (whoStage OR cd4PercentLess20 OR cdLess500)");
+
+		CompositionCohortDefinition over12years = new CompositionCohortDefinition();
+		over12years.setName("over12years");
+		over12years.addParameter(new Parameter("onDate", "On Date", Date.class));
+		over12years.addSearch("under13Years", ReportUtils.map(commonCohorts.agedAtMost(12), "effectiveDate=${onDate}"));
+		over12years.addSearch("inHIVProgram", ReportUtils.map(commonCohorts.enrolled(MetadataUtils.existing(Program.class, HivMetadata._Program.HIV)), "enrolledOnOrBefore=${onDate}"));
+		over12years.addSearch("whoStage", ReportUtils.map((commonCohorts.hasObs(CURRENT_WHO_STAGE, WHO_STAGE_3_ADULT, WHO_STAGE_4_ADULT )), "onOrBefore=${onDate}"));
+		over12years.addSearch("cd4Less350", ReportUtils.map(cd4Less350));
+		over12years.setCompositionString("(inHIVProgram AND NOT under13Years) AND (whoStage OR cd4Less350)");
+
+		CompositionCohortDefinition eligibleForART = new CompositionCohortDefinition();
+
+		eligibleForART.setName("eligibleForART");
+		eligibleForART.addParameter(new Parameter("onDate", "onDate", Date.class));
+		eligibleForART.addSearch("pediUnder24InProgram", ReportUtils.map(pediUnder24InProgram, "onDate=${onDate}"));
+		eligibleForART.addSearch("pedi2To5years", ReportUtils.map(pedi2To5years, "onDate=${onDate}"));
+		eligibleForART.addSearch("pedi5To12years", ReportUtils.map(pedi5To12years, "onDate=${onDate}"));
+		eligibleForART.addSearch("over12years", ReportUtils.map(over12years, "onDate=${onDate}"));
+		eligibleForART.addSearch("onART", ReportUtils.map(onArt(), "onDate=${onDate}"));
+		eligibleForART.addSearch("notLostToFollowUp",ReportUtils.map(commonCohorts.hasEncounter(), "onOrAfter=${onDate-90d}"));
+		eligibleForART.setCompositionString("((pediUnder24InProgram OR pedi2To5years OR pedi5To12years OR over12years) AND notLostToFollowUp) AND NOT onART");
+
+		return eligibleForART;
 	}
 
 	/**
@@ -72,10 +176,36 @@ public class ArtCohortLibrary {
 	 * @return the cohort definition
 	 */
 	public CohortDefinition onArt() {
-		CalculationCohortDefinition cd = new CalculationCohortDefinition(new OnArtCalculation());
+		SqlCohortDefinition cd = new SqlCohortDefinition("select distinct(patient_id) from orders where concept_id in (select concept_id from concept_set where concept_set =" + Dictionary.getConcept(Dictionary.ANTIRETROVIRAL_DRUGS).getConceptId() + ") and (discontinued_date is null or discontinued_date > :onDate) and start_date < :onDate and (auto_expire_date is null or auto_expire_date > :onDate) and voided = 0");
 		cd.setName("on ART on date");
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
 		return cd;
+	}
+
+	/**
+	 * Patients who missed appointments on ${onDate}
+	 * @return the cohort definition
+	 */
+	public CohortDefinition missedAppointments() {
+		CalculationCohortDefinition cd = new CalculationCohortDefinition(new MissedLastAppointmentCalculation());
+		cd.setName("missed appointment on date");
+		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
+		return cd;
+	}
+
+	/**
+	 * Patients who are on art and  missed appointments on ${onDate}
+	 * @return the cohort definition
+	 */
+	public CohortDefinition onArtAndMissedAppointments() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("on ART and Missed last appointment");
+		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
+		cd.addSearch("onArt", ReportUtils.map(onArt(), "onDate=${onDate}"));
+		cd.addSearch("missedAppointments", ReportUtils.map(missedAppointments(), "onDate=${onDate}"));
+		cd.setCompositionString("onArt AND NOT missedAppointments");
+		return cd;
+
 	}
 
 	/**
@@ -86,7 +216,7 @@ public class ArtCohortLibrary {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.setName("on ART and pregnant");
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
-		cd.addSearch("onArt", ReportUtils.map(onArt(), "onDate=${onDate}"));
+		cd.addSearch("onArt", ReportUtils.map(onArtAndMissedAppointments(), "onDate=${onDate}"));
 		cd.addSearch("pregnant", ReportUtils.map(commonCohorts.pregnant(), "onDate=${onDate}"));
 		cd.setCompositionString("onArt AND pregnant");
 		return cd;
@@ -100,7 +230,7 @@ public class ArtCohortLibrary {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.setName("on ART and not pregnant");
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
-		cd.addSearch("onArt", ReportUtils.map(onArt(), "onDate=${onDate}"));
+		cd.addSearch("onArt", ReportUtils.map(onArtAndMissedAppointments(), "onDate=${onDate}"));
 		cd.addSearch("pregnant", ReportUtils.map(commonCohorts.pregnant(), "onDate=${onDate}"));
 		cd.setCompositionString("onArt AND NOT pregnant");
 		return cd;
@@ -244,8 +374,8 @@ public class ArtCohortLibrary {
 		cd.setName("Started ART excluding transfer ins");
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-		cd.addSearch("startedArt", ReportUtils.map(startedArt(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
-		cd.addSearch("transferIns", ReportUtils.map(commonCohorts.transferredIn(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("startedArt", ReportUtils.map(startedArt(), "onOrBefore=${onOrAfter}"));
+		cd.addSearch("transferIns", ReportUtils.map(commonCohorts.transferredIn(), "onOrBefore=${onOrAfter}"));
 		cd.setCompositionString("startedArt AND NOT transferIns");
 		return cd;
 	}
@@ -259,7 +389,7 @@ public class ArtCohortLibrary {
 		cd.setName("Started ART excluding transfer ins on date in this facility");
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.addSearch("startedArt", ReportUtils.map(startedArt(), "onOrBefore=${onOrBefore}"));
-		cd.addSearch("transferIns", ReportUtils.map(commonCohorts.transferredIn(), "onOrBefore=${onOrBefore}"));
+		cd.addSearch("transferIns", ReportUtils.map(hivCohortLibrary.startedArtFromTransferringFacilityOnDate(), "onOrBefore=${onOrBefore}"));
 		cd.setCompositionString("startedArt AND NOT transferIns");
 		return  cd;
 	}

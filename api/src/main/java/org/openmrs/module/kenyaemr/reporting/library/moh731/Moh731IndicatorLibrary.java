@@ -68,7 +68,7 @@ public class Moh731IndicatorLibrary {
 	 * @return the indicator
 	 */
 	public CohortIndicator cumulativeOnArt() {
-		return cohortIndicator("Cumulative ever on ART", ReportUtils.map(artCohorts.startedArtExcludingTransferins(), "onOrAfter=${startDate},onOrBefore=${endDate}"));
+		return cohortIndicator("Cumulative ever on ART", ReportUtils.map(artCohorts.startedArtExcludingTransferinsOnDate(), "onOrBefore=${endDate}"));
 	}
 
 	/**
@@ -76,7 +76,9 @@ public class Moh731IndicatorLibrary {
 	 * @return the indicator
 	 */
 	public CohortIndicator art12MonthNetCohort() {
-		return cohortIndicator("ART 12 Month Net Cohort", ReportUtils.map(artCohorts.netCohort12Months(), "onDate=${endDate}"));
+		//add a hacky way to determine if art start date is at the end of every month then add one day
+		//to avoid reporting twice in the previouse and the following month
+		return cohortIndicator("ART 12 Month Net Cohort", ReportUtils.map(artCohorts.netCohort12Months(), "onDate=${endDate + 1d}"));
 	}
 
 	/**
@@ -84,7 +86,7 @@ public class Moh731IndicatorLibrary {
 	 * @return the indicator
 	 */
 	public CohortIndicator onOriginalFirstLineAt12Months() {
-		return cohortIndicator("On original 1st line at 12 months", ReportUtils.map(moh731Cohorts.onOriginalFirstLineAt12Months(), "fromDate=${startDate},toDate=${endDate}"));
+		return cohortIndicator("On original 1st line at 12 months", ReportUtils.map(moh731Cohorts.onOriginalFirstLineAt12Months(), "fromDate=${startDate},toDate=${endDate + 1d}"));
 	}
 
 	/**
@@ -92,7 +94,7 @@ public class Moh731IndicatorLibrary {
 	 * @return the indicator
 	 */
 	public CohortIndicator onAlternateFirstLineAt12Months() {
-		return cohortIndicator("On alternate 1st line at 12 months", ReportUtils.map(moh731Cohorts.onAlternateFirstLineAt12Months(), "fromDate=${startDate},toDate=${endDate}"));
+		return cohortIndicator("On alternate 1st line at 12 months", ReportUtils.map(moh731Cohorts.onAlternateFirstLineAt12Months(), "fromDate=${startDate},toDate=${endDate + 1d}"));
 	}
 
 	/**
@@ -100,7 +102,7 @@ public class Moh731IndicatorLibrary {
 	 * @return the indicator
 	 */
 	public CohortIndicator onSecondLineAt12Months() {
-		return cohortIndicator("On 2nd line at 12 months", ReportUtils.map(moh731Cohorts.onSecondLineAt12Months(), "fromDate=${startDate},toDate=${endDate}"));
+		return cohortIndicator("On 2nd line at 12 months", ReportUtils.map(moh731Cohorts.onSecondLineAt12Months(), "fromDate=${startDate},toDate=${endDate + 1d}"));
 	}
 
 	/**
@@ -108,7 +110,7 @@ public class Moh731IndicatorLibrary {
 	 * @return the indicator
 	 */
 	public CohortIndicator onTherapyAt12Months() {
-		return cohortIndicator("On therapy at 12 months", ReportUtils.map(moh731Cohorts.onTherapyAt12Months(), "fromDate=${startDate},toDate=${endDate}"));
+		return cohortIndicator("On therapy at 12 months", ReportUtils.map(moh731Cohorts.onTherapyAt12Months(), "fromDate=${startDate},toDate=${endDate + 1d}"));
 	}
 
 	/**

@@ -19,13 +19,14 @@ import org.openmrs.EncounterType;
 import org.openmrs.Program;
 import org.openmrs.api.PatientSetService;
 import org.openmrs.module.kenyacore.report.ReportUtils;
-import org.openmrs.module.kenyacore.report.builder.CalculationCohortDefinition;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.NeverTakenCtxOrDapsoneCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
+import org.openmrs.module.kenyaemr.reporting.cohort.definition.DateObsValueBetweenCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonCohortLibrary;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
-import org.openmrs.module.reporting.cohort.definition.*;
+import org.openmrs.module.reporting.cohort.definition.CodedObsCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -113,9 +114,12 @@ public class HivCohortLibrary {
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.addSearch("enrolledExcludingTransfers", ReportUtils.map(enrolledExcludingTransfers(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
 		cd.addSearch("referredFrom", ReportUtils.map(referredFrom(entryPoints), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
-		cd.setCompositionString("enrolledExcludingTransfers AND referredFrom");
+		cd.addSearch("completeProgram", ReportUtils.map(commonCohorts.compltedProgram(), "completedOnOrBefore=${onOrBefore}"));
+		cd.setCompositionString("enrolledExcludingTransfers AND referredFrom AND NOT completeProgram");
 		return cd;
 	}
+
+
 
 	/**
 	 * Patients who were enrolled in HIV care (excluding transfers) not from the given entry points between ${onOrAfter} and ${onOrBefore}
@@ -128,7 +132,8 @@ public class HivCohortLibrary {
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.addSearch("enrolledExcludingTransfers", ReportUtils.map(enrolledExcludingTransfers(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
 		cd.addSearch("referredNotFrom", ReportUtils.map(referredNotFrom(entryPoints), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
-		cd.setCompositionString("enrolledExcludingTransfers AND referredNotFrom");
+		cd.addSearch("completeProgram", ReportUtils.map(commonCohorts.compltedProgram(), "completedOnOrBefore=${onOrBefore}"));
+		cd.setCompositionString("enrolledExcludingTransfers AND referredNotFrom AND NOT completeProgram");
 		return cd;
 	}
 
@@ -273,5 +278,20 @@ public class HivCohortLibrary {
 		cd.addSearch("testedForHivHivInfectedPositive", ReportUtils.map(commonCohorts.hasObs(hivInfected ,positive), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
 		cd.setCompositionString("resultOfHivTestPositive OR testedForHivHivInfectedPositive");
 		return cd;
+	}
+
+	/**
+	 * Patients who started art from the transfer facility
+	 * @return the cohort definition
+	 */
+	public CohortDefinition startedArtFromTransferringFacilityOnDate() {
+		Concept starteArtFromTransferringFacility = Dictionary.getConcept(Dictionary.ANTIRETROVIRAL_TREATMENT_START_DATE);
+		DateObsValueBetweenCohortDefinition cd = new DateObsValueBetweenCohortDefinition();
+		cd.setName("Patients Who Started ART From the Transferring Facility between date");
+		cd.setQuestion(starteArtFromTransferringFacility);
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		return cd;
+
 	}
 }

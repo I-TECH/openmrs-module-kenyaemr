@@ -23,6 +23,7 @@ import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.reporting.BaseIndicatorReportBuilder;
 import org.openmrs.module.kenyaemr.reporting.EmrReportingUtils;
 import org.openmrs.module.kenyaemr.reporting.ColumnParameters;
+import org.openmrs.module.kenyaemr.reporting.library.moh731.Moh731IndicatorLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonDimensionLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.HivIndicatorLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.art.ArtIndicatorLibrary;
@@ -61,13 +62,16 @@ public class Moh711ReportBuilder extends BaseIndicatorReportBuilder {
 	@Autowired
 	private TbIndicatorLibrary tbIndicators;
 
+	@Autowired
+	private Moh731IndicatorLibrary moh731Indicators;
+
 	/**
 	 * @see org.openmrs.module.kenyaemr.reporting.BaseIndicatorReportBuilder#buildDataSets()
 	 */
 	@Override
 	public List<DataSetDefinition> buildDataSets() {
 		return Arrays.asList(
-				createTbDataSet(),
+				/*createTbDataSet(),*/
 				createArtDataSet()
 		);
 	}
@@ -159,7 +163,7 @@ public class Moh711ReportBuilder extends BaseIndicatorReportBuilder {
 		EmrReportingUtils.addRow(dsd, "K4", "Cumulative started ARV", ReportUtils.map(artIndicators.startedArtCumulative(), indParams), allColumns);
 		EmrReportingUtils.addRow(dsd, "K5-1", "Currently on ARVs - Pregnant women", ReportUtils.map(artIndicators.onArtAndPregnant(), indParams), femaleColumns);
 		EmrReportingUtils.addRow(dsd, "K5-2", "Currently on ARVs - All others", ReportUtils.map(artIndicators.onArtAndNotPregnant(), indParams), allColumns);
-		EmrReportingUtils.addRow(dsd, "K5-3", "Currently on ARVs - Sub-total", ReportUtils.map(artIndicators.onArt(), indParams), allColumns);
+		EmrReportingUtils.addRow(dsd, "K5-3", "Currently on ARVs - Sub-total", ReportUtils.map(moh731Indicators.currentlyOnArt(), indParams), allColumns);
 		EmrReportingUtils.addRow(dsd, "K6", "Eligible for ART", ReportUtils.map(artIndicators.eligibleForArt(), indParams), allColumns);
 		//EmrReportingUtils.addRow(dsd, "K7-1", "Post-exposure prophylaxis..", map(???, indParams), allColumns);
 		//EmrReportingUtils.addRow(dsd, "K7-2", "Post-exposure prophylaxis..", map(???, indParams), allColumns);

@@ -20,15 +20,15 @@ import org.openmrs.Program;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
-import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyacore.calculation.Filters;
 import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
-import org.openmrs.module.metadatadeploy.MetadataUtils;
+import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.HivConstants;
-import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
+import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
+import org.openmrs.module.metadatadeploy.MetadataUtils;
 
 import java.util.Collection;
 import java.util.Date;
@@ -50,8 +50,8 @@ public class LostToFollowUpCalculation extends BaseEmrCalculation implements Pat
 	 * Evaluates the calculation
 	 * @should calculate false for deceased patients
 	 * @should calculate false for patients not in HIV program
-	 * @should calculate false for patients with an encounter in last LOST_TO_FOLLOW_UP_THRESHOLD_DAYS days
-	 * @should calculate true for patient with no encounter in last LOST_TO_FOLLOW_UP_THRESHOLD_DAYS days
+	 * @should calculate false for patients with an encounter in last LOST_TO_FOLLOW_UP_THRESHOLD_DAYS days days since appointment date
+	 * @should calculate true for patient with no encounter in last LOST_TO_FOLLOW_UP_THRESHOLD_DAYS days days since appointment date
 	 */
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> arg1, PatientCalculationContext context) {
@@ -62,6 +62,7 @@ public class LostToFollowUpCalculation extends BaseEmrCalculation implements Pat
 		Set<Integer> inHivProgram = Filters.inProgram(hivProgram, alive, context);
 
 		CalculationResultMap lastEncounters = Calculations.lastEncounter(null, inHivProgram, context);
+		CalculationResultMap lastReturnDateObss = Calculations.lastObs(Dictionary.getConcept(Dictionary.RETURN_VISIT_DATE), inHivProgram, context);
 
 		CalculationResultMap ret = new CalculationResultMap();
 		for (Integer ptId : cohort) {
@@ -72,8 +73,11 @@ public class LostToFollowUpCalculation extends BaseEmrCalculation implements Pat
 
 				// Patient is lost if no encounters in last X days
 				Encounter lastEncounter = EmrCalculationUtils.encounterResultForPatient(lastEncounters, ptId);
+				Date lastScheduledReturnDate = EmrCalculationUtils.datetimeObsResultForPatient(lastReturnDateObss, ptId);
 				Date lastEncounterDate = lastEncounter != null ? lastEncounter.getEncounterDatetime() : null;
-				lost = lastEncounterDate == null || daysSince(lastEncounterDate, context) > HivConstants.LOST_TO_FOLLOW_UP_THRESHOLD_DAYS;
+				if (lastScheduledReturnDate != null) {
+					lost = lastEncounterDate == null || daysSince(lastScheduledReturnDate, context) > HivConstants.LOST_TO_FOLLOW_UP_THRESHOLD_DAYS;
+				}
 			}
 			ret.put(ptId, new SimpleResult(lost, this, context));
 
