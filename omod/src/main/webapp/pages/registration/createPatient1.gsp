@@ -4,7 +4,7 @@
 	ui.includeJavascript("kenyaemr", "controllers/account.js")
 
 	def menuItems = [
-			[ label: "Back to home", iconProvider: "kenyaui", icon: "buttons/back.png", label: "Back to home", href: ui.pageLink("kenyaemr", "registration/registrationHome") ]
+			[ label: "Back to home", iconProvider: "kenyaui", icon: "buttons/back.png", label: "Back to home", href: ui.pageLink("kenyaemr", "registration/createPatient") ]
 	]
 %>
 
@@ -21,25 +21,13 @@
 </div>
 
 <div class="ke-page-content">
-
-	<script type="text/javascript">
-		function ke_useNewPerson() {
-			ui.navigate('kenyaemr', 'registration/createPatient2');
-		}
-	</script>
-
 	<div class="ke-panel-frame">
-		<div class="ke-panel-heading">Step 1: Select Existing Account</div>
+		<div class="ke-panel-heading">Step 2 :Select Existing Account</div>
 		<div class="ke-panel-controls" style="overflow: auto" ng-controller="AccountSearchForm" ng-init="init('non-patients')">
 			<table style="width: 100%">
 				<tr>
 					<td style="width: 50%; text-align: left; vertical-align: middle">
 						Filter <input type="text" ng-model="query" ng-change="updateSearch()" />
-					</td>
-					<td style="width: 50%; text-align: right; vertical-align: middle">
-						<button type="button" onclick="ke_useNewPerson()">
-							<img src="${ ui.resourceLink("kenyaui", "images/buttons/account_add.png") }" /> Use new person
-						</button>
 					</td>
 				</tr>
 			</table>
