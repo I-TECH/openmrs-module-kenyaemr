@@ -82,10 +82,7 @@ public class NeedsCd4TestCalculation extends BaseEmrCalculation implements Patie
 				Date lastResultDate = CoreUtils.latest(dateCount, datePercent);
 
 				if (lastResultDate == null || (daysSince(lastResultDate, context) > HivConstants.NEEDS_CD4_COUNT_AFTER_DAYS)) {
-					if(lost.containsKey(ptId)) {
-						needsCD4 = false;
-					}
-					else {
+					if( !(lost.containsKey(ptId))) {
 						needsCD4 = true;
 					}
 				}
