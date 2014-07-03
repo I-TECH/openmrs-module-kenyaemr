@@ -21,6 +21,7 @@ import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyacore.report.builder.CalculationCohortDefinition;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.library.MissedLastAppointmentCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.LostToFollowUpCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtStartDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.OnAlternateFirstLineArtCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.OnOriginalFirstLineArtCalculation;
@@ -165,10 +166,21 @@ public class ArtCohortLibrary {
 		eligibleForART.addSearch("pedi5To12years", ReportUtils.map(pedi5To12years, "onDate=${onDate}"));
 		eligibleForART.addSearch("over12years", ReportUtils.map(over12years, "onDate=${onDate}"));
 		eligibleForART.addSearch("onART", ReportUtils.map(onArt(), "onDate=${onDate}"));
-		eligibleForART.addSearch("notLostToFollowUp",ReportUtils.map(commonCohorts.hasEncounter(), "onOrAfter=${onDate-90d}"));
-		eligibleForART.setCompositionString("((pediUnder24InProgram OR pedi2To5years OR pedi5To12years OR over12years) AND notLostToFollowUp) AND NOT onART");
+		eligibleForART.addSearch("lostToFollowUp", ReportUtils.map(lostToFollowUpPatients(), "onDate=${onDate}"));
+		eligibleForART.setCompositionString("(pediUnder24InProgram OR pedi2To5years OR pedi5To12years OR over12years) AND NOT (lostToFollowUp OR onART)");
 
 		return eligibleForART;
+	}
+
+	/**
+	 * Patients who are LTFU
+	 * @return the cohort definition
+	 */
+	public CohortDefinition lostToFollowUpPatients() {
+		CalculationCohortDefinition cd = new CalculationCohortDefinition(new LostToFollowUpCalculation());
+		cd.setName("lost to follow on date");
+		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
+		return cd;
 	}
 
 	/**
