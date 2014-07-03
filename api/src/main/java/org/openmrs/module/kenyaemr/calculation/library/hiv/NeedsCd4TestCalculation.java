@@ -20,6 +20,7 @@ import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.ObsResult;
 import org.openmrs.module.kenyacore.CoreUtils;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
+import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyacore.calculation.Filters;
 import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
@@ -63,7 +64,7 @@ public class NeedsCd4TestCalculation extends BaseEmrCalculation implements Patie
 
 		CalculationResultMap lastObsCount = Calculations.lastObs(Dictionary.getConcept(Dictionary.CD4_COUNT), cohort, context);
 		CalculationResultMap lastObsPercent = Calculations.lastObs(Dictionary.getConcept(Dictionary.CD4_PERCENT), cohort, context);
-		CalculationResultMap lost = calculate(new LostToFollowUpCalculation(), cohort, context);
+		Set<Integer> ltfu = CalculationUtils.patientsThatPass(calculate(new LostToFollowUpCalculation(), cohort, context));
 
 		CalculationResultMap ret = new CalculationResultMap();
 		for (Integer ptId : cohort) {
@@ -83,6 +84,10 @@ public class NeedsCd4TestCalculation extends BaseEmrCalculation implements Patie
 
 				if (lastResultDate == null || (daysSince(lastResultDate, context) > HivConstants.NEEDS_CD4_COUNT_AFTER_DAYS)) {
 						needsCD4 = true;
+				}
+
+				if(ltfu.contains(ptId)){
+					needsCD4 = false;
 				}
 			}
 			ret.put(ptId, new BooleanResult(needsCD4, this, context));
