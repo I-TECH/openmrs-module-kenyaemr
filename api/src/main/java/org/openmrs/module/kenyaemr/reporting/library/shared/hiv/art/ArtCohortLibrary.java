@@ -16,12 +16,12 @@ package org.openmrs.module.kenyaemr.reporting.library.shared.hiv.art;
 
 import org.openmrs.Concept;
 import org.openmrs.Program;
-import org.openmrs.api.PatientSetService;
 import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyacore.report.builder.CalculationCohortDefinition;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.library.MissedLastAppointmentCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.LostToFollowUpCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.EligibleForArtCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtStartDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.OnAlternateFirstLineArtCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.OnOriginalFirstLineArtCalculation;
@@ -36,13 +36,9 @@ import org.openmrs.module.kenyaemr.reporting.cohort.definition.RegimenOrderCohor
 import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonCohortLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.HivCohortLibrary;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
-import org.openmrs.module.reporting.cohort.definition.CodedObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.NumericObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
-import org.openmrs.module.reporting.common.RangeComparator;
-import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -73,7 +69,12 @@ public class ArtCohortLibrary {
 	 */
 	public CohortDefinition eligibleForArt() {
 
-		NumericObsCohortDefinition cd4Less500 = new NumericObsCohortDefinition();
+		CalculationCohortDefinition eligibleForART = new CalculationCohortDefinition(new EligibleForArtCalculation());
+		eligibleForART.setName("eligible for ART on date");
+		eligibleForART.addParameter(new Parameter("onDate", "On Date", Date.class));
+		return eligibleForART;
+
+		/*NumericObsCohortDefinition cd4Less500 = new NumericObsCohortDefinition();
 		cd4Less500.setName("CDLessThan500");
 		cd4Less500.setQuestion(Dictionary.getConcept(Dictionary.CD4_COUNT));
 		cd4Less500.setOperator1(RangeComparator.LESS_THAN);
@@ -168,8 +169,8 @@ public class ArtCohortLibrary {
 		eligibleForART.addSearch("onART", ReportUtils.map(onArt(), "onDate=${onDate}"));
 		eligibleForART.addSearch("lostToFollowUp", ReportUtils.map(lostToFollowUpPatients(), "onDate=${onDate}"));
 		eligibleForART.setCompositionString("(pediUnder24InProgram OR pedi2To5years OR pedi5To12years OR over12years) AND NOT (lostToFollowUp OR onART)");
-
-		return eligibleForART;
+*/
+		//return eligibleForART;
 	}
 
 	/**
