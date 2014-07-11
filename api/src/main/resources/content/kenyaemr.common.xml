@@ -248,6 +248,7 @@
 		<property name="name" value="DHIS 2 File Generator" />
 		<property name="description" value="DHIS Compatible Report" />
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
+		<property name="template" value="kenyaemr:dhis2.xls" />
 	</bean>
 
 </beans>

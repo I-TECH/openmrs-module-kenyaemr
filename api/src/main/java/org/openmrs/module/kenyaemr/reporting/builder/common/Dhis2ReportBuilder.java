@@ -99,19 +99,19 @@ public class Dhis2ReportBuilder extends AbstractReportBuilder {
 	 * @return dataset
 	 */
 	protected DataSetDefinition counsellingAndTesting() {
-		CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
-		dsd.setName("1");
-		dsd.setDescription("HIV Counselling And Testing");
-		dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-		dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
-		dsd.addDimension("age", ReportUtils.map(commonDimensions.standardAgeGroups(), "onDate=${endDate}"));
-		dsd.addDimension("gender", ReportUtils.map(commonDimensions.gender()));
+		CohortIndicatorDataSetDefinition counsellingAndTestingDsd = new CohortIndicatorDataSetDefinition();
+		counsellingAndTestingDsd.setName("1");
+		counsellingAndTestingDsd.setDescription("HIV Counselling And Testing");
+		counsellingAndTestingDsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+		counsellingAndTestingDsd.addParameter(new Parameter("endDate", "End Date", Date.class));
+		counsellingAndTestingDsd.addDimension("age", ReportUtils.map(commonDimensions.standardAgeGroups(), "onDate=${endDate}"));
+		counsellingAndTestingDsd.addDimension("gender", ReportUtils.map(commonDimensions.gender()));
 
 		//defining dimensions to be used in this dsd
 		ColumnParameters colMaleUnder15 = new ColumnParameters(null, "<15, Male", "gender=M|age=<15");
 		ColumnParameters colFemaleUnder = new ColumnParameters(null, "<15, Female", "gender=F|age=<15");
-		ColumnParameters colMale15to24 = new ColumnParameters(null, "15 to 24, Male", "gender=M|age=<24|age>=15");
-		ColumnParameters colFemale15to24 = new ColumnParameters(null, "15 to 24, Female", "gender=F|age=<24|age>=15");
+		ColumnParameters colMale15to24 = new ColumnParameters(null, "15 to 24, Male", "gender=M|age=<24");
+		ColumnParameters colFemale15to24 = new ColumnParameters(null, "15 to 24, Female", "gender=F|age=<24");
 		ColumnParameters colMaleAbove24 = new ColumnParameters(null, "25+, Male", "gender=M|age=25+");
 		ColumnParameters colFemaleAbove24 = new ColumnParameters(null, "25+, Female", "gender=F|age=25+");
 		ColumnParameters colTotal = new ColumnParameters(null, "Total", "");
@@ -122,21 +122,21 @@ public class Dhis2ReportBuilder extends AbstractReportBuilder {
 		String indParams = "startDate=${startDate},endDate=${endDate}";
 
 		//1.1 testing for hiv
-		dsd.addColumn("HV01-01-01", "Testing for HIV - First Testing HIV", ReportUtils.map(mchmsIndicators.testedForHivInMchmsAntenatal(), indParams), "");
-		dsd.addColumn("HV01-01-02", "Testing for HIV - Repeat Testing HIV", ReportUtils.map(mchmsIndicators.testedForHivInMchmsAntenatal(), indParams), "");
-		dsd.addColumn("HV01-01-03", "Testing for HIV - Total Tested HIV", ReportUtils.map(mchmsIndicators.testedForHivInMchmsAntenatal(), indParams), "");
-		dsd.addColumn("HV01-01-04", "Testing for HIV - Couple Testing", ReportUtils.map(mchmsIndicators.testedForHivInMchmsAntenatal(), indParams), "");
-		dsd.addColumn("HV01-01-05", "Testing for HIV - Static Testing HIV (Health Facility)", ReportUtils.map(mchmsIndicators.testedForHivInMchmsAntenatal(), indParams), "");
-		dsd.addColumn("HV01-01-06", "Testing for HIV - Outreach Testing HIV", ReportUtils.map(mchmsIndicators.testedForHivInMchmsAntenatal(), indParams), "");
+		counsellingAndTestingDsd.addColumn("HV01-01-01", "Testing for HIV - First Testing HIV", ReportUtils.map(mchmsIndicators.testedForHivInMchmsAntenatal(), indParams), "");
+		counsellingAndTestingDsd.addColumn("HV01-01-02", "Testing for HIV - Repeat Testing HIV", ReportUtils.map(mchmsIndicators.testedForHivInMchmsAntenatal(), indParams), "");
+		counsellingAndTestingDsd.addColumn("HV01-01-03", "Testing for HIV - Total Tested HIV", ReportUtils.map(mchmsIndicators.testedForHivInMchmsAntenatal(), indParams), "");
+		counsellingAndTestingDsd.addColumn("HV01-01-04", "Testing for HIV - Couple Testing", ReportUtils.map(mchmsIndicators.testedForHivInMchmsAntenatal(), indParams), "");
+		counsellingAndTestingDsd.addColumn("HV01-01-05", "Testing for HIV - Static Testing HIV (Health Facility)", ReportUtils.map(mchmsIndicators.testedForHivInMchmsAntenatal(), indParams), "");
+		counsellingAndTestingDsd.addColumn("HV01-01-06", "Testing for HIV - Outreach Testing HIV", ReportUtils.map(mchmsIndicators.testedForHivInMchmsAntenatal(), indParams), "");
 
 		//1.2 Receiving Results (Couples only)
-		dsd.addColumn("HV01-02-01", "Concordant Couples Receiving Results (Couples Only)", ReportUtils.map(mchmsIndicators.testedForHivInMchmsAntenatal(), indParams), "");
-		dsd.addColumn("HV01-02-02", "Discordant Couples Receiving Results (Couples Only)", ReportUtils.map(mchmsIndicators.testedForHivInMchmsAntenatal(), indParams), "");
+		counsellingAndTestingDsd.addColumn("HV01-02-01", "Concordant Couples Receiving Results (Couples Only)", ReportUtils.map(mchmsIndicators.testedForHivInMchmsAntenatal(), indParams), "");
+		counsellingAndTestingDsd.addColumn("HV01-02-02", "Discordant Couples Receiving Results (Couples Only)", ReportUtils.map(mchmsIndicators.testedForHivInMchmsAntenatal(), indParams), "");
 
 		//1.3 Receiving Positive results
-		EmrReportingUtils.addRow(dsd, "HV01-02", "On CTX Prophylaxis", ReportUtils.map(hivIndicators.onCotrimoxazoleProphylaxis(), indParams), allColumns, Arrays.asList("01", "02", "03", "04", "05", "06", "07"));
+		EmrReportingUtils.addRow(counsellingAndTestingDsd, "HV01-03", "On CTX Prophylaxis", ReportUtils.map(hivIndicators.onCotrimoxazoleProphylaxis(), indParams), allColumns, Arrays.asList("01", "02", "03", "04", "05", "06", "07"));
 
-		return dsd;
+		return counsellingAndTestingDsd;
 	}
 
 	/**
@@ -185,63 +185,60 @@ public class Dhis2ReportBuilder extends AbstractReportBuilder {
 
 		//Care and Treatment
 		//3.1 on Cotrimoxazole prophylaxis
-		cohortDsd.addColumn("HV03-01", "HIV Exposed Infants (within 2 months) on Cotrimoxazole prophylaxis", ReportUtils.map(mchcsIndicatorLibrary.hivExposedInfantsWithin2Months(), indParams), "");
+		cohortDsd.addColumn("HV03-01-01", "HIV Exposed Infants (within 2 months) on Cotrimoxazole prophylaxis", ReportUtils.map(mchcsIndicatorLibrary.hivExposedInfantsWithin2Months(), indParams), "");
 
-		cohortDsd.addColumn("HV03-02", "HIV Exposed Infants (Eligible for CTX at 2 Months)", ReportUtils.map(mchcsIndicatorLibrary.hivExposedInfantsWithin2MonthsAndEligibleForCTX(), indParams), "");
+		cohortDsd.addColumn("HV03-01-02", "HIV Exposed Infants (Eligible for CTX at 2 Months)", ReportUtils.map(mchcsIndicatorLibrary.hivExposedInfantsWithin2MonthsAndEligibleForCTX(), indParams), "");
 
 		//ctx for the group of patients that require dimensions
-		EmrReportingUtils.addRow(cohortDsd, "K8-1", "On CTX", ReportUtils.map(hivIndicators.onCotrimoxazoleProphylaxis(), indParams), customColumns);
+		EmrReportingUtils.addRow(cohortDsd, "HV03-01", "On CTX", ReportUtils.map(hivIndicators.onCotrimoxazoleProphylaxis(), indParams), customColumns, Arrays.asList("03", "04", "05", "06", "07"));
 
 		// 3.2 (Enrolled in Care)
-		EmrReportingUtils.addRow(cohortDsd, "HV03", "Enrolled in care", ReportUtils.map(hivIndicators.enrolledExcludingTransfers(), indParams), allColumns, Arrays.asList("08", "09", "10", "11", "12", "13"));
+		EmrReportingUtils.addRow(cohortDsd, "HV03-02", "Enrolled in care", ReportUtils.map(hivIndicators.enrolledExcludingTransfers(), indParams), allColumns, Arrays.asList("01", "02", "03", "04", "05", "06"));
 
 		// 3.3 (Currently in Care)
-		EmrReportingUtils.addRow(cohortDsd, "HV03", "Currently in care", ReportUtils.map(moh731Indicators.currentlyInCare(), indParams), allColumns, Arrays.asList("14", "15", "16", "17", "18", "19"));
-
-		// 3.3 (Currently in Care)
-		EmrReportingUtils.addRow(cohortDsd, "HV03", "Currently in care", ReportUtils.map(moh731Indicators.currentlyInCare(), indParams), allColumns, Arrays.asList("14", "15", "16", "17", "18", "19"));
+		EmrReportingUtils.addRow(cohortDsd, "HV03-03", "Currently in care", ReportUtils.map(moh731Indicators.currentlyInCare(), indParams), allColumns, Arrays.asList("01", "02", "03", "04", "05", "06"));
 
 		// 3.4 (Starting ART)
-		EmrReportingUtils.addRow(cohortDsd, "HV03", "Starting ART", ReportUtils.map(artIndicators.startedArt(), indParams), allColumns, Arrays.asList("20", "21", "22", "23", "24", "25"));
-		cohortDsd.addColumn("HV03-26", "Starting ART (Pregnant Women)", ReportUtils.map(artIndicators.startedArtWhilePregnant(), indParams), "");
-		cohortDsd.addColumn("HV03-27", "Starting ART (TB Patient)", ReportUtils.map(artIndicators.startedArtWhileTbPatient(), indParams), "");
+		EmrReportingUtils.addRow(cohortDsd, "HV03-04", "Starting ART", ReportUtils.map(artIndicators.startedArt(), indParams), allColumns, Arrays.asList("01", "02", "03", "04", "05", "06"));
+		cohortDsd.addColumn("HV03-04-07", "Starting ART (Pregnant Women)", ReportUtils.map(artIndicators.startedArtWhilePregnant(), indParams), "");
+		cohortDsd.addColumn("HV03-04-08", "Starting ART (TB Patient)", ReportUtils.map(artIndicators.startedArtWhileTbPatient(), indParams), "");
 
 		// 3.5 (Revisits ART)
-		EmrReportingUtils.addRow(cohortDsd, "HV03", "Revisits ART", ReportUtils.map(moh731Indicators.revisitsArt(), indParams), allColumns, Arrays.asList("28", "29", "30", "31", "32", "33"));
+		EmrReportingUtils.addRow(cohortDsd, "HV03-05", "Revisits ART", ReportUtils.map(moh731Indicators.revisitsArt(), indParams), allColumns, Arrays.asList("01", "02", "03", "04", "05", "06"));
 
 		// 3.6 (Currently on ART [All])
-		EmrReportingUtils.addRow(cohortDsd, "HV03", "Currently on ART [All]", ReportUtils.map(moh731Indicators.currentlyOnArt(), indParams), allColumns, Arrays.asList("34", "35", "36", "37", "38", "39"));
+		EmrReportingUtils.addRow(cohortDsd, "HV03-06", "Currently on ART [All]", ReportUtils.map(moh731Indicators.currentlyOnArt(), indParams), allColumns, Arrays.asList("01", "02", "03", "04", "05", "06"));
 
 		// 3.7 (Cumulative Ever on ART)
-		EmrReportingUtils.addRow(cohortDsd, "HV03", "Cumulative ever on ART", ReportUtils.map(moh731Indicators.cumulativeOnArt(), indParams), nonInfantColumns, Arrays.asList("40", "41", "42", "43", "44"));
+		EmrReportingUtils.addRow(cohortDsd, "HV03-07", "Cumulative ever on ART", ReportUtils.map(moh731Indicators.cumulativeOnArt(), indParams), nonInfantColumns, Arrays.asList("01", "02", "03", "04", "05"));
 
 		// 3.8 (Survival and Retention on ART at 12 months)
-		cohortDsd.addColumn("HV03-45", "ART Net Cohort at 12 months", ReportUtils.map(moh731Indicators.art12MonthNetCohort(), indParams), "");
-		cohortDsd.addColumn("HV03-46", "On original 1st Line at 12 months", ReportUtils.map(moh731Indicators.onOriginalFirstLineAt12Months(), indParams), "");
-		cohortDsd.addColumn("HV03-47", "On alternative 1st Line at 12 months", ReportUtils.map(moh731Indicators.onAlternateFirstLineAt12Months(), indParams), "");
-		cohortDsd.addColumn("HV03-48", "On 2nd Line (or higher) at 12 months ", ReportUtils.map(moh731Indicators.onSecondLineAt12Months(), indParams), "");
-		cohortDsd.addColumn("HV03-49", "On therapy at 12 months (Total) ", ReportUtils.map(moh731Indicators.onTherapyAt12Months(), indParams), "");
+		cohortDsd.addColumn("HV03-08-01", "ART Net Cohort at 12 months", ReportUtils.map(moh731Indicators.art12MonthNetCohort(), indParams), "");
+		cohortDsd.addColumn("HV03-08-02", "On original 1st Line at 12 months", ReportUtils.map(moh731Indicators.onOriginalFirstLineAt12Months(), indParams), "");
+		cohortDsd.addColumn("HV03-08-03", "On alternative 1st Line at 12 months", ReportUtils.map(moh731Indicators.onAlternateFirstLineAt12Months(), indParams), "");
+		cohortDsd.addColumn("HV03-08-04", "On 2nd Line (or higher) at 12 months ", ReportUtils.map(moh731Indicators.onSecondLineAt12Months(), indParams), "");
+		cohortDsd.addColumn("HV03-08-05", "On therapy at 12 months (Total) ", ReportUtils.map(moh731Indicators.onTherapyAt12Months(), indParams), "");
 
 		// 3.9 (Screening)
-		EmrReportingUtils.addRow(cohortDsd, "HV03", "Screened for TB", ReportUtils.map(tbIndicators.screenedForTb(), indParams), nonInfantColumns, Arrays.asList("50", "51", "52", "53", "54"));
+		EmrReportingUtils.addRow(cohortDsd, "HV03-09", "Screened for TB", ReportUtils.map(tbIndicators.screenedForTb(), indParams), nonInfantColumns, Arrays.asList("01", "02", "03", "04", "05"));
+		cohortDsd.addColumn("HV03-09-06", "Screened for cervica cancer(female 18 years and older) ", ReportUtils.map(moh731Indicators.onTherapyAt12Months(), indParams), "");
 
-		// TODO HV03-55 (Screened for cervical cancer (F 18+))
 		// 3.10 (Prevention with Positives)
-		cohortDsd.addColumn("HV09-04", "Modern contraceptive methods", ReportUtils.map(pwpIndicators.modernContraceptivesProvided(), indParams), "");
-		cohortDsd.addColumn("HV09-05", "Provided with condoms", ReportUtils.map(pwpIndicators.condomsProvided(), indParams), "");
-		cohortDsd.addColumn("HV09-06", "Provided with adherence counselling", ReportUtils.map(pwpIndicators.condomsProvided(), indParams), "");
-		cohortDsd.addColumn("HV09-07", "Disclosed their HIV status to sexual partiners", ReportUtils.map(pwpIndicators.condomsProvided(), indParams), "");
-		cohortDsd.addColumn("HV09-08", "Knowledge of sexual partners HIV status", ReportUtils.map(pwpIndicators.condomsProvided(), indParams), "");
-		cohortDsd.addColumn("HV09-09", "Screened for STI's", ReportUtils.map(pwpIndicators.condomsProvided(), indParams), "");
-		cohortDsd.addColumn("HV09-10", "Linked to community based services", ReportUtils.map(pwpIndicators.condomsProvided(), indParams), "");
-		cohortDsd.addColumn("HV09-11", "Visited home by a health care provider/HIV clinic peer educator", ReportUtils.map(pwpIndicators.condomsProvided(), indParams), "");
-		cohortDsd.addColumn("HV09-12", "Currently Provided with a minimum package of PWP services", ReportUtils.map(pwpIndicators.condomsProvided(), indParams), "");
+		cohortDsd.addColumn("HV03-10-01", "Modern contraceptive methods", ReportUtils.map(pwpIndicators.modernContraceptivesProvided(), indParams), "");
+		cohortDsd.addColumn("HV03-10-02", "Provided with condoms", ReportUtils.map(pwpIndicators.condomsProvided(), indParams), "");
+		cohortDsd.addColumn("HV03-10-03", "Provided with adherence counselling", ReportUtils.map(pwpIndicators.condomsProvided(), indParams), "");
+		cohortDsd.addColumn("HV03-10-04", "Disclosed their HIV status to sexual partiners", ReportUtils.map(pwpIndicators.condomsProvided(), indParams), "");
+		cohortDsd.addColumn("HV03-10-05", "Knowledge of sexual partners HIV status", ReportUtils.map(pwpIndicators.condomsProvided(), indParams), "");
+		cohortDsd.addColumn("HV03-10-06", "Screened for STI's", ReportUtils.map(pwpIndicators.condomsProvided(), indParams), "");
+		cohortDsd.addColumn("HV03-10-07", "Linked to community based services", ReportUtils.map(pwpIndicators.condomsProvided(), indParams), "");
+		cohortDsd.addColumn("HV03-10-08", "Visited home by a health care provider/HIV clinic peer educator", ReportUtils.map(pwpIndicators.condomsProvided(), indParams), "");
+		cohortDsd.addColumn("HV03-10-09", "Currently Provided with a minimum package of PWP services", ReportUtils.map(pwpIndicators.condomsProvided(), indParams), "");
 
 		// 3.11 (HIV Care Visits)
-		nonCohortDsd.addColumn("HV03-70", "HIV care visits (Females 18+)", ReportUtils.map(moh731Indicators.hivCareVisitsFemale18(), indParams));
-		nonCohortDsd.addColumn("HV03-71", "HIV care visits (Scheduled)", ReportUtils.map(moh731Indicators.hivCareVisitsScheduled(), indParams));
-		nonCohortDsd.addColumn("HV03-72", "HIV care visits (Unscheduled)", ReportUtils.map(moh731Indicators.hivCareVisitsUnscheduled(), indParams));
-		nonCohortDsd.addColumn("HV03-73", "HIV care visits (Total)", ReportUtils.map(moh731Indicators.hivCareVisitsTotal(), indParams));
+		nonCohortDsd.addColumn("HV03-11-01", "HIV care visits (Females 18+)", ReportUtils.map(moh731Indicators.hivCareVisitsFemale18(), indParams));
+		nonCohortDsd.addColumn("HV03-11-02", "HIV care visits (Scheduled)", ReportUtils.map(moh731Indicators.hivCareVisitsScheduled(), indParams));
+		nonCohortDsd.addColumn("HV03-11-03", "HIV care visits (Unscheduled)", ReportUtils.map(moh731Indicators.hivCareVisitsUnscheduled(), indParams));
+		nonCohortDsd.addColumn("HV03-11-04", "HIV care visits (Total)", ReportUtils.map(moh731Indicators.hivCareVisitsTotal(), indParams));
 	return mergedDsd;
 	}
 	/**
@@ -259,65 +256,65 @@ public class Dhis2ReportBuilder extends AbstractReportBuilder {
 		String indParams = "startDate=${startDate},endDate=${endDate}";
 
 		//2.1 Testing for HIV
-		dsd.addColumn("HV02-01", "Testing for HIV (Antenatal)", ReportUtils.map(mchmsIndicators.testedForHivInMchmsAntenatal(), indParams), "");
-		dsd.addColumn("HV02-02", "Testing for HIV (Labor and Delivery)", ReportUtils.map(mchmsIndicators.testedForHivInMchmsDelivery(), indParams), "");
-		dsd.addColumn("HV02-03", "Testing for HIV (Postnatal (within 72hrs))", ReportUtils.map(mchmsIndicators.testedForHivInMchmsPostnatal(), indParams), "");
-		dsd.addColumn("HV02-04", "Testing for HIV (Total (Sum HV02-01 to HV02-03))", ReportUtils.map(mchmsIndicators.testedForHivInMchms(), indParams), "");
+		dsd.addColumn("HV02-01-01", "Testing for HIV (Antenatal)", ReportUtils.map(mchmsIndicators.testedForHivInMchmsAntenatal(), indParams), "");
+		dsd.addColumn("HV02-01-02", "Testing for HIV (Labor and Delivery)", ReportUtils.map(mchmsIndicators.testedForHivInMchmsDelivery(), indParams), "");
+		dsd.addColumn("HV02-01-03", "Testing for HIV (Postnatal (within 72hrs))", ReportUtils.map(mchmsIndicators.testedForHivInMchmsPostnatal(), indParams), "");
+		dsd.addColumn("HV02-01-04", "Testing for HIV (Total (Sum HV02-01 to HV02-03))", ReportUtils.map(mchmsIndicators.testedForHivInMchms(), indParams), "");
 
 		//2.2 HIV Positive Results
-		dsd.addColumn("HV02-05", "HIV positive results (At entry into ANC)", ReportUtils.map(mchmsIndicators.testedHivPositiveBeforeMchms(), indParams), "");
-		dsd.addColumn("HV02-06", "HIV positive results (Antenatal)", ReportUtils.map(mchmsIndicators.testedHivPositiveInMchmsAntenatal(), indParams), "");
-		dsd.addColumn("HV02-07", "HIV positive results (Labor and Delivery)", ReportUtils.map(mchmsIndicators.testedHivPositiveInMchmsDelivery(), indParams), "");
-		dsd.addColumn("HV02-08", "HIV positive results (Postnatal (within 72hrs))", ReportUtils.map(mchmsIndicators.testedHivPositiveInMchmsPostnatal(), indParams), "");
-		dsd.addColumn("HV02-09", "HIV Positive(PMTCT) ", ReportUtils.map(mchmsIndicators.testedHivPositiveInMchms(), indParams), "");
+		dsd.addColumn("HV02-02-01", "HIV positive results (At entry into ANC)", ReportUtils.map(mchmsIndicators.testedHivPositiveBeforeMchms(), indParams), "");
+		dsd.addColumn("HV02-02-02", "HIV positive results (Antenatal)", ReportUtils.map(mchmsIndicators.testedHivPositiveInMchmsAntenatal(), indParams), "");
+		dsd.addColumn("HV02-02-03", "HIV positive results (Labor and Delivery)", ReportUtils.map(mchmsIndicators.testedHivPositiveInMchmsDelivery(), indParams), "");
+		dsd.addColumn("HV02-02-04", "HIV positive results (Postnatal (within 72hrs))", ReportUtils.map(mchmsIndicators.testedHivPositiveInMchmsPostnatal(), indParams), "");
+		dsd.addColumn("HV02-02-05", "HIV Positive(PMTCT) ", ReportUtils.map(mchmsIndicators.testedHivPositiveInMchms(), indParams), "");
 
 		//2.3partners Involvement
-		dsd.addColumn("HV02-11", "Male partners tested - (ANC/L&D)", ReportUtils.map(mchmsIndicators.partnerTestedDuringAncOrDelivery(), indParams), "");
-		dsd.addColumn("HV02-12", "Discordant Couples", ReportUtils.map(mchmsIndicators.discordantCouples(), indParams), "");
+		dsd.addColumn("HV02-03-01", "Male partners tested - (ANC/L&D)", ReportUtils.map(mchmsIndicators.partnerTestedDuringAncOrDelivery(), indParams), "");
+		dsd.addColumn("HV02-03-02", "Discordant Couples", ReportUtils.map(mchmsIndicators.discordantCouples(), indParams), "");
 
 		//2.4 Maternal Prophylaxis( at first contact only)
-		dsd.addColumn("HV02-4-0", "Maternal Prophylaxis( at first contact only) Prophylaxis-NVP Only", ReportUtils.map(mchmsIndicators.discordantCouples(), indParams), "");
-		dsd.addColumn("HV02-4-1", "Maternal Prophylaxis( at first contact only) Prophylaxis-(AZT+SdNVP)", ReportUtils.map(mchmsIndicators.discordantCouples(), indParams), "");
-		dsd.addColumn("HV02-4-2", "Maternal Prophylaxis( at first contact only) Prophylaxis-interrupted HAART", ReportUtils.map(mchmsIndicators.discordantCouples(), indParams), "");
-		dsd.addColumn("HV02-4-3", "Maternal Prophylaxis( at first contact only) Prophylaxis-HAART", ReportUtils.map(mchmsIndicators.discordantCouples(), indParams), "");
-		dsd.addColumn("HV02-4-4", "Maternal Prophylaxis( at first contact only) Total PMTCT Prophylaxis", ReportUtils.map(mchmsIndicators.discordantCouples(), indParams), "");
+		dsd.addColumn("HV02-04-01", "Maternal Prophylaxis( at first contact only) Prophylaxis-NVP Only", ReportUtils.map(mchmsIndicators.discordantCouples(), indParams), "");
+		dsd.addColumn("HV02-04-02", "Maternal Prophylaxis( at first contact only) Prophylaxis-(AZT+SdNVP)", ReportUtils.map(mchmsIndicators.discordantCouples(), indParams), "");
+		dsd.addColumn("HV02-04-03", "Maternal Prophylaxis( at first contact only) Prophylaxis-interrupted HAART", ReportUtils.map(mchmsIndicators.discordantCouples(), indParams), "");
+		dsd.addColumn("HV02-04-04", "Maternal Prophylaxis( at first contact only) Prophylaxis-HAART", ReportUtils.map(mchmsIndicators.discordantCouples(), indParams), "");
+		dsd.addColumn("HV02-04-05", "Maternal Prophylaxis( at first contact only) Total PMTCT Prophylaxis", ReportUtils.map(mchmsIndicators.discordantCouples(), indParams), "");
 
 		//2.5 Assesment for ART Eligibility in MCH (at Diagnosis)
-		dsd.addColumn("HV02-5-0", "Assessed for eligibility at 1st ANC - WHO Staging done", ReportUtils.map(mchmsIndicators.assessedForArtEligibility(ArtAssessmentMethod.WHO_STAGING), indParams), "");
-		dsd.addColumn("HV02-5-1", "Assessed for eligibility at 1st ANC - CD4", ReportUtils.map(mchmsIndicators.assessedForArtEligibility(ArtAssessmentMethod.CD4_COUNT), indParams), "");
-		dsd.addColumn("HV02-5-2", "Assesed for Eligibility in ANC", ReportUtils.map(mchmsIndicators.assessedForArtEligibility(null), indParams), "");
-		dsd.addColumn("HV02-5-3", "Started on ART during ANC", ReportUtils.map(mchmsIndicators.assessedForArtEligibility(null), indParams), "");
+		dsd.addColumn("HV02-05-01", "Assessed for eligibility at 1st ANC - WHO Staging done", ReportUtils.map(mchmsIndicators.assessedForArtEligibility(ArtAssessmentMethod.WHO_STAGING), indParams), "");
+		dsd.addColumn("HV02-05-02", "Assessed for eligibility at 1st ANC - CD4", ReportUtils.map(mchmsIndicators.assessedForArtEligibility(ArtAssessmentMethod.CD4_COUNT), indParams), "");
+		dsd.addColumn("HV02-05-03", "Assesed for Eligibility in ANC", ReportUtils.map(mchmsIndicators.assessedForArtEligibility(null), indParams), "");
+		dsd.addColumn("HV02-05-04", "Started on ART during ANC", ReportUtils.map(mchmsIndicators.assessedForArtEligibility(null), indParams), "");
 
 
 		//2.6 Infant Testing (initial tests only)
-		dsd.addColumn("HV02-6-0", "PCR (within 2 months) Infant Testing (Initial test only)", ReportUtils.map(mchcsIndicatorLibrary.pcrWithInitialIn2Months(), indParams), "");
-		dsd.addColumn("HV02-6-1", "PCR (from 3 to 8 months) Infant Testing (Initial test only)", ReportUtils.map(mchcsIndicatorLibrary.pcrWithInitialBetween3And8MonthsOfAge(), indParams), "");
-		dsd.addColumn("HV02-6-2", "Serology (from 9 to 12 months) Infant Testing (Initial test only)", ReportUtils.map(mchcsIndicatorLibrary.serologyAntBodyTestBetween9And12Months(), indParams), "");
-		dsd.addColumn("HV02-6-3", "PCR (from 9 to 12 months) Infant Testing (Initial test only)", ReportUtils.map(mchcsIndicatorLibrary.pcrTestBetween9And12Months(), indParams), "");
-		dsd.addColumn("HV02-6-4", "Total HEI Tested by 12 months", ReportUtils.map(mchcsIndicatorLibrary.totalHeiTestedBy12Months(), indParams), "");
+		dsd.addColumn("HV02-06-01", "PCR (within 2 months) Infant Testing (Initial test only)", ReportUtils.map(mchcsIndicatorLibrary.pcrWithInitialIn2Months(), indParams), "");
+		dsd.addColumn("HV02-06-02", "PCR (from 3 to 8 months) Infant Testing (Initial test only)", ReportUtils.map(mchcsIndicatorLibrary.pcrWithInitialBetween3And8MonthsOfAge(), indParams), "");
+		dsd.addColumn("HV02-06-03", "Serology (from 9 to 12 months) Infant Testing (Initial test only)", ReportUtils.map(mchcsIndicatorLibrary.serologyAntBodyTestBetween9And12Months(), indParams), "");
+		dsd.addColumn("HV02-06-04", "PCR (from 9 to 12 months) Infant Testing (Initial test only)", ReportUtils.map(mchcsIndicatorLibrary.pcrTestBetween9And12Months(), indParams), "");
+		dsd.addColumn("HV02-06-06", "Total HEI Tested by 12 months", ReportUtils.map(mchcsIndicatorLibrary.totalHeiTestedBy12Months(), indParams), "");
 
 
 		//2.7 Confirmed Infant Test Results
-		dsd.addColumn("HV02-7-0", "PCR (by 2 months) Confirmed Infant Test Results Positive", ReportUtils.map(mchcsIndicatorLibrary.pcrConfirmedPositive2Months(), indParams), "");
-		dsd.addColumn("HV02-7-1", "PCR (3 to 8 months) Confirmed Infant Test Results Positive", ReportUtils.map(mchcsIndicatorLibrary.pcrConfirmedPositiveBetween3To8Months(), indParams), "");
-		dsd.addColumn("HV02-7-2", "PCR (9 to 12 months) Confirmed Infant Test Results Positive", ReportUtils.map(mchcsIndicatorLibrary.pcrConfirmedPositiveBetween9To12Months(), indParams), "");
-		dsd.addColumn("HV02-7-3", "Total Confirmed Positive Infant test result by PCR", ReportUtils.map(mchcsIndicatorLibrary.pcrTotalConfirmedPositive(), indParams), "");
+		dsd.addColumn("HV02-07-01", "PCR (by 2 months) Confirmed Infant Test Results Positive", ReportUtils.map(mchcsIndicatorLibrary.pcrConfirmedPositive2Months(), indParams), "");
+		dsd.addColumn("HV02-07-02", "PCR (3 to 8 months) Confirmed Infant Test Results Positive", ReportUtils.map(mchcsIndicatorLibrary.pcrConfirmedPositiveBetween3To8Months(), indParams), "");
+		dsd.addColumn("HV02-07-03", "PCR (9 to 12 months) Confirmed Infant Test Results Positive", ReportUtils.map(mchcsIndicatorLibrary.pcrConfirmedPositiveBetween9To12Months(), indParams), "");
+		dsd.addColumn("HV02-07-04", "Total Confirmed Positive Infant test result by PCR", ReportUtils.map(mchcsIndicatorLibrary.pcrTotalConfirmedPositive(), indParams), "");
 
 		//2.8 Infant Feeding
-		dsd.addColumn("HV02-8-0", "EBF(6 months) Infant Feeding", ReportUtils.map(mchcsIndicatorLibrary.exclusiveBreastFeedingAtSixMonths(), indParams), "");
-		dsd.addColumn("HV02-8-1", "ERF(6 months) Infant Feeding", ReportUtils.map(mchcsIndicatorLibrary.exclusiveReplacementFeedingAtSixMonths(), indParams), "");
-		dsd.addColumn("HV02-8-2", "MF(6 months) Infant Feeding", ReportUtils.map(mchcsIndicatorLibrary.mixedFeedingAtSixMonths(), indParams), "");
-		dsd.addColumn("HV02-8-3", "Total Exposed aged six Months", ReportUtils.map(mchcsIndicatorLibrary.totalExposedAgedSixMoths(), indParams), "");
-		dsd.addColumn("HV02-8-4", "BF(at 12 months) Infant Feeding", ReportUtils.map(mchcsIndicatorLibrary.totalExposedAgedSixMoths(), indParams), "");
-		dsd.addColumn("HV02-8-5", "Not BF(at 12 months) Infant Feeding", ReportUtils.map(mchcsIndicatorLibrary.totalExposedAgedSixMoths(), indParams), "");
-		dsd.addColumn("HV02-8-6", "Not known Infant Feeding (12 months)", ReportUtils.map(mchcsIndicatorLibrary.totalExposedAgedSixMoths(), indParams), "");
-		dsd.addColumn("HV02-8-7", "Total Exposed 12", ReportUtils.map(mchcsIndicatorLibrary.totalExposedAgedSixMoths(), indParams), "");
+		dsd.addColumn("HV02-08-01", "EBF(6 months) Infant Feeding", ReportUtils.map(mchcsIndicatorLibrary.exclusiveBreastFeedingAtSixMonths(), indParams), "");
+		dsd.addColumn("HV02-08-02", "ERF(6 months) Infant Feeding", ReportUtils.map(mchcsIndicatorLibrary.exclusiveReplacementFeedingAtSixMonths(), indParams), "");
+		dsd.addColumn("HV02-08-03", "MF(6 months) Infant Feeding", ReportUtils.map(mchcsIndicatorLibrary.mixedFeedingAtSixMonths(), indParams), "");
+		dsd.addColumn("HV02-08-04", "Total Exposed aged six Months", ReportUtils.map(mchcsIndicatorLibrary.totalExposedAgedSixMoths(), indParams), "");
+		dsd.addColumn("HV02-08-05", "BF(at 12 months) Infant Feeding", ReportUtils.map(mchcsIndicatorLibrary.totalExposedAgedSixMoths(), indParams), "");
+		dsd.addColumn("HV02-08-06", "Not BF(at 12 months) Infant Feeding", ReportUtils.map(mchcsIndicatorLibrary.totalExposedAgedSixMoths(), indParams), "");
+		dsd.addColumn("HV02-08-07", "Not known Infant Feeding (12 months)", ReportUtils.map(mchcsIndicatorLibrary.totalExposedAgedSixMoths(), indParams), "");
+		dsd.addColumn("HV02-08-08", "Total Exposed 12", ReportUtils.map(mchcsIndicatorLibrary.totalExposedAgedSixMoths(), indParams), "");
 
 		//2.9 Infant ARV Prophylaxis(at first contact only)
-		dsd.addColumn("HV02-9-0", "Issued in ANC (Infant ARV prophylaxis)", ReportUtils.map(mchcsIndicatorLibrary.pcrConfirmedPositive2Months(), indParams), "");
-		dsd.addColumn("HV02-9-1", "Labour and Delivery (Infant ARV prophylaxis)", ReportUtils.map(mchcsIndicatorLibrary.pcrConfirmedPositive2Months(), indParams), "");
-		dsd.addColumn("HV02-9-2", "PNC (<72hrs) (Infant ARV prophylaxis)", ReportUtils.map(mchcsIndicatorLibrary.pcrConfirmedPositive2Months(), indParams), "");
-		dsd.addColumn("HV02-9-3", "Total Infants Issued Prophylaxis", ReportUtils.map(mchcsIndicatorLibrary.pcrConfirmedPositive2Months(), indParams), "");
+		dsd.addColumn("HV02-09-01", "Issued in ANC (Infant ARV prophylaxis)", ReportUtils.map(mchcsIndicatorLibrary.pcrConfirmedPositive2Months(), indParams), "");
+		dsd.addColumn("HV02-09-02", "Labour and Delivery (Infant ARV prophylaxis)", ReportUtils.map(mchcsIndicatorLibrary.pcrConfirmedPositive2Months(), indParams), "");
+		dsd.addColumn("HV02-09-03", "PNC (<72hrs) (Infant ARV prophylaxis)", ReportUtils.map(mchcsIndicatorLibrary.pcrConfirmedPositive2Months(), indParams), "");
+		dsd.addColumn("HV02-09-04", "Total Infants Issued Prophylaxis", ReportUtils.map(mchcsIndicatorLibrary.pcrConfirmedPositive2Months(), indParams), "");
 
 		return  dsd;
 	}
@@ -337,7 +334,7 @@ public class Dhis2ReportBuilder extends AbstractReportBuilder {
 
 		//defining dimensions to be used in this dsd
 		ColumnParameters col0To14 = new ColumnParameters("", "Circumcised 0-14 years", "gender=M|age=<15");
-		ColumnParameters col15to24 = new ColumnParameters("", "Circumcised 15-24 years", "gender=M|age=<24|age>=15");
+		ColumnParameters col15to24 = new ColumnParameters("", "Circumcised 15-24 years", "gender=M|age=<24");
 		ColumnParameters colAbove25 = new ColumnParameters("", "Circumcised 25 years and Above", "gender=M|age=25+");
 		ColumnParameters colTotal = new ColumnParameters("", "Total Circumcised", "");
 

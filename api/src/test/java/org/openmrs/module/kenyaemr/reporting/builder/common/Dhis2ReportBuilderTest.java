@@ -14,7 +14,6 @@
 package org.openmrs.module.kenyaemr.reporting.builder.common;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyacore.report.ReportDescriptor;
@@ -38,7 +37,6 @@ import java.util.Arrays;
 /**
  * tests for {@link.Dhis2ReportBuilder}
  */
-@Ignore
 public class Dhis2ReportBuilderTest extends BaseModuleContextSensitiveTest {
 
 	@Autowired
