@@ -21,6 +21,8 @@ import org.openmrs.Concept;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
+import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
+import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.regimen.RegimenManager;
 import org.openmrs.module.kenyaemr.test.EmrTestUtils;
 import org.openmrs.module.kenyacore.test.TestUtils;
@@ -38,6 +40,12 @@ public class OnSecondLineArtCalculationTest extends BaseModuleContextSensitiveTe
 	@Autowired
 	private RegimenManager regimenManager;
 
+	@Autowired
+	private HivMetadata hivMetadata;
+
+	@Autowired
+	private CommonMetadata commonMetadata;
+
 	/**
 	 * Setup each test
 	 */
@@ -45,6 +53,9 @@ public class OnSecondLineArtCalculationTest extends BaseModuleContextSensitiveTe
 	public void setup() throws Exception {
 		executeDataSet("dataset/test-concepts.xml");
 		executeDataSet("dataset/test-drugs.xml");
+
+		commonMetadata.install();
+		hivMetadata.install();
 
 		regimenManager.refresh();
 	}
