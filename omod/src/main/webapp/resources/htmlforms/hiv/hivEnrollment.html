@@ -25,12 +25,15 @@
 		function onTransferStatusChange() {
 			if (getValue('transfer-status.value') == NO_CONCEPT_ID) {
 				jq('#transfer-details :input').prop('disabled', true);
+				jq('#hiv-id :input').prop('disabled', false);
 				jq('#generate-hiv-id').show();
 			} else if (getValue('transfer-status.value') == YES_CONCEPT_ID) {
 				jq('#transfer-details :input').prop('disabled', false);
+				jq('#hiv-id :input').prop('disabled', false);
 				jq('#generate-hiv-id').hide();
 			} else {
 				jq('#transfer-details :input').prop('disabled', true);
+				jq('#hiv-id :input').prop('disabled', true);
 				jq('#generate-hiv-id').hide();
 			}
 		}
