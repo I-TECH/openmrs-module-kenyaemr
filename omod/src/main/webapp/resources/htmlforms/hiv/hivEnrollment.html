@@ -24,22 +24,22 @@
 
 		function onTransferStatusChange() {
 			if (getValue('transfer-status.value') == NO_CONCEPT_ID) {
-				jq('#transfer-details').hide();
+				jq('#transfer-details :input').prop('disabled', true);
 				jq('#generate-hiv-id').show();
 			} else if (getValue('transfer-status.value') == YES_CONCEPT_ID) {
-				jq('#transfer-details').show();
+				jq('#transfer-details :input').prop('disabled', false);
 				jq('#generate-hiv-id').hide();
 			} else {
-				jq('#transfer-details').hide();
+				jq('#transfer-details :input').prop('disabled', true);
 				jq('#generate-hiv-id').hide();
 			}
 		}
 
 		function onArtStatusChange() {
 			if (getValue('art-status.value') == 'true') {
-				jq('#art-history').show();
+				jq('#art-history :input').prop('disabled', false);
 			} else {
-				jq('#art-history').hide();
+				jq('#art-history :input').prop('disabled', true);
 			}
 		}
 
