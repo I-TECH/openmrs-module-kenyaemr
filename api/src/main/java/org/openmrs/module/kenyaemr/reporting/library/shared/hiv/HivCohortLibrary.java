@@ -19,7 +19,9 @@ import org.openmrs.EncounterType;
 import org.openmrs.Program;
 import org.openmrs.api.PatientSetService;
 import org.openmrs.module.kenyacore.report.ReportUtils;
+import org.openmrs.module.kenyacore.report.builder.CalculationCohortDefinition;
 import org.openmrs.module.kenyaemr.Dictionary;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.OnCtxWithinDurationCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.DateObsValueBetweenCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonCohortLibrary;
@@ -188,7 +190,8 @@ public class HivCohortLibrary {
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.addSearch("onCtx", ReportUtils.map(onCtx, "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
 		cd.addSearch("onMedCtx", ReportUtils.map(commonCohorts.medicationDispensed(Dictionary.getConcept(Dictionary.SULFAMETHOXAZOLE_TRIMETHOPRIM)),"onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
-		cd.setCompositionString("onCtx OR onMedCtx");
+		cd.addSearch("onCtxOnDuration", ReportUtils.map(onCtxOnDuration(), "onDate=${onOrBefore}"));
+		cd.setCompositionString("onCtx OR onMedCtx OR onCtxOnDuration");
 
 		return cd;
 	}
@@ -293,5 +296,16 @@ public class HivCohortLibrary {
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		return cd;
 
+	}
+
+	/**
+	 * Patients who are on ctx on ${onDate}
+	 * @return the cohort definition
+	 */
+	public CohortDefinition onCtxOnDuration() {
+		CalculationCohortDefinition cd = new CalculationCohortDefinition(new OnCtxWithinDurationCalculation());
+		cd.setName("On CTX on date");
+		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
+		return cd;
 	}
 }
