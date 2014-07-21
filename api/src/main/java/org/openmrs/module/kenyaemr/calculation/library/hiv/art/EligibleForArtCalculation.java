@@ -14,27 +14,28 @@
 
 package org.openmrs.module.kenyaemr.calculation.library.hiv.art;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.Set;
-
 import org.openmrs.Program;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
+import org.openmrs.module.kenyacore.calculation.BooleanResult;
 import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyacore.calculation.Filters;
 import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
-import org.openmrs.module.kenyacore.calculation.BooleanResult;
-import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
-import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
+import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.LastCd4CountCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.LastCd4PercentageCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.LastWhoStageCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.LostToFollowUpIncludingTransferOutCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.util.EmrUtils;
+import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.common.Age;
+
+import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Calculates whether patients are eligible for ART
@@ -64,6 +65,7 @@ public class EligibleForArtCalculation extends BaseEmrCalculation implements Pat
 		
 		// need to exclude those on ART already
 		Set<Integer> onArt = CalculationUtils.patientsThatPass(calculate(new OnArtCalculation(), cohort, context));
+		Set<Integer> ltfu = CalculationUtils.patientsThatPass(calculate(new LostToFollowUpIncludingTransferOutCalculation(), cohort, context));
 		
 		CalculationResultMap ages = Calculations.ages(cohort, context);
 		
@@ -80,6 +82,9 @@ public class EligibleForArtCalculation extends BaseEmrCalculation implements Pat
 				Double cd4Percent = EmrCalculationUtils.numericObsResultForPatient(lastCd4Percent, ptId);
 				Integer whoStage = EmrUtils.whoStage(EmrCalculationUtils.codedObsResultForPatient(lastWhoStage, ptId));
 				eligible = isEligible(ageInMonths, cd4, cd4Percent, whoStage);
+			}
+			if(ltfu.contains(ptId)) {
+				eligible = false;
 			}
 			ret.put(ptId, new BooleanResult(eligible, this));
 		}

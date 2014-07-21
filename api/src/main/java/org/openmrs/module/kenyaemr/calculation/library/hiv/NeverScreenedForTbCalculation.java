@@ -14,25 +14,26 @@
 
 package org.openmrs.module.kenyaemr.calculation.library.hiv;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.openmrs.Concept;
 import org.openmrs.Obs;
 import org.openmrs.Program;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.ListResult;
+import org.openmrs.module.kenyacore.calculation.BooleanResult;
 import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyacore.calculation.Filters;
-import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
-import org.openmrs.module.kenyacore.calculation.BooleanResult;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
+import org.openmrs.module.kenyaemr.metadata.TbMetadata;
+import org.openmrs.module.metadatadeploy.MetadataUtils;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Calculates HIV patients who have not been screened for TB
@@ -51,7 +52,9 @@ public class NeverScreenedForTbCalculation extends BaseEmrCalculation {
 	 */
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> params, PatientCalculationContext context) {
+
 		Program hivProgram = MetadataUtils.getProgram(HivMetadata._Program.HIV);
+		Program tbProgram = MetadataUtils.existing(Program.class, TbMetadata._Program.TB);
 
 		Concept tbDiseaseStatus = Dictionary.getConcept(Dictionary.TUBERCULOSIS_DISEASE_STATUS);
 		Concept diseaseSuspected = Dictionary.getConcept(Dictionary.DISEASE_SUSPECTED);
@@ -60,6 +63,7 @@ public class NeverScreenedForTbCalculation extends BaseEmrCalculation {
 
 		Set<Integer> alive = Filters.alive(cohort, context);
 		Set<Integer> inHivProgram = Filters.inProgram(hivProgram, alive, context);
+		Set<Integer> inTbProgram = Filters.inProgram(tbProgram , alive ,context);
 
 		CalculationResultMap screeningObs = Calculations.allObs(tbDiseaseStatus, cohort, context);
 
@@ -73,7 +77,7 @@ public class NeverScreenedForTbCalculation extends BaseEmrCalculation {
 				List<Obs> diseasesStatuses = CalculationUtils.extractResultValues((ListResult) screeningObs.get(ptId));
 
 				for (Obs diseaseStatus : diseasesStatuses) {
-					if (diseaseSuspected.equals(diseaseStatus.getValueCoded()) || diseaseDiagnosed.equals(diseaseStatus.getValueCoded()) || noSignsOrSymptoms.equals(diseaseStatus.getValueCoded())) {
+					if (diseaseSuspected.equals(diseaseStatus.getValueCoded()) || diseaseDiagnosed.equals(diseaseStatus.getValueCoded()) || noSignsOrSymptoms.equals(diseaseStatus.getValueCoded()) || inTbProgram.contains(ptId) ) {
 						hivAndNeverScreened = false;
 						break;
 					}

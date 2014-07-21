@@ -14,16 +14,19 @@
 
 package org.openmrs.module.kenyaemr.calculation.library.hiv.art;
 
-import java.util.Collection;
-import java.util.Map;
-
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
-import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
+import org.openmrs.module.kenyacore.calculation.CalculationUtils;
+import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.LostToFollowUpCalculation;
 import org.openmrs.module.kenyaemr.regimen.RegimenOrder;
+
+import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Calculates whether patients are on second-line ART regimens
@@ -40,6 +43,7 @@ public class OnSecondLineArtCalculation extends BaseEmrCalculation {
 
 		// Get active ART regimen of each patient
 		CalculationResultMap currentArvs = calculate(new CurrentArtRegimenCalculation(), cohort, context);
+		Set<Integer> ltfu = CalculationUtils.patientsThatPass(calculate(new LostToFollowUpCalculation(), cohort, context));
 
 		CalculationResultMap ret = new CalculationResultMap();
 		for (Integer ptId : cohort) {
@@ -50,6 +54,9 @@ public class OnSecondLineArtCalculation extends BaseEmrCalculation {
 				RegimenOrder currentRegimen = (RegimenOrder) currentArvResult.getValue();
 
 				onSecondLine = EmrCalculationUtils.regimenInGroup(currentRegimen, "ARV", "adult-second");
+			}
+			if (ltfu.contains(ptId)) {
+				onSecondLine = false;
 			}
 
 			ret.put(ptId, new BooleanResult(onSecondLine, this, context));

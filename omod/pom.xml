@@ -8,7 +8,7 @@
 	</parent>
 
 	<artifactId>kenyaemr-omod</artifactId>
-  <version>14.1.3-RC3-SNAPSHOT</version>
+    <version>14.1.3-RC3-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>KenyaEMR Module OMOD</name>
 	<description>OMOD project for KenyaEMR Module</description>
