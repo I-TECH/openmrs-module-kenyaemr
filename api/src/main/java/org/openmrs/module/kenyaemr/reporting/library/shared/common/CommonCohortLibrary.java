@@ -21,7 +21,9 @@ import org.openmrs.api.PatientSetService;
 import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyacore.report.builder.CalculationCohortDefinition;
 import org.openmrs.module.kenyaemr.Dictionary;
+import org.openmrs.module.kenyaemr.calculation.library.DeceasedPatientsCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.InProgramCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.RecordedDeceasedCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.OnAlternateFirstLineArtCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.DateObsValueBetweenCohortDefinition;
@@ -272,6 +274,28 @@ public class CommonCohortLibrary {
 		cd.setName("Those patients who completed program on date");
 		cd.addParameter(new Parameter("completedOnOrBefore", "Complete Date", Date.class));
 		cd.setPrograms(Arrays.asList(MetadataUtils.existing(Program.class, HivMetadata._Program.HIV)));
+		return cd;
+	}
+
+	/**
+	 * Patients who are Deceased
+	 * @return the cohort definition
+	 */
+	public  CohortDefinition deceasedPatients() {
+		CalculationCohortDefinition cd = new CalculationCohortDefinition(new DeceasedPatientsCalculation());
+		cd.setName("deceases patients on date");
+		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
+		return cd;
+	}
+
+	/**
+	 * Patients who ahve been marked as dead in discontinuation forms but NOT YET deceased
+	 * @return cohort definition
+	 */
+	public CohortDefinition markedAsDeadButNotDeceased() {
+		CalculationCohortDefinition cd = new CalculationCohortDefinition(new RecordedDeceasedCalculation());
+		cd.setName("marked as dead patients on date");
+		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
 		return cd;
 	}
 }
