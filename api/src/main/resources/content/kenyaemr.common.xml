@@ -31,6 +31,7 @@
 				<ref bean="kenyaemr.common.report.missedAppointment" />
 				<ref bean="kenyaemr.common.report.moh711" />
 				<ref bean="kenyaemr.common.report.moh731" />
+				<ref bean="kenyaemr.common.report.recordedDeceased" />
 			</set>
 		</property>
 	</bean>
@@ -240,6 +241,14 @@
 		<property name="description" value="Monthly ART Drug Report" />
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 		<property name="template" value="kenyaemr:artDrugs.xls" />
+	</bean>
+
+	<bean id="kenyaemr.common.report.recordedDeceased" class="org.openmrs.module.kenyacore.report.CalculationReportDescriptor">
+		<property name="targetUuid" value="e7736868-125e-11e4-ab7a-a327f879345f" />
+		<property name="name" value="Patients to be marked as deceased" />
+		<property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.RecordedDeceasedCalculation" />
+		<property name="displayIdentifier" ref="kenyaemr.hiv.identifier.upn" />
+		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 	</bean>
 
 </beans>

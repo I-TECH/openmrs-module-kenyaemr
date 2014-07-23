@@ -18,12 +18,12 @@ import org.openmrs.Concept;
 import org.openmrs.Program;
 import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyacore.report.builder.CalculationCohortDefinition;
-import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.library.MissedLastAppointmentCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.LostToFollowUpCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.EligibleForArtCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtStartDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.OnAlternateFirstLineArtCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.OnArtCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.OnOriginalFirstLineArtCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.OnSecondLineArtCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.PregnantAtArtStartCalculation;
@@ -38,7 +38,6 @@ import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.HivCohortLibrary
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -91,7 +90,7 @@ public class ArtCohortLibrary {
 	 * @return the cohort definition
 	 */
 	public CohortDefinition onArt() {
-		SqlCohortDefinition cd = new SqlCohortDefinition("select distinct(patient_id) from orders where concept_id in (select concept_id from concept_set where concept_set =" + Dictionary.getConcept(Dictionary.ANTIRETROVIRAL_DRUGS).getConceptId() + ") and (discontinued_date is null or discontinued_date > :onDate) and start_date < :onDate and (auto_expire_date is null or auto_expire_date > :onDate) and voided = 0");
+		CalculationCohortDefinition cd = new CalculationCohortDefinition(new OnArtCalculation());
 		cd.setName("on ART on date");
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
 		return cd;
@@ -277,21 +276,6 @@ public class ArtCohortLibrary {
 		cd.setName("started ART");
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-		return cd;
-	}
-
-	/**
-	 * Patients who started ART between ${onOrAfter} and ${onOrBefore} excluding transfer ins
-	 * @return the cohort definition
-	 */
-	public CohortDefinition startedArtExcludingTransferins() {
-		CompositionCohortDefinition cd = new CompositionCohortDefinition();
-		cd.setName("Started ART excluding transfer ins");
-		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
-		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-		cd.addSearch("startedArt", ReportUtils.map(startedArt(), "onOrBefore=${onOrAfter}"));
-		cd.addSearch("transferIns", ReportUtils.map(commonCohorts.transferredIn(), "onOrBefore=${onOrAfter}"));
-		cd.setCompositionString("startedArt AND NOT transferIns");
 		return cd;
 	}
 
