@@ -42,9 +42,7 @@ public class OnCtxWithinDurationCalculation extends BaseEmrCalculation {
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
 
-		Date endDate = getEndDate(); // this is the end of the reporting period
-		//Date endDate = (parameterValues != null && parameterValues.containsKey("endDate")) ? (Date) parameterValues.get("endDate") : null;
-		//System.out.println("The date is this one "+endDate);
+		Date endDate = context.getNow(); // this is the end of the reporting period
 
 		Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
 		Set<Integer> alive = Filters.alive(cohort, context);
@@ -101,17 +99,5 @@ public class OnCtxWithinDurationCalculation extends BaseEmrCalculation {
 
 		}
 		return ret;
-	}
-	//get the last date of the last month
-	//just before we let reporting framework provide a solution for accessing start and end dates
-	protected Date getEndDate() {
-
-		Calendar calendar = Calendar.getInstance();
-		calendar.add(Calendar.MONTH, -1);
-
-		int max = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
-		calendar.set(Calendar.DAY_OF_MONTH, max);
-
-		return calendar.getTime();
 	}
 }
