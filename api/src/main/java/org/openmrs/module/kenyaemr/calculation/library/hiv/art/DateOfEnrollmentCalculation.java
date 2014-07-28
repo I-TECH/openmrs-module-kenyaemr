@@ -11,53 +11,52 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-
 package org.openmrs.module.kenyaemr.calculation.library.hiv.art;
 
-import org.openmrs.Concept;
+import org.openmrs.Encounter;
+import org.openmrs.EncounterType;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
+import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
-import org.openmrs.module.kenyacore.calculation.BooleanResult;
 import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
+import org.openmrs.module.kenyaemr.metadata.HivMetadata;
+import org.openmrs.module.metadatadeploy.MetadataUtils;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 
 /**
- * Calculates whether a patient is a transfer in based on the status
+ * Calculate the date of enrollment into HIV Program
  */
-public class IsTransferInCalculation extends AbstractPatientCalculation {
+public class DateOfEnrollmentCalculation extends AbstractPatientCalculation {
 
-	/**
-	 * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(java.util.Collection,
-	 *      java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
-	 */
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues,
 										 PatientCalculationContext context) {
-
-		Concept transferInStatus = Dictionary.getConcept(Dictionary.TRANSFER_IN);
-
-		CalculationResultMap transferInStatusResults = Calculations.lastObs(transferInStatus,cohort,context);
-		Set<Integer> transferInDate = CalculationUtils.patientsThatPass(calculate(new TransferInDateCalculation(), cohort, context));
+		Set<Integer> transferinPatients = CalculationUtils.patientsThatPass(calculate(new IsTransferInCalculation(), cohort, context));
+		CalculationResultMap enrolledHere = Calculations.firstEncounter(MetadataUtils.existing(EncounterType.class, HivMetadata._EncounterType.HIV_ENROLLMENT), cohort, context);
+		CalculationResultMap dateEnrolledIntoHivFromFacility = Calculations.lastObs(Dictionary.getConcept(Dictionary.DATE_ENROLLED_IN_HIV_CARE), cohort, context);
 
 		CalculationResultMap result = new CalculationResultMap();
 		for (Integer ptId : cohort) {
-			boolean isTransferIn = false;
-
-			Concept status = EmrCalculationUtils.codedObsResultForPatient(transferInStatusResults, ptId);
-
-			if (((status != null) && (status.equals(Dictionary.getConcept(Dictionary.YES)))) || transferInDate.contains(ptId) ) {
-				isTransferIn = true;
+			Date enrollmentDate = null;
+			Encounter encounter = EmrCalculationUtils.encounterResultForPatient(enrolledHere, ptId);
+			Date dateHivStarted = EmrCalculationUtils.obsResultForPatient(dateEnrolledIntoHivFromFacility, ptId).getValueDate();
+			if(encounter != null){
+				enrollmentDate = encounter.getEncounterDatetime();
 			}
-
-			result.put(ptId, new BooleanResult(isTransferIn, this, context));
+			if((transferinPatients.contains(ptId)) && (dateHivStarted != null)) {
+				enrollmentDate = dateHivStarted;
+			}
+			result.put(ptId, new SimpleResult(enrollmentDate, this));
 		}
-		return result;
+
+		return  result;
 	}
 }

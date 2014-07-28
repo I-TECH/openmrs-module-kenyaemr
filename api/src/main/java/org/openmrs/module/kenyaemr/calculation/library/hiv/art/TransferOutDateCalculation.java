@@ -11,27 +11,25 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-
 package org.openmrs.module.kenyaemr.calculation.library.hiv.art;
 
 import org.openmrs.Concept;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
+import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
-import org.openmrs.module.kenyacore.calculation.BooleanResult;
-import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.Map;
-import java.util.Set;
 
 /**
- * Calculates whether a patient is a transfer in based on the status
+ * Calculates whether a patient has a transfer out date
  */
-public class IsTransferInCalculation extends AbstractPatientCalculation {
+public class TransferOutDateCalculation extends AbstractPatientCalculation {
 
 	/**
 	 * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(java.util.Collection,
@@ -41,23 +39,16 @@ public class IsTransferInCalculation extends AbstractPatientCalculation {
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues,
 										 PatientCalculationContext context) {
 
-		Concept transferInStatus = Dictionary.getConcept(Dictionary.TRANSFER_IN);
-
-		CalculationResultMap transferInStatusResults = Calculations.lastObs(transferInStatus,cohort,context);
-		Set<Integer> transferInDate = CalculationUtils.patientsThatPass(calculate(new TransferInDateCalculation(), cohort, context));
+		Concept transferOutDate = Dictionary.getConcept(Dictionary.DATE_TRANSFERRED_OUT);
+		CalculationResultMap transferInDateResults = Calculations.lastObs(transferOutDate, cohort, context);
 
 		CalculationResultMap result = new CalculationResultMap();
-		for (Integer ptId : cohort) {
-			boolean isTransferIn = false;
+		for(int ptId : cohort){
 
-			Concept status = EmrCalculationUtils.codedObsResultForPatient(transferInStatusResults, ptId);
+			Date tDate = EmrCalculationUtils.datetimeObsResultForPatient(transferInDateResults, ptId);
 
-			if (((status != null) && (status.equals(Dictionary.getConcept(Dictionary.YES)))) || transferInDate.contains(ptId) ) {
-				isTransferIn = true;
-			}
-
-			result.put(ptId, new BooleanResult(isTransferIn, this, context));
+			result.put(ptId, tDate == null ? null : new SimpleResult(tDate, null));
 		}
-		return result;
+		return  result;
 	}
 }
