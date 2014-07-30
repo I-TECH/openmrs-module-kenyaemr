@@ -13,49 +13,45 @@
  */
 package org.openmrs.module.kenyaemr.calculation.library.hiv.art;
 
-import org.openmrs.Encounter;
-import org.openmrs.EncounterType;
 import org.openmrs.Obs;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
-import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
-import org.openmrs.module.kenyaemr.metadata.HivMetadata;
-import org.openmrs.module.metadatadeploy.MetadataUtils;
 
 import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
-import java.util.Set;
 
 /**
- * Calculate the date of enrollment into HIV Program
+ * Calculate the first date a client was started on arvs
  */
-public class DateOfEnrollmentCalculation extends AbstractPatientCalculation {
+public class DateARV1Calculation extends AbstractPatientCalculation {
 
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues,
 										 PatientCalculationContext context) {
-		Set<Integer> transferinPatients = CalculationUtils.patientsThatPass(calculate(new IsTransferInCalculation(), cohort, context));
-		CalculationResultMap enrolledHere = Calculations.firstEncounter(MetadataUtils.existing(EncounterType.class, HivMetadata._EncounterType.HIV_ENROLLMENT), cohort, context);
-		CalculationResultMap dateEnrolledIntoHivFromFacility = Calculations.lastObs(Dictionary.getConcept(Dictionary.DATE_ENROLLED_IN_HIV_CARE), cohort, context);
+
+		CalculationResultMap patientsStartedAtThisFacility = calculate(new OriginalCohortCalculation(), cohort, context);
+		CalculationResultMap transferInPatients = Calculations.lastObs(Dictionary.getConcept(Dictionary.ANTIRETROVIRAL_TREATMENT_START_DATE), cohort, context);
 
 		CalculationResultMap result = new CalculationResultMap();
 		for (Integer ptId : cohort) {
-			Date enrollmentDate = null;
-			Encounter encounter = EmrCalculationUtils.encounterResultForPatient(enrolledHere, ptId);
-			Obs dateHivStarted = EmrCalculationUtils.obsResultForPatient(dateEnrolledIntoHivFromFacility, ptId);
-			if((encounter != null) && (!(transferinPatients.contains(ptId)))){
-				enrollmentDate = encounter.getEncounterDatetime();
+			Date dateArv1 = null;
+			Date startedHere = EmrCalculationUtils.datetimeResultForPatient(patientsStartedAtThisFacility, ptId);
+			Obs transferIns = EmrCalculationUtils.obsResultForPatient(transferInPatients, ptId);
+			if(startedHere != null){
+				dateArv1 = startedHere;
 			}
-			if((transferinPatients.contains(ptId)) && (dateHivStarted != null)) {
-				enrollmentDate = dateHivStarted.getValueDate();
+
+			if((transferInPatients.containsKey(ptId)) && (transferIns != null)){
+				dateArv1 = transferIns.getValueDate();
 			}
-			result.put(ptId, new SimpleResult(enrollmentDate, this));
+			result.put(ptId, new SimpleResult(dateArv1, this));
+
 		}
 
 		return  result;

@@ -21,10 +21,16 @@ import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyacore.report.builder.AbstractCohortReportBuilder;
 import org.openmrs.module.kenyacore.report.builder.Builds;
 import org.openmrs.module.kenyacore.report.data.patient.definition.CalculationDataDefinition;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.DateARV1Calculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.DateARV2Calculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.DateLastSeenCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.DateOfEnrollmentCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.IsTransferInCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.IsTransferOutCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.LastCd4Calculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.LastCd4CountDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.OriginalCohortCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.PatientOutComeCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.TransferInDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.TransferOutDateCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
@@ -87,16 +93,22 @@ public class ArtCohortAnalysisReportBuilder extends AbstractCohortReportBuilder 
 		DataDefinition nameDef = new ConvertedPersonDataDefinition("name", new PreferredNameDataDefinition(), nameFormatter);
 
 		dsd.addColumn("id", new PatientIdDataDefinition(), "");
-		dsd.addColumn("Names", nameDef, "");
+		dsd.addColumn("Name", nameDef, "");
 		dsd.addColumn("Patient Unique ID", identifierDef, "");
 		dsd.addColumn("DOB", new BirthdateDataDefinition(), "", new BirthdateConverter());
-		dsd.addColumn("Gender", new GenderDataDefinition(), "");
+		dsd.addColumn("Sex", new GenderDataDefinition(), "");
 		dsd.addColumn("Original Cohort", new CalculationDataDefinition("Original Cohort", new OriginalCohortCalculation()), "", new CalculationResultConverter() );
-		dsd.addColumn("TI", new CalculationDataDefinition("T I", new IsTransferInCalculation()), "", new CalculationResultConverter());
+		dsd.addColumn("TI", new CalculationDataDefinition("TI", new IsTransferInCalculation()), "", new CalculationResultConverter());
 		dsd.addColumn("Date TI", new CalculationDataDefinition("Date TI", new TransferInDateCalculation()), "", new CalculationResultConverter());
 		dsd.addColumn("TO", new CalculationDataDefinition("TO", new IsTransferOutCalculation()), "", new CalculationResultConverter());
 		dsd.addColumn("Date TO", new CalculationDataDefinition("Date TO", new TransferOutDateCalculation()), "", new CalculationResultConverter());
 		dsd.addColumn("DOE", new CalculationDataDefinition("DOE", new DateOfEnrollmentCalculation()), "", new CalculationResultConverter());
+		dsd.addColumn("DateArv1", new CalculationDataDefinition("DateArv1", new DateARV1Calculation()), "", new CalculationResultConverter());
+		dsd.addColumn("DateArv2", new CalculationDataDefinition("DateArv2", new DateARV2Calculation()), "", new CalculationResultConverter());
+		dsd.addColumn("Date Last Seen", new CalculationDataDefinition("Date Last Seen", new DateLastSeenCalculation()), "", new CalculationResultConverter());
+		dsd.addColumn("OutCome", new CalculationDataDefinition("OutCome", new PatientOutComeCalculation()), "", new CalculationResultConverter());
+		dsd.addColumn("Last CD4 Count", new CalculationDataDefinition("Last CD4 Count", new LastCd4Calculation()), "", new CalculationResultConverter());
+		dsd.addColumn("Last CD4 Count Date", new CalculationDataDefinition("Last CD4 Count Date", new LastCd4CountDateCalculation()), "", new CalculationResultConverter());
 	}
 
 	@Override
