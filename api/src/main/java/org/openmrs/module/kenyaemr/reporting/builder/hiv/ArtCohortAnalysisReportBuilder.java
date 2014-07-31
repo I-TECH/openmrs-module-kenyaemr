@@ -94,7 +94,7 @@ public class ArtCohortAnalysisReportBuilder extends AbstractCohortReportBuilder 
 
 		dsd.addColumn("id", new PatientIdDataDefinition(), "");
 		dsd.addColumn("Name", nameDef, "");
-		dsd.addColumn("Patient Unique ID", identifierDef, "");
+		dsd.addColumn("UPN", identifierDef, "");
 		dsd.addColumn("DOB", new BirthdateDataDefinition(), "", new BirthdateConverter());
 		dsd.addColumn("Sex", new GenderDataDefinition(), "");
 		dsd.addColumn("Original Cohort", new CalculationDataDefinition("Original Cohort", new OriginalCohortCalculation()), "", new CalculationResultConverter() );
@@ -103,12 +103,12 @@ public class ArtCohortAnalysisReportBuilder extends AbstractCohortReportBuilder 
 		dsd.addColumn("TO", new CalculationDataDefinition("TO", new IsTransferOutCalculation()), "", new CalculationResultConverter());
 		dsd.addColumn("Date TO", new CalculationDataDefinition("Date TO", new TransferOutDateCalculation()), "", new CalculationResultConverter());
 		dsd.addColumn("DOE", new CalculationDataDefinition("DOE", new DateOfEnrollmentCalculation()), "", new CalculationResultConverter());
-		dsd.addColumn("DateArv1", new CalculationDataDefinition("DateArv1", new DateARV1Calculation()), "", new CalculationResultConverter());
-		dsd.addColumn("DateArv2", new CalculationDataDefinition("DateArv2", new DateARV2Calculation()), "", new CalculationResultConverter());
-		dsd.addColumn("Date Last Seen", new CalculationDataDefinition("Date Last Seen", new DateLastSeenCalculation()), "", new CalculationResultConverter());
+		dsd.addColumn("ARV Start", new CalculationDataDefinition("ARV Start", new DateARV1Calculation()), "", new CalculationResultConverter());
+		dsd.addColumn("ARV 2nd Line Start", new CalculationDataDefinition("ARV 2nd Line Start", new DateARV2Calculation()), "", new CalculationResultConverter());
+		dsd.addColumn("Last Seen", new CalculationDataDefinition("Date Last Seen", new DateLastSeenCalculation()), "", new CalculationResultConverter());
 		dsd.addColumn("OutCome", new CalculationDataDefinition("OutCome", new PatientOutComeCalculation()), "", new CalculationResultConverter());
-		dsd.addColumn("Last CD4 Count", new CalculationDataDefinition("Last CD4 Count", new LastCd4Calculation()), "", new CalculationResultConverter());
-		dsd.addColumn("Last CD4 Count Date", new CalculationDataDefinition("Last CD4 Count Date", new LastCd4CountDateCalculation()), "", new CalculationResultConverter());
+		dsd.addColumn("Last CD4", new CalculationDataDefinition("Last CD4", new LastCd4Calculation()), "", new CalculationResultConverter());
+		dsd.addColumn("Last CD4 Date", new CalculationDataDefinition("Last CD4 Date", new LastCd4CountDateCalculation()), "", new CalculationResultConverter());
 	}
 
 	@Override

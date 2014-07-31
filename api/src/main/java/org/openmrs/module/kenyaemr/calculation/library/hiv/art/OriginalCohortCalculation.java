@@ -13,17 +13,13 @@
  */
 package org.openmrs.module.kenyaemr.calculation.library.hiv.art;
 
-import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
-import org.openmrs.Location;
-import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
 import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.calculation.Calculations;
-import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
@@ -53,17 +49,8 @@ public class OriginalCohortCalculation extends AbstractPatientCalculation {
 		CalculationResultMap result = new CalculationResultMap();
 		for (Integer ptId : cohort) {
 			Date arvStartDate = null;
-			//get the encounter information based on the hiv encounter type
-			Encounter encounter = EmrCalculationUtils.encounterResultForPatient(enrollments, ptId);
-			//pick the location on that encounter and check if it happened in this facility
-			Location thisFacility = Context.getService(KenyaEmrService.class).getDefaultLocation();
-			Location encounterFacility = encounter.getLocation();
-			//check if these locations are equal
-			if((thisFacility.equals(encounterFacility)) && (artStartDate.contains(ptId))){
-				//reject if a patient is a transfer in
-				if(!(transferIns.contains(ptId))){
+			if((artStartDate.contains(ptId)) && (!(transferIns.contains(ptId)))){
 					arvStartDate = EmrCalculationUtils.datetimeResultForPatient(initialArtStartDate,ptId);
-				}
 			}
 				result.put(ptId, new SimpleResult(arvStartDate, this));
 		}

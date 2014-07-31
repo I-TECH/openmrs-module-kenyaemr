@@ -20,6 +20,7 @@ import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
 import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.calculation.Calculations;
+import org.openmrs.module.kenyacore.calculation.Filters;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.LostToFollowUpCalculation;
@@ -39,6 +40,8 @@ public class PatientOutComeCalculation extends AbstractPatientCalculation {
 
 		CalculationResultMap programDiscontinuation = Calculations.lastObs(Dictionary.getConcept(Dictionary.REASON_FOR_PROGRAM_DISCONTINUATION), cohort, context);
 		Set<Integer> lostPatients = CalculationUtils.patientsThatPass(calculate(new LostToFollowUpCalculation(), cohort, context));
+		Set<Integer> alive = Filters.alive(cohort,context);
+
 
 		//declare possible options that would be displayed
 		Concept transferOut = Dictionary.getConcept(Dictionary.TRANSFERRED_OUT);
@@ -54,14 +57,14 @@ public class PatientOutComeCalculation extends AbstractPatientCalculation {
 			}
 
 			if(lostPatients.contains(ptId)){
-				status = "Lost To followup";
+				status = "Lost To Follow Up";
 			}
 
 			if((results != null) && (results.equals(transferOut))) {
 				status = "Transferred Out";
 			}
 
-			if((results != null) && (results.equals(died))) {
+			if(((results != null) && (results.equals(died))) || (!alive.contains(ptId)) ) {
 				status = "Dead";
 			}
 			ret.put(ptId, new SimpleResult(status, this));
