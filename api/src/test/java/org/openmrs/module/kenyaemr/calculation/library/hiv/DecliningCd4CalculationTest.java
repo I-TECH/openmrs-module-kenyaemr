@@ -97,7 +97,7 @@ public class DecliningCd4CalculationTest extends BaseModuleContextSensitiveTest 
 
 		CalculationResultMap resultMap = new DecliningCd4Calculation().evaluate(ptIds, null, Context.getService(PatientCalculationService.class).createCalculationContext());
 		Assert.assertFalse((Boolean) resultMap.get(6).getValue());  //in Hiv program but without cd4 i.e needs cd4
-		Assert.assertTrue((Boolean) resultMap.get(7).getValue()); // has decline in CD4
+		Assert.assertFalse((Boolean) resultMap.get(7).getValue()); // has decline in CD4
 		Assert.assertFalse((Boolean) resultMap.get(8).getValue()); // has increase in CD4
 		Assert.assertFalse((Boolean) resultMap.get(999).getValue()); // not in HIV Program
 	}

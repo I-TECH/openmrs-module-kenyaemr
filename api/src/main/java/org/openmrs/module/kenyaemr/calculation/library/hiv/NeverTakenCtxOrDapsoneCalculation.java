@@ -14,11 +14,6 @@
 
 package org.openmrs.module.kenyaemr.calculation.library.hiv;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.openmrs.Concept;
 import org.openmrs.Obs;
 import org.openmrs.Program;
@@ -33,6 +28,11 @@ import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Calculates whether patients have taken CTX or Dapsone
@@ -51,6 +51,8 @@ public class NeverTakenCtxOrDapsoneCalculation extends AbstractPatientCalculatio
 		CalculationResultMap medOrdersObss = Calculations.allObs(Dictionary.getConcept(Dictionary.MEDICATION_ORDERS), cohort, context);
 
 		CalculationResultMap ctxProphylaxisObss = Calculations.allObs(Dictionary.getConcept(Dictionary.COTRIMOXAZOLE_DISPENSED), cohort, context);
+
+		Set<Integer> ltfu = CalculationUtils.patientsThatPass(calculate(new LostToFollowUpCalculation(), cohort, context));
 
 		// Get concepts...
 		Concept yes = Dictionary.getConcept(Dictionary.YES);
@@ -91,6 +93,10 @@ public class NeverTakenCtxOrDapsoneCalculation extends AbstractPatientCalculatio
 						}
 					}
 				}
+			}
+
+			if(ltfu.contains(ptId)){
+				neverTakenCtxOrDapsone = false;
 			}
 
 			ret.put(ptId, new BooleanResult(neverTakenCtxOrDapsone, this));

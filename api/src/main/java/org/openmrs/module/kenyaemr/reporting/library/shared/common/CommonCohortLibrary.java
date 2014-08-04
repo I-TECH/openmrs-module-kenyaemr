@@ -20,11 +20,21 @@ import org.openmrs.Program;
 import org.openmrs.api.PatientSetService;
 import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyacore.report.cohort.definition.CalculationCohortDefinition;
-import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.calculation.library.InProgramCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.OnAlternateFirstLineArtCalculation;
 import org.openmrs.module.kenyacore.report.cohort.definition.DateObsValueBetweenCohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.*;
+import org.openmrs.module.kenyaemr.Dictionary;
+import org.openmrs.module.kenyaemr.calculation.library.DeceasedPatientsCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.InProgramCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.RecordedDeceasedCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.OnAlternateFirstLineArtCalculation;
+import org.openmrs.module.kenyaemr.metadata.HivMetadata;
+import org.openmrs.module.metadatadeploy.MetadataUtils;
+import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.CodedObsCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.EncounterCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.ProgramEnrollmentCohortDefinition;
 import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
@@ -199,7 +209,8 @@ public class CommonCohortLibrary {
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.addSearch("enrolled", ReportUtils.map(enrolled(programs), "enrolledOnOrAfter=${onOrAfter},enrolledOnOrBefore=${onOrBefore}"));
 		cd.addSearch("transferIn", ReportUtils.map(transferredIn(), "onOrBefore=${onOrBefore}"));
-		cd.setCompositionString("enrolled AND NOT transferIn");
+		cd.addSearch("completeProgram", ReportUtils.map(compltedProgram(), "completedOnOrBefore=${onOrBefore}"));
+		cd.setCompositionString("enrolled AND NOT (transferIn OR completeProgram)");
 		return cd;
 	}
 
@@ -257,6 +268,40 @@ public class CommonCohortLibrary {
 		cd.setQuestion(Dictionary.getConcept(Dictionary.MEDICATION_ORDERS));
 		cd.setValueList(Arrays.asList(concepts));
 		cd.setOperator(SetComparator.IN);
+		return cd;
+	}
+
+	/**
+	 * Patients who completed program ${onOrAfter} and ${onOrBefore}
+	 * @return the cohort definition
+	 */
+	public CohortDefinition compltedProgram() {
+		ProgramEnrollmentCohortDefinition cd = new ProgramEnrollmentCohortDefinition();
+		cd.setName("Those patients who completed program on date");
+		cd.addParameter(new Parameter("completedOnOrBefore", "Complete Date", Date.class));
+		cd.setPrograms(Arrays.asList(MetadataUtils.existing(Program.class, HivMetadata._Program.HIV)));
+		return cd;
+	}
+
+	/**
+	 * Patients who are Deceased
+	 * @return the cohort definition
+	 */
+	public  CohortDefinition deceasedPatients() {
+		CalculationCohortDefinition cd = new CalculationCohortDefinition(new DeceasedPatientsCalculation());
+		cd.setName("deceases patients on date");
+		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
+		return cd;
+	}
+
+	/**
+	 * Patients who ahve been marked as dead in discontinuation forms but NOT YET deceased
+	 * @return cohort definition
+	 */
+	public CohortDefinition markedAsDeadButNotDeceased() {
+		CalculationCohortDefinition cd = new CalculationCohortDefinition(new RecordedDeceasedCalculation());
+		cd.setName("marked as dead patients on date");
+		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
 		return cd;
 	}
 }

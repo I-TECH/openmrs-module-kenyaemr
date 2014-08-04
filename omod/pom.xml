@@ -8,6 +8,7 @@
 	</parent>
 
 	<artifactId>kenyaemr-omod</artifactId>
+    <version>14.2-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>KenyaEMR Module OMOD</name>
 	<description>OMOD project for KenyaEMR Module</description>
@@ -172,5 +173,4 @@
 			</plugin>
 		</plugins>
 	</build>
-
 </project>

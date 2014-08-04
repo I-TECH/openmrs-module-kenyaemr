@@ -35,7 +35,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.Arrays;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.hasKey;
+import static org.hamcrest.Matchers.is;
 
 /**
  * Tests for {@link Moh711ReportBuilder}
