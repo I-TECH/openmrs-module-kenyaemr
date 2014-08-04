@@ -41,6 +41,8 @@ public class PatientOutComeCalculation extends AbstractPatientCalculation {
 		CalculationResultMap programDiscontinuation = Calculations.lastObs(Dictionary.getConcept(Dictionary.REASON_FOR_PROGRAM_DISCONTINUATION), cohort, context);
 		Set<Integer> lostPatients = CalculationUtils.patientsThatPass(calculate(new LostToFollowUpCalculation(), cohort, context));
 		Set<Integer> alive = Filters.alive(cohort,context);
+		Set<Integer> patientsWhoStartedArt = CalculationUtils.patientsThatPass(calculate( new InitialArtRegimenCalculation(), cohort, context));
+		Set<Integer> patientCurrentArt = CalculationUtils.patientsThatPass(calculate(new CurrentArtRegimenCalculation(), cohort, context));
 
 
 		//declare possible options that would be displayed
@@ -66,6 +68,10 @@ public class PatientOutComeCalculation extends AbstractPatientCalculation {
 
 			if(((results != null) && (results.equals(died))) || (!alive.contains(ptId)) ) {
 				status = "Dead";
+			}
+
+			if((patientsWhoStartedArt.contains(ptId)) && (!patientCurrentArt.contains(ptId))) {
+				status = "Stopped ART";
 			}
 			ret.put(ptId, new SimpleResult(status, this));
 		}
