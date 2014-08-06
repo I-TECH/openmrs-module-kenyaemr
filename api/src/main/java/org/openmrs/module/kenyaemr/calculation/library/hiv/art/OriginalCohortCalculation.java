@@ -13,16 +13,12 @@
  */
 package org.openmrs.module.kenyaemr.calculation.library.hiv.art;
 
-import org.openmrs.EncounterType;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
 import org.openmrs.module.kenyacore.calculation.CalculationUtils;
-import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
-import org.openmrs.module.kenyaemr.metadata.HivMetadata;
-import org.openmrs.module.metadatadeploy.MetadataUtils;
 
 import java.util.Collection;
 import java.util.Date;
@@ -43,7 +39,6 @@ public class OriginalCohortCalculation extends AbstractPatientCalculation {
 										 PatientCalculationContext context) {
 
 		Set<Integer> artStartDate = CalculationUtils.patientsThatPass(calculate(new InitialArtStartDateCalculation(), cohort, context));
-		CalculationResultMap enrollments = Calculations.firstEncounter(MetadataUtils.existing(EncounterType.class, HivMetadata._EncounterType.HIV_ENROLLMENT), cohort, context);
 		Set<Integer> transferIns = CalculationUtils.patientsThatPass(calculate(new IsTransferInCalculation(), cohort, context));
 		CalculationResultMap initialArtStartDate = calculate(new InitialArtStartDateCalculation(), cohort, context);
 		CalculationResultMap result = new CalculationResultMap();

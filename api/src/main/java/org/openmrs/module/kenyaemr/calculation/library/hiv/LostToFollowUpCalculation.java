@@ -82,13 +82,8 @@ public class LostToFollowUpCalculation extends AbstractPatientCalculation implem
 				Encounter lastEncounter = EmrCalculationUtils.encounterResultForPatient(lastEncounters, ptId);
 				Date lastScheduledReturnDate = EmrCalculationUtils.datetimeObsResultForPatient(lastReturnDateObss, ptId);
 				Obs discontuation = EmrCalculationUtils.obsResultForPatient(lastProgramDiscontinuation, ptId);
-				Date lastEncounterDate = lastEncounter != null ? lastEncounter.getEncounterDatetime() : null;
-
-				lost = lastEncounterDate == null || daysSince(lastEncounterDate, context) > HivConstants.LOST_TO_FOLLOW_UP_THRESHOLD_DAYS;
-
-
 				if (lastScheduledReturnDate != null) {
-					if(lastEncounterDate == null || daysSince(lastScheduledReturnDate, context) > HivConstants.LOST_TO_FOLLOW_UP_THRESHOLD_DAYS){
+					if(daysSince(lastScheduledReturnDate, context) > HivConstants.LOST_TO_FOLLOW_UP_THRESHOLD_DAYS){
 						lost = true;
 					}
 					if(discontuation != null && discontuation.getValueCoded().equals(transferout)) {
