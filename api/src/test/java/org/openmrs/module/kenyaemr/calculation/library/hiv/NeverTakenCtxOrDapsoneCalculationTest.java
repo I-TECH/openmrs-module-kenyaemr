@@ -82,7 +82,7 @@ public class NeverTakenCtxOrDapsoneCalculationTest extends BaseModuleContextSens
 		CalculationResultMap resultMap = new NeverTakenCtxOrDapsoneCalculation().evaluate(ptIds, null, Context.getService(PatientCalculationService.class).createCalculationContext());
 		Assert.assertFalse((Boolean) resultMap.get(2).getValue()); // has prophalaxis obs = yes
 		Assert.assertFalse((Boolean) resultMap.get(6).getValue()); // has med order for Dapsone
-		Assert.assertFalse((Boolean) resultMap.get(7).getValue());
+		Assert.assertTrue((Boolean) resultMap.get(7).getValue());
 		Assert.assertFalse((Boolean) resultMap.get(8).getValue()); // is not in HIV program
 	}
 }

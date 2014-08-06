@@ -102,9 +102,9 @@ public class NeedsCd4TestCalculationTest extends BaseModuleContextSensitiveTest 
 		List<Integer> ptIds = Arrays.asList(2, 6, 7, 8, 999);
 		CalculationResultMap resultMap = new NeedsCd4TestCalculation().evaluate(ptIds, null, Context.getService(PatientCalculationService.class).createCalculationContext());
 		Assert.assertFalse((Boolean) resultMap.get(2).getValue()); // has recent CD4%
-		Assert.assertFalse((Boolean) resultMap.get(6).getValue()); // has old CD4%
+		Assert.assertTrue((Boolean) resultMap.get(6).getValue()); // has old CD4%
 		Assert.assertFalse((Boolean) resultMap.get(7).getValue()); // has recent CD4
-		Assert.assertFalse((Boolean) resultMap.get(8).getValue()); // has old CD4
+		Assert.assertTrue((Boolean) resultMap.get(8).getValue()); // has old CD4
 		Assert.assertFalse((Boolean) resultMap.get(999).getValue()); // not in HIV Program
 	}
 }
