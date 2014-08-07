@@ -58,4 +58,15 @@ public class QiIndicatorLibrary {
 				map(hivCohorts.hasHivVisit(), "onOrAfter=${endDate-6m},onOrBefore=${endDate}")
 		);
 	}
+
+	/**
+	 * Percentage eligible patients initiated on ART
+	 * @return the indicator
+	 */
+	public CohortIndicator artInitiation() {
+		return cohortIndicator("ART Initiation",
+				map(artCohorts.startedArt(), "onOrAfter=${endDate-6m},onOrBefore=${endDate}" ),
+				map(artCohorts.eligibleForArt(), "onDate=${endDate-6m}" )
+				);
+	}
 }

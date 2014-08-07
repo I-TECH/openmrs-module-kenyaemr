@@ -35,8 +35,8 @@ import java.util.List;
  * Quality Improvement report
  */
 @Component
-@Builds({"kenyaemr.hiv.report.qi"})
-public class QiReportBuilder extends AbstractReportBuilder {
+@Builds({"kenyaemr.hiv.report.qi.adult.c.tx"})
+public class QiAdultCTxReportBuilder extends AbstractReportBuilder {
 
 	@Autowired
 	private QiIndicatorLibrary qiIndicators;
@@ -75,6 +75,7 @@ public class QiReportBuilder extends AbstractReportBuilder {
 		String indParams = "startDate=${startDate},endDate=${endDate}";
 
 		dsd.addColumn("02", "Patients in care should have a CD4 assessment every 6 months", ReportUtils.map(qiIndicators.hivMonitoringCd4(), indParams), "");
+		dsd.addColumn("03", "ART Eligible patients should be Initiated on ART", ReportUtils.map(qiIndicators.artInitiation(), indParams), "");
 		dsd.addColumn("07", "Patients should receive nutritional status assessment (BMI/MUAC) at every clinic visit", ReportUtils.map(qiIndicators.nutritionalAssessment(), indParams), "");
 		return dsd;
 	}
