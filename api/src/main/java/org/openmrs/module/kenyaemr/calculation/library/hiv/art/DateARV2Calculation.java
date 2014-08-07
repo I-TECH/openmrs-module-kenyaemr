@@ -13,15 +13,18 @@
  */
 package org.openmrs.module.kenyaemr.calculation.library.hiv.art;
 
+import org.openmrs.DrugOrder;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
-import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
+import org.openmrs.module.kenyacore.calculation.CalculationUtils;
+import org.openmrs.module.kenyaemr.regimen.RegimenOrder;
 
 import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Date a patient changed to second line of arv
@@ -32,13 +35,19 @@ public class DateARV2Calculation extends AbstractPatientCalculation {
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues,
 										 PatientCalculationContext context) {
 
-		CalculationResultMap onSecondLine = calculate(new OnSecondLineArtCalculation(),cohort,context);
-
+		Set<Integer> patientsOnSecondLine = CalculationUtils.patientsThatPass(calculate(new OnSecondLineArtCalculation(), cohort, context));
+		CalculationResultMap currentArvs = calculate(new CurrentArtRegimenCalculation(), cohort, context);
 		CalculationResultMap result = new CalculationResultMap();
-		for (Integer ptId : cohort) {
-
-			Date secondLineStartDate = EmrCalculationUtils.datetimeResultForPatient(onSecondLine, ptId);
-
+		for (Integer ptId : patientsOnSecondLine) {
+			Date secondLineStartDate = null;
+			SimpleResult currentArvResult = (SimpleResult) currentArvs.get(ptId);
+			if (currentArvResult != null) {
+				RegimenOrder currentRegimen = (RegimenOrder) currentArvResult.getValue();
+				Set<DrugOrder> drugs = currentRegimen.getDrugOrders();
+				for(DrugOrder o:drugs){
+					secondLineStartDate = o.getStartDate();
+				}
+			}
 			if(secondLineStartDate != null){
 				result.put(ptId, new SimpleResult(secondLineStartDate, this));
 			}
