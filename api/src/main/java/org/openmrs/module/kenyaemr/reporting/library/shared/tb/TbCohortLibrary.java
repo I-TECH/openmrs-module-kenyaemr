@@ -28,6 +28,7 @@ import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
+import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -249,6 +250,119 @@ public class TbCohortLibrary {
 		Concept patientClassification = Dictionary.getConcept(Dictionary.TYPE_OF_TB_PATIENT);
 		Concept newDetects = Dictionary.getConcept(Dictionary.SMEAR_POSITIVE_NEW_TUBERCULOSIS_PATIENT);
 		return commonCohorts.hasObs(patientClassification,newDetects);
+	}
+
+	/**
+	 * Patients who have smear NOT done
+	 */
+	public CohortDefinition pulmonaryTbSmearNotDone() {
+		Concept cultureResults = Dictionary.getConcept(Dictionary.RESULTS_TUBERCULOSIS_CULTURE);
+		Concept smearNotDone = Dictionary.getConcept(Dictionary.NOT_DONE);
+		return commonCohorts.hasObs(cultureResults,smearNotDone);
+	}
+
+	/**
+	 * Patients in tb program and smear not done and have pulmonary tb results at 2 months
+	 * @return the cohort definition
+	 */
+	public CohortDefinition ptbSmearNotDoneResultsAt2Months() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("pulmonaryTbPatients", ReportUtils.map(pulmonaryTbPatients(), "onOrAfter=${onOrAfter-2},onOrBefore=${onOrBefore}"));
+		cd.addSearch("smearNotDone", ReportUtils.map(pulmonaryTbSmearNotDone(), "onOrAfter=${onOrAfter-2},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("pulmonaryTbPatients AND smearNotDone");
+		return cd;
+	}
+
+	/**
+	 * Total enrolled patients into tb program and have ptb smear not done results at 2 months
+	 * @return cohort definition
+	 */
+	public CohortDefinition totalEnrolledPtbSmearNotDoneResultsAt2Months() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("ptbSmearNotDoneResultsAt2Months", ReportUtils.map(ptbSmearNotDoneResultsAt2Months(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("enrolled", ReportUtils.map(enrolled(), "enrolledOnOrAfter=${onOrAfter-12},enrolledOnOrBefore=${onOrBefore-8}"));
+		cd.setCompositionString("ptbSmearNotDoneResultsAt2Months AND enrolled");
+		return cd;
+	}
+
+	/**
+	 * Patient who finalized their initial treatment
+	 * return the cohort definition
+	 */
+	public CohortDefinition ptbSmearNotDoneResults2MonthsFinalizedInitialtreatment() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("ptbSmearNotDoneResultsAt2Months", ReportUtils.map(ptbSmearNotDoneResultsAt2Months(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("enrolled", ReportUtils.map(enrolled(), "enrolledOnOrAfter=${onOrAfter-12},enrolledOnOrBefore=${onOrBefore-8}"));
+		cd.addSearch("finished", ReportUtils.map(commonCohorts.hasObs(Dictionary.getConcept(Dictionary.TUBERCULOSIS_TREATMENT_OUTCOME), Dictionary.getConcept(Dictionary.TREATMENT_COMPLETE)), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("ptbSmearNotDoneResultsAt2Months AND enrolled AND finished");
+		return cd;
+	}
+
+	/**
+	 * Patients who died
+	 * @return cohort definition
+	 */
+	public CohortDefinition ptbSmearNotDoneResults2MonthsDied() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("ptbSmearNotDoneResultsAt2Months", ReportUtils.map(ptbSmearNotDoneResultsAt2Months(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("enrolled", ReportUtils.map(enrolled(), "enrolledOnOrAfter=${onOrAfter-12},enrolledOnOrBefore=${onOrBefore-8}"));
+		cd.addSearch("died", ReportUtils.map(commonCohorts.hasObs(Dictionary.getConcept(Dictionary.TUBERCULOSIS_TREATMENT_OUTCOME), Dictionary.getConcept(Dictionary.DIED)), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("ptbSmearNotDoneResultsAt2Months AND enrolled AND died");
+		return cd;
+	}
+
+	/**
+	 * Patient who absconded the treatment
+	 * @return cohort definition
+	 */
+	public CohortDefinition ptbSmearNotDoneResults2MonthsAbsconded() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("ptbSmearNotDoneResultsAt2Months", ReportUtils.map(ptbSmearNotDoneResultsAt2Months(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("enrolled", ReportUtils.map(enrolled(), "enrolledOnOrAfter=${onOrAfter-12},enrolledOnOrBefore=${onOrBefore-8}"));
+		cd.addSearch("defaulted", ReportUtils.map(commonCohorts.hasObs(Dictionary.getConcept(Dictionary.TUBERCULOSIS_TREATMENT_OUTCOME), Dictionary.getConcept(Dictionary.DEFAULTED)), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("ptbSmearNotDoneResultsAt2Months AND enrolled AND defaulted");
+		return cd;
+	}
+
+	/**
+	 * Patients who transferred out
+	 * @return cohort definition
+	 */
+	public CohortDefinition ptbSmearNotDoneResults2MonthsTransferredOut() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("ptbSmearNotDoneResultsAt2Months", ReportUtils.map(ptbSmearNotDoneResultsAt2Months(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("enrolled", ReportUtils.map(enrolled(), "enrolledOnOrAfter=${onOrAfter-12},enrolledOnOrBefore=${onOrBefore-8}"));
+		cd.addSearch("transferredOut", ReportUtils.map(commonCohorts.hasObs(Dictionary.getConcept(Dictionary.TUBERCULOSIS_TREATMENT_OUTCOME), Dictionary.getConcept(Dictionary.TRANSFERRED_OUT)), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("ptbSmearNotDoneResultsAt2Months AND enrolled AND transferredOut");
+		return cd;
+	}
+
+	/**
+	 * Total Patients evaluated
+	 * @return cohort Definition
+	 */
+	public CohortDefinition ptbSmearNotDoneResults2MonthsTotalEvaluated() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("ptbSmearNotDoneResults2MonthsFinalizedInitialtreatment", ReportUtils.map(ptbSmearNotDoneResults2MonthsFinalizedInitialtreatment(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("ptbSmearNotDoneResults2MonthsDied", ReportUtils.map(ptbSmearNotDoneResults2MonthsDied(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("ptbSmearNotDoneResults2MonthsAbsconded", ReportUtils.map(ptbSmearNotDoneResults2MonthsAbsconded(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("ptbSmearNotDoneResults2MonthsTransferredOut", ReportUtils.map(ptbSmearNotDoneResults2MonthsTransferredOut(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("ptbSmearNotDoneResults2MonthsFinalizedInitialtreatment OR ptbSmearNotDoneResults2MonthsDied OR ptbSmearNotDoneResults2MonthsAbsconded OR ptbSmearNotDoneResults2MonthsTransferredOut");
+		return  cd;
 	}
 
 }

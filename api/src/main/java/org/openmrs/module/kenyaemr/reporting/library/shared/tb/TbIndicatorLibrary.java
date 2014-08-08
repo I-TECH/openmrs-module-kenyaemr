@@ -148,4 +148,64 @@ public class TbIndicatorLibrary {
 				map(tbCohorts.tbNewDetectedCases(), "onOrAfter=${startDate},onOrBefore=${endDate}")
 		);
 	}
+
+	/**
+	 * Total enrolled patients into tb program and have ptb smear not done results at 2 months
+	 * @return cohort indicator
+	 */
+	public CohortIndicator totalEnrolled() {
+		return cohortIndicator("Total Enrolled",
+				map(tbCohorts.totalEnrolledPtbSmearNotDoneResultsAt2Months(), "onOrAfter=${startDate},onOrBefore=${endDate}")
+				);
+	}
+
+	/**
+	 * Total patients who finalized their treatment
+	 * @return Indicator
+	 */
+	public  CohortIndicator finalizedInitialTreatment() {
+		return cohortIndicator("Finalized Initial Treatment",
+				map(tbCohorts.ptbSmearNotDoneResults2MonthsFinalizedInitialtreatment(), "onOrAfter=${startDate},onOrBefore=${endDate}")
+		);
+	}
+
+	/**
+	 * Total patients who died
+	 * @return Indicator
+	 */
+	public  CohortIndicator died() {
+		return cohortIndicator("Died",
+				map(tbCohorts.ptbSmearNotDoneResults2MonthsDied(), "onOrAfter=${startDate},onOrBefore=${endDate}")
+		);
+	}
+
+	/**
+	 * Total patients who died
+	 * @return Indicator
+	 */
+	public  CohortIndicator absconded() {
+		return cohortIndicator("Absconded",
+				map(tbCohorts.ptbSmearNotDoneResults2MonthsAbsconded(), "onOrAfter=${startDate},onOrBefore=${endDate}")
+		);
+	}
+
+	/**
+	 * Total patients who Transferred out
+	 * @return Indicator
+	 */
+	public  CohortIndicator transferredOut() {
+		return cohortIndicator("Transferred Out",
+				map(tbCohorts.ptbSmearNotDoneResults2MonthsTransferredOut(), "onOrAfter=${startDate},onOrBefore=${endDate}")
+		);
+	}
+
+	/**
+	 * Total patients evaluated
+	 * @return Indicator
+	 */
+	public  CohortIndicator totalEvaluated() {
+		return cohortIndicator("Total evaluated",
+				map(tbCohorts.ptbSmearNotDoneResults2MonthsTotalEvaluated(), "onOrAfter=${startDate},onOrBefore=${endDate}")
+		);
+	}
 }

@@ -62,8 +62,8 @@ public class QiPaedCTxReportBuilder extends AbstractReportBuilder {
 	}
 
 	/**
-	 * Creates the dataset
-	 * @return the dataset
+	 * Creates the data set
+	 * @return the data set
 	 */
 	protected DataSetDefinition qiDataset() {
 		CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
