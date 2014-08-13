@@ -27,11 +27,11 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Extra - Pulmonary TB cases 2 months
+ * Extra - Pulmonary TB cases 2 and 8 months that were registered 8-12 month ago
  */
 @Component
-@Builds({"kenyaemr.tb.report.eptb.2"})
-public class ExtraPulmonaryTb2ReportBuilder extends AbstractReportBuilder {
+@Builds({"kenyaemr.tb.report.eptb.2.8.8.12"})
+public class ExtraPulmonaryTb2And8812ReportBuilder extends AbstractReportBuilder {
 
 	/**
 	 * @see org.openmrs.module.kenyacore.report.builder.AbstractReportBuilder#getParameters(org.openmrs.module.kenyacore.report.ReportDescriptor)

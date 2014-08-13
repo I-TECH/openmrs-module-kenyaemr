@@ -14,16 +14,12 @@
 package org.openmrs.module.kenyaemr.reporting.builder.tb;
 
 import org.openmrs.module.kenyacore.report.ReportDescriptor;
-import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyacore.report.builder.AbstractReportBuilder;
 import org.openmrs.module.kenyacore.report.builder.Builds;
-import org.openmrs.module.kenyaemr.reporting.library.shared.tb.TbIndicatorLibrary;
-import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
@@ -31,14 +27,11 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * New Smear-Negative PTB for 2 months
+ * extra pulmonary TB for 2 and 8  months registered 12-15 months earlier
  */
 @Component
-@Builds({"kenyaemr.tb.report.new.smear.negative.ptb.2"})
-public class NewSmearNegativePTB2ReportBuilder extends AbstractReportBuilder {
-
-	@Autowired
-	TbIndicatorLibrary tbIndicatorLibrary;
+@Builds({"kenyaemr.tb.report.eptb.2.8.12.15"})
+public class ExtraPulmonaryTb2And81215ReportBuilder extends AbstractReportBuilder {
 
 	/**
 	 * @see org.openmrs.module.kenyacore.report.builder.AbstractReportBuilder#getParameters(org.openmrs.module.kenyacore.report.ReportDescriptor)
@@ -56,29 +49,6 @@ public class NewSmearNegativePTB2ReportBuilder extends AbstractReportBuilder {
 	 */
 	@Override
 	protected List<Mapped<DataSetDefinition>> buildDataSets(ReportDescriptor descriptor, ReportDefinition report) {
-		return Arrays.asList(
-				ReportUtils.map(ptbSmearNotDoneResults2Months(), "startDate=${startDate},endDate=${endDate}")
-			);
-	}
-
-	/**
-	 * Create the data set
-	 * @return data set
-	 */
-	protected DataSetDefinition ptbSmearNotDoneResults2Months() {
-		CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
-		dsd.setName("Smear Not Done 2 months");
-		dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-		dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
-
-		String indParams = "startDate=${startDate},endDate=${endDate}";
-
-		dsd.addColumn("1", "Total Enrolled", ReportUtils.map(tbIndicatorLibrary.totalEnrolled(), indParams), "");
-		dsd.addColumn("2", "Finalized Initial Treatment", ReportUtils.map(tbIndicatorLibrary.finalizedInitialTreatment(), indParams), "");
-		dsd.addColumn("3", "Died", ReportUtils.map(tbIndicatorLibrary.died(), indParams), "");
-		dsd.addColumn("4", "Absconded", ReportUtils.map(tbIndicatorLibrary.absconded(), indParams), "");
-		dsd.addColumn("5", "Transferred Out", ReportUtils.map(tbIndicatorLibrary.transferredOut(), indParams), "");
-		dsd.addColumn("6", "Total Evaluated", ReportUtils.map(tbIndicatorLibrary.totalEvaluated(), indParams), "");
-	   return  dsd;
+		return Arrays.asList();
 	}
 }

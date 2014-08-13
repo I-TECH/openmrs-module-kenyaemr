@@ -20,15 +20,17 @@ import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyacore.report.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.library.tb.MissedLastTbAppointmentCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.tb.OnCPTCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.tb.TbInitialTreatmentCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.metadata.TbMetadata;
 import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonCohortLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.HivCohortLibrary;
+import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.art.ArtCohortLibrary;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
-import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -42,8 +44,12 @@ public class TbCohortLibrary {
 
 	@Autowired
 	private CommonCohortLibrary commonCohorts;
+
 	@Autowired
 	private HivCohortLibrary hivCohortLibrary;
+
+	@Autowired
+	private ArtCohortLibrary artCohortLibrary;
 
 	/**
 	 * Patients who were enrolled in TB program (including transfers) between ${enrolledOnOrAfter} and ${enrolledOnOrBefore}
@@ -167,7 +173,7 @@ public class TbCohortLibrary {
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.addSearch("inTbProgram", ReportUtils.map(commonCohorts.enrolled(tbProgram), "enrolledOnOrBefore=${onOrBefore}"));
-		cd.addSearch("hivTestedPositive", ReportUtils.map(hivCohortLibrary.testedHivPositive(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("hivTestedPositive", ReportUtils.map(hivCohortLibrary.testedHivStatus(Dictionary.getConcept(Dictionary.POSITIVE)), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
 		cd.setCompositionString("inTbProgram AND hivTestedPositive");
 		return cd;
 	}
@@ -265,13 +271,24 @@ public class TbCohortLibrary {
 	 * Patients in tb program and smear not done and have pulmonary tb results at 2 months
 	 * @return the cohort definition
 	 */
-	public CohortDefinition ptbSmearNotDoneResultsAt2Months() {
+	public CohortDefinition ptbSmearNotDoneResultsAtMonths(int months) {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-		cd.addSearch("pulmonaryTbPatients", ReportUtils.map(pulmonaryTbPatients(), "onOrAfter=${onOrAfter-2},onOrBefore=${onOrBefore}"));
-		cd.addSearch("smearNotDone", ReportUtils.map(pulmonaryTbSmearNotDone(), "onOrAfter=${onOrAfter-2},onOrBefore=${onOrBefore}"));
+		cd.addSearch("pulmonaryTbPatients", ReportUtils.map(pulmonaryTbPatients(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("smearNotDone", ReportUtils.map(pulmonaryTbSmearNotDone(), "onOrAfter=${onOrBefore- "+ months +"m},onOrBefore=${onOrBefore}"));
 		cd.setCompositionString("pulmonaryTbPatients AND smearNotDone");
+		return cd;
+	}
+
+	/**
+	 * Patients who have completed their initial tb treatment
+	 * @return cohort definition
+	 */
+	public CohortDefinition completedInitialTreatment() {
+		CalculationCohortDefinition cd = new CalculationCohortDefinition(new TbInitialTreatmentCalculation());
+		cd.setName("patients who completed tb initial treatment on date");
+		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
 		return cd;
 	}
 
@@ -279,12 +296,12 @@ public class TbCohortLibrary {
 	 * Total enrolled patients into tb program and have ptb smear not done results at 2 months
 	 * @return cohort definition
 	 */
-	public CohortDefinition totalEnrolledPtbSmearNotDoneResultsAt2Months() {
+	public CohortDefinition totalEnrolledPtbSmearNotDoneResultsAtMonths(int highMonths, int leastMonths  ) {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-		cd.addSearch("ptbSmearNotDoneResultsAt2Months", ReportUtils.map(ptbSmearNotDoneResultsAt2Months(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
-		cd.addSearch("enrolled", ReportUtils.map(enrolled(), "enrolledOnOrAfter=${onOrAfter-12},enrolledOnOrBefore=${onOrBefore-8}"));
+		cd.addSearch("ptbSmearNotDoneResultsAt2Months", ReportUtils.map(ptbSmearNotDoneResultsAtMonths(2), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("enrolled", ReportUtils.map(enrolled(), "enrolledOnOrAfter=${onOrAfter-"+ highMonths +"m},enrolledOnOrBefore=${onOrAfter-"+ leastMonths + "m}"));
 		cd.setCompositionString("ptbSmearNotDoneResultsAt2Months AND enrolled");
 		return cd;
 	}
@@ -297,10 +314,9 @@ public class TbCohortLibrary {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-		cd.addSearch("ptbSmearNotDoneResultsAt2Months", ReportUtils.map(ptbSmearNotDoneResultsAt2Months(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
-		cd.addSearch("enrolled", ReportUtils.map(enrolled(), "enrolledOnOrAfter=${onOrAfter-12},enrolledOnOrBefore=${onOrBefore-8}"));
-		cd.addSearch("finished", ReportUtils.map(commonCohorts.hasObs(Dictionary.getConcept(Dictionary.TUBERCULOSIS_TREATMENT_OUTCOME), Dictionary.getConcept(Dictionary.TREATMENT_COMPLETE)), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
-		cd.setCompositionString("ptbSmearNotDoneResultsAt2Months AND enrolled AND finished");
+		cd.addSearch("ptbSmearNotDoneResultsAt2Months", ReportUtils.map(totalEnrolledPtbSmearNotDoneResultsAtMonths(12, 8), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("finalizedInitialTreatment", ReportUtils.map(completedInitialTreatment(), "onDate=${onOrBefore}"));
+		cd.setCompositionString("ptbSmearNotDoneResultsAt2Months AND finalizedInitialTreatment");
 		return cd;
 	}
 
@@ -312,10 +328,9 @@ public class TbCohortLibrary {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-		cd.addSearch("ptbSmearNotDoneResultsAt2Months", ReportUtils.map(ptbSmearNotDoneResultsAt2Months(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
-		cd.addSearch("enrolled", ReportUtils.map(enrolled(), "enrolledOnOrAfter=${onOrAfter-12},enrolledOnOrBefore=${onOrBefore-8}"));
+		cd.addSearch("ptbSmearNotDoneResultsAt2Months", ReportUtils.map(totalEnrolledPtbSmearNotDoneResultsAtMonths(12,8), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
 		cd.addSearch("died", ReportUtils.map(commonCohorts.hasObs(Dictionary.getConcept(Dictionary.TUBERCULOSIS_TREATMENT_OUTCOME), Dictionary.getConcept(Dictionary.DIED)), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
-		cd.setCompositionString("ptbSmearNotDoneResultsAt2Months AND enrolled AND died");
+		cd.setCompositionString("ptbSmearNotDoneResultsAt2Months AND died");
 		return cd;
 	}
 
@@ -327,10 +342,9 @@ public class TbCohortLibrary {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-		cd.addSearch("ptbSmearNotDoneResultsAt2Months", ReportUtils.map(ptbSmearNotDoneResultsAt2Months(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
-		cd.addSearch("enrolled", ReportUtils.map(enrolled(), "enrolledOnOrAfter=${onOrAfter-12},enrolledOnOrBefore=${onOrBefore-8}"));
+		cd.addSearch("ptbSmearNotDoneResultsAt2Months", ReportUtils.map(totalEnrolledPtbSmearNotDoneResultsAtMonths(12, 8), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
 		cd.addSearch("defaulted", ReportUtils.map(commonCohorts.hasObs(Dictionary.getConcept(Dictionary.TUBERCULOSIS_TREATMENT_OUTCOME), Dictionary.getConcept(Dictionary.DEFAULTED)), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
-		cd.setCompositionString("ptbSmearNotDoneResultsAt2Months AND enrolled AND defaulted");
+		cd.setCompositionString("ptbSmearNotDoneResultsAt2Months AND defaulted");
 		return cd;
 	}
 
@@ -342,10 +356,9 @@ public class TbCohortLibrary {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-		cd.addSearch("ptbSmearNotDoneResultsAt2Months", ReportUtils.map(ptbSmearNotDoneResultsAt2Months(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
-		cd.addSearch("enrolled", ReportUtils.map(enrolled(), "enrolledOnOrAfter=${onOrAfter-12},enrolledOnOrBefore=${onOrBefore-8}"));
+		cd.addSearch("ptbSmearNotDoneResultsAt2Months", ReportUtils.map(totalEnrolledPtbSmearNotDoneResultsAtMonths(12, 8), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
 		cd.addSearch("transferredOut", ReportUtils.map(commonCohorts.hasObs(Dictionary.getConcept(Dictionary.TUBERCULOSIS_TREATMENT_OUTCOME), Dictionary.getConcept(Dictionary.TRANSFERRED_OUT)), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
-		cd.setCompositionString("ptbSmearNotDoneResultsAt2Months AND enrolled AND transferredOut");
+		cd.setCompositionString("ptbSmearNotDoneResultsAt2Months AND transferredOut");
 		return cd;
 	}
 
@@ -365,4 +378,638 @@ public class TbCohortLibrary {
 		return  cd;
 	}
 
+	/**
+	 * Total enrolled 8-12 months earlier and have results a 8 months
+	 * @return cohort definition
+	 */
+	public CohortDefinition totalEnrolled8Months(int highMonths, int leastMonths ) {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("ptbSmearNotDoneResultsAtMonths", ReportUtils.map(ptbSmearNotDoneResultsAtMonths(8), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("enrolled", ReportUtils.map(enrolled(), "enrolledOnOrAfter=${onOrBefore-"+ highMonths +"m},enrolledOnOrBefore=${onOrBefore-"+ leastMonths + "m}"));
+		cd.setCompositionString("ptbSmearNotDoneResultsAtMonths AND enrolled");
+		return cd;
+	}
+
+	/**
+	 *Total enrolled 8-12 months earlier and have results a 8 months and are HIV positive
+	 * @return cohort definition
+	 */
+	public CohortDefinition totalEnrolled8MonthsHivPositive() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		Concept hivPositive = Dictionary.getConcept(Dictionary.POSITIVE);
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("totalEnrolled8Months", ReportUtils.map(totalEnrolled8Months(12, 8), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("hivPositive", ReportUtils.map(hivCohortLibrary.testedHivStatus(hivPositive), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("totalEnrolled8Months AND hivPositive");
+		return cd;
+	}
+
+	/**
+	 *Total enrolled 8-12 months earlier and have results a 8 months and are HIV negative
+	 * @return cohort definition
+	 */
+	public CohortDefinition totalEnrolled8MonthsHivNegative() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		Concept hivNegative = Dictionary.getConcept(Dictionary.NEGATIVE);
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("totalEnrolled8Months", ReportUtils.map(totalEnrolled8Months(12, 8), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("hivNegative", ReportUtils.map(hivCohortLibrary.testedHivStatus(hivNegative), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("totalEnrolled8Months AND hivNegative");
+		return cd;
+	}
+
+	/**
+	 *Total enrolled 8-12 months earlier and have results a 8 months and are HIV test not done
+	 * @return cohort definition
+	 */
+	public CohortDefinition totalEnrolled8MonthsHivTestNotDone() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		Concept hivNotDone = Dictionary.getConcept(Dictionary.NOT_DONE);
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("totalEnrolled8Months", ReportUtils.map(totalEnrolled8Months(12, 8), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("hivTestNotDone", ReportUtils.map(hivCohortLibrary.testedHivStatus(hivNotDone), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("totalEnrolled8Months AND hivTestNotDone");
+		return cd;
+	}
+
+	/**
+	 * Total number of patients registered 8-12 months earlier
+	 * Patients should be hiv+, hiv-, hiv Test not done
+	 * results at 8 months
+	 */
+	public CohortDefinition totalEnrolled8MonthsHivPositiveNegativeTestNotDone() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("hivPositive", ReportUtils.map(totalEnrolled8MonthsHivPositive(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("hivNegative", ReportUtils.map(totalEnrolled8MonthsHivNegative(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("hivNotDone", ReportUtils.map(totalEnrolled8MonthsHivTestNotDone(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("hivPositive OR hivNegative OR hivNotDone");
+		return cd;
+	}
+
+	/**
+	 * Patients on CPT
+	 * @return cohort definition
+	 */
+	public CohortDefinition onCPT() {
+		CalculationCohortDefinition cd = new CalculationCohortDefinition(new OnCPTCalculation());
+		cd.setName("patients cpt on date");
+		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
+		return cd;
+	}
+
+	/**
+	 * Total patients enrolled 8-12 months earlier
+	 * hiv +
+	 * results at 8 months
+	 * on cpt
+	 * @return cohort definition
+	 */
+	public CohortDefinition totalEnrolled8MonthsHivPositiveOnCpt() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("totalEnrolled8MonthsHivPositive", ReportUtils.map(totalEnrolled8MonthsHivPositive(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("onCpt", ReportUtils.map(onCPT(), "onDate=${onOrBefore}"));
+		cd.setCompositionString("totalEnrolled8MonthsHivPositive AND onCpt");
+		return cd;
+	}
+
+	/**
+	 * Total patients enrolled 8-12 months earlier
+	 * hiv +
+	 * results at 8 months
+	 * on art
+	 * @return cohort definition
+	 */
+	public CohortDefinition totalEnrolled8MonthsHivPositiveOnArt() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("totalEnrolled8MonthsHivPositive", ReportUtils.map(totalEnrolled8MonthsHivPositive(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("onART", ReportUtils.map(artCohortLibrary.onArt(), "onDate=${onOrBefore}"));
+		cd.setCompositionString("totalEnrolled8MonthsHivPositive AND onART");
+		return cd;
+	}
+
+	/**
+	 * Patients who finalized initial treatment
+	 * Results at 8 months
+	 * 8-12 months earlier
+	 * HIV positive
+	 * completed the treatment
+	 * @return cohort definition
+	 */
+	public CohortDefinition finalizedInitialTreatmentResults8monthsHivPositive() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("totalEnrolled8MonthsHivPositive", ReportUtils.map(totalEnrolled8MonthsHivPositive(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("finalizedInitialTreatment", ReportUtils.map(completedInitialTreatment(), "onDate=${onOrBefore}"));
+		cd.setCompositionString("totalEnrolled8MonthsHivPositive AND finalizedInitialTreatment");
+		return cd;
+	}
+
+	/**
+	 * Patients who finalized initial treatment
+	 * Results at 8 months
+	 * 8-12 months earlier
+	 * HIV positive
+	 * died
+	 * @return cohort definition
+	 */
+	public CohortDefinition diedResults8monthsHivPositive() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("totalEnrolled8MonthsHivPositive", ReportUtils.map(totalEnrolled8MonthsHivPositive(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("died", ReportUtils.map(commonCohorts.hasObs(Dictionary.getConcept(Dictionary.TUBERCULOSIS_TREATMENT_OUTCOME), Dictionary.getConcept(Dictionary.DIED)), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("totalEnrolled8MonthsHivPositive AND died");
+		return cd;
+	}
+
+	/**
+	 * Patients who finalized initial treatment
+	 * Results at 8 months
+	 * 8-12 months earlier
+	 * HIV positive
+	 * absconded
+	 * @return cohort definition
+	 */
+	public CohortDefinition abscondedResults8monthsHivPositive() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("totalEnrolled8MonthsHivPositive", ReportUtils.map(totalEnrolled8MonthsHivPositive(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("absconded", ReportUtils.map(commonCohorts.hasObs(Dictionary.getConcept(Dictionary.TUBERCULOSIS_TREATMENT_OUTCOME), Dictionary.getConcept(Dictionary.DEFAULTED)), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("totalEnrolled8MonthsHivPositive AND absconded");
+		return cd;
+	}
+
+	/**
+	 * Patients who finalized initial treatment
+	 * Results at 8 months
+	 * 8-12 months earlier
+	 * HIV positive
+	 * Transferred out
+	 * @return cohort definition
+	 */
+	public CohortDefinition transferredOutResults8monthsHivPositive() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("totalEnrolled8MonthsHivPositive", ReportUtils.map(totalEnrolled8MonthsHivPositive(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("transferredOut", ReportUtils.map(commonCohorts.hasObs(Dictionary.getConcept(Dictionary.TUBERCULOSIS_TREATMENT_OUTCOME), Dictionary.getConcept(Dictionary.TRANSFERRED_OUT)), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("totalEnrolled8MonthsHivPositive AND transferredOut");
+		return cd;
+	}
+
+	/**
+	 * Patients who finalized initial treatment
+	 * Results at 8 months
+	 * 8-12 months earlier
+	 * HIV positive
+	 * Transferred out, absconded, died, finished initial treatment
+	 * @return cohort definition
+	 */
+	public CohortDefinition finalizedInitialTreatmentDiedAbscondedTransferredOutResults8monthsHivPositive() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("finalizedInitialTreatmentResults8monthsHivPositive", ReportUtils.map(finalizedInitialTreatmentResults8monthsHivPositive(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("diedResults8monthsHivPositive", ReportUtils.map(diedResults8monthsHivPositive(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("abscondedResults8monthsHivPositive", ReportUtils.map(abscondedResults8monthsHivPositive(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("transferredOutResults8monthsHivPositive", ReportUtils.map(transferredOutResults8monthsHivPositive(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("finalizedInitialTreatmentResults8monthsHivPositive OR diedResults8monthsHivPositive OR abscondedResults8monthsHivPositive OR transferredOutResults8monthsHivPositive");
+		return cd;
+	}
+
+	/**
+	 *Total enrolled 8-12 months earlier and have results a 8 months and are HIV negative
+	 * finalized treatment
+	 * @return cohort definition
+	 */
+	public CohortDefinition finalizedInitialTreatmentTotalEnrolled8MonthsHivNegative() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("totalEnrolled8MonthsHivNegative", ReportUtils.map(totalEnrolled8MonthsHivNegative(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("finalizedInitialTreatment", ReportUtils.map(completedInitialTreatment(), "onDate=${onOrBefore}"));
+		cd.setCompositionString("totalEnrolled8MonthsHivNegative AND finalizedInitialTreatment");
+		return cd;
+	}
+
+	/**
+	 *Total enrolled 8-12 months earlier and have results a 8 months and are HIV negative
+	 * died
+	 * @return cohort definition
+	 */
+	public CohortDefinition diedTotalEnrolled8MonthsHivNegative() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("totalEnrolled8MonthsHivNegative", ReportUtils.map(totalEnrolled8MonthsHivNegative(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("died", ReportUtils.map(commonCohorts.hasObs(Dictionary.getConcept(Dictionary.TUBERCULOSIS_TREATMENT_OUTCOME), Dictionary.getConcept(Dictionary.DIED)), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("totalEnrolled8MonthsHivNegative AND died");
+		return cd;
+	}
+
+	/**
+	 *Total enrolled 8-12 months earlier and have results a 8 months and are HIV negative
+	 * absconded
+	 * @return cohort definition
+	 */
+	public CohortDefinition abscondedTotalEnrolled8MonthsHivNegative() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("totalEnrolled8MonthsHivNegative", ReportUtils.map(totalEnrolled8MonthsHivNegative(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("absconded", ReportUtils.map(commonCohorts.hasObs(Dictionary.getConcept(Dictionary.TUBERCULOSIS_TREATMENT_OUTCOME), Dictionary.getConcept(Dictionary.DEFAULTED)), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("totalEnrolled8MonthsHivNegative AND absconded");
+		return cd;
+	}
+
+	/**
+	 *Total enrolled 8-12 months earlier and have results a 8 months and are HIV negative
+	 * transferred out
+	 * @return cohort definition
+	 */
+	public CohortDefinition transferredOutTotalEnrolled8MonthsHivNegative() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("totalEnrolled8MonthsHivNegative", ReportUtils.map(totalEnrolled8MonthsHivNegative(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("transferredOut", ReportUtils.map(commonCohorts.hasObs(Dictionary.getConcept(Dictionary.TUBERCULOSIS_TREATMENT_OUTCOME), Dictionary.getConcept(Dictionary.TRANSFERRED_OUT)), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("totalEnrolled8MonthsHivNegative AND transferredOut");
+		return cd;
+	}
+
+	/**
+	 * Patients who finalized initial treatment
+	 * Results at 8 months
+	 * 8-12 months earlier
+	 * HIV negative
+	 * Transferred out, absconded, died, finished initial treatment
+	 * @return cohort definition
+	 */
+	public CohortDefinition finalizedInitialTreatmentDiedAbscondedTransferredOutResults8monthsHivNegative() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("finalizedInitialTreatmentResults8monthsHivNegative", ReportUtils.map(finalizedInitialTreatmentTotalEnrolled8MonthsHivNegative(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("diedResults8monthsHivNegative", ReportUtils.map(diedTotalEnrolled8MonthsHivNegative(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("abscondedResults8monthsHivNegative", ReportUtils.map(abscondedTotalEnrolled8MonthsHivNegative(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("transferredOutResults8monthsHivNegative", ReportUtils.map(transferredOutTotalEnrolled8MonthsHivNegative(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("finalizedInitialTreatmentResults8monthsHivNegative OR diedResults8monthsHivNegative OR abscondedResults8monthsHivNegative OR transferredOutResults8monthsHivNegative");
+		return cd;
+	}
+
+	/**
+	 *Total enrolled 8-12 months earlier and have results a 8 months and are HIV test not done
+	 * finalized  initial treatment
+	 * @return cohort definition
+	 */
+	public CohortDefinition finalizedInitialTreatmentTotalEnrolled8MonthsHivTestNotDone() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("totalEnrolled8MonthsHivTestNotDone", ReportUtils.map(totalEnrolled8MonthsHivTestNotDone(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("finalizedInitialTreatment", ReportUtils.map(completedInitialTreatment(), "onDate=${onOrBefore}"));
+		cd.setCompositionString("totalEnrolled8MonthsHivTestNotDone AND finalizedInitialTreatment");
+		return cd;
+	}
+
+	/**
+	 *Total enrolled 8-12 months earlier and have results a 8 months and are HIV test not done
+	 * died
+	 * @return cohort definition
+	 */
+	public CohortDefinition diedTotalEnrolled8MonthsHivTestNotDone() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("totalEnrolled8MonthsHivTestNotDone", ReportUtils.map(totalEnrolled8MonthsHivTestNotDone(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("died", ReportUtils.map(commonCohorts.hasObs(Dictionary.getConcept(Dictionary.TUBERCULOSIS_TREATMENT_OUTCOME), Dictionary.getConcept(Dictionary.DIED)), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("totalEnrolled8MonthsHivTestNotDone AND died");
+		return cd;
+	}
+
+	/**
+	 *Total enrolled 8-12 months earlier and have results a 8 months and are HIV test not done
+	 * absconded
+	 * @return cohort definition
+	 */
+	public CohortDefinition abscondedTotalEnrolled8MonthsHivTestNotDone() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("totalEnrolled8MonthsHivTestNotDone", ReportUtils.map(totalEnrolled8MonthsHivTestNotDone(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("absconded", ReportUtils.map(commonCohorts.hasObs(Dictionary.getConcept(Dictionary.TUBERCULOSIS_TREATMENT_OUTCOME), Dictionary.getConcept(Dictionary.DEFAULTED)), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("totalEnrolled8MonthsHivTestNotDone AND absconded");
+		return cd;
+	}
+
+	/**
+	 *Total enrolled 8-12 months earlier and have results a 8 months and are HIV test not done
+	 * Transferred out
+	 * @return cohort definition
+	 */
+	public CohortDefinition transferredOutTotalEnrolled8MonthsHivTestNotDone() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("totalEnrolled8MonthsHivTestNotDone", ReportUtils.map(totalEnrolled8MonthsHivTestNotDone(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("transferredOut", ReportUtils.map(commonCohorts.hasObs(Dictionary.getConcept(Dictionary.TUBERCULOSIS_TREATMENT_OUTCOME), Dictionary.getConcept(Dictionary.TRANSFERRED_OUT)), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("totalEnrolled8MonthsHivTestNotDone AND transferredOut");
+		return cd;
+	}
+
+	/**
+	 * Patients who finalized initial treatment
+	 * Results at 8 months
+	 * 8-12 months earlier
+	 * HIV test not done
+	 * Transferred out, absconded, died, finished initial treatment
+	 * @return cohort definition
+	 */
+	public CohortDefinition finalizedInitialTreatmentDiedAbscondedTransferredOutResults8monthsHivTestNotDone() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("finalizedInitialTreatmentResults8monthsHivTestNotDone", ReportUtils.map(finalizedInitialTreatmentTotalEnrolled8MonthsHivTestNotDone(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("diedResults8monthsHivTestNotDone", ReportUtils.map(diedTotalEnrolled8MonthsHivTestNotDone(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("abscondedResults8monthsHivTestNotDone", ReportUtils.map(abscondedTotalEnrolled8MonthsHivTestNotDone(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("transferredOutResults8monthsHivTestNotDone", ReportUtils.map(transferredOutTotalEnrolled8MonthsHivTestNotDone(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("finalizedInitialTreatmentResults8monthsHivTestNotDone OR diedResults8monthsHivTestNotDone OR abscondedResults8monthsHivTestNotDone OR transferredOutResults8monthsHivTestNotDone");
+		return cd;
+	}
+
+	/**
+	 * Total number of patients registered 8-12 months earlier
+	 * Patients should be hiv+, hiv-, hiv Test not done
+	 * Finalized initial treatment
+	 * results at 8 months
+	 */
+	public CohortDefinition finalizedInitialTreatmentTotalEnrolled8MonthsHivPositiveNegativeTestNotDone() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("totalEnrolled8MonthsHivPositiveNegativeTestNotDone", ReportUtils.map(totalEnrolled8MonthsHivPositiveNegativeTestNotDone(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("finalizedInitialTreatment", ReportUtils.map(completedInitialTreatment(), "onDate=${onOrBefore}"));
+		cd.setCompositionString("totalEnrolled8MonthsHivPositiveNegativeTestNotDone AND finalizedInitialTreatment");
+		return cd;
+	}
+
+	/**
+	 * Total number of patients registered 8-12 months earlier
+	 * Patients should be hiv+, hiv-, hiv Test not done
+	 * died
+	 * results at 8 months
+	 */
+	public CohortDefinition diedTotalEnrolled8MonthsHivPositiveNegativeTestNotDone() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("totalEnrolled8MonthsHivPositiveNegativeTestNotDone", ReportUtils.map(totalEnrolled8MonthsHivPositiveNegativeTestNotDone(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("died", ReportUtils.map(commonCohorts.hasObs(Dictionary.getConcept(Dictionary.TUBERCULOSIS_TREATMENT_OUTCOME), Dictionary.getConcept(Dictionary.DIED)), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("totalEnrolled8MonthsHivPositiveNegativeTestNotDone AND died");
+		return cd;
+	}
+
+	/**
+	 * Total number of patients registered 8-12 months earlier
+	 * Patients should be hiv+, hiv-, hiv Test not done
+	 * absconded
+	 * results at 8 months
+	 */
+	public CohortDefinition abscondedTotalEnrolled8MonthsHivPositiveNegativeTestNotDone() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("totalEnrolled8MonthsHivPositiveNegativeTestNotDone", ReportUtils.map(totalEnrolled8MonthsHivPositiveNegativeTestNotDone(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("absconded", ReportUtils.map(commonCohorts.hasObs(Dictionary.getConcept(Dictionary.TUBERCULOSIS_TREATMENT_OUTCOME), Dictionary.getConcept(Dictionary.DEFAULTED)), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("totalEnrolled8MonthsHivPositiveNegativeTestNotDone AND absconded");
+		return cd;
+	}
+
+	/**
+	 * Total number of patients registered 8-12 months earlier
+	 * Patients should be hiv+, hiv-, hiv Test not done
+	 * absconded
+	 * results at 8 months
+	 */
+	public CohortDefinition transferredOutTotalEnrolled8MonthsHivPositiveNegativeTestNotDone() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("totalEnrolled8MonthsHivPositiveNegativeTestNotDone", ReportUtils.map(totalEnrolled8MonthsHivPositiveNegativeTestNotDone(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("transferredOut", ReportUtils.map(commonCohorts.hasObs(Dictionary.getConcept(Dictionary.TUBERCULOSIS_TREATMENT_OUTCOME), Dictionary.getConcept(Dictionary.TRANSFERRED_OUT)), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("totalEnrolled8MonthsHivPositiveNegativeTestNotDone AND transferredOut");
+		return cd;
+	}
+
+	/**
+	 * Total number of patients registered 8-12 months earlier
+	 * Patients should be hiv+, hiv-, hiv Test not done
+	 * total evaluated
+	 * results at 8 months
+	 */
+	public CohortDefinition finalizedInitialTreatmentDiedAbscondedTransferredOutResults8monthsHivPositiveNegativeTestNotDone() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("finalizedInitialTreatmentTotalEnrolled8MonthsHivPositiveNegativeTestNotDone", ReportUtils.map(finalizedInitialTreatmentTotalEnrolled8MonthsHivPositiveNegativeTestNotDone(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("diedTotalEnrolled8MonthsHivPositiveNegativeTestNotDone", ReportUtils.map(diedTotalEnrolled8MonthsHivPositiveNegativeTestNotDone(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("abscondedTotalEnrolled8MonthsHivPositiveNegativeTestNotDone", ReportUtils.map(abscondedTotalEnrolled8MonthsHivPositiveNegativeTestNotDone(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("transferredOutTotalEnrolled8MonthsHivPositiveNegativeTestNotDone", ReportUtils.map(transferredOutTotalEnrolled8MonthsHivPositiveNegativeTestNotDone(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("finalizedInitialTreatmentTotalEnrolled8MonthsHivPositiveNegativeTestNotDone OR diedTotalEnrolled8MonthsHivPositiveNegativeTestNotDone OR abscondedTotalEnrolled8MonthsHivPositiveNegativeTestNotDone OR transferredOutTotalEnrolled8MonthsHivPositiveNegativeTestNotDone");
+		return cd;
+	}
+
+	/**
+	 * Total patients enrolled 8-12 months earlier
+	 * hiv +
+	 * results at 8 months
+	 * on cpt
+	 * finalized initial treatment
+	 * @return cohort definition
+	 */
+	public CohortDefinition finalizedInitialTreatmentTotalEnrolled8MonthsHivPositiveOnCpt() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("totalEnrolled8MonthsHivPositiveOnCpt", ReportUtils.map(totalEnrolled8MonthsHivPositiveOnCpt(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("finalizedInitialTreatment", ReportUtils.map(completedInitialTreatment(), "onDate=${onOrBefore}"));
+		cd.setCompositionString("totalEnrolled8MonthsHivPositiveOnCpt AND finalizedInitialTreatment");
+		return cd;
+	}
+
+	/**
+	 * Total patients enrolled 8-12 months earlier
+	 * hiv +
+	 * results at 8 months
+	 * on cpt
+	 * died
+	 * @return cohort definition
+	 */
+	public CohortDefinition diedTotalEnrolled8MonthsHivPositiveOnCpt() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("totalEnrolled8MonthsHivPositiveOnCpt", ReportUtils.map(totalEnrolled8MonthsHivPositiveOnCpt(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("died", ReportUtils.map(commonCohorts.hasObs(Dictionary.getConcept(Dictionary.TUBERCULOSIS_TREATMENT_OUTCOME), Dictionary.getConcept(Dictionary.DIED)), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("totalEnrolled8MonthsHivPositiveOnCpt AND died");
+		return cd;
+	}
+
+	/**
+	 * Total patients enrolled 8-12 months earlier
+	 * hiv +
+	 * results at 8 months
+	 * on cpt
+	 * absconded
+	 * @return cohort definition
+	 */
+	public CohortDefinition abscondedTotalEnrolled8MonthsHivPositiveOnCpt() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("totalEnrolled8MonthsHivPositiveOnCpt", ReportUtils.map(totalEnrolled8MonthsHivPositiveOnCpt(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("absconded", ReportUtils.map(commonCohorts.hasObs(Dictionary.getConcept(Dictionary.TUBERCULOSIS_TREATMENT_OUTCOME), Dictionary.getConcept(Dictionary.DEFAULTED)), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("totalEnrolled8MonthsHivPositiveOnCpt AND absconded");
+		return cd;
+	}
+
+	/**
+	 * Total patients enrolled 8-12 months earlier
+	 * hiv +
+	 * results at 8 months
+	 * on cpt
+	 * transferred out
+	 * @return cohort definition
+	 */
+	public CohortDefinition transferredOutTotalEnrolled8MonthsHivPositiveOnCpt() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("totalEnrolled8MonthsHivPositiveOnCpt", ReportUtils.map(totalEnrolled8MonthsHivPositiveOnCpt(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("transferredOut", ReportUtils.map(commonCohorts.hasObs(Dictionary.getConcept(Dictionary.TUBERCULOSIS_TREATMENT_OUTCOME), Dictionary.getConcept(Dictionary.TRANSFERRED_OUT)), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("totalEnrolled8MonthsHivPositiveOnCpt AND transferredOut");
+		return cd;
+	}
+
+	/**
+	 * Total number of patients registered 8-12 months earlier
+	 * Patients should be hiv+, hiv-, hiv Test not done
+	 * total evaluated
+	 * results at 8 months
+	 */
+	public CohortDefinition finalizedInitialTreatmentDiedAbscondedTransferredOutResults8monthsHivPositiveOnCpt() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("finalizedInitialTreatmentTotalEnrolled8MonthsHivPositiveOnCpt", ReportUtils.map(finalizedInitialTreatmentTotalEnrolled8MonthsHivPositiveOnCpt(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("diedTotalEnrolled8MonthsHivPositiveOnCpt", ReportUtils.map(diedTotalEnrolled8MonthsHivPositiveOnCpt(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("abscondedTotalEnrolled8MonthsHivPositiveOnCpt", ReportUtils.map(abscondedTotalEnrolled8MonthsHivPositiveOnCpt(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("transferredOutTotalEnrolled8MonthsHivPositiveOnCpt", ReportUtils.map(transferredOutTotalEnrolled8MonthsHivPositiveOnCpt(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("finalizedInitialTreatmentTotalEnrolled8MonthsHivPositiveOnCpt OR diedTotalEnrolled8MonthsHivPositiveOnCpt OR abscondedTotalEnrolled8MonthsHivPositiveOnCpt OR transferredOutTotalEnrolled8MonthsHivPositiveOnCpt");
+		return cd;
+	}
+
+	/**
+	 * Total patients enrolled 8-12 months earlier
+	 * hiv +
+	 * results at 8 months
+	 * on art
+	 * finalized initial treatment
+	 * @return cohort definition
+	 */
+	public CohortDefinition finalizedInitialTreatmentTotalEnrolled8MonthsHivPositiveOnArt() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("totalEnrolled8MonthsHivPositiveOnArt", ReportUtils.map(totalEnrolled8MonthsHivPositiveOnArt(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("finalizedInitialTreatment", ReportUtils.map(completedInitialTreatment(), "onDate=${onOrBefore}"));
+		cd.setCompositionString("totalEnrolled8MonthsHivPositiveOnArt AND finalizedInitialTreatment");
+		return cd;
+	}
+
+	/**
+	 * Total patients enrolled 8-12 months earlier
+	 * hiv +
+	 * results at 8 months
+	 * on art
+	 * died
+	 * @return cohort definition
+	 */
+	public CohortDefinition diedTotalEnrolled8MonthsHivPositiveOnArt() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("totalEnrolled8MonthsHivPositiveOnArt", ReportUtils.map(totalEnrolled8MonthsHivPositiveOnArt(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("died", ReportUtils.map(commonCohorts.hasObs(Dictionary.getConcept(Dictionary.TUBERCULOSIS_TREATMENT_OUTCOME), Dictionary.getConcept(Dictionary.DIED)), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("totalEnrolled8MonthsHivPositiveOnArt AND died");
+		return cd;
+	}
+
+	/**
+	 * Total patients enrolled 8-12 months earlier
+	 * hiv +
+	 * results at 8 months
+	 * on art
+	 * absconded
+	 * @return cohort definition
+	 */
+	public CohortDefinition abscondedTotalEnrolled8MonthsHivPositiveOnArt() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("totalEnrolled8MonthsHivPositiveOnArt", ReportUtils.map(totalEnrolled8MonthsHivPositiveOnArt(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("absconded", ReportUtils.map(commonCohorts.hasObs(Dictionary.getConcept(Dictionary.TUBERCULOSIS_TREATMENT_OUTCOME), Dictionary.getConcept(Dictionary.DEFAULTED)), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("totalEnrolled8MonthsHivPositiveOnArt AND absconded");
+		return cd;
+	}
+
+	/**
+	 * Total patients enrolled 8-12 months earlier
+	 * hiv +
+	 * results at 8 months
+	 * on art
+	 * transfer out
+	 * @return cohort definition
+	 */
+	public CohortDefinition transferOutTotalEnrolled8MonthsHivPositiveOnArt() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("totalEnrolled8MonthsHivPositiveOnArt", ReportUtils.map(totalEnrolled8MonthsHivPositiveOnArt(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("transferOut", ReportUtils.map(commonCohorts.hasObs(Dictionary.getConcept(Dictionary.TUBERCULOSIS_TREATMENT_OUTCOME), Dictionary.getConcept(Dictionary.TRANSFERRED_OUT)), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("totalEnrolled8MonthsHivPositiveOnArt AND transferOut");
+		return cd;
+	}
+
+	/**
+	 * Total number of patients registered 8-12 months earlier
+	 * Patients should be hiv+, hiv-, hiv Test not done
+	 * on art
+	 * total evaluated
+	 * results at 8 months
+	 */
+	public CohortDefinition finalizedInitialTreatmentDiedAbscondedTransferredOutResults8monthsHivPositiveOnArt() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("finalizedInitialTreatmentTotalEnrolled8MonthsHivPositiveOnArt", ReportUtils.map(finalizedInitialTreatmentTotalEnrolled8MonthsHivPositiveOnArt(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("diedTotalEnrolled8MonthsHivPositiveOnArt", ReportUtils.map(diedTotalEnrolled8MonthsHivPositiveOnArt(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("abscondedTotalEnrolled8MonthsHivPositiveOnArt", ReportUtils.map(abscondedTotalEnrolled8MonthsHivPositiveOnArt(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("transferOutTotalEnrolled8MonthsHivPositiveOnArt", ReportUtils.map(transferOutTotalEnrolled8MonthsHivPositiveOnArt(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("finalizedInitialTreatmentTotalEnrolled8MonthsHivPositiveOnArt OR diedTotalEnrolled8MonthsHivPositiveOnArt OR abscondedTotalEnrolled8MonthsHivPositiveOnArt OR transferOutTotalEnrolled8MonthsHivPositiveOnArt");
+		return cd;
+	}
 }

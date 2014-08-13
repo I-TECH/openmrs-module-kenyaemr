@@ -16,10 +16,12 @@ package org.openmrs.module.kenyaemr.reporting.builder.tb;
 import org.openmrs.module.kenyacore.report.ReportDescriptor;
 import org.openmrs.module.kenyacore.report.builder.AbstractReportBuilder;
 import org.openmrs.module.kenyacore.report.builder.Builds;
+import org.openmrs.module.kenyaemr.reporting.library.shared.tb.TbIndicatorLibrary;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
@@ -27,11 +29,14 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * New Smear-Negative PTB for 2 months
- */
+* New Smear-Negative PTB for 2 and 8  months registered 12-15 months earlier
+*/
 @Component
-@Builds({"kenyaemr.tb.report.new.smear.negative.ptb.8"})
-public class NewSmearNegativePTB8ReportBuilder extends AbstractReportBuilder {
+@Builds({"kenyaemr.tb.report.new.smear.negative.ptb.2.8.12.15"})
+public class NewSmearNegativePTB2And81215ReportBuilder extends AbstractReportBuilder {
+
+	@Autowired
+	TbIndicatorLibrary tbIndicatorLibrary;
 
 	/**
 	 * @see org.openmrs.module.kenyacore.report.builder.AbstractReportBuilder#getParameters(org.openmrs.module.kenyacore.report.ReportDescriptor)
@@ -49,6 +54,9 @@ public class NewSmearNegativePTB8ReportBuilder extends AbstractReportBuilder {
 	 */
 	@Override
 	protected List<Mapped<DataSetDefinition>> buildDataSets(ReportDescriptor descriptor, ReportDefinition report) {
-		return Arrays.asList();
+		return Arrays.asList(
+				///ReportUtils.map(ptbSmearNotDoneResults2Months(), "startDate=${startDate},endDate=${endDate}"),
+				//ReportUtils.map(ptbSmearNotDoneResults8Months(), "startDate=${startDate},endDate=${endDate}")
+		);
 	}
 }
