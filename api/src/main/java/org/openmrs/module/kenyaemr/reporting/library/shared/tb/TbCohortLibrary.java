@@ -22,6 +22,7 @@ import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.library.tb.MissedLastTbAppointmentCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.tb.OnCPTCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.tb.TbInitialTreatmentCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.tb.TbTreatmentStartDateCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.metadata.TbMetadata;
 import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonCohortLibrary;
@@ -271,13 +272,25 @@ public class TbCohortLibrary {
 	 * Patients in tb program and smear not done and have pulmonary tb results at 2 months
 	 * @return the cohort definition
 	 */
-	public CohortDefinition ptbSmearNotDoneResultsAtMonths(int months) {
+	public CohortDefinition ptbSmearNotDoneResultsAtMonths() {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.addSearch("pulmonaryTbPatients", ReportUtils.map(pulmonaryTbPatients(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
-		cd.addSearch("smearNotDone", ReportUtils.map(pulmonaryTbSmearNotDone(), "onOrAfter=${onOrBefore- "+ months +"m},onOrBefore=${onOrBefore}"));
+		cd.addSearch("smearNotDone", ReportUtils.map(pulmonaryTbSmearNotDone(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
 		cd.setCompositionString("pulmonaryTbPatients AND smearNotDone");
+		return cd;
+	}
+
+	/**
+	 * Patients who started tb results n months later
+	 * @return cohort definition
+	 */
+	public CohortDefinition startedTbTreatmentResultsAtMonths(Integer months) {
+		CalculationCohortDefinition cd = new CalculationCohortDefinition(new TbTreatmentStartDateCalculation());
+		cd.setName("patients Tb results at"+ months + "months");
+		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
+		cd.addCalculationParameter("months", months);
 		return cd;
 	}
 
@@ -300,9 +313,10 @@ public class TbCohortLibrary {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-		cd.addSearch("ptbSmearNotDoneResultsAt2Months", ReportUtils.map(ptbSmearNotDoneResultsAtMonths(2), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("ptbSmearNotDoneResultsAt2Months", ReportUtils.map(ptbSmearNotDoneResultsAtMonths(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
 		cd.addSearch("enrolled", ReportUtils.map(enrolled(), "enrolledOnOrAfter=${onOrAfter-"+ highMonths +"m},enrolledOnOrBefore=${onOrAfter-"+ leastMonths + "m}"));
-		cd.setCompositionString("ptbSmearNotDoneResultsAt2Months AND enrolled");
+		cd.addSearch("resultsAt2Months", ReportUtils.map(startedTbTreatmentResultsAtMonths(2), "onDate=${onOrBefore}"));
+		cd.setCompositionString("ptbSmearNotDoneResultsAt2Months AND enrolled AND resultsAt2Months");
 		return cd;
 	}
 
@@ -386,9 +400,10 @@ public class TbCohortLibrary {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-		cd.addSearch("ptbSmearNotDoneResultsAtMonths", ReportUtils.map(ptbSmearNotDoneResultsAtMonths(8), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("ptbSmearNotDoneResultsAtMonths", ReportUtils.map(ptbSmearNotDoneResultsAtMonths(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
 		cd.addSearch("enrolled", ReportUtils.map(enrolled(), "enrolledOnOrAfter=${onOrBefore-"+ highMonths +"m},enrolledOnOrBefore=${onOrBefore-"+ leastMonths + "m}"));
-		cd.setCompositionString("ptbSmearNotDoneResultsAtMonths AND enrolled");
+		cd.addSearch("resultsAt8Months", ReportUtils.map(startedTbTreatmentResultsAtMonths(8), "onDate=${onOrBefore}"));
+		cd.setCompositionString("ptbSmearNotDoneResultsAtMonths AND enrolled AND resultsAt8Months");
 		return cd;
 	}
 
