@@ -69,6 +69,7 @@ public class SmearNotDonePTB2And8812ReportBuilder extends AbstractReportBuilder 
 	protected DataSetDefinition ptbSmearNotDoneResults2Months() {
 		CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
 		dsd.setName("2");
+		dsd.setDescription("PTB Smear Not Done TB Cases - Results at 2 Months");
 		dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
 
@@ -90,6 +91,7 @@ public class SmearNotDonePTB2And8812ReportBuilder extends AbstractReportBuilder 
 	protected DataSetDefinition ptbSmearNotDoneResults8Months() {
 		CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
 		dsd.setName("8");
+		dsd.setDescription("PTB Smear Not Done TB Cases - Results at 8 Months");
 		dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
 

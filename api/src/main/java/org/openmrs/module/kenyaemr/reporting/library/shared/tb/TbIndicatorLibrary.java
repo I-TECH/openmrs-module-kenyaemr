@@ -718,4 +718,339 @@ public class TbIndicatorLibrary {
 		);
 	}
 
+	/**
+	 * Treatment of new sputum smear negative pulmonary
+	 * patients registered 12 to 15 months earlier
+	 * pulmonary tb
+	 * results at 2 months
+	 * @return Indicator
+	 */
+	public CohortIndicator newSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults2Months() {
+		return cohortIndicator("Total Enrolled 2 months results new smear negative PTB ",
+				map(tbCohorts.newSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults2Months(15, 12), "onOrAfter=${startDate},onOrBefore=${endDate}")
+		);
+	}
+
+	/**
+	 * Treatment of new sputum smear negative pulmonary
+	 * patients registered 12 to 15 months earlier
+	 * pulmonary tb
+	 * results at 2 months
+	 * finalized treatment
+	 * @return Indicator
+	 */
+	public CohortIndicator finalizedInitialTreatmentNewSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults2Months() {
+		return cohortIndicator("Total Enrolled 2 months results new smear negative PTB - Finalized Initial Treatment ",
+				map(tbCohorts.finalizedInitialTreatmentNewSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults2Months(), "onOrAfter=${startDate},onOrBefore=${endDate}")
+		);
+	}
+
+	/**
+	 * Treatment of new sputum smear negative pulmonary
+	 * patients registered 12 to 15 months earlier
+	 * pulmonary tb
+	 * results at 2 months
+	 * died
+	 * @return Indicator
+	 */
+	public CohortIndicator diedNewSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults2Months() {
+		return cohortIndicator("Total Enrolled 2 months results new smear negative PTB - Died",
+				map(tbCohorts.diedNewSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults2Months(), "onOrAfter=${startDate},onOrBefore=${endDate}")
+		);
+	}
+
+	/**
+	 * Treatment of new sputum smear negative pulmonary
+	 * patients registered 12 to 15 months earlier
+	 * pulmonary tb
+	 * results at 2 months
+	 * absconded
+	 * @return Indicator
+	 */
+	public CohortIndicator abscondedNewSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults2Months() {
+		return cohortIndicator("Total Enrolled 2 months results new smear negative PTB - Absconded",
+				map(tbCohorts.abscondedNewSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults2Months(), "onOrAfter=${startDate},onOrBefore=${endDate}")
+		);
+	}
+
+	/**
+	 * Treatment of new sputum smear negative pulmonary
+	 * patients registered 12 to 15 months earlier
+	 * pulmonary tb
+	 * results at 2 months
+	 * transferred out
+	 * @return Indicator
+	 */
+	public CohortIndicator transferredOutNewSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults2Months() {
+		return cohortIndicator("Total Enrolled 2 months results new smear negative PTB - Transferred Out",
+				map(tbCohorts.transferOutNewSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults2Months(), "onOrAfter=${startDate},onOrBefore=${endDate}")
+		);
+	}
+
+	/**
+	 * Treatment of new sputum smear negative pulmonary
+	 * patients registered 12 to 15 months earlier
+	 * pulmonary tb
+	 * results at 2 months
+	 * transferred out, absconded, died, finalized initial treatment
+	 * @return Indicator
+	 */
+	public CohortIndicator transferOutAbscondedDiedFinalizedInitialTreatmentNewSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults2Months() {
+		return cohortIndicator("Total Enrolled 2 months results new smear negative PTB - All Outcomes",
+				map(tbCohorts.transferOutAbscondedDiedFinalizedInitialTreatmentNewSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults2Months(), "onOrAfter=${startDate},onOrBefore=${endDate}")
+		);
+	}
+
+	/**
+	 * Treatment of new sputum smear negative pulmonary
+	 * patients registered 12 to 15 months earlier
+	 * pulmonary tb
+	 * results at 8 months
+	 * @return Indicator
+	 */
+	public CohortIndicator newSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults8Months() {
+		return cohortIndicator("Total Enrolled 8 months results new smear negative PTB ",
+				map(tbCohorts.newSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults8Months(15, 12), "onOrAfter=${startDate},onOrBefore=${endDate}")
+		);
+	}
+
+	/**
+	 * Treatment of new sputum smear negative pulmonary
+	 * patients registered 12 to 15 months earlier
+	 * pulmonary tb
+	 * results at 8 months
+	 * treatment complete
+	 * @return Indicator
+	 */
+	public CohortIndicator treatmentCompletedNewSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults8Months() {
+		return cohortIndicator("Total Enrolled 8 months results new smear negative PTB - Treatment Complete ",
+				map(tbCohorts.treatmentCompletedNewSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults8Months(), "onOrAfter=${startDate},onOrBefore=${endDate}")
+		);
+	}
+
+	/**
+	 * Treatment of new sputum smear negative pulmonary
+	 * patients registered 12 to 15 months earlier
+	 * pulmonary tb
+	 * results at 8 months
+	 * died
+	 * @return Indicator
+	 */
+	public CohortIndicator diedNewSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults8Months() {
+		return cohortIndicator("Total Enrolled 8 months results new smear negative PTB - Died ",
+				map(tbCohorts.diedNewSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults8Months(), "onOrAfter=${startDate},onOrBefore=${endDate}")
+		);
+	}
+
+	/**
+	 * Treatment of new sputum smear negative pulmonary
+	 * patients registered 12 to 15 months earlier
+	 * pulmonary tb
+	 * results at 8 months
+	 * out of control
+	 * @return Indicator
+	 */
+	public CohortIndicator outOfControlNewSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults8Months() {
+		return cohortIndicator("Total Enrolled 8 months results new smear negative PTB - Out Of Control ",
+				map(tbCohorts.outOfControlNewSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults8Months(), "onOrAfter=${startDate},onOrBefore=${endDate}")
+		);
+	}
+
+	/**
+	 * Treatment of new sputum smear negative pulmonary
+	 * patients registered 12 to 15 months earlier
+	 * pulmonary tb
+	 * results at 8 months
+	 * transferred out
+	 * @return Indicator
+	 */
+	public CohortIndicator transferOutNewSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults8Months() {
+		return cohortIndicator("Total Enrolled 8 months results new smear negative PTB - Transferred Out ",
+				map(tbCohorts.transferOutNewSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults8Months(), "onOrAfter=${startDate},onOrBefore=${endDate}")
+		);
+	}
+
+	/**
+	 * Treatment of new sputum smear negative pulmonary
+	 * patients registered 12 to 15 months earlier
+	 * pulmonary tb
+	 * results at 8 months
+	 * became smear positive
+	 * @return Indicator
+	 */
+	public CohortIndicator becameSmearPositiveNewSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults8Months() {
+		return cohortIndicator("Total Enrolled 8 months results new smear negative PTB - Transferred Out ",
+				map(tbCohorts.becameSmearPositiveNewSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults8Months(), "onOrAfter=${startDate},onOrBefore=${endDate}")
+		);
+	}
+
+	/**
+	 * Treatment of new sputum smear negative pulmonary
+	 * patients registered 12 to 15 months earlier
+	 * pulmonary tb
+	 * results at 8 months
+	 * became smear positive,transferred out,out of control,treatment complete, died
+	 * @return Indicator
+	 */
+	public CohortIndicator transferOutOutOfControlDiedCompletedTreatmentNewSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults8Months() {
+		return cohortIndicator("Total Enrolled 8 months results new smear negative PTB - Outcomes all ",
+				map(tbCohorts.transferOutOutOfControlDiedCompletedTreatmentNewSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults8Months(), "onOrAfter=${startDate},onOrBefore=${endDate}")
+		);
+	}
+
+
+	/**
+	 * patients registered 12 to 15 months earlier
+	 * extra pulmonary TB
+	 * results at 2 months
+	 * @return Indicator
+	 */
+	public CohortIndicator extraPulmonaryTbResultsAt2Months() {
+		return cohortIndicator("Total Enrolled 2 months results Extra-Pulmonary TB ",
+				map(tbCohorts.extraPulmonaryTbResultsAt2Months(15, 12), "onOrAfter=${startDate},onOrBefore=${endDate}")
+		);
+	}
+
+	/**
+	 * patients registered 12 to 15 months earlier
+	 * extra pulmonary TB
+	 * results at 2 months
+	 * finalized initial treatment
+	 * @return Indicator
+	 */
+	public CohortIndicator finalizedInitialTreatmentExtraPulmonaryTbResultsAt2Months() {
+		return cohortIndicator("Total Enrolled 2 months results Extra-Pulmonary TB - Finalized Initial Treatment ",
+				map(tbCohorts.finalizedInitialTreatmentExtraPulmonaryTbResultsAt2Months(), "onOrAfter=${startDate},onOrBefore=${endDate}")
+		);
+	}
+
+	/**
+	 * patients registered 12 to 15 months earlier
+	 * extra pulmonary TB
+	 * results at 2 months
+	 * died
+	 * @return Indicator
+	 */
+	public CohortIndicator diedExtraPulmonaryTbResultsAt2Months() {
+		return cohortIndicator("Total Enrolled 2 months results Extra-Pulmonary TB - Died ",
+				map(tbCohorts.diedExtraPulmonaryTbResultsAt2Months(), "onOrAfter=${startDate},onOrBefore=${endDate}")
+		);
+	}
+
+	/**
+	 * patients registered 12 to 15 months earlier
+	 * extra pulmonary TB
+	 * results at 2 months
+	 * absconded
+	 * @return Indicator
+	 */
+	public CohortIndicator abscondedExtraPulmonaryTbResultsAt2Months() {
+		return cohortIndicator("Total Enrolled 2 months results Extra-Pulmonary TB - Absconded ",
+				map(tbCohorts.abscondedExtraPulmonaryTbResultsAt2Months(), "onOrAfter=${startDate},onOrBefore=${endDate}")
+		);
+	}
+
+	/**
+	 * patients registered 12 to 15 months earlier
+	 * extra pulmonary TB
+	 * results at 2 months
+	 * absconded
+	 * @return Indicator
+	 */
+	public CohortIndicator transferredOutExtraPulmonaryTbResultsAt2Months() {
+		return cohortIndicator("Total Enrolled 2 months results Extra-Pulmonary TB - Transferred Out ",
+				map(tbCohorts.transferredOutExtraPulmonaryTbResultsAt2Months(), "onOrAfter=${startDate},onOrBefore=${endDate}")
+		);
+	}
+
+	/**
+	 * patients registered 12 to 15 months earlier
+	 * extra pulmonary TB
+	 * results at 2 months
+	 * all outcomes
+	 * @return Indicator
+	 */
+	public CohortIndicator transferOutAbscondedDiedCompletedTreatmentNewSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults8Months() {
+		return cohortIndicator("Total Enrolled 2 months results Extra-Pulmonary TB - Outcomes all ",
+				map(tbCohorts.transferOutAbscondedDiedCompletedTreatmentNewSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults8Months(), "onOrAfter=${startDate},onOrBefore=${endDate}")
+		);
+	}
+
+	/**
+	 * patients registered 12 to 15 months earlier
+	 * extra pulmonary TB
+	 * results at 8 months
+	 * @return Indicator
+	 */
+	public CohortIndicator extraPulmonaryTbResultsAt8Months() {
+		return cohortIndicator("Total Enrolled 8 months results Extra-Pulmonary TB ",
+				map(tbCohorts.extraPulmonaryTbResultsAt8Months(15, 12), "onOrAfter=${startDate},onOrBefore=${endDate}")
+		);
+	}
+
+	/**
+	 * patients registered 12 to 15 months earlier
+	 * extra pulmonary TB
+	 * results at 8 months
+	 * treatment completed
+	 * @return Indicator
+	 */
+	public CohortIndicator treatmentCompletedExtraPulmonaryTbResultsAt8Months() {
+		return cohortIndicator("Total Enrolled 8 months results Extra-Pulmonary TB - Treatment Complete ",
+				map(tbCohorts.treatmentCompleteExtraPulmonaryTbResultsAt8Months(), "onOrAfter=${startDate},onOrBefore=${endDate}")
+		);
+	}
+
+	/**
+	 * patients registered 12 to 15 months earlier
+	 * extra pulmonary TB
+	 * results at 8 months
+	 * died
+	 * @return Indicator
+	 */
+	public CohortIndicator diedExtraPulmonaryTbResultsAt8Months() {
+		return cohortIndicator("Total Enrolled 8 months results Extra-Pulmonary TB - Died",
+				map(tbCohorts.diedExtraPulmonaryTbResultsAt8Months(), "onOrAfter=${startDate},onOrBefore=${endDate}")
+		);
+	}
+
+	/**
+	 * patients registered 12 to 15 months earlier
+	 * extra pulmonary TB
+	 * results at 8 months
+	 * out of control
+	 * @return Indicator
+	 */
+	public CohortIndicator outOfControlExtraPulmonaryTbResultsAt8Months() {
+		return cohortIndicator("Total Enrolled 8 months results Extra-Pulmonary TB - Out of Control",
+				map(tbCohorts.outOfControlExtraPulmonaryTbResultsAt8Months(), "onOrAfter=${startDate},onOrBefore=${endDate}")
+		);
+	}
+
+	/**
+	 * patients registered 12 to 15 months earlier
+	 * extra pulmonary TB
+	 * results at 8 months
+	 * transferred out
+	 * @return Indicator
+	 */
+	public CohortIndicator transferredOutExtraPulmonaryTbResultsAt8Months() {
+		return cohortIndicator("Total Enrolled 8 months results Extra-Pulmonary TB - Transferred Out",
+				map(tbCohorts.transferredOutExtraPulmonaryTbResultsAt8Months(), "onOrAfter=${startDate},onOrBefore=${endDate}")
+		);
+	}
+
+	/**
+	 * patients registered 12 to 15 months earlier
+	 * extra pulmonary TB
+	 * results at 8 months
+	 * outcomes all
+	 * @return Indicator
+	 */
+	public CohortIndicator transferOutOutOfControlDiedCompletedTreatmentExtraPulmonaryTbResultsAt8Months() {
+		return cohortIndicator("Total Enrolled 8 months results Extra-Pulmonary TB - Outcomes all",
+				map(tbCohorts.transferOutOutOfControlDiedCompletedTreatmentExtraPulmonaryTbResultsAt8Months(), "onOrAfter=${startDate},onOrBefore=${endDate}")
+		);
+	}
+
 }

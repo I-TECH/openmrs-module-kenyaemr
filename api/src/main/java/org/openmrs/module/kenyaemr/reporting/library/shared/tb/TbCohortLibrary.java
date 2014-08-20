@@ -20,7 +20,6 @@ import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyacore.report.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.library.tb.MissedLastTbAppointmentCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.tb.OnCPTCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.tb.TbInitialTreatmentCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.tb.TbTreatmentStartDateCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
@@ -469,17 +468,6 @@ public class TbCohortLibrary {
 	}
 
 	/**
-	 * Patients on CPT
-	 * @return cohort definition
-	 */
-	public CohortDefinition onCPT() {
-		CalculationCohortDefinition cd = new CalculationCohortDefinition(new OnCPTCalculation());
-		cd.setName("patients cpt on date");
-		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
-		return cd;
-	}
-
-	/**
 	 * Total patients enrolled 8-12 months earlier
 	 * hiv +
 	 * results at 8 months
@@ -491,7 +479,7 @@ public class TbCohortLibrary {
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.addSearch("totalEnrolled8MonthsHivPositive", ReportUtils.map(totalEnrolled8MonthsHivPositive(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
-		cd.addSearch("onCpt", ReportUtils.map(onCPT(), "onDate=${onOrBefore}"));
+		cd.addSearch("onCpt", ReportUtils.map(inTbAndHivProgramsAndOnCtxProphylaxis(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
 		cd.setCompositionString("totalEnrolled8MonthsHivPositive AND onCpt");
 		return cd;
 	}
@@ -1025,6 +1013,415 @@ public class TbCohortLibrary {
 		cd.addSearch("abscondedTotalEnrolled8MonthsHivPositiveOnArt", ReportUtils.map(abscondedTotalEnrolled8MonthsHivPositiveOnArt(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
 		cd.addSearch("transferOutTotalEnrolled8MonthsHivPositiveOnArt", ReportUtils.map(transferOutTotalEnrolled8MonthsHivPositiveOnArt(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
 		cd.setCompositionString("finalizedInitialTreatmentTotalEnrolled8MonthsHivPositiveOnArt OR diedTotalEnrolled8MonthsHivPositiveOnArt OR abscondedTotalEnrolled8MonthsHivPositiveOnArt OR transferOutTotalEnrolled8MonthsHivPositiveOnArt");
+		return cd;
+	}
+
+	/**
+	 * Treatment of new sputum smear negative pulmonary
+	 * patients registered 12 to 15 months earlier
+	 * pulmonary tb
+	 * results at 2 months
+	 * @return cohort definition
+	 */
+	public CohortDefinition newSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults2Months(int highMonths, int leastMonths) {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("pulmoaryTbSmearNegative", ReportUtils.map(pulmonaryTbSmearNegative(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("enrolled", ReportUtils.map(enrolled(), "enrolledOnOrAfter=${onOrAfter-"+ highMonths +"m},enrolledOnOrBefore=${onOrAfter-"+ leastMonths + "m}"));
+		cd.addSearch("resultsAt2Months", ReportUtils.map(startedTbTreatmentResultsAtMonths(2), "onDate=${onOrBefore}"));
+		cd.setCompositionString("pulmoaryTbSmearNegative AND enrolled AND resultsAt2Months");
+		return cd;
+	}
+
+	/**
+	 * newSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults2Months
+	 * finalized initial treatment
+	 */
+	public CohortDefinition finalizedInitialTreatmentNewSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults2Months() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("newSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults2Months", ReportUtils.map(newSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults2Months(15, 12),"onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("finalizedInitialTreatment", ReportUtils.map(completedInitialTreatment(), "onDate=${onOrBefore}"));
+		cd.setCompositionString("newSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults2Months AND finalizedInitialTreatment");
+		return cd;
+	}
+
+	/**
+	 * newSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults2Months
+	 * died
+	 */
+	public CohortDefinition diedNewSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults2Months() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("newSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults2Months", ReportUtils.map(newSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults2Months(15, 12),"onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("died", ReportUtils.map(died(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("newSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults2Months AND died");
+		return cd;
+	}
+
+	/**
+	 * newSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults2Months
+	 * absconded
+	 */
+	public CohortDefinition abscondedNewSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults2Months() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("newSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults2Months", ReportUtils.map(newSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults2Months(15, 12),"onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("absconded", ReportUtils.map(commonCohorts.hasObs(Dictionary.getConcept(Dictionary.TUBERCULOSIS_TREATMENT_OUTCOME), Dictionary.getConcept(Dictionary.DEFAULTED)), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("newSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults2Months AND absconded");
+		return cd;
+	}
+
+	/**
+	 * newSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults2Months
+	 * transfer out
+	 */
+	public CohortDefinition transferOutNewSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults2Months() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("newSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults2Months", ReportUtils.map(newSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults2Months(15, 12),"onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("transferOut", ReportUtils.map(commonCohorts.hasObs(Dictionary.getConcept(Dictionary.TUBERCULOSIS_TREATMENT_OUTCOME), Dictionary.getConcept(Dictionary.TRANSFERRED_OUT)), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("newSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults2Months AND transferOut");
+		return cd;
+	}
+
+	/**
+	 * newSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults2Months
+	 * transfer out,absconded,died,finalized initial treatment
+	 */
+	public CohortDefinition transferOutAbscondedDiedFinalizedInitialTreatmentNewSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults2Months() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("finalizedInitialTreatmentNewSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults2Months", ReportUtils.map(finalizedInitialTreatmentNewSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults2Months(),"onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("diedNewSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults2Months", ReportUtils.map(diedNewSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults2Months(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("abscondedNewSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults2Months", ReportUtils.map(abscondedNewSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults2Months(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("transferOutNewSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults2Months", ReportUtils.map(transferOutNewSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults2Months(),"onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("finalizedInitialTreatmentNewSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults2Months OR diedNewSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults2Months OR abscondedNewSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults2Months OR transferOutNewSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults2Months");
+		return cd;
+	}
+
+	/**
+	 * Treatment of new sputum smear negative pulmonary
+	 * patients registered 12 to 15 months earlier
+	 * pulmonary tb
+	 * results at 8 months
+	 * @return cohort definition
+	 */
+	public CohortDefinition newSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults8Months(int highMonths, int leastMonths) {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("pulmoaryTbSmearNegative", ReportUtils.map(pulmonaryTbSmearNegative(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("enrolled", ReportUtils.map(enrolled(), "enrolledOnOrAfter=${onOrAfter-"+ highMonths +"m},enrolledOnOrBefore=${onOrAfter-"+ leastMonths + "m}"));
+		cd.addSearch("resultsAt2Months", ReportUtils.map(startedTbTreatmentResultsAtMonths(8), "onDate=${onOrBefore}"));
+		cd.setCompositionString("pulmoaryTbSmearNegative AND enrolled AND resultsAt2Months");
+		return cd;
+	}
+
+	/**
+	 * Treatment of new sputum smear negative pulmonary
+	 * patients registered 12 to 15 months earlier
+	 * pulmonary tb
+	 * results at 8 months
+	 * treatment completed
+	 * @return cohort definition
+	 */
+	public CohortDefinition treatmentCompletedNewSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults8Months() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("newSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults8Months", ReportUtils.map(newSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults8Months(15, 12), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("treatmentCompleted", ReportUtils.map(commonCohorts.hasObs(Dictionary.getConcept(Dictionary.TUBERCULOSIS_TREATMENT_OUTCOME), Dictionary.getConcept(Dictionary.TREATMENT_COMPLETE)), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("newSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults8Months AND treatmentCompleted");
+		return cd;
+	}
+
+	/**
+	 * Treatment of new sputum smear negative pulmonary
+	 * patients registered 12 to 15 months earlier
+	 * pulmonary tb
+	 * results at 8 months
+	 * died
+	 * @return cohort definition
+	 */
+	public CohortDefinition diedNewSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults8Months() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("newSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults8Months", ReportUtils.map(newSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults8Months(15, 12), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("died", ReportUtils.map(commonCohorts.hasObs(Dictionary.getConcept(Dictionary.TUBERCULOSIS_TREATMENT_OUTCOME), Dictionary.getConcept(Dictionary.DIED)), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("newSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults8Months AND died");
+		return cd;
+	}
+
+	/**
+	 * Treatment of new sputum smear negative pulmonary
+	 * patients registered 12 to 15 months earlier
+	 * pulmonary tb
+	 * results at 8 months
+	 * Out of control
+	 * @return cohort definition
+	 */
+	public CohortDefinition outOfControlNewSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults8Months() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("newSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults8Months", ReportUtils.map(newSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults8Months(15, 12), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("outOfControl", ReportUtils.map(commonCohorts.hasObs(Dictionary.getConcept(Dictionary.TYPE_OF_TB_PATIENT), Dictionary.getConcept(Dictionary.RETREATMENT_AFTER_DEFAULT_TUBERCULOSIS)), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("newSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults8Months AND outOfControl");
+		return cd;
+	}
+
+	/**
+	 * Treatment of new sputum smear negative pulmonary
+	 * patients registered 12 to 15 months earlier
+	 * pulmonary tb
+	 * results at 8 months
+	 * transfer out
+	 * @return cohort definition
+	 */
+	public CohortDefinition transferOutNewSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults8Months() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("newSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults8Months", ReportUtils.map(newSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults8Months(15, 12), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("transferOut", ReportUtils.map(commonCohorts.hasObs(Dictionary.getConcept(Dictionary.TUBERCULOSIS_TREATMENT_OUTCOME), Dictionary.getConcept(Dictionary.TRANSFERRED_OUT)), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("newSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults8Months AND transferOut");
+		return cd;
+	}
+
+	/**
+	 * Treatment of new sputum smear negative pulmonary
+	 * patients registered 12 to 15 months earlier
+	 * pulmonary tb
+	 * results at 8 months
+	 * became smear positive
+	 * @return cohort definition
+	 */
+	public CohortDefinition becameSmearPositiveNewSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults8Months() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("newSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults8Months", ReportUtils.map(newSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults8Months(15, 12), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("becameSmearPositive", ReportUtils.map(commonCohorts.hasObs(Dictionary.getConcept(Dictionary.TUBERCULOSIS_TREATMENT_OUTCOME), Dictionary.getConcept(Dictionary.TUBERCULOSIS_TREATMENT_FAILURE)), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("newSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults8Months AND becameSmearPositive");
+		return cd;
+	}
+
+	/**
+	 * NewSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults8Months
+	 * transfer out,out of control,became smear positive,died,completed treatment
+	 */
+	public CohortDefinition transferOutOutOfControlDiedCompletedTreatmentNewSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults8Months() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("treatmentCompleted", ReportUtils.map(treatmentCompletedNewSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults8Months(),"onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("died", ReportUtils.map(diedNewSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults8Months(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("outOfControl", ReportUtils.map(outOfControlNewSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults8Months(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("transferOut", ReportUtils.map(transferOutNewSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults8Months(),"onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("becameSmearPositive", ReportUtils.map(becameSmearPositiveNewSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults8Months(),"onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("treatmentCompleted OR died OR outOfControl OR transferOut OR becameSmearPositive");
+		return cd;
+	}
+
+	/**
+	 *patients registered 12 to 15 months earlier
+	 *  results at 2 months
+	 *  @return cohort definition
+	 */
+	public CohortDefinition extraPulmonaryTbResultsAt2Months(int highMonths, int leastMonths) {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("extraPulmonaryTbPatients", ReportUtils.map(extraPulmonaryTbPatients(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("enrolled", ReportUtils.map(enrolled(), "enrolledOnOrAfter=${onOrAfter-"+ highMonths +"m},enrolledOnOrBefore=${onOrAfter-"+ leastMonths + "m}"));
+		cd.addSearch("resultsAt2Months", ReportUtils.map(startedTbTreatmentResultsAtMonths(2), "onDate=${onOrBefore}"));
+		cd.setCompositionString("extraPulmonaryTbPatients AND enrolled AND resultsAt2Months");
+		return cd;
+	}
+
+	/**
+	 *patients registered 12 to 15 months earlier
+	 *  results at 2 months
+	 *  finalizedInitialTreatment
+	 *  @return cohort definition
+	 */
+	public CohortDefinition finalizedInitialTreatmentExtraPulmonaryTbResultsAt2Months() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("extraPulmonaryTbResultsAt2Months", ReportUtils.map(extraPulmonaryTbResultsAt2Months(15, 12), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("finalizedInitialTreatment", ReportUtils.map(commonCohorts.hasObs(Dictionary.getConcept(Dictionary.TUBERCULOSIS_TREATMENT_OUTCOME), Dictionary.getConcept(Dictionary.TREATMENT_COMPLETE)), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("extraPulmonaryTbResultsAt2Months AND finalizedInitialTreatment");
+		return cd;
+	}
+
+	/**
+	 *patients registered 12 to 15 months earlier
+	 *  results at 2 months
+	 *  died
+	 *  @return cohort definition
+	 */
+	public CohortDefinition diedExtraPulmonaryTbResultsAt2Months() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("extraPulmonaryTbResultsAt2Months", ReportUtils.map(extraPulmonaryTbResultsAt2Months(15, 12), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("died", ReportUtils.map(commonCohorts.hasObs(Dictionary.getConcept(Dictionary.TUBERCULOSIS_TREATMENT_OUTCOME), Dictionary.getConcept(Dictionary.DIED)), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("extraPulmonaryTbResultsAt2Months AND died");
+		return cd;
+	}
+
+	/**
+	 *patients registered 12 to 15 months earlier
+	 *  results at 2 months
+	 *  absconded
+	 *  @return cohort definition
+	 */
+	public CohortDefinition abscondedExtraPulmonaryTbResultsAt2Months() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("extraPulmonaryTbResultsAt2Months", ReportUtils.map(extraPulmonaryTbResultsAt2Months(15, 12), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("absconded", ReportUtils.map(commonCohorts.hasObs(Dictionary.getConcept(Dictionary.TUBERCULOSIS_TREATMENT_OUTCOME), Dictionary.getConcept(Dictionary.DEFAULTED)), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("extraPulmonaryTbResultsAt2Months AND absconded");
+		return cd;
+	}
+
+	/**
+	 *patients registered 12 to 15 months earlier
+	 *  results at 2 months
+	 *  transferredOut
+	 *  @return cohort definition
+	 */
+	public CohortDefinition transferredOutExtraPulmonaryTbResultsAt2Months() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("extraPulmonaryTbResultsAt2Months", ReportUtils.map(extraPulmonaryTbResultsAt2Months(15, 12), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("transferredOut", ReportUtils.map(commonCohorts.hasObs(Dictionary.getConcept(Dictionary.TUBERCULOSIS_TREATMENT_OUTCOME), Dictionary.getConcept(Dictionary.TRANSFERRED_OUT)), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("extraPulmonaryTbResultsAt2Months AND transferredOut");
+		return cd;
+	}
+
+	/**
+	 * ExtraPulmonaryTbResultsAt2Months
+	 * transfer out,absconded,died,completed treatment
+	 */
+	public CohortDefinition transferOutAbscondedDiedCompletedTreatmentNewSputumSmearNegative12to15MonthsEarlierPulmonaryTbResults8Months() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("finalizedInitialTreatment", ReportUtils.map(finalizedInitialTreatmentExtraPulmonaryTbResultsAt2Months(),"onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("died", ReportUtils.map(diedExtraPulmonaryTbResultsAt2Months(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("absconded", ReportUtils.map(abscondedExtraPulmonaryTbResultsAt2Months(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("transferredOut", ReportUtils.map(transferredOutExtraPulmonaryTbResultsAt2Months(),"onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("finalizedInitialTreatment OR died OR absconded OR transferredOut");
+		return cd;
+	}
+
+	/**
+	 *patients registered 12 to 15 months earlier
+	 *  results at 8 months
+	 *  @return cohort definition
+	 */
+	public CohortDefinition extraPulmonaryTbResultsAt8Months(int highMonths, int leastMonths) {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("extraPulmonaryTbPatients", ReportUtils.map(extraPulmonaryTbPatients(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("enrolled", ReportUtils.map(enrolled(), "enrolledOnOrAfter=${onOrAfter-"+ highMonths +"m},enrolledOnOrBefore=${onOrAfter-"+ leastMonths + "m}"));
+		cd.addSearch("resultsAt2Months", ReportUtils.map(startedTbTreatmentResultsAtMonths(8), "onDate=${onOrBefore}"));
+		cd.setCompositionString("extraPulmonaryTbPatients AND enrolled AND resultsAt2Months");
+		return cd;
+	}
+
+	/**
+	 *patients registered 12 to 15 months earlier
+	 *  results at 8 months
+	 *  treatment completed
+	 *  @return cohort definition
+	 */
+	public CohortDefinition treatmentCompleteExtraPulmonaryTbResultsAt8Months() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("extraPulmonaryTbResultsAt8Months", ReportUtils.map(extraPulmonaryTbResultsAt8Months(15, 12), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("treatmentCompleted", ReportUtils.map(commonCohorts.hasObs(Dictionary.getConcept(Dictionary.TUBERCULOSIS_TREATMENT_OUTCOME), Dictionary.getConcept(Dictionary.TREATMENT_COMPLETE)), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("extraPulmonaryTbResultsAt8Months AND treatmentCompleted");
+		return cd;
+	}
+
+	/**
+	 *patients registered 12 to 15 months earlier
+	 *  results at 8 months
+	 *  died
+	 *  @return cohort definition
+	 */
+	public CohortDefinition diedExtraPulmonaryTbResultsAt8Months() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("extraPulmonaryTbResultsAt8Months", ReportUtils.map(extraPulmonaryTbResultsAt8Months(15, 12), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("died", ReportUtils.map(commonCohorts.hasObs(Dictionary.getConcept(Dictionary.TUBERCULOSIS_TREATMENT_OUTCOME), Dictionary.getConcept(Dictionary.DIED)), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("extraPulmonaryTbResultsAt8Months AND died");
+		return cd;
+	}
+
+	/**
+	 *patients registered 12 to 15 months earlier
+	 *  results at 8 months
+	 *  out of control
+	 *  @return cohort definition
+	 */
+	public CohortDefinition outOfControlExtraPulmonaryTbResultsAt8Months() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("extraPulmonaryTbResultsAt8Months", ReportUtils.map(extraPulmonaryTbResultsAt8Months(15, 12), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("outOfControl", ReportUtils.map(commonCohorts.hasObs(Dictionary.getConcept(Dictionary.TYPE_OF_TB_PATIENT), Dictionary.getConcept(Dictionary.RETREATMENT_AFTER_DEFAULT_TUBERCULOSIS)), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("extraPulmonaryTbResultsAt8Months AND outOfControl");
+		return cd;
+	}
+
+	/**
+	 *patients registered 12 to 15 months earlier
+	 *  results at 8 months
+	 *  transfer out
+	 *  @return cohort definition
+	 */
+	public CohortDefinition transferredOutExtraPulmonaryTbResultsAt8Months() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("extraPulmonaryTbResultsAt8Months", ReportUtils.map(extraPulmonaryTbResultsAt8Months(15, 12), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("transferredOut", ReportUtils.map(commonCohorts.hasObs(Dictionary.getConcept(Dictionary.TUBERCULOSIS_TREATMENT_OUTCOME), Dictionary.getConcept(Dictionary.TRANSFERRED_OUT)), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("extraPulmonaryTbResultsAt8Months AND transferredOut");
+		return cd;
+	}
+
+	/**
+	 *patients registered 12 to 15 months earlier
+	 *  results at 8 months
+	 *  transfer out, out of control, died, treatment completed
+	 *  @return cohort definition
+	 */
+	public CohortDefinition transferOutOutOfControlDiedCompletedTreatmentExtraPulmonaryTbResultsAt8Months() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("treatmentCompleted", ReportUtils.map(treatmentCompleteExtraPulmonaryTbResultsAt8Months(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("died", ReportUtils.map(diedExtraPulmonaryTbResultsAt8Months(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("outOfControl", ReportUtils.map(outOfControlExtraPulmonaryTbResultsAt8Months(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("transferredOut", ReportUtils.map(transferredOutExtraPulmonaryTbResultsAt8Months(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("treatmentCompleted OR died OR outOfControl OR transferredOut");
 		return cd;
 	}
 }
