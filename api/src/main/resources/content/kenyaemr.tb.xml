@@ -123,27 +123,11 @@
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 	</bean>
 
-	<bean id="kenyaemr.tb.report.eptb.2.8.8.12" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
-		<property name="targetUuid" value="18516056-1e27-11e4-af0b-3f84842084cc" />
-		<property name="name" value="Extra - Pulmonary TB" />
-		<property name="description" value="Cohort Report on Results of Treatment of Extra PTB Patient of Registered - Results at 2 and 8 Months (Registered 8-12 months Earlier)" />
-		<property name="template" value="kenyaemr:tb/eptb2and8months812monthsearlier.xls" />
-		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
-	</bean>
-
 	<bean id="kenyaemr.tb.report.new.smear.negative.ptb.2.8.12.15" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
 		<property name="targetUuid" value="fd4b2c88-214b-11e4-878d-135d55706f1d" />
 		<property name="name" value="New Smear Negative - PTB and Extra PTB" />
 		<property name="description" value="Cohort Report on Results of Treatment of New Smear Negative PTB- Results at 2 and 8 Months (Registered 12-15 months Earlier)" />
 		<property name="template" value="kenyaemr:tb/ptbnewsptumsmearnegative2and8.xls" />
-		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
-	</bean>
-
-	<bean id="kenyaemr.tb.report.eptb.2.8.12.15" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
-		<property name="targetUuid" value="2c2a7166-214d-11e4-97a5-cb28b4f7f515" />
-		<property name="name" value="Extra - Pulmonary TB" />
-		<property name="description" value="Cohort Report on Results of Treatment of Extra PTB Patient of Registered - Results at 2 and 8 Months (Registered 12-15 months Earlier)" />
-		<property name="template" value="kenyaemr:tb/eptb2and8months1215monthsearlier.xls" />
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 	</bean>
 </beans>
