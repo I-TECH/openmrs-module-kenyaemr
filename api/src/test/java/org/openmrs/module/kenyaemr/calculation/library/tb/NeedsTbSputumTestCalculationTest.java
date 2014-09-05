@@ -17,6 +17,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Concept;
+import org.openmrs.Program;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
@@ -25,6 +26,7 @@ import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.metadata.TbMetadata;
+import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -77,6 +79,13 @@ public class NeedsTbSputumTestCalculationTest extends BaseModuleContextSensitive
 		Concept tbDiseaseStatus = Dictionary.getConcept(Dictionary.TUBERCULOSIS_DISEASE_STATUS);
 		Concept diseaseSuspected = Dictionary.getConcept(Dictionary.DISEASE_SUSPECTED);
 		Concept diseaseunknown = Dictionary.getConcept(Dictionary.UNKNOWN);
+
+		//get Tb program
+		Program tbProgram = MetadataUtils.existing(Program.class, TbMetadata._Program.TB);
+
+		//enroll patient 2 into tb program
+		TestUtils.enrollInProgram(TestUtils.getPatient(2), tbProgram, TestUtils.date(2014, 7, 1));
+		TestUtils.enrollInProgram(TestUtils.getPatient(6), tbProgram, TestUtils.date(2014, 7, 1));
 
 		// Screen patient #2 on May 31st
 		TestUtils.saveObs(TestUtils.getPatient(2), tbDiseaseStatus, diseaseSuspected, TestUtils.date(2014, 7, 10));

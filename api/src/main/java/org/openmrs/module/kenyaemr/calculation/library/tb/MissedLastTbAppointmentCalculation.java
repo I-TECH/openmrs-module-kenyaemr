@@ -63,8 +63,8 @@ public class MissedLastTbAppointmentCalculation extends BaseEmrCalculation imple
 					Date lastActualReturnDate = lastEncounter != null ? lastEncounter.getEncounterDatetime() : null;
 					missedVisit = lastActualReturnDate == null || lastActualReturnDate.before(lastScheduledReturnDate);
 				}
+				ret.put(ptId, new SimpleResult(missedVisit, this, context));
 			}
-			ret.put(ptId, new SimpleResult(missedVisit, this, context));
 		}
 
 		return ret;

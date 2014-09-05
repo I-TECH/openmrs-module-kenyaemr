@@ -15,6 +15,7 @@
 package org.openmrs.module.kenyaemr.reporting.library.shared.hiv;
 
 import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.art.ArtCohortLibrary;
+import org.openmrs.module.kenyaemr.reporting.library.shared.tb.TbCohortLibrary;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -36,6 +37,9 @@ public class QiIndicatorLibrary {
 
 	@Autowired
 	private QiCohortLibrary qiCohorts;
+
+	@Autowired
+	private TbCohortLibrary tbCohorts;
 
 	/**
 	 * Percentage of patients with an HIV care visit who have CD4 test results in the last 6 months
@@ -66,7 +70,51 @@ public class QiIndicatorLibrary {
 	public CohortIndicator artInitiation() {
 		return cohortIndicator("ART Initiation",
 				map(artCohorts.startedArt(), "onOrAfter=${endDate-6m},onOrBefore=${endDate}" ),
-				map(artCohorts.eligibleForArt(), "onDate=${endDate-6m}" )
+				map(qiCohorts.hivInfectedAndNotOnARTAndHasHivClinicalVisit(), "onOrAfter=${startDate}" )
 				);
+	}
+
+	/**
+	 * Clinical visit service coverage
+	 * @return the indicator
+	 */
+	public CohortIndicator clinicalVisit() {
+		return cohortIndicator("Clinical Visit",
+				map(qiCohorts.inCareHasAtLeast2Visits(), "onDate=${endDate-6m}" ),
+				map(qiCohorts.clinicalVisit(), "onOrAfter=${startDate},onOrBefore=${endDate}" )
+		);
+	}
+
+	/**
+	 * HIV Monitoring Viral Load coverage
+	 * @return the indicator
+	 */
+	public CohortIndicator hivMonitoringViralLoad() {
+		return cohortIndicator("HIV Monitoring - Viral Load",
+				map(qiCohorts.onARTatLeast12MonthsAndHaveAtLeastVLResultsDuringTheLast12Months(), "onOrBefore=${endDate}" ),
+				map(qiCohorts.onARTatLeast12MonthsAndHaveAtLeastOneVisitDuringTheLast6MonthsReview(), "onOrAfter=${startDate},onOrBefore=${endDate}" )
+		);
+	}
+
+	/**
+	 * HIV Monitoring Viral Load - supression outcome
+	 * @return CohortIndicator
+	 */
+	public CohortIndicator hivMonitoringViralLoadSupression() {
+		return cohortIndicator("HIV Monitoring - Viral Load - Supression Outcome",
+				map(qiCohorts.onARTatLeast12MonthsAndVlLess1000(), "onOrBefore=${endDate}" ),
+				map(qiCohorts.onARTatLeast12MonthsAndAtLeastVlResults(), "onOrBefore=${endDate}" )
+		);
+	}
+
+	/**
+	 * Tb Screening Servicess coverage
+	 * @return CohortIndicator
+	 */
+	public CohortIndicator tbScreeningServiceCoverage() {
+		return cohortIndicator("Tb screening - Service Coverage",
+				map(tbCohorts.screenedForTb(), "onOrAfter=${endDate-6m},onOrBefore=${endDate}"),
+				map(qiCohorts.hivInfectedNotOnTbTreatmentHaveAtLeastOneHivClinicalVisitDuring6Months(), "onOrAfter=${startDate},onOrBefore=${endDate}")
+		);
 	}
 }

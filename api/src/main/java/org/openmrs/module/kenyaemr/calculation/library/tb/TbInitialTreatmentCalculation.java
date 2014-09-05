@@ -14,17 +14,16 @@
 package org.openmrs.module.kenyaemr.calculation.library.tb;
 
 import org.openmrs.Concept;
-import org.openmrs.Program;
+import org.openmrs.Encounter;
+import org.openmrs.EncounterType;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
-import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyacore.calculation.Filters;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.LostToFollowUpCalculation;
 import org.openmrs.module.kenyaemr.metadata.TbMetadata;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 
@@ -43,26 +42,20 @@ public class TbInitialTreatmentCalculation extends AbstractPatientCalculation {
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> params, PatientCalculationContext context) {
 		//only deal with the alive patients
 		Set<Integer> alive = Filters.alive(cohort, context);
-		//patients in tb program
-		Set<Integer> inTbProgram = Filters.inProgram(MetadataUtils.existing(Program.class, TbMetadata._Program.TB), alive, context);
+		//Patients in tb program
+		CalculationResultMap inProgram = Calculations.lastEncounter(MetadataUtils.existing(EncounterType.class, TbMetadata._EncounterType.TB_ENROLLMENT), alive, context);
 		//find initial observation for completed treatment
 		CalculationResultMap treatmentOutcome = Calculations.firstObs(Dictionary.getConcept(Dictionary.TUBERCULOSIS_TREATMENT_OUTCOME), cohort, context);
-		//exclude those who are lost to follow up
-		Set<Integer> ltfu = CalculationUtils.patientsThatPass(calculate(new LostToFollowUpCalculation(), cohort, context));
-
 		//get the concept of completed treatment
 		Concept completedInitialTreatment = Dictionary.getConcept(Dictionary.TREATMENT_COMPLETE);
 
 		CalculationResultMap ret = new CalculationResultMap();
 		for(int ptId:cohort){
 			boolean completed = false;
+			Encounter tbEnrollmentEncounter = EmrCalculationUtils.encounterResultForPatient(inProgram, ptId);
 			Concept concept = EmrCalculationUtils.codedObsResultForPatient(treatmentOutcome, ptId);
-			if((inTbProgram.contains(ptId)) && (concept != null) && (concept.equals(completedInitialTreatment))){
+			if((tbEnrollmentEncounter != null) && (concept != null) && (concept.equals(completedInitialTreatment))){
 				completed = true;
-			}
-
-			if(ltfu.contains(ptId)) {
-				completed = false;
 			}
 
 			ret.put(ptId, new BooleanResult(completed, this, context));

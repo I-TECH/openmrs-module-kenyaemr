@@ -310,6 +310,7 @@ public class TbCohortLibrary {
 	 */
 	public CohortDefinition totalEnrolledPtbSmearNotDoneResultsAtMonths(int highMonths, int leastMonths  ) {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("Total enrolled in 2 months between "+leastMonths+" and "+highMonths);
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.addSearch("ptbSmearNotDoneResultsAt2Months", ReportUtils.map(ptbSmearNotDoneResultsAtMonths(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
@@ -325,6 +326,7 @@ public class TbCohortLibrary {
 	 */
 	public CohortDefinition ptbSmearNotDoneResults2MonthsFinalizedInitialtreatment() {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("Finalized Initial treatment 8 to 12 months");
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.addSearch("ptbSmearNotDoneResultsAt2Months", ReportUtils.map(totalEnrolledPtbSmearNotDoneResultsAtMonths(12, 8), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));

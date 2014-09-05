@@ -78,7 +78,7 @@ public class NeedsTbSputumTestCalculation extends AbstractPatientCalculation imp
 		Concept retreatmentAfterDefault = Dictionary.getConcept(Dictionary.RETREATMENT_AFTER_DEFAULT_TUBERCULOSIS);
 
 		// check if there is any observation recorded per the tuberculosis disease status
-		CalculationResultMap lastObsTbDiseaseStatus = Calculations.lastObs(Dictionary.getConcept(Dictionary.TUBERCULOSIS_DISEASE_STATUS), cohort, context);
+		CalculationResultMap lastObsTbDiseaseStatus = Calculations.lastObs(Dictionary.getConcept(Dictionary.TUBERCULOSIS_DISEASE_STATUS), inTbProgram, context);
 
 		// get last observations for disease classification, patient classification
 		// and pulmonary tb positive to determine when sputum will be due for patients in future
@@ -87,7 +87,7 @@ public class NeedsTbSputumTestCalculation extends AbstractPatientCalculation imp
 		CalculationResultMap lastTbPulmonayResult = Calculations.lastObs(Dictionary.getConcept(Dictionary.RESULTS_TUBERCULOSIS_CULTURE), inTbProgram, context);
 
 		// get the first observation ever the patient had a sputum results for month 0
-		CalculationResultMap sputumResultsForMonthZero = Calculations.firstObs(Dictionary.getConcept(Dictionary.SPUTUM_FOR_ACID_FAST_BACILLI), alive, context);
+		CalculationResultMap sputumResultsForMonthZero = Calculations.firstObs(Dictionary.getConcept(Dictionary.SPUTUM_FOR_ACID_FAST_BACILLI), inTbProgram, context);
 
 		// get the date when Tb treatment was started, the patient should be in tb program to have this date
 		CalculationResultMap tbStartTreatmentDate = Calculations.lastObs(Dictionary.getConcept(Dictionary.TUBERCULOSIS_DRUG_TREATMENT_START_DATE), inTbProgram, context);
@@ -102,7 +102,7 @@ public class NeedsTbSputumTestCalculation extends AbstractPatientCalculation imp
 				Obs lastObsTbDiseaseResults = EmrCalculationUtils.obsResultForPatient(lastObsTbDiseaseStatus, ptId);
 				if ((lastObsTbDiseaseResults != null) && (lastObsTbDiseaseResults.getValueCoded().equals(tbsuspect))) {
 					// get the last observation of sputum since tb was suspected
-					CalculationResultMap firstObsSinceSuspected = Calculations.firstObsOnOrAfter(Dictionary.getConcept(Dictionary.SPUTUM_FOR_ACID_FAST_BACILLI), lastObsTbDiseaseResults.getObsDatetime(), cohort, context);
+					CalculationResultMap firstObsSinceSuspected = Calculations.firstObsOnOrAfter(Dictionary.getConcept(Dictionary.SPUTUM_FOR_ACID_FAST_BACILLI), lastObsTbDiseaseResults.getObsDatetime(), inTbProgram, context);
 
 					// get the first observation of sputum since the patient was
 					// suspected

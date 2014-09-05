@@ -154,7 +154,7 @@ public class TbIndicatorLibrary {
 	 * @return cohort indicator
 	 */
 	public CohortIndicator totalEnrolled() {
-		return cohortIndicator("Total Enrolled",
+		return cohortIndicator("TB - Total Enrolled",
 				map(tbCohorts.totalEnrolledPtbSmearNotDoneResultsAtMonths(12, 8), "onOrAfter=${startDate},onOrBefore=${endDate}")
 				);
 	}
@@ -164,7 +164,7 @@ public class TbIndicatorLibrary {
 	 * @return Indicator
 	 */
 	public  CohortIndicator finalizedInitialTreatment() {
-		return cohortIndicator("Finalized Initial Treatment",
+		return cohortIndicator("TB - Finalized Initial Treatment",
 				map(tbCohorts.ptbSmearNotDoneResults2MonthsFinalizedInitialtreatment(), "onOrAfter=${startDate},onOrBefore=${endDate}")
 		);
 	}
