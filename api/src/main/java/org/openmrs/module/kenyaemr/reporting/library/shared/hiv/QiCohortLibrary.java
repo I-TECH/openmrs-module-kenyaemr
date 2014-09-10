@@ -16,26 +16,32 @@ package org.openmrs.module.kenyaemr.reporting.library.shared.hiv;
 
 import org.openmrs.Concept;
 import org.openmrs.EncounterType;
+import org.openmrs.Program;
+import org.openmrs.api.PatientSetService;
 import org.openmrs.api.PatientSetService.TimeModifier;
 import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyacore.report.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.kenyacore.report.cohort.definition.ObsInLastVisitCohortDefinition;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.InCareHasAtLeast2VisitsCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.PatientsWhoMeetCriteriaForNutritionalSupport;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.reporting.library.moh731.Moh731CohortLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonCohortLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.art.ArtCohortLibrary;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
+import org.openmrs.module.reporting.cohort.definition.CodedObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.DateObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.NumericObsCohortDefinition;
 import org.openmrs.module.reporting.common.RangeComparator;
+import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
 import java.util.Date;
 
 /**
@@ -242,9 +248,165 @@ public class QiCohortLibrary {
 		compositionCohortDefinition.addSearch("inHivProgram", ReportUtils.map(hivCohortLibrary.enrolled()));
 		compositionCohortDefinition.addSearch("onTbTreatment", ReportUtils.map(onTbTreatment, "onOrAfter=${onOrBefore-6},onOrBefore=${onOrBefore}"));
 		compositionCohortDefinition.addSearch("hasHivClinicalVisit", ReportUtils.map(clinicalVisit(), "onOrAfter=${onOrBefore-6},onOrBefore=${onOrBefore}"));
-		compositionCohortDefinition.setCompositionString("inHivProgram AND hasHivClinicalVisit AND NOT onTbTreatment");
+		compositionCohortDefinition.setCompositionString("(inHivProgram AND hasHivClinicalVisit) AND NOT onTbTreatment");
 		return compositionCohortDefinition;
 	}
 
+	/**
+	 * Number of patients with negative TB screens
+	 * Patients who  have NOt had IPT
+	 */
+	public CohortDefinition patientWithNegativeTbScreenWhoHaveNotHadIPT() {
+		Concept tbDiseaseStatus = Dictionary.getConcept(Dictionary.TUBERCULOSIS_DISEASE_STATUS);
+		Concept noSignsOrSymptoms = Dictionary.getConcept(Dictionary.NO_SIGNS_OR_SYMPTOMS_OF_DISEASE);
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("Screened for TB negative and NOT on IPT");
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addSearch("negativeTB", ReportUtils.map(commonCohorts.hasObs(tbDiseaseStatus, noSignsOrSymptoms), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("onIPT", ReportUtils.map(onINHProphylaxis(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("negativeTB AND NOT onIPT");
+		return cd;
+	}
+
+	/**
+	 * Patients who are on INH
+	 * Isoniazid dispensed
+	 * Isoniazid medication
+	 * INH prophylaxis
+	 * @return CohortDefinition
+	 */
+	public CohortDefinition onINHProphylaxis() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+
+		CodedObsCohortDefinition inhDispensed = new CodedObsCohortDefinition();
+		inhDispensed.setName("isoniazid dispensed");
+		inhDispensed.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		inhDispensed.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		inhDispensed.setTimeModifier(PatientSetService.TimeModifier.LAST);
+		inhDispensed.setQuestion(Dictionary.getConcept(Dictionary.ISONIAZID_DISPENSED));
+		inhDispensed.setValueList(Arrays.asList(Dictionary.getConcept(Dictionary.YES)));
+		inhDispensed.setOperator(SetComparator.IN);
+
+		cd.addSearch("inhDispensed", ReportUtils.map(inhDispensed, "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("inhMedication", ReportUtils.map(commonCohorts.medicationDispensed(Dictionary.getConcept(Dictionary.ISONIAZID)), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("inhProphylaxis", ReportUtils.map(commonCohorts.hasObs(Dictionary.getConcept(Dictionary.PATIENT_REPORTED_CURRENT_TUBERCULOSIS_PROPHYLAXIS), Dictionary.getConcept(Dictionary.ISONIAZID_PROPHYLAXIS)), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("inhDispensed OR inhMedication OR inhProphylaxis");
+		return cd;
+	}
+
+	/**
+	 * Number of patients who have NOT had IPT within the last 2 years
+	 * Patients who have negative tb screen at last clinic visit during the 6 months review period
+	 * @return CohortDefinition
+	 */
+	public CohortDefinition patientsWhoHaveHadNoIptWithinLast2YearsTbNegativeDuring6MonthsReviewPeriod() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		Concept tbDiseaseStatus = Dictionary.getConcept(Dictionary.TUBERCULOSIS_DISEASE_STATUS);
+		Concept noSignsOrSymptoms = Dictionary.getConcept(Dictionary.NO_SIGNS_OR_SYMPTOMS_OF_DISEASE);
+		cd.setName("Patients with No IPT within 2 years and Tb Negative");
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addSearch("negativeTB", ReportUtils.map(commonCohorts.hasObs(tbDiseaseStatus, noSignsOrSymptoms), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("onIPT", ReportUtils.map(onINHProphylaxis(), "onOrAfter=${onOrBefore-24m},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("negativeTB AND NOT onIPT");
+		return  cd;
+	}
+
+	/**
+	 * Patients who meet criteria for nutritional support
+	 * Patients who received nutritional support
+	 * @return CohortDefinition
+	 */
+	public CohortDefinition patientsWhoMeetNutritionalSupportAtLastClinicVisit() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addSearch("meetNutritionCriteria", ReportUtils.map(patientsWhoMeetCriteriaForNutritionalSupport(), "onDate=${onOrBefore}"));
+		cd.addSearch("lastClinicVisit", ReportUtils.map(hadNutritionalAssessmentAtLastVisit(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("meetNutritionCriteria AND lastClinicVisit");
+		return  cd;
+	}
+
+	/**
+	 * Patients who meet criteria for nutritional support
+	 * BMI < 18.5 in adult or
+	 * MUAC < 23 cm
+	 */
+	public CohortDefinition patientsWhoMeetCriteriaForNutritionalSupport() {
+		CalculationCohortDefinition cd = new CalculationCohortDefinition(new PatientsWhoMeetCriteriaForNutritionalSupport());
+		cd.setName("Patients who meet criteria for nutritional support");
+		cd.addParameter(new Parameter("onDate", "onDate", Date.class));
+		return cd;
+	}
+
+	/**
+	 * patients who are HIV positive
+	 * Partners having at least hiv known positive known status
+	 * @return CohortDefinition
+	 */
+	public CohortDefinition hivPositivePatientsWhosePartnersAreHivPositive() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("inHivProgram", ReportUtils.map(commonCohorts.enrolled(MetadataUtils.existing(Program.class, HivMetadata._Program.HIV)), "enrolledOnOrBefore=${onOrBefore}"));
+		cd.addSearch("spousePartner", ReportUtils.map(commonCohorts.hasObs(Dictionary.getConcept(Dictionary.FAMILY_MEMBER), Dictionary.getConcept(Dictionary.PARTNER_OR_SPOUSE)), "onOrBefore=${onOrBefore}"));
+		cd.addSearch("hivPositivePartner", ReportUtils.map(commonCohorts.hasObs(Dictionary.getConcept(Dictionary.SIGN_SYMPTOM_PRESENT), Dictionary.getConcept(Dictionary.YES)), "onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("inHivProgram AND hivPositivePartner AND spousePartner");
+		return  cd;
+
+	}
+
+	/**
+	 *Hiv infected patients with at least one clinic visit during the six months review period
+	 * Have at least one partner
+	 * @return CohortDefinition
+	 */
+	public CohortDefinition hivPositivePatientsWithAtLeastOnePartner() {
+		EncounterType hivEnroll = MetadataUtils.existing(EncounterType.class, HivMetadata._EncounterType.HIV_ENROLLMENT);
+		EncounterType hivConsult = MetadataUtils.existing(EncounterType.class, HivMetadata._EncounterType.HIV_CONSULTATION);
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("inHivProgram", ReportUtils.map(commonCohorts.enrolled(MetadataUtils.existing(Program.class, HivMetadata._Program.HIV)), "enrolledOnOrBefore=${onOrBefore}"));
+		cd.addSearch("anyPartner", ReportUtils.map(commonCohorts.hasObs(Dictionary.getConcept(Dictionary.FAMILY_MEMBER), Dictionary.getConcept(Dictionary.PARTNER_OR_SPOUSE)), "onOrBefore=${onOrBefore}"));
+		cd.addSearch("atLeastOneHIVClinicalVisit", ReportUtils.map(commonCohorts.hasEncounter(hivEnroll, hivConsult), "onOrAfter=${onOrBefore},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("inHivProgram AND anyPartner AND atLeastOneHIVClinicalVisit");
+		return  cd;
+	}
+
+	/**
+	 * patients who are HIV positive
+	 * children having at least hiv known positive known status
+	 * @return CohortDefinition
+	 */
+	public CohortDefinition hivPositivePatientsWhoseChildrenAreHivPositive() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("inHivProgram", ReportUtils.map(commonCohorts.enrolled(MetadataUtils.existing(Program.class, HivMetadata._Program.HIV)), "enrolledOnOrBefore=${onOrBefore}"));
+		cd.addSearch("spousePartner", ReportUtils.map(commonCohorts.hasObs(Dictionary.getConcept(Dictionary.FAMILY_MEMBER), Dictionary.getConcept(Dictionary.CHILD)), "onOrBefore=${onOrBefore}"));
+		cd.addSearch("hivPositivePartner", ReportUtils.map(commonCohorts.hasObs(Dictionary.getConcept(Dictionary.SIGN_SYMPTOM_PRESENT), Dictionary.getConcept(Dictionary.YES)), "onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("inHivProgram AND hivPositivePartner AND spousePartner");
+		return  cd;
+
+	}
+
+	/**
+	 *Hiv infected patients with at least one clinic visit during the six months review period
+	 * Have at least one partner
+	 * @return CohortDefinition
+	 */
+	public CohortDefinition hivPositivePatientsWithAtLeastOneChildOrMinor() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		EncounterType hivEnroll = MetadataUtils.existing(EncounterType.class, HivMetadata._EncounterType.HIV_ENROLLMENT);
+		EncounterType hivConsult = MetadataUtils.existing(EncounterType.class, HivMetadata._EncounterType.HIV_CONSULTATION);
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addSearch("inHivProgram", ReportUtils.map(commonCohorts.enrolled(MetadataUtils.existing(Program.class, HivMetadata._Program.HIV)), "enrolledOnOrBefore=${onOrBefore}"));
+		cd.addSearch("anyChild", ReportUtils.map(commonCohorts.hasObs(Dictionary.getConcept(Dictionary.FAMILY_MEMBER), Dictionary.getConcept(Dictionary.CHILD)), "onOrBefore=${onOrBefore}"));
+		cd.addSearch("atLeastOneHIVClinicalVisit", ReportUtils.map(commonCohorts.hasEncounter(hivEnroll, hivConsult), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("inHivProgram AND anyChild AND atLeastOneHIVClinicalVisit");
+		return  cd;
+	}
 
 }

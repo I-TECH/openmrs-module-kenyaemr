@@ -117,4 +117,59 @@ public class QiIndicatorLibrary {
 				map(qiCohorts.hivInfectedNotOnTbTreatmentHaveAtLeastOneHivClinicalVisitDuring6Months(), "onOrAfter=${startDate},onOrBefore=${endDate}")
 		);
 	}
+
+	/**
+	 * patients eligible for IPT who were initiated on IPT
+	 * @return CohortIndicator
+	 */
+	public CohortIndicator patientsEligibleForIPTWhoWereInitiatedOnIPT() {
+		return cohortIndicator("TB IPT - Service Coverage",
+				map(qiCohorts.patientWithNegativeTbScreenWhoHaveNotHadIPT(), "onOrAfter=${endDate-24m},onOrBefore=${endDate}"),
+				map(qiCohorts.patientsWhoHaveHadNoIptWithinLast2YearsTbNegativeDuring6MonthsReviewPeriod(), "onOrAfter=${endDate-6},onOrBefore=${endDate}")
+		);
+	}
+
+	/**
+	 * Patients eligible for nutritional support and who received
+	 * @return  CohortIndicator
+	 */
+	public CohortIndicator patientsEligibleForNutritionalSupportAndWhoReceived() {
+		return cohortIndicator("Nutritional Support - Service Coverage",
+				map(qiCohorts.patientsWhoMeetCriteriaForNutritionalSupport(), "onDate=${endDate}"),
+				map(qiCohorts.patientsWhoMeetNutritionalSupportAtLastClinicVisit(), "onOrAfter=${endDate-6},onOrBefore=${endDate}")
+		);
+	}
+
+	/**
+	 * Partner testing - service coverage
+	 * @return CohortIndicator
+	 */
+	public CohortIndicator partnerTesting() {
+		return cohortIndicator("Partner Testing- Service Coverage",
+				map(qiCohorts.hivPositivePatientsWhosePartnersAreHivPositive(), "onOrBefore=${endDate}"),
+				map(qiCohorts.hivPositivePatientsWithAtLeastOnePartner(), "onOrAfter=${endDate-6m},onOrBefore=${endDate}")
+		);
+	}
+
+	/**
+	 * Children Testing - services coverage
+	 * @return CohortIndicator
+	 */
+	public CohortIndicator childrenTesting() {
+		return cohortIndicator("Children Testing- Service Coverage",
+				map(qiCohorts.hivPositivePatientsWhoseChildrenAreHivPositive(), "onOrBefore=${endDate}"),
+				map(qiCohorts.hivPositivePatientsWithAtLeastOneChildOrMinor(), "onOrAfter=${endDate-6m},onOrBefore=${endDate}")
+		);
+	}
+
+	/**
+	 * Reproductive Health family planning service coverage
+	 * @return CohortIndicator
+	 */
+	public CohortIndicator reproductiveHealthFamilyPlanning() {
+		return cohortIndicator("Reproductive Health - Service Coverage",
+				map(qiCohorts.hivPositivePatientsWhoseChildrenAreHivPositive(), "onOrBefore=${endDate}"),
+				map(qiCohorts.hivPositivePatientsWithAtLeastOneChildOrMinor(), "onOrAfter=${endDate-6m},onOrBefore=${endDate}")
+		);
+	}
 }
