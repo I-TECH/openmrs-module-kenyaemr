@@ -15,5 +15,5 @@
 
 <div class="ke-page-content">
     ${ ui.includeFragment("kenyaemr", "system/backupSummary") }
-    ${ ui.includeFragment("kenyaemr", "system/backupRestore",[ mysqlpassword: mysqlpassword])}
+    ${ ui.includeFragment("kenyaemr", "system/backupRestore") }
 </div>

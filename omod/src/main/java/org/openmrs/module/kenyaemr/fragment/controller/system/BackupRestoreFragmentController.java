@@ -211,7 +211,7 @@ public class BackupRestoreFragmentController {
      * @throws Exception
      */
 
-    public static String sc1() throws Exception {
+    public static String sc1(){
         try {
             JobDetail jobDetail = JobBuilder.newJob(ScheduledIncrementalBackups.class)
                     .withIdentity(cronJobID(), groupJobID())
@@ -220,7 +220,7 @@ public class BackupRestoreFragmentController {
             Trigger cronTrigger = TriggerBuilder
                     .newTrigger()
                     .withIdentity(dummyTriggerJobID(), groupJobID())
-                    .withSchedule(CronScheduleBuilder.cronSchedule("0 45 8,15,17 * * ?"))
+                    .withSchedule(CronScheduleBuilder.cronSchedule("0 20 8,18,17 * * ?"))
                     .build();
 
             SchedulerFactory schFactory = new StdSchedulerFactory();
@@ -236,7 +236,7 @@ public class BackupRestoreFragmentController {
         Trigger cronTrigger = TriggerBuilder
                 .newTrigger()
                 .withIdentity(dummyTriggerJobID(), groupJobID())
-                .withSchedule(CronScheduleBuilder.cronSchedule("0 45 8,15,17 * * ?"))
+                .withSchedule(CronScheduleBuilder.cronSchedule("0 20 8,18,17 * * ?"))
                 .build();
 
         Date nowtime = new Date();

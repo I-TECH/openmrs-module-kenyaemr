@@ -74,7 +74,7 @@ kenyaemrApp.controller('BackupSummary', ['$scope', '$http', '$timeout', function
         $http.get(ui.fragmentActionLink('kenyaemr', 'system/systemUtils', 'getBackupSummary', { appId: $scope.appId })).
             success(function(data) {
                 $scope.infos = data;
-                $timeout($scope.refresh, 90000);
+                $timeout($scope.refresh, 5000);
             });
     };
 }]);

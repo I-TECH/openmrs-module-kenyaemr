@@ -90,7 +90,7 @@ public class SystemUtilsFragmentController {
         List<SimpleObject> points = new ArrayList<SimpleObject>();
         points.add(SimpleObject.create("label", "Last Backup: (Date, Time)", "value", BackupRestoreFragmentController.lastBackup()));
         points.add(SimpleObject.create("label", "Backup Status: (Backup Failed / Successful)", "value", BackupRestoreFragmentController.backupStatus()));
-        points.add(SimpleObject.create("label", "Next Scheduled Backup: (Date, Time)", "value", BackupRestoreFragmentController.sc1()));
-        return points;
+	    points.add(SimpleObject.create("label", "Next Scheduled Backup: (Date, Time)", "value", BackupRestoreFragmentController.sc1()));
+	        return points;
     }
 }
