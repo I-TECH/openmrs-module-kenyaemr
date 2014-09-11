@@ -80,7 +80,7 @@ public class QiIndicatorLibrary {
 	 */
 	public CohortIndicator clinicalVisit() {
 		return cohortIndicator("Clinical Visit",
-				map(qiCohorts.inCareHasAtLeast2Visits(), "onDate=${endDate-6m}" ),
+				map(qiCohorts.inCareHasAtLeast2Visits(), "onOrBefore=${endDate-6m}" ),
 				map(qiCohorts.clinicalVisit(), "onOrAfter=${endDate-6m},onOrBefore=${endDate}" )
 		);
 	}
@@ -135,7 +135,7 @@ public class QiIndicatorLibrary {
 	 */
 	public CohortIndicator patientsEligibleForNutritionalSupportAndWhoReceived() {
 		return cohortIndicator("Nutritional Support - Service Coverage",
-				map(qiCohorts.patientsWhoMeetCriteriaForNutritionalSupport(), "onDate=${endDate}"),
+				map(qiCohorts.patientsWhoMeetCriteriaForNutritionalSupport(), "onOrBefore=${endDate}"),
 				map(qiCohorts.patientsWhoMeetNutritionalSupportAtLastClinicVisit(), "onOrBefore=${endDate}")
 		);
 	}

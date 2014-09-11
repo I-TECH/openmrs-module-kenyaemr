@@ -117,6 +117,6 @@ public class QiCohortLibraryTest extends BaseModuleContextSensitiveTest {
 		context.addParameterValue("onOrBefore", TestUtils.date(2012, 6, 30));
 		EvaluatedCohort cohort = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
 
-		ReportingTestUtils.assertCohortEquals(Arrays.asList(6, 7), cohort);
+		ReportingTestUtils.assertCohortEquals(Arrays.asList(7), cohort);
 	}
 }
