@@ -1,7 +1,6 @@
 /**
  * Configure search types
  */
-
 kenyaui.configureSearch('concept', {
 	searchProvider: 'kenyaemr',
 	searchFragment: 'search',
@@ -48,6 +47,7 @@ kenyaui.configureSearch('provider', {
 
 /**
  * Configure AngularJS
+ * kenyaemr depending on kenyaui
  */
 var kenyaemrApp = angular.module('kenyaemr', [ 'kenyaui' ]);
 
@@ -55,7 +55,156 @@ var kenyaemrApp = angular.module('kenyaemr', [ 'kenyaui' ]);
  * Utility methods
  */
 (function(kenyaemr, $) {
-	/**
+
+    jq(function () {
+        jq('#backup-database-form .mycheckbox').click(function () {
+            $(":checkbox").change(function(e){
+                $(this).val( $(":checked").length > 0 ? "true" : "false");
+            })
+        })
+    });
+
+kenyaemr.callDatabaseBackup = function() {
+
+//                function doFormSubmission(returnUrl) {
+//            kenyaui.openLoadingDialog({ heading: 'Backup', message: 'Database Backup...' });
+
+//            var form = $('#backup-database-form');
+
+            // Disable the submit button
+//            form.find('.backup-button').prop('disabled', true);
+
+
+            $.getJSON(ui.fragmentActionLink('kenyaemr', 'system/backupRestore', 'backupEnhancement'), function () {
+
+//                jQuery.post(form.attr('action'), form.serialize(), function (result2) {
+//                    if (result2.success) {
+//                        ui.disableConfirmBeforeNavigating();
+//
+//                        if (callback) {
+//                            ui.navigate(callback);
+//                        }
+//                        else {
+//                            ui.reloadPage();
+//                        }
+//                    }
+//                    else {
+//                        // Show errors on form
+//                        for (key in result2.errors) {
+//                            showError(key, result2.errors[key]);
+//                        }
+
+                        // Keep user on form page to fix errors
+//                        kenyaui.notifyError('Please fix all errors and resubmit');
+//                        kenyaui.closeDialog();
+//                        submitting = false;
+//                        $('#main_content').slideDown();
+
+
+                        // Re-enable the submit button
+//                        form.find('.backup-button').prop('disabled', false);
+                    })
+//                }, 'json')
+//                    .error(function (jqXHR, textStatus, errorThrown) {
+//                        window.alert('Unexpected error, please contact your System Administrator: ' + textStatus);
+//                        console.log(errorThrown);
+//                    });
+
+
+
+
+//                if (result.backupEnhanced) {
+//                kenyaui.notifySuccess('Database Backup Successful');
+////                kenyaui.notifyError('Please transfer the backup to external storage');
+////                kenyaui.openAlertDialog({message:$.getJSON(ui.fragmentActionLink('kenyaemr', 'backupRestore', 'successmessage', function (result){
+////                    lblMessage.setText("<html><font color='green'>Backup created successfully to <br>" + myFile + "/openmrs-" + strFilename + ".sql</font></html>");
+////
+////                }))})
+//                kenyaui.showCheckBox({ heading: 'Backup Successful', message: 'Database backup successful to: Location:',okIcon: '' });
+////                var checkbox = $( "#checkbox" );
+////                checkbox.val( checkbox[0].checked ? "true" : "false" );
+////                kenyaui.openDynamicDialog({ heading: 'View Form', url: contentUrl, width: 90, height: 90, scrolling: true });
+////                callback();
+//            }
+//            else {
+////                kenyaui.notifyError('Database-Backup Unsuccessful');
+//            }
+//        })
+    };
+
+//Database Restore
+    kenyaemr.callDatabaseRestore = function() {
+
+//                function doFormSubmission(returnUrl) {
+//        kenyaui.openLoadingDialog({ heading: 'Restore', message: 'Database Restore...' });
+//
+//        var form = $('#backup-database-form');
+//
+//        // Disable the submit button
+//        form.find('.restorebackup-button').prop('disabled', true);
+
+
+        $.getJSON(ui.fragmentActionLink('kenyaemr', 'system/backupRestore', 'restoreDatabase'), function () {
+
+//            jQuery.post(form.attr('action'), form.serialize(), function (result2) {
+//                if (result2.success) {
+//                    ui.disableConfirmBeforeNavigating();
+//
+//                    if (callback) {
+//                        ui.navigate(callback);
+//                    }
+//                    else {
+//                        ui.reloadPage();
+//                    }
+//                }
+//                else {
+//                    // Show errors on form
+//                    for (key in result2.errors) {
+//                        showError(key, result2.errors[key]);
+//                    }
+//
+//                    // Keep user on form page to fix errors
+////                        kenyaui.notifyError('Please fix all errors and resubmit');
+//                    kenyaui.closeDialog();
+//                    submitting = false;
+////                    $('#main_content').slideDown();
+//
+//                    // Re-enable the submit button
+//                    form.find('.restorebackup-button').prop('disabled', false);
+//                }
+////                }, 'json')
+////                    .error(function (jqXHR, textStatus, errorThrown) {
+////                        window.alert('Unexpected error, please contact your System Administrator: ' + textStatus);
+////                        console.log(errorThrown);
+//            });
+
+
+
+
+//            if (result.databaseRestored) {
+//                kenyaui.notifySuccess('Database Restore Successful');
+////                kenyaui.notifyError('Please transfer the backup to external storage');
+////                kenyaui.openAlertDialog({message:$.getJSON(ui.fragmentActionLink('kenyaemr', 'backupRestore', 'successmessage', function (result){
+////                    lblMessage.setText("<html><font color='green'>Backup created successfully to <br>" + myFile + "/openmrs-" + strFilename + ".sql</font></html>");
+////
+////                }))})
+//                kenyaui.showCheckBox({ heading: 'Backup Successful', message: 'Database backup successful to: Location:',okIcon: '' });
+////                var checkbox = $( "#checkbox" );
+////                checkbox.val( checkbox[0].checked ? "true" : "false" );
+////                kenyaui.openDynamicDialog({ heading: 'View Form', url: contentUrl, width: 90, height: 90, scrolling: true });
+//                callback();
+//            }
+//            else {
+////                kenyaui.notifyError('Database-Restore Unsuccessful');
+//            }
+        })
+    };
+
+
+
+
+
+    /**
 	 * Opens a dialog displaying the given encounter
 	 * @param appId the app id
 	 * @param encounterId the encounter id

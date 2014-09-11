@@ -46,7 +46,14 @@ public class EmrConstants {
 	public static final String GP_SUPPORT_EMAIL_ADDRESS = MODULE_ID + ".supportEmailAddress";
 	public static final String GP_EXTERNAL_HELP_URL = MODULE_ID + ".externalHelpUrl";
 
-	/**
+
+    public static final String GP_LAST_BACKUP = MODULE_ID + ".lastBackupDateTime";
+    public static final String GP_BACKUP_STATUS = MODULE_ID + ".backupStatus";
+    public static final String GP_NEXT_SCHEDULED_BACKUP = MODULE_ID + ".nextScheduledBackup";
+    public static final String GP_MYSQL_DETAILS = MODULE_ID + ".mysqlDetails";
+
+
+    /**
 	 * Default global property values
 	 */
 	public static final String DEFAULT_SUPPORT_PHONE_NUMBER = "0800720701";

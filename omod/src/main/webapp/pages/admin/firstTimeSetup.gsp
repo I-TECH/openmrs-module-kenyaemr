@@ -49,10 +49,11 @@
 
 		<div class="ke-panel-content">
 			<form id="settings-form" action="${ ui.pageLink("kenyaemr", "admin/firstTimeSetup") }">
+
 				<% if (defaultLocation) { %>
 					<div class="ke-warning" style="margin-bottom: 5px">Ensure that all visits are closed before changing the default location</div>
 				<% } %>
-
+                <input type="password" name="mysqlDetails" class="mysqlDetails" style="width: 200px" />
 				<% fields.each { %>
 				${ ui.includeFragment("kenyaui", "widget/labeledField", it) }
 				<% } %>

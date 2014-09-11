@@ -1,6 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
+
 	<groupId>org.openmrs.module</groupId>
 	<artifactId>kenyaemr</artifactId>
 	<version>14.2-SNAPSHOT</version>
@@ -57,6 +58,47 @@
 
 	<dependencies>
 		<!-- Begin OpenMRS modules -->
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>1.7.1</version>
+        </dependency>
+
+        <!--<dependency>-->
+            <!--<groupId>com.googlecode.json-simple</groupId>-->
+            <!--<artifactId>json-simple</artifactId>-->
+            <!--<version>1.1</version>-->
+        <!--</dependency>-->
+
+        <dependency>
+            <groupId>org.quartz-scheduler</groupId>
+            <artifactId>quartz</artifactId>
+            <version>2.2.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.quartz-scheduler</groupId>
+            <artifactId>quartz-jobs</artifactId>
+            <version>2.2.1</version>
+        </dependency>
+
+        <!-- Log4j library -->
+
+        <!--<dependency>-->
+            <!--<groupId>log4j</groupId>-->
+            <!--<artifactId>log4j</artifactId>-->
+            <!--<version>1.2.16</version>-->
+        <!--</dependency>-->
+
+
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>3.9</version>
+            <!--<version>${openMRSVersion}</version>-->
+            <type>jar</type>
+            <scope>provided</scope>
+        </dependency>
 
 		<dependency>
 			<groupId>org.openmrs.module</groupId>
@@ -260,6 +302,20 @@
 	<build>
 		<pluginManagement>
 			<plugins>
+
+
+
+                            <!--<plugin>-->
+                                <!--<groupId>org.apache.maven.plugins</groupId>-->
+                                <!--<artifactId>maven-surefire-plugin</artifactId>-->
+                                <!--<version>2.17</version>-->
+                                <!--<configuration>-->
+                                    <!--<includes>-->
+                                        <!--<!-<include>Sample.java</include>-->
+                                    <!--</includes>-->
+                                <!--</configuration>-->
+                            <!--</plugin>-->
+
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
