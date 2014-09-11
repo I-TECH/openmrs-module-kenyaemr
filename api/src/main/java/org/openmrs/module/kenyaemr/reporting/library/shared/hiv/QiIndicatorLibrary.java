@@ -70,7 +70,7 @@ public class QiIndicatorLibrary {
 	public CohortIndicator artInitiation() {
 		return cohortIndicator("ART Initiation",
 				map(artCohorts.startedArt(), "onOrAfter=${endDate-6m},onOrBefore=${endDate}" ),
-				map(qiCohorts.hivInfectedAndNotOnARTAndHasHivClinicalVisit(), "onOrAfter=${startDate}" )
+				map(qiCohorts.hivInfectedAndNotOnARTAndHasHivClinicalVisit(), "onOrAfter=${endDate-6m},onOrBefore=${endDate}" )
 				);
 	}
 
@@ -81,7 +81,7 @@ public class QiIndicatorLibrary {
 	public CohortIndicator clinicalVisit() {
 		return cohortIndicator("Clinical Visit",
 				map(qiCohorts.inCareHasAtLeast2Visits(), "onDate=${endDate-6m}" ),
-				map(qiCohorts.clinicalVisit(), "onOrAfter=${startDate},onOrBefore=${endDate}" )
+				map(qiCohorts.clinicalVisit(), "onOrAfter=${endDate-6m},onOrBefore=${endDate}" )
 		);
 	}
 
@@ -92,7 +92,7 @@ public class QiIndicatorLibrary {
 	public CohortIndicator hivMonitoringViralLoad() {
 		return cohortIndicator("HIV Monitoring - Viral Load",
 				map(qiCohorts.onARTatLeast12MonthsAndHaveAtLeastVLResultsDuringTheLast12Months(), "onOrBefore=${endDate}" ),
-				map(qiCohorts.onARTatLeast12MonthsAndHaveAtLeastOneVisitDuringTheLast6MonthsReview(), "onOrAfter=${startDate},onOrBefore=${endDate}" )
+				map(qiCohorts.onARTatLeast12MonthsAndHaveAtLeastOneVisitDuringTheLast6MonthsReview(), "onOrAfter=${endDate-6m},onOrBefore=${endDate}" )
 		);
 	}
 
@@ -114,7 +114,7 @@ public class QiIndicatorLibrary {
 	public CohortIndicator tbScreeningServiceCoverage() {
 		return cohortIndicator("Tb screening - Service Coverage",
 				map(tbCohorts.screenedForTb(), "onOrAfter=${endDate-6m},onOrBefore=${endDate}"),
-				map(qiCohorts.hivInfectedNotOnTbTreatmentHaveAtLeastOneHivClinicalVisitDuring6Months(), "onOrAfter=${startDate},onOrBefore=${endDate}")
+				map(qiCohorts.hivInfectedNotOnTbTreatmentHaveAtLeastOneHivClinicalVisitDuring6Months(), "onOrAfter=${endDate-6m},onOrBefore=${endDate}")
 		);
 	}
 
@@ -136,7 +136,7 @@ public class QiIndicatorLibrary {
 	public CohortIndicator patientsEligibleForNutritionalSupportAndWhoReceived() {
 		return cohortIndicator("Nutritional Support - Service Coverage",
 				map(qiCohorts.patientsWhoMeetCriteriaForNutritionalSupport(), "onDate=${endDate}"),
-				map(qiCohorts.patientsWhoMeetNutritionalSupportAtLastClinicVisit(), "onOrAfter=${endDate-6},onOrBefore=${endDate}")
+				map(qiCohorts.patientsWhoMeetNutritionalSupportAtLastClinicVisit(), "onOrBefore=${endDate}")
 		);
 	}
 
@@ -157,7 +157,7 @@ public class QiIndicatorLibrary {
 	 */
 	public CohortIndicator childrenTesting() {
 		return cohortIndicator("Children Testing- Service Coverage",
-				map(qiCohorts.hivPositivePatientsWhoseChildrenAreHivPositive(), "onOrBefore=${endDate}"),
+				map(qiCohorts.hivPositivePatientsWhoseChildrenAreHivPositive(), "onOrAfter=${endDate-6m},onOrBefore=${endDate}"),
 				map(qiCohorts.hivPositivePatientsWithAtLeastOneChildOrMinor(), "onOrAfter=${endDate-6m},onOrBefore=${endDate}")
 		);
 	}
@@ -168,8 +168,8 @@ public class QiIndicatorLibrary {
 	 */
 	public CohortIndicator reproductiveHealthFamilyPlanning() {
 		return cohortIndicator("Reproductive Health - Service Coverage",
-				map(qiCohorts.hivPositivePatientsWhoseChildrenAreHivPositive(), "onOrBefore=${endDate}"),
-				map(qiCohorts.hivPositivePatientsWithAtLeastOneChildOrMinor(), "onOrAfter=${endDate-6m},onOrBefore=${endDate}")
+				map(qiCohorts.nonPregnantWomen15To49YearsOnModernContraceptives(), "onOrAfter=${endDate-6m},onOrBefore=${endDate}"),
+				map(qiCohorts.nonPregnantWomen15To49YearsWithAtLeastOneHivClinicalVisit(), "onOrAfter=${endDate-6m},onOrBefore=${endDate}")
 		);
 	}
 }

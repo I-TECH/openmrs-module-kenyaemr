@@ -54,13 +54,16 @@ public class QiCohortLibrary {
 	private CommonCohortLibrary commonCohorts;
 
 	@Autowired
-	ArtCohortLibrary artCohortLibrary;
+	private ArtCohortLibrary artCohortLibrary;
 
 	@Autowired
-	Moh731CohortLibrary moh731CohortLibrary;
+	private Moh731CohortLibrary moh731CohortLibrary;
 
 	@Autowired
-	HivCohortLibrary hivCohortLibrary;
+	private HivCohortLibrary hivCohortLibrary;
+
+	@Autowired
+	private PwpCohortLibrary pwpCohortLibrary;
 
 	public CohortDefinition hadNutritionalAssessmentAtLastVisit() {
 		Concept weight = Dictionary.getConcept(Dictionary.WEIGHT_KG);
@@ -93,15 +96,13 @@ public class QiCohortLibrary {
 	}
 
 	public CohortDefinition hivInfectedAndNotOnARTAndHasHivClinicalVisit() {
-		EncounterType hivEnroll = MetadataUtils.existing(EncounterType.class, HivMetadata._EncounterType.HIV_ENROLLMENT);
-		EncounterType hivConsult = MetadataUtils.existing(EncounterType.class, HivMetadata._EncounterType.HIV_CONSULTATION);
 		CompositionCohortDefinition cd =new CompositionCohortDefinition();
 		cd.setName("Not on ART with at least one HIV clinical Visit");
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
-		cd.addSearch("atLeastOneHIVClinicalVisit", ReportUtils.map(commonCohorts.hasEncounter(hivEnroll, hivConsult), "onOrAfter=${onOrAfter-6m},onOrBefore=${onOrBefore}"));
-		cd.addSearch("eligibleForART", ReportUtils.map(artCohortLibrary.eligibleForArt(), "onDate=${onOrAfter-6m}"));
-		cd.setCompositionString("atLeastOneHIVClinicalVisit AND eligibleForART");
+		cd.addSearch("hasVisits", ReportUtils.map(hivCohortLibrary.hasHivVisit(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("eligibleForART", ReportUtils.map(artCohortLibrary.eligibleForArt(), "onDate=${onOrBefore}"));
+		cd.setCompositionString("hasVisits AND eligibleForART");
 		return cd;
 	}
 
@@ -119,15 +120,13 @@ public class QiCohortLibrary {
 	 *
 	 */
 	public CohortDefinition clinicalVisit() {
-		EncounterType hivEnroll = MetadataUtils.existing(EncounterType.class, HivMetadata._EncounterType.HIV_ENROLLMENT);
-		EncounterType hivConsult = MetadataUtils.existing(EncounterType.class, HivMetadata._EncounterType.HIV_CONSULTATION);
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.setName("in care and has a visit during 6 months review period");
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addSearch("inCare", ReportUtils.map(moh731CohortLibrary.currentlyInCare(), "onDate=${onOrBefore}"));
-		cd.addSearch("atLeastOneHIVClinicalVisit", ReportUtils.map(commonCohorts.hasEncounter(hivEnroll, hivConsult), "onOrAfter=${onOrBefore-6m},onOrBefore=${onOrBefore}"));
-		cd.setCompositionString("inCare AND atLeastOneHIVClinicalVisit");
+		cd.addSearch("hasVisit", ReportUtils.map(hivCohortLibrary.hasHivVisit(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("inCare AND hasVisit");
 		return cd;
 	}
 
@@ -187,7 +186,7 @@ public class QiCohortLibrary {
 
 		//find the <1000 copies of recent obs
 		NumericObsCohortDefinition cdVlLess1000 = new NumericObsCohortDefinition();
-		cdVlLess1000.setName("less1000Copies");
+		cdVlLess1000.setName("Less than 1000 Copies");
 		cdVlLess1000.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cdVlLess1000.setQuestion(Dictionary.getConcept(Dictionary.HIV_VIRAL_LOAD));
 		cdVlLess1000.setOperator1(RangeComparator.LESS_THAN);
@@ -196,6 +195,7 @@ public class QiCohortLibrary {
 
 
 		compositionCohortDefinition.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		compositionCohortDefinition.setName("Number of patients on ART for at least 12 months and VL < 1000 copies");
 		compositionCohortDefinition.setName("onARTatLeast12MonthsAndVlLess1000");
 		compositionCohortDefinition.addSearch("onART12Months", ReportUtils.map(artCohortLibrary.netCohortMonths(12), "onDate=${onOrBefore}"));
 		compositionCohortDefinition.addSearch("vlLess1000", ReportUtils.map(cdVlLess1000, "onOrBefore=${onOrBefore}"));
@@ -214,12 +214,13 @@ public class QiCohortLibrary {
 
 		//find the <1000 copies of recent obs
 		NumericObsCohortDefinition atLeastVlResults = new NumericObsCohortDefinition();
-		atLeastVlResults.setName("atLeastOneVlResults");
+		atLeastVlResults.setName("At least one VL results");
 		atLeastVlResults.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		atLeastVlResults.setQuestion(Dictionary.getConcept(Dictionary.HIV_VIRAL_LOAD));
 		atLeastVlResults.setTimeModifier(TimeModifier.ANY);
 
 		compositionCohortDefinition.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		compositionCohortDefinition.setName("Number of patients on ART for at least 12 and have one VL results");
 		compositionCohortDefinition.setName("onARTatLeast12MonthsAndAtLeastVlResults");
 		compositionCohortDefinition.addSearch("onART12Months", ReportUtils.map(artCohortLibrary.netCohortMonths(12), "onDate=${onOrBefore}"));
 		compositionCohortDefinition.addSearch("atLeastOneVlResults", ReportUtils.map(atLeastVlResults, "onOrBefore=${onOrBefore}"));
@@ -243,11 +244,12 @@ public class QiCohortLibrary {
 		onTbTreatment.setTimeModifier(TimeModifier.LAST);
 
 		CompositionCohortDefinition compositionCohortDefinition = new CompositionCohortDefinition();
+		compositionCohortDefinition.setName("in HIV has clinic and NOT in TB");
 		compositionCohortDefinition.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		compositionCohortDefinition.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		compositionCohortDefinition.addSearch("inHivProgram", ReportUtils.map(hivCohortLibrary.enrolled()));
-		compositionCohortDefinition.addSearch("onTbTreatment", ReportUtils.map(onTbTreatment, "onOrAfter=${onOrBefore-6},onOrBefore=${onOrBefore}"));
-		compositionCohortDefinition.addSearch("hasHivClinicalVisit", ReportUtils.map(clinicalVisit(), "onOrAfter=${onOrBefore-6},onOrBefore=${onOrBefore}"));
+		compositionCohortDefinition.addSearch("onTbTreatment", ReportUtils.map(onTbTreatment, "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		compositionCohortDefinition.addSearch("hasHivClinicalVisit", ReportUtils.map(clinicalVisit(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
 		compositionCohortDefinition.setCompositionString("(inHivProgram AND hasHivClinicalVisit) AND NOT onTbTreatment");
 		return compositionCohortDefinition;
 	}
@@ -290,6 +292,7 @@ public class QiCohortLibrary {
 		inhDispensed.setValueList(Arrays.asList(Dictionary.getConcept(Dictionary.YES)));
 		inhDispensed.setOperator(SetComparator.IN);
 
+		cd.setName("Formulation of INH");
 		cd.addSearch("inhDispensed", ReportUtils.map(inhDispensed, "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
 		cd.addSearch("inhMedication", ReportUtils.map(commonCohorts.medicationDispensed(Dictionary.getConcept(Dictionary.ISONIAZID)), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
 		cd.addSearch("inhProphylaxis", ReportUtils.map(commonCohorts.hasObs(Dictionary.getConcept(Dictionary.PATIENT_REPORTED_CURRENT_TUBERCULOSIS_PROPHYLAXIS), Dictionary.getConcept(Dictionary.ISONIAZID_PROPHYLAXIS)), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
@@ -322,10 +325,11 @@ public class QiCohortLibrary {
 	 */
 	public CohortDefinition patientsWhoMeetNutritionalSupportAtLastClinicVisit() {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("Patients who meet nutritional assessment and received nutritional support");
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addSearch("meetNutritionCriteria", ReportUtils.map(patientsWhoMeetCriteriaForNutritionalSupport(), "onDate=${onOrBefore}"));
-		cd.addSearch("lastClinicVisit", ReportUtils.map(hadNutritionalAssessmentAtLastVisit(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("lastClinicVisit", ReportUtils.map(hadNutritionalAssessmentAtLastVisit(), "onOrBefore=${onOrBefore}"));
 		cd.setCompositionString("meetNutritionCriteria AND lastClinicVisit");
 		return  cd;
 	}
@@ -349,6 +353,7 @@ public class QiCohortLibrary {
 	 */
 	public CohortDefinition hivPositivePatientsWhosePartnersAreHivPositive() {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("Hiv positive with a partner who is positive");
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.addSearch("inHivProgram", ReportUtils.map(commonCohorts.enrolled(MetadataUtils.existing(Program.class, HivMetadata._Program.HIV)), "enrolledOnOrBefore=${onOrBefore}"));
 		cd.addSearch("spousePartner", ReportUtils.map(commonCohorts.hasObs(Dictionary.getConcept(Dictionary.FAMILY_MEMBER), Dictionary.getConcept(Dictionary.PARTNER_OR_SPOUSE)), "onOrBefore=${onOrBefore}"));
@@ -364,14 +369,14 @@ public class QiCohortLibrary {
 	 * @return CohortDefinition
 	 */
 	public CohortDefinition hivPositivePatientsWithAtLeastOnePartner() {
-		EncounterType hivEnroll = MetadataUtils.existing(EncounterType.class, HivMetadata._EncounterType.HIV_ENROLLMENT);
-		EncounterType hivConsult = MetadataUtils.existing(EncounterType.class, HivMetadata._EncounterType.HIV_CONSULTATION);
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("Hiv positive with at least one partner");
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addSearch("inHivProgram", ReportUtils.map(commonCohorts.enrolled(MetadataUtils.existing(Program.class, HivMetadata._Program.HIV)), "enrolledOnOrBefore=${onOrBefore}"));
 		cd.addSearch("anyPartner", ReportUtils.map(commonCohorts.hasObs(Dictionary.getConcept(Dictionary.FAMILY_MEMBER), Dictionary.getConcept(Dictionary.PARTNER_OR_SPOUSE)), "onOrBefore=${onOrBefore}"));
-		cd.addSearch("atLeastOneHIVClinicalVisit", ReportUtils.map(commonCohorts.hasEncounter(hivEnroll, hivConsult), "onOrAfter=${onOrBefore},onOrBefore=${onOrBefore}"));
-		cd.setCompositionString("inHivProgram AND anyPartner AND atLeastOneHIVClinicalVisit");
+		cd.addSearch("hasVisits", ReportUtils.map(hivCohortLibrary.hasHivVisit(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("inHivProgram AND anyPartner AND hasVisits");
 		return  cd;
 	}
 
@@ -382,31 +387,75 @@ public class QiCohortLibrary {
 	 */
 	public CohortDefinition hivPositivePatientsWhoseChildrenAreHivPositive() {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("Hiv infected and children Hiv Positive");
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addSearch("inHivProgram", ReportUtils.map(commonCohorts.enrolled(MetadataUtils.existing(Program.class, HivMetadata._Program.HIV)), "enrolledOnOrBefore=${onOrBefore}"));
-		cd.addSearch("spousePartner", ReportUtils.map(commonCohorts.hasObs(Dictionary.getConcept(Dictionary.FAMILY_MEMBER), Dictionary.getConcept(Dictionary.CHILD)), "onOrBefore=${onOrBefore}"));
-		cd.addSearch("hivPositivePartner", ReportUtils.map(commonCohorts.hasObs(Dictionary.getConcept(Dictionary.SIGN_SYMPTOM_PRESENT), Dictionary.getConcept(Dictionary.YES)), "onOrBefore=${onOrBefore}"));
-		cd.setCompositionString("inHivProgram AND hivPositivePartner AND spousePartner");
+		cd.addSearch("child", ReportUtils.map(commonCohorts.hasObs(Dictionary.getConcept(Dictionary.FAMILY_MEMBER), Dictionary.getConcept(Dictionary.CHILD)), "onOrBefore=${onOrBefore}"));
+		cd.addSearch("hivPositiveChild", ReportUtils.map(commonCohorts.hasObs(Dictionary.getConcept(Dictionary.SIGN_SYMPTOM_PRESENT), Dictionary.getConcept(Dictionary.YES)), "onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("inHivProgram AND hivPositiveChild AND child");
 		return  cd;
 
 	}
 
 	/**
 	 *Hiv infected patients with at least one clinic visit during the six months review period
-	 * Have at least one partner
+	 * Have at least one child
 	 * @return CohortDefinition
 	 */
 	public CohortDefinition hivPositivePatientsWithAtLeastOneChildOrMinor() {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
-		EncounterType hivEnroll = MetadataUtils.existing(EncounterType.class, HivMetadata._EncounterType.HIV_ENROLLMENT);
-		EncounterType hivConsult = MetadataUtils.existing(EncounterType.class, HivMetadata._EncounterType.HIV_CONSULTATION);
+		cd.setName("Hiv positive with at least one child");
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addSearch("inHivProgram", ReportUtils.map(commonCohorts.enrolled(MetadataUtils.existing(Program.class, HivMetadata._Program.HIV)), "enrolledOnOrBefore=${onOrBefore}"));
 		cd.addSearch("anyChild", ReportUtils.map(commonCohorts.hasObs(Dictionary.getConcept(Dictionary.FAMILY_MEMBER), Dictionary.getConcept(Dictionary.CHILD)), "onOrBefore=${onOrBefore}"));
-		cd.addSearch("atLeastOneHIVClinicalVisit", ReportUtils.map(commonCohorts.hasEncounter(hivEnroll, hivConsult), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
-		cd.setCompositionString("inHivProgram AND anyChild AND atLeastOneHIVClinicalVisit");
+		cd.addSearch("hasVisits", ReportUtils.map(hivCohortLibrary.hasHivVisit(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("inHivProgram AND anyChild AND hasVisits");
 		return  cd;
+	}
+
+	/**
+	 * Patients of HIV-infected non pregnant women aged 15-49 years
+	 * Patients on modern contraceptives during the review period
+	 * @return CohortDefinition
+	 */
+	public CohortDefinition nonPregnantWomen15To49YearsOnModernContraceptives() {
+		Concept notPregnant = Dictionary.getConcept(Dictionary.NO);
+		Concept pregnancyStatus = Dictionary.getConcept(Dictionary.PREGNANCY_STATUS);
+
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("Non pregnant 15 to 49 years on modern contraceptives");
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addSearch("inHivProgram", ReportUtils.map(commonCohorts.enrolled(MetadataUtils.existing(Program.class, HivMetadata._Program.HIV)), "enrolledOnOrBefore=${onOrBefore}"));
+		cd.addSearch("notPregnant", ReportUtils.map(commonCohorts.hasObs(pregnancyStatus, notPregnant), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("above15Years", ReportUtils.map(commonCohorts.agedAtLeast(15), "effectiveDate=${onOrBefore}"));
+		cd.addSearch("below49Years", ReportUtils.map(commonCohorts.agedAtMost(49), "effectiveDate=${onOrBefore}"));
+		cd.addSearch("onModernContraceptives", ReportUtils.map(pwpCohortLibrary.modernContraceptivesProvided(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("inHivProgram AND notPregnant AND above15Years AND below49Years AND onModernContraceptives");
+		return cd;
+	}
+
+	/**
+	 * Patients who are hiv positive 15 to 49 years
+	 * have at least one hiv clinical visit during the 6 months review period
+	 * @return CohortDefinition
+	 */
+	public CohortDefinition nonPregnantWomen15To49YearsWithAtLeastOneHivClinicalVisit() {
+		Concept notPregnant = Dictionary.getConcept(Dictionary.NO);
+		Concept pregnancyStatus = Dictionary.getConcept(Dictionary.PREGNANCY_STATUS);
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("Non pregnant 15 to 49 years with at least one hiv clinical visit");
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addSearch("inHivProgram", ReportUtils.map(commonCohorts.enrolled(MetadataUtils.existing(Program.class, HivMetadata._Program.HIV)), "enrolledOnOrBefore=${onOrBefore}"));
+		cd.addSearch("notPregnant", ReportUtils.map(commonCohorts.hasObs(pregnancyStatus, notPregnant), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("above15Years", ReportUtils.map(commonCohorts.agedAtLeast(15), "effectiveDate=${onOrBefore}"));
+		cd.addSearch("below49Years", ReportUtils.map(commonCohorts.agedAtMost(49), "effectiveDate=${onOrBefore}"));
+		cd.addSearch("hasVisits", ReportUtils.map(hivCohortLibrary.hasHivVisit(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("inHivProgram AND notPregnant AND above15Years AND below49Years AND hasVisits");
+		return cd;
 	}
 
 }
