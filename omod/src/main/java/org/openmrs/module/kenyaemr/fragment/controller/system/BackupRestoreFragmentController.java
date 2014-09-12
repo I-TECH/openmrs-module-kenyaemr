@@ -1,11 +1,8 @@
 package org.openmrs.module.kenyaemr.fragment.controller.system;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.openmrs.GlobalProperty;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
-import org.openmrs.api.db.AdministrationDAO;
 import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.module.kenyaemr.security.Decryption;
@@ -16,6 +13,7 @@ import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -38,35 +36,29 @@ import java.util.zip.ZipOutputStream;
 /**
  * Created by agnes on 7/9/14.
  */
-//@Controller
+@Controller
 @Component
 @AppPage(EmrConstants.APP_ADMIN)
 public class BackupRestoreFragmentController {
-    private static Log log = LogFactory.getLog(BackupRestoreFragmentController.class);
 
     @Autowired
     private KenyaUiUtils kenyaUiUtils;
-    protected AdministrationDAO dao;
     public static String strFilename;
-    static HttpSession session;
 
     public void controller(){
+	    nextScheduledBackup();
     }
 
     public static String decryptMysqlDetails() {
         final String iv = "0123456789abcdef"; // This has to be 16 characters
         final String secretKey = "Replace this by your secret key";
-//        final MD5 decryption = new MD5();
         String mysqlDetails = Context.getService(KenyaEmrService.class).getMysqlDetails();
 
         final String decryptedDatas = Decryption.decrypt(mysqlDetails, iv, secretKey);
-        System.out.println(decryptedDatas);
         return decryptedDatas;
     }
 
-
-
-    public static String backupEnhancement() throws Exception {
+    public static String backupEnhancement(@SpringBean KenyaUiUtils kenyaUi, HttpSession httpSession) throws Exception {
         Context.openSession();
         Location location = Context.getService(KenyaEmrService.class).getDefaultLocation();
         String defaultLocation = location.getName().replaceAll("\\s", "_");
@@ -76,7 +68,6 @@ public class BackupRestoreFragmentController {
         strFilename = dateFormat.format(now);
 
         JFileChooser chooser = new JFileChooser();
-        String userHome = System.getProperty("user.home");
         chooser.setCurrentDirectory(new java.io.File("."));
         chooser.setDialogTitle("Select Backup Location");
         chooser.setPreferredSize(new Dimension(800, 600));
@@ -85,18 +76,15 @@ public class BackupRestoreFragmentController {
         chooser.setAcceptAllFileFilterUsed(false);
 
         if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-            System.out.println("getCurrentDirectory(): " + chooser.getCurrentDirectory());
-            System.out.println("getSelectedFile() : " + chooser.getSelectedFile());
             String dir = (chooser.getSelectedFile().toString());
 
             String mysqlDetails = decryptMysqlDetails();
-            System.out.println("The password in db is:"+mysqlDetails);
             String command = ("mysqldump -uroot -p"+mysqlDetails+" backuptest -r" + dir + "/" + defaultLocation + "-" + strFilename + ".sql");
 
 
 /**
  * Save Last BackupDate/Time; Last Backup Status values to the database.
- * Install the global property as in EmrConstants, Common Metadata, CoreConstructors.java
+ * Install the global property
  * processComplete==0 when backup process is successful
  * Save backups in zip format
  */
@@ -108,7 +96,7 @@ public class BackupRestoreFragmentController {
                 p = runtime.exec(command);
                 int processComplete = p.waitFor();
                 if (processComplete == 0) {
-//                    kenyaUi.notifySuccess(session,"Database Backup Successful");
+                    kenyaUi.notifySuccess(httpSession,"Database Backup Successful");
 
                     byte[] buffer = new byte[1024];
                     String srcFilename = (dir + "/" + defaultLocation + "-" + strFilename + ".sql");
@@ -138,7 +126,7 @@ public class BackupRestoreFragmentController {
                         e.printStackTrace();
                     }
 /**
- *Save the values upon successful backup ie: date and time of last backup; Backup status: successful
+ *Save the values upon successful backup ie: date and time of last backup; Backup status: successful/failed
  */
                     Context.openSession();
                     GlobalProperty lastBackupGP = new GlobalProperty(EmrConstants.GP_LAST_BACKUP, strFilename);
@@ -169,23 +157,22 @@ public class BackupRestoreFragmentController {
                     Context.getAdministrationService().getGlobalPropertyObject(backupFailedGP.toString());
                     Context.getAdministrationService().saveGlobalProperty(backupFailedGP);
 
-//                    kenyaUi.notifyError(session, "Database Backup Failed");
+                    kenyaUi.notifyError(httpSession, "Database Backup Failed");
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
-//            kenyaUi.notifySuccess(session, "Database Backup Successful");
+            kenyaUi.notifySuccess(httpSession, "Database Backup Successful");
 
         } else {
-//            kenyaUi.notifyError(session, "No backup destination folder selected");
-            System.out.println("No Selection ");
+            kenyaUi.notifyError(httpSession, "No backup destination folder selected");
         }
         return null;
     }
 
 
     /**
-     * Generate UUID for random naming of jobs.
+     * Generate UUID for random naming of cron jobs.
      */
 
     public static String cronJobID(){
@@ -193,7 +180,7 @@ public class BackupRestoreFragmentController {
         return cronID;
     }
 
-    public static String dummyTriggerJobID(){
+    public static String TriggerJobID(){
         String cronID = UUID.randomUUID().toString();
         return cronID;
     }
@@ -207,11 +194,11 @@ public class BackupRestoreFragmentController {
      * method to schedule backups using quartz scheduler
      * displays next schedule date/time in the backup summary fragment
      *
-     * @return
-     * @throws Exception
+     * @return the nextscheduled backup date/time
+     *
      */
 
-    public static String sc1(){
+    public static String nextScheduledBackup(){
         try {
             JobDetail jobDetail = JobBuilder.newJob(ScheduledIncrementalBackups.class)
                     .withIdentity(cronJobID(), groupJobID())
@@ -219,8 +206,10 @@ public class BackupRestoreFragmentController {
 
             Trigger cronTrigger = TriggerBuilder
                     .newTrigger()
-                    .withIdentity(dummyTriggerJobID(), groupJobID())
-                    .withSchedule(CronScheduleBuilder.cronSchedule("0 20 8,18,17 * * ?"))
+                    .withIdentity(TriggerJobID(), groupJobID())
+                    .withSchedule(CronScheduleBuilder.cronSchedule("0 46 9,11,19 * * ?")
+		                    .withMisfireHandlingInstructionFireAndProceed())
+		            .startNow()
                     .build();
 
             SchedulerFactory schFactory = new StdSchedulerFactory();
@@ -235,8 +224,10 @@ public class BackupRestoreFragmentController {
 
         Trigger cronTrigger = TriggerBuilder
                 .newTrigger()
-                .withIdentity(dummyTriggerJobID(), groupJobID())
-                .withSchedule(CronScheduleBuilder.cronSchedule("0 20 8,18,17 * * ?"))
+                .withIdentity(TriggerJobID(), groupJobID())
+                .withSchedule(CronScheduleBuilder.cronSchedule("0 46 9,11,19 * * ?")
+		                .withMisfireHandlingInstructionFireAndProceed())
+		        .startNow()
                 .build();
 
         Date nowtime = new Date();
@@ -287,7 +278,6 @@ public class BackupRestoreFragmentController {
      */
     public void restoreDatabase(@SpringBean KenyaUiUtils kenyaUi, HttpSession httpSession, HttpServletRequest request) {
         Context.openSession();
-        Location location = Context.getService(KenyaEmrService.class).getDefaultLocation();
         JFileChooser fc = new JFileChooser();
 
         fc.setDialogTitle("Select Database Restore File");
@@ -302,11 +292,8 @@ public class BackupRestoreFragmentController {
             String myFile = (fc.getSelectedFile().toString());
             String myFolder = fc.getCurrentDirectory().toString();
 
-
             String INPUT_ZIP_FILE = myFile;
-            System.out.println("one" + INPUT_ZIP_FILE);
             String OUTPUT_FOLDER = myFolder;
-            System.out.println("two" + OUTPUT_FOLDER);
 
             byte[] buffer = new byte[1024];
             try {
@@ -319,9 +306,7 @@ public class BackupRestoreFragmentController {
                 while (ze != null) {
                     String fileName = ze.getName();
                     File newFile = new File(OUTPUT_FOLDER + File.separator + fileName);
-                    System.out.println("file unzip : " + newFile.getAbsoluteFile());
-                    //create all non exists folders
-                    //else you will hit FileNotFoundException for compressed folder
+
                     new File(newFile.getParent()).mkdirs();
                     FileOutputStream fos = new FileOutputStream(newFile);
                     int len;
@@ -333,20 +318,13 @@ public class BackupRestoreFragmentController {
                     zis.closeEntry();
                     zis.close();
 
-
-                    Date now = new Date();
-                    SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy_HH:mm:ss");
-                    //File file = new File(dateFormat.format(now));
-                    String strFilename = dateFormat.format(now);
-                    System.out.println(strFilename);
+	                String mysqlDetails = decryptMysqlDetails();
                     String user = "root";
-                    String pass = "pass";
                     String dbname = "backuptest2";
                     String source = newFile.getAbsoluteFile().toString();
-                    System.out.println(myFile);
 
 
-                    String[] command = new String[]{"mysql", dbname, "--user=" + user, "--password=" + pass, "-e", " source " + source};
+                    String[] command = new String[]{"mysql", dbname, "--user=" + user, "--password=" + mysqlDetails, "-e", " source " + source};
 
                     Process p = null;
                     try {
@@ -354,34 +332,22 @@ public class BackupRestoreFragmentController {
                         p = runtime.exec(command);
                         int processComplete = p.waitFor();
                         if (processComplete == 0) {
-//                                if (kenyaui !=null) {
-                            kenyaUi.notifySuccess(request.getSession(), "Database Restore Successful");
-                            System.out.println("value NOT null");
-                            System.out.println("hereitis:" + kenyaUi);
-//                                }
-//                            else {
-//                                    System.out.println("value is null");
-//                                kenyaUiUtils.notifyError(session,"value is null");
-//                               }
+                            kenyaUi.notifySuccess(httpSession, "Database Restore Successful");
                             System.out.println("Restore successful");
-//                    return SimpleObject.create("databaseRestored", Context.isAuthenticated());
 
                         } else {
                             System.out.println("Restore failed");
-//                            kenyaui.notifyError(session, "Database Restore UnSuccessful");
+                            kenyaUi.notifyError(httpSession, "Database Restore UnSuccessful");
                         }
 
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
 //                    Catch unzip try block
-
                     try {
                         File file = new File(source);
                         if (file.delete()) {
-                            System.out.println(file.getName() + " is deleted!");
                         } else {
-                            System.out.println("Delete operation is failed.");
                         }
                     } catch (Exception e) {
                         e.printStackTrace();

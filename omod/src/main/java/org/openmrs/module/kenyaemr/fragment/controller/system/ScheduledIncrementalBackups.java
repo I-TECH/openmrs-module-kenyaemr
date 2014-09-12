@@ -32,11 +32,6 @@ public class ScheduledIncrementalBackups implements Job {
 	private KenyaUiUtils kenyaUiUtils;
 	HttpSession httpSession;
 	public String userHome = System.getProperty("user.home");
-//	String url = "jdbc:mysql://localhost:3306/openmrs";
-//	String user = "root";
-//	String password = "pass";
-//	Connection conn = null;
-//	PreparedStatement stmt = null;
 
 	public static String decryptMysqlDetails() {
 		Context.openSession();
@@ -80,7 +75,6 @@ public class ScheduledIncrementalBackups implements Job {
 		deleteScheduledIncrementalBackups(30, ".sql.zip");
 
 		String mysqlDetails = decryptMysqlDetails();
-		System.out.println("The password in db is:"+mysqlDetails);
 		String command = ("mysqldump -uroot -p"+mysqlDetails+" backuptest -r" + dir + "/" + defaultLocation + "-" + strFilename + ".sql");
 
 		Process p = null;
@@ -90,14 +84,18 @@ public class ScheduledIncrementalBackups implements Job {
 			int processComplete = p.waitFor();
 			if (processComplete == 0) {
 
+
 				byte[] buffer = new byte[1024];
+
 				String srcFilename = (dir + "/" + defaultLocation + "-" + strFilename + ".sql");
+
 				try {
-					FileOutputStream fos =
-							new FileOutputStream(dir + "/" + defaultLocation + "-" + strFilename + ".sql.zip");
+					FileOutputStream fos = new FileOutputStream(dir + "/" + defaultLocation + "-" + strFilename + ".sql.zip");
 					ZipOutputStream zos = new ZipOutputStream(fos);
+
 					File srcFile = new File(srcFilename);
 					ZipEntry ze = new ZipEntry(defaultLocation + "-" + strFilename + ".sql");
+
 					FileInputStream in = new FileInputStream(srcFile);
 					zos.putNextEntry(ze);
 
@@ -105,25 +103,17 @@ public class ScheduledIncrementalBackups implements Job {
 					while ((length = in.read(buffer)) > 0) {
 						zos.write(buffer, 0, length);
 					}
+
+
 					zos.closeEntry();
 					in.close();
 					zos.close();
+
 
 				} catch (IOException ex) {
 					ex.printStackTrace();
 				}
 
-				try {
-					File file = new File(srcFilename);
-					if (file.delete()) {
-						log.debug(file.getName() + " is deleted!");
-					} else {
-						log.debug("Delete operation is failed.");
-					}
-
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
 
 				/**
 				 * save the last backup date time to the database
@@ -134,10 +124,8 @@ public class ScheduledIncrementalBackups implements Job {
 				GlobalProperty backupSuccessfulGP = new GlobalProperty(EmrConstants.GP_BACKUP_STATUS, "Backup Successful");
 
 				if (Context.isAuthenticated() != true) {
-					String username = Context.getAdministrationService()
-							.getGlobalPropertyByUuid("efc55087-9285-46db-b613-9ccd8655a5e1").getValue().toString();
-					String password = Context.getAdministrationService()
-							.getGlobalPropertyByUuid("3a8e6ff8-6fd2-44c6-b625-b1e25ce243de").getValue().toString();
+					String username = Context.getAdministrationService().getGlobalProperty("scheduler.username");
+					String password = Context.getAdministrationService().getGlobalProperty("scheduler.password");
 					Context.authenticate(username, password);
 				}
 				Context.getAdministrationService().saveGlobalProperty(lastBackupGP);
@@ -152,6 +140,14 @@ public class ScheduledIncrementalBackups implements Job {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+//						try {
+//							File file = new File(srcFilename);
+//							if (file.delete()) {
+//							}
+//						} catch (Exception e) {
+//							e.printStackTrace();
+//						}
+
 
 	}
 

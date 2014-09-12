@@ -40,19 +40,20 @@ import javax.servlet.http.HttpSession;
  */
 @AppPage(EmrConstants.APP_ADMIN)
 public class FirstTimeSetupPageController {
-	
+
 	public String controller(HttpSession session, PageModel model, UiUtils ui,
-							 @SpringBean KenyaUiUtils kenyaUi,
-							 @SpringBean IdentifierManager identifierManager,
-                             @RequestParam(required = false, value = "mysqlDetails") String mysqlDetails,
-                             @RequestParam(required = false, value = "defaultLocation") Location defaultLocation,
-	                         @RequestParam(required = false, value = "mrnIdentifierSourceStart") String mrnIdentifierSourceStart,
-	                         @RequestParam(required = false, value = "hivIdentifierSourceStart") String hivIdentifierSourceStart) {
-		
+			@SpringBean KenyaUiUtils kenyaUi,
+			@SpringBean IdentifierManager identifierManager,
+			@RequestParam(required = false, value = "mysqlDetails") String mysqlDetails,
+			@RequestParam(required = false, value = "defaultLocation") Location defaultLocation,
+			@RequestParam(required = false, value = "mrnIdentifierSourceStart") String mrnIdentifierSourceStart,
+			@RequestParam(required = false, value = "hivIdentifierSourceStart") String hivIdentifierSourceStart) {
+
 		KenyaEmrService service = Context.getService(KenyaEmrService.class);
-		
+
 		// handle submission
-		if (defaultLocation != null || StringUtils.isNotEmpty(mrnIdentifierSourceStart) || StringUtils.isNotEmpty(hivIdentifierSourceStart)|| StringUtils.isNotEmpty(mysqlDetails)){
+		if (defaultLocation != null || StringUtils.isNotEmpty(mrnIdentifierSourceStart) || StringUtils
+				.isNotEmpty(hivIdentifierSourceStart) || StringUtils.isNotEmpty(mysqlDetails)) {
 			if (defaultLocation != null) {
 				service.setDefaultLocation(defaultLocation);
 			}
@@ -62,28 +63,25 @@ public class FirstTimeSetupPageController {
 			if (StringUtils.isNotEmpty(hivIdentifierSourceStart)) {
 				service.setupHivUniqueIdentifierSource(hivIdentifierSourceStart);
 			}
-            if (StringUtils.isNotEmpty(mysqlDetails)) {
-                service.setMysqlDetails(mysqlDetails);
-            }
+			if (StringUtils.isNotEmpty(mysqlDetails)) {
+				service.setMysqlDetails(mysqlDetails);
+			}
 			kenyaUi.notifySuccess(session, "First-Time Setup Completed");
 
 			return "redirect:" + ui.pageLink(EmrConstants.MODULE_ID, "home");
 		}
 
-        mysqlDetails = service.getMysqlDetails();
+		mysqlDetails = service.getMysqlDetails();
 		defaultLocation = service.getDefaultLocation();
-		IdentifierSource mrnIdentifierSource = identifierManager.getIdentifierSource(MetadataUtils.existing(PatientIdentifierType.class, CommonMetadata._PatientIdentifierType.OPENMRS_ID));
-		IdentifierSource hivIdentifierSource = identifierManager.getIdentifierSource(MetadataUtils.existing(PatientIdentifierType.class, HivMetadata._PatientIdentifierType.UNIQUE_PATIENT_NUMBER));
+		IdentifierSource mrnIdentifierSource = identifierManager.getIdentifierSource(
+				MetadataUtils.existing(PatientIdentifierType.class, CommonMetadata._PatientIdentifierType.OPENMRS_ID));
+		IdentifierSource hivIdentifierSource = identifierManager.getIdentifierSource(MetadataUtils
+				.existing(PatientIdentifierType.class, HivMetadata._PatientIdentifierType.UNIQUE_PATIENT_NUMBER));
 
+		User authenticatedUser = Context.getAuthenticatedUser();
 
-        System.out.println("Yes its the password from first time setup");
-        System.out.println(mysqlDetails);
-        System.out.println(defaultLocation);
-
-        User authenticatedUser = Context.getAuthenticatedUser();
-		
 		model.addAttribute("isSuperUser", authenticatedUser != null ? Context.getAuthenticatedUser().isSuperUser() : false);
-        model.addAttribute("mysqlDetails", mysqlDetails);
+		model.addAttribute("mysqlDetails", mysqlDetails);
 		model.addAttribute("defaultLocation", defaultLocation);
 		model.addAttribute("mrnIdentifierSource", mrnIdentifierSource);
 		model.addAttribute("hivIdentifierSource", hivIdentifierSource);

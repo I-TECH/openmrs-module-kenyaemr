@@ -53,7 +53,6 @@ kenyaemrApp.controller('DatabaseSummary', ['$scope', '$http', function($scope, $
 	};
 }]);
 
-//Controller for Backup Enhancement - Backup Summary
 
 kenyaemrApp.controller('BackupSummary', ['$scope', '$http', '$timeout', function($scope, $http, $timeout) {
 
