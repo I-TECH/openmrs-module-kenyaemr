@@ -45,7 +45,7 @@ import java.util.Arrays;
 import java.util.Date;
 
 /**
- * Library of Quality Improvement cohorts for HIV care
+ * Library of Quality Improvement cohorts for HIV care adult
  */
 @Component
 public class QiCohortLibrary {
@@ -96,6 +96,10 @@ public class QiCohortLibrary {
 		return cd;
 	}
 
+	/**
+	 *HIV infected patients NOT on ART and has hiv clinical visit
+	 * @return CohortDefinition
+	 */
 	public CohortDefinition hivInfectedAndNotOnARTAndHasHivClinicalVisit() {
 		CompositionCohortDefinition cd =new CompositionCohortDefinition();
 		cd.setName("Not on ART with at least one HIV clinical Visit");
@@ -109,7 +113,7 @@ public class QiCohortLibrary {
 	}
 
 	/**
-	 *
+	 * Patients in care and has at least 2 visits
 	 */
 	public CohortDefinition inCareHasAtLeast2Visits() {
 		CalculationCohortDefinition cdInCareHasAtLeast2Visits = new CalculationCohortDefinition(new InCareHasAtLeast2VisitsCalculation());
@@ -126,7 +130,8 @@ public class QiCohortLibrary {
 	}
 
 	/**
-	 *
+	 *Patients with a=clinical visits
+	 * @return CohortDefinition
 	 */
 	public CohortDefinition clinicalVisit() {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
@@ -182,7 +187,7 @@ public class QiCohortLibrary {
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addSearch("onART12Months", ReportUtils.map(artCohortLibrary.netCohortMonths(12), "onDate=${onOrBefore}"));
-		cd.addSearch("atLeastOneHIVClinicalVisit", ReportUtils.map(clinicalVisit(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("atLeastOneHIVClinicalVisit", ReportUtils.map(clinicalVisit(), "onOrAfter=${onOrBefore-6m},onOrBefore=${onOrBefore}"));
 		cd.addSearch("adult", ReportUtils.map(commonCohorts.agedAtLeast(15), "effectiveDate=${onOrBefore}"));
 		cd.setCompositionString("onART12Months AND atLeastOneHIVClinicalVisit AND adult");
 		return cd;
@@ -312,8 +317,7 @@ public class QiCohortLibrary {
 		cd.addSearch("inhDispensed", ReportUtils.map(inhDispensed, "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
 		cd.addSearch("inhMedication", ReportUtils.map(commonCohorts.medicationDispensed(Dictionary.getConcept(Dictionary.ISONIAZID)), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
 		cd.addSearch("inhProphylaxis", ReportUtils.map(commonCohorts.hasObs(Dictionary.getConcept(Dictionary.PATIENT_REPORTED_CURRENT_TUBERCULOSIS_PROPHYLAXIS), Dictionary.getConcept(Dictionary.ISONIAZID_PROPHYLAXIS)), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
-		cd.addSearch("adult", ReportUtils.map(commonCohorts.agedAtLeast(15), "effectiveDate=${onOrBefore}"));
-		cd.setCompositionString("(inhDispensed OR inhMedication OR inhProphylaxis) AND adult");
+		cd.setCompositionString("inhDispensed OR inhMedication OR inhProphylaxis");
 		return cd;
 	}
 

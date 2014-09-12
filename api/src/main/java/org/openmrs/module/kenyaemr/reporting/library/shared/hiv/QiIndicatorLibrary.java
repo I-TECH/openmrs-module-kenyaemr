@@ -80,7 +80,7 @@ public class QiIndicatorLibrary {
 	 */
 	public CohortIndicator clinicalVisit() {
 		return cohortIndicator("Clinical Visit",
-				map(qiCohorts.inCareHasAtLeast2Visits(), "onOrBefore=${endDate-6m}" ),
+				map(qiCohorts.inCareHasAtLeast2Visits(), "onOrBefore=${endDate}" ),
 				map(qiCohorts.clinicalVisit(), "onOrAfter=${endDate-6m},onOrBefore=${endDate}" )
 		);
 	}
@@ -90,9 +90,9 @@ public class QiIndicatorLibrary {
 	 * @return the indicator
 	 */
 	public CohortIndicator hivMonitoringViralLoad() {
-		return cohortIndicator("HIV Monitoring - Viral Load",
-				map(qiCohorts.onARTatLeast12MonthsAndHaveAtLeastVLResultsDuringTheLast12Months(), "onOrBefore=${endDate}" ),
-				map(qiCohorts.onARTatLeast12MonthsAndHaveAtLeastOneVisitDuringTheLast6MonthsReview(), "onOrAfter=${endDate-6m},onOrBefore=${endDate}" )
+		return cohortIndicator("HIV Monitoring - Viral Load Coverage",
+				map(qiCohorts.onARTatLeast12MonthsAndHaveAtLeastVLResultsDuringTheLast12Months(), "onOrAfter=${startDate},onOrBefore=${endDate}" ),
+				map(qiCohorts.onARTatLeast12MonthsAndHaveAtLeastOneVisitDuringTheLast6MonthsReview(), "onOrAfter=${startDate},onOrBefore=${endDate}" )
 		);
 	}
 
@@ -100,7 +100,7 @@ public class QiIndicatorLibrary {
 	 * HIV Monitoring Viral Load - supression outcome
 	 * @return CohortIndicator
 	 */
-	public CohortIndicator hivMonitoringViralLoadSupression() {
+	public CohortIndicator hivMonitoringViralLoadSuppression() {
 		return cohortIndicator("HIV Monitoring - Viral Load - Supression Outcome",
 				map(qiCohorts.onARTatLeast12MonthsAndVlLess1000(), "onOrBefore=${endDate}" ),
 				map(qiCohorts.onARTatLeast12MonthsAndAtLeastVlResults(), "onOrBefore=${endDate}" )

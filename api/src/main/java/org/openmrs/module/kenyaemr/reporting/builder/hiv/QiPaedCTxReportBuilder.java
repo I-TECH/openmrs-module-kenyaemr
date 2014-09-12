@@ -18,6 +18,7 @@ import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyacore.report.builder.AbstractReportBuilder;
 import org.openmrs.module.kenyacore.report.builder.Builds;
 import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.QiIndicatorLibrary;
+import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.QiPaedsIndicatorLibrary;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
@@ -38,7 +39,7 @@ import java.util.List;
 public class QiPaedCTxReportBuilder extends AbstractReportBuilder {
 
 	@Autowired
-	private QiIndicatorLibrary qiIndicators;
+	private QiPaedsIndicatorLibrary qiIndicators;
 
 	/**
 	 * @see org.openmrs.module.kenyacore.report.builder.AbstractReportBuilder#getParameters(org.openmrs.module.kenyacore.report.ReportDescriptor)
@@ -57,7 +58,7 @@ public class QiPaedCTxReportBuilder extends AbstractReportBuilder {
 	@Override
 	protected List<Mapped<DataSetDefinition>> buildDataSets(ReportDescriptor descriptor, ReportDefinition report) {
 		return Arrays.asList(
-				ReportUtils.map(qiDataset(), "startDate=${startDate},endDate=${endDate}")
+				ReportUtils.map(qiPaedsDataset(), "startDate=${startDate},endDate=${endDate}")
 		);
 	}
 
@@ -65,15 +66,24 @@ public class QiPaedCTxReportBuilder extends AbstractReportBuilder {
 	 * Creates the data set
 	 * @return the data set
 	 */
-	protected DataSetDefinition qiDataset() {
+	protected DataSetDefinition qiPaedsDataset() {
 		CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
-		dsd.setName("Standards-paeds");
+		dsd.setName("2");
 		dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
 
 		String indParams = "startDate=${startDate},endDate=${endDate}";
 
-		dsd.addColumn("15", "Patients in care should have a CD4 assessment every 6 months", ReportUtils.map(qiIndicators.hivMonitoringCd4(), indParams), "");
+		dsd.addColumn("2.1", "% of patients in care with 2 0r more visits, 3 months apart", ReportUtils.map(qiIndicators.clinicalVisit(), indParams), "");
+		dsd.addColumn("2.2", "% of HIV infected patients in care with at least one cd4 count", ReportUtils.map(qiIndicators.hivMonitoringCd4(), indParams), "");
+		dsd.addColumn("2.3", "% eligible patients initiated on ART", ReportUtils.map(qiIndicators.artInitiation(), indParams), "");
+		dsd.addColumn("2.4", "% of patients on ART with at least one VL result during the last 12 months", ReportUtils.map(qiIndicators.hivMonitoringViralLoad(), indParams), "");
+		dsd.addColumn("2.5", "% of patients on ART for at least 6 months with VL suppression", ReportUtils.map(qiIndicators.hivMonitoringViralLoadSupression(), indParams), "");
+		dsd.addColumn("2.6", "% of patients screened for TB at last clinic visit", ReportUtils.map(qiIndicators.tbScreeningServiceCoverage(), indParams), "");
+		dsd.addColumn("2.7", "% of patients eligible for IPT who were initiated on IPT ", ReportUtils.map(qiIndicators.patientsEligibleForIPTWhoWereInitiatedOnIPT(), indParams), "");
+		dsd.addColumn("2.8", "% of patients with Nutritional assessment", ReportUtils.map(qiIndicators.nutritionalAssessment(), indParams), "");
+		dsd.addColumn("2.9", "% of patients eligible for nutritional support and who received nutritional support", ReportUtils.map(qiIndicators.patientsEligibleForNutritionalSupportAndWhoReceived(), indParams), "");
+		dsd.addColumn("2.10", "% of children aged 8-14 who have been disclosed HIV status", ReportUtils.map(qiIndicators.childrenBetween8And14WhoseHivStatusDisclosedToThem(), indParams), "");
 		return dsd;
 	}
 }

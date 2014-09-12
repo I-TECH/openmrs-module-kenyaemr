@@ -78,7 +78,7 @@ public class QiAdultCTxReportBuilder extends AbstractReportBuilder {
 		dsd.addColumn("02", "% of HIV infected patients in care with at least one CD4 count during the 6 months Review period", ReportUtils.map(qiIndicators.hivMonitoringCd4(), indParams), "");
 		dsd.addColumn("03", "% eligible patients initiated on ART", ReportUtils.map(qiIndicators.artInitiation(), indParams), "");
 		dsd.addColumn("04", "% of patients on ART with at least on VL results during the last 12 months", ReportUtils.map(qiIndicators.hivMonitoringViralLoad(), indParams), "");
-		dsd.addColumn("05", "% of patients on ART for at least 6 months with VL suppression", ReportUtils.map(qiIndicators.hivMonitoringViralLoadSupression(), indParams), "");
+		dsd.addColumn("05", "% of patients on ART for at least 6 months with VL suppression", ReportUtils.map(qiIndicators.hivMonitoringViralLoadSuppression(), indParams), "");
 		dsd.addColumn("06", "% of patients screened for TB using ICF card at last clinic visit", ReportUtils.map(qiIndicators.tbScreeningServiceCoverage(), indParams), "");
 		dsd.addColumn("07", "% of patients eligible for IPT who were initiated on IPT", ReportUtils.map(qiIndicators.patientsEligibleForIPTWhoWereInitiatedOnIPT(), indParams), "");
 		dsd.addColumn("08", "% of patients with Nutritional assessment at the last clinic visit", ReportUtils.map(qiIndicators.nutritionalAssessment(), indParams), "");
