@@ -349,6 +349,31 @@ public class QiPaedsCohortLibrary {
 		return cd;
 	}
 
+	/**
+	 * Has cd4 results only paeds
+	 * @return CohortDefinition
+	 */
+	public CohortDefinition hasCD4ResultsPaeds() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addSearch("hasCd4", ReportUtils.map(hivCohortLibrary.hasCd4Result(), "onOrAfter=${onOrBefore-6m},onOrBefore=${onOrBefore}"));
+		cd.addSearch("child", ReportUtils.map(commonCohorts.agedAtMost(15), "effectiveDate=${onOrBefore}"));
+		cd.setCompositionString("hasCd4 AND child");
+		return cd;
+	}
 
-
+	/**
+	 * Has visits only paeds
+	 * @return CohortDefinition
+	 */
+	public CohortDefinition hasHivVisitPaeds() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addSearch("hasVisits", ReportUtils.map(hivCohortLibrary.hasHivVisit(), "onOrAfter=${onOrBefore-6m},onOrBefore=${onOrBefore}"));
+		cd.addSearch("child", ReportUtils.map(commonCohorts.agedAtMost(15), "effectiveDate=${onOrBefore}"));
+		cd.setCompositionString("hasVisits AND child");
+		return cd;
+	}
 }

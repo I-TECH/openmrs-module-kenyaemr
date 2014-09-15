@@ -44,8 +44,8 @@ public class QiPaedsIndicatorLibrary {
 	 */
 	public CohortIndicator hivMonitoringCd4() {
 		return cohortIndicator("HIV monitoring - CD4 Child",
-				map(hivCohorts.hasCd4Result(), "onOrAfter=${endDate-6m},onOrBefore=${endDate}"),
-				map(hivCohorts.hasHivVisit(), "onOrAfter=${endDate-6m},onOrBefore=${endDate}")
+				map(qiCohorts.hasCD4ResultsPaeds(), "onOrAfter=${startDate},onOrBefore=${endDate}"),
+				map(qiCohorts.hasHivVisitPaeds(), "onOrAfter=${startDate},onOrBefore=${endDate}")
 		);
 	}
 

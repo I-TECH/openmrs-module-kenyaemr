@@ -492,4 +492,32 @@ public class QiCohortLibrary {
 		return cd;
 	}
 
+	/**
+	 * Has cd4 results only adult
+	 * @return CohortDefinition
+	 */
+	public CohortDefinition hasCD4ResultsAdult() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addSearch("hasCd4", ReportUtils.map(hivCohortLibrary.hasCd4Result(), "onOrAfter=${onOrBefore-6m},onOrBefore=${onOrBefore}"));
+		cd.addSearch("adult", ReportUtils.map(commonCohorts.agedAtLeast(15), "effectiveDate=${onOrBefore}"));
+		cd.setCompositionString("hasCd4 AND adult");
+		return cd;
+	}
+
+	/**
+	 * Has visits only adult
+	 * @return CohortDefinition
+	 */
+	public CohortDefinition hasHivVisitAdult() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addSearch("hasVisits", ReportUtils.map(hivCohortLibrary.hasHivVisit(), "onOrAfter=${onOrBefore-6m},onOrBefore=${onOrBefore}"));
+		cd.addSearch("adult", ReportUtils.map(commonCohorts.agedAtLeast(15), "effectiveDate=${onOrBefore}"));
+		cd.setCompositionString("hasVisits AND adult");
+		return cd;
+	}
+
 }
