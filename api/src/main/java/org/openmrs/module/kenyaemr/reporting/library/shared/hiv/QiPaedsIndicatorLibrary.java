@@ -111,7 +111,7 @@ public class QiPaedsIndicatorLibrary {
 	public CohortIndicator nutritionalAssessment() {
 		return cohortIndicator("Nutritional assessment Child",
 				map(qiCohorts.hadNutritionalAssessmentAtLastVisit(), "onOrBefore=${endDate}"),
-				map(hivCohorts.hasHivVisit(), "onOrAfter=${endDate-6m},onOrBefore=${endDate}")
+				map(qiCohorts.hasHivVisitPaeds(), "onOrAfter=${startDate},onOrBefore=${endDate}")
 		);
 	}
 
