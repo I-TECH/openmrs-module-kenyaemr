@@ -46,7 +46,7 @@ public class PregnantWithANCVisitsCalculation extends AbstractPatientCalculation
         Set<Integer> female = Filters.female(cohort, context);
 
         Form ancForm = MetadataUtils.existing(Form.class,MchMetadata._Form.MCHMS_ANTENATAL_VISIT);
-        CalculationResultMap allEncountersForMCHConsultation = Calculations.allEncounters(MetadataUtils.existing(EncounterType.class, MchMetadata._EncounterType.MCHCS_CONSULTATION), female, context);
+        CalculationResultMap allEncountersForMCHConsultation = Calculations.allEncounters(MetadataUtils.existing(EncounterType.class, MchMetadata._EncounterType.MCHMS_CONSULTATION), female, context);
         Integer minVisits = (Integer) parameterValues.get("visits");
 
         Program mchmsProgram = MetadataUtils.existing(Program.class, MchMetadata._Program.MCHMS);
@@ -55,18 +55,18 @@ public class PregnantWithANCVisitsCalculation extends AbstractPatientCalculation
         Set<Integer> pregnantCohort = CalculationUtils.patientsThatPass(calculate(new IsPregnantCalculation(),female,context));
         CalculationResultMap ret = new CalculationResultMap();
         for (Integer ptId : cohort) {
+
             boolean result = false;
-
-
             if (pregnantCohort.contains(ptId) || patientActiveOnMchms.contains(ptId)){
                 ListResult mchcsEncountersResult = (ListResult) allEncountersForMCHConsultation.get(ptId);
                 List<Encounter> encounters = CalculationUtils.extractResultValues(mchcsEncountersResult);
 
                 int counter = 0;
+
                 for(Encounter e: encounters){
                     if(ancForm.getUuid().equals(e.getForm().getUuid())){
                         counter++;
-                        if(counter >= minVisits){
+                        if(counter == minVisits){
                             result = true;
                             break;
                         }
