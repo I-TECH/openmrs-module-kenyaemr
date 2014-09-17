@@ -17,6 +17,7 @@ import org.openmrs.module.kenyacore.report.ReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyacore.report.builder.AbstractReportBuilder;
 import org.openmrs.module.kenyacore.report.builder.Builds;
+import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.QiEmtctIndicatorLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.QiIndicatorLibrary;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
@@ -38,7 +39,7 @@ import java.util.List;
 public class QiEmtctReportBuilder extends AbstractReportBuilder {
 
 	@Autowired
-	private QiIndicatorLibrary qiIndicators;
+	private QiEmtctIndicatorLibrary qiEmtctIndicatorLibrary;
 
 	/**
 	 * @see org.openmrs.module.kenyacore.report.builder.AbstractReportBuilder#getParameters(org.openmrs.module.kenyacore.report.ReportDescriptor)
@@ -57,7 +58,7 @@ public class QiEmtctReportBuilder extends AbstractReportBuilder {
 	@Override
 	protected List<Mapped<DataSetDefinition>> buildDataSets(ReportDescriptor descriptor, ReportDefinition report) {
 		return Arrays.asList(
-				ReportUtils.map(qiDataset(), "startDate=${startDate},endDate=${endDate}")
+				ReportUtils.map(qiEmtctDataset(), "startDate=${startDate},endDate=${endDate}")
 			);
 	}
 
@@ -65,7 +66,7 @@ public class QiEmtctReportBuilder extends AbstractReportBuilder {
 	 * Creates the dataset
 	 * @return the dataset
 	 */
-	protected DataSetDefinition qiDataset() {
+	protected DataSetDefinition qiEmtctDataset() {
 		CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
 		dsd.setName("3");
 		dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -73,9 +74,9 @@ public class QiEmtctReportBuilder extends AbstractReportBuilder {
 
 		String indParams = "startDate=${startDate},endDate=${endDate}";
 
-		dsd.addColumn("3.1", "% of pregnant women attending at least four ANC visits", ReportUtils.map(qiIndicators.hivMonitoringCd4(), indParams), "");
-		dsd.addColumn("3.2", "% of skilled deliveries within the facility catchment population", ReportUtils.map(qiIndicators.hivMonitoringCd4(), indParams), "");
-		dsd.addColumn("3.3", "% of deliveries with accurately filled Partographs", ReportUtils.map(qiIndicators.hivMonitoringCd4(), indParams), "");
+		dsd.addColumn("3.1", "% of pregnant women attending at least four ANC visits", ReportUtils.map(qiEmtctIndicatorLibrary.patientsAttendingAtLeast4AncVisitsAndPregnant(), indParams), "");
+		dsd.addColumn("3.2", "% of skilled deliveries within the facility catchment population", ReportUtils.map(qiEmtctIndicatorLibrary.skilledDeliveriesWithinFacility(), indParams), "");
+		/*dsd.addColumn("3.3", "% of deliveries with accurately filled Partographs", ReportUtils.map(qiIndicators.hivMonitoringCd4(), indParams), "");
 		dsd.addColumn("3.4", "% of Mother-newborn pairs reviewed  by health care provider 7-14 days of birth", ReportUtils.map(qiIndicators.hivMonitoringCd4(), indParams), "");
 		dsd.addColumn("3.5", "% of pregnant women whose partners have been tested for HIV or who are known positive", ReportUtils.map(qiIndicators.hivMonitoringCd4(), indParams), "");
 		dsd.addColumn("3.6", "% of HIV-infected pregnant women receiving  HAART", ReportUtils.map(qiIndicators.hivMonitoringCd4(), indParams), "");
@@ -86,6 +87,7 @@ public class QiEmtctReportBuilder extends AbstractReportBuilder {
 		dsd.addColumn("3.11", "% HIV exposed mother baby pair (0-18 months) in active care among facility registered", ReportUtils.map(qiIndicators.hivMonitoringCd4(), indParams), "");
 		dsd.addColumn("3.12", "% HIV exposed mother baby pair (0-18 months) in active care among population estimate", ReportUtils.map(qiIndicators.hivMonitoringCd4(), indParams), "");
 		dsd.addColumn("3.13", "% HIV exposed infants diagnosed with HIV between 0 and 18 months", ReportUtils.map(qiIndicators.hivMonitoringCd4(), indParams), "");
+		*/
 		return dsd;
 	}
 }
