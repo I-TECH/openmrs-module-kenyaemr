@@ -22,6 +22,7 @@ import org.openmrs.module.kenyacore.test.ReportingTestUtils;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
+import org.openmrs.module.kenyaemr.metadata.MchMetadata;
 import org.openmrs.module.kenyaemr.metadata.TbMetadata;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.report.ReportData;
@@ -56,6 +57,9 @@ public class QiEmtctReportBuilderTest extends BaseModuleContextSensitiveTest {
 	@Autowired
 	private QiEmtctReportBuilder builder;
 
+	@Autowired
+	private MchMetadata mchMetadata;
+
 	@Before
 	public void setup() throws Exception {
 		executeDataSet("dataset/test-concepts.xml");
@@ -63,6 +67,7 @@ public class QiEmtctReportBuilderTest extends BaseModuleContextSensitiveTest {
 		commonMetadata.install();
 		hivMetadata.install();
 		tbMetadata.install();
+		mchMetadata.install();
 	}
 
 	@Test
