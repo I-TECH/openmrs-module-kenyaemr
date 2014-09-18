@@ -14,19 +14,27 @@
 package org.openmrs.module.kenyaemr.reporting.library.shared.hiv;
 
 import org.openmrs.Concept;
+import org.openmrs.EncounterType;
+import org.openmrs.Form;
 import org.openmrs.api.PatientSetService;
 import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyacore.report.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.kenyacore.report.cohort.definition.DateCalculationCohortDefinition;
 import org.openmrs.module.kenyacore.report.cohort.definition.DateObsValueBetweenCohortDefinition;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.PregnantAtArtStartCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.mchms.EddEstimateFromMchmsProgramCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.mchms.PregnantWithANCVisitsCalculation;
+import org.openmrs.module.kenyaemr.metadata.MchMetadata;
+import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonCohortLibrary;
+import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.cohort.definition.CodedObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.EncounterCohortDefinition;
 import org.openmrs.module.reporting.common.SetComparator;
+import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
@@ -38,12 +46,15 @@ import java.util.Date;
 @Component
 public class QiEmtctCohortLibrary {
 
+	@Autowired
+	private CommonCohortLibrary commonCohorts;
+
 	/**
 	 * Number of pregnant women attending at least N ANC visits
 	 * @return org.openmrs.module.reporting.cohort.definition.CohortDefinition
 	 */
 	public CohortDefinition patientsAttendingAtLeastAncVisitsAndPregnant(Integer ancVisits) {
-		CalculationCohortDefinition cd = new CalculationCohortDefinition(new PregnantAtArtStartCalculation());
+		CalculationCohortDefinition cd = new CalculationCohortDefinition(new PregnantWithANCVisitsCalculation());
 		cd.setName("Pregnant women who had at least "+ ancVisits +" during the review period");
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
 		cd.addCalculationParameter("visits", ancVisits);
@@ -101,5 +112,19 @@ public class QiEmtctCohortLibrary {
 		cd.setCompositionString("lmp AND edd");
 
 		return cd;
+	}
+
+	/**
+	 *
+	 */
+	public CohortDefinition numberOfNewAnClients() {
+		EncounterCohortDefinition encCd = new EncounterCohortDefinition();
+		encCd.setName("has encounter between dates");
+		encCd.setTimeQualifier(TimeQualifier.FIRST);
+		encCd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		encCd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		encCd.setEncounterTypeList(Arrays.asList(MetadataUtils.existing(EncounterType.class, MchMetadata._EncounterType.MCHMS_CONSULTATION)));
+		encCd.setFormList(Arrays.asList(MetadataUtils.existing(Form.class, MchMetadata._Form.MCHMS_ANTENATAL_VISIT)));
+		return encCd;
 	}
 }

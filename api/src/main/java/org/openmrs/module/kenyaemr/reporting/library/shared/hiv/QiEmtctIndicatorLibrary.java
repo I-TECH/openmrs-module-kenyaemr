@@ -29,14 +29,17 @@ public class QiEmtctIndicatorLibrary {
 	@Autowired
 	private QiEmtctCohortLibrary qiEmtctCohortLibrary;
 
+	@Autowired
+	private QiCohortLibrary qiCohortLibrary;
+
 	/**
 	 *% of pregnant women attending at least four ANC visits
 	 * @return org.openmrs.module.reporting.indicator.CohortIndicator
 	 */
 	public CohortIndicator patientsAttendingAtLeast4AncVisitsAndPregnant() {
 		return cohortIndicator("Pregnant women who had at least 4 during the review period",
-				map(qiEmtctCohortLibrary.patientsAttendingAtLeastAncVisitsAndPregnant(4), "onDate=${endDate}" ),
-				map(qiEmtctCohortLibrary.patientsAttendingAtLeastAncVisitsAndPregnant(0), "onDate=${endDate}" )
+				map(qiEmtctCohortLibrary.patientsAttendingAtLeastAncVisitsAndPregnant(4), "onDate=${endDate}"),
+				map(qiEmtctCohortLibrary.patientsAttendingAtLeastAncVisitsAndPregnant(0), "onDate=${endDate}")
 		);
 	}
 
@@ -46,8 +49,19 @@ public class QiEmtctIndicatorLibrary {
 	 */
 	public CohortIndicator skilledDeliveriesWithinFacility() {
 		return cohortIndicator("Skilled deliveries within the facility",
-				map(qiEmtctCohortLibrary.womenDeliveredInFacility(), "onOrBefore=${endDate}" ),
-				map(qiEmtctCohortLibrary.numberOfExpectedDeliveriesInTheFacilityCatchmentPopulationDuringTheReviewPeriod(), "onOrAfter=${endDate-6m},onOrBefore=${endDate}" )
+				map(qiEmtctCohortLibrary.womenDeliveredInFacility(), "onOrBefore=${endDate}"),
+				map(qiEmtctCohortLibrary.numberOfExpectedDeliveriesInTheFacilityCatchmentPopulationDuringTheReviewPeriod(), "onOrAfter=${endDate-6m},onOrBefore=${endDate}")
+		);
+	}
+
+	/**
+	 * % of pregnant women whose partners have been tested for HIV or who are known positive.
+	 * @return CohortIndicator
+	 */
+	public CohortIndicator numberOfNewAnClients() {
+		return cohortIndicator("Partner testing - (Service coverage)",
+				map(qiCohortLibrary.hivPositivePatientsWhosePartnersAreHivPositive(), "onOrAfter=${endDate-6m},onOrBefore=${endDate}"),
+				map(qiEmtctCohortLibrary.numberOfNewAnClients(), "onOrAfter=${endDate-6m},onOrBefore=${endDate}")
 		);
 	}
 }
