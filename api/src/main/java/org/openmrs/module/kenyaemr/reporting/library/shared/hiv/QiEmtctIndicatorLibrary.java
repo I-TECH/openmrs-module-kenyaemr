@@ -64,4 +64,15 @@ public class QiEmtctIndicatorLibrary {
 				map(qiEmtctCohortLibrary.numberOfNewAnClients(), "onOrAfter=${endDate-6m},onOrBefore=${endDate}")
 		);
 	}
+
+	/**
+	 * % of Mother-newborn pairs reviewed  by health care provider 7-14 days of birth
+	 * @return CohortIndicator
+	 */
+	public CohortIndicator mothersNewBornPairReview() {
+		return cohortIndicator("Mother-baby pair postnatal follow-up",
+				map(qiEmtctCohortLibrary.mothersNewBornPairReview(), "onDate=${endDate}"),
+				map(qiEmtctCohortLibrary.numberOfExpectedDeliveriesInTheFacilityCatchmentPopulationDuringTheReviewPeriod(), "onOrBefore=${endDate}")
+		);
+	}
 }

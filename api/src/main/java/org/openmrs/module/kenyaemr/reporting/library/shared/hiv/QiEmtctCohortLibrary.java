@@ -23,6 +23,7 @@ import org.openmrs.module.kenyacore.report.cohort.definition.DateCalculationCoho
 import org.openmrs.module.kenyacore.report.cohort.definition.DateObsValueBetweenCohortDefinition;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.library.mchms.EddEstimateFromMchmsProgramCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.mchms.MotherNewBornPairReviewedCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.mchms.PregnantWithANCVisitsCalculation;
 import org.openmrs.module.kenyaemr.metadata.MchMetadata;
 import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonCohortLibrary;
@@ -126,5 +127,15 @@ public class QiEmtctCohortLibrary {
 		encCd.setEncounterTypeList(Arrays.asList(MetadataUtils.existing(EncounterType.class, MchMetadata._EncounterType.MCHMS_CONSULTATION)));
 		encCd.setFormList(Arrays.asList(MetadataUtils.existing(Form.class, MchMetadata._Form.MCHMS_ANTENATAL_VISIT)));
 		return encCd;
+	}
+
+	/**
+	 *
+	 */
+	public CohortDefinition mothersNewBornPairReview() {
+		CalculationCohortDefinition cd = new CalculationCohortDefinition(new MotherNewBornPairReviewedCalculation());
+		cd.setName("Mother-new born pair reviewed");
+		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
+		return cd;
 	}
 }
