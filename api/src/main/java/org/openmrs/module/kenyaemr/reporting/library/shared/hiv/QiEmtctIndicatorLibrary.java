@@ -37,7 +37,7 @@ public class QiEmtctIndicatorLibrary {
 	 * @return org.openmrs.module.reporting.indicator.CohortIndicator
 	 */
 	public CohortIndicator patientsAttendingAtLeast4AncVisitsAndPregnant() {
-		return cohortIndicator("Pregnant women who had at least 4 during the review period",
+		return cohortIndicator("4th ANC visit (FANC) Service coverage ",
 				map(qiEmtctCohortLibrary.patientsAttendingAtLeastAncVisitsAndPregnant(4), "onDate=${endDate}"),
 				map(qiEmtctCohortLibrary.patientsAttendingAtLeastAncVisitsAndPregnant(0), "onDate=${endDate}")
 		);
@@ -60,7 +60,7 @@ public class QiEmtctIndicatorLibrary {
 	 */
 	public CohortIndicator numberOfNewAnClients() {
 		return cohortIndicator("Partner testing - (Service coverage)",
-				map(qiCohortLibrary.hivPositivePatientsWhosePartnersAreHivPositive(), "onOrAfter=${endDate-6m},onOrBefore=${endDate}"),
+				map(qiEmtctCohortLibrary.pregnantWomenWhosePartnersHaveBeenTestedForHivOrWhoAreKnownPositive(), "onOrAfter=${endDate-6m},onOrBefore=${endDate}"),
 				map(qiEmtctCohortLibrary.numberOfNewAnClients(), "onOrAfter=${endDate-6m},onOrBefore=${endDate}")
 		);
 	}
@@ -75,4 +75,19 @@ public class QiEmtctIndicatorLibrary {
 				map(qiEmtctCohortLibrary.numberOfExpectedDeliveriesInTheFacilityCatchmentPopulationDuringTheReviewPeriod(), "onOrBefore=${endDate}")
 		);
 	}
+
+	/**
+	 *% of HIV-infected pregnant women receiving  HAART .
+	 * @return CohortIndicator
+	 */
+	public CohortIndicator HIVInfectedPregnantWomenReceivingHAART() {
+		return cohortIndicator("ART Provision (Service coverage))",
+				map(qiEmtctCohortLibrary.hivInfectedPregnantWomenReceivingHaart(), "onOrBefore=${endDate}"),
+				map(qiEmtctCohortLibrary.hIVInfectedPregnantWomenWhoHadAtLeastOneAncVisitDuring6MonthsReviewPeriod(), "onOrAfter=${endDate-6m},onOrBefore=${endDate}")
+		);
+	}
+
+	/**
+	 *
+	 */
 }

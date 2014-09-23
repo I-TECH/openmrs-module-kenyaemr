@@ -66,7 +66,7 @@ public class PregnantWithANCVisitsCalculation extends AbstractPatientCalculation
                 for(Encounter e: encounters){
                     if(ancForm.getUuid().equals(e.getForm().getUuid())){
                         counter++;
-                        if(counter == minVisits){
+                        if(counter >= minVisits){
                             result = true;
                             break;
                         }

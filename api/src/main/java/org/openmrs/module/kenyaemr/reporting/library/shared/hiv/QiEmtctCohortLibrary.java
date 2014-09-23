@@ -16,15 +16,19 @@ package org.openmrs.module.kenyaemr.reporting.library.shared.hiv;
 import org.openmrs.Concept;
 import org.openmrs.EncounterType;
 import org.openmrs.Form;
+import org.openmrs.Program;
 import org.openmrs.api.PatientSetService;
 import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyacore.report.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.kenyacore.report.cohort.definition.DateCalculationCohortDefinition;
 import org.openmrs.module.kenyacore.report.cohort.definition.DateObsValueBetweenCohortDefinition;
 import org.openmrs.module.kenyaemr.Dictionary;
+import org.openmrs.module.kenyaemr.calculation.library.IsPregnantCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.mchms.EddEstimateFromMchmsProgramCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.mchms.MotherNewBornPairReviewedCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.mchms.OnHaartCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.mchms.PregnantWithANCVisitsCalculation;
+import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.metadata.MchMetadata;
 import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonCohortLibrary;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
@@ -49,6 +53,12 @@ public class QiEmtctCohortLibrary {
 
 	@Autowired
 	private CommonCohortLibrary commonCohorts;
+
+	@Autowired
+	private QiCohortLibrary qiCohortLibrary;
+
+	@Autowired
+	private HivCohortLibrary hivCohortLibrary;
 
 	/**
 	 * Number of pregnant women attending at least N ANC visits
@@ -136,6 +146,69 @@ public class QiEmtctCohortLibrary {
 		CalculationCohortDefinition cd = new CalculationCohortDefinition(new MotherNewBornPairReviewedCalculation());
 		cd.setName("Mother-new born pair reviewed");
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
+		return cd;
+	}
+
+	/*
+	* pregnant wommen
+	*@return CohortDefinition
+	 */
+	public CohortDefinition pregnant() {
+		CalculationCohortDefinition calculationCd = new CalculationCohortDefinition(new IsPregnantCalculation());
+		calculationCd.setName("Pregnant");
+		calculationCd.addParameter(new Parameter("onDate", "On Date", Date.class));
+		return calculationCd;
+	}
+
+	/**
+	 * Partners of pregnant women should be tested for HIV or have a known positive status
+	 * @return CohortDefinition
+	 */
+	public CohortDefinition pregnantWomenWhosePartnersHaveBeenTestedForHivOrWhoAreKnownPositive() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("Pregnant women and whose partners are tested");
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addSearch("testedOrKnownHiv", ReportUtils.map(qiCohortLibrary.hivPositivePatientsWhosePartnersAreHivPositive(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("pregnant", ReportUtils.map(pregnant(), "onDate=${onOrBefore}"));
+		cd.setCompositionString("testedOrKnownHiv AND pregnant");
+		return cd;
+	}
+
+	/**
+	 * Number of HIV infected pregnant women who were receiving HAART
+	 * @return CohortDefinition
+	 */
+	public CohortDefinition hivInfectedPregnantWomenReceivingHaart() {
+		CalculationCohortDefinition calculationCd = new CalculationCohortDefinition(new OnHaartCalculation());
+		calculationCd.setName("Mother on HAART");
+		calculationCd.addParameter(new Parameter("onDate", "On Date", Date.class));
+
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("Hiv infected women receiving Haart");
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addSearch("pregnant", ReportUtils.map(pregnant(), "onDate=${onOrBefore}"));
+		//cd.addSearch("inHivProgram", ReportUtils.map(commonCohorts.enrolled(MetadataUtils.existing(Program.class, HivMetadata._Program.HIV)), "enrolledOnOrBefore=${onOrBefore}"));
+		cd.addSearch("onHaart", ReportUtils.map(calculationCd, "onDate=${onOrBefore}"));
+		cd.setCompositionString("pregnant AND onHaart");
+		return cd;
+	}
+
+	/**
+	 * Number of HIV-infected pregnant women who had at least one ANC visit during the 6 months review period.
+	 * @return CohortDefinition
+	 */
+	public CohortDefinition hIVInfectedPregnantWomenWhoHadAtLeastOneAncVisitDuring6MonthsReviewPeriod() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("Hiv infected, pregnant women with at least one anc visit");
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addSearch("hivTestedPositive", ReportUtils.map(hivCohortLibrary.testedHivStatus(Dictionary.getConcept(Dictionary.POSITIVE)), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("inHivProgram", ReportUtils.map(commonCohorts.enrolled(MetadataUtils.existing(Program.class, HivMetadata._Program.HIV)), "enrolledOnOrBefore=${onOrBefore}"));
+		cd.addSearch("pregnant", ReportUtils.map(pregnant(), "onDate=${onOrBefore}"));
+		cd.addSearch("atLeastOneANCVisit", ReportUtils.map(patientsAttendingAtLeastAncVisitsAndPregnant(0), "onDate=${onOrBefore}"));
+		cd.setCompositionString("(hivTestedPositive OR inHivProgram) AND pregnant AND atLeastOneANCVisit");
 		return cd;
 	}
 }
