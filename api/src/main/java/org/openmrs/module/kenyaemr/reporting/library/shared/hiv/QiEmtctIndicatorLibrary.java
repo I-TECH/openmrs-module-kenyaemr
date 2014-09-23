@@ -39,7 +39,7 @@ public class QiEmtctIndicatorLibrary {
 	public CohortIndicator patientsAttendingAtLeast4AncVisitsAndPregnant() {
 		return cohortIndicator("4th ANC visit (FANC) Service coverage ",
 				map(qiEmtctCohortLibrary.patientsAttendingAtLeastAncVisitsAndPregnant(4), "onDate=${endDate}"),
-				map(qiEmtctCohortLibrary.patientsAttendingAtLeastAncVisitsAndPregnant(0), "onDate=${endDate}")
+				map(qiEmtctCohortLibrary.patientsAttendingAtLeastAncVisitsAndPregnant(1), "onDate=${endDate}")
 		);
 	}
 
@@ -88,6 +88,13 @@ public class QiEmtctIndicatorLibrary {
 	}
 
 	/**
-	 *
+	 *% of HIV-infected pregnant or lactating women on ART for at least 6 months who had a VL assessment done
+	 * @return CohortIndicator
 	 */
+	public CohortIndicator hIVInfectedPregnantOrLactatingWomenOnArtForAtLeast6MonthsWhoHadAvlAssessmentDone() {
+		return cohortIndicator("HIV Monitoring Viral Load (Service coverage))",
+				map(qiEmtctCohortLibrary.hivInfectedOrLactatingWomenOnARTForAtLeast6MonthsWithVLResultsNotOlderThan6monthsAtTheirLastVisit(), "onOrAfter=${endDate-6m},onOrBefore=${endDate}"),
+				map(qiEmtctCohortLibrary.hivInfectedOrLactatingWomenOnARTForAtLeast6MonthsWithAtLeastOneAncVisitDuringThe6MonthsReviewPeriod(), "onOrAfter=${endDate-6m},onOrBefore=${endDate}")
+		);
+	}
 }

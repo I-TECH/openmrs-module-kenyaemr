@@ -80,8 +80,8 @@ public class QiEmtctReportBuilder extends AbstractReportBuilder {
 		dsd.addColumn("3.4", "% of Mother-newborn pairs reviewed  by health care provider 7-14 days of birth", ReportUtils.map(qiEmtctIndicatorLibrary.mothersNewBornPairReview(), indParams), "");
 		dsd.addColumn("3.5", "% of pregnant women whose partners have been tested for HIV or who are known positive", ReportUtils.map(qiEmtctIndicatorLibrary.numberOfNewAnClients(), indParams), "");
 		dsd.addColumn("3.6", "% of HIV-infected pregnant women receiving  HAART", ReportUtils.map(qiEmtctIndicatorLibrary.HIVInfectedPregnantWomenReceivingHAART(), indParams), "");
-		/*dsd.addColumn("3.7", "% of HIV-infected pregnant or lactating women on ART for at least 6 months who had a VL assessment done", ReportUtils.map(qiIndicators.hivMonitoringCd4(), indParams), "");
-		dsd.addColumn("3.8", "% of HIV-infected pregnant or lactating women on ART for at least 6 months with VL suppression", ReportUtils.map(qiIndicators.hivMonitoringCd4(), indParams), "");
+		dsd.addColumn("3.7", "% of HIV-infected pregnant or lactating women on ART for at least 6 months who had a VL assessment done", ReportUtils.map(qiEmtctIndicatorLibrary.hIVInfectedPregnantOrLactatingWomenOnArtForAtLeast6MonthsWhoHadAvlAssessmentDone(), indParams), "");
+		/*dsd.addColumn("3.8", "% of HIV-infected pregnant or lactating women on ART for at least 6 months with VL suppression", ReportUtils.map(qiIndicators.hivMonitoringCd4(), indParams), "");
 		dsd.addColumn("3.9", "% HEI who received HIV DNA PCR testing by age 6 weeks and results are available", ReportUtils.map(qiIndicators.hivMonitoringCd4(), indParams), "");
 		dsd.addColumn("3.10", "% HIV exposed infants on exclusive breast  feeding at age 6 months", ReportUtils.map(qiIndicators.hivMonitoringCd4(), indParams), "");
 		dsd.addColumn("3.11", "% HIV exposed mother baby pair (0-18 months) in active care among facility registered", ReportUtils.map(qiIndicators.hivMonitoringCd4(), indParams), "");

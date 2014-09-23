@@ -31,11 +31,14 @@ import org.openmrs.module.kenyaemr.calculation.library.mchms.PregnantWithANCVisi
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.metadata.MchMetadata;
 import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonCohortLibrary;
+import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.art.ArtCohortLibrary;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.cohort.definition.CodedObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.EncounterCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.NumericObsCohortDefinition;
+import org.openmrs.module.reporting.common.RangeComparator;
 import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
@@ -59,6 +62,9 @@ public class QiEmtctCohortLibrary {
 
 	@Autowired
 	private HivCohortLibrary hivCohortLibrary;
+
+	@Autowired
+	private ArtCohortLibrary artCohortLibrary;
 
 	/**
 	 * Number of pregnant women attending at least N ANC visits
@@ -207,8 +213,52 @@ public class QiEmtctCohortLibrary {
 		cd.addSearch("hivTestedPositive", ReportUtils.map(hivCohortLibrary.testedHivStatus(Dictionary.getConcept(Dictionary.POSITIVE)), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
 		cd.addSearch("inHivProgram", ReportUtils.map(commonCohorts.enrolled(MetadataUtils.existing(Program.class, HivMetadata._Program.HIV)), "enrolledOnOrBefore=${onOrBefore}"));
 		cd.addSearch("pregnant", ReportUtils.map(pregnant(), "onDate=${onOrBefore}"));
-		cd.addSearch("atLeastOneANCVisit", ReportUtils.map(patientsAttendingAtLeastAncVisitsAndPregnant(0), "onDate=${onOrBefore}"));
+		cd.addSearch("atLeastOneANCVisit", ReportUtils.map(patientsAttendingAtLeastAncVisitsAndPregnant(1), "onDate=${onOrBefore}"));
 		cd.setCompositionString("(hivTestedPositive OR inHivProgram) AND pregnant AND atLeastOneANCVisit");
+		return cd;
+	}
+
+	/**
+	 * Number of HIV-infected pregnant or lactating women on ART for at least 6 months with a VL result not older than 6 months at their last visit.
+	 * @return CohortDefinition
+	 */
+	public CohortDefinition hivInfectedOrLactatingWomenOnARTForAtLeast6MonthsWithVLResultsNotOlderThan6monthsAtTheirLastVisit() {
+
+		//find the <1000 copies of recent obs
+		NumericObsCohortDefinition cdVl = new NumericObsCohortDefinition();
+		cdVl.setName("VL result");
+		cdVl.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cdVl.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cdVl.setQuestion(Dictionary.getConcept(Dictionary.HIV_VIRAL_LOAD));
+		cdVl.setTimeModifier(PatientSetService.TimeModifier.LAST);
+
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("Hiv infected, pregnant women or lactating on ART and VL in the last 6 months");
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addSearch("onART6Months", ReportUtils.map(artCohortLibrary.netCohortMonths(6), "onDate=${onOrBefore}"));
+		cd.addSearch("hivTestedPositive", ReportUtils.map(hivCohortLibrary.testedHivStatus(Dictionary.getConcept(Dictionary.POSITIVE)), "onOrBefore=${onOrBefore}"));
+		cd.addSearch("inHivProgram", ReportUtils.map(commonCohorts.enrolled(MetadataUtils.existing(Program.class, HivMetadata._Program.HIV)), "enrolledOnOrBefore=${onOrBefore}"));
+		cd.addSearch("pregnant", ReportUtils.map(pregnant(), "onDate=${onOrBefore}"));
+		cd.addSearch("vlResults", ReportUtils.map(cdVl, "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("(hivTestedPositive OR inHivProgram) AND onART6Months AND pregnant AND vlResults");
+		return cd;
+
+	}
+
+	/**
+	 * Number of HIV-infected pregnant or lactating women who have been on ART for at least 6 months with at least one ANC visit during the 6 months review period.
+	 * @return CohortDefinition
+	 */
+	public CohortDefinition hivInfectedOrLactatingWomenOnARTForAtLeast6MonthsWithAtLeastOneAncVisitDuringThe6MonthsReviewPeriod() {
+
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("Hiv infected, pregnant women or lactating on ART and has ANC in the last 6 months");
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addSearch("hadAncVisitPregnantOrLactatingHivInfected", ReportUtils.map(hIVInfectedPregnantWomenWhoHadAtLeastOneAncVisitDuring6MonthsReviewPeriod(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("onART6Months", ReportUtils.map(artCohortLibrary.netCohortMonths(6), "onDate=${onOrBefore}"));
+		cd.setCompositionString("hadAncVisitPregnantOrLactatingHivInfected AND onART6Months");
 		return cd;
 	}
 }
