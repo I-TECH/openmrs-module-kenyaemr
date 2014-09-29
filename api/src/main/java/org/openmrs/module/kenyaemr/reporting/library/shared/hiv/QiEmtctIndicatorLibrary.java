@@ -97,4 +97,15 @@ public class QiEmtctIndicatorLibrary {
 				map(qiEmtctCohortLibrary.hivInfectedOrLactatingWomenOnARTForAtLeast6MonthsWithAtLeastOneAncVisitDuringThe6MonthsReviewPeriod(), "onOrAfter=${endDate-6m},onOrBefore=${endDate}")
 		);
 	}
+
+	/**
+	 *All deliveries should be monitored using an accurately filled partograph
+	 * @return CohortIndicator
+	 */
+	public CohortIndicator allDeliveriesShouldBeMonitoredUsingAnAccuratelyFilledPartograph() {
+		return cohortIndicator("Quality of Delivery (Service delivery)",
+				map(qiEmtctCohortLibrary.numberOfDeliveriesWithPartographsAccuratelyFilled(6), "onDate=${endDate}"),
+				map(qiEmtctCohortLibrary.numberOfDeliveriesInTheFacilityDuringTheReviewPeriod(6), "onDate=${endDate}")
+		);
+	}
 }

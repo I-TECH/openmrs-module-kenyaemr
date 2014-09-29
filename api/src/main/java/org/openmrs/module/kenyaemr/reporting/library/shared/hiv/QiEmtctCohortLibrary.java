@@ -24,6 +24,8 @@ import org.openmrs.module.kenyacore.report.cohort.definition.DateCalculationCoho
 import org.openmrs.module.kenyacore.report.cohort.definition.DateObsValueBetweenCohortDefinition;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.library.IsPregnantCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.mchms.AllDeliveriesOnOrAfterMonthsCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.mchms.DeliveriesWithFullPartographsCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.mchms.EddEstimateFromMchmsProgramCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.mchms.MotherNewBornPairReviewedCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.mchms.OnHaartCalculation;
@@ -38,7 +40,6 @@ import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.EncounterCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.NumericObsCohortDefinition;
-import org.openmrs.module.reporting.common.RangeComparator;
 import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
@@ -259,6 +260,27 @@ public class QiEmtctCohortLibrary {
 		cd.addSearch("hadAncVisitPregnantOrLactatingHivInfected", ReportUtils.map(hIVInfectedPregnantWomenWhoHadAtLeastOneAncVisitDuring6MonthsReviewPeriod(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
 		cd.addSearch("onART6Months", ReportUtils.map(artCohortLibrary.netCohortMonths(6), "onDate=${onOrBefore}"));
 		cd.setCompositionString("hadAncVisitPregnantOrLactatingHivInfected AND onART6Months");
+		return cd;
+	}
+
+	/**
+	 * Number of deliveries with partographs accurately filled during the review period
+	 * @return CohortDefinition
+	 */
+	public CohortDefinition numberOfDeliveriesWithPartographsAccuratelyFilled(int months) {
+		CalculationCohortDefinition cd = new CalculationCohortDefinition(new DeliveriesWithFullPartographsCalculation());
+		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
+		cd.addCalculationParameter("onOrAfter", months);
+		return cd;
+	}
+
+	/**
+	 *
+	 */
+	public CohortDefinition numberOfDeliveriesInTheFacilityDuringTheReviewPeriod(int months) {
+		CalculationCohortDefinition cd = new CalculationCohortDefinition(new AllDeliveriesOnOrAfterMonthsCalculation());
+		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
+		cd.addCalculationParameter("onOrAfter", months);
 		return cd;
 	}
 }

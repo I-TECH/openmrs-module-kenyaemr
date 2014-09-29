@@ -76,7 +76,7 @@ public class QiEmtctReportBuilder extends AbstractReportBuilder {
 
 		dsd.addColumn("3.1", "% of pregnant women attending at least four ANC visits", ReportUtils.map(qiEmtctIndicatorLibrary.patientsAttendingAtLeast4AncVisitsAndPregnant(), indParams), "");
 		dsd.addColumn("3.2", "% of skilled deliveries within the facility catchment population", ReportUtils.map(qiEmtctIndicatorLibrary.skilledDeliveriesWithinFacility(), indParams), "");
-		//dsd.addColumn("3.3", "% of deliveries with accurately filled Partographs", ReportUtils.map(qiIndicators.hivMonitoringCd4(), indParams), "");
+		dsd.addColumn("3.3", "% of deliveries with accurately filled Partographs", ReportUtils.map(qiEmtctIndicatorLibrary.allDeliveriesShouldBeMonitoredUsingAnAccuratelyFilledPartograph(), indParams), "");
 		dsd.addColumn("3.4", "% of Mother-newborn pairs reviewed  by health care provider 7-14 days of birth", ReportUtils.map(qiEmtctIndicatorLibrary.mothersNewBornPairReview(), indParams), "");
 		dsd.addColumn("3.5", "% of pregnant women whose partners have been tested for HIV or who are known positive", ReportUtils.map(qiEmtctIndicatorLibrary.numberOfNewAnClients(), indParams), "");
 		dsd.addColumn("3.6", "% of HIV-infected pregnant women receiving  HAART", ReportUtils.map(qiEmtctIndicatorLibrary.HIVInfectedPregnantWomenReceivingHAART(), indParams), "");

@@ -57,7 +57,7 @@ public class DeliveriesWithFullPartographsCalculation extends AbstractPatientCal
 		 * concept list that defines full partograph.
 		 * TODO: This is a list of concepts used with delivery form. It is assumed that full partograph requires all these concepts. Verify this
 		 */
-		List<String> conceptlist = Arrays.asList(
+		List<String> conceptList = Arrays.asList(
 				Dictionary.getConcept(Metadata.Concept.PREGNANCY_DURATION_AMOUNT).getUuid(),
 				Dictionary.getConcept(Metadata.Concept.METHOD_OF_DELIVERY).getUuid(),
 				Dictionary.getConcept(Metadata.Concept.DATE_OF_CONFINEMENT).getUuid(),
@@ -98,7 +98,7 @@ public class DeliveriesWithFullPartographsCalculation extends AbstractPatientCal
                     if(deliveryForm.getUuid().equals(e.getForm().getUuid())){
 						//TODO: This code assumes that delivery form is filled in one encounter. This will need to be changed if logic changes
 						List<Obs> deliveryObs = obsService.getObservations(Arrays.asList(personService.getPerson(ptId)), Arrays.asList(e), null, null, null, null, null, null, null, null, null, false);
-                            result = isCompletePartograph(conceptlist, deliveryObs);
+                            result = isCompletePartograph(conceptList, deliveryObs);
 							break;
 
                     }
