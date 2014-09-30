@@ -108,4 +108,15 @@ public class QiEmtctIndicatorLibrary {
 				map(qiEmtctCohortLibrary.numberOfDeliveriesInTheFacilityDuringTheReviewPeriod(6), "onDate=${endDate}")
 		);
 	}
+
+	/**
+	 *% of HIV-infected pregnant or lactating women on ART for at least 6 months with VL suppression
+	 * @return CohortIndicator
+	 */
+	public CohortIndicator hivInfectedPregnantOrLactatingWomenOnArtForAtLeast6MonthsWithVlSuppression() {
+		return cohortIndicator("HIV Monitoring Viral Load  suppression (Outcome))",
+				map(qiEmtctCohortLibrary.numberOfHivInfectedPregnantOrLactatingWomenOnArtForAtLeast6MonthsWhoHaveVlLess1000CopiesOnTheirMostRecentVlResult(), "onOrBefore=${endDate}"),
+				map(qiEmtctCohortLibrary.numberOfHivInfectedPregnantOrLactatingWomenOnArtForAtLeast6MonthsWithVlResultNotOlderThan6MonthsFromTheEndOfTheReviewPeriod(), "onOrAfter=${endDate-6m},onOrBefore=${endDate}")
+		);
+	}
 }

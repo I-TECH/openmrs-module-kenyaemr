@@ -213,7 +213,6 @@ public class QiCohortLibrary {
 
 		compositionCohortDefinition.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		compositionCohortDefinition.setName("Number of patients on ART for at least 12 months and VL < 1000 copies");
-		compositionCohortDefinition.setName("onARTatLeast12MonthsAndVlLess1000");
 		compositionCohortDefinition.addSearch("onART12Months", ReportUtils.map(artCohortLibrary.netCohortMonths(12), "onDate=${onOrBefore}"));
 		compositionCohortDefinition.addSearch("vlLess1000", ReportUtils.map(cdVlLess1000, "onOrBefore=${onOrBefore}"));
 		compositionCohortDefinition.addSearch("adult", ReportUtils.map(commonCohorts.agedAtLeast(15), "effectiveDate=${onOrBefore}"));
