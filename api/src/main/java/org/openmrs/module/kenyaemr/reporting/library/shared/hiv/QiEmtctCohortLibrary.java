@@ -23,6 +23,7 @@ import org.openmrs.module.kenyacore.report.cohort.definition.CalculationCohortDe
 import org.openmrs.module.kenyacore.report.cohort.definition.DateCalculationCohortDefinition;
 import org.openmrs.module.kenyacore.report.cohort.definition.DateObsValueBetweenCohortDefinition;
 import org.openmrs.module.kenyaemr.Dictionary;
+import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.calculation.library.IsPregnantCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.mchms.AllDeliveriesOnOrAfterMonthsCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.mchms.DeliveriesWithFullPartographsCalculation;
@@ -282,5 +283,13 @@ public class QiEmtctCohortLibrary {
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
 		cd.addCalculationParameter("onOrAfter", months);
 		return cd;
+	}
+
+	/**
+	 * infants exposed to HIV
+	 * This is checked when a child is enrolled through mchcs enrollment form
+	 */
+	public CohortDefinition exposedInfants(){
+		return commonCohorts.hasObs(Dictionary.getConcept(Metadata.Concept.CHILDS_CURRENT_HIV_STATUS), Dictionary.getConcept(Metadata.Concept.EXPOSURE_TO_HIV));
 	}
 }
