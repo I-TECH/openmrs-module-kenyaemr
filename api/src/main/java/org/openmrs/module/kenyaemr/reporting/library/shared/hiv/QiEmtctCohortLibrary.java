@@ -41,6 +41,7 @@ import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.EncounterCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.NumericObsCohortDefinition;
+import org.openmrs.module.reporting.common.RangeComparator;
 import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
@@ -276,7 +277,8 @@ public class QiEmtctCohortLibrary {
 	}
 
 	/**
-	 *
+	 * Number of deliveries in the facility during the review period
+	 * @return CohortDefinition
 	 */
 	public CohortDefinition numberOfDeliveriesInTheFacilityDuringTheReviewPeriod(int months) {
 		CalculationCohortDefinition cd = new CalculationCohortDefinition(new AllDeliveriesOnOrAfterMonthsCalculation());
@@ -289,7 +291,57 @@ public class QiEmtctCohortLibrary {
 	 * infants exposed to HIV
 	 * This is checked when a child is enrolled through mchcs enrollment form
 	 */
-	public CohortDefinition exposedInfants(){
+	public CohortDefinition exposedInfants() {
 		return commonCohorts.hasObs(Dictionary.getConcept(Metadata.Concept.CHILDS_CURRENT_HIV_STATUS), Dictionary.getConcept(Metadata.Concept.EXPOSURE_TO_HIV));
+	}
+	 /* Number of HIV-infected pregnant or lactating women on ART for at least 6 months who have VL < 1,000 copies on their most recent VL result
+	 * @return CohortDefinition
+	 */
+	public CohortDefinition numberOfHivInfectedPregnantOrLactatingWomenOnArtForAtLeast6MonthsWhoHaveVlLess1000CopiesOnTheirMostRecentVlResult() {
+
+		//find the <1000 copies of recent obs
+		NumericObsCohortDefinition cdVlLess1000 = new NumericObsCohortDefinition();
+		cdVlLess1000.setName("Less than 1000 Copies");
+		cdVlLess1000.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cdVlLess1000.setQuestion(Dictionary.getConcept(Dictionary.HIV_VIRAL_LOAD));
+		cdVlLess1000.setOperator1(RangeComparator.LESS_THAN);
+		cdVlLess1000.setValue1(1000.0);
+		cdVlLess1000.setTimeModifier(PatientSetService.TimeModifier.LAST);
+
+
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("pregnant and on art 6 months ago");
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("onART6Months", ReportUtils.map(artCohortLibrary.netCohortMonths(6), "onDate=${onOrBefore}"));
+		cd.addSearch("vlLess1000", ReportUtils.map(cdVlLess1000, "onOrBefore=${onOrBefore}"));
+		cd.addSearch("pregnant", ReportUtils.map(pregnant(), "onDate=${onOrBefore}"));
+		cd.setCompositionString("onART6Months AND vlLess1000 AND pregnant");
+		return cd;
+	}
+
+	/**
+	 * Number of HIV-infected pregnant or lactating women on ART for at least 6 months with a VL result not older than 6 months from the end of the review period.
+	 * @return CohortDefinition
+	 */
+	public CohortDefinition numberOfHivInfectedPregnantOrLactatingWomenOnArtForAtLeast6MonthsWithVlResultNotOlderThan6MonthsFromTheEndOfTheReviewPeriod() {
+
+		//find vl copies of recent obs
+		NumericObsCohortDefinition cdVlLess1000 = new NumericObsCohortDefinition();
+		cdVlLess1000.setName("vl Copies");
+		cdVlLess1000.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cdVlLess1000.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cdVlLess1000.setQuestion(Dictionary.getConcept(Dictionary.HIV_VIRAL_LOAD));
+		cdVlLess1000.setTimeModifier(PatientSetService.TimeModifier.LAST);
+
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("pregnant and on art 6 months ago");
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addSearch("pregnant", ReportUtils.map(pregnant(), "onDate=${onOrBefore}"));
+		cd.addSearch("vlLess1000", ReportUtils.map(cdVlLess1000, "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("onART6Months", ReportUtils.map(artCohortLibrary.netCohortMonths(6), "onDate=${onOrBefore}"));
+		cd.setCompositionString("onART6Months AND vlLess1000 AND pregnant");
+		return cd;
+
 	}
 }
