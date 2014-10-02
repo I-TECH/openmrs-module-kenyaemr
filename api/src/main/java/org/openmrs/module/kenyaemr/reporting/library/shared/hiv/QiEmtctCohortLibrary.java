@@ -362,9 +362,8 @@ public class QiEmtctCohortLibrary {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.setName("exposed infants with dna pcr test results");
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
 		cd.addSearch("exposedInfants", ReportUtils.map(exposedInfants(), "onOrBefore=${onOrBefore}"));
-		cd.addSearch("dnaPcrInfants", ReportUtils.map(numberOfInfantsWhoReceivedDNAPCRObs(weeks), "onDate={onOrBefore}"));
+		cd.addSearch("dnaPcrInfants", ReportUtils.map(numberOfInfantsWhoReceivedDNAPCRObs(weeks), "onDate=${onOrBefore}"));
 		cd.setCompositionString("exposedInfants AND dnaPcrInfants");
 		return cd;
 	}
