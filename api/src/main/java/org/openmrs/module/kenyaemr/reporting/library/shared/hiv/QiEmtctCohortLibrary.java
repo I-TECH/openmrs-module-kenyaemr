@@ -25,6 +25,7 @@ import org.openmrs.module.kenyacore.report.cohort.definition.DateObsValueBetween
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.calculation.library.IsPregnantCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.mchcs.InfantsDNAPCRCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.mchms.AllDeliveriesOnOrAfterMonthsCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.mchms.DeliveriesWithFullPartographsCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.mchms.EddEstimateFromMchmsProgramCalculation;
@@ -343,5 +344,28 @@ public class QiEmtctCohortLibrary {
 		cd.setCompositionString("onART6Months AND vlLess1000 AND pregnant");
 		return cd;
 
+	}
+
+	public CohortDefinition numberOfInfantsWhoReceivedDNAPCRObs(int weeks) {
+		CalculationCohortDefinition dnaPcrInfants = new CalculationCohortDefinition(new InfantsDNAPCRCalculation());
+		dnaPcrInfants.addParameter(new Parameter("onDate", "On Date", Date.class));
+		dnaPcrInfants.addCalculationParameter("durationAfterBirth", weeks);
+		return dnaPcrInfants;
+	}
+
+	/**
+	 * Number of exposed infants who received dna-pcr test after birth
+	 * @return CohortDefinition
+	 */
+	public CohortDefinition numberOfExposedInfantsWhoRecievedDNAPCRTest(int weeks) {
+
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("exposed infants with dna pcr test results");
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
+		cd.addSearch("exposedInfants", ReportUtils.map(exposedInfants(), "onOrBefore=${onOrBefore}"));
+		cd.addSearch("dnaPcrInfants", ReportUtils.map(numberOfInfantsWhoReceivedDNAPCRObs(weeks), "onDate={onOrBefore}"));
+		cd.setCompositionString("exposedInfants AND dnaPcrInfants");
+		return cd;
 	}
 }
