@@ -16,6 +16,7 @@ import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.metadata.MchMetadata;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.util.databasechange.BooleanConceptChangeSet;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
@@ -76,7 +77,20 @@ public class InfantsDNAPCRCalculationTest extends BaseModuleContextSensitiveTest
 			TestUtils.saveEncounter(patient, mchcsConsultationEncounterType, followUpForm, TestUtils.date(2014, 9, 30), dnaPcrObs);
 		}
 
-		List<Integer> ptIds = Arrays.asList(7, 8);
+		{
+			/**
+			 * save patient with birth date set but with no dna-pcr obs
+			 */
+			Patient patient = TestUtils.getPatient(6);
+			Obs[] dnaPcrObs = {
+					TestUtils.saveObs(patient, Dictionary.getConcept(Metadata.Concept.HIV_DNA_POLYMERASE_CHAIN_REACTION), Dictionary.getConcept(Metadata.Concept.DETECTED), TestUtils.date(2014, 8, 30)),
+					TestUtils.saveObs(patient, Dictionary.getConcept(Metadata.Concept.HIV_DNA_POLYMERASE_CHAIN_REACTION), Dictionary.getConcept(Metadata.Concept.NOT_DETECTED) , TestUtils.date(2014, 9, 10)),
+			};
+
+			TestUtils.saveEncounter(patient, mchcsConsultationEncounterType, followUpForm, TestUtils.date(2014, 9, 30));
+		}
+
+		List<Integer> ptIds = Arrays.asList(7, 8, 999, 6);
 		Map<String, Object> params = new HashMap<String, Object>();
 
 		params.put("durationAfterBirth", 6);
@@ -85,6 +99,8 @@ public class InfantsDNAPCRCalculationTest extends BaseModuleContextSensitiveTest
 
 		Assert.assertTrue((Boolean) resultMap.get(7).getValue());
 		Assert.assertFalse((Boolean) resultMap.get(8).getValue());
+		Assert.assertNull(resultMap.get(999)); // voided, no dob and pcr obs
+		Assert.assertFalse((Boolean) resultMap.get(6).getValue()); // the patient has no dna-pcr obs
 
 	}
 

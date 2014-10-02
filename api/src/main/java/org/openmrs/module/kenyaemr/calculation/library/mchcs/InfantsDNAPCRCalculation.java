@@ -51,14 +51,14 @@ public class InfantsDNAPCRCalculation extends AbstractPatientCalculation {
 		//get param val for age
 		Integer durationAfterBirth = (Integer)parameterValues.get("durationAfterBirth");
 		PatientService service = Context.getPatientService();
-		for (Integer ptId : infantsWithDNAPCR.keySet()) {
+		for (Integer ptId : cohort) {
 			boolean receivedTest = false;
 
 			ListResult result = (ListResult) infantsWithDNAPCR.get(ptId);
 			List<Obs> obs = CalculationUtils.extractResultValues(result);
 			Date dob = service.getPatient(ptId).getBirthdate();
 
-			if (!dob.equals(null)) {
+			if (dob != null && !obs.isEmpty()) {
 				/**
 				 * We convert durationAfterBirth to days to allow for a given acceptable range
 				 * no_of_days = durationAfterBirth X 7
@@ -75,12 +75,15 @@ public class InfantsDNAPCRCalculation extends AbstractPatientCalculation {
 				Calendar upper_boundary = setCalendarTime(target_date.getTime());
 				upper_boundary.add(Calendar.DAY_OF_YEAR, 6);
 
-				for (Obs o : obs) {
 
-					Calendar obs_date = setCalendarTime(o.getObsDatetime());
-					if (obs_date.after(lower_boundary) && obs_date.before(upper_boundary)) {
-						receivedTest = true;
-						break;
+				for (Obs o : obs) {
+					if(o != null) {
+
+						Calendar obs_date = setCalendarTime(o.getObsDatetime());
+						if (obs_date.after(lower_boundary) && obs_date.before(upper_boundary)) {
+							receivedTest = true;
+							break;
+						}
 					}
 				}
 
