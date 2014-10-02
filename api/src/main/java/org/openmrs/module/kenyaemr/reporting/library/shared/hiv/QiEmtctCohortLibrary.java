@@ -25,6 +25,7 @@ import org.openmrs.module.kenyacore.report.cohort.definition.DateObsValueBetween
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.calculation.library.IsPregnantCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.mchcs.HEICohortsXMonthsDuringReviewCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.mchcs.InfantsDNAPCRCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.mchms.AllDeliveriesOnOrAfterMonthsCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.mchms.DeliveriesWithFullPartographsCalculation;
@@ -36,6 +37,7 @@ import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.metadata.MchMetadata;
 import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonCohortLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.art.ArtCohortLibrary;
+import org.openmrs.module.kenyaemr.reporting.library.shared.mchcs.MchcsCohortLibrary;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.cohort.definition.CodedObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -69,6 +71,9 @@ public class QiEmtctCohortLibrary {
 
 	@Autowired
 	private ArtCohortLibrary artCohortLibrary;
+
+	@Autowired
+	private MchcsCohortLibrary mchcsCohortLibrary;
 
 	/**
 	 * Number of pregnant women attending at least N ANC visits
@@ -357,7 +362,7 @@ public class QiEmtctCohortLibrary {
 	 * Number of exposed infants who received dna-pcr test after birth
 	 * @return CohortDefinition
 	 */
-	public CohortDefinition numberOfExposedInfantsWhoRecievedDNAPCRTest(int weeks) {
+	public CohortDefinition numberOfExposedInfantsWhoReceivedDNAPCRTest(int weeks) {
 
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.setName("exposed infants with dna pcr test results");
@@ -365,6 +370,55 @@ public class QiEmtctCohortLibrary {
 		cd.addSearch("exposedInfants", ReportUtils.map(exposedInfants(), "onOrBefore=${onOrBefore}"));
 		cd.addSearch("dnaPcrInfants", ReportUtils.map(numberOfInfantsWhoReceivedDNAPCRObs(weeks), "onDate=${onOrBefore}"));
 		cd.setCompositionString("exposedInfants AND dnaPcrInfants");
+		return cd;
+	}
+
+	/**
+	 * Number of HIV exposed infants that are on exclusive breast feeding at age 6 months
+	 * @return CohortDefinition
+	 */
+	public CohortDefinition heiInfantsOnExclusiveBreastFeedingAtAge6Months() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("Number of HIV exposed infants that are on exclusive breast feeding at age 6 months");
+		cd.addParameter(new Parameter("OnOrBefore", "Before Date", Date.class));
+		cd.addParameter(new Parameter("OnOrAfter", "After Date", Date.class));
+		cd.addSearch("exposedInfants", ReportUtils.map(exposedInfants(), "onOrBefore=${onOrBefore}"));
+		cd.addSearch("exclusiveFeeding", ReportUtils.map(mchcsCohortLibrary.exclusiveBreastFeeding(), "onOrAfter=${OnOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("ageAt6Months", ReportUtils.map(mchcsCohortLibrary.ageAt6Months(), "effectiveDate=${onOrBefore}"));
+		cd.setCompositionString("exposedInfants AND exclusiveFeeding AND ageAt6Months");
+		return cd;
+	}
+
+	/**
+	 * Number of HIV-exposed infants identified HIV positive by 18 months of age
+	 * @return CohortDefinition
+	 */
+	public CohortDefinition heiIdentifiedHivPositiveBy18MonthsOfAge() {
+		Concept discontinuation = Dictionary.getConcept(Dictionary.REASON_FOR_PROGRAM_DISCONTINUATION);
+		Concept hivPositive18Months = Dictionary.getConcept(Dictionary.HIV_POSITIVE);
+		Concept resultOfHivTesting = Dictionary.getConcept(Dictionary.RESULT_OF_HIV_TEST);
+		Concept positive = Dictionary.getConcept(Dictionary.POSITIVE);
+
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("Number of HIV-exposed infants identified HIV positive by 18 months of age");
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addSearch("exposedInfants", ReportUtils.map(exposedInfants(), "onOrBefore=${onOrBefore}"));
+		cd.addSearch("hivPositiveBy18Months", ReportUtils.map(commonCohorts.hasObs(discontinuation, hivPositive18Months), "onOrAfter=${OnOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("hivPositive", ReportUtils.map(commonCohorts.hasObs(resultOfHivTesting, positive), "onOrAfter=${OnOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("exposedInfants AND (hivPositiveBy18Months OR hivPositive)");
+		return  cd;
+	}
+
+	/**
+	 * Number of HEI in cohorts who turned 12 months during the 6 months review period
+	 * @return CohortDefinition
+	 */
+	public CohortDefinition heiCohortWhoTurnedXMonthsDuringXMonthsReviewPeriod(int turnedMonths, int reviewMonths) {
+		CalculationCohortDefinition cd = new CalculationCohortDefinition(new HEICohortsXMonthsDuringReviewCalculation());
+		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
+		cd.addCalculationParameter("turnedMonths", turnedMonths);
+		cd.addCalculationParameter("reviewMonths", reviewMonths);
 		return cd;
 	}
 }
