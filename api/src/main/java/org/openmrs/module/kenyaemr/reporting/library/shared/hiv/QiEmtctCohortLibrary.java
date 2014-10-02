@@ -23,7 +23,9 @@ import org.openmrs.module.kenyacore.report.cohort.definition.CalculationCohortDe
 import org.openmrs.module.kenyacore.report.cohort.definition.DateCalculationCohortDefinition;
 import org.openmrs.module.kenyacore.report.cohort.definition.DateObsValueBetweenCohortDefinition;
 import org.openmrs.module.kenyaemr.Dictionary;
+import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.calculation.library.IsPregnantCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.mchcs.InfantsDNAPCRCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.mchms.AllDeliveriesOnOrAfterMonthsCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.mchms.DeliveriesWithFullPartographsCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.mchms.EddEstimateFromMchmsProgramCalculation;
@@ -287,7 +289,13 @@ public class QiEmtctCohortLibrary {
 	}
 
 	/**
-	 * Number of HIV-infected pregnant or lactating women on ART for at least 6 months who have VL < 1,000 copies on their most recent VL result
+	 * infants exposed to HIV
+	 * This is checked when a child is enrolled through mchcs enrollment form
+	 */
+	public CohortDefinition exposedInfants() {
+		return commonCohorts.hasObs(Dictionary.getConcept(Metadata.Concept.CHILDS_CURRENT_HIV_STATUS), Dictionary.getConcept(Metadata.Concept.EXPOSURE_TO_HIV));
+	}
+	 /* Number of HIV-infected pregnant or lactating women on ART for at least 6 months who have VL < 1,000 copies on their most recent VL result
 	 * @return CohortDefinition
 	 */
 	public CohortDefinition numberOfHivInfectedPregnantOrLactatingWomenOnArtForAtLeast6MonthsWhoHaveVlLess1000CopiesOnTheirMostRecentVlResult() {
@@ -334,6 +342,29 @@ public class QiEmtctCohortLibrary {
 		cd.addSearch("vlLess1000", ReportUtils.map(cdVlLess1000, "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
 		cd.addSearch("onART6Months", ReportUtils.map(artCohortLibrary.netCohortMonths(6), "onDate=${onOrBefore}"));
 		cd.setCompositionString("onART6Months AND vlLess1000 AND pregnant");
+		return cd;
+
+	}
+
+	public CohortDefinition numberOfInfantsWhoReceivedDNAPCRObs(int weeks) {
+		CalculationCohortDefinition dnaPcrInfants = new CalculationCohortDefinition(new InfantsDNAPCRCalculation());
+		dnaPcrInfants.addParameter(new Parameter("onDate", "On Date", Date.class));
+		dnaPcrInfants.addCalculationParameter("durationAfterBirth", weeks);
+		return dnaPcrInfants;
+	}
+
+	/**
+	 * Number of exposed infants who received dna-pcr test after birth
+	 * @return CohortDefinition
+	 */
+	public CohortDefinition numberOfExposedInfantsWhoRecievedDNAPCRTest(int weeks) {
+
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("exposed infants with dna pcr test results");
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("exposedInfants", ReportUtils.map(exposedInfants(), "onOrBefore=${onOrBefore}"));
+		cd.addSearch("dnaPcrInfants", ReportUtils.map(numberOfInfantsWhoReceivedDNAPCRObs(weeks), "onDate=${onOrBefore}"));
+		cd.setCompositionString("exposedInfants AND dnaPcrInfants");
 		return cd;
 	}
 }
