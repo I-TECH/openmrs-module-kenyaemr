@@ -76,8 +76,8 @@ public class InfantMotherOrGuardianPairVisitsCalculationTest extends BaseModuleC
 		CalculationResultMap resultMap = new InfantMotherOrGuardianPairVisitsCalculation().evaluate(ptIds, params, Context.getService(PatientCalculationService.class).createCalculationContext());
 
 		Assert.assertTrue((Boolean) resultMap.get(2).getValue());
-		Assert.assertTrue((Boolean) resultMap.get(6).getValue());
-		Assert.assertNull(resultMap.get(999));
+		Assert.assertFalse((Boolean) resultMap.get(6).getValue());
+		Assert.assertFalse((Boolean) resultMap.get(999).getValue());
 	}
 
 }

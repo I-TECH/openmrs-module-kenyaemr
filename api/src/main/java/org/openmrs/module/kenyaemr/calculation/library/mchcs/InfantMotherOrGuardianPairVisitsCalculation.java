@@ -56,11 +56,12 @@ public class InfantMotherOrGuardianPairVisitsCalculation extends AbstractPatient
 		//extract infant and mother/guardian ids from calculation map
 		Set<Integer> infantIds = infantVisits.keySet();
 
-		Set<Date> infantVisitDates = new HashSet<Date>();
-		Set<Date> motherVisitDates = new HashSet<Date>();
-
 		CalculationResultMap ret = new CalculationResultMap();
 		for (Integer ptid : cohort){
+			// create containers for infant and mother/guardian visits for every cohort member
+			Set<Date> infantVisitDates = new HashSet<Date>();
+			Set<Date> motherVisitDates = new HashSet<Date>();
+
 			boolean result = false;
 			if (infantIds.contains(ptid)){
 				ListResult infantData = (ListResult)infantVisits.get(ptid);
@@ -70,9 +71,6 @@ public class InfantMotherOrGuardianPairVisitsCalculation extends AbstractPatient
 				}
 
 				Set<Integer> mother_guardian_ids = (Set<Integer>)infantRelations.get(ptid).getValue();
-				//ListResult infantRelationsIds = (ListResult) infantRelations.get(ptid);
-				//List<Integer> mother_guardian_ids = CalculationUtils.extractResultValues(infantRelationsIds);
-
 
 				for(Integer id : mother_guardian_ids) {
 					ListResult mother_visits_data = (ListResult)motherGuardianVisits.get(id);
