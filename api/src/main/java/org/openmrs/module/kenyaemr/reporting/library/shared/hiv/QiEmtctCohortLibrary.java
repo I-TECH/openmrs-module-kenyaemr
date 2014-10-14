@@ -452,8 +452,8 @@ public class QiEmtctCohortLibrary {
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addSearch("Infants", ReportUtils.map(ageCohort, "effectiveDate=${onOrBefore}"));
 		cd.addSearch("exposedPatients", ReportUtils.map(exposedInfants(), "onOrBefore=${onOrBefore}"));
-		cd.addSearch("inFollowUp", ReportUtils.map(patientsWithForms(MetadataUtils.existing(Form.class, MchMetadata._Form.MCHCS_FOLLOW_UP))));
-		cd.setCompositionString("exposedInfants AND inFollowUp");
+		cd.addSearch("inFollowUp", ReportUtils.map(patientsWithForms(MetadataUtils.existing(Form.class, MchMetadata._Form.MCHCS_FOLLOW_UP)), "onOrAfter=${onOrAfter}, onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("Infants AND exposedPatients AND inFollowUp");
 		return cd;
 	}
 }
