@@ -84,8 +84,8 @@ public class QiEmtctReportBuilder extends AbstractReportBuilder {
 		dsd.addColumn("3.8", "% of HIV-infected pregnant or lactating women on ART for at least 6 months with VL suppression", ReportUtils.map(qiEmtctIndicatorLibrary.hivInfectedPregnantOrLactatingWomenOnArtForAtLeast6MonthsWithVlSuppression(), indParams), "");
 		dsd.addColumn("3.9", "% HEI who received HIV DNA PCR testing by age 6 weeks and results are available", ReportUtils.map(qiEmtctIndicatorLibrary.heiWhoReceivedHivDnaPCRTestingByAge6WeeksAndResultsAreAvailable(), indParams), "");
 		dsd.addColumn("3.10", "% HIV exposed infants on exclusive breast  feeding at age 6 months", ReportUtils.map(qiEmtctIndicatorLibrary.hivExposedInfantsOnExclusiveBreastFeedingAtAge6Months(), indParams), "");
-		//dsd.addColumn("3.11", "% HIV exposed mother baby pair (0-18 months) in active care among facility registered", ReportUtils.map(qiEmtctIndicatorLibrary.hivExposedMotherBabyPair0to18MonthsInActiveCareAmongFacilityRegistered(), indParams), "");
-		//dsd.addColumn("3.12", "% HIV exposed mother baby pair (0-18 months) in active care among population estimate", ReportUtils.map(qiEmtctIndicatorLibrary.hivExposedMotherBabyPair0To18MonthsInActiveCareAmongPopulationEstimate(), indParams), "");
+		dsd.addColumn("3.11", "% HIV exposed mother baby pair (0-18 months) in active care among facility registered", ReportUtils.map(qiEmtctIndicatorLibrary.hivExposedMotherBabyPair0to18MonthsInActiveCareAmongFacilityRegistered(), indParams), "");
+		dsd.addColumn("3.12", "% HIV exposed mother baby pair (0-18 months) in active care among population estimate", ReportUtils.map(qiEmtctIndicatorLibrary.hivExposedMotherBabyPair0To18MonthsInActiveCareAmongPopulationEstimate(), indParams), "");
 		dsd.addColumn("3.13", "% HIV exposed infants diagnosed with HIV between 0 and 18 months", ReportUtils.map(qiEmtctIndicatorLibrary.hivExposedInfantsDiagnosedWithHivBetween0And18Months(), indParams), "");
 		return dsd;
 	}

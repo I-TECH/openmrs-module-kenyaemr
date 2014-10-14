@@ -8,6 +8,7 @@ import org.openmrs.Patient;
 import org.openmrs.RelationshipType;
 import org.openmrs.VisitType;
 import org.openmrs.api.context.Context;
+import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyacore.test.TestUtils;
@@ -75,7 +76,9 @@ public class InfantMotherOrGuardianPairVisitsCalculationTest extends BaseModuleC
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("reviewPeriod", 4);
 		Date endDate = TestUtils.date(2014, 10, 13);
-		CalculationResultMap resultMap = new InfantMotherOrGuardianPairVisitsCalculation().evaluate(ptIds, params, Context.getService(PatientCalculationService.class).createCalculationContext());
+		PatientCalculationContext p = Context.getService(PatientCalculationService.class).createCalculationContext();
+		p.setNow(endDate);
+		CalculationResultMap resultMap = new InfantMotherOrGuardianPairVisitsCalculation().evaluate(ptIds, params, p);
 
 		Assert.assertTrue((Boolean) resultMap.get(2).getValue());
 		Assert.assertFalse((Boolean) resultMap.get(6).getValue());

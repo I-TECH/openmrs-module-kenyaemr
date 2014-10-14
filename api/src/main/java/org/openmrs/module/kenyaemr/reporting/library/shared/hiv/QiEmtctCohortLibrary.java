@@ -26,6 +26,7 @@ import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.calculation.library.IsPregnantCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.mchcs.HEICohortsXMonthsDuringReviewCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.mchcs.InfantMotherOrGuardianPairVisitsCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.mchcs.InfantsDNAPCRCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.mchms.AllDeliveriesOnOrAfterMonthsCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.mchms.DeliveriesWithFullPartographsCalculation;
@@ -354,6 +355,11 @@ public class QiEmtctCohortLibrary {
 
 	}
 
+	/**
+	 *
+	 * @param weeks
+	 * @return
+	 */
 	public CohortDefinition numberOfInfantsWhoReceivedDNAPCRObs(int weeks) {
 		CalculationCohortDefinition dnaPcrInfants = new CalculationCohortDefinition(new InfantsDNAPCRCalculation());
 		dnaPcrInfants.addParameter(new Parameter("onDate", "On Date", Date.class));
@@ -450,10 +456,40 @@ public class QiEmtctCohortLibrary {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addSearch("heiPatients0To18Months", ReportUtils.map(heiPatients0To18Months(), "onOrBefore=${onOrBefore}"));
+		cd.addSearch("inFollowUp", ReportUtils.map(patientsWithForms(MetadataUtils.existing(Form.class, MchMetadata._Form.MCHCS_FOLLOW_UP)), "onOrAfter=${onOrBefore-6m},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("heiPatients0To18Months AND inFollowUp");
+		return cd;
+	}
+
+	/**
+	 * Number of infants seen in facility during review period whose mother/guardian also have documented visit on same day during review period
+	 * @return CohortDefinition
+	 */
+	public CohortDefinition numberOfInfantsSeenInFacilityDuringReviewPeriodWhoseMotherOrGuardianAlsoHaveDocumentedVisitOnSameDayDuringReviewPeriod(int reviewPeriod) {
+		CalculationCohortDefinition cd = new CalculationCohortDefinition(new InfantMotherOrGuardianPairVisitsCalculation());
+		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
+		cd.addCalculationParameter("reviewPeriod", reviewPeriod);
+		return cd;
+	}
+
+	/**
+	 * HEI patients between 0 and 18 months  at a facility
+	 */
+	public CohortDefinition heiPatients0To18Months(){
+		AgeCohortDefinition ageCohort = new AgeCohortDefinition();
+		ageCohort.setMaxAgeUnit(DurationUnit.MONTHS);
+		ageCohort.setMinAgeUnit(DurationUnit.DAYS);
+		ageCohort.setMaxAge(18);
+		ageCohort.setMinAge(0);
+		ageCohort.addParameter(new Parameter("effectiveDate", "Effective Date", Date.class));
+
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addSearch("Infants", ReportUtils.map(ageCohort, "effectiveDate=${onOrBefore}"));
 		cd.addSearch("exposedPatients", ReportUtils.map(exposedInfants(), "onOrBefore=${onOrBefore}"));
-		cd.addSearch("inFollowUp", ReportUtils.map(patientsWithForms(MetadataUtils.existing(Form.class, MchMetadata._Form.MCHCS_FOLLOW_UP)), "onOrAfter=${onOrAfter}, onOrBefore=${onOrBefore}"));
-		cd.setCompositionString("Infants AND exposedPatients AND inFollowUp");
+		cd.setCompositionString("Infants AND exposedPatients");
 		return cd;
 	}
 }
