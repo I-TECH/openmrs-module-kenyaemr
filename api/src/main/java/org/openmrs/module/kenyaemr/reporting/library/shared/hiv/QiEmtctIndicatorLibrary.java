@@ -119,4 +119,64 @@ public class QiEmtctIndicatorLibrary {
 				map(qiEmtctCohortLibrary.numberOfHivInfectedPregnantOrLactatingWomenOnArtForAtLeast6MonthsWithVlResultNotOlderThan6MonthsFromTheEndOfTheReviewPeriod(), "onOrAfter=${endDate-6m},onOrBefore=${endDate}")
 		);
 	}
+
+	/**
+	 * % HEI who received HIV DNA PCR testing by age 6 weeks and results are available
+	 * 3.9
+	 * @return CohortIndicator
+	 */
+	public  CohortIndicator heiWhoReceivedHivDnaPCRTestingByAge6WeeksAndResultsAreAvailable() {
+		return cohortIndicator("Early Infant Diagnosis  (Service coverage)",
+				map(qiEmtctCohortLibrary.numberOfExposedInfantsWhoReceivedDNAPCRTest(6), "onOrBefore=${endDate}"),
+				map(qiEmtctCohortLibrary.heiCohortWhoTurnedXMonthsDuringXMonthsReviewPeriod(12, 6), "onDate=${endDate}")
+		);
+	}
+
+	/**
+	 * % HIV exposed infants on exclusive breast  feeding at age 6 months
+	 * 3.10
+	 * @return CohortIndicator
+	 */
+	public CohortIndicator hivExposedInfantsOnExclusiveBreastFeedingAtAge6Months() {
+		return cohortIndicator("Infant Feeding Practices (Service Coverage))",
+				map(qiEmtctCohortLibrary.heiInfantsOnExclusiveBreastFeedingAtAge6Months(), "onOrAfter=${endDate-6m},onOrBefore=${endDate}"),
+				map(qiEmtctCohortLibrary.heiCohortWhoTurnedXMonthsDuringXMonthsReviewPeriod(12, 6), "onDate=${endDate}")
+		);
+	}
+
+	/**
+	 * % HIV exposed mother baby pair (0-18 months) in active care among facility registered
+	 * 3.11
+	 * @return Cohort
+	 */
+	public CohortIndicator hivExposedMotherBabyPair0to18MonthsInActiveCareAmongFacilityRegistered() {
+		return cohortIndicator("Retention of Mother baby pair - Facility estimate (Retention)",
+				map(qiEmtctCohortLibrary.numberOfHivInfectedPregnantOrLactatingWomenOnArtForAtLeast6MonthsWhoHaveVlLess1000CopiesOnTheirMostRecentVlResult(), "onOrBefore=${endDate}"),
+				map(qiEmtctCohortLibrary.numberOfHivInfectedPregnantOrLactatingWomenOnArtForAtLeast6MonthsWithVlResultNotOlderThan6MonthsFromTheEndOfTheReviewPeriod(), "onOrAfter=${endDate-6m},onOrBefore=${endDate}")
+		);
+	}
+
+	/**
+	 * % HIV exposed mother baby pair (0-18 months) in active care among population estimate
+	 * 3.12
+	 * @return CohortIndicator
+	 */
+	public CohortIndicator hivExposedMotherBabyPair0To18MonthsInActiveCareAmongPopulationEstimate() {
+		return cohortIndicator("Retention of Mother baby pair - Population estimate (Retention)",
+				map(qiEmtctCohortLibrary.numberOfHivInfectedPregnantOrLactatingWomenOnArtForAtLeast6MonthsWhoHaveVlLess1000CopiesOnTheirMostRecentVlResult(), "onOrBefore=${endDate}"),
+				map(qiEmtctCohortLibrary.numberOfHivInfectedPregnantOrLactatingWomenOnArtForAtLeast6MonthsWithVlResultNotOlderThan6MonthsFromTheEndOfTheReviewPeriod(), "onOrAfter=${endDate-6m},onOrBefore=${endDate}")
+		);
+	}
+
+	/**
+	 * % HIV exposed infants diagnosed with HIV between 0 and 18 months
+	 * 3.13
+	 * @return CohortIndicator
+	 */
+	public CohortIndicator hivExposedInfantsDiagnosedWithHivBetween0And18Months() {
+		return cohortIndicator("% HIV exposed infants diagnosed with HIV between 0 and 18 months",
+				map(qiEmtctCohortLibrary.heiIdentifiedHivPositiveBy18MonthsOfAge(), "onOrAfter=${endDate-6m},onOrBefore=${endDate}"),
+				map(qiEmtctCohortLibrary.heiCohortWhoTurnedXMonthsDuringXMonthsReviewPeriod(24, 6), "onDate=${endDate}")
+		);
+	}
 }

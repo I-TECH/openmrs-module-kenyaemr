@@ -742,6 +742,8 @@
   <concept_answer concept_answer_id="2262" concept_id="159424" answer_concept="1066" creator="1" date_created="2010-08-28 21:55:50.0" uuid="2262CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC" sort_weight="2262.0"/>
   <concept_answer concept_answer_id="2263" concept_id="159424" answer_concept="1065" creator="1" date_created="2010-08-28 21:55:50.0" uuid="2263CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC" sort_weight="2263.0"/>
   <concept_answer concept_answer_id="2264" concept_id="159424" answer_concept="1067" creator="1" date_created="2010-08-28 21:55:50.0" uuid="2264CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC" sort_weight="2264.0"/>
+  <concept concept_id="138571" retired="0" datatype_id="4" class_id="4" is_set="0" creator="1" date_created="2007-11-03 00:00:00.0" version="" changed_by="1" date_changed="2013-05-20 13:36:20.0" retired_by="1" uuid="138571AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+  <concept_name concept_id="138571" name="HIV Positive" locale="en" creator="1" date_created="2007-10-18 04:28:24.0" concept_name_id="38380" voided="0" voided_by="1" uuid="38380BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB" concept_name_type="FULLY_SPECIFIED" locale_preferred="true"/>
   <concept concept_id="856" retired="0" datatype_id="1" class_id="1" is_set="0" creator="1" date_created="2004-05-05 00:00:00.0" version="" changed_by="1" date_changed="2013-12-24 04:20:42.0" retired_by="1" uuid="856AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
   <concept_numeric concept_id="856" low_absolute="0.0" units="copies/ml" precise="0"/>
   <concept_name concept_id="856" name="HIV VIRAL LOAD" locale="en" creator="1" date_created="2004-05-05 00:00:00.0" concept_name_id="898" voided="0" voided_by="1" uuid="898BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB" concept_name_type="FULLY_SPECIFIED" locale_preferred="true"/>
