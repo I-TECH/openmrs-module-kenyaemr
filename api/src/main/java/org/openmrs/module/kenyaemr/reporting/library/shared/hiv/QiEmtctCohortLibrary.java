@@ -39,15 +39,18 @@ import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonCohortL
 import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.art.ArtCohortLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.shared.mchcs.MchcsCohortLibrary;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
+import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CodedObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.EncounterCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.NumericObsCohortDefinition;
+import org.openmrs.module.reporting.common.DurationUnit;
 import org.openmrs.module.reporting.common.RangeComparator;
 import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
+import org.openmrs.reporting.Report;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -419,6 +422,38 @@ public class QiEmtctCohortLibrary {
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
 		cd.addCalculationParameter("turnedMonths", turnedMonths);
 		cd.addCalculationParameter("reviewMonths", reviewMonths);
+		return cd;
+	}
+
+	/**
+	 * patients who had a particular form filled during a given period of time
+	 */
+	public CohortDefinition patientsWithForms(Form form){
+		EncounterCohortDefinition cd = new EncounterCohortDefinition();
+		cd.setFormList(Arrays.asList(form));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		return cd;
+	}
+
+	/**
+	 * HEI patients between 0 and 18 months in follow-up at a facility
+	 */
+	public CohortDefinition heiPatientsInFollowUp(){
+		AgeCohortDefinition ageCohort = new AgeCohortDefinition();
+		ageCohort.setMaxAgeUnit(DurationUnit.MONTHS);
+		ageCohort.setMinAgeUnit(DurationUnit.DAYS);
+		ageCohort.setMaxAge(18);
+		ageCohort.setMinAge(0);
+		ageCohort.addParameter(new Parameter("effectiveDate", "Effective Date", Date.class));
+
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addSearch("Infants", ReportUtils.map(ageCohort, "effectiveDate=${onOrBefore}"));
+		cd.addSearch("exposedPatients", ReportUtils.map(exposedInfants(), "onOrBefore=${onOrBefore}"));
+		cd.addSearch("inFollowUp", ReportUtils.map(patientsWithForms(MetadataUtils.existing(Form.class, MchMetadata._Form.MCHCS_FOLLOW_UP)), "onOrAfter=${onOrAfter}, onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("Infants AND exposedPatients AND inFollowUp");
 		return cd;
 	}
 }
