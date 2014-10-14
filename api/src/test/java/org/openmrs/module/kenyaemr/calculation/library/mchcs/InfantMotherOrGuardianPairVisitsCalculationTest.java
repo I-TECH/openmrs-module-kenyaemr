@@ -17,6 +17,7 @@ import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -73,6 +74,7 @@ public class InfantMotherOrGuardianPairVisitsCalculationTest extends BaseModuleC
 		List<Integer> ptIds = Arrays.asList(2, 6, 999);
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("reviewPeriod", 4);
+		Date endDate = TestUtils.date(2014, 10, 13);
 		CalculationResultMap resultMap = new InfantMotherOrGuardianPairVisitsCalculation().evaluate(ptIds, params, Context.getService(PatientCalculationService.class).createCalculationContext());
 
 		Assert.assertTrue((Boolean) resultMap.get(2).getValue());
