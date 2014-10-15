@@ -75,7 +75,7 @@ public class ScheduledIncrementalBackups implements Job {
 		deleteScheduledIncrementalBackups(30, ".sql.zip");
 
 		String mysqlDetails = decryptMysqlDetails();
-		String command = ("mysqldump -uroot -p"+mysqlDetails+" backuptest -r" + dir + "/" + defaultLocation + "-" + strFilename + ".sql");
+		String command = ("mysqldump -uroot -p"+mysqlDetails+" openmrs -r" + dir + "/" + defaultLocation + "-" + strFilename + ".sql");
 
 		Process p = null;
 		try {

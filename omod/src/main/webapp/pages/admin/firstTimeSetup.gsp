@@ -53,6 +53,7 @@
 				<% if (defaultLocation) { %>
 					<div class="ke-warning" style="margin-bottom: 5px">Ensure that all visits are closed before changing the default location</div>
 				<% } %>
+                <div class="ke-panel-content"><h5>Enter MySQL Password</h5></div>
                 <input type="password" name="mysqlDetails" class="mysqlDetails" style="width: 200px" />
 				<% fields.each { %>
 				${ ui.includeFragment("kenyaui", "widget/labeledField", it) }

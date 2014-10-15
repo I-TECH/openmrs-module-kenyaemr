@@ -79,7 +79,7 @@ public class BackupRestoreFragmentController {
             String dir = (chooser.getSelectedFile().toString());
 
             String mysqlDetails = decryptMysqlDetails();
-            String command = ("mysqldump -uroot -p"+mysqlDetails+" backuptest -r" + dir + "/" + defaultLocation + "-" + strFilename + ".sql");
+            String command = ("mysqldump -uroot -p"+mysqlDetails+" openmrs -r" + dir + "/" + defaultLocation + "-" + strFilename + ".sql");
 
 
 /**
@@ -207,7 +207,7 @@ public class BackupRestoreFragmentController {
             Trigger cronTrigger = TriggerBuilder
                     .newTrigger()
                     .withIdentity(TriggerJobID(), groupJobID())
-                    .withSchedule(CronScheduleBuilder.cronSchedule("0 46 9,11,19 * * ?")
+                    .withSchedule(CronScheduleBuilder.cronSchedule("0 58 9,12,19 * * ?")
 		                    .withMisfireHandlingInstructionFireAndProceed())
 		            .startNow()
                     .build();
@@ -225,7 +225,7 @@ public class BackupRestoreFragmentController {
         Trigger cronTrigger = TriggerBuilder
                 .newTrigger()
                 .withIdentity(TriggerJobID(), groupJobID())
-                .withSchedule(CronScheduleBuilder.cronSchedule("0 46 9,11,19 * * ?")
+                .withSchedule(CronScheduleBuilder.cronSchedule("0 58 9,12,19 * * ?")
 		                .withMisfireHandlingInstructionFireAndProceed())
 		        .startNow()
                 .build();
@@ -320,11 +320,10 @@ public class BackupRestoreFragmentController {
 
 	                String mysqlDetails = decryptMysqlDetails();
                     String user = "root";
-                    String dbname = "backuptest2";
+                    String dbname = "openmrs";
                     String source = newFile.getAbsoluteFile().toString();
 
-
-                    String[] command = new String[]{"mysql", dbname, "--user=" + user, "--password=" + mysqlDetails, "-e", " source " + source};
+                    String[] command = new String[]{"mysql", dbname, "--user=" + user, "--password=" +mysqlDetails, "-e", " source " + source};
 
                     Process p = null;
                     try {
@@ -338,6 +337,7 @@ public class BackupRestoreFragmentController {
                         } else {
                             System.out.println("Restore failed");
                             kenyaUi.notifyError(httpSession, "Database Restore UnSuccessful");
+
                         }
 
                     } catch (Exception e) {
