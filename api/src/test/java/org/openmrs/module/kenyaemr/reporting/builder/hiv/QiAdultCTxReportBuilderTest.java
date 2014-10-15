@@ -37,9 +37,9 @@ import java.util.Arrays;
 import static org.hamcrest.Matchers.*;
 
 /**
- * Tests for {@link QiReportBuilder}
+ * Tests for {@link QiAdultCTxReportBuilder}
  */
-public class QiReportBuilderTest extends BaseModuleContextSensitiveTest {
+public class QiAdultCTxReportBuilderTest extends BaseModuleContextSensitiveTest {
 
 	@Autowired
 	private CommonMetadata commonMetadata;
@@ -51,11 +51,11 @@ public class QiReportBuilderTest extends BaseModuleContextSensitiveTest {
 	private TbMetadata tbMetadata;
 
 	@Autowired
-	@Qualifier("kenyaemr.hiv.report.qi")
+	@Qualifier("kenyaemr.hiv.report.qi.adult.c.tx")
 	private ReportDescriptor report;
 
 	@Autowired
-	private QiReportBuilder builder;
+	private QiAdultCTxReportBuilder builder;
 
 	@Before
 	public void setup() throws Exception {

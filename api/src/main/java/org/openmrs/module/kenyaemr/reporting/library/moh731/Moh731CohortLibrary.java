@@ -79,7 +79,8 @@ public class Moh731CohortLibrary {
 		cd.addParameter(new Parameter("toDate", "To Date", Date.class));
 		cd.addSearch("startedArt", ReportUtils.map(artCohorts.startedArt(), "onOrAfter=${fromDate},onOrBefore=${toDate}"));
 		cd.addSearch("revisitsArt", ReportUtils.map(revisitsArt(), "fromDate=${fromDate},toDate=${toDate}"));
-		cd.setCompositionString("startedArt OR revisitsArt");
+		cd.addSearch("deceased", ReportUtils.map(commonCohorts.deceasedPatients(), "onDate=${toDate}"));
+		cd.setCompositionString("startedArt OR revisitsArt AND NOT deceased");
 		return cd;
 	}
 

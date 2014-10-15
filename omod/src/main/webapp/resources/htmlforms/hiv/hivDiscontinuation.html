@@ -63,44 +63,44 @@
 	<div class="ke-form-content">
 		<fieldset>
 			<legend>Discontinue HIV Care</legend>
-				<table class="baseline-aligned" width="100%" border="0">
+			<table class="baseline-aligned" width="100%" border="0">
+				<tr>
+					<td>Date:</td>
+					<td><encounterDate id="encounter-date" showTime="true" /></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Reason:</td>
+					<td><obs conceptId="161555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="159492AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160034AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5240AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,819AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Transferred Out,Died,Lost to Follow,Cannot afford Treatment,Other,Unknown" id="idReason" /></td>
+					<td></td>
+					<td></td>
+				</tr>
+			</table>
+			<div id="pdied">
+				<table>
 					<tr>
-						<td>Date:</td>
-						<td><encounterDate id="encounter-date" showTime="true" /></td>
-						<td></td>
-						<td></td>
-					</tr>
-					<tr>
-						<td>Reason:</td>
-						<td><obs conceptId="161555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="idReason" /></td>
+						<td>If Patient Died, please provide Date of Death if Known:</td>
+						<td><obs conceptId="1543AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
 						<td></td>
 						<td></td>
 					</tr>
 				</table>
-				<div id="pdied">
-					<table>
-						<tr>
-							<td>If Patient Died, please provide Date of Death if Known:</td>
-							<td><obs conceptId="1543AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
-							<td></td>
-							<td></td>
-						</tr>
-					</table>
-				</div>
+			</div>
 
-				<div id="ptransferred">
-					<table>
-						<tr>
-							<td><i>(If transferred out)</i> <br/>Transfer to Facility:</td>
-							<td ><br/><obs conceptId="159495AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "/></td>
-							<td></td>
-							<td></td>
-						</tr>
-					</table>
-				</div>
-				<br/>
-				<hr/>
-				<br/>
+			<div id="ptransferred">
+				<table>
+					<tr>
+						<td><i>(If transferred out)</i> <br/>Transfer to Facility:</td>
+						<td ><br/><obs conceptId="159495AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "/></td>
+						<td>Date Transferred Out<br /></td>
+						<td><br/><obs conceptId="160649AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "/></td>
+					</tr>
+				</table>
+			</div>
+			<br/>
+			<hr/>
+			<br/>
 
 			Signed  at <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete"/>
 

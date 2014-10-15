@@ -18,7 +18,9 @@
 		</property>
 		<property name="reports">
 			<set>
-				<ref bean="kenyaemr.hiv.report.qi" /> <!-- hidden until 14.2 as it isn't finished -->
+				<ref bean="kenyaemr.hiv.report.qi.adult.c.tx" />
+				<ref bean="kenyaemr.hiv.report.qi.peds.c.tx" />
+				<ref bean="kenyaemr.hiv.report.qi.adult.emtct" />
 				<ref bean="kenyaemr.hiv.report.dueForCd4" />
 				<ref bean="kenyaemr.hiv.report.decliningCd4" />
 				<ref bean="kenyaemr.hiv.report.lostToFollowUp" />
@@ -139,9 +141,24 @@
 
 	<!-- ===================== Reports ===================== -->
 
-	<bean id="kenyaemr.hiv.report.qi" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
+	<bean id="kenyaemr.hiv.report.qi.adult.c.tx" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
 		<property name="targetUuid" value="496a24ee-77e1-4f5e-82ba-bc78f6943537" />
-		<property name="name" value="Quality Improvement" />
+		<property name="name" value="Quality Improvement - Adult C and Tx" />
+		<property name="description" value="Standards for HIV Care - Adult Care and Treatment" />
+		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
+		<!--<property name="template" value="kenyaemr:hiv/adultCareAndTreatment.xls" />-->
+	</bean>
+
+	<bean id="kenyaemr.hiv.report.qi.peds.c.tx" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
+		<property name="targetUuid" value="2ce6f242-1e2c-11e4-9587-0bdfd164f2a9" />
+		<property name="name" value="Quality Improvement -paeds C and Tx" />
+		<property name="description" value="Standards for HIV Care" />
+		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
+	</bean>
+
+	<bean id="kenyaemr.hiv.report.qi.adult.emtct" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
+		<property name="targetUuid" value="b15ae74a-1e2c-11e4-81bd-a3989c3214c1" />
+		<property name="name" value="Quality Improvement -EMTCT" />
 		<property name="description" value="Standards for HIV Care" />
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 	</bean>

@@ -92,6 +92,6 @@ public class QiIndicatorLibraryTest extends BaseModuleContextSensitiveTest {
 		Fraction fraction = (Fraction) CohortIndicatorResult.getResultValue(result);
 
 		Assert.assertThat(fraction.getNumerator(), is(1));
-		Assert.assertThat(fraction.getDenominator(), is(2));
+		Assert.assertThat(fraction.getDenominator(), is(1));
 	}
 }

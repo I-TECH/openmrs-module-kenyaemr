@@ -9,6 +9,7 @@
 	</parent>
 
 	<artifactId>kenyaemr-distro</artifactId>
+  <version>14.2-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>KenyaEMR Distribution (optional)</name>
 	<description>Distribution project for KenyaEMR</description>
@@ -250,5 +251,4 @@
 			</build>
 		</profile>
 	</profiles>
-
 </project>

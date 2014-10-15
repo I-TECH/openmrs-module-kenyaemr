@@ -18,6 +18,7 @@ import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.MapDataSet;
 import org.openmrs.module.reporting.report.ReportData;
+import org.openmrs.module.reporting.report.ReportRequest;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.renderer.RenderingException;
 import org.openmrs.module.reporting.report.renderer.RenderingMode;
@@ -53,18 +54,18 @@ public class MergedCsvReportRenderer implements ReportRenderer {
 	}
 
 	/**
-	 * @see ReportRenderer#getRenderedContentType(org.openmrs.module.reporting.report.definition.ReportDefinition, String)
+	 * @see ReportRenderer#getRenderedContentType(ReportRequest)
 	 */
 	@Override
-	public String getRenderedContentType(ReportDefinition definition, String argument) {
+	public String getRenderedContentType(ReportRequest request) {
 		return "text/csv";
 	}
 
 	/**
-	 * @see ReportRenderer#getFilename(org.openmrs.module.reporting.report.definition.ReportDefinition, String)
+	 * @see ReportRenderer#getFilename(ReportRequest)
 	 */
 	@Override
-	public String getFilename(ReportDefinition definition, String argument) {
+	public String getFilename(ReportRequest request) {
 		return "test.csv";
 	}
 

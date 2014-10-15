@@ -36,6 +36,7 @@ import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -535,5 +536,35 @@ public class TbCohortLibraryTest extends BaseModuleContextSensitiveTest {
 		context.addParameterValue("onOrBefore", TestUtils.date(2012, 6, 30));
 		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
 		ReportingTestUtils.assertCohortEquals(Arrays.asList(7), evaluated);
+	}
+
+	/**
+	 * @see TbCohortLibrary#totalEnrolledPtbSmearNotDoneResultsAtMonths(int, int)
+	 */
+	@Test
+	public  void ptbSmearNotDoneResultsAtMonths_totalEnrolledPtbSmearNotDoneResultsAtMonths() throws Exception {
+		Concept diseaseClassification = Dictionary.getConcept(Dictionary.SITE_OF_TUBERCULOSIS_DISEASE);
+		Concept extraPulmonary = Dictionary.getConcept(Dictionary.MYCROBACTERIUM_TUBERCULOSIS_EXTRAPULMONARY);
+		Concept pulmonary = Dictionary.getConcept(Dictionary.PULMONARY_TB);
+		Concept smearNotDone = Dictionary.getConcept(Dictionary.NOT_DONE);
+		Concept cultureResults = Dictionary.getConcept(Dictionary.RESULTS_TUBERCULOSIS_CULTURE);
+		//get the tb start treatment date as a concept
+		Concept tbStartDate = Dictionary.getConcept(Dictionary.TUBERCULOSIS_DRUG_TREATMENT_START_DATE);
+		//enroll patient 6 into tb program 12 months ago from 31/07/2014
+		Program tbProgram = MetadataUtils.existing(Program.class, TbMetadata._Program.TB);
+		TestUtils.enrollInProgram(TestUtils.getPatient(6), tbProgram, TestUtils.date(2013, 7, 31));
+
+		//#7 to have obs diseaseClassification extraPulmonary
+		TestUtils.saveObs(TestUtils.getPatient(7), diseaseClassification, extraPulmonary, TestUtils.date(2014, 7, 10));
+		//#6 to have obs patientClassification  pulmonary and give him results smear Not done
+		TestUtils.saveObs(TestUtils.getPatient(6), diseaseClassification, pulmonary, TestUtils.date(2014, 7, 10));
+		TestUtils.saveObs(TestUtils.getPatient(6), cultureResults, smearNotDone, TestUtils.date(2014, 7, 28));
+		TestUtils.saveObs(TestUtils.getPatient(6), tbStartDate, TestUtils.date(2014, 6, 1), TestUtils.date(2014, 7, 28));
+
+		CohortDefinition cd = tbCohortLibrary.totalEnrolledPtbSmearNotDoneResultsAtMonths(12, 8);
+		context.addParameterValue("onOrAfter", TestUtils.date(2014, 7, 1));
+		context.addParameterValue("onOrBefore", TestUtils.date(2014, 7, 31));
+		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
+		ReportingTestUtils.assertCohortEquals(Arrays.asList(6), evaluated);
 	}
 }

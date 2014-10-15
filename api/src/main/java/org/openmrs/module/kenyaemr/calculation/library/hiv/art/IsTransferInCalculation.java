@@ -19,12 +19,14 @@ import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
+import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Calculates whether a patient is a transfer in based on the status
@@ -42,6 +44,7 @@ public class IsTransferInCalculation extends AbstractPatientCalculation {
 		Concept transferInStatus = Dictionary.getConcept(Dictionary.TRANSFER_IN);
 
 		CalculationResultMap transferInStatusResults = Calculations.lastObs(transferInStatus,cohort,context);
+		Set<Integer> transferInDate = CalculationUtils.patientsThatPass(calculate(new TransferInDateCalculation(), cohort, context));
 
 		CalculationResultMap result = new CalculationResultMap();
 		for (Integer ptId : cohort) {
@@ -49,7 +52,7 @@ public class IsTransferInCalculation extends AbstractPatientCalculation {
 
 			Concept status = EmrCalculationUtils.codedObsResultForPatient(transferInStatusResults, ptId);
 
-			if (((status != null) && (status.equals(Dictionary.getConcept(Dictionary.YES))))) {
+			if (((status != null) && (status.equals(Dictionary.getConcept(Dictionary.YES)))) || transferInDate.contains(ptId) ) {
 				isTransferIn = true;
 			}
 

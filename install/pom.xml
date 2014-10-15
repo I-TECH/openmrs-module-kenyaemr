@@ -8,6 +8,7 @@
 	</parent>
 
 	<artifactId>kenyaemr-install</artifactId>
+  <version>14.2-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>KenyaEMR Installation (optional)</name>
 	<description>Installation tools for KenyaEMR</description>
@@ -161,5 +162,4 @@
 			</build>
 		</profile>
 	</profiles>
-
 </project>

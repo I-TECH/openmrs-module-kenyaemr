@@ -15,13 +15,13 @@
 package org.openmrs.module.kenyaemr.reporting.library.shared.mchcs;
 
 
-
 import org.openmrs.Concept;
 import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyacore.report.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.NeverTakenCtxOrDapsoneCalculation;
 import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonCohortLibrary;
+import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.HivCohortLibrary;
 import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
@@ -40,6 +40,10 @@ public class MchcsCohortLibrary {
 
 	@Autowired
 	private CommonCohortLibrary commonCohorts;
+
+	@Autowired
+	private HivCohortLibrary hivCohortLibrary;
+
 
 	/**
 	 * Infants who have taken pcr test between ${onOrAfter} and ${onOrBefore}
@@ -453,7 +457,7 @@ public class MchcsCohortLibrary {
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.addSearch("hivExposedInfantsWithin2Months",ReportUtils.map(hivExposedInfantsWithin2Months(),"onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
-		cd.addSearch("hivExposedInfantsEligibleForCTX",ReportUtils.map(hivExposedInfantsEligibleForCTX(),"onDate=${onOrBefore}"));
+		cd.addSearch("hivExposedInfantsEligibleForCTX",ReportUtils.map(hivCohortLibrary.onCtxProphylaxis(),"onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
 		cd.setCompositionString("hivExposedInfantsWithin2Months AND hivExposedInfantsEligibleForCTX");
 		return cd;
 	}

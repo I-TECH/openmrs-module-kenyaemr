@@ -18,6 +18,9 @@ import org.openmrs.Concept;
 import org.openmrs.Program;
 import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyacore.report.cohort.definition.CalculationCohortDefinition;
+import org.openmrs.module.kenyacore.report.cohort.definition.DateCalculationCohortDefinition;
+import org.openmrs.module.kenyaemr.calculation.library.MissedLastAppointmentCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.LostToFollowUpCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.EligibleForArtCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtStartDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.OnAlternateFirstLineArtCalculation;
@@ -29,9 +32,9 @@ import org.openmrs.module.kenyaemr.calculation.library.hiv.art.TbPatientAtArtSta
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.WhoStageAtArtStartCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.regimen.RegimenManager;
-import org.openmrs.module.kenyacore.report.cohort.definition.DateCalculationCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.RegimenOrderCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonCohortLibrary;
+import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.HivCohortLibrary;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
@@ -56,13 +59,28 @@ public class ArtCohortLibrary {
 	@Autowired
 	private CommonCohortLibrary commonCohorts;
 
+	@Autowired
+	private HivCohortLibrary hivCohortLibrary;
+
 	/**
 	 * Patients who are eligible for ART on ${onDate}
 	 * @return the cohort definition
 	 */
 	public CohortDefinition eligibleForArt() {
-		CalculationCohortDefinition cd = new CalculationCohortDefinition(new EligibleForArtCalculation());
-		cd.setName("eligible for ART on date");
+
+		CalculationCohortDefinition eligibleForART = new CalculationCohortDefinition(new EligibleForArtCalculation());
+		eligibleForART.setName("eligible for ART on date");
+		eligibleForART.addParameter(new Parameter("onDate", "On Date", Date.class));
+		return eligibleForART;
+	}
+
+	/**
+	 * Patients who are LTFU
+	 * @return the cohort definition
+	 */
+	public CohortDefinition lostToFollowUpPatients() {
+		CalculationCohortDefinition cd = new CalculationCohortDefinition(new LostToFollowUpCalculation());
+		cd.setName("lost to follow on date");
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
 		return cd;
 	}
@@ -79,6 +97,32 @@ public class ArtCohortLibrary {
 	}
 
 	/**
+	 * Patients who missed appointments on ${onDate}
+	 * @return the cohort definition
+	 */
+	public CohortDefinition missedAppointments() {
+		CalculationCohortDefinition cd = new CalculationCohortDefinition(new MissedLastAppointmentCalculation());
+		cd.setName("missed appointment on date");
+		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
+		return cd;
+	}
+
+	/**
+	 * Patients who are on art and  missed appointments on ${onDate}
+	 * @return the cohort definition
+	 */
+	public CohortDefinition onArtAndMissedAppointments() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("on ART and Missed last appointment");
+		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
+		cd.addSearch("onArt", ReportUtils.map(onArt(), "onDate=${onDate}"));
+		cd.addSearch("missedAppointments", ReportUtils.map(missedAppointments(), "onDate=${onDate}"));
+		cd.setCompositionString("onArt AND NOT missedAppointments");
+		return cd;
+
+	}
+
+	/**
 	 * Patients who are on ART and pregnant on ${onDate}
 	 * @return the cohort definition
 	 */
@@ -86,7 +130,7 @@ public class ArtCohortLibrary {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.setName("on ART and pregnant");
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
-		cd.addSearch("onArt", ReportUtils.map(onArt(), "onDate=${onDate}"));
+		cd.addSearch("onArt", ReportUtils.map(onArtAndMissedAppointments(), "onDate=${onDate}"));
 		cd.addSearch("pregnant", ReportUtils.map(commonCohorts.pregnant(), "onDate=${onDate}"));
 		cd.setCompositionString("onArt AND pregnant");
 		return cd;
@@ -100,7 +144,7 @@ public class ArtCohortLibrary {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.setName("on ART and not pregnant");
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
-		cd.addSearch("onArt", ReportUtils.map(onArt(), "onDate=${onDate}"));
+		cd.addSearch("onArt", ReportUtils.map(onArtAndMissedAppointments(), "onDate=${onDate}"));
 		cd.addSearch("pregnant", ReportUtils.map(commonCohorts.pregnant(), "onDate=${onDate}"));
 		cd.setCompositionString("onArt AND NOT pregnant");
 		return cd;
@@ -236,21 +280,6 @@ public class ArtCohortLibrary {
 	}
 
 	/**
-	 * Patients who started ART between ${onOrAfter} and ${onOrBefore} excluding transfer ins
-	 * @return the cohort definition
-	 */
-	public CohortDefinition startedArtExcludingTransferins() {
-		CompositionCohortDefinition cd = new CompositionCohortDefinition();
-		cd.setName("Started ART excluding transfer ins");
-		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
-		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-		cd.addSearch("startedArt", ReportUtils.map(startedArt(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
-		cd.addSearch("transferIns", ReportUtils.map(commonCohorts.transferredIn(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
-		cd.setCompositionString("startedArt AND NOT transferIns");
-		return cd;
-	}
-
-	/**
 	 * Patients who started ART on ${onOrBefore} excluding transfer ins
 	 * @return the cohort definition
 	 */
@@ -259,7 +288,7 @@ public class ArtCohortLibrary {
 		cd.setName("Started ART excluding transfer ins on date in this facility");
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.addSearch("startedArt", ReportUtils.map(startedArt(), "onOrBefore=${onOrBefore}"));
-		cd.addSearch("transferIns", ReportUtils.map(commonCohorts.transferredIn(), "onOrBefore=${onOrBefore}"));
+		cd.addSearch("transferIns", ReportUtils.map(hivCohortLibrary.startedArtFromTransferringFacilityOnDate(), "onOrBefore=${onOrBefore}"));
 		cd.setCompositionString("startedArt AND NOT transferIns");
 		return  cd;
 	}

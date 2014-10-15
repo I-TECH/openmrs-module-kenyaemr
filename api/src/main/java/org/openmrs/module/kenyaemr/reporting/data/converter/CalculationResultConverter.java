@@ -43,6 +43,12 @@ public class CalculationResultConverter implements DataConverter{
 
 			return ((Concept) value).getName();
 		}
+		else if (value instanceof String) {
+			return value;
+		}
+		else if (value instanceof Double) {
+			return value;
+		}
 
 		return null;
 	}

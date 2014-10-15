@@ -155,7 +155,7 @@ public class HivCohortLibraryTest extends BaseModuleContextSensitiveTest {
 	}
 
 	/**
-	 * @see HivCohortLibrary#testedHivPositive()
+	 * @see HivCohortLibrary#testedHivStatus(Concept)
 	 */
 	@Test
 	public void testedHivPositive_shouldReturnPatientsWhoTestedHivPositive() throws Exception {
@@ -175,7 +175,7 @@ public class HivCohortLibraryTest extends BaseModuleContextSensitiveTest {
 		TestUtils.saveObs(TestUtils.getPatient(8), hivInfected, unknown, TestUtils.date(2012, 5, 10));
 
 		//patient #6 and #8 should pass the criteria
-		CohortDefinition cd = hivCohortLibrary.testedHivPositive();
+		CohortDefinition cd = hivCohortLibrary.testedHivStatus(positive);
 		context.addParameterValue("onOrAfter", TestUtils.date(2012, 6, 1));
 		context.addParameterValue("onOrBefore", TestUtils.date(2012, 6, 30));
 		EvaluatedCohort evaluated = Context.getService(CohortDefinitionService.class).evaluate(cd, context);

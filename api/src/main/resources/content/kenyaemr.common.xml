@@ -31,6 +31,9 @@
 				<ref bean="kenyaemr.common.report.missedAppointment" />
 				<ref bean="kenyaemr.common.report.moh711" />
 				<ref bean="kenyaemr.common.report.moh731" />
+				<ref bean="kenyaemr.common.report.dhis2" />
+				<ref bean="kenyaemr.common.report.recordedDeceased" />
+				<ref bean="kenyaemr.common.report.allPatients" />
 			</set>
 		</property>
 	</bean>
@@ -240,6 +243,30 @@
 		<property name="description" value="Monthly ART Drug Report" />
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 		<property name="template" value="kenyaemr:artDrugs.xls" />
+	</bean>
+
+	<bean id="kenyaemr.common.report.dhis2" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
+		<property name="targetUuid" value="e8f317ea-ebb9-11e3-abe5-7f8b2039b9d7" />
+		<property name="name" value="DHIS 2 File Generator" />
+		<property name="description" value="DHIS Compatible Report" />
+		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
+		<property name="template" value="kenyaemr:dhis2.xls" />
+	</bean>
+
+	<bean id="kenyaemr.common.report.recordedDeceased" class="org.openmrs.module.kenyacore.report.CalculationReportDescriptor">
+		<property name="targetUuid" value="e7736868-125e-11e4-ab7a-a327f879345f" />
+		<property name="name" value="Patients to be marked as deceased" />
+		<property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.RecordedDeceasedCalculation" />
+		<property name="displayIdentifier" ref="kenyaemr.hiv.identifier.upn" />
+		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
+	</bean>
+
+	<bean id="kenyaemr.common.report.allPatients" class="org.openmrs.module.kenyacore.report.CalculationReportDescriptor">
+		<property name="targetUuid" value="9e2ed586-130b-11e4-929a-8746415b715a" />
+		<property name="name" value="All Patients List" />
+		<property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.hiv.AllPatientsCalculation" />
+		<property name="displayIdentifier" ref="kenyaemr.hiv.identifier.upn" />
+		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 	</bean>
 
 </beans>

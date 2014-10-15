@@ -17,6 +17,10 @@
 		</property>
 		<property name="reports">
 			<set>
+				<ref bean="kenyaemr.tb.report.smear.not.done.ptb.2.8.8.12" />
+				<ref bean="kenyaemr.tb.report.new.smear.negative.ptb.2.8.12.15" />
+				<!--<ref bean="kenyaemr.tb.report.eptb.2.8.8.12" />-->
+				<!--<ref bean="kenyaemr.tb.report.eptb.2.8.12.15" />-->
 				<ref bean="kenyaemr.tb.report.inProgram" />
 				<ref bean="kenyaemr.tb.report.needsSputumTest" />
 				<ref bean="kenyaemr.tb.report.missingSputumResults" />
@@ -111,4 +115,19 @@
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 	</bean>
 
+	<bean id="kenyaemr.tb.report.smear.not.done.ptb.2.8.8.12" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
+		<property name="targetUuid" value="432585b2-1e24-11e4-aac7-87d0570a70cf" />
+		<property name="name" value="PTB Smear Not Done TB Cases" />
+		<property name="description" value="Cohort Report on Results of Treatment of Smear Not Done PTB- Results at 2 and 8 Months (Registered 8-12 months Earlier)" />
+		<property name="template" value="kenyaemr:tb/ptbsmearnotdone2and8months.xls" />
+		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
+	</bean>
+
+	<bean id="kenyaemr.tb.report.new.smear.negative.ptb.2.8.12.15" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
+		<property name="targetUuid" value="fd4b2c88-214b-11e4-878d-135d55706f1d" />
+		<property name="name" value="New Smear Negative - PTB and Extra PTB" />
+		<property name="description" value="Cohort Report on Results of Treatment of New Smear Negative PTB- Results at 2 and 8 Months (Registered 12-15 months Earlier)" />
+		<property name="template" value="kenyaemr:tb/ptbnewsptumsmearnegative2and8.xls" />
+		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
+	</bean>
 </beans>
