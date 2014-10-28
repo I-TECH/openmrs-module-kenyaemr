@@ -1,26 +1,22 @@
 package org.openmrs.module.kenyaemr.calculation.library.hiv;
 
 import org.openmrs.EncounterType;
-import org.openmrs.Patient;
 import org.openmrs.Visit;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
-import org.openmrs.module.kenyacore.calculation.CalculationUtils;
+import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyacore.calculation.Filters;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
-import org.openmrs.module.reporting.cohort.EvaluatedCohort;
-import org.openmrs.module.reporting.cohort.definition.EncounterCohortDefinition;
-import org.openmrs.module.reporting.common.TimeQualifier;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -45,29 +41,22 @@ public class InCareHasAtLeast2VisitsCalculation extends AbstractPatientCalculati
 		//declare the encounter types that are looked for
 		EncounterType hivEnroll = MetadataUtils.existing(EncounterType.class, HivMetadata._EncounterType.HIV_ENROLLMENT);
 		EncounterType hivConsult = MetadataUtils.existing(EncounterType.class, HivMetadata._EncounterType.HIV_CONSULTATION);
-		///////////////////////////////////////////////
-		EncounterCohortDefinition cd = new EncounterCohortDefinition();
-		cd.setName("has "+hivEnroll.getName()+" or"+hivConsult.getName()+" encounter between "+days90Ago+" and "+onDate);
-		cd.setTimeQualifier(TimeQualifier.ANY);
-		cd.setEncounterTypeList(Arrays.asList(hivEnroll, hivConsult));
-		cd.setOnOrAfter(days90Ago);
-		cd.setOnOrBefore(onDate);
-		////////////////////////////////////////////
-		EvaluatedCohort currentlyInCare = CalculationUtils.evaluateWithReporting(cd, alive, null, context);
 
-		//find a list of patients
-		List<Patient> patientStubs = new ArrayList<Patient>();
-		for (Integer pid : currentlyInCare.getMemberIds()) {
-			patientStubs.add(new Patient(pid));
-		}
+		CalculationResultMap currentlyInCareHivEnroll = Calculations.allEncountersOnOrAfter(hivEnroll, days90Ago, alive, context);
+		CalculationResultMap currentlyInCareHivConsult = Calculations.allEncountersOnOrAfter(hivConsult, days90Ago, alive, context);
+
+		Set<Integer> currentlyInCareHivEnrollPatients = new HashSet<Integer>(currentlyInCareHivEnroll.keySet());
+		Set<Integer> currentlyInCareHivConsultPatients = new HashSet<Integer>(currentlyInCareHivConsult.keySet());
+		Set<Integer> allPatients = new HashSet<Integer>(currentlyInCareHivEnrollPatients);
+		allPatients.addAll(currentlyInCareHivConsultPatients);
 
 		//find patients who had at least 2 clinical visits
 		// look for visits that started before endOfDay and ended after startOfDay
-		List<Visit> visits = Context.getVisitService().getVisits(null, patientStubs, null, null, null, days90Ago, onDate, null, null, true, false);
 
 		for (Integer ptId: cohort){
 			boolean incare = false;
-			if((currentlyInCare.contains(ptId)) && (visits.size() >= 2)){
+			List<Visit> visits = Context.getVisitService().getVisits(null, Arrays.asList(Context.getPatientService().getPatient(ptId)), null, null, null, days90Ago, onDate, null, null, true, false);
+			if((allPatients.contains(ptId)) && (visits.size() >= 2)){
 				incare = true;
 			}
 			ret.put(ptId, new BooleanResult(incare, this, context));
