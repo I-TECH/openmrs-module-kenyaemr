@@ -161,7 +161,6 @@ public class NeedsTbSputumTestCalculation extends AbstractPatientCalculation imp
 						// null
 						// or empty have the alert persist otherwise not
 						if (resultAfterTwomonthsOnOrAfterdateAfterTwomonths == null) {
-							System.out.println("This is the status "+tbsuspect.getName() + "and patient is"+ptId);
 							needsSputum = true;
 						}
 
