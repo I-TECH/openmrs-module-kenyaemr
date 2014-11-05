@@ -14,15 +14,15 @@
 
 package org.openmrs.module.kenyaemr.fragment.controller;
 
-import org.openmrs.*;
-import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyacore.program.ProgramManager;
-import org.openmrs.module.kenyaemr.util.EmrUtils;
+import org.openmrs.Concept;
+import org.openmrs.Encounter;
+import org.openmrs.Form;
+import org.openmrs.Patient;
+import org.openmrs.module.kenyaemr.metadata.HivMetadata;
+import org.openmrs.module.kenyaemr.regimen.RegimenChangeHistory;
+import org.openmrs.module.kenyaemr.regimen.RegimenManager;
 import org.openmrs.module.kenyaemr.wrapper.PatientWrapper;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
-import org.openmrs.module.kenyaemr.metadata.HivMetadata;
-import org.openmrs.module.kenyaemr.regimen.RegimenManager;
-import org.openmrs.module.kenyaemr.regimen.RegimenChangeHistory;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.FragmentParam;
@@ -46,7 +46,7 @@ public class Moh257FragmentController {
 
 		String[] page1FormUuids = {
 				HivMetadata._Form.MOH_257_FACE_PAGE,
-				HivMetadata._Form.MOH_257_ARV_THERAPY,
+				/*HivMetadata._Form.MOH_257_ARV_THERAPY,*/
 				HivMetadata._Form.FAMILY_HISTORY
 		};
 

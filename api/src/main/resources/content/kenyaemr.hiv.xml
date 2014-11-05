@@ -113,7 +113,7 @@
 		<property name="htmlform" value="kenyaemr:hiv/moh257FacePage.html" />
 	</bean>
 
-	<!-- MOH257 ARV Therapy -->
+	<!--&lt;!&ndash; MOH257 ARV Therapy &ndash;&gt;
 	<bean id="kenyaemr.hiv.form.moh257ArvTherapy" class="org.openmrs.module.kenyacore.form.FormDescriptor">
 		<property name="targetUuid" value="8f5b3ba5-1677-450f-8445-33b9a38107ae" />
 		<property name="apps">
@@ -123,7 +123,7 @@
 		</property>
 		<property name="icon" value="kenyaui:forms/moh257.png" />
 		<property name="htmlform" value="kenyaemr:hiv/moh257ArvTherapy.html" />
-	</bean>
+	</bean>-->
 
 	<!-- MOH257 Visit Summary -->
 	<bean id="kenyaemr.hiv.form.moh257VisitSummary" class="org.openmrs.module.kenyacore.form.FormDescriptor">
