@@ -98,7 +98,215 @@ function setMaritalStatus()
     {
         jq('#ms_si').find('input[type=checkbox]').attr('checked',true);
     }
+}
 
+function setEntryPoint(){
+
+    var entrypoint=parseInt("<lookup complexExpression="#set($t = $fn.latestObs(160540)) $t.valueCoded"/>" )
+    //window.alert(entrypoint);
+
+    if (entrypoint==PMTCT_CONCEPT_ID)
+    {
+        jq('#ep_pmtct').find('input[type=checkbox]').attr('checked',true);
+    }
+
+    else if (entrypoint==VCT_CONCEPT_ID)
+    {
+        jq('#ep_vct').find('input[type=checkbox]').attr('checked',true);
+    }
+
+    else if (entrypoint==INPATIENT_AD_CONCEPT_ID)
+    {
+        jq('#ep_ipdAd').find('input[type=checkbox]').attr('checked',true);
+    }
+
+    else if (entrypoint==INPATIENT_CH_CONCEPT_ID)
+    {
+        jq('#ep_ipdCh').find('input[type=checkbox]').attr('checked',true);
+    }
+
+    else if (entrypoint==TRANSFER_IN_CONCEPT_ID)
+    {
+        jq('#ep_transfer_in').find('input[type=checkbox]').attr('checked',true);
+    }
+
+    else if (entrypoint==TB_ENTRY_CONCEPT_ID)
+    {
+        jq('#ep_tb').find('input[type=checkbox]').attr('checked',true);
+    }
+    else if (entrypoint==MCH_CONCEPT_ID)
+    {
+        jq('#ep_mch').find('input[type=checkbox]').attr('checked',true);
+    }
+    else if (entrypoint==OTHER_ENTRY_CONCEPT_ID)
+    {
+        jq('#ep_other').find('input[type=checkbox]').attr('checked',true);
+    }
+    else if (entrypoint==OPD_ENTRY_CONCEPT_ID)
+    {
+        jq('#ep_opd').find('input[type=checkbox]').attr('checked',true);
+    }
+
+    else if (entrypoint==FAMILY_CONCEPT_ID)
+    {
+        jq('#ep_fm').find('input[type=checkbox]').attr('checked',true);
+    }
+    else if (entrypoint==VMMC_CONCEPT_ID)
+    {
+        jq('#ep_vmmc').find('input[type=checkbox]').attr('checked',true);
+    }
+
+}
+
+function setTsName()
+{
+    var p1="<lookup complexExpression="#set($t = $fn.latestObs(160638)) $t.valueText"/>"
+    if (p1 !== 'undefined')
+    {
+        setValue('ts_name.value',p1) ;
+    }
+}
+
+function setTsAddress()
+{
+    var p1="<lookup expression="fn.latestObs(160641).valueText" />"
+    if (p1 !== 'undefined')
+    {
+        setValue('ts_address.value',p1) ;
+    }
+}
+
+function setTsTelephone()
+{
+    var p1="<lookup expression="fn.latestObs(160642).valueText" />"
+    if (p1 !== 'undefined')
+    {
+        setValue('ts_tel.value',p1) ;
+    }
+}
+
+function setTsRelation()
+{
+    var p1=parseInt("<lookup complexExpression="#set($t = $fn.latestObs(160640)) $t.valueCoded"/>" );
+    if (!isNaN(p1))
+    {
+        setValue('ts_rship.value',p1) ;
+    }
+}
+
+function setTsRelation()
+{
+    var p1=parseInt("<lookup complexExpression="#set($t = $fn.latestObs(160640)) $t.valueCoded"/>" );
+    if (!isNaN(p1))
+    {
+        setValue('ts_rship.value',p1) ;
+    }
+}
+
+function setDatePositive()
+{
+    /*
+     getValue('hivposdate.value')//
+     */
+    var p1=new Date("<lookup expression="fn.latestObs(160554).valueDatetime"/>" );
+    if (p1 !== 'undefined')
+    {
+        //alert(p1) ;
+        var yy=p1.getFullYear();
+        var mm=p1.getMonth();
+        var dd=p1.getDate() ;
+
+        dpos=yy + "-" + ("0"+ mm).slice(-2) + "-" + ("0"+dd).slice(-2);
+
+        setValue('date_confirmed_pos.value',dpos) ;
+    }
+}
+
+function setDateEnrolled()
+{
+    var p1=new Date("<lookup expression="fn.latestObs(160555).valueDatetime"/>");
+    if (p1 !== 'undefined')
+    {
+        var yy=p1.getFullYear();
+        var mm=p1.getMonth();
+        var dd=p1.getDate() ;
+
+        d=yy + "-" + ("0"+ mm).slice(-2) + "-" + ("0"+dd).slice(-2);
+        setValue('date_Enrolled.value',d) ;
+    }
+}
+
+function setTIDate(){
+
+    var p1=new Date("<lookup expression="fn.latestObs(160534).valueDatetime"/>" );
+    if (p1 !== 'undefined')
+    {
+        var yy=p1.getFullYear();
+        var mm=p1.getMonth();
+        var dd=p1.getDate() ;
+
+        d=yy + "-" + ("0"+ mm).slice(-2) + "-" + ("0"+dd).slice(-2);
+        setValue('ti_date.value',d) ;
+    }
+}
+
+function setTIDistrict(){
+
+    var p1="<lookup expression="fn.latestObs(161551).valueText" />"
+    if (p1 !== 'undefined')
+    {
+        setValue('ti_district.value',p1) ;
+    }
+}
+
+function setTIFacility(){
+
+    var p1="<lookup expression="fn.latestObs(160535).valueText" />"
+    if (p1 !== 'undefined')
+    {
+        setValue('ti_facility.value',p1) ;
+    }
+}
+
+function setTIHaartFacility(){
+
+    var p1="<lookup expression="fn.latestObs(160632).valueText" />"
+    if (p1 !== 'undefined')
+    {
+        setValue('where.value',p1) ;
+    }
+}
+
+
+function setTIHaartDate(){
+
+    var p1=new Date("<lookup expression="fn.latestObs(160534).valueDatetime"/>" );
+    if (p1 !== 'undefined')
+    {
+        var yy=p1.getFullYear();
+        var mm=p1.getMonth();
+        var dd=p1.getDate() ;
+
+        d=yy + "-" + ("0"+ mm).slice(-2) + "-" + ("0"+dd).slice(-2);
+        setValue('ti_date_started_haart.value',d) ;
+    }
+}
+
+function setArtStatus(){
+    var p1=parseInt("<lookup expression="fn.latestObs(160533).valueNumeric" />");
+    if (!isNaN(p1))
+    {
+        if(p1==1)
+        {
+            jq('#art-status').find('input[type=radio]').attr('checked',true);
+        }
+        else
+        {
+            jq('#art-status').find('input[type=radio]').attr('checked',false);
+        }
+        //setValue('art-status.value',p1) ;
+
+    }
 }
 
 function onEncounterDateChange()
@@ -302,21 +510,21 @@ jq(function() {
     //jq('#allergy input').click(onAllergy);
     onAllergy();
     /*
-    getField('allergy.value').change(function(){
-        if(getValue('allergy.value')== ALLERGY_TO_OTHER)
-        {
-            // jq('#allergy_detail').show();
-            jq('#allergy_detail').find('input[type=text]').removeAttr('disabled');
+     getField('allergy.value').change(function(){
+     if(getValue('allergy.value')== ALLERGY_TO_OTHER)
+     {
+     // jq('#allergy_detail').show();
+     jq('#allergy_detail').find('input[type=text]').removeAttr('disabled');
 
-        }
-        else
-        {
-            setValue('allergy_detail.value', '');
-            //jq('#allergy_detail').hide();
-            jq('#allergy_detail').find('input[type=text]').attr('disabled','true');
+     }
+     else
+     {
+     setValue('allergy_detail.value', '');
+     //jq('#allergy_detail').hide();
+     jq('#allergy_detail').find('input[type=text]').attr('disabled','true');
 
-        }
-    });
+     }
+     });
      */
     getField('date_confirmed_pos.value').change(function(){
         var birthDate = new Date(getValue('dob.value'))//.getTime();
@@ -356,7 +564,7 @@ jq(function() {
         }
     });
 
-      /* hide or display transfer in fields */
+    /* hide or display transfer in fields */
     jq('#ep_transfer_in input').click(OnTransferStatusChange);
     OnTransferStatusChange();
 
@@ -366,8 +574,12 @@ jq(function() {
 
     jq('#ms_mp input').click(setMaritalStatus);
     setMaritalStatus();
-    
-       jq('#ep_pmtct input').click(function(){
+
+    jq('#ep_pmtct input').click(setEntryPoint);
+    setEntryPoint();
+
+
+    jq('#ep_pmtct input').click(function(){
         if (getValue('ep_pmtct.value')==PMTCT_CONCEPT_ID)
         {
             setValue('ep_vct.value','') ;
@@ -383,7 +595,7 @@ jq(function() {
         }
     });
 
-  jq('#ep_vct input').click(function(){
+    jq('#ep_vct input').click(function(){
         if (getValue('ep_vct.value')==VCT_CONCEPT_ID)
         {
             setValue('ep_pmtct.value','') ;
@@ -399,7 +611,7 @@ jq(function() {
         }
     });
 
-  jq('#ep_ipdAd input').click(function(){
+    jq('#ep_ipdAd input').click(function(){
         if (getValue('ep_ipdAd.value')==INPATIENT_AD_CONCEPT_ID)
         {
             setValue('ep_vct.value','') ;
@@ -415,7 +627,7 @@ jq(function() {
         }
     });
 
-  jq('#ep_ipdCh input').click(function(){
+    jq('#ep_ipdCh input').click(function(){
         if (getValue('ep_ipdCh.value')==INPATIENT_CH_CONCEPT_ID)
         {
             setValue('ep_vct.value','') ;
@@ -431,7 +643,7 @@ jq(function() {
         }
     });
 
-  jq('#ep_transfer_in input').click(function(){
+    jq('#ep_transfer_in input').click(function(){
         if (getValue('ep_transfer_in.value')==TRANSFER_IN_CONCEPT_ID)
         {
             setValue('ep_vct.value','') ;
@@ -447,7 +659,7 @@ jq(function() {
         }
     });
 
-  jq('#ep_tb input').click(function(){
+    jq('#ep_tb input').click(function(){
         if (getValue('ep_tb.value')==TB_ENTRY_CONCEPT_ID)
         {
             setValue('ep_vct.value','') ;
@@ -463,7 +675,7 @@ jq(function() {
         }
     });
 
-  jq('#ep_mch input').click(function(){
+    jq('#ep_mch input').click(function(){
         if (getValue('ep_mch.value')==MCH_CONCEPT_ID)
         {
             setValue('ep_vct.value','') ;
@@ -479,7 +691,7 @@ jq(function() {
         }
     });
 
-  jq('#ep_other input').click(function(){
+    jq('#ep_other input').click(function(){
         if (getValue('ep_other.value')==OTHER_ENTRY_CONCEPT_ID)
         {
             setValue('ep_vct.value','') ;
@@ -495,7 +707,7 @@ jq(function() {
         }
     });
 
-  jq('#ep_opd input').click(function(){
+    jq('#ep_opd input').click(function(){
         if (getValue('ep_opd.value')==OPD_ENTRY_CONCEPT_ID)
         {
             setValue('ep_vct.value','') ;
@@ -511,7 +723,7 @@ jq(function() {
         }
     });
 
-  jq('#ep_fm input').click(function(){
+    jq('#ep_fm input').click(function(){
         if (getValue('ep_fm.value')==FAMILY_CONCEPT_ID)
         {
             setValue('ep_vct.value','') ;
@@ -527,7 +739,7 @@ jq(function() {
         }
     });
 
-  jq('#ep_vmmc input').click(function(){
+    jq('#ep_vmmc input').click(function(){
         if (getValue('ep_vmmc.value')==VMMC_CONCEPT_ID)
         {
             setValue('ep_vct.value','') ;
@@ -543,11 +755,49 @@ jq(function() {
         }
     });
 
+    getField('date_Enrolled.value').focus(setDateEnrolled);
+    setDateEnrolled();
+
+    getField('date_confirmed_pos.value').focus(setDatePositive);
+    setDatePositive();
+
+    getField('ti_date.value').change(setTIDate);
+    setTIDate();
+
+    getField('ti_district.value').change(setTIDistrict);
+    setTIDistrict();
+
+    getField('ti_facility.value').change(setTIFacility);
+    setTIFacility();
+
+    getField('where.value').change(setTIHaartFacility);
+    setTIHaartFacility();
+
+
+    getField('ti_date_started_haart.value').change(setTIHaartDate);
+    setTIHaartDate();
+
+    getField('art-status.value').change(setArtStatus);
+    setArtStatus();
+
+    getField('ts_rship.value').change(setTsRelation);
+    setTsRelation();
+
+    getField('ts_name.value').change(setTsName);
+    setTsName();
+
+
+    getField('ts_address.value').change(setTsAddress);
+    setTsAddress();
+
+    getField('ts_tel.value').change(setTsTelephone);
+    setTsTelephone();
+
 });
 </script>
 
 <div style="display:none">
-	<encounterProvider default="ae01b8ff-a4cc-4012-bcf7-72359e852e14" />
+    <encounterProvider default="ae01b8ff-a4cc-4012-bcf7-72359e852e14" />
 </div>
 
 <div class="ke-form-header">
@@ -639,14 +889,14 @@ jq(function() {
                 <td colspan="2">Treatment Supporter</td>
             </tr>
             <tr>
-                <td>Name:<obs conceptId="160638AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/> </td>
-                <td>Relationship:<obs conceptId="160640AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                <td>Name:<obs id="ts_name" conceptId="160638AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/> </td>
+                <td>Relationship:<obs id="ts_rship" conceptId="160640AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                       style="dropdown"/> </td>
 
             </tr>
             <tr>
-                <td>Postal Address:<obs conceptId="160641AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/> </td>
-                <td>Tel No:<obs conceptId="160642AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /> </td>
+                <td>Postal Address:<obs id="ts_address" conceptId="160641AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/> </td>
+                <td>Tel No:<obs id="ts_tel" conceptId="160642AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /> </td>
             </tr>
         </table>
     </td>
@@ -732,38 +982,18 @@ jq(function() {
                                 <obs conceptId="1691AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText="PEP" style="checkbox"/>
                                 <obs conceptId="1181AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"    answerConceptId="1185AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="HAART" style="checkbox"/>
                             </td>
-                            <td><obs conceptId="1088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                     answerConceptIds="792AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,794AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,630AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,84309AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,74807AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,70056AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,80487AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,80586AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,75523AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,78643AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,84795AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,77995AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160104AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160105AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,86663AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,75628AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,79040AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,83412AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,71647AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161361AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,103166AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,104565AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162201AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,817AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162199AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                     answerLabels="D4T/3TC/NVP,
-												LPV/r,
-												AZT/3TC,
-												D4T,
-												DDI,
-												ABC,
-												NFV,
-												NVP,
-												EFV,
-												3TC,
-												TDF,
-												IDV,
-												AZT/3TC/EFV,
-												D4T/3TC/EFV,
-												AZT,
-												FTC,
-												LPV,
-												RTV,
-												ATV,
-												3TC/NVP/AZT,
-												3TC/D4T,
-												TDF/3TC,
-												TDF/3TC/EFV,
-												ABC/3TC,
-												EFV/FTC/TDF,
-												3TC/LPV/r/TDF,
-												ABC/3TC/AZT,
-												ABC/NVP/3TC,
-												3TC/ABC/LPV/r"
-                                     answerSeparator="&lt;br /&gt;" style="dropdown" dateLabel=""/></td>
+                            <td><obs conceptId="1088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="794AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="LPV/r" style="checkbox" />
+                                <obs conceptId="1088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="84309AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="D4T" style="checkbox" />
+                                <obs conceptId="1088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="74807AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="DDI" style="checkbox" />
+                                <obs conceptId="1088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="70056AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="ABC" style="checkbox" />
+                                <obs conceptId="1088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="80487AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="NFV" style="checkbox" />
+                                <obs conceptId="1088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="80586AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="NVP" style="checkbox" /><br/>
+                                <obs conceptId="1088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="75523AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="EFV" style="checkbox" />
+                                <obs conceptId="1088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="78643AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="3TC" style="checkbox" />
+                                <obs conceptId="1088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="84795AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="TDF" style="checkbox" />
+                                <obs conceptId="1088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="86663AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="AZT" style="checkbox" />
+                                <obs conceptId="1088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="83412AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="RTV" style="checkbox" />
+                                <obs conceptId="1088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="71647AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="ATV" style="checkbox" dateLabel=""/></td>
 
                         </tr>
                     </obsgroup>
@@ -781,10 +1011,13 @@ jq(function() {
         <table>
             <tr>
                 <td><br/>Date Confirmed HIV Positive</td>
-                <td><br/><obs id="date_confirmed_pos"  conceptId="160554AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/><span id="date_confirmed_error"></span></td>
+                <td><br/><obs id="date_confirmed_pos"  conceptId="160554AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+                    <span id="date_confirmed_error"></span>
+                </td>
+
                 <td><br/>Where?
                     <obsgroup groupingConceptId="161559AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-                        <obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+                        <obs id="where" conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
                     </obsgroup>
                 </td>
 
@@ -792,10 +1025,11 @@ jq(function() {
             </tr>
             <tr>
                 <td>Date Enrolled in HIV Care</td>
-                <td><obs id="date_Enrolled" conceptId="160555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
+                <td><obs id="date_Enrolled" conceptId="160555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+                </td>
                 <td>WHO Stage
 
-									<span id="initialWhoStageAd"><obs id="whostage" conceptId="160553AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
+                    <span id="initialWhoStageAd"><obs id="whostage" conceptId="160553AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
                 </td>
 
             </tr>
