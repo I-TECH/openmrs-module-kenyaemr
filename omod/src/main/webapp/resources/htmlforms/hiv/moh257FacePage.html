@@ -14,16 +14,16 @@
 <htmlform>
 
 <style type="text/css">
-    table.moh257 {
-        border-collapse: collapse;
-        background-color: #F3F9FF;
-    }
-    table.moh257 > tbody > tr > td, table.moh257 > tbody > tr > th {
-        border: 1px solid black;
-        vertical-align: baseline;
-        padding: 4px;
-        text-align: left;
-    }
+	table.moh257 {
+		border-collapse: collapse;
+		background-color: #F3F9FF;
+	}
+	table.moh257 > tbody > tr > td, table.moh257 > tbody > tr > th {
+		border: 1px solid black;
+		vertical-align: baseline;
+		padding: 4px;
+		text-align: left;
+	}
 </style>
 <script type="text/javascript">
 var YES_CONCEPT_ID = 1065;
@@ -68,68 +68,276 @@ var ctxPath = typeof openmrsContextPath === 'string' ? openmrsContextPath : OPEN
 
 function setMaritalStatus()
 {
-    var mStatus=parseInt("<lookup complexExpression="#set($t = $fn.latestObs(1054)) $t.valueCoded"/>" )
-    if (mStatus==POLYGAMOUS)
-    {
-        jq('#ms_mp').find('input[type=checkbox]').attr('checked',true);
-    }
+	var mStatus=parseInt("<lookup complexExpression="#set($t = $fn.latestObs(1054)) $t.valueCoded"/>" )
+	if (mStatus==POLYGAMOUS)
+	{
+		jq('#ms_mp').find('input[type=checkbox]').attr('checked',true);
+	}
 
-    else if (mStatus==MONOGAMOUS)
-    {
-        jq('#ms_mm').find('input[type=checkbox]').attr('checked',true);
-    }
+	else if (mStatus==MONOGAMOUS)
+	{
+		jq('#ms_mm').find('input[type=checkbox]').attr('checked',true);
+	}
 
-    else if (mStatus==DIVORCED)
-    {
-        jq('#ms_di').find('input[type=checkbox]').attr('checked',true);
-    }
+	else if (mStatus==DIVORCED)
+	{
+		jq('#ms_di').find('input[type=checkbox]').attr('checked',true);
+	}
 
-    else if (mStatus==WIDOW)
-    {
-        jq('#ms_wi').find('input[type=checkbox]').attr('checked',true);
-    }
+	else if (mStatus==WIDOW)
+	{
+		jq('#ms_wi').find('input[type=checkbox]').attr('checked',true);
+	}
 
-    else if (mStatus==COHABITING)
-    {
-        jq('#ms_co').find('input[type=checkbox]').attr('checked',true);
-    }
+	else if (mStatus==COHABITING)
+	{
+		jq('#ms_co').find('input[type=checkbox]').attr('checked',true);
+	}
 
-    else if (mStatus==SINGLE)
-    {
-        jq('#ms_si').find('input[type=checkbox]').attr('checked',true);
-    }
+	else if (mStatus==SINGLE)
+	{
+		jq('#ms_si').find('input[type=checkbox]').attr('checked',true);
+	}
+}
 
+function setEntryPoint(){
+
+	var entrypoint=parseInt("<lookup complexExpression="#set($t = $fn.latestObs(160540)) $t.valueCoded"/>" )
+	//window.alert(entrypoint);
+
+	if (entrypoint==PMTCT_CONCEPT_ID)
+	{
+		jq('#ep_pmtct').find('input[type=checkbox]').attr('checked',true);
+	}
+
+	else if (entrypoint==VCT_CONCEPT_ID)
+	{
+		jq('#ep_vct').find('input[type=checkbox]').attr('checked',true);
+	}
+
+	else if (entrypoint==INPATIENT_AD_CONCEPT_ID)
+	{
+		jq('#ep_ipdAd').find('input[type=checkbox]').attr('checked',true);
+	}
+
+	else if (entrypoint==INPATIENT_CH_CONCEPT_ID)
+	{
+		jq('#ep_ipdCh').find('input[type=checkbox]').attr('checked',true);
+	}
+
+	else if (entrypoint==TRANSFER_IN_CONCEPT_ID)
+	{
+		jq('#ep_transfer_in').find('input[type=checkbox]').attr('checked',true);
+	}
+
+	else if (entrypoint==TB_ENTRY_CONCEPT_ID)
+	{
+		jq('#ep_tb').find('input[type=checkbox]').attr('checked',true);
+	}
+	else if (entrypoint==MCH_CONCEPT_ID)
+	{
+		jq('#ep_mch').find('input[type=checkbox]').attr('checked',true);
+	}
+	else if (entrypoint==OTHER_ENTRY_CONCEPT_ID)
+	{
+		jq('#ep_other').find('input[type=checkbox]').attr('checked',true);
+	}
+	else if (entrypoint==OPD_ENTRY_CONCEPT_ID)
+	{
+		jq('#ep_opd').find('input[type=checkbox]').attr('checked',true);
+	}
+
+	else if (entrypoint==FAMILY_CONCEPT_ID)
+	{
+		jq('#ep_fm').find('input[type=checkbox]').attr('checked',true);
+	}
+	else if (entrypoint==VMMC_CONCEPT_ID)
+	{
+		jq('#ep_vmmc').find('input[type=checkbox]').attr('checked',true);
+	}
+
+}
+
+function setTsName()
+{
+	var p1="<lookup complexExpression="#set($t = $fn.latestObs(160638)) $t.valueText"/>"
+	if (p1 !== 'undefined')
+	{
+		setValue('ts_name.value',p1) ;
+	}
+}
+
+function setTsAddress()
+{
+	var p1="<lookup expression="fn.latestObs(160641).valueText" />"
+	if (p1 !== 'undefined')
+	{
+		setValue('ts_address.value',p1) ;
+	}
+}
+
+function setTsTelephone()
+{
+	var p1="<lookup expression="fn.latestObs(160642).valueText" />"
+	if (p1 !== 'undefined')
+	{
+		setValue('ts_tel.value',p1) ;
+	}
+}
+
+function setTsRelation()
+{
+	var p1=parseInt("<lookup complexExpression="#set($t = $fn.latestObs(160640)) $t.valueCoded"/>" );
+	if (!isNaN(p1))
+	{
+		setValue('ts_rship.value',p1) ;
+	}
+}
+
+function setTsRelation()
+{
+	var p1=parseInt("<lookup complexExpression="#set($t = $fn.latestObs(160640)) $t.valueCoded"/>" );
+	if (!isNaN(p1))
+	{
+		setValue('ts_rship.value',p1) ;
+	}
+}
+
+function setDatePositive()
+{
+	/*
+	 getValue('hivposdate.value')//
+	 */
+	var p1=new Date("<lookup expression="fn.latestObs(160554).valueDatetime"/>" );
+	if (p1 !== 'undefined')
+	{
+		//alert(p1) ;
+		var yy=p1.getFullYear();
+		var mm=p1.getMonth();
+		var dd=p1.getDate() ;
+
+		dpos=yy + "-" + ("0"+ mm).slice(-2) + "-" + ("0"+dd).slice(-2);
+
+		setValue('date_confirmed_pos.value',dpos) ;
+	}
+}
+
+function setDateEnrolled()
+{
+	var p1=new Date("<lookup expression="fn.latestObs(160555).valueDatetime"/>");
+	if (p1 !== 'undefined')
+	{
+		var yy=p1.getFullYear();
+		var mm=p1.getMonth();
+		var dd=p1.getDate() ;
+
+		d=yy + "-" + ("0"+ mm).slice(-2) + "-" + ("0"+dd).slice(-2);
+		setValue('date_Enrolled.value',d) ;
+	}
+}
+
+function setTIDate(){
+
+	var p1=new Date("<lookup expression="fn.latestObs(160534).valueDatetime"/>" );
+	if (p1 !== 'undefined')
+	{
+		var yy=p1.getFullYear();
+		var mm=p1.getMonth();
+		var dd=p1.getDate() ;
+
+		d=yy + "-" + ("0"+ mm).slice(-2) + "-" + ("0"+dd).slice(-2);
+		setValue('ti_date.value',d) ;
+	}
+}
+
+function setTIDistrict(){
+
+	var p1="<lookup expression="fn.latestObs(161551).valueText" />"
+	if (p1 !== 'undefined')
+	{
+		setValue('ti_district.value',p1) ;
+	}
+}
+
+function setTIFacility(){
+
+	var p1="<lookup expression="fn.latestObs(160535).valueText" />"
+	if (p1 !== 'undefined')
+	{
+		setValue('ti_facility.value',p1) ;
+	}
+}
+
+function setTIHaartFacility(){
+
+	var p1="<lookup expression="fn.latestObs(160632).valueText" />"
+	if (p1 !== 'undefined')
+	{
+		setValue('where.value',p1) ;
+	}
+}
+
+
+function setTIHaartDate(){
+
+	var p1=new Date("<lookup expression="fn.latestObs(160534).valueDatetime"/>" );
+	if (p1 !== 'undefined')
+	{
+		var yy=p1.getFullYear();
+		var mm=p1.getMonth();
+		var dd=p1.getDate() ;
+
+		d=yy + "-" + ("0"+ mm).slice(-2) + "-" + ("0"+dd).slice(-2);
+		setValue('ti_date_started_haart.value',d) ;
+	}
+}
+
+function setArtStatus(){
+	var p1=parseInt("<lookup expression="fn.latestObs(160533).valueNumeric" />");
+	if (!isNaN(p1))
+	{
+		if(p1==1)
+		{
+			jq('#art-status').find('input[type=radio]').attr('checked',true);
+		}
+		else
+		{
+			jq('#art-status').find('input[type=radio]').attr('checked',false);
+		}
+		//setValue('art-status.value',p1) ;
+
+	}
 }
 
 function onEncounterDateChange()
 {
 
-    var birthDate = new Date(getValue('dob.value'))//.getTime();
-    var today = new Date()//.getTime();        //get current date
-    //var ENC_DATE=new Date(getValue('encounter-date.value'))//.getTime();
-    var patientId = <lookup expression="patient.patientId"/>;
-    var encDate = getValue('encounter-date.value');
+	var birthDate = new Date(getValue('dob.value'))//.getTime();
+	var today = new Date()//.getTime();        //get current date
+	//var ENC_DATE=new Date(getValue('encounter-date.value'))//.getTime();
+	var patientId = <lookup expression="patient.patientId"/>;
+	var encDate = getValue('encounter-date.value');
 
-    /*this data should not be in Future */
-    if(encDate &gt; today)
-    {
-        getField('encounter-date.error').html('Should not be greater than the Current date').show();
-    }
-    else if(encDate &lt; birthDate)
-    {
-        /* Encounter Date should be greater than the Patients's date of Birth    */
-        getField('encounter-date.error').html('Should not be less than the date of Birth').show();
-    }
-    else
-    {
-        getField('encounter-date.error').hide();
-    }
+	/*this data should not be in Future */
+	if(encDate &gt; today)
+	{
+		getField('encounter-date.error').html('Should not be greater than the Current date').show();
+	}
+	else if(encDate &lt; birthDate)
+	{
+		/* Encounter Date should be greater than the Patients's date of Birth    */
+		getField('encounter-date.error').html('Should not be less than the date of Birth').show();
+	}
+	else
+	{
+		getField('encounter-date.error').hide();
+	}
 
 
-    jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/patient/patientUtils/age.action', { patientId: patientId, now: encDate })
-            .done(function(data) {
-                onPatientAgeUpdate(data.age);
-            });
+	jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/patient/patientUtils/age.action', { patientId: patientId, now: encDate })
+			.done(function(data) {
+				onPatientAgeUpdate(data.age);
+			});
 
 
 }
@@ -138,410 +346,452 @@ function onEncounterDateChange()
  * Updates the form due to a patient age change
  */
 function onPatientAgeUpdate(age) {
-    var isPediatric = (age &lt; 15);
-    jq('#whostage select option').each(function() {
-        var concept = parseInt(jq(this).prop('value'));
+	var isPediatric = (age &lt; 15);
+	jq('#whostage select option').each(function() {
+		var concept = parseInt(jq(this).prop('value'));
 
-        if (WHO_STAGES_PEDS.indexOf(concept) >= 0) {
-            jq(this).prop('disabled', !isPediatric);
-        }
-        else if (WHO_STAGES_ADULT.indexOf(concept) >= 0) {
-            jq(this).prop('disabled', isPediatric);
-        }
-    });
+		if (WHO_STAGES_PEDS.indexOf(concept) >= 0) {
+			jq(this).prop('disabled', !isPediatric);
+		}
+		else if (WHO_STAGES_ADULT.indexOf(concept) >= 0) {
+			jq(this).prop('disabled', isPediatric);
+		}
+	});
 
-    //jq('#calculated-age').html(age + '/' + (isPediatric ? 'PEDS' : 'ADULT'));
+	//jq('#calculated-age').html(age + '/' + (isPediatric ? 'PEDS' : 'ADULT'));
 }
 
 function OnTransferStatusChange()
 {
-    if (getValue('ep_transfer_in.value')== TRANSFER_IN_CONCEPT_ID)
-    {
-        //jq('#transfer_details').show();
-        jq('#ti_date').find('input[class=hasDatepicker]').removeAttr('disabled');
-        jq('#ti_district').find('input[type=text]').removeAttr('disabled');
-        jq('#ti_facility').find('input[type=text]').removeAttr('disabled');
-        jq('#ti_date_started_haart').find('input[class=hasDatepicker]').removeAttr('disabled');
-    }
-    else
-    {
-        setValue('ti_date.value', '');
-        setValue('ti_district.value', '');
-        setValue('ti_facility.value', '');
-        setValue('ti_date_started_haart.value', '');
-        //jq('#transfer_details').hide();
+	if (getValue('ep_transfer_in.value')== TRANSFER_IN_CONCEPT_ID)
+	{
+		//jq('#transfer_details').show();
+		jq('#ti_date').find('input[class=hasDatepicker]').removeAttr('disabled');
+		jq('#ti_district').find('input[type=text]').removeAttr('disabled');
+		jq('#ti_facility').find('input[type=text]').removeAttr('disabled');
+		jq('#ti_date_started_haart').find('input[class=hasDatepicker]').removeAttr('disabled');
+	}
+	else
+	{
+		setValue('ti_date.value', '');
+		setValue('ti_district.value', '');
+		setValue('ti_facility.value', '');
+		setValue('ti_date_started_haart.value', '');
+		//jq('#transfer_details').hide();
 
-        jq('#ti_date').find('input[class=hasDatepicker]').attr('disabled','true');
-        jq('#ti_date_started_haart').find('input[class=hasDatepicker]').attr('disabled','true');
-        jq('#ti_district').find('input[type=text]').attr('disabled','true');
-        jq('#ti_facility').find('input[type=text]').attr('disabled','true');
-    }
+		jq('#ti_date').find('input[class=hasDatepicker]').attr('disabled','true');
+		jq('#ti_date_started_haart').find('input[class=hasDatepicker]').attr('disabled','true');
+		jq('#ti_district').find('input[type=text]').attr('disabled','true');
+		jq('#ti_facility').find('input[type=text]').attr('disabled','true');
+	}
 }
 
 function OnARTStatusChange()
 {
-    if (getValue('art-status.value')== 'true')
-    {
-        //jq('#art-History').show();
-        jq('#art-History :input').attr('disabled',false);
-    }
-    else
-    {
-        //jq('#art-History').hide();
-        jq('#art-History :input').attr('disabled',true);
-    }
+	if (getValue('art-status.value')== 'true')
+	{
+		//jq('#art-History').show();
+		jq('#art-History :input').attr('disabled',false);
+	}
+	else
+	{
+		//jq('#art-History').hide();
+		jq('#art-History :input').attr('disabled',true);
+	}
 }
 
 function onAllergy()
 {
-    if(getValue('allergy.value')== ALLERGY_TO_OTHER)
-    {
-        // jq('#allergy_detail').show();
-        jq('#allergy_detail').find('input[type=text]').removeAttr('disabled');
+	if(getValue('allergy.value')== ALLERGY_TO_OTHER)
+	{
+		// jq('#allergy_detail').show();
+		jq('#allergy_detail').find('input[type=text]').removeAttr('disabled');
 
-    }
-    else
-    {
-        setValue('allergy_detail.value', '');
-        //jq('#allergy_detail').hide();
-        jq('#allergy_detail').find('input[type=text]').attr('disabled','true');
+	}
+	else
+	{
+		setValue('allergy_detail.value', '');
+		//jq('#allergy_detail').hide();
+		jq('#allergy_detail').find('input[type=text]').attr('disabled','true');
 
-    }
+	}
 }
 function onUpnGenerateClick() {
-    kenyaui.openConfirmDialog({
-        heading: 'Generate UPN',
-        message: 'This should only be used for new patients. If the patient already has a UPN, please enter that instead.',
-        okLabel: 'Continue',
-        okCallback: function() {
-            jq.getJSON('/' + ctxPath + '/kenyaemr/emrUtils/nextHivUniquePatientNumber.action', function(data) {
-                jq('#hiv-id input[type=text]').val(data.value);
-                jq('#generate-hiv-id').hide();
-            });
-        }
-    });
+	kenyaui.openConfirmDialog({
+		heading: 'Generate UPN',
+		message: 'This should only be used for new patients. If the patient already has a UPN, please enter that instead.',
+		okLabel: 'Continue',
+		okCallback: function() {
+			jq.getJSON('/' + ctxPath + '/kenyaemr/emrUtils/nextHivUniquePatientNumber.action', function(data) {
+				jq('#hiv-id input[type=text]').val(data.value);
+				jq('#generate-hiv-id').hide();
+			});
+		}
+	});
 }
 
 jq(function() {
-    //getField('weight.value').change(onWeightOrHeightChange);
-    //getField('height.value').change(onWeightOrHeightChange);
-    jq('#generate-hiv-id').click(onUpnGenerateClick);
-    getField('encounter-date.value').change(onEncounterDateChange);
+	//getField('weight.value').change(onWeightOrHeightChange);
+	//getField('height.value').change(onWeightOrHeightChange);
+	jq('#generate-hiv-id').click(onUpnGenerateClick);
+	getField('encounter-date.value').change(onEncounterDateChange);
 
-    //onWeightOrHeightChange();
-    onEncounterDateChange();
-    /* allow single selection for marital status */
-    getField('ms_mp.value').change(function(){
-        if(getValue('ms_mp.value')== POLYGAMOUS)
-        {
-            setValue('ms_di.value', '');
-            setValue('ms_co.value', '');
-            setValue('ms_mm.value', '');
-            setValue('ms_si.value', '');
-            setValue('ms_wi.value', '');
-        }
+	//onWeightOrHeightChange();
+	onEncounterDateChange();
+	/* allow single selection for marital status */
+	getField('ms_mp.value').change(function(){
+		if(getValue('ms_mp.value')== POLYGAMOUS)
+		{
+			setValue('ms_di.value', '');
+			setValue('ms_co.value', '');
+			setValue('ms_mm.value', '');
+			setValue('ms_si.value', '');
+			setValue('ms_wi.value', '');
+		}
 
-    });
+	});
 
-    getField('ms_di.value').change(function(){
-        if(getValue('ms_di.value')== DIVORCED)
-        {
-            setValue('ms_mp.value', '');
-            setValue('ms_co.value', '');
-            setValue('ms_mm.value', '');
-            setValue('ms_si.value', '');
-            setValue('ms_wi.value', '');
-        }
-    });
+	getField('ms_di.value').change(function(){
+		if(getValue('ms_di.value')== DIVORCED)
+		{
+			setValue('ms_mp.value', '');
+			setValue('ms_co.value', '');
+			setValue('ms_mm.value', '');
+			setValue('ms_si.value', '');
+			setValue('ms_wi.value', '');
+		}
+	});
 
-    getField('ms_co.value').change(function(){
-        if(getValue('ms_co.value')== COHABITING)
-        {
-            setValue('ms_di.value', '');
-            setValue('ms_mp.value', '');
-            setValue('ms_mm.value', '');
-            setValue('ms_si.value', '');
-            setValue('ms_wi.value', '');
-        }
-    });
+	getField('ms_co.value').change(function(){
+		if(getValue('ms_co.value')== COHABITING)
+		{
+			setValue('ms_di.value', '');
+			setValue('ms_mp.value', '');
+			setValue('ms_mm.value', '');
+			setValue('ms_si.value', '');
+			setValue('ms_wi.value', '');
+		}
+	});
 
-    getField('ms_mm.value').change(function(){
-        if(getValue('ms_mm.value')== MONOGAMOUS)
-        {
-            setValue('ms_di.value', '');
-            setValue('ms_mp.value', '');
-            setValue('ms_co.value', '');
-            setValue('ms_si.value', '');
-            setValue('ms_wi.value', '');
-        }
-    });
+	getField('ms_mm.value').change(function(){
+		if(getValue('ms_mm.value')== MONOGAMOUS)
+		{
+			setValue('ms_di.value', '');
+			setValue('ms_mp.value', '');
+			setValue('ms_co.value', '');
+			setValue('ms_si.value', '');
+			setValue('ms_wi.value', '');
+		}
+	});
 
-    getField('ms_si.value').change(function(){
-        if(getValue('ms_si.value')== SINGLE)
-        {
-            setValue('ms_di.value', '');
-            setValue('ms_mp.value', '');
-            setValue('ms_mm.value', '');
-            setValue('ms_co.value', '');
-            setValue('ms_wi.value', '');
-        }
-    });
+	getField('ms_si.value').change(function(){
+		if(getValue('ms_si.value')== SINGLE)
+		{
+			setValue('ms_di.value', '');
+			setValue('ms_mp.value', '');
+			setValue('ms_mm.value', '');
+			setValue('ms_co.value', '');
+			setValue('ms_wi.value', '');
+		}
+	});
 
-    getField('ms_wi.value').change(function(){
-        if(getValue('ms_wi.value')== WIDOW)
-        {
-            setValue('ms_di.value', '');
-            setValue('ms_mp.value', '');
-            setValue('ms_mm.value', '');
-            setValue('ms_si.value', '');
-            setValue('ms_co.value', '');
-        }
-    });
+	getField('ms_wi.value').change(function(){
+		if(getValue('ms_wi.value')== WIDOW)
+		{
+			setValue('ms_di.value', '');
+			setValue('ms_mp.value', '');
+			setValue('ms_mm.value', '');
+			setValue('ms_si.value', '');
+			setValue('ms_co.value', '');
+		}
+	});
 
-    getField('allergy.value').change(onAllergy) ;
-    //jq('#allergy input').click(onAllergy);
-    onAllergy();
-    /*
-    getField('allergy.value').change(function(){
-        if(getValue('allergy.value')== ALLERGY_TO_OTHER)
-        {
-            // jq('#allergy_detail').show();
-            jq('#allergy_detail').find('input[type=text]').removeAttr('disabled');
+	getField('allergy.value').change(onAllergy) ;
+	//jq('#allergy input').click(onAllergy);
+	onAllergy();
+	/*
+	 getField('allergy.value').change(function(){
+	 if(getValue('allergy.value')== ALLERGY_TO_OTHER)
+	 {
+	 // jq('#allergy_detail').show();
+	 jq('#allergy_detail').find('input[type=text]').removeAttr('disabled');
 
-        }
-        else
-        {
-            setValue('allergy_detail.value', '');
-            //jq('#allergy_detail').hide();
-            jq('#allergy_detail').find('input[type=text]').attr('disabled','true');
+	 }
+	 else
+	 {
+	 setValue('allergy_detail.value', '');
+	 //jq('#allergy_detail').hide();
+	 jq('#allergy_detail').find('input[type=text]').attr('disabled','true');
 
-        }
-    });
-     */
-    getField('date_confirmed_pos.value').change(function(){
-        var birthDate = new Date(getValue('dob.value'))//.getTime();
-        var pos_date=new Date(getValue('date_confirmed_pos.value'))//.getTime();
+	 }
+	 });
+	 */
+	getField('date_confirmed_pos.value').change(function(){
+		var birthDate = new Date(getValue('dob.value'))//.getTime();
+		var pos_date=new Date(getValue('date_confirmed_pos.value'))//.getTime();
 
-        if (pos_date &lt; birthDate )
-        {
-            getField('date_confirmed_pos.error').html('Should not be less than the date of Birth').show();
-        }
-        else
-        {
-            getField('date_confirmed_pos.error').hide();
-        }
-    });
+		if (pos_date &lt; birthDate )
+		{
+			getField('date_confirmed_pos.error').html('Should not be less than the date of Birth').show();
+		}
+		else
+		{
+			getField('date_confirmed_pos.error').hide();
+		}
+	});
 
-    getField('date_Enrolled.value').change(function(){
-        var birthDate = new Date("<lookup expression="patient.birthdate"/>")//.getTime();
-        var enroll_date=new Date(getValue('date_Enrolled.value'))//.getTime();
-        var pos_date=new Date(getValue('date_confirmed_pos.value'))//.getTime();
+	getField('date_Enrolled.value').change(function(){
+		var birthDate = new Date("<lookup expression="patient.birthdate"/>")//.getTime();
+		var enroll_date=new Date(getValue('date_Enrolled.value'))//.getTime();
+		var pos_date=new Date(getValue('date_confirmed_pos.value'))//.getTime();
 
-        if (enroll_date &lt; birthDate )
-        {
-            getField('date_Enrolled.error').html('Should not be less than the date of Birth').show();
-        }
-        else
-        {
-            getField('date_Enrolled.error').hide();
-        }
+		if (enroll_date &lt; birthDate )
+		{
+			getField('date_Enrolled.error').html('Should not be less than the date of Birth').show();
+		}
+		else
+		{
+			getField('date_Enrolled.error').hide();
+		}
 
-        if (enroll_date &lt; pos_date )
-        {
-            getField('date_Enrolled.error').html('Should not be less than the date confirmed HIV Positive').show();
-        }
-        else
-        {
-            getField('date_Enrolled.error').hide();
-        }
-    });
+		if (enroll_date &lt; pos_date )
+		{
+			getField('date_Enrolled.error').html('Should not be less than the date confirmed HIV Positive').show();
+		}
+		else
+		{
+			getField('date_Enrolled.error').hide();
+		}
+	});
 
-      /* hide or display transfer in fields */
-    jq('#ep_transfer_in input').click(OnTransferStatusChange);
-    OnTransferStatusChange();
+	/* hide or display transfer in fields */
+	jq('#ep_transfer_in input').click(OnTransferStatusChange);
+	OnTransferStatusChange();
 
-    /* hide or display ART History in fields */
-    jq('#art-status input').click(OnARTStatusChange);
-    OnARTStatusChange();
+	/* hide or display ART History in fields */
+	jq('#art-status input').click(OnARTStatusChange);
+	OnARTStatusChange();
 
-    jq('#ms_mp input').click(setMaritalStatus);
-    setMaritalStatus();
-    
-       jq('#ep_pmtct input').click(function(){
-        if (getValue('ep_pmtct.value')==PMTCT_CONCEPT_ID)
-        {
-            setValue('ep_vct.value','') ;
-            setValue('ep_ipdAd.value','') ;
-            setValue('ep_ipdCh.value','') ;
-            setValue('ep_transfer_in.value','') ;
-            setValue('ep_tb.value','') ;
-            setValue('ep_mch.value','') ;
-            setValue('ep_other.value','') ;
-            setValue('ep_opd.value','') ;
-            setValue('ep_fm.value','') ;
-            setValue('ep_vmmc.value','') ;
-        }
-    });
+	jq('#ms_mp input').click(setMaritalStatus);
+	setMaritalStatus();
 
-  jq('#ep_vct input').click(function(){
-        if (getValue('ep_vct.value')==VCT_CONCEPT_ID)
-        {
-            setValue('ep_pmtct.value','') ;
-            setValue('ep_ipdAd.value','') ;
-            setValue('ep_ipdCh.value','') ;
-            setValue('ep_transfer_in.value','') ;
-            setValue('ep_tb.value','') ;
-            setValue('ep_mch.value','') ;
-            setValue('ep_other.value','') ;
-            setValue('ep_opd.value','') ;
-            setValue('ep_fm.value','') ;
-            setValue('ep_vmmc.value','') ;
-        }
-    });
+	jq('#ep_pmtct input').click(setEntryPoint);
+	setEntryPoint();
 
-  jq('#ep_ipdAd input').click(function(){
-        if (getValue('ep_ipdAd.value')==INPATIENT_AD_CONCEPT_ID)
-        {
-            setValue('ep_vct.value','') ;
-            setValue('ep_pmtct.value','') ;
-            setValue('ep_ipdCh.value','') ;
-            setValue('ep_transfer_in.value','') ;
-            setValue('ep_tb.value','') ;
-            setValue('ep_mch.value','') ;
-            setValue('ep_other.value','') ;
-            setValue('ep_opd.value','') ;
-            setValue('ep_fm.value','') ;
-            setValue('ep_vmmc.value','') ;
-        }
-    });
 
-  jq('#ep_ipdCh input').click(function(){
-        if (getValue('ep_ipdCh.value')==INPATIENT_CH_CONCEPT_ID)
-        {
-            setValue('ep_vct.value','') ;
-            setValue('ep_ipdAd.value','') ;
-            setValue('ep_pmtct.value','') ;
-            setValue('ep_transfer_in.value','') ;
-            setValue('ep_tb.value','') ;
-            setValue('ep_mch.value','') ;
-            setValue('ep_other.value','') ;
-            setValue('ep_opd.value','') ;
-            setValue('ep_fm.value','') ;
-            setValue('ep_vmmc.value','') ;
-        }
-    });
+	jq('#ep_pmtct input').click(function(){
+		if (getValue('ep_pmtct.value')==PMTCT_CONCEPT_ID)
+		{
+			setValue('ep_vct.value','') ;
+			setValue('ep_ipdAd.value','') ;
+			setValue('ep_ipdCh.value','') ;
+			setValue('ep_transfer_in.value','') ;
+			setValue('ep_tb.value','') ;
+			setValue('ep_mch.value','') ;
+			setValue('ep_other.value','') ;
+			setValue('ep_opd.value','') ;
+			setValue('ep_fm.value','') ;
+			setValue('ep_vmmc.value','') ;
+		}
+	});
 
-  jq('#ep_transfer_in input').click(function(){
-        if (getValue('ep_transfer_in.value')==TRANSFER_IN_CONCEPT_ID)
-        {
-            setValue('ep_vct.value','') ;
-            setValue('ep_ipdAd.value','') ;
-            setValue('ep_ipdCh.value','') ;
-            setValue('ep_pmtct.value','') ;
-            setValue('ep_tb.value','') ;
-            setValue('ep_mch.value','') ;
-            setValue('ep_other.value','') ;
-            setValue('ep_opd.value','') ;
-            setValue('ep_fm.value','') ;
-            setValue('ep_vmmc.value','') ;
-        }
-    });
+	jq('#ep_vct input').click(function(){
+		if (getValue('ep_vct.value')==VCT_CONCEPT_ID)
+		{
+			setValue('ep_pmtct.value','') ;
+			setValue('ep_ipdAd.value','') ;
+			setValue('ep_ipdCh.value','') ;
+			setValue('ep_transfer_in.value','') ;
+			setValue('ep_tb.value','') ;
+			setValue('ep_mch.value','') ;
+			setValue('ep_other.value','') ;
+			setValue('ep_opd.value','') ;
+			setValue('ep_fm.value','') ;
+			setValue('ep_vmmc.value','') ;
+		}
+	});
 
-  jq('#ep_tb input').click(function(){
-        if (getValue('ep_tb.value')==TB_ENTRY_CONCEPT_ID)
-        {
-            setValue('ep_vct.value','') ;
-            setValue('ep_ipdAd.value','') ;
-            setValue('ep_ipdCh.value','') ;
-            setValue('ep_transfer_in.value','') ;
-            setValue('ep_pmtct.value','') ;
-            setValue('ep_mch.value','') ;
-            setValue('ep_other.value','') ;
-            setValue('ep_opd.value','') ;
-            setValue('ep_fm.value','') ;
-            setValue('ep_vmmc.value','') ;
-        }
-    });
+	jq('#ep_ipdAd input').click(function(){
+		if (getValue('ep_ipdAd.value')==INPATIENT_AD_CONCEPT_ID)
+		{
+			setValue('ep_vct.value','') ;
+			setValue('ep_pmtct.value','') ;
+			setValue('ep_ipdCh.value','') ;
+			setValue('ep_transfer_in.value','') ;
+			setValue('ep_tb.value','') ;
+			setValue('ep_mch.value','') ;
+			setValue('ep_other.value','') ;
+			setValue('ep_opd.value','') ;
+			setValue('ep_fm.value','') ;
+			setValue('ep_vmmc.value','') ;
+		}
+	});
 
-  jq('#ep_mch input').click(function(){
-        if (getValue('ep_mch.value')==MCH_CONCEPT_ID)
-        {
-            setValue('ep_vct.value','') ;
-            setValue('ep_ipdAd.value','') ;
-            setValue('ep_ipdCh.value','') ;
-            setValue('ep_transfer_in.value','') ;
-            setValue('ep_tb.value','') ;
-            setValue('ep_pmtct.value','') ;
-            setValue('ep_other.value','') ;
-            setValue('ep_opd.value','') ;
-            setValue('ep_fm.value','') ;
-            setValue('ep_vmmc.value','') ;
-        }
-    });
+	jq('#ep_ipdCh input').click(function(){
+		if (getValue('ep_ipdCh.value')==INPATIENT_CH_CONCEPT_ID)
+		{
+			setValue('ep_vct.value','') ;
+			setValue('ep_ipdAd.value','') ;
+			setValue('ep_pmtct.value','') ;
+			setValue('ep_transfer_in.value','') ;
+			setValue('ep_tb.value','') ;
+			setValue('ep_mch.value','') ;
+			setValue('ep_other.value','') ;
+			setValue('ep_opd.value','') ;
+			setValue('ep_fm.value','') ;
+			setValue('ep_vmmc.value','') ;
+		}
+	});
 
-  jq('#ep_other input').click(function(){
-        if (getValue('ep_other.value')==OTHER_ENTRY_CONCEPT_ID)
-        {
-            setValue('ep_vct.value','') ;
-            setValue('ep_ipdAd.value','') ;
-            setValue('ep_ipdCh.value','') ;
-            setValue('ep_transfer_in.value','') ;
-            setValue('ep_tb.value','') ;
-            setValue('ep_mch.value','') ;
-            setValue('ep_pmtct.value','') ;
-            setValue('ep_opd.value','') ;
-            setValue('ep_fm.value','') ;
-            setValue('ep_vmmc.value','') ;
-        }
-    });
+	jq('#ep_transfer_in input').click(function(){
+		if (getValue('ep_transfer_in.value')==TRANSFER_IN_CONCEPT_ID)
+		{
+			setValue('ep_vct.value','') ;
+			setValue('ep_ipdAd.value','') ;
+			setValue('ep_ipdCh.value','') ;
+			setValue('ep_pmtct.value','') ;
+			setValue('ep_tb.value','') ;
+			setValue('ep_mch.value','') ;
+			setValue('ep_other.value','') ;
+			setValue('ep_opd.value','') ;
+			setValue('ep_fm.value','') ;
+			setValue('ep_vmmc.value','') ;
+		}
+	});
 
-  jq('#ep_opd input').click(function(){
-        if (getValue('ep_opd.value')==OPD_ENTRY_CONCEPT_ID)
-        {
-            setValue('ep_vct.value','') ;
-            setValue('ep_ipdAd.value','') ;
-            setValue('ep_ipdCh.value','') ;
-            setValue('ep_transfer_in.value','') ;
-            setValue('ep_tb.value','') ;
-            setValue('ep_mch.value','') ;
-            setValue('ep_other.value','') ;
-            setValue('ep_pmtct.value','') ;
-            setValue('ep_fm.value','') ;
-            setValue('ep_vmmc.value','') ;
-        }
-    });
+	jq('#ep_tb input').click(function(){
+		if (getValue('ep_tb.value')==TB_ENTRY_CONCEPT_ID)
+		{
+			setValue('ep_vct.value','') ;
+			setValue('ep_ipdAd.value','') ;
+			setValue('ep_ipdCh.value','') ;
+			setValue('ep_transfer_in.value','') ;
+			setValue('ep_pmtct.value','') ;
+			setValue('ep_mch.value','') ;
+			setValue('ep_other.value','') ;
+			setValue('ep_opd.value','') ;
+			setValue('ep_fm.value','') ;
+			setValue('ep_vmmc.value','') ;
+		}
+	});
 
-  jq('#ep_fm input').click(function(){
-        if (getValue('ep_fm.value')==FAMILY_CONCEPT_ID)
-        {
-            setValue('ep_vct.value','') ;
-            setValue('ep_ipdAd.value','') ;
-            setValue('ep_ipdCh.value','') ;
-            setValue('ep_transfer_in.value','') ;
-            setValue('ep_tb.value','') ;
-            setValue('ep_mch.value','') ;
-            setValue('ep_other.value','') ;
-            setValue('ep_opd.value','') ;
-            setValue('ep_pmtct.value','') ;
-            setValue('ep_vmmc.value','') ;
-        }
-    });
+	jq('#ep_mch input').click(function(){
+		if (getValue('ep_mch.value')==MCH_CONCEPT_ID)
+		{
+			setValue('ep_vct.value','') ;
+			setValue('ep_ipdAd.value','') ;
+			setValue('ep_ipdCh.value','') ;
+			setValue('ep_transfer_in.value','') ;
+			setValue('ep_tb.value','') ;
+			setValue('ep_pmtct.value','') ;
+			setValue('ep_other.value','') ;
+			setValue('ep_opd.value','') ;
+			setValue('ep_fm.value','') ;
+			setValue('ep_vmmc.value','') ;
+		}
+	});
 
-  jq('#ep_vmmc input').click(function(){
-        if (getValue('ep_vmmc.value')==VMMC_CONCEPT_ID)
-        {
-            setValue('ep_vct.value','') ;
-            setValue('ep_ipdAd.value','') ;
-            setValue('ep_ipdCh.value','') ;
-            setValue('ep_transfer_in.value','') ;
-            setValue('ep_tb.value','') ;
-            setValue('ep_mch.value','') ;
-            setValue('ep_other.value','') ;
-            setValue('ep_opd.value','') ;
-            setValue('ep_pmtct.value','') ;
-            setValue('ep_fm.value','') ;
-        }
-    });
+	jq('#ep_other input').click(function(){
+		if (getValue('ep_other.value')==OTHER_ENTRY_CONCEPT_ID)
+		{
+			setValue('ep_vct.value','') ;
+			setValue('ep_ipdAd.value','') ;
+			setValue('ep_ipdCh.value','') ;
+			setValue('ep_transfer_in.value','') ;
+			setValue('ep_tb.value','') ;
+			setValue('ep_mch.value','') ;
+			setValue('ep_pmtct.value','') ;
+			setValue('ep_opd.value','') ;
+			setValue('ep_fm.value','') ;
+			setValue('ep_vmmc.value','') ;
+		}
+	});
+
+	jq('#ep_opd input').click(function(){
+		if (getValue('ep_opd.value')==OPD_ENTRY_CONCEPT_ID)
+		{
+			setValue('ep_vct.value','') ;
+			setValue('ep_ipdAd.value','') ;
+			setValue('ep_ipdCh.value','') ;
+			setValue('ep_transfer_in.value','') ;
+			setValue('ep_tb.value','') ;
+			setValue('ep_mch.value','') ;
+			setValue('ep_other.value','') ;
+			setValue('ep_pmtct.value','') ;
+			setValue('ep_fm.value','') ;
+			setValue('ep_vmmc.value','') ;
+		}
+	});
+
+	jq('#ep_fm input').click(function(){
+		if (getValue('ep_fm.value')==FAMILY_CONCEPT_ID)
+		{
+			setValue('ep_vct.value','') ;
+			setValue('ep_ipdAd.value','') ;
+			setValue('ep_ipdCh.value','') ;
+			setValue('ep_transfer_in.value','') ;
+			setValue('ep_tb.value','') ;
+			setValue('ep_mch.value','') ;
+			setValue('ep_other.value','') ;
+			setValue('ep_opd.value','') ;
+			setValue('ep_pmtct.value','') ;
+			setValue('ep_vmmc.value','') ;
+		}
+	});
+
+	jq('#ep_vmmc input').click(function(){
+		if (getValue('ep_vmmc.value')==VMMC_CONCEPT_ID)
+		{
+			setValue('ep_vct.value','') ;
+			setValue('ep_ipdAd.value','') ;
+			setValue('ep_ipdCh.value','') ;
+			setValue('ep_transfer_in.value','') ;
+			setValue('ep_tb.value','') ;
+			setValue('ep_mch.value','') ;
+			setValue('ep_other.value','') ;
+			setValue('ep_opd.value','') ;
+			setValue('ep_pmtct.value','') ;
+			setValue('ep_fm.value','') ;
+		}
+	});
+
+	getField('date_Enrolled.value').focus(setDateEnrolled);
+	setDateEnrolled();
+
+	getField('date_confirmed_pos.value').focus(setDatePositive);
+	setDatePositive();
+
+	getField('ti_date.value').change(setTIDate);
+	setTIDate();
+
+	getField('ti_district.value').change(setTIDistrict);
+	setTIDistrict();
+
+	getField('ti_facility.value').change(setTIFacility);
+	setTIFacility();
+
+	getField('where.value').change(setTIHaartFacility);
+	setTIHaartFacility();
+
+
+	getField('ti_date_started_haart.value').change(setTIHaartDate);
+	setTIHaartDate();
+
+	getField('art-status.value').change(setArtStatus);
+	setArtStatus();
+
+	getField('ts_rship.value').change(setTsRelation);
+	setTsRelation();
+
+	getField('ts_name.value').change(setTsName);
+	setTsName();
+
+
+	getField('ts_address.value').change(setTsAddress);
+	setTsAddress();
+
+	getField('ts_tel.value').change(setTsTelephone);
+	setTsTelephone();
 
 });
 </script>
@@ -551,278 +801,262 @@ jq(function() {
 </div>
 
 <div class="ke-form-header">
-    <table style="width: 100%">
-        <tr>
-            <td>Date: <encounterDate id="encounter-date" showTime="false"/></td>
-            <td>Enrolled at: <encounterLocation id="site" default="GlobalProperty:kenyaemr.defaultLocation"/></td>
-        </tr>
-    </table>
+	<table style="width: 100%">
+		<tr>
+			<td>Date: <encounterDate id="encounter-date" showTime="false"/></td>
+			<td>Enrolled at: <encounterLocation id="site" default="GlobalProperty:kenyaemr.defaultLocation"/></td>
+		</tr>
+	</table>
 </div>
 
 <div class="ke-form-content">
 <table class="moh257" align="center">
 <tbody>
 <tr>
-    <td style="background-color: #696969; color: #ffffff;">PATIENT PROFILE</td>
+	<td style="background-color: #696969; color: #ffffff;">PATIENT PROFILE</td>
 </tr>
 <tr>
-    <td>
-        <table>
-            <excludeIf velocityTest="$kenyaemr.hasHivUniquePatientNumber()">
-                <tr>
-                    <td>Unique Patient Number (UPN)</td>
-                    <td>
-                        <span id="hiv-id"><patient field="identifier" identifierTypeId="05ee9cf4-7242-4a17-b4d4-00f707265c8a" /></span>
-                        <input type="button" id="generate-hiv-id" value="Generate"/>
-                    </td>
-                </tr>
-            </excludeIf>
-            <!--
-            <tr>
-                <td>Unique Patient Number:</td>
-                <td><lookup class="value" complexExpression="#foreach( $patId in $patientIdentifiers.get('Unique Patient Number') ) $patId #end "/></td>
-            </tr>
-            -->
-            <tr>
-                <td>Patient's Names: <br/><lookup class="value" expression="patient.personName"/></td>
-                <td>Date of Birth <lookup class="value" id="dob" expression="patient.birthdate"/>
-                    Age: <lookup class="value" id="age" expression="patient.age"/>
-                </td>
-            </tr>
-            <tr>
-                <td>Sex <lookup class="value" expression="patient.gender" /></td>
-                <td>Postal Address <lookup class="value" expression="patient.personAddress.address1" /> </td>
+	<td>
+		<table>
+			<excludeIf velocityTest="$kenyaemr.hasHivUniquePatientNumber()">
+				<tr>
+					<td>Unique Patient Number (UPN)</td>
+					<td>
+						<span id="hiv-id"><patient field="identifier" identifierTypeId="05ee9cf4-7242-4a17-b4d4-00f707265c8a" /></span>
+						<input type="button" id="generate-hiv-id" value="Generate"/>
+					</td>
+				</tr>
+			</excludeIf>
+			<!--
+			<tr>
+				<td>Unique Patient Number:</td>
+				<td><lookup class="value" complexExpression="#foreach( $patId in $patientIdentifiers.get('Unique Patient Number') ) $patId #end "/></td>
+			</tr>
+			-->
+			<tr>
+				<td>Patient's Names: <br/><lookup class="value" expression="patient.personName"/></td>
+				<td>Date of Birth <lookup class="value" id="dob" expression="patient.birthdate"/>
+					Age: <lookup class="value" id="age" expression="patient.age"/>
+				</td>
+			</tr>
+			<tr>
+				<td>Sex <lookup class="value" expression="patient.gender" /></td>
+				<td>Postal Address <lookup class="value" expression="patient.personAddress.address1" /> </td>
 
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <table width="100%">
-                        <tr>
-                            <td colspan="2">Tel Contact:</td>
-                        </tr>
-                        <tr>
-                            <td>District:  <lookup class="value" expression="patient.personAddress.countyDistrict" /> </td>
-                            <td>Location: <lookup class="value" expression="patient.personAddress.address6" /></td>
-                        </tr>
-                        <tr>
-                            <td>Sub-location:  <lookup class="value" expression="patient.personAddress.address5" /> </td>
-                            <td>Landmark: <lookup class="value" expression="patient.personAddress.address2" /></td>
-                        </tr>
-                        <tr>
-                            <td colspan="2">Nearest H/Center</td>
-                        </tr>
-                    </table>
+			</tr>
+			<tr>
+				<td colspan="2">
+					<table width="100%">
+						<tr>
+							<td colspan="2">Tel Contact:</td>
+						</tr>
+						<tr>
+							<td>District:  <lookup class="value" expression="patient.personAddress.countyDistrict" /> </td>
+							<td>Location: <lookup class="value" expression="patient.personAddress.address6" /></td>
+						</tr>
+						<tr>
+							<td>Sub-location:  <lookup class="value" expression="patient.personAddress.address5" /> </td>
+							<td>Landmark: <lookup class="value" expression="patient.personAddress.address2" /></td>
+						</tr>
+						<tr>
+							<td colspan="2">Nearest H/Center</td>
+						</tr>
+					</table>
 
-                </td>
+				</td>
 
-            </tr>
+			</tr>
 
 
-            <tr>
-                <td colspan="2">
-                    <table>
-                        <tr>
-                            <td rowspan="2">Marital Status</td>
-                            <td><obs id="ms_mp" conceptId="1054AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="159715AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Married Polygamous" style="checkbox"/></td>
-                            <td><obs id="ms_di" conceptId="1054AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1058AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Divorced" style="checkbox"/></td>
-                            <td><obs id="ms_co" conceptId="1054AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1060AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Cohabiting" style="checkbox"/></td>
-                        </tr>
-                        <tr>
-                            <td><obs id="ms_mm" conceptId="1054AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Married Monogamous" style="checkbox"/></td>
-                            <td><obs id="ms_wi" conceptId="1054AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1059AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Widowed" style="checkbox"/></td>
-                            <td><obs id="ms_si" conceptId="1054AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1057AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Single" style="checkbox"/></td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2">Treatment Supporter</td>
-            </tr>
-            <tr>
-                <td>Name:<obs conceptId="160638AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/> </td>
-                <td>Relationship:<obs conceptId="160640AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                      style="dropdown"/> </td>
+			<tr>
+				<td colspan="2">
+					<table>
+						<tr>
+							<td rowspan="2">Marital Status</td>
+							<td><obs id="ms_mp" conceptId="1054AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="159715AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Married Polygamous" style="checkbox"/></td>
+							<td><obs id="ms_di" conceptId="1054AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1058AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Divorced" style="checkbox"/></td>
+							<td><obs id="ms_co" conceptId="1054AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1060AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Cohabiting" style="checkbox"/></td>
+						</tr>
+						<tr>
+							<td><obs id="ms_mm" conceptId="1054AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Married Monogamous" style="checkbox"/></td>
+							<td><obs id="ms_wi" conceptId="1054AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1059AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Widowed" style="checkbox"/></td>
+							<td><obs id="ms_si" conceptId="1054AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1057AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Single" style="checkbox"/></td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">Treatment Supporter</td>
+			</tr>
+			<tr>
+				<td>Name:<obs id="ts_name" conceptId="160638AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/> </td>
+				<td>Relationship:<obs id="ts_rship" conceptId="160640AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									  style="dropdown"/> </td>
 
-            </tr>
-            <tr>
-                <td>Postal Address:<obs conceptId="160641AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/> </td>
-                <td>Tel No:<obs conceptId="160642AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /> </td>
-            </tr>
-        </table>
-    </td>
+			</tr>
+			<tr>
+				<td>Postal Address:<obs id="ts_address" conceptId="160641AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/> </td>
+				<td>Tel No:<obs id="ts_tel" conceptId="160642AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /> </td>
+			</tr>
+		</table>
+	</td>
 </tr>
 <tr>
-    <td style="background-color: #696969; color: #ffffff;">Patient Source</td>
+	<td style="background-color: #696969; color: #ffffff;">Patient Source</td>
 </tr>
 <tr>
-    <td>
-        <table>
-            <tr>
-                <td rowspan="3">Entry Point</td>
+	<td>
+		<table>
+			<tr>
+				<td rowspan="3">Entry Point</td>
 
-                <td><obs  id="ep_pmtct" conceptId="160540AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160538AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="PMTCT" style="checkbox"/></td>
-                <td><obs  id="ep_ipdAd" conceptId="160540AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160536AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="IPD-Ad" style="checkbox"/></td>
-                <td><obs  id="ep_tb" conceptId="160540AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160541AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="TB Clinic" style="checkbox"/></td>
-                <td><obs  id="ep_opd" conceptId="160540AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160542AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="OPD" style="checkbox"/></td>
+				<td><obs  id="ep_pmtct" conceptId="160540AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160538AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="PMTCT" style="checkbox"/></td>
+				<td><obs  id="ep_ipdAd" conceptId="160540AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160536AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="IPD-Ad" style="checkbox"/></td>
+				<td><obs  id="ep_tb" conceptId="160540AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160541AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="TB Clinic" style="checkbox"/></td>
+				<td><obs  id="ep_opd" conceptId="160540AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160542AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="OPD" style="checkbox"/></td>
 
-            </tr>
-            <tr>
+			</tr>
+			<tr>
 
-                <td><obs id="ep_vct" conceptId="160540AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160539AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="VCT" style="checkbox"/></td>
-                <td><obs id="ep_ipdCh" conceptId="160540AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160537AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="IPD-Ch" style="checkbox"/></td>
-                <td><obs id="ep_mch" conceptId="160540AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160544AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="MCH-Child" style="checkbox"/></td>
-                <td><obs id="ep_vmmc" conceptId="160540AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="162223AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="VMMC" style="checkbox"/></td>
+				<td><obs id="ep_vct" conceptId="160540AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160539AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="VCT" style="checkbox"/></td>
+				<td><obs id="ep_ipdCh" conceptId="160540AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160537AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="IPD-Ch" style="checkbox"/></td>
+				<td><obs id="ep_mch" conceptId="160540AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160544AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="MCH-Child" style="checkbox"/></td>
+				<td><obs id="ep_vmmc" conceptId="160540AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="162223AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="VMMC" style="checkbox"/></td>
 
-            </tr>
-            <tr>
+			</tr>
+			<tr>
 
-                <td><obs id="ep_fm" conceptId="160540AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1560AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Family Member" style="checkbox"/></td>
-                <td><obs id="ep_other" conceptId="160540AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Other, (Specify e.g. (STI)" style="checkbox"/></td>
-                <td colspan="2">
-                    <obs id="ep_transfer_in" conceptId="160540AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                         answerConceptId="160563AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                         answerLabel="Transfer in from Other HIV Clinic"
-                         style="checkbox"/>
-                </td>
+				<td><obs id="ep_fm" conceptId="160540AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1560AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Family Member" style="checkbox"/></td>
+				<td><obs id="ep_other" conceptId="160540AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Other, (Specify e.g. (STI)" style="checkbox"/></td>
+				<td colspan="2">
+					<obs id="ep_transfer_in" conceptId="160540AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+						 answerConceptId="160563AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+						 answerLabel="Transfer in from Other HIV Clinic"
+						 style="checkbox"/>
+				</td>
 
-            </tr>
-            <tr>
-                <td> Transfer In:</td>
-                <td colspan="3">
+			</tr>
+			<tr>
+				<td> Transfer In:</td>
+				<td colspan="3">
 									<span id="transfer_details">
 										<table>
-                                            <tr>
-                                                <td>Date:</td>
-                                                <td><obs id="ti_date" conceptId="160534AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
-                                                <td>From: District</td>
-                                                <td><obs id="ti_district" conceptId="161551AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
-                                            </tr>
-                                            <tr>
-                                                <td>Facility:</td>
-                                                <td><obs id="ti_facility" conceptId="160535AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
-                                                <td>Date started ART</td>
-                                                <td><obs id="ti_date_started_haart" conceptId="159599AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
-                                            </tr>
-                                        </table>
+											<tr>
+												<td>Date:</td>
+												<td><obs id="ti_date" conceptId="160534AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
+												<td>From: District</td>
+												<td><obs id="ti_district" conceptId="161551AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
+											</tr>
+											<tr>
+												<td>Facility:</td>
+												<td><obs id="ti_facility" conceptId="160535AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
+												<td>Date started ART</td>
+												<td><obs id="ti_date_started_haart" conceptId="159599AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
+											</tr>
+										</table>
 									</span>
-                </td>
-            </tr>
-        </table>
-    </td>
+				</td>
+			</tr>
+		</table>
+	</td>
 </tr>
 <tr>
-    <td style="background-color: #696969; color: #ffffff;">ART History</td>
+	<td style="background-color: #696969; color: #ffffff;">ART History</td>
 </tr>
 <tr>
-    <td>
-        Previously on ARVs (PMTCT &amp; PEP included)? <obs id="art-status" conceptId="160533AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="yes_no"/>
-        <br/>
+	<td>
+		Previously on ARVs (PMTCT &amp; PEP included)? <obs id="art-status" conceptId="160533AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="yes_no"/>
+		<br/>
         <span id="art-History">
         <table>
-            <tr>
-                <td>If "Yes" then Purpose</td>
-                <td>List Drug Names &amp; Dates Last Used</td>
-            </tr>
-            <repeat>
-                <template>
-                    <obsgroup groupingConceptId="160741AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-                        <tr>
+			<tr>
+				<td>If "Yes" then Purpose</td>
+				<td>List Drug Names &amp; Dates Last Used</td>
+			</tr>
+			<repeat>
+				<template>
+					<obsgroup groupingConceptId="160741AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+						<tr>
 
-                            <td><obs conceptId="1148AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="PMTCT" style="checkbox"/>
-                                <obs conceptId="1691AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText="PEP" style="checkbox"/>
-                                <obs conceptId="1181AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"    answerConceptId="1185AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="HAART" style="checkbox"/>
-                            </td>
-                            <td><obs conceptId="1088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                     answerConceptIds="792AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,794AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,630AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,84309AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,74807AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,70056AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,80487AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,80586AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,75523AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,78643AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,84795AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,77995AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160104AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160105AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,86663AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,75628AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,79040AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,83412AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,71647AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161361AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,103166AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,104565AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162201AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,817AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162199AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                     answerLabels="D4T/3TC/NVP,
-												LPV/r,
-												AZT/3TC,
-												D4T,
-												DDI,
-												ABC,
-												NFV,
-												NVP,
-												EFV,
-												3TC,
-												TDF,
-												IDV,
-												AZT/3TC/EFV,
-												D4T/3TC/EFV,
-												AZT,
-												FTC,
-												LPV,
-												RTV,
-												ATV,
-												3TC/NVP/AZT,
-												3TC/D4T,
-												TDF/3TC,
-												TDF/3TC/EFV,
-												ABC/3TC,
-												EFV/FTC/TDF,
-												3TC/LPV/r/TDF,
-												ABC/3TC/AZT,
-												ABC/NVP/3TC,
-												3TC/ABC/LPV/r"
-                                     answerSeparator="&lt;br /&gt;" style="dropdown" dateLabel=""/></td>
+							<td><obs conceptId="1148AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="PMTCT" style="checkbox"/>
+								<obs conceptId="1691AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText="PEP" style="checkbox"/>
+								<obs conceptId="1181AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"    answerConceptId="1185AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="HAART" style="checkbox"/>
+							</td>
+							<td><obs conceptId="1088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="794AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="LPV/r" style="checkbox" />
+								<obs conceptId="1088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="84309AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="D4T" style="checkbox" />
+								<obs conceptId="1088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="74807AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="DDI" style="checkbox" />
+								<obs conceptId="1088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="70056AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="ABC" style="checkbox" />
+								<obs conceptId="1088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="80487AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="NFV" style="checkbox" />
+								<obs conceptId="1088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="80586AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="NVP" style="checkbox" /><br/>
+								<obs conceptId="1088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="75523AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="EFV" style="checkbox" />
+								<obs conceptId="1088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="78643AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="3TC" style="checkbox" />
+								<obs conceptId="1088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="84795AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="TDF" style="checkbox" />
+								<obs conceptId="1088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="86663AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="AZT" style="checkbox" />
+								<obs conceptId="1088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="83412AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="RTV" style="checkbox" />
+								<obs conceptId="1088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="71647AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="ATV" style="checkbox" dateLabel=""/></td>
 
-                        </tr>
-                    </obsgroup>
-                </template>
-                <render n="1" concept=" " />
-                <render n="2" concept=" " />
-                <render n="3" concept=" " />
-                <render n="4" concept=" " />
-                <render n="5" concept=" " />
-            </repeat>
+						</tr>
+					</obsgroup>
+				</template>
+				<render n="1" concept=" " />
+				<render n="2" concept=" " />
+				<render n="3" concept=" " />
+				<render n="4" concept=" " />
+				<render n="5" concept=" " />
+			</repeat>
 
 
-        </table>
+		</table>
         </span>
-        <table>
-            <tr>
-                <td><br/>Date Confirmed HIV Positive</td>
-                <td><br/><obs id="date_confirmed_pos"  conceptId="160554AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/><span id="date_confirmed_error"></span></td>
-                <td><br/>Where?
-                    <obsgroup groupingConceptId="161559AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-                        <obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-                    </obsgroup>
-                </td>
+		<table>
+			<tr>
+				<td><br/>Date Confirmed HIV Positive</td>
+				<td><br/><obs id="date_confirmed_pos"  conceptId="160554AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+					<span id="date_confirmed_error"></span>
+				</td>
+
+				<td><br/>Where?
+					<obsgroup groupingConceptId="161559AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+						<obs id="where" conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+					</obsgroup>
+				</td>
 
 
-            </tr>
-            <tr>
-                <td>Date Enrolled in HIV Care</td>
-                <td><obs id="date_Enrolled" conceptId="160555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
-                <td>WHO Stage
+			</tr>
+			<tr>
+				<td>Date Enrolled in HIV Care</td>
+				<td><obs id="date_Enrolled" conceptId="160555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+				</td>
+				<td>WHO Stage
 
-									<span id="initialWhoStageAd"><obs id="whostage" conceptId="160553AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
-                </td>
+					<span id="initialWhoStageAd"><obs id="whostage" conceptId="160553AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
+				</td>
 
-            </tr>
-            <tr>
-                <td>Any Drug Allegies?</td>
-                <td colspan="2">
-                    <obsgroup groupingConceptId="160647AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-                        <obs id="allergy" conceptId="160643AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             answerConceptIds="1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162170AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,81724AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             answerLabels="No,Allergey to Sulfa,Allergy to penicillin,Allergy to other medicine "
-                                /> <br/>
+			</tr>
+			<tr>
+				<td>Any Drug Allegies?</td>
+				<td colspan="2">
+					<obsgroup groupingConceptId="160647AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+						<obs id="allergy" conceptId="160643AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 answerConceptIds="1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162170AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,81724AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 answerLabels="No,Allergey to Sulfa,Allergy to penicillin,Allergy to other medicine "
+								/> <br/>
 
-                        <obs id="allergy_detail" conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-                    </obsgroup></td>
-            </tr>
-        </table>
-    </td>
+						<obs id="allergy_detail" conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+					</obsgroup></td>
+			</tr>
+		</table>
+	</td>
 </tr>
 <tr>
-    <td style="background-color: #696969; color: #ffffff;">HIV Status of Family Members -> Use family information table form</td>
+	<td style="background-color: #696969; color: #ffffff;">HIV Status of Family Members -> Use family information table form</td>
 </tr>
 </tbody>
 </table>
 </div>
 <enrollInProgram programId="dfdc6d40-2f2f-463d-ba90-cc97350441a8"/>
 <div class="ke-form-footer">
-    <submit />
+	<submit />
 </div>
 
 </htmlform>
