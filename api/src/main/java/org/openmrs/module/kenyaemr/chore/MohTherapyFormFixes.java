@@ -20,7 +20,6 @@ import org.openmrs.Form;
 import org.openmrs.Obs;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.FormService;
-import org.openmrs.api.ObsService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyacore.chore.AbstractChore;
 import org.openmrs.module.kenyaemr.Dictionary;
@@ -39,8 +38,6 @@ import java.util.Set;
  */
 @Component("kenyaemr.chore.mohTherapyFormFixes")
 public class MohTherapyFormFixes extends AbstractChore {
-	@Autowired
-	private ObsService obsService;
 
 	@Autowired
 	private EncounterService encounterService;
@@ -70,11 +67,10 @@ public class MohTherapyFormFixes extends AbstractChore {
 					obs.setVoidedBy(Context.getAuthenticatedUser());
 					obs.setVoidReason("Wrong Concept mapping corrected");
 					obs.setDateVoided(new Date());
-
 					count++;
 				}
 			}
 		}
-		out.print("Matching patients corrected are  "+count);
+		out.println("Matching patients corrected are  "+count);
 	}
 }
