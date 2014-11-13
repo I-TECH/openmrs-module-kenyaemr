@@ -44,7 +44,7 @@
 		<div class="ke-field-label">Month</div>
 		<div class="ke-field-content">
 
-			${ ui.includeFragment("kenyaemr", "field/reportPeriod", [ pastMonths: 7 ]) }
+			${ ui.includeFragment("kenyaemr", "field/reportPeriod", [ pastMonths: 24 ]) }
 		</div>
 		<% } %>
 		<% params.each { name, param -> %>

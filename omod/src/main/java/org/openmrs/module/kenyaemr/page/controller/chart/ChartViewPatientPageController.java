@@ -88,16 +88,13 @@ public class ChartViewPatientPageController {
 		model.addAttribute("programSummaries", programSummaries(patient, progams, programManager, kenyaUi));
 		model.addAttribute("visits", Context.getVisitService().getVisitsByPatient(patient));
 		model.addAttribute("visitsCount", Context.getVisitService().getVisitsByPatient(patient).size());
-		
 		Form form = null;
 		String selection = null;
-		
 		if (visit != null) {
 			selection = "visit-" + visit.getVisitId();
 		}
 		else if (formUuid != null) {
 			selection = "form-" + formUuid;
-			
 			form = Context.getFormService().getFormByUuid(formUuid);
 			List<Encounter> encounters = Context.getEncounterService().getEncounters(patient, null, null, null, Collections.singleton(form), null, null, null, null, false);
 			Encounter encounter = encounters.size() > 0 ? encounters.get(0) : null;

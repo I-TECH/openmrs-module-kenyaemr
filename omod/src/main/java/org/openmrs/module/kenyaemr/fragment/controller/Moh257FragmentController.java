@@ -18,6 +18,8 @@ import org.openmrs.Concept;
 import org.openmrs.Encounter;
 import org.openmrs.Form;
 import org.openmrs.Patient;
+import org.openmrs.Program;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.regimen.RegimenChangeHistory;
 import org.openmrs.module.kenyaemr.regimen.RegimenManager;
@@ -79,5 +81,7 @@ public class Moh257FragmentController {
 		Concept masterSet = regimenManager.getMasterSetConcept("ARV");
 		RegimenChangeHistory arvHistory = RegimenChangeHistory.forPatient(patient, masterSet);
 		model.addAttribute("arvHistory", arvHistory);
+		Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
+		model.addAttribute("inHivProgram", Context.getProgramWorkflowService().getPatientPrograms(patient, hivProgram, null, null, null, null, true));
 	}
 }
