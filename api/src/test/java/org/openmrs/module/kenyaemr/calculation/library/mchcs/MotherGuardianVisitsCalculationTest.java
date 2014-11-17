@@ -76,7 +76,7 @@ public class MotherGuardianVisitsCalculationTest extends BaseModuleContextSensit
 		params.put("reviewPeriod", 4);
 		CalculationResultMap resultMap = new MotherGuardianVisitsCalculation().evaluate(ptIds, params, Context.getService(PatientCalculationService.class).createCalculationContext());
 
-		Assert.assertThat(((ListResult) resultMap.get(7)).getValues().size(), is(2));
+		Assert.assertThat(((ListResult) resultMap.get(7)).getValues().size(), is(1));
 		Assert.assertThat(((ListResult) resultMap.get(8)).getValues().size(), is(1));
 		Assert.assertNull(resultMap.get(999));
 	}

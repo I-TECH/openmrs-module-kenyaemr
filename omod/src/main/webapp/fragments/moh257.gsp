@@ -30,15 +30,22 @@
 	<div class="ke-panel-content" style="background-color: #F3F9FF">
 		${ ui.includeFragment("kenyaemr", "widget/encounterStack", [ encounters: page2Encounters, onEncounterClick: onEncounterClick ]) }
 		<br />
-		<div align="center">
-			${ ui.includeFragment("kenyaui", "widget/button", [
-					label: "Add Visit Summary",
-					extra: "From column",
-					iconProvider: "kenyaui",
-					icon: "buttons/visit_retrospective.png",
-					href: ui.pageLink("kenyaemr", "enterForm", [ appId: currentApp.id, patientId: currentPatient, formUuid: page2Form.uuid, returnUrl: ui.thisUrl() ])
-			]) }
-		</div>
+		<% if (inHivProgram) { %>
+			<div align="center">
+				${ ui.includeFragment("kenyaui", "widget/button", [
+						label: "Add Visit Summary",
+						extra: "From column",
+						iconProvider: "kenyaui",
+						icon: "buttons/visit_retrospective.png",
+						href: ui.pageLink("kenyaemr", "enterForm", [ appId: currentApp.id, patientId: currentPatient, formUuid: page2Form.uuid, returnUrl: ui.thisUrl() ])
+				]) }
+			</div>
+		<%}%>
+		<% if (!(inHivProgram)) { %>
+			<div class="ke-warning" align="center">
+				You need to enroll the patient into HIV program before completing visit summary and regimen
+			</div>
+		<%}%>
 	</div>
 </div>
 
@@ -46,17 +53,19 @@
 	<div class="ke-panel-heading">ARV Regimen History</div>
 	<div class="ke-panel-content" style="background-color: #F3F9FF">
 		${ ui.includeFragment("kenyaemr", "regimenHistory", [ history: arvHistory ]) }
-
 		<br />
-		<div align="center">
-			${ ui.includeFragment("kenyaui", "widget/button", [
-					label: "Edit History",
-					extra: "Go to editor",
-					iconProvider: "kenyaui",
-					icon: "buttons/regimen.png",
-					classes: [ "padded" ],
-					href: ui.pageLink("kenyaemr", "regimenEditor", [ appId: currentApp.id, patientId: currentPatient, category: "ARV", returnUrl: ui.thisUrl() ])
-			]) }
-		</div>
+		<% if (inHivProgram) { %>
+			<div align="center">
+				${ ui.includeFragment("kenyaui", "widget/button", [
+						label: "Edit History",
+						extra: "Go to editor",
+						iconProvider: "kenyaui",
+						icon: "buttons/regimen.png",
+						classes: [ "padded" ],
+						href: ui.pageLink("kenyaemr", "regimenEditor", [ appId: currentApp.id, patientId: currentPatient, category: "ARV", returnUrl: ui.thisUrl() ])
+				]) }
+			</div>
+		<%}%>
 	</div>
+
 </div>

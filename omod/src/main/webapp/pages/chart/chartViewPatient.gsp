@@ -44,7 +44,7 @@
 	</div>
 
 	<div class="ke-panel-frame">
-		<div class="ke-panel-heading">Visits</div>
+		<div class="ke-panel-heading">Visits(${ visitsCount })</div>
 
 		<% if (!visits) {
 			print ui.includeFragment("kenyaui", "widget/panelMenuItem", [

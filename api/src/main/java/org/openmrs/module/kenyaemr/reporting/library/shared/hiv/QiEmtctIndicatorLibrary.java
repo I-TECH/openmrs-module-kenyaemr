@@ -151,8 +151,8 @@ public class QiEmtctIndicatorLibrary {
 	 */
 	public CohortIndicator hivExposedMotherBabyPair0to18MonthsInActiveCareAmongFacilityRegistered() {
 		return cohortIndicator("Retention of Mother baby pair - Facility estimate (Retention)",
-				map(qiEmtctCohortLibrary.numberOfHivInfectedPregnantOrLactatingWomenOnArtForAtLeast6MonthsWhoHaveVlLess1000CopiesOnTheirMostRecentVlResult(), "onOrBefore=${endDate}"),
-				map(qiEmtctCohortLibrary.numberOfHivInfectedPregnantOrLactatingWomenOnArtForAtLeast6MonthsWithVlResultNotOlderThan6MonthsFromTheEndOfTheReviewPeriod(), "onOrAfter=${endDate-6m},onOrBefore=${endDate}")
+				map(qiEmtctCohortLibrary.numberOfInfantsSeenInFacilityDuringReviewPeriodWhoseMotherOrGuardianAlsoHaveDocumentedVisitOnSameDayDuringReviewPeriod(6), "onDate=${endDate}"),
+				map(qiEmtctCohortLibrary.heiPatientsInFollowUp(), "onOrBefore=${endDate}")
 		);
 	}
 
@@ -163,8 +163,8 @@ public class QiEmtctIndicatorLibrary {
 	 */
 	public CohortIndicator hivExposedMotherBabyPair0To18MonthsInActiveCareAmongPopulationEstimate() {
 		return cohortIndicator("Retention of Mother baby pair - Population estimate (Retention)",
-				map(qiEmtctCohortLibrary.numberOfHivInfectedPregnantOrLactatingWomenOnArtForAtLeast6MonthsWhoHaveVlLess1000CopiesOnTheirMostRecentVlResult(), "onOrBefore=${endDate}"),
-				map(qiEmtctCohortLibrary.numberOfHivInfectedPregnantOrLactatingWomenOnArtForAtLeast6MonthsWithVlResultNotOlderThan6MonthsFromTheEndOfTheReviewPeriod(), "onOrAfter=${endDate-6m},onOrBefore=${endDate}")
+				map(qiEmtctCohortLibrary.numberOfInfantsSeenInFacilityDuringReviewPeriodWhoseMotherOrGuardianAlsoHaveDocumentedVisitOnSameDayDuringReviewPeriod(6), "onDate=${endDate}"),
+				map(qiEmtctCohortLibrary.heiPatients0To18Months(), "onOrAfter=${endDate-6m},onOrBefore=${endDate}")
 		);
 	}
 
