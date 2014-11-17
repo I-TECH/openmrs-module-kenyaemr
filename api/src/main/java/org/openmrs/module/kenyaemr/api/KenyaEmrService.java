@@ -14,14 +14,14 @@
 
 package org.openmrs.module.kenyaemr.api;
 
-import java.util.Date;
-import java.util.List;
-
 import org.openmrs.Location;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
 import org.openmrs.api.OpenmrsService;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * Business logic methods for KenyaEMR
@@ -69,7 +69,7 @@ public interface KenyaEmrService extends OpenmrsService {
 	@Transactional(readOnly = true)
 	Location getLocationByMflCode(String mflCode);
 
-	/**
+   	/**
 	 * Generates the next unique patient number identifier value
 	 * @param comment the reference comment
 	 * @return the identifier value
@@ -96,4 +96,19 @@ public interface KenyaEmrService extends OpenmrsService {
 	 * @param startFrom the base identifier to start from
 	 */
 	void setupHivUniqueIdentifierSource(String startFrom);
+
+    /**
+     * Sets the mysql details. i.e. the value that should be auto-set for new
+     */
+    void setMysqlDetails(String mysqlDetails);
+
+    /**
+     * Gets the mysql details.
+     * @return the mysql details
+     * @should get the mysql details when set
+     */
+    @Transactional(readOnly = true)
+    String getMysqlDetails();
+
+
 }

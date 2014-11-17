@@ -52,3 +52,28 @@ kenyaemrApp.controller('DatabaseSummary', ['$scope', '$http', function($scope, $
 			});
 	};
 }]);
+
+
+kenyaemrApp.controller('BackupSummary', ['$scope', '$http', '$timeout', function($scope, $http, $timeout) {
+
+    $scope.infos = [];
+
+    /**
+     * Initializes the controller
+     */
+    $scope.init = function(appId) {
+        $scope.appId = appId;
+        $scope.refresh();
+    };
+
+    /**
+     * Refreshes the server information
+     */
+    $scope.refresh = function() {
+        $http.get(ui.fragmentActionLink('kenyaemr', 'system/systemUtils', 'getBackupSummary', { appId: $scope.appId })).
+            success(function(data) {
+                $scope.infos = data;
+                $timeout($scope.refresh, 5000);
+            });
+    };
+}]);

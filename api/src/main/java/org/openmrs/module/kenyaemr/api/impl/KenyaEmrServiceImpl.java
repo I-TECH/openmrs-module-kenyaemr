@@ -16,12 +16,7 @@ package org.openmrs.module.kenyaemr.api.impl;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.GlobalProperty;
-import org.openmrs.Location;
-import org.openmrs.LocationAttributeType;
-import org.openmrs.Patient;
-import org.openmrs.PatientIdentifierType;
-import org.openmrs.Visit;
+import org.openmrs.*;
 import org.openmrs.api.APIException;
 import org.openmrs.api.LocationService;
 import org.openmrs.api.context.Context;
@@ -31,24 +26,22 @@ import org.openmrs.module.idgen.IdentifierSource;
 import org.openmrs.module.idgen.SequentialIdentifierGenerator;
 import org.openmrs.module.idgen.service.IdentifierSourceService;
 import org.openmrs.module.idgen.validator.LuhnModNIdentifierValidator;
-import org.openmrs.module.kenyaemr.metadata.FacilityMetadata;
-import org.openmrs.module.kenyaemr.wrapper.Facility;
-import org.openmrs.module.metadatadeploy.MetadataUtils;
+import org.openmrs.module.kenyacore.identifier.IdentifierManager;
 import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.module.kenyaemr.api.db.KenyaEmrDAO;
-import org.openmrs.module.kenyacore.identifier.IdentifierManager;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
+import org.openmrs.module.kenyaemr.metadata.FacilityMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
+import org.openmrs.module.kenyaemr.security.Encryption;
+import org.openmrs.module.kenyaemr.security.MD5;
+import org.openmrs.module.kenyaemr.wrapper.Facility;
+import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.util.OpenmrsUtil;
 import org.openmrs.util.PrivilegeConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Implementations of business logic methods for KenyaEMR
@@ -89,11 +82,12 @@ public class KenyaEmrServiceImpl extends BaseOpenmrsService implements KenyaEmrS
 			return false;
 		}
 
+        boolean defaultMysqlDetailsConfigured = getMysqlDetails() != null;
 		boolean defaultLocationConfigured = getDefaultLocation() != null;
 		boolean mrnConfigured = identifierManager.getIdentifierSource(MetadataUtils.existing(PatientIdentifierType.class, CommonMetadata._PatientIdentifierType.OPENMRS_ID)) != null;
 		boolean upnConfigured = identifierManager.getIdentifierSource(MetadataUtils.existing(PatientIdentifierType.class, HivMetadata._PatientIdentifierType.UNIQUE_PATIENT_NUMBER)) != null;
 
-		setupRequired = !(defaultLocationConfigured && mrnConfigured && upnConfigured);
+		setupRequired = !(defaultLocationConfigured && mrnConfigured && upnConfigured && defaultMysqlDetailsConfigured);
 		return setupRequired;
 	}
 
@@ -253,4 +247,45 @@ public class KenyaEmrServiceImpl extends BaseOpenmrsService implements KenyaEmrS
 		AutoGenerationOption auto = new AutoGenerationOption(idType, idGen, true, true);
 		idService.saveAutoGenerationOption(auto);
 	}
+
+    /**
+     * Method to encrypt mysql details
+     * @return
+     */
+    public static String encryptMysqlDetails(String mysqlDetails) {
+        final String iv = "0123456789abcdef"; // This has to be 16 characters
+        final String secretKey = "Replace this by your secret key";
+        final MD5 encryption = new MD5();
+
+        final String encryptedData = Encryption.encrypt(mysqlDetails, iv, secretKey);
+        System.out.println("ati encrypted"+encryptedData);
+
+        return encryptedData;
+    }
+    /**
+     * Saves mysql details in encrypted form
+     * @param mysqlDetails
+     */
+    @Override
+    public void setMysqlDetails(String mysqlDetails) {
+        GlobalProperty gp = Context.getAdministrationService().getGlobalPropertyObject(EmrConstants.GP_MYSQL_DETAILS);
+        gp.setValue(encryptMysqlDetails(mysqlDetails));
+        Context.getAdministrationService().saveGlobalProperty(gp);
+    }
+
+    @Override
+    public String getMysqlDetails() {
+        try {
+            Context.addProxyPrivilege(PrivilegeConstants.VIEW_GLOBAL_PROPERTIES);
+
+            GlobalProperty gp = Context.getAdministrationService().getGlobalPropertyObject(EmrConstants.GP_MYSQL_DETAILS);
+            return gp != null ? ((String) gp.getValue()) : null;
+        }
+        finally {
+            Context.removeProxyPrivilege(PrivilegeConstants.VIEW_GLOBAL_PROPERTIES);
+        }
+    }
+
+
+
 }

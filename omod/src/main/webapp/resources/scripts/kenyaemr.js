@@ -1,24 +1,28 @@
 /**
  * Configure search types
  */
-
 kenyaui.configureSearch('concept', {
 	searchProvider: 'kenyaemr',
 	searchFragment: 'search',
-	format: function(concept) { return concept.name; }
+	format: function (concept) {
+		return concept.name;
+	}
 });
 
 kenyaui.configureSearch('location', {
 	searchProvider: 'kenyaemr',
 	searchFragment: 'search',
-	format: function(location) { return location.name + ' <span style="color: #999">' + location.code + '</span>'; }
+	format: function (location) {
+		return location.name + ' <span style="color: #999">' + location.code + '</span>';
+	}
 });
 
 kenyaui.configureSearch('person', {
 	searchProvider: 'kenyaemr',
 	searchFragment: 'search',
-	format: function(person) {
-		var icon = ui.resourceLink('kenyaui', 'images/glyphs/' + ((person.isPatient ? 'patient' : 'person') + '_' + person.gender) + '.png');
+	format: function (person) {
+		var icon = ui.resourceLink('kenyaui',
+						'images/glyphs/' + ((person.isPatient ? 'patient' : 'person') + '_' + person.gender) + '.png');
 		var html = '<img src="' + icon + '" class="ke-glyph" /> ' + person.name;
 		if (person.age) {
 			html += ' <span style="color: #999">' + person.age + '</span>';
@@ -30,7 +34,7 @@ kenyaui.configureSearch('person', {
 kenyaui.configureSearch('patient', {
 	searchProvider: 'kenyaemr',
 	searchFragment: 'search',
-	format: function(patient) {
+	format: function (patient) {
 		var icon = ui.resourceLink('kenyaui', 'images/glyphs/patient_' + patient.gender + '.png');
 		var html = '<img src="' + icon + '" class="ke-glyph" /> ' + patient.name;
 		if (patient.age) {
@@ -43,25 +47,55 @@ kenyaui.configureSearch('patient', {
 kenyaui.configureSearch('provider', {
 	searchProvider: 'kenyaemr',
 	searchFragment: 'search',
-	format: function(provider) { return provider.person.name; }
+	format: function (provider) {
+		return provider.person.name;
+	}
 });
 
 /**
  * Configure AngularJS
+ * kenyaemr depending on kenyaui
  */
 var kenyaemrApp = angular.module('kenyaemr', [ 'kenyaui' ]);
 
 /**
  * Utility methods
  */
-(function(kenyaemr, $) {
+(function (kenyaemr, $) {
+
+	jq(function () {
+		jq('#backup-database-form .mycheckbox').click(function () {
+			$(":checkbox").change(function (e) {
+				$(this).val($(":checked").length > 0 ? "true" : "false");
+			})
+		})
+	});
+
+	kenyaemr.callDatabaseBackup = function () {
+		kenyaui.openLoadingDialog({ heading: 'Backup', message: 'Database Backup...' });
+
+		$.getJSON(ui.fragmentActionLink('kenyaemr', 'system/backupRestore', 'backupEnhancement'), function (result) {
+			kenyaui.closeDialog();
+//			kenyaui.notifySuccess('Database Backup Successful');
+		})
+	};
+
+	kenyaemr.callDatabaseRestore = function () {
+		        kenyaui.openLoadingDialog({ heading: 'Restore', message: 'Database Restore...' });
+
+		$.getJSON(ui.fragmentActionLink('kenyaemr', 'system/backupRestore', 'restoreDatabase'), function () {
+			kenyaui.closeDialog();
+		})
+	};
+
 	/**
 	 * Opens a dialog displaying the given encounter
 	 * @param appId the app id
 	 * @param encounterId the encounter id
 	 */
-	kenyaemr.openEncounterDialog = function(appId, encounterId) {
-		var contentUrl = ui.pageLink('kenyaemr', 'dialog/formDialog', { appId: appId, encounterId: encounterId, currentUrl: location.href });
+	kenyaemr.openEncounterDialog = function (appId, encounterId) {
+		var contentUrl = ui.pageLink('kenyaemr', 'dialog/formDialog',
+				{ appId: appId, encounterId: encounterId, currentUrl: location.href });
 		kenyaui.openDynamicDialog({ heading: 'View Form', url: contentUrl, width: 90, height: 90, scrolling: true });
 	};
 
@@ -69,10 +103,10 @@ var kenyaemrApp = angular.module('kenyaemr', [ 'kenyaui' ]);
 	 * Updates the value of a regimen field from its displayed controls
 	 * @param fieldId the regimen field id
 	 */
-	kenyaemr.updateRegimenFromDisplay = function(fieldId) {
+	kenyaemr.updateRegimenFromDisplay = function (fieldId) {
 		var regimenStr = '';
 
-		$('#' + fieldId +  '-container .regimen-component').each(function() {
+		$('#' + fieldId + '-container .regimen-component').each(function () {
 			var drug = $(this).find('.regimen-component-drug').val();
 			var dose = $(this).find('.regimen-component-dose').val();
 			var units = $(this).find('.regimen-component-units').val();
@@ -94,22 +128,23 @@ var kenyaemrApp = angular.module('kenyaemr', [ 'kenyaui' ]);
 	 * @param initialValue the initial field value (may be null)
 	 * @param readOnly true if control should be read only
 	 */
-	kenyaemr.dynamicObsField = function(parentId, fieldName, conceptId, initialValue, readOnly) {
+	kenyaemr.dynamicObsField = function (parentId, fieldName, conceptId, initialValue, readOnly) {
 		var placeHolderId = kenyaui.generateId();
 		$('#' + parentId).append('<div id="' + placeHolderId + '" class="ke-loading ke-form-dynamic-field">&nbsp;</div>');
-		$.get('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/generateField.htm', { name: fieldName, conceptId: conceptId, initialValue: initialValue, readOnly : readOnly })
-			.done(function (html) {
-				$('#' + placeHolderId).removeClass('ke-loading');
-				$('#' + placeHolderId).html(html);
-			});
+		$.get('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/generateField.htm',
+				{ name: fieldName, conceptId: conceptId, initialValue: initialValue, readOnly: readOnly })
+				.done(function (html) {
+					$('#' + placeHolderId).removeClass('ke-loading');
+					$('#' + placeHolderId).html(html);
+				});
 	};
 
 	/**
 	 * Ensures user authentication before invoking the passed callback
 	 * @param callback the callback to invoke
 	 */
-	kenyaemr.ensureUserAuthenticated = function(callback) {
-		$.getJSON(ui.fragmentActionLink('kenyaemr', 'emrUtils', 'isAuthenticated'), function(result) {
+	kenyaemr.ensureUserAuthenticated = function (callback) {
+		$.getJSON(ui.fragmentActionLink('kenyaemr', 'emrUtils', 'isAuthenticated'), function (result) {
 			if (result.authenticated) {
 				callback();
 			}
@@ -120,7 +155,7 @@ var kenyaemrApp = angular.module('kenyaemr', [ 'kenyaui' ]);
 				var errorField = authdialog.find('.error');
 
 				loginButton.unbind('click');
-				loginButton.click(function() {
+				loginButton.click(function () {
 					loginButton.prop('disabled', true);
 					errorField.hide();
 
@@ -128,7 +163,8 @@ var kenyaemrApp = angular.module('kenyaemr', [ 'kenyaui' ]);
 					var password = $('#authdialog-password').val();
 
 					// Try authenticating and then submitting again...
-					$.getJSON(ui.fragmentActionLink('kenyaemr', 'emrUtils', 'authenticate', { username: username, password: password }), function(result) {
+					$.getJSON(ui.fragmentActionLink('kenyaemr', 'emrUtils', 'authenticate',
+							{ username: username, password: password }), function (result) {
 						if (result.authenticated) {
 							kenyaui.closeDialog();
 							callback();
@@ -150,28 +186,28 @@ var kenyaemrApp = angular.module('kenyaemr', [ 'kenyaui' ]);
 	 * @param appId the current app id (may be null)
 	 * @param callback function to call with fetched resources
 	 */
-	kenyaemr.fetchHelpResources = function(helpSiteUrl, appId, callback) {
+	kenyaemr.fetchHelpResources = function (helpSiteUrl, appId, callback) {
 		$.getJSON(helpSiteUrl + '/content.json')
-			.success(function(data) {
-				// Filter resources by current app
-				var appResources = _.filter(data.resources, function(resource) {
-					return (_.isEmpty(resource.apps) && !appId) || _.contains(resource.apps, appId);
-				});
+				.success(function (data) {
+					// Filter resources by current app
+					var appResources = _.filter(data.resources, function (resource) {
+						return (_.isEmpty(resource.apps) && !appId) || _.contains(resource.apps, appId);
+					});
 
-				// Simplify each resource into { name, url, icon }
-				var simplifiedResources = _.map(appResources, function(resource) {
-					var name = resource.name;
-					var url = helpSiteUrl + '/' + resource.file;
-					var type = endsWith(resource.file, '.pdf') ? 'pdf' : 'video';
-					var icon = ui.resourceLink('kenyaui', 'images/glyphs/' + type + '.png');
-					return { name: name, url: url, icon: icon };
-				});
+					// Simplify each resource into { name, url, icon }
+					var simplifiedResources = _.map(appResources, function (resource) {
+						var name = resource.name;
+						var url = helpSiteUrl + '/' + resource.file;
+						var type = endsWith(resource.file, '.pdf') ? 'pdf' : 'video';
+						var icon = ui.resourceLink('kenyaui', 'images/glyphs/' + type + '.png');
+						return { name: name, url: url, icon: icon };
+					});
 
-				callback(simplifiedResources);
-			})
-			.error(function() {
-				kenyaui.notifyError('Unable to connect to external help');
-			});
+					callback(simplifiedResources);
+				})
+				.error(function () {
+					kenyaui.notifyError('Unable to connect to external help');
+				});
 	};
 
 	/**
@@ -185,4 +221,4 @@ var kenyaemrApp = angular.module('kenyaemr', [ 'kenyaui' ]);
 		return d >= 0 && string.indexOf(pattern, d) === d;
 	}
 
-}( window.kenyaemr = window.kenyaemr || {}, jQuery ));
+}(window.kenyaemr = window.kenyaemr || {}, jQuery));
