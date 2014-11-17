@@ -21,13 +21,13 @@ import org.openmrs.User;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.idgen.IdentifierSource;
 import org.openmrs.module.kenyacore.identifier.IdentifierManager;
+import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.module.kenyaui.annotation.AppPage;
-import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.page.PageModel;
@@ -40,20 +40,18 @@ import javax.servlet.http.HttpSession;
  */
 @AppPage(EmrConstants.APP_ADMIN)
 public class FirstTimeSetupPageController {
-
+	
 	public String controller(HttpSession session, PageModel model, UiUtils ui,
-			@SpringBean KenyaUiUtils kenyaUi,
-			@SpringBean IdentifierManager identifierManager,
-			@RequestParam(required = false, value = "mysqlDetails") String mysqlDetails,
-			@RequestParam(required = false, value = "defaultLocation") Location defaultLocation,
-			@RequestParam(required = false, value = "mrnIdentifierSourceStart") String mrnIdentifierSourceStart,
-			@RequestParam(required = false, value = "hivIdentifierSourceStart") String hivIdentifierSourceStart) {
-
+							 @SpringBean KenyaUiUtils kenyaUi,
+							 @SpringBean IdentifierManager identifierManager,
+	                         @RequestParam(required = false, value = "defaultLocation") Location defaultLocation,
+	                         @RequestParam(required = false, value = "mrnIdentifierSourceStart") String mrnIdentifierSourceStart,
+	                         @RequestParam(required = false, value = "hivIdentifierSourceStart") String hivIdentifierSourceStart) {
+		
 		KenyaEmrService service = Context.getService(KenyaEmrService.class);
-
+		
 		// handle submission
-		if (defaultLocation != null || StringUtils.isNotEmpty(mrnIdentifierSourceStart) || StringUtils
-				.isNotEmpty(hivIdentifierSourceStart) || StringUtils.isNotEmpty(mysqlDetails)) {
+		if (defaultLocation != null || StringUtils.isNotEmpty(mrnIdentifierSourceStart) || StringUtils.isNotEmpty(hivIdentifierSourceStart)) {
 			if (defaultLocation != null) {
 				service.setDefaultLocation(defaultLocation);
 			}
@@ -63,25 +61,18 @@ public class FirstTimeSetupPageController {
 			if (StringUtils.isNotEmpty(hivIdentifierSourceStart)) {
 				service.setupHivUniqueIdentifierSource(hivIdentifierSourceStart);
 			}
-			if (StringUtils.isNotEmpty(mysqlDetails)) {
-				service.setMysqlDetails(mysqlDetails);
-			}
 			kenyaUi.notifySuccess(session, "First-Time Setup Completed");
 
 			return "redirect:" + ui.pageLink(EmrConstants.MODULE_ID, "home");
 		}
-
-		mysqlDetails = service.getMysqlDetails();
+		
 		defaultLocation = service.getDefaultLocation();
-		IdentifierSource mrnIdentifierSource = identifierManager.getIdentifierSource(
-				MetadataUtils.existing(PatientIdentifierType.class, CommonMetadata._PatientIdentifierType.OPENMRS_ID));
-		IdentifierSource hivIdentifierSource = identifierManager.getIdentifierSource(MetadataUtils
-				.existing(PatientIdentifierType.class, HivMetadata._PatientIdentifierType.UNIQUE_PATIENT_NUMBER));
+		IdentifierSource mrnIdentifierSource = identifierManager.getIdentifierSource(MetadataUtils.existing(PatientIdentifierType.class, CommonMetadata._PatientIdentifierType.OPENMRS_ID));
+		IdentifierSource hivIdentifierSource = identifierManager.getIdentifierSource(MetadataUtils.existing(PatientIdentifierType.class, HivMetadata._PatientIdentifierType.UNIQUE_PATIENT_NUMBER));
 
 		User authenticatedUser = Context.getAuthenticatedUser();
-
+		
 		model.addAttribute("isSuperUser", authenticatedUser != null ? Context.getAuthenticatedUser().isSuperUser() : false);
-		model.addAttribute("mysqlDetails", mysqlDetails);
 		model.addAttribute("defaultLocation", defaultLocation);
 		model.addAttribute("mrnIdentifierSource", mrnIdentifierSource);
 		model.addAttribute("hivIdentifierSource", hivIdentifierSource);

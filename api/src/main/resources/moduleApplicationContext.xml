@@ -186,15 +186,5 @@
 		</property>
 		<property name="developer" value="${user.name}"/>
 	</bean>
-<!--Apache Commons for File Upload-->
-    <bean id="multipartResolver1" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
-        <!-- Max size in bytes. -->
-        <!--<property name="maxUploadSize" value="100000"/>-->
-    </bean>
-
-    <bean id="multipartResolver"
-          class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
-        <property name="maxUploadSize" value="100000"/>
-    </bean>
 
 </beans>

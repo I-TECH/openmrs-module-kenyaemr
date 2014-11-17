@@ -65,6 +65,7 @@ public class SystemUtilsFragmentController {
 		points.add(SimpleObject.create("label", "System timezone", "value", userInfo.get("timezone")));
 		points.add(SimpleObject.create("label", "Java version", "value", javaInfo.get("version") + " (" + javaInfo.get("vendor") + ")"));
 		points.add(SimpleObject.create("label", "Memory (used / total / max)", "value", memInfo.toString()));
+
 		return points;
 	}
 
@@ -80,17 +81,4 @@ public class SystemUtilsFragmentController {
 		points.add(SimpleObject.create("label", "Total users", "value", Context.getUserService().getAllUsers().size()));
 		return points;
 	}
-
-    /**
-     * Fetches a backup summary
-     * @return the summary
-     */
-    @AppAction(EmrConstants.APP_ADMIN)
-    public List<SimpleObject> getBackupSummary() throws Exception {
-        List<SimpleObject> points = new ArrayList<SimpleObject>();
-        points.add(SimpleObject.create("label", "Last Backup: (Date, Time)", "value", BackupRestoreFragmentController.lastBackup()));
-        points.add(SimpleObject.create("label", "Backup Status: (Backup Failed / Successful)", "value", BackupRestoreFragmentController.backupStatus()));
-	    points.add(SimpleObject.create("label", "Next Scheduled Backup: (Date, Time)", "value", BackupRestoreFragmentController.nextScheduledBackup()));
-	        return points;
-    }
 }

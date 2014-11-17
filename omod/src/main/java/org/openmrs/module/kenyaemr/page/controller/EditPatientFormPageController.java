@@ -14,6 +14,9 @@
 
 package org.openmrs.module.kenyaemr.page.controller;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.openmrs.Encounter;
 import org.openmrs.Form;
 import org.openmrs.Patient;
@@ -21,9 +24,6 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyaui.annotation.SharedPage;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Page for editing a per-patient form
