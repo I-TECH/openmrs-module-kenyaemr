@@ -131,6 +131,9 @@ public class KenyaEmrServiceImplTest extends BaseModuleContextSensitiveTest {
 		// MRN ID source
 		service.setupMrnIdentifierSource(null);
 
+        //MySQL Details
+        service.setMysqlDetails("enterdetail");
+
 		// HIV ID source
 		service.setupHivUniqueIdentifierSource("00001");
 
