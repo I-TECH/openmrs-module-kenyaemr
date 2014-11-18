@@ -205,23 +205,7 @@ function setTsRelation()
 
 function setDatePositive()
 {
-<<<<<<< HEAD
-    /*
-     getValue('hivposdate.value')//
-     */
-    var p1=new Date("<lookup expression="fn.latestObs(160554).valueDatetime"/>" );
-    if (p1 !== 'undefined')
-    {
-        //alert(p1) ;
-        var yy=p1.getFullYear();
-        var mm=p1.getMonth();
-        var dd=p1.getDate() ;
 
-        dpos=yy + "-" + ("0"+ mm).slice(-2) + "-" + ("0"+dd).slice(-2);
-
-        setValue('date_confirmed_pos.value',dpos) ;
-    }
-=======
 	/*
 	 getValue('hivposdate.value')//
 	 */
@@ -237,23 +221,12 @@ function setDatePositive()
 
 		setValue('date_confirmed_pos.value',dpos) ;
 	}
->>>>>>> 32d0b56044ac7ef17f9d63e4cb64d7341a43a012
+
 }
 
 function setDateEnrolled()
 {
-<<<<<<< HEAD
-    var p1=new Date("<lookup expression="fn.latestObs(160555).valueDatetime"/>");
-    if (p1 !== 'undefined')
-    {
-        var yy=p1.getFullYear();
-        var mm=p1.getMonth();
-        var dd=p1.getDate() ;
 
-        d=yy + "-" + ("0"+ mm).slice(-2) + "-" + ("0"+dd).slice(-2);
-        setValue('date_Enrolled.value',d) ;
-    }
-=======
 	var p1=new Date("<lookup expression="fn.latestObs(160555).valueDatetime"/>");
 	if (p1 !== 'undefined')
 	{
@@ -264,26 +237,18 @@ function setDateEnrolled()
 		d=yy + "-" + ("0"+ mm).slice(-2) + "-" + ("0"+dd).slice(-2);
 		setValue('date_Enrolled.value',d) ;
 	}
->>>>>>> 32d0b56044ac7ef17f9d63e4cb64d7341a43a012
+
 }
 
 function setTIDate(){
 
-<<<<<<< HEAD
-    var p1=new Date("<lookup expression="fn.latestObs(160534).valueDatetime"/>" );
-    if (p1 !== 'undefined')
-    {
-        var yy=p1.getFullYear();
-        var mm=p1.getMonth();
-        var dd=p1.getDate() ;
-=======
 	var p1=new Date("<lookup expression="fn.latestObs(160534).valueDatetime"/>" );
 	if (p1 !== 'undefined')
 	{
 		var yy=p1.getFullYear();
 		var mm=p1.getMonth() + 1;
 		var dd=p1.getDate() ;
->>>>>>> 32d0b56044ac7ef17f9d63e4cb64d7341a43a012
+
 
         d=yy + "-" + ("0"+ mm).slice(-2) + "-" + ("0"+dd).slice(-2);
         setValue('ti_date.value',d) ;
@@ -320,21 +285,14 @@ function setTIHaartFacility(){
 
 function setTIHaartDate(){
 
-<<<<<<< HEAD
-    var p1=new Date("<lookup expression="fn.latestObs(160534).valueDatetime"/>" );
-    if (p1 !== 'undefined')
-    {
-        var yy=p1.getFullYear();
-        var mm=p1.getMonth();
-        var dd=p1.getDate() ;
-=======
+
 	var p1=new Date("<lookup expression="fn.latestObs(160534).valueDatetime"/>" );
 	if (p1 !== 'undefined')
 	{
 		var yy=p1.getFullYear();
 		var mm=p1.getMonth() + 1;
 		var dd=p1.getDate() ;
->>>>>>> 32d0b56044ac7ef17f9d63e4cb64d7341a43a012
+
 
         d=yy + "-" + ("0"+ mm).slice(-2) + "-" + ("0"+dd).slice(-2);
         setValue('ti_date_started_haart.value',d) ;
