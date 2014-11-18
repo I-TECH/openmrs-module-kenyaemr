@@ -14,12 +14,12 @@
 
 package org.openmrs.module.kenyaemr.fragment.controller.patient;
 
-import java.util.Date;
-
 import org.openmrs.module.kenyacore.CoreUtils;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 import org.openmrs.util.OpenmrsUtil;
+
+import java.util.Date;
 
 /**
  * Controller for daily schedule fragment
