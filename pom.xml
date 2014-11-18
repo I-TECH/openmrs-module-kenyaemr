@@ -28,8 +28,8 @@
 	</modules>
 
 	<properties>
-		<openMRSVersion>1.9.7</openMRSVersion>
-		<cielVersion>20140101</cielVersion>
+		<openMRSVersion>1.9.8</openMRSVersion>
+		<cielVersion>20141103</cielVersion>
 
 		<!-- Dependency modules -->
 		<appframeworkVersion>2.2.1</appframeworkVersion>
