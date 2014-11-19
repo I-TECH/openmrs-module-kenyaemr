@@ -160,7 +160,7 @@ function setEntryPoint(){
 
 function setTsName()
 {
-    var p1="<lookup expression="fn.latestObs(160638).valueText" />"
+    var p1="<lookup expression="fn.latestObs(160638).valueText"/>"
     if (p1 !== 'undefined')
     {
         setValue('ts_name.value',p1) ;
@@ -209,7 +209,9 @@ function setDatePositive()
 	/*
 	 getValue('hivposdate.value')//
 	 */
-	var p1=new Date("<lookup expression="fn.latestObs(160554).valueDatetime"/>" );
+	var dbp1="<lookup expression="fn.latestObs(160554).valueDatetime"/>" ;
+    var p1;
+    if(dbp1!=='undefined'){p1=new Date(dbp1);}
 	if (p1 !== 'undefined')
 	{
 		//alert(p1) ;
@@ -227,7 +229,9 @@ function setDatePositive()
 function setDateEnrolled()
 {
 
-	var p1=new Date("<lookup expression="fn.latestObs(160555).valueDatetime"/>");
+	var dbp1="<lookup expression="fn.latestObs(160555).valueDatetime"/>";
+    var p1;
+    if(dbp1!=='undefined'){p1=new Date(dbp1);}
 	if (p1 !== 'undefined')
 	{
 		var yy=p1.getFullYear();
@@ -242,7 +246,9 @@ function setDateEnrolled()
 
 function setTIDate(){
 
-	var p1=new Date("<lookup expression="fn.latestObs(160534).valueDatetime"/>" );
+	var dbp1="<lookup expression="fn.latestObs(160534).valueDatetime"/>" ;
+    var p1;
+    if(dbp1!=='undefined'){p1=new Date(dbp1);}
 	if (p1 !== 'undefined')
 	{
 		var yy=p1.getFullYear();
@@ -286,7 +292,9 @@ function setTIHaartFacility(){
 function setTIHaartDate(){
 
 
-	var p1=new Date("<lookup expression="fn.latestObs(160534).valueDatetime"/>" );
+	var dbp1="<lookup expression="fn.latestObs(160534).valueDatetime"/>" ;
+    var p1;
+    if(dbp1!=='undefined'){p1=new Date(dbp1);}
 	if (p1 !== 'undefined')
 	{
 		var yy=p1.getFullYear();
@@ -300,10 +308,10 @@ function setTIHaartDate(){
 }
 
 function setArtStatus(){
-    var p1=parseInt("<lookup complexExpression="#set($t = $fn.latestObs(160533)) $t.valueCoded"/>"  );
+    var p1=parseInt("<lookup complexExpression="#set($t = $fn.latestObs(160533)) $t.valueNumeric"/>"  );
     if (!isNaN(p1))
     {
-        setValue('art-status.value',p1) ;
+        //setValue('art-status.value',p1) ;
     }
 }
 
