@@ -14,23 +14,25 @@
 
 package org.openmrs.module.kenyaemr.calculation.library.hiv.art;
 
+import org.openmrs.Concept;
 import org.openmrs.Program;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
+import org.openmrs.module.kenyacore.calculation.BooleanResult;
 import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyacore.calculation.Filters;
 import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
-import org.openmrs.module.kenyacore.calculation.BooleanResult;
+import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
-import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.LastCd4CountCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.LastCd4PercentageCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.LastWhoStageCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.LostToFollowUpIncludingTransferOutCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.util.EmrUtils;
+import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.common.Age;
 
 import java.util.Collection;
@@ -62,10 +64,15 @@ public class EligibleForArtCalculation extends AbstractPatientCalculation implem
 
 		Set<Integer> alive = Filters.alive(cohort, context);
 		Set<Integer> inHivProgram = Filters.inProgram(hivProgram, alive, context);
+		Concept tca = Dictionary.getConcept(Dictionary.RETURN_VISIT_DATE);
 		
 		// need to exclude those on ART already
 		Set<Integer> onArt = CalculationUtils.patientsThatPass(calculate(new OnArtCalculation(), cohort, context));
 		Set<Integer> ltfu = CalculationUtils.patientsThatPass(calculate(new LostToFollowUpIncludingTransferOutCalculation(), cohort, context));
+
+		//only exclude LTF within the reporting period
+		CalculationResultMap nextAppointmentDate = Calculations.lastObsOnOrBefore(tca, context.getNow(), ltfu, context);
+		Set<Integer> ltfuWithinPeriod = nextAppointmentDate.keySet();
 		
 		CalculationResultMap ages = Calculations.ages(cohort, context);
 		
@@ -83,7 +90,7 @@ public class EligibleForArtCalculation extends AbstractPatientCalculation implem
 				Integer whoStage = EmrUtils.whoStage(EmrCalculationUtils.codedObsResultForPatient(lastWhoStage, ptId));
 				eligible = isEligible(ageInMonths, cd4, cd4Percent, whoStage);
 			}
-			if(ltfu.contains(ptId)) {
+			if(ltfuWithinPeriod.contains(ptId)) {
 				eligible = false;
 			}
 			ret.put(ptId, new BooleanResult(eligible, this));
