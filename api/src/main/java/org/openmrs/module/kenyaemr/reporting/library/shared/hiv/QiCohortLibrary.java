@@ -15,7 +15,6 @@
 package org.openmrs.module.kenyaemr.reporting.library.shared.hiv;
 
 import org.openmrs.Concept;
-import org.openmrs.EncounterType;
 import org.openmrs.Program;
 import org.openmrs.api.PatientSetService;
 import org.openmrs.api.PatientSetService.TimeModifier;
@@ -116,16 +115,17 @@ public class QiCohortLibrary {
 	 * Patients in care and has at least 2 visits
 	 */
 	public CohortDefinition inCareHasAtLeast2Visits() {
-		CalculationCohortDefinition cdInCareHasAtLeast2Visits = new CalculationCohortDefinition(new InCareHasAtLeast2VisitsCalculation());
-		cdInCareHasAtLeast2Visits.setName("patients in care and have at least 2 visits 3 months a part");
-		cdInCareHasAtLeast2Visits.addParameter(new Parameter("onDate", "On Date", Date.class));
+		CalculationCohortDefinition hasAtLeast2VisitsWithin3Months = new CalculationCohortDefinition(new InCareHasAtLeast2VisitsCalculation());
+		hasAtLeast2VisitsWithin3Months.setName("patients in care and have at least 2 visits 3 months a part");
+		hasAtLeast2VisitsWithin3Months.addParameter(new Parameter("onDate", "On Date", Date.class));
 
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.setName("Adult and in care");
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-		cd.addSearch("inCare", ReportUtils.map(cdInCareHasAtLeast2Visits, "onDate=${onOrBefore}"));
+		cd.addSearch("inCare", ReportUtils.map(moh731CohortLibrary.currentlyInCare(), "onDate=${onOrBefore}"));
 		cd.addSearch("adult", ReportUtils.map(commonCohorts.agedAtLeast(15), "effectiveDate=${onOrBefore}"));
-		cd.setCompositionString("inCare AND adult");
+		cd.addSearch("has2VisitsIn3Months", ReportUtils.map(hasAtLeast2VisitsWithin3Months, "onDate=${onOrBefore}"));
+		cd.setCompositionString("inCare AND adult AND has2VisitsIn3Months");
 		return  cd;
 	}
 

@@ -1,22 +1,20 @@
 package org.openmrs.module.kenyaemr.calculation.library.hiv;
 
-import org.openmrs.EncounterType;
+import org.openmrs.Program;
 import org.openmrs.Visit;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
-import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyacore.calculation.Filters;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -29,38 +27,55 @@ public class InCareHasAtLeast2VisitsCalculation extends AbstractPatientCalculati
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> params, PatientCalculationContext context) {
 
+		Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
+		Set<Integer> inHivProgram = Filters.inProgram(hivProgram, cohort, context);
 		CalculationResultMap ret = new CalculationResultMap();
-		Set<Integer> alive = Filters.alive(cohort, context);
-		Date onDate = context.getNow();// end of reporting period
-		Date days90Ago;//variable to hold the date that will evaluated 90 days ago
-		//calculate date 90 day ago
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTime(onDate);
-		calendar.add(Calendar.DATE, -90);
-		days90Ago = calendar.getTime();
-		//declare the encounter types that are looked for
-		EncounterType hivEnroll = MetadataUtils.existing(EncounterType.class, HivMetadata._EncounterType.HIV_ENROLLMENT);
-		EncounterType hivConsult = MetadataUtils.existing(EncounterType.class, HivMetadata._EncounterType.HIV_CONSULTATION);
-
-		CalculationResultMap currentlyInCareHivEnroll = Calculations.allEncountersOnOrAfter(hivEnroll, days90Ago, alive, context);
-		CalculationResultMap currentlyInCareHivConsult = Calculations.allEncountersOnOrAfter(hivConsult, days90Ago, alive, context);
-
-		Set<Integer> currentlyInCareHivEnrollPatients = new HashSet<Integer>(currentlyInCareHivEnroll.keySet());
-		Set<Integer> currentlyInCareHivConsultPatients = new HashSet<Integer>(currentlyInCareHivConsult.keySet());
-		Set<Integer> allPatients = new HashSet<Integer>(currentlyInCareHivEnrollPatients);
-		allPatients.addAll(currentlyInCareHivConsultPatients);
-
-		//find patients who had at least 2 clinical visits
-		// look for visits that started before endOfDay and ended after startOfDay
 
 		for (Integer ptId: cohort){
-			boolean incare = false;
-			List<Visit> visits = Context.getVisitService().getVisits(null, Arrays.asList(Context.getPatientService().getPatient(ptId)), null, null, null, days90Ago, onDate, null, null, true, false);
-			if((allPatients.contains(ptId)) && (visits.size() >= 2)){
-				incare = true;
+			boolean has2VisitsWithin3Months = false;
+			List<Visit> visits = Context.getVisitService().getVisitsByPatient(Context.getPatientService().getPatient(ptId));
+			List<Date> visitDates = new ArrayList<Date>();
+			if(inHivProgram.contains(ptId) &&  visits.size() > 1){
+				for (Visit visit: visits) {
+					visitDates.add(visit.getStartDatetime());
+				}
+				//check if the list is NOt empty and the visits exceed 2
+				if (dateThatAre6MonthsOldFromNow(visitDates, context).size() > 1 && !(dateThatAre6MonthsOldFromNow(visitDates, context).isEmpty())) {
+						if(checkIfAnyVisit3MonthsApart(dateThatAre6MonthsOldFromNow(visitDates, context))) {
+							has2VisitsWithin3Months = true;
+						}
+				}
 			}
-			ret.put(ptId, new BooleanResult(incare, this, context));
+			ret.put(ptId, new BooleanResult(has2VisitsWithin3Months, this, context));
 		}
 		return ret;
+	}
+	List<Date> dateThatAre6MonthsOldFromNow(List<Date> dates, PatientCalculationContext context){
+		List<Date> returnDates = new ArrayList<Date>();
+		Date reportingTime = context.getNow();//to hold the date when reporting is done
+		Date startDate;// to handle the date we expect our visits to have started
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(reportingTime);
+		calendar.add(Calendar.MONTH, -6);
+
+		startDate = calendar.getTime();
+		for (Date date: dates){
+			if(date.after(startDate) && date.before(reportingTime)) {
+				returnDates.add(date);
+			}
+		}
+
+		return returnDates;
+	}
+
+	boolean checkIfAnyVisit3MonthsApart(List<Date> dateList) {
+		boolean isTrue = true;
+		//finding if any of the dates in a list is 3 months a part
+		int sizeOfList = dateList.size();
+		for(int i = 0; i<sizeOfList; i++) {
+
+		}
+
+		return isTrue;
 	}
 }
