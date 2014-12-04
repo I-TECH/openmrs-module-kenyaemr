@@ -18,7 +18,9 @@ import org.openmrs.Concept;
 import org.openmrs.Program;
 import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyacore.report.cohort.definition.CalculationCohortDefinition;
+import org.openmrs.module.kenyacore.report.data.patient.definition.VisitsForPatientDataDefinition;
 import org.openmrs.module.kenyaemr.Dictionary;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.cqi.PatientLastVisitCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.tb.MissedLastTbAppointmentCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.tb.TbInitialTreatmentCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.tb.TbTreatmentStartDateCalculation;
@@ -30,6 +32,8 @@ import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.art.ArtCohortLib
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.EncounterCohortDefinition;
+import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -69,6 +73,26 @@ public class TbCohortLibrary {
 		Concept diseaseDiagnosed = Dictionary.getConcept(Dictionary.DISEASE_DIAGNOSED);
 		Concept noSignsOrSymptoms = Dictionary.getConcept(Dictionary.NO_SIGNS_OR_SYMPTOMS_OF_DISEASE);
 		return commonCohorts.hasObs(tbDiseaseStatus, diseaseSuspected, diseaseDiagnosed, noSignsOrSymptoms);
+	}
+
+	/**
+	 * Patients screened for TB using ICF form
+	 * @return CohortDefinition
+	 */
+	public CohortDefinition screenedForTbUsingICF() {
+		CalculationCohortDefinition cd = new CalculationCohortDefinition(new PatientLastVisitCalculation());
+		cd.setName("Patients who had tb screens in last visit");
+		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
+
+		CompositionCohortDefinition comp = new CompositionCohortDefinition();
+		comp.setName("Screened for tb in last visit using ICF form and some observations saved");
+		comp.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		comp.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		comp.addSearch("usingICF", ReportUtils.map(cd, "onDate=${onOrBefore}"));
+		comp.addSearch("obsSaved", ReportUtils.map(screenedForTb(), "onOrAfter=${onOrBefore-6m},onOrBefore=${onOrBefore}"));
+		comp.setCompositionString("usingICF AND obsSaved");
+
+		return comp;
 	}
 
 	/**

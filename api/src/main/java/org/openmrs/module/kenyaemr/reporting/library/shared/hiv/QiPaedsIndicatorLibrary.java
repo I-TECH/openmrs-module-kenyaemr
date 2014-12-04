@@ -55,8 +55,8 @@ public class QiPaedsIndicatorLibrary {
 	 */
 	public CohortIndicator artInitiation() {
 		return cohortIndicator("ART Initiation - Child",
-				map(artCohorts.startedArt(), "onOrAfter=${endDate-6m},onOrBefore=${endDate}" ),
-				map(qiCohorts.hivInfectedAndNotOnARTAndHasHivClinicalVisit(), "onOrAfter=${endDate-6m},onOrBefore=${endDate}")
+				map(artCohorts.eligibleAndStartedART(), "onOrAfter=${startDate},onOrBefore=${endDate}" ),
+				map(qiCohorts.hivInfectedAndNotOnARTAndHasHivClinicalVisit(), "onOrAfter=${startDate},onOrBefore=${endDate}")
 		);
 	}
 
@@ -77,8 +77,8 @@ public class QiPaedsIndicatorLibrary {
 	 */
 	public CohortIndicator hivMonitoringViralLoadSupression() {
 		return cohortIndicator("HIV Monitoring - Viral Load - Suppression Outcome Child",
-				map(qiCohorts.onARTatLeast12MonthsAndVlLess1000(), "onOrBefore=${endDate}"),
-				map(qiCohorts.onARTatLeast12MonthsAndAtLeastVlResults(), "onOrBefore=${endDate}")
+				map(qiCohorts.onARTatLeast12MonthsAndVlLess1000(), "onOrAfter=${startDate},onOrBefore=${endDate}"),
+				map(qiCohorts.onARTatLeast12MonthsAndAtLeastVlResults(), "onOrAfter=${startDate},onOrBefore=${endDate}")
 		);
 	}
 
@@ -88,8 +88,8 @@ public class QiPaedsIndicatorLibrary {
 	 */
 	public CohortIndicator tbScreeningServiceCoverage() {
 		return cohortIndicator("Tb screening - Service Coverage Child",
-				map(tbCohorts.screenedForTb(), "onOrAfter=${endDate-6m},onOrBefore=${endDate}"),
-				map(qiCohorts.hivInfectedNotOnTbTreatmentHaveAtLeastOneHivClinicalVisitDuring6Months(), "onOrAfter=${endDate-6m},onOrBefore=${endDate}")
+				map(tbCohorts.screenedForTbUsingICF(), "onOrAfter=${startDate},onOrBefore=${endDate}"),
+				map(qiCohorts.hivInfectedNotOnTbTreatmentHaveAtLeastOneHivClinicalVisitDuring6Months(), "onOrAfter=${startDate},onOrBefore=${endDate}")
 		);
 	}
 
@@ -99,8 +99,8 @@ public class QiPaedsIndicatorLibrary {
 	 */
 	public CohortIndicator patientsEligibleForIPTWhoWereInitiatedOnIPT() {
 		return cohortIndicator("TB IPT - Service Coverage Child",
-				map(qiCohorts.patientWithNegativeTbScreenWhoHaveNotHadIPT(), "onOrAfter=${endDate-24m},onOrBefore=${endDate}"),
-				map(qiCohorts.patientsWhoHaveHadNoIptWithinLast2YearsTbNegativeDuring6MonthsReviewPeriod(), "onOrAfter=${endDate-6},onOrBefore=${endDate}")
+				map(qiCohorts.patientWithNegativeTbScreenWhoHaveNotHadIPT(), "onOrAfter=${startDate},onOrBefore=${endDate}"),
+				map(qiCohorts.patientsWhoHaveHadNoIptWithinLast2YearsTbNegativeDuring6MonthsReviewPeriod(), "onOrAfter=${startDate},onOrBefore=${endDate}")
 		);
 	}
 
@@ -110,7 +110,7 @@ public class QiPaedsIndicatorLibrary {
 	 */
 	public CohortIndicator nutritionalAssessment() {
 		return cohortIndicator("Nutritional assessment Child",
-				map(qiCohorts.hadNutritionalAssessmentAtLastVisit(), "onOrBefore=${endDate}"),
+				map(qiCohorts.hadNutritionalAssessmentAtLastVisit(), "onOrAfter=${endDate-6m},onOrBefore=${endDate}"),
 				map(qiCohorts.hasHivVisitPaeds(), "onOrAfter=${startDate},onOrBefore=${endDate}")
 		);
 	}
@@ -122,7 +122,7 @@ public class QiPaedsIndicatorLibrary {
 	public CohortIndicator patientsEligibleForNutritionalSupportAndWhoReceived() {
 		return cohortIndicator("Nutritional Support - Service Coverage Child",
 				map(qiCohorts.patientsWhoMeetCriteriaForNutritionalSupport(), "onOrBefore=${endDate}"),
-				map(qiCohorts.patientsWhoMeetNutritionalSupportAtLastClinicVisit(), "onOrAfter=${endDate-6m},onOrBefore=${endDate}")
+				map(qiCohorts.patientsWhoMeetNutritionalSupportAtLastClinicVisit(), "onOrAfter=${endDate},onOrBefore=${endDate}")
 		);
 	}
 
@@ -132,8 +132,8 @@ public class QiPaedsIndicatorLibrary {
 	 */
 	public CohortIndicator childrenBetween8And14WhoseHivStatusDisclosedToThem() {
 		return cohortIndicator("Disclosure - Service Coverage Child",
-				map(qiCohorts.childrenInfected8to14YearsWhoseStatusDisclosedToThem(), "onOrBefore=${endDate}"),
-				map(qiCohorts.childrenInfected8to14YearsEnrolledInCareWithAtLeastOneHivVisit(), "onOrAfter=${endDate-6m},onOrBefore=${endDate}")
+				map(qiCohorts.childrenInfected8to14YearsWhoseStatusDisclosedToThem(), "onOrAfter=${startDate},onOrBefore=${endDate}"),
+				map(qiCohorts.childrenInfected8to14YearsEnrolledInCareWithAtLeastOneHivVisit(), "onOrAfter=${startDate},onOrBefore=${endDate}")
 		);
 	}
 

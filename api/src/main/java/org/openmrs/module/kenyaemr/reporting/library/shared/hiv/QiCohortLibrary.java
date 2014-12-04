@@ -24,10 +24,13 @@ import org.openmrs.module.kenyacore.report.cohort.definition.ObsInLastVisitCohor
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.InCareHasAtLeast2VisitsCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.PatientsWhoMeetCriteriaForNutritionalSupport;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.cqi.DiedInMonthOneOfReviewCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.cqi.InCareInMonths4To6During6MonthsReviewPeriodCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.reporting.library.moh731.Moh731CohortLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonCohortLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.art.ArtCohortLibrary;
+import org.openmrs.module.kenyaemr.reporting.library.shared.tb.TbCohortLibrary;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.cohort.definition.CodedObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -64,32 +67,40 @@ public class QiCohortLibrary {
 	@Autowired
 	private PwpCohortLibrary pwpCohortLibrary;
 
+	@Autowired
+	private TbCohortLibrary tbCohortLibrary;
+
 	public CohortDefinition hadNutritionalAssessmentAtLastVisit() {
 		Concept weight = Dictionary.getConcept(Dictionary.WEIGHT_KG);
 		Concept height = Dictionary.getConcept(Dictionary.HEIGHT_CM);
 		Concept muac = Dictionary.getConcept(Dictionary.MUAC);
 
 		ObsInLastVisitCohortDefinition hadWeight = new ObsInLastVisitCohortDefinition();
-		hadWeight.setName("patients with weight obs in last visit");
+		hadWeight.setName("patients with weight obs in last visit Child");
 		hadWeight.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		hadWeight.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		hadWeight.setQuestion(weight);
 
 		ObsInLastVisitCohortDefinition hadHeight = new ObsInLastVisitCohortDefinition();
-		hadHeight.setName("patients with height obs in last visit");
+		hadHeight.setName("patients with height obs in last visit Child");
 		hadHeight.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		hadHeight.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		hadHeight.setQuestion(height);
 
 		ObsInLastVisitCohortDefinition hadMuac = new ObsInLastVisitCohortDefinition();
-		hadMuac.setName("patients with MUAC obs in last visit");
+		hadMuac.setName("patients with MUAC obs in last visit Child");
 		hadMuac.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		hadMuac.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		hadMuac.setQuestion(muac);
 
 		CompositionCohortDefinition cd =new CompositionCohortDefinition();
-		hadMuac.setName("patients with nutritional assessment in last visit");
+		hadMuac.setName("patients with nutritional assessment in last visit Child");
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-		cd.addSearch("hadWeight", ReportUtils.map(hadWeight, "onOrBefore=${onOrBefore}"));
-		cd.addSearch("hadHeight", ReportUtils.map(hadHeight, "onOrBefore=${onOrBefore}"));
-		cd.addSearch("hadMuac", ReportUtils.map(hadMuac, "onOrBefore=${onOrBefore}"));
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+
+		cd.addSearch("hadWeight", ReportUtils.map(hadWeight, "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("hadHeight", ReportUtils.map(hadHeight, "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("hadMuac", ReportUtils.map(hadMuac, "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
 		cd.addSearch("adult", ReportUtils.map(commonCohorts.agedAtLeast(15), "effectiveDate=${onOrBefore}"));
 		cd.setCompositionString("(hadWeight AND hadHeight AND adult) OR hadMuac");
 		return cd;
@@ -104,10 +115,11 @@ public class QiCohortLibrary {
 		cd.setName("Not on ART with at least one HIV clinical Visit");
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
-		cd.addSearch("hasVisits", ReportUtils.map(hivCohortLibrary.hasHivVisit(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("hasVisits", ReportUtils.map(hivCohortLibrary.hasHivVisit(), "onOrAfter=${onOrBefore-6m},onOrBefore=${onOrBefore}"));
 		cd.addSearch("eligibleForART", ReportUtils.map(artCohortLibrary.eligibleForArt(), "onDate=${onOrBefore}"));
 		cd.addSearch("adult", ReportUtils.map(commonCohorts.agedAtLeast(15), "effectiveDate=${onOrBefore}"));
-		cd.setCompositionString("hasVisits AND eligibleForART AND adult");
+		cd.addSearch("onART", ReportUtils.map(artCohortLibrary.onArt(), "onDate=${onOrBefore}"));
+		cd.setCompositionString("(hasVisits AND eligibleForART AND adult) AND NOT onART");
 		return cd;
 	}
 
@@ -139,11 +151,40 @@ public class QiCohortLibrary {
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addSearch("inCare", ReportUtils.map(moh731CohortLibrary.currentlyInCare(), "onDate=${onOrBefore}"));
-		cd.addSearch("hasVisit", ReportUtils.map(hivCohortLibrary.hasHivVisit(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("hasVisit", ReportUtils.map(hivCohortLibrary.hasHivVisit(), "onOrAfter=${onOrAfter-6m},onOrBefore=${onOrBefore}"));
 		cd.addSearch("adult", ReportUtils.map(commonCohorts.agedAtLeast(15), "effectiveDate=${onOrBefore}"));
-		cd.setCompositionString("inCare AND hasVisit AND adult");
+		cd.addSearch("enrolledIn4To6MonthOfReviewPeriod", ReportUtils.map(enrolledIn4To6MonthOfReviewPeriod(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("inCare AND hasVisit AND adult AND NOT enrolledIn4To6MonthOfReviewPeriod");
 		return cd;
 	}
+
+	/**
+	 * Patients who are newly enrolled in 4th to 6th month
+	 * @return CohortDefinition
+	 */
+	 public CohortDefinition enrolledIn4To6MonthOfReviewPeriod() {
+
+		 CalculationCohortDefinition enrolled4To6Months = new CalculationCohortDefinition(new InCareInMonths4To6During6MonthsReviewPeriodCalculation());
+		 enrolled4To6Months.setName("Patients in care at the 4th and 6th month during review");
+		 enrolled4To6Months.addParameter(new Parameter("onDate", "On Date", Date.class));
+
+		 CalculationCohortDefinition died = new CalculationCohortDefinition(new DiedInMonthOneOfReviewCalculation());
+		 died.setName("Patients who died in the first month");
+		 died.addParameter(new Parameter("onDate", "On Date", Date.class));
+
+		 Concept REASON_FOR_PROGRAM_DISCONTINUATION = Dictionary.getConcept(Dictionary.REASON_FOR_PROGRAM_DISCONTINUATION);
+		 Concept TRANSFERRED_OUT = Dictionary.getConcept(Dictionary.TRANSFERRED_OUT);
+
+		 CompositionCohortDefinition comp = new CompositionCohortDefinition();
+		 comp.setName("Enrolled on 4th to 6th months, transferred and died in month 1");
+		 comp.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		 comp.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		 comp.addSearch("enrolled4To6Months", ReportUtils.map(enrolled4To6Months, "onDate=${onOrBefore}"));
+		 comp.addSearch("transfer", ReportUtils.map(commonCohorts.hasObs(REASON_FOR_PROGRAM_DISCONTINUATION, TRANSFERRED_OUT), "onOrAfter=${onOrBefore-6m},onOrBefore=${onOrBefore}"));
+		 comp.addSearch("diedInMonth1", ReportUtils.map(died, "onDate=${onOrBefore}"));
+		 comp.setCompositionString("enrolled4To6Months OR transfer OR diedInMonth1");
+		 return comp;
+	 }
 
 	/**
 	 * Patients with at least on viral load results during last 12 months duration
@@ -187,9 +228,9 @@ public class QiCohortLibrary {
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addSearch("onART12Months", ReportUtils.map(artCohortLibrary.netCohortMonths(12), "onDate=${onOrBefore}"));
-		cd.addSearch("atLeastOneHIVClinicalVisit", ReportUtils.map(clinicalVisit(), "onOrAfter=${onOrBefore-6m},onOrBefore=${onOrBefore}"));
+		cd.addSearch("hasVisit", ReportUtils.map(hivCohortLibrary.hasHivVisit(), "onOrAfter=${onOrAfter-6m},onOrBefore=${onOrBefore}"));
 		cd.addSearch("adult", ReportUtils.map(commonCohorts.agedAtLeast(15), "effectiveDate=${onOrBefore}"));
-		cd.setCompositionString("onART12Months AND atLeastOneHIVClinicalVisit AND adult");
+		cd.setCompositionString("onART12Months AND hasVisit AND adult");
 		return cd;
 	}
 
@@ -267,9 +308,9 @@ public class QiCohortLibrary {
 		compositionCohortDefinition.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		compositionCohortDefinition.addSearch("inHivProgram", ReportUtils.map(hivCohortLibrary.enrolled()));
 		compositionCohortDefinition.addSearch("onTbTreatment", ReportUtils.map(onTbTreatment, "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
-		compositionCohortDefinition.addSearch("hasHivVisit", ReportUtils.map(clinicalVisit(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		compositionCohortDefinition.addSearch("hasVisit", ReportUtils.map(hivCohortLibrary.hasHivVisit(), "onOrAfter=${onOrAfter-6m},onOrBefore=${onOrBefore}"));
 		compositionCohortDefinition.addSearch("adult", ReportUtils.map(commonCohorts.agedAtLeast(15), "effectiveDate=${onOrBefore}"));
-		compositionCohortDefinition.setCompositionString("(inHivProgram AND hasHivVisit AND adult) AND NOT onTbTreatment");
+		compositionCohortDefinition.setCompositionString("(inHivProgram AND hasVisit AND adult) AND NOT onTbTreatment");
 		return compositionCohortDefinition;
 	}
 
@@ -284,8 +325,8 @@ public class QiCohortLibrary {
 		cd.setName("Screened for TB negative and NOT on IPT");
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
-		cd.addSearch("negativeTB", ReportUtils.map(commonCohorts.hasObs(tbDiseaseStatus, noSignsOrSymptoms), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
-		cd.addSearch("onIPT", ReportUtils.map(onINHProphylaxis(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("negativeTB", ReportUtils.map(commonCohorts.hasObs(tbDiseaseStatus, noSignsOrSymptoms), "onOrAfter=${onOrBefore-6m},onOrBefore=${onOrBefore}"));
+		cd.addSearch("onIPT", ReportUtils.map(onINHProphylaxis(), "onOrAfter=${onOrBefore-24m},onOrBefore=${onOrBefore}"));
 		cd.addSearch("adult", ReportUtils.map(commonCohorts.agedAtLeast(15), "effectiveDate=${onOrBefore}"));
 		cd.setCompositionString("(negativeTB AND adult) AND NOT onIPT");
 		return cd;
@@ -385,9 +426,9 @@ public class QiCohortLibrary {
 		cd.setName("Hiv positive with a partner who is positive");
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
-		cd.addSearch("inHivProgram", ReportUtils.map(commonCohorts.enrolled(MetadataUtils.existing(Program.class, HivMetadata._Program.HIV)), "enrolledOnOrAfter=${onOrAfter},enrolledOnOrBefore=${onOrBefore}"));
-		cd.addSearch("spousePartner", ReportUtils.map(commonCohorts.hasObs(Dictionary.getConcept(Dictionary.FAMILY_MEMBER), Dictionary.getConcept(Dictionary.PARTNER_OR_SPOUSE)), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
-		cd.addSearch("hivPositivePartner", ReportUtils.map(commonCohorts.hasObs(Dictionary.getConcept(Dictionary.SIGN_SYMPTOM_PRESENT), Dictionary.getConcept(Dictionary.YES)), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("inHivProgram", ReportUtils.map(commonCohorts.enrolled(MetadataUtils.existing(Program.class, HivMetadata._Program.HIV)), "enrolledOnOrBefore=${onOrBefore}"));
+		cd.addSearch("spousePartner", ReportUtils.map(commonCohorts.hasObs(Dictionary.getConcept(Dictionary.FAMILY_MEMBER), Dictionary.getConcept(Dictionary.PARTNER_OR_SPOUSE)), "onOrAfter=${onOrBefore-12m},onOrBefore=${onOrBefore}"));
+		cd.addSearch("hivPositivePartner", ReportUtils.map(commonCohorts.hasObs(Dictionary.getConcept(Dictionary.SIGN_SYMPTOM_PRESENT), Dictionary.getConcept(Dictionary.YES)), "onOrAfter=${onOrBefore-12m},onOrBefore=${onOrBefore}"));
 		cd.addSearch("adult", ReportUtils.map(commonCohorts.agedAtLeast(15), "effectiveDate=${onOrBefore}"));
 		cd.setCompositionString("inHivProgram AND hivPositivePartner AND spousePartner AND adult");
 		return  cd;
@@ -406,7 +447,7 @@ public class QiCohortLibrary {
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addSearch("inHivProgram", ReportUtils.map(commonCohorts.enrolled(MetadataUtils.existing(Program.class, HivMetadata._Program.HIV)), "enrolledOnOrBefore=${onOrBefore}"));
 		cd.addSearch("anyPartner", ReportUtils.map(commonCohorts.hasObs(Dictionary.getConcept(Dictionary.FAMILY_MEMBER), Dictionary.getConcept(Dictionary.PARTNER_OR_SPOUSE)), "onOrBefore=${onOrBefore}"));
-		cd.addSearch("hasVisits", ReportUtils.map(hivCohortLibrary.hasHivVisit(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("hasVisits", ReportUtils.map(hivCohortLibrary.hasHivVisit(), "onOrAfter=${onOrBefore-6m},onOrBefore=${onOrBefore}"));
 		cd.addSearch("adult", ReportUtils.map(commonCohorts.agedAtLeast(15), "effectiveDate=${onOrBefore}"));
 		cd.setCompositionString("inHivProgram AND anyPartner AND hasVisits AND adult");
 		return  cd;
@@ -424,7 +465,7 @@ public class QiCohortLibrary {
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addSearch("inHivProgram", ReportUtils.map(commonCohorts.enrolled(MetadataUtils.existing(Program.class, HivMetadata._Program.HIV)), "enrolledOnOrBefore=${onOrBefore}"));
 		cd.addSearch("hasChild", ReportUtils.map(commonCohorts.hasObs(Dictionary.getConcept(Dictionary.FAMILY_MEMBER), Dictionary.getConcept(Dictionary.CHILD)), "onOrBefore=${onOrBefore}"));
-		cd.addSearch("hivPositiveChild", ReportUtils.map(commonCohorts.hasObs(Dictionary.getConcept(Dictionary.SIGN_SYMPTOM_PRESENT), Dictionary.getConcept(Dictionary.YES)), "onOrBefore=${onOrBefore}"));
+		cd.addSearch("hivPositiveChild", ReportUtils.map(commonCohorts.hasObs(Dictionary.getConcept(Dictionary.SIGN_SYMPTOM_PRESENT), Dictionary.getConcept(Dictionary.YES)), "onOrAfter=${onOrBefore-6m},onOrBefore=${onOrBefore}"));
 		cd.addSearch("adult", ReportUtils.map(commonCohorts.agedAtLeast(15), "effectiveDate=${onOrBefore}"));
 		cd.setCompositionString("inHivProgram AND hivPositiveChild AND hasChild AND adult");
 		return  cd;
@@ -517,6 +558,20 @@ public class QiCohortLibrary {
 		cd.addSearch("hasVisits", ReportUtils.map(hivCohortLibrary.hasHivVisit(), "onOrAfter=${onOrBefore-6m},onOrBefore=${onOrBefore}"));
 		cd.addSearch("adult", ReportUtils.map(commonCohorts.agedAtLeast(15), "effectiveDate=${onOrBefore}"));
 		cd.setCompositionString("hasVisits AND adult");
+		return cd;
+	}
+
+	/**
+	 * Adult patients screened for tb using ICF form
+	 * @return CohortDefinition
+	 */
+	public CohortDefinition screenedForTBUsingICF() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addSearch("adult", ReportUtils.map(commonCohorts.agedAtLeast(15), "effectiveDate=${onOrBefore}"));
+		cd.addSearch("screenedForTb", ReportUtils.map(tbCohortLibrary.screenedForTbUsingICF(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("adult AND screenedForTb");
 		return cd;
 	}
 

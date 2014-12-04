@@ -34,7 +34,7 @@ public class DeceasedPatientsCalculation extends BaseEmrCalculation {
 	 * @param parameterValues
 	 * @param context
 	 * @return true for deceased patients
-	 * @return False for deceased patients
+	 * @return False for non deceased patients
 	 */
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {

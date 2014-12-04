@@ -280,6 +280,21 @@ public class ArtCohortLibrary {
 	}
 
 	/**
+	 * Patients who are eligible and started art during 6 months review period
+	 * @return CohortDefinition
+	 */
+	public CohortDefinition eligibleAndStartedART() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("Eligible and started ART");
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("eligible", ReportUtils.map(eligibleForArt(), "onDate=${onOrBefore}"));
+		cd.addSearch("startART", ReportUtils.map(startedArt(), "onOrAfter=${onOrBefore-6m},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("eligible AND startART");
+		return  cd;
+	}
+
+	/**
 	 * Patients who started ART on ${onOrBefore} excluding transfer ins
 	 * @return the cohort definition
 	 */
