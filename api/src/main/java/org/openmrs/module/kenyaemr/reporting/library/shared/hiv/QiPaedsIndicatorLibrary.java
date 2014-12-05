@@ -16,16 +16,10 @@ import static org.openmrs.module.kenyaemr.reporting.EmrReportingUtils.cohortIndi
 public class QiPaedsIndicatorLibrary {
 
 	@Autowired
-	private HivCohortLibrary hivCohorts;
-
-	@Autowired
 	private ArtCohortLibrary artCohorts;
 
 	@Autowired
 	private QiPaedsCohortLibrary qiCohorts;
-
-	@Autowired
-	private TbCohortLibrary tbCohorts;
 
 	/**
 	 * Clinical visit service coverage
@@ -88,7 +82,7 @@ public class QiPaedsIndicatorLibrary {
 	 */
 	public CohortIndicator tbScreeningServiceCoverage() {
 		return cohortIndicator("Tb screening - Service Coverage Child",
-				map(tbCohorts.screenedForTbUsingICF(), "onOrAfter=${startDate},onOrBefore=${endDate}"),
+				map(qiCohorts.screenForTBUsingICFAndChild(), "onOrAfter=${startDate},onOrBefore=${endDate}"),
 				map(qiCohorts.hivInfectedNotOnTbTreatmentHaveAtLeastOneHivClinicalVisitDuring6Months(), "onOrAfter=${startDate},onOrBefore=${endDate}")
 		);
 	}

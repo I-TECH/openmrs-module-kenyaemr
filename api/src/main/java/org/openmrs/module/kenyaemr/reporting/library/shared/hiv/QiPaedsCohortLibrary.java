@@ -12,6 +12,7 @@ import org.openmrs.module.kenyaemr.calculation.library.hiv.PatientsWhoMeetCriter
 import org.openmrs.module.kenyaemr.reporting.library.moh731.Moh731CohortLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonCohortLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.art.ArtCohortLibrary;
+import org.openmrs.module.kenyaemr.reporting.library.shared.tb.TbCohortLibrary;
 import org.openmrs.module.reporting.cohort.definition.CodedObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
@@ -45,7 +46,7 @@ public class QiPaedsCohortLibrary {
 	private HivCohortLibrary hivCohortLibrary;
 
 	@Autowired
-	private PwpCohortLibrary pwpCohortLibrary;
+	private TbCohortLibrary tbCohortLibrary;
 
 	@Autowired
 	private QiCohortLibrary qiCohortLibrary;
@@ -97,6 +98,21 @@ public class QiPaedsCohortLibrary {
 		cd.addSearch("child", ReportUtils.map(commonCohorts.agedAtMost(15), "effectiveDate=${onOrBefore}"));
 		cd.addSearch("onART", ReportUtils.map(artCohortLibrary.onArt(), "onDate=${onOrBefore}"));
 		cd.setCompositionString("(hasVisits AND eligibleForART AND child) AND NOT onART");
+		return cd;
+	}
+
+	/**
+	 * Children who were screened for TB
+	 * @return CohortDefinition
+	 */
+	public CohortDefinition screenForTBUsingICFAndChild() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("Child screened for TB using ICF form");
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addSearch("child", ReportUtils.map(commonCohorts.agedAtMost(15), "effectiveDate=${onOrBefore}"));
+		cd.addSearch("screened", ReportUtils.map(tbCohortLibrary.screenedForTbUsingICF(), "onOrAfter=${onOrBefore-6m},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("child AND screened");
 		return cd;
 	}
 
