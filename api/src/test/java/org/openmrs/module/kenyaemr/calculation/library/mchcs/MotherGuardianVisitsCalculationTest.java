@@ -17,6 +17,8 @@ import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,18 +58,18 @@ public class MotherGuardianVisitsCalculationTest extends BaseModuleContextSensit
 			Patient guardian = TestUtils.getPatient(8);
 			TestUtils.saveRelationship(mother, mother_relation, infant);
 			TestUtils.saveRelationship(guardian, guardian_relation, infant);
-			TestUtils.saveVisit(mother, visitType, TestUtils.date(2014, 5, 10, 10, 30, 00), TestUtils.date(2014, 5, 10, 12, 30, 00) );
-			TestUtils.saveVisit(mother, visitType, TestUtils.date(2014, 7, 10, 10, 30, 00), TestUtils.date(2014, 7, 10, 12, 30, 00));
-			TestUtils.saveVisit(guardian, visitType, TestUtils.date(2014, 8, 10, 10, 30, 00), TestUtils.date(2014, 8, 10, 12, 30, 00));
+			TestUtils.saveVisit(mother, visitType, computeWithinRangeEncounterDate(6), computeWithinRangeEncounterDate(6) );
+			TestUtils.saveVisit(mother, visitType, computeWithinRangeEncounterDate(5), computeWithinRangeEncounterDate(5));
+			TestUtils.saveVisit(guardian, visitType, computeWithinRangeEncounterDate(3), computeWithinRangeEncounterDate(3));
 		}
 
 		{
 			Patient infant = TestUtils.getPatient(6);
 			Patient mother = TestUtils.getPatient(7);
 			TestUtils.saveRelationship(mother, mother_relation, infant);
-			TestUtils.saveVisit(mother, visitType, TestUtils.date(2014, 9, 10, 10, 30, 00), TestUtils.date(2014, 9, 10, 12, 30, 00));
-			TestUtils.saveVisit(mother, visitType, TestUtils.date(2014, 1, 10, 10, 30, 00), TestUtils.date(2014, 1, 10, 12, 30, 00));
-			TestUtils.saveVisit(mother, visitType, TestUtils.date(2014, 2, 10, 10, 30, 00), TestUtils.date(2014, 2, 10, 12, 30, 00));
+			TestUtils.saveVisit(mother, visitType, computeWithinRangeEncounterDate(2), computeWithinRangeEncounterDate(2));
+			TestUtils.saveVisit(mother, visitType, computeWithinRangeEncounterDate(10), computeWithinRangeEncounterDate(10));
+			TestUtils.saveVisit(mother, visitType, computeWithinRangeEncounterDate(12), computeWithinRangeEncounterDate(12));
 
 		}
 
@@ -79,6 +81,15 @@ public class MotherGuardianVisitsCalculationTest extends BaseModuleContextSensit
 		Assert.assertThat(((ListResult) resultMap.get(7)).getValues().size(), is(1));
 		Assert.assertThat(((ListResult) resultMap.get(8)).getValues().size(), is(1));
 		Assert.assertNull(resultMap.get(999));
+	}
+
+	private Date computeWithinRangeEncounterDate(int months){
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.MONTH, -months);
+		cal.clear(Calendar.HOUR);
+		cal.clear(Calendar.MINUTE);
+		cal.clear(Calendar.MILLISECOND);
+		return cal.getTime();
 	}
 
 }
