@@ -18,6 +18,7 @@ import org.apache.commons.io.FileUtils;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyacore.CoreUtils;
 import org.openmrs.module.kenyacore.UiResource;
+import org.openmrs.module.kenyacore.report.HybridReportDescriptor;
 import org.openmrs.module.kenyacore.report.IndicatorReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportManager;
@@ -50,6 +51,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Properties;
 
 /**
  * Download report data as Excel or CSV
@@ -100,12 +102,13 @@ public class ReportExportPageController {
 										 ReportData data,
 										 ResourceFactory resourceFactory) throws IOException {
 
-		if (!(report instanceof IndicatorReportDescriptor)) {
-			throw new RuntimeException("Only indicator reports can be rendered as Excel");
+
+		if (!(report instanceof IndicatorReportDescriptor) && !(report instanceof HybridReportDescriptor)) {
+			throw new RuntimeException("Only indicator/hybrid reports can be rendered as Excel");
 		}
 
 		ReportDefinition definition = report.getTarget();
-		UiResource template = ((IndicatorReportDescriptor) report).getTemplate();
+		UiResource template = (report instanceof IndicatorReportDescriptor) ? ((IndicatorReportDescriptor) report).getTemplate() : ((HybridReportDescriptor) report).getTemplate();
 
 		if (template == null || !template.getPath().endsWith(".xls")) {
 			throw new RuntimeException("Report doesn't specify a Excel template");
@@ -126,6 +129,16 @@ public class ReportExportPageController {
 			design.setName(report.getName());
 			design.setReportDefinition(definition);
 			design.setRendererType(ExcelTemplateRenderer.class);
+
+			if (report instanceof HybridReportDescriptor){
+				Properties props = new Properties();
+				String repeatingSections = ((HybridReportDescriptor) report).getRepeatingSection();
+				if (repeatingSections != null){
+					props.put("repeatingSections", repeatingSections);
+					design.setProperties(props);
+				}
+			}
+
 			design.addResource(resource);
 
 			renderer = new ExcelTemplateRenderer() {
