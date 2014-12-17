@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.openmrs.module.kenyacore.CoreUtils;
+import org.openmrs.module.kenyacore.report.HybridReportDescriptor;
 import org.openmrs.module.kenyacore.report.IndicatorReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportManager;
@@ -60,8 +61,16 @@ public class ReportPageController {
 
 		CoreUtils.checkAccess(report, kenyaUi.getCurrentApp(pageRequest));
 
-		boolean isIndicator = report instanceof IndicatorReportDescriptor;
-		boolean excelRenderable = isIndicator && ((IndicatorReportDescriptor) report).getTemplate() != null;
+		boolean isIndicator = false;
+		if (report instanceof IndicatorReportDescriptor || report instanceof HybridReportDescriptor)
+			isIndicator = true;
+
+		boolean excelRenderable = false;
+		if (report instanceof IndicatorReportDescriptor && isIndicator && ((IndicatorReportDescriptor) report).getTemplate() != null) {
+			excelRenderable = true;
+		} else if (report instanceof HybridReportDescriptor && isIndicator && ((HybridReportDescriptor) report).getTemplate() != null) {
+			excelRenderable = true;
+		}
 
 		model.addAttribute("report", report);
 		model.addAttribute("definition", definition);
