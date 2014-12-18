@@ -253,4 +253,14 @@ public class KenyaEmrServiceImpl extends BaseOpenmrsService implements KenyaEmrS
 		AutoGenerationOption auto = new AutoGenerationOption(idType, idGen, true, true);
 		idService.saveAutoGenerationOption(auto);
 	}
+
+	@Override
+	public List<Object> executeSqlQuery(String query, Map<String, Object> substitutions) {
+		return dao.executeSqlQuery(query, substitutions);
+	}
+
+	@Override
+	public List<Object> executeHqlQuery(String query, Map<String, Object> substitutions) {
+		return dao.executeHqlQuery(query, substitutions);
+	}
 }
