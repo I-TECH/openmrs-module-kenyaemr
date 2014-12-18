@@ -34,6 +34,7 @@
 				<ref bean="kenyaemr.common.report.dhis2" />
 				<ref bean="kenyaemr.common.report.recordedDeceased" />
 				<ref bean="kenyaemr.common.report.allPatients" />
+                <ref bean="kenyaemr.common.report.rdqaReport" />
 			</set>
 		</property>
 	</bean>
@@ -268,5 +269,18 @@
 		<property name="displayIdentifier" ref="kenyaemr.hiv.identifier.upn" />
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 	</bean>
+
+    <!-- =========================== RDQA Reports =============================-->
+    <bean id="kenyaemr.common.report.rdqaReport" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
+        <property name="targetUuid" value="ed1cfbf2-64c6-11e4-86ed-10c37b209d8a" />
+        <property name="name" value="RDQA Report" />
+        <property name="description" value="Report for Routine Data Quality Analysis" />
+        <property name="apps">
+            <set>
+                <ref bean="kenyaemr.app.reports" />
+            </set></property>
+        <property name="template" value="kenyaemr:rdqa/rdqaTemplate.xls" />
+        <property name="repeatingSection" value="sheet:1,row:11,dataset:allPatients" />
+    </bean>
 
 </beans>

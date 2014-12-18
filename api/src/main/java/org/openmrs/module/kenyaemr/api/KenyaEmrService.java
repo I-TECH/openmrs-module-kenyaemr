@@ -16,6 +16,7 @@ package org.openmrs.module.kenyaemr.api;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.openmrs.Location;
 import org.openmrs.Patient;
@@ -96,4 +97,7 @@ public interface KenyaEmrService extends OpenmrsService {
 	 * @param startFrom the base identifier to start from
 	 */
 	void setupHivUniqueIdentifierSource(String startFrom);
+
+	public List<Object> executeSqlQuery(String query, Map<String, Object> substitutions);
+	public List<Object> executeHqlQuery(String query, Map<String, Object> substitutions);
 }
