@@ -13,6 +13,8 @@ import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,16 +42,16 @@ public class VisitsWithinAPeriodCalculationTest extends BaseModuleContextSensiti
 
 		{
 			Patient patient = TestUtils.getPatient(7);
-			TestUtils.saveVisit(patient, visitType, TestUtils.date(2014, 5, 10, 10, 30, 00), TestUtils.date(2014, 5, 10, 12, 30, 00) );
-			TestUtils.saveVisit(patient, visitType, TestUtils.date(2014, 7, 10, 10, 30, 00), TestUtils.date(2014, 7, 10, 12, 30, 00));
-			TestUtils.saveVisit(patient, visitType, TestUtils.date(2014, 8, 10, 10, 30, 00), TestUtils.date(2014, 8, 10, 12, 30, 00));
+			TestUtils.saveVisit(patient, visitType, computeWithinRangeEncounterDate(6), computeWithinRangeEncounterDate(6) );
+			TestUtils.saveVisit(patient, visitType, computeWithinRangeEncounterDate(5), computeWithinRangeEncounterDate(5));
+			TestUtils.saveVisit(patient, visitType, computeWithinRangeEncounterDate(3), computeWithinRangeEncounterDate(3));
 		}
 
 		{
 			Patient patient = TestUtils.getPatient(8);
-			TestUtils.saveVisit(patient, visitType, TestUtils.date(2013, 9, 10, 10, 30, 00), TestUtils.date(2013, 9, 10, 12, 30, 00));
-			TestUtils.saveVisit(patient, visitType, TestUtils.date(2014, 1, 10, 10, 30, 00), TestUtils.date(2014, 1, 10, 12, 30, 00));
-			TestUtils.saveVisit(patient, visitType, TestUtils.date(2014, 2, 10, 10, 30, 00), TestUtils.date(2014, 2, 10, 12, 30, 00));
+			TestUtils.saveVisit(patient, visitType, computeWithinRangeEncounterDate(12), computeWithinRangeEncounterDate(12));
+			TestUtils.saveVisit(patient, visitType, computeWithinRangeEncounterDate(8), computeWithinRangeEncounterDate(8));
+			TestUtils.saveVisit(patient, visitType, computeWithinRangeEncounterDate(6), computeWithinRangeEncounterDate(6));
 
 		}
 
@@ -63,6 +65,15 @@ public class VisitsWithinAPeriodCalculationTest extends BaseModuleContextSensiti
 		Assert.assertThat(((ListResult) resultMap.get(7)).getValues().size(), is(1));
 		Assert.assertThat(((ListResult) resultMap.get(8)).getValues().size(), is(0));
 		Assert.assertThat(((ListResult) resultMap.get(999)).getValues().size(), is(0));
+	}
+
+	private Date computeWithinRangeEncounterDate(int months){
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.MONTH, -months);
+		cal.clear(Calendar.HOUR);
+		cal.clear(Calendar.MINUTE);
+		cal.clear(Calendar.MILLISECOND);
+		return cal.getTime();
 	}
 
 

@@ -18,6 +18,8 @@ import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,13 +46,13 @@ public class HEICohortsXMonthsDuringReviewCalculationTest extends BaseModuleCont
 			 * set up patients with relevant birth date for test
 			 */
 			Patient patient = TestUtils.getPatient(6);
-			patient.setBirthdate(TestUtils.date(2010, 10, 10));
+			patient.setBirthdate(computeWithinRangeEncounterDate(49));
 
 			Patient patient_two = TestUtils.getPatient(7);
-			patient_two.setBirthdate(TestUtils.date(2013, 6, 10));
+			patient_two.setBirthdate(computeWithinRangeEncounterDate(15));
 
 			Patient patient_three = TestUtils.getPatient(8);
-			patient_three.setBirthdate(TestUtils.date(2014, 5, 10));
+			patient_three.setBirthdate(computeWithinRangeEncounterDate(3));
 		}
 
 		List<Integer> ptIds = Arrays.asList(7, 8, 999, 6);
@@ -66,6 +68,15 @@ public class HEICohortsXMonthsDuringReviewCalculationTest extends BaseModuleCont
 		Assert.assertNull(resultMap.get(999)); // voided, no dob
 		Assert.assertFalse((Boolean) resultMap.get(6).getValue());
 
+	}
+
+	private Date computeWithinRangeEncounterDate(int months){
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.MONTH, -months);
+		cal.clear(Calendar.HOUR);
+		cal.clear(Calendar.MINUTE);
+		cal.clear(Calendar.MILLISECOND);
+		return cal.getTime();
 	}
 
 }
