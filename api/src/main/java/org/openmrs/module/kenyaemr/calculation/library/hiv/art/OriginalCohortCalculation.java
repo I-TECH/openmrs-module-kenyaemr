@@ -39,12 +39,12 @@ public class OriginalCohortCalculation extends AbstractPatientCalculation {
 										 PatientCalculationContext context) {
 
 		Set<Integer> artStartDate = CalculationUtils.patientsThatPass(calculate(new InitialArtStartDateCalculation(), cohort, context));
-		Set<Integer> transferIns = CalculationUtils.patientsThatPass(calculate(new StartedArtAtTransferingFacilityCalculation(), cohort, context));
+		//Set<Integer> transferIns = CalculationUtils.patientsThatPass(calculate(new StartedArtAtTransferingFacilityCalculation(), cohort, context));
 		CalculationResultMap initialArtStartDate = calculate(new InitialArtStartDateCalculation(), cohort, context);
 		CalculationResultMap result = new CalculationResultMap();
 		for (Integer ptId : cohort) {
 			Date arvStartDate = null;
-			if((artStartDate.contains(ptId)) && (!(transferIns.contains(ptId)))){
+			if((artStartDate.contains(ptId))){
 					arvStartDate = EmrCalculationUtils.datetimeResultForPatient(initialArtStartDate,ptId);
 			}
 				result.put(ptId, new SimpleResult(arvStartDate, this));

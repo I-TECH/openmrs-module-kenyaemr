@@ -70,7 +70,6 @@ public class AllDeliveriesOnOrAfterMonthsCalculationTest extends BaseModuleConte
         params.put("onOrAfter", 4);
 
         CalculationResultMap resultMap = new AllDeliveriesOnOrAfterMonthsCalculation().evaluate(ptIds, params, Context.getService(PatientCalculationService.class).createCalculationContext());
-
         Assert.assertTrue((Boolean) resultMap.get(7).getValue());
         Assert.assertFalse((Boolean) resultMap.get(8).getValue());
         Assert.assertFalse((Boolean) resultMap.get(999).getValue()); // has no recorded status

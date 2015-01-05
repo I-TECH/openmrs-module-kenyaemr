@@ -15,6 +15,7 @@
 package org.openmrs.module.kenyaemr.reporting.builder.hiv;
 
 import org.openmrs.PatientIdentifierType;
+import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.module.kenyacore.report.CohortReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportUtils;
@@ -55,7 +56,9 @@ import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -97,7 +100,25 @@ public class ArtCohortAnalysisReportBuilder extends AbstractCohortReportBuilder 
 		dsd.addColumn("UPN", identifierDef, "");
 		dsd.addColumn("DOB", new BirthdateDataDefinition(), "", new BirthdateConverter());
 		dsd.addColumn("Sex", new GenderDataDefinition(), "");
-		dsd.addColumn("Original Cohort", new CalculationDataDefinition("Original Cohort", new OriginalCohortCalculation()), "", new CalculationResultConverter() );
+		dsd.addColumn("Original Cohort", new CalculationDataDefinition("Original Cohort", new OriginalCohortCalculation()), "", new DataConverter(){
+			@Override
+			public Class<?> getInputDataType() {
+				return Date.class;
+			}
+
+			@Override
+			public Class<?> getDataType() {
+				return String.class;
+			}
+
+			@Override
+			public Object convert(Object input) {
+				Object value = ((CalculationResult) input).getValue();
+				Calendar cal = Calendar.getInstance();
+				cal.setTime((Date) value);
+				return (new SimpleDateFormat("MMM").format(cal.getTime())+"-"+new SimpleDateFormat("yyyy").format(cal.getTime()));
+			}
+		});
 		dsd.addColumn("TI", new CalculationDataDefinition("TI", new IsTransferInCalculation()), "", new CalculationResultConverter());
 		dsd.addColumn("Date TI", new CalculationDataDefinition("Date TI", new TransferInDateCalculation()), "", new CalculationResultConverter());
 		dsd.addColumn("TO", new CalculationDataDefinition("TO", new IsTransferOutCalculation()), "", new CalculationResultConverter());
@@ -114,7 +135,7 @@ public class ArtCohortAnalysisReportBuilder extends AbstractCohortReportBuilder 
 	@Override
 	protected Mapped<CohortDefinition> buildCohort(CohortReportDescriptor descriptor, PatientDataSetDefinition dsd) {
 		int months = Integer.parseInt(descriptor.getId().split("\\.")[4]);
-		CohortDefinition cd = artCohortLibrary.netCohortMonths(months);
+		CohortDefinition cd = artCohortLibrary.netCohortMonthsBetweenDatesGivenMonths(months);
 		return ReportUtils.map(cd, "onDate=${endDate}");
 	}
 }

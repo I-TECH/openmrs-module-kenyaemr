@@ -198,6 +198,21 @@ public class ArtCohortLibrary {
 	}
 
 	/**
+	 * Patients who are in the "month net cohort" on ${onDate}
+	 * Patients who started art between dates given months
+	 * Used for art cohort analysis
+	 * @return the cohort definition
+	 */
+	public CohortDefinition netCohortMonthsBetweenDatesGivenMonths(int months) {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("in " + months + " month net cohort on date given months");
+		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
+		cd.addSearch("startedArtMonthsAgo", ReportUtils.map(startedArt(), "onOrAfter=${onDate},onOrBefore=${onDate+" + months + "m}"));
+		cd.setCompositionString("startedArtMonthsAgo");
+		return cd;
+	}
+
+	/**
 	 * Patients on the given regimen. In the future this should look at dispensing records during the reporting period
 	 * which implicitly check whether a patient is active. As a workaround until we get to dispensing records, we
 	 * explicitly check whether a patient is active here by looking for recent encounters.

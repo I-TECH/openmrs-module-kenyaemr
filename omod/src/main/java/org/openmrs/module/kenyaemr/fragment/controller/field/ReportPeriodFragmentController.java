@@ -36,7 +36,7 @@ public class ReportPeriodFragmentController {
 						   @SpringBean KenyaUiUtils kenyaui) {
 
 		List<SimpleObject> months = new ArrayList<SimpleObject>();
-		SimpleDateFormat labelFormat = new SimpleDateFormat("MMMM yyyy");
+		SimpleDateFormat labelFormat = new SimpleDateFormat("MMM yyyy");
 
 		Date start = DateUtil.getStartOfMonth(new Date());
 		for (int i = 0; i < pastMonths; ++i) {
