@@ -16,6 +16,8 @@ import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,15 +54,15 @@ public class AllDeliveriesOnOrAfterMonthsCalculationTest extends BaseModuleConte
         // For the purposes of this test, everyone is a woman
         {
             Patient patient = TestUtils.getPatient(7);
-            TestUtils.saveEncounter(patient, ancEncounterType, deliveryForm, TestUtils.date(2014, 8, 20));
-            TestUtils.saveEncounter(patient, ancEncounterType, deliveryForm, TestUtils.date(2012, 4, 20));
+            TestUtils.saveEncounter(patient, ancEncounterType, deliveryForm, computeWithinRangeEncounterDate(3));
+            TestUtils.saveEncounter(patient, ancEncounterType, deliveryForm, computeWithinRangeEncounterDate(5));
         }
 
         {
             Patient patient = TestUtils.getPatient(8);
-            TestUtils.saveEncounter(patient, ancEncounterType, deliveryForm, TestUtils.date(2012, 1, 20));
-            TestUtils.saveEncounter(patient, ancEncounterType, deliveryForm, TestUtils.date(2014, 3, 20));
-            TestUtils.saveEncounter(patient, ancEncounterType, deliveryForm, TestUtils.date(2013, 2, 20));
+            TestUtils.saveEncounter(patient, ancEncounterType, deliveryForm, computeWithinRangeEncounterDate(10));
+            TestUtils.saveEncounter(patient, ancEncounterType, deliveryForm, computeWithinRangeEncounterDate(5));
+            TestUtils.saveEncounter(patient, ancEncounterType, deliveryForm, computeWithinRangeEncounterDate(20));
            
         }
 
@@ -75,5 +77,14 @@ public class AllDeliveriesOnOrAfterMonthsCalculationTest extends BaseModuleConte
         Assert.assertFalse((Boolean) resultMap.get(8).getValue());
         Assert.assertFalse((Boolean) resultMap.get(999).getValue()); // has no recorded status
     }
+
+	private Date computeWithinRangeEncounterDate(int months){
+				Calendar cal = Calendar.getInstance();
+				cal.add(Calendar.MONTH, -months);
+				cal.clear(Calendar.HOUR);
+				cal.clear(Calendar.MINUTE);
+				cal.clear(Calendar.MILLISECOND);
+				return cal.getTime();
+			}
 
 }
