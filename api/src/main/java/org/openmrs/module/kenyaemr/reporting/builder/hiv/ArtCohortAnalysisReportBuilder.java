@@ -136,6 +136,6 @@ public class ArtCohortAnalysisReportBuilder extends AbstractCohortReportBuilder 
 	protected Mapped<CohortDefinition> buildCohort(CohortReportDescriptor descriptor, PatientDataSetDefinition dsd) {
 		int months = Integer.parseInt(descriptor.getId().split("\\.")[4]);
 		CohortDefinition cd = artCohortLibrary.netCohortMonthsBetweenDatesGivenMonths(months);
-		return ReportUtils.map(cd, "onDate=${endDate}");
+		return ReportUtils.map(cd, "onDate=${startDate}");
 	}
 }
