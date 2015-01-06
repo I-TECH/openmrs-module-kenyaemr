@@ -20,7 +20,7 @@
 			<set>
 				<ref bean="kenyaemr.hiv.report.qi.adult.c.tx" />
 				<ref bean="kenyaemr.hiv.report.qi.peds.c.tx" />
-				<ref bean="kenyaemr.hiv.report.qi.adult.emtct" />
+				<!--<ref bean="kenyaemr.hiv.report.qi.adult.emtct" />-->
 				<ref bean="kenyaemr.hiv.report.dueForCd4" />
 				<ref bean="kenyaemr.hiv.report.decliningCd4" />
 				<ref bean="kenyaemr.hiv.report.lostToFollowUp" />
