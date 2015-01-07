@@ -291,7 +291,7 @@ public class Dhis2ReportBuilder extends AbstractReportBuilder {
 		dsd.addColumn("HV02-06-02", "PCR (from 3 to 8 months) Infant Testing (Initial test only)", ReportUtils.map(mchcsIndicatorLibrary.pcrWithInitialBetween3And8MonthsOfAge(), indParams), "");
 		dsd.addColumn("HV02-06-03", "Serology (from 9 to 12 months) Infant Testing (Initial test only)", ReportUtils.map(mchcsIndicatorLibrary.serologyAntBodyTestBetween9And12Months(), indParams), "");
 		dsd.addColumn("HV02-06-04", "PCR (from 9 to 12 months) Infant Testing (Initial test only)", ReportUtils.map(mchcsIndicatorLibrary.pcrTestBetween9And12Months(), indParams), "");
-		dsd.addColumn("HV02-06-06", "Total HEI Tested by 12 months", ReportUtils.map(mchcsIndicatorLibrary.totalHeiTestedBy12Months(), indParams), "");
+		dsd.addColumn("HV02-06-05", "Total HEI Tested by 12 months", ReportUtils.map(mchcsIndicatorLibrary.totalHeiTestedBy12Months(), indParams), "");
 
 
 		//2.7 Confirmed Infant Test Results
@@ -305,10 +305,10 @@ public class Dhis2ReportBuilder extends AbstractReportBuilder {
 		dsd.addColumn("HV02-08-02", "ERF(6 months) Infant Feeding", ReportUtils.map(mchcsIndicatorLibrary.exclusiveReplacementFeedingAtSixMonths(), indParams), "");
 		dsd.addColumn("HV02-08-03", "MF(6 months) Infant Feeding", ReportUtils.map(mchcsIndicatorLibrary.mixedFeedingAtSixMonths(), indParams), "");
 		dsd.addColumn("HV02-08-04", "Total Exposed aged six Months", ReportUtils.map(mchcsIndicatorLibrary.totalExposedAgedSixMoths(), indParams), "");
-		dsd.addColumn("HV02-08-05", "BF(at 12 months) Infant Feeding", ReportUtils.map(mchcsIndicatorLibrary.totalExposedAgedSixMoths(), indParams), "");
-		dsd.addColumn("HV02-08-06", "Not BF(at 12 months) Infant Feeding", ReportUtils.map(mchcsIndicatorLibrary.totalExposedAgedSixMoths(), indParams), "");
-		dsd.addColumn("HV02-08-07", "Not known Infant Feeding (12 months)", ReportUtils.map(mchcsIndicatorLibrary.totalExposedAgedSixMoths(), indParams), "");
-		dsd.addColumn("HV02-08-08", "Total Exposed 12", ReportUtils.map(mchcsIndicatorLibrary.totalExposedAgedSixMoths(), indParams), "");
+		dsd.addColumn("HV02-08-05", "BF(at 12 months) Infant Feeding", ReportUtils.map(mchcsIndicatorLibrary.motherOnTreatmentAndBreastFeeding(), indParams), "");
+		dsd.addColumn("HV02-08-06", "Not BF(at 12 months) Infant Feeding", ReportUtils.map(mchcsIndicatorLibrary.motherOnTreatmentAndNotBreastFeeding(), indParams), "");
+		dsd.addColumn("HV02-08-07", "Not known Infant Feeding (12 months)", ReportUtils.map(mchcsIndicatorLibrary.motherOnTreatmentAndNotBreastFeedingUnknown(), indParams), "");
+		dsd.addColumn("HV02-08-08", "Total Exposed 12", ReportUtils.map(mchcsIndicatorLibrary.totalBreastFeedingMotherOnTreatment(), indParams), "");
 
 		//2.9 Infant ARV Prophylaxis(at first contact only)
 		dsd.addColumn("HV02-09-01", "Issued in ANC (Infant ARV prophylaxis)", ReportUtils.map(mchcsIndicatorLibrary.pcrConfirmedPositive2Months(), indParams), "");
