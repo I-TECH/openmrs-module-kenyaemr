@@ -135,6 +135,7 @@ public class RDQAReportBuilder extends AbstractHybridReportBuilder {
 
 		EncountersForPatientDataDefinition definition = new EncountersForPatientDataDefinition();
 		EncounterType hivConsultation = MetadataUtils.existing(EncounterType.class, HivMetadata._EncounterType.HIV_CONSULTATION);
+		EncounterType hivEnrollment = MetadataUtils.existing(EncounterType.class, HivMetadata._EncounterType.HIV_ENROLLMENT);
 		EncounterType consultation = MetadataUtils.existing(EncounterType.class, CommonMetadata._EncounterType.CONSULTATION);
 
 		List<EncounterType> encounterTypes = Arrays.asList(hivConsultation, consultation);
