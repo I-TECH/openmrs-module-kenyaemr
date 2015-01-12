@@ -1,7 +1,6 @@
 package org.openmrs.module.kenyaemr.reporting.library.shared.hiv;
 
 import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.art.ArtCohortLibrary;
-import org.openmrs.module.kenyaemr.reporting.library.shared.tb.TbCohortLibrary;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -28,7 +27,7 @@ public class QiPaedsIndicatorLibrary {
 	public CohortIndicator clinicalVisit() {
 		return cohortIndicator("Clinical Visit - Child",
 				map(qiCohorts.inCareHasAtLeast2Visits(), "onOrBefore=${endDate}" ),
-				map(qiCohorts.clinicalVisit(), "onOrAfter=${endDate-6m},onOrBefore=${endDate}" )
+				map(qiCohorts.clinicalVisit(), "onOrAfter=${startDate},onOrBefore=${endDate}" )
 		);
 	}
 
@@ -49,7 +48,7 @@ public class QiPaedsIndicatorLibrary {
 	 */
 	public CohortIndicator artInitiation() {
 		return cohortIndicator("ART Initiation - Child",
-				map(artCohorts.eligibleAndStartedART(), "onOrAfter=${startDate},onOrBefore=${endDate}" ),
+				map(artCohorts.eligibleAndStartedARTPeds(), "onOrAfter=${startDate},onOrBefore=${endDate}" ),
 				map(qiCohorts.hivInfectedAndNotOnARTAndHasHivClinicalVisit(), "onOrAfter=${startDate},onOrBefore=${endDate}")
 		);
 	}

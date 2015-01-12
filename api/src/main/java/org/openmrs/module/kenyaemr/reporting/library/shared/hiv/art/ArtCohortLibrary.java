@@ -16,12 +16,15 @@ package org.openmrs.module.kenyaemr.reporting.library.shared.hiv.art;
 
 import org.openmrs.Concept;
 import org.openmrs.Program;
+import org.openmrs.api.PatientSetService;
 import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyacore.report.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.kenyacore.report.cohort.definition.DateCalculationCohortDefinition;
+import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.library.MissedLastAppointmentCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.LostToFollowUpCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.EligibleForArtCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.EligibleForArtExclusiveCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtStartDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.OnAlternateFirstLineArtCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.OnArtCalculation;
@@ -38,6 +41,8 @@ import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.HivCohortLibrary
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.NumericObsCohortDefinition;
+import org.openmrs.module.reporting.common.RangeComparator;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -72,6 +77,13 @@ public class ArtCohortLibrary {
 		eligibleForART.setName("eligible for ART on date");
 		eligibleForART.addParameter(new Parameter("onDate", "On Date", Date.class));
 		return eligibleForART;
+	}
+
+	public CohortDefinition EligibleForArtExclusive() {
+		CalculationCohortDefinition eligibleForARTExclusive = new CalculationCohortDefinition(new EligibleForArtExclusiveCalculation());
+		eligibleForARTExclusive.setName("eligible for ART on date exclusively");
+		eligibleForARTExclusive.addParameter(new Parameter("onDate", "On Date", Date.class));
+		return eligibleForARTExclusive;
 	}
 
 	/**
@@ -295,17 +307,34 @@ public class ArtCohortLibrary {
 	}
 
 	/**
-	 * Patients who are eligible and started art during 6 months review period
+	 * Patients who are eligible and started art during 6 months review period adults
 	 * @return CohortDefinition
 	 */
-	public CohortDefinition eligibleAndStartedART() {
+	public CohortDefinition eligibleAndStartedARTAdult() {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.setName("Eligible and started ART");
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-		cd.addSearch("eligible", ReportUtils.map(eligibleForArt(), "onDate=${onOrBefore}"));
+		cd.addSearch("eligible", ReportUtils.map(EligibleForArtExclusive(), "onDate=${onOrBefore}"));
 		cd.addSearch("startART", ReportUtils.map(startedArt(), "onOrAfter=${onOrBefore-6m},onOrBefore=${onOrBefore}"));
-		cd.setCompositionString("eligible AND startART");
+		cd.addSearch("adult", ReportUtils.map(commonCohorts.agedAtLeast(15), "effectiveDate=${onOrBefore}"));
+		cd.setCompositionString("eligible and startART and adult");
+		return  cd;
+	}
+
+	/**
+	 * Patients who are eligible and started art during 6 months review period children
+	 * @return CohortDefinition
+	 */
+	public CohortDefinition eligibleAndStartedARTPeds() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("Eligible and started ART");
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("eligible", ReportUtils.map(EligibleForArtExclusive(), "onDate=${onOrBefore}"));
+		cd.addSearch("startART", ReportUtils.map(startedArt(), "onOrAfter=${onOrBefore-6m},onOrBefore=${onOrBefore}"));
+		cd.addSearch("child", ReportUtils.map(commonCohorts.agedAtMost(15), "effectiveDate=${onOrBefore}"));
+		cd.setCompositionString("eligible and startART and child");
 		return  cd;
 	}
 

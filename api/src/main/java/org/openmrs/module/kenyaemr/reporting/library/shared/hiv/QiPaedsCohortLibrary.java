@@ -78,9 +78,10 @@ public class QiPaedsCohortLibrary {
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addSearch("inCare", ReportUtils.map(moh731CohortLibrary.currentlyInCare(), "onDate=${onOrBefore}"));
-		cd.addSearch("hasVisit", ReportUtils.map(hivCohortLibrary.hasHivVisit(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("hasVisit", ReportUtils.map(hivCohortLibrary.hasHivVisit(), "onOrAfter=${onOrBefore-6m},onOrBefore=${onOrBefore}"));
 		cd.addSearch("child", ReportUtils.map(commonCohorts.agedAtMost(15), "effectiveDate=${onOrBefore}"));
-		cd.setCompositionString("inCare AND hasVisit AND child");
+		cd.addSearch("enrolledIn4To6MonthOfReviewPeriod", ReportUtils.map(qiCohortLibrary.enrolledIn4To6MonthOfReviewPeriod(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("inCare and hasVisit AND child and NOT enrolledIn4To6MonthOfReviewPeriod");
 		return cd;
 	}
 
@@ -94,10 +95,10 @@ public class QiPaedsCohortLibrary {
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addSearch("hasVisits", ReportUtils.map(hivCohortLibrary.hasHivVisit(), "onOrAfter=${onOrBefore-6m},onOrBefore=${onOrBefore}"));
-		cd.addSearch("eligibleForART", ReportUtils.map(artCohortLibrary.eligibleForArt(), "onDate=${onOrBefore}"));
+		cd.addSearch("atLeastOneEligibilityCriteria", ReportUtils.map(artCohortLibrary.EligibleForArtExclusive(), "onDate=${onOrBefore}"));
 		cd.addSearch("child", ReportUtils.map(commonCohorts.agedAtMost(15), "effectiveDate=${onOrBefore}"));
-		cd.addSearch("onART", ReportUtils.map(artCohortLibrary.onArt(), "onDate=${onOrBefore}"));
-		cd.setCompositionString("(hasVisits AND eligibleForART AND child) AND NOT onART");
+		cd.addSearch("onART", ReportUtils.map(artCohortLibrary.onArt(), "onDate=${onOrBefore-6m}"));
+		cd.setCompositionString("(hasVisits AND atLeastOneEligibilityCriteria AND child) AND NOT onART");
 		return cd;
 	}
 

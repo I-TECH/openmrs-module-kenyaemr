@@ -69,7 +69,7 @@ public class QiIndicatorLibrary {
 	 */
 	public CohortIndicator artInitiation() {
 		return cohortIndicator("ART Initiation",
-				map(artCohorts.eligibleAndStartedART(), "onOrAfter=${startDate},onOrBefore=${endDate}" ),
+				map(artCohorts.eligibleAndStartedARTAdult(), "onOrAfter=${startDate},onOrBefore=${endDate}" ),
 				map(qiCohorts.hivInfectedAndNotOnARTAndHasHivClinicalVisit(), "onOrAfter=${startDate},onOrBefore=${endDate}" )
 				);
 	}
