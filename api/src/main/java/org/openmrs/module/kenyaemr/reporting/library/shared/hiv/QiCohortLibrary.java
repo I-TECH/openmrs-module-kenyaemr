@@ -253,11 +253,11 @@ public class QiCohortLibrary {
 
 		compositionCohortDefinition.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		compositionCohortDefinition.setName("Number of patients on ART for at least 12 months and VL < 1000 copies");
-		compositionCohortDefinition.addSearch("onART12Months", ReportUtils.map(artCohortLibrary.netCohortMonths(12), "onDate=${onOrBefore}"));
+		compositionCohortDefinition.addSearch("onARTForAtLeast12Months", ReportUtils.map(artCohortLibrary.onArt(), "onDate=${onOrBefore-12m}"));
 		compositionCohortDefinition.addSearch("vlLess1000", ReportUtils.map(cdVlLess1000, "onOrBefore=${onOrBefore}"));
 		compositionCohortDefinition.addSearch("adult", ReportUtils.map(commonCohorts.agedAtLeast(15), "effectiveDate=${onOrBefore}"));
 
-		compositionCohortDefinition.setCompositionString("onART12Months AND vlLess1000 AND adult");
+		compositionCohortDefinition.setCompositionString("onARTForAtLeast12Months AND vlLess1000 AND adult");
 
 		return compositionCohortDefinition;
 	}
@@ -279,11 +279,11 @@ public class QiCohortLibrary {
 		compositionCohortDefinition.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		compositionCohortDefinition.setName("Number of patients on ART for at least 12 and have one VL results");
 		compositionCohortDefinition.setName("onARTatLeast12MonthsAndAtLeastVlResults");
-		compositionCohortDefinition.addSearch("onART12Months", ReportUtils.map(artCohortLibrary.netCohortMonths(12), "onDate=${onOrBefore}"));
+		compositionCohortDefinition.addSearch("onARTForAtLeast12Months", ReportUtils.map(artCohortLibrary.onArt(), "onDate=${onOrBefore-12m}"));
 		compositionCohortDefinition.addSearch("atLeastOneVlResults", ReportUtils.map(atLeastVlResults, "onOrBefore=${onOrBefore}"));
 		compositionCohortDefinition.addSearch("adult", ReportUtils.map(commonCohorts.agedAtLeast(15), "effectiveDate=${onOrBefore}"));
 
-		compositionCohortDefinition.setCompositionString("onART12Months AND atLeastOneVlResults AND adult");
+		compositionCohortDefinition.setCompositionString("onARTForAtLeast12Months AND atLeastOneVlResults AND adult");
 
 		return compositionCohortDefinition;
 	}
