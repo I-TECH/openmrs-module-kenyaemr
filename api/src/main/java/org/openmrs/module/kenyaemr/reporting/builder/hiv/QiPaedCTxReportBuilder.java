@@ -81,7 +81,7 @@ public class QiPaedCTxReportBuilder extends AbstractReportBuilder {
 		dsd.addColumn("2.6", "% of patients screened for TB at last clinic visit", ReportUtils.map(qiIndicators.tbScreeningServiceCoverage(), indParams), "");
 		dsd.addColumn("2.7", "% of patients eligible for IPT who were initiated on IPT ", ReportUtils.map(qiIndicators.patientsEligibleForIPTWhoWereInitiatedOnIPT(), indParams), "");
 		dsd.addColumn("2.8", "% of patients with Nutritional assessment", ReportUtils.map(qiIndicators.nutritionalAssessment(), indParams), "");
-		dsd.addColumn("2.9", "% of patients eligible for nutritional support and who received nutritional support", ReportUtils.map(qiIndicators.patientsEligibleForNutritionalSupportAndWhoReceived(), indParams), "");
+		//dsd.addColumn("2.9", "% of patients eligible for nutritional support and who received nutritional support", ReportUtils.map(qiIndicators.patientsEligibleForNutritionalSupportAndWhoReceived(), indParams), "");
 		//dsd.addColumn("2.10", "% of children aged 8-14 who have been disclosed HIV status", ReportUtils.map(qiIndicators.childrenBetween8And14WhoseHivStatusDisclosedToThem(), indParams), "");
 		return dsd;
 	}
