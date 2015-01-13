@@ -16,16 +16,19 @@ package org.openmrs.module.kenyaemr.calculation.library.hiv.cqi;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
 import org.openmrs.Visit;
-import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
+import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
+import org.openmrs.module.kenyacore.calculation.CalculationUtils;
+import org.openmrs.module.kenyacore.report.data.patient.definition.VisitsForPatientDataDefinition;
 import org.openmrs.module.kenyaemr.metadata.TbMetadata;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
+import org.openmrs.module.reporting.common.TimeQualifier;
 
+import java.util.Calendar;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -37,17 +40,32 @@ public class PatientLastVisitCalculation extends AbstractPatientCalculation {
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> params, PatientCalculationContext context) {
 
 		CalculationResultMap ret = new CalculationResultMap();
+		Calendar calendarSixMonths = Calendar.getInstance();
+		calendarSixMonths.setTime(context.getNow());
+		calendarSixMonths.add(Calendar.MONTH, -6);
+
+		VisitsForPatientDataDefinition visitsDef = new VisitsForPatientDataDefinition();
+		visitsDef.setWhich(TimeQualifier.LAST);
+		visitsDef.setStartedOnOrAfter(calendarSixMonths.getTime());
+		visitsDef.setStartedOnOrBefore(context.getNow());
+
+		CalculationResultMap visitData = CalculationUtils.evaluateWithReporting(visitsDef, cohort, params, null, context);
+
 		for (Integer ptId: cohort) {
 			boolean hadIcfCardCompleted = false;
-			List<Visit> visits = Context.getVisitService().getVisitsByPatient(Context.getPatientService().getPatient(ptId), true, true);
-			 if(visits.size() > 0) {
-				 Visit lastVisit = visits.get(0);
-				 	for(Encounter encounter: lastVisit.getEncounters()) {
-						if (encounter.getEncounterType().equals(MetadataUtils.existing(EncounterType.class, TbMetadata._EncounterType.TB_SCREENING))) {
-							hadIcfCardCompleted = true;
+				SimpleResult result = (SimpleResult) visitData.get(ptId);
+				if (result != null) {
+					Visit visit = (Visit) result.getValue();
+					if (visit.getEncounters() != null) {
+						for (Encounter encounter : visit.getEncounters()) {
+							if (encounter != null) {
+								if (encounter.getEncounterType().equals(MetadataUtils.existing(EncounterType.class, TbMetadata._EncounterType.TB_SCREENING))) {
+									hadIcfCardCompleted = true;
+								}
+							}
 						}
 					}
-			 }
+			}
 			ret.put(ptId, new BooleanResult(hadIcfCardCompleted, this, context));
 		}
 		return ret;
