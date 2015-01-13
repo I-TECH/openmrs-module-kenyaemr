@@ -53,11 +53,9 @@ public class InCareHasAtLeast2VisitsCalculation extends AbstractPatientCalculati
 
 			List<Date> visitDates = new ArrayList<Date>();
 			if(inHivProgram.contains(ptId) &&  visits.size() > 1){
-				//System.out.println("Patient "+ptId+" Has "+visits.size());
 				for (Visit visit: visits) {
 					visitDates.add(visit.getStartDatetime());
 				}
-				//System.out.println("Patient "+ptId+" Has "+visitDates);
 				//check if the list is NOT empty and the visits exceed 2
 				if (dateThatAre6MonthsOldFromNow(visitDates, context).size() > 1 && !(dateThatAre6MonthsOldFromNow(visitDates, context).isEmpty())) {
 						if(checkIfAnyVisit3MonthsApart(dateThatAre6MonthsOldFromNow(visitDates, context))) {

@@ -313,9 +313,9 @@ public class QiPaedsCohortLibrary {
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 
-		cd.addSearch("hadWeight", ReportUtils.map(hadWeight, "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
-		cd.addSearch("hadHeight", ReportUtils.map(hadHeight, "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
-		cd.addSearch("hadMuac", ReportUtils.map(hadMuac, "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("hadWeight", ReportUtils.map(hadWeight, "onOrAfter=${onOrBefore-6m},onOrBefore=${onOrBefore}"));
+		cd.addSearch("hadHeight", ReportUtils.map(hadHeight, "onOrAfter=${onOrBefore-6m},onOrBefore=${onOrBefore}"));
+		cd.addSearch("hadMuac", ReportUtils.map(hadMuac, "onOrAfter=${onOrBefore-6m},onOrBefore=${onOrBefore}"));
 		cd.addSearch("child", ReportUtils.map(commonCohorts.agedAtMost(15), "effectiveDate=${onOrBefore}"));
 		cd.setCompositionString("(hadWeight AND hadHeight AND child) OR hadMuac");
 		return cd;

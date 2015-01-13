@@ -503,10 +503,10 @@ public class QiCohortLibrary {
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addSearch("inHivProgram", ReportUtils.map(commonCohorts.enrolled(MetadataUtils.existing(Program.class, HivMetadata._Program.HIV)), "enrolledOnOrBefore=${onOrBefore}"));
-		cd.addSearch("notPregnant", ReportUtils.map(commonCohorts.hasObs(pregnancyStatus, notPregnant), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("notPregnant", ReportUtils.map(commonCohorts.hasObs(pregnancyStatus, notPregnant), "onOrAfter=${onOrBefore-6m},onOrBefore=${onOrBefore}"));
 		cd.addSearch("above15Years", ReportUtils.map(commonCohorts.agedAtLeast(15), "effectiveDate=${onOrBefore}"));
 		cd.addSearch("below49Years", ReportUtils.map(commonCohorts.agedAtMost(49), "effectiveDate=${onOrBefore}"));
-		cd.addSearch("onModernContraceptives", ReportUtils.map(pwpCohortLibrary.modernContraceptivesProvided(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("onModernContraceptives", ReportUtils.map(pwpCohortLibrary.modernContraceptivesProvided(), "onOrAfter=${onOrBefore-6m},onOrBefore=${onOrBefore}"));
 		cd.setCompositionString("inHivProgram AND notPregnant AND above15Years AND below49Years AND onModernContraceptives");
 		return cd;
 	}
@@ -524,10 +524,10 @@ public class QiCohortLibrary {
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addSearch("inHivProgram", ReportUtils.map(commonCohorts.enrolled(MetadataUtils.existing(Program.class, HivMetadata._Program.HIV)), "enrolledOnOrBefore=${onOrBefore}"));
-		cd.addSearch("notPregnant", ReportUtils.map(commonCohorts.hasObs(pregnancyStatus, notPregnant), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("notPregnant", ReportUtils.map(commonCohorts.hasObs(pregnancyStatus, notPregnant), "onOrAfter=${onOrBefore-6m},onOrBefore=${onOrBefore}"));
 		cd.addSearch("above15Years", ReportUtils.map(commonCohorts.agedAtLeast(15), "effectiveDate=${onOrBefore}"));
 		cd.addSearch("below49Years", ReportUtils.map(commonCohorts.agedAtMost(49), "effectiveDate=${onOrBefore}"));
-		cd.addSearch("hasVisits", ReportUtils.map(hivCohortLibrary.hasHivVisit(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("hasVisits", ReportUtils.map(hivCohortLibrary.hasHivVisit(), "onOrAfter=${onOrBefore-6m},onOrBefore=${onOrBefore}"));
 		cd.setCompositionString("inHivProgram AND notPregnant AND above15Years AND below49Years AND hasVisits");
 		return cd;
 	}
