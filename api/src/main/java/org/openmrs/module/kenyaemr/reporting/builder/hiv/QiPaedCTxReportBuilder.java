@@ -79,7 +79,7 @@ public class QiPaedCTxReportBuilder extends AbstractReportBuilder {
 		dsd.addColumn("2.4", "% of patients on ART with at least one VL result during the last 12 months", ReportUtils.map(qiIndicators.hivMonitoringViralLoad(), indParams), "");
 		dsd.addColumn("2.5", "% of patients on ART for at least 6 months with VL suppression", ReportUtils.map(qiIndicators.hivMonitoringViralLoadSupression(), indParams), "");
 		dsd.addColumn("2.6", "% of patients screened for TB at last clinic visit", ReportUtils.map(qiIndicators.tbScreeningServiceCoverage(), indParams), "");
-		dsd.addColumn("2.7", "% of patients eligible for IPT who were initiated on IPT ", ReportUtils.map(qiIndicators.patientsEligibleForIPTWhoWereInitiatedOnIPT(), indParams), "");
+		//dsd.addColumn("2.7", "% of patients eligible for IPT who were initiated on IPT ", ReportUtils.map(qiIndicators.patientsEligibleForIPTWhoWereInitiatedOnIPT(), indParams), "");
 		dsd.addColumn("2.8", "% of patients with Nutritional assessment", ReportUtils.map(qiIndicators.nutritionalAssessment(), indParams), "");
 		//dsd.addColumn("2.9", "% of patients eligible for nutritional support and who received nutritional support", ReportUtils.map(qiIndicators.patientsEligibleForNutritionalSupportAndWhoReceived(), indParams), "");
 		//dsd.addColumn("2.10", "% of children aged 8-14 who have been disclosed HIV status", ReportUtils.map(qiIndicators.childrenBetween8And14WhoseHivStatusDisclosedToThem(), indParams), "");
