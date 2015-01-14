@@ -23,12 +23,18 @@ import org.openmrs.module.kenyacore.report.IndicatorReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportManager;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
+import org.openmrs.module.kenyaemr.reporting.cohort.definition.RDQACohortDefinition;
+import org.openmrs.module.kenyaemr.reporting.cohort.definition.RDQACohortSampleFrameDefinition;
 import org.openmrs.module.kenyaemr.reporting.renderer.MergedCsvReportRenderer;
 import org.openmrs.module.kenyaemr.wrapper.Facility;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.module.kenyaui.annotation.SharedPage;
+import org.openmrs.module.reporting.cohort.EvaluatedCohort;
+import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.common.ContentType;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.ReportDesignResource;
@@ -166,6 +172,7 @@ public class ReportExportPageController {
 	 */
 	protected void addExtraContextValues(EvaluationContext context) {
 		Facility facility = new Facility(Context.getService(KenyaEmrService.class).getDefaultLocation());
+		KenyaUiUtils kenyaui = Context.getRegisteredComponents(KenyaUiUtils.class).get(0);
 
 		context.addContextValue("facility.name", facility.getTarget().getName());
 		context.addContextValue("facility.code", facility.getMflCode());
@@ -173,10 +180,42 @@ public class ReportExportPageController {
 		Calendar period = new GregorianCalendar();
 		period.setTime(context.containsParameter("startDate") ? (Date) context.getParameterValue("startDate") : context.getEvaluationDate());
 
+		String evaluationDate = kenyaui.formatDate(context.getEvaluationDate());
+		String evaluationTime = kenyaui.formatTime(context.getEvaluationDate());
+
+		context.addContextValue("evaluationDate", evaluationDate);
+		context.addContextValue("evaluationTime", evaluationTime);
 		context.addContextValue("period.year", period.get(Calendar.YEAR));
 		context.addContextValue("period.month", period.get(Calendar.MONTH));
 		context.addContextValue("period.month.name", new SimpleDateFormat("MMMMM").format(period.getTime()));
+
+		//add context values for rdqa report
+		CohortDefinition definition = new RDQACohortDefinition();
+		CohortDefinition allPatientsDefinition = new RDQACohortSampleFrameDefinition();
+
+		CohortDefinitionService service = Context.getService(CohortDefinitionService.class);
+		EvaluatedCohort rdqaCohort = null;
+		EvaluatedCohort allPatientsCohort = null;
+
+		try {
+			rdqaCohort = service.evaluate(definition, context);
+			allPatientsCohort = service.evaluate(allPatientsDefinition, context);
+		} catch (EvaluationException e) {
+			e.printStackTrace();
+		}
+
+		if (rdqaCohort !=null ){
+			Integer eligiblePatients = rdqaCohort.getMemberIds().size();
+			context.addContextValue("sampleSize", eligiblePatients);
+		}
+
+		if (allPatientsCohort !=null ){
+			Integer allPatients = allPatientsCohort.getMemberIds().size();
+			context.addContextValue("sampleFrame", allPatients);
+		}
+
 	}
+
 
 	/**
 	 * Renders an indicator report as CSV

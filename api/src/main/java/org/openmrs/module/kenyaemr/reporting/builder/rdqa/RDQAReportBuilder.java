@@ -138,13 +138,12 @@ public class RDQAReportBuilder extends AbstractHybridReportBuilder {
 		EncounterType hivEnrollment = MetadataUtils.existing(EncounterType.class, HivMetadata._EncounterType.HIV_ENROLLMENT);
 		EncounterType consultation = MetadataUtils.existing(EncounterType.class, CommonMetadata._EncounterType.CONSULTATION);
 
-		List<EncounterType> encounterTypes = Arrays.asList(hivConsultation, consultation);
+		List<EncounterType> encounterTypes = Arrays.asList(hivConsultation, consultation, hivEnrollment);
 
 		definition.setWhich(TimeQualifier.LAST);
 		definition.setTypes(encounterTypes);
 		dsd.addColumn("Last encounter date in the blue card", definition, "", new EncounterDatetimeConverter());
 
-		//dsd.addColumn("Last encounter date in the blue card", new CalculationDataDefinition("Last Encounter Date", new PatientLastEncounterDateCalculation()), "", new RDQACalculationResultConverter());
 		dsd.addColumn("Next Appointment Date", new ObsForPersonDataDefinition("Next Appointment Date", TimeQualifier.LAST, Dictionary.getConcept(Dictionary.RETURN_VISIT_DATE), null, null), "", new ObsValueDatetimeConverter());
 		dsd.addColumn("Number of visits in paper bluecards", new CalculationDataDefinition("Total Visits", new VisitsForAPatientCalculation()), "", new DataConverter() {
 			@Override

@@ -51,6 +51,7 @@ public class RDQACohortDefinitionEvaluator implements CohortDefinitionEvaluator 
 			Integer allPatients = dataMapFromSQL.size();
 			SampleSizeConfiguration conf = getSampleConfiguration();
 			Integer requiredPatients = getSampleSize(allPatients, conf);
+
 			int i =0;
 			for (Double rand : dataMapFromSQL.keySet()){
 				if (i < requiredPatients){
