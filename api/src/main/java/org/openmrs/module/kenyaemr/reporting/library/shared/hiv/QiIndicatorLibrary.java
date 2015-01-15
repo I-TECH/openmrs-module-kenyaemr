@@ -69,7 +69,7 @@ public class QiIndicatorLibrary {
 	 */
 	public CohortIndicator artInitiation() {
 		return cohortIndicator("ART Initiation",
-				map(artCohorts.eligibleAndStartedART(), "onOrAfter=${startDate},onOrBefore=${endDate}" ),
+				map(artCohorts.eligibleAndStartedARTAdult(), "onOrAfter=${startDate},onOrBefore=${endDate}" ),
 				map(qiCohorts.hivInfectedAndNotOnARTAndHasHivClinicalVisit(), "onOrAfter=${startDate},onOrBefore=${endDate}" )
 				);
 	}
@@ -168,8 +168,8 @@ public class QiIndicatorLibrary {
 	 */
 	public CohortIndicator reproductiveHealthFamilyPlanning() {
 		return cohortIndicator("Reproductive Health - Service Coverage",
-				map(qiCohorts.nonPregnantWomen15To49YearsOnModernContraceptives(), "onOrAfter=${endDate-6m},onOrBefore=${endDate}"),
-				map(qiCohorts.nonPregnantWomen15To49YearsWithAtLeastOneHivClinicalVisit(), "onOrAfter=${endDate-6m},onOrBefore=${endDate}")
+				map(qiCohorts.nonPregnantWomen15To49YearsOnModernContraceptives(), "onOrAfter=${startDate},onOrBefore=${endDate}"),
+				map(qiCohorts.nonPregnantWomen15To49YearsWithAtLeastOneHivClinicalVisit(), "onOrAfter=${startDate},onOrBefore=${endDate}")
 		);
 	}
 }

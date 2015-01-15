@@ -364,7 +364,7 @@ function onPatientAgeUpdate(age) {
         }
     });
 
-    //jq('#calculated-age').html(age + '/' + (isPediatric ? 'PEDS' : 'ADULT'));
+
 }
 
 function OnTransferStatusChange()
@@ -437,8 +437,6 @@ function onUpnGenerateClick() {
 }
 
 jq(function() {
-    //getField('weight.value').change(onWeightOrHeightChange);
-    //getField('height.value').change(onWeightOrHeightChange);
     jq('#generate-hiv-id').click(onUpnGenerateClick);
     getField('encounter-date.value').change(onEncounterDateChange);
 
@@ -515,23 +513,7 @@ jq(function() {
     getField('allergy.value').change(onAllergy) ;
     //jq('#allergy input').click(onAllergy);
     onAllergy();
-    /*
-     getField('allergy.value').change(function(){
-     if(getValue('allergy.value')== ALLERGY_TO_OTHER)
-     {
-     // jq('#allergy_detail').show();
-     jq('#allergy_detail').find('input[type=text]').removeAttr('disabled');
 
-     }
-     else
-     {
-     setValue('allergy_detail.value', '');
-     //jq('#allergy_detail').hide();
-     jq('#allergy_detail').find('input[type=text]').attr('disabled','true');
-
-     }
-     });
-     */
     getField('date_confirmed_pos.value').change(function(){
         var birthDate = new Date(getValue('dob.value'))//.getTime();
         var pos_date=new Date(getValue('date_confirmed_pos.value'))//.getTime();
@@ -770,33 +752,33 @@ jq(function() {
     getField('ti_date.value').change(setTIDate);
     setTIDate();
 
-    getField('ti_district.value').change(setTIDistrict);
+    //getField('ti_district.value').change(setTIDistrict);
     setTIDistrict();
 
-    getField('ti_facility.value').change(setTIFacility);
+    //getField('ti_facility.value').change(setTIFacility);
     setTIFacility();
 
-    getField('where.value').change(setTIHaartFacility);
+    //getField('where.value').change(setTIHaartFacility);
     setTIHaartFacility();
 
 
-    getField('ti_date_started_haart.value').change(setTIHaartDate);
+    //getField('ti_date_started_haart.value').change(setTIHaartDate);
     setTIHaartDate();
 
-    getField('art-status.value').change(setArtStatus);
+   // getField('art-status.value').change(setArtStatus);
     setArtStatus();
 
-    getField('ts_rship.value').change(setTsRelation);
+    //getField('ts_rship.value').change(setTsRelation);
     setTsRelation();
 
-    getField('ts_name.value').change(setTsName);
+    //getField('ts_name.value').change(setTsName);
     setTsName();
 
 
-    getField('ts_address.value').change(setTsAddress);
+    //getField('ts_address.value').change(setTsAddress);
     setTsAddress();
 
-    getField('ts_tel.value').change(setTsTelephone);
+    //getField('ts_tel.value').change(setTsTelephone);
     setTsTelephone();
 
 });

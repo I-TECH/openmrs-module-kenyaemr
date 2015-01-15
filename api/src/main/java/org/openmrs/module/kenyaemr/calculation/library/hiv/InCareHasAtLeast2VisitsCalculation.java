@@ -50,6 +50,7 @@ public class InCareHasAtLeast2VisitsCalculation extends AbstractPatientCalculati
 		for (Integer ptId: cohort){
 			boolean has2VisitsWithin3Months = false;
 			List<Visit> visits = Context.getVisitService().getVisitsByPatient(Context.getPatientService().getPatient(ptId));
+
 			List<Date> visitDates = new ArrayList<Date>();
 			if(inHivProgram.contains(ptId) &&  visits.size() > 1){
 				for (Visit visit: visits) {
@@ -73,7 +74,6 @@ public class InCareHasAtLeast2VisitsCalculation extends AbstractPatientCalculati
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(reportingTime);
 		calendar.add(Calendar.MONTH, -6);
-
 		startDate = calendar.getTime();
 		for (Date date: dates){
 			if(date.after(startDate) && date.before(reportingTime)) {
@@ -90,7 +90,7 @@ public class InCareHasAtLeast2VisitsCalculation extends AbstractPatientCalculati
 		//finding if any of the dates in a list is 3 months a part
 		for (int i = 0; i < dateList.size(); i++) {
 			for (int j = i+1; j < dateList.size(); j++){
-			  if(daysSince(dateList.get(i), dateList.get(j)) >= 89 && daysSince(dateList.get(i), dateList.get(j)) < 93) {
+			  if(daysSince(dateList.get(i), dateList.get(j)) >= 85) {
 				  isTrue = true;
 				  break;
 			  }
