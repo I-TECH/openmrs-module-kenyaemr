@@ -9,6 +9,7 @@ import org.openmrs.module.kenyacore.report.cohort.definition.ObsInLastVisitCohor
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.InCareHasAtLeast2VisitsCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.PatientsWhoMeetCriteriaForNutritionalSupport;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.cqi.HavingAtLeastOneVisitInEachQuoterCalculation;
 import org.openmrs.module.kenyaemr.reporting.library.moh731.Moh731CohortLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonCohortLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.art.ArtCohortLibrary;
@@ -59,12 +60,17 @@ public class QiPaedsCohortLibrary {
 		cdInCareHasAtLeast2Visits.setName("patients in care and have at least 2 visits 3 months a part");
 		cdInCareHasAtLeast2Visits.addParameter(new Parameter("onDate", "On Date", Date.class));
 
+		CalculationCohortDefinition cdHasAtLeast1VisitInEveryQuoter = new CalculationCohortDefinition(new HavingAtLeastOneVisitInEachQuoterCalculation());
+		cdHasAtLeast1VisitInEveryQuoter.setName("patients who have at least one visit in every quoter");
+		cdHasAtLeast1VisitInEveryQuoter.addParameter(new Parameter("onDate", "On Date", Date.class));
+
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.setName("child and in care");
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.addSearch("inCare", ReportUtils.map(cdInCareHasAtLeast2Visits, "onDate=${onOrBefore}"));
+		cd.addSearch("atLeastAVisitInEachQuoter", ReportUtils.map(cdHasAtLeast1VisitInEveryQuoter, "onDate=${onOrBefore}"));
 		cd.addSearch("child", ReportUtils.map(commonCohorts.agedAtMost(15), "effectiveDate=${onOrBefore}"));
-		cd.setCompositionString("inCare AND child");
+		cd.setCompositionString("(inCare OR atLeastAVisitInEachQuoter) AND child");
 		return  cd;
 	}
 
