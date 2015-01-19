@@ -59,8 +59,8 @@ public class QiPaedsIndicatorLibrary {
 	 */
 	public CohortIndicator hivMonitoringViralLoad() {
 		return cohortIndicator("HIV Monitoring - Viral Load Child",
-				map(qiCohorts.onARTatLeast12MonthsAndHaveAtLeastVLResultsDuringTheLast12Months(), "onOrAfter=${startDate},onOrBefore=${endDate}" ),
-				map(qiCohorts.onARTatLeast12MonthsAndHaveAtLeastOneVisitDuringTheLast6MonthsReview(), "onOrAfter=${startDate},onOrBefore=${endDate}")
+				map(qiCohorts.onARTatLeast6MonthsAndHaveAtLeastVLResultsDuringTheLast12Months(), "onOrBefore=${endDate}" ),
+				map(qiCohorts.onARTatLeast6MonthsAndHaveAtLeastOneVisitDuringTheLast6MonthsReview(), "onOrAfter=${startDate},onOrBefore=${endDate}")
 		);
 	}
 
@@ -70,8 +70,8 @@ public class QiPaedsIndicatorLibrary {
 	 */
 	public CohortIndicator hivMonitoringViralLoadSupression() {
 		return cohortIndicator("HIV Monitoring - Viral Load - Suppression Outcome Child",
-				map(qiCohorts.onARTatLeast12MonthsAndVlLess1000(), "onOrAfter=${startDate},onOrBefore=${endDate}"),
-				map(qiCohorts.onARTatLeast12MonthsAndAtLeastVlResults(), "onOrAfter=${startDate},onOrBefore=${endDate}")
+				map(qiCohorts.onARTatLeast6MonthsAndVlLess1000(), "onOrBefore=${endDate}"),
+				map(qiCohorts.onARTatLeast6MonthsAndHaveAtLeastVLResultsDuringTheLast12Months(), "onOrBefore=${endDate}")
 		);
 	}
 
