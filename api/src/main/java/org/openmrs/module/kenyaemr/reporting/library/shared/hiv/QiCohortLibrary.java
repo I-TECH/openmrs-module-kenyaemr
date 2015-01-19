@@ -73,12 +73,12 @@ public class QiCohortLibrary {
 	private TbCohortLibrary tbCohortLibrary;
 
 
-	public CohortDefinition onART() {
+	/*public CohortDefinition onART() {
 		SqlCohortDefinition onART = new SqlCohortDefinition("select distinct(patient_id) from orders where concept_id in (select concept_id from concept_set where concept_set =" + Dictionary.getConcept(Dictionary.ANTIRETROVIRAL_DRUGS).getConceptId() + ") and (discontinued_date is null or discontinued_date > :onDate) and start_date < :onDate and (auto_expire_date is null or auto_expire_date > :onDate) and voided = 0");
 		onART.setName("onART");
 		onART.addParameter(new Parameter("onDate", "On Date", Date.class));
 		return onART;
-	}
+	}*/
 
 	public CohortDefinition hadNutritionalAssessmentAtLastVisit() {
 		Concept weight = Dictionary.getConcept(Dictionary.WEIGHT_KG);
@@ -128,7 +128,7 @@ public class QiCohortLibrary {
 		cd.addSearch("hasVisits", ReportUtils.map(hivCohortLibrary.hasHivVisit(), "onOrAfter=${onOrBefore-6m},onOrBefore=${onOrBefore}"));
 		cd.addSearch("atLeastOneEligibilityCriteria", ReportUtils.map(artCohortLibrary.EligibleForArtExclusive(), "onDate=${onOrBefore}"));
 		cd.addSearch("adult", ReportUtils.map(commonCohorts.agedAtLeast(15), "effectiveDate=${onOrBefore}"));
-		cd.addSearch("onART", ReportUtils.map(onART(), "onDate=${onOrBefore-6m}"));
+		cd.addSearch("onART", ReportUtils.map(artCohortLibrary.onArt(), "onDate=${onOrBefore-6m}"));
 		cd.setCompositionString("(hasVisits and atLeastOneEligibilityCriteria and adult) and NOT onART");
 		return cd;
 	}
@@ -221,8 +221,7 @@ public class QiCohortLibrary {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.setName("on ART at least 12 months and have VL during the last 12 months");
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
-		cd.addSearch("onARTForAtLeast12Months", ReportUtils.map(onART(), "onDate=${onOrBefore-12m}"));
+		cd.addSearch("onARTForAtLeast12Months", ReportUtils.map(artCohortLibrary.onArt(), "onDate=${onOrBefore-12m}"));
 		cd.addSearch("viralLoadResults", ReportUtils.map(viralLoadResultsDuringLast12Months(12), "onDate=${onOrBefore}"));
 		cd.addSearch("adult", ReportUtils.map(commonCohorts.agedAtLeast(15), "effectiveDate=${onOrBefore}"));
 		cd.setCompositionString("onARTForAtLeast12Months AND viralLoadResults AND adult");
@@ -239,7 +238,7 @@ public class QiCohortLibrary {
 		cd.setName("on ART and have at least one clinical visit during the last 12 months");
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
-		cd.addSearch("onARTForAtLeast12Months", ReportUtils.map(onART(), "onDate=${onOrBefore-12m}"));
+		cd.addSearch("onARTForAtLeast12Months", ReportUtils.map(artCohortLibrary.onArt(), "onDate=${onOrBefore-12m}"));
 		cd.addSearch("hasVisit", ReportUtils.map(hivCohortLibrary.hasHivVisit(), "onOrAfter=${onOrAfter-6m},onOrBefore=${onOrBefore}"));
 		cd.addSearch("adult", ReportUtils.map(commonCohorts.agedAtLeast(15), "effectiveDate=${onOrBefore}"));
 		cd.setCompositionString("onARTForAtLeast12Months AND hasVisit AND adult");
@@ -264,7 +263,7 @@ public class QiCohortLibrary {
 
 		compositionCohortDefinition.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		compositionCohortDefinition.setName("Number of patients on ART for at least 12 months and VL < 1000 copies");
-		compositionCohortDefinition.addSearch("onARTForAtLeast12Months", ReportUtils.map(onART(), "onDate=${onOrBefore-12m}"));
+		compositionCohortDefinition.addSearch("onARTForAtLeast12Months", ReportUtils.map(artCohortLibrary.onArt(), "onDate=${onOrBefore-12m}"));
 		compositionCohortDefinition.addSearch("vlLess1000", ReportUtils.map(cdVlLess1000, "onDate=${onOrBefore}"));
 		compositionCohortDefinition.addSearch("adult", ReportUtils.map(commonCohorts.agedAtLeast(15), "effectiveDate=${onOrBefore}"));
 

@@ -62,7 +62,7 @@ public class PatientsWithVLResultsAtLeastMonthAgoCalculation extends AbstractPat
 							Date obsDate = obs.getObsDatetime();
 							if (obsDate.after(dateMonthsAgo.getTime()) && obsDate.before(context.getNow())) {
 								hasVLResultsXMonthsAgo = true;
-								break;
+								//break;
 							}
 						}
 					}

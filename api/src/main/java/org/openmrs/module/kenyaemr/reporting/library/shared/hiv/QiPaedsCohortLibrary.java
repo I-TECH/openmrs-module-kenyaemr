@@ -104,7 +104,7 @@ public class QiPaedsCohortLibrary {
 		cd.addSearch("hasVisits", ReportUtils.map(hivCohortLibrary.hasHivVisit(), "onOrAfter=${onOrBefore-6m},onOrBefore=${onOrBefore}"));
 		cd.addSearch("atLeastOneEligibilityCriteria", ReportUtils.map(artCohortLibrary.EligibleForArtExclusive(), "onDate=${onOrBefore}"));
 		cd.addSearch("child", ReportUtils.map(commonCohorts.agedAtMost(15), "effectiveDate=${onOrBefore}"));
-		cd.addSearch("onART", ReportUtils.map(qiCohortLibrary.onART(), "onDate=${onOrBefore-6m}"));
+		cd.addSearch("onART", ReportUtils.map(artCohortLibrary.onArt(), "onDate=${onOrBefore-6m}"));
 		cd.setCompositionString("(hasVisits AND atLeastOneEligibilityCriteria AND child) AND NOT onART");
 		return cd;
 	}
@@ -145,7 +145,7 @@ public class QiPaedsCohortLibrary {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.setName("on ART for at least 6 months and have VL during the last 12 months - Child");
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-		cd.addSearch("onARTForAtLeast6Months", ReportUtils.map(qiCohortLibrary.onART(), "onDate=${onOrBefore-6m}"));
+		cd.addSearch("onARTForAtLeast6Months", ReportUtils.map(artCohortLibrary.onArt(), "onDate=${onOrBefore-6m}"));
 		cd.addSearch("viralLoadResultsIn12Months", ReportUtils.map(havingVlXMonthsAgo(12), "onDate=${onOrBefore}"));
 		cd.addSearch("child", ReportUtils.map(commonCohorts.agedAtMost(15), "effectiveDate=${onOrBefore}"));
 		cd.setCompositionString("onARTForAtLeast6Months AND child AND viralLoadResultsIn12Months");
@@ -162,7 +162,7 @@ public class QiPaedsCohortLibrary {
 		cd.setName("on ART at least 6 months and have at least one clinical visit during the last 12 months - Child");
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
-		cd.addSearch("onARTForAtLeast6Months", ReportUtils.map(qiCohortLibrary.onART(), "onDate=${onOrBefore-6m}"));
+		cd.addSearch("onARTForAtLeast6Months", ReportUtils.map(artCohortLibrary.onArt(), "onDate=${onOrBefore-6m}"));
 		cd.addSearch("hasVisit", ReportUtils.map(hivCohortLibrary.hasHivVisit(), "onOrAfter=${onOrBefore-6m},onOrBefore=${onOrBefore}"));
 		cd.addSearch("child", ReportUtils.map(commonCohorts.agedAtMost(15), "effectiveDate=${onOrBefore}"));
 		cd.setCompositionString("onARTForAtLeast6Months AND hasVisit AND child");
@@ -189,7 +189,7 @@ public class QiPaedsCohortLibrary {
 		cd.setName("Number of patients on ART for at least 6 months and VL < 1000 copies in last 12 months -  Child");
 		cd.setName("onARTatLeast6MonthsAndVlLess1000");
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-		cd.addSearch("onARTatLeast6Months", ReportUtils.map(qiCohortLibrary.onART(), "onDate=${onOrBefore-6m}"));
+		cd.addSearch("onARTatLeast6Months", ReportUtils.map(artCohortLibrary.onArt(), "onDate=${onOrBefore-6m}"));
 		cd.addSearch("vlLess1000", ReportUtils.map(cdVlLess1000, "onDate=${onOrBefore}"));
 		cd.addSearch("child", ReportUtils.map(commonCohorts.agedAtMost(15), "effectiveDate=${onOrBefore}"));
 
