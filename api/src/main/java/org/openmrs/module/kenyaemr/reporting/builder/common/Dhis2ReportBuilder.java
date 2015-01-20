@@ -271,7 +271,7 @@ public class Dhis2ReportBuilder extends AbstractReportBuilder {
 		dsd.addColumn("HV02-05-01", "Assessment for ART in MCH (at Diagnosis) - Assessed for eligibility in 1st ANC - WHO Staging done", ReportUtils.map(mchmsIndicators.assessedForArtEligibility(ArtAssessmentMethod.WHO_STAGING), indParams), "");
 		dsd.addColumn("HV02-05-02", "Assessment for ART in MCH (at Diagnosis) - Assessed for eligibility in 1st ANC - CD4", ReportUtils.map(mchmsIndicators.assessedForArtEligibility(ArtAssessmentMethod.CD4_COUNT), indParams), "");
 		dsd.addColumn("HV02-05-03", "Assessment for ART in MCH (at Diagnosis) - Assessed for Eligibility in ANC", ReportUtils.map(mchmsIndicators.assessedForArtEligibility(null), indParams), "");
-		dsd.addColumn("HV02-05-04", "Assessment for ART in MCH (at Diagnosis) - Started on ART during ANC", ReportUtils.map(mchmsIndicators.assessedForArtEligibility(null), indParams), "");
+		//dsd.addColumn("HV02-05-04", "Assessment for ART in MCH (at Diagnosis) - Started on ART during ANC", ReportUtils.map(mchmsIndicators.assessedForArtEligibility(null), indParams), "");
 
 
 		//2.6 Infant Testing (initial tests only)
