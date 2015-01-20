@@ -91,7 +91,7 @@ public class QiIndicatorLibrary {
 	 */
 	public CohortIndicator hivMonitoringViralLoad() {
 		return cohortIndicator("HIV Monitoring - Viral Load Coverage",
-				map(qiCohorts.onARTatLeast12MonthsAndHaveAtLeastVLResultsDuringTheLast12Months(), "onOrAfter=${startDate},onOrBefore=${endDate}" ),
+				map(qiCohorts.onARTatLeast12MonthsAndHaveAtLeastVLResultsDuringTheLast12Months(), "onOrBefore=${endDate}" ),
 				map(qiCohorts.onARTatLeast12MonthsAndHaveAtLeastOneVisitDuringTheLast6MonthsReview(), "onOrAfter=${startDate},onOrBefore=${endDate}" )
 		);
 	}
@@ -103,7 +103,7 @@ public class QiIndicatorLibrary {
 	public CohortIndicator hivMonitoringViralLoadSuppression() {
 		return cohortIndicator("HIV Monitoring - Viral Load - Supression Outcome",
 				map(qiCohorts.onARTatLeast12MonthsAndVlLess1000(), "onOrBefore=${endDate}" ),
-				map(qiCohorts.onARTatLeast12MonthsAndAtLeastVlResults(), "onOrBefore=${endDate}" )
+				map(qiCohorts. onARTatLeast12MonthsAndHaveAtLeastVLResultsDuringTheLast12Months(), "onOrBefore=${endDate}" )
 		);
 	}
 

@@ -25,7 +25,10 @@ import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.InCareHasAtLeast2VisitsCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.PatientsWhoMeetCriteriaForNutritionalSupport;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.cqi.DiedInMonthOneOfReviewCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.cqi.HavingAtLeastOneVisitInEachQuoterCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.cqi.InCareInMonths4To6During6MonthsReviewPeriodCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.cqi.PatientsWithVLResultsAtLeastMonthAgoCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.cqi.PatientsWithVLResultsLessThanXValueCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.reporting.library.moh731.Moh731CohortLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonCohortLibrary;
@@ -36,8 +39,7 @@ import org.openmrs.module.reporting.cohort.definition.CodedObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.DateObsCohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.NumericObsCohortDefinition;
-import org.openmrs.module.reporting.common.RangeComparator;
+import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,6 +71,14 @@ public class QiCohortLibrary {
 
 	@Autowired
 	private TbCohortLibrary tbCohortLibrary;
+
+
+	/*public CohortDefinition onART() {
+		SqlCohortDefinition onART = new SqlCohortDefinition("select distinct(patient_id) from orders where concept_id in (select concept_id from concept_set where concept_set =" + Dictionary.getConcept(Dictionary.ANTIRETROVIRAL_DRUGS).getConceptId() + ") and (discontinued_date is null or discontinued_date > :onDate) and start_date < :onDate and (auto_expire_date is null or auto_expire_date > :onDate) and voided = 0");
+		onART.setName("onART");
+		onART.addParameter(new Parameter("onDate", "On Date", Date.class));
+		return onART;
+	}*/
 
 	public CohortDefinition hadNutritionalAssessmentAtLastVisit() {
 		Concept weight = Dictionary.getConcept(Dictionary.WEIGHT_KG);
@@ -131,12 +141,17 @@ public class QiCohortLibrary {
 		hasAtLeast2VisitsWithin3Months.setName("patients in care and have at least 2 visits 3 months a part");
 		hasAtLeast2VisitsWithin3Months.addParameter(new Parameter("onDate", "On Date", Date.class));
 
+		CalculationCohortDefinition cdHasAtLeast1VisitInEveryQuoter = new CalculationCohortDefinition(new HavingAtLeastOneVisitInEachQuoterCalculation());
+		cdHasAtLeast1VisitInEveryQuoter.setName("patients who have at least one visit in every quoter");
+		cdHasAtLeast1VisitInEveryQuoter.addParameter(new Parameter("onDate", "On Date", Date.class));
+
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.setName("Adult and in care");
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.addSearch("adult", ReportUtils.map(commonCohorts.agedAtLeast(15), "effectiveDate=${onOrBefore}"));
 		cd.addSearch("has2VisitsIn3Months", ReportUtils.map(hasAtLeast2VisitsWithin3Months, "onDate=${onOrBefore}"));
-		cd.setCompositionString("adult AND has2VisitsIn3Months");
+		cd.addSearch("atLeast1VisitInEachQuoter", ReportUtils.map(cdHasAtLeast1VisitInEveryQuoter, "onDate=${onOrBefore}"));
+		cd.setCompositionString("adult AND (has2VisitsIn3Months OR atLeast1VisitInEachQuoter)");
 		return  cd;
 	}
 
@@ -189,13 +204,11 @@ public class QiCohortLibrary {
 	 * Patients with at least on viral load results during last 12 months duration
 	 * @return CohortDefinition
 	 */
-	public CohortDefinition viralLoadResultsDuringLast12Months() {
-		NumericObsCohortDefinition cd = new NumericObsCohortDefinition();
-		cd.setName("Viral Load results");
-		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
-		cd.setQuestion(Dictionary.getConcept(Dictionary.HIV_VIRAL_LOAD));
-		cd.setTimeModifier(TimeModifier.ANY);
+	public CohortDefinition viralLoadResultsDuringLast12Months(int months) {
+		CalculationCohortDefinition cd = new CalculationCohortDefinition(new PatientsWithVLResultsAtLeastMonthAgoCalculation());
+		cd.setName("Patients With VL results within 12 months");
+		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
+		cd.addCalculationParameter("months", months);
 		return  cd;
 	}
 
@@ -208,9 +221,8 @@ public class QiCohortLibrary {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.setName("on ART at least 12 months and have VL during the last 12 months");
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addSearch("onARTForAtLeast12Months", ReportUtils.map(artCohortLibrary.onArt(), "onDate=${onOrBefore-12m}"));
-		cd.addSearch("viralLoadResults", ReportUtils.map(viralLoadResultsDuringLast12Months(), "onOrAfter=${onOrBefore-12m},onOrBefore=${onOrBefore}"));
+		cd.addSearch("viralLoadResults", ReportUtils.map(viralLoadResultsDuringLast12Months(12), "onDate=${onOrBefore}"));
 		cd.addSearch("adult", ReportUtils.map(commonCohorts.agedAtLeast(15), "effectiveDate=${onOrBefore}"));
 		cd.setCompositionString("onARTForAtLeast12Months AND viralLoadResults AND adult");
 		return cd;
@@ -242,48 +254,20 @@ public class QiCohortLibrary {
 		CompositionCohortDefinition compositionCohortDefinition = new CompositionCohortDefinition();
 
 		//find the <1000 copies of recent obs
-		NumericObsCohortDefinition cdVlLess1000 = new NumericObsCohortDefinition();
-		cdVlLess1000.setName("Less than 1000 Copies");
-		cdVlLess1000.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-		cdVlLess1000.setQuestion(Dictionary.getConcept(Dictionary.HIV_VIRAL_LOAD));
-		cdVlLess1000.setOperator1(RangeComparator.LESS_THAN);
-		cdVlLess1000.setValue1(1000.0);
-		cdVlLess1000.setTimeModifier(TimeModifier.LAST);
+		CalculationCohortDefinition cdVlLess1000 = new CalculationCohortDefinition( new PatientsWithVLResultsLessThanXValueCalculation());
+		cdVlLess1000.setName("VL Less than 1000 Copies");
+		cdVlLess1000.addParameter(new Parameter("onDate", "On Date", Date.class));
+		cdVlLess1000.addCalculationParameter("months", 12 );
+		cdVlLess1000.addCalculationParameter("threshold", 1000.0);
 
 
 		compositionCohortDefinition.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		compositionCohortDefinition.setName("Number of patients on ART for at least 12 months and VL < 1000 copies");
 		compositionCohortDefinition.addSearch("onARTForAtLeast12Months", ReportUtils.map(artCohortLibrary.onArt(), "onDate=${onOrBefore-12m}"));
-		compositionCohortDefinition.addSearch("vlLess1000", ReportUtils.map(cdVlLess1000, "onOrBefore=${onOrBefore}"));
+		compositionCohortDefinition.addSearch("vlLess1000", ReportUtils.map(cdVlLess1000, "onDate=${onOrBefore}"));
 		compositionCohortDefinition.addSearch("adult", ReportUtils.map(commonCohorts.agedAtLeast(15), "effectiveDate=${onOrBefore}"));
 
 		compositionCohortDefinition.setCompositionString("onARTForAtLeast12Months AND vlLess1000 AND adult");
-
-		return compositionCohortDefinition;
-	}
-
-	/**
-	 * Number of patients on ART for at least 12
-	 * Have at least one VL results
-	 */
-	public CohortDefinition onARTatLeast12MonthsAndAtLeastVlResults() {
-		CompositionCohortDefinition compositionCohortDefinition = new CompositionCohortDefinition();
-
-		//find the <1000 copies of recent obs
-		NumericObsCohortDefinition atLeastVlResults = new NumericObsCohortDefinition();
-		atLeastVlResults.setName("At least one VL results");
-		atLeastVlResults.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-		atLeastVlResults.setQuestion(Dictionary.getConcept(Dictionary.HIV_VIRAL_LOAD));
-		atLeastVlResults.setTimeModifier(TimeModifier.ANY);
-
-		compositionCohortDefinition.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-		compositionCohortDefinition.setName("Number of patients on ART for at least 12 and have one VL results");
-		compositionCohortDefinition.setName("onARTatLeast12MonthsAndAtLeastVlResults");
-		compositionCohortDefinition.addSearch("onARTForAtLeast12Months", ReportUtils.map(artCohortLibrary.onArt(), "onDate=${onOrBefore-12m}"));
-		compositionCohortDefinition.addSearch("atLeastOneVlResults", ReportUtils.map(atLeastVlResults, "onOrBefore=${onOrBefore}"));
-		compositionCohortDefinition.addSearch("adult", ReportUtils.map(commonCohorts.agedAtLeast(15), "effectiveDate=${onOrBefore}"));
-
-		compositionCohortDefinition.setCompositionString("onARTForAtLeast12Months AND atLeastOneVlResults AND adult");
 
 		return compositionCohortDefinition;
 	}
