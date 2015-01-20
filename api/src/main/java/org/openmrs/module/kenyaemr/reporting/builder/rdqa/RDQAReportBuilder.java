@@ -107,7 +107,6 @@ public class RDQAReportBuilder extends AbstractHybridReportBuilder {
 		dsd.addColumn("Enrollment into Program", new CalculationDataDefinition("Enrollment into Program", new PatientProgramEnrollmentCalculation()), "", new PatientProgramEnrollmentConverter());
 		dsd.addColumn("Enrollment Date", new CalculationDataDefinition("Enrollment Date", new PatientProgramEnrollmentCalculation()), "", new PatientProgramEnrollmentDateConverter());
 		dsd.addColumn("Entry Point", new ObsForPersonDataDefinition("Entry Point", TimeQualifier.LAST, Dictionary.getConcept(Dictionary.METHOD_OF_ENROLLMENT), null, null), "", new PatientEntryPointDataConverter());
-		/*dsd.addColumn("CD4 at Art Start", new CalculationDataDefinition("CD4 at Art Start", new CD4AtArtStartDateCalculation()), "", new RDQACalculationResultConverter());*/
         dsd.addColumn("Sex", new GenderDataDefinition(), "", new GenderConverter());
 		dsd.addColumn("Date of Birth", new BirthdateDataDefinition(), "", new BirthdateConverter(DATE_FORMAT));
 

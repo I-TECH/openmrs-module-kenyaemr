@@ -13,12 +13,12 @@ public class DateArtStartDateConverter implements DataConverter {
 	@Override
 	public Object convert(Object original) {
 		if (original == null)
-			return "N/A";
+			return "NA";
 
 		Object value = ((CalculationResult) original).getValue();
 
 		if (value == null)
-			return "N/A";
+			return "NA";
 
 		return RDQAReportUtils.formatdates((Date) value, RDQAReportUtils.DATE_FORMAT);
 	}
