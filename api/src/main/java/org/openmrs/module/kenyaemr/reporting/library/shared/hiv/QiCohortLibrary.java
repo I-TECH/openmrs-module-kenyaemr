@@ -214,7 +214,7 @@ public class QiCohortLibrary {
 
 	/**
 	 * Patients on ART for at least 12 months by the end of the review period
-	 * Patients have at least one Viral Load (VL) results during the last 1 months
+	 * Patients have at least one Viral Load (VL) results during the last 12 months
 	 * @return cohort definition
 	 */
 	public CohortDefinition onARTatLeast12MonthsAndHaveAtLeastVLResultsDuringTheLast12Months() {
@@ -263,11 +263,11 @@ public class QiCohortLibrary {
 
 		compositionCohortDefinition.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		compositionCohortDefinition.setName("Number of patients on ART for at least 12 months and VL < 1000 copies");
-		compositionCohortDefinition.addSearch("onARTForAtLeast12Months", ReportUtils.map(artCohortLibrary.onArt(), "onDate=${onOrBefore-12m}"));
+		compositionCohortDefinition.addSearch("onARTForAtLeast12MonthsAdultAndHasVl", ReportUtils.map(onARTatLeast12MonthsAndHaveAtLeastVLResultsDuringTheLast12Months(), "onOrBefore=${onOrBefore}"));
 		compositionCohortDefinition.addSearch("vlLess1000", ReportUtils.map(cdVlLess1000, "onDate=${onOrBefore}"));
-		compositionCohortDefinition.addSearch("adult", ReportUtils.map(commonCohorts.agedAtLeast(15), "effectiveDate=${onOrBefore}"));
+		//compositionCohortDefinition.addSearch("adult", ReportUtils.map(commonCohorts.agedAtLeast(15), "effectiveDate=${onOrBefore}"));
 
-		compositionCohortDefinition.setCompositionString("onARTForAtLeast12Months AND vlLess1000 AND adult");
+		compositionCohortDefinition.setCompositionString("onARTForAtLeast12MonthsAdultAndHasVl AND vlLess1000");
 
 		return compositionCohortDefinition;
 	}

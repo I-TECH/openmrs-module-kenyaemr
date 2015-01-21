@@ -14,7 +14,12 @@
 package org.openmrs.module.kenyaemr.calculation.library.hiv.art;
 
 import org.openmrs.Concept;
+import org.openmrs.Encounter;
+import org.openmrs.EncounterType;
+import org.openmrs.Obs;
+import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
+import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
@@ -24,8 +29,12 @@ import org.openmrs.module.kenyacore.calculation.Filters;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.LostToFollowUpCalculation;
+import org.openmrs.module.kenyaemr.metadata.HivMetadata;
+import org.openmrs.module.metadatadeploy.MetadataUtils;
 
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 
@@ -39,42 +48,58 @@ public class PatientOutComeCalculation extends AbstractPatientCalculation {
 										 PatientCalculationContext context) {
 
 		Integer months = (parameterValues != null && parameterValues.containsKey("months")) ? (Integer) parameterValues.get("months") : null;
+		Date evaluationDate = context.getNow();
 
-		CalculationResultMap programDiscontinuation = Calculations.lastObs(Dictionary.getConcept(Dictionary.REASON_FOR_PROGRAM_DISCONTINUATION), cohort, context);
+		//get date that is months a head from the now
+		Calendar calendarMonthsAhead = Calendar.getInstance();
+		calendarMonthsAhead.setTime(evaluationDate);
+		calendarMonthsAhead.add(Calendar.MONTH, months);
+
+		//override the patient context back to now
+		PatientCalculationService service = Context.getService(PatientCalculationService.class);
+		PatientCalculationContext pContext = service.createCalculationContext();
+		pContext.setNow(calendarMonthsAhead.getTime());
+
+		CalculationResultMap lastEncounterOfHivDisco = Calculations.lastEncounter(MetadataUtils.existing(EncounterType.class, HivMetadata._EncounterType.HIV_DISCONTINUATION), cohort, pContext);
+
 		Set<Integer> lostPatients = CalculationUtils.patientsThatPass(calculate(new LostToFollowUpCalculation(), cohort, context));
-		Set<Integer> alive = Filters.alive(cohort,context);
-		Set<Integer> patientsWhoStartedArt = CalculationUtils.patientsThatPass(calculate( new InitialArtRegimenCalculation(), cohort, context));
-		Set<Integer> patientCurrentArt = CalculationUtils.patientsThatPass(calculate(new CurrentArtRegimenCalculation(), cohort, context));
 
+		Set<Integer> alive = Filters.alive(cohort,pContext);
+
+		Set<Integer> patientsWhoStartedArt = CalculationUtils.patientsThatPass(calculate( new InitialArtRegimenCalculation(), cohort, pContext));
+
+		Set<Integer> patientCurrentArt = CalculationUtils.patientsThatPass(calculate(new CurrentArtRegimenCalculation(), cohort, pContext));
 
 		//declare possible options that would be displayed
 		Concept transferOut = Dictionary.getConcept(Dictionary.TRANSFERRED_OUT);
 		Concept died = Dictionary.getConcept(Dictionary.DIED);
+		Concept ltfu = Context.getConceptService().getConceptByUuid("5240AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 
 		CalculationResultMap ret = new CalculationResultMap();
 		for (Integer ptId : cohort) {
-		   String status = "";
-			Concept results = EmrCalculationUtils.codedObsResultForPatient(programDiscontinuation, ptId);
+		   String status = "Alive";
+			Encounter encounter = EmrCalculationUtils.encounterResultForPatient(lastEncounterOfHivDisco, ptId);
 
-			if(results == null){
-				status = "Alive";
+			if(encounter != null && encounter.getEncounterDatetime().before(calendarMonthsAhead.getTime())) {
+				for(Obs obs :encounter.getAllObs()){
+					if(obs.getConcept().equals(Dictionary.getConcept(Dictionary.REASON_FOR_PROGRAM_DISCONTINUATION))){
+
+						if(obs.getValueCoded().equals(transferOut)) {
+							status = "Transferred Out";
+						}
+						if(obs.getValueCoded().equals(died) || !(alive.contains(ptId))) {
+							status = "Dead";
+						}
+						if (obs.getValueCoded().equals(ltfu) || lostPatients.contains(ptId)) {
+							status = "Lost To Follow-Up";
+						}
+					}
+				}
 			}
-
-			if(lostPatients.contains(ptId)){
-				status = "Lost To Follow Up";
-			}
-
-			if((results != null) && (results.equals(transferOut))) {
-				status = "Transferred Out";
-			}
-
-			if(((results != null) && (results.equals(died))) || (!alive.contains(ptId)) ) {
-				status = "Dead";
-			}
-
 			if((patientsWhoStartedArt.contains(ptId)) && (!patientCurrentArt.contains(ptId))) {
 				status = "Stopped ART";
 			}
+
 			ret.put(ptId, new SimpleResult(status, this));
 		}
 		 return  ret;

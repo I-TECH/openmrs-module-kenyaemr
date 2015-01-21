@@ -128,7 +128,7 @@ public class ArtCohortAnalysisReportBuilder extends AbstractCohortReportBuilder 
 		dsd.addColumn("ARV 2nd Line Start", new CalculationDataDefinition("ARV 2nd Line Start", new DateARV2Calculation()), "", new CalculationResultConverter());
 		dsd.addColumn("Last Seen", new CalculationDataDefinition("Date Last Seen", new DateLastSeenCalculation()), "", new CalculationResultConverter());
 
-		dsd.addColumn("OutCome", outComes(report), "startDate=${startDate}", new CalculationResultConverter());
+		dsd.addColumn("OutCome", outComes(report), "onDate=${startDate}", new CalculationResultConverter());
 
 		dsd.addColumn("Last CD4", new CalculationDataDefinition("Last CD4", new LastCd4Calculation()), "", new CalculationResultConverter());
 		dsd.addColumn("Last CD4 Date", new CalculationDataDefinition("Last CD4 Date", new LastCd4CountDateCalculation()), "", new CalculationResultConverter());
@@ -146,7 +146,7 @@ public class ArtCohortAnalysisReportBuilder extends AbstractCohortReportBuilder 
 		CalculationDataDefinition cd = new CalculationDataDefinition("OutCome", new PatientOutComeCalculation());
 		cd.setName("Patients Outcomes");
 		cd.addCalculationParameter("months", months);
-		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
 		return  cd;
 	}
 }
