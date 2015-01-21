@@ -23,12 +23,12 @@ public class RegimenConverter implements DataConverter {
 		SimpleResult sr = (SimpleResult) original;
 
 		if (sr == null)
-			return "N/A";
+			return "NA";
 
 		RegimenOrder ro = (RegimenOrder) sr.getValue();
 
 		if (CollectionUtils.isEmpty(ro.getDrugOrders())) {
-			return "N/A";
+			return "NA";
 		}
 		List<String> components = new ArrayList<String>();
 
