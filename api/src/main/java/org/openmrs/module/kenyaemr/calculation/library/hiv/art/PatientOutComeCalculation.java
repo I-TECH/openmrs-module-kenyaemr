@@ -28,6 +28,7 @@ import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyacore.calculation.Filters;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
+import org.openmrs.module.kenyaemr.calculation.library.DeceasedPatientsCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.LostToFollowUpCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
@@ -70,6 +71,8 @@ public class PatientOutComeCalculation extends AbstractPatientCalculation {
 
 		Set<Integer> patientCurrentArt = CalculationUtils.patientsThatPass(calculate(new CurrentArtRegimenCalculation(), cohort, pContext));
 
+		Set<Integer> deceased = CalculationUtils.patientsThatPass(calculate( new DeceasedPatientsCalculation(), cohort, pContext));
+
 		//declare possible options that would be displayed
 		Concept transferOut = Dictionary.getConcept(Dictionary.TRANSFERRED_OUT);
 		Concept died = Dictionary.getConcept(Dictionary.DIED);
@@ -98,6 +101,14 @@ public class PatientOutComeCalculation extends AbstractPatientCalculation {
 			}
 			if((patientsWhoStartedArt.contains(ptId)) && (!patientCurrentArt.contains(ptId))) {
 				status = "Stopped ART";
+			}
+
+			if(deceased.contains(ptId)) {
+				status = "Dead";
+			}
+
+			if(lostPatients.contains(ptId)){
+				status = "Lost To Follow-Up";
 			}
 
 			ret.put(ptId, new SimpleResult(status, this));

@@ -47,7 +47,10 @@ public class CalculationResultConverter implements DataConverter{
 			return value;
 		}
 		else if (value instanceof Double) {
-			return value;
+			return ((Double) value).doubleValue();
+		}
+		else if (value instanceof Integer){
+			return ((Integer) value).intValue();
 		}
 
 		return null;

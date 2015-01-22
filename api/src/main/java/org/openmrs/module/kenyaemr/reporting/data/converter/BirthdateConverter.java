@@ -24,7 +24,7 @@ public class BirthdateConverter implements DataConverter {
 	public Object convert(Object obj) {
 		KenyaUiUtils kenyaUi = Context.getRegisteredComponents(KenyaUiUtils.class).get(0);
 		 Birthdate birthdate = (Birthdate) obj;
-		return kenyaUi.formatPersonBirthdate(birthdate.getBirthdate(), birthdate.isEstimated());
+		return kenyaUi.formatDate(birthdate.getBirthdate());
 	}
 
 	@Override

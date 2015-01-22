@@ -22,10 +22,16 @@ import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyacore.report.builder.AbstractCohortReportBuilder;
 import org.openmrs.module.kenyacore.report.builder.Builds;
 import org.openmrs.module.kenyacore.report.data.patient.definition.CalculationDataDefinition;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.AgeAtARTInitiationCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.CD4AtARTInitiationCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.CurrentARTStartDateCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.CurrentArtRegimenCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.DateARV1Calculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.DateARV2Calculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.DateLastSeenCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.DateOfEnrollmentCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtRegimenCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.IsBirthDateApproximatedCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.IsTransferInCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.IsTransferOutCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.LastCd4Calculation;
@@ -35,6 +41,7 @@ import org.openmrs.module.kenyaemr.calculation.library.hiv.art.PatientOutComeCal
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.TransferInDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.TransferOutDateCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
+import org.openmrs.module.kenyaemr.reporting.calculation.converter.RegimenConverter;
 import org.openmrs.module.kenyaemr.reporting.data.converter.BirthdateConverter;
 import org.openmrs.module.kenyaemr.reporting.data.converter.CalculationResultConverter;
 import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.art.ArtCohortLibrary;
@@ -99,6 +106,7 @@ public class ArtCohortAnalysisReportBuilder extends AbstractCohortReportBuilder 
 		dsd.addColumn("Name", nameDef, "");
 		dsd.addColumn("UPN", identifierDef, "");
 		dsd.addColumn("DOB", new BirthdateDataDefinition(), "", new BirthdateConverter());
+		dsd.addColumn("DOB approx", new CalculationDataDefinition("DOB approx", new IsBirthDateApproximatedCalculation()), "", new CalculationResultConverter());
 		dsd.addColumn("Sex", new GenderDataDefinition(), "");
 		dsd.addColumn("Original Cohort", new CalculationDataDefinition("Original Cohort", new OriginalCohortCalculation()), "", new DataConverter(){
 			@Override
@@ -124,7 +132,12 @@ public class ArtCohortAnalysisReportBuilder extends AbstractCohortReportBuilder 
 		dsd.addColumn("TO", new CalculationDataDefinition("TO", new IsTransferOutCalculation()), "", new CalculationResultConverter());
 		dsd.addColumn("Date TO", new CalculationDataDefinition("Date TO", new TransferOutDateCalculation()), "", new CalculationResultConverter());
 		dsd.addColumn("DOE", new CalculationDataDefinition("DOE", new DateOfEnrollmentCalculation()), "", new CalculationResultConverter());
+		dsd.addColumn("First ART regimen", new CalculationDataDefinition("First ART regimen", new InitialArtRegimenCalculation()), "", new RegimenConverter());
 		dsd.addColumn("ARV Start", new CalculationDataDefinition("ARV Start", new DateARV1Calculation()), "", new CalculationResultConverter());
+		dsd.addColumn("Current ART regimen", new CalculationDataDefinition("Current ART regimen", new CurrentArtRegimenCalculation()), "", new RegimenConverter());
+		dsd.addColumn("Current ART regimen Date", new CalculationDataDefinition("Current ART regimen Date", new CurrentARTStartDateCalculation()), "", new CalculationResultConverter());
+		dsd.addColumn("Age at ART initiation", new CalculationDataDefinition("Age at ART initiation", new AgeAtARTInitiationCalculation()), "", new CalculationResultConverter());
+		dsd.addColumn("CD4 at ART initiation", new CalculationDataDefinition("CD4 at ART initiation", new CD4AtARTInitiationCalculation()), "", new CalculationResultConverter());
 		dsd.addColumn("ARV 2nd Line Start", new CalculationDataDefinition("ARV 2nd Line Start", new DateARV2Calculation()), "", new CalculationResultConverter());
 		dsd.addColumn("Last Seen", new CalculationDataDefinition("Date Last Seen", new DateLastSeenCalculation()), "", new CalculationResultConverter());
 
