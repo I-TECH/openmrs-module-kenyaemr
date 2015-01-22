@@ -44,7 +44,7 @@ public class CalculationResultConverter implements DataConverter{
 			return ((Concept) value).getName();
 		}
 		else if (value instanceof String) {
-			return value;
+			return value.toString();
 		}
 		else if (value instanceof Double) {
 			return ((Double) value).doubleValue();

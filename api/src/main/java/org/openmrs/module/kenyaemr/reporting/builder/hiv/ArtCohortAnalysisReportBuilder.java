@@ -17,9 +17,11 @@ package org.openmrs.module.kenyaemr.reporting.builder.hiv;
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.module.kenyacore.report.CohortReportDescriptor;
+import org.openmrs.module.kenyacore.report.HybridReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyacore.report.builder.AbstractCohortReportBuilder;
+import org.openmrs.module.kenyacore.report.builder.AbstractHybridReportBuilder;
 import org.openmrs.module.kenyacore.report.builder.Builds;
 import org.openmrs.module.kenyacore.report.data.patient.definition.CalculationDataDefinition;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.AgeAtARTInitiationCalculation;
@@ -71,7 +73,7 @@ import java.util.List;
 
 @Component
 @Builds({"kenyaemr.hiv.report.artCohortAnalysis.6", "kenyaemr.hiv.report.artCohortAnalysis.12", "kenyaemr.hiv.report.artCohortAnalysis.24", "kenyaemr.hiv.report.artCohortAnalysis.36"})
-public class ArtCohortAnalysisReportBuilder extends AbstractCohortReportBuilder {
+public class ArtCohortAnalysisReportBuilder extends AbstractHybridReportBuilder {
 
 	@Autowired
 	private ArtCohortLibrary artCohortLibrary;
@@ -93,7 +95,7 @@ public class ArtCohortAnalysisReportBuilder extends AbstractCohortReportBuilder 
 	 * @see org.openmrs.module.kenyacore.report.builder.AbstractCohortReportBuilder#addColumns(CohortReportDescriptor, PatientDataSetDefinition)
 	 */
 	@Override
-	protected void addColumns(CohortReportDescriptor report, PatientDataSetDefinition dsd) {
+	protected void addColumns(HybridReportDescriptor report, PatientDataSetDefinition dsd) {
 
 		PatientIdentifierType upn = MetadataUtils.existing(PatientIdentifierType.class, HivMetadata._PatientIdentifierType.UNIQUE_PATIENT_NUMBER);
 		DataConverter identifierFormatter = new ObjectFormatter("{identifier}");
@@ -101,7 +103,7 @@ public class ArtCohortAnalysisReportBuilder extends AbstractCohortReportBuilder 
 
 		DataConverter nameFormatter = new ObjectFormatter("{familyName}, {givenName}");
 		DataDefinition nameDef = new ConvertedPersonDataDefinition("name", new PreferredNameDataDefinition(), nameFormatter);
-
+		dsd.setName("artCohortAnalysis");
 		dsd.addColumn("id", new PatientIdDataDefinition(), "");
 		dsd.addColumn("Name", nameDef, "");
 		dsd.addColumn("UPN", identifierDef, "");
@@ -133,7 +135,7 @@ public class ArtCohortAnalysisReportBuilder extends AbstractCohortReportBuilder 
 		dsd.addColumn("Date TO", new CalculationDataDefinition("Date TO", new TransferOutDateCalculation()), "", new CalculationResultConverter());
 		dsd.addColumn("DOE", new CalculationDataDefinition("DOE", new DateOfEnrollmentCalculation()), "", new CalculationResultConverter());
 		dsd.addColumn("First ART regimen", new CalculationDataDefinition("First ART regimen", new InitialArtRegimenCalculation()), "", new RegimenConverter());
-		dsd.addColumn("ARV Start", new CalculationDataDefinition("ARV Start", new DateARV1Calculation()), "", new CalculationResultConverter());
+		dsd.addColumn("ARV Start Date", new CalculationDataDefinition("ARV Start Date", new DateARV1Calculation()), "", new CalculationResultConverter());
 		dsd.addColumn("Current ART regimen", new CalculationDataDefinition("Current ART regimen", new CurrentArtRegimenCalculation()), "", new RegimenConverter());
 		dsd.addColumn("Current ART regimen Date", new CalculationDataDefinition("Current ART regimen Date", new CurrentARTStartDateCalculation()), "", new CalculationResultConverter());
 		dsd.addColumn("Age at ART initiation", new CalculationDataDefinition("Age at ART initiation", new AgeAtARTInitiationCalculation()), "", new CalculationResultConverter());
@@ -148,13 +150,13 @@ public class ArtCohortAnalysisReportBuilder extends AbstractCohortReportBuilder 
 	}
 
 	@Override
-	protected Mapped<CohortDefinition> buildCohort(CohortReportDescriptor descriptor, PatientDataSetDefinition dsd) {
+	protected Mapped<CohortDefinition> buildCohort(HybridReportDescriptor descriptor, PatientDataSetDefinition dsd) {
 		int months = Integer.parseInt(descriptor.getId().split("\\.")[4]);
 		CohortDefinition cd = artCohortLibrary.netCohortMonthsBetweenDatesGivenMonths(months);
 		return ReportUtils.map(cd, "onDate=${startDate}");
 	}
 
-	private DataDefinition outComes(CohortReportDescriptor descriptor) {
+	private DataDefinition outComes(HybridReportDescriptor descriptor) {
 		int months = Integer.parseInt(descriptor.getId().split("\\.")[4]);
 		CalculationDataDefinition cd = new CalculationDataDefinition("OutCome", new PatientOutComeCalculation());
 		cd.setName("Patients Outcomes");
