@@ -18,32 +18,38 @@
 	</table>
 </fieldset>
 
-<table class="ke-table-vertical">
-	<thead>
-	<tr>
-		<th>Name</th>
-		<% nonIdOrNameColumns.each { col -> %>
-		<th>${ col.label }</th>
-		<% } %>
-	</tr>
-	</thead>
-	<tbody>
-	<%
-		dataSet.rows.each { row ->
-			def patientId = row.getColumnValue("id")
-			def personName = row.getColumnValue("Name")
-			def personGender = row.getColumnValue("Sex").toLowerCase()
-	%>
+<% if (nonIdOrNameColumns.size() > 0) { %>
+	<table class="ke-table-vertical">
+		<thead>
 		<tr>
-			<td>
-				<img src="${ ui.resourceLink("kenyaui", "images/glyphs/patient_" + personGender + ".png") }" class="ke-glyph" />
-				<a href="${ ui.pageLink("kenyaemr", "chart/chartViewPatient", [ patientId: patientId ]) }">${ personName }</a>
-			</td>
-
-		<% nonIdOrNameColumns.each { col -> %>
-			<td>${ formatData(row.getColumnValue(col)) }</td>
-		<% } %>
+			<th>Name</th>
+			<% nonIdOrNameColumns.each { col -> %>
+			<th>${ col.label }</th>
+			<% } %>
 		</tr>
-	<% } %>
-	</tbody>
-</table>
+		</thead>
+		<tbody>
+		<%
+			dataSet.rows.each { row ->
+				def patientId = row.getColumnValue("id")
+				def personName = row.getColumnValue("Name")
+				def personGender = row.getColumnValue("Sex").toLowerCase()
+		%>
+			<tr>
+				<td>
+					<img src="${ ui.resourceLink("kenyaui", "images/glyphs/patient_" + personGender + ".png") }" class="ke-glyph" />
+					<a href="${ ui.pageLink("kenyaemr", "chart/chartViewPatient", [ patientId: patientId ]) }">${ personName }</a>
+				</td>
+
+			<% nonIdOrNameColumns.each { col -> %>
+				<td>${ formatData(row.getColumnValue(col)) }</td>
+			<% } %>
+			</tr>
+		<% } %>
+		</tbody>
+	</table>
+<% } else {%>
+<fieldset>
+	Insufficient follow-up time to generate this report
+</fieldset>
+<% } %>
