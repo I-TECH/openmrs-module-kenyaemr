@@ -154,7 +154,7 @@ public class ReportExportPageController {
 			};
 		}
 
-		addExtraContextValues(data.getContext());
+		addExtraContextValues(data, data.getContext());
 
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		renderer.render(data, null, out);
@@ -170,12 +170,14 @@ public class ReportExportPageController {
 	 * Adds some extra context values which can be used in Excel templates
 	 * @param context the evaluation context
 	 */
-	protected void addExtraContextValues(EvaluationContext context) {
+	protected void addExtraContextValues(ReportData data, EvaluationContext context) {
 		Facility facility = new Facility(Context.getService(KenyaEmrService.class).getDefaultLocation());
 		KenyaUiUtils kenyaui = Context.getRegisteredComponents(KenyaUiUtils.class).get(0);
+		ReportDefinition reportData = data.getDefinition();
 
 		context.addContextValue("facility.name", facility.getTarget().getName());
 		context.addContextValue("facility.code", facility.getMflCode());
+		context.addContextValue("report.name", reportData.getName());
 
 		Calendar period = new GregorianCalendar();
 		period.setTime(context.containsParameter("startDate") ? (Date) context.getParameterValue("startDate") : context.getEvaluationDate());
@@ -213,6 +215,26 @@ public class ReportExportPageController {
 			Integer allPatients = allPatientsCohort.getMemberIds().size();
 			context.addContextValue("sampleFrame", allPatients);
 		}
+		//calculate the time frame for art cohort analysis reports
+		String reportName = reportData.getName();
+		//get the number out of that name
+		int reportPeriod  = Integer.parseInt(reportName.replaceAll("\\D+",""));
+
+		//calculate date from the report period
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(period.getTime());
+		calendar.add(Calendar.MONTH, reportPeriod);
+
+		//put the date in a variable
+		String reportEndDatePeriod = kenyaui.formatDate(calendar.getTime());
+		String reportStartDatePeriod = kenyaui.formatDate(period.getTime());
+
+		//add this value to the context
+		context.addContextValue("period.report.month",reportPeriod);
+		context.addContextValue("period.month.name.short", new SimpleDateFormat("MMM").format(period.getTime()));
+		context.addContextValue("period.day", period.get(Calendar.DATE));
+		context.addContextValue("period.endDate", reportEndDatePeriod);
+		context.addContextValue("period.startDate", reportStartDatePeriod);
 
 	}
 
