@@ -218,7 +218,10 @@ public class ReportExportPageController {
 		//calculate the time frame for art cohort analysis reports
 		String reportName = reportData.getName();
 		//get the number out of that name
-		int reportPeriod  = Integer.parseInt(reportName.replaceAll("\\D+",""));
+		int reportPeriod  = 0;
+		if (reportName.matches(".*\\d+.*")) {
+			reportPeriod = Integer.parseInt(reportName.replaceAll("\\D+",""));
+		}
 
 		//calculate date from the report period
 		Calendar calendar = Calendar.getInstance();
