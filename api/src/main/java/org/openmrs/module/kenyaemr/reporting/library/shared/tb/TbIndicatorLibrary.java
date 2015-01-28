@@ -46,7 +46,7 @@ public class TbIndicatorLibrary {
 	 */
 	public CohortIndicator diedAndStarted12MonthsAgo() {
 		return cohortIndicator("patients who started TB treatment 12 months ago and died",
-				map(tbCohorts.diedAndStarted12MonthsAgo(), "onOrAfter=${startDate},onOrBefore=${endDate}")
+				map(tbCohorts.diedAndStarted12MonthsAgo(), "onOrBefore=${endDate}")
 		);
 	}
 

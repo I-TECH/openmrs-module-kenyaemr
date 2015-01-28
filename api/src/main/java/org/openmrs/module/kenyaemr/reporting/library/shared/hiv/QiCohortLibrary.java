@@ -229,6 +229,20 @@ public class QiCohortLibrary {
 	}
 
 	/**
+	 * This aggregate other indicators to be used in others as intersections
+	 */
+	public CohortDefinition hivMonitoringViralLoadNumAndDen() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("Patients with the viral load");
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addSearch("onARTatLeast12MonthsAndHaveAtLeastVLResultsDuringTheLast12Months", ReportUtils.map(onARTatLeast12MonthsAndHaveAtLeastVLResultsDuringTheLast12Months(), "onOrBefore=${onOrBefore}"));
+		cd.addSearch("onARTatLeast12MonthsAndHaveAtLeastOneVisitDuringTheLast6MonthsReview", ReportUtils.map(onARTatLeast12MonthsAndHaveAtLeastOneVisitDuringTheLast6MonthsReview(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("onARTatLeast12MonthsAndHaveAtLeastVLResultsDuringTheLast12Months AND onARTatLeast12MonthsAndHaveAtLeastOneVisitDuringTheLast6MonthsReview");
+		return cd;
+	}
+
+	/**
 	 * Number of HIV infected patients on ART 12 months ago
 	 * Have atleast one clinical visit during the six months review period
 	 * @return CohortDefinition

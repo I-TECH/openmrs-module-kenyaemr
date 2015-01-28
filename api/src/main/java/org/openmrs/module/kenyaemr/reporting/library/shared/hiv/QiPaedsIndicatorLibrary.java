@@ -71,7 +71,7 @@ public class QiPaedsIndicatorLibrary {
 	public CohortIndicator hivMonitoringViralLoadSupression() {
 		return cohortIndicator("HIV Monitoring - Viral Load - Suppression Outcome Child",
 				map(qiCohorts.onARTatLeast6MonthsAndVlLess1000(), "onOrBefore=${endDate}"),
-				map(qiCohorts.onARTatLeast6MonthsAndHaveAtLeastVLResultsDuringTheLast12Months(), "onOrBefore=${endDate}")
+				map(qiCohorts.hivMonitoringViralLoadNumDenForChild(), "onOrAfter=${startDate},onOrBefore=${endDate}")
 		);
 	}
 

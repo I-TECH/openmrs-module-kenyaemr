@@ -153,6 +153,20 @@ public class QiPaedsCohortLibrary {
 	}
 
 	/**
+	 *
+	 */
+	public CohortDefinition hivMonitoringViralLoadNumDenForChild() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("Viral Load for children Num And Den");
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addSearch("onARTatLeast6MonthsAndHaveAtLeastVLResultsDuringTheLast12Months", ReportUtils.map(onARTatLeast6MonthsAndHaveAtLeastVLResultsDuringTheLast12Months(), "onOrBefore=${onOrBefore}"));
+		cd.addSearch("onARTatLeast6MonthsAndHaveAtLeastOneVisitDuringTheLast6MonthsReview", ReportUtils.map(onARTatLeast6MonthsAndHaveAtLeastOneVisitDuringTheLast6MonthsReview(), "onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("onARTatLeast6MonthsAndHaveAtLeastVLResultsDuringTheLast12Months AND onARTatLeast6MonthsAndHaveAtLeastOneVisitDuringTheLast6MonthsReview");
+		return cd;
+	}
+
+	/**
 	 * Number of HIV infected patients on ART 12 months ago
 	 * Have atleast one clinical visit during the six months review period
 	 * @return CohortDefinition

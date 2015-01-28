@@ -103,7 +103,7 @@ public class QiIndicatorLibrary {
 	public CohortIndicator hivMonitoringViralLoadSuppression() {
 		return cohortIndicator("HIV Monitoring - Viral Load - Supression Outcome",
 				map(qiCohorts.onARTatLeast12MonthsAndVlLess1000(), "onOrBefore=${endDate}" ),
-				map(qiCohorts. onARTatLeast12MonthsAndHaveAtLeastVLResultsDuringTheLast12Months(), "onOrBefore=${endDate}" )
+				map(qiCohorts. hivMonitoringViralLoadNumAndDen(), "onOrAfter=${startDate},onOrBefore=${endDate}" )
 		);
 	}
 
