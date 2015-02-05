@@ -15,6 +15,7 @@
 package org.openmrs.module.kenyaemr.reporting.data.converter;
 
 import org.openmrs.Concept;
+import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
@@ -51,6 +52,9 @@ public class CalculationResultConverter implements DataConverter{
 		}
 		else if (value instanceof Integer){
 			return ((Integer) value).intValue();
+		}
+		else if (value instanceof Location){
+			return ((Location) value).getName();
 		}
 
 		return null;

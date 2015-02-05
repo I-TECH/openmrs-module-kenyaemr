@@ -20,24 +20,26 @@ import org.openmrs.module.kenyacore.report.CohortReportDescriptor;
 import org.openmrs.module.kenyacore.report.HybridReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportUtils;
-import org.openmrs.module.kenyacore.report.builder.AbstractCohortReportBuilder;
 import org.openmrs.module.kenyacore.report.builder.AbstractHybridReportBuilder;
 import org.openmrs.module.kenyacore.report.builder.Builds;
 import org.openmrs.module.kenyacore.report.data.patient.definition.CalculationDataDefinition;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.AgeAtARTInitiationCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.CD4AtARTInitiationCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.CohortReportTypeCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.CurrentARTStartDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.CurrentArtRegimenCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.DateARV1Calculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.DateARV2Calculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.DateLastSeenCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.DateOfEnrollmentCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.FacilityNameCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtRegimenCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.IsBirthDateApproximatedCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.IsTransferInCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.IsTransferOutCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.LastCd4Calculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.LastCd4CountDateCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.MflCodeCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.OriginalCohortCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.PatientOutComeCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.TransferInDateCalculation;
@@ -106,11 +108,9 @@ public class ArtCohortAnalysisReportBuilder extends AbstractHybridReportBuilder 
 		dsd.setName("artCohortAnalysis");
 		dsd.addColumn("id", new PatientIdDataDefinition(), "");
 		dsd.addColumn("Name", nameDef, "");
-		dsd.addColumn("UPN", identifierDef, "");
-		dsd.addColumn("DOB", new BirthdateDataDefinition(), "", new BirthdateConverter());
-		dsd.addColumn("DOB approx", new CalculationDataDefinition("DOB approx", new IsBirthDateApproximatedCalculation()), "", new CalculationResultConverter());
-		dsd.addColumn("Sex", new GenderDataDefinition(), "");
-		dsd.addColumn("Original Cohort", new CalculationDataDefinition("Original Cohort", new OriginalCohortCalculation()), "", new DataConverter(){
+		dsd.addColumn("Facility name", new CalculationDataDefinition("Facility Name", new FacilityNameCalculation()), "", new CalculationResultConverter());
+		dsd.addColumn("MFL code", new CalculationDataDefinition("MFL Code", new MflCodeCalculation()), "", new CalculationResultConverter());
+		dsd.addColumn("Cohort Month", new CalculationDataDefinition("Original Cohort", new OriginalCohortCalculation()), "", new DataConverter(){
 			@Override
 			public Class<?> getInputDataType() {
 				return Date.class;
@@ -129,6 +129,12 @@ public class ArtCohortAnalysisReportBuilder extends AbstractHybridReportBuilder 
 				return (new SimpleDateFormat("MMM").format(cal.getTime())+"-"+new SimpleDateFormat("yyyy").format(cal.getTime()));
 			}
 		});
+		dsd.addColumn("Cohort Report Type", cohortReportType(report), "", new CalculationResultConverter());
+		dsd.addColumn("UPN", identifierDef, "");
+		dsd.addColumn("DOB", new BirthdateDataDefinition(), "", new BirthdateConverter());
+		dsd.addColumn("DOB approx", new CalculationDataDefinition("DOB approx", new IsBirthDateApproximatedCalculation()), "", new CalculationResultConverter());
+		dsd.addColumn("Sex", new GenderDataDefinition(), "");
+
 		dsd.addColumn("TI", new CalculationDataDefinition("TI", new IsTransferInCalculation()), "", new CalculationResultConverter());
 		dsd.addColumn("Date TI", new CalculationDataDefinition("Date TI", new TransferInDateCalculation()), "", new CalculationResultConverter());
 		dsd.addColumn("TO", new CalculationDataDefinition("TO", new IsTransferOutCalculation()), "", new CalculationResultConverter());
@@ -151,9 +157,9 @@ public class ArtCohortAnalysisReportBuilder extends AbstractHybridReportBuilder 
 
 	@Override
 	protected Mapped<CohortDefinition> buildCohort(HybridReportDescriptor descriptor, PatientDataSetDefinition dsd) {
-		int months = Integer.parseInt(descriptor.getId().split("\\.")[4]);
-		CohortDefinition cd = artCohortLibrary.netCohortMonthsBetweenDatesGivenMonths(months);
-		return ReportUtils.map(cd, "onDate=${startDate}");
+		//int months = Integer.parseInt(descriptor.getId().split("\\.")[4]);
+		CohortDefinition cd = artCohortLibrary.netCohortMonthsBetweenDatesGivenMonths();
+		return ReportUtils.map(cd, "startDate=${startDate},endDate=${endDate}");
 	}
 
 	private DataDefinition outComes(HybridReportDescriptor descriptor) {
@@ -162,6 +168,14 @@ public class ArtCohortAnalysisReportBuilder extends AbstractHybridReportBuilder 
 		cd.setName("Patients Outcomes");
 		cd.addCalculationParameter("months", months);
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
+		return  cd;
+	}
+
+	private DataDefinition cohortReportType(HybridReportDescriptor descriptor) {
+		int months = Integer.parseInt(descriptor.getId().split("\\.")[4]);
+		CalculationDataDefinition cd = new CalculationDataDefinition("Cohort Report Type", new CohortReportTypeCalculation());
+		cd.setName("Cohort Report Type");
+		cd.addCalculationParameter("months", months);
 		return  cd;
 	}
 }

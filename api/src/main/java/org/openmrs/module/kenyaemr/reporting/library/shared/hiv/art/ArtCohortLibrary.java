@@ -215,11 +215,12 @@ public class ArtCohortLibrary {
 	 * Used for art cohort analysis
 	 * @return the cohort definition
 	 */
-	public CohortDefinition netCohortMonthsBetweenDatesGivenMonths(int months) {
+	public CohortDefinition netCohortMonthsBetweenDatesGivenMonths() {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
-		cd.setName("in " + months + " month net cohort on date given months");
-		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
-		cd.addSearch("startedArtMonthsAgo", ReportUtils.map(startedArt(), "onOrAfter=${onDate},onOrBefore=${onDate+" + months + "m}"));
+		cd.setName("month net cohort on date given months");
+		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+		cd.addSearch("startedArtMonthsAgo", ReportUtils.map(startedArt(), "onOrAfter=${startDate},onOrBefore=${endDate}"));
 		cd.setCompositionString("startedArtMonthsAgo");
 		return cd;
 	}
