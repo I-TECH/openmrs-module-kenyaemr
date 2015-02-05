@@ -836,7 +836,7 @@ jq(function() {
                 <td colspan="2">
                     <table width="100%">
                         <tr>
-                            <td colspan="2">Tel Contact:</td>
+                            <td colspan="2">Tel Contact:<lookup class="value" expression="personAttributes.get('Telephone contact')"/></td>
                         </tr>
                         <tr>
                             <td>District:  <lookup class="value" expression="patient.personAddress.countyDistrict" /> </td>
@@ -846,9 +846,9 @@ jq(function() {
                             <td>Sub-location:  <lookup class="value" expression="patient.personAddress.address5" /> </td>
                             <td>Landmark: <lookup class="value" expression="patient.personAddress.address2" /></td>
                         </tr>
-                        <tr>
-                            <td colspan="2">Nearest H/Center</td>
-                        </tr>
+                        <!--<tr>
+                            <td colspan="2">Nearest H/Center:<lookup expression="personAttributes.get('Health Center')"/></td>
+                        </tr>-->
                     </table>
 
                 </td>
