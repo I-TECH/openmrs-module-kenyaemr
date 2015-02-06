@@ -17,10 +17,8 @@
 		</property>
 		<property name="reports">
 			<set>
-				<ref bean="kenyaemr.tb.report.smear.not.done.ptb.2.8.8.12" />
-				<ref bean="kenyaemr.tb.report.new.smear.negative.ptb.2.8.12.15" />
-				<!--<ref bean="kenyaemr.tb.report.eptb.2.8.8.12" />-->
-				<!--<ref bean="kenyaemr.tb.report.eptb.2.8.12.15" />-->
+				<!--<ref bean="kenyaemr.tb.report.smear.not.done.ptb.2.8.8.12" />
+				<ref bean="kenyaemr.tb.report.new.smear.negative.ptb.2.8.12.15" />-->
 				<ref bean="kenyaemr.tb.report.inProgram" />
 				<ref bean="kenyaemr.tb.report.needsSputumTest" />
 				<ref bean="kenyaemr.tb.report.missingSputumResults" />
