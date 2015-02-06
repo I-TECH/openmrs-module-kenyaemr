@@ -34,7 +34,7 @@ import java.util.List;
  * Quality Improvement report
  */
 @Component
-//@Builds({"kenyaemr.hiv.report.qi.adult.emtct"})
+@Builds({"kenyaemr.hiv.report.qi.adult.emtct"})
 public class QiEmtctReportBuilder extends AbstractReportBuilder {
 
 	@Autowired
