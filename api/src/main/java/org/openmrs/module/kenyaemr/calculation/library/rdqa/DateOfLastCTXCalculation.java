@@ -51,8 +51,10 @@ public class DateOfLastCTXCalculation extends AbstractPatientCalculation {
 			Date lastCtx = null;
 			Obs medOrdersObs= EmrCalculationUtils.obsResultForPatient(medOrders, ptId);
 			Obs ctxProphylaxisDispencedObs= EmrCalculationUtils.obsResultForPatient(ctxProphylaxisDispenced, ptId);
-			if(ctxProphylaxisDispencedObs != null && ctxProphylaxisDispencedObs.getValueCoded().equals(yes)) {
-				lastCtx = ctxProphylaxisDispencedObs.getObsDatetime();
+			if(ctxProphylaxisDispencedObs != null){
+				if(ctxProphylaxisDispencedObs.getValueCoded() != null && ctxProphylaxisDispencedObs.getValueCoded().equals(yes)) {
+					lastCtx = ctxProphylaxisDispencedObs.getObsDatetime();
+				}
 			}
 			if((medOrdersObs != null && medOrdersObs.getValueCoded().equals(ctx)) || (medOrdersObs != null && medOrdersObs.getValueCoded().equals(dapsone))) {
 				lastCtx = medOrdersObs.getObsDatetime();
