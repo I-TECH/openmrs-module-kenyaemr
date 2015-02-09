@@ -35,18 +35,17 @@ public class DateOfLastCTXCalculation extends AbstractPatientCalculation {
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
 
+		CalculationResultMap ret = new CalculationResultMap();
 		CalculationResultMap medOrders = Calculations.lastObs(Dictionary.getConcept(Dictionary.MEDICATION_ORDERS), cohort, context);
-
 		CalculationResultMap ctxProphylaxisDispenced = Calculations.lastObs(Dictionary.getConcept(Dictionary.COTRIMOXAZOLE_DISPENSED), cohort, context);
 
-		/////////////////////////////////////////////////////////////////////////////////////////////
-		// Get concepts...
+		if (medOrders == null && ctxProphylaxisDispenced == null){
+			return ret;
+		}
+
 		Concept yes = Dictionary.getConcept(Dictionary.YES);
 		Concept dapsone = Dictionary.getConcept(Dictionary.DAPSONE);
 		Concept ctx = Dictionary.getConcept(Dictionary.SULFAMETHOXAZOLE_TRIMETHOPRIM);
-		///////////////////////////////////////////////////////////////////////////////////////////
-
-		CalculationResultMap ret = new CalculationResultMap();
 
 		for (Integer ptId : cohort) {
 			Date lastCtx = null;
