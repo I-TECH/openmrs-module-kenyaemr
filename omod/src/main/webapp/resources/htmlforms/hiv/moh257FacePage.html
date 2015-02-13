@@ -953,13 +953,16 @@ jq(function() {
 </tr>
 <tr>
     <td>
+		<br />
         Previously on ARVs (PMTCT &amp; PEP included)? <obs id="art-status" conceptId="160533AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="yes_no"/>
-        <br/>
+        <br />
+		<br />
         <span id="art-History">
-        <table>
+        <table cellspacing="15">
             <tr>
-                <td>If "Yes" then Purpose</td>
-                <td>List Drug Names &amp; Dates Last Used</td>
+                <th>If "Yes" then Purpose</th>
+                <th>List Drug Names</th>
+				<th>Dates Last Used</th>
             </tr>
             <repeat>
                 <template>
@@ -981,11 +984,16 @@ jq(function() {
                                 <obs conceptId="1088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="84795AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="TDF" style="checkbox" />
                                 <obs conceptId="1088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="86663AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="AZT" style="checkbox" />
                                 <obs conceptId="1088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="83412AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="RTV" style="checkbox" />
-                                <obs conceptId="1088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="71647AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="ATV" style="checkbox" dateLabel=""/></td>
+                                <obs conceptId="1088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="71647AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="ATV" style="checkbox" />
+							</td>
+							<td>
+								<obs conceptId="160753AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  />
+							</td>
 
                         </tr>
                     </obsgroup>
                 </template>
+				<br />
                 <render n="1" concept=" " />
                 <render n="2" concept=" " />
                 <render n="3" concept=" " />
