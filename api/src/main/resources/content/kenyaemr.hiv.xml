@@ -28,10 +28,10 @@
 				<ref bean="kenyaemr.hiv.report.eligibleForArt" />
 				<ref bean="kenyaemr.hiv.report.onSecondLineArt" />
 				<ref bean="kenyaemr.hiv.report.neverTakenCtxOrDapsone" />
-				<!--<ref bean="kenyaemr.hiv.report.artCohortAnalysis.6" />
+				<ref bean="kenyaemr.hiv.report.artCohortAnalysis.6" />
 				<ref bean="kenyaemr.hiv.report.artCohortAnalysis.12" />
 				<ref bean="kenyaemr.hiv.report.artCohortAnalysis.24" />
-				<ref bean="kenyaemr.hiv.report.artCohortAnalysis.36" />-->
+				<ref bean="kenyaemr.hiv.report.artCohortAnalysis.36" />
 			</set>
 		</property>
 		<property name="fragments">
