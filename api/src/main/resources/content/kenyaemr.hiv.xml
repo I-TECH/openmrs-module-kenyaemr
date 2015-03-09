@@ -255,4 +255,13 @@
 		<property name="repeatingSection" value="sheet:1,row:11,dataset:artCohortAnalysis" />
 	</bean>
 
+	<bean id="kenyaemr.hiv.report.artCohortAnalysis.data.on.ART.cohorts" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
+		<property name="targetUuid" value="76a7ebaa-c626-11e4-b460-8f2f4a954c2f" />
+		<property name="name" value="Data on ART Cohorts" />
+		<property name="description" value="Pre-ART and ART clients" />
+		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
+		<property name="template" value="kenyaemr:hiv/data_on_ART_cohorts.xls" />
+		<property name="repeatingSection" value="sheet:1,row:11,dataset:artCohortAnalysis" />
+	</bean>
+
 </beans>
