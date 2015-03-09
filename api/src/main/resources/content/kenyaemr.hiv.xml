@@ -32,6 +32,7 @@
 				<ref bean="kenyaemr.hiv.report.artCohortAnalysis.12" />
 				<ref bean="kenyaemr.hiv.report.artCohortAnalysis.24" />
 				<ref bean="kenyaemr.hiv.report.artCohortAnalysis.36" />
+                <ref bean="kenyaemr.hiv.report.artCohortAnalysis.data.on.ART.cohorts" />
 			</set>
 		</property>
 		<property name="fragments">
@@ -260,8 +261,8 @@
 		<property name="name" value="Data on ART Cohorts" />
 		<property name="description" value="Pre-ART and ART clients" />
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
-		<property name="template" value="kenyaemr:hiv/data_on_ART_cohorts.xls" />
-		<property name="repeatingSection" value="sheet:1,row:11,dataset:artCohortAnalysis" />
+		<property name="template" value="kenyaemr:hiv/pre_art_art_clients.xls" />
+		<property name="repeatingSection" value="sheet:1,row:3,dataset:artCohortAnalysis" />
 	</bean>
 
 </beans>
