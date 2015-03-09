@@ -262,7 +262,7 @@
 		<property name="description" value="Pre-ART and ART clients" />
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 		<property name="template" value="kenyaemr:hiv/pre_art_art_clients.xls" />
-		<property name="repeatingSection" value="sheet:1,row:3,dataset:artCohortAnalysis" />
+		<property name="repeatingSection" value="sheet:1,row:3,dataset:Pre-ART-and-ART-clients" />
 	</bean>
 
 </beans>
