@@ -18,7 +18,11 @@ public class CustomDataConverter implements DataConverter {
 
 		Concept value = ((Obs) obj).getValueCoded();
 
-		return value.getName().getName();
+		if(value != null && value.getName() != null) {
+			return value.getName().getName();
+		}
+
+		return null;
 	}
 
 	@Override

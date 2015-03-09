@@ -1,7 +1,6 @@
 package org.openmrs.module.kenyaemr.calculation.library.hiv;
 
 import org.openmrs.Person;
-import org.openmrs.PersonAddress;
 import org.openmrs.api.PersonService;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
@@ -25,13 +24,10 @@ public class SubCountyAddressCalculation extends AbstractPatientCalculation {
 		PersonService personService = Context.getPersonService();
 
 		for(Integer ptId : cohort) {
-			Person patient = personService.getPerson(ptId);
-			PersonAddress address = patient.getPersonAddress();
-			String subCounty = "";
-			if(address != null) {
-				subCounty = address.getCountyDistrict();
+			Person person = personService.getPerson(ptId);
+			if(person.getPersonAddress() != null) {
+				ret.put(ptId, new SimpleResult(person.getPersonAddress().getCountyDistrict(), this));
 			}
-			ret.put(ptId, new SimpleResult(subCounty, this));
 		}
 
 		return ret;

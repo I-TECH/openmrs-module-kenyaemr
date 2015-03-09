@@ -23,17 +23,32 @@ import org.openmrs.module.kenyacore.report.builder.AbstractHybridReportBuilder;
 import org.openmrs.module.kenyacore.report.builder.Builds;
 import org.openmrs.module.kenyacore.report.data.patient.definition.CalculationDataDefinition;
 import org.openmrs.module.kenyaemr.Dictionary;
+import org.openmrs.module.kenyaemr.calculation.library.DeceasedPatientsCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.MissedLastAppointmentCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.CountyAddressCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.LostToFollowUpCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.SubCountyAddressCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.CurrentARTStartDateCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.CurrentArtRegimenCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.DateLastSeenCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.DateOfEnrollmentCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtRegimenCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtStartDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.IsTransferInCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.IsTransferOutCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.TransferInDateCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.rdqa.PatientProgramEnrollmentCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.TransferOutDateCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.rdqa.DateOfDeathCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.rdqa.ValueAtDateOfOtherPatientCalculationCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.reporting.calculation.converter.CustomDateConverter;
+import org.openmrs.module.kenyaemr.reporting.calculation.converter.DateArtStartDateConverter;
 import org.openmrs.module.kenyaemr.reporting.calculation.converter.GenderConverter;
-import org.openmrs.module.kenyaemr.reporting.calculation.converter.PatientProgramEnrollmentConverter;
+import org.openmrs.module.kenyaemr.reporting.calculation.converter.ObsDatetimeConverter;
+import org.openmrs.module.kenyaemr.reporting.calculation.converter.ObsValueDatetimeConverter;
+import org.openmrs.module.kenyaemr.reporting.calculation.converter.ObsValueNumericConverter;
+import org.openmrs.module.kenyaemr.reporting.calculation.converter.PatientProgramEnrollmentDateConverter;
+import org.openmrs.module.kenyaemr.reporting.calculation.converter.RegimenConverter;
 import org.openmrs.module.kenyaemr.reporting.data.converter.CalculationResultConverter;
 import org.openmrs.module.kenyaemr.reporting.data.converter.CustomDataConverter;
 import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.HivCohortLibrary;
@@ -95,65 +110,45 @@ public class PreArtandArtClientsReportBuilder extends AbstractHybridReportBuilde
 		dsd.addColumn("Marital Status", new ObsForPersonDataDefinition("Marital Status", TimeQualifier.LAST, Dictionary.getConcept(Dictionary.CIVIL_STATUS), null, null), "", new CustomDataConverter());
 		dsd.addColumn("County", new CalculationDataDefinition("ARV Start Date", new CountyAddressCalculation()), "", new CalculationResultConverter());
 		dsd.addColumn("Sub County/District", new CalculationDataDefinition("ARV Start Date", new SubCountyAddressCalculation()), "", new CalculationResultConverter());
-		dsd.addColumn("Date of Diagnosis", new ObsForPersonDataDefinition("Date of Diagnosis", TimeQualifier.LAST, Dictionary.getConcept(Dictionary.DATE_OF_HIV_DIAGNOSIS), null, null), "", new CalculationResultConverter());
-		dsd.addColumn("Date of enrollment to care", new CalculationDataDefinition("Date of enrollment to care", new PatientProgramEnrollmentCalculation()), "", new PatientProgramEnrollmentConverter());
+		dsd.addColumn("Date of Diagnosis", new ObsForPersonDataDefinition("Date of Diagnosis", TimeQualifier.LAST, Dictionary.getConcept(Dictionary.DATE_OF_HIV_DIAGNOSIS), null, null), "", new CustomDataConverter());
+		dsd.addColumn("Date of enrollment to care", new CalculationDataDefinition("Date of enrollment to care", new DateOfEnrollmentCalculation()), "", new CalculationResultConverter());
 		dsd.addColumn("Transfer in (TI)", new CalculationDataDefinition("Transfer in (TI)", new IsTransferInCalculation()), "", new CalculationResultConverter());
 		dsd.addColumn("Date Transfered in", new CalculationDataDefinition("Date Transfered in", new TransferInDateCalculation()), "", new CustomDateConverter());
-		/*
-		dsd.addColumn("Enrollment Date", new CalculationDataDefinition("Enrollment Date", new PatientProgramEnrollmentCalculation()), "", new PatientProgramEnrollmentDateConverter());
-		dsd.addColumn("Entry Point", new ObsForPersonDataDefinition("Entry Point", TimeQualifier.LAST, Dictionary.getConcept(Dictionary.METHOD_OF_ENROLLMENT), null, null), "", new PatientEntryPointDataConverter());
-
-		dsd.addColumn("Art Start Date", new CalculationDataDefinition("Art Start Date", new InitialArtStartDateCalculation()), "", new DateArtStartDateConverter());
-		dsd.addColumn("Weight at Art Start", new CalculationDataDefinition("Weight at Art Start", new WeightAtArtStartDateCalculation()), "", new WeightConverter());
-
-		dsd.addColumn("First CD4 Count", new ObsForPersonDataDefinition("First CD4 Count", TimeQualifier.FIRST, Dictionary.getConcept(Dictionary.CD4_COUNT), null, null), "", new ObsValueNumericConverter(1));
-		dsd.addColumn("First CD4 Count Date", new ObsForPersonDataDefinition("First CD4 Count Date", TimeQualifier.FIRST, Dictionary.getConcept(Dictionary.CD4_COUNT), null, null), "", new ObsDatetimeConverter());
-		dsd.addColumn("Last CD4 Count", new ObsForPersonDataDefinition("Last CD4 Count", TimeQualifier.LAST, Dictionary.getConcept(Dictionary.CD4_COUNT), null, null), "", new ObsValueNumericConverter(1));
-		dsd.addColumn("Last CD4 Count Date", new ObsForPersonDataDefinition("Last CD4 Count Date", TimeQualifier.LAST, Dictionary.getConcept(Dictionary.CD4_COUNT), null, null), "", new ObsDatetimeConverter());
-
-		dsd.addColumn("First WHO Stage", new ObsForPersonDataDefinition("First WHO Stage", TimeQualifier.FIRST, Dictionary.getConcept(Dictionary.CURRENT_WHO_STAGE), null, null), "", new WHOStageDataConverter());
-		dsd.addColumn("First WHO Stage Date", new ObsForPersonDataDefinition("First WHO Stage Date", TimeQualifier.FIRST, Dictionary.getConcept(Dictionary.CURRENT_WHO_STAGE), null, null), "", new ObsDatetimeConverter());
-		dsd.addColumn("Last WHO Stage", new ObsForPersonDataDefinition("Last WHO Stage", TimeQualifier.LAST, Dictionary.getConcept(Dictionary.CURRENT_WHO_STAGE), null, null), "", new WHOStageDataConverter());
-		dsd.addColumn("Last WHO Stage Date", new ObsForPersonDataDefinition("Last WHO Stage Date", TimeQualifier.LAST, Dictionary.getConcept(Dictionary.CURRENT_WHO_STAGE), null, null), "", new ObsDatetimeConverter());
-
-		dsd.addColumn("Current Regimen", new CalculationDataDefinition("Current Regimen", new CurrentArtRegimenCalculation()), "", new RegimenConverter());
-
-		dsd.addColumn("Transfer In Date", new CalculationDataDefinition("Transfer In Date", new TransferInDateCalculation()), "", new CustomDateConverter());
-		dsd.addColumn("Transfer Out Date", new CalculationDataDefinition("Transfer Out Date", new TransferOutDateCalculation()), "", new CustomDateConverter());
-		dsd.addColumn("Date of Death", new CalculationDataDefinition("Date of Death", new DateOfDeathCalculation()), "", new CustomDateConverter());
-
-		dsd.addColumn("CTX/Dapsone last, documentation date", new CalculationDataDefinition("CTX/Dapsone last, documentation date", new DateOfLastCTXCalculation()), "", new RDQACalculationResultConverter());
-
-		EncountersForPatientDataDefinition definition = new EncountersForPatientDataDefinition();
-		EncounterType hivConsultation = MetadataUtils.existing(EncounterType.class, HivMetadata._EncounterType.HIV_CONSULTATION);
-		EncounterType hivEnrollment = MetadataUtils.existing(EncounterType.class, HivMetadata._EncounterType.HIV_ENROLLMENT);
-		EncounterType consultation = MetadataUtils.existing(EncounterType.class, CommonMetadata._EncounterType.CONSULTATION);
-
-		List<EncounterType> encounterTypes = Arrays.asList(hivConsultation, consultation, hivEnrollment);
-
-		definition.setWhich(TimeQualifier.LAST);
-		definition.setTypes(encounterTypes);
-		dsd.addColumn("Last encounter date in the blue card", definition, "", new EncounterDatetimeConverter());
-
-		dsd.addColumn("Next Appointment Date", new ObsForPersonDataDefinition("Next Appointment Date", TimeQualifier.LAST, Dictionary.getConcept(Dictionary.RETURN_VISIT_DATE), null, null), "", new ObsValueDatetimeConverter());
-		dsd.addColumn("Number of visits in paper bluecards", new CalculationDataDefinition("Total Visits", new VisitsForAPatientCalculation()), "", new DataConverter() {
-			@Override
-			public Class<?> getInputDataType() {
-				return Integer.class;
-			}
-
-			@Override
-			public Class<?> getDataType() {
-				return Integer.class;
-			}
-
-			@Override
-			public Object convert(Object input) {
-				return input;
-			}
-		});
-
-		dsd.addColumn("Patient checked-out", new CalculationDataDefinition("Checked Out", new PatientCheckOutStatusCalculation()), "", new RDQACalculationResultConverter());*/
+		//dsd.addColumn("Current IPT status", new CalculationDataDefinition("Current IPT status", new TransferInDateCalculation()), "", new CustomDateConverter());
+		//dsd.addColumn("IPT start date", new CalculationDataDefinition("IPT start date", new TransferInDateCalculation()), "", new CustomDateConverter());
+		//dsd.addColumn("Current TB status", new CalculationDataDefinition("Current TB status", new TransferInDateCalculation()), "", new CustomDateConverter());
+		//dsd.addColumn("Date of TB diagnosis", new CalculationDataDefinition("Date of TB diagnosis", new TransferInDateCalculation()), "", new CustomDateConverter());
+		//dsd.addColumn("Anti TB start date", new CalculationDataDefinition("Anti TB start date", new TransferInDateCalculation()), "", new CustomDateConverter());
+		//dsd.addColumn("Date medically eligible for ART", new CalculationDataDefinition("Date medically eligible for ART", new TransferInDateCalculation()), "", new CustomDateConverter());
+		dsd.addColumn("Original/Initial ART regimen", new CalculationDataDefinition("Original/Initial ART regimen", new InitialArtRegimenCalculation()), "", new RegimenConverter());
+		dsd.addColumn("Initial ART start Date", new CalculationDataDefinition("Initial ART start Date", new InitialArtStartDateCalculation()), "", new DateArtStartDateConverter());
+		dsd.addColumn("Reason for ART initiation", new CalculationDataDefinition("Reason for ART initiation", new InitialArtStartDateCalculation()), "", new DateArtStartDateConverter());
+		dsd.addColumn("Current ART regimen", new CalculationDataDefinition("Current ART regimen", new CurrentArtRegimenCalculation()), "", new RegimenConverter());
+		dsd.addColumn("Start date for Current regimen", new CalculationDataDefinition("Start date for Current regimen", new CurrentARTStartDateCalculation()), "", new CalculationResultConverter());
+		dsd.addColumn("Date of Last Visit", new CalculationDataDefinition("Date of Last Visit", new DateLastSeenCalculation()), "", new CalculationResultConverter());
+		dsd.addColumn("Initial CD4 count", new ObsForPersonDataDefinition("Initial CD4 count", TimeQualifier.FIRST, Dictionary.getConcept(Dictionary.CD4_COUNT), null, null), "", new ObsValueNumericConverter(1));
+		dsd.addColumn("Date of initial CD4 Count", new ObsForPersonDataDefinition("Date of initial CD4 Count", TimeQualifier.FIRST, Dictionary.getConcept(Dictionary.CD4_COUNT), null, null), "", new ObsDatetimeConverter());
+		dsd.addColumn("Last documented CD4 count", new ObsForPersonDataDefinition("Last documented CD4 count", TimeQualifier.LAST, Dictionary.getConcept(Dictionary.CD4_COUNT), null, null), "", new ObsValueNumericConverter(1));
+		dsd.addColumn("Date of last CD4 count", new ObsForPersonDataDefinition("Date of last CD4 count", TimeQualifier.LAST, Dictionary.getConcept(Dictionary.CD4_COUNT), null, null), "", new ObsDatetimeConverter());
+		//dsd.addColumn("Latest viral documented Vial load", new ObsForPersonDataDefinition("Latest viral documented Vial load", TimeQualifier.LAST, Dictionary.getConcept(Dictionary.CD4_COUNT), null, null), "", new ObsDatetimeConverter());
+		//dsd.addColumn("Date of latest Viral Load", new ObsForPersonDataDefinition("Date of latest Viral Load", TimeQualifier.LAST, Dictionary.getConcept(Dictionary.CD4_COUNT), null, null), "", new ObsDatetimeConverter());
+		//dsd.addColumn("2nd last viral Load", new ObsForPersonDataDefinition("2nd last viral Load", TimeQualifier.LAST, Dictionary.getConcept(Dictionary.CD4_COUNT), null, null), "", new ObsDatetimeConverter());
+		//dsd.addColumn("Date of 2nd last viral load", new ObsForPersonDataDefinition("Date of 2nd last viral load", TimeQualifier.LAST, Dictionary.getConcept(Dictionary.CD4_COUNT), null, null), "", new ObsDatetimeConverter());
+		//dsd.addColumn("3rd Last viral load", new ObsForPersonDataDefinition("3rd Last viral load", TimeQualifier.LAST, Dictionary.getConcept(Dictionary.CD4_COUNT), null, null), "", new ObsDatetimeConverter());
+		//dsd.addColumn("Date of 3rd last viral load", new ObsForPersonDataDefinition("Date of 3rd last viral load", TimeQualifier.LAST, Dictionary.getConcept(Dictionary.CD4_COUNT), null, null), "", new ObsDatetimeConverter());
+		dsd.addColumn("Last appointment date", new ObsForPersonDataDefinition("Last appointment date", TimeQualifier.LAST, Dictionary.getConcept(Dictionary.RETURN_VISIT_DATE), null, null), "", new ObsValueDatetimeConverter());
+		//dsd.addColumn("Alive and on Follow-up", new ObsForPersonDataDefinition("Alive and on Follow-up", TimeQualifier.LAST, Dictionary.getConcept(Dictionary.RETURN_VISIT_DATE), null, null), "", new ObsValueDatetimeConverter());
+		//dsd.addColumn("Stopped (Interrupted)", new ObsForPersonDataDefinition("Stopped (Interrupted)", TimeQualifier.LAST, Dictionary.getConcept(Dictionary.RETURN_VISIT_DATE), null, null), "", new ObsValueDatetimeConverter());
+		//dsd.addColumn("Date stopped", new ObsForPersonDataDefinition("Date stopped", TimeQualifier.LAST, Dictionary.getConcept(Dictionary.RETURN_VISIT_DATE), null, null), "", new ObsValueDatetimeConverter());
+		dsd.addColumn("Transferred out", new CalculationDataDefinition("Transferred out", new IsTransferOutCalculation()), "", new CalculationResultConverter());
+		dsd.addColumn("Date Transferred out", new CalculationDataDefinition("Date Transferred out", new TransferOutDateCalculation()), "", new CalculationResultConverter());
+		dsd.addColumn("Defaulted", new CalculationDataDefinition("Defaulted", new MissedLastAppointmentCalculation()), "", new CalculationResultConverter());
+		dsd.addColumn("Lost to Follow-up", new CalculationDataDefinition("Lost to Follow-up", new LostToFollowUpCalculation()), "", new CalculationResultConverter());
+		//dsd.addColumn("Date classified as LTFU", new CalculationDataDefinition("Date classified as LTFU", new LostToFollowUpCalculation()), "", new CalculationResultConverter());
+		dsd.addColumn("Died", new CalculationDataDefinition("Died", new DeceasedPatientsCalculation()), "", new CalculationResultConverter());
+		dsd.addColumn("Date reported dead", new CalculationDataDefinition("Date reported dead", new DateOfDeathCalculation()), "", new CalculationResultConverter());
+		//dsd.addColumn("Documented pregnancies in 2012", new CalculationDataDefinition("Documented pregnancies in 2012", new LostToFollowUpCalculation()), "", new CalculationResultConverter());
+		//dsd.addColumn("EDD of pregnancies documented in 2012", new CalculationDataDefinition("EDD of pregnancies documented in 2012", new LostToFollowUpCalculation()), "", new CalculationResultConverter());
 	}
 
 	@Override
