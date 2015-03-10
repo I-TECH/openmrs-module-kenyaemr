@@ -39,6 +39,7 @@ import org.openmrs.module.kenyaemr.calculation.library.hiv.art.IsTransferOutCalc
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.TransferInDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.TransferOutDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.rdqa.DateOfDeathCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.rdqa.PatientProgramEnrollmentCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.rdqa.ValueAtDateOfOtherPatientCalculationCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.reporting.calculation.converter.CustomDateConverter;
@@ -104,7 +105,7 @@ public class PreArtandArtClientsReportBuilder extends AbstractHybridReportBuilde
 		dsd.addColumn("County", new CalculationDataDefinition("ARV Start Date", new CountyAddressCalculation()), "", new CalculationResultConverter());
 		dsd.addColumn("Sub County/District", new CalculationDataDefinition("ARV Start Date", new SubCountyAddressCalculation()), "", new CalculationResultConverter());
 		dsd.addColumn("Date of Diagnosis", new ObsForPersonDataDefinition("Date of Diagnosis", TimeQualifier.LAST, Dictionary.getConcept(Dictionary.DATE_OF_HIV_DIAGNOSIS), null, null), "", new CustomDataConverter());
-		dsd.addColumn("Date of enrollment to care", new CalculationDataDefinition("Date of enrollment to care", new DateOfEnrollmentCalculation()), "", new CalculationResultConverter());
+		dsd.addColumn("Date of enrollment to care", new CalculationDataDefinition("Date of enrollment to care", new PatientProgramEnrollmentCalculation()), "", new PatientProgramEnrollmentDateConverter());
 		dsd.addColumn("Transfer in (TI)", new CalculationDataDefinition("Transfer in (TI)", new IsTransferInCalculation()), "", new CalculationResultConverter());
 		dsd.addColumn("Date Transfered in", new CalculationDataDefinition("Date Transfered in", new TransferInDateCalculation()), "", new CustomDateConverter());
 		//dsd.addColumn("Current IPT status", new CalculationDataDefinition("Current IPT status", new TransferInDateCalculation()), "", new CustomDateConverter());
@@ -115,7 +116,7 @@ public class PreArtandArtClientsReportBuilder extends AbstractHybridReportBuilde
 		//dsd.addColumn("Date medically eligible for ART", new CalculationDataDefinition("Date medically eligible for ART", new TransferInDateCalculation()), "", new CustomDateConverter());
 		dsd.addColumn("Original/Initial ART regimen", new CalculationDataDefinition("Original/Initial ART regimen", new InitialArtRegimenCalculation()), "", new RegimenConverter());
 		dsd.addColumn("Initial ART start Date", new CalculationDataDefinition("Initial ART start Date", new InitialArtStartDateCalculation()), "", new DateArtStartDateConverter());
-		dsd.addColumn("Reason for ART initiation", new CalculationDataDefinition("Reason for ART initiation", new InitialArtStartDateCalculation()), "", new DateArtStartDateConverter());
+		//dsd.addColumn("Reason for ART initiation", new CalculationDataDefinition("Reason for ART initiation", new InitialArtStartDateCalculation()), "", new DateArtStartDateConverter());
 		dsd.addColumn("Current ART regimen", new CalculationDataDefinition("Current ART regimen", new CurrentArtRegimenCalculation()), "", new RegimenConverter());
 		dsd.addColumn("Start date for Current regimen", new CalculationDataDefinition("Start date for Current regimen", new CurrentARTStartDateCalculation()), "", new CalculationResultConverter());
 		dsd.addColumn("Date of Last Visit", new CalculationDataDefinition("Date of Last Visit", new DateLastSeenCalculation()), "", new CalculationResultConverter());
