@@ -21,10 +21,14 @@ import org.openmrs.module.kenyacore.report.builder.AbstractHybridReportBuilder;
 import org.openmrs.module.kenyacore.report.builder.Builds;
 import org.openmrs.module.kenyacore.report.data.patient.definition.CalculationDataDefinition;
 import org.openmrs.module.kenyaemr.Dictionary;
+import org.openmrs.module.kenyaemr.calculation.StoppedARTCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.DeceasedPatientsCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.MissedLastAppointmentCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.AliveAndOnFollowUpCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.CountyAddressCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.DateClassifiedLTFUCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.LostToFollowUpCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.StoppedARTDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.SubCountyAddressCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.CurrentARTStartDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.CurrentArtRegimenCalculation;
@@ -39,9 +43,9 @@ import org.openmrs.module.kenyaemr.calculation.library.hiv.art.ViralLoadListCalc
 import org.openmrs.module.kenyaemr.calculation.library.rdqa.DateOfDeathCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.rdqa.PatientProgramEnrollmentCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
-import org.openmrs.module.kenyaemr.reporting.calculation.converter.CustomDateConverter;
 import org.openmrs.module.kenyaemr.reporting.calculation.converter.PatientProgramEnrollmentDateConverter;
 import org.openmrs.module.kenyaemr.reporting.calculation.converter.RegimenConverter;
+import org.openmrs.module.kenyaemr.reporting.data.converter.ArtStoppedConverter;
 import org.openmrs.module.kenyaemr.reporting.data.converter.BirthdateConverter;
 import org.openmrs.module.kenyaemr.reporting.data.converter.CalculationMapResultsConverter;
 import org.openmrs.module.kenyaemr.reporting.data.converter.CalculationResultConverter;
@@ -72,8 +76,6 @@ import org.springframework.stereotype.Component;
 @Builds({"kenyaemr.hiv.report.artCohortAnalysis.data.on.ART.cohorts"})
 public class PreArtandArtClientsReportBuilder extends AbstractHybridReportBuilder {
 
-	public static final String DATE_FORMAT = "dd/MM/yyyy";
-
 	@Autowired
 	private HivCohortLibrary hivCohortLibrary;
 
@@ -102,7 +104,7 @@ public class PreArtandArtClientsReportBuilder extends AbstractHybridReportBuilde
 		dsd.addColumn("Date of Diagnosis", new ObsForPersonDataDefinition("Date of Diagnosis", TimeQualifier.LAST, Dictionary.getConcept(Dictionary.DATE_OF_HIV_DIAGNOSIS), null, null), "", new CustomDataConverter());
 		dsd.addColumn("Date of enrollment to care", new CalculationDataDefinition("Date of enrollment to care", new PatientProgramEnrollmentCalculation()), "", new PatientProgramEnrollmentDateConverter());
 		dsd.addColumn("Transfer in (TI)", new CalculationDataDefinition("Transfer in (TI)", new IsTransferInCalculation()), "", new CalculationResultConverter());
-		dsd.addColumn("Date Transfered in", new CalculationDataDefinition("Date Transfered in", new TransferInDateCalculation()), "", new CustomDateConverter());
+		dsd.addColumn("Date Transfered in", new CalculationDataDefinition("Date Transfered in", new TransferInDateCalculation()), "", new CalculationResultConverter());
 		///dsd.addColumn("Current IPT status", new CalculationDataDefinition("Current IPT status", new TransferInDateCalculation()), "", new CustomDateConverter());
 		///dsd.addColumn("IPT start date", new CalculationDataDefinition("IPT start date", new TransferInDateCalculation()), "", new CustomDateConverter());
 		///dsd.addColumn("Current TB status", new CalculationDataDefinition("Current TB status", new TransferInDateCalculation()), "", new CustomDateConverter());
@@ -126,14 +128,14 @@ public class PreArtandArtClientsReportBuilder extends AbstractHybridReportBuilde
 		dsd.addColumn("3rd Last vL", new CalculationDataDefinition("3rd Last vL", new ViralLoadListCalculation()), "", new CalculationMapResultsConverter("value", 3));
 		dsd.addColumn("3rd last VL Date", new CalculationDataDefinition("3rd last VL Date", new ViralLoadListCalculation()), "", new CalculationMapResultsConverter("date", 3));
 		dsd.addColumn("Last appointment date", new ObsForPersonDataDefinition("Last appointment date", TimeQualifier.LAST, Dictionary.getConcept(Dictionary.RETURN_VISIT_DATE), null, null), "", new ObsDateConverter());
-		///dsd.addColumn("Alive and on Follow-up", new ObsForPersonDataDefinition("Alive and on Follow-up", TimeQualifier.LAST, Dictionary.getConcept(Dictionary.RETURN_VISIT_DATE), null, null), "", new ObsValueDatetimeConverter());
-		///dsd.addColumn("Stopped (Interrupted)", new ObsForPersonDataDefinition("Stopped (Interrupted)", TimeQualifier.LAST, Dictionary.getConcept(Dictionary.RETURN_VISIT_DATE), null, null), "", new ObsValueDatetimeConverter());
-		///dsd.addColumn("Date stopped", new ObsForPersonDataDefinition("Date stopped", TimeQualifier.LAST, Dictionary.getConcept(Dictionary.RETURN_VISIT_DATE), null, null), "", new ObsValueDatetimeConverter());
+		dsd.addColumn("Alive and on Follow-up", new CalculationDataDefinition("Alive and on Follow-up", new AliveAndOnFollowUpCalculation()), "", new CalculationResultConverter());
+		dsd.addColumn("Stopped (Interrupted)", new CalculationDataDefinition("Stopped (Interrupted)",new StoppedARTCalculation()), "", new CalculationResultConverter());
+		dsd.addColumn("Date stopped", new CalculationDataDefinition("Date stopped", new StoppedARTDateCalculation()), "", new ArtStoppedConverter());
 		dsd.addColumn("Transferred out", new CalculationDataDefinition("Transferred out", new IsTransferOutCalculation()), "", new CalculationResultConverter());
 		dsd.addColumn("Date Transferred out", new CalculationDataDefinition("Date Transferred out", new TransferOutDateCalculation()), "", new CalculationResultConverter());
 		dsd.addColumn("Defaulted", new CalculationDataDefinition("Defaulted", new MissedLastAppointmentCalculation()), "", new CalculationResultConverter());
 		dsd.addColumn("Lost to Follow-up", new CalculationDataDefinition("Lost to Follow-up", new LostToFollowUpCalculation()), "", new CalculationResultConverter());
-		///dsd.addColumn("Date classified as LTFU", new CalculationDataDefinition("Date classified as LTFU", new LostToFollowUpCalculation()), "", new CalculationResultConverter());
+		dsd.addColumn("Date classified as LTFU", new CalculationDataDefinition("Date classified as LTFU", new DateClassifiedLTFUCalculation()), "", new CalculationResultConverter());
 		dsd.addColumn("Died", new CalculationDataDefinition("Died", new DeceasedPatientsCalculation()), "", new CalculationResultConverter());
 		dsd.addColumn("Date reported dead", new CalculationDataDefinition("Date reported dead", new DateOfDeathCalculation()), "", new CalculationResultConverter());
 		///dsd.addColumn("Pregnancies in 2012", new CalculationDataDefinition("Pregnancies in 2012", new LostToFollowUpCalculation()), "", new CalculationResultConverter());
