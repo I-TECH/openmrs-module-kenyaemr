@@ -43,7 +43,7 @@ public class ArtStoppedConverter implements DataConverter {
 		String[] dateParts = datePart.split("-");
 
 		Calendar calendar = Calendar.getInstance();
-		calendar.set(Integer.parseInt(dateParts[0]), Integer.parseInt(dateParts[1]), Integer.parseInt(dateParts[2]));
+		calendar.set(Integer.parseInt(dateParts[0]), (Integer.parseInt(dateParts[1])-1), Integer.parseInt(dateParts[2]));
 		Date dateRequired = calendar.getTime();
 		return dateRequired;
 	}
