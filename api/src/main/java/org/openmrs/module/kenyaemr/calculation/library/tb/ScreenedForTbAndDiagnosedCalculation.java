@@ -30,7 +30,7 @@ public class ScreenedForTbAndDiagnosedCalculation extends AbstractPatientCalcula
 		for(Integer ptId:cohort) {
 			boolean suspect = false;
 			Concept suspectOrDiagnosed = EmrCalculationUtils.codedObsResultForPatient(tbStatus, ptId);
-			if(suspectOrDiagnosed != null) {
+			if(suspectOrDiagnosed != null && (suspectOrDiagnosed.equals(diseaseDiagnosed) || suspectOrDiagnosed.equals(diseaseSuspect))) {
 				suspect = true;
 			}
 			ret.put(ptId, new BooleanResult(suspect, this));
