@@ -127,7 +127,7 @@ public class DateMedicallyEligibleForARTCalculation extends AbstractPatientCalcu
 			if (cd4 != null && (!cd4.isEmpty())) {
 				for(Obs obsCd4 : cd4) {
 					if (obsCd4.getValueNumeric() < 500) {
-						dateAndReason = obsCd4.getObsDatetime() + "-" + "CD4 LESS THAN 500";
+						dateAndReason = obsCd4.getObsDatetime() + "=" + "CD4 LESS THAN 500";
 						break;
 					}
 				}
