@@ -26,8 +26,10 @@ import org.openmrs.module.kenyaemr.calculation.library.DeceasedPatientsCalculati
 import org.openmrs.module.kenyaemr.calculation.library.MissedLastAppointmentCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.AliveAndOnFollowUpCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.CountyAddressCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.CurrentIPTStatus;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.DateClassifiedLTFUCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.DateMedicallyEligibleForARTCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.IPTStartDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.LostToFollowUpCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.StoppedARTDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.SubCountyAddressCalculation;
@@ -109,12 +111,12 @@ public class PreArtandArtClientsReportBuilder extends AbstractHybridReportBuilde
 		dsd.addColumn("Marital Status", new ObsForPersonDataDefinition("Marital Status", TimeQualifier.LAST, Dictionary.getConcept(Dictionary.CIVIL_STATUS), null, null), "", new CustomDataConverter());
 		dsd.addColumn("County", new CalculationDataDefinition("ARV Start Date", new CountyAddressCalculation()), "", new CalculationResultConverter());
 		dsd.addColumn("Sub County/District", new CalculationDataDefinition("ARV Start Date", new SubCountyAddressCalculation()), "", new CalculationResultConverter());
-		dsd.addColumn("Date of Diagnosis", new ObsForPersonDataDefinition("Date of Diagnosis", TimeQualifier.LAST, Dictionary.getConcept(Dictionary.DATE_OF_HIV_DIAGNOSIS), null, null), "", new CustomDataConverter());
+		dsd.addColumn("Date of Diagnosis", new ObsForPersonDataDefinition("Date of Diagnosis", TimeQualifier.LAST, Dictionary.getConcept(Dictionary.DATE_OF_HIV_DIAGNOSIS), null, null), "", new ObsDateConverter());
 		dsd.addColumn("Date of enrollment to care", new CalculationDataDefinition("Date of enrollment to care", new PatientProgramEnrollmentCalculation()), "", new PatientProgramEnrollmentDateConverter());
 		dsd.addColumn("Transfer in (TI)", new CalculationDataDefinition("Transfer in (TI)", new IsTransferInCalculation()), "", new CalculationResultConverter());
 		dsd.addColumn("Date Transferred in", new CalculationDataDefinition("Date Transferred in", new TransferInDateCalculation()), "", new CalculationResultConverter());
-		///dsd.addColumn("Current IPT status", new CalculationDataDefinition("Current IPT status", new TransferInDateCalculation()), "", new CustomDateConverter());
-		///dsd.addColumn("IPT start date", new CalculationDataDefinition("IPT start date", new TransferInDateCalculation()), "", new CustomDateConverter());
+		dsd.addColumn("Current IPT status", new CalculationDataDefinition("Current IPT status", new CurrentIPTStatus()), "", new CalculationResultConverter());
+		dsd.addColumn("IPT start date", new CalculationDataDefinition("IPT start date", new IPTStartDateCalculation()), "", new CalculationResultConverter());
 		dsd.addColumn("Current TB status", new CalculationDataDefinition("Current TB status", new CurrentTbStatusCalculation()), "", new CalculationResultConverter());
 		dsd.addColumn("Date of TB diagnosis", new CalculationDataDefinition("Date of TB diagnosis", new ScreenedForTbAndDiagnosedCalculation()), "", new CalculationResultConverter());
 		dsd.addColumn("Anti TB start date", new ObsForPersonDataDefinition("Anti TB start date", TimeQualifier.LAST, Dictionary.getConcept(Dictionary.TUBERCULOSIS_DRUG_TREATMENT_START_DATE), null, null), "", new ObsDateConverter());
