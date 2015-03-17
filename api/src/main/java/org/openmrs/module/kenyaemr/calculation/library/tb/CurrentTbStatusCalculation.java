@@ -1,6 +1,7 @@
 package org.openmrs.module.kenyaemr.calculation.library.tb;
 
 import org.openmrs.Concept;
+import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
@@ -25,10 +26,10 @@ public class CurrentTbStatusCalculation extends AbstractPatientCalculation {
 		CalculationResultMap tbStatus = Calculations.lastObs(tbDiseaseStatus, cohort, context);
 
 		for(Integer ptId:cohort) {
-			Concept value = null;
+			boolean value = false;
 			Concept tbStatusValue = EmrCalculationUtils.codedObsResultForPatient(tbStatus, ptId);
-			if(tbStatusValue != null) {
-				value = tbStatusValue;
+			if(tbStatusValue != null && tbStatusValue.equals(Context.getConceptService().getConceptByUuid("1662AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))) {
+				value = true;
 			}
 			ret.put(ptId, new SimpleResult(value, this));
 		}

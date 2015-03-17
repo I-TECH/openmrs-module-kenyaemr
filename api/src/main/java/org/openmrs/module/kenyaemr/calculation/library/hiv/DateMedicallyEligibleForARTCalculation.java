@@ -70,18 +70,18 @@ public class DateMedicallyEligibleForARTCalculation extends AbstractPatientCalcu
 		String dateAndReason = null;
 
 		if (ageInMonths < 24) {
-			dateAndReason = birthDate+"="+"BELOW 24 MONTHS";
+			dateAndReason = birthDate+"="+"7";
 		}
 		else if (ageInMonths < 60) { // 24-59 months
 			if (whoStage != null && (!cd4.isEmpty())) {
 				for(Obs obsWhoStage:whoStage) {
 					if (obsWhoStage.getValueCoded().equals(Dictionary.WHO_STAGE_3_PEDS)) {
-						dateAndReason = obsWhoStage.getObsDatetime() + "=" + "WHO STAGE 3 PAED";
+						dateAndReason = obsWhoStage.getObsDatetime() + "=" + "1";
 					}
 
 					if (obsWhoStage.getValueCoded().equals(Dictionary.WHO_STAGE_4_PEDS)) {
 
-						dateAndReason = obsWhoStage.getObsDatetime() + "=" + "WHO STAGE 4 PAED";
+						dateAndReason = obsWhoStage.getObsDatetime() + "=" + "1";
 
 					}
 				}
@@ -90,7 +90,7 @@ public class DateMedicallyEligibleForARTCalculation extends AbstractPatientCalcu
 			if (cd4Percent != null && (!cd4Percent.isEmpty())) {
 				for(Obs obsPercent:cd4Percent) {
 					if(obsPercent.getValueNumeric() < 25) {
-						dateAndReason = obsPercent.getObsDatetime()+"="+"CD4 PERCENT LESS THAN 25";
+						dateAndReason = obsPercent.getObsDatetime()+"="+"2";
 						break;
 					}
 				}
@@ -98,7 +98,7 @@ public class DateMedicallyEligibleForARTCalculation extends AbstractPatientCalcu
 			if (cd4 != null && (!cd4.isEmpty())) {
 				for(Obs obsCd4 : cd4) {
 					if(obsCd4.getValueNumeric() < 1000) {
-						dateAndReason = obsCd4.getObsDatetime() + "=" + "CD4 LESS THAN 1000";
+						dateAndReason = obsCd4.getObsDatetime() + "=" + "2";
 						break;
 					}
 				}
@@ -108,10 +108,10 @@ public class DateMedicallyEligibleForARTCalculation extends AbstractPatientCalcu
 			if (whoStage != null && (!whoStage.isEmpty())) {
 				for(Obs obsWhoStage:whoStage) {
 					if (obsWhoStage.getValueCoded().equals(Dictionary.WHO_STAGE_3_PEDS)) {
-						dateAndReason = obsWhoStage.getObsDatetime() + "=" + "WHO STAGE 3 PEDS";
+						dateAndReason = obsWhoStage.getObsDatetime() + "=" + "1";
 					}
 					if (obsWhoStage.getValueCoded().equals(Dictionary.WHO_STAGE_4_PEDS)) {
-						dateAndReason = obsWhoStage.getObsDatetime() + "=" + "WHO STAGE 4 PEDS";
+						dateAndReason = obsWhoStage.getObsDatetime() + "=" + "1";
 					}
 					break;
 				}
@@ -119,7 +119,7 @@ public class DateMedicallyEligibleForARTCalculation extends AbstractPatientCalcu
 			if (cd4Percent != null && (!cd4Percent.isEmpty())) {
 				for(Obs obsPercent : cd4Percent) {
 					if (obsPercent.getValueNumeric() < 20) {
-						dateAndReason = obsPercent.getObsDatetime() + "=" + "CD4 PERCENT LESS THAN 20";
+						dateAndReason = obsPercent.getObsDatetime() + "=" + "2";
 						break;
 					}
 				}
@@ -127,7 +127,7 @@ public class DateMedicallyEligibleForARTCalculation extends AbstractPatientCalcu
 			if (cd4 != null && (!cd4.isEmpty())) {
 				for(Obs obsCd4 : cd4) {
 					if (obsCd4.getValueNumeric() < 500) {
-						dateAndReason = obsCd4.getObsDatetime() + "=" + "CD4 LESS THAN 500";
+						dateAndReason = obsCd4.getObsDatetime() + "=" + "2";
 						break;
 					}
 				}
@@ -137,10 +137,10 @@ public class DateMedicallyEligibleForARTCalculation extends AbstractPatientCalcu
 			if (whoStage != null && (!whoStage.isEmpty())) {
 				for(Obs obsWhoStage:whoStage) {
 					if (obsWhoStage.getValueCoded().equals(Dictionary.WHO_STAGE_3_ADULT)) {
-						dateAndReason = obsWhoStage.getObsDatetime() + "=" + "WHO STAGE 3 ADULT";
+						dateAndReason = obsWhoStage.getObsDatetime() + "=" + "1";
 					}
 					if (obsWhoStage.getValueCoded().equals(Dictionary.WHO_STAGE_4_ADULT)) {
-						dateAndReason = obsWhoStage.getObsDatetime() + "=" + "WHO STAGE 4 ADULT";
+						dateAndReason = obsWhoStage.getObsDatetime() + "=" + "1";
 					}
 					break;
 				}
@@ -148,7 +148,7 @@ public class DateMedicallyEligibleForARTCalculation extends AbstractPatientCalcu
 			if (cd4 != null && (!cd4.isEmpty())) {
 				for(Obs obsCd4:cd4) {
 					if(obsCd4.getValueNumeric() < 350) {
-						dateAndReason = obsCd4.getObsDatetime() + "=" + "CD4 LESS THAN 350";
+						dateAndReason = obsCd4.getObsDatetime() + "=" + "2";
 						break;
 					}
 				}

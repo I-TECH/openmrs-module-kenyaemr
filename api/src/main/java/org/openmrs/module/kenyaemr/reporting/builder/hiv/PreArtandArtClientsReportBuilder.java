@@ -24,15 +24,7 @@ import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.StoppedARTCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.DeceasedPatientsCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.MissedLastAppointmentCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.AliveAndOnFollowUpCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.CountyAddressCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.CurrentIPTStatus;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.DateClassifiedLTFUCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.DateMedicallyEligibleForARTCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.IPTStartDateCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.LostToFollowUpCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.StoppedARTDateCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.SubCountyAddressCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.*;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.CurrentARTStartDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.CurrentArtRegimenCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.DateLastSeenCalculation;
@@ -52,14 +44,7 @@ import org.openmrs.module.kenyaemr.calculation.library.tb.ScreenedForTbAndDiagno
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.reporting.calculation.converter.PatientProgramEnrollmentDateConverter;
 import org.openmrs.module.kenyaemr.reporting.calculation.converter.RegimenConverter;
-import org.openmrs.module.kenyaemr.reporting.data.converter.ArtStoppedConverter;
-import org.openmrs.module.kenyaemr.reporting.data.converter.BirthdateConverter;
-import org.openmrs.module.kenyaemr.reporting.data.converter.CalculationMapResultsConverter;
-import org.openmrs.module.kenyaemr.reporting.data.converter.CalculationResultConverter;
-import org.openmrs.module.kenyaemr.reporting.data.converter.CustomDataConverter;
-import org.openmrs.module.kenyaemr.reporting.data.converter.MedicallyEligibleConverter;
-import org.openmrs.module.kenyaemr.reporting.data.converter.ObsDateConverter;
-import org.openmrs.module.kenyaemr.reporting.data.converter.ObsNumericConverter;
+import org.openmrs.module.kenyaemr.reporting.data.converter.*;
 import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.HivCohortLibrary;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -148,6 +133,8 @@ public class PreArtandArtClientsReportBuilder extends AbstractHybridReportBuilde
 		dsd.addColumn("Date classified as LTFU", new CalculationDataDefinition("Date classified as LTFU", new DateClassifiedLTFUCalculation()), "", new CalculationResultConverter());
 		dsd.addColumn("Died", new CalculationDataDefinition("Died", new DeceasedPatientsCalculation()), "", new CalculationResultConverter());
 		dsd.addColumn("Date reported dead", new CalculationDataDefinition("Date reported dead", new DateOfDeathCalculation()), "", new CalculationResultConverter());
+        dsd.addColumn("Documented pregnancies", new CalculationDataDefinition("Documented pregnancies", new PregnancyAndEDDCalculation()), "", new PregnancyEddConverter("status"));
+        dsd.addColumn("EDD of pregnancies", new CalculationDataDefinition("EDD of pregnancies", new PregnancyAndEDDCalculation()), "", new PregnancyEddConverter("date"));
 	}
 
 	@Override
