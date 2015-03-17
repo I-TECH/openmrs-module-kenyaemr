@@ -25,7 +25,7 @@ public class ScreenedForTbAndDiagnosedCalculation extends AbstractPatientCalcula
 		Concept tbDiseaseStatus = Dictionary.getConcept(Dictionary.TUBERCULOSIS_DISEASE_STATUS);
 		Concept diseaseDiagnosed = Dictionary.getConcept(Dictionary.DISEASE_DIAGNOSED);
 		Concept diseaseSuspect = Dictionary.getConcept(Dictionary.DISEASE_SUSPECTED);
-		 CalculationResultMap tbStatus = Calculations.lastObs(tbDiseaseStatus, cohort, context);
+		CalculationResultMap tbStatus = Calculations.lastObs(tbDiseaseStatus, cohort, context);
 
 		for(Integer ptId:cohort) {
 			boolean suspect = false;
