@@ -81,7 +81,7 @@ public class DateMedicallyEligibleForARTCalculation extends AbstractPatientCalcu
             if (whoStage != null && (!cd4.isEmpty())) {
                 for(Obs obsWhoStage:whoStage) {
                     if (obsWhoStage.getValueCoded().equals(Dictionary.WHO_STAGE_3_PEDS)) {
-                        dateAndReason = obsWhoStage.getObsDatetime().after(arvStartDate)? arvStartDate + "=" + "1" : obsWhoStage.getObsDatetime() + "=" + "1" ;
+                        dateAndReason = (arvStartDate != null && obsWhoStage.getObsDatetime().after(arvStartDate))? arvStartDate + "=" + "1" : obsWhoStage.getObsDatetime() + "=" + "1" ;
                     }
 
                     if (obsWhoStage.getValueCoded().equals(Dictionary.WHO_STAGE_4_PEDS)) {
