@@ -24,16 +24,20 @@ public class PregnancyAndEDDCalculation extends AbstractPatientCalculation {
 
         Concept yes = Dictionary.getConcept(Dictionary.YES);
         CalculationResultMap pregStatusObss = Calculations.allObs(Dictionary.getConcept(Dictionary.PREGNANCY_STATUS), aliveAndFemale, context);
-        CalculationResultMap edd = Calculations.lastObs(Dictionary.getConcept(Dictionary.EXPECTED_DATE_OF_DELIVERY), aliveAndFemale, context);
+        CalculationResultMap edd = Calculations.allObs(Dictionary.getConcept(Dictionary.EXPECTED_DATE_OF_DELIVERY), aliveAndFemale, context);
 
         CalculationResultMap ret = new CalculationResultMap();
 
         for(Integer ptId:cohort) {
             String result = null;
             ListResult listResult = (ListResult) pregStatusObss.get(ptId);
-            Obs eddDate = EmrCalculationUtils.obsResultForPatient(edd, ptId);
+            ListResult listResultEdd = (ListResult) edd.get(ptId);
+            //Obs eddDate = EmrCalculationUtils.obsResultForPatient(edd, ptId);
 
-            if (listResult != null && eddDate != null) {
+            List<Obs> pregnanciesIn2012 = new ArrayList<Obs>();
+            List<Obs> eddsIn2012 = new ArrayList<Obs>();
+
+            if (listResult != null) {
                 List<Obs> listOfPregnancies = CalculationUtils.extractResultValues(listResult);
 
                 for(Obs obs : listOfPregnancies ) {
@@ -41,14 +45,34 @@ public class PregnancyAndEDDCalculation extends AbstractPatientCalculation {
                     Calendar cal = Calendar.getInstance();
                     cal.setTime(obs.getObsDatetime());
                     int year = cal.get(Calendar.YEAR);
-                    //System.out.println("Patient "+ptId+" preg date is "+obs.getObsDatetime()+" and edd is "+eddDate.getValueDatetime());
-                    if(year == 2012) {
-                        result ="Y"+"="+eddDate.getValueDatetime() ;
-                    }
 
-                    break;
+                    if(year == 2012) {
+                        pregnanciesIn2012.add(obs);
+                    }
                 }
             }
+
+            if(listResultEdd != null) {
+                List<Obs> listOfPregnanciesEdd = CalculationUtils.extractResultValues(listResultEdd);
+
+                for(Obs obs : listOfPregnanciesEdd ) {
+
+                    Calendar cal = Calendar.getInstance();
+                    cal.setTime(obs.getObsDatetime());
+                    int year = cal.get(Calendar.YEAR);
+
+                    if(year == 2012) {
+                        eddsIn2012.add(obs);
+                    }
+                }
+            }
+
+            //go through the populated lists by picking the last observation
+            if( !(pregnanciesIn2012.isEmpty()) && !(eddsIn2012.isEmpty())) {
+
+                result ="Y"+"="+eddsIn2012.get(eddsIn2012.size() -1).getValueDatetime();
+            }
+
 
             ret.put(ptId, new SimpleResult(result, this));
         }
