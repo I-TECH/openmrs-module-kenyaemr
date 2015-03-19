@@ -12,6 +12,8 @@ import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyacore.calculation.Filters;
 import org.openmrs.module.kenyaemr.Dictionary;
+import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtStartDateCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.common.Age;
@@ -40,6 +42,7 @@ public class DateMedicallyEligibleForARTCalculation extends AbstractPatientCalcu
 		CalculationResultMap allWhoStage = Calculations.allObs(Dictionary.getConcept(Dictionary.CURRENT_WHO_STAGE), cohort, context);
 		CalculationResultMap allCd4 = Calculations.allObs(Dictionary.getConcept(Dictionary.CD4_COUNT), cohort, context);
 		CalculationResultMap allCd4Percent = Calculations.allObs(Dictionary.getConcept(Dictionary.CD4_PERCENT), cohort, context);
+		CalculationResultMap artStartDateMap = calculate(new InitialArtStartDateCalculation(), cohort, context);
 
 		for (Integer ptId : cohort) {
 			String dateAndReason = null;
@@ -49,8 +52,9 @@ public class DateMedicallyEligibleForARTCalculation extends AbstractPatientCalcu
 				List<Obs> whoStages = CalculationUtils.extractResultValues((ListResult) allWhoStage.get(ptId));
 				List<Obs> cd4s = CalculationUtils.extractResultValues((ListResult) allCd4.get(ptId));
 				List<Obs> cd4Percents = CalculationUtils.extractResultValues((ListResult) allCd4Percent.get(ptId));
+				Date arvStartDate = EmrCalculationUtils.datetimeResultForPatient(artStartDateMap, ptId);
 
-				dateAndReason = isEligible(birthDate, ageInMonths, cd4s, cd4Percents, whoStages);
+				dateAndReason = isEligible(ageInMonths, cd4s, cd4Percents, whoStages, birthDate, arvStartDate);
 			}
 			ret.put(ptId, new SimpleResult(dateAndReason, this));
 		}
@@ -64,9 +68,10 @@ public class DateMedicallyEligibleForARTCalculation extends AbstractPatientCalcu
 	 * @param cd4Percent the last CD4 percentage
 	 * @param whoStage the last WHO stage
 	 * @param birthDate the date when born
+	 * @param arvStartDate
 	 * @return true if patient is eligible
 	 */
-	protected String isEligible(Date birthDate, int ageInMonths, List<Obs> cd4, List<Obs> cd4Percent, List<Obs> whoStage) {
+	protected String isEligible(int ageInMonths, List<Obs> cd4, List<Obs> cd4Percent, List<Obs> whoStage, Date birthDate, Date arvStartDate) {
 		String dateAndReason = null;
 
 		if (ageInMonths < 24) {
@@ -76,12 +81,12 @@ public class DateMedicallyEligibleForARTCalculation extends AbstractPatientCalcu
 			if (whoStage != null && (!cd4.isEmpty())) {
 				for(Obs obsWhoStage:whoStage) {
 					if (obsWhoStage.getValueCoded().equals(Dictionary.WHO_STAGE_3_PEDS)) {
-						dateAndReason = obsWhoStage.getObsDatetime() + "=" + "1";
+						dateAndReason = obsWhoStage.getObsDatetime().after(arvStartDate)? arvStartDate + "=" + "1" : obsWhoStage.getObsDatetime() + "=" + "1" ;
 					}
 
 					if (obsWhoStage.getValueCoded().equals(Dictionary.WHO_STAGE_4_PEDS)) {
 
-						dateAndReason = obsWhoStage.getObsDatetime() + "=" + "1";
+						dateAndReason = obsWhoStage.getObsDatetime().after(arvStartDate)? arvStartDate + "=" + "1" : obsWhoStage.getObsDatetime() + "=" + "1" ;
 
 					}
 				}
@@ -90,7 +95,7 @@ public class DateMedicallyEligibleForARTCalculation extends AbstractPatientCalcu
 			if (cd4Percent != null && (!cd4Percent.isEmpty())) {
 				for(Obs obsPercent:cd4Percent) {
 					if(obsPercent.getValueNumeric() < 25) {
-						dateAndReason = obsPercent.getObsDatetime()+"="+"2";
+						dateAndReason = obsPercent.getObsDatetime().after(arvStartDate)? arvStartDate + "=" + "2" : obsPercent.getObsDatetime() + "=" + "2" ;
 						break;
 					}
 				}
@@ -98,7 +103,7 @@ public class DateMedicallyEligibleForARTCalculation extends AbstractPatientCalcu
 			if (cd4 != null && (!cd4.isEmpty())) {
 				for(Obs obsCd4 : cd4) {
 					if(obsCd4.getValueNumeric() < 1000) {
-						dateAndReason = obsCd4.getObsDatetime() + "=" + "2";
+						dateAndReason = obsCd4.getObsDatetime().after(arvStartDate)? arvStartDate + "=" + "2" : obsCd4.getObsDatetime() + "=" + "2" ;
 						break;
 					}
 				}
@@ -108,10 +113,10 @@ public class DateMedicallyEligibleForARTCalculation extends AbstractPatientCalcu
 			if (whoStage != null && (!whoStage.isEmpty())) {
 				for(Obs obsWhoStage:whoStage) {
 					if (obsWhoStage.getValueCoded().equals(Dictionary.WHO_STAGE_3_PEDS)) {
-						dateAndReason = obsWhoStage.getObsDatetime() + "=" + "1";
+						dateAndReason = obsWhoStage.getObsDatetime().after(arvStartDate)? arvStartDate + "=" + "1" : obsWhoStage.getObsDatetime() + "=" + "1" ;
 					}
 					if (obsWhoStage.getValueCoded().equals(Dictionary.WHO_STAGE_4_PEDS)) {
-						dateAndReason = obsWhoStage.getObsDatetime() + "=" + "1";
+						dateAndReason = obsWhoStage.getObsDatetime().after(arvStartDate)? arvStartDate + "=" + "1" : obsWhoStage.getObsDatetime() + "=" + "1" ;
 					}
 					break;
 				}
@@ -119,7 +124,7 @@ public class DateMedicallyEligibleForARTCalculation extends AbstractPatientCalcu
 			if (cd4Percent != null && (!cd4Percent.isEmpty())) {
 				for(Obs obsPercent : cd4Percent) {
 					if (obsPercent.getValueNumeric() < 20) {
-						dateAndReason = obsPercent.getObsDatetime() + "=" + "2";
+						dateAndReason = obsPercent.getObsDatetime().after(arvStartDate)? arvStartDate + "=" + "2" : obsPercent.getObsDatetime() + "=" + "2" ;
 						break;
 					}
 				}
@@ -127,7 +132,7 @@ public class DateMedicallyEligibleForARTCalculation extends AbstractPatientCalcu
 			if (cd4 != null && (!cd4.isEmpty())) {
 				for(Obs obsCd4 : cd4) {
 					if (obsCd4.getValueNumeric() < 500) {
-						dateAndReason = obsCd4.getObsDatetime() + "=" + "2";
+						dateAndReason = obsCd4.getObsDatetime().after(arvStartDate)? arvStartDate + "=" + "2" : obsCd4.getObsDatetime() + "=" + "2" ;
 						break;
 					}
 				}
@@ -137,10 +142,10 @@ public class DateMedicallyEligibleForARTCalculation extends AbstractPatientCalcu
 			if (whoStage != null && (!whoStage.isEmpty())) {
 				for(Obs obsWhoStage:whoStage) {
 					if (obsWhoStage.getValueCoded().equals(Dictionary.WHO_STAGE_3_ADULT)) {
-						dateAndReason = obsWhoStage.getObsDatetime() + "=" + "1";
+						dateAndReason = obsWhoStage.getObsDatetime().after(arvStartDate)? arvStartDate + "=" + "1" : obsWhoStage.getObsDatetime() + "=" + "1" ;
 					}
 					if (obsWhoStage.getValueCoded().equals(Dictionary.WHO_STAGE_4_ADULT)) {
-						dateAndReason = obsWhoStage.getObsDatetime() + "=" + "1";
+						dateAndReason = obsWhoStage.getObsDatetime().after(arvStartDate)? arvStartDate + "=" + "1" : obsWhoStage.getObsDatetime() + "=" + "1" ;
 					}
 					break;
 				}
@@ -148,7 +153,7 @@ public class DateMedicallyEligibleForARTCalculation extends AbstractPatientCalcu
 			if (cd4 != null && (!cd4.isEmpty())) {
 				for(Obs obsCd4:cd4) {
 					if(obsCd4.getValueNumeric() < 350) {
-						dateAndReason = obsCd4.getObsDatetime() + "=" + "2";
+						dateAndReason = obsCd4.getObsDatetime().after(arvStartDate)? arvStartDate + "=" + "2" : obsCd4.getObsDatetime() + "=" + "2" ;
 						break;
 					}
 				}
