@@ -19,12 +19,16 @@ import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.module.reporting.common.Birthdate;
 import org.openmrs.module.reporting.data.converter.DataConverter;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class BirthdateConverter implements DataConverter {
 	@Override
 	public Object convert(Object obj) {
 		KenyaUiUtils kenyaUi = Context.getRegisteredComponents(KenyaUiUtils.class).get(0);
 		 Birthdate birthdate = (Birthdate) obj;
-		return kenyaUi.formatDate(birthdate.getBirthdate());
+		return formatDate(birthdate.getBirthdate());
 	}
 
 	@Override
@@ -36,4 +40,9 @@ public class BirthdateConverter implements DataConverter {
 	public Class<?> getDataType() {
 		return String.class;
 	}
+
+    private String formatDate(Date date) {
+        DateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy");
+        return date == null?"":dateFormatter.format(date);
+    }
 }

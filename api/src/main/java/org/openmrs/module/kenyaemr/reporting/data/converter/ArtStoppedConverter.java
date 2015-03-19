@@ -5,6 +5,8 @@ import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.module.reporting.data.converter.DataConverter;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -23,7 +25,7 @@ public class ArtStoppedConverter implements DataConverter {
 
 		Object value = ((CalculationResult) obj).getValue();
 		 if(value != null) {
-			 return kenyaui.formatDate(stringToDate(value.toString()));
+			 return formatDate(stringToDate(value.toString()));
 		 }
 		return null;
 	}
@@ -47,5 +49,10 @@ public class ArtStoppedConverter implements DataConverter {
 		Date dateRequired = calendar.getTime();
 		return dateRequired;
 	}
+
+    private String formatDate(Date date) {
+        DateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy");
+        return date == null?"":dateFormatter.format(date);
+    }
 }
 

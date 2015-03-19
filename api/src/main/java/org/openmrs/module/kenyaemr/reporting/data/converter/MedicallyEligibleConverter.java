@@ -5,6 +5,8 @@ import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.module.reporting.data.converter.DataConverter;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -39,7 +41,7 @@ public class MedicallyEligibleConverter implements DataConverter {
 		if (value instanceof String) {
 
 			if(which.equals("date")){
-				return kenyaui.formatDate(stringToDate(((String) value).split("=")[0]));
+				return formatDate(stringToDate(((String) value).split("=")[0]));
 			}
 
 			if(which.equals("reason")){
@@ -69,4 +71,9 @@ public class MedicallyEligibleConverter implements DataConverter {
 		Date dateRequired = calendar.getTime();
 		return dateRequired;
 	}
+
+    private String formatDate(Date date) {
+        DateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy");
+        return date == null?"":dateFormatter.format(date);
+    }
 }
