@@ -159,7 +159,7 @@ public class PreArtandArtClientsReportBuilder extends AbstractHybridReportBuilde
 	protected Mapped<CohortDefinition> buildCohort(HybridReportDescriptor descriptor, PatientDataSetDefinition dsd) {
 		CohortDefinition cd = hivCohortLibrary.enrolled();
         cd.setName("preArtArtClients");
-		return ReportUtils.map(cd, "endDate=${endDate}");
+		return ReportUtils.map(cd, "enrolledOnOrBefore=${endDate}");
 	}
 
 }
