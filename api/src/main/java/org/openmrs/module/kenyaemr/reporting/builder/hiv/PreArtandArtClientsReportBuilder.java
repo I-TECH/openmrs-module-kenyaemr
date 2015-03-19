@@ -16,6 +16,7 @@ package org.openmrs.module.kenyaemr.reporting.builder.hiv;
 
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.module.kenyacore.report.HybridReportDescriptor;
+import org.openmrs.module.kenyacore.report.ReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyacore.report.builder.AbstractHybridReportBuilder;
 import org.openmrs.module.kenyacore.report.builder.Builds;
@@ -62,8 +63,13 @@ import org.openmrs.module.reporting.data.person.definition.PersonIdDataDefinitio
 import org.openmrs.module.reporting.data.person.definition.PreferredNameDataDefinition;
 import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
+import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
 @Component
 @Builds({"kenyaemr.hiv.report.artCohortAnalysis.data.on.ART.cohorts"})
@@ -71,6 +77,18 @@ public class PreArtandArtClientsReportBuilder extends AbstractHybridReportBuilde
 
 	@Autowired
 	private HivCohortLibrary hivCohortLibrary;
+
+    /**
+     *
+     * @see org.openmrs.module.kenyacore.report.builder.AbstractCohortReportBuilder#getParameters(org.openmrs.module.kenyacore.report.ReportDescriptor)
+     */
+    @Override
+    protected List<Parameter> getParameters(ReportDescriptor descriptor) {
+        return Arrays.asList(
+                new Parameter("startDate", "Start Date", Date.class),
+                new Parameter("endDate", "End Date", Date.class)
+        );
+    }
 
 	/**
 	 *
@@ -111,7 +129,7 @@ public class PreArtandArtClientsReportBuilder extends AbstractHybridReportBuilde
 		dsd.addColumn("Reason for ART initiation", new CalculationDataDefinition("Reason for ART initiation", new DateMedicallyEligibleForARTCalculation()), "", new MedicallyEligibleConverter("reason"));
 		dsd.addColumn("Current ART regimen", new CalculationDataDefinition("Current ART regimen", new CurrentArtRegimenCalculation()), "", new RegimenConverter());
 		dsd.addColumn("Start date for Current regimen", new CalculationDataDefinition("Start date for Current regimen", new CurrentARTStartDateCalculation()), "", new CalculationResultConverter());
-		dsd.addColumn("Date of Last Visit", new CalculationDataDefinition("Date of Last Visit", new DateLastSeenCalculation()), "", new CalculationResultConverter());
+		dsd.addColumn("Date of Last Visit", new CalculationDataDefinition("Date of Last Visit", new DateLastSeenWithNoEncountersCalculation()), "", new CalculationResultConverter());
 		dsd.addColumn("Initial CD4 count", new ObsForPersonDataDefinition("Initial CD4 count", TimeQualifier.FIRST, Dictionary.getConcept(Dictionary.CD4_COUNT), null, null), "", new ObsNumericConverter());
 		dsd.addColumn("Date of initial CD4 Count", new ObsForPersonDataDefinition("Date of initial CD4 Count", TimeQualifier.FIRST, Dictionary.getConcept(Dictionary.CD4_COUNT), null, null), "", new ObsDateConverter());
 		dsd.addColumn("Last documented CD4 count", new ObsForPersonDataDefinition("Last documented CD4 count", TimeQualifier.LAST, Dictionary.getConcept(Dictionary.CD4_COUNT), null, null), "", new ObsNumericConverter());
@@ -141,7 +159,7 @@ public class PreArtandArtClientsReportBuilder extends AbstractHybridReportBuilde
 	protected Mapped<CohortDefinition> buildCohort(HybridReportDescriptor descriptor, PatientDataSetDefinition dsd) {
 		CohortDefinition cd = hivCohortLibrary.enrolled();
         cd.setName("preArtArtClients");
-		return ReportUtils.map(cd, "");
+		return ReportUtils.map(cd, "endDate=${endDate}");
 	}
 
 }
