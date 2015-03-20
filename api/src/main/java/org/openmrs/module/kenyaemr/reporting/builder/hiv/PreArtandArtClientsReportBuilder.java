@@ -29,12 +29,10 @@ import org.openmrs.module.kenyaemr.calculation.library.MissedLastAppointmentCalc
 import org.openmrs.module.kenyaemr.calculation.library.hiv.*;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.*;
 import org.openmrs.module.kenyaemr.calculation.library.rdqa.DateOfDeathCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.rdqa.PatientProgramEnrollmentCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.tb.CurrentTbStatusCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.tb.ScreenedForTbAndDiagnosedCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.reporting.builder.tb.TBStartDateCalculation;
-import org.openmrs.module.kenyaemr.reporting.calculation.converter.PatientProgramEnrollmentDateConverter;
 import org.openmrs.module.kenyaemr.reporting.calculation.converter.RegimenConverter;
 import org.openmrs.module.kenyaemr.reporting.data.converter.*;
 import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.HivCohortLibrary;
@@ -115,8 +113,8 @@ public class PreArtandArtClientsReportBuilder extends AbstractHybridReportBuilde
         dsd.addColumn("Date of enrollment to care", hivProgramEnrollment, "", new DateOfLastEnrollmentConverter());
 		dsd.addColumn("Transfer in (TI)", new CalculationDataDefinition("Transfer in (TI)", new IsTransferInCalculation()), "onDate=${endDate}", new CalculationResultConverter());
 		dsd.addColumn("Date Transferred in", new CalculationDataDefinition("Date Transferred in", new TransferInDateCalculation()), "onDate=${endDate}", new CalculationResultConverter());
-		dsd.addColumn("Current IPT status", new CalculationDataDefinition("Current IPT status", new CurrentIPTStatus()), "onDate=${endDate}", new CalculationResultConverter());
-		dsd.addColumn("IPT start date", new CalculationDataDefinition("IPT start date", new IPTStartDateCalculation()), "onDate=${endDate}", new CalculationResultConverter());
+        dsd.addColumn("Current IPT status", new CalculationDataDefinition("Current IPT status", new CurrentIPTStatusCalculation()), "onDate=${endDate}", new CurrentIPTStatusConverter("status"));
+        dsd.addColumn("IPT start date", new CalculationDataDefinition("IPT start date", new IPTStartDateCalculation()), "onDate=${endDate}", new CurrentIPTStatusConverter("startDate"));
 		dsd.addColumn("Current TB status", new CalculationDataDefinition("Current TB status", new CurrentTbStatusCalculation()), "onDate=${endDate}", new CalculationResultConverter());
 		dsd.addColumn("Date of TB diagnosis", new CalculationDataDefinition("Date of TB diagnosis", new ScreenedForTbAndDiagnosedCalculation()), "onDate=${endDate}", new CalculationResultConverter());
 		dsd.addColumn("Anti TB start date", tbStartDate(), "endDate=${endDate}", new CalculationResultConverter());
@@ -150,6 +148,7 @@ public class PreArtandArtClientsReportBuilder extends AbstractHybridReportBuilde
 		dsd.addColumn("Date reported dead", new CalculationDataDefinition("Date reported dead", new DateOfDeathCalculation()), "onDate=${endDate}", new CalculationResultConverter());
         dsd.addColumn("Documented pregnancies", new CalculationDataDefinition("Documented pregnancies", new PregnancyAndEDDCalculation()), "onDate=${endDate}", new PregnancyEddConverter("status"));
         dsd.addColumn("EDD of pregnancies", new CalculationDataDefinition("EDD of pregnancies", new PregnancyAndEDDCalculation()), "onDate=${endDate}", new PregnancyEddConverter("date"));
+
 	}
 
 	@Override
