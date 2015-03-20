@@ -84,12 +84,12 @@ public class DateMedicallyEligibleForARTCalculation extends AbstractPatientCalcu
             if (whoStage != null && (!cd4.isEmpty())) {
                 for(Obs obsWhoStage:whoStage) {
                     if (obsWhoStage.getValueCoded().equals(Dictionary.WHO_STAGE_3_PEDS)) {
-                        dateAndReason = (arvStartDate != null && obsWhoStage.getObsDatetime().after(arvStartDate))? arvStartDate.toString() : obsWhoStage.getObsDatetime() + "=" + "1" ;
+                        dateAndReason = (arvStartDate != null && obsWhoStage.getObsDatetime().after(arvStartDate))? arvStartDate + "=" : obsWhoStage.getObsDatetime() + "=" + "1" ;
                     }
 
                     if (obsWhoStage.getValueCoded().equals(Dictionary.WHO_STAGE_4_PEDS)) {
 
-                        dateAndReason = (arvStartDate != null && obsWhoStage.getObsDatetime().after(arvStartDate))? arvStartDate.toString() : obsWhoStage.getObsDatetime() + "=" + "1" ;
+                        dateAndReason = (arvStartDate != null && obsWhoStage.getObsDatetime().after(arvStartDate))? arvStartDate + "=" : obsWhoStage.getObsDatetime() + "=" + "1" ;
 
                     }
                 }
@@ -98,7 +98,7 @@ public class DateMedicallyEligibleForARTCalculation extends AbstractPatientCalcu
             if (cd4Percent != null && (!cd4Percent.isEmpty())) {
                 for(Obs obsPercent:cd4Percent) {
                     if(obsPercent.getValueNumeric() < 25) {
-                        dateAndReason = (arvStartDate != null && obsPercent.getObsDatetime().after(arvStartDate))? arvStartDate.toString() : obsPercent.getObsDatetime() + "=" + "2" ;
+                        dateAndReason = (arvStartDate != null && obsPercent.getObsDatetime().after(arvStartDate))? arvStartDate + "=" : obsPercent.getObsDatetime() + "=" + "2" ;
                         break;
                     }
                 }
@@ -106,7 +106,7 @@ public class DateMedicallyEligibleForARTCalculation extends AbstractPatientCalcu
             if (cd4 != null && (!cd4.isEmpty())) {
                 for(Obs obsCd4 : cd4) {
                     if(obsCd4.getValueNumeric() < 1000) {
-                        dateAndReason = (arvStartDate != null && obsCd4.getObsDatetime().after(arvStartDate))? arvStartDate.toString() : obsCd4.getObsDatetime() + "=" + "2" ;
+                        dateAndReason = (arvStartDate != null && obsCd4.getObsDatetime().after(arvStartDate))? arvStartDate + "=" : obsCd4.getObsDatetime() + "=" + "2" ;
                         break;
                     }
                 }
@@ -193,10 +193,10 @@ public class DateMedicallyEligibleForARTCalculation extends AbstractPatientCalcu
             if (whoStage != null && (!whoStage.isEmpty())) {
                 for(Obs obsWhoStage:whoStage) {
                     if (obsWhoStage.getValueCoded().equals(Dictionary.WHO_STAGE_3_PEDS)) {
-                        dateAndReason = (arvStartDate != null && obsWhoStage.getObsDatetime().after(arvStartDate))? arvStartDate.toString() : obsWhoStage.getObsDatetime() + "=" + "1" ;
+                        dateAndReason = (arvStartDate != null && obsWhoStage.getObsDatetime().after(arvStartDate))? arvStartDate + "=" : obsWhoStage.getObsDatetime() + "=" + "1" ;
                     }
                     if (obsWhoStage.getValueCoded().equals(Dictionary.WHO_STAGE_4_PEDS)) {
-                        dateAndReason = (arvStartDate != null && obsWhoStage.getObsDatetime().after(arvStartDate))? arvStartDate.toString() : obsWhoStage.getObsDatetime() + "=" + "1" ;
+                        dateAndReason = (arvStartDate != null && obsWhoStage.getObsDatetime().after(arvStartDate))? arvStartDate + "=" : obsWhoStage.getObsDatetime() + "=" + "1" ;
                     }
                     break;
                 }
@@ -204,7 +204,7 @@ public class DateMedicallyEligibleForARTCalculation extends AbstractPatientCalcu
             if (cd4Percent != null && (!cd4Percent.isEmpty())) {
                 for(Obs obsPercent : cd4Percent) {
                     if (obsPercent.getValueNumeric() < 20) {
-                        dateAndReason = (arvStartDate != null && obsPercent.getObsDatetime().after(arvStartDate))? arvStartDate.toString() : obsPercent.getObsDatetime() + "=" + "2" ;
+                        dateAndReason = (arvStartDate != null && obsPercent.getObsDatetime().after(arvStartDate))? arvStartDate + "=" : obsPercent.getObsDatetime() + "=" + "2" ;
                         break;
                     }
                 }
@@ -212,7 +212,7 @@ public class DateMedicallyEligibleForARTCalculation extends AbstractPatientCalcu
             if (cd4 != null && (!cd4.isEmpty())) {
                 for(Obs obsCd4 : cd4) {
                     if (obsCd4.getValueNumeric() < 500) {
-                        dateAndReason = (arvStartDate != null && obsCd4.getObsDatetime().after(arvStartDate))? arvStartDate.toString() : obsCd4.getObsDatetime() + "=" + "2" ;
+                        dateAndReason = (arvStartDate != null && obsCd4.getObsDatetime().after(arvStartDate))? arvStartDate + "=" : obsCd4.getObsDatetime() + "=" + "2" ;
                         break;
                     }
                 }
@@ -299,10 +299,10 @@ public class DateMedicallyEligibleForARTCalculation extends AbstractPatientCalcu
             if (whoStage != null && (!whoStage.isEmpty())) {
                 for(Obs obsWhoStage:whoStage) {
                     if (obsWhoStage.getValueCoded().equals(Dictionary.WHO_STAGE_3_ADULT)) {
-                        dateAndReason = (arvStartDate != null && obsWhoStage.getObsDatetime().after(arvStartDate))? arvStartDate.toString() : obsWhoStage.getObsDatetime() + "=" + "1" ;
+                        dateAndReason = (arvStartDate != null && obsWhoStage.getObsDatetime().after(arvStartDate))? arvStartDate + "=" : obsWhoStage.getObsDatetime() + "=" + "1" ;
                     }
                     if (obsWhoStage.getValueCoded().equals(Dictionary.WHO_STAGE_4_ADULT)) {
-                        dateAndReason = (arvStartDate != null && obsWhoStage.getObsDatetime().after(arvStartDate))? arvStartDate.toString() : obsWhoStage.getObsDatetime() + "=" + "1" ;
+                        dateAndReason = (arvStartDate != null && obsWhoStage.getObsDatetime().after(arvStartDate))? arvStartDate + "=" : obsWhoStage.getObsDatetime() + "=" + "1" ;
                     }
                     break;
                 }
@@ -310,7 +310,7 @@ public class DateMedicallyEligibleForARTCalculation extends AbstractPatientCalcu
             if (cd4 != null && (!cd4.isEmpty())) {
                 for(Obs obsCd4:cd4) {
                     if(obsCd4.getValueNumeric() < 350) {
-                        dateAndReason = (arvStartDate != null && obsCd4.getObsDatetime().after(arvStartDate))? arvStartDate.toString() : obsCd4.getObsDatetime() + "=" + "2" ;
+                        dateAndReason = (arvStartDate != null && obsCd4.getObsDatetime().after(arvStartDate))? arvStartDate + "=" : obsCd4.getObsDatetime() + "=" + "2" ;
                         break;
                     }
                 }
