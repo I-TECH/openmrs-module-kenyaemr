@@ -9,6 +9,7 @@ import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyacore.calculation.*;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
+import org.openmrs.module.kenyaemr.reporting.model.DocumentedPregnanciesIn2012;
 
 import java.util.*;
 
@@ -29,7 +30,7 @@ public class PregnancyAndEDDCalculation extends AbstractPatientCalculation {
         CalculationResultMap ret = new CalculationResultMap();
 
         for(Integer ptId:cohort) {
-            String result = null;
+            DocumentedPregnanciesIn2012 result = null;
             ListResult listResult = (ListResult) pregStatusObss.get(ptId);
             ListResult listResultEdd = (ListResult) edd.get(ptId);
             //Obs eddDate = EmrCalculationUtils.obsResultForPatient(edd, ptId);
@@ -68,9 +69,12 @@ public class PregnancyAndEDDCalculation extends AbstractPatientCalculation {
             }
 
             //go through the populated lists by picking the last observation
-            if( !(pregnanciesIn2012.isEmpty()) && !(eddsIn2012.isEmpty())) {
+            if(!(pregnanciesIn2012.isEmpty()) && !(eddsIn2012.isEmpty())) {
 
-                result ="Y"+"="+eddsIn2012.get(eddsIn2012.size() -1).getValueDatetime();
+                result = new DocumentedPregnanciesIn2012(true, eddsIn2012.get(eddsIn2012.size() -1).getValueDatetime());
+            }
+            else {
+                result = new DocumentedPregnanciesIn2012(false, null);
             }
 
 

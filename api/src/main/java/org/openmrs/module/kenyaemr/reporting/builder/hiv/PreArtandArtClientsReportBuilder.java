@@ -14,6 +14,7 @@
 
 package org.openmrs.module.kenyaemr.reporting.builder.hiv;
 
+import org.openmrs.EncounterType;
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.Program;
 import org.openmrs.module.kenyacore.report.HybridReportDescriptor;
@@ -29,7 +30,6 @@ import org.openmrs.module.kenyaemr.calculation.library.MissedLastAppointmentCalc
 import org.openmrs.module.kenyaemr.calculation.library.hiv.*;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.*;
 import org.openmrs.module.kenyaemr.calculation.library.rdqa.DateOfDeathCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.tb.CurrentTbStatusCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.tb.ScreenedForTbAndDiagnosedCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.reporting.builder.tb.TBStartDateCalculation;
@@ -43,14 +43,10 @@ import org.openmrs.module.reporting.data.DataDefinition;
 import org.openmrs.module.reporting.data.converter.DataConverter;
 import org.openmrs.module.reporting.data.converter.ObjectFormatter;
 import org.openmrs.module.reporting.data.patient.definition.ConvertedPatientDataDefinition;
+import org.openmrs.module.reporting.data.patient.definition.EncountersForPatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.PatientIdentifierDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.ProgramEnrollmentsForPatientDataDefinition;
-import org.openmrs.module.reporting.data.person.definition.BirthdateDataDefinition;
-import org.openmrs.module.reporting.data.person.definition.ConvertedPersonDataDefinition;
-import org.openmrs.module.reporting.data.person.definition.GenderDataDefinition;
-import org.openmrs.module.reporting.data.person.definition.ObsForPersonDataDefinition;
-import org.openmrs.module.reporting.data.person.definition.PersonIdDataDefinition;
-import org.openmrs.module.reporting.data.person.definition.PreferredNameDataDefinition;
+import org.openmrs.module.reporting.data.person.definition.*;
 import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
@@ -91,10 +87,7 @@ public class PreArtandArtClientsReportBuilder extends AbstractHybridReportBuilde
 		DataConverter identifierFormatter = new ObjectFormatter("{identifier}");
 		DataDefinition identifierDef = new ConvertedPatientDataDefinition("identifier", new PatientIdentifierDataDefinition(upn.getName(), upn), identifierFormatter);
 
-        Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
-        ProgramEnrollmentsForPatientDataDefinition hivProgramEnrollment = new ProgramEnrollmentsForPatientDataDefinition();
-        hivProgramEnrollment.setWhichEnrollment(TimeQualifier.LAST);
-        hivProgramEnrollment.setProgram(hivProgram);
+
 
 
 		DataConverter nameFormatter = new ObjectFormatter("{familyName}, {givenName}");
@@ -107,48 +100,48 @@ public class PreArtandArtClientsReportBuilder extends AbstractHybridReportBuilde
 		dsd.addColumn("Unique Identifier", identifierDef, "");
 		dsd.addColumn("Sex", new GenderDataDefinition(), "");
 		dsd.addColumn("Date of Birth", new BirthdateDataDefinition(), "", new BirthdateConverter());
-		dsd.addColumn("Marital Status", new ObsForPersonDataDefinition("Marital Status", TimeQualifier.LAST, Dictionary.getConcept(Dictionary.CIVIL_STATUS), null, null), "onOrBefore=${endDate}", new CustomDataConverter());
-		dsd.addColumn("County", new CalculationDataDefinition("ARV Start Date", new CountyAddressCalculation()), "onDate=${endDate}", new CalculationResultConverter());
-		dsd.addColumn("Sub County/District", new CalculationDataDefinition("ARV Start Date", new SubCountyAddressCalculation()), "onDate=${endDate}", new CalculationResultConverter());
-		dsd.addColumn("Date of Diagnosis", new ObsForPersonDataDefinition("Date of Diagnosis", TimeQualifier.LAST, Dictionary.getConcept(Dictionary.DATE_OF_HIV_DIAGNOSIS), null, null), "onOrBefore=${endDate}", new DateOfHivDiagnosisConverter());
-        dsd.addColumn("Date of enrollment to care", hivProgramEnrollment, "", new DateOfLastEnrollmentConverter());
-		dsd.addColumn("Transfer in (TI)", new CalculationDataDefinition("Transfer in (TI)", new IsTransferInCalculation()), "onDate=${endDate}", new CalculationResultConverter());
-		dsd.addColumn("Date Transferred in", new CalculationDataDefinition("Date Transferred in", new TransferInDateCalculation()), "onDate=${endDate}", new CalculationResultConverter());
-        dsd.addColumn("Current IPT status", new CalculationDataDefinition("Current IPT status", new CurrentIPTStatusCalculation()), "onDate=${endDate}", new CurrentIPTStatusConverter("status"));
-        dsd.addColumn("IPT start date", new CalculationDataDefinition("IPT start date", new IPTStartDateCalculation()), "onDate=${endDate}", new CurrentIPTStatusConverter("startDate"));
-		dsd.addColumn("Current TB status", new CalculationDataDefinition("Current TB status", new CurrentTbStatusCalculation()), "onDate=${endDate}", new CalculationResultConverter());
-		dsd.addColumn("Date of TB diagnosis", new CalculationDataDefinition("Date of TB diagnosis", new ScreenedForTbAndDiagnosedCalculation()), "onDate=${endDate}", new CalculationResultConverter());
-		dsd.addColumn("Anti TB start date", tbStartDate(), "endDate=${endDate}", new CalculationResultConverter());
-		dsd.addColumn("Date medically eligible for ART", new CalculationDataDefinition("Date medically eligible for ART", new DateMedicallyEligibleForARTCalculation()), "onDate=${endDate}", new MedicallyEligibleConverter("date"));
-		dsd.addColumn("Original/Initial ART regimen", new CalculationDataDefinition("Original/Initial ART regimen", new InitialArtRegimenCalculation()), "onDate=${endDate}", new RegimenConverter());
-		dsd.addColumn("Initial ART start Date", new CalculationDataDefinition("Initial ART start Date", new InitialArtStartDateCalculation()), "onDate=${endDate}", new CalculationResultConverter());
-		dsd.addColumn("Reason for ART initiation", new CalculationDataDefinition("Reason for ART initiation", new DateMedicallyEligibleForARTCalculation()), "onDate=${endDate}", new MedicallyEligibleConverter("reason"));
-		dsd.addColumn("Current ART regimen", new CalculationDataDefinition("Current ART regimen", new CurrentArtRegimenCalculation()), "onDate=${endDate}", new RegimenConverter());
-		dsd.addColumn("Start date for Current regimen", new CalculationDataDefinition("Start date for Current regimen", new CurrentARTStartDateCalculation()), "onDate=${endDate}", new CalculationResultConverter());
-		dsd.addColumn("Date of Last Visit", new CalculationDataDefinition("Date of Last Visit", new DateLastSeenWithNoEncountersCalculation()), "onDate=${endDate}", new CalculationResultConverter());
-		dsd.addColumn("Initial CD4 count", new ObsForPersonDataDefinition("Initial CD4 count", TimeQualifier.FIRST, Dictionary.getConcept(Dictionary.CD4_COUNT), null, null), "onOrBefore=${endDate}", new ObsNumericConverter());
-		dsd.addColumn("Date of initial CD4 Count", new ObsForPersonDataDefinition("Date of initial CD4 Count", TimeQualifier.FIRST, Dictionary.getConcept(Dictionary.CD4_COUNT), null, null), "onOrBefore=${endDate}", new ObsDateConverter());
-		dsd.addColumn("Last documented CD4 count", new ObsForPersonDataDefinition("Last documented CD4 count", TimeQualifier.LAST, Dictionary.getConcept(Dictionary.CD4_COUNT), null, null), "onOrBefore=${endDate}", new ObsNumericConverter());
-		dsd.addColumn("Date of last CD4 count", new ObsForPersonDataDefinition("Date of last CD4 count", TimeQualifier.LAST, Dictionary.getConcept(Dictionary.CD4_COUNT), null, null), "onOrBefore=${endDate}", new ObsDateConverter());
-		dsd.addColumn("Latest VL", new ObsForPersonDataDefinition("Latest VL", TimeQualifier.LAST, Dictionary.getConcept(Dictionary.HIV_VIRAL_LOAD), null, null), "onOrBefore=${endDate}", new ObsNumericConverter());
-		dsd.addColumn("Latest VL Date", new ObsForPersonDataDefinition("Latest VL Date", TimeQualifier.LAST, Dictionary.getConcept(Dictionary.HIV_VIRAL_LOAD), null, null), "onOrBefore=${endDate}", new ObsDateConverter());
-		dsd.addColumn("2nd last VL", new CalculationDataDefinition("2nd last VL", new ViralLoadListCalculation()), "onDate=${endDate}", new CalculationMapResultsConverter("value", 2));
-		dsd.addColumn("2nd last VL Date", new CalculationDataDefinition("2nd last VL Date", new ViralLoadListCalculation()), "onDate=${endDate}", new CalculationMapResultsConverter("date", 2));
-		dsd.addColumn("3rd Last vL", new CalculationDataDefinition("3rd Last vL", new ViralLoadListCalculation()), "onDate=${endDate}", new CalculationMapResultsConverter("value", 3));
-		dsd.addColumn("3rd last VL Date", new CalculationDataDefinition("3rd last VL Date", new ViralLoadListCalculation()), "onDate=${endDate}", new CalculationMapResultsConverter("date", 3));
-		dsd.addColumn("Last appointment date", new ObsForPersonDataDefinition("Last appointment date", TimeQualifier.LAST, Dictionary.getConcept(Dictionary.RETURN_VISIT_DATE), null, null), "onOrBefore=${endDate}", new ObsDateConverter());
-		dsd.addColumn("Alive and on Follow-up", new CalculationDataDefinition("Alive and on Follow-up", new AliveAndOnFollowUpCalculation()), "onDate=${endDate}", new CalculationResultConverter());
-		dsd.addColumn("Stopped (Interrupted)", new CalculationDataDefinition("Stopped (Interrupted)",new StoppedARTCalculation()), "onDate=${endDate}", new CalculationResultConverter());
-		dsd.addColumn("Date stopped", new CalculationDataDefinition("Date stopped", new StoppedARTDateCalculation()), "onDate=${endDate}", new ArtStoppedConverter());
-		dsd.addColumn("Transferred out", new CalculationDataDefinition("Transferred out", new IsTransferOutCalculation()), "onDate=${endDate}", new CalculationResultConverter());
-		dsd.addColumn("Date Transferred out", new CalculationDataDefinition("Date Transferred out", new TransferOutDateCalculation()), "onDate=${endDate}", new CalculationResultConverter());
-		dsd.addColumn("Defaulted", new CalculationDataDefinition("Defaulted", new MissedLastAppointmentCalculation()), "onDate=${endDate}", new CalculationResultConverter());
-		dsd.addColumn("Lost to Follow-up", new CalculationDataDefinition("Lost to Follow-up", new LostToFollowUpCalculation()), "onDate=${endDate}", new CalculationResultConverter());
-		dsd.addColumn("Date classified as LTFU", new CalculationDataDefinition("Date classified as LTFU", new DateClassifiedLTFUCalculation()), "onDate=${endDate}", new CalculationResultConverter());
-		dsd.addColumn("Died", new CalculationDataDefinition("Died", new DeceasedPatientsCalculation()), "onDate=${endDate}", new CalculationResultConverter());
-		dsd.addColumn("Date reported dead", new CalculationDataDefinition("Date reported dead", new DateOfDeathCalculation()), "onDate=${endDate}", new CalculationResultConverter());
-        dsd.addColumn("Documented pregnancies", new CalculationDataDefinition("Documented pregnancies", new PregnancyAndEDDCalculation()), "onDate=${endDate}", new PregnancyEddConverter("status"));
-        dsd.addColumn("EDD of pregnancies", new CalculationDataDefinition("EDD of pregnancies", new PregnancyAndEDDCalculation()), "onDate=${endDate}", new PregnancyEddConverter("date"));
+		dsd.addColumn("Marital Status", new ObsForPersonDataDefinition("Marital Status", TimeQualifier.LAST, Dictionary.getConcept(Dictionary.CIVIL_STATUS), null, null), "", new CustomDataConverter());
+		dsd.addColumn("County", new CalculationDataDefinition("ARV Start Date", new CountyAddressCalculation()), "", new CalculationResultConverter());
+		dsd.addColumn("Sub County/District", new CalculationDataDefinition("ARV Start Date", new SubCountyAddressCalculation()), "", new CalculationResultConverter());
+		dsd.addColumn("Date of Diagnosis", dateOfDiagnosis(), "onOrBefore=${endDate}", new DateOfHivDiagnosisConverter());
+        dsd.addColumn("Date of enrollment to care", hivProgramEnrollment(),  "onOrBefore=${endDate}", new DateOfLastEnrollmentConverter());
+		dsd.addColumn("Transfer in (TI)", transferIn(), "endDate=${endDate}", new CalculationResultConverter());
+		dsd.addColumn("Date Transferred in", dateTransferredIn(), "endDate=${endDate}", new CalculationResultConverter());
+        dsd.addColumn("Current IPT status", iptStatus(), "endDate=${endDate}", new CurrentIPTStatusConverter("status"));
+        dsd.addColumn("IPT start date", iptStatus(), "endDate=${endDate}", new CurrentIPTStatusConverter("startDate"));
+		dsd.addColumn("Current TB status", tbStatus(), "endDate=${endDate}", new  CurrentTBStatusConverter("status"));
+		dsd.addColumn("Date of TB diagnosis", dateOfTbDiagnosis(), "endDate=${endDate}", new CalculationResultConverter());
+		dsd.addColumn("Anti TB start date", tbStatus(), "endDate=${endDate}",  new  CurrentTBStatusConverter("startDate"));
+		dsd.addColumn("Date medically eligible for ART", dateMedicallyEligibleForART(), "endDate=${endDate}", new MedicallyEligibleConverter("date"));
+		dsd.addColumn("Original/Initial ART regimen", InitialARTRegimen(), "endDate=${endDate}", new RegimenConverter());
+		dsd.addColumn("Initial ART start Date", initialArtStartDate(), "endDate=${endDate}", new CalculationResultConverter());
+		dsd.addColumn("Reason for ART initiation", new CalculationDataDefinition("Reason for ART initiation", new DateMedicallyEligibleForARTCalculation()), "", new MedicallyEligibleConverter("reason"));
+		dsd.addColumn("Current ART regimen", currentArtRegimen(), "endDate=${endDate}", new RegimenConverter());
+		dsd.addColumn("Start date for Current regimen", startDateForCurrentRegimen(), "endDate=${endDate}", new CalculationResultConverter());
+		dsd.addColumn("Date of Last Visit", dateOfLastVisit(), "endDate=${endDate}", new CalculationResultConverter());
+		dsd.addColumn("Initial CD4 count", initialCD4Count(),"onOrBefore=${endDate}", new ObsNumericConverter());
+		dsd.addColumn("Date of initial CD4 Count",  initialCD4Count(),"onOrBefore=${endDate}", new ObsDateConverter());
+		dsd.addColumn("Last documented CD4 count", lastCD4Count(), "onOrBefore=${endDate}", new ObsNumericConverter());
+		dsd.addColumn("Date of last CD4 count", lastCD4Count(), "onOrBefore=${endDate}", new ObsDateConverter());
+		dsd.addColumn("Latest VL", latestVl(),  "onOrBefore=${endDate}", new ObsNumericConverter());
+		dsd.addColumn("Latest VL Date", latestVl(),  "onOrBefore=${endDate}", new ObsDateConverter());
+		dsd.addColumn("2nd last VL", viralLoad(), "endDate=${endDate}", new CalculationMapResultsConverter("value", 2));
+		dsd.addColumn("2nd last VL Date", viralLoad(), "endDate=${endDate}", new CalculationMapResultsConverter("date", 2));
+		dsd.addColumn("3rd Last vL", viralLoad(), "endDate=${endDate}", new CalculationMapResultsConverter("value", 3));
+		dsd.addColumn("3rd last VL Date", viralLoad(), "endDate=${endDate}", new CalculationMapResultsConverter("date", 3));
+		dsd.addColumn("Last appointment date",  returnVisitDate(), "endDate=${endDate}", new CalculationResultConverter());
+		dsd.addColumn("Alive and on Follow-up", aliveAndOnFollowUp(), "endDate=${endDate}", new CalculationResultConverter());
+		dsd.addColumn("Stopped (Interrupted)", stoppedArt(), "endDate=${endDate}", new CalculationResultConverter());
+		dsd.addColumn("Date stopped", stoppedArtDate(), "endDate=${endDate}", new ArtStoppedConverter());
+		dsd.addColumn("Transferred out", transferOut(), "endDate=${endDate}", new CalculationResultConverter());
+		dsd.addColumn("Date Transferred out", transferOutDate(), "endDate=${endDate}", new CalculationResultConverter());
+		dsd.addColumn("Defaulted", defaulted(), "endDate=${endDate}", new CalculationResultConverter());
+		dsd.addColumn("Lost to Follow-up", classifiedLTFU(), "endDate=${endDate}", new LostToFollowUpConverter("status"));
+		dsd.addColumn("Date classified as LTFU", classifiedLTFU(), "endDate=${endDate}", new LostToFollowUpConverter("lostDate"));
+		dsd.addColumn("Died", died(), "endDate=${endDate}", new CalculationResultConverter());
+		dsd.addColumn("Date reported dead", dateReportedDate(), "endDate=${endDate}", new CalculationResultConverter());
+        dsd.addColumn("Documented pregnancies", new CalculationDataDefinition("Documented pregnancies", new PregnancyAndEDDCalculation()), "", new PregnancyEddConverter("status"));
+        dsd.addColumn("EDD of pregnancies", new CalculationDataDefinition("EDD of pregnancies", new PregnancyAndEDDCalculation()), "", new PregnancyEddConverter("date"));
 
 	}
 
@@ -159,11 +152,187 @@ public class PreArtandArtClientsReportBuilder extends AbstractHybridReportBuilde
 		return ReportUtils.map(cd, "enrolledOnOrBefore=${endDate}");
 	}
 
-    private DataDefinition tbStartDate() {
+    private DataDefinition dateReportedDate() {
+        CalculationDataDefinition cd = new CalculationDataDefinition("date date", new DateOfDeathCalculation());
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        return cd;
+    }
+
+    private DataDefinition died() {
+        CalculationDataDefinition cd = new CalculationDataDefinition("deceased", new DeceasedPatientsCalculation());
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        return cd;
+    }
+
+    private DataDefinition classifiedLTFU() {
+        CalculationDataDefinition cd = new CalculationDataDefinition("LTFU", new DateClassifiedLTFUCalculation());
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        return cd;
+    }
+
+    private DataDefinition lostToFollow() {
+        CalculationDataDefinition cd = new CalculationDataDefinition("lost", new LostToFollowUpCalculation());
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        return cd;
+    }
+
+    private DataDefinition defaulted() {
+        CalculationDataDefinition cd = new CalculationDataDefinition("defaulted", new MissedLastAppointmentCalculation());
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        return cd;
+    }
+    private DataDefinition transferOutDate() {
+        CalculationDataDefinition cd = new CalculationDataDefinition("Transfer Out", new TransferOutDateCalculation());
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        return cd;
+    }
+
+    private DataDefinition transferOut() {
+        CalculationDataDefinition cd = new CalculationDataDefinition("Transfer Out", new IsTransferOutCalculation());
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        return cd;
+    }
+
+    private DataDefinition latestVl() {
+        ObsForPersonDataDefinition obs = new ObsForPersonDataDefinition();
+        obs.setWhich(TimeQualifier.LAST);
+        obs.setQuestion(Dictionary.getConcept(Dictionary.HIV_VIRAL_LOAD));
+        obs.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+        return obs;
+    }
+
+    private DataDefinition lastCD4Count() {
+        ObsForPersonDataDefinition obs = new ObsForPersonDataDefinition();
+        obs.setWhich(TimeQualifier.LAST);
+        obs.setQuestion(Dictionary.getConcept(Dictionary.CD4_COUNT));
+        obs.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+        return obs;
+    }
+
+    private DataDefinition initialCD4Count() {
+        ObsForPersonDataDefinition obs = new ObsForPersonDataDefinition();
+        obs.setWhich(TimeQualifier.FIRST);
+        obs.setQuestion(Dictionary.getConcept(Dictionary.CD4_COUNT));
+        obs.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+        return obs;
+    }
+
+    private DataDefinition tbStatus() {
         CalculationDataDefinition cd = new CalculationDataDefinition("Anti TB start date", new TBStartDateCalculation());
         cd.setName("Anti TB start date");
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         return cd;
     }
+
+    private DataDefinition iptStatus() {
+        CalculationDataDefinition cd = new CalculationDataDefinition("Current IPT status", new CurrentIPTStatusCalculation());
+        cd.setName("Current IPT status");
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        return cd;
+    }
+
+    private DataDefinition hivProgramEnrollment() {
+        EncounterType hivEnrollmentEncType = MetadataUtils.existing(EncounterType.class, HivMetadata._EncounterType.HIV_ENROLLMENT);
+        EncountersForPatientDataDefinition hivEnrollment = new EncountersForPatientDataDefinition();
+        hivEnrollment.setWhich(TimeQualifier.LAST);
+        hivEnrollment.setTypes(Arrays.asList(hivEnrollmentEncType));
+        hivEnrollment.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+
+        return hivEnrollment;
+    }
+
+    private DataDefinition dateOfDiagnosis() {
+        ObsForPersonDataDefinition obs = new ObsForPersonDataDefinition();
+        obs.setWhich(TimeQualifier.LAST);
+        obs.setQuestion(Dictionary.getConcept(Dictionary.DATE_OF_HIV_DIAGNOSIS));
+        obs.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+        return obs;
+    }
+
+    private DataDefinition transferIn() {
+
+        CalculationDataDefinition cd = new CalculationDataDefinition("Transfer in", new IsTransferInCalculation());
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        return cd;
+    }
+    private DataDefinition startDateForCurrentRegimen() {
+        CalculationDataDefinition cd = new CalculationDataDefinition("Start date for Current regimen", new CurrentARTStartDateCalculation());
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        return cd;
+    }
+
+    private DataDefinition dateTransferredIn() {
+        CalculationDataDefinition cd = new CalculationDataDefinition("Transfer in date", new TransferInDateCalculation());
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        return cd;
+    }
+
+    private DataDefinition dateOfTbDiagnosis() {
+        CalculationDataDefinition cd = new CalculationDataDefinition("Date of TB diagnosis", new ScreenedForTbAndDiagnosedCalculation());
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        return cd;
+    }
+
+    private DataDefinition dateMedicallyEligibleForART() {
+        CalculationDataDefinition cd = new CalculationDataDefinition("Date medically eligible for ART", new DateMedicallyEligibleForARTCalculation());
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        return cd;
+    }
+
+    private DataDefinition InitialARTRegimen() {
+        CalculationDataDefinition cd = new CalculationDataDefinition("Original/Initial ART regimen", new InitialArtRegimenCalculation());
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        return cd;
+    }
+
+    private DataDefinition initialArtStartDate() {
+        CalculationDataDefinition cd = new CalculationDataDefinition("Initial ART start Date", new InitialArtStartDateCalculation());
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        return cd;
+    }
+
+    private DataDefinition currentArtRegimen() {
+        CalculationDataDefinition cd = new CalculationDataDefinition("Current ART regimen", new CurrentArtRegimenCalculation());
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        return cd;
+    }
+
+    private DataDefinition dateOfLastVisit() {
+        CalculationDataDefinition cd = new CalculationDataDefinition("Date of Last Visit", new DateLastSeenWithNoEncountersCalculation());
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        return cd;
+    }
+
+    private DataDefinition viralLoad() {
+        CalculationDataDefinition cd = new CalculationDataDefinition("viral load", new ViralLoadListCalculation());
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        return cd;
+    }
+
+    private DataDefinition aliveAndOnFollowUp() {
+        CalculationDataDefinition cd = new CalculationDataDefinition("Alive and on Follow-up", new ViralLoadListCalculation());
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        return cd;
+    }
+
+    private DataDefinition stoppedArt() {
+        CalculationDataDefinition cd = new CalculationDataDefinition("Stopped", new StoppedARTCalculation());
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        return cd;
+    }
+
+    private DataDefinition stoppedArtDate() {
+        CalculationDataDefinition cd = new CalculationDataDefinition("Stopped date", new StoppedARTDateCalculation());
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        return cd;
+    }
+
+    private DataDefinition returnVisitDate() {
+        CalculationDataDefinition cd = new CalculationDataDefinition("return date", new LastReturnVisitDateCalculation());
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        return cd;
+    }
+
+
 
 }

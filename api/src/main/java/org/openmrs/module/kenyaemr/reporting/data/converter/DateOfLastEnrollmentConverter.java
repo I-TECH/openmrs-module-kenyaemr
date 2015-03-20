@@ -1,5 +1,6 @@
 package org.openmrs.module.kenyaemr.reporting.data.converter;
 
+import org.openmrs.Encounter;
 import org.openmrs.PatientProgram;
 import org.openmrs.module.reporting.data.converter.DataConverter;
 
@@ -14,20 +15,20 @@ public class DateOfLastEnrollmentConverter implements DataConverter {
     @Override
     public Object convert(Object original) {
 
-        PatientProgram pp = (PatientProgram) original;
+        Encounter pp = (Encounter) original;
 
         if (pp == null)
             return "";
 
-        if (pp.getDateEnrolled() == null)
+        if (pp.getEncounterDatetime() == null)
             return "";
 
-        return  formatDate(pp.getDateEnrolled());
+        return  formatDate(pp.getEncounterDatetime());
     }
 
     @Override
     public Class<?> getInputDataType() {
-        return PatientProgram.class;
+        return Encounter.class;
     }
 
     @Override

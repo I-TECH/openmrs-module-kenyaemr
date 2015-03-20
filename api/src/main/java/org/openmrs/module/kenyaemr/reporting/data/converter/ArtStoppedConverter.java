@@ -17,7 +17,6 @@ public class ArtStoppedConverter implements DataConverter {
 
 	@Override
 	public Object convert(Object obj) {
-		KenyaUiUtils kenyaui = Context.getRegisteredComponents(KenyaUiUtils.class).get(0);
 
 		if (obj == null) {
 			return "";
@@ -54,5 +53,7 @@ public class ArtStoppedConverter implements DataConverter {
         DateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy");
         return date == null?"":dateFormatter.format(date);
     }
+
+
 }
 
