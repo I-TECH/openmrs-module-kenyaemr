@@ -15,8 +15,6 @@ import java.util.Date;
  * Created by codehub on 11/03/15.
  */
 public class ObsDateConverter implements DataConverter {
-    @Autowired
-    private EmrUiUtils emrUiUtils;
 
 	@Override
 	public Object convert(Object original) {
