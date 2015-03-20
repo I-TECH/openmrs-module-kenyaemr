@@ -28,9 +28,9 @@ public class MedicallyEligibleConverter implements DataConverter {
 	}
 
 	private String which;
+
 	@Override
 	public Object convert(Object obj) {
-		KenyaUiUtils kenyaui = Context.getRegisteredComponents(KenyaUiUtils.class).get(0);
 
 		if (obj == null) {
 			return "";

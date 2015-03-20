@@ -115,14 +115,14 @@ public class PreArtandArtClientsReportBuilder extends AbstractHybridReportBuilde
 		dsd.addColumn("Date medically eligible for ART", dateMedicallyEligibleForART(), "endDate=${endDate}", new MedicallyEligibleConverter("date"));
 		dsd.addColumn("Original/Initial ART regimen", InitialARTRegimen(), "endDate=${endDate}", new RegimenConverter());
 		dsd.addColumn("Initial ART start Date", initialArtStartDate(), "endDate=${endDate}", new CalculationResultConverter());
-		dsd.addColumn("Reason for ART initiation", new CalculationDataDefinition("Reason for ART initiation", new DateMedicallyEligibleForARTCalculation()), "", new MedicallyEligibleConverter("reason"));
+		dsd.addColumn("Reason for ART initiation",  dateMedicallyEligibleForART(), "endDate=${endDate}", new MedicallyEligibleConverter("reason"));
 		dsd.addColumn("Current ART regimen", currentArtRegimen(), "endDate=${endDate}", new RegimenConverter());
 		dsd.addColumn("Start date for Current regimen", startDateForCurrentRegimen(), "endDate=${endDate}", new CalculationResultConverter());
 		dsd.addColumn("Date of Last Visit", dateOfLastVisit(), "endDate=${endDate}", new CalculationResultConverter());
 		dsd.addColumn("Initial CD4 count", initialCD4Count(),"onOrBefore=${endDate}", new ObsNumericConverter());
-		dsd.addColumn("Date of initial CD4 Count",  initialCD4Count(),"onOrBefore=${endDate}", new ObsDateConverter());
+        dsd.addColumn("Date of initial CD4 Count",  initialCD4Count(),"onOrBefore=${endDate}", new ObsDateConverter());
 		dsd.addColumn("Last documented CD4 count", lastCD4Count(), "onOrBefore=${endDate}", new ObsNumericConverter());
-		dsd.addColumn("Date of last CD4 count", lastCD4Count(), "onOrBefore=${endDate}", new ObsDateConverter());
+        dsd.addColumn("Date of last CD4 count", lastCD4Count(), "onOrBefore=${endDate}", new ObsDateConverter());
 		dsd.addColumn("Latest VL", latestVl(),  "onOrBefore=${endDate}", new ObsNumericConverter());
 		dsd.addColumn("Latest VL Date", latestVl(),  "onOrBefore=${endDate}", new ObsDateConverter());
 		dsd.addColumn("2nd last VL", viralLoad(), "endDate=${endDate}", new CalculationMapResultsConverter("value", 2));
@@ -133,7 +133,7 @@ public class PreArtandArtClientsReportBuilder extends AbstractHybridReportBuilde
 		dsd.addColumn("Alive and on Follow-up", aliveAndOnFollowUp(), "endDate=${endDate}", new CalculationResultConverter());
 		dsd.addColumn("Stopped (Interrupted)", stoppedArt(), "endDate=${endDate}", new CalculationResultConverter());
 		dsd.addColumn("Date stopped", stoppedArtDate(), "endDate=${endDate}", new ArtStoppedConverter());
-		dsd.addColumn("Transferred out", transferOut(), "endDate=${endDate}", new CalculationResultConverter());
+        dsd.addColumn("Transferred out", transferOut(), "endDate=${endDate}", new CalculationResultConverter());
 		dsd.addColumn("Date Transferred out", transferOutDate(), "endDate=${endDate}", new CalculationResultConverter());
 		dsd.addColumn("Defaulted", defaulted(), "endDate=${endDate}", new CalculationResultConverter());
 		dsd.addColumn("Lost to Follow-up", classifiedLTFU(), "endDate=${endDate}", new LostToFollowUpConverter("status"));
