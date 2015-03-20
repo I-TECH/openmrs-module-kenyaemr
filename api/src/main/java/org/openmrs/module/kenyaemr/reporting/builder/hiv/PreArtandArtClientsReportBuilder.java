@@ -29,7 +29,6 @@ import org.openmrs.module.kenyaemr.calculation.library.MissedLastAppointmentCalc
 import org.openmrs.module.kenyaemr.calculation.library.hiv.*;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.CurrentARTStartDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.CurrentArtRegimenCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.DateLastSeenCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.FacilityNameCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtRegimenCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtStartDateCalculation;
@@ -40,11 +39,9 @@ import org.openmrs.module.kenyaemr.calculation.library.hiv.art.TransferInDateCal
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.TransferOutDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.ViralLoadListCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.rdqa.DateOfDeathCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.rdqa.PatientProgramEnrollmentCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.tb.CurrentTbStatusCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.tb.ScreenedForTbAndDiagnosedCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
-import org.openmrs.module.kenyaemr.reporting.calculation.converter.PatientProgramEnrollmentDateConverter;
 import org.openmrs.module.kenyaemr.reporting.calculation.converter.RegimenConverter;
 import org.openmrs.module.kenyaemr.reporting.data.converter.*;
 import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.HivCohortLibrary;
@@ -125,8 +122,8 @@ public class PreArtandArtClientsReportBuilder extends AbstractHybridReportBuilde
         dsd.addColumn("Date of enrollment to care", hivProgramEnrollment, "", new DateOfLastEnrollmentConverter());
 		dsd.addColumn("Transfer in (TI)", new CalculationDataDefinition("Transfer in (TI)", new IsTransferInCalculation()), "", new CalculationResultConverter());
 		dsd.addColumn("Date Transferred in", new CalculationDataDefinition("Date Transferred in", new TransferInDateCalculation()), "", new CalculationResultConverter());
-		dsd.addColumn("Current IPT status", new CalculationDataDefinition("Current IPT status", new CurrentIPTStatus()), "", new CalculationResultConverter());
-		dsd.addColumn("IPT start date", new CalculationDataDefinition("IPT start date", new IPTStartDateCalculation()), "", new CalculationResultConverter());
+		dsd.addColumn("Current IPT status", new CalculationDataDefinition("Current IPT status", new CurrentIPTStatusCalculation()), "", new CurrentIPTStatusConverter("status"));
+		dsd.addColumn("IPT start date", new CalculationDataDefinition("IPT start date", new IPTStartDateCalculation()), "", new CurrentIPTStatusConverter("startDate"));
 		dsd.addColumn("Current TB status", new CalculationDataDefinition("Current TB status", new CurrentTbStatusCalculation()), "", new CalculationResultConverter());
 		dsd.addColumn("Date of TB diagnosis", new CalculationDataDefinition("Date of TB diagnosis", new ScreenedForTbAndDiagnosedCalculation()), "", new CalculationResultConverter());
 		dsd.addColumn("Anti TB start date", new ObsForPersonDataDefinition("Anti TB start date", TimeQualifier.LAST, Dictionary.getConcept(Dictionary.TUBERCULOSIS_DRUG_TREATMENT_START_DATE), null, null), "", new ObsDateConverter());
