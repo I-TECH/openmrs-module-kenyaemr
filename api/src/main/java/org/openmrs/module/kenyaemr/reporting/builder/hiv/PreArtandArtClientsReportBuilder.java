@@ -89,6 +89,7 @@ public class PreArtandArtClientsReportBuilder extends AbstractHybridReportBuilde
 
 
 
+
 		DataConverter nameFormatter = new ObjectFormatter("{familyName}, {givenName}");
 		DataDefinition nameDef = new ConvertedPersonDataDefinition("name", new PreferredNameDataDefinition(), nameFormatter);
 		dsd.setName("preArtArtClients");
