@@ -105,6 +105,7 @@ public class PreArtandArtClientsReportBuilder extends AbstractHybridReportBuilde
         hivProgramEnrollment.setWhichEnrollment(TimeQualifier.LAST);
         hivProgramEnrollment.setProgram(hivProgram);
 
+
 		DataConverter nameFormatter = new ObjectFormatter("{familyName}, {givenName}");
 		DataDefinition nameDef = new ConvertedPersonDataDefinition("name", new PreferredNameDataDefinition(), nameFormatter);
 		dsd.setName("preArtArtClients");
