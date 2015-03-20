@@ -50,7 +50,7 @@ public class CurrentTbStatusCalculation extends AbstractPatientCalculation {
 				ret.put(ptId, new BooleanResult(value, this));
 			}
 			for (Obs o: tbObsForPatient) {
-				if (o.getObsDatetime().before(lastEncounterDate) && o.getObsDatetime().after(lowerLimitDate) && o.getValueCoded().equals(Context.getConceptService().getConceptByUuid("1662AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))) {
+				if (o.getObsDatetime().before(context.getNow()) && o.getObsDatetime().after(lowerLimitDate) && o.getValueCoded().equals(Dictionary.getConcept("1662AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))) {
 					value = true;
 					break;
 				}
