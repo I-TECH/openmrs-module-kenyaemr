@@ -2,6 +2,7 @@ package org.openmrs.module.kenyaemr.reporting.data.converter;
 
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.result.CalculationResult;
+import org.openmrs.module.kenyaemr.reporting.model.DocumentedPregnanciesIn2012;
 import org.openmrs.module.kenyaemr.util.EmrUiUtils;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.module.reporting.data.converter.DataConverter;
@@ -36,20 +37,22 @@ public class PregnancyEddConverter implements DataConverter {
     public Object convert(Object obj) {
 
         if (obj == null) {
-            return "N";
+            return "";
         }
 
         Object value = ((CalculationResult) obj).getValue();
 
-        if (value instanceof String) {
+        DocumentedPregnanciesIn2012 documentedPregnanciesIn2012 = (DocumentedPregnanciesIn2012) value;
 
-            if(status.equals("date")){
-                return formatDate(stringToDate(((String) value).split("=")[1]));
-            }
+        if (documentedPregnanciesIn2012 == null) {
+            return "";
+        }
 
-            if(status.equals("status")){
-                return ((String) value).split("=")[0];
-            }
+        if (status.equals("status")){
+            return documentedPregnanciesIn2012.isPregnant()? "Y" : "N";
+
+        } else if (status.equals("date")) {
+            return formatDate(documentedPregnanciesIn2012.getEdd());
         }
 
         return null;
@@ -62,16 +65,6 @@ public class PregnancyEddConverter implements DataConverter {
     @Override
     public Class<?> getDataType() {
         return String.class;
-    }
-
-    private Date stringToDate(String date) {
-        String datePart = date.split(" ")[0];
-        String[] dateParts = datePart.split("-");
-
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Integer.parseInt(dateParts[0]), (Integer.parseInt(dateParts[1])-1), Integer.parseInt(dateParts[2]));
-        Date dateRequired = calendar.getTime();
-        return dateRequired;
     }
 
     private String formatDate(Date date) {

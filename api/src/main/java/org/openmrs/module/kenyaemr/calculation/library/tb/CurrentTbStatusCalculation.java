@@ -33,14 +33,14 @@ public class CurrentTbStatusCalculation extends AbstractPatientCalculation {
 		CalculationResultMap ret = new CalculationResultMap();
 		Concept tbDiseaseStatus = Dictionary.getConcept(Dictionary.TUBERCULOSIS_DISEASE_STATUS);
 		CalculationResultMap tbStatus = Calculations.allObs(tbDiseaseStatus, cohort, context);
-		CalculationResultMap lastEncounterDates = calculate(new PatientLastEncounterDateCalculation(), cohort, context);
+		//CalculationResultMap lastEncounterDates = calculate(new PatientLastEncounterDateCalculation(), cohort, context);
 
 		for(Integer ptId:cohort) {
 			boolean value = false;
 
-			Date lastEncounterDate = EmrCalculationUtils.datetimeResultForPatient(lastEncounterDates, ptId);
+			//Date lastEncounterDate = EmrCalculationUtils.datetimeResultForPatient(lastEncounterDates, ptId);
 			Calendar cal = Calendar.getInstance();
-			cal.setTime(lastEncounterDate);
+			cal.setTime(context.getNow());
 			cal.add(Calendar.MONTH, -IPT_TREATMENT_DURATION);
 			Date lowerLimitDate = cal.getTime();
 

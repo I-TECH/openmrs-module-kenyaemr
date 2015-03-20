@@ -13,6 +13,7 @@ import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.HivConstants;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
+import org.openmrs.module.kenyaemr.reporting.model.LostToFU;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 
 import java.util.Calendar;
@@ -42,7 +43,7 @@ public class DateClassifiedLTFUCalculation extends AbstractPatientCalculation {
 		CalculationResultMap ret = new CalculationResultMap();
 
 		for (Integer ptId : cohort) {
-			Date dateClassifiedLTFU = null;
+            LostToFU classifiedLTFU = null;
 			// Is patient alive and in the HIV program
 			if (inHivProgram.contains(ptId)) {
 				Date lastScheduledReturnDate = EmrCalculationUtils.datetimeObsResultForPatient(lastReturnDateObss, ptId);
@@ -53,12 +54,15 @@ public class DateClassifiedLTFUCalculation extends AbstractPatientCalculation {
 							Calendar dateClassified = Calendar.getInstance();
 							dateClassified.setTime(lastScheduledReturnDate);
 							dateClassified.add(Calendar.DATE, HivConstants.LOST_TO_FOLLOW_UP_THRESHOLD_DAYS);
-							dateClassifiedLTFU = dateClassified.getTime();
+                            classifiedLTFU = new LostToFU(true, dateClassified.getTime());
 						}
+                        else {
+                            classifiedLTFU = new LostToFU(false, null);
+                        }
 					}
 				}
 			}
-			ret.put(ptId, new SimpleResult(dateClassifiedLTFU, this));
+			ret.put(ptId, new SimpleResult(classifiedLTFU, this));
 		}
 		return ret;
 	}

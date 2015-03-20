@@ -11,7 +11,7 @@ import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
-import org.openmrs.module.kenyaemr.calculation.library.rdqa.PatientLastEncounterDateCalculation;
+import org.openmrs.module.kenyaemr.reporting.model.TBStatus;
 
 import java.util.*;
 
@@ -33,6 +33,7 @@ public class TBStartDateCalculation extends AbstractPatientCalculation {
 
         for (Integer ptId : cohort) {
             Date tbStartDateFromTbEnrollmentForm = null;
+            TBStatus tbStatus1 = null;
             List<Obs> listOfTbTreatmentObs = new ArrayList<Obs>();
 
             ListResult tbStatusObsResults = (ListResult) tbStatus.get(ptId);
@@ -57,13 +58,16 @@ public class TBStartDateCalculation extends AbstractPatientCalculation {
             Obs tbStartDateFromTbEnrollmentFormObs = EmrCalculationUtils.obsResultForPatient(tbEnrollmentTbStartDate, ptId);
 
             if(tbStartDateFromTbEnrollmentFormObs != null && tbStartDateFromTbEnrollmentFormObs.getObsDatetime().before(context.getNow())){
-                tbStartDateFromTbEnrollmentForm = tbStartDateFromTbEnrollmentFormObs.getValueDatetime();
+                tbStatus1 = new TBStatus(true, tbStartDateFromTbEnrollmentFormObs.getValueDatetime());
             }
             else if (!(listOfTbTreatmentObs.isEmpty())){
-                tbStartDateFromTbEnrollmentForm = listOfTbTreatmentObs.get(0).getObsDatetime();
+                tbStatus1 = new TBStatus(true, listOfTbTreatmentObs.get(0).getObsDatetime());
+            }
+            else {
+                tbStatus1 = new TBStatus(false, null);
             }
 
-            ret.put(ptId, new SimpleResult(tbStartDateFromTbEnrollmentForm, this));
+            ret.put(ptId, new SimpleResult(tbStatus1, this));
 
         }
 
