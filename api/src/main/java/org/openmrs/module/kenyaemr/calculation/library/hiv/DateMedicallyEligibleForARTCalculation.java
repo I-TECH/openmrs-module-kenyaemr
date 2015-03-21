@@ -1,5 +1,6 @@
 package org.openmrs.module.kenyaemr.calculation.library.hiv;
 
+import org.openmrs.Concept;
 import org.openmrs.Obs;
 import org.openmrs.Program;
 import org.openmrs.api.context.Context;
@@ -78,6 +79,12 @@ public class DateMedicallyEligibleForARTCalculation extends AbstractPatientCalcu
 			return new PatientEligibility("age", birthDate);
         }
         else if (ageInMonths < 60) { // 24-59 months
+
+			if (!whoStage.isEmpty() && (!cd4.isEmpty() || !cd4Percent.isEmpty())) {
+				EligibilityDateReason dateReason = dateEligible(cd4, cd4Percent, whoStage, 25, 1000);
+				return new PatientEligibility(dateReason.getReason(), dateReason.getDateEligible());
+			}
+
             if (whoStage != null && (!cd4.isEmpty())) {
                 for(Obs obsWhoStage:whoStage) {
                     if (obsWhoStage.getValueCoded().equals(Dictionary.WHO_STAGE_3_PEDS)) {
@@ -118,6 +125,10 @@ public class DateMedicallyEligibleForARTCalculation extends AbstractPatientCalcu
             }
         }
         else if (ageInMonths < 155) {
+			if (!whoStage.isEmpty() && (!cd4.isEmpty() || !cd4Percent.isEmpty())) {
+				EligibilityDateReason dateReason = dateEligible(cd4, cd4Percent, whoStage, 20, 500);
+				return new PatientEligibility(dateReason.getReason(), dateReason.getDateEligible());
+			}
             if (whoStage != null && (!whoStage.isEmpty())) {
                 for(Obs obsWhoStage:whoStage) {
                     if (obsWhoStage.getValueCoded().equals(Dictionary.WHO_STAGE_3_PEDS)) {
@@ -152,6 +163,10 @@ public class DateMedicallyEligibleForARTCalculation extends AbstractPatientCalcu
             }
         }
         else {
+			if (!whoStage.isEmpty() && (!cd4.isEmpty() || !cd4Percent.isEmpty())) {
+				EligibilityDateReason dateReason = dateEligible(cd4, cd4Percent, whoStage, 0, 350);
+				return new PatientEligibility(dateReason.getReason(), dateReason.getDateEligible());
+			}
             if (whoStage != null && (!whoStage.isEmpty())) {
                 for(Obs obsWhoStage:whoStage) {
                     if (obsWhoStage.getValueCoded().equals(Dictionary.WHO_STAGE_3_ADULT)) {
@@ -178,6 +193,111 @@ public class DateMedicallyEligibleForARTCalculation extends AbstractPatientCalcu
         }
         return null;
     }
+
+	protected EligibilityDateReason dateEligible(List<Obs> cd4, List<Obs> cd4Percent, List<Obs> whoStage, int cd4PercentThreshold, int cd4CountThreshold) {
+		String reason = null;
+		Date dateEligible = null;
+		Date whoDate = null;
+		Date cd4Date = compareCD4CountAndPercent(cd4, cd4Percent, cd4PercentThreshold, cd4CountThreshold);
+
+		for(Obs obsWhoStage:whoStage) {
+			if (obsWhoStage.getValueCoded().equals(Dictionary.WHO_STAGE_3_ADULT)) {
+				whoDate = obsWhoStage.getObsDatetime();
+				break;
+			}
+			if (obsWhoStage.getValueCoded().equals(Dictionary.WHO_STAGE_4_ADULT)) {
+				whoDate =obsWhoStage.getObsDatetime();
+				break;
+			}
+			if (obsWhoStage.getValueCoded().equals(Dictionary.WHO_STAGE_3_PEDS)) {
+				whoDate = obsWhoStage.getObsDatetime();
+				break;
+			}
+			if (obsWhoStage.getValueCoded().equals(Dictionary.WHO_STAGE_4_PEDS)) {
+				whoDate =obsWhoStage.getObsDatetime();
+				break;
+			}
+		}
+
+		if (whoDate.before(cd4Date)) {
+			dateEligible = whoDate;
+			reason = "whoStage";
+		} else {
+			dateEligible = cd4Date;
+			reason = "cd4";
+		}
+		return new EligibilityDateReason(reason,dateEligible);
+	}
+
+	private Date compareCD4CountAndPercent (List<Obs> cd4, List<Obs> cd4Percent, int cd4PercentThreshold, int cd4CountThreshold) {
+		Date eligibilityDate = null;
+		Date cd4PercentDate = null;
+		Date cd4CountDate = null;
+
+		if (!cd4.isEmpty() && cd4Percent.isEmpty()) {
+			for(Obs obsCount : cd4) {
+				if (obsCount.getValueNumeric() < cd4CountThreshold) {
+					eligibilityDate = obsCount.getObsDatetime() ;
+					break;
+				}
+			}
+		}
+
+		if (cd4.isEmpty() && !cd4Percent.isEmpty()) {
+			for(Obs obsPercent : cd4Percent) {
+				if (obsPercent.getValueNumeric() < cd4PercentThreshold) {
+					eligibilityDate = obsPercent.getObsDatetime() ;
+					break;
+				}
+			}
+		}
+
+		if (!cd4.isEmpty() && !cd4Percent.isEmpty()) {
+
+			for(Obs obsPercent : cd4Percent) {
+				if (obsPercent.getValueNumeric() < cd4PercentThreshold) {
+					 cd4PercentDate = obsPercent.getObsDatetime() ;
+					break;
+				}
+			}
+
+			for(Obs obsCount : cd4) {
+				if (obsCount.getValueNumeric() < cd4CountThreshold) {
+					cd4CountDate = obsCount.getObsDatetime() ;
+					break;
+				}
+			}
+
+			eligibilityDate = cd4PercentDate.before(cd4CountDate) ? cd4PercentDate : cd4CountDate;
+		}
+		return eligibilityDate;
+	}
+
+	class EligibilityDateReason {
+		private String reason;
+		private Date dateEligible;
+
+		EligibilityDateReason(String reason, Date dateEligible) {
+			this.reason = reason;
+			this.dateEligible = dateEligible;
+		}
+
+		public String getReason() {
+			return reason;
+		}
+
+		public void setReason(String reason) {
+			this.reason = reason;
+		}
+
+		public Date getDateEligible() {
+			return dateEligible;
+		}
+
+		public void setDateEligible(Date dateEligible) {
+			this.dateEligible = dateEligible;
+		}
+	}
 
 
 }
