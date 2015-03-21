@@ -50,7 +50,20 @@ public class MedicallyEligibleConverter implements DataConverter {
 			}
 
 			if(which.equals("reason")){
-				return eligibility.getCriteria() != null ? eligibility.getCriteria() : null;
+				if (eligibility.getCriteria() != null) {
+					String reason = eligibility.getCriteria();
+					if (reason.startsWith("who")) {
+						return "1";
+					} else if (reason.startsWith("age")) {
+						return "7";
+					} else if (reason.startsWith("cd")) {
+						return "2";
+					} else {
+						return "";
+					}
+				} else {
+					return null;
+				}
 			}
 
 		return  null;
