@@ -206,7 +206,7 @@ public class DateMedicallyEligibleForARTCalculation extends AbstractPatientCalcu
 		String reason = null;
 		Date dateEligible = null;
 		Date cd4Date = null;
-		if (!(cd4.isEmpty() || cd4Percent.isEmpty())) {
+		if (!cd4.isEmpty() || !cd4Percent.isEmpty()) {
 			cd4Date = compareCD4CountAndPercent(cd4, cd4Percent, cd4PercentThreshold, cd4CountThreshold);
 		}
 
