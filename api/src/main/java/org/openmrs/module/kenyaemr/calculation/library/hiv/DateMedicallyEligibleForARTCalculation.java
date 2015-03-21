@@ -1,6 +1,5 @@
 package org.openmrs.module.kenyaemr.calculation.library.hiv;
 
-import org.openmrs.Concept;
 import org.openmrs.Obs;
 import org.openmrs.Program;
 import org.openmrs.api.context.Context;
@@ -200,31 +199,33 @@ public class DateMedicallyEligibleForARTCalculation extends AbstractPatientCalcu
 		Date whoDate = null;
 		Date cd4Date = compareCD4CountAndPercent(cd4, cd4Percent, cd4PercentThreshold, cd4CountThreshold);
 
-		for(Obs obsWhoStage:whoStage) {
-			if (obsWhoStage.getValueCoded().equals(Dictionary.WHO_STAGE_3_ADULT)) {
-				whoDate = obsWhoStage.getObsDatetime();
-				break;
+		if (!whoStage.isEmpty()) {
+			for (Obs obsWhoStage : whoStage) {
+				if (obsWhoStage.getValueCoded().equals(Dictionary.WHO_STAGE_3_ADULT)) {
+					whoDate = obsWhoStage.getObsDatetime();
+					break;
+				}
+				if (obsWhoStage.getValueCoded().equals(Dictionary.WHO_STAGE_4_ADULT)) {
+					whoDate = obsWhoStage.getObsDatetime();
+					break;
+				}
+				if (obsWhoStage.getValueCoded().equals(Dictionary.WHO_STAGE_3_PEDS)) {
+					whoDate = obsWhoStage.getObsDatetime();
+					break;
+				}
+				if (obsWhoStage.getValueCoded().equals(Dictionary.WHO_STAGE_4_PEDS)) {
+					whoDate = obsWhoStage.getObsDatetime();
+					break;
+				}
 			}
-			if (obsWhoStage.getValueCoded().equals(Dictionary.WHO_STAGE_4_ADULT)) {
-				whoDate =obsWhoStage.getObsDatetime();
-				break;
-			}
-			if (obsWhoStage.getValueCoded().equals(Dictionary.WHO_STAGE_3_PEDS)) {
-				whoDate = obsWhoStage.getObsDatetime();
-				break;
-			}
-			if (obsWhoStage.getValueCoded().equals(Dictionary.WHO_STAGE_4_PEDS)) {
-				whoDate =obsWhoStage.getObsDatetime();
-				break;
-			}
-		}
 
-		if (whoDate.before(cd4Date)) {
-			dateEligible = whoDate;
-			reason = "whoStage";
-		} else {
-			dateEligible = cd4Date;
-			reason = "cd4";
+			if (whoDate != null && whoDate.before(cd4Date)) {
+				dateEligible = whoDate;
+				reason = "whoStage";
+			} else if (cd4Date != null && cd4Date.before(whoDate)){
+				dateEligible = cd4Date;
+				reason = "cd4";
+			}
 		}
 		return new EligibilityDateReason(reason,dateEligible);
 	}
