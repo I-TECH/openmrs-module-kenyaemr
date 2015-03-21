@@ -4,9 +4,11 @@ import org.openmrs.Concept;
 import org.openmrs.Obs;
 import org.openmrs.Program;
 import org.openmrs.calculation.patient.PatientCalculationContext;
+import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
+import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyacore.calculation.Filters;
 import org.openmrs.module.kenyaemr.Dictionary;
@@ -32,36 +34,32 @@ public class DateClassifiedLTFUCalculation extends AbstractPatientCalculation {
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
 
-		Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
-		Concept reasonForDiscontinuation = Dictionary.getConcept(Dictionary.REASON_FOR_PROGRAM_DISCONTINUATION);
-
-		Set<Integer> alive = Filters.alive(cohort, context);
-		Set<Integer> inHivProgram = Filters.inProgram(hivProgram, alive, context);
-		CalculationResultMap lastReturnDateObss = Calculations.lastObs(Dictionary.getConcept(Dictionary.RETURN_VISIT_DATE), inHivProgram, context);
-		CalculationResultMap lastProgramDiscontinuation = Calculations.lastObs(reasonForDiscontinuation, cohort, context);
+        //find the return visit date from the last encounter
+        CalculationResultMap resultMap = calculate(new LastReturnVisitDateCalculation(), cohort, context);
+        //find lost to follow up patients
+        Set<Integer> lostPatients = CalculationUtils.patientsThatPass(calculate(new LostToFollowUpCalculation(), cohort, context));
 
 		CalculationResultMap ret = new CalculationResultMap();
 
 		for (Integer ptId : cohort) {
             LostToFU classifiedLTFU = null;
 			// Is patient alive and in the HIV program
-			if (inHivProgram.contains(ptId)) {
-				Date lastScheduledReturnDate = EmrCalculationUtils.datetimeObsResultForPatient(lastReturnDateObss, ptId);
-				Obs discontinuation = EmrCalculationUtils.obsResultForPatient(lastProgramDiscontinuation, ptId);
-				if (lastScheduledReturnDate != null) {
-					if (daysSince(lastScheduledReturnDate, context) > HivConstants.LOST_TO_FOLLOW_UP_THRESHOLD_DAYS) {
-						if (discontinuation == null) {
-							Calendar dateClassified = Calendar.getInstance();
-							dateClassified.setTime(lastScheduledReturnDate);
-							dateClassified.add(Calendar.DATE, HivConstants.LOST_TO_FOLLOW_UP_THRESHOLD_DAYS);
-                            classifiedLTFU = new LostToFU(true, dateClassified.getTime());
-						}
-                        else {
-                            classifiedLTFU = new LostToFU(false, null);
-                        }
-					}
-				}
+			if (lostPatients.contains(ptId)) {
+				SimpleResult lastScheduledReturnDateResults = (SimpleResult) resultMap.get(ptId);
+
+				if (lastScheduledReturnDateResults != null) {
+                    Date lastScheduledReturnDate = (Date) lastScheduledReturnDateResults.getValue();
+                    Calendar dateClassified = Calendar.getInstance();
+                    dateClassified.setTime(lastScheduledReturnDate);
+                    dateClassified.add(Calendar.DATE, HivConstants.LOST_TO_FOLLOW_UP_THRESHOLD_DAYS);
+                    classifiedLTFU = new LostToFU(true, dateClassified.getTime());
+                }
+
 			}
+            else {
+                classifiedLTFU = new LostToFU(false, null);
+            }
+
 			ret.put(ptId, new SimpleResult(classifiedLTFU, this));
 		}
 		return ret;

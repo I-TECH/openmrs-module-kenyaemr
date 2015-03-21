@@ -310,7 +310,7 @@ public class PreArtandArtClientsReportBuilder extends AbstractHybridReportBuilde
     }
 
     private DataDefinition aliveAndOnFollowUp() {
-        CalculationDataDefinition cd = new CalculationDataDefinition("Alive and on Follow-up", new ViralLoadListCalculation());
+        CalculationDataDefinition cd = new CalculationDataDefinition("Alive and on Follow-up", new AliveAndOnFollowUpCalculation());
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         return cd;
     }
