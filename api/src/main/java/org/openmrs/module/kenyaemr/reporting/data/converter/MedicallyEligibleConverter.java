@@ -39,13 +39,14 @@ public class MedicallyEligibleConverter implements DataConverter {
 		Object value = ((CalculationResult) obj).getValue();
 
 		if (value instanceof String) {
-
+            String [] reasonStr = ((String) value).split("=");
 			if(which.equals("date")){
 				return formatDate(stringToDate(((String) value).split("=")[0]));
 			}
 
 			if(which.equals("reason")){
-				return ((String) value).split("=")[1];
+
+				return reasonStr[1] != null ? reasonStr[1] : null ;
 			}
 		}
 
