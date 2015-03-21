@@ -49,10 +49,12 @@ public class DateClassifiedLTFUCalculation extends AbstractPatientCalculation {
 
 				if (lastScheduledReturnDateResults != null) {
                     Date lastScheduledReturnDate = (Date) lastScheduledReturnDateResults.getValue();
-                    Calendar dateClassified = Calendar.getInstance();
-                    dateClassified.setTime(lastScheduledReturnDate);
-                    dateClassified.add(Calendar.DATE, HivConstants.LOST_TO_FOLLOW_UP_THRESHOLD_DAYS);
-                    classifiedLTFU = new LostToFU(true, dateClassified.getTime());
+                    if(lastScheduledReturnDate != null) {
+                        Calendar dateClassified = Calendar.getInstance();
+                        dateClassified.setTime(lastScheduledReturnDate);
+                        dateClassified.add(Calendar.DATE, HivConstants.LOST_TO_FOLLOW_UP_THRESHOLD_DAYS);
+                        classifiedLTFU = new LostToFU(true, dateClassified.getTime());
+                    }
                 }
 
 			}
