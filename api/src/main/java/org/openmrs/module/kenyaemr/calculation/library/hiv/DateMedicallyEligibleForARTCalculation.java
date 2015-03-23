@@ -81,6 +81,9 @@ public class DateMedicallyEligibleForARTCalculation extends AbstractPatientCalcu
 
 			if (!whoStage.isEmpty() && (!cd4.isEmpty() || !cd4Percent.isEmpty())) {
 				EligibilityDateReason dateReason = dateEligible(cd4, cd4Percent, whoStage, 25, 1000);
+				if ((arvStartDate != null && dateReason.getDateEligible() != null && dateReason.getDateEligible().after(arvStartDate))) {
+					return new PatientEligibility(null, arvStartDate);
+				}
 				return new PatientEligibility(dateReason.getReason(), dateReason.getDateEligible());
 			}
 
@@ -126,6 +129,9 @@ public class DateMedicallyEligibleForARTCalculation extends AbstractPatientCalcu
         else if (ageInMonths < 155) {
 			if (!whoStage.isEmpty() && (!cd4.isEmpty() || !cd4Percent.isEmpty())) {
 				EligibilityDateReason dateReason = dateEligible(cd4, cd4Percent, whoStage, 20, 500);
+				if ((arvStartDate != null && dateReason.getDateEligible() != null && dateReason.getDateEligible().after(arvStartDate))) {
+					return new PatientEligibility(null, arvStartDate);
+				}
 				return new PatientEligibility(dateReason.getReason(), dateReason.getDateEligible());
 			}
             if (whoStage != null && (!whoStage.isEmpty())) {
@@ -164,6 +170,9 @@ public class DateMedicallyEligibleForARTCalculation extends AbstractPatientCalcu
         else {
 			if (!whoStage.isEmpty() && (!cd4.isEmpty() || !cd4Percent.isEmpty())) {
 				EligibilityDateReason dateReason = dateEligible(cd4, cd4Percent, whoStage, 0, 350);
+				if ((arvStartDate != null && dateReason.getDateEligible() != null && dateReason.getDateEligible().after(arvStartDate))) {
+					return new PatientEligibility(null, arvStartDate);
+				}
 				return new PatientEligibility(dateReason.getReason(), dateReason.getDateEligible());
 			}
             if (whoStage != null && (!whoStage.isEmpty())) {
@@ -196,10 +205,17 @@ public class DateMedicallyEligibleForARTCalculation extends AbstractPatientCalcu
 	protected EligibilityDateReason dateEligible(List<Obs> cd4, List<Obs> cd4Percent, List<Obs> whoStage, int cd4PercentThreshold, int cd4CountThreshold) {
 		String reason = null;
 		Date dateEligible = null;
-		Date whoDate = null;
-		Date cd4Date = compareCD4CountAndPercent(cd4, cd4Percent, cd4PercentThreshold, cd4CountThreshold);
+		Date cd4Date = null;
+		if (!cd4.isEmpty() || !cd4Percent.isEmpty()) {
+			cd4Date = compareCD4CountAndPercent(cd4, cd4Percent, cd4PercentThreshold, cd4CountThreshold);
+		}
 
-		if (!whoStage.isEmpty()) {
+		if (whoStage.isEmpty()){
+			if (cd4Date != null) {
+				return new EligibilityDateReason("cd4", cd4Date);
+			}
+		} else {
+			Date whoDate = null;
 			for (Obs obsWhoStage : whoStage) {
 				if (obsWhoStage.getValueCoded().equals(Dictionary.WHO_STAGE_3_ADULT)) {
 					whoDate = obsWhoStage.getObsDatetime();
@@ -219,10 +235,20 @@ public class DateMedicallyEligibleForARTCalculation extends AbstractPatientCalcu
 				}
 			}
 
-			if (whoDate != null && whoDate.before(cd4Date)) {
+			if (whoDate != null && cd4Date == null) {
 				dateEligible = whoDate;
 				reason = "whoStage";
-			} else if (cd4Date != null && cd4Date.before(whoDate)){
+			}
+
+			if (cd4Date != null && whoDate == null) {
+				dateEligible = cd4Date;
+				reason = "cd4";
+			}
+
+			if (whoDate != null && cd4Date != null && whoDate.before(cd4Date)) {
+				dateEligible = whoDate;
+				reason = "whoStage";
+			} else if (cd4Date != null && whoDate != null && cd4Date.before(whoDate)){
 				dateEligible = cd4Date;
 				reason = "cd4";
 			}
@@ -269,7 +295,15 @@ public class DateMedicallyEligibleForARTCalculation extends AbstractPatientCalcu
 				}
 			}
 
-			eligibilityDate = cd4PercentDate.before(cd4CountDate) ? cd4PercentDate : cd4CountDate;
+			if (cd4CountDate != null && cd4PercentDate == null) {
+				eligibilityDate = cd4CountDate;
+			} else if (cd4PercentDate != null && cd4CountDate == null) {
+				eligibilityDate = cd4PercentDate;
+			} else if (cd4CountDate != null && cd4PercentDate != null){
+				eligibilityDate = cd4PercentDate.before(cd4CountDate) ? cd4PercentDate : cd4CountDate;
+			}
+
+
 		}
 		return eligibilityDate;
 	}
