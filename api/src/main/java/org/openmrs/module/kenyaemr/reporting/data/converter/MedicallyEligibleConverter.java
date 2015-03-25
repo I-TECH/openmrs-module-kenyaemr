@@ -66,6 +66,14 @@ public class MedicallyEligibleConverter implements DataConverter {
 				}
 			}
 
+            if(which.equals("value")) {
+                Double cd4Value = eligibility.getCd4Values();
+                if(cd4Value == null) {
+                    return null;
+                }
+                return cd4Value;
+            }
+
 		return  null;
 	}
 

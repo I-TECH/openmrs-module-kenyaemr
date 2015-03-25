@@ -116,6 +116,8 @@ public class PreArtandArtClientsReportBuilder extends AbstractHybridReportBuilde
 		dsd.addColumn("Original/Initial ART regimen", InitialARTRegimen(), "endDate=${endDate}", new RegimenConverter());
 		dsd.addColumn("Initial ART start Date", initialArtStartDate(), "endDate=${endDate}", new CalculationResultConverter());
 		dsd.addColumn("Reason for ART initiation",  dateMedicallyEligibleForART(), "endDate=${endDate}", new MedicallyEligibleConverter("reason"));
+        dsd.addColumn("CD4 at eligibility",  dateMedicallyEligibleForART(), "endDate=${endDate}", new MedicallyEligibleConverter("value"));
+        dsd.addColumn("CD4 at ART Start",  cd4AtARTStartDate(), "endDate=${endDate}", new CalculationResultConverter());
 		dsd.addColumn("Current ART regimen", currentArtRegimen(), "endDate=${endDate}", new RegimenConverter());
 		dsd.addColumn("Start date for Current regimen", startDateForCurrentRegimen(), "endDate=${endDate}", new CalculationResultConverter());
 		dsd.addColumn("Date of Last Visit", dateOfLastVisit(), "endDate=${endDate}", new CalculationResultConverter());
@@ -333,6 +335,10 @@ public class PreArtandArtClientsReportBuilder extends AbstractHybridReportBuilde
         return cd;
     }
 
-
+    private DataDefinition cd4AtARTStartDate() {
+        CalculationDataDefinition cd = new CalculationDataDefinition("", new CD4AtARTInitiationCalculation());
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        return cd;
+    }
 
 }

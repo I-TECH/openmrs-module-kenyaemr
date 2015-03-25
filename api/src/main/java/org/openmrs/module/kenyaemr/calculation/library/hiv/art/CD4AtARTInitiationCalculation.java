@@ -26,11 +26,7 @@ import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by codehub on 22/01/15.
@@ -68,10 +64,20 @@ public class CD4AtARTInitiationCalculation  extends AbstractPatientCalculation {
 			}
 
 			if(artStartDate != null) {
-				Date aDayBefore = CoreUtils.dateAddDays(artStartDate, -2);
-				Date aDayAfter = CoreUtils.dateAddDays(artStartDate, 2);
+
+                Calendar threeMonthsBeforeArt = Calendar.getInstance();
+                threeMonthsBeforeArt.setTime(artStartDate);
+                threeMonthsBeforeArt.add(Calendar.MONTH, -3);
+
+                Calendar threeMonthsAfterArt = Calendar.getInstance();
+                threeMonthsAfterArt.setTime(artStartDate);
+                threeMonthsAfterArt.add(Calendar.MONTH, 3);
+
+
+				Date monthsBefore = threeMonthsBeforeArt.getTime();
+				Date monthsAfter = threeMonthsAfterArt.getTime();
 				for(Obs cd4CountObs:obsListCd4Count){
-					if(cd4CountObs.getObsDatetime().after(aDayBefore) && cd4CountObs.getObsDatetime().before(aDayAfter)) {
+					if(cd4CountObs.getObsDatetime().after(monthsBefore) && cd4CountObs.getObsDatetime().before(monthsAfter)) {
 						cd4Results = cd4CountObs.getValueNumeric();
 					}
 				}

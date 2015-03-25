@@ -19,11 +19,7 @@ import org.openmrs.module.kenyaemr.reporting.model.PatientEligibility;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.common.Age;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Calculates the date when a patient was medically eligible and the reasons
@@ -75,31 +71,35 @@ public class DateMedicallyEligibleForARTCalculation extends AbstractPatientCalcu
     protected PatientEligibility getCriteriaAndDate(int ageInMonths, List<Obs> cd4, List<Obs> cd4Percent, List<Obs> whoStage, Date birthDate, Date arvStartDate) {
 
         if (ageInMonths < 24) {
-			return new PatientEligibility("age", birthDate);
+			return new PatientEligibility("age", birthDate, null);
         }
         else if (ageInMonths < 60) { // 24-59 months
 
 			if (!whoStage.isEmpty() && (!cd4.isEmpty() || !cd4Percent.isEmpty())) {
-				EligibilityDateReason dateReason = dateEligible(cd4, cd4Percent, whoStage, 25, 1000);
+				EligibilityDateReason dateReason = dateEligible(cd4, cd4Percent, whoStage, 25, 1000, arvStartDate);
 				if ((arvStartDate != null && dateReason.getDateEligible() != null && dateReason.getDateEligible().after(arvStartDate))) {
-					return new PatientEligibility(null, arvStartDate);
+					return new PatientEligibility(null, arvStartDate, null);
 				}
-				return new PatientEligibility(dateReason.getReason(), dateReason.getDateEligible());
+				return new PatientEligibility(dateReason.getReason(), dateReason.getDateEligible(), dateReason.getCd4());
 			}
+
+            if(cd4.isEmpty() && cd4Percent.isEmpty() && whoStage.isEmpty() && arvStartDate != null ) {
+                return new PatientEligibility(null, arvStartDate, null);
+            }
 
             if (whoStage != null && (!cd4.isEmpty())) {
                 for(Obs obsWhoStage:whoStage) {
                     if (obsWhoStage.getValueCoded().equals(Dictionary.WHO_STAGE_3_PEDS)) {
 						Date d = (arvStartDate != null && obsWhoStage.getObsDatetime().after(arvStartDate))? arvStartDate : obsWhoStage.getObsDatetime();
 						String r = (arvStartDate != null && obsWhoStage.getObsDatetime().after(arvStartDate))? null : "who3Peds";
-						return new PatientEligibility(r, d);
+						return new PatientEligibility(r, d, null);
                     }
 
                     if (obsWhoStage.getValueCoded().equals(Dictionary.WHO_STAGE_4_PEDS)) {
 
                         Date d = (arvStartDate != null && obsWhoStage.getObsDatetime().after(arvStartDate))? arvStartDate : obsWhoStage.getObsDatetime();
 						String r = (arvStartDate != null && obsWhoStage.getObsDatetime().after(arvStartDate))? null : "who4Peds";
-						return new PatientEligibility(r, d);
+						return new PatientEligibility(r, d, null);
 
                     }
                 }
@@ -110,7 +110,7 @@ public class DateMedicallyEligibleForARTCalculation extends AbstractPatientCalcu
                     if(obsPercent.getValueNumeric() < 25) {
 						Date d =  (arvStartDate != null && obsPercent.getObsDatetime().after(arvStartDate))? arvStartDate : obsPercent.getObsDatetime() ;
 						String r = (arvStartDate != null && obsPercent.getObsDatetime().after(arvStartDate))? null : "cdPercent" ;
-						return new PatientEligibility(r, d);
+						return new PatientEligibility(r, d, obsPercent.getValueNumeric());
 
                     }
                 }
@@ -120,7 +120,7 @@ public class DateMedicallyEligibleForARTCalculation extends AbstractPatientCalcu
                     if(obsCd4.getValueNumeric() < 1000) {
 						Date d = (arvStartDate != null && obsCd4.getObsDatetime().after(arvStartDate))? arvStartDate : obsCd4.getObsDatetime() ;
 						String r = (arvStartDate != null && obsCd4.getObsDatetime().after(arvStartDate))? null : "cd4Count" ;
-						return new PatientEligibility(r, d);
+						return new PatientEligibility(r, d, obsCd4.getValueNumeric());
 
                     }
                 }
@@ -128,23 +128,28 @@ public class DateMedicallyEligibleForARTCalculation extends AbstractPatientCalcu
         }
         else if (ageInMonths < 155) {
 			if (!whoStage.isEmpty() && (!cd4.isEmpty() || !cd4Percent.isEmpty())) {
-				EligibilityDateReason dateReason = dateEligible(cd4, cd4Percent, whoStage, 20, 500);
+				EligibilityDateReason dateReason = dateEligible(cd4, cd4Percent, whoStage, 20, 500, arvStartDate);
 				if ((arvStartDate != null && dateReason.getDateEligible() != null && dateReason.getDateEligible().after(arvStartDate))) {
-					return new PatientEligibility(null, arvStartDate);
+					return new PatientEligibility(null, arvStartDate, null);
 				}
-				return new PatientEligibility(dateReason.getReason(), dateReason.getDateEligible());
+				return new PatientEligibility(dateReason.getReason(), dateReason.getDateEligible(), dateReason.getCd4());
 			}
+
+            if(cd4.isEmpty() && cd4Percent.isEmpty() && whoStage.isEmpty() && arvStartDate != null ) {
+                return new PatientEligibility(null, arvStartDate, null);
+            }
+
             if (whoStage != null && (!whoStage.isEmpty())) {
                 for(Obs obsWhoStage:whoStage) {
                     if (obsWhoStage.getValueCoded().equals(Dictionary.WHO_STAGE_3_PEDS)) {
 						Date d = (arvStartDate != null && obsWhoStage.getObsDatetime().after(arvStartDate))? arvStartDate : obsWhoStage.getObsDatetime();
 						String r = (arvStartDate != null && obsWhoStage.getObsDatetime().after(arvStartDate))? null : "who3Peds";
-						return new PatientEligibility(r, d);
+						return new PatientEligibility(r, d, null);
                     }
                     if (obsWhoStage.getValueCoded().equals(Dictionary.WHO_STAGE_4_PEDS)) {
                         Date d = (arvStartDate != null && obsWhoStage.getObsDatetime().after(arvStartDate))? arvStartDate : obsWhoStage.getObsDatetime();
 						String r = (arvStartDate != null && obsWhoStage.getObsDatetime().after(arvStartDate))? null : "who4Peds";
-						return new PatientEligibility(r, d);
+						return new PatientEligibility(r, d, null);
                     }
                 }
             }
@@ -153,7 +158,7 @@ public class DateMedicallyEligibleForARTCalculation extends AbstractPatientCalcu
                     if (obsPercent.getValueNumeric() < 20) {
                         Date d = (arvStartDate != null && obsPercent.getObsDatetime().after(arvStartDate))? arvStartDate : obsPercent.getObsDatetime() ;
 						String r = (arvStartDate != null && obsPercent.getObsDatetime().after(arvStartDate))? null : "cdPercent" ;
-						return new PatientEligibility(r, d);
+						return new PatientEligibility(r, d, obsPercent.getValueNumeric());
                     }
                 }
             }
@@ -162,30 +167,35 @@ public class DateMedicallyEligibleForARTCalculation extends AbstractPatientCalcu
                     if (obsCd4.getValueNumeric() < 500) {
 						Date d = (arvStartDate != null && obsCd4.getObsDatetime().after(arvStartDate))? arvStartDate : obsCd4.getObsDatetime() ;
 						String r = (arvStartDate != null && obsCd4.getObsDatetime().after(arvStartDate))? null : "cd4Count" ;
-						return new PatientEligibility(r, d);
+						return new PatientEligibility(r, d, obsCd4.getValueNumeric());
                     }
                 }
             }
         }
         else {
 			if (!whoStage.isEmpty() && (!cd4.isEmpty() || !cd4Percent.isEmpty())) {
-				EligibilityDateReason dateReason = dateEligible(cd4, cd4Percent, whoStage, 0, 350);
+				EligibilityDateReason dateReason = dateEligible(cd4, cd4Percent, whoStage, 0, 350, arvStartDate);
 				if ((arvStartDate != null && dateReason.getDateEligible() != null && dateReason.getDateEligible().after(arvStartDate))) {
-					return new PatientEligibility(null, arvStartDate);
+					return new PatientEligibility(null, arvStartDate, null);
 				}
-				return new PatientEligibility(dateReason.getReason(), dateReason.getDateEligible());
+				return new PatientEligibility(dateReason.getReason(), dateReason.getDateEligible(), dateReason.getCd4());
 			}
+
+            if(cd4.isEmpty() && cd4Percent.isEmpty() && whoStage.isEmpty() && arvStartDate != null ) {
+                return new PatientEligibility(null, arvStartDate, null);
+            }
+
             if (whoStage != null && (!whoStage.isEmpty())) {
                 for(Obs obsWhoStage:whoStage) {
                     if (obsWhoStage.getValueCoded().equals(Dictionary.WHO_STAGE_3_ADULT)) {
 						Date d = (arvStartDate != null && obsWhoStage.getObsDatetime().after(arvStartDate))? arvStartDate : obsWhoStage.getObsDatetime();
 						String r = (arvStartDate != null && obsWhoStage.getObsDatetime().after(arvStartDate))? null : "who3Adults";
-						return new PatientEligibility(r, d);
+						return new PatientEligibility(r, d, null);
                     }
                     if (obsWhoStage.getValueCoded().equals(Dictionary.WHO_STAGE_4_ADULT)) {
 						Date d = (arvStartDate != null && obsWhoStage.getObsDatetime().after(arvStartDate))? arvStartDate : obsWhoStage.getObsDatetime();
 						String r = (arvStartDate != null && obsWhoStage.getObsDatetime().after(arvStartDate))? null : "who4Adults";
-						return new PatientEligibility(r, d);
+						return new PatientEligibility(r, d, null);
                     }
                 }
             }
@@ -194,7 +204,7 @@ public class DateMedicallyEligibleForARTCalculation extends AbstractPatientCalcu
                     if(obsCd4.getValueNumeric() < 350) {
 						Date d = (arvStartDate != null && obsCd4.getObsDatetime().after(arvStartDate))? arvStartDate : obsCd4.getObsDatetime() ;
 						String r = (arvStartDate != null && obsCd4.getObsDatetime().after(arvStartDate))? null : "cd4Count" ;
-						return new PatientEligibility(r, d);
+						return new PatientEligibility(r, d, obsCd4.getValueNumeric());
                     }
                 }
             }
@@ -202,17 +212,25 @@ public class DateMedicallyEligibleForARTCalculation extends AbstractPatientCalcu
         return null;
     }
 
-	protected EligibilityDateReason dateEligible(List<Obs> cd4, List<Obs> cd4Percent, List<Obs> whoStage, int cd4PercentThreshold, int cd4CountThreshold) {
+	protected EligibilityDateReason dateEligible(List<Obs> cd4, List<Obs> cd4Percent, List<Obs> whoStage, int cd4PercentThreshold, int cd4CountThreshold, Date arvStartDate) {
 		String reason = null;
 		Date dateEligible = null;
-		Date cd4Date = null;
+		Double cd4Value = null;
+        Map<Date, Double> cd4ValuesAndDate = new HashMap<Date, Double>();
+
 		if (!cd4.isEmpty() || !cd4Percent.isEmpty()) {
-			cd4Date = compareCD4CountAndPercent(cd4, cd4Percent, cd4PercentThreshold, cd4CountThreshold);
+            cd4ValuesAndDate = compareCD4CountAndPercent(cd4, cd4Percent, cd4PercentThreshold, cd4CountThreshold);
 		}
 
 		if (whoStage.isEmpty()){
-			if (cd4Date != null) {
-				return new EligibilityDateReason("cd4", cd4Date);
+			if (cd4ValuesAndDate != null) {
+                    Date dateValue = null;
+                    Double cd4Val = null;
+                for(Map.Entry<Date, Double> val : cd4ValuesAndDate.entrySet()) {
+                    dateValue = val.getKey();
+                    cd4Val = val.getValue();
+                }
+                return new EligibilityDateReason("cd4", dateValue, cd4Val);
 			}
 		} else {
 			Date whoDate = null;
@@ -235,36 +253,70 @@ public class DateMedicallyEligibleForARTCalculation extends AbstractPatientCalcu
 				}
 			}
 
-			if (whoDate != null && cd4Date == null) {
+			if (whoDate != null && cd4ValuesAndDate.isEmpty()) {
 				dateEligible = whoDate;
 				reason = "whoStage";
+                cd4Value = null;
 			}
 
-			if (cd4Date != null && whoDate == null) {
-				dateEligible = cd4Date;
+			if (!(cd4ValuesAndDate.isEmpty()) && whoDate == null) {
+                Date dateValue = null;
+                Double cd4Val = null;
+                for(Map.Entry<Date, Double> val : cd4ValuesAndDate.entrySet()) {
+                    dateValue = val.getKey();
+                    cd4Val = val.getValue();
+                }
+				dateEligible = dateValue;
 				reason = "cd4";
+                cd4Value = cd4Val;
 			}
 
-			if (whoDate != null && cd4Date != null && whoDate.before(cd4Date)) {
-				dateEligible = whoDate;
-				reason = "whoStage";
-			} else if (cd4Date != null && whoDate != null && cd4Date.before(whoDate)){
-				dateEligible = cd4Date;
-				reason = "cd4";
+            if(cd4ValuesAndDate.isEmpty() && whoDate == null && arvStartDate != null) {
+                dateEligible = arvStartDate;
+                reason = "";
+                cd4Value = null;
+            }
+
+			if (whoDate != null && cd4ValuesAndDate.isEmpty()) {
+                Date dateValue = null;
+                for(Map.Entry<Date, Double> val : cd4ValuesAndDate.entrySet()) {
+                    dateValue = val.getKey();
+                }
+                if( whoDate.before(dateValue) ){
+                    dateEligible = whoDate;
+                    reason = "whoStage";
+                    cd4Value = null;
+                }
+			} else if (!(cd4ValuesAndDate.isEmpty()) && whoDate != null){
+
+                Date dateValue = null;
+                Double cd4Val = null;
+                for(Map.Entry<Date, Double> val : cd4ValuesAndDate.entrySet()) {
+                    dateValue = val.getKey();
+                    cd4Val = val.getValue();
+                }
+                if(dateValue != null && dateValue.before(whoDate)) {
+                    dateEligible = dateValue;
+                    reason = "cd4";
+                    cd4Value = cd4Val;
+                }
 			}
 		}
-		return new EligibilityDateReason(reason,dateEligible);
+		return new EligibilityDateReason(reason,dateEligible, cd4Value);
 	}
 
-	private Date compareCD4CountAndPercent (List<Obs> cd4, List<Obs> cd4Percent, int cd4PercentThreshold, int cd4CountThreshold) {
+	private Map<Date, Double> compareCD4CountAndPercent (List<Obs> cd4, List<Obs> cd4Percent, int cd4PercentThreshold, int cd4CountThreshold) {
 		Date eligibilityDate = null;
 		Date cd4PercentDate = null;
 		Date cd4CountDate = null;
+        Double cdCount4Value = null;
+        Map<Date, Double> cd4DateAndValue = new HashMap<Date, Double>();
 
 		if (!cd4.isEmpty() && cd4Percent.isEmpty()) {
 			for(Obs obsCount : cd4) {
 				if (obsCount.getValueNumeric() < cd4CountThreshold) {
 					eligibilityDate = obsCount.getObsDatetime() ;
+                    cdCount4Value = obsCount.getValueNumeric();
 					break;
 				}
 			}
@@ -274,6 +326,7 @@ public class DateMedicallyEligibleForARTCalculation extends AbstractPatientCalcu
 			for(Obs obsPercent : cd4Percent) {
 				if (obsPercent.getValueNumeric() < cd4PercentThreshold) {
 					eligibilityDate = obsPercent.getObsDatetime() ;
+                    cdCount4Value = obsPercent.getValueNumeric();
 					break;
 				}
 			}
@@ -284,6 +337,7 @@ public class DateMedicallyEligibleForARTCalculation extends AbstractPatientCalcu
 			for(Obs obsPercent : cd4Percent) {
 				if (obsPercent.getValueNumeric() < cd4PercentThreshold) {
 					 cd4PercentDate = obsPercent.getObsDatetime() ;
+                    cdCount4Value = obsPercent.getValueNumeric();
 					break;
 				}
 			}
@@ -291,6 +345,7 @@ public class DateMedicallyEligibleForARTCalculation extends AbstractPatientCalcu
 			for(Obs obsCount : cd4) {
 				if (obsCount.getValueNumeric() < cd4CountThreshold) {
 					cd4CountDate = obsCount.getObsDatetime() ;
+                    cdCount4Value = obsCount.getValueNumeric();
 					break;
 				}
 			}
@@ -303,36 +358,51 @@ public class DateMedicallyEligibleForARTCalculation extends AbstractPatientCalcu
 				eligibilityDate = cd4PercentDate.before(cd4CountDate) ? cd4PercentDate : cd4CountDate;
 			}
 
+            if(cdCount4Value != null) {
+                cd4DateAndValue.put(eligibilityDate, cdCount4Value);
+            }
+
 
 		}
-		return eligibilityDate;
+		return cd4DateAndValue;
 	}
 
 	class EligibilityDateReason {
 		private String reason;
 		private Date dateEligible;
+        private Double cd4;
 
-		EligibilityDateReason(String reason, Date dateEligible) {
-			this.reason = reason;
-			this.dateEligible = dateEligible;
-		}
 
-		public String getReason() {
-			return reason;
-		}
+        public EligibilityDateReason(String reason, Date dateEligible, Double cd4) {
+            this.reason = reason;
+            this.dateEligible = dateEligible;
+            this.cd4 = cd4;
+        }
 
-		public void setReason(String reason) {
-			this.reason = reason;
-		}
+        public String getReason() {
+            return reason;
+        }
 
-		public Date getDateEligible() {
-			return dateEligible;
-		}
+        public void setReason(String reason) {
+            this.reason = reason;
+        }
 
-		public void setDateEligible(Date dateEligible) {
-			this.dateEligible = dateEligible;
-		}
-	}
+        public Date getDateEligible() {
+            return dateEligible;
+        }
+
+        public void setDateEligible(Date dateEligible) {
+            this.dateEligible = dateEligible;
+        }
+
+        public Double getCd4() {
+            return cd4;
+        }
+
+        public void setCd4(Double cd4) {
+            this.cd4 = cd4;
+        }
+    }
 
 
 }
