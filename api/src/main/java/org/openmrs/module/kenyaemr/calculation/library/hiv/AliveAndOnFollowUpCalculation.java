@@ -7,6 +7,7 @@ import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
 import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.calculation.Filters;
+import org.openmrs.module.kenyaemr.calculation.library.MissedLastAppointmentCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 
@@ -15,7 +16,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Created by codehub on 12/03/15.
+ * Calculate only patients who are active, exclude lost to follow up patients and those who defaulted care
  */
 public class AliveAndOnFollowUpCalculation extends AbstractPatientCalculation {
 
@@ -28,13 +29,14 @@ public class AliveAndOnFollowUpCalculation extends AbstractPatientCalculation {
 		Set<Integer> inHivProgram = Filters.inProgram(hivProgram, alive, context);
 
 		Set<Integer> ltfu = CalculationUtils.patientsThatPass(calculate(new LostToFollowUpCalculation(), cohort, context));
+        Set<Integer> defaulted = CalculationUtils.patientsThatPass(calculate( new MissedLastAppointmentCalculation(), cohort, context));
 		CalculationResultMap ret = new CalculationResultMap();
 		for(Integer ptId: cohort){
 			boolean aliveAndOnFollowUp = false;
 			 if(inHivProgram.contains(ptId)) {
 				aliveAndOnFollowUp = true;
 			 }
-			if(ltfu.contains(ptId)) {
+			if(ltfu.contains(ptId) || defaulted.contains(ptId)) {
 				aliveAndOnFollowUp = false;
 			}
 			ret.put(ptId, new BooleanResult(aliveAndOnFollowUp, this));
