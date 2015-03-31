@@ -113,11 +113,16 @@ public class PreArtandArtClientsReportBuilder extends AbstractHybridReportBuilde
 		dsd.addColumn("Date of TB diagnosis", dateOfTbDiagnosis(), "endDate=${endDate}", new CalculationResultConverter());
 		dsd.addColumn("Anti TB start date", tbStatus(), "endDate=${endDate}",  new  CurrentTBStatusConverter("startDate"));
 		dsd.addColumn("Date medically eligible for ART", dateMedicallyEligibleForART(), "endDate=${endDate}", new MedicallyEligibleConverter("date"));
+        dsd.addColumn("Lcd4artInitiation",  latestCd4PriorToArtInitiation(), "endDate=${endDate}", new LatestCd4PriorToArtInitiationConverter("value"));
+        dsd.addColumn("Dcd4artInitiation",  latestCd4PriorToArtInitiation(), "endDate=${endDate}", new LatestCd4PriorToArtInitiationConverter("date"));
 		dsd.addColumn("Original/Initial ART regimen", InitialARTRegimen(), "endDate=${endDate}", new RegimenConverter());
 		dsd.addColumn("Initial ART start Date", initialArtStartDate(), "endDate=${endDate}", new CalculationResultConverter());
+        dsd.addColumn("Earliest CD4", earliestCd4FollowingArtInitiation(), "endDate=${endDate}", new EarliestCd4FollowingArtInitiationConverter("value"));
+        dsd.addColumn("Date of earliest CD4", earliestCd4FollowingArtInitiation(), "endDate=${endDate}", new EarliestCd4FollowingArtInitiationConverter("date"));
 		dsd.addColumn("Reason for ART initiation",  dateMedicallyEligibleForART(), "endDate=${endDate}", new MedicallyEligibleConverter("reason"));
-        dsd.addColumn("CD4 at eligibility",  dateMedicallyEligibleForART(), "endDate=${endDate}", new MedicallyEligibleConverter("value"));
-        dsd.addColumn("CD4 at ART Start",  cd4AtARTStartDate(), "endDate=${endDate}", new CalculationResultConverter());
+        dsd.addColumn("Pregnancy status",  currentPregnancyStatusAtARTEnrolment(), "endDate=${endDate}", new CalculationResultConverter());
+        /*dsd.addColumn("CD4 at eligibility",  dateMedicallyEligibleForART(), "endDate=${endDate}", new MedicallyEligibleConverter("value"));
+        dsd.addColumn("CD4 at ART Start",  cd4AtARTStartDate(), "endDate=${endDate}", new CalculationResultConverter());*/
 		dsd.addColumn("Current ART regimen", currentArtRegimen(), "endDate=${endDate}", new RegimenConverter());
 		dsd.addColumn("Start date for Current regimen", startDateForCurrentRegimen(), "endDate=${endDate}", new CalculationResultConverter());
 		dsd.addColumn("Date of Last Visit", dateOfLastVisit(), "endDate=${endDate}", new CalculationResultConverter());
@@ -154,6 +159,23 @@ public class PreArtandArtClientsReportBuilder extends AbstractHybridReportBuilde
 		return ReportUtils.map(cd, "enrolledOnOrBefore=${endDate}");
 	}
 
+    private DataDefinition earliestCd4FollowingArtInitiation() {
+        CalculationDataDefinition cd = new CalculationDataDefinition("earliest cd4", new EarliestCd4FollowingArtInitiationCalculation());
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        return cd;
+    }
+    private DataDefinition latestCd4PriorToArtInitiation() {
+        CalculationDataDefinition cd = new CalculationDataDefinition("latest cd4 prior to art", new LatestCd4PriorToArtInitiationCalculation());
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        return cd;
+    }
+
+    private DataDefinition currentPregnancyStatusAtARTEnrolment() {
+        CalculationDataDefinition cd = new CalculationDataDefinition("Pregnancy status", new CurrentPregnancyStatusAtARTEnrolmentCalculation());
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        return cd;
+    }
+
     private DataDefinition dateReportedDate() {
         CalculationDataDefinition cd = new CalculationDataDefinition("date date", new DateOfDeathCalculation());
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -172,11 +194,11 @@ public class PreArtandArtClientsReportBuilder extends AbstractHybridReportBuilde
         return cd;
     }
 
-    private DataDefinition lostToFollow() {
+   /* private DataDefinition lostToFollow() {
         CalculationDataDefinition cd = new CalculationDataDefinition("lost", new LostToFollowUpCalculation());
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         return cd;
-    }
+    }*/
 
     private DataDefinition defaulted() {
         CalculationDataDefinition cd = new CalculationDataDefinition("defaulted", new MissedLastAppointmentCalculation());
@@ -335,10 +357,10 @@ public class PreArtandArtClientsReportBuilder extends AbstractHybridReportBuilde
         return cd;
     }
 
-    private DataDefinition cd4AtARTStartDate() {
+    /*private DataDefinition cd4AtARTStartDate() {
         CalculationDataDefinition cd = new CalculationDataDefinition("", new CD4AtARTInitiationCalculation());
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         return cd;
-    }
+    }*/
 
 }

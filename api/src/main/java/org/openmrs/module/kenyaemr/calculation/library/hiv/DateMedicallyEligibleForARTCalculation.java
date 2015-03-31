@@ -71,7 +71,7 @@ public class DateMedicallyEligibleForARTCalculation extends AbstractPatientCalcu
     private PatientEligibility getCriteriaAndDate(int ageInMonths, List<Obs> cd4, List<Obs> cd4Percent, List<Obs> whoStage, Date birthDate, Date arvStartDate) {
 
         if (ageInMonths < 24) {
-			return new PatientEligibility("age", birthDate, null);
+			return new PatientEligibility("age", birthDate);
         }
         else if (ageInMonths < 60) { // 24-59 months
 
@@ -80,163 +80,23 @@ public class DateMedicallyEligibleForARTCalculation extends AbstractPatientCalcu
                 Date whoDate = whoDate(whoStage);
 
                 if(cd4.isEmpty() && cd4Percent.isEmpty() && whoDate != null && arvStartDate != null && (whoDate.before(arvStartDate) || whoDate.equals(arvStartDate))) {
-                    return new PatientEligibility("who", whoDate, null);
+                    return new PatientEligibility("who", whoDate);
                 }
 
-                if(cd4.isEmpty() && cd4Percent.isEmpty() && whoDate != null && arvStartDate != null && arvStartDate.before(whoDate)) {
-                    return new PatientEligibility("", arvStartDate, null);
+                else if(cd4.isEmpty() && cd4Percent.isEmpty() && whoDate != null && arvStartDate != null && arvStartDate.before(whoDate)) {
+                    return new PatientEligibility("", arvStartDate);
                 }
 
-                if(cd4.isEmpty() && cd4Percent.isEmpty() && whoDate == null && arvStartDate != null) {
-                    return new PatientEligibility("", arvStartDate, null);
+                else if(cd4.isEmpty() && cd4Percent.isEmpty() && whoDate == null && arvStartDate != null) {
+                    return new PatientEligibility("", arvStartDate);
                 }
 
-                if(cd4.isEmpty() && cd4Percent.isEmpty() && whoDate != null && arvStartDate == null) {
-                    return new PatientEligibility("who", whoDate, null);
-                }
-            if(!(cd4.isEmpty()) && cd4Percent.isEmpty()) {
-                Date dateVal = null;
-                Double val = null;
-                Date whoDateIn = whoDate(whoStage);
-                for(Obs obs: cd4) {
-                    if(obs.getValueNumeric() < 1000) {
-                        dateVal = obs.getObsDatetime();
-                        val = obs.getValueNumeric();
-                        break;
-                    }
+                else if(cd4.isEmpty() && cd4Percent.isEmpty() && whoDate != null && arvStartDate == null) {
+                    return new PatientEligibility("who", whoDate);
                 }
 
-                if(dateVal != null && whoDateIn == null && arvStartDate == null) {
-                    return new PatientEligibility("cd4", dateVal, val );
-                }
-
-                if(dateVal == null && whoDateIn != null && arvStartDate == null) {
-                    return new PatientEligibility("who", whoDateIn, null );
-                }
-
-                if(dateVal == null && whoDateIn == null && arvStartDate != null) {
-                    return new PatientEligibility("", arvStartDate, null );
-                }
-
-                if(dateVal != null && whoDateIn != null && arvStartDate == null && dateVal.before(whoDateIn)) {
-                    return new PatientEligibility("cd4", dateVal, val );
-                }
-
-                if(dateVal != null && whoDateIn != null && arvStartDate == null && whoDateIn.before(dateVal)) {
-                    return new PatientEligibility("who", whoDateIn, null );
-                }
-
-                if(dateVal != null && whoDateIn != null && arvStartDate == null && whoDateIn.equals(dateVal)) {
-                    return new PatientEligibility("who", whoDateIn, null );
-                }
-
-                if(dateVal != null && whoDateIn == null && arvStartDate != null && dateVal.before(arvStartDate)){
-                    return new PatientEligibility("cd4", dateVal, val );
-                }
-
-                if(dateVal != null && whoDateIn == null && arvStartDate != null && dateVal.equals(arvStartDate)){
-                    return new PatientEligibility("cd4", dateVal, val );
-                }
-
-                if(dateVal != null && whoDateIn == null && arvStartDate != null && arvStartDate.before(whoDateIn)){
-                    return new PatientEligibility("", arvStartDate, null );
-                }
-
-                if(dateVal != null && whoDateIn != null && arvStartDate != null && dateVal.before(whoDateIn) && dateVal.before(arvStartDate)) {
-                    return new PatientEligibility("cd4", dateVal, val );
-                }
-
-                if(dateVal != null && whoDateIn != null && arvStartDate != null && whoDateIn.before(dateVal) && whoDateIn.before(arvStartDate)) {
-                    return new PatientEligibility("who", whoDateIn, null );
-                }
-
-                if(dateVal != null && whoDateIn != null && arvStartDate != null && arvStartDate.before(dateVal) && arvStartDate.before(whoDateIn)) {
-                    return new PatientEligibility("", arvStartDate, null );
-                }
-
-                if(dateVal != null && whoDateIn != null && arvStartDate != null && dateVal.equals(whoDateIn) && dateVal.equals(arvStartDate)){
-                    return new PatientEligibility("who", whoDateIn, null );
-                }
-
-                if(dateVal != null && whoDateIn != null && arvStartDate != null && dateVal.equals(whoDateIn) && dateVal.before(arvStartDate)){
-                    return new PatientEligibility("who", whoDateIn, null );
-                }
-
-
-            }
-            if(cd4.isEmpty() && !cd4Percent.isEmpty()) {
-
-                Date dateVal = null;
-                Double val = null;
-                Date whoDateIn = whoDate(whoStage);
-                for(Obs obs: cd4Percent) {
-                    if(obs.getValueNumeric() < 25) {
-                        dateVal = obs.getObsDatetime();
-                        val = obs.getValueNumeric();
-                        break;
-                    }
-                }
-
-                if(dateVal != null && whoDateIn == null && arvStartDate == null) {
-                    return new PatientEligibility("cd4", dateVal, val );
-                }
-
-                if(dateVal == null && whoDateIn != null && arvStartDate == null) {
-                    return new PatientEligibility("who", whoDateIn, null );
-                }
-
-                if(dateVal == null && whoDateIn == null && arvStartDate != null) {
-                    return new PatientEligibility("", arvStartDate, null );
-                }
-
-                if(dateVal != null && whoDateIn != null && arvStartDate == null && dateVal.before(whoDateIn)) {
-                    return new PatientEligibility("cd4", dateVal, val );
-                }
-
-                if(dateVal != null && whoDateIn != null && arvStartDate == null && whoDateIn.before(dateVal)) {
-                    return new PatientEligibility("who", whoDateIn, null );
-                }
-
-                if(dateVal != null && whoDateIn != null && arvStartDate == null && whoDateIn.equals(dateVal)) {
-                    return new PatientEligibility("who", whoDateIn, null );
-                }
-
-                if(dateVal != null && whoDateIn == null && arvStartDate != null && dateVal.before(arvStartDate)){
-                    return new PatientEligibility("cd4", dateVal, val );
-                }
-
-                if(dateVal != null && whoDateIn == null && arvStartDate != null && dateVal.equals(arvStartDate)){
-                    return new PatientEligibility("cd4", dateVal, val );
-                }
-
-                if(dateVal != null && whoDateIn == null && arvStartDate != null && arvStartDate.before(whoDateIn)){
-                    return new PatientEligibility("", arvStartDate, null );
-                }
-
-                if(dateVal != null && whoDateIn != null && arvStartDate != null && dateVal.before(whoDateIn) && dateVal.before(arvStartDate)) {
-                    return new PatientEligibility("cd4", dateVal, val );
-                }
-
-                if(dateVal != null && whoDateIn != null && arvStartDate != null && whoDateIn.before(dateVal) && whoDateIn.before(arvStartDate)) {
-                    return new PatientEligibility("who", whoDateIn, null );
-                }
-
-                if(dateVal != null && whoDateIn != null && arvStartDate != null && arvStartDate.before(dateVal) && arvStartDate.before(whoDateIn)) {
-                    return new PatientEligibility("", arvStartDate, null );
-                }
-
-                if(dateVal != null && whoDateIn != null && arvStartDate != null && dateVal.equals(whoDateIn) && dateVal.equals(arvStartDate)){
-                    return new PatientEligibility("who", whoDateIn, null );
-                }
-
-                if(dateVal != null && whoDateIn != null && arvStartDate != null && dateVal.equals(whoDateIn) && dateVal.before(arvStartDate)){
-                    return new PatientEligibility("who", whoDateIn, null );
-                }
-
-            }
-
-				if (dateReason.getDateEligible() != null) {
-					return new PatientEligibility(dateReason.getReason(), dateReason.getDateEligible(), dateReason.getCd4());
+				else if (dateReason.getDateEligible() != null) {
+					return new PatientEligibility(dateReason.getReason(), dateReason.getDateEligible());
 				}
 
         }
@@ -247,166 +107,24 @@ public class DateMedicallyEligibleForARTCalculation extends AbstractPatientCalcu
                 Date whoDate = whoDate(whoStage);
 
                 if(cd4.isEmpty() && cd4Percent.isEmpty() && whoDate != null && arvStartDate != null && (whoDate.before(arvStartDate) || whoDate.equals(arvStartDate))) {
-                    return new PatientEligibility("who", whoDate, null);
+                    return new PatientEligibility("who", whoDate);
                 }
 
-                if(cd4.isEmpty() && cd4Percent.isEmpty() && whoDate != null && arvStartDate != null && arvStartDate.before(whoDate)) {
-                    return new PatientEligibility("", arvStartDate, null);
+                else if(cd4.isEmpty() && cd4Percent.isEmpty() && whoDate != null && arvStartDate != null && arvStartDate.before(whoDate)) {
+                    return new PatientEligibility("", arvStartDate);
                 }
 
-                if(cd4.isEmpty() && cd4Percent.isEmpty() && whoDate == null && arvStartDate != null) {
-                    return new PatientEligibility("", arvStartDate, null);
+                else if(cd4.isEmpty() && cd4Percent.isEmpty() && whoDate == null && arvStartDate != null) {
+                    return new PatientEligibility("", arvStartDate);
                 }
 
-                if(cd4.isEmpty() && cd4Percent.isEmpty() && whoDate != null && arvStartDate == null) {
-                    return new PatientEligibility("who", whoDate, null);
-                }
-            if(!(cd4.isEmpty()) && cd4Percent.isEmpty()) {
-                Date dateVal = null;
-                Double val = null;
-                Date whoDateIn = whoDate(whoStage);
-                for(Obs obs: cd4) {
-                    if(obs.getValueNumeric() < 500) {
-                        dateVal = obs.getObsDatetime();
-                        val = obs.getValueNumeric();
-                        break;
-                    }
+                else if(cd4.isEmpty() && cd4Percent.isEmpty() && whoDate != null && arvStartDate == null) {
+                    return new PatientEligibility("who", whoDate);
                 }
 
-                if(dateVal != null && whoDateIn == null && arvStartDate == null) {
-                    return new PatientEligibility("cd4", dateVal, val );
+                else if (dateReason.getDateEligible() !=null) {
+                    return new PatientEligibility(dateReason.getReason(), dateReason.getDateEligible());
                 }
-
-                if(dateVal == null && whoDateIn != null && arvStartDate == null) {
-                    return new PatientEligibility("who", whoDateIn, null );
-                }
-
-                if(dateVal == null && whoDateIn == null && arvStartDate != null) {
-                    return new PatientEligibility("", arvStartDate, null );
-                }
-
-                if(dateVal != null && whoDateIn != null && arvStartDate == null && dateVal.before(whoDateIn)) {
-                    return new PatientEligibility("cd4", dateVal, val );
-                }
-
-                if(dateVal != null && whoDateIn != null && arvStartDate == null && whoDateIn.before(dateVal)) {
-                    return new PatientEligibility("who", whoDateIn, null );
-                }
-
-                if(dateVal != null && whoDateIn != null && arvStartDate == null && whoDateIn.equals(dateVal)) {
-                    return new PatientEligibility("who", whoDateIn, null );
-                }
-
-                if(dateVal != null && whoDateIn == null && arvStartDate != null && dateVal.before(arvStartDate)){
-                    return new PatientEligibility("cd4", dateVal, val );
-                }
-
-                if(dateVal != null && whoDateIn == null && arvStartDate != null && dateVal.equals(arvStartDate)){
-                    return new PatientEligibility("cd4", dateVal, val );
-                }
-
-                if(dateVal != null && whoDateIn == null && arvStartDate != null && arvStartDate.before(dateVal)){
-                    return new PatientEligibility("", arvStartDate, null );
-                }
-
-                if(dateVal != null && whoDateIn != null && arvStartDate != null && dateVal.before(whoDateIn) && dateVal.before(arvStartDate)) {
-                    return new PatientEligibility("cd4", dateVal, val );
-                }
-
-                if(dateVal != null && whoDateIn != null && arvStartDate != null && whoDateIn.before(dateVal) && whoDateIn.before(arvStartDate)) {
-                    return new PatientEligibility("who", whoDateIn, null );
-                }
-
-                if(dateVal != null && whoDateIn != null && arvStartDate != null && arvStartDate.before(dateVal) && arvStartDate.before(whoDateIn)) {
-                    return new PatientEligibility("", arvStartDate, null );
-                }
-
-                if(dateVal != null && whoDateIn != null && arvStartDate != null && dateVal.equals(whoDateIn) && dateVal.equals(arvStartDate)){
-                    return new PatientEligibility("who", whoDateIn, null );
-                }
-
-                if(dateVal != null && whoDateIn != null && arvStartDate != null && dateVal.equals(whoDateIn) && dateVal.before(arvStartDate)){
-                    return new PatientEligibility("who", whoDateIn, null );
-                }
-
-
-            }
-            if(cd4.isEmpty() && !cd4Percent.isEmpty()) {
-
-                Date dateVal = null;
-                Double val = null;
-                Date whoDateIn = whoDate(whoStage);
-                for(Obs obs: cd4Percent) {
-                    if(obs.getValueNumeric() < 20) {
-                        dateVal = obs.getObsDatetime();
-                        val = obs.getValueNumeric();
-                        break;
-                    }
-                }
-
-                if(dateVal != null && whoDateIn == null && arvStartDate == null) {
-                    return new PatientEligibility("cd4", dateVal, val );
-                }
-
-                if(dateVal == null && whoDateIn != null && arvStartDate == null) {
-                    return new PatientEligibility("who", whoDateIn, null );
-                }
-
-                if(dateVal == null && whoDateIn == null && arvStartDate != null) {
-                    return new PatientEligibility("", arvStartDate, null );
-                }
-
-                if(dateVal != null && whoDateIn != null && arvStartDate == null && dateVal.before(whoDateIn)) {
-                    return new PatientEligibility("cd4", dateVal, val );
-                }
-
-                if(dateVal != null && whoDateIn != null && arvStartDate == null && whoDateIn.before(dateVal)) {
-                    return new PatientEligibility("who", whoDateIn, null );
-                }
-
-                if(dateVal != null && whoDateIn != null && arvStartDate == null && whoDateIn.equals(dateVal)) {
-                    return new PatientEligibility("who", whoDateIn, null );
-                }
-
-                if(dateVal != null && whoDateIn == null && arvStartDate != null && dateVal.before(arvStartDate)){
-                    return new PatientEligibility("cd4", dateVal, val );
-                }
-
-                if(dateVal != null && whoDateIn == null && arvStartDate != null && dateVal.equals(arvStartDate)){
-                    return new PatientEligibility("cd4", dateVal, val );
-                }
-
-                if(dateVal != null && whoDateIn == null && arvStartDate != null && arvStartDate.before(dateVal)){
-                    return new PatientEligibility("", arvStartDate, null );
-                }
-
-                if(dateVal != null && whoDateIn != null && arvStartDate != null && dateVal.before(whoDateIn) && dateVal.before(arvStartDate)) {
-                    return new PatientEligibility("cd4", dateVal, val );
-                }
-
-                if(dateVal != null && whoDateIn != null && arvStartDate != null && whoDateIn.before(dateVal) && whoDateIn.before(arvStartDate)) {
-                    return new PatientEligibility("who", whoDateIn, null );
-                }
-
-                if(dateVal != null && whoDateIn != null && arvStartDate != null && arvStartDate.before(dateVal) && arvStartDate.before(whoDateIn)) {
-                    return new PatientEligibility("", arvStartDate, null );
-                }
-
-                if(dateVal != null && whoDateIn != null && arvStartDate != null && dateVal.equals(whoDateIn) && dateVal.equals(arvStartDate)){
-                    return new PatientEligibility("who", whoDateIn, null );
-                }
-
-                if(dateVal != null && whoDateIn != null && arvStartDate != null && dateVal.equals(whoDateIn) && dateVal.before(arvStartDate)){
-                    return new PatientEligibility("who", whoDateIn, null );
-                }
-
-            }
-
-
-
-            if (dateReason.getDateEligible() !=null) {
-                return new PatientEligibility(dateReason.getReason(), dateReason.getDateEligible(), dateReason.getCd4());
-            }
         }
         else {
 
@@ -415,101 +133,31 @@ public class DateMedicallyEligibleForARTCalculation extends AbstractPatientCalcu
                 Date whoDate = whoDate(whoStage);
 
                 if(cd4.isEmpty() && cd4Percent.isEmpty() && whoDate != null && arvStartDate != null && (whoDate.before(arvStartDate) || whoDate.equals(arvStartDate))) {
-                    return new PatientEligibility("who", whoDate, null);
+                    return new PatientEligibility("who", whoDate);
                 }
 
-                if(cd4.isEmpty() && cd4Percent.isEmpty() && whoDate != null && arvStartDate != null && whoDate.before(arvStartDate)) {
-                    return new PatientEligibility("who", whoDate, null);
+                else if(cd4.isEmpty() && cd4Percent.isEmpty() && whoDate != null && arvStartDate != null && whoDate.before(arvStartDate)) {
+                    return new PatientEligibility("who", whoDate);
                 }
 
-                if(cd4.isEmpty() && cd4Percent.isEmpty() && whoDate != null && arvStartDate != null && whoDate.before(arvStartDate) && whoDate.equals(arvStartDate)) {
-                    return new PatientEligibility("who", whoDate, null);
+                else if(cd4.isEmpty() && cd4Percent.isEmpty() && whoDate != null && arvStartDate != null && whoDate.before(arvStartDate) && whoDate.equals(arvStartDate)) {
+                    return new PatientEligibility("who", whoDate);
                 }
 
-                if(cd4.isEmpty() && cd4Percent.isEmpty() && whoDate != null && arvStartDate != null && arvStartDate.before(whoDate)) {
-                    return new PatientEligibility("", arvStartDate, null);
+                else if(cd4.isEmpty() && cd4Percent.isEmpty() && whoDate != null && arvStartDate != null && arvStartDate.before(whoDate)) {
+                    return new PatientEligibility("", arvStartDate);
                 }
 
-                if(cd4.isEmpty() && cd4Percent.isEmpty() && whoDate == null && arvStartDate != null) {
-                    return new PatientEligibility("", arvStartDate, null);
+                else if(cd4.isEmpty() && cd4Percent.isEmpty() && whoDate == null && arvStartDate != null) {
+                    return new PatientEligibility("", arvStartDate);
                 }
 
-                if(cd4.isEmpty() && cd4Percent.isEmpty() && whoDate != null && arvStartDate == null) {
-                    return new PatientEligibility("who", whoDate, null);
+                else if(cd4.isEmpty() && cd4Percent.isEmpty() && whoDate != null && arvStartDate == null) {
+                    return new PatientEligibility("who", whoDate);
                 }
 
-                if(!(cd4.isEmpty()) && cd4Percent.isEmpty()) {
-                    Date dateVal = null;
-                    Double val = null;
-                    Date whoDateIn = whoDate(whoStage);
-                    for(Obs obs: cd4) {
-                        if(obs.getValueNumeric() < 350) {
-                            dateVal = obs.getObsDatetime();
-                            val = obs.getValueNumeric();
-                            break;
-                        }
-                    }
-
-                    if(dateVal != null && whoDateIn == null && arvStartDate == null) {
-                       return new PatientEligibility("cd4", dateVal, val );
-                    }
-
-                    if(dateVal == null && whoDateIn != null && arvStartDate == null) {
-                        return new PatientEligibility("who", whoDateIn, null );
-                    }
-
-                    if(dateVal == null && whoDateIn == null && arvStartDate != null) {
-                        return new PatientEligibility("", arvStartDate, null );
-                    }
-
-                    if(dateVal != null && whoDateIn != null && arvStartDate == null && dateVal.before(whoDateIn)) {
-                        return new PatientEligibility("cd4", dateVal, val );
-                    }
-
-                    if(dateVal != null && whoDateIn != null && arvStartDate == null && whoDateIn.before(dateVal)) {
-                        return new PatientEligibility("who", whoDateIn, null );
-                    }
-
-                    if(dateVal != null && whoDateIn != null && arvStartDate == null && whoDateIn.equals(dateVal)) {
-                        return new PatientEligibility("who", whoDateIn, null );
-                    }
-
-                    if(dateVal != null && whoDateIn == null && arvStartDate != null && dateVal.before(arvStartDate)){
-                        return new PatientEligibility("cd4", dateVal, val );
-                    }
-
-                    if(dateVal != null && whoDateIn == null && arvStartDate != null && dateVal.equals(arvStartDate)){
-                        return new PatientEligibility("cd4", dateVal, val );
-                    }
-
-                    if(dateVal != null && whoDateIn == null && arvStartDate != null && arvStartDate.before(dateVal)){
-                        return new PatientEligibility("", arvStartDate, null );
-                    }
-
-                    if(dateVal != null && whoDateIn != null && arvStartDate != null && dateVal.before(whoDateIn) && dateVal.before(arvStartDate)) {
-                        return new PatientEligibility("cd4", dateVal, val );
-                    }
-
-                    if(dateVal != null && whoDateIn != null && arvStartDate != null && whoDateIn.before(dateVal) && whoDateIn.before(arvStartDate)) {
-                        return new PatientEligibility("who", whoDateIn, null );
-                    }
-
-                    if(dateVal != null && whoDateIn != null && arvStartDate != null && arvStartDate.before(dateVal) && arvStartDate.before(whoDateIn)) {
-                        return new PatientEligibility("", arvStartDate, null );
-                    }
-
-                    if(dateVal != null && whoDateIn != null && arvStartDate != null && dateVal.equals(whoDateIn) && dateVal.equals(arvStartDate)){
-                        return new PatientEligibility("who", whoDateIn, null );
-                    }
-
-                    if(dateVal != null && whoDateIn != null && arvStartDate != null && dateVal.equals(whoDateIn) && dateVal.before(arvStartDate)){
-                        return new PatientEligibility("who", whoDateIn, null );
-                    }
-
-                }
-
-                if (dateReason.getDateEligible() !=null) {
-                    return new PatientEligibility(dateReason.getReason(), dateReason.getDateEligible(), dateReason.getCd4());
+                else if (dateReason.getDateEligible() !=null) {
+                    return new PatientEligibility(dateReason.getReason(), dateReason.getDateEligible());
                 }
 
         }
@@ -520,122 +168,97 @@ public class DateMedicallyEligibleForARTCalculation extends AbstractPatientCalcu
 
 		String reason = null;
 		Date dateEligible = null;
-		Double cd4Value = null;
-        Map<Date, Double> cd4ValuesAndDate = compareCD4CountAndPercent(cd4, cd4Percent, cd4PercentThreshold, cd4CountThreshold);
+        Date cd4ValuesAndDate = compareCD4CountAndPercent(cd4, cd4Percent, cd4PercentThreshold, cd4CountThreshold);
         Date whoDate = whoDate(whoStage);
-        Date initialCd4DateValue = null;
-        Double initialCd4Value = null;
 
-        for(Map.Entry<Date, Double> cd4Values : cd4ValuesAndDate.entrySet()) {
-            initialCd4DateValue = cd4Values.getKey();
-            initialCd4Value = cd4Values.getValue();
-        }
-
-        if (whoDate == null  && initialCd4DateValue == null && arvStartDate != null){
+        if (whoDate == null  && cd4ValuesAndDate == null && arvStartDate != null){
                 dateEligible = arvStartDate;
                 reason = "";
-                cd4Value = null;
 		}
 
-        if (whoDate != null && initialCd4DateValue == null &&  arvStartDate == null){
+        else if (whoDate != null && cd4ValuesAndDate == null &&  arvStartDate == null){
             dateEligible = whoDate;
             reason = "who";
-            cd4Value = null;
         }
 
-        if (whoDate == null && initialCd4DateValue != null  && arvStartDate == null){
+        else if (whoDate == null && cd4ValuesAndDate != null  && arvStartDate == null){
 
-            dateEligible = initialCd4DateValue;
+            dateEligible = cd4ValuesAndDate;
             reason = "cd4";
-            cd4Value = initialCd4Value;
         }
 
-        if (whoDate == null && initialCd4DateValue != null && arvStartDate != null && (initialCd4DateValue.before(arvStartDate) || initialCd4DateValue.equals(arvStartDate))) {
+        else if (whoDate == null && cd4ValuesAndDate != null && arvStartDate != null && (cd4ValuesAndDate.before(arvStartDate) || cd4ValuesAndDate.equals(arvStartDate))) {
 
 
-            dateEligible = initialCd4DateValue;
+            dateEligible = cd4ValuesAndDate;
             reason = "cd4";
-            cd4Value = initialCd4Value;
         }
 
-        if(whoDate == null && initialCd4DateValue != null && arvStartDate != null && arvStartDate.before(initialCd4DateValue)) {
+        else if(whoDate == null && cd4ValuesAndDate != null && arvStartDate != null && arvStartDate.before(cd4ValuesAndDate)) {
             dateEligible = arvStartDate;
             reason = "";
-            cd4Value = null;
         }
 
 
-        if (whoDate != null && initialCd4DateValue == null && arvStartDate != null && (whoDate.before(arvStartDate) || whoDate.equals(arvStartDate))) {
+        else if (whoDate != null && cd4ValuesAndDate == null && arvStartDate != null && (whoDate.before(arvStartDate) || whoDate.equals(arvStartDate))) {
 
             dateEligible = whoDate;
             reason = "who";
-            cd4Value = null;
         }
 
-        if (whoDate != null && initialCd4DateValue == null && arvStartDate != null && arvStartDate.before(whoDate)){
+        else if (whoDate != null && cd4ValuesAndDate == null && arvStartDate != null && arvStartDate.before(whoDate)){
             dateEligible = arvStartDate;
             reason = "";
-            cd4Value = null;
         }
 
-        if (whoDate != null && initialCd4DateValue != null && arvStartDate == null && initialCd4DateValue.before(whoDate)){
+        else if (whoDate != null && cd4ValuesAndDate != null && arvStartDate == null && cd4ValuesAndDate.before(whoDate)){
 
-                dateEligible = initialCd4DateValue;
+                dateEligible = cd4ValuesAndDate;
                 reason = "cd4";
-                cd4Value = initialCd4Value;
             }
 
-        if(whoDate != null && initialCd4DateValue != null && arvStartDate == null && (whoDate.before(initialCd4DateValue) || whoDate.equals(initialCd4DateValue))) {
+        else if(whoDate != null && cd4ValuesAndDate != null && arvStartDate == null && (whoDate.before(cd4ValuesAndDate) || whoDate.equals(cd4ValuesAndDate))) {
             dateEligible = whoDate;
             reason = "who";
-            cd4Value = null;
         }
 
 
-        if (whoDate != null && initialCd4DateValue != null && arvStartDate != null && (whoDate.before(initialCd4DateValue) || whoDate.equals(initialCd4DateValue)) && (whoDate.before(arvStartDate) || whoDate.equals(arvStartDate))){
+        else if (whoDate != null && cd4ValuesAndDate != null && arvStartDate != null && (whoDate.before(cd4ValuesAndDate) || whoDate.equals(cd4ValuesAndDate)) && (whoDate.before(arvStartDate) || whoDate.equals(arvStartDate))){
             dateEligible = whoDate;
             reason = "who";
-            cd4Value = null;
         }
 
-        if (whoDate != null && initialCd4DateValue != null && arvStartDate != null && initialCd4DateValue.before(whoDate) && (initialCd4DateValue.before(arvStartDate) || initialCd4DateValue.equals(arvStartDate))){
-            dateEligible = initialCd4DateValue;
+        else if (whoDate != null && cd4ValuesAndDate != null && arvStartDate != null && cd4ValuesAndDate.before(whoDate) && (cd4ValuesAndDate.before(arvStartDate) || cd4ValuesAndDate.equals(arvStartDate))){
+            dateEligible = cd4ValuesAndDate;
             reason = "cd4";
-            cd4Value = initialCd4Value;
         }
 
-        if (whoDate != null && initialCd4DateValue != null && arvStartDate != null && (arvStartDate.before(whoDate) || arvStartDate.before(initialCd4DateValue))){
+        else if (whoDate != null && cd4ValuesAndDate != null && arvStartDate != null && (arvStartDate.before(whoDate) || arvStartDate.before(cd4ValuesAndDate))){
             dateEligible = arvStartDate;
             reason = "";
-            cd4Value = null;
         }
 
-        if (whoDate != null && initialCd4DateValue != null && arvStartDate != null && arvStartDate.before(whoDate) && arvStartDate.before(initialCd4DateValue)){
+        else if (whoDate != null && cd4ValuesAndDate != null && arvStartDate != null && arvStartDate.before(whoDate) && arvStartDate.before(cd4ValuesAndDate)){
             dateEligible = arvStartDate;
             reason = "";
-            cd4Value = null;
         }
 
-        if (whoDate != null && initialCd4DateValue != null && arvStartDate != null && arvStartDate.before(whoDate) && arvStartDate.before(initialCd4DateValue)){
+        else if (whoDate != null && cd4ValuesAndDate != null && arvStartDate != null && arvStartDate.before(whoDate) && arvStartDate.before(cd4ValuesAndDate)){
             dateEligible = arvStartDate;
             reason = "";
-            cd4Value = null;
         }
 
-        if (whoDate != null && initialCd4DateValue != null && arvStartDate != null && whoDate.equals(initialCd4DateValue) && whoDate.equals(arvStartDate)){
+        else if (whoDate != null && cd4ValuesAndDate != null && arvStartDate != null && whoDate.equals(cd4ValuesAndDate) && whoDate.equals(arvStartDate)){
             dateEligible = whoDate;
             reason = "who";
-            cd4Value = null;
         }
 
-        if (whoDate != null && initialCd4DateValue != null && arvStartDate != null && (whoDate.equals(initialCd4DateValue) || whoDate.equals(arvStartDate))){
+        else if (whoDate != null && cd4ValuesAndDate != null && arvStartDate != null && (whoDate.equals(cd4ValuesAndDate) || whoDate.equals(arvStartDate))){
             dateEligible = whoDate;
             reason = "who";
-            cd4Value = null;
-
         }
 
-		return new EligibilityDateReason(reason,dateEligible, cd4Value);
+		return new EligibilityDateReason(reason, dateEligible);
 	}
 
     private Date whoDate(List<Obs> whoStage) {
@@ -671,22 +294,22 @@ public class DateMedicallyEligibleForARTCalculation extends AbstractPatientCalcu
         return whoStageDate;
 
     }
-	private Map<Date, Double> compareCD4CountAndPercent (List<Obs> cd4, List<Obs> cd4Percent, int cd4PercentThreshold, int cd4CountThreshold) {
+	private Date compareCD4CountAndPercent (List<Obs> cd4, List<Obs> cd4Percent, int cd4PercentThreshold, int cd4CountThreshold) {
 		Date eligibilityDate;
 		Date cd4PercentDate = null;
 		Date cd4CountDate = null;
 
-        Map<Date, Double> cd4DateAndValue = new HashMap<Date, Double>();;
+        Date cd4DateAndValue = null;
 
 		if (!(cd4.isEmpty()) && cd4Percent.isEmpty()) {
 			for(Obs obsCount : cd4) {
 				if (obsCount.getValueNumeric() < cd4CountThreshold) {
 
-                    cd4DateAndValue.put(obsCount.getObsDatetime(), obsCount.getValueNumeric());
+                    cd4DateAndValue = obsCount.getObsDatetime();
 					break;
 				}
                 else {
-                    cd4DateAndValue.put(null, null);
+                    cd4DateAndValue = null;
                 }
 			}
 		}
@@ -694,29 +317,32 @@ public class DateMedicallyEligibleForARTCalculation extends AbstractPatientCalcu
 		if (cd4.isEmpty() && !(cd4Percent.isEmpty())) {
             for (Obs obsPercent : cd4Percent) {
                 if (obsPercent.getValueNumeric() < cd4PercentThreshold) {
-                    cd4DateAndValue.put(obsPercent.getObsDatetime(), obsPercent.getValueNumeric());
+                    cd4DateAndValue = obsPercent.getObsDatetime();
                     break;
                 } else {
-                    cd4DateAndValue.put(null, null);
+                    cd4DateAndValue = null;
                 }
             }
         }
 
 		if (!cd4.isEmpty() && !cd4Percent.isEmpty()) {
-            Double cdCount4Value = null;
             for (Obs obsPercent : cd4Percent) {
                 if (obsPercent.getValueNumeric() < cd4PercentThreshold) {
                     cd4PercentDate = obsPercent.getObsDatetime();
-                    cdCount4Value = obsPercent.getValueNumeric();
                     break;
+                }
+                else {
+                    cd4PercentDate = null;
                 }
             }
 
             for (Obs obsCount : cd4) {
                 if (obsCount.getValueNumeric() < cd4CountThreshold) {
                     cd4CountDate = obsCount.getObsDatetime();
-                    cdCount4Value = obsCount.getValueNumeric();
                     break;
+                }
+                else {
+                    cd4CountDate = null;
                 }
             }
 
@@ -731,10 +357,9 @@ public class DateMedicallyEligibleForARTCalculation extends AbstractPatientCalcu
                 eligibilityDate = cd4CountDate;
             } else {
                 eligibilityDate = null;
-                cdCount4Value = null;
             }
 
-                cd4DateAndValue.put(eligibilityDate, cdCount4Value);
+                cd4DateAndValue = eligibilityDate;
 
         }
 
@@ -744,13 +369,11 @@ public class DateMedicallyEligibleForARTCalculation extends AbstractPatientCalcu
 	class EligibilityDateReason {
 		private String reason;
 		private Date dateEligible;
-        private Double cd4;
 
-
-        public EligibilityDateReason(String reason, Date dateEligible, Double cd4) {
+        public EligibilityDateReason(String reason, Date dateEligible) {
             this.reason = reason;
             this.dateEligible = dateEligible;
-            this.cd4 = cd4;
+
         }
 
         public String getReason() {
@@ -769,13 +392,6 @@ public class DateMedicallyEligibleForARTCalculation extends AbstractPatientCalcu
             this.dateEligible = dateEligible;
         }
 
-        public Double getCd4() {
-            return cd4;
-        }
-
-        public void setCd4(Double cd4) {
-            this.cd4 = cd4;
-        }
     }
 
 
