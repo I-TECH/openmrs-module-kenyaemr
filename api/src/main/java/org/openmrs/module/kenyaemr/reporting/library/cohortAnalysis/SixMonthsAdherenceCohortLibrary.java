@@ -21,6 +21,7 @@ import org.openmrs.module.kenyaemr.calculation.library.cohort.RetentionAliveCoho
 import org.openmrs.module.kenyaemr.calculation.library.cohort.RetentionDeadCohortCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.cohort.RetentionLTFUCohortCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.cohort.RetentionStoppedCohortCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.cohort.RetentionTOCohortCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.cohort.SixMonthCohortCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.cohort.ThreeMonthCohortCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.cohort.TwoMonthsCohortCalculation;
@@ -137,6 +138,17 @@ public class SixMonthsAdherenceCohortLibrary {
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
 		cd.addCalculationParameter("cohort", key);
 		cd.setName("stopped art at 12 months cohort");
+		return cd;
+	}
+
+	/**
+	 * alive cohort definition
+	 */
+	public CohortDefinition toCohortDefinition(String key) {
+		CalculationCohortDefinition cd = new CalculationCohortDefinition(new RetentionTOCohortCalculation());
+		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
+		cd.addCalculationParameter("cohort", key);
+		cd.setName("TO at 12 months cohort");
 		return cd;
 	}
 }

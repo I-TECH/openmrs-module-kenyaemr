@@ -114,6 +114,14 @@ public class SixMonthArtAdherenceReportBuilder extends AbstractReportBuilder {
 		dsd.addColumn("3MonthsStopped", "three-month Stopped patients", ReportUtils.map(indicatorLibrary.stoppedPatients("3month"), indParams), "");
 		dsd.addColumn("6MonthsStopped", "six-month Stopped patients", ReportUtils.map(indicatorLibrary.stoppedPatients("6month"), indParams), "");
 
+		dsd.addColumn("allTo", "TO patients", ReportUtils.map(indicatorLibrary.toPatients("all"), indParams), "");
+		dsd.addColumn("2wksTo", "two-week TO patients", ReportUtils.map(indicatorLibrary.toPatients("2weeks"), indParams), "");
+		dsd.addColumn("1MonthTo", "one-month TO patients", ReportUtils.map(indicatorLibrary.toPatients("1month"), indParams), "");
+		dsd.addColumn("2MonthsTo", "two-month TO patients", ReportUtils.map(indicatorLibrary.toPatients("2month"), indParams), "");
+		dsd.addColumn("3MonthsTo", "three-month TO patients", ReportUtils.map(indicatorLibrary.toPatients("3month"), indParams), "");
+		dsd.addColumn("6MonthsTo", "six-month TO patients", ReportUtils.map(indicatorLibrary.toPatients("6month"), indParams), "");
+
+
 		return dsd;
 	}
 

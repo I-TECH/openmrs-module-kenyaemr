@@ -108,4 +108,12 @@ public class SixMonthsAdherenceIndicatorLibrary {
 		return cohortIndicator("Stopped patients",
 				ReportUtils.map(cohorts.stoppedCohortDefinition(key), "onDate=${startDate}"));
 	}
+
+	/**
+	 * Two weeks cohort definition
+	 */
+	public CohortIndicator toPatients(String key) {
+		return cohortIndicator("TO patients",
+				ReportUtils.map(cohorts.toCohortDefinition(key), "onDate=${startDate}"));
+	}
 }
