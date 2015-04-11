@@ -13,13 +13,22 @@
  */
 package org.openmrs.module.kenyaemr.calculation.library.cohort;
 
+import org.openmrs.Obs;
+import org.openmrs.api.ObsService;
+import org.openmrs.api.PersonService;
+import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
+import org.openmrs.module.kenyaemr.Dictionary;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Calculates cohort of a patient using difference between encounter and next visit dates
@@ -30,19 +39,33 @@ public class OneMonthCohortCalculation extends AbstractPatientCalculation {
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
 
-		CalculationResultMap resultMap = calculate(new PatientCohortCalculation(), cohort, context);
+		ObsService service = Context.getObsService();
+		PersonService personService = Context.getPersonService();
+		Set<Integer> newCohort = new HashSet<Integer>();
+
+		List<Obs> rtcPatientsObs = service.getObservations(null, null, Arrays.asList(Dictionary.getConcept(Dictionary.RETURN_VISIT_DATE)), null, null, null, null, null, null, context.getNow(), null, false);
+		for (Obs o : rtcPatientsObs) {
+			newCohort.add(o.getPersonId());
+		}
 		CalculationResultMap ret = new CalculationResultMap();
 
-		for (Integer ptid : cohort) {
-			PatientCohortCategoryInfo info = (PatientCohortCategoryInfo)resultMap.get(ptid).getValue();
-			if (info != null) {
-				if (1 == info.getCohort() && "Month".equals(info.getUnit())) {
-					ret.put(ptid, new SimpleResult(info, this));
+		if (newCohort.isEmpty()) {
+			return ret;
+		}
+
+		for (Integer ptid : newCohort) {
+
+			List<Obs> rtc = service.getObservations(Arrays.asList(personService.getPerson(ptid)), null, Arrays.asList(Dictionary.getConcept(Dictionary.RETURN_VISIT_DATE)), null, null, null, null, null, null, context.getNow(), null, false);
+			if (!rtc.isEmpty()) {
+				PatientCohortCategoryInfo cohortInfo = CohortReportUtil.getPatientCohortCategoryInfo(rtc.get(0).getObsDatetime(), rtc.get(0).getValueDate());
+				if (cohortInfo != null && cohortInfo.getCohort() != null && cohortInfo.getUnit() != null) {
+					if (1 == cohortInfo.getCohort() && "Month".equals(cohortInfo.getUnit())) {
+						ret.put(ptid, new SimpleResult(cohortInfo, this));
+					}
 				}
 			}
 		}
 
 		return ret;
 	}
-
 }

@@ -16,12 +16,20 @@ package org.openmrs.module.kenyaemr.reporting.library.cohortAnalysis;
 
 import org.openmrs.module.kenyacore.report.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.kenyaemr.calculation.library.cohort.OneMonthCohortCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.cohort.PatientCohortCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.cohort.RetentionAliveCohortCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.cohort.RetentionDeadCohortCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.cohort.RetentionLTFUCohortCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.cohort.RetentionStoppedCohortCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.cohort.SixMonthCohortCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.cohort.ThreeMonthCohortCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.cohort.TwoMonthsCohortCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.cohort.TwoWeeksCohortCalculation;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
+import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.stereotype.Component;
+
+import java.util.Date;
 
 /**
  * Library of cohorts of interest to Global funds research
@@ -30,10 +38,21 @@ import org.springframework.stereotype.Component;
 public class SixMonthsAdherenceCohortLibrary {
 
 	/**
+	 * All patients
+	 */
+	public CohortDefinition allPatientsCohortDefinition() {
+		CalculationCohortDefinition cd = new CalculationCohortDefinition(new PatientCohortCalculation());
+		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
+		cd.setName("All patients cohort");
+		return cd;
+	}
+
+	/**
 	 * Two weeks cohort definition
 	 */
 	public CohortDefinition twoWeeksCohortDefinition() {
 		CalculationCohortDefinition cd = new CalculationCohortDefinition(new TwoWeeksCohortCalculation());
+		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
 		cd.setName("Two weeks art refill cohort");
 		return cd;
 	}
@@ -43,6 +62,7 @@ public class SixMonthsAdherenceCohortLibrary {
 	 */
 	public CohortDefinition oneMonthCohortDefinition() {
 		CalculationCohortDefinition cd = new CalculationCohortDefinition(new OneMonthCohortCalculation());
+		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
 		cd.setName("One Month art refill cohort");
 		return cd;
 	}
@@ -52,6 +72,7 @@ public class SixMonthsAdherenceCohortLibrary {
 	 */
 	public CohortDefinition twoMonthCohortDefinition() {
 		CalculationCohortDefinition cd = new CalculationCohortDefinition(new TwoMonthsCohortCalculation());
+		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
 		cd.setName("Two Months art refill cohort");
 		return cd;
 	}
@@ -61,6 +82,7 @@ public class SixMonthsAdherenceCohortLibrary {
 	 */
 	public CohortDefinition threeMonthCohortDefinition() {
 		CalculationCohortDefinition cd = new CalculationCohortDefinition(new ThreeMonthCohortCalculation());
+		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
 		cd.setName("Three Months art refill cohort");
 		return cd;
 	}
@@ -69,7 +91,52 @@ public class SixMonthsAdherenceCohortLibrary {
 	 */
 	public CohortDefinition sixMonthCohortDefinition() {
 		CalculationCohortDefinition cd = new CalculationCohortDefinition(new SixMonthCohortCalculation());
+		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
 		cd.setName("Six Months art refill cohort");
+		return cd;
+	}
+
+	/**
+	 * alive cohort definition
+	 */
+	public CohortDefinition aliveCohortDefinition(String key) {
+		CalculationCohortDefinition cd = new CalculationCohortDefinition(new RetentionAliveCohortCalculation());
+		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
+		cd.addCalculationParameter("cohort", key);
+		cd.setName("alive at 12 months cohort");
+		return cd;
+	}
+
+	/**
+	 * alive cohort definition
+	 */
+	public CohortDefinition deadCohortDefinition(String key) {
+		CalculationCohortDefinition cd = new CalculationCohortDefinition(new RetentionDeadCohortCalculation());
+		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
+		cd.addCalculationParameter("cohort", key);
+		cd.setName("dead at 12 months cohort");
+		return cd;
+	}
+
+	/**
+	 * alive cohort definition
+	 */
+	public CohortDefinition ltfuCohortDefinition(String key) {
+		CalculationCohortDefinition cd = new CalculationCohortDefinition(new RetentionLTFUCohortCalculation());
+		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
+		cd.addCalculationParameter("cohort", key);
+		cd.setName("ltfu at 12 months cohort");
+		return cd;
+	}
+
+	/**
+	 * alive cohort definition
+	 */
+	public CohortDefinition stoppedCohortDefinition(String key) {
+		CalculationCohortDefinition cd = new CalculationCohortDefinition(new RetentionStoppedCohortCalculation());
+		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
+		cd.addCalculationParameter("cohort", key);
+		cd.setName("stopped art at 12 months cohort");
 		return cd;
 	}
 }
