@@ -57,7 +57,7 @@ public class OneMonthCohortCalculation extends AbstractPatientCalculation {
 
 			List<Obs> rtc = service.getObservations(Arrays.asList(personService.getPerson(ptid)), null, Arrays.asList(Dictionary.getConcept(Dictionary.RETURN_VISIT_DATE)), null, null, null, null, null, null, context.getNow(), null, false);
 			if (!rtc.isEmpty()) {
-				PatientCohortCategoryInfo cohortInfo = CohortReportUtil.getPatientCohortCategoryInfo(rtc.get(0).getObsDatetime(), rtc.get(0).getValueDate());
+				PatientCohortCategoryInfo cohortInfo = CohortReportUtil.getPatientCohortCategoryInfo(rtc);
 				if (cohortInfo != null && cohortInfo.getCohort() != null && cohortInfo.getUnit() != null) {
 					if (1 == cohortInfo.getCohort() && "Month".equals(cohortInfo.getUnit())) {
 						ret.put(ptid, new SimpleResult(cohortInfo, this));
