@@ -24,8 +24,8 @@ import org.openmrs.module.kenyacore.report.cohort.definition.DateObsValueBetween
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.library.DeceasedPatientsCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.InProgramCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.IsPregnantCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.RecordedDeceasedCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.OnAlternateFirstLineArtCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
@@ -235,7 +235,7 @@ public class CommonCohortLibrary {
 	 * @return the cohort definition
 	 */
 	public CohortDefinition pregnant() {
-		CalculationCohortDefinition cd = new CalculationCohortDefinition(new OnAlternateFirstLineArtCalculation());
+		CalculationCohortDefinition cd = new CalculationCohortDefinition(new IsPregnantCalculation());
 		cd.setName("pregnant on date");
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
 		return cd;
