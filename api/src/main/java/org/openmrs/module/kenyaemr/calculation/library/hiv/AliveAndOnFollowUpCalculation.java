@@ -28,15 +28,18 @@ public class AliveAndOnFollowUpCalculation extends AbstractPatientCalculation {
 		Set<Integer> alive = Filters.alive(cohort, context);
 		Set<Integer> inHivProgram = Filters.inProgram(hivProgram, alive, context);
 
-		Set<Integer> ltfu = CalculationUtils.patientsThatPass(calculate(new LostToFollowUpCalculation(), cohort, context));
-        Set<Integer> defaulted = CalculationUtils.patientsThatPass(calculate( new MissedLastAppointmentCalculation(), cohort, context));
+		CalculationResultMap ltfu = calculate(new LostToFollowUpCalculation(), cohort, context);
+        CalculationResultMap defaulted = calculate(new MissedLastAppointmentCalculation(), cohort, context);
 		CalculationResultMap ret = new CalculationResultMap();
 		for(Integer ptId: cohort){
 			boolean aliveAndOnFollowUp = false;
+
+            Boolean ltfuBoolean = (Boolean) ltfu.get(ptId).getValue();
+            Boolean defaultedBoolean = (Boolean) defaulted.get(ptId).getValue();
 			 if(inHivProgram.contains(ptId)) {
 				aliveAndOnFollowUp = true;
 			 }
-			if(ltfu.contains(ptId) || defaulted.contains(ptId)) {
+			if((ltfuBoolean != null && ltfuBoolean.equals(Boolean.TRUE)) || (defaultedBoolean != null && defaultedBoolean.equals(Boolean.TRUE))) {
 				aliveAndOnFollowUp = false;
 			}
 			ret.put(ptId, new BooleanResult(aliveAndOnFollowUp, this));

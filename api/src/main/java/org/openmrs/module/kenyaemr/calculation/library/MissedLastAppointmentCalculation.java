@@ -58,18 +58,20 @@ public class MissedLastAppointmentCalculation extends AbstractPatientCalculation
 
 		CalculationResultMap lastReturnDateObss = Calculations.lastObs(Dictionary.getConcept(Dictionary.RETURN_VISIT_DATE), alive, context);
 		CalculationResultMap lastEncounters = Calculations.lastEncounter(null, cohort, context);
-		Set<Integer> ltfu = CalculationUtils.patientsThatPass(calculate(new LostToFollowUpCalculation(), cohort, context));
+		CalculationResultMap ltfu = calculate(new LostToFollowUpCalculation(), cohort, context);
 
 		CalculationResultMap ret = new CalculationResultMap();
 		for (Integer ptId : cohort) {
 			boolean missedVisit = false;
+
+            Boolean ltfuResults = (Boolean) ltfu.get(ptId).getValue();
 
 			// Is patient alive
 			if (alive.contains(ptId)) {
 				Date lastScheduledReturnDate = EmrCalculationUtils.datetimeObsResultForPatient(lastReturnDateObss, ptId);
 
 				// Does patient have a scheduled return visit in the past
-				if (lastScheduledReturnDate != null && EmrCalculationUtils.daysSince(lastScheduledReturnDate, context) > 0) {
+				if (lastScheduledReturnDate != null && EmrCalculationUtils.daysSince(lastScheduledReturnDate, context) > 30 && EmrCalculationUtils.daysSince(lastScheduledReturnDate, context) < 90) {
 
 					// Has patient returned since
 					Encounter lastEncounter = EmrCalculationUtils.encounterResultForPatient(lastEncounters, ptId);
@@ -77,7 +79,7 @@ public class MissedLastAppointmentCalculation extends AbstractPatientCalculation
 					missedVisit = lastActualReturnDate == null || lastActualReturnDate.before(lastScheduledReturnDate);
 				}
 
-				if (ltfu.contains(ptId)) {
+				if (ltfuResults != null && ltfuResults.equals(Boolean.TRUE)) {
 					missedVisit = false;
 				}
 			}

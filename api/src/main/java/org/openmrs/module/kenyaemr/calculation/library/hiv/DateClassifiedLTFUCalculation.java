@@ -37,14 +37,15 @@ public class DateClassifiedLTFUCalculation extends AbstractPatientCalculation {
         //find the return visit date from the last encounter
         CalculationResultMap resultMap = calculate(new LastReturnVisitDateCalculation(), cohort, context);
         //find lost to follow up patients
-        Set<Integer> lostPatients = CalculationUtils.patientsThatPass(calculate(new LostToFollowUpCalculation(), cohort, context));
+        CalculationResultMap lostPatients = calculate(new LostToFollowUpCalculation(), cohort, context);
 
 		CalculationResultMap ret = new CalculationResultMap();
 
 		for (Integer ptId : cohort) {
             LostToFU classifiedLTFU = null;
+            Boolean lost = (Boolean) lostPatients.get(ptId).getValue();
 			// Is patient alive and in the HIV program
-			if (lostPatients.contains(ptId)) {
+			if (lost != null && lost.equals(Boolean.TRUE)) {
 				SimpleResult lastScheduledReturnDateResults = (SimpleResult) resultMap.get(ptId);
 
 				if (lastScheduledReturnDateResults != null) {
