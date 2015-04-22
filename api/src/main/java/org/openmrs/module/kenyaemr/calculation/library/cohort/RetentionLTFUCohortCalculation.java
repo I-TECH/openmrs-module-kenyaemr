@@ -33,6 +33,7 @@ import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.calculation.library.DeceasedPatientsCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.LostToFollowUpCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.LostToFollowUpForSixMonthsAppointmentsCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.CurrentArtRegimenCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtRegimenCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
@@ -72,8 +73,14 @@ public class RetentionLTFUCohortCalculation extends AbstractPatientCalculation {
 
 		CalculationResultMap lastEncounterOfHivDisco = Calculations.lastEncounter(MetadataUtils.existing(EncounterType.class, HivMetadata._EncounterType.HIV_DISCONTINUATION), patientCohort, pContext);
 
-		Set<Integer> lostPatients = CalculationUtils.patientsThatPass(calculate(new LostToFollowUpCalculation(), patientCohort, pContext));
+		Set<Integer> lostPatients;
 
+		if ("6month".equals(cohortParam)) {
+			lostPatients = CalculationUtils.patientsThatPass(calculate(new LostToFollowUpForSixMonthsAppointmentsCalculation(), patientCohort, pContext));
+		}
+		else {
+			lostPatients = CalculationUtils.patientsThatPass(calculate(new LostToFollowUpCalculation(), patientCohort, pContext));
+		}
 		Set<Integer> alive = Filters.alive(patientCohort, pContext);
 
 		Set<Integer> patientsWhoStartedArt = CalculationUtils.patientsThatPass(calculate( new InitialArtRegimenCalculation(), patientCohort, pContext));
