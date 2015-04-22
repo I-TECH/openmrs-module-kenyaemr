@@ -46,7 +46,7 @@ public class RegimenYearsCalculation extends BaseEmrCalculation {
     @Override
     public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> params, PatientCalculationContext context) {
 
-        Integer years = (params != null && params.containsKey("years")) ? (Integer) params.get("years") : null;
+        Integer days = (params != null && params.containsKey("days")) ? (Integer) params.get("days") : null;
 
         CalculationResultMap ret = new CalculationResultMap();
 
@@ -65,11 +65,11 @@ public class RegimenYearsCalculation extends BaseEmrCalculation {
             Date initialRegimenDate = EmrCalculationUtils.resultForPatient(initialArtStartDate, ptId);
             CalculationResultMap currentReg;
 
-            if(initialRegimenDate != null && years != null) {
+            if(initialRegimenDate != null && days != null) {
 
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime(initialRegimenDate);
-                calendar.add(Calendar.YEAR, years);
+                calendar.add(Calendar.DATE, days);
                 context.setNow(calendar.getTime());
 
                  currentReg = activeDrugOrders(arvs, Arrays.asList(ptId), context);
@@ -80,7 +80,7 @@ public class RegimenYearsCalculation extends BaseEmrCalculation {
                 reportingTime.setTime(context1.getNow());
 
 
-                if(result != null && (yearsSince(initialRegimenDate, reportingTime.getTime()) > (years * 12))) {
+                if(result != null && (daysSince(initialRegimenDate, reportingTime.getTime()) > days)) {
 
                     RegimenOrder regimen = new RegimenOrder(new HashSet<DrugOrder>(CalculationUtils.<DrugOrder>extractResultValues(result)));
                     ret.put(ptId, new SimpleResult(regimen, this, context));
@@ -99,10 +99,10 @@ public class RegimenYearsCalculation extends BaseEmrCalculation {
         return ret;
     }
 
-    private  int yearsSince(Date date1, Date date2) {
+    private  int daysSince(Date date1, Date date2) {
         DateTime d1 = new DateTime(date1.getTime());
         DateTime d2 = new DateTime(date2.getTime());
-        return Months.monthsBetween(d1, d2).getMonths();
+        return Days.daysBetween(d1, d2).getDays();
     }
 
 

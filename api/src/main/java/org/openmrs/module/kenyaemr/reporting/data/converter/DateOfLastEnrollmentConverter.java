@@ -15,15 +15,15 @@ public class DateOfLastEnrollmentConverter implements DataConverter {
     @Override
     public Object convert(Object original) {
 
-        PatientProgram pp = (PatientProgram) original;
+        Encounter pp = (Encounter) original;
 
         if (pp == null)
             return "";
 
-        if (pp.getDateEnrolled() == null)
+        if (pp.getEncounterDatetime() == null)
             return "";
 
-        return  formatDate(pp.getDateEnrolled());
+        return  formatDate(pp.getEncounterDatetime());
     }
 
     @Override

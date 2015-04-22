@@ -1,6 +1,7 @@
 package org.openmrs.module.kenyaemr.calculation.library.cohort.analysis;
 
 import org.joda.time.DateTime;
+import org.joda.time.Days;
 import org.joda.time.Months;
 import org.joda.time.Years;
 import org.openmrs.PatientProgram;
@@ -37,7 +38,7 @@ public class ARTYearsCalculation extends AbstractPatientCalculation {
     @Override
     public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> params, PatientCalculationContext context) {
 
-        Integer years = (params != null && params.containsKey("years")) ? (Integer) params.get("years") : null;
+        Integer days = (params != null && params.containsKey("days")) ? (Integer) params.get("days") : null;
         CalculationResultMap ret = new CalculationResultMap();
 
 
@@ -47,14 +48,11 @@ public class ARTYearsCalculation extends AbstractPatientCalculation {
         CalculationResultMap ltfu = calculate(new DateClassifiedLTFUCalculation(), cohort, context);
         CalculationResultMap transferredOut = calculate(new TransferOutDateCalculation(), cohort, context);
         CalculationResultMap onART = calculate(new InitialArtStartDateCalculation(), cohort, context);
-        Set<Integer> onlyThoseOnArt = onART.keySet();
 
         for(Integer ptId : cohort) {
             String value = null;
-            Date artInitiationDate;
             Date resultsDate;
             Date dateLost = null;
-            Date runAfter;
 
             Date dod = EmrCalculationUtils.datetimeResultForPatient(deadPatients, ptId);
 
@@ -73,37 +71,32 @@ public class ARTYearsCalculation extends AbstractPatientCalculation {
                 dateLost = (Date) classifiedLTFU.getDateLost();
             }
 
-            if(initialArtStart != null && years != null && onlyThoseOnArt.contains(ptId) && (yearsSince(initialArtStart, context.getNow()) > (years * 12))) {
-                artInitiationDate = initialArtStart;
+            if(initialArtStart != null && days != null && (daysSince(initialArtStart, context.getNow()) > days)) {
 
                 Calendar calendar = Calendar.getInstance();
-                calendar.setTime(artInitiationDate);
-                calendar.add(Calendar.YEAR, years);
-                //set the context to only use this date
+                calendar.setTime(initialArtStart);
+                calendar.add(Calendar.DATE, days);
                 resultsDate = calendar.getTime();
-
-                Calendar calendarRunAfter = Calendar.getInstance();
-                calendarRunAfter.setTime(artInitiationDate);
-                calendarRunAfter.add(Calendar.YEAR, (years - 1));
-                runAfter = calendarRunAfter.getTime();
 
 
                 //if dead in the first year after enrollment, we cascade that for the all the years
-                if (artInitiationDate != null && dod != null && resultsDate != null && dod.before(resultsDate) && dod.after(artInitiationDate)) {
+                if (dod != null && resultsDate != null && dod.before(resultsDate) && dod.after(initialArtStart)) {
                     value = "D";
-                } else {
+                }
 
-                    if (runAfter != null && dateTo != null && dateTo.before(resultsDate) && dateTo.after(runAfter)) {
+                else if (dateTo != null && dateTo.before(resultsDate)) {
                         value = "T";
-                    } else if (runAfter != null && dateLost != null && dateLost.before(resultsDate) && dateLost.after(runAfter)) {
+                    }
+                else if (dateLost != null && dateLost.before(resultsDate)) {
                         value = "L";
-                    } else if (runAfter != null && defaultedDate != null && defaultedDate.after(runAfter)) {
+                    }
+                else if (defaultedDate != null && defaultedDate.after(initialArtStart)) {
                         value = "F";
-                    } else {
+                    }
+                else {
                         value = "V";
 
                     }
-                }
             }
 
             ret.put(ptId, new SimpleResult(value, this));
@@ -112,9 +105,9 @@ public class ARTYearsCalculation extends AbstractPatientCalculation {
         return ret;
     }
 
-    private  int yearsSince(Date date1, Date date2) {
+    private  int daysSince(Date date1, Date date2) {
         DateTime d1 = new DateTime(date1.getTime());
         DateTime d2 = new DateTime(date2.getTime());
-        return Months.monthsBetween(d1, d2).getMonths();
+        return Days.daysBetween(d1, d2).getDays();
     }
 }
