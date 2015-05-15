@@ -82,10 +82,10 @@ public class NeedsTbSputumTestCalculation extends AbstractPatientCalculation imp
 		CalculationResultMap lastTbPulmonayResult = Calculations.lastObs(Dictionary.getConcept(Dictionary.RESULTS_TUBERCULOSIS_CULTURE), inTbProgram, context);
 
 		// get the first observation ever the patient had a sputum results for month 0
-		CalculationResultMap lastSputumResults = Calculations.lastObs(SPUTUM_FOR_ACID_FAST_BACILLI, inTbProgram, context);
+		CalculationResultMap lastSputumResults = Calculations.lastObs(SPUTUM_FOR_ACID_FAST_BACILLI, cohort, context);
 
 		// get the date when Tb treatment was started, the patient should be in tb program to have this date
-		CalculationResultMap tbStartTreatmentDate = Calculations.lastObs(Dictionary.getConcept(Dictionary.TUBERCULOSIS_DRUG_TREATMENT_START_DATE), inTbProgram, context);
+		CalculationResultMap tbStartTreatmentDate = Calculations.lastObs(Dictionary.getConcept(Dictionary.TUBERCULOSIS_DRUG_TREATMENT_START_DATE), cohort, context);
 
 		CalculationResultMap ret = new CalculationResultMap();
 		for (Integer ptId : cohort) {
@@ -119,9 +119,6 @@ public class NeedsTbSputumTestCalculation extends AbstractPatientCalculation imp
 
 						//find first sputum results after 2 months. If the results is null activate the alert
 						CalculationResultMap resuts2Months = Calculations.firstObsOnOrAfter(SPUTUM_FOR_ACID_FAST_BACILLI, months2.getTime(), Arrays.asList(ptId), context);
-						if(EmrCalculationUtils.obsResultForPatient(resuts2Months, ptId) == null ) {
-							needsSputum = true;
-						}
 
 						Calendar months4 = Calendar.getInstance();
 						months4.setTime(treatmentStartDate);
@@ -129,19 +126,33 @@ public class NeedsTbSputumTestCalculation extends AbstractPatientCalculation imp
 						//repeat after 4 months
 						CalculationResultMap resuts4Months = Calculations.firstObsOnOrAfter(SPUTUM_FOR_ACID_FAST_BACILLI, months4.getTime(), Arrays.asList(ptId), context);
 
-						if(EmrCalculationUtils.obsResultForPatient(resuts4Months, ptId) == null ) {
-							needsSputum = true;
-						}
-
-						//repeat for 6 months
-
 						Calendar months6 = Calendar.getInstance();
 						months6.setTime(treatmentStartDate);
 						months6.add(Calendar.MONTH, 6);
 
 						CalculationResultMap resuts6Months = Calculations.firstObsOnOrAfter(SPUTUM_FOR_ACID_FAST_BACILLI, months6.getTime(), Arrays.asList(ptId), context);
-						if(EmrCalculationUtils.obsResultForPatient(resuts6Months, ptId) == null ) {
+
+						if(EmrCalculationUtils.obsResultForPatient(resuts2Months, ptId) == null && months2.getTime().before(context.getNow())) {
 							needsSputum = true;
+						}
+
+						if(EmrCalculationUtils.obsResultForPatient(resuts4Months, ptId) == null && months4.getTime().before(context.getNow())) {
+							needsSputum = true;
+						}
+
+						//repeat for 6 months
+
+						if(EmrCalculationUtils.obsResultForPatient(resuts6Months, ptId) == null && months6.getTime().before(context.getNow()) ) {
+							needsSputum = true;
+						}
+
+						//if any of the prior sputum results are given ignore the preceding ones
+						if(EmrCalculationUtils.obsResultForPatient(resuts6Months, ptId) != null && (EmrCalculationUtils.obsResultForPatient(resuts4Months, ptId) == null || EmrCalculationUtils.obsResultForPatient(resuts2Months, ptId) == null)) {
+							needsSputum = false;
+						}
+
+						if(EmrCalculationUtils.obsResultForPatient(resuts4Months, ptId) != null && EmrCalculationUtils.obsResultForPatient(resuts2Months, ptId) == null) {
+							needsSputum = false;
 						}
 					}
 				}
