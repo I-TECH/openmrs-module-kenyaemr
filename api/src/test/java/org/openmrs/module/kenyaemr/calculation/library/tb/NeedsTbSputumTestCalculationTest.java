@@ -82,10 +82,11 @@ public class NeedsTbSputumTestCalculationTest extends BaseModuleContextSensitive
 
 		//get Tb program
 		Program tbProgram = MetadataUtils.existing(Program.class, TbMetadata._Program.TB);
+		Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
 
 		//enroll patient 2 into tb program
 		TestUtils.enrollInProgram(TestUtils.getPatient(2), tbProgram, TestUtils.date(2014, 7, 1));
-		TestUtils.enrollInProgram(TestUtils.getPatient(6), tbProgram, TestUtils.date(2014, 7, 1));
+		TestUtils.enrollInProgram(TestUtils.getPatient(6), hivProgram, TestUtils.date(2014, 7, 1));
 
 		// Screen patient #2 on May 31st
 		TestUtils.saveObs(TestUtils.getPatient(2), tbDiseaseStatus, diseaseSuspected, TestUtils.date(2014, 7, 10));
@@ -98,8 +99,8 @@ public class NeedsTbSputumTestCalculationTest extends BaseModuleContextSensitive
 
 		List<Integer> ptIds = Arrays.asList(2,6, 7, 8, 999);
 		CalculationResultMap resultMap = new NeedsTbSputumTestCalculation().evaluate(ptIds, null, Context.getService(PatientCalculationService.class).createCalculationContext());
-		Assert.assertTrue((Boolean) resultMap.get(2).getValue()); // is a suspect
-		Assert.assertTrue((Boolean) resultMap.get(6).getValue()); // is a suspect
+		Assert.assertFalse((Boolean) resultMap.get(2).getValue()); // is in Tb program, meaning tb status is known
+		Assert.assertTrue((Boolean) resultMap.get(6).getValue()); // is a suspect and in HIV program
 		Assert.assertFalse((Boolean) resultMap.get(7).getValue()); // NOT a Tb suspect
 	}
 
