@@ -33,6 +33,7 @@ import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
+import org.openmrs.module.kenyaemr.metadata.TbMetadata;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +49,9 @@ public class EligibleForArtCalculationTest extends BaseModuleContextSensitiveTes
 	@Autowired
 	private HivMetadata hivMetadata;
 
+	@Autowired
+	private TbMetadata tbMetadata;
+
 	/**
 	 * Setup each test
 	 */
@@ -57,6 +61,7 @@ public class EligibleForArtCalculationTest extends BaseModuleContextSensitiveTes
 
 		commonMetadata.install();
 		hivMetadata.install();
+		tbMetadata.install();
 	}
 	
 	/**
@@ -74,11 +79,11 @@ public class EligibleForArtCalculationTest extends BaseModuleContextSensitiveTes
 
 		// Give patient #6 a high CD4 count today
 		Concept cd4 = Dictionary.getConcept(Dictionary.CD4_COUNT);
-		TestUtils.saveObs(TestUtils.getPatient(6), cd4, 1001, new Date());
+		TestUtils.saveObs(TestUtils.getPatient(6), cd4, 1001, TestUtils.date(2015, 1, 1));
 
 		// Give patients #7 and #8 a low CD4 count today
-		TestUtils.saveObs(TestUtils.getPatient(7), cd4, 101, new Date());
-		TestUtils.saveObs(TestUtils.getPatient(8), cd4, 101, new Date());
+		TestUtils.saveObs(TestUtils.getPatient(7), cd4, 101, TestUtils.date(2011, 1, 1));
+		TestUtils.saveObs(TestUtils.getPatient(8), cd4, 101, TestUtils.date(2011, 1, 1));
 
 		// Put patient #8 already on ARTs
 		Concept stavudine = Dictionary.getConcept(Dictionary.STAVUDINE);
@@ -87,7 +92,7 @@ public class EligibleForArtCalculationTest extends BaseModuleContextSensitiveTes
 		List<Integer> cohort = Arrays.asList(6, 7, 8, 999);
 
 		CalculationResultMap resultMap = new EligibleForArtCalculation().evaluate(cohort, null, Context.getService(PatientCalculationService.class).createCalculationContext());
-		Assert.assertFalse((Boolean) resultMap.get(6).getValue()); // has high CD4
+		Assert.assertTrue((Boolean) resultMap.get(6).getValue()); // below 10 years should be put on art regardiless of other factors
 		Assert.assertTrue((Boolean) resultMap.get(7).getValue()); // has low CD4
 		Assert.assertFalse((Boolean) resultMap.get(8).getValue()); // already on ART
 		Assert.assertFalse((Boolean) resultMap.get(999).getValue()); // not in HIV Program
