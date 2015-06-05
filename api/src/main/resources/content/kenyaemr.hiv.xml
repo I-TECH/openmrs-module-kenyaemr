@@ -32,6 +32,7 @@
 				<ref bean="kenyaemr.hiv.report.artCohortAnalysis.12" />
 				<ref bean="kenyaemr.hiv.report.artCohortAnalysis.24" />
 				<ref bean="kenyaemr.hiv.report.artCohortAnalysis.36" />
+				<ref bean="kenyaemr.hiv.report.needsViralLoad" />
 			</set>
 		</property>
 		<property name="fragments">
@@ -253,6 +254,15 @@
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 		<property name="template" value="kenyaemr:art/artCohortAnalysis.xls" />
 		<property name="repeatingSection" value="sheet:1,row:11,dataset:artCohortAnalysis" />
+	</bean>
+
+	<!-- introduction of viral load alert-->
+	<bean id="kenyaemr.hiv.report.needsViralLoad" class="org.openmrs.module.kenyacore.report.CalculationReportDescriptor">
+		<property name="targetUuid" value="ec1535a8-0b65-11e5-99a4-c3eb412c64d3" />
+		<property name="name" value="Patients eligible for Viral Load" />
+		<property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.hiv.NeedsViralLoadTestCalculation" />
+		<property name="displayIdentifier" ref="kenyaemr.hiv.identifier.upn" />
+		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 	</bean>
 
 </beans>
