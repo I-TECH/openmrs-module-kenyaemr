@@ -14,9 +14,13 @@
 
 package org.openmrs.module.kenyaemr.calculation.library.mchcs;
 
+import org.joda.time.DateTime;
+import org.joda.time.Weeks;
 import org.openmrs.Concept;
 import org.openmrs.Obs;
+import org.openmrs.Person;
 import org.openmrs.Program;
+import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
@@ -30,6 +34,7 @@ import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.metadata.MchMetadata;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 
@@ -59,8 +64,9 @@ public class NeedsPcrTestCalculation extends AbstractPatientCalculation implemen
 		Set<Integer> inMchcsProgram = Filters.inProgram(mchcsProgram, alive, context);
 
 		// Get whether the child is HIV Exposed
-		CalculationResultMap lastChildHivStatus = Calculations.lastObs(Dictionary.getConcept(Dictionary.CHILDS_CURRENT_HIV_STATUS), inMchcsProgram, context);
-		CalculationResultMap lastPcrTest = Calculations.lastObs(Dictionary.getConcept(Dictionary.HIV_DNA_POLYMERASE_CHAIN_REACTION), inMchcsProgram, context);
+		CalculationResultMap lastChildHivStatus = Calculations.lastObs(Dictionary.getConcept(Dictionary.CHILDS_CURRENT_HIV_STATUS), cohort, context);
+		CalculationResultMap lastPcrTestReaction = Calculations.lastObs(Dictionary.getConcept(Dictionary.HIV_DNA_POLYMERASE_CHAIN_REACTION), cohort, context);
+		CalculationResultMap lastPcrTestQualitative = Calculations.lastObs(Dictionary.getConcept(Dictionary.HIV_DNA_POLYMERASE_CHAIN_REACTION_QUALITATIVE), cohort, context);
 
 		Concept hivExposed = Dictionary.getConcept(Dictionary.EXPOSURE_TO_HIV);
 
@@ -74,15 +80,26 @@ public class NeedsPcrTestCalculation extends AbstractPatientCalculation implemen
 			if (inMchcsProgram.contains(ptId)) {
 
 				Obs hivStatusObs = EmrCalculationUtils.obsResultForPatient(lastChildHivStatus, ptId);
-				Obs pcrTestObs =  EmrCalculationUtils.obsResultForPatient(lastPcrTest, ptId);
+				Obs pcrTestObs =  EmrCalculationUtils.obsResultForPatient(lastPcrTestReaction, ptId);
+				Obs pcrTestObsQual =  EmrCalculationUtils.obsResultForPatient(lastPcrTestReaction, ptId);
 
-				if (hivStatusObs != null && pcrTestObs == null && (hivStatusObs.getValueCoded().equals(hivExposed))) {
+				//get birth date of this patient
+				Person person = Context.getPersonService().getPerson(ptId);
+
+				if (hivStatusObs != null && (pcrTestObs == null ||  pcrTestObsQual == null) && (hivStatusObs.getValueCoded().equals(hivExposed)) && getAge(person.getBirthdate(), context.getNow()) >= 6) {
 					needsPcr = true;
 				}
+
 			}
 
 			ret.put(ptId, new BooleanResult(needsPcr, this, context));
 		}
 		return ret;
+	}
+
+	Integer getAge(Date birtDate, Date context) {
+		DateTime d1 = new DateTime(birtDate.getTime());
+		DateTime d2 = new DateTime(context.getTime());
+		return Weeks.weeksBetween(d1, d2).getWeeks();
 	}
 }

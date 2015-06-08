@@ -66,9 +66,9 @@ public class NeedsPcrTestCalculationTest extends BaseModuleContextSensitiveTest 
 		Program mchcsProgram = MetadataUtils.existing(Program.class, MchMetadata._Program.MCHCS);
 
 		// Enroll patients #6 and  #7  in the mchcs Program
-		TestUtils.enrollInProgram(TestUtils.getPatient(6), mchcsProgram, new Date());
-		TestUtils.enrollInProgram(TestUtils.getPatient(7), mchcsProgram, new Date());
-		TestUtils.enrollInProgram(TestUtils.getPatient(8), mchcsProgram, new Date());
+		TestUtils.enrollInProgram(TestUtils.getPatient(6), mchcsProgram, TestUtils.date(2015, 4, 1));
+		TestUtils.enrollInProgram(TestUtils.getPatient(7), mchcsProgram, TestUtils.date(2015, 1, 1));
+		TestUtils.enrollInProgram(TestUtils.getPatient(8), mchcsProgram, TestUtils.date(2014, 1, 1));
 
 		//get the HIV status of the infant and the if wheather pcr was done or NOT
 		Concept infantHivStatus = Dictionary.getConcept(Dictionary.CHILDS_CURRENT_HIV_STATUS);
