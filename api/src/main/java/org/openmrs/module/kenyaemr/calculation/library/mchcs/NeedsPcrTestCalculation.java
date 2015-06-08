@@ -86,7 +86,7 @@ public class NeedsPcrTestCalculation extends AbstractPatientCalculation implemen
 				//get birth date of this patient
 				Person person = Context.getPersonService().getPerson(ptId);
 
-				if (hivStatusObs != null && (pcrTestObs == null ||  pcrTestObsQual == null) && (hivStatusObs.getValueCoded().equals(hivExposed)) && getAge(person.getBirthdate(), context.getNow()) >= 6) {
+				if (hivStatusObs != null && pcrTestObs == null &&  pcrTestObsQual == null && (hivStatusObs.getValueCoded().equals(hivExposed)) && getAge(person.getBirthdate(), context.getNow()) >= 6) {
 					needsPcr = true;
 				}
 
