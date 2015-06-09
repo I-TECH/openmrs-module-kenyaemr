@@ -78,7 +78,7 @@ public class NotTakenPcrConfirmatoryTestCalculationTest extends BaseModuleContex
 
 		//get the HIV status of the infant and the if wheather antibody test was done or NOT
 		Concept infantHivStatus = Dictionary.getConcept(Dictionary.CHILDS_CURRENT_HIV_STATUS);
-		Concept pcrTest = Dictionary.getConcept(Dictionary.HIV_DNA_POLYMERASE_CHAIN_REACTION);
+		Concept pcrTest = Dictionary.getConcept(Dictionary.HIV_DNA_POLYMERASE_CHAIN_REACTION_QUALITATIVE);
 		Concept status = Dictionary.getConcept(Dictionary.CONFIRMATION_STATUS);
 		//get the hiv status after the exit
 		Concept hivStatus = Dictionary.getConcept(Dictionary.HIV_STATUS);
