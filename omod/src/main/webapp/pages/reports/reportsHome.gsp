@@ -38,7 +38,7 @@
 					</td>
 					<td style="width: 50%; vertical-align: top; padding-left: 5px">
 						<div class="ke-panel-frame">
-							<div class="ke-panel-heading">Cohort</div>
+							<div class="ke-panel-heading">Patient Follow-Up Reports</div>
 							<div class="ke-panel-content">
 								${ ui.includeFragment("kenyaemr", "widget/reportStack", [ reports: cohortReports(reports), onReportClick: onReportClick ]) }
 							</div>

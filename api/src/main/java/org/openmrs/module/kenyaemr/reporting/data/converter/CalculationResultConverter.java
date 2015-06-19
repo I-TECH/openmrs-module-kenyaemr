@@ -21,6 +21,8 @@ import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.module.reporting.data.converter.DataConverter;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class CalculationResultConverter implements DataConverter{
@@ -38,7 +40,7 @@ public class CalculationResultConverter implements DataConverter{
 			return (Boolean) value ? "Yes" : "No";
 		}
 		else if (value instanceof Date) {
-			return kenyaui.formatDate((Date) value);
+			return formatDate((Date) value);
 		}
 		else if (value instanceof Concept) {
 
@@ -68,5 +70,10 @@ public class CalculationResultConverter implements DataConverter{
 	@Override
 	public Class<?> getDataType() {
 		return String.class;
+	}
+
+	private String formatDate(Date date) {
+		DateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy");
+		return date == null?"":dateFormatter.format(date);
 	}
 }

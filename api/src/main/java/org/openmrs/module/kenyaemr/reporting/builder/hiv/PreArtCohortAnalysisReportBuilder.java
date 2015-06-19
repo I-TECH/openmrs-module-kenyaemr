@@ -14,10 +14,8 @@
 
 package org.openmrs.module.kenyaemr.reporting.builder.hiv;
 
-import org.openmrs.EncounterType;
 import org.openmrs.Program;
 import org.openmrs.PatientIdentifierType;
-import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.module.kenyacore.report.CohortReportDescriptor;
 import org.openmrs.module.kenyacore.report.HybridReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportDescriptor;
@@ -25,52 +23,34 @@ import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyacore.report.builder.AbstractHybridReportBuilder;
 import org.openmrs.module.kenyacore.report.builder.Builds;
 import org.openmrs.module.kenyacore.report.data.patient.definition.CalculationDataDefinition;
-import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.Metadata;
+import org.openmrs.module.kenyaemr.calculation.TimelyLinkageCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.AgeAtProgramEnrollmentCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.AgeAtARTInitiationCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.CD4AtARTInitiationCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.CohortReportTypeCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.CurrentARTStartDateCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.CurrentArtRegimenCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.DateARV1Calculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.DateARV2Calculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.DateLastSeenCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.DateOfDiagnosisCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.InitialCd4CountCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.InitialCd4PercentCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.DateOfEnrollmentCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.FacilityNameCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtRegimenCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.IsBirthDateApproximatedCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.IsTransferInCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.IsTransferOutCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.LastCd4Calculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.LastCd4CountDateCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.MflCodeCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.OriginalCohortCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.PatientOutComeCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.TransferInDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.TransferOutDateCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
-import org.openmrs.module.kenyaemr.reporting.calculation.converter.RegimenConverter;
+import org.openmrs.module.kenyaemr.reporting.calculation.converter.TimelyLinkageDataConverter;
 import org.openmrs.module.kenyaemr.reporting.data.converter.BirthdateConverter;
 import org.openmrs.module.kenyaemr.reporting.data.converter.CalculationResultConverter;
-import org.openmrs.module.kenyaemr.reporting.data.converter.DateOfHivDiagnosisConverter;
-import org.openmrs.module.kenyaemr.reporting.data.converter.DateOfLastEnrollmentConverter;
+import org.openmrs.module.kenyaemr.reporting.data.converter.Cd4ValueAndDateConverter;
 import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonCohortLibrary;
-import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.art.ArtCohortLibrary;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
-import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.data.DataDefinition;
 import org.openmrs.module.reporting.data.converter.DataConverter;
 import org.openmrs.module.reporting.data.converter.ObjectFormatter;
 import org.openmrs.module.reporting.data.patient.definition.ConvertedPatientDataDefinition;
-import org.openmrs.module.reporting.data.patient.definition.EncountersForPatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.PatientIdDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.PatientIdentifierDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.BirthdateDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.ConvertedPersonDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.GenderDataDefinition;
-import org.openmrs.module.reporting.data.person.definition.ObsForPersonDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.PreferredNameDataDefinition;
 import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
@@ -78,9 +58,7 @@ import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -119,12 +97,22 @@ public class PreArtCohortAnalysisReportBuilder extends AbstractHybridReportBuild
 		dsd.addColumn("id", new PatientIdDataDefinition(), "");
 		dsd.addColumn("Name", nameDef, "");
 		dsd.addColumn("UPN", identifierDef, "");
-		dsd.addColumn("Enrollment into care date", hivProgramEnrollment(), "", new DateOfLastEnrollmentConverter());
+		dsd.addColumn("Enrollment into care date", hivProgramEnrollment(), "onDate=${endDate}", new CalculationResultConverter());
 		dsd.addColumn("DOB", new BirthdateDataDefinition(), "", new BirthdateConverter());
 		dsd.addColumn("DOB approx", new CalculationDataDefinition("DOB approx", new IsBirthDateApproximatedCalculation()), "", new CalculationResultConverter());
 		dsd.addColumn("Age at HIV enrollment", ageAtHivProgramEnrollment(), "onDate=${endDate}", new CalculationResultConverter());
 		dsd.addColumn("Sex", new GenderDataDefinition(), "");
-		dsd.addColumn("Date of Diagnosis", dateOfDiagnosis(), "onOrBefore=${endDate}", new DateOfHivDiagnosisConverter());
+		dsd.addColumn("Date of Diagnosis", dateOfDiagnosis(), "onDate=${endDate}", new CalculationResultConverter());
+		dsd.addColumn("Timely linkage", timelyLinkage(), "onDate=${endDate}", new TimelyLinkageDataConverter());
+		dsd.addColumn("Transfer in", new CalculationDataDefinition("Transfer in", new IsTransferInCalculation()), "", new CalculationResultConverter());
+		dsd.addColumn("Date Transfer in", new CalculationDataDefinition("Date Transfer in", new TransferInDateCalculation()), "", new CalculationResultConverter());
+		dsd.addColumn("Transfer out", new CalculationDataDefinition("Transfer out", new IsTransferOutCalculation()), "", new CalculationResultConverter());
+		dsd.addColumn("Date Transferred out", new CalculationDataDefinition("Date Transferred out", new TransferOutDateCalculation()), "", new CalculationResultConverter());
+		dsd.addColumn("Initial CD4 count", new CalculationDataDefinition("Initial CD4 count", new InitialCd4CountCalculation()), "", new Cd4ValueAndDateConverter("value"));
+		dsd.addColumn("Date of initial CD4 count", new CalculationDataDefinition("Date of initial CD4 count", new InitialCd4CountCalculation()), "", new Cd4ValueAndDateConverter("date"));
+		dsd.addColumn("Initial CD4 percent", new CalculationDataDefinition("Initial CD4 percent", new InitialCd4PercentCalculation()), "", new Cd4ValueAndDateConverter("value"));
+		dsd.addColumn("Date of initial CD4 percent", new CalculationDataDefinition("Date of initial CD4 percent", new InitialCd4PercentCalculation()), "", new Cd4ValueAndDateConverter("date"));
+
 
 		/*dsd.addColumn("TI", new CalculationDataDefinition("TI", new IsTransferInCalculation()), "", new CalculationResultConverter());
 		dsd.addColumn("Date TI", new CalculationDataDefinition("Date TI", new TransferInDateCalculation()), "", new CalculationResultConverter());
@@ -153,27 +141,25 @@ public class PreArtCohortAnalysisReportBuilder extends AbstractHybridReportBuild
 	}
 
 	private DataDefinition hivProgramEnrollment() {
-		EncounterType hivEnrollmentEncounterType = MetadataUtils.existing(EncounterType.class, HivMetadata._EncounterType.HIV_ENROLLMENT);
-
-		EncountersForPatientDataDefinition hivEnrollment = new EncountersForPatientDataDefinition();
-		hivEnrollment.setWhich(TimeQualifier.LAST);
-		hivEnrollment.setTypes(Arrays.asList(hivEnrollmentEncounterType));
-		hivEnrollment.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-		hivEnrollment.addParameter(new Parameter("onOrAfter", "Before Date", Date.class));
-
-		return hivEnrollment;
+		CalculationDataDefinition cd = new CalculationDataDefinition("careEnrollment", new DateOfEnrollmentCalculation());
+		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
+		return cd;
 	}
 
 	private DataDefinition dateOfDiagnosis() {
-		ObsForPersonDataDefinition obs = new ObsForPersonDataDefinition();
-		obs.setWhich(TimeQualifier.LAST);
-		obs.setQuestion(Dictionary.getConcept(Dictionary.DATE_OF_HIV_DIAGNOSIS));
-		obs.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-		return obs;
+		CalculationDataDefinition cd = new CalculationDataDefinition("diagnosisDate", new DateOfDiagnosisCalculation());
+		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
+		return cd;
 	}
 
 	private DataDefinition ageAtHivProgramEnrollment() {
 		CalculationDataDefinition cd = new CalculationDataDefinition("ageAtEnrollment", new AgeAtProgramEnrollmentCalculation());
+		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
+		return cd;
+
+	}
+	private DataDefinition timelyLinkage() {
+		CalculationDataDefinition cd = new CalculationDataDefinition("timelyLinkage", new TimelyLinkageCalculation());
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
 		return cd;
 

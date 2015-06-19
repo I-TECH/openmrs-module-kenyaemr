@@ -52,8 +52,12 @@ public class DateOfEnrollmentCalculation extends AbstractPatientCalculation {
 			if((encounter != null) && (!(transferinPatients.contains(ptId)))){
 				enrollmentDate = encounter.getEncounterDatetime();
 			}
-			if((transferinPatients.contains(ptId)) && (dateHivStarted != null)) {
-				enrollmentDate = dateHivStarted.getValueDate();
+			else if((transferinPatients.contains(ptId)) && (dateHivStarted != null)) {
+				enrollmentDate = dateHivStarted.getValueDatetime();
+			}
+
+			else if(encounter != null && (transferinPatients.contains(ptId)) && (dateHivStarted == null)) {
+				enrollmentDate = encounter.getEncounterDatetime();
 			}
 			result.put(ptId, new SimpleResult(enrollmentDate, this));
 		}
