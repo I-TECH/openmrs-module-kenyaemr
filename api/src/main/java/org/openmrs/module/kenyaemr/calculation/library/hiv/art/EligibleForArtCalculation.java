@@ -172,7 +172,7 @@ public class EligibleForArtCalculation extends AbstractPatientCalculation implem
 		}
 
 		else { // 15+ years
-			if (cd4 != null && cd4 < 500) {
+			if (cd4 != null && cd4 <= 500) {
 				return true;
 			}
 			if(isPregnant || isaSeroDiscordant) {

@@ -16,6 +16,8 @@ package org.openmrs.module.kenyaemr.calculation.library.hiv.art;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
 import org.openmrs.Obs;
+import org.openmrs.PatientProgram;
+import org.openmrs.Program;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
@@ -38,27 +40,19 @@ import java.util.Set;
 public class DateOfEnrollmentCalculation extends AbstractPatientCalculation {
 
 	@Override
-	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues,
-										 PatientCalculationContext context) {
-		Set<Integer> transferinPatients = CalculationUtils.patientsThatPass(calculate(new IsTransferInCalculation(), cohort, context));
-		CalculationResultMap enrolledHere = Calculations.firstEncounter(MetadataUtils.existing(EncounterType.class, HivMetadata._EncounterType.HIV_ENROLLMENT), cohort, context);
-		CalculationResultMap dateEnrolledIntoHivFromFacility = Calculations.lastObs(Dictionary.getConcept(Dictionary.DATE_ENROLLED_IN_HIV_CARE), cohort, context);
+	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
+
+		Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
+		CalculationResultMap enrolledHere = Calculations.activeEnrollment(hivProgram, cohort, context);
 
 		CalculationResultMap result = new CalculationResultMap();
 		for (Integer ptId : cohort) {
 			Date enrollmentDate = null;
-			Encounter encounter = EmrCalculationUtils.encounterResultForPatient(enrolledHere, ptId);
-			Obs dateHivStarted = EmrCalculationUtils.obsResultForPatient(dateEnrolledIntoHivFromFacility, ptId);
-			if((encounter != null) && (!(transferinPatients.contains(ptId)))){
-				enrollmentDate = encounter.getEncounterDatetime();
-			}
-			else if((transferinPatients.contains(ptId)) && (dateHivStarted != null)) {
-				enrollmentDate = dateHivStarted.getValueDatetime();
+			PatientProgram patientProgram = EmrCalculationUtils.resultForPatient(enrolledHere, ptId);
+			if((patientProgram != null)){
+				enrollmentDate = patientProgram.getDateEnrolled();
 			}
 
-			else if(encounter != null && (transferinPatients.contains(ptId)) && (dateHivStarted == null)) {
-				enrollmentDate = encounter.getEncounterDatetime();
-			}
 			result.put(ptId, new SimpleResult(enrollmentDate, this));
 		}
 
