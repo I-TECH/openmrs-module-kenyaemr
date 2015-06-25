@@ -130,12 +130,12 @@ public class PreArtCohortAnalysisReportBuilder extends AbstractHybridReportBuild
 
 
 
-		dsd.addColumn("OutCome 6 Months", patientOutComes(6), "onDate=${endDate}", new CalculationResultConverter());
-		dsd.addColumn("OutCome 12 Months", patientOutComes(12), "onDate=${startDate}", new CalculationResultConverter());
-		dsd.addColumn("OutCome 24 Months", patientOutComes(24), "onDate=${startDate}", new CalculationResultConverter());
-		dsd.addColumn("OutCome 36 Months", patientOutComes(36), "onDate=${startDate}", new CalculationResultConverter());
-		dsd.addColumn("OutCome 48 Months", patientOutComes(48), "onDate=${startDate}", new CalculationResultConverter());
-		dsd.addColumn("OutCome 60 Months", patientOutComes(60), "onDate=${startDate}", new CalculationResultConverter());
+		dsd.addColumn("OutCome 6 Months", patientOutComes(6), "", new CalculationResultConverter());
+		dsd.addColumn("OutCome 12 Months", patientOutComes(12), "", new CalculationResultConverter());
+		dsd.addColumn("OutCome 24 Months", patientOutComes(24), "", new CalculationResultConverter());
+		dsd.addColumn("OutCome 36 Months", patientOutComes(36), "", new CalculationResultConverter());
+		dsd.addColumn("OutCome 48 Months", patientOutComes(48), "", new CalculationResultConverter());
+		dsd.addColumn("OutCome 60 Months", patientOutComes(60), "", new CalculationResultConverter());
 
 	}
 
@@ -172,7 +172,6 @@ public class PreArtCohortAnalysisReportBuilder extends AbstractHybridReportBuild
 
 	private DataDefinition patientOutComes(int months) {
 		CalculationDataDefinition cd = new CalculationDataDefinition("outcomes", new PatientPreArtOutComeCalculation());
-		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
 		cd.addCalculationParameter("months" , months);
 		return cd;
 

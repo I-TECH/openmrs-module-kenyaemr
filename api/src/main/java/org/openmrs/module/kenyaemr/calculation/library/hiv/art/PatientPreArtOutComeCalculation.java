@@ -26,6 +26,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
+import org.openmrs.calculation.result.ListResult;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
 import org.openmrs.module.kenyacore.calculation.CalculationUtils;
@@ -45,6 +46,7 @@ import org.openmrs.module.metadatadeploy.MetadataUtils;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -75,6 +77,8 @@ public class PatientPreArtOutComeCalculation extends AbstractPatientCalculation 
 		for (Integer ptId : cohort) {
 		   String status = null;
 			Date dateLost = null;
+
+
 			PatientProgram patientProgram = EmrCalculationUtils.resultForPatient(enrolledHere, ptId);
 
 			//evaluate the calculation result maps
@@ -96,9 +100,31 @@ public class PatientPreArtOutComeCalculation extends AbstractPatientCalculation 
 				dateLost = (Date) classifiedLTFU.getDateLost();
 			}
 
-			if(patientProgram != null && months != null && (monthsSince(patientProgram.getDateEnrolled(), new Date()) >= months)) {
+			if(patientProgram != null && months != null && monthsSince(patientProgram.getDateEnrolled(), new Date()) >= months ) {
+				Calendar calendar = Calendar.getInstance();
+				calendar.setTime(patientProgram.getDateEnrolled());
+				calendar.add(Calendar.MONTH, months);
 
-				status = "A";
+				if(initialArtStart != null && (initialArtStart.before(calendar.getTime()) || initialArtStart.equals(calendar.getTime()))) {
+					status = "Initiated ART";
+				}
+				if(dod != null && (dod.before(calendar.getTime()) || dod.equals(calendar.getTime()))) {
+					status = "Died";
+				}
+				if(dateTo != null && (dateTo.before(calendar.getTime()) || dateTo.equals(calendar.getTime()))) {
+					status = "TO";
+				}
+				if(dateLost != null && (dateLost.before(calendar.getTime()) || dateLost.equals(calendar.getTime()))){
+					status = "LTFU";
+				}
+				if(defaultedDate != null && (defaultedDate.before(calendar.getTime()) || defaultedDate.equals(calendar.getTime()))){
+					status = "Defaulted";
+				}
+				else {
+					status = "Alive and not on ART";
+				}
+
+
 			}
 			ret.put(ptId, new SimpleResult(status, this));
 		}

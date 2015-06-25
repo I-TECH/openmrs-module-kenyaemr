@@ -76,7 +76,7 @@ public class DateAndReasonFirstMedicallyEligibleForArtCalculation extends Abstra
 
             PatientEligibility patientEligibility = null;
 
-            Date eligibleDateObs = EmrCalculationUtils.datetimeResultForPatient(eligibleDateMap, ptId);
+            Obs eligibleDateObs = EmrCalculationUtils.obsResultForPatient(eligibleDateMap, ptId);
             Obs  eligibleReasonObs = EmrCalculationUtils.obsResultForPatient(eligibleReasonMap, ptId);
 
             Obs hepatitisConcept = EmrCalculationUtils.obsResultForPatient(hepatitisMap, ptId);
@@ -105,7 +105,7 @@ public class DateAndReasonFirstMedicallyEligibleForArtCalculation extends Abstra
             }
 
             else if(eligibleDateObs != null && eligibleReasonObs != null ) {
-                patientEligibility = new PatientEligibility(eligibleReason(eligibleReasonObs.getValueCoded()), eligibleDateObs);
+                patientEligibility = new PatientEligibility(eligibleReason(eligibleReasonObs.getValueCoded()), eligibleDateObs.getValueDatetime());
             }
 
            else  if(dnaPcrQual != null && dnaPcrQual.getValueCoded().equals(Dictionary.getConcept(Dictionary.POSITIVE))) {
@@ -121,7 +121,6 @@ public class DateAndReasonFirstMedicallyEligibleForArtCalculation extends Abstra
                     Date birthDate = Context.getPersonService().getPerson(ptId).getBirthdate();
                     List<Obs> whoStages = CalculationUtils.extractResultValues((ListResult) allWhoStage.get(ptId));
                     List<Obs> cd4s = CalculationUtils.extractResultValues((ListResult) allCd4.get(ptId));
-
                     patientEligibility = getCriteriaAndDate(ageInMonths, cd4s, whoStages, birthDate, artStartDate);
                 }
             }
@@ -152,8 +151,11 @@ public class DateAndReasonFirstMedicallyEligibleForArtCalculation extends Abstra
         }
 
         else if (ageInMonths > 120 && ageInMonths <= 180) { //children above 10 years and not above 15 years
+            if(whoDate(whoStag) != null && cd4Date(cd4) != null && artStartDate != null && cd4Date(cd4).before(whoDate(whoStag)) &&  cd4Date(cd4).before(artStartDate)) {
+                return new PatientEligibility("CD4", cd4Date(cd4));
+            }
 
-            if(checkIfOnArtBeforeOthers(artStartDate, cd4, whoStag) != null && whoDate(whoStag) != null && checkIfOnArtBeforeOthers(artStartDate, cd4, whoStag).before(whoDate(whoStag))) {
+            else if(checkIfOnArtBeforeOthers(artStartDate, cd4, whoStag) != null && whoDate(whoStag) != null && checkIfOnArtBeforeOthers(artStartDate, cd4, whoStag).before(whoDate(whoStag))) {
                 return new PatientEligibility(null, artStartDate);
             }
             else if(whoDate(whoStag) != null) {
@@ -164,7 +166,11 @@ public class DateAndReasonFirstMedicallyEligibleForArtCalculation extends Abstra
 
         else if (ageInMonths > 180){
 
-            if(checkIfOnArtBeforeOthers(artStartDate, cd4, whoStag) != null && cd4Date(cd4) != null && checkIfOnArtBeforeOthers(artStartDate, cd4, whoStag).before(cd4Date(cd4))) {
+            if(whoDate(whoStag) != null && cd4Date(cd4) != null && artStartDate != null && whoDate(whoStag).before(cd4Date(cd4)) &&  whoDate(whoStag).before(artStartDate)) {
+                return new PatientEligibility("WHO", whoDate(whoStag));
+            }
+
+            else if(checkIfOnArtBeforeOthers(artStartDate, cd4, whoStag) != null && cd4Date(cd4) != null && checkIfOnArtBeforeOthers(artStartDate, cd4, whoStag).before(cd4Date(cd4))) {
                 return new PatientEligibility(null, artStartDate);
             }
 
@@ -180,16 +186,12 @@ public class DateAndReasonFirstMedicallyEligibleForArtCalculation extends Abstra
     Date whoDate(List<Obs> whoStage) {
         Date whoStageDate = null;
 
-        if(whoStage.isEmpty()) {
-            whoStageDate = null;
-        }
-        else {
+        if(whoStage.size() > 0) {
 
             for (Obs obsWhoStage : whoStage) {
-
                 Integer stage = EmrUtils.whoStage(obsWhoStage.getValueCoded());
 
-                if (stage == 3 || stage == 4) {
+                if (stage != null && (stage == 3 || stage == 4)) {
                     whoStageDate = obsWhoStage.getObsDatetime();
                     break;
 
@@ -205,10 +207,7 @@ public class DateAndReasonFirstMedicallyEligibleForArtCalculation extends Abstra
     Date cd4Date(List<Obs> cd4) {
         Date cd4Date = null;
 
-        if(cd4.isEmpty()) {
-            cd4Date = null;
-        }
-        else {
+        if(cd4.size() > 0) {
 
             for (Obs obsCd4 : cd4) {
 
