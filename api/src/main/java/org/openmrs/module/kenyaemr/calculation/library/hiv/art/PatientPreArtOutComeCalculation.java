@@ -14,30 +14,20 @@
 package org.openmrs.module.kenyaemr.calculation.library.hiv.art;
 
 import org.joda.time.DateTime;
-import org.joda.time.Days;
 import org.joda.time.Months;
-import org.openmrs.Concept;
-import org.openmrs.Encounter;
-import org.openmrs.EncounterType;
-import org.openmrs.Obs;
 import org.openmrs.PatientProgram;
 import org.openmrs.Program;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
-import org.openmrs.calculation.result.ListResult;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
 import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.calculation.Calculations;
-import org.openmrs.module.kenyacore.calculation.Filters;
-import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
-import org.openmrs.module.kenyaemr.calculation.library.DeceasedPatientsCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.AliveAndOnFollowUpCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.DateClassifiedLTFUCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.LostToFollowUpCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.models.LostToFU;
 import org.openmrs.module.kenyaemr.calculation.library.rdqa.DateOfDeathCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
@@ -46,7 +36,6 @@ import org.openmrs.module.metadatadeploy.MetadataUtils;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -62,15 +51,26 @@ public class PatientPreArtOutComeCalculation extends AbstractPatientCalculation 
 
 		Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
 
-		CalculationResultMap enrolledHere = Calculations.activeEnrollment(hivProgram, cohort, context);
+		PatientCalculationService patientCalculationService = Context.getService(PatientCalculationService.class);
 
-		//bring in all the required outcome maps
-		CalculationResultMap deadPatients = calculate(new DateOfDeathCalculation(), cohort, context);
-		CalculationResultMap defaulted = calculate(new DateDefaultedCalculation(), cohort, context);
-		CalculationResultMap ltfu = calculate(new DateClassifiedLTFUCalculation(), cohort, context);
-		CalculationResultMap transferredOut = calculate(new TransferOutDateCalculation(), cohort, context);
-		CalculationResultMap onART = calculate(new InitialArtStartDateCalculation(), cohort, context);
-		CalculationResultMap aliveAndOnFollowUp = calculate(new AliveAndOnFollowUpCalculation(), cohort, context);
+		PatientCalculationContext context1 = patientCalculationService.createCalculationContext();
+		if(months == null) {
+			months = 0;
+		}
+
+
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(context.getNow());
+		calendar.add(Calendar.MONTH, months);
+
+		context1.setNow(calendar.getTime());
+		CalculationResultMap enrolledHere = Calculations.activeEnrollment(hivProgram, cohort, context1);
+		CalculationResultMap deadPatients = calculate(new DateOfDeathCalculation(), cohort, context1);
+		CalculationResultMap defaulted = calculate(new DateDefaultedCalculation(), cohort, context1);
+		CalculationResultMap ltfu = calculate(new DateClassifiedLTFUCalculation(), cohort, context1);
+		CalculationResultMap transferredOut = calculate(new TransferOutDateCalculation(), cohort, context1);
+		CalculationResultMap onART = calculate(new InitialArtStartDateCalculation(), cohort, context1);
+		Set<Integer> aliveAndOnFollowUp = CalculationUtils.patientsThatPass(calculate(new AliveAndOnFollowUpCalculation(), cohort, context1));
 
 
 		CalculationResultMap ret = new CalculationResultMap();
@@ -100,30 +100,34 @@ public class PatientPreArtOutComeCalculation extends AbstractPatientCalculation 
 				dateLost = (Date) classifiedLTFU.getDateLost();
 			}
 
-			if(patientProgram != null && months != null && monthsSince(patientProgram.getDateEnrolled(), new Date()) >= months ) {
-				Calendar calendar = Calendar.getInstance();
-				calendar.setTime(patientProgram.getDateEnrolled());
-				calendar.add(Calendar.MONTH, months);
+			System.out.println("The patients are "+ptId+" and program is "+patientProgram);
+			if(patientProgram != null && monthsSince(patientProgram.getDateEnrolled(), new Date()) >= months ) {
 
-				if(initialArtStart != null && (initialArtStart.before(calendar.getTime()) || initialArtStart.equals(calendar.getTime()))) {
-					status = "Initiated ART";
-				}
-				if(dod != null && (dod.before(calendar.getTime()) || dod.equals(calendar.getTime()))) {
-					status = "Died";
-				}
-				if(dateTo != null && (dateTo.before(calendar.getTime()) || dateTo.equals(calendar.getTime()))) {
-					status = "TO";
-				}
-				if(dateLost != null && (dateLost.before(calendar.getTime()) || dateLost.equals(calendar.getTime()))){
-					status = "LTFU";
-				}
-				if(defaultedDate != null && (defaultedDate.before(calendar.getTime()) || defaultedDate.equals(calendar.getTime()))){
-					status = "Defaulted";
-				}
-				else {
-					status = "Alive and not on ART";
+				status = "V";
+
+				Calendar calendar1 = Calendar.getInstance();
+				calendar1.setTime(patientProgram.getDateEnrolled());
+				calendar1.add(Calendar.MONTH, months);
+
+				if(initialArtStart != null && (initialArtStart.before(calendar1.getTime()) || initialArtStart.equals(calendar1.getTime())) && initialArtStart.after(patientProgram.getDateEnrolled())) {
+					status = "A";
 				}
 
+				if(dod != null && (dod.before(calendar1.getTime()) || dod.equals(calendar1.getTime()))) {
+					status = "D";
+				}
+
+				if(dateTo != null && (dateTo.before(calendar1.getTime()) || dateTo.equals(calendar1.getTime()))) {
+					status = "T";
+				}
+
+				if(dateLost != null && (dateLost.before(calendar1.getTime()) || dateLost.equals(calendar1.getTime()))){
+					status = "L";
+				}
+
+				if(defaultedDate != null && (defaultedDate.before(calendar1.getTime()) || defaultedDate.equals(calendar1.getTime()))){
+					status = "F";
+				}
 
 			}
 			ret.put(ptId, new SimpleResult(status, this));

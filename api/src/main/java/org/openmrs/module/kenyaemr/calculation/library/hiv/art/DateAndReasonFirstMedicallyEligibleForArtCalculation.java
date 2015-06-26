@@ -151,11 +151,8 @@ public class DateAndReasonFirstMedicallyEligibleForArtCalculation extends Abstra
         }
 
         else if (ageInMonths > 120 && ageInMonths <= 180) { //children above 10 years and not above 15 years
-            if(whoDate(whoStag) != null && cd4Date(cd4) != null && artStartDate != null && cd4Date(cd4).before(whoDate(whoStag)) &&  cd4Date(cd4).before(artStartDate)) {
-                return new PatientEligibility("CD4", cd4Date(cd4));
-            }
 
-            else if(checkIfOnArtBeforeOthers(artStartDate, cd4, whoStag) != null && whoDate(whoStag) != null && checkIfOnArtBeforeOthers(artStartDate, cd4, whoStag).before(whoDate(whoStag))) {
+            if(checkIfOnArtBeforeOthers(artStartDate, cd4, whoStag) != null && whoDate(whoStag) != null && checkIfOnArtBeforeOthers(artStartDate, cd4, whoStag).before(whoDate(whoStag))) {
                 return new PatientEligibility(null, artStartDate);
             }
             else if(whoDate(whoStag) != null) {
@@ -166,11 +163,7 @@ public class DateAndReasonFirstMedicallyEligibleForArtCalculation extends Abstra
 
         else if (ageInMonths > 180){
 
-            if(whoDate(whoStag) != null && cd4Date(cd4) != null && artStartDate != null && whoDate(whoStag).before(cd4Date(cd4)) &&  whoDate(whoStag).before(artStartDate)) {
-                return new PatientEligibility("WHO", whoDate(whoStag));
-            }
-
-            else if(checkIfOnArtBeforeOthers(artStartDate, cd4, whoStag) != null && cd4Date(cd4) != null && checkIfOnArtBeforeOthers(artStartDate, cd4, whoStag).before(cd4Date(cd4))) {
+            if(checkIfOnArtBeforeOthers(artStartDate, cd4, whoStag) != null && cd4Date(cd4) != null && checkIfOnArtBeforeOthers(artStartDate, cd4, whoStag).before(cd4Date(cd4))) {
                 return new PatientEligibility(null, artStartDate);
             }
 
