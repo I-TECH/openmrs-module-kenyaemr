@@ -57,76 +57,67 @@ public class PatientPreArtOutComeCalculation extends AbstractPatientCalculation 
 		if(months == null) {
 			months = 0;
 		}
+		CalculationResultMap enrolledHere = calculate( new DateOfEnrollmentCalculation(),cohort, context);
 
-
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTime(context.getNow());
-		calendar.add(Calendar.MONTH, months);
-
-		context1.setNow(calendar.getTime());
-		CalculationResultMap enrolledHere = Calculations.activeEnrollment(hivProgram, cohort, context1);
-		CalculationResultMap deadPatients = calculate(new DateOfDeathCalculation(), cohort, context1);
-		CalculationResultMap defaulted = calculate(new DateDefaultedCalculation(), cohort, context1);
-		CalculationResultMap ltfu = calculate(new DateClassifiedLTFUCalculation(), cohort, context1);
-		CalculationResultMap transferredOut = calculate(new TransferOutDateCalculation(), cohort, context1);
-		CalculationResultMap onART = calculate(new InitialArtStartDateCalculation(), cohort, context1);
 		Set<Integer> aliveAndOnFollowUp = CalculationUtils.patientsThatPass(calculate(new AliveAndOnFollowUpCalculation(), cohort, context1));
-
 
 		CalculationResultMap ret = new CalculationResultMap();
 		for (Integer ptId : cohort) {
 		   String status = null;
 			Date dateLost = null;
 
+			Date patientProgramDate = EmrCalculationUtils.resultForPatient(enrolledHere, ptId);
 
-			PatientProgram patientProgram = EmrCalculationUtils.resultForPatient(enrolledHere, ptId);
+			if(patientProgramDate != null && monthsSince(patientProgramDate, new Date()) >= months ) {
 
-			//evaluate the calculation result maps
+				Calendar calendar = Calendar.getInstance();
+				calendar.setTime(patientProgramDate);
+				calendar.add(Calendar.MONTH, months);
+				context1.setNow(calendar.getTime());
 
-			Date dod = EmrCalculationUtils.datetimeResultForPatient(deadPatients, ptId);
 
-			LostToFU classifiedLTFU = EmrCalculationUtils.resultForPatient(ltfu, ptId);
+				CalculationResultMap onART = calculate(new InitialArtStartDateCalculation(), cohort, context1);
+				//find the initial art start date
+				Date initialArtStart = EmrCalculationUtils.datetimeResultForPatient(onART, ptId);
 
-			//find date transferred out
-			Date dateTo = EmrCalculationUtils.datetimeResultForPatient(transferredOut, ptId);
+				CalculationResultMap deadPatients = calculate(new DateOfDeathCalculation(), cohort, context1);
+				Date dod = EmrCalculationUtils.datetimeResultForPatient(deadPatients, ptId);
 
-			//find the initial art start date
-			Date initialArtStart = EmrCalculationUtils.datetimeResultForPatient(onART, ptId);
+				CalculationResultMap transferredOut = calculate(new TransferOutDateCalculation(), cohort, context1);
+				//find date transferred out
+				Date dateTo = EmrCalculationUtils.datetimeResultForPatient(transferredOut, ptId);
 
-			//find date defaulted
-			Date defaultedDate = EmrCalculationUtils.datetimeResultForPatient(defaulted, ptId);
+				CalculationResultMap defaulted = calculate(new DateDefaultedCalculation(), cohort, context1);
+				//find date defaulted
+				Date defaultedDate = EmrCalculationUtils.datetimeResultForPatient(defaulted, ptId);
 
-			if(classifiedLTFU != null) {
-				dateLost = (Date) classifiedLTFU.getDateLost();
-			}
-
-			System.out.println("The patients are "+ptId+" and program is "+patientProgram);
-			if(patientProgram != null && monthsSince(patientProgram.getDateEnrolled(), new Date()) >= months ) {
-
-				status = "V";
-
-				Calendar calendar1 = Calendar.getInstance();
-				calendar1.setTime(patientProgram.getDateEnrolled());
-				calendar1.add(Calendar.MONTH, months);
-
-				if(initialArtStart != null && (initialArtStart.before(calendar1.getTime()) || initialArtStart.equals(calendar1.getTime())) && initialArtStart.after(patientProgram.getDateEnrolled())) {
-					status = "A";
+				CalculationResultMap ltfu = calculate(new DateClassifiedLTFUCalculation(), cohort, context1);
+				LostToFU classifiedLTFU = EmrCalculationUtils.resultForPatient(ltfu, ptId);
+				if(classifiedLTFU != null) {
+					dateLost = (Date) classifiedLTFU.getDateLost();
 				}
 
-				if(dod != null && (dod.before(calendar1.getTime()) || dod.equals(calendar1.getTime()))) {
-					status = "D";
+
+				status = "Alive and not on ART";
+
+				if(initialArtStart != null && (initialArtStart.before(calendar.getTime()) || initialArtStart.equals(calendar.getTime())) && initialArtStart.after(patientProgramDate)) {
+					status = "Initiated ART";
 				}
 
-				if(dateTo != null && (dateTo.before(calendar1.getTime()) || dateTo.equals(calendar1.getTime()))) {
-					status = "T";
+				if(dod != null && (dod.before(calendar.getTime()) || dod.equals(calendar.getTime()))) {
+					status = "Died";
 				}
 
-				if(dateLost != null && (dateLost.before(calendar1.getTime()) || dateLost.equals(calendar1.getTime()))){
-					status = "L";
+				if(dateTo != null && (dateTo.before(calendar.getTime()) || dateTo.equals(calendar.getTime()))) {
+					status = "Transferred out";
 				}
 
-				if(defaultedDate != null && (defaultedDate.before(calendar1.getTime()) || defaultedDate.equals(calendar1.getTime()))){
-					status = "F";
+				if(dateLost != null && (dateLost.before(calendar.getTime()) || dateLost.equals(calendar.getTime()))){
+					status = "Lost to follow up";
+				}
+
+				if(defaultedDate != null && (defaultedDate.before(calendar.getTime()) || defaultedDate.equals(calendar.getTime()))){
+					status = "Defaulted";
 				}
 
 			}

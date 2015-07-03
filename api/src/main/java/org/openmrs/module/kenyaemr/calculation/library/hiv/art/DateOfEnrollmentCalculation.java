@@ -20,6 +20,7 @@ import org.openmrs.PatientProgram;
 import org.openmrs.Program;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
+import org.openmrs.calculation.result.ListResult;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
 import org.openmrs.module.kenyacore.calculation.CalculationUtils;
@@ -31,6 +32,7 @@ import org.openmrs.module.metadatadeploy.MetadataUtils;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -43,14 +45,15 @@ public class DateOfEnrollmentCalculation extends AbstractPatientCalculation {
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
 
 		Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
-		CalculationResultMap enrolledHere = Calculations.activeEnrollment(hivProgram, cohort, context);
+		CalculationResultMap enrolledHere = Calculations.allEnrollments(hivProgram, cohort, context);
 
 		CalculationResultMap result = new CalculationResultMap();
 		for (Integer ptId : cohort) {
 			Date enrollmentDate = null;
-			PatientProgram patientProgram = EmrCalculationUtils.resultForPatient(enrolledHere, ptId);
-			if((patientProgram != null)){
-				enrollmentDate = patientProgram.getDateEnrolled();
+			ListResult listResult = (ListResult) enrolledHere.get(ptId);
+			List<PatientProgram> patientProgram = CalculationUtils.extractResultValues(listResult);
+			if((patientProgram != null && patientProgram.size() > 0)){
+				enrollmentDate = patientProgram.get(0).getDateEnrolled();
 			}
 
 			result.put(ptId, new SimpleResult(enrollmentDate, this));
