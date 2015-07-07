@@ -1,4 +1,4 @@
-package org.openmrs.module.kenyaemr.reporting.data.converter;
+package org.openmrs.module.kenyaemr.reporting.calculation.converter;
 
 import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.module.kenyaemr.calculation.library.models.Cd4ValueAndDate;
@@ -9,15 +9,11 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * Created by codehub on 18/06/15.
+ * Created by codehub on 06/07/15.
  */
-public class Cd4ValueAndDateConverter implements DataConverter {
+public class CurrentCd4Converter implements DataConverter {
 
     private String what;
-
-    public Cd4ValueAndDateConverter(String what) {
-        this.what = what;
-    }
 
     public String getWhat() {
         return what;
@@ -27,18 +23,22 @@ public class Cd4ValueAndDateConverter implements DataConverter {
         this.what = what;
     }
 
+    public CurrentCd4Converter(String what) {
+        this.what = what;
+    }
+
     @Override
     public Object convert(Object obj) {
 
         if (obj == null) {
-            return "";
+            return "missing";
         }
 
         Object value = ((CalculationResult) obj).getValue();
         Cd4ValueAndDate cd4ValueAndDate = (Cd4ValueAndDate) value;
 
         if(cd4ValueAndDate == null) {
-            return  "";
+            return  "missing";
         }
         if(what.equals("date")) {
             return formatDate(cd4ValueAndDate.getCd4Date());

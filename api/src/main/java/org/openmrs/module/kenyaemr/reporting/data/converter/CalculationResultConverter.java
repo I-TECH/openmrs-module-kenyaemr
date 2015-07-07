@@ -50,10 +50,10 @@ public class CalculationResultConverter implements DataConverter{
 			return value.toString();
 		}
 		else if (value instanceof Double) {
-			return ((Double) value).doubleValue();
+			return ((Double) value);
 		}
 		else if (value instanceof Integer){
-			return ((Integer) value).intValue();
+			return ((Integer) value);
 		}
 		else if (value instanceof Location){
 			return ((Location) value).getName();
