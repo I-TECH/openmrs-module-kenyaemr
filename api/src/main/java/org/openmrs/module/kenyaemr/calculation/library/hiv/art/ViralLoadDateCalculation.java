@@ -10,8 +10,6 @@ import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
-import org.openmrs.module.kenyaemr.calculation.library.models.Cd4ValueAndDate;
-import org.openmrs.module.reporting.common.DateUtil;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -21,9 +19,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by codehub on 06/07/15.
+ * Calculates the date when the viral load was taken
  */
-public class ViralLoadCalculation extends AbstractPatientCalculation {
+public class ViralLoadDateCalculation extends AbstractPatientCalculation {
 
     @Override
     public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues,PatientCalculationContext context) {
@@ -33,7 +31,7 @@ public class ViralLoadCalculation extends AbstractPatientCalculation {
         CalculationResultMap artStartDateMap = calculate(new InitialArtStartDateCalculation(), cohort, context);
 
         for(Integer ptId:cohort) {
-            Double vlValue = null;
+            Date vlValue = null;
             ListResult listResult = (ListResult) allVL.get(ptId);
             List<Obs> obsList = CalculationUtils.extractResultValues(listResult);
             List<Obs> validVls = new ArrayList<Obs>();
@@ -51,7 +49,7 @@ public class ViralLoadCalculation extends AbstractPatientCalculation {
                 }
 
                 if(validVls.size() > 0) {
-                    vlValue = validVls.get(validVls.size() -1).getValueNumeric();
+                    vlValue = validVls.get(validVls.size() -1).getObsDatetime();
                 }
                 ret.put(ptId, new SimpleResult(vlValue, this));
             }

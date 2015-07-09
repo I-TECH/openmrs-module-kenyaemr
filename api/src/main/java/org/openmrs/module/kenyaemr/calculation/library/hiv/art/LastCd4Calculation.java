@@ -64,7 +64,7 @@ public class LastCd4Calculation extends AbstractPatientCalculation {
 			}
 
 			if(validListObs.size() > 0) {
-				new Cd4ValueAndDate(validListObs.get(validListObs.size() - 1).getValueNumeric(), validListObs.get(validListObs.size() - 1).getObsDatetime());
+				cd4ValueAndDate = new Cd4ValueAndDate(validListObs.get(validListObs.size() - 1).getValueNumeric(), validListObs.get(validListObs.size() - 1).getObsDatetime());
 			}
 			ret.put(ptId, new SimpleResult(cd4ValueAndDate, this));
 		}

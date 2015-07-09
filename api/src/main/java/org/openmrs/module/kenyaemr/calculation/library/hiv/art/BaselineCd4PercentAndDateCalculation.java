@@ -46,7 +46,7 @@ public class BaselineCd4PercentAndDateCalculation extends AbstractPatientCalcula
                 }
             }
             if(validCd4Percent.size() > 0) {
-                new Cd4ValueAndDate(validCd4Percent.get(validCd4Percent.size() - 1).getValueNumeric(), validCd4Percent.get(validCd4Percent.size() - 1).getObsDatetime());
+                cd4ValueAndDate = new Cd4ValueAndDate(validCd4Percent.get(validCd4Percent.size() - 1).getValueNumeric(), validCd4Percent.get(validCd4Percent.size() - 1).getObsDatetime());
             }
 
             ret.put(ptId, new SimpleResult(cd4ValueAndDate, this));

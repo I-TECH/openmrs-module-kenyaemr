@@ -15,6 +15,10 @@ public class Cd4ValueAndDateConverter implements DataConverter {
 
     private String what;
 
+    public Cd4ValueAndDateConverter(){
+
+    }
+
     public Cd4ValueAndDateConverter(String what) {
         this.what = what;
     }

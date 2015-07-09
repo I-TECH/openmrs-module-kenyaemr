@@ -87,20 +87,20 @@ public class PatientArtOutComeCalculation extends AbstractPatientCalculation {
                     status = "Stopped ART";
                 }
 
-                if(dod != null && (dod.before(calendarAfterART.getTime()) || dod.equals(calendarAfterART.getTime()))) {
-                    status = "Died";
-                }
-
                 if(dateTo != null && (dateTo.before(calendarAfterART.getTime()) || dateTo.equals(calendarAfterART.getTime()))) {
                     status = "Transferred out";
+                }
+
+                if(defaultedDate != null && (defaultedDate.before(calendarAfterART.getTime()) || defaultedDate.equals(calendarAfterART.getTime()))){
+                    status = "Defaulted";
                 }
 
                 if(dateLost != null && (dateLost.before(calendarAfterART.getTime()) || dateLost.equals(calendarAfterART.getTime()))){
                     status = "Lost to follow up";
                 }
 
-                if(defaultedDate != null && (defaultedDate.before(calendarAfterART.getTime()) || defaultedDate.equals(calendarAfterART.getTime()))){
-                    status = "Defaulted";
+                if(dod != null && (dod.before(calendarAfterART.getTime()) || dod.equals(calendarAfterART.getTime()))) {
+                    status = "Died";
                 }
 
             }

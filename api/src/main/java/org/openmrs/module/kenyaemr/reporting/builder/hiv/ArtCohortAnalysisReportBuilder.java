@@ -33,10 +33,10 @@ import org.openmrs.module.kenyaemr.calculation.library.hiv.art.PatientArtOutCome
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.TransferInDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.TransferOutDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.ViralLoadCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.ViralLoadDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.ViralSuppressionCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.rdqa.DateOfDeathCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
-import org.openmrs.module.kenyaemr.reporting.calculation.converter.Cd4CountImprovementConverter;
 import org.openmrs.module.kenyaemr.reporting.calculation.converter.ChangeInCd4Converter;
 import org.openmrs.module.kenyaemr.reporting.calculation.converter.CurrentCd4Converter;
 import org.openmrs.module.kenyaemr.reporting.calculation.converter.MedicallyEligibleConverter;
@@ -128,15 +128,16 @@ public class ArtCohortAnalysisReportBuilder extends AbstractHybridReportBuilder 
         dsd.addColumn("Current cd4 percent", new CalculationDataDefinition("Current cd4 percent", new LastCd4PercentCalculation()), "", new CurrentCd4Converter("value"));
         dsd.addColumn("Date current cd4 percent", new CalculationDataDefinition("Date current cd4 percent", new LastCd4PercentCalculation()), "", new CurrentCd4Converter("date"));
         dsd.addColumn("Change in cd4 count", new CalculationDataDefinition("Change in cd4 count", new ChangeInCd4CountCalculation()), "", new ChangeInCd4Converter());
-        dsd.addColumn("Cd4 count improvement", new CalculationDataDefinition("Cd4 count improvement", new Cd4CountImprovementCalculation()), "", new Cd4CountImprovementConverter());
+        dsd.addColumn("Cd4 count improvement", new CalculationDataDefinition("Cd4 count improvement", new Cd4CountImprovementCalculation()), "", new CalculationResultConverter());
         dsd.addColumn("Change in cd4 percent", new CalculationDataDefinition("Change in cd4 percent", new ChangeInCd4PercentCalculation()), "", new ChangeInCd4Converter());
-        dsd.addColumn("Cd4 percent improvement", new CalculationDataDefinition("Cd4 percent improvement", new Cd4PercentImprovementCalculation()), "", new Cd4CountImprovementConverter());
-        dsd.addColumn("Current viral load", new CalculationDataDefinition("Current viral load", new ViralLoadCalculation()), "", new Cd4ValueAndDateConverter("value"));
-        dsd.addColumn("Date of current viral load", new CalculationDataDefinition("Date of current viral load", new ViralLoadCalculation()), "", new Cd4ValueAndDateConverter("date"));
+        dsd.addColumn("Cd4 percent improvement", new CalculationDataDefinition("Cd4 percent improvement", new Cd4PercentImprovementCalculation()), "", new CalculationResultConverter());
+        dsd.addColumn("Current viral load", new CalculationDataDefinition("Current viral load", new ViralLoadCalculation()), "", new CalculationResultConverter());
+        dsd.addColumn("Date of current viral load", new CalculationDataDefinition("Date of current viral load", new ViralLoadDateCalculation()), "", new CalculationResultConverter());
         dsd.addColumn("Viral suppression", new CalculationDataDefinition("Viral suppression", new ViralSuppressionCalculation()), "", new CalculationResultConverter());
         dsd.addColumn("Date of Last visit", new CalculationDataDefinition("Date of Last visit", new DateLastSeenCalculation()), "", new CalculationResultConverter());
         dsd.addColumn("Date of expected next visit", new CalculationDataDefinition("Date of expected next visit", new LastReturnVisitDateCalculation()), "", new CalculationResultConverter());
         dsd.addColumn("Date of death", new CalculationDataDefinition("Date of death", new DateOfDeathCalculation()), "", new CalculationResultConverter());
+
         dsd.addColumn("OutCome 6 Months", patientOutComes(6), "onDate=${endDate}", new CalculationResultConverter());
         dsd.addColumn("OutCome 12 Months", patientOutComes(12), "onDate=${endDate}", new CalculationResultConverter());
         dsd.addColumn("OutCome 24 Months", patientOutComes(24), "onDate=${endDate}", new CalculationResultConverter());

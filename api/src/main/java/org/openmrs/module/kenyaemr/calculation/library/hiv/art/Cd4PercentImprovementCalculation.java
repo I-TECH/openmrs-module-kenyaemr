@@ -2,6 +2,7 @@ package org.openmrs.module.kenyaemr.calculation.library.hiv.art;
 
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
+import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
@@ -21,13 +22,16 @@ public class Cd4PercentImprovementCalculation extends AbstractPatientCalculation
         CalculationResultMap calculations = calculate(new ChangeInCd4PercentCalculation(), cohort, context);
 
         for(Integer ptId: cohort) {
-            boolean hasImproved = false;
+            String hasImproved = "Missing";
 
             Double value = EmrCalculationUtils.resultForPatient(calculations, ptId);
             if(value != null && value > 0.0) {
-                hasImproved = true;
+                hasImproved = "Yes";
             }
-            ret.put(ptId, new BooleanResult(hasImproved, this));
+            else if(value != null && value <= 0.0) {
+                hasImproved = "No";
+            }
+            ret.put(ptId, new SimpleResult(hasImproved, this));
         }
 
         return ret;

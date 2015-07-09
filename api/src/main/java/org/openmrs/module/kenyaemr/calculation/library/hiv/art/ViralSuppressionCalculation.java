@@ -2,6 +2,7 @@ package org.openmrs.module.kenyaemr.calculation.library.hiv.art;
 
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
+import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
@@ -22,13 +23,17 @@ public class ViralSuppressionCalculation extends AbstractPatientCalculation {
         CalculationResultMap viralLoad = calculate(new ViralLoadCalculation(), cohort, context);
 
         for(Integer ptId:cohort) {
-            boolean suppressed = false;
-            Cd4ValueAndDate cd4ValueAndDate = EmrCalculationUtils.resultForPatient(viralLoad, ptId);
+            String suppressed = "Missing";
+            Double cd4ValueAndDate = EmrCalculationUtils.resultForPatient(viralLoad, ptId);
 
-            if(cd4ValueAndDate != null && cd4ValueAndDate.getCd4Value() < 1000) {
-                suppressed = true;
+            if(cd4ValueAndDate != null && cd4ValueAndDate < 1000) {
+                suppressed = "Yes";
             }
-            ret.put(ptId, new BooleanResult(suppressed, this));
+            else if(cd4ValueAndDate != null && cd4ValueAndDate >= 1000){
+                suppressed = "No";
+            }
+
+            ret.put(ptId, new SimpleResult(suppressed, this));
         }
         return  ret;
 

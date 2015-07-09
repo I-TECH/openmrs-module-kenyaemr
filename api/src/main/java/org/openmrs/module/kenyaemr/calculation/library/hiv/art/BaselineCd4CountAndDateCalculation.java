@@ -41,13 +41,13 @@ public class BaselineCd4CountAndDateCalculation extends AbstractPatientCalculati
             List<Obs> allCd4Obs = CalculationUtils.extractResultValues(listResult);
             if(allCd4Obs.size() > 0 && artInitiationDt != null) {
                 for (Obs obs : allCd4Obs) {
-                    if (daysBetween(obs.getObsDatetime(), artInitiationDt) <= 90) {
+                    if (obs.getObsDatetime().before(artInitiationDt) && daysBetween(artInitiationDt, obs.getObsDatetime()) <= 90) {
                         validCd4.add(obs);
                     }
                 }
             }
             if(validCd4.size() > 0) {
-                new Cd4ValueAndDate(validCd4.get(validCd4.size() - 1).getValueNumeric(), validCd4.get(validCd4.size() - 1).getObsDatetime());
+                cd4ValueAndDate =  new Cd4ValueAndDate(validCd4.get(validCd4.size() - 1).getValueNumeric(), validCd4.get(validCd4.size() - 1).getObsDatetime());
             }
 
             ret.put(ptId, new SimpleResult(cd4ValueAndDate, this));
