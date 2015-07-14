@@ -70,7 +70,7 @@ import java.util.Date;
 import java.util.List;
 
 @Component
-@Builds({"kenyaemr.hiv.report.artCohortAnalysis.preArt"})
+@Builds({"kenyaemr.hiv.report.artCohortAnalysis.preArt","kenyaemr.hiv.report.cohort.analysis.preArt.6","kenyaemr.hiv.report.cohort.analysis.preArt.12","kenyaemr.hiv.report.cohort.analysis.preArt.24","kenyaemr.hiv.report.cohort.analysis.preArt.36","kenyaemr.hiv.report.cohort.analysis.preArt.48","kenyaemr.hiv.report.cohort.analysis.preArt.60"})
 public class PreArtCohortAnalysisReportBuilder extends AbstractHybridReportBuilder {
 
 	@Autowired

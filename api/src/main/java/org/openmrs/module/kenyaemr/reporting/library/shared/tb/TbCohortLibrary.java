@@ -75,6 +75,22 @@ public class TbCohortLibrary {
 	}
 
 	/**
+	 * Patients who were screeed for tb and are in hiv program
+	 * @return the cohort definition
+	 */
+	public CohortDefinition screenedForTbAndHivPositive() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("screened and hiv positive");
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("screened", ReportUtils.map(screenedForTb(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("hivPositive", ReportUtils.map(hivCohortLibrary.enrolled(), "enrolledOnOrBefore=${onOrBefore}"));
+		cd.setCompositionString("screened AND hivPositive");
+
+		return cd;
+	}
+
+	/**
 	 * Patients screened for TB using ICF form
 	 * @return CohortDefinition
 	 */

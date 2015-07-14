@@ -11,6 +11,7 @@
 	<import resource="content/kenyaemr.mchms.xml" />
 	<import resource="content/kenyaemr.mchcs.xml" />
 	<import resource="content/kenyaemr.tb.xml" />
+	<import resource="content/kenyaemr.cohort.analysis.xml" />
 
 	<!-- ===================== App descriptors ===================== -->
 

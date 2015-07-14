@@ -35,13 +35,13 @@ public class CurrentArtLineCalculation extends AbstractPatientCalculation {
             if(initialRegimenDate != null){
 
                 if (onFirstLine != null && onFirstLine.contains(ptId)) {
-                    line = "1st";
+                    line = "first";
                 }
                 else if(onSecondLine != null  && onSecondLine.contains(ptId)) {
-                    line = "2nd";
+                    line = "second";
                 }
                 else if(onFirstLine != null && onSecondLine != null && onFirstLine.contains(ptId) && onSecondLine.contains(ptId)) {
-                    line = "2nd";
+                    line = "second";
                 }
                 else {
                     line = "Other";
