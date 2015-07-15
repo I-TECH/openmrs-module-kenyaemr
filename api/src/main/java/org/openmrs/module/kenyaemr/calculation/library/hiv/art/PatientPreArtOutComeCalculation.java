@@ -49,8 +49,6 @@ public class PatientPreArtOutComeCalculation extends AbstractPatientCalculation 
 
 		Integer months = (parameterValues != null && parameterValues.containsKey("months")) ? (Integer) parameterValues.get("months") : null;
 
-		Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
-
 		PatientCalculationService patientCalculationService = Context.getService(PatientCalculationService.class);
 
 		PatientCalculationContext context1 = patientCalculationService.createCalculationContext();
@@ -58,8 +56,6 @@ public class PatientPreArtOutComeCalculation extends AbstractPatientCalculation 
 			months = 0;
 		}
 		CalculationResultMap enrolledHere = calculate( new DateOfEnrollmentCalculation(),cohort, context);
-
-		Set<Integer> aliveAndOnFollowUp = CalculationUtils.patientsThatPass(calculate(new AliveAndOnFollowUpCalculation(), cohort, context1));
 
 		CalculationResultMap ret = new CalculationResultMap();
 		for (Integer ptId : cohort) {

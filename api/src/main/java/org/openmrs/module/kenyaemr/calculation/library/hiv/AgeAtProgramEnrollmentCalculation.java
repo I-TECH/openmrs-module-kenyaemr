@@ -9,6 +9,7 @@ import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
 import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.DateOfEnrollmentCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.common.Age;
@@ -25,23 +26,31 @@ public class AgeAtProgramEnrollmentCalculation extends AbstractPatientCalculatio
     @Override
     public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
 
-        CalculationResultMap dateEnrolled = Calculations.lastEncounter(MetadataUtils.existing(EncounterType.class, HivMetadata._EncounterType.HIV_ENROLLMENT), cohort, context);
+        CalculationResultMap dateEnrolled = calculate(new DateOfEnrollmentCalculation(), cohort, context);
         CalculationResultMap ret = new CalculationResultMap();
         for(Integer ptId:cohort){
-            Integer ageAtEnrollment = null;
-            Encounter encounter = EmrCalculationUtils.encounterResultForPatient(dateEnrolled, ptId);
+            String ageAtEnrollment = null;
+            Date encounterDate = EmrCalculationUtils.resultForPatient(dateEnrolled, ptId);
             Date birthDate = Context.getPatientService().getPatient(ptId).getBirthdate();
 
-            if (encounter != null && birthDate != null){
-                ageAtEnrollment = ageInYearsAtDate(birthDate, encounter.getEncounterDatetime());
+            if (encounterDate != null && birthDate != null){
+                ageAtEnrollment = ageInYearsAtDate(birthDate, encounterDate);
             }
             ret.put(ptId, new SimpleResult(ageAtEnrollment, this, context));
         }
         return ret;
     }
 
-    private Integer ageInYearsAtDate(Date birthDate, Date artInitiationDate) {
+    private String ageInYearsAtDate(Date birthDate, Date artInitiationDate) {
+
         Age age = new Age(birthDate, artInitiationDate);
-        return age.getFullYears();
+        String ages;
+        if(age.getFullYears() < 2) {
+            ages = age.getFullMonths()+" months";
+        }
+        else {
+            ages = age.getFullYears()+" years";
+        }
+        return ages;
     }
 }

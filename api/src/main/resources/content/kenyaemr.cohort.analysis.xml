@@ -30,8 +30,8 @@
         <property name="name" value="Pre-ART cohort 6 months" />
         <property name="description" value="Cohort based upon shared month and year of enrollment into HIV care and treatment 6 months outcome" />
         <property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
-        <property name="template" value="kenyaemr:hiv/preArtCohortAnalysis.xls" />
-        <property name="repeatingSection" value="sheet:1,row:11,dataset:preArtCohortAnalysis" />
+        <property name="template" value="kenyaemr:hiv/pre_ART_Cohort.xls" />
+        <property name="repeatingSection" value="sheet:1,row:6,dataset:preArtCohortAnalysis" />
     </bean>
 
     <bean id="kenyaemr.hiv.report.cohort.analysis.preArt.12" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
@@ -39,8 +39,8 @@
         <property name="name" value="Pre-ART cohort 12 months" />
         <property name="description" value="Cohort based upon shared month and year of enrollment into HIV care and treatment 12 months outcome" />
         <property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
-        <property name="template" value="kenyaemr:hiv/preArtCohortAnalysis.xls" />
-        <property name="repeatingSection" value="sheet:1,row:11,dataset:preArtCohortAnalysis" />
+        <property name="template" value="kenyaemr:hiv/pre_ART_Cohort.xls" />
+        <property name="repeatingSection" value="sheet:1,row:6,dataset:preArtCohortAnalysis" />
     </bean>
 
     <bean id="kenyaemr.hiv.report.cohort.analysis.preArt.24" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
@@ -48,8 +48,8 @@
         <property name="name" value="Pre-ART cohort 24 months" />
         <property name="description" value="Cohort based upon shared month and year of enrollment into HIV care and treatment 24 months outcome" />
         <property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
-        <property name="template" value="kenyaemr:hiv/preArtCohortAnalysis.xls" />
-        <property name="repeatingSection" value="sheet:1,row:11,dataset:preArtCohortAnalysis" />
+        <property name="template" value="kenyaemr:hiv/pre_ART_Cohort.xls" />
+        <property name="repeatingSection" value="sheet:1,row:6,dataset:preArtCohortAnalysis" />
     </bean>
 
     <bean id="kenyaemr.hiv.report.cohort.analysis.preArt.36" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
@@ -57,8 +57,8 @@
         <property name="name" value="Pre-ART cohort 36 months" />
         <property name="description" value="Cohort based upon shared month and year of enrollment into HIV care and treatment 36 months outcome" />
         <property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
-        <property name="template" value="kenyaemr:hiv/preArtCohortAnalysis.xls" />
-        <property name="repeatingSection" value="sheet:1,row:11,dataset:preArtCohortAnalysis" />
+        <property name="template" value="kenyaemr:hiv/pre_ART_Cohort.xls" />
+        <property name="repeatingSection" value="sheet:1,row:6,dataset:preArtCohortAnalysis" />
     </bean>
 
     <bean id="kenyaemr.hiv.report.cohort.analysis.preArt.48" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
@@ -66,8 +66,8 @@
         <property name="name" value="Pre-ART cohort 48 months" />
         <property name="description" value="Cohort based upon shared month and year of enrollment into HIV care and treatment 48 months outcome" />
         <property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
-        <property name="template" value="kenyaemr:hiv/preArtCohortAnalysis.xls" />
-        <property name="repeatingSection" value="sheet:1,row:11,dataset:preArtCohortAnalysis" />
+        <property name="template" value="kenyaemr:hiv/pre_ART_Cohort.xls" />
+        <property name="repeatingSection" value="sheet:1,row:6,dataset:preArtCohortAnalysis" />
     </bean>
 
     <bean id="kenyaemr.hiv.report.cohort.analysis.preArt.60" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
@@ -75,8 +75,8 @@
         <property name="name" value="Pre-ART cohort 60 months" />
         <property name="description" value="Cohort based upon shared month and year of enrollment into HIV care and treatment 60 months outcome" />
         <property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
-        <property name="template" value="kenyaemr:hiv/preArtCohortAnalysis.xls" />
-        <property name="repeatingSection" value="sheet:1,row:11,dataset:preArtCohortAnalysis" />
+        <property name="template" value="kenyaemr:hiv/pre_ART_Cohort.xls" />
+        <property name="repeatingSection" value="sheet:1,row:6,dataset:preArtCohortAnalysis" />
     </bean>
 
     <bean id="kenyaemr.hiv.report.art.cohort.analysis.art.12" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">

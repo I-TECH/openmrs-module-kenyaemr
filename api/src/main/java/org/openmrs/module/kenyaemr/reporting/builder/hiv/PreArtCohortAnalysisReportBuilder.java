@@ -70,7 +70,7 @@ import java.util.Date;
 import java.util.List;
 
 @Component
-@Builds({"kenyaemr.hiv.report.artCohortAnalysis.preArt","kenyaemr.hiv.report.cohort.analysis.preArt.6","kenyaemr.hiv.report.cohort.analysis.preArt.12","kenyaemr.hiv.report.cohort.analysis.preArt.24","kenyaemr.hiv.report.cohort.analysis.preArt.36","kenyaemr.hiv.report.cohort.analysis.preArt.48","kenyaemr.hiv.report.cohort.analysis.preArt.60"})
+@Builds({"kenyaemr.hiv.report.cohort.analysis.preArt.6","kenyaemr.hiv.report.cohort.analysis.preArt.12","kenyaemr.hiv.report.cohort.analysis.preArt.24","kenyaemr.hiv.report.cohort.analysis.preArt.36","kenyaemr.hiv.report.cohort.analysis.preArt.48","kenyaemr.hiv.report.cohort.analysis.preArt.60"})
 public class PreArtCohortAnalysisReportBuilder extends AbstractHybridReportBuilder {
 
 	@Autowired
@@ -100,6 +100,7 @@ public class PreArtCohortAnalysisReportBuilder extends AbstractHybridReportBuild
 		DataDefinition identifierDef = new ConvertedPatientDataDefinition("identifier", new PatientIdentifierDataDefinition(upn.getName(), upn), identifierFormatter);
 		DataConverter nameFormatter = new ObjectFormatter("{familyName}, {givenName}");
 		DataDefinition nameDef = new ConvertedPersonDataDefinition("name", new PreferredNameDataDefinition(), nameFormatter);
+
 		dsd.setName("preArtCohortAnalysis");
 		dsd.addColumn("id", new PatientIdDataDefinition(), "");
 		dsd.addColumn("Name", nameDef, "");
@@ -119,24 +120,13 @@ public class PreArtCohortAnalysisReportBuilder extends AbstractHybridReportBuild
 		dsd.addColumn("Date of initial CD4 count", new CalculationDataDefinition("Date of initial CD4 count", new InitialCd4CountCalculation()), "", new Cd4ValueAndDateConverter("date"));
 		dsd.addColumn("Initial CD4 percent", new CalculationDataDefinition("Initial CD4 percent", new InitialCd4PercentCalculation()), "", new Cd4ValueAndDateConverter("value"));
 		dsd.addColumn("Date of initial CD4 percent", new CalculationDataDefinition("Date of initial CD4 percent", new InitialCd4PercentCalculation()), "", new Cd4ValueAndDateConverter("date"));
-
 		dsd.addColumn("Date first medically eligible for ART", new CalculationDataDefinition("Date first medically eligible for ART", new DateAndReasonFirstMedicallyEligibleForArtCalculation()), "", new MedicallyEligibleConverter("date"));
 		dsd.addColumn("Reason first medically eligible For ART", new CalculationDataDefinition("Reason first medically eligible For ART", new DateAndReasonFirstMedicallyEligibleForArtCalculation()), "", new MedicallyEligibleConverter("reason"));
 		dsd.addColumn("Medically eligible but not enrolled on ART", new CalculationDataDefinition("Medically eligible but not enrolled on ART", new EligibleForArtCalculation()), "", new CalculationResultConverter());
 		dsd.addColumn("Date of Last visit", new CalculationDataDefinition("Date of Last visit", new DateLastSeenCalculation()), "", new CalculationResultConverter());
 		dsd.addColumn("Date of expected next visit", new CalculationDataDefinition("Date of expected next visit", new LastReturnVisitDateCalculation()), "", new CalculationResultConverter());
 		dsd.addColumn("Date of death", new CalculationDataDefinition("Date of death", new DateOfDeathCalculation()), "", new CalculationResultConverter());
-
-
-
-
-		dsd.addColumn("OutCome 6 Months", patientOutComes(6), "onDate=${endDate}", new CalculationResultConverter());
-		dsd.addColumn("OutCome 12 Months", patientOutComes(12), "onDate=${endDate}", new CalculationResultConverter());
-		dsd.addColumn("OutCome 24 Months", patientOutComes(24), "onDate=${endDate}", new CalculationResultConverter());
-		dsd.addColumn("OutCome 36 Months", patientOutComes(36), "onDate=${endDate}", new CalculationResultConverter());
-		dsd.addColumn("OutCome 48 Months", patientOutComes(48), "onDate=${endDate}", new CalculationResultConverter());
-		dsd.addColumn("OutCome 60 Months", patientOutComes(60), "onDate=${endDate}", new CalculationResultConverter());
-
+		dsd.addColumn("OutComes", patientOutComes(report), "onDate=${endDate}", new CalculationResultConverter());
 	}
 
 	@Override
@@ -170,7 +160,8 @@ public class PreArtCohortAnalysisReportBuilder extends AbstractHybridReportBuild
 
 	}
 
-	private DataDefinition patientOutComes(int months) {
+	private DataDefinition patientOutComes(HybridReportDescriptor descriptor) {
+		int months = Integer.parseInt(descriptor.getId().split("\\.")[6]);
 		CalculationDataDefinition cd = new CalculationDataDefinition("outcomes", new PatientPreArtOutComeCalculation());
 		cd.addCalculationParameter("months" , months);
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
