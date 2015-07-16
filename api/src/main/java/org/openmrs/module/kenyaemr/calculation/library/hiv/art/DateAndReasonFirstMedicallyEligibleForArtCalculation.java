@@ -90,30 +90,51 @@ public class DateAndReasonFirstMedicallyEligibleForArtCalculation extends Abstra
 
             if(inHivProgram.contains(ptId) && pregnancyObs != null && pregnancyObs.getValueCoded().equals(Dictionary.getConcept(Dictionary.YES))) {
                 patientEligibility = new PatientEligibility("PREGNANT", pregnancyObs.getObsDatetime());
+                if(artStartDate != null && pregnancyObs.getObsDatetime().after(artStartDate)) {
+                    patientEligibility = new PatientEligibility("", artStartDate);
+                }
             }
 
             else if(inHivProgram.contains(ptId) && hepatitisConcept != null && hepatitisConcept.getValueCoded().equals(Dictionary.getConcept(Dictionary.HEPATITIS_B))) {
                 patientEligibility = new PatientEligibility("TB/HPV", hepatitisConcept.getObsDatetime());
+                if(artStartDate != null && hepatitisConcept.getObsDatetime().after(artStartDate)) {
+                    patientEligibility = new PatientEligibility("", artStartDate);
+                }
             }
 
             else if(inHivProgram.contains(ptId) && inTbProgram.contains(ptId) || (hasTbConcpt != null && hasTbConcpt.getValueCoded().equals(Dictionary.getConcept(Dictionary.DISEASE_DIAGNOSED))) || (hasTbConcpt != null && hasTbConcpt.getValueCoded().equals(Dictionary.getConcept(Dictionary.ON_TREATMENT_FOR_DISEASE)))) {
                 patientEligibility = new PatientEligibility("TB/HPV", hasTbConcpt.getObsDatetime());
+                if(artStartDate != null && hasTbConcpt.getObsDatetime().after(artStartDate)) {
+                    patientEligibility = new PatientEligibility("", artStartDate);
+                }
             }
 
            else if(inHivProgram.contains(ptId) && isDiscodantCouple != null && isDiscodantCouple.getValueCoded().equals(Dictionary.getConcept(Dictionary.DISCORDANT_COUPLE))) {
                 patientEligibility = new PatientEligibility("DISCORDANT", isDiscodantCouple.getObsDatetime());
+                if(artStartDate != null && isDiscodantCouple.getObsDatetime().after(artStartDate)) {
+                    patientEligibility = new PatientEligibility("", artStartDate);
+                }
             }
 
             else if(eligibleDateObs != null && eligibleReasonObs != null ) {
                 patientEligibility = new PatientEligibility(eligibleReason(eligibleReasonObs.getValueCoded()), eligibleDateObs.getValueDatetime());
+                if(artStartDate != null && eligibleDateObs.getValueDatetime().after(artStartDate)) {
+                    patientEligibility = new PatientEligibility("", artStartDate);
+                }
             }
 
            else  if(dnaPcrQual != null && dnaPcrQual.getValueCoded().equals(Dictionary.getConcept(Dictionary.POSITIVE))) {
                 patientEligibility = new PatientEligibility("PCR", dnaPcrQual.getObsDatetime());
+                if(artStartDate != null && dnaPcrQual.getObsDatetime().after(artStartDate)) {
+                    patientEligibility = new PatientEligibility("", artStartDate);
+                }
             }
 
             else if(dnaPcrRea != null && dnaPcrRea.getValueCoded().equals(Dictionary.getConcept(Dictionary.DETECTED))) {
                 patientEligibility = new PatientEligibility("PCR", dnaPcrRea.getObsDatetime());
+                if(artStartDate != null && dnaPcrRea.getObsDatetime().after(artStartDate)) {
+                    patientEligibility = new PatientEligibility("", artStartDate);
+                }
             }
             else {
                 if (inHivProgram.contains(ptId)) {

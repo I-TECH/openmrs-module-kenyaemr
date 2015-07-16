@@ -1,5 +1,7 @@
 package org.openmrs.module.kenyaemr.calculation.library.hiv.art;
 
+import org.joda.time.DateTime;
+import org.joda.time.Days;
 import org.openmrs.Obs;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
@@ -29,34 +31,42 @@ public class ViralLoadCalculation extends AbstractPatientCalculation {
     public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues,PatientCalculationContext context) {
 
         CalculationResultMap ret = new CalculationResultMap();
+        Integer months = (parameterValues != null && parameterValues.containsKey("months")) ? (Integer) parameterValues.get("months") : null;
         CalculationResultMap allVL = Calculations.allObs(Dictionary.getConcept(Dictionary.HIV_VIRAL_LOAD), cohort, context);
         CalculationResultMap artStartDateMap = calculate(new InitialArtStartDateCalculation(), cohort, context);
 
         for(Integer ptId:cohort) {
-            Double vlValue = null;
+            Cd4ValueAndDate vlValue = null;
             ListResult listResult = (ListResult) allVL.get(ptId);
             List<Obs> obsList = CalculationUtils.extractResultValues(listResult);
             List<Obs> validVls = new ArrayList<Obs>();
             Date artStartDate = EmrCalculationUtils.datetimeResultForPatient(artStartDateMap, ptId);
-            if(obsList.size() > 0 && artStartDate != null) {
+            if(obsList.size() > 0 && artStartDate != null && months != null) {
 
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime(artStartDate);
-                calendar.add(Calendar.DATE, 365);
+                calendar.add(Calendar.MONTH, months);
+
 
                 for(Obs obs: obsList) {
-                    if((obs.getObsDatetime().after(artStartDate) || obs.getObsDatetime().equals(artStartDate)) && (obs.getObsDatetime().before(calendar.getTime()) || obs.getObsDatetime().equals(calendar.getTime()))) {
+                    if((obs.getObsDatetime().after(artStartDate) || obs.getObsDatetime().equals(artStartDate)) && (daysBetween(obs.getObsDatetime(), calendar.getTime()) <= 365) && (obs.getObsDatetime().before(calendar.getTime()))) {
                         validVls.add(obs);
                     }
                 }
 
                 if(validVls.size() > 0) {
-                    vlValue = validVls.get(validVls.size() -1).getValueNumeric();
+                    vlValue = new Cd4ValueAndDate(validVls.get(validVls.size() -1).getValueNumeric(),validVls.get(validVls.size() -1).getObsDatetime() );
                 }
                 ret.put(ptId, new SimpleResult(vlValue, this));
             }
 
         }
         return ret;
+    }
+
+    private int daysBetween(Date date1, Date date2) {
+        DateTime d1 = new DateTime(date1.getTime());
+        DateTime d2 = new DateTime(date2.getTime());
+        return Days.daysBetween(d1, d2).getDays();
     }
 }

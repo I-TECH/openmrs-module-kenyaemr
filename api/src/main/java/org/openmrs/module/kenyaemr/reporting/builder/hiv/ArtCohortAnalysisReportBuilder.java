@@ -22,18 +22,18 @@ import org.openmrs.module.kenyaemr.calculation.library.hiv.art.DateARV1Calculati
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.DateAndReasonFirstMedicallyEligibleForArtCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.DateLastSeenCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.DateOfEnrollmentCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.DaysFromArtEligibilityToArtInitiationCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.DaysFromEnrollmentToArtInitiationCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtRegimenCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.IsBirthDateApproximatedCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.IsTransferInCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.IsTransferOutCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.LastCd4Calculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.LastCd4CountDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.LastCd4PercentCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.PatientArtOutComeCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.TransferInDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.TransferOutDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.ViralLoadCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.ViralLoadDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.ViralSuppressionCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.rdqa.DateOfDeathCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
@@ -101,6 +101,7 @@ public class ArtCohortAnalysisReportBuilder extends AbstractHybridReportBuilder 
         DataDefinition identifierDef = new ConvertedPatientDataDefinition("identifier", new PatientIdentifierDataDefinition(upn.getName(), upn), identifierFormatter);
         DataConverter nameFormatter = new ObjectFormatter("{familyName}, {givenName}");
         DataDefinition nameDef = new ConvertedPersonDataDefinition("name", new PreferredNameDataDefinition(), nameFormatter);
+
         dsd.setName("artCohortAnalysis");
         dsd.addColumn("id", new PatientIdDataDefinition(), "");
         dsd.addColumn("Name", nameDef, "");
@@ -115,6 +116,9 @@ public class ArtCohortAnalysisReportBuilder extends AbstractHybridReportBuilder 
         dsd.addColumn("TO", new CalculationDataDefinition("TO", new IsTransferOutCalculation()), "", new CalculationResultConverter());
         dsd.addColumn("Date TO", new CalculationDataDefinition("Date TO", new TransferOutDateCalculation()), "", new CalculationResultConverter());
         dsd.addColumn("ARV Start Date", new CalculationDataDefinition("ARV Start Date", new DateARV1Calculation()), "", new CalculationResultConverter());
+        dsd.addColumn("Days from enrollment in care to ART Initiation", new CalculationDataDefinition("Days from enrollment in care to ART Initiation", new DaysFromEnrollmentToArtInitiationCalculation()), "", new CalculationResultConverter());
+        dsd.addColumn("Days from ART eligibility to ART Initiation", new CalculationDataDefinition("Days from ART eligibility to ART Initiation", new DaysFromArtEligibilityToArtInitiationCalculation()), "", new CalculationResultConverter());
+        dsd.addColumn("Date first medically eligible for ART", new CalculationDataDefinition("Date first medically eligible for ART", new DateAndReasonFirstMedicallyEligibleForArtCalculation()), "", new MedicallyEligibleConverter("date"));
         dsd.addColumn("Reason first medically eligible For ART", new CalculationDataDefinition("Reason first medically eligible For ART", new DateAndReasonFirstMedicallyEligibleForArtCalculation()), "", new MedicallyEligibleConverter("reason"));
         dsd.addColumn("Baseline cd4 count", new CalculationDataDefinition("Baseline cd4 count", new BaselineCd4CountAndDateCalculation()), "", new Cd4ValueAndDateConverter("value"));
         dsd.addColumn("Date of baseline cd4 count", new CalculationDataDefinition("Date of baseline cd4 count", new BaselineCd4CountAndDateCalculation()), "", new Cd4ValueAndDateConverter("date"));
@@ -131,19 +135,15 @@ public class ArtCohortAnalysisReportBuilder extends AbstractHybridReportBuilder 
         dsd.addColumn("Cd4 count improvement", new CalculationDataDefinition("Cd4 count improvement", new Cd4CountImprovementCalculation()), "", new CalculationResultConverter());
         dsd.addColumn("Change in cd4 percent", new CalculationDataDefinition("Change in cd4 percent", new ChangeInCd4PercentCalculation()), "", new ChangeInCd4Converter());
         dsd.addColumn("Cd4 percent improvement", new CalculationDataDefinition("Cd4 percent improvement", new Cd4PercentImprovementCalculation()), "", new CalculationResultConverter());
-        dsd.addColumn("Current viral load", new CalculationDataDefinition("Current viral load", new ViralLoadCalculation()), "", new CalculationResultConverter());
-        dsd.addColumn("Date of current viral load", new CalculationDataDefinition("Date of current viral load", new ViralLoadDateCalculation()), "", new CalculationResultConverter());
+        dsd.addColumn("Current viral load", viralLoad(report), "", new CurrentCd4Converter("value"));
+        dsd.addColumn("Date of current viral load", viralLoad(report), "", new CurrentCd4Converter("date"));
         dsd.addColumn("Viral suppression", new CalculationDataDefinition("Viral suppression", new ViralSuppressionCalculation()), "", new CalculationResultConverter());
         dsd.addColumn("Date of Last visit", new CalculationDataDefinition("Date of Last visit", new DateLastSeenCalculation()), "", new CalculationResultConverter());
         dsd.addColumn("Date of expected next visit", new CalculationDataDefinition("Date of expected next visit", new LastReturnVisitDateCalculation()), "", new CalculationResultConverter());
         dsd.addColumn("Date of death", new CalculationDataDefinition("Date of death", new DateOfDeathCalculation()), "", new CalculationResultConverter());
 
-        dsd.addColumn("OutCome 6 Months", patientOutComes(6), "onDate=${endDate}", new CalculationResultConverter());
-        dsd.addColumn("OutCome 12 Months", patientOutComes(12), "onDate=${endDate}", new CalculationResultConverter());
-        dsd.addColumn("OutCome 24 Months", patientOutComes(24), "onDate=${endDate}", new CalculationResultConverter());
-        dsd.addColumn("OutCome 36 Months", patientOutComes(36), "onDate=${endDate}", new CalculationResultConverter());
-        dsd.addColumn("OutCome 48 Months", patientOutComes(48), "onDate=${endDate}", new CalculationResultConverter());
-        dsd.addColumn("OutCome 60 Months", patientOutComes(60), "onDate=${endDate}", new CalculationResultConverter());
+        dsd.addColumn("ART Outcomes", patientOutComes(report), "onDate=${endDate}", new CalculationResultConverter());
+
 
     }
 
@@ -153,7 +153,8 @@ public class ArtCohortAnalysisReportBuilder extends AbstractHybridReportBuilder 
         return ReportUtils.map(cd, "startDate=${startDate},endDate=${endDate}");
     }
 
-    private DataDefinition patientOutComes(int months) {
+    private DataDefinition patientOutComes(HybridReportDescriptor descriptor) {
+        int months = Integer.parseInt(descriptor.getId().split("\\.")[7]);
         CalculationDataDefinition cd = new CalculationDataDefinition("outcomes", new PatientArtOutComeCalculation());
         cd.addCalculationParameter("months", months);
         cd.addParameter(new Parameter("onDate", "On Date", Date.class));
@@ -163,6 +164,13 @@ public class ArtCohortAnalysisReportBuilder extends AbstractHybridReportBuilder 
 
     private DataDefinition hivProgramEnrollment() {
         CalculationDataDefinition cd = new CalculationDataDefinition("careEnrollment", new DateOfEnrollmentCalculation());
+        return cd;
+    }
+
+    private DataDefinition viralLoad(HybridReportDescriptor descriptor) {
+        int months = Integer.parseInt(descriptor.getId().split("\\.")[7]);
+        CalculationDataDefinition cd = new CalculationDataDefinition("viral load", new ViralLoadCalculation());
+        cd.addCalculationParameter("months", months);
         return cd;
     }
 }

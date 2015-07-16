@@ -79,9 +79,7 @@ public class PatientArtOutComeCalculation extends AbstractPatientCalculation {
 
                 Set<Integer> onART = CalculationUtils.patientsThatPass(calculate(new OnArtCalculation(), cohort, context1));
 
-
-
-                status = "Alive and  on ART";
+                status = "Alive and on ART";
 
                 if(!(onART.contains(ptId))) {
                     status = "Stopped ART";

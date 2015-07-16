@@ -79,13 +79,15 @@
         <property name="repeatingSection" value="sheet:1,row:6,dataset:preArtCohortAnalysis" />
     </bean>
 
+    <!--art cohort descriptors-->
+
     <bean id="kenyaemr.hiv.report.art.cohort.analysis.art.12" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
         <property name="targetUuid" value="fe9503a0-2953-11e5-836f-ef622b3d1bfe" />
         <property name="name" value="ART cohort 12 months" />
         <property name="description" value="Cohort based upon shared month and year of ART initiation 12 months" />
         <property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
         <property name="template" value="kenyaemr:art/artCohortAnalysis.xls" />
-        <property name="repeatingSection" value="sheet:1,row:11,dataset:artCohortAnalysis" />
+        <property name="repeatingSection" value="sheet:1,row:4,dataset:artCohortAnalysis" />
     </bean>
 
     <bean id="kenyaemr.hiv.report.art.cohort.analysis.art.6" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
@@ -94,7 +96,7 @@
         <property name="description" value="Cohort based upon shared month and year of ART initiation 6 months" />
         <property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
         <property name="template" value="kenyaemr:art/artCohortAnalysis.xls" />
-        <property name="repeatingSection" value="sheet:1,row:11,dataset:artCohortAnalysis" />
+        <property name="repeatingSection" value="sheet:1,row:4,dataset:artCohortAnalysis" />
     </bean>
 
     <bean id="kenyaemr.hiv.report.art.cohort.analysis.art.24" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
@@ -103,7 +105,7 @@
         <property name="description" value="Cohort based upon shared month and year of ART initiation 24 months" />
         <property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
         <property name="template" value="kenyaemr:art/artCohortAnalysis.xls" />
-        <property name="repeatingSection" value="sheet:1,row:11,dataset:artCohortAnalysis" />
+        <property name="repeatingSection" value="sheet:1,row:4,dataset:artCohortAnalysis" />
     </bean>
 
     <bean id="kenyaemr.hiv.report.art.cohort.analysis.art.36" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
@@ -112,7 +114,7 @@
         <property name="description" value="Cohort based upon shared month and year of ART initiation 36 months" />
         <property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
         <property name="template" value="kenyaemr:art/artCohortAnalysis.xls" />
-        <property name="repeatingSection" value="sheet:1,row:11,dataset:artCohortAnalysis" />
+        <property name="repeatingSection" value="sheet:1,row:4,dataset:artCohortAnalysis" />
     </bean>
 
     <bean id="kenyaemr.hiv.report.art.cohort.analysis.art.48" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
@@ -121,7 +123,7 @@
         <property name="description" value="Cohort based upon shared month and year of ART initiation 48 months" />
         <property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
         <property name="template" value="kenyaemr:art/artCohortAnalysis.xls" />
-        <property name="repeatingSection" value="sheet:1,row:11,dataset:artCohortAnalysis" />
+        <property name="repeatingSection" value="sheet:1,row:4,dataset:artCohortAnalysis" />
     </bean>
 
     <bean id="kenyaemr.hiv.report.art.cohort.analysis.art.60" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
@@ -130,7 +132,7 @@
         <property name="description" value="Cohort based upon shared month and year of ART initiation 60 months" />
         <property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
         <property name="template" value="kenyaemr:art/artCohortAnalysis.xls" />
-        <property name="repeatingSection" value="sheet:1,row:11,dataset:artCohortAnalysis" />
+        <property name="repeatingSection" value="sheet:1,row:4,dataset:artCohortAnalysis" />
     </bean>
 
 </beans>
