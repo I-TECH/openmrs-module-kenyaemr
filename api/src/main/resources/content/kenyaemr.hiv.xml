@@ -143,14 +143,15 @@
 		<property name="name" value="Quality Improvement - Adult C and Tx" />
 		<property name="description" value="Standards for HIV Care - Adult Care and Treatment" />
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
-		<!--<property name="template" value="kenyaemr:hiv/adultCareAndTreatment.xls" />-->
+		<property name="template" value="kenyaemr:hiv/adultCareAndTreatment.xls" />
 	</bean>
 
 	<bean id="kenyaemr.hiv.report.qi.peds.c.tx" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
 		<property name="targetUuid" value="2ce6f242-1e2c-11e4-9587-0bdfd164f2a9" />
 		<property name="name" value="Quality Improvement -paeds C and Tx" />
-		<property name="description" value="Standards for HIV Care" />
+		<property name="description" value="Standards for HIV Care - Paeds Care and Treatment" />
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
+		<property name="template" value="kenyaemr:hiv/paedsCareAndTreatment.xls" />
 	</bean>
 
 	<bean id="kenyaemr.hiv.report.qi.adult.emtct" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">

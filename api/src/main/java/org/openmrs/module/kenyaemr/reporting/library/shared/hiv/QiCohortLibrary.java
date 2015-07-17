@@ -117,6 +117,21 @@ public class QiCohortLibrary {
 	}
 
 	/**
+	 * intersection of hadNutritionalAssessmentAtLastVisit and hasHivVisitAdult
+	 * @return CohortDefinition
+	 */
+	public CohortDefinition hadNutritionalAssessmentAtLastVisitAndhasHivVisitAdult() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addSearch("hadNutritionalAssessmentAtLastVisit", ReportUtils.map(hadNutritionalAssessmentAtLastVisit(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("hasHivVisitAdult", ReportUtils.map(hasHivVisitAdult(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("hadNutritionalAssessmentAtLastVisit AND hasHivVisitAdult");
+		return cd;
+
+	}
+
+	/**
 	 *HIV infected patients NOT on ART and has hiv clinical visit
 	 * @return CohortDefinition
 	 */
@@ -156,7 +171,7 @@ public class QiCohortLibrary {
 	}
 
 	/**
-	 *Patients with a=clinical visits
+	 *Patients with a clinical visits
 	 * @return CohortDefinition
 	 */
 	public CohortDefinition clinicalVisit() {
@@ -170,6 +185,22 @@ public class QiCohortLibrary {
 		cd.addSearch("enrolledIn4To6MonthOfReviewPeriod", ReportUtils.map(enrolledIn4To6MonthOfReviewPeriod(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
 		cd.setCompositionString("inCare AND hasVisit AND adult AND NOT enrolledIn4To6MonthOfReviewPeriod");
 		return cd;
+	}
+
+	/**
+	 * Intersection of inCareHasAtLeast2Visits and clinicalVisit
+	 * @return cohort definition
+	 */
+	public CohortDefinition patientsInCareAndHasAtLeast2Visits() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("Intersection of inCareHasAtLeast2Visits and clinicalVisit");
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addSearch("inCareHasAtLeast2Visits", ReportUtils.map(inCareHasAtLeast2Visits(), "onOrBefore=${onOrBefore}"));
+		cd.addSearch("clinicalVisit", ReportUtils.map(clinicalVisit(),"onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("inCareHasAtLeast2Visits AND clinicalVisit");
+		return cd;
+
 	}
 
 	/**
@@ -229,6 +260,23 @@ public class QiCohortLibrary {
 	}
 
 	/**
+	 * Intersection of onARTatLeast12MonthsAndHaveAtLeastVLResultsDuringTheLast12Months and onARTatLeast12MonthsAndHaveAtLeastOneVisitDuringTheLast6MonthsReview
+	 * @return CohortDefinition
+	 */
+	public CohortDefinition onARTatLeast12MonthAndHaveAtLeastOneVisitDuringTheLast6MonthsReview() {
+
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addSearch("onARTatLeast12Month", ReportUtils.map(onARTatLeast12MonthsAndHaveAtLeastVLResultsDuringTheLast12Months(), "onOrBefore=${onOrBefore}"));
+		cd.addSearch("onARTatLeast12MonthsAndHaveAtLeastOneVisit", ReportUtils.map(onARTatLeast12MonthsAndHaveAtLeastOneVisitDuringTheLast6MonthsReview(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("onARTatLeast12Month AND onARTatLeast12MonthsAndHaveAtLeastOneVisit");
+
+		return cd;
+
+	}
+
+	/**
 	 * This aggregate other indicators to be used in others as intersections
 	 */
 	public CohortDefinition hivMonitoringViralLoadNumAndDen() {
@@ -271,7 +319,7 @@ public class QiCohortLibrary {
 		CalculationCohortDefinition cdVlLess1000 = new CalculationCohortDefinition( new PatientsWithVLResultsLessThanXValueCalculation());
 		cdVlLess1000.setName("VL Less than 1000 Copies");
 		cdVlLess1000.addParameter(new Parameter("onDate", "On Date", Date.class));
-		cdVlLess1000.addCalculationParameter("months", 12 );
+		cdVlLess1000.addCalculationParameter("months", 12);
 		cdVlLess1000.addCalculationParameter("threshold", 1000.0);
 
 
@@ -284,6 +332,20 @@ public class QiCohortLibrary {
 		compositionCohortDefinition.setCompositionString("onARTForAtLeast12MonthsAdultAndHasVl AND vlLess1000");
 
 		return compositionCohortDefinition;
+	}
+
+	/**
+	 * intersection of onARTatLeast12MonthsAndVlLess1000 and hivMonitoringViralLoadNumAndDen
+	 * @return CohortDefinition
+	 */
+	public CohortDefinition onARTatLeast12MonthsAndVlLess1000AndHivMonitoringViralLoadNumAndDen() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addSearch("onARTatLeast12MonthsAndVlLess1000", ReportUtils.map(onARTatLeast12MonthsAndVlLess1000(), "onOrBefore=${onOrBefore}"));
+		cd.addSearch("hivMonitoringViralLoadNumAndDen", ReportUtils.map(hivMonitoringViralLoadNumAndDen(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("onARTatLeast12MonthsAndVlLess1000 AND hivMonitoringViralLoadNumAndDen");
+		return cd;
 	}
 
 	/**
@@ -510,6 +572,20 @@ public class QiCohortLibrary {
 	}
 
 	/**
+	 * intersection of nonPregnantWomen15To49YearsOnModernContraceptives and nonPregnantWomen15To49YearsWithAtLeastOneHivClinicalVisit
+	 * @return CohortDefinition
+	 */
+	public CohortDefinition nonPregnantWomen15To49YearsOnModernContraceptivesAndHasVisits() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addSearch("nonPregnantWomen15To49YearsOnModernContraceptives", ReportUtils.map(nonPregnantWomen15To49YearsOnModernContraceptives(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("nonPregnantWomen15To49YearsWithAtLeastOneHivClinicalVisit", ReportUtils.map(nonPregnantWomen15To49YearsWithAtLeastOneHivClinicalVisit(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("nonPregnantWomen15To49YearsOnModernContraceptives AND nonPregnantWomen15To49YearsWithAtLeastOneHivClinicalVisit");
+		return cd;
+	}
+
+	/**
 	 * Patients who are hiv positive 15 to 49 years
 	 * have at least one hiv clinical visit during the 6 months review period
 	 * @return CohortDefinition
@@ -559,6 +635,20 @@ public class QiCohortLibrary {
 	}
 
 	/**
+	 * Intersection of hasCD4ResultsAdult and hasHivVisitAdult
+	 * @return CohortDefinition
+	 */
+	public CohortDefinition hasCD4ResultsAndHasHivVisitAdult() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addSearch("hasCD4ResultsAdult", ReportUtils.map(hasCD4ResultsAdult(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("hasHivVisitAdult", ReportUtils.map(hasHivVisitAdult(),"onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("hasCD4ResultsAdult AND hasHivVisitAdult");
+		return cd;
+	}
+
+	/**
 	 * Adult patients screened for tb using ICF form
 	 * @return CohortDefinition
 	 */
@@ -569,6 +659,20 @@ public class QiCohortLibrary {
 		cd.addSearch("adult", ReportUtils.map(commonCohorts.agedAtLeast(15), "effectiveDate=${onOrBefore}"));
 		cd.addSearch("screenedForTb", ReportUtils.map(tbCohortLibrary.screenedForTbUsingICF(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
 		cd.setCompositionString("adult AND screenedForTb");
+		return cd;
+	}
+
+	/**
+	 * intersection of screenedForTBUsingICF and hivInfectedNotOnTbTreatmentHaveAtLeastOneHivClinicalVisitDuring6Months
+	 * @return CohortDefinition
+	 */
+	public CohortDefinition screenedForTBUsingICFNotOnTbTreatmentAndHsaClinicalVisits(){
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addSearch("screenedForTBUsingICF", ReportUtils.map(screenedForTBUsingICF(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("hivInfectedNotOnTbTreatmentHaveAtLeastOneHivClinicalVisitDuring6Months", ReportUtils.map(hivInfectedNotOnTbTreatmentHaveAtLeastOneHivClinicalVisitDuring6Months(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("screenedForTBUsingICF AND hivInfectedNotOnTbTreatmentHaveAtLeastOneHivClinicalVisitDuring6Months");
 		return cd;
 	}
 

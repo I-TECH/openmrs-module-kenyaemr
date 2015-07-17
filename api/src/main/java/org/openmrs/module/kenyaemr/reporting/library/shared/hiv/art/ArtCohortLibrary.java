@@ -38,6 +38,7 @@ import org.openmrs.module.kenyaemr.regimen.RegimenManager;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.RegimenOrderCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonCohortLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.HivCohortLibrary;
+import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.QiCohortLibrary;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
@@ -66,6 +67,9 @@ public class ArtCohortLibrary {
 
 	@Autowired
 	private HivCohortLibrary hivCohortLibrary;
+
+	@Autowired
+	private QiCohortLibrary qiCohortLibrary;
 
 	/**
 	 * Patients who are eligible for ART on ${onDate}
@@ -321,6 +325,20 @@ public class ArtCohortLibrary {
 		cd.addSearch("adult", ReportUtils.map(commonCohorts.agedAtLeast(15), "effectiveDate=${onOrBefore}"));
 		cd.setCompositionString("eligible and startART and adult");
 		return  cd;
+	}
+
+	/**
+	 * Intersection of eligibleAndStartedARTAdult and hivInfectedAndNotOnARTAndHasHivClinicalVisit
+	 * @return CohortDefinition
+	 */
+	public CohortDefinition eligibleAndStartedARTAndHivInfectedAndNotOnARTAndHasHivClinicalVisit() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("eligibleAndStartedART", ReportUtils.map(eligibleAndStartedARTAdult(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("hivInfectedAndNotOnART", ReportUtils.map(qiCohortLibrary.hivInfectedAndNotOnARTAndHasHivClinicalVisit(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("eligibleAndStartedART AND hivInfectedAndNotOnART");
+		return cd;
 	}
 
 	/**
