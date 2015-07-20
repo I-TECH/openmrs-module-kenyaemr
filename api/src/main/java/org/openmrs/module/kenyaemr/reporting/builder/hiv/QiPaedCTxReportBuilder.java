@@ -73,16 +73,33 @@ public class QiPaedCTxReportBuilder extends AbstractReportBuilder {
 
 		String indParams = "startDate=${startDate},endDate=${endDate}";
 
+		dsd.addColumn("2.011", "Patients in care and has at least 2 visits", ReportUtils.map(qiIndicators.clinicalVisitNum(), indParams), "");
+		dsd.addColumn("2.012", "Patients with a clinical visits", ReportUtils.map(qiIndicators.clinicalVisitDen(), indParams), "");
 		dsd.addColumn("2.1", "% of patients in care with 2 or more visits, 3 months apart", ReportUtils.map(qiIndicators.clinicalVisit(), indParams), "");
+
+		dsd.addColumn("2.021", "Has cd4 results only", ReportUtils.map(qiIndicators.hivMonitoringCd4Num(), indParams), "");
+		dsd.addColumn("2.022", "Children aged 8 to 14 years with at least one HIV Clinical visit during 6 months review", ReportUtils.map(qiIndicators.hivMonitoringCd4Den(), indParams), "");
 		dsd.addColumn("2.2", "% of HIV infected patients in care with at least one cd4 count", ReportUtils.map(qiIndicators.hivMonitoringCd4(), indParams), "");
+
+		dsd.addColumn("2.031", "Patients who are eligible and started art during 6 months review period children", ReportUtils.map(qiIndicators.artInitiationNum(), indParams), "");
+		dsd.addColumn("2.032", "HIV infected patients NOT on ART and has hiv clinical visit", ReportUtils.map(qiIndicators.artInitiationDen(), indParams), "");
 		dsd.addColumn("2.3", "% eligible patients initiated on ART", ReportUtils.map(qiIndicators.artInitiation(), indParams), "");
+
+		dsd.addColumn("2.041", "On ART with atleast one VL results", ReportUtils.map(qiIndicators.hivMonitoringViralLoadNum(), indParams), "");
+		dsd.addColumn("2.042", "On ART 12 months and has a clinical visit", ReportUtils.map(qiIndicators.hivMonitoringViralLoadDen(), indParams), "");
 		dsd.addColumn("2.4", "% of patients on ART with at least one VL result during the last 12 months", ReportUtils.map(qiIndicators.hivMonitoringViralLoad(), indParams), "");
+
+		dsd.addColumn("2.051", "On ART with VL<1000", ReportUtils.map(qiIndicators.hivMonitoringViralLoadSupressionNum(), indParams), "");
+		dsd.addColumn("2.052", "On ART and has clinical visits", ReportUtils.map(qiIndicators.hivMonitoringViralLoadSupressionDen(), indParams), "");
 		dsd.addColumn("2.5", "% of patients on ART for at least 6 months with VL suppression", ReportUtils.map(qiIndicators.hivMonitoringViralLoadSupression(), indParams), "");
+
+		dsd.addColumn("2.061", "Patients screened for tb using ICF form", ReportUtils.map(qiIndicators.tbScreeningServiceCoverageNum(), indParams), "");
+		dsd.addColumn("2.062", "Not on Tb treatment and has clinical visits", ReportUtils.map(qiIndicators.tbScreeningServiceCoverageDen(), indParams), "");
 		dsd.addColumn("2.6", "% of patients screened for TB at last clinic visit", ReportUtils.map(qiIndicators.tbScreeningServiceCoverage(), indParams), "");
-		//dsd.addColumn("2.7", "% of patients eligible for IPT who were initiated on IPT ", ReportUtils.map(qiIndicators.patientsEligibleForIPTWhoWereInitiatedOnIPT(), indParams), "");
+
+		dsd.addColumn("2.081", "Had nutritional assessment at last visit", ReportUtils.map(qiIndicators.nutritionalAssessmentNum(), indParams), "");
+		dsd.addColumn("2.082", "Has clinical visits", ReportUtils.map(qiIndicators.nutritionalAssessmentDen(), indParams), "");
 		dsd.addColumn("2.8", "% of patients with Nutritional assessment", ReportUtils.map(qiIndicators.nutritionalAssessment(), indParams), "");
-		//dsd.addColumn("2.9", "% of patients eligible for nutritional support and who received nutritional support", ReportUtils.map(qiIndicators.patientsEligibleForNutritionalSupportAndWhoReceived(), indParams), "");
-		//dsd.addColumn("2.10", "% of children aged 8-14 who have been disclosed HIV status", ReportUtils.map(qiIndicators.childrenBetween8And14WhoseHivStatusDisclosedToThem(), indParams), "");
 		return dsd;
 	}
 }
