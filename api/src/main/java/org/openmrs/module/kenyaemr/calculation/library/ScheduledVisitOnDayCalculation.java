@@ -51,7 +51,7 @@ public class ScheduledVisitOnDayCalculation extends AbstractPatientCalculation {
 		Concept returnVisitDate = Dictionary.getConcept(Dictionary.RETURN_VISIT_DATE);
 
 		DateObsCohortDefinition cd = new DateObsCohortDefinition();
-		cd.setTimeModifier(TimeModifier.ANY);
+		cd.setTimeModifier(TimeModifier.LAST);
 		cd.setQuestion(returnVisitDate);
 		cd.setOperator1(RangeComparator.GREATER_EQUAL);
 		cd.setValue1(startOfDay);
