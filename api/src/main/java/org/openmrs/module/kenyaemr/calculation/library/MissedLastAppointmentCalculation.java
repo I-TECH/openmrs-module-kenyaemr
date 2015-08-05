@@ -26,6 +26,7 @@ import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.LostToFollowUpCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.IsTransferOutCalculation;
 
 import java.util.Collection;
 import java.util.Date;
@@ -59,13 +60,13 @@ public class MissedLastAppointmentCalculation extends AbstractPatientCalculation
 		CalculationResultMap lastReturnDateObss = Calculations.lastObs(Dictionary.getConcept(Dictionary.RETURN_VISIT_DATE), alive, context);
 		CalculationResultMap lastEncounters = Calculations.lastEncounter(null, cohort, context);
 		Set<Integer> ltfu = CalculationUtils.patientsThatPass(calculate(new LostToFollowUpCalculation(), cohort, context));
-
+		Set<Integer> transferredOut = CalculationUtils.patientsThatPass(calculate(new IsTransferOutCalculation(), cohort, context));
 		CalculationResultMap ret = new CalculationResultMap();
 		for (Integer ptId : cohort) {
 			boolean missedVisit = false;
 
 			// Is patient alive
-			if (alive.contains(ptId)) {
+			if (alive.contains(ptId) && !(ltfu.contains(ptId)) && !(transferredOut.contains(ptId))) {
 				Date lastScheduledReturnDate = EmrCalculationUtils.datetimeObsResultForPatient(lastReturnDateObss, ptId);
 
 				// Does patient have a scheduled return visit in the past
@@ -77,9 +78,6 @@ public class MissedLastAppointmentCalculation extends AbstractPatientCalculation
 					missedVisit = lastActualReturnDate == null || lastActualReturnDate.before(lastScheduledReturnDate);
 				}
 
-				if (ltfu.contains(ptId)) {
-					missedVisit = false;
-				}
 			}
 			ret.put(ptId, new SimpleResult(missedVisit, this, context));
 		}
