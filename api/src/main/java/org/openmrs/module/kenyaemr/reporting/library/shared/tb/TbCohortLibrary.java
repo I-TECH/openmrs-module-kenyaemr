@@ -20,12 +20,14 @@ import org.openmrs.api.PatientSetService;
 import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyacore.report.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.kenyaemr.Dictionary;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.ScreenedForTbInLastVisitCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.cqi.PatientLastVisitCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.tb.MissedLastTbAppointmentCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.tb.TbInitialTreatmentCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.tb.TbTreatmentStartDateCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.metadata.TbMetadata;
+import org.openmrs.module.kenyaemr.reporting.library.moh731.Moh731CohortLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonCohortLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.HivCohortLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.art.ArtCohortLibrary;
@@ -54,6 +56,9 @@ public class TbCohortLibrary {
 	@Autowired
 	private ArtCohortLibrary artCohortLibrary;
 
+	@Autowired
+	private Moh731CohortLibrary moh731CohortLibrary;
+
 	/**
 	 * Patients who were enrolled in TB program (including transfers) between ${enrolledOnOrAfter} and ${enrolledOnOrBefore}
 	 * @return the cohort definition
@@ -75,7 +80,27 @@ public class TbCohortLibrary {
 	}
 
 	/**
-	 * Patients who were screeed for tb and are in hiv program
+	 * Patients who are currently in care and screened for Tb during their last visit
+	 * @return CohortDefinition
+	 */
+	public CohortDefinition currentlyOnCareAndScreenedInTheLastVisit() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+
+		CalculationCohortDefinition calculationCohortDefinition = new CalculationCohortDefinition(new ScreenedForTbInLastVisitCalculation());
+		calculationCohortDefinition.setName("Screened for Tb during the last visit ");
+		calculationCohortDefinition.addParameter(new Parameter("onDate", "On Date", Date.class));
+
+
+		cd.setName("Currently in care and screen for Tb during last visit");
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("currentlyInCare", ReportUtils.map(moh731CohortLibrary.currentlyInCare(), "onDate=${onOrBefore}"));
+		cd.addSearch("screenedForTbDuringLastVisit", ReportUtils.map(calculationCohortDefinition, "onDate=${onOrBefore}"));
+		cd.setCompositionString("currentlyInCare AND screenedForTbDuringLastVisit");
+		return cd;
+	}
+
+	/**
+	 * Patients who were screened for tb and are in hiv program
 	 * @return the cohort definition
 	 */
 	public CohortDefinition screenedForTbAndHivPositive() {
@@ -84,8 +109,9 @@ public class TbCohortLibrary {
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.addSearch("screened", ReportUtils.map(screenedForTb(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("currentlyOnCareAndScreenedInTheLastVisit", ReportUtils.map(currentlyOnCareAndScreenedInTheLastVisit(), "onOrBefore=${onOrBefore}"));
 		cd.addSearch("hivPositive", ReportUtils.map(hivCohortLibrary.enrolled(), "enrolledOnOrBefore=${onOrBefore}"));
-		cd.setCompositionString("screened AND hivPositive");
+		cd.setCompositionString("(screened OR currentlyOnCareAndScreenedInTheLastVisit) AND hivPositive");
 
 		return cd;
 	}
