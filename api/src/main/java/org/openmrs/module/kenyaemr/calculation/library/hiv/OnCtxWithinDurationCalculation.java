@@ -51,6 +51,7 @@ public class OnCtxWithinDurationCalculation extends BaseEmrCalculation {
 		CalculationResultMap medDuration = Calculations.lastObs(Dictionary.getConcept(Dictionary.MEDICATION_DURATION), cohort, context);
 		CalculationResultMap medDurationunits = Calculations.lastObs(Dictionary.getConcept(Dictionary.DURATION_UNITS), cohort, context);
 		Set<Integer> ltfu = CalculationUtils.patientsThatPass(calculate(new LostToFollowUpCalculation(), cohort, context));
+		Set<Integer> hasTCA = CalculationUtils.patientsThatPass(calculate(new NextOfVisitHigherThanContextCalculation(), cohort, context));
 
 		//get the drug components dispensed
 		Concept ctx = Dictionary.getConcept(Dictionary.SULFAMETHOXAZOLE_TRIMETHOPRIM);
@@ -84,17 +85,13 @@ public class OnCtxWithinDurationCalculation extends BaseEmrCalculation {
 							cal.add(Calendar.YEAR, durationMonthsDays);
 						}
 						Date nextRefilldate = cal.getTime();
-						if(nextRefilldate.compareTo(endDate) >= 0) {
+						if((nextRefilldate.compareTo(endDate) >= 0 || hasTCA.contains(ptId)) && !(ltfu.contains(ptId)) ) {
 							onCtxOnDuration = true;
 						}
 					}
 
 				}
 			}
-			if(ltfu.contains(ptId)){
-				onCtxOnDuration = false;
-			}
-
 			ret.put(ptId, new BooleanResult(onCtxOnDuration, this));
 
 		}

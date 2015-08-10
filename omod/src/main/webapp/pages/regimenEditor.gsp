@@ -5,6 +5,7 @@
 	def allowChange = history.changes && history.changes.last().started
 	def allowRestart = history.changes && !history.changes.last().started
 	def allowUndo = history.changes && history.changes.size() > 0
+	def isManager = isManager
 
 	def changeDateField = { label ->
 		[ label: label, formFieldName: "changeDate", class: java.util.Date, showTime: true, initialValue: initialDate ]
@@ -66,6 +67,9 @@
 	<div class="ke-panel-frame">
 		<div class="ke-panel-heading">${ category } Regimen History</div>
 		<div class="ke-panel-content">
+			<% if(!isManager) { %>
+				<div class="ke-warning" style="margin-bottom: 5px">Editing of current regimen can be done by a KenyaEMR user with Manager permissions</div>
+			<% } %>
 
 			${ ui.includeFragment("kenyaemr", "regimenHistory", [ history: history ]) }
 
