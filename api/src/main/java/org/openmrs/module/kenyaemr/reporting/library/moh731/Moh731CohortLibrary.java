@@ -89,13 +89,19 @@ public class Moh731CohortLibrary {
 	 * @return the cohort definition
  	 */
 	public CohortDefinition currentlyOnArt() {
+
+		CalculationCohortDefinition hasAppointmentDate = new CalculationCohortDefinition( new NextOfVisitHigherThanContextCalculation());
+		hasAppointmentDate.setName("Having appointment higher than context");
+		hasAppointmentDate.addParameter(new Parameter("onDate", "On Date", Date.class));
+
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.addParameter(new Parameter("fromDate", "From Date", Date.class));
 		cd.addParameter(new Parameter("toDate", "To Date", Date.class));
 		cd.addSearch("startedArt", ReportUtils.map(artCohorts.startedArt(), "onOrAfter=${fromDate},onOrBefore=${toDate}"));
 		cd.addSearch("revisitsArt", ReportUtils.map(revisitsArt(), "fromDate=${fromDate},toDate=${toDate}"));
+		cd.addSearch("hasAppointmentDate", ReportUtils.map(hasAppointmentDate, "onDate=${toDate}"));
 		cd.addSearch("deceased", ReportUtils.map(commonCohorts.deceasedPatients(), "onDate=${toDate}"));
-		cd.setCompositionString("startedArt OR revisitsArt AND NOT deceased");
+		cd.setCompositionString("(startedArt OR revisitsArt OR hasAppointmentDate) AND NOT deceased");
 		return cd;
 	}
 
