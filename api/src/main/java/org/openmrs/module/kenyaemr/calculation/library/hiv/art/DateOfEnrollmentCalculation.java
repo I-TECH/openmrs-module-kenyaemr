@@ -29,6 +29,7 @@ import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
+import org.openmrs.module.reporting.common.DateUtil;
 
 import java.util.Collection;
 import java.util.Date;
@@ -52,8 +53,13 @@ public class DateOfEnrollmentCalculation extends AbstractPatientCalculation {
 			Date enrollmentDate = null;
 			ListResult listResult = (ListResult) enrolledHere.get(ptId);
 			List<PatientProgram> patientProgram = CalculationUtils.extractResultValues(listResult);
-			if((patientProgram != null && patientProgram.size() > 0)){
-				enrollmentDate = patientProgram.get(0).getDateEnrolled();
+			if(patientProgram.size() > 0){
+				for(PatientProgram program: patientProgram) {
+					if((program.getDateEnrolled().after(DateUtil.getStartOfMonth(context.getNow())) || program.getDateEnrolled().equals(DateUtil.getStartOfMonth(context.getNow()))) && (program.getDateEnrolled().before(context.getNow()) || program.getDateEnrolled().equals(context.getNow())))
+					{
+						enrollmentDate = program.getDateEnrolled();
+					}
+				}
 			}
 
 			result.put(ptId, new SimpleResult(enrollmentDate, this));
