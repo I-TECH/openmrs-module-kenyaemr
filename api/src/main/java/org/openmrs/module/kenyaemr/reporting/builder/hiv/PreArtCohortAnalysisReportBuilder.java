@@ -46,6 +46,7 @@ import org.openmrs.module.kenyaemr.reporting.calculation.converter.TimelyLinkage
 import org.openmrs.module.kenyaemr.reporting.data.converter.BirthdateConverter;
 import org.openmrs.module.kenyaemr.reporting.data.converter.CalculationResultConverter;
 import org.openmrs.module.kenyaemr.reporting.data.converter.Cd4ValueAndDateConverter;
+import org.openmrs.module.kenyaemr.reporting.data.converter.IdentifierConverter;
 import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonCohortLibrary;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -96,8 +97,7 @@ public class PreArtCohortAnalysisReportBuilder extends AbstractHybridReportBuild
 	protected void addColumns(HybridReportDescriptor report, PatientDataSetDefinition dsd) {
 
 		PatientIdentifierType upn = MetadataUtils.existing(PatientIdentifierType.class, HivMetadata._PatientIdentifierType.UNIQUE_PATIENT_NUMBER);
-		DataConverter identifierFormatter = new ObjectFormatter("{identifier}");
-		DataDefinition identifierDef = new ConvertedPatientDataDefinition("identifier", new PatientIdentifierDataDefinition(upn.getName(), upn), identifierFormatter);
+		DataDefinition identifierDef = new ConvertedPatientDataDefinition("identifier", new PatientIdentifierDataDefinition(upn.getName(), upn), new IdentifierConverter());
 		DataConverter nameFormatter = new ObjectFormatter("{familyName}, {givenName}");
 		DataDefinition nameDef = new ConvertedPersonDataDefinition("name", new PreferredNameDataDefinition(), nameFormatter);
 
