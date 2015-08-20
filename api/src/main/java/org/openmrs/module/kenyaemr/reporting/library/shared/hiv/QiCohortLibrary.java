@@ -42,6 +42,7 @@ import org.openmrs.module.reporting.cohort.definition.DateObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
+import org.openmrs.module.reporting.evaluation.parameter.Parameterizable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -184,6 +185,21 @@ public class QiCohortLibrary {
 		cd.addSearch("adult", ReportUtils.map(commonCohorts.agedAtLeast(15), "effectiveDate=${onOrBefore}"));
 		cd.addSearch("enrolledIn4To6MonthOfReviewPeriod", ReportUtils.map(enrolledIn4To6MonthOfReviewPeriod(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
 		cd.setCompositionString("inCare AND hasVisit AND adult AND NOT enrolledIn4To6MonthOfReviewPeriod");
+		return cd;
+	}
+
+	/**
+	 * patients who dont meet the criteria of clinical visit
+	 * @return CohortDefinition
+	 */
+	public CohortDefinition complimentClinicalVisit() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("compliment - clinical visits");
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addSearch("patientsInCareAndHasAtLeast2Visits", ReportUtils.map(patientsInCareAndHasAtLeast2Visits(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("clinicalVisit", ReportUtils.map(clinicalVisit(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("clinicalVisit AND NOT patientsInCareAndHasAtLeast2Visits ");
 		return cd;
 	}
 
@@ -676,4 +692,74 @@ public class QiCohortLibrary {
 		return cd;
 	}
 
+	public CohortDefinition complimentHasCd4Results() {
+
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addSearch("hasCD4ResultsAndHasHivVisitAdult", ReportUtils.map(hasCD4ResultsAndHasHivVisitAdult(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("hasHivVisitAdult", ReportUtils.map(hasHivVisitAdult(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("hasHivVisitAdult AND NOT hasCD4ResultsAndHasHivVisitAdult");
+		return cd;
+	}
+
+	public CohortDefinition complimentPatientsWhoAreEligibleAndStartedArt() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addSearch("eligibleAndStartedARTAndHivInfectedAndNotOnARTAndHasHivClinicalVisit", ReportUtils.map(artCohortLibrary.eligibleAndStartedARTAndHivInfectedAndNotOnARTAndHasHivClinicalVisit(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("hivInfectedAndNotOnARTAndHasHivClinicalVisit", ReportUtils.map(hivInfectedAndNotOnARTAndHasHivClinicalVisit(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("hivInfectedAndNotOnARTAndHasHivClinicalVisit AND NOT eligibleAndStartedARTAndHivInfectedAndNotOnARTAndHasHivClinicalVisit");
+		return cd;
+	}
+
+	public CohortDefinition complimentPatientsOnArtHavingAtLeastOneViralLoad() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addSearch("onARTatLeast12MonthAndHaveAtLeastOneVisitDuringTheLast6MonthsReview", ReportUtils.map(onARTatLeast12MonthAndHaveAtLeastOneVisitDuringTheLast6MonthsReview(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("onARTatLeast12MonthsAndHaveAtLeastOneVisitDuringTheLast6MonthsReview", ReportUtils.map(onARTatLeast12MonthsAndHaveAtLeastOneVisitDuringTheLast6MonthsReview(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("onARTatLeast12MonthsAndHaveAtLeastOneVisitDuringTheLast6MonthsReview AND NOT onARTatLeast12MonthAndHaveAtLeastOneVisitDuringTheLast6MonthsReview");
+		return cd;
+	}
+
+	public CohortDefinition complimentOnARTatLeast12MonthsAndVlLess1000() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addSearch("onARTatLeast12MonthsAndVlLess1000AndHivMonitoringViralLoadNumAndDen", ReportUtils.map(onARTatLeast12MonthsAndVlLess1000AndHivMonitoringViralLoadNumAndDen(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("hivMonitoringViralLoadNumAndDen", ReportUtils.map(hivMonitoringViralLoadNumAndDen(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("hivMonitoringViralLoadNumAndDen AND NOT onARTatLeast12MonthsAndVlLess1000AndHivMonitoringViralLoadNumAndDen");
+		return cd;
+	}
+
+	public CohortDefinition complimentTbScreeningUsingIcfAdult() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addSearch("screenedForTBUsingICFNotOnTbTreatmentAndHsaClinicalVisits", ReportUtils.map(screenedForTBUsingICFNotOnTbTreatmentAndHsaClinicalVisits(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("hivInfectedNotOnTbTreatmentHaveAtLeastOneHivClinicalVisitDuring6Months", ReportUtils.map(hivInfectedNotOnTbTreatmentHaveAtLeastOneHivClinicalVisitDuring6Months(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("hivInfectedNotOnTbTreatmentHaveAtLeastOneHivClinicalVisitDuring6Months AND NOT screenedForTBUsingICFNotOnTbTreatmentAndHsaClinicalVisits");
+		return cd;
+	}
+
+	public CohortDefinition complimentNutritionalAssessmentNum() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addSearch("hadNutritionalAssessmentAtLastVisitAndhasHivVisitAdult", ReportUtils.map(hadNutritionalAssessmentAtLastVisitAndhasHivVisitAdult(), "onOrAfter=${onOrAfter-6m},onOrBefore=${onOrBefore}"));
+		cd.addSearch("hasHivVisitAdult", ReportUtils.map(hasHivVisitAdult(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("hasHivVisitAdult AND NOT hadNutritionalAssessmentAtLastVisitAndhasHivVisitAdult");
+		return cd;
+	}
+
+	public CohortDefinition complimentReproductiveHealthFamilyPlanningNum() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addSearch("nonPregnantWomen15To49YearsOnModernContraceptivesAndHasVisits", ReportUtils.map(nonPregnantWomen15To49YearsOnModernContraceptivesAndHasVisits(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("nonPregnantWomen15To49YearsWithAtLeastOneHivClinicalVisit", ReportUtils.map(nonPregnantWomen15To49YearsWithAtLeastOneHivClinicalVisit(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("nonPregnantWomen15To49YearsWithAtLeastOneHivClinicalVisit AND NOT nonPregnantWomen15To49YearsOnModernContraceptivesAndHasVisits");
+		return cd;
+	}
 }

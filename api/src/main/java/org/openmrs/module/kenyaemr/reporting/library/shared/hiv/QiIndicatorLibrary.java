@@ -17,6 +17,7 @@ package org.openmrs.module.kenyaemr.reporting.library.shared.hiv;
 import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.art.ArtCohortLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.shared.tb.TbCohortLibrary;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
+import org.openmrs.module.reporting.evaluation.parameter.Parameterizable;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -70,6 +71,16 @@ public class QiIndicatorLibrary {
 	public CohortIndicator hasVisits(){
 		return cohortIndicator("Has cd4 results",
 				map(qiCohorts.hasHivVisitAdult(), "onOrAfter=${startDate},onOrBefore=${endDate}")
+		);
+	}
+
+	/**
+	 * Compliment of hasCd4Results
+	 * @return CohortDefinition
+	 */
+	public CohortIndicator complimentHasCd4Results() {
+		return cohortIndicator("Compliment of  cd4 results",
+				map(qiCohorts.complimentHasCd4Results(), "onOrAfter=${startDate},onOrBefore=${endDate}")
 		);
 	}
 
@@ -131,6 +142,15 @@ public class QiIndicatorLibrary {
 				map(qiCohorts.hivInfectedAndNotOnARTAndHasHivClinicalVisit(), "onOrAfter=${startDate},onOrBefore=${endDate}" )
 		);
 	}
+	/**
+	 * Compliment of patientsWhoAreEligibleAndStartedArt
+	 * @return CohortIndicator
+	 */
+	public CohortIndicator complimentPatientsWhoAreEligibleAndStartedArt() {
+		return cohortIndicator("Compliment of patientsWhoAreEligibleAndStartedArt",
+				map(qiCohorts.complimentPatientsWhoAreEligibleAndStartedArt(), "onOrAfter=${startDate},onOrBefore=${endDate}" )
+		);
+	}
 
 
 
@@ -150,6 +170,15 @@ public class QiIndicatorLibrary {
 	public CohortIndicator patientsWithClinicalVisits() {
 		return cohortIndicator("Patients with a clinical visits",
 				map(qiCohorts.clinicalVisit(), "onOrAfter=${endDate},onOrBefore=${endDate}" ));
+	}
+
+	/**
+	 * Patients representing those not meeting the indicator
+	 * @return indicator
+	 */
+	public CohortIndicator complimentPatientsWithClinicalVisits() {
+		return cohortIndicator("Patients representing those not meeting the indicator",
+				map(qiCohorts.complimentClinicalVisit(), "onOrAfter=${endDate},onOrBefore=${endDate}" ));
 	}
 
 	/**
@@ -197,6 +226,15 @@ public class QiIndicatorLibrary {
 	}
 
 	/**
+	 *
+	 */
+	public CohortIndicator complimentPatientsOnArtHavingAtLeastOneViralLoad() {
+		return cohortIndicator("",
+				map(qiCohorts.complimentPatientsOnArtHavingAtLeastOneViralLoad(), "onOrAfter=${startDate},onOrBefore=${endDate}" )
+		);
+	}
+
+	/**
 	 * HIV Monitoring Viral Load - supression outcome
 	 * @return CohortIndicator
 	 */
@@ -223,6 +261,15 @@ public class QiIndicatorLibrary {
 	public CohortIndicator hivMonitoringViralLoadNumAndDen() {
 		return cohortIndicator("",
 				map(qiCohorts. hivMonitoringViralLoadNumAndDen(), "onOrAfter=${startDate},onOrBefore=${endDate}" )
+		);
+	}
+
+	/**
+	 *
+	 */
+	public CohortIndicator complimentOnARTatLeast12MonthsAndVlLess1000() {
+		return cohortIndicator("",
+				map(qiCohorts.complimentOnARTatLeast12MonthsAndVlLess1000(), "onOrAfter=${startDate},onOrBefore=${endDate}" )
 		);
 	}
 
@@ -255,6 +302,15 @@ public class QiIndicatorLibrary {
 	public CohortIndicator patientsCurrentlyNotOnTbTreatmentAndHaveClinicalVisit() {
 		return cohortIndicator("",
 				map(qiCohorts.hivInfectedNotOnTbTreatmentHaveAtLeastOneHivClinicalVisitDuring6Months(), "onOrAfter=${startDate},onOrBefore=${endDate}")
+		);
+	}
+
+	/**
+	 *
+	 */
+	public CohortIndicator complimentTbScreeningUsingIcfAdult() {
+		return cohortIndicator("",
+				map(qiCohorts.complimentTbScreeningUsingIcfAdult(), "onOrAfter=${startDate},onOrBefore=${endDate}")
 		);
 	}
 
@@ -328,6 +384,19 @@ public class QiIndicatorLibrary {
 	public CohortIndicator reproductiveHealthFamilyPlanningDen() {
 		return cohortIndicator("Reproductive Health - Service Coverage-denominator",
 				map(qiCohorts.nonPregnantWomen15To49YearsWithAtLeastOneHivClinicalVisit(), "onOrAfter=${startDate},onOrBefore=${endDate}")
+		);
+	}
+
+	public CohortIndicator complimentNutritionalAssessmentNum() {
+		return cohortIndicator("",
+				map(qiCohorts.complimentNutritionalAssessmentNum(), "onOrAfter=${startDate},onOrBefore=${endDate}")
+		);
+	}
+
+	public CohortIndicator complimentReproductiveHealthFamilyPlanningNum() {
+
+		return cohortIndicator("",
+				map(qiCohorts.complimentReproductiveHealthFamilyPlanningNum(), "onOrAfter=${startDate},onOrBefore=${endDate}")
 		);
 	}
 }
