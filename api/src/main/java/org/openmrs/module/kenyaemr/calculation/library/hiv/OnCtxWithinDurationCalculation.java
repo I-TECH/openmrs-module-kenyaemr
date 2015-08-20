@@ -27,6 +27,7 @@ import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
+import org.openmrs.module.reporting.common.DateUtil;
 
 import java.util.Calendar;
 import java.util.Collection;
@@ -85,7 +86,7 @@ public class OnCtxWithinDurationCalculation extends BaseEmrCalculation {
 							cal.add(Calendar.YEAR, durationMonthsDays);
 						}
 						Date nextRefilldate = cal.getTime();
-						if((nextRefilldate.compareTo(endDate) >= 0 || hasTCA.contains(ptId)) && !(ltfu.contains(ptId)) ) {
+						if((nextRefilldate.after(DateUtil.getStartOfMonth(endDate)) || hasTCA.contains(ptId) || nextRefilldate.equals(DateUtil.getStartOfMonth(endDate))) && !(ltfu.contains(ptId))) {
 							onCtxOnDuration = true;
 						}
 					}
