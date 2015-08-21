@@ -66,7 +66,7 @@ public class Moh731CohortLibrary {
 		cd.addSearch("recentEncounter", ReportUtils.map(commonCohorts.hasEncounter(hivEnroll, hivConsult), "onOrAfter=${onDate-90d},onOrBefore=${onDate}"));
 		cd.addSearch("appointmentHigher", ReportUtils.map(nextAppointment, "onDate=${onDate}"));
 		cd.addSearch("inHivProgram", ReportUtils.map(hivCohortLibrary.enrolled(), "enrolledOnOrBefore=${onDate}"));
-		cd.setCompositionString("recentEncounter OR appointmentHigher");
+		cd.setCompositionString("(recentEncounter OR appointmentHigher) AND inHivProgram");
 		return cd;
 	}
 
@@ -85,6 +85,23 @@ public class Moh731CohortLibrary {
 	}
 
 	/**
+	 * Has appointment date and started art
+	 */
+	public CohortDefinition hasAppointmentDateAndStartedArt() {
+		CalculationCohortDefinition hasAppointmentDate = new CalculationCohortDefinition( new NextOfVisitHigherThanContextCalculation());
+		hasAppointmentDate.setName("Having appointment higher than context");
+		hasAppointmentDate.addParameter(new Parameter("onDate", "On Date", Date.class));
+
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addSearch("startedArt", ReportUtils.map(artCohorts.startedArt(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("hasAppointmentDate", ReportUtils.map(hasAppointmentDate, "onDate=${onOrBefore}"));
+		cd.setCompositionString("startedArt AND hasAppointmentDate");
+		return cd;
+	}
+
+	/**
 	 * Currently on ART.. we could calculate this several ways...
 	 * @return the cohort definition
  	 */
@@ -99,7 +116,7 @@ public class Moh731CohortLibrary {
 		cd.addParameter(new Parameter("toDate", "To Date", Date.class));
 		cd.addSearch("startedArt", ReportUtils.map(artCohorts.startedArt(), "onOrAfter=${fromDate},onOrBefore=${toDate}"));
 		cd.addSearch("revisitsArt", ReportUtils.map(revisitsArt(), "fromDate=${fromDate},toDate=${toDate}"));
-		cd.addSearch("hasAppointmentDate", ReportUtils.map(hasAppointmentDate, "onDate=${toDate}"));
+		cd.addSearch("hasAppointmentDate", ReportUtils.map(hasAppointmentDateAndStartedArt(), "onOrAfter=${fromDate},onOrBefore=${toDate}"));
 		cd.addSearch("deceased", ReportUtils.map(commonCohorts.deceasedPatients(), "onDate=${toDate}"));
 		cd.setCompositionString("(startedArt OR revisitsArt OR hasAppointmentDate) AND NOT deceased");
 		return cd;

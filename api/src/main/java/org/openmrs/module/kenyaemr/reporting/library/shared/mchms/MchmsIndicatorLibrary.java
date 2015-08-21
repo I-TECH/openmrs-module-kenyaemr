@@ -41,7 +41,7 @@ public class MchmsIndicatorLibrary {
 	 */
 	public CohortIndicator testedForHivBeforeOrDuringMchms() {
 		return cohortIndicator(null,
-				map(mchmsCohortLibrary.testedForHivInMchms(null, null), "onOrAfter=${startDate},onOrBefore=${endDate}")
+				map(mchmsCohortLibrary.testedForHivBeforeOrDuringMchms(), "onOrAfter=${startDate},onOrBefore=${endDate}")
 		);
 	}
 
@@ -52,7 +52,7 @@ public class MchmsIndicatorLibrary {
 	 */
 	public CohortIndicator testedForHivInMchms() {
 		return cohortIndicator(null,
-				map(mchmsCohortLibrary.testedForHivInMchms(PregnancyStage.AFTER_ENROLLMENT, null), "onOrAfter=${startDate},onOrBefore=${endDate}")
+				map(mchmsCohortLibrary.testedForHivInMchms(), "onOrAfter=${startDate},onOrBefore=${endDate}")
 		);
 	}
 
@@ -108,7 +108,7 @@ public class MchmsIndicatorLibrary {
 	 */
 	public CohortIndicator testedHivPositiveInMchms() {
 		return cohortIndicator(null,
-				map(mchmsCohortLibrary.testedForHivInMchms(null, Dictionary.getConcept(Dictionary.POSITIVE)), "onOrAfter=${startDate},onOrBefore=${endDate}")
+				map(mchmsCohortLibrary.testedHivPositiveInMchms(), "onOrAfter=${startDate},onOrBefore=${endDate}")
 		);
 	}
 
@@ -173,6 +173,15 @@ public class MchmsIndicatorLibrary {
 	public CohortIndicator assessedForArtEligibility(ArtAssessmentMethod artAssessmentMethod) {
 		return cohortIndicator(null,
 				map(mchmsCohortLibrary.assessedForArtEligibility(artAssessmentMethod), "onOrAfter=${startDate},onOrBefore=${endDate}")
+		);
+	}
+
+	/**
+	 *
+	 */
+	public CohortIndicator assessedForArtEligibilityTotal() {
+		return cohortIndicator(null,
+				map(mchmsCohortLibrary.assessedForArtEligibilityTotal(), "onOrAfter=${startDate},onOrBefore=${endDate}")
 		);
 	}
 }

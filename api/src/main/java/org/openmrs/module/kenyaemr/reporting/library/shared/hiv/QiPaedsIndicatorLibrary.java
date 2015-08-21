@@ -1,6 +1,7 @@
 package org.openmrs.module.kenyaemr.reporting.library.shared.hiv;
 
 import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.art.ArtCohortLibrary;
+import org.openmrs.module.reporting.evaluation.parameter.Parameterizable;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -46,6 +47,14 @@ public class QiPaedsIndicatorLibrary {
 	public CohortIndicator clinicalVisitDen() {
 		return cohortIndicator("",
 				map(qiCohorts.clinicalVisit(), "onOrAfter=${startDate},onOrBefore=${endDate}" )
+		);
+	}
+	/**
+	 *
+	 */
+	public CohortIndicator complementClinicalVisitNum() {
+		return cohortIndicator("",
+				map(qiCohorts.complementClinicalVisitNum(), "onOrAfter=${startDate},onOrBefore=${endDate}" )
 		);
 	}
 
@@ -255,4 +264,39 @@ public class QiPaedsIndicatorLibrary {
 		);
 	}
 
+	public CohortIndicator complementHivMonitoringCd4Num() {
+		return cohortIndicator("",
+				map(qiCohorts.complementHivMonitoringCd4Num(), "onOrAfter=${startDate},onOrBefore=${endDate}")
+		);
+	}
+
+	public CohortIndicator complementArtInitiationNum() {
+		return cohortIndicator("",
+				map(qiCohorts.complementArtInitiationNum(), "onOrAfter=${startDate},onOrBefore=${endDate}")
+		);
+	}
+
+	public CohortIndicator complementHivMonitoringViralLoadNum() {
+		return cohortIndicator("",
+				map(qiCohorts.complementHivMonitoringViralLoadNum(), "onOrAfter=${startDate},onOrBefore=${endDate}")
+		);
+	}
+
+	public CohortIndicator complementHivMonitoringViralLoadSupressionNum() {
+		return cohortIndicator("",
+				map(qiCohorts.complementHivMonitoringViralLoadSupressionNum(), "onOrAfter=${startDate},onOrBefore=${endDate}")
+		);
+	}
+
+	public CohortIndicator complementTbScreeningServiceCoverageNum() {
+		return cohortIndicator("",
+				map(qiCohorts.complementTbScreeningServiceCoverageNum(), "onOrAfter=${startDate},onOrBefore=${endDate}")
+		);
+	}
+
+	public CohortIndicator complementNutritionalAssessmentNum() {
+		return cohortIndicator("",
+				map(qiCohorts.complementNutritionalAssessmentNum(), "onOrAfter=${startDate},onOrBefore=${endDate}")
+		);
+	}
 }
