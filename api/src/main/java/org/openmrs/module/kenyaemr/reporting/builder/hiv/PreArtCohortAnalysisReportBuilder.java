@@ -26,12 +26,13 @@ import org.openmrs.module.kenyacore.report.data.patient.definition.CalculationDa
 import org.openmrs.module.kenyaemr.calculation.TimelyLinkageCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.AgeAtProgramEnrollmentCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.DateOfDiagnosisCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.DateOfEnrollmentHivCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.InitialCd4CountCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.InitialCd4PercentCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.LastReturnVisitDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.DateAndReasonFirstMedicallyEligibleForArtCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.DateLastSeenCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.DateOfEnrollmentCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.DateOfEnrollmentArtCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.EligibleForArtCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.IsBirthDateApproximatedCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.IsTransferInCalculation;
@@ -112,10 +113,10 @@ public class PreArtCohortAnalysisReportBuilder extends AbstractHybridReportBuild
 		dsd.addColumn("Sex", new GenderDataDefinition(), "");
 		dsd.addColumn("Date of Diagnosis", dateOfDiagnosis(), "onDate=${endDate}", new CalculationResultConverter());
 		dsd.addColumn("Timely linkage", timelyLinkage(), "onDate=${endDate}", new TimelyLinkageDataConverter());
-		dsd.addColumn("Transfer in", new CalculationDataDefinition("Transfer in", new IsTransferInCalculation()), "", new CalculationResultConverter());
-		dsd.addColumn("Date Transfer in", new CalculationDataDefinition("Date Transfer in", new TransferInDateCalculation()), "", new CalculationResultConverter());
-		dsd.addColumn("Transfer out", new CalculationDataDefinition("Transfer out", new IsTransferOutCalculation()), "", new CalculationResultConverter());
-		dsd.addColumn("Date Transferred out", new CalculationDataDefinition("Date Transferred out", new TransferOutDateCalculation()), "", new CalculationResultConverter());
+		dsd.addColumn("Transfer in", ti(), "onDate=${endDate}", new CalculationResultConverter());
+		dsd.addColumn("Date Transfer in", tiDate(), "onDate=${endDate}", new CalculationResultConverter());
+		dsd.addColumn("Transfer out", to(), "onDate=${endDate}", new CalculationResultConverter());
+		dsd.addColumn("Date Transferred out", toDate(), "onDate=${endDate}", new CalculationResultConverter());
 		dsd.addColumn("Initial CD4 count", new CalculationDataDefinition("Initial CD4 count", new InitialCd4CountCalculation()), "", new Cd4ValueAndDateConverter("value"));
 		dsd.addColumn("Date of initial CD4 count", new CalculationDataDefinition("Date of initial CD4 count", new InitialCd4CountCalculation()), "", new Cd4ValueAndDateConverter("date"));
 		dsd.addColumn("Initial CD4 percent", new CalculationDataDefinition("Initial CD4 percent", new InitialCd4PercentCalculation()), "", new Cd4ValueAndDateConverter("value"));
@@ -125,10 +126,36 @@ public class PreArtCohortAnalysisReportBuilder extends AbstractHybridReportBuild
 		dsd.addColumn("Medically eligible but not enrolled on ART", new CalculationDataDefinition("Medically eligible but not enrolled on ART", new EligibleForArtCalculation()), "", new CalculationResultConverter());
 		dsd.addColumn("Date of Last visit", new CalculationDataDefinition("Date of Last visit", new DateLastSeenCalculation()), "", new CalculationResultConverter());
 		dsd.addColumn("Date of expected next visit", new CalculationDataDefinition("Date of expected next visit", new LastReturnVisitDateCalculation()), "", new CalculationResultConverter());
-		dsd.addColumn("Date of death", new CalculationDataDefinition("Date of death", new DateOfDeathCalculation()), "", new CalculationResultConverter());
+		dsd.addColumn("Date of death", death(), "onDate=${endDate}", new CalculationResultConverter());
 		dsd.addColumn("OutComes", patientOutComes(report), "onDate=${endDate}", new CalculationResultConverter());
 	}
 
+	private DataDefinition toDate() {
+		CalculationDataDefinition cd = new CalculationDataDefinition("toDate", new TransferOutDateCalculation());
+		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
+		return cd;
+	}
+	private DataDefinition to() {
+		CalculationDataDefinition cd = new CalculationDataDefinition("to", new IsTransferOutCalculation());
+		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
+		return cd;
+	}
+
+	private DataDefinition tiDate() {
+		CalculationDataDefinition cd = new CalculationDataDefinition("tiDate", new TransferInDateCalculation());
+		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
+		return cd;
+	}
+	private DataDefinition ti() {
+		CalculationDataDefinition cd = new CalculationDataDefinition("ti", new IsTransferInCalculation());
+		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
+		return cd;
+	}
+	private DataDefinition death() {
+		CalculationDataDefinition cd = new CalculationDataDefinition("death", new DateOfDeathCalculation());
+		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
+		return cd;
+	}
 	@Override
 	protected Mapped<CohortDefinition> buildCohort(HybridReportDescriptor descriptor, PatientDataSetDefinition dsd) {
 		CohortDefinition cd = commonCohortLibrary.enrolled(MetadataUtils.existing(Program.class, HivMetadata._Program.HIV));
@@ -136,7 +163,7 @@ public class PreArtCohortAnalysisReportBuilder extends AbstractHybridReportBuild
 	}
 
 	private DataDefinition hivProgramEnrollment() {
-		CalculationDataDefinition cd = new CalculationDataDefinition("careEnrollment", new DateOfEnrollmentCalculation());
+		CalculationDataDefinition cd = new CalculationDataDefinition("careEnrollment", new DateOfEnrollmentHivCalculation());
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
 		return cd;
 	}

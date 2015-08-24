@@ -22,7 +22,7 @@ public class Cd4PercentImprovementCalculation extends AbstractPatientCalculation
         CalculationResultMap calculations = calculate(new ChangeInCd4PercentCalculation(), cohort, context);
 
         for(Integer ptId: cohort) {
-            String hasImproved = "Missing";
+            String hasImproved = "";
 
             Double value = EmrCalculationUtils.resultForPatient(calculations, ptId);
             if(value != null && value > 0.0) {

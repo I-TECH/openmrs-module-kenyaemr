@@ -11,7 +11,7 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.kenyaemr.calculation.library.hiv.art;
+package org.openmrs.module.kenyaemr.calculation.library.hiv;
 
 import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
@@ -40,31 +40,31 @@ import java.util.Set;
 /**
  * Calculate the date of enrollment into HIV Program
  */
-public class DateOfEnrollmentCalculation extends AbstractPatientCalculation {
+public class DateOfEnrollmentHivCalculation extends AbstractPatientCalculation {
 
-	@Override
-	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
+    @Override
+    public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
 
-		Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
-		CalculationResultMap enrolledHere = Calculations.allEnrollments(hivProgram, cohort, context);
+        Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
+        CalculationResultMap enrolledHere = Calculations.allEnrollments(hivProgram, cohort, context);
 
-		CalculationResultMap result = new CalculationResultMap();
-		for (Integer ptId : cohort) {
-			Date enrollmentDate = null;
-			ListResult listResult = (ListResult) enrolledHere.get(ptId);
-			List<PatientProgram> patientProgram = CalculationUtils.extractResultValues(listResult);
-			if(patientProgram.size() > 0){
-				for(PatientProgram program: patientProgram) {
-					if((program.getDateEnrolled().after(DateUtil.getStartOfMonth(context.getNow())) || program.getDateEnrolled().equals(DateUtil.getStartOfMonth(context.getNow()))) && (program.getDateEnrolled().before(context.getNow()) || program.getDateEnrolled().equals(context.getNow())))
-					{
-						enrollmentDate = program.getDateEnrolled();
-					}
-				}
-			}
+        CalculationResultMap result = new CalculationResultMap();
+        for (Integer ptId : cohort) {
+            Date enrollmentDate = null;
+            ListResult listResult = (ListResult) enrolledHere.get(ptId);
+            List<PatientProgram> patientProgram = CalculationUtils.extractResultValues(listResult);
+            if(patientProgram.size() > 0){
+                for(PatientProgram program: patientProgram) {
+                    if((program.getDateEnrolled().after(DateUtil.getStartOfMonth(context.getNow())) || program.getDateEnrolled().equals(DateUtil.getStartOfMonth(context.getNow()))) && (program.getDateEnrolled().before(context.getNow()) || program.getDateEnrolled().equals(context.getNow())))
+                    {
+                        enrollmentDate = program.getDateEnrolled();
+                    }
+                }
+            }
 
-			result.put(ptId, new SimpleResult(enrollmentDate, this));
-		}
+            result.put(ptId, new SimpleResult(enrollmentDate, this));
+        }
 
-		return  result;
-	}
+        return  result;
+    }
 }

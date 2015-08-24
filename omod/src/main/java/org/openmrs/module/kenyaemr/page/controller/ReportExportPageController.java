@@ -278,7 +278,7 @@ public class ReportExportPageController {
 	public String getDownloadFilename(ReportDefinition definition, EvaluationContext ec, String extension) {
 		Date date = ec.containsParameter("startDate") ? (Date) ec.getParameterValue("startDate") : ec.getEvaluationDate();
 
-		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM");
-		return definition.getName() + " " + df.format(date) + "." + extension;
+		SimpleDateFormat df = new SimpleDateFormat("MMM-yyyy");
+		return definition.getName() + "_" + df.format(date) + "." + extension;
 	}
 }

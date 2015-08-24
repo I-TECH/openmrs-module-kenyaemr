@@ -23,7 +23,7 @@ public class ViralSuppressionCalculation extends AbstractPatientCalculation {
         CalculationResultMap viralLoad = calculate(new ViralLoadCalculation(), cohort, context);
 
         for(Integer ptId:cohort) {
-            String suppressed = "Missing";
+            String suppressed = "";
             Double cd4ValueAndDate = EmrCalculationUtils.resultForPatient(viralLoad, ptId);
 
             if(cd4ValueAndDate != null && cd4ValueAndDate < 1000) {

@@ -50,7 +50,7 @@ public class AgeAtARTInitiationCalculation extends AbstractPatientCalculation {
 		CalculationResultMap artStartDateMap = calculate(new InitialArtStartDateCalculation(), cohort, context);
 		CalculationResultMap ret = new CalculationResultMap();
 		for(Integer ptId:cohort){
-			String ageAtARTStart = null;
+			Integer ageAtARTStart = null;
 			Date birthDate = Context.getPatientService().getPatient(ptId).getBirthdate();
 			Date artStartDate = EmrCalculationUtils.datetimeResultForPatient(artStartDateMap, ptId);
 			if (artStartDate != null && birthDate != null){
@@ -61,15 +61,9 @@ public class AgeAtARTInitiationCalculation extends AbstractPatientCalculation {
 		return ret;
 	}
 
-	private String ageInYearsAtDate(Date birthDate, Date artInitiationDate) {
+	private Integer ageInYearsAtDate(Date birthDate, Date artInitiationDate) {
 		Age age = new Age(birthDate, artInitiationDate);
-		String ages;
-		if(age.getFullYears() < 1) {
-			ages = "<1";
-		}
-		else {
-			ages = age.getFullYears().toString();
-		}
-		return ages;
+
+		return age.getFullYears();
 	}
 }

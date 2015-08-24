@@ -31,14 +31,14 @@ public class CurrentCd4Converter implements DataConverter {
     public Object convert(Object obj) {
 
         if (obj == null) {
-            return "missing";
+            return "";
         }
 
         Object value = ((CalculationResult) obj).getValue();
         Cd4ValueAndDate cd4ValueAndDate = (Cd4ValueAndDate) value;
 
         if(cd4ValueAndDate == null) {
-            return  "missing";
+            return  "";
         }
         if(what.equals("date")) {
             return formatDate(cd4ValueAndDate.getCd4Date());

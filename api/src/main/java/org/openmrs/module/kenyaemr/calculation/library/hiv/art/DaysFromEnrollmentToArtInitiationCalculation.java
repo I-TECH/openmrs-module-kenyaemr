@@ -21,7 +21,7 @@ public class DaysFromEnrollmentToArtInitiationCalculation extends AbstractPatien
     public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
         CalculationResultMap ret = new CalculationResultMap();
 
-        CalculationResultMap enrollmentDate = calculate(new DateOfEnrollmentCalculation(), cohort, context);
+        CalculationResultMap enrollmentDate = calculate(new DateOfEnrollmentArtCalculation(), cohort, context);
         CalculationResultMap artInitiationDate = calculate(new InitialArtStartDateCalculation(), cohort, context);
 
         for(Integer ptId: cohort){

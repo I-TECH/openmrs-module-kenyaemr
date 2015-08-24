@@ -2,7 +2,6 @@ package org.openmrs.module.kenyaemr.calculation.library.hiv.art;
 
 import org.joda.time.DateTime;
 import org.joda.time.Months;
-import org.openmrs.Program;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.patient.PatientCalculationService;
@@ -11,12 +10,9 @@ import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
 import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.AliveAndOnFollowUpCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.DateClassifiedLTFUCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.models.LostToFU;
 import org.openmrs.module.kenyaemr.calculation.library.rdqa.DateOfDeathCalculation;
-import org.openmrs.module.kenyaemr.metadata.HivMetadata;
-import org.openmrs.module.metadatadeploy.MetadataUtils;
 
 import java.util.Calendar;
 import java.util.Collection;
@@ -40,7 +36,7 @@ public class PatientArtOutComeCalculation extends AbstractPatientCalculation {
         if(months == null) {
             months = 0;
         }
-        CalculationResultMap enrolledHere = calculate( new DateOfEnrollmentCalculation(),cohort, context);
+        CalculationResultMap enrolledHere = calculate( new DateOfEnrollmentArtCalculation(),cohort, context);
         CalculationResultMap onARTInitial = calculate(new InitialArtStartDateCalculation(), cohort, context);
 
         CalculationResultMap ret = new CalculationResultMap();
@@ -94,7 +90,7 @@ public class PatientArtOutComeCalculation extends AbstractPatientCalculation {
                 }
 
                 if(dateLost != null && (dateLost.before(calendarAfterART.getTime()) || dateLost.equals(calendarAfterART.getTime()))){
-                    status = "Lost to follow up";
+                    status = "LTFU";
                 }
 
                 if(dod != null && (dod.before(calendarAfterART.getTime()) || dod.equals(calendarAfterART.getTime()))) {

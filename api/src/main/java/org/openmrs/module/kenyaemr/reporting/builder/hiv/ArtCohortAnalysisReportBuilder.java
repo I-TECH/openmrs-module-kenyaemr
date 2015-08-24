@@ -21,7 +21,7 @@ import org.openmrs.module.kenyaemr.calculation.library.hiv.art.CurrentArtRegimen
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.DateARV1Calculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.DateAndReasonFirstMedicallyEligibleForArtCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.DateLastSeenCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.DateOfEnrollmentCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.DateOfEnrollmentArtCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.DaysFromArtEligibilityToArtInitiationCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.DaysFromEnrollmentToArtInitiationCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtRegimenCalculation;
@@ -106,15 +106,15 @@ public class ArtCohortAnalysisReportBuilder extends AbstractHybridReportBuilder 
         dsd.addColumn("id", new PatientIdDataDefinition(), "");
         dsd.addColumn("Name", nameDef, "");
         dsd.addColumn("UPN", identifierDef, "");
-        dsd.addColumn("Enrollment into care date", hivProgramEnrollment(), "", new CalculationResultConverter());
+        dsd.addColumn("Enrollment into care date", hivProgramEnrollment(), "onDate=${endDate}", new CalculationResultConverter());
         dsd.addColumn("DOB", new BirthdateDataDefinition(), "", new BirthdateConverter());
         dsd.addColumn("DOB approx", new CalculationDataDefinition("DOB approx", new IsBirthDateApproximatedCalculation()), "", new CalculationResultConverter());
         dsd.addColumn("Age at ART initiation", new CalculationDataDefinition("Age at ART initiation", new AgeAtARTInitiationCalculation()), "", new CalculationResultConverter());
         dsd.addColumn("Sex", new GenderDataDefinition(), "");
-        dsd.addColumn("TI", new CalculationDataDefinition("TI", new IsTransferInCalculation()), "", new CalculationResultConverter());
-        dsd.addColumn("Date TI", new CalculationDataDefinition("Date TI", new TransferInDateCalculation()), "", new CalculationResultConverter());
-        dsd.addColumn("TO", new CalculationDataDefinition("TO", new IsTransferOutCalculation()), "", new CalculationResultConverter());
-        dsd.addColumn("Date TO", new CalculationDataDefinition("Date TO", new TransferOutDateCalculation()), "", new CalculationResultConverter());
+        dsd.addColumn("TI", ti(), "onDate=${endDate}", new CalculationResultConverter());
+        dsd.addColumn("Date TI", tiDate(), "onDate=${endDate}", new CalculationResultConverter());
+        dsd.addColumn("TO", to(), "onDate=${endDate}", new CalculationResultConverter());
+        dsd.addColumn("Date TO", toDate(), "onDate=${endDate}", new CalculationResultConverter());
         dsd.addColumn("ARV Start Date", new CalculationDataDefinition("ARV Start Date", new DateARV1Calculation()), "", new CalculationResultConverter());
         dsd.addColumn("Days from enrollment in care to ART Initiation", new CalculationDataDefinition("Days from enrollment in care to ART Initiation", new DaysFromEnrollmentToArtInitiationCalculation()), "", new CalculationResultConverter());
         dsd.addColumn("Days from ART eligibility to ART Initiation", new CalculationDataDefinition("Days from ART eligibility to ART Initiation", new DaysFromArtEligibilityToArtInitiationCalculation()), "", new CalculationResultConverter());
@@ -140,7 +140,7 @@ public class ArtCohortAnalysisReportBuilder extends AbstractHybridReportBuilder 
         dsd.addColumn("Viral suppression", new CalculationDataDefinition("Viral suppression", new ViralSuppressionCalculation()), "", new CalculationResultConverter());
         dsd.addColumn("Date of Last visit", new CalculationDataDefinition("Date of Last visit", new DateLastSeenCalculation()), "", new CalculationResultConverter());
         dsd.addColumn("Date of expected next visit", new CalculationDataDefinition("Date of expected next visit", new LastReturnVisitDateCalculation()), "", new CalculationResultConverter());
-        dsd.addColumn("Date of death", new CalculationDataDefinition("Date of death", new DateOfDeathCalculation()), "", new CalculationResultConverter());
+        dsd.addColumn("Date of death", death(), "onDate=${endDate}", new CalculationResultConverter());
 
         dsd.addColumn("ART Outcomes", patientOutComes(report), "onDate=${endDate}", new CalculationResultConverter());
 
@@ -163,7 +163,8 @@ public class ArtCohortAnalysisReportBuilder extends AbstractHybridReportBuilder 
     }
 
     private DataDefinition hivProgramEnrollment() {
-        CalculationDataDefinition cd = new CalculationDataDefinition("careEnrollment", new DateOfEnrollmentCalculation());
+        CalculationDataDefinition cd = new CalculationDataDefinition("careEnrollment", new DateOfEnrollmentArtCalculation());
+        cd.addParameter(new Parameter("onDate", "On Date", Date.class));
         return cd;
     }
 
@@ -171,6 +172,34 @@ public class ArtCohortAnalysisReportBuilder extends AbstractHybridReportBuilder 
         int months = Integer.parseInt(descriptor.getId().split("\\.")[7]);
         CalculationDataDefinition cd = new CalculationDataDefinition("viral load", new ViralLoadCalculation());
         cd.addCalculationParameter("months", months);
+        return cd;
+    }
+
+    private DataDefinition death() {
+        CalculationDataDefinition cd = new CalculationDataDefinition("death", new DateOfDeathCalculation());
+        cd.addParameter(new Parameter("onDate", "On Date", Date.class));
+        return cd;
+    }
+
+    private DataDefinition toDate() {
+        CalculationDataDefinition cd = new CalculationDataDefinition("toDate", new TransferOutDateCalculation());
+        cd.addParameter(new Parameter("onDate", "On Date", Date.class));
+        return cd;
+    }
+    private DataDefinition to() {
+        CalculationDataDefinition cd = new CalculationDataDefinition("to", new IsTransferOutCalculation());
+        cd.addParameter(new Parameter("onDate", "On Date", Date.class));
+        return cd;
+    }
+
+    private DataDefinition tiDate() {
+        CalculationDataDefinition cd = new CalculationDataDefinition("tiDate", new TransferInDateCalculation());
+        cd.addParameter(new Parameter("onDate", "On Date", Date.class));
+        return cd;
+    }
+    private DataDefinition ti() {
+        CalculationDataDefinition cd = new CalculationDataDefinition("ti", new IsTransferInCalculation());
+        cd.addParameter(new Parameter("onDate", "On Date", Date.class));
         return cd;
     }
 }

@@ -15,29 +15,21 @@ package org.openmrs.module.kenyaemr.calculation.library.hiv.art;
 
 import org.joda.time.DateTime;
 import org.joda.time.Months;
-import org.openmrs.PatientProgram;
-import org.openmrs.Program;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
-import org.openmrs.module.kenyacore.calculation.CalculationUtils;
-import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.AliveAndOnFollowUpCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.DateClassifiedLTFUCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.models.LostToFU;
 import org.openmrs.module.kenyaemr.calculation.library.rdqa.DateOfDeathCalculation;
-import org.openmrs.module.kenyaemr.metadata.HivMetadata;
-import org.openmrs.module.metadatadeploy.MetadataUtils;
 
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Calculate possible patient outcomes at the end of the cohort period
@@ -55,7 +47,7 @@ public class PatientPreArtOutComeCalculation extends AbstractPatientCalculation 
 		if(months == null) {
 			months = 0;
 		}
-		CalculationResultMap enrolledHere = calculate( new DateOfEnrollmentCalculation(),cohort, context);
+		CalculationResultMap enrolledHere = calculate( new DateOfEnrollmentArtCalculation(),cohort, context);
 
 		CalculationResultMap ret = new CalculationResultMap();
 		for (Integer ptId : cohort) {
@@ -99,21 +91,20 @@ public class PatientPreArtOutComeCalculation extends AbstractPatientCalculation 
 				if(initialArtStart != null && (initialArtStart.before(calendar.getTime()) || initialArtStart.equals(calendar.getTime())) && initialArtStart.after(patientProgramDate)) {
 					status = "Initiated ART";
 				}
-
-				if(dod != null && (dod.before(calendar.getTime()) || dod.equals(calendar.getTime()))) {
-					status = "Died";
-				}
-
 				if(dateTo != null && (dateTo.before(calendar.getTime()) || dateTo.equals(calendar.getTime()))) {
 					status = "Transferred out";
 				}
 
-				if(dateLost != null && (dateLost.before(calendar.getTime()) || dateLost.equals(calendar.getTime()))){
-					status = "Lost to follow up";
-				}
-
 				if(defaultedDate != null && (defaultedDate.before(calendar.getTime()) || defaultedDate.equals(calendar.getTime()))){
 					status = "Defaulted";
+				}
+
+				if(dateLost != null && (dateLost.before(calendar.getTime()) || dateLost.equals(calendar.getTime()))){
+					status = "LTFU";
+				}
+
+				if(dod != null && (dod.before(calendar.getTime()) || dod.equals(calendar.getTime()))) {
+					status = "Died";
 				}
 
 			}

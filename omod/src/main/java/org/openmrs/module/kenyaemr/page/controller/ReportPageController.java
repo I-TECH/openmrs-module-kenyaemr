@@ -92,6 +92,13 @@ public class ReportPageController {
 			model.addAttribute("startDate", startDate);
 		}
 
+		SimpleDateFormat datePeriodForAll = new SimpleDateFormat("MMM-yyyy");
+		String date = "";
+		if(startDate != null) {
+			date ="_"+ datePeriodForAll.format(startDate);
+		}
+		model.addAttribute("date", date);
+
 		model.addAttribute("requests", getRequests(definition, ui, reportService));
 	}
 

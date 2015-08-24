@@ -13,7 +13,7 @@ public class ChangeInCd4Converter implements DataConverter {
     public Object convert(Object obj) {
 
         if (obj == null) {
-            return "Missing";
+            return "";
         }
 
         return  ((CalculationResult) obj).getValue();

@@ -10,7 +10,7 @@ import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.DateOfEnrollmentCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.DateOfEnrollmentArtCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.models.Cd4ValueAndDate;
 
 import java.util.ArrayList;
@@ -29,7 +29,7 @@ public class InitialCd4CountCalculation  extends AbstractPatientCalculation {
     public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
         CalculationResultMap ret = new CalculationResultMap();
         CalculationResultMap allCd4s = Calculations.allObs(Dictionary.getConcept(Dictionary.CD4_COUNT), cohort, context);
-        CalculationResultMap enrollment = calculate(new DateOfEnrollmentCalculation(), cohort, context);
+        CalculationResultMap enrollment = calculate(new DateOfEnrollmentArtCalculation(), cohort, context);
 
         for(Integer ptId:cohort) {
 

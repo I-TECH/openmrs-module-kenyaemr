@@ -27,7 +27,7 @@
 
     <bean id="kenyaemr.hiv.report.cohort.analysis.preArt.6" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
         <property name="targetUuid" value="ca6855fa-2944-11e5-86a1-0b927acd7c2e" />
-        <property name="name" value="Pre-ART cohort 6 months" />
+        <property name="name" value="Pre-ART_cohort_6months" />
         <property name="description" value="Cohort based upon shared month and year of enrollment into HIV care and treatment 6 months outcome" />
         <property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
         <property name="template" value="kenyaemr:hiv/pre_ART_Cohort.xls" />
@@ -36,7 +36,7 @@
 
     <bean id="kenyaemr.hiv.report.cohort.analysis.preArt.12" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
         <property name="targetUuid" value="df7b9434-2944-11e5-9493-1f1d97d158433" />
-        <property name="name" value="Pre-ART cohort 12 months" />
+        <property name="name" value="Pre-ART_cohort_12months" />
         <property name="description" value="Cohort based upon shared month and year of enrollment into HIV care and treatment 12 months outcome" />
         <property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
         <property name="template" value="kenyaemr:hiv/pre_ART_Cohort.xls" />
@@ -45,7 +45,7 @@
 
     <bean id="kenyaemr.hiv.report.cohort.analysis.preArt.24" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
         <property name="targetUuid" value="f7d45b24-2944-11e5-9505-f35ad16e5a01" />
-        <property name="name" value="Pre-ART cohort 24 months" />
+        <property name="name" value="Pre-ART_cohort_24months" />
         <property name="description" value="Cohort based upon shared month and year of enrollment into HIV care and treatment 24 months outcome" />
         <property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
         <property name="template" value="kenyaemr:hiv/pre_ART_Cohort.xls" />
@@ -54,7 +54,7 @@
 
     <bean id="kenyaemr.hiv.report.cohort.analysis.preArt.36" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
         <property name="targetUuid" value="18bee8ae-2945-11e5-be16-f74c5560c404" />
-        <property name="name" value="Pre-ART cohort 36 months" />
+        <property name="name" value="Pre-ART_cohort_36months" />
         <property name="description" value="Cohort based upon shared month and year of enrollment into HIV care and treatment 36 months outcome" />
         <property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
         <property name="template" value="kenyaemr:hiv/pre_ART_Cohort.xls" />
@@ -63,7 +63,7 @@
 
     <bean id="kenyaemr.hiv.report.cohort.analysis.preArt.48" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
         <property name="targetUuid" value="363e2174-2945-11e5-8933-afaf404a2d30" />
-        <property name="name" value="Pre-ART cohort 48 months" />
+        <property name="name" value="Pre-ART_cohort_48months" />
         <property name="description" value="Cohort based upon shared month and year of enrollment into HIV care and treatment 48 months outcome" />
         <property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
         <property name="template" value="kenyaemr:hiv/pre_ART_Cohort.xls" />
@@ -72,7 +72,7 @@
 
     <bean id="kenyaemr.hiv.report.cohort.analysis.preArt.60" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
         <property name="targetUuid" value="50066de6-2945-11e5-9e8d-bf2d293ac565" />
-        <property name="name" value="Pre-ART cohort 60 months" />
+        <property name="name" value="Pre-ART_cohort_60months" />
         <property name="description" value="Cohort based upon shared month and year of enrollment into HIV care and treatment 60 months outcome" />
         <property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
         <property name="template" value="kenyaemr:hiv/pre_ART_Cohort.xls" />
@@ -83,7 +83,7 @@
 
     <bean id="kenyaemr.hiv.report.art.cohort.analysis.art.12" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
         <property name="targetUuid" value="fe9503a0-2953-11e5-836f-ef622b3d1bfe" />
-        <property name="name" value="ART cohort 12 months" />
+        <property name="name" value="ART_cohort_12months" />
         <property name="description" value="Cohort based upon shared month and year of ART initiation 12 months" />
         <property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
         <property name="template" value="kenyaemr:art/artCohortAnalysis.xls" />
@@ -92,7 +92,7 @@
 
     <bean id="kenyaemr.hiv.report.art.cohort.analysis.art.6" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
         <property name="targetUuid" value="d4c6174e-2953-11e5-826f-df1ddf57c121" />
-        <property name="name" value="ART cohort 6 months" />
+        <property name="name" value="ART_cohort_6months" />
         <property name="description" value="Cohort based upon shared month and year of ART initiation 6 months" />
         <property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
         <property name="template" value="kenyaemr:art/artCohortAnalysis.xls" />
@@ -101,7 +101,7 @@
 
     <bean id="kenyaemr.hiv.report.art.cohort.analysis.art.24" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
         <property name="targetUuid" value="1bd9b78a-2954-11e5-8ab7-a784080b5183" />
-        <property name="name" value="ART cohort 24 months" />
+        <property name="name" value="ART_cohort_24months" />
         <property name="description" value="Cohort based upon shared month and year of ART initiation 24 months" />
         <property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
         <property name="template" value="kenyaemr:art/artCohortAnalysis.xls" />
@@ -110,7 +110,7 @@
 
     <bean id="kenyaemr.hiv.report.art.cohort.analysis.art.36" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
         <property name="targetUuid" value="3150179e-2954-11e5-a2b0-db4775a99fac" />
-        <property name="name" value="ART cohort 36 months" />
+        <property name="name" value="ART_cohort_36months" />
         <property name="description" value="Cohort based upon shared month and year of ART initiation 36 months" />
         <property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
         <property name="template" value="kenyaemr:art/artCohortAnalysis.xls" />
@@ -119,7 +119,7 @@
 
     <bean id="kenyaemr.hiv.report.art.cohort.analysis.art.48" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
         <property name="targetUuid" value="47233650-2954-11e5-9a29-73499c9a2163" />
-        <property name="name" value="ART cohort 48 months" />
+        <property name="name" value="ART_cohort_48months" />
         <property name="description" value="Cohort based upon shared month and year of ART initiation 48 months" />
         <property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
         <property name="template" value="kenyaemr:art/artCohortAnalysis.xls" />
@@ -128,7 +128,7 @@
 
     <bean id="kenyaemr.hiv.report.art.cohort.analysis.art.60" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
         <property name="targetUuid" value="583dde68-2954-11e5-a42c-635b85322b3d" />
-        <property name="name" value="ART cohort 60 months" />
+        <property name="name" value="ART_cohort_60months" />
         <property name="description" value="Cohort based upon shared month and year of ART initiation 60 months" />
         <property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
         <property name="template" value="kenyaemr:art/artCohortAnalysis.xls" />

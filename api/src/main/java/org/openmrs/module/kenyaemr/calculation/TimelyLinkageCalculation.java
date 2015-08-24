@@ -7,7 +7,7 @@ import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.DateOfDiagnosisCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.DateOfEnrollmentCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.DateOfEnrollmentArtCalculation;
 
 import java.util.Collection;
 import java.util.Date;
@@ -25,7 +25,7 @@ public class TimelyLinkageCalculation extends AbstractPatientCalculation {
         CalculationResultMap ret = new CalculationResultMap();
 
         //find the enrollment date into a calculation result map
-        CalculationResultMap careEnrollment = calculate(new DateOfEnrollmentCalculation(), cohort, context);
+        CalculationResultMap careEnrollment = calculate(new DateOfEnrollmentArtCalculation(), cohort, context);
         //find date of diagnosis into a result map
         CalculationResultMap diagnosisDate = calculate(new DateOfDiagnosisCalculation(), cohort, context);
 
