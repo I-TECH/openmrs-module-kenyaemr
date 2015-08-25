@@ -28,7 +28,7 @@ public class CurrentArtLineCalculation extends AbstractPatientCalculation {
         Set<Integer> onSecondLine = CalculationUtils.patientsThatPass(calculate(new OnSecondLineArtCalculation(), cohort, context));
 
         for(Integer ptId: cohort) {
-            String line = null;
+            String line = "Other";
 
             Date initialRegimenDate = EmrCalculationUtils.resultForPatient(initialArtStartDate, ptId);
 
@@ -37,20 +37,14 @@ public class CurrentArtLineCalculation extends AbstractPatientCalculation {
                 if (onFirstLine != null && onFirstLine.contains(ptId)) {
                     line = "1st";
                 }
-                else if(onSecondLine != null  && onSecondLine.contains(ptId)) {
+                if(onSecondLine != null  && onSecondLine.contains(ptId)) {
                     line = "2nd";
                 }
-                else if(onFirstLine != null && onSecondLine != null && onFirstLine.contains(ptId) && onSecondLine.contains(ptId)) {
+                if(onFirstLine != null && onSecondLine != null && onFirstLine.contains(ptId) && onSecondLine.contains(ptId)) {
                     line = "2nd";
                 }
-                else {
-                    line = "Other";
-                }
-                ret.put(ptId, new SimpleResult(line, this));
-            }
 
-            else {
-                ret.put(ptId, null);
+                ret.put(ptId, new SimpleResult(line, this));
             }
 
         }

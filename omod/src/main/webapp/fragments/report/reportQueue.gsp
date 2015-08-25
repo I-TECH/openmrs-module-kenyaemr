@@ -6,6 +6,7 @@
 			<tr>
 				<th ng-if="!reportUuid">Report</th>
 				<th>Requested</th>
+				<th>By</th>
 				<th>Report name</th>
 				<th>Status</th>
 				<th>Time taken</th>
@@ -16,6 +17,7 @@
 			<tr ng-repeat="request in queued">
 				<td ng-if="!reportUuid">{{ request.report.name }}</td>
 				<td>{{ request.requestDate | keDateTime }}</td>
+				<td>{{ request.requestedBy.person.name}}</td>
 				<td>{{ request.report.name }}</td>
 				<td>{{ request.status }}</td>
 				<td>{{ request.timeTaken || '--:--:--' }}</td>

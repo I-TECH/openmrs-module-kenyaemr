@@ -57,6 +57,7 @@ public class ReportRequestSimplifier extends AbstractSimplifier<ReportRequest> {
 		ret.put("status", request.getStatus());
 		ret.put("finished", request.getStatus().equals(ReportRequest.Status.COMPLETED) || request.getStatus().equals(ReportRequest.Status.FAILED));
 		ret.put("timeTaken", timeTaken != null ? kenyaui.formatDuration(timeTaken) : null);
+		ret.put("parameters", request.getReportDefinition().getParameterMappings());
 		return ret;
 	}
 

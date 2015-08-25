@@ -41,6 +41,7 @@ import org.openmrs.module.kenyaemr.reporting.calculation.converter.ChangeInCd4Co
 import org.openmrs.module.kenyaemr.reporting.calculation.converter.CurrentCd4Converter;
 import org.openmrs.module.kenyaemr.reporting.calculation.converter.MedicallyEligibleConverter;
 import org.openmrs.module.kenyaemr.reporting.calculation.converter.RegimenConverter;
+import org.openmrs.module.kenyaemr.reporting.calculation.converter.RegimenLineConverter;
 import org.openmrs.module.kenyaemr.reporting.data.converter.BirthdateConverter;
 import org.openmrs.module.kenyaemr.reporting.data.converter.CalculationResultConverter;
 import org.openmrs.module.kenyaemr.reporting.data.converter.Cd4ValueAndDateConverter;
@@ -106,7 +107,7 @@ public class ArtCohortAnalysisReportBuilder extends AbstractHybridReportBuilder 
         dsd.addColumn("id", new PatientIdDataDefinition(), "");
         dsd.addColumn("Name", nameDef, "");
         dsd.addColumn("UPN", identifierDef, "");
-        dsd.addColumn("Enrollment into care date", hivProgramEnrollment(), "onDate=${endDate}", new CalculationResultConverter());
+        dsd.addColumn("Enrollment into care date", hivProgramEnrollment(), "", new CalculationResultConverter());
         dsd.addColumn("DOB", new BirthdateDataDefinition(), "", new BirthdateConverter());
         dsd.addColumn("DOB approx", new CalculationDataDefinition("DOB approx", new IsBirthDateApproximatedCalculation()), "", new CalculationResultConverter());
         dsd.addColumn("Age at ART initiation", new CalculationDataDefinition("Age at ART initiation", new AgeAtARTInitiationCalculation()), "", new CalculationResultConverter());
@@ -126,7 +127,7 @@ public class ArtCohortAnalysisReportBuilder extends AbstractHybridReportBuilder 
         dsd.addColumn("Date of baseline cd4 percent", new CalculationDataDefinition("Date of baseline cd4 percent", new BaselineCd4PercentAndDateCalculation()), "", new Cd4ValueAndDateConverter("date"));
         dsd.addColumn("Initial ART regimen", new CalculationDataDefinition("First ART regimen", new InitialArtRegimenCalculation()), "", new RegimenConverter());
         dsd.addColumn("Current ART regimen", new CalculationDataDefinition("Current ART regimen", new CurrentArtRegimenCalculation()), "", new RegimenConverter());
-        dsd.addColumn("Current ART line", new CalculationDataDefinition("Current ART line", new CurrentArtLineCalculation()), "", new CalculationResultConverter());
+        dsd.addColumn("Current ART line", new CalculationDataDefinition("Current ART line", new CurrentArtRegimenCalculation()), "", new RegimenLineConverter());
         dsd.addColumn("Current cd4 count", new CalculationDataDefinition("Current cd4 count", new LastCd4Calculation()), "", new CurrentCd4Converter("value"));
         dsd.addColumn("Date current cd4 count", new CalculationDataDefinition("Date current cd4 count", new LastCd4Calculation()), "", new CurrentCd4Converter("date"));
         dsd.addColumn("Current cd4 percent", new CalculationDataDefinition("Current cd4 percent", new LastCd4PercentCalculation()), "", new CurrentCd4Converter("value"));

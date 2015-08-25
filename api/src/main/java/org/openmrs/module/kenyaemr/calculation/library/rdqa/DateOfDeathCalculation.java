@@ -43,7 +43,7 @@ public class DateOfDeathCalculation extends AbstractPatientCalculation {
 		for (Integer ptId : cohort) {
 			Person p = service.getPerson(ptId);
 			Date dod = null;
-			if (p.isDead()) {
+			if (p.isDead() && p.getDeathDate() != null && p.getDeathDate().before(context.getNow())) {
 				dod = p.getDeathDate();
 			}
 			result.put(ptId, new SimpleResult(dod, this));
