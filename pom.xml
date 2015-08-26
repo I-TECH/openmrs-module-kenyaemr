@@ -40,7 +40,7 @@
 		<idgenVersion>2.6</idgenVersion>
 		<kenyacoreVersion>2.3-SNAPSHOT</kenyacoreVersion>
 		<kenyadqVersion>1.2-SNAPSHOT</kenyadqVersion>
-		<kenyauiVersion>2.0.3</kenyauiVersion>
+		<kenyauiVersion>2.0.4-SNAPSHOT</kenyauiVersion>
 		<logicVersion>0.5.2</logicVersion>
 		<metadatadeployVersion>1.3</metadatadeployVersion>
 		<metadatamappingVersion>1.0.1</metadatamappingVersion>

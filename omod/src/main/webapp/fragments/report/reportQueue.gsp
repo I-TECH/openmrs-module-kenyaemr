@@ -7,7 +7,7 @@
 				<th ng-if="!reportUuid">Report</th>
 				<th>Requested</th>
 				<th>By</th>
-				<th>Report name</th>
+				<th>Report file name</th>
 				<th>Status</th>
 				<th>Time taken</th>
 				<th>&nbsp;</th>
@@ -18,7 +18,7 @@
 				<td ng-if="!reportUuid">{{ request.report.name }}</td>
 				<td>{{ request.requestDate | keDateTime }}</td>
 				<td>{{ request.requestedBy.person.name}}</td>
-				<td>{{ request.report.name }}</td>
+				<td>{{ request.report.name }}_{{ request.parameters.startDate | keDateShort }}</td>
 				<td>{{ request.status }}</td>
 				<td>{{ request.timeTaken || '--:--:--' }}</td>
 				<td style="text-align: right">

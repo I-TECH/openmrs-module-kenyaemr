@@ -52,7 +52,7 @@
 				<tr>
 					<th>Requested</th>
 					<th>By</th>
-					<th>Report name</th>
+					<th>Report file name</th>
 					<th>Status</th>
 					<th>Time taken</th>
 					<th>&nbsp;</th>
