@@ -15,19 +15,18 @@ public class TimelyLinkageDataConverter implements DataConverter {
             return "Unknown";
         }
         Object value = ((CalculationResult) obj).getValue();
-
         if(value instanceof Integer) {
-
             if (((Integer) value) <= 90) {
                 return "Yes";
-            } else if (((Integer) value) > 90) {
+            }
+            else if (((Integer) value) > 90) {
                 return "No";
             }
         }
         else {
-
             return "Unknown";
         }
+
         return null;
     }
 

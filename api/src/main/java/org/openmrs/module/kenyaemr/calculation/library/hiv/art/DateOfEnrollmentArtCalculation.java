@@ -54,10 +54,8 @@ public class DateOfEnrollmentArtCalculation extends AbstractPatientCalculation {
 			ListResult listResult = (ListResult) enrolledHere.get(ptId);
 			List<PatientProgram> patientProgram = CalculationUtils.extractResultValues(listResult);
 			if(patientProgram.size() > 0){
-				for(PatientProgram program: patientProgram) {
-						enrollmentDate = program.getDateEnrolled();
+				enrollmentDate = patientProgram.get(0).getDateEnrolled();
 
-				}
 			}
 
 			result.put(ptId, new SimpleResult(enrollmentDate, this));

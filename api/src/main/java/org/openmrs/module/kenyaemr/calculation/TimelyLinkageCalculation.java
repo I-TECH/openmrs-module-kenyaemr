@@ -36,7 +36,10 @@ public class TimelyLinkageCalculation extends AbstractPatientCalculation {
             Date diagnoseDate = EmrCalculationUtils.datetimeResultForPatient(diagnosisDate, ptId);
 
             if(careEnrollmentDate != null && diagnoseDate != null) {
-                diff = daysSince(careEnrollmentDate, diagnoseDate);
+                diff = daysSince(diagnoseDate,careEnrollmentDate);
+            }
+            if(diagnoseDate == null) {
+                ret.put(ptId, new SimpleResult(null, this));
             }
             ret.put(ptId, new SimpleResult(diff, this));
 

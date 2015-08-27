@@ -12,6 +12,8 @@ import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.DateOfEnrollmentArtCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.models.Cd4ValueAndDate;
+import org.openmrs.module.reporting.common.DateUtil;
+import org.openmrs.module.reporting.common.DurationUnit;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -40,7 +42,7 @@ public class InitialCd4CountCalculation  extends AbstractPatientCalculation {
             List<Obs> cd4sNearest = new ArrayList<Obs>();
             for(Obs obs:allObsAsList){
                 Date obsDate = obs.getObsDatetime();
-                if((enrollmentDate != null && obsDate != null && obsDate.before(enrollmentDate) && obsDate.after(dateDaysBefore(enrollmentDate, 91))) ||(enrollmentDate != null && obsDate != null && obsDate.equals(enrollmentDate))) {
+                if(enrollmentDate != null && obsDate.before(dateLimit(enrollmentDate, 91))) {
                     cd4sNearest.add(obs);
                 }
             }
@@ -53,12 +55,9 @@ public class InitialCd4CountCalculation  extends AbstractPatientCalculation {
         return ret;
     }
 
-    Date dateDaysBefore(Date enrollmentDate, Integer addDays) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(enrollmentDate);
-        calendar.add(Calendar.DATE, -addDays);
+    private  Date dateLimit(Date date1, Integer days) {
 
-        return calendar.getTime();
+        return DateUtil.adjustDate(date1, days, DurationUnit.DAYS);
     }
 
 }

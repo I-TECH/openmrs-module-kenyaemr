@@ -29,10 +29,10 @@ import org.openmrs.module.kenyaemr.calculation.library.hiv.DateOfDiagnosisCalcul
 import org.openmrs.module.kenyaemr.calculation.library.hiv.DateOfEnrollmentHivCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.InitialCd4CountCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.InitialCd4PercentCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.IsTransferInAndHasDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.LastReturnVisitDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.DateAndReasonFirstMedicallyEligibleForArtCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.DateLastSeenCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.DateOfEnrollmentArtCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.EligibleForArtCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.IsBirthDateApproximatedCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.IsTransferInCalculation;
@@ -44,6 +44,7 @@ import org.openmrs.module.kenyaemr.calculation.library.rdqa.DateOfDeathCalculati
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.reporting.calculation.converter.MedicallyEligibleConverter;
 import org.openmrs.module.kenyaemr.reporting.calculation.converter.TimelyLinkageDataConverter;
+import org.openmrs.module.kenyaemr.reporting.calculation.converter.TransferInAndDateConverter;
 import org.openmrs.module.kenyaemr.reporting.data.converter.BirthdateConverter;
 import org.openmrs.module.kenyaemr.reporting.data.converter.CalculationResultConverter;
 import org.openmrs.module.kenyaemr.reporting.data.converter.Cd4ValueAndDateConverter;
@@ -112,9 +113,10 @@ public class PreArtCohortAnalysisReportBuilder extends AbstractHybridReportBuild
 		dsd.addColumn("Age at HIV enrollment", ageAtHivProgramEnrollment(), "onDate=${endDate}", new CalculationResultConverter());
 		dsd.addColumn("Sex", new GenderDataDefinition(), "");
 		dsd.addColumn("Date of Diagnosis", dateOfDiagnosis(), "onDate=${endDate}", new CalculationResultConverter());
-		dsd.addColumn("Timely linkage", timelyLinkage(), "onDate=${endDate}", new TimelyLinkageDataConverter());
-		dsd.addColumn("Transfer in", ti(), "onDate=${endDate}", new CalculationResultConverter());
-		dsd.addColumn("Date Transfer in", tiDate(), "onDate=${endDate}", new CalculationResultConverter());
+		dsd.addColumn("Days from HIV Diagnosis to Enrollment", timelyLinkage(), "", new CalculationResultConverter());
+		dsd.addColumn("Timely linkage", timelyLinkage(), "", new TimelyLinkageDataConverter());
+		dsd.addColumn("Transfer in", ti(), "onDate=${endDate}", new TransferInAndDateConverter("state"));
+		dsd.addColumn("Date Transfer in", ti(), "onDate=${endDate}", new TransferInAndDateConverter("date"));
 		dsd.addColumn("Transfer out", to(), "onDate=${endDate}", new CalculationResultConverter());
 		dsd.addColumn("Date Transferred out", toDate(), "onDate=${endDate}", new CalculationResultConverter());
 		dsd.addColumn("Initial CD4 count", new CalculationDataDefinition("Initial CD4 count", new InitialCd4CountCalculation()), "", new Cd4ValueAndDateConverter("value"));
@@ -141,13 +143,8 @@ public class PreArtCohortAnalysisReportBuilder extends AbstractHybridReportBuild
 		return cd;
 	}
 
-	private DataDefinition tiDate() {
-		CalculationDataDefinition cd = new CalculationDataDefinition("tiDate", new TransferInDateCalculation());
-		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
-		return cd;
-	}
 	private DataDefinition ti() {
-		CalculationDataDefinition cd = new CalculationDataDefinition("ti", new IsTransferInCalculation());
+		CalculationDataDefinition cd = new CalculationDataDefinition("tiAndDate", new IsTransferInAndHasDateCalculation());
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
 		return cd;
 	}
