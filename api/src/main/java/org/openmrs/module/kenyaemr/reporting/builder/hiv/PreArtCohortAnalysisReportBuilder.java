@@ -30,6 +30,7 @@ import org.openmrs.module.kenyaemr.calculation.library.hiv.DateOfEnrollmentHivCa
 import org.openmrs.module.kenyaemr.calculation.library.hiv.InitialCd4CountCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.InitialCd4PercentCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.IsTransferInAndHasDateCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.IsTransferOutAndHasDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.LastReturnVisitDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.DateAndReasonFirstMedicallyEligibleForArtCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.DateLastSeenCalculation;
@@ -50,6 +51,7 @@ import org.openmrs.module.kenyaemr.reporting.data.converter.CalculationResultCon
 import org.openmrs.module.kenyaemr.reporting.data.converter.Cd4ValueAndDateConverter;
 import org.openmrs.module.kenyaemr.reporting.data.converter.IdentifierConverter;
 import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonCohortLibrary;
+import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.HivCohortLibrary;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.data.DataDefinition;
@@ -77,7 +79,7 @@ import java.util.List;
 public class PreArtCohortAnalysisReportBuilder extends AbstractHybridReportBuilder {
 
 	@Autowired
-	private CommonCohortLibrary commonCohortLibrary;
+	private HivCohortLibrary commonCohortLibrary;
 
 	/**
 	 *
@@ -117,8 +119,8 @@ public class PreArtCohortAnalysisReportBuilder extends AbstractHybridReportBuild
 		dsd.addColumn("Timely linkage", timelyLinkage(), "", new TimelyLinkageDataConverter());
 		dsd.addColumn("Transfer in", ti(), "onDate=${endDate}", new TransferInAndDateConverter("state"));
 		dsd.addColumn("Date Transfer in", ti(), "onDate=${endDate}", new TransferInAndDateConverter("date"));
-		dsd.addColumn("Transfer out", to(), "onDate=${endDate}", new CalculationResultConverter());
-		dsd.addColumn("Date Transferred out", toDate(), "onDate=${endDate}", new CalculationResultConverter());
+		dsd.addColumn("Transfer out", to(report), "onDate=${endDate}", new TransferInAndDateConverter("state"));
+		dsd.addColumn("Date Transferred out", to(report), "onDate=${endDate}", new TransferInAndDateConverter("date"));
 		dsd.addColumn("Initial CD4 count", new CalculationDataDefinition("Initial CD4 count", new InitialCd4CountCalculation()), "", new Cd4ValueAndDateConverter("value"));
 		dsd.addColumn("Date of initial CD4 count", new CalculationDataDefinition("Date of initial CD4 count", new InitialCd4CountCalculation()), "", new Cd4ValueAndDateConverter("date"));
 		dsd.addColumn("Initial CD4 percent", new CalculationDataDefinition("Initial CD4 percent", new InitialCd4PercentCalculation()), "", new Cd4ValueAndDateConverter("value"));
@@ -132,14 +134,10 @@ public class PreArtCohortAnalysisReportBuilder extends AbstractHybridReportBuild
 		dsd.addColumn("OutComes", patientOutComes(report), "onDate=${endDate}", new CalculationResultConverter());
 	}
 
-	private DataDefinition toDate() {
-		CalculationDataDefinition cd = new CalculationDataDefinition("toDate", new TransferOutDateCalculation());
+	private DataDefinition to(HybridReportDescriptor descriptor) {
+		CalculationDataDefinition cd = new CalculationDataDefinition("to", new IsTransferOutAndHasDateCalculation());
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
-		return cd;
-	}
-	private DataDefinition to() {
-		CalculationDataDefinition cd = new CalculationDataDefinition("to", new IsTransferOutCalculation());
-		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
+		cd.addCalculationParameter("outcomePeriod",Integer.parseInt(descriptor.getId().split("\\.")[6]));
 		return cd;
 	}
 
@@ -155,8 +153,8 @@ public class PreArtCohortAnalysisReportBuilder extends AbstractHybridReportBuild
 	}
 	@Override
 	protected Mapped<CohortDefinition> buildCohort(HybridReportDescriptor descriptor, PatientDataSetDefinition dsd) {
-		CohortDefinition cd = commonCohortLibrary.enrolled(MetadataUtils.existing(Program.class, HivMetadata._Program.HIV));
-		return ReportUtils.map(cd, "enrolledOnOrAfter=${startDate},enrolledOnOrBefore=${endDate}");
+		CohortDefinition cd = commonCohortLibrary.firstProgramEnrollment();
+		return ReportUtils.map(cd, "onOrAfter=${startDate},onOrBefore=${endDate}");
 	}
 
 	private DataDefinition hivProgramEnrollment() {

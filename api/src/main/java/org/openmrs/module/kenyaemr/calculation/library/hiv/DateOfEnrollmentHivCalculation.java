@@ -58,6 +58,7 @@ public class DateOfEnrollmentHivCalculation extends AbstractPatientCalculation {
                 for(PatientProgram p: patientProgram) {
                     if(p.getDateEnrolled().before(DateUtil.adjustDate(context.getNow(), 1, DurationUnit.DAYS)) && p.getDateEnrolled().after(DateUtil.adjustDate(DateUtil.getStartOfMonth(context.getNow()), -1, DurationUnit.DAYS))) {
                         enrollmentDate = p.getDateEnrolled();
+                        break;
                     }
                 }
             }

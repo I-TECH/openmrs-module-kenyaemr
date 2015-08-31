@@ -34,7 +34,7 @@ public class DateOfDiagnosisCalculation extends AbstractPatientCalculation {
             Date dateOfDiagnosis = null;
 
             Obs date = EmrCalculationUtils.obsResultForPatient(diagnosisDate, ptId);
-            if(date != null) {
+            if(date != null && date.getValueDatetime().before(context.getNow())) {
                 dateOfDiagnosis = date.getValueDatetime();
             }
 

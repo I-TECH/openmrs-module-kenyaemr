@@ -43,11 +43,11 @@ public class IsTransferInAndHasDateCalculation extends AbstractPatientCalculatio
         EncounterType enrollmentEncounter = MetadataUtils.existing(EncounterType.class, HivMetadata._EncounterType.HIV_ENROLLMENT);
         Set<Integer> inHivProgram = Filters.inProgram(hivProgram, cohort, context);
 
-        CalculationResultMap allEnrollments = Calculations.allEnrollments(hivProgram, cohort, context);
+        //CalculationResultMap allEnrollments = Calculations.allEnrollments(hivProgram, cohort, context);
         CalculationResultMap allEncounters = Calculations.allEncountersOnOrAfter(enrollmentEncounter, DateUtil.adjustDate(DateUtil.getStartOfMonth(context.getNow()), -1, DurationUnit.DAYS), cohort, context);
 
-        CalculationResultMap transferInStatusResults = Calculations.lastObs(transferInStatus, cohort, context);
-        CalculationResultMap transferInDateResults = Calculations.lastObs(transferInDate, cohort, context);
+       // CalculationResultMap transferInStatusResults = Calculations.lastObs(transferInStatus, cohort, context);
+        //CalculationResultMap transferInDateResults = Calculations.lastObs(transferInDate, cohort, context);
 
         for(Integer ptId : cohort) {
             TransferInAndDate transferInAndDate = null;
@@ -80,23 +80,27 @@ public class IsTransferInAndHasDateCalculation extends AbstractPatientCalculatio
                     else if(obs.getConcept().equals(transferInDate)) {
                         transferInDateResultsObs = obs;
                     }
-                    //break;
                 }
 
                 if(transferInStatusResultsObs != null && transferInDateResultsObs != null && transferInStatusResultsObs.getValueCoded().equals(Dictionary.getConcept(Dictionary.YES))) {
                     transferInAndDate = new TransferInAndDate("Yes", transferInDateResultsObs.getValueDatetime());
                 }
-                if(transferInStatusResultsObs != null && transferInDateResultsObs == null && transferInStatusResultsObs.getValueCoded().equals(Dictionary.getConcept(Dictionary.YES))) {
+                else if(transferInStatusResultsObs != null && transferInDateResultsObs == null && transferInStatusResultsObs.getValueCoded().equals(Dictionary.getConcept(Dictionary.YES))) {
                     transferInAndDate = new TransferInAndDate("Yes", transferInStatusResultsObs.getObsDatetime());
                 }
 
-                if(transferInStatusResultsObs == null && transferInDateResultsObs != null) {
+                else if(transferInStatusResultsObs == null && transferInDateResultsObs != null) {
                     transferInAndDate = new TransferInAndDate("Yes", transferInDateResultsObs.getValueDatetime());
                 }
-                if((transferInStatusResultsObs == null && transferInDateResultsObs == null) || (transferInStatusResultsObs !=null && transferInStatusResultsObs.getValueCoded().equals(Dictionary.getConcept(Dictionary.NO)))) {
+                else {
                     transferInAndDate = new TransferInAndDate("No", null);
                 }
             }
+
+            else {
+                transferInAndDate = new TransferInAndDate("No", null);
+            }
+
             ret.put(ptId, new SimpleResult(transferInAndDate, this));
 
         }
