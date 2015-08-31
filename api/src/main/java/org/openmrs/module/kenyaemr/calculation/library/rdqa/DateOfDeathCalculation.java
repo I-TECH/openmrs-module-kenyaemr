@@ -21,6 +21,8 @@ import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
+import org.openmrs.module.reporting.common.DateUtil;
+import org.openmrs.module.reporting.common.DurationUnit;
 
 import java.util.Collection;
 import java.util.Date;
@@ -35,15 +37,19 @@ public class DateOfDeathCalculation extends AbstractPatientCalculation {
 	 *      java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
 	 */
 	@Override
-	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues,
-										 PatientCalculationContext context) {
+	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> params, PatientCalculationContext context) {
 
 		CalculationResultMap result = new CalculationResultMap();
+		Integer outcomePeriod = (params != null && params.containsKey("outcomePeriod")) ? (Integer) params.get("outcomePeriod") : null;
+		Date uptoDate = context.getNow();
+		if(outcomePeriod != null) {
+			uptoDate = DateUtil.adjustDate(DateUtil.adjustDate(DateUtil.getStartOfMonth(context.getNow()), outcomePeriod, DurationUnit.MONTHS), 1, DurationUnit.DAYS);
+		}
 		PersonService service = Context.getPersonService();
 		for (Integer ptId : cohort) {
 			Person p = service.getPerson(ptId);
 			Date dod = null;
-			if (p.isDead() && p.getDeathDate() != null && p.getDeathDate().before(context.getNow())) {
+			if (p.isDead() && p.getDeathDate() != null && p.getDeathDate().before(uptoDate)) {
 				dod = p.getDeathDate();
 			}
 			result.put(ptId, new SimpleResult(dod, this));
