@@ -41,6 +41,7 @@ import org.openmrs.module.kenyaemr.calculation.library.hiv.art.IsTransferOutCalc
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.PatientPreArtOutComeCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.TransferInDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.TransferOutDateCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.pre_art.MedicallyEligibleButNotEnrolledOnArtCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.rdqa.DateOfDeathCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.reporting.calculation.converter.MedicallyEligibleConverter;
@@ -127,8 +128,8 @@ public class PreArtCohortAnalysisReportBuilder extends AbstractHybridReportBuild
 		dsd.addColumn("Date of initial CD4 percent", new CalculationDataDefinition("Date of initial CD4 percent", new InitialCd4PercentCalculation()), "", new Cd4ValueAndDateConverter("date"));
 		dsd.addColumn("Date first medically eligible for ART", new CalculationDataDefinition("Date first medically eligible for ART", new DateAndReasonFirstMedicallyEligibleForArtCalculation()), "", new MedicallyEligibleConverter("date"));
 		dsd.addColumn("Reason first medically eligible For ART", new CalculationDataDefinition("Reason first medically eligible For ART", new DateAndReasonFirstMedicallyEligibleForArtCalculation()), "", new MedicallyEligibleConverter("reason"));
-		dsd.addColumn("Medically eligible but not enrolled on ART", new CalculationDataDefinition("Medically eligible but not enrolled on ART", new EligibleForArtCalculation()), "", new CalculationResultConverter());
-		dsd.addColumn("Date of Last visit", new CalculationDataDefinition("Date of Last visit", new DateLastSeenCalculation()), "", new CalculationResultConverter());
+		dsd.addColumn("Medically eligible but not enrolled on ART", eligibleButNotOnArt(report), "onDate=${endDate}", new CalculationResultConverter());
+		dsd.addColumn("Date of Last visit", lastVisit(report), "onDate=${endDate}", new CalculationResultConverter());
 		dsd.addColumn("Date of expected next visit", new CalculationDataDefinition("Date of expected next visit", new LastReturnVisitDateCalculation()), "", new CalculationResultConverter());
 		dsd.addColumn("Date of death", death(), "onDate=${endDate}", new CalculationResultConverter());
 		dsd.addColumn("OutComes", patientOutComes(report), "onDate=${endDate}", new CalculationResultConverter());
@@ -187,6 +188,22 @@ public class PreArtCohortAnalysisReportBuilder extends AbstractHybridReportBuild
 		CalculationDataDefinition cd = new CalculationDataDefinition("outcomes", new PatientPreArtOutComeCalculation());
 		cd.addCalculationParameter("months" , months);
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
+		return cd;
+
+	}
+
+	private DataDefinition eligibleButNotOnArt(HybridReportDescriptor descriptor) {
+		CalculationDataDefinition cd = new CalculationDataDefinition("eligibleButNotOnArt", new MedicallyEligibleButNotEnrolledOnArtCalculation());
+		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
+		cd.addCalculationParameter("outcomePeriod", Integer.parseInt(descriptor.getId().split("\\.")[6]));
+		return cd;
+
+	}
+
+	private DataDefinition lastVisit(HybridReportDescriptor descriptor) {
+		CalculationDataDefinition cd = new CalculationDataDefinition("lastVisit", new DateLastSeenCalculation());
+		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
+		cd.addCalculationParameter("outcomePeriod", Integer.parseInt(descriptor.getId().split("\\.")[6]));
 		return cd;
 
 	}

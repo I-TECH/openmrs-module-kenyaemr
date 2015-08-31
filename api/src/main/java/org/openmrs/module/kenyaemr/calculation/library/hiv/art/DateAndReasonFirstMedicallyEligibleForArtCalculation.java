@@ -123,19 +123,6 @@ public class DateAndReasonFirstMedicallyEligibleForArtCalculation extends Abstra
                 }
             }
 
-           /*else  if(dnaPcrQual != null && dnaPcrQual.getValueCoded().equals(Dictionary.getConcept(Dictionary.POSITIVE))) {
-                patientEligibility = new PatientEligibility("PCR", dnaPcrQual.getObsDatetime());
-                if(artStartDate != null && dnaPcrQual.getObsDatetime().after(artStartDate)) {
-                    patientEligibility = new PatientEligibility("", artStartDate);
-                }
-            }
-
-            else if(dnaPcrRea != null && dnaPcrRea.getValueCoded().equals(Dictionary.getConcept(Dictionary.DETECTED))) {
-                patientEligibility = new PatientEligibility("PCR", dnaPcrRea.getObsDatetime());
-                if(artStartDate != null && dnaPcrRea.getObsDatetime().after(artStartDate)) {
-                    patientEligibility = new PatientEligibility("", artStartDate);
-                }
-            }*/
             else {
                 if (inHivProgram.contains(ptId)) {
                     int ageInMonths = ((Age) ages.get(ptId).getValue()).getFullMonths();
