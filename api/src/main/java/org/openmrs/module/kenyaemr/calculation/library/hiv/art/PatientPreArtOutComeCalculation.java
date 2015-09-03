@@ -23,8 +23,11 @@ import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.DateClassifiedLTFUCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.DateOfEnrollmentHivCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.models.LostToFU;
 import org.openmrs.module.kenyaemr.calculation.library.rdqa.DateOfDeathCalculation;
+import org.openmrs.module.reporting.common.DateUtil;
+import org.openmrs.module.reporting.common.DurationUnit;
 
 import java.util.Calendar;
 import java.util.Collection;
@@ -37,85 +40,88 @@ import java.util.Map;
 public class PatientPreArtOutComeCalculation extends AbstractPatientCalculation {
 
 	@Override
-	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
+	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> params, PatientCalculationContext context) {
 
-		Integer months = (parameterValues != null && parameterValues.containsKey("months")) ? (Integer) parameterValues.get("months") : null;
-
-		PatientCalculationService patientCalculationService = Context.getService(PatientCalculationService.class);
-
-		PatientCalculationContext context1 = patientCalculationService.createCalculationContext();
-		if(months == null) {
-			months = 0;
+		Integer outcomePeriod = (params != null && params.containsKey("outcomePeriod")) ? (Integer) params.get("outcomePeriod") : null;
+		Date futureDate;
+		PatientCalculationService service = Context.getService(PatientCalculationService.class);
+		PatientCalculationContext newContext = service.createCalculationContext();
+		if(outcomePeriod == null){
+			newContext = context;
+			futureDate = context.getNow();
 		}
-		CalculationResultMap enrolledHere = calculate( new DateOfEnrollmentArtCalculation(),cohort, context);
+		else {
+			newContext.setNow(DateUtil.adjustDate(context.getNow(), outcomePeriod, DurationUnit.MONTHS));
+			//futureDate = DateUtil.adjustDate(DateUtil.getStartOfMonth(context.getNow()), outcomePeriod, DurationUnit.MONTHS);
+		}
+
+		CalculationResultMap enrolledHere = calculate( new DateOfEnrollmentHivCalculation(),cohort, context);
+		CalculationResultMap onART = calculate(new InitialArtStartDateCalculation(), cohort, newContext);
+		CalculationResultMap deadPatients = calculate(new DateOfDeathCalculation(), cohort, newContext);
+		CalculationResultMap transferredOut = calculate(new TransferOutDateCalculation(), cohort, newContext);
+		CalculationResultMap defaulted = calculate(new DateDefaultedCalculation(), cohort, newContext);
+		CalculationResultMap ltfu = calculate(new DateClassifiedLTFUCalculation(), cohort, newContext);
 
 		CalculationResultMap ret = new CalculationResultMap();
+
 		for (Integer ptId : cohort) {
-		   String status = null;
+		   	String status = "Alive and not on ART";
 			Date dateLost = null;
 
 			Date patientProgramDate = EmrCalculationUtils.resultForPatient(enrolledHere, ptId);
 
-			if(patientProgramDate != null && monthsSince(patientProgramDate, new Date()) >= months ) {
-
-				Calendar calendar = Calendar.getInstance();
-				calendar.setTime(patientProgramDate);
-				calendar.add(Calendar.MONTH, months);
-				context1.setNow(calendar.getTime());
-
-
-				CalculationResultMap onART = calculate(new InitialArtStartDateCalculation(), cohort, context1);
-				//find the initial art start date
+			if(patientProgramDate != null && outcomePeriod != null) {
 				Date initialArtStart = EmrCalculationUtils.datetimeResultForPatient(onART, ptId);
-
-				CalculationResultMap deadPatients = calculate(new DateOfDeathCalculation(), cohort, context1);
 				Date dod = EmrCalculationUtils.datetimeResultForPatient(deadPatients, ptId);
-
-				CalculationResultMap transferredOut = calculate(new TransferOutDateCalculation(), cohort, context1);
-				//find date transferred out
 				Date dateTo = EmrCalculationUtils.datetimeResultForPatient(transferredOut, ptId);
-
-				CalculationResultMap defaulted = calculate(new DateDefaultedCalculation(), cohort, context1);
-				//find date defaulted
 				Date defaultedDate = EmrCalculationUtils.datetimeResultForPatient(defaulted, ptId);
-
-				CalculationResultMap ltfu = calculate(new DateClassifiedLTFUCalculation(), cohort, context1);
 				LostToFU classifiedLTFU = EmrCalculationUtils.resultForPatient(ltfu, ptId);
 				if(classifiedLTFU != null) {
 					dateLost = (Date) classifiedLTFU.getDateLost();
 				}
+				//get future date that would be used as a limit
+				futureDate = DateUtil.adjustDate(DateUtil.adjustDate(patientProgramDate, outcomePeriod, DurationUnit.MONTHS), 1, DurationUnit.DAYS);
 
 
-				status = "Alive and not on ART";
-
-				if(initialArtStart != null && (initialArtStart.before(calendar.getTime()) || initialArtStart.equals(calendar.getTime())) && initialArtStart.after(patientProgramDate)) {
+				//start looping through to get outcomes
+				if(initialArtStart != null && initialArtStart.before(futureDate) ) {
 					status = "Initiated ART";
 				}
-				if(dateTo != null && (dateTo.before(calendar.getTime()) || dateTo.equals(calendar.getTime()))) {
-					status = "Transferred out";
-				}
+				else {
+					if(dod != null && dateTo != null && dod.before(dateTo) && dod.before(futureDate)) {
+						status = "Died";
+					}
+					else if(dod != null && dateTo != null && dateTo.before(dod) && dateTo.before(futureDate)) {
+						status = "Transferred out";
+					}
 
-				if(defaultedDate != null && (defaultedDate.before(calendar.getTime()) || defaultedDate.equals(calendar.getTime()))){
-					status = "Defaulted";
-				}
+					else if(dod != null && dod.before(futureDate)){
+						status = "Died";
+					}
+					else if(dateTo != null && dateTo.before(futureDate)){
+						status = "Transferred out";
+					}
 
-				if(dateLost != null && (dateLost.before(calendar.getTime()) || dateLost.equals(calendar.getTime()))){
-					status = "LTFU";
-				}
+					else if(defaultedDate != null && dateLost != null && defaultedDate.before(dateLost) && defaultedDate.before(futureDate)){
+						status = "Defaulted";
+					}
 
-				if(dod != null && (dod.before(calendar.getTime()) || dod.equals(calendar.getTime()))) {
-					status = "Died";
-				}
+					else if(defaultedDate != null && dateLost != null && dateLost.before(defaultedDate) && dateLost.before(futureDate)){
+						status = "LTFU";
+					}
+					else if(defaultedDate != null && defaultedDate.before(futureDate)) {
+						status = "Defaulted";
+					}
 
+					else if(dateLost != null && dateLost.before(futureDate)) {
+						status = "LTFU";
+					}
+				}
+				ret.put(ptId, new SimpleResult(status, this));
 			}
-			ret.put(ptId, new SimpleResult(status, this));
+
 		}
 		 return  ret;
 	}
 
-	private  int monthsSince(Date date1, Date date2) {
-		DateTime d1 = new DateTime(date1.getTime());
-		DateTime d2 = new DateTime(date2.getTime());
-		return Months.monthsBetween(d1, d2).getMonths();
-	}
 }

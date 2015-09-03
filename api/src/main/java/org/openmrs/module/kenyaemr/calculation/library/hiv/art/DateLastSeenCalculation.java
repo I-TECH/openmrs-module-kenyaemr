@@ -25,6 +25,7 @@ import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
 import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.DateOfEnrollmentHivCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.common.DateUtil;
@@ -45,37 +46,38 @@ public class DateLastSeenCalculation extends AbstractPatientCalculation {
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> params, PatientCalculationContext context) {
 
 		Integer outcomePeriod = (params != null && params.containsKey("outcomePeriod")) ? (Integer) params.get("outcomePeriod") : null;
-		Date futureDate;
+
 		PatientCalculationService service = Context.getService(PatientCalculationService.class);
 		PatientCalculationContext newContext = service.createCalculationContext();
-		if(outcomePeriod == null){
-			newContext = context;
-			futureDate = context.getNow();
-		}
-		else {
+		if(outcomePeriod != null){
 			newContext.setNow(DateUtil.adjustDate(DateUtil.getStartOfMonth(context.getNow()), outcomePeriod, DurationUnit.MONTHS));
-			futureDate = DateUtil.adjustDate(DateUtil.getStartOfMonth(context.getNow()), outcomePeriod, DurationUnit.MONTHS);
 		}
 
 		CalculationResultMap lastEncounter = Calculations.allEncounters(null, cohort, newContext);
+		CalculationResultMap dateEnrolledMap = calculate(new DateOfEnrollmentHivCalculation(), cohort, context);
 
 		CalculationResultMap result = new CalculationResultMap();
 		for (Integer ptId : cohort) {
 			ListResult allEncounters = (ListResult) lastEncounter.get(ptId);
 			List<Encounter> encounterList = CalculationUtils.extractResultValues(allEncounters);
-			Date encounterDate = null;
-			List<Encounter> targetedEncounters = new ArrayList<Encounter>();
-			if(encounterList.size() > 0) {
-				for(Encounter encounter: encounterList) {
-					if (encounter.getEncounterDatetime().before(futureDate)) {
-						targetedEncounters.add(encounter);
+			Date enrolledDate = EmrCalculationUtils.datetimeResultForPatient(dateEnrolledMap, ptId);
+			if(outcomePeriod != null && enrolledDate != null) {
+				Date futureDate = DateUtil.adjustDate(enrolledDate, outcomePeriod, DurationUnit.MONTHS);
+				Date encounterDate = null;
+				List<Encounter> targetedEncounters = new ArrayList<Encounter>();
+				if (encounterList.size() > 0) {
+					for (Encounter encounter : encounterList) {
+						if (encounter.getEncounterDatetime().before(futureDate)) {
+							targetedEncounters.add(encounter);
+						}
+					}
+					if (targetedEncounters.size() > 0) {
+						encounterDate = targetedEncounters.get(targetedEncounters.size() - 1).getEncounterDatetime();
 					}
 				}
-				if(targetedEncounters.size() > 0){
-					encounterDate = targetedEncounters.get(targetedEncounters.size() - 1).getEncounterDatetime();
-				}
+
+				result.put(ptId, new SimpleResult(encounterDate, this));
 			}
-			result.put(ptId, new SimpleResult(encounterDate, this));
 		}
 		return  result;
 	}

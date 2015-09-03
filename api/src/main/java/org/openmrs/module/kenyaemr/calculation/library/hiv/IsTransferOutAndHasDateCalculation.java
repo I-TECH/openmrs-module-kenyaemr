@@ -53,17 +53,15 @@ public class IsTransferOutAndHasDateCalculation extends AbstractPatientCalculati
 
         PatientCalculationService newContextService = Context.getService(PatientCalculationService.class);
         PatientCalculationContext newContext = newContextService.createCalculationContext();
-        if(outcomePeriod == null){
-            newContext= context;
-        }
-        else {
+       if(outcomePeriod != null) {
 
-            newContext.setNow(DateUtil.adjustDate(DateUtil.getStartOfMonth(context.getNow()), outcomePeriod, DurationUnit.MONTHS));
-        }
+           newContext.setNow(DateUtil.adjustDate(DateUtil.getStartOfMonth(context.getNow()), outcomePeriod, DurationUnit.MONTHS));
+       }
+
 
         CalculationResultMap lastReasonForExit = Calculations.lastObs(reasonForExit, cohort, newContext);
         CalculationResultMap lastTransferOutDate = Calculations.lastObs(transferOutDate, cohort, newContext);
-        CalculationResultMap discoEncounter = Calculations.lastEncounter(hivDiscontinuationEncounter, cohort, newContext);
+        CalculationResultMap enrollmentDateMap = calculate(new DateOfEnrollmentHivCalculation(), cohort, context);
 
         for(Integer ptId : cohort) {
             TransferInAndDate transferOutAndDate = null;
@@ -71,10 +69,11 @@ public class IsTransferOutAndHasDateCalculation extends AbstractPatientCalculati
 
             Obs reasonForExitObs = EmrCalculationUtils.obsResultForPatient(lastReasonForExit, ptId);
             Obs transferOutDateObs = EmrCalculationUtils.obsResultForPatient(lastTransferOutDate, ptId);
-            Encounter discoEnct = EmrCalculationUtils.encounterResultForPatient(discoEncounter, ptId);
+            Date enrolledDate = EmrCalculationUtils.datetimeResultForPatient(enrollmentDateMap, ptId);
 
-            if(inHivProgram.contains(ptId)) {
-                if(transferOutDateObs != null && transferOutDateObs.getValueDatetime().after(DateUtil.getStartOfMonth(context.getNow())) && transferOutDateObs.getValueDatetime().before(newContext.getNow())){
+            if(inHivProgram.contains(ptId) && outcomePeriod != null) {
+                Date futureDate = DateUtil.adjustDate(enrolledDate, outcomePeriod, DurationUnit.MONTHS);
+                if(transferOutDateObs != null && transferOutDateObs.getValueDatetime().after(DateUtil.adjustDate(DateUtil.getStartOfMonth(context.getNow()), -1, DurationUnit.DAYS)) && transferOutDateObs.getValueDatetime().before(futureDate)){
                     transferOutDateValid = transferOutDateObs.getValueDatetime();
                 }
 

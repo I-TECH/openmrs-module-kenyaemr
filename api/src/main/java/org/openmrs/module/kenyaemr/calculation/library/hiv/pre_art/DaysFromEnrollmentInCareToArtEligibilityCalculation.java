@@ -1,5 +1,7 @@
 package org.openmrs.module.kenyaemr.calculation.library.hiv.pre_art;
 
+import org.joda.time.DateTime;
+import org.joda.time.Days;
 import org.openmrs.Obs;
 import org.openmrs.PatientProgram;
 import org.openmrs.Program;
@@ -8,8 +10,8 @@ import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.ListResult;
+import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
-import org.openmrs.module.kenyacore.calculation.BooleanResult;
 import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyacore.calculation.Filters;
@@ -18,7 +20,6 @@ import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.DateOfEnrollmentHivCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.DateAndReasonFirstMedicallyEligibleForArtCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtStartDateCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.OnArtCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.models.PatientEligibility;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.metadata.TbMetadata;
@@ -29,7 +30,6 @@ import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.DurationUnit;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -37,9 +37,9 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Find date of hiv eligibilty if <= date of forst outcome
+ * Created by codehub on 01/09/15.
  */
-public class MedicallyEligibleButNotEnrolledOnArtCalculation extends AbstractPatientCalculation {
+public class DaysFromEnrollmentInCareToArtEligibilityCalculation extends AbstractPatientCalculation {
 
     @Override
     public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> params, PatientCalculationContext context) {
@@ -78,9 +78,8 @@ public class MedicallyEligibleButNotEnrolledOnArtCalculation extends AbstractPat
         //find those who have status for tb
         CalculationResultMap tbStatus = Calculations.lastObs(Dictionary.getConcept(Dictionary.TUBERCULOSIS_DISEASE_STATUS), cohort, context);
 
-
-        for(Integer ptId: cohort) {
-            boolean eligibleButNotEnrolled = false;
+        for(Integer ptId: cohort){
+            Integer days = null;
             PatientEligibility patientEligibility;
             Obs hepatitisConcept = EmrCalculationUtils.obsResultForPatient(hepatitisMap, ptId);
             Obs isDiscodantCouple = EmrCalculationUtils.obsResultForPatient(hivRiskFactor, ptId);
@@ -97,9 +96,9 @@ public class MedicallyEligibleButNotEnrolledOnArtCalculation extends AbstractPat
             Date birthDate = Context.getPersonService().getPerson(ptId).getBirthdate();
 
             PatientProgram hivEnrollment = EmrCalculationUtils.resultForPatient(hivEnrollmenMap, ptId);
+            Date hivEnrollmentDate = hivEnrollment.getDateEnrolled();
 
-            if(inHivProgram.contains(ptId) && hivEnrollment != null) {
-                Date hivEnrollmentDate = hivEnrollment.getDateEnrolled();
+            if(inHivProgram.contains(ptId) && hivEnrollmentDate != null) {
 
                 futureDate = DateUtil.adjustDate(DateUtil.adjustDate(hivEnrollmentDate, outcomePeriod, DurationUnit.MONTHS), 1, DurationUnit.DAYS);
 
@@ -128,15 +127,22 @@ public class MedicallyEligibleButNotEnrolledOnArtCalculation extends AbstractPat
 
                 }
 
-                if (patientEligibility != null && patientEligibility.getEligibilityDate() != null && artStartDate == null) {
-                    eligibleButNotEnrolled = true;
+                if(patientEligibility != null){
+                    days = daysBetween(patientEligibility.getEligibilityDate(), hivEnrollmentDate);
                 }
+
             }
-            ret.put(ptId, new BooleanResult(eligibleButNotEnrolled, this));
+            ret.put(ptId, new SimpleResult(days, this));
         }
+
         return ret;
     }
 
+    private Integer daysBetween(Date d1, Date d2){
+        DateTime date1 = new DateTime(d1.getTime());
+        DateTime date2 = new DateTime(d2.getTime());
+        return Math.abs(Days.daysBetween(date1, date2).getDays());
+    }
 
     private PatientEligibility getCriteriaAndDate(int ageInMonths, List<Obs> cd4, List<Obs> whoStag, Date birthDate, Date artStartDate, Date hivEnrollmentDate, int period) {
 
@@ -245,4 +251,5 @@ public class MedicallyEligibleButNotEnrolledOnArtCalculation extends AbstractPat
 
         return isOnARTDate;
     }
+
 }
