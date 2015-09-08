@@ -15,6 +15,8 @@ import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.LastCd4CountCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.LastCd4PercentageCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.models.Cd4ValueAndDate;
+import org.openmrs.module.reporting.common.DateUtil;
+import org.openmrs.module.reporting.common.DurationUnit;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -28,11 +30,15 @@ import java.util.Map;
 public class LastCd4PercentCalculation extends AbstractPatientCalculation {
 
     @Override
-    public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues,
-                                         PatientCalculationContext context) {
+    public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> params, PatientCalculationContext context) {
+        Integer outcomePeriod = (params != null && params.containsKey("outcomePeriod")) ? (Integer) params.get("outcomePeriod") : null;
+        CalculationResultMap artInitiationDate = calculate(new InitialArtStartDateCalculation(), cohort, context);
+        if(outcomePeriod != null) {
+            context.setNow(DateUtil.adjustDate(context.getNow(), outcomePeriod, DurationUnit.MONTHS));
+        }
 
         CalculationResultMap allCd4s = Calculations.allObs(Dictionary.getConcept(Dictionary.CD4_PERCENT), cohort, context);
-        CalculationResultMap artInitiationDate = calculate(new InitialArtStartDateCalculation(), cohort, context);
+
 
         CalculationResultMap ret = new CalculationResultMap();
         for (Integer ptId : cohort) {
@@ -43,8 +49,9 @@ public class LastCd4PercentCalculation extends AbstractPatientCalculation {
             List<Obs> validListObs = new ArrayList<Obs>();
 
             if(allObsList.size() > 0 && artInitiationDt != null ) {
+                Date outcomeDate = DateUtil.adjustDate(DateUtil.adjustDate(artInitiationDt, outcomePeriod, DurationUnit.MONTHS), 1, DurationUnit.DAYS);
                 for(Obs obs:allObsList) {
-                    if(daysBetween(obs.getObsDatetime(), artInitiationDt) <= 183) {
+                    if(obs.getObsDatetime().before(outcomeDate) && obs.getObsDatetime().after(dateLimit(outcomeDate, -184))) {
                         validListObs.add(obs);
                     }
                 }
@@ -59,9 +66,8 @@ public class LastCd4PercentCalculation extends AbstractPatientCalculation {
         return ret;
     }
 
-    private  int daysBetween(Date date1, Date date2) {
-        DateTime d1 = new DateTime(date1.getTime());
-        DateTime d2 = new DateTime(date2.getTime());
-        return Days.daysBetween(d1, d2).getDays();
+    private  Date dateLimit(Date date1, Integer days) {
+
+        return DateUtil.adjustDate(date1, days, DurationUnit.DAYS);
     }
 }

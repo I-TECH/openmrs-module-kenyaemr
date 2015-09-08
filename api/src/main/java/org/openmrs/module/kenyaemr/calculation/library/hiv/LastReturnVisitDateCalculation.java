@@ -43,7 +43,6 @@ public class LastReturnVisitDateCalculation extends AbstractPatientCalculation {
             Obs returnVisitDateFromLastDate = EmrCalculationUtils.obsResultForPatient(returnVisitDateMap, ptId);
             if (hivEncounter != null) {
                 if (!(hivEncounter.getAllObs().isEmpty())) {
-                    //loop through each obs and find the return visit date value
                     for (Obs obs : hivEncounter.getAllObs()) {
                         if (obs.getConcept().equals(returnVisitDateConcept)) {
                             returnVisitDate = obs.getValueDatetime();

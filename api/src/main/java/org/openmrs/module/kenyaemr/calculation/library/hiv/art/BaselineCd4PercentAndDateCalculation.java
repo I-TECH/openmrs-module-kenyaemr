@@ -13,6 +13,8 @@ import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.calculation.library.models.Cd4ValueAndDate;
+import org.openmrs.module.reporting.common.DateUtil;
+import org.openmrs.module.reporting.common.DurationUnit;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -40,7 +42,7 @@ public class BaselineCd4PercentAndDateCalculation extends AbstractPatientCalcula
             List<Obs> allCd4PercentObs = CalculationUtils.extractResultValues(listResult);
             if(allCd4PercentObs.size() > 0 && artInitiationDt != null) {
                 for (Obs obs : allCd4PercentObs) {
-                    if (daysBetween(obs.getObsDatetime(), artInitiationDt) <= 90) {
+                    if (obs.getObsDatetime().before(dateLimit(artInitiationDt, 16)) && obs.getObsDatetime().after(dateLimit(artInitiationDt, -91))) {
                         validCd4Percent.add(obs);
                     }
                 }
@@ -57,9 +59,8 @@ public class BaselineCd4PercentAndDateCalculation extends AbstractPatientCalcula
     }
 
 
-    private  int daysBetween(Date date1, Date date2) {
-        DateTime d1 = new DateTime(date1.getTime());
-        DateTime d2 = new DateTime(date2.getTime());
-        return Days.daysBetween(d1, d2).getDays();
+    private  Date dateLimit(Date date1, Integer days) {
+
+        return DateUtil.adjustDate(date1, days, DurationUnit.DAYS);
     }
 }

@@ -1,10 +1,6 @@
 package org.openmrs.module.kenyaemr.calculation.library.hiv;
 
-import org.openmrs.Concept;
-import org.openmrs.Encounter;
-import org.openmrs.EncounterType;
-import org.openmrs.Obs;
-import org.openmrs.Program;
+import org.openmrs.*;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.patient.PatientCalculationService;
@@ -39,39 +35,35 @@ public class IsTransferOutAndHasDateCalculation extends AbstractPatientCalculati
         CalculationResultMap ret = new CalculationResultMap();
 
         Integer outcomePeriod = (params != null && params.containsKey("outcomePeriod")) ? (Integer) params.get("outcomePeriod") : null;
-
-
-        Concept transferOutStatus = Dictionary.getConcept(Dictionary.TRANSFERRED_OUT);
+       Concept transferOutStatus = Dictionary.getConcept(Dictionary.TRANSFERRED_OUT);
         Concept transferOutDate = Dictionary.getConcept(Dictionary.DATE_TRANSFERRED_OUT);
         Concept reasonForExit = Dictionary.getConcept(Dictionary.REASON_FOR_PROGRAM_DISCONTINUATION);
         Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
         Set<Integer> inHivProgram = Filters.inProgram(hivProgram, cohort, context);
+        CalculationResultMap enrollmentDateMap = Calculations.firstEnrollments(hivProgram, cohort, context);
 
-        EncounterType hivDiscontinuationEncounter = MetadataUtils.existing(EncounterType.class, HivMetadata._EncounterType.HIV_DISCONTINUATION);
 
-        //have a new patient context
-
-        PatientCalculationService newContextService = Context.getService(PatientCalculationService.class);
-        PatientCalculationContext newContext = newContextService.createCalculationContext();
        if(outcomePeriod != null) {
 
-           newContext.setNow(DateUtil.adjustDate(DateUtil.getStartOfMonth(context.getNow()), outcomePeriod, DurationUnit.MONTHS));
+           context.setNow(DateUtil.adjustDate(DateUtil.getStartOfMonth(context.getNow()), outcomePeriod, DurationUnit.MONTHS));
        }
 
-
-        CalculationResultMap lastReasonForExit = Calculations.lastObs(reasonForExit, cohort, newContext);
-        CalculationResultMap lastTransferOutDate = Calculations.lastObs(transferOutDate, cohort, newContext);
-        CalculationResultMap enrollmentDateMap = calculate(new DateOfEnrollmentHivCalculation(), cohort, context);
+        CalculationResultMap lastReasonForExit = Calculations.lastObs(reasonForExit, cohort, context);
+        CalculationResultMap lastTransferOutDate = Calculations.lastObs(transferOutDate, cohort, context);
 
         for(Integer ptId : cohort) {
-            TransferInAndDate transferOutAndDate = null;
+            TransferInAndDate transferOutAndDate;
             Date transferOutDateValid = null;
 
             Obs reasonForExitObs = EmrCalculationUtils.obsResultForPatient(lastReasonForExit, ptId);
             Obs transferOutDateObs = EmrCalculationUtils.obsResultForPatient(lastTransferOutDate, ptId);
-            Date enrolledDate = EmrCalculationUtils.datetimeResultForPatient(enrollmentDateMap, ptId);
+            PatientProgram patientProgram = EmrCalculationUtils.resultForPatient(enrollmentDateMap, ptId);
+            Date enrolledDate = null;
+            if(patientProgram != null) {
+                enrolledDate = patientProgram.getDateEnrolled();
+            }
 
-            if(inHivProgram.contains(ptId) && outcomePeriod != null) {
+            if(inHivProgram.contains(ptId) && enrolledDate != null) {
                 Date futureDate = DateUtil.adjustDate(enrolledDate, outcomePeriod, DurationUnit.MONTHS);
                 if(transferOutDateObs != null && transferOutDateObs.getValueDatetime().after(DateUtil.adjustDate(DateUtil.getStartOfMonth(context.getNow()), -1, DurationUnit.DAYS)) && transferOutDateObs.getValueDatetime().before(futureDate)){
                     transferOutDateValid = transferOutDateObs.getValueDatetime();

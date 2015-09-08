@@ -33,6 +33,12 @@
 	else {
 		dataPoints << [ label: "Last CD4 percentage", value: "None" ]
 	}
+	if (calculations.lastViralLoad) {
+		dataPoints << [ label: "Last Viral Load", value: ui.format(calculations.lastViralLoad.value), extra: calculations.lastViralLoad.value.obsDatetime ]
+	}
+	else {
+		dataPoints << [ label: "Last Viral Load", value: "None" ]
+	}
 %>
 
 <% if (config.complete) { %>

@@ -107,6 +107,8 @@ public class RegimenConverter implements DataConverter {
 
 		listMap.put("ABC+3TC+LPV/r", Arrays.asList("ABACAVIR","LAMIVUDINE", "LOPINAVIR", "RITONAVIR" ));
 		listMap.put("ABC+ddI+LPV/r", Arrays.asList("ABACAVIR","DIDANOSINE", "LOPINAVIR", "RITONAVIR" ));
+		listMap.put("AZT+3TC+DRV/r", Arrays.asList("ZIDOVUDINE","LAMIVUDINE", "DARUNAVIR", "RITONAVIR" ));
+		listMap.put("ABC+3TC+DRV/r", Arrays.asList("ABACAVIR","LAMIVUDINE", "DARUNAVIR", "RITONAVIR" ));
 
 		return listMap;
 

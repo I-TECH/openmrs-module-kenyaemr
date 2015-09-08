@@ -14,7 +14,6 @@
 
 package org.openmrs.module.kenyaemr.reporting.builder.hiv;
 
-import org.openmrs.Program;
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.module.kenyacore.report.CohortReportDescriptor;
 import org.openmrs.module.kenyacore.report.HybridReportDescriptor;
@@ -31,20 +30,14 @@ import org.openmrs.module.kenyaemr.calculation.library.hiv.InitialCd4CountCalcul
 import org.openmrs.module.kenyaemr.calculation.library.hiv.InitialCd4PercentCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.IsTransferInAndHasDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.IsTransferOutAndHasDateCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.LastReturnVisitDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.DateAndReasonFirstMedicallyEligibleForArtCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.DateLastSeenCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.EligibleForArtCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.IsBirthDateApproximatedCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.IsTransferInCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.IsTransferOutCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.PatientPreArtOutComeCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.TransferInDateCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.TransferOutDateCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.pre_art.DateOfDeathPreArtAnalysisCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.pre_art.DaysFromEnrollmentInCareToArtEligibilityCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.pre_art.LastReturnVisitDatePreArtAnalysisCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.pre_art.MedicallyEligibleButNotEnrolledOnArtCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.pre_art.ReturnVisitDateBasedOnPeriodCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.rdqa.DateOfDeathCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.reporting.calculation.converter.MedicallyEligibleConverter;
 import org.openmrs.module.kenyaemr.reporting.calculation.converter.TimelyLinkageDataConverter;
@@ -53,7 +46,6 @@ import org.openmrs.module.kenyaemr.reporting.data.converter.BirthdateConverter;
 import org.openmrs.module.kenyaemr.reporting.data.converter.CalculationResultConverter;
 import org.openmrs.module.kenyaemr.reporting.data.converter.Cd4ValueAndDateConverter;
 import org.openmrs.module.kenyaemr.reporting.data.converter.IdentifierConverter;
-import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonCohortLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.HivCohortLibrary;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -151,7 +143,7 @@ public class PreArtCohortAnalysisReportBuilder extends AbstractHybridReportBuild
 		return cd;
 	}
 	private DataDefinition death(HybridReportDescriptor descriptor) {
-		CalculationDataDefinition cd = new CalculationDataDefinition("death", new DateOfDeathCalculation());
+		CalculationDataDefinition cd = new CalculationDataDefinition("death", new DateOfDeathPreArtAnalysisCalculation());
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
 		cd.addCalculationParameter("outcomePeriod", Integer.parseInt(descriptor.getId().split("\\.")[6]));
 		return cd;
@@ -213,7 +205,7 @@ public class PreArtCohortAnalysisReportBuilder extends AbstractHybridReportBuild
 	}
 
 	private DataDefinition expectedNextVisitDate(HybridReportDescriptor descriptor) {
-		CalculationDataDefinition cd = new CalculationDataDefinition("nextVisitDate", new ReturnVisitDateBasedOnPeriodCalculation());
+		CalculationDataDefinition cd = new CalculationDataDefinition("nextVisitDate", new LastReturnVisitDatePreArtAnalysisCalculation());
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
 		cd.addCalculationParameter("outcomePeriod", Integer.parseInt(descriptor.getId().split("\\.")[6]));
 		return cd;

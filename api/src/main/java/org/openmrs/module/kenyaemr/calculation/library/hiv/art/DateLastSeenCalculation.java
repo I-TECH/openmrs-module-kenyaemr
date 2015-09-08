@@ -14,10 +14,9 @@
 package org.openmrs.module.kenyaemr.calculation.library.hiv.art;
 
 import org.openmrs.Encounter;
-import org.openmrs.EncounterType;
-import org.openmrs.api.context.Context;
+import org.openmrs.PatientProgram;
+import org.openmrs.Program;
 import org.openmrs.calculation.patient.PatientCalculationContext;
-import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.ListResult;
 import org.openmrs.calculation.result.SimpleResult;
@@ -25,7 +24,6 @@ import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
 import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.DateOfEnrollmentHivCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.common.DateUtil;
@@ -46,23 +44,23 @@ public class DateLastSeenCalculation extends AbstractPatientCalculation {
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> params, PatientCalculationContext context) {
 
 		Integer outcomePeriod = (params != null && params.containsKey("outcomePeriod")) ? (Integer) params.get("outcomePeriod") : null;
+		Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
+		CalculationResultMap dateEnrolledMap = Calculations.firstEnrollments(hivProgram, cohort, context);
 
-		PatientCalculationService service = Context.getService(PatientCalculationService.class);
-		PatientCalculationContext newContext = service.createCalculationContext();
 		if(outcomePeriod != null){
-			newContext.setNow(DateUtil.adjustDate(DateUtil.getStartOfMonth(context.getNow()), outcomePeriod, DurationUnit.MONTHS));
+			context.setNow(DateUtil.adjustDate(DateUtil.getStartOfMonth(context.getNow()), outcomePeriod, DurationUnit.MONTHS));
 		}
 
-		CalculationResultMap lastEncounter = Calculations.allEncounters(null, cohort, newContext);
-		CalculationResultMap dateEnrolledMap = calculate(new DateOfEnrollmentHivCalculation(), cohort, context);
+		CalculationResultMap lastEncounter = Calculations.allEncounters(null, cohort, context);
+
 
 		CalculationResultMap result = new CalculationResultMap();
 		for (Integer ptId : cohort) {
 			ListResult allEncounters = (ListResult) lastEncounter.get(ptId);
 			List<Encounter> encounterList = CalculationUtils.extractResultValues(allEncounters);
-			Date enrolledDate = EmrCalculationUtils.datetimeResultForPatient(dateEnrolledMap, ptId);
-			if(outcomePeriod != null && enrolledDate != null) {
-				Date futureDate = DateUtil.adjustDate(enrolledDate, outcomePeriod, DurationUnit.MONTHS);
+			PatientProgram patientProgram = EmrCalculationUtils.resultForPatient(dateEnrolledMap, ptId);
+			if(outcomePeriod != null && patientProgram != null) {
+				Date futureDate = DateUtil.adjustDate(DateUtil.adjustDate(patientProgram.getDateEnrolled(), outcomePeriod, DurationUnit.MONTHS), 1, DurationUnit.DAYS);
 				Date encounterDate = null;
 				List<Encounter> targetedEncounters = new ArrayList<Encounter>();
 				if (encounterList.size() > 0) {

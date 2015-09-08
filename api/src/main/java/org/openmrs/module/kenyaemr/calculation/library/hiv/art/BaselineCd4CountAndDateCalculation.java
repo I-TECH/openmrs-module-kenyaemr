@@ -1,8 +1,5 @@
 package org.openmrs.module.kenyaemr.calculation.library.hiv.art;
 
-import org.joda.time.DateTime;
-import org.joda.time.Days;
-import org.joda.time.Months;
 import org.openmrs.Obs;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
@@ -43,7 +40,7 @@ public class BaselineCd4CountAndDateCalculation extends AbstractPatientCalculati
             List<Obs> allCd4Obs = CalculationUtils.extractResultValues(listResult);
             if(allCd4Obs.size() > 0 && artInitiationDt != null) {
                 for (Obs obs : allCd4Obs) {
-                    if ((obs.getObsDatetime().before(artInitiationDt) || obs.getObsDatetime().equals(artInitiationDt)) && obs.getObsDatetime().before(dateLimit(artInitiationDt, 16)) && obs.getObsDatetime().after(dateLimit(artInitiationDt, -91))){
+                    if (obs.getObsDatetime().before(dateLimit(artInitiationDt, 16)) && obs.getObsDatetime().after(dateLimit(artInitiationDt, -91))){
 
                         validCd4.add(obs);
                     }

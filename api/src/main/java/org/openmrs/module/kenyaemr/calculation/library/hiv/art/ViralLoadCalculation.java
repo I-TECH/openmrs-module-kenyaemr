@@ -14,6 +14,7 @@ import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.calculation.library.models.Cd4ValueAndDate;
 import org.openmrs.module.reporting.common.DateUtil;
+import org.openmrs.module.reporting.common.DurationUnit;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -31,9 +32,15 @@ public class ViralLoadCalculation extends AbstractPatientCalculation {
     public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues,PatientCalculationContext context) {
 
         CalculationResultMap ret = new CalculationResultMap();
-        Integer months = (parameterValues != null && parameterValues.containsKey("months")) ? (Integer) parameterValues.get("months") : null;
-        CalculationResultMap allVL = Calculations.allObs(Dictionary.getConcept(Dictionary.HIV_VIRAL_LOAD), cohort, context);
         CalculationResultMap artStartDateMap = calculate(new InitialArtStartDateCalculation(), cohort, context);
+
+        Integer outcomePeriod = (parameterValues != null && parameterValues.containsKey("outcomePeriod")) ? (Integer) parameterValues.get("outcomePeriod") : null;
+        if(outcomePeriod != null) {
+            context.setNow(DateUtil.adjustDate(context.getNow(), outcomePeriod, DurationUnit.MONTHS));
+        }
+
+        CalculationResultMap allVL = Calculations.allObs(Dictionary.getConcept(Dictionary.HIV_VIRAL_LOAD), cohort, context);
+
 
         for(Integer ptId:cohort) {
             Cd4ValueAndDate vlValue = null;
@@ -41,15 +48,13 @@ public class ViralLoadCalculation extends AbstractPatientCalculation {
             List<Obs> obsList = CalculationUtils.extractResultValues(listResult);
             List<Obs> validVls = new ArrayList<Obs>();
             Date artStartDate = EmrCalculationUtils.datetimeResultForPatient(artStartDateMap, ptId);
-            if(obsList.size() > 0 && artStartDate != null && months != null) {
+            if(obsList.size() > 0 && artStartDate != null && outcomePeriod != null) {
 
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTime(artStartDate);
-                calendar.add(Calendar.MONTH, months);
+                Date outcomeDate = DateUtil.adjustDate(DateUtil.adjustDate(artStartDate, outcomePeriod, DurationUnit.MONTHS), 1, DurationUnit.DAYS);
 
 
                 for(Obs obs: obsList) {
-                    if((obs.getObsDatetime().after(artStartDate) || obs.getObsDatetime().equals(artStartDate)) && (daysBetween(obs.getObsDatetime(), calendar.getTime()) <= 365) && (obs.getObsDatetime().before(calendar.getTime()))) {
+                    if(obs.getObsDatetime().before(outcomeDate) && obs.getObsDatetime().after(dateLimit(outcomeDate, -366))) {
                         validVls.add(obs);
                     }
                 }
@@ -64,9 +69,8 @@ public class ViralLoadCalculation extends AbstractPatientCalculation {
         return ret;
     }
 
-    private int daysBetween(Date date1, Date date2) {
-        DateTime d1 = new DateTime(date1.getTime());
-        DateTime d2 = new DateTime(date2.getTime());
-        return Days.daysBetween(d1, d2).getDays();
+    private  Date dateLimit(Date date1, Integer days) {
+
+        return DateUtil.adjustDate(date1, days, DurationUnit.DAYS);
     }
 }

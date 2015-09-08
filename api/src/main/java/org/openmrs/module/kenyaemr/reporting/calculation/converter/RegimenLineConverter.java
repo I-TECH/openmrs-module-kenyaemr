@@ -46,11 +46,12 @@ public class RegimenLineConverter implements DataConverter {
         regimens.add("TDF+3TC+EFV");
         regimens.add("d4T+3TC+NVP");
         regimens.add("d4T+3TC+EFV");
-        regimens.add("AZT+3TC+LPV/r");
+        //regimens.add("TDF+3TC+ATV/r");
         regimens.add("ABC+3TC+NVP");
         regimens.add("ABC+3TC+EFV");
         regimens.add("ABC+3TC+AZT");
-        regimens.add("ABC+3TC+LPV/r");
+        //regimens.add("ABC+3TC+LPV/r");
+        //regimens.add("AZT+3TC+LPV/r");
         return regimens;
     }
 
@@ -69,6 +70,11 @@ public class RegimenLineConverter implements DataConverter {
         regimens.add("d4T+3TC+ABC");
         regimens.add("AZT+ABC+LPV/r");
         regimens.add("d4T+ABC+LPV/r");
+        regimens.add("ABC+3TC+LPV/r");
+        regimens.add("AZT+3TC+ATV/r");
+        regimens.add("ABC+3TC+DRV/r");
+        regimens.add("AZT+3TC+DRV/r");
+        regimens.add("TDF+3TC+ATV/r");
         return regimens;
     }
 }

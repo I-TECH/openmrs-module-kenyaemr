@@ -100,10 +100,9 @@ public class DateAndReasonFirstMedicallyEligibleForArtCalculation extends Abstra
             Date birthDate = Context.getPersonService().getPerson(ptId).getBirthdate();
 
             PatientProgram hivEnrollment = EmrCalculationUtils.resultForPatient(hivEnrollmenMap, ptId);
-            Date hivEnrollmentDate = hivEnrollment.getDateEnrolled();
 
-            if(inHivProgram.contains(ptId)) {
-                futureDate = DateUtil.adjustDate(DateUtil.adjustDate(hivEnrollmentDate, outcomePeriod, DurationUnit.MONTHS), 1, DurationUnit.DAYS);
+            if(inHivProgram.contains(ptId) && hivEnrollment != null) {
+                futureDate = DateUtil.adjustDate(DateUtil.adjustDate(hivEnrollment.getDateEnrolled(), outcomePeriod, DurationUnit.MONTHS), 1, DurationUnit.DAYS);
 
                 if (inHivProgram.contains(ptId) && pregnancyObs != null && pregnancyObs.getValueCoded().equals(Dictionary.getConcept(Dictionary.YES)) && pregnancyObs.getObsDatetime().before(futureDate)) {
                     patientEligibility = new PatientEligibility("Pregnant or breastfeeding", pregnancyObs.getObsDatetime());
@@ -126,7 +125,7 @@ public class DateAndReasonFirstMedicallyEligibleForArtCalculation extends Abstra
                         patientEligibility = new PatientEligibility("", artStartDate);
                     }
                 } else {
-                        patientEligibility = getCriteriaAndDate(ageInMonths, obsList, obsListWho, birthDate, artStartDate, hivEnrollmentDate, outcomePeriod);
+                        patientEligibility = getCriteriaAndDate(ageInMonths, obsList, obsListWho, birthDate, artStartDate, hivEnrollment.getDateEnrolled(), outcomePeriod);
 
                 }
             }

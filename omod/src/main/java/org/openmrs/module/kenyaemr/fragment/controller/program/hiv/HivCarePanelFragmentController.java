@@ -18,6 +18,8 @@ import org.openmrs.Concept;
 import org.openmrs.Patient;
 import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.LastViralLoadCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.ViralLoadCalculation;
 import org.openmrs.module.kenyaemr.regimen.RegimenManager;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.LastWhoStageCalculation;
@@ -53,6 +55,7 @@ public class HivCarePanelFragmentController {
 		calculationResults.put("lastWHOStage", EmrCalculationUtils.evaluateForPatient(LastWhoStageCalculation.class, null, patient));
 		calculationResults.put("lastCD4Count", EmrCalculationUtils.evaluateForPatient(LastCd4CountCalculation.class, null, patient));
 		calculationResults.put("lastCD4Percent", EmrCalculationUtils.evaluateForPatient(LastCd4PercentageCalculation.class, null, patient));
+		calculationResults.put("lastViralLoad", EmrCalculationUtils.evaluateForPatient(LastViralLoadCalculation.class, null, patient));
 
 		model.addAttribute("calculations", calculationResults);
 
@@ -60,6 +63,6 @@ public class HivCarePanelFragmentController {
 		RegimenChangeHistory history = RegimenChangeHistory.forPatient(patient, medSet);
 		model.addAttribute("regimenHistory", history);
 
-		model.addAttribute("graphingConcepts", Dictionary.getConcepts(Dictionary.WEIGHT_KG, Dictionary.CD4_COUNT, Dictionary.CD4_PERCENT));
+		model.addAttribute("graphingConcepts", Dictionary.getConcepts(Dictionary.WEIGHT_KG, Dictionary.CD4_COUNT, Dictionary.CD4_PERCENT, Dictionary.HIV_VIRAL_LOAD));
 	}
 }
