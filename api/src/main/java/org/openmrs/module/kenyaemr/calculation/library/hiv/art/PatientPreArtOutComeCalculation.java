@@ -102,14 +102,14 @@ public class PatientPreArtOutComeCalculation extends AbstractPatientCalculation 
 						status = "Defaulted";
 					}
 
-					else if(defaultedDate != null && dateLost != null && dateLost.before(defaultedDate) && dateLost.before(futureDate) && dateLost.after(patientProgramDate.getDateEnrolled())){
+					else if(defaultedDate != null && dateLost != null && dateLost.before(defaultedDate) && dateLost.before(futureDate) && dateLost.after(patientProgramDate.getDateEnrolled()) && dateLost.before(new Date())){
 						status = "LTFU";
 					}
-					else if(defaultedDate != null && defaultedDate.before(futureDate) && defaultedDate.after(patientProgramDate.getDateEnrolled())) {
+					else if(defaultedDate != null && defaultedDate.before(futureDate) && defaultedDate.after(patientProgramDate.getDateEnrolled()) && defaultedDate.before(new Date())) {
 						status = "Defaulted";
 					}
 
-					else if(dateLost != null && dateLost.before(futureDate) && dateLost.after(patientProgramDate.getDateEnrolled())) {
+					else if(dateLost != null && dateLost.before(futureDate) && dateLost.after(patientProgramDate.getDateEnrolled()) && dateLost.before(new Date())) {
 						status = "LTFU";
 					}
 				}

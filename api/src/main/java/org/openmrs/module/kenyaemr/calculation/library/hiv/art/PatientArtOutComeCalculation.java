@@ -36,7 +36,6 @@ public class PatientArtOutComeCalculation extends AbstractPatientCalculation {
         CalculationResultMap transferredOut = calculate(new TransferOutDateCalculation(), cohort, context);
         CalculationResultMap defaulted = calculate(new DateDefaultedCalculation(), cohort, context);
         CalculationResultMap ltfu = calculate(new DateClassifiedLTFUCalculation(), cohort, context);
-        //Set<Integer> onART = CalculationUtils.patientsThatPass(calculate(new OnArtCalculation(), cohort, context));
         CalculationResultMap stoppedArtMap = calculate(new StoppedARTDateCalculation(), cohort, context);
 
 
@@ -53,6 +52,12 @@ public class PatientArtOutComeCalculation extends AbstractPatientCalculation {
                 dateLost = (Date) classifiedLTFU.getDateLost();
             }
             String stoppedDate = EmrCalculationUtils.resultForPatient(stoppedArtMap, ptId);
+            System.out.println("The patient::::"+ptId);
+            System.out.println("Art start date is ::::"+initialArtStart);
+            System.out.println("Dead date is ::::"+dod);
+            System.out.println("To date is ::::"+dateTo);
+            System.out.println("Defaulted  date is ::::"+defaultedDate);
+            System.out.println("LTFU date is "+dateLost);
 
             if(initialArtStart != null && months != null) {
                 Date futureDate = DateUtil.adjustDate(DateUtil.adjustDate(initialArtStart, months, DurationUnit.MONTHS), 1, DurationUnit.DAYS);
@@ -69,7 +74,7 @@ public class PatientArtOutComeCalculation extends AbstractPatientCalculation {
                 else if(stoppedDate != null && dateLost != null) {
                     try {
                         Date stDate = artStoppedDate(stoppedDate);
-                        if(stDate.after(initialArtStart) && stDate.before(futureDate) && stDate.before(dateLost)) {
+                        if(stDate.after(initialArtStart) && stDate.before(futureDate) && stDate.before(dateLost) && dateLost.before(new Date())) {
                             status = "LTFU";
                         }
                         else if(stDate.after(initialArtStart) && stDate.before(futureDate) && stDate.after(dateLost)) {
@@ -90,10 +95,10 @@ public class PatientArtOutComeCalculation extends AbstractPatientCalculation {
                     }
                 }
 
-                else if(dateLost != null && (dateLost.before(futureDate)) && dateLost.after(initialArtStart)){
+                else if(dateLost != null && (dateLost.before(futureDate)) && dateLost.after(initialArtStart) && dateLost.before(new Date())){
                     status = "LTFU";
                 }
-                else if(defaultedDate != null && (defaultedDate.before(futureDate)) && defaultedDate.after(initialArtStart)){
+                else if(defaultedDate != null && (defaultedDate.before(futureDate)) && defaultedDate.after(initialArtStart) && defaultedDate.before(new Date())){
                     status = "Defaulted";
                 }
 
