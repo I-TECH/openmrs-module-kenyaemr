@@ -52,12 +52,6 @@ public class PatientArtOutComeCalculation extends AbstractPatientCalculation {
                 dateLost = (Date) classifiedLTFU.getDateLost();
             }
             String stoppedDate = EmrCalculationUtils.resultForPatient(stoppedArtMap, ptId);
-            System.out.println("The patient::::"+ptId);
-            System.out.println("Art start date is ::::"+initialArtStart);
-            System.out.println("Dead date is ::::"+dod);
-            System.out.println("To date is ::::"+dateTo);
-            System.out.println("Defaulted  date is ::::"+defaultedDate);
-            System.out.println("LTFU date is "+dateLost);
 
             if(initialArtStart != null && months != null) {
                 Date futureDate = DateUtil.adjustDate(DateUtil.adjustDate(initialArtStart, months, DurationUnit.MONTHS), 1, DurationUnit.DAYS);

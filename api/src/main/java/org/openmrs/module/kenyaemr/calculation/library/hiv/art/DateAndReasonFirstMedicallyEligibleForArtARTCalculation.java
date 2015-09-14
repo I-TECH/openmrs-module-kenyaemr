@@ -1,7 +1,5 @@
 package org.openmrs.module.kenyaemr.calculation.library.hiv.art;
 
-import org.joda.time.DateTime;
-import org.joda.time.Days;
 import org.openmrs.Obs;
 import org.openmrs.PatientProgram;
 import org.openmrs.Program;
@@ -34,9 +32,11 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Created by codehub on 16/07/15.
+ * Created by codehub on 9/14/15.
  */
-public class DaysFromArtEligibilityToArtInitiationCalculation extends AbstractPatientCalculation {
+public class DateAndReasonFirstMedicallyEligibleForArtARTCalculation extends AbstractPatientCalculation {
+
+
 
     @Override
     public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> params, PatientCalculationContext context) {
@@ -53,7 +53,6 @@ public class DaysFromArtEligibilityToArtInitiationCalculation extends AbstractPa
 
         CalculationResultMap hivEnrollmenMap = Calculations.firstEnrollments(hivProgram, cohort, context);
 
-
         Integer outcomePeriod = (params != null && params.containsKey("outcomePeriod")) ? (Integer) params.get("outcomePeriod") : null;
 
         if(outcomePeriod != null) {
@@ -64,21 +63,13 @@ public class DaysFromArtEligibilityToArtInitiationCalculation extends AbstractPa
         CalculationResultMap allWhoStage = Calculations.allObs(Dictionary.getConcept(Dictionary.CURRENT_WHO_STAGE), cohort, context);
         CalculationResultMap allCd4 = Calculations.allObs(Dictionary.getConcept(Dictionary.CD4_COUNT), cohort, context);
         CalculationResultMap artStartDateMap = calculate(new InitialArtStartDateCalculation(), cohort, context);
-        //find hepatits status
         CalculationResultMap hepatitisMap = Calculations.lastObs(Dictionary.getConcept(Dictionary.PROBLEM_ADDED), cohort, context);
-
-        //find pregnant women
         CalculationResultMap pregStatusObss = Calculations.lastObs(Dictionary.getConcept(Dictionary.PREGNANCY_STATUS), female, context);
-        //finding those at risk for hiv
         CalculationResultMap hivRiskFactor = Calculations.lastObs(Dictionary.getConcept(Dictionary.HIV_RISK_FACTOR), cohort, context);
-
-        //find those who have status for tb
         CalculationResultMap tbStatus = Calculations.lastObs(Dictionary.getConcept(Dictionary.TUBERCULOSIS_DISEASE_STATUS), cohort, context);
 
-        CalculationResultMap artInitiationDate = calculate(new InitialArtStartDateCalculation(), cohort, context);
-
         for(Integer ptId: cohort) {
-            Integer days = null;
+
             PatientEligibility patientEligibility = null;
 
             Obs hepatitisConcept = EmrCalculationUtils.obsResultForPatient(hepatitisMap, ptId);
@@ -93,11 +84,10 @@ public class DaysFromArtEligibilityToArtInitiationCalculation extends AbstractPa
             List<Obs> obsListWho = CalculationUtils.extractResultValues(allWhoListResults);
 
             int ageInMonths = ((Age) ages.get(ptId).getValue()).getFullMonths();
+
             PatientProgram hivEnrollment = EmrCalculationUtils.resultForPatient(hivEnrollmenMap, ptId);
 
-            Date artInitialDate = EmrCalculationUtils.datetimeResultForPatient(artInitiationDate, ptId);
-
-            if(inHivProgram.contains(ptId) && artInitialDate != null && hivEnrollment != null){
+            if(inHivProgram.contains(ptId) && hivEnrollment != null) {
 
                 if (pregnancyObs != null && pregnancyObs.getValueCoded().equals(Dictionary.getConcept(Dictionary.YES))) {
                     patientEligibility = new PatientEligibility("Pregnant or breastfeeding", pregnancyObs.getObsDatetime());
@@ -123,19 +113,11 @@ public class DaysFromArtEligibilityToArtInitiationCalculation extends AbstractPa
                     patientEligibility = getCriteriaAndDate(ageInMonths, obsList, obsListWho, artStartDate, hivEnrollment.getDateEnrolled());
 
                 }
-                if(patientEligibility != null && patientEligibility.getEligibilityDate() != null) {
-                    days = daysBetween(patientEligibility.getEligibilityDate(), artInitialDate);
-                }
             }
-            ret.put(ptId, new SimpleResult(days, this));
+            ret.put(ptId, new SimpleResult(patientEligibility, this));
         }
-        return  ret;
-    }
 
-    private int daysBetween(Date date1, Date date2) {
-        DateTime d1 = new DateTime(date1.getTime());
-        DateTime d2 = new DateTime(date2.getTime());
-        return Math.abs(Days.daysBetween(d1, d2).getDays());
+        return ret;
     }
 
     private PatientEligibility getCriteriaAndDate(int ageInMonths, List<Obs> cd4, List<Obs> whoStag, Date artStartDate, Date hivEnrollmentDate) {

@@ -19,7 +19,7 @@ import org.openmrs.module.kenyaemr.calculation.library.hiv.art.ChangeInCd4CountC
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.ChangeInCd4PercentCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.CurrentArtRegimenCohortAnalysisCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.DateARV1Calculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.DateAndReasonFirstMedicallyEligibleForArtCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.DateAndReasonFirstMedicallyEligibleForArtARTCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.DateLastSeenArtCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.DateOfDeathArtAnalysisCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.DateOfEnrollmentArtCalculation;
@@ -202,7 +202,7 @@ public class ArtCohortAnalysisReportBuilder extends AbstractHybridReportBuilder 
     }
 
     private DataDefinition dateAndReasonFirstMedicallyEligibleForArtCalculation(HybridReportDescriptor descriptor) {
-        CalculationDataDefinition cd = new CalculationDataDefinition("date and reason", new DateAndReasonFirstMedicallyEligibleForArtCalculation());
+        CalculationDataDefinition cd = new CalculationDataDefinition("date and reason", new DateAndReasonFirstMedicallyEligibleForArtARTCalculation());
         cd.addParameter(new Parameter("onDate", "On Date", Date.class));
         cd.addCalculationParameter("outcomePeriod", Integer.parseInt(descriptor.getId().split("\\.")[7]));
         return cd;

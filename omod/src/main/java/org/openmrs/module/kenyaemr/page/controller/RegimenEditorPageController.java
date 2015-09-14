@@ -18,11 +18,11 @@ import org.openmrs.Concept;
 import org.openmrs.Patient;
 import org.openmrs.Role;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyaemr.regimen.RegimenManager;
 import org.openmrs.module.kenyaemr.EmrConstants;
+import org.openmrs.module.kenyaemr.EmrWebConstants;
 import org.openmrs.module.kenyaemr.regimen.RegimenChange;
 import org.openmrs.module.kenyaemr.regimen.RegimenChangeHistory;
-import org.openmrs.module.kenyaemr.EmrWebConstants;
+import org.openmrs.module.kenyaemr.regimen.RegimenManager;
 import org.openmrs.module.kenyaui.annotation.SharedPage;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.page.PageModel;
@@ -30,8 +30,6 @@ import org.openmrs.util.OpenmrsUtil;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Date;
-import java.util.List;
-import java.util.Set;
 
 /**
  * Controller for regimen editor page
@@ -63,7 +61,7 @@ public class RegimenEditorPageController {
 		try {
 			boolean isManager = false;
 			for(Role role: Context.getAllRoles(Context.getAuthenticatedUser())) {
-				if(role.getName().equals("Manager")) {
+				if(role.getName().equals("Manager") || role.getName().equals("System Developer")) {
 					isManager = true;
 					break;
 				}

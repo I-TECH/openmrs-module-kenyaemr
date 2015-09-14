@@ -1,6 +1,7 @@
 package org.openmrs.module.kenyaemr.calculation.library.hiv;
 
-import org.openmrs.Concept;
+import org.joda.time.DateTime;
+import org.joda.time.Months;
 import org.openmrs.Obs;
 import org.openmrs.Program;
 import org.openmrs.calculation.patient.PatientCalculationContext;
@@ -13,15 +14,14 @@ import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyacore.calculation.Filters;
 import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.HivConstants;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.CurrentARTStartDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtStartDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.OnArtCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
+import org.openmrs.module.reporting.common.DateUtil;
+import org.openmrs.module.reporting.common.DurationUnit;
 
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -63,12 +63,10 @@ public class NeedsViralLoadTestCalculation extends AbstractPatientCalculation im
 
         //find for prgnant females
 
-        CalculationResultMap pregStatusObssEdd = Calculations.lastObs(Dictionary.getConcept(Dictionary.EXPECTED_DATE_OF_DELIVERY), aliveAndFemale, context);
+        CalculationResultMap pregStatusObss = Calculations.lastObs(Dictionary.getConcept(Dictionary.PREGNANCY_STATUS), aliveAndFemale, context);
 
         //get the initial art start date
         CalculationResultMap artStartDate = calculate(new InitialArtStartDateCalculation(), cohort, context);
-        //find current art start date
-        CalculationResultMap currentArtDate = calculate(new CurrentARTStartDateCalculation(), cohort, context);
 
         for(Integer ptId:cohort) {
             boolean needsViralLoadTest = false;
@@ -77,9 +75,7 @@ public class NeedsViralLoadTestCalculation extends AbstractPatientCalculation im
             ListResult listResult = (ListResult) viralLoadList.get(ptId);
             List<Obs> listObsViralLoads = CalculationUtils.extractResultValues(listResult);
             //find pregnancy obs
-            Obs pregnantEdd = EmrCalculationUtils.obsResultForPatient(pregStatusObssEdd, ptId);
-            //find the date this patient current art start date
-            Date currentDate = EmrCalculationUtils.datetimeResultForPatient(currentArtDate, ptId);
+            Obs pregnantEdd = EmrCalculationUtils.obsResultForPatient(pregStatusObss, ptId);
 
             if(inHivProgram.contains(ptId) && onArt.contains(ptId)){
                 if(listObsViralLoads.size() == 0 && dateInitiated != null && (daysSince(dateInitiated, context) > 180) && (daysSince(dateInitiated, context) < 360)) {
@@ -98,20 +94,14 @@ public class NeedsViralLoadTestCalculation extends AbstractPatientCalculation im
                 }
 
                 //check for pregnancy
-                if(pregnantEdd != null && viralLoadObs != null) {
-                    //find a date 6 months ago from the context date
-                    Calendar calendar9MonthsFromEdd = Calendar.getInstance();
-                    calendar9MonthsFromEdd.setTime(pregnantEdd.getValueDatetime()); //set the calendar instance to the edd
-                    calendar9MonthsFromEdd.add(Calendar.MONTH, -9); // get nine months off to estimate when thye got pregnant
-
-                    //find if they might have taken any vl 6 months prior
-                    Calendar calendar6MonthsFromConception = Calendar.getInstance();
-                    calendar6MonthsFromConception.setTime(calendar9MonthsFromEdd.getTime());
-                    calendar6MonthsFromConception.add(Calendar.MONTH, -6);
-
-                    if(viralLoadObs.getObsDatetime().before(calendar6MonthsFromConception.getTime())) {
-                        needsViralLoadTest = true;
-                    }
+                if(pregnantEdd != null && pregnantEdd.getValueCoded().equals(Dictionary.getConcept(Dictionary.YES)) && dateInitiated != null) {
+                    Date whenVLWillBeDue = DateUtil.adjustDate(dateInitiated, 6, DurationUnit.MONTHS);
+                        if(viralLoadObs == null && (context.getNow().after(whenVLWillBeDue) || context.getNow().equals(whenVLWillBeDue))){
+                            needsViralLoadTest = true;
+                        }
+                        if(viralLoadObs != null && viralLoadObs.getValueNumeric() > 1000 && (monthsBetween(viralLoadObs.getObsDatetime(), context.getNow()) >= 3)){
+                            needsViralLoadTest = true;
+                        }
                 }
 
             }
@@ -120,5 +110,11 @@ public class NeedsViralLoadTestCalculation extends AbstractPatientCalculation im
         }
         return  ret;
 
+    }
+
+    int monthsBetween(Date d1, Date d2) {
+        DateTime dateTime1 = new DateTime(d1.getTime());
+        DateTime dateTime2 = new DateTime(d2.getTime());
+        return Math.abs(Months.monthsBetween(dateTime1, dateTime2).getMonths());
     }
 }
