@@ -3,22 +3,17 @@ package org.openmrs.module.kenyaemr.calculation.library.hiv.pre_art;
 import org.openmrs.Obs;
 import org.openmrs.PatientProgram;
 import org.openmrs.Program;
-import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
-import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.ListResult;
+import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
-import org.openmrs.module.kenyacore.calculation.BooleanResult;
 import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyacore.calculation.Filters;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.DateOfEnrollmentHivCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.DateAndReasonFirstMedicallyEligibleForArtCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtStartDateCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.OnArtCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.models.PatientEligibility;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.metadata.TbMetadata;
@@ -29,9 +24,10 @@ import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.DurationUnit;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -47,15 +43,11 @@ public class MedicallyEligibleButNotEnrolledOnArtCalculation extends AbstractPat
         Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
         Program tbProgram = MetadataUtils.existing(Program.class, TbMetadata._Program.TB);
 
-        Set<Integer> inHivProgram = Filters.inProgram(hivProgram, cohort, context);
-        //in tb program
-        Set<Integer> inTbProgram = Filters.inProgram(tbProgram, cohort, context);
 
         Set<Integer> female = Filters.female(cohort, context);
 
         CalculationResultMap hivEnrollmenMap = Calculations.firstEnrollments(hivProgram, cohort, context);
-
-        Date futureDate = context.getNow();
+        CalculationResultMap tbEnrollmenMap = Calculations.firstEnrollments(tbProgram, cohort, context);
 
         Integer outcomePeriod = (params != null && params.containsKey("outcomePeriod")) ? (Integer) params.get("outcomePeriod") : null;
 
@@ -80,7 +72,7 @@ public class MedicallyEligibleButNotEnrolledOnArtCalculation extends AbstractPat
 
 
         for(Integer ptId: cohort) {
-            boolean eligibleButNotEnrolled = false;
+            String eligibleButNotEnrolled = null;
             PatientEligibility patientEligibility;
             Obs hepatitisConcept = EmrCalculationUtils.obsResultForPatient(hepatitisMap, ptId);
             Obs isDiscodantCouple = EmrCalculationUtils.obsResultForPatient(hivRiskFactor, ptId);
@@ -94,75 +86,108 @@ public class MedicallyEligibleButNotEnrolledOnArtCalculation extends AbstractPat
             List<Obs> obsListWho = CalculationUtils.extractResultValues(allWhoListResults);
 
             int ageInMonths = ((Age) ages.get(ptId).getValue()).getFullMonths();
-            Date birthDate = Context.getPersonService().getPerson(ptId).getBirthdate();
 
             PatientProgram hivEnrollment = EmrCalculationUtils.resultForPatient(hivEnrollmenMap, ptId);
+            PatientProgram tbEnrollment = EmrCalculationUtils.resultForPatient(tbEnrollmenMap, ptId);
 
-            if(inHivProgram.contains(ptId) && hivEnrollment != null) {
+            if(hivEnrollment != null && outcomePeriod != null) {
                 Date hivEnrollmentDate = hivEnrollment.getDateEnrolled();
 
-                futureDate = DateUtil.adjustDate(DateUtil.adjustDate(hivEnrollmentDate, outcomePeriod, DurationUnit.MONTHS), 1, DurationUnit.DAYS);
+                Date futureDate = DateUtil.adjustDate(DateUtil.adjustDate(hivEnrollmentDate, outcomePeriod, DurationUnit.MONTHS), 1, DurationUnit.DAYS);
 
-                if (inHivProgram.contains(ptId) && pregnancyObs != null && pregnancyObs.getValueCoded().equals(Dictionary.getConcept(Dictionary.YES)) && pregnancyObs.getObsDatetime().before(futureDate)) {
+                if (pregnancyObs != null && pregnancyObs.getValueCoded().equals(Dictionary.getConcept(Dictionary.YES)) && pregnancyObs.getObsDatetime().before(futureDate)) {
                     patientEligibility = new PatientEligibility("Pregnant or breastfeeding", pregnancyObs.getObsDatetime());
                     if (artStartDate != null && pregnancyObs.getObsDatetime().after(artStartDate)) {
                         patientEligibility = new PatientEligibility("", artStartDate);
                     }
-                } else if (inHivProgram.contains(ptId) && hepatitisConcept != null && hepatitisConcept.getValueCoded().equals(Dictionary.getConcept(Dictionary.HEPATITIS_B)) && hepatitisConcept.getObsDatetime().before(futureDate)) {
+                } else if (hepatitisConcept != null && hepatitisConcept.getValueCoded().equals(Dictionary.getConcept(Dictionary.HEPATITIS_B)) && hepatitisConcept.getObsDatetime().before(futureDate)) {
                     patientEligibility = new PatientEligibility("HPV/HIV coinfection", hepatitisConcept.getObsDatetime());
                     if (artStartDate != null && hepatitisConcept.getObsDatetime().after(artStartDate)) {
                         patientEligibility = new PatientEligibility("", artStartDate);
                     }
-                } else if ((inHivProgram.contains(ptId) && inTbProgram.contains(ptId) || (hasTbConcpt != null && hasTbConcpt.getValueCoded().equals(Dictionary.getConcept(Dictionary.DISEASE_DIAGNOSED))) || (hasTbConcpt != null && hasTbConcpt.getValueCoded().equals(Dictionary.getConcept(Dictionary.ON_TREATMENT_FOR_DISEASE)))) && hasTbConcpt.getObsDatetime().before(futureDate)) {
-                    patientEligibility = new PatientEligibility("TB/HIV co infection ", hasTbConcpt.getObsDatetime());
-                    if (artStartDate != null && hasTbConcpt.getObsDatetime().after(artStartDate)) {
+                } else if ((tbEnrollment != null || (hasTbConcpt != null && hasTbConcpt.getValueCoded().equals(Dictionary.getConcept(Dictionary.DISEASE_DIAGNOSED))) || (hasTbConcpt != null && hasTbConcpt.getValueCoded().equals(Dictionary.getConcept(Dictionary.ON_TREATMENT_FOR_DISEASE))))) {
+                    if(tbEnrollment != null && artStartDate != null && (tbEnrollment.getDateEnrolled().before(artStartDate) || tbEnrollment.getDateEnrolled().equals(artStartDate))) {
+                        patientEligibility = new PatientEligibility("TB/HIV coinfection ", tbEnrollment.getDateEnrolled());
+                    }
+                    else if(hasTbConcpt != null && ((hasTbConcpt.getValueCoded().equals(Dictionary.getConcept(Dictionary.DISEASE_DIAGNOSED))) || hasTbConcpt.getValueCoded().equals(Dictionary.getConcept(Dictionary.DISEASE_DIAGNOSED)))) {
+                        patientEligibility = new PatientEligibility("TB/HIV coinfection ", hasTbConcpt.getObsDatetime());
+                    }
+                    else {
                         patientEligibility = new PatientEligibility("", artStartDate);
                     }
-                } else if (inHivProgram.contains(ptId) && isDiscodantCouple != null && isDiscodantCouple.getValueCoded().equals(Dictionary.getConcept(Dictionary.DISCORDANT_COUPLE)) && isDiscodantCouple.getObsDatetime().before(futureDate)) {
+                }  else if (isDiscodantCouple != null && isDiscodantCouple.getValueCoded().equals(Dictionary.getConcept(Dictionary.DISCORDANT_COUPLE)) && isDiscodantCouple.getObsDatetime().before(futureDate)) {
                     patientEligibility = new PatientEligibility("Discordant couple (HIV-negative partner)", isDiscodantCouple.getObsDatetime());
                     if (artStartDate != null && isDiscodantCouple.getObsDatetime().after(artStartDate)) {
                         patientEligibility = new PatientEligibility("", artStartDate);
                     }
                 } else {
-                    patientEligibility = getCriteriaAndDate(ageInMonths, obsList, obsListWho, birthDate, artStartDate, hivEnrollmentDate, outcomePeriod);
+                    patientEligibility = getCriteriaAndDate(ageInMonths, obsList, obsListWho, artStartDate, hivEnrollmentDate, outcomePeriod);
 
                 }
-
                 if (patientEligibility != null && patientEligibility.getEligibilityDate() != null && artStartDate == null) {
-                    eligibleButNotEnrolled = true;
+                    eligibleButNotEnrolled = "Yes";
+                }
+                else if (artStartDate != null && artStartDate.before(futureDate)) {
+                    eligibleButNotEnrolled = "No";
                 }
             }
-            ret.put(ptId, new BooleanResult(eligibleButNotEnrolled, this));
+            ret.put(ptId, new SimpleResult(eligibleButNotEnrolled, this));
         }
         return ret;
     }
 
 
-    private PatientEligibility getCriteriaAndDate(int ageInMonths, List<Obs> cd4, List<Obs> whoStag, Date birthDate, Date artStartDate, Date hivEnrollmentDate, int period) {
+    private PatientEligibility getCriteriaAndDate(int ageInMonths, List<Obs> cd4, List<Obs> whoStag, Date artStartDate, Date hivEnrollmentDate, int period) {
 
         if (ageInMonths <= 120) {//children less than 10 years
-            return new PatientEligibility("Age 10 years and below", birthDate);
+            return new PatientEligibility("Age 10 years and below", hivEnrollmentDate);
         }
 
-        else if (ageInMonths > 120 && ageInMonths <= 180) { //children above 10 years and not above 15 years
+        else if (ageInMonths > 120 && ageInMonths <= 180) {
+            Date artStartDt = checkIfOnArtBeforeWho(artStartDate, whoStag, hivEnrollmentDate, period);
+            Date whoDate = whoDate(whoStag, hivEnrollmentDate, period);
 
-            if(checkIfOnArtBeforeOthers(artStartDate, cd4, whoStag, hivEnrollmentDate, period) != null && whoDate(whoStag, hivEnrollmentDate, period) != null && checkIfOnArtBeforeOthers(artStartDate, cd4, whoStag, hivEnrollmentDate, period).before(whoDate(whoStag, hivEnrollmentDate, period))) {
+            if(artStartDt != null && whoDate != null && correctDateFormat(artStartDt).before(correctDateFormat(whoDate)) ) {
                 return new PatientEligibility(null, artStartDate);
             }
-            else if(whoDate(whoStag, hivEnrollmentDate, period) != null) {
+            else if(artStartDt != null && whoDate != null && correctDateFormat(artStartDt).equals(correctDateFormat(whoDate))) {
+                return new PatientEligibility("WHO stage = Stage IV", whoDate);
+            }
 
-                return new PatientEligibility("WHO stage = Stage IV", whoDate(whoStag, hivEnrollmentDate, period));
+            else if(artStartDt != null && whoDate != null && correctDateFormat(artStartDt).after(correctDateFormat(whoDate))) {
+                return new PatientEligibility("WHO stage = Stage IV", whoDate);
+            }
+
+            else if(artStartDt == null && whoDate != null) {
+                return new PatientEligibility("WHO stage = Stage IV", whoDate);
+            }
+
+            else if(artStartDt != null && whoDate == null) {
+                return new PatientEligibility(null, artStartDate);
             }
         }
 
         else if (ageInMonths > 180){
+            Date artStartDt = checkIfOnArtBeforeCd4(artStartDate, cd4, hivEnrollmentDate, period);
+            Date cd4Date = cd4Date(cd4, hivEnrollmentDate, period);
 
-            if(checkIfOnArtBeforeOthers(artStartDate, cd4, whoStag, hivEnrollmentDate, period) != null && cd4Date(cd4, hivEnrollmentDate, period) != null && checkIfOnArtBeforeOthers(artStartDate, cd4, whoStag, hivEnrollmentDate, period).before(cd4Date(cd4, hivEnrollmentDate, period))) {
+            if(artStartDt != null && cd4Date != null && correctDateFormat(artStartDt).before(correctDateFormat(cd4Date))) {
                 return new PatientEligibility(null, artStartDate);
             }
 
-            else if(cd4Date(cd4, hivEnrollmentDate, period) != null) {
-                return new PatientEligibility("CD4 count<=500", cd4Date(cd4, hivEnrollmentDate, period));
+            else if(artStartDt != null && cd4Date != null && correctDateFormat(artStartDt).equals(correctDateFormat(cd4Date))) {
+                return new PatientEligibility("CD4 count<=500", cd4Date);
+            }
+
+            else if(artStartDt != null && cd4Date != null && correctDateFormat(artStartDt).after(correctDateFormat(cd4Date))) {
+                return new PatientEligibility("CD4 count<=500", cd4Date);
+            }
+
+            else if(artStartDt == null && cd4Date != null) {
+                return new PatientEligibility("CD4 count<=500", cd4Date);
+            }
+            else if(artStartDt != null && cd4Date == null) {
+                return new PatientEligibility(null, artStartDate);
             }
 
         }
@@ -180,13 +205,13 @@ public class MedicallyEligibleButNotEnrolledOnArtCalculation extends AbstractPat
             for (Obs obsWhoStage : whoStage) {
                 Integer stage = EmrUtils.whoStage(obsWhoStage.getValueCoded());
 
-                if (stage != null && (stage == 3 || stage == 4) && obsWhoStage.getObsDatetime().before(futureDate)) {
+                if (stage != null && (stage == 3 || stage == 4) && obsWhoStage.getObsDatetime().before(futureDate) && (obsWhoStage.getObsDatetime().after(hivEnrollmentDate) || obsWhoStage.getObsDatetime().equals(hivEnrollmentDate))) {
                     listOfWho.add(obsWhoStage);
 
                 }
             }
             if(listOfWho.size() > 0) {
-                whoStageDate = listOfWho.get(listOfWho.size() - 1).getObsDatetime();
+                whoStageDate = correctDateFormat(listOfWho.get(0).getObsDatetime());
             }
 
         }
@@ -198,18 +223,19 @@ public class MedicallyEligibleButNotEnrolledOnArtCalculation extends AbstractPat
     Date cd4Date(List<Obs> cd4, Date hivEnrollmentDate, int period) {
         Date cd4Date = null;
         Date futureDate = DateUtil.adjustDate(DateUtil.adjustDate(hivEnrollmentDate, period, DurationUnit.MONTHS), 1, DurationUnit.DAYS);
+        Date enrollDate = DateUtil.adjustDate(hivEnrollmentDate, -1, DurationUnit.DAYS);
         List<Obs> cd4Less500 = new ArrayList<Obs>();
 
         if(cd4.size() > 0) {
 
             for (Obs obsCd4 : cd4) {
-                if (obsCd4.getValueNumeric() <= 500 && obsCd4.getObsDatetime().before(futureDate)) {
+                if (obsCd4.getValueNumeric() <= 500 && obsCd4.getObsDatetime().before(futureDate) && obsCd4.getObsDatetime().after(enrollDate)) {
                     cd4Less500.add(obsCd4);
                 }
 
             }
             if(cd4Less500.size() > 0){
-                cd4Date = cd4Less500.get(cd4Less500.size() - 1).getObsDatetime();
+                cd4Date = correctDateFormat(cd4Less500.get(0).getObsDatetime());
             }
 
 
@@ -219,30 +245,45 @@ public class MedicallyEligibleButNotEnrolledOnArtCalculation extends AbstractPat
 
     }
 
-    Date checkIfOnArtBeforeOthers(Date artDate, List<Obs> cd4, List<Obs> whoStage, Date hivEnrollmentDate, int period) {
+    Date checkIfOnArtBeforeWho(Date artDate, List<Obs> whoStage, Date hivEnrollmentDate, int period) {
         Date isOnARTDate = null;
         Date futureDate = DateUtil.adjustDate(DateUtil.adjustDate(hivEnrollmentDate, period, DurationUnit.MONTHS), 1, DurationUnit.DAYS);
 
-        if(whoDate(whoStage, hivEnrollmentDate, period) == null && cd4Date(cd4,hivEnrollmentDate, period) == null && artDate != null && artDate.before(futureDate)) {
-            isOnARTDate = artDate;
+        if(whoDate(whoStage, hivEnrollmentDate, period) == null && artDate != null && artDate.before(futureDate)) {
+            isOnARTDate = correctDateFormat(artDate);
         }
 
-        if(whoDate(whoStage, hivEnrollmentDate, period) != null && cd4Date(cd4, hivEnrollmentDate, period) == null && artDate != null && whoDate(whoStage, hivEnrollmentDate, period).after(artDate) && artDate.before(futureDate)) {
-            isOnARTDate = artDate;
+        if(whoDate(whoStage, hivEnrollmentDate, period) != null  && artDate != null && whoDate(whoStage, hivEnrollmentDate, period).after(artDate) && artDate.before(futureDate)) {
+            isOnARTDate = correctDateFormat(artDate);
         }
-
-        if(cd4Date(cd4, hivEnrollmentDate, period) != null && whoDate(whoStage, hivEnrollmentDate, period) == null &&  artDate != null && cd4Date(cd4, hivEnrollmentDate, period).after(artDate) && artDate.before(futureDate)) {
-            isOnARTDate = artDate;
-        }
-
-        if(cd4Date(cd4, hivEnrollmentDate, period) != null && whoDate(whoStage, hivEnrollmentDate, period) != null &&  artDate != null) {
-            if(artDate.before(whoDate(whoStage, hivEnrollmentDate, period)) && artDate.before(cd4Date(cd4, hivEnrollmentDate, period))) {
-                isOnARTDate = artDate;
-            }
-        }
-
-
 
         return isOnARTDate;
+
+    }
+
+    Date checkIfOnArtBeforeCd4(Date artDate, List<Obs> cd4, Date hivEnrollmentDate, int period) {
+        Date isOnARTDate = null;
+        Date futureDate = DateUtil.adjustDate(DateUtil.adjustDate(hivEnrollmentDate, period, DurationUnit.MONTHS), 1, DurationUnit.DAYS);
+
+        if(cd4Date(cd4, hivEnrollmentDate, period) == null && artDate != null && (correctDateFormat(artDate)).before(futureDate)) {
+            isOnARTDate = correctDateFormat(artDate);
+        }
+
+        if(cd4Date(cd4, hivEnrollmentDate, period) != null  && artDate != null && cd4Date(cd4, hivEnrollmentDate, period).after(artDate) && artDate.before(futureDate)) {
+            isOnARTDate = correctDateFormat(artDate);
+        }
+
+        return isOnARTDate;
+
+    }
+
+    Date correctDateFormat(Date date) {
+        GregorianCalendar gc = new GregorianCalendar();
+        gc.setTime(date);
+        gc.set(Calendar.HOUR_OF_DAY, 0);
+        gc.set(Calendar.MINUTE, 0);
+        gc.set(Calendar.SECOND, 0);
+        gc.set(Calendar.MILLISECOND, 0);
+        return gc.getTime();
     }
 }
