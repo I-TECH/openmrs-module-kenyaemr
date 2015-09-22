@@ -14,12 +14,6 @@
 
 package org.openmrs.module.kenyaemr.calculation;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
 import org.openmrs.Concept;
 import org.openmrs.DrugOrder;
 import org.openmrs.calculation.patient.PatientCalculationContext;
@@ -31,6 +25,12 @@ import org.openmrs.module.kenyacore.CoreUtils;
 import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
 import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.reporting.data.patient.definition.DrugOrdersForPatientDataDefinition;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Previously the base class for calculations, replaced by AbstractPatientCalculation in KenyaCore.

@@ -45,13 +45,13 @@ public class DaysFromArtEligibilityToArtInitiationCalculation extends AbstractPa
         Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
         Program tbProgram = MetadataUtils.existing(Program.class, TbMetadata._Program.TB);
 
-        Set<Integer> inHivProgram = Filters.inProgram(hivProgram, cohort, context);
         //in tb program
         Set<Integer> inTbProgram = Filters.inProgram(tbProgram, cohort, context);
 
         Set<Integer> female = Filters.female(cohort, context);
 
         CalculationResultMap hivEnrollmenMap = Calculations.firstEnrollments(hivProgram, cohort, context);
+        CalculationResultMap tbEnrollmentMap = Calculations.firstEnrollments(tbProgram, cohort, context);
 
 
         Integer outcomePeriod = (params != null && params.containsKey("outcomePeriod")) ? (Integer) params.get("outcomePeriod") : null;
@@ -94,10 +94,11 @@ public class DaysFromArtEligibilityToArtInitiationCalculation extends AbstractPa
 
             int ageInMonths = ((Age) ages.get(ptId).getValue()).getFullMonths();
             PatientProgram hivEnrollment = EmrCalculationUtils.resultForPatient(hivEnrollmenMap, ptId);
+            PatientProgram tbEnrollment = EmrCalculationUtils.resultForPatient(tbEnrollmentMap, ptId);
 
             Date artInitialDate = EmrCalculationUtils.datetimeResultForPatient(artInitiationDate, ptId);
 
-            if(inHivProgram.contains(ptId) && artInitialDate != null && hivEnrollment != null){
+            if(artInitialDate != null && hivEnrollment != null){
 
                 if (pregnancyObs != null && pregnancyObs.getValueCoded().equals(Dictionary.getConcept(Dictionary.YES))) {
                     patientEligibility = new PatientEligibility("Pregnant or breastfeeding", pregnancyObs.getObsDatetime());
@@ -109,9 +110,14 @@ public class DaysFromArtEligibilityToArtInitiationCalculation extends AbstractPa
                     if (artStartDate != null && hepatitisConcept.getObsDatetime().after(artStartDate)) {
                         patientEligibility = new PatientEligibility("", artStartDate);
                     }
-                } else if ((inTbProgram.contains(ptId) || (hasTbConcpt != null && hasTbConcpt.getValueCoded().equals(Dictionary.getConcept(Dictionary.DISEASE_DIAGNOSED))) || (hasTbConcpt != null && hasTbConcpt.getValueCoded().equals(Dictionary.getConcept(Dictionary.ON_TREATMENT_FOR_DISEASE))))) {
-                    patientEligibility = new PatientEligibility("TB/HIV co infection ", hasTbConcpt.getObsDatetime());
-                    if (artStartDate != null && hasTbConcpt.getObsDatetime().after(artStartDate)) {
+                } else if ((tbEnrollment != null || (hasTbConcpt != null && hasTbConcpt.getValueCoded().equals(Dictionary.getConcept(Dictionary.DISEASE_DIAGNOSED))) || (hasTbConcpt != null && hasTbConcpt.getValueCoded().equals(Dictionary.getConcept(Dictionary.ON_TREATMENT_FOR_DISEASE))))) {
+                    if(tbEnrollment != null && artStartDate != null && (tbEnrollment.getDateEnrolled().before(artStartDate) || tbEnrollment.getDateEnrolled().equals(artStartDate))) {
+                        patientEligibility = new PatientEligibility("TB/HIV co infection ", tbEnrollment.getDateEnrolled());
+                    }
+                    else if(hasTbConcpt != null && ((hasTbConcpt.getValueCoded().equals(Dictionary.getConcept(Dictionary.DISEASE_DIAGNOSED))) || hasTbConcpt.getValueCoded().equals(Dictionary.getConcept(Dictionary.DISEASE_DIAGNOSED)))) {
+                        patientEligibility = new PatientEligibility("TB/HIV co infection ", hasTbConcpt.getObsDatetime());
+                    }
+                    else {
                         patientEligibility = new PatientEligibility("", artStartDate);
                     }
                 } else if (isDiscodantCouple != null && isDiscodantCouple.getValueCoded().equals(Dictionary.getConcept(Dictionary.DISCORDANT_COUPLE))) {

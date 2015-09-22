@@ -6,7 +6,6 @@ import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.ListResult;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
-import org.openmrs.module.kenyacore.calculation.BooleanResult;
 import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyaemr.Dictionary;
@@ -15,7 +14,11 @@ import org.openmrs.module.kenyaemr.calculation.library.models.Cd4ValueAndDate;
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.DurationUnit;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by codehub on 06/07/15.
@@ -36,7 +39,7 @@ public class ViralSuppressionCalculation extends AbstractPatientCalculation {
         CalculationResultMap allVL = Calculations.allObs(Dictionary.getConcept(Dictionary.HIV_VIRAL_LOAD), cohort, context);
 
         for(Integer ptId:cohort) {
-            boolean suppressed = false;
+            String suppressed = null;
             Cd4ValueAndDate vlValue = null;
             ListResult listResult = (ListResult) allVL.get(ptId);
             List<Obs> obsList = CalculationUtils.extractResultValues(listResult);
@@ -56,7 +59,11 @@ public class ViralSuppressionCalculation extends AbstractPatientCalculation {
                     vlValue = new Cd4ValueAndDate(validVls.get(validVls.size() -1).getValueNumeric(),validVls.get(validVls.size() -1).getObsDatetime() );
                 }
                 if(vlValue != null && vlValue.getCd4Value() < 1000) {
-                    suppressed = true;
+                    suppressed = "Yes";
+                }
+
+                if(vlValue != null && vlValue.getCd4Value() >= 1000) {
+                    suppressed = "No";
                 }
             }
 

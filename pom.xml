@@ -28,7 +28,7 @@
 	</modules>
 
 	<properties>
-		<openMRSVersion>1.9.8</openMRSVersion>
+		<openMRSVersion>1.9.9</openMRSVersion>
 		<cielVersion>20150123</cielVersion>
 
 		<!-- Dependency modules -->
