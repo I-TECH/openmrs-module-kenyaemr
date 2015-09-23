@@ -191,7 +191,7 @@ public class HivCohortLibrary {
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.addSearch("onCtx", ReportUtils.map(onCtx, "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
-		cd.addSearch("onMedCtx", ReportUtils.map(commonCohorts.medicationDispensed(Dictionary.getConcept(Dictionary.SULFAMETHOXAZOLE_TRIMETHOPRIM)),"onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("onMedCtx", ReportUtils.map(commonCohorts.medicationDispensed(Dictionary.getConcept(Dictionary.SULFAMETHOXAZOLE_TRIMETHOPRIM), Dictionary.getConcept(Dictionary.DAPSONE)),"onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
 		cd.addSearch("onCtxOnDuration", ReportUtils.map(onCtxOnDuration(), "onDate=${onOrBefore}"));
 		cd.setCompositionString("onCtx OR onMedCtx OR onCtxOnDuration");
 

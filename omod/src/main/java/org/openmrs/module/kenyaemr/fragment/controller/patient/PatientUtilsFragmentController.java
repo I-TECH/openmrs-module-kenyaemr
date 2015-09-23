@@ -14,14 +14,6 @@
 
 package org.openmrs.module.kenyaemr.fragment.controller.patient;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Patient;
@@ -42,12 +34,22 @@ import org.openmrs.module.kenyaemr.calculation.library.ScheduledVisitOnDayCalcul
 import org.openmrs.module.kenyaemr.calculation.library.VisitsOnDayCalculation;
 import org.openmrs.module.kenyaui.annotation.AppAction;
 import org.openmrs.module.kenyaui.annotation.SharedAction;
+import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.session.Session;
 import org.openmrs.util.PersonByNameComparator;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * AJAX utility methods for patients
@@ -119,6 +121,29 @@ public class PatientUtilsFragmentController {
 		}
 
 		return simplified;
+	}
+
+	@SharedAction
+	public SimpleObject[] getSeenPatients(@RequestParam("date") Date date, UiUtils ui) {
+
+		List<Patient> allPatients = Context.getPatientService().getAllPatients();
+		List<SimpleObject> simplifiedObj = new ArrayList<SimpleObject>();
+
+		Date startOfDay =DateUtil.getStartOfDay(date);
+		Date endOfDay = DateUtil.getEndOfDay(date);
+
+
+		for(Patient patient:allPatients) {
+			SimpleObject so = ui.simplifyObject(patient);
+			List<Visit> visitsOnDate = Context.getVisitService().getVisits(null, Arrays.asList(patient), null, null, startOfDay, endOfDay, null, null, null, true, false);
+			if(visitsOnDate.size() > 0) {
+				so.put("patients", ui.simplifyObject(patient));
+				simplifiedObj.add(so);
+			}
+		}
+
+
+		return ui.simplifyCollection(simplifiedObj);
 	}
 
 	/**

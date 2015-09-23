@@ -15,7 +15,6 @@
 package org.openmrs.module.kenyaemr.calculation.library.hiv.art;
 
 import org.openmrs.Concept;
-import org.openmrs.Obs;
 import org.openmrs.Program;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
@@ -26,11 +25,9 @@ import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyacore.calculation.Filters;
 import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.calculation.library.IsPregnantCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.LastCd4CountCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.LastCd4PercentageCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.LastWhoStageCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.LostToFollowUpIncludingTransferOutCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
@@ -83,7 +80,6 @@ public class EligibleForArtCalculation extends AbstractPatientCalculation implem
 		
 		CalculationResultMap lastWhoStage = calculate(new LastWhoStageCalculation(), cohort, context);
 		CalculationResultMap lastCd4 = calculate(new LastCd4CountCalculation(), cohort, context);
-		CalculationResultMap lastCd4Percent = calculate(new LastCd4PercentageCalculation(), cohort, context);
 
 		//find hepatits status
 		CalculationResultMap hepatitisMap = Calculations.lastObs(Dictionary.getConcept(Dictionary.PROBLEM_ADDED), cohort, context);
@@ -137,9 +133,8 @@ public class EligibleForArtCalculation extends AbstractPatientCalculation implem
 			if (inHivProgram.contains(ptId) && !onArt.contains(ptId)) {
 				int ageInMonths = ((Age) ages.get(ptId).getValue()).getFullMonths();
 				Double cd4 = EmrCalculationUtils.numericObsResultForPatient(lastCd4, ptId);
-				Double cd4Percent = EmrCalculationUtils.numericObsResultForPatient(lastCd4Percent, ptId);
 				Integer whoStage = EmrUtils.whoStage(EmrCalculationUtils.codedObsResultForPatient(lastWhoStage, ptId));
-				eligible = isEligible(ageInMonths, cd4, cd4Percent, whoStage, hasHepatitis, hasTb, isPregnant, isDiscordant);
+				eligible = isEligible(ageInMonths, cd4, whoStage, hasHepatitis, hasTb, isPregnant, isDiscordant);
 			}
 			if(ltfuWithinPeriod.contains(ptId)) {
 				eligible = false;
@@ -153,11 +148,10 @@ public class EligibleForArtCalculation extends AbstractPatientCalculation implem
 	 * Checks eligibility based on age, CD4 and WHO stage
 	 * @param ageInMonths the patient age in months
 	 * @param cd4 the last CD4 count
-	 * @param cd4Percent the last CD4 percentage
 	 * @param whoStage the last WHO stage
 	 * @return true if patient is eligible
 	 */
-	protected boolean isEligible(int ageInMonths, Double cd4, Double cd4Percent, Integer whoStage, Boolean hasHepatitis, Boolean hasTb, Boolean isPregnant, Boolean isaSeroDiscordant) {
+	protected boolean isEligible(int ageInMonths, Double cd4, Integer whoStage, Boolean hasHepatitis, Boolean hasTb, Boolean isPregnant, Boolean isaSeroDiscordant) {
 		if (ageInMonths <= 120) {//children less than 10 years
 			return true;
 		}
@@ -172,10 +166,16 @@ public class EligibleForArtCalculation extends AbstractPatientCalculation implem
 		}
 
 		else { // 15+ years
-			if (cd4 != null && cd4 <= 500) {
+			if (cd4 != null && cd4 < 500) {
 				return true;
 			}
 			if(isPregnant || isaSeroDiscordant) {
+				return true;
+			}
+			if (whoStage != null && (whoStage == 3 || whoStage == 4)) {
+				return true;
+			}
+			if (hasHepatitis || hasTb) {
 				return true;
 			}
 		}
