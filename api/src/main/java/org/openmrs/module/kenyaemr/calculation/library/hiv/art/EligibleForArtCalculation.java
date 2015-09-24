@@ -94,6 +94,13 @@ public class EligibleForArtCalculation extends AbstractPatientCalculation implem
 		//DNA PCR
 		CalculationResultMap dnaPcrQualitative = Calculations.lastObs(Dictionary.getConcept(Dictionary.HIV_DNA_POLYMERASE_CHAIN_REACTION_QUALITATIVE), cohort, context);
 		CalculationResultMap dnaPcrReaction = Calculations.lastObs(Dictionary.getConcept(Dictionary.HIV_DNA_POLYMERASE_CHAIN_REACTION), cohort, context);
+
+		//find breast feeding map
+		CalculationResultMap breastFeedingMap = Calculations.lastObs(Dictionary.getConcept(Dictionary.INFANT_FEEDING_METHOD), cohort, context);
+		Concept hepatitisB = Dictionary.getConcept(Dictionary.HEPATITIS_B);
+		Concept acuteTypeBViralHepatitis = Dictionary.getConcept(Dictionary.ACUTE_TYPE_B_VIRAL_HEPATITIS);
+		Concept acuteFulminatingTypeBViralHepatitis = Dictionary.getConcept(Dictionary.ACUTE_FULMINATING_TYPE_B_VIRAL_HEPATITIS);
+		Concept chronicActiveTypeBViralHepatitis = Dictionary.getConcept(Dictionary.CHRONIC_ACTIVE_TYPE_B_VIRAL_HEPATITIS);
 		
 		CalculationResultMap ret = new CalculationResultMap();
 		for (Integer ptId : cohort) {
@@ -102,9 +109,10 @@ public class EligibleForArtCalculation extends AbstractPatientCalculation implem
 			boolean hasTb = false;
 			boolean isPregnant = false;
 			boolean isDiscordant = false;
+			boolean isBreastFeeding = false;
 
 			Concept hepatitisConcept = EmrCalculationUtils.codedObsResultForPatient(hepatitisMap, ptId);
-			if(hepatitisConcept != null && hepatitisConcept.equals(Dictionary.getConcept(Dictionary.HEPATITIS_B))) {
+			if(hepatitisConcept != null && (hepatitisConcept.equals(hepatitisB) || hepatitisConcept.equals(acuteTypeBViralHepatitis) || hepatitisConcept.equals(acuteFulminatingTypeBViralHepatitis) || hepatitisConcept.equals(chronicActiveTypeBViralHepatitis))) {
 				hasHepatitis = true;
 			}
 			Concept hasTbConcpt = EmrCalculationUtils.codedObsResultForPatient(tbStatus, ptId);
@@ -130,11 +138,16 @@ public class EligibleForArtCalculation extends AbstractPatientCalculation implem
 				eligible = true;
 			}
 
+			Concept infantFeedingConcept = EmrCalculationUtils.codedObsResultForPatient(breastFeedingMap, ptId);
+			if(infantFeedingConcept != null && (infantFeedingConcept.equals(Dictionary.getConcept(Dictionary.BREASTFED_EXCLUSIVELY)) || infantFeedingConcept.equals(Dictionary.getConcept(Dictionary.MIXED_FEEDING)))) {
+				isBreastFeeding = true;
+			}
+
 			if (inHivProgram.contains(ptId) && !onArt.contains(ptId)) {
 				int ageInMonths = ((Age) ages.get(ptId).getValue()).getFullMonths();
 				Double cd4 = EmrCalculationUtils.numericObsResultForPatient(lastCd4, ptId);
 				Integer whoStage = EmrUtils.whoStage(EmrCalculationUtils.codedObsResultForPatient(lastWhoStage, ptId));
-				eligible = isEligible(ageInMonths, cd4, whoStage, hasHepatitis, hasTb, isPregnant, isDiscordant);
+				eligible = isEligible(ageInMonths, cd4, whoStage, hasHepatitis, hasTb, isPregnant, isDiscordant, isBreastFeeding);
 			}
 			if(ltfuWithinPeriod.contains(ptId)) {
 				eligible = false;
@@ -151,7 +164,7 @@ public class EligibleForArtCalculation extends AbstractPatientCalculation implem
 	 * @param whoStage the last WHO stage
 	 * @return true if patient is eligible
 	 */
-	protected boolean isEligible(int ageInMonths, Double cd4, Integer whoStage, Boolean hasHepatitis, Boolean hasTb, Boolean isPregnant, Boolean isaSeroDiscordant) {
+	protected boolean isEligible(int ageInMonths, Double cd4, Integer whoStage, Boolean hasHepatitis, Boolean hasTb, Boolean isPregnant, Boolean isaSeroDiscordant, Boolean isBreastFeeding) {
 		if (ageInMonths <= 120) {//children less than 10 years
 			return true;
 		}
@@ -159,7 +172,8 @@ public class EligibleForArtCalculation extends AbstractPatientCalculation implem
 			if (whoStage != null && (whoStage == 3 || whoStage == 4)) {
 				return true;
 			}
-			if (hasHepatitis || hasTb) {
+
+			if(isPregnant || isaSeroDiscordant || isBreastFeeding || hasHepatitis || hasTb) {
 				return true;
 			}
 
@@ -169,13 +183,10 @@ public class EligibleForArtCalculation extends AbstractPatientCalculation implem
 			if (cd4 != null && cd4 < 500) {
 				return true;
 			}
-			if(isPregnant || isaSeroDiscordant) {
+			if(isPregnant || isaSeroDiscordant || isBreastFeeding || hasHepatitis || hasTb) {
 				return true;
 			}
 			if (whoStage != null && (whoStage == 3 || whoStage == 4)) {
-				return true;
-			}
-			if (hasHepatitis || hasTb) {
 				return true;
 			}
 		}

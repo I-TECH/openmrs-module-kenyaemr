@@ -264,28 +264,23 @@ function setTIDate(){
 function setTIDistrict(){
 
     var p1="<lookup expression="fn.latestObs(161551).valueText" />"
-    if (p1 !== 'undefined')
-    {
+
         setValue('ti_district.value',p1) ;
-    }
+
 }
 
 function setTIFacility(){
 
     var p1="<lookup expression="fn.latestObs(160535).valueText" />"
-    if (p1 !== 'undefined')
-    {
+
         setValue('ti_facility.value',p1) ;
-    }
+
 }
 
 function setTIHaartFacility(){
 
     var p1="<lookup expression="fn.latestObs(160632).valueText" />"
-    if (p1 !== 'undefined')
-    {
         setValue('where.value',p1) ;
-    }
 }
 
 

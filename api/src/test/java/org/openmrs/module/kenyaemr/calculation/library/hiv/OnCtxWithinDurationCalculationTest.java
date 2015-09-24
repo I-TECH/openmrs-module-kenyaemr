@@ -72,12 +72,17 @@ public class OnCtxWithinDurationCalculationTest extends BaseModuleContextSensiti
 		Concept ctx = Dictionary.getConcept(Dictionary.SULFAMETHOXAZOLE_TRIMETHOPRIM);
 		TestUtils.saveObs(TestUtils.getPatient(6), medOrders, ctx, TestUtils.date(2013, 1, 1));
 
+		//give patient #7 med dispensed
+		Concept medDispensed = Dictionary.getConcept(Dictionary.COTRIMOXAZOLE_DISPENSED);
+		Concept yes = Dictionary.getConcept(Dictionary.YES);
+		TestUtils.saveObs(TestUtils.getPatient(7), medDispensed, yes, TestUtils.date(2013, 1, 1));
+
 		List<Integer> ptIds = Arrays.asList(2, 6, 7, 8);
 
 		CalculationResultMap resultMap = new OnCtxWithinDurationCalculation().evaluate(ptIds, null, Context.getService(PatientCalculationService.class).createCalculationContext());
 		Assert.assertFalse((Boolean) resultMap.get(2).getValue());
-		Assert.assertFalse((Boolean) resultMap.get(6).getValue());
-		Assert.assertFalse((Boolean) resultMap.get(7).getValue());
+		Assert.assertTrue((Boolean) resultMap.get(6).getValue());
+		Assert.assertTrue((Boolean) resultMap.get(7).getValue());
 		Assert.assertFalse((Boolean) resultMap.get(8).getValue());
 	}
 }

@@ -78,28 +78,38 @@ public class NeedsViralLoadTestCalculation extends AbstractPatientCalculation im
             Obs pregnantEdd = EmrCalculationUtils.obsResultForPatient(pregStatusObss, ptId);
 
             if(inHivProgram.contains(ptId) && onArt.contains(ptId)){
-                if(listObsViralLoads.size() == 0 && dateInitiated != null && (daysSince(dateInitiated, context) > 180) && (daysSince(dateInitiated, context) < 360)) {
+                if(listObsViralLoads.size() == 0 && dateInitiated != null && (daysSince(dateInitiated, context) >= 180)) {
+                    needsViralLoadTest = true;
+                }
+                if(dateInitiated != null && (daysSince(dateInitiated, context) >= 360)) {
                     needsViralLoadTest = true;
                 }
 
                 //those continuing should receive one VL every year
                 //pick the date of the last viral load
-                if(viralLoadObs != null && (daysSince(viralLoadObs.getObsDatetime(), context) > 360)) {
+                if(viralLoadObs != null && (daysSince(viralLoadObs.getObsDatetime(), context) >= 360)) {
                     needsViralLoadTest = true;
                 }
 
-                //if vl less than
+                //if vl more than
                 if(viralLoadObs != null && viralLoadObs.getValueNumeric() > 1000 && (daysSince(viralLoadObs.getObsDatetime(), context) > 90)) {
                     needsViralLoadTest = true;
                 }
 
                 //check for pregnancy
                 if(pregnantEdd != null && pregnantEdd.getValueCoded().equals(Dictionary.getConcept(Dictionary.YES)) && dateInitiated != null) {
-                    Date whenVLWillBeDue = DateUtil.adjustDate(dateInitiated, 6, DurationUnit.MONTHS);
-                        if(viralLoadObs == null && (context.getNow().after(whenVLWillBeDue) || context.getNow().equals(whenVLWillBeDue))){
+                    Date whenVLWillBeDue = DateUtil.adjustDate(DateUtil.adjustDate(dateInitiated, 6, DurationUnit.MONTHS), -1, DurationUnit.DAYS);
+                    //if last vl is 6 months older then the patient is due for vl
+                        if(viralLoadObs == null) {
+                            needsViralLoadTest = true;
+                        }
+                        if(viralLoadObs == null && (context.getNow().after(whenVLWillBeDue))){
                             needsViralLoadTest = true;
                         }
                         if(viralLoadObs != null && viralLoadObs.getValueNumeric() > 1000 && (monthsBetween(viralLoadObs.getObsDatetime(), context.getNow()) >= 3)){
+                            needsViralLoadTest = true;
+                        }
+                        if(viralLoadObs != null && daysSince(viralLoadObs.getObsDatetime(), context) >= 180) {
                             needsViralLoadTest = true;
                         }
                 }
