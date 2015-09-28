@@ -22,5 +22,4 @@
 		<property name="providerIdToMap" value="appui" />
 		<property name="resourceIdToMap" value="standardEmrPage" />
 	</bean>
-
 </beans>

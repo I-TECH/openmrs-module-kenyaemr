@@ -14,6 +14,7 @@
 
 package org.openmrs.module.kenyaemr.calculation.library.hiv;
 
+import org.openmrs.Obs;
 import org.openmrs.Program;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
@@ -70,6 +71,7 @@ public class NeedsCd4TestCalculation extends AbstractPatientCalculation implemen
 		CalculationResultMap lastObsPercent = Calculations.lastObs(Dictionary.getConcept(Dictionary.CD4_PERCENT), cohort, context);
 		Set<Integer> ltfu = CalculationUtils.patientsThatPass(calculate(new LostToFollowUpCalculation(), cohort, context));
 		CalculationResultMap startedArt = calculate(new InitialArtStartDateCalculation(), cohort, context);
+		CalculationResultMap medOrdersObss = Calculations.lastObs(Dictionary.getConcept(Dictionary.MEDICATION_ORDERS), cohort, context);
 
 		CalculationResultMap ret = new CalculationResultMap();
 		for (Integer ptId : cohort) {
@@ -95,6 +97,28 @@ public class NeedsCd4TestCalculation extends AbstractPatientCalculation implemen
 
 				if(ltfu.contains(ptId)){
 					needsCD4 = false;
+				}
+			}
+			if(inHivProgram.contains(ptId) && artStartDate != null) {
+				Obs fluconazoleObs = EmrCalculationUtils.obsResultForPatient(medOrdersObss, ptId);
+
+				if(fluconazoleObs != null && fluconazoleObs.getValueCoded().equals(Dictionary.getConcept(Dictionary.FLUCONAZOLE))) {
+					// Does patient have CD4 or CD4% result in the last X days
+					ObsResult r = (ObsResult) lastObsCount.get(ptId);
+					ObsResult p = (ObsResult) lastObsPercent.get(ptId);
+
+					Date dateCount = r != null ? r.getDateOfResult() : null;
+					Date datePercent = p != null ? p.getDateOfResult() : null;
+
+					Date lastResultDate = CoreUtils.latest(dateCount, datePercent);
+
+					if (lastResultDate == null || (daysSince(lastResultDate, context) > HivConstants.NEEDS_CD4_COUNT_AFTER_DAYS)) {
+						needsCD4 = true;
+					}
+
+					if(ltfu.contains(ptId)){
+						needsCD4 = false;
+					}
 				}
 			}
 			ret.put(ptId, new BooleanResult(needsCD4, this, context));

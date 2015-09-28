@@ -28,6 +28,7 @@ import org.openmrs.module.kenyacore.calculation.Filters;
 import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.EligibleForArtCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.OnArtCalculation;
 import org.openmrs.module.kenyaemr.metadata.MchMetadata;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
@@ -68,12 +69,13 @@ public class NotOnArtCalculation extends AbstractPatientCalculation implements P
 		CalculationResultMap artStatusObss = Calculations.lastObs(Dictionary.getConcept(Dictionary.ANTIRETROVIRAL_USE_IN_PREGNANCY), inMchmsProgram, context);
 		CalculationResultMap lmpObss = Calculations.firstObs(Dictionary.getConcept(Dictionary.LAST_MONTHLY_PERIOD), inMchmsProgram, context);
 		Set<Integer> onART = CalculationUtils.patientsThatPass(calculate(new OnArtCalculation(), cohort, context));
+		Set<Integer> eligibleForArt = CalculationUtils.patientsThatPass(calculate(new EligibleForArtCalculation(), cohort, context));
 
 		CalculationResultMap ret = new CalculationResultMap();
 		for (Integer ptId : cohort) {
 			// Is patient alive and in MCH program?
 			boolean notOnArt = false;
-			if (inMchmsProgram.contains(ptId) && !onART.contains(ptId)) {
+			if (inMchmsProgram.contains(ptId) && !(onART.contains(ptId)) && !(eligibleForArt.contains(ptId))) {
 				Concept lastHivStatus = EmrCalculationUtils.codedObsResultForPatient(lastHivStatusObss, ptId);
 				Concept lastArtStatus = EmrCalculationUtils.codedObsResultForPatient(artStatusObss, ptId);
 				Date lastLmpDate = EmrCalculationUtils.datetimeObsResultForPatient(lmpObss, ptId);

@@ -25,6 +25,8 @@ import org.openmrs.Program;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
+import org.openmrs.module.kenyaemr.metadata.HivMetadata;
+import org.openmrs.module.kenyaemr.metadata.TbMetadata;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
@@ -49,6 +51,12 @@ public class NotOnArtCalculationTest extends BaseModuleContextSensitiveTest {
 	@Autowired
 	private MchMetadata mchMetadata;
 
+	@Autowired
+	private HivMetadata hivMetadata;
+
+	@Autowired
+	private TbMetadata tbMetadata;
+
 	/**
 	 * Setup each test
 	 */
@@ -57,6 +65,8 @@ public class NotOnArtCalculationTest extends BaseModuleContextSensitiveTest {
 		executeDataSet("dataset/test-concepts.xml");
 
 		commonMetadata.install();
+		hivMetadata.install();
+		tbMetadata.install();
 		mchMetadata.install();
 	}
 

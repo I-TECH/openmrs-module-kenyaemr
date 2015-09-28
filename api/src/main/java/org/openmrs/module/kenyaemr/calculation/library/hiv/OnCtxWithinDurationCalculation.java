@@ -60,10 +60,10 @@ public class OnCtxWithinDurationCalculation extends BaseEmrCalculation {
 		Concept ctx = Dictionary.getConcept(Dictionary.SULFAMETHOXAZOLE_TRIMETHOPRIM);
 		Concept dapson = Dictionary.getConcept(Dictionary.DAPSONE);
 		Concept yes = Dictionary.getConcept(Dictionary.YES);
-		Concept days = Dictionary.getConcept("1072AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-		Concept months = Dictionary.getConcept("1074AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-		Concept weeks = Dictionary.getConcept("1073AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-		Concept years = Dictionary.getConcept("1734AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+		Concept days = Dictionary.getConcept(Dictionary.DAYS);
+		Concept months = Dictionary.getConcept(Dictionary.MONTHS);
+		Concept weeks = Dictionary.getConcept(Dictionary.WEEKS);
+		Concept years = Dictionary.getConcept(Dictionary.YEARS);
 
 		CalculationResultMap ret = new CalculationResultMap();
 		for (Integer ptId : cohort) {
