@@ -23,7 +23,9 @@ import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyacore.test.TestUtils;
+import org.openmrs.module.kenyaemr.metadata.MchMetadata;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
 import java.util.List;
@@ -34,6 +36,8 @@ import static org.hamcrest.Matchers.notNullValue;
  * Tests for {@link IsPregnantCalculation}
  */
 public class IsPregnantCalculationTest extends BaseModuleContextSensitiveTest {
+	@Autowired
+	private MchMetadata mchMetadata;
 
 	/**
 	 * Setup each test
@@ -41,6 +45,7 @@ public class IsPregnantCalculationTest extends BaseModuleContextSensitiveTest {
 	@Before
 	public void setup() throws Exception {
 		executeDataSet("dataset/test-concepts.xml");
+		mchMetadata.install();
 	}
 
 	/**

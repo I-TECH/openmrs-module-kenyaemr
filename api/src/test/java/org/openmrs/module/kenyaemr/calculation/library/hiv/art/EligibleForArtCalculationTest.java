@@ -14,12 +14,6 @@
 
 package org.openmrs.module.kenyaemr.calculation.library.hiv.art;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,10 +27,16 @@ import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
+import org.openmrs.module.kenyaemr.metadata.MchMetadata;
 import org.openmrs.module.kenyaemr.metadata.TbMetadata;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Tests for {@link EligibleForArtCalculation}
@@ -52,6 +52,9 @@ public class EligibleForArtCalculationTest extends BaseModuleContextSensitiveTes
 	@Autowired
 	private TbMetadata tbMetadata;
 
+	@Autowired
+	private MchMetadata mchMetadata;
+
 	/**
 	 * Setup each test
 	 */
@@ -62,6 +65,7 @@ public class EligibleForArtCalculationTest extends BaseModuleContextSensitiveTes
 		commonMetadata.install();
 		hivMetadata.install();
 		tbMetadata.install();
+		mchMetadata.install();
 	}
 	
 	/**
