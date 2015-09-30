@@ -81,9 +81,10 @@ public class NeedsViralLoadTestCalculation extends AbstractPatientCalculation im
                 if(listObsViralLoads.size() == 0 && dateInitiated != null && (daysSince(dateInitiated, context) >= 180)) {
                     needsViralLoadTest = true;
                 }
-                if(dateInitiated != null && (daysSince(dateInitiated, context) >= 360)) {
+                //need to check here if patient has had any viral load
+                /*if(dateInitiated != null && (daysSince(dateInitiated, context) >= 360)) {
                     needsViralLoadTest = true;
-                }
+                }*/
 
                 //those continuing should receive one VL every year
                 //pick the date of the last viral load
