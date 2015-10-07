@@ -165,7 +165,7 @@
 		<property name="targetUuid" value="70bca1e5-7c68-4500-bfb8-0795549f35a4" />
 		<property name="name" value="Patients who are lost to followup" />
 		<property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.hiv.LostToFollowUpCalculation" />
-		<property name="displayIdentifier" ref="kenyaemr.hiv.identifier.upn" />
+		<!--<property name="displayIdentifier" ref="kenyaemr.hiv.identifier.upn" />-->
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 	</bean>
 
@@ -173,7 +173,6 @@
 		<property name="targetUuid" value="9227c34f-18b6-4c93-844e-5732572d5125" />
 		<property name="name" value="Patients due for CD4 test" />
 		<property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.hiv.NeedsCd4TestCalculation" />
-		<property name="displayIdentifier" ref="kenyaemr.hiv.identifier.upn" />
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 	</bean>
 
@@ -189,7 +188,7 @@
 		<property name="targetUuid" value="e20f9d12-1df4-4e50-9002-294244457c6f" />
 		<property name="name" value="Patients eligible for ART" />
 		<property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.hiv.art.EligibleForArtCalculation" />
-		<property name="displayIdentifier" ref="kenyaemr.hiv.identifier.upn" />
+		<!--<property name="displayIdentifier" ref="kenyaemr.hiv.identifier.upn" />-->
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 	</bean>
 
@@ -197,7 +196,7 @@
 		<property name="targetUuid" value="55038932-2c87-4295-86d1-802e623424ea" />
 		<property name="name" value="Patients who have never been screened for TB" />
 		<property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.hiv.NeverScreenedForTbCalculation" />
-		<property name="displayIdentifier" ref="kenyaemr.hiv.identifier.upn" />
+		<!--<property name="displayIdentifier" ref="kenyaemr.hiv.identifier.upn" />-->
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 	</bean>
 

@@ -91,9 +91,6 @@ public class EligibleForArtCalculation extends AbstractPatientCalculation implem
 		Set<Integer> pregnantWomen = CalculationUtils.patientsThatPass(calculate(new IsPregnantCalculation(), cohort, context));
 		//finding those at risk for hiv
 		CalculationResultMap hivRiskFactor = Calculations.lastObs(Dictionary.getConcept(Dictionary.HIV_RISK_FACTOR), cohort, context);
-		//DNA PCR
-		CalculationResultMap dnaPcrQualitative = Calculations.lastObs(Dictionary.getConcept(Dictionary.HIV_DNA_POLYMERASE_CHAIN_REACTION_QUALITATIVE), cohort, context);
-		CalculationResultMap dnaPcrReaction = Calculations.lastObs(Dictionary.getConcept(Dictionary.HIV_DNA_POLYMERASE_CHAIN_REACTION), cohort, context);
 
 		//find breast feeding map
 		CalculationResultMap breastFeedingMap = Calculations.lastObs(Dictionary.getConcept(Dictionary.INFANT_FEEDING_METHOD), cohort, context);
@@ -126,24 +123,12 @@ public class EligibleForArtCalculation extends AbstractPatientCalculation implem
 			if(isDiscodantCouple != null && isDiscodantCouple.equals(Dictionary.getConcept(Dictionary.DISCORDANT_COUPLE))) {
 				isDiscordant = true;
 			}
-			//finding results for pcr
-			Concept dnaPcrQual = EmrCalculationUtils.codedObsResultForPatient(dnaPcrQualitative, ptId);
-			Concept dnaPcrRea = EmrCalculationUtils.codedObsResultForPatient(dnaPcrReaction, ptId);
-
-			if(dnaPcrQual != null && dnaPcrQual.equals(Dictionary.getConcept(Dictionary.POSITIVE)) && !onArt.contains(ptId)) {
-				eligible = true;
-			}
-
-			if(dnaPcrRea != null && dnaPcrRea.equals(Dictionary.getConcept(Dictionary.DETECTED)) && !onArt.contains(ptId)) {
-				eligible = true;
-			}
 
 			Concept infantFeedingConcept = EmrCalculationUtils.codedObsResultForPatient(breastFeedingMap, ptId);
-			if(infantFeedingConcept != null && (infantFeedingConcept.equals(Dictionary.getConcept(Dictionary.BREASTFED_EXCLUSIVELY)) || infantFeedingConcept.equals(Dictionary.getConcept(Dictionary.MIXED_FEEDING)))) {
-				isBreastFeeding = true;
-			}
-
 			if (inHivProgram.contains(ptId) && !onArt.contains(ptId)) {
+				if(infantFeedingConcept != null && (infantFeedingConcept.equals(Dictionary.getConcept(Dictionary.BREASTFED_EXCLUSIVELY)) || infantFeedingConcept.equals(Dictionary.getConcept(Dictionary.MIXED_FEEDING)))) {
+					isBreastFeeding = true;
+				}
 				int ageInMonths = ((Age) ages.get(ptId).getValue()).getFullMonths();
 				Double cd4 = EmrCalculationUtils.numericObsResultForPatient(lastCd4, ptId);
 				Integer whoStage = EmrUtils.whoStage(EmrCalculationUtils.codedObsResultForPatient(lastWhoStage, ptId));
