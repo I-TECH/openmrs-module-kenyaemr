@@ -29,7 +29,7 @@ import org.openmrs.module.kenyaemr.calculation.library.hiv.DateOfEnrollmentHivCa
 import org.openmrs.module.kenyaemr.calculation.library.hiv.InitialCd4CountCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.InitialCd4PercentCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.IsTransferInAndHasDateCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.IsTransferOutAndHasDateCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.IsApreTransferOutAndHasDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.DateAndReasonFirstMedicallyEligibleForArtCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.DateLastSeenCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.IsBirthDateApproximatedCalculation;
@@ -131,7 +131,7 @@ public class PreArtCohortAnalysisReportBuilder extends AbstractHybridReportBuild
 	}
 
 	private DataDefinition to(HybridReportDescriptor descriptor) {
-		CalculationDataDefinition cd = new CalculationDataDefinition("to", new IsTransferOutAndHasDateCalculation());
+		CalculationDataDefinition cd = new CalculationDataDefinition("to", new IsApreTransferOutAndHasDateCalculation());
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
 		cd.addCalculationParameter("outcomePeriod",Integer.parseInt(descriptor.getId().split("\\.")[6]));
 		return cd;

@@ -9,7 +9,6 @@ import org.openmrs.module.kenyacore.report.builder.AbstractHybridReportBuilder;
 import org.openmrs.module.kenyacore.report.builder.Builds;
 import org.openmrs.module.kenyacore.report.data.patient.definition.CalculationDataDefinition;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.IsTransferInAndHasDateCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.IsTransferOutAndHasDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.AgeAtARTInitiationCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.BaselineCd4CountAndDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.BaselineCd4PercentAndDateCalculation;
@@ -26,6 +25,7 @@ import org.openmrs.module.kenyaemr.calculation.library.hiv.art.DateOfEnrollmentA
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.DaysFromArtEligibilityToArtInitiationCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.DaysFromEnrollmentToArtInitiationCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtRegimenCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.IsArtTransferOutAndHasDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.IsBirthDateApproximatedCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.LastCd4Calculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.LastCd4PercentCalculation;
@@ -155,7 +155,7 @@ public class ArtCohortAnalysisReportBuilder extends AbstractHybridReportBuilder 
     private DataDefinition patientOutComes(HybridReportDescriptor descriptor) {
         int months = Integer.parseInt(descriptor.getId().split("\\.")[7]);
         CalculationDataDefinition cd = new CalculationDataDefinition("outcomes", new PatientArtOutComeCalculation());
-        cd.addCalculationParameter("months", months);
+        cd.addCalculationParameter("outcomePeriod", months);
         cd.addParameter(new Parameter("onDate", "On Date", Date.class));
         return cd;
 
@@ -182,7 +182,7 @@ public class ArtCohortAnalysisReportBuilder extends AbstractHybridReportBuilder 
     }
 
     private DataDefinition to(HybridReportDescriptor descriptor) {
-        CalculationDataDefinition cd = new CalculationDataDefinition("to", new IsTransferOutAndHasDateCalculation());
+        CalculationDataDefinition cd = new CalculationDataDefinition("to", new IsArtTransferOutAndHasDateCalculation());
         cd.addParameter(new Parameter("onDate", "On Date", Date.class));
         cd.addCalculationParameter("outcomePeriod", Integer.parseInt(descriptor.getId().split("\\.")[7]));
         return cd;

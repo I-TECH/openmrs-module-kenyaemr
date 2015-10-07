@@ -155,9 +155,22 @@ public class DateAndReasonFirstMedicallyEligibleForArtARTCalculation extends Abs
         else if (ageInMonths > 180){
             Date artStartDt = checkIfOnArtBeforeCd4(artStartDate, cd4);
             Date cd4Date = cd4Date(cd4, artStartDate);
+            Date whoDate = whoDate(whoStag, artStartDate);
 
             if(artStartDt != null && cd4Date != null && correctDateFormat(artStartDt).before(correctDateFormat(cd4Date))) {
                 return new PatientEligibility(null, artStartDate);
+            }
+
+            else if(artStartDt != null && whoDate != null && correctDateFormat(artStartDt).equals(correctDateFormat(whoDate))) {
+                return new PatientEligibility("WHO stage = Stage IV", whoDate);
+            }
+
+            else if(artStartDt != null && whoDate != null && correctDateFormat(artStartDt).after(correctDateFormat(whoDate))) {
+                return new PatientEligibility("WHO stage = Stage IV", whoDate);
+            }
+
+            else if(artStartDt == null && whoDate != null) {
+                return new PatientEligibility("WHO stage = Stage IV", whoDate);
             }
 
             else if(artStartDt != null && cd4Date != null && correctDateFormat(artStartDt).equals(correctDateFormat(cd4Date))) {

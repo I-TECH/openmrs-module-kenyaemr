@@ -1,7 +1,5 @@
 package org.openmrs.module.kenyaemr.calculation.library.hiv.art;
 
-import org.joda.time.DateTime;
-import org.joda.time.Days;
 import org.openmrs.Obs;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
@@ -42,7 +40,7 @@ public class BaselineCd4PercentAndDateCalculation extends AbstractPatientCalcula
             List<Obs> allCd4PercentObs = CalculationUtils.extractResultValues(listResult);
             if(allCd4PercentObs.size() > 0 && artInitiationDt != null) {
                 for (Obs obs : allCd4PercentObs) {
-                    if (obs.getObsDatetime().before(dateLimit(artInitiationDt, 16)) && obs.getObsDatetime().after(dateLimit(artInitiationDt, -91))) {
+                    if (obs.getObsDatetime().before(dateLimit(artInitiationDt, 16)) && obs.getObsDatetime().after(dateLimit(artInitiationDt, -184))) {
                         validCd4Percent.add(obs);
                     }
                 }

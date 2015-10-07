@@ -38,6 +38,9 @@ public class TransferInAndDateConverter implements DataConverter {
             return "";
         }
         if(what.equals("date")) {
+            if(stateAndDate.getDate() == null) {
+                return "";
+            }
             return formatDate(stateAndDate.getDate());
         }
         if(what.equals("state")) {
