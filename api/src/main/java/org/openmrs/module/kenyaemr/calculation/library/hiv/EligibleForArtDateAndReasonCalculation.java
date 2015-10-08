@@ -1,22 +1,26 @@
 package org.openmrs.module.kenyaemr.calculation.library.hiv;
 
 import org.openmrs.Concept;
+import org.openmrs.Encounter;
+import org.openmrs.EncounterType;
 import org.openmrs.Obs;
 import org.openmrs.PatientProgram;
 import org.openmrs.Program;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
+import org.openmrs.calculation.result.ListResult;
 import org.openmrs.calculation.result.SimpleResult;
+import org.openmrs.module.kenyacore.CoreUtils;
 import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
 import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyacore.calculation.Filters;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
-import org.openmrs.module.kenyaemr.calculation.library.IsPregnantCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.OnArtCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.models.PatientEligibility;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
+import org.openmrs.module.kenyaemr.metadata.MchMetadata;
 import org.openmrs.module.kenyaemr.metadata.TbMetadata;
 import org.openmrs.module.kenyaemr.util.EmrUtils;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
@@ -24,6 +28,7 @@ import org.openmrs.module.reporting.common.Age;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -53,16 +58,12 @@ public class EligibleForArtDateAndReasonCalculation extends AbstractPatientCalcu
         //find hepatits status
         CalculationResultMap hepatitisMap = Calculations.lastObs(Dictionary.getConcept(Dictionary.PROBLEM_ADDED), cohort, context);
         //in tb program
-        Set<Integer> inTbProgram = Filters.inProgram(tbProgram, alive, context);
+        CalculationResultMap inTbProgram = Calculations.activeEnrollment(tbProgram, alive, context);
         //find those who have status for tb
         CalculationResultMap tbStatus = Calculations.lastObs(Dictionary.getConcept(Dictionary.TUBERCULOSIS_DISEASE_STATUS), cohort, context);
-        //find pregnant women
-        Set<Integer> pregnantWomen = CalculationUtils.patientsThatPass(calculate(new IsPregnantCalculation(), cohort, context));
+
         //finding those at risk for hiv
-        CalculationResultMap hivRiskFactor = Calculations.lastObs(Dictionary.getConcept(Dictionary.HIV_RISK_FACTOR), cohort, context);
-        //DNA PCR
-        CalculationResultMap dnaPcrQualitative = Calculations.lastObs(Dictionary.getConcept(Dictionary.HIV_DNA_POLYMERASE_CHAIN_REACTION_QUALITATIVE), cohort, context);
-        CalculationResultMap dnaPcrReaction = Calculations.lastObs(Dictionary.getConcept(Dictionary.HIV_DNA_POLYMERASE_CHAIN_REACTION), cohort, context);
+        CalculationResultMap hivRiskFactor = Calculations.allObs(Dictionary.getConcept(Dictionary.HIV_RISK_FACTOR), cohort, context);
 
         //find breast feeding map
         CalculationResultMap breastFeedingMap = Calculations.lastObs(Dictionary.getConcept(Dictionary.INFANT_FEEDING_METHOD), cohort, context);
@@ -71,22 +72,88 @@ public class EligibleForArtDateAndReasonCalculation extends AbstractPatientCalcu
         Concept acuteFulminatingTypeBViralHepatitis = Dictionary.getConcept(Dictionary.ACUTE_FULMINATING_TYPE_B_VIRAL_HEPATITIS);
         Concept chronicActiveTypeBViralHepatitis = Dictionary.getConcept(Dictionary.CHRONIC_ACTIVE_TYPE_B_VIRAL_HEPATITIS);
 
+
+        //pregnancy status
+        Set<Integer> aliveAndFemale = Filters.female(Filters.alive(cohort, context), context);
+        EncounterType mchEnrollment = MetadataUtils.existing(EncounterType.class, MchMetadata._EncounterType.MCHMS_ENROLLMENT);
+
+        Concept yes = Dictionary.getConcept(Dictionary.YES);
+        CalculationResultMap pregStatusObss = Calculations.lastObs(Dictionary.getConcept(Dictionary.PREGNANCY_STATUS), aliveAndFemale, context);
+        CalculationResultMap enrollmentMap = Calculations.lastEncounter(mchEnrollment, aliveAndFemale, context);
+
         for (Integer ptId : cohort) {
             PatientEligibility patientEligibility = null;
             Date hasHepatitisDate = null;
             Date hasTbDate = null;
             Date hasPregnantDate = null;
-            Date hasDiscordant = null;
+            Date hasDiscordantDate = null;
             Date hasBreastFeedingDate = null;
-            PatientProgram patientProgram = EmrCalculationUtils.resultForPatient(inHivProgram, ptId);
+            PatientProgram patientProgramHiv = EmrCalculationUtils.resultForPatient(inHivProgram, ptId);
+            PatientProgram patientProgramTb = EmrCalculationUtils.resultForPatient(inTbProgram, ptId);
 
-            if (patientProgram != null && !onArt.contains(ptId)) {
+            //pregnancy issues
+            Obs pregStatusObs = EmrCalculationUtils.obsResultForPatient(pregStatusObss, ptId);
+            Encounter encounter = EmrCalculationUtils.encounterResultForPatient(enrollmentMap, ptId);
+
+            if (patientProgramHiv != null && !onArt.contains(ptId)) {
+
+                //check for Tb
+                Obs hasTbObs = EmrCalculationUtils.obsResultForPatient(tbStatus, ptId);
+                Date tbStartDateProg = null, tbStartDateObs = null;
+                if(patientProgramTb != null){
+                    tbStartDateProg = patientProgramTb.getDateEnrolled();
+                }
+                if((hasTbObs != null && hasTbObs.getValueCoded().equals(Dictionary.getConcept(Dictionary.DISEASE_DIAGNOSED))) || (hasTbObs != null && hasTbObs.getValueCoded().equals(Dictionary.getConcept(Dictionary.ON_TREATMENT_FOR_DISEASE)))) {
+                    tbStartDateObs = hasTbObs.getObsDatetime();
+                }
+                if(tbStartDateProg != null && tbStartDateObs == null){
+                    hasTbDate = tbStartDateProg;
+                }
+                else if(tbStartDateObs != null && tbStartDateProg == null){
+                    hasTbDate =tbStartDateObs;
+                }
+                else if(tbStartDateProg != null && tbStartDateObs != null){
+                    //pick the first one
+                    hasTbDate = CoreUtils.earliest(tbStartDateProg, tbStartDateObs);
+                }
+
+                //check for HPV
+                Obs hepatitisObs = EmrCalculationUtils.obsResultForPatient(hepatitisMap, ptId);
+                if(hepatitisObs != null && (hepatitisObs.getValueCoded().equals(hepatitisB) || hepatitisObs.getValueCoded().equals(acuteTypeBViralHepatitis) || hepatitisObs.getValueCoded().equals(acuteFulminatingTypeBViralHepatitis) || hepatitisObs.getValueCoded().equals(chronicActiveTypeBViralHepatitis))) {
+                    hasHepatitisDate = hepatitisObs.getObsDatetime();
+                }
+
+                //discordant couples
+                ListResult listResult = (ListResult) hivRiskFactor.get(ptId);
+                List<Obs> isDiscodantCoupleObs = CalculationUtils.extractResultValues(listResult);
+                if(isDiscodantCoupleObs.size() > 0 ){
+                    for(Obs obs: isDiscodantCoupleObs){
+                        if(obs.getValueCoded().equals(Dictionary.getConcept(Dictionary.DISCORDANT_COUPLE))) {
+                            hasDiscordantDate = obs.getObsDatetime();
+                            break;
+                        }
+                    }
+                }
+                //breast feeding
+                Obs infantFeedingObs = EmrCalculationUtils.obsResultForPatient(breastFeedingMap, ptId);
+                if(infantFeedingObs != null && (infantFeedingObs.getValueCoded().equals(Dictionary.getConcept(Dictionary.BREASTFED_EXCLUSIVELY)) || infantFeedingObs.getValueCoded().equals(Dictionary.getConcept(Dictionary.MIXED_FEEDING)))) {
+                    hasBreastFeedingDate = infantFeedingObs.getObsDatetime();
+                }
+
+                //check for pregnancy
+                if (pregStatusObs != null && pregStatusObs.getValueCoded().equals(yes)) {
+                    hasPregnantDate = pregStatusObs.getObsDatetime();
+                }
+
+                if(encounter != null) {
+                    hasPregnantDate = encounter.getEncounterDatetime();
+                }
 
                 int ageInMonths = ((Age) ages.get(ptId).getValue()).getFullMonths();
                 Obs cd4 = EmrCalculationUtils.obsResultForPatient(lastCd4, ptId);
                 Obs whoStage = EmrCalculationUtils.obsResultForPatient(lastWhoStage, ptId);
 
-                patientEligibility = getCriteriaAndDate(ageInMonths, cd4, whoStage, hasHepatitisDate, hasTbDate, hasPregnantDate, hasDiscordant, hasBreastFeedingDate, patientProgram.getDateEnrolled() );
+                patientEligibility = getCriteriaAndDate(ageInMonths, cd4, whoStage, hasHepatitisDate, hasTbDate, hasPregnantDate, hasDiscordantDate, hasBreastFeedingDate, patientProgramHiv.getDateEnrolled() );
 
             }
             ret.put(ptId, new SimpleResult(patientEligibility, this));

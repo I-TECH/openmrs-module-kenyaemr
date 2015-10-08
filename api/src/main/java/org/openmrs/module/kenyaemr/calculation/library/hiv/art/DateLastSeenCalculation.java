@@ -65,7 +65,7 @@ public class DateLastSeenCalculation extends AbstractPatientCalculation {
 				List<Encounter> targetedEncounters = new ArrayList<Encounter>();
 				if (encounterList.size() > 0) {
 					for (Encounter encounter : encounterList) {
-						if (encounter.getEncounterDatetime().before(futureDate)) {
+						if (encounter.getEncounterDatetime().before(futureDate) && (encounter.getEncounterDatetime().after(patientProgram.getDateEnrolled()) || encounter.getEncounterDatetime().equals(patientProgram.getDateEnrolled()))) {
 							targetedEncounters.add(encounter);
 						}
 					}
