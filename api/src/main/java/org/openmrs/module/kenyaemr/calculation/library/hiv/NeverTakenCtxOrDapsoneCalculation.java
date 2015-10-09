@@ -15,21 +15,25 @@
 package org.openmrs.module.kenyaemr.calculation.library.hiv;
 
 import org.openmrs.Concept;
+import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.Program;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.ListResult;
 import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
+import org.openmrs.module.kenyacore.calculation.BooleanResult;
 import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyacore.calculation.Filters;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyacore.calculation.BooleanResult;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
+import org.openmrs.module.reporting.common.DateUtil;
+import org.openmrs.module.reporting.common.DurationUnit;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -54,6 +58,14 @@ public class NeverTakenCtxOrDapsoneCalculation extends AbstractPatientCalculatio
 
 		Set<Integer> ltfu = CalculationUtils.patientsThatPass(calculate(new LostToFollowUpCalculation(), cohort, context));
 
+		//calculate those patients who are in care
+		//patient who have heard an encounter in the last 3 months
+		Date endOfReportingPeriod = DateUtil.getEndOfMonth(DateUtil.adjustDate(DateUtil.getStartOfMonth(context.getNow()), -1, DurationUnit.DAYS));
+		Date startOfReportingPeriod = DateUtil.adjustDate(DateUtil.adjustDate(endOfReportingPeriod, -3, DurationUnit.MONTHS), -1, DurationUnit.DAYS);
+		//context.setNow(endOfReportingPeriod);
+		CalculationResultMap activePatients = Calculations.allEncounters(null, cohort, context);
+
+
 		// Get concepts...
 		Concept yes = Dictionary.getConcept(Dictionary.YES);
 		Concept dapsone = Dictionary.getConcept(Dictionary.DAPSONE);
@@ -62,9 +74,19 @@ public class NeverTakenCtxOrDapsoneCalculation extends AbstractPatientCalculatio
 		CalculationResultMap ret = new CalculationResultMap();
 		for (Integer ptId : cohort) {
 			boolean neverTakenCtxOrDapsone = false;
+			boolean isActive = false;
+			ListResult listResult = (ListResult) activePatients.get(ptId);
+			List<Encounter> allEncounters = CalculationUtils.extractResultValues(listResult);
+			for(Encounter encounter : allEncounters) {
+				if(encounter.getEncounterDatetime().after(startOfReportingPeriod)) {
+					isActive = true;
+					break;
+				}
+			}
+
 
 			// Is patient alive and in the HIV program
-			if (inHivProgram.contains(ptId)) {
+			if (inHivProgram.contains(ptId) && isActive) {
 				neverTakenCtxOrDapsone = true;
 
 				// First look to see if they have an obs for taking as prophylaxis

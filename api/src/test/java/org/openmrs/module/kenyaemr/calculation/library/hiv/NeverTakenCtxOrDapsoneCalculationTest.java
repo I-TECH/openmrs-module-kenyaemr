@@ -18,6 +18,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Concept;
+import org.openmrs.EncounterType;
+import org.openmrs.Obs;
 import org.openmrs.Program;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationService;
@@ -31,6 +33,7 @@ import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -66,6 +69,13 @@ public class NeverTakenCtxOrDapsoneCalculationTest extends BaseModuleContextSens
 		TestUtils.enrollInProgram(TestUtils.getPatient(2), hivProgram, TestUtils.date(2011, 1, 1));
 		TestUtils.enrollInProgram(TestUtils.getPatient(6), hivProgram, TestUtils.date(2011, 1, 1));
 		TestUtils.enrollInProgram(TestUtils.getPatient(7), hivProgram, TestUtils.date(2011, 1, 1));
+		//give patient # 7 an encounter
+		EncounterType type = MetadataUtils.existing(EncounterType.class, HivMetadata._EncounterType.HIV_CONSULTATION);
+		Obs obs = new Obs();
+		obs.setConcept(Dictionary.getConcept(Dictionary.CIVIL_STATUS));
+		obs.setObsDatetime(new Date());
+		obs.setValueCoded(Dictionary.getConcept(Dictionary.MARRIED_MONOGAMOUS));
+		TestUtils.saveEncounter(TestUtils.getPatient(7), type, new Date(), obs);
 
 		// Give patient #2 CTX dispensed obs
 		Concept ctxDispensed = Dictionary.getConcept(Dictionary.COTRIMOXAZOLE_DISPENSED);
