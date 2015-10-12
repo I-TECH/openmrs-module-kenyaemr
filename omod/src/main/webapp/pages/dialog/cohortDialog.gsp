@@ -1,10 +1,22 @@
+<%
+    ui.includeJavascript("kenyaemr", "controllers/report.js")
+%>
+<script type="text/javascript">
+
+</script>
 <div class="ke-panel-content">
+	<% if (cohort.size() > 0) {%>
+		<div class="ke-form-header">
+			Viewing ${cohort.size()} Patients ${column}
+		</div>
+	<% } %>
 	<table class="ke-table-vertical">
 		<thead>
 			<tr>
 				<th>Name</th>
 				<th>Age</th>
 				<th>Sex</th>
+				<th>Unique Patient Number</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -16,6 +28,7 @@
 				</td>
 				<td>${ patient.age }</td>
 				<td>${ patient.gender }</td>
+				<td>${ patient.identifiers[0].identifier }</td>
 			</tr>
 			<% } %>
 		</tbody>

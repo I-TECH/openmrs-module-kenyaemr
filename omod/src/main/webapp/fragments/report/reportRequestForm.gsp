@@ -30,8 +30,27 @@
 				var field = jQuery(this);
 				params[field.attr('name')] = field.val();
 			});
-
-			${ config.onRequestCallback }(params);
+			var periodValue = parseInt(jQuery('#report-period').val());
+			if(periodValue == null) {
+				periodValue = 0;
+			}
+			var datePicked = jQuery('#date_value').val();
+			var pickedDate = datePicked.split("-");
+			var date = new Date();
+			date.setDate(pickedDate[2]);
+			date.setMonth(pickedDate[1]-1);
+			date.setYear(pickedDate[0]);
+			var results = date.setMonth(date.getMonth() + periodValue);
+			var today = new Date().getTime();
+			if(periodValue > 6 && results > today) {
+				kenyaui.openAlertDialog({
+					heading: 'Run report',
+					message: 'Insufficient follow-up time to run this report '
+				});
+			}
+			else {
+				${ config.onRequestCallback }(params);
+			}
 		});
 	});
 </script>
@@ -44,7 +63,7 @@
 		<div class="ke-field-label">Month</div>
 		<div class="ke-field-content">
 
-			${ ui.includeFragment("kenyaemr", "field/reportPeriod", [ pastMonths: 60 ]) }
+			${ ui.includeFragment("kenyaemr", "field/reportPeriod", [ pastMonths: 65 ]) }
 		</div>
 		<% } %>
 		<% params.each { name, param -> %>
@@ -60,7 +79,8 @@
 		<% } %>
 	</form>
 </div>
-<div class="ke-panel-footer">
+ <div class="ke-panel-footer">
 	<button type="button" id="${ config.id }_btn"><img src="${ ui.resourceLink("kenyaui", "images/glyphs/start.png") }" /> Request</button>
 	<button type="button" onclick="kenyaui.closeDialog();"><img src="${ ui.resourceLink("kenyaui", "images/glyphs/cancel.png") }" /> Cancel</button>
 </div>
+<input type="hidden"  id="report-period" name="period-report" value="${ period }"/>

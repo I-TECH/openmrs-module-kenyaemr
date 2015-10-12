@@ -35,6 +35,7 @@ import org.openmrs.ui.framework.page.PageModel;
 import org.openmrs.ui.framework.page.PageRequest;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
@@ -49,6 +50,7 @@ public class CohortDialogPageController {
 						   PageRequest pageRequest,
 						   PageModel model,
 						   UiUtils ui,
+						   HttpServletResponse response,
 						   @SpringBean ReportManager reportManager,
 						   @SpringBean KenyaUiUtils kenyaUi,
 						   @SpringBean ReportService reportService) {

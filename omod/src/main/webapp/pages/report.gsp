@@ -41,7 +41,6 @@
 			<% } %>
 		</div>
 	</div>
-
 	${ ui.includeFragment("kenyaemr", "report/reportQueue", [ allowCancel: false ]) }
 
 	<div class="ke-panel-frame">
