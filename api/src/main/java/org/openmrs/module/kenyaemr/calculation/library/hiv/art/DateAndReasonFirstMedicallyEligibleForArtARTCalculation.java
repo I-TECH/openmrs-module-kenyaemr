@@ -1,5 +1,7 @@
 package org.openmrs.module.kenyaemr.calculation.library.hiv.art;
 
+import org.openmrs.Encounter;
+import org.openmrs.EncounterType;
 import org.openmrs.Obs;
 import org.openmrs.PatientProgram;
 import org.openmrs.Program;
@@ -15,6 +17,7 @@ import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.calculation.library.models.PatientEligibility;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
+import org.openmrs.module.kenyaemr.metadata.MchMetadata;
 import org.openmrs.module.kenyaemr.metadata.TbMetadata;
 import org.openmrs.module.kenyaemr.util.EmrUtils;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
@@ -64,6 +67,8 @@ public class DateAndReasonFirstMedicallyEligibleForArtARTCalculation extends Abs
         CalculationResultMap pregStatusObss = Calculations.lastObs(Dictionary.getConcept(Dictionary.PREGNANCY_STATUS), female, context);
         CalculationResultMap hivRiskFactor = Calculations.lastObs(Dictionary.getConcept(Dictionary.HIV_RISK_FACTOR), cohort, context);
         CalculationResultMap tbStatus = Calculations.lastObs(Dictionary.getConcept(Dictionary.TUBERCULOSIS_DISEASE_STATUS), cohort, context);
+        EncounterType mchEnrollment = MetadataUtils.existing(EncounterType.class, MchMetadata._EncounterType.MCHMS_ENROLLMENT);
+        CalculationResultMap enrollmentMap = Calculations.lastEncounter(mchEnrollment, female, context);
 
         for(Integer ptId: cohort) {
 
@@ -74,6 +79,7 @@ public class DateAndReasonFirstMedicallyEligibleForArtARTCalculation extends Abs
             Obs hasTbConcpt = EmrCalculationUtils.obsResultForPatient(tbStatus, ptId);
             Obs pregnancyObs = EmrCalculationUtils.obsResultForPatient(pregStatusObss, ptId);
             Date artStartDate = EmrCalculationUtils.datetimeResultForPatient(artStartDateMap, ptId);
+            Encounter pregnantEncounter = EmrCalculationUtils.encounterResultForPatient(enrollmentMap, ptId);
 
             ListResult allCd4ListResults = (ListResult) allCd4.get(ptId);
             List<Obs> obsList = CalculationUtils.extractResultValues(allCd4ListResults);
@@ -91,7 +97,11 @@ public class DateAndReasonFirstMedicallyEligibleForArtARTCalculation extends Abs
                     if (artStartDate != null && pregnancyObs.getObsDatetime().after(artStartDate)) {
                         patientEligibility = new PatientEligibility("", artStartDate);
                     }
-                } else if (hepatitisConcept != null && hepatitisConcept.getValueCoded().equals(Dictionary.getConcept(Dictionary.HEPATITIS_B))) {
+                }
+                else if(pregnantEncounter != null){
+                    patientEligibility = new PatientEligibility("Pregnant or breastfeeding", pregnantEncounter.getEncounterDatetime());
+                }
+                else if (hepatitisConcept != null && hepatitisConcept.getValueCoded().equals(Dictionary.getConcept(Dictionary.HEPATITIS_B))) {
                     patientEligibility = new PatientEligibility("HPV/HIV coinfection", hepatitisConcept.getObsDatetime());
                     if (artStartDate != null && hepatitisConcept.getObsDatetime().after(artStartDate)) {
                         patientEligibility = new PatientEligibility("", artStartDate);
@@ -111,7 +121,11 @@ public class DateAndReasonFirstMedicallyEligibleForArtARTCalculation extends Abs
                     if (artStartDate != null && isDiscodantCouple.getObsDatetime().after(artStartDate)) {
                         patientEligibility = new PatientEligibility("", artStartDate);
                     }
-                } else {
+                }
+                else if (ageInMonths <= 120){
+                    patientEligibility = new PatientEligibility("Age 10 years and below", hivEnrollment.getDateEnrolled());
+                }
+                else {
                     patientEligibility = getCriteriaAndDate(ageInMonths, obsList, obsListWho, artStartDate, hivEnrollment.getDateEnrolled());
 
                 }
