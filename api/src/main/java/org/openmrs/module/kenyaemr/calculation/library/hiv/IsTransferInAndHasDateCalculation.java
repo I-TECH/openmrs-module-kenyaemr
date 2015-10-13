@@ -42,16 +42,11 @@ public class IsTransferInAndHasDateCalculation extends AbstractPatientCalculatio
             Obs transferInDateObs = EmrCalculationUtils.obsResultForPatient(transferInDateMap, ptId);
 
             if(inHivProgram.contains(ptId)) {
-
-                if(transferInObs != null && transferInDateObs != null && transferInObs.getValueCoded().equals(Dictionary.getConcept(Dictionary.YES))) {
+                if(transferInDateObs != null){
                     transferInAndDate = new TransferInAndDate("Yes", transferInDateObs.getValueDatetime());
                 }
-                else if(transferInObs != null && transferInDateObs == null && transferInObs.getValueCoded().equals(Dictionary.getConcept(Dictionary.YES))) {
+                else if(transferInObs != null && transferInObs.getValueCoded().equals(Dictionary.getConcept(Dictionary.YES))) {
                     transferInAndDate = new TransferInAndDate("Yes", transferInObs.getObsDatetime());
-                }
-
-                else if(transferInObs == null && transferInDateObs != null) {
-                    transferInAndDate = new TransferInAndDate("Yes", transferInDateObs.getValueDatetime());
                 }
                 else {
                     transferInAndDate = new TransferInAndDate("No", null);

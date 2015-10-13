@@ -77,14 +77,12 @@ public class PatientArtOutComeCalculation extends AbstractPatientCalculation {
                     transferOutDateValid = transferOutDateObs.getValueDatetime();
                 }
 
-                else if(reasonForExitObs != null && transferOutDateValid != null && reasonForExitObs.getValueCoded().equals(transferOutStatus)) {
+                else if(reasonForExitObs != null && transferOutDateObs != null && reasonForExitObs.getValueCoded().equals(transferOutStatus)) {
                     transferOutDateValid = transferOutDateObs.getValueDatetime();
                 }
-                else if(reasonForExitObs != null && transferOutDateValid == null && reasonForExitObs.getValueCoded().equals(transferOutStatus) && reasonForExitObs.getObsDatetime().before(futureDate)) {
+                else if(reasonForExitObs != null && transferOutDateObs == null && reasonForExitObs.getValueCoded().equals(transferOutStatus) && reasonForExitObs.getObsDatetime().before(futureDate)) {
                     transferOutDateValid = reasonForExitObs.getObsDatetime();
                 }
-
-
 
                 if(dod != null && (dod.before(futureDate)) && dod.after(initialArtStart)) {
                     status = "Died";
