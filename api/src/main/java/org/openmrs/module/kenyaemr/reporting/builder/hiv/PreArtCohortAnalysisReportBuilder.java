@@ -27,9 +27,8 @@ import org.openmrs.module.kenyaemr.calculation.library.hiv.AgeAtProgramEnrollmen
 import org.openmrs.module.kenyaemr.calculation.library.hiv.DateOfDiagnosisCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.DateOfEnrollmentHivCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.InitialCd4CountCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.InitialCd4PercentCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.IsTransferInAndHasDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.IsApreTransferOutAndHasDateCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.IsTransferInAndHasDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.DateAndReasonFirstMedicallyEligibleForArtCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.DateLastSeenCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.IsBirthDateApproximatedCalculation;
@@ -118,8 +117,6 @@ public class PreArtCohortAnalysisReportBuilder extends AbstractHybridReportBuild
 		dsd.addColumn("Date Transferred out", to(report), "onDate=${endDate}", new TransferInAndDateConverter("date"));
 		dsd.addColumn("Initial CD4 count", new CalculationDataDefinition("Initial CD4 count", new InitialCd4CountCalculation()), "", new Cd4ValueAndDateConverter("value"));
 		dsd.addColumn("Date of initial CD4 count", new CalculationDataDefinition("Date of initial CD4 count", new InitialCd4CountCalculation()), "", new Cd4ValueAndDateConverter("date"));
-		dsd.addColumn("Initial CD4 percent", new CalculationDataDefinition("Initial CD4 percent", new InitialCd4PercentCalculation()), "", new Cd4ValueAndDateConverter("value"));
-		dsd.addColumn("Date of initial CD4 percent", new CalculationDataDefinition("Date of initial CD4 percent", new InitialCd4PercentCalculation()), "", new Cd4ValueAndDateConverter("date"));
 		dsd.addColumn("Date first medically eligible for ART", dateAndReasonFirstMedicallyEligibleForArtCalculation(report), "onDate=${endDate}", new MedicallyEligibleConverter("date"));
 		dsd.addColumn("Days from enrollment in care to ART eligibility", daysFromEnrollmentToEligibility(report), "onDate=${endDate}", new CalculationResultConverter());
 		dsd.addColumn("Reason first medically eligible For ART", dateAndReasonFirstMedicallyEligibleForArtCalculation(report), "onDate=${endDate}", new MedicallyEligibleConverter("reason"));

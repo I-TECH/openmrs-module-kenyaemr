@@ -11,11 +11,8 @@ import org.openmrs.module.kenyacore.report.data.patient.definition.CalculationDa
 import org.openmrs.module.kenyaemr.calculation.library.hiv.IsTransferInAndHasDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.AgeAtARTInitiationCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.BaselineCd4CountAndDateCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.BaselineCd4PercentAndDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.Cd4CountImprovementCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.Cd4PercentImprovementCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.ChangeInCd4CountCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.ChangeInCd4PercentCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.CurrentArtRegimenCohortAnalysisCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.DateARV1Calculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.DateAndReasonFirstMedicallyEligibleForArtARTCalculation;
@@ -28,7 +25,6 @@ import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtRegimen
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.IsArtTransferOutAndHasDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.IsBirthDateApproximatedCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.LastCd4Calculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.LastCd4PercentCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.LastReturnVisitDateArtAnalysisCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.PatientArtOutComeCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.ViralLoadCalculation;
@@ -121,26 +117,19 @@ public class ArtCohortAnalysisReportBuilder extends AbstractHybridReportBuilder 
         dsd.addColumn("Reason first medically eligible For ART", dateAndReasonFirstMedicallyEligibleForArtCalculation(report), "onDate=${endDate}", new MedicallyEligibleConverter("reason"));
         dsd.addColumn("Baseline cd4 count", new CalculationDataDefinition("Baseline cd4 count", new BaselineCd4CountAndDateCalculation()), "", new Cd4ValueAndDateConverter("value"));
         dsd.addColumn("Date of baseline cd4 count", new CalculationDataDefinition("Date of baseline cd4 count", new BaselineCd4CountAndDateCalculation()), "", new Cd4ValueAndDateConverter("date"));
-        dsd.addColumn("Baseline cd4 percent", new CalculationDataDefinition("Baseline cd4 percent", new BaselineCd4PercentAndDateCalculation()), "", new Cd4ValueAndDateConverter("value"));
-        dsd.addColumn("Date of baseline cd4 percent", new CalculationDataDefinition("Date of baseline cd4 percent", new BaselineCd4PercentAndDateCalculation()), "", new Cd4ValueAndDateConverter("date"));
         dsd.addColumn("Initial ART regimen", new CalculationDataDefinition("First ART regimen", new InitialArtRegimenCalculation()), "", new RegimenConverter());
         dsd.addColumn("Current ART regimen", currentARTRegimen(report), "onDate=${endDate}", new RegimenConverter());
         dsd.addColumn("Current ART line", currentARTRegimen(report), "onDate=${endDate}", new RegimenLineConverter());
         dsd.addColumn("Current cd4 count", currentCd4Count(report), "onDate=${endDate}", new CurrentCd4Converter("value"));
         dsd.addColumn("Date current cd4 count", currentCd4Count(report), "onDate=${endDate}", new CurrentCd4Converter("date"));
-        dsd.addColumn("Current cd4 percent", currentCd4Percent(report), "onDate=${endDate}", new CurrentCd4Converter("value"));
-        dsd.addColumn("Date current cd4 percent", currentCd4Percent(report), "onDate=${endDate}", new CurrentCd4Converter("date"));
         dsd.addColumn("Change in cd4 count", changeInCd4Count(report), "onDate=${endDate}", new ChangeInCd4Converter());
         dsd.addColumn("Cd4 count improvement", cd4CountImprovement(report), "onDate=${endDate}", new CalculationResultConverter());
-        dsd.addColumn("Change in cd4 percent", changeInCd4Percent(report), "onDate=${endDate}", new ChangeInCd4Converter());
-        dsd.addColumn("Cd4 percent improvement", cd4PercentImprovement(report), "onDate=${endDate}", new CalculationResultConverter());
         dsd.addColumn("Current viral load", viralLoad(report), "onDate=${endDate}", new CurrentCd4Converter("value"));
         dsd.addColumn("Date of current viral load", viralLoad(report), "onDate=${endDate}", new CurrentCd4Converter("date"));
         dsd.addColumn("Viral suppression", viralSuppression(report), "onDate=${endDate}", new CalculationResultConverter());
         dsd.addColumn("Date of Last visit", lastSeen(report), "onDate=${endDate}", new CalculationResultConverter());
         dsd.addColumn("Date of expected next visit", nextAppointmentDate(report), "onDate=${endDate}", new CalculationResultConverter());
         dsd.addColumn("Date of death", death(report), "onDate=${endDate}", new CalculationResultConverter());
-
         dsd.addColumn("ART Outcomes", patientOutComes(report), "onDate=${endDate}", new CalculationResultConverter());
 
 
@@ -222,13 +211,6 @@ public class ArtCohortAnalysisReportBuilder extends AbstractHybridReportBuilder 
         return cd;
     }
 
-    private DataDefinition currentCd4Percent(HybridReportDescriptor descriptor) {
-        CalculationDataDefinition cd = new CalculationDataDefinition("currentCd4Percent", new LastCd4PercentCalculation());
-        cd.addParameter(new Parameter("onDate", "On Date", Date.class));
-        cd.addCalculationParameter("outcomePeriod", Integer.parseInt(descriptor.getId().split("\\.")[7]));
-        return cd;
-    }
-
     private DataDefinition changeInCd4Count(HybridReportDescriptor descriptor) {
         CalculationDataDefinition cd = new CalculationDataDefinition("changeInCd4Count", new ChangeInCd4CountCalculation());
         cd.addParameter(new Parameter("onDate", "On Date", Date.class));
@@ -242,21 +224,6 @@ public class ArtCohortAnalysisReportBuilder extends AbstractHybridReportBuilder 
         cd.addCalculationParameter("outcomePeriod", Integer.parseInt(descriptor.getId().split("\\.")[7]));
         return cd;
     }
-
-    private DataDefinition changeInCd4Percent(HybridReportDescriptor descriptor) {
-        CalculationDataDefinition cd = new CalculationDataDefinition("changeInCd4Percent", new ChangeInCd4PercentCalculation());
-        cd.addParameter(new Parameter("onDate", "On Date", Date.class));
-        cd.addCalculationParameter("outcomePeriod", Integer.parseInt(descriptor.getId().split("\\.")[7]));
-        return cd;
-    }
-
-    private DataDefinition cd4PercentImprovement(HybridReportDescriptor descriptor) {
-        CalculationDataDefinition cd = new CalculationDataDefinition("changeImprovementPercent", new Cd4PercentImprovementCalculation());
-        cd.addParameter(new Parameter("onDate", "On Date", Date.class));
-        cd.addCalculationParameter("outcomePeriod", Integer.parseInt(descriptor.getId().split("\\.")[7]));
-        return cd;
-    }
-
     private DataDefinition viralSuppression(HybridReportDescriptor descriptor) {
         CalculationDataDefinition cd = new CalculationDataDefinition("viralSuppression", new ViralSuppressionCalculation());
         cd.addParameter(new Parameter("onDate", "On Date", Date.class));
