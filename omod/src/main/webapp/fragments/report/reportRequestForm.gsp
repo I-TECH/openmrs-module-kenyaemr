@@ -35,6 +35,9 @@
 				periodValue = 0;
 			}
 			var datePicked = jQuery('#date_value').val();
+			if(datePicked == null){
+				${ config.onRequestCallback }(params);
+			}
 			var pickedDate = datePicked.split("-");
 			var date = new Date();
 			date.setDate(pickedDate[2]);
@@ -42,7 +45,7 @@
 			date.setYear(pickedDate[0]);
 			var results = date.setMonth(date.getMonth() + periodValue);
 			var today = new Date().getTime();
-			if(periodValue > 6 && results > today) {
+			if(periodValue > 6 && results > today && periodValue <= 60) {
 				kenyaui.openAlertDialog({
 					heading: 'Run report',
 					message: 'Insufficient follow-up time to run this report '
