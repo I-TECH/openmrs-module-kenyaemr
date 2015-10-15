@@ -103,9 +103,14 @@ public class LastReturnVisitDateArtAnalysisCalculation extends AbstractPatientCa
                     //if return visit date still missing we will check the 3rd prior visit
                     if(returnVisitDate == null && requiredVisits.size() > 2) {
                         //get the visit date of the last visit
-                        Date lastVisitDate = requiredVisits.get(1).getStartDatetime();
+                        Date lastVisitDate0 = requiredVisits.get(0).getStartDatetime();
+                        Date priorVisitDate1 = requiredVisits.get(1).getStartDatetime();
+                        Date lastVisitDate1 = requiredVisits.get(1).getStartDatetime();
                         Date priorVisitDate2 = requiredVisits.get(2).getStartDatetime();
-                        int dayDiff = daysBetweenDates(lastVisitDate, priorVisitDate2);
+
+                        int day2= daysBetweenDates(lastVisitDate1, priorVisitDate2);
+                        int day1 = daysBetweenDates(lastVisitDate0, priorVisitDate1);
+                        int dayDiff =day2+day1;
                         //get the prior visit
                         Set<Encounter> priorVisitEncounters = requiredVisits.get(2).getEncounters();
                         Date priorReturnDate2 = null;
@@ -129,9 +134,17 @@ public class LastReturnVisitDateArtAnalysisCalculation extends AbstractPatientCa
                     //if return visit date still missing we will check the 4th prior visit
                     if(returnVisitDate == null && requiredVisits.size() > 3) {
                         //get the visit date of the last visit
-                        Date lastVisitDate = requiredVisits.get(2).getStartDatetime();
+                        Date lastVisitDate0 = requiredVisits.get(0).getStartDatetime();
+                        Date priorVisitDate1 = requiredVisits.get(1).getStartDatetime();
+                        Date lastVisitDate1 = requiredVisits.get(1).getStartDatetime();
+                        Date priorVisitDate2 = requiredVisits.get(2).getStartDatetime();
+                        Date lastVisitDate2 = requiredVisits.get(2).getStartDatetime();
                         Date priorVisitDate3 = requiredVisits.get(3).getStartDatetime();
-                        int dayDiff = daysBetweenDates(lastVisitDate, priorVisitDate3);
+
+                        int day3 = daysBetweenDates(lastVisitDate2, priorVisitDate3);
+                        int day2= daysBetweenDates(lastVisitDate1, priorVisitDate2);
+                        int day1 = daysBetweenDates(lastVisitDate0, priorVisitDate1);
+                        int dayDiff =day2 + day1 + day3;
                         //get the prior visit
                         Set<Encounter> priorVisitEncounters = requiredVisits.get(3).getEncounters();
                         Date priorReturnDate3 = null;
@@ -155,9 +168,20 @@ public class LastReturnVisitDateArtAnalysisCalculation extends AbstractPatientCa
                     //if return visit date still missing we will pick the 5th visit
                     if(returnVisitDate == null && requiredVisits.size() > 4) {
                         //get the visit date of the last visit
-                        Date lastVisitDate = requiredVisits.get(3).getStartDatetime();
+                        Date lastVisitDate0 = requiredVisits.get(0).getStartDatetime();
+                        Date priorVisitDate1 = requiredVisits.get(1).getStartDatetime();
+                        Date lastVisitDate1 = requiredVisits.get(1).getStartDatetime();
+                        Date priorVisitDate2 = requiredVisits.get(2).getStartDatetime();
+                        Date lastVisitDate2 = requiredVisits.get(2).getStartDatetime();
+                        Date priorVisitDate3 = requiredVisits.get(3).getStartDatetime();
+                        Date lastVisitDate3 = requiredVisits.get(3).getStartDatetime();
                         Date priorVisitDate4 = requiredVisits.get(4).getStartDatetime();
-                        int dayDiff = daysBetweenDates(lastVisitDate, priorVisitDate4);
+
+                        int day4 = daysBetweenDates(lastVisitDate3, priorVisitDate4);
+                        int day3 = daysBetweenDates(lastVisitDate2, priorVisitDate3);
+                        int day2= daysBetweenDates(lastVisitDate1, priorVisitDate2);
+                        int day1 = daysBetweenDates(lastVisitDate0, priorVisitDate1);
+                        int dayDiff =day2 + day1 + day3+day4;
                         //get the prior visit
                         Set<Encounter> priorVisitEncounters = requiredVisits.get(4).getEncounters();
                         Date priorReturnDate4 = null;
