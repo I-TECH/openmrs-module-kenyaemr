@@ -57,6 +57,9 @@ public class DateLastSeenArtCalculation extends AbstractPatientCalculation {
                         encounterDate = targetedEncounters.get(targetedEncounters.size() - 1).getEncounterDatetime();
                     }
                 }
+                if(encounterDate == null){
+                    encounterDate = artStartDate;
+                }
 
                 result.put(ptId, new SimpleResult(encounterDate, this));
             }

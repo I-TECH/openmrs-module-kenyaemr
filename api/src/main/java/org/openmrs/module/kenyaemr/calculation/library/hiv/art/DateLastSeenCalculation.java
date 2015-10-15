@@ -73,6 +73,9 @@ public class DateLastSeenCalculation extends AbstractPatientCalculation {
 						encounterDate = targetedEncounters.get(targetedEncounters.size() - 1).getEncounterDatetime();
 					}
 				}
+				if(encounterDate == null) {
+					encounterDate = patientProgram.getDateEnrolled();
+				}
 
 				result.put(ptId, new SimpleResult(encounterDate, this));
 			}
