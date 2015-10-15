@@ -32,6 +32,7 @@ import org.openmrs.module.reporting.common.DurationUnit;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Calculate possible patient outcomes at the end of the cohort period
@@ -63,6 +64,7 @@ public class PatientPreArtOutComeCalculation extends AbstractPatientCalculation 
 		for (Integer ptId : cohort) {
 		   	String status = "Alive and not on ART";
 			Date dateLost = null;
+			TreeMap<Date, String> preArtOutcomes = new TreeMap<Date, String>();
 
 			PatientProgram patientProgramDate = EmrCalculationUtils.resultForPatient(enrolledHere, ptId);
 
@@ -81,36 +83,43 @@ public class PatientPreArtOutComeCalculation extends AbstractPatientCalculation 
 
 				//start looping through to get outcomes
 				if(initialArtStart != null && initialArtStart.before(futureDate) && initialArtStart.after(patientProgramDate.getDateEnrolled())) {
-					status = "Initiated ART";
+					preArtOutcomes.put(initialArtStart, "Initiated ART");
 				}
-				else {
-					if(dod != null && dateTo != null && dod.before(dateTo) && dod.before(futureDate) && dod.after(patientProgramDate.getDateEnrolled())) {
-						status = "Died";
-					}
-					else if(dod != null && dateTo != null && dateTo.before(dod) && dateTo.before(futureDate) && dateTo.after(patientProgramDate.getDateEnrolled())) {
-						status = "Transferred out";
-					}
 
-					else if(dod != null && dod.before(futureDate) && dod.after(patientProgramDate.getDateEnrolled())){
-						status = "Died";
-					}
-					else if(dateTo != null && dateTo.before(futureDate) && dateTo.after(patientProgramDate.getDateEnrolled())){
-						status = "Transferred out";
-					}
+				if(dod != null && dateTo != null && dod.before(dateTo) && dod.before(futureDate) && dod.after(patientProgramDate.getDateEnrolled())) {
+					preArtOutcomes.put(dod, "Died");
+				}
+				if(dod != null && dateTo != null && dateTo.before(dod) && dateTo.before(futureDate) && dateTo.after(patientProgramDate.getDateEnrolled())) {
+					preArtOutcomes.put(dateTo, "Transferred out");
+				}
 
-					else if(defaultedDate != null && dateLost != null && defaultedDate.before(dateLost) && defaultedDate.before(futureDate) && defaultedDate.after(patientProgramDate.getDateEnrolled())){
-						status = "Defaulted";
-					}
+				if(dod != null && dod.before(futureDate) && dod.after(patientProgramDate.getDateEnrolled())){
+					preArtOutcomes.put(dod, "Died");
+				}
+				if(dateTo != null && dateTo.before(futureDate) && dateTo.after(patientProgramDate.getDateEnrolled())){
+					preArtOutcomes.put(dateTo, "Transferred out");
+				}
 
-					else if(defaultedDate != null && dateLost != null && dateLost.before(defaultedDate) && dateLost.before(futureDate) && dateLost.after(patientProgramDate.getDateEnrolled()) && dateLost.before(new Date())){
-						status = "LTFU";
-					}
-					else if(defaultedDate != null && defaultedDate.before(futureDate) && defaultedDate.after(patientProgramDate.getDateEnrolled()) && defaultedDate.before(new Date())) {
-						status = "Defaulted";
-					}
+				if(defaultedDate != null && dateLost != null && defaultedDate.before(dateLost) && defaultedDate.before(futureDate) && defaultedDate.after(patientProgramDate.getDateEnrolled())){
+					preArtOutcomes.put(defaultedDate, "Defaulted");
+				}
 
-					else if(dateLost != null && dateLost.before(futureDate) && dateLost.after(patientProgramDate.getDateEnrolled()) && dateLost.before(new Date())) {
-						status = "LTFU";
+				if(defaultedDate != null && dateLost != null && dateLost.before(defaultedDate) && dateLost.before(futureDate) && dateLost.after(patientProgramDate.getDateEnrolled()) && dateLost.before(new Date())){
+					preArtOutcomes.put(dateLost, "LTFU");
+				}
+				if(defaultedDate != null && defaultedDate.before(futureDate) && defaultedDate.after(patientProgramDate.getDateEnrolled()) && defaultedDate.before(new Date())) {
+					preArtOutcomes.put(defaultedDate, "Defaulted");
+				}
+
+				if(dateLost != null && dateLost.before(futureDate) && dateLost.after(patientProgramDate.getDateEnrolled()) && dateLost.before(new Date())) {
+					preArtOutcomes.put(dateLost, "LTFU");
+				}
+				//pick the last item in the tree map
+				//check first if it is null
+				if(preArtOutcomes.size() > 0) {
+					Map.Entry<Date, String> values = preArtOutcomes.lastEntry();
+					if(values != null){
+						status = values.getValue();
 					}
 				}
 				ret.put(ptId, new SimpleResult(status, this));

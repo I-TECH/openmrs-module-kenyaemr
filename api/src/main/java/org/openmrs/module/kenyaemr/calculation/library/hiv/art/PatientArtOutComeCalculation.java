@@ -21,6 +21,7 @@ import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Created by codehub on 06/07/15.
@@ -51,9 +52,11 @@ public class PatientArtOutComeCalculation extends AbstractPatientCalculation {
 
 
         CalculationResultMap ret = new CalculationResultMap();
+
         for (Integer ptId : cohort) {
             String status = null;
             Date dateLost = null;
+            TreeMap<Date, String> outComes = new TreeMap<Date, String>();
 
             Date transferOutDateValid = null;
             Obs reasonForExitObs = EmrCalculationUtils.obsResultForPatient(lastReasonForExit, ptId);
@@ -61,7 +64,6 @@ public class PatientArtOutComeCalculation extends AbstractPatientCalculation {
 
             Date initialArtStart = EmrCalculationUtils.datetimeResultForPatient(onARTInitial, ptId);
             Date dod = EmrCalculationUtils.datetimeResultForPatient(deadPatients, ptId);
-           // TransferInAndDate transferOutAndDate = EmrCalculationUtils.resultForPatient(transferredOut, ptId);
             Date defaultedDate = EmrCalculationUtils.datetimeResultForPatient(defaulted, ptId);
             LostToFU classifiedLTFU = EmrCalculationUtils.resultForPatient(ltfu, ptId);
             if(classifiedLTFU != null) {
@@ -85,44 +87,52 @@ public class PatientArtOutComeCalculation extends AbstractPatientCalculation {
                 }
 
                 if(dod != null && (dod.before(futureDate)) && dod.after(initialArtStart)) {
-                    status = "Died";
+                    outComes.put(dod, "Died");
                 }
-                else if(transferOutDateValid != null){
-                        status = "Transferred out";
+                if(transferOutDateValid != null){
+                    outComes.put(transferOutDateValid, "Transferred out");
 
                 }
 
-                else if(stoppedDate != null && dateLost != null) {
+                if(stoppedDate != null && dateLost != null) {
                     try {
                         Date stDate = artStoppedDate(stoppedDate);
                         if(stDate.after(initialArtStart) && stDate.before(futureDate) && stDate.before(dateLost) && dateLost.before(new Date())) {
-                            status = "LTFU";
+                            outComes.put(dateLost, "LTFU");
                         }
                         else if(stDate.after(initialArtStart) && stDate.before(futureDate) && stDate.after(dateLost)) {
-                            status = "Stopped ART";
+                            outComes.put(dateLost, "Stopped ART");
                         }
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
                 }
-                else if(stoppedDate != null) {
+                if(stoppedDate != null) {
                     try {
                         Date stDate = artStoppedDate(stoppedDate);
                         if(stDate.after(initialArtStart) && stDate.before(futureDate)) {
-                            status = "Stopped ART";
+                            outComes.put(artStoppedDate(stoppedDate), "Stopped ART");
                         }
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
                 }
 
-                else if(dateLost != null && (dateLost.before(futureDate)) && dateLost.after(initialArtStart) && dateLost.before(new Date())){
-                    status = "LTFU";
+                if(dateLost != null && (dateLost.before(futureDate)) && dateLost.after(initialArtStart) && dateLost.before(new Date())){
+                    outComes.put(dateLost, "LTFU");
                 }
                 else if(defaultedDate != null && (defaultedDate.before(futureDate)) && defaultedDate.after(initialArtStart) && defaultedDate.before(new Date())){
-                    status = "Defaulted";
+                    outComes.put(dateLost, "Defaulted");
                 }
 
+            }
+            //now check for things in the map and have the results recorded
+            //since the map is sorted ascending, we pick the last item in the list
+            if(outComes.size() > 0) {
+                Map.Entry<Date, String> values = outComes.lastEntry();
+                if (values != null) {
+                    status = values.getValue();
+                }
             }
             ret.put(ptId, new SimpleResult(status, this));
         }
