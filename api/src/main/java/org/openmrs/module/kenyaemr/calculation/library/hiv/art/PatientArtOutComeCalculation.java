@@ -338,13 +338,14 @@ public class PatientArtOutComeCalculation extends AbstractPatientCalculation {
     }
     CalculationResultMap defaultedMap(Collection<Integer> cohort, PatientCalculationContext context, Integer period) {
         CalculationResultMap ret = new CalculationResultMap();
+        Set<Integer> isTransferOut = CalculationUtils.patientsThatPass(calculate(new IsTransferOutCalculation(), cohort, context));
         CalculationResultMap resultMap = returnVisitDate(cohort, context, period);
         for (Integer ptId : cohort) {
             Date dateDefaulted = null;
             SimpleResult lastScheduledReturnDateResults = (SimpleResult) resultMap.get(ptId);
             if (lastScheduledReturnDateResults != null) {
                 Date lastScheduledReturnDate = (Date) lastScheduledReturnDateResults.getValue();
-                if(lastScheduledReturnDate != null) {
+                if(lastScheduledReturnDate != null && !(isTransferOut.contains(ptId))) {
                     dateDefaulted = CoreUtils.dateAddDays(lastScheduledReturnDate, 30);
                 }
             }
@@ -356,12 +357,13 @@ public class PatientArtOutComeCalculation extends AbstractPatientCalculation {
 
     CalculationResultMap ltfuMap(Collection<Integer> cohort, PatientCalculationContext context, Integer period) {
         CalculationResultMap ret = new CalculationResultMap();
+        Set<Integer> isTransferOut = CalculationUtils.patientsThatPass(calculate(new IsTransferOutCalculation(), cohort, context));
         CalculationResultMap resultMap = returnVisitDate(cohort, context, period);
         for (Integer ptId : cohort) {
             LostToFU classifiedLTFU;
             SimpleResult lastScheduledReturnDateResults = (SimpleResult) resultMap.get(ptId);
             Date lastScheduledReturnDate = (Date) lastScheduledReturnDateResults.getValue();
-            if (lastScheduledReturnDate != null && (daysSince(lastScheduledReturnDate, context) > HivConstants.LOST_TO_FOLLOW_UP_THRESHOLD_DAYS)) {
+            if (lastScheduledReturnDate != null && (daysSince(lastScheduledReturnDate, context) > HivConstants.LOST_TO_FOLLOW_UP_THRESHOLD_DAYS) && !(isTransferOut.contains(ptId))) {
                 classifiedLTFU = new LostToFU(true, DateUtil.adjustDate(lastScheduledReturnDate, HivConstants.LOST_TO_FOLLOW_UP_THRESHOLD_DAYS, DurationUnit.DAYS ));
             }
 

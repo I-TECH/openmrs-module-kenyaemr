@@ -40,6 +40,9 @@ import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.DurationUnit;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -112,10 +115,13 @@ public class PatientPreArtOutComeCalculation extends AbstractPatientCalculation 
 				if(dod != null && dod.before(futureDate) && dod.after(patientProgramDate.getDateEnrolled())){
 					preArtOutcomes.put(dod, "Died");
 				}
-				if(dateTo != null && dateTo.before(futureDate) && dateTo.after(patientProgramDate.getDateEnrolled())){
-					preArtOutcomes.put(dateTo, "Transferred out");
+				try {
+					if(dateTo != null && dateTo.before(futureDate) && (dateTo.after(patientProgramDate.getDateEnrolled()) || dateOnlyDate(dateTo.toString()).equals(dateOnlyDate(patientProgramDate.getDateEnrolled().toString())))){
+                        preArtOutcomes.put(dateTo, "Transferred out");
+                    }
+				} catch (ParseException e) {
+					e.printStackTrace();
 				}
-
 				if(defaultedDate != null && dateLost != null && defaultedDate.before(dateLost) && defaultedDate.before(futureDate) && defaultedDate.after(patientProgramDate.getDateEnrolled())){
 					preArtOutcomes.put(defaultedDate, "Defaulted");
 				}
@@ -129,6 +135,9 @@ public class PatientPreArtOutComeCalculation extends AbstractPatientCalculation 
 
 				if(dateLost != null && dateLost.before(futureDate) && dateLost.after(patientProgramDate.getDateEnrolled()) && dateLost.before(new Date())) {
 					preArtOutcomes.put(dateLost, "LTFU");
+				}
+				if(initialArtStart != null && dateTo != null) {
+					preArtOutcomes.remove(initialArtStart);
 				}
 				//pick the last item in the tree map
 				//check first if it is null
@@ -154,11 +163,12 @@ public class PatientPreArtOutComeCalculation extends AbstractPatientCalculation 
 	CalculationResultMap ltfuMap(Collection<Integer> cohort, PatientCalculationContext context, Integer period) {
 		CalculationResultMap ret = new CalculationResultMap();
 		CalculationResultMap resultMap = returnVisitDate(cohort, context, period);
+		Set<Integer> isTransferOut = CalculationUtils.patientsThatPass(calculate(new IsTransferOutCalculation(), cohort, context));
 		for (Integer ptId : cohort) {
 			LostToFU classifiedLTFU;
 			SimpleResult lastScheduledReturnDateResults = (SimpleResult) resultMap.get(ptId);
 			Date lastScheduledReturnDate = (Date) lastScheduledReturnDateResults.getValue();
-			if (lastScheduledReturnDate != null && (daysSince(lastScheduledReturnDate, context) > HivConstants.LOST_TO_FOLLOW_UP_THRESHOLD_DAYS)) {
+			if (lastScheduledReturnDate != null && (daysSince(lastScheduledReturnDate, context) > HivConstants.LOST_TO_FOLLOW_UP_THRESHOLD_DAYS) && !(isTransferOut.contains(ptId))) {
 				classifiedLTFU = new LostToFU(true, DateUtil.adjustDate(lastScheduledReturnDate, HivConstants.LOST_TO_FOLLOW_UP_THRESHOLD_DAYS, DurationUnit.DAYS ));
 			}
 
@@ -354,12 +364,13 @@ public class PatientPreArtOutComeCalculation extends AbstractPatientCalculation 
 	CalculationResultMap defaultedMap(Collection<Integer> cohort, PatientCalculationContext context, Integer period) {
 		CalculationResultMap ret = new CalculationResultMap();
 		CalculationResultMap resultMap = returnVisitDate(cohort, context, period);
+		Set<Integer> isTransferOut = CalculationUtils.patientsThatPass(calculate(new IsTransferOutCalculation(), cohort, context));
 		for (Integer ptId : cohort) {
 			Date dateDefaulted = null;
 			SimpleResult lastScheduledReturnDateResults = (SimpleResult) resultMap.get(ptId);
 			if (lastScheduledReturnDateResults != null) {
 				Date lastScheduledReturnDate = (Date) lastScheduledReturnDateResults.getValue();
-				if(lastScheduledReturnDate != null) {
+				if(lastScheduledReturnDate != null && !(isTransferOut.contains(ptId))) {
 					dateDefaulted = CoreUtils.dateAddDays(lastScheduledReturnDate, 30);
 				}
 			}
@@ -367,6 +378,12 @@ public class PatientPreArtOutComeCalculation extends AbstractPatientCalculation 
 			ret.put(ptId, new SimpleResult(dateDefaulted, this));
 		}
 		return ret;
+	}
+
+	Date dateOnlyDate(String string) throws ParseException {
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		return dateFormat.parse(string);
+
 	}
 
 }
