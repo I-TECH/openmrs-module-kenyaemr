@@ -25,11 +25,14 @@ public class DaysFromEnrollmentToArtInitiationCalculation extends AbstractPatien
         CalculationResultMap artInitiationDate = calculate(new InitialArtStartDateCalculation(), cohort, context);
 
         for(Integer ptId: cohort){
-            Integer days = null;
+            Integer days;
             Date dateOfEnrollment = EmrCalculationUtils.datetimeResultForPatient(enrollmentDate, ptId);
             Date dateOfInitialArt = EmrCalculationUtils.datetimeResultForPatient(artInitiationDate, ptId);
-            if(dateOfEnrollment != null && dateOfInitialArt != null) {
-                days = daysBetween(dateOfEnrollment, dateOfInitialArt);
+            if(dateOfEnrollment == null || dateOfInitialArt == null || dateOfEnrollment.after(dateOfInitialArt)){
+                days = null;
+            }
+            else{
+                days = daysBetween(dateOfInitialArt,dateOfEnrollment);
             }
 
             ret.put(ptId, new SimpleResult(days, this));
@@ -40,6 +43,6 @@ public class DaysFromEnrollmentToArtInitiationCalculation extends AbstractPatien
     private int daysBetween(Date date1, Date date2) {
         DateTime d1 = new DateTime(date1.getTime());
         DateTime d2 = new DateTime(date2.getTime());
-        return Days.daysBetween(d1, d2).getDays();
+        return Math.abs(Days.daysBetween(d1, d2).getDays());
     }
 }

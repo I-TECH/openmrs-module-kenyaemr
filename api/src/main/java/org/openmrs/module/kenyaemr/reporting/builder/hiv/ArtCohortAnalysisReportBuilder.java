@@ -11,7 +11,6 @@ import org.openmrs.module.kenyacore.report.data.patient.definition.CalculationDa
 import org.openmrs.module.kenyaemr.calculation.library.hiv.IsTransferInAndHasDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.AgeAtARTInitiationCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.BaselineCd4CountAndDateCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.Cd4CountImprovementCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.ChangeInCd4CountCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.CurrentArtRegimenCohortAnalysisCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.DateARV1Calculation;
@@ -120,11 +119,10 @@ public class ArtCohortAnalysisReportBuilder extends AbstractHybridReportBuilder 
         dsd.addColumn("Initial ART regimen", new CalculationDataDefinition("First ART regimen", new InitialArtRegimenCalculation()), "", new RegimenConverter());
         dsd.addColumn("Current ART regimen", currentARTRegimen(report), "onDate=${endDate}", new RegimenConverter());
         dsd.addColumn("Current ART line", currentARTRegimen(report), "onDate=${endDate}", new RegimenLineConverter());
-        dsd.addColumn("Current cd4 count", currentCd4Count(report), "onDate=${endDate}", new CurrentCd4Converter("value"));
+        dsd.addColumn("CD4 at end of follow up", currentCd4Count(report), "onDate=${endDate}", new CurrentCd4Converter("value"));
         dsd.addColumn("Date current cd4 count", currentCd4Count(report), "onDate=${endDate}", new CurrentCd4Converter("date"));
         dsd.addColumn("Change in cd4 count", changeInCd4Count(report), "onDate=${endDate}", new ChangeInCd4Converter());
-        dsd.addColumn("Cd4 count improvement", cd4CountImprovement(report), "onDate=${endDate}", new CalculationResultConverter());
-        dsd.addColumn("Current viral load", viralLoad(report), "onDate=${endDate}", new CurrentCd4Converter("value"));
+        dsd.addColumn("Viral load at end of follow up", viralLoad(report), "onDate=${endDate}", new CurrentCd4Converter("value"));
         dsd.addColumn("Date of current viral load", viralLoad(report), "onDate=${endDate}", new CurrentCd4Converter("date"));
         dsd.addColumn("Viral suppression", viralSuppression(report), "onDate=${endDate}", new CalculationResultConverter());
         dsd.addColumn("Date of Last visit", lastSeen(report), "onDate=${endDate}", new CalculationResultConverter());
@@ -227,12 +225,6 @@ public class ArtCohortAnalysisReportBuilder extends AbstractHybridReportBuilder 
         return cd;
     }
 
-    private DataDefinition cd4CountImprovement(HybridReportDescriptor descriptor) {
-        CalculationDataDefinition cd = new CalculationDataDefinition("changeImprovementCount", new Cd4CountImprovementCalculation());
-        cd.addParameter(new Parameter("onDate", "On Date", Date.class));
-        cd.addCalculationParameter("outcomePeriod", Integer.parseInt(descriptor.getId().split("\\.")[7]));
-        return cd;
-    }
     private DataDefinition viralSuppression(HybridReportDescriptor descriptor) {
         CalculationDataDefinition cd = new CalculationDataDefinition("viralSuppression", new ViralSuppressionCalculation());
         cd.addParameter(new Parameter("onDate", "On Date", Date.class));
