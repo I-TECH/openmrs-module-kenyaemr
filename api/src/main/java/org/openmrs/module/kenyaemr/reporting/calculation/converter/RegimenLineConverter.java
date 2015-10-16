@@ -12,10 +12,10 @@ public class RegimenLineConverter implements DataConverter {
     @Override
     public Object convert(Object o) {
         String regimen = (String) new RegimenConverter().convert(o);
-        if(regimen == null)
-            return "";
-        String line = "";
-        if(firstLineRegimen().contains(regimen)){
+        if(regimen == null || regimen.isEmpty() || regimen.equals("NA")) {
+            return "NA";
+        }
+        else if(firstLineRegimen().contains(regimen)){
             return "1st";
         }
         else if(secondLineRegimen().contains(regimen)) {
@@ -46,12 +46,9 @@ public class RegimenLineConverter implements DataConverter {
         regimens.add("TDF+3TC+EFV");
         regimens.add("d4T+3TC+NVP");
         regimens.add("d4T+3TC+EFV");
-        //regimens.add("TDF+3TC+ATV/r");
         regimens.add("ABC+3TC+NVP");
         regimens.add("ABC+3TC+EFV");
         regimens.add("ABC+3TC+AZT");
-        //regimens.add("ABC+3TC+LPV/r");
-        //regimens.add("AZT+3TC+LPV/r");
         return regimens;
     }
 
