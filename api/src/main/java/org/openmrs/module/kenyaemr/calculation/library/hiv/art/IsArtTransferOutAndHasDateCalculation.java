@@ -52,13 +52,13 @@ public class IsArtTransferOutAndHasDateCalculation extends AbstractPatientCalcul
             if(artStartDate != null && outcomePeriod != null) {
                 Date futureDate = DateUtil.adjustDate(artStartDate, outcomePeriod, DurationUnit.MONTHS);
 
-                if(transferOutDateObs != null && transferOutDateObs.getObsDatetime().before(futureDate)){
+                if(transferOutDateObs != null && transferOutDateObs.getObsDatetime().before(futureDate) && transferOutDateObs.getObsDatetime().after(artStartDate)){
                     transferOutDateValid = transferOutDateObs.getValueDatetime();
                 }
                 if(transferOutDateValid != null) {
                     transferOutAndDate = new TransferInAndDate("Yes", transferOutDateValid);
                 }
-                else if(reasonForExitObs != null && reasonForExitObs.getValueCoded().equals(transferOutStatus) && reasonForExitObs.getObsDatetime().before(futureDate)) {
+                else if(reasonForExitObs != null && reasonForExitObs.getValueCoded().equals(transferOutStatus) && reasonForExitObs.getObsDatetime().before(futureDate) && reasonForExitObs.getObsDatetime().after(artStartDate)) {
                     transferOutAndDate = new TransferInAndDate("Yes", reasonForExitObs.getObsDatetime());
                 }
                 else {
