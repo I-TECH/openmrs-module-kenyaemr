@@ -13,8 +13,6 @@
  */
 package org.openmrs.module.kenyaemr.calculation.library.hiv.art;
 
-import org.joda.time.DateTime;
-import org.joda.time.Days;
 import org.openmrs.Obs;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
@@ -25,7 +23,6 @@ import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.LastCd4CountCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.models.Cd4ValueAndDate;
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.DurationUnit;
@@ -63,10 +60,10 @@ public class LastCd4Calculation extends AbstractPatientCalculation {
 			List<Obs> allObsList = CalculationUtils.extractResultValues(listResult);
 			List<Obs> validListObs = new ArrayList<Obs>();
 
-			if(allObsList.size() > 0 && artInitiationDt != null ) {
+			if(allObsList.size() > 0 && artInitiationDt != null && outcomePeriod != null) {
 				Date outcomeDate = DateUtil.adjustDate(DateUtil.adjustDate(artInitiationDt, outcomePeriod, DurationUnit.MONTHS), 1, DurationUnit.DAYS);
 				for(Obs obs:allObsList) {
-					if(obs.getObsDatetime().before(outcomeDate) && obs.getObsDatetime().after(dateLimit(outcomeDate, -184))) {
+					if(obs.getObsDatetime().before(outcomeDate) && obs.getObsDatetime().after(artInitiationDt)) {
 						validListObs.add(obs);
 					}
 				}

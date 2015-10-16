@@ -28,8 +28,13 @@ public class BaselineCd4CountAndDateCalculation extends AbstractPatientCalculati
     @Override
     public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> params, PatientCalculationContext context) {
         CalculationResultMap ret = new CalculationResultMap();
+        Integer outcomePeriod = (params != null && params.containsKey("outcomePeriod")) ? (Integer) params.get("outcomePeriod") : null;
 
         CalculationResultMap artInitiationDate = calculate(new InitialArtStartDateCalculation(), cohort, context);
+
+        if(outcomePeriod != null) {
+            context.setNow(DateUtil.adjustDate(context.getNow(), outcomePeriod, DurationUnit.MONTHS));
+        }
         CalculationResultMap allCd4 = Calculations.allObs(Dictionary.getConcept(Dictionary.CD4_COUNT), cohort, context);
 
         for(Integer ptId: cohort) {
@@ -40,8 +45,7 @@ public class BaselineCd4CountAndDateCalculation extends AbstractPatientCalculati
             List<Obs> allCd4Obs = CalculationUtils.extractResultValues(listResult);
             if(allCd4Obs.size() > 0 && artInitiationDt != null) {
                 for (Obs obs : allCd4Obs) {
-                    if (obs.getObsDatetime().before(dateLimit(artInitiationDt, 16)) && obs.getObsDatetime().after(dateLimit(artInitiationDt, -184))){
-
+                    if (obs.getObsDatetime().before(dateLimit(artInitiationDt, 1)) && obs.getObsDatetime().after(DateUtil.getStartOfMonth(dateLimit(artInitiationDt, -183)))){
                         validCd4.add(obs);
                     }
                 }

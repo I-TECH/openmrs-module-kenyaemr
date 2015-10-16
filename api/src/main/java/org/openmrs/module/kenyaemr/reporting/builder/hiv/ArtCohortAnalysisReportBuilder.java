@@ -115,8 +115,8 @@ public class ArtCohortAnalysisReportBuilder extends AbstractHybridReportBuilder 
         dsd.addColumn("Days from ART eligibility to ART Initiation", fromEligibilityToArtStart(report), "onDate=${endDate}", new CalculationResultConverter());
         dsd.addColumn("Date first medically eligible for ART", dateAndReasonFirstMedicallyEligibleForArtCalculation(report), "onDate=${endDate}", new MedicallyEligibleConverter("date"));
         dsd.addColumn("Reason first medically eligible For ART", dateAndReasonFirstMedicallyEligibleForArtCalculation(report), "onDate=${endDate}", new MedicallyEligibleConverter("reason"));
-        dsd.addColumn("Baseline cd4 count", new CalculationDataDefinition("Baseline cd4 count", new BaselineCd4CountAndDateCalculation()), "", new Cd4ValueAndDateConverter("value"));
-        dsd.addColumn("Date of baseline cd4 count", new CalculationDataDefinition("Date of baseline cd4 count", new BaselineCd4CountAndDateCalculation()), "", new Cd4ValueAndDateConverter("date"));
+        dsd.addColumn("Baseline cd4 count", baselineCd4(report), "onDate=${endDate}", new Cd4ValueAndDateConverter("value"));
+        dsd.addColumn("Date of baseline cd4 count", baselineCd4(report), "onDate=${endDate}", new Cd4ValueAndDateConverter("date"));
         dsd.addColumn("Initial ART regimen", new CalculationDataDefinition("First ART regimen", new InitialArtRegimenCalculation()), "", new RegimenConverter());
         dsd.addColumn("Current ART regimen", currentARTRegimen(report), "onDate=${endDate}", new RegimenConverter());
         dsd.addColumn("Current ART line", currentARTRegimen(report), "onDate=${endDate}", new RegimenLineConverter());
@@ -144,6 +144,15 @@ public class ArtCohortAnalysisReportBuilder extends AbstractHybridReportBuilder 
     private DataDefinition patientOutComes(HybridReportDescriptor descriptor) {
         int months = Integer.parseInt(descriptor.getId().split("\\.")[7]);
         CalculationDataDefinition cd = new CalculationDataDefinition("outcomes", new PatientArtOutComeCalculation());
+        cd.addCalculationParameter("outcomePeriod", months);
+        cd.addParameter(new Parameter("onDate", "On Date", Date.class));
+        return cd;
+
+    }
+
+    private DataDefinition baselineCd4(HybridReportDescriptor descriptor) {
+        int months = Integer.parseInt(descriptor.getId().split("\\.")[7]);
+        CalculationDataDefinition cd = new CalculationDataDefinition("baselinecd4", new BaselineCd4CountAndDateCalculation());
         cd.addCalculationParameter("outcomePeriod", months);
         cd.addParameter(new Parameter("onDate", "On Date", Date.class));
         return cd;
