@@ -88,14 +88,14 @@ public class PatientArtOutComeCalculation extends AbstractPatientCalculation {
                 Date futureDate = DateUtil.adjustDate(DateUtil.adjustDate(initialArtStart, outcomePeriod, DurationUnit.MONTHS), 1, DurationUnit.DAYS);
                 status = "Alive and on ART";
 
-                if(transferOutDateObs != null && transferOutDateObs.getValueDatetime().before(futureDate)){
+                if(transferOutDateObs != null && transferOutDateObs.getValueDatetime().before(futureDate) && transferOutDateObs.getObsDatetime().after(initialArtStart)){
                     transferOutDateValid = transferOutDateObs.getValueDatetime();
                 }
 
-                else if(reasonForExitObs != null && transferOutDateObs != null && reasonForExitObs.getValueCoded().equals(transferOutStatus)) {
+                else if(reasonForExitObs != null && transferOutDateObs != null && reasonForExitObs.getValueCoded().equals(transferOutStatus) &&  transferOutDateObs.getObsDatetime().after(initialArtStart)) {
                     transferOutDateValid = transferOutDateObs.getValueDatetime();
                 }
-                else if(reasonForExitObs != null && transferOutDateObs == null && reasonForExitObs.getValueCoded().equals(transferOutStatus) && reasonForExitObs.getObsDatetime().before(futureDate)) {
+                else if(reasonForExitObs != null && transferOutDateObs == null && reasonForExitObs.getValueCoded().equals(transferOutStatus) && reasonForExitObs.getObsDatetime().before(futureDate) && reasonForExitObs.getObsDatetime().after(initialArtStart)) {
                     transferOutDateValid = reasonForExitObs.getObsDatetime();
                 }
 
