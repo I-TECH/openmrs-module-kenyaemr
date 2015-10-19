@@ -47,11 +47,13 @@ public class DateLastSeenCalculation extends AbstractPatientCalculation {
 		Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
 		CalculationResultMap dateEnrolledMap = Calculations.firstEnrollments(hivProgram, cohort, context);
 
+
 		if(outcomePeriod != null){
 			context.setNow(DateUtil.adjustDate(DateUtil.getStartOfMonth(context.getNow()), outcomePeriod, DurationUnit.MONTHS));
 		}
 
 		CalculationResultMap lastEncounter = Calculations.allEncounters(null, cohort, context);
+		CalculationResultMap initialArtStart = calculate(new InitialArtStartDateCalculation(), cohort, context);
 
 
 		CalculationResultMap result = new CalculationResultMap();
@@ -59,6 +61,7 @@ public class DateLastSeenCalculation extends AbstractPatientCalculation {
 			ListResult allEncounters = (ListResult) lastEncounter.get(ptId);
 			List<Encounter> encounterList = CalculationUtils.extractResultValues(allEncounters);
 			PatientProgram patientProgram = EmrCalculationUtils.resultForPatient(dateEnrolledMap, ptId);
+			Date artStartDate = EmrCalculationUtils.datetimeResultForPatient(initialArtStart, ptId);
 			if(outcomePeriod != null && patientProgram != null) {
 				Date futureDate = DateUtil.adjustDate(DateUtil.adjustDate(patientProgram.getDateEnrolled(), outcomePeriod, DurationUnit.MONTHS), 1, DurationUnit.DAYS);
 				Date encounterDate = null;
@@ -70,10 +73,20 @@ public class DateLastSeenCalculation extends AbstractPatientCalculation {
 						}
 					}
 					if (targetedEncounters.size() > 0) {
-						encounterDate = targetedEncounters.get(targetedEncounters.size() - 1).getEncounterDatetime();
+						Date encounterDateRequired = targetedEncounters.get(targetedEncounters.size() - 1).getEncounterDatetime();
+						if(artStartDate != null && artStartDate.after(encounterDateRequired)) {
+							encounterDate = artStartDate;
+						}
+						else {
+							encounterDate = encounterDateRequired;
+						}
 					}
 				}
-				if(encounterDate == null) {
+				if(encounterDate == null && artStartDate != null) {
+					encounterDate = artStartDate;
+				}
+
+				if(encounterDate == null){
 					encounterDate = patientProgram.getDateEnrolled();
 				}
 
