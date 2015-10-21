@@ -1,13 +1,9 @@
 package org.openmrs.module.kenyaemr.calculation.library.hiv.art;
 
-import org.openmrs.Concept;
-import org.openmrs.Obs;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
-import org.openmrs.module.kenyacore.calculation.Calculations;
-import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.calculation.library.models.TransferInAndDate;
 import org.openmrs.module.reporting.common.DateUtil;
@@ -27,9 +23,6 @@ public class IsArtTransferOutAndHasDateCalculation extends AbstractPatientCalcul
         CalculationResultMap ret = new CalculationResultMap();
 
         Integer outcomePeriod = (params != null && params.containsKey("outcomePeriod")) ? (Integer) params.get("outcomePeriod") : null;
-        Concept transferOutStatus = Dictionary.getConcept(Dictionary.TRANSFERRED_OUT);
-        Concept transferOutDate = Dictionary.getConcept(Dictionary.DATE_TRANSFERRED_OUT);
-        Concept reasonForExit = Dictionary.getConcept(Dictionary.REASON_FOR_PROGRAM_DISCONTINUATION);
         CalculationResultMap artStartDateMap = calculate(new InitialArtStartDateCalculation(), cohort, context);
 
 
@@ -38,28 +31,18 @@ public class IsArtTransferOutAndHasDateCalculation extends AbstractPatientCalcul
             context.setNow(DateUtil.adjustDate(DateUtil.getStartOfMonth(context.getNow()), outcomePeriod, DurationUnit.MONTHS));
         }
 
-        CalculationResultMap lastReasonForExit = Calculations.lastObs(reasonForExit, cohort, context);
-        CalculationResultMap lastTransferOutDate = Calculations.lastObs(transferOutDate, cohort, context);
+        CalculationResultMap transferredOutMap = calculate(new TransferOutDateCalculation(), cohort, context);
 
         for(Integer ptId : cohort) {
             TransferInAndDate transferOutAndDate = null;
-            Date transferOutDateValid = null;
-
-            Obs reasonForExitObs = EmrCalculationUtils.obsResultForPatient(lastReasonForExit, ptId);
-            Obs transferOutDateObs = EmrCalculationUtils.obsResultForPatient(lastTransferOutDate, ptId);
             Date artStartDate = EmrCalculationUtils.resultForPatient(artStartDateMap, ptId);
+            Date transOutDate = EmrCalculationUtils.datetimeResultForPatient(transferredOutMap, ptId);
 
             if(artStartDate != null && outcomePeriod != null) {
-                Date futureDate = DateUtil.adjustDate(artStartDate, outcomePeriod, DurationUnit.MONTHS);
+                Date futureDate = DateUtil.adjustDate(DateUtil.adjustDate(artStartDate, outcomePeriod, DurationUnit.MONTHS), 1, DurationUnit.DAYS);
 
-                if(transferOutDateObs != null && transferOutDateObs.getObsDatetime().before(futureDate) && transferOutDateObs.getObsDatetime().after(artStartDate)){
-                    transferOutDateValid = transferOutDateObs.getValueDatetime();
-                }
-                if(transferOutDateValid != null) {
-                    transferOutAndDate = new TransferInAndDate("Yes", transferOutDateValid);
-                }
-                else if(reasonForExitObs != null && reasonForExitObs.getValueCoded().equals(transferOutStatus) && reasonForExitObs.getObsDatetime().before(futureDate) && reasonForExitObs.getObsDatetime().after(artStartDate)) {
-                    transferOutAndDate = new TransferInAndDate("Yes", reasonForExitObs.getObsDatetime());
+                if(transOutDate != null && transOutDate.after(artStartDate) && transOutDate.before(futureDate)) {
+                    transferOutAndDate = new TransferInAndDate("Yes", transOutDate);
                 }
                 else {
                     transferOutAndDate = new TransferInAndDate("No", null);

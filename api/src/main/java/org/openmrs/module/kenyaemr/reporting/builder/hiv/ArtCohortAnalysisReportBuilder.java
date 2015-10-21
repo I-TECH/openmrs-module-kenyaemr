@@ -120,10 +120,10 @@ public class ArtCohortAnalysisReportBuilder extends AbstractHybridReportBuilder 
         dsd.addColumn("Current ART regimen", currentARTRegimen(report), "onDate=${endDate}", new RegimenConverter());
         dsd.addColumn("Current ART line", currentARTRegimen(report), "onDate=${endDate}", new RegimenLineConverter());
         dsd.addColumn("CD4 at end of follow up", currentCd4Count(report), "onDate=${endDate}", new CurrentCd4Converter("value"));
-        dsd.addColumn("Date current cd4 count", currentCd4Count(report), "onDate=${endDate}", new CurrentCd4Converter("date"));
+        dsd.addColumn("CD4 at end of follow up date", currentCd4Count(report), "onDate=${endDate}", new CurrentCd4Converter("date"));
         dsd.addColumn("Change in cd4 count", changeInCd4Count(report), "onDate=${endDate}", new ChangeInCd4Converter());
         dsd.addColumn("Viral load at end of follow up", viralLoad(report), "onDate=${endDate}", new CurrentCd4Converter("value"));
-        dsd.addColumn("Date of current viral load", viralLoad(report), "onDate=${endDate}", new CurrentCd4Converter("date"));
+        dsd.addColumn("Date viral load at end of follow up", viralLoad(report), "onDate=${endDate}", new CurrentCd4Converter("date"));
         dsd.addColumn("Viral suppression", viralSuppression(report), "onDate=${endDate}", new CalculationResultConverter());
         dsd.addColumn("Date of Last visit", lastSeen(report), "onDate=${endDate}", new CalculationResultConverter());
         dsd.addColumn("Date of expected next visit", nextAppointmentDate(report), "onDate=${endDate}", new CalculationResultConverter());

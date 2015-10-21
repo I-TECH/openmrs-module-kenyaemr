@@ -13,13 +13,12 @@ import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
-import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyacore.calculation.Filters;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtStartDateCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.IsTransferOutCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.TransferOutDateCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.common.DateUtil;
@@ -50,20 +49,22 @@ public class LastReturnVisitDatePreArtAnalysisCalculation extends AbstractPatien
 
         Set<Integer> alive = Filters.alive(cohort, context);
         Concept RETURN_VISIT_DATE = Dictionary.getConcept(Dictionary.RETURN_VISIT_DATE);
-        Set<Integer> transferredOut = CalculationUtils.patientsThatPass(calculate(new IsTransferOutCalculation(), cohort, context));
+        CalculationResultMap transferredOutMap = calculate(new TransferOutDateCalculation(), cohort, context);
         CalculationResultMap initialArtStart = calculate(new InitialArtStartDateCalculation(), cohort, context);
-        CalculationResultMap dateLastSeenMap = lastSeenDateMap(cohort, context, outcomePeriod);
+        CalculationResultMap dateLastSeenMap = lastSeenDateMap(cohort, context);
 
         CalculationResultMap ret = new CalculationResultMap();
         for(Integer ptId: cohort) {
             PatientProgram patientProgram = EmrCalculationUtils.resultForPatient(hivenrollment, ptId);
             Date artStartDate = EmrCalculationUtils.datetimeResultForPatient(initialArtStart, ptId);
             Date lastSeenDate = EmrCalculationUtils.datetimeResultForPatient(dateLastSeenMap, ptId);
+            Date transOutDate = EmrCalculationUtils.datetimeResultForPatient(transferredOutMap, ptId);
             Date returnVisitDate = null;
             List<Visit> allVisits = Context.getVisitService().getVisitsByPatient(Context.getPatientService().getPatient(ptId));
             List<Visit> requiredVisits = new ArrayList<Visit>();
+            Date futureDate;
             if(patientProgram != null && outcomePeriod != null) {
-                Date futureDate = DateUtil.adjustDate(DateUtil.adjustDate(patientProgram.getDateEnrolled(), outcomePeriod, DurationUnit.MONTHS), 1, DurationUnit.DAYS);
+                futureDate = DateUtil.adjustDate(DateUtil.adjustDate(patientProgram.getDateEnrolled(), outcomePeriod, DurationUnit.MONTHS), 1, DurationUnit.DAYS);
                 for(Visit visit:allVisits) {
                     if(visit.getStartDatetime().before(futureDate)) {
                         requiredVisits.add(visit);
@@ -116,7 +117,7 @@ public class LastReturnVisitDatePreArtAnalysisCalculation extends AbstractPatien
                             }
                             if (priorReturnDate1 != null) {
                                 if (dayDiff < 30) {
-                                    dayDiff = 30;
+                                    dayDiff = 90;
                                 }
                                 returnVisitDate = DateUtil.adjustDate(priorReturnDate1, dayDiff, DurationUnit.DAYS);
                             }
@@ -126,15 +127,14 @@ public class LastReturnVisitDatePreArtAnalysisCalculation extends AbstractPatien
                 }
                 //check if return visit date is null and last seen date has some values
                 else if(lastSeenDate != null){
-                    returnVisitDate = DateUtil.adjustDate(lastSeenDate, 30, DurationUnit.DAYS);
+                    returnVisitDate = DateUtil.adjustDate(lastSeenDate, 90, DurationUnit.DAYS);
+                }
+
+                if((transOutDate != null && transOutDate.after(patientProgram.getDateEnrolled()) && transOutDate.before(futureDate)) || !(alive.contains(ptId))) {
+                    returnVisitDate = null;
                 }
 
             }
-
-            if(transferredOut.contains(ptId) || !(alive.contains(ptId))) {
-                returnVisitDate = null;
-            }
-
             ret.put(ptId, new SimpleResult(returnVisitDate, this));
 
         }
@@ -146,7 +146,7 @@ public class LastReturnVisitDatePreArtAnalysisCalculation extends AbstractPatien
         return Math.abs(Days.daysBetween(dateTime1, dateTime2).getDays());
     }
 
-    CalculationResultMap lastSeenDateMap(Collection<Integer> cohort, PatientCalculationContext context, Integer outcomePeriod ){
+    CalculationResultMap lastSeenDateMap(Collection<Integer> cohort, PatientCalculationContext context){
         Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
         CalculationResultMap dateEnrolledMap = Calculations.firstEnrollments(hivProgram, cohort, context);
 
@@ -158,7 +158,7 @@ public class LastReturnVisitDatePreArtAnalysisCalculation extends AbstractPatien
             Encounter encounter = EmrCalculationUtils.encounterResultForPatient(lastEncounter, ptId);
             PatientProgram patientProgram = EmrCalculationUtils.resultForPatient(dateEnrolledMap, ptId);
             Date artStartDate = EmrCalculationUtils.datetimeResultForPatient(initialArtStart, ptId);
-            if(outcomePeriod != null && patientProgram != null) {
+            if(patientProgram != null) {
                 Date encounterDate = null;
                 if (encounter != null) {
                     if(artStartDate != null && artStartDate.after(encounter.getEncounterDatetime())) {

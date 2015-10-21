@@ -186,7 +186,7 @@ public class PatientPreArtOutComeCalculation extends AbstractPatientCalculation 
 
 		Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
 		CalculationResultMap enrolledHere = Calculations.firstEnrollments(hivProgram, cohort, context);
-		CalculationResultMap dateLastSeen = dateLastSeen(cohort, context, period);
+		CalculationResultMap dateLastSeen = dateLastSeen(cohort, context);
 
 		Set<Integer> alive = Filters.alive(cohort, context);
 		Concept RETURN_VISIT_DATE = Dictionary.getConcept(Dictionary.RETURN_VISIT_DATE);
@@ -292,7 +292,7 @@ public class PatientPreArtOutComeCalculation extends AbstractPatientCalculation 
 
 	}
 
-	CalculationResultMap dateLastSeen(Collection<Integer> cohort, PatientCalculationContext context, Integer outcomePeriod){
+	CalculationResultMap dateLastSeen(Collection<Integer> cohort, PatientCalculationContext context){
 		Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
 		CalculationResultMap dateEnrolledMap = Calculations.firstEnrollments(hivProgram, cohort, context);
 
@@ -304,7 +304,7 @@ public class PatientPreArtOutComeCalculation extends AbstractPatientCalculation 
 			Encounter encounter = EmrCalculationUtils.encounterResultForPatient(lastEncounter, ptId);
 			PatientProgram patientProgram = EmrCalculationUtils.resultForPatient(dateEnrolledMap, ptId);
 			Date artStartDate = EmrCalculationUtils.datetimeResultForPatient(initialArtStart, ptId);
-			if(outcomePeriod != null && patientProgram != null) {
+			if(patientProgram != null) {
 				Date encounterDate = null;
 				if (encounter != null) {
 

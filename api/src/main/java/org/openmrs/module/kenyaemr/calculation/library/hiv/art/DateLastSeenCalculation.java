@@ -58,7 +58,7 @@ public class DateLastSeenCalculation extends AbstractPatientCalculation {
 			Encounter encounter = EmrCalculationUtils.encounterResultForPatient(lastEncounter, ptId);
 			PatientProgram patientProgram = EmrCalculationUtils.resultForPatient(dateEnrolledMap, ptId);
 			Date artStartDate = EmrCalculationUtils.datetimeResultForPatient(initialArtStart, ptId);
-			if(outcomePeriod != null && patientProgram != null) {
+			if(patientProgram != null) {
 				Date encounterDate = null;
 				if (encounter != null) {
 
