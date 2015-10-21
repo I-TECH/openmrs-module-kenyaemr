@@ -11,7 +11,6 @@ import org.openmrs.Visit;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
-import org.openmrs.calculation.result.ListResult;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
 import org.openmrs.module.kenyacore.calculation.CalculationUtils;
@@ -151,35 +150,25 @@ public class LastReturnVisitDatePreArtAnalysisCalculation extends AbstractPatien
         Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
         CalculationResultMap dateEnrolledMap = Calculations.firstEnrollments(hivProgram, cohort, context);
 
-        CalculationResultMap lastEncounter = Calculations.allEncounters(null, cohort, context);
+        CalculationResultMap lastEncounter = Calculations.lastEncounter(null, cohort, context);
         CalculationResultMap initialArtStart = calculate(new InitialArtStartDateCalculation(), cohort, context);
 
         CalculationResultMap result = new CalculationResultMap();
         for (Integer ptId : cohort) {
-            ListResult allEncounters = (ListResult) lastEncounter.get(ptId);
-            List<Encounter> encounterList = CalculationUtils.extractResultValues(allEncounters);
+            Encounter encounter = EmrCalculationUtils.encounterResultForPatient(lastEncounter, ptId);
             PatientProgram patientProgram = EmrCalculationUtils.resultForPatient(dateEnrolledMap, ptId);
             Date artStartDate = EmrCalculationUtils.datetimeResultForPatient(initialArtStart, ptId);
             if(outcomePeriod != null && patientProgram != null) {
-                Date futureDate = DateUtil.adjustDate(DateUtil.adjustDate(patientProgram.getDateEnrolled(), outcomePeriod, DurationUnit.MONTHS), 1, DurationUnit.DAYS);
                 Date encounterDate = null;
-                List<Encounter> targetedEncounters = new ArrayList<Encounter>();
-                if (encounterList.size() > 0) {
-                    for (Encounter encounter : encounterList) {
-                        if (encounter.getEncounterDatetime().before(futureDate) && (encounter.getEncounterDatetime().after(patientProgram.getDateEnrolled()) || encounter.getEncounterDatetime().equals(patientProgram.getDateEnrolled()))) {
-                            targetedEncounters.add(encounter);
-                        }
+                if (encounter != null) {
+                    if(artStartDate != null && artStartDate.after(encounter.getEncounterDatetime())) {
+                        encounterDate = artStartDate;
                     }
-                    if (targetedEncounters.size() > 0) {
-                        Date encounterDateRequired = targetedEncounters.get(targetedEncounters.size() - 1).getEncounterDatetime();
-                        if(artStartDate != null && artStartDate.after(encounterDateRequired)) {
-                            encounterDate = artStartDate;
-                        }
-                        else {
-                            encounterDate = encounterDateRequired;
-                        }
+                    else {
+                        encounterDate = encounter.getEncounterDatetime();
                     }
                 }
+
                 if(encounterDate == null && artStartDate != null) {
                     encounterDate = artStartDate;
                 }

@@ -186,6 +186,7 @@ public class PatientPreArtOutComeCalculation extends AbstractPatientCalculation 
 
 		Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
 		CalculationResultMap enrolledHere = Calculations.firstEnrollments(hivProgram, cohort, context);
+		CalculationResultMap dateLastSeen = dateLastSeen(cohort, context, period);
 
 		Set<Integer> alive = Filters.alive(cohort, context);
 		Concept RETURN_VISIT_DATE = Dictionary.getConcept(Dictionary.RETURN_VISIT_DATE);
@@ -194,6 +195,7 @@ public class PatientPreArtOutComeCalculation extends AbstractPatientCalculation 
 			PatientProgram patientProgram = EmrCalculationUtils.resultForPatient(enrolledHere, ptId);
 			Date returnVisitDate = null;
 			List<Visit> allVisits = Context.getVisitService().getVisitsByPatient(Context.getPatientService().getPatient(ptId));
+			Date lastSeenDate = EmrCalculationUtils.datetimeResultForPatient(dateLastSeen, ptId);
 			List<Visit> requiredVisits = new ArrayList<Visit>();
 			if(alive.contains(ptId) && !(transferredOut.contains(ptId)) && period != null && patientProgram != null) {
 				Date futureDate = DateUtil.adjustDate(DateUtil.adjustDate(patientProgram.getDateEnrolled(), period, DurationUnit.MONTHS), 1, DurationUnit.DAYS);
@@ -222,136 +224,40 @@ public class PatientPreArtOutComeCalculation extends AbstractPatientCalculation 
 					//check if this patient has more than one visit in the
 					if (returnVisitDate == null && requiredVisits.size() > 1) {
 						//get the visit date of the last visit
+
 						Date lastVisitDate = requiredVisits.get(0).getStartDatetime();
 						Date priorVisitDate1 = requiredVisits.get(1).getStartDatetime();
 						int dayDiff = daysBetweenDates(lastVisitDate, priorVisitDate1);
-						//get the prior visit
-						Set<Encounter> priorVisitEncounters = requiredVisits.get(1).getEncounters();
 						Date priorReturnDate1 = null;
-						if (priorVisitEncounters.size() > 0) {
-							Set<Obs> allObs;
-							for (Encounter encounter : priorVisitEncounters) {
-								allObs = encounter.getAllObs();
-								for (Obs obs : allObs) {
-									if (obs.getConcept().equals(RETURN_VISIT_DATE)) {
-										priorReturnDate1 = obs.getValueDatetime();
-										break;
-									}
-								}
-							}
-							if (priorReturnDate1 != null) {
-								returnVisitDate = DateUtil.adjustDate(priorReturnDate1, dayDiff, DurationUnit.DAYS);
-
-							}
+						if(lastSeenDate != null){
+							priorReturnDate1 = lastSeenDate;
 						}
-
-					}
-
-					//if return visit date still missing we will check the 3rd prior visit
-					if (returnVisitDate == null && requiredVisits.size() > 2) {
-						//get the visit date of the last visit
-						Date lastVisitDate0 = requiredVisits.get(0).getStartDatetime();
-						Date priorVisitDate1 = requiredVisits.get(1).getStartDatetime();
-						Date lastVisitDate1 = requiredVisits.get(1).getStartDatetime();
-						Date priorVisitDate2 = requiredVisits.get(2).getStartDatetime();
-
-						int day2 = daysBetweenDates(lastVisitDate1, priorVisitDate2);
-						int day1 = daysBetweenDates(lastVisitDate0, priorVisitDate1);
-						int dayDiff = day2 + day1;
 						//get the prior visit
-						Set<Encounter> priorVisitEncounters = requiredVisits.get(2).getEncounters();
-						Date priorReturnDate2 = null;
-						if (priorVisitEncounters.size() > 0) {
-							Set<Obs> allObs;
-							for (Encounter encounter : priorVisitEncounters) {
-								allObs = encounter.getAllObs();
-								for (Obs obs : allObs) {
-									if (obs.getConcept().equals(RETURN_VISIT_DATE)) {
-										priorReturnDate2 = obs.getValueDatetime();
-										break;
+						else {
+							Set<Encounter> priorVisitEncounters = requiredVisits.get(1).getEncounters();
+							if (priorVisitEncounters.size() > 0) {
+								Set<Obs> allObs;
+								for (Encounter encounter : priorVisitEncounters) {
+									allObs = encounter.getAllObs();
+									for (Obs obs : allObs) {
+										if (obs.getConcept().equals(RETURN_VISIT_DATE)) {
+											priorReturnDate1 = obs.getValueDatetime();
+											break;
+										}
 									}
 								}
+
 							}
-							if (priorReturnDate2 != null) {
-								returnVisitDate = DateUtil.adjustDate(priorReturnDate2, dayDiff, DurationUnit.DAYS);
+						}
+						if (priorReturnDate1 != null) {
+							if (dayDiff < 30) {
+								dayDiff = 30;
 							}
+							returnVisitDate = DateUtil.adjustDate(priorReturnDate1, dayDiff, DurationUnit.DAYS);
+
 						}
 
 					}
-
-					//if return visit date still missing we will check the 4th prior visit
-					if (returnVisitDate == null && requiredVisits.size() > 3) {
-						//get the visit date of the last visit
-						Date lastVisitDate0 = requiredVisits.get(0).getStartDatetime();
-						Date priorVisitDate1 = requiredVisits.get(1).getStartDatetime();
-						Date lastVisitDate1 = requiredVisits.get(1).getStartDatetime();
-						Date priorVisitDate2 = requiredVisits.get(2).getStartDatetime();
-						Date lastVisitDate2 = requiredVisits.get(2).getStartDatetime();
-						Date priorVisitDate3 = requiredVisits.get(3).getStartDatetime();
-
-						int day3 = daysBetweenDates(lastVisitDate2, priorVisitDate3);
-						int day2 = daysBetweenDates(lastVisitDate1, priorVisitDate2);
-						int day1 = daysBetweenDates(lastVisitDate0, priorVisitDate1);
-						int dayDiff = day2 + day1 + day3;
-						//get the prior visit
-						Set<Encounter> priorVisitEncounters = requiredVisits.get(3).getEncounters();
-						Date priorReturnDate3 = null;
-						if (priorVisitEncounters.size() > 0) {
-							Set<Obs> allObs;
-							for (Encounter encounter : priorVisitEncounters) {
-								allObs = encounter.getAllObs();
-								for (Obs obs : allObs) {
-									if (obs.getConcept().equals(RETURN_VISIT_DATE)) {
-										priorReturnDate3 = obs.getValueDatetime();
-										break;
-									}
-								}
-							}
-							if (priorReturnDate3 != null) {
-								returnVisitDate = DateUtil.adjustDate(priorReturnDate3, dayDiff, DurationUnit.DAYS);
-							}
-						}
-
-					}
-
-					//if return visit date still missing we will pick the 5th visit
-					if (returnVisitDate == null && requiredVisits.size() > 4) {
-						//get the visit date of the last visit
-						Date lastVisitDate0 = requiredVisits.get(0).getStartDatetime();
-						Date priorVisitDate1 = requiredVisits.get(1).getStartDatetime();
-						Date lastVisitDate1 = requiredVisits.get(1).getStartDatetime();
-						Date priorVisitDate2 = requiredVisits.get(2).getStartDatetime();
-						Date lastVisitDate2 = requiredVisits.get(2).getStartDatetime();
-						Date priorVisitDate3 = requiredVisits.get(3).getStartDatetime();
-						Date lastVisitDate3 = requiredVisits.get(3).getStartDatetime();
-						Date priorVisitDate4 = requiredVisits.get(4).getStartDatetime();
-
-						int day4 = daysBetweenDates(lastVisitDate3, priorVisitDate4);
-						int day3 = daysBetweenDates(lastVisitDate2, priorVisitDate3);
-						int day2 = daysBetweenDates(lastVisitDate1, priorVisitDate2);
-						int day1 = daysBetweenDates(lastVisitDate0, priorVisitDate1);
-						int dayDiff = day2 + day1 + day3 + day4;
-						//get the prior visit
-						Set<Encounter> priorVisitEncounters = requiredVisits.get(4).getEncounters();
-						Date priorReturnDate4 = null;
-						if (priorVisitEncounters.size() > 0) {
-							Set<Obs> allObs;
-							for (Encounter encounter : priorVisitEncounters) {
-								allObs = encounter.getAllObs();
-								for (Obs obs : allObs) {
-									if (obs.getConcept().equals(RETURN_VISIT_DATE)) {
-										priorReturnDate4 = obs.getValueDatetime();
-										break;
-									}
-								}
-							}
-							if (priorReturnDate4 != null) {
-								returnVisitDate = DateUtil.adjustDate(priorReturnDate4, dayDiff, DurationUnit.DAYS);
-							}
-						}
-
-					}
-
 				}
 				if (returnVisitDate == null) {
 					returnVisitDate = DateUtil.adjustDate(patientProgram.getDateEnrolled(), 30, DurationUnit.DAYS);
@@ -384,6 +290,44 @@ public class PatientPreArtOutComeCalculation extends AbstractPatientCalculation 
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		return dateFormat.parse(string);
 
+	}
+
+	CalculationResultMap dateLastSeen(Collection<Integer> cohort, PatientCalculationContext context, Integer outcomePeriod){
+		Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
+		CalculationResultMap dateEnrolledMap = Calculations.firstEnrollments(hivProgram, cohort, context);
+
+		CalculationResultMap lastEncounter = Calculations.lastEncounter(null, cohort, context);
+		CalculationResultMap initialArtStart = calculate(new InitialArtStartDateCalculation(), cohort, context);
+
+		CalculationResultMap result = new CalculationResultMap();
+		for (Integer ptId : cohort) {
+			Encounter encounter = EmrCalculationUtils.encounterResultForPatient(lastEncounter, ptId);
+			PatientProgram patientProgram = EmrCalculationUtils.resultForPatient(dateEnrolledMap, ptId);
+			Date artStartDate = EmrCalculationUtils.datetimeResultForPatient(initialArtStart, ptId);
+			if(outcomePeriod != null && patientProgram != null) {
+				Date encounterDate = null;
+				if (encounter != null) {
+
+						if(artStartDate != null && artStartDate.after(encounter.getEncounterDatetime())) {
+							encounterDate = artStartDate;
+						}
+						else {
+							encounterDate = encounter.getEncounterDatetime();
+						}
+
+				}
+				if(encounterDate == null && artStartDate != null) {
+					encounterDate = artStartDate;
+				}
+
+				if(encounterDate == null){
+					encounterDate = patientProgram.getDateEnrolled();
+				}
+
+				result.put(ptId, new SimpleResult(encounterDate, this));
+			}
+		}
+		return result;
 	}
 
 }
