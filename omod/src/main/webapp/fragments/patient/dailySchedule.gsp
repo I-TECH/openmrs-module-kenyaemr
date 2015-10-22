@@ -7,9 +7,9 @@
 	else if (isTomorrow)
 		heading += "Tomorrow"
 	else if (isYesterday)
-		heading += "Yesterday"
+		heading = "missed appointments Yesterday"
 	else
-		heading += kenyaui.formatDate(date)
+		heading ="missed appointments on "+ kenyaui.formatDate(date)
 %>
 
 <div class="ke-panel-frame" ng-controller="DailySchedule" ng-init="init('${ currentApp.id }', '${ kenyaui.formatDateParam(date) }', '${ config.pageProvider }', '${ config.page }')">

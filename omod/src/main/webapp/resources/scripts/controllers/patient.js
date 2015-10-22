@@ -198,7 +198,7 @@ kenyaemrApp.controller('DailySeen', ['$scope', '$http', function($scope, $http) 
 	};
 
 	/**
-	 * Refreshes the schedule
+	 * Refreshes the seen patients
 	 */
 	$scope.fetch = function() {
 		$http.get(ui.fragmentActionLink('kenyaemr', 'patient/patientUtils', 'getSeenPatients', { appId: $scope.appId, date: $scope.date })).

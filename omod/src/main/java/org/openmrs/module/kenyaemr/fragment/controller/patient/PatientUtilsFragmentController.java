@@ -124,26 +124,37 @@ public class PatientUtilsFragmentController {
 	}
 
 	@SharedAction
-	public SimpleObject[] getSeenPatients(@RequestParam("date") Date date, UiUtils ui) {
+	public List<SimpleObject> getSeenPatients(@RequestParam("date") Date date, UiUtils ui) {
 
+		Date startOfDay = DateUtil.getStartOfDay(date);
+		Date endOfDay = DateUtil.getEndOfDay(date);
 		List<Patient> allPatients = Context.getPatientService().getAllPatients();
+		List<Patient> requiredPatients = new ArrayList<Patient>();
 		List<SimpleObject> simplifiedObj = new ArrayList<SimpleObject>();
 
-		Date startOfDay =DateUtil.getStartOfDay(date);
-		Date endOfDay = DateUtil.getEndOfDay(date);
-
-
-		for(Patient patient:allPatients) {
-			SimpleObject so = ui.simplifyObject(patient);
-			List<Visit> visitsOnDate = Context.getVisitService().getVisits(null, Arrays.asList(patient), null, null, startOfDay, endOfDay, null, null, null, true, false);
-			if(visitsOnDate.size() > 0) {
-				so.put("patients", ui.simplifyObject(patient));
-				simplifiedObj.add(so);
+		// look for visits that started before endOfDay and ended after startOfDay
+		List<Visit> visits = Context.getVisitService().getVisits(null, allPatients, null, null, null, endOfDay, startOfDay, null, null, true, false);
+		if(visits.size() > 0) {
+			for (Visit visit : visits) {
+				requiredPatients.add(visit.getPatient());
 			}
+		}
+		for(Patient p:requiredPatients) {
+			SimpleObject so = ui.simplifyObject(p);
+			List<Visit> patientVisit = Context.getVisitService().getVisitsByPatient(p);
+			List<Visit> only = new ArrayList<Visit>();
+			for(Visit selectedVisit: patientVisit) {
+				if(selectedVisit.getStartDatetime().before(endOfDay) && selectedVisit.getStartDatetime().after(startOfDay)){
+					only.add(selectedVisit);
+				}
+			}
+			so.put("visits", ui.simplifyCollection(only));
+			simplifiedObj.add(so);
+
 		}
 
 
-		return ui.simplifyCollection(simplifiedObj);
+		return simplifiedObj;
 	}
 
 	/**
