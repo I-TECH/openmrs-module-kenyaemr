@@ -51,11 +51,11 @@ public class LastReturnVisitDateCalculation extends AbstractPatientCalculation {
                     }
                 }
 
-                }
+            }
 
-                if (returnVisitDateFromLastDate != null) {
-                    returnVisitDate = returnVisitDateFromLastDate.getValueDatetime();
-                }
+            if (returnVisitDateFromLastDate != null) {
+                returnVisitDate = returnVisitDateFromLastDate.getValueDatetime();
+            }
                 ret.put(ptId, new SimpleResult(returnVisitDate, this));
             }
 

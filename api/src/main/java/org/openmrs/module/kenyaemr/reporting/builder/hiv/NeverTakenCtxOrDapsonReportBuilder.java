@@ -1,11 +1,10 @@
-package org.openmrs.module.kenyaemr.reporting.builder.common;
+package org.openmrs.module.kenyaemr.reporting.builder.hiv;
 
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.module.kenyacore.report.CohortReportDescriptor;
 import org.openmrs.module.kenyacore.report.builder.Builds;
 import org.openmrs.module.kenyacore.report.builder.CalculationReportBuilder;
 import org.openmrs.module.kenyacore.report.data.patient.definition.CalculationDataDefinition;
-import org.openmrs.module.kenyaemr.calculation.library.NumberOfDaysLateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.TelephoneNumberCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.LastReturnVisitDateCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
@@ -19,12 +18,11 @@ import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
 import org.springframework.stereotype.Component;
 
 /**
- * Created by codehub on 10/7/15.
- * Use to list patients who missed appointment
+ * Creuiated by codehub on 10/23/15.
  */
 @Component
-@Builds({"kenyaemr.common.report.missedAppointment"})
-public class MissedAppointmentReportBuilder extends CalculationReportBuilder {
+@Builds({"kenyaemr.hiv.report.neverTakenCtxOrDapsone"})
+public class NeverTakenCtxOrDapsonReportBuilder extends CalculationReportBuilder {
 
     @Override
     protected void addColumns(CohortReportDescriptor report, PatientDataSetDefinition dsd) {
@@ -33,9 +31,14 @@ public class MissedAppointmentReportBuilder extends CalculationReportBuilder {
 
         addStandardColumns(report, dsd);
         dsd.addColumn("UPN", identifierDef, "");
-        dsd.addColumn("Appointment date", new CalculationDataDefinition("Appointment date", new LastReturnVisitDateCalculation()), "", new CalculationResultConverter());
-        dsd.addColumn("Number of days late", new CalculationDataDefinition("Number of days late", new NumberOfDaysLateCalculation()), "", new CalculationResultConverter());
+        dsd.addColumn("Last date of appointment", returnVisitDate(), "", new CalculationResultConverter());
+        dsd.addColumn("Next date of appointment", new CalculationDataDefinition("Next date of appointment", new LastReturnVisitDateCalculation()), "", new CalculationResultConverter());
         dsd.addColumn("Phone number", new CalculationDataDefinition("Phone number", new TelephoneNumberCalculation()), "", new CalculationResultConverter());
 
+    }
+
+    DataDefinition returnVisitDate(){
+        CalculationDataDefinition cd = new CalculationDataDefinition("return date", new ConceptObsListCalculation());
+        return cd;
     }
 }
