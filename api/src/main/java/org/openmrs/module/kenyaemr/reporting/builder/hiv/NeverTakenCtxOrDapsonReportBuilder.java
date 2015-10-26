@@ -7,6 +7,7 @@ import org.openmrs.module.kenyacore.report.builder.CalculationReportBuilder;
 import org.openmrs.module.kenyacore.report.data.patient.definition.CalculationDataDefinition;
 import org.openmrs.module.kenyaemr.calculation.library.TelephoneNumberCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.LastReturnVisitDateCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.LastReturnVisitDateNthPositionCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.reporting.data.converter.CalculationResultConverter;
 import org.openmrs.module.kenyaemr.reporting.data.converter.IdentifierConverter;
@@ -38,7 +39,7 @@ public class NeverTakenCtxOrDapsonReportBuilder extends CalculationReportBuilder
     }
 
     DataDefinition returnVisitDate(){
-        CalculationDataDefinition cd = new CalculationDataDefinition("return date", new ConceptObsListCalculation());
+        CalculationDataDefinition cd = new CalculationDataDefinition("return date", new LastReturnVisitDateNthPositionCalculation());
         return cd;
     }
 }

@@ -25,13 +25,13 @@ import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyacore.calculation.Filters;
 import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.TbConstants;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.metadata.TbMetadata;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
+import org.openmrs.module.reporting.common.DateUtil;
+import org.openmrs.module.reporting.common.DurationUnit;
 
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
@@ -90,59 +90,47 @@ public class NeedsTbSputumTestCalculation extends AbstractPatientCalculation imp
 		CalculationResultMap ret = new CalculationResultMap();
 		for (Integer ptId : cohort) {
 			boolean needsSputum = false;
+			//find those patients who have positive sputum results
+			Obs diseaseClassification = EmrCalculationUtils.obsResultForPatient(lastDiseaseClassiffication, ptId);
+			Obs tbResults = EmrCalculationUtils.obsResultForPatient(lastTbPulmonayResult, ptId);
+			Date  treatmentStartDate = EmrCalculationUtils.datetimeObsResultForPatient(tbStartTreatmentDate, ptId);
+			Obs lastObsTbDiseaseResults = EmrCalculationUtils.obsResultForPatient(lastObsTbDiseaseStatus, ptId);
+			Obs lastSputumResultsObs = EmrCalculationUtils.obsResultForPatient(lastSputumResults, ptId);
 
 			// check if a patient is alive
 			if (alive.contains(ptId)) {
-				// is the patient suspected of TB?
-				Obs lastObsTbDiseaseResults = EmrCalculationUtils.obsResultForPatient(lastObsTbDiseaseStatus, ptId);
-				Obs lastSputumResultsObs = EmrCalculationUtils.obsResultForPatient(lastSputumResults, ptId);
-				if ((lastObsTbDiseaseResults != null) && (lastObsTbDiseaseResults.getValueCoded().equals(tbsuspect)) && lastSputumResultsObs == null) {
+				if ((lastObsTbDiseaseResults != null) && (lastObsTbDiseaseResults.getValueCoded().equals(tbsuspect)) && lastSputumResultsObs == null && !(inTbProgram.contains(ptId))) {
 						needsSputum = true;
-					if(inTbProgram.contains(ptId)) {
-						needsSputum = false;
-					}
 				}
-
-				//find those patients who have positive sputum results
-				Obs diseaseClassification = EmrCalculationUtils.obsResultForPatient(lastDiseaseClassiffication, ptId);
-				Obs tbResults = EmrCalculationUtils.obsResultForPatient(lastTbPulmonayResult, ptId);
-				Date  treatmentStartDate = EmrCalculationUtils.datetimeObsResultForPatient(tbStartTreatmentDate, ptId);
-
-				if(inTbProgram.contains(ptId) && diseaseClassification != null && tbResults != null && (diseaseClassification.getValueCoded().equals(pulmonaryTb)) && (tbResults.getValueCoded().equals(smearPositive)) && treatmentStartDate != null) {
+				else if(inTbProgram.contains(ptId) && diseaseClassification != null && tbResults != null && (diseaseClassification.getValueCoded().equals(pulmonaryTb)) && (tbResults.getValueCoded().equals(smearPositive)) && treatmentStartDate != null) {
 
 					if(lastSputumResultsObs != null && !(lastSputumResultsObs.getValueCoded().equals(NEGATIVE))) {
 
 						//get date after 2,4 and 6 months
-						Calendar months2 = Calendar.getInstance();
-						months2.setTime(treatmentStartDate);
-						months2.add(Calendar.MONTH, 2);
 
 						//find first sputum results after 2 months. If the results is null activate the alert
-						CalculationResultMap resuts2Months = Calculations.firstObsOnOrAfter(SPUTUM_FOR_ACID_FAST_BACILLI, months2.getTime(), Arrays.asList(ptId), context);
+						Date months2 = DateUtil.adjustDate(treatmentStartDate, 2, DurationUnit.MONTHS);
+						CalculationResultMap resuts2Months = Calculations.firstObsOnOrAfter(SPUTUM_FOR_ACID_FAST_BACILLI, months2, Arrays.asList(ptId), context);
 
-						Calendar months4 = Calendar.getInstance();
-						months4.setTime(treatmentStartDate);
-						months4.add(Calendar.MONTH, 4);
 						//repeat after 4 months
-						CalculationResultMap resuts4Months = Calculations.firstObsOnOrAfter(SPUTUM_FOR_ACID_FAST_BACILLI, months4.getTime(), Arrays.asList(ptId), context);
+						Date months4 = DateUtil.adjustDate(treatmentStartDate, 4, DurationUnit.MONTHS);
+						CalculationResultMap resuts4Months = Calculations.firstObsOnOrAfter(SPUTUM_FOR_ACID_FAST_BACILLI, months4, Arrays.asList(ptId), context);
 
-						Calendar months6 = Calendar.getInstance();
-						months6.setTime(treatmentStartDate);
-						months6.add(Calendar.MONTH, 6);
+						//repeat for months 6
+						Date months6 = DateUtil.adjustDate(treatmentStartDate, 6, DurationUnit.MONTHS);
+						CalculationResultMap resuts6Months = Calculations.firstObsOnOrAfter(SPUTUM_FOR_ACID_FAST_BACILLI, months6, Arrays.asList(ptId), context);
 
-						CalculationResultMap resuts6Months = Calculations.firstObsOnOrAfter(SPUTUM_FOR_ACID_FAST_BACILLI, months6.getTime(), Arrays.asList(ptId), context);
-
-						if(EmrCalculationUtils.obsResultForPatient(resuts2Months, ptId) == null && months2.getTime().before(context.getNow())) {
+						if(EmrCalculationUtils.obsResultForPatient(resuts2Months, ptId) == null && months2.before(context.getNow())) {
 							needsSputum = true;
 						}
 
-						if(EmrCalculationUtils.obsResultForPatient(resuts4Months, ptId) == null && months4.getTime().before(context.getNow())) {
+						if (EmrCalculationUtils.obsResultForPatient(resuts4Months, ptId) == null && months4.before(context.getNow())) {
 							needsSputum = true;
 						}
 
 						//repeat for 6 months
 
-						if(EmrCalculationUtils.obsResultForPatient(resuts6Months, ptId) == null && months6.getTime().before(context.getNow()) ) {
+						if(EmrCalculationUtils.obsResultForPatient(resuts6Months, ptId) == null && months6.before(context.getNow()) ) {
 							needsSputum = true;
 						}
 

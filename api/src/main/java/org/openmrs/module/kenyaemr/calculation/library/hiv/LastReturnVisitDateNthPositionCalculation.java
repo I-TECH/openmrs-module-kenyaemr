@@ -37,7 +37,7 @@ public class LastReturnVisitDateNthPositionCalculation extends AbstractPatientCa
                 visitDate = returnVisitDateFromLastDate.get(0).getValueDatetime();
             }
             else if (returnVisitDateFromLastDate.size() > 1) {
-                visitDate = returnVisitDateFromLastDate.get(returnVisitDateFromLastDate.size() - 1).getValueDatetime();
+                visitDate = returnVisitDateFromLastDate.get(returnVisitDateFromLastDate.size() - 2).getValueDatetime();
             }
 
             ret.put(ptId, new SimpleResult(visitDate, this));

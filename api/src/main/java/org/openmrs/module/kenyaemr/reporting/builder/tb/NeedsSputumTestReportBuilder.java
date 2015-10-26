@@ -4,8 +4,11 @@ import org.openmrs.PatientIdentifierType;
 import org.openmrs.module.kenyacore.report.CohortReportDescriptor;
 import org.openmrs.module.kenyacore.report.builder.Builds;
 import org.openmrs.module.kenyacore.report.builder.CalculationReportBuilder;
+import org.openmrs.module.kenyacore.report.data.patient.definition.CalculationDataDefinition;
+import org.openmrs.module.kenyaemr.calculation.library.tb.NeedsTbSputumTestDateCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.metadata.TbMetadata;
+import org.openmrs.module.kenyaemr.reporting.data.converter.CalculationResultConverter;
 import org.openmrs.module.kenyaemr.reporting.data.converter.IdentifierConverter;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.data.DataDefinition;
@@ -33,5 +36,6 @@ public class NeedsSputumTestReportBuilder extends CalculationReportBuilder {
         addStandardColumns(report, dsd);
         dsd.addColumn("Unique Patient Number", identifierDefUpn, "");
         dsd.addColumn("District Registration Number", identifierDefDn, "");
+        dsd.addColumn("Due date", new CalculationDataDefinition("Date Eligible", new NeedsTbSputumTestDateCalculation()), "", new CalculationResultConverter());
     }
 }
