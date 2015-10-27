@@ -106,7 +106,7 @@
 						<bean parent="TestDefinition" p:concept="21AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><!-- HAEMOGLOBIN -->
 						<bean parent="TestDefinition" p:concept="1319AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><!-- LYMPHOCYTE COUNT -->
 						<!-- Missing: Serum Cryptococcal Antigen -->
-						<bean parent="TestDefinition" p:concept="856AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><!-- HIV VIRAL LOAD -->
+						<!--<bean parent="TestDefinition" p:concept="856AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />&lt;!&ndash; HIV VIRAL LOAD &ndash;&gt;-->
 						<bean parent="TestDefinition" p:concept="855AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><!-- ERYTHROCYTE SEDIMENTATION RATE -->
 						<bean parent="TestDefinition" p:concept="857AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><!-- BLOOD UREA NITROGEN -->
 					</list>
