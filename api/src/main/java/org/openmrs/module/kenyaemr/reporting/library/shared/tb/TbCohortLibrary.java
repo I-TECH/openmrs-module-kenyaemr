@@ -105,13 +105,15 @@ public class TbCohortLibrary {
 	 */
 	public CohortDefinition screenedForTbAndHivPositive() {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		Concept tbDiseaseStatus = Dictionary.getConcept(Dictionary.TUBERCULOSIS_DISEASE_STATUS);
+		Concept onTreatment = Dictionary.getConcept(Dictionary.ON_TREATMENT_FOR_DISEASE);
 		cd.setName("screened and hiv positive");
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.addSearch("screened", ReportUtils.map(screenedForTb(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
 		cd.addSearch("currentlyOnCareAndScreenedInTheLastVisit", ReportUtils.map(currentlyOnCareAndScreenedInTheLastVisit(), "onOrBefore=${onOrBefore}"));
-		cd.addSearch("hivPositive", ReportUtils.map(hivCohortLibrary.enrolled(), "enrolledOnOrBefore=${onOrBefore}"));
-		cd.setCompositionString("(screened OR currentlyOnCareAndScreenedInTheLastVisit) AND hivPositive");
+		cd.addSearch("onTreatment", ReportUtils.map(commonCohorts.hasObs(tbDiseaseStatus, onTreatment), "onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("(screened OR currentlyOnCareAndScreenedInTheLastVisit) AND NOT onTreatment");
 
 		return cd;
 	}
