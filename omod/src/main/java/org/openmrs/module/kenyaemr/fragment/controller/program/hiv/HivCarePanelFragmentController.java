@@ -25,6 +25,7 @@ import org.openmrs.module.kenyaemr.calculation.library.hiv.LastWhoStageCalculati
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtRegimenCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtStartDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.LastViralLoadCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.LowDitactableViralLoadCalculation;
 import org.openmrs.module.kenyaemr.regimen.RegimenChangeHistory;
 import org.openmrs.module.kenyaemr.regimen.RegimenManager;
 import org.openmrs.ui.framework.annotation.FragmentParam;
@@ -57,6 +58,9 @@ public class HivCarePanelFragmentController {
 		calculationResults.put("lastViralLoad", EmrCalculationUtils.evaluateForPatient(LastViralLoadCalculation.class, null, patient));
 
 		model.addAttribute("calculations", calculationResults);
+		CalculationResult result = EmrCalculationUtils.evaluateForPatient(LowDitactableViralLoadCalculation.class, null, patient);
+		model.addAttribute("results", result);
+		model.addAttribute("label", "Yes");
 
 		Concept medSet = regimenManager.getMasterSetConcept("ARV");
 		RegimenChangeHistory history = RegimenChangeHistory.forPatient(patient, medSet);

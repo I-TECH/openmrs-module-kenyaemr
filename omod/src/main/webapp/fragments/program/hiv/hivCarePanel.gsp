@@ -39,6 +39,13 @@
 	else {
 		dataPoints << [ label: "Last Viral Load", value: "None" ]
 	}
+
+	if (results) {
+		dataPoints << [ label: "LDL", value: ui.format(label), extra: results.value.obsDatetime ]
+	}
+	else {
+		dataPoints << [ label: "LDL", value: "None" ]
+	}
 %>
 
 <% if (config.complete) { %>
