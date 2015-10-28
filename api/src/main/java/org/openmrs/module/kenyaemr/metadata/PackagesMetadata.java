@@ -35,7 +35,7 @@ public class PackagesMetadata extends AbstractMetadataBundle {
 	 */
 	@Override
 	public void install() {
-		install(packageFile("metadata/KenyaEMR_Drugs-2.zip", null, _Package.DRUGS));
+		install(packageFile("metadata/KenyaEMR_Drugs-3.zip", null, _Package.DRUGS));
 		install(packageFile("metadata/KenyaEMR_Misc-41.zip", null, _Package.MISC));
 	}
 }
