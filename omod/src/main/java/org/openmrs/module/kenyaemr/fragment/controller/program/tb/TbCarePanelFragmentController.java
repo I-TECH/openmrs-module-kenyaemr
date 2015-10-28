@@ -15,14 +15,16 @@
 package org.openmrs.module.kenyaemr.fragment.controller.program.tb;
 
 import org.openmrs.Concept;
+import org.openmrs.Obs;
 import org.openmrs.Patient;
 import org.openmrs.calculation.result.CalculationResult;
+import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
-import org.openmrs.module.kenyaemr.regimen.RegimenManager;
 import org.openmrs.module.kenyaemr.calculation.library.tb.TbDiseaseClassificationCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.tb.TbPatientClassificationCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.tb.TbTreatmentNumberCalculation;
 import org.openmrs.module.kenyaemr.regimen.RegimenChangeHistory;
+import org.openmrs.module.kenyaemr.regimen.RegimenManager;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.FragmentModel;
@@ -47,11 +49,22 @@ public class TbCarePanelFragmentController {
 
 		result = EmrCalculationUtils.evaluateForPatient(TbPatientClassificationCalculation.class, null, patient);
 		calculationResults.put("tbPatientClassification", result != null ? result.getValue() : null);
+		String message = "None";
+		if(result != null){
+			Obs obs  = (Obs) result.getValue();
+			if(obs.getValueCoded().equals(Dictionary.getConcept(Dictionary.SMEAR_POSITIVE_NEW_TUBERCULOSIS_PATIENT))) {
+				message = "New tuberculosis patient";
+			}
+			else {
+				message = obs.getValueCoded().getName().getName();
+			}
+		}
 
 		result = EmrCalculationUtils.evaluateForPatient(TbTreatmentNumberCalculation.class, null, patient);
 		calculationResults.put("tbTreatmentNumber", result != null ? result.getValue() : null);
 
 		model.addAttribute("calculations", calculationResults);
+		model.addAttribute("result", message);
 
 		Concept medSet = regimenManager.getMasterSetConcept("TB");
 		RegimenChangeHistory history = RegimenChangeHistory.forPatient(patient, medSet);
