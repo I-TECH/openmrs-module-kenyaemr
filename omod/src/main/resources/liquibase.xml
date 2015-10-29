@@ -115,4 +115,13 @@
 		</sql>
 	</changeSet>
 
+	<changeSet id="${project.parent.artifactId}-20151029-1715" author="ningosi">
+		<comment>
+			Updating concepts that are of free text from an HIV adendum form to 161011(free text comment)
+		</comment>
+		<sqlFile path="sql/CorrectFreeTextOnHivAdendum.sql" />
+
+
+	</changeSet>
+
 </databaseChangeLog>
