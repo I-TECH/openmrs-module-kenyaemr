@@ -14,19 +14,15 @@
 
 package org.openmrs.module.kenyaemr.calculation.library.hiv.art;
 
-import org.openmrs.Concept;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
-import org.openmrs.module.kenyacore.calculation.CalculationUtils;
-import org.openmrs.module.kenyacore.calculation.Calculations;
-import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Calculates whether a patient is a transfer in based on the status
@@ -41,18 +37,15 @@ public class IsTransferInCalculation extends AbstractPatientCalculation {
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues,
 										 PatientCalculationContext context) {
 
-		Concept transferInStatus = Dictionary.getConcept(Dictionary.TRANSFER_IN);
-
-		CalculationResultMap transferInStatusResults = Calculations.lastObs(transferInStatus,cohort,context);
-		Set<Integer> transferInDate = CalculationUtils.patientsThatPass(calculate(new TransferInDateCalculation(), cohort, context));
+		CalculationResultMap transferInDate = calculate(new TransferInDateCalculation(), cohort, context);
 
 		CalculationResultMap result = new CalculationResultMap();
 		for (Integer ptId : cohort) {
 			boolean isTransferIn = false;
 
-			Concept status = EmrCalculationUtils.codedObsResultForPatient(transferInStatusResults, ptId);
+			Date transferInDateValue = EmrCalculationUtils.datetimeResultForPatient(transferInDate, ptId);
 
-			if (((status != null) && (status.equals(Dictionary.getConcept(Dictionary.YES)))) || transferInDate.contains(ptId) ) {
+			if (transferInDateValue != null ) {
 				isTransferIn = true;
 			}
 
