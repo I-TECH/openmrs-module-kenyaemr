@@ -21,6 +21,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyacore.report.ReportDescriptor;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
+import org.openmrs.module.kenyaemr.metadata.MchMetadata;
 import org.openmrs.module.kenyaemr.metadata.TbMetadata;
 import org.openmrs.module.kenyaemr.regimen.RegimenManager;
 import org.openmrs.module.kenyacore.test.ReportingTestUtils;
@@ -53,6 +54,9 @@ public class Moh711ReportBuilderTest extends BaseModuleContextSensitiveTest {
 	private TbMetadata tbMetadata;
 
 	@Autowired
+	private MchMetadata mchMetadata;
+
+	@Autowired
 	private RegimenManager regimenManager;
 
 	@Autowired
@@ -70,6 +74,7 @@ public class Moh711ReportBuilderTest extends BaseModuleContextSensitiveTest {
 		commonMetadata.install();
 		hivMetadata.install();
 		tbMetadata.install();
+		mchMetadata.install();
 
 		regimenManager.refresh();
 	}

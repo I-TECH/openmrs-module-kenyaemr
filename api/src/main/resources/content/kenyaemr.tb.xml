@@ -93,7 +93,7 @@
 		<property name="targetUuid" value="ed001a42-8462-49d3-8e9d-5c7bedc1806d" />
 		<property name="name" value="Patients in TB program" />
 		<property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.tb.InTbProgramCalculation" />
-		<property name="displayIdentifier" ref="kenyaemr.tb.identifier.districtRegistration" />
+		<!--<property name="displayIdentifier" ref="kenyaemr.tb.identifier.districtRegistration" />-->
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 	</bean>
 
@@ -101,7 +101,7 @@
 		<property name="targetUuid" value="316c9d65-fbce-402e-8e89-b5f7e78276cb" />
 		<property name="name" value="Patients due for TB sputum test" />
 		<property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.tb.NeedsTbSputumTestCalculation" />
-		<property name="displayIdentifier" ref="kenyaemr.tb.identifier.districtRegistration" />
+		<!--<property name="displayIdentifier" ref="kenyaemr.tb.identifier.districtRegistration" />-->
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 	</bean>
 
@@ -109,7 +109,7 @@
 		<property name="targetUuid" value="c38e0866-b24b-43e0-aa21-e21638742e63" />
 		<property name="name" value="Patients with missing TB sputum results" />
 		<property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.tb.MissingTbSputumResultsCalculation" />
-		<property name="displayIdentifier" ref="kenyaemr.tb.identifier.districtRegistration" />
+		<!--<property name="displayIdentifier" ref="kenyaemr.tb.identifier.districtRegistration" />-->
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 	</bean>
 

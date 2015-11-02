@@ -17,15 +17,17 @@ package org.openmrs.module.kenyaemr.fragment.controller.program.hiv;
 import org.openmrs.Concept;
 import org.openmrs.Patient;
 import org.openmrs.calculation.result.CalculationResult;
-import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
-import org.openmrs.module.kenyaemr.regimen.RegimenManager;
 import org.openmrs.module.kenyaemr.Dictionary;
+import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.LastCd4CountCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.LastCd4PercentageCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.LastWhoStageCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtRegimenCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtStartDateCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.LastCd4CountCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.LastCd4PercentageCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.LastViralLoadCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.LowDitactableViralLoadCalculation;
 import org.openmrs.module.kenyaemr.regimen.RegimenChangeHistory;
+import org.openmrs.module.kenyaemr.regimen.RegimenManager;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.FragmentModel;
@@ -53,13 +55,17 @@ public class HivCarePanelFragmentController {
 		calculationResults.put("lastWHOStage", EmrCalculationUtils.evaluateForPatient(LastWhoStageCalculation.class, null, patient));
 		calculationResults.put("lastCD4Count", EmrCalculationUtils.evaluateForPatient(LastCd4CountCalculation.class, null, patient));
 		calculationResults.put("lastCD4Percent", EmrCalculationUtils.evaluateForPatient(LastCd4PercentageCalculation.class, null, patient));
+		calculationResults.put("lastViralLoad", EmrCalculationUtils.evaluateForPatient(LastViralLoadCalculation.class, null, patient));
 
 		model.addAttribute("calculations", calculationResults);
+		CalculationResult result = EmrCalculationUtils.evaluateForPatient(LowDitactableViralLoadCalculation.class, null, patient);
+		model.addAttribute("results", result);
+		model.addAttribute("label", "Yes");
 
 		Concept medSet = regimenManager.getMasterSetConcept("ARV");
 		RegimenChangeHistory history = RegimenChangeHistory.forPatient(patient, medSet);
 		model.addAttribute("regimenHistory", history);
 
-		model.addAttribute("graphingConcepts", Dictionary.getConcepts(Dictionary.WEIGHT_KG, Dictionary.CD4_COUNT, Dictionary.CD4_PERCENT));
+		model.addAttribute("graphingConcepts", Dictionary.getConcepts(Dictionary.WEIGHT_KG, Dictionary.CD4_COUNT, Dictionary.CD4_PERCENT, Dictionary.HIV_VIRAL_LOAD));
 	}
 }

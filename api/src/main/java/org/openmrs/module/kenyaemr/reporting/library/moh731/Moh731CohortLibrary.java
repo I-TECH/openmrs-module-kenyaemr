@@ -16,12 +16,17 @@ package org.openmrs.module.kenyaemr.reporting.library.moh731;
 
 import org.openmrs.EncounterType;
 import org.openmrs.module.kenyacore.report.ReportUtils;
+import org.openmrs.module.kenyacore.report.cohort.definition.CalculationCohortDefinition;
+import org.openmrs.module.kenyaemr.Dictionary;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.NextOfVisitHigherThanContextCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonCohortLibrary;
+import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.HivCohortLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.art.ArtCohortLibrary;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.DateObsCohortDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -40,6 +45,9 @@ public class Moh731CohortLibrary {
 	@Autowired
 	private ArtCohortLibrary artCohorts;
 
+	@Autowired
+	private HivCohortLibrary hivCohortLibrary;
+
 	/**
 	 * Patients currently in care (includes transfers)
 	 * @return the cohort definition
@@ -48,10 +56,17 @@ public class Moh731CohortLibrary {
 		EncounterType hivEnroll = MetadataUtils.existing(EncounterType.class, HivMetadata._EncounterType.HIV_ENROLLMENT);
 		EncounterType hivConsult = MetadataUtils.existing(EncounterType.class, HivMetadata._EncounterType.HIV_CONSULTATION);
 
+		//find those patients who have next of appointment date
+		CalculationCohortDefinition nextAppointment = new CalculationCohortDefinition(new NextOfVisitHigherThanContextCalculation());
+		nextAppointment.setName("Have date of next visit");
+		nextAppointment.addParameter(new Parameter("onDate", "On Date", Date.class));
+
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
 		cd.addSearch("recentEncounter", ReportUtils.map(commonCohorts.hasEncounter(hivEnroll, hivConsult), "onOrAfter=${onDate-90d},onOrBefore=${onDate}"));
-		cd.setCompositionString("recentEncounter");
+		cd.addSearch("appointmentHigher", ReportUtils.map(nextAppointment, "onDate=${onDate}"));
+		cd.addSearch("inHivProgram", ReportUtils.map(hivCohortLibrary.enrolled(), "enrolledOnOrBefore=${onDate}"));
+		cd.setCompositionString("(recentEncounter OR appointmentHigher) AND inHivProgram");
 		return cd;
 	}
 
@@ -70,17 +85,40 @@ public class Moh731CohortLibrary {
 	}
 
 	/**
+	 * Has appointment date and started art
+	 */
+	public CohortDefinition hasAppointmentDateAndStartedArt() {
+		CalculationCohortDefinition hasAppointmentDate = new CalculationCohortDefinition( new NextOfVisitHigherThanContextCalculation());
+		hasAppointmentDate.setName("Having appointment higher than context");
+		hasAppointmentDate.addParameter(new Parameter("onDate", "On Date", Date.class));
+
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addSearch("startedArt", ReportUtils.map(artCohorts.startedArt(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("hasAppointmentDate", ReportUtils.map(hasAppointmentDate, "onDate=${onOrBefore}"));
+		cd.setCompositionString("startedArt AND hasAppointmentDate");
+		return cd;
+	}
+
+	/**
 	 * Currently on ART.. we could calculate this several ways...
 	 * @return the cohort definition
  	 */
 	public CohortDefinition currentlyOnArt() {
+
+		CalculationCohortDefinition hasAppointmentDate = new CalculationCohortDefinition( new NextOfVisitHigherThanContextCalculation());
+		hasAppointmentDate.setName("Having appointment higher than context");
+		hasAppointmentDate.addParameter(new Parameter("onDate", "On Date", Date.class));
+
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.addParameter(new Parameter("fromDate", "From Date", Date.class));
 		cd.addParameter(new Parameter("toDate", "To Date", Date.class));
 		cd.addSearch("startedArt", ReportUtils.map(artCohorts.startedArt(), "onOrAfter=${fromDate},onOrBefore=${toDate}"));
 		cd.addSearch("revisitsArt", ReportUtils.map(revisitsArt(), "fromDate=${fromDate},toDate=${toDate}"));
+		cd.addSearch("hasAppointmentDate", ReportUtils.map(hasAppointmentDateAndStartedArt(), "onOrAfter=${fromDate},onOrBefore=${toDate}"));
 		cd.addSearch("deceased", ReportUtils.map(commonCohorts.deceasedPatients(), "onDate=${toDate}"));
-		cd.setCompositionString("startedArt OR revisitsArt AND NOT deceased");
+		cd.setCompositionString("(startedArt OR revisitsArt OR hasAppointmentDate) AND NOT deceased");
 		return cd;
 	}
 

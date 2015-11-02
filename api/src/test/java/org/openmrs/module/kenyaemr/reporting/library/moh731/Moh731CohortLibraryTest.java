@@ -18,6 +18,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Concept;
 import org.openmrs.EncounterType;
+import org.openmrs.Program;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
@@ -74,6 +75,10 @@ public class Moh731CohortLibraryTest extends BaseModuleContextSensitiveTest {
 	public void currentlyInCare() throws Exception {
 		EncounterType triage = MetadataUtils.existing(EncounterType.class, CommonMetadata._EncounterType.TRIAGE);
 		EncounterType hivConsult = MetadataUtils.existing(EncounterType.class, HivMetadata._EncounterType.HIV_CONSULTATION);
+		Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
+
+		TestUtils.enrollInProgram(TestUtils.getPatient(7), hivProgram,PERIOD_END);
+		TestUtils.enrollInProgram(TestUtils.getPatient(8), hivProgram, PERIOD_END);
 
 		// Give patient #2 irrelevant encounter during 90 day window
 		TestUtils.saveEncounter(TestUtils.getPatient(2), triage, TestUtils.date(2012, 6, 15));
@@ -101,6 +106,8 @@ public class Moh731CohortLibraryTest extends BaseModuleContextSensitiveTest {
 	public void revisitsArt() throws Exception {
 		EncounterType hivConsult = MetadataUtils.existing(EncounterType.class, HivMetadata._EncounterType.HIV_CONSULTATION);
 		Concept stavudine = Context.getConceptService().getConcept(84309);
+		Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
+		TestUtils.enrollInProgram(TestUtils.getPatient(7), hivProgram,PERIOD_END);
 
 		// Start patient #6 this month and give them a visit in the reporting period + 2 months
 		TestUtils.saveDrugOrder(TestUtils.getPatient(6), stavudine, TestUtils.date(2012, 6, 10), null);

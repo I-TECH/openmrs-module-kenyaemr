@@ -16,11 +16,9 @@ package org.openmrs.module.kenyaemr.reporting.library.shared.hiv.art;
 
 import org.openmrs.Concept;
 import org.openmrs.Program;
-import org.openmrs.api.PatientSetService;
 import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyacore.report.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.kenyacore.report.cohort.definition.DateCalculationCohortDefinition;
-import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.library.MissedLastAppointmentCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.LostToFollowUpCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.EligibleForArtCalculation;
@@ -32,17 +30,18 @@ import org.openmrs.module.kenyaemr.calculation.library.hiv.art.OnOriginalFirstLi
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.OnSecondLineArtCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.PregnantAtArtStartCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.TbPatientAtArtStartCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.TransferredInAfterArtStartCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.WhoStageAtArtStartCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.regimen.RegimenManager;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.RegimenOrderCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonCohortLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.HivCohortLibrary;
+import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.QiCohortLibrary;
+import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.QiPaedsCohortLibrary;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.NumericObsCohortDefinition;
-import org.openmrs.module.reporting.common.RangeComparator;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -66,6 +65,12 @@ public class ArtCohortLibrary {
 
 	@Autowired
 	private HivCohortLibrary hivCohortLibrary;
+
+	@Autowired
+	private QiCohortLibrary qiCohortLibrary;
+
+	@Autowired
+	private QiPaedsCohortLibrary qiPaedsCohortLibrary;
 
 	/**
 	 * Patients who are eligible for ART on ${onDate}
@@ -216,12 +221,18 @@ public class ArtCohortLibrary {
 	 * @return the cohort definition
 	 */
 	public CohortDefinition netCohortMonthsBetweenDatesGivenMonths() {
+		CalculationCohortDefinition calc = new CalculationCohortDefinition(new TransferredInAfterArtStartCalculation());
+		calc.setName("Patients who transferred in while started art");
+		calc.addParameter(new Parameter("onDate", "On Date", Date.class));
+
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.setName("month net cohort on date given months");
 		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
 		cd.addSearch("startedArtMonthsAgo", ReportUtils.map(startedArt(), "onOrAfter=${startDate},onOrBefore=${endDate}"));
-		cd.setCompositionString("startedArtMonthsAgo");
+		cd.addSearch("transferInWhileOnArt", ReportUtils.map(calc));
+		cd.addSearch("inHivProgram", ReportUtils.map(hivCohortLibrary.enrolled(), "enrolledOnOrBefore=${endDate}"));
+		cd.setCompositionString("(startedArtMonthsAgo AND inHivProgram) AND NOT transferInWhileOnArt");
 		return cd;
 	}
 
@@ -324,6 +335,20 @@ public class ArtCohortLibrary {
 	}
 
 	/**
+	 * Intersection of eligibleAndStartedARTAdult and hivInfectedAndNotOnARTAndHasHivClinicalVisit
+	 * @return CohortDefinition
+	 */
+	public CohortDefinition eligibleAndStartedARTAndHivInfectedAndNotOnARTAndHasHivClinicalVisit() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("eligibleAndStartedART", ReportUtils.map(eligibleAndStartedARTAdult(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("hivInfectedAndNotOnART", ReportUtils.map(qiCohortLibrary.hivInfectedAndNotOnARTAndHasHivClinicalVisit(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("eligibleAndStartedART AND hivInfectedAndNotOnART");
+		return cd;
+	}
+
+	/**
 	 * Patients who are eligible and started art during 6 months review period children
 	 * @return CohortDefinition
 	 */
@@ -337,6 +362,20 @@ public class ArtCohortLibrary {
 		cd.addSearch("child", ReportUtils.map(commonCohorts.agedAtMost(15), "effectiveDate=${onOrBefore}"));
 		cd.setCompositionString("eligible and startART and child");
 		return  cd;
+	}
+
+	/**
+	 * Intersection of eligibleAndStartedARTPeds and hivInfectedAndNotOnARTAndHasHivClinicalVisit
+	 * @return CohortDefinition
+	 */
+	public CohortDefinition eligibleAndStartedARTPedsAndhivInfectedAndNotOnARTAndHasHivClinicalVisit() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("eligibleAndStartedARTPeds", ReportUtils.map(eligibleAndStartedARTPeds(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("hivInfectedAndNotOnARTAndHasHivClinicalVisit", ReportUtils.map(qiPaedsCohortLibrary.hivInfectedAndNotOnARTAndHasHivClinicalVisit(),  "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("eligibleAndStartedARTPeds AND hivInfectedAndNotOnARTAndHasHivClinicalVisit");
+		return cd;
 	}
 
 	/**

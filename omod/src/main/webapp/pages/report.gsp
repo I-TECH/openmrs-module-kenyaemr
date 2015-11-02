@@ -41,7 +41,6 @@
 			<% } %>
 		</div>
 	</div>
-
 	${ ui.includeFragment("kenyaemr", "report/reportQueue", [ allowCancel: false ]) }
 
 	<div class="ke-panel-frame">
@@ -52,6 +51,7 @@
 				<tr>
 					<th>Requested</th>
 					<th>By</th>
+					<th>Report file name</th>
 					<th>Status</th>
 					<th>Time taken</th>
 					<th>&nbsp;</th>
@@ -60,7 +60,8 @@
 				<tbody>
 				<tr ng-repeat="request in finished">
 					<td>{{ request.requestDate | keDateTime }}</td>
-					<td>{{ request.requestedBy.person.name }}</td>
+					<td>{{ request.requestedBy.person.name}}</td>
+					<td>{{ request.report.name }}_{{ request.parameters.startDate | keDateShort }}</td>
 					<td>{{ request.status }}</td>
 					<td>{{ request.timeTaken || '--:--:--' }}</td>
 					<td style="text-align: right">

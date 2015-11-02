@@ -24,6 +24,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Converts a report request to a simple object
@@ -57,6 +59,7 @@ public class ReportRequestSimplifier extends AbstractSimplifier<ReportRequest> {
 		ret.put("status", request.getStatus());
 		ret.put("finished", request.getStatus().equals(ReportRequest.Status.COMPLETED) || request.getStatus().equals(ReportRequest.Status.FAILED));
 		ret.put("timeTaken", timeTaken != null ? kenyaui.formatDuration(timeTaken) : null);
+		ret.put("parameters", getDate(request));
 		return ret;
 	}
 
@@ -74,5 +77,18 @@ public class ReportRequestSimplifier extends AbstractSimplifier<ReportRequest> {
 		Date end = request.getEvaluateCompleteDatetime() != null ? request.getEvaluateCompleteDatetime() : new Date();
 
 		return end.getTime() - start.getTime();
+	}
+
+	Map<String, Object> getDate(ReportRequest reportRequest) {
+		Map<String, Object> mappings = new HashMap<String, Object>();
+
+		if(reportRequest.getReportDefinition().getParameterMappings().isEmpty()){
+			mappings.put("startDate", new Date());
+		}
+		else {
+			mappings.putAll(reportRequest.getReportDefinition().getParameterMappings());
+		}
+
+		return mappings;
 	}
 }

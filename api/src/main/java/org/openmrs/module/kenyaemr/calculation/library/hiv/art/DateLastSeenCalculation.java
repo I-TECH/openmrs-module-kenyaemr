@@ -14,7 +14,8 @@
 package org.openmrs.module.kenyaemr.calculation.library.hiv.art;
 
 import org.openmrs.Encounter;
-import org.openmrs.EncounterType;
+import org.openmrs.PatientProgram;
+import org.openmrs.Program;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
@@ -23,6 +24,8 @@ import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
+import org.openmrs.module.reporting.common.DateUtil;
+import org.openmrs.module.reporting.common.DurationUnit;
 
 import java.util.Collection;
 import java.util.Date;
@@ -34,17 +37,48 @@ import java.util.Map;
 public class DateLastSeenCalculation extends AbstractPatientCalculation {
 
 	@Override
-	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues,
-										 PatientCalculationContext context) {
-		CalculationResultMap lastEncounter = Calculations.lastEncounter(MetadataUtils.existing(EncounterType.class, HivMetadata._EncounterType.HIV_CONSULTATION), cohort, context);
+	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> params, PatientCalculationContext context) {
+
+		Integer outcomePeriod = (params != null && params.containsKey("outcomePeriod")) ? (Integer) params.get("outcomePeriod") : null;
+		Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
+		CalculationResultMap dateEnrolledMap = Calculations.firstEnrollments(hivProgram, cohort, context);
+
+
+		if(outcomePeriod != null){
+			context.setNow(DateUtil.adjustDate(DateUtil.getStartOfMonth(context.getNow()), outcomePeriod, DurationUnit.MONTHS));
+		}
+
+		CalculationResultMap lastEncounter = Calculations.lastEncounter(null, cohort, context);
+		CalculationResultMap initialArtStart = calculate(new InitialArtStartDateCalculation(), cohort, context);
+
+
 		CalculationResultMap result = new CalculationResultMap();
 		for (Integer ptId : cohort) {
-			Encounter encounterInfo = EmrCalculationUtils.encounterResultForPatient(lastEncounter, ptId);
-			Date dateLastSeen = null;
-			if(encounterInfo != null){
-				dateLastSeen = encounterInfo.getEncounterDatetime();
+
+			Encounter encounter = EmrCalculationUtils.encounterResultForPatient(lastEncounter, ptId);
+			PatientProgram patientProgram = EmrCalculationUtils.resultForPatient(dateEnrolledMap, ptId);
+			Date artStartDate = EmrCalculationUtils.datetimeResultForPatient(initialArtStart, ptId);
+			if(patientProgram != null) {
+				Date encounterDate = null;
+				if (encounter != null) {
+
+					if(artStartDate != null && artStartDate.after(encounter.getEncounterDatetime())) {
+						encounterDate = artStartDate;
+					}
+					else {
+						encounterDate = encounter.getEncounterDatetime();
+					}
+				}
+				if(encounterDate == null && artStartDate != null) {
+					encounterDate = artStartDate;
+				}
+
+				if(encounterDate == null){
+					encounterDate = patientProgram.getDateEnrolled();
+				}
+
+				result.put(ptId, new SimpleResult(encounterDate, this));
 			}
-			result.put(ptId, new SimpleResult(dateLastSeen, this));
 		}
 		return  result;
 	}

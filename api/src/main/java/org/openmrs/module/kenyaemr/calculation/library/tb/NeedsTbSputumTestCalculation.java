@@ -25,12 +25,13 @@ import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyacore.calculation.Filters;
 import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.TbConstants;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.metadata.TbMetadata;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
+import org.openmrs.module.reporting.common.DateUtil;
+import org.openmrs.module.reporting.common.DurationUnit;
 
-import java.util.Calendar;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
@@ -38,8 +39,8 @@ import java.util.Set;
 
 /**
  * Calculate whether patients are due for a sputum test. Calculation returns
- * true if the patient is alive, and screened for tb, and has cough of any
- * duration probably 2 weeks during the 2 weeks then there should have been no
+ * true if the patient is alive, and screened for tb, and is a suspect,
+ * those on treatment with pulmonary tb positive, a repeat is done 2, 4, and 6 months
  * sputum results recorded
  */
 public class NeedsTbSputumTestCalculation extends AbstractPatientCalculation implements PatientFlagCalculation {
@@ -69,211 +70,79 @@ public class NeedsTbSputumTestCalculation extends AbstractPatientCalculation imp
 		Concept tbsuspect = Dictionary.getConcept(Dictionary.DISEASE_SUSPECTED);
 		Concept pulmonaryTb = Dictionary.getConcept(Dictionary.PULMONARY_TB);
 		Concept smearPositive = Dictionary.getConcept(Dictionary.POSITIVE);
-
-		// get patient classification concepts for new smear positive, sm
-		// relapse,failure and resuming after defaulting
-		Concept smearPositiveNew = Dictionary.getConcept(Dictionary.SMEAR_POSITIVE_NEW_TUBERCULOSIS_PATIENT);
-		Concept relapseSmearPositive = Dictionary.getConcept(Dictionary.RELAPSE_SMEAR_POSITIVE_TUBERCULOSIS);
-		Concept treatmentFailure = Dictionary.getConcept(Dictionary.TUBERCULOSIS_TREATMENT_FAILURE);
-		Concept retreatmentAfterDefault = Dictionary.getConcept(Dictionary.RETREATMENT_AFTER_DEFAULT_TUBERCULOSIS);
+		Concept NEGATIVE = Dictionary.getConcept(Dictionary.NEGATIVE);
+		Concept SPUTUM_FOR_ACID_FAST_BACILLI = Dictionary.getConcept(Dictionary.SPUTUM_FOR_ACID_FAST_BACILLI);
 
 		// check if there is any observation recorded per the tuberculosis disease status
-		CalculationResultMap lastObsTbDiseaseStatus = Calculations.lastObs(Dictionary.getConcept(Dictionary.TUBERCULOSIS_DISEASE_STATUS), inTbProgram, context);
+		CalculationResultMap lastObsTbDiseaseStatus = Calculations.lastObs(Dictionary.getConcept(Dictionary.TUBERCULOSIS_DISEASE_STATUS), cohort, context);
 
 		// get last observations for disease classification, patient classification
 		// and pulmonary tb positive to determine when sputum will be due for patients in future
 		CalculationResultMap lastDiseaseClassiffication = Calculations.lastObs(Dictionary.getConcept(Dictionary.SITE_OF_TUBERCULOSIS_DISEASE), inTbProgram, context);
-		CalculationResultMap lastPatientClassification = Calculations.lastObs(Dictionary.getConcept(Dictionary.TYPE_OF_TB_PATIENT), inTbProgram, context);
 		CalculationResultMap lastTbPulmonayResult = Calculations.lastObs(Dictionary.getConcept(Dictionary.RESULTS_TUBERCULOSIS_CULTURE), inTbProgram, context);
 
 		// get the first observation ever the patient had a sputum results for month 0
-		CalculationResultMap sputumResultsForMonthZero = Calculations.firstObs(Dictionary.getConcept(Dictionary.SPUTUM_FOR_ACID_FAST_BACILLI), inTbProgram, context);
+		CalculationResultMap lastSputumResults = Calculations.lastObs(SPUTUM_FOR_ACID_FAST_BACILLI, cohort, context);
 
 		// get the date when Tb treatment was started, the patient should be in tb program to have this date
-		CalculationResultMap tbStartTreatmentDate = Calculations.lastObs(Dictionary.getConcept(Dictionary.TUBERCULOSIS_DRUG_TREATMENT_START_DATE), inTbProgram, context);
+		CalculationResultMap tbStartTreatmentDate = Calculations.lastObs(Dictionary.getConcept(Dictionary.TUBERCULOSIS_DRUG_TREATMENT_START_DATE), cohort, context);
 
 		CalculationResultMap ret = new CalculationResultMap();
 		for (Integer ptId : cohort) {
 			boolean needsSputum = false;
+			//find those patients who have positive sputum results
+			Obs diseaseClassification = EmrCalculationUtils.obsResultForPatient(lastDiseaseClassiffication, ptId);
+			Obs tbResults = EmrCalculationUtils.obsResultForPatient(lastTbPulmonayResult, ptId);
+			Date  treatmentStartDate = EmrCalculationUtils.datetimeObsResultForPatient(tbStartTreatmentDate, ptId);
+			Obs lastObsTbDiseaseResults = EmrCalculationUtils.obsResultForPatient(lastObsTbDiseaseStatus, ptId);
+			Obs lastSputumResultsObs = EmrCalculationUtils.obsResultForPatient(lastSputumResults, ptId);
 
 			// check if a patient is alive
 			if (alive.contains(ptId)) {
-				// is the patient suspected of TB?
-				Obs lastObsTbDiseaseResults = EmrCalculationUtils.obsResultForPatient(lastObsTbDiseaseStatus, ptId);
-				if ((lastObsTbDiseaseResults != null) && (lastObsTbDiseaseResults.getValueCoded().equals(tbsuspect))) {
-					// get the last observation of sputum since tb was suspected
-					CalculationResultMap firstObsSinceSuspected = Calculations.firstObsOnOrAfter(Dictionary.getConcept(Dictionary.SPUTUM_FOR_ACID_FAST_BACILLI), lastObsTbDiseaseResults.getObsDatetime(), inTbProgram, context);
-
-					// get the first observation of sputum since the patient was
-					// suspected
-					Obs firstObsSinceSuspectedResults = EmrCalculationUtils.obsResultForPatient(firstObsSinceSuspected, ptId);
-
-					if (firstObsSinceSuspectedResults == null) {
+				if ((lastObsTbDiseaseResults != null) && (lastObsTbDiseaseResults.getValueCoded().equals(tbsuspect)) && lastSputumResultsObs == null && !(inTbProgram.contains(ptId))) {
 						needsSputum = true;
-					}
 				}
-				// getting sputum alerts for already enrolled patients
-				// get the observations based on disease classification,patient
-				// classification and results of tuberculosis
-				Obs diseaseClassification = EmrCalculationUtils.obsResultForPatient(lastDiseaseClassiffication, ptId);
-				Obs patientClassification = EmrCalculationUtils.obsResultForPatient(lastPatientClassification, ptId);
-				Obs tbResults = EmrCalculationUtils.obsResultForPatient(lastTbPulmonayResult, ptId);
-				// get the obsresult for month zero
-				Obs resultsForMonthZero = EmrCalculationUtils.obsResultForPatient(sputumResultsForMonthZero, ptId);
-				// get obsresults for tb treatment start date
-				Date  treatmentStartDate = EmrCalculationUtils.datetimeObsResultForPatient(tbStartTreatmentDate, ptId);
-				// get calendar instance and set the date to the tb treatment
-				// start
-				// date
-				Calendar c = Calendar.getInstance();
-				
+				else if(inTbProgram.contains(ptId) && diseaseClassification != null && tbResults != null && (diseaseClassification.getValueCoded().equals(pulmonaryTb)) && (tbResults.getValueCoded().equals(smearPositive)) && treatmentStartDate != null) {
 
-				if ((resultsForMonthZero != null)
-						&& (treatmentStartDate != null)
-						&& (diseaseClassification != null)
-						&& (tbResults != null)
-						&& (diseaseClassification.getValueCoded().equals(pulmonaryTb))
-						&& (tbResults.getValueCoded().equals(smearPositive))) {
-							c.setTime(treatmentStartDate);
-							Integer numberOfDaysSinceTreatmentStarted = EmrCalculationUtils.daysSince(treatmentStartDate, context);
-					// patients with patient classification as new have a repeat
-					// sputum in month 2,5 and 6
-					// repeating sputum test at month 2 for new patient
-					// classification
-					if ((patientClassification != null)
-							&& (patientClassification.getValueCoded().equals(smearPositiveNew))
-							&& (numberOfDaysSinceTreatmentStarted >= TbConstants.MONTH_TWO_SPUTUM_TEST)) {
-						// check for the first obs since
-						// numberOfDaysSinceTreatmentStarted elaspses, first
-						// encounter on or after 2 month
-						// get the date two months after start of treatment
-						c.add(Calendar.DATE, TbConstants.MONTH_TWO_SPUTUM_TEST);
-						Date dateAfterTwomonths = c.getTime();
-						// now find the first obs recorded on or after
-						// dateAfterTwomonths based on sputum ie it should be
-						// null
-						// for alert to remain active otherwise it has to go off
-						CalculationResultMap firstObsAfterTwomonthsOnOrAfterdateAfterTwomonths = Calculations.firstObsOnOrAfter(Dictionary.getConcept(Dictionary.SPUTUM_FOR_ACID_FAST_BACILLI), dateAfterTwomonths, inTbProgram, context);
-						// get the observation results
-						Obs resultAfterTwomonthsOnOrAfterdateAfterTwomonths = EmrCalculationUtils.obsResultForPatient(firstObsAfterTwomonthsOnOrAfterdateAfterTwomonths, ptId);
-						// check if
-						// resultAfterTwomonthsOnOrAfterdateAfterTwomonths is
-						// null
-						// or empty have the alert persist otherwise not
-						if (resultAfterTwomonthsOnOrAfterdateAfterTwomonths == null) {
+					if(lastSputumResultsObs != null && !(lastSputumResultsObs.getValueCoded().equals(NEGATIVE))) {
+
+						//get date after 2,4 and 6 months
+
+						//find first sputum results after 2 months. If the results is null activate the alert
+						Date months2 = DateUtil.adjustDate(treatmentStartDate, 2, DurationUnit.MONTHS);
+						CalculationResultMap resuts2Months = Calculations.firstObsOnOrAfter(SPUTUM_FOR_ACID_FAST_BACILLI, months2, Arrays.asList(ptId), context);
+
+						//repeat after 4 months
+						Date months4 = DateUtil.adjustDate(treatmentStartDate, 4, DurationUnit.MONTHS);
+						CalculationResultMap resuts4Months = Calculations.firstObsOnOrAfter(SPUTUM_FOR_ACID_FAST_BACILLI, months4, Arrays.asList(ptId), context);
+
+						//repeat for months 6
+						Date months6 = DateUtil.adjustDate(treatmentStartDate, 6, DurationUnit.MONTHS);
+						CalculationResultMap resuts6Months = Calculations.firstObsOnOrAfter(SPUTUM_FOR_ACID_FAST_BACILLI, months6, Arrays.asList(ptId), context);
+
+						if(EmrCalculationUtils.obsResultForPatient(resuts2Months, ptId) == null && months2.before(context.getNow())) {
 							needsSputum = true;
 						}
 
-					}
-					// Repeat for month 5 for new patient classification
-					if ((patientClassification != null)
-							&& (patientClassification.getValueCoded().equals(smearPositiveNew))
-							&& (numberOfDaysSinceTreatmentStarted >= TbConstants.MONTH_FIVE_SPUTUM_TEST)) {
-						// get the date at month 5 since treatment started
-						c.add(Calendar.DATE, TbConstants.MONTH_FIVE_SPUTUM_TEST);
-						Date dateAfterFiveMonths = c.getTime();
-						// check if any obs is collected on or after this date
-						CalculationResultMap firstObsAfterFivemonthsOnOrAfterdateAfterFivemonths = Calculations.firstObsOnOrAfter(
-								Dictionary.getConcept(Dictionary.SPUTUM_FOR_ACID_FAST_BACILLI),	dateAfterFiveMonths, inTbProgram, context);
-						// get the observation results
-						Obs resultAfterFivemonthsOnOrAfterdateAfterFivemonths = EmrCalculationUtils.obsResultForPatient(firstObsAfterFivemonthsOnOrAfterdateAfterFivemonths, ptId);
-						// check if this value is empty then the alert should
-						// persist
-						if (resultAfterFivemonthsOnOrAfterdateAfterFivemonths == null) {
+						if (EmrCalculationUtils.obsResultForPatient(resuts4Months, ptId) == null && months4.before(context.getNow())) {
 							needsSputum = true;
 						}
 
-					}
-					// Repeat for month 6 for new patient classification and
-					// sputum
-					// is said to be completed
-					if ((patientClassification != null)
-							&& (patientClassification.getValueCoded().equals(smearPositiveNew))
-							&& (numberOfDaysSinceTreatmentStarted >= TbConstants.MONTH_SIX_SPUTUM_TEST)) {
-						// get the date at month 6 since treatment started
-						c.add(Calendar.DATE, TbConstants.MONTH_SIX_SPUTUM_TEST);
-						Date dateAfterSixMonths = c.getTime();
-						// check if there is any observation on or after this
-						// date
-						CalculationResultMap firstObsAfterSixmonthsOnOrAfterdateAfterSixmonths = Calculations.firstObsOnOrAfter(
-								Dictionary.getConcept(Dictionary.SPUTUM_FOR_ACID_FAST_BACILLI), dateAfterSixMonths, inTbProgram, context);
-						// get the observation results
-						Obs resultAfterSixmonthsOnOrAfterdateAfterSixmonths = EmrCalculationUtils.obsResultForPatient(firstObsAfterSixmonthsOnOrAfterdateAfterSixmonths,ptId);
-						// if the value is empty or null, then the alert has to
-						// persist
-						if (resultAfterSixmonthsOnOrAfterdateAfterSixmonths == null) {
+						//repeat for 6 months
+
+						if(EmrCalculationUtils.obsResultForPatient(resuts6Months, ptId) == null && months6.before(context.getNow()) ) {
 							needsSputum = true;
 						}
 
-					}
-					// now to check for the repeat sputum tests for patient
-					// classification smear positive relapse, failure and
-					// resumed
-					// test repeat in month 3,5 and 8
-					if ((patientClassification != null)
-							&& ((patientClassification.getValueCoded().equals(relapseSmearPositive))
-							|| (patientClassification.getValueCoded().equals(treatmentFailure))
-							|| (patientClassification.getValueCoded().equals(retreatmentAfterDefault)))) {
-						// check for the days elapsed since treatment was commenced
-						// will target 3rd month
-						if (numberOfDaysSinceTreatmentStarted >= TbConstants.MONTH_THREE_SPUTUM_TEST) {
-							// get the date at Month 3 since the treatment started
-							c.add(Calendar.DATE, TbConstants.MONTH_THREE_SPUTUM_TEST);
-							Date dateAfterThreeMonths = c.getTime();
-							// get the first observation of sputum on or after the
-							// date
-							CalculationResultMap firstObsAfterThreeMonthOnOrAfterdateAfterThreeMonths = Calculations.firstObsOnOrAfter(
-									Dictionary.getConcept(Dictionary.SPUTUM_FOR_ACID_FAST_BACILLI),	dateAfterThreeMonths, inTbProgram, context);
-							// get the observation results
-							Obs resultAfterThreemonthsOnOrAfterdateAfterThreemonths = EmrCalculationUtils.obsResultForPatient(firstObsAfterThreeMonthOnOrAfterdateAfterThreeMonths, ptId);
-							// check if this contain any value, it null or empty
-							// then alert has to persist
-							if (resultAfterThreemonthsOnOrAfterdateAfterThreemonths == null) {
-								needsSputum = true;
-							}
-
+						//if any of the prior sputum results are given ignore the preceding ones
+						if(EmrCalculationUtils.obsResultForPatient(resuts6Months, ptId) != null && (EmrCalculationUtils.obsResultForPatient(resuts4Months, ptId) == null || EmrCalculationUtils.obsResultForPatient(resuts2Months, ptId) == null)) {
+							needsSputum = false;
 						}
-						// check for the days in the 5th month
-						if (numberOfDaysSinceTreatmentStarted >= TbConstants.MONTH_FIVE_SPUTUM_TEST) {
-							// get the date after 5 month since the retreatment
-							// started
-							c.add(Calendar.DATE, TbConstants.MONTH_FIVE_SPUTUM_TEST);
-							Date dateAfterFiveMonths = c.getTime();
-							// get the first observation of sputum on or after the
-							// date
-							CalculationResultMap firstObsAfterFiveMonthOnOrAfterdateAfterFiveMonths = Calculations.firstObsOnOrAfter(
-									Dictionary.getConcept(Dictionary.SPUTUM_FOR_ACID_FAST_BACILLI),	dateAfterFiveMonths, inTbProgram, context);
-							// get the observation results
-							Obs resultAfterFivemonthsOnOrAfterdateAfterFivemonths = EmrCalculationUtils.obsResultForPatient(firstObsAfterFiveMonthOnOrAfterdateAfterFiveMonths, ptId);
-							// check if this contain any value, it null or empty
-							// then alert has to persist
-							if (resultAfterFivemonthsOnOrAfterdateAfterFivemonths == null) {
-								needsSputum = true;
-							}
 
-						}
-						// check for the days in the 8th month and it will be
-						// considered complete treatment
-						if (numberOfDaysSinceTreatmentStarted >= TbConstants.MONTH_EIGHT_SPUTUM_TEST) {
-							// get the date after 8 month since the retreatment
-							// started
-							c.add(Calendar.DATE, TbConstants.MONTH_EIGHT_SPUTUM_TEST);
-							Date dateAfterEightMonths = c.getTime();
-							// get the first observation of sputum on or after the
-							// date
-							CalculationResultMap firstObsAfterEightMonthOnOrAfterdateAfterEightMonths = Calculations.firstObsOnOrAfter(
-									Dictionary.getConcept(Dictionary.SPUTUM_FOR_ACID_FAST_BACILLI), 	dateAfterEightMonths, inTbProgram, context);
-							// get the observation results
-							Obs resultAfterEightmonthsOnOrAfterdateAfterEightmonths = EmrCalculationUtils.obsResultForPatient(firstObsAfterEightMonthOnOrAfterdateAfterEightMonths, ptId);
-							// check if this contain any value, it null or empty
-							// then alert has to persist
-							if (resultAfterEightmonthsOnOrAfterdateAfterEightmonths == null) {
-								needsSputum = true;
-							}
-
+						if(EmrCalculationUtils.obsResultForPatient(resuts4Months, ptId) != null && EmrCalculationUtils.obsResultForPatient(resuts2Months, ptId) == null) {
+							needsSputum = false;
 						}
 					}
-
 				}
 
 			}

@@ -5,7 +5,7 @@
 
 	dataPoints << [ label: "Treatment Number", value: calculations.tbTreatmentNumber ]
 	dataPoints << [ label: "Disease classification", value: calculations.tbDiseaseClassification ]
-	dataPoints << [ label: "Patient classification", value: calculations.tbPatientClassification ]
+	dataPoints << [ label: "Patient classification", value: result ]
 %>
 
 <div class="ke-stack-item">

@@ -213,6 +213,7 @@
 			<drug code="E400" drugUuid="37e185a3-ba6b-447a-83e0-7ff3edbe76f7" /><!-- Ethambutol 400mg -->
 			<drug code="E275" drugUuid="52690c5a-e9cd-4561-8aad-3b646fb7deaa" /><!-- Ethambutol 275mg -->
 			<drug code="S1" drugUuid="13b56178-a15b-4070-951d-2ce813cccc32" /><!-- Streptomycin 1g -->
+			<drug code="Rfb150" drugUuid="c0b4caf2-3fc4-42db-b4ea-5d082136b651" /><!-- RIFABUTIN 150mg -->
 		</drugs>
 
 		<group code="adult-intensive" name="Intensive Phase (Adult)">

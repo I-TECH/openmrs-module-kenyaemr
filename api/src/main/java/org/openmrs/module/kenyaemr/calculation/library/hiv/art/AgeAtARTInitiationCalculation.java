@@ -63,6 +63,7 @@ public class AgeAtARTInitiationCalculation extends AbstractPatientCalculation {
 
 	private Integer ageInYearsAtDate(Date birthDate, Date artInitiationDate) {
 		Age age = new Age(birthDate, artInitiationDate);
+
 		return age.getFullYears();
 	}
 }

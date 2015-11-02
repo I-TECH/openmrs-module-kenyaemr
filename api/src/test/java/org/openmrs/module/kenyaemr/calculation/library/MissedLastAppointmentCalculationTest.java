@@ -18,12 +18,14 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Concept;
+import org.openmrs.Program;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
+import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -68,6 +70,8 @@ public class MissedLastAppointmentCalculationTest extends BaseModuleContextSensi
 	 */
 	@Test
 	public void evaluate_shouldDetermineWhetherPatientsWhoMissedAppointmentsOrDefaulted() throws Exception {
+		Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
+		TestUtils.enrollInProgram(TestUtils.getPatient(7), hivProgram, TestUtils.date(2000, 6, 1));
 		// Give patient #7 a return visit obs of 10 days ago
 		Concept returnVisit = Context.getConceptService().getConcept(5096);
 		Calendar calendar = Calendar.getInstance();

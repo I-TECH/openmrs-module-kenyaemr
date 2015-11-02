@@ -175,6 +175,48 @@ kenyaemrApp.controller('DailySchedule', ['$scope', '$http', function($scope, $ht
 }]);
 
 /**
+ * Controller for daily seen patients
+ */
+kenyaemrApp.controller('DailySeen', ['$scope', '$http', function($scope, $http) {
+
+	$scope.date = null;
+	$scope.seen = [];
+
+	/**
+	 * Initializes the controller
+	 * @param appId
+	 * @param date
+	 * @param pageProvider
+	 * @param page
+	 */
+	$scope.init = function(appId, date, pageProvider, page) {
+		$scope.appId = appId;
+		$scope.date = date;
+		$scope.pageProvider = pageProvider;
+		$scope.page = page;
+		$scope.fetch();
+	};
+
+	/**
+	 * Refreshes the seen patients
+	 */
+	$scope.fetch = function() {
+		$http.get(ui.fragmentActionLink('kenyaemr', 'patient/patientUtils', 'getSeenPatients', { appId: $scope.appId, date: $scope.date })).
+			success(function(data) {
+				$scope.seen = data;
+			});
+	};
+
+	/**
+	 * Result click event handler
+	 * @param patient the clicked patient
+	 */
+	$scope.onResultClick = function(patient) {
+		ui.navigate($scope.pageProvider, $scope.page, { patientId: patient.id });
+	};
+}]);
+
+/**
  * Controller for recently viewed
  */
 kenyaemrApp.controller('RecentlyViewed', ['$scope', '$http', function($scope, $http) {

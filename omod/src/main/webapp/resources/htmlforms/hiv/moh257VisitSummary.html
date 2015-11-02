@@ -74,6 +74,9 @@ function onWeightOrHeightChange() {
 function onEncounterDateChange() {
     var patientId = <lookup expression="patient.patientId"/>;
     var encDate = getValue('encounter-date.value');
+    if(encDate == null) {
+        encDate = new Date();
+    }
 
     jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/emrUtils/durationSinceStartArt.action', { patientId: patientId, now: encDate })
             .done(function(data) {
@@ -195,7 +198,7 @@ jq(function() {
 
     onWeightOrHeightChange();
     onEncounterDateChange();
-
+    setValue('encounter-date.value', "");
     beforeSubmit.push(function() {
         var encounterDate = new Date(getValue('encounter-date.value')).getTime();
         var nextAptDate = new Date(getValue('next-apt-date.value')).getTime();
@@ -662,7 +665,7 @@ jq(function() {
     </td>
 </tr>
 <tr>
-    <th rowspan="5">Laboratory<br />Investigations<br />Done</th>
+    <th rowspan="6">Laboratory<br />Investigations<br />Done</th>
     <th colspan="2">CD4 (# or %)</th>
     <td>(x)</td>
     <td colspan="2">Count: <obs conceptId="5497AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /> or <obs conceptId="730AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />%</td>
@@ -683,8 +686,18 @@ jq(function() {
     <td colspan="2"><obs conceptId="307AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="sputumResults" answerConceptIds="159985AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Scanty,+,++,+++,Negative" /></td>
 </tr>
 <tr>
-    <th colspan="2">Other</th>
+    <th colspan="2">HIV Viral Load</th>
     <td>(ab)</td>
+    <td colspan="2">
+        <obs conceptId="856AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" showUnits="true" />
+        or
+        <obs conceptId="1305AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1302AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="LDL" />
+    </td>
+</tr>
+
+<tr>
+    <th colspan="2">Other</th>
+    <td>(ac)</td>
     <td colspan="2">
         <dynamicObsContainer id="other-lab-tests" />
 
@@ -698,7 +711,7 @@ jq(function() {
 </tr>
 <tr>
     <th colspan="3">Referral / Hospitalized</th>
-    <td>(ac)</td>
+    <td>(ad)</td>
     <td>
         1. <obs conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><br />
         2. <obs conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><br />
@@ -714,7 +727,7 @@ jq(function() {
 </tr>
 <tr>
     <th colspan="3">At Risk Population</th>
-    <td>(ad)</td>
+    <td>(ae)</td>
     <td colspan="2">
         <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="6096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Discordant couple (DC)" style="checkbox" /><br />
         <includeIf velocityTest="$patient.gender == 'M' ">
@@ -731,25 +744,25 @@ jq(function() {
     <th rowspan="2">PwP<br />Services<br />(&#10003;)</th>
     <th>Disclosure</th>
     <th>Partner Tested</th>
-    <td>(ae)</td>
+    <td>(af)</td>
     <td><obs id="pwp-disclosure" conceptId="159423AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" /></td>
     <td><obs id="pwp-partnertested" conceptId="161557AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" /></td>
 </tr>
 <tr>
     <th>Condoms</th>
     <th>Screened STI</th>
-    <td>(af)</td>
+    <td>(ag)</td>
     <td><obs conceptId="159777AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" /></td>
     <td><obs conceptId="161558AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" /></td>
 </tr>
 <tr>
     <th colspan="3">Date of Next Appointment</th>
-    <td>(ag)</td>
+    <td>(ah)</td>
     <td colspan="2"><obs id="next-apt-date" conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" /></td>
 </tr>
 <tr>
     <th colspan="3">Clinician Initials</th>
-    <td>(ah)</td>
+    <td>(ai)</td>
     <td colspan="2"><obs conceptId="1473AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
 </tr>
 </tbody>

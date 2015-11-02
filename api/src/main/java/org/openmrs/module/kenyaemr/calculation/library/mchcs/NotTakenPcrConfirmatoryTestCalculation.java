@@ -62,13 +62,13 @@ public class NotTakenPcrConfirmatoryTestCalculation extends AbstractPatientCalcu
 		Set<Integer> inMchcsProgram = Filters.inProgram(mchcsProgram, alive, context);
 
 		// Get whether the child is HIV Exposed
-		CalculationResultMap lastChildHivStatus = Calculations.lastObs(Dictionary.getConcept(Dictionary.CHILDS_CURRENT_HIV_STATUS), inMchcsProgram, context);
+		CalculationResultMap lastChildHivStatus = Calculations.lastObs(Dictionary.getConcept(Dictionary.CHILDS_CURRENT_HIV_STATUS), cohort, context);
 
 		//check if pcr test was done
-		CalculationResultMap lastPcrTest = Calculations.lastObs(Dictionary.getConcept(Dictionary.HIV_DNA_POLYMERASE_CHAIN_REACTION), inMchcsProgram, context);
+		CalculationResultMap lastPcrTest = Calculations.lastObs(Dictionary.getConcept(Dictionary.HIV_DNA_POLYMERASE_CHAIN_REACTION_QUALITATIVE), cohort, context);
 
 		//check if the context status was set to confirmatory
-		CalculationResultMap lastPcrStatus = Calculations.lastObs(Dictionary.getConcept(Dictionary.TEXT_CONTEXT_STATUS), inMchcsProgram, context);
+		CalculationResultMap lastPcrStatus = Calculations.lastObs(Dictionary.getConcept(Dictionary.TEXT_CONTEXT_STATUS), cohort, context);
 
 		Concept hivExposed = Dictionary.getConcept(Dictionary.EXPOSURE_TO_HIV);
 		Concept pcrCornfirmatory = Dictionary.getConcept(Dictionary.CONFIRMATION_STATUS);
@@ -76,7 +76,7 @@ public class NotTakenPcrConfirmatoryTestCalculation extends AbstractPatientCalcu
 		//get an encounter type for HEI completion
 		EncounterType hei_completion_encounterType = MetadataUtils.existing(EncounterType.class, MchMetadata._EncounterType.MCHCS_HEI_COMPLETION);
 		//load all patient last encounters of HEI completion encounter type
-		CalculationResultMap lastEncounters = Calculations.lastEncounter(hei_completion_encounterType,inMchcsProgram,context);
+		CalculationResultMap lastEncounters = Calculations.lastEncounter(hei_completion_encounterType,cohort,context);
 
 
 		CalculationResultMap ret = new CalculationResultMap();

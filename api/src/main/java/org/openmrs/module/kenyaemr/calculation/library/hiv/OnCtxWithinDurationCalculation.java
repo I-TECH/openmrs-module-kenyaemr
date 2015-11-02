@@ -27,6 +27,8 @@ import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
+import org.openmrs.module.reporting.common.DateUtil;
+import org.openmrs.module.reporting.common.DurationUnit;
 
 import java.util.Calendar;
 import java.util.Collection;
@@ -42,7 +44,7 @@ public class OnCtxWithinDurationCalculation extends BaseEmrCalculation {
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
 
-		Date endDate = context.getNow(); // this is the end of the reporting period
+		//Date endDate = context.getNow(); // this is the end of the reporting period
 
 		Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
 		Set<Integer> alive = Filters.alive(cohort, context);
@@ -51,9 +53,17 @@ public class OnCtxWithinDurationCalculation extends BaseEmrCalculation {
 		CalculationResultMap medDuration = Calculations.lastObs(Dictionary.getConcept(Dictionary.MEDICATION_DURATION), cohort, context);
 		CalculationResultMap medDurationunits = Calculations.lastObs(Dictionary.getConcept(Dictionary.DURATION_UNITS), cohort, context);
 		Set<Integer> ltfu = CalculationUtils.patientsThatPass(calculate(new LostToFollowUpCalculation(), cohort, context));
+		Set<Integer> hasTCA = CalculationUtils.patientsThatPass(calculate(new NextOfVisitHigherThanContextCalculation(), cohort, context));
+		CalculationResultMap medicationDispensed = Calculations.lastObs(Dictionary.getConcept(Dictionary.COTRIMOXAZOLE_DISPENSED), cohort, context);
 
 		//get the drug components dispensed
 		Concept ctx = Dictionary.getConcept(Dictionary.SULFAMETHOXAZOLE_TRIMETHOPRIM);
+		Concept dapson = Dictionary.getConcept(Dictionary.DAPSONE);
+		Concept yes = Dictionary.getConcept(Dictionary.YES);
+		Concept days = Dictionary.getConcept(Dictionary.DAYS);
+		Concept months = Dictionary.getConcept(Dictionary.MONTHS);
+		Concept weeks = Dictionary.getConcept(Dictionary.WEEKS);
+		Concept years = Dictionary.getConcept(Dictionary.YEARS);
 
 		CalculationResultMap ret = new CalculationResultMap();
 		for (Integer ptId : cohort) {
@@ -63,38 +73,50 @@ public class OnCtxWithinDurationCalculation extends BaseEmrCalculation {
 				Obs ctxMedsObs = EmrCalculationUtils.obsResultForPatient(medOrdersObss, ptId);
 				Obs ctxDurationObs = EmrCalculationUtils.obsResultForPatient(medDuration, ptId);
 				Obs ctxDurationUnits = EmrCalculationUtils.obsResultForPatient(medDurationunits, ptId);
-				if(ctxMedsObs != null && ctxDurationObs != null && ctxDurationUnits != null) {
-					if(ctxMedsObs.getValueCoded().equals(ctx) && ctxMedsObs.getObsGroup().equals(ctxDurationObs.getObsGroup()) && ctxMedsObs.getObsGroup().equals(ctxDurationUnits.getObsGroup()) ) {
-						Integer durationMonthsDays = Integer.parseInt(ctxDurationObs.getValueNumeric().toString().trim().split("\\.")[0]);
-
-						Date obsDate = ctxMedsObs.getObsDatetime();
-						String durationUnits = ctxDurationUnits.getValueCoded().getName().getName().trim();
+				Obs medicationDispensedObs = EmrCalculationUtils.obsResultForPatient(medicationDispensed, ptId);
+				if(ctxMedsObs != null) {
+					if(ctxMedsObs.getValueCoded().equals(ctx) || ctxMedsObs.getValueCoded().equals(dapson)) {
+						//check if duration and units are given
 						Calendar cal = Calendar.getInstance();
-						cal.setTime(obsDate);
-						if(durationUnits.equals("MONTHS")){
-							cal.add(Calendar.MONTH, durationMonthsDays);
-						}
-						if(durationUnits.equals("DAYS")) {
-							cal.add(Calendar.DATE, durationMonthsDays);
-						}
-						if(durationUnits.equals("WEEKS")) {
-							cal.add(Calendar.DATE, (durationMonthsDays * 7));
-						}
-						if(durationUnits.equals("YEARS")) {
-							cal.add(Calendar.YEAR, durationMonthsDays);
+						cal.setTime(context.getNow());
+
+						if(ctxDurationObs != null && ctxDurationUnits != null && ctxMedsObs.getObsGroup().equals(ctxDurationObs.getObsGroup()) && ctxMedsObs.getObsGroup().equals(ctxDurationUnits.getObsGroup())) {
+							Integer durationMonthsDays = Integer.parseInt(ctxDurationObs.getValueNumeric().toString().trim().split("\\.")[0]);
+
+							Date obsDate = ctxMedsObs.getObsDatetime();
+							Concept durationUnits = ctxDurationUnits.getValueCoded();
+							cal.setTime(obsDate);
+							if (durationUnits.equals(months)) {
+								cal.add(Calendar.MONTH, durationMonthsDays);
+							}
+							else if (durationUnits.equals(days)) {
+								cal.add(Calendar.DATE, durationMonthsDays);
+							}
+							else if (durationUnits.equals(weeks)) {
+								cal.add(Calendar.DATE, (durationMonthsDays * 7));
+							}
+							else if (durationUnits.equals(years)) {
+								cal.add(Calendar.YEAR, durationMonthsDays);
+							}
 						}
 						Date nextRefilldate = cal.getTime();
-						if(nextRefilldate.compareTo(endDate) >= 0) {
+						if((nextRefilldate.after(DateUtil.adjustDate(DateUtil.getStartOfMonth(context.getNow()), -1, DurationUnit.DAYS)) || hasTCA.contains(ptId)) && !(ltfu.contains(ptId))) {
 							onCtxOnDuration = true;
 						}
 					}
 
 				}
-			}
-			if(ltfu.contains(ptId)){
-				onCtxOnDuration = false;
-			}
+				if(medicationDispensedObs != null && medicationDispensedObs.getValueCoded().equals(yes)){
+					onCtxOnDuration = true;
+				}
 
+				if(medicationDispensedObs != null && medicationDispensedObs.getValueCoded().equals(yes) && hasTCA.contains(ptId)){
+					onCtxOnDuration = true;
+				}
+				if(ltfu.contains(ptId)){
+					onCtxOnDuration = false;
+				}
+			}
 			ret.put(ptId, new BooleanResult(onCtxOnDuration, this));
 
 		}

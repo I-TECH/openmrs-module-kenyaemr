@@ -22,6 +22,7 @@ import org.openmrs.module.kenyacore.test.ReportingTestUtils;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
+import org.openmrs.module.kenyaemr.metadata.MchMetadata;
 import org.openmrs.module.kenyaemr.metadata.TbMetadata;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.report.ReportData;
@@ -50,6 +51,9 @@ public class QiPaedCTxReportBuilderTest extends BaseModuleContextSensitiveTest {
 	private TbMetadata tbMetadata;
 
 	@Autowired
+	private MchMetadata mchMetadata;
+
+	@Autowired
 	@Qualifier("kenyaemr.hiv.report.qi.adult.c.tx")
 	private ReportDescriptor report;
 
@@ -63,6 +67,7 @@ public class QiPaedCTxReportBuilderTest extends BaseModuleContextSensitiveTest {
 		commonMetadata.install();
 		hivMetadata.install();
 		tbMetadata.install();
+		mchMetadata.install();
 	}
 
 	@Test

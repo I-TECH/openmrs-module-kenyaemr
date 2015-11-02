@@ -1,0 +1,12 @@
+/*
+[
+  {
+    "id": "openconceptlab",
+    "description": "openconceptlab.app.description",
+    "icon": "kenyaemr:apps/concepts.png",
+    "url": "openconceptlab/status.page",
+    "label":"Open Concept Lab ",
+    "order": 1000000
+
+  }
+]*/

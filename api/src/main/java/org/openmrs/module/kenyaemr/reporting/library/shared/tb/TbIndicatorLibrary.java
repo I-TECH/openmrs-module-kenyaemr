@@ -36,7 +36,7 @@ public class TbIndicatorLibrary {
 	 */
 	public CohortIndicator screenedForTb() {
 		return cohortIndicator("patients screened for TB",
-				map(tbCohorts.screenedForTb(), "onOrAfter=${startDate},onOrBefore=${endDate}")
+				map(tbCohorts.screenedForTbAndHivPositive(), "onOrAfter=${startDate},onOrBefore=${endDate}")
 		);
 	}
 

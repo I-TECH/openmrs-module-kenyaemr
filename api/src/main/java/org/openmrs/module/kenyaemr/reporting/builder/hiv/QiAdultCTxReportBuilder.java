@@ -68,24 +68,57 @@ public class QiAdultCTxReportBuilder extends AbstractReportBuilder {
 	 */
 	protected DataSetDefinition qiDataset() {
 		CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
-		dsd.setName("1");
+		dsd.setName("Adults");
 		dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
 
 		String indParams = "startDate=${startDate},endDate=${endDate}";
 
 		dsd.addColumn("1.1", "% of patient in care with 2 or more visits, 3 months a part during the 6 months Review period", ReportUtils.map(qiIndicators.clinicalVisit(), indParams), "");
+		dsd.addColumn("1.11", "Numerator", ReportUtils.map(qiIndicators.patientsInCareAndHasAtLeast2Visits(), indParams), "");
+		dsd.addColumn("1.12", "Denominator", ReportUtils.map(qiIndicators.patientsWithClinicalVisits(), indParams), "");
+		dsd.addColumn("1.13", "Complement", ReportUtils.map(qiIndicators.complimentPatientsWithClinicalVisits(), indParams), "");
+
 		dsd.addColumn("1.2", "% of HIV infected patients in care with at least one CD4 count during the 6 months Review period", ReportUtils.map(qiIndicators.hivMonitoringCd4(), indParams), "");
+		dsd.addColumn("1.21", "Numerator", ReportUtils.map(qiIndicators.hasCd4Results(), indParams), "");
+		dsd.addColumn("1.22", "Denominator", ReportUtils.map(qiIndicators.hasVisits(), indParams), "");
+		dsd.addColumn("1.23", "Complement", ReportUtils.map(qiIndicators.complimentHasCd4Results(), indParams), "");
+
 		dsd.addColumn("1.3", "% eligible patients initiated on ART", ReportUtils.map(qiIndicators.artInitiation(), indParams), "");
+		dsd.addColumn("1.31", "Numerator", ReportUtils.map(qiIndicators.patientsWhoAreEligibleAndStartedArt(), indParams), "");
+		dsd.addColumn("1.32", "Denominator", ReportUtils.map(qiIndicators.hivInfectedPatientsNotOnArtAndHasHivClinicalVisit(), indParams), "");
+		dsd.addColumn("1.33", "Complement", ReportUtils.map(qiIndicators.complimentPatientsWhoAreEligibleAndStartedArt(), indParams), "");
+
 		dsd.addColumn("1.4", "% of patients on ART with at least one VL results during the last 12 months", ReportUtils.map(qiIndicators.hivMonitoringViralLoad(), indParams), "");
+		dsd.addColumn("1.41", "Numerator", ReportUtils.map(qiIndicators.patientsOnArtHavingAtLeastOneViralLoad(), indParams), "");
+		dsd.addColumn("1.42", "Denominator", ReportUtils.map(qiIndicators.onArtWithAtLeastOneClinicalVisit(), indParams), "");
+		dsd.addColumn("1.43", "Complement", ReportUtils.map(qiIndicators.complimentPatientsOnArtHavingAtLeastOneViralLoad(), indParams), "");
+
 		dsd.addColumn("1.5", "% of patients on ART for at least 6 months with VL suppression", ReportUtils.map(qiIndicators.hivMonitoringViralLoadSuppression(), indParams), "");
+		dsd.addColumn("1.51", "Numerator", ReportUtils.map(qiIndicators.onARTatLeast12MonthsAndVlLess1000(), indParams), "");
+		dsd.addColumn("1.52", "Denominator", ReportUtils.map(qiIndicators.hivMonitoringViralLoadNumAndDen(), indParams), "");
+		dsd.addColumn("1.53", "Complement", ReportUtils.map(qiIndicators.complimentOnARTatLeast12MonthsAndVlLess1000(), indParams), "");
+
 		dsd.addColumn("1.6", "% of patients screened for TB using ICF card at last clinic visit", ReportUtils.map(qiIndicators.tbScreeningServiceCoverage(), indParams), "");
+		dsd.addColumn("1.61", "Numerator", ReportUtils.map(qiIndicators.tbScreeningUsingIcfAdult(), indParams), "");
+		dsd.addColumn("1.62", "Denominator", ReportUtils.map(qiIndicators.patientsCurrentlyNotOnTbTreatmentAndHaveClinicalVisit(), indParams), "");
+		dsd.addColumn("1.63", "Complement", ReportUtils.map(qiIndicators.complimentTbScreeningUsingIcfAdult(), indParams), "");
+
 		//dsd.addColumn("1.7", "% of patients eligible for IPT who were initiated on IPT", ReportUtils.map(qiIndicators.patientsEligibleForIPTWhoWereInitiatedOnIPT(), indParams), "");
+
 		dsd.addColumn("1.8", "% of patients with Nutritional assessment at the last clinic visit", ReportUtils.map(qiIndicators.nutritionalAssessment(), indParams), "");
+		dsd.addColumn("1.81", "Numerator", ReportUtils.map(qiIndicators.nutritionalAssessmentNum(), indParams), "");
+		dsd.addColumn("1.82", "Denominator", ReportUtils.map(qiIndicators.nutritionalAssessmentDen(), indParams), "");
+		dsd.addColumn("1.83", "Complement", ReportUtils.map(qiIndicators.complimentNutritionalAssessmentNum(), indParams), "");
+
 		//dsd.addColumn("1.9", "% of patients eligible for nutritional support and who received nutritional support", ReportUtils.map(qiIndicators.patientsEligibleForNutritionalSupportAndWhoReceived(), indParams), "");
 		//dsd.addColumn("1.10", "% of patients whose partner(s) have been tested for HIV or have known positive Status", ReportUtils.map(qiIndicators.partnerTesting(), indParams), "");
 		//dsd.addColumn("1.11", "% of patients whose children have been tested for HIV or have known positive Status", ReportUtils.map(qiIndicators.childrenTesting(), indParams), "");
-		dsd.addColumn("1.12", "% non-pregnant women patients who are on modern contraceptive methods During the review period", ReportUtils.map(qiIndicators.reproductiveHealthFamilyPlanning(), indParams), "");
+
+		dsd.addColumn("1.012", "% non-pregnant women patients who are on modern contraceptive methods During the review period", ReportUtils.map(qiIndicators.reproductiveHealthFamilyPlanning(), indParams), "");
+		dsd.addColumn("1.121", "Numerator", ReportUtils.map(qiIndicators.reproductiveHealthFamilyPlanningNum(), indParams), "");
+		dsd.addColumn("1.122", "Denominator", ReportUtils.map(qiIndicators.reproductiveHealthFamilyPlanningDen(), indParams), "");
+		dsd.addColumn("1.123", "Complement", ReportUtils.map(qiIndicators.complimentReproductiveHealthFamilyPlanningNum(), indParams), "");
 		//dsd.addColumn("13", "% HIV infected non-pregnant women 18 to 65 years who have been screened for Cervical Cancer in within the last 12 months", ReportUtils.map(qiIndicators.nutritionalAssessment(), indParams), "");
 		return dsd;
 	}

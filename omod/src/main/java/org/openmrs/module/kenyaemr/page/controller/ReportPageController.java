@@ -14,12 +14,6 @@
 
 package org.openmrs.module.kenyaemr.page.controller;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.openmrs.module.kenyacore.CoreUtils;
 import org.openmrs.module.kenyacore.report.HybridReportDescriptor;
 import org.openmrs.module.kenyacore.report.IndicatorReportDescriptor;
@@ -38,6 +32,12 @@ import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.page.PageModel;
 import org.openmrs.ui.framework.page.PageRequest;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Report overview page
@@ -77,6 +77,8 @@ public class ReportPageController {
 		model.addAttribute("isIndicator", isIndicator);
 		model.addAttribute("excelRenderable", excelRenderable);
 		model.addAttribute("returnUrl", returnUrl);
+		model.addAttribute("period", definition.getName().replaceAll("[^0-9]", ""));
+
 
 		if (isIndicator) {
 			Map<String, String> startDateOptions = new LinkedHashMap<String, String>();
@@ -91,6 +93,13 @@ public class ReportPageController {
 			model.addAttribute("startDateSelected", startDate != null ? kenyaUi.formatDateParam(startDate) : null);
 			model.addAttribute("startDate", startDate);
 		}
+
+		SimpleDateFormat datePeriodForAll = new SimpleDateFormat("MMM-yyyy");
+		String date = "";
+		if(startDate != null) {
+			date ="_"+ datePeriodForAll.format(startDate);
+		}
+		model.addAttribute("date", date);
 
 		model.addAttribute("requests", getRequests(definition, ui, reportService));
 	}

@@ -15,8 +15,6 @@
 package org.openmrs.module.kenyaemr.calculation.library.hiv;
 
 import org.openmrs.Concept;
-
-import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.Program;
 import org.openmrs.calculation.patient.PatientCalculationContext;
@@ -67,7 +65,7 @@ public class LostToFollowUpCalculation extends AbstractPatientCalculation implem
 		Set<Integer> alive = Filters.alive(cohort, context);
 		Set<Integer> inHivProgram = Filters.inProgram(hivProgram, alive, context);
 
-		CalculationResultMap lastEncounters = Calculations.lastEncounter(null, inHivProgram, context);
+		//CalculationResultMap lastEncounters = Calculations.lastEncounter(null, inHivProgram, context);
 		CalculationResultMap lastReturnDateObss = Calculations.lastObs(Dictionary.getConcept(Dictionary.RETURN_VISIT_DATE), inHivProgram, context);
 		CalculationResultMap lastProgramDiscontinuation = Calculations.lastObs(reasonForDiscontinuation, cohort, context);
 
@@ -79,7 +77,7 @@ public class LostToFollowUpCalculation extends AbstractPatientCalculation implem
 			if (inHivProgram.contains(ptId)) {
 
 				// Patient is lost if no encounters in last X days
-				Encounter lastEncounter = EmrCalculationUtils.encounterResultForPatient(lastEncounters, ptId);
+				//Encounter lastEncounter = EmrCalculationUtils.encounterResultForPatient(lastEncounters, ptId);
 				Date lastScheduledReturnDate = EmrCalculationUtils.datetimeObsResultForPatient(lastReturnDateObss, ptId);
 				Obs discontuation = EmrCalculationUtils.obsResultForPatient(lastProgramDiscontinuation, ptId);
 				if (lastScheduledReturnDate != null) {

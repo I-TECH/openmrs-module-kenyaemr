@@ -19,6 +19,7 @@
 </fieldset>
 
 <% if (nonIdOrNameColumns.size() > 0) { %>
+<div style="overflow: auto">
 	<table class="ke-table-vertical">
 		<thead>
 		<tr>
@@ -48,6 +49,7 @@
 		<% } %>
 		</tbody>
 	</table>
+</div>
 <% } else {%>
 <fieldset>
 	Insufficient follow-up time to generate this report

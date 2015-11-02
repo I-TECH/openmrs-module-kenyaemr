@@ -133,7 +133,7 @@ public class Moh731ReportBuilder extends AbstractReportBuilder {
 
 		dsd.addColumn("HV02-18", "Assessed for eligibility at 1st ANC - WHO Staging done", ReportUtils.map(mchmsIndicators.assessedForArtEligibility(ArtAssessmentMethod.WHO_STAGING), indParams), "");
 		dsd.addColumn("HV02-19", "Assessed for eligibility at 1st ANC - CD4", ReportUtils.map(mchmsIndicators.assessedForArtEligibility(ArtAssessmentMethod.CD4_COUNT), indParams), "");
-		dsd.addColumn("HV02-20", "Assesed for Eligibility in ANC (Sum HV02-18 to HV02-19)", ReportUtils.map(mchmsIndicators.assessedForArtEligibility(null), indParams), "");
+		dsd.addColumn("HV02-20", "Assesed for Eligibility in ANC (Sum HV02-18 to HV02-19)", ReportUtils.map(mchmsIndicators.assessedForArtEligibilityTotal(), indParams), "");
 
 
 		dsd.addColumn("HV02-24", "PCR within 2 months", ReportUtils.map(mchcsIndicatorLibrary.pcrWithInitialIn2Months(), indParams), "");

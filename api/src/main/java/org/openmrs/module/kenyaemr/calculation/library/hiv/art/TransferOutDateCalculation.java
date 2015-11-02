@@ -14,6 +14,7 @@
 package org.openmrs.module.kenyaemr.calculation.library.hiv.art;
 
 import org.openmrs.Concept;
+import org.openmrs.Obs;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
@@ -40,14 +41,25 @@ public class TransferOutDateCalculation extends AbstractPatientCalculation {
 										 PatientCalculationContext context) {
 
 		Concept transferOutDate = Dictionary.getConcept(Dictionary.DATE_TRANSFERRED_OUT);
+		Concept discontinueQuestion = Dictionary.getConcept(Dictionary.REASON_FOR_PROGRAM_DISCONTINUATION);
+		Concept transferOut = Dictionary.getConcept(Dictionary.TRANSFERRED_OUT);
 		CalculationResultMap transferInDateResults = Calculations.lastObs(transferOutDate, cohort, context);
+		CalculationResultMap discontinueObs = Calculations.lastObs(discontinueQuestion, cohort, context);
 
 		CalculationResultMap result = new CalculationResultMap();
 		for(int ptId : cohort){
 
 			Date tDate = EmrCalculationUtils.datetimeObsResultForPatient(transferInDateResults, ptId);
+			Obs discoReason = EmrCalculationUtils.obsResultForPatient(discontinueObs, ptId);
+			Date dateTo = null;
+			if(tDate != null){
+				dateTo = tDate;
+			}
+			if(dateTo == null && discoReason != null && discoReason.getValueCoded().equals(transferOut)) {
+				dateTo = discoReason.getObsDatetime();
+			}
 
-			result.put(ptId, tDate == null ? null : new SimpleResult(tDate, null));
+			result.put(ptId, new SimpleResult(dateTo, this));
 		}
 		return  result;
 	}

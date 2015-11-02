@@ -30,6 +30,7 @@ import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonCohortL
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
+import org.openmrs.module.reporting.evaluation.parameter.Parameterizable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -172,5 +173,48 @@ public class MchmsCohortLibrary {
 		cohortCd.addSearch("artAssessmentOnFirstVisit", ReportUtils.map((CohortDefinition) calculationCd, "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
 		cohortCd.setCompositionString("firstMchmsVisitWithinPeriod AND artAssessmentOnFirstVisit");
 		return cohortCd;
+	}
+
+	public CohortDefinition testedForHivInMchms() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "Start Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "End Date", Date.class));
+		cd.addSearch("antenatal", ReportUtils.map(testedForHivInMchms(PregnancyStage.ANTENATAL, null), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("delivery", ReportUtils.map(testedForHivInMchms(PregnancyStage.DELIVERY, null), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("postnatal", ReportUtils.map(testedForHivInMchms(PregnancyStage.POSTNATAL, null), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("antenatal OR delivery OR postnatal");
+		return cd;
+	}
+
+	public CohortDefinition testedHivPositiveInMchms() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "Start Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "End Date", Date.class));
+		cd.addSearch("enrollment", ReportUtils.map(testedForHivInMchms(PregnancyStage.BEFORE_ENROLLMENT, Dictionary.getConcept(Dictionary.POSITIVE)), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("antenatal", ReportUtils.map(testedForHivInMchms(PregnancyStage.DELIVERY, Dictionary.getConcept(Dictionary.POSITIVE)), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("delivery", ReportUtils.map(testedForHivInMchms(PregnancyStage.POSTNATAL, Dictionary.getConcept(Dictionary.POSITIVE)), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("postnatal", ReportUtils.map(testedForHivInMchms(PregnancyStage.POSTNATAL, Dictionary.getConcept(Dictionary.POSITIVE)), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("enrollment OR antenatal OR delivery OR postnatal");
+		return cd;
+	}
+
+	public CohortDefinition testedForHivBeforeOrDuringMchms() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "Start Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "End Date", Date.class));
+		cd.addSearch("during", ReportUtils.map(testedForHivInMchms(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("enrollment", ReportUtils.map(testedForHivInMchms(PregnancyStage.BEFORE_ENROLLMENT, Dictionary.getConcept(Dictionary.POSITIVE)), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("during OR enrollment");
+		return cd;
+	}
+
+	public CohortDefinition assessedForArtEligibilityTotal() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrAfter", "Start Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "End Date", Date.class));
+		cd.addSearch("cd4", ReportUtils.map(assessedForArtEligibility(ArtAssessmentMethod.CD4_COUNT), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("who", ReportUtils.map(assessedForArtEligibility(ArtAssessmentMethod.WHO_STAGING), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("cd4 OR who");
+		return cd;
 	}
 }

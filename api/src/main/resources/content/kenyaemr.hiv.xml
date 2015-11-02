@@ -28,11 +28,7 @@
 				<ref bean="kenyaemr.hiv.report.eligibleForArt" />
 				<ref bean="kenyaemr.hiv.report.onSecondLineArt" />
 				<ref bean="kenyaemr.hiv.report.neverTakenCtxOrDapsone" />
-				<ref bean="kenyaemr.hiv.report.artCohortAnalysis.6" />
-				<ref bean="kenyaemr.hiv.report.artCohortAnalysis.12" />
-				<ref bean="kenyaemr.hiv.report.artCohortAnalysis.24" />
-				<ref bean="kenyaemr.hiv.report.artCohortAnalysis.36" />
-                <ref bean="kenyaemr.hiv.report.artCohortAnalysis.data.on.ART.cohorts" />
+				<ref bean="kenyaemr.hiv.report.needsViralLoad" />
 			</set>
 		</property>
 		<property name="fragments">
@@ -144,17 +140,18 @@
 
 	<bean id="kenyaemr.hiv.report.qi.adult.c.tx" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
 		<property name="targetUuid" value="496a24ee-77e1-4f5e-82ba-bc78f6943537" />
-		<property name="name" value="Quality Improvement - Adult C and Tx" />
-		<property name="description" value="Standards for HIV Care - Adult Care and Treatment" />
+		<property name="name" value="CQI - Adult C and Tx" />
+		<property name="description" value="Continuous Quality Improvement (CQI) Standards for HIV Care - Adult Care and Treatment" />
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
-		<!--<property name="template" value="kenyaemr:hiv/adultCareAndTreatment.xls" />-->
+		<property name="template" value="kenyaemr:hiv/adultCareAndTreatment.xls" />
 	</bean>
 
 	<bean id="kenyaemr.hiv.report.qi.peds.c.tx" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
 		<property name="targetUuid" value="2ce6f242-1e2c-11e4-9587-0bdfd164f2a9" />
-		<property name="name" value="Quality Improvement -paeds C and Tx" />
-		<property name="description" value="Standards for HIV Care" />
+		<property name="name" value="CQI - Paeds C and Tx" />
+		<property name="description" value="Continuous Quality Improvement (CQI) Standards for HIV Care - Paediatric Care and Treatment" />
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
+		<property name="template" value="kenyaemr:hiv/paedsCareAndTreatment.xls" />
 	</bean>
 
 	<bean id="kenyaemr.hiv.report.qi.adult.emtct" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
@@ -168,7 +165,7 @@
 		<property name="targetUuid" value="70bca1e5-7c68-4500-bfb8-0795549f35a4" />
 		<property name="name" value="Patients who are lost to followup" />
 		<property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.hiv.LostToFollowUpCalculation" />
-		<property name="displayIdentifier" ref="kenyaemr.hiv.identifier.upn" />
+		<!--<property name="displayIdentifier" ref="kenyaemr.hiv.identifier.upn" />-->
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 	</bean>
 
@@ -176,7 +173,6 @@
 		<property name="targetUuid" value="9227c34f-18b6-4c93-844e-5732572d5125" />
 		<property name="name" value="Patients due for CD4 test" />
 		<property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.hiv.NeedsCd4TestCalculation" />
-		<property name="displayIdentifier" ref="kenyaemr.hiv.identifier.upn" />
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 	</bean>
 
@@ -192,7 +188,7 @@
 		<property name="targetUuid" value="e20f9d12-1df4-4e50-9002-294244457c6f" />
 		<property name="name" value="Patients eligible for ART" />
 		<property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.hiv.art.EligibleForArtCalculation" />
-		<property name="displayIdentifier" ref="kenyaemr.hiv.identifier.upn" />
+		<!--<property name="displayIdentifier" ref="kenyaemr.hiv.identifier.upn" />-->
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 	</bean>
 
@@ -200,7 +196,7 @@
 		<property name="targetUuid" value="55038932-2c87-4295-86d1-802e623424ea" />
 		<property name="name" value="Patients who have never been screened for TB" />
 		<property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.hiv.NeverScreenedForTbCalculation" />
-		<property name="displayIdentifier" ref="kenyaemr.hiv.identifier.upn" />
+		<!--<property name="displayIdentifier" ref="kenyaemr.hiv.identifier.upn" />-->
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 	</bean>
 
@@ -214,55 +210,17 @@
 
 	<bean id="kenyaemr.hiv.report.neverTakenCtxOrDapsone" class="org.openmrs.module.kenyacore.report.CalculationReportDescriptor">
 		<property name="targetUuid" value="8eda25f8-a3aa-401c-ab88-49f6f2021a39" />
-		<property name="name" value="Patients who have never taken CTX or Dapsone" />
+		<property name="name" value="Active patients currently NOT on CTX or Dapsone" />
 		<property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.hiv.NeverTakenCtxOrDapsoneCalculation" />
-		<property name="displayIdentifier" ref="kenyaemr.hiv.identifier.upn" />
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 	</bean>
 
-	<bean id="kenyaemr.hiv.report.artCohortAnalysis.6" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
-		<property name="targetUuid" value="f33a42d2-b400-11e3-9ecc-ef35e5682104" />
-		<property name="name" value="ART Cohort Analysis (6 months)" />
-		<property name="description" value="Definition of patient Attributes for ART Cohort Analysis for a cohort period of 6 months" />
+	<!-- introduction of viral load alert-->
+	<bean id="kenyaemr.hiv.report.needsViralLoad" class="org.openmrs.module.kenyacore.report.CalculationReportDescriptor">
+		<property name="targetUuid" value="ec1535a8-0b65-11e5-99a4-c3eb412c64d3" />
+		<property name="name" value="Patients eligible for Viral Load" />
+		<property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.hiv.NeedsViralLoadTestCalculation" />
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
-		<property name="template" value="kenyaemr:art/artCohortAnalysis.xls" />
-		<property name="repeatingSection" value="sheet:1,row:11,dataset:artCohortAnalysis" />
-	</bean>
-
-	<bean id="kenyaemr.hiv.report.artCohortAnalysis.12" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
-		<property name="targetUuid" value="8d968eb8-ce9f-11e3-8991-db9b985479a5" />
-		<property name="name" value="ART Cohort Analysis (12 months)" />
-		<property name="description" value="Definition of patient Attributes for ART Cohort Analysis for a cohort period of 12 months" />
-		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
-		<property name="template" value="kenyaemr:art/artCohortAnalysis.xls" />
-		<property name="repeatingSection" value="sheet:1,row:11,dataset:artCohortAnalysis" />
-	</bean>
-
-	<bean id="kenyaemr.hiv.report.artCohortAnalysis.24" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
-		<property name="targetUuid" value="ab02202a-ce9f-11e3-b04c-ff079c8e7f2c" />
-		<property name="name" value="ART Cohort Analysis (24 months)" />
-		<property name="description" value="Definition of patient Attributes for ART Cohort Analysis for a cohort period of 24 months" />
-		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
-		<property name="template" value="kenyaemr:art/artCohortAnalysis.xls" />
-		<property name="repeatingSection" value="sheet:1,row:11,dataset:artCohortAnalysis" />
-	</bean>
-
-	<bean id="kenyaemr.hiv.report.artCohortAnalysis.36" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
-		<property name="targetUuid" value="98de0f34-cea0-11e3-9ee7-974211375f56" />
-		<property name="name" value="ART Cohort Analysis (36 months)" />
-		<property name="description" value="Definition of patient Attributes for ART Cohort Analysis for a cohort period of 36 months" />
-		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
-		<property name="template" value="kenyaemr:art/artCohortAnalysis.xls" />
-		<property name="repeatingSection" value="sheet:1,row:11,dataset:artCohortAnalysis" />
-	</bean>
-
-	<bean id="kenyaemr.hiv.report.artCohortAnalysis.data.on.ART.cohorts" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
-		<property name="targetUuid" value="76a7ebaa-c626-11e4-b460-8f2f4a954c2f" />
-		<property name="name" value="Data on ART Cohorts" />
-		<property name="description" value="Pre-ART and ART Clients" />
-		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
-		<property name="template" value="kenyaemr:hiv/pre_art_art_clients.xls" />
-		<property name="repeatingSection" value="sheet:1,row:3,dataset:preArtArtClients" />
 	</bean>
 
 </beans>
