@@ -52,6 +52,7 @@ import org.openmrs.module.kenyaemr.reporting.calculation.converter.RDQACalculati
 import org.openmrs.module.kenyaemr.reporting.calculation.converter.RegimenConverter;
 import org.openmrs.module.kenyaemr.reporting.calculation.converter.WHOStageDataConverter;
 import org.openmrs.module.kenyaemr.reporting.calculation.converter.WeightConverter;
+import org.openmrs.module.kenyaemr.reporting.cohort.definition.RDQAActiveCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.RDQACohortDefinition;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -170,19 +171,19 @@ public class RDQAReportBuilder extends AbstractHybridReportBuilder {
 	@Override
 	protected Mapped<CohortDefinition> buildCohort(HybridReportDescriptor descriptor, PatientDataSetDefinition dsd) {
 		CohortDefinition cd = new RDQACohortDefinition();
-        cd.setName("RDQA Patients");
+        cd.setName("RDQA All Patients");
 		return ReportUtils.map(cd, "");
 	}
 
     protected Mapped<CohortDefinition> activePatientsCohort() {
-        CohortDefinition cd = new RDQACohortDefinition();
-        cd.setName("RDQA Patients");
+        CohortDefinition cd = new RDQAActiveCohortDefinition();
+        cd.setName("RDQA Active Patients");
         return ReportUtils.map(cd, "");
     }
 
     protected Mapped<CohortDefinition> allPatientsCohort() {
         CohortDefinition cd = new RDQACohortDefinition();
-        cd.setName("RDQA Patients");
+        cd.setName("RDQA All Patients");
         return ReportUtils.map(cd, "");
     }
 
@@ -219,7 +220,6 @@ public class RDQAReportBuilder extends AbstractHybridReportBuilder {
 
         DataConverter nameFormatter = new ObjectFormatter("{familyName}, {givenName}");
         DataDefinition nameDef = new ConvertedPersonDataDefinition("name", new PreferredNameDataDefinition(), nameFormatter);
-        dsd.setName("allPatients");
         dsd.addColumn("id", new PersonIdDataDefinition(), "");
         dsd.addColumn("Name", nameDef, "");
         dsd.addColumn("Unique Patient No", identifierDef, "");

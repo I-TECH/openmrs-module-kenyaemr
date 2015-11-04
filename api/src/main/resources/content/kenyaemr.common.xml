@@ -280,7 +280,7 @@
                 <ref bean="kenyaemr.app.reports" />
             </set></property>
         <property name="template" value="kenyaemr:rdqa/rdqaTemplate.xls" />
-        <property name="repeatingSection" value="sheet:1,row:11,dataset:allPatients" />
+        <property name="repeatingSection" value="sheet:1,row:11,dataset:allPatients | sheet:2,row:11,dataset:activePatients " />
     </bean>
 
 </beans>
