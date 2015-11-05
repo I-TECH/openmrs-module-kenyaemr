@@ -129,7 +129,7 @@ public class DaysFromEnrollmentInCareToArtEligibilityCalculation extends Abstrac
 
                 }
 
-                if(patientEligibility != null){
+                if(patientEligibility != null && patientEligibility.getEligibilityDate() != null){
                     days = daysBetween(patientEligibility.getEligibilityDate(), hivEnrollment.getDateEnrolled());
                 }
 
