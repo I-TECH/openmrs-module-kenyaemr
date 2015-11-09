@@ -12,6 +12,8 @@ import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyacore.calculation.Filters;
 import org.openmrs.module.kenyaemr.Dictionary;
+import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtStartDateCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.common.Age;
@@ -24,6 +26,7 @@ import java.util.Set;
 
 /**
  * Calculates the date when a patient was medically eligible and the reasons
+ *
  */
 public class DateMedicallyEligibleForARTCalculation extends AbstractPatientCalculation {
 
@@ -36,6 +39,7 @@ public class DateMedicallyEligibleForARTCalculation extends AbstractPatientCalcu
 		Set<Integer> inHivProgram = Filters.inProgram(hivProgram, cohort, context);
 
 		CalculationResultMap ages = Calculations.ages(cohort, context);
+		CalculationResultMap artStartDateMap = calculate(new InitialArtStartDateCalculation(), cohort, context);
 
 		CalculationResultMap allWhoStage = Calculations.allObs(Dictionary.getConcept(Dictionary.CURRENT_WHO_STAGE), cohort, context);
 		CalculationResultMap allCd4 = Calculations.allObs(Dictionary.getConcept(Dictionary.CD4_COUNT), cohort, context);
@@ -49,8 +53,9 @@ public class DateMedicallyEligibleForARTCalculation extends AbstractPatientCalcu
 				List<Obs> whoStages = CalculationUtils.extractResultValues((ListResult) allWhoStage.get(ptId));
 				List<Obs> cd4s = CalculationUtils.extractResultValues((ListResult) allCd4.get(ptId));
 				List<Obs> cd4Percents = CalculationUtils.extractResultValues((ListResult) allCd4Percent.get(ptId));
+				Date arvStartDate = EmrCalculationUtils.datetimeResultForPatient(artStartDateMap, ptId);
 
-				dateAndReason = isEligible(birthDate, ageInMonths, cd4s, cd4Percents, whoStages);
+				dateAndReason = isEligible(ageInMonths, cd4s, cd4Percents, whoStages, birthDate, arvStartDate );
 			}
 			ret.put(ptId, new SimpleResult(dateAndReason, this));
 		}
@@ -64,10 +69,16 @@ public class DateMedicallyEligibleForARTCalculation extends AbstractPatientCalcu
 	 * @param cd4Percent the last CD4 percentage
 	 * @param whoStage the last WHO stage
 	 * @param birthDate the date when born
+	 * @param arvStartDate
 	 * @return true if patient is eligible
 	 */
-	protected String isEligible(Date birthDate, int ageInMonths, List<Obs> cd4, List<Obs> cd4Percent, List<Obs> whoStage) {
+	protected String isEligible(int ageInMonths, List<Obs> cd4, List<Obs> cd4Percent, List<Obs> whoStage, Date birthDate, Date arvStartDate) {
 		String dateAndReason = null;
+
+		/**
+		 * TODO: Date medically eligible should always come before date art started. Cases where the reverse is true should have the date set to date art started
+		 *
+		 */
 
 		if (ageInMonths < 24) {
 			dateAndReason = birthDate+"="+"BELOW 24 MONTHS";
@@ -76,12 +87,11 @@ public class DateMedicallyEligibleForARTCalculation extends AbstractPatientCalcu
 			if (whoStage != null && (!cd4.isEmpty())) {
 				for(Obs obsWhoStage:whoStage) {
 					if (obsWhoStage.getValueCoded().equals(Dictionary.WHO_STAGE_3_PEDS)) {
-						dateAndReason = obsWhoStage.getObsDatetime() + "=" + "WHO STAGE 3 PAED";
+						dateAndReason = obsWhoStage.getObsDatetime().after(arvStartDate)? arvStartDate + "=" + "WHO STAGE 3 PAED" : obsWhoStage.getObsDatetime() + "=" + "WHO STAGE 3 PAED" ;
 					}
 
 					if (obsWhoStage.getValueCoded().equals(Dictionary.WHO_STAGE_4_PEDS)) {
-
-						dateAndReason = obsWhoStage.getObsDatetime() + "=" + "WHO STAGE 4 PAED";
+						dateAndReason = obsWhoStage.getObsDatetime().after(arvStartDate)? arvStartDate + "=" + "WHO STAGE 4 PAED" : obsWhoStage.getObsDatetime() + "=" + "WHO STAGE 4 PAED" ;
 
 					}
 				}
@@ -90,7 +100,7 @@ public class DateMedicallyEligibleForARTCalculation extends AbstractPatientCalcu
 			if (cd4Percent != null && (!cd4Percent.isEmpty())) {
 				for(Obs obsPercent:cd4Percent) {
 					if(obsPercent.getValueNumeric() < 25) {
-						dateAndReason = obsPercent.getObsDatetime()+"="+"CD4 PERCENT LESS THAN 25";
+						dateAndReason = obsPercent.getObsDatetime().after(arvStartDate)? arvStartDate + "=" + "CD4 PERCENT LESS THAN 25" : obsPercent.getObsDatetime() + "=" + "CD4 PERCENT LESS THAN 25" ;
 						break;
 					}
 				}
@@ -98,7 +108,7 @@ public class DateMedicallyEligibleForARTCalculation extends AbstractPatientCalcu
 			if (cd4 != null && (!cd4.isEmpty())) {
 				for(Obs obsCd4 : cd4) {
 					if(obsCd4.getValueNumeric() < 1000) {
-						dateAndReason = obsCd4.getObsDatetime() + "=" + "CD4 LESS THAN 1000";
+						dateAndReason = obsCd4.getObsDatetime().after(arvStartDate)? arvStartDate + "=" + "CD4 LESS THAN 1000" : obsCd4.getObsDatetime() + "=" + "CD4 LESS THAN 1000" ;
 						break;
 					}
 				}
@@ -108,10 +118,12 @@ public class DateMedicallyEligibleForARTCalculation extends AbstractPatientCalcu
 			if (whoStage != null && (!whoStage.isEmpty())) {
 				for(Obs obsWhoStage:whoStage) {
 					if (obsWhoStage.getValueCoded().equals(Dictionary.WHO_STAGE_3_PEDS)) {
-						dateAndReason = obsWhoStage.getObsDatetime() + "=" + "WHO STAGE 3 PEDS";
+						dateAndReason = obsWhoStage.getObsDatetime().after(arvStartDate)? arvStartDate + "=" + "WHO STAGE 3 PEDS" : obsWhoStage.getObsDatetime() + "=" + "WHO STAGE 3 PEDS" ;
+
 					}
 					if (obsWhoStage.getValueCoded().equals(Dictionary.WHO_STAGE_4_PEDS)) {
-						dateAndReason = obsWhoStage.getObsDatetime() + "=" + "WHO STAGE 4 PEDS";
+						dateAndReason = obsWhoStage.getObsDatetime().after(arvStartDate)? arvStartDate + "=" + "WHO STAGE 4 PEDS" : obsWhoStage.getObsDatetime() + "=" + "WHO STAGE 4 PEDS" ;
+
 					}
 					break;
 				}
@@ -119,7 +131,7 @@ public class DateMedicallyEligibleForARTCalculation extends AbstractPatientCalcu
 			if (cd4Percent != null && (!cd4Percent.isEmpty())) {
 				for(Obs obsPercent : cd4Percent) {
 					if (obsPercent.getValueNumeric() < 20) {
-						dateAndReason = obsPercent.getObsDatetime() + "=" + "CD4 PERCENT LESS THAN 20";
+						dateAndReason = obsPercent.getObsDatetime().after(arvStartDate)? arvStartDate + "=" + "CD4 PERCENT LESS THAN 20" : obsPercent.getObsDatetime() + "=" + "CD4 PERCENT LESS THAN 20" ;
 						break;
 					}
 				}
@@ -127,7 +139,7 @@ public class DateMedicallyEligibleForARTCalculation extends AbstractPatientCalcu
 			if (cd4 != null && (!cd4.isEmpty())) {
 				for(Obs obsCd4 : cd4) {
 					if (obsCd4.getValueNumeric() < 500) {
-						dateAndReason = obsCd4.getObsDatetime() + "=" + "CD4 LESS THAN 500";
+						dateAndReason = obsCd4.getObsDatetime().after(arvStartDate)? arvStartDate + "=" + "CD4 LESS THAN 500" : obsCd4.getObsDatetime() + "=" + "CD4 LESS THAN 500" ;
 						break;
 					}
 				}
@@ -137,10 +149,12 @@ public class DateMedicallyEligibleForARTCalculation extends AbstractPatientCalcu
 			if (whoStage != null && (!whoStage.isEmpty())) {
 				for(Obs obsWhoStage:whoStage) {
 					if (obsWhoStage.getValueCoded().equals(Dictionary.WHO_STAGE_3_ADULT)) {
-						dateAndReason = obsWhoStage.getObsDatetime() + "=" + "WHO STAGE 3 ADULT";
+						dateAndReason = obsWhoStage.getObsDatetime().after(arvStartDate)? arvStartDate + "=" + "WHO STAGE 3 ADULT" : obsWhoStage.getObsDatetime() + "=" + "WHO STAGE 3 ADULT" ;
+
 					}
 					if (obsWhoStage.getValueCoded().equals(Dictionary.WHO_STAGE_4_ADULT)) {
-						dateAndReason = obsWhoStage.getObsDatetime() + "=" + "WHO STAGE 4 ADULT";
+						dateAndReason = obsWhoStage.getObsDatetime().after(arvStartDate)? arvStartDate + "=" + "WHO STAGE 4 ADULT" : obsWhoStage.getObsDatetime() + "=" + "WHO STAGE 4 ADULT" ;
+
 					}
 					break;
 				}
@@ -148,7 +162,8 @@ public class DateMedicallyEligibleForARTCalculation extends AbstractPatientCalcu
 			if (cd4 != null && (!cd4.isEmpty())) {
 				for(Obs obsCd4:cd4) {
 					if(obsCd4.getValueNumeric() < 350) {
-						dateAndReason = obsCd4.getObsDatetime() + "=" + "CD4 LESS THAN 350";
+						dateAndReason = obsCd4.getObsDatetime().after(arvStartDate)? arvStartDate + "=" + "CD4 LESS THAN 350" : obsCd4.getObsDatetime() + "=" + "CD4 LESS THAN 350" ;
+
 						break;
 					}
 				}
