@@ -15,6 +15,7 @@
 package org.openmrs.module.kenyaemr.reporting.builder.hiv;
 
 import org.openmrs.PatientIdentifierType;
+import org.openmrs.Program;
 import org.openmrs.module.kenyacore.report.HybridReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyacore.report.builder.AbstractHybridReportBuilder;
@@ -24,15 +25,7 @@ import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.StoppedARTCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.DeceasedPatientsCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.MissedLastAppointmentCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.AliveAndOnFollowUpCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.CountyAddressCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.CurrentIPTStatus;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.DateClassifiedLTFUCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.DateMedicallyEligibleForARTCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.IPTStartDateCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.LostToFollowUpCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.StoppedARTDateCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.SubCountyAddressCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.*;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.CurrentARTStartDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.CurrentArtRegimenCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.DateLastSeenCalculation;
@@ -52,14 +45,7 @@ import org.openmrs.module.kenyaemr.calculation.library.tb.ScreenedForTbAndDiagno
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.reporting.calculation.converter.PatientProgramEnrollmentDateConverter;
 import org.openmrs.module.kenyaemr.reporting.calculation.converter.RegimenConverter;
-import org.openmrs.module.kenyaemr.reporting.data.converter.ArtStoppedConverter;
-import org.openmrs.module.kenyaemr.reporting.data.converter.BirthdateConverter;
-import org.openmrs.module.kenyaemr.reporting.data.converter.CalculationMapResultsConverter;
-import org.openmrs.module.kenyaemr.reporting.data.converter.CalculationResultConverter;
-import org.openmrs.module.kenyaemr.reporting.data.converter.CustomDataConverter;
-import org.openmrs.module.kenyaemr.reporting.data.converter.MedicallyEligibleConverter;
-import org.openmrs.module.kenyaemr.reporting.data.converter.ObsDateConverter;
-import org.openmrs.module.kenyaemr.reporting.data.converter.ObsNumericConverter;
+import org.openmrs.module.kenyaemr.reporting.data.converter.*;
 import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.HivCohortLibrary;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -69,6 +55,7 @@ import org.openmrs.module.reporting.data.converter.DataConverter;
 import org.openmrs.module.reporting.data.converter.ObjectFormatter;
 import org.openmrs.module.reporting.data.patient.definition.ConvertedPatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.PatientIdentifierDataDefinition;
+import org.openmrs.module.reporting.data.patient.definition.ProgramEnrollmentsForPatientDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.BirthdateDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.ConvertedPersonDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.GenderDataDefinition;
@@ -83,7 +70,6 @@ import org.springframework.stereotype.Component;
 @Component
 @Builds({"kenyaemr.hiv.report.artCohortAnalysis.data.on.ART.cohorts"})
 public class PreArtandArtClientsReportBuilder extends AbstractHybridReportBuilder {
-
 	@Autowired
 	private HivCohortLibrary hivCohortLibrary;
 
@@ -97,9 +83,14 @@ public class PreArtandArtClientsReportBuilder extends AbstractHybridReportBuilde
 		PatientIdentifierType upn = MetadataUtils.existing(PatientIdentifierType.class, HivMetadata._PatientIdentifierType.UNIQUE_PATIENT_NUMBER);
 		DataConverter identifierFormatter = new ObjectFormatter("{identifier}");
 		DataDefinition identifierDef = new ConvertedPatientDataDefinition("identifier", new PatientIdentifierDataDefinition(upn.getName(), upn), identifierFormatter);
-
 		DataConverter nameFormatter = new ObjectFormatter("{familyName}, {givenName}");
 		DataDefinition nameDef = new ConvertedPersonDataDefinition("name", new PreferredNameDataDefinition(), nameFormatter);
+
+		Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
+		ProgramEnrollmentsForPatientDataDefinition hivProgramEnrollment = new ProgramEnrollmentsForPatientDataDefinition();
+		hivProgramEnrollment.setWhichEnrollment(TimeQualifier.LAST);
+		hivProgramEnrollment.setProgram(hivProgram);
+
 		dsd.setName("preArtArtClients");
 		dsd.addColumn("id", new PersonIdDataDefinition(), "");
 		dsd.addColumn("Facility name", new CalculationDataDefinition("Facility Name", new FacilityNameCalculation()), "", new CalculationResultConverter());
@@ -112,7 +103,7 @@ public class PreArtandArtClientsReportBuilder extends AbstractHybridReportBuilde
 		dsd.addColumn("County", new CalculationDataDefinition("ARV Start Date", new CountyAddressCalculation()), "", new CalculationResultConverter());
 		dsd.addColumn("Sub County/District", new CalculationDataDefinition("ARV Start Date", new SubCountyAddressCalculation()), "", new CalculationResultConverter());
 		dsd.addColumn("Date of Diagnosis", new ObsForPersonDataDefinition("Date of Diagnosis", TimeQualifier.LAST, Dictionary.getConcept(Dictionary.DATE_OF_HIV_DIAGNOSIS), null, null), "", new ObsDateConverter());
-		dsd.addColumn("Date of enrollment to care", new CalculationDataDefinition("Date of enrollment to care", new PatientProgramEnrollmentCalculation()), "", new PatientProgramEnrollmentDateConverter());
+		dsd.addColumn("Date of enrollment to care", hivProgramEnrollment, "", new DateOfLastEnrollmentConverter());
 		dsd.addColumn("Transfer in (TI)", new CalculationDataDefinition("Transfer in (TI)", new IsTransferInCalculation()), "", new CalculationResultConverter());
 		dsd.addColumn("Date Transferred in", new CalculationDataDefinition("Date Transferred in", new TransferInDateCalculation()), "", new CalculationResultConverter());
 		dsd.addColumn("Current IPT status", new CalculationDataDefinition("Current IPT status", new CurrentIPTStatus()), "", new CalculationResultConverter());
@@ -148,6 +139,8 @@ public class PreArtandArtClientsReportBuilder extends AbstractHybridReportBuilde
 		dsd.addColumn("Date classified as LTFU", new CalculationDataDefinition("Date classified as LTFU", new DateClassifiedLTFUCalculation()), "", new CalculationResultConverter());
 		dsd.addColumn("Died", new CalculationDataDefinition("Died", new DeceasedPatientsCalculation()), "", new CalculationResultConverter());
 		dsd.addColumn("Date reported dead", new CalculationDataDefinition("Date reported dead", new DateOfDeathCalculation()), "", new CalculationResultConverter());
+        dsd.addColumn("Documented pregnancies", new CalculationDataDefinition("Documented pregnancies", new PregnancyAndEDDCalculation()), "", new PregnancyEddConverter("status"));
+        dsd.addColumn("EDD of pregnancies", new CalculationDataDefinition("EDD of pregnancies", new PregnancyAndEDDCalculation()), "", new PregnancyEddConverter("date"));
 	}
 
 	@Override

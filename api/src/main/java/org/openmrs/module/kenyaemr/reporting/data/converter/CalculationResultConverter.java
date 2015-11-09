@@ -38,7 +38,7 @@ public class CalculationResultConverter implements DataConverter{
 		Object value = ((CalculationResult) obj).getValue();
 
 		if (value instanceof Boolean) {
-			return (Boolean) value ? "Yes" : "No";
+			return (Boolean) value ? "Y" : "N";
 		}
 		else if (value instanceof Date) {
 			return formatDate((Date) value);
