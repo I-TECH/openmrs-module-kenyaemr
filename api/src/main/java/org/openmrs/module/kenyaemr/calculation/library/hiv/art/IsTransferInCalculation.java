@@ -14,15 +14,20 @@
 
 package org.openmrs.module.kenyaemr.calculation.library.hiv.art;
 
+import org.openmrs.Program;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
+import org.openmrs.module.kenyacore.calculation.Filters;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
+import org.openmrs.module.kenyaemr.metadata.HivMetadata;
+import org.openmrs.module.metadatadeploy.MetadataUtils;
 
 import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Calculates whether a patient is a transfer in based on the status
@@ -36,7 +41,8 @@ public class IsTransferInCalculation extends AbstractPatientCalculation {
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues,
 										 PatientCalculationContext context) {
-
+		Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
+		Set<Integer> inHivProgram = Filters.inProgram(hivProgram, cohort, context);
 		CalculationResultMap transferInDate = calculate(new TransferInDateCalculation(), cohort, context);
 
 		CalculationResultMap result = new CalculationResultMap();
@@ -45,7 +51,7 @@ public class IsTransferInCalculation extends AbstractPatientCalculation {
 
 			Date transferInDateValue = EmrCalculationUtils.datetimeResultForPatient(transferInDate, ptId);
 
-			if (transferInDateValue != null ) {
+			if (inHivProgram.contains(ptId) && transferInDateValue != null ) {
 				isTransferIn = true;
 			}
 
