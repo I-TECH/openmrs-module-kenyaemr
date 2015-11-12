@@ -16,12 +16,17 @@ package org.openmrs.module.kenyaemr.calculation;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.Program;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.kenyaemr.calculation.library.DeceasedPatientsCalculation;
+import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
+import org.openmrs.module.kenyaemr.metadata.HivMetadata;
+import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
 import java.util.List;
@@ -31,16 +36,29 @@ import java.util.List;
  */
 public class DeadPatientsCalculationTest extends BaseModuleContextSensitiveTest {
 
+	@Autowired
+	private CommonMetadata commonMetadata;
+	@Autowired
+	private HivMetadata hivMetadata;
+
 	/**
 	 * Setup each test
 	 */
 	@Before
 	public void setup() throws Exception {
 		executeDataSet("dataset/test-concepts.xml");
+		commonMetadata.install();
+		hivMetadata.install();
 	}
 
 	@Test
 	public void evaluate_shouldCalculateDeadPatients() throws Exception {
+
+
+		Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
+
+		TestUtils.enrollInProgram(TestUtils.getPatient(2), hivProgram, TestUtils.date(2014, 3, 1));
+		TestUtils.enrollInProgram(TestUtils.getPatient(6), hivProgram, TestUtils.date(2014, 3, 1));
 		TestUtils.getPatient(6).setDead(true);
 		TestUtils.getPatient(2).setDead(true);
 

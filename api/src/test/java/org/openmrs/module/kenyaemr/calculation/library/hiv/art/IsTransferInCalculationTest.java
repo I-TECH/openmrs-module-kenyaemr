@@ -18,13 +18,18 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Concept;
+import org.openmrs.Program;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
+import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
+import org.openmrs.module.kenyaemr.metadata.HivMetadata;
+import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -35,6 +40,10 @@ import java.util.Map;
  * Test for {@link IsTransferInCalculation}
  */
 public class IsTransferInCalculationTest extends BaseModuleContextSensitiveTest {
+	@Autowired
+	private CommonMetadata commonMetadata;
+	@Autowired
+	private HivMetadata hivMetadata;
 
 	/**
 	 * Setup each test
@@ -42,6 +51,8 @@ public class IsTransferInCalculationTest extends BaseModuleContextSensitiveTest 
 	@Before
 	public void setup() throws Exception {
 		executeDataSet("dataset/test-concepts.xml");
+		commonMetadata.install();
+		hivMetadata.install();
 	}
 
 	/**
@@ -50,9 +61,14 @@ public class IsTransferInCalculationTest extends BaseModuleContextSensitiveTest 
 	@Test
 	public void evaluate_shouldCalculateIsTransferInCalculation() throws Exception {
 
+		Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
 		Concept transferInStatus = Dictionary.getConcept(Dictionary.TRANSFER_IN);
 		Concept yes = Dictionary.getConcept(Dictionary.YES);
 		Concept no = Dictionary.getConcept(Dictionary.NO);
+
+		//enroll patients into hiv program
+		TestUtils.enrollInProgram(TestUtils.getPatient(2), hivProgram, TestUtils.date(2014, 3, 1));
+		TestUtils.enrollInProgram(TestUtils.getPatient(7), hivProgram, TestUtils.date(2014, 3, 1));
 
 		//make #2 a transfer in with the looking at the status
 		TestUtils.saveObs(TestUtils.getPatient(2), transferInStatus, yes, TestUtils.date(2014, 3, 1));
