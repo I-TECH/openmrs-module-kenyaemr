@@ -12,8 +12,6 @@ import org.openmrs.PatientIdentifierType;
 import org.openmrs.PatientProgram;
 import org.openmrs.PersonName;
 import org.openmrs.Program;
-import org.openmrs.api.ConceptService;
-import org.openmrs.api.ObsService;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
@@ -52,7 +50,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -70,10 +67,8 @@ public class SummariesFragmentController {
                            FragmentModel model){
         PatientSummary patientSummary = new PatientSummary();
         PatientService patientService = Context.getPatientService();
-        ObsService obsService = Context.getObsService();
         KenyaEmrService kenyaEmrService = Context.getService(KenyaEmrService.class);
         Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
-        ConceptService conceptService = Context.getConceptService();
         Date artStartDate = null;
 
         patientSummary.setDateOfReport(formatDate(new Date()));
@@ -213,12 +208,15 @@ public class SummariesFragmentController {
         CalculationResultMap alergies = Calculations.allObs(Dictionary.getConcept("160643AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), Arrays.asList(patient.getPatientId()), context);
         ListResult allergyResults = (ListResult) alergies.get(patient.getPatientId());
         List<Obs> listOfAllergies = CalculationUtils.extractResultValues(allergyResults);
-        for(Obs obs:listOfAllergies){
-            if(obs != null) {
-                patientSummary.setDrigAllergies(obs.getValueCoded().getName().getName());
-            }
-            else {
-                patientSummary.setDrigAllergies("");
+        String allergies = "";
+        if(listOfAllergies.size() == 1){
+            allergies = listOfAllergies.get(0).getValueCoded().getName().getName();
+        }
+        else {
+            for (Obs obs : listOfAllergies) {
+                if (obs != null) {
+                    allergies += obs.getValueCoded().getName().getName()+",";
+                }
             }
         }
         //previous art details
@@ -300,10 +298,17 @@ public class SummariesFragmentController {
 
         //first regimen for the patient
         CalculationResult firstRegimenResults = EmrCalculationUtils.evaluateForPatient(InitialArtRegimenCalculation.class, null, patient);
-        if(firstRegimenResults != null) {
+        String firstRegimen;
+        if(firstRegimenResults == null || firstRegimenResults.isEmpty()){
+            firstRegimen = "";
+        }
+        else {
             RegimenOrder ro = (RegimenOrder) firstRegimenResults.getValue();
             List<String> components = new ArrayList<String>();
-            if (ro != null) {
+            if(ro.getDrugOrders() == null || ro.getDrugOrders().isEmpty()){
+                firstRegimen = "";
+            }
+            else {
                 for (DrugOrder o : ro.getDrugOrders()) {
                     ConceptName cn = o.getConcept().getPreferredName(CoreConstants.LOCALE);
                     if (cn == null) {
@@ -311,12 +316,8 @@ public class SummariesFragmentController {
                     }
                     components.add(cn.getName());
                 }
-                patientSummary.setFirstRegimen(getRegimenName(standardRegimens(), components));
+                firstRegimen = getRegimenName(standardRegimens(), components);
             }
-        }
-
-        else {
-            patientSummary.setFirstRegimen("");
         }
         //previous drugs/regimens and dates
         String regimens = "";
@@ -340,15 +341,20 @@ public class SummariesFragmentController {
         CalculationResultMap problemsAdded = Calculations.allObs(Dictionary.getConcept(Dictionary.PROBLEM_ADDED), Arrays.asList(patient.getPatientId()), context);
         ListResult problemsAddedList = (ListResult) problemsAdded.get(patient.getPatientId());
         List<Obs> problemsAddedListObs = CalculationUtils.extractResultValues(problemsAddedList);
-        List<String> ios = new ArrayList<String>();
+        Set<Integer> ios = new HashSet<Integer>();
+        String iosResults = "";
+        List<Integer> iosIntoList = new ArrayList<Integer>();
         for(Obs obs:problemsAddedListObs) {
-            ios.add(ios(obs.getValueCoded()));
+            ios.add(obs.getValueCoded().getConceptId());
         }
-        if(ios.size() > 0) {
-            patientSummary.setOis(ios);
+        iosIntoList.addAll(ios);
+        if(iosIntoList.size() == 1) {
+            iosResults = ios(iosIntoList.get(0));
         }
         else {
-            patientSummary.setOis(Collections.<String>emptyList());
+            for(Integer values : iosIntoList){
+                iosResults +=values+",";
+            }
         }
         //current art regimen
         CalculationResult currentRegimenResults = EmrCalculationUtils.evaluateForPatient(CurrentArtRegimenCalculation.class, null, patient);
@@ -430,6 +436,7 @@ public class SummariesFragmentController {
         //find clinics enrolled
         CalculationResult clinicsEnrolledResult = EmrCalculationUtils.evaluateForPatient(PatientProgramEnrollmentCalculation.class, null, patient);
         Set<String> patientProgramList= new HashSet<String>();
+        List<String> setToList = new ArrayList<String>();
         if(clinicsEnrolledResult != null){
             List<PatientProgram> patientPrograms = (List<PatientProgram>) clinicsEnrolledResult.getValue();
             for(PatientProgram p: patientPrograms) {
@@ -437,15 +444,19 @@ public class SummariesFragmentController {
                 patientProgramList.add(programs(p.getProgram().getProgramId()));
             }
         }
-            if(patientProgramList.size() > 0){
-                patientSummary.setClinicsEnrolled(patientProgramList.toString());
-            }
+        setToList.addAll(patientProgramList);
+        String clinicValues = "";
+        if(setToList.size() == 1){
+            clinicValues = setToList.get(0);
+        }
         else {
-                patientSummary.setClinicsEnrolled("");
+            for(String val:setToList) {
+                clinicValues += val+",";
             }
+        }
     //most recent cd4
         CalculationResult cd4Results = EmrCalculationUtils.evaluateForPatient(LastCd4CountDateCalculation.class, null, patient);
-        if(cd4Results != null){
+        if(cd4Results != null && cd4Results.getValue() != null){
             patientSummary.setMostRecentCd4(((Obs) cd4Results.getValue()).getValueNumeric().toString());
             patientSummary.setMostRecentCd4Date(formatDate(((Obs) cd4Results.getValue()).getObsDatetime()));
         }
@@ -488,19 +499,10 @@ public class SummariesFragmentController {
         else {
             patientSummary.setTransferOutDate("");
         }
-
-
-
-
-
-
-
-
         model.addAttribute("patient", patientSummary);
         model.addAttribute("names", stringBuilder);
         model.addAttribute("currentRegimen", patientSummary.getCurrentArtRegimen());
         model.addAttribute("onCtx", patientSummary.getOnCtx());
-        model.addAttribute("firstRegimen", patientSummary.getFirstRegimen());
         model.addAttribute("onDapsone", patientSummary.getDapsone());
         model.addAttribute("onIpt", patientSummary.getOnIpt());
         model.addAttribute("programs", patientSummary.getClinicsEnrolled());
@@ -511,6 +513,10 @@ public class SummariesFragmentController {
         model.addAttribute("deadDeath", patientSummary.getDeathDate());
         model.addAttribute("returnVisitDate", patientSummary.getNextAppointmentDate());
         model.addAttribute("toDate", patientSummary.getTransferOutDate());
+        model.addAttribute("allergies", allergies);
+        model.addAttribute("iosResults", iosResults);
+        model.addAttribute("clinicValues", clinicValues);
+        model.addAttribute("firstRegimen", firstRegimen);
 
     }
 
@@ -621,72 +627,72 @@ public class SummariesFragmentController {
         }
         return  value;
     }
-    String ios(Concept concept) {
+    String ios(Integer concept) {
         String value;
-        if(concept.equals(Dictionary.getConcept("123358AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))){
+        if(concept.equals(123358)){
             value = "Zoster";
         }
-        else if(concept.equals(Dictionary.getConcept("5334AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))){
+        else if(concept.equals(5334)){
             value = "Thrush - oral";
         }
-        else if(concept.equals(Dictionary.getConcept("298AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))){
+        else if(concept.equals(298)){
             value = "Thrush - vaginal";
         }
-        else if(concept.equals(Dictionary.getConcept("143264AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))){
+        else if(concept.equals(143264)){
             value = "Cough";
         }
-        else if(concept.equals(Dictionary.getConcept("122496AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))){
+        else if(concept.equals(122496)){
             value = "Difficult breathing";
         }
-        else if(concept.equals(Dictionary.getConcept("140238AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))){
+        else if(concept.equals(140238)){
             value = "Fever";
         }
-        else if(concept.equals(Dictionary.getConcept("487AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))){
+        else if(concept.equals(487)){
             value = "Dementia/Enceph";
         }
-        else if(concept.equals(Dictionary.getConcept("150796AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))){
+        else if(concept.equals(150796)){
             value = "Weight loss";
         }
-        else if(concept.equals(Dictionary.getConcept("114100AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))){
+        else if(concept.equals(114100)){
             value = "Pneumonia";
         }
-        else if(concept.equals(Dictionary.getConcept("123529AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))){
+        else if(concept.equals(123529)){
             value = "Urethral discharge";
         }
-        else if(concept.equals(Dictionary.getConcept("902AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))){
+        else if(concept.equals(902)){
             value = "Pelvic inflammatory disease";
         }
-        else if(concept.equals(Dictionary.getConcept("111721AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))){
+        else if(concept.equals(111721)){
             value = "Ulcers - mouth";
         }
-        else if(concept.equals(Dictionary.getConcept("120939AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))){
+        else if(concept.equals(120939)){
             value = "Ulcers - other";
         }
-        else if(concept.equals(Dictionary.getConcept("145762AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))){
+        else if(concept.equals(145762)){
             value = "Genital ulcer disease";
         }
-        else if(concept.equals(Dictionary.getConcept("140707AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))){
+        else if(concept.equals(140707)){
             value = "Poor weight gain";
         }
-        else if(concept.equals(Dictionary.getConcept("112141AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))){
+        else if(concept.equals(112141)){
             value = "Tuberculosis";
         }
-        else if(concept.equals(Dictionary.getConcept("160028AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))){
+        else if(concept.equals(160028)){
             value = "Immune reconstitution inflammatory syndrome";
         }
-        else if(concept.equals(Dictionary.getConcept("162330AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))){
+        else if(concept.equals(162330)){
             value = "Severe uncomplicated malnutrition";
         }
-        else if(concept.equals(Dictionary.getConcept("162331AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))){
+        else if(concept.equals(162331)){
             value = "Severe complicated malnutrition";
         }
 
-        else if(concept.equals(Dictionary.getConcept("1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))){
+        else if(concept.equals(1107)){
             value = "None";
         }
 
         else {
-            value = concept.getName().getName();
+            value = Context.getConceptService().getConcept(concept).getName().getName();
         }
         return value;
     }

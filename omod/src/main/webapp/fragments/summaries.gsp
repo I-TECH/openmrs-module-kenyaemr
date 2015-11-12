@@ -46,12 +46,9 @@ table.moh257 > tbody > tr > td, table.moh257 > tbody > tr > th {
                 <td colspan="3">Marital status: ${ patient.maritalStatus }</td>
             </tr>
             <tr>
-                <td colspan="3">&nbsp;</td>
-            </tr>
-            <tr>
                 <td>Date Confirmed HIV Positive: ${ patient.hivConfrimedDate }</td>
-                <td>1st CD4: ${ patient.firstCd4 }</td>
-                <td>Date 1st CD4: ${ patient.firstCd4Date }</td>
+                <td>First CD4: ${ patient.firstCd4 }</td>
+                <td>Date first CD4: ${ patient.firstCd4Date }</td>
             </tr>
             <tr>
                 <td>Date enrolled into care: ${ patient.dateEnrolledIntoCare}</td>
@@ -74,12 +71,7 @@ table.moh257 > tbody > tr > td, table.moh257 > tbody > tr > th {
                 <td>Contact details: ${patient.contactOfTreatmentSupporter}</td>
             </tr>
             <tr>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-            </tr>
-            <tr>
-                <td colspan="3">Drug allergies: ${patient.drigAllergies}</td>
+                <td colspan="3">Drug allergies: ${allergies}</td>
             </tr>
             <tr>
                 <td>&nbsp;</td>
@@ -105,7 +97,7 @@ table.moh257 > tbody > tr > td, table.moh257 > tbody > tr > th {
                 <td colspan="2">First regimen: ${firstRegimen}</td>
             </tr>
             <tr>
-                <td colspan="3">Past or current OI: ${patient.ois}</td>
+                <td colspan="3">Past or current OI: ${iosResults}</td>
             </tr>
             <tr>
                 <td>&nbsp;</td>
@@ -115,25 +107,38 @@ table.moh257 > tbody > tr > td, table.moh257 > tbody > tr > th {
             <tr>
                 <td>Current ART regimen: ${currentRegimen}</td>
                 <td colspan="2">
-                    ART interruptions: ${ patient.artInterruptions}
-                    Reason: ${patient.artInterruptionReason}
-                    Date: ${patient.artInterruptionDate}
+                    <table width="100%">
+                        <tr>
+                            <td width="40%">ART interruptions:</td>
+                            <td>Reason: </td>
+                            <td>Date:</td>
+                        </tr>
+                    </table>
                 </td>
             </tr>
             <tr>
                 <td>Current WHO stage: ${patient.currentWhoStaging}</td>
                 <td colspan="2">
-                    Substitution within 1st line regimen: ${patient.substitutionWithFirstLine}
-                    Reason: ${patient.substitutionWithFirstLineReason}
-                    Date: ${patient.substitutionWithFirstLineDate}
+                    <table width="100%">
+                        <tr>
+                            <td width="40%">Substitution within 1st line regimen:</td>
+                            <td>Reason: </td>
+                            <td>Date:</td>
+                        </tr>
+                    </table>
+
                 </td>
             </tr>
             <tr>
                 <td>CTX: ${onCtx}</td>
                 <td colspan="2">
-                    Switch to 2nd line regimen: ${patient.switchToSecondLineRegimen}
-                    Reason: ${patient.switchToSecondLineRegimenReason}
-                    Date: ${patient.switchToSecondLineRegimenDate}
+                    <table width="100%">
+                        <tr>
+                            <td width="40%">Switch to 2nd line regimen:</td>
+                            <td>Reason: </td>
+                            <td>Date:</td>
+                        </tr>
+                    </table>
                 </td>
             </tr>
             <tr>
@@ -145,13 +150,19 @@ table.moh257 > tbody > tr > td, table.moh257 > tbody > tr > th {
                 <td colspan="2">&nbsp;</td>
             </tr>
             <tr>
-                <td colspan="2">Clinics enrolled: ${programs}</td>
+                <td colspan="2">Clinics enrolled: ${clinicValues}</td>
                 <td>Transfer out date: ${toDate}</td>
             </tr>
             <tr>
                 <td colspan="2">
-                    Most recent CD4: ${recentCd4Count}
-                    Date: ${recentCd4CountDate}
+                    <table width="75%">
+                        <tr>
+                            <td width="50%">Most recent CD4: ${recentCd4Count}</td>
+                            <td>Date: ${recentCd4CountDate}</td>
+                        </tr>
+                    </table>
+
+
                 </td>
                 <td>
                     Death date: ${deadDeath}
@@ -159,8 +170,12 @@ table.moh257 > tbody > tr > td, table.moh257 > tbody > tr > th {
             </tr>
             <tr>
                 <td colspan="2">
-                    Most recent VL: ${recentVl}
-                    Date: ${recentVlDate}
+                    <table width="75%">
+                        <tr>
+                            <td width="50%">Most recent VL: ${recentVl}</td>
+                            <td> Date: ${recentVlDate}</td>
+                        </tr>
+                    </table>
                 </td>
                 <td>
                     Next appointment: ${returnVisitDate}
