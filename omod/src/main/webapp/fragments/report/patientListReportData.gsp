@@ -50,8 +50,13 @@
 		</tbody>
 	</table>
 </div>
-<% } else {%>
+<% } else if(isCohortReport) {%>
 <fieldset>
 	Insufficient follow-up time to generate this report
 </fieldset>
+<% } else {%>
+<fieldset>
+	None
+</fieldset>
 <% } %>
+
