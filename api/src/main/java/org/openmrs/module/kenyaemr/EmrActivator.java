@@ -18,8 +18,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.ModuleActivator;
 import org.openmrs.module.kenyacore.CoreContext;
+import org.openmrs.module.reporting.report.service.ReportService;
 
 /**
  * This class contains the logic that is run every time this module is either started or stopped.
@@ -71,6 +73,7 @@ public class EmrActivator implements ModuleActivator {
 	 * @see ModuleActivator#started()
 	 */
 	public void started() {
+		Context.getService(ReportService.class).deleteOldReportRequests();
 		log.info("KenyaEMR started");
 	}
 

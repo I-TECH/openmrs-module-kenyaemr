@@ -58,6 +58,7 @@
 				</tr>
 				</thead>
 				<tbody>
+
 				<tr ng-repeat="request in finished">
 					<td>{{ request.requestDate | keDateTime }}</td>
 					<td>{{ request.requestedBy.person.name}}</td>
@@ -65,20 +66,33 @@
 					<td>{{ request.status }}</td>
 					<td>{{ request.timeTaken || '--:--:--' }}</td>
 					<td style="text-align: right">
-						<div ng-if="request.status == 'COMPLETED'">
-							<a href="#" ng-click="viewReportData(request.id)">
-								<img src="${ ui.resourceLink("kenyaui", "images/glyphs/view.png") }" class="ke-glyph" /> View
-							</a>
-							&nbsp;&nbsp;
-							<a href="#" ng-click="exportReportData(request.id, 'csv')">
-								<img src="${ ui.resourceLink("kenyaui", "images/glyphs/csv.png") }" class="ke-glyph" /> CSV
-							</a>
-							&nbsp;&nbsp;
-							<% if (excelRenderable) { %>
-							<a href="#" ng-click="exportReportData(request.id , 'excel')">
-								<img src="${ ui.resourceLink("kenyaui", "images/glyphs/excel.png") }" class="ke-glyph" /> Excel
-							</a>
-							<% } %>
+						<div ng-if="request.status == 'COMPLETED' && request.hasData ">
+							<table class="ke-table-vertical">
+								<tr>
+									<td>
+										<a href="#" ng-click="viewReportData(request.id)">
+											<img src="${ ui.resourceLink("kenyaui", "images/glyphs/view.png") }" class="ke-glyph" /> View
+										</a>
+									</td>
+									<td>
+										<div ng-if="request.hasDataSet">
+											<a href="#" ng-click="exportReportData(request.id, 'csv')">
+												<img src="${ ui.resourceLink("kenyaui", "images/glyphs/csv.png") }" class="ke-glyph" /> CSV
+											</a>
+										</div>
+									</td>
+									<td>
+										<div ng-if="request.hasDataSet">
+											<% if (excelRenderable){ %>
+											<a href="#" ng-click="exportReportData(request.id , 'excel')">
+												<img src="${ ui.resourceLink("kenyaui", "images/glyphs/excel.png") }" class="ke-glyph" /> Excel
+											</a>
+											<% } %>
+										</div>
+									</td>
+								</tr>
+							</table>
+
 						</div>
 						<div ng-if="request.status == 'FAILED'">
 							<a href="#" ng-click="viewReportError(request.id)">
