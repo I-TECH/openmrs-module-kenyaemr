@@ -220,9 +220,10 @@ public class ArtCohortLibrary {
 	 * Used for art cohort analysis
 	 * @return the cohort definition
 	 */
-	public CohortDefinition netCohortMonthsBetweenDatesGivenMonths() {
+	public CohortDefinition netCohortMonthsBetweenDatesGivenMonths(Integer period) {
 		CalculationCohortDefinition calc = new CalculationCohortDefinition(new TransferredInAfterArtStartCalculation());
 		calc.setName("Patients who transferred in while started art");
+		calc.addCalculationParameter("outcomePeriod", period);
 		calc.addParameter(new Parameter("onDate", "On Date", Date.class));
 
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();

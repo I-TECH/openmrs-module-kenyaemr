@@ -135,7 +135,8 @@ public class ArtCohortAnalysisReportBuilder extends AbstractHybridReportBuilder 
 
     @Override
     protected Mapped<CohortDefinition> buildCohort(HybridReportDescriptor descriptor, PatientDataSetDefinition dsd) {
-        CohortDefinition cd = artCohortLibrary.netCohortMonthsBetweenDatesGivenMonths();
+        Integer period = Integer.parseInt(descriptor.getId().split("\\.")[7]);
+        CohortDefinition cd = artCohortLibrary.netCohortMonthsBetweenDatesGivenMonths(period);
         return ReportUtils.map(cd, "startDate=${startDate},endDate=${endDate}");
     }
 
