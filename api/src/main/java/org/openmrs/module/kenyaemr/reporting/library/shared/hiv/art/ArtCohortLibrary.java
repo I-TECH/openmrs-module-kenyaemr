@@ -232,8 +232,7 @@ public class ArtCohortLibrary {
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
 		cd.addSearch("startedArtMonthsAgo", ReportUtils.map(startedArt(), "onOrAfter=${startDate},onOrBefore=${endDate}"));
 		cd.addSearch("transferInWhileOnArt", ReportUtils.map(calc));
-		cd.addSearch("inHivProgram", ReportUtils.map(hivCohortLibrary.enrolled(), "enrolledOnOrBefore=${endDate}"));
-		cd.setCompositionString("(startedArtMonthsAgo AND inHivProgram) AND NOT transferInWhileOnArt");
+		cd.setCompositionString("startedArtMonthsAgo AND NOT transferInWhileOnArt");
 		return cd;
 	}
 
