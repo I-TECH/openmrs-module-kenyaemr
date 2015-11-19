@@ -57,6 +57,7 @@ public class DateAndReasonFirstMedicallyEligibleForArtCalculation extends Abstra
 
         CalculationResultMap ages = Calculations.ages(cohort, context);
         CalculationResultMap allWhoStage = Calculations.allObs(Dictionary.getConcept(Dictionary.CURRENT_WHO_STAGE), cohort, context);
+        CalculationResultMap allWhoStageInitial = Calculations.allObs(Dictionary.getConcept(Dictionary.Initial_World_Health_Organization_HIV_stage), cohort, context);
         CalculationResultMap allCd4 = Calculations.allObs(Dictionary.getConcept(Dictionary.CD4_COUNT), cohort, context);
         CalculationResultMap artStartDateMap = calculate(new InitialArtStartDateCalculation(), cohort, context);
         CalculationResultMap hepatitisMap = Calculations.lastObs(Dictionary.getConcept(Dictionary.PROBLEM_ADDED), cohort, context);
@@ -78,6 +79,14 @@ public class DateAndReasonFirstMedicallyEligibleForArtCalculation extends Abstra
             List<Obs> obsList = CalculationUtils.extractResultValues(allCd4ListResults);
             ListResult allWhoListResults = (ListResult) allWhoStage.get(ptId);
             List<Obs> obsListWho = CalculationUtils.extractResultValues(allWhoListResults);
+            ListResult allWhoStageInitialResults = (ListResult) allWhoStageInitial.get(ptId);
+            List<Obs> allWhoStageInitialList = CalculationUtils.extractResultValues(allWhoStageInitialResults);
+
+            //combine these 2 list for who into a new list
+            List<Obs> newWHOList = new ArrayList<Obs>();
+            newWHOList.addAll(obsListWho);
+            newWHOList.addAll(allWhoStageInitialList);
+
 
             int ageInMonths = ((Age) ages.get(ptId).getValue()).getFullMonths();
 
@@ -113,7 +122,7 @@ public class DateAndReasonFirstMedicallyEligibleForArtCalculation extends Abstra
                         patientEligibility = new PatientEligibility("", artStartDate);
                     }
                 } else {
-                        patientEligibility = getCriteriaAndDate(ageInMonths, obsList, obsListWho, artStartDate, hivEnrollment.getDateEnrolled(), outcomePeriod);
+                        patientEligibility = getCriteriaAndDate(ageInMonths, obsList, newWHOList, artStartDate, hivEnrollment.getDateEnrolled(), outcomePeriod);
 
                 }
             }
@@ -184,22 +193,25 @@ public class DateAndReasonFirstMedicallyEligibleForArtCalculation extends Abstra
     Date whoDate(List<Obs> whoStage, Date hivEnrollmentDate, int period) {
         Date whoStageDate = null;
         Date futureDate = DateUtil.adjustDate(DateUtil.adjustDate(hivEnrollmentDate, period, DurationUnit.MONTHS), 1, DurationUnit.DAYS);
+        Date enrollDate = DateUtil.adjustDate(hivEnrollmentDate, -1, DurationUnit.DAYS);
         List<Obs> listOfWho = new ArrayList<Obs>();
 
-        if(whoStage.size() > 0) {
+        if (whoStage.size() > 0) {
 
             for (Obs obsWhoStage : whoStage) {
                 Integer stage = EmrUtils.whoStage(obsWhoStage.getValueCoded());
 
-                if (stage != null && (stage == 3 || stage == 4) && obsWhoStage.getObsDatetime().before(futureDate) && (obsWhoStage.getObsDatetime().after(hivEnrollmentDate) || obsWhoStage.getObsDatetime().equals(hivEnrollmentDate))) {
-                    listOfWho.add(obsWhoStage);
+                if (stage != null && (stage == 3 || stage == 4)) {
+                    if (obsWhoStage.getObsDatetime().before(futureDate) && obsWhoStage.getObsDatetime().after(enrollDate)) {
+                        listOfWho.add(obsWhoStage);
 
+                    }
                 }
-            }
-            if(listOfWho.size() > 0) {
-                whoStageDate = correctDateFormat(listOfWho.get(0).getObsDatetime());
-            }
+                if (listOfWho.size() > 0) {
+                    whoStageDate = correctDateFormat(listOfWho.get(0).getObsDatetime());
+                }
 
+            }
         }
 
         return whoStageDate;
@@ -251,7 +263,7 @@ public class DateAndReasonFirstMedicallyEligibleForArtCalculation extends Abstra
         Date isOnARTDate = null;
         Date futureDate = DateUtil.adjustDate(DateUtil.adjustDate(hivEnrollmentDate, period, DurationUnit.MONTHS), 1, DurationUnit.DAYS);
 
-        if(cd4Date(cd4, hivEnrollmentDate, period) == null && artDate != null && (correctDateFormat(artDate)).before(futureDate)) {
+        if(cd4Date(cd4, hivEnrollmentDate, period) == null && artDate != null && correctDateFormat(artDate).before(futureDate)) {
             isOnARTDate = correctDateFormat(artDate);
         }
 
