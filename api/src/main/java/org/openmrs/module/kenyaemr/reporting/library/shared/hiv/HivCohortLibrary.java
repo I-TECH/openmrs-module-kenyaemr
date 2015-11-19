@@ -25,7 +25,7 @@ import org.openmrs.module.kenyacore.report.cohort.definition.DateObsValueBetween
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.FirstProgramEnrollment;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.OnCtxWithinDurationCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.IsTransferInCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.pre_art.TransferredInAfterEnrollmentCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonCohortLibrary;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
@@ -315,7 +315,7 @@ public class HivCohortLibrary {
 	 * Patients enrolled in HIV program based on their first enrollment
 	 * @return the CohortDefinition
 	 */
-	public CohortDefinition firstProgramEnrollment() {
+	public CohortDefinition firstProgramEnrollment(Integer outcomePeriod) {
 		DateCalculationCohortDefinition cd = new DateCalculationCohortDefinition(new FirstProgramEnrollment());
 		cd.setName("First program enrollment date");
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
@@ -325,15 +325,16 @@ public class HivCohortLibrary {
 		compCd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		compCd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 
-		CalculationCohortDefinition calcCd = new CalculationCohortDefinition(new IsTransferInCalculation());
-		calcCd.setName("boolean transfer in");
+		CalculationCohortDefinition calcCd = new CalculationCohortDefinition(new TransferredInAfterEnrollmentCalculation());
+		calcCd.setName("boolean transfer in after enrollment");
 		calcCd.addParameter(new Parameter("onDate", "On Date", Date.class));
+		calcCd.addCalculationParameter("outcomePeriod", outcomePeriod);
+
 
 		compCd.addSearch("cd", ReportUtils.map(cd, "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
-		compCd.addSearch("ti", ReportUtils.map(commonCohorts.transferredIn(), "onOrBefore=${onOrBefore}"));
-		compCd.addSearch("calcCd", ReportUtils.map(calcCd, "onDate=${onOrBefore}"));
+		compCd.addSearch("calcCd", ReportUtils.map(calcCd));
 
-		compCd.setCompositionString("cd AND NOT (ti OR calcCd)");
+		compCd.setCompositionString("cd AND NOT calcCd");
 
 		return compCd;
 	}

@@ -111,8 +111,8 @@ public class PreArtCohortAnalysisReportBuilder extends AbstractHybridReportBuild
 		dsd.addColumn("Date of diagnosis", dateOfDiagnosis(), "onDate=${endDate}", new CalculationResultConverter());
 		dsd.addColumn("Days from HIV diagnosis to enrollment", timelyLinkage(), "", new CalculationResultConverter());
 		dsd.addColumn("Timely linkage", timelyLinkage(), "", new TimelyLinkageDataConverter());
-		dsd.addColumn("Transfer in", ti(), "onDate=${endDate}", new TransferInAndDateConverter("state"));
-		dsd.addColumn("Date transfer in", ti(), "onDate=${endDate}", new TransferInAndDateConverter("date"));
+		dsd.addColumn("Transfer in", ti(), "", new TransferInAndDateConverter("state"));
+		dsd.addColumn("Date transfer in", ti(), "", new TransferInAndDateConverter("date"));
 		dsd.addColumn("Transfer out", to(report), "onDate=${endDate}", new TransferInAndDateConverter("state"));
 		dsd.addColumn("Date transferred out", to(report), "onDate=${endDate}", new TransferInAndDateConverter("date"));
 		dsd.addColumn("Initial CD4 count", new CalculationDataDefinition("Initial CD4 count", new InitialCd4CountCalculation()), "", new Cd4ValueAndDateConverter("value"));
@@ -136,7 +136,7 @@ public class PreArtCohortAnalysisReportBuilder extends AbstractHybridReportBuild
 
 	private DataDefinition ti() {
 		CalculationDataDefinition cd = new CalculationDataDefinition("tiAndDate", new IsTransferInAndHasDateCalculation());
-		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
+		//cd.addParameter(new Parameter("onDate", "On Date", Date.class));
 		return cd;
 	}
 	private DataDefinition death(HybridReportDescriptor descriptor) {
@@ -147,7 +147,8 @@ public class PreArtCohortAnalysisReportBuilder extends AbstractHybridReportBuild
 	}
 	@Override
 	protected Mapped<CohortDefinition> buildCohort(HybridReportDescriptor descriptor, PatientDataSetDefinition dsd) {
-		CohortDefinition cd = commonCohortLibrary.firstProgramEnrollment();
+		Integer outcomePeriod = Integer.parseInt(descriptor.getId().split("\\.")[6]);
+		CohortDefinition cd = commonCohortLibrary.firstProgramEnrollment(outcomePeriod);
 		return ReportUtils.map(cd, "onOrAfter=${startDate},onOrBefore=${endDate}");
 	}
 

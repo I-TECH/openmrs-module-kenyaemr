@@ -33,7 +33,6 @@ import org.openmrs.module.kenyacore.calculation.Filters;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.HivConstants;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
-import org.openmrs.module.kenyaemr.calculation.library.models.LostToFU;
 import org.openmrs.module.kenyaemr.calculation.library.rdqa.DateOfDeathCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
@@ -92,9 +91,9 @@ public class PatientPreArtOutComeCalculation extends AbstractPatientCalculation 
 				Date dod = EmrCalculationUtils.datetimeResultForPatient(deadPatients, ptId);
 				Date dateTo = EmrCalculationUtils.datetimeResultForPatient(transferredOut, ptId);
 				Date defaultedDate = EmrCalculationUtils.datetimeResultForPatient(defaulted, ptId);
-				LostToFU classifiedLTFU = EmrCalculationUtils.resultForPatient(ltfu, ptId);
+				Date classifiedLTFU = EmrCalculationUtils.datetimeResultForPatient(ltfu, ptId);
 				if(classifiedLTFU != null) {
-					dateLost = (Date) classifiedLTFU.getDateLost();
+					dateLost = classifiedLTFU;
 				}
 				//get future date that would be used as a limit
 				Date futureDate = DateUtil.adjustDate(DateUtil.adjustDate(patientProgramDate.getDateEnrolled(), outcomePeriod, DurationUnit.MONTHS), 1, DurationUnit.DAYS);
@@ -154,29 +153,18 @@ public class PatientPreArtOutComeCalculation extends AbstractPatientCalculation 
 		 return  ret;
 	}
 
-	int daysBetweenDates(Date d1, Date d2) {
-		DateTime dateTime1 = new DateTime(d1.getTime());
-		DateTime dateTime2 = new DateTime(d2.getTime());
-		return Math.abs(Days.daysBetween(dateTime1, dateTime2).getDays());
-	}
-
 	CalculationResultMap ltfuMap(Collection<Integer> cohort, PatientCalculationContext context, Integer period) {
 		CalculationResultMap ret = new CalculationResultMap();
 		CalculationResultMap resultMap = returnVisitDate(cohort, context, period);
 		Set<Integer> isTransferOut = CalculationUtils.patientsThatPass(calculate(new IsTransferOutCalculation(), cohort, context));
 		for (Integer ptId : cohort) {
-			LostToFU classifiedLTFU;
+			Date dateLost = null;
 			SimpleResult lastScheduledReturnDateResults = (SimpleResult) resultMap.get(ptId);
 			Date lastScheduledReturnDate = (Date) lastScheduledReturnDateResults.getValue();
 			if (lastScheduledReturnDate != null && (daysSince(lastScheduledReturnDate, context) > HivConstants.LOST_TO_FOLLOW_UP_THRESHOLD_DAYS) && !(isTransferOut.contains(ptId))) {
-				classifiedLTFU = new LostToFU(true, DateUtil.adjustDate(lastScheduledReturnDate, HivConstants.LOST_TO_FOLLOW_UP_THRESHOLD_DAYS, DurationUnit.DAYS ));
+				dateLost = DateUtil.adjustDate(lastScheduledReturnDate, HivConstants.LOST_TO_FOLLOW_UP_THRESHOLD_DAYS, DurationUnit.DAYS );
 			}
-
-			else {
-				classifiedLTFU = new LostToFU(false, null);
-			}
-
-			ret.put(ptId, new SimpleResult(classifiedLTFU, this));
+			ret.put(ptId, new SimpleResult(dateLost, this));
 		}
 		return ret;
 	}
@@ -219,48 +207,42 @@ public class PatientPreArtOutComeCalculation extends AbstractPatientCalculation 
 								}
 							}
 						}
+						if(returnVisitDate != null && lastSeenDate != null && returnVisitDate.before(lastSeenDate)){
+							returnVisitDate =null;
+
+						}
 					}
 
-					//check if this patient has more than one visit in the
-					if (returnVisitDate == null && requiredVisits.size() > 1) {
-						//get the visit date of the last visit
-
+					if(returnVisitDate == null && requiredVisits.size() > 1){
 						Date lastVisitDate = requiredVisits.get(0).getStartDatetime();
 						Date priorVisitDate1 = requiredVisits.get(1).getStartDatetime();
 						int dayDiff = daysBetweenDates(lastVisitDate, priorVisitDate1);
-						Date priorReturnDate1 = null;
-						if(lastSeenDate != null){
-							priorReturnDate1 = lastSeenDate;
-						}
 						//get the prior visit
-						else {
-							Set<Encounter> priorVisitEncounters = requiredVisits.get(1).getEncounters();
-							if (priorVisitEncounters.size() > 0) {
-								Set<Obs> allObs;
-								for (Encounter encounter : priorVisitEncounters) {
-									allObs = encounter.getAllObs();
-									for (Obs obs : allObs) {
-										if (obs.getConcept().equals(RETURN_VISIT_DATE)) {
-											priorReturnDate1 = obs.getValueDatetime();
-											break;
-										}
+						Set<Encounter> priorVisitEncounters = requiredVisits.get(1).getEncounters();
+						Date priorReturnDate1 = null;
+						if (priorVisitEncounters.size() > 0) {
+							Set<Obs> allObs;
+							for (Encounter encounter : priorVisitEncounters) {
+								allObs = encounter.getAllObs();
+								for (Obs obs : allObs) {
+									if (obs.getConcept().equals(RETURN_VISIT_DATE)) {
+										priorReturnDate1 = obs.getValueDatetime();
+										break;
 									}
 								}
-
+							}
+							if (priorReturnDate1 != null) {
+								returnVisitDate = DateUtil.adjustDate(priorReturnDate1, dayDiff, DurationUnit.DAYS);
 							}
 						}
-						if (priorReturnDate1 != null) {
-							if (dayDiff < 30) {
-								dayDiff = 30;
-							}
-							returnVisitDate = DateUtil.adjustDate(priorReturnDate1, dayDiff, DurationUnit.DAYS);
-
+						if(returnVisitDate != null && lastSeenDate != null && returnVisitDate.before(lastSeenDate)){
+							returnVisitDate = DateUtil.adjustDate(lastSeenDate, 30, DurationUnit.DAYS);
 						}
-
 					}
+
 				}
 				if (returnVisitDate == null) {
-					returnVisitDate = DateUtil.adjustDate(patientProgram.getDateEnrolled(), 30, DurationUnit.DAYS);
+					returnVisitDate = DateUtil.adjustDate(lastSeenDate, 30, DurationUnit.DAYS);
 				}
 			}
 			ret.put(ptId, new SimpleResult(returnVisitDate, this));
@@ -277,7 +259,7 @@ public class PatientPreArtOutComeCalculation extends AbstractPatientCalculation 
 			if (lastScheduledReturnDateResults != null) {
 				Date lastScheduledReturnDate = (Date) lastScheduledReturnDateResults.getValue();
 				if(lastScheduledReturnDate != null && !(isTransferOut.contains(ptId))) {
-					dateDefaulted = CoreUtils.dateAddDays(lastScheduledReturnDate, 30);
+					dateDefaulted = CoreUtils.dateAddDays(lastScheduledReturnDate, 3);
 				}
 			}
 
@@ -304,8 +286,8 @@ public class PatientPreArtOutComeCalculation extends AbstractPatientCalculation 
 			Encounter encounter = EmrCalculationUtils.encounterResultForPatient(lastEncounter, ptId);
 			PatientProgram patientProgram = EmrCalculationUtils.resultForPatient(dateEnrolledMap, ptId);
 			Date artStartDate = EmrCalculationUtils.datetimeResultForPatient(initialArtStart, ptId);
+			Date encounterDate = null;
 			if(patientProgram != null) {
-				Date encounterDate = null;
 				if (encounter != null) {
 
 						if(artStartDate != null && artStartDate.after(encounter.getEncounterDatetime())) {
@@ -314,7 +296,6 @@ public class PatientPreArtOutComeCalculation extends AbstractPatientCalculation 
 						else {
 							encounterDate = encounter.getEncounterDatetime();
 						}
-
 				}
 				if(encounterDate == null && artStartDate != null) {
 					encounterDate = artStartDate;
@@ -323,11 +304,16 @@ public class PatientPreArtOutComeCalculation extends AbstractPatientCalculation 
 				if(encounterDate == null){
 					encounterDate = patientProgram.getDateEnrolled();
 				}
-
-				result.put(ptId, new SimpleResult(encounterDate, this));
 			}
+			result.put(ptId, new SimpleResult(encounterDate, this));
 		}
 		return result;
+	}
+
+	int daysBetweenDates(Date d1, Date d2) {
+		DateTime dateTime1 = new DateTime(d1.getTime());
+		DateTime dateTime2 = new DateTime(d2.getTime());
+		return Math.abs(Days.daysBetween(dateTime1, dateTime2).getDays());
 	}
 
 }

@@ -18,7 +18,6 @@ import org.openmrs.module.kenyacore.calculation.Filters;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.HivConstants;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
-import org.openmrs.module.kenyaemr.calculation.library.models.LostToFU;
 import org.openmrs.module.kenyaemr.calculation.library.rdqa.DateOfDeathCalculation;
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.DurationUnit;
@@ -68,9 +67,9 @@ public class PatientArtOutComeCalculation extends AbstractPatientCalculation {
             Date initialArtStart = EmrCalculationUtils.datetimeResultForPatient(onARTInitial, ptId);
             Date dod = EmrCalculationUtils.datetimeResultForPatient(deadPatients, ptId);
             Date defaultedDate = EmrCalculationUtils.datetimeResultForPatient(defaulted, ptId);
-            LostToFU classifiedLTFU = EmrCalculationUtils.resultForPatient(ltfu, ptId);
+            Date classifiedLTFU = EmrCalculationUtils.datetimeResultForPatient(ltfu, ptId);
             if(classifiedLTFU != null) {
-                dateLost = (Date) classifiedLTFU.getDateLost();
+                dateLost = classifiedLTFU;
             }
             String stoppedDate = EmrCalculationUtils.resultForPatient(stoppedArtMap, ptId);
 
@@ -175,6 +174,32 @@ public class PatientArtOutComeCalculation extends AbstractPatientCalculation {
                             }
                         }
                         if(returnVisitDate != null && lastSeenDate != null && returnVisitDate.before(lastSeenDate)){
+                            returnVisitDate = null;
+                        }
+                    }
+                    if(returnVisitDate == null && requiredVisits.size() > 1){
+                        Date lastVisitDate = requiredVisits.get(0).getStartDatetime();
+                        Date priorVisitDate1 = requiredVisits.get(1).getStartDatetime();
+                        int dayDiff = daysBetweenDates(lastVisitDate, priorVisitDate1);
+                        //get the prior visit
+                        Set<Encounter> priorVisitEncounters = requiredVisits.get(1).getEncounters();
+                        Date priorReturnDate1 = null;
+                        if (priorVisitEncounters.size() > 0) {
+                            Set<Obs> allObs;
+                            for (Encounter encounter : priorVisitEncounters) {
+                                allObs = encounter.getAllObs();
+                                for (Obs obs : allObs) {
+                                    if (obs.getConcept().equals(RETURN_VISIT_DATE)) {
+                                        priorReturnDate1 = obs.getValueDatetime();
+                                        break;
+                                    }
+                                }
+                            }
+                            if (priorReturnDate1 != null) {
+                                returnVisitDate = DateUtil.adjustDate(priorReturnDate1, dayDiff, DurationUnit.DAYS);
+                            }
+                        }
+                        if(returnVisitDate != null && lastSeenDate != null && returnVisitDate.before(lastSeenDate)){
                             returnVisitDate = DateUtil.adjustDate(lastSeenDate, 30, DurationUnit.DAYS);
                         }
                     }
@@ -202,7 +227,7 @@ public class PatientArtOutComeCalculation extends AbstractPatientCalculation {
             if (lastScheduledReturnDateResults != null) {
                 Date lastScheduledReturnDate = (Date) lastScheduledReturnDateResults.getValue();
                 if(!(isTransferOut.contains(ptId)) && lastScheduledReturnDate != null) {
-                    dateDefaulted = CoreUtils.dateAddDays(lastScheduledReturnDate, 30);
+                    dateDefaulted = CoreUtils.dateAddDays(lastScheduledReturnDate, 3);
                 }
             }
 
@@ -215,16 +240,13 @@ public class PatientArtOutComeCalculation extends AbstractPatientCalculation {
         CalculationResultMap ret = new CalculationResultMap();
         Set<Integer> isTransferOut = CalculationUtils.patientsThatPass(calculate(new IsTransferOutCalculation(), cohort, context));
         CalculationResultMap resultMap = returnVisitDate(cohort, context, period);
+        Date  classifiedLTFU = null;
         for (Integer ptId : cohort) {
-            LostToFU classifiedLTFU;
+
             SimpleResult lastScheduledReturnDateResults = (SimpleResult) resultMap.get(ptId);
             Date lastScheduledReturnDate = (Date) lastScheduledReturnDateResults.getValue();
             if (lastScheduledReturnDate != null && (daysSince(lastScheduledReturnDate, context) > HivConstants.LOST_TO_FOLLOW_UP_THRESHOLD_DAYS) && !(isTransferOut.contains(ptId))) {
-                classifiedLTFU = new LostToFU(true, DateUtil.adjustDate(lastScheduledReturnDate, HivConstants.LOST_TO_FOLLOW_UP_THRESHOLD_DAYS, DurationUnit.DAYS ));
-            }
-
-            else {
-                classifiedLTFU = new LostToFU(false, null);
+                classifiedLTFU = DateUtil.adjustDate(lastScheduledReturnDate, HivConstants.LOST_TO_FOLLOW_UP_THRESHOLD_DAYS, DurationUnit.DAYS );
             }
 
             ret.put(ptId, new SimpleResult(classifiedLTFU, this));
@@ -232,11 +254,6 @@ public class PatientArtOutComeCalculation extends AbstractPatientCalculation {
         return ret;
     }
 
-    int daysBetweenDates(Date d1, Date d2) {
-        DateTime dateTime1 = new DateTime(d1.getTime());
-        DateTime dateTime2 = new DateTime(d2.getTime());
-        return Math.abs(Days.daysBetween(dateTime1, dateTime2).getDays());
-    }
 
     CalculationResultMap dateLastSeen(Collection<Integer> cohort, PatientCalculationContext context) {
         CalculationResultMap initialArtStart = calculate(new InitialArtStartDateCalculation(), cohort, context);
@@ -261,6 +278,11 @@ public class PatientArtOutComeCalculation extends AbstractPatientCalculation {
         return  result;
 
 
+    }
+    int daysBetweenDates(Date d1, Date d2) {
+        DateTime dateTime1 = new DateTime(d1.getTime());
+        DateTime dateTime2 = new DateTime(d2.getTime());
+        return Math.abs(Days.daysBetween(dateTime1, dateTime2).getDays());
     }
 
 }
