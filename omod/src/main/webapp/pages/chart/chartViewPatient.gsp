@@ -9,13 +9,21 @@
 					iconProvider: "kenyaui",
 					icon: "buttons/patient_overview.png"
 			],
-	        [
+			[
 					label: "MOH 257",
 					href: ui.pageLink("kenyaemr", "chart/chartViewPatient", [ patientId: currentPatient.id, section: "moh257" ]),
 					active: (selection == "section-moh257"),
 					iconProvider: "kenyaui",
 					icon: "forms/moh257.png"
+			],
+			[
+					label: "Patient summary",
+					href: ui.pageLink("kenyaemr", "chart/chartViewPatient", [ patientId: currentPatient.id, section: "summaries" ]),
+					active: (selection == "section-summaries"),
+					iconProvider: "kenyaui",
+					icon: "buttons/summary.png"
 			]
+
 	];
 
 	oneTimeForms.each { form ->
@@ -48,7 +56,7 @@
 
 		<% if (!visits) {
 			print ui.includeFragment("kenyaui", "widget/panelMenuItem", [
-				label: ui.message("general.none"),
+					label: ui.message("general.none"),
 			])
 		}
 		else {
@@ -69,39 +77,43 @@
 
 	<% if (visit) { %>
 
-		${ ui.includeFragment("kenyaemr", "visitSummary", [ visit: visit ]) }
-		<% if (!visit.voided) { %>
-			${ ui.includeFragment("kenyaemr", "visitCompletedForms", [ visit: visit ]) }
-			${ ui.includeFragment("kenyaemr", "visitAvailableForms", [ visit: visit ]) }
-		<% } %>
+	${ ui.includeFragment("kenyaemr", "visitSummary", [ visit: visit ]) }
+	<% if (!visit.voided) { %>
+	${ ui.includeFragment("kenyaemr", "visitCompletedForms", [ visit: visit ]) }
+	${ ui.includeFragment("kenyaemr", "visitAvailableForms", [ visit: visit ]) }
+	<% } %>
 
 	<% } else if (form) { %>
 
-		<div class="ke-panel-frame">
-			<div class="ke-panel-heading">${ ui.format(form) }</div>
-			<div class="ke-panel-content">
+	<div class="ke-panel-frame">
+		<div class="ke-panel-heading">${ ui.format(form) }</div>
+		<div class="ke-panel-content">
 
-				<% if (encounter) { %>
-					${ ui.includeFragment("kenyaemr", "form/viewHtmlForm", [ encounter: encounter ]) }
-				<% } else { %>
-					<em>Not filled out</em>
-				<% } %>
+			<% if (encounter) { %>
+			${ ui.includeFragment("kenyaemr", "form/viewHtmlForm", [ encounter: encounter ]) }
+			<% } else { %>
+			<em>Not filled out</em>
+			<% } %>
 
-			</div>
 		</div>
+	</div>
 
 	<% } else if (program) { %>
 
-		${ ui.includeFragment("kenyaemr", "program/programHistory", [ patient: currentPatient, program: program, showClinicalData: true ]) }
+	${ ui.includeFragment("kenyaemr", "program/programHistory", [ patient: currentPatient, program: program, showClinicalData: true ]) }
 
 	<% } else if (section == "overview") { %>
 
-		${ ui.includeFragment("kenyaemr", "program/programCarePanels", [ patient: currentPatient, complete: true, activeOnly: false ]) }
+	${ ui.includeFragment("kenyaemr", "program/programCarePanels", [ patient: currentPatient, complete: true, activeOnly: false ]) }
 
 	<% } else if (section == "moh257") { %>
 
-		${ ui.includeFragment("kenyaemr", "moh257", [ patient: currentPatient ]) }
+	${ ui.includeFragment("kenyaemr", "moh257", [ patient: currentPatient ]) }
 
-	<% } %>
+	<% }else if (section == "summaries") { %>
+
+	${ ui.includeFragment("kenyaemr", "summaries", [ patient: currentPatient ]) }
+
+	<%} %>
 
 </div>

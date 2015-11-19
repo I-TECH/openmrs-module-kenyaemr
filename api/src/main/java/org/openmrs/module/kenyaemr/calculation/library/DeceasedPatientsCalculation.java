@@ -13,11 +13,14 @@
  */
 package org.openmrs.module.kenyaemr.calculation.library;
 
+import org.openmrs.Program;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyacore.calculation.Filters;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
+import org.openmrs.module.kenyaemr.metadata.HivMetadata;
+import org.openmrs.module.metadatadeploy.MetadataUtils;
 
 import java.util.Collection;
 import java.util.Map;
@@ -38,12 +41,13 @@ public class DeceasedPatientsCalculation extends BaseEmrCalculation {
 	 */
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
-
+		Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
+		Set<Integer> inHivProgram = Filters.inProgram(hivProgram, cohort, context);
 		Set<Integer> alive = Filters.alive(cohort, context);
 		CalculationResultMap ret = new CalculationResultMap();
 		for (Integer ptId : cohort) {
 			boolean dead = false;
-			if(!(alive.contains(ptId))){
+			if(inHivProgram.contains(ptId) && !(alive.contains(ptId))){
 				dead = true;
 			}
 			ret.put(ptId, new SimpleResult(dead, this, context));

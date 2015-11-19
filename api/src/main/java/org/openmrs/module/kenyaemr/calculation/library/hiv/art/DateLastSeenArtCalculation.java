@@ -28,7 +28,7 @@ public class DateLastSeenArtCalculation extends AbstractPatientCalculation {
         CalculationResultMap initialArtStart = calculate(new InitialArtStartDateCalculation(), cohort, context);
 
         if(outcomePeriod != null){
-            context.setNow(DateUtil.adjustDate(DateUtil.getStartOfMonth(context.getNow()), outcomePeriod, DurationUnit.MONTHS));
+            context.setNow(DateUtil.adjustDate(context.getNow(), outcomePeriod, DurationUnit.MONTHS));
         }
         CalculationResultMap lastEncounter = Calculations.lastEncounter(null, cohort, context);
 
@@ -36,8 +36,9 @@ public class DateLastSeenArtCalculation extends AbstractPatientCalculation {
         for (Integer ptId : cohort) {
             Encounter encounter = EmrCalculationUtils.encounterResultForPatient(lastEncounter, ptId);
             Date artStartDate = EmrCalculationUtils.datetimeResultForPatient(initialArtStart, ptId);
+            Date encounterDate = null;
             if(artStartDate != null) {
-                Date encounterDate;
+
                 if (encounter != null && encounter.getEncounterDatetime().after(artStartDate)) {
                     encounterDate = encounter.getEncounterDatetime();
                 }
@@ -45,8 +46,8 @@ public class DateLastSeenArtCalculation extends AbstractPatientCalculation {
                     encounterDate = artStartDate;
                 }
 
-                result.put(ptId, new SimpleResult(encounterDate, this));
             }
+            result.put(ptId, new SimpleResult(encounterDate, this));
         }
         return  result;
     }

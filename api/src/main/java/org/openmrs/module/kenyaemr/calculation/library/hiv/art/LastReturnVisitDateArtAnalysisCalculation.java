@@ -1,7 +1,5 @@
 package org.openmrs.module.kenyaemr.calculation.library.hiv.art;
 
-import org.joda.time.DateTime;
-import org.joda.time.Days;
 import org.openmrs.Concept;
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
@@ -42,6 +40,8 @@ public class LastReturnVisitDateArtAnalysisCalculation extends AbstractPatientCa
         if(outcomePeriod != null){
             context.setNow(DateUtil.adjustDate(context.getNow(), outcomePeriod, DurationUnit.MONTHS));
         }
+
+
         Set<Integer> alive = Filters.alive(cohort, context);
         Concept RETURN_VISIT_DATE = Dictionary.getConcept(Dictionary.RETURN_VISIT_DATE);
         CalculationResultMap transferredOutMap = calculate(new TransferOutDateCalculation(), cohort, context);
@@ -77,44 +77,13 @@ public class LastReturnVisitDateArtAnalysisCalculation extends AbstractPatientCa
                                 }
                             }
                         }
-                    }
-                    //check if this patient has more than one visit in the
-                    if(returnVisitDate == null && requiredVisits.size() > 1) {
-                        //get the visit date of the last visit
-                        Date priorReturnDate1 = null;
-
-                        Date lastVisitDate = requiredVisits.get(0).getStartDatetime();
-                        Date priorVisitDate1 = requiredVisits.get(1).getStartDatetime();
-                        int dayDiff = daysBetweenDates(lastVisitDate, priorVisitDate1);
-                        //get the prior visit
-                        Set<Encounter> priorVisitEncounters = requiredVisits.get(1).getEncounters();
-                        if(lastSeenDate != null){
-                            priorReturnDate1 = lastSeenDate;
-                        }
-                        else if(priorVisitEncounters.size() > 0) {
-
-                            Set<Obs> allObs;
-                            for (Encounter encounter : priorVisitEncounters) {
-                                allObs = encounter.getAllObs();
-                                for (Obs obs : allObs) {
-                                    if (obs.getConcept().equals(RETURN_VISIT_DATE)) {
-                                        priorReturnDate1 = obs.getValueDatetime();
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                        if(priorReturnDate1 != null) {
-                            if(dayDiff < 90){
-                                dayDiff = 90;
-                            }
-                            returnVisitDate = DateUtil.adjustDate(priorReturnDate1, dayDiff, DurationUnit.DAYS);
+                        if(returnVisitDate != null && lastSeenDate != null && returnVisitDate.before(lastSeenDate)){
+                            returnVisitDate = DateUtil.adjustDate(lastSeenDate, 30, DurationUnit.DAYS);
                         }
                     }
-
                 }
-                if(returnVisitDate == null){
-                    returnVisitDate = DateUtil.adjustDate(artStartDate, 90, DurationUnit.DAYS);
+                if(returnVisitDate == null && lastSeenDate != null){
+                    returnVisitDate = DateUtil.adjustDate(lastSeenDate, 30, DurationUnit.DAYS);
                 }
 
             }
@@ -127,11 +96,6 @@ public class LastReturnVisitDateArtAnalysisCalculation extends AbstractPatientCa
         return ret;
     }
 
-    int daysBetweenDates(Date d1, Date d2) {
-        DateTime dateTime1 = new DateTime(d1.getTime());
-        DateTime dateTime2 = new DateTime(d2.getTime());
-        return Math.abs(Days.daysBetween(dateTime1, dateTime2).getDays());
-    }
     CalculationResultMap dateLastSeen(Collection<Integer> cohort, PatientCalculationContext context) {
         CalculationResultMap initialArtStart = calculate(new InitialArtStartDateCalculation(), cohort, context);
         CalculationResultMap lastEncounter = Calculations.lastEncounter(null, cohort, context);

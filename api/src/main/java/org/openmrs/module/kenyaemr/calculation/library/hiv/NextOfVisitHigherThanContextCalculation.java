@@ -12,8 +12,6 @@ import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
-import org.openmrs.module.reporting.common.DateUtil;
-import org.openmrs.module.reporting.common.DurationUnit;
 
 import java.util.Collection;
 import java.util.Date;
@@ -40,7 +38,7 @@ public class NextOfVisitHigherThanContextCalculation extends AbstractPatientCalc
             Obs nextOfVisitObs = EmrCalculationUtils.obsResultForPatient(nextAppointmentMap, ptId);
             if(nextOfVisitObs != null && inHivProgram.contains(ptId)) {
                 Date valueDateTime = nextOfVisitObs.getValueDatetime();
-                if(valueDateTime != null && (valueDateTime.after(DateUtil.adjustDate(DateUtil.getStartOfMonth(context.getNow()), -1, DurationUnit.DAYS)))){
+                if(valueDateTime != null && (valueDateTime.after(context.getNow()))){
                     hasNextDateOfVisit = true;
                 }
             }

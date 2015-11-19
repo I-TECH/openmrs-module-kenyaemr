@@ -20,7 +20,6 @@ import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.metadata.TbMetadata;
 import org.openmrs.module.kenyaemr.util.EmrUtils;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
-import org.openmrs.module.reporting.common.Age;
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.DurationUnit;
 
@@ -44,9 +43,7 @@ public class DaysFromArtEligibilityToArtInitiationCalculation extends AbstractPa
 
         Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
         Program tbProgram = MetadataUtils.existing(Program.class, TbMetadata._Program.TB);
-
-        //in tb program
-        Set<Integer> inTbProgram = Filters.inProgram(tbProgram, cohort, context);
+        CalculationResultMap ages = calculate(new AgeAtARTInitiationCalculation(), cohort, context);
 
         Set<Integer> female = Filters.female(cohort, context);
 
@@ -60,7 +57,7 @@ public class DaysFromArtEligibilityToArtInitiationCalculation extends AbstractPa
             context.setNow(DateUtil.adjustDate(context.getNow(), outcomePeriod, DurationUnit.MONTHS));
         }
 
-        CalculationResultMap ages = Calculations.ages(cohort, context);
+
         CalculationResultMap allWhoStage = Calculations.allObs(Dictionary.getConcept(Dictionary.CURRENT_WHO_STAGE), cohort, context);
         CalculationResultMap allCd4 = Calculations.allObs(Dictionary.getConcept(Dictionary.CD4_COUNT), cohort, context);
         CalculationResultMap artStartDateMap = calculate(new InitialArtStartDateCalculation(), cohort, context);
@@ -92,7 +89,7 @@ public class DaysFromArtEligibilityToArtInitiationCalculation extends AbstractPa
             ListResult allWhoListResults = (ListResult) allWhoStage.get(ptId);
             List<Obs> obsListWho = CalculationUtils.extractResultValues(allWhoListResults);
 
-            int ageInMonths = ((Age) ages.get(ptId).getValue()).getFullMonths();
+            Integer ageInMonths = ((Integer) ages.get(ptId).getValue() * 12);
             PatientProgram hivEnrollment = EmrCalculationUtils.resultForPatient(hivEnrollmenMap, ptId);
             PatientProgram tbEnrollment = EmrCalculationUtils.resultForPatient(tbEnrollmentMap, ptId);
 
@@ -146,7 +143,14 @@ public class DaysFromArtEligibilityToArtInitiationCalculation extends AbstractPa
 
     private PatientEligibility getCriteriaAndDate(int ageInMonths, List<Obs> cd4, List<Obs> whoStag, Date artStartDate, Date hivEnrollmentDate) {
 
-        if (ageInMonths <= 120) {//children less than 10 years
+        if (ageInMonths <= 120 && hivEnrollmentDate.before(artStartDate)) {//children less than 10 years
+            return new PatientEligibility("Age 10 years and below", hivEnrollmentDate);
+        }
+        else if (ageInMonths <= 120 && artStartDate.before(hivEnrollmentDate)) {//children less than 10 years
+            return new PatientEligibility("Age 10 years and below", artStartDate);
+        }
+
+        else if (ageInMonths <= 120 && artStartDate.equals(hivEnrollmentDate)) {//children less than 10 years
             return new PatientEligibility("Age 10 years and below", hivEnrollmentDate);
         }
 

@@ -198,7 +198,6 @@ jq(function() {
 
     onWeightOrHeightChange();
     onEncounterDateChange();
-    setValue('encounter-date.value', "");
     beforeSubmit.push(function() {
         var encounterDate = new Date(getValue('encounter-date.value')).getTime();
         var nextAptDate = new Date(getValue('next-apt-date.value')).getTime();
@@ -295,7 +294,16 @@ jq(function() {
     <th rowspan="2">Visit Details</th>
     <th colspan="2">Date</th>
     <td>(a)</td>
-    <td><encounterDate id="encounter-date" showTime="false" /></td>
+    <td>
+        <ifMode mode="ENTER">
+            <script type="text/javascript">
+                jq(function(){
+                    setValue("encounter-date.value", "");
+                });
+            </script>
+        </ifMode>
+        <encounterDate id="encounter-date" showTime="false" />
+    </td>
     <td><encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" /></td>
 </tr>
 <tr>

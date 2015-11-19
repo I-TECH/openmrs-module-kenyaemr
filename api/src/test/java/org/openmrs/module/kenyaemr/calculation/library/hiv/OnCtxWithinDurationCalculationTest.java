@@ -19,6 +19,7 @@ import org.junit.Test;
 import org.openmrs.Concept;
 import org.openmrs.Program;
 import org.openmrs.api.context.Context;
+import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyacore.test.TestUtils;
@@ -77,9 +78,17 @@ public class OnCtxWithinDurationCalculationTest extends BaseModuleContextSensiti
 		Concept yes = Dictionary.getConcept(Dictionary.YES);
 		TestUtils.saveObs(TestUtils.getPatient(7), medDispensed, yes, TestUtils.date(2013, 1, 1));
 
-		List<Integer> ptIds = Arrays.asList(2, 6, 7, 8);
+		//give patient 6 and 7 a TCA date
+		Concept tca = Dictionary.getConcept(Dictionary.RETURN_VISIT_DATE);
+		TestUtils.saveObs(TestUtils.getPatient(6), tca, TestUtils.date(2013, 4, 30), TestUtils.date(2013, 1, 1));
+		TestUtils.saveObs(TestUtils.getPatient(7), tca, TestUtils.date(2013, 4, 30), TestUtils.date(2013, 1, 1));
 
-		CalculationResultMap resultMap = new OnCtxWithinDurationCalculation().evaluate(ptIds, null, Context.getService(PatientCalculationService.class).createCalculationContext());
+
+		List<Integer> ptIds = Arrays.asList(2, 6, 7, 8);
+		PatientCalculationContext context = Context.getService(PatientCalculationService.class).createCalculationContext();
+		context.setNow(TestUtils.date(2013, 1, 31));
+
+		CalculationResultMap resultMap = new OnCtxWithinDurationCalculation().evaluate(ptIds, null, context);
 		Assert.assertFalse((Boolean) resultMap.get(2).getValue());
 		Assert.assertTrue((Boolean) resultMap.get(6).getValue());
 		Assert.assertTrue((Boolean) resultMap.get(7).getValue());

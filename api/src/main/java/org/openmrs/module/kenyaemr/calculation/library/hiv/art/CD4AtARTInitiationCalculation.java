@@ -19,14 +19,12 @@ import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.ListResult;
 import org.openmrs.calculation.result.SimpleResult;
-import org.openmrs.module.kenyacore.CoreUtils;
 import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
 import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -57,26 +55,24 @@ public class CD4AtARTInitiationCalculation  extends AbstractPatientCalculation {
 		CalculationResultMap artStartDateMap = calculate(new InitialArtStartDateCalculation(), cohort, context);
 		CalculationResultMap cd4Counts = Calculations.allObs(Dictionary.getConcept(Dictionary.CD4_COUNT), cohort, context);
 		for(Integer ptId: cohort) {
-			Double cd4Results = null;
+			SimpleResult result = null;
 			Date artStartDate = EmrCalculationUtils.datetimeResultForPatient(artStartDateMap, ptId);
 			ListResult cd4CountResults = (ListResult) cd4Counts.get(ptId);
-			;
-			List<Obs> obsListCd4Count = new ArrayList<Obs>();
+			List<Obs> obsListCd4Count;
 
-			if(cd4CountResults != null) {
+			if(cd4CountResults != null && artStartDate != null) {
 				obsListCd4Count = CalculationUtils.extractResultValues(cd4CountResults);
-			}
+				Obs lastBeforeArtStart = EmrCalculationUtils.findLastOnOrBefore(obsListCd4Count, artStartDate);
 
-			if(artStartDate != null) {
-				Date aDayBefore = CoreUtils.dateAddDays(artStartDate, -2);
-				Date aDayAfter = CoreUtils.dateAddDays(artStartDate, 2);
-				for(Obs cd4CountObs:obsListCd4Count){
-					if(cd4CountObs.getObsDatetime().after(aDayBefore) && cd4CountObs.getObsDatetime().before(aDayAfter)) {
-						cd4Results = cd4CountObs.getValueNumeric();
+				if (lastBeforeArtStart != null) {
+					Double cd4 = lastBeforeArtStart.getValueNumeric();
+					if(cd4 != null){
+						result = new SimpleResult(cd4, this);
 					}
 				}
 			}
-			ret.put(ptId, new SimpleResult(cd4Results, this));
+
+			ret.put(ptId, result);
 		}
 		return ret;
 	}

@@ -15,18 +15,11 @@
 package org.openmrs.module.kenyaemr.fragment.controller.report;
 
 import org.apache.commons.collections.map.HashedMap;
-import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyacore.report.CalculationReportDescriptor;
-import org.openmrs.module.kenyacore.report.ReportManager;
 import org.openmrs.module.reporting.dataset.DataSetRow;
 import org.openmrs.module.reporting.dataset.SimpleDataSet;
-import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
-import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 import org.openmrs.ui.framework.annotation.FragmentParam;
-import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 
 import java.util.Map;
@@ -44,6 +37,7 @@ public class PatientListReportDataFragmentController {
 		model.addAttribute("definition", reportData.getDefinition());
 		model.addAttribute("dataSet", dataSet);
 		model.addAttribute("summary", createSummary(dataSet));
+		model.addAttribute("isCohortReport", isCohortAnalysisReport(reportData.getDefinition()));
 	}
 
 	/**
@@ -68,5 +62,13 @@ public class PatientListReportDataFragmentController {
 		summary.put("males", males);
 		summary.put("females", females);
 		return summary;
+	}
+
+	boolean isCohortAnalysisReport(ReportDefinition reportDefinition){
+		boolean isCohortReport = false;
+		if(reportDefinition.getName().contains("cohort")){
+			isCohortReport = true;
+		}
+		return isCohortReport;
 	}
 }

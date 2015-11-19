@@ -27,8 +27,6 @@ import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
-import org.openmrs.module.reporting.common.DateUtil;
-import org.openmrs.module.reporting.common.DurationUnit;
 
 import java.util.Calendar;
 import java.util.Collection;
@@ -78,7 +76,7 @@ public class OnCtxWithinDurationCalculation extends BaseEmrCalculation {
 					if(ctxMedsObs.getValueCoded().equals(ctx) || ctxMedsObs.getValueCoded().equals(dapson)) {
 						//check if duration and units are given
 						Calendar cal = Calendar.getInstance();
-						cal.setTime(context.getNow());
+						cal.setTime(ctxMedsObs.getObsDatetime());
 
 						if(ctxDurationObs != null && ctxDurationUnits != null && ctxMedsObs.getObsGroup().equals(ctxDurationObs.getObsGroup()) && ctxMedsObs.getObsGroup().equals(ctxDurationUnits.getObsGroup())) {
 							Integer durationMonthsDays = Integer.parseInt(ctxDurationObs.getValueNumeric().toString().trim().split("\\.")[0]);
@@ -100,19 +98,25 @@ public class OnCtxWithinDurationCalculation extends BaseEmrCalculation {
 							}
 						}
 						Date nextRefilldate = cal.getTime();
-						if((nextRefilldate.after(DateUtil.adjustDate(DateUtil.getStartOfMonth(context.getNow()), -1, DurationUnit.DAYS)) || hasTCA.contains(ptId)) && !(ltfu.contains(ptId))) {
+						if(nextRefilldate.after(context.getNow())) {
 							onCtxOnDuration = true;
 						}
 					}
 
 				}
-				if(medicationDispensedObs != null && medicationDispensedObs.getValueCoded().equals(yes)){
-					onCtxOnDuration = true;
-				}
 
 				if(medicationDispensedObs != null && medicationDispensedObs.getValueCoded().equals(yes) && hasTCA.contains(ptId)){
 					onCtxOnDuration = true;
 				}
+
+				if(ctxMedsObs != null && ctxMedsObs.getValueCoded().equals(ctx) && hasTCA.contains(ptId)){
+					onCtxOnDuration = true;
+				}
+
+				if(ctxMedsObs != null && ctxMedsObs.getValueCoded().equals(dapson) && hasTCA.contains(ptId)){
+					onCtxOnDuration = true;
+				}
+
 				if(ltfu.contains(ptId)){
 					onCtxOnDuration = false;
 				}

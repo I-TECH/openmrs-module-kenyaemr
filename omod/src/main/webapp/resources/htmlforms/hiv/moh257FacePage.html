@@ -432,6 +432,8 @@ function onUpnGenerateClick() {
 }
 
 jq(function() {
+    var encounterDateTime = getValue("encounter-date.value");
+
     jq('#generate-hiv-id').click(onUpnGenerateClick);
     getField('encounter-date.value').change(onEncounterDateChange);
 
@@ -786,7 +788,16 @@ jq(function() {
 <div class="ke-form-header">
     <table style="width: 100%">
         <tr>
-            <td>Enrollment Date: <encounterDate id="encounter-date" showTime="false"/></td>
+            <td>
+                <ifMode mode="ENTER">
+                    <script type="text/javascript">
+                        jq(function(){
+                        setValue("encounter-date.value", "");
+                        });
+                    </script>
+                </ifMode>
+                Enrollment Date: <encounterDate id="encounter-date" showTime="false" />
+            </td>
             <td>Enrolled at: <encounterLocation id="site" default="GlobalProperty:kenyaemr.defaultLocation"/></td>
         </tr>
     </table>

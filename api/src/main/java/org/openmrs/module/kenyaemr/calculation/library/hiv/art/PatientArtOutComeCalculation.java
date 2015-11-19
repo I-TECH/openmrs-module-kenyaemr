@@ -174,46 +174,13 @@ public class PatientArtOutComeCalculation extends AbstractPatientCalculation {
                                 }
                             }
                         }
+                        if(returnVisitDate != null && lastSeenDate != null && returnVisitDate.before(lastSeenDate)){
+                            returnVisitDate = DateUtil.adjustDate(lastSeenDate, 30, DurationUnit.DAYS);
+                        }
                     }
-
-                    //check if this patient has more than one visit in the
-                    if (returnVisitDate == null && requiredVisits.size() > 1) {
-                        //get the visit date of the last visit
-                        Date lastVisitDate = requiredVisits.get(0).getStartDatetime();
-                        Date priorVisitDate1 = requiredVisits.get(1).getStartDatetime();
-                        int dayDiff = daysBetweenDates(lastVisitDate, priorVisitDate1);
-                        //get the prior visit
-                        Set<Encounter> priorVisitEncounters = requiredVisits.get(1).getEncounters();
-                        Date priorReturnDate1 = null;
-                        if(lastSeenDate != null) {
-                            priorReturnDate1 = lastSeenDate;
-                        }
-                        else if (priorVisitEncounters.size() > 0) {
-                            Set<Obs> allObs;
-                            for (Encounter encounter : priorVisitEncounters) {
-                                allObs = encounter.getAllObs();
-                                for (Obs obs : allObs) {
-                                    if (obs.getConcept().equals(RETURN_VISIT_DATE)) {
-                                        priorReturnDate1 = obs.getValueDatetime();
-                                        break;
-                                    }
-                                }
-                            }
-
-                        }
-                        if (priorReturnDate1 != null) {
-                            if(dayDiff < 90){
-                                dayDiff = 90;
-                            }
-                            returnVisitDate = DateUtil.adjustDate(priorReturnDate1, dayDiff, DurationUnit.DAYS);
-
-                        }
-
-                    }
-
                 }
                 if (returnVisitDate == null) {
-                    returnVisitDate = DateUtil.adjustDate(artStartDate, 90, DurationUnit.DAYS);
+                    returnVisitDate = DateUtil.adjustDate(lastSeenDate, 30, DurationUnit.DAYS);
                 }
 
 
