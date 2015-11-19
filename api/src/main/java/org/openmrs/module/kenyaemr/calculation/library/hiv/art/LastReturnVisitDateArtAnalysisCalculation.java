@@ -1,5 +1,7 @@
 package org.openmrs.module.kenyaemr.calculation.library.hiv.art;
 
+import org.joda.time.DateTime;
+import org.joda.time.Days;
 import org.openmrs.Concept;
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
@@ -78,6 +80,32 @@ public class LastReturnVisitDateArtAnalysisCalculation extends AbstractPatientCa
                             }
                         }
                         if(returnVisitDate != null && lastSeenDate != null && returnVisitDate.before(lastSeenDate)){
+                            returnVisitDate = null;
+                        }
+                    }
+                    if(returnVisitDate == null && requiredVisits.size() > 1){
+                        Date lastVisitDate = requiredVisits.get(0).getStartDatetime();
+                        Date priorVisitDate1 = requiredVisits.get(1).getStartDatetime();
+                        int dayDiff = daysBetweenDates(lastVisitDate, priorVisitDate1);
+                        //get the prior visit
+                        Set<Encounter> priorVisitEncounters = requiredVisits.get(1).getEncounters();
+                        Date priorReturnDate1 = null;
+                        if (priorVisitEncounters.size() > 0) {
+                            Set<Obs> allObs;
+                            for (Encounter encounter : priorVisitEncounters) {
+                                allObs = encounter.getAllObs();
+                                for (Obs obs : allObs) {
+                                    if (obs.getConcept().equals(RETURN_VISIT_DATE)) {
+                                        priorReturnDate1 = obs.getValueDatetime();
+                                        break;
+                                    }
+                                }
+                            }
+                            if (priorReturnDate1 != null) {
+                                returnVisitDate = DateUtil.adjustDate(priorReturnDate1, dayDiff, DurationUnit.DAYS);
+                            }
+                        }
+                        if(returnVisitDate != null && lastSeenDate != null && returnVisitDate.before(lastSeenDate)){
                             returnVisitDate = DateUtil.adjustDate(lastSeenDate, 30, DurationUnit.DAYS);
                         }
                     }
@@ -119,5 +147,10 @@ public class LastReturnVisitDateArtAnalysisCalculation extends AbstractPatientCa
         return  result;
 
 
+    }
+    int daysBetweenDates(Date d1, Date d2) {
+        DateTime dateTime1 = new DateTime(d1.getTime());
+        DateTime dateTime2 = new DateTime(d2.getTime());
+        return Math.abs(Days.daysBetween(dateTime1, dateTime2).getDays());
     }
 }

@@ -85,11 +85,11 @@ public class LastReturnVisitDatePreArtAnalysisCalculation extends AbstractPatien
                                 }
                             }
                         }
+                        if(returnVisitDate != null && lastSeenDate != null && returnVisitDate.before(lastSeenDate)){
+                            returnVisitDate = null;
+                        }
                     }
-
-                    //check if this patient has more than one visit in the
-                    if (returnVisitDate == null && requiredVisits.size() > 1) {
-                        //get the visit date of the last visit
+                    if(returnVisitDate == null && requiredVisits.size() > 1){
                         Date lastVisitDate = requiredVisits.get(0).getStartDatetime();
                         Date priorVisitDate1 = requiredVisits.get(1).getStartDatetime();
                         int dayDiff = daysBetweenDates(lastVisitDate, priorVisitDate1);
@@ -97,13 +97,6 @@ public class LastReturnVisitDatePreArtAnalysisCalculation extends AbstractPatien
                         Set<Encounter> priorVisitEncounters = requiredVisits.get(1).getEncounters();
                         Date priorReturnDate1 = null;
                         if (priorVisitEncounters.size() > 0) {
-                            if (lastSeenDate != null && artStartDate != null && lastSeenDate.after(artStartDate)) {
-                                priorReturnDate1 = lastSeenDate;
-                            } else if (lastSeenDate != null && artStartDate != null && artStartDate.after(lastSeenDate)) {
-                                priorReturnDate1 = artStartDate;
-                            } else if (lastSeenDate != null && artStartDate == null) {
-                                priorReturnDate1 = lastSeenDate;
-                            } else {
                                 Set<Obs> allObs;
                                 for (Encounter encounter : priorVisitEncounters) {
                                     allObs = encounter.getAllObs();
@@ -114,20 +107,18 @@ public class LastReturnVisitDatePreArtAnalysisCalculation extends AbstractPatien
                                         }
                                     }
                                 }
-                            }
-                            if (priorReturnDate1 != null) {
-                                if (dayDiff < 30) {
-                                    dayDiff = 90;
+                                if (priorReturnDate1 != null) {
+                                    returnVisitDate = DateUtil.adjustDate(priorReturnDate1, dayDiff, DurationUnit.DAYS);
                                 }
-                                returnVisitDate = DateUtil.adjustDate(priorReturnDate1, dayDiff, DurationUnit.DAYS);
-                            }
                         }
-
+                        if(returnVisitDate != null && lastSeenDate != null && returnVisitDate.before(lastSeenDate)){
+                            returnVisitDate = DateUtil.adjustDate(lastSeenDate, 30, DurationUnit.DAYS);
+                        }
                     }
                 }
                 //check if return visit date is null and last seen date has some values
-                else if(lastSeenDate != null){
-                    returnVisitDate = DateUtil.adjustDate(lastSeenDate, 90, DurationUnit.DAYS);
+                if(returnVisitDate == null && lastSeenDate != null){
+                    returnVisitDate = DateUtil.adjustDate(lastSeenDate, 30, DurationUnit.DAYS);
                 }
 
                 if((transOutDate != null && transOutDate.after(patientProgram.getDateEnrolled()) && transOutDate.before(futureDate)) || !(alive.contains(ptId))) {
@@ -139,11 +130,6 @@ public class LastReturnVisitDatePreArtAnalysisCalculation extends AbstractPatien
 
         }
         return ret;
-    }
-    int daysBetweenDates(Date d1, Date d2) {
-        DateTime dateTime1 = new DateTime(d1.getTime());
-        DateTime dateTime2 = new DateTime(d2.getTime());
-        return Math.abs(Days.daysBetween(dateTime1, dateTime2).getDays());
     }
 
     CalculationResultMap lastSeenDateMap(Collection<Integer> cohort, PatientCalculationContext context){
@@ -158,8 +144,9 @@ public class LastReturnVisitDatePreArtAnalysisCalculation extends AbstractPatien
             Encounter encounter = EmrCalculationUtils.encounterResultForPatient(lastEncounter, ptId);
             PatientProgram patientProgram = EmrCalculationUtils.resultForPatient(dateEnrolledMap, ptId);
             Date artStartDate = EmrCalculationUtils.datetimeResultForPatient(initialArtStart, ptId);
+            Date encounterDate = null;
             if(patientProgram != null) {
-                Date encounterDate = null;
+
                 if (encounter != null) {
                     if(artStartDate != null && artStartDate.after(encounter.getEncounterDatetime())) {
                         encounterDate = artStartDate;
@@ -176,10 +163,15 @@ public class LastReturnVisitDatePreArtAnalysisCalculation extends AbstractPatien
                 if(encounterDate == null){
                     encounterDate = patientProgram.getDateEnrolled();
                 }
-
-                result.put(ptId, new SimpleResult(encounterDate, this));
             }
+            result.put(ptId, new SimpleResult(encounterDate, this));
         }
         return result;
+    }
+
+    int daysBetweenDates(Date d1, Date d2) {
+        DateTime dateTime1 = new DateTime(d1.getTime());
+        DateTime dateTime2 = new DateTime(d2.getTime());
+        return Math.abs(Days.daysBetween(dateTime1, dateTime2).getDays());
     }
 }
