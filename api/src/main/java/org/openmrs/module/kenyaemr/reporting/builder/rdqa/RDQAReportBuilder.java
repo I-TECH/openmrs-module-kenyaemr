@@ -29,31 +29,15 @@ import org.openmrs.module.kenyaemr.calculation.library.hiv.art.CurrentArtRegimen
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtStartDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.TransferInDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.TransferOutDateCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.rdqa.DateOfDeathCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.rdqa.DateOfLastCTXCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.rdqa.PatientCheckOutStatusCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.rdqa.PatientProgramEnrollmentCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.rdqa.ValueAtDateOfOtherPatientCalculationCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.rdqa.VisitsForAPatientCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.rdqa.WeightAtArtStartDateCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.rdqa.*;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
-import org.openmrs.module.kenyaemr.reporting.calculation.converter.CustomDateConverter;
-import org.openmrs.module.kenyaemr.reporting.calculation.converter.DateArtStartDateConverter;
-import org.openmrs.module.kenyaemr.reporting.calculation.converter.EncounterDatetimeConverter;
-import org.openmrs.module.kenyaemr.reporting.calculation.converter.GenderConverter;
-import org.openmrs.module.kenyaemr.reporting.calculation.converter.ObsDatetimeConverter;
-import org.openmrs.module.kenyaemr.reporting.calculation.converter.ObsValueDatetimeConverter;
-import org.openmrs.module.kenyaemr.reporting.calculation.converter.ObsValueNumericConverter;
-import org.openmrs.module.kenyaemr.reporting.calculation.converter.PatientEntryPointDataConverter;
-import org.openmrs.module.kenyaemr.reporting.calculation.converter.PatientProgramEnrollmentConverter;
-import org.openmrs.module.kenyaemr.reporting.calculation.converter.PatientProgramEnrollmentDateConverter;
-import org.openmrs.module.kenyaemr.reporting.calculation.converter.RDQACalculationResultConverter;
-import org.openmrs.module.kenyaemr.reporting.calculation.converter.RegimenConverter;
-import org.openmrs.module.kenyaemr.reporting.calculation.converter.WHOStageDataConverter;
-import org.openmrs.module.kenyaemr.reporting.calculation.converter.WeightConverter;
+import org.openmrs.module.kenyaemr.reporting.calculation.converter.*;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.RDQAActiveCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.RDQACohortDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.Cd4OrVLValueAndDateConverter;
+import org.openmrs.module.kenyaemr.reporting.data.converter.Cd4ValueAndDateConverter;
+import org.openmrs.module.kenyaemr.reporting.library.rdqa.RDQAIndicatorLibrary;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.common.TimeQualifier;
@@ -64,16 +48,13 @@ import org.openmrs.module.reporting.data.converter.ObjectFormatter;
 import org.openmrs.module.reporting.data.patient.definition.ConvertedPatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.EncountersForPatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.PatientIdentifierDataDefinition;
-import org.openmrs.module.reporting.data.person.definition.BirthdateDataDefinition;
-import org.openmrs.module.reporting.data.person.definition.ConvertedPersonDataDefinition;
-import org.openmrs.module.reporting.data.person.definition.GenderDataDefinition;
-import org.openmrs.module.reporting.data.person.definition.ObsForPersonDataDefinition;
-import org.openmrs.module.reporting.data.person.definition.PersonIdDataDefinition;
-import org.openmrs.module.reporting.data.person.definition.PreferredNameDataDefinition;
+import org.openmrs.module.reporting.data.person.definition.*;
+import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
@@ -83,6 +64,9 @@ import java.util.List;
 @Builds({"kenyaemr.common.report.rdqaReport"})
 public class RDQAReportBuilder extends AbstractHybridReportBuilder {
 	public static final String DATE_FORMAT = "dd/MM/yyyy";
+
+    @Autowired
+    private RDQAIndicatorLibrary rdqa;
 
 	/**
 	 *
@@ -200,7 +184,8 @@ public class RDQAReportBuilder extends AbstractHybridReportBuilder {
 
         return Arrays.asList(
                 ReportUtils.map(allPatientsDSD, ""),
-                ReportUtils.map(activePatientsDSD, "")
+                ReportUtils.map(activePatientsDSD, ""),
+                ReportUtils.map(careAndTreatmentDataSet(), "")
         );
     }
 
@@ -223,9 +208,9 @@ public class RDQAReportBuilder extends AbstractHybridReportBuilder {
         dsd.addColumn("id", new PersonIdDataDefinition(), "");
         dsd.addColumn("Name", nameDef, "");
         dsd.addColumn("Unique Patient No", identifierDef, "");
-        dsd.addColumn("Enrollment into Program", new CalculationDataDefinition("Enrollment into Program", new PatientProgramEnrollmentCalculation()), "", new PatientProgramEnrollmentConverter());
         dsd.addColumn("Enrollment Date", new CalculationDataDefinition("Enrollment Date", new PatientProgramEnrollmentCalculation()), "", new PatientProgramEnrollmentDateConverter());
         dsd.addColumn("Entry Point", new ObsForPersonDataDefinition("Entry Point", TimeQualifier.LAST, Dictionary.getConcept(Dictionary.METHOD_OF_ENROLLMENT), null, null), "", new PatientEntryPointDataConverter());
+        dsd.addColumn("Date confirmed positive", new ObsForPersonDataDefinition("Date Confirmed Positive", TimeQualifier.FIRST, Dictionary.getConcept(Dictionary.DATE_OF_HIV_DIAGNOSIS), null, null), "", new ObsDatetimeConverter());
         dsd.addColumn("Sex", new GenderDataDefinition(), "", new GenderConverter());
         dsd.addColumn("Date of Birth", new BirthdateDataDefinition(), "", new BirthdateConverter(DATE_FORMAT));
 
@@ -235,8 +220,8 @@ public class RDQAReportBuilder extends AbstractHybridReportBuilder {
 
         dsd.addColumn("First CD4 Count", new ObsForPersonDataDefinition("First CD4 Count", TimeQualifier.FIRST, Dictionary.getConcept(Dictionary.CD4_COUNT), null, null), "", new ObsValueNumericConverter(1));
         dsd.addColumn("First CD4 Count Date", new ObsForPersonDataDefinition("First CD4 Count Date", TimeQualifier.FIRST, Dictionary.getConcept(Dictionary.CD4_COUNT), null, null), "", new ObsDatetimeConverter());
-        dsd.addColumn("Last CD4 Count", new ObsForPersonDataDefinition("Last CD4 Count", TimeQualifier.LAST, Dictionary.getConcept(Dictionary.CD4_COUNT), null, null), "", new ObsValueNumericConverter(1));
-        dsd.addColumn("Last CD4 Count Date", new ObsForPersonDataDefinition("Last CD4 Count Date", TimeQualifier.LAST, Dictionary.getConcept(Dictionary.CD4_COUNT), null, null), "", new ObsDatetimeConverter());
+        dsd.addColumn("Last CD4 Count", new CalculationDataDefinition("Last CD4 Count", new LastCD4OrVLResultCalculation()), "", new Cd4OrVLValueAndDateConverter("value"));
+        dsd.addColumn("Last CD4 Count Date", new CalculationDataDefinition("Last CD4 Count Date", new LastCD4OrVLResultCalculation()), "", new Cd4OrVLValueAndDateConverter("date"));
 
         dsd.addColumn("First WHO Stage", new ObsForPersonDataDefinition("First WHO Stage", TimeQualifier.FIRST, Dictionary.getConcept(Dictionary.CURRENT_WHO_STAGE), null, null), "", new WHOStageDataConverter());
         dsd.addColumn("First WHO Stage Date", new ObsForPersonDataDefinition("First WHO Stage Date", TimeQualifier.FIRST, Dictionary.getConcept(Dictionary.CURRENT_WHO_STAGE), null, null), "", new ObsDatetimeConverter());
@@ -282,6 +267,25 @@ public class RDQAReportBuilder extends AbstractHybridReportBuilder {
 
         dsd.addColumn("Patient checked-out", new CalculationDataDefinition("Checked Out", new PatientCheckOutStatusCalculation()), "", new RDQACalculationResultConverter());
         return dsd;
+    }
+
+    protected DataSetDefinition careAndTreatmentDataSet() {
+        CohortIndicatorDataSetDefinition cohortDsd = new CohortIndicatorDataSetDefinition();
+        cohortDsd.setName("cohortIndicator");
+
+        String indParams = "";
+
+        /*cohortDsd.addColumn("ctx", "On CTX Prophylaxis", ReportUtils.map(rdqa.patientsOnCTX(), indParams), "");
+        cohortDsd.addColumn("enrolledInCare", "Enrolled in care", ReportUtils.map(rdqa.enrolledInCare(), indParams), "");
+        cohortDsd.addColumn("currentInCare", "Currently in care", ReportUtils.map(rdqa.currentInCare(), indParams), "");
+        cohortDsd.addColumn("currentOnART", "Currently on ART", ReportUtils.map(rdqa.currentOnART(), indParams), "");
+        cohortDsd.addColumn("cumulativeOnART", "Cumulative ever on ART", ReportUtils.map(rdqa.cumulativeOnART(), indParams), "");
+        cohortDsd.addColumn("screenedForTB", "Screened for TB", ReportUtils.map(rdqa.screenedForTB(), indParams), "");*/
+       /*cohortDsd.addColumn("knownPositives", "Total with known status", ReportUtils.map(rdqa.knownPositives(), indParams), "");*/
+        cohortDsd.addColumn("sampleFrame", "Total Patients", ReportUtils.map(rdqa.sampleFrame(), indParams), "");
+        cohortDsd.addColumn("sampleSize", "RDQA Patients", ReportUtils.map(rdqa.sampleSize(), indParams), "");
+
+        return cohortDsd;
     }
 
 }

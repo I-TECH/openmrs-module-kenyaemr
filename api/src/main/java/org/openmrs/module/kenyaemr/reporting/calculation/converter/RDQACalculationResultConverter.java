@@ -26,7 +26,7 @@ public class RDQACalculationResultConverter implements DataConverter{
 	public Object convert(Object obj) {
 
 		if (obj == null) {
-			return null;
+			return "Missing";
 		}
 
 		Object value = ((CalculationResult) obj).getValue();
@@ -48,7 +48,7 @@ public class RDQACalculationResultConverter implements DataConverter{
 			return value;
 		}
 
-		return null;
+		return "Missing";
 	}
 
 	@Override

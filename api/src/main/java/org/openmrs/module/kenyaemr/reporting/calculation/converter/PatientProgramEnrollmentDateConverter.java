@@ -21,12 +21,12 @@ public class PatientProgramEnrollmentDateConverter implements DataConverter {
 
 		SimpleResult baseResult = (SimpleResult) original;
 		if (baseResult == null)
-			return null;
+			return "Missing";
 
 		List<PatientProgram> result = (List<PatientProgram>)baseResult.getValue();
 
 		if (result.size() == 0)
-			return null;
+			return "Missing";
 
 		if (result.size() == 1) {
 			Date date = result.get(0).getDateEnrolled();
@@ -37,7 +37,7 @@ public class PatientProgramEnrollmentDateConverter implements DataConverter {
 		Date dateEnrolled = findHIVProgramAndReturnDate(result);
 		if (dateEnrolled != null)
 			return RDQAReportUtils.formatdates(findHIVProgramAndReturnDate(result), RDQAReportUtils.DATE_FORMAT);
-		return null;
+		return "Missing";
 	}
 
 	@Override
