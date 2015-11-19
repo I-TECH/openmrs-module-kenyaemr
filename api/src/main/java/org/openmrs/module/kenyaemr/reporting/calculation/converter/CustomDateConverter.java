@@ -25,7 +25,7 @@ public class CustomDateConverter implements DataConverter{
 	public Object convert(Object obj) {
 
 		if (obj == null) {
-			return "NA";
+			return "Missing";
 		}
 
 		Object value = ((CalculationResult) obj).getValue();

@@ -10,6 +10,8 @@ public class Cd4ValueAndDate {
     private Double cd4Value;
     private Date cd4Date;
 
+    public Cd4ValueAndDate(){}
+
     public Cd4ValueAndDate(Double cd4Value, Date cd4Date) {
         this.cd4Value = cd4Value;
         this.cd4Date = cd4Date;

@@ -191,30 +191,7 @@ public class ReportExportPageController {
 		context.addContextValue("period.month", period.get(Calendar.MONTH));
 		context.addContextValue("period.month.name", new SimpleDateFormat("MMMMM").format(period.getTime()));
 
-		//add context values for rdqa report
-		CohortDefinition definition = new RDQACohortDefinition();
-		CohortDefinition allPatientsDefinition = new RDQACohortSampleFrameDefinition();
 
-		CohortDefinitionService service = Context.getService(CohortDefinitionService.class);
-		EvaluatedCohort rdqaCohort = null;
-		EvaluatedCohort allPatientsCohort = null;
-
-		try {
-			rdqaCohort = service.evaluate(definition, context);
-			allPatientsCohort = service.evaluate(allPatientsDefinition, context);
-		} catch (EvaluationException e) {
-			e.printStackTrace();
-		}
-
-		if (rdqaCohort !=null ){
-			Integer eligiblePatients = rdqaCohort.getMemberIds().size();
-			context.addContextValue("sampleSize", eligiblePatients);
-		}
-
-		if (allPatientsCohort !=null ){
-			Integer allPatients = allPatientsCohort.getMemberIds().size();
-			context.addContextValue("sampleFrame", allPatients);
-		}
 		//calculate the time frame for art cohort analysis reports
 		String reportName = reportData.getName();
 		//get the number out of that name
