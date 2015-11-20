@@ -21,10 +21,11 @@ import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
 import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtStartDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.models.CD4VLValueAndDate;
-import org.openmrs.module.kenyaemr.calculation.library.models.Cd4ValueAndDate;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -37,42 +38,41 @@ public class LastCD4OrVLResultCalculation extends AbstractPatientCalculation {
 
         CalculationResultMap lastCD4Map = Calculations.lastObs(Dictionary.getConcept(Dictionary.CD4_COUNT), cohort, context);
         CalculationResultMap lastVLMap = Calculations.lastObs(Dictionary.getConcept(Dictionary.HIV_VIRAL_LOAD), cohort, context);
-
+        CalculationResultMap artStartDateMap = calculate(new InitialArtStartDateCalculation(), cohort, context);
 		CalculationResultMap ret = new CalculationResultMap();
 
 		for (Integer ptId : cohort) {
 
             Obs lastCd4Obs = EmrCalculationUtils.obsResultForPatient(lastCD4Map, ptId);
             Obs lastVLObs = EmrCalculationUtils.obsResultForPatient(lastVLMap, ptId);
-            CD4VLValueAndDate obsResult = null;
+            Date artStartDate = EmrCalculationUtils.datetimeResultForPatient(artStartDateMap, ptId);
+            CD4VLValueAndDate obsResult = new CD4VLValueAndDate();
 
-            if (lastCd4Obs != null && lastVLObs != null) {
-                obsResult = new CD4VLValueAndDate();
-                if (lastVLObs.getObsDatetime().equals(lastCd4Obs.getObsDatetime()) || lastVLObs.getObsDatetime().after(lastCd4Obs.getObsDatetime())) {
-                    obsResult.setConcept("vl");
-                    obsResult.setValue(lastVLObs.getValueNumeric());
-                    obsResult.setDate(lastVLObs.getObsDatetime());
-                    ret.put(ptId, new SimpleResult(obsResult, this));
-                }  else {
-                    obsResult.setConcept("cd4");
-                    obsResult.setValue(lastCd4Obs.getValueNumeric());
-                    obsResult.setDate(lastCd4Obs.getObsDatetime());
-                    ret.put(ptId, new SimpleResult(obsResult, this));
-                }
+            /**
+             * Check if a patient is started on art and pick the last VL result and only CD4 count in case of no VL
+             * CD4 takes precedence for patients in care
+             */
+            if (artStartDate != null) {
+                   if (lastVLObs != null) {
+                       obsResult.setConcept("vl");
+                       obsResult.setValue(lastVLObs.getValueNumeric());
+                       obsResult.setDate(lastVLObs.getObsDatetime());
+                   } else if (lastCd4Obs != null) {
+                       obsResult.setConcept("cd4");
+                       obsResult.setValue(lastCd4Obs.getValueNumeric());
+                       obsResult.setDate(lastCd4Obs.getObsDatetime());
+                   }
 
-            }  else if (lastCd4Obs !=null && lastVLObs == null) {
-                obsResult.setConcept("cd4");
-                obsResult = new CD4VLValueAndDate();
-                obsResult.setValue(lastCd4Obs.getValueNumeric());
-                obsResult.setDate(lastCd4Obs.getObsDatetime());
-                ret.put(ptId, new SimpleResult(obsResult, this));
-
-            }  else if (lastVLObs != null && lastCd4Obs == null) {
-                obsResult.setConcept("vl");
-                obsResult = new CD4VLValueAndDate();
-                obsResult.setValue(lastVLObs.getValueNumeric());
-                obsResult.setDate(lastVLObs.getObsDatetime());
-                ret.put(ptId, new SimpleResult(obsResult, this));
+            }   else { //this is for a patient who is in care. CD4 takes precedence
+                    if (lastCd4Obs != null) {
+                        obsResult.setConcept("cd4");
+                        obsResult.setValue(lastCd4Obs.getValueNumeric());
+                        obsResult.setDate(lastCd4Obs.getObsDatetime());
+                    } else if (lastVLObs != null) {
+                        obsResult.setConcept("vl");
+                        obsResult.setValue(lastVLObs.getValueNumeric());
+                        obsResult.setDate(lastVLObs.getObsDatetime());
+                    }
             }
 
 			ret.put(ptId, new SimpleResult(obsResult, this));
