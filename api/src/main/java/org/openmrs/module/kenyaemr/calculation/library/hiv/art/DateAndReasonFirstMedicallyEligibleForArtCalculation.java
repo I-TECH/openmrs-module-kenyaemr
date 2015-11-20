@@ -132,62 +132,29 @@ public class DateAndReasonFirstMedicallyEligibleForArtCalculation extends Abstra
         return ret;
     }
 
-     private PatientEligibility getCriteriaAndDate(int ageInMonths, List<Obs> cd4, List<Obs> whoStag, Date artStartDate, Date hivEnrollmentDate, int period) {
+    PatientEligibility getCriteriaAndDate(int ageInMonths, List<Obs> cd4, List<Obs> whoStag, Date artStartDate, Date hivEnrollmentDate, int period) {
+         PatientEligibility patientEligibility;
 
-        if (ageInMonths <= 120) {//children less than 10 years
-             return new PatientEligibility("Age 10 years and below", hivEnrollmentDate);
+         if(ageInMonths <= 120 && artStartDate == null){
+             patientEligibility = new PatientEligibility("Age 10 years and below", hivEnrollmentDate);
+         }
+         else if (ageInMonths <= 120 && artStartDate != null && hivEnrollmentDate.before(artStartDate)) {//children less than 10 years
+             patientEligibility = new PatientEligibility("Age 10 years and below", hivEnrollmentDate);
+         }
+         else  if(ageInMonths <= 120 && artStartDate != null  && artStartDate.before(hivEnrollmentDate)){
+             patientEligibility = new PatientEligibility("Age 10 years and below", artStartDate);
+         }
+         else  if(ageInMonths <= 120 && artStartDate != null && artStartDate.equals(hivEnrollmentDate)){
+             patientEligibility = new PatientEligibility("Age 10 years and below", hivEnrollmentDate);
+         }
+
+        else {
+             patientEligibility = checkStartArtWithEalierstBetweenWhoAndCd4(whoStag,cd4,hivEnrollmentDate,period,artStartDate);
         }
 
-        else if (ageInMonths > 120 && ageInMonths <= 180) {
-                Date artStartDt = checkIfOnArtBeforeWho(artStartDate, whoStag, hivEnrollmentDate, period);
-                Date whoDate = whoDate(whoStag, hivEnrollmentDate, period);
 
-            if(artStartDt != null && whoDate != null && correctDateFormat(artStartDt).before(correctDateFormat(whoDate)) ) {
-                return new PatientEligibility(null, artStartDate);
-            }
-            else if(artStartDt != null && whoDate != null && correctDateFormat(artStartDt).equals(correctDateFormat(whoDate))) {
-                return new PatientEligibility("WHO stage = Stage IV", whoDate);
-            }
 
-            else if(artStartDt != null && whoDate != null && correctDateFormat(artStartDt).after(correctDateFormat(whoDate))) {
-                return new PatientEligibility("WHO stage = Stage IV", whoDate);
-            }
-
-            else if(artStartDt == null && whoDate != null) {
-                return new PatientEligibility("WHO stage = Stage IV", whoDate);
-            }
-
-            else if(artStartDt != null && whoDate == null) {
-                return new PatientEligibility(null, artStartDate);
-            }
-        }
-
-        else if (ageInMonths > 180){
-            Date artStartDt = checkIfOnArtBeforeCd4(artStartDate, cd4, hivEnrollmentDate, period);
-            Date cd4Date = cd4Date(cd4, hivEnrollmentDate, period);
-
-            if(artStartDt != null && cd4Date != null && correctDateFormat(artStartDt).before(correctDateFormat(cd4Date))) {
-                return new PatientEligibility(null, artStartDate);
-            }
-
-            else if(artStartDt != null && cd4Date != null && correctDateFormat(artStartDt).equals(correctDateFormat(cd4Date))) {
-                return new PatientEligibility("CD4 count<=500", cd4Date);
-            }
-
-            else if(artStartDt != null && cd4Date != null && correctDateFormat(artStartDt).after(correctDateFormat(cd4Date))) {
-                return new PatientEligibility("CD4 count<=500", cd4Date);
-            }
-
-            else if(artStartDt == null && cd4Date != null) {
-                return new PatientEligibility("CD4 count<=500", cd4Date);
-            }
-            else if(artStartDt != null && cd4Date == null) {
-                return new PatientEligibility(null, artStartDate);
-            }
-
-        }
-
-        return  null;
+        return  patientEligibility;
     }
 
     Date whoDate(List<Obs> whoStage, Date hivEnrollmentDate, int period) {
@@ -243,38 +210,6 @@ public class DateAndReasonFirstMedicallyEligibleForArtCalculation extends Abstra
 
     }
 
-    Date checkIfOnArtBeforeWho(Date artDate, List<Obs> whoStage, Date hivEnrollmentDate, int period) {
-        Date isOnARTDate = null;
-        Date futureDate = DateUtil.adjustDate(DateUtil.adjustDate(hivEnrollmentDate, period, DurationUnit.MONTHS), 1, DurationUnit.DAYS);
-
-        if(whoDate(whoStage, hivEnrollmentDate, period) == null && artDate != null && artDate.before(futureDate)) {
-            isOnARTDate = correctDateFormat(artDate);
-        }
-
-        if(whoDate(whoStage, hivEnrollmentDate, period) != null  && artDate != null && whoDate(whoStage, hivEnrollmentDate, period).after(artDate) && artDate.before(futureDate)) {
-            isOnARTDate = correctDateFormat(artDate);
-        }
-
-        return isOnARTDate;
-
-    }
-
-    Date checkIfOnArtBeforeCd4(Date artDate, List<Obs> cd4, Date hivEnrollmentDate, int period) {
-        Date isOnARTDate = null;
-        Date futureDate = DateUtil.adjustDate(DateUtil.adjustDate(hivEnrollmentDate, period, DurationUnit.MONTHS), 1, DurationUnit.DAYS);
-
-        if(cd4Date(cd4, hivEnrollmentDate, period) == null && artDate != null && correctDateFormat(artDate).before(futureDate)) {
-            isOnARTDate = correctDateFormat(artDate);
-        }
-
-        if(cd4Date(cd4, hivEnrollmentDate, period) != null  && artDate != null && cd4Date(cd4, hivEnrollmentDate, period).after(artDate) && artDate.before(futureDate)) {
-            isOnARTDate = correctDateFormat(artDate);
-        }
-
-        return isOnARTDate;
-
-    }
-
     Date correctDateFormat(Date date) {
         GregorianCalendar gc = new GregorianCalendar();
         gc.setTime(date);
@@ -283,6 +218,53 @@ public class DateAndReasonFirstMedicallyEligibleForArtCalculation extends Abstra
         gc.set(Calendar.SECOND, 0);
         gc.set(Calendar.MILLISECOND, 0);
         return gc.getTime();
+    }
+
+    PatientEligibility ealierstBetweenWhoAndCd4(List<Obs> whoStage, List<Obs> cd4,  Date hivEnrollmentDate, int period){
+       Date whoDate = whoDate(whoStage, hivEnrollmentDate, period);
+        Date cd4Date = cd4Date(cd4, hivEnrollmentDate, period);
+        PatientEligibility patientEligibility = null;
+        //compare the 2 dates
+        if(cd4Date == null && whoDate == null){
+            patientEligibility = null;
+        }
+        if(cd4Date != null && whoDate == null){
+            patientEligibility = new PatientEligibility("CD4 count<=500", cd4Date);
+        }
+        else if(cd4Date == null && whoDate != null){
+            patientEligibility = new PatientEligibility("WHO stage = Stage IV", whoDate);
+        }
+        else if(whoDate != null && cd4Date != null &&  whoDate.before(cd4Date)){
+            patientEligibility = new PatientEligibility("WHO stage = Stage IV", whoDate);
+        }
+        else if(cd4Date != null && whoDate != null  && cd4Date.before(whoDate)){
+            patientEligibility = new PatientEligibility("CD4 count<=500", cd4Date);
+        }
+        else if(cd4Date != null && whoDate != null && cd4Date.equals(whoDate)){
+            patientEligibility = new PatientEligibility("WHO stage = Stage IV", whoDate);
+        }
+
+        return  patientEligibility;
+    }
+
+    PatientEligibility checkStartArtWithEalierstBetweenWhoAndCd4(List<Obs> whoStage, List<Obs> cd4,  Date hivEnrollmentDate, int period, Date artStartDate){
+        PatientEligibility patientEligibility = null;
+        Date futureDate = DateUtil.adjustDate(DateUtil.adjustDate(hivEnrollmentDate, period, DurationUnit.MONTHS), 1, DurationUnit.DAYS);
+        PatientEligibility patientEligibilityCriteria = ealierstBetweenWhoAndCd4(whoStage, cd4, hivEnrollmentDate, period);
+        if(patientEligibilityCriteria == null && artStartDate != null && artStartDate.before(futureDate)){
+            patientEligibility = new PatientEligibility("", artStartDate);
+        }
+        else {
+            if(patientEligibilityCriteria != null){
+                if(artStartDate != null && artStartDate.before(patientEligibilityCriteria.getEligibilityDate())){
+                    patientEligibility = new PatientEligibility("", artStartDate);
+                }
+                else {
+                    patientEligibility = patientEligibilityCriteria;
+                }
+            }
+        }
+        return  patientEligibility;
     }
 
 

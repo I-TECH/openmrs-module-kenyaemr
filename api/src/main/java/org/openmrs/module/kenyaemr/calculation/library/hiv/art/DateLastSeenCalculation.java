@@ -62,7 +62,6 @@ public class DateLastSeenCalculation extends AbstractPatientCalculation {
 			if(patientProgram != null) {
 
 				if (encounter != null) {
-
 					if(artStartDate != null && artStartDate.after(encounter.getEncounterDatetime())) {
 						encounterDate = artStartDate;
 					}
