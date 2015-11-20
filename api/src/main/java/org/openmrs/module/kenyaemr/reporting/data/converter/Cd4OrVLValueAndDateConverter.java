@@ -49,7 +49,7 @@ public class Cd4OrVLValueAndDateConverter implements DataConverter {
             return formatDate(cd4VLValueAndDate.getDate());
         }
         if(what.equals("date") && cd4VLValueAndDate.getConcept()=="cd4") {
-            return formatDate(cd4VLValueAndDate.getDate()) + "**";
+            return formatDate(cd4VLValueAndDate.getDate());
         }
         if(what.equals("value") && cd4VLValueAndDate.getConcept()=="vl") {
             return cd4VLValueAndDate.getValue();
