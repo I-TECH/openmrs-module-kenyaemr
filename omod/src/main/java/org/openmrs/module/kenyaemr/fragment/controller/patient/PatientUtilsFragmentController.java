@@ -20,6 +20,7 @@ import org.openmrs.Patient;
 import org.openmrs.Person;
 import org.openmrs.Relationship;
 import org.openmrs.Visit;
+import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.patient.PatientCalculationService;
@@ -230,5 +231,20 @@ public class PatientUtilsFragmentController {
 			}
 		}
 		return ui.simplifyCollection(people);
+	}
+
+	/**
+	 * Gets a patient by their id
+	 * @param patientId the patient
+	 * @param ui the UI utils
+	 * @return the simplified patient
+	 */
+	public String patientExist(@RequestParam("patientId") String patientId,UiUtils ui) {
+		String givenName = "";
+		List<Patient> patients = Context.getPatientService().getPatients(patientId);
+		if(patients.size() > 0){
+			givenName = patients.get(0).getGivenName();
+		}
+		return givenName;
 	}
 }

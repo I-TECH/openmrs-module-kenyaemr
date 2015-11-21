@@ -60,6 +60,16 @@
 			});
 		}
 
+		function onSubmitWithUpnField(upn) {
+			var isPresent = "";
+			jq.getJSON('/' + ctxPath +  '/kenyaemr/patient/patientUtils/patientExist.action',{ patientId: upn },function(data) {
+				if(data != null){
+					isPresent = data;
+				}
+			});
+			return isPresent;
+		}
+
 		jq(function() {
 			jq('#transfer-status input').click(onTransferStatusChange);
 			jq('#art-status input').click(onArtStatusChange);
@@ -72,6 +82,12 @@
 				var birthDate = new Date("<lookup expression="patient.birthdate" />").getTime();
 				var encounterDate = new Date(getValue('encounter-date.value')).getTime();
 				var confirmedPveDate = new Date(getValue('confirmed-positive-date.value')).getTime();
+				var upn = jq('#hiv-id input[type=text]').val();
+
+				/*if(onSubmitWithUpnField(upn) != null) {
+					alert("This number already exist");
+					return false;
+				}*/
 
 				if (encounterDate &lt; birthDate) {
 					getField('encounter-date.error').html('Encounter date, should not be earlier than birth date').show();
@@ -85,6 +101,7 @@
 					getField('confirmed-positive-date.error').html('Confirmed HIV+ date, should not be later than HIV enrollment Date').show();
 					return false;
 				}
+
 				return true;
 			});
 		});
@@ -338,5 +355,4 @@
 	<div class="ke-form-footer">
 		<submit />
 	</div>
-
 </htmlform>
