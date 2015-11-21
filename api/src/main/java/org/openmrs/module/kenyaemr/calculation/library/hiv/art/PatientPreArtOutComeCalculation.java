@@ -145,6 +145,12 @@ public class PatientPreArtOutComeCalculation extends AbstractPatientCalculation 
 					if(values != null){
 						status = values.getValue();
 					}
+					if(preArtOutcomes.containsValue("Transferred out")){
+						status ="Transferred out";
+					}
+					if(preArtOutcomes.containsValue("Died")){
+						status ="Died";
+					}
 				}
 				ret.put(ptId, new SimpleResult(status, this));
 			}
