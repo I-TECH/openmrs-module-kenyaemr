@@ -215,7 +215,7 @@ public class SummariesFragmentController {
         else {
             for (Obs obs : listOfAllergies) {
                 if (obs != null) {
-                    allergies += obs.getValueCoded().getName().getName()+",";
+                    allergies += obs.getValueCoded().getName().getName()+" ";
                 }
             }
         }
@@ -245,10 +245,10 @@ public class SummariesFragmentController {
             purposeString +=previousArtReason(previousArtPurposePmtctObs.getConcept());
         }
         if(previousArtPurposePepObs != null && previousArtPurposePepObs.getValueCoded() != null){
-            purposeString += ","+previousArtReason(previousArtPurposePepObs.getConcept());
+            purposeString += " "+previousArtReason(previousArtPurposePepObs.getConcept());
         }
         if(previousArtPurposeHaartObs != null && previousArtPurposeHaartObs.getValueCoded() != null){
-            purposeString +=","+ previousArtReason(previousArtPurposeHaartObs.getConcept());
+            purposeString +=" "+ previousArtReason(previousArtPurposeHaartObs.getConcept());
         }
 
             patientSummary.setArtPurpose(purposeString);
@@ -329,8 +329,8 @@ public class SummariesFragmentController {
             regimenDates += formatDate(pmtctRegimenObs.getObsDatetime());
         }
         if(pepAndHaartRegimenObs != null){
-            regimens +=","+pepAndHaartRegimenObs.getValueCoded().getName().getName();
-            regimenDates +=","+formatDate(pepAndHaartRegimenObs.getObsDatetime());
+            regimens +=" "+pepAndHaartRegimenObs.getValueCoded().getName().getName();
+            regimenDates +=" "+formatDate(pepAndHaartRegimenObs.getObsDatetime());
         }
         patientSummary.setPurposeDrugs(regimens);
         patientSummary.setPurposeDate(regimenDates);
@@ -352,7 +352,7 @@ public class SummariesFragmentController {
         else {
             for(Integer values : iosIntoList){
                 if(values != 1107) {
-                    iosResults += ios(values) + ",";
+                    iosResults += ios(values) + " ";
                 }
             }
         }
@@ -454,7 +454,7 @@ public class SummariesFragmentController {
         }
         else {
             for(String val:setToList) {
-                clinicValues += val+",";
+                clinicValues += val+" ";
             }
         }
     //most recent cd4
