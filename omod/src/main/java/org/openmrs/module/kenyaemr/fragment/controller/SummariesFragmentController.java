@@ -220,21 +220,16 @@ public class SummariesFragmentController {
             }
         }
         //previous art details
-        CalculationResultMap previousArt = Calculations.allObs(Dictionary.getConcept("160533AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), Arrays.asList(patient.getPatientId()), context);
-        ListResult previousArtList = (ListResult) previousArt.get(patient.getPatientId());
-        List<Obs> previousArtObsList = CalculationUtils.extractResultValues(previousArtList);
-        for(Obs obs:previousArtObsList) {
+        CalculationResultMap previousArt = Calculations.lastObs(Dictionary.getConcept("160533AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), Arrays.asList(patient.getPatientId()), context);
+        Obs previousArtObs = EmrCalculationUtils.obsResultForPatient(previousArt,patient.getPatientId());
 
-            if (obs.getValueCoded() != null && obs.getValueCoded().getConceptId() == 1 &&  obs.getVoided().equals(false)) {
+            if (previousArtObs.getValueCoded() != null &&  previousArtObs.getValueCoded().getConceptId() == 1 &&  previousArtObs.getVoided().equals(false)) {
                 patientSummary.setPreviousArt("Yes");
-                break;
-            } else if (obs.getValueCoded() != null && obs.getValueCoded().getConceptId() == 2 &&  obs.getVoided().equals(false)) {
+            } else if (previousArtObs.getValueCoded() != null &&  previousArtObs.getValueCoded().getConceptId() == 2 &&  previousArtObs.getVoided().equals(false)) {
                 patientSummary.setPreviousArt("No");
-                break;
             } else {
-                patientSummary.setPreviousArt("");
+                patientSummary.setPreviousArt("Nil");
             }
-        }
         //set the purpose for previous art
         CalculationResultMap previousArtPurposePmtct = Calculations.lastObs(Dictionary.getConcept("1148AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), Arrays.asList(patient.getPatientId()), context);
         CalculationResultMap previousArtPurposePep = Calculations.lastObs(Dictionary.getConcept("1691AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), Arrays.asList(patient.getPatientId()), context);
@@ -243,6 +238,9 @@ public class SummariesFragmentController {
         Obs previousArtPurposePepObs = EmrCalculationUtils.obsResultForPatient(previousArtPurposePep, patient.getPatientId());
         Obs previousArtPurposeHaartObs = EmrCalculationUtils.obsResultForPatient(previousArtPurposeHaart, patient.getPatientId());
         String purposeString = "";
+        if(patientSummary.getPreviousArt().equals("Nil") || patientSummary.getPreviousArt().equals("No")){
+            purposeString +="Nil";
+        }
         if(previousArtPurposePmtctObs != null && previousArtPurposePmtctObs.getValueCoded() != null) {
             purposeString +=previousArtReason(previousArtPurposePmtctObs.getConcept());
         }
@@ -252,12 +250,8 @@ public class SummariesFragmentController {
         if(previousArtPurposeHaartObs != null && previousArtPurposeHaartObs.getValueCoded() != null){
             purposeString +=","+ previousArtReason(previousArtPurposeHaartObs.getConcept());
         }
-        if(purposeString.isEmpty()){
-           patientSummary.setArtPurpose("");
-        }
-        else {
+
             patientSummary.setArtPurpose(purposeString);
-        }
 
         //art start date
         CalculationResult artStartDateResults = EmrCalculationUtils.evaluateForPatient(InitialArtStartDateCalculation.class, null, patient);
@@ -326,6 +320,10 @@ public class SummariesFragmentController {
         CalculationResultMap pepAndHaartRegimen = Calculations.lastObs(Dictionary.getConcept("1088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), Arrays.asList(patient.getPatientId()), context);
         Obs pmtctRegimenObs = EmrCalculationUtils.obsResultForPatient(pmtctRegimen, patient.getPatientId());
         Obs pepAndHaartRegimenObs = EmrCalculationUtils.obsResultForPatient(pepAndHaartRegimen, patient.getPatientId());
+        if(patientSummary.getPreviousArt().equals("Nil") || patientSummary.getPreviousArt().equals("No")){
+            regimens += "Nil";
+            regimenDates += "Nil";
+        }
         if(pmtctRegimenObs != null){
             regimens += pmtctRegimenObs.getValueCoded().getName().getName();
             regimenDates += formatDate(pmtctRegimenObs.getObsDatetime());
@@ -353,7 +351,9 @@ public class SummariesFragmentController {
         }
         else {
             for(Integer values : iosIntoList){
-                iosResults +=values+",";
+                if(values != 1107) {
+                    iosResults += ios(values) + ",";
+                }
             }
         }
         //current art regimen
@@ -411,8 +411,11 @@ public class SummariesFragmentController {
         if(medOrdersMapObs != null && medOrdersMapObs.getValueCoded().equals(Dictionary.getConcept(Dictionary.DAPSONE))){
             patientSummary.setDapsone("Yes");
         }
+        else if(medOrdersMapObs != null && medOrdersMapObs.getValueCoded().equals(Dictionary.getConcept(Dictionary.SULFAMETHOXAZOLE_TRIMETHOPRIM)) || medicationDispensedCtxObs != null && medicationDispensedCtxObs.getValueCoded().equals(Dictionary.getConcept(Dictionary.YES))){
+            patientSummary.setDapsone("No");
+        }
         else {
-            patientSummary.setDapsone("");
+            patientSummary.setDapsone("No");
         }
         //on IPT
         CalculationResultMap medicationDispensedIpt = Calculations.lastObs(Dictionary.getConcept(Dictionary.ISONIAZID_DISPENSED), Arrays.asList(patient.getPatientId()), context);
@@ -596,19 +599,19 @@ public class SummariesFragmentController {
         String stage = "";
         if(concept.equals(Dictionary.getConcept(Dictionary.WHO_STAGE_1_ADULT)) || concept.equals(Dictionary.getConcept(Dictionary.WHO_STAGE_1_PEDS))){
 
-            stage = "1";
+            stage = "I";
         }
         else if(concept.equals(Dictionary.getConcept(Dictionary.WHO_STAGE_2_ADULT)) || concept.equals(Dictionary.getConcept(Dictionary.WHO_STAGE_2_PEDS))){
 
-            stage = "2";
+            stage = "II";
         }
         else if(concept.equals(Dictionary.getConcept(Dictionary.WHO_STAGE_3_ADULT)) || concept.equals(Dictionary.getConcept(Dictionary.WHO_STAGE_3_PEDS))){
 
-            stage = "3";
+            stage = "III";
         }
         else if(concept.equals(Dictionary.getConcept(Dictionary.WHO_STAGE_4_ADULT)) || concept.equals(Dictionary.getConcept(Dictionary.WHO_STAGE_4_PEDS))){
 
-            stage = "4";
+            stage = "IV";
         }
         return stage;
     }

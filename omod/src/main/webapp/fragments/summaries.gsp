@@ -26,25 +26,22 @@ table.moh257 > tbody > tr > td, table.moh257 > tbody > tr > th {
                 <td>MFL code: ${patient.mflCode}</td>
             </tr>
             <tr>
-                <td colspan="3">Unique Patient Number: ${ patient.upn }</td>
+                <td>UPN: ${ patient.upn }</td>
+                <td colspan="2">Name: ${names}</td>
             </tr>
             <tr>
-                <td colspan="3">Name: ${names}</td>
-            </tr>
-            <tr>
-                <td colspan="3">DOB: ${ patient.birthDate }</td>
-            </tr>
-            <tr>
-                <td colspan="3">Age: ${ patient.age }</td>
+                <td>DOB: ${ patient.birthDate }</td>
+                <td colspan="2">
+                    Age: ${ patient.age }
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Gender: ${ patient.gender}
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Marital status: ${ patient.maritalStatus }
+                </td>
             </tr>
 
             <tr>
-                <td colspan="3">Gender: ${ patient.gender}</td>
+                <td colspan="3">&nbsp;&nbsp;</td>
             </tr>
 
-            <tr>
-                <td colspan="3">Marital status: ${ patient.maritalStatus }</td>
-            </tr>
             <tr>
                 <td>Date Confirmed HIV Positive: ${ patient.hivConfrimedDate }</td>
                 <td>First CD4: ${ patient.firstCd4 }</td>
@@ -52,15 +49,16 @@ table.moh257 > tbody > tr > td, table.moh257 > tbody > tr > th {
             </tr>
             <tr>
                 <td>Date enrolled into care: ${ patient.dateEnrolledIntoCare}</td>
-                <td colspan="2">WHO stage at enrollment: ${patient.whoStagingAtEnrollment}</td>
-            </tr>
-            <tr>
-                <td>Patient entry point: ${patient.patientEntryPoint}</td>
-                <td colspan="2">Date of entry point: ${patient.dateEntryPoint}</td>
-            </tr>
-            <tr>
+                <td>WHO stage at enrollment: ${patient.whoStagingAtEnrollment}</td>
                 <td>Transfer in date: ${patient.transferInDate}</td>
+            </tr>
+            <tr>
+                <td>Entry point: ${patient.patientEntryPoint}</td>
+                <td>Date of entry point: ${patient.dateEntryPoint}</td>
                 <td colspan="2">Facility transferred from: ${patient.transferInFacility}</td>
+            </tr>
+            <tr>
+                <td colspan="3">&nbsp;</td>
             </tr>
             <tr>
                 <td colspan="3">Treatment supporter details:</td>
@@ -74,9 +72,7 @@ table.moh257 > tbody > tr > td, table.moh257 > tbody > tr > th {
                 <td colspan="3">Drug allergies: ${allergies}</td>
             </tr>
             <tr>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
+                <td colspan="3">&nbsp;</td>
             </tr>
             <tr>
                 <td>Previous ART: ${patient.previousArt}</td>
@@ -84,8 +80,8 @@ table.moh257 > tbody > tr > td, table.moh257 > tbody > tr > th {
             </tr>
             <tr>
                 <td>Purpose: ${patient.artPurpose}</td>
-                <td>Clinical stage: ${patient.clinicalStageAtArtStart}</td>
-                <td>CD4: ${patient.cd4AtArtStart}</td>
+                <td>Clinical stage at ART: ${patient.clinicalStageAtArtStart}</td>
+                <td>CD4 at ART: ${patient.cd4AtArtStart}</td>
             </tr>
             <tr>
                 <td>Drugs/Regimen: ${patient.purposeDrugs}</td>
@@ -100,9 +96,7 @@ table.moh257 > tbody > tr > td, table.moh257 > tbody > tr > th {
                 <td colspan="3">Past or current OI: ${iosResults}</td>
             </tr>
             <tr>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
+                <td colspan="3">&nbsp;</td>
             </tr>
             <tr>
                 <td>Current ART regimen: ${currentRegimen}</td>
@@ -110,8 +104,17 @@ table.moh257 > tbody > tr > td, table.moh257 > tbody > tr > th {
                     <table width="100%">
                         <tr>
                             <td width="40%">ART interruptions:</td>
-                            <td>Reason: </td>
-                            <td>Date:</td>
+                            <td>
+                                <table>
+                                    <tr>
+                                        <td>Reason: </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Date:</td>
+                                    </tr>
+                                </table>
+                            </td>
+
                         </tr>
                     </table>
                 </td>
@@ -122,8 +125,16 @@ table.moh257 > tbody > tr > td, table.moh257 > tbody > tr > th {
                     <table width="100%">
                         <tr>
                             <td width="40%">Substitution within 1st line regimen:</td>
-                            <td>Reason: </td>
-                            <td>Date:</td>
+                            <td>
+                                <table>
+                                    <tr>
+                                        <td>Reason: </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Date:</td>
+                                    </tr>
+                                </table>
+                            </td>
                         </tr>
                     </table>
 
@@ -135,19 +146,27 @@ table.moh257 > tbody > tr > td, table.moh257 > tbody > tr > th {
                     <table width="100%">
                         <tr>
                             <td width="40%">Switch to 2nd line regimen:</td>
-                            <td>Reason: </td>
-                            <td>Date:</td>
+                            <td>
+                                <table>
+                                    <tr>
+                                        <td>Reason: </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Date:</td>
+                                    </tr>
+                                </table>
+                            </td>
                         </tr>
                     </table>
                 </td>
             </tr>
             <tr>
                 <td>Dapsone: ${onDapsone}</td>
-                <td colspan="2">&nbsp;</td>
+                <td>IPT: ${onIpt}</td>
+                <td>&nbsp;</td>
             </tr>
             <tr>
-                <td>IPT: ${onIpt}</td>
-                <td colspan="2">&nbsp;</td>
+                <td colspan="3">&nbsp;</td>
             </tr>
             <tr>
                 <td colspan="2">Clinics enrolled: ${clinicValues}</td>
@@ -197,7 +216,7 @@ table.moh257 > tbody > tr > td, table.moh257 > tbody > tr > th {
             var oTable = document.getElementById("tblDetails");
 
             docprint.document.open();
-            docprint.document.write('<html><head><title>${names} Summary</title>');
+            docprint.document.write('<html><head>');
             docprint.document.write('</head><body><center>');
             docprint.document.write(oTable.parentNode.innerHTML);
             docprint.document.write('</center></body></html>');
