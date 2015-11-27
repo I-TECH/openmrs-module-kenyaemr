@@ -5,7 +5,9 @@ import org.openmrs.EncounterType;
 import org.openmrs.Obs;
 import org.openmrs.PatientProgram;
 import org.openmrs.Program;
+import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
+import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.ListResult;
 import org.openmrs.calculation.result.SimpleResult;
@@ -49,7 +51,6 @@ public class DateAndReasonFirstMedicallyEligibleForArtARTCalculation extends Abs
 
         Set<Integer> female = Filters.female(cohort, context);
 
-        CalculationResultMap hivEnrollmenMap = Calculations.firstEnrollments(hivProgram, cohort, context);
         CalculationResultMap tbEnrollmentMap = Calculations.firstEnrollments(tbProgram, cohort, context);
         CalculationResultMap ages = calculate(new AgeAtARTInitiationCalculation(), cohort, context);
 
@@ -58,6 +59,9 @@ public class DateAndReasonFirstMedicallyEligibleForArtARTCalculation extends Abs
         if(outcomePeriod != null) {
             context.setNow(DateUtil.adjustDate(context.getNow(), outcomePeriod, DurationUnit.MONTHS));
         }
+        PatientCalculationContext contextEnrollment = Context.getService(PatientCalculationService.class).createCalculationContext();
+        contextEnrollment.setNow(new Date());
+        CalculationResultMap hivEnrollmenMap = Calculations.firstEnrollments(hivProgram, cohort, contextEnrollment);
 
 
         CalculationResultMap allWhoStage = Calculations.allObs(Dictionary.getConcept(Dictionary.CURRENT_WHO_STAGE), cohort, context);
@@ -142,7 +146,7 @@ public class DateAndReasonFirstMedicallyEligibleForArtARTCalculation extends Abs
     }
 
     PatientEligibility getCriteriaAndDate(int ageInMonths, List<Obs> cd4, List<Obs> whoStag, Date artStartDate, Date hivEnrollmentDate, int period) {
-        PatientEligibility patientEligibility = null;
+        PatientEligibility patientEligibility;
         if (ageInMonths <= 120 && hivEnrollmentDate.before(artStartDate)) {//children less than 10 years
             patientEligibility = new PatientEligibility("Age 10 years and below", hivEnrollmentDate);
         }
