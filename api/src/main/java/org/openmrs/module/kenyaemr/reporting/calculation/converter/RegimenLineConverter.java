@@ -11,7 +11,7 @@ import java.util.List;
 public class RegimenLineConverter implements DataConverter {
     @Override
     public Object convert(Object o) {
-        String regimen = (String) new RegimenConverter().convert(o);
+        String regimen = (String) new ArtCohortRegimenConverter().convert(o);
         if(regimen == null || regimen.isEmpty() || regimen.equals("NA")) {
             return "NA";
         }

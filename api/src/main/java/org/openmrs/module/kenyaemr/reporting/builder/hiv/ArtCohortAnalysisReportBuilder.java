@@ -29,6 +29,7 @@ import org.openmrs.module.kenyaemr.calculation.library.hiv.art.PatientArtOutCome
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.ViralLoadCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.ViralSuppressionCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
+import org.openmrs.module.kenyaemr.reporting.calculation.converter.ArtCohortRegimenConverter;
 import org.openmrs.module.kenyaemr.reporting.calculation.converter.ChangeInCd4Converter;
 import org.openmrs.module.kenyaemr.reporting.calculation.converter.CurrentCd4Converter;
 import org.openmrs.module.kenyaemr.reporting.calculation.converter.MedicallyEligibleConverter;
@@ -105,8 +106,8 @@ public class ArtCohortAnalysisReportBuilder extends AbstractHybridReportBuilder 
         dsd.addColumn("DOB approx", new CalculationDataDefinition("DOB approx", new IsBirthDateApproximatedCalculation()), "", new CalculationResultConverter());
         dsd.addColumn("Age at ART initiation", new CalculationDataDefinition("Age at ART initiation", new AgeAtARTInitiationCalculation()), "", new CalculationResultConverter());
         dsd.addColumn("Sex", new GenderDataDefinition(), "");
-        dsd.addColumn("TI", ti(), "onDate=${endDate}", new TransferInAndDateConverter("state"));
-        dsd.addColumn("Date TI", ti(), "onDate=${endDate}", new TransferInAndDateConverter("date"));
+        dsd.addColumn("TI", ti(), "", new TransferInAndDateConverter("state"));
+        dsd.addColumn("Date TI", ti(), "", new TransferInAndDateConverter("date"));
         dsd.addColumn("TO", to(report), "onDate=${endDate}", new TransferInAndDateConverter("state"));
         dsd.addColumn("Date TO", to(report), "onDate=${endDate}", new TransferInAndDateConverter("date"));
         dsd.addColumn("ARV Start Date", new CalculationDataDefinition("ARV Start Date", new DateARV1Calculation()), "", new CalculationResultConverter());
@@ -117,7 +118,7 @@ public class ArtCohortAnalysisReportBuilder extends AbstractHybridReportBuilder 
         dsd.addColumn("ART baseline CD4 count", baselineCd4(report), "onDate=${endDate}", new Cd4ValueAndDateConverter("value"));
         dsd.addColumn("Date of ART baseline CD4 count", baselineCd4(report), "onDate=${endDate}", new Cd4ValueAndDateConverter("date"));
         dsd.addColumn("Initial ART regimen", new CalculationDataDefinition("First ART regimen", new InitialArtRegimenCalculation()), "", new RegimenConverter());
-        dsd.addColumn("Current ART regimen", currentARTRegimen(report), "onDate=${endDate}", new RegimenConverter());
+        dsd.addColumn("Current ART regimen", currentARTRegimen(report), "onDate=${endDate}", new ArtCohortRegimenConverter());
         dsd.addColumn("Current ART line", currentARTRegimen(report), "onDate=${endDate}", new RegimenLineConverter());
         dsd.addColumn("CD4 at end of follow up", currentCd4Count(report), "onDate=${endDate}", new CurrentCd4Converter("value"));
         dsd.addColumn("CD4 at end of follow up date", currentCd4Count(report), "onDate=${endDate}", new CurrentCd4Converter("date"));

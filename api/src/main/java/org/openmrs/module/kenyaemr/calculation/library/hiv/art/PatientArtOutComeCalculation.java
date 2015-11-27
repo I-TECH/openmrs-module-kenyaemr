@@ -231,7 +231,7 @@ public class PatientArtOutComeCalculation extends AbstractPatientCalculation {
             if (lastScheduledReturnDateResults != null) {
                 Date lastScheduledReturnDate = (Date) lastScheduledReturnDateResults.getValue();
                 if(!(isTransferOut.contains(ptId)) && lastScheduledReturnDate != null) {
-                    dateDefaulted = CoreUtils.dateAddDays(lastScheduledReturnDate, 3);
+                    dateDefaulted = CoreUtils.dateAddDays(lastScheduledReturnDate, 30);
                 }
             }
 
