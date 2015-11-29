@@ -149,6 +149,9 @@ public class PatientPreArtOutComeCalculation extends AbstractPatientCalculation 
 					if(preArtOutcomes.containsValue("Died")){
 						status ="Died";
 					}
+					if(preArtOutcomes.containsValue("Initiated ART")){
+						status ="Initiated ART";
+					}
 				}
 				ret.put(ptId, new SimpleResult(status, this));
 			}

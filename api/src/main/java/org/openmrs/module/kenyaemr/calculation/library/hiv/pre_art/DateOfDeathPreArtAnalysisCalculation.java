@@ -8,6 +8,7 @@ import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
 import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtStartDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.rdqa.DateOfDeathCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
@@ -35,11 +36,13 @@ public class DateOfDeathPreArtAnalysisCalculation extends AbstractPatientCalcula
         }
 
         CalculationResultMap deadPatientsMap = calculate(new DateOfDeathCalculation(), cohort, context);
+        CalculationResultMap artStartDate = calculate(new InitialArtStartDateCalculation(), cohort, context);
 
         CalculationResultMap ret = new CalculationResultMap();
 
         for(Integer ptId:cohort){
             Date result = EmrCalculationUtils.datetimeResultForPatient(deadPatientsMap, ptId);
+            Date artDate = EmrCalculationUtils.datetimeResultForPatient(artStartDate, ptId);
             PatientProgram patientProgram = EmrCalculationUtils.resultForPatient(enrollment, ptId);
             Date deathDate = null;
             if(patientProgram != null && outcomePeriod != null && result != null) {
@@ -47,6 +50,9 @@ public class DateOfDeathPreArtAnalysisCalculation extends AbstractPatientCalcula
                 if (result.before(futureDate)) {
                     deathDate = result;
 
+                }
+                if(artDate != null && artDate.after(patientProgram.getDateEnrolled()) &&  artDate.before(futureDate)){
+                    deathDate = null;
                 }
             }
             ret.put(ptId, new SimpleResult(deathDate, this));
