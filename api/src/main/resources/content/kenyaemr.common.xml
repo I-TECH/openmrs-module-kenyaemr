@@ -251,7 +251,7 @@
 
 	<bean id="kenyaemr.common.report.dhis2" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
 		<property name="targetUuid" value="e8f317ea-ebb9-11e3-abe5-7f8b2039b9d7" />
-		<property name="name" value="DHIS 2 File Generator" />
+		<property name="name" value="DHIS II File Generator" />
 		<property name="description" value="DHIS Compatible Report" />
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 		<property name="template" value="kenyaemr:dhis2.xls" />

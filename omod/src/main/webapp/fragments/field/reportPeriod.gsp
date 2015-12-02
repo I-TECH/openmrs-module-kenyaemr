@@ -10,7 +10,7 @@
 			var period = jQuery(this).val().split('|');
 			jQuery('#${ config.id }_start').val(period[0]);
 			jQuery('#${ config.id }_end').val(period[1]);
-			jQuery('#date_value').val(period[0]);
+			jQuery('#date_value').val(period[1]);
 		});
 
 		select.change();
