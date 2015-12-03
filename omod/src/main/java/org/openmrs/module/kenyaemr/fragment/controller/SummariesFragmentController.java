@@ -103,6 +103,9 @@ public class SummariesFragmentController {
         if(status != null){
             patientSummary.setMaritalStatus(status.getName().getName());
         }
+        else {
+            patientSummary.setMaritalStatus("");
+        }
 
         //date confirmed hiv positive
         CalculationResultMap hivConfirmation = Calculations.lastObs(Dictionary.getConcept(Dictionary.DATE_OF_HIV_DIAGNOSIS), Arrays.asList(patient.getId()), context);
@@ -223,12 +226,12 @@ public class SummariesFragmentController {
         CalculationResultMap previousArt = Calculations.lastObs(Dictionary.getConcept("160533AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), Arrays.asList(patient.getPatientId()), context);
         Obs previousArtObs = EmrCalculationUtils.obsResultForPatient(previousArt,patient.getPatientId());
 
-            if (previousArtObs.getValueCoded() != null &&  previousArtObs.getValueCoded().getConceptId() == 1 &&  previousArtObs.getVoided().equals(false)) {
+            if (previousArtObs != null && previousArtObs.getValueCoded() != null &&  previousArtObs.getValueCoded().getConceptId() == 1 &&  previousArtObs.getVoided().equals(false)) {
                 patientSummary.setPreviousArt("Yes");
-            } else if (previousArtObs.getValueCoded() != null &&  previousArtObs.getValueCoded().getConceptId() == 2 &&  previousArtObs.getVoided().equals(false)) {
+            } else if (previousArtObs != null && previousArtObs.getValueCoded() != null &&  previousArtObs.getValueCoded().getConceptId() == 2 &&  previousArtObs.getVoided().equals(false)) {
                 patientSummary.setPreviousArt("No");
             } else {
-                patientSummary.setPreviousArt("Nil");
+                patientSummary.setPreviousArt("None");
             }
         //set the purpose for previous art
         CalculationResultMap previousArtPurposePmtct = Calculations.lastObs(Dictionary.getConcept("1148AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), Arrays.asList(patient.getPatientId()), context);
@@ -238,8 +241,8 @@ public class SummariesFragmentController {
         Obs previousArtPurposePepObs = EmrCalculationUtils.obsResultForPatient(previousArtPurposePep, patient.getPatientId());
         Obs previousArtPurposeHaartObs = EmrCalculationUtils.obsResultForPatient(previousArtPurposeHaart, patient.getPatientId());
         String purposeString = "";
-        if(patientSummary.getPreviousArt().equals("Nil") || patientSummary.getPreviousArt().equals("No")){
-            purposeString +="Nil";
+        if(patientSummary.getPreviousArt().equals("None") || patientSummary.getPreviousArt().equals("No")){
+            purposeString ="None";
         }
         if(previousArtPurposePmtctObs != null && previousArtPurposePmtctObs.getValueCoded() != null) {
             purposeString +=previousArtReason(previousArtPurposePmtctObs.getConcept());
@@ -316,26 +319,39 @@ public class SummariesFragmentController {
         //previous drugs/regimens and dates
         String regimens = "";
         String regimenDates = "";
-        CalculationResultMap pmtctRegimen = Calculations.lastObs(Dictionary.getConcept("966AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), Arrays.asList(patient.getPatientId()), context);
-        CalculationResultMap pepAndHaartRegimen = Calculations.lastObs(Dictionary.getConcept("1088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), Arrays.asList(patient.getPatientId()), context);
-        Obs pmtctRegimenObs = EmrCalculationUtils.obsResultForPatient(pmtctRegimen, patient.getPatientId());
-        Obs pepAndHaartRegimenObs = EmrCalculationUtils.obsResultForPatient(pepAndHaartRegimen, patient.getPatientId());
-        if(patientSummary.getPreviousArt().equals("Nil") || patientSummary.getPreviousArt().equals("No")){
-            regimens += "Nil";
-            regimenDates += "Nil";
+        CalculationResultMap pmtctRegimenHivEnroll = Calculations.lastObs(Dictionary.getConcept("966AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), Arrays.asList(patient.getPatientId()), context);
+        CalculationResultMap pepAndHaartRegimenHivEnroll = Calculations.allObs(Dictionary.getConcept("1088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), Arrays.asList(patient.getPatientId()), context);
+
+        Obs obsPmtctHivEnroll = EmrCalculationUtils.obsResultForPatient(pmtctRegimenHivEnroll, patient.getPatientId());
+
+        ListResult listResults = (ListResult) pepAndHaartRegimenHivEnroll.get(patient.getPatientId());
+        List<Obs> pepAndHaartRegimenObsList = CalculationUtils.extractResultValues(listResults);
+        if(patientSummary.getPreviousArt().equals("None") || patientSummary.getPreviousArt().equals("No")){
+            regimens = "None";
+            regimenDates += "None";
         }
-        if(pmtctRegimenObs != null){
-            regimens += pmtctRegimenObs.getValueCoded().getName().getName();
-            regimenDates += formatDate(pmtctRegimenObs.getObsDatetime());
+        if(obsPmtctHivEnroll != null){
+
+                regimens = getCorrectDrugCode(obsPmtctHivEnroll.getValueCoded());
+                regimenDates = formatDate(obsPmtctHivEnroll.getObsDatetime());
         }
-        if(pepAndHaartRegimenObs != null){
-            regimens +=" "+pepAndHaartRegimenObs.getValueCoded().getName().getName();
-            regimenDates +=" "+formatDate(pepAndHaartRegimenObs.getObsDatetime());
+
+        if(pepAndHaartRegimenObsList != null && !pepAndHaartRegimenObsList.isEmpty() && pepAndHaartRegimenObsList.size() == 1){
+            regimens =getCorrectDrugCode(pepAndHaartRegimenObsList.get(0).getValueCoded());
+            regimenDates =formatDate(pepAndHaartRegimenObsList.get(0).getObsDatetime());
+
+        }
+        else if(pepAndHaartRegimenObsList != null && !pepAndHaartRegimenObsList.isEmpty() && pepAndHaartRegimenObsList.size() > 1){
+            for(Obs obs:pepAndHaartRegimenObsList) {
+                regimens +=getCorrectDrugCode(obs.getValueCoded())+",";
+                regimenDates =formatDate(obs.getObsDatetime());
+            }
+
         }
         patientSummary.setPurposeDrugs(regimens);
         patientSummary.setPurposeDate(regimenDates);
 
-        //past or current ois
+        //past or current oisg
         CalculationResultMap problemsAdded = Calculations.allObs(Dictionary.getConcept(Dictionary.PROBLEM_ADDED), Arrays.asList(patient.getPatientId()), context);
         ListResult problemsAddedList = (ListResult) problemsAdded.get(patient.getPatientId());
         List<Obs> problemsAddedListObs = CalculationUtils.extractResultValues(problemsAddedList);
@@ -776,6 +792,51 @@ public class SummariesFragmentController {
             prog ="MCH-Mother";
         }
         return prog;
+    }
+
+    String getCorrectDrugCode(Concept concept){
+        String defaultString = "";
+        if(concept.equals(Dictionary.getConcept("794AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))){
+            defaultString = "LPV/r";
+        }
+        else if(concept.equals(Dictionary.getConcept("84309AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))){
+            defaultString = "d4T";
+        }
+        else if(concept.equals(Dictionary.getConcept("74807AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))){
+            defaultString = "DDI";
+        }
+        else if(concept.equals(Dictionary.getConcept("70056AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))){
+            defaultString = "ABC";
+        }
+        else if(concept.equals(Dictionary.getConcept("80487AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))){
+            defaultString = "NFV";
+        }
+        else if(concept.equals(Dictionary.getConcept("80586AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))){
+            defaultString = "NVP";
+        }
+        else if(concept.equals(Dictionary.getConcept("75523AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))){
+            defaultString = "EFV";
+        }
+        else if(concept.equals(Dictionary.getConcept("78643AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))){
+            defaultString = "3TC";
+        }
+        else if(concept.equals(Dictionary.getConcept("84795AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))){
+            defaultString = "TDF";
+        }
+        else if(concept.equals(Dictionary.getConcept("86663AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))){
+            defaultString = "AZT";
+        }
+        else if(concept.equals(Dictionary.getConcept("83412AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))){
+            defaultString = "RTV";
+        }
+        else if(concept.equals(Dictionary.getConcept("71647AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))){
+            defaultString = "ATV";
+        }
+        else {
+            defaultString = concept.getName().getName();
+        }
+
+        return defaultString;
     }
 
 }
