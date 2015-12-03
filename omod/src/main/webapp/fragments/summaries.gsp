@@ -50,7 +50,7 @@ table.moh257 > tbody > tr > td, table.moh257 > tbody > tr > th {
             <tr>
                 <td>Date enrolled into care: ${ patient.dateEnrolledIntoCare}</td>
                 <td>WHO stage at enrollment: ${patient.whoStagingAtEnrollment}</td>
-                <td>Transfer in date: ${patient.transferInDate}</td>
+                <td>Transfer in date: ${tiDate}</td>
             </tr>
             <tr>
                 <td>Entry point: ${patient.patientEntryPoint}</td>
@@ -67,6 +67,9 @@ table.moh257 > tbody > tr > td, table.moh257 > tbody > tr > th {
                 <td>Name: ${patient.nameOfTreatmentSupporter}</td>
                 <td>Relationship: ${patient.relationshipToTreatmentSupporter}</td>
                 <td>Contact details: ${patient.contactOfTreatmentSupporter}</td>
+            </tr>
+            <tr>
+                <td colspan="3">&nbsp;</td>
             </tr>
             <tr>
                 <td colspan="3">Drug allergies: ${allergies}</td>

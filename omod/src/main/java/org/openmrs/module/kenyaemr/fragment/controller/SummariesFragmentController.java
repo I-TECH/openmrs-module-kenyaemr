@@ -163,11 +163,12 @@ public class SummariesFragmentController {
 
         //transfer in date
         CalculationResult transferInResults = EmrCalculationUtils.evaluateForPatient(TransferInDateCalculation.class, null, patient);
-        if(transferInResults != null) {
-            patientSummary.setTransferInDate(formatDate((Date) transferInResults.getValue()));
+        String tiDate;
+        if(transferInResults.isEmpty()){
+            tiDate = "N/A";
         }
         else {
-            patientSummary.setTransferInDate("");
+            tiDate = formatDate((Date) transferInResults.getValue());
         }
         //facility transferred form
         CalculationResultMap transferInFacilty = Calculations.lastObs(Dictionary.getConcept("160535AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), Arrays.asList(patient.getPatientId()), context);
@@ -176,7 +177,7 @@ public class SummariesFragmentController {
             patientSummary.setTransferInFacility(faciltyObs.getValueText());
         }
         else {
-            patientSummary.setTransferInFacility("");
+            patientSummary.setTransferInFacility("N/A");
         }
         //treatment suppoter details
         CalculationResultMap treatmentSupporterName = Calculations.lastObs(Dictionary.getConcept("160638AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), Arrays.asList(patient.getPatientId()), context);
@@ -212,16 +213,20 @@ public class SummariesFragmentController {
         ListResult allergyResults = (ListResult) alergies.get(patient.getPatientId());
         List<Obs> listOfAllergies = CalculationUtils.extractResultValues(allergyResults);
         String allergies = "";
-        if(listOfAllergies.size() == 1){
+        if(listOfAllergies.size() == 0){
+            allergies = "None";
+        }
+        else if(listOfAllergies.size() == 1){
             allergies = listOfAllergies.get(0).getValueCoded().getName().getName();
         }
-        else {
+        else{
             for (Obs obs : listOfAllergies) {
                 if (obs != null) {
                     allergies += obs.getValueCoded().getName().getName()+" ";
                 }
             }
         }
+
         //previous art details
         CalculationResultMap previousArt = Calculations.lastObs(Dictionary.getConcept("160533AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), Arrays.asList(patient.getPatientId()), context);
         Obs previousArtObs = EmrCalculationUtils.obsResultForPatient(previousArt,patient.getPatientId());
@@ -269,7 +274,7 @@ public class SummariesFragmentController {
         //Clinical stage at art start
         CalculationResult whoStageAtArtStartResults = EmrCalculationUtils.evaluateForPatient(WhoStageAtArtStartCalculation.class, null,patient);
         if(whoStageAtArtStartResults != null){
-            patientSummary.setClinicalStageAtArtStart(whoStageAtArtStartResults.getValue().toString());
+            patientSummary.setClinicalStageAtArtStart(intergerToRoman(whoStageAtArtStartResults.getValue().toString()));
         }
         else {
             patientSummary.setClinicalStageAtArtStart("");
@@ -402,12 +407,12 @@ public class SummariesFragmentController {
             patientSummary.setCurrentWhoStaging("");
         }
         //find whether this patient has been in CTX
-        CalculationResultMap medOrdersMap = Calculations.lastObs(Dictionary.getConcept(Dictionary.MEDICATION_ORDERS), Arrays.asList(patient.getPatientId()), context);
+        CalculationResultMap medOrdersMapCtx = Calculations.lastObs(Dictionary.getConcept(Dictionary.MEDICATION_ORDERS), Arrays.asList(patient.getPatientId()), context);
         CalculationResultMap medicationDispensedCtx = Calculations.lastObs(Dictionary.getConcept(Dictionary.COTRIMOXAZOLE_DISPENSED), Arrays.asList(patient.getPatientId()), context);
 
-        Obs medOrdersMapObs = EmrCalculationUtils.obsResultForPatient(medOrdersMap, patient.getPatientId());
+        Obs medOrdersMapObsCtx = EmrCalculationUtils.obsResultForPatient(medOrdersMapCtx, patient.getPatientId());
         Obs medicationDispensedCtxObs = EmrCalculationUtils.obsResultForPatient(medicationDispensedCtx, patient.getPatientId());
-        if(medOrdersMapObs != null && medOrdersMapObs.getValueCoded().equals(Dictionary.getConcept(Dictionary.SULFAMETHOXAZOLE_TRIMETHOPRIM))){
+        if(medOrdersMapObsCtx != null && medOrdersMapObsCtx.getValueCoded().equals(Dictionary.getConcept(Dictionary.SULFAMETHOXAZOLE_TRIMETHOPRIM))){
             patientSummary.setOnCtx("Yes");
         }
         else if(medicationDispensedCtxObs != null && medicationDispensedCtxObs.getValueCoded().equals(Dictionary.getConcept(Dictionary.YES))){
@@ -420,23 +425,27 @@ public class SummariesFragmentController {
             patientSummary.setOnCtx("N/A");
         }
         else {
-            patientSummary.setOnCtx("");
+            patientSummary.setOnCtx("No");
         }
 
         //Find if a patient is on dapsone
-        if(medOrdersMapObs != null && medOrdersMapObs.getValueCoded().equals(Dictionary.getConcept(Dictionary.DAPSONE))){
+        CalculationResultMap medOrdersMapDapsone = Calculations.lastObs(Dictionary.getConcept(Dictionary.MEDICATION_ORDERS), Arrays.asList(patient.getPatientId()), context);
+        Obs medOrdersMapObsDapsone = EmrCalculationUtils.obsResultForPatient(medOrdersMapDapsone, patient.getPatientId());
+        if(medOrdersMapObsDapsone != null && medOrdersMapObsDapsone.getValueCoded().equals(Dictionary.getConcept(Dictionary.DAPSONE))){
             patientSummary.setDapsone("Yes");
         }
-        else if(medOrdersMapObs != null && medOrdersMapObs.getValueCoded().equals(Dictionary.getConcept(Dictionary.SULFAMETHOXAZOLE_TRIMETHOPRIM)) || medicationDispensedCtxObs != null && medicationDispensedCtxObs.getValueCoded().equals(Dictionary.getConcept(Dictionary.YES))){
+        else if(medOrdersMapObsDapsone != null && medOrdersMapObsDapsone.getValueCoded().equals(Dictionary.getConcept(Dictionary.SULFAMETHOXAZOLE_TRIMETHOPRIM)) || medicationDispensedCtxObs != null && medicationDispensedCtxObs.getValueCoded().equals(Dictionary.getConcept(Dictionary.YES))){
             patientSummary.setDapsone("No");
         }
         else {
             patientSummary.setDapsone("No");
         }
         //on IPT
+        CalculationResultMap medOrdersMapInh = Calculations.lastObs(Dictionary.getConcept(Dictionary.MEDICATION_ORDERS), Arrays.asList(patient.getPatientId()), context);
+        Obs medOrdersMapObsInh = EmrCalculationUtils.obsResultForPatient(medOrdersMapInh, patient.getPatientId());
         CalculationResultMap medicationDispensedIpt = Calculations.lastObs(Dictionary.getConcept(Dictionary.ISONIAZID_DISPENSED), Arrays.asList(patient.getPatientId()), context);
         Obs medicationDispensedIptObs = EmrCalculationUtils.obsResultForPatient(medicationDispensedIpt, patient.getPatientId());
-        if(medOrdersMapObs != null && medOrdersMapObs.getValueCoded().equals(Dictionary.getConcept(Dictionary.ISONIAZID))){
+        if(medOrdersMapObsInh != null && medOrdersMapObsInh.getValueCoded().equals(Dictionary.getConcept(Dictionary.ISONIAZID))){
             patientSummary.setOnIpt("Yes");
         }
         else if(medicationDispensedIptObs != null && medicationDispensedIptObs.getValueCoded().equals(Dictionary.getConcept(Dictionary.YES))){
@@ -449,7 +458,7 @@ public class SummariesFragmentController {
             patientSummary.setOnIpt("N/A");
         }
         else {
-            patientSummary.setOnIpt("");
+            patientSummary.setOnIpt("No");
         }
 
         //find clinics enrolled
@@ -486,22 +495,32 @@ public class SummariesFragmentController {
 
         //most recent viral load
         CalculationResult vlResults = EmrCalculationUtils.evaluateForPatient(LastViralLoadCalculation.class, null, patient);
+        CalculationResultMap viralLoadLdl = Calculations.lastObs(Dictionary.getConcept("1305AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), Arrays.asList(patient.getPatientId()), context);
+        Obs viralLoadLdlObs = EmrCalculationUtils.obsResultForPatient(viralLoadLdl, patient.getPatientId());
+
+        String viralLoadValue, viralLoadDate;
         if(vlResults != null){
-            patientSummary.setMostRecentVl(((Obs) vlResults.getValue()).getValueNumeric().toString());
-            patientSummary.setMostRecentVlDate(formatDate(((Obs) vlResults.getValue()).getObsDatetime()));
+            viralLoadValue = ((Obs) vlResults.getValue()).getValueNumeric().toString();
+            viralLoadDate =formatDate(((Obs) vlResults.getValue()).getObsDatetime());
+        }
+        else if(viralLoadLdlObs != null){
+            viralLoadValue = "LDL";
+            viralLoadDate = formatDate(viralLoadLdlObs.getObsDatetime());
         }
         else{
-            patientSummary.setMostRecentVl("");
-            patientSummary.setMostRecentVlDate("");
+            viralLoadValue = "";
+            viralLoadDate = "";
         }
         // find deceased date
         CalculationResult deadResults = EmrCalculationUtils.evaluateForPatient(DateOfDeathCalculation.class, null, patient);
-        if(deadResults != null){
-            patientSummary.setDeathDate(formatDate((Date) deadResults.getValue()));
+        String dead;
+        if(deadResults.isEmpty()){
+            dead = "N/A";
         }
-        else{
-            patientSummary.setDeathDate("");
+        else {
+            dead = formatDate((Date) deadResults.getValue());
         }
+
         // next appointment date
         CalculationResult returnVisitResults = EmrCalculationUtils.evaluateForPatient(LastReturnVisitDateCalculation.class, null, patient);
         if(returnVisitResults != null){
@@ -512,12 +531,14 @@ public class SummariesFragmentController {
         }
         // transfer out date
         CalculationResult totResults = EmrCalculationUtils.evaluateForPatient(TransferOutDateCalculation.class, null, patient);
-        if(totResults != null){
-            patientSummary.setTransferOutDate(formatDate((Date) totResults.getValue()));
+        String toDate;
+        if(totResults.isEmpty()){
+            toDate = "N/A";
         }
         else {
-            patientSummary.setTransferOutDate("");
+            toDate = formatDate((Date) totResults.getValue());
         }
+
         model.addAttribute("patient", patientSummary);
         model.addAttribute("names", stringBuilder);
         model.addAttribute("currentRegimen", patientSummary.getCurrentArtRegimen());
@@ -527,15 +548,20 @@ public class SummariesFragmentController {
         model.addAttribute("programs", patientSummary.getClinicsEnrolled());
         model.addAttribute("recentCd4Count", patientSummary.getMostRecentCd4());
         model.addAttribute("recentCd4CountDate", patientSummary.getMostRecentCd4Date());
-        model.addAttribute("recentVl", patientSummary.getMostRecentVl());
-        model.addAttribute("recentVlDate", patientSummary.getMostRecentVlDate());
-        model.addAttribute("deadDeath", patientSummary.getDeathDate());
+        model.addAttribute("recentVl", viralLoadValue);
+        model.addAttribute("recentVlDate", viralLoadDate);
+        model.addAttribute("deadDeath", dead);
         model.addAttribute("returnVisitDate", patientSummary.getNextAppointmentDate());
-        model.addAttribute("toDate", patientSummary.getTransferOutDate());
+        model.addAttribute("toDate", toDate);
+        model.addAttribute("tiDate", tiDate);
         model.addAttribute("allergies", allergies);
         model.addAttribute("iosResults", iosResults);
         model.addAttribute("clinicValues", clinicValues);
         model.addAttribute("firstRegimen", firstRegimen);
+
+        System.out.println("The transfer in date is ::"+tiDate);
+        System.out.println("The transfer out date is ::"+toDate);
+        System.out.println("The death date is ::"+dead);
 
     }
 
@@ -647,7 +673,7 @@ public class SummariesFragmentController {
         return  value;
     }
     String ios(Integer concept) {
-        String value;
+        String value ;
         if(concept.equals(123358)){
             value = "Zoster";
         }
@@ -837,6 +863,22 @@ public class SummariesFragmentController {
         }
 
         return defaultString;
+    }
+    String intergerToRoman(String integer){
+        String value = "";
+        if(integer.equals("1")){
+            value = "I";
+        }
+        else if(integer.equals("2")){
+            value = "II";
+        }
+        else if(integer.equals("3")){
+            value = "III";
+        }
+        else if(integer.equals("4")){
+            value = "IV";
+        }
+        return value;
     }
 
 }
