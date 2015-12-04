@@ -48,14 +48,7 @@ import org.openmrs.ui.framework.fragment.FragmentModel;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by codehub on 10/30/15.
@@ -407,27 +400,35 @@ public class SummariesFragmentController {
             patientSummary.setCurrentWhoStaging("");
         }
         //find whether this patient has been in CTX
-        CalculationResultMap medOrdersMapCtx = Calculations.lastObs(Dictionary.getConcept(Dictionary.MEDICATION_ORDERS), Arrays.asList(patient.getPatientId()), context);
+        CalculationResultMap medOrdersMapCtx = Calculations.allObs(Dictionary.getConcept(Dictionary.MEDICATION_ORDERS), Arrays.asList(patient.getPatientId()), context);
         CalculationResultMap medicationDispensedCtx = Calculations.lastObs(Dictionary.getConcept(Dictionary.COTRIMOXAZOLE_DISPENSED), Arrays.asList(patient.getPatientId()), context);
 
-        Obs medOrdersMapObsCtx = EmrCalculationUtils.obsResultForPatient(medOrdersMapCtx, patient.getPatientId());
+        ListResult medOrdersMapListResults = (ListResult) medOrdersMapCtx.get(patient.getPatientId());
+        List<Obs> listOfObsCtx = CalculationUtils.extractResultValues(medOrdersMapListResults);
+
         Obs medicationDispensedCtxObs = EmrCalculationUtils.obsResultForPatient(medicationDispensedCtx, patient.getPatientId());
-        if(medOrdersMapObsCtx != null && medOrdersMapObsCtx.getValueCoded().equals(Dictionary.getConcept(Dictionary.SULFAMETHOXAZOLE_TRIMETHOPRIM))){
-            patientSummary.setOnCtx("Yes");
+        String ctxValue = "";
+        if(listOfObsCtx.size() > 0){
+            Collections.reverse(listOfObsCtx);
+            for(Obs obs:listOfObsCtx){
+                if(obs.getValueCoded().equals(Dictionary.getConcept(Dictionary.SULFAMETHOXAZOLE_TRIMETHOPRIM))){
+                    ctxValue = "Yes";
+                    break;
+                }
+            }
         }
         else if(medicationDispensedCtxObs != null && medicationDispensedCtxObs.getValueCoded().equals(Dictionary.getConcept(Dictionary.YES))){
-            patientSummary.setOnCtx("Yes");
+            ctxValue = "Yes";
         }
         else if(medicationDispensedCtxObs != null && medicationDispensedCtxObs.getValueCoded().equals(Dictionary.getConcept(Dictionary.NO))){
-            patientSummary.setOnCtx("No");
+            ctxValue = "No";
         }
         else if(medicationDispensedCtxObs != null && medicationDispensedCtxObs.getValueCoded().equals(Dictionary.getConcept(Dictionary.NOT_APPLICABLE))){
-            patientSummary.setOnCtx("N/A");
+            ctxValue = "N/A";
         }
         else {
-            patientSummary.setOnCtx("No");
+            ctxValue = "No";
         }
-
         //Find if a patient is on dapsone
         CalculationResultMap medOrdersMapDapsone = Calculations.lastObs(Dictionary.getConcept(Dictionary.MEDICATION_ORDERS), Arrays.asList(patient.getPatientId()), context);
         Obs medOrdersMapObsDapsone = EmrCalculationUtils.obsResultForPatient(medOrdersMapDapsone, patient.getPatientId());
@@ -508,8 +509,8 @@ public class SummariesFragmentController {
             viralLoadDate = formatDate(viralLoadLdlObs.getObsDatetime());
         }
         else{
-            viralLoadValue = "";
-            viralLoadDate = "";
+            viralLoadValue = "None";
+            viralLoadDate = "None";
         }
         // find deceased date
         CalculationResult deadResults = EmrCalculationUtils.evaluateForPatient(DateOfDeathCalculation.class, null, patient);
@@ -542,7 +543,7 @@ public class SummariesFragmentController {
         model.addAttribute("patient", patientSummary);
         model.addAttribute("names", stringBuilder);
         model.addAttribute("currentRegimen", patientSummary.getCurrentArtRegimen());
-        model.addAttribute("onCtx", patientSummary.getOnCtx());
+        model.addAttribute("onCtx", ctxValue);
         model.addAttribute("onDapsone", patientSummary.getDapsone());
         model.addAttribute("onIpt", patientSummary.getOnIpt());
         model.addAttribute("programs", patientSummary.getClinicsEnrolled());
@@ -558,10 +559,6 @@ public class SummariesFragmentController {
         model.addAttribute("iosResults", iosResults);
         model.addAttribute("clinicValues", clinicValues);
         model.addAttribute("firstRegimen", firstRegimen);
-
-        System.out.println("The transfer in date is ::"+tiDate);
-        System.out.println("The transfer out date is ::"+toDate);
-        System.out.println("The death date is ::"+dead);
 
     }
 

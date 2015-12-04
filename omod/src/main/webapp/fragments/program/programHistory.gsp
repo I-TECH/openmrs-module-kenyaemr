@@ -11,7 +11,7 @@
 		</div>
 		<% } else if (patientForms) { %>
 		<div class="ke-stack-item">
-			<% patientForms.each { form -> %>
+			<% patientForms.each { form -> %>programHistory
 				${ ui.includeFragment("kenyaui", "widget/button", [
 						iconProvider: form.iconProvider,
 						icon: form.icon,
