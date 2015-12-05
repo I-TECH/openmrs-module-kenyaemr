@@ -23,6 +23,7 @@ import org.openmrs.module.kenyacore.report.cohort.definition.CalculationCohortDe
 import org.openmrs.module.kenyacore.report.cohort.definition.DateCalculationCohortDefinition;
 import org.openmrs.module.kenyacore.report.cohort.definition.DateObsValueBetweenCohortDefinition;
 import org.openmrs.module.kenyaemr.Dictionary;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.CtxFromAListOfMedicationOrdersCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.FirstProgramEnrollment;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.OnCtxWithinDurationCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.pre_art.TransferredInAfterEnrollmentCalculation;
@@ -184,6 +185,10 @@ public class HivCohortLibrary {
 		onCtx.setValueList(Arrays.asList(Dictionary.getConcept(Dictionary.YES)));
 		onCtx.setOperator(SetComparator.IN);
 
+		CalculationCohortDefinition ctxFromAListOfMedicationOrders = new CalculationCohortDefinition(new CtxFromAListOfMedicationOrdersCalculation());
+		ctxFromAListOfMedicationOrders.setName("ctxFromAListOfMedicationOrders");
+		ctxFromAListOfMedicationOrders.addParameter(new Parameter("OnDate", "On Date", Date.class));
+
 		//we need to include those patients who have either ctx in the med orders
 		//that was not captured coded obs
 
@@ -193,8 +198,8 @@ public class HivCohortLibrary {
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.addSearch("onCtx", ReportUtils.map(onCtx, "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
 		cd.addSearch("onMedCtx", ReportUtils.map(commonCohorts.medicationDispensed(Dictionary.getConcept(Dictionary.SULFAMETHOXAZOLE_TRIMETHOPRIM), Dictionary.getConcept(Dictionary.DAPSONE)),"onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
-		cd.addSearch("onCtxOnDuration", ReportUtils.map(onCtxOnDuration(), "onDate=${onOrBefore}"));
-		cd.setCompositionString("onCtx OR onMedCtx OR onCtxOnDuration");
+		cd.addSearch("ctxFromAListOfMedicationOrders", ReportUtils.map(ctxFromAListOfMedicationOrders, "onDate=${onOrBefore}"));
+		cd.setCompositionString("onCtx OR onMedCtx OR ctxFromAListOfMedicationOrders");
 
 		return cd;
 	}
@@ -299,18 +304,6 @@ public class HivCohortLibrary {
 		return cd;
 
 	}
-
-	/**
-	 * Patients who are on ctx on ${onDate}
-	 * @return the cohort definition
-	 */
-	public CohortDefinition onCtxOnDuration() {
-		CalculationCohortDefinition cd = new CalculationCohortDefinition(new OnCtxWithinDurationCalculation());
-		cd.setName("On CTX on date");
-		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
-		return cd;
-	}
-
 	/**
 	 * Patients enrolled in HIV program based on their first enrollment
 	 * @return the CohortDefinition
