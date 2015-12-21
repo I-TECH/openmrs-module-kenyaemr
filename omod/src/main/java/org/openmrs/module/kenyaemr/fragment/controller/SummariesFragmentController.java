@@ -470,7 +470,7 @@ public class SummariesFragmentController {
             List<PatientProgram> patientPrograms = (List<PatientProgram>) clinicsEnrolledResult.getValue();
             for(PatientProgram p: patientPrograms) {
 
-                patientProgramList.add(programs(p.getProgram().getProgramId()));
+                patientProgramList.add(programs(p.getProgram().getConcept().getConceptId()));
             }
         }
         setToList.addAll(patientProgramList);
@@ -480,7 +480,7 @@ public class SummariesFragmentController {
         }
         else {
             for(String val:setToList) {
-                clinicValues += val+" ";
+                clinicValues += val+",";
             }
         }
     //most recent cd4
@@ -799,21 +799,18 @@ public class SummariesFragmentController {
     }
     String programs(int value){
        String prog="";
-        if(value == 1){
+        if(value == 160541){
             prog ="TB";
         }
 
-        if(value == 2){
+        if(value == 160631){
             prog ="HIV";
         }
 
-        if(value == 3){
-            prog ="MCH-Child";
+        if(value == 159937){
+            prog ="MCH";
         }
 
-        if(value == 4){
-            prog ="MCH-Mother";
-        }
         return prog;
     }
 

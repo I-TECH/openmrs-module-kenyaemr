@@ -40,9 +40,9 @@ public class PatientProgramEnrollmentCalculation extends AbstractPatientCalculat
 
 		CalculationResultMap ret = new CalculationResultMap();
 
-		for (Integer ptid : cohort) {
-			List<PatientProgram> programs = service.getPatientPrograms(patientService.getPatient(ptid), null, null, null, null,null, false);
-			ret.put(ptid, new SimpleResult(programs, this));
+		for (Integer ptId : cohort) {
+			List<PatientProgram> programs = service.getPatientPrograms(patientService.getPatient(ptId), null, null, null, null,null, true);
+			ret.put(ptId, new SimpleResult(programs, this));
 		}
 
 		return ret;

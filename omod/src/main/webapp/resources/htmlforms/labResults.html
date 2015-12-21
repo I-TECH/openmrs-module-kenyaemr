@@ -12,6 +12,22 @@
   ~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
 -->
 <htmlform>
+	<script type="text/javascript">
+		function viralLoadValidation(){
+			if(getValue('ldl.value') == 1302){
+				jq('#vLoadResults :input').prop( "disabled", true );
+			}
+			else {
+				jq('#vLoadResults :input').prop( "disabled", false );
+			}
+		}
+
+		jq(function() {
+			getField('ldl.value').change(viralLoadValidation);
+			viralLoadValidation;
+		});
+
+	</script>
 
 	<div class="ke-form-header">
 		<table width="100%">
@@ -62,7 +78,7 @@
 			<tr>
 				<td>06 (a).</td>
 				<td>HIV Viral Load</td>
-				<td>
+				<td id="vLoadResults">
 					<obs conceptId="856AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" showUnits="true" dateLabel="&lt;/td&gt;&lt;td&gt;"/>
 
 				</td>
@@ -71,7 +87,7 @@
 			<tr>
 				<td>06 (b).</td>
 				<td>HIV Viral Load(LDL)</td>
-				<td><obs conceptId="1305AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1302AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="LDL" dateLabel="&lt;/td&gt;&lt;td&gt;"/></td>
+				<td><obs conceptId="1305AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1302AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="LDL" id="ldl"  dateLabel="&lt;/td&gt;&lt;td&gt;"/></td>
 			</tr>
 			<tr>
 				<td>07.</td>

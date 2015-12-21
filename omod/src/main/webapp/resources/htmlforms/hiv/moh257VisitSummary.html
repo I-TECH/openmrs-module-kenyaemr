@@ -190,14 +190,24 @@ function setPregDateField(option) {
         }
     }
 }
+function viralLoadValidation(){
+    if(getValue('ldl.value') == 1302){
+        jq('#vLoadResults :input').prop( "disabled", true );
+    }
+    else {
+        jq('#vLoadResults :input').prop( "disabled", false );
+    }
+}
 
 jq(function() {
     getField('weight.value').change(onWeightOrHeightChange);
     getField('height.value').change(onWeightOrHeightChange);
     getField('encounter-date.value').change(onEncounterDateChange);
+    getField('ldl.value').change(viralLoadValidation);
 
     onWeightOrHeightChange();
     onEncounterDateChange();
+    viralLoadValidation();
     beforeSubmit.push(function() {
         var encounterDate = new Date(getValue('encounter-date.value')).getTime();
         var nextAptDate = new Date(getValue('next-apt-date.value')).getTime();
@@ -696,10 +706,10 @@ jq(function() {
 <tr>
     <th colspan="2">HIV Viral Load</th>
     <td>(ab)</td>
-    <td colspan="2">
-        <obs conceptId="856AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" showUnits="true" />
+    <td colspan="2" >
+       <span id="vLoadResults"> <obs conceptId="856AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" showUnits="true" id="viral-load-value"/></span>
         or
-        <obs conceptId="1305AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1302AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="LDL" />
+        <obs conceptId="1305AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1302AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="LDL" id="ldl"/>
     </td>
 </tr>
 
