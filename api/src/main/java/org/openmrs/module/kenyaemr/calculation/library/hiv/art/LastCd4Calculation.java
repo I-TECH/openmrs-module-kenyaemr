@@ -62,8 +62,9 @@ public class LastCd4Calculation extends AbstractPatientCalculation {
 
 			if(allObsList.size() > 0 && artInitiationDt != null && outcomePeriod != null) {
 				Date outcomeDate = DateUtil.adjustDate(DateUtil.adjustDate(artInitiationDt, outcomePeriod, DurationUnit.MONTHS), 1, DurationUnit.DAYS);
+				Date outcomeDate183DaysBefore = DateUtil.adjustDate(outcomeDate, -184, DurationUnit.DAYS);
 				for(Obs obs:allObsList) {
-					if(obs.getObsDatetime().before(outcomeDate) && obs.getObsDatetime().after(dateLimit(artInitiationDt, 31))) {
+					if(obs.getObsDatetime().before(outcomeDate) && obs.getObsDatetime().after(outcomeDate183DaysBefore)) {
 						validListObs.add(obs);
 					}
 				}
