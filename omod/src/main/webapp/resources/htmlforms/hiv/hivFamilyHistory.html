@@ -13,56 +13,111 @@
 -->
 <htmlform>
 
-	<!-- Encounter date, provider and location are not relevant for CE forms -->
-	<div style="display:none">
-		<encounterDate id="encounter-date" />
-		<encounterProvider default="ae01b8ff-a4cc-4012-bcf7-72359e852e14" />
-		<encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" />
-	</div>
+    <script>
+        $(document).ready(function () {
 
-	<div class="ke-form-content">
-		<table width="100%">
-			<thead>
-				<tr>
-					<th>Name of Members</th>
-					<th>Age</th>
-					<th>Relation</th>
-					<th>HIV Result</th>
-					<th>In Care?</th>
-					<th>CCC Number</th>
-				</tr>
-			</thead>
-			<tbody>
-				<repeat>
-					<template>
-						<obsgroup groupingConceptId="160593AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-							<tr>
-								<td><obs conceptId="160750AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labetText=" "/></td>
-								<td><obs conceptId="160617AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Age"/><obs conceptId="1732AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1734AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1074AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="dropdown" answerLabels="Years,Months" /> </td>
-								<td><obs conceptId="1560AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="970AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,971AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159772AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160273AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,972AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1528AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,975AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,974AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5617AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162221AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160639AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Mother,Father,Grandmother,Grandfather,Sibling,Child,Aunt,Uncle,Spouse/partner,Co-Wife,Guardian,Other" /></td>
-								<td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="dropdown" answerLabels="P,N,E,DK"/></td>
-								<td><obs conceptId="159811AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="dropdown" answerLabels="YES,NO,UNKNOWN"/></td>
-								<td><obs conceptId="160752AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=""/></td>
-							</tr>
-						</obsgroup>
-					</template>
-					<render n="1" concept=" " />
-					<render n="2" concept=" " />
-					<render n="3" concept=" " />
-					<render n="4" concept=" " />
-					<render n="5" concept=" " />
-					<render n="6" concept=" " />
-					<render n="7" concept=" " />
-					<render n="8" concept=" " />
-					<render n="9" concept=" " />
-					<render n="10" concept=" " />
-				</repeat>
-			</tbody>
-		</table>
-	</div>
+            disableFields();
 
-	<div class="ke-form-footer">
-		<submit />
-	</div>
+            $(".hiv-status select").change(function () {
+                var row = $(this).parent().parent().parent();
+                if (this.value == '1065') {
+                    $(row).find('.in-care select').attr('disabled', false);
+                    $(row).find('.ccc-no input').attr('disabled', false);
+                } else {
+                    $(row).find('.in-care select').val('');
+                    $(row).find('.ccc-no input').val('');
+                    $(row).find('.in-care select').attr('disabled', true);
+                    $(row).find('.ccc-no input').attr('disabled', true);
+                }
+            });
+
+            function disableFields() {
+                var table = document.getElementById("table");
+                for (var i = 0, row; row = table.rows[i]; i++) {
+                    var hivStatus = $(row).find('.hiv-status select').val();
+                    if (hivStatus === '1065') {
+                        $(row).find('.in-care select').attr('disabled', false);
+                        $(row).find('.ccc-no input').attr('disabled', false);
+                    } else {
+                        $(row).find('.in-care select').attr('disabled', true);
+                        $(row).find('.ccc-no input').attr('disabled', true);
+                    }
+                }
+            }
+        });
+    </script>
+
+    <!-- Encounter date, provider and location are not relevant for CE forms -->
+    <div style="display:none">
+        <encounterDate id="encounter-date"/>
+        <encounterProvider default="ae01b8ff-a4cc-4012-bcf7-72359e852e14"/>
+        <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation"/>
+    </div>
+
+    <div class="ke-form-content">
+        <table id="table" width="100%">
+            <thead>
+            <tr>
+                <th>Name of Members</th>
+                <th>Age</th>
+                <th>Relation</th>
+                <th>HIV Result</th>
+                <th>In Care?</th>
+                <th>CCC Number</th>
+            </tr>
+            </thead>
+            <tbody>
+            <repeat>
+                <template>
+                    <obsgroup groupingConceptId="160593AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                        <tr>
+                            <td>
+                                <obs conceptId="160750AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labetText=" "/>
+                            </td>
+                            <td>
+                                <obs conceptId="160617AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Age"/>
+                                <obs conceptId="1732AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     answerConceptIds="1734AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1074AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     style="dropdown" answerLabels="Years,Months"/>
+                            </td>
+                            <td>
+                                <obs conceptId="1560AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     answerConceptIds="970AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,971AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159772AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160273AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,972AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1528AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,975AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,974AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5617AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162221AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160639AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     answerLabels="Mother,Father,Grandmother,Grandfather,Sibling,Child,Aunt,Uncle,Spouse/partner,Co-Wife,Guardian,Other"/>
+                            </td>
+                            <td>
+                                <obs class="hiv-status" conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     style="dropdown" answerLabels="P,N,E,DK"/>
+                            </td>
+                            <td>
+                                <obs class="in-care" conceptId="159811AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     style="dropdown" answerLabels="YES,NO,UNKNOWN"/>
+                            </td>
+                            <td>
+                                <obs class="ccc-no" conceptId="160752AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=""/>
+                            </td>
+                        </tr>
+                    </obsgroup>
+                </template>
+                <render n="1" concept=" "/>
+                <render n="2" concept=" "/>
+                <render n="3" concept=" "/>
+                <render n="4" concept=" "/>
+                <render n="5" concept=" "/>
+                <render n="6" concept=" "/>
+                <render n="7" concept=" "/>
+                <render n="8" concept=" "/>
+                <render n="9" concept=" "/>
+                <render n="10" concept=" "/>
+            </repeat>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="ke-form-footer">
+        <submit/>
+    </div>
 
 </htmlform>
