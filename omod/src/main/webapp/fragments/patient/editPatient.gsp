@@ -183,7 +183,10 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
         dialogConfig     : [heading: "Calculate Birthdate", width: 40, height: 40],
         fields           : [
                 [label: "Age in years", formFieldName: "age", class: java.lang.Integer],
-                [label: "On date", formFieldName: "now", class: java.util.Date, initialValue: new java.text.SimpleDateFormat("yyyy-MM-dd").parse(new Date().getYear() + "-06-15")]
+                [
+                        label: "On date", formFieldName: "now",
+                        class: java.util.Date, initialValue: new java.text.SimpleDateFormat("yyyy-MM-dd").parse((new Date().getYear() + 1900) + "-06-15")
+                ]
         ],
         fragmentProvider : "kenyaemr",
         fragment         : "emrUtils",
