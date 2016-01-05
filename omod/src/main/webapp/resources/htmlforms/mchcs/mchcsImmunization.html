@@ -25,6 +25,26 @@
 		text-align: left;
 		}
 	</style>
+	<script type="text/javascript">
+
+		function bcgScarValidation(){
+			if(getValue('bcg-scar-checked.value') == false || getValue('bcg-scar-checked.value') == 1066){
+				jq('#date-scar-checked :input').prop( "disabled", true );
+				jq('#date-scar-check-repeat :input').prop( "disabled", true );
+			}
+			else {
+				jq('#date-scar-checked :input').prop( "disabled", false );
+				jq('#date-scar-check-repeat :input').prop( "disabled", false );
+			}
+		}
+		jq(function() {
+			bcgScarValidation();
+			jq('#bcg-scar-checked input:radio').click(function() {
+				bcgScarValidation();
+			});
+
+		});
+	</script>
 
 	<div class="ke-form-header">
 		<table style="width: 100%">
@@ -91,10 +111,10 @@
 			<tbody>
 				<tr>
 					<td>
-						BCG-Scar checked<obs conceptId="160265AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" />
+						BCG-Scar checked<obs conceptId="160265AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" id="bcg-scar-checked" />
 					</td>
-					<td>Date checked<obs conceptId="160753AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
-					<td>Date BCG repeated<obs conceptId="1410AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+					<td id="date-scar-checked">Date checked<obs conceptId="160753AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+					<td id="date-scar-check-repeat">Date BCG repeated<obs conceptId="1410AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  /></td>
 				</tr>
 			</tbody>
 		</table>
