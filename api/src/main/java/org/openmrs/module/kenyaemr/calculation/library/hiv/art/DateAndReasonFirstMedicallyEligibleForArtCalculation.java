@@ -108,10 +108,10 @@ public class DateAndReasonFirstMedicallyEligibleForArtCalculation extends Abstra
                     }
                 } else if ((tbEnrollment != null || (hasTbConcpt != null && hasTbConcpt.getValueCoded().equals(Dictionary.getConcept(Dictionary.DISEASE_DIAGNOSED))) || (hasTbConcpt != null && hasTbConcpt.getValueCoded().equals(Dictionary.getConcept(Dictionary.ON_TREATMENT_FOR_DISEASE))))) {
                     if(tbEnrollment != null && artStartDate != null && (tbEnrollment.getDateEnrolled().before(artStartDate) || tbEnrollment.getDateEnrolled().equals(artStartDate))) {
-                        patientEligibility = new PatientEligibility("TB/HIV coinfection ", tbEnrollment.getDateEnrolled());
+                        patientEligibility = new PatientEligibility("TB/HIV coinfection", tbEnrollment.getDateEnrolled());
                     }
                     else if(hasTbConcpt != null && ((hasTbConcpt.getValueCoded().equals(Dictionary.getConcept(Dictionary.DISEASE_DIAGNOSED))) || hasTbConcpt.getValueCoded().equals(Dictionary.getConcept(Dictionary.DISEASE_DIAGNOSED)))) {
-                        patientEligibility = new PatientEligibility("TB/HIV coinfection ", hasTbConcpt.getObsDatetime());
+                        patientEligibility = new PatientEligibility("TB/HIV coinfection", hasTbConcpt.getObsDatetime());
                     }
                     else {
                         patientEligibility = new PatientEligibility("", artStartDate);
