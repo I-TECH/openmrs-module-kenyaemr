@@ -145,8 +145,14 @@ public class SummariesFragmentController {
         //patient entry point
         CalculationResultMap entryPointMap = Calculations.lastObs(Dictionary.getConcept(Dictionary.METHOD_OF_ENROLLMENT), Arrays.asList(patient.getPatientId()), context);
         Obs entryPointObs = EmrCalculationUtils.obsResultForPatient(entryPointMap, patient.getPatientId());
-        patientSummary.setPatientEntryPoint(entryPointAbbriviations(entryPointObs.getValueCoded()));
-        patientSummary.setDateEntryPoint(formatDate(entryPointObs.getObsDatetime()));
+        if(entryPointObs != null) {
+            patientSummary.setPatientEntryPoint(entryPointAbbriviations(entryPointObs.getValueCoded()));
+            patientSummary.setDateEntryPoint(formatDate(entryPointObs.getObsDatetime()));
+        }
+        else {
+            patientSummary.setPatientEntryPoint("");
+            patientSummary.setDateEntryPoint("");
+        }
 
         Set<PersonName> names = patient.getNames();
         StringBuilder stringBuilder = new StringBuilder();

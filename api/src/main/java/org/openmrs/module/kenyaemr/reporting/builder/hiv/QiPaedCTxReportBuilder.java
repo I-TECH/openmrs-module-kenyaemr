@@ -74,39 +74,39 @@ public class QiPaedCTxReportBuilder extends AbstractReportBuilder {
 		String indParams = "startDate=${startDate},endDate=${endDate}";
 
 		dsd.addColumn("2.1", "% of patients in care with 2 or more visits, 3 months apart", ReportUtils.map(qiIndicators.clinicalVisit(), indParams), "");
-		dsd.addColumn("2.11", "Numerator", ReportUtils.map(qiIndicators.clinicalVisitNum(), indParams), "");
-		dsd.addColumn("2.12", "Denominator", ReportUtils.map(qiIndicators.clinicalVisitDen(), indParams), "");
-		dsd.addColumn("2.13", "Complement", ReportUtils.map(qiIndicators.complementClinicalVisitNum(), indParams), "");
+		dsd.addColumn("2.1a", "Numerator", ReportUtils.map(qiIndicators.clinicalVisitNum(), indParams), "");
+		dsd.addColumn("2.1b", "Denominator", ReportUtils.map(qiIndicators.clinicalVisitDen(), indParams), "");
+		dsd.addColumn("2.1c", "QI gap", ReportUtils.map(qiIndicators.complementClinicalVisitNum(), indParams), "");
 
 		dsd.addColumn("2.2", "% of HIV infected patients in care with at least one cd4 count", ReportUtils.map(qiIndicators.hivMonitoringCd4(), indParams), "");
-		dsd.addColumn("2.21", "Numerator", ReportUtils.map(qiIndicators.hivMonitoringCd4Num(), indParams), "");
-		dsd.addColumn("2.22", "Denominator", ReportUtils.map(qiIndicators.hivMonitoringCd4Den(), indParams), "");
-		dsd.addColumn("2.23", "Complement", ReportUtils.map(qiIndicators.complementHivMonitoringCd4Num(), indParams), "");
+		dsd.addColumn("2.2a", "Numerator", ReportUtils.map(qiIndicators.hivMonitoringCd4Num(), indParams), "");
+		dsd.addColumn("2.2b", "Denominator", ReportUtils.map(qiIndicators.hivMonitoringCd4Den(), indParams), "");
+		dsd.addColumn("2.2c", "QI gap", ReportUtils.map(qiIndicators.complementHivMonitoringCd4Num(), indParams), "");
 
 		dsd.addColumn("2.3", "% eligible patients initiated on ART", ReportUtils.map(qiIndicators.artInitiation(), indParams), "");
-		dsd.addColumn("2.31", "Numerator", ReportUtils.map(qiIndicators.artInitiationNum(), indParams), "");
-		dsd.addColumn("2.32", "Denominator", ReportUtils.map(qiIndicators.artInitiationDen(), indParams), "");
-		dsd.addColumn("2.33", "Complement", ReportUtils.map(qiIndicators.complementArtInitiationNum(), indParams), "");
+		dsd.addColumn("2.3a", "Numerator", ReportUtils.map(qiIndicators.artInitiationNum(), indParams), "");
+		dsd.addColumn("2.3b", "Denominator", ReportUtils.map(qiIndicators.artInitiationDen(), indParams), "");
+		dsd.addColumn("2.3c", "QI gap", ReportUtils.map(qiIndicators.complementArtInitiationNum(), indParams), "");
 
 		dsd.addColumn("2.4", "% of patients on ART with at least one VL result during the last 12 months", ReportUtils.map(qiIndicators.hivMonitoringViralLoad(), indParams), "");
-		dsd.addColumn("2.41", "Numerator", ReportUtils.map(qiIndicators.hivMonitoringViralLoadNum(), indParams), "");
-		dsd.addColumn("2.42", "Denominator", ReportUtils.map(qiIndicators.hivMonitoringViralLoadDen(), indParams), "");
-		dsd.addColumn("2.43", "Complement", ReportUtils.map(qiIndicators.complementHivMonitoringViralLoadNum(), indParams), "");
+		dsd.addColumn("2.4a", "Numerator", ReportUtils.map(qiIndicators.hivMonitoringViralLoadNum(), indParams), "");
+		dsd.addColumn("2.4b", "Denominator", ReportUtils.map(qiIndicators.hivMonitoringViralLoadDen(), indParams), "");
+		dsd.addColumn("2.4c", "QI gap", ReportUtils.map(qiIndicators.complementHivMonitoringViralLoadNum(), indParams), "");
 
 		dsd.addColumn("2.5", "% of patients on ART for at least 6 months with VL suppression", ReportUtils.map(qiIndicators.hivMonitoringViralLoadSupression(), indParams), "");
-		dsd.addColumn("2.51", "Numerator", ReportUtils.map(qiIndicators.hivMonitoringViralLoadSupressionNum(), indParams), "");
-		dsd.addColumn("2.52", "Denominator", ReportUtils.map(qiIndicators.hivMonitoringViralLoadSupressionDen(), indParams), "");
-		dsd.addColumn("2.53", "Complement", ReportUtils.map(qiIndicators.complementHivMonitoringViralLoadSupressionNum(), indParams), "");
+		dsd.addColumn("2.5a", "Numerator", ReportUtils.map(qiIndicators.hivMonitoringViralLoadSupressionNum(), indParams), "");
+		dsd.addColumn("2.5b", "Denominator", ReportUtils.map(qiIndicators.hivMonitoringViralLoadSupressionDen(), indParams), "");
+		dsd.addColumn("2.5c", "QI gap", ReportUtils.map(qiIndicators.complementHivMonitoringViralLoadSupressionNum(), indParams), "");
 
 		dsd.addColumn("2.6", "% of patients screened for TB at last clinic visit", ReportUtils.map(qiIndicators.tbScreeningServiceCoverage(), indParams), "");
-		dsd.addColumn("2.61", "Numerator", ReportUtils.map(qiIndicators.tbScreeningServiceCoverageNum(), indParams), "");
-		dsd.addColumn("2.62", "Denominator", ReportUtils.map(qiIndicators.tbScreeningServiceCoverageDen(), indParams), "");
-		dsd.addColumn("2.63", "Complement", ReportUtils.map(qiIndicators.complementTbScreeningServiceCoverageNum(), indParams), "");
+		dsd.addColumn("2.6a", "Numerator", ReportUtils.map(qiIndicators.tbScreeningServiceCoverageNum(), indParams), "");
+		dsd.addColumn("2.6b", "Denominator", ReportUtils.map(qiIndicators.tbScreeningServiceCoverageDen(), indParams), "");
+		dsd.addColumn("2.6c", "QI gap", ReportUtils.map(qiIndicators.complementTbScreeningServiceCoverageNum(), indParams), "");
 
 		dsd.addColumn("2.8", "% of patients with Nutritional assessment", ReportUtils.map(qiIndicators.nutritionalAssessment(), indParams), "");
-		dsd.addColumn("2.81", "Numerator", ReportUtils.map(qiIndicators.nutritionalAssessmentNum(), indParams), "");
-		dsd.addColumn("2.82", "Denominator", ReportUtils.map(qiIndicators.nutritionalAssessmentDen(), indParams), "");
-		dsd.addColumn("2.83", "Complement", ReportUtils.map(qiIndicators.complementNutritionalAssessmentNum(), indParams), "");
+		dsd.addColumn("2.8a", "Numerator", ReportUtils.map(qiIndicators.nutritionalAssessmentNum(), indParams), "");
+		dsd.addColumn("2.8b", "Denominator", ReportUtils.map(qiIndicators.nutritionalAssessmentDen(), indParams), "");
+		dsd.addColumn("2.8c", "QI gap", ReportUtils.map(qiIndicators.complementNutritionalAssessmentNum(), indParams), "");
 
 		return dsd;
 	}
