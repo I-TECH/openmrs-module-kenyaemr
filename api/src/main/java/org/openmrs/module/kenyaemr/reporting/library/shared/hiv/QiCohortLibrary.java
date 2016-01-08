@@ -632,7 +632,8 @@ public class QiCohortLibrary {
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addSearch("hasCd4", ReportUtils.map(hivCohortLibrary.hasCd4Result(), "onOrAfter=${onOrBefore-6m},onOrBefore=${onOrBefore}"));
 		cd.addSearch("adult", ReportUtils.map(commonCohorts.agedAtLeast(15), "effectiveDate=${onOrBefore}"));
-		cd.setCompositionString("hasCd4 AND adult");
+		cd.addSearch("onART", ReportUtils.map(artCohortLibrary.onArt(), "onDate=${onOrBefore}"));
+		cd.setCompositionString("hasCd4 AND adult AND NOT onART");
 		return cd;
 	}
 
@@ -646,7 +647,8 @@ public class QiCohortLibrary {
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addSearch("hasVisits", ReportUtils.map(hivCohortLibrary.hasHivVisit(), "onOrAfter=${onOrBefore-6m},onOrBefore=${onOrBefore}"));
 		cd.addSearch("adult", ReportUtils.map(commonCohorts.agedAtLeast(15), "effectiveDate=${onOrBefore}"));
-		cd.setCompositionString("hasVisits AND adult");
+		cd.addSearch("onART", ReportUtils.map(artCohortLibrary.onArt(), "onDate=${onOrBefore}"));
+		cd.setCompositionString("hasVisits AND adult AND NOT onART");
 		return cd;
 	}
 
@@ -660,7 +662,8 @@ public class QiCohortLibrary {
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addSearch("hasCD4ResultsAdult", ReportUtils.map(hasCD4ResultsAdult(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
 		cd.addSearch("hasHivVisitAdult", ReportUtils.map(hasHivVisitAdult(),"onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
-		cd.setCompositionString("hasCD4ResultsAdult AND hasHivVisitAdult");
+		cd.addSearch("onART", ReportUtils.map(artCohortLibrary.onArt(), "onDate=${onOrBefore}"));
+		cd.setCompositionString("hasCD4ResultsAdult AND hasHivVisitAdult AND NOT onART");
 		return cd;
 	}
 
@@ -699,7 +702,8 @@ public class QiCohortLibrary {
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addSearch("hasCD4ResultsAndHasHivVisitAdult", ReportUtils.map(hasCD4ResultsAndHasHivVisitAdult(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
 		cd.addSearch("hasHivVisitAdult", ReportUtils.map(hasHivVisitAdult(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
-		cd.setCompositionString("hasHivVisitAdult AND NOT hasCD4ResultsAndHasHivVisitAdult");
+		cd.addSearch("onART", ReportUtils.map(artCohortLibrary.onArt(), "onDate=${onOrBefore}"));
+		cd.setCompositionString("hasHivVisitAdult AND NOT hasCD4ResultsAndHasHivVisitAdult AND NOT onART");
 		return cd;
 	}
 
