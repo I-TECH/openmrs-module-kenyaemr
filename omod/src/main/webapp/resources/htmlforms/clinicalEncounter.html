@@ -35,11 +35,22 @@
 			}
 			jq('#calculated-bmi').html(display);
 		}
+		function displayRecentBmi(){
+			var weightKg = "<lookup expression="fn.latestObs(5089).valueNumeric"/>"
+			var heightM = ("<lookup expression="fn.latestObs(5090).valueNumeric"/>")/100
+			var bmi ='';
+			if (!isNaN(weightKg) &amp;&amp; !isNaN(heightM))  {
+				bmi = weightKg / (heightM * heightM);
+			}
+			alert(weightKg);
+			jq('#recent-calculated-bmi').html(bmi.toFixed(2));
+		}
 
 		jq(function() {
 			getField('weight.value').change(onWeightOrHeightChange);
 			getField('height.value').change(onWeightOrHeightChange);
 			onWeightOrHeightChange();
+			//displayRecentBmi();
 
 			var strtext = "";
 			var familyPlanningOption = getValue('fplanning.value');
@@ -211,7 +222,7 @@
 				<tr>
 					<td>BMI</td>
 					<td><span id="calculated-bmi" class="value"></span></td>
-					<td>-</td>
+					<td><span id="recent-calculated-bmi" class="value"></span></td>
 				</tr>
 				<tr>
 					<td>MUAC</td>
