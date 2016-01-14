@@ -27,24 +27,31 @@
 		<div id="external-help-links" style="padding: 10px 0 10px 10px"></div>
 	</div>
 
-	Click <a href="${ externalHelpUrl }" target="_blank">here</a> to view all help resources.
 	<% } %>
 
-	If you are experiencing a problem you should contact your clinic's IT admin for support.
-	You may also submit a support ticket. To do so:
 
-	<br />
-
-	<div style="width:450px; margin:0 auto; text-align: center; background-color: #e8e7e2; padding: 10px; border-radius: 4px">
-		<img src="${ ui.resourceLink("kenyaui", "images/glyphs/phone.png") }" class="ke-glyph" /> Call the help desk for free at <strong>${ supportNumber }</strong><br />
-		<img src="${ ui.resourceLink("kenyaui", "images/glyphs/phone.png") }" class="ke-glyph" /> For Nyanza and Western regions call free at <strong>0800720535</strong><br />
-		or<br />
-		<img src="${ ui.resourceLink("kenyaui", "images/glyphs/email.png") }" class="ke-glyph" /> Email <a href="mailto:${ supportEmail }">${ supportEmail }</a>
-		<br />
-		<br />
-		Please include your facility code which is <strong>${ facilityCode }</strong>
+	<div style="width:auto; margin:0 auto; text-align: left; background-color: #803625; padding: 10px; border-radius: 4px">
+		<a href="../help/releases/index.html") }" style="color: white" target="_blank"> KenyaEMR releases</a>
 	</div>
 	<br />
+	<div style="width: auto; margin:0 auto; text-align: left; background-color: #803625; padding: 10px; border-radius: 4px; valign: top">
+	    <h4 style="color: white">Self Learning Tools and Resources</h4>
+	    <div>
+	        <a href="../help/eSessions/index.html"><img src="${ ui.resourceLink("kenyaemr", "images/help/esessions_icon.png") }"  target="_blank" /></a>
+	        <a href="../help/index.html"><img src="${ ui.resourceLink("kenyaemr", "images/help/job_aids_icon.png") }"  target="_blank" /></a>
+	        <a href="../help/guidelines/index.html"><img src="${ ui.resourceLink("kenyaemr", "images/help/guidelines_icon.png") }"  target="_blank" /></a>
+	        <a href="../help/analysis-tools/index.html"><img src="${ ui.resourceLink("kenyaemr", "images/help/analysis_tools_icon.png") }"  target="_blank" /></a>
+	    </div>
+	</div>
+	<br />
+	<div style="width:auto; margin:0 auto; text-align: left; background-color: #803625; padding: 10px; border-radius: 4px" valign: top>
+	    <h4 style="color: white; valign: top">Contact Information</h4>
+	     <div>
+            <img src="${ ui.resourceLink("kenyaemr", "images/help/champion_icon.png") }"  target="_blank" />
+            <img src="${ ui.resourceLink("kenyaemr", "images/help/email_icon.png") }"  target="_blank" />
+            <img src="${ ui.resourceLink("kenyaemr", "images/help/phone_icon.png") }"  target="_blank" />
+           </div>
+    </div>
 
 </div>
 <div class="ke-panel-footer">

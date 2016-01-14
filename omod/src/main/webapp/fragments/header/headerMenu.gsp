@@ -37,6 +37,6 @@
 	}
 	function ke_showHelp() {
 		var currentAppId = ${ currentApp ? ("'" + currentApp.id + "'" ) : "null" };
-		kenyaui.openDynamicDialog({ heading: 'Help', url: ui.pageLink('kenyaemr', 'dialog/helpDialog', { appId: currentAppId }), width: 90, height: 90 });
+		kenyaui.openDynamicDialog({ heading: 'Help and Resource Center', url: ui.pageLink('kenyaemr', 'dialog/helpDialog', { appId: currentAppId }), width: 60, height: 60 });
 	}
 </script>
