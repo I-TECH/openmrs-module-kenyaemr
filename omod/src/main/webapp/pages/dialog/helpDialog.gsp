@@ -30,17 +30,18 @@
 	<% } %>
 
 
-	<div style="width:auto; margin:0 auto; text-align: left; background-color: #803625; padding: 10px; border-radius: 4px">
-		<a href="../help/releases/index.html") }" style="color: white" target="_blank"> KenyaEMR releases</a>
+	<div style="width:auto; margin:0 auto; text-align: center; background-color: #803625; padding: 10px; border-radius: 4px">
+	    <h4 style="color: white; align: left;">KenyaEMR Release Notes</h4>
+		<a href="../help/releases/index.html") }" style="color: white;" target="_blank"> <img src="${ ui.resourceLink("kenyaemr", "images/help/releases.png") }" /></a>
 	</div>
 	<br />
 	<div style="width: auto; margin:0 auto; text-align: left; background-color: #803625; padding: 10px; border-radius: 4px; valign: top">
 	    <h4 style="color: white">Self Learning Tools and Resources</h4>
 	    <div>
-	        <a href="../help/eSessions/index.html"><img src="${ ui.resourceLink("kenyaemr", "images/help/esessions_icon.png") }"  target="_blank" /></a>
-	        <a href="../help/index.html"><img src="${ ui.resourceLink("kenyaemr", "images/help/job_aids_icon.png") }"  target="_blank" /></a>
-	        <a href="../help/guidelines/index.html"><img src="${ ui.resourceLink("kenyaemr", "images/help/guidelines_icon.png") }"  target="_blank" /></a>
-	        <a href="../help/analysis-tools/index.html"><img src="${ ui.resourceLink("kenyaemr", "images/help/analysis_tools_icon.png") }"  target="_blank" /></a>
+	        <a href="../help/eSessions/index.html"><img src="${ ui.resourceLink("kenyaemr", "images/help/esessions_icon.png") }" /></a>
+	        <a href="../help/index.html"><img src="${ ui.resourceLink("kenyaemr", "images/help/job_aids_icon.png") }" /></a>
+	        <a href="../help/guidelines/index.html"><img src="${ ui.resourceLink("kenyaemr", "images/help/guidelines_icon.png") }" /></a>
+	        <a href="../help/analysis-tools/index.html"><img src="${ ui.resourceLink("kenyaemr", "images/help/analysis_tools_icon.png") }" /></a>
 	    </div>
 	</div>
 	<br />
