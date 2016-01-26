@@ -14,11 +14,17 @@
 
 package org.openmrs.module.kenyaemr.fragment.controller.header;
 
+import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyaemr.EmrConstants;
+import org.openmrs.module.kenyaemr.api.KenyaEmrService;
+import org.openmrs.ui.framework.fragment.FragmentModel;
+
 /**
  * Controller for the app header, which includes user menu
  */
 public class HeaderMenuFragmentController {
 
-	public void controller() {
+	public void controller(FragmentModel model) {
+		model.put("externalHelpUrl", Context.getAdministrationService().getGlobalProperty(EmrConstants.GP_EXTERNAL_HELP_URL, EmrConstants.DEFAULT_EXTERNAL_HELP_URL));
 	}
 }

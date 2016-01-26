@@ -36,6 +36,6 @@
 		}});
 	}
 	function ke_showHelp() {
-		window.open("../help/");
+		window.open('${ externalHelpUrl }');
 	}
 </script>
