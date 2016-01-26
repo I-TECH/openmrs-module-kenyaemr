@@ -41,13 +41,11 @@ public class DeceasedPatientsCalculation extends BaseEmrCalculation {
 	 */
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
-		Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
-		Set<Integer> inHivProgram = Filters.inProgram(hivProgram, cohort, context);
 		Set<Integer> alive = Filters.alive(cohort, context);
 		CalculationResultMap ret = new CalculationResultMap();
 		for (Integer ptId : cohort) {
 			boolean dead = false;
-			if(inHivProgram.contains(ptId) && !(alive.contains(ptId))){
+			if(!(alive.contains(ptId))){
 				dead = true;
 			}
 			ret.put(ptId, new SimpleResult(dead, this, context));
