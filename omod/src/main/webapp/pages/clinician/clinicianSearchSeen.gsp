@@ -23,6 +23,7 @@
             dateFormat: 'yy-mm-dd',
             defaultDate: '${ kenyaui.formatDateParam(seenDate) }',
             gotoCurrent: true,
+            maxDate: new Date,
             onSelect: function(dateText) {
                 ui.navigate('kenyaemr', 'clinician/clinicianSearchSeen', { seenDate: dateText });
             }

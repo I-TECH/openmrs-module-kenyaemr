@@ -30,7 +30,7 @@ public class NextAppointmentPlus90DaysCalculation extends AbstractPatientCalcula
             boolean hasNextDateOfVisit90Days = false;
 
             Obs nextOfVisitObs = EmrCalculationUtils.obsResultForPatient(nextAppointmentMap, ptId);
-            if(nextOfVisitObs != null && nextOfVisitObs.getValueDatetime() != null)
+            if(nextOfVisitObs != null && nextOfVisitObs.getValueDatetime() != null) {
                 Date notAlostToFollowPatient = DateUtil.adjustDate(nextOfVisitObs.getValueDatetime(), 90, DurationUnit.DAYS);
                 if(notAlostToFollowPatient.after(DateUtil.getStartOfMonth(context.getNow()))){
                     hasNextDateOfVisit90Days = true;

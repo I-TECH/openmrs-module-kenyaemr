@@ -66,21 +66,21 @@ public class HivCarePanelFragmentController {
 		if(!lastViralLoad.isEmpty()){
 			String values = lastViralLoad.getValue().toString();
 			//split by brace
-			String value = values.replaceAll("\\p{P}","");
+			String value = values.replaceAll("\\{", "").replaceAll("\\}","");
 			//split by equal sign
 			if(!value.isEmpty()) {
 				String[] splitByEqualSign = value.split("=");
 				valuesRequired = splitByEqualSign[0];
 				//for a date from a string
 				String dateSplitedBySpace = splitByEqualSign[1].split(" ")[0].trim();
-				int yearPart = Integer.parseInt(dateSplitedBySpace.substring(0,4));
-				int monthPart = Integer.parseInt(dateSplitedBySpace.substring(4,6));
-				int dayPart = Integer.parseInt(dateSplitedBySpace.substring(6,8));
+				String yearPart = dateSplitedBySpace.split("-")[0].trim();
+				String monthPart = dateSplitedBySpace.split("-")[1].trim();
+				String dayPart = dateSplitedBySpace.split("-")[2].trim();
 
 				Calendar calendar = Calendar.getInstance();
-				calendar.set(Calendar.YEAR, yearPart);
-				calendar.set(Calendar.MONTH, monthPart - 1);
-				calendar.set(Calendar.DATE, dayPart);
+				calendar.set(Calendar.YEAR, Integer.parseInt(yearPart));
+				calendar.set(Calendar.MONTH, Integer.parseInt(monthPart) - 1);
+				calendar.set(Calendar.DATE, Integer.parseInt(dayPart));
 
 				datesRequired = calendar.getTime();
 			}
