@@ -55,7 +55,7 @@ public class HivCarePanelFragmentController {
 		calculationResults.put("lastCD4Count", EmrCalculationUtils.evaluateForPatient(LastCd4CountCalculation.class, null, patient));
 		calculationResults.put("lastCD4Percent", EmrCalculationUtils.evaluateForPatient(LastCd4PercentageCalculation.class, null, patient));
 		CalculationResult lastViralLoad = EmrCalculationUtils.evaluateForPatient(ViralLoadAndLdlCalculation.class, null, patient);
-		String valuesRequired = "";
+		String valuesRequired = "None";
 		Date datesRequired = null;
 		if(!lastViralLoad.isEmpty()) {
 			calculationResults.put("lastViralLoad", lastViralLoad);
@@ -84,11 +84,6 @@ public class HivCarePanelFragmentController {
 
 				datesRequired = calendar.getTime();
 			}
-			else {
-				valuesRequired = "None";
-				datesRequired = null;
-			}
-
 		}
 		model.addAttribute("value", valuesRequired);
 		model.addAttribute("date", datesRequired);

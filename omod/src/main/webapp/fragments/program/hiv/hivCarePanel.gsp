@@ -22,7 +22,7 @@
 	}
 
 	if (calculations.lastCD4Count) {
-		dataPoints << [ label: "Last CD4 count", value: ui.format(calculations.lastCD4Count.value) + " cells/&micro;L", extra: calculations.lastCD4Count.value.obsDatetime ]
+		dataPoints << [ label: "Last CD4 count", value: ui.format(calculations.lastCD4Count.value) + "", extra: calculations.lastCD4Count.value.obsDatetime ]
 	} else {
 		dataPoints << [ label: "Last CD4 count", value: "None" ]
 	}

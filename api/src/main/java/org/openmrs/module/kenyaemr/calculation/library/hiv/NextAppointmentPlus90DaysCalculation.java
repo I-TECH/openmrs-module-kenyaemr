@@ -25,14 +25,13 @@ public class NextAppointmentPlus90DaysCalculation extends AbstractPatientCalcula
         CalculationResultMap ret = new CalculationResultMap();
 
         CalculationResultMap nextAppointmentMap = Calculations.lastObs(Dictionary.getConcept(Dictionary.RETURN_VISIT_DATE), cohort, context);
-
         for(Integer ptId: cohort){
             boolean hasNextDateOfVisit90Days = false;
 
             Obs nextOfVisitObs = EmrCalculationUtils.obsResultForPatient(nextAppointmentMap, ptId);
             if(nextOfVisitObs != null && nextOfVisitObs.getValueDatetime() != null) {
                 Date notAlostToFollowPatient = DateUtil.adjustDate(nextOfVisitObs.getValueDatetime(), 90, DurationUnit.DAYS);
-                if(notAlostToFollowPatient.after(DateUtil.getStartOfMonth(context.getNow()))){
+                if(notAlostToFollowPatient.after(context.getNow())){
                     hasNextDateOfVisit90Days = true;
                 }
             }

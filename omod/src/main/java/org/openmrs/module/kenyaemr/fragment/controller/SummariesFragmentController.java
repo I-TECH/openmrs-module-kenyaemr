@@ -27,16 +27,7 @@ import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.LastReturnVisitDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.LastWhoStageCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.CD4AtARTInitiationCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.CurrentArtRegimenCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtRegimenCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtStartDateCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.LastCd4CountDateCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.LastViralLoadCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.TransferInDateCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.TransferOutDateCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.WeightAtArtInitiationCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.WhoStageAtArtStartCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.*;
 import org.openmrs.module.kenyaemr.calculation.library.models.PatientSummary;
 import org.openmrs.module.kenyaemr.calculation.library.rdqa.DateOfDeathCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.rdqa.PatientProgramEnrollmentCalculation;
@@ -500,24 +491,37 @@ public class SummariesFragmentController {
             patientSummary.setMostRecentCd4Date("");
         }
 
-        //most recent viral load
-        CalculationResult vlResults = EmrCalculationUtils.evaluateForPatient(LastViralLoadCalculation.class, null, patient);
-        CalculationResultMap viralLoadLdl = Calculations.lastObs(Dictionary.getConcept("1305AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), Arrays.asList(patient.getPatientId()), context);
-        Obs viralLoadLdlObs = EmrCalculationUtils.obsResultForPatient(viralLoadLdl, patient.getPatientId());
 
-        String viralLoadValue, viralLoadDate;
-        if(vlResults != null){
-            viralLoadValue = ((Obs) vlResults.getValue()).getValueNumeric().toString();
-            viralLoadDate =formatDate(((Obs) vlResults.getValue()).getObsDatetime());
+        //most recent viral load
+        CalculationResult vlResults = EmrCalculationUtils.evaluateForPatient(ViralLoadAndLdlCalculation.class, null, patient);
+
+        String viralLoadValue = "None";
+        String viralLoadDate = "None";
+        if(!vlResults.isEmpty()) {
+            String values = vlResults.getValue().toString();
+            //split by brace
+            String value = values.replaceAll("\\{", "").replaceAll("\\}","");
+            if(!value.isEmpty()) {
+                String[] splitByEqualSign = value.split("=");
+                viralLoadValue = splitByEqualSign[0];
+
+
+                //for a date from a string
+                String dateSplitedBySpace = splitByEqualSign[1].split(" ")[0].trim();
+                String yearPart = dateSplitedBySpace.split("-")[0].trim();
+                String monthPart = dateSplitedBySpace.split("-")[1].trim();
+                String dayPart = dateSplitedBySpace.split("-")[2].trim();
+
+                Calendar calendar = Calendar.getInstance();
+                calendar.set(Calendar.YEAR, Integer.parseInt(yearPart));
+                calendar.set(Calendar.MONTH, Integer.parseInt(monthPart) - 1);
+                calendar.set(Calendar.DATE, Integer.parseInt(dayPart));
+
+                viralLoadDate = formatDate(calendar.getTime());
+            }
         }
-        else if(viralLoadLdlObs != null){
-            viralLoadValue = "LDL";
-            viralLoadDate = formatDate(viralLoadLdlObs.getObsDatetime());
-        }
-        else{
-            viralLoadValue = "None";
-            viralLoadDate = "None";
-        }
+
+
         // find deceased date
         CalculationResult deadResults = EmrCalculationUtils.evaluateForPatient(DateOfDeathCalculation.class, null, patient);
         String dead;

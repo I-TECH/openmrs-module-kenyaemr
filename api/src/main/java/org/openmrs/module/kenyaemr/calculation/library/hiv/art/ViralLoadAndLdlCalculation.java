@@ -5,6 +5,8 @@ import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
+import org.openmrs.module.kenyaemr.*;
+import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 
 import java.util.*;
@@ -39,7 +41,12 @@ public class ViralLoadAndLdlCalculation extends AbstractPatientCalculation {
 
                 //since observations are sorted we pick the last one
                 Obs lastViralLoadPicked = listOfViralLoad.get(1);
-                viralLoadValues.put(lastViralLoadPicked.getValueNumeric()+" copies/ml", lastViralLoadPicked.getObsDatetime());
+                if(lastViralLoadPicked.getConcept().equals(org.openmrs.module.kenyaemr.Dictionary.getConcept(Dictionary.HIV_VIRAL_LOAD))) {
+                    viralLoadValues.put(lastViralLoadPicked.getValueNumeric() + " copies/ml", lastViralLoadPicked.getObsDatetime());
+                }
+                else {
+                    viralLoadValues.put("LDL", lastViralLoadPicked.getObsDatetime());
+                }
 
             }
             ret.put(ptId, new SimpleResult(viralLoadValues, this));
