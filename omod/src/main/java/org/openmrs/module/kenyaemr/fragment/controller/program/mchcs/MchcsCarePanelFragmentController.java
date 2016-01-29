@@ -65,15 +65,24 @@ public class MchcsCarePanelFragmentController {
 			hivStatus =  heiCompletionWrapper.firstObs(Dictionary.getConcept(Dictionary.HIV_STATUS));
 		}
 
-		if ((hivExposed != null) && (hivExposed.getValueCoded() != Dictionary.getConcept(Dictionary.EXPOSURE_TO_HIV))) {
-			calculations.put("heioutcomes", "Not HIV Exposed");
+		if (hivExposed != null && hivExposed.getValueCoded().equals(Dictionary.getConcept(Dictionary.EXPOSURE_TO_HIV)) && heiOutcomes == null) {
+			calculations.put("heioutcomes", "Still in HEI Care");
 		}
-		else if (heiOutcomes != null && hivExposed != null && hivStatus != null) {
+		if (hivExposed != null && hivExposed.getValueCoded().equals(Dictionary.getConcept(Dictionary.NO)) && heiOutcomes == null) {
+			calculations.put("heioutcomes", "Not HIV exposed");
+		}
+		if (hivExposed != null && hivExposed.getValueCoded().equals(Dictionary.getConcept(Dictionary.UNKNOWN)) && heiOutcomes == null) {
+			calculations.put("heioutcomes", "Unknown");
+		}
+		if (heiOutcomes != null && hivExposed != null && hivStatus != null) {
 			calculations.put("heioutcomes", heiOutcomes.getValueCoded());
 			calculations.put("hivStatus",hivStatus.getValueCoded());
 		}
-		else {
-			calculations.put("heioutcomes", "Still in HEI Care");
+		if (heiOutcomes != null && hivExposed != null && hivStatus == null) {
+			calculations.put("heioutcomes", heiOutcomes.getValueCoded());
+			calculations.put("hivStatus", "Not Specified");
+		}
+		if(hivStatus == null){
 			calculations.put("hivStatus", "Not Specified");
 		}
 
