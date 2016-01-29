@@ -100,14 +100,14 @@ public class TbCohortLibrary {
 	}
 
 	/**
-	 * Patients who were screened for tb and are in hiv program
+	 * Patients who were screened for tb and are not on any tb treatment
 	 * @return the cohort definition
 	 */
-	public CohortDefinition screenedForTbAndHivPositive() {
+	public CohortDefinition screenedForTbAndNotOnTbTreatment() {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		Concept tbDiseaseStatus = Dictionary.getConcept(Dictionary.TUBERCULOSIS_DISEASE_STATUS);
 		Concept onTreatment = Dictionary.getConcept(Dictionary.ON_TREATMENT_FOR_DISEASE);
-		cd.setName("screened and hiv positive");
+		cd.setName("screened for tb and not on tb treatment");
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.addSearch("screened", ReportUtils.map(screenedForTb(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
@@ -116,6 +116,22 @@ public class TbCohortLibrary {
 		cd.setCompositionString("(screened OR currentlyOnCareAndScreenedInTheLastVisit) AND NOT onTreatment");
 
 		return cd;
+	}
+
+	/**
+	 * Patients who are screened for Tb and are Hiv positive
+	 * @return CohortDefinition
+	 */
+	public CohortDefinition screenedForTbAndHivPositive(){
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("Screened for tb and in hiv program");
+		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		cd.addSearch("screenedForTb", ReportUtils.map(screenedForTbAndNotOnTbTreatment(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+		cd.addSearch("inHivProgram", ReportUtils.map(hivCohortLibrary.enrolled(),"enrolledOnOrBefore=${onOrBefore}"));
+		cd.setCompositionString("screenedForTb AND inHivProgram");
+		return cd;
+
 	}
 
 	/**
