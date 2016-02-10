@@ -28,8 +28,6 @@ public class IsTransferOutCalculation extends AbstractPatientCalculation {
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues,
 										 PatientCalculationContext context) {
 
-		Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
-		Set<Integer> inHivProgram = Filters.inProgram(hivProgram, cohort, context);
 		CalculationResultMap transferOutDate = calculate(new TransferOutDateCalculation(), cohort, context);
 
 		CalculationResultMap result = new CalculationResultMap();
@@ -37,7 +35,7 @@ public class IsTransferOutCalculation extends AbstractPatientCalculation {
 		for (Integer ptId : cohort) {
 			boolean isTransferOut = false;
 			Date dateTo = EmrCalculationUtils.datetimeResultForPatient(transferOutDate, ptId);
-			if (inHivProgram.contains(ptId) && dateTo != null) {
+			if (dateTo != null) {
 				isTransferOut = true;
 			}
 			result.put(ptId, new BooleanResult(isTransferOut, this, context));
