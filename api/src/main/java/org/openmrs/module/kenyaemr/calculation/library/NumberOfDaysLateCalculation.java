@@ -19,7 +19,7 @@ import java.util.Map;
 public class NumberOfDaysLateCalculation extends AbstractPatientCalculation {
     @Override
     public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> map, PatientCalculationContext context) {
-        
+
         CalculationResultMap ret = new CalculationResultMap();
         CalculationResultMap returnDate = calculate(new LastReturnVisitDateCalculation(), cohort, context);
         for(Integer ptId: cohort){

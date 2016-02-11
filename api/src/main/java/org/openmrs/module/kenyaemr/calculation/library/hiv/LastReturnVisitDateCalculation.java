@@ -26,10 +26,6 @@ public class LastReturnVisitDateCalculation extends AbstractPatientCalculation {
     @Override
     public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> map, PatientCalculationContext context) {
 
-        EncounterType hivConsultation = MetadataUtils.existing(EncounterType.class, HivMetadata._EncounterType.HIV_CONSULTATION);
-
-        CalculationResultMap lastEncounter = Calculations.lastEncounter(hivConsultation, cohort, context);
-
         Concept returnVisitDateConcept = Dictionary.getConcept(Dictionary.RETURN_VISIT_DATE);
 
         CalculationResultMap returnVisitDateMap = Calculations.lastObs(returnVisitDateConcept, cohort, context);
@@ -39,19 +35,7 @@ public class LastReturnVisitDateCalculation extends AbstractPatientCalculation {
         for (Integer ptId : cohort) {
             Date returnVisitDate = null;
 
-            Encounter hivEncounter = EmrCalculationUtils.encounterResultForPatient(lastEncounter, ptId);
             Obs returnVisitDateFromLastDate = EmrCalculationUtils.obsResultForPatient(returnVisitDateMap, ptId);
-            if (hivEncounter != null) {
-                if (!(hivEncounter.getAllObs().isEmpty())) {
-                    for (Obs obs : hivEncounter.getAllObs()) {
-                        if (obs.getConcept().equals(returnVisitDateConcept)) {
-                            returnVisitDate = obs.getValueDatetime();
-                            break;
-                        }
-                    }
-                }
-
-            }
 
             if (returnVisitDateFromLastDate != null) {
                 returnVisitDate = returnVisitDateFromLastDate.getValueDatetime();

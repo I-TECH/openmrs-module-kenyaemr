@@ -74,7 +74,7 @@ public class LostToFollowUpCalculation extends AbstractPatientCalculation implem
 			boolean lost = false;
 
 			// Is patient alive and in the HIV program
-			if (inHivProgram.contains(ptId)) {
+			if (alive.contains(ptId)) {
 
 				// Patient is lost if no encounters in last X days
 				//Encounter lastEncounter = EmrCalculationUtils.encounterResultForPatient(lastEncounters, ptId);

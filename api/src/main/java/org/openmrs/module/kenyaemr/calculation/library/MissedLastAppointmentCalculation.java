@@ -58,9 +58,9 @@ public class MissedLastAppointmentCalculation extends AbstractPatientCalculation
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
 
-		Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
+		//Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
 		Set<Integer> alive = Filters.alive(cohort, context);
-		Set<Integer> inHivProgram = Filters.inProgram(hivProgram, alive, context);
+		//Set<Integer> inHivProgram = Filters.inProgram(hivProgram, alive, context);
 
 		CalculationResultMap lastReturnDateObss = Calculations.lastObs(Dictionary.getConcept(Dictionary.RETURN_VISIT_DATE), alive, context);
 		CalculationResultMap lastEncounters = Calculations.lastEncounter(null, cohort, context);
@@ -71,12 +71,11 @@ public class MissedLastAppointmentCalculation extends AbstractPatientCalculation
 			boolean missedVisit = false;
 
 			// Is patient alive
-			if (inHivProgram.contains(ptId) && !(ltfu.contains(ptId)) && !(transferredOut.contains(ptId))) {
+			if (alive.contains(ptId) && !(ltfu.contains(ptId)) && !(transferredOut.contains(ptId))) {
 				Date lastScheduledReturnDate = EmrCalculationUtils.datetimeObsResultForPatient(lastReturnDateObss, ptId);
 
 				// Does patient have a scheduled return visit in the past
 				if (lastScheduledReturnDate != null && EmrCalculationUtils.daysSince(lastScheduledReturnDate, context) > 0) {
-
 					// Has patient returned since
 					Encounter lastEncounter = EmrCalculationUtils.encounterResultForPatient(lastEncounters, ptId);
 					Date lastActualReturnDate = lastEncounter != null ? lastEncounter.getEncounterDatetime() : null;
