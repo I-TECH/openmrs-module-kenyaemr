@@ -139,14 +139,20 @@
 
 				if (getValue('hiv-exposed-child.value') == '') {
 					jq('#arv-prophylaxis :input').prop('disabled', true);
+					jq('#mother-drugs :input').prop('disabled', true);
+					jq('#on-art-at-enrollment-of-infant :input').prop('disabled', true);
 				}
 
 				if (getValue('hiv-exposed-child.value') == EXPOSURE_TO_HIV_ID) {
 					jq('#arv-prophylaxis :input').prop('disabled', false);
+					jq('#mother-drugs :input').prop('disabled', false);
+					jq('#on-art-at-enrollment-of-infant :input').prop('disabled', false);
 				}
 
 				if (getValue('hiv-exposed-child.value') == NO_CONCEPT_ID) {
 					jq('#arv-prophylaxis :input').prop('disabled', true);
+					jq('#mother-drugs :input').prop('disabled', true);
+					jq('#on-art-at-enrollment-of-infant :input').prop('disabled', true);
 				}
 			}
 		jq(function() {
@@ -366,7 +372,7 @@
 					</td>
 				</tr>
 				<tr>
-					<td>
+					<td id="mother-drugs">
 						Mother received Drugs for PMTCT?  <obs conceptId="1148AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" id="pmtctDrugsReceived"/>
 					</td>
 					<td colspan="2">
@@ -378,7 +384,7 @@
 					</td>
 				</tr>
 				<tr>
-					<td> On ART at Enrollment of Infant
+					<td id="on-art-at-enrollment-of-infant"> On ART at Enrollment of Infant
 						<obs conceptId="162055AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" id="onART"/>
 					</td>
 						<td id="mohter-on-art-at-enrollment">Enter regimen
