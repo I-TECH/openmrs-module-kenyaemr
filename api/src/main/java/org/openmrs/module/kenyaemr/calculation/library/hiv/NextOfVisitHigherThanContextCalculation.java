@@ -28,8 +28,8 @@ public class NextOfVisitHigherThanContextCalculation extends AbstractPatientCalc
     @Override
     public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> params, PatientCalculationContext context) {
         CalculationResultMap ret = new CalculationResultMap();
-        Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
-        Set<Integer> inHivProgram = Filters.inProgram(hivProgram, cohort, context);
+        //Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
+        //Set<Integer> inHivProgram = Filters.inProgram(hivProgram, cohort, context);
 
         CalculationResultMap nextAppointmentMap = Calculations.lastObs(Dictionary.getConcept(Dictionary.RETURN_VISIT_DATE), cohort, context);
 
@@ -37,7 +37,7 @@ public class NextOfVisitHigherThanContextCalculation extends AbstractPatientCalc
             boolean hasNextDateOfVisit = false;
 
             Obs nextOfVisitObs = EmrCalculationUtils.obsResultForPatient(nextAppointmentMap, ptId);
-            if(nextOfVisitObs != null && inHivProgram.contains(ptId)) {
+            if(nextOfVisitObs != null) {
                 Date valueDateTime = nextOfVisitObs.getValueDatetime();
                 if(valueDateTime != null && (valueDateTime.after(DateUtil.getStartOfMonth(context.getNow())))){
                     hasNextDateOfVisit = true;

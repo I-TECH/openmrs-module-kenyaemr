@@ -80,29 +80,9 @@ public class NeedsCd4TestCalculation extends AbstractPatientCalculation implemen
 			Date artStartDate = EmrCalculationUtils.datetimeResultForPatient(startedArt, ptId);
 
 			// Is patient alive and in the HIV program
-			if (inHivProgram.contains(ptId) && artStartDate == null) {
+			if(inHivProgram.contains(ptId)) {
+				if (artStartDate == null) {
 
-				// Does patient have CD4 or CD4% result in the last X days
-				ObsResult r = (ObsResult) lastObsCount.get(ptId);
-				ObsResult p = (ObsResult) lastObsPercent.get(ptId);
-
-				Date dateCount = r != null ? r.getDateOfResult() : null;
-				Date datePercent = p != null ? p.getDateOfResult() : null;
-
-				Date lastResultDate = CoreUtils.latest(dateCount, datePercent);
-
-				if (lastResultDate == null || (daysSince(lastResultDate, context) > HivConstants.NEEDS_CD4_COUNT_AFTER_DAYS)) {
-						needsCD4 = true;
-				}
-
-				if(ltfu.contains(ptId)){
-					needsCD4 = false;
-				}
-			}
-			if(inHivProgram.contains(ptId) && artStartDate != null) {
-				Obs fluconazoleObs = EmrCalculationUtils.obsResultForPatient(medOrdersObss, ptId);
-
-				if(fluconazoleObs != null && fluconazoleObs.getValueCoded().equals(Dictionary.getConcept(Dictionary.FLUCONAZOLE))) {
 					// Does patient have CD4 or CD4% result in the last X days
 					ObsResult r = (ObsResult) lastObsCount.get(ptId);
 					ObsResult p = (ObsResult) lastObsPercent.get(ptId);
@@ -116,8 +96,29 @@ public class NeedsCd4TestCalculation extends AbstractPatientCalculation implemen
 						needsCD4 = true;
 					}
 
-					if(ltfu.contains(ptId)){
+					if (ltfu.contains(ptId)) {
 						needsCD4 = false;
+					}
+				} else if (artStartDate != null) {
+					Obs fluconazoleObs = EmrCalculationUtils.obsResultForPatient(medOrdersObss, ptId);
+
+					if (fluconazoleObs != null && fluconazoleObs.getValueCoded().equals(Dictionary.getConcept(Dictionary.FLUCONAZOLE))) {
+						// Does patient have CD4 or CD4% result in the last X days
+						ObsResult r = (ObsResult) lastObsCount.get(ptId);
+						ObsResult p = (ObsResult) lastObsPercent.get(ptId);
+
+						Date dateCount = r != null ? r.getDateOfResult() : null;
+						Date datePercent = p != null ? p.getDateOfResult() : null;
+
+						Date lastResultDate = CoreUtils.latest(dateCount, datePercent);
+
+						if (lastResultDate == null || (daysSince(lastResultDate, context) > HivConstants.NEEDS_CD4_COUNT_AFTER_DAYS)) {
+							needsCD4 = true;
+						}
+
+						if (ltfu.contains(ptId)) {
+							needsCD4 = false;
+						}
 					}
 				}
 			}
