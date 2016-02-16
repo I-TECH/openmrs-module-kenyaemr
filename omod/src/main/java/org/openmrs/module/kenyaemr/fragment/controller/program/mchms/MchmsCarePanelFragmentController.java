@@ -14,8 +14,6 @@
 
 package org.openmrs.module.kenyaemr.fragment.controller.program.mchms;
 
-import org.joda.time.DateTime;
-import org.joda.time.Weeks;
 import org.openmrs.Concept;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
@@ -29,7 +27,6 @@ import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,12 +45,6 @@ public class MchmsCarePanelFragmentController {
 
 		Encounter lastMchEnrollment = patientWrapper.lastEncounter(MetadataUtils.existing(EncounterType.class, MchMetadata._EncounterType.MCHMS_ENROLLMENT));
 		EncounterWrapper lastMchEnrollmentWrapped = new EncounterWrapper(lastMchEnrollment);
-
-		Obs lmpObs = lastMchEnrollmentWrapped.firstObs(Dictionary.getConcept(Dictionary.LAST_MONTHLY_PERIOD));
-		if (lmpObs != null) {
-			Weeks weeks = Weeks.weeksBetween(new DateTime(lmpObs.getValueDate()), new DateTime(new Date()));
-			calculations.put("gestation", weeks.getWeeks());
-		}
 
 		Obs hivStatusObs = lastMchEnrollmentWrapped.firstObs(Dictionary.getConcept(Dictionary.HIV_STATUS));
 		if (hivStatusObs != null) {

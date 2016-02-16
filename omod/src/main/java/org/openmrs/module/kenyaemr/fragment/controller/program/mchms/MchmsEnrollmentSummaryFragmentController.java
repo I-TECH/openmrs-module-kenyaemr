@@ -10,6 +10,8 @@
 
 package org.openmrs.module.kenyaemr.fragment.controller.program.mchms;
 
+import org.joda.time.DateTime;
+import org.joda.time.Weeks;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
 import org.openmrs.Form;
@@ -23,6 +25,7 @@ import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -53,6 +56,8 @@ public class MchmsEnrollmentSummaryFragmentController {
         Obs lmpObs = enrollment.firstObs(Dictionary.getConcept(Dictionary.LAST_MONTHLY_PERIOD));
         if (lmpObs != null) {
             if (deliveryEncounter == null) {
+                Weeks weeks = Weeks.weeksBetween(new DateTime(lmpObs.getValueDate()), new DateTime(new Date()));
+                dataPoints.put("Gestation (weeks)", weeks.getWeeks());
                 dataPoints.put("LMP", lmpObs.getValueDate());
                 dataPoints.put("EDD (LMP)", CoreUtils.dateAddDays(lmpObs.getValueDate(), 280));
             }
