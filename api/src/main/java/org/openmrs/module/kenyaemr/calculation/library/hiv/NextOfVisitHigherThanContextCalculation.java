@@ -39,7 +39,7 @@ public class NextOfVisitHigherThanContextCalculation extends AbstractPatientCalc
             Obs nextOfVisitObs = EmrCalculationUtils.obsResultForPatient(nextAppointmentMap, ptId);
             if(nextOfVisitObs != null) {
                 Date valueDateTime = nextOfVisitObs.getValueDatetime();
-                if(valueDateTime != null && (valueDateTime.after(DateUtil.getStartOfMonth(context.getNow())))){
+                if(valueDateTime != null && (valueDateTime.after(context.getNow()))){
                     hasNextDateOfVisit = true;
                 }
             }

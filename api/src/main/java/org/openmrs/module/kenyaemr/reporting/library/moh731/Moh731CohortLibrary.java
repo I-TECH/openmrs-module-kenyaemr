@@ -63,18 +63,18 @@ public class Moh731CohortLibrary {
 		nextAppointment.addParameter(new Parameter("onDate", "On Date", Date.class));
 
 		//those with appointment date plus 90 days
-		CalculationCohortDefinition nextAppointmentPlus90Days = new CalculationCohortDefinition(new NextAppointmentPlus90DaysCalculation());
-		nextAppointmentPlus90Days.setName("Have date of next visit plus 90 days");
-		nextAppointmentPlus90Days.addParameter(new Parameter("onDate", "On Date", Date.class));
+		//CalculationCohortDefinition nextAppointmentPlus90Days = new CalculationCohortDefinition(new NextAppointmentPlus90DaysCalculation());
+		//nextAppointmentPlus90Days.setName("Have date of next visit plus 90 days");
+		//nextAppointmentPlus90Days.addParameter(new Parameter("onDate", "On Date", Date.class));
 
 
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
 		cd.addSearch("recentEncounter", ReportUtils.map(commonCohorts.hasEncounter(hivEnroll, hivConsult), "onOrAfter=${onDate-90d},onOrBefore=${onDate}"));
 		cd.addSearch("appointmentHigher", ReportUtils.map(nextAppointment, "onDate=${onDate}"));
-		cd.addSearch("appointment90Days", ReportUtils.map(nextAppointmentPlus90Days, "onDate=${onDate}"));
+		//cd.addSearch("appointment90Days", ReportUtils.map(nextAppointmentPlus90Days, "onDate=${onDate}"));
 		cd.addSearch("inHivProgram", ReportUtils.map(hivCohortLibrary.enrolled(), "enrolledOnOrBefore=${onDate}"));
-		cd.setCompositionString("(recentEncounter OR appointmentHigher OR appointment90Days) AND inHivProgram");
+		cd.setCompositionString("(recentEncounter OR appointmentHigher) AND inHivProgram");
 		return cd;
 	}
 
@@ -124,7 +124,7 @@ public class Moh731CohortLibrary {
 		cd.addParameter(new Parameter("toDate", "To Date", Date.class));
 		cd.addSearch("startedArt", ReportUtils.map(artCohorts.startedArt(), "onOrAfter=${fromDate},onOrBefore=${toDate}"));
 		cd.addSearch("revisitsArt", ReportUtils.map(revisitsArt(), "fromDate=${fromDate},toDate=${toDate}"));
-		cd.addSearch("hasAppointmentDate", ReportUtils.map(hasAppointmentDateAndStartedArt(), "onOrAfter=${fromDate},onOrBefore=${toDate}"));
+		cd.addSearch("hasAppointmentDate", ReportUtils.map(hasAppointmentDate, "onDate=${onOrBefore}"));
 		cd.addSearch("deceased", ReportUtils.map(commonCohorts.deceasedPatients(), "onDate=${toDate}"));
 		cd.setCompositionString("(startedArt OR revisitsArt OR hasAppointmentDate) AND NOT deceased");
 		return cd;
