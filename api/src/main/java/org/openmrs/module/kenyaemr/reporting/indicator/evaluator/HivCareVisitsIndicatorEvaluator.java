@@ -133,7 +133,7 @@ public class HivCareVisitsIndicatorEvaluator implements IndicatorEvaluator {
 		List<Obs> returnVisitObss = Context.getObsService().getObservationsByPersonAndConcept(encounter.getPatient(), returnVisitDate);
 
 		for (Obs returnVisitObs : returnVisitObss) {
-			if (DateUtils.isSameDay(returnVisitObs.getValueDate(), visitDate)) {
+			if (returnVisitObs != null && returnVisitObs.getValueDate() != null && DateUtils.isSameDay(returnVisitObs.getValueDate(), visitDate)) {
 				return true;
 			}
 		}

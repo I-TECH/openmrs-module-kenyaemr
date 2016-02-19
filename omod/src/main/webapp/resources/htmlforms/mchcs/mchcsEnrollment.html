@@ -39,6 +39,7 @@
 			var NO_CONCEPT_ID = 1066;
 			var EXPOSURE_TO_HIV_ID = 822;
 			var SPECIAL_CARE = 161628;
+			var UNKOWN = 1067;
 
 			function onTransferStatusChange() {
 				if (getValue('transfer-status.value') == NO_CONCEPT_ID) {
@@ -141,18 +142,21 @@
 					jq('#arv-prophylaxis :input').prop('disabled', true);
 					jq('#mother-drugs :input').prop('disabled', true);
 					jq('#on-art-at-enrollment-of-infant :input').prop('disabled', true);
+					jq('#mother-art-details :input').prop('disabled', true);
 				}
 
 				if (getValue('hiv-exposed-child.value') == EXPOSURE_TO_HIV_ID) {
 					jq('#arv-prophylaxis :input').prop('disabled', false);
 					jq('#mother-drugs :input').prop('disabled', false);
 					jq('#on-art-at-enrollment-of-infant :input').prop('disabled', false);
+					jq('#mother-art-details :input').prop('disabled', false);
 				}
 
-				if (getValue('hiv-exposed-child.value') == NO_CONCEPT_ID) {
+				if (getValue('hiv-exposed-child.value') == NO_CONCEPT_ID || getValue('hiv-exposed-child.value') == UNKOWN) {
 					jq('#arv-prophylaxis :input').prop('disabled', true);
 					jq('#mother-drugs :input').prop('disabled', true);
 					jq('#on-art-at-enrollment-of-infant :input').prop('disabled', true);
+					jq('#mother-art-details :input').prop('disabled', true);
 				}
 			}
 		jq(function() {
