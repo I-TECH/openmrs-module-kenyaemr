@@ -18,6 +18,7 @@ import org.openmrs.EncounterType;
 import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyacore.report.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.kenyaemr.Dictionary;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.CtxFromAListOfMedicationOrdersCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.NextAppointmentPlus90DaysCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.NextOfVisitHigherThanContextCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
@@ -62,19 +63,18 @@ public class Moh731CohortLibrary {
 		nextAppointment.setName("Have date of next visit");
 		nextAppointment.addParameter(new Parameter("onDate", "On Date", Date.class));
 
-		//those with appointment date plus 90 days
-		//CalculationCohortDefinition nextAppointmentPlus90Days = new CalculationCohortDefinition(new NextAppointmentPlus90DaysCalculation());
-		//nextAppointmentPlus90Days.setName("Have date of next visit plus 90 days");
-		//nextAppointmentPlus90Days.addParameter(new Parameter("onDate", "On Date", Date.class));
+		CalculationCohortDefinition ctxFromAListOfMedicationOrders = new CalculationCohortDefinition(new CtxFromAListOfMedicationOrdersCalculation());
+		ctxFromAListOfMedicationOrders.setName("ctxFromAListOfMedicationOrders");
+		ctxFromAListOfMedicationOrders.addParameter(new Parameter("OnDate", "On Date", Date.class));
 
 
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
 		cd.addSearch("recentEncounter", ReportUtils.map(commonCohorts.hasEncounter(hivEnroll, hivConsult), "onOrAfter=${onDate-90d},onOrBefore=${onDate}"));
 		cd.addSearch("appointmentHigher", ReportUtils.map(nextAppointment, "onDate=${onDate}"));
-		//cd.addSearch("appointment90Days", ReportUtils.map(nextAppointmentPlus90Days, "onDate=${onDate}"));
+		cd.addSearch("hasCtx", ReportUtils.map(ctxFromAListOfMedicationOrders, "onDate=${onDate}"));
 		cd.addSearch("inHivProgram", ReportUtils.map(hivCohortLibrary.enrolled(), "enrolledOnOrBefore=${onDate}"));
-		cd.setCompositionString("(recentEncounter OR appointmentHigher) AND inHivProgram");
+		cd.setCompositionString("(recentEncounter OR appointmentHigher OR hasCtx) AND inHivProgram");
 		return cd;
 	}
 

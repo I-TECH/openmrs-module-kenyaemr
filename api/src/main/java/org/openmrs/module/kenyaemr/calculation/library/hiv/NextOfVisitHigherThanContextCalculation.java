@@ -28,8 +28,6 @@ public class NextOfVisitHigherThanContextCalculation extends AbstractPatientCalc
     @Override
     public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> params, PatientCalculationContext context) {
         CalculationResultMap ret = new CalculationResultMap();
-        //Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
-        //Set<Integer> inHivProgram = Filters.inProgram(hivProgram, cohort, context);
 
         CalculationResultMap nextAppointmentMap = Calculations.lastObs(Dictionary.getConcept(Dictionary.RETURN_VISIT_DATE), cohort, context);
 
