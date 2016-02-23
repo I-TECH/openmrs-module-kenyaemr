@@ -48,12 +48,14 @@ public class PatientsWithVLResultsLessThanXValueCalculation extends AbstractPati
 		CalculationResultMap ret = new CalculationResultMap();
 
 		CalculationResultMap allVlsResults = Calculations.allObs(Dictionary.getConcept(Dictionary.HIV_VIRAL_LOAD), cohort, context);
+		CalculationResultMap ldl = Calculations.allObs(Dictionary.getConcept(Dictionary.HIV_VIRAL_LOAD_QUALITATIVE), cohort, context);
 
 		for(Integer ptId : cohort){
 
 			boolean hasVLResultsXMonthsAgo = false;
 
 			ListResult vlObsListResult = (ListResult) allVlsResults.get(ptId);
+			ListResult ldlObsListResult = (ListResult) ldl.get(ptId);
 
 			if (vlObsListResult != null) {
 				List<Obs> obsList = CalculationUtils.extractResultValues(vlObsListResult);
@@ -66,6 +68,16 @@ public class PatientsWithVLResultsLessThanXValueCalculation extends AbstractPati
 							hasVLResultsXMonthsAgo = true;
 							break;
 						}
+					}
+				}
+			}
+
+			if(ldlObsListResult != null && hasVLResultsXMonthsAgo == false){
+				List<Obs> ldlList = CalculationUtils.extractResultValues(ldlObsListResult);
+				for (Obs ldlObs : ldlList) {
+					Date obsDate = ldlObs.getObsDatetime();
+					if (obsDate.after(dateMonthsAgo.getTime()) && obsDate.before(context.getNow())) {
+						hasVLResultsXMonthsAgo = true;
 					}
 				}
 			}

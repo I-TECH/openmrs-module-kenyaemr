@@ -22,6 +22,7 @@ import org.openmrs.module.kenyacore.calculation.BooleanResult;
 import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyaemr.Dictionary;
+import org.openmrs.module.reporting.common.DateUtil;
 
 import java.util.Calendar;
 import java.util.Collection;
@@ -47,12 +48,14 @@ public class PatientsWithVLResultsAtLeastMonthAgoCalculation extends AbstractPat
 		CalculationResultMap ret = new CalculationResultMap();
 
 		CalculationResultMap allVlsResults = Calculations.allObs(Dictionary.getConcept(Dictionary.HIV_VIRAL_LOAD), cohort, context);
+		CalculationResultMap ldl = Calculations.allObs(Dictionary.getConcept(Dictionary.HIV_VIRAL_LOAD_QUALITATIVE), cohort, context);
 
 		for(Integer ptId : cohort){
 
 			boolean hasVLResultsXMonthsAgo = false;
 
 			ListResult vlObsListResult = (ListResult) allVlsResults.get(ptId);
+			ListResult ldlObsListResult = (ListResult) ldl.get(ptId);
 
 			if (vlObsListResult != null) {
 				List<Obs> obsList = CalculationUtils.extractResultValues(vlObsListResult);
@@ -62,10 +65,19 @@ public class PatientsWithVLResultsAtLeastMonthAgoCalculation extends AbstractPat
 							Date obsDate = obs.getObsDatetime();
 							if (obsDate.after(dateMonthsAgo.getTime()) && obsDate.before(context.getNow())) {
 								hasVLResultsXMonthsAgo = true;
-								//break;
 							}
 						}
 					}
+			}
+
+			if(ldlObsListResult != null){
+				List<Obs> ldlList = CalculationUtils.extractResultValues(ldlObsListResult);
+				for (Obs ldlObs : ldlList) {
+					Date obsDate = ldlObs.getObsDatetime();
+					if (obsDate.after(dateMonthsAgo.getTime()) && obsDate.before(context.getNow())) {
+						hasVLResultsXMonthsAgo = true;
+					}
+				}
 			}
 			ret.put(ptId, new BooleanResult(hasVLResultsXMonthsAgo, this, context));
 		}

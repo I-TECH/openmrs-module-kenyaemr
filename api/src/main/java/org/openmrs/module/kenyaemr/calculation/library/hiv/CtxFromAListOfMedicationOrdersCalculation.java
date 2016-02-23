@@ -58,7 +58,7 @@ public class CtxFromAListOfMedicationOrdersCalculation extends AbstractPatientCa
             for(Obs obs: allObsOrders){
                 if((obs.getValueCoded().equals(ctx) || obs.getValueCoded().equals(dapson))){
                     whenCtxTaken = obs;
-                    if(obs.getObsDatetime().after(DateUtil.adjustDate(DateUtil.getStartOfMonth(context.getNow()), -1, DurationUnit.DAYS))) {
+                    if(obs.getObsDatetime().after(context.getNow())) {
                         onCtxFromAlistOfMedicationOrders = true;
                     }
                     break;
@@ -91,7 +91,7 @@ public class CtxFromAListOfMedicationOrdersCalculation extends AbstractPatientCa
                     calendar.add(Calendar.DATE, duration);
                 }
 
-                if(calendar.getTime().after(DateUtil.getStartOfMonth(context.getNow()))) {
+                if(calendar.getTime().after(context.getNow())) {
                     onCtxFromAlistOfMedicationOrders = true;
                 }
             }
