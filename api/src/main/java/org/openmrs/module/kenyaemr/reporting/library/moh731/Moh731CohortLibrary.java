@@ -18,6 +18,7 @@ import org.openmrs.EncounterType;
 import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyacore.report.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.kenyaemr.Dictionary;
+import org.openmrs.module.kenyaemr.calculation.library.MissedLastAppointmentCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.CtxFromAListOfMedicationOrdersCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.NextAppointmentPlus90DaysCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.NextOfVisitHigherThanContextCalculation;
@@ -67,15 +68,25 @@ public class Moh731CohortLibrary {
 		ctxFromAListOfMedicationOrders.setName("ctxFromAListOfMedicationOrders");
 		ctxFromAListOfMedicationOrders.addParameter(new Parameter("OnDate", "On Date", Date.class));
 
-
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
 		cd.addSearch("recentEncounter", ReportUtils.map(commonCohorts.hasEncounter(hivEnroll, hivConsult), "onOrAfter=${onDate-90d},onOrBefore=${onDate}"));
 		cd.addSearch("appointmentHigher", ReportUtils.map(nextAppointment, "onDate=${onDate}"));
 		cd.addSearch("hasCtx", ReportUtils.map(ctxFromAListOfMedicationOrders, "onDate=${onDate}"));
 		cd.addSearch("inHivProgram", ReportUtils.map(hivCohortLibrary.enrolled(), "enrolledOnOrBefore=${onDate}"));
-		cd.setCompositionString("(recentEncounter OR appointmentHigher OR hasCtx) AND inHivProgram");
+		cd.addSearch("missedAppointment", ReportUtils.map(missedAppointment(), "onDate=${onDate}"));
+		cd.setCompositionString("((recentEncounter OR appointmentHigher OR hasCtx) AND inHivProgram) AND NOT missedAppointment");
 		return cd;
+	}
+
+	/**
+	 *
+	 */
+	public CohortDefinition missedAppointment(){
+		CalculationCohortDefinition cdMissed = new CalculationCohortDefinition(new MissedLastAppointmentCalculation());
+		cdMissed.setName("Missed appointment patients");
+		cdMissed.addParameter(new Parameter("OnDate", "On Date", Date.class));
+		return cdMissed;
 	}
 
 	/**
@@ -88,7 +99,9 @@ public class Moh731CohortLibrary {
 		cd.addParameter(new Parameter("toDate", "To Date", Date.class));
 		cd.addSearch("inCare", ReportUtils.map(currentlyInCare(), "onDate=${toDate}"));
 		cd.addSearch("startedBefore", ReportUtils.map(artCohorts.startedArt(), "onOrBefore=${fromDate-1d}"));
-		cd.setCompositionString("inCare AND startedBefore");
+		cd.addSearch("missedAppointment", ReportUtils.map(missedAppointment(), "onDate=${onDate}"));
+		cd.addSearch("deceased", ReportUtils.map(commonCohorts.deceasedPatients(), "onDate=${toDate}"));
+		cd.setCompositionString("inCare AND startedBefore AND NOT deceased");
 		return cd;
 	}
 

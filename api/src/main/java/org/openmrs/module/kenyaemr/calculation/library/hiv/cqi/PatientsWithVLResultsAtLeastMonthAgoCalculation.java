@@ -23,6 +23,7 @@ import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.reporting.common.DateUtil;
+import org.openmrs.module.reporting.common.DurationUnit;
 
 import java.util.Calendar;
 import java.util.Collection;
@@ -63,7 +64,7 @@ public class PatientsWithVLResultsAtLeastMonthAgoCalculation extends AbstractPat
 					if (obsList.size() > 0) {
 						for (Obs obs : obsList) {
 							Date obsDate = obs.getObsDatetime();
-							if (obsDate.after(dateMonthsAgo.getTime()) && obsDate.before(context.getNow())) {
+							if (obsDate.after(DateUtil.adjustDate(dateMonthsAgo.getTime(), -1, DurationUnit.DAYS)) && obsDate.before(context.getNow())) {
 								hasVLResultsXMonthsAgo = true;
 							}
 						}
@@ -74,7 +75,7 @@ public class PatientsWithVLResultsAtLeastMonthAgoCalculation extends AbstractPat
 				List<Obs> ldlList = CalculationUtils.extractResultValues(ldlObsListResult);
 				for (Obs ldlObs : ldlList) {
 					Date obsDate = ldlObs.getObsDatetime();
-					if (obsDate.after(dateMonthsAgo.getTime()) && obsDate.before(context.getNow())) {
+					if (obsDate.after(DateUtil.adjustDate(dateMonthsAgo.getTime(), -1, DurationUnit.DAYS)) && obsDate.before(context.getNow())) {
 						hasVLResultsXMonthsAgo = true;
 					}
 				}
