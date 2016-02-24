@@ -315,11 +315,11 @@ public class QiCohortLibrary {
 	 */
 	public CohortDefinition onARTatLeast12MonthsAndHaveAtLeastOneVisitDuringTheLast6MonthsReview() {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
-		cd.setName("on ART and have at least one clinical visit during the last 12 months");
+		cd.setName("on ART for atleast 12 months and have at least one clinical visit during the last 6 months");
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addSearch("onARTForAtLeast12Months", ReportUtils.map(artCohortLibrary.onArt(), "onDate=${onOrBefore-12m}"));
-		cd.addSearch("hasVisit", ReportUtils.map(hivCohortLibrary.hasHivVisit(), "onOrAfter=${onOrAfter-6m},onOrBefore=${onOrBefore}"));
+		cd.addSearch("hasVisit", ReportUtils.map(hivCohortLibrary.hasHivVisit(), "onOrAfter=${onOrBefore-6m},onOrBefore=${onOrBefore}"));
 		cd.addSearch("adult", ReportUtils.map(commonCohorts.agedAtLeast(15), "effectiveDate=${onOrBefore}"));
 		cd.addSearch("deceased", ReportUtils.map(commonCohorts.deceasedPatients(), "onDate=${onOrBefore}"));
 		cd.setCompositionString("onARTForAtLeast12Months AND hasVisit AND adult AND NOT deceased");

@@ -72,7 +72,8 @@ public class QiPaedsCohortLibrary {
 		cd.addSearch("inCare", ReportUtils.map(cdInCareHasAtLeast2Visits, "onDate=${onOrBefore}"));
 		cd.addSearch("atLeastAVisitInEachQuoter", ReportUtils.map(cdHasAtLeast1VisitInEveryQuoter, "onDate=${onOrBefore}"));
 		cd.addSearch("child", ReportUtils.map(commonCohorts.agedAtMost(15), "effectiveDate=${onOrBefore}"));
-		cd.setCompositionString("(inCare OR atLeastAVisitInEachQuoter) AND child");
+		cd.addSearch("deceased", ReportUtils.map(commonCohorts.deceasedPatients(), "onDate=${onOrBefore}"));
+		cd.setCompositionString("(inCare OR atLeastAVisitInEachQuoter) AND child AND NOT deceased");
 		return  cd;
 	}
 
@@ -87,7 +88,8 @@ public class QiPaedsCohortLibrary {
 		cd.addSearch("inCareHasAtLeast2Visits", ReportUtils.map(inCareHasAtLeast2Visits(), "onOrBefore=${onOrBefore}"));
 		cd.addSearch("clinicalVisit", ReportUtils.map(clinicalVisit(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
 		cd.addSearch("onART", ReportUtils.map(artCohortLibrary.onArt(), "onDate=${onOrBefore}"));
-		cd.setCompositionString("inCareHasAtLeast2Visits AND clinicalVisit AND NOT onART");
+		cd.addSearch("deceased", ReportUtils.map(commonCohorts.deceasedPatients(), "onDate=${onOrBefore}"));
+		cd.setCompositionString("inCareHasAtLeast2Visits AND clinicalVisit AND NOT onART AND NOT deceased");
 		return cd;
 	}
 
@@ -105,7 +107,8 @@ public class QiPaedsCohortLibrary {
 		cd.addSearch("child", ReportUtils.map(commonCohorts.agedAtMost(15), "effectiveDate=${onOrBefore}"));
 		cd.addSearch("enrolledIn4To6MonthOfReviewPeriod", ReportUtils.map(qiCohortLibrary.enrolledIn4To6MonthOfReviewPeriod(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
 		cd.addSearch("onART", ReportUtils.map(artCohortLibrary.onArt(), "onDate=${onOrBefore}"));
-		cd.setCompositionString("inCare AND hasVisit AND child AND NOT enrolledIn4To6MonthOfReviewPeriod AND NOT onART");
+		cd.addSearch("deceased", ReportUtils.map(commonCohorts.deceasedPatients(), "onDate=${onOrBefore}"));
+		cd.setCompositionString("inCare AND hasVisit AND child AND NOT enrolledIn4To6MonthOfReviewPeriod AND NOT onART AND NOT deceased");
 		return cd;
 	}
 
@@ -122,7 +125,8 @@ public class QiPaedsCohortLibrary {
 		cd.addSearch("atLeastOneEligibilityCriteria", ReportUtils.map(artCohortLibrary.EligibleForArtExclusive(), "onDate=${onOrBefore}"));
 		cd.addSearch("child", ReportUtils.map(commonCohorts.agedAtMost(15), "effectiveDate=${onOrBefore}"));
 		cd.addSearch("onART", ReportUtils.map(artCohortLibrary.onArt(), "onDate=${onOrBefore-6m}"));
-		cd.setCompositionString("(hasVisits AND atLeastOneEligibilityCriteria AND child) AND NOT onART");
+		cd.addSearch("deceased", ReportUtils.map(commonCohorts.deceasedPatients(), "onDate=${onOrBefore}"));
+		cd.setCompositionString("(hasVisits AND atLeastOneEligibilityCriteria AND child) AND NOT onART AND NOT deceased");
 		return cd;
 	}
 
@@ -137,7 +141,8 @@ public class QiPaedsCohortLibrary {
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addSearch("child", ReportUtils.map(commonCohorts.agedAtMost(15), "effectiveDate=${onOrBefore}"));
 		cd.addSearch("screened", ReportUtils.map(tbCohortLibrary.screenedForTbUsingICF(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
-		cd.setCompositionString("child AND screened");
+		cd.addSearch("deceased", ReportUtils.map(commonCohorts.deceasedPatients(), "onDate=${onOrBefore}"));
+		cd.setCompositionString("child AND screened AND NOT deceased");
 		return cd;
 	}
 
@@ -151,7 +156,8 @@ public class QiPaedsCohortLibrary {
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addSearch("screenForTBUsingICFAndChild", ReportUtils.map(screenForTBUsingICFAndChild(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
 		cd.addSearch("hivInfectedNotOnTbTreatmentHaveAtLeastOneHivClinicalVisitDuring6Months", ReportUtils.map(hivInfectedNotOnTbTreatmentHaveAtLeastOneHivClinicalVisitDuring6Months(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
-		cd.setCompositionString("screenForTBUsingICFAndChild AND hivInfectedNotOnTbTreatmentHaveAtLeastOneHivClinicalVisitDuring6Months");
+		cd.addSearch("deceased", ReportUtils.map(commonCohorts.deceasedPatients(), "onDate=${onOrBefore}"));
+		cd.setCompositionString("screenForTBUsingICFAndChild AND hivInfectedNotOnTbTreatmentHaveAtLeastOneHivClinicalVisitDuring6Months AND NOT deceased");
 		return cd;
 	}
 
@@ -179,7 +185,8 @@ public class QiPaedsCohortLibrary {
 		cd.addSearch("onARTForAtLeast6Months", ReportUtils.map(artCohortLibrary.onArt(), "onDate=${onOrBefore-6m}"));
 		cd.addSearch("viralLoadResultsIn12Months", ReportUtils.map(havingVlXMonthsAgo(12), "onDate=${onOrBefore}"));
 		cd.addSearch("child", ReportUtils.map(commonCohorts.agedAtMost(15), "effectiveDate=${onOrBefore}"));
-		cd.setCompositionString("onARTForAtLeast6Months AND child AND viralLoadResultsIn12Months");
+		cd.addSearch("deceased", ReportUtils.map(commonCohorts.deceasedPatients(), "onDate=${onOrBefore}"));
+		cd.setCompositionString("onARTForAtLeast6Months AND child AND viralLoadResultsIn12Months AND NOT deceased");
 		return cd;
 	}
 
@@ -193,7 +200,8 @@ public class QiPaedsCohortLibrary {
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addSearch("onARTatLeast6MonthsAndHaveAtLeastVLResultsDuringTheLast12Months", ReportUtils.map(onARTatLeast6MonthsAndHaveAtLeastVLResultsDuringTheLast12Months(), "onOrBefore=${onOrBefore}"));
 		cd.addSearch("onARTatLeast6MonthsAndHaveAtLeastOneVisitDuringTheLast6MonthsReview", ReportUtils.map(onARTatLeast6MonthsAndHaveAtLeastOneVisitDuringTheLast6MonthsReview(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
-		cd.setCompositionString("onARTatLeast6MonthsAndHaveAtLeastVLResultsDuringTheLast12Months AND onARTatLeast6MonthsAndHaveAtLeastOneVisitDuringTheLast6MonthsReview");
+		cd.addSearch("deceased", ReportUtils.map(commonCohorts.deceasedPatients(), "onDate=${onOrBefore}"));
+		cd.setCompositionString("onARTatLeast6MonthsAndHaveAtLeastVLResultsDuringTheLast12Months AND onARTatLeast6MonthsAndHaveAtLeastOneVisitDuringTheLast6MonthsReview AND NOT deceased");
 		return cd;
 	}
 
@@ -207,7 +215,8 @@ public class QiPaedsCohortLibrary {
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addSearch("onARTatLeast6MonthsAndHaveAtLeastVLResultsDuringTheLast12Months", ReportUtils.map(onARTatLeast6MonthsAndHaveAtLeastVLResultsDuringTheLast12Months(), "onOrBefore=${onOrBefore}"));
 		cd.addSearch("onARTatLeast6MonthsAndHaveAtLeastOneVisitDuringTheLast6MonthsReview", ReportUtils.map(onARTatLeast6MonthsAndHaveAtLeastOneVisitDuringTheLast6MonthsReview(), "onOrBefore=${onOrBefore}"));
-		cd.setCompositionString("onARTatLeast6MonthsAndHaveAtLeastVLResultsDuringTheLast12Months AND onARTatLeast6MonthsAndHaveAtLeastOneVisitDuringTheLast6MonthsReview");
+		cd.addSearch("deceased", ReportUtils.map(commonCohorts.deceasedPatients(), "onDate=${onOrBefore}"));
+		cd.setCompositionString("onARTatLeast6MonthsAndHaveAtLeastVLResultsDuringTheLast12Months AND onARTatLeast6MonthsAndHaveAtLeastOneVisitDuringTheLast6MonthsReview AND NOT deceased");
 		return cd;
 	}
 
@@ -224,7 +233,8 @@ public class QiPaedsCohortLibrary {
 		cd.addSearch("onARTForAtLeast6Months", ReportUtils.map(artCohortLibrary.onArt(), "onDate=${onOrBefore-6m}"));
 		cd.addSearch("hasVisit", ReportUtils.map(hivCohortLibrary.hasHivVisit(), "onOrAfter=${onOrBefore-6m},onOrBefore=${onOrBefore}"));
 		cd.addSearch("child", ReportUtils.map(commonCohorts.agedAtMost(15), "effectiveDate=${onOrBefore}"));
-		cd.setCompositionString("onARTForAtLeast6Months AND hasVisit AND child");
+		cd.addSearch("deceased", ReportUtils.map(commonCohorts.deceasedPatients(), "onDate=${onOrBefore}"));
+		cd.setCompositionString("onARTForAtLeast6Months AND hasVisit AND child AND NOT deceased");
 		return cd;
 	}
 
@@ -251,8 +261,9 @@ public class QiPaedsCohortLibrary {
 		cd.addSearch("onARTatLeast6Months", ReportUtils.map(artCohortLibrary.onArt(), "onDate=${onOrBefore-6m}"));
 		cd.addSearch("vlLess1000", ReportUtils.map(cdVlLess1000, "onDate=${onOrBefore}"));
 		cd.addSearch("child", ReportUtils.map(commonCohorts.agedAtMost(15), "effectiveDate=${onOrBefore}"));
+		cd.addSearch("deceased", ReportUtils.map(commonCohorts.deceasedPatients(), "onDate=${onOrBefore}"));
 
-		cd.setCompositionString("onARTatLeast6Months AND vlLess1000 AND child");
+		cd.setCompositionString("onARTatLeast6Months AND vlLess1000 AND child AND NOT deceased");
 
 		return cd;
 	}
@@ -266,7 +277,8 @@ public class QiPaedsCohortLibrary {
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addSearch("onARTatLeast6MonthsAndVlLess1000", ReportUtils.map(onARTatLeast6MonthsAndVlLess1000(), "onOrBefore=${onOrBefore}"));
 		cd.addSearch("hivMonitoringViralLoadNumDenForChild", ReportUtils.map(hivMonitoringViralLoadNumDenForChild(),  "onOrBefore=${onOrBefore}"));
-		cd.setCompositionString("onARTatLeast6MonthsAndVlLess1000 AND hivMonitoringViralLoadNumDenForChild");
+		cd.addSearch("deceased", ReportUtils.map(commonCohorts.deceasedPatients(), "onDate=${onOrBefore}"));
+		cd.setCompositionString("onARTatLeast6MonthsAndVlLess1000 AND hivMonitoringViralLoadNumDenForChild AND NOT deceased");
 		return cd;
 	}
 
@@ -291,7 +303,8 @@ public class QiPaedsCohortLibrary {
 		compositionCohortDefinition.addSearch("onTbTreatment", ReportUtils.map(onTbTreatment, "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
 		compositionCohortDefinition.addSearch("hasHivVisit", ReportUtils.map(hivCohortLibrary.hasHivVisit(), "onOrAfter=${onOrBefore-6m},onOrBefore=${onOrBefore}"));
 		compositionCohortDefinition.addSearch("child", ReportUtils.map(commonCohorts.agedAtMost(15), "effectiveDate=${onOrBefore}"));
-		compositionCohortDefinition.setCompositionString("(inHivProgram AND hasHivVisit AND child) AND NOT onTbTreatment");
+		compositionCohortDefinition.addSearch("deceased", ReportUtils.map(commonCohorts.deceasedPatients(), "onDate=${onOrBefore}"));
+		compositionCohortDefinition.setCompositionString("(inHivProgram AND hasHivVisit AND child) AND NOT (onTbTreatment OR deceased)");
 		return compositionCohortDefinition;
 	}
 
@@ -309,7 +322,8 @@ public class QiPaedsCohortLibrary {
 		cd.addSearch("negativeTB", ReportUtils.map(commonCohorts.hasObs(tbDiseaseStatus, noSignsOrSymptoms), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
 		cd.addSearch("onIPT", ReportUtils.map(qiCohortLibrary.onINHProphylaxis(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
 		cd.addSearch("child", ReportUtils.map(commonCohorts.agedAtMost(15), "effectiveDate=${onOrBefore}"));
-		cd.setCompositionString("(negativeTB AND child) AND NOT onIPT");
+		cd.addSearch("deceased", ReportUtils.map(commonCohorts.deceasedPatients(), "onDate=${onOrBefore}"));
+		cd.setCompositionString("(negativeTB AND child) AND NOT (onIPT OR deceased)");
 		return cd;
 	}
 
@@ -339,7 +353,8 @@ public class QiPaedsCohortLibrary {
 		cd.addSearch("negativeTB", ReportUtils.map(coded, "onOrAfter=${onOrBefore-6m},onOrBefore=${onOrBefore}"));
 		cd.addSearch("onIPT", ReportUtils.map(qiCohortLibrary.onINHProphylaxis(), "onOrAfter=${onOrBefore-24m},onOrBefore=${onOrBefore}"));
 		cd.addSearch("child", ReportUtils.map(commonCohorts.agedAtMost(15), "effectiveDate=${onOrBefore}"));
-		cd.setCompositionString("(negativeTB AND child) AND NOT onIPT");
+		cd.addSearch("deceased", ReportUtils.map(commonCohorts.deceasedPatients(), "onDate=${onOrBefore}"));
+		cd.setCompositionString("(negativeTB AND child) AND NOT (onIPT OR deceased)");
 		return  cd;
 	}
 
@@ -375,7 +390,8 @@ public class QiPaedsCohortLibrary {
 		cd.addSearch("hadHeight", ReportUtils.map(hadHeight, "onOrAfter=${onOrBefore-6m},onOrBefore=${onOrBefore}"));
 		cd.addSearch("hadMuac", ReportUtils.map(hadMuac, "onOrAfter=${onOrBefore-6m},onOrBefore=${onOrBefore}"));
 		cd.addSearch("child", ReportUtils.map(commonCohorts.agedAtMost(15), "effectiveDate=${onOrBefore}"));
-		cd.setCompositionString("(hadWeight AND hadHeight AND child) OR hadMuac");
+		cd.addSearch("deceased", ReportUtils.map(commonCohorts.deceasedPatients(), "onDate=${onOrBefore}"));
+		cd.setCompositionString("(hadWeight AND hadHeight AND child) OR hadMuac AND NOT deceased");
 		return cd;
 	}
 	/**
@@ -388,7 +404,8 @@ public class QiPaedsCohortLibrary {
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addSearch("hadNutritionalAssessmentAtLastVisit", ReportUtils.map(hadNutritionalAssessmentAtLastVisit(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
 		cd.addSearch("hasHivVisitPaeds", ReportUtils.map(hasHivVisitPaeds(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
-		cd.setCompositionString("hadNutritionalAssessmentAtLastVisit AND hasHivVisitPaeds");
+		cd.addSearch("deceased", ReportUtils.map(commonCohorts.deceasedPatients(), "onDate=${onOrBefore}"));
+		cd.setCompositionString("hadNutritionalAssessmentAtLastVisit AND hasHivVisitPaeds AND NOT deceased");
 		return cd;
 	}
 
@@ -407,7 +424,8 @@ public class QiPaedsCohortLibrary {
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.addSearch("meetCriteria", ReportUtils.map(cdMeetCriteria, "onDate=${onOrBefore}"));
 		cd.addSearch("child", ReportUtils.map(commonCohorts.agedAtMost(15), "effectiveDate=${onOrBefore}"));
-		cd.setCompositionString("meetCriteria AND child");
+		cd.addSearch("deceased", ReportUtils.map(commonCohorts.deceasedPatients(), "onDate=${onOrBefore}"));
+		cd.setCompositionString("meetCriteria AND child AND NOT deceased");
 		return cd;
 	}
 
@@ -424,7 +442,8 @@ public class QiPaedsCohortLibrary {
 		cd.addSearch("meetNutritionCriteria", ReportUtils.map(patientsWhoMeetCriteriaForNutritionalSupport(), "onOrBefore=${onOrBefore}"));
 		cd.addSearch("lastClinicVisit", ReportUtils.map(hadNutritionalAssessmentAtLastVisit(), "onOrBefore=${onOrBefore}"));
 		cd.addSearch("child", ReportUtils.map(commonCohorts.agedAtMost(15), "effectiveDate=${onOrBefore}"));
-		cd.setCompositionString("meetNutritionCriteria AND lastClinicVisit AND child");
+		cd.addSearch("deceased", ReportUtils.map(commonCohorts.deceasedPatients(), "onDate=${onOrBefore}"));
+		cd.setCompositionString("meetNutritionCriteria AND lastClinicVisit AND child AND NOT deceased");
 		return  cd;
 	}
 
@@ -441,7 +460,8 @@ public class QiPaedsCohortLibrary {
 		cd.addSearch("disclosed", ReportUtils.map(commonCohorts.hasObs(Dictionary.getConcept(Dictionary.HIV_STATUS_DISCLOSED_TO_OTHER_FAMILY_MEMBERS), Dictionary.getConcept(Dictionary.YES)), "onOrBefore=${onOrBefore}"));
 		cd.addSearch("childMore8Years", ReportUtils.map(commonCohorts.agedAtLeast(8), "effectiveDate=${onOrBefore}"));
 		cd.addSearch("childLess15", ReportUtils.map(commonCohorts.agedAtMost(15), "effectiveDate=${onOrBefore}"));
-		cd.setCompositionString("hivInfected AND disclosed AND childMore8Years AND childLess15");
+		cd.addSearch("deceased", ReportUtils.map(commonCohorts.deceasedPatients(), "onDate=${onOrBefore}"));
+		cd.setCompositionString("hivInfected AND disclosed AND childMore8Years AND childLess15 AND NOT deceased");
 		return cd;
 	}
 
@@ -466,7 +486,8 @@ public class QiPaedsCohortLibrary {
 		cd.addSearch("dnaPcr2", ReportUtils.map(commonCohorts.hasObs(dnaPcr2, positive), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
 		cd.addSearch("antiBody1", ReportUtils.map(commonCohorts.hasObs(antiBody1, positive), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
 		cd.addSearch("antiBody2", ReportUtils.map(commonCohorts.hasObs(antiBody2, positive), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
-		cd.setCompositionString("dnaPcr1 OR dnaPcr2 OR antiBody1 OR antiBody2");
+		cd.addSearch("deceased", ReportUtils.map(commonCohorts.deceasedPatients(), "onDate=${onOrBefore}"));
+		cd.setCompositionString("dnaPcr1 OR dnaPcr2 OR antiBody1 OR antiBody2 AND NOT deceased");
 		return cd;
 	}
 
@@ -484,7 +505,8 @@ public class QiPaedsCohortLibrary {
 		cd.addSearch("childLess15", ReportUtils.map(commonCohorts.agedAtMost(15), "effectiveDate=${onOrBefore}"));
 		cd.addSearch("hasVisit", ReportUtils.map(hivCohortLibrary.hasHivVisit(), "onOrAfter=${onOrBefore-6m},onOrBefore=${onOrBefore}"));
 		cd.addSearch("hivInfected", ReportUtils.map(infectedWithHiv(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
-		cd.setCompositionString("inHivProgram AND hasVisit AND childMore4 AND childLess15");
+		cd.addSearch("deceased", ReportUtils.map(commonCohorts.deceasedPatients(), "onDate=${onOrBefore}"));
+		cd.setCompositionString("inHivProgram AND hasVisit AND childMore4 AND childLess15 AND NOT deceased");
 		return cd;
 	}
 
@@ -500,7 +522,8 @@ public class QiPaedsCohortLibrary {
 		cd.addSearch("child", ReportUtils.map(commonCohorts.agedAtMost(15), "effectiveDate=${onOrBefore}"));
 		cd.addSearch("hasVisits", ReportUtils.map(hivCohortLibrary.hasHivVisit(), "onOrAfter=${onOrBefore-6m},onOrBefore=${onOrBefore}"));
 		cd.addSearch("onART", ReportUtils.map(artCohortLibrary.onArt(), "onDate=${onOrBefore}"));
-		cd.setCompositionString("hasCd4 AND child AND hasVisits AND NOT onART");
+		cd.addSearch("deceased", ReportUtils.map(commonCohorts.deceasedPatients(), "onDate=${onOrBefore}"));
+		cd.setCompositionString("hasCd4 AND child AND hasVisits AND NOT (onART OR deceased)");
 		return cd;
 	}
 
@@ -514,7 +537,8 @@ public class QiPaedsCohortLibrary {
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addSearch("hasCD4ResultsPaeds", ReportUtils.map(hasCD4ResultsPaeds(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
 		cd.addSearch("hasHivVisitPaeds", ReportUtils.map(hasHivVisitPaeds(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
-		cd.setCompositionString("hasCD4ResultsPaeds AND hasHivVisitPaeds");
+		cd.addSearch("deceased", ReportUtils.map(commonCohorts.deceasedPatients(), "onDate=${onOrBefore}"));
+		cd.setCompositionString("hasCD4ResultsPaeds AND hasHivVisitPaeds AND NOT deceased");
 		return cd;
 	}
 
@@ -529,7 +553,8 @@ public class QiPaedsCohortLibrary {
 		cd.addSearch("hasVisits", ReportUtils.map(hivCohortLibrary.hasHivVisit(), "onOrAfter=${onOrBefore-6m},onOrBefore=${onOrBefore}"));
 		cd.addSearch("child", ReportUtils.map(commonCohorts.agedAtMost(15), "effectiveDate=${onOrBefore}"));
 		cd.addSearch("onART", ReportUtils.map(artCohortLibrary.onArt(), "onDate=${onOrBefore}"));
-		cd.setCompositionString("hasVisits AND child AND NOT onART");
+		cd.addSearch("deceased", ReportUtils.map(commonCohorts.deceasedPatients(), "onDate=${onOrBefore}"));
+		cd.setCompositionString("hasVisits AND child AND NOT (onART OR deceased)");
 		return cd;
 	}
 
@@ -540,7 +565,8 @@ public class QiPaedsCohortLibrary {
 		cd.addSearch("inCareHasAtLeast2VisitsAndClinicalVisit", ReportUtils.map(inCareHasAtLeast2VisitsAndClinicalVisit(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
 		cd.addSearch("clinicalVisit", ReportUtils.map(clinicalVisit(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
 		cd.addSearch("onART", ReportUtils.map(artCohortLibrary.onArt(), "onDate=${onOrBefore}"));
-		cd.setCompositionString("clinicalVisit AND NOT inCareHasAtLeast2VisitsAndClinicalVisit AND NOT onART");
+		cd.addSearch("deceased", ReportUtils.map(commonCohorts.deceasedPatients(), "onDate=${onOrBefore}"));
+		cd.setCompositionString("clinicalVisit AND NOT inCareHasAtLeast2VisitsAndClinicalVisit AND NOT (onART OR deceased)");
 		return cd;
 	}
 
@@ -550,7 +576,8 @@ public class QiPaedsCohortLibrary {
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addSearch("hasCD4ResultsPaedsAndhasHivVisitPaeds", ReportUtils.map(hasCD4ResultsPaedsAndhasHivVisitPaeds(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
 		cd.addSearch("hasHivVisitPaeds", ReportUtils.map(hasHivVisitPaeds(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
-		cd.setCompositionString("hasHivVisitPaeds AND NOT hasCD4ResultsPaedsAndhasHivVisitPaeds");
+		cd.addSearch("deceased", ReportUtils.map(commonCohorts.deceasedPatients(), "onDate=${onOrBefore}"));
+		cd.setCompositionString("hasHivVisitPaeds AND NOT (hasCD4ResultsPaedsAndhasHivVisitPaeds OR deceased)");
 		return cd;
 	}
 
@@ -560,7 +587,8 @@ public class QiPaedsCohortLibrary {
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addSearch("eligibleAndStartedARTPedsAndhivInfectedAndNotOnARTAndHasHivClinicalVisit", ReportUtils.map(artCohortLibrary.eligibleAndStartedARTPedsAndhivInfectedAndNotOnARTAndHasHivClinicalVisit(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
 		cd.addSearch("hivInfectedAndNotOnARTAndHasHivClinicalVisit", ReportUtils.map(hivInfectedAndNotOnARTAndHasHivClinicalVisit(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
-		cd.setCompositionString("hivInfectedAndNotOnARTAndHasHivClinicalVisit AND NOT eligibleAndStartedARTPedsAndhivInfectedAndNotOnARTAndHasHivClinicalVisit");
+		cd.addSearch("deceased", ReportUtils.map(commonCohorts.deceasedPatients(), "onDate=${onOrBefore}"));
+		cd.setCompositionString("hivInfectedAndNotOnARTAndHasHivClinicalVisit AND NOT eligibleAndStartedARTPedsAndhivInfectedAndNotOnARTAndHasHivClinicalVisit AND NOT deceased");
 		return cd;
 	}
 
@@ -570,7 +598,8 @@ public class QiPaedsCohortLibrary {
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addSearch("numerator", ReportUtils.map(onARTatLeast6MonthsAndHaveAtLeastVLResultsDuringTheLast12MonthsAndOnARTatLeast6MonthsAndHaveAtLeastOneVisitDuringTheLast6MonthsReview(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
 		cd.addSearch("denominator", ReportUtils.map(onARTatLeast6MonthsAndHaveAtLeastOneVisitDuringTheLast6MonthsReview(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
-		cd.setCompositionString("denominator AND NOT numerator");
+		cd.addSearch("deceased", ReportUtils.map(commonCohorts.deceasedPatients(), "onDate=${onOrBefore}"));
+		cd.setCompositionString("denominator AND NOT numerator AND NOT deceased");
 		return cd;
 	}
 
@@ -580,7 +609,8 @@ public class QiPaedsCohortLibrary {
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addSearch("numerator", ReportUtils.map(onARTatLeast6MonthsAndVlLess1000AndHivMonitoringViralLoadNumDenForChild(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
 		cd.addSearch("denominator", ReportUtils.map(hivMonitoringViralLoadNumDenForChild(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
-		cd.setCompositionString("denominator AND NOT numerator");
+		cd.addSearch("deceased", ReportUtils.map(commonCohorts.deceasedPatients(), "onDate=${onOrBefore}"));
+		cd.setCompositionString("denominator AND NOT numerator AND NOT deceased");
 		return cd;
 	}
 
@@ -590,7 +620,8 @@ public class QiPaedsCohortLibrary {
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addSearch("numerator", ReportUtils.map(screenForTBUsingICFAndChildAndIsHivInfectedNotOnTbTreatmentHaveAtLeastOneHivClinicalVisitDuring6Months(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
 		cd.addSearch("denominator", ReportUtils.map(hivInfectedNotOnTbTreatmentHaveAtLeastOneHivClinicalVisitDuring6Months(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
-		cd.setCompositionString("denominator AND NOT numerator");
+		cd.addSearch("deceased", ReportUtils.map(commonCohorts.deceasedPatients(), "onDate=${onOrBefore}"));
+		cd.setCompositionString("denominator AND NOT numerator AND NOT deceased");
 		return cd;
 	}
 
@@ -600,7 +631,8 @@ public class QiPaedsCohortLibrary {
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addSearch("numerator", ReportUtils.map(hadNutritionalAssessmentAtLastVisitAndHasHivVisitPaeds(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
 		cd.addSearch("denominator", ReportUtils.map(hasHivVisitPaeds(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
-		cd.setCompositionString("denominator AND NOT numerator");
+		cd.addSearch("deceased", ReportUtils.map(commonCohorts.deceasedPatients(), "onDate=${onOrBefore}"));
+		cd.setCompositionString("denominator AND NOT numerator AND NOT deceased");
 		return cd;
 	}
 }
