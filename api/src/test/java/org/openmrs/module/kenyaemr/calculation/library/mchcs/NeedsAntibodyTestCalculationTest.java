@@ -97,7 +97,7 @@ public class NeedsAntibodyTestCalculationTest extends BaseModuleContextSensitive
 		context.setNow(TestUtils.date(2015, 6 ,1));
 
 		CalculationResultMap resultMap = new NeedsAntibodyTestCalculation().evaluate(ptIds, null, context);
-		Assert.assertTrue((Boolean) resultMap.get(6).getValue()); // HEI and has null antibody and is >=9 months
+		Assert.assertTrue((Boolean) resultMap.get(6).getValue()); // HEI and has null antibody and is 9 months<= age >=18 months
 		Assert.assertFalse((Boolean) resultMap.get(7).getValue()); //has antibody 1
 		Assert.assertFalse((Boolean) resultMap.get(8).getValue()); // has antibody 2
 	}

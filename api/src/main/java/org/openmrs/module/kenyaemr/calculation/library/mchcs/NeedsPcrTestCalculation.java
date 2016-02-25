@@ -15,6 +15,7 @@
 package org.openmrs.module.kenyaemr.calculation.library.mchcs;
 
 import org.joda.time.DateTime;
+import org.joda.time.Months;
 import org.joda.time.Weeks;
 import org.openmrs.Concept;
 import org.openmrs.Obs;
@@ -86,7 +87,7 @@ public class NeedsPcrTestCalculation extends AbstractPatientCalculation implemen
 				//get birth date of this patient
 				Person person = Context.getPersonService().getPerson(ptId);
 
-				if (hivStatusObs != null && pcrTestObs == null &&  pcrTestObsQual == null && (hivStatusObs.getValueCoded().equals(hivExposed)) && getAge(person.getBirthdate(), context.getNow()) >= 6) {
+				if (hivStatusObs != null && pcrTestObs == null &&  pcrTestObsQual == null && (hivStatusObs.getValueCoded().equals(hivExposed)) && getAgeInWeeks(person.getBirthdate(), context.getNow()) >= 6 && getAgeInMonts(person.getBirthdate(), context.getNow()) <= 9) {
 					needsPcr = true;
 				}
 
@@ -97,9 +98,15 @@ public class NeedsPcrTestCalculation extends AbstractPatientCalculation implemen
 		return ret;
 	}
 
-	Integer getAge(Date birtDate, Date context) {
+	Integer getAgeInWeeks(Date birtDate, Date context) {
 		DateTime d1 = new DateTime(birtDate.getTime());
 		DateTime d2 = new DateTime(context.getTime());
 		return Weeks.weeksBetween(d1, d2).getWeeks();
+	}
+
+	Integer getAgeInMonts(Date birtDate, Date context) {
+		DateTime d1 = new DateTime(birtDate.getTime());
+		DateTime d2 = new DateTime(context.getTime());
+		return Months.monthsBetween(d1, d2).getMonths();
 	}
 }

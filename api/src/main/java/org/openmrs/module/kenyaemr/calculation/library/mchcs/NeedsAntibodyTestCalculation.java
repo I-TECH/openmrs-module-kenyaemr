@@ -84,7 +84,7 @@ public class NeedsAntibodyTestCalculation extends AbstractPatientCalculation imp
 
 				Person person = Context.getPersonService().getPerson(ptId);
 
-				if (hivStatusObs != null && (hivStatusObs.getValueCoded().equals(hivExposedUnknown)) && getAge(person.getBirthdate(), context.getNow()) < 18 && rapidTest1 == null) {
+				if (hivStatusObs != null && (hivStatusObs.getValueCoded().equals(hivExposedUnknown)) && getAge(person.getBirthdate(), context.getNow()) <= 18 && rapidTest1 == null && getAge(person.getBirthdate(), context.getNow()) >= 9) {
 					needsAntibody = true;
 				}
 			}

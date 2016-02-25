@@ -20,6 +20,7 @@ import org.junit.Test;
 import org.openmrs.Concept;
 import org.openmrs.Program;
 import org.openmrs.api.context.Context;
+import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
@@ -64,6 +65,8 @@ public class NeedsPcrTestCalculationTest extends BaseModuleContextSensitiveTest 
 	public void evaluate_shouldCalculatePcrTest() throws Exception {
 		//get mchcs program
 		Program mchcsProgram = MetadataUtils.existing(Program.class, MchMetadata._Program.MCHCS);
+		//set the birth date of patient #6 to be above 6 weeks and below or equal to 9 months
+		TestUtils.getPatient(6).setBirthdate(TestUtils.date(2015, 1, 1));
 
 		// Enroll patients #6 and  #7  in the mchcs Program
 		TestUtils.enrollInProgram(TestUtils.getPatient(6), mchcsProgram, TestUtils.date(2015, 4, 1));
@@ -75,17 +78,21 @@ public class NeedsPcrTestCalculationTest extends BaseModuleContextSensitiveTest 
 		Concept pcrStatus = Dictionary.getConcept(Dictionary.HIV_DNA_POLYMERASE_CHAIN_REACTION);
 
 		//make patient #6 be HEI and has no pcr results
-		TestUtils.saveObs(TestUtils.getPatient(6),infantHivStatus,Dictionary.getConcept(Dictionary.EXPOSURE_TO_HIV),new Date());
+		TestUtils.saveObs(TestUtils.getPatient(6),infantHivStatus,Dictionary.getConcept(Dictionary.EXPOSURE_TO_HIV), TestUtils.date(2015, 4, 1));
 		//TestUtils.saveObs(ps.getPatient(6),pcrStatus,Dictionary.getConcept(null),new Date());
 
-		//make patient #6 be HEI and has has pcr results
-		TestUtils.saveObs(TestUtils.getPatient(7),infantHivStatus,Dictionary.getConcept(Dictionary.EXPOSURE_TO_HIV),new Date());
-		TestUtils.saveObs(TestUtils.getPatient(7),pcrStatus,Dictionary.getConcept(Dictionary.HIV_DNA_POLYMERASE_CHAIN_REACTION),new Date());
+		//make patient #7 be HEI and has has pcr results
+		TestUtils.saveObs(TestUtils.getPatient(7),infantHivStatus,Dictionary.getConcept(Dictionary.EXPOSURE_TO_HIV), TestUtils.date(2015, 4, 1));
+		TestUtils.saveObs(TestUtils.getPatient(7),pcrStatus,Dictionary.getConcept(Dictionary.HIV_DNA_POLYMERASE_CHAIN_REACTION), TestUtils.date(2015, 4, 1));
 
 		Context.flushSession();
 
 		List<Integer> ptIds = Arrays.asList(6, 7,8);
-		CalculationResultMap resultMap = Context.getService(PatientCalculationService.class).evaluate(ptIds, new NeedsPcrTestCalculation());
+		PatientCalculationService service = Context.getService(PatientCalculationService.class);
+		PatientCalculationContext context = service.createCalculationContext();
+		context.setNow(TestUtils.date(2015, 4, 30));
+
+		CalculationResultMap resultMap =  new NeedsPcrTestCalculation().evaluate(ptIds, null, context);
 		Assert.assertTrue((Boolean) resultMap.get(6).getValue()); // HEI and has null pcr
 		Assert.assertFalse((Boolean) resultMap.get(7).getValue()); // in HEI but pcr is done
 		Assert.assertFalse((Boolean) resultMap.get(8).getValue()); // Not HEI
