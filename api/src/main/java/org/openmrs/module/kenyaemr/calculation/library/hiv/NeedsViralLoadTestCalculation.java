@@ -106,6 +106,10 @@ public class NeedsViralLoadTestCalculation extends AbstractPatientCalculation im
                 //if vl more than
                 if(viralLoadObs != null && viralLoadObs.getValueNumeric() > 1000 && (daysSince(viralLoadObs.getObsDatetime(), context) > 90)) {
                     needsViralLoadTest = true;
+
+                    if(lastLdlObs != null && (daysSince(lastLdlObs.getObsDatetime(), context) < 360)) {
+                        needsViralLoadTest = false;
+                    }
                 }
 
                 //check for pregnancy
@@ -120,6 +124,9 @@ public class NeedsViralLoadTestCalculation extends AbstractPatientCalculation im
                         }
                         if(viralLoadObs != null && viralLoadObs.getValueNumeric() > 1000 && (monthsBetween(viralLoadObs.getObsDatetime(), context.getNow()) >= 3)){
                             needsViralLoadTest = true;
+                            if(lastLdlObs != null && (daysSince(lastLdlObs.getObsDatetime(), context) < 360)) {
+                                needsViralLoadTest = false;
+                            }
                         }
                         if(viralLoadObs != null && daysSince(viralLoadObs.getObsDatetime(), context) >= 180) {
                             needsViralLoadTest = true;
