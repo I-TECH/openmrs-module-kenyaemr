@@ -112,7 +112,7 @@ public class TbCohortLibrary {
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.addSearch("screened", ReportUtils.map(screenedForTb(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
 		cd.addSearch("currentlyOnCareAndScreenedInTheLastVisit", ReportUtils.map(currentlyOnCareAndScreenedInTheLastVisit(), "onOrBefore=${onOrBefore}"));
-		cd.addSearch("onTreatment", ReportUtils.map(commonCohorts.hasObs(tbDiseaseStatus, onTreatment), "onOrBefore=${onOrBefore}"));
+		cd.addSearch("onTreatment", ReportUtils.map(commonCohorts.hasObs(tbDiseaseStatus, onTreatment), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
 		cd.setCompositionString("(screened OR currentlyOnCareAndScreenedInTheLastVisit) AND NOT onTreatment");
 
 		return cd;

@@ -70,12 +70,13 @@ public class Moh731CohortLibrary {
 
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
+
 		cd.addSearch("recentEncounter", ReportUtils.map(commonCohorts.hasEncounter(hivEnroll, hivConsult), "onOrAfter=${onDate-90d},onOrBefore=${onDate}"));
 		cd.addSearch("appointmentHigher", ReportUtils.map(nextAppointment, "onDate=${onDate}"));
 		cd.addSearch("hasCtx", ReportUtils.map(ctxFromAListOfMedicationOrders, "onDate=${onDate}"));
 		cd.addSearch("inHivProgram", ReportUtils.map(hivCohortLibrary.enrolled(), "enrolledOnOrBefore=${onDate}"));
-		cd.addSearch("missedAppointment", ReportUtils.map(missedAppointment(), "onDate=${onDate}"));
-		cd.setCompositionString("((recentEncounter OR appointmentHigher OR hasCtx) AND inHivProgram) AND NOT missedAppointment");
+		cd.addSearch("ltfDeadTo", ReportUtils.map(hivCohortLibrary.transferredOutDeadAndLtf(), "onOrBefore=${onDate}"));
+		cd.setCompositionString("((recentEncounter OR appointmentHigher OR hasCtx) AND inHivProgram) AND NOT ltfDeadTo");
 		return cd;
 	}
 
@@ -100,8 +101,8 @@ public class Moh731CohortLibrary {
 		cd.addSearch("inCare", ReportUtils.map(currentlyInCare(), "onDate=${toDate}"));
 		cd.addSearch("startedBefore", ReportUtils.map(artCohorts.startedArt(), "onOrBefore=${fromDate-1d}"));
 		cd.addSearch("missedAppointment", ReportUtils.map(missedAppointment(), "onDate=${onDate}"));
-		cd.addSearch("deceased", ReportUtils.map(commonCohorts.deceasedPatients(), "onDate=${toDate}"));
-		cd.setCompositionString("inCare AND startedBefore AND NOT deceased");
+		cd.addSearch("toDeadLtf", ReportUtils.map(hivCohortLibrary.transferredOutDeadAndLtf(), "onOrBefore=${toDate}"));
+		cd.setCompositionString("inCare AND startedBefore AND NOT toDeadLtf");
 		return cd;
 	}
 
@@ -133,8 +134,8 @@ public class Moh731CohortLibrary {
 		cd.addSearch("startedArt", ReportUtils.map(artCohorts.startedArt(), "onOrAfter=${fromDate},onOrBefore=${toDate}"));
 		cd.addSearch("revisitsArt", ReportUtils.map(revisitsArt(), "fromDate=${fromDate},toDate=${toDate}"));
 		cd.addSearch("hasAppointmentDateAndStartedART", ReportUtils.map(hasAppointmentDateAndStartedArt(), "onOrBefore=${toDate}"));
-		cd.addSearch("deceased", ReportUtils.map(commonCohorts.deceasedPatients(), "onDate=${toDate}"));
-		cd.setCompositionString("(startedArt OR revisitsArt OR hasAppointmentDateAndStartedART) AND NOT deceased");
+		cd.addSearch("toDeadLtf", ReportUtils.map(hivCohortLibrary.transferredOutDeadAndLtf(), "onOrBefore=${toDate}"));
+		cd.setCompositionString("(startedArt OR revisitsArt OR hasAppointmentDateAndStartedART) AND NOT toDeadLtf");
 		return cd;
 	}
 

@@ -25,9 +25,12 @@ import org.openmrs.module.kenyacore.report.cohort.definition.DateObsValueBetween
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.CtxFromAListOfMedicationOrdersCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.FirstProgramEnrollment;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.LostToFollowUpCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.OnCtxWithinDurationCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.IsTransferOutCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.pre_art.TransferredInAfterEnrollmentCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
+import org.openmrs.module.kenyaemr.reporting.library.moh731.Moh731CohortLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonCohortLibrary;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.cohort.definition.CodedObsCohortDefinition;
@@ -50,6 +53,9 @@ public class HivCohortLibrary {
 
 	@Autowired
 	private CommonCohortLibrary commonCohorts;
+
+	@Autowired
+	private Moh731CohortLibrary moh731CohortLibrary;
 
 	/**
 	 * Patients referred from the given entry point onto the HIV program
@@ -199,10 +205,38 @@ public class HivCohortLibrary {
 		cd.addSearch("onCtx", ReportUtils.map(onCtx, "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
 		cd.addSearch("onMedCtx", ReportUtils.map(commonCohorts.medicationDispensed(Dictionary.getConcept(Dictionary.SULFAMETHOXAZOLE_TRIMETHOPRIM), Dictionary.getConcept(Dictionary.DAPSONE)),"onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
 		cd.addSearch("ctxFromAListOfMedicationOrders", ReportUtils.map(ctxFromAListOfMedicationOrders, "onDate=${onOrBefore}"));
-		cd.setCompositionString("onCtx OR onMedCtx OR ctxFromAListOfMedicationOrders");
+		cd.addSearch("transferredOutDeadAndLtf", ReportUtils.map(transferredOutDeadAndLtf(), "onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("(onCtx OR onMedCtx OR ctxFromAListOfMedicationOrders) AND NOT transferredOutDeadAndLtf");
 
 		return cd;
 	}
+
+	/**
+	 * Patients who are transferred out, deads ltf
+	 * @return the cohort definition
+	 */
+	public CohortDefinition transferredOutDeadAndLtf(){
+		CalculationCohortDefinition calcLtf = new CalculationCohortDefinition(new LostToFollowUpCalculation());
+		calcLtf.setName("lost to follow up");
+		calcLtf.addParameter(new Parameter("onDate", "On Date", Date.class));
+
+		CalculationCohortDefinition calcTout = new CalculationCohortDefinition(new IsTransferOutCalculation());
+		calcTout.setName("to patients");
+		calcTout.addParameter(new Parameter("onDate", "On Date", Date.class));
+
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+
+		cd.addSearch("deceased", ReportUtils.map(commonCohorts.deceasedPatients(), "onDate=${onOrBefore}"));
+		cd.addSearch("ltf", ReportUtils.map(calcLtf, "onDate=${onOrBefore}"));
+		cd.addSearch("to", ReportUtils.map(calcTout, "onDate=${onOrBefore}"));
+		cd.addSearch("missedAppointment", ReportUtils.map(moh731CohortLibrary.missedAppointment(), "onDate=${onOrBefore}"));
+		cd.setCompositionString("deceased OR ltf OR to OR missedAppointment");
+
+		return cd;
+
+	}
+
 
 	/**
 	 * Patients who are in HIV care and are taking CTX prophylaxis between ${onOrAfter} and ${onOrBefore}
@@ -216,7 +250,8 @@ public class HivCohortLibrary {
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.addSearch("inProgram", ReportUtils.map(commonCohorts.inProgram(hivProgram), "onDate=${onOrBefore}"));
 		cd.addSearch("onCtxProphylaxis", ReportUtils.map(onCtxProphylaxis(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
-		cd.setCompositionString("inProgram AND onCtxProphylaxis");
+		cd .addSearch("transferredOutDeadAndLtf", ReportUtils.map(transferredOutDeadAndLtf(), "onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("(inProgram AND onCtxProphylaxis) AND NOT transferredOutDeadAndLtf");
 		return cd;
 	}
 

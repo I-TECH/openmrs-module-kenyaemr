@@ -33,6 +33,8 @@ public class CtxFromAListOfMedicationOrdersCalculation extends AbstractPatientCa
         CalculationResultMap medDurationunits = Calculations.allObs(Dictionary.getConcept(Dictionary.DURATION_UNITS), cohort, context);
         Set<Integer> hasTCA = CalculationUtils.patientsThatPass(calculate(new NextOfVisitHigherThanContextCalculation(), cohort, context));
         CalculationResultMap medicationDispensed = Calculations.lastObs(Dictionary.getConcept(Dictionary.COTRIMOXAZOLE_DISPENSED), cohort, context);
+        CalculationResultMap nextAppointmentMap = Calculations.lastObs(Dictionary.getConcept(Dictionary.RETURN_VISIT_DATE), cohort, context);
+
 
         Concept ctx = Dictionary.getConcept(Dictionary.SULFAMETHOXAZOLE_TRIMETHOPRIM);
         Concept dapson = Dictionary.getConcept(Dictionary.DAPSONE);
@@ -42,6 +44,7 @@ public class CtxFromAListOfMedicationOrdersCalculation extends AbstractPatientCa
             ListResult listResult = (ListResult) medOrdersObss.get(ptId);
             List<Obs> allObsOrders = CalculationUtils.extractResultValues(listResult);
             Obs medicationDispensedObs = EmrCalculationUtils.obsResultForPatient(medicationDispensed, ptId);
+            Obs nextAppointmentDate = EmrCalculationUtils.obsResultForPatient(nextAppointmentMap, ptId);
             //find for duration
             ListResult listResult1 = (ListResult) medDuration.get(ptId);
             List<Obs> allObsDuration = CalculationUtils.extractResultValues(listResult1);
@@ -58,7 +61,7 @@ public class CtxFromAListOfMedicationOrdersCalculation extends AbstractPatientCa
             for(Obs obs: allObsOrders){
                 if((obs.getValueCoded().equals(ctx) || obs.getValueCoded().equals(dapson))){
                     whenCtxTaken = obs;
-                    if(obs.getObsDatetime().after(context.getNow())) {
+                    if(obs.getObsDatetime().after(DateUtil.getStartOfMonth(context.getNow()))) {
                         onCtxFromAlistOfMedicationOrders = true;
                     }
                     break;
@@ -84,10 +87,14 @@ public class CtxFromAListOfMedicationOrdersCalculation extends AbstractPatientCa
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime(whenCtxTaken.getObsDatetime());
                 //adjust this date with the duration specified
-                if(duration < 7) {
+                if(durationUnits.equals(Dictionary.getConcept(Dictionary.MONTHS))) {
                     calendar.add(Calendar.MONTH, duration);
                 }
-                else {
+                else if(durationUnits.equals(Dictionary.getConcept(Dictionary.WEEKS))) {
+
+                    calendar.add(Calendar.DATE, duration * 7);
+                }
+                else if(durationUnits.equals(Dictionary.getConcept(Dictionary.DAYS))){
                     calendar.add(Calendar.DATE, duration);
                 }
 
@@ -96,11 +103,11 @@ public class CtxFromAListOfMedicationOrdersCalculation extends AbstractPatientCa
                 }
             }
 
-            if(whenCtxTaken != null && hasTCA.contains(ptId)){
+            if(whenCtxTaken != null && hasTCA.contains(ptId) && nextAppointmentDate != null && nextAppointmentDate.getValueDatetime().after(context.getNow()) && nextAppointmentDate.getObsDatetime().before(context.getNow())){
                 onCtxFromAlistOfMedicationOrders = true;
             }
 
-            if(medicationDispensedObs != null && medicationDispensedObs.getValueCoded().equals(Dictionary.getConcept(Dictionary.YES)) && hasTCA.contains(ptId)){
+            if(medicationDispensedObs != null && nextAppointmentDate != null &&  medicationDispensedObs.getValueCoded().equals(Dictionary.getConcept(Dictionary.YES)) && hasTCA.contains(ptId) && nextAppointmentDate.getValueDatetime().after(context.getNow()) && nextAppointmentDate.getObsDatetime().before(context.getNow())){
                 onCtxFromAlistOfMedicationOrders = true;
             }
             ret.put(ptId, new BooleanResult(onCtxFromAlistOfMedicationOrders, this));
