@@ -202,7 +202,7 @@ public class RDQAReportBuilder extends AbstractHybridReportBuilder {
         allPatients.addRowFilter(allPatientsCohort());
         DataSetDefinition allPatientsDSD = allPatients;
 
-        PatientDataSetDefinition activePatients = rdqaDataSetDefinition("activePatients");
+        PatientDataSetDefinition activePatients = rdqaActiveDataSetDefinition("activePatients");
         activePatients.addRowFilter(activePatientsCohort());
         DataSetDefinition activePatientsDSD = activePatients;
 
