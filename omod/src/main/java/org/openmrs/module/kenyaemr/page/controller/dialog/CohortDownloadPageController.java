@@ -12,13 +12,16 @@ package org.openmrs.module.kenyaemr.page.controller.dialog;
 
 import org.openmrs.Cohort;
 import org.openmrs.Patient;
+import org.openmrs.PatientIdentifier;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.patient.PatientCalculationService;
+import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyacore.CoreUtils;
 import org.openmrs.module.kenyacore.report.ReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportManager;
+import org.openmrs.module.kenyadq.api.impl.CsvCreator;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.DateOfEnrollmentArtCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtStartDateCalculation;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
@@ -30,13 +33,12 @@ import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.ReportRequest;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.service.ReportService;
-import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.SpringBean;
-import org.openmrs.ui.framework.page.PageModel;
+import org.openmrs.ui.framework.page.FileDownload;
 import org.openmrs.ui.framework.page.PageRequest;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -44,19 +46,19 @@ import java.util.List;
  * Controller for cohort dialog
  */
 @SharedPage
-public class CohortDialogPageController {
+public class CohortDownloadPageController {
 
-    public void controller(@RequestParam("request") ReportRequest reportRequest,
-                           @RequestParam("dataset") String dataSetName,
-                           @RequestParam("column") String columnName,
-                           PageRequest pageRequest,
-                           PageModel model,
-                           UiUtils ui,
-                           HttpServletResponse response,
-                           @SpringBean ReportManager reportManager,
-                           @SpringBean KenyaUiUtils kenyaUi,
-                           @SpringBean ReportService reportService) {
-
+    public FileDownload controller
+            (
+                    @RequestParam("request") ReportRequest reportRequest,
+                    @RequestParam("dataset") String dataSetName,
+                    @RequestParam("column") String columnName,
+                    PageRequest pageRequest,
+                    @SpringBean ReportManager reportManager,
+                    @SpringBean KenyaUiUtils kenyaUi,
+                    @SpringBean ReportService reportService,
+                    @SpringBean CsvCreator csvCreator
+            ) {
         ReportDefinition definition = reportRequest.getReportDefinition().getParameterizable();
         ReportDescriptor report = reportManager.getReportDescriptor(definition);
 
@@ -90,12 +92,43 @@ public class CohortDialogPageController {
         InitialArtStartDateCalculation initialArtStartDateCalculation = new InitialArtStartDateCalculation();
         CalculationResultMap artInitializationDates = initialArtStartDateCalculation.evaluate(cohort.getMemberIds(), null, calculationContext);
 
-        model.addAttribute("column", dataSetColumn);
-        model.addAttribute("reportRequest", reportRequest);
-        model.addAttribute("dataSet", dataSetName);
-        model.addAttribute("cohort", cohort);
-        model.addAttribute("patients", ui.simplifyCollection(patients));
-        model.addAttribute("enrollmentDates", enrollmentDates);
-        model.addAttribute("artInitializationDates", artInitializationDates);
+
+        List<Object> data = new ArrayList<Object>();
+        List<Object> headerRow = new ArrayList<Object>();
+        List<Object> header = new ArrayList<Object>();
+        header.add("Name");
+        header.add("Age");
+        header.add("Gender");
+        header.add("UPN");
+        header.add("Enrollment Date");
+        header.add("ART Initialization Date");
+        headerRow.add(header.toArray());
+        for (Patient patient : patients) {
+            List<Object> row = new ArrayList<Object>();
+            row.add(patient.getPersonName().getFullName());
+            row.add(patient.getAge());
+            row.add(patient.getGender());
+            row.add(new ArrayList<PatientIdentifier>(patient.getIdentifiers()).get(0));
+
+            Date enrollmentDate = null;
+            CalculationResult enrollmentDateCalcResult = enrollmentDates.get(patient.getId());
+            if (enrollmentDateCalcResult != null) {
+                enrollmentDate = (Date) enrollmentDateCalcResult.getValue();
+            }
+            row.add(enrollmentDate);
+
+            Date artInitializationDate = null;
+            CalculationResult artInitializationDateCalcResult = artInitializationDates.get(patient.getId());
+            if (artInitializationDateCalcResult != null) {
+                artInitializationDate = (Date) artInitializationDateCalcResult.getValue();
+            }
+            row.add(artInitializationDate);
+
+            data.add(row.toArray());
+        }
+
+        System.out.println("");
+        FileDownload fileDownload = new FileDownload("Cohort.csv", "text/csv", csvCreator.createCsv(data, header));
+        return fileDownload;
     }
 }

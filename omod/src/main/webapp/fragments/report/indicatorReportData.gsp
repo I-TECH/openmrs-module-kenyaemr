@@ -11,6 +11,16 @@
 
 		kenyaui.openDynamicDialog({ heading: 'View Cohort', url: contentUrl, width: 90, height: 90, scrolling: true });
 	}
+
+	function downloadCohort(reportRequest, dataSet, column) {
+		ui.navigate('kenyaemr', 'dialog/cohortDownload',
+				{
+					appId: '${ currentApp.id }',
+					request: reportRequest,
+					dataset: dataSet,
+					column: column
+				});
+	}
 </script>
 
 <div class="ke-panel-content">
