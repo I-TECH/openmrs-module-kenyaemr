@@ -21,7 +21,7 @@ import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyacore.CoreUtils;
 import org.openmrs.module.kenyacore.report.ReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportManager;
-import org.openmrs.module.kenyadq.api.impl.CsvCreator;
+import org.openmrs.module.kenyaemr.api.impl.CsvMaker;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.DateOfEnrollmentArtCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtStartDateCalculation;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
@@ -60,7 +60,7 @@ public class CohortDownloadPageController {
                     @SpringBean ReportManager reportManager,
                     @SpringBean KenyaUiUtils kenyaUi,
                     @SpringBean ReportService reportService,
-                    @SpringBean CsvCreator csvCreator
+                    @SpringBean CsvMaker csvMaker
             ) {
         ReportDefinition definition = reportRequest.getReportDefinition().getParameterizable();
         ReportDescriptor report = reportManager.getReportDescriptor(definition);
@@ -115,14 +115,14 @@ public class CohortDownloadPageController {
 
             String enrollmentDate = null;
             CalculationResult enrollmentDateCalcResult = enrollmentDates.get(patient.getId());
-            if (enrollmentDateCalcResult != null) {
+            if (enrollmentDateCalcResult != null && enrollmentDateCalcResult.getValue() != null) {
                 enrollmentDate = DATE_FORMAT.format((Date) enrollmentDateCalcResult.getValue());
             }
             row.add(enrollmentDate);
 
             String artInitializationDate = null;
             CalculationResult artInitializationDateCalcResult = artInitializationDates.get(patient.getId());
-            if (artInitializationDateCalcResult != null) {
+            if (artInitializationDateCalcResult != null && artInitializationDateCalcResult.getValue() != null) {
                 artInitializationDate = DATE_FORMAT.format((Date) artInitializationDateCalcResult.getValue());
             }
             row.add(artInitializationDate);
@@ -131,7 +131,7 @@ public class CohortDownloadPageController {
         }
 
         System.out.println("");
-        FileDownload fileDownload = new FileDownload("Cohort.csv", "text/csv", csvCreator.createCsv(data, header));
+        FileDownload fileDownload = new FileDownload("Cohort.csv", "text/csv", csvMaker.createCsv(data, header));
         return fileDownload;
     }
 }
