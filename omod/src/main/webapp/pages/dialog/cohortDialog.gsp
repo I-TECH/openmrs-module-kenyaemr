@@ -26,6 +26,7 @@
                 def rq = reportRequest.id;
                 def ds = dataSet;
                 def col = column.name;
+				java.text.SimpleDateFormat dateFormat = new java.text.SimpleDateFormat("dd/MM/yyyy");
             %>
 			<% patients.each { patient -> %>
 			<tr>
@@ -36,8 +37,10 @@
 				<td>${ patient.age }</td>
 				<td>${ patient.gender.toUpperCase() }</td>
 				<td>${ patient.identifiers[0].identifier }</td>
-			    <td>${ enrollmentDates.get(patient.id) != null? (enrollmentDates.get(patient.id).value != null ? enrollmentDates.get(patient.id).value : "") : ""  }</td>
-                <td>${ artInitializationDates.get(patient.id) != null ? artInitializationDates.get(patient.id).value : "" }</td>
+			    <td>${ enrollmentDates.get(patient.id) != null? (enrollmentDates.get(patient.id).value != null ?
+						dateFormat.format(enrollmentDates.get(patient.id).value) : "") : ""  }</td>
+                <td>${ artInitializationDates.get(patient.id) != null ?
+						dateFormat.format(artInitializationDates.get(patient.id).value) : "" }</td>
 			</tr>
 			<% } %>
 		</tbody>

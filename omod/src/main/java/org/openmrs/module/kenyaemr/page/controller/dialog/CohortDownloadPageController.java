@@ -38,6 +38,7 @@ import org.openmrs.ui.framework.page.FileDownload;
 import org.openmrs.ui.framework.page.PageRequest;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -47,6 +48,8 @@ import java.util.List;
  */
 @SharedPage
 public class CohortDownloadPageController {
+
+    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
 
     public FileDownload controller
             (
@@ -110,17 +113,17 @@ public class CohortDownloadPageController {
             row.add(patient.getGender());
             row.add(new ArrayList<PatientIdentifier>(patient.getIdentifiers()).get(0));
 
-            Date enrollmentDate = null;
+            String enrollmentDate = null;
             CalculationResult enrollmentDateCalcResult = enrollmentDates.get(patient.getId());
             if (enrollmentDateCalcResult != null) {
-                enrollmentDate = (Date) enrollmentDateCalcResult.getValue();
+                enrollmentDate = DATE_FORMAT.format((Date) enrollmentDateCalcResult.getValue());
             }
             row.add(enrollmentDate);
 
-            Date artInitializationDate = null;
+            String artInitializationDate = null;
             CalculationResult artInitializationDateCalcResult = artInitializationDates.get(patient.getId());
             if (artInitializationDateCalcResult != null) {
-                artInitializationDate = (Date) artInitializationDateCalcResult.getValue();
+                artInitializationDate = DATE_FORMAT.format((Date) artInitializationDateCalcResult.getValue());
             }
             row.add(artInitializationDate);
 
