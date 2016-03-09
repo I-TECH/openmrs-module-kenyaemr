@@ -23,18 +23,13 @@ import org.openmrs.module.kenyacore.report.IndicatorReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportManager;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.RDQACohortDefinition;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.RDQACohortSampleFrameDefinition;
+import org.openmrs.module.kenyaemr.reporting.renderer.AdxReportRenderer;
 import org.openmrs.module.kenyaemr.reporting.renderer.MergedCsvReportRenderer;
 import org.openmrs.module.kenyaemr.wrapper.Facility;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.module.kenyaui.annotation.SharedPage;
-import org.openmrs.module.reporting.cohort.EvaluatedCohort;
-import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.common.ContentType;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.ReportDesignResource;
@@ -67,6 +62,7 @@ public class ReportExportPageController {
 
 	private static final String EXPORT_TYPE_EXCEL = "excel";
 	private static final String EXPORT_TYPE_CSV = "csv";
+	private static final String EXPORT_TYPE_ADX = "adx";
 
 	/**
 	 * Exports report data as the given type
@@ -91,6 +87,9 @@ public class ReportExportPageController {
 		}
 		else if (EXPORT_TYPE_CSV.equals(type)) {
 			return renderAsCsv(report, reportData);
+		}
+		else if (EXPORT_TYPE_ADX.equals(type)) {
+			return renderAsAdx(report, reportData);
 		}
 		else {
 			throw new RuntimeException("Unrecognised export type: " + type);
@@ -233,6 +232,15 @@ public class ReportExportPageController {
 		renderer.render(data, null, out);
 
 		return new FileDownload(getDownloadFilename(report.getTarget(), data.getContext(), "csv"), ContentType.CSV.getContentType(), out.toByteArray());
+	}
+
+	protected FileDownload renderAsAdx(ReportDescriptor report, ReportData data) throws IOException {
+		ReportRenderer renderer = new AdxReportRenderer();
+
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		renderer.render(data, null, out);
+
+		return new FileDownload(getDownloadFilename(report.getTarget(), data.getContext(), "xml"), ContentType.XML.getContentType(), out.toByteArray());
 	}
 
 	/**
