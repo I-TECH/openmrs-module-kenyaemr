@@ -13,6 +13,7 @@ package org.openmrs.module.kenyaemr.page.controller.dialog;
 import org.openmrs.Cohort;
 import org.openmrs.Patient;
 import org.openmrs.PatientIdentifier;
+import org.openmrs.PatientIdentifierType;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.patient.PatientCalculationService;
@@ -24,8 +25,10 @@ import org.openmrs.module.kenyacore.report.ReportManager;
 import org.openmrs.module.kenyaemr.api.impl.CsvMaker;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.DateOfEnrollmentArtCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtStartDateCalculation;
+import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.module.kenyaui.annotation.SharedPage;
+import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.MapDataSet;
 import org.openmrs.module.reporting.indicator.dimension.CohortIndicatorAndDimensionResult;
@@ -111,7 +114,7 @@ public class CohortDownloadPageController {
             row.add(patient.getPersonName().getFullName());
             row.add(patient.getAge());
             row.add(patient.getGender());
-            row.add(new ArrayList<PatientIdentifier>(patient.getIdentifiers()).get(0));
+            row.add(getUpn(patient));
 
             String enrollmentDate = null;
             CalculationResult enrollmentDateCalcResult = enrollmentDates.get(patient.getId());
@@ -133,5 +136,15 @@ public class CohortDownloadPageController {
         System.out.println("");
         FileDownload fileDownload = new FileDownload("Cohort.csv", "text/csv", csvMaker.createCsv(data, header));
         return fileDownload;
+    }
+
+    private PatientIdentifier getUpn(Patient patient) {
+        PatientIdentifierType upnIdType = MetadataUtils.existing(PatientIdentifierType.class, CommonMetadata._PatientIdentifierType.PATIENT_CLINIC_NUMBER);
+        for (PatientIdentifier patientIdentifier : patient.getIdentifiers()) {
+            if (patientIdentifier.getIdentifierType().equals(upnIdType)) {
+                return patientIdentifier;
+            }
+        }
+        return null;
     }
 }
