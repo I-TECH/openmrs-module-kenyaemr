@@ -4,11 +4,17 @@ import org.openmrs.module.kenyacore.report.ReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyacore.report.builder.AbstractReportBuilder;
 import org.openmrs.module.kenyacore.report.builder.Builds;
+import org.openmrs.module.kenyaemr.reporting.ColumnParameters;
+import org.openmrs.module.kenyaemr.reporting.EmrReportingUtils;
+import org.openmrs.module.kenyaemr.reporting.library.mer.MerCohortIndicatorLibrary;
+import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonDimensionLibrary;
+import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.HivIndicatorLibrary;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
@@ -22,6 +28,18 @@ import java.util.List;
 @Builds({"kenyaemr.common.report.mer-indicators"})
 public class MerIndicatorsReportBuilder extends AbstractReportBuilder {
 
+    @Autowired
+    private CommonDimensionLibrary commonDimensions;
+
+    @Autowired
+    private HivIndicatorLibrary hivIndicators;
+
+    @Autowired
+    private MerCohortIndicatorLibrary merCohortIndicators;
+
+
+
+
     @Override
     protected List<Parameter> getParameters(ReportDescriptor descriptor) {
         return Arrays.asList(
@@ -33,7 +51,7 @@ public class MerIndicatorsReportBuilder extends AbstractReportBuilder {
     @Override
     protected List<Mapped<DataSetDefinition>> buildDataSets(ReportDescriptor descriptor, ReportDefinition report) {
         return Arrays.asList(
-                ReportUtils.map(merIndicators(), "startDate=${startDate},endDate=${endDate}")
+                ReportUtils.map(merDataSet(), "startDate=${startDate},endDate=${endDate}")
         );
     }
 
@@ -41,12 +59,19 @@ public class MerIndicatorsReportBuilder extends AbstractReportBuilder {
      * Create a data set for the mer indicator
      * @return dataset
      */
-    protected DataSetDefinition merIndicators() {
-        CohortIndicatorDataSetDefinition cid = new CohortIndicatorDataSetDefinition();
-        cid.setName("Mer Indicators");
-        cid.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cid.addParameter(new Parameter("endDate", "End Date", Date.class));
-        return cid;
+    protected DataSetDefinition merDataSet() {
+        CohortIndicatorDataSetDefinition cohortDsd = new CohortIndicatorDataSetDefinition();
+        cohortDsd.setName("Mer level 1 indicators");
+        cohortDsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cohortDsd.addParameter(new Parameter("endDate", "End Date", Date.class));
+
+        String indParams = "startDate=${startDate},endDate=${endDate}";
+
+        cohortDsd.addColumn("PMTCT_STAT", "% of pregnant women with known HIV status", ReportUtils.map(merCohortIndicators.percentageOfPregnantWomenWithKnownHivStatus(), indParams), "");
+        cohortDsd.addColumn("PMTCT_ARV", "% of HIV+ pregnant women who received antiretrovirals to reduce risk of MTCT during pregnancy and delivery", ReportUtils.map(merCohortIndicators.percentageOfPregnantWomenWithKnownHivStatus(), indParams), "");
+        cohortDsd.addColumn("PMTCT_EID", "% of infants born to HIV-positive women who had a virologic HIV test done within 12 months of birth", ReportUtils.map(merCohortIndicators.percentageOfInfantsBornToHIVPositiveWomenWhoHadVirologicHivTestDoneWithin12MonthsOfBirth(), indParams), "");
+
+        return cohortDsd;
 
     }
 }
