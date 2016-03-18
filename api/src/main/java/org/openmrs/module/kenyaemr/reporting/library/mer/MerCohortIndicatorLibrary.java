@@ -60,6 +60,6 @@ public class MerCohortIndicatorLibrary {
     public CohortIndicator finalOutcomesAmongHivExposedInfantsRegisteredInTheBirthCohort(){
         return cohortIndicator("Final outcomes among HIV exposed infants registered in the birth cohort",
                 map(merCohorts.numberOfHivExposedInfantsWithDocumentedOutcome(), "onOrAfter=${endDate-12m},onOrBefore=${endDate}"),
-                map(mchmsCohortLibrary.numberOfHivExposedInfantsRegisteredInTheBirthCohortAtAnyTime(), "onOrAfter=${endDate-12m},onOrBefore=${endDate}"));
+                map(merCohorts.numberOfHivExposedInfantsRegisteredInTheBirthCohortAtAnyTime(), "onOrAfter=${endDate-12m},onOrBefore=${endDate}"));
     }
 }
