@@ -27,8 +27,8 @@ public class MerCohortIndicatorLibrary {
      */
    public  CohortIndicator percentageOfPregnantWomenWithKnownHivStatus() {
         return cohortIndicator("percentage of pregnant women with known HIV status",
-                map(mchmsCohortLibrary.testedForHivBeforeOrDuringMchms(), "onOrAfter=${startDate-3m},onOrBefore=${endDate}"),
-                map(mchmsCohortLibrary.testedForHivInMchms(), "onOrAfter=${startDate-3m},onOrBefore=${endDate}"));
+                map(mchmsCohortLibrary.testedForHivBeforeOrDuringMchms(), "onOrAfter=${endDate-3m},onOrBefore=${endDate}"),
+                map(mchmsCohortLibrary.testedForHivInMchms(), "onOrAfter=${endDate-3m},onOrBefore=${endDate}"));
 
     }
     /**
@@ -38,8 +38,8 @@ public class MerCohortIndicatorLibrary {
     public CohortIndicator percentageOfHivPositivePregnantWomenWhoReceivedArtDuringPregnancyAndDelivery() {
 
         return cohortIndicator("Percentage of HIV-positive pregnant women who received art",
-                map(merCohorts.numberOfHivPositivePregnantWomenWhoReceivedART(), "onOrAfter=${startDate-6m},onOrBefore=${endDate}"),
-                map(mchmsCohortLibrary.testedHivPositiveInMchms(), "onOrAfter=${startDate-6m},onOrBefore=${endDate}"));
+                map(merCohorts.numberOfHivPositivePregnantWomenWhoReceivedART(), "onOrAfter=${endDate-6m},onOrBefore=${endDate}"),
+                map(mchmsCohortLibrary.testedHivPositiveInMchms(), "onOrAfter=${endDate-6m},onOrBefore=${endDate}"));
 
     }
 
@@ -49,7 +49,17 @@ public class MerCohortIndicatorLibrary {
      */
     public CohortIndicator percentageOfInfantsBornToHIVPositiveWomenWhoHadVirologicHivTestDoneWithin12MonthsOfBirth(){
         return cohortIndicator("Percentage of infants born to HIV-positive women who had a virologic HIV test done within 12 months of birth",
-                map(merCohorts.numberOfInfantsWhoHadVirologicHivTestWithin12MonthsOfBirthDuringTheReportingPeriod(), "onOrAfter=${startDate-3m},onOrBefore=${endDate}"),
-                map(mchmsCohortLibrary.testedHivPositiveInMchms(), "onOrAfter=${startDate-3m},onOrBefore=${endDate}"));
+                map(merCohorts.numberOfInfantsWhoHadVirologicHivTestWithin12MonthsOfBirthDuringTheReportingPeriod(), "onOrAfter=${endDate-3m},onOrBefore=${endDate}"),
+                map(mchmsCohortLibrary.testedHivPositiveInMchms(), "onOrAfter=${endDate-3m},onOrBefore=${endDate}"));
+    }
+
+    /**
+     * Final outcomes among HIV exposed infants registered in the birth cohort
+     * @return CohortIndicator
+     */
+    public CohortIndicator finalOutcomesAmongHivExposedInfantsRegisteredInTheBirthCohort(){
+        return cohortIndicator("Final outcomes among HIV exposed infants registered in the birth cohort",
+                map(merCohorts.numberOfHivExposedInfantsWithDocumentedOutcome(), "onOrAfter=${endDate-12m},onOrBefore=${endDate}"),
+                map(mchmsCohortLibrary.numberOfHivExposedInfantsRegisteredInTheBirthCohortAtAnyTime(), "onOrAfter=${endDate-12m},onOrBefore=${endDate}"));
     }
 }

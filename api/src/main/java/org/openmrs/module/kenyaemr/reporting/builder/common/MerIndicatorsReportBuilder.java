@@ -51,15 +51,15 @@ public class MerIndicatorsReportBuilder extends AbstractReportBuilder {
     @Override
     protected List<Mapped<DataSetDefinition>> buildDataSets(ReportDescriptor descriptor, ReportDefinition report) {
         return Arrays.asList(
-                ReportUtils.map(merDataSet(), "startDate=${startDate},endDate=${endDate}")
+                ReportUtils.map(merDataSetLevel1(), "startDate=${startDate},endDate=${endDate}")
         );
     }
 
     /**
-     * Create a data set for the mer indicator
+     * Create a data set for the mer indicator level 1
      * @return dataset
      */
-    protected DataSetDefinition merDataSet() {
+    protected DataSetDefinition merDataSetLevel1() {
         CohortIndicatorDataSetDefinition cohortDsd = new CohortIndicatorDataSetDefinition();
         cohortDsd.setName("Mer level 1 indicators");
         cohortDsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -67,11 +67,27 @@ public class MerIndicatorsReportBuilder extends AbstractReportBuilder {
 
         String indParams = "startDate=${startDate},endDate=${endDate}";
 
-        cohortDsd.addColumn("PMTCT_STAT", "% of pregnant women with known HIV status", ReportUtils.map(merCohortIndicators.percentageOfPregnantWomenWithKnownHivStatus(), indParams), "");
-        cohortDsd.addColumn("PMTCT_ARV", "% of HIV+ pregnant women who received antiretrovirals to reduce risk of MTCT during pregnancy and delivery", ReportUtils.map(merCohortIndicators.percentageOfPregnantWomenWithKnownHivStatus(), indParams), "");
-        cohortDsd.addColumn("PMTCT_EID", "% of infants born to HIV-positive women who had a virologic HIV test done within 12 months of birth", ReportUtils.map(merCohortIndicators.percentageOfInfantsBornToHIVPositiveWomenWhoHadVirologicHivTestDoneWithin12MonthsOfBirth(), indParams), "");
+        cohortDsd.addColumn("PMTCT_STAT", "Pregnant women with known HIV status", ReportUtils.map(merCohortIndicators.percentageOfPregnantWomenWithKnownHivStatus(), indParams), "");
+        cohortDsd.addColumn("PMTCT_ARV", "HIV+ pregnant women who received antiretrovirals to reduce risk of MTCT during pregnancy and delivery", ReportUtils.map(merCohortIndicators.percentageOfPregnantWomenWithKnownHivStatus(), indParams), "");
+        cohortDsd.addColumn("PMTCT_EID", "Infants born to HIV-positive women who had a virologic HIV test done within 12 months of birth", ReportUtils.map(merCohortIndicators.percentageOfInfantsBornToHIVPositiveWomenWhoHadVirologicHivTestDoneWithin12MonthsOfBirth(), indParams), "");
+        cohortDsd.addColumn("PMTCT_FO", "Final outcomes among HIV exposed infants registered in the birth cohort", ReportUtils.map(merCohortIndicators.finalOutcomesAmongHivExposedInfantsRegisteredInTheBirthCohort(), indParams), "");
 
         return cohortDsd;
 
+    }
+
+    /**
+     * Create a data set definition for level 2 indicators
+     * @return DataSetDefinition
+     */
+    protected DataSetDefinition merDataSetLevel2() {
+        CohortIndicatorDataSetDefinition cohortDsd = new CohortIndicatorDataSetDefinition();
+        cohortDsd.setName("Mer level 1 indicators");
+        cohortDsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cohortDsd.addParameter(new Parameter("endDate", "End Date", Date.class));
+
+        String indParams = "startDate=${startDate},endDate=${endDate}";
+
+        return cohortDsd;
     }
 }

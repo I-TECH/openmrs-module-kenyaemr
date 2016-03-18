@@ -70,4 +70,22 @@ public class MerCohortLibrary {
 
     }
 
+    /**
+     * Number of HIV-exposed infants with a documented outcome by 18 months of age (collection of 18 month outcomes is recommended at 24 months of age)
+     * @return CohortDefinition
+     */
+    public CohortDefinition numberOfHivExposedInfantsWithDocumentedOutcome() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        return cd;
+    }
+
+    /**
+     * Number of HIV-exposed infants registered in the birth cohort at any time between 0 and 18 months of age (including transfers-ins)
+     * @return CohortDefinition
+     */
+    public CohortDefinition numberOfHivExposedInfantsRegisteredInTheBirthCohortAtAnyTime() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        return cd;
+    }
+
 }
