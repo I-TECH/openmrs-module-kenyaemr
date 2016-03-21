@@ -8,9 +8,11 @@ import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonCohortL
 import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.HivCohortLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.art.ArtCohortLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.shared.mchcs.MchcsCohortLibrary;
+import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.NumericObsCohortDefinition;
+import org.openmrs.module.reporting.common.DurationUnit;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -75,7 +77,21 @@ public class MerCohortLibrary {
      * @return CohortDefinition
      */
     public CohortDefinition numberOfHivExposedInfantsWithDocumentedOutcome() {
+
+        AgeCohortDefinition ageCohortDefinition = new AgeCohortDefinition();
+        ageCohortDefinition.setName("ageAt24");
+        ageCohortDefinition.setMaxAge(24);
+        ageCohortDefinition.setMaxAgeUnit(DurationUnit.MONTHS);
+        ageCohortDefinition.addParameter(new Parameter("effectiveDate", "Effective Date", Date.class));
+
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.setName("Number of HIV-exposed infants with a documented outcome by 18 months of age");
+        cd.addParameter(new Parameter("onOrAfter", "After date", Date.class));
+        cd.addParameter(new Parameter("onOrBefore", "Before date", Date.class));
+        cd.addSearch("hivExposed", ReportUtils.map(commonCohorts.hasObs(Dictionary.getConcept(Dictionary.CHILDS_CURRENT_HIV_STATUS), Dictionary.getConcept(Dictionary.EXPOSURE_TO_HIV)),  "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+        cd.addSearch("hasOutcome", ReportUtils.map(commonCohorts.hasObs(Dictionary.getConcept(Dictionary.REASON_FOR_PROGRAM_DISCONTINUATION)),  "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+        cd.addSearch("age", ReportUtils.map(ageCohortDefinition, "effectiveDate=${onOrBefore}"));
+        cd.setCompositionString("hivExposed AND hasOutcome AND age");
         return cd;
     }
 
@@ -84,7 +100,19 @@ public class MerCohortLibrary {
      * @return CohortDefinition
      */
     public CohortDefinition numberOfHivExposedInfantsRegisteredInTheBirthCohortAtAnyTime() {
+        AgeCohortDefinition ageCohortDefinition = new AgeCohortDefinition();
+        ageCohortDefinition.setName("ageAt24");
+        ageCohortDefinition.setMaxAge(24);
+        ageCohortDefinition.setMaxAgeUnit(DurationUnit.MONTHS);
+        ageCohortDefinition.addParameter(new Parameter("effectiveDate", "Effective Date", Date.class));
+
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.setName("Number of HIV-exposed infants registered in the birth cohort at any time between 0 and 18 months of age");
+        cd.addParameter(new Parameter("onOrAfter", "After date", Date.class));
+        cd.addParameter(new Parameter("onOrBefore", "Before date", Date.class));
+        cd.addSearch("hivExposed", ReportUtils.map(commonCohorts.hasObs(Dictionary.getConcept(Dictionary.CHILDS_CURRENT_HIV_STATUS), Dictionary.getConcept(Dictionary.EXPOSURE_TO_HIV)),  "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+        cd.addSearch("age", ReportUtils.map(ageCohortDefinition, "effectiveDate=${onOrBefore}"));
+        cd.setCompositionString("hivExposed AND age");
         return cd;
     }
 

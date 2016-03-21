@@ -51,7 +51,8 @@ public class MerIndicatorsReportBuilder extends AbstractReportBuilder {
     @Override
     protected List<Mapped<DataSetDefinition>> buildDataSets(ReportDescriptor descriptor, ReportDefinition report) {
         return Arrays.asList(
-                ReportUtils.map(merDataSetLevel1(), "startDate=${startDate},endDate=${endDate}")
+                ReportUtils.map(merDataSetLevel1(), "startDate=${startDate},endDate=${endDate}"),
+                ReportUtils.map(merDataSetLevel2(), "startDate=${startDate},endDate=${endDate}")
         );
     }
 
