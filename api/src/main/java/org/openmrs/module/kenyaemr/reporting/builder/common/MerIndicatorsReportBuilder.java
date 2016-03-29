@@ -83,11 +83,13 @@ public class MerIndicatorsReportBuilder extends AbstractReportBuilder {
      */
     protected DataSetDefinition merDataSetLevel2() {
         CohortIndicatorDataSetDefinition cohortDsd = new CohortIndicatorDataSetDefinition();
-        cohortDsd.setName("Mer level 1 indicators");
+        cohortDsd.setName("Mer level 2 indicators");
         cohortDsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cohortDsd.addParameter(new Parameter("endDate", "End Date", Date.class));
 
         String indParams = "startDate=${startDate},endDate=${endDate}";
+
+        cohortDsd.addColumn("PMTCT_CTX", "Infants born to HIV-positive pregnant women who were started on CTX prophylaxis within two months of birth", ReportUtils.map(merCohortIndicators.infantsBornToHivPositivePregnantWomenWhoStartedCtxWithin2MonthsOfBirth(), indParams), "");
 
         return cohortDsd;
     }

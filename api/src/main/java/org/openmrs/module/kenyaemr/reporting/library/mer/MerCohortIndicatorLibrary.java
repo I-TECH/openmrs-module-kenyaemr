@@ -62,4 +62,14 @@ public class MerCohortIndicatorLibrary {
                 map(merCohorts.numberOfHivExposedInfantsWithDocumentedOutcome(), "onOrAfter=${endDate-12m},onOrBefore=${endDate}"),
                 map(merCohorts.numberOfHivExposedInfantsRegisteredInTheBirthCohortAtAnyTime(), "onOrAfter=${endDate-12m},onOrBefore=${endDate}"));
     }
+
+    /**
+     * Percentage of infants born to HIV-positive pregnant women who were started on Cotrimoxazole (CTX) prophylaxis within two months of birth
+     * @return CohortIndicator
+     */
+    public CohortIndicator infantsBornToHivPositivePregnantWomenWhoStartedCtxWithin2MonthsOfBirth() {
+        return cohortIndicator("Percentage of infants born to HIV-positive pregnant women who were started on Cotrimoxazole (CTX) prophylaxis within two months of birth",
+                map(merCohorts.infantsBornToHivPositiveWomenStartedCtxWithin2MonthsOfBirth(), "onOrAfter=${endDate-3m},onOrBefore=${endDate}"),
+                map(merCohorts.hivPositivePregnantWomenIdendifiedInTheReportingPeriod(), "onOrAfter=${endDate-3m},onOrBefore=${endDate}"));
+    }
 }

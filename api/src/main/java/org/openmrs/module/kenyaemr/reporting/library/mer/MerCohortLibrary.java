@@ -1,22 +1,26 @@
 package org.openmrs.module.kenyaemr.reporting.library.mer;
 
 import org.openmrs.Concept;
+import org.openmrs.EncounterType;
+import org.openmrs.Form;
 import org.openmrs.api.PatientSetService.TimeModifier;
 import org.openmrs.module.kenyacore.report.ReportUtils;
+import org.openmrs.module.kenyacore.report.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.kenyaemr.Dictionary;
+import org.openmrs.module.kenyaemr.calculation.library.IsPregnantCalculation;
+import org.openmrs.module.kenyaemr.metadata.MchMetadata;
 import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonCohortLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.HivCohortLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.art.ArtCohortLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.shared.mchcs.MchcsCohortLibrary;
-import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.NumericObsCohortDefinition;
+import org.openmrs.module.metadatadeploy.MetadataUtils;
+import org.openmrs.module.reporting.cohort.definition.*;
 import org.openmrs.module.reporting.common.DurationUnit;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
 import java.util.Date;
 
 /**
@@ -114,6 +118,49 @@ public class MerCohortLibrary {
         cd.addSearch("age", ReportUtils.map(ageCohortDefinition, "effectiveDate=${onOrBefore}"));
         cd.setCompositionString("hivExposed AND age");
         return cd;
+    }
+
+    /**
+     * Number of infants born to HIV-positive women who were started on CTX prophylaxis within two months of birth at USG supported sites within the reporting period
+     * @return CohortDefinition
+     */
+    public CohortDefinition infantsBornToHivPositiveWomenStartedCtxWithin2MonthsOfBirth() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+
+        EncounterCohortDefinition enc = new EncounterCohortDefinition();
+        enc.setName("has delivery encounter");
+        enc.addParameter(new Parameter("onOrAfter", "After date", Date.class));
+        enc.addParameter(new Parameter("onOrBefore", "Beforer date", Date.class));
+        enc.setEncounterTypeList(Arrays.asList(MetadataUtils.existing(EncounterType.class, MchMetadata._EncounterType.MCHMS_CONSULTATION)));
+        enc.setFormList(Arrays.asList(MetadataUtils.existing(Form.class, MchMetadata._Form.MCHMS_DELIVERY)));
+
+        cd.addParameter(new Parameter("onOrAfter", "After date", Date.class));
+        cd.addParameter(new Parameter("onOrBefore", "Before date", Date.class));
+        cd.addSearch("hivPositive", ReportUtils.map(hivCohorts.enrolled(), "enrolledOnOrAfter=${onOrAfter},enrolledOnOrBefore=${onOrBefore}"));
+        cd.addSearch("onCtx", ReportUtils.map(hivCohorts.onCtxProphylaxis(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+        cd.addSearch("delivered", ReportUtils.map(enc, "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
+        cd.setCompositionString("hivPositive AND onCtx AND delivered");
+        return cd;
+    }
+
+    /**
+     * Number of HIV-positive pregnant women identified in the reporting period (including known HIV-positives at entry)
+     * @return CohortDefinition
+     */
+    public CohortDefinition hivPositivePregnantWomenIdendifiedInTheReportingPeriod() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+
+        CalculationCohortDefinition calc = new CalculationCohortDefinition(new IsPregnantCalculation());
+        calc.setName("pregnant");
+        calc.addParameter(new Parameter("onDate", "On Date", Date.class));
+
+        cd.addParameter(new Parameter("onOrAfter", "After date", Date.class));
+        cd.addParameter(new Parameter("onOrBefore", "Before date", Date.class));
+        cd.addSearch("hivPositive", ReportUtils.map(hivCohorts.enrolled(), "enrolledOnOrAfter=${onOrAfter},enrolledOnOrBefore=${onOrBefore}"));
+        cd.addSearch("pregnant", ReportUtils.map(calc, "onDate=${onOrBefore}"));
+        cd.setCompositionString("hivPositive AND pregnant");
+        return cd;
+
     }
 
 }
