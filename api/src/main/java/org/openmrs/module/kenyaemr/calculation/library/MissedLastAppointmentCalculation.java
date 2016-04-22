@@ -30,6 +30,8 @@ import org.openmrs.module.kenyaemr.calculation.library.hiv.LostToFollowUpCalcula
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.IsTransferOutCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
+import org.openmrs.module.reporting.common.DateUtil;
+import org.openmrs.module.reporting.common.DurationUnit;
 
 import java.util.Collection;
 import java.util.Date;
@@ -80,6 +82,9 @@ public class MissedLastAppointmentCalculation extends AbstractPatientCalculation
 					Encounter lastEncounter = EmrCalculationUtils.encounterResultForPatient(lastEncounters, ptId);
 					Date lastActualReturnDate = lastEncounter != null ? lastEncounter.getEncounterDatetime() : null;
 					missedVisit = lastActualReturnDate == null || lastActualReturnDate.before(lastScheduledReturnDate);
+					if(missedVisit && lastEncounter != null && lastEncounter.getEncounterDatetime().after(DateUtil.adjustDate(DateUtil.getStartOfMonth(context.getNow()), -1, DurationUnit.DAYS)) && lastEncounter.getEncounterDatetime().before(DateUtil.adjustDate(context.getNow(), 1, DurationUnit.DAYS))){
+						missedVisit = false;
+					}
 				}
 
 			}

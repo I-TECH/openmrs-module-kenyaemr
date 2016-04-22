@@ -43,13 +43,13 @@ public class TransferOutDateCalculation extends AbstractPatientCalculation {
 		Concept transferOutDate = Dictionary.getConcept(Dictionary.DATE_TRANSFERRED_OUT);
 		Concept discontinueQuestion = Dictionary.getConcept(Dictionary.REASON_FOR_PROGRAM_DISCONTINUATION);
 		Concept transferOut = Dictionary.getConcept(Dictionary.TRANSFERRED_OUT);
-		CalculationResultMap transferInDateResults = Calculations.lastObs(transferOutDate, cohort, context);
+		CalculationResultMap transferOutDateResults = Calculations.lastObs(transferOutDate, cohort, context);
 		CalculationResultMap discontinueObs = Calculations.lastObs(discontinueQuestion, cohort, context);
 
 		CalculationResultMap result = new CalculationResultMap();
 		for(int ptId : cohort){
 
-			Date tDate = EmrCalculationUtils.datetimeObsResultForPatient(transferInDateResults, ptId);
+			Date tDate = EmrCalculationUtils.datetimeObsResultForPatient(transferOutDateResults, ptId);
 			Obs discoReason = EmrCalculationUtils.obsResultForPatient(discontinueObs, ptId);
 			Date dateTo = null;
 			if(tDate != null){

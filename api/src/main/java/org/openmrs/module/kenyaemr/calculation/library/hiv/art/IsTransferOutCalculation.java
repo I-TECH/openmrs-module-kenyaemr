@@ -1,10 +1,12 @@
 package org.openmrs.module.kenyaemr.calculation.library.hiv.art;
 
 import org.openmrs.Program;
+import org.openmrs.calculation.Calculation;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
+import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyacore.calculation.Filters;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
@@ -27,8 +29,10 @@ public class IsTransferOutCalculation extends AbstractPatientCalculation {
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues,
 										 PatientCalculationContext context) {
-
+		Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
+		CalculationResultMap inHivProgram = Calculations.activeEnrollment(hivProgram, cohort, context);
 		CalculationResultMap transferOutDate = calculate(new TransferOutDateCalculation(), cohort, context);
+
 
 		CalculationResultMap result = new CalculationResultMap();
 
@@ -37,6 +41,9 @@ public class IsTransferOutCalculation extends AbstractPatientCalculation {
 			Date dateTo = EmrCalculationUtils.datetimeResultForPatient(transferOutDate, ptId);
 			if (dateTo != null) {
 				isTransferOut = true;
+			}
+			if(inHivProgram.containsKey(ptId)){
+				isTransferOut = false;
 			}
 			result.put(ptId, new BooleanResult(isTransferOut, this, context));
 		}

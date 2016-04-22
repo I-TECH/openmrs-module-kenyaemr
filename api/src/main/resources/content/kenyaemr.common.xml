@@ -38,6 +38,7 @@
 				<ref bean="kenyaemr.common.report.clients.died" />
 				<ref bean="kenyaemr.common.report.clients.transferred.in" />
 				<ref bean="kenyaemr.common.report.clients.transferred.out" />
+				<ref bean="kenyaemr.common.report.mer-indicators" />
 			</set>
 		</property>
 	</bean>
@@ -157,7 +158,7 @@
 		<property name="order" value="200030" />
 	</bean>
 
-	<!-- Other Medications -->
+	<!-- Medications -->
 	<bean id="kenyaemr.common.form.otherMedications" class="org.openmrs.module.kenyacore.form.FormDescriptor">
 		<property name="targetUuid" value="d4ff8ad1-19f8-484f-9395-04c755de9a47" />
 		<property name="apps">
@@ -312,6 +313,15 @@
 		<property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.DeceasedPatientsCalculation" />
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 
+	</bean>
+
+	<!-- MER indicators-->
+	<bean id="kenyaemr.common.report.mer-indicators" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
+		<property name="targetUuid" value="c51f5468-da01-11e5-97dd-10c37b209c79" />
+		<property name="name" value="MER Indicators" />
+		<property name="description" value="Enables facilities to properly manage their clients and also assisting in the national reporting mechanisms" />
+		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
+		<property name="template" value="kenyaemr:mer.xls" />
 	</bean>
 
 </beans>
