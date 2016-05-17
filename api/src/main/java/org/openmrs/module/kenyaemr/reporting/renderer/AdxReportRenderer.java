@@ -63,10 +63,11 @@ public class AdxReportRenderer extends ReportDesignRenderer {
         w.write("<adx xmlns=\"urn:ihe:qrph:adx:2015\"\n" +
                 "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
                 "xsi:schemaLocation=\"urn:ihe:qrph:adx:2015 ../schema/adx_loose.xsd\"\n" +
-                "exported=\"" + isoDateTimeFormat.format(new Date()) + "\">\n" +
-                "<group orgUnit=\"11936\" period=\"" + isoDateFormat.format(reportDate)
-                + "/P1M\" dataSet=\"" + reportData.getDefinition().getName() + "\">\n");
+                "exported=\"" + isoDateTimeFormat.format(new Date()) + "\">\n");
+
         for (String dsKey : reportData.getDataSets().keySet()) {
+            w.write("<group orgUnit=\"11936\" period=\"" + isoDateFormat.format(reportDate)
+                    + "/P1M\" dataSet=\"" + reportData.getDefinition().getName().replace(" ", "_") + "_" + dsKey + "\">\n");
             DataSet dataset = reportData.getDataSets().get(dsKey);
             List<DataSetColumn> columns = dataset.getMetaData().getColumns();
             for (DataSetRow row : dataset) {
@@ -76,8 +77,9 @@ public class AdxReportRenderer extends ReportDesignRenderer {
                     w.write("<dataValue dataElement=\"" + name + "\" value=\"" + value.toString() + "\"/>\n");
                 }
             }
+            w.write("</group>\n");
         }
-        w.write("</group>\n" + "</adx>");
+        w.write("</adx>\n");
         w.flush();
     }
 }
