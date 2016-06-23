@@ -10,6 +10,8 @@
 package org.openmrs.module.kenyaemr.reporting.renderer;
 
 import org.openmrs.annotation.Handler;
+import org.openmrs.api.AdministrationService;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.DataSetRow;
@@ -34,6 +36,8 @@ import java.util.List;
 @Handler
 public class AdxReportRenderer extends ReportDesignRenderer {
 
+    private AdministrationService administrationService;
+
     /**
      * @see ReportRenderer#getFilename(ReportRequest)
      */
@@ -56,7 +60,9 @@ public class AdxReportRenderer extends ReportDesignRenderer {
 
         DateFormat isoDateTimeFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mmZ");
         DateFormat isoDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        Date reportDate = (Date) reportData.getContext().getContextValues().get("start_of_last_month");
+        Date reportDate = (Date) reportData.getContext().getParameterValue("startDate");
+        administrationService = Context.getAdministrationService();
+        String mfl = administrationService.getGlobalProperty("kenyaemr.defaultLocation");
 
         Writer w = new OutputStreamWriter(out, "UTF-8");
         w.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
@@ -66,8 +72,8 @@ public class AdxReportRenderer extends ReportDesignRenderer {
                 "exported=\"" + isoDateTimeFormat.format(new Date()) + "\">\n");
 
         for (String dsKey : reportData.getDataSets().keySet()) {
-            w.write("<group orgUnit=\"11936\" period=\"" + isoDateFormat.format(reportDate)
-                    + "/P1M\" dataSet=\"" + reportData.getDefinition().getName().replace(" ", "_") + "_" + dsKey + "\">\n");
+            w.write("<group orgUnit=\"" + mfl + "\" period=\"" + isoDateFormat.format(reportDate)
+                    + "/P1M\" dataSet=\"" + reportData.getDefinition().getName().replace(" ", "_") + "-" + dsKey + "\">\n");
             DataSet dataset = reportData.getDataSets().get(dsKey);
             List<DataSetColumn> columns = dataset.getMetaData().getColumns();
             for (DataSetRow row : dataset) {
