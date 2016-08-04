@@ -32,7 +32,7 @@ public class TbSuspectCalculation extends AbstractPatientCalculation{
 		
 		Concept tbSuspect = Dictionary.getConcept(Dictionary.DISEASE_SUSPECTED);
 		
-		CalculationResultMap lastTbDiseaseStatus = Calculations.lastObs(Dictionary.TUBERCULOSIS_DISEASE_STATUS, alive, context); 
+		CalculationResultMap lastTbDiseaseStatus = Calculations.lastObs(Dictionary.getConcept(Dictionary.TUBERCULOSIS_DISEASE_STATUS), alive, context); 
 		
 		CalculationResultMap ret = new CalculationResultMap();
 		
