@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+	<!-- ===================== Program ===================== -->
+
+	<bean id="kenyaemr.ipt.program" class="org.openmrs.module.kenyacore.program.ProgramDescriptor">
+		<property name="targetUuid" value="${metadata.program.IPT}" />
+		<property name="eligibilityCalculation" value="org.openmrs.module.kenyaemr.calculation.library.tb.EligibleForTbProgramCalculation" />
+		<property name="defaultEnrollmentForm" ref="kenyaemr.ipt.form.enrollment" />
+		<property name="defaultCompletionForm" ref="kenyaemr.ipt.form.completion" />
+		<property name="visitForms" ref="kenyaemr.ipt.form.followup" />
+	
+		<property name="reports">
+			<set>
+				<ref bean="kenyaemr.tb.report.inProgram" />
+			</set>
+		</property>
+		<property name="fragments">
+			<map>
+				<entry key="enrollment-summary" value="kenyaemr:program/ipt/iptInitiationSummary" />
+				<entry key="care-panel" value="kenyaemr:program/ipt/iptCarePanel" />
+				<entry key="completion-summary" value="kenyaemr:program/ipt/iptOutcomeSummary" />
+			</map>
+		</property>
+		<property name="order" value="300" />
+	</bean>
+
+	<!-- ===================== Identifiers ===================== -->
+
+	<!-- District Registration Number -->
+<!-- 	<bean id="kenyaemr.ipt.identifier.districtRegistration" class="org.openmrs.module.kenyacore.identifier.IdentifierDescriptor"> -->
+<!-- 		<property name="targetUuid" value="${metadata.identifiertype.DISTRICT_REGISTRATION_NUMBER}" /> -->
+<!-- 		<property name="order" value="60" /> -->
+<!-- 	</bean> -->
+
+	<!-- ===================== Forms ===================== -->
+
+	<!--IPT Initiation-->
+	<bean id="kenyaemr.ipt.form.enrollment" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="61ea2a72-b0f9-47cf-ae86-443f88656acc" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.registration" />
+				<ref bean="kenyaemr.app.intake" />
+				<ref bean="kenyaemr.app.clinician" />
+				<ref bean="kenyaemr.app.chart" />
+			</set>
+		</property>
+		<property name="icon" value="kenyaui:forms/generic.png" />
+		<property name="htmlform" value="kenyaemr:ipt/iptInitiation.html" />
+	</bean>
+
+	<!--IPT Completion -->
+	<bean id="kenyaemr.ipt.form.completion" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="5bdd3b65-8b7b-46a0-9f7b-dfe764143848" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.registration" />
+				<ref bean="kenyaemr.app.intake" />
+				<ref bean="kenyaemr.app.clinician" />
+				<ref bean="kenyaemr.app.chart" />
+			</set>
+		</property>
+		<property name="icon" value="kenyaui:forms/completion.png" />
+		<property name="htmlform" value="kenyaemr:ipt/iptOutcome.html" />
+	</bean>
+
+	<!--IPT follow up-->
+	<bean id="kenyaemr.ipt.form.followup" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="9d0e4be8-ab72-4394-8df7-b509b9d45179" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.clinician" />
+				<ref bean="kenyaemr.app.chart" />
+			</set>
+		</property>
+		<property name="icon" value="kenyaui:forms/generic.png" />
+		<property name="htmlform" value="kenyaemr:ipt/iptFollowUp.html" />
+	</bean>
+
+	<!-- ===================== Reports ===================== -->
+
+<!-- 	<bean id="kenyaemr.tb.report.inProgram" class="org.openmrs.module.kenyacore.report.CalculationReportDescriptor"> -->
+<!-- 		<property name="targetUuid" value="ed001a42-8462-49d3-8e9d-5c7bedc1806d" /> -->
+<!-- 		<property name="name" value="Patients in TB program" /> -->
+<!-- 		<property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.tb.InTbProgramCalculation" /> -->
+<!-- 		<property name="displayIdentifier" ref="kenyaemr.tb.identifier.districtRegistration" /> -->
+<!-- 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property> -->
+<!-- 	</bean> -->
+
+
+
+</beans>

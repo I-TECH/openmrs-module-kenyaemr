@@ -14,7 +14,7 @@
 <htmlform>
 
 	<script type="text/javascript">
-		jq(function() {
+		jQuery(function($) {
 			var valbirthdate = "<lookup  expression="patient.birthdate" />"
 			var valChangedToDateFormat = new Date(valbirthdate).getTime();
 
@@ -34,6 +34,148 @@
 				}
 				return true;
 			});
+
+			var screeningRadios = $('#screening-questions').find('input[type=radio]');
+			var iptClientWorkupRadios = $('#ipt-client-workup').find('input[type=radio]');
+
+			const YES_CONCEPT_ID = 1065;
+			const NO_CONCEPT_ID = 1066
+
+			//This function will perform the folllowing:
+			//Only show 'IPT Client Workup' tab if all screening questions evaluate to NO
+			//Only show 'Action Taken' tab if any of the screening questions evaluate to YES
+			var showHideTabs = function() {
+				var actionTakenTab = $('#action-taken');
+				var iptClientWorkupTab = $('#ipt-client-workup');
+				
+				var showActionTakenTab = false;
+				var showIPTClientWorkupTab = false;
+
+				var screeningYesResponses = [];
+				var screeningNoResponses = [];
+
+				//Fetch responses for the screening questions
+				$.each(screeningRadios, function(){
+
+					//Push any responses to the respective screeningYesResponses and screeningNoResponses array
+					if (this.value == YES_CONCEPT_ID &amp;&amp; this.checked == true) {
+						screeningYesResponses.push(this);
+
+					}
+
+					if (this.value == NO_CONCEPT_ID &amp;&amp; this.checked == true) {
+						screeningNoResponses.push(this);
+
+					}
+
+				});
+
+				//If no responses have been recorded than hide the ActionTaken and IPTClientWorkup tabs
+				if (screeningYesResponses.length == 0 &amp;&amp; screeningNoResponses.length == 0 ) {
+				} else {
+
+					if (screeningYesResponses.length &gt; 0) {
+						showActionTakenTab = true;
+
+					} else {
+
+						//Check if we have 5 NO responses
+						if (screeningNoResponses.length == screeningRadios.length / 2 ) {
+							showIPTClientWorkupTab = true;
+
+						} 
+					}
+
+				}
+
+				if (showActionTakenTab) {
+					actionTakenTab.show();
+
+				} else {
+					actionTakenTab.hide();
+					clearRadios(actionTakenTab);
+
+				}
+
+				if (showIPTClientWorkupTab) {
+					iptClientWorkupTab.show();
+
+				} else {
+					iptClientWorkupTab.hide();
+					clearRadios(iptClientWorkupTab);
+
+				}
+
+			};
+
+			var showHideIPTInitiationTab = function() {
+
+				var iptInitiationTab = $('#ipt-initiation');
+				var showIPTInitiationTab = false;
+
+				var iptClientWorkupYesResponses = [];
+				var iptClientWorkupNoResponses = [];
+
+				//Fetch responses for the IPT client workup questions
+				$.each(iptClientWorkupRadios, function() {
+
+					//Push any responses to the respective iptClientWorkupYesResponses and iptClientWorkupNoResponses array
+					if (this.value == YES_CONCEPT_ID &amp;&amp; this.checked == true) {
+						iptClientWorkupYesResponses.push(this);
+
+					}
+
+					if (this.value == NO_CONCEPT_ID &amp;&amp; this.checked == true) {
+						iptClientWorkupNoResponses.push(this);
+
+					}					
+
+				});
+
+				if (iptClientWorkupYesResponses.length == 0 &amp;&amp; iptClientWorkupNoResponses.length == 0) {
+				} else {
+
+					if (iptClientWorkupNoResponses.length == iptClientWorkupRadios.length / 2) {
+						showIPTInitiationTab = true;
+
+					} 
+				}
+
+				if (showIPTInitiationTab) {
+					iptInitiationTab.show();
+
+				} else {
+					iptInitiationTab.hide();
+
+				}
+
+			};
+
+			var clearRadios = function(parentObj) {
+
+				parentObj.find('input[type=radio]').each(function() {
+
+					this.checked = false;
+
+				});
+
+			}
+
+			screeningRadios.change(function() {
+
+				showHideTabs();
+
+			});
+
+			iptClientWorkupRadios.change(function() {
+
+				showHideIPTInitiationTab();
+
+			});
+
+			showHideTabs();
+			showHideIPTInitiationTab();
+
 		});
 	</script>
 
@@ -47,72 +189,136 @@
 	</div>
 
 	<div class="ke-form-content">
-		<table>
+	    <fieldset>
+	    	<legend>Screening Questions</legend>
+			<table id="screening-questions">
+				<tr>
+					<obsgroup groupingConceptId="1727AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+						<span style="display: none">
+							<obs conceptId="1728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="159799AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" defaultValue="159799"/>
+						</span>
+						<td>Cough of any duration:</td>
+						<td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
+					</obsgroup>
+				</tr>
+				<tr>
+					<obsgroup groupingConceptId="1727AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+						<span style="display: none">
+							<obs conceptId="1728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  answerConceptId="124068AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" defaultValue="124068"/>
+						</span>
+						<td>Contact with a TB Case:</td>
+						<td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
+					</obsgroup>
+				</tr>
+				<tr>
+					<obsgroup groupingConceptId="1727AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+						<span style="display: none">
+							<obs conceptId="1728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1494AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" defaultValue="1494"/>
+						</span>
+						<td>Fever:</td>
+						<td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
+					</obsgroup>
+				</tr>
+				<tr>
+					<obsgroup groupingConceptId="1727AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+						<span style="display: none">
+							<obs conceptId="1728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="832AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" defaultValue="832"/>
+						</span>
+						<td>Noticeable weight loss or poor weight gain:</td>
+						<td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
+					</obsgroup>
+				</tr>
+				<tr>
+					<obsgroup groupingConceptId="1727AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+						<span style="display: none">
+							<obs conceptId="1728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="133027AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" defaultValue="133027"/>
+						</span>
+						<td>Night sweats:</td>
+						<td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
+					</obsgroup>
+				</tr>
+	        </table>
+	    </fieldset>
+
+	    <fieldset id="action-taken">
+	    	<legend>Indicate Action Taken</legend>
+	        <table>
+	            <tr>
+	            	<td>Sputum Smear:</td>
+	                <td><obs conceptId="307AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" /></td>
+	            </tr>
+	            <tr>
+	            	<td>Chest X-ray:</td>
+	                <td><obs conceptId="12AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,152526AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" /></td>
+	            </tr>
+	            <tr>
+	            	<td>Start Anti-TBs:</td>
+	                <td><obs conceptId="162309AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" /></td>
+	            </tr>
+	            <tr>
+	            	<td>Invitation of contacts:</td>
+	                <td><obs conceptId="163414" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" /></td>
+	            </tr>
+	            <tr>
+	            	<td>Evaluated for IPT:</td>
+	                <td><obs conceptId="162275AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelTExt=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" /></td>
+	            </tr>
+	        </table>
+	    </fieldset>
+
+	    <fieldset id="ipt-client-workup">
+	    	<legend>Isoniazid Preventive Therapy (IPT) Client Workup</legend>
+	    	<table>
+	    		<tr>
+		    		<td colspan="2" class="ke-panel-header">Ask for the following</td>
+	    		</tr>
+	    		<tr>
+	    			<obsgroup groupingConceptId="1727AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+						<span style="display: none">
+							<obs conceptId="1728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="162311AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" defaultValue="162311"/>
+						</span>
+		    			<td>1. Yellow Urine</td>
+		    			<td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
+	    			</obsgroup>
+	    		</tr>
+	    		<tr>
+	    			<obsgroup groupingConceptId="1727AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+						<span style="display: none">
+							<obs conceptId="1728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="132652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" defaultValue="132652"/>
+						</span>	    		
+		    			<td>2. Numbness/ burning sensation on the hands or feet</td>
+		    			<td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
+	    			</obsgroup>
+	    		</tr>
+	    		<tr>
+	    			<td colspan="2" class="ke-panel-header">Examine the following</td>
+	    		</tr>
+	    		<tr>
+	    			<obsgroup groupingConceptId="1727AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+						<span style="display: none">
+							<obs conceptId="1728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5192AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" defaultValue="5192"/>
+						</span>	    		
+		    			<td>1. Yellowness of eyes </td>
+		    			<td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
+	    			</obsgroup>
+	    		</tr>
+	    		<tr>
+	    			<obsgroup groupingConceptId="1727AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+						<span style="display: none">
+							<obs conceptId="1728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="124994AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" defaultValue="124994"/>
+						</span>	  
+		    			<td>2.Tenderness in the upper right quadrant of the abdomen </td>
+		    			<td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
+		    		</obsgroup>
+	    		</tr>
+	    	</table>
+	    </fieldset>
+
+		<div id="ipt-initiation" style="width: 100%; float: left; overflow: auto; text-align: left; padding: 5px"><span class="ke-flagtag">Candidate for IPT Initiation</span></div>
+
+        <table>
 			<tr>
-				<obsgroup groupingConceptId="1727AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-					<span style="display: none">
-						<obs conceptId="1728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="159799AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" defaultValue="159799"/>
-					</span>
-					<td>Cough for 2 weeks or more:</td>
-					<td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
-				</obsgroup>
-			</tr>
-			<tr>
-				<obsgroup groupingConceptId="1727AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-					<span style="display: none">
-						<obs conceptId="1728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  answerConceptId="124068AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" defaultValue="124068"/>
-					</span>
-					<td>History of close contact with confirmed TB:</td>
-					<td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
-				</obsgroup>
-			</tr>
-			<tr>
-				<obsgroup groupingConceptId="1727AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-					<span style="display: none">
-						<obs conceptId="1728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="145455AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" defaultValue="145455"/>
-					</span>
-					<td>Chronic cough?</td>
-					<td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
-				</obsgroup>
-			</tr>
-			<tr>
-				<obsgroup groupingConceptId="1727AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-					<span style="display: none">
-						<obs conceptId="1728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1494AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" defaultValue="1494"/>
-					</span>
-					<td>Fever for 2 weeks or more:</td>
-					<td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
-				</obsgroup>
-			</tr>
-			<tr>
-				<obsgroup groupingConceptId="1727AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-					<span style="display: none">
-						<obs conceptId="1728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="832AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" defaultValue="832"/>
-					</span>
-					<td>Noticeable weight loss:</td>
-					<td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
-				</obsgroup>
-			</tr>
-			<tr>
-				<obsgroup groupingConceptId="1727AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-					<span style="display: none">
-						<obs conceptId="1728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="120749AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" defaultValue="120749"/>
-					</span>
-					<td>Chest Pain or Breathlessness:</td>
-					<td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
-				</obsgroup>
-			</tr>
-			<tr>
-				<obsgroup groupingConceptId="1727AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-					<span style="display: none">
-						<obs conceptId="1728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="133027AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" defaultValue="133027"/>
-					</span>
-					<td>Night sweat for 2 weeks or more:</td>
-					<td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
-				</obsgroup>
-			</tr>
-			<tr>
-				<td colspan="2"><hr/></td>
+				<td colspan="2"><p> </p></td>
 			</tr>
 			<tr>
 				<td colspan="2">
