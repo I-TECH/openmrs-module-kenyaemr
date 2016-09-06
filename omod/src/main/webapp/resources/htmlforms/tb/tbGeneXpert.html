@@ -1,0 +1,111 @@
+<!--
+  ~ The contents of this file are subject to the OpenMRS Public License
+  ~ Version 1.0 (the "License"); you may not use this file except in
+  ~ compliance with the License. You may obtain a copy of the License at
+  ~ http://license.openmrs.org
+  ~
+  ~ Software distributed under the License is distributed on an "AS IS"
+  ~ basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+  ~ License for the specific language governing rights and limitations
+  ~ under the License.
+  ~
+  ~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+  -->
+<htmlform>
+	
+	<script type="text/javascript">
+		jQuery(function($){
+			getField("encounter-date.value").change(function(){
+				setValue("date-started-on-ipt.value", getValue("encounter-date.value"));
+			});
+		});
+	</script>
+
+	<div class="ke-form-header">
+		<table width="100%">
+		  <tr>
+				<ifMode mode="ENTER">
+					<script type="text/javascript">
+						jq(function(){
+							setValue("encounter-date.value", "");
+						});
+					</script>
+				</ifMode>
+				<td>Date: <encounterDate id="encounter-date" showTime="true" /></td>
+				<td>Location: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete" /></td>
+		  </tr>
+		</table>
+	</div>
+
+	<div class="ke-form-content">
+		<fieldset style="display:none">
+	        <table>
+		            <tr>
+		                <td>Date started on IPT</td>
+		                <td>
+		                    <obs id="date-started-on-ipt" conceptId="162320AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText="" />
+		                </td>
+		            </tr>
+	        </table>
+		</fieldset>
+		<includeIf velocityTest = "$patient.age &gt; 14" >
+		  <fieldset style="display:block">
+		  <legend>ART Status</legend>
+
+		    <table>
+		        <tr>
+		            <td>On Art</td>
+		            <td>
+		                <span class="value">
+		                <lookup complexExpression="
+		                #set($latestARTStatus = $fn.latestObs('160117AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'))
+		                #if ($latestARTStatus.valueCoded.equals($fn.getConcept('160119AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')))
+		                	Yes
+		                #else
+		                	No
+		                #end
+		                " />
+		                </span>
+		            </td>
+		        </tr>
+		        <tr>
+		            <td>Date Started on ART if on ART</td>
+		            <td>
+		                <span class="value">
+		                <lookup complexExpression = "
+		                #set($latestARVDate = $fn.latestObs('159599AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA').getValueAsString(en))
+		                #if ($latestARVDate)
+		                	$latestARVDate
+		                #else
+		                	N/A
+		                #end
+		                " />
+		                </span>
+		            </td>
+		        </tr>
+		    </table>
+
+		  </fieldset>
+		</includeIf>
+
+		<includeIf velocityTest = "$patient.age &lt; 15" >
+		  <fieldset>
+		      <legend>Indication for IPT</legend>
+
+		      <table>
+		          <tr>
+		            <td>Indication for IPT</td>
+		            <td>
+		                <obs conceptId="162276AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="138571AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162277AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162278AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="dropdown"  labelText=""/>
+		            </td>
+		          </tr>
+		      </table>
+		  </fieldset>
+		</includeIf>
+	</div>
+
+	<div class="ke-form-footer">
+		<submit />
+	</div>
+
+</htmlform>
