@@ -10,7 +10,12 @@
 		<property name="eligibilityCalculation" value="org.openmrs.module.kenyaemr.calculation.library.tb.EligibleForTbProgramCalculation" />
 		<property name="defaultEnrollmentForm" ref="kenyaemr.ipt.form.enrollment" />
 		<property name="defaultCompletionForm" ref="kenyaemr.ipt.form.completion" />
-		<property name="visitForms" ref="kenyaemr.ipt.form.followup" />
+		<property name="visitForms" >
+			<set>
+				<ref bean="kenyaemr.ipt.form.followup" />
+				<ref bean="kenyaemr.common.form.geneXpert" />
+			</set>
+		</property>
 	
 		<property name="reports">
 			<set>
