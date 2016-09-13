@@ -24,6 +24,7 @@
 				<ref bean="kenyaemr.tb.report.missingSputumResults" />
 				<ref bean="kenyaemr.tb.report.tbSuspects" />
 				<ref bean="kenyaemr.tb.report.in.tb.program.missing.pyridoxine" />
+				<ref bean="kenyaemr.tb.report.in.tb.diary" />
 			</set>
 		</property>
 		<property name="fragments">
@@ -147,5 +148,12 @@
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 	</bean>
 	
+	<bean id="kenyaemr.tb.report.in.tb.diary" class="org.openmrs.module.kenyacore.report.CalculationReportDescriptor">
+		<property name="targetUuid" value="4ec2dca2-58a2-478c-a71e-98053447b368" />
+		<property name="name" value="TB Patients Diary - Expected Visits" />
+		<property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.ipt.ScheduledVisitOnDayCalculation" />
+<!-- 		<property name="displayIdentifier" ref="kenyaemr.tb.identifier.districtRegistration" /> -->
+		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
+	</bean>
 
 </beans>

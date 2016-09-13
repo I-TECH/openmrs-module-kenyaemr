@@ -28,7 +28,7 @@ public class IptOutcomeSummaryFragmentController {
 		if (encounter != null) {
 			EncounterWrapper wrapper = new EncounterWrapper(encounter);
 
-			Obs outcomeObs = wrapper.firstObs(Dictionary.getConcept(Dictionary.TUBERCULOSIS_PROPHYLAXIS_OUTCOME));
+			Obs outcomeObs = wrapper.firstObs(Dictionary.getConcept(Dictionary.PATIENT_OUTCOME));
 			if (outcomeObs != null) {
 				dataPoints.put("Outcome", outcomeObs.getValueCoded());
 			}
