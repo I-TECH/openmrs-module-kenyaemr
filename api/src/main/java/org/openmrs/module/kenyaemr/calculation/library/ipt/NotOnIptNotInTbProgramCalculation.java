@@ -32,8 +32,6 @@ public class NotOnIptNotInTbProgramCalculation extends AbstractPatientCalculatio
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues,
 			PatientCalculationContext context) {
 
-		Boolean notOnIpt = false;
-
 		Program iptProgram = MetadataUtils.existing(Program.class, IPTMetadata._Program.IPT);
 		Program tbProgram = MetadataUtils.existing(Program.class, TbMetadata._Program.TB);
 
@@ -45,11 +43,14 @@ public class NotOnIptNotInTbProgramCalculation extends AbstractPatientCalculatio
 		Set<Integer> inTbProgram = Filters.inProgram(tbProgram, alive, context);
 
 		CalculationResultMap lastIptMap = Calculations.lastEncounter(iptOutcome, alive, context);
-
 		CalculationResultMap ret = new CalculationResultMap();
 
 		for (Integer ptId : cohort) {
+
+			Boolean notOnIpt = false;
+
 			if (alive.contains(ptId) && !inTbProgram.contains(ptId) && !onIptProgram.contains(ptId)) {
+				
 				Encounter lastIptEncounter = EmrCalculationUtils.encounterResultForPatient(lastIptMap, ptId);
 
 				if (lastIptEncounter != null) {
@@ -58,16 +59,19 @@ public class NotOnIptNotInTbProgramCalculation extends AbstractPatientCalculatio
 
 					// check if 2 years have passed since last IPT
 					if (yearsSinceLastIpt.getYears() > 2) {
+						
 						notOnIpt = true;
 						
 					}
-				} else {					
+				} else {	
+					
 					notOnIpt = true;
 					
 				}
+				
 			}
 			
-			ret.put(ptId, new BooleanResult(notOnIpt, this));
+			ret.put(ptId, new BooleanResult(notOnIpt, this, context));
 			
 		}
 		

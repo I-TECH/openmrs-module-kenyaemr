@@ -19,8 +19,6 @@ public class OnIptProgramCalculation extends AbstractPatientCalculation {
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues,
 			PatientCalculationContext context) {
 
-		Boolean onIpt = false;
-
 		Program iptProgram = MetadataUtils.existing(Program.class, IPTMetadata._Program.IPT);
 
 		// Get all patients who are alive and initiated into IPT
@@ -30,11 +28,17 @@ public class OnIptProgramCalculation extends AbstractPatientCalculation {
 		CalculationResultMap ret = new CalculationResultMap();
 
 		for (Integer ptId : cohort) {
+
+			Boolean onIpt = false;
+			
 			if (onIptProgram.contains(ptId)) {
+				
 				onIpt = true;
+				
 			}
 
-			ret.put(ptId, new BooleanResult(onIpt, this));
+			ret.put(ptId, new BooleanResult(onIpt, this, context));
+			
 		}
 
 		return ret;

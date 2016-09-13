@@ -53,12 +53,18 @@ public class NotInTbProgramMissedTbScreeningAtLastAppointmentCalculation extends
 				DateTime lastTbScreeningDate = lastTbScreeningEncounter!=null ? new DateTime(lastTbScreeningEncounter.getEncounterDatetime()): null;
 				
 				if ((lastTbScreeningDate != null && lastEncounterDate != null)) {
+					
 					if (Math.abs(DateTimeComparator.getDateOnlyInstance().compare(lastTbScreeningDate, lastEncounterDate))>1){
+						
 						missedScreening = true;
-					}					
+						
+					}
+					
 				}
-				ret.put(ptId, new BooleanResult(missedScreening, this));
+				
 			}
+			
+			ret.put(ptId, new BooleanResult(missedScreening, this, context));
 			
 		}
 
