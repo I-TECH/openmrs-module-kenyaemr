@@ -19,7 +19,8 @@
 	
 		<property name="reports">
 			<set>
-				<ref bean="kenyaemr.tb.report.inProgram" />
+				<ref bean="kenyaemr.ipt.report.onIpt" />
+				<ref bean="kenyaemr.ipt.report.not.on.ipt.not.in.tb.program" />
 			</set>
 		</property>
 		<property name="fragments">
@@ -87,14 +88,19 @@
 
 	<!-- ===================== Reports ===================== -->
 
-<!-- 	<bean id="kenyaemr.tb.report.inProgram" class="org.openmrs.module.kenyacore.report.CalculationReportDescriptor"> -->
-<!-- 		<property name="targetUuid" value="ed001a42-8462-49d3-8e9d-5c7bedc1806d" /> -->
-<!-- 		<property name="name" value="Patients in TB program" /> -->
-<!-- 		<property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.tb.InTbProgramCalculation" /> -->
+	<bean id="kenyaemr.ipt.report.onIpt" class="org.openmrs.module.kenyacore.report.CalculationReportDescriptor">
+		<property name="targetUuid" value="1303cda9-742c-41f1-a4f2-4adadf2b24e9" />
+		<property name="name" value="Patients on IPT" />
+		<property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.ipt.OnIptProgramCalculation" />
 <!-- 		<property name="displayIdentifier" ref="kenyaemr.tb.identifier.districtRegistration" /> -->
-<!-- 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property> -->
-<!-- 	</bean> -->
-
-
+		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
+	</bean>
+	<bean id="kenyaemr.ipt.report.not.on.ipt.not.in.tb.program" class="org.openmrs.module.kenyacore.report.CalculationReportDescriptor">
+		<property name="targetUuid" value="b31d4acb-0db6-4dc5-adc5-7f07da76f142" />
+		<property name="name" value="Patients not on IPT and not on TB Treatment" />
+		<property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.ipt.NotOnIptNotInTbProgramCalculation" />
+<!-- 		<property name="displayIdentifier" ref="kenyaemr.tb.identifier.districtRegistration" /> -->
+		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
+	</bean>
 
 </beans>

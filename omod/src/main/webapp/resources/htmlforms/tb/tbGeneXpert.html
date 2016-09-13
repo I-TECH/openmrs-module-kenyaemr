@@ -39,7 +39,7 @@
 	</script>
 
 	<div class="ke-form-header">
-		<table width="100%" class="tb">
+		<table width="100%">
 		  <tr>
 				<ifMode mode="ENTER">
 					<script type="text/javascript">
@@ -55,7 +55,7 @@
 	</div>
 
 	<div class="ke-form-content">
-			<table align="center">
+			<table align="center" class="tb">
 				<tr>
 					<td>
 						<fieldset>
@@ -88,11 +88,13 @@
 						            	answerConceptIds="164081AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, 
 						            				164078AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, 
 						            				164079AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, 
-						            				164080AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" 
+						            				164080AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                    5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" 
 						            	answerLabels="New IPT Patient,
 						            				IPT followup at 2 months, 
 						            				IPT followup at 4 months,
-						            				IPT followup at 6 months"
+						            				IPT followup at 6 months,
+                                                    Other"
 										style="radio" labelText="" answerSeparator="&lt;br /&gt;" required="true" />
 						            </td>
 						        </tr>
@@ -102,7 +104,7 @@
 							<legend>Reason for Xpert MTB/RIF testing:</legend>
 						    <table>
 						        <tr>
-						            <td colspan="2">
+						            <td valign="top" style="width:50%">
 					            		<table class="tb1">
 					            			<tr>
 					            				<th>1. TB Diagnosis</th>
@@ -134,7 +136,9 @@
 					            					style="checkbox" labelText=""/>
 					            				</td>
 					            			</tr>
-					            		</table><br/>
+					            		</table>
+					            	</td>
+						            <td valign="top" style="width:50%">
 					            		<table class="tb1">
 					            			<tr>
 					            				<th>2. DR TB surveillance</th>
