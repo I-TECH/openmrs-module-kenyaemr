@@ -65,7 +65,7 @@ public class QiPaedsIndicatorLibrary {
 	public CohortIndicator hivMonitoringCd4() {
 		return cohortIndicator("HIV monitoring - CD4 Child",
 				map(qiCohorts.hasCD4ResultsPaeds(), "onOrAfter=${startDate},onOrBefore=${endDate}"),
-				map(qiCohorts.hasHivVisitPaeds(), "onOrAfter=${startDate},onOrBefore=${endDate}")
+				map(qiCohorts.hasHivVisitPaeds(true), "onOrAfter=${startDate},onOrBefore=${endDate}")
 		);
 	}
 
@@ -83,7 +83,7 @@ public class QiPaedsIndicatorLibrary {
 	 */
 	public CohortIndicator hivMonitoringCd4Den() {
 		return cohortIndicator("",
-				map(qiCohorts.hasHivVisitPaeds(), "onOrAfter=${startDate},onOrBefore=${endDate}")
+				map(qiCohorts.hasHivVisitPaeds(true), "onOrAfter=${startDate},onOrBefore=${endDate}")
 		);
 	}
 
@@ -220,7 +220,7 @@ public class QiPaedsIndicatorLibrary {
 	public CohortIndicator nutritionalAssessment() {
 		return cohortIndicator("Nutritional assessment Child",
 				map(qiCohorts.hadNutritionalAssessmentAtLastVisit(), "onOrAfter=${endDate-6m},onOrBefore=${endDate}"),
-				map(qiCohorts.hasHivVisitPaeds(), "onOrAfter=${startDate},onOrBefore=${endDate}")
+				map(qiCohorts.hasHivVisitPaeds(false), "onOrAfter=${startDate},onOrBefore=${endDate}")
 		);
 	}
 
@@ -238,7 +238,7 @@ public class QiPaedsIndicatorLibrary {
 	 */
 	public CohortIndicator nutritionalAssessmentDen() {
 		return cohortIndicator("",
-				map(qiCohorts.hasHivVisitPaeds(), "onOrAfter=${startDate},onOrBefore=${endDate}")
+				map(qiCohorts.hasHivVisitPaeds(false), "onOrAfter=${startDate},onOrBefore=${endDate}")
 		);
 	}
 
