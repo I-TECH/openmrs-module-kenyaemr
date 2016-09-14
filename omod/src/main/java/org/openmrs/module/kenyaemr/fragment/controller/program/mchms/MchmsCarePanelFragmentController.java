@@ -46,7 +46,8 @@ public class MchmsCarePanelFragmentController {
 		Encounter lastMchEnrollment = patientWrapper.lastEncounter(MetadataUtils.existing(EncounterType.class, MchMetadata._EncounterType.MCHMS_ENROLLMENT));
 		EncounterWrapper lastMchEnrollmentWrapped = new EncounterWrapper(lastMchEnrollment);
 
-		Obs hivStatusObs = lastMchEnrollmentWrapped.firstObs(Dictionary.getConcept(Dictionary.HIV_STATUS));
+		//Fix to NullPointer in chart view patient for patient with no encounter or voided encounter(s)
+		Obs hivStatusObs = lastMchEnrollment != null ? lastMchEnrollmentWrapped.firstObs(Dictionary.getConcept(Dictionary.HIV_STATUS)) : null;
 		if (hivStatusObs != null) {
 			calculations.put("hivStatus", hivStatusObs.getValueCoded());
 		} else {

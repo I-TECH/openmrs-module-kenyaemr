@@ -50,7 +50,7 @@ public class QiIndicatorLibrary {
 	public CohortIndicator hivMonitoringCd4() {
 		return cohortIndicator("HIV monitoring - CD4",
 				map(qiCohorts.hasCD4ResultsAdult(), "onOrAfter=${startDate},onOrBefore=${endDate}"),
-				map(qiCohorts.hasHivVisitAdult(), "onOrAfter=${startDate},onOrBefore=${endDate}")
+				map(qiCohorts.hasHivVisitAdult(true), "onOrAfter=${startDate},onOrBefore=${endDate}")
 		);
 	}
 
@@ -70,7 +70,7 @@ public class QiIndicatorLibrary {
 	 */
 	public CohortIndicator hasVisits(){
 		return cohortIndicator("Has cd4 results",
-				map(qiCohorts.hasHivVisitAdult(), "onOrAfter=${startDate},onOrBefore=${endDate}")
+				map(qiCohorts.hasHivVisitAdult(true), "onOrAfter=${startDate},onOrBefore=${endDate}")
 		);
 	}
 
@@ -91,7 +91,7 @@ public class QiIndicatorLibrary {
 	public CohortIndicator nutritionalAssessment() {
 		return cohortIndicator("Nutritional assessment",
 				map(qiCohorts.hadNutritionalAssessmentAtLastVisit(), "onOrAfter=${endDate-6m},onOrBefore=${endDate}"),
-				map(qiCohorts.hasHivVisitAdult(), "onOrAfter=${startDate},onOrBefore=${endDate}")
+				map(qiCohorts.hasHivVisitAdult(false), "onOrAfter=${startDate},onOrBefore=${endDate}")
 		);
 	}
 
@@ -109,7 +109,7 @@ public class QiIndicatorLibrary {
 	 */
 	public CohortIndicator nutritionalAssessmentDen() {
 		return cohortIndicator("Nutritional assessment-denominator",
-				map(qiCohorts.hasHivVisitAdult(), "onOrAfter=${startDate},onOrBefore=${endDate}")
+				map(qiCohorts.hasHivVisitAdult(false), "onOrAfter=${startDate},onOrBefore=${endDate}")
 		);
 	}
 
