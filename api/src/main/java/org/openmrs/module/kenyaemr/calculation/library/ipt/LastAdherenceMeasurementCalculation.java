@@ -12,7 +12,6 @@ import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyacore.calculation.Filters;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.metadata.IPTMetadata;
-import org.openmrs.module.kenyaemr.metadata.MchMetadata;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 
 public class LastAdherenceMeasurementCalculation extends AbstractPatientCalculation {

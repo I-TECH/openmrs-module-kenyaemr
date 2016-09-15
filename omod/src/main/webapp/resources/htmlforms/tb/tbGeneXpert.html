@@ -12,6 +12,23 @@
   ~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
   -->
 <htmlform>
+	<style type="text/css">
+			table.tb {
+				background-color: #FFFFCC;
+				border: 1px solid black;
+			}
+			table.tb1 {
+				border: 1px solid black;
+				vertical-align: baseline;
+				text-align: left;
+				background-color: #FFFFFF;
+				width:100%;
+			}
+			table.tb1 tr th,table.tb1 tr td{
+				border: 0;
+				padding: 10px;
+			}
+	</style>
 	
 	<script type="text/javascript">
 		jQuery(function($){
@@ -38,70 +55,207 @@
 	</div>
 
 	<div class="ke-form-content">
-		<fieldset style="display:none">
-	        <table>
-		            <tr>
-		                <td>Date started on IPT</td>
-		                <td>
-		                    <obs id="date-started-on-ipt" conceptId="162320AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText="" />
-		                </td>
-		            </tr>
-	        </table>
-		</fieldset>
-		<includeIf velocityTest = "$patient.age &gt; 14" >
-		  <fieldset style="display:block">
-		  <legend>ART Status</legend>
+			<table align="center" class="tb">
+				<tr>
+					<td>
+						<fieldset>
+							<legend>HIV Status:</legend>
+						    <table>
+						        <tr>
+						            <td>
+						            	<obs 
+						            	conceptId="1169AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" 
+						            	answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, 
+						            					664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, 
+						            					1118AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, 
+						            					162570AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" 
+						            	answerLabels="POSITIVE, 
+						            					NEGATIVE, 
+						            					NOT DONE, 
+						            					DECLINED" 
+						            	style="radio" labelText="" required="true" />
+						            </td>
+						        </tr>
+						    </table>
+						</fieldset>
+						<fieldset>
+							<legend>Reason for smear examination:</legend>
+						    <table>
+						        <tr>
+						            <td>
+						            	<obs 
+						            	conceptId="164082AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" 
+						            	answerConceptIds="164081AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, 
+						            				164078AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, 
+						            				164079AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, 
+						            				164080AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                    5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" 
+						            	answerLabels="New IPT Patient,
+						            				IPT followup at 2 months, 
+						            				IPT followup at 4 months,
+						            				IPT followup at 6 months,
+                                                    Other"
+										style="radio" labelText="" answerSeparator="&lt;br /&gt;" required="true" />
+						            </td>
+						        </tr>
+						    </table>
+						</fieldset>
+						<fieldset>
+							<legend>Reason for Xpert MTB/RIF testing:</legend>
+						    <table>
+						        <tr>
+						            <td valign="top" style="width:50%">
+					            		<table class="tb1">
+					            			<tr>
+					            				<th>1. TB Diagnosis</th>
+					            			</tr>
+					            			<tr>
+					            				<td>
+					            					<obs 
+					            					conceptId="b473fd0d-0689-43c2-8465-e17c5e02d999" 
+					            					answerConceptId="138571AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" 
+					            					answerLabel="HIV positive with symptoms of TB" 
+					            					style="checkbox" labelText=""/>
+					            				</td>
+					            			</tr>
+											<tr>
+												<td>
+					            					<obs 
+					            					conceptId="b473fd0d-0689-43c2-8465-e17c5e02d999" 
+					            					answerConceptId="164095AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" 
+					            					answerLabel="Children &lt;15 yrs with TB symptoms" 
+					            					style="checkbox" labelText=""/>
+					            				</td>
+				            				</tr>		            				
+					            			<tr>
+					            				<td>
+					            					<obs 
+					            					conceptId="b473fd0d-0689-43c2-8465-e17c5e02d999" 
+					            					answerConceptId="164096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" 
+					            					answerLabel="All smear negative PTB cases (who are clinically and x-ray suggestive)" 
+					            					style="checkbox" labelText=""/>
+					            				</td>
+					            			</tr>
+					            		</table>
+					            	</td>
+						            <td valign="top" style="width:50%">
+					            		<table class="tb1">
+					            			<tr>
+					            				<th>2. DR TB surveillance</th>
+					            			</tr>
+					            			<tr>
+					            				<td>
+					            					<obs 
+					            					conceptId="b473fd0d-0689-43c2-8465-e17c5e02d999" 
+					            					answerConceptId="160032AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" 
+					            					answerLabel="Failure first line treatment (Failure CAT 1)" 
+					            					style="checkbox" labelText=""/>
+					            				</td>
+					            			</tr>
+											<tr>		            				
+												<td>
+					            					<obs 
+					            					conceptId="b473fd0d-0689-43c2-8465-e17c5e02d999" 
+					            					answerConceptId="164097AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" 
+					            					answerLabel="Return after loss to follow up" 
+					            					style="checkbox" labelText=""/>
+					            				</td>
+				            				</tr>
+											<tr>		            				
+												<td>
+					            					<obs 
+					            					conceptId="b473fd0d-0689-43c2-8465-e17c5e02d999" 
+					            					answerConceptId="160030AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" 
+					            					answerLabel="Failure re-treatment (Failure CAT 2)" 
+					            					style="checkbox" labelText=""/>
+					            				</td>
+					            			</tr>
+											<tr>
+												<td>
+					            					<obs 
+					            					conceptId="b473fd0d-0689-43c2-8465-e17c5e02d999" 
+					            					answerConceptId="160033AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" 
+					            					answerLabel="Relapse" 
+					            					style="checkbox" labelText=""/>
+					            				</td>
+					            			</tr>
+					            			<tr>
+					            				<td>
+					            					<obs 
+					            					conceptId="b473fd0d-0689-43c2-8465-e17c5e02d999" 
+					            					answerConceptId="164098AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" 
+					            					answerLabel="DR TB contacts" 
+					            					style="checkbox" labelText=""/>
+					            				</td>
+					            			</tr>
+					            			<tr>
+					            				<td>
+					            					<obs 
+					            					conceptId="b473fd0d-0689-43c2-8465-e17c5e02d999" 
+					            					answerConceptId="5619AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" 
+					            					answerLabel="Healthcare workers with TB symptoms" 
+					            					style="checkbox" labelText=""/>
+					            				</td>
+					            			</tr>
+					            			<tr>
+					            				<td>
+					            					<obs 
+					            					conceptId="b473fd0d-0689-43c2-8465-e17c5e02d999" 
+					            					answerConceptId="164099AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" 
+					            					answerLabel="Patients who develop TB on IPT" 
+					            					style="checkbox" labelText=""/>
+					            				</td>
+					            			</tr>
+				            				<tr>
+				            					<td>
+					            					<obs 
+					            					conceptId="b473fd0d-0689-43c2-8465-e17c5e02d999" 
+					            					answerConceptId="164100AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" 
+					            					answerLabel="Refugees with symptoms of TB" 
+					            					style="checkbox" labelText=""/>
+					            				</td>
+					            			</tr>
+				            				<tr>
+				            					<td>
+					            					<obs 
+					            					conceptId="b473fd0d-0689-43c2-8465-e17c5e02d999" 
+					            					answerConceptId="164101AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" 
+					            					answerLabel="Smear positive at 2 months" 
+					            					style="checkbox" labelText=""/>
+					            				</td>
+					            			</tr>
+				            				<tr>
+				            					<td>
+					            					<obs 
+					            					conceptId="b473fd0d-0689-43c2-8465-e17c5e02d999" 
+					            					answerConceptId="162277AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" 
+					            					answerLabel="Prisoners with TB symptoms" 
+					            					style="checkbox" labelText=""/>
+					            				</td>
+					            			</tr>
+					            		</table>
+						            </td>
+						        </tr>
+						    </table>
+						</fieldset>						
+						<fieldset><legend>Type of sample:</legend>
+						    <table> 
+						        <tr>
+						            <td>
+						            	<obs 
+						            	conceptId="164092AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" 
+						            	answerConceptIds="42AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, 5042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" 
+						            	answerLabels="Pulmonary, Extra-Pulmonary" 
+						            	style="radio" labelText="" required="true" />		            	
+						            </td>
+						        </tr>
+						    </table>
 
-		    <table>
-		        <tr>
-		            <td>On Art</td>
-		            <td>
-		                <span class="value">
-		                <lookup complexExpression="
-		                #set($latestARTStatus = $fn.latestObs('160117AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'))
-		                #if ($latestARTStatus.valueCoded.equals($fn.getConcept('160119AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')))
-		                	Yes
-		                #else
-		                	No
-		                #end
-		                " />
-		                </span>
-		            </td>
-		        </tr>
-		        <tr>
-		            <td>Date Started on ART if on ART</td>
-		            <td>
-		                <span class="value">
-		                <lookup complexExpression = "
-		                #set($latestARVDate = $fn.latestObs('159599AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA').getValueAsString(en))
-		                #if ($latestARVDate)
-		                	$latestARVDate
-		                #else
-		                	N/A
-		                #end
-		                " />
-		                </span>
-		            </td>
-		        </tr>
-		    </table>
+						</fieldset>
+					</td>
+				</tr>
+			</table>
 
-		  </fieldset>
-		</includeIf>
-
-		<includeIf velocityTest = "$patient.age &lt; 15" >
-		  <fieldset>
-		      <legend>Indication for IPT</legend>
-
-		      <table>
-		          <tr>
-		            <td>Indication for IPT</td>
-		            <td>
-		                <obs conceptId="162276AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="138571AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162277AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162278AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="dropdown"  labelText=""/>
-		            </td>
-		          </tr>
-		      </table>
-		  </fieldset>
-		</includeIf>
 	</div>
 
 	<div class="ke-form-footer">

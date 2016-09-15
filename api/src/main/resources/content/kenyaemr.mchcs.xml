@@ -20,6 +20,7 @@
 		<property name="visitForms">
 			<set>
 				<ref bean="kenyaemr.form.mchcsFollowupVisit" />
+				<ref bean="kenyaemr.common.form.geneXpert" />
 			</set>
 		</property>
 		<property name="reports">
