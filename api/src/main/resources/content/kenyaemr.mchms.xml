@@ -23,6 +23,7 @@
 				<ref bean="kenyaemr.mchms.form.antenatalVisit"/>
 				<ref bean="kenyaemr.mchms.form.postnatalVisit"/>
 				<ref bean="kenyaemr.common.form.tbScreening"/>
+				<ref bean="kenyaemr.common.form.geneXpert"/>
 			</set>
 		</property>
 		<property name="reports">
