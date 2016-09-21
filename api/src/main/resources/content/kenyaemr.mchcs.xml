@@ -12,13 +12,13 @@
 		<property name="defaultCompletionForm" ref="kenyaemr.form.mchcsCompletion" />
 		<property name="patientForms">
 			<set>
-				<ref bean="kenyaemr.form.mchcsImmunization" />
 				<ref bean="kenyaemr.form.mchcsHeiExit" />
 
 			</set>
 		</property>
 		<property name="visitForms">
 			<set>
+				<ref bean="kenyaemr.form.mchcsImmunization" />
 				<ref bean="kenyaemr.form.mchcsFollowupVisit" />
 				<ref bean="kenyaemr.common.form.geneXpert" />
 			</set>
@@ -81,6 +81,7 @@
 		</property>
 		<property name="icon" value="kenyaui:forms/generic.png" />
 		<property name="htmlform" value="kenyaemr:mchcs/mchcsFollowupVisit.html" />
+		<property name="order" value="200020" />
 	</bean>
 
 	<!--  mchcs  Immunization -->
@@ -96,6 +97,7 @@
 		</property>
 		<property name="icon" value="kenyaui:forms/generic.png" />
 		<property name="htmlform" value="kenyaemr:mchcs/mchcsImmunization.html" />
+		<property name="order" value="200030" />
 	</bean>
 
 	<!-- mchcs  Completion -->
