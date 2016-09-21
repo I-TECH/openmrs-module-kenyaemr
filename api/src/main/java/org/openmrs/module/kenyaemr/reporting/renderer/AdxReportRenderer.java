@@ -9,9 +9,12 @@
  */
 package org.openmrs.module.kenyaemr.reporting.renderer;
 
+import org.openmrs.Location;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.AdministrationService;
+import org.openmrs.api.LocationService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyaemr.wrapper.Facility;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.DataSetRow;
@@ -38,6 +41,8 @@ public class AdxReportRenderer extends ReportDesignRenderer {
 
     private AdministrationService administrationService;
 
+    private LocationService locationService;
+
     /**
      * @see ReportRenderer#getFilename(ReportRequest)
      */
@@ -62,7 +67,14 @@ public class AdxReportRenderer extends ReportDesignRenderer {
         DateFormat isoDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date reportDate = (Date) reportData.getContext().getParameterValue("startDate");
         administrationService = Context.getAdministrationService();
-        String mfl = administrationService.getGlobalProperty("kenyaemr.defaultLocation");
+        locationService = Context.getLocationService();
+
+        Integer locationId = Integer.parseInt(administrationService.getGlobalProperty("kenyaemr.defaultLocation"));
+        Location location = locationService.getLocation(locationId);
+        String mfl = "Unknown";
+        if (location != null) {
+            mfl = new Facility(location).getMflCode();
+        }
 
         Writer w = new OutputStreamWriter(out, "UTF-8");
         w.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
