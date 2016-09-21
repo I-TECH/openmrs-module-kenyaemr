@@ -36,68 +36,79 @@ import java.util.Map;
  */
 public class MchmsCarePanelFragmentController {
 
-	public void controller(@FragmentParam("patient") Patient patient,
-						   @FragmentParam("complete") Boolean complete,
-						   FragmentModel model) {
+	public void controller(@FragmentParam("patient") Patient patient, @FragmentParam("complete") Boolean complete,
+			FragmentModel model) {
 		Map<String, Object> calculations = new HashMap<String, Object>();
 
 		PatientWrapper patientWrapper = new PatientWrapper(patient);
 
-		Encounter lastMchEnrollment = patientWrapper.lastEncounter(MetadataUtils.existing(EncounterType.class, MchMetadata._EncounterType.MCHMS_ENROLLMENT));
-		EncounterWrapper lastMchEnrollmentWrapped = new EncounterWrapper(lastMchEnrollment);
+		Encounter lastMchEnrollment = patientWrapper.lastEncounter(
+				MetadataUtils.existing(EncounterType.class, MchMetadata._EncounterType.MCHMS_ENROLLMENT));
 
-		Obs hivStatusObs = lastMchEnrollmentWrapped.firstObs(Dictionary.getConcept(Dictionary.HIV_STATUS));
-		if (hivStatusObs != null) {
-			calculations.put("hivStatus", hivStatusObs.getValueCoded());
-		} else {
-			calculations.put("hivStatus", "Not Specified");
-		}
+		if (lastMchEnrollment != null) {
 
-		Encounter lastMchConsultation = patientWrapper.lastEncounter(MetadataUtils.existing(EncounterType.class, MchMetadata._EncounterType.MCHMS_CONSULTATION));
+			EncounterWrapper lastMchEnrollmentWrapped = new EncounterWrapper(lastMchEnrollment);
 
-		if (lastMchConsultation != null) {
-			EncounterWrapper lastMchConsultationWrapped = new EncounterWrapper(lastMchConsultation);
+			Obs hivStatusObs = lastMchEnrollmentWrapped.firstObs(Dictionary.getConcept(Dictionary.HIV_STATUS));
+			if (hivStatusObs != null) {
+				calculations.put("hivStatus", hivStatusObs.getValueCoded());
+			} else {
+				calculations.put("hivStatus", "Not Specified");
+			}
 
-			Obs arvUseObs = lastMchConsultationWrapped.firstObs(Dictionary.getConcept(Dictionary.ANTIRETROVIRAL_USE_IN_PREGNANCY));
-			if (arvUseObs != null) {
-				Concept concept = arvUseObs.getValueCoded();
-				if (concept.equals(Dictionary.getConcept(Dictionary.MOTHER_ON_PROPHYLAXIS))
-						|| concept.equals(Dictionary.getConcept(Dictionary.MOTHER_ON_HAART))) {
-					String regimen = "Regimen not specified";
-					List<Obs> drugObsList = lastMchConsultationWrapped.allObs(Dictionary.getConcept(Dictionary.ANTIRETROVIRAL_USED_IN_PREGNANCY));
-					if (!drugObsList.isEmpty()) {
-						String rgmn = "";
-						for (Obs obs : drugObsList) {
-							if (obs != null) {
-								rgmn += obs.getValueCoded().getName().getName();
-								if (!obs.equals(drugObsList.get(drugObsList.size() - 1))) {
-									rgmn += " + ";
+			Encounter lastMchConsultation = patientWrapper.lastEncounter(
+					MetadataUtils.existing(EncounterType.class, MchMetadata._EncounterType.MCHMS_CONSULTATION));
+
+			if (lastMchConsultation != null) {
+				EncounterWrapper lastMchConsultationWrapped = new EncounterWrapper(lastMchConsultation);
+
+				Obs arvUseObs = lastMchConsultationWrapped
+						.firstObs(Dictionary.getConcept(Dictionary.ANTIRETROVIRAL_USE_IN_PREGNANCY));
+				if (arvUseObs != null) {
+					Concept concept = arvUseObs.getValueCoded();
+					if (concept.equals(Dictionary.getConcept(Dictionary.MOTHER_ON_PROPHYLAXIS))
+							|| concept.equals(Dictionary.getConcept(Dictionary.MOTHER_ON_HAART))) {
+						String regimen = "Regimen not specified";
+						List<Obs> drugObsList = lastMchConsultationWrapped
+								.allObs(Dictionary.getConcept(Dictionary.ANTIRETROVIRAL_USED_IN_PREGNANCY));
+						if (!drugObsList.isEmpty()) {
+							String rgmn = "";
+							for (Obs obs : drugObsList) {
+								if (obs != null) {
+									rgmn += obs.getValueCoded().getName().getName();
+									if (!obs.equals(drugObsList.get(drugObsList.size() - 1))) {
+										rgmn += " + ";
+									}
 								}
 							}
+							if (!rgmn.isEmpty()) {
+								regimen = rgmn;
+							}
 						}
-						if (!rgmn.isEmpty()) {
-							regimen = rgmn;
+						if (concept.equals(Dictionary.getConcept(Dictionary.MOTHER_ON_PROPHYLAXIS))) {
+							calculations.put("onProhylaxis", "Yes (" + regimen + ")");
+							calculations.put("onHaart", "No");
+						} else if (concept.equals(Dictionary.getConcept(Dictionary.MOTHER_ON_HAART))) {
+							calculations.put("onProhylaxis", "No");
+							calculations.put("onHaart", "Yes (" + regimen + ")");
 						}
-					}
-					if (concept.equals(Dictionary.getConcept(Dictionary.MOTHER_ON_PROPHYLAXIS))) {
-						calculations.put("onProhylaxis", "Yes (" + regimen + ")");
-						calculations.put("onHaart", "No");
-					} else if (concept.equals(Dictionary.getConcept(Dictionary.MOTHER_ON_HAART))) {
+					} else {
 						calculations.put("onProhylaxis", "No");
-						calculations.put("onHaart", "Yes (" + regimen + ")");
+						calculations.put("onHaart", "No");
 					}
 				} else {
-					calculations.put("onProhylaxis", "No");
-					calculations.put("onHaart", "No");
+					calculations.put("onProhylaxis", "Not specified");
+					calculations.put("onHaart", "Not specified");
 				}
 			} else {
 				calculations.put("onProhylaxis", "Not specified");
 				calculations.put("onHaart", "Not specified");
 			}
-		} else {
-			calculations.put("onProhylaxis", "Not specified");
-			calculations.put("onHaart", "Not specified");
 		}
+		else{
+			calculations.put("hivStatus", "Not Specified");			
+		}
+		
 		model.addAttribute("calculations", calculations);
 	}
 }
