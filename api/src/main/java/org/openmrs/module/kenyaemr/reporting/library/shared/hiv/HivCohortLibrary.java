@@ -26,7 +26,6 @@ import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.CtxFromAListOfMedicationOrdersCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.FirstProgramEnrollment;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.LostToFollowUpCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.OnCtxWithinDurationCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.IsTransferOutCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.pre_art.TransferredInAfterEnrollmentCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
@@ -205,17 +204,42 @@ public class HivCohortLibrary {
 		cd.addSearch("onCtx", ReportUtils.map(onCtx, "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
 		cd.addSearch("onMedCtx", ReportUtils.map(commonCohorts.medicationDispensed(Dictionary.getConcept(Dictionary.SULFAMETHOXAZOLE_TRIMETHOPRIM), Dictionary.getConcept(Dictionary.DAPSONE)),"onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
 		cd.addSearch("ctxFromAListOfMedicationOrders", ReportUtils.map(ctxFromAListOfMedicationOrders, "onDate=${onOrBefore}"));
-		cd.addSearch("transferredOutDeadAndLtf", ReportUtils.map(transferredOutDeadAndLtf(), "onOrBefore=${onOrBefore}"));
-		cd.setCompositionString("(onCtx OR onMedCtx OR ctxFromAListOfMedicationOrders) AND NOT transferredOutDeadAndLtf");
+		cd.addSearch("transferredOutDeadLtfuAndMissedAppointment", ReportUtils.map(transferredOutDeadLtfuAndMissedAppointment(), "onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("(onCtx OR onMedCtx OR ctxFromAListOfMedicationOrders) AND NOT transferredOutDeadLtfuAndMissedAppointment");
 
 		return cd;
 	}
 
 	/**
-	 * Patients who are transferred out, deads ltf
+	 * Patients who are transferred out, dead and lost to follow up
 	 * @return the cohort definition
 	 */
-	public CohortDefinition transferredOutDeadAndLtf(){
+	public CohortDefinition  transferredOutDeadAndLtfu(){
+		CalculationCohortDefinition calcLtf = new CalculationCohortDefinition(new LostToFollowUpCalculation());
+		calcLtf.setName("lost to follow up");
+		calcLtf.addParameter(new Parameter("onDate", "On Date", Date.class));
+
+		CalculationCohortDefinition calcTout = new CalculationCohortDefinition(new IsTransferOutCalculation());
+		calcTout.setName("to patients");
+		calcTout.addParameter(new Parameter("onDate", "On Date", Date.class));
+
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+
+		cd.addSearch("deceased", ReportUtils.map(commonCohorts.deceasedPatients(), "onDate=${onOrBefore}"));
+		cd.addSearch("ltf", ReportUtils.map(calcLtf, "onDate=${onOrBefore}"));
+		cd.addSearch("to", ReportUtils.map(calcTout, "onDate=${onOrBefore}"));
+
+		cd.setCompositionString("deceased OR ltf OR to");
+
+		return cd;
+	}
+
+	/**
+	 * Patients who are transferred out, dead, lost to follow up and missed appointment
+	 * @return the cohort definition
+	 */
+	public CohortDefinition transferredOutDeadLtfuAndMissedAppointment(){
 		CalculationCohortDefinition calcLtf = new CalculationCohortDefinition(new LostToFollowUpCalculation());
 		calcLtf.setName("lost to follow up");
 		calcLtf.addParameter(new Parameter("onDate", "On Date", Date.class));
@@ -234,7 +258,6 @@ public class HivCohortLibrary {
 		cd.setCompositionString("deceased OR ltf OR to OR missedAppointment");
 
 		return cd;
-
 	}
 
 
@@ -250,8 +273,8 @@ public class HivCohortLibrary {
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.addSearch("inProgram", ReportUtils.map(commonCohorts.inProgram(hivProgram), "onDate=${onOrBefore}"));
 		cd.addSearch("onCtxProphylaxis", ReportUtils.map(onCtxProphylaxis(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
-		cd .addSearch("transferredOutDeadAndLtf", ReportUtils.map(transferredOutDeadAndLtf(), "onOrBefore=${onOrBefore}"));
-		cd.setCompositionString("(inProgram AND onCtxProphylaxis) AND NOT transferredOutDeadAndLtf");
+		cd .addSearch("transferredOutDeadLtfuAndMissedAppointment", ReportUtils.map(transferredOutDeadLtfuAndMissedAppointment(), "onOrBefore=${onOrBefore}"));
+		cd.setCompositionString("(inProgram AND onCtxProphylaxis) AND NOT transferredOutDeadLtfuAndMissedAppointment");
 		return cd;
 	}
 

@@ -17,10 +17,8 @@ package org.openmrs.module.kenyaemr.reporting.library.moh731;
 import org.openmrs.EncounterType;
 import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyacore.report.cohort.definition.CalculationCohortDefinition;
-import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.library.MissedLastAppointmentCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.CtxFromAListOfMedicationOrdersCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.NextAppointmentPlus90DaysCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.NextOfVisitHigherThanContextCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonCohortLibrary;
@@ -29,7 +27,6 @@ import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.art.ArtCohortLib
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.DateObsCohortDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -75,7 +72,7 @@ public class Moh731CohortLibrary {
 		cd.addSearch("appointmentHigher", ReportUtils.map(nextAppointment, "onDate=${onDate}"));
 		cd.addSearch("hasCtx", ReportUtils.map(ctxFromAListOfMedicationOrders, "onDate=${onDate}"));
 		cd.addSearch("inHivProgram", ReportUtils.map(hivCohortLibrary.enrolled(), "enrolledOnOrBefore=${onDate}"));
-		cd.addSearch("ltfDeadTo", ReportUtils.map(hivCohortLibrary.transferredOutDeadAndLtf(), "onOrBefore=${onDate}"));
+		cd.addSearch("ltfDeadTo", ReportUtils.map(hivCohortLibrary.transferredOutDeadAndLtfu(), "onOrBefore=${onDate}"));
 		cd.setCompositionString("((recentEncounter OR appointmentHigher OR hasCtx) AND inHivProgram) AND NOT ltfDeadTo");
 		return cd;
 	}
@@ -101,7 +98,7 @@ public class Moh731CohortLibrary {
 		cd.addSearch("inCare", ReportUtils.map(currentlyInCare(), "onDate=${toDate}"));
 		cd.addSearch("startedBefore", ReportUtils.map(artCohorts.startedArt(), "onOrBefore=${fromDate-1d}"));
 		cd.addSearch("missedAppointment", ReportUtils.map(missedAppointment(), "onDate=${onDate}"));
-		cd.addSearch("toDeadLtf", ReportUtils.map(hivCohortLibrary.transferredOutDeadAndLtf(), "onOrBefore=${toDate}"));
+		cd.addSearch("toDeadLtf", ReportUtils.map(hivCohortLibrary.transferredOutDeadLtfuAndMissedAppointment(), "onOrBefore=${toDate}"));
 		cd.setCompositionString("inCare AND startedBefore AND NOT toDeadLtf");
 		return cd;
 	}
@@ -134,7 +131,7 @@ public class Moh731CohortLibrary {
 		cd.addSearch("startedArt", ReportUtils.map(artCohorts.startedArt(), "onOrAfter=${fromDate},onOrBefore=${toDate}"));
 		cd.addSearch("revisitsArt", ReportUtils.map(revisitsArt(), "fromDate=${fromDate},toDate=${toDate}"));
 		cd.addSearch("hasAppointmentDateAndStartedART", ReportUtils.map(hasAppointmentDateAndStartedArt(), "onOrBefore=${toDate}"));
-		cd.addSearch("toDeadLtf", ReportUtils.map(hivCohortLibrary.transferredOutDeadAndLtf(), "onOrBefore=${toDate}"));
+		cd.addSearch("toDeadLtf", ReportUtils.map(hivCohortLibrary.transferredOutDeadLtfuAndMissedAppointment(), "onOrBefore=${toDate}"));
 		cd.setCompositionString("(startedArt OR revisitsArt OR hasAppointmentDateAndStartedART) AND NOT toDeadLtf");
 		return cd;
 	}

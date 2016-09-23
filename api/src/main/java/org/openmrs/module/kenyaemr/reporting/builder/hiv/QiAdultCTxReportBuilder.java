@@ -104,7 +104,11 @@ public class QiAdultCTxReportBuilder extends AbstractReportBuilder {
 		dsd.addColumn("1.6b", "Denominator", ReportUtils.map(qiIndicators.patientsCurrentlyNotOnTbTreatmentAndHaveClinicalVisit(), indParams), "");
 		dsd.addColumn("1.6c", "QI gap", ReportUtils.map(qiIndicators.complimentTbScreeningUsingIcfAdult(), indParams), "");
 
+        //TODO - Implement CQI with the new TB module enhancements
 		//dsd.addColumn("1.7", "% of patients eligible for IPT who were initiated on IPT", ReportUtils.map(qiIndicators.patientsEligibleForIPTWhoWereInitiatedOnIPT(), indParams), "");
+		//dsd.addColumn("1.7a", "Numerator", ReportUtils.map(qiIndicators.patientsEligibleForIPTWhoWereInitiatedOnIPTNum(), indParams), "");
+		//dsd.addColumn("1.7b", "Denominator", ReportUtils.map(qiIndicators.patientsEligibleForIPTWhoWereInitiatedOnIPTDen(), indParams), "");
+		//dsd.addColumn("1.7c", "QI gap", ReportUtils.map(qiIndicators.complimentPatientsEligibleForIPTWhoWereInitiatedOnIPT(), indParams), "");
 
 		dsd.addColumn("1.8", "% of patients with Nutritional assessment at the last clinic visit", ReportUtils.map(qiIndicators.nutritionalAssessment(), indParams), "");
 		dsd.addColumn("1.8a", "Numerator", ReportUtils.map(qiIndicators.nutritionalAssessmentNum(), indParams), "");

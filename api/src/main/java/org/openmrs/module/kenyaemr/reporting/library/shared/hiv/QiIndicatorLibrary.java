@@ -399,4 +399,40 @@ public class QiIndicatorLibrary {
 				map(qiCohorts.complimentReproductiveHealthFamilyPlanningNum(), "onOrAfter=${startDate},onOrBefore=${endDate}")
 		);
 	}
+
+	/**
+	 * Patients eligible for IPT who were initiated on IPT - Numerator
+	 * CQI - 1.7a
+	 *
+	 * @return CohortIndicator
+	 */
+	public CohortIndicator patientsEligibleForIPTWhoWereInitiatedOnIPTNum() {
+		return cohortIndicator("TB IPT - Service Coverage - Num",
+				map(qiCohorts.patientWithNegativeTbScreenWhoHaveNotHadIPT(), "onOrAfter=${endDate-24m},onOrBefore=${endDate}")
+		);
+	}
+
+	/**
+	 * Patients eligible for IPT who were initiated on IPT Denominator
+	 * CQI - 1.7b
+	 *
+	 * @return CohortIndicator
+	 */
+	public CohortIndicator patientsEligibleForIPTWhoWereInitiatedOnIPTDen() {
+		return cohortIndicator("TB IPT - Service Coverage - Den",
+				map(qiCohorts.patientsWhoHaveHadNoIptWithinLast2YearsTbNegativeDuring6MonthsReviewPeriod(), "onOrAfter=${endDate-6},onOrBefore=${endDate}")
+		);
+	}
+
+	/**
+	 * QI gap - patients eligible for IPT who were initiated on IPT
+	 * CQI - 1.7c
+	 *
+	 * @return CohortIndicator
+	 */
+	public CohortIndicator complimentPatientsEligibleForIPTWhoWereInitiatedOnIPT() {
+		return cohortIndicator("TB IPT - Service Coverage - QI gap",
+				map(qiCohorts.complimentPatientsEligibleForIPTWhoWereInitiatedOnIPT(), "onOrAfter=${endDate-6},onOrBefore=${endDate}")
+		);
+	}
 }

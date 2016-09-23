@@ -103,6 +103,12 @@ public class QiPaedCTxReportBuilder extends AbstractReportBuilder {
 		dsd.addColumn("2.6b", "Denominator", ReportUtils.map(qiIndicators.tbScreeningServiceCoverageDen(), indParams), "");
 		dsd.addColumn("2.6c", "QI gap", ReportUtils.map(qiIndicators.complementTbScreeningServiceCoverageNum(), indParams), "");
 
+        //TODO - Implement CQI with the new TB module enhancements
+		//dsd.addColumn("2.7", "% of patients eligible for IPT who were initiated on IPT", ReportUtils.map(qiIndicators.patientsEligibleForIPTWhoWereInitiatedOnIPT(), indParams), "");
+		//dsd.addColumn("2.7a", "Numerator", ReportUtils.map(qiIndicators.patientsEligibleForIPTWhoWereInitiatedOnIPTNum(), indParams), "");
+		//dsd.addColumn("2.7b", "Denominator", ReportUtils.map(qiIndicators.patientsEligibleForIPTWhoWereInitiatedOnIPTDen(), indParams), "");
+		//dsd.addColumn("2.7c", "QI gap", ReportUtils.map(qiIndicators.complementPatientsEligibleForIPTWhoWereInitiatedOnIPT(), indParams), "");
+
 		dsd.addColumn("2.8", "% of patients with Nutritional assessment", ReportUtils.map(qiIndicators.nutritionalAssessment(), indParams), "");
 		dsd.addColumn("2.8a", "Numerator", ReportUtils.map(qiIndicators.nutritionalAssessmentNum(), indParams), "");
 		dsd.addColumn("2.8b", "Denominator", ReportUtils.map(qiIndicators.nutritionalAssessmentDen(), indParams), "");

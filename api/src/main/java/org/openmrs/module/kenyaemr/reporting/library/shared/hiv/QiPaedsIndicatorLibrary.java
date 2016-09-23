@@ -299,4 +299,40 @@ public class QiPaedsIndicatorLibrary {
 				map(qiCohorts.complementNutritionalAssessmentNum(), "onOrAfter=${startDate},onOrBefore=${endDate}")
 		);
 	}
+
+	/**
+	 * Patients eligible for IPT who were initiated on IPT - Numerator
+	 * CQI - 2.7a
+	 *
+	 * @return CohortIndicator
+	 */
+	public CohortIndicator patientsEligibleForIPTWhoWereInitiatedOnIPTNum() {
+		return cohortIndicator("TB IPT - Service Coverage Child - Num",
+				map(qiCohorts.patientWithNegativeTbScreenWhoHaveNotHadIPT(), "onOrAfter=${startDate},onOrBefore=${endDate}")
+		);
+	}
+
+	/**
+	 * Patients eligible for IPT who were initiated on IPT - Denominator
+	 * CQI - 2.7b
+	 * @return CohortIndicator
+	 */
+	public CohortIndicator patientsEligibleForIPTWhoWereInitiatedOnIPTDen() {
+		return cohortIndicator("TB IPT - Service Coverage Child - Den",
+				map(qiCohorts.patientsWhoHaveHadNoIptWithinLast2YearsTbNegativeDuring6MonthsReviewPeriod(), "onOrAfter=${startDate},onOrBefore=${endDate}")
+		);
+	}
+
+	/**
+	 * QI gap - patients eligible for IPT who were initiated on IPT
+	 * CQI - 2.7C
+	 *
+	 * @return CohortIndicator
+	 */
+	public CohortIndicator complementPatientsEligibleForIPTWhoWereInitiatedOnIPT() {
+		return cohortIndicator("TB IPT - Service Coverage Child - QI gap",
+				map(qiCohorts.patientWithNegativeTbScreenWhoHaveNotHadIPT(), "onOrAfter=${startDate},onOrBefore=${endDate}"),
+				map(qiCohorts.patientsWhoHaveHadNoIptWithinLast2YearsTbNegativeDuring6MonthsReviewPeriod(), "onOrAfter=${startDate},onOrBefore=${endDate}")
+		);
+	}
 }
