@@ -19,6 +19,7 @@ import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyacore.CoreUtils;
 import org.openmrs.module.kenyacore.report.ReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportManager;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.DateLastSeenCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.DateOfEnrollmentArtCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtStartDateCalculation;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
@@ -90,6 +91,9 @@ public class CohortDialogPageController {
         InitialArtStartDateCalculation initialArtStartDateCalculation = new InitialArtStartDateCalculation();
         CalculationResultMap artInitializationDates = initialArtStartDateCalculation.evaluate(cohort.getMemberIds(), null, calculationContext);
 
+        DateLastSeenCalculation datesLastSeenCalculation = new DateLastSeenCalculation();
+        CalculationResultMap datesLastSeen = datesLastSeenCalculation.evaluate(cohort.getMemberIds(), null, calculationContext);
+
         model.addAttribute("column", dataSetColumn);
         model.addAttribute("reportRequest", reportRequest);
         model.addAttribute("dataSet", dataSetName);
@@ -97,5 +101,6 @@ public class CohortDialogPageController {
         model.addAttribute("patients", ui.simplifyCollection(patients));
         model.addAttribute("enrollmentDates", enrollmentDates);
         model.addAttribute("artInitializationDates", artInitializationDates);
+        model.addAttribute("datesLastSeen", datesLastSeen);
     }
 }

@@ -19,6 +19,7 @@
 				<th>Unique Patient Number</th>
                 <th>Enrollment Date (HIV Program)</th>
                 <th>ART Initiation Date</th>
+				<th>Last Seen Date</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -41,6 +42,8 @@
 						dateFormat.format(enrollmentDates.get(patient.id).value) : "") : ""  }</td>
                 <td>${ artInitializationDates.get(patient.id) != null ?
 						dateFormat.format(artInitializationDates.get(patient.id).value) : "" }</td>
+				<td>${ datesLastSeen.get(patient.id) != null ?
+						dateFormat.format(datesLastSeen.get(patient.id).value) : "" }</td>
 			</tr>
 			<% } %>
 		</tbody>
