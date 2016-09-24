@@ -140,7 +140,7 @@
 		</property>
 		<property name="icon" value="kenyaui:forms/generic.png" />
 		<property name="htmlform" value="kenyaemr:clinicalEncounter.html" />
-		<property name="order" value="200020" />
+		<property name="order" value="200040" />
 	</bean>
 
 	<!-- Lab Results -->
@@ -155,7 +155,7 @@
 		</property>
 		<property name="icon" value="kenyaui:forms/labresults.png" />
 		<property name="htmlform" value="kenyaemr:labResults.html" />
-		<property name="order" value="200030" />
+		<property name="order" value="200050" />
 	</bean>
 
 	<!-- Medications -->
@@ -169,7 +169,7 @@
 		</property>
 		<property name="icon" value="kenyaui:forms/generic.png" />
 		<property name="htmlform" value="kenyaemr:otherMedications.html" />
-		<property name="order" value="200040" />
+		<property name="order" value="200060" />
 	</bean>
 
 	<!-- Progress Note -->
@@ -184,7 +184,7 @@
 		</property>
 		<property name="icon" value="kenyaui:forms/generic.png" />
 		<property name="htmlform" value="kenyaemr:progressNote.html" />
-		<property name="order" value="200050" />
+		<property name="order" value="200070" />
 	</bean>
 
 	<!-- TB Screening -->
