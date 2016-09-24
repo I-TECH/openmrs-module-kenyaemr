@@ -218,7 +218,7 @@
 			<drug code="Rfb150" drugUuid="c0b4caf2-3fc4-42db-b4ea-5d082136b651" /><!-- RIFABUTIN 150mg -->
 		</drugs>
 
-		<group code="adult-intensive" name="Intensive Phase (Adult)">
+		<group code="adult-intensive" name="Intensive Phase (Adult) - Daily (2 months)">
 			<regimen name="RHZE (150mg/75mg/400mg/275mg ⨉ 1 tabs)">
 				<component drugCode="R150" dose="1" units="tab" frequency="OD" />
 				<component drugCode="H75" dose="1" units="tab" frequency="OD" />
@@ -263,6 +263,18 @@
 				<component drugCode="H75" dose="4" units="tab" frequency="OD" />
 				<component drugCode="Z400" dose="4" units="tab" frequency="OD" />
 			</regimen>
+			<regimen name="S (1 gm x 1 vial)">
+				<component drugCode="S1" dose="1" units="tab" frequency="OD" />
+			</regimen>
+			<regimen name="S (1 gm x 2 vials)">
+				<component drugCode="S1" dose="2" units="tab" frequency="OD" />
+			</regimen> 
+			<regimen name="S (1 gm x 3 vials)">
+				<component drugCode="S1" dose="3" units="tab" frequency="OD" />
+			</regimen> 
+			<regimen name="S (1 gm x 4 vials)">
+				<component drugCode="S1" dose="4" units="tab" frequency="OD" />
+			</regimen> 
 			<regimen name="SRHZE (1g + 150mg/75mg/400mg/275mg ⨉ 2 tabs)">
 				<component drugCode="S1" dose="1" units="g" frequency="OD" />
 				<component drugCode="R150" dose="2" units="tab" frequency="OD" />
@@ -349,34 +361,94 @@
 				<component drugCode="Z400" dose="4" units="tab" frequency="OD" />
 				<component drugCode="E275" dose="4" units="tab" frequency="OD" />
 			</regimen>
-			<regimen name="S (1 gm vial)">
-				<component drugCode="S1" dose="1" units="g" frequency="OD" />
-			</regimen> 
 		</group>
 
-		<group code="child-intensive" name="Intensive Phase (Child)">
-			<regimen name="RHZ (60mg/30mg/150mg)">
-				<component drugCode="R60" units="tab" frequency="OD" />
-				<component drugCode="H30" units="tab" frequency="OD" />
-				<component drugCode="Z150" units="tab" frequency="OD" />
+		<group code="child-intensive" name="Intensive Phase (Child) - Daily (2 months)">
+			<regimen name="RHZ (60mg/30mg/150mg) x 1 tab">
+				<component drugCode="R60" dose="1" units="tab" frequency="OD" />
+				<component drugCode="H30" dose="1" units="tab" frequency="OD" />
+				<component drugCode="Z150" dose="1" units="tab" frequency="OD" />
+			</regimen>
+			<regimen name="RHZ (60mg/30mg/150mg) x 2 tabs">
+				<component drugCode="R60" dose="2" units="tab" frequency="OD" />
+				<component drugCode="H30" dose="2" units="tab" frequency="OD" />
+				<component drugCode="Z150" dose="2" units="tab" frequency="OD" />
+			</regimen>
+			<regimen name="RHZ (60mg/30mg/150mg) x 3 tabs">
+				<component drugCode="R60" dose="3" units="tab" frequency="OD" />
+				<component drugCode="H30" dose="3" units="tab" frequency="OD" />
+				<component drugCode="Z150" dose="3" units="tab" frequency="OD" />
+			</regimen>
+			<regimen name="RHZ (60mg/30mg/150mg) x 4 tabs">
+				<component drugCode="R60" dose="4" units="tab" frequency="OD" />
+				<component drugCode="H30" dose="4" units="tab" frequency="OD" />
+				<component drugCode="Z150" dose="4" units="tab" frequency="OD" />
 			</regimen>
 			<regimen name="E (400 mg tab)">
-				<component drugCode="E400" units="tab" frequency="OD" />
+				<component drugCode="E400" dose="1" units="tab" frequency="OD" />
 			</regimen>
-			<regimen name="E (100 mg tab)">
-				<component drugCode="E100" units="tab" frequency="OD" />
+			<regimen name="E (400 mg x 2 tabs)">
+				<component drugCode="E400" dose="2" units="tab" frequency="OD" />
 			</regimen>
-			<regimen name="RH (60mg/60mg tabs)">
-				<component drugCode="R60" units="tab" frequency="OD" />
-				<component drugCode="H60" units="tab" frequency="OD" />
+			<regimen name="E (400 mg x 3 tabs)">
+				<component drugCode="E400" dose="3" units="tab" frequency="OD" />
 			</regimen>
-			<regimen name="RH (60mg/30 mg tabs) ">
-				<component drugCode="R60" units="tab" frequency="OD" />
-				<component drugCode="H30" units="tab" frequency="OD" />
+			<regimen name="E (400 mg x 4 tabs)">
+				<component drugCode="E400" dose="4" units="tab" frequency="OD" />
+			</regimen>
+			<regimen name="E (100 mg x 1 tab)">
+				<component drugCode="E100" dose="1" units="tab" frequency="OD" />
+			</regimen>
+			<regimen name="E (100 mg x 2 tabs)">
+				<component drugCode="E100" dose="2" units="tab" frequency="OD" />
+			</regimen>
+			<regimen name="E (100 mg x 3 tabs)">
+				<component drugCode="E100" dose="3" units="tab" frequency="OD" />
+			</regimen>
+			<regimen name="E (100 mg x 4 tabs)">
+				<component drugCode="E100" dose="4" units="tab" frequency="OD" />
+			</regimen>
+			<regimen name="RH (60mg/60mg x 1 tab)">
+				<component drugCode="R60" dose="1" units="tab" frequency="OD" />
+				<component drugCode="H60" dose="1" units="tab" frequency="OD" />
+			</regimen>
+			<regimen name="RH (60mg/60mg x 2 tabs)">
+				<component drugCode="R60" dose="2" units="tab" frequency="OD" />
+				<component drugCode="H60" dose="2" units="tab" frequency="OD" />
+			</regimen>
+			<regimen name="RH (60mg/60mg x 3 tabs)">
+				<component drugCode="R60" dose="3" units="tab" frequency="OD" />
+				<component drugCode="H60" dose="3" units="tab" frequency="OD" />
+			</regimen>
+			<regimen name="RH (60mg/60mg x 4 tabs)">
+				<component drugCode="R60" dose="4" units="tab" frequency="OD" />
+				<component drugCode="H60" dose="4" units="tab" frequency="OD" />
+			</regimen>
+			<regimen name="RH (60mg/30 mg x 1 tab) ">
+				<component drugCode="R60" dose="1" units="tab" frequency="OD" />
+				<component drugCode="H30" dose="1" units="tab" frequency="OD" />
+			</regimen>
+			<regimen name="RH (60mg/30 mg x 2 tabs) ">
+				<component drugCode="R60" dose="2" units="tab" frequency="OD" />
+				<component drugCode="H30" dose="2" units="tab" frequency="OD" />
+			</regimen>
+			<regimen name="RH (60mg/30 mg x 3 tabs) ">
+				<component drugCode="R60" dose="3" units="tab" frequency="OD" />
+				<component drugCode="H30" dose="3" units="tab" frequency="OD" />
+			</regimen>
+			<regimen name="RH (60mg/30 mg x 4 tabs) ">
+				<component drugCode="R60" dose="4" units="tab" frequency="OD" />
+				<component drugCode="H30" dose="4" units="tab" frequency="OD" />
 			</regimen>
 		</group>
 
-		<group code="adult-continuation" name="Continuation Phase (Adult)">
+		<group code="adult-continuation" name="Continuation Phase (Adult) - Daily (4-6 months)">
+			<regimen name="RHZE (150mg/75mg/400mg/275mg ⨉ 1 tabs)">
+				<component drugCode="R150" dose="1" units="tab" frequency="OD" />
+				<component drugCode="H75" dose="1" units="tab" frequency="OD" />
+				<component drugCode="Z400" dose="1" units="tab" frequency="OD" />
+				<component drugCode="E275" dose="1" units="tab" frequency="OD" />
+			</regimen>
 			<regimen name="RHZE (150mg/75mg/400mg/275mg ⨉ 2 tabs)">
 				<component drugCode="R150" dose="2" units="tab" frequency="OD" />
 				<component drugCode="H75" dose="2" units="tab" frequency="OD" />
@@ -394,6 +466,11 @@
 				<component drugCode="H75" dose="4" units="tab" frequency="OD" />
 				<component drugCode="Z400" dose="4" units="tab" frequency="OD" />
 				<component drugCode="E275" dose="4" units="tab" frequency="OD" />
+			</regimen>
+			<regimen name="RHZ (150mg/75mg/400mg ⨉ 1 tabs)">
+				<component drugCode="R150" dose="1" units="tab" frequency="OD" />
+				<component drugCode="H75" dose="1" units="tab" frequency="OD" />
+				<component drugCode="Z400" dose="1" units="tab" frequency="OD" />
 			</regimen>
 			<regimen name="RHZ (150mg/75mg/400mg ⨉ 2 tabs)">
 				<component drugCode="R150" dose="2" units="tab" frequency="OD" />
@@ -410,6 +487,11 @@
 				<component drugCode="H75" dose="4" units="tab" frequency="OD" />
 				<component drugCode="Z400" dose="4" units="tab" frequency="OD" />
 			</regimen>
+			<regimen name="RHE (150mg/75mg/275mg ⨉ 1 tabs)">
+				<component drugCode="R150" dose="1" units="tab" frequency="OD" />
+				<component drugCode="H75" dose="1" units="tab" frequency="OD" />
+				<component drugCode="E275" dose="1" units="tab" frequency="OD" />
+			</regimen>
 			<regimen name="RHE (150mg/75mg/275mg ⨉ 2 tabs)">
 				<component drugCode="R150" dose="2" units="tab" frequency="OD" />
 				<component drugCode="H75" dose="2" units="tab" frequency="OD" />
@@ -425,6 +507,10 @@
 				<component drugCode="H75" dose="4" units="tab" frequency="OD" />
 				<component drugCode="E275" dose="4" units="tab" frequency="OD" />
 			</regimen>
+			<regimen name="RH (150mg/75mg ⨉ 1 tab)">
+				<component drugCode="R150" dose="1" units="tab" frequency="OD" />
+				<component drugCode="H75" dose="1" units="tab" frequency="OD" />
+			</regimen>
 			<regimen name="RH (150mg/75mg ⨉ 2 tabs)">
 				<component drugCode="R150" dose="2" units="tab" frequency="OD" />
 				<component drugCode="H75" dose="2" units="tab" frequency="OD" />
@@ -437,6 +523,10 @@
 				<component drugCode="R150" dose="4" units="tab" frequency="OD" />
 				<component drugCode="H75" dose="4" units="tab" frequency="OD" />
 			</regimen>
+			<regimen name="EH (275mg/75mg ⨉ 1 tab)">
+				<component drugCode="E400" dose="1" units="tab" frequency="OD" />
+				<component drugCode="H150" dose="1" units="tab" frequency="OD" />
+			</regimen>			
 			<regimen name="EH (275mg/75mg ⨉ 2 tabs)">
 				<component drugCode="E400" dose="2" units="tab" frequency="OD" />
 				<component drugCode="H150" dose="2" units="tab" frequency="OD" />
@@ -451,14 +541,109 @@
 			</regimen>
 		</group>
 
-		<group code="child-continuation" name="Continuation Phase (Child)">
-			<regimen name="RH (60mg/30mg)">
-				<component drugCode="R60" units="tab" frequency="OD" />
-				<component drugCode="H30" units="tab" frequency="OD" />
+		<group code="child-continuation" name="Continuation Phase (Child) - Daily (4-6 months)">
+			<regimen name="RH (60mg/60mg x 1 tab)">
+				<component drugCode="R60" dose="1" units="tab" frequency="OD" />
+				<component drugCode="H60" dose="1" units="tab" frequency="OD" />
 			</regimen>
+			<regimen name="RH (60mg/60mg x 2 tabs)">
+				<component drugCode="R60" dose="2" units="tab" frequency="OD" />
+				<component drugCode="H60" dose="2" units="tab" frequency="OD" />
+			</regimen>
+			<regimen name="RH (60mg/60mg x 3 tabs)">
+				<component drugCode="R60" dose="3" units="tab" frequency="OD" />
+				<component drugCode="H60" dose="3" units="tab" frequency="OD" />
+			</regimen>
+			<regimen name="RH (60mg/60mg x 4 tabs)">
+				<component drugCode="R60" dose="4" units="tab" frequency="OD" />
+				<component drugCode="H60" dose="4" units="tab" frequency="OD" />
+			</regimen>
+			<regimen name="RH (60mg/30mg x 1 tab)">
+				<component drugCode="R60" dose="1" units="tab" frequency="OD" />
+				<component drugCode="H30" dose="1" units="tab" frequency="OD" />
+			</regimen>
+			<regimen name="RH (60mg/30mg x 2 tabs)">
+				<component drugCode="R60" dose="2" units="tab" frequency="OD" />
+				<component drugCode="H30" dose="2" units="tab" frequency="OD" />
+			</regimen>
+			<regimen name="RH (60mg/30mg x 3 tabs)">
+				<component drugCode="R60" dose="3" units="tab" frequency="OD" />
+				<component drugCode="H30" dose="3" units="tab" frequency="OD" />
+			</regimen>
+			<regimen name="RH (60mg/30mg x 4 tabs)">
+				<component drugCode="R60" dose="4" units="tab" frequency="OD" />
+				<component drugCode="H30" dose="4" units="tab" frequency="OD" />
+			</regimen>
+			<regimen name="E (100 mg x 1 tab)">
+				<component drugCode="E100" dose="1" units="tab" frequency="OD" />
+			</regimen>
+			<regimen name="E (100 mg x 2 tabs)">
+				<component drugCode="E100" dose="2" units="tab" frequency="OD" />
+			</regimen>
+			<regimen name="E (100 mg x 3 tabs)">
+				<component drugCode="E100" dose="3" units="tab" frequency="OD" />
+			</regimen>
+			<regimen name="E (100 mg x 4 tabs)">
+				<component drugCode="E100" dose="4" units="tab" frequency="OD" />
+			</regimen>
+			<regimen name="E (400 mg tab)">
+				<component drugCode="E400" dose="1" units="tab" frequency="OD" />
+			</regimen>
+			<regimen name="E (400 mg x 2 tabs)">
+				<component drugCode="E400" dose="2" units="tab" frequency="OD" />
+			</regimen>
+			<regimen name="E (400 mg x 3 tabs)">
+				<component drugCode="E400" dose="3" units="tab" frequency="OD" />
+			</regimen>
+			<regimen name="E (400 mg x 4 tabs)">
+				<component drugCode="E400" dose="4" units="tab" frequency="OD" />
+			</regimen>
+
 		</group>
 
-		<group code="retreatment" name="Re-treatment">
+		<group code="adult-retreatment" name="Re-treatment (Adult)- Daily (3 months)">
+			<regimen name="RH (60mg/60mg x 1 tab)">
+				<component drugCode="R60" dose="1" units="tab" frequency="OD" />
+				<component drugCode="H60" dose="1" units="tab" frequency="OD" />
+			</regimen>
+			<regimen name="RH (60mg/60mg x 2 tabs)">
+				<component drugCode="R60" dose="2" units="tab" frequency="OD" />
+				<component drugCode="H60" dose="2" units="tab" frequency="OD" />
+			</regimen>
+			<regimen name="RH (60mg/60mg x 3 tabs)">
+				<component drugCode="R60" dose="3" units="tab" frequency="OD" />
+				<component drugCode="H60" dose="3" units="tab" frequency="OD" />
+			</regimen>
+			<regimen name="RH (60mg/60mg x 4 tabs)">
+				<component drugCode="R60" dose="4" units="tab" frequency="OD" />
+				<component drugCode="H60" dose="4" units="tab" frequency="OD" />
+			</regimen>
+			<regimen name="RHZ (60mg/30mg/150mg) x 1 tab">
+				<component drugCode="R60" dose="1" units="tab" frequency="OD" />
+				<component drugCode="H30" dose="1" units="tab" frequency="OD" />
+				<component drugCode="Z150" dose="1" units="tab" frequency="OD" />
+			</regimen>
+			<regimen name="RHZ (60mg/30mg/150mg) x 2 tabs">
+				<component drugCode="R60" dose="2" units="tab" frequency="OD" />
+				<component drugCode="H30" dose="2" units="tab" frequency="OD" />
+				<component drugCode="Z150" dose="2" units="tab" frequency="OD" />
+			</regimen>
+			<regimen name="RHZ (60mg/30mg/150mg) x 3 tabs">
+				<component drugCode="R60" dose="3" units="tab" frequency="OD" />
+				<component drugCode="H30" dose="3" units="tab" frequency="OD" />
+				<component drugCode="Z150" dose="3" units="tab" frequency="OD" />
+			</regimen>
+			<regimen name="RHZ (60mg/30mg/150mg) x 4 tabs">
+				<component drugCode="R60" dose="4" units="tab" frequency="OD" />
+				<component drugCode="H30" dose="4" units="tab" frequency="OD" />
+				<component drugCode="Z150" dose="4" units="tab" frequency="OD" />
+			</regimen>
+			<regimen name="RHZE (150mg/75mg/400mg/275mg ⨉ 1 tabs)">
+				<component drugCode="R150" dose="1" units="tab" frequency="OD" />
+				<component drugCode="H75" dose="1" units="tab" frequency="OD" />
+				<component drugCode="Z400" dose="1" units="tab" frequency="OD" />
+				<component drugCode="E275" dose="1" units="tab" frequency="OD" />
+			</regimen>
 			<regimen name="RHZE (150mg/75mg/400mg/275mg ⨉ 2 tabs)">
 				<component drugCode="R150" dose="2" units="tab" frequency="OD" />
 				<component drugCode="H75" dose="2" units="tab" frequency="OD" />
@@ -476,6 +661,36 @@
 				<component drugCode="H75" dose="4" units="tab" frequency="OD" />
 				<component drugCode="Z400" dose="4" units="tab" frequency="OD" />
 				<component drugCode="E275" dose="4" units="tab" frequency="OD" />
+			</regimen>
+		</group>
+		<group code="child-retreatment" name="Child Re-treatment(Child) - Daily (3 months)">
+			<regimen name="E (100 mg x 1 tab)">
+				<component drugCode="E100" dose="1" units="tab" frequency="OD" />
+			</regimen>
+			<regimen name="E (100 mg x 2 tabs)">
+				<component drugCode="E100" dose="2" units="tab" frequency="OD" />
+			</regimen>
+			<regimen name="E (100 mg x 3 tabs)">
+				<component drugCode="E100" dose="3" units="tab" frequency="OD" />
+			</regimen>
+			<regimen name="E (100 mg x 4 tabs)">
+				<component drugCode="E100" dose="4" units="tab" frequency="OD" />
+			</regimen>
+			<regimen name="RH (60mg/60mg x 1 tab)">
+				<component drugCode="R60" dose="1" units="tab" frequency="OD" />
+				<component drugCode="H60" dose="1" units="tab" frequency="OD" />
+			</regimen>
+			<regimen name="RH (60mg/60mg x 2 tabs)">
+				<component drugCode="R60" dose="2" units="tab" frequency="OD" />
+				<component drugCode="H60" dose="2" units="tab" frequency="OD" />
+			</regimen>
+			<regimen name="RH (60mg/60mg x 3 tabs)">
+				<component drugCode="R60" dose="3" units="tab" frequency="OD" />
+				<component drugCode="H60" dose="3" units="tab" frequency="OD" />
+			</regimen>
+			<regimen name="RH (60mg/60mg x 4 tabs)">
+				<component drugCode="R60" dose="4" units="tab" frequency="OD" />
+				<component drugCode="H60" dose="4" units="tab" frequency="OD" />
 			</regimen>
 		</group>
 	</category>
