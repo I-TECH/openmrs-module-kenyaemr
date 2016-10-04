@@ -13,6 +13,8 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openmrs.Location;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.AdministrationService;
@@ -44,6 +46,8 @@ public class AdxReportSender extends ReportDesignRenderer {
     private AdministrationService administrationService;
 
     private LocationService locationService;
+
+    protected static final Log log = LogFactory.getLog(AdxReportSender.class);
 
     //TODO: Move constants to global properties after successful pilot
     private static final String URL = "http://test.phiresearchlab.org/dhis/api/dataValueSets?dataElementIdScheme=code&orgUnitIdScheme=code";
@@ -108,22 +112,30 @@ public class AdxReportSender extends ReportDesignRenderer {
 
         String url = URL;
         PostMethod post = new PostMethod(url);
+        log.info("URL: " + url);
         try {
             StringRequestEntity requestEntity = new StringRequestEntity(xml, "application/xml+adx", "UTF-8");
             post.setRequestEntity(requestEntity);
             post.setRequestHeader("Content-type", "application/xml+adx");
-            post.addRequestHeader("Authorization", "Basic" + Base64.encodeBase64((USERNAME + ":" + PASSWORD).getBytes()));
+            String authorization = "Basic " + Base64.encodeBase64((USERNAME + ":" + PASSWORD).getBytes());
+            log.info("Authorization bytes: " + authorization);
+            authorization = "Basic " + new String(Base64.encodeBase64((USERNAME + ":" + PASSWORD).getBytes()));
+            log.info("Authorization string: " + authorization);
+            post.addRequestHeader("Authorization", authorization);
             HttpClient httpclient = new HttpClient();
 
             int result = httpclient.executeMethod(post);
+            log.info("result: " + result);
             if (result != 200) {
                 throw new RenderingException("Could not send report. HTTP Status Code: " + result);
             }
             System.out.println("Response status code: " + result);
             System.out.println("Response body: ");
             System.out.println(post.getResponseBodyAsString());
+            log.info("Response body:: " + post.getResponseBodyAsString());
         } catch (IOException e) {
             e.printStackTrace();
+            log.error("IOException: ", e);
         } finally {
             post.releaseConnection();
         }
