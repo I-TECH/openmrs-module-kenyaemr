@@ -93,7 +93,14 @@
 									<td>
 										<div ng-if="request.hasDataSet">
 											<a href="#" ng-click="exportReportData(request.id, 'adx')">
-												<img src="${ ui.resourceLink("kenyaui", "images/glyphs/csv.png") }" class="ke-glyph" /> ADX
+												<img src="${ ui.resourceLink("kenyaui", "images/glyphs/csv.png") }" class="ke-glyph" /> Download ADX
+											</a>
+										</div>
+									</td>
+									<td>
+										<div ng-if="request.hasDataSet">
+											<a href="#" ng-click="sendAdx(request.id)">
+												<img src="${ ui.resourceLink("kenyaui", "images/glyphs/csv.png") }" class="ke-glyph" /> Send ADX
 											</a>
 										</div>
 									</td>
