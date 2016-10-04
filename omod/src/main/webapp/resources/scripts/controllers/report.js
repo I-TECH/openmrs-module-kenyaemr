@@ -95,6 +95,14 @@ kenyaemrApp.controller('ReportController', ['$scope', '$http', '$timeout', funct
 	};
 
 	/**
+	 * Sends ADX report to DHIS
+	 * @param requestId the report request id
+	 */
+	$scope.sendAdx = function(requestId) {
+		ui.navigate('kenyaemr', 'adxSender', { appId: $scope.appId, request: requestId });
+	};
+
+	/**
 	 * Displays a dialog showing a request error
 	 * @param requestId the request id
 	 */
