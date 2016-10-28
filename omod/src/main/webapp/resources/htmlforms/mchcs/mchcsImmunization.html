@@ -150,8 +150,8 @@
 			
 			}
 
-			//$('body').live('click', 'span.controlConcept input:checkbox', function(){
-			$('span.controlConcept input:checkbox').live('change', function(){
+			$('body').on('click', 'span.controlConcept input:checkbox', function(){
+			//$('span.controlConcept input:checkbox').live('change', function(){
 
 				var parentRow = $(this).parents('tr:first');
 				
