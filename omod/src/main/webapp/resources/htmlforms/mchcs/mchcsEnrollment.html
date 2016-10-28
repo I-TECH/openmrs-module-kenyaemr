@@ -92,16 +92,16 @@
 
 			function onARTatEnrollment(){
 				if (getValue('onART.value') == NO_CONCEPT_ID) {
-					jq('#mohter-on-art-at-enrollment :input').prop('disabled', true);
-					jq('#mohter-on-art-at-enrollment1 :input').prop('disabled', true);
+					jq('#mother-on-art-at-enrollment :input').prop('disabled', true);
+					jq('#mother-on-art-at-enrollment1 :input').prop('disabled', true);
 				}
 				else if (getValue('onART.value') == YES_CONCEPT_ID) {
-					jq('#mohter-on-art-at-enrollment :input').prop('disabled', false);
-					jq('#mohter-on-art-at-enrollment1 :input').prop('disabled',false);
+					jq('#mother-on-art-at-enrollment :input').prop('disabled', false);
+					jq('#mother-on-art-at-enrollment1 :input').prop('disabled',false);
 				}
 				else {
-					jq('#mohter-on-art-at-enrollment :input').prop('disabled', true);
-					jq('#mohter-on-art-at-enrollment1 :input').prop('disabled', true);
+					jq('#mother-on-art-at-enrollment :input').prop('disabled', true);
+					jq('#mother-on-art-at-enrollment1 :input').prop('disabled', true);
 				}
 			}
 
@@ -143,6 +143,8 @@
 					jq('#mother-drugs :input').prop('disabled', true);
 					jq('#on-art-at-enrollment-of-infant :input').prop('disabled', true);
 					jq('#mother-art-details :input').prop('disabled', true);
+					jq('#hei-id :input').prop('disabled', true);
+					jq('#spd :input').prop('disabled', true);
 				}
 
 				if (getValue('hiv-exposed-child.value') == EXPOSURE_TO_HIV_ID) {
@@ -157,6 +159,8 @@
 					jq('#mother-drugs :input').prop('disabled', true);
 					jq('#on-art-at-enrollment-of-infant :input').prop('disabled', true);
 					jq('#mother-art-details :input').prop('disabled', true);
+					jq('#hei-id :input').prop('disabled', true);
+					jq('#spd :input').prop('disabled', true);
 				}
 			}
 		jq(function() {
@@ -212,64 +216,144 @@
 			<tbody>
 				<tr>
 					<td colspan="3" style="background-color: #696969; color: #ffffff; text-align:center;">
-						Mch Child Services Follow-up Card(Enrollment)
-					</td>
+						Mch Child Enrolment Form</td>
 				</tr>
 
 				<tr>
 					<td colspan="3">
 						Cohort by month and year of Birth:   MM-YYYY
-						<span id="calculated-cohort" class="value"></span>
-					</td>
-
+						<span id="calculated-cohort" class="value"></span>					</td>
 				</tr>
 				<tr>
 					<td colspan="3" style="background-color: #696969; color: #ffffff;">
-						INFANT PROFILE
-					</td>
+						SECTION I </td>
 				</tr>
 				<tr>
-					<td>
-						Child Exposed?<obs conceptId="5303AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="822AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No,Unkwon" id="hiv-exposed-child" style="radio" /><br />
-						<div id="child-status-required" class="error"></div>
-
-					</td>
+					<td valign="top">Particulars of the child </td>
 					<td colspan="2">
 						<table>
 							<tr>
-								<td>HEI ID Number</td>
-								<td><span id="hei-id"><patient field="identifier" identifierTypeId="0691f522-dd67-4eeb-92c8-af5083baf338" required="false" /></span></td>
-								<td>SPD No</td>
-								<td><obs conceptId="162054AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
-								<td>Birth Weight: (kg)</td>
-								<td><obs conceptId="5916AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
+								<td>Date first seen</td>
+								<td><obs conceptId="162140AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" showTime="false"/></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
 							</tr>
 							<tr>
 								<td>Gestation at birth(weeks)</td>
 								<td><obs conceptId="1409AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /> </td>
-								<td>Date first seen</td>
-								<td><obs conceptId="162140AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" showTime="false"/></td>
+								<td>Birth Weight: (kg)</td>
+								<td><obs conceptId="5916AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
+								<td>Birth length in cm </td>
+								<td><obs conceptId="1503AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
 							</tr>
 							<tr>
-								<td>
-									Birth Notification Number<br />
-									<obs conceptId="162051AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
-								</td>
-								<td></td>
-								<td colspan="5">
-									Certificate of Birth Registration Number:(after acquiring a certificate) <br />
-									<obs conceptId="162052AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="70"/></td>
-							</tr>
-						</table>
-
-					</td>
+							  <td>Birth Order in Family (1,2,3) </td>
+							  <td><obs conceptId="163460AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
+							  <td>Birth type: </td>
+						      <td><obs conceptId="159949AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="159913AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159914AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159915AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,113450AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,113440AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Single,Twins,Triplets,Quadruplets,Quintuplets" style="radio" answerSeparator="&lt;br/&gt;"/></td>
+						      <td>Place of delivery</td>
+						      <td>							  
+							  	<obs conceptId="1572AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1589AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1536AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Facility,Home,Other" style="radio"/>							  </td>
+						  </tr>
+							<tr>
+							  <td>Mode of Delivery  </td>
+							  <td><obs conceptId="5630AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1170AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1171AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="SVD,C-Section" style="radio"/></td>
+							  <td colspan="4"></td>
+						  </tr>
+						</table>					</td>
 				</tr>
 
 				<tr>
-					<td>Child need special care?<obs conceptId="161630AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="161628AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" id="specialCare"/> </td>
+				  <td valign="top">Registration Details </td>
+				  <td colspan="2"><table border="0" cellspacing="0" cellpadding="0">
+                    <tr>
+                      <td>Birth Notification Number</td>
+                      <td><obs conceptId="162051AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+                      <td>Date Issued </td>
+                      <td><obs conceptId="164129AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>Birth certificate Number </td>
+                      <td><obs conceptId="162052AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+                      <td>Date of registration </td>
+                      <td><obs conceptId="164130AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+                      <td>Place of registration </td>
+                      <td><obs conceptId="164140AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /> </td>
+                    </tr>
+                    <tr>
+                      <td>Health facility name:</td>
+                      <td><obs conceptId="162724AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+                      <td>Patient Clinic No. </td>
+                      <td><patient field="identifier" identifierTypeId="b4d66522-11fc-45c7-83e3-39a1af21ae0d" required="false" /></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>CWC No <br />
+					  Format:(CWC-MFL code-serial number) e.g CWC-15007-00001(). </td>
+                      <td><patient field="identifier" identifierTypeId="1dc8b419-35f2-4316-8d68-135f0689859b" required="false" /></td>
+                      <td>Permanent Register Number </td>
+                      <td><obs conceptId="1646AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td colspan="4">National Unique Patient Identifier <patient field="identifier" identifierTypeId="f85081e2-b4be-4e48-b3a4-7994b69bb101" required="false" /></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                  </table></td>
+			  </tr>
+				<tr>
+				  <td valign="top">Contact details </td>
+				  <td colspan="2"><table border="0" cellspacing="0" cellpadding="0">
+                    <tr>
+                      <td>Father's Name:  </td>
+                      <td><div id="father-name-list" class="value">						</div></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>Mother's Name</td>
+                      <td><div id="mother-name-list" class="value">						</div></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>Guardian's Name </td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>Community Health Worker's Name </td>
+                      <td><obs conceptId="164141AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                  </table></td>
+			  </tr>
+				<tr>
+					<td>Special Care </td>
 					<td colspan="2">
 						<table id="reasonsForSpecialCare">
 							<tbody>
+								<tr>
+								  <th colpan="2">Does the child need special care?
+					  <obs conceptId="161630AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="161628AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" id="specialCare"/></th>
+							  </tr>
 								<tr>
 									<th colpan="2">Reasons For  Special Care(<i>Tick as appropriate</i>)</th>
 								</tr>
@@ -279,33 +363,51 @@
 										<obs conceptId="161601AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="162071AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Birth less than 2 years after last birth" style="checkbox" /> <br />
 										<obs conceptId="161601AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="162072AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Fifth or more child" style="checkbox" /><br />
 										<obs conceptId="161601AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="162073AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Teenage mother" style="checkbox" /> <br />
-										<obs conceptId="161601AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="162074AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Brother or sisters undernourished" style="checkbox" />
-									</td>
+										<obs conceptId="161601AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="162074AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Brother or sisters undernourished" style="checkbox" />									</td>
 									<td>
 										<obs conceptId="161601AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="162075AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Multiple births(Twins,triplets)" style="checkbox" /> <br />
 										<obs conceptId="161601AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="162076AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Child in family dead" style="checkbox" /> <br />
 										<obs conceptId="161601AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1174AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Orphan" style="checkbox" /> <br />
 										<obs conceptId="161601AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="161599AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Child has disability" style="checkbox" /> <br />
 										<obs conceptId="161601AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1859AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Parent HIV positive" style="checkbox" /> <br />
-										<obs conceptId="161601AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="123174AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="History/signs of child abuse/neglect" style="checkbox" />
-									</td>
+										<obs conceptId="161601AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="123174AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="History/signs of child abuse/neglect" style="checkbox" />									</td>
 								</tr>
 							</tbody>
-						</table>
-					</td>
+						</table>					</td>
 				</tr>
 				<tr>
-					<td>Source of Referral</td>
+				  <td>Exposure History </td>
+				  <td colspan="2">HIV Exposed Child?
+				    <obs conceptId="5303AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="822AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No,Unkwon" id="hiv-exposed-child" style="radio" /><br />
+						<div id="child-status-required" class="error"></div></td>
+			  </tr>
+				<tr>
+				  <td colspan="3" style="background-color: #696969; color: #ffffff;">
+				  SECTION II				  </td>
+			  </tr>
+				<tr>
+				  <td>HEI Registration </td>
+				  <td colspan="2">
+						  <table>
+						  	<tr>
+				  				<td>HEI ID Number</td>
+								<td><span id="hei-id"><patient field="identifier" identifierTypeId="0691f522-dd67-4eeb-92c8-af5083baf338" required="false" /></span></td>
+								<td>SPD No</td>
+								<td id="spd"><obs conceptId="162054AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+							</tr>
+						</table>				  </td>
+			  </tr>
+				<tr>
+					<td>Referral details </td>
 					<td colspan="2">
 						<table>
 							<tr>
-								<td>
+								<td>Source of Referral
 									<obs style="radio" answerSeparator=" "
 									 conceptId="160540AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 									 answerConceptIds="160537AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160542AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160456AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162050AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160538AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 									 answerLabels="Paediatric,OPD,Maternity,CCC,MCH/PMTCT,Other"
-									/>
-								</td>
+									/>								</td>
 							</tr>
 							<tr>
 								<td>Transfer in?
@@ -313,8 +415,7 @@
 									<obs id="transfer-status" conceptId="160563AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio"
 									answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 									answerLabels="Yes,No"
-									/>
-								</td>
+									/>								</td>
 							</tr>
 							<tr>
 								<td>
@@ -333,81 +434,87 @@
 												<td><obs conceptId="160555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
 											</tr>
 										</table>
-									</div>
-								</td>
+									</div>								</td>
 							</tr>
-						</table>
-					</td>
+						</table>					</td>
 				</tr>
 				<tr id="arv-prophylaxis">
-					<td>ARV Prophylaxis</td>
+					<td valign="top">Child ARV Prophylaxis</td>
 						<obsgroup groupingConceptId="1638AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
 							<td colspan="2">
-								<obs conceptId="1282AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="80586AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1149AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-									 answerLabels="Sd NVP Only,sd NVP+AZT+3TC,NVP for 6 weeks(Mother on HAART),None,Other" style="radio"/> <br />
-								Is the mother Breastfeeding? <obs conceptId="159941AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159941AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No,Unknown" style="radio"/><br />
-								NVP during BF? <obs conceptId="1282AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" answerConceptId="80586AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel=""/>
-							</td>
+								<table border="0" cellspacing="0" cellpadding="0">
+								  
+								  <tr>
+									<td>Type of ARV prophylaxis</td>
+									<td colspan="2"><obs conceptId="1282AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="80586AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1149AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									 answerLabels="Sd NVP Only,sd NVP+AZT+3TC,NVP for 6 weeks(Mother on HAART),None,Other" style="radio"/> </td>
+									<td></td>
+								  </tr>
+								  <tr>
+									<td>Is the mother Breastfeeding? </td>
+									<td><obs conceptId="159941AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159941AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No,Unknown" style="radio"/></td>
+									<td></td>
+									<td></td>
+								  </tr>
+								  <tr>
+									<td>NVP during BF? </td>
+									<td><obs conceptId="1282AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" answerConceptId="80586AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel=""/></td>
+									<td>History of TB Contact in Household? </td>
+									<td><obs conceptId="152460AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" id="tbcontact"/></td>
+								  </tr>
+								<tr>
+									<td>											</td>
+									<td colspan="2"><span id="yesTbContact" class="value">Screen for TB; and appropriately refer for INH Prophylaxis</span></td>
+								</tr>
+								</table>								</td>
 						</obsgroup>
 				</tr>
 				<tr>
-					<td>
-						History of TB Contact in Household? <obs conceptId="152460AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" id="tbcontact"/>
-					</td>
-					<td colspan="2"><span id="yesTbContact" class="value">Screen for TB; and appropriately refer for INH Prophylaxis</span></td>
-				</tr>
-				<tr>
-					<td colspan="3" style="background-color: #696969; color: #ffffff;">
-						PARENT'S PROFILE(<i>Edit using Relationship Section</i>)
-					</td>
-				</tr>
-				<tr>
-					<td>
-						Name of Mother <br />
-						<div id="mother-name-list" class="value">
-
-						</div>
-					</td>
-					<td>Mother Alive? <obs conceptId="160429AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  style="yes_no"/></td>
-					<td>
-						Name of Father <br />
-						<div id="father-name-list" class="value">
-
-						</div>
-					</td>
-				</tr>
-				<tr>
-					<td id="mother-drugs">
-						Mother received Drugs for PMTCT?  <obs conceptId="1148AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" id="pmtctDrugsReceived"/>
-					</td>
-					<td colspan="2">
-						<div id="mother-art-details">
-							Select the combination
-							<obs conceptId="1086AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="80586AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1149AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-								 answerLabels="Sd NVP Only,AZT+NVP+3TC,HAART,None" style="radio"/>
-						</div>
-					</td>
-				</tr>
-				<tr>
-					<td id="on-art-at-enrollment-of-infant"> On ART at Enrollment of Infant
-						<obs conceptId="162055AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" id="onART"/>
-					</td>
-						<td id="mohter-on-art-at-enrollment">Enter regimen
-							<obs conceptId="1088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+				  <td>Mother's ARV profile </td>
+				  <td colspan="2">
+				  <table border="0" cellspacing="0" cellpadding="0">
+                    <tr>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>Mother Alive? </td>
+                      <td><obs conceptId="160429AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  style="yes_no"/></td>
+                      <td>Mother received Drugs for PMTCT?  </td>
+                      <td id="mother-drugs"><obs conceptId="1148AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" id="pmtctDrugsReceived"/></td>
+                    </tr>
+                    <tr>
+                      <td>If yes, select regimen</td>
+                      <td id="mother-on-art-at-enrollment">
+					  	<obs conceptId="1088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 								 answerConceptIds="5811AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,792AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,794AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,630AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5424AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
 								 84309AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,74807AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,70056AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,80586AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,75523AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,78643AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
 								 84795AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,77995AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160105AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160104AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,86663AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,75628AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
 								 79040AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,83412AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,71647AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
 								 161361AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,103166AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-								 answerLabels="Unkown,D4T+3TC+NVP,LPV/r,3TC+ZDV,Other,D4T,DDI,ABC,NVP,EFV,3TC,TDF,IDV,AZT+3TC+EFV,D4T+3TC+EFV,AZT,FTC,LPV,RTV,ATV,AZT+3TC+NVP,3TC+D4T,TDF+3TC,EDF+3TC+EFV,ABC+3TC" />
-
-						</td>
-						<td id="mohter-on-art-at-enrollment1">Parent's CCC No. <obs conceptId="162053AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="15"/></td>
-				</tr>
-				<tr>
-					<td>Mode of Delivery <obs conceptId="5630AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1170AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1171AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="SVD,C-Section" style="radio"/></td>
-					<td colspan="2">Place of Delivery <obs conceptId="1572AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1589AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1536AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Facility,Home" style="radio"/></td>
-				</tr>
+								 answerLabels="Unkown,D4T+3TC+NVP,LPV/r,3TC+ZDV,Other,D4T,DDI,ABC,NVP,EFV,3TC,TDF,IDV,AZT+3TC+EFV,D4T+3TC+EFV,AZT,FTC,LPV,RTV,ATV,AZT+3TC+NVP,3TC+D4T,TDF+3TC,EDF+3TC+EFV,ABC+3TC" />						</td>
+						<td id="mother-on-art-at-enrollment1">Parent's CCC No. <obs conceptId="162053AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="15"/></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>Mother On ART at Enrollment of Infant	</td>
+                      <td id="on-art-at-enrollment-of-infant"><obs conceptId="162055AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" id="onART"/>	</td>
+                      <td>
+							Select the combination
+					 </td>
+					 <td>
+					 							<div id="mother-art-details">
+							<obs conceptId="1086AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="80586AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1149AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								 answerLabels="Sd NVP Only,AZT+NVP+3TC,HAART,None" style="radio"/>
+						</div>					  
+					 </td>
+                    </tr>
+                  </table></td>
+			  </tr>
+				
 				<enrollInProgram programId="c2ecdf11-97cd-432a-a971-cfd9bd296b83"/>
 			</tbody>
 		</table>
