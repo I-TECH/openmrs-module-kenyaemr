@@ -58,6 +58,8 @@ public class CommonMetadata extends AbstractMetadataBundle {
 		public static final String OLD_ID = Metadata.IdentifierType.OLD;
 		public static final String OPENMRS_ID = Metadata.IdentifierType.MEDICAL_RECORD_NUMBER;
 		public static final String PATIENT_CLINIC_NUMBER = Metadata.IdentifierType.PATIENT_CLINIC_NUMBER;
+		public static final String NATIONAL_UNIQUE_PATIENT_IDENTIFIER = Metadata.IdentifierType.NATIONAL_UNIQUE_PATIENT_IDENTIFIER;
+		public static final String CWC_NUMBER = Metadata.IdentifierType.CWC_NUMBER;
 	}
 
 	public static final class _PersonAttributeType {
@@ -120,7 +122,13 @@ public class CommonMetadata extends AbstractMetadataBundle {
 		install(patientIdentifierType("National ID", "Kenyan national identity card number",
 				"\\d{5,10}", "Between 5 and 10 consecutive digits", null,
 				LocationBehavior.NOT_USED, false, _PatientIdentifierType.NATIONAL_ID));
-
+		install(patientIdentifierType("National Unique patient identifier", "National Unique patient identifier",
+				".{1,14}", "At most 14 characters long", null,
+				LocationBehavior.REQUIRED, false, _PatientIdentifierType.NATIONAL_UNIQUE_PATIENT_IDENTIFIER));
+		install(patientIdentifierType("CWC Number", "Assigned to a child patient when enrolling into the Child Welfare Clinic (CWC)",
+				".{1,14}", "Should take the format (CWC-MFL code-serial number) e.g CWC-15007-00001", null,
+				LocationBehavior.REQUIRED, false, _PatientIdentifierType.CWC_NUMBER));
+		
 		install(personAttributeType("Telephone contact", "Telephone contact number",
 				String.class, null, false, 1.0, _PersonAttributeType.TELEPHONE_CONTACT));
 		install(personAttributeType("Email address", "Email address of person",
