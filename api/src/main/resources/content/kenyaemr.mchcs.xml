@@ -31,6 +31,11 @@
 				<ref bean="kenyaemr.mchcs.report.notPcrConfirmatoryTested" />
 				<ref bean="kenyaemr.mchcs.report.infantNotOnCTX" />
 				<ref bean="kenyaemr.mchcs.report.infantWithoutPcp" />
+				<ref bean="kenyaemr.mchcs.report.moh710" />
+				<ref bean="kenyaemr.mchcs.report.moh510" />
+				<ref bean="kenyaemr.mchcs.report.moh511" />
+				<ref bean="kenyaemr.mchcs.report.vaccinationAppointments" />
+				<ref bean="kenyaemr.mchcs.report.defaulter" />
 			</set>
 		</property>
 		<property name="fragments">
@@ -172,5 +177,44 @@
 		<property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.mchcs.InfantNeverTakenProphylaxisCalculation" />
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 	</bean>
+	
+	<bean id="kenyaemr.mchcs.report.moh710" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
+		<property name="targetUuid" value="f63a2d76-a763-443d-aa74-4440d3c08e9e" />
+		<property name="name" value="MOH 710" />
+		<property name="description" value="MOH Immunization Report" />
+		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
+		<property name="template" value="kenyaemr:moh710.xls" />
+	</bean>	
 
+	<bean id="kenyaemr.mchcs.report.moh510" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
+		<property name="targetUuid" value="83e61bd1-a121-4355-bcbd-fa655c24166a" />
+		<property name="name" value="MOH 510" />
+		<property name="description" value="Permanent Immunization Register" />
+		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
+		<property name="template" value="kenyaemr:moh510.xls" />
+	</bean>
+
+	<bean id="kenyaemr.mchcs.report.moh511" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
+		<property name="targetUuid" value="759cf726-8f51-4fa7-8b9f-8184a468e023" />
+		<property name="name" value="MOH 511" />
+		<property name="description" value="CWC Register(MOH 511)" />
+		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
+		<property name="template" value="kenyaemr:moh511.xls" />
+	</bean>
+	
+	<bean id="kenyaemr.mchcs.report.vaccinationAppointments" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
+		<property name="targetUuid" value="7a2e9b40-5d34-4528-92c0-ef5efcc18c45" />
+		<property name="name" value="Vaccination Appointment List" />
+		<property name="description" value="Appointment List for Vaccination" />
+		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
+		<property name="template" value="kenyaemr:vaccination_appointment_list.xls" />
+	</bean>
+
+	<bean id="kenyaemr.mchcs.report.defaulter" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
+		<property name="targetUuid" value="2211bbce-ff75-4ef5-b993-8ecbe7d94e25" />
+		<property name="name" value="CWC Defaulter" />
+		<property name="description" value="CWC Defaulter Report" />
+		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
+		<property name="template" value="kenyaemr:cwc_defaulter.xls" />
+	</bean>
 </beans>
