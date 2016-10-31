@@ -72,9 +72,13 @@
 
 						var textInputField = $(this);
 
-						if( textInputField.parents('span:first').is('.sequenceNo') ) { //Set value for sequence number field from the hidden sequence number field value
+						//This next step sets the value for sequence number field
+						if( textInputField.parents('span:first').is('.sequenceNo') ) { 						
+							
+							//Here we extract the Sequence Number from the obs field Id e.g Id bcg-1 produces 1, opv-0 produces 0 etc
+							var sequenceNo = textInputField.parents('span:first').attr('id').match(/[0-9]/g).join(""); 
 
-							textInputField.val(hiddenVaccineSequenceNumberField.val());
+							textInputField.val(sequenceNo);
 
 							textInputField.change();
 
@@ -89,13 +93,9 @@
 
     					var textInputField = $(this);
 
-                        if( !textInputField.is('.hVaccineSequenceNo') ) { //Clear values from all fields apart from the hidden vaccine sequence number field
+						textInputField.val('');
 
-							textInputField.val('');
-
-							textInputField.change();
-
-						}						
+						textInputField.change();
 
 						if( $(this).is('.hasDatepicker') ) {
 
@@ -314,8 +314,7 @@
 								<td style="border-right:none">{vaccineLabel}</td>
 								<td style="border-left:none">
 									<obs conceptId ="984" answerConceptId="{vaccineConceptId}" answerLabel="" showDate="true" id="{id}" class="vaccineConcept controlConcept"/>
-									<obs conceptId="1418AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="3" class="sequenceNo" id="{id}SequenceNo"/>	
-									<input type="hidden" name="{id}hVaccineSequenceNo" class="hVaccineSequenceNo" value="{vaccineSequenceNo}" />						
+									<obs conceptId="1418AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="3" class="sequenceNo" id="{id}"/>
 								</td>
 								<td>
 									<obs conceptId="1420" size="7" />
@@ -336,23 +335,23 @@
 							</tr>
 						</obsgroup>
 					</template>
-					<render vaccineConceptId="886AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" vaccineLabel="BCG" vaccineSequenceNo="1" id="bcg" class="bcg"/>
-					<render vaccineConceptId="783AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" vaccineLabel="OPV at Birth" vaccineSequenceNo="0" id="opv-birth" class="opv"/>
+					<render vaccineConceptId="886AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" vaccineLabel="BCG" vaccineSequenceNo="1" id="bcg-1" class="bcg"/>
+					<render vaccineConceptId="783AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" vaccineLabel="OPV at Birth" vaccineSequenceNo="0" id="opv-birth-0" class="opv"/>
 					<render vaccineConceptId="783AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" vaccineLabel="OPV 1" vaccineSequenceNo="1" id="opv-1" class="opv"/>
 					<render vaccineConceptId="783AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" vaccineLabel="OPV 2" vaccineSequenceNo="2" id="opv-2" class="opv"/>
 					<render vaccineConceptId="783AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" vaccineLabel="OPV 3" vaccineSequenceNo="3" id="opv-3" class="opv"/>
-					<render vaccineConceptId="1422AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" vaccineLabel="IPV" vaccineSequenceNo="1" id="ipv" class="ipv"/>
+					<render vaccineConceptId="1422AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" vaccineLabel="IPV" vaccineSequenceNo="1" id="ipv-1" class="ipv"/>
 					<render vaccineConceptId="781AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" vaccineLabel="DPT/Hep B/Hib 1" vaccineSequenceNo="1" id="dpt-hepb-hib-1" class="dpt-hepb-hib" />
 					<render vaccineConceptId="781AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" vaccineLabel="DPT/Hep B/Hib 2" vaccineSequenceNo="2" id="dpt-hepb-hib-2" class="dpt-hepb-hib" />
 					<render vaccineConceptId="781AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" vaccineLabel="DPT/Hep B/Hib 3" vaccineSequenceNo="3" id="dpt-hepb-hib-3" class="dpt-hepb-hib" />
-					<render vaccineConceptId="162342AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" vaccineLabel="PCV 10 (Pneumococcal) 1" vaccineSequenceNo="1" id="pcv10-1" class="pcv" />
-					<render vaccineConceptId="162342AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" vaccineLabel="PCV 10 (Pneumococcal) 2" vaccineSequenceNo="2" id="pcv10-2" class="pcv" />
-					<render vaccineConceptId="162342AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" vaccineLabel="PCV 10 (Pneumococcal)3" vaccineSequenceNo="3" id="pcv10-3" class="pcv" />
+					<render vaccineConceptId="162342AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" vaccineLabel="PCV 10 (Pneumococcal) 1" vaccineSequenceNo="1" id="pcvTen-1" class="pcv" />
+					<render vaccineConceptId="162342AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" vaccineLabel="PCV 10 (Pneumococcal) 2" vaccineSequenceNo="2" id="pcvTen-2" class="pcv" />
+					<render vaccineConceptId="162342AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" vaccineLabel="PCV 10 (Pneumococcal)3" vaccineSequenceNo="3" id="pcvTen-3" class="pcv" />
 					<render vaccineConceptId="83531AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" vaccineLabel="ROTA 1" vaccineSequenceNo="1" id="rota-1" class="rota" />
 					<render vaccineConceptId="162586AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" vaccineLabel="Measles/Rubella 1" vaccineSequenceNo="1" id="measles-rubella-1" class="measles-rubella" />
-					<render vaccineConceptId="5864AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" vaccineLabel="Yellow Fever" vaccineSequenceNo="1" id="yellow-fever" class="yellow-fever" />
+					<render vaccineConceptId="5864AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" vaccineLabel="Yellow Fever" vaccineSequenceNo="1" id="yellow-fever-1" class="yellow-fever" />
 					<render vaccineConceptId="162586AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" vaccineLabel="Measles/Rubella 2" vaccineSequenceNo="2" id="measles-rubella-2" class="measles-rubella"/>
-					<render vaccineConceptId="36AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" vaccineLabel="Measles at 6 months" vaccineSequenceNo="1" id="measles-6-months" class="measles-6-months"/>
+					<render vaccineConceptId="36AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" vaccineLabel="Measles at 6 months" vaccineSequenceNo="1" id="measles-six-months-1" class="measles-six-months"/>
 					<render vaccineConceptId="83531AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" vaccineLabel="ROTA 2" vaccineSequenceNo="2" id="rota-2" class="rota" />
 				</repeat>
 				</tbody>
@@ -387,8 +386,7 @@
                 <td colspan="2">{caption}</td>
                 <td>
 				<obs conceptId="1282AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="86339AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" showDate="true" answerLabel="" class="controlConcept vitA dateGiven" id="vitaA-{n}"/> 
-				<obs conceptId="1418AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="3" class="sequenceNo" id="{id}SequenceNo"/>	
-				<input type="hidden" name="{id}hVaccineSequenceNo" class="hVaccineSequenceNo" value="{sequenceNo}" />	
+				<obs conceptId="1418AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="3" class="sequenceNo" id="vitaA-S{sequenceNo}" />
 				<span id="vitA-given">
 					<obs conceptId="161534AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" answerLabel="Yes" answerConceptId="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" class="vitAGivenYes" />
 					<obs conceptId="161534AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" answerLabel="No" answerConceptId="1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" class="vitAGivenNo" /> 
