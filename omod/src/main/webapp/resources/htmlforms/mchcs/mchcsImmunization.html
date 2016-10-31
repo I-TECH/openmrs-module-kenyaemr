@@ -65,7 +65,23 @@
 			
 			MyApp.ui = {
 				enableAssociatedFields: function (rowObject){				
-					rowObject.find('input:text').removeAttr('readonly').removeClass('disabled');					
+
+					var hiddenVaccineSequenceNumberField = rowObject.find('input.hVaccineSequenceNo');
+					
+					rowObject.find('input:text').removeAttr('readonly').removeClass('disabled').each( function() {
+
+						var textInputField = $(this);
+
+						if( textInputField.parents('span:first').is('.sequenceNo') ) { //Set value for sequence number field from the hidden sequence number field value
+
+							textInputField.val(hiddenVaccineSequenceNumberField.val());
+
+							textInputField.change();
+
+						}
+
+					} );
+
 				},
 	
 				disableAssociatedFields: function (rowObject){	
@@ -73,9 +89,11 @@
 
     					var textInputField = $(this);
 
-                        if( !textInputField.parents(':first').has('.sequenceNo') ) {
+                        if( !textInputField.is('.hVaccineSequenceNo') ) { //Clear values from all fields apart from the hidden vaccine sequence number field
 
 							textInputField.val('');
+
+							textInputField.change();
 
 						}						
 
@@ -296,7 +314,8 @@
 								<td style="border-right:none">{vaccineLabel}</td>
 								<td style="border-left:none">
 									<obs conceptId ="984" answerConceptId="{vaccineConceptId}" answerLabel="" showDate="true" id="{id}" class="vaccineConcept controlConcept"/>
-									<obs conceptId="1418AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="3" defaultValue="{vaccineSequenceNo}" class="sequenceNo"/>							
+									<obs conceptId="1418AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="3" class="sequenceNo" id="{id}SequenceNo"/>	
+									<input type="hidden" name="{id}hVaccineSequenceNo" class="hVaccineSequenceNo" value="{vaccineSequenceNo}" />						
 								</td>
 								<td>
 									<obs conceptId="1420" size="7" />
@@ -368,7 +387,8 @@
                 <td colspan="2">{caption}</td>
                 <td>
 				<obs conceptId="1282AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="86339AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" showDate="true" answerLabel="" class="controlConcept vitA dateGiven" id="vitaA-{n}"/> 
-				<obs conceptId="1418AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="3" defaultValue="{sequenceNo}" class="sequenceNo"/>				
+				<obs conceptId="1418AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="3" class="sequenceNo" id="{id}SequenceNo"/>	
+				<input type="hidden" name="{id}hVaccineSequenceNo" class="hVaccineSequenceNo" value="{sequenceNo}" />	
 				<span id="vitA-given">
 					<obs conceptId="161534AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" answerLabel="Yes" answerConceptId="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" class="vitAGivenYes" />
 					<obs conceptId="161534AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" answerLabel="No" answerConceptId="1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" class="vitAGivenNo" /> 
