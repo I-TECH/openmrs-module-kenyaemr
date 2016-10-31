@@ -15,36 +15,274 @@
 
 	<style type="text/css">
 		table.hei {
-		border-collapse: collapse;
-		background-color: #fff0f7
+			border-collapse: collapse;
+			background-color: #fff0f7
 		}
 		table.hei > tbody > tr > td, table.hei > tbody > tr > th {
-		border: 1px solid black;
-		vertical-align: baseline;
-		padding: 4px;
-		text-align: left;
+			border: 1px solid black;
+			vertical-align: baseline;
+			padding: 4px;
+			text-align: left;
 		}
-	</style>
-	<script type="text/javascript">
 
-		function bcgScarValidation(){
-			if(getValue('bcg-scar-checked.value') == false || getValue('bcg-scar-checked.value') == 1066){
-				jq('#date-scar-checked :input').prop( "disabled", true );
-				jq('#date-scar-check-repeat :input').prop( "disabled", true );
-			}
-			else {
-				jq('#date-scar-checked :input').prop( "disabled", false );
-				jq('#date-scar-check-repeat :input').prop( "disabled", false );
-			}
+		span.sequenceNo input {
+			display:none;
 		}
-		jq(function() {
-			bcgScarValidation();
-			jq('#bcg-scar-checked input:radio').click(function() {
-				bcgScarValidation();
+		
+		span.vaccineConcept input[type=text] {
+			display:none;
+		}
+		
+		span#vitA-given {
+			display:none;
+		}
+		
+		.disabled {
+			background-color: #ebebe4;
+		}
+
+	</style>
+
+	<script>jQuery.noConflict();</script>
+
+	<script type="text/javascript">
+	
+		jQuery().ready(function($){			
+		
+			var MyApp = MyApp || {};
+			
+			MyApp.concepts = {
+				NO_CONCEPT_ID: 1066
+			}
+			
+			
+			MyApp.common = {			
+				formatDate: function ( date ) {
+					var format = $('.hasDatepicker').datepicker('option', 'dateFormat'); //Alternative: var format = "<lookup expression="fn.globalProperty('htmlformentry.dateFormat')" />"; 					
+					return $.datepicker.formatDate( format, date );
+				}	
+			}
+			
+			MyApp.ui = {
+				enableAssociatedFields: function (rowObject){				
+
+					var hiddenVaccineSequenceNumberField = rowObject.find('input.hVaccineSequenceNo');
+					
+					rowObject.find('input:text').removeAttr('readonly').removeClass('disabled').each( function() {
+
+						var textInputField = $(this);
+
+						if( textInputField.parents('span:first').is('.sequenceNo') ) { //Set value for sequence number field from the hidden sequence number field value
+
+							textInputField.val(hiddenVaccineSequenceNumberField.val());
+
+							textInputField.change();
+
+						}
+
+					} );
+
+				},
+	
+				disableAssociatedFields: function (rowObject){	
+					rowObject.find('input:text').attr('readonly', 'true').addClass('disabled').each( function() {
+
+    					var textInputField = $(this);
+
+                        if( !textInputField.is('.hVaccineSequenceNo') ) { //Clear values from all fields apart from the hidden vaccine sequence number field
+
+							textInputField.val('');
+
+							textInputField.change();
+
+						}						
+
+						if( $(this).is('.hasDatepicker') ) {
+
+							$(this).datepicker("setDate", null );
+
+						}
+
+					});
+					
+					rowObject.find('input:checkbox').removeAttr('checked');
+				},
+
+				bcgScarValidation: function() {
+					if(getValue('bcg-scar-checked.value') == false || getValue('bcg-scar-checked.value') == MyApp.concepts.NO_CONCEPT_ID){
+						$('#date-scar-checked :input').attr( "disabled", true );
+						$('#date-scar-check-repeat :input').attr( "disabled", true );
+					}
+					else {
+						$('#date-scar-checked :input').attr( "disabled", false );
+						$('#date-scar-check-repeat :input').attr( "disabled", false );
+					}
+				}
+
+			}
+			
+			MyApp.immunization = {
+				//Compute the no. of days between when a vaccine is administered and the next time it should be administered 
+				getSpacingInDays: function(obj) {
+				
+					var bcgSpacing = 6 * 7 //6 weeks to days
+					var opvSpacing = 4 * 7 //4 weeks to days				
+					var dptSpacing = 4 * 7 //4 weeks to days
+					var pcvSpacing = 4 * 7 //4 weeks to days
+					var rotaSpacing = 4 * 7 //4 weeks to days
+					var vitASpacing = 6 * 4 * 7  //6 months
+					var measlesRubellaSpacing = 9 * 4 * 7 //9 months to days
+	
+					var parentRow  = obj.parents('tr:first');
+					
+					if ( parentRow.find('span.bcg').length > 0 ) {					
+						return bcgSpacing;						
+					}
+	
+					if ( parentRow.find('span.opv').length > 0 ) {					
+						return opvSpacing;						
+					}
+	
+					if ( parentRow.find('span.dpt').length > 0 ) {					
+						return dptSpacing;						
+					}
+	
+					if ( parentRow.find('span.pcv').length > 0 ) {					
+						return pcvSpacing;						
+					}
+	
+					if ( parentRow.find('span.rota').length > 0 ) {					
+						return rotaSpacing;						
+					}
+	
+					if ( parentRow.find('span.vitA').length > 0 ) {					
+						return vitASpacing;						
+					}
+	
+					if ( parentRow.find('span.measles-rubella').length > 0 ) {					
+						return measlesRubellaSpacing;						
+					}
+					
+					return 0;
+				}
+			
+			}
+
+			$('body').on('click', 'span.controlConcept input:checkbox', function(){
+			//$('span.controlConcept input:checkbox').live('change', function(){
+
+				var parentRow = $(this).parents('tr:first');
+				
+				if (this.checked == true){
+				
+					MyApp.ui.enableAssociatedFields(parentRow);			
+				
+				} else {
+				
+					MyApp.ui.disableAssociatedFields(parentRow);
+					
+				}
+			
+			});			
+			
+			$('span.controlConcept input:checkbox').each(function(){
+			
+				var parentRow = $(this).parents('tr:first');
+
+				if ($(this).is(':checked') == true) {
+				
+					MyApp.ui.enableAssociatedFields(parentRow);	
+											
+				} else {
+				
+					MyApp.ui.disableAssociatedFields(parentRow); 
+									
+				}
+								
+			});
+			
+			$("span.dateGiven input:text").change(function(){
+				
+				var selectedDate = $(this).val();
+				var parentRow = $(this).parents('tr:first')
+
+				if (selectedDate != '')	{
+				
+					var dateGiven = new Date(selectedDate);
+					var vaccineObsDateTime = parentRow.find('span.vaccineConcept input:text'); //Get the vaccine obs datetime (ConceptId 984)
+					var vitaminAGivenYes = parentRow.find('span.vitAGivenYes input:checkbox');
+					
+					if (vaccineObsDateTime.length > 0 ){
+										
+						//vaccineObsDateTime.val( MyApp.common.formatDate(dateGiven) );
+						vaccineObsDateTime.datepicker("setDate", MyApp.common.formatDate(dateGiven) );
+					}
+					
+					if (vitaminAGivenYes.length > 0) {
+					
+						vitaminAGivenYes.attr('checked', 'checked');
+						
+					}
+					
+					//Autocompute the date of next visit based on the 'date given' input				
+					var spacing = MyApp.immunization.getSpacingInDays($(this));	
+					var nextVisitingDate = dateGiven;
+					var formattedNextVisitingDate = '';
+
+					if (spacing > 0) {
+					
+						nextVisitingDate.setDate ( dateGiven.getDate() + parseInt(spacing) );						
+						//parentRow.find('span.nextVisitDate input:text').val( MyApp.common.formatDate(nextVisitingDate) );
+						parentRow.find('span.nextVisitDate input:text').datepicker("setDate", MyApp.common.formatDate(nextVisitingDate) );
+
+					}
+				} else {
+				
+					parentRow.find('input:checkbox').removeAttr('checked');
+					parentRow.find('input:text').val('');
+					
+				}				
+			});
+			
+			$('#bcg-scar-checked input:radio').click(function() {
+				MyApp.ui.bcgScarValidation();
+			});
+			
+			beforeSubmit.push(function() {
+			
+				var validationFailed = false;
+
+				$('span.error').html('').hide();
+			
+				$('span.controlConcept input:checked').each(function(){
+					
+					var parentRow = $(this).parents('tr:first');
+					
+					$.each (parentRow.find('input:text'), function () {
+						
+						var txtField = $(this);
+						
+						if ( !txtField.is(':hidden') ) {
+						
+							if (txtField.val() == '' ) {
+							
+								txtField.siblings('.error:first').html('* Required').show();
+								validationFailed = true;
+							}
+						}						
+					});
+														
+				});
+				
+				return !validationFailed;
 			});
 
+			MyApp.ui.bcgScarValidation();
+			
 		});
+
 	</script>
+
 
 	<div class="ke-form-header">
 		<table style="width: 100%">
@@ -57,115 +295,123 @@
 	</div>
 
 	<div class="ke-form-content">
-		<table border="0"  class="hei" align="center" width="70%">
-			<tbody>
-				<tr>
-					<th colspan="5" style="background-color: #696969; color: #ffffff;text-align:center;">IMMUNIZATIONS(PROTECT YOUR CHILD)</th>
-				</tr>
-				<tr>
-					<th>Vaccine</th>
-					<th>Sequence No</th>
-					<th>Dose/ Units</th>
-					<th>Date Given</th>
-					<th>Date of Next Visit</th>
-				</tr>
+				<table width="70%" align="center" class="hei" id="immunizations">
+				<thead>
+					<tr>
+						<th colspan="2">Vaccine</th>
+						<th>Batch No</th>
+						<th>Expiry Date</th>
+						<th>Dose/Units</th>
+						<th>Date Given</th>
+						<th>Date of next visit</th>
+					</tr>
+				</thead>
+				<tbody>
 				<repeat>
 					<template>
 						<obsgroup groupingConceptId="1421AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
 							<tr>
-								<td>
-									<obs conceptId="984AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-										 answerConceptIds="886AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,783AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1685AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,82215AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,79409AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5864AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="BCG Vaccine(at birth),Oral Polio Vaccine(OPV),DPT/HEP B/Hib,Pneumococcal Vaccine,Measles Vaccine,Yellow Fever" />
+								<td style="border-right:none">{vaccineLabel}</td>
+								<td style="border-left:none">
+									<obs conceptId ="984" answerConceptId="{vaccineConceptId}" answerLabel="" showDate="true" id="{id}" class="vaccineConcept controlConcept"/>
+									<obs conceptId="1418AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="3" class="sequenceNo" id="{id}SequenceNo"/>	
+									<input type="hidden" name="{id}hVaccineSequenceNo" class="hVaccineSequenceNo" value="{vaccineSequenceNo}" />						
 								</td>
 								<td>
-									<obs conceptId="1418AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+									<obs conceptId="1420" size="7" />
 								</td>
 								<td>
-									<obs conceptId="1443AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
-									<obs conceptId="1444AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="5" />
+									<obs conceptId="162502" allowFutureDates="true"/>
 								</td>
 								<td>
-									<obs conceptId="1410AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+									<obs conceptId="1443AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="3" allowDecimal="true"/>/
+									<obs conceptId="1444AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="2" />
 								</td>
 								<td>
-									<obs conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" />
+									<obs conceptId="1410AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" class="dateGiven"/>
+								</td>
+								<td>
+									<obs conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" class="{class} nextVisitDate"/>							
 								</td>
 							</tr>
 						</obsgroup>
 					</template>
-					<render n="1" concept=" "/>
-					<render n="2" concept=" "/>
-					<render n="3" concept=" "/>
-					<render n="4" concept=" "/>
-					<render n="5" concept=" "/>
-					<render n="6" concept=" "/>
-					<render n="7" concept=" "/>
-					<render n="8" concept=" "/>
-					<render n="9" concept=" "/>
-					<render n="10" concept=" "/>
+					<render vaccineConceptId="886AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" vaccineLabel="BCG" vaccineSequenceNo="1" id="bcg" class="bcg"/>
+					<render vaccineConceptId="783AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" vaccineLabel="OPV at Birth" vaccineSequenceNo="0" id="opv-birth" class="opv"/>
+					<render vaccineConceptId="783AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" vaccineLabel="OPV 1" vaccineSequenceNo="1" id="opv-1" class="opv"/>
+					<render vaccineConceptId="783AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" vaccineLabel="OPV 2" vaccineSequenceNo="2" id="opv-2" class="opv"/>
+					<render vaccineConceptId="783AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" vaccineLabel="OPV 3" vaccineSequenceNo="3" id="opv-3" class="opv"/>
+					<render vaccineConceptId="1422AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" vaccineLabel="IPV" vaccineSequenceNo="1" id="ipv" class="ipv"/>
+					<render vaccineConceptId="781AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" vaccineLabel="DPT/Hep B/Hib 1" vaccineSequenceNo="1" id="dpt-hepb-hib-1" class="dpt-hepb-hib" />
+					<render vaccineConceptId="781AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" vaccineLabel="DPT/Hep B/Hib 2" vaccineSequenceNo="2" id="dpt-hepb-hib-2" class="dpt-hepb-hib" />
+					<render vaccineConceptId="781AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" vaccineLabel="DPT/Hep B/Hib 3" vaccineSequenceNo="3" id="dpt-hepb-hib-3" class="dpt-hepb-hib" />
+					<render vaccineConceptId="162342AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" vaccineLabel="PCV 10 (Pneumococcal) 1" vaccineSequenceNo="1" id="pcv10-1" class="pcv" />
+					<render vaccineConceptId="162342AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" vaccineLabel="PCV 10 (Pneumococcal) 2" vaccineSequenceNo="2" id="pcv10-2" class="pcv" />
+					<render vaccineConceptId="162342AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" vaccineLabel="PCV 10 (Pneumococcal)3" vaccineSequenceNo="3" id="pcv10-3" class="pcv" />
+					<render vaccineConceptId="83531AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" vaccineLabel="ROTA 1" vaccineSequenceNo="1" id="rota-1" class="rota" />
+					<render vaccineConceptId="162586AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" vaccineLabel="Measles/Rubella 1" vaccineSequenceNo="1" id="measles-rubella-1" class="measles-rubella" />
+					<render vaccineConceptId="5864AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" vaccineLabel="Yellow Fever" vaccineSequenceNo="1" id="yellow-fever" class="yellow-fever" />
+					<render vaccineConceptId="162586AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" vaccineLabel="Measles/Rubella 2" vaccineSequenceNo="2" id="measles-rubella-2" class="measles-rubella"/>
+					<render vaccineConceptId="36AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" vaccineLabel="Measles at 6 months" vaccineSequenceNo="1" id="measles-6-months" class="measles-6-months"/>
+					<render vaccineConceptId="83531AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" vaccineLabel="ROTA 2" vaccineSequenceNo="2" id="rota-2" class="rota" />
 				</repeat>
-			</tbody>
+				</tbody>
+				</table>
+		<table class="hei" width="70%" border="0" align="center">
+		  <tr>
+			<td>BCG Scar Checked?
+		    <obs conceptId="160265AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" id="bcg-scar-checked" /></td><td>Date Checked
+		      <obs conceptId="160753AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="date-scar-checked"/></td><td>Date BCG Repeated
+		        <obs conceptId="1410AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="date-scar-check-repeat"/></td>
+		  </tr>
 		</table>
-		<br />
 		<table class="hei" align="center" width="70%">
-			<tbody>
-				<tr>
-					<td>
-						BCG-Scar checked<obs conceptId="160265AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" id="bcg-scar-checked" />
-					</td>
-					<td id="date-scar-checked">Date checked<obs conceptId="160753AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
-					<td id="date-scar-check-repeat">Date BCG repeated<obs conceptId="1410AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  /></td>
-				</tr>
-			</tbody>
-		</table>
-		<br />
-		<table class="hei" align="center" width="70%">
-			<tbody>
-				<tr>
-					<th colspan="4" style="background-color: #696969; color: #ffffff;text-align:center;">VITAMIN A CAPSULES FROM 6 MONTHS</th>
-				</tr>
-				<tr>
-					<th colspan="2">VITAMIN A CAPSULE: Given orally</th>
-					<th rowspan="2">Tick if Given</th>
-					<th rowspan="2">Date of next visit</th>
-				</tr>
-				<tr>
-					<td colspan="2">At 6 months or at first contact thereafter</td>
-				</tr>
-				<tr>
-					<th colspan="2">Dose/Units</th>
-					<th></th>
-					<th></th>
-				</tr>
-				<repeat>
-					<template>
-						<obsgroup groupingConceptId="1441AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-							<tr>
-								<td colspan="2">
-									<obs conceptId="1443AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="30"/>
-									<obs conceptId="1444AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="5" />
-								</td>
-								<td>
-									<obs conceptId="161534AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" answerLabel="Yes" answerConceptId="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
-									<obs conceptId="161534AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" answerLabel="No" answerConceptId="1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
-								</td>
-								<td><obs conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" /></td>
-							</tr>
-						</obsgroup>
-					</template>
-					<render n="1" concept=" "/>
-					<render n="2" concept=" "/>
-					<render n="3" concept=" "/>
-					<render n="4" concept=" "/>
-					<render n="5" concept=" "/>
-					<render n="6" concept=" "/>
-					<render n="7" concept=" "/>
-					<render n="8" concept=" "/>
-					<render n="9" concept=" "/>
-					<render n="10" concept=" "/>
-			</repeat>
-			</tbody>
-		</table>
+          <tbody>
+            <tr>
+              <th colspan="4" style="background-color: #696969; color: #ffffff;text-align:center;">VITAMIN A CAPSULES FROM 6 MONTHS</th>
+            </tr>
+            <tr>
+              <th colspan="2">VITAMIN A CAPSULE: Given orally At 6 months or at first contact thereafter</th>
+              <th></th>
+              <th></th>
+            </tr>
+            
+            <tr>
+              <th colspan="2">Dose/Units</th>
+              <th>Date Given</th>
+              <th>Date of next visit</th>
+            </tr>
+            <repeat> <template>
+            <obsgroup groupingConceptId="1442AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+              <tr>
+                <td colspan="2">{caption}</td>
+                <td>
+				<obs conceptId="1282AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="86339AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" showDate="true" answerLabel="" class="controlConcept vitA dateGiven" id="vitaA-{n}"/> 
+				<obs conceptId="1418AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="3" class="sequenceNo" id="{id}SequenceNo"/>	
+				<input type="hidden" name="{id}hVaccineSequenceNo" class="hVaccineSequenceNo" value="{sequenceNo}" />	
+				<span id="vitA-given">
+					<obs conceptId="161534AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" answerLabel="Yes" answerConceptId="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" class="vitAGivenYes" />
+					<obs conceptId="161534AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" answerLabel="No" answerConceptId="1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" class="vitAGivenNo" /> 
+				</span>				</td>
+                <td><obs conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" class="nextVisitDate"/></td>
+              </tr>
+            </obsgroup>
+            </template>
+            <render n="1" caption="Vitamin A at 6 months (100,000 i.u)" sequenceNo="1" />
+            <render n="2" caption="Vitamin A at 1 yr (200,000 i.u)" sequenceNo="2" />
+            <render n="3" caption="Vitamin A at 1 &lt;sup&gt;1&lt;/sup&gt;/&lt;sub&gt;2&lt;/sub&gt; (200,000 i.u)" sequenceNo="3" />
+            <render n="4" caption="Vitamin A at 2 yrs (200,000 i.u)" sequenceNo="4" />
+            <render n="5" caption="Vitamin A at >2yrs-5yrs (200,000 i.u)" sequenceNo="5" />
+            </repeat>
+          </tbody>
+        </table>
+	    <table class="hei" width="70%" border="0" align="center">
+          <tr>
+           <td>Fully immunized child <obs conceptId="164134AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" id="fully-immunized-child" /></td>
+            <td>Date given last vaccine <obs conceptId="162585AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+          </tr>
+        </table>
+
 	</div>
 	<div class="ke-form-footer">
 		<submit />
