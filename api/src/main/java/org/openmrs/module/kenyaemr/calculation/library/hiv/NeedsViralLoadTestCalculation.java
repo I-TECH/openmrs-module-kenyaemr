@@ -62,6 +62,10 @@ public class NeedsViralLoadTestCalculation extends AbstractPatientCalculation im
         CalculationResultMap viralLoadList = Calculations.allObs(Dictionary.getConcept(Dictionary.HIV_VIRAL_LOAD), cohort, context);
         //check for non detectables
         CalculationResultMap ldlViralLoad = Calculations.allObs(Dictionary.getConcept(Dictionary.HIV_VIRAL_LOAD_QUALITATIVE), cohort, context);
+
+        //check for test orders
+        CalculationResultMap testOrders = Calculations.allObs(Dictionary.getConcept(Dictionary.TESTS_ORDERED), cohort, context);
+
         //check for last ldl
         CalculationResultMap ldlLast = Calculations.lastObs(Dictionary.getConcept(Dictionary.HIV_VIRAL_LOAD_QUALITATIVE), cohort, context);
 
@@ -77,12 +81,17 @@ public class NeedsViralLoadTestCalculation extends AbstractPatientCalculation im
             Obs viralLoadObs = EmrCalculationUtils.obsResultForPatient(viralLoad, ptId);
             Date dateInitiated = EmrCalculationUtils.datetimeResultForPatient(artStartDate, ptId);
             ListResult listResult = (ListResult) viralLoadList.get(ptId);
+            ListResult testOrdersList = (ListResult) testOrders.get(ptId);
+            List<Obs> testObsList = CalculationUtils.extractResultValues(testOrdersList);
             List<Obs> listObsViralLoads = CalculationUtils.extractResultValues(listResult);
             ListResult ldlList = (ListResult) ldlViralLoad.get(ptId);
             List<List> listLdl = CalculationUtils.extractResultValues(ldlList);
             Obs lastLdlObs = EmrCalculationUtils.obsResultForPatient(ldlLast, ptId);
             //find pregnancy obs
             Obs pregnantEdd = EmrCalculationUtils.obsResultForPatient(pregStatusObss, ptId);
+
+            //Find latest viral load test order
+            Obs lastVlTestOrder = getLatestVlOrder(testObsList);
 
             if(inHivProgram.contains(ptId) && onArt.contains(ptId)){
                 if(listObsViralLoads.size() == 0 && listLdl.size() == 0 && dateInitiated != null && (daysSince(dateInitiated, context) >= 180)) {
@@ -136,6 +145,15 @@ public class NeedsViralLoadTestCalculation extends AbstractPatientCalculation im
                         }
                 }
 
+                //check if has vl test order within 6 months
+                if (lastVlTestOrder!= null && daysSince(lastVlTestOrder.getObsDatetime(), context) >= 180) {
+                    needsViralLoadTest = true;
+                }
+
+                if (lastVlTestOrder!= null && daysSince(lastVlTestOrder.getObsDatetime(), context) < 180) {
+                    needsViralLoadTest = false;
+                }
+
             }
 
             ret.put(ptId, new BooleanResult(needsViralLoadTest, this));
@@ -148,5 +166,22 @@ public class NeedsViralLoadTestCalculation extends AbstractPatientCalculation im
         DateTime dateTime1 = new DateTime(d1.getTime());
         DateTime dateTime2 = new DateTime(d2.getTime());
         return Math.abs(Months.monthsBetween(dateTime1, dateTime2).getMonths());
+    }
+
+    Obs getLatestVlOrder(List<Obs> lstObs) {
+        Obs latestObs = null;
+        for(Obs o:lstObs) {
+            if(o.getValueCoded() == Dictionary.getConcept(Dictionary.HIV_VIRAL_LOAD)) {
+                if(latestObs == null) {
+                    latestObs =o;
+                } else {
+                    if (o.getObsDatetime().after(latestObs.getObsDatetime()) ) {
+                        latestObs =o;
+                    }
+                }
+
+            }
+        }
+         return latestObs;
     }
 }

@@ -28,9 +28,13 @@
 				var encounterDate = new Date(getValue('encounter-date.value')).getTime();
 				var encouterDateValue = new Date(getValue('encounter-date.value'));
 				var fourMonthsFromEncounterDate = encouterDateValue.setDate(encouterDateValue.getDate() + 120);
-				if ((returnDate &lt; encounterDate) || (returnDate &gt; fourMonthsFromEncounterDate)) {
-					getField('returnVisitDate.error').html('Return Visit date should be after encounter date and NOT more than four months from Encounter Date').show();
+				if (returnDate &lt; encounterDate)  {
+					getField('returnVisitDate.error').html('Return Visit date should be after encounter date').show();
 					return false;
+				}
+
+				if (returnDate &gt; fourMonthsFromEncounterDate) {
+					alert('Return Visit date is more than four months from Encounter Date');
 				}
 				return true;
 			});

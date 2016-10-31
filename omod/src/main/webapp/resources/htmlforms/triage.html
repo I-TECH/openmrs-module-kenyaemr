@@ -35,16 +35,19 @@
             getField('height.value').change(onWeightOrHeightChange);
             onWeightOrHeightChange();
 
-            var pbirthdate = new Date("<lookup expression="
-            patient.birthdate
-            " />"
-            ).
-            getTime();
-            var pgender = "<lookup expression="
-            patient.gender
-            " />";
+            //limit letters only in text field
+            jQuery('#rsn').keypress(function(event) {
+            var code = (event.keyCode ? event.keyCode : event.which);
+            //alert(code)
+            if (code &gt;= 48  &amp;&amp; code &lt;= 57) //numbers
+                event.preventDefault();
+            });
 
-            if (pgender == 'F') {
+
+            var pbirthdate = new Date("<lookup expression="patient.birthdate" />").getTime();
+            var pgender = "<lookup expression="patient.gender" />";
+
+            if (pgender === 'F') {
                 beforeSubmit.push(function () {
                     var lmpdate = new Date(getValue('lmp-date.value')).getTime();
                     if (lmpdate &lt; pbirthdate) {
@@ -78,7 +81,7 @@
                 <tr>
                     <td>Reason for visit</td>
                     <td>
-                        <obs conceptId="160430AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="2" cols="80"/>
+                        <obs id="rsn" conceptId="160430AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="2" cols="80"/>
                     </td>
                 </tr>
             </table>
